@@ -1,10 +1,10 @@
-import { ajax } from '../../utils/ajax';
-import type { Taxon, TaxonTreeDefItem } from './types';
-import { f } from '../../utils/functools';
-import type { SpecifyResource } from './legacyTypes';
 import { treeText } from '../../localization/tree';
+import { ajax } from '../../utils/ajax';
+import { f } from '../../utils/functools';
 import { formatUrl } from '../Router/queryString';
-import { AnyTree } from './helperTypes';
+import type { AnyTree } from './helperTypes';
+import type { SpecifyResource } from './legacyTypes';
+import type { Taxon, TaxonTreeDefItem } from './types';
 
 export const initializeTreeRecord = (
   resource: SpecifyResource<AnyTree>
@@ -19,9 +19,9 @@ export const treeBusinessRules = async (
 ): Promise<BusinessRuleResult | undefined> =>
   fieldName === 'parent'
     ? predictFullName(resource, true)
-    : fieldName === 'name' || fieldName.toLowerCase() === 'definitionitem'
+    : (fieldName === 'name' || fieldName.toLowerCase() === 'definitionitem'
     ? predictFullName(resource, false)
-    : undefined;
+    : undefined);
 
 export type BusinessRuleResult = {
   readonly key: string;

@@ -1,10 +1,24 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import type { LocalizedString } from 'typesafe-i18n';
 import type { State } from 'typesafe-reducer';
 
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { commonText } from '../../localization/common';
+import { interactionsText } from '../../localization/interactions';
 import { ajax } from '../../utils/ajax';
-import { error } from '../Errors/assert';
+import { f } from '../../utils/functools';
+import type { RA } from '../../utils/types';
+import { defined, filterArray } from '../../utils/types';
+import { getBooleanAttribute, getParsedAttribute } from '../../utils/utils';
+import { Ul } from '../Atoms';
+import { icons } from '../Atoms/Icons';
+import { Link } from '../Atoms/Link';
 import { fetchCollection } from '../DataModel/collection';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import { getResourceViewUrl, parseJavaClassName } from '../DataModel/resource';
+import { getModel, schema, strictGetModel } from '../DataModel/schema';
+import type { SpecifyModel } from '../DataModel/specifyModel';
 import type {
   Disposal,
   Gift,
@@ -12,33 +26,19 @@ import type {
   RecordSet,
   Tables,
 } from '../DataModel/types';
-import { f } from '../../utils/functools';
-import { getBooleanAttribute, getParsedAttribute } from '../../utils/utils';
-import { cachableUrl } from '../InitialContext';
-import { commonText } from '../../localization/common';
-import { fetchView } from '../FormParse';
-import { hasPermission, hasTablePermission } from '../Permissions/helpers';
-import { formatUrl } from '../Router/queryString';
-import { getResourceViewUrl, parseJavaClassName } from '../DataModel/resource';
-import { getModel, schema, strictGetModel } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
-import type { RA } from '../../utils/types';
-import { defined, filterArray } from '../../utils/types';
-import { userInformation } from '../InitialContext/userInformation';
-import { Ul } from '../Atoms';
-import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import { icons } from '../Atoms/Icons';
-import { InteractionDialog } from './InteractionDialog';
-import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { ReportsView } from '../Reports';
-import { OverlayContext } from '../Router/Router';
-import { Link } from '../Atoms/Link';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { SerializedResource } from '../DataModel/helperTypes';
-import { TableIcon } from '../Molecules/TableIcon';
+import { error } from '../Errors/assert';
 import { softFail } from '../Errors/Crash';
-import { LocalizedString } from 'typesafe-i18n';
-import { interactionsText } from '../../localization/interactions';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
+import { fetchView } from '../FormParse';
+import { cachableUrl } from '../InitialContext';
+import { userInformation } from '../InitialContext/userInformation';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { TableIcon } from '../Molecules/TableIcon';
+import { hasPermission, hasTablePermission } from '../Permissions/helpers';
+import { ReportsView } from '../Reports';
+import { formatUrl } from '../Router/queryString';
+import { OverlayContext } from '../Router/Router';
+import { InteractionDialog } from './InteractionDialog';
 
 export const interactionTables: ReadonlySet<keyof Tables> = new Set<
   keyof Tables
@@ -126,7 +126,7 @@ const fetchEntries = f.store(
           const table =
             action === 'NEW_GIFT'
               ? 'Gift'
-              : action === 'NEW_LOAN'
+              : (action === 'NEW_LOAN'
               ? 'Loan'
               : defined(
                   (await f
@@ -138,7 +138,7 @@ const fetchEntries = f.store(
                     )) ??
                     getModel(getParsedAttribute(entry, 'table') ?? '')?.name,
                   'Failed to get table name for interaction item. Set table or view attributes'
-                );
+                ));
           return {
             action: f.includes(supportedActions, action) ? action : undefined,
             table,
@@ -186,11 +186,11 @@ function Interactions({
         const actionModel =
           table.toLowerCase() === 'loan'
             ? schema.models.Loan
-            : table.toLowerCase() === 'gift'
+            : (table.toLowerCase() === 'gift'
             ? schema.models.Gift
             : table.toLowerCase() === 'disposal'
             ? schema.models.Disposal
-            : undefined;
+            : undefined);
         if (actionModel === undefined) {
           softFail(new Error(`Unknown interaction table: ${table}`));
           return;
@@ -274,16 +274,16 @@ function Interactions({
                     ? stringLocalization[
                         label as keyof typeof stringLocalization
                       ] ?? label
-                    : typeof table === 'string'
+                    : (typeof table === 'string'
                     ? getModel(table)?.label
-                    : (action as LocalizedString)}
+                    : (action as LocalizedString))}
                 </Link.Default>
               </li>
             ) : undefined
           )}
       </Ul>
     </Dialog>
-  ) : state.type === 'InteractionState' ? (
+  ) : (state.type === 'InteractionState' ? (
     <InteractionDialog
       action={{ model: state.actionModel, name: state.action }}
       model={schema.models[state.table]}
@@ -291,9 +291,9 @@ function Interactions({
       searchField={strictGetModel(state.table).strictGetLiteralField(
         state.table === 'Loan'
           ? 'loanNumber'
-          : state.table === 'Disposal'
+          : (state.table === 'Disposal'
           ? 'disposalNumber'
-          : 'catalogNumber'
+          : 'catalogNumber')
       )}
       onClose={handleClose}
     />
@@ -306,7 +306,7 @@ function Interactions({
     />
   ) : (
     error('Invalid state')
-  );
+  ));
 }
 
 export function InteractionsOverlay(): JSX.Element | null {

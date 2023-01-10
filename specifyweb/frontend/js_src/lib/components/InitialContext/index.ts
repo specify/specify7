@@ -3,9 +3,9 @@
  */
 
 import type { MimeType } from '../../utils/ajax';
-import { formatNumber, MILLISECONDS } from '../Atoms/Internationalization';
 import { f } from '../../utils/functools';
 import { defined } from '../../utils/types';
+import { formatNumber, MILLISECONDS } from '../Atoms/Internationalization';
 
 /**
  * This belongs to ./components/toolbar/cachebuster.tsx but was moved here
@@ -63,7 +63,7 @@ export const load = async <T>(path: string, mimeType: MimeType): Promise<T> =>
     const timePassed = endTime - startTime;
     // A very crude detection mechanism
     const isCached = timePassed < 100;
-    // eslint-disable-next-line no-console
+     
     console.log(
       `${path} %c[${
         isCached

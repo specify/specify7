@@ -1,16 +1,17 @@
-import { SpecifyModel } from '../DataModel/specifyModel';
+import React from 'react';
+
+import { formsText } from '../../localization/forms';
 import { hijackBackboneAjax } from '../../utils/ajax/backboneAjax';
+import { Http } from '../../utils/ajax/definitions';
+import { fieldFormat } from '../../utils/fieldFormat';
+import type { RA } from '../../utils/types';
+import { Link } from '../Atoms/Link';
+import { getModelById } from '../DataModel/schema';
+import type { SpecifyModel } from '../DataModel/specifyModel';
 import { format, naiveFormatter } from '../Forms/dataObjFormatters';
 import { hasTablePermission } from '../Permissions/helpers';
-import { Link } from '../Atoms/Link';
-import { RA } from '../../utils/types';
-import { formsText } from '../../localization/forms';
-import React from 'react';
-import { QueryFieldSpec } from './fieldSpec';
+import type { QueryFieldSpec } from './fieldSpec';
 import { queryIdField } from './Results';
-import { getModelById } from '../DataModel/schema';
-import { fieldFormat } from '../../utils/fieldFormat';
-import { Http } from '../../utils/ajax/definitions';
 
 const needAuditLogFormatting = (fieldSpecs: RA<QueryFieldSpec>): boolean =>
   fieldSpecs.some(({ table }) =>

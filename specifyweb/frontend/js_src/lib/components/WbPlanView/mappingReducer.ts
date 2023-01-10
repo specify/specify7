@@ -8,6 +8,17 @@ import type { Action } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
 
 import { setCache } from '../../utils/cache';
+import type { IR, RA } from '../../utils/types';
+import { replaceItem } from '../../utils/utils';
+import type { Tables } from '../DataModel/types';
+import { softFail } from '../Errors/Crash';
+import { uniquifyHeaders } from './headerHelper';
+import {
+  deduplicateMappings,
+  mappingPathIsComplete,
+  mutateMappingPath,
+} from './helpers';
+import { defaultColumnOptions, getLinesFromHeaders } from './linesGetter';
 import type {
   AutoMapperSuggestion,
   MappingLine,
@@ -15,18 +26,7 @@ import type {
   MappingState,
   SelectElementPosition,
 } from './Mapper';
-import type { Tables } from '../DataModel/types';
-import { replaceItem } from '../../utils/utils';
-import type { IR, RA } from '../../utils/types';
 import type { MatchBehaviors } from './uploadPlanParser';
-import { uniquifyHeaders } from './headerHelper';
-import { defaultColumnOptions, getLinesFromHeaders } from './linesGetter';
-import {
-  deduplicateMappings,
-  mappingPathIsComplete,
-  mutateMappingPath,
-} from './helpers';
-import { softFail } from '../Errors/Crash';
 
 const modifyLine = (
   state: MappingState,

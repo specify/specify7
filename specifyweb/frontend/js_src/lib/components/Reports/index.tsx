@@ -3,6 +3,7 @@ import React from 'react';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
+import { reportsText } from '../../localization/report';
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
@@ -16,6 +17,7 @@ import type {
   SerializedModel,
   SerializedResource,
 } from '../DataModel/helperTypes';
+import { schema } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { SpAppResource } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
@@ -27,8 +29,6 @@ import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import { formatUrl } from '../Router/queryString';
 import { OverlayContext } from '../Router/Router';
 import { Report } from './Report';
-import { reportsText } from '../../localization/report';
-import { schema } from '../DataModel/schema';
 
 export const reportsAvailable = ajax<{ readonly available: boolean }>(
   cachableUrl('/context/report_runner_status.json'),

@@ -1,8 +1,8 @@
 import type jQuery from 'jquery';
 import React from 'react';
 
-import { Dialog, dialogClassNames } from './Dialog';
 import { createBackboneView } from '../Core/reactBackboneExtend';
+import { Dialog, dialogClassNames } from './Dialog';
 
 // REFACTOR: get rid of this once everything is using React
 

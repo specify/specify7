@@ -1,12 +1,13 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
+
+import { theories } from '../../tests/utils';
 import {
   createDictionary,
   rawDictionary,
   StringToJsx,
   whitespaceSensitive,
 } from '../utils';
-import { theories } from '../../tests/utils';
-import { LocalizedString } from 'typesafe-i18n';
 import { DEFAULT_LANGUAGE } from '../utils/config';
 
 const raw = {
@@ -85,29 +86,29 @@ test('Key with JSX', () =>
       },
     })
   ).toMatchInlineSnapshot(`
-    <React.Fragment>
-      
-      <React.Fragment>
+    <>
+
+      <>
         <span>
           A
         </span>
-      </React.Fragment>
-       a 
-      <React.Fragment>
+      </>
+       a
+      <>
         <span>
           B
         </span>
-      </React.Fragment>
-       
-      <React.Fragment>
+      </>
+
+      <>
         <br />
-      </React.Fragment>
-       
-      <React.Fragment>
+      </>
+
+      <>
         <p>
           B
         </p>
-      </React.Fragment>
+      </>
        _
-    </React.Fragment>
+    </>
   `));

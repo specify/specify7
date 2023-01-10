@@ -1,7 +1,7 @@
-import { generateMappingPathPreview } from '../mappingPreview';
 import { requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
 import { anyTreeRank, formattedEntry, formatTreeRank } from '../mappingHelpers';
+import { generateMappingPathPreview } from '../mappingPreview';
 
 requireContext();
 

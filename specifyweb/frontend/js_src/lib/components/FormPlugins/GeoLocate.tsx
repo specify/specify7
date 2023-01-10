@@ -1,21 +1,21 @@
 import React from 'react';
 
-import type { Geography, Locality } from '../DataModel/types';
-import { f } from '../../utils/functools';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
 import { localityText } from '../../localization/locality';
-import { hasTablePermission } from '../Permissions/helpers';
-import { formatUrl } from '../Router/queryString';
-import { schema } from '../DataModel/schema';
+import { f } from '../../utils/functools';
 import type { IR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { schema } from '../DataModel/schema';
+import type { Geography, Locality } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
-import { useCachedState } from '../../hooks/useCachedState';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { useBooleanState } from '../../hooks/useBooleanState';
+import { hasTablePermission } from '../Permissions/helpers';
+import { formatUrl } from '../Router/queryString';
 
 const defaultWidth = 947;
 const defaultHeight = 779;
@@ -101,7 +101,7 @@ function GeoLocate({
     'height'
   );
 
-  return data === undefined ? null : data === false ? (
+  return data === undefined ? null : (data === false ? (
     <Dialog
       buttons={commonText.close()}
       header={localityText.geographyRequired()}
@@ -134,11 +134,11 @@ function GeoLocate({
         src={formatUrl(
           'https://www.geo-locate.org/web/webgeoreflight.aspx',
           data
-        ).replace(/%7c/gi, '|')}
+        ).replaceAll(/%7c/gi, '|')}
         title={localityText.geoLocate()}
       />
     </Dialog>
-  );
+  ));
 }
 
 async function getGeoLocateData(
@@ -197,7 +197,7 @@ async function getGeoLocateData(
           ...(Array.isArray(point)
             ? {
                 points: filterArray([...point, uncertainty])
-                  .map((part) => part.toString().replace(/[:|]/g, ' '))
+                  .map((part) => part.toString().replaceAll(/[:|]/g, ' '))
                   .join('|'),
               }
             : {}),

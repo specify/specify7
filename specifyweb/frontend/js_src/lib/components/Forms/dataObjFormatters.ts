@@ -2,6 +2,10 @@
  * Format a resource using resource formatters defined in Specify 6
  */
 
+import type { LocalizedString } from 'typesafe-i18n';
+
+import { formsText } from '../../localization/forms';
+import { userText } from '../../localization/user';
 import { ajax } from '../../utils/ajax';
 import { fieldFormat } from '../../utils/fieldFormat';
 import { resolveParser } from '../../utils/parser/definitions';
@@ -19,8 +23,9 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { LiteralField } from '../DataModel/specifyField';
 import type { Collection } from '../DataModel/specifyModel';
-import { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Tables } from '../DataModel/types';
+import { softFail } from '../Errors/Crash';
 import {
   cachableUrl,
   contextUnlockedPromise,
@@ -28,10 +33,6 @@ import {
 } from '../InitialContext';
 import { hasPathPermission, hasTablePermission } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
-import { softFail } from '../Errors/Crash';
-import { userText } from '../../localization/user';
-import { LocalizedString } from 'typesafe-i18n';
-import { formsText } from '../../localization/forms';
 
 export type Formatter = {
   readonly name: string | undefined;
@@ -208,7 +209,7 @@ export async function format<SCHEMA extends AnySchema>(
   return isEmptyResource
     ? automaticFormatter ?? undefined
     : Promise.all(
-        fields.map((field) => formatField(field, resource, tryBest))
+        fields.map(async (field) => formatField(field, resource, tryBest))
       ).then((values) => values.join('') as LocalizedString);
 }
 
@@ -249,9 +250,9 @@ async function formatField(
               value as string | undefined
             )
       )
-    : tryBest
+    : (tryBest
     ? naiveFormatter(resource.specifyModel.name, resource.id)
-    : userText.noPermission();
+    : userText.noPermission());
 
   return formatted === '' ? '' : `${separator}${formatted}`;
 }

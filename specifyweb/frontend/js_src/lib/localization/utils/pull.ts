@@ -1,23 +1,27 @@
-import { program } from 'commander';
 import fs from 'node:fs';
 import path from 'node:path';
+
+import { program } from 'commander';
 import gettextParser from 'gettext-parser';
 import prettier from 'prettier';
+import type { LocalizedString } from 'typesafe-i18n';
 
+import { formatList } from '../../components/Atoms/Internationalization';
+import { f } from '../../utils/functools';
+import type { IR, RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
+import { group } from '../../utils/utils';
+import type {
+  ExtractedStrings} from '../utils/scanUsages';
 import {
   dictionaryExtension,
-  ExtractedStrings,
   extractStrings,
 } from '../utils/scanUsages';
-import { testLogging } from './testLogging';
-import { formatList } from '../../components/Atoms/Internationalization';
-import { filterArray, IR, RA } from '../../utils/types';
-import { LocalizationEntry, whitespaceSensitive } from './index';
 import { languageCodeMapper } from './config';
+import type { LocalizationEntry} from './index';
+import { whitespaceSensitive } from './index';
 import { gettextExtension } from './sync';
-import { group } from '../../utils/utils';
-import { f } from '../../utils/functools';
-import { LocalizedString } from 'typesafe-i18n';
+import { testLogging } from './testLogging';
 
 program
   .name('Pull localization')
@@ -69,7 +73,7 @@ function ensureConsistency(
     );
 }
 
-const parseDictionaries = (
+const parseDictionaries = async (
   components: RA<string>
 ): Promise<IR<IR<LocalizationEntry>>> =>
   Promise.all(
@@ -211,9 +215,9 @@ const mergeStrings = (
   ),
 });
 
-const updateLocalFiles = (merged: ExtractedStrings): Promise<void> =>
+const updateLocalFiles = async (merged: ExtractedStrings): Promise<void> =>
   Promise.all(
-    Object.entries(merged).map(([component, { dictionaryName, strings }]) =>
+    Object.entries(merged).map(async ([component, { dictionaryName, strings }]) =>
       updateLocalFile(component, dictionaryName, strings)
     )
   ).then(f.void);

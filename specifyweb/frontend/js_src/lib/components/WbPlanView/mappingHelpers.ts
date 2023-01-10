@@ -4,10 +4,10 @@
  * @module
  */
 
-import type { MappingPath } from './Mapper';
+import type { R, RA, WritableArray } from '../../utils/types';
 import { schemaBase as schema } from '../DataModel/schemaBase';
 import type { Relationship } from '../DataModel/specifyField';
-import type { R, RA, WritableArray } from '../../utils/types';
+import type { MappingPath } from './Mapper';
 import type { ColumnOptions } from './uploadPlanParser';
 
 /**

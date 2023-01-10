@@ -1,5 +1,5 @@
-import { f } from '../../utils/functools';
 import { readCookie } from '../../utils/ajax/cookies';
+import { f } from '../../utils/functools';
 import { setDevelopmentGlobal } from '../../utils/types';
 
 /**
@@ -47,8 +47,10 @@ export type Language = typeof languages[number];
 
 export const DEFAULT_LANGUAGE = 'en-us';
 
-// Django does not allow invalid language codes, so can't read them from
-// <html lang="..."> tag. Instead, we read them from cookies directly
+/*
+ * Django does not allow invalid language codes, so can't read them from
+ * <html lang="..."> tag. Instead, we read them from cookies directly
+ */
 const cookieLanguage = readCookie('language');
 export const devLanguage = f.includes(Object.keys(devLanguages), cookieLanguage)
   ? cookieLanguage

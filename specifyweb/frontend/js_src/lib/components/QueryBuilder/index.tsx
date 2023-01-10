@@ -1,24 +1,24 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 
-import type { RecordSet, SpQuery } from '../DataModel/types';
-import { f } from '../../utils/functools';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { useSearchParameter } from '../../hooks/navigation';
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { queryText } from '../../localization/query';
-import { hasPermission, hasToolPermission } from '../Permissions/helpers';
-import { queryFromTree } from './fromTree';
+import { f } from '../../utils/functools';
+import { deserializeResource } from '../DataModel/helpers';
+import type { AnyTree } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { fetchResource } from '../DataModel/resource';
 import { getModel, schema } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { RecordSet, SpQuery } from '../DataModel/types';
 import { isTreeModel } from '../InitialContext/treeRanks';
 import { userInformation } from '../InitialContext/userInformation';
-import { NotFoundView } from '../Router/NotFoundView';
+import { hasPermission, hasToolPermission } from '../Permissions/helpers';
 import { ProtectedTool, ProtectedTree } from '../Permissions/PermissionDenied';
+import { NotFoundView } from '../Router/NotFoundView';
+import { queryFromTree } from './fromTree';
 import { QueryBuilder } from './Wrapped';
-import { useSearchParameter } from '../../hooks/navigation';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { AnyTree } from '../DataModel/helperTypes';
-import { deserializeResource } from '../DataModel/helpers';
 
 function useQueryRecordSet(): SpecifyResource<RecordSet> | false | undefined {
   const [recordsetid = ''] = useSearchParameter('recordsetid');
@@ -50,13 +50,13 @@ function QueryBuilderWrapper({
   return (
     <QueryBuilder
       autoRun={autoRun}
+      forceCollection={undefined}
       isReadOnly={
         !hasPermission('/querybuilder/query', 'execute') &&
         !hasToolPermission('queryBuilder', query.isNew() ? 'create' : 'update')
       }
       query={query}
       recordSet={typeof recordSet === 'object' ? recordSet : undefined}
-      forceCollection={undefined}
     />
   );
 }

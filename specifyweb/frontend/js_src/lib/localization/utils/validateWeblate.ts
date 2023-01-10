@@ -1,10 +1,10 @@
 import { Http } from '../../utils/ajax/definitions';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
+import { sortFunction } from '../../utils/utils';
 import { syncBranch, weblateBranch } from './config';
 import type { DictionaryUsages } from './scanUsages';
 import { testLogging } from './testLogging';
-import { sortFunction } from '../../utils/utils';
 
 const { error, warn } = testLogging;
 

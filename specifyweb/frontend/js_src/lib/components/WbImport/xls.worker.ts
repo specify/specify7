@@ -28,7 +28,7 @@ context.onmessage = function (e) {
     const options: ParsingOptions = {
       type: 'array',
       raw: true,
-      sheetRows: previewSize != null ? previewSize : 0,
+      sheetRows: previewSize == null ? 0 : previewSize,
     };
     const workbook = read(fileData, options);
 

@@ -1,25 +1,25 @@
 import React from 'react';
 
-import { f } from '../../utils/functools';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
+import { f } from '../../utils/functools';
+import { DataEntry } from '../Atoms/DataEntry';
+import { fetchDistantRelated } from '../DataModel/helpers';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { schema } from '../DataModel/schema';
+import type { Collection } from '../DataModel/specifyModel';
+import { UiCommand } from '../FormCommands';
+import { FormField } from '../FormFields';
 import type { FormMode, FormType } from '../FormParse';
 import { fetchView, resolveViewDefinition } from '../FormParse';
 import type { cellAlign, CellTypes } from '../FormParse/cells';
-import { schema } from '../DataModel/schema';
-import type { Collection } from '../DataModel/specifyModel';
-import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
-import { DataEntry } from '../Atoms/DataEntry';
-import { FormTableInteraction } from './FormTableInteraction';
 import { RenderForm } from '../Forms/SpecifyForm';
-import { UiCommand } from '../FormCommands';
-import { FormField } from '../FormFields';
 import { SubView } from '../Forms/SubView';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { AnySchema } from '../DataModel/helperTypes';
 import { TableIcon } from '../Molecules/TableIcon';
-import { fetchDistantRelated } from '../DataModel/helpers';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
+import { FormTableInteraction } from './FormTableInteraction';
 
 const cellRenderers: {
   readonly [KEY in keyof CellTypes]: (props: {
@@ -59,10 +59,10 @@ const cellRenderers: {
   Label({ cellData: { text, labelForCellId, title }, formatId, align }) {
     const style: React.CSSProperties = {
       textAlign:
-        align === 'right' ? 'right' : align === 'center' ? 'center' : undefined,
+        align === 'right' ? 'right' : (align === 'center' ? 'center' : undefined),
     };
     return typeof text === 'string' &&
-      text.length === 0 ? null : typeof labelForCellId === 'string' ? (
+      text.length === 0 ? null : (typeof labelForCellId === 'string' ? (
       <label htmlFor={formatId(labelForCellId)} style={style} title={title}>
         {text}
       </label>
@@ -70,7 +70,7 @@ const cellRenderers: {
       <p style={style} title={title}>
         {text}
       </p>
-    );
+    ));
   },
   Separator({ cellData: { label, icon, forClass } }) {
     return typeof label === 'string' || typeof forClass === 'string' ? (

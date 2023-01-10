@@ -4,14 +4,14 @@
 
 import React from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { SetUnloadProtectsContext } from '../components/Core/Contexts';
 import { isOverlay, OverlayContext } from '../components/Router/Router';
+import { locationToState } from '../components/Router/RouterState';
 import type { GetOrSet, GetSet, RA } from '../utils/types';
 import { defined } from '../utils/types';
 import { removeItem } from '../utils/utils';
-import { locationToState } from '../components/Router/RouterState';
-import { LocalizedString } from 'typesafe-i18n';
 
 export function useSearchParameter(
   name: string | undefined

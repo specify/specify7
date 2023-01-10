@@ -8,21 +8,22 @@
 import type { Action } from 'typesafe-reducer';
 import { generateDispatch } from 'typesafe-reducer';
 
-import type { Options, TableSynonym } from './autoMapperDefinitions';
-import { autoMapperDefinitions } from './autoMapperDefinitions';
-import type { AutoMapperScope, MappingPath } from './Mapper';
-import type { Tables } from '../DataModel/types';
 import { f } from '../../utils/functools';
+import type { IR, R, RA, Writable, WritableArray } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { findArrayDivergencePoint } from '../../utils/utils';
+import type { AnyTree } from '../DataModel/helperTypes';
 import { getModel, strictGetModel } from '../DataModel/schema';
 import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { Tables } from '../DataModel/types';
 import {
   getTreeDefinitionItems,
   isTreeModel,
 } from '../InitialContext/treeRanks';
-import type { IR, R, RA, Writable, WritableArray } from '../../utils/types';
-import { filterArray } from '../../utils/types';
+import type { Options, TableSynonym } from './autoMapperDefinitions';
+import { autoMapperDefinitions } from './autoMapperDefinitions';
+import type { AutoMapperScope, MappingPath } from './Mapper';
 import {
   formatToManyIndex,
   formatTreeRank,
@@ -34,7 +35,6 @@ import {
   valueIsTreeRank,
 } from './mappingHelpers';
 import { isCircularRelationship } from './modelHelpers';
-import { AnyTree } from '../DataModel/helperTypes';
 
 // REFACTOR: make code more readable. split into several files
 
@@ -182,7 +182,7 @@ const regexRemoveDuplicateHeaderIndexes = /\(\d+\)/gu;
 // Used to remove non letter characters
 const regexRemoveNonAz = /[^\sa-z]+/gu;
 
-// eslint-disable-next-line optimize-regex/optimize-regex
+ 
 const regexRemoveParentheses = /\([^)]*\)|\[[^\]]*\]|\{[^}]*\}|<[^>]*>/gu;
 
 const regexParseOrdinalNumbers = /^(\d+)(?:st|nd|rd|th) ([\sa-z]+)$/gu;
@@ -309,19 +309,19 @@ export class AutoMapper {
           const lowercaseName = handleOrdinalNumbers(
             originalName
               .toLowerCase()
-              .replace(regexReplaceWhiteSpace, ' ')
-              .replace(regexRemoveDuplicateHeaderIndexes, '')
+              .replaceAll(regexReplaceWhiteSpace, ' ')
+              .replaceAll(regexRemoveDuplicateHeaderIndexes, '')
               .trim()
           );
           const strippedName = lowercaseName
-            .replace(regexRemoveNonAz, ' ')
-            .replace(regexReplaceWhiteSpace, ' ')
+            .replaceAll(regexRemoveNonAz, ' ')
+            .replaceAll(regexReplaceWhiteSpace, ' ')
             .trim();
 
           const finalName = lowercaseName
-            .replace(regexRemoveParentheses, ' ')
-            .replace(regexRemoveNonAz, ' ')
-            .replace(regexReplaceWhiteSpace, ' ')
+            .replaceAll(regexRemoveParentheses, ' ')
+            .replaceAll(regexRemoveNonAz, ' ')
+            .replaceAll(regexReplaceWhiteSpace, ' ')
             .trim()
             .split(' ')
             .join('');
@@ -626,7 +626,7 @@ export class AutoMapper {
     if (Array.isArray(ranksData)) {
       let ranks = ranksData.map(({ name }) => name).slice(1);
       const pushRankToPath =
-        mappingPath.length <= 0 || !valueIsTreeRank(mappingPath.at(-1)!);
+        mappingPath.length <= 0 || !valueIsTreeRank(mappingPath.at(-1));
 
       if (!pushRankToPath)
         ranks = [getNameFromTreeRankName(mappingPath.at(-1)!)];

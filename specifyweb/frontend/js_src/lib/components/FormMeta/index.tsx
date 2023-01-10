@@ -4,6 +4,8 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
+import { reportsText } from '../../localization/report';
+import { schemaText } from '../../localization/schema';
 import { f } from '../../utils/functools';
 import { H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -32,8 +34,6 @@ import { QueryTreeUsages } from './QueryTreeUsages';
 import { ReadOnlyMode } from './ReadOnlyMode';
 import { ShareRecord } from './ShareRecord';
 import { SubViewMeta } from './SubViewMeta';
-import { schemaText } from '../../localization/schema';
-import { reportsText } from '../../localization/report';
 
 /**
  * Form preferences host context aware user preferences and other meta-actions.
@@ -136,10 +136,10 @@ function MetaDialog({
         {subView === undefined && (
           <PrintOnSave
             defaultValue={false}
-            id={undefined}
-            name={undefined}
             field={undefined}
+            id={undefined}
             model={resource.specifyModel}
+            name={undefined}
             text={
               interactionTables.has(resource.specifyModel.name)
                 ? reportsText.generateReportOnSave()

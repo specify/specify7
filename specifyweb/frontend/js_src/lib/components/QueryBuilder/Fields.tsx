@@ -1,14 +1,14 @@
 import React from 'react';
 
-import type { Tables } from '../DataModel/types';
-import type { QueryField } from './helpers';
-import { scrollIntoView } from '../TreeView/helpers';
+import { useReadyEffect } from '../../hooks/useReadyEffect';
 import type { RA } from '../../utils/types';
 import { Ul } from '../Atoms';
+import type { Tables } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import { QueryLine } from './Field';
+import { scrollIntoView } from '../TreeView/helpers';
 import type { MappingPath } from '../WbPlanView/Mapper';
-import { useReadyEffect } from '../../hooks/useReadyEffect';
+import { QueryLine } from './Field';
+import type { QueryField } from './helpers';
 
 export function QueryFields({
   baseTableName,
@@ -108,9 +108,9 @@ export function QueryFields({
                 : handleLineFocus?.(
                     target === 'previous'
                       ? line - 1
-                      : target === 'current'
+                      : (target === 'current'
                       ? line
-                      : line + 1
+                      : line + 1)
                   )
             }
             onMappingChange={handleMappingChange?.bind(undefined, line)}

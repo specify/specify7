@@ -1,4 +1,11 @@
+import { schemaText } from '../../localization/schema';
+import { resolveParser } from '../../utils/parser/definitions';
+import type { RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { sortFunction, split } from '../../utils/utils';
+import type { AnySchema, TableFields } from '../DataModel/helperTypes';
+import type { LiteralField, Relationship } from '../DataModel/specifyField';
+import type { SpecifyModel } from '../DataModel/specifyModel';
 import type {
   FormMode,
   FormType,
@@ -6,15 +13,8 @@ import type {
   ViewDescription,
 } from '../FormParse';
 import type { CellTypes, FormCellDefinition } from '../FormParse/cells';
-import type { LiteralField, Relationship } from '../DataModel/specifyField';
-import type { SpecifyModel } from '../DataModel/specifyModel';
-import type { RA } from '../../utils/types';
-import { filterArray } from '../../utils/types';
-import { resolveParser } from '../../utils/parser/definitions';
-import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
-import { AnySchema, TableFields } from '../DataModel/helperTypes';
 import { hasTablePermission } from '../Permissions/helpers';
-import { schemaText } from '../../localization/schema';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 
 /**
  * If form definition is missing, this function will generate one on the fly
@@ -243,7 +243,7 @@ function getFieldDefinition(
             label: field.label,
             printOnSave: false,
           }
-        : typeof parser.pickListName === 'string'
+        : (typeof parser.pickListName === 'string'
         ? {
             type: 'ComboBox',
             defaultValue: undefined,
@@ -261,7 +261,7 @@ function getFieldDefinition(
             min: parser.min,
             max: parser.max,
             step: parser.step,
-          }),
+          })),
     },
   };
 }

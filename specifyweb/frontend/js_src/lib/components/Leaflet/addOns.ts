@@ -5,8 +5,8 @@ import { getCache, setCache } from '../../utils/cache';
 import type { IR, RA, RR } from '../../utils/types';
 import { overwriteReadOnly } from '../../utils/types';
 import { capitalize, KEY } from '../../utils/utils';
-import type { LeafletMarker, MarkerGroups } from './index';
 import L from './extend';
+import type { LeafletMarker, MarkerGroups } from './index';
 import { preferredBaseLayer, preferredOverlay } from './layers';
 
 export type LeafletCacheSalt = 'CoMap' | 'MainMap';
@@ -125,7 +125,7 @@ export function addMarkersToMap(
           style="background-color: hsl(${hue}deg, 50%, 50%, 0.7)"
         ><span>${childCount}</span></div>`,
         className: `marker-cluster marker-cluster-${
-          childCount < 10 ? 'small' : childCount < 100 ? 'medium' : 'large'
+          childCount < 10 ? 'small' : (childCount < 100 ? 'medium' : 'large')
         }`,
         iconSize: new L.Point(40, 40),
       });

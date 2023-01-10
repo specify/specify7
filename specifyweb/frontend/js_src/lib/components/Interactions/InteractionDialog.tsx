@@ -1,7 +1,41 @@
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 
+import { useValidation } from '../../hooks/useValidation';
+import { commonText } from '../../localization/common';
+import { interactionsText } from '../../localization/interactions';
 import { ajax } from '../../utils/ajax';
+import type { PreparationRow, Preparations } from '../../utils/ajax/specifyApi';
+import {
+  getPrepsAvailableForLoanCoIds,
+  getPrepsAvailableForLoanRs,
+} from '../../utils/ajax/specifyApi';
+import { f } from '../../utils/functools';
+import type {
+  Parser} from '../../utils/parser/definitions';
+import {
+  getValidationAttributes,
+  pluralizeParser,
+  resolveParser,
+} from '../../utils/parser/definitions';
+import type {
+  InvalidParseResult,
+  ValidParseResult} from '../../utils/parser/parse';
+import {
+  parseValue
+} from '../../utils/parser/parse';
+import type { IR, RA, WritableArray } from '../../utils/types';
+import { filterArray } from '../../utils/types';
+import { sortFunction } from '../../utils/utils';
+import { H3 } from '../Atoms';
+import { Button } from '../Atoms/Button';
+import { Link } from '../Atoms/Link';
+import { LoadingContext } from '../Core/Contexts';
+import { toTable } from '../DataModel/helpers';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import { getResourceViewUrl } from '../DataModel/resource';
+import type { LiteralField } from '../DataModel/specifyField';
+import type { Collection, SpecifyModel } from '../DataModel/specifyModel';
 import type {
   CollectionObject,
   Disposal,
@@ -12,43 +46,11 @@ import type {
   LoanPreparation,
   RecordSet,
 } from '../DataModel/types';
-import { f } from '../../utils/functools';
-import { sortFunction } from '../../utils/utils';
-import { commonText } from '../../localization/common';
-import { getResourceViewUrl } from '../DataModel/resource';
-import type { PreparationRow, Preparations } from '../../utils/ajax/specifyApi';
-import {
-  getPrepsAvailableForLoanCoIds,
-  getPrepsAvailableForLoanRs,
-} from '../../utils/ajax/specifyApi';
-import type { LiteralField } from '../DataModel/specifyField';
-import type { Collection, SpecifyModel } from '../DataModel/specifyModel';
-import type { IR, RA, WritableArray } from '../../utils/types';
-import { filterArray } from '../../utils/types';
-import { H3 } from '../Atoms';
-import { LoadingContext } from '../Core/Contexts';
-import { Dialog } from '../Molecules/Dialog';
-import { PrepDialog } from './PrepDialog';
-import { Button } from '../Atoms/Button';
-import { Link } from '../Atoms/Link';
-import { useValidation } from '../../hooks/useValidation';
-import { SerializedResource } from '../DataModel/helperTypes';
-import { toTable } from '../DataModel/helpers';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
+import { Dialog } from '../Molecules/Dialog';
 import { RecordSetsDialog } from '../Toolbar/RecordSets';
-import {
-  InvalidParseResult,
-  parseValue,
-  ValidParseResult,
-} from '../../utils/parser/parse';
 import { usePref } from '../UserPreferences/usePref';
-import {
-  getValidationAttributes,
-  Parser,
-  pluralizeParser,
-  resolveParser,
-} from '../../utils/parser/definitions';
-import { interactionsText } from '../../localization/interactions';
+import { PrepDialog } from './PrepDialog';
 
 export function InteractionDialog({
   recordSetsPromise,
@@ -141,12 +143,12 @@ export function InteractionDialog({
       let index = 0;
       let offsetIndex = 0;
       while (offsetIndex < entries.length && index < prepsData.length) {
-        if (entries[offsetIndex] != prepsData[index][0])
-          missing.push(entries[offsetIndex]);
-        else {
+        if (entries[offsetIndex] == prepsData[index][0])
+          {
           const value = prepsData[index][0];
           while (++index < prepsData.length && prepsData[index][0] == value);
         }
+        else {missing.push(entries[offsetIndex]);}
         offsetIndex += 1;
       }
       if (offsetIndex < entries.length)
@@ -202,7 +204,7 @@ export function InteractionDialog({
     >
       {interactionsText.returnedAndSaved({ count: state.result })}
     </Dialog>
-  ) : state.type === 'PreparationSelectState' &&
+  ) : (state.type === 'PreparationSelectState' &&
     Object.keys(state.problems).length === 0 ? (
     <PrepDialog
       action={action}
@@ -232,19 +234,19 @@ export function InteractionDialog({
                 >
                   {interactionsText.addUnassociated()}
                 </Button.Blue>
-              ) : model.name === 'Loan' || action.model.name === 'Loan' ? (
+              ) : (model.name === 'Loan' || action.model.name === 'Loan' ? (
                 <Link.Blue href={getResourceViewUrl('Loan')}>
                   {interactionsText.withoutPreparations()}
                 </Link.Blue>
-              ) : undefined}
+              ) : undefined)}
             </>
           }
           header={
             typeof itemCollection === 'object'
               ? interactionsText.addItems()
-              : model.name === 'Loan'
+              : (model.name === 'Loan'
               ? interactionsText.recordReturn({ modelName: model.label })
-              : interactionsText.createRecord({ modelName: action.model.name })
+              : interactionsText.createRecord({ modelName: action.model.name }))
           }
           onClose={handleClose}
         >
@@ -338,7 +340,7 @@ export function InteractionDialog({
         </Dialog>
       )}
     </RecordSetsDialog>
-  );
+  ));
 }
 
 function useParser(searchField: LiteralField | undefined): {
@@ -397,7 +399,7 @@ function useParser(searchField: LiteralField | undefined): {
       parser,
       split: (values): RA<string> =>
         values
-          .replace(new RegExp(delimiters.join('|'), 'g'), '\t')
+          .replaceAll(new RegExp(delimiters.join('|'), 'g'), '\t')
           .split('\t')
           .map(f.trim)
           .filter(Boolean),

@@ -3,6 +3,7 @@ import { useOutletContext } from 'react-router';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { commonText } from '../../localization/common';
+import { headerText } from '../../localization/header';
 import { resourcesText } from '../../localization/resources';
 import { f } from '../../utils/functools';
 import { mappedFind } from '../../utils/utils';
@@ -26,7 +27,6 @@ import { useResourcesTree } from './hooks';
 import type { AppResourcesOutlet } from './index';
 import type { AppResourceType } from './types';
 import { appResourceSubTypes, appResourceTypes } from './types';
-import { headerText } from '../../localization/header';
 
 /**
  * Check if one type is a subtype of another
@@ -53,7 +53,7 @@ export function CreateAppResource(): JSX.Element {
   const [mimeType, setMimeType] = React.useState<string | undefined>(undefined);
   return directory === undefined ? (
     <NotFoundView container={false} />
-  ) : type === undefined ? (
+  ) : (type === undefined ? (
     <Dialog
       buttons={commonText.cancel()}
       header={resourcesText.selectResourceType()}
@@ -123,7 +123,7 @@ export function CreateAppResource(): JSX.Element {
       name={name}
       type={type}
     />
-  );
+  ));
 }
 
 export const findAppResourceDirectory = (

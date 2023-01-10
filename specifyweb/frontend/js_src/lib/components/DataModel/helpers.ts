@@ -10,13 +10,13 @@ import type {
   SerializedModel,
   SerializedResource,
 } from './helperTypes';
-import { TableFields } from './helperTypes';
+import type { TableFields } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
 import { parseResourceUrl, resourceToJson } from './resource';
 import { schema, strictGetModel } from './schema';
 import type { LiteralField, Relationship } from './specifyField';
+import type { SpecifyModel } from './specifyModel';
 import type { Tables } from './types';
-import { SpecifyModel } from './specifyModel';
 
 /** Like resource.toJSON(), but keys are converted to camel case */
 export const serializeResource = <SCHEMA extends AnySchema>(
@@ -24,8 +24,8 @@ export const serializeResource = <SCHEMA extends AnySchema>(
 ): SerializedResource<SCHEMA> =>
   serializeModel<SCHEMA>(
     'toJSON' in resource
-      ? resourceToJson(resource as SpecifyResource<SCHEMA>)
-      : (resource as SerializedModel<SCHEMA>),
+      ? resourceToJson(resource )
+      : (resource ),
     (resource as SpecifyResource<SCHEMA>)?.specifyModel?.name
   );
 
@@ -163,7 +163,7 @@ export const deserializeResource = <SCHEMA extends AnySchema>(
      * line according to TypeScript trace analyzer)
      */
     (serializedResource as SerializedResource<SCHEMA>)
-      ._tableName as keyof Tables
+      ._tableName 
   ].Resource(removeKey(serializedResource, '_tableName' as 'id'));
 
 /**
@@ -186,14 +186,14 @@ export async function fetchDistantRelated(
   const related =
     fields === undefined || fields.length === 0
       ? resource
-      : fields.length === 1
+      : (fields.length === 1
       ? await resource.fetch()
       : await resource.rgetPromise(
           fields
             .slice(0, -1)
             .map(({ name }) => name)
             .join('.')
-        );
+        ));
 
   const field = fields?.at(-1);
   return related === undefined ? undefined : { resource: related, field };

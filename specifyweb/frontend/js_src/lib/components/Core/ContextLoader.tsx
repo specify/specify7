@@ -1,13 +1,13 @@
 import React from 'react';
 
-import { f } from '../../utils/functools';
-import { initialContext } from '../InitialContext';
-import { commonText } from '../../localization/common';
-import { Main } from './Main';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
-import { SplashScreen } from './SplashScreen';
+import { commonText } from '../../localization/common';
+import { f } from '../../utils/functools';
 import { crash } from '../Errors/Crash';
+import { initialContext } from '../InitialContext';
+import { Main } from './Main';
+import { SplashScreen } from './SplashScreen';
 
 // Show loading splash screen if didn't finish load within 2 seconds
 const LOADING_TIMEOUT = 2000;
@@ -42,9 +42,9 @@ export function ContextLoader(): JSX.Element | null {
 
   return isContextLoaded ? (
     <Main />
-  ) : showLoadingScreen ? (
+  ) : (showLoadingScreen ? (
     <SplashScreen>
       <h2 className="text-center">{commonText.loading()}</h2>
     </SplashScreen>
-  ) : null;
+  ) : null);
 }

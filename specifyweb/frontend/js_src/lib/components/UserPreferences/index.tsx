@@ -254,7 +254,7 @@ function FormatString({
 }): JSX.Element {
   return typeof text === 'object' ? (
     text
-  ) : text.includes('<key>') ? (
+  ) : (text.includes('<key>') ? (
     <span>
       <StringToJsx
         components={{
@@ -265,7 +265,7 @@ function FormatString({
     </span>
   ) : (
     <>{text}</>
-  );
+  ));
 }
 
 function Item({

@@ -1,7 +1,7 @@
-import { parseUiCommand } from '../commands';
-import { strictParseXml } from '../../AppResources/codeMirrorLinters';
 import { requireContext } from '../../../tests/helpers';
+import { strictParseXml } from '../../AppResources/codeMirrorLinters';
 import { schema } from '../../DataModel/schema';
+import { parseUiCommand } from '../commands';
 
 requireContext();
 

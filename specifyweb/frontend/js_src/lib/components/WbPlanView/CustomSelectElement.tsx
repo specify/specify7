@@ -8,24 +8,24 @@
  */
 
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
-import type { Tables } from '../DataModel/types';
-import { camelToKebab, upperToKebab } from '../../utils/utils';
 import { commonText } from '../../localization/common';
-import { getModel } from '../DataModel/schema';
-import { scrollIntoView } from '../TreeView/helpers';
+import { formsText } from '../../localization/forms';
+import { wbPlanText } from '../../localization/wbPlan';
 import type { IR, RA, RR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
+import { camelToKebab, upperToKebab } from '../../utils/utils';
 import { iconClassName, icons } from '../Atoms/Icons';
+import { getModel } from '../DataModel/schema';
+import type { Tables } from '../DataModel/types';
 import {
   TableIcon,
   tableIconEmpty,
   tableIconSelected,
   tableIconUndefined,
 } from '../Molecules/TableIcon';
-import { formsText } from '../../localization/forms';
-import { LocalizedString } from 'typesafe-i18n';
-import { wbPlanText } from '../../localization/wbPlan';
+import { scrollIntoView } from '../TreeView/helpers';
 
 type Properties =
   /*
@@ -570,13 +570,13 @@ export function CustomSelectElement({
           ${
             defaultOption?.isRequired === true
               ? 'custom-select-input-required bg-[color:var(--custom-select-b2)]'
-              : defaultOption?.isHidden === true
+              : (defaultOption?.isHidden === true
               ? `custom-select-input-hidden bg-[color:var(--custom-select-b2)]
                  dark:!border-solid`
               : customSelectType === 'OPTIONS_LIST' &&
                 defaultOption?.isRelationship === true
               ? 'bg-yellow-250 dark:bg-yellow-900'
-              : customSelectElementBackground
+              : customSelectElementBackground)
           }
           ${isOpen ? 'rounded-b-none [z-index:3]' : ''}
         `}
@@ -737,7 +737,7 @@ export function CustomSelectElement({
       `}
       ref={customSelectElementRef}
       role={role}
-      tabIndex={has('tabIndex') ? 0 : has('interactive') ? -1 : undefined}
+      tabIndex={has('tabIndex') ? 0 : (has('interactive') ? -1 : undefined)}
       title={selectLabel}
       onBlur={
         has('interactive')

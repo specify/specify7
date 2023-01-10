@@ -1,15 +1,15 @@
 import React from 'react';
 
+import { attachmentsText } from '../../localization/attachments';
 import { formsText } from '../../localization/forms';
 import { Label, Select } from '../Atoms/Form';
+import { getField } from '../DataModel/helpers';
+import { schema } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { FormType } from '../FormParse';
 import type { SubViewContext } from '../Forms/SubView';
-import { OrderPicker } from '../UserPreferences/Renderers';
 import { toLargeSortConfig, toSmallSortConfig } from '../Molecules/Sorting';
-import { attachmentsText } from '../../localization/attachments';
-import { schema } from '../DataModel/schema';
-import { getField } from '../DataModel/helpers';
+import { OrderPicker } from '../UserPreferences/Renderers';
 
 export function SubViewMeta({
   subView,

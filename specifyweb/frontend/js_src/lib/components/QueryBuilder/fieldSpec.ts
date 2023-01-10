@@ -2,20 +2,20 @@
  * Query Field spec is a Specify 6 concept for a query field.
  */
 
-import { queryFieldFilters } from './FieldFilter';
-import type { MappingPath } from '../WbPlanView/Mapper';
-import type { SpQueryField, Tables } from '../DataModel/types';
 import { f } from '../../utils/functools';
+import type { Parser } from '../../utils/parser/definitions';
+import { resolveParser } from '../../utils/parser/definitions';
+import type { RA, WritableArray } from '../../utils/types';
+import { defined, filterArray } from '../../utils/types';
 import { capitalize, insertItem, replaceItem } from '../../utils/utils';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getModelById, schema, strictGetModel } from '../DataModel/schema';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpQueryField, Tables } from '../DataModel/types';
+import { fail } from '../Errors/Crash';
 import { isTreeModel } from '../InitialContext/treeRanks';
-import type { RA, WritableArray } from '../../utils/types';
-import { defined, filterArray } from '../../utils/types';
-import type { Parser } from '../../utils/parser/definitions';
-import { resolveParser } from '../../utils/parser/definitions';
+import type { MappingPath } from '../WbPlanView/Mapper';
 import {
   anyTreeRank,
   formatPartialField,
@@ -29,7 +29,7 @@ import {
   valueIsToManyIndex,
   valueIsTreeRank,
 } from '../WbPlanView/mappingHelpers';
-import { fail } from '../Errors/Crash';
+import { queryFieldFilters } from './FieldFilter';
 
 const reStringId = /^([^.]*)\.([^.]*)\.(.*)$/;
 
@@ -78,6 +78,7 @@ export class QueryFieldSpec {
    * They are returned in the back-end response, but they are not
    * visible in the results table, unless user explicitly adds them.
    */
+  // eslint-disable-next-line functional/prefer-readonly-type
   public isPhantom: boolean = false;
 
   public constructor(baseTable: SpecifyModel) {
@@ -102,13 +103,13 @@ export class QueryFieldSpec {
                * to be called "ID" (case-sensitive)
                */
               typeof this.treeRank === 'string'
-                ? field === field.model.idField && this.treeRank !== anyTreeRank
+                ? (field === field.model.idField && this.treeRank !== anyTreeRank
                   ? 'ID'
                   : field.name === 'author'
                   ? 'Author'
                   : field.name === 'fullName' && this.treeRank !== anyTreeRank
                   ? ''
-                  : field.name
+                  : field.name)
                 : field.name
             ) ?? ''
           }${
@@ -150,7 +151,7 @@ export class QueryFieldSpec {
       this.joinPath.flatMap((field, index, { length }) => [
         field.name,
         field.isRelationship
-          ? relationshipIsToMany(field)
+          ? (relationshipIsToMany(field)
             ? formatToManyIndex(1)
             : isTreeModel(field.relatedModel.name)
             ? formatTreeRank(
@@ -158,7 +159,7 @@ export class QueryFieldSpec {
                   ? this.treeRank ?? anyTreeRank
                   : anyTreeRank
               )
-            : undefined
+            : undefined)
           : undefined,
       ])
     );
@@ -193,9 +194,9 @@ export class QueryFieldSpec {
     const rest = filterArray(
       this.joinPath.map((field) =>
         field.isRelationship
-          ? field.relatedModel.name.toLowerCase() === field.name.toLowerCase()
+          ? (field.relatedModel.name.toLowerCase() === field.name.toLowerCase()
             ? field.relatedModel.tableId.toString()
-            : `${field.relatedModel.tableId}-${field.name}`
+            : `${field.relatedModel.tableId}-${field.name}`)
           : undefined
       )
     );
@@ -297,9 +298,9 @@ export class QueryFieldSpec {
       fieldSpec.treeRank =
         typeof parsedField === 'object'
           ? parts.slice(0, -1).join(' ') || anyTreeRank
-          : typeof field === 'object'
+          : (typeof field === 'object'
           ? anyTreeRank
-          : fieldName || anyTreeRank;
+          : fieldName || anyTreeRank);
       fieldSpec.joinPath = filterArray([
         ...fieldSpec.joinPath,
         field === undefined

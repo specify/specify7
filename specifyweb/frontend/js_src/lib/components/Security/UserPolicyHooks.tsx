@@ -1,8 +1,10 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { ajax } from '../../utils/ajax';
+import { Http } from '../../utils/ajax/definitions';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
@@ -12,8 +14,6 @@ import type { Collection, SpecifyUser } from '../DataModel/types';
 import { hasDerivedPermission, hasPermission } from '../Permissions/helpers';
 import type { Policy } from './Policy';
 import { processPolicies } from './policyConverter';
-import { Http } from '../../utils/ajax/definitions';
-import { LocalizedString } from 'typesafe-i18n';
 
 /** Fetching user policies */
 export function useUserPolicies(
@@ -108,7 +108,7 @@ export function useUserInstitutionalPolicies(
       async () =>
         userResource.isNew()
           ? []
-          : hasDerivedPermission(
+          : (hasDerivedPermission(
               '/permissions/institutional_policies/user',
               'read'
             )
@@ -122,7 +122,7 @@ export function useUserInstitutionalPolicies(
               initialInstitutionPolicies.current = policies;
               return policies;
             })
-          : undefined,
+          : undefined),
       [userResource]
     ),
     false

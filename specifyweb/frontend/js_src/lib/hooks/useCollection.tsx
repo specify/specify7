@@ -1,10 +1,10 @@
 import React from 'react';
 
 import type { SerializedCollection } from '../components/DataModel/collection';
+import type { AnySchema } from '../components/DataModel/helperTypes';
 import { f } from '../utils/functools';
 import { defined } from '../utils/types';
 import { useAsyncState } from './useAsyncState';
-import { AnySchema } from '../components/DataModel/helperTypes';
 
 /**
  * A hook for fetching a collection of resources in a paginated way
@@ -44,7 +44,7 @@ export function useCollection<SCHEMA extends AnySchema>(
        * time
        */
       currentCallback.current === callback
-        ? typeof fetchRef.current === 'object'
+        ? (typeof fetchRef.current === 'object'
           ? callback().then(f.undefined)
           : callback().then((result) =>
               // If fetch function changed while fetching, discard the results
@@ -57,7 +57,7 @@ export function useCollection<SCHEMA extends AnySchema>(
                     totalCount: defined(collection).totalCount,
                   }))
                 : undefined
-            )
+            ))
         : undefined,
     [callback, collection]
   );

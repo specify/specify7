@@ -6,6 +6,7 @@ import React from 'react';
 
 import { useSearchParameter } from '../../hooks/navigation';
 import { commonText } from '../../localization/common';
+import { headerText } from '../../localization/header';
 import { ajax } from '../../utils/ajax';
 import type { IR, RA } from '../../utils/types';
 import { Container, H3 } from '../Atoms';
@@ -22,7 +23,6 @@ import {
   usePrimarySearch,
   useSecondarySearch,
 } from './ExpressSearchHooks';
-import { headerText } from '../../localization/header';
 
 export function ExpressSearchView(): JSX.Element {
   const [query = ''] = useSearchParameter('q');
@@ -62,13 +62,13 @@ function TableResults({
       <H3>{header}</H3>
       {queryResults === undefined ? (
         <p aria-live="polite">{commonText.running()}</p>
-      ) : Object.keys(queryResults).length === 0 ? (
+      ) : (Object.keys(queryResults).length === 0 ? (
         <p aria-live="polite">{commonText.noMatches()}</p>
       ) : (
         queryResults.map((results, index) => (
           <TableResult key={index} {...results} />
         ))
-      )}
+      ))}
     </section>
   );
 }

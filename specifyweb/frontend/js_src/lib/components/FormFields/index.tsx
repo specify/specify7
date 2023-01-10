@@ -6,6 +6,7 @@ import type { Parser } from '../../utils/parser/definitions';
 import { getValidationAttributes } from '../../utils/parser/definitions';
 import type { IR, RA } from '../../utils/types';
 import { Input, Textarea } from '../Atoms/Form';
+import { fetchDistantRelated } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
@@ -19,7 +20,6 @@ import { PrintOnSave, SpecifyFormCheckbox } from './Checkbox';
 import { Combobox } from './ComboBox';
 import { UiField } from './Field';
 import { QueryComboBox } from './QueryComboBox';
-import { fetchDistantRelated } from '../DataModel/helpers';
 
 const fieldRenderers: {
   readonly [KEY in keyof FieldTypes]: (props: {
@@ -50,7 +50,7 @@ const fieldRenderers: {
         name={name}
         text={label}
       />
-    ) : field?.isRelationship ? null : (
+    ) : (field?.isRelationship ? null : (
       <SpecifyFormCheckbox
         defaultValue={defaultValue}
         field={field}
@@ -60,7 +60,7 @@ const fieldRenderers: {
         resource={resource}
         text={label}
       />
-    );
+    ));
   },
   TextArea({
     id,
@@ -178,9 +178,9 @@ const fieldRenderers: {
     return (
       <UiField
         field={field}
-        name={name}
         id={id}
         mode={mode}
+        name={name}
         parser={parser}
         resource={resource}
       />
@@ -242,9 +242,9 @@ export function FormField({
           mode={isReadOnly || data.resource !== resource ? 'view' : mode}
           {...rest}
           field={data.field}
-          name={fields?.map(({ name }) => name).join('.')}
           fieldDefinition={fieldDefinition as FieldTypes['Checkbox']}
           isRequired={rest.isRequired && mode !== 'search'}
+          name={fields?.map(({ name }) => name).join('.')}
           resource={data.resource}
         />
       )}

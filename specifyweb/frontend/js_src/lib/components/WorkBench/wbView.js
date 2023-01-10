@@ -12,18 +12,47 @@
 
 import '../../../css/workbench.css';
 
+import Handsontable from 'handsontable';
 import $ from 'jquery';
 import React from 'react';
 import _ from 'underscore';
-import { Backbone } from '../DataModel/backbone';
-import Handsontable from 'handsontable';
 
+import { backEndText } from '../../localization/backEnd';
+import { commonText } from '../../localization/common';
+import { whitespaceSensitive } from '../../localization/utils';
+import { LANGUAGE } from '../../localization/utils/config';
+import { wbPlanText } from '../../localization/wbPlan';
+import { wbText } from '../../localization/workbench';
+import { ajax } from '../../utils/ajax';
+import { Http } from '../../utils/ajax/definitions';
+import { ping } from '../../utils/ajax/ping';
+import { getCache, setCache } from '../../utils/cache';
+import { f } from '../../utils/functools';
+import { filterArray } from '../../utils/types';
+import { capitalize, clamp, mappedFind } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
+import { iconClassName, legacyNonJsxIcons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
+import { legacyLoadingContext } from '../Core/Contexts';
+import { createBackboneView } from '../Core/reactBackboneExtend';
+import { Backbone } from '../DataModel/backbone';
+import { serializeResource } from '../DataModel/helpers';
 import { getModel, schema, strictGetModel } from '../DataModel/schema';
-import { DataSetNameView } from './DataSetMeta';
-import { WbUploaded } from './Results';
-import { WBUtils } from './wbUtils';
+import { crash } from '../Errors/Crash';
+import { format } from '../Forms/dataObjFormatters';
+import { getIcon, unknownIcon } from '../InitialContext/icons';
+import { strictGetTreeDefinitionItems } from '../InitialContext/treeRanks';
+import { loadingBar } from '../Molecules';
+import { dialogClassNames } from '../Molecules/Dialog';
+import { showDialog } from '../Molecules/LegacyDialog';
+import {
+  hasPermission,
+  hasTablePermission,
+  hasTreeAccess,
+} from '../Permissions/helpers';
+import { fetchPickList } from '../PickLists/fetch';
+import { getUserPref } from '../UserPreferences/helpers';
+import { pathStartsWith } from '../WbPlanView/helpers';
 import {
   formatToManyIndex,
   formatTreeRank,
@@ -31,44 +60,15 @@ import {
   mappingPathToString,
   valueIsTreeRank,
 } from '../WbPlanView/mappingHelpers';
-import { parseUploadPlan } from '../WbPlanView/uploadPlanParser';
-import { capitalize, clamp, mappedFind } from '../../utils/utils';
 import { getTableFromMappingPath } from '../WbPlanView/navigator';
-import { getIcon, unknownIcon } from '../InitialContext/icons';
-import { wbText } from '../../localization/workbench';
-import { commonText } from '../../localization/common';
-import { showDialog } from '../Molecules/LegacyDialog';
-import { dialogClassNames } from '../Molecules/Dialog';
-import { format } from '../Forms/dataObjFormatters';
-import { iconClassName, legacyNonJsxIcons } from '../Atoms/Icons';
-import { whitespaceSensitive } from '../../localization/utils';
-import { filterArray } from '../../utils/types';
-import { strictGetTreeDefinitionItems } from '../InitialContext/treeRanks';
-import { serializeResource } from '../DataModel/helpers';
-import { fetchPickList } from '../PickLists/fetch';
-import { ajax } from '../../utils/ajax';
-import { ping } from '../../utils/ajax/ping';
-import {
-  hasPermission,
-  hasTablePermission,
-  hasTreeAccess,
-} from '../Permissions/helpers';
-import { wbViewTemplate } from './Template';
-import { legacyLoadingContext } from '../Core/Contexts';
-import { getCache, setCache } from '../../utils/cache';
-import { f } from '../../utils/functools';
-import { pathStartsWith } from '../WbPlanView/helpers';
-import { getUserPref } from '../UserPreferences/helpers';
-import { createBackboneView } from '../Core/reactBackboneExtend';
-import { WbStatus } from './Status';
-import { crash } from '../Errors/Crash';
-import { loadingBar } from '../Molecules';
-import { Http } from '../../utils/ajax/definitions';
+import { parseUploadPlan } from '../WbPlanView/uploadPlanParser';
+import { DataSetNameView } from './DataSetMeta';
 import { downloadDataSet } from './helpers';
-import { LANGUAGE } from '../../localization/utils/config';
+import { WbUploaded } from './Results';
 import { resolveValidationMessage } from './resultsParser';
-import { backEndText } from '../../localization/backEnd';
-import { wbPlanText } from '../../localization/wbPlan';
+import { WbStatus } from './Status';
+import { wbViewTemplate } from './Template';
+import { WBUtils } from './wbUtils';
 
 const metaKeys = [
   'isNew',
@@ -455,7 +455,7 @@ export const WBView = Backbone.View.extend({
                     isCommand: false,
                     renderer: (_hot, wrapper) => {
                       const { endRow: visualRow, endCol: visualCol } =
-                        this.wbutils.getSelectedRegions().slice(-1)[0];
+                        this.wbutils.getSelectedRegions().at(-1);
                       const physicalRow = this.hot.toPhysicalRow(visualRow);
                       const physicalCol = this.hot.toPhysicalColumn(visualCol);
 
@@ -688,7 +688,7 @@ export const WBView = Backbone.View.extend({
       this.mappings.tableNames
         .map((tableName, index) => ({
           tableName,
-          fieldName: this.mappings.lines[index].mappingPath.slice(-1)[0],
+          fieldName: this.mappings.lines[index].mappingPath.at(-1),
           headerName: this.mappings.lines[index].headerName,
         }))
         .map(async ({ tableName, fieldName, headerName }) => {
@@ -745,14 +745,14 @@ export const WBView = Backbone.View.extend({
         }))
         .filter(
           ({ mappingPath, index }) =>
-            valueIsTreeRank(mappingPath.slice(-2)[0]) &&
-            mappingPath.slice(-1)[0] === 'name' &&
+            valueIsTreeRank(mappingPath.at(-2)) &&
+            mappingPath.at(-1) === 'name' &&
             hasTreeAccess(this.mappings.tableNames[index], 'read')
         )
         .map(({ mappingPath, headerName, index }) => ({
           mappingGroup: mappingPathToString(mappingPath.slice(0, -2)),
           tableName: this.mappings.tableNames[index],
-          rankName: getNameFromTreeRankName(mappingPath.slice(-2)[0]),
+          rankName: getNameFromTreeRankName(mappingPath.at(-2)),
           physicalCol: this.dataset.columns.indexOf(headerName),
         }))
         .map(({ mappingGroup, tableName, rankName, physicalCol }) => ({
@@ -790,7 +790,8 @@ export const WBView = Backbone.View.extend({
    * .issues are handled automatically by the comments plugin.
    * This is why, afterRenderer only has to handle the isModified and isNew
    * cases
-   * */
+   * 
+   */
   afterRenderer(td, visualRow, visualCol, property, _value) {
     if (this.hot === undefined) {
       td.classList.add('text-gray-500');
@@ -927,7 +928,8 @@ export const WBView = Backbone.View.extend({
    *
    * This logic wasn't be put into beforePaste because it receives
    * arguments that are inconvenient to work with
-   * */
+   * 
+   */
   beforeChange(unfilteredChanges, source) {
     if (source !== 'CopyPaste.paste') return true;
 
@@ -975,7 +977,8 @@ export const WBView = Backbone.View.extend({
           /*
            * Ignore cases where value didn't change
            * (happens when double click a cell and then click on another cell)
-           * */
+           * 
+           */
           oldValue !== newValue &&
           // Or where value changed from null to empty
           (oldValue !== null || newValue !== '') &&
@@ -1244,14 +1247,15 @@ export const WBView = Backbone.View.extend({
   },
   // Do not scroll the viewport to the last column after inserting a row
   afterPaste(data, coords) {
-    const lastCoords = coords.slice(-1)[0];
+    const lastCoords = coords.at(-1);
     if (data.some((row) => row.length === this.dataset.columns.length))
       this.hot.scrollViewportTo(lastCoords.endRow, lastCoords.startCol);
   },
   /*
    * Reposition the comment box if it is overflowing
    * See https://github.com/specify/specify7/issues/932
-   * */
+   * 
+   */
   afterOnCellMouseOver(_event, coordinates, cell) {
     const physicalRow = this.hot.toPhysicalRow(coordinates.row);
     const physicalCol = this.hot.toPhysicalColumn(coordinates.col);
@@ -1909,8 +1913,10 @@ export const WBView = Backbone.View.extend({
     this.datasetmeta.changeOwner();
   },
 
-  // Actions
-  // aka Rollback
+  /*
+   * Actions
+   * aka Rollback
+   */
   unupload() {
     const dialog = showDialog({
       header: wbText.beginRollback(),
@@ -2092,7 +2098,7 @@ export const WBView = Backbone.View.extend({
   saveClicked() {
     this.save();
   },
-  save() {
+  async save() {
     // Clear validation
     this.dataset.rowresults = null;
     this.stopLiveValidation();
@@ -2139,7 +2145,7 @@ export const WBView = Backbone.View.extend({
     this.cellMeta = [];
 
     switch (this.validationMode) {
-      case 'live':
+      case 'live': {
         this.liveValidationStack = Array.from(
           { length: this.hot.countRows() },
           (_, visualRow) => this.hot.toPhysicalRow(visualRow)
@@ -2149,18 +2155,21 @@ export const WBView = Backbone.View.extend({
         this.wbutils.toggleCellTypes('invalidCells', 'remove');
         event.target.setAttribute('aria-pressed', true);
         break;
-      case 'static':
+      }
+      case 'static': {
         this.getValidationResults();
         this.wbutils.toggleCellTypes('invalidCells', 'remove');
         this.liveValidationStack = [];
         this.liveValidationActive = false;
         event.target.setAttribute('aria-pressed', false);
         break;
-      case 'off':
+      }
+      case 'off': {
         this.liveValidationStack = [];
         this.liveValidationActive = false;
         event.target.setAttribute('aria-pressed', false);
         break;
+      }
     }
 
     this.hot.render();
@@ -2245,7 +2254,7 @@ export const WBView = Backbone.View.extend({
   },
   resolveValidationColumns(initialColumns, inferColumnsCallback = undefined) {
     // See https://github.com/specify/specify7/issues/810
-    let columns = initialColumns.filter((column) => column);
+    let columns = initialColumns.filter(Boolean);
     if (typeof inferColumnsCallback === 'function' && columns.length === 0)
       columns = inferColumnsCallback();
     if (columns.length === 0) columns = this.dataset.columns;
@@ -2599,15 +2608,15 @@ export const WBView = Backbone.View.extend({
       header:
         this.refreshInitiatedBy === 'validate'
           ? wbText.validationCanceled()
-          : this.refreshInitiatedBy === 'unupload'
+          : (this.refreshInitiatedBy === 'unupload'
           ? wbText.rollbackCanceled()
-          : wbText.uploadCanceled(),
+          : wbText.uploadCanceled()),
       content:
         this.refreshInitiatedBy === 'validate'
           ? wbText.validationCanceledDescription()
-          : this.refreshInitiatedBy === 'unupload'
+          : (this.refreshInitiatedBy === 'unupload'
           ? wbText.rollbackCanceledDescription()
-          : wbText.uploadCanceledDescription(),
+          : wbText.uploadCanceledDescription()),
       onClose: () => dialog.remove(),
       buttons: commonText.close(),
     });

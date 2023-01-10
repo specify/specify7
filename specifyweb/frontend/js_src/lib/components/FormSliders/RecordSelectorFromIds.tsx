@@ -1,5 +1,8 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
+import { unsetUnloadProtect } from '../../hooks/navigation';
+import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import type { RA } from '../../utils/types';
@@ -11,14 +14,11 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { FormMode } from '../FormParse';
 import { ResourceView } from '../Forms/ResourceView';
+import { saveFormUnloadProtect } from '../Forms/Save';
 import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import type { RecordSelectorProps } from './RecordSelector';
 import { useRecordSelector } from './RecordSelector';
-import { useTriggerState } from '../../hooks/useTriggerState';
-import { unsetUnloadProtect } from '../../hooks/navigation';
-import { saveFormUnloadProtect } from '../Forms/Save';
-import { LocalizedString } from 'typesafe-i18n';
 
 /**
  * A Wrapper for RecordSelector that allows to specify list of records by their
@@ -224,13 +224,13 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
         resource={resource}
         title={title}
         viewName={viewName}
+        onAdd={handleClone}
         onClose={handleClose}
         onDeleted={
           resource?.isNew() === true || hasTablePermission(model.name, 'delete')
             ? handleRemove?.bind(undefined, 'deleteButton')
             : undefined
         }
-        onAdd={handleClone}
         onSaved={(): void => handleSaved(resource!)}
       />
       {dialogs}

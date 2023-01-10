@@ -1,8 +1,9 @@
-import { GetOrSet } from '../utils/types';
 import React from 'react';
+
 import { LoadingContext } from '../components/Core/Contexts';
-import { f } from '../utils/functools';
 import { fail } from '../components/Errors/Crash';
+import { f } from '../utils/functools';
+import type { GetOrSet } from '../utils/types';
 
 /**
  * Like React.useState, but initial value is retrieved asynchronously

@@ -146,9 +146,9 @@ export const augmentQueryFields = (
 ): RA<QueryField> =>
   isDistinct
     ? fields
-    : baseTableName === 'SpAuditLog'
+    : (baseTableName === 'SpAuditLog'
     ? addQueryFields(fields, auditLogMappingPaths, true)
-    : addLocalityFields(baseTableName, fields, isDistinct);
+    : addLocalityFields(baseTableName, fields, isDistinct));
 
 /**
  * It is expected by QueryResultsWrapper that this function does not change

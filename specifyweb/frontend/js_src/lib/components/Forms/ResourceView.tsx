@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import type { LocalizedString } from 'typesafe-i18n';
 import type { State } from 'typesafe-reducer';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
@@ -19,13 +20,12 @@ import type { FormMode } from '../FormParse';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { ReportsView } from '../Reports';
+import { UnloadProtectDialog } from '../Router/Router';
 import { getUserPref } from '../UserPreferences/helpers';
 import { usePref } from '../UserPreferences/usePref';
 import { useResourceView } from './BaseResourceView';
 import { DeleteButton } from './DeleteButton';
 import { SaveButton } from './Save';
-import { UnloadProtectDialog } from '../Router/Router';
-import { LocalizedString } from 'typesafe-i18n';
 import { AppTitle } from '../Molecules/AppTitle';
 
 /**

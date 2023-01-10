@@ -5,23 +5,22 @@
  */
 
 import { ajax } from '../../utils/ajax';
+import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
+import { f } from '../../utils/functools';
+import type { IR, RA } from '../../utils/types';
+import { sortFunction } from '../../utils/utils';
+import { getModel, schema } from '../DataModel/schema';
+import type { Tables } from '../DataModel/types';
+import { isTreeModel } from '../InitialContext/treeRanks';
 import { AutoMapper } from './autoMapper';
-import type { Dataset } from './Wrapped';
+import { renameNewlyCreatedHeaders } from './headerHelper';
 import type {
   AutoMapperSuggestion,
   MappingLine,
   MappingPath,
   SelectElementPosition,
 } from './Mapper';
-import type { Tables } from '../DataModel/types';
-import { f } from '../../utils/functools';
-import { sortFunction } from '../../utils/utils';
-import { getModel, schema } from '../DataModel/schema';
-import { isTreeModel } from '../InitialContext/treeRanks';
-import type { IR, RA } from '../../utils/types';
-import { uploadPlanBuilder } from './uploadPlanBuilder';
-import { renameNewlyCreatedHeaders } from './headerHelper';
 import {
   anyTreeRank,
   findDuplicateMappings,
@@ -33,7 +32,8 @@ import {
   valueIsTreeRank,
 } from './mappingHelpers';
 import { getMappingLineData } from './navigator';
-import { Http } from '../../utils/ajax/definitions';
+import { uploadPlanBuilder } from './uploadPlanBuilder';
+import type { Dataset } from './Wrapped';
 
 export async function savePlan({
   dataset,
@@ -296,9 +296,9 @@ export function mutateMappingPath({
         ...mappingPath.slice(0, index + 1),
         ...(mappingPath.length > index + 1
           ? mappingPath.slice(index + 1)
-          : ignoreToMany && isNewToMany
+          : (ignoreToMany && isNewToMany
           ? [formatToManyIndex(1), '0']
-          : ['0']),
+          : ['0'])),
       ]
     : mappingPath;
 }

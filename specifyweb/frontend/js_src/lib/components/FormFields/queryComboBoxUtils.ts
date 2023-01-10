@@ -13,7 +13,7 @@ import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { flippedSortTypes } from '../QueryBuilder/helpers';
 import { getUserPref } from '../UserPreferences/helpers';
 import type { CollectionRelationships } from './useCollectionRelationships';
-import { QueryComboBoxTreeData } from './useTreeData';
+import type { QueryComboBoxTreeData } from './useTreeData';
 
 export function makeComboBoxQuery({
   fieldName,
@@ -177,9 +177,9 @@ export const getRelatedCollectionId = (
 ): number | undefined =>
   (fieldName === 'rightSide'
     ? left
-    : fieldName === 'leftSide'
+    : (fieldName === 'leftSide'
     ? right
-    : undefined
+    : undefined)
   )?.find(
     ({ id }) =>
       id ===

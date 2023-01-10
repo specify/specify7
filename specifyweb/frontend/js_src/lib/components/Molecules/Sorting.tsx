@@ -6,7 +6,7 @@ import type { SortConfigs } from '../../utils/cache/definitions';
 import type { RA } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { icons } from '../Atoms/Icons';
-import { SubViewSortField } from '../FormParse/cells';
+import type { SubViewSortField } from '../FormParse/cells';
 
 export type SortConfig<FIELD_NAMES extends string> = {
   readonly sortField: FIELD_NAMES;
@@ -31,9 +31,9 @@ export function SortIndicator<FIELD_NAMES extends string>({
         </span>
       )}
       {isSorted
-        ? sortConfig.ascending
+        ? (sortConfig.ascending
           ? icons.chevronUp
-          : icons.chevronDown
+          : icons.chevronDown)
         : undefined}
     </span>
   );

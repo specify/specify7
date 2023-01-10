@@ -1,4 +1,5 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useResourceValue } from '../../hooks/useResourceValue';
 import { commonText } from '../../localization/common';
@@ -8,10 +9,9 @@ import { Lat, Long, trimLatLong } from '../../utils/latLong';
 import { Input, Select } from '../Atoms/Form';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
+import { schema } from '../DataModel/schema';
 import type { Locality } from '../DataModel/types';
 import type { FormMode } from '../FormParse';
-import { schema } from '../DataModel/schema';
-import { LocalizedString } from 'typesafe-i18n';
 
 export const coordinateType = ['Point', 'Line', 'Rectangle'] as const;
 export type CoordinateType = typeof coordinateType[number];
@@ -90,9 +90,9 @@ function Coordinate({
     setValidation(isValid ? '' : formsText.invalidValue());
     handleFormatted(
       isValid
-        ? hasValue
+        ? (hasValue
           ? parsed?.format(step) ?? ''
-          : commonText.notApplicable()
+          : commonText.notApplicable())
         : undefined
     );
 
@@ -271,9 +271,9 @@ export function LatLongUi({
             label={
               coordinateType === 'Point'
                 ? localityText.coordinates()
-                : coordinateType === 'Line'
+                : (coordinateType === 'Line'
                 ? commonText.start()
-                : localityText.northWestCorner()
+                : localityText.northWestCorner())
             }
             resource={resource}
             step={step}

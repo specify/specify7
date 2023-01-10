@@ -1,10 +1,12 @@
 import React from 'react';
 import { useOutletContext } from 'react-router';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { commonText } from '../../localization/common';
+import { userText } from '../../localization/user';
 import type { GetOrSet, IR, RA } from '../../utils/types';
 import { defined } from '../../utils/types';
 import { index } from '../../utils/utils';
@@ -34,8 +36,6 @@ import {
 } from './CollectionHooks';
 import type { Role } from './Role';
 import { fetchRoles } from './utils';
-import { userText } from '../../localization/user';
-import { LocalizedString } from 'typesafe-i18n';
 
 export type RoleBase = {
   readonly roleId: number;
@@ -217,7 +217,7 @@ export function CollectionView({
                     </div>
                   </>
                 )
-              ) : hasPermission(
+              ) : (hasPermission(
                   '/permissions/user/roles',
                   'read',
                   collection.id
@@ -225,7 +225,7 @@ export function CollectionView({
                 commonText.loading()
               ) : (
                 <CurrentUserLink collectionId={collection.id} />
-              )}
+              ))}
             </section>
           </div>
         </>

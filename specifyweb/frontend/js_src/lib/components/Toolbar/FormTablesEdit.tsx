@@ -94,9 +94,9 @@ export function useFormModels(): GetSet<RA<SpecifyModel> | 'legacy'> {
   const visibleTables =
     tables === 'legacy'
       ? []
-      : tables.length === 0
+      : (tables.length === 0
       ? filterArray(defaultFormTablesConfig.map(getModel))
-      : tables.map(getModelById);
+      : tables.map(getModelById));
   const accessibleTables = visibleTables.filter(({ name }) =>
     hasTablePermission(name, 'read')
   );

@@ -1,3 +1,7 @@
+import type { LocalizedString } from 'typesafe-i18n';
+
+import { requireContext } from '../../../tests/helpers';
+import { theories } from '../../../tests/utils';
 import type { PartialBy } from '../../../utils/types';
 import { strictParseXml } from '../../AppResources/codeMirrorLinters';
 import { schema } from '../../DataModel/schema';
@@ -7,9 +11,6 @@ import {
   parseSpecifyProperties,
   processColumnDefinition,
 } from '../cells';
-import { theories } from '../../../tests/utils';
-import { requireContext } from '../../../tests/helpers';
-import { LocalizedString } from 'typesafe-i18n';
 
 requireContext();
 

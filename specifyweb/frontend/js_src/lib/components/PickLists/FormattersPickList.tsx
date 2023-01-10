@@ -1,17 +1,17 @@
 import React from 'react';
 
-import { fetchFormatters } from '../Forms/dataObjFormatters';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import type { RA } from '../../utils/types';
 import { resourceOn } from '../DataModel/resource';
 import { getModel } from '../DataModel/schema';
-import type { RA } from '../../utils/types';
+import { fail } from '../Errors/Crash';
 import type {
   DefaultComboBoxProps,
   PickListItemSimple,
 } from '../FormFields/ComboBox';
-import { PickListComboBox } from './index';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { fail } from '../Errors/Crash';
+import { fetchFormatters } from '../Forms/dataObjFormatters';
 import { PickListTypes } from './definitions';
+import { PickListComboBox } from './index';
 
 export function FormattersPickList(props: DefaultComboBoxProps): JSX.Element {
   const fetchItems = React.useCallback(async () => {

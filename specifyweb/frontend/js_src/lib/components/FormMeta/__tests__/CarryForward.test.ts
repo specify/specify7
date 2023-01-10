@@ -1,5 +1,5 @@
-import { dependentFields } from '../CarryForward';
 import { requireContext } from '../../../tests/helpers';
+import { dependentFields } from '../CarryForward';
 
 requireContext();
 

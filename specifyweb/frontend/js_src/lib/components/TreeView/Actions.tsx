@@ -1,28 +1,28 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
-import { ping } from '../../utils/ajax/ping';
-import { formData } from '../../utils/ajax/helpers';
-import { toLowerCase } from '../../utils/utils';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
+import { queryText } from '../../localization/query';
 import { treeText } from '../../localization/tree';
-import { hasPermission, hasTablePermission } from '../Permissions/helpers';
-import { schema } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
-import type { Row } from './helpers';
-import { checkMoveViolatesEnforced } from './helpers';
+import { formData } from '../../utils/ajax/helpers';
+import { ping } from '../../utils/ajax/ping';
 import type { RA } from '../../utils/types';
-import { LoadingContext } from '../Core/Contexts';
-import { DeleteButton } from '../Forms/DeleteButton';
-import { Dialog } from '../Molecules/Dialog';
-import { ResourceView } from '../Forms/ResourceView';
+import { toLowerCase } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
-import { useLiveState } from '../../hooks/useLiveState';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { AnySchema, AnyTree } from '../DataModel/helperTypes';
-import { LocalizedString } from 'typesafe-i18n';
-import { queryText } from '../../localization/query';
+import { LoadingContext } from '../Core/Contexts';
+import type { AnySchema, AnyTree } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { schema } from '../DataModel/schema';
+import type { SpecifyModel } from '../DataModel/specifyModel';
+import { DeleteButton } from '../Forms/DeleteButton';
+import { ResourceView } from '../Forms/ResourceView';
+import { Dialog } from '../Molecules/Dialog';
+import { hasPermission, hasTablePermission } from '../Permissions/helpers';
+import type { Row } from './helpers';
+import { checkMoveViolatesEnforced } from './helpers';
 
 type Action = 'add' | 'desynonymize' | 'edit' | 'merge' | 'move' | 'synonymize';
 
@@ -85,8 +85,8 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
       <li className="contents">
         <EditRecordDialog<SCHEMA>
           addNew={false}
-          isRoot={isRoot}
           disabled={focusedRow === undefined}
+          isRoot={isRoot}
           label={
             hasTablePermission(tableName, 'update')
               ? commonText.edit()
@@ -287,14 +287,14 @@ function ActiveAction<SCHEMA extends AnyTree>({
   const title =
     type === 'move'
       ? treeText.nodeMoveHintMessage({ nodeName: actionRow.fullName })
-      : type === 'merge'
+      : (type === 'merge'
       ? treeText.mergeNodeHintMessage({ nodeName: actionRow.fullName })
       : type === 'synonymize'
       ? treeText.synonymizeNodeHintMessage({ nodeName: actionRow.fullName })
       : treeText.desynonymizeNodeMessage({
           nodeName: actionRow.fullName,
           synonymName: focusedRow.fullName,
-        });
+        }));
   let disabled: string | false = false;
   if (type === 'move') {
     if (isSameRecord) disabled = title;
@@ -326,7 +326,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
       >
         {typeof disabled === 'string'
           ? disabled
-          : type === 'move'
+          : (type === 'move'
           ? treeText.moveNodeHere({ nodeName: actionRow.fullName })
           : type === 'merge'
           ? treeText.mergeNodeHere({ nodeName: actionRow.fullName })
@@ -335,7 +335,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
               nodeName: actionRow.fullName,
               synonymName: focusedRow.fullName,
             })
-          : treeText.desynonymizeNode()}
+          : treeText.desynonymizeNode())}
       </Button.Small>
       <Button.Small onClick={handleCancelAction}>
         {commonText.cancel()}
@@ -350,7 +350,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
           <br />
           {error}
         </Dialog>
-      ) : showPrompt ? (
+      ) : (showPrompt ? (
         <Dialog
           buttons={
             <>
@@ -366,22 +366,22 @@ function ActiveAction<SCHEMA extends AnyTree>({
               >
                 {type === 'move'
                   ? treeText.moveNode()
-                  : type === 'merge'
+                  : (type === 'merge'
                   ? treeText.mergeNode()
                   : type === 'synonymize'
                   ? treeText.synonymizeNode()
-                  : treeText.desynonymizeNode()}
+                  : treeText.desynonymizeNode())}
               </Button.Blue>
             </>
           }
           header={
             type === 'move'
               ? treeText.moveNode()
-              : type === 'merge'
+              : (type === 'merge'
               ? treeText.mergeNode()
               : type === 'synonymize'
               ? treeText.synonymizeNode()
-              : treeText.desynonymizeNode()
+              : treeText.desynonymizeNode())
           }
           onClose={handleCancelAction}
         >
@@ -391,7 +391,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
                 nodeName: actionRow.fullName,
                 parentName: focusedRow.fullName,
               })
-            : type === 'merge'
+            : (type === 'merge'
             ? treeText.mergeNodeMessage({
                 treeName,
                 nodeName: actionRow.fullName,
@@ -406,9 +406,9 @@ function ActiveAction<SCHEMA extends AnyTree>({
             : treeText.desynonymizeNodeMessage({
                 nodeName: actionRow.fullName,
                 synonymName: focusedRow.fullName,
-              })}
+              }))}
         </Dialog>
-      ) : undefined}
+      ) : undefined)}
     </menu>
   );
 }

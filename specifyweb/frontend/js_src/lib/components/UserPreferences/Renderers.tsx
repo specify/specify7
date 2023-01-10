@@ -252,9 +252,9 @@ export const DefaultPreferenceItemRender: PreferenceItemComponent<any> =
   function ({ definition, value, onChange: handleChange, isReadOnly }) {
     const parser =
       'type' in definition
-        ? typeof definition.parser === 'object'
+        ? (typeof definition.parser === 'object'
           ? mergeParsers(parserFromType(definition.type), definition.parser)
-          : parserFromType(definition.type)
+          : parserFromType(definition.type))
         : undefined;
     const validationAttributes = React.useMemo(
       () => f.maybe(parser, getValidationAttributes),
@@ -289,7 +289,7 @@ export const DefaultPreferenceItemRender: PreferenceItemComponent<any> =
           )
         )}
       </>
-    ) : parser?.type === 'checkbox' ? (
+    ) : (parser?.type === 'checkbox' ? (
       <Input.Checkbox
         checked={value}
         isReadOnly={isReadOnly}
@@ -335,5 +335,5 @@ export const DefaultPreferenceItemRender: PreferenceItemComponent<any> =
           } else handleChanged(newValue);
         }}
       />
-    );
+    ));
   };

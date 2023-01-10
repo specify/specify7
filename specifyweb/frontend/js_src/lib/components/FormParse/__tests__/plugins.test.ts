@@ -1,8 +1,8 @@
 import { mockTime, requireContext } from '../../../tests/helpers';
-import { parseUiPlugin } from '../plugins';
-import { generateInit } from './helpers';
 import { strictParseXml } from '../../AppResources/codeMirrorLinters';
 import { schema } from '../../DataModel/schema';
+import { parseUiPlugin } from '../plugins';
+import { generateInit } from './helpers';
 
 mockTime();
 requireContext();

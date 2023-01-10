@@ -4,12 +4,12 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { f } from '../../utils/functools';
 import type { SpecifyModel } from '../DataModel/specifyModel';
+import { softFail } from '../Errors/Crash';
 import type { FormMode, FormType, ViewDescription } from '../FormParse';
 import { fetchView, parseViewDefinition } from '../FormParse';
 import { webOnlyViews } from '../FormParse/webOnlyViews';
 import { usePref } from '../UserPreferences/usePref';
 import { autoGenerateViewDefinition } from './generateFormDefinition';
-import { softFail } from '../Errors/Crash';
 
 /**
  * By default, Specify 7 replaces all ObjectAttachment forms with

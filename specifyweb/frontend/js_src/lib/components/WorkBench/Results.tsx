@@ -6,16 +6,16 @@
 
 import React from 'react';
 
-import type { Tables } from '../DataModel/types';
-import { sortFunction } from '../../utils/utils';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
-import { strictGetModel } from '../DataModel/schema';
 import type { RR } from '../../utils/types';
+import { sortFunction } from '../../utils/utils';
 import { H2, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
-import { TableIcon } from '../Molecules/TableIcon';
 import { formatNumber } from '../Atoms/Internationalization';
+import { strictGetModel } from '../DataModel/schema';
+import type { Tables } from '../DataModel/types';
+import { TableIcon } from '../Molecules/TableIcon';
 
 function TableResults({
   tableName,

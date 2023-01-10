@@ -6,10 +6,10 @@
 
 import type { State } from 'typesafe-reducer';
 
-import type { Tables } from '../DataModel/types';
-import type { IR, RA, RR } from '../../utils/types';
 import { backEndText } from '../../localization/backEnd';
+import type { IR, RA, RR } from '../../utils/types';
 import { formatList } from '../Atoms/Internationalization';
+import type { Tables } from '../DataModel/types';
 
 /*
  * If an UploadResult involves a tree record, this metadata indicates

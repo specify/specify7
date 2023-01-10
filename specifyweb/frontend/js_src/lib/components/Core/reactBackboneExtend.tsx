@@ -5,13 +5,13 @@
  * @module
  */
 
-import { default as Backbone, type View } from 'backbone';
+import { type View,default as Backbone } from 'backbone';
 import React from 'react';
 import type { Root } from 'react-dom/client';
 import { createRoot } from 'react-dom/client';
 
-import { error } from '../Errors/assert';
 import type { IR } from '../../utils/types';
+import { error } from '../Errors/assert';
 import { Contexts } from './Contexts';
 
 /**

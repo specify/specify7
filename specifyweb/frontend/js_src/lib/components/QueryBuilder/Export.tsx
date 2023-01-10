@@ -72,7 +72,7 @@ export function QueryExportButtons({
         >
           {queryText.queryExportStartedDescription()}
         </Dialog>
-      ) : state === 'warning' ? (
+      ) : (state === 'warning' ? (
         <Dialog
           buttons={commonText.close()}
           header={queryText.missingCoordinatesForKml()}
@@ -80,7 +80,7 @@ export function QueryExportButtons({
         >
           {queryText.missingCoordinatesForKmlDescription()}
         </Dialog>
-      ) : undefined}
+      ) : undefined)}
       {hasPermission('/querybuilder/query', 'export_csv') && (
         <QueryButton
           disabled={fields.length === 0}

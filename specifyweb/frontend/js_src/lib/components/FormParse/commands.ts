@@ -5,19 +5,19 @@
  * On any modifications, please check if documentation needs to be updated.
  */
 
+import type { LocalizedString } from 'typesafe-i18n';
 import type { State } from 'typesafe-reducer';
 
-import { getParsedAttribute } from '../../utils/utils';
-import type { IR, RA } from '../../utils/types';
-import { legacyLocalize } from '../InitialContext/legacyUiLocalization';
 import { f } from '../../utils/functools';
-import { setLogContext } from '../Errors/interceptLogs';
-import { hasPermission, hasTablePermission } from '../Permissions/helpers';
-import { Tables } from '../DataModel/types';
-import { error } from '../Errors/assert';
-import { SpecifyModel } from '../DataModel/specifyModel';
+import type { IR, RA } from '../../utils/types';
+import { getParsedAttribute } from '../../utils/utils';
 import { formatList } from '../Atoms/Internationalization';
-import { LocalizedString } from 'typesafe-i18n';
+import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { Tables } from '../DataModel/types';
+import { error } from '../Errors/assert';
+import { setLogContext } from '../Errors/interceptLogs';
+import { legacyLocalize } from '../InitialContext/legacyUiLocalization';
+import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 
 export type UiCommands = {
   readonly GenerateLabel: State<'GenerateLabel'>;
@@ -54,9 +54,9 @@ const processUiCommand: {
     !hasTablePermission('LoanPreparation', 'update') ||
     !hasTablePermission('LoanReturnPreparation', 'update')
       ? { type: 'Blank' }
-      : model.name === 'Loan'
+      : (model.name === 'Loan'
       ? { type: 'ReturnLoan' }
-      : { type: 'WrongTable', supportedTables: ['Loan'] },
+      : { type: 'WrongTable', supportedTables: ['Loan'] }),
   Unsupported: ({ name }) => {
     console.error(`Unsupported command: ${name ?? '(null)'}`);
     return { type: 'Unsupported', name };

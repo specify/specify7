@@ -1,14 +1,15 @@
 import React from 'react';
-import { Outlet, RouteObject } from 'react-router';
-
-import type { IR, RA, WritableArray } from '../../utils/types';
-import { LoadingScreen } from '../Molecules/Dialog';
-import { useTitle } from '../Molecules/AppTitle';
-import { LocalizedString } from 'typesafe-i18n';
-import {
+import type { RouteObject } from 'react-router';
+import { Outlet } from 'react-router';
+import type {
   IndexRouteObject,
   NonIndexRouteObject,
 } from 'react-router/dist/lib/context';
+import type { LocalizedString } from 'typesafe-i18n';
+
+import type { IR, RA, WritableArray } from '../../utils/types';
+import { useTitle } from '../Molecules/AppTitle';
+import { LoadingScreen } from '../Molecules/Dialog';
 
 /**
  * A wrapper for native React Routes object. Makes everything readonly.

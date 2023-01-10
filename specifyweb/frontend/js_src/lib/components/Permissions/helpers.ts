@@ -1,7 +1,9 @@
+import { getCache } from '../../utils/cache';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import type { AnyTree } from '../DataModel/helperTypes';
 import { schema } from '../DataModel/schema';
+import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { Tables } from '../DataModel/types';
 import { toolDefinitions } from '../Security/registry';
 import { tableNameToResourceName } from '../Security/utils';
@@ -11,11 +13,11 @@ import {
   getOperationPermissions,
   getTablePermissions,
 } from './index';
-import { getCache } from '../../utils/cache';
-import { LiteralField, Relationship } from '../DataModel/specifyField';
 
-// FEATURE: use localized action and resource names in all these log messages
-// REFACTOR: use <ProtectedTable> and etc in favor of this function
+/*
+ * FEATURE: use localized action and resource names in all these log messages
+ * REFACTOR: use <ProtectedTable> and etc in favor of this function
+ */
 /**
  * Security errors are logged so that admins can see why a particular UI
  * component is disabled or missing

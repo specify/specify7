@@ -6,30 +6,30 @@
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { useParams } from 'react-router-dom';
+import type { LocalizedString } from 'typesafe-i18n';
 
-import { ajax } from '../../utils/ajax';
-import { f } from '../../utils/functools';
+import { useUnloadProtect } from '../../hooks/navigation';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useErrorContext } from '../../hooks/useErrorContext';
 import { commonText } from '../../localization/common';
 import { localityText } from '../../localization/locality';
+import { wbPlanText } from '../../localization/wbPlan';
 import { wbText } from '../../localization/workbench';
-import { hasPermission, hasTablePermission } from '../Permissions/helpers';
-import { treeRanksPromise } from '../InitialContext/treeRanks';
+import { ajax } from '../../utils/ajax';
+import { f } from '../../utils/functools';
 import type { GetSet } from '../../utils/types';
-import { WBView } from './wbView';
+import { Button } from '../Atoms/Button';
+import { className } from '../Atoms/className';
+import { Input } from '../Atoms/Form';
+import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
 import { useMenuItem } from '../Header';
-import { useUnloadProtect } from '../../hooks/navigation';
+import { treeRanksPromise } from '../InitialContext/treeRanks';
+import { legacyDialogs } from '../Molecules/LegacyDialog';
+import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import { NotFoundView } from '../Router/NotFoundView';
 import type { Dataset } from '../WbPlanView/Wrapped';
-import { useErrorContext } from '../../hooks/useErrorContext';
-import { Button } from '../Atoms/Button';
-import { Link } from '../Atoms/Link';
-import { Input } from '../Atoms/Form';
-import { className } from '../Atoms/className';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { legacyDialogs } from '../Molecules/LegacyDialog';
-import { LocalizedString } from 'typesafe-i18n';
-import { wbPlanText } from '../../localization/wbPlan';
+import { WBView } from './wbView';
 
 function Navigation({
   name,
@@ -211,16 +211,16 @@ function WbView({
             <Button.Small
               aria-haspopup="dialog"
               className="wb-convert-coordinates"
-              onClick={undefined}
               title={wbText.unavailableWithoutLocality()}
+              onClick={undefined}
             >
               {wbText.convertCoordinates()}
             </Button.Small>
             <Button.Small
               aria-haspopup="dialog"
               className="wb-geolocate"
-              onClick={undefined}
               title={wbText.unavailableWithoutLocality()}
+              onClick={undefined}
             >
               {localityText.geoLocate()}
             </Button.Small>
@@ -229,8 +229,8 @@ function WbView({
         <Button.Small
           aria-haspopup="dialog"
           className="wb-leafletmap"
-          onClick={undefined}
           title={wbText.unavailableWithoutLocality()}
+          onClick={undefined}
         >
           {localityText.geoMap()}
         </Button.Small>
@@ -288,7 +288,7 @@ export const wbViewTemplate = (
   dataSetId: number
 ): string =>
   ReactDOMServer.renderToStaticMarkup(
-    <WbView dataSetId={dataSetId} isUploaded={isUploaded} isMapped={isMapped} />
+    <WbView dataSetId={dataSetId} isMapped={isMapped} isUploaded={isUploaded} />
   );
 
 const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
@@ -351,7 +351,7 @@ function useWbView(
       return undefined;
     const contained = document.createElement('section');
     contained.setAttribute('class', `wbs-form ${className.containerFull}`);
-    container.appendChild(contained);
+    container.append(contained);
     const view = new WBView({
       el: contained,
       dataset: dataSet,

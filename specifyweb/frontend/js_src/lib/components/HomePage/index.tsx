@@ -48,11 +48,11 @@ function WelcomeScreenContent(): JSX.Element {
       src={source}
       title={welcomeText.pageTitle()}
     />
-  ) : mode === 'default' ? (
+  ) : (mode === 'default' ? (
     defaultSplashScreen
   ) : (
     <img alt="" className="h-full" src={source} />
-  );
+  ));
 }
 
 const defaultSplashScreen = (

@@ -2,7 +2,10 @@
  * Class for a specify model (a database table)
  */
 
+import type { LocalizedString } from 'typesafe-i18n';
+
 import { commonText } from '../../localization/common';
+import { getCache } from '../../utils/cache';
 import type { IR, R, RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import { camelToHuman } from '../../utils/utils';
@@ -24,16 +27,14 @@ import { ResourceBase } from './resourceApi';
 import type { SchemaLocalization } from './schema';
 import { getSchemaLocalization, schema } from './schema';
 import { unescape } from './schemaBase';
+import { schemaAliases } from './schemaExtras';
 import { getTableOverwrite, modelViews } from './schemaOverrides';
 import type { Relationship } from './specifyField';
 import {
   type FieldDefinition,
-  LiteralField,
   type RelationshipDefinition,
+  LiteralField,
 } from './specifyField';
-import { getCache } from '../../utils/cache';
-import { schemaAliases } from './schemaExtras';
-import { LocalizedString } from 'typesafe-i18n';
 
 type FieldAlias = {
   readonly vname: string;
@@ -276,10 +277,10 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
 
     this.label = (
       useLabels
-        ? typeof this.localization.name === 'string' &&
+        ? (typeof this.localization.name === 'string' &&
           this.localization.name.length > 0
           ? unescape(this.localization.name)
-          : camelToHuman(this.name)
+          : camelToHuman(this.name))
         : this.name
     ) as LocalizedString;
 

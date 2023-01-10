@@ -4,34 +4,34 @@
 
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import type { LocalizedString } from 'typesafe-i18n';
 
-import type { SortConfigs } from '../../utils/cache/definitions';
-import { f } from '../../utils/functools';
+import { formsText } from '../../localization/forms';
+import { schemaText } from '../../localization/schema';
 import { welcomeText } from '../../localization/welcome';
+import type { SortConfigs } from '../../utils/cache/definitions';
+import { syncFieldFormat } from '../../utils/fieldFormat';
+import { f } from '../../utils/functools';
+import { resolveParser } from '../../utils/parser/definitions';
+import type { RA, RR } from '../../utils/types';
+import { Container, H2, H3 } from '../Atoms';
+import { Button } from '../Atoms/Button';
+import { formatNumber } from '../Atoms/Internationalization';
+import { Link } from '../Atoms/Link';
+import { getField } from '../DataModel/helpers';
 import { getModel, schema } from '../DataModel/schema';
+import type { SpecifyModel } from '../DataModel/specifyModel';
+import { softFail } from '../Errors/Crash';
+import { getSystemInfo } from '../InitialContext/systemInfo';
+import { useTitle } from '../Molecules/AppTitle';
+import { downloadFile } from '../Molecules/FilePicker';
+import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
+import { TableIcon } from '../Molecules/TableIcon';
+import { NotFoundView } from '../Router/NotFoundView';
 import {
   javaTypeToHuman,
   localizedRelationshipTypes,
 } from '../SchemaConfig/helpers';
-import type { SpecifyModel } from '../DataModel/specifyModel';
-import { getSystemInfo } from '../InitialContext/systemInfo';
-import type { RA, RR } from '../../utils/types';
-import { resolveParser } from '../../utils/parser/definitions';
-import { downloadFile } from '../Molecules/FilePicker';
-import { formatNumber } from '../Atoms/Internationalization';
-import { NotFoundView } from '../Router/NotFoundView';
-import { Button } from '../Atoms/Button';
-import { Link } from '../Atoms/Link';
-import { Container, H2, H3 } from '../Atoms';
-import { softFail } from '../Errors/Crash';
-import { TableIcon } from '../Molecules/TableIcon';
-import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
-import { syncFieldFormat } from '../../utils/fieldFormat';
-import { formsText } from '../../localization/forms';
-import { schemaText } from '../../localization/schema';
-import { LocalizedString } from 'typesafe-i18n';
-import { useTitle } from '../Molecules/AppTitle';
-import { getField } from '../DataModel/helpers';
 
 function Table<
   SORT_CONFIG extends

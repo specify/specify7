@@ -4,12 +4,15 @@ import type { SafeNavigateFunction } from 'react-router';
 import { useLocation, useNavigate, useRoutes } from 'react-router-dom';
 
 import { commonText } from '../../localization/common';
+import { mainText } from '../../localization/main';
 import { toRelativeUrl } from '../../utils/ajax/helpers';
 import { listen } from '../../utils/events';
+import { f } from '../../utils/functools';
 import { setDevelopmentGlobal } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { unloadProtectEvents, UnloadProtectsContext } from '../Core/Contexts';
+import { softFail } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { Dialog } from '../Molecules/Dialog';
 import { getUserPref } from '../UserPreferences/helpers';
@@ -18,9 +21,6 @@ import { overlayRoutes } from './OverlayRoutes';
 import { useRouterBlocker } from './RouterBlocker';
 import { toReactRoutes } from './RouterUtils';
 import { routes } from './Routes';
-import { f } from '../../utils/functools';
-import { softFail } from '../Errors/Crash';
-import { mainText } from '../../localization/main';
 
 let unsafeNavigateFunction: SafeNavigateFunction | undefined;
 export const unsafeNavigate = (

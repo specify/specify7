@@ -1,9 +1,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
+
 import { afterAll, beforeAll, expect } from '@jest/globals';
 
 import type { ajax, AjaxResponseObject } from '../../utils/ajax';
-import { MimeType } from '../../utils/ajax';
+import type { MimeType } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { handleAjaxResponse } from '../../utils/ajax/response';
 import { f } from '../../utils/functools';
@@ -89,7 +90,7 @@ export async function ajaxMock<RESPONSE_TYPE>(
   const overwrittenData =
     overrides[url]?.[requestMethod] ??
     overrides[urlWithoutQuery]?.[requestMethod];
-  if (typeof overwrittenData !== 'undefined') {
+  if (overwrittenData !== undefined) {
     const { data, responseCode, body } = overwrittenData;
     if (body !== undefined) expect(requestBody).toEqual(body);
     const value = data();
@@ -122,7 +123,7 @@ export async function ajaxMock<RESPONSE_TYPE>(
         parsedPath.base === splitFileName(dirent.name).fileName)
   )?.name;
 
-  if (typeof targetFile === 'undefined')
+  if (targetFile === undefined)
     throw new Error(
       `No static source found for URL ${url} [${requestMethod}].\n` +
         `You can mock it by creating a file in ./lib/tests/ajax/static\n` +

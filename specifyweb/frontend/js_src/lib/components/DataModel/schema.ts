@@ -4,25 +4,26 @@
  * specifyfield.ts.
  */
 
-import { error } from '../Errors/assert';
-import type { Agent, Tables } from './types';
+import type { LocalizedString } from 'typesafe-i18n';
+
 import { f } from '../../utils/functools';
-import { sortFunction } from '../../utils/utils';
-import { load } from '../InitialContext';
-import { formatUrl } from '../Router/queryString';
-import { schemaBase } from './schemaBase';
-import { schemaExtras } from './schemaExtras';
-import { LiteralField, Relationship } from './specifyField';
-import { SpecifyModel, type TableDefinition } from './specifyModel';
-import { isTreeModel } from '../InitialContext/treeRanks';
 import type { IR, RA, RR } from '../../utils/types';
 import {
   defined,
   overwriteReadOnly,
   setDevelopmentGlobal,
 } from '../../utils/types';
-import { AnySchema, AnyTree } from './helperTypes';
-import { LocalizedString } from 'typesafe-i18n';
+import { sortFunction } from '../../utils/utils';
+import { error } from '../Errors/assert';
+import { load } from '../InitialContext';
+import { isTreeModel } from '../InitialContext/treeRanks';
+import { formatUrl } from '../Router/queryString';
+import type { AnySchema, AnyTree } from './helperTypes';
+import { schemaBase } from './schemaBase';
+import { schemaExtras } from './schemaExtras';
+import { LiteralField, Relationship } from './specifyField';
+import { type TableDefinition,SpecifyModel } from './specifyModel';
+import type { Agent, Tables } from './types';
 
 export type SchemaLocalization = {
   readonly name: LocalizedString | null;

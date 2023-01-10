@@ -1,3 +1,4 @@
+import { overrideAjax } from '../../../tests/ajax';
 import { mockTime, requireContext } from '../../../tests/helpers';
 import { addMissingFields } from '../addMissingFields';
 import {
@@ -9,10 +10,9 @@ import {
   toTables,
   toTreeTable,
 } from '../helpers';
+import { getResourceApiUrl } from '../resource';
 import { schema } from '../schema';
 import type { Tables } from '../types';
-import { overrideAjax } from '../../../tests/ajax';
-import { getResourceApiUrl } from '../resource';
 
 mockTime();
 requireContext();

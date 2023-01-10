@@ -1,11 +1,11 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
+import { wbPlanText } from '../../localization/wbPlan';
 import { spanNumber } from '../../utils/utils';
 import { icons } from '../Atoms/Icons';
 import { getModel } from '../DataModel/schema';
 import { getIcon } from '../InitialContext/icons';
-import { LocalizedString } from 'typesafe-i18n';
-import { wbPlanText } from '../../localization/wbPlan';
 
 const MAX_HUE = 360;
 
@@ -52,16 +52,16 @@ export function TableIcon({
    * In all other cases, set this to true, or explicitly set the label as a
    * string
    */
-  readonly label: boolean | LocalizedString;
+  readonly label: LocalizedString | boolean;
   readonly className?: string;
 }): JSX.Element {
   const tableIconSource = getIcon(name);
   const resolvedTableLabel =
     label === false
       ? undefined
-      : typeof label === 'string'
+      : (typeof label === 'string'
       ? label
-      : getModel(name)?.label ?? '';
+      : getModel(name)?.label ?? '');
   const role = typeof resolvedTableLabel === 'string' ? 'img' : undefined;
   const ariaHidden = resolvedTableLabel === undefined;
   if (typeof tableIconSource === 'string')

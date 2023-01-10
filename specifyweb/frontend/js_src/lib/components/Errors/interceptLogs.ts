@@ -61,11 +61,11 @@ export function setLogContext(
 const toSafeValue = (value: unknown): unknown =>
   typeof value === 'function'
     ? value.toString()
-    : value === undefined
+    : (value === undefined
     ? 'undefined'
     : typeof value === 'object'
     ? jsonStringify(value)
-    : value;
+    : value);
 
 export function interceptLogs(): void {
   logTypes.forEach((logType) => {
@@ -80,9 +80,9 @@ export function interceptLogs(): void {
      * 2. Add this file to "ignore list" in DevTools. Here is how:
      *    https://stackoverflow.com/q/7126822/8584605
      */
-    // eslint-disable-next-line no-console
+     
     const defaultFunction = console[logType];
-    // eslint-disable-next-line no-console
+     
     console[logType] = (...args: RA<unknown>): void => {
       const hasContext = Object.keys(context).length > 0;
       defaultFunction(...args, ...(hasContext ? [context] : []));

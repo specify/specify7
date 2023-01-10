@@ -2,6 +2,9 @@ import React from 'react';
 import { omit } from 'underscore';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
+import { commonText } from '../../localization/common';
+import { userText } from '../../localization/user';
+import { StringToJsx } from '../../localization/utils';
 import { f } from '../../utils/functools';
 import { jsonStringify } from '../../utils/utils';
 import { deserializeResource, serializeResource } from '../DataModel/helpers';
@@ -13,9 +16,6 @@ import { userInformation } from '../InitialContext/userInformation';
 import { actionToLabel, resourceNameToLongLabel } from '../Security/utils';
 import { institutionPermissions } from './definitions';
 import type { PermissionErrorSchema } from './PermissionDenied';
-import { userText } from '../../localization/user';
-import { StringToJsx } from '../../localization/utils';
-import { commonText } from '../../localization/common';
 
 export function formatPermissionsError(
   response: string,
@@ -72,9 +72,9 @@ export function FormatPermissionError({
                   ${
                     index === 0
                       ? 'rounded-l'
-                      : index + 1 === length
+                      : (index + 1 === length
                       ? 'rounded-r'
-                      : ''
+                      : '')
                   }
                 `}
                 key={index}
@@ -111,10 +111,10 @@ export function FormatPermissionError({
       {typeof url === 'string' && (
         <p>
           <StringToJsx
-            string={userText.permissionDeniedForUrl()}
             components={{
               url: <code>{url}</code>,
             }}
+            string={userText.permissionDeniedForUrl()}
           />
         </p>
       )}

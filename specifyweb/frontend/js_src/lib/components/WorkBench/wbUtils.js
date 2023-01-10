@@ -7,32 +7,33 @@
  */
 
 import $ from 'jquery';
-import _ from 'underscore';
 import React from 'react';
+import _ from 'underscore';
+
+import { commonText } from '../../localization/common';
+import { localityText } from '../../localization/locality';
+import { wbText } from '../../localization/workbench';
+import { f } from '../../utils/functools';
+import { Lat, Long } from '../../utils/latLong';
+import { filterArray } from '../../utils/types';
+import { camelToKebab, clamp, sortFunction } from '../../utils/utils';
+import { Ul } from '../Atoms';
+import { Button } from '../Atoms/Button';
+import { Input, Label } from '../Atoms/Form';
+import { createBackboneView } from '../Core/reactBackboneExtend';
+import { Backbone } from '../DataModel/backbone';
+import { LeafletMap } from '../Leaflet/Map';
 import {
   findLocalityColumnsInDataSet,
   getLocalitiesDataFromSpreadsheet,
   getLocalityColumnsFromSelectedCells,
   getLocalityCoordinate,
 } from '../Leaflet/wbLocalityDataExtractor';
-import { Backbone } from '../DataModel/backbone';
-import { Ul } from '../Atoms';
-import { Button } from '../Atoms/Button';
-import { Input, Label } from '../Atoms/Form';
-import { Lat, Long } from '../../utils/latLong';
-import { camelToKebab, clamp, sortFunction } from '../../utils/utils';
-import { f } from '../../utils/functools';
+import { showDialog } from '../Molecules/LegacyDialog';
 import {
   getInitialSearchPreferences,
   WbAdvancedSearch,
 } from './AdvancedSearch';
-import { wbText } from '../../localization/workbench';
-import { commonText } from '../../localization/common';
-import { showDialog } from '../Molecules/LegacyDialog';
-import { createBackboneView } from '../Core/reactBackboneExtend';
-import { LeafletMap } from '../Leaflet/Map';
-import { localityText } from '../../localization/locality';
-import { filterArray } from '../../utils/types';
 
 const wbSearchView = createBackboneView(WbAdvancedSearch);
 const LeafletMapView = createBackboneView(LeafletMap);
@@ -107,16 +108,21 @@ export const WBUtils = Backbone.View.extend({
   },
   cellIsType(metaArray, type) {
     switch (type) {
-      case 'invalidCells':
+      case 'invalidCells': {
         return this.wbview.getCellMetaFromArray(metaArray, 'issues').length > 0;
-      case 'newCells':
+      }
+      case 'newCells': {
         return this.wbview.getCellMetaFromArray(metaArray, 'isNew');
-      case 'modifiedCells':
+      }
+      case 'modifiedCells': {
         return this.wbview.getCellMetaFromArray(metaArray, 'isModified');
-      case 'searchResults':
+      }
+      case 'searchResults': {
         return this.wbview.getCellMetaFromArray(metaArray, 'isSearchResult');
-      default:
+      }
+      default: {
         return false;
+      }
     }
   },
   navigateCells(
@@ -173,12 +179,12 @@ export const WBUtils = Backbone.View.extend({
 
     const compareCols =
       direction === 'next'
-        ? matchCurrentCell
+        ? (matchCurrentCell
           ? (visualCol) => visualCol >= currentTransposedCol
-          : (visualCol) => visualCol > currentTransposedCol
-        : matchCurrentCell
+          : (visualCol) => visualCol > currentTransposedCol)
+        : (matchCurrentCell
         ? (visualCol) => visualCol <= currentTransposedCol
-        : (visualCol) => visualCol < currentTransposedCol;
+        : (visualCol) => visualCol < currentTransposedCol);
 
     let matchedCell;
     let cellIsTypeCount = 0;
@@ -697,7 +703,7 @@ export const WBUtils = Backbone.View.extend({
   },
 
   showGeoLocate(event) {
-    // don't allow opening more than one window)
+    // Don't allow opening more than one window)
     if (this.geoLocateDialog !== undefined) {
       this.geoLocateDialog.remove();
       this.geoLocateDialog = undefined;
@@ -746,14 +752,14 @@ export const WBUtils = Backbone.View.extend({
           <>
             <Button.DialogClose>{commonText.close()}</Button.DialogClose>
             <Button.Blue
-              onClick={() => updateGeoLocate(localityIndex - 1)}
               disabled={selection.isFirst(localityIndex)}
+              onClick={() => updateGeoLocate(localityIndex - 1)}
             >
               {commonText.previous()}
             </Button.Blue>
             <Button.Blue
-              onClick={() => updateGeoLocate(localityIndex + 1)}
               disabled={selection.isLast(localityIndex)}
+              onClick={() => updateGeoLocate(localityIndex + 1)}
             >
               {commonText.next()}
             </Button.Blue>
@@ -772,8 +778,10 @@ export const WBUtils = Backbone.View.extend({
 
     const visualHeaders = this.getVisualHeaders();
     const handleGeolocateResult = (event) => {
-      // This may happen if the message was sent by someone other than GeoLocate,
-      // (i.e, a React DevTools plugin)
+      /*
+       * This may happen if the message was sent by someone other than GeoLocate,
+       * (i.e, a React DevTools plugin)
+       */
       if (typeof event.data !== 'string') return;
       const dataColumns = event.data?.split('|') ?? [];
       if (dataColumns.length !== 4 || event.data === '|||') return;
@@ -987,18 +995,18 @@ export const WBUtils = Backbone.View.extend({
     const handleChange = () => {
       const includeSymbolsFunction = includeSymbols
         ? (coordinate) => coordinate
-        : (coordinate) => coordinate.replace(/[^\s\w\-.]/g, '');
-      const lastChar = (value) => value[value.length - 1];
+        : (coordinate) => coordinate.replaceAll(/[^\s\w\-.]/g, '');
+      const lastChar = (value) => value.at(-1);
       const removeLastChar = (value) => value.slice(0, -1);
       const endsWith = (value, charset) => charset.includes(lastChar(value));
       const stripCardinalDirections = (finalValue) =>
         showCardinalDirection
           ? finalValue
-          : endsWith(finalValue, 'SW')
+          : (endsWith(finalValue, 'SW')
           ? `-${removeLastChar(finalValue)}`
           : endsWith(finalValue, 'NE')
           ? removeLastChar(finalValue)
-          : finalValue;
+          : finalValue);
 
       const selectedCells = getSelectedCells();
       const changes = originalState

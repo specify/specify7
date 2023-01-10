@@ -1,8 +1,10 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
+import { userText } from '../../localization/user';
 import { f } from '../../utils/functools';
 import type { IR, RA, RR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
@@ -22,8 +24,6 @@ import { Dialog } from '../Molecules/Dialog';
 import { downloadFile, FilePicker, fileToText } from '../Molecules/FilePicker';
 import { hasPermission } from '../Permissions/helpers';
 import type { NewRole, Role } from './Role';
-import { userText } from '../../localization/user';
-import { LocalizedString } from 'typesafe-i18n';
 
 type Category = 'changed' | 'created' | 'unchanged';
 const categoryLabels = {
@@ -174,14 +174,14 @@ export function ImportExport({
                                   .map((newRole) => {
                                     const groupName =
                                       typeof newRole.id === 'number'
-                                        ? JSON.stringify(
+                                        ? (JSON.stringify(
                                             removeKey(roles![newRole.id], 'id')
                                           ) ===
                                           JSON.stringify(
                                             removeKey(newRole, 'id')
                                           )
                                           ? 'unchanged'
-                                          : 'changed'
+                                          : 'changed')
                                         : 'created';
                                     return (groupName === 'changed' &&
                                       !hasPermission(

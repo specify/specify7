@@ -3,9 +3,9 @@
  * and needs to be resolved by the user
  */
 
-import type { SpecifyResource } from './legacyTypes';
 import type { R, RA } from '../../utils/types';
-import { AnySchema } from './helperTypes';
+import type { AnySchema } from './helperTypes';
+import type { SpecifyResource } from './legacyTypes';
 
 /*
  * Propagate a save blocker even for independent resources, because
@@ -37,9 +37,9 @@ export class SaveBlockers<SCHEMA extends AnySchema> {
   // eslint-disable-next-line functional/prefer-readonly-type
   public blockers: R<Blocker> = {};
 
-  // eslint-disable-next-line functional/prefer-readonly-type
-  public readonly blockingResources: Set<SpecifyResource<AnySchema>> =
-    new Set();
+   
+  public readonly blockingResources =
+    new Set<SpecifyResource<AnySchema>>();
 
   public constructor(resource: SpecifyResource<SCHEMA>) {
     this.resource = resource;

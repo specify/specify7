@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
+import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
 import { filterArray } from '../../utils/types';
@@ -12,7 +13,6 @@ import { load } from '../InitialContext';
 import { formatUrl } from '../Router/queryString';
 import { columnToFieldMapper } from './parseSelect';
 import type { TypeSearch } from './queryComboBoxUtils';
-import { commonText } from '../../localization/common';
 
 const typeSearches = load<Element>(
   formatUrl('/context/app.resource', { name: 'TypeSearches' }),
@@ -26,7 +26,7 @@ export function useTypeSearch(
 ): TypeSearch | false | undefined {
   const relatedModel =
     initialRelatedModel ??
-    (field?.isRelationship === true ? field.relatedModel : undefined);
+    (field?.isRelationship ? field.relatedModel : undefined);
   const [typeSearch] = useAsyncState<TypeSearch | false>(
     React.useCallback(
       () =>

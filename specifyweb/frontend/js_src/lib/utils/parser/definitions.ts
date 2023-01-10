@@ -12,6 +12,7 @@ import type {
 import { error } from '../../components/Errors/assert';
 import type { UiFormatter } from '../../components/Forms/uiFormatters';
 import { monthsPickList } from '../../components/PickLists/definitions';
+import { getUserPref } from '../../components/UserPreferences/helpers';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { queryText } from '../../localization/query';
@@ -21,7 +22,6 @@ import { f } from '../functools';
 import { parseRelativeDate } from '../relativeDate';
 import type { IR, RA, RR } from '../types';
 import { filterArray } from '../types';
-import { getUserPref } from '../../components/UserPreferences/helpers';
 
 /** Makes sure a wrapped function would receive a string value */
 export const stringGuard =
@@ -94,9 +94,9 @@ export const parsers = f.store(
       printFormatter: (value) =>
         value === undefined
           ? ''
-          : Boolean(value)
+          : (Boolean(value)
           ? queryText.yes()
-          : commonText.no(),
+          : commonText.no()),
       value: false,
     },
 

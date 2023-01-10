@@ -240,16 +240,16 @@ function reshapeLocalityData(localityData: LocalityData): LocalityData {
 
       const { headerName, value } = localityDataEntries[index].field;
 
-      if (groupName in aggregated)
-        aggregated[groupName] = {
-          ...aggregated[groupName],
-          value: `${value} ${aggregated[groupName].value}`,
-        };
-      else
-        aggregated[groupName] = {
-          headerName,
-          value,
-        };
+      aggregated[groupName] =
+        groupName in aggregated
+          ? {
+              ...aggregated[groupName],
+              value: `${value} ${aggregated[groupName].value}`,
+            }
+          : {
+              headerName,
+              value,
+            };
 
       return aggregated;
     },

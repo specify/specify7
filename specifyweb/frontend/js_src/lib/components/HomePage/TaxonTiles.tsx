@@ -1,19 +1,19 @@
 import React from 'react';
 
-import { ajax } from '../../utils/ajax';
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { welcomeText } from '../../localization/welcome';
+import { ajax } from '../../utils/ajax';
+import type { RA } from '../../utils/types';
+import {
+  getTreeDefinitionItems,
+  treeRanksPromise,
+} from '../InitialContext/treeRanks';
 import {
   getTitleGenerator,
   makeTreeMap,
   mergeNodes,
   pairNodes,
 } from './taxonTileHelpers';
-import {
-  getTreeDefinitionItems,
-  treeRanksPromise,
-} from '../InitialContext/treeRanks';
-import type { RA } from '../../utils/types';
-import { useAsyncState } from '../../hooks/useAsyncState';
 
 export function TaxonTiles(): JSX.Element {
   const [container, setContainer] = React.useState<SVGElement | null>(null);

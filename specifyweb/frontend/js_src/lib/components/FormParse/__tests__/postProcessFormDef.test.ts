@@ -1,11 +1,12 @@
+import type { LocalizedString } from 'typesafe-i18n';
+
 import { requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
+import { ensure } from '../../../utils/types';
+import { getField } from '../../DataModel/helpers';
 import { schema } from '../../DataModel/schema';
 import type { CellTypes, FormCellDefinition } from '../cells';
 import { exportsForTests, postProcessFormDef } from '../postProcessFormDef';
-import { LocalizedString } from 'typesafe-i18n';
-import { ensure } from '../../../utils/types';
-import { getField } from '../../DataModel/helpers';
 
 requireContext();
 

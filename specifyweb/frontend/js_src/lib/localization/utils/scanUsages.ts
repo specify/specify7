@@ -13,21 +13,24 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
+import type { LocalizedString } from 'typesafe-i18n';
+
+import { formatList } from '../../components/Atoms/Internationalization';
+import { f } from '../../utils/functools';
 import type { IR, R, RA, RR, WritableArray } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { group, split } from '../../utils/utils';
-import {
+import type { Language} from './config';
+import { DEFAULT_LANGUAGE, languages } from './config';
+import type {
   LocalizationDictionary as LanguageDictionary,
-  LocalizationEntry,
+  LocalizationEntry} from './index';
+import {
   localizationMetaKeys,
   rawDictionary,
   whitespaceSensitive,
 } from './index';
-import { f } from '../../utils/functools';
-import { formatList } from '../../components/Atoms/Internationalization';
 import { testLogging } from './testLogging';
-import { DEFAULT_LANGUAGE, Language, languages } from './config';
-import { LocalizedString } from 'typesafe-i18n';
 
 if (process.argv[1] === undefined)
   throw new Error('Unable to find the path of the current directory');
@@ -137,7 +140,7 @@ export type DictionaryUsages = IR<{
 }>;
 
 export async function scanUsages(
-  mode: 'verbose' | 'normal' | 'silent'
+  mode: 'normal' | 'silent' | 'verbose'
 ): Promise<DictionaryUsages | undefined> {
   const debug = mode === 'verbose' ? console.log : () => undefined;
   const warn = mode === 'silent' ? () => undefined : globalWarn;
@@ -161,8 +164,7 @@ export async function scanUsages(
 
   const dictionaries: DictionaryUsages = Object.fromEntries(
     Object.entries(entries).map(
-      ([categoryName, { dictionaryName, strings }]) => {
-        return [
+      ([categoryName, { dictionaryName, strings }]) => [
           dictionaryName,
           {
             categoryName,
@@ -220,8 +222,7 @@ export async function scanUsages(
               })
             ),
           },
-        ];
-      }
+        ]
     )
   );
 
@@ -290,7 +291,7 @@ export async function scanUsages(
         // Matched the declaration of a dictionary (i.e, const commonText = ...)
         if (followingCharacter === '=') return;
         // Matched a comment (i.e, // dictionaryText \n someOtherLine)
-        if (followingCharacter.match(/\w/u)) return;
+        if (/\w/u.test(followingCharacter)) return;
         if (followingCharacter !== '.') {
           report(
             `Unexpected dynamic usage of a ${dictionaryName} dictionary\n`,
@@ -396,8 +397,7 @@ export async function scanUsages(
             originalValue: value,
           });
         });
-      }),
-    {}
+      })
   );
 
   Object.entries(compoundDictionaries).forEach(([language, valueDictionary]) =>
@@ -467,6 +467,5 @@ export async function scanUsages(
     warn(`Errors: ${getErrorCount()}`);
   }
 
-  if (getErrorCount() > 0) return undefined;
-  else return dictionaries;
+  return getErrorCount() > 0 ? undefined : dictionaries;
 }

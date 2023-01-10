@@ -1,11 +1,11 @@
-import type { AppResources } from './hooks';
-import type { SpAppResource, SpViewSetObj } from '../DataModel/types';
 import { f } from '../../utils/functools';
-import { KEY, sortFunction } from '../../utils/utils';
 import type { RA } from '../../utils/types';
-import { appResourceSubTypes } from './types';
-import { SerializedResource } from '../DataModel/helperTypes';
+import { KEY, sortFunction } from '../../utils/utils';
 import { toResource } from '../DataModel/helpers';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import type { SpAppResource, SpViewSetObj } from '../DataModel/types';
+import type { AppResources } from './hooks';
+import { appResourceSubTypes } from './types';
 
 export const allAppResources = Array.from(
   Object.keys(appResourceSubTypes)
@@ -43,11 +43,11 @@ export const filterAppResources = (
   appResources:
     filters.appResources.length === 0
       ? []
-      : hasAllAppResources(filters.appResources)
+      : (hasAllAppResources(filters.appResources)
       ? resources.appResources
       : resources.appResources.filter((resource) =>
           filters.appResources.includes(getAppResourceType(resource))
-        ),
+        )),
 });
 
 export const getResourceType = (

@@ -1,10 +1,10 @@
 import React from 'react';
 
+import type { RA } from '../../utils/types';
 import { displayError } from '../Core/Contexts';
 import { breakpoint } from './assert';
 import { ErrorDialog } from './ErrorDialog';
 import { formatError, handleAjaxError } from './FormatError';
-import { RA } from '../../utils/types';
 
 /** Display an error message. Can be dismissed */
 // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
@@ -20,7 +20,7 @@ export const softFail =
 export const crash = (error: Error): void => showError(error, false);
 
 /** Spawn a modal error dialog based on an error object */
-// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
+ 
 function showError(
   error: Error,
   dismissible: boolean,

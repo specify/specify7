@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { mainText } from '../../localization/main';
 import { Http } from '../../utils/ajax/definitions';
 import type { RA, WritableArray } from '../../utils/types';
 import { jsonStringify } from '../../utils/utils';
@@ -11,7 +12,6 @@ import { PermissionError } from '../Permissions/PermissionDenied';
 import { unsafeTriggerNotFound } from '../Router/Router';
 import { ErrorDialog } from './ErrorDialog';
 import { produceStackTrace } from './stackTrace';
-import { mainText } from '../../localization/main';
 
 export function formatError(
   error: unknown,

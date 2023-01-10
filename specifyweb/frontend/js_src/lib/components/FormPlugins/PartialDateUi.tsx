@@ -1,5 +1,9 @@
 import React from 'react';
 
+import { useSaveBlockers } from '../../hooks/resource';
+import { useValidation } from '../../hooks/useValidation';
+import { commonText } from '../../localization/common';
+import { formsText } from '../../localization/forms';
 import {
   databaseDateFormat,
   fullDateFormat,
@@ -7,21 +11,17 @@ import {
 } from '../../utils/dateFormat';
 import { dayjs, getDateInputValue } from '../../utils/dayJs';
 import { f } from '../../utils/functools';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { commonText } from '../../localization/common';
-import { formsText } from '../../localization/forms';
-import { resourceOn } from '../DataModel/resource';
-import type { RR } from '../../utils/types';
 import {
   getValidationAttributes,
   resolveParser,
 } from '../../utils/parser/definitions';
-import { Input, Select } from '../Atoms/Form';
+import type { RR } from '../../utils/types';
 import { Button } from '../Atoms/Button';
+import { Input, Select } from '../Atoms/Form';
 import { dateParts } from '../Atoms/Internationalization';
-import { useSaveBlockers } from '../../hooks/resource';
-import { useValidation } from '../../hooks/useValidation';
-import { AnySchema } from '../DataModel/helperTypes';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { resourceOn } from '../DataModel/resource';
 import { usePref } from '../UserPreferences/usePref';
 
 export function isInputSupported(type: string): boolean {
@@ -109,13 +109,15 @@ function unsafeParseFullDate(
 ): ReturnType<typeof dayjs> | undefined {
   if (fullDateFormat().toUpperCase() !== 'DD/MM/YYYY') return;
   const parsed = /(\d{2})\D(\d{2})\D(\d{4})/.exec(value)?.slice(1);
-  if (typeof parsed === 'undefined') return undefined;
+  if (parsed === undefined) return undefined;
   const [day, month, year] = parsed.map(f.unary(Number.parseInt));
   return dayjs(new Date(year, month - 1, day));
 }
 
-// TESTS: this has been very buggy. add tests
-// REFACTOR: split this component into smaller
+/*
+ * TESTS: this has been very buggy. add tests
+ * REFACTOR: split this component into smaller
+ */
 export function PartialDateUi<SCHEMA extends AnySchema>({
   resource,
   dateField,
@@ -172,7 +174,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
 
   const errors = useSaveBlockers({
     resource,
-    fieldName: dateField as string,
+    fieldName: dateField ,
   });
   const { inputRef, validationRef } = useValidation(errors);
 
@@ -299,9 +301,9 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
       const validationMessage =
         precision === 'full'
           ? formsText.requiredFormat({ format: fullDateFormat() })
-          : precision === 'month-year'
+          : (precision === 'month-year'
           ? formsText.requiredFormat({ format: monthFormat() })
-          : formsText.invalidDate();
+          : formsText.invalidDate());
       resource.saveBlockers?.add(
         `invaliddate:${dateField}`,
         dateField,

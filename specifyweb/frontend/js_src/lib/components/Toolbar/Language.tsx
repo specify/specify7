@@ -3,13 +3,24 @@
  */
 
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { StringToJsx } from '../../localization/utils';
+import type {
+  Language} from '../../localization/utils/config';
+import {
+  devLanguage,
+  devLanguages,
+  disabledLanguages,
+  LANGUAGE,
+  languages,
+} from '../../localization/utils/config';
 import { ajax } from '../../utils/ajax';
 import { csrfToken } from '../../utils/ajax/csrfToken';
+import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
@@ -19,23 +30,13 @@ import { fail } from '../Errors/Crash';
 import { supportLink } from '../Errors/ErrorDialog';
 import { cachableUrl } from '../InitialContext';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { formatUrl } from '../Router/queryString';
+import { languageSeparator } from '../SchemaConfig/Languages';
 import type {
   PreferenceItem,
   PreferenceItemComponent,
 } from '../UserPreferences/Definitions';
 import { PreferencesContext, prefEvents } from '../UserPreferences/Hooks';
-import { LocalizedString } from 'typesafe-i18n';
-import {
-  devLanguage,
-  devLanguages,
-  disabledLanguages,
-  Language,
-  LANGUAGE,
-  languages,
-} from '../../localization/utils/config';
-import { formatUrl } from '../Router/queryString';
-import { Http } from '../../utils/ajax/definitions';
-import { languageSeparator } from '../SchemaConfig/Languages';
 
 export const handleLanguageChange = async (language: Language): Promise<void> =>
   ping(
@@ -57,7 +58,7 @@ export function LanguageSelection<LANGUAGES extends string>({
   languages,
   onChange: handleChange,
   isReadOnly = false,
-  showDevLanguages = process.env.NODE_ENV === 'development',
+  showDevLanguages: showDevelopmentLanguages = process.env.NODE_ENV === 'development',
 }: {
   readonly value: LANGUAGES;
   readonly languages: IR<string> | undefined;
@@ -107,7 +108,7 @@ export function LanguageSelection<LANGUAGES extends string>({
           <option value="supportLocalization">
             {headerText.helpLocalizeSpecify()}
           </option>
-          {showDevLanguages && (
+          {showDevelopmentLanguages && (
             <optgroup label="Development languages">
               {Object.entries(devLanguages).map(([code, name]) => (
                 <option key={code} value={code}>
@@ -259,9 +260,9 @@ export const SchemaLanguagePreferenceItem: PreferenceItemComponent<string> =
       <LanguageSelection<string>
         isReadOnly={isReadOnly || languages === undefined}
         languages={languages ?? { loading: commonText.loading() }}
+        showDevLanguages={false}
         value={value}
         onChange={handleChange}
-        showDevLanguages={false}
       />
     );
   };

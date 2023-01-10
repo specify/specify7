@@ -1,8 +1,10 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
+import { headerText } from '../../localization/header';
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
@@ -26,13 +28,11 @@ import type { Tables } from '../DataModel/types';
 import { fetchView } from '../FormParse';
 import { cachableUrl } from '../InitialContext';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { TableIcon } from '../Molecules/TableIcon';
 import { hasTablePermission } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
 import { OverlayContext } from '../Router/Router';
 import { EditFormTables, useFormModels } from '../Toolbar/FormTablesEdit';
-import { TableIcon } from '../Molecules/TableIcon';
-import { headerText } from '../../localization/header';
-import { LocalizedString } from 'typesafe-i18n';
 
 export function FormsDialogOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -56,7 +56,7 @@ export function FormsDialog({
 
   return isEditing ? (
     <EditFormTables onClose={handleClose} />
-  ) : Array.isArray(forms) ? (
+  ) : (Array.isArray(forms) ? (
     <Dialog
       buttons={commonText.cancel()}
       className={{ container: dialogClassNames.narrowContainer }}
@@ -70,7 +70,7 @@ export function FormsDialog({
           {forms
             .filter(({ table }) => hasTablePermission(table, 'create'))
             .map(({ iconName, title, table }, index) => (
-              <li key={index} className="contents">
+              <li className="contents" key={index}>
                 <Link.Default
                   href={getResourceViewUrl(table)}
                   onClick={
@@ -92,7 +92,7 @@ export function FormsDialog({
         </Ul>
       </nav>
     </Dialog>
-  ) : null;
+  ) : null);
 }
 
 export type FormEntry = {

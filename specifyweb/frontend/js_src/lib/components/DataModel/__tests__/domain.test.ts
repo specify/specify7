@@ -1,12 +1,12 @@
+import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
+import { formatUrl } from '../../Router/queryString';
 import {
   fetchCollectionsForResource,
   getCollectionForResource,
 } from '../domain';
 import { getResourceApiUrl } from '../resource';
 import { schema } from '../schema';
-import { overrideAjax } from '../../../tests/ajax';
-import { formatUrl } from '../../Router/queryString';
 
 requireContext();
 

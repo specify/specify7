@@ -1,5 +1,6 @@
-import type { IR, RA } from '../utils/types';
 import { describe, expect, test } from '@jest/globals';
+
+import type { IR, RA } from '../utils/types';
 
 /**
  * Named after https://github.com/RobPethick/jest-theories

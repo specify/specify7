@@ -4,7 +4,8 @@
  * @module
  */
 
-import { LocalizedString } from 'typesafe-i18n';
+import type { LocalizedString } from 'typesafe-i18n';
+
 import type { KeysToLowerCase } from '../components/DataModel/helperTypes';
 import { f } from './functools';
 import type { IR, RA, RR } from './types';
@@ -32,10 +33,10 @@ export const lowerToHuman = (value: string): string =>
   value.toLowerCase().split('_').map(capitalize).join(' ');
 
 export const camelToKebab = (value: string): string =>
-  value.replace(/([a-z])([A-Z])/gu, '$1-$2').toLowerCase();
+  value.replaceAll(/([a-z])([A-Z])/gu, '$1-$2').toLowerCase();
 
 export const camelToHuman = (value: string): string =>
-  capitalize(value.replace(/([a-z])([A-Z])/gu, '$1 $2')).replace(
+  capitalize(value.replaceAll(/([a-z])([A-Z])/gu, '$1 $2')).replace(
     /Dna\b/,
     'DNA'
   );
@@ -300,7 +301,7 @@ export const index = <T extends { readonly id: number }>(data: RA<T>): IR<T> =>
 
 /** Escape all characters that have special meaning in regular expressions */
 export const escapeRegExp = (string: string): string =>
-  string.replace(/[$()*+.?[\\\]^{|}]/g, '\\$&');
+  string.replaceAll(/[$()*+.?[\\\]^{|}]/g, '\\$&');
 
 /** Fix for "getAttribute" being case-sensetive for non-HTML elements */
 export const getAttribute = (cell: Element, name: string): string | undefined =>
@@ -333,9 +334,9 @@ export const keysToLowerCase = <OBJECT extends IR<unknown>>(
       key.toLowerCase(),
       Array.isArray(value)
         ? value.map((value) =>
-          typeof value === 'object'  && value !== null ?
-            keysToLowerCase(value)
-          : (value as KeysToLowerCase<OBJECT>)
+            typeof value === 'object' && value !== null
+              ? keysToLowerCase(value)
+              : (value as KeysToLowerCase<OBJECT>)
           )
         : typeof value === 'object' && value !== null
         ? keysToLowerCase(value as IR<unknown>)

@@ -1,9 +1,11 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { commonText } from '../../localization/common';
+import { userText } from '../../localization/user';
 import type { GetOrSet, IR } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Ul } from '../Atoms';
@@ -11,6 +13,7 @@ import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
 import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
+import { deserializeResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { Collection } from '../DataModel/types';
 import { ResourceView } from '../Forms/ResourceView';
@@ -20,9 +23,6 @@ import { updateCollectionRole } from './CollectionRole';
 import { createCollectionRole } from './CreateRole';
 import { ImportExport } from './ImportExport';
 import type { Role } from './Role';
-import { deserializeResource } from '../DataModel/helpers';
-import { userText } from '../../localization/user';
-import { LocalizedString } from 'typesafe-i18n';
 
 /**
  * Display a button to open current user

@@ -4,13 +4,13 @@
 
 import React from 'react';
 
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { commonText } from '../../localization/common';
+import { headerText } from '../../localization/header';
+import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
 import { cachableUrls } from '../InitialContext';
-import { commonText } from '../../localization/common';
 import { Dialog } from '../Molecules/Dialog';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { Http } from '../../utils/ajax/definitions';
-import { headerText } from '../../localization/header';
 
 export const clearCache = async (): Promise<true> =>
   Promise.all(
@@ -21,7 +21,7 @@ export const clearCache = async (): Promise<true> =>
         {
           expectedResponseCodes: [Http.OK, Http.NOT_FOUND, Http.NO_CONTENT],
         }
-        // eslint-disable-next-line no-console
+         
       ).then(() => console.log(`Cleaned cache from ${endpoint}`))
     )
   ).then(() => {

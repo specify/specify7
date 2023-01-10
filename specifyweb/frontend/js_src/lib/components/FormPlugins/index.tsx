@@ -10,6 +10,7 @@ import { AttachmentsPlugin } from '../Attachments/Plugin';
 import { toTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { Tables } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import type { FormMode, FormType } from '../FormParse';
@@ -26,7 +27,6 @@ import { LeafletPlugin } from './Leaflet';
 import { PaleoLocationMapPlugin } from './PaleoLocation';
 import { PartialDateUi } from './PartialDateUi';
 import { WebLink } from './WebLink';
-import { LiteralField, Relationship } from '../DataModel/specifyField';
 
 const pluginRenderers: {
   readonly [KEY in keyof UiPlugins]: (props: {
@@ -129,12 +129,12 @@ const pluginRenderers: {
     return (
       <ErrorBoundary dismissable>
         <WebLink
-          id={id}
-          name={name}
           field={field}
           formType={formType}
           icon={icon}
+          id={id}
           mode={mode}
+          name={name}
           resource={resource}
           webLink={webLink}
         />
@@ -150,8 +150,8 @@ const pluginRenderers: {
       return (
         <AttachmentsPlugin
           id={id}
-          name={name}
           mode={mode}
+          name={name}
           resource={resource}
         />
       );
@@ -260,12 +260,12 @@ export function FormPlugin({
   ] as typeof pluginRenderers.AttachmentPlugin;
   return (
     <Renderer
-      id={id}
-      name={name}
       field={field}
       formType={formType}
+      id={id}
       isRequired={isRequired}
       mode={mode}
+      name={name}
       pluginDefinition={
         fieldDefinition.pluginDefinition as UiPlugins['AttachmentPlugin']
       }

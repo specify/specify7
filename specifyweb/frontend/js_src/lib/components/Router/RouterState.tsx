@@ -1,63 +1,57 @@
+import type { SafeLocation } from 'history';
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { AnySchema } from '../DataModel/helperTypes';
+import type { AnySchema } from '../DataModel/helperTypes';
 import type {
   SpAppResource,
   SpecifyUser,
   SpViewSetObj as SpViewSetObject,
 } from '../DataModel/types';
+import type { NewRole, Role } from '../Security/Role';
 import { isOverlay, OverlayContext } from './Router';
-import { NewRole, Role } from '../Security/Role';
-import { SafeLocation } from 'history';
 
 /*
  * Symbol() would be better suites for this, but it can't be used because
  * state must be serializable
  */
 type PureLocationState =
-  | State<
+  State<
       'AppResource',
       {
         readonly resource?: SerializedResource<SpAppResource | SpViewSetObject>;
         readonly directoryKey?: string;
         readonly initialDataFrom?: number;
       }
-    >
-  | State<
+    > | State<
       'BackgroundLocation',
       {
         readonly location: SafeLocation;
       }
-    >
-  | State<
+    > | State<
+      'Command',
+      {
+        readonly nextUrl: string;
+      }
+    > | State<
       'RecordSet',
       {
         readonly resource: SerializedResource<AnySchema> | undefined;
         readonly recordSetItemIndex?: number;
       }
-    >
-  | State<
-      'Command',
-      {
-        readonly nextUrl: string;
-      }
-    >
-  | State<
+    > | State<
       'SecurityRole',
       {
         readonly role?: NewRole | Role;
       }
-    >
-  | State<
+    > | State<
       'SecurityUser',
       {
         readonly user?: SerializedResource<SpecifyUser>;
         readonly initialCollectionId?: number;
       }
-    >
-  | State<'NotFoundPage'>;
+    > | State<'NotFoundPage'>;
 export type SafeLocationState = PureLocationState | undefined;
 
 /**

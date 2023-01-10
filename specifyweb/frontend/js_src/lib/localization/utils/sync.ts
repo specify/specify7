@@ -1,13 +1,15 @@
-import gettextParser from 'gettext-parser';
 import fs from 'node:fs';
 import path from 'node:path';
+
+import gettextParser from 'gettext-parser';
+import type { LocalizedString } from 'typesafe-i18n';
+
 import { f } from '../../utils/functools';
 import { filterArray } from '../../utils/types';
 import { camelToHuman } from '../../utils/utils';
+import { languageCodeMapper, languages } from './config';
 import { whitespaceSensitive } from './index';
 import type { DictionaryUsages } from './scanUsages';
-import { languageCodeMapper, languages } from './config';
-import { LocalizedString } from 'typesafe-i18n';
 
 function formatFilePath(filePath: string): string {
   const parts = filePath.split('/');

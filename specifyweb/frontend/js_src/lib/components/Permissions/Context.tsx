@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { fetchUserPermissions } from './index';
 import { useAsyncState } from '../../hooks/useAsyncState';
+import { fetchUserPermissions } from './index';
 
 /**
  * Allows embedding resources from a different collection with corresponding
@@ -33,9 +33,9 @@ export function SetPermissionContext({
   return (
     <PermissionContext.Provider value={collectionId}>
       {fetchedCollection === collectionId
-        ? typeof children === 'function'
+        ? (typeof children === 'function'
           ? children()
-          : children
+          : children)
         : fallback}
     </PermissionContext.Provider>
   );

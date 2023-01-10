@@ -2,23 +2,23 @@ import React from 'react';
 import { useOutletContext } from 'react-router';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
-import type { AppResourceMode } from './helpers';
-import { getAppResourceMode } from './helpers';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import { fetchResource } from '../DataModel/resource';
 import type {
   SpAppResource,
   SpAppResourceDir,
   SpViewSetObj,
 } from '../DataModel/types';
-import { fetchResource } from '../DataModel/resource';
-import type { AppResourcesOutlet } from './index';
-import { findAppResourceDirectory } from './Create';
-import { AppResourceEditor } from './Editor';
-import type { AppResources } from './hooks';
-import { useResourcesTree } from './hooks';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { SerializedResource } from '../DataModel/helperTypes';
 import { NotFoundView } from '../Router/NotFoundView';
 import { locationToState, useStableLocation } from '../Router/RouterState';
+import { findAppResourceDirectory } from './Create';
+import { AppResourceEditor } from './Editor';
+import type { AppResourceMode } from './helpers';
+import { getAppResourceMode } from './helpers';
+import type { AppResources } from './hooks';
+import { useResourcesTree } from './hooks';
+import type { AppResourcesOutlet } from './index';
 
 export function AppResourceView(): JSX.Element {
   return <Wrapper mode="appResources" />;
@@ -46,7 +46,7 @@ export function Wrapper({
   const baseHref = `/specify/resources/${
     mode === 'appResources' ? 'app-resource' : 'view-set'
   }`;
-  return initialData === undefined ? null : resource === undefined ||
+  return initialData === undefined ? null : (resource === undefined ||
     directory === undefined ? (
     <NotFoundView container={false} />
   ) : (
@@ -92,7 +92,7 @@ export function Wrapper({
         navigate(`${baseHref}/${appResource.id}/`);
       }}
     />
-  );
+  ));
 }
 
 function useAppResource(

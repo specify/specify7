@@ -1,24 +1,24 @@
 import React from 'react';
 
-import { fetchCollection } from '../DataModel/collection';
-import type { Geography } from '../DataModel/types';
+import type { RA } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
+import { fetchCollection } from '../DataModel/collection';
+import { toTreeTable } from '../DataModel/helpers';
+import type { AnyTree } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { hasTreeAccess } from '../Permissions/helpers';
 import { resourceOn } from '../DataModel/resource';
+import type { Geography } from '../DataModel/types';
+import type {
+  DefaultComboBoxProps,
+  PickListItemSimple,
+} from '../FormFields/ComboBox';
 import {
   isTreeResource,
   strictGetTreeDefinitionItems,
   treeRanksPromise,
 } from '../InitialContext/treeRanks';
-import type { RA } from '../../utils/types';
-import type {
-  DefaultComboBoxProps,
-  PickListItemSimple,
-} from '../FormFields/ComboBox';
+import { hasTreeAccess } from '../Permissions/helpers';
 import { PickListComboBox } from './index';
-import { AnyTree } from '../DataModel/helperTypes';
-import { toTreeTable } from '../DataModel/helpers';
 
 const fetchPossibleRanks = async (
   lowestChildRank: number,

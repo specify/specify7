@@ -1,11 +1,12 @@
+import type { LocalizedString } from 'typesafe-i18n';
+
+import { reportsText } from '../../../localization/report';
 import { requireContext } from '../../../tests/helpers';
 import { strictParseXml } from '../../AppResources/codeMirrorLinters';
+import { getField } from '../../DataModel/helpers';
+import { schema } from '../../DataModel/schema';
 import { parseFormField } from '../fields';
 import { generateInit } from './helpers';
-import { LocalizedString } from 'typesafe-i18n';
-import { reportsText } from '../../../localization/report';
-import { schema } from '../../DataModel/schema';
-import { getField } from '../../DataModel/helpers';
 
 requireContext();
 

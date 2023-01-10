@@ -1,9 +1,12 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useCachedState } from '../../hooks/useCachedState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
+import { resourcesText } from '../../localization/resources';
+import { StringToJsx } from '../../localization/utils';
 import type { RA } from '../../utils/types';
 import { multiSortFunction, removeItem, replaceItem } from '../../utils/utils';
 import { Ul } from '../Atoms';
@@ -26,9 +29,6 @@ import { buildAppResourceConformation, getAppResourceMode } from './helpers';
 import type { AppResources, AppResourcesTree } from './hooks';
 import { useAppResourceCount, useResourcesTree } from './hooks';
 import { appResourceSubTypes } from './types';
-import { resourcesText } from '../../localization/resources';
-import { StringToJsx } from '../../localization/utils';
-import { LocalizedString } from 'typesafe-i18n';
 
 export function AppResourcesAside({
   resources: initialResources,
@@ -160,13 +160,13 @@ function TreeItem({
         }
       >
         <StringToJsx
+          components={{
+            wrap: (count) => <span className="text-neutral-500">{count}</span>,
+          }}
           string={commonText.jsxCountLine({
             resource: label,
             count,
           })}
-          components={{
-            wrap: (count) => <span className="text-neutral-500">{count}</span>,
-          }}
         />
       </Button.LikeLink>
       {isExpanded && (

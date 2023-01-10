@@ -1,17 +1,17 @@
-import { fetchCollection } from './collection';
-import type { CollectionObject } from './types';
+import { globalEvents } from '../../utils/ajax/specifyApi';
+import type { RA } from '../../utils/types';
 import { capitalize, takeBetween } from '../../utils/utils';
-import type { SpecifyResource } from './legacyTypes';
-import { hasTablePermission } from '../Permissions/helpers';
+import { fail } from '../Errors/Crash';
 import { getCollectionPref } from '../InitialContext/remotePrefs';
+import { getDomainResource } from '../InitialContext/treeRanks';
+import { hasTablePermission } from '../Permissions/helpers';
+import { fetchCollection } from './collection';
+import { toTable } from './helpers';
+import type { AnySchema } from './helperTypes';
+import type { SpecifyResource } from './legacyTypes';
 import { getResourceApiUrl, idFromUrl } from './resource';
 import { schema } from './schema';
-import { globalEvents } from '../../utils/ajax/specifyApi';
-import { getDomainResource } from '../InitialContext/treeRanks';
-import type { RA } from '../../utils/types';
-import { AnySchema } from './helperTypes';
-import { toTable } from './helpers';
-import { fail } from '../Errors/Crash';
+import type { CollectionObject } from './types';
 
 /**
  * Some tasks to do after a new resource is created

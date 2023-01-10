@@ -143,7 +143,7 @@ export function useUserAgents(
             ] as const);
         return (
           typeof userId === 'number'
-            ? hasTablePermission('Agent', 'read') &&
+            ? (hasTablePermission('Agent', 'read') &&
               hasTablePermission('Division', 'read')
               ? fetchCollection(
                   'Agent',
@@ -155,7 +155,7 @@ export function useUserAgents(
                     division__in: divisions.map(([id]) => id).join(','),
                   }
                 ).then(({ records }) => records)
-              : Promise.resolve([serializeResource(userInformation.agent)])
+              : Promise.resolve([serializeResource(userInformation.agent)]))
             : Promise.resolve([])
         ).then((rawAgents) => {
           const agents = Object.fromEntries(

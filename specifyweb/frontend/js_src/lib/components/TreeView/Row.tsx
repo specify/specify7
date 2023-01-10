@@ -1,14 +1,14 @@
 import React from 'react';
 
+import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
-import { getUserPref } from '../UserPreferences/helpers';
-import type { Conformations, KeyAction, Row, Stats } from './helpers';
-import { formatTreeStats, mapKey, scrollIntoView } from './helpers';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
-import { useId } from '../../hooks/useId';
+import { getUserPref } from '../UserPreferences/helpers';
+import type { Conformations, KeyAction, Row, Stats } from './helpers';
+import { formatTreeStats, mapKey, scrollIntoView } from './helpers';
 
 export function TreeRow({
   row,
@@ -157,9 +157,9 @@ export function TreeRow({
                 ${
                   isAction
                     ? 'outline outline-1 outline-red-500'
-                    : isFocused
+                    : (isFocused
                     ? 'outline outline-1 outline-blue-500'
-                    : ''
+                    : '')
                 }
               `}
               forwardRef={isFocused ? handleRef : undefined}
@@ -187,22 +187,22 @@ export function TreeRow({
               <span className="-mr-2">
                 <span className="sr-only">
                   {isFocused
-                    ? isLoading
+                    ? (isLoading
                       ? commonText.loading()
                       : row.children === 0
                       ? treeText.leafNode()
                       : displayChildren
                       ? treeText.opened()
-                      : treeText.closed()
+                      : treeText.closed())
                     : undefined}
                 </span>
                 {isLoading
                   ? icons.clock
-                  : row.children === 0
+                  : (row.children === 0
                   ? icons.blank
                   : displayChildren
                   ? icons.chevronDown
-                  : icons.chevronRight}
+                  : icons.chevronRight)}
               </span>
               <span
                 className={

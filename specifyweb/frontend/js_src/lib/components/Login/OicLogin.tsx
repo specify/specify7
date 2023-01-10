@@ -3,19 +3,19 @@
  */
 
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
-import { formatUrl } from '../Router/queryString';
-import type { RA } from '../../utils/types';
 import { useSearchParameter } from '../../hooks/navigation';
+import { userText } from '../../localization/user';
+import type { Language } from '../../localization/utils/config';
+import type { RA } from '../../utils/types';
+import { Button } from '../Atoms/Button';
+import { className } from '../Atoms/className';
 import { Form } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
-import { Button } from '../Atoms/Button';
 import { SplashScreen } from '../Core/SplashScreen';
-import { className } from '../Atoms/className';
-import { userText } from '../../localization/user';
-import { LocalizedString } from 'typesafe-i18n';
-import { Language } from '../../localization/utils/config';
+import { formatUrl } from '../Router/queryString';
 import { LoginLanguageChooser } from './index';
 
 export type OicProvider = {
@@ -74,10 +74,10 @@ export function OicLogin({
         ))}
         {data.inviteToken === '' && (
           <Link.Fancy
+            className={className.navigationHandled}
             href={formatUrl('/accounts/legacy_login/', {
               next,
             })}
-            className={className.navigationHandled}
           >
             {userText.legacyLogin()}
           </Link.Fancy>

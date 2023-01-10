@@ -1,16 +1,16 @@
 import React from 'react';
 
-import { fetchCollection } from '../DataModel/collection';
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { f } from '../../utils/functools';
+import { Input } from '../Atoms/Form';
+import { fetchCollection } from '../DataModel/collection';
+import { deserializeResource } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { schema } from '../DataModel/schema';
+import type { CollectingEventAttribute } from '../DataModel/types';
+import { QueryComboBox } from '../FormFields/QueryComboBox';
 import type { FormMode, FormType } from '../FormParse';
 import { hasTreeAccess } from '../Permissions/helpers';
-import { schema } from '../DataModel/schema';
-import { Input } from '../Atoms/Form';
-import { QueryComboBox } from '../FormFields/QueryComboBox';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { CollectingEventAttribute } from '../DataModel/types';
-import { deserializeResource } from '../DataModel/helpers';
 
 const template = document.createElement('template');
 template.innerHTML =
@@ -51,7 +51,7 @@ export function HostTaxon({
   );
   return rightSideCollection === undefined ? (
     <Input.Text isReadOnly />
-  ) : hasTreeAccess('Taxon', 'read') ? (
+  ) : (hasTreeAccess('Taxon', 'read') ? (
     <QueryComboBox
       field={schema.models.CollectingEventAttribute.strictGetRelationship(
         'hostTaxon'
@@ -65,5 +65,5 @@ export function HostTaxon({
       resource={resource}
       typeSearch={hostTaxonTypeSearch}
     />
-  ) : null;
+  ) : null);
 }

@@ -1,8 +1,12 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useCachedState } from '../../hooks/useCachedState';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
+import { headerText } from '../../localization/header';
+import { mainText } from '../../localization/main';
+import { StringToJsx } from '../../localization/utils';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
@@ -15,10 +19,6 @@ import { Dialog } from '../Molecules/Dialog';
 import { downloadFile } from '../Molecules/FilePicker';
 import { clearCache } from '../RouterCommands/CacheBuster';
 import { usePref } from '../UserPreferences/usePref';
-import { mainText } from '../../localization/main';
-import { headerText } from '../../localization/header';
-import { StringToJsx } from '../../localization/utils';
-import { LocalizedString } from 'typesafe-i18n';
 
 const supportEmail = 'support@specifysoftware.org' as LocalizedString;
 export const supportLink = (
@@ -31,13 +31,12 @@ const errors = new Set<string>();
 const errorBody = (
   <p>
     <StringToJsx
-      string={mainText.errorResolutionDescription()}
       components={{ email: supportLink }}
+      string={mainText.errorResolutionDescription()}
     />
     <br />
     <br />
     <StringToJsx
-      string={mainText.errorResolutionSecondDescription()}
       components={{
         memberLink: (label) => (
           <Link.NewTab href="https://www.specifysoftware.org/members/#:~:text=Members%20can%20contact%20support%40specifysoftware.org%20for%20assistance%20updating.">
@@ -50,6 +49,7 @@ const errorBody = (
           </Link.NewTab>
         ),
       }}
+      string={mainText.errorResolutionSecondDescription()}
     />
   </p>
 );

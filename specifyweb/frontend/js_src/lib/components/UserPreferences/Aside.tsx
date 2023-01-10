@@ -1,4 +1,5 @@
 import React from 'react';
+import { useLocation } from 'react-router';
 import { useNavigate } from 'react-router-dom';
 
 import { listen } from '../../utils/events';
@@ -6,9 +7,8 @@ import { f } from '../../utils/functools';
 import type { GetSet, WritableArray } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { Link } from '../Atoms/Link';
-import { usePrefDefinitions } from './index';
-import { useLocation } from 'react-router';
 import { locationToState } from '../Router/RouterState';
+import { usePrefDefinitions } from './index';
 
 /** Update the active category on the sidebar as user scrolls */
 export function useActiveCategory(): {
