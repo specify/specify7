@@ -42,7 +42,7 @@ export const toReactRoutes = (
       element:
         typeof fetchElement === 'function' ? (
           <Async
-            element={React.lazy(async () =>
+            Element={React.lazy(async () =>
               fetchElement().then((element) => ({ default: element }))
             )}
             title={enhancedRoute.title ?? title}
@@ -62,10 +62,11 @@ export const toReactRoutes = (
  * when any component is being loaded.
  */
 export function Async({
-  element: Element,
+  Element,
   title,
 }: {
-  readonly element: React.FunctionComponent;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly Element: React.FunctionComponent;
   readonly title: LocalizedString | undefined;
 }): JSX.Element {
   useTitle(title);

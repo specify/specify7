@@ -29,7 +29,6 @@ import type { TableFields } from '../DataModel/helperTypes';
 import type { JavaType } from '../DataModel/specifyField';
 import type { Collection, Tables } from '../DataModel/types';
 import { error, softError } from '../Errors/assert';
-import { softFail } from '../Errors/Crash';
 import {
   LanguagePreferencesItem,
   SchemaLanguagePreferenceItem,
@@ -1647,7 +1646,8 @@ import('../DataModel/schema')
       } else softError('Unable to replace the tree preferences item title');
     })
   )
-  .catch(softFail);
+  // Not using softFail here to avoid circular dependency
+  .catch(console.error);
 
 export type Preferences = GenericPreferencesCategories &
   typeof preferenceDefinitions;

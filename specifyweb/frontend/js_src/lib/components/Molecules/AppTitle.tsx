@@ -8,7 +8,6 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { mainText } from '../../localization/main';
 import { UnloadProtectsContext } from '../Core/Contexts';
 import { usePref } from '../UserPreferences/usePref';
-import { UnloadProtectsContext } from '../Core/Contexts';
 
 export function AppTitle({ title }: { readonly title: LocalizedString }): null {
   const [updateTitle] = usePref('form', 'behavior', 'updatePageTitle');
@@ -24,8 +23,8 @@ export function useTitle(title: LocalizedString | undefined): void {
   const id = React.useRef({});
   // Change page's title
   React.useEffect(() => {
-    if (typeof title === 'string')
-      titleStack.set(id.current, `${isBlocked ? '*' : ''}${title}`);
+    if (title === undefined) return undefined;
+    titleStack.set(id.current, `${isBlocked ? '*' : ''}${title}`);
     refreshTitle();
     return (): void => {
       titleStack.delete(id.current);
