@@ -14,6 +14,7 @@ import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import { QueryButton } from './Components';
 import type { QueryField } from './helpers';
 import { hasLocalityColumns } from './helpers';
+import { keysToLowerCase } from '../../utils/utils';
 
 export function QueryExportButtons({
   baseTableName,
@@ -35,17 +36,21 @@ export function QueryExportButtons({
     undefined
   );
 
-  function doQueryExport(url: string, captions?: RA<string>): void {
+  function doQueryExport(url: string): void {
     if (typeof getQueryFieldRecords === 'function')
       queryResource.set('fields', getQueryFieldRecords());
     const serialized = queryResource.toJSON();
     setState('creating');
     void ping(url, {
       method: 'POST',
-      body: {
+      body: keysToLowerCase({
         ...serialized,
-        captions,
-      },
+        captions: fields
+          .filter(({ isDisplay }) => isDisplay)
+          .map(({ mappingPath }) =>
+            generateMappingPathPreview(baseTableName, mappingPath)
+          ),
+      }),
     });
   }
 
@@ -88,14 +93,7 @@ export function QueryExportButtons({
           showConfirmation={showConfirmation}
           onClick={(): void =>
             hasLocalityColumns(fields)
-              ? doQueryExport(
-                  '/stored_query/exportkml/',
-                  fields
-                    .filter(({ isDisplay }) => isDisplay)
-                    .map(({ mappingPath }) =>
-                      generateMappingPathPreview(baseTableName, mappingPath)
-                    )
-                )
+              ? doQueryExport('/stored_query/exportkml/')
               : setState('warning')
           }
         >

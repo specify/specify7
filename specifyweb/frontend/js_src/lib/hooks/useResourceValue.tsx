@@ -11,7 +11,6 @@ import type { RA } from '../utils/types';
 import type { Parser } from '../utils/parser/definitions';
 import { mergeParsers, resolveParser } from '../utils/parser/definitions';
 import { className } from '../components/Atoms/className';
-import { FormContext } from '../components/Core/Contexts';
 import { useValidation } from './useValidation';
 import { useBooleanState } from './useBooleanState';
 import { AnySchema } from '../components/DataModel/helperTypes';
@@ -20,6 +19,7 @@ import {
   LiteralField,
   Relationship,
 } from '../components/DataModel/specifyField';
+import { FormContext } from '../components/Forms/BaseResourceView';
 
 /**
  * A hook to integrate an Input with a field on a Backbone resource

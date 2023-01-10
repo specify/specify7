@@ -24,11 +24,6 @@ export type EnhancedRoute = Readonly<
    * preferences
    */
   readonly title?: LocalizedString;
-  /*
-   * Add an explicit way of opting out from displaying the path in user
-   * preferences (this is the case implicitly if title is missing)
-   */
-  readonly navigatable?: boolean;
 };
 
 /** Convert EnhancedRoutes to RouteObjects */
@@ -37,25 +32,25 @@ export const toReactRoutes = (
   title?: LocalizedString
 ): WritableArray<RouteObject> =>
   enhancedRoutes.map<IndexRouteObject | NonIndexRouteObject>(
-    ({ element, children, ...enhancedRoute }) => ({
+    ({ element: fetchElement, children, ...enhancedRoute }) => ({
       ...enhancedRoute,
       index: enhancedRoute.index as unknown as false,
       children: Array.isArray(children)
         ? toReactRoutes(children, title)
         : undefined,
       element:
-        typeof element === 'function' ? (
-          <Async element={element} title={enhancedRoute.title ?? title} />
+        typeof fetchElement === 'function' ? (
+          <Async
+            element={React.lazy(async () =>
+              fetchElement().then((element) => ({ default: element }))
+            )}
+            title={enhancedRoute.title ?? title}
+          />
         ) : (
-          element
+          fetchElement
         ),
     })
   );
-
-const map = new Map<
-  () => Promise<React.FunctionComponent>,
-  React.FunctionComponent
->();
 
 /**
  * Using this allows Webpack to split code bundles.
@@ -66,24 +61,13 @@ const map = new Map<
  * when any component is being loaded.
  */
 export function Async({
-  element: getElement,
+  element: Element,
   title,
 }: {
-  readonly element: () => Promise<React.FunctionComponent>;
+  readonly element: React.FunctionComponent;
   readonly title: LocalizedString | undefined;
 }): JSX.Element {
   useTitle(title);
-
-  const cached = map.get(getElement);
-  const Element =
-    typeof cached === 'function'
-      ? cached
-      : React.lazy(async () =>
-          getElement().then((element) => {
-            map.set(getElement, element);
-            return { default: element };
-          })
-        );
 
   return (
     <React.Suspense fallback={<LoadingScreen />}>

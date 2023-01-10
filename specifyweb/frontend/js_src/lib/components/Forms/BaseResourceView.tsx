@@ -5,8 +5,6 @@ import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { Form } from '../Atoms/Form';
-import type { FormMetaType } from '../Core/Contexts';
-import { FormContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
@@ -150,3 +148,27 @@ export function useResourceView<SCHEMA extends AnySchema>({
     ) : undefined,
   };
 }
+
+export type FormMetaType = {
+  /*
+   * Whether user tried to submit a form. This causes deferred save blockers
+   * to appear
+   */
+  readonly triedToSubmit: boolean;
+};
+export const FormContext = React.createContext<
+  readonly [
+    meta: FormMetaType,
+    setMeta:
+      | ((
+          newState: FormMetaType | ((oldMeta: FormMetaType) => FormMetaType)
+        ) => void)
+      | undefined
+  ]
+>([
+  {
+    triedToSubmit: false,
+  },
+  undefined,
+]);
+FormContext.displayName = 'FormContext';

@@ -6,7 +6,11 @@ import { commonText } from '../../localization/common';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
-import { legacyLoadingContext, UnloadProtectsContext } from '../Core/Contexts';
+import {
+  legacyLoadingContext,
+  SetUnloadProtectsContext,
+  UnloadProtectsContext,
+} from '../Core/Contexts';
 import { Dialog } from '../Molecules/Dialog';
 import { downloadFile } from '../Molecules/FilePicker';
 import { clearCache } from '../RouterCommands/CacheBuster';
@@ -88,9 +92,8 @@ export function ErrorDialog({
     'clearCacheOnException'
   );
 
-  const [unloadProtects = [], setUnloadProtects] = React.useContext(
-    UnloadProtectsContext
-  )!;
+  const unloadProtects = React.useContext(UnloadProtectsContext)!;
+  const setUnloadProtects = React.useContext(SetUnloadProtectsContext)!;
   /**
    * Clear unload protects when error occurs, but return them back if error
    * is dismissed

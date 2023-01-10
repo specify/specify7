@@ -1,16 +1,13 @@
 import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
-import { useStateForContext } from '../../hooks/useStateForContext';
 import { commonText } from '../../localization/common';
 import { eventListener } from '../../utils/events';
-import { f } from '../../utils/functools';
 import type { GetOrSet, RA } from '../../utils/types';
 import { setDevelopmentGlobal } from '../../utils/types';
 import { error } from '../Errors/assert';
 import { crash } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import type { MenuItemName } from '../Header/menuItemDefinitions';
 import { loadingBar } from '../Molecules';
 import { Dialog, dialogClassNames, LoadingScreen } from '../Molecules/Dialog';
 
@@ -113,36 +110,30 @@ export function Contexts({
     },
     []
   );
-  const getSetUnloadProtect = React.useMemo(
-    () => [unloadProtects, handleChangeUnloadProtects] as const,
-    [unloadProtects, handleChangeUnloadProtects]
-  );
-
-  const menuContext = useStateForContext<MenuItemName | undefined>(undefined);
 
   return (
-    <UnloadProtectsContext.Provider value={getSetUnloadProtect}>
-      <ErrorBoundary>
-        <ErrorContext.Provider value={handleError}>
-          {errors}
-          <LoadingContext.Provider value={loadingHandler}>
-            <Dialog
-              buttons={undefined}
-              className={{ container: dialogClassNames.narrowContainer }}
-              header={commonText.loading()}
-              isOpen={isLoading}
-              onClose={undefined}
-            >
-              {loadingBar}
-            </Dialog>
-            <MenuContext.Provider value={menuContext}>
+    <UnloadProtectsContext.Provider value={unloadProtects}>
+      <SetUnloadProtectsContext.Provider value={handleChangeUnloadProtects}>
+        <ErrorBoundary>
+          <ErrorContext.Provider value={handleError}>
+            {errors}
+            <LoadingContext.Provider value={loadingHandler}>
+              <Dialog
+                buttons={undefined}
+                className={{ container: dialogClassNames.narrowContainer }}
+                header={commonText.loading()}
+                isOpen={isLoading}
+                onClose={undefined}
+              >
+                {loadingBar}
+              </Dialog>
               <React.Suspense fallback={<LoadingScreen />}>
                 {children}
               </React.Suspense>
-            </MenuContext.Provider>
-          </LoadingContext.Provider>
-        </ErrorContext.Provider>
-      </ErrorBoundary>
+            </LoadingContext.Provider>
+          </ErrorContext.Provider>
+        </ErrorBoundary>
+      </SetUnloadProtectsContext.Provider>
     </UnloadProtectsContext.Provider>
   );
 }
@@ -169,37 +160,10 @@ ErrorContext.displayName = 'ErrorContext';
  * List of current unload protects (used for preventing loss of unsaved changes)
  */
 export const UnloadProtectsContext = React.createContext<
-  GetOrSet<RA<string>> | undefined
+  RA<string> | undefined
 >(undefined);
 UnloadProtectsContext.displayName = 'UnloadProtectsContext';
-
-/** Identifies active menu item */
-export const MenuContext = React.createContext<
-  GetOrSet<MenuItemName | undefined>
->([undefined, f.never]);
-MenuContext.displayName = 'MenuContext';
-
-export type FormMetaType = {
-  /*
-   * Whether user tried to submit a form. This causes deferred save blockers
-   * to appear
-   */
-  readonly triedToSubmit: boolean;
-};
-
-export const FormContext = React.createContext<
-  readonly [
-    meta: FormMetaType,
-    setMeta:
-      | ((
-          newState: FormMetaType | ((oldMeta: FormMetaType) => FormMetaType)
-        ) => void)
-      | undefined
-  ]
->([
-  {
-    triedToSubmit: false,
-  },
-  undefined,
-]);
-FormContext.displayName = 'FormContext';
+export const SetUnloadProtectsContext = React.createContext<
+  GetOrSet<RA<string>>[1] | undefined
+>(undefined);
+SetUnloadProtectsContext.displayName = 'SetUnloadProtectsContext';

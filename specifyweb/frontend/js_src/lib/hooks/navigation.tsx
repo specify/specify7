@@ -5,7 +5,7 @@
 import React from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
 
-import { UnloadProtectsContext } from '../components/Core/Contexts';
+import { SetUnloadProtectsContext } from '../components/Core/Contexts';
 import { isOverlay, OverlayContext } from '../components/Router/Router';
 import type { GetOrSet, GetSet, RA } from '../utils/types';
 import { defined } from '../utils/types';
@@ -67,9 +67,7 @@ export function useUnloadProtect(
   isEnabled: boolean,
   message: LocalizedString
 ): () => void {
-  const [_unloadProtects, setUnloadProtects] = React.useContext(
-    UnloadProtectsContext
-  )!;
+  const setUnloadProtects = React.useContext(SetUnloadProtectsContext)!;
 
   const handleRemove = React.useCallback(
     (): void => unsetUnloadProtect(setUnloadProtects, message),

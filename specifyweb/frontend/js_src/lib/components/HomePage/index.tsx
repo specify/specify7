@@ -8,9 +8,11 @@ import { usePref } from '../UserPreferences/usePref';
 
 const taxonTiles = f.store(() => (
   <Async
-    element={async (): Promise<React.FunctionComponent> =>
-      import('./TaxonTiles').then(({ TaxonTiles }) => TaxonTiles)
-    }
+    element={React.lazy(async () =>
+      import('./TaxonTiles').then(({ TaxonTiles }) => ({
+        default: TaxonTiles,
+      }))
+    )}
     title={undefined}
   />
 ));

@@ -59,7 +59,8 @@ export const entrypointRoutes: RA<EnhancedRoute> = [
 ];
 /* eslint-enable @typescript-eslint/promise-function-async */
 
+const routes = toReactRoutes(entrypointRoutes);
+
 export function EntrypointRouter(): JSX.Element {
-  const routes = React.useMemo(() => toReactRoutes(entrypointRoutes), []);
   return useRoutes(routes) ?? <NotFoundView />;
 }

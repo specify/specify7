@@ -6,6 +6,7 @@ import type { RA } from '../../utils/types';
 import { removeItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
+import { SetUnloadProtectsContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { FormMode } from '../FormParse';
@@ -15,7 +16,6 @@ import { hasTablePermission } from '../Permissions/helpers';
 import type { RecordSelectorProps } from './RecordSelector';
 import { useRecordSelector } from './RecordSelector';
 import { useTriggerState } from '../../hooks/useTriggerState';
-import { UnloadProtectsContext } from '../Core/Contexts';
 import { unsetUnloadProtect } from '../../hooks/navigation';
 import { saveFormUnloadProtect } from '../Forms/Save';
 import { LocalizedString } from 'typesafe-i18n';
@@ -107,7 +107,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   const [unloadProtect, setUnloadProtect] = React.useState<
     (() => void) | undefined
   >(undefined);
-  const [_, setUnloadProtects] = React.useContext(UnloadProtectsContext)!;
+  const setUnloadProtects = React.useContext(SetUnloadProtectsContext)!;
 
   const {
     dialogs,

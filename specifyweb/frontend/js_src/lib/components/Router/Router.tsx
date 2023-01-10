@@ -211,7 +211,7 @@ function UnloadProtect({
 }: {
   readonly background: SafeLocation | undefined;
 }): JSX.Element | null {
-  const [unloadProtects] = React.useContext(UnloadProtectsContext)!;
+  const unloadProtects = React.useContext(UnloadProtectsContext)!;
   const [unloadProtect, setUnloadProtect] = React.useState<
     { readonly resolve: () => void; readonly reject: () => void } | undefined
   >(undefined);

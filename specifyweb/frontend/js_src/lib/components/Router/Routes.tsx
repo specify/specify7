@@ -23,7 +23,6 @@ export const routes: RA<EnhancedRoute> = [
         ({ ExpressSearchView }) => ExpressSearchView
       ),
     title: headerText.expressSearch(),
-    navigatable: false,
   },
   {
     path: 'express_search',

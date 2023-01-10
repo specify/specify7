@@ -16,17 +16,17 @@ import type { RA, RR, WritableArray } from '../../utils/types';
 import { writable } from '../../utils/types';
 import { Form, Input, Select } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
-import { MenuContext } from '../Core/Contexts';
 import type { MenuItem } from '../Core/Main';
-import { switchCollection } from '../RouterCommands/SwitchCollection';
-import { useSearchParameter } from '../../hooks/navigation';
+import { MenuContext, SetMenuContext } from '../Core/Main';
 import { Submit } from '../Atoms/Submit';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { SerializedModel } from '../DataModel/helperTypes';
+import type { SerializedModel } from '../DataModel/helperTypes';
 import { usePref } from '../UserPreferences/usePref';
 import { useTriggerState } from '../../hooks/useTriggerState';
-import { toLargeSortConfig } from '../Molecules/Sorting';
 import { headerText } from '../../localization/header';
+import { toLargeSortConfig } from '../Molecules/Sorting';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { switchCollection } from '../RouterCommands/SwitchCollection';
+import { useSearchParameter } from '../../hooks/navigation';
 
 let activeMenuItems: WritableArray<MenuItemName> = [];
 
@@ -35,7 +35,7 @@ let activeMenuItems: WritableArray<MenuItemName> = [];
  * hook is active
  */
 export function useMenuItem(menuItem: MenuItemName): void {
-  const [_menuItem, setMenuItem] = React.useContext(MenuContext);
+  const setMenuItem = React.useContext(SetMenuContext);
   React.useEffect(() => {
     activeMenuItems.push(menuItem);
     setMenuItem(menuItem);
@@ -53,7 +53,7 @@ export function HeaderItems({
 }: {
   readonly menuItems: RR<MenuItemName, MenuItem>;
 }): JSX.Element {
-  const [activeMenuItem] = React.useContext(MenuContext);
+  const activeMenuItem = React.useContext(MenuContext);
   return (
     <nav
       aria-label={commonText.primary()}
