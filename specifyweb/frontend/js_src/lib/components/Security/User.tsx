@@ -227,7 +227,7 @@ function UserView({
     <Container.Base className="flex-1">
       <DataEntry.Header>
         <h3 className="text-2xl">{title}</h3>
-        <AppTitle title={formatted} type="form" />
+        <AppTitle title={formatted} />
       </DataEntry.Header>
       {form(
         <>

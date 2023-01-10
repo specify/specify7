@@ -26,6 +26,7 @@ import { DeleteButton } from './DeleteButton';
 import { SaveButton } from './Save';
 import { UnloadProtectDialog } from '../Router/Router';
 import { LocalizedString } from 'typesafe-i18n';
+import { AppTitle } from '../Molecules/AppTitle';
 
 /**
  * There is special behavior required when creating one of these resources,
@@ -279,7 +280,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
       <Container.FullGray>
         <Container.Center className="!w-auto">
           <DataEntry.Header>
-            {/*<AppTitle title={titleOverride ?? formatted} type="form" />*/}
+            <AppTitle title={titleOverride ?? formatted} />
             <DataEntry.Title>{titleOverride ?? jsxFormatted}</DataEntry.Title>
             {headerComponents}
           </DataEntry.Header>

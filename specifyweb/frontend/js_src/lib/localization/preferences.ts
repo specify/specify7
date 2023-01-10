@@ -730,4 +730,14 @@ export const preferencesText = createDictionary({
     'en-us': 'Don’t use',
     'ru-ru': 'Не использовать',
   },
+  showUnsavedIndicator: {
+    'en-us': 'Show unsaved changes indicator',
+    'ru-ru': 'Показывать индикатор несохраненных изменений',
+  },
+  showUnsavedIndicatorDescription: {
+    'en-us': `
+      Show an "*" in the tab title when there are unsaved changes in the
+      current tab
+    `,
+  },
 } as const);

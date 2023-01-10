@@ -93,7 +93,7 @@ export function AppResourceEditor({
   const headerButtons = (
     <>
       <AppResourceEditButton title={title}>{form()}</AppResourceEditButton>
-      <AppTitle title={formatted} type="form" />
+      <AppTitle title={formatted} />
       <Button.Blue
         aria-label={localityText.toggleFullScreen()}
         aria-pressed={isFullScreen}
