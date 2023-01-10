@@ -296,17 +296,17 @@ export const backEndText = createDictionary({
   // Permissions // 
   resourceInPermissionRegistry : {
     'en-us' : `
-    Resource {resource:formatted} already in Permissions registry
+    Resource {resource:string} already in Permissions registry
     `,
   },
   actorIsNotSpecifyUser: {
     'en-us' : `
-    Agent {actor:formatted} is not a SpecifyUser
+    Agent {actor:string} is not a SpecifyUser
     `,
   },
   unexpectedCollectionType : {
     'en-us' : `
-    Unexpected type of collection '{unexptectedTypeName:string}'. Expected '{collectionName:string}'
+    Unexpected type of collection '{unexpectedTypeName:string}'. Expected '{collectionName:string}'
     `,
   },
 
