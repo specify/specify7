@@ -24,11 +24,14 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'масштаб',
   },
   attachmentServerUnavailable: {
-    'en-us': 'Attachment server unavailable.',
-    'ru-ru': 'Сервер прикрепленных файлов недоступен.',
-    'es-es': 'Servidor de archivos adjuntos no disponible.',
-    'fr-fr': 'Serveur de pièces jointes indisponible.',
-    'uk-ua': 'Сервер прикріплень недоступний.',
+    'en-us': 'Attachment server unavailable',
+    'ru-ru': 'Сервер прикрепленных файлов недоступен',
+    'es-es': 'Servidor de archivos adjuntos no disponible',
+    'fr-fr': 'Serveur de pièces jointes indisponible',
+    'uk-ua': 'Сервер прикріплень недоступний',
+  },
+  attachmentServerUnavailableDescription: {
+    'en-us': 'Setup your attachment server'
   },
   orderBy: {
     'en-us': 'Order By',
