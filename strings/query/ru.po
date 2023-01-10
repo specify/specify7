@@ -102,22 +102,22 @@ msgstr "Создание набора объектов..."
 msgid "recordSetCreated"
 msgstr "Набор Объектов Созданный"
 
-#: components/QueryBuilder/Export.tsx:70
+#: components/QueryBuilder/Export.tsx:78
 #. Used in: Components > Query Builder > Export
 msgid "missingCoordinatesForKml"
 msgstr "Невозможно экспортировать в KML"
 
-#: components/QueryBuilder/Export.tsx:73
+#: components/QueryBuilder/Export.tsx:81
 #. Used in: Components > Query Builder > Export
 msgid "missingCoordinatesForKmlDescription"
 msgstr "Пожалуйста, добавьте в запрос поля широты и долготы."
 
-#: components/QueryBuilder/Export.tsx:62
+#: components/QueryBuilder/Export.tsx:70
 #. Used in: Components > Query Builder > Export
 msgid "queryExportStarted"
 msgstr "Экспорт запроса запущен"
 
-#: components/QueryBuilder/Export.tsx:65
+#: components/QueryBuilder/Export.tsx:73
 #. Used in: Components > Query Builder > Export
 msgid "queryExportStartedDescription"
 msgstr ""
@@ -155,12 +155,12 @@ msgstr "Считать"
 msgid "distinct"
 msgstr "Отчетливый"
 
-#: components/QueryBuilder/Export.tsx:82
+#: components/QueryBuilder/Export.tsx:90
 #. Used in: Components > Query Builder > Export
 msgid "createCsv"
 msgstr "Создать CSV"
 
-#: components/QueryBuilder/Export.tsx:102
+#: components/QueryBuilder/Export.tsx:103
 #. Used in: Components > Query Builder > Export
 msgid "createKml"
 msgstr "Создать KML"

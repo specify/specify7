@@ -136,8 +136,8 @@ msgstr "Створити"
 #: components/PickLists/index.tsx:268
 #: components/QueryBuilder/Components.tsx:267
 #: components/QueryBuilder/Edit.tsx:147
-#: components/QueryBuilder/Export.tsx:61
 #: components/QueryBuilder/Export.tsx:69
+#: components/QueryBuilder/Export.tsx:77
 #: components/QueryBuilder/LoanReturn.tsx:155
 #: components/QueryBuilder/LoanReturn.tsx:224
 #: components/QueryBuilder/Save.tsx:65
