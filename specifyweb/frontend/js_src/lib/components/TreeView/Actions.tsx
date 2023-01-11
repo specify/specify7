@@ -58,6 +58,12 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
   const resourceName = `/tree/edit/${toLowerCase(tableName)}` as const;
   const isSynonym = typeof focusedRow?.acceptedId === 'number';
 
+  const doExpandSynonymActionsPref = getPref(
+    `sp7.allow_adding_child_to_synonymized_parent.${
+      tableName as AnyTree['tableName']
+    }`
+  );
+
   const disableButtons =
     focusedRow === undefined || typeof currentAction === 'string';
   return currentAction === undefined ||
@@ -114,18 +120,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
             addNew
             disabled={
               focusedRow === undefined ||
-              (getPref(
-                `sp7.allow_adding_child_to_synonymized_parent.${
-                  tableName as
-                    | 'GeologicTimePeriod'
-                    | 'Taxon'
-                    | 'Geography'
-                    | 'LithoStrat'
-                    | 'Storage'
-                }`
-              )
-                ? false
-                : typeof focusedRow.acceptedId === 'number') ||
+              (doExpandSynonymActionsPref ? false : isSynonym) ||
               // Forbid adding children to the lowest rank
               ranks.at(-1) === focusedRow.rankId
             }
@@ -166,16 +161,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
             disabled={
               disableButtons ||
               isRoot ||
-              (getPref(
-                `sp7.allow_adding_child_to_synonymized_parent.${
-                  tableName as
-                    | 'GeologicTimePeriod'
-                    | 'Taxon'
-                    | 'Geography'
-                    | 'LithoStrat'
-                    | 'Storage'
-                }`
-              )
+              (doExpandSynonymActionsPref
                 ? false
                 : !isSynonym && focusedRow.children > 0)
             }
