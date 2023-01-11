@@ -53,6 +53,11 @@ export function StatItem({
     | undefined;
   readonly onItemRename: ((newLabel: string) => void) | undefined;
 }): JSX.Element | null {
+  const handleItemValueLoad = React.useCallback(
+    (value: number | string, itemLabel: string) =>
+      handleValueLoad?.(categoryIndex, itemIndex, value, itemLabel),
+    [handleValueLoad, categoryIndex, itemIndex]
+  );
   const customStatsSpec = useCustomStatsSpec(item);
   const pathToValue =
     item.type === 'DefaultStat' && item.itemType === 'BackendStat'
@@ -74,8 +79,6 @@ export function StatItem({
       query={query}
       statLabel={statsSpecCalculated?.label}
       statValue={item.itemValue}
-      categoryIndex={categoryIndex}
-      itemIndex={itemIndex}
       onClick={handleClick}
       onItemRename={handleItemRename}
       onRemove={handleRemove}
@@ -88,7 +91,7 @@ export function StatItem({
       }
       fields={statsSpecCalculated.fields}
       tableName={statsSpecCalculated.tableName}
-      onValueLoad={handleValueLoad}
+      onItemValueLoad={handleItemValueLoad}
     />
   ) : item.type === 'DefaultStat' &&
     statsSpecCalculated !== undefined &&
@@ -103,10 +106,8 @@ export function StatItem({
       onClick={handleClick}
       onItemRename={handleItemRename}
       onRemove={handleRemove}
-      categoryIndex={categoryIndex}
-      itemIndex={itemIndex}
       formatter={statsSpecCalculated.formatter}
-      onValueLoad={handleValueLoad}
+      onItemValueLoad={handleItemValueLoad}
     />
   ) : null;
 }
@@ -116,33 +117,24 @@ function BackEndItem({
   urlToFetch,
   pathToValue,
   formatter,
-  categoryIndex,
-  itemIndex,
   statLabel,
   isDefault,
   onClick: handleClick,
   onRemove: handleRemove,
   onItemRename: handleItemRename,
-  onValueLoad: handleValueLoad,
+  onItemValueLoad: handleItemValueLoad,
 }: {
   readonly statValue: string | number | undefined;
   readonly urlToFetch: string;
   readonly pathToValue: string;
-  readonly categoryIndex: number;
-  readonly itemIndex: number;
   readonly statLabel: string;
   readonly isDefault: boolean;
   readonly formatter: (rawValue: any) => string;
   readonly onClick: (() => void) | undefined;
   readonly onRemove: (() => void) | undefined;
   readonly onItemRename: ((newLabel: string) => void) | undefined;
-  readonly onValueLoad:
-    | ((
-        categoryIndex: number,
-        itemIndex: number,
-        value: number | string,
-        itemLabel: string
-      ) => void)
+  readonly onItemValueLoad:
+    | ((value: number | string, itemLabel: string) => void)
     | undefined;
 }): JSX.Element {
   const [count] = useAsyncState<number | string | undefined>(
@@ -162,35 +154,29 @@ function BackEndItem({
             ).then((data) => {
               const rawValue = data[pathToValue as keyof BackendStatsResult];
               if (rawValue === undefined) return undefined;
-              const finalValue = formatter(rawValue);
-              handleValueLoad?.(
-                categoryIndex,
-                itemIndex,
-                finalValue,
-                statLabel
-              );
-              return finalValue;
+              return formatter(rawValue);
             })
-          : Promise.resolve(statValue),
+          : Promise.resolve(undefined),
       [
         statLabel,
         statValue,
-        categoryIndex,
         formatter,
-        handleValueLoad,
-        itemIndex,
+        handleItemValueLoad,
         pathToValue,
         urlToFetch,
       ]
     ),
     false
   );
+  if (count !== undefined && statValue === undefined) {
+    handleItemValueLoad?.(count, statLabel);
+  }
   return (
     <StatsResult
       isDefault={isDefault}
       query={undefined}
       statLabel={statLabel}
-      statValue={statValue ?? count}
+      statValue={statValue}
       onClick={handleClick}
       onItemRename={handleItemRename}
       onRemove={handleRemove}
@@ -210,9 +196,7 @@ function QueryItem({
   onSpecChanged: handleSpecChanged,
   onItemRename: handleItemRename,
   isDefault,
-  onValueLoad: handleValueLoad,
-  categoryIndex,
-  itemIndex,
+  onItemValueLoad: handleItemValueLoad,
 }: {
   readonly statValue: string | number | undefined;
   readonly tableName: keyof Tables;
@@ -233,16 +217,9 @@ function QueryItem({
       ) => void)
     | undefined;
   readonly onItemRename: ((newLabel: string) => void) | undefined;
-  readonly onValueLoad:
-    | ((
-        categoryIndex: number,
-        itemIndex: number,
-        value: number | string,
-        itemLabel: string
-      ) => void)
+  readonly onItemValueLoad:
+    | ((value: number | string, itemLabel: string) => void)
     | undefined;
-  readonly categoryIndex: number;
-  readonly itemIndex: number;
 }): JSX.Element | null {
   const [count] = useAsyncState<string | number | undefined>(
     React.useCallback(
@@ -261,36 +238,21 @@ function QueryItem({
             >('queryStats', queryCountPromiseGenerator(query), {
               tableName,
               fields,
-            }).then((data) => {
-              if (data !== undefined) {
-                handleValueLoad?.(
-                  categoryIndex,
-                  itemIndex,
-                  data.toString(),
-                  statLabel
-                );
-              }
-              return data;
             })
-          : Promise.resolve(statValue),
-      [
-        statValue,
-        tableName,
-        fields,
-        handleValueLoad,
-        categoryIndex,
-        itemIndex,
-        statLabel,
-      ]
+          : Promise.resolve(undefined),
+      [statValue, tableName, fields, handleItemValueLoad, statLabel]
     ),
     false
   );
+  if (count !== undefined && statValue === undefined) {
+    handleItemValueLoad?.(count, statLabel);
+  }
   return (
     <StatsResult
       isDefault={isDefault}
       query={query}
       statLabel={statLabel}
-      statValue={statValue ?? count}
+      statValue={statValue}
       onClick={handleClick}
       onItemRename={handleItemRename}
       onRemove={handleRemove}
