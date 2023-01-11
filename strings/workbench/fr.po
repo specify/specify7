@@ -11,7 +11,7 @@ msgstr "Table de travail"
 
 #: components/WorkBench/Status.tsx:75
 #: components/WorkBench/Template.tsx:145
-#: components/WorkBench/wbView.js:1916
+#: components/WorkBench/wbView.js:1932
 #. Used in: Components > Work Bench > Status ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 msgid "rollback"
 msgstr "Retour en arriere"
@@ -29,7 +29,7 @@ msgstr "Validation"
 
 #: components/WorkBench/Status.tsx:74
 #: components/WorkBench/Template.tsx:156
-#: components/WorkBench/wbView.js:1942
+#: components/WorkBench/wbView.js:1958
 #. Used in: Components > Work Bench > Status ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 msgid "upload"
 msgstr "Télécharger"
@@ -49,34 +49,34 @@ msgstr "Téléchargement"
 msgid "validating"
 msgstr "Validation"
 
-#: components/WorkBench/wbView.js:541
+#: components/WorkBench/wbView.js:544
 #. Used in: Components > Work Bench > Wb View
 msgid "disambiguate"
 msgstr "Désambiguïser"
 
-#: components/WorkBench/wbView.js:552
+#: components/WorkBench/wbView.js:555
 #. Used in: Components > Work Bench > Wb View
 msgid "fillDown"
 msgstr "Remplissez"
 
-#: components/WorkBench/wbView.js:560
+#: components/WorkBench/wbView.js:563
 #. Used in: Components > Work Bench > Wb View
 msgid "fillUp"
 msgstr "Remplir"
 
 #: components/WorkBench/Template.tsx:166
-#: components/WorkBench/wbView.js:2023
+#: components/WorkBench/wbView.js:2039
 #. Used in: Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 msgid "revert"
 msgstr "Revenir"
 
-#: components/WorkBench/wbView.js:2150
+#: components/WorkBench/wbView.js:2166
 #. Used in: Components > Work Bench > Wb View
 msgid "dataCheck"
 msgstr "Vérification des données"
 
-#: components/WorkBench/wbView.js:2144
-#: components/WorkBench/wbView.js:2147
+#: components/WorkBench/wbView.js:2160
+#: components/WorkBench/wbView.js:2163
 #. Used in: Components > Work Bench > Wb View
 msgid "dataCheckOn"
 msgstr "Vérification des données : activée"
@@ -145,12 +145,12 @@ msgstr "Cellules d'erreur"
 msgid "dataEditor"
 msgstr "Éditeur de données"
 
-#: components/WorkBench/wbView.js:1580
+#: components/WorkBench/wbView.js:1596
 #. Used in: Components > Work Bench > Wb View
 msgid "noDisambiguationResults"
 msgstr "Impossible de lever l'ambiguïté"
 
-#: components/WorkBench/wbView.js:1581
+#: components/WorkBench/wbView.js:1597
 #. Used in: Components > Work Bench > Wb View
 msgid "noDisambiguationResultsDescription"
 msgstr ""
@@ -162,24 +162,24 @@ msgstr ""
 "devrez ajouter des champs et des valeurs à l'ensemble de données pour "
 "résoudre l'ambiguïté."
 
-#: components/WorkBench/wbView.js:1635
+#: components/WorkBench/wbView.js:1651
 #. Used in: Components > Work Bench > Wb View
 msgid "disambiguateMatches"
 msgstr "Désambiguïser plusieurs correspondances d'enregistrements"
 
-#: components/WorkBench/wbView.js:1683
+#: components/WorkBench/wbView.js:1699
 #. Used in: Components > Work Bench > Wb View
 msgid "applyAllUnavailable"
 msgstr ""
 "\"Appliquer tout\" n'est pas disponible lorsque la vérification des données "
 "est en cours."
 
-#: components/WorkBench/wbView.js:1899
+#: components/WorkBench/wbView.js:1915
 #. Used in: Components > Work Bench > Wb View
 msgid "beginRollback"
 msgstr "Commencer la restauration de l'ensemble de données ?"
 
-#: components/WorkBench/wbView.js:1900
+#: components/WorkBench/wbView.js:1916
 #. Used in: Components > Work Bench > Wb View
 msgid "beginRollbackDescription"
 msgstr ""
@@ -189,12 +189,12 @@ msgstr ""
 "référencée (réutilisée) par d'autres enregistrements de données depuis leur "
 "téléchargement."
 
-#: components/WorkBench/wbView.js:1930
+#: components/WorkBench/wbView.js:1946
 #. Used in: Components > Work Bench > Wb View
 msgid "startUpload"
 msgstr "Commencer le téléchargement de l'ensemble de données ?"
 
-#: components/WorkBench/wbView.js:1931
+#: components/WorkBench/wbView.js:1947
 #. Used in: Components > Work Bench > Wb View
 msgid "startUploadDescription"
 msgstr ""
@@ -226,19 +226,19 @@ msgstr "Ensemble de données supprimé avec succès"
 msgid "dataSetDeletedDescription"
 msgstr "Ensemble de données supprimé avec succès."
 
-#: components/WorkBench/wbView.js:2016
+#: components/WorkBench/wbView.js:2032
 #. Used in: Components > Work Bench > Wb View
 msgid "revertChanges"
 msgstr "Annuler les modifications non enregistrées ?"
 
-#: components/WorkBench/wbView.js:2017
+#: components/WorkBench/wbView.js:2033
 #. Used in: Components > Work Bench > Wb View
 msgid "revertChangesDescription"
 msgstr ""
 "Cette action annulera toutes les modifications apportées à l'ensemble de "
 "données depuis le dernier enregistrement."
 
-#: components/WorkBench/wbView.js:2040
+#: components/WorkBench/wbView.js:2056
 #. Used in: Components > Work Bench > Wb View
 msgid "saving"
 msgstr "Économie..."
@@ -250,34 +250,34 @@ msgstr ""
 "Les modifications apportées à cet ensemble de données n'ont pas été "
 "enregistrées."
 
-#: components/WorkBench/wbView.js:2252
+#: components/WorkBench/wbView.js:2270
 #. Used in: Components > Work Bench > Wb View
 msgid "noMatchErrorMessage"
 msgstr ""
 "Aucun enregistrement correspondant pour la table de correspondance "
 "obligatoire."
 
-#: components/WorkBench/wbView.js:2276
+#: components/WorkBench/wbView.js:2296
 #. Used in: Components > Work Bench > Wb View
 msgid "matchedMultipleErrorMessage"
 msgstr ""
 "Cette valeur correspond à deux enregistrements de base de données existants "
 "ou plus et la correspondance doit être levée avant le téléchargement."
 
-#: components/WorkBench/wbView.js:2481
+#: components/WorkBench/wbView.js:2498
 #. Used in: Components > Work Bench > Wb View
 msgid "validationNoErrors"
 msgstr "Valider terminé sans erreur"
 
-#: components/WorkBench/wbView.js:2483
+#: components/WorkBench/wbView.js:2501
 #. Used in: Components > Work Bench > Wb View
 msgid "validationNoErrorsDescription"
 msgstr ""
 "La validation n'a trouvé aucune erreur, elle est prête à être téléchargée "
 "dans la base de données."
 
-#: components/WorkBench/wbView.js:2486
-#: components/WorkBench/wbView.js:2495
+#: components/WorkBench/wbView.js:2504
+#: components/WorkBench/wbView.js:2515
 #. Used in: Components > Work Bench > Wb View
 msgid "validationReEditWarning"
 msgstr ""
@@ -285,41 +285,41 @@ msgstr ""
 "validation doit être exécutée à nouveau avant le téléchargement pour "
 "vérifier qu'aucune erreur n'a été introduite."
 
-#: components/WorkBench/wbView.js:2490
+#: components/WorkBench/wbView.js:2509
 #. Used in: Components > Work Bench > Wb View
 msgid "validationErrors"
 msgstr "Valider terminé avec des erreurs"
 
-#: components/WorkBench/wbView.js:2492
+#: components/WorkBench/wbView.js:2512
 #. Used in: Components > Work Bench > Wb View
 msgid "validationErrorsDescription"
 msgstr "La validation a détecté des erreurs dans l'ensemble de données."
 
-#: components/WorkBench/wbView.js:2501
+#: components/WorkBench/wbView.js:2522
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadSuccessful"
 msgstr "Téléchargement terminé sans erreur"
 
-#: components/WorkBench/wbView.js:2502
+#: components/WorkBench/wbView.js:2523
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadSuccessfulDescription"
 msgstr ""
 "Cliquez sur le bouton \"Résultats\" pour voir le nombre de nouveaux "
 "enregistrements ajoutés à chaque table de la base de données."
 
-#: components/WorkBench/wbView.js:2505
+#: components/WorkBench/wbView.js:2526
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadErrors"
 msgstr "Échec du téléchargement en raison de cellules d'erreur"
 
-#: components/WorkBench/wbView.js:2507
+#: components/WorkBench/wbView.js:2529
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadErrorsDescription"
 msgstr ""
 "Le téléchargement a échoué en raison d'une ou plusieurs erreurs de valeur "
 "de cellule."
 
-#: components/WorkBench/wbView.js:2510
+#: components/WorkBench/wbView.js:2532
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadErrorsSecondDescription"
 msgstr ""
@@ -327,44 +327,44 @@ msgstr ""
 "la souris pour chaque cellule d'erreur, puis apportez les corrections "
 "appropriées. Enregistrez et réessayez le téléchargement."
 
-#: components/WorkBench/wbView.js:2514
+#: components/WorkBench/wbView.js:2537
 #. Used in: Components > Work Bench > Wb View
 msgid "dataSetRollback"
 msgstr "L'ensemble de données a été annulé avec succès"
 
-#: components/WorkBench/wbView.js:2515
+#: components/WorkBench/wbView.js:2538
 #. Used in: Components > Work Bench > Wb View
 msgid "dataSetRollbackDescription"
 msgstr ""
 "Cet ensemble de données restauré est enregistré et peut être modifié ou "
 "rechargé."
 
-#: components/WorkBench/wbView.js:2535
+#: components/WorkBench/wbView.js:2558
 #. Used in: Components > Work Bench > Wb View
 msgid "validationCanceled"
 msgstr "Validation annulée"
 
-#: components/WorkBench/wbView.js:2541
+#: components/WorkBench/wbView.js:2564
 #. Used in: Components > Work Bench > Wb View
 msgid "validationCanceledDescription"
 msgstr "Validation de l'ensemble de données annulée."
 
-#: components/WorkBench/wbView.js:2537
+#: components/WorkBench/wbView.js:2560
 #. Used in: Components > Work Bench > Wb View
 msgid "rollbackCanceled"
 msgstr "Restauration annulée"
 
-#: components/WorkBench/wbView.js:2543
+#: components/WorkBench/wbView.js:2566
 #. Used in: Components > Work Bench > Wb View
 msgid "rollbackCanceledDescription"
 msgstr "Restauration de l'ensemble de données annulée."
 
-#: components/WorkBench/wbView.js:2538
+#: components/WorkBench/wbView.js:2561
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadCanceled"
 msgstr "Téléchargement annulé"
 
-#: components/WorkBench/wbView.js:2544
+#: components/WorkBench/wbView.js:2567
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadCanceledDescription"
 msgstr "Téléchargement de l'ensemble de données annulé."
@@ -379,44 +379,44 @@ msgstr "Format de géocoordonnée"
 msgid "coordinateConverterDescription"
 msgstr "Choisissez un format de géocoordonnées préféré"
 
-#: components/WorkBench/wbView.js:666
+#: components/WorkBench/wbView.js:669
 #. 🟥When empty string is used as a default value for a column, this is shown instead. Used in: Components > Work Bench > Wb View
 msgid "emptyStringInline"
 msgstr "(chaîne vide)"
 
 #: components/WorkBench/Template.tsx:133
-#: components/WorkBench/wbView.js:2376
+#: components/WorkBench/wbView.js:2396
 #. Used in: Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 msgid "wbUploadedUnavailable"
 msgstr "L'ensemble de données doit être validé ou téléchargé"
 
-#: components/WorkBench/wbView.js:277
+#: components/WorkBench/wbView.js:279
 #. Used in: Components > Work Bench > Wb View
 msgid "wbValidateUnavailable"
 msgstr ""
 "Un plan de téléchargement doit être défini avant que cet ensemble de "
 "données puisse être validé"
 
-#: components/WorkBench/wbView.js:2371
+#: components/WorkBench/wbView.js:2391
 #. Used in: Components > Work Bench > Wb View
 msgid "unavailableWhileEditing"
 msgstr "Cette action nécessite que toutes les modifications soient enregistrées"
 
-#: components/WorkBench/wbView.js:2459
+#: components/WorkBench/wbView.js:2479
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadUnavailableWhileHasErrors"
 msgstr ""
 "Le téléchargement n'est pas disponible alors que certaines cellules ont des "
 "erreurs de validation"
 
-#: components/WorkBench/wbView.js:1737
+#: components/WorkBench/wbView.js:1753
 #. Used in: Components > Work Bench > Wb View
 msgid "unavailableWhileViewingResults"
 msgstr ""
 "Cette action n'est pas disponible lors de l'affichage des résultats de "
 "téléchargement"
 
-#: components/WorkBench/wbView.js:1704
+#: components/WorkBench/wbView.js:1720
 #. Used in: Components > Work Bench > Wb View
 msgid "unavailableWhileValidating"
 msgstr ""
@@ -435,7 +435,7 @@ msgstr "Cet outil nécessite que les colonnes de localité soient mappées"
 msgid "unavailableWhenUploaded"
 msgstr "Cet outil ne fonctionne pas avec les ensembles de données téléchargés"
 
-#: components/WorkBench/wbView.js:2382
+#: components/WorkBench/wbView.js:2402
 #. Used in: Components > Work Bench > Wb View
 msgid "dataSetDeletedOrNotFound"
 msgstr "L'ensemble de données a été supprimé par une autre session."
@@ -455,7 +455,7 @@ msgstr "Télécharger les résultats"
 msgid "potentialUploadResults"
 msgstr "Résultats de téléchargement potentiels"
 
-#: components/WorkBench/wbView.js:467
+#: components/WorkBench/wbView.js:470
 #. Used in: Components > Work Bench > Wb View
 msgid "noUploadResultsAvailable"
 msgstr "Aucun résultat de téléchargement n'est disponible pour cette cellule"

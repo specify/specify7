@@ -3,26 +3,26 @@ msgstr "Content-Type: text/plain\n"
 
 #: components/UserPreferences/Definitions.tsx:1451
 #: components/WorkBench/Template.tsx:118
-#: components/WorkBench/wbView.js:1860
+#: components/WorkBench/wbView.js:1876
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 msgid "dataMapper"
 msgstr "Сопоставления"
 
 #: components/WbPlanView/State.tsx:37
 #: components/WorkBench/wbView.js:259
-#: components/WorkBench/wbView.js:1950
+#: components/WorkBench/wbView.js:1966
 #. Used in: Components > Wb Plan View > State ⬤ Components > Work Bench > Wb View
 msgid "noUploadPlan"
 msgstr "План загрузки не определен"
 
 #: components/WorkBench/wbView.js:273
-#: components/WorkBench/wbView.js:1951
+#: components/WorkBench/wbView.js:1967
 #. Used in: Components > Work Bench > Wb View
 msgid "noUploadPlanDescription"
 msgstr "Для этого набора данных не определен план загрузки. Создать эго сейчас?"
 
-#: components/WorkBench/wbView.js:380
-#: components/WorkBench/wbView.js:381
+#: components/WorkBench/wbView.js:383
+#: components/WorkBench/wbView.js:384
 #. Used in: Components > Work Bench > Wb View
 msgid "unmappedColumn"
 msgstr "Несопоставленный столбец"
