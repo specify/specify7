@@ -1,6 +1,7 @@
 import { requireContext } from '../../../tests/helpers';
 import { getUiFormatters } from '../../Forms/uiFormatters';
 import { schema, strictGetModel } from '../schema';
+import { getField } from '../helpers';
 
 requireContext();
 
@@ -136,7 +137,7 @@ describe('override', () => {
       ).toBe(true));
 
     test('field with "optional" override is not required', () => {
-      const field = schema.models.Agent.strictGetField('agentType');
+      const field = getField(schema.models.Agent, 'agentType');
       expect(field.isRequired).toBe(true);
       expect(field.overrides.isRequired).toBe(false);
     });
@@ -149,7 +150,7 @@ describe('override', () => {
       ).toBe(true));
 
     test('field with "hidden" override is not required', () => {
-      const field = schema.models.Determination.strictGetField('isCurrent');
+      const field = getField(schema.models.Determination, 'isCurrent');
       expect(field.isRequired).toBe(true);
       expect(field.overrides.isRequired).toBe(false);
       expect(field.isHidden).toBe(false);
@@ -157,7 +158,7 @@ describe('override', () => {
     });
 
     test('required field is made not hidden', () => {
-      const field = schema.models.AccessionAttachment.strictGetField('ordinal');
+      const field = getField(schema.models.AccessionAttachment, 'ordinal');
       expect(field.isRequired).toBe(true);
       expect(field.overrides.isRequired).toBe(true);
       expect(field.isHidden).toBe(true);
@@ -167,28 +168,26 @@ describe('override', () => {
 
   describe('isReadOnly', () => {
     test('inherits schema value', () => {
-      const field = schema.models.Accession.strictGetField(
-        'actualTotalCountAmt'
-      );
+      const field = getField(schema.models.Accession, 'integer1');
       expect(field.isHidden).toBe(true);
       expect(field.overrides.isHidden).toBe(true);
     });
 
     test('can be overwritten by the front-end', () => {
-      const field = schema.models.PrepType.strictGetField('isLoanable');
+      const field = getField(schema.models.PrepType, 'isLoanable');
       expect(field.isReadOnly).toBe(false);
       expect(field.overrides.isReadOnly).toBe(true);
     });
 
     // Because https://github.com/specify/specify7/issues/1399
     test('all tree table relationships are readonly', () => {
-      const field = schema.models.Taxon.strictGetField('definition');
+      const field = getField(schema.models.Taxon, 'definition');
       expect(field.isReadOnly).toBe(false);
       expect(field.overrides.isReadOnly).toBe(true);
     });
 
     test('readonly fields are not required', () => {
-      const field = schema.models.SpecifyUser.strictGetField('isAdmin');
+      const field = getField(schema.models.SpecifyUser, 'isAdmin');
       expect(field.isReadOnly).toBe(true);
       expect(field.overrides.isReadOnly).toBe(true);
       expect(field.isRequired).toBe(true);
@@ -197,34 +196,41 @@ describe('override', () => {
   });
 });
 
+describe('isVirtual', () => {
+  test('virtual field', () =>
+    expect(
+      getField(schema.models.Accession, 'actualTotalCountAmt').isVirtual
+    ).toBe(true));
+  test('non virtual field', () =>
+    expect(getField(schema.models.Accession, 'accessionNumber').isVirtual).toBe(
+      false
+    ));
+});
+
 test('getLocalizedDesc', () =>
   expect(
-    schema.models.Deaccession.strictGetField(
-      'timestampModified'
-    ).getLocalizedDesc()
+    getField(schema.models.Deaccession, 'timestampModified').getLocalizedDesc()
   ).toBe('The timestamp the record was last modified.'));
 
 test('getFormat', () =>
   expect(
-    schema.models.CollectionObject.strictGetField('catalogNumber').getFormat()
+    getField(schema.models.CollectionObject, 'catalogNumber').getFormat()
   ).toBe('CatalogNumberNumeric'));
 
 test('getUiFormatter', () =>
   expect(
-    schema.models.CollectionObject.strictGetField(
-      'catalogNumber'
-    ).getUiFormatter()
+    getField(schema.models.CollectionObject, 'catalogNumber').getUiFormatter()
   ).toBe(getUiFormatters().CatalogNumberNumeric));
 
 describe('getPickList', () => {
   test('can get schema-assigned pick-list', () =>
-    expect(
-      schema.models.AccessionAgent.strictGetField('role').getPickList()
-    ).toBe('AccessionRole'));
+    expect(getField(schema.models.AccessionAgent, 'role').getPickList()).toBe(
+      'AccessionRole'
+    ));
   test('can get front-end only pick list', () =>
-    expect(
-      schema.models.PickList.strictGetField('tableName').getPickList()
-    ).toBe('_TablesByName'));
+    expect(getField(schema.models.PickList, 'tableName').getPickList()).toBe(
+      '_TablesByName'
+    ));
 });
 
 test('getWebLinkName', () =>
@@ -268,7 +274,7 @@ describe('Relationship', () => {
     ).toBe(schema.models.Accession));
 
   test('relationship to system table is made optional', () => {
-    const field = schema.models.Accession.strictGetRelationship('division');
+    const field = getField(schema.models.Accession, 'division');
     expect(field.relatedModel.overrides.isSystem).toBe(true);
     expect(field.isRequired).toBe(true);
     expect(field.overrides.isRequired).toBe(false);
@@ -276,14 +282,12 @@ describe('Relationship', () => {
 
   describe('relationships to hidden models are hidden', () => {
     test('base case', () => {
-      const field =
-        schema.models.LithoStrat.strictGetRelationship('paleoContexts');
+      const field = getField(schema.models.LithoStrat, 'paleoContexts');
       expect(field.relatedModel.overrides.isHidden).toBe(true);
       expect(field.overrides.isHidden).toBe(true);
     });
     test('unless the relationship is referring to the current table', () => {
-      const field =
-        schema.models.GeologicTimePeriod.strictGetRelationship('children');
+      const field = getField(schema.models.GeologicTimePeriod, 'children');
       expect(field.relatedModel).toBe(field.model);
       expect(field.relatedModel.overrides.isHidden).toBe(true);
       expect(field.overrides.isHidden).toBe(false);
@@ -299,8 +303,7 @@ describe('Relationship', () => {
       ).toBe(true));
 
     test('collectingEvent may be independent', () => {
-      const field =
-        schema.models.CollectionObject.strictGetRelationship('collectingEvent');
+      const field = getField(schema.models.CollectionObject, 'collectingEvent');
       expect(field.isDependent()).toBe(schema.embeddedCollectingEvent);
     });
 
@@ -312,10 +315,14 @@ describe('Relationship', () => {
   });
 
   test('getReverse', () => {
-    const collectingEvent =
-      schema.models.CollectionObject.strictGetRelationship('collectingEvent');
-    const collectionObject =
-      schema.models.CollectingEvent.strictGetRelationship('collectionObjects');
+    const collectingEvent = getField(
+      schema.models.CollectionObject,
+      'collectingEvent'
+    );
+    const collectionObject = getField(
+      schema.models.CollectingEvent,
+      'collectionObjects'
+    );
     expect(collectingEvent.getReverse()).toBe(collectionObject);
   });
 });

@@ -499,6 +499,7 @@ export function QueryBuilder({
                   fields={state.fields}
                   getQueryFieldRecords={getQueryFieldRecords}
                   queryResource={queryResource}
+                  recordSetId={recordSet?.id}
                 />
               )
             }

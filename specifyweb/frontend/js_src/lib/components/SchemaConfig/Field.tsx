@@ -15,6 +15,8 @@ import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { schemaText } from '../../localization/schema';
 import { commonText } from '../../localization/common';
 import { schema } from '../DataModel/schema';
+import { resourcesText } from '../../localization/resources';
+import { getField } from '../DataModel/helpers';
 
 export function SchemaConfigField({
   schemaData,
@@ -68,7 +70,7 @@ export function SchemaConfigField({
         <Input.Number isReadOnly value={field.length ?? ''} />
       </Label.Block>
       <Label.Block>
-        {schema.models.SpLocaleContainerItem.strictGetField('type').label}
+        {resourcesText.type()}
         <Input.Text
           isReadOnly
           value={javaTypeToHuman(
@@ -94,7 +96,7 @@ export function SchemaConfigField({
           isReadOnly={isReadOnly}
           onValueChange={(value): void => handleChange('isRequired', value)}
         />
-        {schema.models.SpLocaleContainerItem.strictGetField('isRequired').label}
+        {getField(schema.models.SpLocaleContainerItem, 'isRequired').label}
       </Label.Inline>
       <SchemaConfigFormat
         field={field}

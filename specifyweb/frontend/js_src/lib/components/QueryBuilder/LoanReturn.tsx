@@ -40,6 +40,7 @@ import { QueryButton } from './Components';
 import type { QueryField } from './helpers';
 import { LocalizedString } from 'typesafe-i18n';
 import { interactionsText } from '../../localization/interactions';
+import { getField } from '../DataModel/helpers';
 
 const returnLoanPreps = async (
   query: SerializedModel<SpQuery>,
@@ -191,11 +192,11 @@ export function QueryLoanReturn({
                 <thead>
                   <tr>
                     <th scope="col">
-                      {schema.models.Loan.strictGetField('loanNumber').label}
+                      {getField(schema.models.Loan, 'loanNumber').label}
                     </th>
                     <th scope="col">
                       {
-                        schema.models.LoanPreparation.strictGetField('quantity')
+                        getField(schema.models.LoanPreparation, 'quantity')
                           .label
                       }
                     </th>
