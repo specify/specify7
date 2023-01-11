@@ -8,9 +8,9 @@ import { commonText } from '../../localization/common';
 import { statsText } from '../../localization/stats';
 import { H3, Ul } from '../Atoms';
 import { QueryList } from '../Toolbar/Query';
-import { Categories } from './Categories';
 import React from 'react';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
+import { AddStatPage } from './AddStatPage';
 
 export function AddStatDialog({
   defaultStatsAddLeft,
@@ -86,40 +86,17 @@ export function AddStatDialog({
                       item.type === 'DefaultStat' && item.isVisible === false
                   )
                 ) ? undefined : (
-                  <li key={index}>
-                    <h4 className="text-lg font-semibold">
-                      {defaultLayoutPage.label}
-                    </h4>
-                    <Ul className="flex flex-col gap-2">
-                      <Categories
-                        pageLayout={defaultLayoutPage}
-                        statsSpec={statsSpec}
-                        onClick={(item: DefaultStat | CustomStat): void => {
-                          handleAdd(item, -1);
-                          handleClose();
-                        }}
-                        onRemove={undefined}
-                        onCategoryRename={undefined}
-                        onItemRename={undefined}
-                        onAdd={undefined}
-                        onSpecChanged={undefined}
-                        onValueLoad={(
-                          categoryIndex: number,
-                          itemIndex: number,
-                          value: number | string,
-                          itemLabel: string
-                        ) => {
-                          handleValueLoad?.(
-                            categoryIndex,
-                            itemIndex,
-                            value,
-                            itemLabel,
-                            index
-                          );
-                        }}
-                      />
-                    </Ul>
-                  </li>
+                  <AddStatPage
+                    pageLabel={defaultLayoutPage.label}
+                    pageIndex={index}
+                    pageLayout={defaultLayoutPage}
+                    statsSpec={statsSpec}
+                    onClick={(item: DefaultStat | CustomStat): void => {
+                      handleAdd(item, -1);
+                      handleClose();
+                    }}
+                    onValueLoad={handleValueLoad}
+                  />
                 )
               )}
             </Ul>
