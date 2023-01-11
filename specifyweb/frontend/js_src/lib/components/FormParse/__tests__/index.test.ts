@@ -181,9 +181,8 @@ describe('fetchView', () => {
   );
 
   test('handles 404 errors gracefully', async () => {
-    const consoleError = jest.fn();
-    jest.spyOn(console, 'error').mockImplementation(consoleError);
-    expect(fetchView(notFoundViewName)).resolves.toBeUndefined();
+    jest.spyOn(console, 'error').mockImplementation();
+    await expect(fetchView(notFoundViewName)).resolves.toBeUndefined();
   });
 
   const frontEndOnlyView = spAppResourceView;
@@ -200,8 +199,7 @@ describe('fetchView', () => {
 });
 
 test('parseViewDefinition', () => {
-  const consoleWarn = jest.fn();
-  jest.spyOn(console, 'warn').mockImplementation(consoleWarn);
+  jest.spyOn(console, 'warn').mockImplementation();
   const result = parseViewDefinition(
     {
       ...viewDefinition,
@@ -323,8 +321,7 @@ theories(parseFormTableColumns, {
 });
 
 test('parseFormDefinition', () => {
-  const consoleWarn = jest.fn();
-  jest.spyOn(console, 'warn').mockImplementation(consoleWarn);
+  jest.spyOn(console, 'warn').mockImplementation();
   expect(
     parseFormDefinition(tinyFormView, schema.models.CollectionObject)
   ).toEqual(parsedTinyView);

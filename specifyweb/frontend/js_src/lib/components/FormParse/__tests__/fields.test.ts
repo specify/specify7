@@ -177,8 +177,7 @@ describe('parseFormField', () => {
     }));
 
   test('Invalid combo box', () => {
-    const consoleError = jest.fn();
-    jest.spyOn(console, 'error').mockImplementation(consoleError);
+    jest.spyOn(console, 'error').mockImplementation();
     expect(parse('<cell uiType="combobox"/>', {})).toEqual({
       defaultValue: undefined,
       isReadOnly: false,
@@ -215,8 +214,7 @@ describe('parseFormField', () => {
     }));
 
   test('Query Combo Box for non-relationship', () => {
-    const consoleError = jest.fn();
-    jest.spyOn(console, 'error').mockImplementation(consoleError);
+    jest.spyOn(console, 'error').mockImplementation();
     expect(parse('<cell uiType="querycbx"/>', {})).toEqual({
       isReadOnly: true,
       type: 'Blank',

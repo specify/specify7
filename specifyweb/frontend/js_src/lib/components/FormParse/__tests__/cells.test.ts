@@ -112,8 +112,7 @@ const cell = (
 
 describe('parseFormCell', () => {
   test('base case', () => {
-    const consoleWarn = jest.fn();
-    jest.spyOn(console, 'warn').mockImplementation(consoleWarn);
+    jest.spyOn(console, 'warn').mockImplementation();
     expect(
       parseFormCell(schema.models.CollectionObject, strictParseXml('<cell />'))
     ).toEqual(
@@ -125,8 +124,7 @@ describe('parseFormCell', () => {
   });
 
   test('unsupported cell with some attributes', () => {
-    const consoleWarn = jest.fn();
-    jest.spyOn(console, 'warn').mockImplementation(consoleWarn);
+    jest.spyOn(console, 'warn').mockImplementation();
     expect(
       parseFormCell(
         schema.models.CollectionObject,
@@ -200,8 +198,7 @@ describe('parseFormCell', () => {
     ));
 
   test('unknown field', () => {
-    const consoleError = jest.fn();
-    jest.spyOn(console, 'error').mockImplementation(consoleError);
+    jest.spyOn(console, 'error').mockImplementation();
     expect(
       parseFormCell(
         schema.models.CollectionObject,
@@ -215,8 +212,7 @@ describe('parseFormCell', () => {
   });
 
   test('unknown field with default value', () => {
-    const consoleError = jest.fn();
-    jest.spyOn(console, 'error').mockImplementation(consoleError);
+    jest.spyOn(console, 'error').mockImplementation();
     expect(
       parseFormCell(
         schema.models.CollectionObject,

@@ -23,8 +23,7 @@ const parse = (
 
 describe('parseUiPlugin', () => {
   test('Simplest case', () => {
-    const consoleError = jest.fn();
-    jest.spyOn(console, 'error').mockImplementation(consoleError);
+    jest.spyOn(console, 'error').mockImplementation();
     expect(parse({})).toEqual({
       type: 'Unsupported',
       name: undefined,
@@ -32,8 +31,7 @@ describe('parseUiPlugin', () => {
   });
 
   test('Invalid cell', () => {
-    const consoleError = jest.fn();
-    jest.spyOn(console, 'error').mockImplementation(consoleError);
+    jest.spyOn(console, 'error').mockImplementation();
     expect(parse({ getProperty: generateInit({ name: 'a' }) })).toEqual({
       type: 'Unsupported',
       name: 'a',
@@ -118,8 +116,7 @@ describe('parseUiPlugin', () => {
     }));
 
   test('collection relationship on unsupported table', () => {
-    const consoleError = jest.fn();
-    jest.spyOn(console, 'error').mockImplementation(consoleError);
+    jest.spyOn(console, 'error').mockImplementation();
     expect(
       parse({
         getProperty: generateInit({

@@ -3,4 +3,4 @@ import { dependentFields } from '../CarryForward';
 
 requireContext();
 
-test('derivedFields', () => expect(dependentFields()).toMatchSnapshot());
+test('dependentFields', () => expect(dependentFields()).toMatchSnapshot());

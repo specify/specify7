@@ -5,7 +5,6 @@ import { commonText } from '../../../localization/common';
 import { mainText } from '../../../localization/main';
 import { LeakContext, mount } from '../../../tests/reactUtils';
 import { flippedPromise } from '../../../utils/promise';
-import { crash } from '../../Errors/Crash';
 import {
   Contexts,
   ErrorContext,
@@ -75,8 +74,8 @@ test('<Contexts> provide a loading context', async () => {
   const newHeading = await findByRole('heading', {
     name: commonText.loading(),
   });
+  const { crash } = await import('../../Errors/Crash');
   expect(crash).not.toHaveBeenCalled();
-  jest.spyOn(console, 'error').mockImplementation();
   rejectedPromise.reject('error');
   await waitForElementToBeRemoved(newHeading);
   expect(crash).toHaveBeenCalledTimes(1);
