@@ -1,8 +1,8 @@
 import _ from 'underscore';
 
-import {flippedPromise} from '../../utils/promise';
 import {formsText} from '../../localization/forms';
 import {globalEvents} from '../../utils/ajax/specifyApi';
+import {flippedPromise} from '../../utils/promise';
 import {formatList} from '../Atoms/Internationalization';
 import {isTreeResource} from '../InitialContext/treeRanks';
 import {businessRuleDefs} from './businessRuleDefs';

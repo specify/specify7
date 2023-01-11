@@ -18,7 +18,7 @@ Documentation for used GitHub secrets.
             <td>QODANA_TOKEN</td>
             <td>No</td>
             <td>
-                Used by JetBrain's Qodana service
+                Token for JetBrain's Qodana service
             </td>
             <td>
                 <a href="https://github.com/specify/specify7/pull/2710">
@@ -52,6 +52,20 @@ Documentation for used GitHub secrets.
             <td>
                 <a href="https://github.com/specify/specify7/blob/weblate-localization/.github/workflows/push.yml">
                     push.yml
+                </a>
+            </td>
+        </tr>
+        <tr>
+            <td>TESTS_PUSH_TO_GITHUB</td>
+            <td>Yes</td>
+            <td>
+                Personal GitHub token (from @maxxxxxdlp account). Personal token
+                is used to bypass branch protection rules (to allow Weblate to
+                push directly to production branch)
+            </td>
+            <td>
+                <a href="https://github.com/specify/specify7/blob/production/.github/workflows/test.yml">
+                    test.yml
                 </a>
             </td>
         </tr>

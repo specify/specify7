@@ -9,7 +9,6 @@ import type {
   LiteralField,
   Relationship,
 } from '../components/DataModel/specifyField';
-import { FormContext } from '../components/Forms/BaseResourceView';
 import { getDateInputValue } from '../utils/dayJs';
 import { listen } from '../utils/events';
 import { f } from '../utils/functools';

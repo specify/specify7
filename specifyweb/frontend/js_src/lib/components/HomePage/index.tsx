@@ -8,7 +8,7 @@ import { usePref } from '../UserPreferences/usePref';
 
 const taxonTiles = f.store(() => (
   <Async
-    element={React.lazy(async () =>
+    Element={React.lazy(async () =>
       import('./TaxonTiles').then(({ TaxonTiles }) => ({
         default: TaxonTiles,
       }))

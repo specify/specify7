@@ -8,8 +8,8 @@ import type {
 import type { LocalizedString } from 'typesafe-i18n';
 
 import type { IR, RA, WritableArray } from '../../utils/types';
-import { LoadingScreen } from '../Molecules/Dialog';
 import { useTitle } from '../Molecules/AppTitle';
+import { LoadingScreen } from '../Molecules/Dialog';
 
 /**
  * A wrapper for native React Routes object. Makes everything readonly.

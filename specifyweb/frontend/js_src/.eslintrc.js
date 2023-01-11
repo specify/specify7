@@ -14,7 +14,12 @@ module.exports = {
     browser: true,
     node: true,
   },
-  extends: ['@maxxxxxdlp/eslint-config-react'],
+  extends: [
+    '@maxxxxxdlp/eslint-config-react',
+    // When editing the ESLint config, I found it advantageous to directly link to
+    // the local .eslintrc file instead of the npm package:
+    // '/Users/maxpatiiuk/site/git/dotfiles/npm/eslint-config-react/.eslintrc.js',
+  ],
   rules: {
     '@typescript-eslint/no-empty-interface': OFF,
   },
