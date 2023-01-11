@@ -72,7 +72,6 @@ class Tree(models.Model):
             raise TreeBusinessRuleException(
                 "Tree node's parent has rank greater than itself",
                 {"tree" : self.__class__.__name__,
-                 "type" : "TREE_RANK_INVARIANT_PARENT",
                  "localizationKey" : "nodeParentInvalidRank",
                  "node" : {
                     "id" : self.id,
@@ -94,7 +93,6 @@ class Tree(models.Model):
             raise TreeBusinessRuleException(
                 "Tree node's rank is greater than or equal to some of its children",
                 {"tree" : self.__class__.__name__,
-                 "type" : "TREE_RANK_INVARIANT_CHILDREN",
                  "localizationKey" : "nodeChildrenInvalidRank",
                  "node" : {
                     "id" : self.id,
@@ -176,7 +174,6 @@ def adding_node(node):
             raise TreeBusinessRuleException(
                 f'Adding node "{node.fullname}" to synonymized parent "{parent.fullname}"',
                 {"tree" : "Taxon",
-                 "type" : "SYNONYMIZED_PARENT",
                  "localizationKey" : "nodeOperationToSynonymizedParent",
                  "operaton" : "Adding",
                  "node" : {
@@ -207,7 +204,6 @@ def moving_node(to_save):
         raise TreeBusinessRuleException(
             'Moving node "{node.fullname}" to synonymized parent "{parent.fullname}"'.format(node=to_save, parent=new_parent),
             {"tree" : "Taxon",
-             "type" : "SYNONYMIZED_PARENT",
              "localizationKey" : "nodeOperationToSynonymizedParent",
              "operation" : "Moving",
              "node" : {
@@ -257,7 +253,6 @@ def merge(node, into, agent):
         raise TreeBusinessRuleException(
             'Merging node "{node.fullname}" with synonymized node "{into.fullname}"'.format(node=node, into=into),
             {"tree" : "Taxon",
-             "type" : "SYNONYMIZED_PARENT",
              "localizationKey" : "nodeOperationToSynonymizedParent", 
              "operation" : "Merging",
              "node" : {
@@ -315,7 +310,6 @@ def synonymize(node, into, agent):
         raise TreeBusinessRuleException(
             'Synonymizing "{node.fullname}" to synonymized node "{into.fullname}"'.format(node=node, into=into),
             {"tree" : "Taxon",
-             "type" : "DOUBLE_SYNONYM",
              "localizationKey" : "nodeSynonymizeToSynonymized",
              "node" : {
                 "id" : node.id,
@@ -338,7 +332,6 @@ def synonymize(node, into, agent):
         raise TreeBusinessRuleException(
             'Synonymizing node "{node.fullname}" which has children'.format(node=node),
             {"tree" : "Taxon",
-             "type" : "SYNONYMIZED_PARENT",
              "localizationKey" : "nodeSynonimizeWithChildren",
              "parent" : {
                 "id" : into.id,

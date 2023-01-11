@@ -37,7 +37,6 @@ def loanprep_quantity_must_be_lte_availability(ipreparation):
             raise BusinessRuleException(
                 f"loan preparation quantity exceeds availability ({ipreparation.id}: {quantity - quantityresolved} {available})", 
                 {"table" : "LoanPreparation",
-                 "type" : "LOAN_PREP_QUANTITY_GT_AVAIL", 
                  "fieldName" : "quantity",
                  "preparationid" : ipreparation.id, 
                  "quantity" : quantity, 
@@ -53,7 +52,6 @@ def giftprep_quantity_must_be_lte_availability(ipreparation):
             raise BusinessRuleException(
                 f"gift preparation quantity exceeds availability ({ipreparation.id}: {quantity} {available})", 
                 {"table" : "GiftPreparation",
-                 "type" : "GIFT_PREP_QUANTITY_GT_AVAIL",
                  "fieldName" : "quantity",
                  "preparationid" : ipreparation.id, 
                  "quantity" : quantity, 
@@ -68,7 +66,6 @@ def exchangeoutprep_quantity_must_be_lte_availability(ipreparation):
             raise BusinessRuleException(
                 "exchangeout preparation quantity exceeds availability ({ipreparation.id}: {quantity} {available})", 
                 {"table" : "ExchangeOutPrep",
-                 "type" : "EXHANGEOUT_PREP_QUANTITY_GT_AVAIL",
                  "fieldName" : "quantity",
                  "preparationid" : ipreparation.id, 
                  "quantity" : quantity, 

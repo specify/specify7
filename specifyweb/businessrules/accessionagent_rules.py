@@ -8,5 +8,4 @@ def agent_division_must_not_be_null(accessionagent):
         raise BusinessRuleException(
             _("AccessionAgent -> Agent relationship is required."),
             {"table" : "Accessionagent",
-             "type" : "NOT_NULL",
              "fieldName" : "agent" })

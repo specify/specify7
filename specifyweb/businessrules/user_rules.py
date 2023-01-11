@@ -45,7 +45,6 @@ def deleting_user(sender, instance, **kwargs):
         raise BusinessRuleException(
             f"user {user.name} owns nonpersonal appresources {[r.name for r in nonpersonal_appresources]}",
             {"table" : user.__class__.__name__,
-             "type" : "DELETE_FK",
              "userid" : user.id}
         )
 
