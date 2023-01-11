@@ -373,7 +373,7 @@ export const statsSpec: IR<StatsSpec> = {
             type: 'BackEndStat',
             pathToValue: undefined,
             urlToFetch: urlSpec.typeSpecimens,
-            formatter: toString,
+            formatter: formatNumber,
           },
         },
       }),
