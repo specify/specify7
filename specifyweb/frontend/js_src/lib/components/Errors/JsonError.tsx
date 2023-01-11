@@ -38,6 +38,14 @@ export function formatJsonBackendResponse(error: string): JSX.Element {
   else return formatBasicResponse(error);
 }
 
+/**
+ *  For consistency, every backend error should contain a
+ *  JsonBackendResponseFooter which optionally contains data,
+ *  and always contains the traceback
+ *
+ *  If the backend repsonse contains additional data, then
+ *  add a <details/> html element which contains the raw json response
+ */
 function JsonBackendResponseFooter({
   response,
   isDataOpen = true,
@@ -62,6 +70,10 @@ function JsonBackendResponseFooter({
   );
 }
 
+/**
+ * If the exception is any type of BusinessRuleException,
+ * include the table icon of the table which caused the exception
+ */
 function BusinessRuleExceptionHeader({
   table,
   response,
@@ -84,6 +96,9 @@ function BusinessRuleExceptionHeader({
   );
 }
 
+/**
+ * Formats a general, non-specify specific backend error.
+ */
 function formatBasicResponse(error: string): JSX.Element {
   const response = createJsonResponse(error);
   return (
@@ -103,11 +118,18 @@ function formatBusinessRuleException(error: string): JSX.Element {
   return (
     <>
       <BusinessRuleExceptionHeader table={table} response={response} />
-      <JsonBackendResponseFooter response={response} />
+      <JsonBackendResponseFooter response={response} isDataOpen={true} />
     </>
   );
 }
 
+/**
+ * Currently this is identical to @see formatBusinessRuleException
+ * However, each TreeBusinessRuleException in the backend is
+ * consistently formatted in such a way to allow the frontend
+ * to potentially stylize/format the json data in an easy to see
+ * and read way
+ */
 function formatTreeBusinessRuleException(error: string): JSX.Element {
   const response = createJsonResponse(error);
   const table: string = response.data.tree;
@@ -120,9 +142,10 @@ function formatTreeBusinessRuleException(error: string): JSX.Element {
 }
 
 /**
- *
- * @param jsonResponseData
- * @returns
+ * Get the 'localizationKey' from the backend and resolve it to
+ * a translated error message from @see backEndText
+ * If the backend has a localizationKey that the frontend can not resolve,
+ * instead return the raw exception message from the backend
  */
 function resolveBackendLocalization(jsonResponseData: any): string {
   const localizationKey: string = jsonResponseData.localizationKey;
