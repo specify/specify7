@@ -23,6 +23,7 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { AnySchema, AnyTree } from '../DataModel/helperTypes';
 import { LocalizedString } from 'typesafe-i18n';
 import { queryText } from '../../localization/query';
+import { getPref } from '../InitialContext/remotePrefs';
 
 type Action = 'add' | 'desynonymize' | 'edit' | 'merge' | 'move' | 'synonymize';
 
@@ -113,7 +114,18 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
             addNew
             disabled={
               focusedRow === undefined ||
-              typeof focusedRow.acceptedId === 'number' ||
+              (getPref(
+                `sp7.allow_adding_child_to_synonymized_parent.${
+                  tableName as
+                    | 'GeologicTimePeriod'
+                    | 'Taxon'
+                    | 'Geography'
+                    | 'LithoStrat'
+                    | 'Storage'
+                }`
+              )
+                ? false
+                : typeof focusedRow.acceptedId === 'number') ||
               // Forbid adding children to the lowest rank
               ranks.at(-1) === focusedRow.rankId
             }
@@ -154,7 +166,18 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
             disabled={
               disableButtons ||
               isRoot ||
-              (!isSynonym && focusedRow.children > 0)
+              (getPref(
+                `sp7.allow_adding_child_to_synonymized_parent.${
+                  tableName as
+                    | 'GeologicTimePeriod'
+                    | 'Taxon'
+                    | 'Geography'
+                    | 'LithoStrat'
+                    | 'Storage'
+                }`
+              )
+                ? false
+                : !isSynonym && focusedRow.children > 0)
             }
             onClick={(): void =>
               setAction(isSynonym ? 'desynonymize' : 'synonymize')
