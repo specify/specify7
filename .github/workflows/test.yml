@@ -202,8 +202,23 @@ jobs:
         run: |
           # Strip specifyweb/frontend/js_src/ from every file name
           changed_files=`sed 's/specifyweb\/frontend\/js_src\///g' <<< "${{ needs.changes.outputs.frontend_changes }}"`
-          echo "Changed front-end files: ${changed_files}"
-          echo "changed=${changed_files}" >> $GITHUB_OUTPUT
+          
+          # Convert to array
+          IFS=' ' read -r -a split_files <<< "$changed_files"
+          
+          # Exclude files that were removed
+          for file in "${split_files[@]}"; do
+              if [ ! -e "$file" ]; then
+                  echo "File was removed: $file"
+                  files=("${split_files[@]/$file}")
+              fi
+          done
+          
+          # Convert back to string
+          changed="${files[*]}"
+          
+          echo "Changed front-end files: ${changed}"
+          echo "changed=${changed}" >> $GITHUB_OUTPUT
 
       - name: Run ESLint auto fixes
         # Don't run this for production branch. Reasons:
