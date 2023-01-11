@@ -229,128 +229,88 @@ export const backEndText = createDictionary({
   ///////////////////////
   /* Error Parsing     */
   ///////////////////////
-
+  showTraceback : {
+    'en-us':'Show Traceback',
+  },
   /// TreeBusinessRuleExceptions
   deletingTreeRoot : {
-    'en-us': `
-    Can not delete root level tree definition item
-    `,
+    'en-us': 'Can not delete root level tree definition item',
   },
   nodeParentInvalidRank : {
-    'en-us' : `
-    Tree node's parent has rank greater than itself
-    `,
+    'en-us' : "Tree node's parent has rank greater than itself",
   },
   nodeChildrenInvalidRank : {
-    'en-us' : `
-    Tree node's rank is greater than some of its children
-    `,
+    'en-us' : "Tree node's rank is greater than some of its children",
   },
   nodeOperationToSynonymizedParent : {
-    'en-us' : `
-    {operation:string} node '{nodeName:string}' to synonymized parent '{parentName:string}'
-    `,
+    'en-us' : "{operation:string} node '{nodeName:string}' to synonymized parent '{parentName:string}'",
   },
   nodeSynonymizeToSynonymized : {
-    'en-us' : `
-    Synonymizing '{nodeName:string}' to synonymized node '{intoName:string}'
-    `,
+    'en-us' : "Synonymizing '{nodeName:string}' to synonymized node '{intoName:string}'",
   },
   nodeSynonimizeWithChildren : {
-    'en-us' : `
-    Synonimizing node '{nodeName:string}' which has children
-    `,
+    'en-us' : "Synonimizing node '{nodeName:string}' which has children",
   },
 
   /// Assertion Errors 
 
   // Trees //
   badTreeStructureInvalidRanks : {
-    'en-us' : `
-    Bad Tree Structure: Found {badRanks:number} cases where node rank is not greater than its parent
-    `,
+    'en-us' : 'Bad Tree Structure: Found {badRanks:number} cases where node rank is not greater than its parent',
   },
   invalidNodeType : {
-    'en-us' : `
-    Unexpected type of node '{node:string}' during {operation:string}. Expected '{nodeModel:string}'
-    `
+    'en-us' : "Unexpected type of node '{node:string}' during {operation:string}. Expected '{nodeModel:string}'",
   },
   mergeAcrossTrees : {
-    'en-us' : `
-    Merging across trees
-    `
+    'en-us' : 'Merging across trees',
   },
   synonymizeAcrossTrees :{
-    'en-us': `
-    Synonymizing across trees
-    `
+    'en-us': 'Synonymizing across trees'
   },
 
   // Determination // 
   limitReachedDeterminingAccepted : {
-    'en-us': `
-    Could not find accepted taxon for synonymized taxon (id = {taxonId:number})"
-    `
+    'en-us': 'Could not find accepted taxon for synonymized taxon (id = {taxonId:number})'
   },
 
   // Permissions // 
   resourceInPermissionRegistry : {
-    'en-us' : `
-    Resource {resource:string} already in Permissions registry
-    `,
+    'en-us' : 'Resource {resource:string} already in Permissions registry',
   },
   actorIsNotSpecifyUser: {
-    'en-us' : `
-    Agent {actor:string} is not a SpecifyUser
-    `,
+    'en-us' : 'Agent {actor:string} is not a SpecifyUser',
   },
   unexpectedCollectionType : {
-    'en-us' : `
-    Unexpected type of collection '{unexpectedTypeName:string}'. Expected '{collectionName:string}'
-    `,
+    'en-us' : "Unexpected type of collection '{unexpectedTypeName:string}'. Expected '{collectionName:string}'",
   },
 
   // Reports/Labels //
   invalidReportMimetype : {
-    'en-us' : `
-    Can not create report: mimetype not 'jrxml/label' or 'jrxml/report'
-    `,
+    'en-us' : "Can not create report: mimetype not 'jrxml/label' or 'jrxml/report'",
   },
 
   // Schema //
   fieldNotRelationship : {
-    'en-us' : `
-    Field {field:string} is not a Relationship
-    `,
+    'en-us' : 'Field {field:string} is not a Relationship',
   },
   
   // Queries //
   unexpectedTableId : {
-    'en-us' : `
-    Unexpected table id '{tableId:string}' in request. Expected '{expectedTableId:string}'
-    `,
+    'en-us' : "Unexpected table id '{tableId:string}' in request. Expected '{expectedTableId:string}'",
   },
   noCollectionInQuery : {
-    'en-us' : `
-    No Collection found in Query for table {table:string}
-    `,
+    'en-us' : 'No Collection found in Query for table {table:string}',
   },
   invalidDatePart : {
-    'en-us' : `
-    Invalid date part '{datePart:string}'. Expected one of {validDateParts:string}
-    `,
+    'en-us' : "Invalid date part '{datePart:string}'. Expected one of {validDateParts:string}",
   },
 
   // Workbench // 
   invalidUploadStatus : {
-    'en-us' : `
-    Invalid status '{uploadStatus:string}' for {operation:string}. Expected {expectedUploadStatus:string}
-    `,
+    'en-us' : "Invalid status '{uploadStatus:string}' for {operation:string}. Expected {expectedUploadStatus:string}",
   },
   datasetAlreadyUploaded : {
-    'en-us' : `
-    Dataset already uploaded
-    `,
+    'en-us' : 'Dataset already uploaded',
   }
 
 } as const);

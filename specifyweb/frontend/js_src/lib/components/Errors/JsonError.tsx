@@ -1,5 +1,6 @@
 import React from 'react';
 import { backEndText } from '../../localization/backEnd';
+import { preferencesText } from '../../localization/preferences';
 import { jsonStringify } from '../../utils/utils';
 import { className } from '../Atoms/className';
 import { TableIcon } from '../Molecules/TableIcon';
@@ -49,12 +50,12 @@ function JsonBackendResponseFooter({
     <>
       {hasData && (
         <details open={isDataOpen}>
-          <summary>Data</summary>
+          <summary>{preferencesText.content()}</summary>
           <pre>{response.formattedData}</pre>
         </details>
       )}
       <details>
-        <summary>Traceback</summary>
+        <summary>{backEndText.showTraceback()}</summary>
         <pre>{response.traceback}</pre>
       </details>
     </>
@@ -68,7 +69,6 @@ function BusinessRuleExceptionHeader({
   readonly table: string;
   readonly response: JsonResponse;
 }): JSX.Element {
-  const type: string = response.data.type;
   return (
     <>
       <div className={`flex space-x-2`}>
@@ -76,7 +76,6 @@ function BusinessRuleExceptionHeader({
         <h2 className={className.headerPrimary}>{response.exception}</h2>
       </div>
       <div className={`flex space-x-2`}>
-        <summary aria-label={type}>{type}:</summary>
         <em className={className.label} title={response.message}>
           {response.message}
         </em>
@@ -120,6 +119,11 @@ function formatTreeBusinessRuleException(error: string): JSX.Element {
   );
 }
 
+/**
+ *
+ * @param jsonResponseData
+ * @returns
+ */
 function resolveBackendLocalization(jsonResponseData: any): string {
   const localizationKey: string = jsonResponseData.localizationKey;
   if (localizationKey === 'badTreeStructureInvalidRanks')
