@@ -29,17 +29,12 @@ import {
   useDefaultLayout,
   useDefaultStatsToAdd,
   useStatsSpec,
-  statSpecToItems,
 } from './hooks';
 import { StatsPageEditing } from './StatsPageEditing';
-import type {
-  CustomStat,
-  DefaultStat,
-  StatCategoryReturn,
-  StatLayout,
-} from './types';
+import type { CustomStat, DefaultStat, StatLayout } from './types';
 import { unknownCategories, urlSpec } from './definitions';
-import { R, RA } from '../../utils/types';
+import { RA } from '../../utils/types';
+import { cleanFulfilledRequests } from '../../utils/ajax/throttledAjax';
 
 export function StatsPage(): JSX.Element | null {
   useMenuItem('statistics');
@@ -113,23 +108,23 @@ export function StatsPage(): JSX.Element | null {
 
   const categoriesToFetchInitially = useCategoryToFetch(
     activePage.isCollection ? collectionLayout : personalLayout
+  ).filter((categoryToFetch) =>
+    unknownCategories.includes(categoryToFetch as keyof typeof urlSpec)
   );
-  const allKeys = React.useMemo(() => Object.keys(urlSpec), []);
+
   const [categoriesToFetch, setCategoriesToFetch] = React.useState<RA<string>>(
     categoriesToFetchInitially.filter((categoryToFetch) =>
       unknownCategories.includes(categoryToFetch as keyof typeof urlSpec)
     )
   );
   const backEndResponse = useBackendApi(categoriesToFetch, false);
-  const statsSpec = useStatsSpec(backEndResponse);
+  const statsSpec = useStatsSpec();
 
-  const defaultBackEndResponse = useBackendApi(allKeys, false);
-  const defaultStatsSpec = useStatsSpec(defaultBackEndResponse);
+  const defaultStatsSpec = useStatsSpec();
   const defaultLayoutSpec = useDefaultLayout(defaultStatsSpec);
 
-  /* Initial Load */
+  /* Initial Load For Collection and Personal Pages*/
   React.useEffect(() => {
-    setDefaultLayout(defaultLayoutSpec);
     if (collectionLayout === undefined) {
       setCollectionLayout(defaultLayoutSpec);
     }
@@ -138,13 +133,16 @@ export function StatsPage(): JSX.Element | null {
     }
   }, [
     collectionLayout,
-    setCollectionLayout,
-    setDefaultLayout,
     defaultLayoutSpec,
     personalLayout,
+    setCollectionLayout,
     setPersonalLayout,
-    defaultStatsSpec,
   ]);
+
+  /* Set Default Layout every time page is rendered*/
+  React.useEffect(() => {
+    setDefaultLayout(defaultLayoutSpec);
+  }, [setDefaultLayout, defaultLayoutSpec]);
 
   const pageLastUpdated = activePage.isCollection
     ? collectionLayout?.[activePage.pageIndex].lastUpdated
@@ -188,41 +186,45 @@ export function StatsPage(): JSX.Element | null {
       setPersonalLayout,
     ]
   );
-  /* Listen for unknown categories updates */
-  React.useEffect(() => {
-    const categoriesFromSpec: R<{
-      readonly pageName: string;
-      readonly categoryName: string;
-      readonly items: StatCategoryReturn;
-    }> = {};
-    Object.entries(statsSpec).forEach(([pageName, pageSpec]) =>
-      Object.entries(pageSpec).forEach(([categoryName, { items }]) => {
-        if (categoriesToFetch.includes(categoryName)) {
-          categoriesFromSpec[categoryName] = {
-            pageName,
-            categoryName,
-            items,
-          };
-        }
-      })
-    );
 
-    handleChange((oldCategory) =>
-      oldCategory.map((unknownCategory) => ({
-        ...unknownCategory,
-        items:
-          unknownCategory.items ??
-          (unknownCategory.categoryToFetch === undefined
-            ? undefined
-            : statSpecToItems(
-                categoriesFromSpec[unknownCategory.categoryToFetch]
-                  .categoryName,
-                categoriesFromSpec[unknownCategory.categoryToFetch].pageName,
-                categoriesFromSpec[unknownCategory.categoryToFetch].items
-              )),
-      }))
+  React.useEffect(() => {
+    Object.entries(statsSpec).forEach(([pageName, pageSpec]) =>
+      Object.entries(pageSpec).forEach(([categoryName, categorySpec]) =>
+        Object.entries(categorySpec.items ?? {}).forEach(
+          ([itemName, { spec }]) => {
+            if (itemName === 'phantomItem' && spec.type === 'BackEndStat') {
+              if (Object.keys(backEndResponse ?? {}).includes(categoryName)) {
+                handleChange((oldCategory) =>
+                  oldCategory.map((unknownCategory) => ({
+                    ...unknownCategory,
+                    items:
+                      unknownCategory.items ??
+                      (unknownCategory.categoryToFetch === undefined ||
+                      backEndResponse?.[unknownCategory.categoryToFetch] ===
+                        undefined ||
+                      unknownCategory.categoryToFetch !== categoryName
+                        ? undefined
+                        : Object.entries(backEndResponse[categoryName]).map(
+                            ([itemName, rawValue]) => ({
+                              type: 'DefaultStat',
+                              pageName,
+                              itemName: 'phantomItem',
+                              categoryName,
+                              itemLabel: itemName,
+                              itemValue: spec.formatter(rawValue),
+                              itemType: 'BackendStat',
+                              pathToValue: itemName,
+                            })
+                          )),
+                  }))
+                );
+              }
+            }
+          }
+        )
+      )
     );
-  }, [categoriesToFetch, handleChange, statsSpec]);
+  }, [backEndResponse, handleChange, statsSpec, pageLayout]);
 
   const queries = useQueries(filters, false);
   const previousCollectionLayout = React.useRef(
@@ -354,6 +356,7 @@ export function StatsPage(): JSX.Element | null {
         )}
         <Button.Blue
           onClick={(): void => {
+            cleanFulfilledRequests();
             if (activePage.isCollection) {
               setCollectionLayout(
                 updatePage(collectionLayout, activePage.pageIndex)
@@ -701,7 +704,7 @@ export function StatsPage(): JSX.Element | null {
         <AddStatDialog
           defaultStatsAddLeft={defaultStatsAddLeft}
           queries={queries}
-          statsSpec={statsSpec}
+          statsSpec={defaultStatsSpec}
           onAdd={(item, itemIndex): void =>
             handleAdd(item, state.categoryIndex, itemIndex)
           }
