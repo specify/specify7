@@ -112,6 +112,7 @@ export function StatsPage(): JSX.Element | null {
     unknownCategories.includes(categoryToFetch as keyof typeof urlSpec)
   );
 
+  const allCategories = React.useMemo(() => Object.keys(urlSpec), []);
   const [categoriesToFetch, setCategoriesToFetch] = React.useState<RA<string>>(
     categoriesToFetchInitially.filter((categoryToFetch) =>
       unknownCategories.includes(categoryToFetch as keyof typeof urlSpec)
@@ -127,9 +128,11 @@ export function StatsPage(): JSX.Element | null {
   React.useEffect(() => {
     if (collectionLayout === undefined) {
       setCollectionLayout(defaultLayoutSpec);
+      setCategoriesToFetch(allCategories);
     }
     if (personalLayout === undefined) {
       setPersonalLayout(defaultLayoutSpec);
+      setCategoriesToFetch(allCategories);
     }
   }, [
     collectionLayout,
@@ -137,6 +140,7 @@ export function StatsPage(): JSX.Element | null {
     personalLayout,
     setCollectionLayout,
     setPersonalLayout,
+    allCategories,
   ]);
 
   /* Set Default Layout every time page is rendered*/
@@ -186,7 +190,6 @@ export function StatsPage(): JSX.Element | null {
       setPersonalLayout,
     ]
   );
-
   React.useEffect(() => {
     Object.entries(statsSpec).forEach(([pageName, pageSpec]) =>
       Object.entries(pageSpec).forEach(([categoryName, categorySpec]) =>
@@ -224,7 +227,7 @@ export function StatsPage(): JSX.Element | null {
         )
       )
     );
-  }, [backEndResponse, handleChange, statsSpec, pageLayout]);
+  }, [backEndResponse, handleChange, statsSpec]);
 
   const queries = useQueries(filters, false);
   const previousCollectionLayout = React.useRef(
@@ -394,6 +397,8 @@ export function StatsPage(): JSX.Element | null {
               onClick={(): void => {
                 setCollectionLayout(defaultLayoutSpec);
                 setPersonalLayout(defaultLayoutSpec);
+                cleanFulfilledRequests();
+                setCategoriesToFetch(Object.keys(urlSpec));
               }}
             >
               {commonText('reset')}
