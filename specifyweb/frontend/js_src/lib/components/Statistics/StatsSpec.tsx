@@ -4,15 +4,12 @@ import { formatNumber } from '../Atoms/Internationalization';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { statsText } from '../../localization/stats';
 import { formattedEntry } from '../WbPlanView/mappingHelpers';
-import type {
-  BackEndStat,
-  BackendStatsResult,
-  StatCategoryReturn,
-} from './types';
+import type { BackendStatsResult, StatCategoryReturn } from './types';
 import { userInformation } from '../InitialContext/userInformation';
 import { ensure } from '../../utils/types';
+import { urlSpec } from './definitions';
 
-const modifyBackendResult = <CATEGORY_NAME extends keyof BackendStatsResult>(
+/*const modifyBackendResult = <CATEGORY_NAME extends keyof BackendStatsResult>(
   backEndStats: BackendStatsResult[CATEGORY_NAME] | undefined,
   modifyFunction: (
     rawValue: BackendStatsResult[CATEGORY_NAME][keyof BackendStatsResult[CATEGORY_NAME]]
@@ -31,7 +28,7 @@ const modifyBackendResult = <CATEGORY_NAME extends keyof BackendStatsResult>(
             },
           },
         ])
-      );
+      ); */
 
 type StatsSpec =
   | {
@@ -48,12 +45,12 @@ type StatsSpec =
         readonly categories: () => StatCategoryReturn;
       };
     };
-
+// @ts-expect-error
 export const statsSpec: IR<StatsSpec> = {
   [statsText('collection')]: {
     holdings: {
       label: statsText('holdings'),
-      categories: (backendStatsResult) => ({
+      categories: () => ({
         specimens: {
           label: statsText('collectionObjects'),
           spec: {
@@ -102,35 +99,50 @@ export const statsSpec: IR<StatsSpec> = {
           label: statsText('familiesRepresented'),
           spec: {
             type: 'BackEndStat',
-            value: backendStatsResult?.familiesRepresented,
+            pathToValue: 'familiesRepresented',
+            urlToFetch: urlSpec.holdings,
+            formatter: formatNumber,
           },
         },
         generaRepresented: {
           label: statsText('generaRepresented'),
           spec: {
             type: 'BackEndStat',
-            value: backendStatsResult?.generaRepresented,
+            pathToValue: 'generaRepresented',
+            urlToFetch: urlSpec.holdings,
+            formatter: formatNumber,
           },
         },
         speciesRepresented: {
           label: statsText('speciesRepresented'),
           spec: {
             type: 'BackEndStat',
-            value: backendStatsResult?.speciesRepresented,
+            pathToValue: 'speciesRepresented',
+            urlToFetch: urlSpec.holdings,
+            formatter: formatNumber,
           },
         },
       }),
     },
     preparations: {
       label: statsText('preparations'),
-      categories: (backendStatsResult) =>
-        modifyBackendResult<'preparations'>(
-          backendStatsResult,
-          (prepelement) =>
-            `${formatNumber(prepelement.lots)} / ${formatNumber(
-              prepelement.total
-            )}`
-        ),
+      categories: () => ({
+        phantomItem: {
+          label: statsText('preparations'),
+          spec: {
+            type: 'BackEndStat',
+            pathToValue: undefined,
+            urlToFetch: urlSpec.preparations,
+            formatter: ({
+              lots,
+              total,
+            }: {
+              readonly lots: number;
+              readonly total: number;
+            }) => `${formatNumber(lots)} / ${formatNumber(total)}`,
+          },
+        },
+      }),
     },
     loans: {
       label: statsText('loans'),
@@ -290,7 +302,7 @@ export const statsSpec: IR<StatsSpec> = {
     },
     localityGeography: {
       label: statsText('localityGeography'),
-      categories: (backendStatsResult) => ({
+      categories: () => ({
         localityCount: {
           label: statsText('localities'),
           spec: {
@@ -327,7 +339,9 @@ export const statsSpec: IR<StatsSpec> = {
           label: statsText('countries'),
           spec: {
             type: 'BackEndStat',
-            value: backendStatsResult?.countries,
+            urlToFetch: urlSpec.localityGeography,
+            pathToValue: 'countries',
+            formatter: formatNumber,
           },
         },
         georeferencedLocalityCount: {
@@ -352,8 +366,17 @@ export const statsSpec: IR<StatsSpec> = {
     },
     typeSpecimens: {
       label: statsText('typeSpecimens'),
-      categories: (backendStatsResult) =>
-        modifyBackendResult<'typeSpecimens'>(backendStatsResult, formatNumber),
+      categories: () => ({
+        phantomItem: {
+          label: statsText('typeSpecimens'),
+          spec: {
+            type: 'BackEndStat',
+            pathToValue: undefined,
+            urlToFetch: urlSpec.typeSpecimens,
+            formatter: toString,
+          },
+        },
+      }),
     },
     catalogStats: {
       label: statsText('computerization'),

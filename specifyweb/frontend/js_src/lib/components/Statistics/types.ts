@@ -27,6 +27,7 @@ export type DefaultStat = State<
     readonly itemLabel: string;
     readonly itemValue: number | string | undefined;
     readonly isVisible?: boolean;
+    readonly pathToValue?: string;
   }
 >;
 
@@ -40,9 +41,25 @@ export type StatLayout = RA<{
   readonly lastUpdated: string | undefined;
 }>;
 
+export type StatSpecCalculated =
+  | BackEndStat
+  | {
+      readonly type: 'QueryStat';
+      readonly tableName: keyof Tables;
+      readonly fields: RA<
+        Partial<SerializedResource<SpQueryField>> & { readonly path: string }
+      >;
+      readonly label: string;
+    }
+  | undefined;
+
 export type StatCategoryReturn =
   | IR<{ readonly label: string; readonly spec: StatItemSpec }>
   | undefined;
+export type ItemReturnSpec = {
+  readonly label: string;
+  readonly spec: StatItemSpec;
+};
 export type StatsSpec = IR<
   IR<{
     readonly label: string;
@@ -73,6 +90,10 @@ export type BackendStatsResult = {
 };
 export type BackEndStat = State<
   'BackEndStat',
-  { readonly value: number | string | undefined }
+  {
+    readonly pathToValue: string | undefined;
+    readonly urlToFetch: string;
+    readonly formatter: (rawResult: any) => string;
+  }
 >;
 export type StatItemSpec = BackEndStat | QueryBuilderStat;

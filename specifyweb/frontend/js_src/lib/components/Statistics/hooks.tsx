@@ -1,11 +1,7 @@
-import { SpQuery } from '../DataModel/types';
+import { SpQuery, SpQueryField, Tables } from '../DataModel/types';
 import type { IR, RA, WritableArray } from '../../utils/types';
-import {
-  useAsyncState,
-  useMultipleAsyncState,
-} from '../../hooks/useAsyncState';
+import { useMultipleAsyncState } from '../../hooks/useAsyncState';
 import React from 'react';
-import { f } from '../../utils/functools';
 import { ajax } from '../../utils/ajax';
 import { statsSpec } from './StatsSpec';
 import type {
@@ -16,6 +12,7 @@ import type {
   StatCategoryReturn,
   StatItemSpec,
   StatLayout,
+  StatSpecCalculated,
   StatsSpec,
 } from './types';
 import { SpecifyResource } from '../DataModel/legacyTypes';
@@ -29,6 +26,7 @@ import { keysToLowerCase } from '../../utils/utils';
 import { statsText } from '../../localization/stats';
 import { throttledAjax } from '../../utils/ajax/throttledAjax';
 import { unknownCategories, urlSpec } from './definitions';
+import { SerializedResource } from '../DataModel/helperTypes';
 
 /**
  * Fetch backend statistics from the API
@@ -56,18 +54,21 @@ const backEndStatPromiseGenerator = (categoriesToFetch: RA<string>) =>
     categoriesToFetch.map((key) => [
       key,
       async () =>
-        throttledAjax('backendStats', async () =>
-          ajax<BackendStatsResult>(urlSpec[key as keyof typeof urlSpec], {
-            method: 'GET',
-            headers: {
-              Accept: 'application/json',
-            },
-          }).then(({ data }) => data)
+        throttledAjax<BackendStatsResult, keyof typeof urlSpec>(
+          'backendStats',
+          async () =>
+            ajax<BackendStatsResult>(urlSpec[key as keyof typeof urlSpec], {
+              method: 'GET',
+              headers: {
+                Accept: 'application/json',
+              },
+            }).then(({ data }) => data),
+          key as keyof typeof urlSpec
         ),
     ])
   );
 
-export function useStatsSpec(backEndResult: BackendStatsResult | undefined): IR<
+export function useStatsSpec(): IR<
   IR<{
     readonly label: string;
     readonly items: StatCategoryReturn;
@@ -84,21 +85,14 @@ export function useStatsSpec(backEndResult: BackendStatsResult | undefined): IR<
                 categoryName,
                 {
                   label,
-                  items: (
-                    categories as (
-                      backendStatResult:
-                        | BackendStatsResult[typeof categoryName]
-                        | string
-                        | undefined
-                    ) => StatCategoryReturn
-                  )(backEndResult?.[categoryName]),
+                  items: (categories as () => StatCategoryReturn)(),
                 },
               ]
             )
           ),
         ])
       ),
-    [backEndResult]
+    []
   );
 }
 
@@ -163,8 +157,9 @@ export const statSpecToItems = (
         itemName,
         categoryName,
         itemLabel: label,
-        itemValue: spec.type === 'BackEndStat' ? spec.value : undefined,
+        itemValue: undefined,
         itemType: spec.type === 'BackEndStat' ? 'BackendStat' : 'QueryStat',
+        pathToValue: spec.type === 'BackEndStat' ? spec.pathToValue : undefined,
       }));
 
 export function useDefaultLayout(statsSpec: StatsSpec): StatLayout {
@@ -175,7 +170,11 @@ export function useDefaultLayout(statsSpec: StatsSpec): StatLayout {
         categories: Object.entries(pageStatsSpec).map(
           ([categoryName, { label, items }]) => ({
             label,
-            items: statSpecToItems(categoryName, pageName, items),
+            items: unknownCategories.includes(
+              categoryName as keyof typeof urlSpec
+            )
+              ? undefined
+              : statSpecToItems(categoryName, pageName, items),
             categoryToFetch: unknownCategories.includes(
               categoryName as keyof typeof urlSpec
             )
@@ -189,11 +188,11 @@ export function useDefaultLayout(statsSpec: StatsSpec): StatLayout {
   );
 }
 
-function queryCountPromiseGenerator(
+export function queryCountPromiseGenerator(
   query: SpecifyResource<SpQuery>
-): () => Promise<number | string | undefined> {
-  return async () =>
-    ajax<{
+): () => Promise<string> {
+  return async () => {
+    const ajaxPromise = ajax<{
       readonly count: number;
     }>('/stored_query/ephemeral/', {
       method: 'POST',
@@ -206,67 +205,94 @@ function queryCountPromiseGenerator(
         countOnly: true,
       }),
     }).then(({ data }) => formatNumber(data.count));
+    return ajaxPromise;
+  };
 }
 
 export function useResolvedSpec(
   statSpecItem:
     | { readonly label: string; readonly spec: StatItemSpec }
     | undefined,
-  itemLabel: string
-):
-  | {
-      readonly type: 'QueryStat';
-      readonly query: SpecifyResource<SpQuery>;
-      readonly label: string;
-    }
-  | {
-      readonly type: 'BackendStat';
-      readonly value: string | number | undefined;
-      readonly label: string | undefined;
-    }
-  | undefined {
+  itemLabel: string,
+  pathToValueLayout: string | undefined
+): StatSpecCalculated {
   return React.useMemo(() => {
-    if (
-      statSpecItem?.spec.type === undefined ||
-      (statSpecItem?.spec.type === 'BackEndStat' && itemLabel === undefined)
-    ) {
-      return undefined;
+    if (statSpecItem?.spec.type === 'BackEndStat') {
+      return pathToValueLayout === undefined &&
+        statSpecItem?.spec.pathToValue === undefined
+        ? undefined
+        : {
+            type: 'BackEndStat',
+            pathToValue: pathToValueLayout ?? statSpecItem?.spec.pathToValue,
+            urlToFetch: statSpecItem?.spec.urlToFetch,
+            formatter: statSpecItem?.spec.formatter,
+          };
+    } else {
+      return statSpecItem?.spec.tableName !== undefined &&
+        statSpecItem?.spec.fields !== undefined
+        ? {
+            type: 'QueryStat',
+            tableName: statSpecItem?.spec.tableName,
+            fields: statSpecItem?.spec.fields,
+            label: itemLabel,
+          }
+        : undefined;
     }
-    return statSpecItem?.spec.type === 'BackEndStat'
-      ? {
-          type: 'BackendStat',
-          value: statSpecItem?.spec.value,
-          label: statSpecItem?.label,
-        }
-      : {
-          type: 'QueryStat',
-          query: deserializeResource(
+  }, [statSpecItem, itemLabel, pathToValueLayout]);
+}
+
+export const useResolvedSpecToQueryResource = (
+  statSpecCalculated: StatSpecCalculated
+): SpecifyResource<SpQuery> | undefined =>
+  React.useMemo(
+    () =>
+      statSpecCalculated?.type === 'QueryStat'
+        ? deserializeResource(
             addMissingFields('SpQuery', {
-              name: statSpecItem?.label,
-              contextName: statSpecItem?.spec?.tableName,
+              name: statSpecCalculated.label,
+              contextName: statSpecCalculated.tableName,
               contextTableId:
-                schema.models[statSpecItem?.spec?.tableName].tableId,
+                schema.models[statSpecCalculated.tableName].tableId,
               countOnly: false,
               selectDistinct: false,
-              fields: statSpecItem?.spec?.fields.map(
+              fields: statSpecCalculated.fields.map(
                 ({ path, ...field }, index) =>
                   serializeResource(
-                    makeQueryField(
-                      (statSpecItem.spec as QueryBuilderStat).tableName,
-                      path,
-                      {
-                        ...field,
-                        position: index,
-                      }
-                    )
+                    makeQueryField(statSpecCalculated.tableName, path, {
+                      ...field,
+                      position: index,
+                    })
                   )
               ),
             })
-          ),
-          label: itemLabel,
-        };
-  }, [statSpecItem, itemLabel]);
-}
+          )
+        : undefined,
+    [statSpecCalculated]
+  );
+export const querySpecToResource = (
+  label: string,
+  tableName: keyof Tables,
+  fields: RA<
+    Partial<SerializedResource<SpQueryField>> & { readonly path: string }
+  >
+): SpecifyResource<SpQuery> =>
+  deserializeResource(
+    addMissingFields('SpQuery', {
+      name: label,
+      contextName: tableName,
+      contextTableId: schema.models[tableName].tableId,
+      countOnly: false,
+      selectDistinct: false,
+      fields: fields.map(({ path, ...field }, index) =>
+        serializeResource(
+          makeQueryField(tableName, path, {
+            ...field,
+            position: index,
+          })
+        )
+      ),
+    })
+  );
 
 export function useCustomStatsSpec(
   item: CustomStat | DefaultStat
@@ -285,67 +311,6 @@ export function useCustomStatsSpec(
         : undefined,
     [item]
   );
-}
-
-export function useValueLoad(
-  statSpecCalculated:
-    | {
-        readonly type: 'QueryStat';
-        readonly query: SpecifyResource<SpQuery> | undefined;
-        readonly label: string | undefined;
-      }
-    | {
-        readonly type: 'BackendStat';
-        readonly value: string | number | undefined;
-        readonly label: string | undefined;
-      }
-    | undefined,
-  categoryIndex: number,
-  itemIndex: number,
-  handleValueLoadIndex:
-    | ((
-        categoryIndex: number,
-        itemIndex: number,
-        value: number | string,
-        itemLabel: string
-      ) => void)
-    | undefined,
-  itemValue: string | number | undefined
-) {
-  const handleValueLoad = React.useCallback(
-    (count: number | string | undefined, itemLabel: string) =>
-      f.maybe(handleValueLoadIndex, (handleValueLoadIndex) => {
-        f.maybe(count, (count) => {
-          handleValueLoadIndex(categoryIndex, itemIndex, count, itemLabel);
-        });
-      }),
-    [categoryIndex, itemIndex, handleValueLoadIndex]
-  );
-  const [count] = useAsyncState(
-    React.useCallback(async () => {
-      if (itemValue !== undefined || statSpecCalculated === undefined) {
-        return undefined;
-      }
-      if (
-        statSpecCalculated.type === 'QueryStat' &&
-        statSpecCalculated.query !== undefined
-      ) {
-        return throttledAjax(
-          'queryStats',
-          queryCountPromiseGenerator(statSpecCalculated.query)
-        );
-      } else if (statSpecCalculated.type === 'BackendStat') {
-        return statSpecCalculated.value;
-      }
-      return undefined;
-    }, [statSpecCalculated, itemValue]),
-    false
-  );
-  React.useEffect(() => {
-    if (statSpecCalculated?.label !== undefined && itemValue === undefined) {
-      handleValueLoad(count, statSpecCalculated.label);
-    }
-  }, [handleValueLoad, statSpecCalculated, count, itemValue]);
 }
 
 export function useCategoryToFetch(
