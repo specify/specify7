@@ -3,26 +3,26 @@ msgstr "Content-Type: text/plain\n"
 
 #: components/UserPreferences/Definitions.tsx:1451
 #: components/WorkBench/Template.tsx:118
-#: components/WorkBench/wbView.js:1861
+#: components/WorkBench/wbView.js:1860
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 msgid "dataMapper"
 msgstr "Картограф даних"
 
 #: components/WbPlanView/State.tsx:37
-#: components/WorkBench/wbView.js:260
-#: components/WorkBench/wbView.js:1951
+#: components/WorkBench/wbView.js:259
+#: components/WorkBench/wbView.js:1950
 #. Used in: Components > Wb Plan View > State ⬤ Components > Work Bench > Wb View
 msgid "noUploadPlan"
 msgstr "План завантаження не визначено"
 
-#: components/WorkBench/wbView.js:274
-#: components/WorkBench/wbView.js:1952
+#: components/WorkBench/wbView.js:273
+#: components/WorkBench/wbView.js:1951
 #. Used in: Components > Work Bench > Wb View
 msgid "noUploadPlanDescription"
 msgstr "Для цього набору даних не визначено план завантаження. Створити зараз?"
 
+#: components/WorkBench/wbView.js:380
 #: components/WorkBench/wbView.js:381
-#: components/WorkBench/wbView.js:382
 #. Used in: Components > Work Bench > Wb View
 msgid "unmappedColumn"
 msgstr "Невідповідний стовпець"
@@ -349,12 +349,12 @@ msgstr "Нова колонка {index:number}"
 msgid "noHeader"
 msgstr "(без заголовка)"
 
-#: components/Toolbar/WbsDialog.tsx:195
+#: components/Toolbar/WbsDialog.tsx:198
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "copyPlan"
 msgstr "Скопіюйте план із наявного набору даних"
 
-#: components/Toolbar/WbsDialog.tsx:207
+#: components/Toolbar/WbsDialog.tsx:210
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "noPlansToCopyFrom"
 msgstr "Немає доступних планів, продовжуйте створювати план завантаження."

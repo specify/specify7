@@ -11,7 +11,7 @@ msgstr "Ouvrir la carte"
 #: components/QueryBuilder/ToMap.tsx:59
 #: components/QueryBuilder/ToMap.tsx:241
 #: components/UserPreferences/Definitions.tsx:1525
-#: components/WorkBench/Template.tsx:235
+#: components/WorkBench/Template.tsx:226
 #. Used in: Components > Leaflet > Map ⬤ Components > Query Builder > To Map ⬤ Components > User Preferences > Definitions ⬤ Components > Work Bench > Template
 msgid "geoMap"
 msgstr "GéoCarte"
@@ -66,7 +66,7 @@ msgstr "Polygones"
 #: components/FormPlugins/GeoLocate.tsx:122
 #: components/FormPlugins/GeoLocate.tsx:138
 #: components/FormPlugins/GeoLocate.tsx:221
-#: components/WorkBench/Template.tsx:225
+#: components/WorkBench/Template.tsx:216
 #: components/WorkBench/wbUtils.js:723
 #: components/WorkBench/wbUtils.js:731
 #. Used in: Components > Form Plugins > Geo Locate ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb Utils

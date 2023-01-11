@@ -4,14 +4,14 @@ msgstr "Content-Type: text/plain\n"
 #: components/Header/menuItemDefinitions.ts:103
 #: components/Router/OverlayRoutes.tsx:117
 #: components/UserPreferences/Definitions.tsx:1327
-#: components/WorkBench/wbView.js:230
+#: components/WorkBench/wbView.js:229
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > User Preferences > Definitions ⬤ Components > Work Bench > Wb View
 msgid "workBench"
 msgstr "banco de trabajo"
 
 #: components/WorkBench/Status.tsx:75
 #: components/WorkBench/Template.tsx:145
-#: components/WorkBench/wbView.js:1917
+#: components/WorkBench/wbView.js:1916
 #. Used in: Components > Work Bench > Status ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 msgid "rollback"
 msgstr "Retroceder"
@@ -29,7 +29,7 @@ msgstr "Validación"
 
 #: components/WorkBench/Status.tsx:74
 #: components/WorkBench/Template.tsx:156
-#: components/WorkBench/wbView.js:1943
+#: components/WorkBench/wbView.js:1942
 #. Used in: Components > Work Bench > Status ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 msgid "upload"
 msgstr "Subir"
@@ -49,66 +49,66 @@ msgstr "Cargando"
 msgid "validating"
 msgstr "Validando"
 
-#: components/WorkBench/wbView.js:542
+#: components/WorkBench/wbView.js:541
 #. Used in: Components > Work Bench > Wb View
 msgid "disambiguate"
 msgstr "desambiguar"
 
-#: components/WorkBench/wbView.js:553
+#: components/WorkBench/wbView.js:552
 #. Used in: Components > Work Bench > Wb View
 msgid "fillDown"
 msgstr "Llenar hacia abajo"
 
-#: components/WorkBench/wbView.js:561
+#: components/WorkBench/wbView.js:560
 #. Used in: Components > Work Bench > Wb View
 msgid "fillUp"
 msgstr "Llena"
 
 #: components/WorkBench/Template.tsx:166
-#: components/WorkBench/wbView.js:2070
+#: components/WorkBench/wbView.js:2023
 #. Used in: Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 msgid "revert"
 msgstr "Revertir"
 
-#: components/WorkBench/wbView.js:2197
+#: components/WorkBench/wbView.js:2150
 #. Used in: Components > Work Bench > Wb View
 msgid "dataCheck"
 msgstr "Comprobación de datos"
 
-#: components/WorkBench/wbView.js:2191
-#: components/WorkBench/wbView.js:2194
+#: components/WorkBench/wbView.js:2144
+#: components/WorkBench/wbView.js:2147
 #. Used in: Components > Work Bench > Wb View
 msgid "dataCheckOn"
 msgstr "Comprobación de datos: activado"
 
-#: components/WorkBench/DataSetMeta.tsx:318
+#: components/WorkBench/DataSetMeta.tsx:380
 #: components/WorkBench/Template.tsx:193
 #. Used in: Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Template
 msgid "changeOwner"
 msgstr "Cambio de propietario"
 
-#: components/WorkBench/Template.tsx:217
+#: components/WorkBench/Template.tsx:208
 #. Used in: Components > Work Bench > Template
 msgid "convertCoordinates"
 msgstr "Convertir coordenadas"
 
-#: components/WorkBench/Template.tsx:243
+#: components/WorkBench/Template.tsx:234
 #. Used in: Components > Work Bench > Template
 msgid "navigation"
 msgstr "Navegación"
 
-#: components/WorkBench/Template.tsx:265
+#: components/WorkBench/Template.tsx:256
 #. Used in: Components > Work Bench > Template
 msgid "replace"
 msgstr "Reemplazar"
 
-#: components/WorkBench/Template.tsx:262
-#: components/WorkBench/Template.tsx:266
+#: components/WorkBench/Template.tsx:253
+#: components/WorkBench/Template.tsx:257
 #. Used in: Components > Work Bench > Template
 msgid "replacementValue"
 msgstr "Valor de reposición"
 
-#: components/WorkBench/Template.tsx:272
+#: components/WorkBench/Template.tsx:263
 #. Used in: Components > Work Bench > Template
 msgid "searchResults"
 msgstr "Resultados de la búsqueda"
@@ -125,17 +125,17 @@ msgstr "Haga clic para alternar la visibilidad"
 msgid "configureSearchReplace"
 msgstr "Configurar Buscar y reemplazar"
 
-#: components/WorkBench/Template.tsx:274
+#: components/WorkBench/Template.tsx:265
 #. Used in: Components > Work Bench > Template
 msgid "modifiedCells"
 msgstr "Celdas modificadas"
 
-#: components/WorkBench/Template.tsx:276
+#: components/WorkBench/Template.tsx:267
 #. Used in: Components > Work Bench > Template
 msgid "newCells"
 msgstr "Nuevas celdas"
 
-#: components/WorkBench/Template.tsx:278
+#: components/WorkBench/Template.tsx:269
 #. Used in: Components > Work Bench > Template
 msgid "errorCells"
 msgstr "Celdas de error"
@@ -145,12 +145,12 @@ msgstr "Celdas de error"
 msgid "dataEditor"
 msgstr "Editor de datos"
 
-#: components/WorkBench/wbView.js:1581
+#: components/WorkBench/wbView.js:1580
 #. Used in: Components > Work Bench > Wb View
 msgid "noDisambiguationResults"
 msgstr "No se puede desambiguar"
 
-#: components/WorkBench/wbView.js:1582
+#: components/WorkBench/wbView.js:1581
 #. Used in: Components > Work Bench > Wb View
 msgid "noDisambiguationResultsDescription"
 msgstr ""
@@ -161,24 +161,24 @@ msgstr ""
 "En el último caso, deberá agregar campos y valores al conjunto de datos "
 "para resolver la ambigüedad."
 
-#: components/WorkBench/wbView.js:1636
+#: components/WorkBench/wbView.js:1635
 #. Used in: Components > Work Bench > Wb View
 msgid "disambiguateMatches"
 msgstr "Eliminar la ambigüedad de coincidencias de registros múltiples"
 
-#: components/WorkBench/wbView.js:1684
+#: components/WorkBench/wbView.js:1683
 #. Used in: Components > Work Bench > Wb View
 msgid "applyAllUnavailable"
 msgstr ""
 "\"Aplicar todo\" no está disponible mientras la verificación de datos está "
 "en curso."
 
-#: components/WorkBench/wbView.js:1900
+#: components/WorkBench/wbView.js:1899
 #. Used in: Components > Work Bench > Wb View
 msgid "beginRollback"
 msgstr "¿Comenzar reversión del conjunto de datos?"
 
-#: components/WorkBench/wbView.js:1901
+#: components/WorkBench/wbView.js:1900
 #. Used in: Components > Work Bench > Wb View
 msgid "beginRollbackDescription"
 msgstr ""
@@ -187,25 +187,25 @@ msgstr ""
 "cancelará si alguno de los datos cargados ha sido referenciado "
 "(reutilizado) por otros registros de datos desde que se cargaron."
 
-#: components/WorkBench/wbView.js:1931
+#: components/WorkBench/wbView.js:1930
 #. Used in: Components > Work Bench > Wb View
 msgid "startUpload"
 msgstr "¿Comenzar carga de conjunto de datos?"
 
-#: components/WorkBench/wbView.js:1932
+#: components/WorkBench/wbView.js:1931
 #. Used in: Components > Work Bench > Wb View
 msgid "startUploadDescription"
 msgstr ""
 "Cargar el conjunto de datos agregará los datos a la base de datos de "
 "especificación."
 
-#: components/WorkBench/wbView.js:2014
-#. Used in: Components > Work Bench > Wb View
+#: components/WorkBench/DataSetMeta.tsx:103
+#. Used in: Components > Work Bench > Data Set Meta
 msgid "deleteDataSet"
 msgstr "¿Eliminar este conjunto de datos?"
 
-#: components/WorkBench/wbView.js:2015
-#. Used in: Components > Work Bench > Wb View
+#: components/WorkBench/DataSetMeta.tsx:107
+#. Used in: Components > Work Bench > Data Set Meta
 msgid "deleteDataSetDescription"
 msgstr ""
 "Eliminar un conjunto de datos lo elimina de forma permanente junto con su "
@@ -213,66 +213,66 @@ msgstr ""
 "reutilización con otros conjuntos de datos. Además, después de eliminar, la "
 "reversión ya no será una opción para un conjunto de datos cargado."
 
-#: components/WorkBench/wbView.js:2034
-#. Used in: Components > Work Bench > Wb View
+#: components/WorkBench/DataSetMeta.tsx:68
+#. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSetDeleted"
 msgstr "Conjunto de datos eliminado con éxito"
 
-#: components/WorkBench/wbView.js:2035
-#. Used in: Components > Work Bench > Wb View
+#: components/WorkBench/DataSetMeta.tsx:71
+#. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSetDeletedDescription"
 msgstr "Conjunto de datos eliminado con éxito."
 
-#: components/WorkBench/wbView.js:2063
+#: components/WorkBench/wbView.js:2016
 #. Used in: Components > Work Bench > Wb View
 msgid "revertChanges"
 msgstr "¿Revertir cambios no guardados?"
 
-#: components/WorkBench/wbView.js:2064
+#: components/WorkBench/wbView.js:2017
 #. Used in: Components > Work Bench > Wb View
 msgid "revertChangesDescription"
 msgstr ""
 "Esta acción descartará todos los cambios realizados en el conjunto de datos "
 "desde la última vez que se guardó."
 
-#: components/WorkBench/wbView.js:2087
+#: components/WorkBench/wbView.js:2040
 #. Used in: Components > Work Bench > Wb View
 msgid "saving"
 msgstr "Ahorro..."
 
-#: components/WorkBench/Template.tsx:347
+#: components/WorkBench/Template.tsx:338
 #. Used in: Components > Work Bench > Template
 msgid "wbUnloadProtect"
 msgstr "Los cambios a este conjunto de datos no se han guardado."
 
-#: components/WorkBench/wbView.js:2299
+#: components/WorkBench/wbView.js:2252
 #. Used in: Components > Work Bench > Wb View
 msgid "noMatchErrorMessage"
 msgstr ""
 "No hay ningún registro coincidente para la tabla de coincidencias "
 "obligatorias."
 
-#: components/WorkBench/wbView.js:2323
+#: components/WorkBench/wbView.js:2276
 #. Used in: Components > Work Bench > Wb View
 msgid "matchedMultipleErrorMessage"
 msgstr ""
 "Este valor coincide con dos o más registros de base de datos existentes y "
 "la coincidencia debe eliminarse antes de cargar."
 
-#: components/WorkBench/wbView.js:2528
+#: components/WorkBench/wbView.js:2481
 #. Used in: Components > Work Bench > Wb View
 msgid "validationNoErrors"
 msgstr "Validar completado sin errores"
 
-#: components/WorkBench/wbView.js:2530
+#: components/WorkBench/wbView.js:2483
 #. Used in: Components > Work Bench > Wb View
 msgid "validationNoErrorsDescription"
 msgstr ""
 "La validación no encontró errores, está listo para ser cargado en la base "
 "de datos."
 
-#: components/WorkBench/wbView.js:2533
-#: components/WorkBench/wbView.js:2542
+#: components/WorkBench/wbView.js:2486
+#: components/WorkBench/wbView.js:2495
 #. Used in: Components > Work Bench > Wb View
 msgid "validationReEditWarning"
 msgstr ""
@@ -280,39 +280,39 @@ msgstr ""
 "volver a ejecutar Validar antes de cargar para verificar que no se hayan "
 "introducido errores."
 
-#: components/WorkBench/wbView.js:2537
+#: components/WorkBench/wbView.js:2490
 #. Used in: Components > Work Bench > Wb View
 msgid "validationErrors"
 msgstr "Validar completado con errores"
 
-#: components/WorkBench/wbView.js:2539
+#: components/WorkBench/wbView.js:2492
 #. Used in: Components > Work Bench > Wb View
 msgid "validationErrorsDescription"
 msgstr "La validación encontró errores en el conjunto de datos."
 
-#: components/WorkBench/wbView.js:2548
+#: components/WorkBench/wbView.js:2501
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadSuccessful"
 msgstr "Carga completada sin errores"
 
-#: components/WorkBench/wbView.js:2549
+#: components/WorkBench/wbView.js:2502
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadSuccessfulDescription"
 msgstr ""
 "Haga clic en el botón \"Resultados\" para ver la cantidad de nuevos "
 "registros agregados a cada tabla de la base de datos."
 
-#: components/WorkBench/wbView.js:2552
+#: components/WorkBench/wbView.js:2505
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadErrors"
 msgstr "Carga fallida debido a celdas de error"
 
-#: components/WorkBench/wbView.js:2554
+#: components/WorkBench/wbView.js:2507
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadErrorsDescription"
 msgstr "La carga falló debido a uno o más errores de valor de celda."
 
-#: components/WorkBench/wbView.js:2557
+#: components/WorkBench/wbView.js:2510
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadErrorsSecondDescription"
 msgstr ""
@@ -320,44 +320,44 @@ msgstr ""
 "cada celda de error, luego haga las correcciones apropiadas. Guarde y "
 "vuelva a intentar la carga."
 
-#: components/WorkBench/wbView.js:2561
+#: components/WorkBench/wbView.js:2514
 #. Used in: Components > Work Bench > Wb View
 msgid "dataSetRollback"
 msgstr "El conjunto de datos se revirtió con éxito"
 
-#: components/WorkBench/wbView.js:2562
+#: components/WorkBench/wbView.js:2515
 #. Used in: Components > Work Bench > Wb View
 msgid "dataSetRollbackDescription"
 msgstr ""
 "Este conjunto de datos revertidos se guarda y se puede editar o volver a "
 "cargar."
 
-#: components/WorkBench/wbView.js:2582
+#: components/WorkBench/wbView.js:2535
 #. Used in: Components > Work Bench > Wb View
 msgid "validationCanceled"
 msgstr "Validación cancelada"
 
-#: components/WorkBench/wbView.js:2588
+#: components/WorkBench/wbView.js:2541
 #. Used in: Components > Work Bench > Wb View
 msgid "validationCanceledDescription"
 msgstr "Se canceló la validación del conjunto de datos."
 
-#: components/WorkBench/wbView.js:2584
+#: components/WorkBench/wbView.js:2537
 #. Used in: Components > Work Bench > Wb View
 msgid "rollbackCanceled"
 msgstr "Reversión cancelada"
 
-#: components/WorkBench/wbView.js:2590
+#: components/WorkBench/wbView.js:2543
 #. Used in: Components > Work Bench > Wb View
 msgid "rollbackCanceledDescription"
 msgstr "Reversión del conjunto de datos cancelada."
 
-#: components/WorkBench/wbView.js:2585
+#: components/WorkBench/wbView.js:2538
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadCanceled"
 msgstr "Carga cancelada"
 
-#: components/WorkBench/wbView.js:2591
+#: components/WorkBench/wbView.js:2544
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadCanceledDescription"
 msgstr "Carga de conjunto de datos cancelada."
@@ -372,51 +372,51 @@ msgstr "Formato de geocoordenadas"
 msgid "coordinateConverterDescription"
 msgstr "Elija un formato de geocoordenada preferido"
 
-#: components/WorkBench/wbView.js:667
+#: components/WorkBench/wbView.js:666
 #. 🟥When empty string is used as a default value for a column, this is shown instead. Used in: Components > Work Bench > Wb View
 msgid "emptyStringInline"
 msgstr "(cuerda vacía)"
 
 #: components/WorkBench/Template.tsx:133
-#: components/WorkBench/wbView.js:2423
+#: components/WorkBench/wbView.js:2376
 #. Used in: Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 msgid "wbUploadedUnavailable"
 msgstr "El conjunto de datos debe validarse o cargarse"
 
-#: components/WorkBench/wbView.js:278
+#: components/WorkBench/wbView.js:277
 #. Used in: Components > Work Bench > Wb View
 msgid "wbValidateUnavailable"
 msgstr ""
 "Se debe definir un plan de carga antes de que se pueda validar este "
 "conjunto de datos"
 
-#: components/WorkBench/wbView.js:2418
+#: components/WorkBench/wbView.js:2371
 #. Used in: Components > Work Bench > Wb View
 msgid "unavailableWhileEditing"
 msgstr "Esta acción requiere que se guarden todos los cambios"
 
-#: components/WorkBench/wbView.js:2506
+#: components/WorkBench/wbView.js:2459
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadUnavailableWhileHasErrors"
 msgstr ""
 "La carga no está disponible porque algunas celdas tienen errores de "
 "validación"
 
-#: components/WorkBench/wbView.js:1738
+#: components/WorkBench/wbView.js:1737
 #. Used in: Components > Work Bench > Wb View
 msgid "unavailableWhileViewingResults"
 msgstr "Esta acción no está disponible mientras se ven los resultados de la carga"
 
-#: components/WorkBench/wbView.js:1705
+#: components/WorkBench/wbView.js:1704
 #. Used in: Components > Work Bench > Wb View
 msgid "unavailableWhileValidating"
 msgstr ""
 "Esta acción no está disponible mientras la verificación de datos está en "
 "curso"
 
-#: components/WorkBench/Template.tsx:215
-#: components/WorkBench/Template.tsx:223
-#: components/WorkBench/Template.tsx:233
+#: components/WorkBench/Template.tsx:206
+#: components/WorkBench/Template.tsx:214
+#: components/WorkBench/Template.tsx:224
 #. Used in: Components > Work Bench > Template
 msgid "unavailableWithoutLocality"
 msgstr "Esta herramienta requiere que se mapeen las columnas de localidad"
@@ -426,7 +426,7 @@ msgstr "Esta herramienta requiere que se mapeen las columnas de localidad"
 msgid "unavailableWhenUploaded"
 msgstr "Esta herramienta no funciona con conjuntos de datos cargados"
 
-#: components/WorkBench/wbView.js:2429
+#: components/WorkBench/wbView.js:2382
 #. Used in: Components > Work Bench > Wb View
 msgid "dataSetDeletedOrNotFound"
 msgstr "El conjunto de datos fue eliminado por otra sesión."
@@ -446,7 +446,7 @@ msgstr "Cargar resultados"
 msgid "potentialUploadResults"
 msgstr "Posibles resultados de carga"
 
-#: components/WorkBench/wbView.js:468
+#: components/WorkBench/wbView.js:467
 #. Used in: Components > Work Bench > Wb View
 msgid "noUploadResultsAvailable"
 msgstr "No hay resultados de carga disponibles para esta celda"
@@ -610,7 +610,7 @@ msgstr "Nombre para el nuevo conjunto de datos:"
 msgid "firstRowIsHeader"
 msgstr "La primera fila es el encabezado:"
 
-#: components/Toolbar/WbsDialog.tsx:173
+#: components/Toolbar/WbsDialog.tsx:176
 #: components/WbImport/index.tsx:238
 #. Used in: Components > Toolbar > Wbs Dialog ⬤ Components > Wb Import > Index
 msgid "importFile"
@@ -626,79 +626,79 @@ msgstr "Columna {columnIndex:number}"
 msgid "newDataSetName"
 msgstr "Nuevo conjunto de datos {date}"
 
-#: components/Toolbar/WbsDialog.tsx:197
+#: components/Toolbar/WbsDialog.tsx:200
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "dataSets"
 msgstr "Conjuntos de datos de WorkBench"
 
-#: components/Toolbar/WbsDialog.tsx:208
+#: components/Toolbar/WbsDialog.tsx:211
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "wbsDialogEmpty"
 msgstr "Actualmente no existen conjuntos de datos."
 
-#: components/Toolbar/WbsDialog.tsx:209
+#: components/Toolbar/WbsDialog.tsx:212
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "createDataSetInstructions"
 msgstr "Utilice \"Importar un archivo\" o \"Crear nuevo\" para crear uno nuevo."
 
-#: components/Toolbar/WbsDialog.tsx:184
+#: components/Toolbar/WbsDialog.tsx:187
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "createNew"
 msgstr "Crear nuevo"
 
-#: components/WorkBench/DataSetMeta.tsx:66
+#: components/WorkBench/DataSetMeta.tsx:127
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSetMeta"
 msgstr "Propiedades del conjunto de datos"
 
 #: components/WbPlanView/Mapper.tsx:401
-#: components/WorkBench/DataSetMeta.tsx:99
+#: components/WorkBench/DataSetMeta.tsx:160
 #. Used in: Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Data Set Meta
 msgid "dataSetName"
 msgstr "Nombre del conjunto de datos"
 
-#: components/WorkBench/DataSetMeta.tsx:121
+#: components/WorkBench/DataSetMeta.tsx:182
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "numberOfRows"
 msgstr "Número de filas"
 
-#: components/WorkBench/DataSetMeta.tsx:127
+#: components/WorkBench/DataSetMeta.tsx:188
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "numberOfColumns"
 msgstr "Número de columnas"
 
-#: components/WorkBench/DataSetMeta.tsx:222
+#: components/WorkBench/DataSetMeta.tsx:283
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "importedFileName"
 msgstr "Importar nombre de archivo"
 
-#: components/WorkBench/DataSetMeta.tsx:225
+#: components/WorkBench/DataSetMeta.tsx:286
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "noFileName"
 msgstr "(sin nombre de archivo)"
 
-#: components/WorkBench/DataSetMeta.tsx:322
+#: components/WorkBench/DataSetMeta.tsx:384
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "changeDataSetOwner"
 msgstr "Cambiar propietario del conjunto de datos"
 
-#: components/WorkBench/DataSetMeta.tsx:343
+#: components/WorkBench/DataSetMeta.tsx:405
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "changeDataSetOwnerDescription"
 msgstr "Seleccionar nuevo propietario:"
 
-#: components/WorkBench/DataSetMeta.tsx:307
-#: components/WorkBench/DataSetMeta.tsx:310
+#: components/WorkBench/DataSetMeta.tsx:369
+#: components/WorkBench/DataSetMeta.tsx:372
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSetOwnerChanged"
 msgstr "El propietario del conjunto de datos cambió"
 
-#: components/WorkBench/DataSetMeta.tsx:255
+#: components/WorkBench/DataSetMeta.tsx:316
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSet"
 msgstr "Conjunto de datos"
 
-#: components/WorkBench/DataSetMeta.tsx:259
+#: components/WorkBench/DataSetMeta.tsx:320
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSetUploadedLabel"
 msgstr "(Subido, solo lectura)"
