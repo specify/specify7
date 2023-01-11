@@ -100,7 +100,6 @@ export const WBView = Backbone.View.extend({
     'click .wb-show-plan': 'showPlan',
     'click .wb-revert': 'revertChanges',
     'click .wb-save': 'saveClicked',
-    'click .wb-delete-data-set': 'delete',
     'click .wb-export-data-set': 'export',
     'click .wb-change-data-set-owner': 'changeOwner',
 
@@ -2030,52 +2029,6 @@ export const WBView = Backbone.View.extend({
         this.trigger('refresh', mode, wasAborted);
       },
     }).render();
-  },
-  delete() {
-    const dialog = showDialog({
-      header: wbText.deleteDataSet(),
-      content: wbText.deleteDataSetDescription(),
-      onClose: () => dialog.remove(),
-      buttons: (
-        <>
-          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Button.Red
-            onClick={() => {
-              ping(
-                `/api/workbench/dataset/${this.dataset.id}/`,
-                {
-                  method: 'DELETE',
-                },
-                { expectedResponseCodes: [Http.NO_CONTENT, Http.NOT_FOUND] }
-              ).then((status) => {
-                this.$el.empty();
-                dialog.remove();
-
-                if (!this.checkDeletedFail(status)) {
-                  const dialog = showDialog({
-                    header: wbText.dataSetDeleted(),
-                    content: wbText.dataSetDeletedDescription(),
-                    buttons: (
-                      <Link.Blue
-                        href="/specify/"
-                        // BUG: this should do navigation with replace:true
-                        onClick={() => {
-                          dialog.remove();
-                        }}
-                      >
-                        {commonText.close()}
-                      </Link.Blue>
-                    ),
-                  });
-                }
-              });
-            }}
-          >
-            {commonText.delete()}
-          </Button.Red>
-        </>
-      ),
-    });
   },
   export() {
     downloadDataSet(this.dataset).catch(fail);

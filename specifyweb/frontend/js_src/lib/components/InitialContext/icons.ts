@@ -40,12 +40,13 @@ const iconDirectories = {
 
 export const unknownIcon = '/images/unknown.png';
 
-export function getIcon(icon: string): string | undefined {
+export function getIcon(name: string): string | undefined {
   for (const [group, xml] of Object.entries(iconGroups)) {
-    const iconFile = findIconInXml(icon, xml)?.getAttribute('file');
+    const iconFile = findIconInXml(name, xml)?.getAttribute('file');
     if (typeof iconFile === 'string')
       return `${iconDirectories[group]}${iconFile}`;
   }
+  console.warn(`Unable to find the icon ${name}`);
   return undefined;
 }
 
@@ -58,7 +59,9 @@ function findIconInXml(
     softFail(new Error('Circular reference in icon definitions'));
     return undefined;
   }
-  const iconNode = xml.querySelector(`icon[name="${icon}"]`);
+  const iconNode = xml.querySelector(
+    `icon[name="${icon}"],icon[file="${icon}"]`
+  );
   const alias = iconNode?.getAttribute('alias');
   return typeof alias === 'string'
     ? findIconInXml(alias, xml, [...cycleDetect, icon])

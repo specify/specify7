@@ -70,11 +70,14 @@ export function DataSetMetaOverlay(): JSX.Element | null {
     true
   );
 
+  const navigate = useNavigate();
+
   return typeof dataset === 'object' ? (
     <DataSetMeta
       dataset={dataset}
       onChange={handleClose}
       onClose={handleClose}
+      onDeleted={ () => navigate('/specify/', {replace: true})}
     />
   ) : null;
 }
