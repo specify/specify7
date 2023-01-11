@@ -29,6 +29,11 @@ import { useSearchParameter } from '../../hooks/navigation';
 import { RA } from '../../utils/types';
 import { State } from 'typesafe-reducer';
 import { LoadingContext } from '../Core/Contexts';
+import { useCachedState } from '../../hooks/useCachedState';
+import { Dialog } from '../Molecules/Dialog';
+import { commonText } from '../../localization/common';
+import { userText } from '../../localization/user';
+import { getField } from '../DataModel/helpers';
 
 export function ViewRecordSet(): JSX.Element {
   const { id, index } = useParams();
@@ -80,9 +85,14 @@ function DisplayRecordSet({
 }: {
   readonly recordSet: SpecifyResource<RecordSet>;
   readonly resourceIndex: number;
-}): null {
+}): null | JSX.Element {
   const [recordToOpen] = usePref('form', 'recordSet', 'recordToOpen');
   const navigate = useNavigate();
+
+  const [isReadOnly = false] = useCachedState('forms', 'readOnlyMode');
+
+  const [readOnlyState, setReadOnlyState] = React.useState(false);
+
   useAsyncState(
     React.useCallback(
       async () =>
@@ -92,24 +102,36 @@ function DisplayRecordSet({
           orderBy: recordToOpen === 'first' ? 'id' : '-id',
           limit: 1,
         }).then(({ records }) =>
-          navigate(
-            formatUrl(
-              getResourceViewUrl(
-                getModelById(recordSet.get('dbTableId')).name,
-                records[0]?.recordId ?? 'new'
-              ),
-              { recordSetId: recordSet.id.toString() }
-            ),
-            {
-              replace: true,
-            }
-          )
+          isReadOnly === true && records.length === 0
+            ? setReadOnlyState(true)
+            : navigate(
+                formatUrl(
+                  getResourceViewUrl(
+                    getModelById(recordSet.get('dbTableId')).name,
+                    records[0]?.recordId ?? 'new'
+                  ),
+                  { recordSetId: recordSet.id.toString() }
+                ),
+                {
+                  replace: true,
+                }
+              )
         ),
       [recordSet, resourceIndex, recordToOpen]
     ),
     true
   );
-  return null;
+  return readOnlyState ? (
+    <>
+      <Dialog
+        buttons={commonText.close()}
+        header={userText.permissionDeniedError()}
+        onClose={(): void => navigate('/specify/')}
+      >
+        {userText.emptyRecordSetsReadOnly()}
+      </Dialog>
+    </>
+  ) : null;
 }
 
 /** Begins the process of creating a new resource */
@@ -190,10 +212,10 @@ function ViewByCatalogProtected(): JSX.Element | null {
        * It's important that this is run after switchCollection() (if needed)
        * so that the formatter for correct collection is fetched
        */
-      const formatter =
-        schema.models.CollectionObject.strictGetLiteralField(
-          'catalogNumber'
-        ).getUiFormatter();
+      const formatter = getField(
+        schema.models.CollectionObject,
+        'catalogNumber'
+      ).getUiFormatter();
 
       let formattedNumber = catalogNumber;
       if (typeof formatter === 'object') {

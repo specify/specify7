@@ -21,6 +21,7 @@ import { smoothScroll } from './helpers';
 import { QueryLoanReturn } from './LoanReturn';
 import type { MainState } from './reducer';
 import { commonText } from '../../localization/common';
+import { getField } from '../DataModel/helpers';
 
 export function QueryHeader({
   recordSet,
@@ -116,8 +117,8 @@ export function QueryHeader({
           onTriedToSave={(): boolean => {
             handleTriedToSave();
             const fieldLengthLimit =
-              schema.models.SpQueryField.strictGetLiteralField('startValue')
-                .length ?? Number.POSITIVE_INFINITY;
+              getField(schema.models.SpQueryField, 'startValue').length ??
+              Number.POSITIVE_INFINITY;
             return state.fields.every((field) =>
               field.filters.every(
                 ({ startValue }) => startValue.length < fieldLengthLimit

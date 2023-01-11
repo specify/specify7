@@ -27,6 +27,7 @@ import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { Http } from '../../utils/ajax/definitions';
 import { headerText } from '../../localization/header';
 import { queryText } from '../../localization/query';
+import { getField } from '../DataModel/helpers';
 
 export function QueryEditButton({
   query,
@@ -226,6 +227,6 @@ function QueryExport({
 
 const getMaxLength = (): number | undefined =>
   f.min(
-    schema.models.SpAppResource.strictGetLiteralField('name').length,
-    schema.models.SpReport.strictGetLiteralField('name').length
+    getField(schema.models.SpAppResource, 'name').length,
+    getField(schema.models.SpReport, 'name').length
   );

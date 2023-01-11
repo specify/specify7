@@ -23,8 +23,8 @@ import type { Field, LocalityData } from './helpers';
 import {
   findRanksInMappings,
   formatCoordinate,
-  getField,
   getLocalityData,
+  getLocalityField,
 } from './helpers';
 
 const addBaseTableName = (
@@ -284,7 +284,7 @@ export function getLocalityCoordinate(
 ): LocalityData | false {
   const getFieldCurried = (fieldName: string): Field<string> => ({
     headerName: localityColumns[fieldName],
-    value: getField(row, headers, localityColumns, fieldName),
+    value: getLocalityField(row, headers, localityColumns, fieldName),
   });
   const formatCoordinateCurried = (fieldName: string): Field<number> => ({
     headerName: localityColumns[fieldName],

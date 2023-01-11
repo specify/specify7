@@ -16,6 +16,7 @@ import { schema } from '../DataModel/schema';
 import { fileToText } from '../Molecules/FilePicker';
 import { uniquifyHeaders } from '../WbPlanView/headerHelper';
 import type { Dataset } from '../WbPlanView/Wrapped';
+import { getField } from '../DataModel/helpers';
 
 /** Remove the extension from the file name */
 export const extractFileName = (fileName: string): string =>
@@ -53,7 +54,7 @@ export const getMaxDataSetLength = (): number | undefined =>
      * to check the length limit in both places. See more:
      * https://github.com/specify/specify7/issues/1203
      */
-    schema.models.RecordSet.strictGetLiteralField('name').length,
+    getField(schema.models.RecordSet, 'name').length,
     dataSetMaxLength
   );
 

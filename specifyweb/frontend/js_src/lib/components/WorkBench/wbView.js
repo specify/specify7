@@ -100,7 +100,6 @@ export const WBView = Backbone.View.extend({
     'click .wb-show-plan': 'showPlan',
     'click .wb-revert': 'revertChanges',
     'click .wb-save': 'saveClicked',
-    'click .wb-delete-data-set': 'delete',
     'click .wb-export-data-set': 'export',
     'click .wb-change-data-set-owner': 'changeOwner',
 
@@ -1916,38 +1915,6 @@ export const WBView = Backbone.View.extend({
           this.trigger('refresh', mode, wasAborted);
         }}
       />
-    );
-  },
-  delete() {
-    const dialog = this.options.display(
-      <Dialog
-        header={wbText.deleteDataSet()}
-        onClose={() => dialog()}
-        buttons={
-          <>
-            <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-            <Button.Red
-              onClick={() => {
-                ping(
-                  `/api/workbench/dataset/${this.dataset.id}/`,
-                  {
-                    method: 'DELETE',
-                  },
-                  { expectedResponseCodes: [Http.NO_CONTENT, Http.NOT_FOUND] }
-                ).then((status) =>
-                  this.checkDeletedFail(status)
-                    ? undefined
-                    : this.options.onDeletedConfirmation()
-                );
-              }}
-            >
-              {commonText.delete()}
-            </Button.Red>
-          </>
-        }
-      >
-        {wbText.deleteDataSetDescription()}
-      </Dialog>
     );
   },
   export() {

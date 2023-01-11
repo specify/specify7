@@ -31,6 +31,7 @@ import { userText } from '../../localization/user';
 import { schemaText } from '../../localization/schema';
 import { LocalizedString } from 'typesafe-i18n';
 import { schema } from '../DataModel/schema';
+import { getField } from '../DataModel/helpers';
 
 export type NewRole = {
   readonly id: number | undefined;
@@ -122,7 +123,7 @@ export function RoleView({
       <div className="flex flex-1 flex-col gap-2 overflow-auto">
         {!isReadOnly && (
           <Label.Block className={className.limitedWidth}>
-            {schema.models.SpPermission.strictGetLiteralField('name').label}
+            {getField(schema.models.SpPermission, 'name').label}
             <Input.Text
               maxLength={roleNameMaxLength}
               required

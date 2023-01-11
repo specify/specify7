@@ -1,8 +1,9 @@
-import { requireContext } from '../../../tests/helpers';
+import { mockTime, requireContext } from '../../../tests/helpers';
 import { schema } from '../../DataModel/schema';
 import type { UiFormatter } from '../uiFormatters';
 import { fetchContext, getUiFormatters } from '../uiFormatters';
 
+mockTime();
 requireContext();
 
 test('formatters are fetched and parsed correctly', async () =>
