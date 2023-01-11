@@ -45,7 +45,7 @@
   textarea,
   .textarea-shadow,
   select {
-    @apply p-1 rounded accent-brand-200 dark:accent-brand-400 ring-gray-500
+    @apply p-1 rounded accent-brand-200 dark:accent-brand-400 ring-gray-400 shadow-sm
       ring-1 dark:ring-0 border-none bg-[color:var(--field-background)]
       text-[length:inherit] leading-[unset]
       [.has-alt-background_&]:optional:bg-white
