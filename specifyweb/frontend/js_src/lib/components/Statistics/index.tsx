@@ -95,9 +95,11 @@ export function StatsPage(): JSX.Element | null {
   const [activePage, setActivePage] = React.useState<{
     readonly isCollection: boolean;
     readonly pageIndex: number;
+    readonly isPageUpdated: boolean;
   }>({
     isCollection: true,
     pageIndex: 0,
+    isPageUpdated: false,
   });
   const filters = React.useMemo(
     () => ({
@@ -242,8 +244,10 @@ export function StatsPage(): JSX.Element | null {
     defaultLayout
   );
 
-  const updatePage = (layout: StatLayout, pageIndex: number): StatLayout => {
-    const lastUpdatedDate = new Date();
+  const getValueUndefined = (
+    layout: StatLayout,
+    pageIndex: number
+  ): StatLayout => {
     return layout.map((pageLayout, index) => ({
       label: pageLayout.label,
       categories: pageLayout.categories.map((category) => ({
@@ -253,6 +257,17 @@ export function StatsPage(): JSX.Element | null {
           itemValue: pageIndex === index ? undefined : item.itemValue,
         })),
       })),
+      lastUpdated: pageLayout.lastUpdated,
+    }));
+  };
+
+  const getLastUpdated = (
+    layout: StatLayout,
+    pageIndex: number
+  ): StatLayout => {
+    const lastUpdatedDate = new Date();
+    return layout.map((pageLayout, index) => ({
+      ...pageLayout,
       lastUpdated:
         pageIndex === index
           ? lastUpdatedDate.toString()
@@ -336,8 +351,32 @@ export function StatsPage(): JSX.Element | null {
           ),
         })
       );
+      if (!activePage.isPageUpdated) {
+        const setLayout = activePage.isCollection
+          ? setCollectionLayout
+          : setPersonalLayout;
+        const layout = activePage.isCollection
+          ? collectionLayout
+          : personalLayout;
+        if (layout !== undefined) {
+          setLayout(getLastUpdated(layout, activePage.pageIndex));
+          setActivePage((currentState) => ({
+            ...currentState,
+            isPageUpdated: true,
+          }));
+        }
+      }
     },
-    [handleChange]
+    [
+      activePage.isCollection,
+      activePage.isPageUpdated,
+      activePage.pageIndex,
+      collectionLayout,
+      handleChange,
+      personalLayout,
+      setCollectionLayout,
+      setPersonalLayout,
+    ]
   );
 
   return collectionLayout === undefined ? null : (
@@ -362,13 +401,13 @@ export function StatsPage(): JSX.Element | null {
             cleanFulfilledRequests();
             if (activePage.isCollection) {
               setCollectionLayout(
-                updatePage(collectionLayout, activePage.pageIndex)
+                getValueUndefined(collectionLayout, activePage.pageIndex)
               );
             } else {
               setPersonalLayout(
                 personalLayout === undefined
                   ? undefined
-                  : updatePage(personalLayout, activePage.pageIndex)
+                  : getValueUndefined(personalLayout, activePage.pageIndex)
               );
             }
             setCategoriesToFetch(Object.keys(urlSpec));
@@ -420,6 +459,7 @@ export function StatsPage(): JSX.Element | null {
                   return {
                     isCollection,
                     pageIndex: newIndex,
+                    isPageUpdated: false,
                   };
                 });
               }}
@@ -472,6 +512,7 @@ export function StatsPage(): JSX.Element | null {
                           setActivePage({
                             isCollection: index === 0,
                             pageIndex,
+                            isPageUpdated: false,
                           });
                         }}
                         onRename={
@@ -539,6 +580,7 @@ export function StatsPage(): JSX.Element | null {
                         setActivePage({
                           pageIndex: layout.length,
                           isCollection: state.isCollection,
+                          isPageUpdated: false,
                         });
                       }
                     }
@@ -565,8 +607,9 @@ export function StatsPage(): JSX.Element | null {
                         setState({
                           type: 'EditingState',
                         });
-                        setActivePage(
-                          !state.isCollection && layout.length === 1
+                        setActivePage({
+                          isPageUpdated: false,
+                          ...(!state.isCollection && layout.length === 1
                             ? {
                                 pageIndex: 0,
                                 isCollection: true,
@@ -574,8 +617,8 @@ export function StatsPage(): JSX.Element | null {
                             : {
                                 pageIndex: layout.length - 2,
                                 isCollection: state.isCollection,
-                              }
-                        );
+                              }),
+                        });
                       }
                       return undefined;
                     }
