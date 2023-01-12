@@ -197,18 +197,35 @@ export const interactionsText = createDictionary({
   resolvedLoans: {
     comment: 'Example: Resolved Loan records',
     'en-us': 'Resolved {loanTable:string} records',
+    'es-es': 'Registros resueltos {loanTable:string}',
+    'fr-fr': 'Enregistrements {loanTable:string} résolus',
+    'ru-ru': 'Решено {loanTable:string} записей',
+    'uk-ua': 'Вирішено записи {loanTable:string}.',
   },
   openLoans: {
     comment: 'Example: Open Loan records',
     'en-us': 'Open {loanTable:string} records',
+    'es-es': 'Abrir registros {loanTable:string}',
+    'fr-fr': 'Ouvrir les enregistrements {loanTable:string}',
+    'ru-ru': 'Открыть {loanTable:string} записей',
+    'uk-ua': 'Відкрийте записи {loanTable:string}.',
   },
   gifts: {
     comment: 'Example: Gift records',
     'en-us': '{giftTable:string} records',
+    'es-es': '{giftTable:string} registros',
+    'fr-fr': '{giftTable:string} enregistrements',
+    'ru-ru': '{giftTable:string} записи',
+    'uk-ua': '{giftTable:string} записи',
   },
-  exchanges: {    
+  exchanges: {
     comment: 'Example: Exchange In / Exchnage Out records',
     'en-us': '{exhangeInTable:string} / {exhangeOutTable:string} records',
+    'es-es': '{exhangeInTable:string} / {exhangeOutTable:string} registros',
+    'fr-fr':
+      '{exhangeInTable:string} / {exhangeOutTable:string} enregistrements',
+    'ru-ru': '{exhangeInTable:string} / {exhangeOutTable:string} записи',
+    'uk-ua': 'Записи {exhangeInTable:string} / {exhangeOutTable:string}.',
   },
   unCataloged: {
     'en-us': 'uncataloged',
@@ -220,11 +237,33 @@ export const interactionsText = createDictionary({
   returnedPreparations: {
     comment: 'Example: Preparation records',
     'en-us': 'Returned {tablePreparation:string} records',
+    'es-es': 'Registros {tablePreparation:string} devueltos',
+    'fr-fr': 'Enregistrements {tablePreparation:string} renvoyés',
+    'ru-ru': 'Возвращено {tablePreparation:string} записей',
+    'uk-ua': 'Повернуто {tablePreparation:string} записів',
   },
   returnedAndSaved: {
     comment: 'Example: 2 Preparation records have been returned and saved',
-    'en-us':
-      '{count:number|formatted} {tablePreparation:string} records have been returned and saved',
+    'en-us': `
+      {count:number|formatted} {tablePreparation:string} records have been
+      returned and saved
+    `,
+    'es-es': `
+      {count:number|formatted} {tablePreparation:string} registros han sido
+      devueltos y guardados
+    `,
+    'fr-fr': `
+      {count:number|formatted} {tablePreparation:string} enregistrements ont été
+      renvoyés et sauvegardés
+    `,
+    'ru-ru': `
+      {count:number|formatted} {tablePreparation:string} записей возвращены и
+      сохранены
+    `,
+    'uk-ua': `
+      Записи {count:number|formatted} {tablePreparation:string} повернуто та
+      збережено
+    `,
   },
   deselectAll: {
     'en-us': 'Deselect all',
@@ -250,6 +289,10 @@ export const interactionsText = createDictionary({
   returnLoan: {
     comment: 'Example: Return Loan records',
     'en-us': 'Return {tableLoan:string} records',
+    'es-es': 'Devolver registros {tableLoan:string}',
+    'fr-fr': 'Renvoyer les enregistrements {tableLoan:string}',
+    'ru-ru': 'Вернуть записи {tableLoan:string}',
+    'uk-ua': 'Повернути записи {tableLoan:string}.',
   },
   printInvoice: {
     'en-us': 'Print Invoice',
@@ -261,29 +304,64 @@ export const interactionsText = createDictionary({
   loanWithoutPreparation: {
     comment: 'Example: Loan records w/o Preparation records',
     'en-us': '{tableLoan:string} w/o {tablePreparation:string} records',
+    'es-es': '{tableLoan:string} sin registros {tablePreparation:string}',
+    'fr-fr':
+      '{tableLoan:string} sans enregistrements {tablePreparation:string}',
+    'ru-ru': '{tableLoan:string} без записей {tablePreparation:string}',
+    'uk-ua': '{tableLoan:string} без записів {tablePreparation:string}.',
   },
   loanWithoutPreparationDescription: {
     comment: 'Example: Create a Loan records with no Preparation records',
-    'en-us': 'Create a {tableLoan:string} with no {tablePreparation:string} records',
+    'en-us':
+      'Create a {tableLoan:string} with no {tablePreparation:string} records',
+    'es-es':
+      'Cree un {tableLoan:string} sin registros {tablePreparation:string}',
+    'fr-fr': `
+      Créer un {tableLoan:string} sans enregistrements {tablePreparation:string}
+    `,
+    'ru-ru':
+      'Создайте {tableLoan:string} без записей {tablePreparation:string}',
+    'uk-ua':
+      'Створіть {tableLoan:string} без записів {tablePreparation:string}.',
   },
   createLoan: {
     comment: 'Example: Create a Loan',
     'en-us': 'Create a {tableLoan:string}',
+    'es-es': 'Crear un {tableLoan:string}',
+    'fr-fr': 'Créer un {tableLoan:string}',
+    'ru-ru': 'Создайте {tableLoan:string}',
+    'uk-ua': 'Створити {tableLoan:string}',
   },
   editLoan: {
     comment: 'Example: Edit a Loan',
     'en-us': 'Edit {tableLoan:string}',
+    'es-es': 'Editar {tableLoan:string}',
+    'fr-fr': 'Modifier {tableLoan:string}',
+    'ru-ru': 'Изменить {tableLoan:string}',
+    'uk-ua': 'Редагувати {tableLoan:string}',
   },
   createdGift: {
     comment: 'Example: Create a Gift',
     'en-us': 'Create a {tableGift:string}',
+    'es-es': 'Crear un {tableLoan:string}',
+    'fr-fr': 'Créer un {tableLoan:string}',
+    'ru-ru': 'Создайте {tableLoan:string}',
+    'uk-ua': 'Створити {tableLoan:string}',
   },
   editGift: {
     comment: 'Example: Edit a Gift',
     'en-us': 'Edit {tableGift:string}',
+    'es-es': 'Editar {tableLoan:string}',
+    'fr-fr': 'Modifier {tableLoan:string}',
+    'ru-ru': 'Изменить {tableLoan:string}',
+    'uk-ua': 'Редагувати {tableLoan:string}',
   },
   createInformationRequest: {
     comment: 'Example: Create a Infrormation Request',
     'en-us': 'Create {tableInformationRequest:string}',
+    'es-es': 'Crear {modelName:string}',
+    'fr-fr': 'Créer {modelName:string}',
+    'ru-ru': 'Создать {tableInformationRequest:string}',
+    'uk-ua': 'Створити {modelName:string}',
   },
 } as const);
