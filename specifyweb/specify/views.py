@@ -20,6 +20,7 @@ from specifyweb.permissions.permissions import PermissionTarget, \
 from specifyweb.workbench.upload.upload_result import FailedBusinessRule
 from . import api, models
 from .specify_jar import specify_jar
+from .build_models import ADDITIONAL_DELETE_BLOCKERS
 
 def login_maybe_required(view):
     @wraps(view)
@@ -171,7 +172,7 @@ def set_password(request, userid):
     return http.HttpResponse('', status=204)
 
 class SetAgentsException(PermissionsException):
-    http_status = 400
+    status_code = 400
 
     def to_json(self):
         return {self.__class__.__name__: self.args[0]}
