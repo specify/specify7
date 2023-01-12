@@ -35,12 +35,7 @@ def agent_types_other_and_group_do_not_have_addresses(agent):
              "fieldName" : "agenttype",
              "agentid" : agent.id})
     
-    # Removing this for now. Need some way to check if the agent has any addresses.
+    # This Business Rule (Agents of type Other/Group can not have Addresses) was removed 
+    # See https://github.com/specify/specify7/issues/2518 for more information
     # if agent_types[agent.agenttype] in ('Other', 'Group'):
-    #     raise BusinessRuleException(
-    #         "agent of type Other or Group cannot have address", 
-    #         {"table" : "Agent",
-    #          "type" : "NOT_NULL",
-    #          "fieldName" : "addresses",
-    #          "agentid" : agent.id})
         # agent.addresses.all().delete()
