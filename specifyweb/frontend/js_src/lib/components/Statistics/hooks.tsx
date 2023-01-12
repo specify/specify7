@@ -122,10 +122,11 @@ export function useDefaultStatsToAdd(
           const defaultStatNotFound =
             defaultItem.type === 'DefaultStat' &&
             !listToUse.some(
-              ({ pageName, categoryName, itemName }) =>
+              ({ pageName, categoryName, itemName, pathToValue }) =>
                 pageName === defaultItem.pageName &&
                 categoryName === defaultItem.categoryName &&
-                itemName === defaultItem.itemName
+                itemName === defaultItem.itemName &&
+                pathToValue === defaultItem.pathToValue
             );
           if (!statNotFound) statNotFound = defaultStatNotFound;
           return {

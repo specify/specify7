@@ -124,6 +124,7 @@ export function StatsPage(): JSX.Element | null {
     categoriesToFetchInitially
   );
   const backEndResponse = useBackendApi(categoriesToFetch, false);
+  const defaultBackEndResponse = useBackendApi(allCategories, false);
   const statsSpec = useStatsSpec();
 
   const defaultStatsSpec = useStatsSpec();
@@ -196,6 +197,24 @@ export function StatsPage(): JSX.Element | null {
       setPersonalLayout,
     ]
   );
+
+  const handleDefaultChange = React.useCallback(
+    (
+      newCategories: (
+        oldCategory: StatLayout[number]['categories']
+      ) => StatLayout[number]['categories']
+    ): void => {
+      setDefaultLayout((oldLayout: StatLayout | undefined) =>
+        oldLayout === undefined
+          ? undefined
+          : replaceItem(oldLayout, 0, {
+              ...oldLayout[0],
+              categories: newCategories(oldLayout[0].categories),
+            })
+      );
+    },
+    [setDefaultLayout]
+  );
   React.useEffect(() => {
     Object.entries(statsSpec).forEach(([pageName, pageSpec]) =>
       Object.entries(pageSpec).forEach(([categoryName, categorySpec]) =>
@@ -247,7 +266,49 @@ export function StatsPage(): JSX.Element | null {
       )
     );
   }, [backEndResponse, handleChange, statsSpec]);
-
+  React.useLayoutEffect(() => {
+    Object.entries(statsSpec).forEach(([pageName, pageSpec]) =>
+      Object.entries(pageSpec).forEach(([categoryName, categorySpec]) =>
+        Object.entries(categorySpec.items ?? {}).forEach(
+          ([itemName, { spec }]) => {
+            if (itemName === 'phantomItem' && spec.type === 'BackEndStat') {
+              if (
+                Object.keys(defaultBackEndResponse ?? {}).includes(categoryName)
+              ) {
+                handleDefaultChange((oldCategory) =>
+                  oldCategory.map((unknownCategory) => {
+                    return {
+                      ...unknownCategory,
+                      items:
+                        unknownCategory.items ??
+                        (unknownCategory.categoryToFetch === undefined ||
+                        defaultBackEndResponse?.[
+                          unknownCategory.categoryToFetch
+                        ] === undefined ||
+                        unknownCategory.categoryToFetch !== categoryName
+                          ? undefined
+                          : Object.entries(
+                              defaultBackEndResponse[categoryName]
+                            ).map(([itemName, rawValue]) => ({
+                              type: 'DefaultStat',
+                              pageName,
+                              itemName: 'phantomItem',
+                              categoryName,
+                              itemLabel: itemName,
+                              itemValue: spec.formatter(rawValue),
+                              itemType: 'BackendStat',
+                              pathToValue: itemName,
+                            }))),
+                    };
+                  })
+                );
+              }
+            }
+          }
+        )
+      )
+    );
+  }, [defaultBackEndResponse, handleDefaultChange, statsSpec]);
   const queries = useQueries(filters, false);
   const previousCollectionLayout = React.useRef(
     collectionLayout as unknown as StatLayout
@@ -793,14 +854,17 @@ export function StatsPage(): JSX.Element | null {
                 ? undefined
                 : layout.map(({ label, categories, lastUpdated }) => ({
                     label,
-                    categories: categories.map(({ label, items }) => ({
-                      label,
-                      items: items?.map((item) =>
-                        item.type === 'DefaultStat'
-                          ? (removeKey(item, 'isVisible') as DefaultStat)
-                          : item
-                      ),
-                    })),
+                    categories: categories.map(
+                      ({ label, items, categoryToFetch }) => ({
+                        label,
+                        items: items?.map((item) =>
+                          item.type === 'DefaultStat'
+                            ? (removeKey(item, 'isVisible') as DefaultStat)
+                            : item
+                        ),
+                        categoryToFetch,
+                      })
+                    ),
                     lastUpdated,
                   }))
             );
