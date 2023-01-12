@@ -192,6 +192,17 @@ function resolveBackendLocalization(jsonResponseData: any): string {
     return backEndText.limitReachedDeterminingAccepted({
       taxonId: jsonResponseData.taxonId,
     });
+  else if (localizationKey === 'fieldNotUnique')
+    return backEndText.fieldNotUnique({
+      tableName: jsonResponseData.table,
+      fieldName: jsonResponseData.fieldName,
+    });
+  else if (localizationKey === 'childFieldNotUnique')
+    return backEndText.childFieldNotUnique({
+      tableName: jsonResponseData.table,
+      fieldName: jsonResponseData.fieldName,
+      parentField: jsonResponseData.parentField,
+    });
   else if (localizationKey === 'resourceInPermissionRegistry')
     return backEndText.resourceInPermissionRegistry({
       resource: jsonResponseData.resource,

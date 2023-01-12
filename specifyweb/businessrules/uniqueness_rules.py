@@ -5,6 +5,7 @@ from .exceptions import BusinessRuleException
 
 def make_uniqueness_rule(model_name, parent_field, unique_field):
     model = getattr(models, model_name)
+    table_name = models.datamodel.get_table(model_name).name
     if parent_field is None:
         # uniqueness is global
         @orm_signal_handler('pre_save', model_name)
@@ -17,8 +18,9 @@ def make_uniqueness_rule(model_name, parent_field, unique_field):
                 conflicts = conflicts.exclude(id=instance.id)
             if conflicts:
                 raise BusinessRuleException(
-                "{} must have unique {}".format(model.__name__, unique_field), 
-                {"table" : model.__name__, 
+                "{} must have unique {}".format(table_name, unique_field), 
+                {"table" : table_name,
+                 "localizationKey" : "fieldNotUnique",
                  "fieldName" : unique_field,
                  "fieldData" : (unique_field, value), 
                  "conflicting" : list(conflicts.values_list('id', flat=True)[:100])})
@@ -40,11 +42,13 @@ def make_uniqueness_rule(model_name, parent_field, unique_field):
                 conflicts = conflicts.exclude(id=instance.id)
             if conflicts:
                 raise BusinessRuleException(
-                    "{} must have unique {} in {}".format(model.__name__, unique_field, parent_field),
-                    {"table" : model.__name__,
+                    "{} must have unique {} in {}".format(table_name, unique_field, parent_field),
+                    {"table" : table_name,
+                    "localizationKey" : "childFieldNotUnique",
                      "fieldName" : unique_field,
                      "fieldData" : (unique_field, value),
-                     "within" : (parent_field, parent),
+                     "parentField" : parent_field,
+                     "parentData" : f"{parent_field}: id={parent}",
                      "conflicting" : list(conflicts.values_list('id', flat=True)[:100])})
     return check_unique
 

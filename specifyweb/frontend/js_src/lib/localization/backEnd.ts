@@ -232,6 +232,12 @@ export const backEndText = createDictionary({
   showTraceback : {
     'en-us':'Show Traceback',
   },
+  fieldNotUnique : {
+    'en-us' : '{tableName:string} must have unique {fieldName:string}',
+  },
+  childFieldNotUnique : {
+    'en-us' : '{tableName:string} must have unique {fieldName:string} in {parentField:string}',
+  },
   /// TreeBusinessRuleExceptions
   deletingTreeRoot : {
     'en-us': 'Can not delete root level tree definition item',
