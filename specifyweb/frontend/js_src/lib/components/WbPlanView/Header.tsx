@@ -13,7 +13,6 @@ export function Layout(props: {
   readonly children: React.ReactNode;
   readonly footer?: JSX.Element;
   readonly onClick?: () => void;
-
   readonly title: JSX.Element | string;
   readonly buttonsLeft: React.ReactNode;
   readonly buttonsRight: React.ReactNode;
