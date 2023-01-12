@@ -3,7 +3,7 @@ from django.db import models
 from specifyweb.businessrules.exceptions import AbortSave
 from . import model_extras
 from .case_insensitive_bool import BooleanField, NullBooleanField
-from .deletion_rules import SPECIAL_DELETION_RULES
+from .deletion_rules import SPECIAL_DELETION_RULES, ADDITIONAL_DELETE_BLOCKERS
 
 appname = __name__.split('.')[-2]
 
@@ -101,6 +101,8 @@ def make_relationship(modelname, rel, datamodel):
         reverse = datamodel.reverse_relationship(rel)
         if reverse and reverse.dependent:
             on_delete = models.CASCADE
+        elif modelname in ADDITIONAL_DELETE_BLOCKERS.keys():
+            on_delete = protect
         else:
             on_delete = protect
 

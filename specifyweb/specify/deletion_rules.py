@@ -9,6 +9,8 @@ from django.db import models
 
     More information can be found at django's docs here: 
     https://docs.djangoproject.com/en/2.2/ref/models/fields/#django.db.models.ForeignKey.on_delete
+
+    See .build_models.py for uses
 """
 SPECIAL_DELETION_RULES = {
     'Appresource' : {'spreport': models.CASCADE},
@@ -23,7 +25,7 @@ SPECIAL_DELETION_RULES = {
         'spappresource': models.CASCADE,
         'spprincipal': models.CASCADE,
         },
-        
+
     # Handle workbench deletion using raw sql in business rules.
     'Workbench' : {'workbenchrow': models.DO_NOTHING},
     'Workbenchrow' : {
@@ -52,4 +54,14 @@ SPECIAL_DELETION_RULES = {
         'splocaleitemstr' : models.CASCADE
     },
     'SpQuery' : {"spqueryfield" : models.CASCADE},
+}
+
+""" Any additional desired delete blockers 
+Of the form 'base_table': ['field_1_name', 'field_2_name', ...]
+Use the django attributes from the 'base_table' for field names
+
+See .build_models.py and .views.py for uses
+"""
+ADDITIONAL_DELETE_BLOCKERS = {
+    'Agent' : ['specifyuser'],
 }
