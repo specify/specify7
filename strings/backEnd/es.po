@@ -91,3 +91,123 @@ msgid "missingRequiredTreeParent"
 msgstr ""
 "Falta el valor de clasificación principal del árbol requerido o no está "
 "asignado para \"{names:string}\"."
+
+#: components/Errors/JsonError.tsx:65
+#. Used in: Components > Errors > Json Error
+msgid "showTraceback"
+msgstr ""
+
+#: components/Errors/JsonError.tsx:191
+#. Used in: Components > Errors > Json Error
+msgid "fieldNotUnique"
+msgstr ""
+
+#: components/Errors/JsonError.tsx:196
+#. Used in: Components > Errors > Json Error
+msgid "childFieldNotUnique"
+msgstr ""
+
+#: components/Errors/JsonError.tsx:156
+#. Used in: Components > Errors > Json Error
+msgid "deletingTreeRoot"
+msgstr ""
+
+#: components/Errors/JsonError.tsx:158
+#. Used in: Components > Errors > Json Error
+msgid "nodeParentInvalidRank"
+msgstr ""
+
+#: components/Errors/JsonError.tsx:160
+#. Used in: Components > Errors > Json Error
+msgid "nodeChildrenInvalidRank"
+msgstr ""
+
+#: components/Errors/JsonError.tsx:162
+#. Used in: Components > Errors > Json Error
+msgid "nodeOperationToSynonymizedParent"
+msgstr ""
+
+#: components/Errors/JsonError.tsx:168
+#. Used in: Components > Errors > Json Error
+msgid "nodeSynonymizeToSynonymized"
+msgstr ""
+
+#: components/Errors/JsonError.tsx:173
+#. Used in: Components > Errors > Json Error
+msgid "nodeSynonimizeWithChildren"
+msgstr ""
+
+#: components/Errors/JsonError.tsx:152
+#. Used in: Components > Errors > Json Error
+msgid "badTreeStructureInvalidRanks"
+msgstr ""
+
+#: components/Errors/JsonError.tsx:177
+#. Used in: Components > Errors > Json Error
+msgid "invalidNodeType"
+msgstr ""
+
+#: components/Errors/JsonError.tsx:183
+#. Used in: Components > Errors > Json Error
+msgid "mergeAcrossTrees"
+msgstr ""
+
+#: components/Errors/JsonError.tsx:185
+#. Used in: Components > Errors > Json Error
+msgid "synonymizeAcrossTrees"
+msgstr ""
+
+#: components/Errors/JsonError.tsx:187
+#. Used in: Components > Errors > Json Error
+msgid "limitReachedDeterminingAccepted"
+msgstr ""
+
+#: components/Errors/JsonError.tsx:202
+#. Used in: Components > Errors > Json Error
+msgid "resourceInPermissionRegistry"
+msgstr ""
+
+#: components/Errors/JsonError.tsx:206
+#. Used in: Components > Errors > Json Error
+msgid "actorIsNotSpecifyUser"
+msgstr ""
+
+#: components/Errors/JsonError.tsx:208
+#. Used in: Components > Errors > Json Error
+msgid "unexpectedCollectionType"
+msgstr ""
+
+#: components/Errors/JsonError.tsx:213
+#. Used in: Components > Errors > Json Error
+msgid "invalidReportMimetype"
+msgstr ""
+
+#: components/Errors/JsonError.tsx:215
+#. Used in: Components > Errors > Json Error
+msgid "fieldNotRelationship"
+msgstr ""
+
+#: components/Errors/JsonError.tsx:217
+#. Used in: Components > Errors > Json Error
+msgid "unexpectedTableId"
+msgstr ""
+
+#: components/Errors/JsonError.tsx:222
+#. Used in: Components > Errors > Json Error
+msgid "noCollectionInQuery"
+msgstr ""
+
+#: components/Errors/JsonError.tsx:224
+#. Used in: Components > Errors > Json Error
+msgid "invalidDatePart"
+msgstr ""
+
+#: components/Errors/JsonError.tsx:229
+#. Used in: Components > Errors > Json Error
+msgid "invalidUploadStatus"
+msgstr ""
+
+#: components/Errors/JsonError.tsx:235
+#. Used in: Components > Errors > Json Error
+msgid "datasetAlreadyUploaded"
+msgstr ""

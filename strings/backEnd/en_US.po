@@ -87,3 +87,139 @@ msgstr "There are multiple \"Uploaded\" placeholder values in the tree!"
 #. Used in: Components > Work Bench > Results Parser
 msgid "missingRequiredTreeParent"
 msgstr "Missing or unmapped required tree parent rank value for \"{names:string}\"."
+
+#: components/Errors/JsonError.tsx:65
+#. Used in: Components > Errors > Json Error
+msgid "showTraceback"
+msgstr "Show Traceback"
+
+#: components/Errors/JsonError.tsx:191
+#. Used in: Components > Errors > Json Error
+msgid "fieldNotUnique"
+msgstr "{tableName:string} must have unique {fieldName:string}"
+
+#: components/Errors/JsonError.tsx:196
+#. Used in: Components > Errors > Json Error
+msgid "childFieldNotUnique"
+msgstr ""
+"{tableName:string} must have unique {fieldName:string} in "
+"{parentField:string}"
+
+#: components/Errors/JsonError.tsx:156
+#. Used in: Components > Errors > Json Error
+msgid "deletingTreeRoot"
+msgstr "Can not delete root level tree definition item"
+
+#: components/Errors/JsonError.tsx:158
+#. Used in: Components > Errors > Json Error
+msgid "nodeParentInvalidRank"
+msgstr "Tree node's parent has rank greater than itself"
+
+#: components/Errors/JsonError.tsx:160
+#. Used in: Components > Errors > Json Error
+msgid "nodeChildrenInvalidRank"
+msgstr "Tree node's rank is greater than some of its children"
+
+#: components/Errors/JsonError.tsx:162
+#. Used in: Components > Errors > Json Error
+msgid "nodeOperationToSynonymizedParent"
+msgstr ""
+"{operation:string} node '{nodeName:string}' to synonymized parent "
+"'{parentName:string}'"
+
+#: components/Errors/JsonError.tsx:168
+#. Used in: Components > Errors > Json Error
+msgid "nodeSynonymizeToSynonymized"
+msgstr "Synonymizing '{nodeName:string}' to synonymized node '{intoName:string}'"
+
+#: components/Errors/JsonError.tsx:173
+#. Used in: Components > Errors > Json Error
+msgid "nodeSynonimizeWithChildren"
+msgstr "Synonimizing node '{nodeName:string}' which has children"
+
+#: components/Errors/JsonError.tsx:152
+#. Used in: Components > Errors > Json Error
+msgid "badTreeStructureInvalidRanks"
+msgstr ""
+"Bad Tree Structure: Found {badRanks:number} cases where node rank is not "
+"greater than its parent"
+
+#: components/Errors/JsonError.tsx:177
+#. Used in: Components > Errors > Json Error
+msgid "invalidNodeType"
+msgstr ""
+"Unexpected type of node '{node:string}' during {operation:string}. Expected "
+"'{nodeModel:string}'"
+
+#: components/Errors/JsonError.tsx:183
+#. Used in: Components > Errors > Json Error
+msgid "mergeAcrossTrees"
+msgstr "Merging across trees"
+
+#: components/Errors/JsonError.tsx:185
+#. Used in: Components > Errors > Json Error
+msgid "synonymizeAcrossTrees"
+msgstr "Synonymizing across trees"
+
+#: components/Errors/JsonError.tsx:187
+#. Used in: Components > Errors > Json Error
+msgid "limitReachedDeterminingAccepted"
+msgstr "Could not find accepted taxon for synonymized taxon (id = {taxonId:number})"
+
+#: components/Errors/JsonError.tsx:202
+#. Used in: Components > Errors > Json Error
+msgid "resourceInPermissionRegistry"
+msgstr "Resource {resource:string} already in Permissions registry"
+
+#: components/Errors/JsonError.tsx:206
+#. Used in: Components > Errors > Json Error
+msgid "actorIsNotSpecifyUser"
+msgstr "Agent {actor:string} is not a SpecifyUser"
+
+#: components/Errors/JsonError.tsx:208
+#. Used in: Components > Errors > Json Error
+msgid "unexpectedCollectionType"
+msgstr ""
+"Unexpected type of collection '{unexpectedTypeName:string}'. Expected "
+"'{collectionName:string}'"
+
+#: components/Errors/JsonError.tsx:213
+#. Used in: Components > Errors > Json Error
+msgid "invalidReportMimetype"
+msgstr "Can not create report: mimetype not 'jrxml/label' or 'jrxml/report'"
+
+#: components/Errors/JsonError.tsx:215
+#. Used in: Components > Errors > Json Error
+msgid "fieldNotRelationship"
+msgstr "Field {field:string} is not a Relationship"
+
+#: components/Errors/JsonError.tsx:217
+#. Used in: Components > Errors > Json Error
+msgid "unexpectedTableId"
+msgstr ""
+"Unexpected table id '{tableId:string}' in request. Expected "
+"'{expectedTableId:string}'"
+
+#: components/Errors/JsonError.tsx:222
+#. Used in: Components > Errors > Json Error
+msgid "noCollectionInQuery"
+msgstr "No Collection found in Query for table {table:string}"
+
+#: components/Errors/JsonError.tsx:224
+#. Used in: Components > Errors > Json Error
+msgid "invalidDatePart"
+msgstr ""
+"Invalid date part '{datePart:string}'. Expected one of "
+"{validDateParts:string}"
+
+#: components/Errors/JsonError.tsx:229
+#. Used in: Components > Errors > Json Error
+msgid "invalidUploadStatus"
+msgstr ""
+"Invalid status '{uploadStatus:string}' for {operation:string}. Expected "
+"{expectedUploadStatus:string}"
+
+#: components/Errors/JsonError.tsx:235
+#. Used in: Components > Errors > Json Error
+msgid "datasetAlreadyUploaded"
+msgstr "Dataset already uploaded"

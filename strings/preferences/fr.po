@@ -446,9 +446,10 @@ msgstr "Mettre l'interface à l'échelle pour correspondre à la taille de la po
 msgid "welcomePage"
 msgstr "Page d'accueil"
 
+#: components/Errors/JsonError.tsx:60
 #: components/UserPreferences/Definitions.tsx:401
 #: components/UserPreferences/Renderers.tsx:182
-#. Used in: Components > User Preferences > Definitions ⬤ Components > User Preferences > Renderers
+#. Used in: Components > Errors > Json Error ⬤ Components > User Preferences > Definitions ⬤ Components > User Preferences > Renderers
 msgid "content"
 msgstr "Teneur"
 
