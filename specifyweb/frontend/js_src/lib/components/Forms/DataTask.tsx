@@ -19,7 +19,6 @@ import {
   fetchCollectionsForResource,
   getCollectionForResource,
 } from '../DataModel/domain';
-import { getField } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
@@ -35,6 +34,8 @@ import { switchCollection } from '../RouterCommands/SwitchCollection';
 import { usePref } from '../UserPreferences/usePref';
 import { OtherCollection } from './OtherCollectionView';
 import { ViewResourceById } from './ShowResource';
+import { fieldFormat } from '../Formatters/fieldFormat';
+import { getField } from '../DataModel/helpers';
 
 export function ViewRecordSet(): JSX.Element {
   const { id, index } = useParams();
@@ -211,23 +212,13 @@ function ViewByCatalogProtected(): JSX.Element | null {
        * It's important that this is run after switchCollection() (if needed)
        * so that the formatter for correct collection is fetched
        */
-      const formatter = getField(
-        schema.models.CollectionObject,
-        'catalogNumber'
-      ).getUiFormatter();
-
-      let formattedNumber = catalogNumber;
-      if (typeof formatter === 'object') {
-        const formatted = formatter.format(catalogNumber);
-        if (formatted === undefined) {
-          console.error('bad catalog number:', catalogNumber);
-          return false;
-        }
-        formattedNumber = formatted;
-      }
+      const formatted = await fieldFormat(
+        getField(schema.models.CollectionObject, 'catalogNumber'),
+        catalogNumber
+      );
 
       return fetchCollection('CollectionObject', {
-        catalogNumber: formattedNumber,
+        catalogNumber: formatted,
         domainFilter: true,
         limit: 1,
       }).then(({ records }) => {

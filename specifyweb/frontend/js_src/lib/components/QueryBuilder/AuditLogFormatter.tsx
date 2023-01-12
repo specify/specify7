@@ -3,12 +3,12 @@ import React from 'react';
 import { formsText } from '../../localization/forms';
 import { hijackBackboneAjax } from '../../utils/ajax/backboneAjax';
 import { Http } from '../../utils/ajax/definitions';
-import { fieldFormat } from '../../utils/fieldFormat';
 import type { RA } from '../../utils/types';
 import { Link } from '../Atoms/Link';
 import { getModelById } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { format, naiveFormatter } from '../Formatters/dataObjFormatters';
+import { fieldFormat } from '../Formatters/fieldFormat';
 import { hasTablePermission } from '../Permissions/helpers';
 import type { QueryFieldSpec } from './fieldSpec';
 import { queryIdField } from './Results';
@@ -96,8 +96,8 @@ export function getAuditRecordFormatter(
           } else
             return fieldFormat(
               fields[index],
-              fieldSpecs[index].parser,
-              (value ?? '').toString()
+              (value ?? '').toString(),
+              fieldSpecs[index].parser
             );
         })
     );

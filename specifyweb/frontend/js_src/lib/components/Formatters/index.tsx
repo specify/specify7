@@ -2,14 +2,12 @@ import React from 'react';
 import { resourcesText } from '../../localization/resources';
 import { parseXml } from '../AppResources/codeMirrorLinters';
 import type { AppResourceTabProps } from '../AppResources/TabDefinitions';
-import type { SpecToJson } from '../Syncer';
-import type { aggregatorSpec, formatterSpec } from './spec';
 import { createXmlNode } from '../Syncer/xmlUtils';
 import { useRoutes } from 'react-router-dom';
 import { formattersRoutes } from './Routes';
 import { NotFoundView } from '../Router/NotFoundView';
 
-export function FormattersWrapper(props: AppResourceTabProps): JSX.Element {
+export function DataObjectFormatter(props: AppResourceTabProps): JSX.Element {
   const payload = React.useMemo(() => {
     const { data, ...rest } = props;
     const element =
@@ -42,6 +40,3 @@ export const FormattersContext = React.createContext<
   | undefined
 >(undefined);
 FormattersContext.displayName = 'FormattersContext';
-
-type Formatter = SpecToJson<ReturnType<typeof formatterSpec>>;
-type Aggregator = SpecToJson<ReturnType<typeof aggregatorSpec>>;

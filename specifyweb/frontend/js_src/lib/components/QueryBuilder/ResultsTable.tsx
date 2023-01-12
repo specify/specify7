@@ -2,7 +2,6 @@ import React from 'react';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useLiveState } from '../../hooks/useLiveState';
-import { syncFieldFormat } from '../../utils/fieldFormat';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Input } from '../Atoms/Form';
@@ -10,6 +9,7 @@ import { Link } from '../Atoms/Link';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpecifyModel } from '../DataModel/specifyModel';
+import { syncFieldFormat } from '../Formatters/fieldFormat';
 import { usePref } from '../UserPreferences/usePref';
 import { getAuditRecordFormatter } from './AuditLogFormatter';
 import type { QueryFieldSpec } from './fieldSpec';
@@ -206,7 +206,7 @@ function Cell({
       !field.isRelationship &&
       typeof fieldSpec === 'object' &&
       !field.isTemporal()
-        ? syncFieldFormat(field, fieldSpec.parser, (value ?? '').toString())
+        ? syncFieldFormat(field, (value ?? '').toString(), fieldSpec.parser)
         : value ?? '',
     [field, fieldSpec, value]
   );

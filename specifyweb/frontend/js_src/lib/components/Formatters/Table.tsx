@@ -3,17 +3,31 @@ import { FormattersContext } from './index';
 import { useRoutePart } from '../Router/useRoutePart';
 import { filterArray, GetSet, RA } from '../../utils/types';
 import { SpecifyModel } from '../DataModel/specifyModel';
-import { Aggregator } from './dataObjFormatters';
 import { group } from '../../utils/utils';
 import { TableList } from '../SchemaConfig/Tables';
+import { Aggregator, Formatter } from './spec';
 
 export function FormatterTable(): JSX.Element {
   const { element } = React.useContext(FormattersContext)!;
   const [type] = useRoutePart('type');
   const [table, setTable] = useRoutePart('tableName');
+
+  return (
+    <Items
+      component={FormatterElement}
+      items={[
+        parsed.formatters,
+        (formatters): void =>
+          setParsed({
+            ...parsed,
+            formatters,
+          }),
+      ]}
+    />
+  );
 }
 
-function TableScope<T extends Aggregator | Formatter>({
+function Items<T extends Aggregator | Formatter>({
   items: [items, setItems],
   component,
 }: {

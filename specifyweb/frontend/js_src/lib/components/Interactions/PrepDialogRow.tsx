@@ -5,7 +5,6 @@ import type { State } from 'typesafe-reducer';
 import { interactionsText } from '../../localization/interactions';
 import type { Preparations } from '../../utils/ajax/specifyApi';
 import { getInteractionsForPrepId } from '../../utils/ajax/specifyApi';
-import { syncFieldFormat } from '../../utils/fieldFormat';
 import type { RA, RR } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Input } from '../Atoms/Form';
@@ -15,6 +14,7 @@ import { getField } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { ExchangeOut, Gift, Loan } from '../DataModel/types';
+import { syncFieldFormat } from '../Formatters/fieldFormat';
 import { ResourceView } from '../Forms/ResourceView';
 
 export function PrepDialogRow({
@@ -67,7 +67,6 @@ export function PrepDialogRow({
         <td className="justify-end tabular-nums">
           {syncFieldFormat(
             getField(schema.models.CollectionObject, 'catalogNumber'),
-            undefined,
             preparation.catalogNumber
           )}
         </td>

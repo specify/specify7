@@ -7,25 +7,16 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { formsText } from '../../localization/forms';
 import { userText } from '../../localization/user';
 import { ajax } from '../../utils/ajax';
-import { fieldFormat } from '../../utils/fieldFormat';
-import { resolveParser } from '../../utils/parser/definitions';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import {
-  getAttribute,
-  getBooleanAttribute,
-  getParsedAttribute,
-  KEY,
-  sortFunction,
-} from '../../utils/utils';
+import { KEY, multiSortFunction, sortFunction } from '../../utils/utils';
+import { fetchDistantRelated } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { LiteralField } from '../DataModel/specifyField';
-import type { Collection } from '../DataModel/specifyModel';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { Collection, SpecifyModel } from '../DataModel/specifyModel';
 import type { Tables } from '../DataModel/types';
-import { softFail } from '../Errors/Crash';
 import {
   cachableUrl,
   contextUnlockedPromise,
@@ -33,39 +24,18 @@ import {
 } from '../InitialContext';
 import { hasPathPermission, hasTablePermission } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
-
-export type Formatter = {
-  readonly name: string | undefined;
-  readonly title: string | undefined;
-  readonly className: string | undefined;
-  readonly isDefault: boolean;
-  readonly switchFieldName: string | undefined;
-  readonly fields: RA<{
-    readonly value: string | undefined;
-    readonly fields: RA<{
-      readonly fieldName: string;
-      readonly separator: string;
-      readonly formatter: string;
-      readonly fieldFormatter: string | undefined;
-    }>;
-  }>;
-};
-
-export type Aggregator = {
-  readonly name: string | undefined;
-  readonly title: string | undefined;
-  readonly className: string | undefined;
-  readonly isDefault: boolean;
-  readonly separator: string;
-  readonly format: string;
-};
+import { xmlParser } from '../Syncer';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
+import { fieldFormat } from './fieldFormat';
+import type { Aggregator, Formatter } from './spec';
+import { formattersSpec } from './spec';
 
 export const fetchFormatters: Promise<{
   readonly formatters: RA<Formatter>;
   readonly aggregators: RA<Aggregator>;
 }> = contextUnlockedPromise.then(async (entrypoint) =>
   entrypoint === 'main'
-    ? ajax<Document>(
+    ? ajax<Element>(
         cachableUrl(
           formatUrl('/context/app.resource', { name: 'DataObjFormatters' })
         ),
@@ -73,65 +43,13 @@ export const fetchFormatters: Promise<{
           // eslint-disable-next-line @typescript-eslint/naming-convention
           headers: { Accept: 'text/xml' },
         }
-      ).then(({ data: definitions }) => ({
-        formatters: filterArray(
-          Array.from(
-            definitions.getElementsByTagName('format'),
-            (formatter) => {
-              const switchElement = formatter.getElementsByTagName('switch')[0];
-              if (switchElement === undefined) return undefined;
-              const isSingle =
-                getBooleanAttribute(switchElement, 'single') ?? true;
-              const field = getParsedAttribute(switchElement, 'field');
-              const fields = Array.from(
-                switchElement.getElementsByTagName('fields'),
-                (fields) => ({
-                  value: getAttribute(fields, 'value'),
-                  fields: Array.from(
-                    fields.getElementsByTagName('field'),
-                    (field) => ({
-                      fieldName: field.textContent?.trim() ?? '',
-                      separator: getAttribute(field, 'sep') ?? '',
-                      formatter: getParsedAttribute(field, 'formatter') ?? '',
-                      fieldFormatter: getParsedAttribute(field, 'format'),
-                    })
-                  ).filter(({ fieldName }) => fieldName.length > 0),
-                })
-              ).filter(({ fields }) => fields.length > 0);
-              // External DataObjFormatters are not supported
-              if (fields.length === 0) return undefined;
-              return {
-                name: getParsedAttribute(formatter, 'name'),
-                title: getParsedAttribute(formatter, 'title'),
-                className: getParsedAttribute(formatter, 'class'),
-                isDefault: getBooleanAttribute(formatter, 'default') ?? false,
-                fields,
-                switchFieldName:
-                  typeof field === 'string' && !isSingle ? field : undefined,
-              };
-            }
-          )
-        ),
-        aggregators: filterArray(
-          Array.from(
-            definitions.getElementsByTagName('aggregator'),
-            (aggregator) => ({
-              name: getParsedAttribute(aggregator, 'name'),
-              title: getParsedAttribute(aggregator, 'title'),
-              className: getParsedAttribute(aggregator, 'class'),
-              isDefault: getParsedAttribute(aggregator, 'default') === 'true',
-              separator: getAttribute(aggregator, 'separator') ?? '',
-              format: getAttribute(aggregator, 'format') ?? '',
-            })
-          )
-        ),
-      }))
-    : foreverFetch<{
-        readonly formatters: RA<Formatter>;
-        readonly aggregators: RA<Aggregator>;
-      }>()
+      ).then(({ data: definitions }) =>
+        xmlParser(formattersSpec())(definitions)
+      )
+    : foreverFetch()
 );
 
+// FIXME: test this
 export const getMainTableFields = (tableName: keyof Tables): RA<LiteralField> =>
   schema.models[tableName].literalFields
     .filter(
@@ -140,7 +58,14 @@ export const getMainTableFields = (tableName: keyof Tables): RA<LiteralField> =>
         !overrides.isHidden &&
         !overrides.isReadOnly
     )
-    .sort(sortFunction(({ isRequired }) => isRequired, true));
+    .sort(
+      multiSortFunction(
+        ({ isRequired }) => isRequired,
+        true,
+        (field) => typeof field.getFormat() === 'string',
+        true
+      )
+    );
 
 export const naiveFormatter = (
   tableLabel: string,
@@ -170,7 +95,7 @@ export async function format<SCHEMA extends AnySchema>(
    * Format a resource even if no formatter is present, or some permissions
    * are missing
    */
-  tryBest: boolean = false
+  tryBest = false
 ): Promise<LocalizedString | undefined> {
   if (typeof resource !== 'object' || resource === null) return undefined;
   if (hasTablePermission(resource.specifyModel.name, 'read'))
@@ -179,21 +104,14 @@ export async function format<SCHEMA extends AnySchema>(
     formatterName ?? resource.specifyModel.getFormat();
 
   const { formatters } = await fetchFormatters;
-  const formatter = resolveFormatter(
+  const { definition } = resolveFormatter(
     formatters,
     resolvedFormatterName,
     resource.specifyModel
   );
 
   // Doesn't support switch fields that are in child objects
-  const fields =
-    typeof formatter.switchFieldName === 'string'
-      ? formatter.fields.find(
-          ({ value }) =>
-            (value?.toString() ?? '') ===
-            (resource.get(formatter.switchFieldName ?? '') ?? '').toString()
-        )?.fields ?? formatter.fields[0].fields
-      : formatter.fields[0].fields;
+  const fields = await determineFields(definition, resource);
 
   const automaticFormatter = tryBest
     ? naiveFormatter(resource.specifyModel.label, resource.id)
@@ -204,7 +122,13 @@ export async function format<SCHEMA extends AnySchema>(
    * no fields
    */
   const isEmptyResource = fields
-    .map(({ fieldName }) => resource.get(fieldName.split('.')[0]))
+    .map(({ field }) =>
+      field?.[0] === undefined
+        ? undefined
+        : field[0].isRelationship && field[0].isDependent()
+        ? resource.getDependentResource(field[0].name)
+        : resource.get(field[0].name)
+    )
     .every((value) => value === undefined || value === null || value === '');
   return isEmptyResource
     ? automaticFormatter ?? undefined
@@ -213,48 +137,66 @@ export async function format<SCHEMA extends AnySchema>(
       ).then((values) => values.join('') as LocalizedString);
 }
 
+async function determineFields<SCHEMA extends AnySchema>(
+  { conditionField, fields }: Formatter['definition'],
+  resource: SpecifyResource<SCHEMA>
+): Promise<Formatter['definition']['fields'][number]['fields']> {
+  if (conditionField === undefined) return fields[0].fields;
+  const result = await fetchDistantRelated(resource, conditionField);
+  if (result === undefined) return fields[0].fields;
+  const rawValue = resource.get(
+    conditionField.map(({ name }) => name).join('.')
+  ) as number | string;
+  const currentValue = rawValue.toString() ?? '';
+  return (
+    fields.find(({ value }) => (value ?? '') === currentValue)?.fields ??
+    fields[0].fields
+  );
+}
+
+// FIXME: add tests
 async function formatField(
   {
-    fieldName,
+    field: fields,
     formatter,
     separator,
+    aggregator,
     fieldFormatter,
-  }: Formatter['fields'][number]['fields'][number],
-  resource: SpecifyResource<AnySchema>,
+  }: Formatter['definition']['fields'][number]['fields'][number],
+  parentResource: SpecifyResource<AnySchema>,
   tryBest: boolean
 ): Promise<string> {
-  if (typeof fieldFormatter === 'string' && fieldFormatter === '') return '';
+  let formatted: string | undefined = '';
+  const hasPermission = hasPathPermission(fields ?? [], 'read');
+  if (hasPermission) {
+    const data = await fetchDistantRelated(parentResource, fields);
+    if (data === undefined) return '';
+    const { resource, field } = data;
+    if (field === undefined) return '';
 
-  const fields = resource.specifyModel.getFields(fieldName);
-  if (fields === undefined)
-    throw new Error(`Tried to get unknown field: ${fieldName}`);
-  const field = fields.at(-1)!;
-  if (field.isRelationship)
-    throw new Error(
-      `Unexpected formatting of a relationship field ${fieldName}`
-    );
+    formatted = field.isRelationship
+      ? await (relationshipIsToMany(field)
+          ? aggregate(await resource.rgetCollection(field.name), aggregator)
+          : format(
+              await resource.rgetPromise(field.name),
+              formatter,
+              tryBest as false
+            ))
+      : await fieldFormat(
+          field,
+          resource.get(field.name) as string | undefined,
+          undefined,
+          fieldFormatter
+        );
+  } else {
+    formatted = tryBest
+      ? naiveFormatter(parentResource.specifyModel.name, parentResource.id)
+      : userText.noPermission();
+  }
 
-  const hasPermission = hasPathPermission(fields, 'read');
-
-  const formatted = hasPermission
-    ? await (
-        resource.rgetPromise(fieldName) as Promise<
-          SpecifyResource<AnySchema> | string | undefined
-        >
-      ).then(async (value) =>
-        formatter.length > 0 && typeof value === 'object'
-          ? (await format(value, formatter)) ?? ''
-          : fieldFormat(
-              field,
-              resolveParser(field),
-              value as string | undefined
-            )
-      )
-    : tryBest
-    ? naiveFormatter(resource.specifyModel.name, resource.id)
-    : userText.noPermission();
-
-  return formatted === '' ? '' : `${separator}${formatted}`;
+  return formatted === undefined || formatted === ''
+    ? ''
+    : `${separator}${formatted}`;
 }
 
 const resolveFormatter = (
@@ -263,61 +205,80 @@ const resolveFormatter = (
   model: SpecifyModel
 ): Formatter =>
   formatters.find(({ name }) => name === formatterName) ??
-  findDefaultFormatter(formatters, model.longName) ??
+  findDefaultFormatter(formatters, model) ??
   autoGenerateFormatter(model);
 
 const findDefaultFormatter = (
   formatters: RA<Formatter>,
-  modelLongNmae: string
+  model: SpecifyModel
 ): Formatter | undefined =>
   formatters
-    .filter(({ className }) => className === modelLongNmae)
+    .filter(({ tableName }) => tableName === model.name)
     .sort(sortFunction(({ isDefault }) => isDefault, true))?.[KEY];
 
 const autoGenerateFormatter = (model: SpecifyModel): Formatter => ({
   name: model.name,
   title: model.name,
-  className: model.longName,
+  tableName: model.name,
   isDefault: true,
-  switchFieldName: undefined,
-  fields: [
-    {
-      value: undefined,
-      fields: filterArray([
-        getMainTableFields(model.name).map((field) => ({
-          fieldName: field.name,
-          separator: '',
-          formatter: '',
-          fieldFormatter: 'true',
-        }))[0],
-      ]),
-    },
-  ],
+  definition: {
+    isSingle: false,
+    conditionField: undefined,
+    external: undefined,
+    fields: [
+      {
+        value: undefined,
+        fields: [
+          getMainTableFields(model.name).map((field) => ({
+            field: [field],
+            separator: '',
+            formatter: undefined,
+            aggregator: undefined,
+            fieldFormatter: undefined,
+          }))[0],
+        ],
+      },
+    ],
+  },
 });
 
 export async function aggregate(
-  collection: Collection<AnySchema>
+  collection: Collection<AnySchema>,
+  aggregatorName?: string
 ): Promise<string> {
   const { aggregators } = await fetchFormatters;
 
-  const aggregatorName = collection.model.specifyModel.getAggregator();
+  const defaultAggregator = collection.model.specifyModel.getAggregator();
 
   const aggregator =
     aggregators.find(({ name }) => name === aggregatorName) ??
+    aggregators.find(({ name }) => name === defaultAggregator) ??
     aggregators.find(
-      ({ className, isDefault }) =>
-        className === collection.model.specifyModel.longName && isDefault
-    );
-
-  if (aggregator === undefined) softFail(new Error('Aggregator not found'));
+      ({ tableName, isDefault }) =>
+        tableName === collection.model.specifyModel.name && isDefault
+    ) ??
+    aggregators.find(
+      ({ tableName }) => tableName === collection.model.specifyModel.name
+    ) ??
+    autoGenerateAggregator(collection.model.specifyModel);
 
   if (!collection.isComplete()) console.error('Collection is incomplete');
 
   return Promise.all(
     collection.models.map(async (resource) =>
-      format(resource, aggregator?.format)
+      format(resource, aggregator.formatterName)
     )
-  ).then((formatted) =>
-    filterArray(formatted).join(aggregator?.separator ?? ', ')
-  );
+  ).then((formatted) => filterArray(formatted).join(aggregator.separator));
 }
+
+const autoGenerateAggregator = (model: SpecifyModel): Aggregator => ({
+  name: model.name,
+  title: model.name,
+  tableName: model.name,
+  isDefault: true,
+  separator: '; ',
+  ending: '',
+  limit: 4,
+  formatterName: undefined,
+  sortField: undefined,
+});

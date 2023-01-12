@@ -5,41 +5,24 @@ import { silenceConsole } from '../Errors/interceptLogs';
 /**
  * Transformer was the original name, but that clashes with Node.js
  */
-export type Syncer<RAW, PARSED, OLD_RAW extends RAW | undefined = RAW> = {
+export type Syncer<RAW, PARSED> = {
   readonly serializer: Serializer<RAW, PARSED>;
-  readonly deserializer: Deserializer<RAW, PARSED, OLD_RAW>;
-};
-
-type SafeSyncerError =
-  'If you see this error, replace syncer() with safeSyncer()';
-
-/**
- * This type of syncer can handle cases when old value is not available (i.e,
- * because a new entry was added to JSON which was not previously serialized)
- */
-export type SafeSyncer<RAW, PARSED> = Syncer<RAW, PARSED, RAW | undefined> & {
-  readonly error: SafeSyncerError;
+  readonly deserializer: Deserializer<RAW, PARSED>;
 };
 
 type Serializer<RAW, PARSED> = (input: RAW) => PARSED;
 
-type Deserializer<RAW, PARSED, OLD_RAW extends RAW | undefined = RAW> = (
+type Deserializer<RAW, PARSED> = (
   value: PARSED,
-  oldInput: OLD_RAW
+  oldInput: RAW | undefined
 ) => RAW;
 
 export const syncer = <RAW, PARSED>(
   serializer: Serializer<RAW, PARSED>,
   deserializer: Deserializer<RAW, PARSED>
-): Syncer<RAW, PARSED> => ({ serializer, deserializer });
-
-export const safeSyncer = <RAW, PARSED>(
-  serializer: Serializer<RAW, PARSED>,
-  deserializer: Deserializer<RAW, PARSED, RAW | undefined>
-): SafeSyncer<RAW, PARSED> => ({
+): Syncer<RAW, PARSED> => ({
   serializer,
   deserializer,
-  ...({} as { readonly error: SafeSyncerError }),
 });
 
 /**
@@ -76,10 +59,6 @@ export function pipe<R1, R2, R3>(
   t1: Syncer<R1, R2>,
   t2: Syncer<R2, R3>
 ): Syncer<R1, R3>;
-export function pipe<R1, R2, R3>(
-  t1: SafeSyncer<R1, R2>,
-  t2: SafeSyncer<R2, R3>
-): SafeSyncer<R1, R3>;
 export function pipe(
   ...syncers: RA<Syncer<unknown, unknown>>
 ): Syncer<unknown, unknown> {

@@ -5,18 +5,13 @@ import { parseBoolean } from '../../utils/parser/parse';
 import type { RA } from '../../utils/types';
 import { getAttribute } from '../../utils/utils';
 import { parseJavaClassName } from '../DataModel/resource';
-import { getModel } from '../DataModel/schema';
+import { getModel, schema } from '../DataModel/schema';
 import type { Tables } from '../DataModel/types';
-import type { BaseSpec, SafeSyncer, SpecToJson } from './index';
-import {
-  safeSyncer,
-  symbolOldInputs,
-  syncer,
-  xmlBuilder,
-  xmlParser,
-} from './index';
+import type { BaseSpec, SpecToJson, Syncer } from './index';
+import { symbolOldInputs, syncer, xmlBuilder, xmlParser } from './index';
 import { silenceConsole } from '../Errors/interceptLogs';
 import { createXmlNode, renameXmlNode } from './xmlUtils';
+import { LiteralField, Relationship } from '../DataModel/specifyField';
 
 function getChildren(cell: Element, tagName: string): RA<Element> {
   const lowerTagName = tagName.toLowerCase();
@@ -25,16 +20,20 @@ function getChildren(cell: Element, tagName: string): RA<Element> {
   );
 }
 
+const ensureCell =
+  <T>(
+    callback: (value: T, cell: Element) => Element
+  ): ((value: T, cell: Element | undefined) => Element) =>
+  (value, cell) =>
+    callback(value, cell ?? createXmlNode(temporaryNodeName));
+
 export const syncers = {
   xmlAttribute: <MODE extends 'empty' | 'required' | 'skip'>(
     attribute: string,
     mode: MODE,
     trim = true
   ) =>
-    syncer<
-      Element,
-      LocalizedString | (MODE extends 'empty' | 'skip' ? never : undefined)
-    >(
+    syncer<Element, LocalizedString | undefined>(
       (cell) => {
         const rawValue = getAttribute(cell, attribute);
         const trimmed = trim ? rawValue?.trim() : rawValue;
@@ -42,36 +41,34 @@ export const syncers = {
           console.error(`Required attribute "${attribute}" is empty`);
         else if (mode === 'required' && trimmed === undefined)
           console.error(`Required attribute "${attribute}" is missing`);
-        return mode === 'empty' || mode === 'skip'
-          ? trimmed ?? ''
-          : (trimmed as LocalizedString);
+        return trimmed;
       },
-      (rawValue = '', cell) => {
+      ensureCell((rawValue = '', cell) => {
         const value = trim ? rawValue.trim() : rawValue;
         if (mode === 'skip' && value === '') cell.removeAttribute(attribute);
         else cell.setAttribute(attribute, value);
         return cell;
-      }
+      })
     ),
-  xmlContent: syncer<Element, string>(
-    (cell) => cell.textContent ?? '',
-    (value, cell) => {
-      cell.textContent = value;
+  xmlContent: syncer<Element, string | undefined>(
+    (cell) => cell.textContent?.trim() ?? undefined,
+    ensureCell((value, cell) => {
+      cell.textContent = value?.trim() ?? '';
       return cell;
-    }
+    })
   ),
   default: <T>(
     defaultValue: T extends (...args: RA<unknown>) => unknown
       ? never
       : T | (() => T)
   ) =>
-    safeSyncer<T | undefined, T>(
+    syncer<T | undefined, T>(
       (value) =>
         value ??
         (typeof defaultValue === 'function' ? defaultValue() : defaultValue),
       (value) => value
     ),
-  javaClassName: safeSyncer<string, keyof Tables | undefined>(
+  javaClassName: syncer<string, keyof Tables | undefined>(
     (className: string) => {
       const tableName = parseJavaClassName(className);
       const parsedName = getModel(tableName ?? className)?.name;
@@ -83,10 +80,8 @@ export const syncers = {
     (value, originalValue) =>
       f.maybe(value, getModel)?.longName ?? originalValue ?? ''
   ),
-  toBoolean: safeSyncer<string, boolean>(parseBoolean, (value) =>
-    value.toString()
-  ),
-  toDecimal: safeSyncer<string, number | undefined>(
+  toBoolean: syncer<string, boolean>(parseBoolean, (value) => value.toString()),
+  toDecimal: syncer<string, number | undefined>(
     f.parseInt,
     (value) => value?.toString() ?? ''
   ),
@@ -100,23 +95,20 @@ export const syncers = {
           console.error(`Unable to find a <${tagName} /> child`);
         return children[0];
       },
-      (rawChild, cell) => {
+      ensureCell((rawChild, cell) => {
         const child = f.maybe(rawChild, ensureTagName(tagName));
         const children = getChildren(cell, tagName);
         if (child === undefined) children[0]?.remove();
         else if (children.length === 0) cell.append(child);
         else cell.replaceChild(children[0], child);
         return cell;
-      }
+      })
     ),
   xmlChildren: (tagName: string) =>
-    syncer<Element, RA<Element | undefined>>(
+    syncer<Element, RA<Element>>(
       (cell) => getChildren(cell, tagName),
-      (rawNewChildren, cell) => {
-        const ensure = ensureTagName(tagName);
-        const newChildren = rawNewChildren.map((child) =>
-          f.maybe(child, ensure)
-        );
+      ensureCell((rawNewChildren, cell) => {
+        const newChildren = rawNewChildren.map(ensureTagName(tagName));
 
         const children = getChildren(cell, tagName);
         /*
@@ -125,33 +117,26 @@ export const syncers = {
          */
         Array.from(
           { length: Math.min(newChildren.length, children.length) },
-          (_, index) => {
-            const child = newChildren[index];
-            if (typeof child === 'object')
-              cell.replaceChild(children[index], child);
-          }
+          (_, index) => cell.replaceChild(children[index], newChildren[index])
         );
         Array.from(
           { length: children.length - newChildren.length },
           (_, index) => children[index].remove()
         );
         const addedCount = newChildren.length - children.length;
-        Array.from({ length: addedCount }, (_, index) => {
-          const child = newChildren[addedCount + index];
-          if (typeof child === 'object') cell.append(child);
-        });
+        Array.from({ length: addedCount }, (_, index) =>
+          cell.append(newChildren[addedCount + index])
+        );
         return cell;
-      }
+      })
     ),
   object<SPEC extends BaseSpec>(spec: SPEC) {
     const parser = xmlParser(spec);
     const builder = xmlBuilder(spec);
-    return safeSyncer<Element, SpecToJson<SPEC>>(
+    return syncer<Element, SpecToJson<SPEC>>(
       parser,
-      (shape, originalCell): Element => {
-        const cell = originalCell ?? createXmlNode(temporaryNodeName);
-        if (originalCell === undefined) silenceConsole(() => parser(cell));
-
+      ensureCell((shape, cell): Element => {
+        if (cell === undefined) silenceConsole(() => parser(cell));
         const intermediates = (
           cell as unknown as {
             readonly [symbolOldInputs]: Record<keyof SPEC, unknown>;
@@ -161,11 +146,11 @@ export const syncers = {
           throw new Error('Bad object structure');
 
         return builder(shape, cell, intermediates);
-      }
+      })
     );
   },
-  map: <SYNCER extends SafeSyncer<any, any>>(syncerDefinition: SYNCER) =>
-    safeSyncer<
+  map: <SYNCER extends Syncer<any, any>>(syncerDefinition: SYNCER) =>
+    syncer<
       RA<Parameters<SYNCER['serializer']>[0]>,
       RA<ReturnType<SYNCER['serializer']>>
     >(
@@ -175,8 +160,8 @@ export const syncers = {
           syncerDefinition.deserializer(element, cells?.[index])
         )
     ),
-  maybe: <SYNCER extends SafeSyncer<any, any>>(syncerDefinition: SYNCER) =>
-    safeSyncer<
+  maybe: <SYNCER extends Syncer<any, any>>(syncerDefinition: SYNCER) =>
+    syncer<
       Parameters<SYNCER['serializer']>[0] | undefined,
       ReturnType<SYNCER['serializer']> | undefined
     >(
@@ -186,6 +171,115 @@ export const syncers = {
           ? undefined
           : syncerDefinition.deserializer(element, cell)
     ),
+  dependent: <
+    KEY extends string,
+    OBJECT extends { readonly [key in KEY]: Element },
+    SUB_SPEC extends BaseSpec,
+    NEW_OBJECT extends Omit<OBJECT, KEY> & {
+      readonly [key in KEY]: SpecToJson<SUB_SPEC>;
+    }
+  >(
+    key: KEY,
+    spec: (dependent: OBJECT) => SUB_SPEC
+  ) =>
+    syncer<OBJECT, NEW_OBJECT>(
+      (object) =>
+        ({
+          ...object,
+          [key]: syncers.object(spec(object)).serializer(object[key]),
+        } as unknown as NEW_OBJECT),
+      (object, oldInput) =>
+        ({
+          ...object,
+          [key]: syncers
+            /*
+             * "object" is actually NEW_SPEC, but the difference shouldn't matter
+             * (they only differ by object[key])
+             */
+            .object(spec(object as unknown as OBJECT))
+            .deserializer(object[key], oldInput?.[key]),
+        } as unknown as OBJECT)
+    ),
+  field: (tableName: keyof Tables | undefined) =>
+    syncer<string | undefined, RA<LiteralField | Relationship> | undefined>(
+      (fieldName) => {
+        if (fieldName === undefined || tableName === undefined)
+          return undefined;
+        const field = schema.models[tableName].getFields(fieldName);
+        if (field === undefined) console.error(`Unknown field: ${fieldName}`);
+        return field;
+      },
+      (fieldName) => fieldName?.map(({ name }) => name).join('.')
+    ),
+  change: <
+    KEY extends string,
+    RAW,
+    PARSED,
+    OBJECT extends { readonly [key in KEY]: RAW },
+    NEW_OBJECT extends OBJECT & { readonly [key in KEY]: PARSED }
+  >(
+    key: KEY,
+    serializer: (object: OBJECT) => PARSED,
+    deserializer: (object: NEW_OBJECT, oldValue: OBJECT | undefined) => RAW
+  ) =>
+    syncer<OBJECT, NEW_OBJECT>(
+      (object) =>
+        ({
+          ...object,
+          [key]: serializer(object),
+        } as unknown as NEW_OBJECT),
+      (object, oldValue) =>
+        ({
+          ...object,
+          [key]: deserializer(object, oldValue),
+        } as unknown as OBJECT)
+    ),
+  /*change: <
+    KEY extends string,
+    RAW,
+    PARSED,
+    OBJECT extends { readonly [key in KEY]: RAW },
+    NEW_OBJECT extends {
+      readonly [key in keyof OBJECT]: key extends KEY ? PARSED : OBJECT[KEY];
+    }
+  >(
+    key: KEY,
+    serializer: (object: OBJECT) => PARSED,
+    deserializer: (object: NEW_OBJECT, oldValue: OBJECT | undefined) => RAW
+  ) =>
+    syncer<OBJECT,NEW_OBJECT>(
+      (object) =>
+        ({
+          ...object,
+          [key]: serializer(object),
+        } as unknown as NEW_OBJECT),
+      (object, oldValue) =>
+        ({
+          ...object,
+          [key]: deserializer(object, oldValue),
+        } as unknown as OBJECT)
+    ),*/
+  /*change: <
+    KEY extends string,
+    OBJECT extends SpecToJson<BaseSpec>,
+    NEW_OBJECT extends SpecToJson<BaseSpec>
+  >(
+    key: KEY,
+    serializer: (object: OBJECT) => NEW_OBJECT[KEY],
+    deserializer: (object: NEW_OBJECT, oldValue: OBJECT | undefined) => OBJECT[KEY]
+  ) =>
+    syncer<OBJECT,NEW_OBJECT>(
+      (object) =>
+        ({
+          ...object,
+          [key]: serializer(object),
+        } as unknown as NEW_OBJECT),
+      (object, oldValue) =>
+        ({
+          ...object,
+          [key]: deserializer(object, oldValue),
+        } as unknown as OBJECT)
+    ),*/
 } as const;
 
 /**

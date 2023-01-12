@@ -10,7 +10,6 @@ import { formsText } from '../../localization/forms';
 import { schemaText } from '../../localization/schema';
 import { welcomeText } from '../../localization/welcome';
 import type { SortConfigs } from '../../utils/cache/definitions';
-import { syncFieldFormat } from '../../utils/fieldFormat';
 import { f } from '../../utils/functools';
 import { resolveParser } from '../../utils/parser/definitions';
 import type { RA, RR } from '../../utils/types';
@@ -22,6 +21,7 @@ import { getField } from '../DataModel/helpers';
 import { getModel, schema } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { softFail } from '../Errors/Crash';
+import { syncFieldFormat } from '../Formatters/fieldFormat';
 import { getSystemInfo } from '../InitialContext/systemInfo';
 import { useTitle } from '../Molecules/AppTitle';
 import { downloadFile } from '../Molecules/FilePicker';
@@ -144,7 +144,7 @@ const parser = f.store(() =>
 );
 
 const booleanFormatter = (value: boolean): string =>
-  syncFieldFormat(undefined, parser(), value);
+  syncFieldFormat(undefined, value, parser());
 
 /*
  * FEATURE: adapt this page for printing

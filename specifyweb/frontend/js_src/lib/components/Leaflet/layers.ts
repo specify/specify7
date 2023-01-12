@@ -161,7 +161,7 @@ export const leafletLayersPromise: Promise<typeof defaultTileLayers> =
             softFail(error);
             return defaultTileLayers;
           })
-      : foreverFetch<typeof defaultTileLayers>()
+      : foreverFetch()
   );
 
 const parseLayersFromJson = (json: IR<unknown>): typeof defaultTileLayers =>
