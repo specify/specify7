@@ -392,10 +392,3 @@ export function statsToTsv(
     nameSpec,
   };
 }
-
-export const newLabelIndex = (itemLabel: string) => {
-  const labelRegEx = new RegExp(
-    `^\\s*${itemLabel}\\s*\\(\\s*\\d\\s*\\)\\s*$`,
-    'u'
-  );
-};

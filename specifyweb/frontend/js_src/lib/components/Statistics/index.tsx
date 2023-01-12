@@ -448,6 +448,7 @@ export function StatsPage(): JSX.Element | null {
         itemLabel: newItemLabel,
       };
     }
+    return item;
   };
 
   const handleDefaultLoad = React.useCallback(
