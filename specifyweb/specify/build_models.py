@@ -1,9 +1,9 @@
 from django.db import models
 
 from specifyweb.businessrules.exceptions import AbortSave
-
 from . import model_extras
 from .case_insensitive_bool import BooleanField, NullBooleanField
+from .deletion_rules import SPECIAL_DELETION_RULES
 
 appname = __name__.split('.')[-2]
 
@@ -73,23 +73,7 @@ def protect(collector, field, sub_objs, using):
     else:
         models.PROTECT(collector, field, sub_objs, using)
 
-SPECIAL_DELETION_RULES = {
-    'Agent.specifyuser': models.SET_NULL,
-    'Recordsetitem.recordset': models.CASCADE,
 
-    # Handle workbench deletion using raw sql in business rules.
-    'Workbenchrow.workbench': models.DO_NOTHING,
-    'Workbenchdataitem.workbenchrow': models.DO_NOTHING,
-    'Workbenchrowimage.workbenchrow': models.DO_NOTHING,
-    'Workbenchrowexportedrelationship.workbenchrow': models.DO_NOTHING,
-
-    'Spappresourcedir.specifyuser': models.CASCADE,
-    'Spappresource.specifyuser': models.CASCADE,
-    'Spappresource.spappresourcedir': models.CASCADE,
-    'Spappresourcedata.spappresource': models.CASCADE,
-    'Spappresourcedata.spviewsetobj': models.CASCADE,
-    'Spreport.appresource': models.CASCADE,
-}
 
 def make_relationship(modelname, rel, datamodel):
     """Return a Django relationship field for the given relationship definition.
@@ -112,7 +96,7 @@ def make_relationship(modelname, rel, datamodel):
         return None
 
     try:
-        on_delete = SPECIAL_DELETION_RULES["%s.%s" % (modelname.capitalize(), rel.name.lower())]
+        on_delete = SPECIAL_DELETION_RULES[f"{rel.name.capitalize()}"][f"{modelname.lower()}"]
     except KeyError:
         reverse = datamodel.reverse_relationship(rel)
         if reverse and reverse.dependent:
