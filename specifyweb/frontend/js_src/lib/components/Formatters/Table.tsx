@@ -3,13 +3,12 @@ import { useOutletContext } from 'react-router';
 
 import { filterArray } from '../../utils/types';
 import { group } from '../../utils/utils';
-import { useRoutePart } from '../Router/useRoutePart';
+import { formatNumber } from '../Atoms/Internationalization';
+import { resolveRelative } from '../Router/Router';
 import { TableList } from '../SchemaConfig/Tables';
 import type { FormatterTypesOutlet } from './Types';
-import { formatNumber } from '../Atoms/Internationalization';
 
 export function FormatterTablesList(): JSX.Element {
-  const [_, setTableName] = useRoutePart('tableName');
   const {
     items: [items],
   } = useOutletContext<FormatterTypesOutlet>();
@@ -17,7 +16,7 @@ export function FormatterTablesList(): JSX.Element {
     group(
       filterArray(
         items.map((item) =>
-          item.tableName === undefined ? undefined : [item.tableName, item]
+          item.table === undefined ? undefined : [item.table.name, item]
         )
       )
     )
@@ -25,9 +24,7 @@ export function FormatterTablesList(): JSX.Element {
   return (
     <TableList
       cacheKey="appResources"
-      getAction={({ name }) =>
-        () =>
-          setTableName(name)}
+      getAction={({ name }): string => resolveRelative(`./${name}`)}
     >
       {({ name }): string | undefined =>
         grouped[name] === undefined

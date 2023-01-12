@@ -1,11 +1,11 @@
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { f } from '../../utils/functools';
-import type { Tables } from '../DataModel/types';
 import type { SpecToJson } from '../Syncer';
 import { createSpec, pipe, syncer } from '../Syncer';
 import { syncers } from '../Syncer/syncers';
 import { createXmlNode } from '../Syncer/xmlUtils';
+import { SpecifyModel } from '../DataModel/specifyModel';
 
 export const formattersSpec = f.store(() =>
   createSpec({
@@ -36,16 +36,16 @@ export const formattersSpec = f.store(() =>
         pipe(
           syncers.object(aggregatorSpec()),
           syncer(
-            ({ tableName, sortField, ...rest }) => ({
+            ({ table, sortField, ...rest }) => ({
               ...rest,
-              tableName,
-              sortField: syncers.field(tableName).serializer(sortField),
+              table,
+              sortField: syncers.field(table?.name).serializer(sortField),
             }),
-            ({ tableName, sortField, ...rest }, old) => ({
+            ({ table, sortField, ...rest }, old) => ({
               ...rest,
-              tableName,
+              table,
               sortField: syncers
-                .field(tableName)
+                .field(table?.name)
                 .deserializer(sortField, old?.sortField),
             })
           )
@@ -69,7 +69,7 @@ const formatterSpec = f.store(() =>
       syncers.default<LocalizedString>('')
     ),
     title: syncers.xmlAttribute('title', 'empty'),
-    tableName: pipe(
+    table: pipe(
       syncers.xmlAttribute('class', 'required'),
       syncers.maybe(syncers.javaClassName)
     ),
@@ -86,9 +86,7 @@ const formatterSpec = f.store(() =>
   })
 );
 
-const switchSpec = ({
-  tableName,
-}: SpecToJson<ReturnType<typeof formatterSpec>>) =>
+const switchSpec = ({ table }: SpecToJson<ReturnType<typeof formatterSpec>>) =>
   createSpec({
     isSingle: pipe(
       syncers.xmlAttribute('default', 'skip'),
@@ -96,7 +94,7 @@ const switchSpec = ({
     ),
     conditionField: pipe(
       syncers.xmlAttribute('field', 'skip'),
-      syncers.field(tableName),
+      syncers.field(table?.name),
       syncer((fields) => {
         const field = fields?.at(-1);
         // FIXME: add validation for no -to-manys in the middle (and in forms too)
@@ -110,18 +108,18 @@ const switchSpec = ({
     external: syncers.xmlChild('external', 'optional'),
     fields: pipe(
       syncers.xmlChildren('fields'),
-      syncers.map(syncers.object(fieldsSpec(tableName)))
+      syncers.map(syncers.object(fieldsSpec(table)))
     ),
   });
 
-const fieldsSpec = (tableName: keyof Tables | undefined) =>
+const fieldsSpec = (table: SpecifyModel | undefined) =>
   createSpec({
     value: syncers.xmlAttribute('value', 'skip'),
     fields: pipe(
       syncers.xmlChildren('field'),
       syncers.map(
         pipe(
-          syncers.object(fieldSpec(tableName)),
+          syncers.object(fieldSpec(table)),
           syncers.change(
             'fieldFormatter',
             ({ field, fieldFormatter }) => {
@@ -159,7 +157,7 @@ const fieldsSpec = (tableName: keyof Tables | undefined) =>
     ),
   });
 
-const fieldSpec = (tableName: keyof Tables | undefined) =>
+const fieldSpec = (table: SpecifyModel | undefined) =>
   createSpec({
     separator: pipe(
       syncers.xmlAttribute('sep', 'skip'),
@@ -168,7 +166,7 @@ const fieldSpec = (tableName: keyof Tables | undefined) =>
     aggregator: syncers.xmlAttribute('aggregator', 'skip'),
     formatter: syncers.xmlAttribute('formatter', 'skip'),
     fieldFormatter: syncers.xmlAttribute('uiFieldFormatter', 'skip'),
-    field: pipe(syncers.xmlContent, syncers.field(tableName)),
+    field: pipe(syncers.xmlContent, syncers.field(table?.name)),
   });
 
 export const aggregatorSpec = f.store(() =>
@@ -178,7 +176,7 @@ export const aggregatorSpec = f.store(() =>
       syncers.default<LocalizedString>('')
     ),
     title: syncers.xmlAttribute('title', 'empty'),
-    tableName: pipe(
+    table: pipe(
       syncers.xmlAttribute('class', 'required'),
       syncers.maybe(syncers.javaClassName)
     ),
@@ -191,13 +189,13 @@ export const aggregatorSpec = f.store(() =>
       syncers.xmlAttribute('separator', 'empty', false),
       syncers.default<LocalizedString>('; ')
     ),
-    ending: syncers.xmlAttribute('ending', 'empty', false),
+    suffix: syncers.xmlAttribute('ending', 'empty', false),
     limit: pipe(
       syncers.xmlAttribute('count', 'empty', false),
       syncers.default<LocalizedString>(''),
       syncers.toDecimal
     ),
-    formatterName: syncers.xmlAttribute('format', 'empty'),
+    formatter: syncers.xmlAttribute('format', 'empty'),
     sortField: syncers.xmlAttribute('orderFieldName', 'empty'),
   })
 );

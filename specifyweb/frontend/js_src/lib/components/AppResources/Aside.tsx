@@ -286,6 +286,7 @@ function ResourceItem({
     <ActiveLink
       className="[&:not([aria-current]):not(:hover)]:!text-neutral-500"
       href={url}
+      mode="startsWith"
       onClick={
         typeof handleOpen === 'function'
           ? (event): void => {

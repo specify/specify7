@@ -19,7 +19,7 @@ const syncer = f.store(() => syncers.object(formattersSpec()));
 const types = ['formatter', 'aggregator'] as const;
 
 export type FormatterTypesOutlet = {
-  readonly items: GetOrSet<RA<Aggregator> | RA<Formatter>>;
+  readonly items: GetOrSet<RA<Aggregator | Formatter>>;
 };
 
 export function FormatterTypes(): JSX.Element {

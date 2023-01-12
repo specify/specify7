@@ -579,7 +579,7 @@ export function CustomSelectElement({
           `}
         >
           {defaultOption.optionLabel === emptyMapping
-            ? wbPlanText.notMapped()
+            ? wbPlanText.notSelected()
             : defaultOption.optionLabel}
         </span>
         {has('arrow') && (

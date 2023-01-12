@@ -621,38 +621,30 @@ export function Mapper(props: {
                       ? state.openSelectElement.index
                       : undefined;
 
-                  if (typeof openSelectElement === 'number') {
-                    if (key === 'ArrowLeft')
-                      if (openSelectElement > 0)
-                        handleOpen(openSelectElement - 1);
-                      else
-                        dispatch({
-                          type: 'CloseSelectElementAction',
-                        });
-                    else if (key === 'ArrowRight')
-                      if (openSelectElement + 1 < fullLineData.length)
-                        handleOpen(openSelectElement + 1);
-                      else
-                        dispatch({
-                          type: 'CloseSelectElementAction',
-                        });
-
-                    return;
-                  }
-
-                  if (key === 'ArrowLeft') handleOpen(fullLineData.length - 1);
-                  else if (key === 'ArrowRight' || key === 'Enter')
-                    handleOpen(0);
-                  else if (key === 'ArrowUp' && line > 0)
-                    dispatch({
-                      type: 'FocusLineAction',
-                      line: line - 1,
-                    });
-                  else if (key === 'ArrowDown' && line + 1 < state.lines.length)
-                    dispatch({
-                      type: 'FocusLineAction',
-                      line: line + 1,
-                    });
+                  handleMappingLineKey({
+                    key,
+                    openedElement: openSelectElement,
+                    lineLength: fullLineData.length,
+                    onOpen: handleOpen,
+                    onClose: () =>
+                      dispatch({
+                        type: 'CloseSelectElementAction',
+                      }),
+                    onFocusPrevious: () =>
+                      line > 0
+                        ? dispatch({
+                            type: 'FocusLineAction',
+                            line: line - 1,
+                          })
+                        : undefined,
+                    onFocusNext: () =>
+                      line + 1 < state.lines.length
+                        ? dispatch({
+                            type: 'FocusLineAction',
+                            line: line + 1,
+                          })
+                        : undefined,
+                  });
                 }}
               />
             </ErrorBoundary>
@@ -682,4 +674,38 @@ export function Mapper(props: {
       <EmptyDataSetDialog lineCount={state.lines.length} />
     </Layout>
   );
+}
+
+export function handleMappingLineKey({
+  key,
+  openedElement,
+  lineLength,
+  onOpen: handleOpen,
+  onClose: handleClose,
+  onFocusNext: handleFocusNext,
+  onFocusPrevious: handleFocusPrevious,
+}: {
+  readonly key: string;
+  readonly openedElement: number | undefined;
+  readonly lineLength: number;
+  readonly onOpen: ((index: number) => void) | undefined;
+  readonly onClose: (() => void) | undefined;
+  readonly onFocusNext: () => void;
+  readonly onFocusPrevious: () => void;
+}): void {
+  if (typeof openedElement === 'number') {
+    if (key === 'ArrowLeft')
+      if (openedElement > 0) handleOpen?.(openedElement - 1);
+      else handleClose?.();
+    else if (key === 'ArrowRight')
+      if (openedElement + 1 < lineLength) handleOpen?.(openedElement + 1);
+      else handleClose?.();
+
+    return;
+  }
+
+  if (key === 'ArrowLeft') handleOpen?.(lineLength - 1);
+  else if (key === 'ArrowRight' || key === 'Enter') handleOpen?.(0);
+  else if (key === 'ArrowUp') handleFocusPrevious();
+  else if (key === 'ArrowDown') handleFocusNext();
 }

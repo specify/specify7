@@ -12,6 +12,7 @@ import { symbolOldInputs, syncer, xmlBuilder, xmlParser } from './index';
 import { silenceConsole } from '../Errors/interceptLogs';
 import { createXmlNode, renameXmlNode } from './xmlUtils';
 import { LiteralField, Relationship } from '../DataModel/specifyField';
+import { SpecifyModel } from '../DataModel/specifyModel';
 
 function getChildren(cell: Element, tagName: string): RA<Element> {
   const lowerTagName = tagName.toLowerCase();
@@ -68,17 +69,16 @@ export const syncers = {
         (typeof defaultValue === 'function' ? defaultValue() : defaultValue),
       (value) => value
     ),
-  javaClassName: syncer<string, keyof Tables | undefined>(
+  javaClassName: syncer<string, SpecifyModel | undefined>(
     (className: string) => {
       const tableName = parseJavaClassName(className);
-      const parsedName = getModel(tableName ?? className)?.name;
-      if (parsedName === undefined)
+      const model = getModel(tableName ?? className);
+      if (model === undefined)
         // FIXME: add context to error messages
         console.error(`Unknown model: ${className ?? '(null)'}`);
-      return parsedName;
+      return model;
     },
-    (value, originalValue) =>
-      f.maybe(value, getModel)?.longName ?? originalValue ?? ''
+    (model, originalValue) => model?.longName ?? originalValue ?? ''
   ),
   toBoolean: syncer<string, boolean>(parseBoolean, (value) => value.toString()),
   toDecimal: syncer<string, number | undefined>(

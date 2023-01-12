@@ -10,20 +10,20 @@ import { Link } from '../Atoms/Link';
 export function ActiveLink<T extends Parameters<typeof Link.Default>[0]>({
   component: LinkComponent = Link.Default,
   'aria-current': ariaCurrent = 'page',
-  end = false,
+  mode = 'exact',
   ...props
 }: T & {
-  readonly end?: boolean;
+  readonly mode?: 'exact' | 'startsWith';
   readonly component?: (props: T) => JSX.Element;
 }): JSX.Element {
   const location = useLocation();
   const isActive =
-    location.pathname === props.href ||
-    `${location.pathname}${location.hash}` === props.href ||
-    location.hash === props.href ||
-    (!end &&
-      location.pathname.startsWith(props.href) &&
-      location.pathname.charAt(props.href.length) === '/');
+    mode === 'exact'
+      ? location.pathname === props.href ||
+        `${location.pathname}${location.hash}` === props.href ||
+        location.hash === props.href
+      : location.pathname.startsWith(props.href) &&
+        location.pathname.charAt(props.href.length - 1) === '/';
   return (
     <LinkComponent
       {...(props as T)}

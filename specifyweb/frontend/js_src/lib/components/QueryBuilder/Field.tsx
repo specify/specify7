@@ -26,6 +26,7 @@ import {
   mappingElementDividerClassName,
 } from '../WbPlanView/LineComponents';
 import type { MappingPath } from '../WbPlanView/Mapper';
+import { handleMappingLineKey } from '../WbPlanView/Mapper';
 import {
   mappingPathToString,
   parsePartialField,
@@ -258,26 +259,18 @@ export function QueryLine({
         ref={lineRef}
         role="list"
         tabIndex={0}
-        // Same key bindings as in WbPlanView
         onClick={(): void => handleLineFocus('current')}
         onKeyDown={({ target, key }): void => {
           if ((target as HTMLElement).closest('input, select') !== null) return;
-          if (typeof openedElement === 'number') {
-            if (key === 'ArrowLeft')
-              if (openedElement > 0) handleOpen?.(openedElement - 1);
-              else handleClose?.();
-            else if (key === 'ArrowRight')
-              if (openedElement + 1 < mappingLineProps.length)
-                handleOpen?.(openedElement + 1);
-              else handleClose?.();
-
-            return;
-          }
-
-          if (key === 'ArrowLeft') handleOpen?.(mappingLineProps.length - 1);
-          else if (key === 'ArrowRight' || key === 'Enter') handleOpen?.(0);
-          else if (key === 'ArrowUp') handleLineFocus('previous');
-          else if (key === 'ArrowDown') handleLineFocus('next');
+          handleMappingLineKey({
+            key,
+            openedElement,
+            lineLength: mappingLineProps.length,
+            onOpen: handleOpen,
+            onClose: handleClose,
+            onFocusPrevious: () => handleLineFocus('previous'),
+            onFocusNext: () => handleLineFocus('next'),
+          });
         }}
       >
         <div

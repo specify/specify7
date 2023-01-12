@@ -47,13 +47,10 @@ export const wbPlanText = createDictionary({
     'fr-fr': 'Colonne non mappée',
     'uk-ua': 'Невідповідний стовпець',
   },
-  notMapped: {
+  notSelected: {
     comment: 'Show in pick list in Data Mapper when column is not mapped',
-    'en-us': 'NOT MAPPED',
-    'ru-ru': 'НЕСОПОСТАВЛЕННЫЙ',
-    'es-es': 'NO MAPEADO',
-    'fr-fr': 'NON CARTOGRAPHIÉ',
-    'uk-ua': 'НЕ МАПИРОВАНО',
+    'en-us': 'NONE SELECTED',
+    'ru-ru': 'НЕ ВЫБРАНО',
   },
   unmapped: {
     'en-us': 'Unmapped',

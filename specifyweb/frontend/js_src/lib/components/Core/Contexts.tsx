@@ -138,6 +138,10 @@ export function Contexts({
   );
 }
 
+/*
+ * REFACTOR: consider turning LoadingContext and useNavigate into global
+ *   functions since they have the same value in all components and never change
+ */
 /**
  * Display a modal loading dialog while promise is resolving.
  * Also, catch and handle erros if promise is rejected.

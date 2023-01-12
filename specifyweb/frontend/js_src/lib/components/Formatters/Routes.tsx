@@ -29,11 +29,23 @@ export const formattersRoutes = toReactRoutes([
               import('./List').then(({ FormatterList }) => FormatterList),
           },
           {
-            path: ':name',
+            path: 'create/new',
             element: async () =>
               import('./Element').then(
                 ({ FormatterWrapper }) => FormatterWrapper
               ),
+          },
+          {
+            path: 'name',
+            children: [
+              {
+                path: ':name',
+                element: async () =>
+                  import('./Element').then(
+                    ({ FormatterWrapper }) => FormatterWrapper
+                  ),
+              },
+            ],
           },
         ],
       },

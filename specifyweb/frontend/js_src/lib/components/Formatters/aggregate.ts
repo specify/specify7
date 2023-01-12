@@ -1,46 +1,58 @@
-import { Collection, SpecifyModel } from '../DataModel/specifyModel';
-import { AnySchema } from '../DataModel/helperTypes';
-import { filterArray } from '../../utils/types';
-import { Aggregator } from './spec';
+import { filterArray, RA } from '../../utils/types';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { Collection, SpecifyModel } from '../DataModel/specifyModel';
 import { fetchFormatters, format } from './dataObjFormatters';
+import type { Aggregator } from './spec';
+import { SpecifyResource } from '../DataModel/legacyTypes';
 
 export async function aggregate(
-  collection: Collection<AnySchema>,
-  aggregatorName?: string
+  collection: RA<SpecifyResource<AnySchema>> | Collection<AnySchema>,
+  aggregator?: Aggregator | string
 ): Promise<string> {
+  const resources = Array.isArray(collection) ? collection : collection.models;
+  if (resources.length === 0) return '';
+  const targetTable = Array.isArray(collection)
+    ? collection[0].specifyModel
+    : collection.model.specifyModel;
+
   const { aggregators } = await fetchFormatters;
 
-  const defaultAggregator = collection.model.specifyModel.getAggregator();
+  const defaultAggregator = targetTable.getAggregator();
 
-  const aggregator =
-    aggregators.find(({ name }) => name === aggregatorName) ??
+  const resolvedAggregator =
+    (typeof aggregator === 'object'
+      ? aggregator
+      : aggregators.find(({ name }) => name === aggregator)) ??
     aggregators.find(({ name }) => name === defaultAggregator) ??
     aggregators.find(
-      ({ tableName, isDefault }) =>
-        tableName === collection.model.specifyModel.name && isDefault
+      ({ table, isDefault }) => table === targetTable && isDefault
     ) ??
-    aggregators.find(
-      ({ tableName }) => tableName === collection.model.specifyModel.name
-    ) ??
-    autoGenerateAggregator(collection.model.specifyModel);
+    aggregators.find(({ table }) => table === targetTable) ??
+    autoGenerateAggregator(targetTable);
 
-  if (!collection.isComplete()) console.error('Collection is incomplete');
+  if (!Array.isArray(collection) && !collection.isComplete())
+    console.error('Collection is incomplete');
 
   return Promise.all(
-    collection.models.map(async (resource) =>
-      format(resource, aggregator.formatterName)
+    resources.map(async (resource) =>
+      format(resource, resolvedAggregator.formatter)
     )
-  ).then((formatted) => filterArray(formatted).join(aggregator.separator));
+  ).then(
+    (formatted) =>
+      `${filterArray(formatted).join(resolvedAggregator.separator)}${
+        resolvedAggregator.suffix ?? ''
+      }}`
+  );
 }
 
-const autoGenerateAggregator = (model: SpecifyModel): Aggregator => ({
-  name: model.name,
-  title: model.name,
-  tableName: model.name,
+const autoGenerateAggregator = (table: SpecifyModel): Aggregator => ({
+  name: table.name,
+  title: table.name,
+  table,
   isDefault: true,
   separator: '; ',
-  ending: '',
+  suffix: '',
   limit: 4,
-  formatterName: undefined,
+  formatter: undefined,
   sortField: undefined,
 });

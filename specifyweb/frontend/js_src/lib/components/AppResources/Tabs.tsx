@@ -50,8 +50,10 @@ export function AppResourcesTabs({
   readonly onChange: (data: string | null) => void;
 }): JSX.Element {
   const tabs = useEditorTabs(resource);
+  const index = React.useState<number>(0);
   const children = (
     <Tabs
+      index={index}
       tabs={Object.fromEntries(
         tabs.map(({ label, component: Component }, index) => [
           label,
@@ -123,13 +125,13 @@ function useEditorTabs(
 
 export function Tabs({
   tabs,
-  index,
+  index: [currentIndex, handleChange],
 }: {
   readonly tabs: IR<JSX.Element>;
-  readonly index?: GetSet<number>;
+  readonly index: GetSet<number>;
 }): JSX.Element {
   return (
-    <Tab.Group selectedIndex={index?.[0]} onChange={index?.[1]}>
+    <Tab.Group selectedIndex={currentIndex} onChange={handleChange}>
       <Tab.List
         // Don't display tabs if there is only one tab
         className={`flex flex-wrap gap-2 ${
@@ -140,6 +142,14 @@ export function Tabs({
           <Tab
             className={`${className.niceButton} ${className.blueButton}`}
             key={index}
+            /**
+             * HeadlessUI does not trigger onChange on click on current tab.
+             * This is a workaround. It overrides their click handler only
+             * if the option IS current.
+             */
+            onClick={
+              currentIndex === index ? () => handleChange(index) : undefined
+            }
           >
             {label}
           </Tab>
@@ -147,7 +157,7 @@ export function Tabs({
       </Tab.List>
       <Tab.Panels className="flex flex-1 overflow-hidden border border-brand-300 dark:border-none">
         {Object.values(tabs).map((element, index) => (
-          <Tab.Panel className="flex flex-1 flex-col gap-2" key={index}>
+          <Tab.Panel className="flex flex-1 flex-col gap-4" key={index}>
             <ErrorBoundary dismissable>{element}</ErrorBoundary>
           </Tab.Panel>
         ))}
