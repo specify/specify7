@@ -49,7 +49,7 @@ export function AttachmentPreview({
     </>
   );
   const className = `
-    flex items-center justify-center rounded bg-white shadow-lg shadow-gray-300
+    flex items-center justify-center rounded bg-white shadow-xl shadow-gray-300
     transition hover:shadow-md hover:shadow-gray-400 dark:bg-black
   `;
   return typeof originalUrl === 'string' ? (

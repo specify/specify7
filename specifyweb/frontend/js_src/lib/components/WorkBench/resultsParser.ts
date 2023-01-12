@@ -10,6 +10,7 @@ import type { Tables } from '../DataModel/types';
 import type { IR, RA, RR } from '../../utils/types';
 import { backEndText } from '../../localization/backEnd';
 import { formatList } from '../Atoms/Internationalization';
+import { LocalizedString } from 'typesafe-i18n';
 
 /*
  * If an UploadResult involves a tree record, this metadata indicates
@@ -165,7 +166,7 @@ export type UploadResult = {
 export function resolveValidationMessage(
   key: string,
   payload: IR<unknown>
-): string {
+): LocalizedString {
   if (key === 'failedParsingBoolean')
     return backEndText.failedParsingBoolean({ value: payload.value as string });
   else if (key === 'failedParsingDecimal')
