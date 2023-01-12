@@ -141,6 +141,11 @@ STATICFILES_DIRS = (
     ('config', SPECIFY_CONFIG_DIR),
 )
 
+# Add web app manifest
+WEBPACK_LOADER = {
+    'MANIFEST_FILE': os.path.join(SPECIFY_CONFIG_DIR, "/static/manifest.json"),
+}
+
 # List of finder classes that know how to find static files in
 # various locations.
 STATICFILES_FINDERS = (
