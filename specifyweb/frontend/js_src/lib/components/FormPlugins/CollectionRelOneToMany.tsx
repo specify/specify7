@@ -71,7 +71,7 @@ export function CollectionOneToManyPlugin({
     <div
       className={`
         w-fit rounded bg-[color:var(--form-background)] p-2
-        ring-1 ring-gray-500 dark:ring-0
+        ring-1 ring-gray-400 shadow-sm dark:ring-0
       `}
     >
       <table className={`grid-table grid-cols-[repeat(3,auto)] gap-2`}>
