@@ -18,11 +18,11 @@ import { Input, Label, Select } from '../Atoms/Form';
 import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
 import { getModel, schema } from '../DataModel/schema';
 import type { Tables } from '../DataModel/types';
-import { useMenuItem } from '../Header';
 import { hasTablePermission } from '../Permissions/helpers';
 import { ProtectedTable } from '../Permissions/PermissionDenied';
 import { OrderPicker } from '../UserPreferences/Renderers';
 import { AttachmentGallery } from './Gallery';
+import { useMenuItem } from '../Header/MenuContext';
 
 const allTablesWithAttachments = f.store(() =>
   filterArray(

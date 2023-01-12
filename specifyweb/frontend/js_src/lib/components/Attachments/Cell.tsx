@@ -8,7 +8,7 @@ import { caseInsensitiveHash } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
 import { fetchRelated } from '../DataModel/collection';
-import { deserializeResource, getField } from '../DataModel/helpers';
+import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { idFromUrl } from '../DataModel/resource';
 import { getModelById, schema } from '../DataModel/schema';
@@ -21,6 +21,7 @@ import { hasTablePermission } from '../Permissions/helpers';
 import { fetchThumbnail } from './attachments';
 import { tablesWithAttachments } from './index';
 import { AttachmentPreview } from './Preview';
+import { deserializeResource } from '../DataModel/serializers';
 
 export function AttachmentCell({
   attachment,

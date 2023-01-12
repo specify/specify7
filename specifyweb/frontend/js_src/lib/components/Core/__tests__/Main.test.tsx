@@ -3,7 +3,7 @@ import React from 'react';
 
 import { LeakContext } from '../../../tests/reactUtils';
 import { Contexts } from '../Contexts';
-import { MenuContext, SetMenuContext } from '../Main';
+import { MenuContext, SetMenuContext } from '../../Header/MenuContext';
 
 test('<Main> is providing MenuContext', () => {
   const handleMenu = jest.fn(

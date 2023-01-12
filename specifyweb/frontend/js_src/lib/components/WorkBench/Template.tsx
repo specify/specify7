@@ -23,13 +23,13 @@ import { className } from '../Atoms/className';
 import { Input } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
-import { useMenuItem } from '../Header';
 import { treeRanksPromise } from '../InitialContext/treeRanks';
 import { legacyDialogs } from '../Molecules/LegacyDialog';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import { NotFoundView } from '../Router/NotFoundView';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { WBView } from './wbView';
+import { useMenuItem } from '../Header/MenuContext';
 
 function Navigation({
   name,

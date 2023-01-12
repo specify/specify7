@@ -5,7 +5,6 @@ import { Http } from '../../../utils/ajax/definitions';
 import type { RA } from '../../../utils/types';
 import { setPref } from '../../UserPreferences/helpers';
 import { addMissingFields } from '../addMissingFields';
-import { serializeResource } from '../helpers';
 import type { AnySchema, TableFields } from '../helperTypes';
 import type { SpecifyResource } from '../legacyTypes';
 import {
@@ -28,6 +27,7 @@ import {
 } from '../resource';
 import { schema } from '../schema';
 import type { CollectionObject } from '../types';
+import { serializeResource } from '../serializers';
 
 const { getCarryOverPreference, getFieldsToClone } = exportsForTests;
 

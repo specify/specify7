@@ -5,7 +5,6 @@ import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { index } from '../../utils/utils';
 import { fetchCollection } from '../DataModel/collection';
-import { serializeResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpLocaleContainer, Tables } from '../DataModel/types';
 import { fetchFormatters } from '../Formatters/dataObjFormatters';
@@ -14,6 +13,7 @@ import { fetchContext as fetchUiFormatters } from '../Forms/uiFormatters';
 import { fetchPickLists } from '../PickLists/definitions';
 import { formatAggregators } from './helpers';
 import { fetchSchemaLanguages } from '../Toolbar/Language';
+import { serializeResource } from '../DataModel/serializers';
 
 export type SchemaData = {
   readonly languages: IR<LocalizedString>;

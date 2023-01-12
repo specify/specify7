@@ -11,15 +11,12 @@ import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { ajax } from '../../utils/ajax';
-import type { RA, RR, WritableArray } from '../../utils/types';
-import { writable } from '../../utils/types';
-import { removeItem, sortFunction, toLowerCase } from '../../utils/utils';
+import type { RA, RR } from '../../utils/types';
+import { sortFunction, toLowerCase } from '../../utils/utils';
 import { Form, Input, Select } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
 import type { MenuItem } from '../Core/Main';
-import { MenuContext, SetMenuContext } from '../Core/Main';
-import { serializeResource } from '../DataModel/helpers';
 import type { SerializedModel } from '../DataModel/helperTypes';
 import type { Collection } from '../DataModel/types';
 import { toLargeSortConfig } from '../Molecules/Sorting';
@@ -27,26 +24,8 @@ import { formatUrl } from '../Router/queryString';
 import { switchCollection } from '../RouterCommands/SwitchCollection';
 import { usePref } from '../UserPreferences/usePref';
 import type { MenuItemName } from './menuItemDefinitions';
-
-let activeMenuItems: WritableArray<MenuItemName> = [];
-
-/**
- * Marks the corresponding menu item as active while the component with this
- * hook is active
- */
-export function useMenuItem(menuItem: MenuItemName): void {
-  const setMenuItem = React.useContext(SetMenuContext);
-  React.useEffect(() => {
-    activeMenuItems.push(menuItem);
-    setMenuItem(menuItem);
-    return () => {
-      const index = activeMenuItems.lastIndexOf(menuItem);
-      if (index !== -1)
-        activeMenuItems = writable(removeItem(activeMenuItems, index));
-      setMenuItem(activeMenuItems.at(-1));
-    };
-  }, [menuItem, setMenuItem]);
-}
+import { serializeResource } from '../DataModel/serializers';
+import { MenuContext } from './MenuContext';
 
 export function HeaderItems({
   menuItems,

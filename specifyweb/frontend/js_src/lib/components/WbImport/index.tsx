@@ -18,7 +18,6 @@ import { Container, H2, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Input, Select } from '../Atoms/Form';
 import { LoadingContext } from '../Core/Contexts';
-import { useMenuItem } from '../Header';
 import { loadingGif } from '../Molecules';
 import type { AutoCompleteItem } from '../Molecules/AutoComplete';
 import { AutoComplete } from '../Molecules/AutoComplete';
@@ -34,6 +33,7 @@ import {
   parseXls,
   wbImportPreviewSize,
 } from './helpers';
+import { useMenuItem } from '../Header/MenuContext';
 
 export function WbImportView(): JSX.Element {
   useMenuItem('workBench');

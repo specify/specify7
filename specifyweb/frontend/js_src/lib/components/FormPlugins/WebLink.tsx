@@ -11,7 +11,6 @@ import { keysToLowerCase, removeKey } from '../../utils/utils';
 import { xmlToString } from '../AppResources/codeMirrorLinters';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
-import { serializeResource } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
@@ -23,6 +22,7 @@ import type { FormMode, FormType } from '../FormParse';
 import { load } from '../InitialContext';
 import { getIcon, unknownIcon } from '../InitialContext/icons';
 import { formatUrl } from '../Router/queryString';
+import { serializeResource } from '../DataModel/serializers';
 
 export const webLinks = load<Element>(
   formatUrl('/context/app.resource', { name: 'WebLinks' }),

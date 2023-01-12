@@ -13,7 +13,6 @@ import type { R, RA } from '../../utils/types';
 import { removeItem, removeKey } from '../../utils/utils';
 import { Container, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
-import { deserializeResource, serializeResource } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { createResource } from '../DataModel/resource';
 import { schema, strictGetModel } from '../DataModel/schema';
@@ -36,6 +35,10 @@ import { sortTypes } from './helpers';
 import { QueryResultsTable } from './ResultsTable';
 import { QueryToForms } from './ToForms';
 import { QueryToMap } from './ToMap';
+import {
+  deserializeResource,
+  serializeResource,
+} from '../DataModel/serializers';
 
 export type QueryResultRow = RA<number | string | null>;
 

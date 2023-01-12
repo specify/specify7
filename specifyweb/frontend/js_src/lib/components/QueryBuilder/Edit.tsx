@@ -16,7 +16,6 @@ import { DataEntry } from '../Atoms/DataEntry';
 import { Form, Input } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
-import { deserializeResource } from '../DataModel/helpers';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -28,6 +27,7 @@ import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { downloadFile } from '../Molecules/FilePicker';
 import { hasPermission } from '../Permissions/helpers';
+import { deserializeResource } from '../DataModel/serializers';
 
 export function QueryEditButton({
   query,

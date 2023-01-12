@@ -11,11 +11,7 @@ import { DataEntry } from '../Atoms/DataEntry';
 import { Form } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { LoadingContext } from '../Core/Contexts';
-import {
-  deserializeResource,
-  serializeResource,
-  toTable,
-} from '../DataModel/helpers';
+import { toTable } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { createResource } from '../DataModel/resource';
 import type {
@@ -39,6 +35,10 @@ import {
 import { getResourceType } from './filtersHelpers';
 import { useAppResourceData } from './hooks';
 import { AppResourcesTabs } from './Tabs';
+import {
+  deserializeResource,
+  serializeResource,
+} from '../DataModel/serializers';
 
 export function AppResourceEditor({
   resource,

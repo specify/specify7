@@ -12,7 +12,7 @@ import { group, replaceItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Form } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
-import { getField, serializeResource, toTable } from '../DataModel/helpers';
+import { getField, toTable } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceApiUrl, getResourceViewUrl } from '../DataModel/resource';
 import { schema, strictGetModel } from '../DataModel/schema';
@@ -27,6 +27,7 @@ import type {
 } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import { PrepDialogRow } from './PrepDialogRow';
+import { serializeResource } from '../DataModel/serializers';
 
 export function PrepDialog({
   onClose: handleClose,

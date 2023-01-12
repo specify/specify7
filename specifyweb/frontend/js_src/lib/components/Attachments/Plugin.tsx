@@ -12,7 +12,7 @@ import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { f } from '../../utils/functools';
 import { Progress } from '../Atoms';
-import { serializeResource, toTable } from '../DataModel/helpers';
+import { toTable } from '../DataModel/helpers';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Attachment } from '../DataModel/types';
@@ -29,6 +29,7 @@ import {
   uploadFile,
 } from './attachments';
 import { AttachmentCell } from './Cell';
+import { serializeResource } from '../DataModel/serializers';
 
 export function AttachmentsPlugin({
   id,

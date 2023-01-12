@@ -14,7 +14,7 @@ import { filterArray } from '../../utils/types';
 import { keysToLowerCase } from '../../utils/utils';
 import { DataEntry } from '../Atoms/DataEntry';
 import { LoadingContext } from '../Core/Contexts';
-import { serializeResource, toTable } from '../DataModel/helpers';
+import { toTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import {
@@ -48,6 +48,7 @@ import {
 import { useCollectionRelationships } from './useCollectionRelationships';
 import { useTreeData } from './useTreeData';
 import { useTypeSearch } from './useTypeSearch';
+import { serializeResource } from '../DataModel/serializers';
 
 /*
  * REFACTOR: split this component

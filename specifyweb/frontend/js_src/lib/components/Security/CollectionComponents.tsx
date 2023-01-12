@@ -13,7 +13,6 @@ import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
 import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
-import { deserializeResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { Collection } from '../DataModel/types';
 import { ResourceView } from '../Forms/ResourceView';
@@ -23,6 +22,7 @@ import { updateCollectionRole } from './CollectionRole';
 import { createCollectionRole } from './CreateRole';
 import { ImportExport } from './ImportExport';
 import type { Role } from './Role';
+import { deserializeResource } from '../DataModel/serializers';
 
 /**
  * Display a button to open current user

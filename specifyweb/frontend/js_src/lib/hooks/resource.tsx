@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { serializeResource } from '../components/DataModel/helpers';
 import type {
   AnySchema,
   SerializedResource,
@@ -16,6 +15,7 @@ import {
   resolveParser,
 } from '../utils/parser/definitions';
 import type { GetOrSet, IR } from '../utils/types';
+import { serializeResource } from '../components/DataModel/serializers';
 
 /**
  * A wrapper for Backbone.Resource that integrates with React.useState for

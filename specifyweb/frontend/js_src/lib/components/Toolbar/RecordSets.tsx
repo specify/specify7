@@ -11,7 +11,7 @@ import { icons } from '../Atoms/Icons';
 import { formatNumber } from '../Atoms/Internationalization';
 import { Link } from '../Atoms/Link';
 import { fetchCollection } from '../DataModel/collection';
-import { deserializeResource, getField } from '../DataModel/helpers';
+import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getModelById, schema } from '../DataModel/schema';
@@ -25,6 +25,7 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { hasToolPermission } from '../Permissions/helpers';
 import { OverlayContext } from '../Router/Router';
 import { EditRecordSet } from './RecordSetEdit';
+import { deserializeResource } from '../DataModel/serializers';
 
 export function RecordSetsOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);

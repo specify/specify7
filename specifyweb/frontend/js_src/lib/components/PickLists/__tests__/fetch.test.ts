@@ -2,10 +2,6 @@ import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
 import { removeKey } from '../../../utils/utils';
 import { addMissingFields } from '../../DataModel/addMissingFields';
-import {
-  deserializeResource,
-  serializeResource,
-} from '../../DataModel/helpers';
 import { getResourceApiUrl } from '../../DataModel/resource';
 import {
   createPickListItem,
@@ -13,6 +9,10 @@ import {
   PickListTypes,
 } from '../definitions';
 import { exportsForTests } from '../fetch';
+import {
+  deserializeResource,
+  serializeResource,
+} from '../../DataModel/serializers';
 
 const { unsafeFetchPickList, fetchPickListItems } = exportsForTests;
 

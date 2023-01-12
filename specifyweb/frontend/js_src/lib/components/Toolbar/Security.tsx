@@ -13,7 +13,6 @@ import { index } from '../../utils/utils';
 import { Container, H2, H3 } from '../Atoms';
 import { className } from '../Atoms/className';
 import { fetchCollection } from '../DataModel/collection';
-import { serializeResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { schema } from '../DataModel/schema';
 import type { Institution, SpecifyUser } from '../DataModel/types';
@@ -26,6 +25,7 @@ import { SafeOutlet } from '../Router/RouterUtils';
 import { processPolicies } from '../Security/policyConverter';
 import type { Role } from '../Security/Role';
 import type { BackEndRole } from '../Security/utils';
+import { serializeResource } from '../DataModel/serializers';
 
 export type SecurityOutlet = {
   readonly institution: SerializedResource<Institution> | undefined;

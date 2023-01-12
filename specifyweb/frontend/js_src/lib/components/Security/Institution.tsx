@@ -16,7 +16,6 @@ import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
 import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
-import { deserializeResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { schema } from '../DataModel/schema';
 import type { Institution } from '../DataModel/types';
@@ -31,6 +30,7 @@ import { createLibraryRole } from './CreateLibraryRole';
 import { ImportExport } from './ImportExport';
 import { updateLibraryRole } from './LibraryRole';
 import { policiesToTsv } from './registry';
+import { deserializeResource } from '../DataModel/serializers';
 
 export function SecurityInstitution(): JSX.Element | null {
   const { institution } = useOutletContext<SecurityOutlet>();

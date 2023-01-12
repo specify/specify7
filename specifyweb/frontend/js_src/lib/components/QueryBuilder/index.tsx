@@ -5,7 +5,6 @@ import { useSearchParameter } from '../../hooks/navigation';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
-import { deserializeResource } from '../DataModel/helpers';
 import type { AnyTree } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { fetchResource } from '../DataModel/resource';
@@ -19,6 +18,7 @@ import { ProtectedTool, ProtectedTree } from '../Permissions/PermissionDenied';
 import { NotFoundView } from '../Router/NotFoundView';
 import { queryFromTree } from './fromTree';
 import { QueryBuilder } from './Wrapped';
+import { deserializeResource } from '../DataModel/serializers';
 
 function useQueryRecordSet(): SpecifyResource<RecordSet> | false | undefined {
   const [recordsetid = ''] = useSearchParameter('recordsetid');

@@ -7,7 +7,6 @@ import { userText } from '../../localization/user';
 import { StringToJsx } from '../../localization/utils';
 import { f } from '../../utils/functools';
 import { jsonStringify } from '../../utils/utils';
-import { deserializeResource, serializeResource } from '../DataModel/helpers';
 import type { SerializedModel } from '../DataModel/helperTypes';
 import { schema } from '../DataModel/schema';
 import type { SpecifyUser } from '../DataModel/types';
@@ -16,6 +15,10 @@ import { userInformation } from '../InitialContext/userInformation';
 import { actionToLabel, resourceNameToLongLabel } from '../Security/utils';
 import { institutionPermissions } from './definitions';
 import type { PermissionErrorSchema } from './PermissionDenied';
+import {
+  deserializeResource,
+  serializeResource,
+} from '../DataModel/serializers';
 
 export function formatPermissionsError(
   response: string,

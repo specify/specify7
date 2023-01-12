@@ -23,7 +23,6 @@ import { DataEntry } from '../Atoms/DataEntry';
 import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
 import { addMissingFields } from '../DataModel/addMissingFields';
-import { deserializeResource, serializeResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { idFromUrl } from '../DataModel/resource';
@@ -73,6 +72,10 @@ import {
   useUserProviders,
 } from './UserPolicyHooks';
 import { anyResource, getAllActions } from './utils';
+import {
+  deserializeResource,
+  serializeResource,
+} from '../DataModel/serializers';
 
 export function SecurityUser(): JSX.Element {
   const location = useStableLocation(useLocation());

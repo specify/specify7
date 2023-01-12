@@ -4,13 +4,13 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { f } from '../../utils/functools';
 import { Input } from '../Atoms/Form';
 import { fetchCollection } from '../DataModel/collection';
-import { deserializeResource } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { CollectingEventAttribute } from '../DataModel/types';
 import { QueryComboBox } from '../FormFields/QueryComboBox';
 import type { FormMode, FormType } from '../FormParse';
 import { hasTreeAccess } from '../Permissions/helpers';
+import { deserializeResource } from '../DataModel/serializers';
 
 const template = document.createElement('template');
 template.innerHTML =

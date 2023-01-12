@@ -10,7 +10,6 @@ import { getUserPref } from '../UserPreferences/helpers';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { addMissingFields } from './addMissingFields';
 import { businessRuleDefs } from './businessRuleDefs';
-import { serializeResource } from './helpers';
 import type {
   AnySchema,
   SerializedModel,
@@ -21,6 +20,7 @@ import type { SpecifyResource } from './legacyTypes';
 import { getModel, schema } from './schema';
 import type { SpecifyModel } from './specifyModel';
 import type { Tables } from './types';
+import { serializeResource } from './serializers';
 
 /*
  * REFACTOR: experiment with an object singleton:

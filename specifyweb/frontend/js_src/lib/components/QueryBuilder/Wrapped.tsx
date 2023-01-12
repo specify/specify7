@@ -19,7 +19,6 @@ import { icons } from '../Atoms/Icons';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getModelById } from '../DataModel/schema';
 import type { RecordSet, SpQuery } from '../DataModel/types';
-import { useMenuItem } from '../Header';
 import { isTreeModel, treeRanksPromise } from '../InitialContext/treeRanks';
 import { useTitle } from '../Molecules/AppTitle';
 import { hasPermission } from '../Permissions/helpers';
@@ -47,6 +46,7 @@ import { mutateLineData, smoothScroll, unParseQueryFields } from './helpers';
 import { getInitialState, reducer } from './reducer';
 import { QueryResultsWrapper } from './ResultsWrapper';
 import { QueryToolbar } from './Toolbar';
+import { useMenuItem } from '../Header/MenuContext';
 
 const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 

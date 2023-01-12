@@ -3,7 +3,6 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
-import { deserializeResource } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type {
@@ -14,6 +13,7 @@ import type {
 } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import { format } from '../Formatters/dataObjFormatters';
+import { deserializeResource } from '../DataModel/serializers';
 
 export type CollectionRelData = {
   readonly relationshipType: SpecifyResource<CollectionRelType>;

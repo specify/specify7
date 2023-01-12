@@ -12,7 +12,6 @@ import {
   unCapitalize,
 } from '../../utils/utils';
 import { fetchRelated } from '../DataModel/collection';
-import { serializeResource } from '../DataModel/helpers';
 import type {
   AnySchema,
   AnyTree,
@@ -21,6 +20,7 @@ import type {
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema, strictGetModel } from '../DataModel/schema';
 import { fetchContext as fetchDomain } from '../DataModel/schemaBase';
+import { serializeResource } from '../DataModel/serializers';
 import type { Tables } from '../DataModel/types';
 
 export const getDomainResource = <

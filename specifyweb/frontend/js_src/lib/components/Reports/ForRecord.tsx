@@ -2,7 +2,6 @@ import React from 'react';
 
 import type { IR } from '../../utils/types';
 import { replaceKey } from '../../utils/utils';
-import { serializeResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { SpQuery } from '../DataModel/types';
@@ -10,6 +9,7 @@ import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { usePref } from '../UserPreferences/usePref';
 import { RunReport } from './Run';
+import { serializeResource } from '../DataModel/serializers';
 
 export function ReportForRecord({
   query: rawQuery,

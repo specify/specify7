@@ -8,7 +8,6 @@ import type { R, RA } from '../../utils/types';
 import { defined } from '../../utils/types';
 import { sortFunction, toLowerCase } from '../../utils/utils';
 import { fetchCollection } from '../DataModel/collection';
-import { deserializeResource, serializeResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema, strictGetModel } from '../DataModel/schema';
@@ -23,6 +22,10 @@ import {
   PickListTypes,
   unsafeGetPickLists,
 } from './definitions';
+import {
+  deserializeResource,
+  serializeResource,
+} from '../DataModel/serializers';
 
 const pickListFetchPromises: R<Promise<SpecifyResource<PickList> | undefined>> =
   {};

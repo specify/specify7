@@ -12,7 +12,7 @@ import { Button } from '../Atoms/Button';
 import { iconClassName, icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { attachmentSettingsPromise } from '../Attachments/attachments';
-import { getField, serializeResource } from '../DataModel/helpers';
+import { getField } from '../DataModel/helpers';
 import type {
   SerializedModel,
   SerializedResource,
@@ -29,6 +29,7 @@ import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import { formatUrl } from '../Router/queryString';
 import { OverlayContext } from '../Router/Router';
 import { Report } from './Report';
+import { serializeResource } from '../DataModel/serializers';
 
 export const reportsAvailable = ajax<{ readonly available: boolean }>(
   cachableUrl('/context/report_runner_status.json'),

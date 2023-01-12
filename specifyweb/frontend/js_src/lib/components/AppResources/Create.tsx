@@ -11,7 +11,6 @@ import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { addMissingFields } from '../DataModel/addMissingFields';
-import { deserializeResource, serializeResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpAppResourceDir } from '../DataModel/types';
 import {
@@ -27,6 +26,10 @@ import { useResourcesTree } from './hooks';
 import type { AppResourcesOutlet } from './index';
 import type { AppResourceType } from './types';
 import { appResourceSubTypes, appResourceTypes } from './types';
+import {
+  deserializeResource,
+  serializeResource,
+} from '../DataModel/serializers';
 
 /**
  * Check if one type is a subtype of another

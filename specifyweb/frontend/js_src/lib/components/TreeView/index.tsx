@@ -13,7 +13,6 @@ import { caseInsensitiveHash, toggleItem } from '../../utils/utils';
 import { Container, H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
-import { deserializeResource } from '../DataModel/helpers';
 import type {
   AnyTree,
   FilterTablesByEndsWith,
@@ -24,7 +23,6 @@ import { getModel, schema } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { ResourceView } from '../Forms/ResourceView';
-import { useMenuItem } from '../Header';
 import { getPref } from '../InitialContext/remotePrefs';
 import { isTreeModel, treeRanksPromise } from '../InitialContext/treeRanks';
 import { useTitle } from '../Molecules/AppTitle';
@@ -48,6 +46,8 @@ import {
 } from './helpers';
 import { TreeRow } from './Row';
 import { TreeViewSearch } from './Search';
+import { deserializeResource } from '../DataModel/serializers';
+import { useMenuItem } from '../Header/MenuContext';
 
 const treeToPref = {
   Geography: 'geography',

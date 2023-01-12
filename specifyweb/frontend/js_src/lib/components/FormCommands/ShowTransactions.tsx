@@ -9,12 +9,12 @@ import { sortFunction } from '../../utils/utils';
 import { H3, Ul } from '../Atoms';
 import { Link } from '../Atoms/Link';
 import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
-import { deserializeResource } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Preparation } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
+import { deserializeResource } from '../DataModel/serializers';
 
 function List({
   resources,

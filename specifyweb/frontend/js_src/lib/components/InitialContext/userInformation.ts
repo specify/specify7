@@ -6,7 +6,6 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import type { RA, Writable } from '../../utils/types';
 import { setDevelopmentGlobal } from '../../utils/types';
-import { serializeResource } from '../DataModel/helpers';
 import type {
   SerializedModel,
   SerializedResource,
@@ -14,6 +13,7 @@ import type {
 import { fetchContext as fetchSchema } from '../DataModel/schema';
 import type { Agent, Collection, SpecifyUser } from '../DataModel/types';
 import { load } from './index';
+import { serializeResource } from '../DataModel/serializers';
 
 export type UserInformation = SerializedModel<SpecifyUser> & {
   readonly name: LocalizedString;

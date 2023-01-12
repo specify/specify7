@@ -13,7 +13,6 @@ import { clamp, split } from '../../utils/utils';
 import { DataEntry } from '../Atoms/DataEntry';
 import { LoadingContext } from '../Core/Contexts';
 import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
-import { serializeResource } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import {
@@ -30,6 +29,7 @@ import { locationToState, useStableLocation } from '../Router/RouterState';
 import { EditRecordSet } from '../Toolbar/RecordSetEdit';
 import type { RecordSelectorProps } from './RecordSelector';
 import { RecordSelectorFromIds } from './RecordSelectorFromIds';
+import { serializeResource } from '../DataModel/serializers';
 
 export function RecordSetWrapper<SCHEMA extends AnySchema>({
   recordSet,

@@ -4,7 +4,6 @@ import { addMissingFields } from '../addMissingFields';
 import {
   fetchDistantRelated,
   isResourceOfType,
-  serializeResource,
   toResource,
   toTable,
   toTables,
@@ -13,6 +12,7 @@ import {
 import { getResourceApiUrl } from '../resource';
 import { schema } from '../schema';
 import type { Tables } from '../types';
+import { serializeResource } from '../serializers';
 
 mockTime();
 requireContext();

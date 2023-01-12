@@ -42,7 +42,6 @@ import {format} from '../Formatters/dataObjFormatters';
 import {whitespaceSensitive} from '../../localization/utils';
 import {filterArray} from '../../utils/types';
 import {strictGetTreeDefinitionItems} from '../InitialContext/treeRanks';
-import {serializeResource} from '../DataModel/helpers';
 import {fetchPickList} from '../PickLists/fetch';
 import {ajax} from '../../utils/ajax';
 import {ping} from '../../utils/ajax/ping';
@@ -69,6 +68,7 @@ import {wbPlanText} from '../../localization/wbPlan';
 import {iconClassName, legacyNonJsxIcons} from '../Atoms/Icons';
 import {getIcon, unknownIcon} from '../InitialContext/icons';
 import {capitalize, clamp, mappedFind} from '../../utils/utils';
+import {serializeResource} from '../DataModel/serializers';
 
 const metaKeys = [
   'isNew',

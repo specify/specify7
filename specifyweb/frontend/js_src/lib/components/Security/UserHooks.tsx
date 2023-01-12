@@ -6,7 +6,6 @@ import { f } from '../../utils/functools';
 import type { IR, RA, RR } from '../../utils/types';
 import { group } from '../../utils/utils';
 import { fetchCollection } from '../DataModel/collection';
-import { serializeResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import {
@@ -21,6 +20,7 @@ import { hasTablePermission } from '../Permissions/helpers';
 import type { RoleBase } from './Collection';
 import type { Role } from './Role';
 import { fetchRoles, fetchUserRoles } from './utils';
+import { serializeResource } from '../DataModel/serializers';
 
 /** Fetch roles from all collections */
 export function useCollectionRoles(
