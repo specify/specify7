@@ -9,6 +9,8 @@ import React from 'react';
 import { RA } from '../../utils/types';
 import { SerializedResource } from '../DataModel/helperTypes';
 import { SpQueryField } from '../DataModel/types';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { statsText } from '../../localization/stats';
 
 export function Categories({
   pageLayout,
@@ -60,6 +62,12 @@ export function Categories({
     | undefined;
 }): JSX.Element {
   const checkEmptyItems = handleSpecChanged === undefined;
+  const [removeCategory, setRemoveCategory] = React.useState<
+    { readonly categoryIndex: number } | undefined
+  >(undefined);
+  const closeRemoveDialog = (): void => {
+    setRemoveCategory(undefined);
+  };
   return pageLayout === undefined ? (
     <></>
   ) : (
@@ -191,15 +199,29 @@ export function Categories({
                   <span className="-ml-2 flex-1" />
                   <Button.Small
                     variant={className.redButton}
-                    onClick={(): void => handleRemove(categoryIndex, undefined)}
+                    onClick={(): void => {
+                      const containsCustom =
+                        pageLayout.categories[categoryIndex].items === undefined
+                          ? false
+                          : (pageLayout.categories[categoryIndex].items?.some(
+                              (item) => item.type === 'CustomStat'
+                            ) as boolean);
+                      if (containsCustom) {
+                        setRemoveCategory({ categoryIndex });
+                      } else {
+                        handleRemove(categoryIndex, undefined);
+                      }
+                    }}
                   >
                     {'Delete All'}
                   </Button.Small>
+                  <></>
                 </div>
               ) : null}
             </li>
           )
       )}
+
       {handleAdd !== undefined && (
         <Button.Gray
           className="!p-4 font-bold shadow-md shadow-gray-300"
@@ -207,6 +229,31 @@ export function Categories({
         >
           {commonText('add')}
         </Button.Gray>
+      )}
+      {removeCategory !== undefined && (
+        <Dialog
+          header="Category Contains Custom Statistics"
+          buttons={
+            <div className="flex flex-row gap-2">
+              <Button.Red
+                onClick={(): void => {
+                  handleRemove?.(removeCategory.categoryIndex, undefined);
+                  closeRemoveDialog();
+                }}
+              >
+                {commonText('delete')}
+              </Button.Red>
+              <span className="-ml-2 flex" />
+              <Button.Blue onClick={closeRemoveDialog}>
+                {commonText('cancel')}
+              </Button.Blue>
+            </div>
+          }
+          className={{ container: dialogClassNames.narrowContainer }}
+          onClose={closeRemoveDialog}
+        >
+          {statsText('customDeleteWarning')}
+        </Dialog>
       )}
     </>
   );
