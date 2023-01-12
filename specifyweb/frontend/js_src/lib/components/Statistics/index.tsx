@@ -79,6 +79,10 @@ export function StatsPage(): JSX.Element | null {
       >
     | State<'DefaultState'>
     | State<'EditingState'>
+    | State<
+        'DeletingCategoryState',
+        { readonly categoryContainsCustom: boolean }
+      >
   >({ type: 'DefaultState' });
 
   const isAddingItem = state.type === 'AddingState';
@@ -278,9 +282,12 @@ export function StatsPage(): JSX.Element | null {
     const setLayout = activePage.isCollection
       ? setCollectionLayout
       : setPersonalLayout;
-    const layout = activePage.isCollection ? collectionLayout : personalLayout;
     if (layout !== undefined) {
-      setLayout(getLastUpdated(layout, activePage.pageIndex));
+      setLayout((layout) =>
+        layout === undefined
+          ? undefined
+          : getLastUpdated(layout, activePage.pageIndex)
+      );
       setActivePage((currentState) => ({
         ...currentState,
         isPageUpdated: true,
@@ -410,14 +417,16 @@ export function StatsPage(): JSX.Element | null {
               isPageUpdated: false,
             }));
             if (activePage.isCollection) {
-              setCollectionLayout(
-                getValueUndefined(collectionLayout, activePage.pageIndex)
+              setCollectionLayout((layout) =>
+                layout === undefined
+                  ? undefined
+                  : getValueUndefined(layout, activePage.pageIndex)
               );
             } else {
-              setPersonalLayout(
-                personalLayout === undefined
+              setPersonalLayout((layout) =>
+                layout === undefined
                   ? undefined
-                  : getValueUndefined(personalLayout, activePage.pageIndex)
+                  : getValueUndefined(layout, activePage.pageIndex)
               );
             }
           }}
