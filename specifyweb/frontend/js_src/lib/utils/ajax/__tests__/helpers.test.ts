@@ -1,5 +1,5 @@
 import { theories } from '../../../tests/utils';
-import { formData, isExternalUrl, toRelativeUrl } from '../helpers';
+import { formData, isExternalUrl, toLocalUrl } from '../helpers';
 
 theories(isExternalUrl, [
   { in: ['blob:https://localhost/'], out: true },
@@ -8,7 +8,7 @@ theories(isExternalUrl, [
   { in: ['/page'], out: false },
 ]);
 
-theories(toRelativeUrl, [
+theories(toLocalUrl, [
   { in: ['http://localhost/page?bar=#hash'], out: '/page?bar=#hash' },
   { in: ['/page?bar=#hash'], out: '/page?bar=#hash' },
   { in: ['https://google.com/page?bar=#hash'], out: undefined },

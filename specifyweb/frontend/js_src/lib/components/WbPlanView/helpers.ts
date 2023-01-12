@@ -56,7 +56,7 @@ export async function savePlan({
     .filter(
       ({ headerName, mappingPath }) =>
         mappingPath.length > 0 &&
-        mappingPath[0] !== '0' &&
+        mappingPath[0] !== emptyMapping &&
         !dataset.columns.includes(headerName)
     )
     .map(({ headerName }) => headerName);
@@ -207,8 +207,10 @@ export const getMappedFields = (
     .filter((line) => pathStartsWith(line.mappingPath, mappingPathFilter))
     .map((line) => line.mappingPath[mappingPathFilter.length]);
 
+export const emptyMapping = '0';
+
 export const mappingPathIsComplete = (mappingPath: MappingPath): boolean =>
-  mappingPath.at(-1) !== '0';
+  mappingPath.at(-1) !== emptyMapping;
 
 /*
  * The most important function in WbPlanView
@@ -219,9 +221,7 @@ export const mappingPathIsComplete = (mappingPath: MappingPath): boolean =>
  *  the selected box on value changes
  */
 export function mutateMappingPath({
-  lines,
-  mappingView,
-  line,
+  mappingPath: originalPath,
   index: originalIndex,
   newValue,
   isRelationship,
@@ -230,9 +230,7 @@ export function mutateMappingPath({
   newTableName,
   ignoreToMany = false,
 }: {
-  readonly lines: RA<MappingLine>;
-  readonly mappingView: MappingPath;
-  readonly line: number | 'mappingView';
+  readonly mappingPath: MappingPath;
   readonly index: number;
   readonly newValue: string;
   readonly isRelationship: boolean;
@@ -245,10 +243,7 @@ export function mutateMappingPath({
    */
   readonly ignoreToMany?: boolean;
 }): MappingPath {
-  // Get mapping path from selected line or mapping view
-  let mappingPath = Array.from(
-    line === 'mappingView' ? mappingView : lines[line].mappingPath
-  );
+  let mappingPath = Array.from(originalPath);
 
   /*
    * If ignoring -to-many, originalIndex needs to be corrected since -to-many
@@ -297,8 +292,8 @@ export function mutateMappingPath({
         ...(mappingPath.length > index + 1
           ? mappingPath.slice(index + 1)
           : ignoreToMany && isNewToMany
-          ? [formatToManyIndex(1), '0']
-          : ['0']),
+          ? [formatToManyIndex(1), emptyMapping]
+          : [emptyMapping]),
       ]
     : mappingPath;
 }

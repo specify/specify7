@@ -15,7 +15,7 @@ import { SchemaConfigColumn } from './Fields';
 import { SchemaConfigFormat } from './Format';
 import { javaTypeToHuman } from './helpers';
 import type { ItemType } from './index';
-import type { SchemaData } from './SetupHooks';
+import type { SchemaData } from './schemaData';
 import { maxSchemaValueLength } from './Table';
 
 export function SchemaConfigField({

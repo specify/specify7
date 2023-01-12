@@ -77,7 +77,6 @@ export function QueryLine({
   readonly onMappingChange:
     | ((payload: {
         readonly index: number;
-        readonly close: boolean;
         readonly newValue: string;
         readonly isRelationship: boolean;
         readonly parentTableName: keyof Tables | undefined;

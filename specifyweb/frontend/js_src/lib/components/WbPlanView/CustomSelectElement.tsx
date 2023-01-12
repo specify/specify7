@@ -26,6 +26,7 @@ import {
   tableIconUndefined,
 } from '../Molecules/TableIcon';
 import { scrollIntoView } from '../TreeView/helpers';
+import { emptyMapping } from './helpers';
 
 type Properties =
   /*
@@ -174,6 +175,14 @@ type CustomSelectElementOptionGroupProps = {
   readonly hasArrow?: boolean;
 };
 
+type ChangeEvent = {
+  readonly newValue: string;
+  readonly isRelationship: boolean;
+  readonly currentTableName: keyof Tables | undefined;
+  readonly newTableName: keyof Tables | undefined;
+  readonly isDoubleClick: boolean;
+};
+
 type CustomSelectElementPropsBase = {
   // The label to use for the element
   readonly selectLabel?: LocalizedString;
@@ -186,14 +195,7 @@ type CustomSelectElementPropsBase = {
 
   readonly onOpen?: () => void;
 
-  readonly onChange?: (payload: {
-    readonly close: boolean;
-    readonly newValue: string;
-    readonly isRelationship: boolean;
-    readonly currentTableName: keyof Tables | undefined;
-    readonly newTableName: keyof Tables | undefined;
-    readonly isDoubleClick: boolean;
-  }) => void;
+  readonly onChange?: (event: ChangeEvent) => void;
   readonly onClose?: () => void;
   readonly customSelectOptionGroups?: IR<CustomSelectElementOptionGroupProps>;
   readonly autoMapperSuggestions?: JSX.Element;
@@ -207,7 +209,6 @@ export type CustomSelectElementPropsClosed = CustomSelectElementPropsBase & {
 export type CustomSelectElementPropsOpenBase = CustomSelectElementPropsBase & {
   readonly isOpen: true;
   readonly onChange?: (payload: {
-    readonly close: boolean;
     readonly newValue: string;
     readonly isRelationship: boolean;
     readonly currentTableName: keyof Tables | undefined;
@@ -227,9 +228,9 @@ export function Icon({
   isPreview = false,
   isEnabled = true,
   tableName = undefined,
-  optionLabel = '0',
+  optionLabel = emptyMapping,
 }: CustomSelectElementIconProps): JSX.Element {
-  if (optionLabel === '0') return tableIconUndefined;
+  if (optionLabel === emptyMapping) return tableIconUndefined;
   else if (!isRelationship && (isPreview || !isEnabled))
     return tableIconSelected;
   else if (!isRelationship || tableName === undefined) return tableIconEmpty;
@@ -303,7 +304,7 @@ function Option({
         />
       )}
       <span className="flex-1">
-        {optionLabel === '0' ? wbPlanText.unmap() : optionLabel}
+        {optionLabel === emptyMapping ? wbPlanText.unmap() : optionLabel}
       </span>
       {hasArrow &&
         (isRelationship ? (
@@ -418,8 +419,8 @@ function ShadowListOfOptions({
 }
 
 const defaultDefaultOption = {
-  optionName: '0',
-  optionLabel: '0',
+  optionName: emptyMapping,
+  optionLabel: emptyMapping,
   tableName: undefined,
   isRelationship: false,
   isRequired: false,
@@ -435,7 +436,7 @@ export function CustomSelectElement({
   selectLabel = '',
   isOpen,
   tableName,
-  onChange: handleChange,
+  onChange: handleChangeRaw,
   onOpen: handleOpen,
   onClose: handleClose,
   previewOption,
@@ -447,6 +448,14 @@ export function CustomSelectElement({
       customSelectTypes[customSelectType].includes(property),
     [customSelectType]
   );
+  const handleChange =
+    has('interactive') && typeof handleChangeRaw === 'function'
+      ? (props: Omit<ChangeEvent, 'currentTableName'>) =>
+          handleChangeRaw({
+            currentTableName: defaultOption.tableName,
+            ...props,
+          })
+      : undefined;
 
   // Used to store internal state if handleKeyboardClick is set
   const [selectedValue, setSelectedValue] = React.useState<string | undefined>(
@@ -495,34 +504,10 @@ export function CustomSelectElement({
     isOpen &&
     customSelectSubtype === 'simple' &&
     has('unmapOption') &&
-    defaultOption.optionName !== '0';
+    defaultOption.optionName !== emptyMapping;
 
   if (showUnmapOption && typeof defaultDefaultOption === 'string')
     inlineOptions = [defaultDefaultOption, ...inlineOptions];
-
-  const handleClick = has('interactive')
-    ? ({
-        isDoubleClick,
-        close,
-        newValue,
-        ...rest
-      }: {
-        readonly close: boolean;
-        readonly newValue: string;
-        readonly isRelationship: boolean;
-        readonly newTableName: keyof Tables | undefined;
-        readonly isDoubleClick: boolean;
-      }): void =>
-        isDoubleClick || close || newValue !== defaultOption.optionName
-          ? handleChange?.({
-              currentTableName: defaultOption.tableName,
-              newValue,
-              isDoubleClick,
-              close,
-              ...rest,
-            })
-          : undefined
-    : undefined;
 
   let header: JSX.Element | undefined;
   let preview: JSX.Element | undefined;
@@ -587,13 +572,13 @@ export function CustomSelectElement({
         <span
           className={`
             flex-1 ${
-              defaultOption.optionLabel === '0'
+              defaultOption.optionLabel === emptyMapping
                 ? 'font-extrabold text-red-600'
                 : ''
             }
           `}
         >
-          {defaultOption.optionLabel === '0'
+          {defaultOption.optionLabel === emptyMapping
             ? wbPlanText.notMapped()
             : defaultOption.optionLabel}
         </span>
@@ -607,17 +592,17 @@ export function CustomSelectElement({
       <Option
         hasArrow
         hasIcon
-        isDefault={defaultOption.optionLabel === '0'}
-        optionLabel="0"
-        onClick={(): void =>
-          handleClick?.({
-            close: true,
-            newValue: '0',
+        isDefault={defaultOption.optionLabel === emptyMapping}
+        optionLabel={emptyMapping}
+        onClick={(): void => {
+          handleChange?.({
+            newValue: emptyMapping,
             isRelationship: false,
             newTableName: undefined,
             isDoubleClick: false,
-          })
-        }
+          });
+          handleClose?.();
+        }}
       />
     ) : undefined;
 
@@ -650,8 +635,11 @@ export function CustomSelectElement({
             key={index}
             selectGroupName={selectGroupName}
             onClick={
-              typeof handleClick === 'function'
-                ? (payload): void => handleClick({ close: true, ...payload })
+              typeof handleChange === 'function'
+                ? (payload): void => {
+                    handleChange(payload);
+                    handleClose?.();
+                  }
                 : undefined
             }
             {...selectGroupData}
@@ -785,18 +773,21 @@ export function CustomSelectElement({
 
               if (typeof newIndex === 'number') {
                 event.preventDefault();
-                const newValue = inlineOptions[newIndex]?.optionName ?? '0';
+                const newValue =
+                  inlineOptions[newIndex]?.optionName ?? emptyMapping;
                 if (!close && has('handleKeyboardClick'))
                   setSelectedValue(newValue);
-                else
-                  handleClick?.({
-                    close,
+                else {
+                  handleChange?.({
                     newValue,
                     isRelationship:
                       inlineOptions[newIndex]?.isRelationship ?? false,
                     newTableName: inlineOptions[newIndex]?.tableName,
                     isDoubleClick: false,
                   });
+                  if (close || newValue !== defaultOption.optionName)
+                    handleClose?.();
+                }
               }
             }
           : undefined

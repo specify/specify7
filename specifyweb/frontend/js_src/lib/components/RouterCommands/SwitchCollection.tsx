@@ -3,7 +3,7 @@ import type { SafeNavigateFunction } from 'react-router';
 import { useLocation, useParams } from 'react-router-dom';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
-import { toRelativeUrl } from '../../utils/ajax/helpers';
+import { toLocalUrl } from '../../utils/ajax/helpers';
 import { ping } from '../../utils/ajax/ping';
 import { locationToState } from '../Router/RouterState';
 
@@ -15,8 +15,7 @@ export const switchCollection = (
   navigate(`/specify/command/switch-collection/${collectionId}/`, {
     state: {
       type: 'Command',
-      nextUrl:
-        nextUrl ?? toRelativeUrl(globalThis.location.href) ?? '/specify/',
+      nextUrl: nextUrl ?? toLocalUrl(globalThis.location.href) ?? '/specify/',
     },
   });
 

@@ -12,7 +12,7 @@ import { PickList } from './Components';
 import { SchemaConfigColumn } from './Fields';
 import { filterFormatters } from './helpers';
 import type { NewSpLocaleItemString, SpLocaleItemString } from './index';
-import type { SchemaData } from './SetupHooks';
+import type { SchemaData } from './schemaData';
 
 export const maxSchemaValueLength = getField(
   schema.models.SpLocaleItemStr,

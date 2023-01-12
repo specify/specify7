@@ -24,7 +24,11 @@ import { isTreeModel, treeRanksPromise } from '../InitialContext/treeRanks';
 import { useTitle } from '../Molecules/AppTitle';
 import { hasPermission } from '../Permissions/helpers';
 import { usePref } from '../UserPreferences/usePref';
-import { getMappedFields, mappingPathIsComplete } from '../WbPlanView/helpers';
+import {
+  emptyMapping,
+  getMappedFields,
+  mappingPathIsComplete,
+} from '../WbPlanView/helpers';
 import { getMappingLineProps } from '../WbPlanView/LineComponents';
 import { MappingView } from '../WbPlanView/MapperComponents';
 import {
@@ -51,7 +55,7 @@ const pendingState = {
   type: 'MainState',
   fields: [],
   showMappingView: true,
-  mappingView: ['0'],
+  mappingView: [emptyMapping],
   queryRunCount: 0,
   openedElement: { line: 1, index: undefined },
   saveRequired: false,

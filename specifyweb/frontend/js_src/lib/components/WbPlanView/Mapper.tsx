@@ -31,6 +31,7 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { smoothScroll } from '../QueryBuilder/helpers';
 import { Layout } from './Header';
 import {
+  emptyMapping,
   fetchAutoMapperSuggestions,
   getMappedFields,
   getMustMatchTables,
@@ -115,7 +116,7 @@ export const getDefaultMappingState = ({
   type: 'MappingState',
   showHiddenFields: getCache('wbPlanViewUi', 'showHiddenFields') ?? false,
   showMappingView: getCache('wbPlanViewUi', 'showMappingView') ?? true,
-  mappingView: ['0'],
+  mappingView: [emptyMapping],
   mappingsAreValidated: false,
   validationResults: [],
   lines,

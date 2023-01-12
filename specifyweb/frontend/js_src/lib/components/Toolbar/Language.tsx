@@ -33,7 +33,7 @@ import { formatUrl } from '../Router/queryString';
 import { languageSeparator } from '../SchemaConfig/Languages';
 import type {
   PreferenceItem,
-  PreferenceItemComponent,
+  PreferenceRendererProps,
 } from '../UserPreferences/Definitions';
 import { PreferencesContext, prefEvents } from '../UserPreferences/Hooks';
 
@@ -57,14 +57,13 @@ export function LanguageSelection<LANGUAGES extends string>({
   languages,
   onChange: handleChange,
   isReadOnly = false,
-  showDevLanguages: showDevelopmentLanguages = process.env.NODE_ENV ===
-    'development',
+  showDevelopmentLanguages = process.env.NODE_ENV === 'development',
 }: {
   readonly value: LANGUAGES;
   readonly languages: IR<string> | undefined;
   readonly onChange: (language: LANGUAGES) => void;
   readonly isReadOnly?: boolean;
-  readonly showDevLanguages?: boolean;
+  readonly showDevelopmentLanguages?: boolean;
 }): JSX.Element {
   const [showSupportDialog, setShowSupportDialog] = React.useState(false);
 
@@ -128,141 +127,131 @@ const url = cachableUrl(
     languages: languages.join(','),
   })
 );
-export const LanguagePreferencesItem: PreferenceItemComponent<Language> =
-  function LanguagePreferencesItem({
-    isReadOnly,
-    definition,
-    category,
-    subcategory,
-    item,
-  }) {
-    const [languages] = useAsyncState<IR<string>>(
-      React.useCallback(
-        async () =>
-          ajax<
-            RA<{
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              readonly name_local: string;
-              readonly code: string;
-            }>
-          >(url, {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            headers: { Accept: 'application/json' },
-          }).then(({ data }) =>
-            Object.fromEntries(
-              Object.entries(data)
-                .filter(
-                  ([code]) =>
-                    !f.has(disabledLanguages, code) || code === language
-                )
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                .map(([code, { name_local }]) => [code, name_local])
-            )
-          ),
-        []
-      ),
-      false
-    );
-    const [language, setLanguage] = React.useState(
-      (devLanguage as Language) ?? LANGUAGE
-    );
 
-    /**
-     * When editing someone else's user preferences, disable the language
-     * selector, since language preference is stored in session storage.
-     */
-    const isRedirecting = React.useContext(PreferencesContext) !== undefined;
-    return (
-      <LanguageSelection<Language>
-        isReadOnly={isReadOnly || isRedirecting || languages === undefined}
-        languages={languages ?? { loading: commonText.loading() }}
-        value={language}
-        onChange={(language): void => {
-          /*
-           * This component does not actually save the current language into
-           * preferences but immediately sends it to the back-end.
-           * This is why it has an independent state and manually triggers
-           * save button
-           */
-          handleLanguageChange(language).catch(raise);
-          setLanguage(language);
-          prefEvents.trigger('update', {
-            category,
-            subcategory,
-            item,
-            definition: definition as PreferenceItem<unknown>,
-          });
-        }}
-      />
-    );
-  };
-
-export function useSchemaLanguages(
-  loadingScreen: boolean
-): IR<LocalizedString> | undefined {
-  const [languages] = useAsyncState<IR<LocalizedString>>(
+export function LanguagePreferencesItem({
+  isReadOnly,
+  definition,
+  category,
+  subcategory,
+  item,
+}: PreferenceRendererProps<Language>): JSX.Element {
+  const [languages] = useAsyncState<IR<string>>(
     React.useCallback(
       async () =>
         ajax<
           RA<{
-            readonly country: string | null;
-            readonly language: string;
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            readonly name_local: string;
+            readonly code: string;
           }>
-        >('/context/schema/language/', {
+        >(url, {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           headers: { Accept: 'application/json' },
-          cache: 'no-cache',
-        })
-          .then(({ data }) =>
-            // Sometimes languages are duplicated. Need to make the list unique
-            f.unique(
-              data.map(
-                ({ country, language }) =>
-                  `${language}${
-                    country === null || country === ''
-                      ? ''
-                      : `${languageSeparator}${country}`
-                  }`
+        }).then(({ data }) =>
+          Object.fromEntries(
+            Object.entries(data)
+              .filter(
+                ([code]) => !f.has(disabledLanguages, code) || code === language
               )
-            )
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              .map(([code, { name_local }]) => [code, name_local])
           )
-          .then((languages) =>
-            // Get translated language names
-            Object.fromEntries(
-              languages
-                .map(
-                  (language) =>
-                    [
-                      language,
-                      (new Intl.DisplayNames(LANGUAGE, { type: 'language' }).of(
-                        language
-                      ) ?? language) as LocalizedString,
-                    ] as const
-                )
-                .sort(sortFunction(([_code, localized]) => localized))
-            )
-          ),
+        ),
       []
     ),
-    loadingScreen
+    false
   );
-  return languages;
+  const [language, setLanguage] = React.useState(
+    (devLanguage as Language) ?? LANGUAGE
+  );
+
+  /**
+   * When editing someone else's user preferences, disable the language
+   * selector, since language preference is stored in session storage.
+   */
+  const isRedirecting = React.useContext(PreferencesContext) !== undefined;
+  return (
+    <LanguageSelection<Language>
+      isReadOnly={isReadOnly || isRedirecting || languages === undefined}
+      languages={languages ?? { loading: commonText.loading() }}
+      value={language}
+      onChange={(language): void => {
+        /*
+         * This component does not actually save the current language into
+         * preferences but immediately sends it to the back-end.
+         * This is why it has an independent state and manually triggers
+         * save button
+         */
+        handleLanguageChange(language).catch(raise);
+        setLanguage(language);
+        prefEvents.trigger('update', {
+          category,
+          subcategory,
+          item,
+          definition: definition as PreferenceItem<unknown>,
+        });
+      }}
+    />
+  );
 }
 
-export const SchemaLanguagePreferenceItem: PreferenceItemComponent<string> =
-  function SchemaLanguagePreferenceItem({
-    value,
-    onChange: handleChange,
-    isReadOnly,
-  }) {
-    const languages = useSchemaLanguages(false);
-    return (
-      <LanguageSelection<string>
-        isReadOnly={isReadOnly || languages === undefined}
-        languages={languages ?? { loading: commonText.loading() }}
-        showDevLanguages={false}
-        value={value}
-        onChange={handleChange}
-      />
+export function SchemaLanguagePreferenceItem({
+  value,
+  onChange: handleChange,
+  isReadOnly,
+}: PreferenceRendererProps<string>): JSX.Element {
+  const [languages] = useAsyncState<IR<LocalizedString>>(
+    React.useCallback(fetchSchemaLanguages, []),
+    false
+  );
+  return (
+    <LanguageSelection<string>
+      isReadOnly={isReadOnly || languages === undefined}
+      languages={languages ?? { loading: commonText.loading() }}
+      showDevelopmentLanguages={false}
+      value={value}
+      onChange={handleChange}
+    />
+  );
+}
+
+export const fetchSchemaLanguages = async (): Promise<IR<string>> =>
+  ajax<
+    RA<{
+      readonly country: string | null;
+      readonly language: string;
+    }>
+  >('/context/schema/language/', {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    headers: { Accept: 'application/json' },
+    cache: 'no-cache',
+  })
+    .then(({ data }) =>
+      // Sometimes languages are duplicated. Need to make the list unique
+      f.unique(
+        data.map(
+          ({ country, language }) =>
+            `${language}${
+              country === null || country === ''
+                ? ''
+                : `${languageSeparator}${country}`
+            }`
+        )
+      )
+    )
+    .then((languages) =>
+      // Get translated language names
+      Object.fromEntries(
+        languages
+          .map(
+            (language) =>
+              [
+                language,
+                (new Intl.DisplayNames(LANGUAGE, { type: 'language' }).of(
+                  language
+                ) ?? language) as LocalizedString,
+              ] as const
+          )
+          .sort(sortFunction(([_code, localized]) => localized))
+      )
     );
-  };

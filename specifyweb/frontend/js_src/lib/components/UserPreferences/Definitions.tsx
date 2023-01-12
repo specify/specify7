@@ -43,7 +43,7 @@ import {
 } from './Renderers';
 
 // Custom Renderer for a preference item
-export type PreferenceItemComponent<VALUE> = (props: {
+export type PreferenceRendererProps<VALUE> = {
   readonly category: string;
   readonly subcategory: string;
   readonly item: string;
@@ -51,7 +51,7 @@ export type PreferenceItemComponent<VALUE> = (props: {
   readonly value: VALUE;
   readonly onChange: (value: VALUE) => void;
   readonly isReadOnly: boolean;
-}) => JSX.Element;
+};
 
 /**
  * Represents a single preference option
@@ -85,7 +85,7 @@ export type PreferenceItem<VALUE> = {
       readonly parser?: Parser;
     }
   | {
-      readonly renderer: PreferenceItemComponent<VALUE>;
+      readonly renderer: (props: PreferenceRendererProps<VALUE>) => JSX.Element;
     }
   | {
       readonly values:

@@ -136,6 +136,14 @@ export const resourcesText = createDictionary({
     'en-us': 'Aggregators',
     'ru-ru': 'Агрегаторы',
   },
+  availableFormatters: {
+    'en-us': 'Available Formatters',
+    'ru-ru': 'Доступные форматировщики',
+  },
+  availableAggregators: {
+    'en-us': 'Available Aggregators',
+    'ru-ru': 'Доступные агрегаторы',
+  },
   searchDialogDefinitions: {
     'en-us': 'Search Dialog Definitions',
     'ru-ru': 'Макеты диалогового окна поиска',
@@ -244,5 +252,33 @@ export const resourcesText = createDictionary({
   failedParsingXml: {
     'en-us': 'Failed to parse XML',
     'ru-ru': 'Не удалось разобрать XML',
+  },
+  name: {
+    'en-us': 'Name',
+    'ru-ru': 'Название',
+  },
+  title: {
+    'en-us': 'Title',
+    'ru-ru': 'Заголовок',
+  },
+  default: {
+    'en-us': 'Default',
+    'ru-ru': 'По умолчанию',
+  },
+  separator: {
+    'en-us': 'Separator',
+    'ru-ru': 'Разделитель',
+  },
+  suffix: {
+    'en-us': 'Suffix',
+    'ru-ru': 'Суффикс',
+  },
+  limit: {
+    'en-us': 'Limit',
+    'ru-ru': 'Лимит',
+  },
+  formatter: {
+    'en-us': 'Formatter',
+    'ru-ru': 'Форматировщик',
   },
 } as const);

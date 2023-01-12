@@ -1,18 +1,20 @@
+import type { Path } from '@remix-run/router/history';
 import type { SafeLocation } from 'history';
 import React from 'react';
 import type { SafeNavigateFunction } from 'react-router';
+import { resolvePath } from 'react-router';
 import { useLocation, useNavigate, useRoutes } from 'react-router-dom';
 
 import { commonText } from '../../localization/common';
 import { mainText } from '../../localization/main';
-import { toRelativeUrl } from '../../utils/ajax/helpers';
+import { toLocalUrl } from '../../utils/ajax/helpers';
 import { listen } from '../../utils/events';
 import { f } from '../../utils/functools';
 import { setDevelopmentGlobal } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { unloadProtectEvents, UnloadProtectsContext } from '../Core/Contexts';
-import { softFail } from '../Errors/Crash';
+import { crash, softFail } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { Dialog } from '../Molecules/Dialog';
 import { getUserPref } from '../UserPreferences/helpers';
@@ -149,20 +151,36 @@ function parseClickEvent(
     !link.classList.contains(className.navigationHandled)
   ) {
     // Don't handle absolute URLs that lead to a different origin
-    const relativeUrl = toRelativeUrl(link.href);
-    if (typeof relativeUrl === 'string') {
+    const localUrl = toLocalUrl(link.href);
+    if (typeof localUrl === 'string') {
       event.preventDefault();
+      link.getAttribute('href');
+      if (
+        process.env.NODE_ENV !== 'production' &&
+        link.getAttribute('href')!.startsWith('.')
+      )
+        crash(
+          new Error(
+            'Relative URLs are not supported as they are unpredictable. ' +
+              'Relative URL leads to different path depending on whether ' +
+              'current URL has trailing slash or not. Consider calling ' +
+              'resolveRelative() first'
+          )
+        );
       return {
-        url: relativeUrl,
-        isOverlay: pathIsOverlay(relativeUrl),
+        url: localUrl,
+        isOverlay: pathIsOverlay(localUrl),
       };
     }
   }
   return undefined;
 }
 
-const locationToUrl = (location: SafeLocation): string =>
+const locationToUrl = (location: Path): string =>
   `${location.pathname}${location.search}${location.hash}`;
+
+export const resolveRelative = (relativePath: string): string =>
+  locationToUrl(resolvePath(relativePath, globalThis.location.href));
 
 function Overlay({
   overlay,

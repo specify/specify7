@@ -23,7 +23,7 @@ import {
   useContainerString,
   useSchemaContainer,
 } from './Hooks';
-import type { SchemaData } from './SetupHooks';
+import type { SchemaData } from './schemaData';
 import { SchemaConfigTable } from './Table';
 
 export type SpLocaleItemString = SerializedResource<SpLocaleItemStr>;

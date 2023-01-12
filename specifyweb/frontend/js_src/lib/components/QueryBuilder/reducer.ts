@@ -13,6 +13,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { SpQuery, Tables } from '../DataModel/types';
 import {
+  emptyMapping,
   mappingPathIsComplete,
   mutateMappingPath,
 } from '../WbPlanView/helpers';
@@ -54,7 +55,7 @@ export const getInitialState = ({
   type: 'MainState',
   fields: parseQueryFields(query.fields ?? []),
   showMappingView: getCache('queryBuilder', 'showMappingView') ?? true,
-  mappingView: ['0'],
+  mappingView: [emptyMapping],
   queryRunCount: autoRun ? 1 : 0,
   openedElement: { line: 1, index: undefined },
   saveRequired: queryResource.isNew(),
@@ -79,7 +80,6 @@ type Actions =
       {
         readonly line: number | 'mappingView';
         readonly index: number;
-        readonly close: boolean;
         readonly newValue: string;
         readonly isRelationship: boolean;
         readonly parentTableName: keyof Tables | undefined;
@@ -93,10 +93,6 @@ type Actions =
     >
   | Action<'ChangeFieldsAction', { readonly fields: RA<QueryField> }>
   | Action<'FocusLineAction', { readonly line: number }>
-  | Action<
-      'LineMoveAction',
-      { readonly line: number; readonly direction: 'down' | 'up' }
-    >
   | Action<'ResetStateAction', { readonly state: MainState }>
   | Action<'RunQueryAction'>
   | Action<'SavedQueryAction'>
@@ -169,24 +165,17 @@ export const reducer = generateReducer<MainState, Actions>({
     fields: replaceItem(state.fields, action.line, action.field),
     saveRequired: true,
   }),
-  ChangeSelectElementValueAction: ({ state, action }) => {
+  ChangeSelectElementValueAction: ({ state, action: { line, ...action } }) => {
     const newMappingPath = mutateMappingPath({
-      lines: [],
-      mappingView:
-        action.line === 'mappingView'
+      ...action,
+      mappingPath:
+        line === 'mappingView'
           ? state.mappingView
-          : state.fields[action.line].mappingPath,
-      line: 'mappingView',
-      index: action.index,
-      newValue: action.newValue,
-      isRelationship: action.isRelationship,
-      parentTableName: action.parentTableName,
-      currentTableName: action.currentTableName,
-      newTableName: action.newTableName,
+          : state.fields[line].mappingPath,
       ignoreToMany: true,
     });
 
-    if (action.line === 'mappingView')
+    if (line === 'mappingView')
       return {
         ...state,
         mappingView: newMappingPath,
@@ -194,14 +183,10 @@ export const reducer = generateReducer<MainState, Actions>({
 
     return {
       ...state,
-      fields: replaceItem(state.fields, action.line, {
-        ...state.fields[action.line],
+      fields: replaceItem(state.fields, line, {
+        ...state.fields[line],
         mappingPath: newMappingPath,
       }),
-      openedElement: {
-        line: state.openedElement.line,
-        index: action.close ? undefined : state.openedElement.index,
-      },
       autoMapperSuggestions: undefined,
       saveRequired: true,
     };

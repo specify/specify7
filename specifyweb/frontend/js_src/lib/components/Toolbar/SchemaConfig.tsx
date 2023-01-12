@@ -9,8 +9,9 @@ import type {
   NewSpLocaleItemString,
   SpLocaleItemString,
 } from '../SchemaConfig';
-import type { SchemaData } from '../SchemaConfig/SetupHooks';
-import { useSchemaData } from '../SchemaConfig/SetupHooks';
+import type { SchemaData } from '../SchemaConfig/schemaData';
+import { fetchSchemaData } from '../SchemaConfig/schemaData';
+import { useAsyncState } from '../../hooks/useAsyncState';
 
 export type WithFetchedStrings = {
   readonly strings: {
@@ -20,7 +21,7 @@ export type WithFetchedStrings = {
 };
 
 export function SchemaConfig(): JSX.Element | null {
-  const schemaData = useSchemaData();
+  const schemaData = useAsyncState(fetchSchemaData, true)[0];
 
   return schemaData === undefined ? null : (
     <SafeOutlet<SchemaData> {...schemaData} />

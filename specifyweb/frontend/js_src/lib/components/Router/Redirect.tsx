@@ -2,7 +2,7 @@ import React from 'react';
 import { generatePath, useLocation, useParams } from 'react-router';
 import { useNavigate } from 'react-router-dom';
 
-import { toRelativeUrl } from '../../utils/ajax/helpers';
+import { toLocalUrl } from '../../utils/ajax/helpers';
 
 /**
  * Does a redirect to another page using React Router
@@ -26,7 +26,7 @@ export function Redirect({ to }: { readonly to: string }): null {
     url.hash = hash;
     url.search = search;
     const completeUrl = url.toString();
-    navigate(toRelativeUrl(completeUrl) ?? completeUrl, {
+    navigate(toLocalUrl(completeUrl) ?? completeUrl, {
       replace: true,
     });
   }, [to, parameters, location, navigate]);

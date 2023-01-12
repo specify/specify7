@@ -15,6 +15,7 @@ import { softFail } from '../Errors/Crash';
 import { uniquifyHeaders } from './headerHelper';
 import {
   deduplicateMappings,
+  emptyMapping,
   mappingPathIsComplete,
   mutateMappingPath,
 } from './helpers';
@@ -90,7 +91,6 @@ export type ChangeSelectElementValueAction = Action<
   {
     readonly line: number | 'mappingView';
     readonly index: number;
-    readonly close: boolean;
     readonly newValue: string;
     readonly isRelationship: boolean;
     readonly parentTableName: keyof Tables | undefined;
@@ -209,7 +209,7 @@ export const reducer = generateReducer<MappingState, MappingActions>({
     ...state,
     lines: state.lines.map((line) => ({
       ...line,
-      mappingPath: ['0'],
+      mappingPath: [emptyMapping],
       columnOptions: defaultColumnOptions,
     })),
     changesMade: true,
@@ -219,7 +219,7 @@ export const reducer = generateReducer<MappingState, MappingActions>({
   ClearMappingLineAction: ({ state, action }) => ({
     ...state,
     lines: modifyLine(state, action.line, {
-      mappingPath: ['0'],
+      mappingPath: [emptyMapping],
       columnOptions: defaultColumnOptions,
     }),
     changesMade: true,
@@ -270,7 +270,7 @@ export const reducer = generateReducer<MappingState, MappingActions>({
           [...state.lines.map(({ headerName }) => headerName), newHeaderName],
           [state.lines.length]
         ).at(-1)!,
-        mappingPath: ['0'],
+        mappingPath: [emptyMapping],
         columnOptions: defaultColumnOptions,
       },
     ],
@@ -298,20 +298,16 @@ export const reducer = generateReducer<MappingState, MappingActions>({
     openSelectElement: undefined,
     autoMapperSuggestions: undefined,
   }),
-  ChangeSelectElementValueAction: ({ state, action }) => {
+  ChangeSelectElementValueAction: ({ state, action: { line, ...action } }) => {
     const newMappingPath = mutateMappingPath({
-      lines: state.lines,
-      mappingView: state.mappingView,
-      line: action.line,
-      index: action.index,
-      newValue: action.newValue,
-      isRelationship: action.isRelationship,
-      parentTableName: action.parentTableName,
-      currentTableName: action.currentTableName,
-      newTableName: action.newTableName,
+      ...action,
+      mappingPath:
+        line === 'mappingView'
+          ? state.mappingView
+          : state.lines[line].mappingPath,
     });
 
-    if (action.line === 'mappingView')
+    if (line === 'mappingView')
       return {
         ...state,
         mappingView: newMappingPath,
@@ -320,12 +316,11 @@ export const reducer = generateReducer<MappingState, MappingActions>({
     return {
       ...state,
       lines: deduplicateMappings(
-        modifyLine(state, action.line, {
+        modifyLine(state, line, {
           mappingPath: newMappingPath,
         }),
         state.openSelectElement?.line ?? false
       ),
-      openSelectElement: action.close ? undefined : state.openSelectElement,
       autoMapperSuggestions: undefined,
       changesMade: true,
       mappingsAreValidated: false,

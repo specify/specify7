@@ -112,6 +112,7 @@ function useEditorTabs(
             component: visualEditor,
           }
         : undefined,
+      // FEATURE: add JSON editor for XML resources 🔥 (based on Syncer)
       {
         label: resourcesText.textEditor(),
         component: AppResourceTextEditor,

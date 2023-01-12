@@ -45,6 +45,7 @@ import {
   valueIsTreeRank,
 } from './mappingHelpers';
 import { getMaxToManyIndex, isCircularRelationship } from './modelHelpers';
+import { emptyMapping } from './helpers';
 
 type NavigationCallbackPayload = {
   readonly model: SpecifyModel;
@@ -224,8 +225,8 @@ export function getMappingLineData({
     position: -1,
     mappingLineData: [],
     mappedFields: [],
-    defaultValue: '0',
-    parsedDefaultValue: ['0', undefined],
+    defaultValue: emptyMapping,
+    parsedDefaultValue: [emptyMapping, undefined],
   };
 
   const isFieldVisible = (
@@ -251,7 +252,7 @@ export function getMappingLineData({
     });
 
   const lastPartIndex =
-    mappingPath.at(-1) === '0'
+    mappingPath.at(-1) === emptyMapping
       ? mappingPath.length - 1
       : mappingPath.length - 2;
 

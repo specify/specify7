@@ -63,6 +63,7 @@ export function getMappingLineProps({
   openSelectElement,
   customSelectType,
   onChange: handleChange,
+  // REFACTOR: onOpen/onClose/openSelectElement should probably be in local state
   onOpen: handleOpen,
   onClose: handleClose,
   onAutoMapperSuggestionSelection: handleAutoMapperSuggestionSelection,
@@ -74,7 +75,6 @@ export function getMappingLineProps({
   readonly customSelectType: CustomSelectType;
   readonly onChange?: (payload: {
     readonly index: number;
-    readonly close: boolean;
     readonly newValue: string;
     readonly isRelationship: boolean;
     readonly parentTableName: keyof Tables | undefined;

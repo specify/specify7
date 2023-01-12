@@ -43,7 +43,6 @@ export function QueryFields({
         line: number,
         payload: {
           readonly index: number;
-          readonly close: boolean;
           readonly newValue: string;
           readonly isRelationship: boolean;
           readonly parentTableName: keyof Tables | undefined;

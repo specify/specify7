@@ -17,7 +17,7 @@ import type {
 import type { WithFetchedStrings } from '../Toolbar/SchemaConfig';
 import { findString } from './helpers';
 import type { NewSpLocaleItemString, SpLocaleItemString } from './index';
-import type { SchemaData } from './SetupHooks';
+import { SchemaData } from './schemaData';
 
 export function useSchemaContainer(
   tables: SchemaData['tables'],

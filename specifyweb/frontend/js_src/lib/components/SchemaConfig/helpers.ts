@@ -1,23 +1,20 @@
-import type { LocalizedString } from 'typesafe-i18n';
-
 import { schemaText } from '../../localization/schema';
 import type { IR, RA } from '../../utils/types';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { parseJavaClassName } from '../DataModel/resource';
 import type {
   JavaType,
   LiteralField,
   Relationship,
 } from '../DataModel/specifyField';
 import type { SpLocaleContainerItem, Tables } from '../DataModel/types';
-import type { Aggregator, Formatter } from '../Formatters/dataObjFormatters';
+import type { Aggregator, Formatter } from '../Formatters/spec';
 import type {
   ItemType,
   NewSpLocaleItemString,
   SpLocaleItemString,
 } from './index';
-import type { DataObjectFormatter } from './SetupHooks';
+import type { DataObjectFormatter } from './schemaData';
 
 let newStringId = 1;
 const defaultLanguage = 'en';
@@ -64,13 +61,16 @@ export const formatAggregators = (
   aggregators: RA<Aggregator | Formatter>
 ): IR<DataObjectFormatter> =>
   Object.fromEntries(
-    aggregators.map(({ name = '', title = '', className = '' }) => [
-      name,
-      {
-        title: title as LocalizedString,
-        className,
-      },
-    ])
+    aggregators.map(
+      ({ name = '', title = '', tableName }) =>
+        [
+          name,
+          {
+            title: title ?? name,
+            tableName,
+          },
+        ] as const
+    )
   );
 
 /**
@@ -78,14 +78,11 @@ export const formatAggregators = (
  */
 export const filterFormatters = (
   formatters: IR<DataObjectFormatter>,
-  tableName: keyof Tables
+  targetTable: keyof Tables
 ): IR<string> =>
   Object.fromEntries(
     Object.entries(formatters)
-      .filter(
-        ([_name, { className }]) =>
-          parseJavaClassName(className).toLowerCase() === tableName
-      )
+      .filter(([_name, { tableName }]) => tableName === targetTable)
       .map(([name, { title }]) => [name, title] as const)
   );
 

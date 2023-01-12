@@ -12,8 +12,11 @@ export const isExternalUrl = (url: string): boolean =>
   new URL(url, globalThis.location.origin).origin !==
     globalThis.location.origin;
 
-// Make sure the given URL is from current origin and give back the relative path
-export function toRelativeUrl(url: string): string | undefined {
+/*
+ * Make sure the given URL is from current origin and give it back without
+ * domain name
+ */
+export function toLocalUrl(url: string): string | undefined {
   const parsed = new URL(url, globalThis.location.origin);
   return parsed.origin === globalThis.location.origin
     ? `${parsed.pathname}${parsed.search}${parsed.hash}`
