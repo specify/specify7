@@ -143,7 +143,7 @@ function formatTreeBusinessRuleException(error: string): JSX.Element {
 
 /**
  * Get the 'localizationKey' from the backend and resolve it to
- * a translated error message from backEndText (see ../../localization/backEnd)
+ * a translated error message from the backend localization dictonary
  * If the backend has a localizationKey that the frontend can not resolve,
  * instead return the raw exception message from the backend
  */
