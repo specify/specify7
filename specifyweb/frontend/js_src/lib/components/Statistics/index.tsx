@@ -111,7 +111,6 @@ export function StatsPage(): JSX.Element | null {
     pageIndex: 0,
     isPageUpdated: false,
   });
-  // const isPageUpdated = React.useRef<boolean>(false);
   const filters = React.useMemo(
     () => ({
       specifyUser: userInformation.id,
@@ -348,7 +347,7 @@ export function StatsPage(): JSX.Element | null {
     const setLayout = activePage.isCollection
       ? setCollectionLayout
       : setPersonalLayout;
-    if (layout !== undefined) {
+    if (Object.values(layout).some((layout) => layout !== undefined)) {
       setLayout((layout) =>
         layout === undefined
           ? undefined
