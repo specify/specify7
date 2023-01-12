@@ -78,7 +78,7 @@ const cellRenderers: {
         className="border-b border-gray-500"
         title={
           typeof forClass === 'string'
-            ? schema.models[forClass].localization.desc?.toString() ?? undefined
+            ? schema.models[forClass].localization.desc ?? undefined
             : undefined
         }
       >
