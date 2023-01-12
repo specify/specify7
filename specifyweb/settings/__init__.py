@@ -92,9 +92,14 @@ LOCALE_PATHS = (
     ),
 )
 
+# On any changes here, also update languageCodeMapper in
+# /specifyweb/frontend/js_src/lib/localization/utils/config.ts
 LANGUAGES = [
     ('en-us', 'English'),
     ('ru-ru', 'русский'),
+    ('uk-ua', 'українська'),
+    ('fr-fr', 'français'),
+    ('es-es', 'español'),
 ]
 
 SITE_ID = 1
