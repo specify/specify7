@@ -54,7 +54,7 @@ const backEndStatPromiseGenerator = (categoriesToFetch: RA<string>) =>
     categoriesToFetch.map((key) => [
       key,
       async () =>
-        throttledAjax<BackendStatsResult, keyof typeof urlSpec>(
+        throttledAjax<BackendStatsResult, string>(
           'backendStats',
           async () =>
             ajax<BackendStatsResult>(urlSpec[key as keyof typeof urlSpec], {
@@ -63,7 +63,7 @@ const backEndStatPromiseGenerator = (categoriesToFetch: RA<string>) =>
                 Accept: 'application/json',
               },
             }).then(({ data }) => data),
-          key as keyof typeof urlSpec
+          urlSpec[key as keyof typeof urlSpec]
         ),
     ])
   );
@@ -317,8 +317,7 @@ export function useCategoryToFetch(
   layout: StatLayout | undefined
 ): WritableArray<string> {
   return React.useMemo(() => {
-    if (layout === undefined)
-      return Object.keys(urlSpec) as WritableArray<string>;
+    if (layout === undefined) return [];
     const categoriesToFetch: WritableArray<string> = [];
     layout.forEach((pageLayout) =>
       pageLayout.categories.forEach(({ items, categoryToFetch }) => {
@@ -335,7 +334,9 @@ export function useCategoryToFetch(
         });
       })
     );
-    return categoriesToFetch;
+    return categoriesToFetch.filter((categoryToFetch) =>
+      unknownCategories.includes(categoryToFetch as keyof typeof urlSpec)
+    );
   }, [layout]);
 }
 

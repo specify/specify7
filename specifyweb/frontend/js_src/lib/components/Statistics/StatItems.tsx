@@ -157,14 +157,7 @@ function BackEndItem({
               return formatter(rawValue);
             })
           : Promise.resolve(undefined),
-      [
-        statLabel,
-        statValue,
-        formatter,
-        handleItemValueLoad,
-        pathToValue,
-        urlToFetch,
-      ]
+      [statLabel, statValue, handleItemValueLoad, pathToValue, urlToFetch]
     ),
     false
   );

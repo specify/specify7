@@ -32,9 +32,10 @@ import {
 } from './hooks';
 import { StatsPageEditing } from './StatsPageEditing';
 import type { CustomStat, DefaultStat, StatLayout } from './types';
-import { unknownCategories, urlSpec } from './definitions';
+import { urlSpec } from './definitions';
 import { RA } from '../../utils/types';
 import { cleanFulfilledRequests } from '../../utils/ajax/throttledAjax';
+import { useTriggerState } from '../../hooks/useTriggerState';
 
 export function StatsPage(): JSX.Element | null {
   useMenuItem('statistics');
@@ -101,6 +102,7 @@ export function StatsPage(): JSX.Element | null {
     pageIndex: 0,
     isPageUpdated: false,
   });
+  // const isPageUpdated = React.useRef<boolean>(false);
   const filters = React.useMemo(
     () => ({
       specifyUser: userInformation.id,
@@ -110,15 +112,12 @@ export function StatsPage(): JSX.Element | null {
 
   const categoriesToFetchInitially = useCategoryToFetch(
     activePage.isCollection ? collectionLayout : personalLayout
-  ).filter((categoryToFetch) =>
-    unknownCategories.includes(categoryToFetch as keyof typeof urlSpec)
   );
 
   const allCategories = React.useMemo(() => Object.keys(urlSpec), []);
-  const [categoriesToFetch, setCategoriesToFetch] = React.useState<RA<string>>(
-    categoriesToFetchInitially.filter((categoryToFetch) =>
-      unknownCategories.includes(categoryToFetch as keyof typeof urlSpec)
-    )
+
+  const [categoriesToFetch, setCategoriesToFetch] = useTriggerState<RA<string>>(
+    categoriesToFetchInitially
   );
   const backEndResponse = useBackendApi(categoriesToFetch, false);
   const statsSpec = useStatsSpec();
@@ -143,6 +142,7 @@ export function StatsPage(): JSX.Element | null {
     setCollectionLayout,
     setPersonalLayout,
     allCategories,
+    setCategoriesToFetch,
   ]);
 
   /* Set Default Layout every time page is rendered*/
@@ -200,28 +200,41 @@ export function StatsPage(): JSX.Element | null {
             if (itemName === 'phantomItem' && spec.type === 'BackEndStat') {
               if (Object.keys(backEndResponse ?? {}).includes(categoryName)) {
                 handleChange((oldCategory) =>
-                  oldCategory.map((unknownCategory) => ({
-                    ...unknownCategory,
-                    items:
-                      unknownCategory.items ??
-                      (unknownCategory.categoryToFetch === undefined ||
-                      backEndResponse?.[unknownCategory.categoryToFetch] ===
-                        undefined ||
-                      unknownCategory.categoryToFetch !== categoryName
-                        ? undefined
-                        : Object.entries(backEndResponse[categoryName]).map(
-                            ([itemName, rawValue]) => ({
-                              type: 'DefaultStat',
-                              pageName,
-                              itemName: 'phantomItem',
-                              categoryName,
-                              itemLabel: itemName,
-                              itemValue: spec.formatter(rawValue),
-                              itemType: 'BackendStat',
-                              pathToValue: itemName,
-                            })
-                          )),
-                  }))
+                  oldCategory.map((unknownCategory) => {
+                    const settingUnknownCategory =
+                      unknownCategory.items === undefined &&
+                      !(
+                        unknownCategory.categoryToFetch === undefined ||
+                        backEndResponse?.[unknownCategory.categoryToFetch] ===
+                          undefined ||
+                        unknownCategory.categoryToFetch !== categoryName
+                      );
+                    if (settingUnknownCategory) {
+                      setLastUpdated();
+                    }
+                    return {
+                      ...unknownCategory,
+                      items:
+                        unknownCategory.items ??
+                        (unknownCategory.categoryToFetch === undefined ||
+                        backEndResponse?.[unknownCategory.categoryToFetch] ===
+                          undefined ||
+                        unknownCategory.categoryToFetch !== categoryName
+                          ? undefined
+                          : Object.entries(backEndResponse[categoryName]).map(
+                              ([itemName, rawValue]) => ({
+                                type: 'DefaultStat',
+                                pageName,
+                                itemName: 'phantomItem',
+                                categoryName,
+                                itemLabel: itemName,
+                                itemValue: spec.formatter(rawValue),
+                                itemType: 'BackendStat',
+                                pathToValue: itemName,
+                              })
+                            )),
+                    };
+                  })
                 );
               }
             }
@@ -259,6 +272,20 @@ export function StatsPage(): JSX.Element | null {
       })),
       lastUpdated: pageLayout.lastUpdated,
     }));
+  };
+
+  const setLastUpdated = () => {
+    const setLayout = activePage.isCollection
+      ? setCollectionLayout
+      : setPersonalLayout;
+    const layout = activePage.isCollection ? collectionLayout : personalLayout;
+    if (layout !== undefined) {
+      setLayout(getLastUpdated(layout, activePage.pageIndex));
+      setActivePage((currentState) => ({
+        ...currentState,
+        isPageUpdated: true,
+      }));
+    }
   };
 
   const getLastUpdated = (
@@ -352,31 +379,10 @@ export function StatsPage(): JSX.Element | null {
         })
       );
       if (!activePage.isPageUpdated) {
-        const setLayout = activePage.isCollection
-          ? setCollectionLayout
-          : setPersonalLayout;
-        const layout = activePage.isCollection
-          ? collectionLayout
-          : personalLayout;
-        if (layout !== undefined) {
-          setLayout(getLastUpdated(layout, activePage.pageIndex));
-          setActivePage((currentState) => ({
-            ...currentState,
-            isPageUpdated: true,
-          }));
-        }
+        setLastUpdated();
       }
     },
-    [
-      activePage.isCollection,
-      activePage.isPageUpdated,
-      activePage.pageIndex,
-      collectionLayout,
-      handleChange,
-      personalLayout,
-      setCollectionLayout,
-      setPersonalLayout,
-    ]
+    [activePage.isPageUpdated, handleChange]
   );
 
   return collectionLayout === undefined ? null : (
@@ -399,6 +405,10 @@ export function StatsPage(): JSX.Element | null {
         <Button.Blue
           onClick={(): void => {
             cleanFulfilledRequests();
+            setActivePage((currentActiveSpec) => ({
+              ...currentActiveSpec,
+              isPageUpdated: false,
+            }));
             if (activePage.isCollection) {
               setCollectionLayout(
                 getValueUndefined(collectionLayout, activePage.pageIndex)
@@ -410,7 +420,6 @@ export function StatsPage(): JSX.Element | null {
                   : getValueUndefined(personalLayout, activePage.pageIndex)
               );
             }
-            setCategoriesToFetch(Object.keys(urlSpec));
           }}
         >
           {commonText('update')}
@@ -434,10 +443,14 @@ export function StatsPage(): JSX.Element | null {
           <>
             <Button.Red
               onClick={(): void => {
+                cleanFulfilledRequests();
                 setCollectionLayout(defaultLayoutSpec);
                 setPersonalLayout(defaultLayoutSpec);
-                cleanFulfilledRequests();
                 setCategoriesToFetch(Object.keys(urlSpec));
+                setActivePage((activePageSpec) => ({
+                  ...activePageSpec,
+                  isPageUpdated: false,
+                }));
               }}
             >
               {commonText('reset')}
