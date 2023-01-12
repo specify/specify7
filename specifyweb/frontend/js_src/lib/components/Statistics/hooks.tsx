@@ -341,8 +341,10 @@ export function useCategoryToFetch(
 }
 
 export function statsToTsv(
-  layout: IR<StatLayout | undefined>
-): string | undefined {
+  layout: IR<StatLayout | undefined>,
+  sourceIndex: number,
+  layoutPageIndex: number
+): { readonly statsTsv: string; readonly nameSpec: string } | undefined {
   if (Object.values(layout).some((layouts) => layouts === undefined))
     return undefined;
   const headers = [
@@ -353,29 +355,39 @@ export function statsToTsv(
     statsText('itemValue'),
   ];
   const statItems: WritableArray<WritableArray<number | string>> = [];
-
-  Object.entries(layout as IR<StatLayout>).forEach(([sourceName, layouts]) =>
-    layouts.forEach((layout) => {
-      if (layout === undefined) return;
-      const layoutLabel = layout.label === undefined ? '' : layout.label;
-      layout.categories.forEach((category) => {
-        if (category === undefined) return;
-        const categoryLabel =
-          category.label === undefined ? '' : category.label;
-        if (category.items === undefined) return;
-        category.items.forEach(({ itemLabel, itemValue }) => {
-          if (itemValue === undefined) return;
-          const newItemLabel = itemLabel === undefined ? '' : itemLabel;
-          statItems.push([
-            sourceName,
-            layoutLabel,
-            categoryLabel,
-            newItemLabel,
-            itemValue.toString(),
-          ]);
+  let nameSpec = '';
+  Object.entries(layout as IR<StatLayout>).forEach(
+    ([sourceName, layouts], layoutSourceIndex) =>
+      layouts.forEach((layout, pageIndex) => {
+        if (layout === undefined) return;
+        const layoutLabel = layout.label === undefined ? '' : layout.label;
+        layout.categories.forEach((category) => {
+          if (category === undefined) return;
+          const categoryLabel =
+            category.label === undefined ? '' : category.label;
+          if (category.items === undefined) return;
+          category.items.forEach(({ itemLabel, itemValue }) => {
+            if (itemValue === undefined) return;
+            const newItemLabel = itemLabel === undefined ? '' : itemLabel;
+            if (
+              layoutSourceIndex === sourceIndex &&
+              pageIndex === layoutPageIndex
+            ) {
+              nameSpec = `${sourceName} ${layoutLabel}`;
+              statItems.push([
+                sourceName,
+                layoutLabel,
+                categoryLabel,
+                newItemLabel,
+                itemValue.toString(),
+              ]);
+            }
+          });
         });
-      });
-    })
+      })
   );
-  return [headers, ...statItems].map((line) => line.join('\t')).join('\n');
+  return {
+    statsTsv: [headers, ...statItems].map((line) => line.join('\t')).join('\n'),
+    nameSpec,
+  };
 }

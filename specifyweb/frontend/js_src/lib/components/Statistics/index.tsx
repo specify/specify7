@@ -428,11 +428,17 @@ export function StatsPage(): JSX.Element | null {
           <Button.Green
             onClick={(): void => {
               const date = new Date();
-              const fileName = `Specify 7 Statistics ${date.toDateString()} ${
+              const statsTsvSpec = statsToTsv(
+                layout,
+                activePage.isCollection ? 0 : 1,
+                activePage.pageIndex
+              );
+              const statsTsv = statsTsvSpec?.statsTsv;
+              const nameSpec = statsTsvSpec?.nameSpec;
+              if (statsTsv === undefined || nameSpec === undefined) return;
+              const fileName = `Specify 7 Statistics ${nameSpec} ${date.toDateString()} ${
                 date.toTimeString().split(' ')[0]
               }.tsv`;
-              const statsTsv = statsToTsv(layout);
-              if (statsTsv === undefined) return;
               downloadFile(fileName, statsTsv).catch(softFail);
             }}
           >
