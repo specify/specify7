@@ -76,7 +76,7 @@ function JsonBackendResponseFooter({
  */
 function BusinessRuleExceptionHeader({
   table,
-  response,
+  response: { exception, message },
 }: {
   readonly table: string;
   readonly response: JsonResponse;
@@ -85,11 +85,11 @@ function BusinessRuleExceptionHeader({
     <>
       <div className={`flex space-x-2`}>
         <TableIcon name={table} label={false} />
-        <h2 className={className.headerPrimary}>{response.exception}</h2>
+        <h2 className={className.headerPrimary}>{exception}</h2>
       </div>
       <div className={`flex space-x-2`}>
-        <em className={className.label} title={response.message}>
-          {response.message}
+        <em className={className.label} title={message}>
+          {message}
         </em>
       </div>
     </>
@@ -143,7 +143,7 @@ function formatTreeBusinessRuleException(error: string): JSX.Element {
 
 /**
  * Get the 'localizationKey' from the backend and resolve it to
- * a translated error message from @see backEndText
+ * a translated error message from backEndText (see ../../localization/backEnd)
  * If the backend has a localizationKey that the frontend can not resolve,
  * instead return the raw exception message from the backend
  */
