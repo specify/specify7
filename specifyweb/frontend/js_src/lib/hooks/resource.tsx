@@ -1,6 +1,9 @@
 import React from 'react';
 
-import { serializeResource } from '../components/DataModel/helpers';
+import {
+  fetchDistantRelated,
+  serializeResource,
+} from '../components/DataModel/helpers';
 import type {
   AnySchema,
   SerializedResource,
@@ -15,7 +18,8 @@ import {
   getValidationAttributes,
   resolveParser,
 } from '../utils/parser/definitions';
-import type { GetOrSet, IR } from '../utils/types';
+import type { GetOrSet, IR, RA } from '../utils/types';
+import { fail } from '../components/Errors/Crash';
 
 /**
  * A wrapper for Backbone.Resource that integrates with React.useState for
@@ -102,6 +106,32 @@ export function useSaveBlockers({
     [resource, fieldName]
   );
   return errors;
+}
+
+export function useDistantRelated(
+  resource: SpecifyResource<AnySchema>,
+  fields: RA<LiteralField | Relationship> | undefined
+): Awaited<ReturnType<typeof fetchDistantRelated>> {
+  const [data, setData] =
+    React.useState<Awaited<ReturnType<typeof fetchDistantRelated>>>(undefined);
+  React.useEffect(() => {
+    if (fields === undefined || fields.length === 0) return undefined;
+    let destructorCalled = false;
+    const destructor = resourceOn(
+      resource,
+      `change:${fields[0].name}`,
+      () =>
+        fetchDistantRelated(resource, fields)
+          .then((data) => (destructorCalled ? undefined : setData(data)))
+          .catch(fail),
+      true
+    );
+    return (): void => {
+      destructor();
+      destructorCalled = true;
+    };
+  }, [resource, fields]);
+  return data;
 }
 
 /**

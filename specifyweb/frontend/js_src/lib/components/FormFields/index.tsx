@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { useAsyncState } from '../../hooks/useAsyncState';
 import { useResourceValue } from '../../hooks/useResourceValue';
 import type { Parser } from '../../utils/parser/definitions';
 import { getValidationAttributes } from '../../utils/parser/definitions';
@@ -19,7 +18,7 @@ import { PrintOnSave, SpecifyFormCheckbox } from './Checkbox';
 import { Combobox } from './ComboBox';
 import { UiField } from './Field';
 import { QueryComboBox } from './QueryComboBox';
-import { fetchDistantRelated } from '../DataModel/helpers';
+import { useDistantRelated } from '../../hooks/resource';
 
 const fieldRenderers: {
   readonly [KEY in keyof FieldTypes]: (props: {
@@ -228,13 +227,7 @@ export function FormField({
   const Render = fieldRenderers[
     fieldDefinition.type
   ] as typeof fieldRenderers.Checkbox;
-  const [data] = useAsyncState(
-    React.useCallback(
-      async () => fetchDistantRelated(resource, fields),
-      [resource, fields]
-    ),
-    false
-  );
+  const data = useDistantRelated(resource, fields);
   return (
     <ErrorBoundary dismissable>
       {data === undefined ? undefined : (

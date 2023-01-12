@@ -196,5 +196,7 @@ export async function fetchDistantRelated(
         );
 
   const field = fields?.at(-1);
-  return related === undefined ? undefined : { resource: related, field };
+  return related === undefined || related === null
+    ? undefined
+    : { resource: related, field };
 }

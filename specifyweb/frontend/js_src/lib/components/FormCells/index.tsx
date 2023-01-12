@@ -19,7 +19,7 @@ import { SubView } from '../Forms/SubView';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { AnySchema } from '../DataModel/helperTypes';
 import { TableIcon } from '../Molecules/TableIcon';
-import { fetchDistantRelated } from '../DataModel/helpers';
+import { useDistantRelated } from '../../hooks/resource';
 
 const cellRenderers: {
   readonly [KEY in keyof CellTypes]: (props: {
@@ -106,17 +106,11 @@ const cellRenderers: {
     formType: parentFormType,
     cellData: { fieldNames, formType, isButton, icon, viewName, sortField },
   }) {
-    const [data] = useAsyncState(
-      React.useCallback(
-        async () =>
-          fetchDistantRelated(
-            rawResource,
-            rawResource.specifyModel.getFields(fieldNames?.join('.') ?? '')
-          ),
-        [rawResource, fieldNames]
-      ),
-      false
+    const fields = React.useMemo(
+      () => rawResource.specifyModel.getFields(fieldNames?.join('.') ?? ''),
+      [rawResource, fieldNames]
     );
+    const data = useDistantRelated(rawResource, fields);
 
     const relationship =
       data?.field?.isRelationship === true ? data.field : undefined;
