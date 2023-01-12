@@ -99,18 +99,6 @@ def delete_blockers(request, model, id):
         }
         for field, sub_objs in collector.delete_blockers
     ]
-
-    # Check if the object has additional delete blockers. 
-    # If so, add them to the response only if the object has data in the 'field'
-    if model.capitalize() in ADDITIONAL_DELETE_BLOCKERS:
-        rel_data = ADDITIONAL_DELETE_BLOCKERS[model.capitalize()]
-        result.extend([{
-            'table' : getattr(obj, data).specify_model.django_name,
-            "field" : data,
-            'id' : getattr(obj, data).id
-        }
-        for data in rel_data if getattr(obj, data) is not None])
-
     return http.HttpResponse(api.toJson(result), content_type='application/json')
 
 @login_maybe_required
