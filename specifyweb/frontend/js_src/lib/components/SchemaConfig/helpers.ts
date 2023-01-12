@@ -11,7 +11,7 @@ import type {
   Relationship,
 } from '../DataModel/specifyField';
 import type { SpLocaleContainerItem, Tables } from '../DataModel/types';
-import type { Aggregator, Formatter } from '../Forms/dataObjFormatters';
+import type { Aggregator, Formatter } from '../Formatters/dataObjFormatters';
 import type {
   ItemType,
   NewSpLocaleItemString,

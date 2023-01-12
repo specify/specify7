@@ -7,7 +7,7 @@ import { Link } from '../Atoms/Link';
 import { strictParseResourceUrl } from '../DataModel/resource';
 import { strictGetModel } from '../DataModel/schema';
 import { softFail } from '../Errors/Crash';
-import { format } from '../Forms/dataObjFormatters';
+import { format } from '../Formatters/dataObjFormatters';
 import { hasTablePermission } from '../Permissions/helpers';
 
 export function FormattedResource({

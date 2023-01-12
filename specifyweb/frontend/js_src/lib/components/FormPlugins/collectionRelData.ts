@@ -13,7 +13,7 @@ import type {
   CollectionRelType,
 } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
-import { format } from '../Forms/dataObjFormatters';
+import { format } from '../Formatters/dataObjFormatters';
 
 export type CollectionRelData = {
   readonly relationshipType: SpecifyResource<CollectionRelType>;

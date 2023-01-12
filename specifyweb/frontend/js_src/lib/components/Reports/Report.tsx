@@ -149,7 +149,7 @@ export function Report({
 
 const reImage = /\$P\{\s*RPT_IMAGE_DIR\s*\}\s*\+\s*"\/"\s*\+\s*"(.*?)"/u;
 
-async function fixupImages(definition: Document): Promise<RA<string>> {
+async function fixupImages(definition: Element): Promise<RA<string>> {
   const fileNames = Object.fromEntries(
     group(
       filterArray(
@@ -265,7 +265,7 @@ function ParametersDialog({
   model,
   onClose: handleClose,
 }: {
-  readonly definition: Document;
+  readonly definition: Element;
   readonly query: SerializedResource<SpQuery> | false | undefined;
   readonly appResource: SerializedResource<SpAppResource>;
   readonly resourceId: number | undefined;

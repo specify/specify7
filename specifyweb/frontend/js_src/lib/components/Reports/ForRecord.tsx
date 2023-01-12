@@ -20,7 +20,7 @@ export function ReportForRecord({
   onClose: handleClose,
 }: {
   readonly query: SerializedResource<SpQuery>;
-  readonly definition: Document;
+  readonly definition: Element;
   readonly parameters: IR<string>;
   readonly model: SpecifyModel;
   readonly resourceId: number;

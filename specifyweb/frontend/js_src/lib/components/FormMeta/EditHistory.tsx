@@ -9,7 +9,7 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { SpQuery } from '../DataModel/types';
-import { format } from '../Forms/dataObjFormatters';
+import { format } from '../Formatters/dataObjFormatters';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { createQuery } from '../QueryBuilder';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';

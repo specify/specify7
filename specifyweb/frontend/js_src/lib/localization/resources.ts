@@ -128,6 +128,14 @@ export const resourcesText = createDictionary({
     'fr-fr': "Formateurs d'enregistrement",
     'uk-ua': 'Форматувальники записів',
   },
+  formatters: {
+    'en-us': 'Formatters',
+    'ru-ru': 'Форматировщики',
+  },
+  aggregators: {
+    'en-us': 'Aggregators',
+    'ru-ru': 'Агрегаторы',
+  },
   searchDialogDefinitions: {
     'en-us': 'Search Dialog Definitions',
     'ru-ru': 'Макеты диалогового окна поиска',
@@ -232,5 +240,9 @@ export const resourcesText = createDictionary({
     'es-es': 'Preferencias remotas',
     'fr-fr': 'Préférences à distance',
     'uk-ua': 'Віддалені параметри',
+  },
+  failedParsingXml: {
+    'en-us': 'Failed to parse XML',
+    'ru-ru': 'Не удалось разобрать XML',
   },
 } as const);

@@ -19,6 +19,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
 import type { Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
+import { errorHandledBy } from '../Errors/FormatError';
 import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { smoothScroll } from '../QueryBuilder/helpers';
@@ -168,7 +169,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
           .save({ onSaveConflict: hasSaveConflict })
           .catch((error_) =>
             // FEATURE: if form save fails, should make the error message dismissible (if safe)
-            Object.getOwnPropertyDescriptor(error_ ?? {}, 'handledBy')
+            Object.getOwnPropertyDescriptor(error_ ?? {}, errorHandledBy)
               ?.value === hasSaveConflict
               ? undefined
               : error(error_)

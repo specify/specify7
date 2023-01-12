@@ -8,7 +8,7 @@ import type { RA } from '../../utils/types';
 import { Link } from '../Atoms/Link';
 import { getModelById } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
-import { format, naiveFormatter } from '../Forms/dataObjFormatters';
+import { format, naiveFormatter } from '../Formatters/dataObjFormatters';
 import { hasTablePermission } from '../Permissions/helpers';
 import type { QueryFieldSpec } from './fieldSpec';
 import { queryIdField } from './Results';

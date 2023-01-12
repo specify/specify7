@@ -8,6 +8,8 @@ export function assert(
   if (!Boolean(value)) error(message);
 }
 
+export const errorDetails: unique symbol = Symbol('Error Details');
+
 /**
  * Allows throwing errors from expressions, not just statements
  *
@@ -20,8 +22,11 @@ export function error(message: Error | string, ...rest: RA<unknown>): never {
   breakpoint();
   const error = message instanceof Error ? message : new Error(message);
   // This is for the "Copy Error Message" feature:
-  if (!('details' in error))
-    Object.defineProperty(error, 'details', { value: rest, enumerable: false });
+  if (!(errorDetails in error))
+    Object.defineProperty(error, errorDetails, {
+      value: rest,
+      enumerable: false,
+    });
   throw error;
 }
 

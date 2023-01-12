@@ -62,7 +62,6 @@ type Properties =
   // Has down arrow (closed picklist preview) or left arrow (relationship)
   | 'arrow';
 export type CustomSelectType =
-  | 'BASE_TABLE_SELECTION_LIST'
   | 'CLOSED_LIST'
   | 'OPENED_LIST'
   | 'OPTIONS_LIST'
@@ -97,14 +96,6 @@ export const customSelectTypes: RR<CustomSelectType, RA<Properties>> = {
   PREVIEW_LIST: ['preview', 'icon'],
   // Used to display a list of AutoMapper suggestions
   SUGGESTION_LIST: ['interactive', 'tabIndex', 'handleKeyboardClick', 'shadow'],
-  // Used for base table selection in mapping view, schema config, et. al.
-  BASE_TABLE_SELECTION_LIST: [
-    'interactive',
-    'autoScroll',
-    'tabIndex',
-    'handleKeyboardClick',
-    'icon',
-  ],
   /*
    * Used for configuring mapping options for a mapping line or filter options
    * for a query line
@@ -114,7 +105,6 @@ export const customSelectTypes: RR<CustomSelectType, RA<Properties>> = {
 
 const customSelectClassNames: Partial<RR<CustomSelectType, string>> = {
   OPENED_LIST: '!h-full',
-  BASE_TABLE_SELECTION_LIST: 'flex-1',
   OPTIONS_LIST: 'grid',
   CLOSED_LIST: 'grid',
   SUGGESTION_LIST: '[z-index:10] h-auto !fixed',

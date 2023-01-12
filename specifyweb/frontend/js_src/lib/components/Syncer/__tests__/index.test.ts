@@ -1,6 +1,6 @@
 import { requireContext } from '../../../tests/helpers';
 import { strictParseXml } from '../../AppResources/codeMirrorLinters';
-import { formattersSpec } from '../dataObjectFormatter';
+import { formattersSpec } from '../../Formatters/spec';
 import { syncers } from '../syncers';
 import { formatXml } from '../xmlUtils';
 
@@ -44,6 +44,7 @@ test('Editing Data Object Formatter', () => {
     element
   );
 
+  // FIXME: use this XML beautifier
   expect(formatXml(element.outerHTML, '  ')).toMatchInlineSnapshot(`
     "<formatters>
       <format name=\\"Accession\\" title=\\"Accession\\" class=\\"edu.ku.brc.specify.datamodel.Accession\\" default=\\"true\\">

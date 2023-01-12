@@ -21,9 +21,8 @@ import {
   setPrefsGenerator,
 } from '../UserPreferences/helpers';
 import { PreferencesContext, useDarkMode } from '../UserPreferences/Hooks';
-import { useCodeMirrorExtensions } from './EditorComponents';
-import { DataObjectFormatter } from '../DataObjectFormatter';
 import { appResourceSubTypes } from './types';
+import { useCodeMirrorExtensions } from './EditorComponents';
 
 export type AppResourceTabProps = {
   readonly isReadOnly: boolean;

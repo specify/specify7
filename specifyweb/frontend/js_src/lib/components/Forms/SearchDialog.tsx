@@ -22,13 +22,13 @@ import { getResourceViewUrl } from '../DataModel/resource';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { error } from '../Errors/assert';
 import { raise } from '../Errors/Crash';
+import { format } from '../Formatters/dataObjFormatters';
 import { load } from '../InitialContext';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { ProtectedAction } from '../Permissions/PermissionDenied';
 import { createQuery } from '../QueryBuilder';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
 import { formatUrl } from '../Router/queryString';
-import { format } from './dataObjFormatters';
 import { RenderForm } from './SpecifyForm';
 import { useViewDefinition } from './useViewDefinition';
 
@@ -135,8 +135,8 @@ export function SearchDialog<SCHEMA extends AnySchema>({
                 )
               )
             )
-            .catch(raise)
-            .finally(handleLoaded);
+            .finally(handleLoaded)
+            .catch(raise);
         }}
       >
         <RenderForm

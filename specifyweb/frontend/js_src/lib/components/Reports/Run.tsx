@@ -17,7 +17,7 @@ export function RunReport({
 }: {
   readonly query: SerializedResource<SpQuery>;
   readonly recordSetId: number | undefined;
-  readonly definition: Document;
+  readonly definition: Element;
   readonly parameters: IR<string>;
   readonly onClose: () => void;
 }): JSX.Element {
@@ -54,7 +54,7 @@ export function RunReport({
         type="hidden"
       />
       <input
-        defaultValue={xmlToString(definition.documentElement)}
+        defaultValue={xmlToString(definition)}
         name="report"
         type="hidden"
       />

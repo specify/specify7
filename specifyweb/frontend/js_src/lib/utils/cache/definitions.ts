@@ -128,6 +128,7 @@ export type CacheDefinitions = {
   readonly appResources: {
     readonly conformation: RA<AppResourcesConformation>;
     readonly filters: AppResourceFilters;
+    readonly showHiddenTables: boolean;
   };
 };
 

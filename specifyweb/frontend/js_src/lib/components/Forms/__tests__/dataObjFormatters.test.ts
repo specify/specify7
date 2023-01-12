@@ -1,5 +1,5 @@
 import { requireContext } from '../../../tests/helpers';
-import { fetchFormatters } from '../dataObjFormatters';
+import { fetchFormatters } from '../../Formatters/dataObjFormatters';
 
 requireContext();
 

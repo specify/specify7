@@ -15,7 +15,7 @@ import { schema, strictGetModel } from '../DataModel/schema';
 import type { PickList, PickListItem, Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import type { PickListItemSimple } from '../FormFields/ComboBox';
-import { format } from '../Forms/dataObjFormatters';
+import { format } from '../Formatters/dataObjFormatters';
 import { hasTablePermission, hasToolPermission } from '../Permissions/helpers';
 import {
   createPickListItem,

@@ -26,33 +26,40 @@ function getChildren(cell: Element, tagName: string): RA<Element> {
 }
 
 export const syncers = {
-  xmlAttribute: <MODE extends 'empty' | 'required'>(
+  xmlAttribute: <MODE extends 'empty' | 'required' | 'skip'>(
     attribute: string,
     mode: MODE,
     trim = true
   ) =>
     syncer<
       Element,
-      LocalizedString | (MODE extends 'empty' ? never : undefined)
+      LocalizedString | (MODE extends 'empty' | 'skip' ? never : undefined)
     >(
       (cell) => {
         const rawValue = getAttribute(cell, attribute);
         const trimmed = trim ? rawValue?.trim() : rawValue;
         if (mode === 'required' && trimmed === '')
           console.error(`Required attribute "${attribute}" is empty`);
-        else if (trimmed === undefined)
-          console[mode === 'required' ? 'error' : 'warn'](
-            `Required attribute "${attribute}" is missing`
-          );
-        return mode === 'empty' ? trimmed ?? '' : (trimmed as LocalizedString);
+        else if (mode === 'required' && trimmed === undefined)
+          console.error(`Required attribute "${attribute}" is missing`);
+        return mode === 'empty' || mode === 'skip'
+          ? trimmed ?? ''
+          : (trimmed as LocalizedString);
       },
-      (value, cell) => {
-        if (typeof value === 'string')
-          cell.setAttribute(attribute, trim ? value.trim() : value);
-        else cell.removeAttribute(attribute);
+      (rawValue = '', cell) => {
+        const value = trim ? rawValue.trim() : rawValue;
+        if (mode === 'skip' && value === '') cell.removeAttribute(attribute);
+        else cell.setAttribute(attribute, value);
         return cell;
       }
     ),
+  xmlContent: syncer<Element, string>(
+    (cell) => cell.textContent ?? '',
+    (value, cell) => {
+      cell.textContent = value;
+      return cell;
+    }
+  ),
   default: <T>(
     defaultValue: T extends (...args: RA<unknown>) => unknown
       ? never
@@ -103,10 +110,13 @@ export const syncers = {
       }
     ),
   xmlChildren: (tagName: string) =>
-    syncer<Element, RA<Element>>(
+    syncer<Element, RA<Element | undefined>>(
       (cell) => getChildren(cell, tagName),
       (rawNewChildren, cell) => {
-        const newChildren = rawNewChildren.map(ensureTagName(tagName));
+        const ensure = ensureTagName(tagName);
+        const newChildren = rawNewChildren.map((child) =>
+          f.maybe(child, ensure)
+        );
 
         const children = getChildren(cell, tagName);
         /*
@@ -115,16 +125,21 @@ export const syncers = {
          */
         Array.from(
           { length: Math.min(newChildren.length, children.length) },
-          (_, index) => cell.replaceChild(children[index], newChildren[index])
+          (_, index) => {
+            const child = newChildren[index];
+            if (typeof child === 'object')
+              cell.replaceChild(children[index], child);
+          }
         );
         Array.from(
           { length: children.length - newChildren.length },
           (_, index) => children[index].remove()
         );
         const addedCount = newChildren.length - children.length;
-        Array.from({ length: addedCount }, (_, index) =>
-          cell.append(newChildren[addedCount + index])
-        );
+        Array.from({ length: addedCount }, (_, index) => {
+          const child = newChildren[addedCount + index];
+          if (typeof child === 'object') cell.append(child);
+        });
         return cell;
       }
     ),
@@ -159,6 +174,17 @@ export const syncers = {
         elements.map((element, index) =>
           syncerDefinition.deserializer(element, cells?.[index])
         )
+    ),
+  maybe: <SYNCER extends SafeSyncer<any, any>>(syncerDefinition: SYNCER) =>
+    safeSyncer<
+      Parameters<SYNCER['serializer']>[0] | undefined,
+      ReturnType<SYNCER['serializer']> | undefined
+    >(
+      (element) => f.maybe(element, syncerDefinition.serializer),
+      (element, cell) =>
+        element === undefined
+          ? undefined
+          : syncerDefinition.deserializer(element, cell)
     ),
 } as const;
 

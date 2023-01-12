@@ -11,7 +11,7 @@ import { deserializeResource, serializeResource } from '../DataModel/helpers';
 import type { SerializedModel } from '../DataModel/helperTypes';
 import { schema } from '../DataModel/schema';
 import type { SpecifyUser } from '../DataModel/types';
-import { format } from '../Forms/dataObjFormatters';
+import { format } from '../Formatters/dataObjFormatters';
 import { userInformation } from '../InitialContext/userInformation';
 import { actionToLabel, resourceNameToLongLabel } from '../Security/utils';
 import { institutionPermissions } from './definitions';

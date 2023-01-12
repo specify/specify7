@@ -5,7 +5,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { commonText } from '../../localization/common';
 import { resourcesText } from '../../localization/resources';
 import { f } from '../../utils/functools';
-import type { RA } from '../../utils/types';
+import type { GetSet, IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
@@ -51,37 +51,22 @@ export function AppResourcesTabs({
 }): JSX.Element {
   const tabs = useEditorTabs(resource);
   const children = (
-    <Tab.Group>
-      <Tab.List
-        // Don't display tabs if there is only one tab
-        className={`flex flex-wrap gap-2 ${tabs.length === 1 ? 'sr-only' : ''}`}
-      >
-        {tabs.map(({ label }, index) => (
-          <Tab
-            className={`${className.niceButton} ${className.blueButton}`}
+    <Tabs
+      tabs={Object.fromEntries(
+        tabs.map(({ label, component: Component }, index) => [
+          label,
+          <Component
             key={index}
-          >
-            {label}
-          </Tab>
-        ))}
-      </Tab.List>
-      <Tab.Panels className="h-full overflow-auto border border-brand-300 dark:border-none">
-        {tabs.map(({ component: Component }, index) => (
-          <Tab.Panel className="h-full" key={index}>
-            <ErrorBoundary dismissable>
-              <Component
-                appResource={appResource}
-                data={data}
-                isReadOnly={isReadOnly}
-                resource={resource}
-                showValidationRef={showValidationRef}
-                onChange={handleChange}
-              />
-            </ErrorBoundary>
-          </Tab.Panel>
-        ))}
-      </Tab.Panels>
-    </Tab.Group>
+            appResource={appResource}
+            data={data}
+            isReadOnly={isReadOnly}
+            resource={resource}
+            showValidationRef={showValidationRef}
+            onChange={handleChange}
+          />,
+        ])
+      )}
+    />
   );
   return isFullScreen ? (
     <Dialog
@@ -133,4 +118,39 @@ function useEditorTabs(
       },
     ]);
   }, [subType]);
+}
+
+export function Tabs({
+  tabs,
+  index,
+}: {
+  readonly tabs: IR<JSX.Element>;
+  readonly index?: GetSet<number>;
+}): JSX.Element {
+  return (
+    <Tab.Group selectedIndex={index?.[0]} onChange={index?.[1]}>
+      <Tab.List
+        // Don't display tabs if there is only one tab
+        className={`flex flex-wrap gap-2 ${
+          Object.keys(tabs).length === 1 ? 'sr-only' : ''
+        }`}
+      >
+        {Object.keys(tabs).map((label, index) => (
+          <Tab
+            className={`${className.niceButton} ${className.blueButton}`}
+            key={index}
+          >
+            {label}
+          </Tab>
+        ))}
+      </Tab.List>
+      <Tab.Panels className="h-full overflow-auto border border-brand-300 dark:border-none">
+        {Object.values(tabs).map((element, index) => (
+          <Tab.Panel className="h-full" key={index}>
+            <ErrorBoundary dismissable>{element}</ErrorBoundary>
+          </Tab.Panel>
+        ))}
+      </Tab.Panels>
+    </Tab.Group>
+  );
 }

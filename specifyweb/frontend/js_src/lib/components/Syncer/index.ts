@@ -76,6 +76,10 @@ export function pipe<R1, R2, R3>(
   t1: Syncer<R1, R2>,
   t2: Syncer<R2, R3>
 ): Syncer<R1, R3>;
+export function pipe<R1, R2, R3>(
+  t1: SafeSyncer<R1, R2>,
+  t2: SafeSyncer<R2, R3>
+): SafeSyncer<R1, R3>;
 export function pipe(
   ...syncers: RA<Syncer<unknown, unknown>>
 ): Syncer<unknown, unknown> {
@@ -152,7 +156,7 @@ export const xmlParser =
     );
     Object.defineProperty(cell, symbolOldInputs, {
       value: intermediates,
-      enumerable: true,
+      configurable: true,
     });
     return object;
   };

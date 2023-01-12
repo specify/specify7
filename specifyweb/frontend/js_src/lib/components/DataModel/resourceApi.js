@@ -13,6 +13,7 @@ import {
     getResourceViewUrl,
     resourceFromUrl
 } from './resource';
+import {errorHandledBy} from '../Errors/FormatError';
 
 function eventHandlerForToOne(related, field) {
         return function(event) {
@@ -574,7 +575,7 @@ function eventHandlerForToOne(related, field) {
                 resource.needsSaved = didNeedSaved;
                 didNeedSaved && resource.trigger('saverequired');
                 if(typeof handleSaveConflict === 'function' && errorHandled)
-                    Object.defineProperty(error, 'handledBy', {
+                    Object.defineProperty(error, errorHandledBy, {
                       value: handleSaveConflict,
                     });
                 throw error;

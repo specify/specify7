@@ -17,42 +17,11 @@ import $ from 'jquery';
 import React from 'react';
 import _ from 'underscore';
 
-import { backEndText } from '../../localization/backEnd';
-import { commonText } from '../../localization/common';
-import { whitespaceSensitive } from '../../localization/utils';
-import { LANGUAGE } from '../../localization/utils/config';
-import { wbPlanText } from '../../localization/wbPlan';
-import { wbText } from '../../localization/workbench';
-import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/definitions';
-import { ping } from '../../utils/ajax/ping';
-import { getCache, setCache } from '../../utils/cache';
-import { f } from '../../utils/functools';
-import { filterArray } from '../../utils/types';
-import { capitalize, clamp, mappedFind } from '../../utils/utils';
-import { Button } from '../Atoms/Button';
-import { iconClassName, legacyNonJsxIcons } from '../Atoms/Icons';
-import { Link } from '../Atoms/Link';
-import { legacyLoadingContext } from '../Core/Contexts';
-import { createBackboneView } from '../Core/reactBackboneExtend';
-import { Backbone } from '../DataModel/backbone';
-import { serializeResource } from '../DataModel/helpers';
-import { getModel, schema, strictGetModel } from '../DataModel/schema';
-import { crash, raise } from '../Errors/Crash';
-import { format } from '../Forms/dataObjFormatters';
-import { getIcon, unknownIcon } from '../InitialContext/icons';
-import { strictGetTreeDefinitionItems } from '../InitialContext/treeRanks';
-import { loadingBar } from '../Molecules';
-import { dialogClassNames } from '../Molecules/Dialog';
-import { showDialog } from '../Molecules/LegacyDialog';
-import {
-  hasPermission,
-  hasTablePermission,
-  hasTreeAccess,
-} from '../Permissions/helpers';
-import { fetchPickList } from '../PickLists/fetch';
-import { getUserPref } from '../UserPreferences/helpers';
-import { pathStartsWith } from '../WbPlanView/helpers';
+import {Button} from '../Atoms/Button';
+import {Link} from '../Atoms/Link';
+import {Backbone} from '../DataModel/backbone';
+import {getModel, schema, strictGetModel} from '../DataModel/schema';
+import {crash, raise} from '../Errors/Crash';
 import {
   formatToManyIndex,
   formatTreeRank,
@@ -60,15 +29,46 @@ import {
   mappingPathToString,
   valueIsTreeRank,
 } from '../WbPlanView/mappingHelpers';
-import { getTableFromMappingPath } from '../WbPlanView/navigator';
-import { parseUploadPlan } from '../WbPlanView/uploadPlanParser';
-import { DataSetNameView } from './DataSetMeta';
-import { downloadDataSet } from './helpers';
-import { WbUploaded } from './Results';
-import { resolveValidationMessage } from './resultsParser';
-import { WbStatus } from './Status';
-import { wbViewTemplate } from './Template';
-import { WBUtils } from './wbUtils';
+import {DataSetNameView} from './DataSetMeta';
+import {WbUploaded} from './Results';
+import {WBUtils} from './wbUtils';
+import {parseUploadPlan} from '../WbPlanView/uploadPlanParser';
+import {getTableFromMappingPath} from '../WbPlanView/navigator';
+import {wbText} from '../../localization/workbench';
+import {commonText} from '../../localization/common';
+import {showDialog} from '../Molecules/LegacyDialog';
+import {dialogClassNames} from '../Molecules/Dialog';
+import {format} from '../Formatters/dataObjFormatters';
+import {whitespaceSensitive} from '../../localization/utils';
+import {filterArray} from '../../utils/types';
+import {strictGetTreeDefinitionItems} from '../InitialContext/treeRanks';
+import {serializeResource} from '../DataModel/helpers';
+import {fetchPickList} from '../PickLists/fetch';
+import {ajax} from '../../utils/ajax';
+import {ping} from '../../utils/ajax/ping';
+import {
+  hasPermission,
+  hasTablePermission,
+  hasTreeAccess,
+} from '../Permissions/helpers';
+import {wbViewTemplate} from './Template';
+import {legacyLoadingContext} from '../Core/Contexts';
+import {getCache, setCache} from '../../utils/cache';
+import {f} from '../../utils/functools';
+import {pathStartsWith} from '../WbPlanView/helpers';
+import {getUserPref} from '../UserPreferences/helpers';
+import {createBackboneView} from '../Core/reactBackboneExtend';
+import {WbStatus} from './Status';
+import {loadingBar} from '../Molecules';
+import {Http} from '../../utils/ajax/definitions';
+import {downloadDataSet} from './helpers';
+import {LANGUAGE} from '../../localization/utils/config';
+import {resolveValidationMessage} from './resultsParser';
+import {backEndText} from '../../localization/backEnd';
+import {wbPlanText} from '../../localization/wbPlan';
+import {iconClassName, legacyNonJsxIcons} from '../Atoms/Icons';
+import {getIcon, unknownIcon} from '../InitialContext/icons';
+import {capitalize, clamp, mappedFind} from '../../utils/utils';
 
 const metaKeys = [
   'isNew',

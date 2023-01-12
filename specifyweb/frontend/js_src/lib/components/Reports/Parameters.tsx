@@ -30,7 +30,7 @@ export function QueryParametersDialog({
 }: {
   readonly query: SerializedResource<SpQuery>;
   readonly recordSetId: number | undefined;
-  readonly definition: Document;
+  readonly definition: Element;
   readonly parameters: IR<string>;
   readonly autoRun: boolean;
   readonly onClose: () => void;

@@ -69,7 +69,6 @@ const toSafeValue = (value: unknown): unknown =>
 
 export function interceptLogs(): void {
   logTypes.forEach((logType) => {
-    if (isSilenced) return;
     /**
      * Read this if you are coming here from DevTools:
      * DevTools would show this file as an originator of all console messages,
@@ -85,6 +84,7 @@ export function interceptLogs(): void {
     const defaultFunction = console[logType];
 
     console[logType] = (...args: RA<unknown>): void => {
+      if (isSilenced) return;
       const hasContext = Object.keys(context).length > 0;
       defaultFunction(...args, ...(hasContext ? [context] : []));
       consoleLog.push({

@@ -26,20 +26,22 @@ export const jsonLinter = createLinter(jsonParseLinter());
 export const xmlToString = (xml: Node): string =>
   new XMLSerializer().serializeToString(xml);
 
-export function parseXml(string: string): Document | string {
-  const parsedXml = new window.DOMParser().parseFromString(string, 'text/xml');
+export function parseXml(string: string): Element | string {
+  const parsedXml = new window.DOMParser().parseFromString(
+    string,
+    'text/xml'
+  ).documentElement;
 
   // Chrome, Safari
-  const parseError =
-    parsedXml.documentElement.getElementsByTagName('parsererror')[0];
+  const parseError = parsedXml.getElementsByTagName('parsererror')[0];
   if (typeof parseError === 'object')
     return (parseError.children[1].textContent ?? parseError.innerHTML).trim();
   // Firefox
-  else if (parsedXml.documentElement.tagName === 'parsererror')
+  else if (parsedXml.tagName === 'parsererror')
     return (
-      parsedXml.documentElement.childNodes[0].nodeValue ??
-      parsedXml.documentElement.textContent ??
-      parsedXml.documentElement.innerHTML
+      parsedXml.childNodes[0].nodeValue ??
+      parsedXml.textContent ??
+      parsedXml.innerHTML
     ).trim();
   else return parsedXml;
 }
@@ -47,7 +49,7 @@ export function parseXml(string: string): Document | string {
 export function strictParseXml(xml: string): Element {
   const parsed = parseXml(xml);
   if (typeof parsed === 'string') throw new Error(parsed);
-  else return parsed.documentElement;
+  else return parsed;
 }
 
 const xmlErrorParsers = [

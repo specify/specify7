@@ -128,6 +128,14 @@ function formatErrorResponse(error: string): JSX.Element {
   return <pre>{error}</pre>;
 }
 
+/**
+ * If defined, means the error has already been handled and does not need to be
+ * reported to the user again
+ */
+export const errorHandledBy: unique symbol = Symbol(
+  'Function that handled the error'
+);
+
 export function handleAjaxError(
   error: unknown,
   response: Response,
@@ -145,7 +153,7 @@ export function handleAjaxError(
       process.env.NODE_ENV !== 'development';
     // In production, uncaught 404 errors redirect to the NOT FOUND page
     if (isNotFoundError && unsafeTriggerNotFound()) {
-      Object.defineProperty(error, 'handledBy', {
+      Object.defineProperty(error, errorHandledBy, {
         value: handleAjaxError,
       });
       throw error;
@@ -168,7 +176,7 @@ export function handleAjaxError(
           <PermissionError error={errorObject} onClose={handleClose} />
         ));
         const error = new Error(errorMessage);
-        Object.defineProperty(error, 'handledBy', {
+        Object.defineProperty(error, errorHandledBy, {
           value: handleAjaxError,
         });
         throw error;
@@ -190,7 +198,7 @@ export function handleAjaxError(
       </ErrorDialog>
     ));
   const newError = new Error(errorMessage);
-  Object.defineProperty(newError, 'handledBy', {
+  Object.defineProperty(newError, errorHandledBy, {
     value: handleAjaxError,
   });
   throw newError;

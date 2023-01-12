@@ -21,7 +21,7 @@ export function formatXml(
 }
 
 export const createXmlNode = (name: string): Element =>
-  document.implementation.createDocument(null, name).children[0];
+  document.implementation.createDocument(null, name).documentElement;
 
 /**
  * Create a new XML element based on an old one, but with a different tagName.

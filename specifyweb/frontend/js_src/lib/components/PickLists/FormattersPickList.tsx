@@ -5,11 +5,11 @@ import type { RA } from '../../utils/types';
 import { resourceOn } from '../DataModel/resource';
 import { getModel } from '../DataModel/schema';
 import { raise } from '../Errors/Crash';
+import { fetchFormatters } from '../Formatters/dataObjFormatters';
 import type {
   DefaultComboBoxProps,
   PickListItemSimple,
 } from '../FormFields/ComboBox';
-import { fetchFormatters } from '../Forms/dataObjFormatters';
 import { PickListTypes } from './definitions';
 import { PickListComboBox } from './index';
 

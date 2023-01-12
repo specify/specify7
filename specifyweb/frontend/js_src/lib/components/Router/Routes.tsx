@@ -212,14 +212,14 @@ export const routes: RA<EnhancedRoute> = [
           ),
       },
       {
-        path: 'app-resource/:id',
+        path: 'app-resource/:id/*',
         element: () =>
           import('../AppResources/EditorWrapper').then(
             ({ AppResourceView }) => AppResourceView
           ),
       },
       {
-        path: 'view-set/:id',
+        path: 'view-set/:id/*',
         element: () =>
           import('../AppResources/EditorWrapper').then(
             ({ ViewSetView }) => ViewSetView

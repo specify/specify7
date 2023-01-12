@@ -24,7 +24,7 @@ export function ReportRecordSets({
 }: {
   readonly query: SerializedResource<SpQuery>;
   readonly appResource: SerializedResource<SpAppResource>;
-  readonly definition: Document;
+  readonly definition: Element;
   readonly parameters: IR<string>;
   readonly onClose: () => void;
 }): JSX.Element {
