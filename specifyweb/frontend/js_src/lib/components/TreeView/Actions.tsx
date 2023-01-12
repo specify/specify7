@@ -23,6 +23,7 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { AnySchema, AnyTree } from '../DataModel/helperTypes';
 import { LocalizedString } from 'typesafe-i18n';
 import { queryText } from '../../localization/query';
+import { getPref } from '../InitialContext/remotePrefs';
 
 type Action = 'add' | 'desynonymize' | 'edit' | 'merge' | 'move' | 'synonymize';
 
@@ -56,6 +57,12 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
 
   const resourceName = `/tree/edit/${toLowerCase(tableName)}` as const;
   const isSynonym = typeof focusedRow?.acceptedId === 'number';
+
+  const doExpandSynonymActionsPref = getPref(
+    `sp7.allow_adding_child_to_synonymized_parent.${
+      tableName as AnyTree['tableName']
+    }`
+  );
 
   const disableButtons =
     focusedRow === undefined || typeof currentAction === 'string';
@@ -113,7 +120,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
             addNew
             disabled={
               focusedRow === undefined ||
-              typeof focusedRow.acceptedId === 'number' ||
+              (doExpandSynonymActionsPref ? false : isSynonym) ||
               // Forbid adding children to the lowest rank
               ranks.at(-1) === focusedRow.rankId
             }
@@ -154,7 +161,9 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
             disabled={
               disableButtons ||
               isRoot ||
-              (!isSynonym && focusedRow.children > 0)
+              (doExpandSynonymActionsPref
+                ? false
+                : !isSynonym && focusedRow.children > 0)
             }
             onClick={(): void =>
               setAction(isSynonym ? 'desynonymize' : 'synonymize')
