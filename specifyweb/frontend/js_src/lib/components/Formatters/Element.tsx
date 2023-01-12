@@ -1,6 +1,6 @@
 import { GetSet } from '../../utils/types';
 import React from 'react';
-import { Aggregator } from './dataObjFormatters';
+import { Aggregator, Formatter } from './spec';
 
 export function FormatterWrapper(): JSX.Element {}
 

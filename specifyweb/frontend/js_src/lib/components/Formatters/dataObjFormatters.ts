@@ -8,14 +8,13 @@ import { formsText } from '../../localization/forms';
 import { userText } from '../../localization/user';
 import { ajax } from '../../utils/ajax';
 import type { RA } from '../../utils/types';
-import { filterArray } from '../../utils/types';
 import { KEY, multiSortFunction, sortFunction } from '../../utils/utils';
 import { fetchDistantRelated } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
+import { fetchContext, schema } from '../DataModel/schema';
 import type { LiteralField } from '../DataModel/specifyField';
-import type { Collection, SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Tables } from '../DataModel/types';
 import {
   cachableUrl,
@@ -29,23 +28,28 @@ import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { fieldFormat } from './fieldFormat';
 import type { Aggregator, Formatter } from './spec';
 import { formattersSpec } from './spec';
+import { aggregate } from './aggregate';
+import { f } from '../../utils/functools';
 
 export const fetchFormatters: Promise<{
   readonly formatters: RA<Formatter>;
   readonly aggregators: RA<Aggregator>;
 }> = contextUnlockedPromise.then(async (entrypoint) =>
   entrypoint === 'main'
-    ? ajax<Element>(
-        cachableUrl(
-          formatUrl('/context/app.resource', { name: 'DataObjFormatters' })
-        ),
-        {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          headers: { Accept: 'text/xml' },
-        }
-      ).then(({ data: definitions }) =>
-        xmlParser(formattersSpec())(definitions)
-      )
+    ? f
+        .all({
+          definitions: ajax<Element>(
+            cachableUrl(
+              formatUrl('/context/app.resource', { name: 'DataObjFormatters' })
+            ),
+            {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              headers: { Accept: 'text/xml' },
+            }
+          ).then(({ data }) => data),
+          schema: fetchContext,
+        })
+        .then(({ definitions }) => xmlParser(formattersSpec())(definitions))
     : foreverFetch()
 );
 
@@ -240,45 +244,4 @@ const autoGenerateFormatter = (model: SpecifyModel): Formatter => ({
       },
     ],
   },
-});
-
-export async function aggregate(
-  collection: Collection<AnySchema>,
-  aggregatorName?: string
-): Promise<string> {
-  const { aggregators } = await fetchFormatters;
-
-  const defaultAggregator = collection.model.specifyModel.getAggregator();
-
-  const aggregator =
-    aggregators.find(({ name }) => name === aggregatorName) ??
-    aggregators.find(({ name }) => name === defaultAggregator) ??
-    aggregators.find(
-      ({ tableName, isDefault }) =>
-        tableName === collection.model.specifyModel.name && isDefault
-    ) ??
-    aggregators.find(
-      ({ tableName }) => tableName === collection.model.specifyModel.name
-    ) ??
-    autoGenerateAggregator(collection.model.specifyModel);
-
-  if (!collection.isComplete()) console.error('Collection is incomplete');
-
-  return Promise.all(
-    collection.models.map(async (resource) =>
-      format(resource, aggregator.formatterName)
-    )
-  ).then((formatted) => filterArray(formatted).join(aggregator.separator));
-}
-
-const autoGenerateAggregator = (model: SpecifyModel): Aggregator => ({
-  name: model.name,
-  title: model.name,
-  tableName: model.name,
-  isDefault: true,
-  separator: '; ',
-  ending: '',
-  limit: 4,
-  formatterName: undefined,
-  sortField: undefined,
 });

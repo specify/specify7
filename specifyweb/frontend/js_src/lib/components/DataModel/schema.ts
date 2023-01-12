@@ -151,6 +151,12 @@ setDevelopmentGlobal('_schema', schema);
  * Can wrap this function call in defined() to cast result to SpecifyModel
  */
 export function getModel(name: string): SpecifyModel | undefined {
+  if (
+    process.env.NODE_ENV === 'development' &&
+    Object.keys(schema.models).length === 0
+  )
+    throw new Error('Calling getModel() before data model is fetched');
+
   const lowerCase = name.toLowerCase();
   return name === ''
     ? undefined

@@ -85,13 +85,13 @@ export const syncers = {
     f.parseInt,
     (value) => value?.toString() ?? ''
   ),
-  xmlChild: (tagName: string) =>
+  xmlChild: (tagName: string, mode: 'optional' | 'required' = 'required') =>
     syncer<Element, Element | undefined>(
       (cell: Element) => {
         const children = getChildren(cell, tagName);
         if (children.length > 1)
           console.error(`Expected to find at most one <${tagName} /> child`);
-        if (children[0] === undefined)
+        if (children[0] === undefined && mode === 'required')
           console.error(`Unable to find a <${tagName} /> child`);
         return children[0];
       },

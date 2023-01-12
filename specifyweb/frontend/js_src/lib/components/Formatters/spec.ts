@@ -107,7 +107,7 @@ const switchSpec = ({
       }, f.id)
     ),
     // FIXME: hide formatters that contain this
-    external: syncers.xmlChild('external'),
+    external: syncers.xmlChild('external', 'optional'),
     fields: pipe(
       syncers.xmlChildren('fields'),
       syncers.map(syncers.object(fieldsSpec(tableName)))

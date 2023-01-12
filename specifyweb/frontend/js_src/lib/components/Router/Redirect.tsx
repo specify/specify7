@@ -9,24 +9,26 @@ import { toRelativeUrl } from '../../utils/ajax/helpers';
  *
  * Preserves current query string and hash
  *
- * Handles URL params too
+ * Handles URL params. Accepts relative URLs
  */
 export function Redirect({ to }: { readonly to: string }): null {
-  const { search, hash } = useLocation();
+  const location = useLocation();
   const parameters = useParams();
   const navigate = useNavigate();
   React.useEffect(() => {
-    const path = generatePath(to, parameters);
-    const url = new URL(
-      `${path}${path.endsWith('/') ? '' : '/'}`,
-      globalThis.location?.origin
-    );
+    const { search, hash, pathname } = location;
+    const rawPath = generatePath(to, parameters);
+    const path = `${rawPath}${rawPath.endsWith('/') ? '' : '/'}`;
+    // Handle both relative and absolute URL
+    const url = path.startsWith('.')
+      ? new URL(path, `${globalThis.location?.origin}${pathname}`)
+      : new URL(path, globalThis.location?.origin);
     url.hash = hash;
     url.search = search;
     const completeUrl = url.toString();
     navigate(toRelativeUrl(completeUrl) ?? completeUrl, {
       replace: true,
     });
-  }, [to, parameters, search, hash, navigate]);
+  }, [to, parameters, location, navigate]);
   return null;
 }

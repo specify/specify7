@@ -16,7 +16,9 @@ export const formattersRoutes = toReactRoutes([
       {
         index: true,
         element: async () =>
-          import('./Table').then(({ FormatterTable }) => FormatterTable),
+          import('./Table').then(
+            ({ FormatterTablesList }) => FormatterTablesList
+          ),
       },
       {
         path: ':tableName',
