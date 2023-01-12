@@ -22,7 +22,7 @@ msgstr "Немає"
 #: components/Forms/ResourceView.tsx:309
 #: components/Forms/SearchDialog.tsx:105
 #: components/Header/Forms.tsx:61
-#: components/Interactions/InteractionsDialog.tsx:225
+#: components/Interactions/InteractionsDialog.tsx:243
 #: components/Interactions/PrepDialog.tsx:97
 #: components/Interactions/PrepReturnDialog.tsx:114
 #: components/PickLists/index.tsx:297
@@ -30,7 +30,7 @@ msgstr "Немає"
 #: components/QueryBuilder/Edit.tsx:177
 #: components/QueryBuilder/FromMap.tsx:71
 #: components/QueryBuilder/Import.tsx:31
-#: components/QueryBuilder/LoanReturn.tsx:158
+#: components/QueryBuilder/LoanReturn.tsx:160
 #: components/Reports/Parameters.tsx:81
 #: components/Reports/Report.tsx:212
 #: components/Reports/Report.tsx:239
@@ -98,7 +98,7 @@ msgstr "Створити"
 #: components/AppResources/Tabs.tsx:90
 #: components/Core/Main.tsx:136
 #: components/FormCells/FormTable.tsx:425
-#: components/FormCommands/ShowTransactions.tsx:103
+#: components/FormCommands/ShowTransactions.tsx:104
 #: components/FormCommands/index.tsx:101
 #: components/FormCommands/index.tsx:123
 #: components/FormFields/QueryComboBox.tsx:542
@@ -128,8 +128,8 @@ msgstr "Створити"
 #: components/Header/Notifications.tsx:141
 #: components/Header/UserTools.tsx:50
 #: components/HomePage/AboutSpecify.tsx:61
-#: components/Interactions/InteractionDialog.tsx:199
-#: components/Interactions/InteractionDialog.tsx:226
+#: components/Interactions/InteractionDialog.tsx:200
+#: components/Interactions/InteractionDialog.tsx:232
 #: components/Interactions/PrepDialog.tsx:94
 #: components/Interactions/PrepReturnDialog.tsx:69
 #: components/Leaflet/Map.tsx:25
@@ -138,8 +138,8 @@ msgstr "Створити"
 #: components/QueryBuilder/Edit.tsx:147
 #: components/QueryBuilder/Export.tsx:69
 #: components/QueryBuilder/Export.tsx:77
-#: components/QueryBuilder/LoanReturn.tsx:155
-#: components/QueryBuilder/LoanReturn.tsx:224
+#: components/QueryBuilder/LoanReturn.tsx:157
+#: components/QueryBuilder/LoanReturn.tsx:226
 #: components/QueryBuilder/Save.tsx:65
 #: components/Reports/Report.tsx:113
 #: components/Reports/Report.tsx:122
@@ -261,7 +261,7 @@ msgstr "ВІДЧИНЕНО"
 msgid "delete"
 msgstr "Видалити"
 
-#: components/Interactions/InteractionDialog.tsx:305
+#: components/Interactions/InteractionDialog.tsx:311
 #: components/WorkBench/wbUtils.js:755
 #. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Work Bench > Wb Utils
 msgid "next"
@@ -290,7 +290,7 @@ msgstr "Інструменти"
 #: components/Core/__tests__/Contexts.test.tsx:65
 #: components/Core/__tests__/Contexts.test.tsx:76
 #: components/FormCells/FormTable.tsx:179
-#: components/FormCommands/ShowTransactions.tsx:54
+#: components/FormCommands/ShowTransactions.tsx:55
 #: components/FormFields/ComboBox.tsx:109
 #: components/FormFields/Field.tsx:247
 #: components/FormFields/QueryComboBox.tsx:397
@@ -371,7 +371,7 @@ msgstr "видалити"
 msgid "search"
 msgstr "Пошук"
 
-#: components/FormCommands/ShowTransactions.tsx:44
+#: components/FormCommands/ShowTransactions.tsx:45
 #: components/Forms/SearchDialog.tsx:156
 #: components/Reports/index.tsx:184
 #. Used in: Components > Form Commands > Show Transactions ⬤ Components > Forms > Search Dialog ⬤ Components > Reports > Index
@@ -409,7 +409,7 @@ msgstr "новий"
 msgid "edit"
 msgstr "Редагувати"
 
-#: components/Interactions/InteractionDialog.tsx:331
+#: components/Interactions/InteractionDialog.tsx:337
 #: components/Reports/Report.tsx:214
 #: components/Security/UserComponents.tsx:183
 #. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Reports > Report ⬤ Components > Security > User Components
@@ -585,7 +585,7 @@ msgstr "Мову"
 msgid "country"
 msgstr "Країна"
 
-#: components/FormCommands/ShowTransactions.tsx:104
+#: components/FormCommands/ShowTransactions.tsx:105
 #. Used in: Components > Form Commands > Show Transactions
 msgid "transactions"
 msgstr "транзакції"

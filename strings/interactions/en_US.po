@@ -2,61 +2,61 @@ msgid ""
 msgstr "Content-Type: text/plain\n"
 
 #: components/Header/menuItemDefinitions.ts:66
-#: components/Interactions/InteractionsDialog.tsx:229
+#: components/Interactions/InteractionsDialog.tsx:247
 #: components/Router/OverlayRoutes.tsx:60
 #: components/UserPreferences/Definitions.tsx:492
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Router > Overlay Routes ⬤ Components > User Preferences > Definitions
 msgid "interactions"
 msgstr "Interactions"
 
-#: components/Interactions/InteractionDialog.tsx:244
+#: components/Interactions/InteractionDialog.tsx:250
 #: components/Interactions/PrepDialog.tsx:118
 #. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog
 msgid "addItems"
 msgstr "Add Items"
 
-#: components/Interactions/InteractionDialog.tsx:246
+#: components/Interactions/InteractionDialog.tsx:252
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "recordReturn"
 msgstr "{modelName:string} Return"
 
-#: components/Interactions/InteractionDialog.tsx:247
+#: components/Interactions/InteractionDialog.tsx:253
 #: components/Interactions/PrepDialog.tsx:119
 #. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog
 msgid "createRecord"
 msgstr "Create {modelName:string}"
 
-#: components/Interactions/InteractionDialog.tsx:191
+#: components/Interactions/InteractionDialog.tsx:192
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "missing"
 msgstr "Missing:"
 
-#: components/Interactions/InteractionDialog.tsx:193
+#: components/Interactions/InteractionDialog.tsx:194
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "preparationsNotFound"
 msgstr "No preparations were found."
 
-#: components/Interactions/InteractionDialog.tsx:311
+#: components/Interactions/InteractionDialog.tsx:317
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "problemsFound"
 msgstr "There are problems with the entry:"
 
-#: components/Interactions/InteractionDialog.tsx:253
+#: components/Interactions/InteractionDialog.tsx:259
 #. 🟥See documentation for syntax for plural rules. Used in: Components > Interactions > Interaction Dialog
 msgid "byChoosingRecordSet"
 msgstr "By choosing a recordset ({{count:none | one | ??}} available)"
 
-#: components/Interactions/InteractionDialog.tsx:259
+#: components/Interactions/InteractionDialog.tsx:265
 #. 🟥Field name is localized. Coming from Schema Configuration. I.e, By entering Catalog Numbers. Used in: Components > Interactions > Interaction Dialog
 msgid "byEnteringNumbers"
 msgstr "By entering {fieldName:string}s"
 
-#: components/Interactions/InteractionDialog.tsx:237
+#: components/Interactions/InteractionDialog.tsx:243
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "withoutPreparations"
 msgstr "Without preparations"
 
-#: components/Interactions/InteractionDialog.tsx:233
+#: components/Interactions/InteractionDialog.tsx:239
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "addUnassociated"
 msgstr "Add unassociated item"
@@ -82,7 +82,7 @@ msgid "unresolved"
 msgstr "Unresolved"
 
 #: components/Interactions/PrepReturnDialog.tsx:231
-#: components/QueryBuilder/LoanReturn.tsx:163
+#: components/QueryBuilder/LoanReturn.tsx:165
 #. Used in: Components > Interactions > Prep Return Dialog ⬤ Components > Query Builder > Loan Return
 msgid "return"
 msgstr "Return"
@@ -98,7 +98,7 @@ msgid "returnAllPreparations"
 msgstr "Return all preparations"
 
 #: components/Interactions/PrepReturnDialog.tsx:149
-#: components/QueryBuilder/LoanReturn.tsx:161
+#: components/QueryBuilder/LoanReturn.tsx:163
 #. Used in: Components > Interactions > Prep Return Dialog ⬤ Components > Query Builder > Loan Return
 msgid "returnSelectedPreparations"
 msgstr "Return selected preparations"
@@ -141,42 +141,44 @@ msgstr "Resolved Amount"
 #: components/Interactions/PrepDialogRow.tsx:160
 #. 🟥Used to format preparations in the prep return dialog. Used in: Components > Interactions > Prep Dialog Row
 msgid "prepReturnFormatter"
-msgstr "{tableName:string}: {resource: string}"
-
-#: components/FormCommands/ShowTransactions.tsx:113
-#. Used in: Components > Form Commands > Show Transactions
-msgid "resolvedLoans"
-msgstr "Resolved Loans"
-
-#: components/FormCommands/ShowTransactions.tsx:107
-#. Used in: Components > Form Commands > Show Transactions
-msgid "openLoans"
-msgstr "Open Loans"
+msgstr "{tableName:string}: {resource:string}"
 
 #: components/FormCommands/ShowTransactions.tsx:119
-#. Used in: Components > Form Commands > Show Transactions
-msgid "gifts"
-msgstr "Gifts"
+#. 🟥Example: Resolved Loan records. Used in: Components > Form Commands > Show Transactions
+msgid "resolvedLoans"
+msgstr "Resolved {loanTable:string} records"
 
-#: components/FormCommands/ShowTransactions.tsx:127
-#. Used in: Components > Form Commands > Show Transactions
+#: components/FormCommands/ShowTransactions.tsx:109
+#. 🟥Example: Open Loan records. Used in: Components > Form Commands > Show Transactions
+msgid "openLoans"
+msgstr "Open {loanTable:string} records"
+
+#: components/FormCommands/ShowTransactions.tsx:129
+#. 🟥Example: Gift records. Used in: Components > Form Commands > Show Transactions
+msgid "gifts"
+msgstr "{giftTable:string} records"
+
+#: components/FormCommands/ShowTransactions.tsx:141
+#. 🟥Example: Exchange In / Exchnage Out records. Used in: Components > Form Commands > Show Transactions
 msgid "exchanges"
-msgstr "Exchanges"
+msgstr "{exhangeInTable:string} / {exhangeOutTable:string} records"
 
 #: components/Interactions/PrepReturnRow.tsx:41
 #. Used in: Components > Interactions > Prep Return Row
 msgid "unCataloged"
 msgstr "uncataloged"
 
-#: components/Interactions/InteractionDialog.tsx:200
-#. Used in: Components > Interactions > Interaction Dialog
+#: components/Interactions/InteractionDialog.tsx:201
+#. 🟥Example: Preparation records. Used in: Components > Interactions > Interaction Dialog
 msgid "returnedPreparations"
-msgstr "Returned Preparations"
+msgstr "Returned {tablePreparation:string} records"
 
-#: components/Interactions/InteractionDialog.tsx:203
-#. Used in: Components > Interactions > Interaction Dialog
+#: components/Interactions/InteractionDialog.tsx:206
+#. 🟥Example: 2 Preparation records have been returned and saved. Used in: Components > Interactions > Interaction Dialog
 msgid "returnedAndSaved"
-msgstr "{count:number|formatted} preparations have been returned and saved."
+msgstr ""
+"{count:number|formatted} {tablePreparation:string} records have been "
+"returned and saved"
 
 #: components/FormMeta/CarryForward.tsx:249
 #: components/Interactions/PrepDialog.tsx:112
@@ -198,47 +200,47 @@ msgstr "Unavailable"
 
 #: components/Interactions/InteractionsDialog.tsx:92
 #: components/QueryBuilder/LoanReturn.tsx:149
-#. Used in: Components > Interactions > Interactions Dialog ⬤ Components > Query Builder > Loan Return
+#. 🟥Example: Return Loan records. Used in: Components > Interactions > Interactions Dialog ⬤ Components > Query Builder > Loan Return
 msgid "returnLoan"
-msgstr "Return Loan"
+msgstr "Return {tableLoan:string} records"
 
-#: components/Interactions/InteractionsDialog.tsx:93
-#: components/Interactions/InteractionsDialog.tsx:102
+#: components/Interactions/InteractionsDialog.tsx:95
+#: components/Interactions/InteractionsDialog.tsx:120
 #. Used in: Components > Interactions > Interactions Dialog
 msgid "printInvoice"
 msgstr "Print Invoice"
 
-#: components/Interactions/InteractionsDialog.tsx:94
-#. Used in: Components > Interactions > Interactions Dialog
-msgid "loanWithoutPreparation"
-msgstr "Loan w/o Preps"
-
 #: components/Interactions/InteractionsDialog.tsx:96
-#. Used in: Components > Interactions > Interactions Dialog
-msgid "loanWithoutPreparationDescription"
-msgstr "Create a loan with no preparations"
-
-#: components/Interactions/InteractionsDialog.tsx:97
-#. Used in: Components > Interactions > Interactions Dialog
-msgid "createLoan"
-msgstr "Create a Loan"
-
-#: components/Interactions/InteractionsDialog.tsx:98
-#. Used in: Components > Interactions > Interactions Dialog
-msgid "editLoan"
-msgstr "Edit Loan"
-
-#: components/Interactions/InteractionsDialog.tsx:99
-#. Used in: Components > Interactions > Interactions Dialog
-msgid "createdGift"
-msgstr "Create a Gift"
-
-#: components/Interactions/InteractionsDialog.tsx:100
-#. Used in: Components > Interactions > Interactions Dialog
-msgid "editGift"
-msgstr "Edit Gift"
+#. 🟥Example: Loan records w/o Preparation records. Used in: Components > Interactions > Interactions Dialog
+msgid "loanWithoutPreparation"
+msgstr "{tableLoan:string} w/o {tablePreparation:string} records"
 
 #: components/Interactions/InteractionsDialog.tsx:101
-#. Used in: Components > Interactions > Interactions Dialog
+#. 🟥Example: Create a Loan records with no Preparation records. Used in: Components > Interactions > Interactions Dialog
+msgid "loanWithoutPreparationDescription"
+msgstr "Create a {tableLoan:string} with no {tablePreparation:string} records"
+
+#: components/Interactions/InteractionsDialog.tsx:105
+#. 🟥Example: Create a Loan. Used in: Components > Interactions > Interactions Dialog
+msgid "createLoan"
+msgstr "Create a {tableLoan:string}"
+
+#: components/Interactions/InteractionsDialog.tsx:108
+#. 🟥Example: Edit a Loan. Used in: Components > Interactions > Interactions Dialog
+msgid "editLoan"
+msgstr "Edit {tableLoan:string}"
+
+#: components/Interactions/InteractionsDialog.tsx:111
+#. 🟥Example: Create a Gift. Used in: Components > Interactions > Interactions Dialog
+msgid "createdGift"
+msgstr "Create a {tableGift:string}"
+
+#: components/Interactions/InteractionsDialog.tsx:114
+#. 🟥Example: Edit a Gift. Used in: Components > Interactions > Interactions Dialog
+msgid "editGift"
+msgstr "Edit {tableGift:string}"
+
+#: components/Interactions/InteractionsDialog.tsx:117
+#. 🟥Example: Create a Infrormation Request. Used in: Components > Interactions > Interactions Dialog
 msgid "createInformationRequest"
-msgstr "Create Information Request"
+msgstr "Create {tableInformationRequest:string}"

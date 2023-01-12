@@ -344,12 +344,12 @@ msgstr "o"
 msgid "yes"
 msgstr "Sí"
 
-#: components/QueryBuilder/LoanReturn.tsx:172
+#: components/QueryBuilder/LoanReturn.tsx:174
 #. Used in: Components > Query Builder > Loan Return
 msgid "noPreparationsToReturn"
 msgstr "No hay elementos sin resolver para devolver"
 
-#: components/QueryBuilder/LoanReturn.tsx:228
+#: components/QueryBuilder/LoanReturn.tsx:230
 #. Used in: Components > Query Builder > Loan Return
 msgid "itemsReturned"
 msgstr "Los artículos han sido devueltos"

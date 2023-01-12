@@ -346,12 +346,12 @@ msgstr "ou alors"
 msgid "yes"
 msgstr "Oui"
 
-#: components/QueryBuilder/LoanReturn.tsx:172
+#: components/QueryBuilder/LoanReturn.tsx:174
 #. Used in: Components > Query Builder > Loan Return
 msgid "noPreparationsToReturn"
 msgstr "Il n'y a aucun élément non résolu à retourner"
 
-#: components/QueryBuilder/LoanReturn.tsx:228
+#: components/QueryBuilder/LoanReturn.tsx:230
 #. Used in: Components > Query Builder > Loan Return
 msgid "itemsReturned"
 msgstr "Les articles ont été retournés"

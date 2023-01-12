@@ -342,12 +342,12 @@ msgstr "or"
 msgid "yes"
 msgstr "Yes"
 
-#: components/QueryBuilder/LoanReturn.tsx:172
+#: components/QueryBuilder/LoanReturn.tsx:174
 #. Used in: Components > Query Builder > Loan Return
 msgid "noPreparationsToReturn"
 msgstr "There are no unresolved items to return"
 
-#: components/QueryBuilder/LoanReturn.tsx:228
+#: components/QueryBuilder/LoanReturn.tsx:230
 #. Used in: Components > Query Builder > Loan Return
 msgid "itemsReturned"
 msgstr "Items have been returned"

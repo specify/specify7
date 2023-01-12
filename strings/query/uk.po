@@ -340,12 +340,12 @@ msgstr "або"
 msgid "yes"
 msgstr "Так"
 
-#: components/QueryBuilder/LoanReturn.tsx:172
+#: components/QueryBuilder/LoanReturn.tsx:174
 #. Used in: Components > Query Builder > Loan Return
 msgid "noPreparationsToReturn"
 msgstr "Немає невирішених елементів для повернення"
 
-#: components/QueryBuilder/LoanReturn.tsx:228
+#: components/QueryBuilder/LoanReturn.tsx:230
 #. Used in: Components > Query Builder > Loan Return
 msgid "itemsReturned"
 msgstr "Товари повернуто"
