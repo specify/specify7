@@ -159,6 +159,7 @@ export function Categories({
                                       itemLabel: item.itemLabel,
                                       itemValue: item.itemValue,
                                       itemType: item.itemType,
+                                      pathToValue: item.itemLabel,
                                     })
                                 : undefined
                               : undefined
