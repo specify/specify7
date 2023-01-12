@@ -50,8 +50,8 @@ msgstr "Нет"
 #: components/Toolbar/RecordSets.tsx:174
 #: components/Toolbar/TreeRepair.tsx:78
 #: components/Toolbar/WbsDialog.tsx:172
-#: components/TreeView/Actions.tsx:341
-#: components/TreeView/Actions.tsx:357
+#: components/TreeView/Actions.tsx:350
+#: components/TreeView/Actions.tsx:366
 #: components/WbPlanView/Mapper.tsx:386
 #: components/WbPlanView/MapperComponents.tsx:316
 #: components/WbPlanView/MapperComponents.tsx:342
@@ -158,7 +158,7 @@ msgstr "Создать"
 #: components/Toolbar/QueryTables.tsx:119
 #: components/Toolbar/QueryTablesEdit.tsx:139
 #: components/Toolbar/TreeRepair.tsx:78
-#: components/TreeView/Actions.tsx:345
+#: components/TreeView/Actions.tsx:354
 #: components/UserPreferences/index.tsx:90
 #: components/WbPlanView/MapperComponents.tsx:195
 #: components/WbPlanView/MapperComponents.tsx:412
@@ -254,7 +254,7 @@ msgstr "Открыть"
 #: components/PickLists/definitions.ts:42
 #: components/Security/PreviewTables.tsx:67
 #: components/Security/Role.tsx:223
-#: components/TreeView/Actions.tsx:435
+#: components/TreeView/Actions.tsx:444
 #: components/WorkBench/DataSetMeta.tsx:93
 #: components/WorkBench/DataSetMeta.tsx:119
 #. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Forms > Delete Button ⬤ Components > Header > Notifications ⬤ Components > Pick Lists > Definitions ⬤ Components > Security > Preview Tables ⬤ Components > Security > Role ⬤ Components > Tree View > Actions ⬤ Components > Work Bench > Data Set Meta
@@ -404,7 +404,7 @@ msgstr "Новый"
 #: components/Toolbar/RecordSets.tsx:273
 #: components/Toolbar/WbsDialog.tsx:258
 #: components/Toolbar/WbsDialog.tsx:262
-#: components/TreeView/Actions.tsx:92
+#: components/TreeView/Actions.tsx:99
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Reports > Index ⬤ Components > Schema Config > Format ⬤ Components > Security > User Components ⬤ Components > Toolbar > Record Sets ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Tree View > Actions
 msgid "edit"
 msgstr "Редактировать"
@@ -473,7 +473,7 @@ msgstr "Полная дата"
 #: components/Atoms/__tests__/index.test.tsx:13
 #: components/Atoms/__tests__/index.test.tsx:14
 #: components/Atoms/__tests__/index.test.tsx:15
-#: components/TreeView/Actions.tsx:93
+#: components/TreeView/Actions.tsx:100
 #: components/WorkBench/wbView.js:1621
 #: components/WorkBench/wbView.js:1622
 #. Used in: Components > Atoms > Data Entry ⬤ Atoms > __tests__ > Button ⬤ Atoms > __tests__ > Index ⬤ Components > Tree View > Actions ⬤ Components > Work Bench > Wb View

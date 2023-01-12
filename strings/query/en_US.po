@@ -5,8 +5,8 @@ msgstr "Content-Type: text/plain\n"
 #: components/QueryBuilder/Toolbar.tsx:61
 #: components/Reports/RecordSets.tsx:99
 #: components/Toolbar/RecordSetEdit.tsx:47
-#: components/TreeView/Actions.tsx:78
-#: components/TreeView/Actions.tsx:81
+#: components/TreeView/Actions.tsx:85
+#: components/TreeView/Actions.tsx:88
 #. Used in: Components > Query Builder > Header ⬤ Components > Query Builder > Toolbar ⬤ Components > Reports > Record Sets ⬤ Components > Toolbar > Record Set Edit ⬤ Components > Tree View > Actions
 msgid "query"
 msgstr "Query"

@@ -13,106 +13,106 @@ msgstr "Des arbres"
 msgid "badStructure"
 msgstr "Mauvaise arborescence."
 
-#: components/TreeView/Actions.tsx:134
+#: components/TreeView/Actions.tsx:141
 #. Used in: Components > Tree View > Actions
 msgid "move"
 msgstr "Se déplacer"
 
-#: components/TreeView/Actions.tsx:144
+#: components/TreeView/Actions.tsx:151
 #. Used in: Components > Tree View > Actions
 msgid "merge"
 msgstr "Fusionner"
 
-#: components/TreeView/Actions.tsx:163
+#: components/TreeView/Actions.tsx:172
 #. Used in: Components > Tree View > Actions
 msgid "undoSynonymy"
 msgstr "Annuler la synonyme"
 
-#: components/TreeView/Actions.tsx:163
+#: components/TreeView/Actions.tsx:172
 #. Used in: Components > Tree View > Actions
 msgid "synonymize"
 msgstr "Synonymiser"
 
-#: components/TreeView/Actions.tsx:346
+#: components/TreeView/Actions.tsx:355
 #. Used in: Components > Tree View > Actions
 msgid "actionFailed"
 msgstr "L'opération a échoué"
 
-#: components/TreeView/Actions.tsx:349
+#: components/TreeView/Actions.tsx:358
 #. Used in: Components > Tree View > Actions
 msgid "actionFailedDescription"
 msgstr "L'opération n'a pas pu être effectuée en raison des erreurs suivantes :"
 
-#: components/TreeView/Actions.tsx:368
-#: components/TreeView/Actions.tsx:379
+#: components/TreeView/Actions.tsx:377
+#: components/TreeView/Actions.tsx:388
 #. Used in: Components > Tree View > Actions
 msgid "moveNode"
 msgstr "Déplacer le nœud"
 
-#: components/TreeView/Actions.tsx:121
+#: components/TreeView/Actions.tsx:128
 #. Used in: Components > Tree View > Actions
 msgid "addChild"
 msgstr "Ajouter un enfant"
 
-#: components/TreeView/Actions.tsx:330
+#: components/TreeView/Actions.tsx:339
 #. Used in: Components > Tree View > Actions
 msgid "moveNodeHere"
 msgstr "Déplacez \"{nodeName:string}\" ici"
 
-#: components/TreeView/Actions.tsx:389
+#: components/TreeView/Actions.tsx:398
 #. Used in: Components > Tree View > Actions
 msgid "nodeMoveMessage"
 msgstr ""
 "Le nœud {treeName:string} \"{nodeName:string}\" sera placé, avec tous ses "
 "descendants, sous le nouveau parent \"{parentName:string}\"."
 
-#: components/TreeView/Actions.tsx:305
+#: components/TreeView/Actions.tsx:314
 #. Used in: Components > Tree View > Actions
 msgid "cantMoveHere"
 msgstr "Impossible de déplacer ce nœud d'arbre ici"
 
-#: components/TreeView/Actions.tsx:310
+#: components/TreeView/Actions.tsx:319
 #. Used in: Components > Tree View > Actions
 msgid "cantMergeHere"
 msgstr "Impossible de fusionner ce nœud d'arborescence ici"
 
-#: components/TreeView/Actions.tsx:306
+#: components/TreeView/Actions.tsx:315
 #. Used in: Components > Tree View > Actions
 msgid "cantMoveToSynonym"
 msgstr "Impossible de passer à un synonyme"
 
-#: components/TreeView/Actions.tsx:311
+#: components/TreeView/Actions.tsx:320
 #. Used in: Components > Tree View > Actions
 msgid "cantMergeIntoSynonym"
 msgstr "Impossible de fusionner en synonymes"
 
-#: components/TreeView/Actions.tsx:314
+#: components/TreeView/Actions.tsx:323
 #. Used in: Components > Tree View > Actions
 msgid "cantSynonymizeSynonym"
 msgstr "Ne peut pas synonyme avec un synonyme"
 
-#: components/TreeView/Actions.tsx:289
+#: components/TreeView/Actions.tsx:298
 #. Used in: Components > Tree View > Actions
 msgid "nodeMoveHintMessage"
 msgstr "Sélectionnez un nouveau parent pour \"{nodeName:string}\""
 
-#: components/TreeView/Actions.tsx:370
-#: components/TreeView/Actions.tsx:381
+#: components/TreeView/Actions.tsx:379
+#: components/TreeView/Actions.tsx:390
 #. Used in: Components > Tree View > Actions
 msgid "mergeNode"
 msgstr "Noeud de fusion"
 
-#: components/TreeView/Actions.tsx:332
+#: components/TreeView/Actions.tsx:341
 #. Used in: Components > Tree View > Actions
 msgid "mergeNodeHere"
 msgstr "Fusionner \"{nodeName:string}\" ici"
 
-#: components/TreeView/Actions.tsx:291
+#: components/TreeView/Actions.tsx:300
 #. Used in: Components > Tree View > Actions
 msgid "mergeNodeHintMessage"
 msgstr "Sélectionnez une nouvelle cible pour \"{nodeName:string}\" à fusionner dans"
 
-#: components/TreeView/Actions.tsx:395
+#: components/TreeView/Actions.tsx:404
 #. Used in: Components > Tree View > Actions
 msgid "mergeNodeMessage"
 msgstr ""
@@ -122,38 +122,38 @@ msgstr ""
 "les descendants correspondant au nom et au rang étant eux-mêmes fusionné "
 "récursivement."
 
-#: components/TreeView/Actions.tsx:372
-#: components/TreeView/Actions.tsx:383
+#: components/TreeView/Actions.tsx:381
+#: components/TreeView/Actions.tsx:392
 #. Used in: Components > Tree View > Actions
 msgid "synonymizeNode"
 msgstr "Synonymiser le nœud"
 
-#: components/TreeView/Actions.tsx:334
+#: components/TreeView/Actions.tsx:343
 #. Used in: Components > Tree View > Actions
 msgid "makeSynonym"
 msgstr "Faire de {nodeName:string} un synonyme de {synonymName:string}"
 
-#: components/TreeView/Actions.tsx:293
+#: components/TreeView/Actions.tsx:302
 #. Used in: Components > Tree View > Actions
 msgid "synonymizeNodeHintMessage"
 msgstr "Sélectionnez une cible pour \"{nodeName:string}\" à synonyme de"
 
-#: components/TreeView/Actions.tsx:401
+#: components/TreeView/Actions.tsx:410
 #. Used in: Components > Tree View > Actions
 msgid "synonymizeMessage"
 msgstr ""
 "Le nœud {treeName:string} \"{nodeName:string}\" deviendra un synonyme de "
 "\"{synonymName:string}\"."
 
-#: components/TreeView/Actions.tsx:338
-#: components/TreeView/Actions.tsx:373
-#: components/TreeView/Actions.tsx:384
+#: components/TreeView/Actions.tsx:347
+#: components/TreeView/Actions.tsx:382
+#: components/TreeView/Actions.tsx:393
 #. Used in: Components > Tree View > Actions
 msgid "desynonymizeNode"
 msgstr "Désynonymiser le nœud"
 
-#: components/TreeView/Actions.tsx:294
-#: components/TreeView/Actions.tsx:406
+#: components/TreeView/Actions.tsx:303
+#: components/TreeView/Actions.tsx:415
 #. Used in: Components > Tree View > Actions
 msgid "desynonymizeNodeMessage"
 msgstr "\"{nodeName:string}\" ne sera plus synonyme de \"{synonymName:string}\"."
