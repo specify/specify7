@@ -39,10 +39,14 @@ export async function throttledAjax<T, S>(
   key: keyof typeof networkRequestsSpec,
   promiseGenerator: () => Promise<T>,
   promiseSpec: S
-) {
+): Promise<T> {
   const { maxFetchCount, currentRequests } = networkRequestsSpec[key];
+  while (currentRequests.length > maxFetchCount) {
+    await Promise.any(currentRequests);
+  }
   const indexInFulfilled = fulfilledNetworkRequests.networkRequests.findIndex(
     (currentPromise) => {
+      console.log(currentPromise.spec, promiseSpec);
       return currentPromise.spec === promiseSpec;
     }
   );
@@ -50,13 +54,11 @@ export async function throttledAjax<T, S>(
     return fulfilledNetworkRequests.networkRequests[indexInFulfilled];
   }
   const promiseIndex = currentRequests.findIndex((currentPromise) => {
+    console.log(currentPromise.spec, promiseSpec);
     return currentPromise.spec === promiseSpec;
   });
   if (promiseIndex !== -1) {
     return currentRequests[promiseIndex];
-  }
-  while (currentRequests.length > maxFetchCount) {
-    await Promise.any(currentRequests);
   }
   const newPromise = promiseGenerator().finally(() => {
     currentRequests.splice(currentRequests.indexOf(newPromise), 1);
