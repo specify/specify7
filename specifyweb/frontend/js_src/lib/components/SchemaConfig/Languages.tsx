@@ -12,7 +12,8 @@ import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
 import { Dialog } from '../Molecules/Dialog';
 import { hasToolPermission } from '../Permissions/helpers';
-import type { SchemaData } from './SetupHooks';
+import { SchemaData } from './schemaData';
+
 export const languageSeparator = '-';
 
 export function ChooseSchemaLanguage(): JSX.Element {

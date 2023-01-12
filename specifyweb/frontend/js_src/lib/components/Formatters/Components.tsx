@@ -1,25 +1,28 @@
-import { filterArray, GetSet, RA } from '../../utils/types';
-import { Formatter } from './spec';
-import { fetchFormatters } from './dataObjFormatters';
-import { useId } from '../../hooks/useId';
+import React from 'react';
+
 import { useAsyncState } from '../../hooks/useAsyncState';
-import { Input, Label } from '../Atoms/Form';
+import { useId } from '../../hooks/useId';
 import { resourcesText } from '../../localization/resources';
-import { SpecifyModel } from '../DataModel/specifyModel';
-import { LiteralField, Relationship } from '../DataModel/specifyField';
-import { AllowedMappings, getMappingLineData } from '../WbPlanView/navigator';
+import { f } from '../../utils/functools';
+import type { GetSet, RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
+import { Ul } from '../Atoms';
+import { Input, Label } from '../Atoms/Form';
+import type { LiteralField, Relationship } from '../DataModel/specifyField';
+import type { SpecifyModel } from '../DataModel/specifyModel';
+import { join } from '../Molecules';
+import { mutateLineData } from '../QueryBuilder/helpers';
 import { emptyMapping, mutateMappingPath } from '../WbPlanView/helpers';
 import {
   getMappingLineProps,
   MappingElement,
   mappingElementDivider,
 } from '../WbPlanView/LineComponents';
-import { mutateLineData } from '../QueryBuilder/helpers';
-import { Ul } from '../Atoms';
 import { handleMappingLineKey } from '../WbPlanView/Mapper';
-import { f } from '../../utils/functools';
-import { join } from '../Molecules';
-import React from 'react';
+import type { FieldType } from '../WbPlanView/mappingHelpers';
+import { getMappingLineData } from '../WbPlanView/navigator';
+import { fetchFormatters } from './dataObjFormatters';
+import type { Formatter } from './spec';
 
 const formattersFunction = async (): Promise<RA<Formatter>> =>
   fetchFormatters.then(({ formatters }) => formatters);
@@ -68,7 +71,7 @@ export function ResourceMapping({
   readonly table: SpecifyModel;
   readonly mapping: GetSet<RA<LiteralField | Relationship> | undefined>;
   readonly isReadOnly: boolean;
-  readonly allowedMappings: AllowedMappings;
+  readonly allowedMappings: RA<FieldType>;
   readonly openIndex: GetSet<number | undefined>;
 }): JSX.Element {
   const rawPath = mapping?.map(({ name }) => name) ?? [];

@@ -14,6 +14,7 @@ import { writable } from '../../utils/types';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpAppResource, SpViewSetObj } from '../DataModel/types';
+import { DataObjectFormatter } from '../Formatters';
 import { PreferencesContent } from '../UserPreferences';
 import type { UserPreferences } from '../UserPreferences/helpers';
 import {
@@ -21,8 +22,8 @@ import {
   setPrefsGenerator,
 } from '../UserPreferences/helpers';
 import { PreferencesContext, useDarkMode } from '../UserPreferences/Hooks';
-import { appResourceSubTypes } from './types';
 import { useCodeMirrorExtensions } from './EditorComponents';
+import type { appResourceSubTypes } from './types';
 
 export type AppResourceTabProps = {
   readonly isReadOnly: boolean;

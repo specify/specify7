@@ -20,7 +20,7 @@ import type { WithFetchedStrings } from '../Toolbar/SchemaConfig';
 import { PickList } from './Components';
 import { getItemType, isFormatterAvailable } from './helpers';
 import type { ItemType } from './index';
-import type { SchemaData } from './SetupHooks';
+import { SchemaData } from './schemaData';
 
 export function SchemaConfigFormat({
   schemaData,

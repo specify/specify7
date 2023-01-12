@@ -62,12 +62,12 @@ export const formatAggregators = (
 ): IR<DataObjectFormatter> =>
   Object.fromEntries(
     aggregators.map(
-      ({ name = '', title = '', tableName }) =>
+      ({ name = '', title = '', table }) =>
         [
           name,
           {
             title: title ?? name,
-            tableName,
+            tableName: table?.name,
           },
         ] as const
     )

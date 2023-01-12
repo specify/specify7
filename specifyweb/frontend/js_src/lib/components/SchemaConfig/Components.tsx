@@ -9,7 +9,7 @@ import type { IR, RA } from '../../utils/types';
 import { H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Select } from '../Atoms/Form';
-import type { SchemaData } from './SetupHooks';
+import type { SchemaData } from './schemaData';
 
 export function SchemaConfigHeader({
   languages,

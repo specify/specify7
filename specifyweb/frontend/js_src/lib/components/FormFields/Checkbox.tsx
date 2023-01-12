@@ -1,14 +1,13 @@
 import React from 'react';
 
 import { useResourceValue } from '../../hooks/useResourceValue';
+import { parseBoolean } from '../../utils/parser/parse';
 import { Input, Label } from '../Atoms/Form';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { usePref } from '../UserPreferences/usePref';
-import { LiteralField, Relationship } from '../DataModel/specifyField';
-import { parseBoolean } from '../../utils/parser/parse';
 
 export function PrintOnSave({
   id,

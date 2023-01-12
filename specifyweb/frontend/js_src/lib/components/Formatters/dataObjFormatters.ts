@@ -7,6 +7,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { formsText } from '../../localization/forms';
 import { userText } from '../../localization/user';
 import { ajax } from '../../utils/ajax';
+import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { KEY, multiSortFunction, sortFunction } from '../../utils/utils';
 import { fetchDistantRelated } from '../DataModel/helpers';
@@ -25,11 +26,10 @@ import { hasPathPermission, hasTablePermission } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
 import { xmlParser } from '../Syncer';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
+import { aggregate } from './aggregate';
 import { fieldFormat } from './fieldFormat';
 import type { Aggregator, Formatter } from './spec';
 import { formattersSpec } from './spec';
-import { aggregate } from './aggregate';
-import { f } from '../../utils/functools';
 
 export const fetchFormatters: Promise<{
   readonly formatters: RA<Formatter>;
@@ -198,14 +198,14 @@ const findDefaultFormatter = (
   model: SpecifyModel
 ): Formatter | undefined =>
   formatters
-    .filter(({ tableName }) => tableName === model.name)
+    .filter(({ table }) => table === model)
     .sort(sortFunction(({ isDefault }) => isDefault, true))?.[KEY];
 
 const autoGenerateFields = 2;
 const autoGenerateFormatter = (model: SpecifyModel): Formatter => ({
   name: model.name,
   title: model.name,
-  tableName: model.name,
+  table: model,
   isDefault: true,
   definition: {
     isSingle: false,

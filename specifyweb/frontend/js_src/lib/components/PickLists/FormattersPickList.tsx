@@ -20,7 +20,7 @@ export function FormattersPickList(props: DefaultComboBoxProps): JSX.Element {
     const model = getModel(props.resource.get('tableName') ?? '');
     return typeof model === 'object'
       ? formatters
-          .filter(({ tableName }) => tableName === model.name)
+          .filter(({ table }) => table === model)
           .map(({ name, title }) => ({
             value: name ?? title ?? '',
             title: title ?? name ?? '',
