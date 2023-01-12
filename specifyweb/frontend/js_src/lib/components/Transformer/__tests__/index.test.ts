@@ -1,26 +1,37 @@
 import { requireContext } from '../../../tests/helpers';
 import { strictParseXml } from '../../AppResources/codeMirrorLinters';
-import {
-  dataObjectFormatterBuilder,
-  dataObjectFormatterParser,
-} from '../dataObjectFormatter';
+import { formatterSpec } from '../dataObjectFormatter';
+import { xmlBuilder, xmlParser } from '../index';
 
 requireContext();
 
-test('Data Object Formatter', () => {
+test('Editing Data Object Formatter', () => {
   const element = strictParseXml(
     `<format name="Accession" title="Accession" class="edu.ku.brc.specify.datamodel.Accession" default="true">
-<switch single="true">
-<fields>
-<field>accessionNumber</field>
-</fields>
-</switch>
-</format>`
+      <!-- this comment will be preserved -->
+      <switch single="true">
+        <fields>
+          <field>accessionNumber</field>
+        </fields>
+      </switch>
+    </format>`
   );
-  const parsed = dataObjectFormatterParser()(element);
-  dataObjectFormatterBuilder()(element, {
-    ...parsed,
-    title: '4',
-  });
-  expect(element).toEqual({});
+
+  const spec = formatterSpec();
+  const parser = xmlParser(spec);
+  const parsed = parser(element);
+
+  const builder = xmlBuilder(spec);
+  builder(element, { ...parsed, title: '4' });
+
+  expect(element.outerHTML).toMatchInlineSnapshot(`
+    "<format name=\\"Accession\\" title=\\"4\\" class=\\"edu.ku.brc.specify.datamodel.Accession\\" default=\\"true\\">
+          <!-- this comment will be preserved -->
+          <switch single=\\"true\\">
+            <fields>
+              <field>accessionNumber</field>
+            </fields>
+          </switch>
+        </format>"
+  `);
 });

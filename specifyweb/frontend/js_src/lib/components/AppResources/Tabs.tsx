@@ -20,7 +20,7 @@ import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { appResourceIcon } from './EditorComponents';
 import { getAppResourceType, getResourceType } from './filtersHelpers';
-import type { AppResourceTab } from './TabDefinitions';
+import type { AppResourceTabProps } from './TabDefinitions';
 import {
   AppResourceTextEditor,
   visualAppResourceEditors,
@@ -109,7 +109,7 @@ function useEditorTabs(
   resource: SerializedResource<SpAppResource | SpViewSetObject>
 ): RA<{
   readonly label: LocalizedString;
-  readonly component: AppResourceTab;
+  readonly component: (props: AppResourceTabProps) => JSX.Element;
 }> {
   const subType = f.maybe(
     toResource(resource, 'SpAppResource'),

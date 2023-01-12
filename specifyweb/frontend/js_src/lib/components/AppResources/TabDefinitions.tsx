@@ -22,25 +22,26 @@ import {
 } from '../UserPreferences/helpers';
 import { PreferencesContext, useDarkMode } from '../UserPreferences/Hooks';
 import { useCodeMirrorExtensions } from './EditorComponents';
-import type { appResourceSubTypes } from './types';
+import { DataObjectFormatter } from '../DataObjectFormatter';
+import { appResourceSubTypes } from './types';
 
-export type AppResourceTab = (props: {
+export type AppResourceTabProps = {
   readonly isReadOnly: boolean;
   readonly resource: SerializedResource<SpAppResource | SpViewSetObj>;
   readonly appResource: SpecifyResource<SpAppResource | SpViewSetObj>;
   readonly data: string | null;
   readonly showValidationRef: React.MutableRefObject<(() => void) | null>;
   readonly onChange: (data: string | null) => void;
-}) => JSX.Element;
+};
 
-export const AppResourceTextEditor: AppResourceTab = function ({
+export function AppResourceTextEditor({
   isReadOnly,
   resource,
   appResource,
   data,
   showValidationRef,
   onChange: handleChange,
-}): JSX.Element {
+}: AppResourceTabProps): JSX.Element {
   const isDarkMode = useDarkMode();
   const extensions = useCodeMirrorExtensions(resource, appResource);
 
@@ -86,13 +87,13 @@ export const AppResourceTextEditor: AppResourceTab = function ({
       }}
     />
   );
-};
+}
 
-const UserPreferencesEditor: AppResourceTab = function ({
+function UserPreferencesEditor({
   isReadOnly,
   data,
   onChange: handleChange,
-}): JSX.Element {
+}: AppResourceTabProps): JSX.Element {
   const id = useId('user-preferences');
   const [preferencesContext] = useLiveState<
     React.ContextType<typeof PreferencesContext>
@@ -127,11 +128,11 @@ const UserPreferencesEditor: AppResourceTab = function ({
       <PreferencesContent id={id} isReadOnly={isReadOnly} />
     </PreferencesContext.Provider>
   );
-};
+}
 
 export const visualAppResourceEditors: RR<
   keyof typeof appResourceSubTypes,
-  AppResourceTab | undefined
+  ((props: AppResourceTabProps) => JSX.Element) | undefined
 > = {
   label: undefined,
   report: undefined,
@@ -142,7 +143,7 @@ export const visualAppResourceEditors: RR<
   expressSearchConfig: undefined,
   webLinks: undefined,
   uiFormatters: undefined,
-  dataObjectFormatters: undefined,
+  dataObjectFormatters: DataObjectFormatter,
   searchDialogDefinitions: undefined,
   dataEntryTables: undefined,
   interactionsTables: undefined,

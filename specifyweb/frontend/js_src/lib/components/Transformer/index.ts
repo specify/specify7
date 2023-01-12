@@ -1,6 +1,9 @@
 import type { IR, RA } from '../../utils/types';
 
-type Transformer<RAW, PARSED> = {
+/**
+ * Transformer was the original name, but that clashes with Node.js
+ */
+export type Syncer<RAW, PARSED> = {
   readonly serializer: Serializer<RAW, PARSED>;
   readonly deserializer: Deserializer<PARSED>;
 };
@@ -10,48 +13,48 @@ type Serializer<RAW, PARSED> = (input: RAW) => PARSED;
 
 type Deserializer<PARSED> = (value: PARSED, element: Element) => void;
 
-export const transformer = <RAW, PARSED>(
+export const syncer = <RAW, PARSED>(
   serializer: Serializer<RAW, PARSED>,
   deserializer: Deserializer<PARSED>
-): Transformer<RAW, PARSED> => ({ serializer, deserializer });
+): Syncer<RAW, PARSED> => ({ serializer, deserializer });
 
 /**
  * Merge multiple transformers. If need to merge more than 6 at once, then
  * just nest multiple pipe() functions
  */
 export function pipe<R1, R2, R3, R4, R5, R6, R7>(
-  t1: Transformer<R1, R2>,
-  t2: Transformer<R2, R3>,
-  t3: Transformer<R3, R4>,
-  t4: Transformer<R4, R5>,
-  t5: Transformer<R5, R6>,
-  t6: Transformer<R6, R7>
-): Transformer<R1, R7>;
+  t1: Syncer<R1, R2>,
+  t2: Syncer<R2, R3>,
+  t3: Syncer<R3, R4>,
+  t4: Syncer<R4, R5>,
+  t5: Syncer<R5, R6>,
+  t6: Syncer<R6, R7>
+): Syncer<R1, R7>;
 export function pipe<R1, R2, R3, R4, R5, R6>(
-  t1: Transformer<R1, R2>,
-  t2: Transformer<R2, R3>,
-  t3: Transformer<R3, R4>,
-  t4: Transformer<R4, R5>,
-  t5: Transformer<R5, R6>
-): Transformer<R1, R6>;
+  t1: Syncer<R1, R2>,
+  t2: Syncer<R2, R3>,
+  t3: Syncer<R3, R4>,
+  t4: Syncer<R4, R5>,
+  t5: Syncer<R5, R6>
+): Syncer<R1, R6>;
 export function pipe<R1, R2, R3, R4, R5>(
-  t1: Transformer<R1, R2>,
-  t2: Transformer<R2, R3>,
-  t3: Transformer<R3, R4>,
-  t4: Transformer<R4, R5>
-): Transformer<R1, R5>;
+  t1: Syncer<R1, R2>,
+  t2: Syncer<R2, R3>,
+  t3: Syncer<R3, R4>,
+  t4: Syncer<R4, R5>
+): Syncer<R1, R5>;
 export function pipe<R1, R2, R3, R4>(
-  t1: Transformer<R1, R2>,
-  t2: Transformer<R2, R3>,
-  t3: Transformer<R3, R4>
-): Transformer<R1, R4>;
+  t1: Syncer<R1, R2>,
+  t2: Syncer<R2, R3>,
+  t3: Syncer<R3, R4>
+): Syncer<R1, R4>;
 export function pipe<R1, R2, R3>(
-  t1: Transformer<R1, R2>,
-  t2: Transformer<R2, R3>
-): Transformer<R1, R3>;
+  t1: Syncer<R1, R2>,
+  t2: Syncer<R2, R3>
+): Syncer<R1, R3>;
 export function pipe(
-  ...transformers: RA<Transformer<unknown, unknown>>
-): Transformer<unknown, unknown> {
+  ...transformers: RA<Syncer<unknown, unknown>>
+): Syncer<unknown, unknown> {
   return {
     serializer: (value) =>
       transformers.reduce((value, { serializer }) => serializer(value), value),
@@ -63,9 +66,8 @@ export function pipe(
   };
 }
 
-type ObjectToJson<CONFORMATION extends IR<Transformer<Element, any>>> = {
-  readonly [KEY in string &
-    keyof CONFORMATION]: CONFORMATION[KEY] extends Transformer<
+export type SpecToJson<SPEC extends IR<Syncer<Element, any>>> = {
+  readonly [KEY in string & keyof SPEC]: SPEC[KEY] extends Syncer<
     any,
     infer PARSED
   >
@@ -73,13 +75,13 @@ type ObjectToJson<CONFORMATION extends IR<Transformer<Element, any>>> = {
     : never;
 };
 
-export const createSpec = <CONFORMATION extends IR<Transformer<Element, any>>>(
-  properties: CONFORMATION
-): CONFORMATION => properties;
+export const createSpec = <SPEC extends IR<Syncer<Element, any>>>(
+  spec: SPEC
+): SPEC => spec;
 
 export const xmlParser =
-  <CONFORMATION extends IR<Transformer<Element, any>>>(spec: CONFORMATION) =>
-  (cell: Element): ObjectToJson<CONFORMATION> =>
+  <SPEC extends IR<Syncer<Element, any>>>(spec: SPEC) =>
+  (cell: Element): SpecToJson<SPEC> =>
     Object.fromEntries(
       Object.entries(spec).map(([key, value]) => [
         key,
@@ -89,13 +91,13 @@ export const xmlParser =
 
 const xmlPropertyParser = <RAW, PARSED>(
   cell: RAW,
-  { serializer }: Transformer<RAW, PARSED>
+  { serializer }: Syncer<RAW, PARSED>
 ): PARSED => serializer(cell);
 
 export const xmlBuilder =
-  <CONFORMATION extends IR<Transformer<Element, any>>>(spec: CONFORMATION) =>
-  (element: Element, shape: ObjectToJson<CONFORMATION>): void =>
+  <SPEC extends IR<Syncer<Element, any>>>(spec: SPEC) =>
+  (element: Element, shape: SpecToJson<SPEC>): void =>
     Object.entries(shape).forEach(([key, value]) => {
-      const { deserializer } = spec[key as keyof CONFORMATION];
+      const { deserializer } = spec[key as keyof SPEC];
       deserializer(value, element);
     });
