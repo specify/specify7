@@ -28,9 +28,33 @@ test('Editing Data Object Formatter', () => {
   const parsed = parser(element);
 
   const builder = xmlBuilder(spec);
-  builder(element, {
-    ...parsed,
-  });
+  builder(
+    {
+      ...parsed,
+      formatters: [
+        {
+          ...parsed.formatters[0],
+          title: 'Test',
+        },
+      ],
+      aggregators: [],
+    },
+    element
+  );
 
-  expect(element.outerHTML).toMatchInlineSnapshot();
+  expect(element.outerHTML).toMatchInlineSnapshot(`
+    "<formatters>
+          <format name=\\"Accession\\" title=\\"Test\\" class=\\"edu.ku.brc.specify.datamodel.Accession\\" default=\\"true\\">
+            <!-- this comment will be preserved -->
+            <switch single=\\"true\\">
+              <fields>
+                <field>accessionNumber</field>
+              </fields>
+            </switch>
+          </format>
+          <aggregators>
+            
+          </aggregators>
+        </formatters>"
+  `);
 });

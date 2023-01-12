@@ -5,21 +5,20 @@ import type { IR, RA } from '../../utils/types';
  */
 export type Syncer<RAW, PARSED> = {
   readonly serializer: Serializer<RAW, PARSED>;
-  readonly deserializer: Deserializer<PARSED>;
+  readonly deserializer: Deserializer<RAW, PARSED>;
 };
 
-// FIXME: consider getting rid of notes and giving oldValue instead
 type Serializer<RAW, PARSED> = (input: RAW) => PARSED;
 
-type Deserializer<PARSED> = (value: PARSED, element: Element) => void;
+type Deserializer<RAW, PARSED> = (value: PARSED, oldInput: RAW) => RAW;
 
 export const syncer = <RAW, PARSED>(
   serializer: Serializer<RAW, PARSED>,
-  deserializer: Deserializer<PARSED>
+  deserializer: Deserializer<RAW, PARSED>
 ): Syncer<RAW, PARSED> => ({ serializer, deserializer });
 
 /**
- * Merge multiple transformers. If need to merge more than 6 at once, then
+ * Merge multiple syncers. If need to merge more than 6 at once, then
  * just nest multiple pipe() functions
  */
 export function pipe<R1, R2, R3, R4, R5, R6, R7>(
@@ -53,18 +52,27 @@ export function pipe<R1, R2, R3>(
   t2: Syncer<R2, R3>
 ): Syncer<R1, R3>;
 export function pipe(
-  ...transformers: RA<Syncer<unknown, unknown>>
+  ...syncers: RA<Syncer<unknown, unknown>>
 ): Syncer<unknown, unknown> {
   return {
-    serializer: (value) =>
-      transformers.reduce((value, { serializer }) => serializer(value), value),
-    deserializer: (value, element) =>
-      transformers.reduceRight(
-        (value, { deserializer }) => deserializer(value, element),
+    serializer(value): unknown {
+      const values = [value];
+      syncers.forEach(({ serializer }, index) =>
+        values.push(serializer(values[index]))
+      );
+      oldInput = values.slice(0, -1);
+      return values.at(-1)!;
+    },
+    deserializer: (value, oldValues) =>
+      syncers.reduceRight(
+        (value, { deserializer }, index) =>
+          deserializer(value, (oldValues as RA<unknown>)[index]),
         value
       ),
   };
 }
+
+let oldInput: unknown = undefined;
 
 export type SpecToJson<SPEC extends IR<Syncer<Element, any>>> = {
   readonly [KEY in string & keyof SPEC]: SPEC[KEY] extends Syncer<
@@ -79,15 +87,27 @@ export const createSpec = <SPEC extends IR<Syncer<Element, any>>>(
   spec: SPEC
 ): SPEC => spec;
 
+const symbolIntermediates: unique symbol = Symbol('XML Cell');
+
 export const xmlParser =
   <SPEC extends IR<Syncer<Element, any>>>(spec: SPEC) =>
-  (cell: Element): SpecToJson<SPEC> =>
-    Object.fromEntries(
-      Object.entries(spec).map(([key, value]) => [
-        key,
-        xmlPropertyParser(cell, value),
-      ])
+  (cell: Element): SpecToJson<SPEC> => {
+    const intermediates: Partial<Record<keyof SPEC, unknown>> = {};
+    const object = Object.fromEntries(
+      Object.entries(spec).map(([key, syncer]) => {
+        oldInput = undefined;
+        const newValue = xmlPropertyParser(cell, syncer);
+        intermediates[key] = oldInput ?? cell;
+        oldInput = undefined;
+        return [key, newValue];
+      })
     );
+    Object.defineProperty(cell, symbolIntermediates, {
+      value: intermediates,
+      enumerable: false,
+    });
+    return object;
+  };
 
 const xmlPropertyParser = <RAW, PARSED>(
   cell: RAW,
@@ -96,10 +116,24 @@ const xmlPropertyParser = <RAW, PARSED>(
 
 export const xmlBuilder =
   <SPEC extends IR<Syncer<Element, any>>>(spec: SPEC) =>
-  (element: Element, shape: SpecToJson<SPEC>): Element => {
+  (shape: SpecToJson<SPEC>, cell: Element): Element => {
+    const intermediates = (
+      cell as unknown as {
+        readonly [symbolIntermediates]: Record<keyof SPEC, unknown>;
+      }
+    )[symbolIntermediates];
+    if (intermediates === undefined) throw new Error('Broken object structure');
     Object.entries(shape).forEach(([key, value]) => {
+      if (!(key in intermediates)) {
+        console.error(`Unexpected key ${key}. It's not in the spec`, {
+          cell,
+          shape,
+          spec,
+        });
+        return;
+      }
       const { deserializer } = spec[key as keyof SPEC];
-      deserializer(value, element);
+      deserializer(value, intermediates[key] as Element);
     });
-    return element;
+    return cell;
   };

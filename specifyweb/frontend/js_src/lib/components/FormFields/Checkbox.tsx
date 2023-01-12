@@ -1,13 +1,14 @@
 import React from 'react';
 
 import { useResourceValue } from '../../hooks/useResourceValue';
-import { f } from '../../utils/functools';
 import { Input, Label } from '../Atoms/Form';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { usePref } from '../UserPreferences/usePref';
+import { LiteralField, Relationship } from '../DataModel/specifyField';
+import { parseBoolean } from '../../utils/parser/parse';
 
 export function PrintOnSave({
   id,
@@ -86,9 +87,12 @@ export function SpecifyFormCheckbox({
     field,
     React.useMemo(() => ({ value: defaultValue }), [defaultValue])
   );
-  const isChecked =
-    !f.includes(falsyFields, value?.toString().toLowerCase().trim()) &&
-    Boolean(value);
+
+  const isChecked = React.useMemo(
+    () => parseBoolean(value.toString()),
+    [value]
+  );
+
   const input = (
     <Input.Checkbox
       checked={isChecked}
@@ -109,6 +113,3 @@ export function SpecifyFormCheckbox({
     input
   );
 }
-
-// REFACTOR: use UiParse boolan parser instead
-const falsyFields = ['false', 'no', 'nan', 'null'];

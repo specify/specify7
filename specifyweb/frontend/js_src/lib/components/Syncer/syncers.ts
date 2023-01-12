@@ -1,8 +1,10 @@
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { f } from '../../utils/functools';
+import { parseBoolean } from '../../utils/parser/parse';
 import type { IR, RA } from '../../utils/types';
-import { getAttribute, getParsedAttribute } from '../../utils/utils';
+import { defined } from '../../utils/types';
+import { getAttribute } from '../../utils/utils';
 import { parseJavaClassName } from '../DataModel/resource';
 import { getModel, strictGetModel } from '../DataModel/schema';
 import type { Tables } from '../DataModel/types';
@@ -17,20 +19,32 @@ function getChildren(cell: Element, tagName: string): RA<Element> {
 }
 
 export const syncers = {
-  xmlAttribute: (attribute: string, required: boolean, trim = true) =>
-    syncer<Element, LocalizedString | undefined>(
+  xmlAttribute: <MODE extends 'empty' | 'required'>(
+    attribute: string,
+    mode: MODE,
+    trim = true
+  ) =>
+    syncer<
+      Element,
+      LocalizedString | (MODE extends 'empty' ? never : undefined)
+    >(
       (cell) => {
-        const value = trim
-          ? getParsedAttribute(cell, attribute)
-          : getAttribute(cell, attribute);
-        if (required && value === undefined)
-          console.error(`Required attribute "${attribute}" is missing`);
-        return value;
+        const rawValue = getAttribute(cell, attribute);
+        const trimmed = trim ? rawValue?.trim() : rawValue;
+        if (mode === 'required' && trimmed === '')
+          console.error(`Required attribute "${attribute}" is empty`);
+        else if (trimmed === undefined)
+          console[mode === 'required' ? 'error' : 'warn'](
+            `Required attribute "${attribute}" is missing`
+          );
+        return mode === 'empty' ? trimmed ?? '' : (trimmed as LocalizedString);
       },
-      (value, cell) =>
-        typeof value === 'string'
-          ? cell.setAttribute(attribute, trim ? value.trim() : value)
-          : cell.removeAttribute(attribute)
+      (value, cell) => {
+        if (typeof value === 'string')
+          cell.setAttribute(attribute, trim ? value.trim() : value);
+        else cell.removeAttribute(attribute);
+        return cell;
+      }
     ),
   default: <T>(
     defaultValue: T extends (...args: RA<unknown>) => unknown
@@ -53,12 +67,9 @@ export const syncers = {
       return parsedName;
     },
     (value) =>
-      value === undefined ? undefined : strictGetModel(value).longName
+      strictGetModel(defined(value, 'Model name was not provided')).longName
   ),
-  toBoolean: syncer<string, boolean>(
-    (value) => value.toLowerCase() === 'true',
-    (value) => value.toString()
-  ),
+  toBoolean: syncer<string, boolean>(parseBoolean, (value) => value.toString()),
   toDecimal: syncer<string, number | undefined>(
     f.parseInt,
     (value) => value?.toString() ?? ''
@@ -78,6 +89,7 @@ export const syncers = {
         if (value === undefined) children[0]?.remove();
         else if (children.length === 0) cell.append(value);
         else cell.replaceChild(children[0], value);
+        return cell;
       }
     ),
   xmlChildren: (tagName: string) =>
@@ -101,33 +113,21 @@ export const syncers = {
           { length: newChildren.length - children.length },
           (_, index) => cell.append(newChildren[index])
         );
+        return cell;
       }
     ),
-  object: <SPEC extends IR<Syncer<Element, any>>>(spec: SPEC) => {
-    const parser = xmlParser(spec);
-    const builder = xmlBuilder(spec);
-    return syncer<
-      Element,
-      { readonly value: SpecToJson<SPEC>; readonly raw: Element }
+  object: <SPEC extends IR<Syncer<Element, any>>>(spec: SPEC) =>
+    syncer<Element, SpecToJson<SPEC>>(xmlParser(spec), xmlBuilder(spec)),
+  map: <SYNCER extends Syncer<any, any>>(syncerDefinition: SYNCER) =>
+    syncer<
+      RA<Parameters<SYNCER['serializer']>[0]>,
+      RA<ReturnType<SYNCER['serializer']>>
     >(
-      (object) => ({ value: parser(object), raw: object }),
-      ({ value, raw }) => builder(raw, value)
-    );
-  },
-  // FIXME: make this more generic (make it accept a syncer rather than spec)
-  array: <SPEC extends IR<Syncer<Element, any>>>(spec: SPEC) => {
-    const parser = xmlParser(spec);
-    const builder = xmlBuilder(spec);
-    return syncer<
-      RA<Element>,
-      RA<{ readonly value: SpecToJson<SPEC>; readonly raw: Element }>
-    >(
-      (elements) =>
-        elements.map((element) => ({
-          value: parser(element),
-          raw: element,
-        })),
-      (elements) => elements.map(({ value, raw }) => builder(raw, value))
-    );
-  },
+      (elements) => elements.map(syncerDefinition.serializer),
+      (elements, cells) =>
+        // FIXME: handle new elements being added
+        elements.map((element, index) =>
+          syncerDefinition.deserializer(element, cells[index])
+        )
+    ),
 } as const;

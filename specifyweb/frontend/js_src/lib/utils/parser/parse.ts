@@ -2,7 +2,7 @@ import type { Input } from '../../components/DataModel/saveBlockers';
 import { hasNativeErrors } from '../../components/Forms/validationHelpers';
 import { formsText } from '../../localization/forms';
 import { mappedFind } from '../utils';
-import type { Parser } from './definitions';
+import { Parser, parserFromType } from './definitions';
 
 export type ValidParseResult = {
   readonly value: string;
@@ -63,4 +63,10 @@ export function parseValue(
         isValid: true,
         parsed: parser.parser?.(formattedValue) ?? formattedValue,
       };
+}
+
+export function parseBoolean(value: string): boolean {
+  const boolParser = parserFromType('java.lang.Boolean');
+  const parsed = parseValue(boolParser, undefined, value);
+  return parsed.isValid ? (parsed.parsed as boolean) : false;
 }
