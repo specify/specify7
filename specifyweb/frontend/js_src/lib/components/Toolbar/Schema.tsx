@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import type { SortConfigs } from '../../utils/cache/definitions';
 import { f } from '../../utils/functools';
@@ -32,6 +32,8 @@ import { schemaText } from '../../localization/schema';
 import { LocalizedString } from 'typesafe-i18n';
 import { useTitle } from '../Molecules/AppTitle';
 import { getField } from '../DataModel/helpers';
+import { data } from 'jquery';
+import { Tables } from '../DataModel/types';
 
 function Table<
   SORT_CONFIG extends
@@ -67,8 +69,8 @@ function Table<
   return (
     <div
       className={`
-        grid-table flex-1 grid-cols-[repeat(var(--cols),auto)] overflow-auto
-        rounded border border-gray-400 dark:border-neutral-500
+        grid-table flex-1 grid-cols-[repeat(var(--cols),auto)]
+        overflow-x-auto rounded border border-gray-400 dark:border-neutral-500
       `}
       role="table"
       style={{ '--cols': Object.keys(headers).length } as React.CSSProperties}
@@ -150,17 +152,19 @@ const booleanFormatter = (value: boolean): string =>
  * FEATURE: adapt this page for printing
  */
 
-export function DataModelTable(): JSX.Element {
-  const { tableName = '' } = useParams();
+export function DataModelTable({
+  tableName,
+}: {
+  readonly tableName: keyof Tables;
+}): JSX.Element {
   const model = getModel(tableName);
-  useTitle(model?.name);
   return model === undefined ? (
     <NotFoundView />
   ) : (
-    <Container.Full>
+    <section className="flex flex-col gap-4">
       <DataModelFields model={model} />
       <DataModelRelationships model={model} />
-    </Container.Full>
+    </section>
   );
 }
 
@@ -216,7 +220,9 @@ function DataModelFields({
     <>
       <div className="flex items-center gap-2">
         <TableIcon label={false} name={model.name} />
-        <H2 className="text-2xl">{model.name}</H2>
+        <H2 id={model.name.toLowerCase()} className="text-2xl">
+          {model.name}
+        </H2>
       </div>
       <H3>{schemaText.fields()}</H3>
       <Table
@@ -278,13 +284,11 @@ function DataModelRelationships({
   const data = React.useMemo(() => getRelationships(model), [model]);
   return (
     <>
-      <H3>{schemaText.relationships()}</H3>
+      <H3 id={model.name.toLowerCase()}>{schemaText.relationships()}</H3>
       <Table
         data={data}
         getLink={({ relatedModel }): string =>
-          `/specify/datamodel/${
-            (relatedModel as readonly [string, JSX.Element])[0]
-          }/`
+          `#${(relatedModel as readonly [string, JSX.Element])[0]}`
         }
         headers={relationshipColumns()}
         sortName="dataModelRelationships"
@@ -340,8 +344,8 @@ const getTables = (): RA<Row<keyof ReturnType<typeof tableColumns>>> =>
 export function DataModelTables(): JSX.Element {
   const tables = React.useMemo(getTables, []);
   return (
-    <Container.Full>
-      <div className="flex items-center gap-2">
+    <Container.Full className="pt-0">
+      <div className="flex items-center gap-2 pt-4">
         <H2 className="text-2xl">
           {`${welcomeText.schemaVersion()} ${getSystemInfo().schema_version}`}
         </H2>
@@ -368,11 +372,18 @@ export function DataModelTables(): JSX.Element {
       <Table
         data={tables}
         getLink={({ name }): string =>
-          `/specify/datamodel/${(name as readonly [string, JSX.Element])[0]}/`
+          `#${(name as readonly [string, JSX.Element])[0]}`
         }
         headers={tableColumns()}
         sortName="dataModelTables"
       />
+      {tables.map(({ name }, index) => (
+        <DataModelTable
+          tableName={(name as readonly [keyof Tables, JSX.Element])[0]}
+          key={index}
+        />
+      ))}
+      <></>
     </Container.Full>
   );
 }
@@ -445,3 +456,12 @@ const dataModelToTsv = (): string =>
   ]
     .map((line) => line.join('\t'))
     .join('\n');
+
+export function DataModelRedirect(): null {
+  const { tableName = '' } = useParams();
+  const navigate = useNavigate();
+  React.useEffect(() => {
+    navigate(`/specify/data-model/#${tableName}`, { replace: true });
+  }, []);
+  return null;
+}

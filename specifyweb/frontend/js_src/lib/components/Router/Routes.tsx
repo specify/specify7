@@ -45,7 +45,7 @@ export const routes: RA<EnhancedRoute> = [
         path: ':tableName',
         element: () =>
           import('../Toolbar/Schema').then(
-            ({ DataModelTable }) => DataModelTable
+            ({ DataModelRedirect }) => DataModelRedirect
           ),
       },
     ],
