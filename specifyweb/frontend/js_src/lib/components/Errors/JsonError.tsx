@@ -15,12 +15,7 @@ type JsonResponse = {
 
 function createJsonResponse(error: string): JsonResponse {
   const json = JSON.parse(error);
-  const hasLocalizationKey =
-    json.data == undefined
-      ? false
-      : json.data.localizationKey == undefined
-      ? false
-      : true;
+  const hasLocalizationKey = typeof json.data?.localizationKey === 'string';
   const jsonResponse = {
     exception: json.exception,
     message: hasLocalizationKey
