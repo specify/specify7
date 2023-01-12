@@ -337,7 +337,7 @@ export function DataModelTables(): JSX.Element {
         >
           {commonText('downloadAsJson')}
         </Link.Green>
-        <Button.Green
+        <Button.Blue
           className="print:hidden"
           onClick={(): void =>
             void downloadFile(
@@ -347,7 +347,7 @@ export function DataModelTables(): JSX.Element {
           }
         >
           {commonText('downloadAsTsv')}
-        </Button.Green>
+        </Button.Blue>
       </div>
       <Table
         data={tables}

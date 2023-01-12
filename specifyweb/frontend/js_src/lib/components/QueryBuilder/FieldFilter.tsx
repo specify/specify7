@@ -528,8 +528,8 @@ function SpecifyUserAutoComplete({
   const valueRef = React.useRef<string>(startValue);
   const items = [
     {
-      label: 'Current Specify User Name',
-      searchValue: 'Current Specify User Name',
+      label: 'Current User',
+      searchValue: 'Current User',
       data: 'currentSpecifyUserName',
     },
   ];
