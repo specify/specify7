@@ -237,6 +237,20 @@ export const headerText = createDictionary({
       адресу <emailLink />
     `,
   },
+  incompleteInline: {
+    'en-us': '(incomplete)',
+  },
+  incompleteLocalization: {
+    'en-us': 'Incomplete localization',
+  },
+  incompleteLocalizationDescription: {
+    'en-us': `
+      Translation to this language is not yet complete. Some elements may be
+      missing localization, or have incorrect localization. If you are
+      interested in helping us complete localization, please <link>follow the
+      instructions.</link>
+    `,
+  },
   tableApi: {
     'en-us': 'Tables API',
     'ru-ru': 'API таблиц',
