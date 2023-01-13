@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import type { SortConfigs } from '../../utils/cache/definitions';
 import { f } from '../../utils/functools';
@@ -30,10 +30,10 @@ import { syncFieldFormat } from '../../utils/fieldFormat';
 import { formsText } from '../../localization/forms';
 import { schemaText } from '../../localization/schema';
 import { LocalizedString } from 'typesafe-i18n';
-import { useTitle } from '../Molecules/AppTitle';
 import { getField } from '../DataModel/helpers';
-import { data } from 'jquery';
 import { Tables } from '../DataModel/types';
+import { useActiveCategory, useFrozenCategory } from '../UserPreferences/Aside';
+import { locationToState } from '../Router/RouterState';
 
 function Table<
   SORT_CONFIG extends
@@ -46,11 +46,13 @@ function Table<
   headers,
   data: unsortedData,
   getLink,
+  className,
 }: {
   readonly sortName: SORT_CONFIG;
   readonly headers: RR<FIELD_NAME, LocalizedString>;
   readonly data: RA<Row<FIELD_NAME>>;
   readonly getLink: ((row: Row<FIELD_NAME>) => string) | undefined;
+  readonly className?: string | undefined;
 }): JSX.Element {
   const indexColumn = Object.keys(headers)[0];
   const [sortConfig, handleSort, applySortConfig] = useSortConfig(
@@ -69,9 +71,9 @@ function Table<
   return (
     <div
       className={`
-        grid-table flex-1 grid-cols-[repeat(var(--cols),auto)]
-        overflow-x-auto rounded border border-gray-400 dark:border-neutral-500
-      `}
+        grid-table
+        w-fit flex-1 grid-cols-[repeat(var(--cols),auto)] rounded border border-gray-400 dark:border-neutral-500
+      ${className}`}
       role="table"
       style={{ '--cols': Object.keys(headers).length } as React.CSSProperties}
     >
@@ -154,14 +156,16 @@ const booleanFormatter = (value: boolean): string =>
 
 export function DataModelTable({
   tableName,
+  forwardRef,
 }: {
   readonly tableName: keyof Tables;
+  readonly forwardRef?: (element: HTMLElement | null) => void;
 }): JSX.Element {
   const model = getModel(tableName);
   return model === undefined ? (
     <NotFoundView />
   ) : (
-    <section className="flex flex-col gap-4">
+    <section className="flex flex-col gap-4" ref={forwardRef}>
       <DataModelFields model={model} />
       <DataModelRelationships model={model} />
     </section>
@@ -227,6 +231,7 @@ function DataModelFields({
       <H3>{schemaText.fields()}</H3>
       <Table
         data={data}
+        // className={'overflow-auto'}
         getLink={undefined}
         headers={fieldColumns()}
         sortName="dataModelFields"
@@ -292,12 +297,13 @@ function DataModelRelationships({
         }
         headers={relationshipColumns()}
         sortName="dataModelRelationships"
+        // className={'overflow-auto'}
       />
     </>
   );
 }
 
-const tableColumns = f.store(
+export const tableColumns = f.store(
   () =>
     ({
       name: getField(schema.models.SpLocaleContainer, 'name').label,
@@ -309,7 +315,7 @@ const tableColumns = f.store(
       relationshipCount: schemaText.relationshipCount(),
     } as const)
 );
-const getTables = (): RA<Row<keyof ReturnType<typeof tableColumns>>> =>
+export const getTables = (): RA<Row<keyof ReturnType<typeof tableColumns>>> =>
   Object.values(schema.models).map((model) => ({
     name: [
       model.name.toLowerCase(),
@@ -343,6 +349,8 @@ const getTables = (): RA<Row<keyof ReturnType<typeof tableColumns>>> =>
 
 export function DataModelTables(): JSX.Element {
   const tables = React.useMemo(getTables, []);
+  const { activeCategory, forwardRefs, containerRef } = useActiveCategory();
+
   return (
     <Container.Full className="pt-0">
       <div className="flex items-center gap-2 pt-4">
@@ -369,22 +377,83 @@ export function DataModelTables(): JSX.Element {
           {schemaText.downloadAsTsv()}
         </Button.Green>
       </div>
-      <Table
-        data={tables}
-        getLink={({ name }): string =>
-          `#${(name as readonly [string, JSX.Element])[0]}`
-        }
-        headers={tableColumns()}
-        sortName="dataModelTables"
-      />
-      {tables.map(({ name }, index) => (
-        <DataModelTable
-          tableName={(name as readonly [keyof Tables, JSX.Element])[0]}
-          key={index}
-        />
-      ))}
-      <></>
+      <div className="relative flex h-full gap-6 md:flex-row">
+        <DataModelAside activeCategory={activeCategory} />
+        <div
+          className="ml-2 flex flex-col gap-2 overflow-y-auto"
+          ref={containerRef}
+        >
+          <Table
+            data={tables}
+            getLink={({ name }): string =>
+              `#${(name as readonly [string, JSX.Element])[0]}`
+            }
+            headers={tableColumns()}
+            sortName="dataModelTables"
+          />
+          {tables.map(({ name }, index) => (
+            <DataModelTable
+              tableName={(name as readonly [keyof Tables, JSX.Element])[0]}
+              key={index}
+              forwardRef={forwardRefs?.bind(undefined, index)}
+            />
+          ))}
+        </div>
+      </div>
     </Container.Full>
+  );
+}
+
+export function DataModelAside({
+  activeCategory,
+}: {
+  readonly activeCategory: number;
+}): JSX.Element {
+  const tables = React.useMemo(getTables, []);
+  const [freezeCategory, setFreezeCategory] = useFrozenCategory();
+  const currentIndex = freezeCategory ?? activeCategory;
+  const navigate = useNavigate();
+  const location = useLocation();
+  const state = locationToState(location, 'BackgroundLocation');
+  const isInOverlay = typeof state === 'object';
+
+  React.useEffect(
+    () =>
+      isInOverlay
+        ? undefined
+        : navigate(
+            `/specify/data-model/#${
+              (tables[activeCategory].name as readonly [string, JSX.Element])[0]
+            }`,
+            {
+              replace: true,
+            }
+          ),
+    [isInOverlay, tables, activeCategory]
+  );
+
+  return (
+    <aside
+      className={`
+                left-0 flex min-w-fit flex-1 flex-col divide-y-4 divide-[color:var(--form-background)]
+                overflow-y-auto
+            `}
+    >
+      {tables.map(({ name }, index) => {
+        const [tableName, jsxName] = name as readonly [string, JSX.Element];
+        return (
+          <Link.Gray
+            aria-current={currentIndex === index ? 'page' : undefined}
+            href={`#${tableName}`}
+            key={index}
+            onClick={(): void => setFreezeCategory(index)}
+            className="!justify-start"
+          >
+            {jsxName}
+          </Link.Gray>
+        );
+      })}
+    </aside>
   );
 }
 

@@ -130,7 +130,7 @@ export function PreferencesAside({
  * This hack temporary makes the clicked category active, until user starts to
  * scroll away
  */
-function useFrozenCategory(): GetSet<number | undefined> {
+export function useFrozenCategory(): GetSet<number | undefined> {
   const [freezeCategory, setFreezeCategory] = React.useState<
     number | undefined
   >(undefined);
