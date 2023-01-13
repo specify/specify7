@@ -14,7 +14,7 @@ import { locationToState } from '../Router/RouterState';
 export function useActiveCategory(): {
   readonly activeCategory: number;
   readonly forwardRefs: (index: number, element: HTMLElement | null) => void;
-  readonly containerRef: React.RefCallback<HTMLDivElement | null>;
+  readonly scrollContainerRef: React.RefCallback<HTMLDivElement | null>;
 } {
   const [activeCategory, setActiveCategory] = React.useState<number>(0);
   const observer = React.useRef<IntersectionObserver | undefined>(undefined);
@@ -43,7 +43,7 @@ export function useActiveCategory(): {
       references.current[index] = element ?? undefined;
       if (element !== null) observer?.current?.observe(element);
     }, []),
-    containerRef: React.useCallback((container): void => {
+    scrollContainerRef: React.useCallback((container): void => {
       observer.current?.disconnect();
 
       observer.current = new IntersectionObserver(
@@ -75,10 +75,8 @@ export function useActiveCategory(): {
 }
 
 export function PreferencesAside({
-  id,
   activeCategory,
 }: {
-  readonly id: (prefix: string) => string;
   readonly activeCategory: number;
 }): JSX.Element {
   const definitions = usePrefDefinitions();
@@ -86,17 +84,18 @@ export function PreferencesAside({
   const location = useLocation();
   const state = locationToState(location, 'BackgroundLocation');
   const isInOverlay = typeof state === 'object';
+  // Don't call navigate while an overlay is open as that will close the overlay
   React.useEffect(
     () =>
       isInOverlay
         ? undefined
         : navigate(
-            `/specify/user-preferences/#${id(definitions[activeCategory][0])}`,
+            `/specify/user-preferences/#${definitions[activeCategory][0]}`,
             {
               replace: true,
             }
           ),
-    [isInOverlay, definitions, activeCategory, id]
+    [isInOverlay, definitions, activeCategory]
   );
 
   const [freezeCategory, setFreezeCategory] = useFrozenCategory();
@@ -112,7 +111,7 @@ export function PreferencesAside({
       {definitions.map(([category, { title }], index) => (
         <Link.Gray
           aria-current={currentIndex === index ? 'page' : undefined}
-          href={`#${id(category)}`}
+          href={`#${category}`}
           key={category}
           onClick={(): void => setFreezeCategory(index)}
         >

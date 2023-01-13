@@ -154,7 +154,7 @@ const booleanFormatter = (value: boolean): string =>
  * FEATURE: adapt this page for printing
  */
 
-export function DataModelTable({
+function DataModelTable({
   tableName,
   forwardRef,
 }: {
@@ -349,7 +349,8 @@ export const getTables = (): RA<Row<keyof ReturnType<typeof tableColumns>>> =>
 
 export function DataModelTables(): JSX.Element {
   const tables = React.useMemo(getTables, []);
-  const { activeCategory, forwardRefs, containerRef } = useActiveCategory();
+  const { activeCategory, forwardRefs, scrollContainerRef } =
+    useActiveCategory();
 
   return (
     <Container.Full className="pt-0">
@@ -381,7 +382,7 @@ export function DataModelTables(): JSX.Element {
         <DataModelAside activeCategory={activeCategory} />
         <div
           className="ml-2 flex flex-col gap-2 overflow-y-auto"
-          ref={containerRef}
+          ref={scrollContainerRef}
         >
           <Table
             data={tables}
