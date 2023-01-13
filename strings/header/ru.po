@@ -129,19 +129,34 @@ msgstr "Вторичный поиск"
 msgid "userTools"
 msgstr "Инструменты"
 
-#: components/Toolbar/Language.tsx:78
-#: components/Toolbar/Language.tsx:108
+#: components/Toolbar/Language.tsx:87
+#: components/Toolbar/Language.tsx:156
 #. Used in: Components > Toolbar > Language
 msgid "helpLocalizeSpecify"
 msgstr "Помогти локализовать Specify 7"
 
-#: components/Toolbar/Language.tsx:86
+#: components/Toolbar/Language.tsx:95
 #. Used in: Components > Toolbar > Language
 msgid "helpLocalizeSpecifyDescription"
 msgstr ""
 "Мы будем очень благодарны за вашу поддержку в локализации пользовательский "
 "интерфейс Specify 7. Если вы заинтересованы, пожалуйста, отправьте письмо "
 "по адресу <emailLink />"
+
+#: components/Toolbar/Language.tsx:150
+#. Used in: Components > Toolbar > Language
+msgid "incompleteInline"
+msgstr ""
+
+#: components/Toolbar/Language.tsx:115
+#. Used in: Components > Toolbar > Language
+msgid "incompleteLocalization"
+msgstr ""
+
+#: components/Toolbar/Language.tsx:127
+#. Used in: Components > Toolbar > Language
+msgid "incompleteLocalizationDescription"
+msgstr ""
 
 #: components/Header/userToolDefinitions.ts:105
 #. Used in: Components > Header > User Tool Definitions

@@ -4,7 +4,7 @@ msgstr "Content-Type: text/plain\n"
 #: components/ChooseCollection/index.tsx:168
 #: components/Core/Main.tsx:118
 #: components/Login/OicLogin.tsx:86
-#: components/Login/index.tsx:162
+#: components/Login/index.tsx:154
 #: components/Permissions/PermissionDenied.tsx:230
 #: components/Router/EntrypointRouter.tsx:18
 #: components/Router/EntrypointRouter.tsx:23
@@ -12,12 +12,12 @@ msgstr "Content-Type: text/plain\n"
 msgid "logIn"
 msgstr "Iniciar sesión"
 
-#: components/Login/index.tsx:140
+#: components/Login/index.tsx:132
 #. Used in: Components > Login > Index
 msgid "username"
 msgstr "Nombre de usuario"
 
-#: components/Login/index.tsx:151
+#: components/Login/index.tsx:143
 #: components/Security/SetPassword.tsx:54
 #. Used in: Components > Login > Index ⬤ Components > Security > Set Password
 msgid "password"
@@ -82,7 +82,7 @@ msgid "noAgentDescription"
 msgstr "Inicie sesión como administrador y asigne un agente a este usuario"
 
 #: components/Login/OicLogin.tsx:47
-#: components/Login/index.tsx:125
+#: components/Login/index.tsx:117
 #. Used in: Components > Login > Oic Login ⬤ Components > Login > Index
 msgid "helloMessage"
 msgstr "¡Hola, {userName:string}!"
@@ -100,7 +100,7 @@ msgstr ""
 msgid "legacyLogin"
 msgstr "Iniciar sesión con Especificar cuenta"
 
-#: components/Login/index.tsx:127
+#: components/Login/index.tsx:119
 #. Used in: Components > Login > Index
 msgid "unknownOicUser"
 msgstr ""
