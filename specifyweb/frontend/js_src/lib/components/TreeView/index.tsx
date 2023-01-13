@@ -104,10 +104,11 @@ function TreeView<SCHEMA extends AnyTree>({
   const baseUrl = `/api/specify_tree/${tableName.toLowerCase()}/${
     treeDefinition.id
   }`;
+  const doIncludeAuthorPref = getPref(`TaxonTreeEditor.DisplayAuthor`);
 
   const getRows = React.useCallback(
     async (parentId: number | 'null') =>
-      fetchRows(`${baseUrl}/${parentId}/${sortField}`),
+      fetchRows(`${baseUrl}/${parentId}/${sortField}/${doIncludeAuthorPref}`),
     [baseUrl, sortField]
   );
 
@@ -291,6 +292,7 @@ function TreeView<SCHEMA extends AnyTree>({
               row={row}
               setFocusedRow={setFocusedRow}
               synonymColor={synonymColor}
+              treeName={tableName}
               onAction={(action): void => {
                 if (action === 'next')
                   if (rows[index + 1] === undefined) return undefined;

@@ -189,6 +189,13 @@ export const remotePrefsDefinitions = f.store(
         parser: 'java.lang.Long',
         isLegacy: true,
       },
+      'TaxonTreeEditor.DisplayAuthor' : {
+        description:
+        "Display Authors of Taxons' next to nodes in the Tree Viewer",
+        defaultValue: false,
+        parser: 'java.lang.Boolean',
+        isLegacy: true,
+      },
       'attachment.is_public_default': {
         description: 'Whether new Attachments are public by default',
         defaultValue: true,

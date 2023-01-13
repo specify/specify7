@@ -35,7 +35,8 @@ def tree_mutation(mutation):
 
 @login_maybe_required
 @require_GET
-def tree_view(request, treedef, tree, parentid, sortfield):
+def tree_view(request, treedef, tree, parentid, sortfield, includeAuthor=False):
+
     """Returns a list of <tree> nodes with parent <parentid> restricted to
     the tree defined by treedefid = <treedef>. The nodes are sorted
     according to <sortfield>.
@@ -60,6 +61,7 @@ def tree_view(request, treedef, tree, parentid, sortfield):
                               node.rankId,
                               node.AcceptedID,
                               accepted.fullName,
+                              node.author if (includeAuthor and tree=="taxon") else "NULL",
                               sql.functions.count(child_id)) \
                         .outerjoin(child, child.ParentID == id_col) \
                         .outerjoin(accepted, node.AcceptedID == getattr(accepted, node._id)) \
@@ -68,7 +70,6 @@ def tree_view(request, treedef, tree, parentid, sortfield):
                         .filter(node.ParentID == parentid) \
                         .order_by(orderby)
         results = list(query)
-
     return HttpResponse(toJson(results), content_type='application/json')
 
 @login_maybe_required
