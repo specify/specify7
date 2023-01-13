@@ -300,7 +300,6 @@ msgstr "Outils"
 #: components/Forms/DeleteButton.tsx:103
 #: components/Forms/SearchDialog.tsx:154
 #: components/Forms/SubView.tsx:202
-#: components/Header/index.tsx:168
 #: components/HomePage/AboutSpecify.tsx:165
 #: components/HomePage/AboutSpecify.tsx:201
 #: components/HomePage/AboutSpecify.tsx:228
@@ -334,7 +333,7 @@ msgstr "Outils"
 #: components/Toolbar/Language.tsx:223
 #: components/Toolbar/Language.tsx:308
 #: components/TreeView/Row.tsx:191
-#. Used in: Components > Attachments > Cell ⬤ Components > Attachments > Plugin ⬤ Components > Core > Context Loader ⬤ Components > Core > Contexts ⬤ Core > __tests__ > Contexts ⬤ Components > Form Cells > Form Table ⬤ Components > Form Commands > Show Transactions ⬤ Components > Form Fields > Combo Box ⬤ Components > Form Fields > Field ⬤ Components > Form Fields > Query Combo Box ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Delete Button ⬤ Components > Forms > Search Dialog ⬤ Components > Forms > Sub View ⬤ Components > Header > Index ⬤ Components > Home Page > About Specify ⬤ Components > Interactions > Prep Return Row ⬤ Components > Leaflet > Index ⬤ Components > Molecules > Auto Complete ⬤ Components > Molecules > Formatted Resource ⬤ Components > Molecules > Index ⬤ Components > Permissions > Format Error ⬤ Components > Query Builder > Field Filter ⬤ Components > Query Builder > Results ⬤ Components > Schema Config > Index ⬤ Components > Security > Collection ⬤ Components > Security > Collection Components ⬤ Components > Security > Collection Role ⬤ Components > Security > Institution ⬤ Components > Security > Policies ⬤ Components > Security > Preview ⬤ Components > Security > Role Template ⬤ Components > Security > User Collections ⬤ Components > Security > User Components ⬤ Components > Toolbar > Language ⬤ Components > Tree View > Row
+#. Used in: Components > Attachments > Cell ⬤ Components > Attachments > Plugin ⬤ Components > Core > Context Loader ⬤ Components > Core > Contexts ⬤ Core > __tests__ > Contexts ⬤ Components > Form Cells > Form Table ⬤ Components > Form Commands > Show Transactions ⬤ Components > Form Fields > Combo Box ⬤ Components > Form Fields > Field ⬤ Components > Form Fields > Query Combo Box ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Delete Button ⬤ Components > Forms > Search Dialog ⬤ Components > Forms > Sub View ⬤ Components > Home Page > About Specify ⬤ Components > Interactions > Prep Return Row ⬤ Components > Leaflet > Index ⬤ Components > Molecules > Auto Complete ⬤ Components > Molecules > Formatted Resource ⬤ Components > Molecules > Index ⬤ Components > Permissions > Format Error ⬤ Components > Query Builder > Field Filter ⬤ Components > Query Builder > Results ⬤ Components > Schema Config > Index ⬤ Components > Security > Collection ⬤ Components > Security > Collection Components ⬤ Components > Security > Collection Role ⬤ Components > Security > Institution ⬤ Components > Security > Policies ⬤ Components > Security > Preview ⬤ Components > Security > Role Template ⬤ Components > Security > User Collections ⬤ Components > Security > User Components ⬤ Components > Toolbar > Language ⬤ Components > Tree View > Row
 msgid "loading"
 msgstr "Chargement…"
 
@@ -364,9 +363,9 @@ msgstr "Supprimer"
 #: components/Forms/SearchDialog.tsx:111
 #: components/Forms/SearchDialog.tsx:114
 #: components/Forms/SearchDialog.tsx:246
-#: components/Header/index.tsx:197
-#: components/Header/index.tsx:202
-#: components/Header/index.tsx:207
+#: components/Header/index.tsx:171
+#: components/Header/index.tsx:176
+#: components/Header/index.tsx:181
 #: components/WorkBench/Template.tsx:244
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Search Dialog ⬤ Components > Header > Index ⬤ Components > Work Bench > Template
 msgid "search"
@@ -700,7 +699,7 @@ msgstr "Copier dans le presse-papier"
 msgid "selected"
 msgstr "Choisi"
 
-#: components/Header/index.tsx:58
+#: components/Header/index.tsx:57
 #. Used in: Components > Header > Index
 msgid "primary"
 msgstr "Primaire"

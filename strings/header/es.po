@@ -11,8 +11,8 @@ msgstr "Saltar al contenido"
 msgid "currentUser"
 msgstr "Usuario actual"
 
-#: components/Header/index.tsx:159
-#: components/Header/index.tsx:161
+#: components/Header/index.tsx:136
+#: components/Header/index.tsx:138
 #. Used in: Components > Header > Index
 msgid "currentCollection"
 msgstr "Colección actual"
