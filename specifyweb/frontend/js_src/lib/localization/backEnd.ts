@@ -10,11 +10,6 @@ import { createDictionary } from './utils';
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
 export const backEndText = createDictionary({
-
-  ///////////////////////
-  /* Workbench Results */
-  ///////////////////////
-
   failedParsingBoolean: {
     'en-us': 'value "{value:string}" not resolvable to True or False',
     'ru-ru': 'значение "{value:string}" не разрешается to True or False',
@@ -225,98 +220,341 @@ export const backEndText = createDictionary({
       для "{names:string}".
     `,
   },
-
-  ///////////////////////
-  /* Error Parsing     */
-  ///////////////////////
-  showTraceback : {
-    'en-us':'Show Traceback',
+  showTraceback: {
+    'en-us': 'Show Traceback',
+    'es-es': 'Mostrar seguimiento',
+    'fr-fr': 'Afficher la trace',
+    'ru-ru': 'Показать трассировку',
+    'uk-ua': 'Показати Traceback',
   },
-  fieldNotUnique : {
-    'en-us' : '{tableName:string} must have unique {fieldName:string}',
+  fieldNotUnique: {
+    'en-us': '{tableName:string} must have unique {fieldName:string}',
+    'es-es': '{tableName:string} debe tener un único {fieldName:string}',
+    'fr-fr': '{tableName:string} doit avoir un {fieldName:string} unique',
+    'ru-ru': '{tableName:string} должен иметь уникальный {fieldName:string}',
+    'uk-ua': '{tableName:string} має мати унікальний {fieldName:string}',
   },
-  childFieldNotUnique : {
-    'en-us' : '{tableName:string} must have unique {fieldName:string} in {parentField:string}',
+  childFieldNotUnique: {
+    'en-us': `
+      {tableName:string} must have unique {fieldName:string} in
+      {parentField:string}
+    `,
+    'es-es': `
+      {tableName:string} debe tener un único {fieldName:string} en
+      {parentField:string}
+    `,
+    'fr-fr': `
+      {tableName:string} doit avoir un {fieldName:string} unique dans
+      {parentField:string}
+    `,
+    'ru-ru': `
+      {tableName:string} должен иметь уникальный {fieldName:string} в
+      {parentField:string}
+    `,
+    'uk-ua': `
+      {tableName:string} повинен мати унікальний {fieldName:string} у
+      {parentField:string}
+    `,
   },
-  /// TreeBusinessRuleExceptions
-  deletingTreeRoot : {
+  deletingTreeRoot: {
     'en-us': 'Can not delete root level tree definition item',
+    'es-es':
+      'No se puede eliminar el elemento de definición del árbol de nivel raíz',
+    'fr-fr': `
+      Impossible de supprimer l'élément de définition d'arborescence de niveau
+      racine
+    `,
+    'ru-ru': 'Невозможно удалить элемент определения дерева корневого уровня',
+    'uk-ua': 'Неможливо видалити елемент визначення дерева кореневого рівня',
   },
-  nodeParentInvalidRank : {
-    'en-us' : "Tree node's parent has rank greater than itself",
+  nodeParentInvalidRank: {
+    'en-us': "Tree node's parent has rank greater than itself",
+    'es-es': 'El padre del nodo del árbol tiene un rango mayor que él mismo',
+    'fr-fr': "Le parent du nœud de l'arbre a un rang supérieur à lui-même",
+    'ru-ru': 'Родительский элемент узла дерева имеет ранг выше, чем он сам',
+    'uk-ua': 'Батьківський вузол дерева має ранг, вищий за нього самого',
   },
-  nodeChildrenInvalidRank : {
-    'en-us' : "Tree node's rank is greater than some of its children",
+  nodeChildrenInvalidRank: {
+    'en-us': "Tree node's rank is greater than some of its children",
+    'es-es':
+      'El rango del nodo del árbol es mayor que el de algunos de sus hijos',
+    'fr-fr': `
+      Le rang du nœud de l'arbre est supérieur à celui de certains de ses
+      enfants
+    `,
+    'ru-ru': 'Ранг узла дерева больше, чем у некоторых его дочерних элементов',
+    'uk-ua': 'Ранг вузла дерева більший, ніж у деяких його дочірніх вузлів',
   },
-  nodeOperationToSynonymizedParent : {
-    'en-us' : "{operation:string} node '{nodeName:string}' to synonymized parent '{parentName:string}'",
+  nodeOperationToSynonymizedParent: {
+    'en-us': `
+      {operation:string} node '{nodeName:string}' to synonymized parent
+      '{parentName:string}'
+    `,
+    'es-es': `
+      {operation:string} nodo '{nodeName:string}' a padre sinónimo
+      '{parentName:string}'
+    `,
+    'fr-fr': `
+      {operation:string} nœud '{nodeName:string}' vers le parent synonyme
+      '{parentName:string}'
+    `,
+    'ru-ru': `
+      {operation:string} узел '{nodeName:string}' для синонимизированного
+      родителя '{parentName:string}'
+    `,
+    'uk-ua': `
+      {operation:string} вузол '{nodeName:string}' до синонімічного
+      батьківського елемента '{parentName:string}'
+    `,
   },
-  nodeSynonymizeToSynonymized : {
-    'en-us' : "Synonymizing '{nodeName:string}' to synonymized node '{intoName:string}'",
+  nodeSynonymizeToSynonymized: {
+    'en-us': `
+      Synonymizing '{nodeName:string}' to synonymized node '{intoName:string}'
+    `,
+    'es-es':
+      "Sinonimizar '{nodeName:string}' al nodo sinónimo '{intoName:string}'",
+    'fr-fr': `
+      Synonymisation de '{nodeName:string}' en nœud synonyme '{intoName:string}'
+    `,
+    'ru-ru': `
+      Синонимизация '{nodeName:string}' к синонимизированному узлу
+      '{intoName:string}'
+    `,
+    'uk-ua': `
+      Синонімізація '{nodeName:string}' до синонімічного вузла
+      '{intoName:string}'
+    `,
   },
-  nodeSynonimizeWithChildren : {
-    'en-us' : "Synonimizing node '{nodeName:string}' which has children",
+  nodeSynonimizeWithChildren: {
+    'en-us': "Synonimizing node '{nodeName:string}' which has children",
+    'es-es': "Sinonimizando el nodo '{nodeName:string}' que tiene hijos",
+    'fr-fr': "Synonymiser le nœud '{nodeName:string}' qui a des enfants",
+    'ru-ru': "Синонимизация узла '{nodeName:string}' с дочерними элементами",
+    'uk-ua': "Синонімізуючий вузол '{nodeName:string}', який має дітей",
   },
-
-  /// Assertion Errors 
-
-  // Trees //
-  badTreeStructureInvalidRanks : {
-    'en-us' : 'Bad Tree Structure: Found {badRanks:number} cases where node rank is not greater than its parent',
+  badTreeStructureInvalidRanks: {
+    'en-us': `
+      Bad Tree Structure: Found {badRanks:number} cases where node rank is not
+      greater than its parent
+    `,
+    'es-es': `
+      Estructura de árbol incorrecta: casos encontrados {badRanks:number} donde
+      el rango del nodo no es mayor que su padre
+    `,
+    'fr-fr': `
+      Mauvaise structure d'arborescence : {badRanks:number} cas trouvés où le
+      rang du nœud n'est pas supérieur à celui de son parent
+    `,
+    'ru-ru': `
+      Плохая древовидная структура: найдено {badRanks:number} случаев, когда
+      ранг узла не выше, чем у его родителя.
+    `,
+    'uk-ua': `
+      Погана структура дерева: знайдено {badRanks:number} випадків, коли ранг
+      вузла не перевищує його батьківського рівня
+    `,
   },
-  invalidNodeType : {
-    'en-us' : "Unexpected type of node '{node:string}' during {operation:string}. Expected '{nodeModel:string}'",
+  invalidNodeType: {
+    'en-us': `
+      Unexpected type of node '{node:string}' during {operation:string}.
+      Expected '{nodeModel:string}'
+    `,
+    'es-es': `
+      Tipo inesperado de nodo '{node:string}' durante {operation:string}. Se
+      esperaba '{nodeModel:string}'
+    `,
+    'fr-fr': `
+      Type de nœud '{node:string}' inattendu pendant
+      {operation:string}. '{nodeModel:string}' attendu
+    `,
+    'ru-ru': `
+      Неожиданный тип узла '{node:string}' во время {operation:string}.
+      Ожидается '{nodeModel:string}'
+    `,
+    'uk-ua': `
+      Неочікуваний тип вузла '{node:string}' під час {operation:string}.
+      Очікується '{nodeModel:string}'
+    `,
   },
-  mergeAcrossTrees : {
-    'en-us' : 'Merging across trees',
+  mergeAcrossTrees: {
+    'en-us': 'Merging across trees',
+    'es-es': 'Fusión a través de los árboles',
+    'fr-fr': 'Fusionner à travers les arbres',
+    'ru-ru': 'Слияние деревьев',
+    'uk-ua': 'Злиття між деревами',
   },
-  synonymizeAcrossTrees :{
-    'en-us': 'Synonymizing across trees'
+  synonymizeAcrossTrees: {
+    'en-us': 'Synonymizing across trees',
+    'es-es': 'Sinonimizar entre árboles',
+    'fr-fr': 'Synonymisation à travers les arbres',
+    'ru-ru': 'Синонимизация деревьев',
+    'uk-ua': 'Синонімізація між деревами',
   },
-
-  // Determination // 
-  limitReachedDeterminingAccepted : {
-    'en-us': 'Could not find accepted taxon for synonymized taxon (id = {taxonId:number})'
+  limitReachedDeterminingAccepted: {
+    'en-us': `
+      Could not find accepted taxon for synonymized taxon (id
+      = {taxonId:number})
+    `,
+    'es-es': `
+      No se pudo encontrar el taxón aceptado para el taxón sinónimo (id
+      = {taxonId:number})
+    `,
+    'fr-fr': `
+      Impossible de trouver le taxon accepté pour le taxon synonymisé (id
+      = {taxonId:number})
+    `,
+    'ru-ru': `
+      Не удалось найти принятый таксон для синонимизированного таксона (id
+      = {taxonId:number})
+    `,
+    'uk-ua': `
+      Не вдалося знайти прийнятний таксон для синонімічного таксону (id
+      = {taxonId:number})
+    `,
   },
-
-  // Permissions // 
-  resourceInPermissionRegistry : {
-    'en-us' : 'Resource {resource:string} already in Permissions registry',
+  resourceInPermissionRegistry: {
+    'en-us': 'Resource {resource:string} already in Permissions registry',
+    'es-es': 'Recurso {resource:string} ya en el registro de permisos',
+    'fr-fr':
+      'Ressource {resource:string} déjà dans le registre des autorisations',
+    'ru-ru': 'Ресурс {resource:string} уже в реестре разрешений',
+    'uk-ua': 'Ресурс {resource:string} уже в реєстрі дозволів',
   },
   actorIsNotSpecifyUser: {
-    'en-us' : 'Agent {actor:string} is not a SpecifyUser',
+    'en-us': 'Agent {actor:string} is not a SpecifyUser',
+    'es-es': 'El agente {actor:string} no es un usuario especificado',
+    'fr-fr': "L'agent {actor:string} n'est pas un utilisateur spécifié",
+    'ru-ru': 'Агент {actor:string} не является SpecifyUser',
+    'uk-ua': 'Агент {actor:string} не є SpecifyUser',
   },
-  unexpectedCollectionType : {
-    'en-us' : "Unexpected type of collection '{unexpectedTypeName:string}'. Expected '{collectionName:string}'",
+  unexpectedCollectionType: {
+    'en-us': `
+      Unexpected type of collection '{unexpectedTypeName:string}'. Expected
+      '{collectionName:string}'
+    `,
+    'es-es': `
+      Tipo inesperado de colección '{unexpectedTypeName:string}'. Se esperaba
+      '{nombre_colección:cadena}'
+    `,
+    'fr-fr': `
+      Type de collection inattendu
+      '{unexpectedTypeName:string}'. '{collectionName:string}' attendu
+    `,
+    'ru-ru': `
+      Неожиданный тип коллекции "{unexpectedTypeName:string}". Ожидается
+      \'{collectionName:string}\'
+    `,
+    'uk-ua': `
+      Неочікуваний тип колекції "{unexpectedTypeName:string}". Очікується
+      \'{collectionName:string}\'
+    `,
   },
-
-  // Reports/Labels //
-  invalidReportMimetype : {
-    'en-us' : "Can not create report: mimetype not 'jrxml/label' or 'jrxml/report'",
+  invalidReportMimetype: {
+    'en-us':
+      "Can not create report: mimetype not 'jrxml/label' or 'jrxml/report'",
+    'es-es': `
+      No se puede crear el informe: mimetype no es 'jrxml/label' o
+      'jrxml/report'
+    `,
+    'fr-fr': `
+      Impossible de créer le rapport : type MIME différent de 'jrxml/label' ou
+      'jrxml/report'
+    `,
+    'ru-ru': `
+      Невозможно создать отчет: mimetype отличается от «jrxml/label» или
+      «jrxml/report»
+    `,
+    'uk-ua':
+      'Неможливо створити звіт: тип mime не "jrxml/label" або "jrxml/report"',
   },
-
-  // Schema //
-  fieldNotRelationship : {
-    'en-us' : 'Field {field:string} is not a Relationship',
+  fieldNotRelationship: {
+    'en-us': 'Field {field:string} is not a Relationship',
+    'es-es': 'El campo {field:string} no es una relación',
+    'fr-fr': "Le champ {field:string} n'est pas une relation",
+    'ru-ru': 'Поле {field:string} не является отношением',
+    'uk-ua': 'Поле {field:string} не є зв’язком',
   },
-  
-  // Queries //
-  unexpectedTableId : {
-    'en-us' : "Unexpected table id '{tableId:string}' in request. Expected '{expectedTableId:string}'",
+  unexpectedTableId: {
+    'en-us': `
+      Unexpected table id '{tableId:string}' in request. Expected
+      '{expectedTableId:string}'
+    `,
+    'es-es': `
+      ID de tabla inesperado '{tableId:string}' en la solicitud. Se esperaba
+      '{expectedTableId:string}'
+    `,
+    'fr-fr': `
+      ID de table inattendu '{tableId:string}' dans la
+      demande. '{expectedTableId:string}' attendu
+    `,
+    'ru-ru': `
+      Неожиданный идентификатор таблицы '{tableId:string}' в запросе. Ожидается
+      '{expectedTableId:string}'
+    `,
+    'uk-ua': `
+      Неочікуваний ідентифікатор таблиці "{tableId:string}" у запиті. Очікується
+      \'{expectedTableId:string}\'
+    `,
   },
-  noCollectionInQuery : {
-    'en-us' : 'No Collection found in Query for table {table:string}',
+  noCollectionInQuery: {
+    'en-us': 'No Collection found in Query for table {table:string}',
+    'es-es': `
+      No se encontró ninguna colección en la consulta de la tabla {table:string}
+    `,
+    'fr-fr':
+      'Aucune collection trouvée dans la requête pour la table {table:string}',
+    'ru-ru': 'Коллекция не найдена в запросе для таблицы {table:string}',
+    'uk-ua': 'У запиті для таблиці {table:string} колекція не знайдена',
   },
-  invalidDatePart : {
-    'en-us' : "Invalid date part '{datePart:string}'. Expected one of {validDateParts:string}",
+  invalidDatePart: {
+    'en-us': `
+      Invalid date part '{datePart:string}'. Expected one of
+      {validDateParts:string}
+    `,
+    'es-es': `
+      Parte de fecha no válida '{datePart:string}'. Esperaba uno de
+      {validDateParts:string}
+    `,
+    'fr-fr': `
+      Partie de date non valide '{datePart:string}'. Attendu l'un des
+      {validDateParts:string}
+    `,
+    'ru-ru': `
+      Недопустимая часть даты '{datePart:string}'. Ожидается один из
+      {validDateParts:string}
+    `,
+    'uk-ua': `
+      Недійсна частина дати "{datePart:string}". Очікується один із
+      {validDateParts:string}
+    `,
   },
-
-  // Workbench // 
-  invalidUploadStatus : {
-    'en-us' : "Invalid status '{uploadStatus:string}' for {operation:string}. Expected {expectedUploadStatus:string}",
+  invalidUploadStatus: {
+    'en-us': `
+      Invalid status '{uploadStatus:string}' for {operation:string}. Expected
+      {expectedUploadStatus:string}
+    `,
+    'es-es': `
+      Estado no válido '{uploadStatus:string}' para {operation:string}. Esperado
+      {expectedUploadStatus:string}
+    `,
+    'fr-fr': `
+      Statut '{uploadStatus:string}' non valide pour {operation:string}. Attendu
+      {expectedUploadStatus:string}
+    `,
+    'ru-ru': `
+      Неверный статус '{uploadStatus:string}' для {operation:string}. Ожидается
+      {expectedUploadStatus:string}
+    `,
+    'uk-ua': `
+      Недійсний статус "{uploadStatus:string}" для {operation:string}.
+      Очікується {expectedUploadStatus:string}
+    `,
   },
-  datasetAlreadyUploaded : {
-    'en-us' : 'Dataset already uploaded',
-  }
-
+  datasetAlreadyUploaded: {
+    'en-us': 'Dataset already uploaded',
+    'es-es': 'Conjunto de datos ya subido',
+    'fr-fr': 'Ensemble de données déjà chargé',
+    'ru-ru': 'Набор данных уже загружен',
+    'uk-ua': 'Набір даних уже завантажено',
+  },
 } as const);
