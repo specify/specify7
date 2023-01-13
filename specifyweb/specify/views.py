@@ -184,7 +184,7 @@ def set_password(request, userid):
     return http.HttpResponse('', status=204)
 
 class SetAgentsException(PermissionsException):
-    http_status = 400
+    status_code = 400
 
     def to_json(self):
         return {self.__class__.__name__: self.args[0]}

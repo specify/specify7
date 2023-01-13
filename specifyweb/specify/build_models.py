@@ -99,6 +99,7 @@ def make_relationship(modelname, rel, datamodel):
         on_delete = SPECIAL_DELETION_RULES[f"{rel.name.capitalize()}"][f"{modelname.lower()}"]
     except KeyError:
         reverse = datamodel.reverse_relationship(rel)
+
         if reverse and reverse.dependent:
             on_delete = models.CASCADE
         elif modelname in ADDITIONAL_DELETE_BLOCKERS.keys():
