@@ -155,9 +155,9 @@ export function StatsPage(): JSX.Element | null {
   ]);
 
   /* Set Default Layout every time page is rendered*/
-  React.useEffect(() => {
-    setDefaultLayout(defaultLayoutSpec);
-  }, [setDefaultLayout, defaultLayoutSpec]);
+  // React.useEffect(() => {
+  //   setDefaultLayout(defaultLayoutSpec);
+  // }, [setDefaultLayout, defaultLayoutSpec]);
 
   const pageLastUpdated = activePage.isCollection
     ? collectionLayout?.[activePage.pageIndex].lastUpdated
