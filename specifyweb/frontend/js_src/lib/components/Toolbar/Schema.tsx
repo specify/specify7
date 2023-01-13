@@ -435,9 +435,9 @@ export function DataModelAside({
   return (
     <aside
       className={`
-                left-0 flex min-w-fit flex-1 flex-col divide-y-4 divide-[color:var(--form-background)]
-                overflow-y-auto
-            `}
+        left-0 hidden min-w-fit flex-1 flex-col divide-y-4
+        divide-[color:var(--form-background)] overflow-y-auto md:flex
+      `}
     >
       {tables.map(({ name }, index) => {
         const [tableName, jsxName] = name as readonly [string, JSX.Element];
