@@ -20,7 +20,6 @@ from specifyweb.permissions.permissions import PermissionTarget, \
 from specifyweb.workbench.upload.upload_result import FailedBusinessRule
 from . import api, models
 from .specify_jar import specify_jar
-from .build_models import ADDITIONAL_DELETE_BLOCKERS
 
 def login_maybe_required(view):
     @wraps(view)
