@@ -10,16 +10,17 @@ import { stringToColor } from './TableIcon';
 export function SvgIcon({
   name,
   className,
+  // FIXME: remove this
+  autoGenerate = false,
 }: {
   readonly name: keyof Tables;
   readonly className: string;
+  readonly autoGenerate?: boolean;
 }) {
-  const shortName = nameMapper()[name] ?? getShortName(name);
+  const shortName =
+    (autoGenerate ? undefined : nameMapper()[name]) ?? getShortName(name);
   const autoName = name.startsWith(shortName[0]) ? name : shortName;
-  const [from, to] = colorMapper()[name] ?? [
-    // FIXME: remove this
-    'black',
-    'black',
+  const [from, to] = (autoGenerate ? undefined : colorMapper()[name]) ?? [
     stringToColor(autoName),
     stringToColor(autoName),
   ];
@@ -227,7 +228,7 @@ const colorMapper = f.store<Partial<RR<keyof Tables, Gradient>>>(() => ({
   Address: colors.blue,
   AddressOfRecord: colors.blue,
   AgentGeography: colors.red,
-  AgentSpeciality: colors.blue,
+  AgentSpecialty: colors.blue,
   Appraisal: colors.purple,
   AttributeDef: colors.green,
   Author: colors.yellowOrange,
