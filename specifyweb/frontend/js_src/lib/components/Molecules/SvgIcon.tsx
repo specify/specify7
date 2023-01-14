@@ -153,6 +153,7 @@ const nameMapper = f.store<Partial<RR<keyof Tables, string>>>(() => ({
   ...startsWith('Disposal', 'Dsp'),
   ...startsWith('FieldNotebookPageSet', 'FnS'),
   ...startsWith('CollectingEventAttr','CeA'),
+  ...startsWith('CollectionObjectAttr', 'CoA'),
   ...endsWith('Agent', 'Agt'),
   ...endsWith('Citation', 'Cit'),
   ...endsWith('Authorization', 'Acc'),
