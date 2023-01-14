@@ -6,7 +6,7 @@ import { getModel } from '../DataModel/schema';
 import { getIcon } from '../InitialContext/icons';
 import { LocalizedString } from 'typesafe-i18n';
 import { wbPlanText } from '../../localization/wbPlan';
-import { SvgIcon } from '../Atoms/SvgIcon';
+import { SvgIcon } from './SvgIcon2';
 
 const MAX_HUE = 360;
 
@@ -57,9 +57,9 @@ export function TableIcon({
   readonly className?: string;
 }): JSX.Element {
   const tableName = getModel(name)?.name;
-  if (typeof tableName === 'string') {
+  if (typeof tableName === 'string')
     return <SvgIcon name={tableName} className={className} />;
-  }
+
   const tableIconSource = getIcon(name);
   const resolvedTableLabel =
     label === false
