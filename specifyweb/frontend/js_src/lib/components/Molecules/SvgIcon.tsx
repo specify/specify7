@@ -2,7 +2,7 @@ import React from 'react';
 import { useId } from '../../hooks/useId';
 import { RR } from '../../utils/types';
 import { Tables } from '../DataModel/types';
-import { stringToColor } from '../Molecules/TableIcon';
+import { stringToColor } from './TableIcon';
 
 export function SvgIcon({
   name,
