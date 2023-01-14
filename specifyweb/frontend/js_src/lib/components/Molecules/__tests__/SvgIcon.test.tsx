@@ -1,11 +1,12 @@
-import { sortFunction } from '../../../utils/utils';
 import { exportsForTests } from '../SvgIcon';
+import { requireContext } from '../../../tests/helpers';
+import { schema } from '../../DataModel/schema';
 
 const { colorMapper } = exportsForTests;
 
-test('colorMapper entries are sorted', () =>
-  expect(colorMapper).toEqual(
-    Object.fromEntries(
-      Object.entries(colorMapper).sort(sortFunction(([key]) => key))
-    )
+requireContext();
+
+test('colorMapper defines colors for all tables', () =>
+  expect(new Set(Object.keys(colorMapper()))).toEqual(
+    new Set(Object.keys(schema.models))
   ));

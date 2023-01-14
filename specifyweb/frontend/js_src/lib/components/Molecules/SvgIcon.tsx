@@ -16,13 +16,19 @@ export function SvgIcon({
 }) {
   const shortName = nameMapper()[name] ?? getShortName(name);
   const autoName = name.startsWith(shortName[0]) ? name : shortName;
-  const [from, to] = colorMapper[name] ?? [
+  const [from, to] = colorMapper()[name] ?? [
+    // FIXME: remove this
+    'black',
+    'black',
     stringToColor(autoName),
     stringToColor(autoName),
   ];
   const id = useId('icon');
-  const fontSize = React.useMemo(() => getFontSize(shortName), [shortName]);
   const isAttachmentTable = isAttachment(name);
+  const fontSize = React.useMemo(
+    () => getFontSize(shortName, isAttachmentTable),
+    [shortName, isAttachmentTable]
+  );
   return (
     <svg
       className={className}
@@ -110,29 +116,30 @@ function getShortName(rawName: keyof Tables): string {
 const baseFontSize = 850;
 const capitalLetter = 95;
 const lowerLetter = 80;
+const attachmentShrink = 0.9;
 
-function getFontSize(name: string): number {
+function getFontSize(name: string, isAttachmentTable: boolean): number {
   const capitalLetters = name.replaceAll(/[^A-Z]/gu, '').length;
   const lowerLetters = name.replaceAll(/[^a-z]/gu, '').length;
-  return (
-    baseFontSize - capitalLetters * capitalLetter - lowerLetters * lowerLetter
-  );
+  const size =
+    baseFontSize - capitalLetters * capitalLetter - lowerLetters * lowerLetter;
+  return isAttachmentTable ? size * attachmentShrink : size;
 }
 
-const startsWith = (
+const startsWith = <T,>(
   prefix: string,
-  resolved: string
-): Partial<RR<keyof Tables, string>> =>
+  resolved: T
+): Partial<RR<keyof Tables, T>> =>
   Object.fromEntries(
     Object.keys(schema.models)
       .filter((tableName) => tableName.startsWith(prefix))
       .map((tableName) => [tableName, resolved])
   );
 
-const endsWith = (
+const endsWith = <T,>(
   prefix: string,
-  resolved: string
-): Partial<RR<keyof Tables, string>> =>
+  resolved: T
+): Partial<RR<keyof Tables, T>> =>
   Object.fromEntries(
     Object.keys(schema.models)
       .filter((tableName) => tableName.endsWith(prefix))
@@ -141,11 +148,11 @@ const endsWith = (
 
 const nameMapper = f.store<Partial<RR<keyof Tables, string>>>(() => ({
   ...startsWith('Accession', 'Acc'),
+  ...startsWith('Attachment', 'Att'),
   ...endsWith('Agent', 'Agt'),
   ...endsWith('Citation', 'Cit'),
   ...endsWith('Authorization', 'Per'),
   ...endsWith('Preparation', 'Pre'),
-  ...startsWith('Attachment', 'Att'),
   Address: 'Adr',
   AddressOfRecord: 'Adr',
   AgentAttachment: 'Agt',
@@ -158,6 +165,9 @@ const nameMapper = f.store<Partial<RR<keyof Tables, string>>>(() => ({
   DNASequencingRun: 'DnaR',
   DNASequencingRunAttachment: 'DnaR',
   ExsiccataItem: 'ExI',
+  GeologicTimePeriod: 'CS',
+  GeologicTimePeriodTreeDef: 'CS',
+  GeologicTimePeriodTreeDefItem: 'CS',
   Gift: 'Gft',
   GiftAttachment: 'Gft',
   GroupPerson: 'Agt',
@@ -182,109 +192,148 @@ const nameMapper = f.store<Partial<RR<keyof Tables, string>>>(() => ({
   SpecifyUser: 'Usr',
 }));
 
-const colors: IR<readonly [from: string, to: string]> = {
+type Gradient = readonly [from: string, to: string];
+
+const colors: IR<Gradient> = {
+  // Taxon
   red: ['#C1272D', '75272D'],
+  // Storage
   blue: ['#0071BC', '#2E3192'],
+  // Audit Log
   lightBlue: ['#00C4F5', '#006BB7'],
+  // Purple
   purple: ['#662D91', '#1B1464'],
+  // Locality
   green: ['#39B54A', '#009245'],
+  // Collection Object
   brown: ['#A67C52', '#754C24'],
+  // Agent
+  yellowOrange: ['#FFB728', '#F49405'],
 };
 
-const colorMapper: RR<keyof Tables, readonly [from: string, to: string]> = {
-  Accession: colors.yellowOrange,
+const colorMapper = f.store<Partial<RR<keyof Tables, Gradient>>>(() => ({
+  ...startsWith('Accession', colors.yellowOrange),
+  ...startsWith('Attachment', colors.green),
+  ...startsWith('Collection', colors.brown),
+  ...startsWith('Agent', colors.yellowOrange),
+  ...startsWith('Collecting', colors.blue),
+  ...startsWith('DNA', colors.purple),
+  ...startsWith('Sp', colors.lightBlue),
+  ...startsWith('Workbench', colors.green),
+  ...endsWith('Agent', colors.yellowOrange),
+  ...endsWith('Citation', colors.red),
+  ...endsWith('Authorization', colors.red),
+  ...endsWith('Preparation', colors.purple),
   Address: colors.blue,
-  Agent: colors.yellowOrange,
+  AddressOfRecord: colors.blue,
   AgentGeography: colors.red,
-  AgentSpecialty: colors.blue,
+  AgentSpeciality: colors.blue,
   Appraisal: colors.purple,
-  Attachment: colors.green,
-  Attribute: colors.green,
-  AttributeDefinition: colors.green,
+  AttributeDef: colors.green,
   Author: colors.yellowOrange,
+  AutoNumberingScheme: colors.lightBlue,
   Borrow: colors.blue,
+  BorrowAttachment: colors.blue,
   BorrowMaterial: colors.brown,
   BorrowReturnMaterial: colors.red,
-  Chronostratigraphy: colors.brown,
-  Citation: colors.red,
-  CollectingEvent: colors.blue,
-  CollectingEventAttribute: colors.blue,
-  CollectingEventAuthorization: colors.red,
-  CollectingTrip: colors.blue,
-  CollectingTripAttribute: colors.yellowOrange,
-  CollectingTripAuthorization: colors.purple,
-  Collection: colors.brown,
-  CollectionObject: colors.brown,
-  CollectionObjectAttribute: colors.brown,
-  CollectionObjectProperty: colors.brown,
   CollectionRelType: colors.purple,
   CollectionRelationship: colors.green,
   Collector: colors.blue,
-  CommonName: colors.red,
-  CommonNameTaxonCitation: colors.green,
+  CommonNameTx: colors.red,
+  CommonNameTxCitation: colors.green,
   ConservDescription: colors.purple,
-  ConservationEvent: colors.green,
-  Conservator: colors.brown,
+  ConservDescriptionAttachment: colors.purple,
+  ConservEvent: colors.green,
+  ConservEventAttachment: colors.green,
   Container: colors.green,
   DNAPrimer: colors.red,
-  DNASequence: colors.purple,
-  DNASequenceRun: colors.purple,
-  DNASequenceRunAttachment: colors.purple,
-  DNASequencingRun: colors.purple,
   DataType: colors.blue,
   Deaccession: colors.purple,
   Determination: colors.brown,
-  DeterminationStatus: colors.blue,
+  DeaccessionAttachment: colors.purple,
+  Determiner: colors.yellowOrange,
   Discipline: colors.yellowOrange,
   Disposal: colors.purple,
+  DisposalAttachment: colors.purple,
   Division: colors.brown,
   ExchangeIn: colors.red,
+  ExchangeInAttachment: colors.red,
+  ExchangeInPrep: colors.red,
   ExchangeOut: colors.blue,
+  ExchangeOutAttachment: colors.blue,
+  ExchangeOutPrep: colors.blue,
   Exsiccata: colors.brown,
   ExsiccataItem: colors.yellowOrange,
   Extractor: colors.blue,
   FieldNotebook: colors.blue,
+  FieldNotebookAttachment: colors.blue,
   FieldNotebookPage: colors.green,
+  FieldNotebookPageAttachment: colors.green,
   FieldNotebookPageSet: colors.yellowOrange,
-  FundingAgent: colors.blue,
+  FieldNotebookPageSetAttachment: colors.yellowOrange,
   GeoCoordDetail: colors.blue,
   Geography: colors.purple,
+  GeographyTreeDef: colors.purple,
+  GeographyTreeDefItem: colors.purple,
   GeologicTimePeriod: colors.green,
+  GeologicTimePeriodTreeDef: colors.green,
+  GeologicTimePeriodTreeDefItem: colors.green,
   Gift: colors.yellowOrange,
-  Group: colors.green,
-  InformationRequest: colors.brown,
+  GiftAttachment: colors.yellowOrange,
+  GroupPerson: colors.yellowOrange,
+  InfoRequest: colors.brown,
   Institution: colors.red,
   InstitutionNetwork: colors.red,
   Journal: colors.brown,
   LatLonPolygon: colors.green,
+  LatLonPolygonPnt: colors.green,
+  LithoStrat: colors.red,
+  LithoStratTreeDef: colors.red,
+  LithoStratTreeDefItem: colors.red,
   Loan: colors.blue,
-  LoanReturnPrep: colors.purple,
+  LoanAttachment: colors.blue,
+  LoanReturnPreparation: colors.purple,
   Locality: colors.green,
-  LocalityDetail: colors.brown,
+  LocalityAttachment: colors.green,
+  LocalityDetail: colors.green,
   LocalityNameAlias: colors.purple,
   MaterialSample: colors.blue,
+  MorphBankView: colors.blue,
   OtherIdentifier: colors.purple,
-  PCRPerson: colors.blue,
+  PcrPerson: colors.blue,
   PaleoContext: colors.yellowOrange,
   Permit: colors.green,
+  PermitAttachment: colors.green,
+  PickList: colors.lightBlue,
+  PickListItem: colors.lightBlue,
   PrepType: colors.green,
-  Preparation: colors.purple,
+  PickList: colors.lightBlue,
+  PreparationAttachment: colors.purple,
+  PreparationAttr: colors.purple,
   PreparationAttribute: colors.purple,
-  PreparationProperty: colors.blue,
+  PreparationProperty: colors.purple,
   Project: colors.red,
+  RecordSet: colors.blue,
+  RecordSetItem: colors.blue,
   ReferenceWork: colors.purple,
+  ReferenceWorkAttachment: colors.purple,
   RepositoryAgreement: colors.purple,
+  RepositoryAgreementAttachment: colors.purple,
   Shipment: colors.brown,
-  SpAuditLog: colors.lightBlue,
-  SpAuditLogField: colors.lightBlue,
   SpSymbiotaInstance: colors.green,
   Storage: colors.blue,
-  Stratigraphy: colors.red,
+  StorageAttachment: colors.blue,
+  StorageTreeDef: colors.blue,
+  StorageTreeDefItem: colors.blue,
   Taxon: colors.red,
+  TaxonAttachment: colors.red,
+  TaxonTreeDef: colors.red,
+  TaxonTreeDefItem: colors.red,
   TaxonAttribute: colors.purple,
   TreatmentEvent: colors.red,
+  TreatmentEventAttachment: colors.red,
   VoucherRelationship: colors.red,
-};
+}));
 
 export const exportsForTests = { nameMapper, colorMapper };
 
