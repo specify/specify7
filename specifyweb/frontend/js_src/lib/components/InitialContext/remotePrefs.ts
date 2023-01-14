@@ -191,9 +191,9 @@ export const remotePrefsDefinitions = f.store(
       },
       'TaxonTreeEditor.DisplayAuthor' : {
         description:
-        "Display Authors of Taxons' next to nodes in the Tree Viewer",
-        defaultValue: false,
-        parser: 'java.lang.Boolean',
+        "Display Authors of Taxons next to nodes with RankID >= this value in the Tree Viewer",
+        defaultValue: 99_999,
+        parser: 'java.lang.Long',
         isLegacy: true,
       },
       'attachment.is_public_default': {

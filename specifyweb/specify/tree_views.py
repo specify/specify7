@@ -12,7 +12,7 @@ from .auditcodes import TREE_MOVE
 from . import tree_extras
 
 from sqlalchemy.orm import aliased
-from sqlalchemy import sql, types, distinct
+from sqlalchemy import sql, types, distinct, case
 
 from specifyweb.stored_queries import models
 from specifyweb.businessrules.exceptions import BusinessRuleException
@@ -35,7 +35,7 @@ def tree_mutation(mutation):
 
 @login_maybe_required
 @require_GET
-def tree_view(request, treedef, tree, parentid, sortfield, includeAuthor=False):
+def tree_view(request, treedef, tree, parentid, sortfield):
 
     """Returns a list of <tree> nodes with parent <parentid> restricted to
     the tree defined by treedefid = <treedef>. The nodes are sorted
@@ -51,6 +51,23 @@ def tree_view(request, treedef, tree, parentid, sortfield, includeAuthor=False):
     child_id = getattr(child, node._id)
     treedef_col = getattr(node, tree_table.name + "TreeDefID")
     orderby = tree_table.name.lower() + '.' + sortfield
+    
+    """
+        If the request wants to include an author in the response, we use a case to determine
+        if the rankId is >= the supplied rank, and if so then we add node.author to the query statement.
+        If the tree is not the taxon tree or the rankId is less than the supplied rank, add NULL instead.
+
+        For more information, view the sqlalchemy docs on case:
+            https://docs.sqlalchemy.org/en/20/core/sqlelement.html#sqlalchemy.sql.expression.case
+    """
+    includeAuthorAfterRank= int(request.GET.get('includeauthorafterrank')) if 'includeauthorafterrank' in request.GET else 99_999
+
+    authorCase = case(
+        [
+            (node.rankId >= includeAuthorAfterRank, node.author if tree=='taxon' else None)
+        ],
+        else_=None
+    )
 
     with models.session_context() as session:
         query = session.query(id_col,
@@ -61,7 +78,7 @@ def tree_view(request, treedef, tree, parentid, sortfield, includeAuthor=False):
                               node.rankId,
                               node.AcceptedID,
                               accepted.fullName,
-                              node.author if (includeAuthor and tree=="taxon") else "NULL",
+                              authorCase,
                               sql.functions.count(child_id)) \
                         .outerjoin(child, child.ParentID == id_col) \
                         .outerjoin(accepted, node.AcceptedID == getattr(accepted, node._id)) \

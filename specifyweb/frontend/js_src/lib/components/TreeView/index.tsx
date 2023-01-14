@@ -32,6 +32,7 @@ import { supportsBackdropBlur } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { ProtectedTree } from '../Permissions/PermissionDenied';
 import { NotFoundView } from '../Router/NotFoundView';
+import { formatUrl } from '../Router/queryString';
 import { EditTreeDefinition } from '../Toolbar/TreeRepair';
 import {
   useHighContrast,
@@ -101,14 +102,19 @@ function TreeView<SCHEMA extends AnyTree>({
   // Node sort order
   const sortField = getPref(`${tableName as 'Geography'}.treeview_sort_field`);
 
+  const includeAuthorAfterRank = getPref(`TaxonTreeEditor.DisplayAuthor`);
+
   const baseUrl = `/api/specify_tree/${tableName.toLowerCase()}/${
     treeDefinition.id
   }`;
-  const doIncludeAuthorPref = getPref(`TaxonTreeEditor.DisplayAuthor`);
 
   const getRows = React.useCallback(
     async (parentId: number | 'null') =>
-      fetchRows(`${baseUrl}/${parentId}/${sortField}/${doIncludeAuthorPref}`),
+      fetchRows(
+        formatUrl(`${baseUrl}/${parentId}/${sortField}/`, {
+          includeAuthorAfterRank: includeAuthorAfterRank.toString(),
+        })
+      ),
     [baseUrl, sortField]
   );
 
