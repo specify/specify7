@@ -5,6 +5,10 @@ import { f } from '../../utils/functools';
 import { Async } from '../Router/RouterUtils';
 import { defaultWelcomePageImage } from '../UserPreferences/Renderers';
 import { usePref } from '../UserPreferences/usePref';
+import { schema } from '../DataModel/schema';
+import { TableIcon } from '../Molecules/TableIcon';
+import { SvgIcon } from '../Molecules/SvgIcon';
+import { getIcon } from '../InitialContext/icons';
 
 const taxonTiles = f.store(() => (
   <Async
@@ -40,6 +44,24 @@ function WelcomeScreenContent(): JSX.Element {
   const [mode] = usePref('welcomePage', 'general', 'mode');
   const [source] = usePref('welcomePage', 'general', 'source');
 
+  // FIXME: remove this
+  return (
+    <div className="flex h-full w-full flex-col gap-4 overflow-auto">
+      {Object.values(schema.models).map(({ name }) => (
+        <div className="flex gap-2" key={name}>
+          <p className={getIcon(name) === undefined ? undefined : 'invisible'}>
+            (missing)
+          </p>
+          <TableIcon name={name} label />
+          <SvgIcon
+            name={name}
+            className="h-table-icon w-table-icon flex-shrink-0"
+          />
+          {name}
+        </div>
+      ))}
+    </div>
+  );
   return mode === 'embeddedWebpage' ? (
     <iframe
       className="h-full w-full border-0"
