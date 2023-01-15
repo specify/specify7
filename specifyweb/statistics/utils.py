@@ -214,7 +214,7 @@ def get_tree_rank_stats(rankid, request):
     logger.warning(','.join(['%s' for x in [1, 2, 4]]))
     len_match = len(indexes_mapped)
     match_str = ','.join(['%s' for x in indexes_mapped])
-    x = "select determinationid from determination join taxon using (taxonid) where nodenumber in (" + match_str + ")"
+    x = "select determinationid from determination join taxon using (taxonid) where nodenumber in (" + match_str + ") limit 40"
     logger.warning('getting data took: ')
     t1 = perf_counter()
     cursor.execute(
