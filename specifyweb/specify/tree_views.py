@@ -60,11 +60,11 @@ def tree_view(request, treedef, tree, parentid, sortfield):
         For more information, view the sqlalchemy docs on case:
             https://docs.sqlalchemy.org/en/20/core/sqlelement.html#sqlalchemy.sql.expression.case
     """
-    includeAuthorAfterRank= int(request.GET.get('includeauthorafterrank')) if 'includeauthorafterrank' in request.GET else 99_999
+    includeAuthor= int(request.GET.get('includeauthor')) if 'includeauthor' in request.GET else 99_999
 
     authorCase = case(
         [
-            (node.rankId >= includeAuthorAfterRank, node.author if tree=='taxon' else None)
+            (node.rankId >= includeAuthor, node.author if tree=='taxon' else None)
         ],
         else_=None
     )

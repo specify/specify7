@@ -102,7 +102,7 @@ function TreeView<SCHEMA extends AnyTree>({
   // Node sort order
   const sortField = getPref(`${tableName as 'Geography'}.treeview_sort_field`);
 
-  const includeAuthorAfterRank = getPref(`TaxonTreeEditor.DisplayAuthor`);
+  const includeAuthor = getPref(`TaxonTreeEditor.DisplayAuthor`);
 
   const baseUrl = `/api/specify_tree/${tableName.toLowerCase()}/${
     treeDefinition.id
@@ -112,7 +112,7 @@ function TreeView<SCHEMA extends AnyTree>({
     async (parentId: number | 'null') =>
       fetchRows(
         formatUrl(`${baseUrl}/${parentId}/${sortField}/`, {
-          includeAuthorAfterRank: includeAuthorAfterRank.toString(),
+          includeAuthor: includeAuthor.toString(),
         })
       ),
     [baseUrl, sortField]
