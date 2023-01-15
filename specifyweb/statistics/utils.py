@@ -76,15 +76,15 @@ def double_decked_binary_counter(interval_list, node_number_list):
     return occurence_count
 
 
-def ddie(interval_list, node_number_list):
+def ddie(interval_list, node_number_list, limit):
     il_start_index = 0
     il_end_index = len(interval_list) - 1
     nn_start_index = 0
     nn_end_index = len(node_number_list) - 1
 
     index_ranges = []
-
-    while (il_start_index <= il_end_index and nn_start_index <= nn_end_index):
+    occurence_count = 0
+    while (il_start_index <= il_end_index and nn_start_index <= nn_end_index and occurence_count <= limit):
         node_number_detr = node_number_list[nn_start_index]
         # print(nn_start_index)
         il_sup_index, il_sup_value = last_smaller_value_iter(interval_list, node_number_detr, il_start_index, il_end_index, key=0)
@@ -101,11 +101,13 @@ def ddie(interval_list, node_number_list):
             end_index_source = nn_start_index
             nn_start_index += 1
             index_ranges.append([start_index_source, end_index_source])
+            occurence_count += 1
             continue
 
         end_index_source, end_source_value = last_smaller_value_iter(
             node_number_list, il_sup_hcnn, nn_start_index, nn_end_index)
         index_ranges.append([nn_start_index, end_index_source])
+        occurence_count += 1
 
         nn_next_index, nn_next_value = first_bigger_value_iter(node_number_list, il_sup_hcnn, nn_start_index + 1, nn_end_index,strict=True)
 
@@ -185,9 +187,14 @@ def get_tree_rank_stats(rankid, request):
     source_intervals = list(cursor.fetchall())
     source_intervals.sort()
 
-    rank_count = double_decked_binary_counter(source_intervals, all_node_numbers_used)
     t1 = perf_counter()
-    indexes_used = ddie(source_intervals, all_node_numbers_used)
+    rank_count = double_decked_binary_counter(source_intervals, all_node_numbers_used)
+    t2 = perf_counter()
+    logger.warning('getting count took: ')
+    logger.warning(t2-t1)
+    logger.warning(rank_count)
+    t1 = perf_counter()
+    indexes_used = ddie(source_intervals, all_node_numbers_used, 40)
     t2 = perf_counter()
     logger.warning('get indexes took: ')
     logger.warning(t2-t1)
