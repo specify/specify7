@@ -15,7 +15,7 @@ def first_bigger_value_iter(number_list, threshold, start_index, finish_index, k
             mid_value_reduced = mid_value
         else:
             mid_value_reduced = mid_value[key]
-        if mid_value_reduced <= threshold if strict else mid_value_reduced <=threshold:
+        if mid_value_reduced <= threshold if strict else mid_value_reduced < threshold:
             start_index = mid_index + 1
         else:
             return_value = mid_value
@@ -74,6 +74,99 @@ def double_decked_binary_counter(interval_list, node_number_list):
         il_start_index = il_sup_index + 1
     return occurence_count
 
+
+def ddie(interval_list, node_number_list):
+    il_start_index = 0
+    il_end_index = len(interval_list) - 1
+    nn_start_index = 0
+    nn_end_index = len(node_number_list) - 1
+
+    index_ranges = []
+
+    while (il_start_index <= il_end_index and nn_start_index <= nn_end_index):
+        node_number_detr = node_number_list[nn_start_index]
+        # print(nn_start_index)
+        il_sup_index, il_sup_value = last_smaller_value_iter(interval_list, node_number_detr, il_start_index, il_end_index, key=0)
+        for t in range(il_sup_index - il_start_index):
+            index_ranges.append(-1)
+        if il_sup_index == -1:
+            nn_start_index += 1
+            continue
+
+        start_index_source = nn_start_index
+        il_sup_hcnn = il_sup_value[1]
+
+        if (il_sup_hcnn == node_number_detr):
+            end_index_source = nn_start_index
+            nn_start_index += 1
+            index_ranges.append([start_index_source, end_index_source])
+            continue
+
+        end_index_source, end_source_value = last_smaller_value_iter(
+            node_number_list, il_sup_hcnn, nn_start_index, nn_end_index)
+        index_ranges.append([nn_start_index, end_index_source])
+
+        nn_next_index, nn_next_value = first_bigger_value_iter(node_number_list, il_sup_hcnn, nn_start_index + 1, nn_end_index,strict=True)
+
+        if nn_next_index == -1:
+            break
+
+        nn_start_index = nn_next_index
+        il_start_index = il_sup_index + 1
+
+    for t in range(il_end_index - il_start_index - 1):
+        index_ranges.append(-1)
+    return index_ranges
+
+
+def ddie1(interval_list, node_number_list):
+    il_start_index = 0
+    il_end_index = len(interval_list) - 1
+    nn_start_index = 0
+    nn_end_index = len(node_number_list) - 1
+
+    index_ranges = []
+
+    while il_start_index <= il_end_index and nn_start_index <= nn_end_index:
+        node_number_detr = node_number_list[nn_start_index]
+        il_sup_index, il_sup_value = last_smaller_value_iter(interval_list,
+                                                             node_number_detr,
+                                                             il_start_index,
+                                                             il_end_index,
+                                                             key=0)
+        for t in range(il_sup_index - il_start_index):
+            index_ranges.append(-1)
+        if il_sup_index == -1:
+            nn_start_index += 1
+            continue
+        if il_sup_value[1] >= node_number_detr:
+            end_index_source, end_source_value = last_smaller_value_iter(
+                node_number_list, il_sup_value[1], nn_start_index, nn_end_index)
+            index_ranges.append([nn_start_index, end_index_source])
+            # found here (adding - both indexes)
+        else:
+            nn_start_index += 1
+            il_start_index += 1
+            # guaranteed to didn't find here (add -1)
+            index_ranges.append(-1)
+            continue
+        il_sup_hcnn = il_sup_value[1]
+        if il_sup_hcnn == node_number_detr:
+            index_ranges.append(nn_start_index)
+            nn_start_index += 1
+            # indexes are same (add either index)
+            continue
+        nn_next_index, nn_next_value = first_bigger_value_iter(node_number_list,
+                                                               il_sup_hcnn,
+                                                               nn_start_index + 1,
+                                                               nn_end_index,
+                                                               strict=True)
+        if nn_next_index == -1:
+            break
+        nn_start_index = nn_next_index
+        il_start_index = il_sup_index + 1
+    return index_ranges
+
 def get_tree_rank_stats(rankid, request):
     cursor = connection.cursor()
     cursor.execute("""
@@ -92,6 +185,56 @@ def get_tree_rank_stats(rankid, request):
     source_intervals.sort()
 
     rank_count = double_decked_binary_counter(source_intervals, all_node_numbers_used)
+
+    indexes_used = ddie(source_intervals, all_node_numbers_used)
+    indexes_mapped = []
+    for x in indexes_used:
+        if x != -1:
+            start_index = x[0]
+            end_index = x[1]
+            for index in range(start_index, end_index + 1):
+                indexes_mapped.append(str(all_node_numbers_used[index]))
+
+
+    logger.warning('count from mapped: ')
+    in_generator = ', '.join(indexes_mapped)
+    logger.warning(','.join(['%s' for x in [1, 2, 4]]))
+    len_match = len(indexes_mapped)
+    match_str = ','.join(['%s' for x in indexes_mapped])
+    x = "select determinationid from determination join taxon using (taxonid) where nodenumber in (" + match_str + ")"
+    cursor.execute(
+    x, indexes_mapped)
+    data = list(cursor.fetchall())
+    logger.warning(data[1:100])
     return rank_count
+
+
+def node_number_rework_test(request):
+    cursor = connection.cursor()
+
+    collection_member_id = ''
+    full_name_test = ''
+    rankid_test = ''
+
+    cursor.execute("""
+    SELECT distinct(taxon.nodenumber)
+    FROM determination join taxon using (taxonid)
+    where CollectionMemberID = % s
+    and taxon.rankid >= % s
+    """, [collection_member_id, full_name_test, rankid_test])
+    source_intervals = list(cursor.fetchall())
+    source_intervals.sort()
+
+    cursor.execute("""
+    SELECT 
+        nodeNumber, highestChildNodeNumber, fullName 
+    FROM taxon
+    where 
+        rankid = % s
+        and fullName = % s
+    """, [rankid_test, full_name_test])
+    mapped_intervals = list(cursor.fetchall())
+    mapped_intervals.sort()
+
 
 

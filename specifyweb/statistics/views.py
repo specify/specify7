@@ -8,6 +8,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 from django.db import connection
+from time import perf_counter
 
 @login_maybe_required
 @openapi(schema={
@@ -37,11 +38,15 @@ from django.db import connection
         }
     }}, )
 def collection_holdings(request) -> HttpResponse:
+    t1 = perf_counter()
     holding_dict = {
-        'familiesRepresented': utils.get_tree_rank_stats(140, request), #families
+        'familiesRepresented':  utils.get_tree_rank_stats(140, request), #families
         'generaRepresented': utils.get_tree_rank_stats(180, request), #genera
         'speciesRepresented': utils.get_tree_rank_stats(220, request) #species
     }
+    t2 = perf_counter()
+    logger.warning('this took: ')
+    logger.warning(t2-t1)
     return http.JsonResponse(holding_dict)
 
 @login_maybe_required
@@ -163,3 +168,16 @@ def collection_type_specimens(request) -> HttpResponse:
 
 def collection_user():
     return http.Http404
+
+def node_number_rework(request) -> HttpResponse:
+    cursor = connection.cursor()
+    utils.node_number_rework_test(request)
+    full_name = ''
+
+    cursor.execute(
+        """
+        SELECT distinct t.taxonid, nodenumber, highestchildnodenumber
+        FROM 
+        """
+    )
+
