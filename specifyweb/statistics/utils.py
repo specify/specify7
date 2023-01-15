@@ -1,6 +1,7 @@
 import logging
 
 logger = logging.getLogger(__name__)
+from time import perf_counter
 from django.db import connection
 
 def first_bigger_value_iter(number_list, threshold, start_index, finish_index, key=-1, strict=False):
@@ -185,8 +186,11 @@ def get_tree_rank_stats(rankid, request):
     source_intervals.sort()
 
     rank_count = double_decked_binary_counter(source_intervals, all_node_numbers_used)
-
+    t1 = perf_counter()
     indexes_used = ddie(source_intervals, all_node_numbers_used)
+    t2 = perf_counter()
+    logger.warning('get indexes took: ')
+    logger.warning(t2-t1)
     indexes_mapped = []
     for x in indexes_used:
         if x != -1:
@@ -197,14 +201,20 @@ def get_tree_rank_stats(rankid, request):
 
 
     logger.warning('count from mapped: ')
+    index_count_mapped = [1 if x != -1 else 0 for x in indexes_used]
+    logger.warning(sum(index_count_mapped))
     in_generator = ', '.join(indexes_mapped)
     logger.warning(','.join(['%s' for x in [1, 2, 4]]))
     len_match = len(indexes_mapped)
     match_str = ','.join(['%s' for x in indexes_mapped])
     x = "select determinationid from determination join taxon using (taxonid) where nodenumber in (" + match_str + ")"
+    logger.warning('getting data took: ')
+    t1 = perf_counter()
     cursor.execute(
     x, indexes_mapped)
     data = list(cursor.fetchall())
+    t2 = perf_counter()
+    logger.warning(t2-t1)
     logger.warning(data[1:100])
     return rank_count
 
