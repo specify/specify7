@@ -204,7 +204,7 @@ const nameMapper = f.store<Partial<RR<keyof Tables, string>>>(() => ({
   SpExportSchemaMapping: 'Exp',
   SpQuery: 'SQL',
   SpQueryField: 'SQL',
-  SpViewSetObj: 'Frm',
+  SpViewSetObj: 'Form',
   SpecifyUser: 'Usr',
 }));
 
