@@ -5,7 +5,7 @@ from django.views.decorators.http import require_GET, require_POST
 from django.http import HttpResponse, Http404
 from django.db import connection, transaction
 
-from .views import login_maybe_required
+from .views import login_maybe_required, openapi
 from .api import get_object_or_404, obj_to_data, toJson
 from .models import datamodel
 from .auditcodes import TREE_MOVE
@@ -33,6 +33,81 @@ def tree_mutation(mutation):
         return HttpResponse(toJson(result), content_type="application/json")
     return wrapper
 
+@openapi(schema={
+    "get": {
+        "parameters": [
+            {
+                "name": "includeauthor",
+                "in": "query",
+                "required": False,
+                "schema": {
+                    "type": "number"
+                },
+                "description": "If parameter is present, include the author of the requested node in the response \
+                    if the tree is taxon and node's rankid >= paramter value."
+            }
+        ],
+        "responses": {
+            "200": {
+                "description": "Returns a list of nodes with parent <parentid> restricted to the tree defined by <treedef>. \
+                Nodes are sorted by <sortfield>",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "array",
+                                "items": [
+                                    {
+                                        "type" : "number",
+                                        "description" : "The id of the child node"
+                                    },
+                                    {
+                                        "type" : "string",
+                                        "description" : "The name of the child node"
+                                    },
+                                    {
+                                        "type" : "string",
+                                        "description" : "The fullName of the child node"
+                                    },
+                                    {
+                                        "type" : "number",
+                                        "description" : "The nodenumber of the child node"
+                                    },
+                                    {
+                                        "type" : "number",
+                                        "description" : "The highestChildNodeNumber of the child node"
+                                    },
+                                    {
+                                        "type" : "number",
+                                        "description" : "The rankId of the child node"
+                                    },
+                                    {
+                                        "type" : "number",
+                                        "description" : "The acceptedId of the child node. Returns null if the node has no acceptedId"
+                                    },
+                                    {
+                                        "type" : "string",
+                                        "description" : "The fullName of the child node's accepted node. Returns null if the node has no acceptedId"
+                                    },
+                                    {
+                                        "type" : "string",
+                                        "description" : "The author of the child node. \
+                                        Returns null if <tree> is not taxon or the rankId of the node is less than <includeAuthor> paramter"
+                                    },
+                                    {
+                                        "type" : "number",
+                                        "description" : "The number of children the child node has"
+                                    }
+                                ],
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+})
 @login_maybe_required
 @require_GET
 def tree_view(request, treedef, tree, parentid, sortfield):
