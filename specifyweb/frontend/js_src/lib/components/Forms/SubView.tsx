@@ -17,6 +17,9 @@ import { fail, softFail } from '../Errors/Crash';
 import { TableIcon } from '../Molecules/TableIcon';
 import { overwriteReadOnly } from '../../utils/types';
 import { SubViewSortField } from '../FormParse/cells';
+import { attachmentSettingsPromise } from '../Attachments/attachments';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { attachmentRelatedTables } from '../Attachments';
 
 export const SubViewContext = React.createContext<
   | {
@@ -31,6 +34,8 @@ export const SubViewContext = React.createContext<
   | undefined
 >(undefined);
 SubViewContext.displayName = 'SubViewContext';
+
+const fetchAttachmentSettings = () => attachmentSettingsPromise;
 
 export function SubView({
   relationship,
@@ -185,6 +190,16 @@ export function SubView({
   );
 
   const [isOpen, _, handleClose, handleToggle] = useBooleanState(!isButton);
+
+  const [isAttachmentConfigured] = useAsyncState(fetchAttachmentSettings, true);
+
+  const isAttachmentTable = attachmentRelatedTables().includes(
+    relationship.relatedModel.name
+  );
+
+  const isAttachmentMisconfirgured =
+    isAttachmentTable && !isAttachmentConfigured;
+
   return (
     <SubViewContext.Provider value={contextValue}>
       {isButton && (
@@ -217,7 +232,9 @@ export function SubView({
           dialog={isButton ? 'nonModal' : false}
           formType={formType}
           mode={
-            relationship.isDependent() && initialMode !== 'view'
+            !isAttachmentMisconfirgured &&
+            relationship.isDependent() &&
+            initialMode !== 'view'
               ? 'edit'
               : 'view'
           }

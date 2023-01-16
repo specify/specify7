@@ -8,7 +8,7 @@ from django.db import models, connection
 from django.db.models import F, Q, ProtectedError
 from django.conf import settings
 
-from specifyweb.businessrules.exceptions import BusinessRuleException
+from specifyweb.businessrules.exceptions import TreeBusinessRuleException
 
 from  .auditcodes import TREE_MERGE, TREE_SYNONYMIZE, TREE_DESYNONYMIZE
 
@@ -69,10 +69,38 @@ class Tree(models.Model):
         try:
             model.objects.get(id=self.id, parent__rankid__lt=F('rankid'))
         except model.DoesNotExist:
-            raise BusinessRuleException("Tree node's parent has rank greater than itself.")
+            raise TreeBusinessRuleException(
+                "Tree node's parent has rank greater than itself",
+                {"tree" : self.__class__.__name__,
+                 "localizationKey" : "nodeParentInvalidRank",
+                 "node" : {
+                    "id" : self.id,
+                    "rankid" : self.rankid,
+                    "fullName" : self.fullname,
+                    "parentid": self.parent.id,
+                    "children": list(self.children.values('id', 'fullname'))
+                 },
+                 "parent" : {
+                    "id": self.parent.id,
+                    "rankid" : self.parent.rankid,
+                    "fullName": self.parent.fullname,
+                    "parentid": self.parent.parent.id,
+                    "children": list(self.parent.children.values('id', 'fullName'))
+                 }
+                 })
 
         if model.objects.filter(parent=self, parent__rankid__gte=F('rankid')).count() > 0:
-            raise BusinessRuleException("Tree node's rank is greater than some of its children.")
+            raise TreeBusinessRuleException(
+                "Tree node's rank is greater than or equal to some of its children",
+                {"tree" : self.__class__.__name__,
+                 "localizationKey" : "nodeChildrenInvalidRank",
+                 "node" : {
+                    "id" : self.id,
+                    "rankid" : self.rankid,
+                    "fullName" : self.fullname,
+                    "parentid": self.parent.id,
+                    "children": list(self.children.values('id', 'rankid', 'fullname').filter(parent=self, parent__rankid__gte=F('rankid')))
+                 }})
 
         if prev_self is None:
              reset_fullnames(self.definition, null_only=True)
@@ -143,7 +171,25 @@ def adding_node(node):
         pattern = r'^sp7\.allow_adding_child_to_synonymized_parent\.' + node.specify_model.name + '=(.+)'
         override = re.search(pattern, remote_prefs, re.MULTILINE)
         if override is None or override.group(1).lower() != "true":
-            raise BusinessRuleException(f'Adding node "{node.fullname}" to synonymized parent "{parent.fullname}".')
+            raise TreeBusinessRuleException(
+                f'Adding node "{node.fullname}" to synonymized parent "{parent.fullname}"',
+                {"tree" : "Taxon",
+                 "localizationKey" : "nodeOperationToSynonymizedParent",
+                 "operaton" : "Adding",
+                 "node" : {
+                    "id" : node.id,
+                    "rankid" : node.rankid,
+                    "fullName" : node.fullname,
+                    "parentid": node.parent.id,
+                    "children": list(node.children.values('id', 'fullname'))
+                 },
+                 "parent" : {
+                    "id" : parent.id,
+                    "rankid" : parent.rankid,
+                    "fullName" : parent.fullname,
+                    "parentid": parent.parent.id,
+                    "children": list(parent.children.values('id', 'fullname'))
+                 }})
 
     insertion_point = open_interval(model, parent.nodenumber, 1)
     node.highestchildnodenumber = node.nodenumber = insertion_point
@@ -155,8 +201,25 @@ def moving_node(to_save):
     size = current.highestchildnodenumber - current.nodenumber + 1
     new_parent = model.objects.select_for_update().get(id=to_save.parent.id)
     if new_parent.accepted_id is not None:
-        raise BusinessRuleException('Moving node "{node.fullname}" to synonymized parent "parent.fullname".'
-                                    .format(node=to_save, parent=new_parent))
+        raise TreeBusinessRuleException(
+            'Moving node "{node.fullname}" to synonymized parent "{parent.fullname}"'.format(node=to_save, parent=new_parent),
+            {"tree" : "Taxon",
+             "localizationKey" : "nodeOperationToSynonymizedParent",
+             "operation" : "Moving",
+             "node" : {
+                "id" : to_save.id,
+                "rankid" : to_save.rankid,
+                "fullName" : to_save.fullname,
+                "parentid": to_save.parent.id,
+                "children": list(to_save.children.values('id', 'fullname'))
+             },
+             "parent" : {
+                "id" : new_parent.id,
+                "rankid" : new_parent.rankid,
+                "fullName" : new_parent.fullname,
+                "parentid": new_parent.parent.id,
+                "children": list(new_parent.children.values('id', 'fullname'))
+             }})
 
     insertion_point = open_interval(model, new_parent.nodenumber, size)
     # node interval will have moved if it is to the right of the insertion point
@@ -178,12 +241,34 @@ def merge(node, into, agent):
     from . import models
     logger.info('merging %s into %s', node, into)
     model = type(node)
-    assert type(into) is model
+    if not type(into) is model: raise AssertionError(
+        f"Unexpected type of node '{into.__class__.__name__}', during merge. Expected '{model.__class__.__name__}'",
+        {"node" : into.__class__.__name__, 
+        "nodeModel" : model.__class__.__name__, 
+        "operation" : "merge", 
+        "localizationKey" : "invalidNodeType"})
     target = model.objects.select_for_update().get(id=into.id)
-    assert node.definition_id == target.definition_id, "merging across trees"
+    if not (node.definition_id == target.definition_id): raise AssertionError("merging across trees", {"localizationKey" : "mergeAcrossTrees"})
     if into.accepted_id is not None:
-        raise BusinessRuleException('Merging node "{node.fullname}" with synonymized node "{into.fullname}".'
-                                    .format(node=node, into=into))
+        raise TreeBusinessRuleException(
+            'Merging node "{node.fullname}" with synonymized node "{into.fullname}"'.format(node=node, into=into),
+            {"tree" : "Taxon",
+             "localizationKey" : "nodeOperationToSynonymizedParent", 
+             "operation" : "Merging",
+             "node" : {
+                "id" : node.id,
+                "rankid" : node.rankid,
+                "fullName" : node.fullname,
+                "parentid": node.parent.id,
+                "children": list(node.children.values('id', 'fullname'))
+             },
+             "synonymized" : {
+                "id" : into.id,
+                "rankid" : into.rankid,
+                "fullName" : into.fullname,
+                "parentid": into.parent.id,
+                "children": list(into.children.values('id', 'fullname'))
+             }})
     target_children = target.children.select_for_update()
     for child in node.children.select_for_update():
         matched = [target_child for target_child in target_children
@@ -213,18 +298,48 @@ def merge(node, into, agent):
 def synonymize(node, into, agent):
     logger.info('synonymizing %s to %s', node, into)
     model = type(node)
-    assert type(into) is model
+    if not type(into) is model: raise AssertionError(
+        f"Unexpected type '{into.__class__.__name__}', during synonymize. Expected '{model.__class__.__name__}'", 
+        {"node" : into.__class__.__name__, 
+        "nodeModel" : model.__class__.__name__, 
+        "operation" : "synonymize", 
+        "localizationKey" : "invalidNodeType"})
     target = model.objects.select_for_update().get(id=into.id)
-    assert node.definition_id == target.definition_id, "synonymizing across trees"
+    if not (node.definition_id == target.definition_id): raise AssertionError("synonymizing across trees", {"localizationKey" : "synonymizeAcrossTrees"})
     if target.accepted_id is not None:
-        raise BusinessRuleException('Synonymizing "{node.fullname}" to synonymized node "{into.fullname}".'
-                                    .format(node=node, into=into))
+        raise TreeBusinessRuleException(
+            'Synonymizing "{node.fullname}" to synonymized node "{into.fullname}"'.format(node=node, into=into),
+            {"tree" : "Taxon",
+             "localizationKey" : "nodeSynonymizeToSynonymized",
+             "node" : {
+                "id" : node.id,
+                "rankid" : node.rankid,
+                "fullName" : node.fullname,
+                "parentid": node.parent.id,
+                "children": list(node.children.values('id', 'fullname'))
+             },
+             "synonymized" : {
+                "id" : into.id,
+                "rankid" : into.rankid,
+                "fullName" : into.fullname,
+                "parentid": into.parent.id,
+                "children": list(into.children.values('id', 'fullname'))
+             }})
     node.accepted_id = target.id
     node.isaccepted = False
     node.save()
     if node.children.count() > 0:
-        raise BusinessRuleException('Synonymizing node "{node.fullname}" which has children.'
-                                    .format(node=node))
+        raise TreeBusinessRuleException(
+            'Synonymizing node "{node.fullname}" which has children'.format(node=node),
+            {"tree" : "Taxon",
+             "localizationKey" : "nodeSynonimizeWithChildren",
+             "parent" : {
+                "id" : into.id,
+                "rankid" : into.rankid,
+                "fullName" : into.fullname,
+                "parentid": into.parent.id,
+                "children": list(into.children.values('id', 'fullname'))
+             }})
     node.acceptedchildren.update(**{node.accepted_id_attr().replace('_id', ''): target})
     #assuming synonym can't be synonymized
     mutation_log(TREE_SYNONYMIZE, node, agent, node.parent,
@@ -452,12 +567,33 @@ def renumber_tree(table):
 
     # make sure there are no cycles
     cursor.execute((
-        "select count(*) from {table} t\n"
+        "select p.{table}id, p.fullname, t.{table}id, t.fullName, tdef.title\n"
+        "from {table} t\n"
         "join {table} p on t.parentid = p.{table}id\n"
+        "join {table}treedefitem tdef on t.{table}treedefitemid=tdef.{table}treedefitemid\n"
         "where t.rankid <= p.rankid\n"
         "and t.acceptedid is null" if table == 'taxon' else ""
     ).format(table=table))
-    assert (0, ) == cursor.fetchone(), "bad tree structure"
+    results = cursor.fetchall()
+    formattedResults = {
+        "nodeData" : [
+            {
+            "parent" : {
+              f"{table.capitalize()} ID" : parentID,
+              "Full Name" : parentName
+        },
+            "child" : {
+              f"{table.capitalize()} ID" : childID,
+              "Full Name" : childName,
+              "Bad Rank" : childRank
+        }} for parentID, parentName, childID, childName, childRank in results],
+        "localizationKey" : "badTreeStructureInvalidRanks",
+    }
+    bad_ranks_count = cursor.rowcount
+    formattedResults["badRanks"] = bad_ranks_count
+    if bad_ranks_count > 0 : raise AssertionError(
+        f"Bad Tree Structure: Found {bad_ranks_count} case(s) where node rank is not greater than it's parent", 
+        formattedResults)
 
     # Get the tree ranks in leaf -> root order.
     cursor.execute("select distinct rankid from {} order by rankid desc".format(table))
