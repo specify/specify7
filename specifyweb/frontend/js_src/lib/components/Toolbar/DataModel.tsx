@@ -359,24 +359,24 @@ export function DataModelTables(): JSX.Element {
           {`${welcomeText.schemaVersion()} ${getSystemInfo().schema_version}`}
         </H2>
         <span className="-ml-2 flex-1" />
-        <Link.Green
+        <Link.Blue
           className="print:hidden"
           download
           href="/context/datamodel.json"
         >
           {schemaText.downloadAsJson()}
-        </Link.Green>
-        <Button.Green
+        </Link.Blue>
+        <Button.Blue
           className="print:hidden"
           onClick={(): void =>
             void downloadFile(
-              `Specify 7 datamodel - v${getSystemInfo().schema_version}.tsv`,
+              `Specify 7 Data Model - v${getSystemInfo().schema_version}.tsv`,
               dataModelToTsv()
             ).catch(softFail)
           }
         >
           {schemaText.downloadAsTsv()}
-        </Button.Green>
+        </Button.Blue>
       </div>
       <div className="relative flex flex-1 gap-6 overflow-hidden md:flex-row">
         <DataModelAside activeCategory={visibleChild} />
@@ -485,16 +485,16 @@ const dataModelToTsv = (): string =>
     ...Object.values(schema.models).flatMap((model) => {
       const commonColumns = [
         model.name,
-        model.label,
+        model.label.replace('\n', ' '),
         booleanFormatter(model.isSystem),
         booleanFormatter(model.isHidden),
         model.tableId,
       ];
       return [
-        model.literalFields.map((field) => [
+        ...model.literalFields.map((field) => [
           ...commonColumns,
           field.name,
-          field.label,
+          field.label.replace('\n', ' '),
           field.getLocalizedDesc(),
           booleanFormatter(field.isHidden),
           booleanFormatter(field.isReadOnly),
@@ -507,10 +507,10 @@ const dataModelToTsv = (): string =>
           '',
           '',
         ]),
-        model.relationships.map((relationship) => [
+        ...model.relationships.map((relationship) => [
           ...commonColumns,
           relationship.name,
-          relationship.label,
+          relationship.label.replace('\n', ' '),
           relationship.getLocalizedDesc(),
           booleanFormatter(relationship.isHidden),
           booleanFormatter(relationship.isReadOnly),
