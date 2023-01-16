@@ -52,9 +52,10 @@ export type StatSpecCalculated =
     }
   | undefined;
 
-export type StatCategoryReturn =
-  | IR<{ readonly label: string; readonly spec: StatItemSpec }>
-  | undefined;
+export type StatCategoryReturn = IR<{
+  readonly label: string;
+  readonly spec: StatItemSpec;
+}>;
 export type ItemReturnSpec = {
   readonly label: string;
   readonly spec: StatItemSpec;

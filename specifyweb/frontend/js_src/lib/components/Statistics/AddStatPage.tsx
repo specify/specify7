@@ -28,19 +28,13 @@ export function AddStatPage({
         categoryIndex: number,
         itemIndex: number,
         value: number | string,
-        itemLabel: string,
         pageIndex: number
       ) => void)
     | undefined;
 }): JSX.Element {
   const handleValueLoadPage = React.useCallback(
-    (
-      categoryIndex: number,
-      itemIndex: number,
-      value: number | string,
-      itemLabel: string
-    ) => {
-      handleValueLoad?.(categoryIndex, itemIndex, value, itemLabel, pageIndex);
+    (categoryIndex: number, itemIndex: number, value: number | string) => {
+      handleValueLoad?.(categoryIndex, itemIndex, value, pageIndex);
     },
     [handleValueLoad, pageIndex]
   );

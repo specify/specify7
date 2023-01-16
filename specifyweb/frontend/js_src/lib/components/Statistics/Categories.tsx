@@ -158,7 +158,11 @@ export function Categories({
                                       itemLabel: item.itemLabel,
                                       itemValue: item.itemValue,
                                       itemType: item.itemType,
-                                      pathToValue: item.itemLabel,
+                                      pathToValue:
+                                        item.itemType === 'BackendStat' &&
+                                        item.itemName === 'phantomItem'
+                                          ? item.itemLabel
+                                          : undefined,
                                     })
                                 : undefined
                               : undefined

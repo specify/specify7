@@ -29,6 +29,7 @@ import {
   useDefaultLayout,
   useDefaultStatsToAdd,
   useStatsSpec,
+  useUnknownCategory,
 } from './hooks';
 import { StatsPageEditing } from './StatsPageEditing';
 import type { CustomStat, DefaultStat, StatLayout } from './types';
@@ -219,100 +220,9 @@ export function StatsPage(): JSX.Element | null {
     },
     [setDefaultLayout]
   );
-  React.useEffect(() => {
-    Object.entries(statsSpec).forEach(([pageName, pageSpec]) =>
-      Object.entries(pageSpec).forEach(([categoryName, categorySpec]) =>
-        Object.entries(categorySpec.items ?? {}).forEach(
-          ([itemName, { spec }]) => {
-            if (itemName === 'phantomItem' && spec.type === 'BackEndStat') {
-              if (Object.keys(backEndResponse ?? {}).includes(categoryName)) {
-                handleChange((oldCategory) =>
-                  oldCategory.map((unknownCategory) => {
-                    const settingUnknownCategory =
-                      unknownCategory.items === undefined &&
-                      !(
-                        unknownCategory.categoryToFetch === undefined ||
-                        backEndResponse?.[unknownCategory.categoryToFetch] ===
-                          undefined ||
-                        unknownCategory.categoryToFetch !== categoryName
-                      );
-                    if (settingUnknownCategory) {
-                      setLastUpdated();
-                    }
-                    return {
-                      ...unknownCategory,
-                      items:
-                        unknownCategory.items ??
-                        (unknownCategory.categoryToFetch === undefined ||
-                        backEndResponse?.[unknownCategory.categoryToFetch] ===
-                          undefined ||
-                        unknownCategory.categoryToFetch !== categoryName
-                          ? undefined
-                          : Object.entries(backEndResponse[categoryName]).map(
-                              ([itemName, rawValue]) => ({
-                                type: 'DefaultStat',
-                                pageName,
-                                itemName: 'phantomItem',
-                                categoryName,
-                                itemLabel: itemName,
-                                itemValue: spec.formatter(rawValue),
-                                itemType: 'BackendStat',
-                                pathToValue: itemName,
-                              })
-                            )),
-                    };
-                  })
-                );
-              }
-            }
-          }
-        )
-      )
-    );
-  }, [backEndResponse, handleChange, statsSpec]);
-  React.useLayoutEffect(() => {
-    Object.entries(statsSpec).forEach(([pageName, pageSpec]) =>
-      Object.entries(pageSpec).forEach(([categoryName, categorySpec]) =>
-        Object.entries(categorySpec.items ?? {}).forEach(
-          ([itemName, { spec }]) => {
-            if (itemName === 'phantomItem' && spec.type === 'BackEndStat') {
-              if (
-                Object.keys(defaultBackEndResponse ?? {}).includes(categoryName)
-              ) {
-                handleDefaultChange((oldCategory) =>
-                  oldCategory.map((unknownCategory) => {
-                    return {
-                      ...unknownCategory,
-                      items:
-                        unknownCategory.items ??
-                        (unknownCategory.categoryToFetch === undefined ||
-                        defaultBackEndResponse?.[
-                          unknownCategory.categoryToFetch
-                        ] === undefined ||
-                        unknownCategory.categoryToFetch !== categoryName
-                          ? undefined
-                          : Object.entries(
-                              defaultBackEndResponse[categoryName]
-                            ).map(([itemName, rawValue]) => ({
-                              type: 'DefaultStat',
-                              pageName,
-                              itemName: 'phantomItem',
-                              categoryName,
-                              itemLabel: itemName,
-                              itemValue: spec.formatter(rawValue),
-                              itemType: 'BackendStat',
-                              pathToValue: itemName,
-                            }))),
-                    };
-                  })
-                );
-              }
-            }
-          }
-        )
-      )
-    );
-  }, [defaultBackEndResponse, handleDefaultChange, statsSpec]);
+  useUnknownCategory(backEndResponse, handleChange, statsSpec);
+  useUnknownCategory(defaultBackEndResponse, handleDefaultChange, statsSpec);
+
   const queries = useQueries(filters, false);
   const previousCollectionLayout = React.useRef(
     collectionLayout as unknown as StatLayout
@@ -455,7 +365,6 @@ export function StatsPage(): JSX.Element | null {
       categoryIndex: number,
       itemIndex: number,
       value: number | string,
-      itemName: string,
       pageIndex: number
     ) => {
       setDefaultLayout((oldValue) =>
@@ -474,7 +383,6 @@ export function StatsPage(): JSX.Element | null {
                     ...(oldValue[pageIndex].categories[categoryIndex].items ??
                       [])[itemIndex],
                     itemValue: value,
-                    itemLabel: itemName,
                   }
                 ),
               }

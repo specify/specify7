@@ -30,7 +30,6 @@ export function AddStatDialog({
         categoryIndex: number,
         itemIndex: number,
         value: number | string,
-        itemLabel: string,
         pageIndex: number
       ) => void)
     | undefined;
