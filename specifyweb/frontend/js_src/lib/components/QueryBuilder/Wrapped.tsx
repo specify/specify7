@@ -534,6 +534,7 @@ export function QueryBuilder({
             queryRunCount={state.queryRunCount}
             recordSetId={recordSet?.id}
             onSelected={handleSelected}
+            isDistinct={query.selectDistinct ?? false}
             onSortChange={(fields): void => {
               dispatch({
                 type: 'ChangeFieldsAction',

@@ -148,7 +148,7 @@ export const augmentQueryFields = (
     ? fields
     : baseTableName === 'SpAuditLog'
     ? addQueryFields(fields, auditLogMappingPaths, true)
-    : addLocalityFields(baseTableName, fields, isDistinct);
+    : addLocalityFields(baseTableName, fields);
 
 /**
  * It is expected by QueryResultsWrapper that this function does not change
@@ -210,11 +210,8 @@ const addQueryFields = (
  */
 function addLocalityFields(
   baseTableName: keyof Tables,
-  fields: RA<QueryField>,
-  isDistinct: boolean
+  fields: RA<QueryField>
 ): RA<QueryField> {
-  if (isDistinct) return fields;
-
   const fieldSpecs = fields.map((field) =>
     QueryFieldSpec.fromPath(baseTableName, field.mappingPath)
   );

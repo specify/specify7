@@ -31,6 +31,7 @@ export function QueryResultsWrapper({
   createRecordSet,
   extraButtons,
   forceCollection,
+  isDistinct,
   onSelected: handleSelected,
   onSortChange: handleSortChange,
 }: {
@@ -43,6 +44,7 @@ export function QueryResultsWrapper({
   readonly createRecordSet: JSX.Element | undefined;
   readonly extraButtons: JSX.Element | undefined;
   readonly forceCollection: number | undefined;
+  readonly isDistinct: boolean;
   readonly onSelected?: (selected: RA<number>) => void;
   readonly onSortChange?: (
     /*
@@ -64,7 +66,7 @@ export function QueryResultsWrapper({
             ...queryResource.toJSON(),
             fields: unParseQueryFields(
               baseTableName,
-              augmentQueryFields(baseTableName, fields, false)
+              augmentQueryFields(baseTableName, fields, isDistinct)
             ),
             collectionId: forceCollection,
             recordSetId,
@@ -96,7 +98,7 @@ export function QueryResultsWrapper({
     setProps(undefined);
 
     const countOnly = queryResource.get('countOnly') === true;
-    const allFields = augmentQueryFields(baseTableName, fields, countOnly);
+    const allFields = augmentQueryFields(baseTableName, fields, isDistinct);
 
     setTotalCount(undefined);
     ajax<{ readonly count: number }>('/stored_query/ephemeral/', {
