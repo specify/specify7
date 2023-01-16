@@ -8,13 +8,8 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { useValidation } from '../../hooks/useValidation';
 import { userText } from '../../localization/user';
 import type { Language } from '../../localization/utils/config';
-import {
-  devLanguage,
-  disabledLanguages,
-  LANGUAGE,
-} from '../../localization/utils/config';
+import { devLanguage, LANGUAGE } from '../../localization/utils/config';
 import { parseDjangoDump } from '../../utils/ajax/csrfToken';
-import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { ErrorMessage } from '../Atoms';
 import { Form, Input, Label } from '../Atoms/Form';
@@ -74,11 +69,8 @@ export function LoginLanguageChooser({
   const loading = React.useContext(LoadingContext);
   return (
     <LanguageSelection<Language>
-      languages={Object.fromEntries(
-        languages.filter(
-          ([code]) => !f.has(disabledLanguages, code) || code === LANGUAGE
-        )
-      )}
+      languages={Object.fromEntries(languages)}
+      isForInterface
       value={(devLanguage as Language) ?? LANGUAGE}
       onChange={(language): void =>
         loading(
@@ -139,6 +131,8 @@ function LegacyLogin({
         <Label.Block>
           {userText.username()}
           <Input.Text
+            autoCapitalize="none"
+            autoCorrect="off"
             defaultValue=""
             forwardRef={validationRef}
             name="username"

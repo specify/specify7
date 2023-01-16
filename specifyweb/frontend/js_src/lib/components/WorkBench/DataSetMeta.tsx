@@ -15,7 +15,7 @@ import { uniquifyDataSetName } from '../../utils/uniquifyName';
 import { LoadingContext } from '../Core/Contexts';
 import { icons } from '../Atoms/Icons';
 import { formatNumber } from '../Atoms/Internationalization';
-import { Dialog } from '../Molecules/Dialog';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { createBackboneView } from '../Core/reactBackboneExtend';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { DateElement } from '../Molecules/DateElement';
@@ -35,6 +35,8 @@ import { unsafeNavigate } from '../Router/Router';
 import { LocalizedString } from 'typesafe-i18n';
 import { schema } from '../DataModel/schema';
 import { StringToJsx } from '../../localization/utils';
+import { getField } from '../DataModel/helpers';
+import { hasPermission } from '../Permissions/helpers';
 
 // FEATURE: allow exporting/importing the mapping
 export function DataSetMeta({
@@ -42,11 +44,13 @@ export function DataSetMeta({
   getRowCount = (): number => dataset.rows.length,
   onClose: handleClose,
   onChange: handleChange,
+  onDeleted: handleDeleted,
 }: {
   readonly dataset: Dataset;
   readonly getRowCount?: () => number;
   readonly onClose: () => void;
   readonly onChange: (dataSetName: LocalizedString) => void;
+  readonly onDeleted: () => void;
 }): JSX.Element | null {
   const id = useId('data-set-meta');
   const [name, setName] = React.useState(dataset.name);
@@ -54,16 +58,74 @@ export function DataSetMeta({
 
   const loading = React.useContext(LoadingContext);
 
-  return (
+  const [isDeleted, setIsDeleted] = React.useState(false);
+
+  const [showDeleteConfirm, setShowDeleteConfirm] = React.useState(false);
+
+  return isDeleted ? (
+    <Dialog
+      buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
+      header={wbText.dataSetDeleted()}
+      onClose={handleDeleted}
+    >
+      {wbText.dataSetDeletedDescription()}
+    </Dialog>
+  ) : showDeleteConfirm ? (
     <Dialog
       buttons={
         <>
+          {hasPermission('/workbench/dataset', 'delete') && (
+            <Button.Red
+              onClick={() => {
+                loading(
+                  ping(
+                    `/api/workbench/dataset/${dataset.id}/`,
+                    {
+                      method: 'DELETE',
+                    },
+                    { expectedResponseCodes: [Http.NO_CONTENT, Http.NOT_FOUND] }
+                  ).then(() => {
+                    setIsDeleted(true);
+                  })
+                );
+              }}
+            >
+              {commonText.delete()}
+            </Button.Red>
+          )}
+          <span className="-ml-2 flex-1" />
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+        </>
+      }
+      className={{
+        container: dialogClassNames.narrowContainer,
+      }}
+      header={wbText.deleteDataSet()}
+      icon={<span className="text-blue-500"> {icons.table}</span>}
+      onClose={handleClose}
+    >
+      {wbText.deleteDataSetDescription()}
+    </Dialog>
+  ) : (
+    <Dialog
+      buttons={
+        <>
+          {hasPermission('/workbench/dataset', 'delete') && (
+            <Button.Red
+              onClick={() => {
+                setShowDeleteConfirm(true);
+              }}
+            >
+              {commonText.delete()}
+            </Button.Red>
+          )}
+          <span className="-ml-2 flex-1" />
           <Button.DialogClose>{commonText.close()}</Button.DialogClose>
           <Submit.Blue form={id('form')}>{commonText.save()}</Submit.Blue>
         </>
       }
       header={wbText.dataSetMeta()}
-      icon={<span className="text-blue-500">{icons.table}</span>}
+      icon={<span className="text-blue-500"> {icons.table}</span>}
       onClose={handleClose}
     >
       <Form
@@ -99,23 +161,20 @@ export function DataSetMeta({
           <Input.Text
             maxLength={getMaxDataSetLength()}
             required
-            spellCheck="true"
+            spellCheck
             value={name}
             onValueChange={(name): void => setName(name as LocalizedString)}
           />
         </Label.Block>
         <Label.Block>
-          <b>
-            {schema.models.Workbench.strictGetLiteralField('remarks').label}:
-          </b>
+          <b>{getField(schema.models.Workbench, 'remarks').label}:</b>
           <AutoGrowTextArea value={remarks} onValueChange={setRemarks} />
         </Label.Block>
         <div className="flex flex-col">
           <b>
             {
-              schema.models.WorkbenchTemplateMappingItem.strictGetLiteralField(
-                'metadata'
-              ).label
+              getField(schema.models.WorkbenchTemplateMappingItem, 'metaData')
+                .label
             }
           </b>
           <span>
@@ -133,9 +192,8 @@ export function DataSetMeta({
           <span>
             <StringToJsx
               string={commonText.jsxColonLine({
-                label:
-                  schema.models.Workbench.strictGetField('timestampCreated')
-                    .label,
+                label: getField(schema.models.Workbench, 'timestampCreated')
+                  .label,
               })}
               components={{
                 wrap: (
@@ -149,9 +207,8 @@ export function DataSetMeta({
           <span>
             <StringToJsx
               string={commonText.jsxColonLine({
-                label:
-                  schema.models.Workbench.strictGetField('timestampModified')
-                    .label,
+                label: getField(schema.models.Workbench, 'timestampModified')
+                  .label,
               })}
               components={{
                 wrap: (
@@ -187,9 +244,8 @@ export function DataSetMeta({
           <span>
             <StringToJsx
               string={commonText.jsxColonLine({
-                label:
-                  schema.models.Workbench.strictGetField('createdByAgent')
-                    .label,
+                label: getField(schema.models.Workbench, 'createdByAgent')
+                  .label,
               })}
               components={{
                 wrap: (
@@ -203,9 +259,8 @@ export function DataSetMeta({
           <span>
             <StringToJsx
               string={commonText.jsxColonLine({
-                label:
-                  schema.models.Workbench.strictGetField('modifiedByAgent')
-                    .label,
+                label: getField(schema.models.Workbench, 'modifiedByAgent')
+                  .label,
               })}
               components={{
                 wrap: (
@@ -266,11 +321,7 @@ function DataSetName({
         )}
       </h2>
       <Button.Small onClick={handleOpen}>
-        {
-          schema.models.WorkbenchTemplateMappingItem.strictGetLiteralField(
-            'metadata'
-          ).label
-        }
+        {getField(schema.models.WorkbenchTemplateMappingItem, 'metaData').label}
       </Button.Small>
       {showMeta && (
         <DataSetMeta
@@ -281,6 +332,7 @@ function DataSetName({
             setName(name);
           }}
           onClose={handleClose}
+          onDeleted={() => unsafeNavigate('/specify/', { replace: true })}
         />
       )}
     </>

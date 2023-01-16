@@ -31,7 +31,7 @@ class PermissionTargetMeta(type):
     def __new__(cls, name, bases, attrs):
         if bases: # skip PermissionsTarget base class
             resource: str = attrs['resource']
-            assert resource not in registry
+            if resource in registry: raise AssertionError(f"Resource '{resource}' already in Permissions registry", {"resource" : resource, "localizationKey" : "resourceInPermissionRegistry"})
 
             actions = registry[resource] = []
 
@@ -64,13 +64,13 @@ def check_permission_targets(collectionid: Optional[int], userid: int, targets: 
         raise NoMatchingRuleException(denials)
 
 class PermissionsException(Exception):
-    http_status = 500
+    status_code = 500
 
     def to_json(self) -> Dict:
         return {'PermissionsException': repr(self)}
 
 class NoMatchingRuleException(PermissionsException):
-    http_status = 403
+    status_code = 403
 
     def __init__(self, denials: List[PermRequest]):
         self.denials = denials
@@ -79,7 +79,7 @@ class NoMatchingRuleException(PermissionsException):
         return {'NoMatchingRuleException': [d._asdict() for d in self.denials]}
 
 class NoAdminUsersException(PermissionsException):
-    http_status = 400
+    status_code = 400
 
     def to_json(self) -> Dict:
         return {'NoAdminUsersException': {}}
@@ -90,7 +90,9 @@ def enforce(collection: Union[int, Model, None], actor, resources: List[str], ac
     if isinstance(actor, Agent):
         userid = actor.specifyuser_id
     else:
-        assert isinstance(actor, models.Specifyuser)
+        if not isinstance(actor, models.Specifyuser): raise AssertionError(
+            f"Agent '{actor}' is not a SpecifyUser", 
+            {"actor" : actor, "localizationKey" : "actorIsNotSpecifyUser"})
         userid = actor.id
 
     if userid is None:
@@ -99,7 +101,11 @@ def enforce(collection: Union[int, Model, None], actor, resources: List[str], ac
     if isinstance(collection, int) or collection is None:
         collectionid = collection
     else:
-        assert isinstance(collection, models.Collection)
+        if not isinstance(collection, models.Collection): raise AssertionError(
+            f"Unexpted type of collection '{collection.__class__.__name__}'. Expected '{models.Collection.__class__.__name__}'",
+            {"unexptectedTypeName": collection.__class__.__name__, 
+            "collectionName" : models.Collection.__class__.__name__, 
+            "localizationKey" : "unexpectedCollectionType"})
         collectionid = collection.id
 
     perm_requests = [PermRequest(collectionid, userid, resource, action) for resource in resources]

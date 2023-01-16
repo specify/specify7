@@ -5,14 +5,12 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useAsyncState } from '../../hooks/useAsyncState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
-import { ajax } from '../../utils/ajax';
 import { listen } from '../../utils/events';
-import type { RA, RR } from '../../utils/types';
-import { sortFunction, toLowerCase } from '../../utils/utils';
+import type { RR } from '../../utils/types';
+import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Form, Input, Select } from '../Atoms/Form';
@@ -21,8 +19,9 @@ import { Link } from '../Atoms/Link';
 import { MenuContext } from '../Core/Contexts';
 import type { MenuItem } from '../Core/Main';
 import { serializeResource } from '../DataModel/helpers';
-import type { SerializedModel } from '../DataModel/helperTypes';
+import { schema } from '../DataModel/schema';
 import type { Collection } from '../DataModel/types';
+import { userInformation } from '../InitialContext/userInformation';
 import { formatUrl } from '../Router/queryString';
 import { switchCollection } from '../RouterCommands/SwitchCollection';
 import { usePref } from '../UserPreferences/usePref';
@@ -205,45 +204,23 @@ function MenuItemComponent({
   ) : null;
 }
 
-type Collections = {
-  readonly available: RA<SerializedModel<Collection>>;
-  readonly current: number | null;
-};
-
 export function CollectionSelector({
   onClick: handleClick,
 }: {
-  readonly onClick: (() => void) | undefined;
+  readonly onClick?: () => void;
 }): JSX.Element {
-  const [collections] = useAsyncState<Collections>(
-    React.useCallback(
-      async () =>
-        ajax<Collections>('/context/collection/', {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          headers: { Accept: 'application/json' },
-        }).then(({ data }) => data),
-      []
-    ),
-    false
-  );
-
   const [sortOrder] = usePref('chooseCollection', 'general', 'sortOrder');
   const isReverseSort = sortOrder.startsWith('-');
   const sortField = (isReverseSort ? sortOrder.slice(1) : sortOrder) as string &
     keyof Collection['fields'];
   const sortedCollections = React.useMemo(
     () =>
-      typeof collections === 'object'
-        ? Array.from(collections.available)
-            .sort(
-              sortFunction(
-                (collection) => collection[toLowerCase(sortField)],
-                isReverseSort
-              )
-            )
-            .map(serializeResource)
-        : undefined,
-    [collections, isReverseSort, sortField]
+      Array.from(userInformation.availableCollections)
+        .sort(
+          sortFunction((collection) => collection[sortField], isReverseSort)
+        )
+        .map(serializeResource),
+    [isReverseSort, sortField]
   );
 
   const navigate = useNavigate();
@@ -259,16 +236,13 @@ export function CollectionSelector({
       aria-label={headerText.currentCollection()}
       className="col-span-2 flex-1"
       title={headerText.currentCollection()}
-      value={collections?.current ?? undefined}
+      value={schema.domainLevelIds.collection}
       onValueChange={(value): void =>
         switchCollection(navigate, Number.parseInt(value), '/specify/')
       }
     >
-      {collections === undefined && (
-        <option disabled>{commonText.loading()}</option>
-      )}
       {sortedCollections?.map(({ id, collectionName }) => (
-        <option key={id} value={id}>
+        <option key={id as number} value={id as number}>
           {collectionName}
         </option>
       ))}

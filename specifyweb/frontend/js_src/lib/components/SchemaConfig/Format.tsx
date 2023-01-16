@@ -20,6 +20,7 @@ import { SerializedResource } from '../DataModel/helperTypes';
 import { schemaText } from '../../localization/schema';
 import { LocalizedString } from 'typesafe-i18n';
 import { schema } from '../DataModel/schema';
+import { getField } from '../DataModel/helpers';
 
 export function SchemaConfigFormat({
   schemaData,
@@ -80,7 +81,8 @@ export function SchemaConfigFormat({
                     `${name} ${value}${
                       isSystem
                         ? ` (${
-                            schema.models.SpLocaleContainerItem.strictGetField(
+                            getField(
+                              schema.models.SpLocaleContainerItem,
                               'isSystem'
                             ).label
                           })`
@@ -102,8 +104,8 @@ export function SchemaConfigFormat({
           value: item.pickListName,
           values: {
             [schemaText.userDefined()]: userPickLists,
-            [schema.models.SpLocaleContainerItem.strictGetField('isSystem')
-              .label]: systemPickLists,
+            [getField(schema.models.SpLocaleContainerItem, 'isSystem').label]:
+              systemPickLists,
           },
           extraComponents: (
             <>

@@ -15,6 +15,7 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { AnySchema } from '../DataModel/helperTypes';
 import { Preparation } from '../DataModel/types';
 import { interactionsText } from '../../localization/interactions';
+import { schema } from '../DataModel/schema';
 
 function List({
   resources,
@@ -104,19 +105,31 @@ export function ShowLoansCommand({
       header={commonText.transactions()}
       onClose={handleClose}
     >
-      <H3>{interactionsText.openLoans()}</H3>
+      <H3>
+        {interactionsText.openLoans({
+          loanTable: schema.models.Loan.label,
+        })}
+      </H3>
       <List
         displayFieldName="loanNumber"
         fieldName="loan"
         resources={data.openLoans ?? []}
       />
-      <H3>{interactionsText.resolvedLoans()}</H3>
+      <H3>
+        {interactionsText.resolvedLoans({
+          loanTable: schema.models.Loan.label,
+        })}
+      </H3>
       <List
         displayFieldName="loanNumber"
         fieldName="loan"
         resources={data.resolvedLoans ?? []}
       />
-      <H3>{interactionsText.gifts()}</H3>
+      <H3>
+        {interactionsText.gifts({
+          giftTable: schema.models.Gift.label,
+        })}
+      </H3>
       <List
         displayFieldName="giftNumber"
         fieldName="gift"
@@ -124,7 +137,12 @@ export function ShowLoansCommand({
       />
       {Array.isArray(data.exchanges) && data.exchanges.length > 0 && (
         <>
-          <H3>{interactionsText.exchanges()}</H3>
+          <H3>
+            {interactionsText.exchanges({
+              exhangeInTable: schema.models.ExchangeIn.label,
+              exhangeOutTable: schema.models.ExchangeOut.label,
+            })}
+          </H3>
           <List
             displayFieldName="exchangeOutNumber"
             fieldName="exchange"

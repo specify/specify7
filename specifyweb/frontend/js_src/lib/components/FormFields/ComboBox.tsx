@@ -9,7 +9,7 @@ import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
 import type { RA } from '../../utils/types';
 import { Input } from '../Atoms/Form';
-import { isResourceOfType } from '../DataModel/helpers';
+import { getField, isResourceOfType } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
@@ -124,21 +124,21 @@ export function Combobox({
     return (
       <FieldsPickList
         {...props}
-        field={schema.models.PickList.strictGetLiteralField('fieldName')}
+        field={getField(schema.models.PickList, 'fieldName')}
       />
     );
   else if (isResourceOfType(resource, 'PickList') && fieldName === 'formatter')
     return (
       <FormattersPickList
         {...props}
-        field={schema.models.PickList.strictGetLiteralField('formatter')}
+        field={getField(schema.models.PickList, 'formatter')}
       />
     );
   else if (isResourceOfType(resource, 'PickList') && fieldName === 'tableName')
     return (
       <TablesPickList
         {...props}
-        field={schema.models.PickList.strictGetLiteralField('tableName')}
+        field={getField(schema.models.PickList, 'tableName')}
       />
     );
   else if (fieldName === 'definitionItem')

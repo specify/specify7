@@ -4,6 +4,7 @@ import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { ping } from '../../utils/ajax/ping';
 import type { RA } from '../../utils/types';
+import { keysToLowerCase } from '../../utils/utils';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpQuery, SpQueryField, Tables } from '../DataModel/types';
@@ -20,6 +21,7 @@ export function QueryExportButtons({
   fields,
   queryResource,
   getQueryFieldRecords,
+  recordSetId,
 }: {
   readonly baseTableName: keyof Tables;
   readonly fields: RA<QueryField>;
@@ -27,6 +29,7 @@ export function QueryExportButtons({
   readonly getQueryFieldRecords:
     | (() => RA<SerializedResource<SpQueryField>>)
     | undefined;
+  readonly recordSetId: number | undefined;
 }): JSX.Element {
   const showConfirmation = (): boolean =>
     fields.some(({ mappingPath }) => !mappingPathIsComplete(mappingPath));
@@ -35,17 +38,22 @@ export function QueryExportButtons({
     undefined
   );
 
-  function doQueryExport(url: string, captions?: RA<string>): void {
+  function doQueryExport(url: string): void {
     if (typeof getQueryFieldRecords === 'function')
       queryResource.set('fields', getQueryFieldRecords());
     const serialized = queryResource.toJSON();
     setState('creating');
     void ping(url, {
       method: 'POST',
-      body: {
+      body: keysToLowerCase({
         ...serialized,
-        captions,
-      },
+        captions: fields
+          .filter(({ isDisplay }) => isDisplay)
+          .map(({ mappingPath }) =>
+            generateMappingPathPreview(baseTableName, mappingPath)
+          ),
+        recordSetId: recordSetId,
+      }),
     });
   }
 
@@ -88,14 +96,7 @@ export function QueryExportButtons({
           showConfirmation={showConfirmation}
           onClick={(): void =>
             hasLocalityColumns(fields)
-              ? doQueryExport(
-                  '/stored_query/exportkml/',
-                  fields
-                    .filter(({ isDisplay }) => isDisplay)
-                    .map(({ mappingPath }) =>
-                      generateMappingPathPreview(baseTableName, mappingPath)
-                    )
-                )
+              ? doQueryExport('/stored_query/exportkml/')
               : setState('warning')
           }
         >
