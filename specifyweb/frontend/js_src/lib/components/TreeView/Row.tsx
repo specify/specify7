@@ -226,7 +226,7 @@ export function TreeRow({
                   {doIncludeAuthorPref &&
                   treeName === 'Taxon' &&
                   typeof row.author === 'string'
-                    ? row.name + ' (' + row.author + ')'
+                    ? row.name + ' ' + row.author
                     : row.name}
                   {typeof row.acceptedId === 'number' && (
                     <span className="sr-only">
