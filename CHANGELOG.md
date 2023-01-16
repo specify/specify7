@@ -42,7 +42,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Available collections are now only fetched once rather than
   twice ([#2770](https://github.com/specify/specify7/pull/2770))
 - Separator icons now display correctly on the forms ([#2074](https://github.com/specify/specify7/issues/2074))
--
 
 ## [7.8.3](https://github.com/specify/specify7/compare/v7.8.2...v7.8.3) (9 January 2023)
 
