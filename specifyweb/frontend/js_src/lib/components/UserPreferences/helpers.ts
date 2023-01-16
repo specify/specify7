@@ -278,7 +278,7 @@ export const setPrefsGenerator = <PREFERENCE extends GenericPreferences>(
           prefs[category] = undefined;
       }
 
-      commitToCache();
+      commitToCacheThrottled();
       requestPreferencesSync();
     }
 
@@ -303,7 +303,9 @@ export const setPref = {
 
 // Sync with back-end at most every 5s
 const syncTimeout = 5 * MILLISECONDS;
+const cacheTimeout = 5 * MILLISECONDS;
 let syncTimeoutInstance: ReturnType<typeof setTimeout> | undefined = undefined;
+let cacheTimeoutInstance: ReturnType<typeof setTimeout> | undefined = undefined;
 let isSyncPending = false;
 let isSyncing = false;
 
@@ -335,6 +337,12 @@ function requestPreferencesSync(): void {
       syncTimeout
     );
   }
+}
+
+function commitToCacheThrottled(): void {
+  if (typeof cacheTimeoutInstance === 'number')
+    globalThis.clearTimeout(cacheTimeoutInstance);
+  cacheTimeoutInstance = globalThis.setTimeout(commitToCache, cacheTimeout);
 }
 
 const syncPreferencesPromiseGenerator = (): RR<
@@ -371,7 +379,7 @@ const syncPreferencesPromiseGenerator = (): RR<
 
 async function syncPreferences(): Promise<void> {
   isSyncPending = false;
-
+  isSyncing = true;
   const syncPreferencePromise = syncPreferencesPromiseGenerator();
   return f.all(syncPreferencePromise).then(() => {
     // If there were additional changes while syncing
@@ -460,7 +468,6 @@ function initializePreferences(resource: IR<ResourceWithData>): void {
   prefEvents.trigger('update', undefined);
   commitToCache();
   setCache('userPreferences', 'defaultCached', defaultPreferences);
-
   registerChangeListener();
 }
 
@@ -474,6 +481,10 @@ const commitToCache = (): void =>
     setCache('collectionPreferences', 'cached', {
       ...preference.collection.preference,
     });
+
+    if (typeof cacheTimeoutInstance === 'number') {
+      globalThis.clearTimeout(cacheTimeoutInstance);
+    }
   };
 
 /** Listen for changes to preferences in another tab */
