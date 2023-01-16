@@ -9,7 +9,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Changed
 
 - `500 error occurred` messages have been replaced by useful error
-  dialogs ([#2668](https://github.com/specify/specify7/issues/2668) – _Requested by many institutions_)
+  dialogs ([#108](https://github.com/specify/specify7/issues/108), [#2668](https://github.com/specify/specify7/issues/2668) 
+  – _Requested by many institutions_)
     - Error responses from the backend have been improved dramatically for environments not using debug mode. Errors
       from MySQL, Django, and other back-end components will now be displayed outside of debug mode showing the
       ExceptionType, message, and StackTrace in a format that can assist on-site IT and collection administrators in
