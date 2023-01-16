@@ -23,6 +23,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   WorkBench ([#2755](https://github.com/specify/specify7/pull/2755))
 - Languages that have incomplete localization can be selected after a warning for use in
   Specify ([#2790](https://github.com/specify/specify7/pull/2790))
+- When no attachment server is present, you can no longer attempt to upload files ([#2585](https://github.com/specify/specify7/issues/2585) - _Reported by The University of Michigan_)
 
 ### Fixed
 
