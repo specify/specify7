@@ -47,15 +47,14 @@ export function StatItem({
     | ((
         categoryIndex: number,
         itemIndex: number,
-        value: number | string,
-        itemLabel: string
+        value: number | string
       ) => void)
     | undefined;
   readonly onItemRename: ((newLabel: string) => void) | undefined;
 }): JSX.Element | null {
   const handleItemValueLoad = React.useCallback(
-    (value: number | string, itemLabel: string) =>
-      handleValueLoad?.(categoryIndex, itemIndex, value, itemLabel),
+    (value: number | string) =>
+      handleValueLoad?.(categoryIndex, itemIndex, value),
     [handleValueLoad, categoryIndex, itemIndex]
   );
   const customStatsSpec = useCustomStatsSpec(item);
@@ -67,17 +66,19 @@ export function StatItem({
     item.type === 'DefaultStat'
       ? statsSpec[item.pageName][item.categoryName]?.items?.[item.itemName]
       : customStatsSpec,
-    item.itemLabel,
     pathToValue
   );
 
-  const query = useResolvedSpecToQueryResource(statsSpecCalculated);
+  const query = useResolvedSpecToQueryResource(
+    statsSpecCalculated,
+    item.itemLabel
+  );
 
   return statsSpecCalculated?.type === 'QueryStat' && query !== undefined ? (
     <QueryItem
       isDefault={item.type === 'DefaultStat'}
       query={query}
-      statLabel={statsSpecCalculated?.label}
+      statLabel={item.itemLabel}
       statValue={item.itemValue}
       onClick={handleClick}
       onItemRename={handleItemRename}
@@ -85,7 +86,7 @@ export function StatItem({
       onSpecChanged={
         handleSpecChanged !== undefined
           ? (tableName, fields) => {
-              handleSpecChanged(tableName, fields, statsSpecCalculated?.label);
+              handleSpecChanged(tableName, fields, item.itemLabel);
             }
           : undefined
       }

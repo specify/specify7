@@ -486,12 +486,7 @@ export function StatsPage(): JSX.Element | null {
     [setDefaultLayout]
   );
   const handleLoad = React.useCallback(
-    (
-      categoryIndex: number,
-      itemIndex: number,
-      value: number | string,
-      itemLabel: string
-    ) => {
+    (categoryIndex: number, itemIndex: number, value: number | string) => {
       handleChange((oldCategory) =>
         replaceItem(oldCategory, categoryIndex, {
           ...oldCategory[categoryIndex],
@@ -501,7 +496,6 @@ export function StatsPage(): JSX.Element | null {
             {
               ...(oldCategory[categoryIndex].items ?? [])[itemIndex],
               itemValue: value,
-              itemLabel,
             }
           ),
         })

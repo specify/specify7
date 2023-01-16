@@ -95,7 +95,7 @@ export const statsSpec: IR<StatsSpec> = {
             ],
           },
         },
-        familiesRepresented: {
+        /*familiesRepresented: {
           label: statsText('familiesRepresented'),
           spec: {
             type: 'BackEndStat',
@@ -121,7 +121,7 @@ export const statsSpec: IR<StatsSpec> = {
             urlToFetch: urlSpec.holdings,
             formatter: formatNumber,
           },
-        },
+        }, */
       }),
     },
     preparations: {

@@ -214,7 +214,6 @@ export function useResolvedSpec(
   statSpecItem:
     | { readonly label: string; readonly spec: StatItemSpec }
     | undefined,
-  itemLabel: string,
   pathToValueLayout: string | undefined
 ): StatSpecCalculated {
   return React.useMemo(() => {
@@ -235,22 +234,22 @@ export function useResolvedSpec(
             type: 'QueryStat',
             tableName: statSpecItem?.spec.tableName,
             fields: statSpecItem?.spec.fields,
-            label: itemLabel,
           }
         : undefined;
     }
-  }, [statSpecItem, itemLabel, pathToValueLayout]);
+  }, [statSpecItem, pathToValueLayout]);
 }
 
 export const useResolvedSpecToQueryResource = (
-  statSpecCalculated: StatSpecCalculated
+  statSpecCalculated: StatSpecCalculated,
+  label: string
 ): SpecifyResource<SpQuery> | undefined =>
   React.useMemo(
     () =>
       statSpecCalculated?.type === 'QueryStat'
         ? deserializeResource(
             addMissingFields('SpQuery', {
-              name: statSpecCalculated.label,
+              name: label,
               contextName: statSpecCalculated.tableName,
               contextTableId:
                 schema.models[statSpecCalculated.tableName].tableId,

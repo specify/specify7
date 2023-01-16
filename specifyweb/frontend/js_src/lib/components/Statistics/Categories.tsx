@@ -53,8 +53,7 @@ export function Categories({
     | ((
         categoryIndex: number,
         itemIndex: number,
-        value: number | string,
-        itemLabel: string
+        value: number | string
       ) => void)
     | undefined;
   readonly onItemRename:
