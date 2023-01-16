@@ -46,14 +46,6 @@ function useUnsafePref<
     GenericPreferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
   >(() => getPref(category, subcategory, item));
 
-  /**
-   * TEST: Stats Page might need testing since it had problems in past with too many state updates
-   * causing glitching. isUpdated was added to fixed it, but the glitching is not reproducible at
-   * the time of this comment.
-   *
-   */
-
-  const isUpdated = React.useRef(false);
   React.useEffect(
     () =>
       prefEvents.on('update', (payload) => {
@@ -66,7 +58,6 @@ function useUnsafePref<
             payload.item !== item)
         )
           return;
-        if (isUpdated.current) return;
         const newValue = getPref(category, subcategory, item);
         setLocalPref(newValue);
       }),
@@ -93,7 +84,6 @@ function useUnsafePref<
 
       const newValue = setPref(category, subcategory, item, newValueRaw);
       setLocalPref(newValue);
-      isUpdated.current = true;
     },
     [category, subcategory, item, setPref, getPref]
   );
