@@ -1,53 +1,42 @@
 msgid ""
-msgstr ""
-"Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-01-16 15:37+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
-"Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
-"attachments/es/>\n"
-"Language: es\n"
-"Content-Type: text/plain\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.15.1-dev\n"
+msgstr "Content-Type: text/plain\n"
 
-#. Used in: Components > Attachments > Index ⬤ Components > Header > Menu Item Definitions ⬤ Components > Router > Routes
 #: components/Attachments/index.tsx:169
 #: components/Header/menuItemDefinitions.ts:109
 #: components/Router/Routes.tsx:164
+#. Used in: Components > Attachments > Index ⬤ Components > Header > Menu Item Definitions ⬤ Components > Router > Routes
 msgid "attachments"
 msgstr "Archivos adjuntos"
 
-#. Used in: Components > Attachments > Index
 #: components/Attachments/index.tsx:229
+#. Used in: Components > Attachments > Index
 msgid "scale"
 msgstr "Escala"
 
-#. Used in: Components > Attachments > Plugin ⬤ Components > Attachments > Index
 #: components/Attachments/Plugin.tsx:119
 #: components/Attachments/index.tsx:69
+#. Used in: Components > Attachments > Plugin ⬤ Components > Attachments > Index
 msgid "attachmentServerUnavailable"
 msgstr "Servidor de archivos adjuntos no disponible"
 
-#. Used in: Components > Attachments > Index
 #: components/Attachments/index.tsx:72
-#, fuzzy
+#. Used in: Components > Attachments > Index
 msgid "attachmentServerUnavailableDescription"
 msgstr "Configura tu servidor de archivos adjuntos"
 
-#. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > User Preferences > Definitions
 #: components/Attachments/index.tsx:218
 #: components/FormMeta/SubViewMeta.tsx:41
 #: components/UserPreferences/Definitions.tsx:1072
+#. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > User Preferences > Definitions
 msgid "orderBy"
 msgstr "ordenar por"
 
-#. Used in: Components > Attachments > Plugin
 #: components/Attachments/Plugin.tsx:143
+#. Used in: Components > Attachments > Plugin
 msgid "uploadingInline"
 msgstr "Subiendo…"
 
-#. Used in: Components > Attachments > Gallery
 #: components/Attachments/Gallery.tsx:77
+#. Used in: Components > Attachments > Gallery
 msgid "noAttachments"
 msgstr "No hay archivos adjuntos"
