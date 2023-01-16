@@ -151,7 +151,7 @@ export function StatsPage(): JSX.Element | null {
     setCategoriesToFetch,
   ]);
 
-  /* Set Default Layout every time page is rendered*/
+  /* Set Default Layout every time page is started from scratch*/
   React.useEffect(() => {
     setDefaultLayout(defaultLayoutSpec);
   }, [setDefaultLayout, defaultLayoutSpec]);
@@ -274,9 +274,7 @@ export function StatsPage(): JSX.Element | null {
     return layout.map((pageLayout, index) => ({
       ...pageLayout,
       lastUpdated:
-        pageIndex === index
-          ? lastUpdatedDate.toString()
-          : pageLayout.lastUpdated,
+        pageIndex === index ? lastUpdatedDate.toJSON() : pageLayout.lastUpdated,
     }));
   };
 

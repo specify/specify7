@@ -5,8 +5,6 @@ import { StatsResult } from './StatsResult';
 import React from 'react';
 import {
   queryCountPromiseGenerator,
-  useCustomStatsSpec,
-  useResolvedSpec,
   useResolvedSpecToQueryResource,
   useStatValueLoad,
 } from './hooks';
@@ -16,6 +14,7 @@ import { SpQuery } from '../DataModel/types';
 import { throttledAjax } from '../../utils/ajax/throttledAjax';
 import { BackendStatsResult } from './types';
 import { ajax } from '../../utils/ajax';
+import { useResolveStatSpec } from './hooks';
 
 export function StatItem({
   statsSpec,
@@ -57,17 +56,7 @@ export function StatItem({
       handleValueLoad?.(categoryIndex, itemIndex, value),
     [handleValueLoad, categoryIndex, itemIndex]
   );
-  const customStatsSpec = useCustomStatsSpec(item);
-  const pathToValue =
-    item.type === 'DefaultStat' && item.itemType === 'BackendStat'
-      ? item.pathToValue
-      : undefined;
-  const statsSpecCalculated = useResolvedSpec(
-    item.type === 'DefaultStat'
-      ? statsSpec[item.pageName][item.categoryName]?.items?.[item.itemName]
-      : customStatsSpec,
-    pathToValue
-  );
+  const statsSpecCalculated = useResolveStatSpec(item, statsSpec);
 
   const query = useResolvedSpecToQueryResource(
     statsSpecCalculated,

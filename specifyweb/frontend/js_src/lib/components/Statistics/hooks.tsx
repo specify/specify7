@@ -5,9 +5,11 @@ import React from 'react';
 import { ajax } from '../../utils/ajax';
 import { statsSpec } from './StatsSpec';
 import type {
+  BackEndStat,
   BackendStatsResult,
   CustomStat,
   DefaultStat,
+  QueryBuilderStat,
   StatCategoryReturn,
   StatItemSpec,
   StatLayout,
@@ -209,36 +211,6 @@ export function queryCountPromiseGenerator(
   };
 }
 
-export function useResolvedSpec(
-  statSpecItem:
-    | { readonly label: string; readonly spec: StatItemSpec }
-    | undefined,
-  pathToValueLayout: string | undefined
-): StatSpecCalculated {
-  return React.useMemo(() => {
-    if (statSpecItem?.spec.type === 'BackEndStat') {
-      return pathToValueLayout === undefined &&
-        statSpecItem?.spec.pathToValue === undefined
-        ? undefined
-        : {
-            type: 'BackEndStat',
-            pathToValue: pathToValueLayout ?? statSpecItem?.spec.pathToValue,
-            urlToFetch: statSpecItem?.spec.urlToFetch,
-            formatter: statSpecItem?.spec.formatter,
-          };
-    } else {
-      return statSpecItem?.spec.tableName !== undefined &&
-        statSpecItem?.spec.fields !== undefined
-        ? {
-            type: 'QueryStat',
-            tableName: statSpecItem?.spec.tableName,
-            fields: statSpecItem?.spec.fields,
-          }
-        : undefined;
-    }
-  }, [statSpecItem, pathToValueLayout]);
-}
-
 export const useResolvedSpecToQueryResource = (
   statSpecCalculated: StatSpecCalculated,
   label: string
@@ -293,23 +265,36 @@ export const querySpecToResource = (
     })
   );
 
-export function useCustomStatsSpec(
-  item: CustomStat | DefaultStat
-): { readonly label: string; readonly spec: StatItemSpec } | undefined {
-  return React.useMemo(
-    () =>
-      item.type === 'CustomStat'
+export function useResolveStatSpec(
+  item: CustomStat | DefaultStat,
+  statsSpec: StatsSpec
+): StatSpecCalculated {
+  return React.useMemo(() => {
+    if (item.type === 'CustomStat') {
+      return {
+        type: 'QueryStat',
+        tableName: item.tableName,
+        fields: item.fields,
+      };
+    } else {
+      const statSpecItem =
+        statsSpec[item.pageName][item.categoryName].items[item.itemName];
+      return item.itemType === 'BackendStat'
         ? {
-            label: item.itemLabel,
-            spec: {
-              type: 'QueryBuilderStat',
-              tableName: item.tableName,
-              fields: item.fields,
-            },
+            type: 'BackEndStat',
+            pathToValue:
+              item.pathToValue ??
+              (statSpecItem.spec as BackEndStat).pathToValue,
+            urlToFetch: (statSpecItem.spec as BackEndStat).urlToFetch,
+            formatter: (statSpecItem.spec as BackEndStat).formatter,
           }
-        : undefined,
-    [item]
-  );
+        : {
+            type: 'QueryStat',
+            tableName: (statSpecItem.spec as QueryBuilderStat).tableName,
+            fields: (statSpecItem.spec as QueryBuilderStat).fields,
+          };
+    }
+  }, [item]);
 }
 
 export function useCategoryToFetch(
