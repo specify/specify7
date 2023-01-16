@@ -40,9 +40,12 @@ from time import perf_counter
 def collection_holdings(request) -> HttpResponse:
     t1 = perf_counter()
     holding_dict = {
-        'familiesRepresented':  utils.get_tree_rank_stats(140, request), #families
-        'generaRepresented': utils.get_tree_rank_stats(180, request), #genera
-        'speciesRepresented': utils.get_tree_rank_stats(220, request) #species
+        'fRStr': utils.get_tree_rank_stats_str(140, request),
+        'gRStr': utils.get_tree_rank_stats_str(180, request),
+        'spStr': utils.get_tree_rank_stats_str(220, request),
+        'fr':  utils.get_tree_rank_stats(140, request), #families
+        'gr': utils.get_tree_rank_stats(180, request), #utils.get_tree_rank_stats(180, request), #genera
+        'sr': utils.get_tree_rank_stats(220, request), #utils.get_tree_rank_stats(220, request) #species
     }
     t2 = perf_counter()
     logger.warning('this took: ')
