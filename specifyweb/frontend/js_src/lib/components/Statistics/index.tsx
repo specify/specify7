@@ -33,15 +33,11 @@ import {
 } from './hooks';
 import { StatsPageEditing } from './StatsPageEditing';
 import type { CustomStat, DefaultStat, StatLayout } from './types';
-import {
-  labelIndexMatchReGenerator,
-  labelMatchReGenerator,
-  labelSepReGenerator,
-  urlSpec,
-} from './definitions';
-import { RA, WritableArray } from '../../utils/types';
+import { urlSpec } from './definitions';
+import { RA } from '../../utils/types';
 import { cleanFulfilledRequests } from '../../utils/ajax/throttledAjax';
 import { useTriggerState } from '../../hooks/useTriggerState';
+import { getUniqueName } from '../../utils/uniquifyName';
 
 export function StatsPage(): JSX.Element | null {
   useMenuItem('statistics');
@@ -296,7 +292,7 @@ export function StatsPage(): JSX.Element | null {
           itemIndex === undefined || itemIndex === -1
             ? [
                 ...(oldCategory[categoryIndex ?? -1].items ?? []),
-                modifyName(item, 'page'),
+                modifyName(item),
               ]
             : replaceItem(
                 oldCategory[categoryIndex ?? -1].items ?? [],
@@ -308,56 +304,19 @@ export function StatsPage(): JSX.Element | null {
   };
 
   const modifyName = (
-    item: CustomStat | DefaultStat,
-    mode: 'category' | 'page'
+    item: CustomStat | DefaultStat
   ): CustomStat | DefaultStat => {
     if (pageLayout === undefined) {
       return item;
     }
-    if (mode === 'page') {
-      const itemsLabelMatched = pageLayout.categories
-        .flatMap(({ items }) => items ?? [])
-        .filter((anyItem) =>
-          labelMatchReGenerator(item.itemLabel).test(anyItem.itemLabel)
-        )
-        .map((anyItem) => anyItem.itemLabel);
-      let newItemLabel = item.itemLabel;
-      if (itemsLabelMatched.length === 0) {
-        newItemLabel = item.itemLabel;
-      } else {
-        let indexToUse = undefined;
-        if (
-          itemsLabelMatched.some((anyLabel) =>
-            labelSepReGenerator(item.itemLabel).test(anyLabel)
-          )
-        ) {
-          indexToUse = 1;
-        }
-        const indexesMatched: WritableArray<number> = [];
-        itemsLabelMatched.forEach((anyLabel) => {
-          if (labelIndexMatchReGenerator(item.itemLabel).test(anyLabel)) {
-            const indexMatch = labelIndexMatchReGenerator(item.itemLabel).exec(
-              anyLabel
-            );
-            if (indexMatch === null) {
-              return;
-            }
-
-            indexesMatched.push(Number.parseInt(indexMatch[1]));
-          }
-        });
-        indexToUse = Math.max(indexesMatched.sort().at(-1) ?? 0, 0) + 1;
-        newItemLabel =
-          indexToUse === undefined
-            ? item.itemLabel
-            : `${item.itemLabel} (${indexToUse})`;
-      }
-      return {
-        ...item,
-        itemLabel: newItemLabel,
-      };
-    }
-    return item;
+    const itemsLabelMatched = pageLayout.categories
+      .flatMap(({ items }) => items ?? [])
+      .map((anyItem) => anyItem.itemLabel)
+      .filter(Boolean);
+    return {
+      ...item,
+      itemLabel: getUniqueName(item.itemLabel, itemsLabelMatched),
+    };
   };
 
   const handleDefaultLoad = React.useCallback(

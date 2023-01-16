@@ -8,7 +8,6 @@ import type {
   BackendStatsResult,
   CustomStat,
   DefaultStat,
-  QueryBuilderStat,
   StatCategoryReturn,
   StatItemSpec,
   StatLayout,
@@ -296,7 +295,7 @@ export const querySpecToResource = (
 
 export function useCustomStatsSpec(
   item: CustomStat | DefaultStat
-): { readonly label: string; readonly spec: QueryBuilderStat } | undefined {
+): { readonly label: string; readonly spec: StatItemSpec } | undefined {
   return React.useMemo(
     () =>
       item.type === 'CustomStat'
@@ -412,4 +411,55 @@ export function useStatValueLoad<
       destructorCalled = true;
     };
   }, [promiseGenerator, statValue, handleValueLoad]);
+}
+
+export function useUnknownCategory(
+  backEndResponse: BackendStatsResult | undefined,
+  handleChange: (
+    newCategories: (
+      oldCategory: StatLayout[number]['categories']
+    ) => StatLayout[number]['categories']
+  ) => void,
+  statsSpec: StatsSpec
+) {
+  React.useLayoutEffect(() => {
+    Object.entries(statsSpec).forEach(([pageName, pageSpec]) =>
+      Object.entries(pageSpec).forEach(([categoryName, categorySpec]) =>
+        Object.entries(categorySpec.items ?? {}).forEach(
+          ([itemName, { spec }]) => {
+            if (itemName === 'phantomItem' && spec.type === 'BackEndStat') {
+              if (Object.keys(backEndResponse ?? {}).includes(categoryName)) {
+                handleChange((oldCategory) =>
+                  oldCategory.map((unknownCategory) => {
+                    return {
+                      ...unknownCategory,
+                      items:
+                        unknownCategory.items ??
+                        (unknownCategory.categoryToFetch === undefined ||
+                        backEndResponse?.[unknownCategory.categoryToFetch] ===
+                          undefined ||
+                        unknownCategory.categoryToFetch !== categoryName
+                          ? undefined
+                          : Object.entries(backEndResponse[categoryName]).map(
+                              ([itemName, rawValue]) => ({
+                                type: 'DefaultStat',
+                                pageName,
+                                itemName: 'phantomItem',
+                                categoryName,
+                                itemLabel: itemName,
+                                itemValue: spec.formatter(rawValue),
+                                itemType: 'BackendStat',
+                                pathToValue: itemName,
+                              })
+                            )),
+                    };
+                  })
+                );
+              }
+            }
+          }
+        )
+      )
+    );
+  }, [backEndResponse, handleChange, statsSpec]);
 }
