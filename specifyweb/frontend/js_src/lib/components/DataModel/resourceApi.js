@@ -225,8 +225,9 @@ function eventHandlerForToOne(related, field) {
                    * string to number (back-end sends certain numeric fields
                    * as strings. Front-end converts those to numbers)
                    * REFACTOR: this logic should be moved to this.parse()
+                   * TEST: add test for "5A" case
                    */
-                  Number.parseInt(oldValue) === Number.parseInt(newValue)
+                  oldValue.toString() === newValue.toString()
                 )
                     options ??= {silent: true};
                 else if(
