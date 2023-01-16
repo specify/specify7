@@ -282,4 +282,7 @@ export const schemaText = createDictionary({
     'fr-fr': 'Tableaux possibles',
     'uk-ua': 'Можливі таблиці',
   },
+  goToTop: {
+    'en-us': 'Go to top',
+  },
 } as const);

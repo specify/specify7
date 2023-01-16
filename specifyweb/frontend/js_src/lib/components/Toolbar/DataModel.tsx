@@ -4,36 +4,36 @@
 
 import React from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import type { LocalizedString } from 'typesafe-i18n';
 
-import type { SortConfigs } from '../../utils/cache/definitions';
-import { f } from '../../utils/functools';
+import { formsText } from '../../localization/forms';
+import { schemaText } from '../../localization/schema';
 import { welcomeText } from '../../localization/welcome';
+import type { SortConfigs } from '../../utils/cache/definitions';
+import { syncFieldFormat } from '../../utils/fieldFormat';
+import { f } from '../../utils/functools';
+import { resolveParser } from '../../utils/parser/definitions';
+import type { RA, RR } from '../../utils/types';
+import { Container, H2, H3 } from '../Atoms';
+import { Button } from '../Atoms/Button';
+import { formatNumber } from '../Atoms/Internationalization';
+import { Link } from '../Atoms/Link';
+import { getField } from '../DataModel/helpers';
 import { getModel, schema } from '../DataModel/schema';
+import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { Tables } from '../DataModel/types';
+import { softFail } from '../Errors/Crash';
+import { getSystemInfo } from '../InitialContext/systemInfo';
+import { downloadFile } from '../Molecules/FilePicker';
+import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
+import { TableIcon } from '../Molecules/TableIcon';
+import { NotFoundView } from '../Router/NotFoundView';
+import { locationToState } from '../Router/RouterState';
 import {
   javaTypeToHuman,
   localizedRelationshipTypes,
 } from '../SchemaConfig/helpers';
-import type { SpecifyModel } from '../DataModel/specifyModel';
-import { getSystemInfo } from '../InitialContext/systemInfo';
-import type { RA, RR } from '../../utils/types';
-import { resolveParser } from '../../utils/parser/definitions';
-import { downloadFile } from '../Molecules/FilePicker';
-import { formatNumber } from '../Atoms/Internationalization';
-import { NotFoundView } from '../Router/NotFoundView';
-import { Button } from '../Atoms/Button';
-import { Link } from '../Atoms/Link';
-import { Container, H2, H3 } from '../Atoms';
-import { softFail } from '../Errors/Crash';
-import { TableIcon } from '../Molecules/TableIcon';
-import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
-import { syncFieldFormat } from '../../utils/fieldFormat';
-import { formsText } from '../../localization/forms';
-import { schemaText } from '../../localization/schema';
-import { LocalizedString } from 'typesafe-i18n';
-import { getField } from '../DataModel/helpers';
-import { Tables } from '../DataModel/types';
 import { useFrozenCategory } from '../UserPreferences/Aside';
-import { locationToState } from '../Router/RouterState';
 import { useTopChild } from '../UserPreferences/useTopChild';
 
 function Table<
@@ -47,7 +47,7 @@ function Table<
   headers,
   data: unsortedData,
   getLink,
-  className,
+  className = '',
 }: {
   readonly sortName: SORT_CONFIG;
   readonly headers: RR<FIELD_NAME, LocalizedString>;
@@ -74,7 +74,8 @@ function Table<
       className={`
         grid-table
         w-fit flex-1 grid-cols-[repeat(var(--cols),auto)] rounded border border-gray-400 dark:border-neutral-500
-      ${className}`}
+        ${className}
+      `}
       role="table"
       style={{ '--cols': Object.keys(headers).length } as React.CSSProperties}
     >
@@ -151,6 +152,8 @@ const parser = f.store(() =>
 const booleanFormatter = (value: boolean): string =>
   syncFieldFormat(undefined, parser(), value);
 
+const topId = 'tables';
+
 function DataModelTable({
   tableName,
   forwardRef,
@@ -163,6 +166,15 @@ function DataModelTable({
     <NotFoundView />
   ) : (
     <section className="flex flex-col gap-4" ref={forwardRef}>
+      <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
+          <TableIcon label={false} name={model.name} />
+          <H2 className="text-2xl" id={model.name.toLowerCase()}>
+            {model.name}
+          </H2>
+        </div>
+        <Link.Default href={`#${topId}`}>{schemaText.goToTop()}</Link.Default>
+      </div>
       <DataModelFields model={model} />
       <DataModelRelationships model={model} />
     </section>
@@ -219,16 +231,9 @@ function DataModelFields({
   const data = React.useMemo(() => getFields(model), [model]);
   return (
     <>
-      <div className="flex items-center gap-2">
-        <TableIcon label={false} name={model.name} />
-        <H2 id={model.name.toLowerCase()} className="text-2xl">
-          {model.name}
-        </H2>
-      </div>
       <H3>{schemaText.fields()}</H3>
       <Table
         data={data}
-        // className={'overflow-auto'}
         getLink={undefined}
         headers={fieldColumns()}
         sortName="dataModelFields"
@@ -294,7 +299,6 @@ function DataModelRelationships({
         }
         headers={relationshipColumns()}
         sortName="dataModelRelationships"
-        // className={'overflow-auto'}
       />
     </>
   );
@@ -380,19 +384,21 @@ export function DataModelTables(): JSX.Element {
           className="ml-2 flex flex-col gap-2 overflow-y-auto"
           ref={scrollContainerRef}
         >
-          <Table
-            data={tables}
-            getLink={({ name }): string =>
-              `#${(name as readonly [string, JSX.Element])[0]}`
-            }
-            headers={tableColumns()}
-            sortName="dataModelTables"
-          />
+          <div id={topId}>
+            <Table
+              data={tables}
+              getLink={({ name }): string =>
+                `#${(name as readonly [string, JSX.Element])[0]}`
+              }
+              headers={tableColumns()}
+              sortName="dataModelTables"
+            />
+          </div>
           {tables.map(({ name }, index) => (
             <DataModelTable
-              tableName={(name as readonly [keyof Tables, JSX.Element])[0]}
-              key={index}
               forwardRef={forwardRefs?.bind(undefined, index)}
+              key={index}
+              tableName={(name as readonly [keyof Tables, JSX.Element])[0]}
             />
           ))}
         </div>
@@ -441,10 +447,10 @@ export function DataModelAside({
         return (
           <Link.Gray
             aria-current={currentIndex === index ? 'page' : undefined}
+            className="!justify-start"
             href={`#${tableName}`}
             key={index}
             onClick={(): void => setFreezeCategory(index)}
-            className="!justify-start"
           >
             {jsxName}
           </Link.Gray>
