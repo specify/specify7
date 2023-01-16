@@ -32,8 +32,9 @@ import { schemaText } from '../../localization/schema';
 import { LocalizedString } from 'typesafe-i18n';
 import { getField } from '../DataModel/helpers';
 import { Tables } from '../DataModel/types';
-import { useActiveCategory, useFrozenCategory } from '../UserPreferences/Aside';
+import { useFrozenCategory } from '../UserPreferences/Aside';
 import { locationToState } from '../Router/RouterState';
+import { useTopChild } from '../UserPreferences/useTopChild';
 
 function Table<
   SORT_CONFIG extends
@@ -345,7 +346,7 @@ export const getTables = (): RA<Row<keyof ReturnType<typeof tableColumns>>> =>
 
 export function DataModelTables(): JSX.Element {
   const tables = React.useMemo(getTables, []);
-  const { visibleChild, forwardRefs, scrollContainerRef } = useActiveCategory();
+  const { visibleChild, forwardRefs, scrollContainerRef } = useTopChild();
 
   return (
     <Container.Full className="pt-0">

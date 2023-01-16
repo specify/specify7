@@ -20,7 +20,7 @@ import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { hasPermission } from '../Permissions/helpers';
-import { PreferencesAside, useActiveCategory } from './Aside';
+import { PreferencesAside } from './Aside';
 import type {
   GenericPreferencesCategories,
   PreferenceItem,
@@ -35,6 +35,7 @@ import {
 import { prefEvents } from './Hooks';
 import { DefaultPreferenceItemRender } from './Renderers';
 import { usePref } from './usePref';
+import { useTopChild } from './useTopChild';
 
 function Preferences(): JSX.Element {
   const [changesMade, handleChangesMade] = useBooleanState();
@@ -52,7 +53,7 @@ function Preferences(): JSX.Element {
     [handleChangesMade, handleRestartNeeded]
   );
 
-  const { visibleChild, forwardRefs, scrollContainerRef } = useActiveCategory();
+  const { visibleChild, forwardRefs, scrollContainerRef } = useTopChild();
 
   return (
     <Container.FullGray>
