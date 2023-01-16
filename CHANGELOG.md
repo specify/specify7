@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [7.8.4](https://github.com/specify/specify7/compare/v7.8.4...v7.8.3) (January 2023)
+## [7.8.4](https://github.com/specify/specify7/compare/v7.8.3...HEAD) (Unreleased)
 
 ### Changed
 
