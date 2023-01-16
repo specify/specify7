@@ -63,7 +63,8 @@ export const interactionsText = createDictionary({
     'en-us': 'By choosing a recordset ({{count:none | one | ??}} available)',
     'ru-ru': 'Выбрав набор записей (доступно {count:number|formatted})',
     'es-es': `
-      Al elegir un conjunto de registros ({{count:none | one | ??}} disponible)
+      Al seleccionar un conjunto de registros ({{count:none | one | ??}}
+      disponible)
     `,
     'fr-fr': `
       En choisissant un jeu d'enregistrements ({{count:none | one | ??}}
