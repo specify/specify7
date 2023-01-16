@@ -64,7 +64,7 @@ function WelcomeScreenContent(): JSX.Element {
           <p className={getIcon(name) === undefined ? undefined : 'invisible'}>
             (missing)
           </p>
-          <TableIcon name={name} label />
+          <TableIcon name={name} label legacy />
           <SvgIcon
             name={name}
             className="h-table-icon w-table-icon flex-shrink-0"

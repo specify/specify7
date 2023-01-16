@@ -6,6 +6,7 @@ import { getModel } from '../DataModel/schema';
 import { getIcon } from '../InitialContext/icons';
 import { LocalizedString } from 'typesafe-i18n';
 import { wbPlanText } from '../../localization/wbPlan';
+import { SvgIcon } from './SvgIcon';
 
 const MAX_HUE = 360;
 
@@ -45,6 +46,8 @@ export function TableIcon({
    * strictly necessary.
    */
   className = 'w-table-icon h-table-icon flex-shrink-0',
+  // FIXME: remove this before merging
+  legacy = false,
 }: {
   readonly name: string;
   /**
@@ -54,11 +57,11 @@ export function TableIcon({
    */
   readonly label: boolean | LocalizedString;
   readonly className?: string;
+  readonly legacy?: boolean;
 }): JSX.Element {
-  // FIXME: uncomment this
-  // const tableName = getModel(name)?.name;
-  // if (typeof tableName === 'string')
-  //   return <SvgIcon name={tableName} className={className} />;
+  const tableName = getModel(name)?.name;
+  if (typeof tableName === 'string' && !legacy)
+    return <SvgIcon name={tableName} className={className} />;
 
   const tableIconSource = getIcon(name);
   const resolvedTableLabel =
