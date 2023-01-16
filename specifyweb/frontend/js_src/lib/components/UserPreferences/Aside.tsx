@@ -1,83 +1,87 @@
 import React from 'react';
+import { useLocation } from 'react-router';
 import { useNavigate } from 'react-router-dom';
+import _ from 'underscore';
 
 import { listen } from '../../utils/events';
-import { f } from '../../utils/functools';
 import type { GetSet, WritableArray } from '../../utils/types';
-import { filterArray } from '../../utils/types';
 import { Link } from '../Atoms/Link';
-import { usePrefDefinitions } from './index';
-import { useLocation } from 'react-router';
 import { locationToState } from '../Router/RouterState';
+import { usePrefDefinitions } from './index';
 
-/** Update the active category on the sidebar as user scrolls */
+/**
+ * Update the active category on the sidebar as user scrolls
+ *
+ * Previous implementation used IntersectionObserver for this, but it was too
+ * slow when you have 180 categories (on the Data Model page)
+ */
 export function useActiveCategory(): {
-  readonly activeCategory: number;
+  readonly visibleChild: number | undefined;
   readonly forwardRefs: (index: number, element: HTMLElement | null) => void;
   readonly scrollContainerRef: React.RefCallback<HTMLDivElement | null>;
 } {
-  const [activeCategory, setActiveCategory] = React.useState<number>(0);
-  const observer = React.useRef<IntersectionObserver | undefined>(undefined);
+  const [activeCategory, setActiveCategory] = React.useState<
+    number | undefined
+  >(0);
   const references = React.useRef<WritableArray<HTMLElement | undefined>>([]);
-  React.useEffect(() => () => observer.current?.disconnect(), []);
 
-  // eslint-disable-next-line functional/prefer-readonly-type
-  const intersecting = React.useRef<Set<number>>(new Set());
+  const [container, setContainer] = React.useState<HTMLDivElement | null>(null);
+  React.useEffect(() => {
+    if (container === null) return undefined;
 
-  function handleObserved({
-    isIntersecting,
-    target,
-  }: IntersectionObserverEntry): void {
-    const index = references.current.indexOf(target as HTMLElement);
-    intersecting.current[isIntersecting ? 'add' : 'delete'](index);
-    const intersection = f.min(...Array.from(intersecting.current)) ?? 0;
-    setActiveCategory(intersection);
-  }
+    function rawHandleChange(): void {
+      if (container === null) return;
+      const { x, y } = container.getBoundingClientRect();
+      const visibleElement = document.elementFromPoint(
+        x,
+        y + marginTop
+      ) as HTMLElement;
+      if (visibleElement === null) return;
+      const section = findSection(container, visibleElement);
+      if (section === undefined) return;
+      const index = references.current.indexOf(section);
+      setActiveCategory(index === -1 ? undefined : index);
+    }
+
+    const handleChange = _.throttle(rawHandleChange, scrollThrottle);
+
+    const observer = new ResizeObserver(handleChange);
+    observer.observe(container);
+    const scroll = listen(container, 'scroll', handleChange);
+    return (): void => {
+      observer.disconnect();
+      scroll();
+    };
+  }, [container]);
 
   return {
-    activeCategory,
+    visibleChild: activeCategory,
     forwardRefs: React.useCallback((index, element) => {
-      const oldElement = references.current[index];
-      if (typeof oldElement === 'object')
-        observer.current?.unobserve(oldElement);
       references.current[index] = element ?? undefined;
-      if (element !== null) observer?.current?.observe(element);
     }, []),
-    scrollContainerRef: React.useCallback((container): void => {
-      observer.current?.disconnect();
-
-      observer.current = new IntersectionObserver(
-        (entries) => entries.map(handleObserved),
-        {
-          root: container,
-          rootMargin: '-200px 0px -100px 0px',
-          threshold: 0,
-        }
-      );
-      /*
-       * Since React 18, apps running in strict mode in development are mounted
-       * followed immediately by an unmount and then mount again. This causes
-       * observer not to fire. Can be fixed by either
-       * running React in non-strict mode (bad idea), or wrapping the following
-       * in setTimeout(()=>..., 0);
-       * More info:
-       * https://reactjs.org/blog/2022/03/08/react-18-upgrade-guide.html#updates-to-strict-mode
-       */
-      setTimeout(
-        () =>
-          filterArray(references.current).forEach((value) =>
-            observer.current?.observe(value)
-          ),
-        0
-      );
-    }, []),
+    scrollContainerRef: setContainer,
   };
 }
 
+/**
+ * Look for an element this many pixels below the top of the scroll container
+ */
+const marginTop = 200;
+const scrollThrottle = 50;
+
+function findSection(
+  container: HTMLElement,
+  child: HTMLElement
+): HTMLElement | undefined {
+  const parent = child.parentElement;
+  if (parent === container) return child;
+  else if (parent === null) return undefined;
+  else return findSection(container, parent);
+}
 export function PreferencesAside({
   activeCategory,
 }: {
-  readonly activeCategory: number;
+  readonly activeCategory: number | undefined;
 }): JSX.Element {
   const definitions = usePrefDefinitions();
   const navigate = useNavigate();
@@ -87,7 +91,7 @@ export function PreferencesAside({
   // Don't call navigate while an overlay is open as that will close the overlay
   React.useEffect(
     () =>
-      isInOverlay
+      isInOverlay || activeCategory === undefined
         ? undefined
         : navigate(
             `/specify/user-preferences/#${definitions[activeCategory][0]}`,

@@ -150,10 +150,6 @@ const parser = f.store(() =>
 const booleanFormatter = (value: boolean): string =>
   syncFieldFormat(undefined, parser(), value);
 
-/*
- * FEATURE: adapt this page for printing
- */
-
 function DataModelTable({
   tableName,
   forwardRef,
@@ -349,8 +345,7 @@ export const getTables = (): RA<Row<keyof ReturnType<typeof tableColumns>>> =>
 
 export function DataModelTables(): JSX.Element {
   const tables = React.useMemo(getTables, []);
-  const { activeCategory, forwardRefs, scrollContainerRef } =
-    useActiveCategory();
+  const { visibleChild, forwardRefs, scrollContainerRef } = useActiveCategory();
 
   return (
     <Container.Full className="pt-0">
@@ -378,8 +373,8 @@ export function DataModelTables(): JSX.Element {
           {schemaText.downloadAsTsv()}
         </Button.Green>
       </div>
-      <div className="relative flex h-full gap-6 md:flex-row">
-        <DataModelAside activeCategory={activeCategory} />
+      <div className="relative flex flex-1 gap-6 overflow-hidden md:flex-row">
+        <DataModelAside activeCategory={visibleChild} />
         <div
           className="ml-2 flex flex-col gap-2 overflow-y-auto"
           ref={scrollContainerRef}
@@ -408,7 +403,7 @@ export function DataModelTables(): JSX.Element {
 export function DataModelAside({
   activeCategory,
 }: {
-  readonly activeCategory: number;
+  readonly activeCategory: number | undefined;
 }): JSX.Element {
   const tables = React.useMemo(getTables, []);
   const [freezeCategory, setFreezeCategory] = useFrozenCategory();
@@ -420,7 +415,7 @@ export function DataModelAside({
 
   React.useEffect(
     () =>
-      isInOverlay
+      isInOverlay || activeCategory === undefined
         ? undefined
         : navigate(
             `/specify/data-model/#${
