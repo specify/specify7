@@ -5,12 +5,10 @@ import { StatsResult } from './StatsResult';
 import React from 'react';
 import {
   queryCountPromiseGenerator,
-  useResolvedSpecToQueryResource,
+  useQuerySpecToResource,
   useStatValueLoad,
 } from './hooks';
 import type { CustomStat, DefaultStat, StatsSpec } from './types';
-import { SpecifyResource } from '../DataModel/legacyTypes';
-import { SpQuery } from '../DataModel/types';
 import { throttledAjax } from '../../utils/ajax/throttledAjax';
 import { BackendStatsResult } from './types';
 import { ajax } from '../../utils/ajax';
@@ -58,19 +56,16 @@ export function StatItem({
   );
   const statsSpecCalculated = useResolveStatSpec(item, statsSpec);
 
-  const query = useResolvedSpecToQueryResource(
-    statsSpecCalculated,
-    item.itemLabel
-  );
-
-  return statsSpecCalculated?.type === 'QueryStat' && query !== undefined ? (
+  return statsSpecCalculated.type === 'QueryStat' ? (
     <QueryItem
       isDefault={item.type === 'DefaultStat'}
-      query={query}
+      tableName={statsSpecCalculated.tableName}
+      fields={statsSpecCalculated.fields}
       statLabel={item.itemLabel}
       statValue={item.itemValue}
       onClick={handleClick}
       onItemRename={handleItemRename}
+      onItemValueLoad={handleItemValueLoad}
       onRemove={handleRemove}
       onSpecChanged={
         handleSpecChanged !== undefined
@@ -79,25 +74,21 @@ export function StatItem({
             }
           : undefined
       }
-      fields={statsSpecCalculated.fields}
-      tableName={statsSpecCalculated.tableName}
-      onItemValueLoad={handleItemValueLoad}
     />
   ) : item.type === 'DefaultStat' &&
-    statsSpecCalculated !== undefined &&
     statsSpecCalculated.type === 'BackEndStat' &&
     statsSpecCalculated.pathToValue !== undefined ? (
     <BackEndItem
+      formatter={statsSpecCalculated.formatter}
       isDefault
-      urlToFetch={statsSpecCalculated.urlToFetch}
       pathToValue={statsSpecCalculated.pathToValue}
       statLabel={item.itemLabel}
       statValue={item.itemValue}
+      urlToFetch={statsSpecCalculated.urlToFetch}
       onClick={handleClick}
       onItemRename={handleItemRename}
-      onRemove={handleRemove}
-      formatter={statsSpecCalculated.formatter}
       onItemValueLoad={handleItemValueLoad}
+      onRemove={handleRemove}
     />
   ) : null;
 }
@@ -159,10 +150,9 @@ function BackEndItem({
 
 function QueryItem({
   statValue,
+  statLabel,
   tableName,
   fields,
-  statLabel,
-  query,
   onClick: handleClick,
   onRemove: handleRemove,
   onSpecChanged: handleSpecChanged,
@@ -175,7 +165,6 @@ function QueryItem({
   readonly fields: RA<
     Partial<SerializedResource<SpQueryField>> & { readonly path: string }
   >;
-  readonly query: SpecifyResource<SpQuery>;
   readonly statLabel: string;
   readonly isDefault: boolean;
   readonly onClick: (() => void) | undefined;
@@ -191,23 +180,15 @@ function QueryItem({
   readonly onItemRename: ((newLabel: string) => void) | undefined;
   readonly onItemValueLoad: ((value: number | string) => void) | undefined;
 }): JSX.Element | null {
+  const query = useQuerySpecToResource(statLabel, tableName, fields);
   const promiseGenerator = React.useCallback(
-    () =>
-      throttledAjax<
-        number | string | undefined,
-        {
-          readonly tableName: keyof Tables;
-          readonly fields: RA<
-            Partial<SerializedResource<SpQueryField>> & {
-              readonly path: string;
-            }
-          >;
-        }
-      >('queryStats', queryCountPromiseGenerator(query), {
-        tableName,
-        fields,
-      }),
-    [tableName, fields]
+    async () =>
+      throttledAjax<number | string | undefined, string>(
+        'queryStats',
+        queryCountPromiseGenerator(query),
+        JSON.stringify({ tableName, fields })
+      ),
+    [query]
   );
 
   useStatValueLoad(statValue, promiseGenerator, handleItemValueLoad);

@@ -11,7 +11,6 @@ import type {
   DefaultStat,
   QueryBuilderStat,
   StatCategoryReturn,
-  StatItemSpec,
   StatLayout,
   StatSpecCalculated,
   StatsSpec,
@@ -211,58 +210,33 @@ export function queryCountPromiseGenerator(
   };
 }
 
-export const useResolvedSpecToQueryResource = (
-  statSpecCalculated: StatSpecCalculated,
-  label: string
-): SpecifyResource<SpQuery> | undefined =>
-  React.useMemo(
-    () =>
-      statSpecCalculated?.type === 'QueryStat'
-        ? deserializeResource(
-            addMissingFields('SpQuery', {
-              name: label,
-              contextName: statSpecCalculated.tableName,
-              contextTableId:
-                schema.models[statSpecCalculated.tableName].tableId,
-              countOnly: false,
-              selectDistinct: false,
-              fields: statSpecCalculated.fields.map(
-                ({ path, ...field }, index) =>
-                  serializeResource(
-                    makeQueryField(statSpecCalculated.tableName, path, {
-                      ...field,
-                      position: index,
-                    })
-                  )
-              ),
-            })
-          )
-        : undefined,
-    [statSpecCalculated]
-  );
-export const querySpecToResource = (
+export const useQuerySpecToResource = (
   label: string,
   tableName: keyof Tables,
   fields: RA<
     Partial<SerializedResource<SpQueryField>> & { readonly path: string }
   >
 ): SpecifyResource<SpQuery> =>
-  deserializeResource(
-    addMissingFields('SpQuery', {
-      name: label,
-      contextName: tableName,
-      contextTableId: schema.models[tableName].tableId,
-      countOnly: false,
-      selectDistinct: false,
-      fields: fields.map(({ path, ...field }, index) =>
-        serializeResource(
-          makeQueryField(tableName, path, {
-            ...field,
-            position: index,
-          })
-        )
+  React.useMemo(
+    () =>
+      deserializeResource(
+        addMissingFields('SpQuery', {
+          name: label,
+          contextName: tableName,
+          contextTableId: schema.models[tableName].tableId,
+          countOnly: false,
+          selectDistinct: false,
+          fields: fields.map(({ path, ...field }, index) =>
+            serializeResource(
+              makeQueryField(tableName, path, {
+                ...field,
+                position: index,
+              })
+            )
+          ),
+        })
       ),
-    })
+    [label, tableName, fields]
   );
 
 export function useResolveStatSpec(

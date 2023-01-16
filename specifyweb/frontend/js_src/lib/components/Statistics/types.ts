@@ -49,8 +49,7 @@ export type StatSpecCalculated =
       readonly fields: RA<
         Partial<SerializedResource<SpQueryField>> & { readonly path: string }
       >;
-    }
-  | undefined;
+    };
 
 export type StatCategoryReturn = IR<{
   readonly label: string;
