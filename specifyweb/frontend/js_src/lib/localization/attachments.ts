@@ -31,7 +31,11 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Сервер прикріплень недоступний',
   },
   attachmentServerUnavailableDescription: {
-    'en-us': 'Setup your attachment server'
+    'en-us': 'Setup your attachment server',
+    'es-es': 'Configura tu servidor de archivos adjuntos',
+    'fr-fr': 'Configurez votre serveur de pièces jointes',
+    'ru-ru': 'Настройте свой сервер вложений',
+    'uk-ua': 'Налаштуйте сервер вкладень',
   },
   orderBy: {
     'en-us': 'Order By',
