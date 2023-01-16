@@ -391,3 +391,25 @@ export function statsToTsv(
     nameSpec,
   };
 }
+
+export function useStatValueLoad<
+  PROMISE_TYPE extends string | number | undefined
+>(
+  statValue: string | number | undefined,
+  promiseGenerator: () => Promise<PROMISE_TYPE>,
+  handleValueLoad: ((value: number | string) => void) | undefined
+) {
+  const shouldFetch =
+    statValue === undefined && typeof handleValueLoad === 'function';
+  React.useEffect(() => {
+    if (!shouldFetch) return undefined;
+    let destructorCalled = false;
+    promiseGenerator().then((value) => {
+      if (value === undefined || destructorCalled) return;
+      handleValueLoad?.(value);
+    });
+    return (): void => {
+      destructorCalled = true;
+    };
+  }, [promiseGenerator, statValue, handleValueLoad]);
+}

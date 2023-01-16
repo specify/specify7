@@ -8,11 +8,11 @@ import {
   useCustomStatsSpec,
   useResolvedSpec,
   useResolvedSpecToQueryResource,
+  useStatValueLoad,
 } from './hooks';
 import type { CustomStat, DefaultStat, StatsSpec } from './types';
 import { SpecifyResource } from '../DataModel/legacyTypes';
 import { SpQuery } from '../DataModel/types';
-import { useAsyncState } from '../../hooks/useAsyncState';
 import { throttledAjax } from '../../utils/ajax/throttledAjax';
 import { BackendStatsResult } from './types';
 import { ajax } from '../../utils/ajax';
@@ -134,37 +134,26 @@ function BackEndItem({
   readonly onClick: (() => void) | undefined;
   readonly onRemove: (() => void) | undefined;
   readonly onItemRename: ((newLabel: string) => void) | undefined;
-  readonly onItemValueLoad:
-    | ((value: number | string, itemLabel: string) => void)
-    | undefined;
+  readonly onItemValueLoad: ((value: number | string) => void) | undefined;
 }): JSX.Element {
-  const [count] = useAsyncState<number | string | undefined>(
-    React.useCallback(
-      async () =>
-        statValue === undefined
-          ? throttledAjax<BackendStatsResult, string>(
-              'backendStats',
-              async () =>
-                ajax<BackendStatsResult>(urlToFetch, {
-                  method: 'GET',
-                  headers: {
-                    Accept: 'application/json',
-                  },
-                }).then(({ data }) => data),
-              urlToFetch
-            ).then((data) => {
-              const rawValue = data[pathToValue as keyof BackendStatsResult];
-              if (rawValue === undefined) return undefined;
-              return formatter(rawValue);
-            })
-          : Promise.resolve(undefined),
-      [statLabel, statValue, handleItemValueLoad, pathToValue, urlToFetch]
-    ),
-    false
+  const promiseGenerator = React.useCallback(
+    () =>
+      throttledAjax<BackendStatsResult, string>(
+        'backendStats',
+        async () =>
+          ajax<BackendStatsResult>(urlToFetch, {
+            method: 'GET',
+            headers: {
+              Accept: 'application/json',
+            },
+          }).then(({ data }) => data),
+        urlToFetch
+      ).then((data) => {
+        return formatter(data[pathToValue as keyof BackendStatsResult]);
+      }),
+    [pathToValue, urlToFetch]
   );
-  if (count !== undefined && statValue === undefined) {
-    handleItemValueLoad?.(count, statLabel);
-  }
+  useStatValueLoad(statValue, promiseGenerator, handleItemValueLoad);
   return (
     <StatsResult
       isDefault={isDefault}
@@ -211,36 +200,29 @@ function QueryItem({
       ) => void)
     | undefined;
   readonly onItemRename: ((newLabel: string) => void) | undefined;
-  readonly onItemValueLoad:
-    | ((value: number | string, itemLabel: string) => void)
-    | undefined;
+  readonly onItemValueLoad: ((value: number | string) => void) | undefined;
 }): JSX.Element | null {
-  const [count] = useAsyncState<string | number | undefined>(
-    React.useCallback(
-      async () =>
-        statValue === undefined
-          ? throttledAjax<
-              string | number | undefined,
-              {
-                readonly tableName: keyof Tables;
-                readonly fields: RA<
-                  Partial<SerializedResource<SpQueryField>> & {
-                    readonly path: string;
-                  }
-                >;
-              }
-            >('queryStats', queryCountPromiseGenerator(query), {
-              tableName,
-              fields,
-            })
-          : Promise.resolve(undefined),
-      [statValue, tableName, fields, handleItemValueLoad, statLabel]
-    ),
-    false
+  const promiseGenerator = React.useCallback(
+    () =>
+      throttledAjax<
+        number | string | undefined,
+        {
+          readonly tableName: keyof Tables;
+          readonly fields: RA<
+            Partial<SerializedResource<SpQueryField>> & {
+              readonly path: string;
+            }
+          >;
+        }
+      >('queryStats', queryCountPromiseGenerator(query), {
+        tableName,
+        fields,
+      }),
+    [tableName, fields]
   );
-  if (count !== undefined && statValue === undefined) {
-    handleItemValueLoad?.(count, statLabel);
-  }
+
+  useStatValueLoad(statValue, promiseGenerator, handleItemValueLoad);
+
   return (
     <StatsResult
       isDefault={isDefault}

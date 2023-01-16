@@ -335,7 +335,7 @@ export const statsSpec: IR<StatsSpec> = {
             ],
           },
         },
-        countriesCount: {
+        /*(countriesCount: {
           label: statsText('countries'),
           spec: {
             type: 'BackEndStat',
@@ -343,7 +343,7 @@ export const statsSpec: IR<StatsSpec> = {
             pathToValue: 'countries',
             formatter: formatNumber,
           },
-        },
+        },*/
         georeferencedLocalityCount: {
           label: statsText('georeferencedLocalities'),
           spec: {
