@@ -97,6 +97,7 @@ msgstr "Create"
 #: components/AppResources/EditorComponents.tsx:59
 #: components/AppResources/Filters.tsx:84
 #: components/AppResources/Tabs.tsx:90
+#: components/Attachments/index.tsx:68
 #: components/Core/Main.tsx:136
 #: components/FormCells/FormTable.tsx:425
 #: components/FormCommands/ShowTransactions.tsx:104
@@ -180,7 +181,7 @@ msgstr "Create"
 #: components/WorkBench/wbView.js:1971
 #: components/WorkBench/wbView.js:2546
 #: components/WorkBench/wbView.js:2569
-#. Used in: Components > App Resources > Editor Components ⬤ Components > App Resources > Filters ⬤ Components > App Resources > Tabs ⬤ Components > Core > Main ⬤ Components > Form Cells > Form Table ⬤ Components > Form Commands > Show Transactions ⬤ Components > Form Commands > Index ⬤ Components > Form Fields > Query Combo Box ⬤ Components > Form Meta > Auto Numbering ⬤ Components > Form Meta > Carry Forward ⬤ Components > Form Meta > Definition ⬤ Components > Form Meta > Edit History ⬤ Components > Form Meta > Pick List Usages ⬤ Components > Form Meta > Index ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Form Plugins > Geo Locate ⬤ Components > Form Plugins > Leaflet ⬤ Components > Form Plugins > Paleo Location ⬤ Components > Form Plugins > Index ⬤ Components > Form Sliders > Record Set ⬤ Components > Forms > Data Task ⬤ Components > Forms > Delete Blocked ⬤ Components > Forms > Resource View ⬤ Components > Forms > Save ⬤ Components > Forms > Search Dialog ⬤ Components > Header > Notifications ⬤ Components > Header > User Tools ⬤ Components > Home Page > About Specify ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Return Dialog ⬤ Components > Leaflet > Map ⬤ Components > Pick Lists > Index ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Edit ⬤ Components > Query Builder > Export ⬤ Components > Query Builder > Loan Return ⬤ Components > Query Builder > Save ⬤ Components > Reports > Report ⬤ Components > Schema Config > Languages ⬤ Components > Security > Role ⬤ Components > Security > Set Password ⬤ Components > Security > User ⬤ Components > Security > User Collections ⬤ Components > Security > User Invite Link ⬤ Components > Specify Network > Index ⬤ Components > Toolbar > Dwca ⬤ Components > Toolbar > Force Update ⬤ Components > Toolbar > Language ⬤ Components > Toolbar > Master Key ⬤ Components > Toolbar > Query Tables ⬤ Components > Toolbar > Query Tables Edit ⬤ Components > Toolbar > Tree Repair ⬤ Components > Tree View > Actions ⬤ Components > User Preferences > Index ⬤ Components > Wb Plan View > Mapper Components ⬤ Components > Wb Plan View > State ⬤ Components > Work Bench > Advanced Search ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Results ⬤ Components > Work Bench > Status ⬤ Components > Work Bench > Wb Utils ⬤ Components > Work Bench > Wb View
+#. Used in: Components > App Resources > Editor Components ⬤ Components > App Resources > Filters ⬤ Components > App Resources > Tabs ⬤ Components > Attachments > Index ⬤ Components > Core > Main ⬤ Components > Form Cells > Form Table ⬤ Components > Form Commands > Show Transactions ⬤ Components > Form Commands > Index ⬤ Components > Form Fields > Query Combo Box ⬤ Components > Form Meta > Auto Numbering ⬤ Components > Form Meta > Carry Forward ⬤ Components > Form Meta > Definition ⬤ Components > Form Meta > Edit History ⬤ Components > Form Meta > Pick List Usages ⬤ Components > Form Meta > Index ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Form Plugins > Geo Locate ⬤ Components > Form Plugins > Leaflet ⬤ Components > Form Plugins > Paleo Location ⬤ Components > Form Plugins > Index ⬤ Components > Form Sliders > Record Set ⬤ Components > Forms > Data Task ⬤ Components > Forms > Delete Blocked ⬤ Components > Forms > Resource View ⬤ Components > Forms > Save ⬤ Components > Forms > Search Dialog ⬤ Components > Header > Notifications ⬤ Components > Header > User Tools ⬤ Components > Home Page > About Specify ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Return Dialog ⬤ Components > Leaflet > Map ⬤ Components > Pick Lists > Index ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Edit ⬤ Components > Query Builder > Export ⬤ Components > Query Builder > Loan Return ⬤ Components > Query Builder > Save ⬤ Components > Reports > Report ⬤ Components > Schema Config > Languages ⬤ Components > Security > Role ⬤ Components > Security > Set Password ⬤ Components > Security > User ⬤ Components > Security > User Collections ⬤ Components > Security > User Invite Link ⬤ Components > Specify Network > Index ⬤ Components > Toolbar > Dwca ⬤ Components > Toolbar > Force Update ⬤ Components > Toolbar > Language ⬤ Components > Toolbar > Master Key ⬤ Components > Toolbar > Query Tables ⬤ Components > Toolbar > Query Tables Edit ⬤ Components > Toolbar > Tree Repair ⬤ Components > Tree View > Actions ⬤ Components > User Preferences > Index ⬤ Components > Wb Plan View > Mapper Components ⬤ Components > Wb Plan View > State ⬤ Components > Work Bench > Advanced Search ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Results ⬤ Components > Work Bench > Status ⬤ Components > Work Bench > Wb Utils ⬤ Components > Work Bench > Wb View
 msgid "close"
 msgstr "Close"
 
@@ -299,7 +300,7 @@ msgstr "Tools"
 #: components/Forms/BaseResourceView.tsx:53
 #: components/Forms/DeleteButton.tsx:103
 #: components/Forms/SearchDialog.tsx:154
-#: components/Forms/SubView.tsx:202
+#: components/Forms/SubView.tsx:217
 #: components/HomePage/AboutSpecify.tsx:165
 #: components/HomePage/AboutSpecify.tsx:201
 #: components/HomePage/AboutSpecify.tsx:228
@@ -565,7 +566,7 @@ msgstr "No Matches"
 msgid "searchQuery"
 msgstr "Search Query"
 
-#: components/Attachments/attachments.ts:72
+#: components/Attachments/attachments.ts:73
 #: components/HomePage/AboutSpecify.tsx:192
 #: components/HomePage/AboutSpecify.tsx:222
 #. Used in: Components > Attachments > Attachments ⬤ Components > Home Page > About Specify
@@ -614,16 +615,16 @@ msgstr "Choose a file or drag it here"
 msgid "selectedFileName"
 msgstr "Selected file"
 
-#: components/Attachments/index.tsx:168
-#: components/Attachments/index.tsx:171
+#: components/Attachments/index.tsx:188
+#: components/Attachments/index.tsx:191
 #: components/Security/registry.ts:103
 #: components/Security/registry.ts:131
 #. Used in: Components > Attachments > Index ⬤ Components > Security > Registry
 msgid "all"
 msgstr "All"
 
-#: components/Attachments/index.tsx:177
-#: components/Attachments/index.tsx:180
+#: components/Attachments/index.tsx:197
+#: components/Attachments/index.tsx:200
 #. Used in: Components > Attachments > Index
 msgid "unused"
 msgstr "Unused"
@@ -664,7 +665,7 @@ msgstr "Dismiss"
 msgid "id"
 msgstr "ID"
 
-#: components/Attachments/index.tsx:151
+#: components/Attachments/index.tsx:171
 #: components/QueryBuilder/Field.tsx:389
 #: components/QueryBuilder/Field.tsx:398
 #. Used in: Components > Attachments > Index ⬤ Components > Query Builder > Field
@@ -746,8 +747,8 @@ msgstr "None available"
 #: components/AppResources/Filters.tsx:102
 #: components/AppResources/Filters.tsx:118
 #: components/AppResources/Filters.tsx:144
-#: components/Attachments/index.tsx:167
-#: components/Attachments/index.tsx:176
+#: components/Attachments/index.tsx:187
+#: components/Attachments/index.tsx:196
 #: components/FormCells/FormTable.tsx:129
 #: components/Header/ExpressSearchTask.tsx:113
 #: components/Toolbar/Query.tsx:95

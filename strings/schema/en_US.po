@@ -9,7 +9,7 @@ msgstr "Content-Type: text/plain\n"
 msgid "table"
 msgstr "Table"
 
-#: components/Attachments/index.tsx:183
+#: components/Attachments/index.tsx:203
 #: components/Router/Routes.tsx:360
 #: components/SchemaConfig/Tables.tsx:55
 #. Used in: Components > Attachments > Index ⬤ Components > Router > Routes ⬤ Components > Schema Config > Tables

@@ -1,24 +1,30 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/Attachments/index.tsx:149
+#: components/Attachments/index.tsx:169
 #: components/Header/menuItemDefinitions.ts:109
 #: components/Router/Routes.tsx:164
 #. Used in: Components > Attachments > Index ⬤ Components > Header > Menu Item Definitions ⬤ Components > Router > Routes
 msgid "attachments"
 msgstr "Pièces jointes"
 
-#: components/Attachments/index.tsx:209
+#: components/Attachments/index.tsx:229
 #. Used in: Components > Attachments > Index
 msgid "scale"
 msgstr "Échelle"
 
 #: components/Attachments/Plugin.tsx:119
-#. Used in: Components > Attachments > Plugin
+#: components/Attachments/index.tsx:69
+#. Used in: Components > Attachments > Plugin ⬤ Components > Attachments > Index
 msgid "attachmentServerUnavailable"
-msgstr "Serveur de pièces jointes indisponible."
+msgstr "Serveur de pièces jointes indisponible"
 
-#: components/Attachments/index.tsx:198
+#: components/Attachments/index.tsx:72
+#. Used in: Components > Attachments > Index
+msgid "attachmentServerUnavailableDescription"
+msgstr ""
+
+#: components/Attachments/index.tsx:218
 #: components/FormMeta/SubViewMeta.tsx:41
 #: components/UserPreferences/Definitions.tsx:1072
 #. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > User Preferences > Definitions
