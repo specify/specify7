@@ -58,13 +58,13 @@ export function SvgIcon({
       </g>
       <g>
         <text
-          dominantBaseline="middle"
+          dominantBaseline="central"
           fill="#FFFFFF"
           fontFamily="Francois One"
           fontSize={`${fontSize}px`}
           textAnchor="middle"
           x="50%"
-          y="56%"
+          y="50%"
         >
           {shortName}
         </text>
