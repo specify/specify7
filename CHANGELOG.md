@@ -4,6 +4,46 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [7.8.4](https://github.com/specify/specify7/compare/v7.8.4...v7.8.3) (January 2023)
+
+### Changed
+
+- `500 error occurred` messages have been replaced by useful error
+  dialogs ([#2668](https://github.com/specify/specify7/issues/2668) – _Requested by many institutions_)
+    - Error responses from the backend have been improved dramatically for environments not using debug mode. Errors
+      from MySQL, Django, and other back-end components will now be displayed outside of debug mode showing the
+      ExceptionType, message, and StackTrace in a format that can assist on-site IT and collection administrators in
+      discovering and solving configuration problems.
+- Introduced a new Specify favicon and icons for a variety of
+  devices ([#2752](https://github.com/specify/specify7/pull/2752))
+- Small beauty improvements have been made, adding shadows and lighter borders to fields throughout
+  Specify ([#2773](https://github.com/specify/specify7/pull/2773))
+- The Delete button has been moved to the Data Set Metadata menu in the
+  WorkBench ([#2755](https://github.com/specify/specify7/pull/2755))
+- Languages that have incomplete localization can be selected after a warning for use in
+  Specify ([#2790](https://github.com/specify/specify7/pull/2790))
+
+### Fixed
+
+- Queries exported to CSV now use the field label as a heading rather than the field's string
+  ID ([#1575](https://github.com/specify/specify7/issues/1575) – _Reported by FWRI, CSIRO, RBGE, and many more_)
+- A new preference has been added allowing users to add children to synonymized parents as well as synonymizing nodes
+  with children ([#751](https://github.com/specify/specify7/issues/751)
+  – [Instructions](https://discourse.specifysoftware.org/t/enable-creating-children-for-synonymized-nodes/987/4) –  _
+  Requested by FWRI, CSIRO, AAFC, RBGE, Ville de Genève, and more_)
+- Interactions table names are now dynamic ([#2420](https://github.com/specify/specify7/issues/2420) – _Requested by
+  RBGE_)
+- Specify now ignores synonymized nodes when checking the tree
+  structure ([#2707](https://github.com/specify/specify7/issues/2707) – Reported by The University of Michigan)
+- Exporting a query on a record set now is scoped to the record set query
+  results ([#2761](https://github.com/specify/specify7/issues/2761) – _Reported by CSIRO_)
+- The print icon now matches other button's appearance in the GeoMap
+  viewer ([#2764](https://github.com/specify/specify7/pull/2764))
+- Available collections are now only fetched once rather than
+  twice ([#2770](https://github.com/specify/specify7/pull/2770))
+- Separator icons now display correctly on the forms ([#2074](https://github.com/specify/specify7/issues/2074))
+-
+
 ## [7.8.3](https://github.com/specify/specify7/compare/v7.8.2...v7.8.3) (9 January 2023)
 
 This update includes many bug fixes in addition to laying the groundwork for Specify's UI to support Spanish, French,
@@ -14,6 +54,7 @@ and contact us at [support@specifysoftware.org](mailto:support@specifysoftware.o
 like to help translate to a language we do not yet support.
 
 ### Changed
+
 - Global Prefs and Remote User Prefs are now differentiated in the App Resources
   viewer ([#2430](https://github.com/specify/specify7/issues/2430))
 - Usernames are no longer automatically capitalized in the navigation menu
@@ -22,6 +63,7 @@ like to help translate to a language we do not yet support.
   mode ([#2698](https://github.com/specify/specify7/issues/2698))
 
 ### Fixed
+
 - Exchange In, Exchange Out, and Disposal attachments now function
   properly ([#2525](https://github.com/specify/specify7/issues/2525) - _Requested by RBGE_)
 - GeoMap full screen icon now conforms to rounded corner
@@ -29,6 +71,7 @@ like to help translate to a language we do not yet support.
 - Fixed app resource creation being blocked because of it trying to get an invalid field
 
 ### Updated
+
 - Updated the copyright year to 2023
 
 ## [7.8.2](https://github.com/specify/specify7/compare/v7.8.1...v7.8.2) (29 December 2022)
@@ -41,18 +84,20 @@ Specify 7. We will be adding Spanish and French localization in near future.
 Additionally, specify now includes the ability to store different
 collections' assets in separate folders.
 ([#1056](https://github.com/specify/specify7/issues/1056#issuecomment-1368093439) - _Requested By
-  NHMD_)
+NHMD_)
 
 [More information](https://discourse.specifysoftware.org/t/get-started-with-specify-7-localization/956)
 
 ## [7.8.1](https://github.com/specify/specify7/compare/v7.8.0...v7.8.1) (13 December 2022)
 
 ### Changed
+
 - Attachments now uses a photo icon instead of a
   link ([#2530](https://github.com/specify/specify7/issues/2530))
 - Animated shadows are now used when viewing attachments
 
 ### Fixed
+
 - The log in button now operates correctly when accessing the database via an
   anonymous user ([#2651](https://github.com/specify/specify7/issues/2651))
 
