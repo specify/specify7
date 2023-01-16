@@ -62,8 +62,9 @@ export const interactionsText = createDictionary({
     comment: 'See documentation for syntax for plural rules',
     'en-us': 'By choosing a recordset ({{count:none | one | ??}} available)',
     'ru-ru': 'Выбрав набор записей (доступно {count:number|formatted})',
-    'es-es':
-      'Eligiendo un juego de registros ({{count:none | one | ??}} disponible)',
+    'es-es': `
+      Al elegir un conjunto de registros ({{count:none | one | ??}} disponible)
+    `,
     'fr-fr': `
       En choisissant un jeu d'enregistrements ({{count:none | one | ??}}
       disponible)
@@ -188,39 +189,44 @@ export const interactionsText = createDictionary({
   },
   prepReturnFormatter: {
     comment: 'Used to format preparations in the prep return dialog',
-    'en-us': '{tableName:string}: {resource: string}',
-    'ru-ru': '{tableName:string}: {resource: string}',
-    'es-es': '{tableName:string}: {resource: string}',
-    'fr-fr': '{tableName : chaîne} : {ressource : chaîne}',
-    'uk-ua': '{tableName:string}: {ресурс: string}',
+    'en-us': '{tableName:string}: {resource:string}',
+    'ru-ru': '{tableName:string}: {resource:string}',
+    'es-es': '{tableName:string}: {resource:string}',
+    'fr-fr': '{tableName:chaîne}: {ressource:chaîne}',
+    'uk-ua': '{tableName:string}: {resource:string}',
   },
   resolvedLoans: {
-    'en-us': 'Resolved Loans',
-    'ru-ru': 'Решение Заемы',
-    'es-es': 'Préstamos Resueltos',
-    'fr-fr': 'Prêts résolus',
-    'uk-ua': 'Вирішені позики',
+    comment: 'Example: Resolved Loan records',
+    'en-us': 'Resolved {loanTable:string} records',
+    'es-es': 'Registros resueltos {loanTable:string}',
+    'fr-fr': 'Enregistrements {loanTable:string} résolus',
+    'ru-ru': 'Решено {loanTable:string} записей',
+    'uk-ua': 'Вирішено записи {loanTable:string}.',
   },
   openLoans: {
-    'en-us': 'Open Loans',
-    'ru-ru': 'Открытые займы',
-    'es-es': 'Préstamos abiertos',
-    'fr-fr': 'Prêts ouverts',
-    'uk-ua': 'Відкриті кредити',
+    comment: 'Example: Open Loan records',
+    'en-us': 'Open {loanTable:string} records',
+    'es-es': 'Abrir registros {loanTable:string}',
+    'fr-fr': 'Ouvrir les enregistrements {loanTable:string}',
+    'ru-ru': 'Открыть {loanTable:string} записей',
+    'uk-ua': 'Відкрийте записи {loanTable:string}.',
   },
   gifts: {
-    'en-us': 'Gifts',
-    'ru-ru': 'Подарки',
-    'es-es': 'Regalos',
-    'fr-fr': 'Cadeaux',
-    'uk-ua': 'Подарунки',
+    comment: 'Example: Gift records',
+    'en-us': '{giftTable:string} records',
+    'es-es': '{giftTable:string} registros',
+    'fr-fr': '{giftTable:string} enregistrements',
+    'ru-ru': '{giftTable:string} записи',
+    'uk-ua': '{giftTable:string} записи',
   },
   exchanges: {
-    'en-us': 'Exchanges',
-    'ru-ru': 'Обмены',
-    'es-es': 'Intercambios',
-    'fr-fr': 'Échanges',
-    'uk-ua': 'Обміни',
+    comment: 'Example: Exchange In / Exchnage Out records',
+    'en-us': '{exhangeInTable:string} / {exhangeOutTable:string} records',
+    'es-es': '{exhangeInTable:string} / {exhangeOutTable:string} registros',
+    'fr-fr':
+      '{exhangeInTable:string} / {exhangeOutTable:string} enregistrements',
+    'ru-ru': '{exhangeInTable:string} / {exhangeOutTable:string} записи',
+    'uk-ua': 'Записи {exhangeInTable:string} / {exhangeOutTable:string}.',
   },
   unCataloged: {
     'en-us': 'uncataloged',
@@ -230,23 +236,35 @@ export const interactionsText = createDictionary({
     'uk-ua': 'некаталогований',
   },
   returnedPreparations: {
-    'en-us': 'Returned Preparations',
-    'ru-ru': 'Возвращенные препараты',
-    'es-es': 'Preparaciones devueltas',
-    'fr-fr': 'Préparations retournées',
-    'uk-ua': 'Повернені препарати',
+    comment: 'Example: Preparation records',
+    'en-us': 'Returned {tablePreparation:string} records',
+    'es-es': 'Registros {tablePreparation:string} devueltos',
+    'fr-fr': 'Enregistrements {tablePreparation:string} renvoyés',
+    'ru-ru': 'Возвращено {tablePreparation:string} записей',
+    'uk-ua': 'Повернуто {tablePreparation:string} записів',
   },
   returnedAndSaved: {
-    'en-us':
-      '{count:number|formatted} preparations have been returned and saved.',
-    'ru-ru': '{count:number|formatted} препарата возвращены и сохранены.',
-    'es-es':
-      '{count:number|formatted} los preparativos se han devuelto y guardado.',
-    'fr-fr': `
-      Les préparations {count:number|formatted} ont été renvoyées et
-      enregistrées.
+    comment: 'Example: 2 Preparation records have been returned and saved',
+    'en-us': `
+      {count:number|formatted} {tablePreparation:string} records have been
+      returned and saved
     `,
-    'uk-ua': 'Препарати {count:number|formatted} повернуто та збережено.',
+    'es-es': `
+      {count:number|formatted} {tablePreparation:string} registros han sido
+      devueltos y guardados
+    `,
+    'fr-fr': `
+      {count:number|formatted} {tablePreparation:string} enregistrements ont été
+      renvoyés et sauvegardés
+    `,
+    'ru-ru': `
+      {count:number|formatted} {tablePreparation:string} записей возвращены и
+      сохранены
+    `,
+    'uk-ua': `
+      Записи {count:number|formatted} {tablePreparation:string} повернуто та
+      збережено
+    `,
   },
   deselectAll: {
     'en-us': 'Deselect all',
@@ -270,11 +288,12 @@ export const interactionsText = createDictionary({
     'uk-ua': 'Недоступний',
   },
   returnLoan: {
-    'en-us': 'Return Loan',
-    'ru-ru': 'Возврат Заема',
-    'es-es': 'Préstamo de devolución',
-    'fr-fr': 'Prêt de retour',
-    'uk-ua': 'Повернення кредиту',
+    comment: 'Example: Return Loan records',
+    'en-us': 'Return {tableLoan:string} records',
+    'es-es': 'Devolver registros {tableLoan:string}',
+    'fr-fr': 'Renvoyer les enregistrements {tableLoan:string}',
+    'ru-ru': 'Вернуть записи {tableLoan:string}',
+    'uk-ua': 'Повернути записи {tableLoan:string}.',
   },
   printInvoice: {
     'en-us': 'Print Invoice',
@@ -284,52 +303,66 @@ export const interactionsText = createDictionary({
     'uk-ua': 'Роздрукувати рахунок-фактуру',
   },
   loanWithoutPreparation: {
-    'en-us': 'Loan w/o Preps',
-    'ru-ru': 'Заем без Препаратов',
-    'es-es': 'Préstamo sin preparación',
-    'fr-fr': 'Prêt sans préparation',
-    'uk-ua': 'Позика без підготовки',
+    comment: 'Example: Loan records w/o Preparation records',
+    'en-us': '{tableLoan:string} w/o {tablePreparation:string} records',
+    'es-es': '{tableLoan:string} sin registros {tablePreparation:string}',
+    'fr-fr':
+      '{tableLoan:string} sans enregistrements {tablePreparation:string}',
+    'ru-ru': '{tableLoan:string} без записей {tablePreparation:string}',
+    'uk-ua': '{tableLoan:string} без записів {tablePreparation:string}.',
   },
   loanWithoutPreparationDescription: {
-    'en-us': 'Create a loan with no preparations',
-    'ru-ru': 'Создать Заем без препаратов',
-    'es-es': 'Crear un préstamo sin preparativos',
-    'fr-fr': 'Créer un prêt sans préparation',
-    'uk-ua': 'Оформіть позику без підготовки',
+    comment: 'Example: Create a Loan records with no Preparation records',
+    'en-us':
+      'Create a {tableLoan:string} with no {tablePreparation:string} records',
+    'es-es':
+      'Cree un {tableLoan:string} sin registros {tablePreparation:string}',
+    'fr-fr': `
+      Créer un {tableLoan:string} sans enregistrements {tablePreparation:string}
+    `,
+    'ru-ru':
+      'Создайте {tableLoan:string} без записей {tablePreparation:string}',
+    'uk-ua':
+      'Створіть {tableLoan:string} без записів {tablePreparation:string}.',
   },
   createLoan: {
-    'en-us': 'Create a Loan',
-    'ru-ru': 'Создать Заем',
-    'es-es': 'Crear un préstamo',
-    'fr-fr': 'Créer un prêt',
-    'uk-ua': 'Створіть позику',
+    comment: 'Example: Create a Loan',
+    'en-us': 'Create a {tableLoan:string}',
+    'es-es': 'Crear un {tableLoan:string}',
+    'fr-fr': 'Créer un {tableLoan:string}',
+    'ru-ru': 'Создайте {tableLoan:string}',
+    'uk-ua': 'Створити {tableLoan:string}',
   },
   editLoan: {
-    'en-us': 'Edit Loan',
-    'ru-ru': 'Редактировать Заем',
-    'es-es': 'Editar préstamo',
-    'fr-fr': 'Modifier le prêt',
-    'uk-ua': 'Редагувати кредит',
+    comment: 'Example: Edit a Loan',
+    'en-us': 'Edit {tableLoan:string}',
+    'es-es': 'Editar {tableLoan:string}',
+    'fr-fr': 'Modifier {tableLoan:string}',
+    'ru-ru': 'Изменить {tableLoan:string}',
+    'uk-ua': 'Редагувати {tableLoan:string}',
   },
   createdGift: {
-    'en-us': 'Create a Gift',
-    'ru-ru': 'Создать Дар',
-    'es-es': 'Crear un regalo',
-    'fr-fr': 'Créer un cadeau',
-    'uk-ua': 'Створіть подарунок',
+    comment: 'Example: Create a Gift',
+    'en-us': 'Create a {tableGift:string}',
+    'es-es': 'Crear una {tableGift:string}',
+    'fr-fr': 'Créer un {tableLoan:string}',
+    'ru-ru': 'Создайте {tableLoan:string}',
+    'uk-ua': 'Створити {tableLoan:string}',
   },
   editGift: {
-    'en-us': 'Edit Gift',
-    'ru-ru': 'Редактировать Дар',
-    'es-es': 'Editar regalo',
-    'fr-fr': 'Modifier le cadeau',
-    'uk-ua': 'Редагувати подарунок',
+    comment: 'Example: Edit a Gift',
+    'en-us': 'Edit {tableGift:string}',
+    'es-es': 'Edite {tableGift:string}',
+    'fr-fr': 'Modifier {tableLoan:string}',
+    'ru-ru': 'Изменить {tableLoan:string}',
+    'uk-ua': 'Редагувати {tableLoan:string}',
   },
   createInformationRequest: {
-    'en-us': 'Create Information Request',
-    'ru-ru': 'Создать Экспресс Запрос',
-    'es-es': 'Crear solicitud de información',
-    'fr-fr': "Créer une demande d'informations",
-    'uk-ua': 'Створити інформаційний запит',
+    comment: 'Example: Create a Infrormation Request',
+    'en-us': 'Create {tableInformationRequest:string}',
+    'es-es': 'Crear {tableInformationRequest:string}',
+    'fr-fr': 'Créer {modelName:string}',
+    'ru-ru': 'Создать {tableInformationRequest:string}',
+    'uk-ua': 'Створити {modelName:string}',
   },
 } as const);

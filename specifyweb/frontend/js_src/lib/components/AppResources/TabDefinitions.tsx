@@ -19,7 +19,6 @@ import { writable } from '../../utils/types';
 import { useCodeMirrorExtensions } from './EditorComponents';
 import { PreferencesContext, useDarkMode } from '../UserPreferences/Hooks';
 import { PreferencesContent } from '../UserPreferences';
-import { useId } from '../../hooks/useId';
 import { useLiveState } from '../../hooks/useLiveState';
 import { appResourceSubTypes } from './types';
 import { SerializedResource } from '../DataModel/helperTypes';
@@ -93,7 +92,6 @@ const UserPreferencesEditor: AppResourceTab = function ({
   data,
   onChange: handleChange,
 }): JSX.Element {
-  const id = useId('user-preferences');
   const [preferencesContext] = useLiveState<
     React.ContextType<typeof PreferencesContext>
   >(
@@ -124,7 +122,7 @@ const UserPreferencesEditor: AppResourceTab = function ({
 
   return (
     <PreferencesContext.Provider value={preferencesContext}>
-      <PreferencesContent id={id} isReadOnly={isReadOnly} />
+      <PreferencesContent isReadOnly={isReadOnly} />
     </PreferencesContext.Provider>
   );
 };

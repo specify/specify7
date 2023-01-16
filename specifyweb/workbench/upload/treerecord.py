@@ -210,7 +210,7 @@ class BoundTreeRecord(NamedTuple):
             key = repr(sorted(tdiwpr.match_key() for tdiwpr in tried_to_match))
             return tdiwprs, MatchedMultiple(ids, key, info)
         else:
-            assert n_matches == 0
+            assert n_matches == 0, f"More than one match found when matching '{tdiwprs}' in '{model}'"
             if parent is not None:
                 info = ReportInfo(tableName=self.name, columns=matched_cols, treeInfo=TreeInfo(parent['definitionitem__name'], parent['name']))
                 return tdiwprs, Matched(parent['id'], info) # partial match
@@ -247,7 +247,7 @@ class BoundTreeRecord(NamedTuple):
         return matches
 
     def _upload(self, to_upload: List[TreeDefItemWithParseResults], matched: Union[Matched, NoMatch]) -> UploadResult:
-        assert to_upload
+        assert to_upload, f"Invalid Error: {to_upload}, can not upload matched resluts: {matched}"
         model = getattr(models, self.name)
 
         parent_info: Optional[Dict]
