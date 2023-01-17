@@ -90,7 +90,7 @@ export function ResourceMapping({
 
   const mappingLineProps = getMappingLineProps({
     mappingLineData: mutateLineData(lineData),
-    customSelectType: 'CLOSED_LIST',
+    customSelectType: 'SIMPLE_LIST',
     onChange: isReadOnly
       ? undefined
       : (payload): void =>

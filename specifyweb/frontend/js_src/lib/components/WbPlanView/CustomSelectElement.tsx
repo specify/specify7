@@ -64,6 +64,7 @@ type Properties =
   | 'arrow';
 export type CustomSelectType =
   | 'CLOSED_LIST'
+  | 'SIMPLE_LIST'
   | 'OPENED_LIST'
   | 'OPTIONS_LIST'
   | 'PREVIEW_LIST'
@@ -91,6 +92,20 @@ export const customSelectTypes: RR<CustomSelectType, RA<Properties>> = {
     'arrow',
   ],
   /*
+   * Like CLOSED_LIST but meant for usage outside the WorkBench mapper
+   * Needed to fix https://github.com/specify/specify7/issues/2729
+   */
+  SIMPLE_LIST: [
+    'interactive',
+    'preview',
+    'unmapOption',
+    'autoScroll',
+    'scroll',
+    'shadow',
+    'icon',
+    'arrow',
+  ],
+  /*
    * Like CLOSED_LIST, but not interactive
    * Used for displaying validation results and inside of a SUGGESTION_LIST
    */
@@ -108,6 +123,7 @@ const customSelectClassNames: Partial<RR<CustomSelectType, string>> = {
   OPENED_LIST: '!h-full',
   OPTIONS_LIST: 'grid',
   CLOSED_LIST: 'grid',
+  SIMPLE_LIST: 'grid',
   SUGGESTION_LIST: '[z-index:10] h-auto !fixed',
 };
 /* eslint-enable @typescript-eslint/naming-convention */
@@ -572,7 +588,8 @@ export function CustomSelectElement({
         <span
           className={`
             flex-1 ${
-              defaultOption.optionLabel === emptyMapping
+              defaultOption.optionLabel === emptyMapping &&
+              customSelectType !== 'SIMPLE_LIST'
                 ? 'font-extrabold text-red-600'
                 : ''
             }
