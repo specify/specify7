@@ -1926,7 +1926,7 @@ export const WBView = Backbone.View.extend({
           },
         }}
         onFinished={(wasAborted) => {
-          this.wbstatus();
+          this.wbstatus?.();
           this.wbstatus = undefined;
           this.trigger('refresh', mode, wasAborted);
         }}
