@@ -197,7 +197,7 @@ export function handleAjaxError(
 }
 
 /** Create an iframe from HTML string */
-function ErrorIframe({
+export function ErrorIframe({
   children: error,
 }: {
   readonly children: string;
@@ -214,7 +214,7 @@ function ErrorIframe({
 
   return (
     <iframe
-      className="h-full"
+      className="h-full w-full"
       ref={iframeRef}
       title={mainText.errorOccurred()}
     />
