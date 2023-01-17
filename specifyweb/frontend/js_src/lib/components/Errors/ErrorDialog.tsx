@@ -56,16 +56,16 @@ export function ErrorDialog({
   copiableMessage,
   // Error dialog is only closable in Development
   onClose: handleClose,
-  dismissable = false,
+  dismissible = false,
 }: {
   readonly children: React.ReactNode;
   readonly copiableMessage: string;
   readonly header?: LocalizedString;
   readonly onClose?: () => void;
-  readonly dismissable?: boolean;
+  readonly dismissible?: boolean;
 }): JSX.Element {
   const id = useId('error-dialog')('');
-  // If there is more than one error, all but the last one should be dismissable
+  // If there is more than one error, all but the last one should be dismissible
   const isLastError = React.useRef(errors.size === 0).current;
   React.useEffect(() => {
     errors.add(id);
@@ -79,7 +79,7 @@ export function ErrorDialog({
   );
   const canClose =
     (canDismiss ||
-      dismissable ||
+      dismissible ||
       process.env.NODE_ENV === 'development' ||
       !isLastError) &&
     typeof handleClose === 'function';

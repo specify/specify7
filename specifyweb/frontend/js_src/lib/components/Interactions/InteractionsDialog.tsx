@@ -326,7 +326,7 @@ export function InteractionsOverlay(): JSX.Element | null {
   const handleClose = React.useContext(OverlayContext);
 
   return typeof entries === 'object' ? (
-    <ErrorBoundary dismissable>
+    <ErrorBoundary dismissible>
       <Interactions entries={entries} onClose={handleClose} />
     </ErrorBoundary>
   ) : null;

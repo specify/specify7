@@ -1,14 +1,16 @@
-import { ajax } from './index';
 import { Backbone } from '../../components/DataModel/backbone';
-import { formatUrl } from '../../components/Router/queryString';
 import { promiseToXhr } from '../../components/DataModel/resourceApi';
+import { formatUrl } from '../../components/Router/queryString';
 import type { RA } from '../types';
 import { defined } from '../types';
 import { Http } from './definitions';
+import type { AjaxErrorMode } from './index';
+import { ajax } from './index';
 
 let expectedResponseCodes: RA<typeof Http[keyof typeof Http]> | undefined =
   undefined;
 let requestCallback: ((status: number) => void) | undefined;
+let errorMessageMode: AjaxErrorMode | undefined;
 
 /**
  * Since arguments can't be passed directly to the Backbone.ajax call, this
@@ -17,13 +19,16 @@ let requestCallback: ((status: number) => void) | undefined;
 export function hijackBackboneAjax<T>(
   responseCodes: RA<typeof Http[keyof typeof Http]>,
   callback: () => T,
-  successCallback: (status: number) => void
+  successCallback: (status: number) => void,
+  errorMode: AjaxErrorMode = 'visible'
 ): T {
   expectedResponseCodes = responseCodes;
   requestCallback = successCallback;
+  errorMessageMode = errorMode;
   const value = callback();
   requestCallback = undefined;
   expectedResponseCodes = undefined;
+  errorMessageMode = undefined;
   return value;
 }
 
@@ -60,6 +65,7 @@ Backbone.ajax = function (request): JQueryXHR {
           Http.CREATED,
           Http.NO_CONTENT,
         ],
+        errorMode: errorMessageMode,
       }
     )
       .then(({ data, status }) => {

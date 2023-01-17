@@ -51,7 +51,7 @@ export const fetchOccurrenceName = async (
           mode: 'cors',
           headers: { Accept: 'application/json' },
         },
-        { strict: false }
+        { errorMode: 'silent' }
       )
     )
     .then(({ data }) =>

@@ -159,7 +159,7 @@ const formatResponse = <RESPONSE_TYPE>(
     expectedResponseCodes,
     accept,
     response: createResponse(expectedResponseCodes),
-    strict: true,
+    errorMode: 'visible',
     text: response,
   });
 

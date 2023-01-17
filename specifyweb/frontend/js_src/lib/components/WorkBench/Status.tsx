@@ -146,7 +146,7 @@ export function WbStatus({
                 { method: 'POST', headers: { Accept: 'application/json' } },
                 {
                   expectedResponseCodes: [Http.UNAVAILABLE, Http.OK],
-                  strict: false,
+                  errorMode: 'silent',
                 }
               )
                 .then(({ data, status }) =>

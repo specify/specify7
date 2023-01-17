@@ -187,7 +187,7 @@ export function QueryResultsWrapper({
     )
   ) : (
     <div className="flex flex-1 snap-start overflow-hidden">
-      <ErrorBoundary dismissable>
+      <ErrorBoundary dismissible>
         <QueryResults {...props} totalCount={totalCount} />
       </ErrorBoundary>
     </div>

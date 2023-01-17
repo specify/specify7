@@ -99,7 +99,7 @@ const pluginRenderers: {
       return null;
     } else
       return (
-        <ErrorBoundary dismissable>
+        <ErrorBoundary dismissible>
           <PartialDateUi
             canChangePrecision={formType === 'form'}
             dateField={field}
@@ -127,7 +127,7 @@ const pluginRenderers: {
         !hasTablePermission('CollectionRelType', 'read')
         ? null
         : f.maybe(toTable(resource, 'CollectionObject'), (collectionObject) => (
-            <ErrorBoundary dismissable>
+            <ErrorBoundary dismissible>
               <CollectionOneToManyPlugin
                 relationship={relationship}
                 resource={collectionObject}
@@ -153,7 +153,7 @@ const pluginRenderers: {
         !hasTablePermission('CollectionRelType', 'read')
         ? null
         : f.maybe(toTable(resource, 'CollectionObject'), (collectionObject) => (
-            <ErrorBoundary dismissable>
+            <ErrorBoundary dismissible>
               <CollectionOneToOnePlugin
                 relationship={relationship}
                 resource={collectionObject}
@@ -167,7 +167,7 @@ const pluginRenderers: {
   LocalityGeoRef({ resource }) {
     return (
       f.maybe(toTable(resource, 'Locality'), (locality) => (
-        <ErrorBoundary dismissable>
+        <ErrorBoundary dismissible>
           <GeoLocatePlugin resource={locality} />
         </ErrorBoundary>
       )) ?? <WrongTable allowedTable="Locality" resource={resource} />
@@ -182,7 +182,7 @@ const pluginRenderers: {
     id,
   }) {
     return (
-      <ErrorBoundary dismissable>
+      <ErrorBoundary dismissible>
         <WebLink
           fieldName={fieldName}
           formType={formType}
@@ -231,7 +231,7 @@ const pluginRenderers: {
         f.maybe(
           toTable(resource, 'CollectingEventAttribute'),
           (collectingEventAttribute) => (
-            <ErrorBoundary dismissable>
+            <ErrorBoundary dismissible>
               <HostTaxon
                 formType={formType}
                 id={id}

@@ -6,7 +6,7 @@ import type { RA } from '../types';
 import { filterArray } from '../types';
 import { sortFunction } from '../utils';
 import { Http, httpCodeToErrorMessage } from './definitions';
-import type { AjaxResponseObject, MimeType } from './index';
+import type { AjaxErrorMode, AjaxResponseObject, MimeType } from './index';
 
 /**
  * Handle network response (parse the data, handle possible errors)
@@ -15,13 +15,13 @@ export function handleAjaxResponse<RESPONSE_TYPE = string>({
   expectedResponseCodes,
   accept,
   response,
-  strict,
+  errorMode,
   text,
 }: {
   readonly expectedResponseCodes: RA<number>;
   readonly accept: MimeType | undefined;
   readonly response: Response;
-  readonly strict: boolean;
+  readonly errorMode: AjaxErrorMode;
   readonly text: string;
 }): AjaxResponseObject<RESPONSE_TYPE> {
   // BUG: silence all errors if the page begun reloading
@@ -84,6 +84,6 @@ export function handleAjaxResponse<RESPONSE_TYPE = string>({
     }
   } catch (error) {
     console.error(error);
-    handleAjaxError(error, response, strict);
+    handleAjaxError(error, response, errorMode);
   }
 }

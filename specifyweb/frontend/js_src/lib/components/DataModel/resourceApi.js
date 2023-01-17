@@ -517,6 +517,7 @@ function eventHandlerForToOne(related, field) {
         save({onSaveConflict:handleSaveConflict,errorOnAlreadySaving=true}={}) {
             var resource = this;
             if (resource._save) {
+                // REFACTOR: instead of erroring on save, just return same promise again
                 if(errorOnAlreadySaving)
                     throw new Error('resource is already being saved');
                 else return resource._save;

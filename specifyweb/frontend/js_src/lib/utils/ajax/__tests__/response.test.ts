@@ -16,7 +16,7 @@ describe('handleAjaxResponse', () => {
         status: Http.NO_CONTENT,
         statusText: undefined,
       }),
-      strict: true,
+      errorMode: 'visible',
       text: '',
     });
     expect(response).toEqual({
@@ -38,7 +38,7 @@ describe('handleAjaxResponse', () => {
         status: Http.OK,
         statusText: undefined,
       }),
-      strict: true,
+      errorMode: 'visible',
       text: 'Test response',
     });
     expect(response).toEqual({
@@ -60,7 +60,7 @@ describe('handleAjaxResponse', () => {
         status: Http.OK,
         statusText: undefined,
       }),
-      strict: true,
+      errorMode: 'visible',
       text: '{"foo": "bar"}',
     });
     expect(response).toEqual({
@@ -84,7 +84,7 @@ describe('handleAjaxResponse', () => {
         status: Http.OK,
         statusText: undefined,
       }),
-      strict: true,
+      errorMode: 'visible',
       text: '<icons type="datamodel" subdir="datamodel">test</icons>',
     });
     expect({
@@ -109,7 +109,7 @@ describe('handleAjaxResponse', () => {
         status: Http.NOT_FOUND,
         statusText: undefined,
       }),
-      strict: true,
+      errorMode: 'visible',
       text: 'Page not found',
     });
     expect(response).toEqual({
@@ -132,7 +132,7 @@ describe('handleAjaxResponse', () => {
         status: Http.UNAVAILABLE,
         statusText: undefined,
       }),
-      strict: true,
+      errorMode: 'visible',
       text: 'Service unavailable',
     });
     expect(handleAjaxError).toHaveBeenLastCalledWith(
@@ -159,7 +159,7 @@ describe('handleAjaxResponse', () => {
         status: Http.NOT_FOUND,
         statusText: undefined,
       }),
-      strict: true,
+      errorMode: 'visible',
       text: 'Page not found',
     });
     expect(handleAjaxError).toHaveBeenLastCalledWith(
@@ -186,7 +186,7 @@ describe('handleAjaxResponse', () => {
         status: Http.FORBIDDEN,
         statusText: undefined,
       }),
-      strict: true,
+      errorMode: 'visible',
       text: 'Not allowed',
     });
     expect(handleAjaxError).toHaveBeenLastCalledWith(
@@ -209,7 +209,7 @@ describe('handleAjaxResponse', () => {
         status: Http.OK,
         statusText: undefined,
       }),
-      strict: true,
+      errorMode: 'visible',
       text: '{',
     });
     expect(handleAjaxError).toHaveBeenLastCalledWith(
@@ -232,7 +232,7 @@ describe('handleAjaxResponse', () => {
         status: Http.OK,
         statusText: undefined,
       }),
-      strict: true,
+      errorMode: 'visible',
       text: '<',
     });
     expect(handleAjaxError).toHaveBeenLastCalledWith(

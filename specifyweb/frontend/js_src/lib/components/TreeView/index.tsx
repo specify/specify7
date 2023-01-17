@@ -176,7 +176,7 @@ function TreeView<SCHEMA extends AnyTree>({
           {treeText.editRanks()}
         </Button.Small>
         <span className="-ml-2 flex-1" />
-        <ErrorBoundary dismissable>
+        <ErrorBoundary dismissible>
           <TreeViewActions<SCHEMA>
             actionRow={actionRow}
             focusedRow={focusedRow}

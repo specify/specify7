@@ -74,7 +74,7 @@ export function Notifications(): JSX.Element {
              *  - Notifications is not a critical component, so if it fails, it
              *    shouldn't bring down entire application
              */
-            { strict: false }
+            { errorMode: 'silent' }
           )
         )
         .then(({ data: notifications }) => {
@@ -164,7 +164,7 @@ export function Notifications(): JSX.Element {
                   last_seen: notifications[0]!.timestamp,
                 }),
               },
-              { strict: false }
+              { errorMode: 'silent' }
             ).then(() => undefined);
           }}
         >
@@ -176,7 +176,7 @@ export function Notifications(): JSX.Element {
            */}
           <p>{notificationsText.mostRecentNotificationsTop()}</p>
           {notifications.map((notification, index) => (
-            <ErrorBoundary dismissable key={index}>
+            <ErrorBoundary dismissible key={index}>
               <NotificationComponent
                 notification={notification}
                 onDelete={(promise): void => {
@@ -223,7 +223,7 @@ function NotificationComponent({
                   // eslint-disable-next-line @typescript-eslint/naming-convention
                   body: formData({ message_id: notification.messageId }),
                 },
-                { strict: false }
+                { errorMode: 'silent' }
               ).then(f.void)
             )
           }

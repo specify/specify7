@@ -303,7 +303,7 @@ export const preferencesPromise = contextUnlockedPromise.then(
               },
               {
                 expectedResponseCodes: [Http.NO_CONTENT, Http.OK],
-                strict: false,
+                errorMode: 'silent',
               }
             )
               .then(({ data, status }) =>

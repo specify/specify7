@@ -144,14 +144,17 @@ export const leafletLayersPromise: Promise<typeof defaultTileLayers> =
             })
           ),
           { headers: { Accept: 'text/plain' } },
-          { strict: false, expectedResponseCodes: [Http.OK, Http.NO_CONTENT] }
+          {
+            errorMode: 'silent',
+            expectedResponseCodes: [Http.OK, Http.NO_CONTENT],
+          }
         )
           .then(({ data, status }) =>
             status === Http.NO_CONTENT
               ? ajax<IR<unknown>>(
                   cachableUrl(leafletLayersEndpoint),
                   { headers: { Accept: 'application/json' } },
-                  { strict: false }
+                  { errorMode: 'silent' }
                 ).then(({ data }) => data)
               : (JSON.parse(data) as IR<unknown>)
           )

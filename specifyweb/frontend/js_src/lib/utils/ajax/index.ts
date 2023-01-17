@@ -24,6 +24,8 @@ export type AjaxResponseObject<RESPONSE_TYPE> = {
   readonly status: number;
 };
 
+export type AjaxErrorMode = 'silent' | 'visible' | 'dismissible';
+
 /**
  * If making a GET request to a URL before previous request resolved, return
  * the previous promise rather then make a new request.
@@ -64,7 +66,7 @@ export async function ajax<RESPONSE_TYPE = string>(
   /** Ajax-specific options that are not passed to fetch() */
   {
     expectedResponseCodes = [Http.OK],
-    strict = true,
+    errorMode = 'silent',
   }: {
     /**
      * Throw if returned response code is not what expected
@@ -72,17 +74,18 @@ export async function ajax<RESPONSE_TYPE = string>(
      */
     readonly expectedResponseCodes?: RA<number>;
     /**
-     * If strict, spawn a modal error message dialog on crash
-     * In either case, error messages are logged to the console
+     * If 'visible', spawn a modal error message dialog on crash
+     * If 'silent', don't show the error dialog
+     * If 'dismissible', show the error dialog, but allow closing it
      */
-    readonly strict?: boolean;
+    readonly errorMode?: AjaxErrorMode;
   } = {}
 ): Promise<AjaxResponseObject<RESPONSE_TYPE>> {
   /**
    * When running in a test environment, mock the calls rather than make
    * actual requests
    */
-  // REFACTOR: replace this with a mcok
+  // REFACTOR: replace this with a mock
   if (process.env.NODE_ENV === 'test') {
     const { ajaxMock } = await import('../../tests/ajax');
     return ajaxMock(
@@ -124,7 +127,7 @@ export async function ajax<RESPONSE_TYPE = string>(
         handleAjaxResponse<RESPONSE_TYPE>({
           expectedResponseCodes,
           accept,
-          strict,
+          errorMode,
           response,
           text,
         }),
@@ -138,7 +141,7 @@ export async function ajax<RESPONSE_TYPE = string>(
         return handleAjaxResponse({
           expectedResponseCodes,
           accept,
-          strict,
+          errorMode,
           response,
           text: error.toString(),
         });

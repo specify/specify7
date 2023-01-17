@@ -166,7 +166,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
         return resource
           .save({ onSaveConflict: hasSaveConflict })
           .catch((error_) =>
-            // FEATURE: if form save fails, should make the error message dismissable (if safe)
+            // FEATURE: if form save fails, should make the error message dismissible (if safe)
             Object.getOwnPropertyDescriptor(error_ ?? {}, 'handledBy')
               ?.value === hasSaveConflict
               ? undefined

@@ -75,7 +75,7 @@ const commandRenderers: {
             {label}
           </Button.Small>
           {showLoans && (
-            <ErrorBoundary dismissable>
+            <ErrorBoundary dismissible>
               <ShowLoansCommand
                 preparation={preparation}
                 onClose={handleHide}

@@ -15,7 +15,7 @@ export const crash = (error: Error): void => showError(error, false);
 
 /** Spawn a modal error dialog based on an error object */
 // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
-function showError(error: Error, dismissable: boolean): void {
+function showError(error: Error, dismissible: boolean): void {
   if (
     Object.getOwnPropertyDescriptor(error ?? {}, 'handledBy')?.value ===
     handleAjaxError
@@ -28,7 +28,7 @@ function showError(error: Error, dismissable: boolean): void {
   displayError(({ onClose: handleClose }) => (
     <ErrorDialog
       copiableMessage={copiableMessage}
-      dismissable={dismissable}
+      dismissible={dismissible}
       onClose={handleClose}
     >
       {errorObject}

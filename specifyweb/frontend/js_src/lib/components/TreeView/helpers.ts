@@ -77,7 +77,7 @@ export const fetchStats = async (url: string): Promise<Stats> =>
       // eslint-disable-next-line @typescript-eslint/naming-convention
       headers: { Accept: 'application/json' },
     },
-    { strict: false }
+    { errorMode: 'silent' }
   )
     .then(({ data }) =>
       Object.fromEntries(

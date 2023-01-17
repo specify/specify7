@@ -56,7 +56,7 @@ const fieldRenderers: {
       return null;
     } else
       return (
-        <ErrorBoundary dismissable>
+        <ErrorBoundary dismissible>
           <SpecifyFormCheckbox
             defaultValue={defaultValue}
             fieldName={fieldName}
@@ -108,7 +108,7 @@ const fieldRenderers: {
       );
 
     return (
-      <ErrorBoundary dismissable>
+      <ErrorBoundary dismissible>
         <Component
           {...validationAttributes}
           forwardRef={validationRef}
@@ -155,7 +155,7 @@ const fieldRenderers: {
       false
     );
     return (
-      <ErrorBoundary dismissable>
+      <ErrorBoundary dismissible>
         <Combobox
           defaultValue={defaultValue}
           field={field}
@@ -214,7 +214,7 @@ const fieldRenderers: {
     fieldDefinition: { defaultValue, min, max, step },
   }) {
     return (
-      <ErrorBoundary dismissable>
+      <ErrorBoundary dismissible>
         <UiField
           fieldName={fieldName}
           id={id}

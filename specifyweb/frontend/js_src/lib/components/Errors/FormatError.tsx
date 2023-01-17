@@ -13,6 +13,7 @@ import { ErrorDialog } from './ErrorDialog';
 import { produceStackTrace } from './stackTrace';
 import { mainText } from '../../localization/main';
 import { formatJsonBackendResponse } from './JsonError';
+import { AjaxErrorMode } from '../../utils/ajax';
 
 export function formatError(
   error: unknown,
@@ -131,7 +132,7 @@ function formatErrorResponse(error: string): JSX.Element {
 export function handleAjaxError(
   error: unknown,
   response: Response,
-  strict: boolean
+  errorMode: AjaxErrorMode
 ): never {
   /*
    * If exceptions occur because user has no agent, don't display the error
@@ -139,7 +140,7 @@ export function handleAjaxError(
    */
   if (userInformation.agent === null) throw error;
 
-  if (strict) {
+  if (errorMode !== 'silent') {
     const isNotFoundError =
       response.status === Http.NOT_FOUND &&
       process.env.NODE_ENV !== 'development';
@@ -179,12 +180,13 @@ export function handleAjaxError(
     error,
     response.url
   );
-  if (strict)
+  if (errorMode !== 'silent')
     displayError(({ onClose: handleClose }) => (
       <ErrorDialog
         copiableMessage={copiableMessage}
         header={mainText.errorOccurred()}
         onClose={handleClose}
+        dismissible={errorMode === 'dismissible'}
       >
         {errorObject}
       </ErrorDialog>

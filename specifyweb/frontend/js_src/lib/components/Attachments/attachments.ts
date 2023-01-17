@@ -197,7 +197,7 @@ export async function uploadFile(
                 status: xhr.status,
                 url: settings!.write,
               } as Response,
-              strict: true,
+              errorMode: 'visible',
               text: xhr.responseText,
             })
           )

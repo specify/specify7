@@ -59,7 +59,18 @@ function HeaderLine({
       <tr>
         <td className={mergeCellBackground} />
         {[merged, ...resources].map((resource, index) => (
-          <th className={mergeHeaderClassName} key={index} scope="col">
+          <th
+            className={`
+              ${mergeHeaderClassName}
+              ${
+                index === 0
+                  ? 'font-extrabold text-black dark:text-white'
+                  : 'font-normal'
+              }
+            `}
+            key={index}
+            scope="col"
+          >
             <TableIcon label name={resource.specifyModel.name} />
             <FormattedResource asLink={false} resource={resource} />
           </th>

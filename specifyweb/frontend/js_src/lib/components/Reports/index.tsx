@@ -35,7 +35,7 @@ export const reportsAvailable = ajax<{ readonly available: boolean }>(
   {
     headers: { Accept: 'application/json' },
   },
-  { strict: false }
+  { errorMode: 'silent' }
 )
   .then(({ data }) => data.available)
   .catch(() => false);
@@ -117,7 +117,7 @@ export function ReportsView({
 
   return typeof appResources === 'object' && attachmentSettings ? (
     typeof selectedReport === 'object' ? (
-      <ErrorBoundary dismissable>
+      <ErrorBoundary dismissible>
         <Report
           appResource={selectedReport}
           model={model}

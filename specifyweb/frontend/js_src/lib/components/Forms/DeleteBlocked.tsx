@@ -95,7 +95,7 @@ export function DeleteBlockers({
   return (
     <>
       {isEmbedded ? (
-        <Ul className="overflow-auto">{children}</Ul>
+        <Ul className="w-full overflow-auto">{children}</Ul>
       ) : (
         <Dialog
           buttons={commonText.close()}
@@ -106,7 +106,7 @@ export function DeleteBlockers({
           onClose={handleClose}
         >
           {formsText.deleteBlockedDescription()}
-          {/* BUG: apply these styles everywhere where necessary */}
+          {/* BUG: apply minmax(0,1fr) everywhere where necessary */}
           <table className="grid-table grid-cols-[minmax(0,1fr),auto] gap-2">
             <thead>
               <tr>
