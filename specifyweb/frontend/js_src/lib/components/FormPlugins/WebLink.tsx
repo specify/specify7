@@ -65,7 +65,7 @@ export function WebLink({
   formType,
   mode,
 }: {
-  readonly resource: SpecifyResource<AnySchema>;
+  readonly resource: SpecifyResource<AnySchema> | undefined;
   readonly id: string | undefined;
   readonly name: string | undefined;
   readonly field: LiteralField | Relationship | undefined;
@@ -74,7 +74,11 @@ export function WebLink({
   readonly formType: FormType;
   readonly mode: FormMode;
 }): JSX.Element {
-  const definition = useDefinition(resource.specifyModel, field?.name, webLink);
+  const definition = useDefinition(
+    resource?.specifyModel,
+    field?.name,
+    webLink
+  );
 
   const [{ url, isExternal }, setUrl] = React.useState<{
     readonly url: string | undefined;
@@ -82,10 +86,16 @@ export function WebLink({
   }>({ url: undefined, isExternal: false });
 
   React.useEffect(() => {
-    if (definition === undefined || definition === false) return;
+    if (
+      definition === undefined ||
+      definition === false ||
+      resource === undefined
+    )
+      return;
     const { args, template } = definition;
 
     async function buildUrl(): Promise<string> {
+      if (resource === undefined) return '';
       let parameters = Object.fromEntries(
         args.map((name) => [name, undefined]) ?? []
       );
@@ -169,13 +179,13 @@ type ParsedWebLink = {
 };
 
 function useDefinition(
-  model: SpecifyModel,
+  model: SpecifyModel | undefined,
   fieldName: string | undefined,
   webLink: string | undefined
 ): ParsedWebLink | undefined | false {
   const [definition] = useAsyncState<ParsedWebLink | false>(
     React.useCallback(async () => {
-      const fieldInfo = model.getField(fieldName ?? '');
+      const fieldInfo = model?.getField(fieldName ?? '');
       const webLinkName = fieldInfo?.getWebLinkName() ?? webLink;
       const definition = await webLinks.then(
         (definitions) => definitions[webLinkName ?? '']
@@ -183,6 +193,7 @@ function useDefinition(
       if (typeof definition === 'object')
         return parseWebLink(definition) ?? false;
 
+      if (model === undefined) return false;
       console.error("Couldn't determine WebLink", {
         tableName: model.name,
         fieldName,

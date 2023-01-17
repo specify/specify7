@@ -22,7 +22,7 @@ export type CollectionRelationships = {
 };
 
 export function useCollectionRelationships(
-  resource: SpecifyResource<AnySchema>
+  resource: SpecifyResource<AnySchema> | undefined
 ): CollectionRelationships | false | undefined {
   const [collectionRelationships] = useAsyncState<
     CollectionRelationships | false
@@ -30,7 +30,7 @@ export function useCollectionRelationships(
     React.useCallback(() => {
       if (
         hasTablePermission('CollectionRelType', 'read') ||
-        resource.specifyModel.name !== 'CollectionRelationship'
+        resource?.specifyModel.name !== 'CollectionRelationship'
       )
         return false;
       return f.all({

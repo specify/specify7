@@ -22,7 +22,7 @@ import { useDistantRelated } from '../../hooks/resource';
 
 const fieldRenderers: {
   readonly [KEY in keyof FieldTypes]: (props: {
-    readonly resource: SpecifyResource<AnySchema>;
+    readonly resource: SpecifyResource<AnySchema> | undefined;
     readonly mode: FormMode;
     readonly fieldDefinition: FieldTypes[KEY];
     readonly id: string | undefined;
@@ -40,15 +40,18 @@ const fieldRenderers: {
     field,
     fieldDefinition: { defaultValue, printOnSave, label },
   }) {
+    const table = resource?.specifyModel ?? field?.model;
     return printOnSave ? (
-      <PrintOnSave
-        defaultValue={defaultValue}
-        field={field}
-        id={id}
-        model={resource.specifyModel}
-        name={name}
-        text={label}
-      />
+      table === undefined ? null : (
+        <PrintOnSave
+          defaultValue={defaultValue}
+          field={field}
+          id={id}
+          model={table}
+          name={name}
+          text={label}
+        />
+      )
     ) : field?.isRelationship ? null : (
       <SpecifyFormCheckbox
         defaultValue={defaultValue}

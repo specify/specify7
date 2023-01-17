@@ -10,6 +10,7 @@ import { AttachmentsPlugin } from '../Attachments/Plugin';
 import { toTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { Tables } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import type { FormMode, FormType } from '../FormParse';
@@ -26,11 +27,10 @@ import { LeafletPlugin } from './Leaflet';
 import { PaleoLocationMapPlugin } from './PaleoLocation';
 import { PartialDateUi } from './PartialDateUi';
 import { WebLink } from './WebLink';
-import { LiteralField, Relationship } from '../DataModel/specifyField';
 
 const pluginRenderers: {
   readonly [KEY in keyof UiPlugins]: (props: {
-    readonly resource: SpecifyResource<AnySchema>;
+    readonly resource: SpecifyResource<AnySchema> | undefined;
     readonly id: string | undefined;
     readonly name: string | undefined;
     readonly pluginDefinition: UiPlugins[KEY];
@@ -41,6 +41,7 @@ const pluginRenderers: {
   }) => JSX.Element | null;
 } = {
   LatLonUI({ resource, mode, id, pluginDefinition: { step, latLongType } }) {
+    if (resource === undefined) return null;
     const locality = toTable(resource, 'Locality');
     return locality === undefined ? null : (
       <LatLongUi
@@ -83,6 +84,7 @@ const pluginRenderers: {
     resource,
     pluginDefinition: { relationship, formatting },
   }) {
+    if (resource === undefined) return null;
     const collectionObject = toTable(resource, 'CollectionObject');
     return collectionObject === undefined ? null : (
       <ErrorBoundary dismissable>
@@ -98,6 +100,7 @@ const pluginRenderers: {
     resource,
     pluginDefinition: { relationship, formatting },
   }) {
+    if (resource === undefined) return null;
     const collectionObject = toTable(resource, 'CollectionObject');
     return resource.isNew() || collectionObject === undefined ? null : (
       <ErrorBoundary dismissable>
@@ -110,6 +113,7 @@ const pluginRenderers: {
     );
   },
   LocalityGeoRef({ resource }) {
+    if (resource === undefined) return null;
     const locality = toTable(resource, 'Locality');
     return locality === undefined ? null : (
       <ErrorBoundary dismissable>
@@ -129,12 +133,12 @@ const pluginRenderers: {
     return (
       <ErrorBoundary dismissable>
         <WebLink
-          id={id}
-          name={name}
           field={field}
           formType={formType}
           icon={icon}
+          id={id}
           mode={mode}
+          name={name}
           resource={resource}
           webLink={webLink}
         />
@@ -150,8 +154,8 @@ const pluginRenderers: {
       return (
         <AttachmentsPlugin
           id={id}
-          name={name}
           mode={mode}
+          name={name}
           resource={resource}
         />
       );
@@ -170,6 +174,7 @@ const pluginRenderers: {
     isRequired,
     pluginDefinition: { relationship },
   }) {
+    if (resource === undefined) return null;
     const collectingEventAttribute = toTable(
       resource,
       'CollectingEventAttribute'
@@ -195,6 +200,7 @@ const pluginRenderers: {
       );
   },
   LocalityGoogleEarth({ resource, id }) {
+    if (resource === undefined) return null;
     const locality = toTable(resource, 'Locality');
     return locality === undefined ? null : (
       <ErrorBoundary dismissable>
@@ -204,6 +210,7 @@ const pluginRenderers: {
   },
   PaleoMap: PaleoLocationMapPlugin,
   WrongTable({ resource, pluginDefinition: { supportedTables } }) {
+    if (resource === undefined) return null;
     return (
       <WrongPluginTable resource={resource} supportedTables={supportedTables} />
     );
@@ -248,7 +255,7 @@ export function FormPlugin({
 }: {
   readonly id: string | undefined;
   readonly name: string | undefined;
-  readonly resource: SpecifyResource<AnySchema>;
+  readonly resource: SpecifyResource<AnySchema> | undefined;
   readonly mode: FormMode;
   readonly fieldDefinition: FieldTypes['Plugin'];
   readonly field: LiteralField | Relationship | undefined;
@@ -260,12 +267,12 @@ export function FormPlugin({
   ] as typeof pluginRenderers.AttachmentPlugin;
   return (
     <Renderer
-      id={id}
-      name={name}
       field={field}
       formType={formType}
+      id={id}
       isRequired={isRequired}
       mode={mode}
+      name={name}
       pluginDefinition={
         fieldDefinition.pluginDefinition as UiPlugins['AttachmentPlugin']
       }

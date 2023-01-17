@@ -86,23 +86,26 @@ export function useSaveBlockers({
   resource,
   fieldName,
 }: {
-  readonly resource: SpecifyResource<AnySchema>;
+  readonly resource: SpecifyResource<AnySchema> | undefined;
   readonly fieldName: string;
 }): string {
   const [errors, setErrors] = React.useState<string>(
-    () => resource.saveBlockers?.getFieldErrors(fieldName).join('\n') ?? ''
+    () => resource?.saveBlockers?.getFieldErrors(fieldName).join('\n') ?? ''
   );
   React.useEffect(
     () =>
-      resourceOn(
-        resource,
-        'blockersChanged',
-        (): void =>
-          setErrors(
-            resource.saveBlockers?.getFieldErrors(fieldName).join('\n') ?? ''
+      resource === undefined
+        ? undefined
+        : resourceOn(
+            resource,
+            'blockersChanged',
+            (): void =>
+              setErrors(
+                resource.saveBlockers?.getFieldErrors(fieldName).join('\n') ??
+                  ''
+              ),
+            false
           ),
-        false
-      ),
     [resource, fieldName]
   );
   return errors;

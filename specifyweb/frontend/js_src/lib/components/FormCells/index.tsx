@@ -143,6 +143,7 @@ const cellRenderers: {
         () =>
           typeof relationship === 'object' &&
           relationshipIsToMany(relationship) &&
+          typeof data?.resource === 'object' &&
           [
             'LoanPreparation',
             'GiftPreparation',

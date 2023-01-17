@@ -1,3 +1,4 @@
+import { overrideAjax } from '../../../tests/ajax';
 import { mockTime, requireContext } from '../../../tests/helpers';
 import { addMissingFields } from '../addMissingFields';
 import {
@@ -9,10 +10,9 @@ import {
   toTables,
   toTreeTable,
 } from '../helpers';
+import { getResourceApiUrl } from '../resource';
 import { schema } from '../schema';
 import type { Tables } from '../types';
-import { overrideAjax } from '../../../tests/ajax';
-import { getResourceApiUrl } from '../resource';
 
 mockTime();
 requireContext();
@@ -218,16 +218,32 @@ describe('fetchDistantRelated', () => {
     id: agentId,
     lastname: 'a',
   };
-  overrideAjax(`/api/specify/agent/${agentId}/`, agent);
+
   test('single field path', async () => {
     const resource = new schema.models.Collector.Resource({ id: collectorId });
     const field = schema.models.Collector.strictGetField('agent');
     const data = (await fetchDistantRelated(resource, [field]))!;
     expect(data.resource).toBe(resource);
     expect(data.field).toBe(field);
-    expect(data.resource.get('agent')).toBe(
+    expect(data.resource!.get('agent')).toBe(
       getResourceApiUrl('Agent', agentId)
     );
+  });
+
+  const emptyCollectorId = 1;
+  overrideAjax(`/api/specify/collector/${emptyCollectorId}/`, {
+    resource_uri: getResourceApiUrl('Collector', emptyCollectorId),
+    id: emptyCollectorId,
+  });
+  test('valid field with missing related resource', async () => {
+    const resource = new schema.models.Collector.Resource({
+      id: emptyCollectorId,
+    });
+    const field = schema.models.Collector.strictGetField('agent');
+    const data = (await fetchDistantRelated(resource, [field]))!;
+    expect(data.resource).toBe(resource);
+    expect(data.field).toBe(field);
+    expect(data.resource).toBeUndefined();
   });
 
   test('multi field path', async () => {
@@ -237,7 +253,7 @@ describe('fetchDistantRelated', () => {
       schema.models.Agent.strictGetField('lastName'),
     ];
     const data = (await fetchDistantRelated(resource, fields))!;
-    expect(data.resource.toJSON()).toEqual(agent);
+    expect(data.resource!.toJSON()).toEqual(agent);
     expect(data.field).toBe(fields.at(-1));
   });
 });
