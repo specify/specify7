@@ -27,6 +27,7 @@ import { SerializedResource } from '../DataModel/helperTypes';
 import { TableIcon } from '../Molecules/TableIcon';
 import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import { queryText } from '../../localization/query';
+import { getField } from '../DataModel/helpers';
 
 export function QueriesOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -136,7 +137,7 @@ function QueryList({
             scope="col"
           >
             <Button.LikeLink onClick={(): void => handleSort('name')}>
-              {schema.models.SpQuery.strictGetLiteralField('name').label}
+              {getField(schema.models.SpQuery, 'name').label}
               <SortIndicator fieldName="name" sortConfig={sortConfig} />
             </Button.LikeLink>
           </th>
@@ -144,7 +145,7 @@ function QueryList({
             <Button.LikeLink
               onClick={(): void => handleSort('timestampCreated')}
             >
-              {schema.models.SpQuery.strictGetField('timestampCreated').label}
+              {getField(schema.models.SpQuery, 'timestampCreated').label}
               <SortIndicator
                 fieldName="timestampCreated"
                 sortConfig={sortConfig}
@@ -155,7 +156,7 @@ function QueryList({
             <Button.LikeLink
               onClick={(): void => handleSort('timestampModified')}
             >
-              {schema.models.SpQuery.strictGetField('timestampModified').label}
+              {getField(schema.models.SpQuery, 'timestampModified').label}
               <SortIndicator
                 fieldName="timestampModified"
                 sortConfig={sortConfig}

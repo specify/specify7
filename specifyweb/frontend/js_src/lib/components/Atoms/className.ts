@@ -12,20 +12,20 @@ export const dialogIconTriggers = {
 };
 
 const buttonClassName = 'button';
-const grayButton = `${buttonClassName} hover:bg-gray-400 bg-gray-300 text-gray-800
+const grayButton = `${buttonClassName} hover:bg-gray-400 bg-gray-300 text-gray-800 shadow-sm
     dark:bg-neutral-600 dark:text-gray-100 hover:dark:bg-neutral-500`;
 const containerBaseUnstyled = `flex flex-col gap-4 overflow-scroll
   overflow-x-auto [overflow-y:overlay] [scrollbar-gutter:stable]`;
 const containerBase = `${containerBaseUnstyled} bg-[color:var(--form-foreground)]
-  rounded p-4 shadow-gray-400 shadow-lg`;
+  rounded p-4 shadow-gray-400 shadow-2xl`;
 const containerFull = 'flex flex-col gap-4 h-full p-4';
 const formStyles =
   'text-[length:var(--form-font-size)] font-[family-name:var(--form-font-family)]';
 const niceButton = `${buttonClassName} rounded cursor-pointer active:brightness-80 px-4 py-2
     disabled:bg-gray-200 disabled:text-gray-500 dark:disabled:!bg-neutral-700 gap-2
-    inline-flex items-center capitalize justify-center`;
-const borderedGrayButton = `${grayButton} ring-1 ring-gray-400 dark:ring-0
-    disabled:ring-gray-500 disabled:dark:ring-neutral-500`;
+    inline-flex items-center capitalize justify-center shadow-sm`;
+const borderedGrayButton = `${grayButton} ring-1 ring-gray-400 shadow-sm dark:ring-0
+    disabled:ring-gray-400 disabled:dark:ring-neutral-500`;
 
 // REFACTOR: reduce this once everything is using React. Can move things into tailwind.config.js
 export const className = {

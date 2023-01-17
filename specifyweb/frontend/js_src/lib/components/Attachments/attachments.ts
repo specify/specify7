@@ -11,6 +11,7 @@ import type { IR } from '../../utils/types';
 import { handleAjaxResponse } from '../../utils/ajax/response';
 import { SerializedResource } from '../DataModel/helperTypes';
 import { Http } from '../../utils/ajax/definitions';
+import { getField } from '../DataModel/helpers';
 
 type AttachmentSettings = {
   readonly collection: string;
@@ -28,6 +29,7 @@ export const attachmentSettingsPromise = load<AttachmentSettings | IR<never>>(
   'application/json'
 ).then((data) => {
   if (Object.keys(data).length > 0) settings = data as AttachmentSettings;
+  return attachmentsAvailable();
 });
 
 export const attachmentsAvailable = (): boolean => typeof settings === 'object';
@@ -218,8 +220,7 @@ export async function uploadFile(
  * REFACTOR: remove this once that issue is fixed
  */
 function fixMimeType(originalMimeType: string): string {
-  const maxLength =
-    schema.models.Attachment.strictGetLiteralField('mimeType').length;
+  const maxLength = getField(schema.models.Attachment, 'mimeType').length;
   if (maxLength === undefined || originalMimeType.length < maxLength)
     return originalMimeType;
   else {

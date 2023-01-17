@@ -12,6 +12,7 @@ import { unsafeTriggerNotFound } from '../Router/Router';
 import { ErrorDialog } from './ErrorDialog';
 import { produceStackTrace } from './stackTrace';
 import { mainText } from '../../localization/main';
+import { formatJsonBackendResponse } from './JsonError';
 
 export function formatError(
   error: unknown,
@@ -111,8 +112,7 @@ export function formatError(
 /** Format error message as JSON, HTML or plain text */
 function formatErrorResponse(error: string): JSX.Element {
   try {
-    const json = JSON.parse(error);
-    return <pre>{jsonStringify(json, 2)}</pre>;
+    return formatJsonBackendResponse(error);
   } catch {
     // Failed parsing error message as JSON
   }

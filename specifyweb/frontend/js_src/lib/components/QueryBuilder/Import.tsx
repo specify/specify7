@@ -15,6 +15,7 @@ import { useNavigate } from 'react-router-dom';
 import { Form } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { SerializedResource } from '../DataModel/helperTypes';
+import { getField } from '../DataModel/helpers';
 
 export function QueryImport({
   onClose: handleClose,
@@ -64,7 +65,7 @@ export function QueryImport({
                     getUniqueName(
                       queryResource.get('name'),
                       queries.map(({ name }) => name),
-                      schema.models.SpQuery.strictGetLiteralField('name').length
+                      getField(schema.models.SpQuery, 'name').length
                     )
                   )
                 )

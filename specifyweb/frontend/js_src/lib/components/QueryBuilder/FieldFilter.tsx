@@ -26,6 +26,7 @@ import { fetchPickList, getPickListItems } from '../PickLists/fetch';
 import { mappingElementDivider } from '../WbPlanView/LineComponents';
 import type { QueryField } from './helpers';
 import { LocalizedString } from 'typesafe-i18n';
+import { getField } from '../DataModel/helpers';
 
 /**
  * Formatters and aggregators don't yet support any filtering options.
@@ -202,10 +203,10 @@ function QueryInputField({
       {/* This invisible input is used to set the height */}
       <Input.Text aria-hidden className="invisible w-0" />
       <Input.Generic
+        // This is the actual input that is visible to user
         {...commonProps}
         {...validationAttributes}
         type={listInput ? 'text' : validationAttributes.type}
-        // This is the actual input that is visible to user
         value={value}
         className={`!absolute inset-0 ${commonProps.className}`}
       />
@@ -333,7 +334,7 @@ function In({
     () => ({
       ...pluralizeParser(parser),
       maxLength: enforceLengthLimit
-        ? schema.models.SpQueryField.strictGetLiteralField('startValue').length
+        ? getField(schema.models.SpQueryField, 'startValue').length
         : undefined,
     }),
     [parser, enforceLengthLimit]

@@ -23,14 +23,21 @@ import { OrderPicker } from '../UserPreferences/Renderers';
 import { AttachmentGallery } from './Gallery';
 import { schemaText } from '../../localization/schema';
 import { attachmentsText } from '../../localization/attachments';
+import { attachmentSettingsPromise } from './attachments';
+import { Dialog } from '../Molecules/Dialog';
+import { useNavigate } from 'react-router-dom';
+
+export const attachmentRelatedTables = f.store(() =>
+  Object.keys(schema.models).filter((tableName) =>
+    tableName.endsWith('Attachment')
+  )
+);
 
 const allTablesWithAttachments = f.store(() =>
   filterArray(
-    Object.keys(schema.models)
-      .filter((tableName) => tableName.endsWith('Attachment'))
-      .map((tableName) =>
-        getModel(tableName.slice(0, -1 * 'Attachment'.length))
-      )
+    attachmentRelatedTables().map((tableName) =>
+      getModel(tableName.slice(0, -1 * 'Attachment'.length))
+    )
   )
 );
 /** Exclude tables without read access*/
@@ -46,11 +53,24 @@ const maxScale = 50;
 const defaultSortOrder = '-timestampCreated';
 const defaultFilter = { type: 'all' } as const;
 
-export function AttachmentsView(): JSX.Element {
-  return (
+const fetchSettings = () => attachmentSettingsPromise;
+
+export function AttachmentsView(): JSX.Element | null {
+  const navigate = useNavigate();
+  const [isConfigured] = useAsyncState(fetchSettings, true);
+
+  return isConfigured === undefined ? null : isConfigured ? (
     <ProtectedTable action="read" tableName="Attachment">
       <Attachments />
     </ProtectedTable>
+  ) : (
+    <Dialog
+      buttons={commonText.close()}
+      header={attachmentsText.attachmentServerUnavailable()}
+      onClose={(): void => navigate('/specify/')}
+    >
+      {attachmentsText.attachmentServerUnavailableDescription()}
+    </Dialog>
   );
 }
 
