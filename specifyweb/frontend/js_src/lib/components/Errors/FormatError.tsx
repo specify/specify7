@@ -205,11 +205,7 @@ export function ErrorIframe({
   const iframeRef = React.useRef<HTMLIFrameElement | null>(null);
   React.useEffect(() => {
     if (iframeRef.current === null) return;
-    const iframeDocument =
-      iframeRef.current.contentDocument ??
-      iframeRef.current.contentWindow?.document;
-    if (iframeDocument === undefined) return;
-    iframeDocument.body.innerHTML = error;
+    iframeRef.current.srcdoc = error;
   }, [error]);
 
   return (
