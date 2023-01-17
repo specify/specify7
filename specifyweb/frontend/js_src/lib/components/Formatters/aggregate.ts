@@ -41,7 +41,7 @@ export async function aggregate(
     (formatted) =>
       `${filterArray(formatted).join(resolvedAggregator.separator)}${
         resolvedAggregator.suffix ?? ''
-      }}`
+      }`
   );
 }
 
