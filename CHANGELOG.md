@@ -31,8 +31,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   ID ([#1575](https://github.com/specify/specify7/issues/1575) – _Reported by FWRI, CSIRO, RBGE, and many more_)
 - A new preference has been added allowing users to add children to synonymized parents as well as synonymizing nodes
   with children ([#751](https://github.com/specify/specify7/issues/751)
-  – [Instructions](https://discourse.specifysoftware.org/t/enable-creating-children-for-synonymized-nodes/987/4) –  _
-  Requested by FWRI, CSIRO, AAFC, RBGE, Ville de Genève, and more_)
+  – [Instructions](https://discourse.specifysoftware.org/t/enable-creating-children-for-synonymized-nodes/987/4) –  _Requested by FWRI, CSIRO, AAFC, RBGE, Ville de Genève, and more_)
 - Interactions table names are now dynamic ([#2420](https://github.com/specify/specify7/issues/2420) – _Requested by
   RBGE_)
 - Specify now ignores synonymized nodes when checking the tree
