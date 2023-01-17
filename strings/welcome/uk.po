@@ -4,6 +4,7 @@ msgstr "Content-Type: text/plain\n"
 #: components/HomePage/index.tsx:47
 #: components/Router/Routes.tsx:406
 #. Used in: Components > Home Page > Index ⬤ Components > Router > Routes
+#, fuzzy
 msgid "pageTitle"
 msgstr "Ласкаво просимо"
 
@@ -11,27 +12,32 @@ msgstr "Ласкаво просимо"
 #: components/HomePage/AboutSpecify.tsx:69
 #: components/Router/OverlayRoutes.tsx:164
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Home Page > About Specify ⬤ Components > Router > Overlay Routes
+#, fuzzy
 msgid "aboutSpecify"
 msgstr "Про Specify 7"
 
 #: components/HomePage/AboutSpecify.tsx:57
 #. Used in: Components > Home Page > About Specify
+#, fuzzy
 msgid "downloadInformation"
 msgstr "Завантажити інформацію"
 
 #: components/HomePage/TaxonTiles.tsx:55
 #: components/UserPreferences/Renderers.tsx:193
 #. Used in: Components > Home Page > Taxon Tiles ⬤ Components > User Preferences > Renderers
+#, fuzzy
 msgid "taxonTiles"
 msgstr "Taxon Tiles"
 
 #: components/HomePage/TaxonTiles.tsx:51
 #. Used in: Components > Home Page > Taxon Tiles
+#, fuzzy
 msgid "taxonTilesDescription"
 msgstr "Показано таксони з {count:number|formatted} або більше об’єктів колекції"
 
 #: components/HomePage/AboutSpecify.tsx:76
 #. Used in: Components > Home Page > About Specify
+#, fuzzy
 msgid "fullAddress"
 msgstr ""
 "Укажіть консорціум колекцій <br />\n"
@@ -42,6 +48,7 @@ msgstr ""
 
 #: components/HomePage/AboutSpecify.tsx:91
 #. Used in: Components > Home Page > About Specify
+#, fuzzy
 msgid "disclosure"
 msgstr ""
 "Програмне забезпечення Specify є продуктом консорціуму Specify Collections "
@@ -55,6 +62,7 @@ msgstr ""
 
 #: components/HomePage/AboutSpecify.tsx:92
 #. Used in: Components > Home Page > About Specify
+#, fuzzy
 msgid "licence"
 msgstr ""
 "Укажіть 7, Copyright 2023, Дослідницький центр Канзаського університету. "
@@ -64,56 +72,67 @@ msgstr ""
 
 #: components/HomePage/AboutSpecify.tsx:95
 #. Used in: Components > Home Page > About Specify
+#, fuzzy
 msgid "systemInformation"
 msgstr "Інформація про систему"
 
 #: components/HomePage/AboutSpecify.tsx:99
 #. Used in: Components > Home Page > About Specify
+#, fuzzy
 msgid "specifyVersion"
 msgstr "Вкажіть 7 версію:"
 
 #: components/HomePage/AboutSpecify.tsx:100
 #. Used in: Components > Home Page > About Specify
+#, fuzzy
 msgid "gitSha"
 msgstr "Git SHA:"
 
 #: components/HomePage/AboutSpecify.tsx:101
 #. Used in: Components > Home Page > About Specify
+#, fuzzy
 msgid "buildDate"
 msgstr "Дата збірки:"
 
 #: components/HomePage/AboutSpecify.tsx:103
 #. Used in: Components > Home Page > About Specify
+#, fuzzy
 msgid "specifySixVersion"
 msgstr "Вкажіть 6 версію:"
 
 #: components/HomePage/AboutSpecify.tsx:106
 #. Used in: Components > Home Page > About Specify
+#, fuzzy
 msgid "databaseVersion"
 msgstr "Версія бази даних:"
 
 #: components/HomePage/AboutSpecify.tsx:108
 #: components/Toolbar/Schema.tsx:346
 #. Used in: Components > Home Page > About Specify ⬤ Components > Toolbar > Schema
+#, fuzzy
 msgid "schemaVersion"
 msgstr "Версія схеми БД:"
 
 #: components/HomePage/AboutSpecify.tsx:113
 #. Used in: Components > Home Page > About Specify
+#, fuzzy
 msgid "databaseName"
 msgstr "Ім'я бази даних:"
 
 #: components/HomePage/AboutSpecify.tsx:135
 #. 🟥I believe ISA stands for Institution Service Agreement. Used in: Components > Home Page > About Specify
+#, fuzzy
 msgid "isaNumber"
 msgstr "Номер ISA:"
 
 #: components/HomePage/AboutSpecify.tsx:138
 #. Used in: Components > Home Page > About Specify
+#, fuzzy
 msgid "browser"
 msgstr "Браузер:"
 
 #: components/HomePage/AboutSpecify.tsx:117
 #. Used in: Components > Home Page > About Specify
+#, fuzzy
 msgid "databaseCreationDate"
 msgstr "Дата створення БД:"

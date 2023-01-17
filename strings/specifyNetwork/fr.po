@@ -4,16 +4,19 @@ msgstr "Content-Type: text/plain\n"
 #: components/SpecifyNetwork/index.tsx:235
 #: components/SpecifyNetwork/index.tsx:239
 #. Used in: Components > Specify Network > Index
+#, fuzzy
 msgid "specifyNetwork"
 msgstr "Spécifiez le réseau"
 
 #: components/SpecifyNetwork/index.tsx:228
 #. Used in: Components > Specify Network > Index
+#, fuzzy
 msgid "failedToOpenPopUp"
 msgstr "Échec de l'ouverture de la page Spécifier le réseau"
 
 #: components/SpecifyNetwork/index.tsx:231
 #. Used in: Components > Specify Network > Index
+#, fuzzy
 msgid "failedToOpenPopUpDescription"
 msgstr ""
 "Assurez-vous que votre navigateur ne bloque pas les fenêtres pop-up et "

@@ -3,27 +3,32 @@ msgstr "Content-Type: text/plain\n"
 
 #: components/Molecules/AppTitle.tsx:47
 #. 🟥Formatting for the title in the web page title bar. Used in: Components > Molecules > App Title
+#, fuzzy
 msgid "appTitle"
 msgstr "{baseTitle:string} | Especificar 7"
 
 #: components/Molecules/AppTitle.tsx:46
 #. 🟥Default page title. Used in: Components > Molecules > App Title
+#, fuzzy
 msgid "baseAppTitle"
 msgstr "Especificar 7"
 
 #: components/Router/NotFoundView.tsx:15
 #: components/Router/NotFoundView.tsx:20
 #. 🟥Used in title. Used in: Components > Router > Not Found View
+#, fuzzy
 msgid "pageNotFound"
 msgstr "Página no encontrada"
 
 #: components/Router/NotFoundView.tsx:25
 #. 🟥Used in the heading on 404 page. Used in: Components > Router > Not Found View
+#, fuzzy
 msgid "nothingWasFound"
 msgstr "¡Ups! no se encontró nada"
 
 #: components/Router/NotFoundView.tsx:26
 #. 🟥Used in the paragraph on 404 page. Used in: Components > Router > Not Found View
+#, fuzzy
 msgid "pageNotFoundDescription"
 msgstr ""
 "Es posible que la página que está buscando haya sido eliminada, haya "
@@ -31,6 +36,7 @@ msgstr ""
 
 #: components/Router/NotFoundView.tsx:29
 #. Used in: Components > Router > Not Found View
+#, fuzzy
 msgid "returnToHomepage"
 msgstr "Regresar a la página principal"
 
@@ -38,11 +44,13 @@ msgstr "Regresar a la página principal"
 #: components/Errors/FormatError.tsx:186
 #: components/Errors/FormatError.tsx:219
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Errors > Format Error
+#, fuzzy
 msgid "errorOccurred"
 msgstr "Lo siento, algo salió un poco mal"
 
 #: components/Errors/ErrorDialog.tsx:163
 #. Used in: Components > Errors > Error Dialog
+#, fuzzy
 msgid "errorOccurredDescription"
 msgstr ""
 "Lo sentimos, parece que ha encontrado un error en Especificar 7 del que tal "
@@ -50,6 +58,7 @@ msgstr ""
 
 #: components/Errors/ErrorDialog.tsx:164
 #. Used in: Components > Errors > Error Dialog
+#, fuzzy
 msgid "criticalErrorOccurredDescription"
 msgstr ""
 "Para evitar corromper los registros de datos, debemos comenzar de nuevo "
@@ -57,6 +66,7 @@ msgstr ""
 
 #: components/Errors/ErrorDialog.tsx:30
 #. Used in: Components > Errors > Error Dialog
+#, fuzzy
 msgid "errorResolutionDescription"
 msgstr ""
 "Si este problema persiste, comuníquese con su soporte de TI. Si se trata de "
@@ -65,6 +75,7 @@ msgstr ""
 
 #: components/Errors/ErrorDialog.tsx:36
 #. 🟥Careful with the <xml> tags when localizing. Used in: Components > Errors > Error Dialog
+#, fuzzy
 msgid "errorResolutionSecondDescription"
 msgstr ""
 "Los usuarios de <memberLink>instituciones miembro</memberLink> pueden "
@@ -74,31 +85,37 @@ msgstr ""
 #: components/Core/__tests__/Contexts.test.tsx:37
 #: components/Errors/ErrorDialog.tsx:172
 #. Used in: Core > __tests__ > Contexts ⬤ Components > Errors > Error Dialog
+#, fuzzy
 msgid "errorMessage"
 msgstr "Mensaje de error"
 
 #: components/Router/Router.tsx:297
 #. Used in: Components > Router > Router
+#, fuzzy
 msgid "leavePageConfirmation"
 msgstr "¿Seguro que quieres salir de esta página?"
 
 #: components/Security/Role.tsx:88
 #. Used in: Components > Security > Role
+#, fuzzy
 msgid "leavePageConfirmationDescription"
 msgstr "Los cambios no guardados se perderán si abandona esta página."
 
 #: components/Router/Router.tsx:293
 #. Used in: Components > Router > Router
+#, fuzzy
 msgid "leave"
 msgstr "Salir"
 
 #: components/Core/Main.tsx:140
 #. Used in: Components > Core > Main
+#, fuzzy
 msgid "versionMismatch"
 msgstr "La versión especificada no coincide con la versión de la base de datos"
 
 #: components/Core/Main.tsx:144
 #. Used in: Components > Core > Main
+#, fuzzy
 msgid "versionMismatchDescription"
 msgstr ""
 "La versión especificada {specifySixVersion:string} no coincide con la "
@@ -106,6 +123,7 @@ msgstr ""
 
 #: components/Core/Main.tsx:149
 #. Used in: Components > Core > Main
+#, fuzzy
 msgid "versionMismatchSecondDescription"
 msgstr ""
 "Por lo tanto, es posible que algunas funciones de Specific 7 no funcionen "
@@ -113,5 +131,6 @@ msgstr ""
 
 #: components/Core/Main.tsx:152
 #. Used in: Components > Core > Main
+#, fuzzy
 msgid "versionMismatchInstructions"
 msgstr "Instrucciones para resolver Especificar discrepancia de esquema"

@@ -98,6 +98,7 @@ msgstr "Контраст"
 
 #: components/UserPreferences/Definitions.tsx:213
 #. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "increase"
 msgstr "Збільшити"
 
@@ -409,6 +410,7 @@ msgstr "Виділіть відповідний підрядок"
 
 #: components/UserPreferences/Definitions.tsx:592
 #. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "languageDescription"
 msgstr "Визначає підписи полів, примітки щодо використання та підписи таблиць"
 
@@ -424,6 +426,7 @@ msgstr "Інтерфейс масштабування"
 
 #: components/UserPreferences/Definitions.tsx:239
 #. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "scaleInterfaceDescription"
 msgstr "Масштабуйте інтерфейс відповідно до розміру шрифту"
 
@@ -483,6 +486,7 @@ msgstr "Режим без обмежень"
 
 #: components/UserPreferences/Definitions.tsx:1465
 #. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "noRestrictionsModeWbDescription"
 msgstr "Дозволяє завантажувати дані в будь-яке поле будь-якої таблиці."
 
@@ -776,6 +780,7 @@ msgstr ""
 
 #: components/UserPreferences/Definitions.tsx:382
 #. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "altClickToSupressNewTabDescription"
 msgstr ""
 "<key>{altKeyName:string}</key>+<key>Натисніть </key> посилання, яке "
@@ -783,91 +788,109 @@ msgstr ""
 
 #: components/UserPreferences/Definitions.tsx:646
 #. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "makeFormDialogsModal"
 msgstr "Зробіть діалогові вікна форми сірими"
 
 #: components/UserPreferences/Definitions.tsx:1090
 #. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "autoScrollTree"
 msgstr "Автоматичне прокручування дерева до виділеного вузла"
 
 #: components/UserPreferences/Definitions.tsx:1495
 #. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "lineWrap"
 msgstr "Обтікання лініями"
 
 #: components/UserPreferences/Definitions.tsx:1502
 #. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "indentSize"
 msgstr "Розмір відступу"
 
 #: components/UserPreferences/Definitions.tsx:1514
 #. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "indentWithTab"
 msgstr "Відступ із <key>Tab</key>"
 
 #: components/UserPreferences/Definitions.tsx:626
 #. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "formHeaderFormat"
 msgstr "Формат заголовка форми"
 
 #: components/UserPreferences/Definitions.tsx:633
 #. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "iconAndTableName"
 msgstr "Значок і назва таблиці"
 
 #: components/UserPreferences/Definitions.tsx:641
 #. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "tableIcon"
 msgstr "Значок таблиці"
 
 #: components/UserPreferences/Definitions.tsx:961
 #. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "maxHeight"
 msgstr "Максимальна висота"
 
 #: components/UserPreferences/Definitions.tsx:840
 #. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "autoComplete"
 msgstr "Автоматичне завершення"
 
 #: components/UserPreferences/Definitions.tsx:1097
 #. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "searchCaseSensitive"
 msgstr "Пошук з урахуванням регістру"
 
 #: components/UserPreferences/Definitions.tsx:1104
 #. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "searchField"
 msgstr "Поле пошуку"
 
 #: components/UserPreferences/Definitions.tsx:495
 #. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "createInteractions"
 msgstr "Створюйте взаємодії"
 
 #: components/UserPreferences/Definitions.tsx:498
 #. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "useSpaceAsDelimiter"
 msgstr "Використовуйте пробіл як роздільник"
 
 #: components/UserPreferences/Definitions.tsx:519
 #. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "useCommaAsDelimiter"
 msgstr "Використовуйте кому як роздільник"
 
 #: components/UserPreferences/Definitions.tsx:540
 #. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "useNewLineAsDelimiter"
 msgstr "Використовуйте новий рядок як роздільник"
 
 #: components/UserPreferences/Definitions.tsx:561
 #. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "useCustomDelimiters"
 msgstr "Використовуйте спеціальні роздільники"
 
 #: components/UserPreferences/Definitions.tsx:562
 #. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "useCustomDelimitersDescription"
 msgstr ""
 "Список роздільників, які слід використовувати на додаток до визначених "
@@ -877,6 +900,7 @@ msgstr ""
 #: components/UserPreferences/Definitions.tsx:527
 #: components/UserPreferences/Definitions.tsx:548
 #. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "detectAutomaticallyDescription"
 msgstr "Визначати автоматично на основі формату номера каталогу"
 
@@ -884,6 +908,7 @@ msgstr "Визначати автоматично на основі формат
 #: components/UserPreferences/Definitions.tsx:531
 #: components/UserPreferences/Definitions.tsx:552
 #. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "use"
 msgstr "використання"
 
@@ -891,5 +916,6 @@ msgstr "використання"
 #: components/UserPreferences/Definitions.tsx:535
 #: components/UserPreferences/Definitions.tsx:556
 #. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "dontUse"
 msgstr "Не використовуйте"

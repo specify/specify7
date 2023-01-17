@@ -4,16 +4,19 @@ msgstr "Content-Type: text/plain\n"
 #: components/SpecifyNetwork/index.tsx:235
 #: components/SpecifyNetwork/index.tsx:239
 #. Used in: Components > Specify Network > Index
+#, fuzzy
 msgid "specifyNetwork"
 msgstr "Especificar red"
 
 #: components/SpecifyNetwork/index.tsx:228
 #. Used in: Components > Specify Network > Index
+#, fuzzy
 msgid "failedToOpenPopUp"
 msgstr "No se pudo abrir la página Especificar red"
 
 #: components/SpecifyNetwork/index.tsx:231
 #. Used in: Components > Specify Network > Index
+#, fuzzy
 msgid "failedToOpenPopUpDescription"
 msgstr ""
 "Asegúrese de que su navegador no esté bloqueando las ventanas emergentes y "

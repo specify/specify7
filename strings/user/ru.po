@@ -197,6 +197,7 @@ msgstr ""
 
 #: components/Forms/DataTask.tsx:131
 #. Used in: Components > Forms > Data Task
+#, fuzzy
 msgid "emptyRecordSetsReadOnly"
 msgstr "Невозможно открыть пустой набор записей в режиме только для чтения"
 

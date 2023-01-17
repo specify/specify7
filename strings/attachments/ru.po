@@ -21,6 +21,7 @@ msgstr "Сервер прикрепленных файлов недоступе�
 
 #: components/Attachments/index.tsx:72
 #. Used in: Components > Attachments > Index
+#, fuzzy
 msgid "attachmentServerUnavailableDescription"
 msgstr "Настройте свой сервер вложений"
 

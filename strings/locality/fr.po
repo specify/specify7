@@ -4,6 +4,7 @@ msgstr "Content-Type: text/plain\n"
 #: components/QueryBuilder/Field.tsx:466
 #: components/QueryBuilder/Field.tsx:467
 #. Used in: Components > Query Builder > Field
+#, fuzzy
 msgid "openMap"
 msgstr "Ouvrir la carte"
 
@@ -13,11 +14,13 @@ msgstr "Ouvrir la carte"
 #: components/UserPreferences/Definitions.tsx:1525
 #: components/WorkBench/Template.tsx:226
 #. Used in: Components > Leaflet > Map ⬤ Components > Query Builder > To Map ⬤ Components > User Preferences > Definitions ⬤ Components > Work Bench > Template
+#, fuzzy
 msgid "geoMap"
 msgstr "GéoCarte"
 
 #: components/QueryBuilder/ToMap.tsx:237
 #. 🟥Used in GeoMap header while records are still being fetched. Used in: Components > Query Builder > To Map
+#, fuzzy
 msgid "queryMapSubset"
 msgstr ""
 "GeoMap - Tracé {plotted:number|formatted} de {total:number|formatted} "
@@ -25,41 +28,49 @@ msgstr ""
 
 #: components/QueryBuilder/ToMap.tsx:234
 #. Used in: Components > Query Builder > To Map
+#, fuzzy
 msgid "queryMapAll"
 msgstr "GeoMap - Enregistrements tracés {plotted:number|formatted}"
 
 #: components/Leaflet/addOns.ts:95
 #. Used in: Components > Leaflet > Add Ons
+#, fuzzy
 msgid "polygonBoundaries"
 msgstr "Limites de polygone"
 
 #: components/Leaflet/addOns.ts:96
 #. Used in: Components > Leaflet > Add Ons
+#, fuzzy
 msgid "errorRadius"
 msgstr "Rayon d'erreur"
 
 #: components/FormPlugins/Leaflet.tsx:81
 #. Used in: Components > Form Plugins > Leaflet
+#, fuzzy
 msgid "showMap"
 msgstr "Afficher la carte"
 
 #: components/FormPlugins/Leaflet.tsx:40
 #. Used in: Components > Form Plugins > Leaflet
+#, fuzzy
 msgid "noCoordinates"
 msgstr "Pas de coordonnées"
 
 #: components/FormPlugins/Leaflet.tsx:43
 #. Used in: Components > Form Plugins > Leaflet
+#, fuzzy
 msgid "notEnoughInformationToMap"
 msgstr "La localité doit avoir des coordonnées pour être cartographiée."
 
 #: components/Leaflet/addOns.ts:93
 #. Used in: Components > Leaflet > Add Ons
+#, fuzzy
 msgid "occurrencePoints"
 msgstr "Épingles"
 
 #: components/Leaflet/addOns.ts:94
 #. Used in: Components > Leaflet > Add Ons
+#, fuzzy
 msgid "occurrencePolygons"
 msgstr "Polygones"
 
@@ -70,69 +81,82 @@ msgstr "Polygones"
 #: components/WorkBench/wbUtils.js:723
 #: components/WorkBench/wbUtils.js:731
 #. Used in: Components > Form Plugins > Geo Locate ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb Utils
+#, fuzzy
 msgid "geoLocate"
 msgstr "GEOlocaliser"
 
 #: components/FormPlugins/GeoLocate.tsx:107
 #. Used in: Components > Form Plugins > Geo Locate
+#, fuzzy
 msgid "geographyRequired"
 msgstr "La géographie doit être cartographiée"
 
 #: components/FormPlugins/GeoLocate.tsx:110
 #. Used in: Components > Form Plugins > Geo Locate
+#, fuzzy
 msgid "geographyRequiredDescription"
 msgstr "Le plug-in GeoLocate nécessite que le champ géographique soit renseigné."
 
 #: components/FormPlugins/LatLongUi.tsx:268
 #. Used in: Components > Form Plugins > Lat Long Ui
+#, fuzzy
 msgid "coordinates"
 msgstr "Coordonnées"
 
 #: components/FormPlugins/LatLongUi.tsx:271
 #. 🟥Represents coordinates. Careful with translation. Used in: Components > Form Plugins > Lat Long Ui
+#, fuzzy
 msgid "northWestCorner"
 msgstr "Coin nord-ouest"
 
 #: components/FormPlugins/LatLongUi.tsx:283
 #. 🟥Represents coordinates. Careful with translation. Used in: Components > Form Plugins > Lat Long Ui
+#, fuzzy
 msgid "southEastCorner"
 msgstr "Coin SE"
 
 #: components/FormPlugins/LatLongUi.tsx:239
 #: components/FormPlugins/LatLongUi.tsx:244
 #. Used in: Components > Form Plugins > Lat Long Ui
+#, fuzzy
 msgid "coordinateType"
 msgstr "Type de coordonnées"
 
 #: components/FormPlugins/LatLongUi.tsx:251
 #. Used in: Components > Form Plugins > Lat Long Ui
+#, fuzzy
 msgid "point"
 msgstr "Point"
 
 #: components/FormPlugins/LatLongUi.tsx:252
 #. Used in: Components > Form Plugins > Lat Long Ui
+#, fuzzy
 msgid "line"
 msgstr "La ligne"
 
 #: components/FormPlugins/LatLongUi.tsx:253
 #. Used in: Components > Form Plugins > Lat Long Ui
+#, fuzzy
 msgid "rectangle"
 msgstr "Rectangle"
 
 #: components/FormPlugins/LatLongUi.tsx:259
 #. Used in: Components > Form Plugins > Lat Long Ui
+#, fuzzy
 msgid "parsed"
 msgstr "analysé"
 
 #: components/FormPlugins/LatLongUi.tsx:165
 #: components/FormPlugins/LatLongUi.tsx:257
 #. Used in: Components > Form Plugins > Lat Long Ui
+#, fuzzy
 msgid "latitude"
 msgstr "Latitude"
 
 #: components/FormPlugins/LatLongUi.tsx:179
 #: components/FormPlugins/LatLongUi.tsx:258
 #. Used in: Components > Form Plugins > Lat Long Ui
+#, fuzzy
 msgid "longitude"
 msgstr "Longitude"
 
@@ -141,5 +165,6 @@ msgstr "Longitude"
 #: components/Leaflet/extend.ts:36
 #: components/Leaflet/extend.ts:37
 #. Used in: Components > App Resources > Editor ⬤ Components > Leaflet > Extend
+#, fuzzy
 msgid "toggleFullScreen"
 msgstr "Basculer en plein écran"

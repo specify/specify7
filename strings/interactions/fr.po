@@ -6,43 +6,51 @@ msgstr "Content-Type: text/plain\n"
 #: components/Router/OverlayRoutes.tsx:60
 #: components/UserPreferences/Definitions.tsx:492
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Router > Overlay Routes ⬤ Components > User Preferences > Definitions
+#, fuzzy
 msgid "interactions"
 msgstr "Interactions"
 
 #: components/Interactions/InteractionDialog.tsx:250
 #: components/Interactions/PrepDialog.tsx:118
 #. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog
+#, fuzzy
 msgid "addItems"
 msgstr "Ajouter des articles"
 
 #: components/Interactions/InteractionDialog.tsx:252
 #. Used in: Components > Interactions > Interaction Dialog
+#, fuzzy
 msgid "recordReturn"
 msgstr "{modelName:string} Retour"
 
 #: components/Interactions/InteractionDialog.tsx:253
 #: components/Interactions/PrepDialog.tsx:119
 #. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog
+#, fuzzy
 msgid "createRecord"
 msgstr "Créer {modelName:string}"
 
 #: components/Interactions/InteractionDialog.tsx:192
 #. Used in: Components > Interactions > Interaction Dialog
+#, fuzzy
 msgid "missing"
 msgstr "Disparus:"
 
 #: components/Interactions/InteractionDialog.tsx:194
 #. Used in: Components > Interactions > Interaction Dialog
+#, fuzzy
 msgid "preparationsNotFound"
 msgstr "Aucune préparation n'a été trouvée."
 
 #: components/Interactions/InteractionDialog.tsx:317
 #. Used in: Components > Interactions > Interaction Dialog
+#, fuzzy
 msgid "problemsFound"
 msgstr "Il y a des problèmes avec l'entrée :"
 
 #: components/Interactions/InteractionDialog.tsx:259
 #. 🟥See documentation for syntax for plural rules. Used in: Components > Interactions > Interaction Dialog
+#, fuzzy
 msgid "byChoosingRecordSet"
 msgstr ""
 "En choisissant un jeu d'enregistrements ({{count:none | one | ??}} "
@@ -50,63 +58,75 @@ msgstr ""
 
 #: components/Interactions/InteractionDialog.tsx:265
 #. 🟥Field name is localized. Coming from Schema Configuration. I.e, By entering Catalog Numbers. Used in: Components > Interactions > Interaction Dialog
+#, fuzzy
 msgid "byEnteringNumbers"
 msgstr "En saisissant {fieldName:string}s"
 
 #: components/Interactions/InteractionDialog.tsx:243
 #. Used in: Components > Interactions > Interaction Dialog
+#, fuzzy
 msgid "withoutPreparations"
 msgstr "Sans préparations"
 
 #: components/Interactions/InteractionDialog.tsx:239
 #. Used in: Components > Interactions > Interaction Dialog
+#, fuzzy
 msgid "addUnassociated"
 msgstr "Ajouter un élément non associé"
 
 #: components/Interactions/PrepDialog.tsx:129
 #. Used in: Components > Interactions > Prep Dialog
+#, fuzzy
 msgid "preparations"
 msgstr "Les préparatifs"
 
 #: components/FormCommands/index.tsx:105
 #. Used in: Components > Form Commands > Index
+#, fuzzy
 msgid "preparationsCanNotBeReturned"
 msgstr "Les préparations ne peuvent être retournées dans ce cadre."
 
 #: components/Interactions/PrepReturnDialog.tsx:73
 #. Used in: Components > Interactions > Prep Return Dialog
+#, fuzzy
 msgid "noUnresolvedPreparations"
 msgstr "Il n'y a pas de préparatifs non résolus pour ce prêt."
 
 #: components/Interactions/PrepReturnDialog.tsx:228
 #. Used in: Components > Interactions > Prep Return Dialog
+#, fuzzy
 msgid "unresolved"
 msgstr "Non résolu"
 
 #: components/Interactions/PrepReturnDialog.tsx:231
 #: components/QueryBuilder/LoanReturn.tsx:165
 #. Used in: Components > Interactions > Prep Return Dialog ⬤ Components > Query Builder > Loan Return
+#, fuzzy
 msgid "return"
 msgstr "Retour"
 
 #: components/Interactions/PrepReturnDialog.tsx:234
 #. Used in: Components > Interactions > Prep Return Dialog
+#, fuzzy
 msgid "resolve"
 msgstr "Résoudre"
 
 #: components/Interactions/PrepReturnDialog.tsx:117
 #. Used in: Components > Interactions > Prep Return Dialog
+#, fuzzy
 msgid "returnAllPreparations"
 msgstr "Retourner toutes les préparations"
 
 #: components/Interactions/PrepReturnDialog.tsx:149
 #: components/QueryBuilder/LoanReturn.tsx:163
 #. Used in: Components > Interactions > Prep Return Dialog ⬤ Components > Query Builder > Loan Return
+#, fuzzy
 msgid "returnSelectedPreparations"
 msgstr "Retourner les préparations sélectionnées"
 
 #: components/Interactions/PrepDialog.tsx:100
 #. Used in: Components > Interactions > Prep Dialog
+#, fuzzy
 msgid "selectAllAvailablePreparations"
 msgstr "Sélectionnez toutes les préparations disponibles"
 
@@ -119,64 +139,76 @@ msgstr "Sélectionnez toutes les préparations disponibles"
 #: components/Interactions/PrepReturnRow.tsx:84
 #: components/Interactions/PrepReturnRow.tsx:86
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Dialog Row ⬤ Components > Interactions > Prep Return Dialog ⬤ Components > Interactions > Prep Return Row
+#, fuzzy
 msgid "selectAll"
 msgstr "Tout sélectionner"
 
 #: components/Interactions/PrepDialogRow.tsx:78
 #: components/Interactions/PrepDialogRow.tsx:81
 #. Used in: Components > Interactions > Prep Dialog Row
+#, fuzzy
 msgid "selectedAmount"
 msgstr "Montant sélectionné"
 
 #: components/Interactions/PrepReturnRow.tsx:105
 #: components/Interactions/PrepReturnRow.tsx:109
 #. Used in: Components > Interactions > Prep Return Row
+#, fuzzy
 msgid "returnedAmount"
 msgstr "Montant retourné"
 
 #: components/Interactions/PrepReturnRow.tsx:125
 #: components/Interactions/PrepReturnRow.tsx:129
 #. Used in: Components > Interactions > Prep Return Row
+#, fuzzy
 msgid "resolvedAmount"
 msgstr "Montant résolu"
 
 #: components/Interactions/PrepDialogRow.tsx:160
 #. 🟥Used to format preparations in the prep return dialog. Used in: Components > Interactions > Prep Dialog Row
+#, fuzzy
 msgid "prepReturnFormatter"
 msgstr "{tableName:chaîne}: {ressource:chaîne}"
 
 #: components/FormCommands/ShowTransactions.tsx:119
 #. 🟥Example: Resolved Loan records. Used in: Components > Form Commands > Show Transactions
+#, fuzzy
 msgid "resolvedLoans"
 msgstr "Enregistrements {loanTable:string} résolus"
 
 #: components/FormCommands/ShowTransactions.tsx:109
 #. 🟥Example: Open Loan records. Used in: Components > Form Commands > Show Transactions
+#, fuzzy
 msgid "openLoans"
 msgstr "Ouvrir les enregistrements {loanTable:string}"
 
 #: components/FormCommands/ShowTransactions.tsx:129
 #. 🟥Example: Gift records. Used in: Components > Form Commands > Show Transactions
+#, fuzzy
 msgid "gifts"
 msgstr "{giftTable:string} enregistrements"
 
 #: components/FormCommands/ShowTransactions.tsx:141
 #. 🟥Example: Exchange In / Exchnage Out records. Used in: Components > Form Commands > Show Transactions
+#, fuzzy
 msgid "exchanges"
 msgstr "{exhangeInTable:string} / {exhangeOutTable:string} enregistrements"
 
 #: components/Interactions/PrepReturnRow.tsx:41
 #. Used in: Components > Interactions > Prep Return Row
+#, fuzzy
 msgid "unCataloged"
 msgstr "non catalogué"
 
 #: components/Interactions/InteractionDialog.tsx:201
 #. 🟥Example: Preparation records. Used in: Components > Interactions > Interaction Dialog
+#, fuzzy
 msgid "returnedPreparations"
 msgstr "Enregistrements {tablePreparation:string} renvoyés"
 
 #: components/Interactions/InteractionDialog.tsx:206
 #. 🟥Example: 2 Preparation records have been returned and saved. Used in: Components > Interactions > Interaction Dialog
+#, fuzzy
 msgid "returnedAndSaved"
 msgstr ""
 "{count:number|formatted} {tablePreparation:string} enregistrements ont été "
@@ -187,62 +219,74 @@ msgstr ""
 #: components/Interactions/PrepReturnDialog.tsx:145
 #: components/QueryBuilder/Results.tsx:235
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Return Dialog ⬤ Components > Query Builder > Results
+#, fuzzy
 msgid "deselectAll"
 msgstr "Tout déselectionner"
 
 #: components/Interactions/PrepDialog.tsx:203
 #. Used in: Components > Interactions > Prep Dialog
+#, fuzzy
 msgid "available"
 msgstr "Disponible"
 
 #: components/Interactions/PrepDialog.tsx:204
 #. Used in: Components > Interactions > Prep Dialog
+#, fuzzy
 msgid "unavailable"
 msgstr "Indisponible"
 
 #: components/Interactions/InteractionsDialog.tsx:92
 #: components/QueryBuilder/LoanReturn.tsx:149
 #. 🟥Example: Return Loan records. Used in: Components > Interactions > Interactions Dialog ⬤ Components > Query Builder > Loan Return
+#, fuzzy
 msgid "returnLoan"
 msgstr "Renvoyer les enregistrements {tableLoan:string}"
 
 #: components/Interactions/InteractionsDialog.tsx:95
 #: components/Interactions/InteractionsDialog.tsx:120
 #. Used in: Components > Interactions > Interactions Dialog
+#, fuzzy
 msgid "printInvoice"
 msgstr "La facture d'impression"
 
 #: components/Interactions/InteractionsDialog.tsx:96
 #. 🟥Example: Loan records w/o Preparation records. Used in: Components > Interactions > Interactions Dialog
+#, fuzzy
 msgid "loanWithoutPreparation"
 msgstr "{tableLoan:string} sans enregistrements {tablePreparation:string}"
 
 #: components/Interactions/InteractionsDialog.tsx:101
 #. 🟥Example: Create a Loan records with no Preparation records. Used in: Components > Interactions > Interactions Dialog
+#, fuzzy
 msgid "loanWithoutPreparationDescription"
 msgstr "Créer un {tableLoan:string} sans enregistrements {tablePreparation:string}"
 
 #: components/Interactions/InteractionsDialog.tsx:105
 #. 🟥Example: Create a Loan. Used in: Components > Interactions > Interactions Dialog
+#, fuzzy
 msgid "createLoan"
 msgstr "Créer un {tableLoan:string}"
 
 #: components/Interactions/InteractionsDialog.tsx:108
 #. 🟥Example: Edit a Loan. Used in: Components > Interactions > Interactions Dialog
+#, fuzzy
 msgid "editLoan"
 msgstr "Modifier {tableLoan:string}"
 
 #: components/Interactions/InteractionsDialog.tsx:111
 #. 🟥Example: Create a Gift. Used in: Components > Interactions > Interactions Dialog
+#, fuzzy
 msgid "createdGift"
 msgstr "Créer un {tableLoan:string}"
 
 #: components/Interactions/InteractionsDialog.tsx:114
 #. 🟥Example: Edit a Gift. Used in: Components > Interactions > Interactions Dialog
+#, fuzzy
 msgid "editGift"
 msgstr "Modifier {tableLoan:string}"
 
 #: components/Interactions/InteractionsDialog.tsx:117
 #. 🟥Example: Create a Infrormation Request. Used in: Components > Interactions > Interactions Dialog
+#, fuzzy
 msgid "createInformationRequest"
 msgstr "Créer {modelName:string}"

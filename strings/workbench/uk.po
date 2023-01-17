@@ -6,6 +6,7 @@ msgstr "Content-Type: text/plain\n"
 #: components/UserPreferences/Definitions.tsx:1327
 #: components/WorkBench/wbView.js:229
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > User Preferences > Definitions ⬤ Components > Work Bench > Wb View
+#, fuzzy
 msgid "workBench"
 msgstr "WorkBench"
 
@@ -13,17 +14,20 @@ msgstr "WorkBench"
 #: components/WorkBench/Template.tsx:145
 #: components/WorkBench/wbView.js:1932
 #. Used in: Components > Work Bench > Status ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
+#, fuzzy
 msgid "rollback"
 msgstr "Відкат"
 
 #: components/WbPlanView/Mapper.tsx:379
 #: components/WorkBench/Template.tsx:127
 #. Used in: Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Template
+#, fuzzy
 msgid "validate"
 msgstr "Перевірити"
 
 #: components/WorkBench/Status.tsx:73
 #. Used in: Components > Work Bench > Status
+#, fuzzy
 msgid "validation"
 msgstr "Перевірка"
 
@@ -31,90 +35,107 @@ msgstr "Перевірка"
 #: components/WorkBench/Template.tsx:156
 #: components/WorkBench/wbView.js:1958
 #. Used in: Components > Work Bench > Status ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
+#, fuzzy
 msgid "upload"
 msgstr "Завантажити"
 
 #: components/WorkBench/Status.tsx:81
 #. Used in: Components > Work Bench > Status
+#, fuzzy
 msgid "rollingBack"
 msgstr "Відкат назад"
 
 #: components/WorkBench/Status.tsx:80
 #. Used in: Components > Work Bench > Status
+#, fuzzy
 msgid "uploading"
 msgstr "Завантаження"
 
 #: components/WorkBench/Status.tsx:79
 #. Used in: Components > Work Bench > Status
+#, fuzzy
 msgid "validating"
 msgstr "Перевірка"
 
 #: components/WorkBench/wbView.js:544
 #. Used in: Components > Work Bench > Wb View
+#, fuzzy
 msgid "disambiguate"
 msgstr "Усунути неоднозначність"
 
 #: components/WorkBench/wbView.js:555
 #. Used in: Components > Work Bench > Wb View
+#, fuzzy
 msgid "fillDown"
 msgstr "Заповнити вниз"
 
 #: components/WorkBench/wbView.js:563
 #. Used in: Components > Work Bench > Wb View
+#, fuzzy
 msgid "fillUp"
 msgstr "Заповнювати"
 
 #: components/WorkBench/Template.tsx:166
 #: components/WorkBench/wbView.js:2039
 #. Used in: Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
+#, fuzzy
 msgid "revert"
 msgstr "Повернути"
 
 #: components/WorkBench/wbView.js:2166
 #. Used in: Components > Work Bench > Wb View
+#, fuzzy
 msgid "dataCheck"
 msgstr "Перевірка даних"
 
 #: components/WorkBench/wbView.js:2160
 #: components/WorkBench/wbView.js:2163
 #. Used in: Components > Work Bench > Wb View
+#, fuzzy
 msgid "dataCheckOn"
 msgstr "Перевірка даних: увімкнено"
 
 #: components/WorkBench/DataSetMeta.tsx:380
 #: components/WorkBench/Template.tsx:193
 #. Used in: Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Template
+#, fuzzy
 msgid "changeOwner"
 msgstr "Змінити власника"
 
 #: components/WorkBench/Template.tsx:208
 #. Used in: Components > Work Bench > Template
+#, fuzzy
 msgid "convertCoordinates"
 msgstr "Перетворення координат"
 
 #: components/WorkBench/Template.tsx:234
 #. Used in: Components > Work Bench > Template
+#, fuzzy
 msgid "navigation"
 msgstr "Навігація"
 
 #: components/WorkBench/Template.tsx:256
 #. Used in: Components > Work Bench > Template
+#, fuzzy
 msgid "replace"
 msgstr "Замінити"
 
 #: components/WorkBench/Template.tsx:253
 #: components/WorkBench/Template.tsx:257
 #. Used in: Components > Work Bench > Template
+#, fuzzy
 msgid "replacementValue"
 msgstr "Відновна вартість"
 
 #: components/WorkBench/Template.tsx:263
 #. Used in: Components > Work Bench > Template
+#, fuzzy
 msgid "searchResults"
 msgstr "Результати пошуку"
 
 #: components/WorkBench/Template.tsx:60
 #. Used in: Components > Work Bench > Template
+#, fuzzy
 msgid "clickToToggle"
 msgstr "Натисніть, щоб увімкнути видимість"
 
@@ -122,36 +143,43 @@ msgstr "Натисніть, щоб увімкнути видимість"
 #: components/WorkBench/AdvancedSearch.tsx:214
 #: components/WorkBench/AdvancedSearch.tsx:216
 #. Used in: Components > Work Bench > Advanced Search
+#, fuzzy
 msgid "configureSearchReplace"
 msgstr "Налаштувати пошук і заміну"
 
 #: components/WorkBench/Template.tsx:265
 #. Used in: Components > Work Bench > Template
+#, fuzzy
 msgid "modifiedCells"
 msgstr "Модифіковані клітини"
 
 #: components/WorkBench/Template.tsx:267
 #. Used in: Components > Work Bench > Template
+#, fuzzy
 msgid "newCells"
 msgstr "Нові клітини"
 
 #: components/WorkBench/Template.tsx:269
 #. Used in: Components > Work Bench > Template
+#, fuzzy
 msgid "errorCells"
 msgstr "Комірки помилок"
 
 #: components/WbPlanView/Mapper.tsx:386
 #. Used in: Components > Wb Plan View > Mapper
+#, fuzzy
 msgid "dataEditor"
 msgstr "Редактор даних"
 
 #: components/WorkBench/wbView.js:1596
 #. Used in: Components > Work Bench > Wb View
+#, fuzzy
 msgid "noDisambiguationResults"
 msgstr "Неможливо усунути неоднозначність"
 
 #: components/WorkBench/wbView.js:1597
 #. Used in: Components > Work Bench > Wb View
+#, fuzzy
 msgid "noDisambiguationResultsDescription"
 msgstr ""
 "Жоден із відповідних записів наразі не існує в базі даних. Це може статися, "
@@ -162,21 +190,25 @@ msgstr ""
 
 #: components/WorkBench/wbView.js:1651
 #. Used in: Components > Work Bench > Wb View
+#, fuzzy
 msgid "disambiguateMatches"
 msgstr "Усуньте неоднозначність збігів кількох записів"
 
 #: components/WorkBench/wbView.js:1699
 #. Used in: Components > Work Bench > Wb View
+#, fuzzy
 msgid "applyAllUnavailable"
 msgstr "Функція «Застосувати все» недоступна, поки триває перевірка даних."
 
 #: components/WorkBench/wbView.js:1915
 #. Used in: Components > Work Bench > Wb View
+#, fuzzy
 msgid "beginRollback"
 msgstr "Почати відкат набору даних?"
 
 #: components/WorkBench/wbView.js:1916
 #. Used in: Components > Work Bench > Wb View
+#, fuzzy
 msgid "beginRollbackDescription"
 msgstr ""
 "Відкат видалить нові записи даних, додані цим набором даних до бази даних "
@@ -186,21 +218,25 @@ msgstr ""
 
 #: components/WorkBench/wbView.js:1946
 #. Used in: Components > Work Bench > Wb View
+#, fuzzy
 msgid "startUpload"
 msgstr "Почати завантаження набору даних?"
 
 #: components/WorkBench/wbView.js:1947
 #. Used in: Components > Work Bench > Wb View
+#, fuzzy
 msgid "startUploadDescription"
 msgstr "Завантаження набору даних додасть дані до бази даних Specify."
 
 #: components/WorkBench/DataSetMeta.tsx:103
 #. Used in: Components > Work Bench > Data Set Meta
+#, fuzzy
 msgid "deleteDataSet"
 msgstr "Видалити цей набір даних?"
 
 #: components/WorkBench/DataSetMeta.tsx:107
 #. Used in: Components > Work Bench > Data Set Meta
+#, fuzzy
 msgid "deleteDataSetDescription"
 msgstr ""
 "Видалення набору даних остаточно видаляє його та його план завантаження. "
@@ -210,21 +246,25 @@ msgstr ""
 
 #: components/WorkBench/DataSetMeta.tsx:68
 #. Used in: Components > Work Bench > Data Set Meta
+#, fuzzy
 msgid "dataSetDeleted"
 msgstr "Набір даних успішно видалено"
 
 #: components/WorkBench/DataSetMeta.tsx:71
 #. Used in: Components > Work Bench > Data Set Meta
+#, fuzzy
 msgid "dataSetDeletedDescription"
 msgstr "Набір даних успішно видалено."
 
 #: components/WorkBench/wbView.js:2032
 #. Used in: Components > Work Bench > Wb View
+#, fuzzy
 msgid "revertChanges"
 msgstr "Скасувати незбережені зміни?"
 
 #: components/WorkBench/wbView.js:2033
 #. Used in: Components > Work Bench > Wb View
+#, fuzzy
 msgid "revertChangesDescription"
 msgstr ""
 "Ця дія призведе до скасування всіх змін, внесених до набору даних після "
@@ -232,21 +272,25 @@ msgstr ""
 
 #: components/WorkBench/wbView.js:2056
 #. Used in: Components > Work Bench > Wb View
+#, fuzzy
 msgid "saving"
 msgstr "Збереження..."
 
 #: components/WorkBench/Template.tsx:338
 #. Used in: Components > Work Bench > Template
+#, fuzzy
 msgid "wbUnloadProtect"
 msgstr "Зміни в цьому наборі даних не збережено."
 
 #: components/WorkBench/wbView.js:2270
 #. Used in: Components > Work Bench > Wb View
+#, fuzzy
 msgid "noMatchErrorMessage"
 msgstr "Немає відповідного запису для таблиці обов’язкової відповідності."
 
 #: components/WorkBench/wbView.js:2296
 #. Used in: Components > Work Bench > Wb View
+#, fuzzy
 msgid "matchedMultipleErrorMessage"
 msgstr ""
 "Це значення збігається з двома чи більше існуючими записами бази даних, і "
@@ -254,17 +298,20 @@ msgstr ""
 
 #: components/WorkBench/wbView.js:2498
 #. Used in: Components > Work Bench > Wb View
+#, fuzzy
 msgid "validationNoErrors"
 msgstr "Перевірка завершена без помилок"
 
 #: components/WorkBench/wbView.js:2501
 #. Used in: Components > Work Bench > Wb View
+#, fuzzy
 msgid "validationNoErrorsDescription"
 msgstr "Перевірка не виявила помилок, вона готова до завантаження в базу даних."
 
 #: components/WorkBench/wbView.js:2504
 #: components/WorkBench/wbView.js:2515
 #. Used in: Components > Work Bench > Wb View
+#, fuzzy
 msgid "validationReEditWarning"
 msgstr ""
 "Примітка. Якщо цей набір даних відредаговано та повторно збережено, перед "
@@ -273,21 +320,25 @@ msgstr ""
 
 #: components/WorkBench/wbView.js:2509
 #. Used in: Components > Work Bench > Wb View
+#, fuzzy
 msgid "validationErrors"
 msgstr "Перевірка виконана з помилками"
 
 #: components/WorkBench/wbView.js:2512
 #. Used in: Components > Work Bench > Wb View
+#, fuzzy
 msgid "validationErrorsDescription"
 msgstr "Перевірка виявила помилки в наборі даних."
 
 #: components/WorkBench/wbView.js:2522
 #. Used in: Components > Work Bench > Wb View
+#, fuzzy
 msgid "uploadSuccessful"
 msgstr "Завантаження завершено без помилок"
 
 #: components/WorkBench/wbView.js:2523
 #. Used in: Components > Work Bench > Wb View
+#, fuzzy
 msgid "uploadSuccessfulDescription"
 msgstr ""
 "Натисніть кнопку «Результати», щоб побачити кількість нових записів, "
@@ -295,16 +346,19 @@ msgstr ""
 
 #: components/WorkBench/wbView.js:2526
 #. Used in: Components > Work Bench > Wb View
+#, fuzzy
 msgid "uploadErrors"
 msgstr "Помилка завантаження через клітинки помилок"
 
 #: components/WorkBench/wbView.js:2529
 #. Used in: Components > Work Bench > Wb View
+#, fuzzy
 msgid "uploadErrorsDescription"
 msgstr "Помилка завантаження через одну або кілька помилок значення клітинки."
 
 #: components/WorkBench/wbView.js:2532
 #. Used in: Components > Work Bench > Wb View
+#, fuzzy
 msgid "uploadErrorsSecondDescription"
 msgstr ""
 "Перевірте набір даних і перегляньте підказки для кожної клітинки помилки, а "
@@ -313,11 +367,13 @@ msgstr ""
 
 #: components/WorkBench/wbView.js:2537
 #. Used in: Components > Work Bench > Wb View
+#, fuzzy
 msgid "dataSetRollback"
 msgstr "Набір даних успішно повернуто"
 
 #: components/WorkBench/wbView.js:2538
 #. Used in: Components > Work Bench > Wb View
+#, fuzzy
 msgid "dataSetRollbackDescription"
 msgstr ""
 "Цей відкочений набір даних зберігається та може бути відредагований або "
@@ -325,77 +381,92 @@ msgstr ""
 
 #: components/WorkBench/wbView.js:2558
 #. Used in: Components > Work Bench > Wb View
+#, fuzzy
 msgid "validationCanceled"
 msgstr "Перевірку скасовано"
 
 #: components/WorkBench/wbView.js:2564
 #. Used in: Components > Work Bench > Wb View
+#, fuzzy
 msgid "validationCanceledDescription"
 msgstr "Перевірку набору даних скасовано."
 
 #: components/WorkBench/wbView.js:2560
 #. Used in: Components > Work Bench > Wb View
+#, fuzzy
 msgid "rollbackCanceled"
 msgstr "Відкат скасовано"
 
 #: components/WorkBench/wbView.js:2566
 #. Used in: Components > Work Bench > Wb View
+#, fuzzy
 msgid "rollbackCanceledDescription"
 msgstr "Відкат набору даних скасовано."
 
 #: components/WorkBench/wbView.js:2561
 #. Used in: Components > Work Bench > Wb View
+#, fuzzy
 msgid "uploadCanceled"
 msgstr "Завантаження скасовано"
 
 #: components/WorkBench/wbView.js:2567
 #. Used in: Components > Work Bench > Wb View
+#, fuzzy
 msgid "uploadCanceledDescription"
 msgstr "Завантаження набору даних скасовано."
 
 #: components/WorkBench/wbUtils.js:1032
 #. Used in: Components > Work Bench > Wb Utils
+#, fuzzy
 msgid "coordinateConverter"
 msgstr "Формат геокоординат"
 
 #: components/WorkBench/wbUtils.js:1042
 #. Used in: Components > Work Bench > Wb Utils
+#, fuzzy
 msgid "coordinateConverterDescription"
 msgstr "Виберіть потрібний формат геокоординат"
 
 #: components/WorkBench/wbView.js:669
 #. 🟥When empty string is used as a default value for a column, this is shown instead. Used in: Components > Work Bench > Wb View
+#, fuzzy
 msgid "emptyStringInline"
 msgstr "(порожній рядок)"
 
 #: components/WorkBench/Template.tsx:133
 #: components/WorkBench/wbView.js:2396
 #. Used in: Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
+#, fuzzy
 msgid "wbUploadedUnavailable"
 msgstr "Набір даних має бути перевірений або завантажений"
 
 #: components/WorkBench/wbView.js:279
 #. Used in: Components > Work Bench > Wb View
+#, fuzzy
 msgid "wbValidateUnavailable"
 msgstr "Перед перевіркою цього набору даних необхідно визначити план завантаження"
 
 #: components/WorkBench/wbView.js:2391
 #. Used in: Components > Work Bench > Wb View
+#, fuzzy
 msgid "unavailableWhileEditing"
 msgstr "Ця дія вимагає збереження всіх змін"
 
 #: components/WorkBench/wbView.js:2479
 #. Used in: Components > Work Bench > Wb View
+#, fuzzy
 msgid "uploadUnavailableWhileHasErrors"
 msgstr "Завантаження недоступне, оскільки в деяких клітинках є помилки перевірки"
 
 #: components/WorkBench/wbView.js:1753
 #. Used in: Components > Work Bench > Wb View
+#, fuzzy
 msgid "unavailableWhileViewingResults"
 msgstr "Ця дія недоступна під час перегляду результатів завантаження"
 
 #: components/WorkBench/wbView.js:1720
 #. Used in: Components > Work Bench > Wb View
+#, fuzzy
 msgid "unavailableWhileValidating"
 msgstr "Ця дія недоступна, поки триває перевірка даних"
 
@@ -403,177 +474,211 @@ msgstr "Ця дія недоступна, поки триває перевірк
 #: components/WorkBench/Template.tsx:214
 #: components/WorkBench/Template.tsx:224
 #. Used in: Components > Work Bench > Template
+#, fuzzy
 msgid "unavailableWithoutLocality"
 msgstr "Цей інструмент вимагає відображення стовпців місцевості"
 
 #: components/WorkBench/wbUtils.js:572
 #. Used in: Components > Work Bench > Wb Utils
+#, fuzzy
 msgid "unavailableWhenUploaded"
 msgstr "Цей інструмент не працює із завантаженими наборами даних"
 
 #: components/WorkBench/wbView.js:2402
 #. Used in: Components > Work Bench > Wb View
+#, fuzzy
 msgid "dataSetDeletedOrNotFound"
 msgstr "Набір даних видалено іншим сеансом."
 
 #: components/WorkBench/wbUtils.js:1070
 #. Used in: Components > Work Bench > Wb Utils
+#, fuzzy
 msgid "includeDmsSymbols"
 msgstr "Додайте символи DMS"
 
 #: components/WorkBench/Results.tsx:54
 #. Used in: Components > Work Bench > Results
+#, fuzzy
 msgid "uploadResults"
 msgstr "Завантажити результати"
 
 #: components/WorkBench/Results.tsx:55
 #. Used in: Components > Work Bench > Results
+#, fuzzy
 msgid "potentialUploadResults"
 msgstr "Потенційні результати завантаження"
 
 #: components/WorkBench/wbView.js:470
 #. Used in: Components > Work Bench > Wb View
+#, fuzzy
 msgid "noUploadResultsAvailable"
 msgstr "Для цієї клітинки немає результатів завантаження"
 
 #: components/WorkBench/Results.tsx:59
 #. Used in: Components > Work Bench > Results
+#, fuzzy
 msgid "wbUploadedDescription"
 msgstr "Кількість нових записів, створених у кожній таблиці:"
 
 #: components/WorkBench/Results.tsx:60
 #. Used in: Components > Work Bench > Results
+#, fuzzy
 msgid "wbUploadedPotentialDescription"
 msgstr "Кількість нових записів, які будуть створені в кожній таблиці:"
 
 #: components/WorkBench/AdvancedSearch.tsx:116
 #. Used in: Components > Work Bench > Advanced Search
+#, fuzzy
 msgid "navigationOptions"
 msgstr "Параметри навігації"
 
 #: components/WorkBench/AdvancedSearch.tsx:118
 #. Used in: Components > Work Bench > Advanced Search
+#, fuzzy
 msgid "cursorPriority"
 msgstr "Пріоритет курсору"
 
 #: components/WorkBench/AdvancedSearch.tsx:131
 #. Used in: Components > Work Bench > Advanced Search
+#, fuzzy
 msgid "columnFirst"
 msgstr "Колонка перша"
 
 #: components/WorkBench/AdvancedSearch.tsx:132
 #. Used in: Components > Work Bench > Advanced Search
+#, fuzzy
 msgid "rowFirst"
 msgstr "Перший ряд"
 
 #: components/WorkBench/AdvancedSearch.tsx:138
 #. Used in: Components > Work Bench > Advanced Search
+#, fuzzy
 msgid "searchOptions"
 msgstr "Параметри пошуку"
 
 #: components/WorkBench/AdvancedSearch.tsx:144
 #. Used in: Components > Work Bench > Advanced Search
+#, fuzzy
 msgid "findEntireCellsOnly"
 msgstr "Знайти лише цілі клітини"
 
 #: components/WorkBench/AdvancedSearch.tsx:151
 #. Used in: Components > Work Bench > Advanced Search
+#, fuzzy
 msgid "matchCase"
 msgstr "Відмінок сірника"
 
 #: components/WorkBench/AdvancedSearch.tsx:158
 #. Used in: Components > Work Bench > Advanced Search
+#, fuzzy
 msgid "useRegularExpression"
 msgstr "Використовуйте регулярний вираз"
 
 #: components/WorkBench/AdvancedSearch.tsx:165
 #. Used in: Components > Work Bench > Advanced Search
+#, fuzzy
 msgid "liveUpdate"
 msgstr "Живий пошук"
 
 #: components/WorkBench/AdvancedSearch.tsx:170
 #. Used in: Components > Work Bench > Advanced Search
+#, fuzzy
 msgid "replaceOptions"
 msgstr "Параметри заміни"
 
 #: components/WorkBench/AdvancedSearch.tsx:172
 #. Used in: Components > Work Bench > Advanced Search
+#, fuzzy
 msgid "replaceMode"
 msgstr "Режим заміни"
 
 #: components/WorkBench/AdvancedSearch.tsx:185
 #. Used in: Components > Work Bench > Advanced Search
+#, fuzzy
 msgid "replaceAll"
 msgstr "Замінити всі збіги"
 
 #: components/WorkBench/AdvancedSearch.tsx:186
 #. Used in: Components > Work Bench > Advanced Search
+#, fuzzy
 msgid "replaceNext"
 msgstr "Замінити наступне входження"
 
 #: components/Router/Routes.tsx:178
 #. Used in: Components > Router > Routes
+#, fuzzy
 msgid "importDataSet"
 msgstr "Імпорт набору даних"
 
 #: components/WbImport/index.tsx:44
 #. Used in: Components > Wb Import > Index
+#, fuzzy
 msgid "wbImportHeader"
 msgstr "Імпортуйте файл, щоб створити новий набір даних"
 
 #: components/WbImport/index.tsx:321
 #. Used in: Components > Wb Import > Index
+#, fuzzy
 msgid "previewDataSet"
 msgstr "Попередній перегляд набору даних"
 
 #: components/WbImport/index.tsx:303
 #. Used in: Components > Wb Import > Index
+#, fuzzy
 msgid "errorImporting"
 msgstr "Під час імпортування файлу виникли такі помилки:"
 
 #: components/WbImport/helpers.ts:109
 #: components/WbImport/helpers.ts:132
 #. Used in: Components > Wb Import > Helpers
+#, fuzzy
 msgid "corruptFile"
 msgstr "Файл {fileName:string} пошкоджено або не містить даних!"
 
 #: components/WbImport/index.tsx:137
 #. Used in: Components > Wb Import > Index
+#, fuzzy
 msgid "characterEncoding"
 msgstr "Кодування символів:"
 
 #: components/WbImport/index.tsx:178
 #. Used in: Components > Wb Import > Index
+#, fuzzy
 msgid "delimiter"
 msgstr "роздільник:"
 
 #: components/UserPreferences/Definitions.tsx:1428
 #: components/WbImport/index.tsx:152
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
+#, fuzzy
 msgid "comma"
 msgstr "Кома"
 
 #: components/UserPreferences/Definitions.tsx:1436
 #: components/WbImport/index.tsx:154
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
+#, fuzzy
 msgid "semicolon"
 msgstr "Крапка з комою"
 
 #: components/UserPreferences/Definitions.tsx:1432
 #: components/WbImport/index.tsx:153
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
+#, fuzzy
 msgid "tab"
 msgstr "вкладка"
 
 #: components/UserPreferences/Definitions.tsx:1440
 #: components/WbImport/index.tsx:155
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
+#, fuzzy
 msgid "space"
 msgstr "космос"
 
 #: components/UserPreferences/Definitions.tsx:1444
 #: components/WbImport/index.tsx:156
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
+#, fuzzy
 msgid "pipe"
 msgstr "Труба"
 
@@ -582,144 +687,172 @@ msgstr "Труба"
 #: components/UserPreferences/Definitions.tsx:547
 #: components/WbImport/index.tsx:193
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
+#, fuzzy
 msgid "determineAutomatically"
 msgstr "Визначити автоматично"
 
 #: components/WbImport/index.tsx:261
 #. Used in: Components > Wb Import > Index
+#, fuzzy
 msgid "chooseDataSetName"
 msgstr "Назва нового набору даних:"
 
 #: components/WbImport/index.tsx:284
 #. Used in: Components > Wb Import > Index
+#, fuzzy
 msgid "firstRowIsHeader"
 msgstr "Перший рядок – заголовок:"
 
 #: components/Toolbar/WbsDialog.tsx:176
 #: components/WbImport/index.tsx:238
 #. Used in: Components > Toolbar > Wbs Dialog ⬤ Components > Wb Import > Index
+#, fuzzy
 msgid "importFile"
 msgstr "Імпорт файлу"
 
 #: components/WbImport/helpers.ts:68
 #. Used in: Components > Wb Import > Helpers
+#, fuzzy
 msgid "columnName"
 msgstr "Колонка {columnIndex:number}"
 
 #: components/Toolbar/WbsDialog.tsx:40
 #. Used in: Components > Toolbar > Wbs Dialog
+#, fuzzy
 msgid "newDataSetName"
 msgstr "Новий набір даних {date}"
 
 #: components/Toolbar/WbsDialog.tsx:200
 #. Used in: Components > Toolbar > Wbs Dialog
+#, fuzzy
 msgid "dataSets"
 msgstr "Набори даних WorkBench"
 
 #: components/Toolbar/WbsDialog.tsx:211
 #. Used in: Components > Toolbar > Wbs Dialog
+#, fuzzy
 msgid "wbsDialogEmpty"
 msgstr "Наразі не існує наборів даних."
 
 #: components/Toolbar/WbsDialog.tsx:212
 #. Used in: Components > Toolbar > Wbs Dialog
+#, fuzzy
 msgid "createDataSetInstructions"
 msgstr "Використовуйте «Імпортувати файл» або «Створити новий», щоб створити новий."
 
 #: components/Toolbar/WbsDialog.tsx:187
 #. Used in: Components > Toolbar > Wbs Dialog
+#, fuzzy
 msgid "createNew"
 msgstr "Створити новий"
 
 #: components/WorkBench/DataSetMeta.tsx:127
 #. Used in: Components > Work Bench > Data Set Meta
+#, fuzzy
 msgid "dataSetMeta"
 msgstr "Властивості набору даних"
 
 #: components/WbPlanView/Mapper.tsx:401
 #: components/WorkBench/DataSetMeta.tsx:160
 #. Used in: Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Data Set Meta
+#, fuzzy
 msgid "dataSetName"
 msgstr "Назва набору даних"
 
 #: components/WorkBench/DataSetMeta.tsx:182
 #. Used in: Components > Work Bench > Data Set Meta
+#, fuzzy
 msgid "numberOfRows"
 msgstr "Кількість рядів"
 
 #: components/WorkBench/DataSetMeta.tsx:188
 #. Used in: Components > Work Bench > Data Set Meta
+#, fuzzy
 msgid "numberOfColumns"
 msgstr "Кількість стовпців"
 
 #: components/WorkBench/DataSetMeta.tsx:283
 #. Used in: Components > Work Bench > Data Set Meta
+#, fuzzy
 msgid "importedFileName"
 msgstr "Імпортувати ім'я файлу"
 
 #: components/WorkBench/DataSetMeta.tsx:286
 #. Used in: Components > Work Bench > Data Set Meta
+#, fuzzy
 msgid "noFileName"
 msgstr "(без імені файлу)"
 
 #: components/WorkBench/DataSetMeta.tsx:384
 #. Used in: Components > Work Bench > Data Set Meta
+#, fuzzy
 msgid "changeDataSetOwner"
 msgstr "Змінити власника набору даних"
 
 #: components/WorkBench/DataSetMeta.tsx:405
 #. Used in: Components > Work Bench > Data Set Meta
+#, fuzzy
 msgid "changeDataSetOwnerDescription"
 msgstr "Виберіть нового власника:"
 
 #: components/WorkBench/DataSetMeta.tsx:369
 #: components/WorkBench/DataSetMeta.tsx:372
 #. Used in: Components > Work Bench > Data Set Meta
+#, fuzzy
 msgid "dataSetOwnerChanged"
 msgstr "Змінено власника набору даних"
 
 #: components/WorkBench/DataSetMeta.tsx:316
 #. Used in: Components > Work Bench > Data Set Meta
+#, fuzzy
 msgid "dataSet"
 msgstr "Набір даних"
 
 #: components/WorkBench/DataSetMeta.tsx:320
 #. Used in: Components > Work Bench > Data Set Meta
+#, fuzzy
 msgid "dataSetUploadedLabel"
 msgstr "(Завантажено, лише для читання)"
 
 #: components/WorkBench/Status.tsx:66
 #. Used in: Components > Work Bench > Status
+#, fuzzy
 msgid "wbStatusUnupload"
 msgstr "Статус відкату набору даних"
 
 #: components/WorkBench/Status.tsx:65
 #. Used in: Components > Work Bench > Status
+#, fuzzy
 msgid "wbStatusUpload"
 msgstr "Статус завантаження набору даних"
 
 #: components/WorkBench/Status.tsx:64
 #. Used in: Components > Work Bench > Status
+#, fuzzy
 msgid "wbStatusValidation"
 msgstr "Статус перевірки набору даних"
 
 #: components/WorkBench/Status.tsx:101
 #. Used in: Components > Work Bench > Status
+#, fuzzy
 msgid "aborting"
 msgstr "Переривання..."
 
 #: components/WorkBench/Status.tsx:91
 #. Used in: Components > Work Bench > Status
+#, fuzzy
 msgid "wbStatusAbortFailed"
 msgstr "Не вдалося перервати {operationName:string}. Будь-ласка спробуйте пізніше"
 
 #: components/WorkBench/Status.tsx:118
 #. 🟥E.x, Validating... Used in: Components > Work Bench > Status
+#, fuzzy
 msgid "wbStatusOperationNoProgress"
 msgstr "{operationName:string}..."
 
 #: components/WorkBench/Status.tsx:122
 #. 🟥E.x, Validating row 999/1,000. Used in: Components > Work Bench > Status
+#, fuzzy
 msgid "wbStatusOperationProgress"
 msgstr ""
 "{operationName:string} рядок "
@@ -727,11 +860,13 @@ msgstr ""
 
 #: components/WorkBench/Status.tsx:105
 #. Used in: Components > Work Bench > Status
+#, fuzzy
 msgid "wbStatusPendingDescription"
 msgstr "{operationName:string} цього набору даних має початися незабаром."
 
 #: components/WorkBench/Status.tsx:108
 #. Used in: Components > Work Bench > Status
+#, fuzzy
 msgid "wbStatusPendingSecondDescription"
 msgstr ""
 "Якщо це повідомлення зберігається довше 30 секунд, процес "
@@ -740,15 +875,18 @@ msgstr ""
 
 #: components/WorkBench/Status.tsx:160
 #. Used in: Components > Work Bench > Status
+#, fuzzy
 msgid "stop"
 msgstr "СТОП"
 
 #: components/WorkBench/Status.tsx:132
 #. Used in: Components > Work Bench > Status
+#, fuzzy
 msgid "wbStatusError"
 msgstr "Під час {operationName:string} сталася помилка"
 
 #: components/WorkBench/Status.tsx:117
 #. Used in: Components > Work Bench > Status
+#, fuzzy
 msgid "updatingTrees"
 msgstr "Оновлення дерев..."

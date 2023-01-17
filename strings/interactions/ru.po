@@ -43,6 +43,7 @@ msgstr "Обнаружены ошибки:"
 
 #: components/Interactions/InteractionDialog.tsx:259
 #. 🟥See documentation for syntax for plural rules. Used in: Components > Interactions > Interaction Dialog
+#, fuzzy
 msgid "byChoosingRecordSet"
 msgstr "Выбрав набор записей (доступно {count:number|formatted})"
 
@@ -145,21 +146,25 @@ msgstr "{tableName:string}: {resource:string}"
 
 #: components/FormCommands/ShowTransactions.tsx:119
 #. 🟥Example: Resolved Loan records. Used in: Components > Form Commands > Show Transactions
+#, fuzzy
 msgid "resolvedLoans"
 msgstr "Решено {loanTable:string} записей"
 
 #: components/FormCommands/ShowTransactions.tsx:109
 #. 🟥Example: Open Loan records. Used in: Components > Form Commands > Show Transactions
+#, fuzzy
 msgid "openLoans"
 msgstr "Открыть {loanTable:string} записей"
 
 #: components/FormCommands/ShowTransactions.tsx:129
 #. 🟥Example: Gift records. Used in: Components > Form Commands > Show Transactions
+#, fuzzy
 msgid "gifts"
 msgstr "{giftTable:string} записи"
 
 #: components/FormCommands/ShowTransactions.tsx:141
 #. 🟥Example: Exchange In / Exchnage Out records. Used in: Components > Form Commands > Show Transactions
+#, fuzzy
 msgid "exchanges"
 msgstr "{exhangeInTable:string} / {exhangeOutTable:string} записи"
 
@@ -170,11 +175,13 @@ msgstr "некаталогизированный"
 
 #: components/Interactions/InteractionDialog.tsx:201
 #. 🟥Example: Preparation records. Used in: Components > Interactions > Interaction Dialog
+#, fuzzy
 msgid "returnedPreparations"
 msgstr "Возвращено {tablePreparation:string} записей"
 
 #: components/Interactions/InteractionDialog.tsx:206
 #. 🟥Example: 2 Preparation records have been returned and saved. Used in: Components > Interactions > Interaction Dialog
+#, fuzzy
 msgid "returnedAndSaved"
 msgstr ""
 "{count:number|formatted} {tablePreparation:string} записей возвращены и "
@@ -201,6 +208,7 @@ msgstr "Недоступен"
 #: components/Interactions/InteractionsDialog.tsx:92
 #: components/QueryBuilder/LoanReturn.tsx:149
 #. 🟥Example: Return Loan records. Used in: Components > Interactions > Interactions Dialog ⬤ Components > Query Builder > Loan Return
+#, fuzzy
 msgid "returnLoan"
 msgstr "Вернуть записи {tableLoan:string}"
 
@@ -212,35 +220,42 @@ msgstr "Распечатать Накладную"
 
 #: components/Interactions/InteractionsDialog.tsx:96
 #. 🟥Example: Loan records w/o Preparation records. Used in: Components > Interactions > Interactions Dialog
+#, fuzzy
 msgid "loanWithoutPreparation"
 msgstr "{tableLoan:string} без записей {tablePreparation:string}"
 
 #: components/Interactions/InteractionsDialog.tsx:101
 #. 🟥Example: Create a Loan records with no Preparation records. Used in: Components > Interactions > Interactions Dialog
+#, fuzzy
 msgid "loanWithoutPreparationDescription"
 msgstr "Создайте {tableLoan:string} без записей {tablePreparation:string}"
 
 #: components/Interactions/InteractionsDialog.tsx:105
 #. 🟥Example: Create a Loan. Used in: Components > Interactions > Interactions Dialog
+#, fuzzy
 msgid "createLoan"
 msgstr "Создайте {tableLoan:string}"
 
 #: components/Interactions/InteractionsDialog.tsx:108
 #. 🟥Example: Edit a Loan. Used in: Components > Interactions > Interactions Dialog
+#, fuzzy
 msgid "editLoan"
 msgstr "Изменить {tableLoan:string}"
 
 #: components/Interactions/InteractionsDialog.tsx:111
 #. 🟥Example: Create a Gift. Used in: Components > Interactions > Interactions Dialog
+#, fuzzy
 msgid "createdGift"
 msgstr "Создайте {tableLoan:string}"
 
 #: components/Interactions/InteractionsDialog.tsx:114
 #. 🟥Example: Edit a Gift. Used in: Components > Interactions > Interactions Dialog
+#, fuzzy
 msgid "editGift"
 msgstr "Изменить {tableLoan:string}"
 
 #: components/Interactions/InteractionsDialog.tsx:117
 #. 🟥Example: Create a Infrormation Request. Used in: Components > Interactions > Interactions Dialog
+#, fuzzy
 msgid "createInformationRequest"
 msgstr "Создать {tableInformationRequest:string}"
