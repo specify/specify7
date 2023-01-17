@@ -49,6 +49,7 @@ import {
   resolveParser,
 } from '../../utils/parser/definitions';
 import { interactionsText } from '../../localization/interactions';
+import { schema } from '../DataModel/schema';
 
 export function InteractionDialog({
   recordSetsPromise,
@@ -197,10 +198,15 @@ export function InteractionDialog({
   return state.type === 'LoanReturnDoneState' ? (
     <Dialog
       buttons={commonText.close()}
-      header={interactionsText.returnedPreparations()}
+      header={interactionsText.returnedPreparations({
+        tablePreparation: schema.models.Preparation.label,
+      })}
       onClose={handleClose}
     >
-      {interactionsText.returnedAndSaved({ count: state.result })}
+      {interactionsText.returnedAndSaved({
+        count: state.result,
+        tablePreparation: schema.models.Preparation.label,
+      })}
     </Dialog>
   ) : state.type === 'PreparationSelectState' &&
     Object.keys(state.problems).length === 0 ? (

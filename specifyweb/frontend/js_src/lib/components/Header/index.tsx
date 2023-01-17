@@ -5,14 +5,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { ajax } from '../../utils/ajax';
 import type { Collection } from '../DataModel/types';
 import { serializeResource } from '../DataModel/helpers';
-import { removeItem, sortFunction, toLowerCase } from '../../utils/utils';
+import { removeItem, sortFunction } from '../../utils/utils';
 import { commonText } from '../../localization/common';
 import type { MenuItemName } from './menuItemDefinitions';
 import { formatUrl } from '../Router/queryString';
-import type { RA, RR, WritableArray } from '../../utils/types';
+import type { RR, WritableArray } from '../../utils/types';
 import { writable } from '../../utils/types';
 import { Form, Input, Select } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
@@ -21,11 +20,11 @@ import type { MenuItem } from '../Core/Main';
 import { switchCollection } from '../RouterCommands/SwitchCollection';
 import { useSearchParameter } from '../../hooks/navigation';
 import { Submit } from '../Atoms/Submit';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { SerializedModel } from '../DataModel/helperTypes';
 import { usePref } from '../UserPreferences/usePref';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { headerText } from '../../localization/header';
+import { userInformation } from '../InitialContext/userInformation';
+import { schema } from '../DataModel/schema';
 
 let activeMenuItems: WritableArray<MenuItemName> = [];
 
@@ -116,41 +115,19 @@ function MenuItemComponent({
   ) : null;
 }
 
-type Collections = {
-  readonly available: RA<SerializedModel<Collection>>;
-  readonly current: number | null;
-};
-
 export function CollectionSelector(): JSX.Element {
-  const [collections] = useAsyncState<Collections>(
-    React.useCallback(
-      async () =>
-        ajax<Collections>('/context/collection/', {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          headers: { Accept: 'application/json' },
-        }).then(({ data }) => data),
-      []
-    ),
-    false
-  );
-
   const [sortOrder] = usePref('chooseCollection', 'general', 'sortOrder');
   const isReverseSort = sortOrder.startsWith('-');
   const sortField = (isReverseSort ? sortOrder.slice(1) : sortOrder) as string &
     keyof Collection['fields'];
   const sortedCollections = React.useMemo(
     () =>
-      typeof collections === 'object'
-        ? Array.from(collections.available)
-            .sort(
-              sortFunction(
-                (collection) => collection[toLowerCase(sortField)],
-                isReverseSort
-              )
-            )
-            .map(serializeResource)
-        : undefined,
-    [collections, isReverseSort, sortField]
+      Array.from(userInformation.availableCollections)
+        .sort(
+          sortFunction((collection) => collection[sortField], isReverseSort)
+        )
+        .map(serializeResource),
+    [isReverseSort, sortField]
   );
 
   const navigate = useNavigate();
@@ -159,16 +136,13 @@ export function CollectionSelector(): JSX.Element {
       aria-label={headerText.currentCollection()}
       className="flex-1"
       title={headerText.currentCollection()}
-      value={collections?.current ?? undefined}
+      value={schema.domainLevelIds.collection}
       onValueChange={(value): void =>
         switchCollection(navigate, Number.parseInt(value), '/specify/')
       }
     >
-      {collections === undefined && (
-        <option disabled>{commonText.loading()}</option>
-      )}
       {sortedCollections?.map(({ id, collectionName }) => (
-        <option key={id} value={id}>
+        <option key={id as number} value={id as number}>
           {collectionName}
         </option>
       ))}

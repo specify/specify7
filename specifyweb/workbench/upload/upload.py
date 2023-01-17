@@ -112,7 +112,7 @@ def do_upload_dataset(
         allow_partial: bool,
         progress: Optional[Progress]=None
 ) -> List[UploadResult]:
-    assert not ds.was_uploaded(), "Already uploaded!"
+    if ds.was_uploaded(): raise AssertionError("Dataset already uploaded", {"localizationKey" : "datasetAlreadyUploaded"})
     ds.rowresults = None
     ds.uploadresult = None
     ds.save(update_fields=['rowresults', 'uploadresult'])
@@ -137,7 +137,7 @@ def do_upload_dataset(
 
 def clear_disambiguation(ds: Spdataset) -> None:
     with transaction.atomic():
-        assert not ds.was_uploaded(), "Already uploaded!"
+        if ds.was_uploaded(): raise AssertionError("Dataset already uploaded!", {"localizationKey" : "datasetAlreadyUploaded"})
         ds.rowresults = None
         ds.uploadresult = None
         ds.save(update_fields=['rowresults', 'uploadresult'])
