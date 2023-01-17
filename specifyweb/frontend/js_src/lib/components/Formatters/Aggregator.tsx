@@ -6,13 +6,17 @@ import { resourcesText } from '../../localization/resources';
 import type { GetSet, RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
-import { LoadingContext } from '../Core/Contexts';
 import { SearchDialog } from '../Forms/SearchDialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import type { FieldType } from '../WbPlanView/mappingHelpers';
 import { aggregate } from './aggregate';
 import { FormattersPickList, ResourceMapping } from './Components';
 import type { Aggregator } from './spec';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { fetchCollection } from '../DataModel/collection';
+import { SpecifyResource } from '../DataModel/legacyTypes';
+import { AnySchema } from '../DataModel/helperTypes';
+import { deserializeResource } from '../DataModel/serializers';
 
 export function AggregatorElement({
   item: [aggregator, setAggregator],
@@ -58,7 +62,7 @@ export function AggregatorElement({
           isReadOnly={isReadOnly}
           min={0}
           step={1}
-          value={aggregator.limit}
+          value={aggregator.limit ?? 0}
           onValueChange={(limit): void =>
             setAggregator({
               ...aggregator,
@@ -107,25 +111,48 @@ export function AggregatorElement({
 }
 
 const allowedMappings: RA<FieldType> = ['toOneIndependent', 'toOneDependent'];
+
 /*
  * FIXME: enforce no mappings to dependent fields
  *   mappings: ['fields', 'toOneIndependent', 'toManyIndependent'],
  */
+const defaultPreviewSize = 4;
 
 function AggregatorPreview({
   aggregator,
 }: {
   readonly aggregator: Aggregator;
 }): JSX.Element {
-  const [aggregated, setAggregated] = React.useState<string | undefined>(
-    undefined
+  const [resources, setResources] = useAsyncState<
+    RA<SpecifyResource<AnySchema>>
+  >(
+    // Use last 10 records as a preview by default
+    React.useCallback(
+      async () =>
+        aggregator.table === undefined
+          ? undefined
+          : fetchCollection(aggregator.table.name, {
+              limit: defaultPreviewSize,
+              orderBy: '-id',
+            }).then(({ records }) => records.map(deserializeResource)),
+      []
+    ),
+    false
   );
+  const [aggregated] = useAsyncState(
+    React.useCallback(
+      async () =>
+        resources === undefined ? false : aggregate(resources, aggregator),
+      [resources, aggregator]
+    ),
+    false
+  );
+
   const [isOpen, handleOpen, handleClose] = useBooleanState();
-  const resource = React.useMemo(
+  const templateResource = React.useMemo(
     () => new aggregator.table!.Resource(),
     [aggregator.table]
   );
-  const loading = React.useContext(LoadingContext);
 
   return (
     <>
@@ -133,17 +160,19 @@ function AggregatorPreview({
       <div>
         <Button.Green onClick={handleOpen}>{commonText.search()}</Button.Green>
       </div>
-      {typeof aggregated === 'string' && <output>{aggregated}</output>}
+      {typeof aggregated === 'string' ? (
+        <output>{aggregated}</output>
+      ) : aggregated === undefined ? (
+        <p>{commonText.loading()}</p>
+      ) : undefined}
       {isOpen && (
         <SearchDialog
           extraFilters={undefined}
           forceCollection={undefined}
           multiple
-          templateResource={resource}
+          templateResource={templateResource}
           onClose={handleClose}
-          onSelected={(resources): void =>
-            loading(aggregate(resources, aggregator).then(setAggregated))
-          }
+          onSelected={setResources}
         />
       )}
     </>

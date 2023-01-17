@@ -4,13 +4,17 @@ import type { Collection, SpecifyModel } from '../DataModel/specifyModel';
 import { fetchFormatters, format } from './dataObjFormatters';
 import type { Aggregator } from './spec';
 import { SpecifyResource } from '../DataModel/legacyTypes';
+import { f } from '../../utils/functools';
+import { sortFunction } from '../../utils/utils';
 
 export async function aggregate(
   collection: RA<SpecifyResource<AnySchema>> | Collection<AnySchema>,
   aggregator?: Aggregator | string
 ): Promise<string> {
-  const resources = Array.isArray(collection) ? collection : collection.models;
-  if (resources.length === 0) return '';
+  const allResources = Array.isArray(collection)
+    ? collection
+    : collection.models;
+  if (allResources.length === 0) return '';
   const targetTable = Array.isArray(collection)
     ? collection[0].specifyModel
     : collection.model.specifyModel;
@@ -30,19 +34,41 @@ export async function aggregate(
     aggregators.find(({ table }) => table === targetTable) ??
     autoGenerateAggregator(targetTable);
 
+  const resources =
+    typeof resolvedAggregator.limit === 'number' && resolvedAggregator.limit > 0
+      ? allResources.slice(0, resolvedAggregator.limit)
+      : allResources;
+
   if (!Array.isArray(collection) && !collection.isComplete())
     console.error('Collection is incomplete');
 
   return Promise.all(
     resources.map(async (resource) =>
-      format(resource, resolvedAggregator.formatter)
+      f.all({
+        formatted: format(resource, resolvedAggregator.formatter),
+        sortValue:
+          resolvedAggregator.sortField === undefined
+            ? undefined
+            : resource.rgetPromise(
+                resolvedAggregator.sortField.map(({ name }) => name).join('.')
+              ),
+      })
     )
-  ).then(
-    (formatted) =>
-      `${filterArray(formatted).join(resolvedAggregator.separator)}${
-        resolvedAggregator.suffix ?? ''
-      }`
-  );
+  ).then((entries) => {
+    const resources = Array.from(
+      filterArray(
+        entries.map(({ formatted, sortValue }) =>
+          formatted === undefined ? undefined : { formatted, sortValue }
+        )
+      )
+    )
+      .sort(sortFunction(({ sortValue }) => sortValue))
+      .map(({ formatted }) => formatted);
+
+    return `${resources.join(resolvedAggregator.separator)}${
+      resolvedAggregator.suffix ?? ''
+    }`;
+  });
 }
 
 const autoGenerateAggregator = (table: SpecifyModel): Aggregator => ({
