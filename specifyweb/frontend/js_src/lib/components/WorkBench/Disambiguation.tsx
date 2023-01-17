@@ -106,6 +106,8 @@ function Row({
       />
       {fullName === false ? (
         <FormattedResource resource={resource} />
+      ) : typeof fullName === 'string' ? (
+        fullName
       ) : (
         commonText.loading()
       )}

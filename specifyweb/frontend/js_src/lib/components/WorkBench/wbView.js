@@ -1607,7 +1607,7 @@ export const WBView = Backbone.View.extend({
           this.setDisambiguation(
             physicalRow,
             matches.mappingPath,
-            Number.parseInt(selected)
+            selected.id
           );
           this.startValidateRow(physicalRow);
         }}
@@ -1628,7 +1628,7 @@ export const WBView = Backbone.View.extend({
             this.setDisambiguation(
               physicalRow,
               matches.mappingPath,
-              Number.parseInt(selected)
+              selected.id
             );
             this.startValidateRow(physicalRow);
           }
