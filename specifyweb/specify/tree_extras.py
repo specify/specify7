@@ -524,7 +524,7 @@ def validate_tree_numbering(table):
     cursor.execute((
         "select count(*) from {table} t join {table} p on t.parentid = p.{table}id\n"
         "where t.rankid <= p.rankid\n"
-        "and t.acceptedid is null" if table == 'taxon' else ""
+        "and t.acceptedid is null"
     ).format(table=table))
     bad_ranks_count, = cursor.fetchone()
     assert bad_ranks_count == 0, \
@@ -572,7 +572,7 @@ def renumber_tree(table):
         "join {table} p on t.parentid = p.{table}id\n"
         "join {table}treedefitem tdef on t.{table}treedefitemid=tdef.{table}treedefitemid\n"
         "where t.rankid <= p.rankid\n"
-        "and t.acceptedid is null" if table == 'taxon' else ""
+        "and t.acceptedid is null"
     ).format(table=table))
     results = cursor.fetchall()
     formattedResults = {
