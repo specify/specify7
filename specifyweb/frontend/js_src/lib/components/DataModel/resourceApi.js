@@ -218,22 +218,18 @@ function eventHandlerForToOne(related, field) {
               typeof (oldValue??'') !== 'object' &&
               typeof (newValue??'') !== 'object'
             ) {
-                if(oldValue === newValue) return this;
-                else if(
+                if(
                   /*
-                   * Don't trigger unload protect if value changed from
-                   * string to number (back-end sends certain numeric fields
-                   * as strings. Front-end converts those to numbers)
+                   * Don't trigger unload protect if:
+                   *  - value didn't change
+                   *  - value changed from string to number (back-end sends
+                   *    decimal numeric fields as string. Front-end converts
+                   *    those to numbers)
+                   *  - value was trimmed
                    * REFACTOR: this logic should be moved to this.parse()
+                   * TEST: add test for "5A" case
                    */
-                  Number.parseInt(oldValue) === Number.parseInt(newValue)
-                )
-                    options ??= {silent: true};
-                else if(
-                  // Trimming the value shouldn't trigger the unload protect
-                  typeof oldValue === 'string' &&
-                  typeof newValue === 'string' &&
-                  oldValue === newValue.trim()
+                  oldValue?.toString() === newValue?.toString().trim()
                 )
                     options ??= {silent: true};
             }
