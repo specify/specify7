@@ -1,13 +1,15 @@
 import React from 'react';
 import { useOutletContext } from 'react-router';
-import { FormatterTypesOutlet } from './Types';
-import { strictGetModel } from '../DataModel/schema';
-import { Ul } from '../Atoms';
-import { NotFoundView } from '../Router/NotFoundView';
-import { Link } from '../Atoms/Link';
-import { resourcesText } from '../../localization/resources';
-import { resolveRelative } from '../Router/Router';
 import { useParams } from 'react-router-dom';
+
+import { resourcesText } from '../../localization/resources';
+import { Ul } from '../Atoms';
+import { Link } from '../Atoms/Link';
+import { strictGetModel } from '../DataModel/schema';
+import { NotFoundView } from '../Router/NotFoundView';
+import { resolveRelative } from '../Router/Router';
+import { ForwardOutlet } from '../Router/RouterUtils';
+import type { FormatterTypesOutlet } from './Types';
 
 export function FormatterList(): JSX.Element {
   const { type, tableName } = useParams();
@@ -42,6 +44,7 @@ export function FormatterList(): JSX.Element {
           ) : undefined
         )}
       </Ul>
+      <ForwardOutlet />
     </div>
   );
 }

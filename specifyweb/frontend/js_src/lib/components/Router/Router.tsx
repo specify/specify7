@@ -180,7 +180,9 @@ const locationToUrl = (location: Path): string =>
   `${location.pathname}${location.search}${location.hash}`;
 
 export const resolveRelative = (relativePath: string): string =>
-  locationToUrl(resolvePath(relativePath, globalThis.location.href));
+  toLocalUrl(
+    locationToUrl(resolvePath(relativePath, globalThis.location.href))
+  )!;
 
 function Overlay({
   overlay,

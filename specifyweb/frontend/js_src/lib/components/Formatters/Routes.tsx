@@ -22,11 +22,11 @@ export const formattersRoutes = toReactRoutes([
       },
       {
         path: ':tableName',
+        element: async () =>
+          import('./List').then(({ FormatterList }) => FormatterList),
         children: [
           {
             index: true,
-            element: async () =>
-              import('./List').then(({ FormatterList }) => FormatterList),
           },
           {
             path: 'create/new',

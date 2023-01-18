@@ -1,6 +1,6 @@
 import React from 'react';
 import type { RouteObject } from 'react-router';
-import { Outlet } from 'react-router';
+import { Outlet, useOutletContext } from 'react-router';
 import type {
   IndexRouteObject,
   NonIndexRouteObject,
@@ -81,4 +81,12 @@ export function Async({
 /** Type-safe react-router outlet */
 export function SafeOutlet<T extends IR<unknown>>(props: T): JSX.Element {
   return <Outlet context={props} />;
+}
+
+/**
+ * Like <Outlet> but forwards all props from parent outlet
+ */
+export function ForwardOutlet(): JSX.Element {
+  const context = useOutletContext();
+  return <Outlet context={context} />;
 }

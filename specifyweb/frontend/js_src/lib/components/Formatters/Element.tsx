@@ -1,25 +1,25 @@
 import React from 'react';
 import { useOutletContext } from 'react-router';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
+import { commonText } from '../../localization/common';
+import { mainText } from '../../localization/main';
 import { resourcesText } from '../../localization/resources';
 import type { GetSet } from '../../utils/types';
 import { replaceItem } from '../../utils/utils';
+import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
-import { icons } from '../Atoms/Icons';
-import { Link } from '../Atoms/Link';
+import { Dialog } from '../Molecules/Dialog';
 import { NotFoundView } from '../Router/NotFoundView';
 import { resolveRelative } from '../Router/Router';
+import { AggregatorElement } from './Aggregator';
+import { FormatterElement } from './Formatter';
 import { FormattersContext } from './index';
 import type { Aggregator, Formatter } from './spec';
 import type { FormatterTypesOutlet } from './Types';
-import { AggregatorElement } from './Aggregator';
-import { FormatterElement } from './Formatter';
 
 export function FormatterWrapper(): JSX.Element {
-  // FIXME: add delete button
   const { type, name } = useParams();
-  // FIXME: add save button
   const {
     items: [items, setItems],
   } = useOutletContext<FormatterTypesOutlet>();
@@ -31,17 +31,37 @@ export function FormatterWrapper(): JSX.Element {
 
   const context = React.useContext(FormattersContext)!;
   const isReadOnly = context.isReadOnly;
+  const navigate = useNavigate();
+  const handleClose = (): void => navigate(resolveRelative('../../'));
+  /*
+   * FIXME: add delete button
+   * FIXME: add save button
+   */
   return index === -1 ? (
-    <NotFoundView container={false} />
+    <Dialog
+      buttons={commonText.close()}
+      header={mainText.pageNotFound()}
+      onClose={handleClose}
+    >
+      <NotFoundView container={false} />
+    </Dialog>
   ) : (
-    <div className="flex flex-col gap-2 overflow-auto">
-      <h4 className="text-xl">{item.title}</h4>
-      <Link.Default href={resolveRelative('../../')}>
-        {icons.arrowLeft}
-        {type === 'formatter'
-          ? resourcesText.formatters()
-          : resourcesText.aggregators()}
-      </Link.Default>
+    <Dialog
+      buttons={
+        <>
+          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+          <span className="-ml-2 flex-1" />
+        </>
+      }
+      header={commonText.colonLine({
+        label:
+          type === 'formatter'
+            ? resourcesText.formatter()
+            : resourcesText.aggregator(),
+        value: item.title ?? item.name,
+      })}
+      onClose={handleClose}
+    >
       <Label.Block>
         {resourcesText.name()}
         <Input.Text
@@ -89,6 +109,6 @@ export function FormatterWrapper(): JSX.Element {
           item={getSet as GetSet<Aggregator>}
         />
       )}
-    </div>
+    </Dialog>
   );
 }

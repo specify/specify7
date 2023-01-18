@@ -281,6 +281,9 @@ export const resourcesText = createDictionary({
     'en-us': 'Formatter',
     'ru-ru': 'Форматировщик',
   },
+  aggregator: {
+    'en-us': 'Aggregator',
+  },
   sortField: {
     'en-us': 'Sort Field',
     'ru-ru': 'Поле сортировки',
