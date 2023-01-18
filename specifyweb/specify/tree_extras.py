@@ -473,7 +473,7 @@ def reset_fullnames(treedef, null_only=False, self_id=None):
     table = treedef.treeentries.model._meta.db_table
     depth = treedef.treedefitems.count()
     reverse = treedef.fullnamedirection == -1
-    return set_fullnames(table, treedef.id, depth, reverse, null_only, self_id)
+    return set_fullnames(table, treedef.id, depth, self_id, reverse, null_only)
 
 
 def set_fullnames(table, treedefid, depth, self_id, reverse=False, null_only=False):
@@ -531,10 +531,10 @@ def predict_fullname(table, depth, parentid, defitemid, name, reverse=False):
 def validate_tree_numbering(table):
     logger.info('validating tree')
     cursor = connection.cursor()
-    cursor.execute(
-        "select count(*), count(distinct nodenumber), count(highestchildnodenumber)\n"
-        "from {table}".format(table=table)
-    )
+    #cursor.execute(
+    #    "select count(*), count(distinct nodenumber), count(highestchildnodenumber)\n"
+    #    "from {table}".format(table=table)
+    #)
     node_count, nn_count, hcnn_count = cursor.fetchone()
     #assert node_count == nn_count == hcnn_count, \
     #    "found {} nodes but {} nodenumbers and {} highestchildnodenumbers" \
@@ -550,11 +550,11 @@ def validate_tree_numbering(table):
      #   "found {} cases where node rank is not greater than it's parent." \
      #   .format(bad_ranks_count)
 
-    cursor.execute((
-        "select count(*) from {table} t join {table} p on t.parentid = p.{table}id\n"
-        "where t.nodenumber not between p.nodenumber and p.highestchildnodenumber\n"
-    ).format(table=table))
-    not_nested_count, = cursor.fetchone()
+    #cursor.execute((
+    #    "select count(*) from {table} t join {table} p on t.parentid = p.{table}id\n"
+    #    "where t.nodenumber not between p.nodenumber and p.highestchildnodenumber\n"
+    #).format(table=table))
+    #not_nested_count, = cursor.fetchone()
     #assert not_nested_count == 0, \
      #   "found {} nodenumbers not nested by parent".format(not_nested_count)
 
