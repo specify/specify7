@@ -96,7 +96,7 @@ function SummaryLines({
           <td>{commonText.notApplicable()}</td>
           {resources.map((resource, index) => (
             <td key={index}>
-              <DateElement date={resource.get('timestampCreated')} flipDates />
+              <DateElement date={resource.get('timestampCreated')} />
             </td>
           ))}
         </MergeRow>
@@ -106,7 +106,7 @@ function SummaryLines({
           <td>{commonText.notApplicable()}</td>
           {resources.map((resource, index) => (
             <td key={index}>
-              <DateElement date={resource.get('timestampModified')} flipDates />
+              <DateElement date={resource.get('timestampModified')} />
             </td>
           ))}
         </MergeRow>
