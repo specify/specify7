@@ -198,7 +198,7 @@ export const remotePrefsDefinitions = f.store(
       'TaxonTreeEditor.DisplayAuthor': {
         description:
           'Display Authors of Taxons next to nodes in the Tree Viewer',
-        defaultValue: 99_999,
+        defaultValue: false,
         parser: 'java.lang.Boolean',
         isLegacy: true,
       },
