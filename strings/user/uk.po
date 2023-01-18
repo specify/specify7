@@ -348,7 +348,7 @@ msgid "configureCollectionAccess"
 msgstr "Виберіть доступ до колекції користувачів"
 
 #: components/Header/userToolDefinitions.ts:53
-#: components/Router/Routes.tsx:64
+#: components/Router/Routes.tsx:65
 #: components/Toolbar/Security.tsx:100
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Toolbar > Security
 #, fuzzy
@@ -477,14 +477,14 @@ msgstr "Усі дії"
 msgid "collectionAccess"
 msgstr "Увімкнути доступ до колекції"
 
-#: components/Router/Routes.tsx:135
+#: components/Router/Routes.tsx:136
 #: components/Security/RoleTemplate.tsx:96
 #. Used in: Components > Router > Routes ⬤ Components > Security > Role Template
 #, fuzzy
 msgid "createRole"
 msgstr "Створити роль"
 
-#: components/Router/Routes.tsx:143
+#: components/Router/Routes.tsx:144
 #: components/Security/RoleTemplate.tsx:83
 #. Used in: Components > Router > Routes ⬤ Components > Security > Role Template
 #, fuzzy

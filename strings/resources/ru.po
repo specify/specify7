@@ -4,7 +4,7 @@ msgstr "Content-Type: text/plain\n"
 #: components/AppResources/Filters.tsx:72
 #: components/AppResources/Filters.tsx:119
 #: components/Header/userToolDefinitions.ts:44
-#: components/Router/Routes.tsx:201
+#: components/Router/Routes.tsx:202
 #: components/Security/registry.ts:204
 #: components/UserPreferences/Definitions.tsx:1489
 #. Used in: Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Security > Registry ⬤ Components > User Preferences > Definitions
@@ -65,7 +65,7 @@ msgid "subCategories"
 msgstr "Подкатегории"
 
 #: components/AppResources/Aside.tsx:247
-#: components/Router/Routes.tsx:209
+#: components/Router/Routes.tsx:210
 #. Used in: Components > App Resources > Aside ⬤ Components > Router > Routes
 msgid "addResource"
 msgstr "Добавить ресурс"

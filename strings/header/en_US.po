@@ -108,7 +108,7 @@ msgstr "Choose DwCA"
 msgid "chooseMetadataResource"
 msgstr "Choose Metadata resource"
 
-#: components/Router/Routes.tsx:25
+#: components/Router/Routes.tsx:26
 #. Used in: Components > Router > Routes
 msgid "expressSearch"
 msgstr "Express Search"
@@ -129,30 +129,30 @@ msgstr "Secondary Search"
 msgid "userTools"
 msgstr "User Tools"
 
-#: components/Toolbar/Language.tsx:87
-#: components/Toolbar/Language.tsx:156
+#: components/Toolbar/Language.tsx:86
+#: components/Toolbar/Language.tsx:162
 #. Used in: Components > Toolbar > Language
 msgid "helpLocalizeSpecify"
 msgstr "Help Localize Specify 7"
 
-#: components/Toolbar/Language.tsx:95
+#: components/Toolbar/Language.tsx:98
 #. Used in: Components > Toolbar > Language
 msgid "helpLocalizeSpecifyDescription"
 msgstr ""
 "We would be very grateful for your support localizing Specify 7 User "
-"Interface. If you are interested, please send an email to <emailLink />"
+"Interface. If you are interested, please <link>see the instructions</link>."
 
-#: components/Toolbar/Language.tsx:150
+#: components/Toolbar/Language.tsx:156
 #. Used in: Components > Toolbar > Language
 msgid "incompleteInline"
 msgstr "(incomplete)"
 
-#: components/Toolbar/Language.tsx:115
+#: components/Toolbar/Language.tsx:121
 #. Used in: Components > Toolbar > Language
 msgid "incompleteLocalization"
 msgstr "Incomplete localization"
 
-#: components/Toolbar/Language.tsx:127
+#: components/Toolbar/Language.tsx:133
 #. Used in: Components > Toolbar > Language
 msgid "incompleteLocalizationDescription"
 msgstr ""
@@ -197,7 +197,7 @@ msgstr "Community Forum"
 
 #: components/Errors/ErrorDialog.tsx:128
 #: components/Header/userToolDefinitions.ts:101
-#: components/Router/Routes.tsx:396
+#: components/Router/Routes.tsx:397
 #: components/RouterCommands/CacheBuster.tsx:42
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Router Commands > Cache Buster
 msgid "clearCache"

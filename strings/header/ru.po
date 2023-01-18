@@ -110,7 +110,7 @@ msgstr "Выберите ДвКА"
 msgid "chooseMetadataResource"
 msgstr "Выберите ресурс метаданных"
 
-#: components/Router/Routes.tsx:25
+#: components/Router/Routes.tsx:26
 #. Used in: Components > Router > Routes
 msgid "expressSearch"
 msgstr "Экспресс-поиск"
@@ -131,31 +131,31 @@ msgstr "Вторичный поиск"
 msgid "userTools"
 msgstr "Инструменты пользователя"
 
-#: components/Toolbar/Language.tsx:87
-#: components/Toolbar/Language.tsx:156
+#: components/Toolbar/Language.tsx:86
+#: components/Toolbar/Language.tsx:162
 #. Used in: Components > Toolbar > Language
 msgid "helpLocalizeSpecify"
 msgstr "Помогите локализовать Укажите 7"
 
-#: components/Toolbar/Language.tsx:95
+#: components/Toolbar/Language.tsx:98
 #. Used in: Components > Toolbar > Language
 msgid "helpLocalizeSpecifyDescription"
 msgstr ""
 "Мы будем очень признательны за вашу поддержку в локализации "
 "пользовательского интерфейса Specify 7. Если вы заинтересованы, отправьте "
-"электронное письмо по адресу <emailLink />"
+"электронное письмо по адресу <link>см. Инструкции</link>."
 
-#: components/Toolbar/Language.tsx:150
+#: components/Toolbar/Language.tsx:156
 #. Used in: Components > Toolbar > Language
 msgid "incompleteInline"
 msgstr "(неполный)"
 
-#: components/Toolbar/Language.tsx:115
+#: components/Toolbar/Language.tsx:121
 #. Used in: Components > Toolbar > Language
 msgid "incompleteLocalization"
 msgstr "Неполная локализация"
 
-#: components/Toolbar/Language.tsx:127
+#: components/Toolbar/Language.tsx:133
 #. Used in: Components > Toolbar > Language
 msgid "incompleteLocalizationDescription"
 msgstr ""
@@ -199,7 +199,7 @@ msgstr "форум сообщества"
 
 #: components/Errors/ErrorDialog.tsx:128
 #: components/Header/userToolDefinitions.ts:101
-#: components/Router/Routes.tsx:396
+#: components/Router/Routes.tsx:397
 #: components/RouterCommands/CacheBuster.tsx:42
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Router Commands > Cache Buster
 msgid "clearCache"

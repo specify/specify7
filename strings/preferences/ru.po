@@ -2,7 +2,7 @@ msgid ""
 msgstr "Content-Type: text/plain\n"
 
 #: components/Header/userToolDefinitions.ts:34
-#: components/Router/Routes.tsx:326
+#: components/Router/Routes.tsx:327
 #: components/UserPreferences/index.tsx:61
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > User Preferences > Index
 msgid "preferences"

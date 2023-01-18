@@ -42,7 +42,7 @@ msgstr "Повернутися на головну сторінку"
 
 #: components/Errors/ErrorDialog.tsx:54
 #: components/Errors/FormatError.tsx:186
-#: components/Errors/FormatError.tsx:219
+#: components/Errors/FormatError.tsx:215
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Errors > Format Error
 #, fuzzy
 msgid "errorOccurred"

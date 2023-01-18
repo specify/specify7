@@ -3,7 +3,7 @@ msgstr "Content-Type: text/plain\n"
 
 #: components/Attachments/index.tsx:169
 #: components/Header/menuItemDefinitions.ts:109
-#: components/Router/Routes.tsx:164
+#: components/Router/Routes.tsx:165
 #. Used in: Components > Attachments > Index ⬤ Components > Header > Menu Item Definitions ⬤ Components > Router > Routes
 msgid "attachments"
 msgstr "Вложения"

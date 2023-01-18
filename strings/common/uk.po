@@ -47,7 +47,7 @@ msgstr "Немає"
 #: components/Security/User.tsx:405
 #: components/Toolbar/ForceUpdate.tsx:33
 #: components/Toolbar/FormTablesEdit.tsx:52
-#: components/Toolbar/Language.tsx:104
+#: components/Toolbar/Language.tsx:107
 #: components/Toolbar/MasterKey.tsx:39
 #: components/Toolbar/Query.tsx:88
 #: components/Toolbar/RecordSets.tsx:174
@@ -161,7 +161,7 @@ msgstr "Створити"
 #: components/SpecifyNetwork/index.tsx:227
 #: components/Toolbar/Dwca.tsx:120
 #: components/Toolbar/ForceUpdate.tsx:23
-#: components/Toolbar/Language.tsx:83
+#: components/Toolbar/Language.tsx:82
 #: components/Toolbar/MasterKey.tsx:102
 #: components/Toolbar/QueryTables.tsx:119
 #: components/Toolbar/QueryTablesEdit.tsx:139
@@ -349,8 +349,8 @@ msgstr "Інструменти"
 #: components/Security/UserCollections.tsx:284
 #: components/Security/UserComponents.tsx:88
 #: components/Security/UserComponents.tsx:161
-#: components/Toolbar/Language.tsx:223
-#: components/Toolbar/Language.tsx:308
+#: components/Toolbar/Language.tsx:229
+#: components/Toolbar/Language.tsx:314
 #: components/TreeView/Row.tsx:191
 #. Used in: Components > Attachments > Cell ⬤ Components > Attachments > Plugin ⬤ Components > Core > Context Loader ⬤ Components > Core > Contexts ⬤ Core > __tests__ > Contexts ⬤ Components > Form Cells > Form Table ⬤ Components > Form Commands > Show Transactions ⬤ Components > Form Fields > Combo Box ⬤ Components > Form Fields > Field ⬤ Components > Form Fields > Query Combo Box ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Delete Button ⬤ Components > Forms > Search Dialog ⬤ Components > Forms > Sub View ⬤ Components > Home Page > About Specify ⬤ Components > Interactions > Prep Return Row ⬤ Components > Leaflet > Index ⬤ Components > Molecules > Auto Complete ⬤ Components > Molecules > Formatted Resource ⬤ Components > Molecules > Index ⬤ Components > Permissions > Format Error ⬤ Components > Query Builder > Field Filter ⬤ Components > Query Builder > Results ⬤ Components > Schema Config > Index ⬤ Components > Security > Collection ⬤ Components > Security > Collection Components ⬤ Components > Security > Collection Role ⬤ Components > Security > Institution ⬤ Components > Security > Policies ⬤ Components > Security > Preview ⬤ Components > Security > Role Template ⬤ Components > Security > User Collections ⬤ Components > Security > User Components ⬤ Components > Toolbar > Language ⬤ Components > Tree View > Row
 #, fuzzy
@@ -445,7 +445,7 @@ msgid "ignore"
 msgstr "Ігнорувати"
 
 #: components/FormSliders/RecordSelectorFromIds.tsx:250
-#: components/Toolbar/Language.tsx:111
+#: components/Toolbar/Language.tsx:114
 #. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Toolbar > Language
 #, fuzzy
 msgid "proceed"
@@ -624,7 +624,7 @@ msgstr "Невідомий"
 
 #: components/SchemaConfig/Languages.tsx:37
 #: components/SchemaConfig/Languages.tsx:88
-#: components/Toolbar/Language.tsx:134
+#: components/Toolbar/Language.tsx:140
 #: components/UserPreferences/Definitions.tsx:129
 #: components/UserPreferences/Definitions.tsx:591
 #. Used in: Components > Schema Config > Languages ⬤ Components > Toolbar > Language ⬤ Components > User Preferences > Definitions
