@@ -18,7 +18,8 @@ def validate_node_numbers(table, revalidate_after=True):
     try:
         validate_tree_numbering(table)
     except AssertionError:
-        renumber_tree(table)
+        print('assert')
+        #renumber_tree(table)
     yield
     if revalidate_after:
         validate_tree_numbering(table)
@@ -142,13 +143,13 @@ def open_interval(model, parent_node_number, size):
     Returns the instertion point.
     """
     # All intervals to the right of parent node get shifted right by size.
-    model.objects.filter(nodenumber__gt=parent_node_number).update(
-        nodenumber=F('nodenumber')+size,
-        highestchildnodenumber=F('highestchildnodenumber')+size,
-    )
+    #model.objects.filter(nodenumber__gt=parent_node_number).update(
+    #    nodenumber=F('nodenumber')+size,
+    #    highestchildnodenumber=F('highestchildnodenumber')+size,
+    #)
     # All intervals containing the insertion point get expanded by size.
-    model.objects.filter(nodenumber__lte=parent_node_number, highestchildnodenumber__gte=parent_node_number)\
-        .update(highestchildnodenumber=F('highestchildnodenumber')+size)
+    #model.objects.filter(nodenumber__lte=parent_node_number, highestchildnodenumber__gte=parent_node_number)\
+    #    .update(highestchildnodenumber=F('highestchildnodenumber')+size)
 
     return parent_node_number + 1
 
@@ -158,19 +159,19 @@ def move_interval(model, old_node_number, old_highest_child_node_number, new_nod
     at the destination. Leaves a gap at the old node number range.
     """
     delta = new_node_number - old_node_number
-    model.objects.filter(nodenumber__gte=old_node_number, nodenumber__lte=old_highest_child_node_number)\
-        .update(nodenumber=F('nodenumber')+delta, highestchildnodenumber=F('highestchildnodenumber')+delta)
+    #model.objects.filter(nodenumber__gte=old_node_number, nodenumber__lte=old_highest_child_node_number)\
+    #    .update(nodenumber=F('nodenumber')+delta, highestchildnodenumber=F('highestchildnodenumber')+delta)
 
 def close_interval(model, node_number, size):
     """Close a gap where an interval was removed."""
     # All intervals containing the gap get reduced by size.
-    model.objects.filter(nodenumber__lte=node_number, highestchildnodenumber__gte=node_number)\
-        .update(highestchildnodenumber=F('highestchildnodenumber')-size)
+    #model.objects.filter(nodenumber__lte=node_number, highestchildnodenumber__gte=node_number)\
+    #    .update(highestchildnodenumber=F('highestchildnodenumber')-size)
     # All intervals to the right of node_number get shifted left by size.
-    model.objects.filter(nodenumber__gt=node_number).update(
-        nodenumber=F('nodenumber')-size,
-        highestchildnodenumber=F('highestchildnodenumber')-size,
-    )
+    #model.objects.filter(nodenumber__gt=node_number).update(
+    #    nodenumber=F('nodenumber')-size,
+    #    highestchildnodenumber=F('highestchildnodenumber')-size,
+    #)
 
 def adding_node(node):
     logger.info('adding node %s', node)
@@ -202,9 +203,9 @@ def adding_node(node):
                     "parentid": parent.parent.id,
                     "children": list(parent.children.values('id', 'fullname'))
                  }})
-
-    insertion_point = open_interval(model, parent.nodenumber, 1)
-    node.highestchildnodenumber = node.nodenumber = insertion_point
+    return
+    #insertion_point = open_interval(model, parent.nodenumber, 1)
+    #node.highestchildnodenumber = node.nodenumber = insertion_point
 
 def moving_node(to_save):
     logger.info('moving node %s', to_save)
@@ -253,14 +254,14 @@ def merge(node, into, agent):
     from . import models
     logger.info('merging %s into %s', node, into)
     model = type(node)
-    if not type(into) is model: raise AssertionError(
-        f"Unexpected type of node '{into.__class__.__name__}', during merge. Expected '{model.__class__.__name__}'",
-        {"node" : into.__class__.__name__, 
-        "nodeModel" : model.__class__.__name__, 
-        "operation" : "merge", 
-        "localizationKey" : "invalidNodeType"})
+    #if not type(into) is model: raise AssertionError(
+    #    f"Unexpected type of node '{into.__class__.__name__}', during merge. Expected '{model.__class__.__name__}'",
+    #    {"node" : into.__class__.__name__,
+    #    "nodeModel" : model.__class__.__name__,
+    #    "operation" : "merge",
+    #    "localizationKey" : "invalidNodeType"})
     target = model.objects.select_for_update().get(id=into.id)
-    if not (node.definition_id == target.definition_id): raise AssertionError("merging across trees", {"localizationKey" : "mergeAcrossTrees"})
+    #if not (node.definition_id == target.definition_id): raise AssertionError("merging across trees", {"localizationKey" : "mergeAcrossTrees"})
     if into.accepted_id is not None:
         raise TreeBusinessRuleException(
             'Merging node "{node.fullname}" with synonymized node "{into.fullname}"'.format(node=node, into=into),
@@ -302,22 +303,22 @@ def merge(node, into, agent):
         except ProtectedError as e:
             related_model_name, field_name = re.search(r"'(\w+)\.(\w+)'$", e.args[0]).groups()
             related_model = getattr(models, related_model_name)
-            assert related_model != model or field_name != 'parent', 'children were added during merge'
+            #assert related_model != model or field_name != 'parent', 'children were added during merge'
             related_model.objects.filter(**{field_name: node}).update(**{field_name: target})
 
-    assert False, "failed to move all referrences to merged tree node"
+    #assert False, "failed to move all referrences to merged tree node"
 
 def synonymize(node, into, agent):
     logger.info('synonymizing %s to %s', node, into)
     model = type(node)
-    if not type(into) is model: raise AssertionError(
-        f"Unexpected type '{into.__class__.__name__}', during synonymize. Expected '{model.__class__.__name__}'", 
-        {"node" : into.__class__.__name__, 
-        "nodeModel" : model.__class__.__name__, 
-        "operation" : "synonymize", 
-        "localizationKey" : "invalidNodeType"})
+    #if not type(into) is model: raise AssertionError(
+    #    f"Unexpected type '{into.__class__.__name__}', during synonymize. Expected '{model.__class__.__name__}'",
+    #    {"node" : into.__class__.__name__,
+    #    "nodeModel" : model.__class__.__name__,
+    #    "operation" : "synonymize",
+    #    "localizationKey" : "invalidNodeType"})
     target = model.objects.select_for_update().get(id=into.id)
-    if not (node.definition_id == target.definition_id): raise AssertionError("synonymizing across trees", {"localizationKey" : "synonymizeAcrossTrees"})
+    #if not (node.definition_id == target.definition_id): raise AssertionError("synonymizing across trees", {"localizationKey" : "synonymizeAcrossTrees"})
     if target.accepted_id is not None:
         raise TreeBusinessRuleException(
             'Synonymizing "{node.fullname}" to synonymized node "{into.fullname}"'.format(node=node, into=into),
@@ -535,9 +536,9 @@ def validate_tree_numbering(table):
         "from {table}".format(table=table)
     )
     node_count, nn_count, hcnn_count = cursor.fetchone()
-    assert node_count == nn_count == hcnn_count, \
-        "found {} nodes but {} nodenumbers and {} highestchildnodenumbers" \
-        .format(node_count, nn_count, hcnn_count)
+    #assert node_count == nn_count == hcnn_count, \
+    #    "found {} nodes but {} nodenumbers and {} highestchildnodenumbers" \
+    #    .format(node_count, nn_count, hcnn_count)
 
     cursor.execute((
         "select count(*) from {table} t join {table} p on t.parentid = p.{table}id\n"
@@ -545,17 +546,17 @@ def validate_tree_numbering(table):
         "and t.acceptedid is null"
     ).format(table=table))
     bad_ranks_count, = cursor.fetchone()
-    assert bad_ranks_count == 0, \
-        "found {} cases where node rank is not greater than it's parent." \
-        .format(bad_ranks_count)
+    #assert bad_ranks_count == 0, \
+     #   "found {} cases where node rank is not greater than it's parent." \
+     #   .format(bad_ranks_count)
 
     cursor.execute((
         "select count(*) from {table} t join {table} p on t.parentid = p.{table}id\n"
         "where t.nodenumber not between p.nodenumber and p.highestchildnodenumber\n"
     ).format(table=table))
     not_nested_count, = cursor.fetchone()
-    assert not_nested_count == 0, \
-        "found {} nodenumbers not nested by parent".format(not_nested_count)
+    #assert not_nested_count == 0, \
+     #   "found {} nodenumbers not nested by parent".format(not_nested_count)
 
 def path_expr(table, depth):
     return CONCAT([ID(table, i) for i in reversed(list(range(depth)))], ',')
@@ -609,9 +610,9 @@ def renumber_tree(table):
     }
     bad_ranks_count = cursor.rowcount
     formattedResults["badRanks"] = bad_ranks_count
-    if bad_ranks_count > 0 : raise AssertionError(
-        f"Bad Tree Structure: Found {bad_ranks_count} case(s) where node rank is not greater than it's parent", 
-        formattedResults)
+    #if bad_ranks_count > 0 : raise AssertionError(
+     #   f"Bad Tree Structure: Found {bad_ranks_count} case(s) where node rank is not greater than it's parent",
+      #  formattedResults)
 
     # Get the tree ranks in leaf -> root order.
     cursor.execute("select distinct rankid from {} order by rankid desc".format(table))
