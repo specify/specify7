@@ -29,8 +29,9 @@ export const fetchContext = contextUnlockedPromise.then((entrypoint) =>
             .split('\n')
             .filter((line) => !line.startsWith('#'))
             .forEach((line) => {
-              const match = /([^=]+)=(.+)/.exec(line);
-              if (match) preferences[match[1].trim()] = match[2];
+              const [key, value] = line.split('=');
+              if (typeof value === 'string')
+                preferences[key.trim()] = value.trim();
             })
         )
         .then(() => preferences)
@@ -189,9 +190,9 @@ export const remotePrefsDefinitions = f.store(
         parser: 'java.lang.Long',
         isLegacy: true,
       },
-      'TaxonTreeEditor.DisplayAuthor' : {
+      'TaxonTreeEditor.DisplayAuthor': {
         description:
-        "Display Authors of Taxons next to nodes with RankID >= this value in the Tree Viewer",
+          'Display Authors of Taxons next to nodes with RankID >= this value in the Tree Viewer',
         defaultValue: 99_999,
         parser: 'java.lang.Long',
         isLegacy: true,
