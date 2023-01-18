@@ -102,7 +102,7 @@ function TreeView<SCHEMA extends AnyTree>({
   // Node sort order
   const sortField = getPref(`${tableName as 'Geography'}.treeview_sort_field`);
 
-  const includeAuthor = getPref(`TaxonTreeEditor.DisplayAuthor`);
+  const includeAuthor = getPref(`TaxonTreeEditor.DisplayAuthor.ForRankIdGreater`);
 
   const baseUrl = `/api/specify_tree/${tableName.toLowerCase()}/${
     treeDefinition.id
