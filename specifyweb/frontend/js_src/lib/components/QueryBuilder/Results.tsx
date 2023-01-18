@@ -276,6 +276,15 @@ export function QueryResults({
                   model={model}
                   selectedRows={selectedRows}
                   onDeleted={handleDelete}
+                  onDismiss={(id): void =>
+                    setSelectedRows(
+                      new Set(
+                        Array.from(selectedRows).filter(
+                          (itemId) => itemId !== id
+                        )
+                      )
+                    )
+                  }
                 />
               )}
             {hasToolPermission('recordSets', 'create') ? (

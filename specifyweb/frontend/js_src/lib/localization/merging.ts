@@ -52,6 +52,8 @@ export const mergingText = createDictionary({
   },
   autoMerge: {
     'en-us': 'Auto-merge',
-    'ru-ru': 'Автоматическое объединение',
+  },
+  dismissFromMerging: {
+    'en-us': 'Dismiss from merging',
   },
 } as const);

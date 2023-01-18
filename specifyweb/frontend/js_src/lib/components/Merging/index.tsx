@@ -33,10 +33,12 @@ export function RecordMerging({
   model,
   selectedRows,
   onDeleted: handleDeleted,
+  onDismiss: handleDismiss,
 }: {
   readonly model: SpecifyModel;
   readonly selectedRows: ReadonlySet<number>;
   readonly onDeleted: (id: number) => void;
+  readonly onDismiss: (id: number) => void;
 }): JSX.Element | null {
   const [isOpen, _, handleClose, handleToggle] = useBooleanState();
 
@@ -51,6 +53,7 @@ export function RecordMerging({
           model={model}
           onClose={handleClose}
           onDeleted={handleDeleted}
+          onDismiss={handleDismiss}
         />
       )}
     </>
@@ -62,11 +65,13 @@ export function MergingDialog({
   ids,
   onClose: handleClose,
   onDeleted: handleDeleted,
+  onDismiss: handleDismiss,
 }: {
   readonly model: SpecifyModel;
   readonly ids: ReadonlySet<number>;
   readonly onClose: () => void;
   readonly onDeleted: (id: number) => void;
+  readonly onDismiss: (id: number) => void;
 }): JSX.Element | null {
   const records = useResources(model, ids);
 
@@ -115,6 +120,7 @@ export function MergingDialog({
         merged={merged}
         records={records}
         onDeleted={handleDeleted}
+        onDismiss={handleDismiss}
         onMerge={(merged, rawResources): void => {
           /*
            * Use the oldest resource as base so as to preserve timestampCreated

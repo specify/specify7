@@ -23,14 +23,20 @@ export function MergingHeader({
   merged,
   resources,
   onDeleted: handleDeleted,
+  onDismiss: handleDismiss,
 }: {
   readonly merged: SpecifyResource<AnySchema>;
   readonly resources: RA<SpecifyResource<AnySchema>>;
   readonly onDeleted: (id: number) => void;
+  readonly onDismiss: (id: number) => void;
 }): JSX.Element {
   return (
     <>
-      <HeaderLine merged={merged} resources={resources} />
+      <HeaderLine
+        merged={merged}
+        resources={resources}
+        onDismiss={handleDismiss}
+      />
       <tbody>
         <SummaryLines merged={merged} resources={resources} />
         <UsagesLine resources={resources} />
@@ -50,9 +56,11 @@ export const mergeHeaderClassName = `sticky top-0 ${mergeCellBackground} z-[20]`
 function HeaderLine({
   merged,
   resources,
+  onDismiss: handleDismiss,
 }: {
   readonly merged: SpecifyResource<AnySchema>;
   readonly resources: RA<SpecifyResource<AnySchema>>;
+  readonly onDismiss: (id: number) => void;
 }): JSX.Element {
   return (
     <thead>
@@ -72,7 +80,16 @@ function HeaderLine({
             scope="col"
           >
             <TableIcon label name={resource.specifyModel.name} />
-            <FormattedResource asLink={false} resource={resource} />
+            <span className="flex-1">
+              <FormattedResource asLink={false} resource={resource} />
+            </span>
+            {index === 0 ? undefined : (
+              <Button.Icon
+                title={mergingText.dismissFromMerging()}
+                icon="x"
+                onClick={() => handleDismiss(resource.id)}
+              />
+            )}
           </th>
         ))}
       </tr>
