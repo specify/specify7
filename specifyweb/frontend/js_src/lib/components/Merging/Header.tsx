@@ -233,8 +233,8 @@ function RecordPreview({
 
   const title =
     index === 0
-      ? mergingText.previewMerged()
-      : `${mergingText.preview()} ${index}`;
+      ? mergingText.newMergedRecord()
+      : mergingText.duplicateRecord({ index });
   return (
     <td className="!items-stretch">
       {typeof merged === 'object' && (
