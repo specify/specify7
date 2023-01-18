@@ -17,7 +17,7 @@ import type { SpecifyModel } from '../DataModel/specifyModel';
 import { FormField } from '../FormFields';
 import type { FieldTypes } from '../FormParse/fields';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
-import { autoMerge, resourceToGeneric } from './autoMerge';
+import { resourceToGeneric } from './autoMerge';
 import { MergeSubviewButton } from './CompareSubView';
 import { MergeRow, MergingHeader } from './Header';
 
@@ -25,22 +25,20 @@ export function CompareRecords({
   formId,
   model,
   records,
+  merged,
   onMerge: handleMerge,
   onDeleted: handleDeleted,
 }: {
   readonly formId: string;
   readonly model: SpecifyModel;
   readonly records: RA<SerializedResource<AnySchema>>;
+  readonly merged: SpecifyResource<AnySchema>;
   readonly onMerge: (
     merged: SpecifyResource<AnySchema>,
     resources: RA<SpecifyResource<AnySchema>>
   ) => void;
   readonly onDeleted: (id: number) => void;
 }): JSX.Element {
-  const merged = React.useMemo(
-    () => deserializeResource(autoMerge(model, records)),
-    [model, records]
-  );
   const resources = React.useMemo(
     () => records.map(deserializeResource),
     [records]

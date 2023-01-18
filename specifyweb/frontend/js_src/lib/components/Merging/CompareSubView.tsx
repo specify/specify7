@@ -34,6 +34,7 @@ import { MergeDialogContainer } from './index';
 import { f } from '../../utils/functools';
 import { serializeResource } from '../DataModel/helpers';
 import { mergingText } from '../../localization/merging';
+import { Submit } from '../Atoms/Submit';
 
 export function MergeSubviewButton({
   relationship,
@@ -158,8 +159,12 @@ function MergeDialog({
   return (
     <MergeDialogContainer
       header={mergingText.mergeFields({ field: relationship.label })}
-      id={id('form')}
-      onCancel={undefined}
+      buttons={
+        <>
+          <span className="-ml-2 flex-1" />
+          <Submit.Gray form={id('form')}>{commonText.close()}</Submit.Gray>
+        </>
+      }
       onClose={handleClose}
     >
       <MergeContainer

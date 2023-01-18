@@ -23,6 +23,9 @@ import { Dialog } from '../Molecules/Dialog';
 import { CompareRecords } from './Compare';
 import { mergingText } from '../../localization/merging';
 import { hijackBackboneAjax } from '../../utils/ajax/backboneAjax';
+import { deserializeResource } from '../../hooks/resource';
+import { autoMerge } from './autoMerge';
+import { useLiveState } from '../../hooks/useLiveState';
 
 const recordMergingTables = new Set<keyof Tables>(['Agent']);
 
@@ -76,16 +79,40 @@ export function MergingDialog({
   const id = useId('merging-dialog');
   const loading = React.useContext(LoadingContext);
   const [error, setError] = React.useState<string | undefined>(undefined);
-  return records === undefined ? null : (
+  const [merged, setMerged] = useLiveState(
+    React.useCallback(
+      () =>
+        records === undefined
+          ? undefined
+          : deserializeResource(autoMerge(model, records, true)),
+      [model, records]
+    )
+  );
+  return records === undefined || merged === undefined ? null : (
     <MergeDialogContainer
-      id={id('form')}
-      onCancel={handleClose}
       onClose={handleClose}
+      buttons={
+        <>
+          <Button.Blue
+            onClick={(): void =>
+              setMerged(deserializeResource(autoMerge(model, records, false)))
+            }
+          >
+            {mergingText.autoMerge()}
+          </Button.Blue>
+          <span className="-ml-2 flex-1" />
+          <Button.BorderedGray onClick={handleClose}>
+            {commonText.cancel()}
+          </Button.BorderedGray>
+          <Submit.Blue form={id('form')}>{treeText.merge()}</Submit.Blue>
+        </>
+      }
     >
       {typeof error === 'string' && <ErrorMessage>{error}</ErrorMessage>}
       <CompareRecords
         formId={id('form')}
         model={model}
+        merged={merged}
         records={records}
         onDeleted={handleDeleted}
         onMerge={(merged, rawResources): void => {
@@ -145,34 +172,22 @@ export function MergingDialog({
 }
 
 export function MergeDialogContainer({
-  id,
   children,
+  buttons,
   header = mergingText.mergeRecords(),
   onClose: handleClose,
-  onCancel: handleCancel,
 }: {
   readonly header?: string;
-  readonly id: string;
   readonly children: React.ReactNode;
+  readonly buttons: JSX.Element;
   readonly onClose: () => void;
-  readonly onCancel?: () => void;
 }): JSX.Element {
   return (
     <Dialog
       buttons={
         <>
           <ToggleMergeView />
-          <span className="-ml-2 flex-1" />
-          {typeof handleCancel === 'function' ? (
-            <>
-              <Button.BorderedGray onClick={handleCancel}>
-                {commonText.cancel()}
-              </Button.BorderedGray>
-              <Submit.Blue form={id}>{treeText.merge()}</Submit.Blue>
-            </>
-          ) : (
-            <Submit.Gray form={id}>{commonText.close()}</Submit.Gray>
-          )}
+          {buttons}
         </>
       }
       header={header}

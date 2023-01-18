@@ -15,7 +15,12 @@ import { getUniqueFields } from '../DataModel/resource';
  */
 export function autoMerge(
   model: SpecifyModel,
-  rawResources: RA<SerializedResource<AnySchema>>
+  rawResources: RA<SerializedResource<AnySchema>>,
+  /**
+   * Only copy data into the merged record if it is the same between all records
+   * Don't try to predict which record to get the data from.
+   */
+  cautious: boolean = true
 ): SerializedResource<AnySchema> {
   if (rawResources.length === 1) return rawResources[0];
   const resources = sortResources(rawResources);
@@ -27,7 +32,7 @@ export function autoMerge(
         .filter((fieldName) => !specialFields.has(fieldName))
         .map((fieldName) => [
           fieldName,
-          mergeField(model.strictGetField(fieldName), resources),
+          mergeField(model.strictGetField(fieldName), resources, cautious),
         ])
     )
   );
@@ -52,7 +57,8 @@ const sortResources = (
 
 function mergeField(
   field: LiteralField | Relationship,
-  resources: RA<SerializedResource<AnySchema>>
+  resources: RA<SerializedResource<AnySchema>>,
+  cautious: boolean
 ) {
   const values = resources.map((resource) => resource[field.name]);
   const nonNullValues = values.filter(
@@ -78,10 +84,13 @@ function mergeField(
       } else
         return autoMerge(
           field.relatedModel,
-          nonNullValues as unknown as RA<SerializedResource<AnySchema>>
+          nonNullValues as unknown as RA<SerializedResource<AnySchema>>,
+          cautious
         );
     else return firstValue;
-  else if (typeof nonNullValues[0] === 'string')
+  else if (typeof nonNullValues[0] === 'string') {
+    const uniqueValues = f.unique(values);
+    if (uniqueValues.length > 0 && cautious) return null;
     return (
       nonNullValues.sort(
         sortFunction((string) =>
@@ -89,7 +98,7 @@ function mergeField(
         )
       )[0] ?? firstValue
     );
-  else return firstValue;
+  } else return firstValue;
 }
 
 /**
