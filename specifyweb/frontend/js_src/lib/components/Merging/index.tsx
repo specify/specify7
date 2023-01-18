@@ -38,7 +38,7 @@ export function RecordMerging({
 
   return recordMergingTables.has(model.name) ? (
     <>
-      <Button.Small disabled={selectedRows.size === 0} onClick={handleToggle}>
+      <Button.Small disabled={selectedRows.size < 2} onClick={handleToggle}>
         {mergingText.mergeRecords()}
       </Button.Small>
       {isOpen && (
