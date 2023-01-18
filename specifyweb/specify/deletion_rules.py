@@ -13,17 +13,15 @@ from django.db import models
     See .build_models.py for uses
 """
 SPECIAL_DELETION_RULES = {
-    'Appresource' : {'spreport': models.CASCADE},
+    'Spappresource' : {'spreports': models.CASCADE},
 
-    'Picklist' : {'picklistitem': models.CASCADE},
-
-    'Recordset' : {'Recordsetitem' : models.CASCADE},
+    'Recordset' : {'recordsetitems' : models.CASCADE},
 
     'Specifyuser' : {
         'agent' : models.SET_NULL,
-        'spappresourcedir' : models.CASCADE,
-        'spappresource': models.CASCADE,
-        'spprincipal': models.CASCADE,
+        'spAppResourceDirs' : models.CASCADE,
+        'spAppResources': models.CASCADE,
+        'spPrincipals': models.CASCADE,
         },
 
     # Handle workbench deletion using raw sql in business rules.
@@ -36,24 +34,23 @@ SPECIAL_DELETION_RULES = {
 
     # System Tables
 
-    'Spauditlog' : {'Spauditlogfield' : models.CASCADE},
+    'Spauditlog' : {'fields' : models.CASCADE},
 
-    'Spappresource' : {'spappresourcedata': models.CASCADE},
+    'Spappresource' : {'spAppResourceDatas': models.CASCADE},
     'Spappresourcedir' : {
-        'spappresource': models.CASCADE,
-        'spviewsetobj' : models.CASCADE,
-        'spappresourcedata': models.CASCADE,
+        'spPersistedAppResources': models.CASCADE,
+        'spPersistedViewSets' : models.CASCADE,
         },
-    'Spviewsetobj' : {'spappresourcedata' : models.CASCADE},
+    'Spviewsetobj' : {'spAppResourceDatas' : models.CASCADE},
     
     'Splocalecontainer' : {
-        'splocalecontaineritem' : models.CASCADE,
-        'splocaleitemstr' : models.CASCADE
+        'items' : models.CASCADE,
+        'names' : models.CASCADE
     },
     'Splocalecontaineritem' : {
-        'splocaleitemstr' : models.CASCADE
+        'name' : models.CASCADE
     },
-    'SpQuery' : {"spqueryfield" : models.CASCADE},
+    'SpQuery' : {"fields" : models.CASCADE},
 }
 
 """ Any additional desired delete blockers 

@@ -100,7 +100,7 @@ def make_relationship(modelname, rel, datamodel):
     except KeyError:
         reverse = datamodel.reverse_relationship(rel)
 
-        if reverse and reverse.dependent:
+        if reverse is not None and reverse.dependent:
             on_delete = models.CASCADE
         elif modelname in ADDITIONAL_DELETE_BLOCKERS.keys():
             on_delete = protect
