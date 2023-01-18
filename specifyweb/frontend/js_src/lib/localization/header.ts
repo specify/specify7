@@ -217,7 +217,8 @@ export const headerText = createDictionary({
   helpLocalizeSpecifyDescription: {
     'en-us': `
       We would be very grateful for your support localizing Specify 7 User
-      Interface. If you are interested, please <link>see the instructions</link>.
+      Interface. If you are interested, please <link>see the
+      instructions</link>.
     `,
     'ru-ru': `
       Мы будем очень признательны за вашу поддержку в локализации
