@@ -535,7 +535,7 @@ def validate_tree_numbering(table):
     #    "select count(*), count(distinct nodenumber), count(highestchildnodenumber)\n"
     #    "from {table}".format(table=table)
     #)
-    node_count, nn_count, hcnn_count = cursor.fetchone()
+   # node_count, nn_count, hcnn_count = cursor.fetchone()
     #assert node_count == nn_count == hcnn_count, \
     #    "found {} nodes but {} nodenumbers and {} highestchildnodenumbers" \
     #    .format(node_count, nn_count, hcnn_count)
@@ -546,6 +546,7 @@ def validate_tree_numbering(table):
         "and t.acceptedid is null"
     ).format(table=table))
     bad_ranks_count, = cursor.fetchone()
+    logger.warning(bad_ranks_count)
     #assert bad_ranks_count == 0, \
      #   "found {} cases where node rank is not greater than it's parent." \
      #   .format(bad_ranks_count)
