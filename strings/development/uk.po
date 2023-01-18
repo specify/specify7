@@ -1,18 +1,32 @@
 msgid ""
-msgstr "Content-Type: text/plain\n"
+msgstr ""
+"Report-Msgid-Bugs-To: support@specifysoftware.org\n"
+"PO-Revision-Date: 2023-01-18 21:27+0000\n"
+"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
+"development/uk/>\n"
+"Language: uk\n"
+"Content-Type: text/plain\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 4.15.1-dev\n"
 
+#. Used in: Components > Developer > Crash Report Visualizer ⬤ Components > Router > Routes
 #: components/Developer/CrashReportVisualizer.tsx:21
 #: components/Router/Routes.tsx:410
-#. Used in: Components > Developer > Crash Report Visualizer ⬤ Components > Router > Routes
+#, fuzzy
 msgid "crashReportVisualizer"
-msgstr ""
+msgstr "Візуалізатор звітів про збої"
 
-#: components/Developer/CrashReportVisualizer.tsx:34
 #. Used in: Components > Developer > Crash Report Visualizer
+#: components/Developer/CrashReportVisualizer.tsx:34
+#, fuzzy
 msgid "downloadAsHtml"
-msgstr ""
+msgstr "Завантажити як HTML"
 
-#: components/Developer/CrashReportMapper.tsx:131
 #. Used in: Components > Developer > Crash Report Mapper
+#: components/Developer/CrashReportMapper.tsx:131
+#, fuzzy
 msgid "details"
-msgstr ""
+msgstr "Подробиці"
