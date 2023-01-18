@@ -128,21 +128,13 @@ def tree_view(request, treedef, tree, parentid, sortfield):
     orderby = tree_table.name.lower() + '.' + sortfield
     
     """
-        If the request wants to include an author in the response, we use a case to determine
-        if the rankId is >= the supplied rank, and if so then we add node.author to the query statement.
-        If the tree is not the taxon tree or the rankId is less than the supplied rank, add NULL instead.
-
-        For more information, view the sqlalchemy docs on case:
-            https://docs.sqlalchemy.org/en/20/core/sqlelement.html#sqlalchemy.sql.expression.case
+        Also include the author of the node in the response if requested and the tree is the taxon tree.
+        There is a preference which can be enabled from within Specify which adds the author next to the 
+        fullname on the front end. 
+        See https://github.com/specify/specify7/pull/2818 for more context and a breakdown regarding 
+        implementation/design decisions
     """
-    includeAuthor= int(request.GET.get('includeauthor')) if 'includeauthor' in request.GET else 99_999
-
-    authorCase = case(
-        [
-            (node.rankId >= includeAuthor, node.author if tree=='taxon' else None)
-        ],
-        else_=None
-    )
+    includeAuthor= request.GET.get('includeauthor') if 'includeauthor' in request.GET else False
 
     with models.session_context() as session:
         query = session.query(id_col,
@@ -153,7 +145,7 @@ def tree_view(request, treedef, tree, parentid, sortfield):
                               node.rankId,
                               node.AcceptedID,
                               accepted.fullName,
-                              authorCase,
+                              node.author if (includeAuthor and tree=='taxon') else "NULL",
                               sql.functions.count(child_id)) \
                         .outerjoin(child, child.ParentID == id_col) \
                         .outerjoin(accepted, node.AcceptedID == getattr(accepted, node._id)) \

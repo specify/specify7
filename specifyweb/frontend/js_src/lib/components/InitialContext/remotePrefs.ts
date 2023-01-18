@@ -190,12 +190,17 @@ export const remotePrefsDefinitions = f.store(
         parser: 'java.lang.Long',
         isLegacy: true,
       },
-      'TaxonTreeEditor.DisplayAuthor.ForRankIdGreater': {
+
+      /* This pref was implemented in Specify 7 in https://github.com/specify/specify7/pull/2818
+         and went through many iterations and changes.
+         See the Pull Request for the full context and implementation/design decision. 
+      */
+      'TaxonTreeEditor.DisplayAuthor': {
         description:
-          'Display Authors of Taxons next to nodes with RankID >= this value in the Tree Viewer',
+          'Display Authors of Taxons next to nodes in the Tree Viewer',
         defaultValue: 99_999,
-        parser: 'java.lang.Long',
-        isLegacy: false,
+        parser: 'java.lang.Boolean',
+        isLegacy: true,
       },
       'attachment.is_public_default': {
         description: 'Whether new Attachments are public by default',

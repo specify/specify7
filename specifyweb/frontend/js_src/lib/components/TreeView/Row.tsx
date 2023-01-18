@@ -128,9 +128,7 @@ export function TreeRow({
   const id = useId('tree-node');
   const isAction = actionRow === row;
 
-  const doIncludeAuthorPref = getPref(
-    `TaxonTreeEditor.DisplayAuthor.ForRankIdGreater`
-  );
+  const doIncludeAuthorPref = getPref(`TaxonTreeEditor.DisplayAuthor`);
 
   const handleRef = React.useCallback(
     (element: HTMLButtonElement | null): void => {
