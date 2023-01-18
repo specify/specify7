@@ -6,6 +6,7 @@ import type { Aggregator } from './spec';
 import { SpecifyResource } from '../DataModel/legacyTypes';
 import { f } from '../../utils/functools';
 import { sortFunction } from '../../utils/utils';
+import { fetchDistantRelated } from '../DataModel/helpers';
 
 export async function aggregate(
   collection: RA<SpecifyResource<AnySchema>> | Collection<AnySchema>,
@@ -49,8 +50,22 @@ export async function aggregate(
         sortValue:
           resolvedAggregator.sortField === undefined
             ? undefined
-            : resource.rgetPromise(
-                resolvedAggregator.sortField.map(({ name }) => name).join('.')
+            : fetchDistantRelated(resource, resolvedAggregator.sortField).then(
+                async (data) => {
+                  if (
+                    data === undefined ||
+                    data.field === undefined ||
+                    data.resource === undefined
+                  )
+                    return undefined;
+                  const { field, resource } = data;
+                  if (field.isRelationship) {
+                    const related = await resource.rgetPromise(field.name);
+                    if (typeof related === 'object' && related !== null)
+                      return format(related);
+                    else return undefined;
+                  } else return resource.get(field.name);
+                }
               ),
       })
     )

@@ -56,33 +56,6 @@ export function AggregatorElement({
           }
         />
       </Label.Block>
-      <Label.Block>
-        {resourcesText.limit()}
-        <Input.Number
-          isReadOnly={isReadOnly}
-          min={0}
-          step={1}
-          value={aggregator.limit ?? 0}
-          onValueChange={(limit): void =>
-            setAggregator({
-              ...aggregator,
-              limit,
-            })
-          }
-        />
-      </Label.Block>
-      <FormattersPickList
-        // REFACTOR: create a readonly context, that would render everything below as readonly
-        isReadOnly={isReadOnly}
-        value={aggregator.formatter}
-        onChange={(formatter): void =>
-          setAggregator({
-            ...aggregator,
-            formatter,
-          })
-        }
-      />
-      {/* FIXME: add a preview of an aggregator in action */}
       {typeof aggregator.table === 'object' && (
         <Label.Block>
           {resourcesText.sortField()}
@@ -102,6 +75,32 @@ export function AggregatorElement({
           />
         </Label.Block>
       )}
+      <FormattersPickList
+        // REFACTOR: create a readonly context, that would render everything below as readonly
+        isReadOnly={isReadOnly}
+        value={aggregator.formatter}
+        onChange={(formatter): void =>
+          setAggregator({
+            ...aggregator,
+            formatter,
+          })
+        }
+      />
+      <Label.Block>
+        {resourcesText.limit()}
+        <Input.Number
+          isReadOnly={isReadOnly}
+          min={0}
+          step={1}
+          value={aggregator.limit ?? 0}
+          onValueChange={(limit): void =>
+            setAggregator({
+              ...aggregator,
+              limit,
+            })
+          }
+        />
+      </Label.Block>
       {typeof aggregator.table === 'object' &&
       hasTablePermission(aggregator.table.name, 'read') ? (
         <AggregatorPreview aggregator={aggregator} />

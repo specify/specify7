@@ -20,6 +20,7 @@ import {
 } from '../WbPlanView/LineComponents';
 import { handleMappingLineKey } from '../WbPlanView/Mapper';
 import type { FieldType } from '../WbPlanView/mappingHelpers';
+import { formattedEntry } from '../WbPlanView/mappingHelpers';
 import { getMappingLineData } from '../WbPlanView/navigator';
 import { fetchFormatters } from './dataObjFormatters';
 import type { Formatter } from './spec';
@@ -74,11 +75,19 @@ export function ResourceMapping({
   readonly allowedMappings: RA<FieldType>;
   readonly openIndex: GetSet<number | undefined>;
 }): JSX.Element {
-  const rawPath = mapping?.map(({ name }) => name) ?? [];
-  const mappingPath = filterArray([
-    ...rawPath,
-    mapping?.at(-1)?.isRelationship === false ? undefined : emptyMapping,
-  ]);
+  // Note, this assumes the "mapping" prop can only be changed by this component
+  const [mappingPath, setMappingPath] = React.useState(() => {
+    const rawPath = mapping?.map(({ name }) => name) ?? [];
+    return filterArray([
+      ...rawPath,
+      rawPath.length === 0
+        ? emptyMapping
+        : mapping?.at(-1)?.isRelationship === false
+        ? undefined
+        : formattedEntry,
+    ]);
+  });
+
   const lineData = getMappingLineData({
     baseTableName: table.name,
     mappingPath,
@@ -93,14 +102,14 @@ export function ResourceMapping({
     customSelectType: 'SIMPLE_LIST',
     onChange: isReadOnly
       ? undefined
-      : (payload): void =>
-          setMapping(
-            table.getFields(
-              mutateMappingPath({ ...payload, mappingPath })
-                .filter((item) => item !== emptyMapping)
-                .join('.')
-            )
-          ),
+      : (payload): void => {
+          const path = mutateMappingPath({ ...payload, mappingPath });
+          setMappingPath(path);
+          const purePath = path.filter(
+            (part) => part !== emptyMapping && part !== formattedEntry
+          );
+          setMapping(table.getFields(purePath.join('.')));
+        },
     onOpen: setOpenIndex,
     onClose: () => setOpenIndex(undefined),
     openSelectElement: openIndex,
