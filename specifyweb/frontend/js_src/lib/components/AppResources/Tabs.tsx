@@ -14,6 +14,7 @@ import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type {
   SpAppResource,
+  SpAppResourceDir,
   SpViewSetObj as SpViewSetObject,
 } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
@@ -25,6 +26,9 @@ import {
   AppResourceTextEditor,
   visualAppResourceEditors,
 } from './TabDefinitions';
+import { WarningMessage } from '../Atoms';
+import { getResourceApiUrl } from '../DataModel/resource';
+import { schema } from '../DataModel/schema';
 
 export function AppResourcesTabs({
   label,
@@ -33,6 +37,7 @@ export function AppResourcesTabs({
   headerButtons,
   appResource,
   resource,
+  directory,
   data,
   isFullScreen,
   onExitFullScreen: handleExitFullScreen,
@@ -43,6 +48,7 @@ export function AppResourcesTabs({
   readonly showValidationRef: React.MutableRefObject<(() => void) | null>;
   readonly appResource: SpecifyResource<SpAppResource | SpViewSetObject>;
   readonly resource: SerializedResource<SpAppResource | SpViewSetObject>;
+  readonly directory: SerializedResource<SpAppResourceDir>;
   readonly headerButtons: JSX.Element;
   readonly data: string | null;
   readonly isFullScreen: boolean;
@@ -63,6 +69,7 @@ export function AppResourcesTabs({
             data={data}
             isReadOnly={isReadOnly}
             resource={resource}
+            directory={directory}
             showValidationRef={showValidationRef}
             onChange={handleChange}
           />,
@@ -103,15 +110,22 @@ function useEditorTabs(
     getAppResourceType
   );
   return React.useMemo(() => {
-    const visualEditor =
+    const VisualEditor =
       typeof subType === 'string'
         ? visualAppResourceEditors[subType]
         : undefined;
     return filterArray([
-      typeof visualEditor === 'function'
+      typeof VisualEditor === 'function'
         ? {
             label: resourcesText.visualEditor(),
-            component: visualEditor,
+            component(props) {
+              return (
+                <>
+                  <OtherCollectionWarning directory={props.directory} />
+                  <VisualEditor {...props} />
+                </>
+              );
+            },
           }
         : undefined,
       // FEATURE: add JSON editor for XML resources 🔥 (based on Syncer)
@@ -121,6 +135,27 @@ function useEditorTabs(
       },
     ]);
   }, [subType]);
+}
+
+/* Display a warning when editing resources from a different collection */
+function OtherCollectionWarning({
+  directory,
+}: {
+  readonly directory: SerializedResource<SpAppResourceDir>;
+}): JSX.Element | null {
+  const isOtherScope = React.useMemo(
+    () =>
+      (typeof directory.collection === 'string' &&
+        directory.collection !==
+          getResourceApiUrl('Collection', schema.domainLevelIds.collection)) ||
+      (typeof directory.discipline === 'string' &&
+        directory.discipline !==
+          getResourceApiUrl('Discipline', schema.domainLevelIds.discipline)),
+    [directory]
+  );
+  return isOtherScope ? (
+    <WarningMessage>{resourcesText.wrongScopeWarning()}</WarningMessage>
+  ) : null;
 }
 
 export function Tabs({

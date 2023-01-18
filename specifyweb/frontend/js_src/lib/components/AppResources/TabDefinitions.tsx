@@ -13,7 +13,11 @@ import type { RR } from '../../utils/types';
 import { writable } from '../../utils/types';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import type { SpAppResource, SpViewSetObj } from '../DataModel/types';
+import type {
+  SpAppResource,
+  SpAppResourceDir,
+  SpViewSetObj,
+} from '../DataModel/types';
 import { DataObjectFormatter } from '../Formatters';
 import { PreferencesContent } from '../UserPreferences';
 import type { UserPreferences } from '../UserPreferences/helpers';
@@ -29,6 +33,7 @@ export type AppResourceTabProps = {
   readonly isReadOnly: boolean;
   readonly resource: SerializedResource<SpAppResource | SpViewSetObj>;
   readonly appResource: SpecifyResource<SpAppResource | SpViewSetObj>;
+  readonly directory: SerializedResource<SpAppResourceDir>;
   readonly data: string | null;
   readonly showValidationRef: React.MutableRefObject<(() => void) | null>;
   readonly onChange: (data: string | null) => void;

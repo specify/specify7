@@ -17,6 +17,15 @@ export const ErrorMessage = wrap(
   }
 );
 
+export const WarningMessage = wrap(
+  'WarningMessage',
+  'div',
+  'flex flex-col gap-2 p-2 text-white bg-orange-500 dark:bg-transparent border border-orange-500 rounded',
+  {
+    role: 'alert',
+  }
+);
+
 export const Container = {
   /**
    * Full-screen gray container. Ment to be a wrapper for Container.Base

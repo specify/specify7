@@ -38,7 +38,6 @@ export function FormattersPickList({
   readonly onChange: (value: string) => void;
 }): JSX.Element {
   const id = useId('formatters');
-  // FIXME: add a warning when editing resources from a different collection
   const [formatters] = useAsyncState(formattersFunction, false);
   return (
     <Label.Block>

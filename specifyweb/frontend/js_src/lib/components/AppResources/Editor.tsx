@@ -145,6 +145,7 @@ export function AppResourceEditor({
           isReadOnly={isReadOnly}
           label={formatted}
           resource={resource}
+          directory={directory}
           showValidationRef={showValidationRef}
           onChange={(data): void => setResourceData({ ...resourceData, data })}
           onExitFullScreen={handleExitFullScreen}
