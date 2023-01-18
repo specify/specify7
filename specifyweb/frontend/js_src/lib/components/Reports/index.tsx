@@ -115,6 +115,17 @@ export function ReportsView({
 
   const [labels, reports] = appResources ?? [[], []];
 
+  if (typeof reports[0] === 'object') {
+    console.log(
+      'reports metaData keys at keys at 3:',
+      Object.keys(reports[3]),
+      'metaData: ',
+      reports[3]['metaData'],
+      'reports query 2',
+      reports
+    );
+  }
+
   return typeof appResources === 'object' && attachmentSettings ? (
     typeof selectedReport === 'object' ? (
       <ErrorBoundary dismissable>
@@ -134,7 +145,10 @@ export function ReportsView({
       >
         <div className="flex flex-col gap-4">
           <section>
-            <h2>{reportsText.reports()}</h2>
+            <div className="flex">
+              <h2>{reportsText.reports()}</h2>
+              <img src="/images/Reports32x32.png" className="ml-2 w-[1.5em]" />
+            </div>
             <ReportRow
               cacheKey="listOfReports"
               icon="/images/Reports32x32.png"
@@ -143,7 +157,10 @@ export function ReportsView({
             />
           </section>
           <section>
-            <h2>{reportsText.labels()}</h2>
+            <div className="flex">
+              <h2>{reportsText.labels()}</h2>
+              <img src="/images/Label32x32.png" className="ml-2 w-[1.5em]" />
+            </div>
             <ReportRow
               cacheKey="listOfLabels"
               icon="/images/Label32x32.png"

@@ -759,7 +759,7 @@ def get_collection(logged_in_collection, model, checker: ReadPermChecker, contro
     objs = apply_filters(logged_in_collection, params, model, control_params)
 
     try:
-        return objs_to_data_(objs, checker, control_params['offset'], control_params['limit'])
+        return objs_to_data_(objs,lambda o: _obj_to_data(o, checker), control_params['offset'], control_params['limit'])
     except FieldError as e:
         raise OrderByError(e)
 
@@ -796,9 +796,9 @@ def apply_filters(logged_in_collection, params, model, control_params=GetCollect
 
 def objs_to_data(objs, offset=0, limit=20) -> CollectionPayload:
     """Wrapper for backwards compatibility."""
-    return objs_to_data_(objs, lambda x: None, offset, limit)
+    return objs_to_data_(objs, lambda o: _obj_to_data(o, lambda x: None), offset, limit)
 
-def objs_to_data_(objs, checker: ReadPermChecker, offset=0, limit=20) -> CollectionPayload:
+def objs_to_data_(objs, mapper: Callable[[Any], Dict[str, Any]], checker: ReadPermChecker, offset=0, limit=20) -> CollectionPayload:
     """Return a collection structure with a list of the data of given objects
     and collection meta data.
     """
@@ -810,7 +810,7 @@ def objs_to_data_(objs, checker: ReadPermChecker, offset=0, limit=20) -> Collect
     else:
         objs = objs[offset:offset + limit]
 
-    return {'objects': [_obj_to_data(o, checker) for o in objs],
+    return {'objects': [mapper(o) for o in objs],
             'meta': {'limit': limit,
                      'offset': offset,
                      'total_count': total_count}}

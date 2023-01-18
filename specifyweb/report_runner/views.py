@@ -14,7 +14,7 @@ from ..permissions.permissions import PermissionTarget, PermissionTargetAction, 
     check_permission_targets, check_table_permissions
 from ..permissions.permissions import PermissionTarget, PermissionTargetAction, \
     check_permission_targets, check_table_permissions
-from ..specify.api import obj_to_data, objs_to_data, toJson, HttpResponseCreated
+from ..specify.api import _obj_to_data, obj_to_data, objs_to_data, objs_to_data_, toJson, HttpResponseCreated
 from ..specify.models import Spappresource, Spappresourcedir, Spreport, Spquery
 from ..specify.views import login_maybe_required
 from ..stored_queries.execution import run_ephemeral_query, models
@@ -77,8 +77,22 @@ def get_reports(request):
         .filter(
             Q(spappresourcedir__specifyuser=request.specify_user) |
             Q(spappresourcedir__ispersonal=False))
+    # raise Exception("Error")
+    response = [
+        dict(
+            app_resource=app_resource,
+            report=app_resource.spreports.first(),
+            query=app_resource.spreports.first().query
+        )
+        for app_resource in reports
+    ]
 
-    data = objs_to_data(reports, request.GET.get('offset', 0), request.GET.get('limit', 0))
+    data = objs_to_data_(
+        response,
+        lambda o: {key: _obj_to_data(value, lambda x: None) for key, value in o},
+        request.GET.get('offset', 0),
+        request.GET.get('limit', 0)
+    )
     return HttpResponse(toJson(data), content_type="application/json")
 
 @require_GET
@@ -131,7 +145,7 @@ def create_report(user_id, discipline_id, query_id, mimetype, name):
         name=name,
         description=name,
         specifyuser_id=user_id,
-        metadata="tableid=-1;reporttype=Report;",
+        metadata="tableid=-1;reporttype=Report",
         )
     appresource.spappresourcedatas.create(
         version=0,
