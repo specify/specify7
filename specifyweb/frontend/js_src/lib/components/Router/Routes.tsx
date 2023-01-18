@@ -12,6 +12,7 @@ import { headerText } from '../../localization/header';
 import { userText } from '../../localization/user';
 import { preferencesText } from '../../localization/preferences';
 import { attachmentsText } from '../../localization/attachments';
+import { developmentText } from '../../localization/development';
 
 // FEATURE: go over non-dynamic routes in all routers to make sure they have titles
 /* eslint-disable @typescript-eslint/promise-function-async */
@@ -397,6 +398,19 @@ export const routes: RA<EnhancedRoute> = [
         element: () =>
           import('../RouterCommands/CacheBuster').then(
             ({ CacheBuster }) => CacheBuster
+          ),
+      },
+    ],
+  },
+  {
+    path: 'developer',
+    children: [
+      {
+        path: 'crash-report-visualizer',
+        title: developmentText.crashReportVisualizer(),
+        element: () =>
+          import('../Developer/CrashReportVisualizer').then(
+            ({ CrashReportVisualizer }) => CrashReportVisualizer
           ),
       },
     ],

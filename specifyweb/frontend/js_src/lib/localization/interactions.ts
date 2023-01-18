@@ -61,9 +61,11 @@ export const interactionsText = createDictionary({
   byChoosingRecordSet: {
     comment: 'See documentation for syntax for plural rules',
     'en-us': 'By choosing a recordset ({{count:none | one | ??}} available)',
-    'ru-ru': 'Выбрав набор записей (доступно {count:number|formatted})',
-    'es-es':
-      'Eligiendo un juego de registros ({{count:none | one | ??}} disponible)',
+    'ru-ru': 'Выбрав набор записей (доступно {{count:none | one | ??}})',
+    'es-es': `
+      Al seleccionar un conjunto de registros ({{count:none | one | ??}}
+      disponible)
+    `,
     'fr-fr': `
       En choisissant un jeu d'enregistrements ({{count:none | one | ??}}
       disponible)
@@ -191,7 +193,7 @@ export const interactionsText = createDictionary({
     'en-us': '{tableName:string}: {resource:string}',
     'ru-ru': '{tableName:string}: {resource:string}',
     'es-es': '{tableName:string}: {resource:string}',
-    'fr-fr': '{tableName:chaîne}: {ressource:chaîne}',
+    'fr-fr': '{tableName:string} : {resource:string}',
     'uk-ua': '{tableName:string}: {resource:string}',
   },
   resolvedLoans: {
@@ -343,7 +345,7 @@ export const interactionsText = createDictionary({
   createdGift: {
     comment: 'Example: Create a Gift',
     'en-us': 'Create a {tableGift:string}',
-    'es-es': 'Crear un {tableLoan:string}',
+    'es-es': 'Crear una {tableGift:string}',
     'fr-fr': 'Créer un {tableLoan:string}',
     'ru-ru': 'Создайте {tableLoan:string}',
     'uk-ua': 'Створити {tableLoan:string}',
@@ -351,7 +353,7 @@ export const interactionsText = createDictionary({
   editGift: {
     comment: 'Example: Edit a Gift',
     'en-us': 'Edit {tableGift:string}',
-    'es-es': 'Editar {tableLoan:string}',
+    'es-es': 'Edite {tableGift:string}',
     'fr-fr': 'Modifier {tableLoan:string}',
     'ru-ru': 'Изменить {tableLoan:string}',
     'uk-ua': 'Редагувати {tableLoan:string}',
@@ -359,7 +361,7 @@ export const interactionsText = createDictionary({
   createInformationRequest: {
     comment: 'Example: Create a Infrormation Request',
     'en-us': 'Create {tableInformationRequest:string}',
-    'es-es': 'Crear {modelName:string}',
+    'es-es': 'Crear {tableInformationRequest:string}',
     'fr-fr': 'Créer {modelName:string}',
     'ru-ru': 'Создать {tableInformationRequest:string}',
     'uk-ua': 'Створити {modelName:string}',

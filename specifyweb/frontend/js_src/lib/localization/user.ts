@@ -26,14 +26,14 @@ export const userText = createDictionary({
   password: {
     'en-us': 'Password',
     'ru-ru': 'Пароль',
-    'es-es': 'Clave',
+    'es-es': 'Contraseña',
     'fr-fr': 'Mot de passe',
     'uk-ua': 'Пароль',
   },
   collectionAccessDenied: {
     'en-us': 'You do not have access to this collection',
     'ru-ru': 'У вас нет доступа к этой коллекции',
-    'es-es': 'No tienes acceso a esta colección.',
+    'es-es': 'No tienes acceso a esta colección',
     'fr-fr': "Vous n'avez pas accès à cette collection",
     'uk-ua': 'Ви не маєте доступу до цієї колекції',
   },
@@ -47,8 +47,8 @@ export const userText = createDictionary({
       коллекции {collectionName:string}.
     `,
     'es-es': `
-      La cuenta actualmente iniciada no tiene acceso a la colección
-      {collectionName:string}.
+      La cuenta que ha iniciado sesión actualmente no tiene acceso a la
+      colección {collectionName:string}.
     `,
     'fr-fr': `
       Le compte actuellement connecté n'a pas accès à la collection
@@ -62,14 +62,14 @@ export const userText = createDictionary({
   changePassword: {
     'en-us': 'Change Password',
     'ru-ru': 'Изменить пароль',
-    'es-es': 'Cambia la contraseña',
+    'es-es': 'Cambiar la contraseña',
     'fr-fr': 'Changer le mot de passe',
     'uk-ua': 'Змінити пароль',
   },
   oldPassword: {
     'en-us': 'Old password',
     'ru-ru': 'Предыдущий пароль',
-    'es-es': 'Contraseña anterior',
+    'es-es': 'Contraseña antigua',
     'fr-fr': 'Ancien mot de passe',
     'uk-ua': 'Старий пароль',
   },
@@ -83,7 +83,7 @@ export const userText = createDictionary({
   repeatPassword: {
     'en-us': 'Repeat new password',
     'ru-ru': 'Повторите новый пароль',
-    'es-es': 'repita la nueva contraseña',
+    'es-es': 'Repita la nueva contraseña',
     'fr-fr': 'Répété le nouveau mot de passe',
     'uk-ua': 'Повторіть новий пароль',
   },
@@ -97,7 +97,7 @@ export const userText = createDictionary({
   setUserAgents: {
     'en-us': 'Set User Agents',
     'ru-ru': 'Настроить пользовательских агентов',
-    'es-es': 'Establecer agentes de usuario',
+    'es-es': 'Configurar los agentes de usuario',
     'fr-fr': 'Définir les agents utilisateurs',
     'uk-ua': 'Встановити агентів користувача',
   },
@@ -144,7 +144,7 @@ export const userText = createDictionary({
       провайдером в будущем.
     `,
     'es-es': `
-      Ha sido invitado a asociar un inicio de sesión externo a su cuenta de
+      Se le ha pedido que vincule un inicio de sesión externo a su cuenta de
       usuario Especificar. Esto le permitirá iniciar sesión en Specific con su
       proveedor elegido en el futuro.
     `,
@@ -162,7 +162,7 @@ export const userText = createDictionary({
   legacyLogin: {
     'en-us': 'Sign in with Specify Account',
     'ru-ru': 'Войти с помощью Профиля Specify',
-    'es-es': 'Iniciar sesión con Especificar cuenta',
+    'es-es': 'Iniciar sesión con una cuenta específica',
     'fr-fr': 'Connectez-vous avec Spécifiez le compte',
     'uk-ua': 'Увійдіть за допомогою Вказати обліковий запис',
   },
@@ -977,8 +977,8 @@ export const userText = createDictionary({
       поэтому они удалены из этих списков.)
     `,
     'es-es': `
-      (Algunas políticas que se aplican solo a nivel de institución no están
-      presentes aquí a nivel de colección).
+      (Algunas políticas que se aplican solo a nivel institucional no están
+      presentes aquí a nivel de colección)
     `,
     'fr-fr': `
       (Certaines politiques qui s'appliquent uniquement au niveau de

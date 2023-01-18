@@ -136,11 +136,6 @@ jobs:
           npm run typecheck && \
           npm run unitTests -- --maxWorkers ${{ steps.cpu-cores.outputs.count }}
 
-      - name: Localization Tests
-        working-directory: specifyweb/frontend/js_src
-        run: |
-          npm run localizationTests -- --emit ./localization-strings
-
       - name: Clone branch that stores localization strings
         # Listen for changes to production branch
         if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
@@ -151,14 +146,15 @@ jobs:
           ref: weblate-localization
           fetch-depth: 0
 
+      - name: Localization Tests
+        working-directory: specifyweb/frontend/js_src
+        run: |
+          npm run localizationTests -- --emit ../../../weblate-localization/strings
+
       - name: Sync localization strings with Weblate (only on production branch)
-        # Only run this step if previous step was not skipped
-        if: steps.weblate.outcome == 'success'
+        if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
         working-directory: weblate-localization
         run: |
-          # Replace old localization strings
-          rm -rf strings
-          mv -f ../specifyweb/frontend/js_src/localization-strings strings
           git add strings
 
           if git diff-index --quiet HEAD --; then
@@ -176,6 +172,7 @@ jobs:
           fi
 
       - name: Make sure Weblate settings are up to date
+        # Only run this step if previous step was not skipped
         if: steps.weblate.outcome == 'success'
         working-directory: specifyweb/frontend/js_src
         env:
