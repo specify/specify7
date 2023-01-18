@@ -29,6 +29,7 @@ import { OverlayContext } from '../Router/Router';
 import { Report } from './Report';
 import { reportsText } from '../../localization/report';
 import { schema } from '../DataModel/schema';
+import { TableIcon } from '../Molecules/TableIcon';
 
 export const reportsAvailable = ajax<{ readonly available: boolean }>(
   cachableUrl('/context/report_runner_status.json'),
@@ -134,16 +135,22 @@ export function ReportsView({
       >
         <div className="flex flex-col gap-4">
           <section>
-            <h2>{reportsText.reports()}</h2>
+            <div className="flex">
+              <h2>{reportsText.reports()}</h2>
+              <img src="/images/Reports32x32.png" className="ml-2 w-[1.5em]" />
+            </div>
             <ReportRow
               cacheKey="listOfReports"
-              icon="/images/Reports32x32.png"
+              icon="CollectionObject"
               resources={reports}
               onClick={setSelectedReport}
             />
           </section>
           <section>
-            <h2>{reportsText.labels()}</h2>
+            <div className="flex">
+              <h2>{reportsText.labels()}</h2>
+              <img src="/images/Label32x32.png" className="ml-2 w-[1.5em]" />
+            </div>
             <ReportRow
               cacheKey="listOfLabels"
               icon="/images/Label32x32.png"
@@ -216,7 +223,8 @@ function ReportRow({
                 title={resource.description ?? undefined}
                 onClick={(): void => handleClick(resource)}
               >
-                <img alt="" className={iconClassName} src={icon} />
+                {/* <img alt="" className={iconClassName} src={icon} /> */}
+                <TableIcon label name={icon} />
                 {resource.name}
               </Button.LikeLink>
             </td>
