@@ -227,18 +227,18 @@ export const headerText = createDictionary({
     `,
     'es-es': `
       Estaríamos muy agradecidos por su apoyo para localizar la interfaz de
-      usuario de Specific 7. Si está interesado, envíe un correo electrónico a
-      <link>ver las instrucciones</link>.
+      usuario de Specific 7. Si está interesado, <link> consulte las
+      instrucciones </link>.
     `,
     'fr-fr': `
       Nous vous serions très reconnaissants de votre aide pour la localisation
       de l'interface utilisateur Spécifiez 7. Si vous êtes intéressé, veuillez
-      envoyer un e-mail à <link>voir les instructions</link>.
+      <link>voir les instructions</link>.
     `,
     'uk-ua': `
       Ми будемо дуже вдячні за вашу підтримку в локалізації інтерфейсу
-      користувача Specify 7. Якщо ви зацікавлені, надішліть електронний лист на
-      адресу <link>див. Інструкції</link>.
+      користувача Specify 7. Якщо ви зацікавлені, <link>перегляньте
+      інструкції</link>.
     `,
   },
   incompleteInline: {
