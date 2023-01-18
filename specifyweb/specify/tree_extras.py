@@ -337,6 +337,12 @@ def synonymize(node, into, agent):
             'Synonymizing node "{node.fullname}" which has children'.format(node=node),
             {"tree" : "Taxon",
              "localizationKey" : "nodeSynonimizeWithChildren",
+             "node" : {
+                "id" : node.id,
+                "rankid" : node.rankid,
+                "fullName" : node.fullname,
+                "children": list(node.children.values('id', 'fullname'))
+             },
              "parent" : {
                 "id" : into.id,
                 "rankid" : into.rankid,
