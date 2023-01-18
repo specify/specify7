@@ -93,7 +93,8 @@ function SummaryLines({
     <>
       {typeof createdField === 'object' && (
         <MergeRow header={createdField.label}>
-          {[merged, ...resources].map((resource, index) => (
+          <td>{commonText.notApplicable()}</td>
+          {resources.map((resource, index) => (
             <td key={index}>
               <DateElement date={resource.get('timestampCreated')} flipDates />
             </td>
@@ -102,7 +103,8 @@ function SummaryLines({
       )}
       {typeof modifiedField === 'object' && (
         <MergeRow header={modifiedField.label}>
-          {[merged, ...resources].map((resource, index) => (
+          <td>{commonText.notApplicable()}</td>
+          {resources.map((resource, index) => (
             <td key={index}>
               <DateElement date={resource.get('timestampModified')} flipDates />
             </td>
