@@ -165,11 +165,10 @@ def adding_node(node):
     model = type(node)
     parent = model.objects.select_for_update().get(id=node.parent.id)
     if parent.accepted_id is not None:
-        # This business rule can be overriden by a remote pref.
         from specifyweb.context.remote_prefs import get_remote_prefs
-        remote_prefs = get_remote_prefs()
+        # This business rule can be overriden by a remote pref.
         pattern = r'^sp7\.allow_adding_child_to_synonymized_parent\.' + node.specify_model.name + '=(.+)'
-        override = re.search(pattern, remote_prefs, re.MULTILINE)
+        override = re.search(pattern, get_remote_prefs(), re.MULTILINE)
         if override is None or override.group(1).lower() != "true":
             raise TreeBusinessRuleException(
                 f'Adding node "{node.fullname}" to synonymized parent "{parent.fullname}"',
@@ -328,11 +327,22 @@ def synonymize(node, into, agent):
     node.accepted_id = target.id
     node.isaccepted = False
     node.save()
-    if node.children.count() > 0:
+
+    # This check can be disabled by a remote pref
+    from specifyweb.context.remote_prefs import get_remote_prefs
+    pattern = r'^sp7\.allow_adding_child_to_synonymized_parent\.' + node.specify_model.name + '=(.+)'
+    override = re.search(pattern, get_remote_prefs(), re.MULTILINE)
+    if node.children.count() > 0 and (override is None or override.group(1).lower() != "true"):
         raise TreeBusinessRuleException(
             'Synonymizing node "{node.fullname}" which has children'.format(node=node),
             {"tree" : "Taxon",
              "localizationKey" : "nodeSynonimizeWithChildren",
+             "node" : {
+                "id" : node.id,
+                "rankid" : node.rankid,
+                "fullName" : node.fullname,
+                "children": list(node.children.values('id', 'fullname'))
+             },
              "parent" : {
                 "id" : into.id,
                 "rankid" : into.rankid,
