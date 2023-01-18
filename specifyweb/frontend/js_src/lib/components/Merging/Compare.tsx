@@ -134,17 +134,8 @@ function findDiffering(
   fields: RA<LiteralField | Relationship>,
   records: RA<SpecifyResource<AnySchema>>
 ): RA<LiteralField | Relationship> {
-  if (records.length === 1 || showMatching) {
-    const nonEmptyFields = fields.filter((field) => {
-      const value =
-        field.isRelationship && field.isDependent()
-          ? records[0].getDependentResource(field.name)
-          : (records[0].get(field.name) as string);
-      return value !== undefined && value !== null && value !== '';
-    });
-    return nonEmptyFields.length === 0 ? fields : nonEmptyFields;
-  } else
-    return fields
+  if (records.length > 0 && !showMatching) {
+    const filteredFields = fields
       .filter(
         (field) =>
           new Set(
@@ -164,6 +155,21 @@ function findDiffering(
           ).size > 1
       )
       .filter(({ name }) => !unMergeableFields.has(name));
+    /*
+     * Even if user said to not show matching, show them anyway in cases where
+     * all fields match. Otherwise, it won't show any fields at all which might
+     * be more confusing
+     */
+    if (filteredFields.length > 0) return filteredFields;
+  }
+  const nonEmptyFields = fields.filter((field) => {
+    const value =
+      field.isRelationship && field.isDependent()
+        ? records[0].getDependentResource(field.name)
+        : (records[0].get(field.name) as string);
+    return value !== undefined && value !== null && value !== '';
+  });
+  return nonEmptyFields.length === 0 ? fields : nonEmptyFields;
 }
 
 export function CompareField({
