@@ -418,12 +418,15 @@ function TableHeaderCell({
   readonly sortConfig: QueryField['sortType'];
   readonly onSortChange?: (sortType: QueryField['sortType']) => void;
 }): JSX.Element {
-  const tableName = fieldSpec?.getField()?.model.name;
+  const baseTableName =
+    fieldSpec !== undefined && fieldSpec.table !== undefined
+      ? fieldSpec.table.name
+      : 'CollectionObject';
 
   const content =
     typeof fieldSpec === 'object' ? (
       <>
-        {tableName && <TableIcon label name={tableName} />}
+        {baseTableName && <TableIcon label name={baseTableName} />}
         {generateMappingPathPreview(
           fieldSpec.baseTable.name,
           fieldSpec.toMappingPath()
