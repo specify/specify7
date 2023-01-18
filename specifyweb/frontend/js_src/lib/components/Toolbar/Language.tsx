@@ -28,7 +28,6 @@ import { Button } from '../Atoms/Button';
 import { Select } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import { fail } from '../Errors/Crash';
-import { supportLink } from '../Errors/ErrorDialog';
 import { cachableUrl } from '../InitialContext';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { formatUrl } from '../Router/queryString';
@@ -90,7 +89,11 @@ export function LanguageSelection<LANGUAGES extends string>({
           <p>
             <StringToJsx
               components={{
-                emailLink: supportLink,
+                link: (label) => (
+                  <Link.NewTab href="https://discourse.specifysoftware.org/t/get-started-with-specify-7-localization/956">
+                    {label}
+                  </Link.NewTab>
+                ),
               }}
               string={headerText.helpLocalizeSpecifyDescription()}
             />
@@ -112,6 +115,9 @@ export function LanguageSelection<LANGUAGES extends string>({
               </Button.Blue>
             </>
           }
+          className={{
+            container: dialogClassNames.narrowContainer,
+          }}
           header={headerText.incompleteLocalization()}
           onClose={(): void => setWarningLanguage(undefined)}
         >
