@@ -22,6 +22,7 @@ import type { Tables } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import { CompareRecords } from './Compare';
 import { mergingText } from '../../localization/merging';
+import { hijackBackboneAjax } from '../../utils/ajax/backboneAjax';
 
 const recordMergingTables = new Set<keyof Tables>(['Agent']);
 
@@ -96,44 +97,46 @@ export function MergingDialog({
             sortFunction((resource) => resource.get('timestampCreated'))
           );
           const target = resources[0];
+          target.bulkSet(removeKey(merged.toJSON(), 'version'));
+
           const clones = resources.slice(1);
           loading(
-            target
-              .bulkSet(removeKey(merged.toJSON(), 'version'))
-              .save()
-              .then(async () => {
-                /*
-                 * Make requests sequentially as they are expected to fail
-                 * (due to business rules). If we do them sequentially, we
-                 * can leave the UI in a state consistent with the back-end
-                 */
-                // eslint-disable-next-line functional/no-loop-statement
-                for (const clone of clones) {
-                  const response = await ajax(
-                    `/api/specify/${model.name.toLowerCase()}/replace/${
-                      clone.id
-                    }/${target.id}/`,
-                    {
-                      method: 'POST',
-                      headers: {
-                        Accept: 'text/plain',
-                      },
+            hijackBackboneAjax(
+              [Http.OK],
+              async () => target.save(),
+              undefined,
+              'dismissible'
+            ).then(async () => {
+              /*
+               * Make requests sequentially as they are expected to fail
+               * (due to business rules). If we do them sequentially, we
+               * can leave the UI in a state consistent with the back-end
+               */
+              // eslint-disable-next-line functional/no-loop-statement
+              for (const clone of clones) {
+                const response = await ajax(
+                  `/api/specify/${model.name.toLowerCase()}/replace/${
+                    clone.id
+                  }/${target.id}/`,
+                  {
+                    method: 'POST',
+                    headers: {
+                      Accept: 'text/plain',
                     },
-                    {
-                      expectedResponseCodes: [
-                        Http.NO_CONTENT,
-                        Http.NOT_ALLOWED,
-                      ],
-                    }
-                  );
-                  if (response.status === Http.NOT_ALLOWED) {
-                    setError(response.data);
-                    return;
+                  },
+                  {
+                    expectedResponseCodes: [Http.NO_CONTENT, Http.NOT_ALLOWED],
+                    errorMode: 'dismissible',
                   }
-                  handleDeleted(clone.id);
+                );
+                if (response.status === Http.NOT_ALLOWED) {
+                  setError(response.data);
+                  return;
                 }
-                setError(undefined);
-              })
+                handleDeleted(clone.id);
+              }
+              setError(undefined);
+            })
           );
         }}
       />

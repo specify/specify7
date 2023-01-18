@@ -19,7 +19,7 @@ let errorMessageMode: AjaxErrorMode | undefined;
 export function hijackBackboneAjax<T>(
   responseCodes: RA<typeof Http[keyof typeof Http]>,
   callback: () => T,
-  successCallback: (status: number) => void,
+  successCallback?: (status: number) => void,
   errorMode: AjaxErrorMode = 'visible'
 ): T {
   expectedResponseCodes = responseCodes;
