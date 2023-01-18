@@ -10,6 +10,7 @@ from django.conf import settings
 
 from specifyweb.businessrules.exceptions import TreeBusinessRuleException
 
+from time import perf_counter
 from  .auditcodes import TREE_MERGE, TREE_SYNONYMIZE, TREE_DESYNONYMIZE
 
 @contextmanager
@@ -102,6 +103,8 @@ class Tree(models.Model):
                     "children": list(self.children.values('id', 'rankid', 'fullname').filter(parent=self, parent__rankid__gte=F('rankid')))
                  }})
 
+        print(self.parent_id, self.name, self.definitionitem_id, prev_self.name, prev_self.definitionitem_id, prev_self.parent_id)
+        t1 = perf_counter()
         if prev_self is None:
              reset_fullnames(self.definition, null_only=True)
         elif (
@@ -109,8 +112,10 @@ class Tree(models.Model):
             or prev_self.definitionitem_id != self.definitionitem_id
             or prev_self.parent_id != self.parent_id
         ):
-            reset_fullnames(self.definition)
-
+            reset_fullnames(self.definition, self_id=self.id)
+        t2 = perf_counter()
+        logger.warning('time near the end block: ')
+        logger.warning(t2-t1)
     def accepted_id_attr(self):
         return 'accepted{}_id'.format(self._meta.db_table)
 
@@ -121,6 +126,13 @@ class Tree(models.Model):
     @accepted_id.setter
     def accepted_id(self, value):
         setattr(self, self.accepted_id_attr(), value)
+
+
+def add_cte(id):
+    if id is None:
+        return ""
+    return ("and ((( with recursive allchildren as ( select taxonid from taxon where parentid = {} union all select taxon.taxonid from taxon join allchildren on taxon.parentid = allchildren.taxonid) select count(*) from allchildren where allchildren.taxonid = t0.taxonid) > 0 ) or t0.taxonid = {})").format(id, id)
+
 
 
 
@@ -455,13 +467,15 @@ def definition_joins(table, depth):
         for j in range(depth)
     ])
 
-def reset_fullnames(treedef, null_only=False):
+
+def reset_fullnames(treedef, null_only=False, self_id=None):
     table = treedef.treeentries.model._meta.db_table
     depth = treedef.treedefitems.count()
     reverse = treedef.fullnamedirection == -1
-    return set_fullnames(table, treedef.id, depth, reverse, null_only)
+    return set_fullnames(table, treedef.id, depth, reverse, null_only, self_id)
 
-def set_fullnames(table, treedefid, depth, reverse=False, null_only=False):
+
+def set_fullnames(table, treedefid, depth, self_id, reverse=False, null_only=False):
     logger.info('set_fullnames: %s', (table, treedefid, depth, reverse))
     if depth < 1:
         return
@@ -475,6 +489,7 @@ def set_fullnames(table, treedefid, depth, reverse=False, null_only=False):
         "and t0.{table}treedefid = {treedefid}\n"
         "and t0.acceptedid is null\n"
         "{null_only}\n"
+        "{cte_expr}"
     ).format(
         root=depth-1,
         table=table,
@@ -483,7 +498,10 @@ def set_fullnames(table, treedefid, depth, reverse=False, null_only=False):
         parent_joins=parent_joins(table, depth),
         definition_joins=definition_joins(table, depth),
         null_only="and t0.fullname is null" if null_only else "",
+        cte_expr=add_cte(self_id)
+
     )
+    logger.warning(sql)
     logger.debug('fullname update sql:\n%s', sql)
     return cursor.execute(sql)
 
@@ -599,7 +617,6 @@ def renumber_tree(table):
     cursor.execute("select distinct rankid from {} order by rankid desc".format(table))
     ranks = [rank for (rank,) in cursor.fetchall()]
     depth = len(ranks)
-
     # Construct a path enumeration for each node and set the
     # nodenumbers according to the lexical ordering of the paths. This
     # ensures ancestor node numbers come before descendents and

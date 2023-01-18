@@ -30,14 +30,13 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
         logger.info('handling treefield %s rank: %s field: %s', table, tree_rank, tree_field)
 
         treedefitem_column = table.name + 'TreeDefItemID'
-
+        logger.warning('')
         if (table, 'TreeRanks') in query.join_cache:
             logger.debug("using join cache for %r tree ranks.", table)
             ancestors, treedef = query.join_cache[(table, 'TreeRanks')]
         else:
             treedef = get_treedef(query.collection, table.name)
             rank_count = treedef.treedefitems.count()
-
             ancestors = [node]
             for i in range(rank_count-1):
                 ancestor = orm.aliased(node)
@@ -47,7 +46,8 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
             logger.debug("adding to join cache for %r tree ranks.", table)
             query = query._replace(join_cache=query.join_cache.copy())
             query.join_cache[(table, 'TreeRanks')] = (ancestors, treedef)
-
+        logger.warning('ancestors: ')
+        logger.warning(ancestors)
         query = query._replace(param_count=self.param_count+1)
         treedefitem_param = sql.bindparam('tdi_%s' % query.param_count, value=treedef.treedefitems.get(name=tree_rank).id)
 
@@ -59,6 +59,8 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
             (getattr(ancestor, treedefitem_column) == treedefitem_param, getattr(ancestor, column_name))
             for ancestor in ancestors
         ])
+        logger.warning(query)
+        logger.warning(column)
 
         return query, column
 

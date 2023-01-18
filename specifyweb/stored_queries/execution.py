@@ -26,6 +26,7 @@ from .queryfield import QueryField
 from ..notifications.models import Message
 from ..specify.models import Collection
 from ..permissions.permissions import check_table_permissions
+from time import perf_counter
 
 logger = logging.getLogger(__name__)
 
@@ -515,8 +516,11 @@ def execute(session, collection, user, tableid, distinct, count_only, field_spec
     "Build and execute a query, returning the results as a data structure for json serialization"
 
     set_group_concat_max_len(session)
+    t1 = perf_counter()
     query, order_by_exprs = build_query(session, collection, user, tableid, field_specs, recordsetid=recordsetid, formatauditobjs=formatauditobjs, distinct=distinct)
-
+    t2 = perf_counter()
+    logger.warning('took')
+    logger.warning(t2-t1)
     if count_only:
         return {'count': query.count()}
     else:

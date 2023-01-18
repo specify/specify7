@@ -240,6 +240,6 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
             predicate = sql.not_(f) if negate else f
         else:
             predicate = None
-
+        logger.warning(predicate)
         query = query.reset_joinpoint()
         return query, orm_field, predicate
