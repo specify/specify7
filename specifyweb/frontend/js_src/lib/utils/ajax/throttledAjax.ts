@@ -46,7 +46,6 @@ export async function throttledAjax<T, S>(
   }
   const indexInFulfilled = fulfilledNetworkRequests.networkRequests.findIndex(
     (currentPromise) => {
-      console.log(currentPromise.spec, promiseSpec);
       return currentPromise.spec === promiseSpec;
     }
   );
@@ -54,7 +53,6 @@ export async function throttledAjax<T, S>(
     return fulfilledNetworkRequests.networkRequests[indexInFulfilled];
   }
   const promiseIndex = currentRequests.findIndex((currentPromise) => {
-    console.log(currentPromise.spec, promiseSpec);
     return currentPromise.spec === promiseSpec;
   });
   if (promiseIndex !== -1) {

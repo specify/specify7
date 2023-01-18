@@ -9,27 +9,6 @@ import { userInformation } from '../InitialContext/userInformation';
 import { ensure } from '../../utils/types';
 import { urlSpec } from './definitions';
 
-/*const modifyBackendResult = <CATEGORY_NAME extends keyof BackendStatsResult>(
-  backEndStats: BackendStatsResult[CATEGORY_NAME] | undefined,
-  modifyFunction: (
-    rawValue: BackendStatsResult[CATEGORY_NAME][keyof BackendStatsResult[CATEGORY_NAME]]
-  ) => BackEndStat['value']
-): StatCategoryReturn =>
-  backEndStats === undefined
-    ? undefined
-    : Object.fromEntries(
-        Object.entries(backEndStats).map(([key, value]) => [
-          key,
-          {
-            label: key,
-            spec: {
-              type: 'BackEndStat',
-              value: modifyFunction(value),
-            },
-          },
-        ])
-      ); */
-
 type StatsSpec =
   | {
       readonly [CATEGORY_NAME in keyof BackendStatsResult]: {
@@ -95,33 +74,48 @@ export const statsSpec: IR<StatsSpec> = {
             ],
           },
         },
-        /*familiesRepresented: {
+        familiesRepresented: {
           label: statsText('familiesRepresented'),
           spec: {
-            type: 'BackEndStat',
-            pathToValue: 'familiesRepresented',
-            urlToFetch: urlSpec.holdings,
-            formatter: formatNumber,
+            type: 'QueryBuilderStat',
+            tableName: 'Determination',
+            fields: [
+              {
+                operStart: queryFieldFilters.any.id,
+                path: 'taxon.Family',
+                selectdistinct: true,
+              },
+            ],
           },
         },
         generaRepresented: {
           label: statsText('generaRepresented'),
           spec: {
-            type: 'BackEndStat',
-            pathToValue: 'generaRepresented',
-            urlToFetch: urlSpec.holdings,
-            formatter: formatNumber,
+            type: 'QueryBuilderStat',
+            tableName: 'Determination',
+            fields: [
+              {
+                operStart: queryFieldFilters.any.id,
+                path: 'taxon.Genus',
+                selectdistinct: true,
+              },
+            ],
           },
         },
         speciesRepresented: {
           label: statsText('speciesRepresented'),
           spec: {
-            type: 'BackEndStat',
-            pathToValue: 'speciesRepresented',
-            urlToFetch: urlSpec.holdings,
-            formatter: formatNumber,
+            type: 'QueryBuilderStat',
+            tableName: 'Determination',
+            fields: [
+              {
+                operStart: queryFieldFilters.any.id,
+                path: 'taxon.Genus',
+                selectdistinct: true,
+              },
+            ],
           },
-        }, */
+        },
       }),
     },
     preparations: {
@@ -335,15 +329,6 @@ export const statsSpec: IR<StatsSpec> = {
             ],
           },
         },
-        /*(countriesCount: {
-          label: statsText('countries'),
-          spec: {
-            type: 'BackEndStat',
-            urlToFetch: urlSpec.localityGeography,
-            pathToValue: 'countries',
-            formatter: formatNumber,
-          },
-        },*/
         georeferencedLocalityCount: {
           label: statsText('georeferencedLocalities'),
           spec: {

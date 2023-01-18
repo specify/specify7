@@ -96,7 +96,6 @@ export function useMultipleAsyncState<T>(
     let destructorCalled = false;
     return (): void => {
       destructorCalled = true;
-      console.log('destructor was called');
     };
   }, [callback, loading, loadingScreen]);
 
