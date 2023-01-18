@@ -9,6 +9,18 @@ import { escapeRegExp } from './utils';
 
 const MAX_NAME_LENGTH = 64;
 
+const format = {
+  title: {
+    // FEATURE: allow users to customize this?
+    prefix: ' (',
+    suffix: ')',
+  },
+  name: {
+    prefix: '_',
+    suffix: '',
+  },
+} as const;
+
 export function getUniqueName(
   name: string,
   usedNames: RA<string>,
@@ -19,15 +31,20 @@ export function getUniqueName(
    * @remarks
    * Can get this number from SQL schema for a given field
    */
-  maxLength: number = Number.POSITIVE_INFINITY
+  maxLength: number = Number.POSITIVE_INFINITY,
+  type: keyof typeof format = 'title'
 ): LocalizedString {
   if (!usedNames.includes(name)) return name as LocalizedString;
-  // FEATURE: allow customizing this?
-  const suffix = / \((\d+)\)$/u.exec(name);
-  const [{ length }, indexString] = suffix ?? ([[], '0'] as const);
+  const { prefix, suffix } = format[type];
+  const reSuffix = new RegExp(
+    `${escapeRegExp(prefix)}(\\d+)${escapeRegExp(suffix)}$`,
+    'u'
+  );
+  const matchedSuffix = reSuffix.exec(name);
+  const [{ length }, indexString] = matchedSuffix ?? ([[], '0'] as const);
   const strippedName = length > 0 ? name.slice(0, -1 * length) : name;
   const indexRegex = new RegExp(
-    `^${escapeRegExp(strippedName)} \\((\\d+)\\)$`,
+    `^${escapeRegExp(strippedName)}${reSuffix.source}`,
     'u'
   );
   const newIndex =
@@ -37,7 +54,7 @@ export function getUniqueName(
         ...usedNames.map((name) => f.parseInt(indexRegex.exec(name)?.[1]) ?? 1),
       ])
     ) + 1;
-  const uniquePart = ` (${newIndex})`;
+  const uniquePart = `${prefix}${newIndex}${suffix}`;
   const newName =
     newIndex === 1 && length === 0
       ? strippedName
