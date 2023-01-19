@@ -29,8 +29,9 @@ export const fetchContext = contextUnlockedPromise.then((entrypoint) =>
             .split('\n')
             .filter((line) => !line.startsWith('#'))
             .forEach((line) => {
-              const match = /([^=]+)=(.+)/.exec(line);
-              if (match) preferences[match[1].trim()] = match[2];
+              const [key, value] = line.split('=');
+              if (typeof value === 'string')
+                preferences[key.trim()] = value.trim();
             })
         )
         .then(() => preferences)
@@ -187,6 +188,18 @@ export const remotePrefsDefinitions = f.store(
           'Show Collection Object count only for nodes with RankID >= than this value',
         defaultValue: 99_999,
         parser: 'java.lang.Long',
+        isLegacy: true,
+      },
+
+      /* This pref was implemented in Specify 7 in https://github.com/specify/specify7/pull/2818
+         and went through many iterations and changes.
+         See the Pull Request for the full context and implementation/design decision. 
+      */
+      'TaxonTreeEditor.DisplayAuthor': {
+        description:
+          'Display Authors of Taxons next to nodes in the Tree Viewer',
+        defaultValue: false,
+        parser: 'java.lang.Boolean',
         isLegacy: true,
       },
       'attachment.is_public_default': {
