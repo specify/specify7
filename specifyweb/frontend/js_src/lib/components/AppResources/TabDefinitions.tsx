@@ -135,10 +135,12 @@ function UserPreferencesEditor({
   );
 }
 
-export const visualAppResourceEditors: RR<
-  keyof typeof appResourceSubTypes,
-  ((props: AppResourceTabProps) => JSX.Element) | undefined
-> = {
+export const visualAppResourceEditors = f.store<
+  RR<
+    keyof typeof appResourceSubTypes,
+    ((props: AppResourceTabProps) => JSX.Element) | undefined
+  >
+>(() => ({
   label: undefined,
   report: undefined,
   userPreferences: UserPreferencesEditor,
@@ -156,4 +158,4 @@ export const visualAppResourceEditors: RR<
   otherJsonResource: undefined,
   otherPropertiesResource: undefined,
   otherAppResources: undefined,
-};
+}));

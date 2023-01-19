@@ -169,7 +169,7 @@ const fieldSpec = (table: SpecifyModel | undefined) =>
     field: pipe(syncers.xmlContent, syncers.field(table?.name)),
   });
 
-export const aggregatorSpec = f.store(() =>
+const aggregatorSpec = f.store(() =>
   createSpec({
     name: pipe(
       syncers.xmlAttribute('name', 'required'),

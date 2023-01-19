@@ -10,6 +10,7 @@ export function FormatterElement({
   readonly item: GetSet<Formatter>;
   readonly isReadOnly: boolean;
 }): JSX.Element {
+  // FIXME: handle external formatter
   // FIXME: include a preview of a the results
   return <pre>{JSON.stringify(formatter, null, 2)}</pre>;
 }

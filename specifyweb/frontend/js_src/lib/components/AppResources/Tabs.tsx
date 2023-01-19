@@ -7,11 +7,14 @@ import { resourcesText } from '../../localization/resources';
 import { f } from '../../utils/functools';
 import type { GetSet, IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
+import { WarningMessage } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { toResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { getResourceApiUrl } from '../DataModel/resource';
+import { schema } from '../DataModel/schema';
 import type {
   SpAppResource,
   SpAppResourceDir,
@@ -26,9 +29,6 @@ import {
   AppResourceTextEditor,
   visualAppResourceEditors,
 } from './TabDefinitions';
-import { WarningMessage } from '../Atoms';
-import { getResourceApiUrl } from '../DataModel/resource';
-import { schema } from '../DataModel/schema';
 
 export function AppResourcesTabs({
   label,
@@ -64,12 +64,12 @@ export function AppResourcesTabs({
         tabs.map(({ label, component: Component }, index) => [
           label,
           <Component
-            key={index}
             appResource={appResource}
             data={data}
-            isReadOnly={isReadOnly}
-            resource={resource}
             directory={directory}
+            isReadOnly={isReadOnly}
+            key={index}
+            resource={resource}
             showValidationRef={showValidationRef}
             onChange={handleChange}
           />,
@@ -112,7 +112,7 @@ function useEditorTabs(
   return React.useMemo(() => {
     const VisualEditor =
       typeof subType === 'string'
-        ? visualAppResourceEditors[subType]
+        ? visualAppResourceEditors()[subType]
         : undefined;
     return filterArray([
       typeof VisualEditor === 'function'

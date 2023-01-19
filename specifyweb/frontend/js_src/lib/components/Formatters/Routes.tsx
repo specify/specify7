@@ -29,13 +29,6 @@ export const formattersRoutes = toReactRoutes([
             index: true,
           },
           {
-            path: 'create/new',
-            element: async () =>
-              import('./Element').then(
-                ({ FormatterWrapper }) => FormatterWrapper
-              ),
-          },
-          {
             path: 'name',
             children: [
               {

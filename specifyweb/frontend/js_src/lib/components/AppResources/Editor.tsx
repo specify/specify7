@@ -14,6 +14,10 @@ import { LoadingContext } from '../Core/Contexts';
 import { toTable } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { createResource } from '../DataModel/resource';
+import {
+  deserializeResource,
+  serializeResource,
+} from '../DataModel/serializers';
 import type {
   SpAppResource,
   SpAppResourceData,
@@ -35,10 +39,6 @@ import {
 import { getResourceType } from './filtersHelpers';
 import { useAppResourceData } from './hooks';
 import { AppResourcesTabs } from './Tabs';
-import {
-  deserializeResource,
-  serializeResource,
-} from '../DataModel/serializers';
 
 export function AppResourceEditor({
   resource,
@@ -140,12 +140,12 @@ export function AppResourceEditor({
         <AppResourcesTabs
           appResource={appResource}
           data={resourceData.data}
+          directory={directory}
           headerButtons={headerButtons}
           isFullScreen={isFullScreen}
           isReadOnly={isReadOnly}
           label={formatted}
           resource={resource}
-          directory={directory}
           showValidationRef={showValidationRef}
           onChange={(data): void => setResourceData({ ...resourceData, data })}
           onExitFullScreen={handleExitFullScreen}
