@@ -24,6 +24,11 @@ type StatsSpec =
         readonly categories: () => StatCategoryReturn;
       };
     };
+
+/*
+ * TODO: Return objects directly instead of returning a callback since
+ *  Code now supports relative dates
+ */
 // @ts-expect-error
 export const statsSpec: IR<StatsSpec> = {
   [statsText('collection')]: {
@@ -73,7 +78,7 @@ export const statsSpec: IR<StatsSpec> = {
               },
             ],
           },
-        },
+        } /*
         familiesRepresented: {
           label: statsText('familiesRepresented'),
           spec: {
@@ -115,7 +120,7 @@ export const statsSpec: IR<StatsSpec> = {
               },
             ],
           },
-        },
+        },*/,
       }),
     },
     preparations: {
