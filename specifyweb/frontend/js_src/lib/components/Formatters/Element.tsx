@@ -6,7 +6,7 @@ import { commonText } from '../../localization/common';
 import { mainText } from '../../localization/main';
 import { resourcesText } from '../../localization/resources';
 import type { GetSet } from '../../utils/types';
-import { replaceItem } from '../../utils/utils';
+import { removeItem, replaceItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { Dialog } from '../Molecules/Dialog';
@@ -33,10 +33,6 @@ export function FormatterWrapper(): JSX.Element {
   const isReadOnly = context.isReadOnly;
   const navigate = useNavigate();
   const handleClose = (): void => navigate(resolveRelative('../../'));
-  /*
-   * FIXME: add delete button
-   * FIXME: add save button
-   */
   return index === -1 ? (
     <Dialog
       buttons={commonText.close()}
@@ -49,8 +45,16 @@ export function FormatterWrapper(): JSX.Element {
     <Dialog
       buttons={
         <>
-          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+          <Button.Red
+            onClick={(): void => {
+              setItems(removeItem(items, index));
+              handleClose();
+            }}
+          >
+            {commonText.delete()}
+          </Button.Red>
           <span className="-ml-2 flex-1" />
+          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
         </>
       }
       header={commonText.colonLine({
