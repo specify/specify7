@@ -217,6 +217,7 @@ export const routes: RA<EnhancedRoute> = [
           import('../AppResources/EditorWrapper').then(
             ({ AppResourceView }) => AppResourceView
           ),
+        isSingleResource: true,
       },
       {
         path: 'view-set/:id/*',
@@ -224,6 +225,7 @@ export const routes: RA<EnhancedRoute> = [
           import('../AppResources/EditorWrapper').then(
             ({ ViewSetView }) => ViewSetView
           ),
+        isSingleResource: true,
       },
     ],
   },
@@ -412,3 +414,5 @@ export const routes: RA<EnhancedRoute> = [
 ];
 
 /* eslint-enable @typescript-eslint/promise-function-async */
+
+export const inRouterContext = {};

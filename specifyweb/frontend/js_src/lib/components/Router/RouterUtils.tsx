@@ -10,6 +10,9 @@ import type { LocalizedString } from 'typesafe-i18n';
 import type { IR, RA, WritableArray } from '../../utils/types';
 import { useTitle } from '../Molecules/AppTitle';
 import { LoadingScreen } from '../Molecules/Dialog';
+import { SetSingleResourceContext } from './Router';
+import { useLocation, useParams } from 'react-router-dom';
+import { useStableLocation } from './RouterState';
 
 /**
  * A wrapper for native React Routes object. Makes everything readonly.
@@ -25,6 +28,15 @@ export type EnhancedRoute = Readonly<
    * preferences
    */
   readonly title?: LocalizedString;
+  /*
+   * If true, links within this route won't trigger unload protect. Useful
+   * when a single resource has separate URLs for tabs/subtabs (e.g, in
+   * DataObjectFormatter editor)
+   *
+   * This can only be used if path ends with '*' and only for the main router
+   * (not entry point router or nested routers)
+   */
+  readonly isSingleResource?: boolean;
 };
 
 /** Convert EnhancedRoutes to RouteObjects */
@@ -32,26 +44,48 @@ export const toReactRoutes = (
   enhancedRoutes: RA<EnhancedRoute>,
   title?: LocalizedString
 ): WritableArray<RouteObject> =>
-  enhancedRoutes.map<IndexRouteObject | NonIndexRouteObject>(
-    ({ element: fetchElement, children, ...enhancedRoute }) => ({
+  enhancedRoutes.map<IndexRouteObject | NonIndexRouteObject>((data) => {
+    const {
+      element: fetchElement,
+      children,
+      isSingleResource = false,
+      ...enhancedRoute
+    } = data;
+    if (
+      process.env.NODE_ENV !== 'production' &&
+      isSingleResource &&
+      (typeof enhancedRoute.path !== 'string' ||
+        !enhancedRoute.path.endsWith('*'))
+    )
+      throw new Error(
+        '"isSingleResource" only has effect for path\'s that end with "*"'
+      );
+
+    const element =
+      typeof fetchElement === 'function' ? (
+        <Async
+          Element={React.lazy(async () =>
+            fetchElement().then((element) => ({ default: element }))
+          )}
+          title={enhancedRoute.title ?? title}
+        />
+      ) : (
+        fetchElement
+      );
+
+    return {
       ...enhancedRoute,
       index: enhancedRoute.index as unknown as false,
       children: Array.isArray(children)
         ? toReactRoutes(children, title)
         : undefined,
-      element:
-        typeof fetchElement === 'function' ? (
-          <Async
-            Element={React.lazy(async () =>
-              fetchElement().then((element) => ({ default: element }))
-            )}
-            title={enhancedRoute.title ?? title}
-          />
-        ) : (
-          fetchElement
-        ),
-    })
-  );
+      element: isSingleResource ? (
+        <SingleResource>{element}</SingleResource>
+      ) : (
+        element
+      ),
+    };
+  });
 
 /**
  * Using this allows Webpack to split code bundles.
@@ -89,4 +123,30 @@ export function SafeOutlet<T extends IR<unknown>>(props: T): JSX.Element {
 export function ForwardOutlet(): JSX.Element {
   const context = useOutletContext();
   return <Outlet context={context} />;
+}
+
+function SingleResource({
+  children,
+}: {
+  readonly children: React.ReactNode;
+}): JSX.Element {
+  const handleSet = React.useContext(SetSingleResourceContext);
+  const parameters = useParams();
+  const location = useStableLocation(useLocation());
+
+  const index =
+    parameters['*'] === undefined
+      ? -1
+      : location.pathname.indexOf(parameters['*']);
+  const path = index === -1 ? undefined : location.pathname.slice(0, index);
+  if (process.env.NODE_ENV !== 'production' && path === undefined)
+    throw new Error(
+      'Unable to extract the base path for the single resource URL'
+    );
+
+  React.useEffect(() => {
+    handleSet(path);
+    return () => handleSet(undefined);
+  }, [handleSet, path]);
+  return <>{children}</>;
 }

@@ -14,6 +14,7 @@ import { setDevelopmentGlobal } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { unloadProtectEvents, UnloadProtectsContext } from '../Core/Contexts';
+import { error } from '../Errors/assert';
 import { crash, softFail } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { Dialog } from '../Molecules/Dialog';
@@ -76,25 +77,23 @@ export function Router(): JSX.Element {
   const isNotFound =
     (main === undefined && overlay === undefined) || isNotFoundPage;
 
+  const [singleResource, setSingleResource] = React.useState<
+    string | undefined
+  >(undefined);
   return (
-    <>
-      <UnloadProtect background={background} />
+    <SetSingleResourceContext.Provider value={setSingleResource}>
+      <UnloadProtect background={background} singleResource={singleResource} />
       {isNotFound ? <NotFoundView /> : undefined}
       {typeof overlay === 'object' && (
         <Overlay background={background} overlay={overlay} />
       )}
       {main}
-    </>
+    </SetSingleResourceContext.Provider>
   );
 }
 
 const pathIsOverlay = (relativeUrl: string): boolean =>
   relativeUrl.startsWith('/specify/overlay/');
-
-// Don't trigger unload protect if only query string or hash changes
-const isCurrentUrl = (relativeUrl: string): boolean =>
-  new URL(relativeUrl, globalThis.location.origin).pathname ===
-  globalThis.location.pathname;
 
 function useLinkIntercept(background: SafeLocation | undefined): void {
   const navigate = useNavigate();
@@ -226,10 +225,20 @@ export const OverlayContext = React.createContext<() => void>(
 );
 OverlayContext.displayName = 'OverlayContext';
 
+/**
+ * If set, links within this path won't trigger unload protection
+ */
+export const SetSingleResourceContext = React.createContext<
+  (path: string | undefined) => void
+>(() => error('SetSingleResourceContext is not defined'));
+SetSingleResourceContext.displayName = 'SetSingleResourceContext';
+
 function UnloadProtect({
   background,
+  singleResource,
 }: {
   readonly background: SafeLocation | undefined;
+  readonly singleResource: string | undefined;
 }): JSX.Element | null {
   const unloadProtects = React.useContext(UnloadProtectsContext)!;
   const [unloadProtect, setUnloadProtect] = React.useState<
@@ -244,7 +253,7 @@ function UnloadProtect({
       shouldUnset
         ? setUnloadProtect((blocker) => void blocker?.resolve())
         : undefined,
-    [isEmpty, isSet]
+    [shouldUnset]
   );
 
   const backgroundRef = React.useRef<SafeLocation | undefined>(background);
@@ -254,17 +263,17 @@ function UnloadProtect({
     React.useCallback(
       async (location) =>
         new Promise((resolve, reject) =>
-          hasUnloadProtect(location, backgroundRef.current)
+          hasUnloadProtect(location, backgroundRef.current, singleResource)
             ? setUnloadProtect({ resolve: () => resolve('unblock'), reject })
             : resolve('ignore')
         ),
-      []
+      [singleResource]
     )
   );
   /*
    * Need to use events rather than context because contexts take time to
    * propagate, leading to false "Unsaved changes" warnings when unsetting
-   * unload protects and navigation are done one after another.
+   * unload protects and navigation are done in the same cycle
    */
   React.useEffect(() => unloadProtectEvents.on('blocked', block), [block]);
   React.useEffect(
@@ -291,11 +300,33 @@ function UnloadProtect({
 /** Decide whether a given URL change should trigger unload protect */
 const hasUnloadProtect = (
   newLocation: SafeLocation,
-  background: SafeLocation | undefined
-): boolean =>
+  background: SafeLocation | undefined,
+  singleResource: string | undefined
+) =>
+  // Check for navigation within overlay
   !pathIsOverlay(newLocation.pathname) &&
+  // Check for navigation that only changes query string / hash
   !isCurrentUrl(newLocation.pathname) &&
-  f.maybe(background, locationToUrl) !== locationToUrl(newLocation);
+  // Check for exiting overlay
+  f.maybe(background, locationToUrl) !== locationToUrl(newLocation) &&
+  // Check for navigation within single resource
+  !isSingleResource(newLocation, singleResource);
+
+function isSingleResource(
+  { pathname }: SafeLocation,
+  singleResource: string | undefined
+): boolean {
+  if (singleResource === undefined) return false;
+  return (
+    pathname.startsWith(singleResource) &&
+    globalThis.location.pathname.startsWith(singleResource)
+  );
+}
+
+// Don't trigger unload protect if only query string or hash changes
+const isCurrentUrl = (relativeUrl: string): boolean =>
+  new URL(relativeUrl, globalThis.location.origin).pathname ===
+  globalThis.location.pathname;
 
 export function UnloadProtectDialog({
   children,
