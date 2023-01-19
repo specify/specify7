@@ -37,9 +37,5 @@ def agent_types_other_and_group_do_not_have_addresses(agent):
     
     # This Business Rule (Agents of type Other/Group can not have Addresses) was removed 
     # See https://github.com/specify/specify7/issues/2518 for more information
-    if agent_types[agent.agenttype] in ('Other', 'Group'):
-        from specifyweb.specify import models
-        rel = models.datamodel.get_table_strict('Splocalecontaineritem').get_relationship('splocaleitemstr')
-        raise KeyError(rel, f"Dep: {rel.dependent}", f"Reverse:  {models.datamodel.reverse_relationship(rel)}")
-        raise KeyError(models.datamodel.get_table('Spappresource').get_relationship('spreports').dependent)
-        agent.addresses.all().delete()
+    # if agent_types[agent.agenttype] in ('Other', 'Group'):
+    #     agent.addresses.all().delete()

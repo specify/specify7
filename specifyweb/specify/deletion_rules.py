@@ -48,7 +48,7 @@ SPECIAL_DELETION_RULES = {
         'names' : models.CASCADE
     },
     'Splocalecontaineritem' : {
-        'name' : models.CASCADE
+        'names' : models.CASCADE
     },
     'SpQuery' : {"fields" : models.CASCADE},
 }
