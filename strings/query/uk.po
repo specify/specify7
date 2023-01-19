@@ -193,7 +193,7 @@ msgid "createKml"
 msgstr "Створіть KML"
 
 #: components/QueryBuilder/Components.tsx:215
-#: components/QueryBuilder/Results.tsx:499
+#: components/QueryBuilder/Results.tsx:500
 #. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Results
 #, fuzzy
 msgid "createRecordSet"
