@@ -108,12 +108,6 @@ export function StatsPage(): JSX.Element | null {
     pageIndex: 0,
     isPageUpdated: false,
   });
-  const filters = React.useMemo(
-    () => ({
-      specifyUser: userInformation.id,
-    }),
-    []
-  );
 
   const categoriesToFetchInitially = useCategoryToFetch(
     activePage.isCollection ? collectionLayout : personalLayout
@@ -127,11 +121,14 @@ export function StatsPage(): JSX.Element | null {
   const backEndResponse = useBackendApi(categoriesToFetch, false);
   const defaultBackEndResponse = useBackendApi(allCategories, false);
   const statsSpec = useStatsSpec();
+  const defaultLayoutSpec = useDefaultLayout(statsSpec);
 
-  const defaultStatsSpec = useStatsSpec();
-  const defaultLayoutSpec = useDefaultLayout(defaultStatsSpec);
-
-  /* Initial Load For Collection and Personal Pages*/
+  /*
+   * Initial Load For Collection and Personal Pages
+   * If collection and personal layout are undefined initially, then we need to fetch all unknown categories.
+   * It is simpler to make the promise twice since throttledAjax returns the previous promise if the spec is same
+   *
+   */
   React.useEffect(() => {
     if (collectionLayout === undefined) {
       setCollectionLayout(defaultLayoutSpec);
@@ -216,9 +213,17 @@ export function StatsPage(): JSX.Element | null {
     },
     [setDefaultLayout]
   );
+
+  // Used to set unknown categories once for layout initially, and every time for default layout
   useUnknownCategory(backEndResponse, handleChange, statsSpec);
   useUnknownCategory(defaultBackEndResponse, handleDefaultChange, statsSpec);
 
+  const filters = React.useMemo(
+    () => ({
+      specifyUser: userInformation.id,
+    }),
+    []
+  );
   const queries = useQueries(filters, false);
   const previousCollectionLayout = React.useRef(
     collectionLayout as unknown as StatLayout
@@ -457,6 +462,10 @@ export function StatsPage(): JSX.Element | null {
                 setPersonalLayout(previousLayout.current);
                 setState({ type: 'DefaultState' });
                 setActivePage(({ isCollection, pageIndex }) => {
+                  /*
+                   * Also handles cases where a new page is added and user clicks on cancel.
+                   * Shifts to the last page in the current group
+                   */
                   const previousLayoutRef = isCollection
                     ? previousCollectionLayout
                     : previousLayout;
@@ -760,7 +769,7 @@ export function StatsPage(): JSX.Element | null {
         <AddStatDialog
           defaultStatsAddLeft={defaultStatsAddLeft}
           queries={queries}
-          statsSpec={defaultStatsSpec}
+          statsSpec={statsSpec}
           onAdd={(item, itemIndex): void =>
             handleAdd(item, state.categoryIndex, itemIndex)
           }
