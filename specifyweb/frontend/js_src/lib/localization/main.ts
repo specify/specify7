@@ -14,7 +14,7 @@ export const mainText = createDictionary({
     comment: 'Formatting for the title in the web page title bar',
     'en-us': '{baseTitle:string} | Specify 7',
     'ru-ru': '{baseTitle:string} | Specify 7',
-    'es-es': '{baseTitle:string} | Specify 7',
+    'es-es': '{baseTitle:string} | Especificar 7',
     'fr-fr': '{baseTitle:string} | Précisez 7',
     'uk-ua': '{baseTitle:string} | Вкажіть 7',
   },
@@ -22,7 +22,7 @@ export const mainText = createDictionary({
     comment: 'Default page title',
     'en-us': 'Specify 7',
     'ru-ru': 'Specify 7',
-    'es-es': 'Specify 7',
+    'es-es': 'Especificar 7',
     'fr-fr': 'Précisez 7',
     'uk-ua': 'Вкажіть 7',
   },
@@ -38,7 +38,7 @@ export const mainText = createDictionary({
     comment: 'Used in the heading on 404 page',
     'en-us': 'Oops! Nothing was found',
     'ru-ru': 'Ой! Ничего не найдено',
-    'es-es': '¡Vaya! no se encontró nada',
+    'es-es': '¡Ups! no se encontró nada',
     'fr-fr': "Oops! Rien n'a été trouvé",
     'uk-ua': 'Ой! Нічого не знайдено',
   },
@@ -53,8 +53,8 @@ export const mainText = createDictionary({
       или она временно недоступна.
     `,
     'es-es': `
-      La página que está buscando puede haber sido eliminada, su nombre ha
-      cambiado o no está disponible temporalmente.
+      Es posible que la página que está buscando haya sido eliminada, haya
+      cambiado de nombre o no esté disponible temporalmente.
     `,
     'fr-fr': `
       La page que vous recherchez a peut-être été supprimée, a changé de nom ou
@@ -68,14 +68,14 @@ export const mainText = createDictionary({
   returnToHomepage: {
     'en-us': 'Return to homepage',
     'ru-ru': 'Вернуться на главную страницу',
-    'es-es': 'Volver a la página de inicio',
+    'es-es': 'Regresar a la página principal',
     'fr-fr': "Retour à la page d'accueil",
     'uk-ua': 'Повернутися на головну сторінку',
   },
   errorOccurred: {
     'en-us': "Sorry, something's gone a bit wrong",
     'ru-ru': 'Произошла неожиданная ошибка',
-    'es-es': 'Lo siento, algo ha ido un poco mal',
+    'es-es': 'Lo siento, algo salió un poco mal',
     'fr-fr': "Désolé, quelque chose s'est un peu mal passé",
     'uk-ua': 'Вибачте, щось пішло не так',
   },
@@ -89,8 +89,8 @@ export const mainText = createDictionary({
       к вашему текущему окну.
     `,
     'es-es': `
-      Lo sentimos, parece que ha encontrado un error en Specify 7 del que no
-      somos conscientes.
+      Lo sentimos, parece que ha encontrado un error en Especificar 7 del que
+      tal vez no tengamos conocimiento.
     `,
     'fr-fr': `
       Nous sommes désolés, il semble que vous ayez rencontré une erreur dans
@@ -111,8 +111,8 @@ export const mainText = createDictionary({
       безопасного места — домашней страницы.
     `,
     'es-es': `
-      Para evitar corromper los registros de datos, tenemos que empezar de nuevo
-      desde un punto seguro: la página de inicio.
+      Para evitar corromper los registros de datos, debemos comenzar de nuevo
+      desde un lugar seguro: la página de inicio.
     `,
     'fr-fr': `
       Pour éviter de corrompre les enregistrements de données, nous devons
@@ -135,9 +135,9 @@ export const mainText = createDictionary({
       отправьте его на <email />.
     `,
     'es-es': `
-      Si el problema persiste, póngase en contacto con el servicio de asistencia
-      informática. Si se trata de una base de datos de Specify Cloud, descargue
-      el mensaje de error y envíelo a <email />.
+      Si este problema persiste, comuníquese con su soporte de TI. Si se trata
+      de una base de datos de Especificar nube, descargue el mensaje de error y
+      envíelo a <email />.
     `,
     'fr-fr': `
       Si ce problème persiste, veuillez contacter votre support informatique.
@@ -164,8 +164,8 @@ export const mainText = createDictionary({
     `,
     'es-es': `
       Los usuarios de <memberLink>instituciones miembro</memberLink> pueden
-      buscar preguntas respondidas y pedir ayuda en nuestro <discourseLink>Foro
-      de la Comunidad</discourseLink>.
+      buscar respuestas a preguntas y pedir ayuda en nuestro <discourseLink>Foro
+      de la comunidad</discourseLink>.
     `,
     'fr-fr': `
       Les utilisateurs des <memberLink>institutions membres</memberLink> peuvent
@@ -188,7 +188,7 @@ export const mainText = createDictionary({
   leavePageConfirmation: {
     'en-us': 'Are you sure you want to leave this page?',
     'ru-ru': 'Вы уверены, что хотите покинуть эту страницу?',
-    'es-es': '¿Seguro que quiere abandonar esta página?',
+    'es-es': '¿Seguro que quieres salir de esta página?',
     'fr-fr': 'Voulez-vous vraiment quitter cette page ?',
     'uk-ua': 'Ви впевнені, що бажаєте залишити цю сторінку?',
   },
@@ -196,7 +196,7 @@ export const mainText = createDictionary({
     'en-us': 'Unsaved changes would be lost if your leave this page.',
     'ru-ru':
       'Несохраненные изменения будут потеряны, если вы покинете эту страницу.',
-    'es-es': 'Los cambios sin guardados se perderán si abandonas esta página.',
+    'es-es': 'Los cambios no guardados se perderán si abandona esta página.',
     'fr-fr': `
       Les modifications non enregistrées seront perdues si vous quittez cette
       page.
