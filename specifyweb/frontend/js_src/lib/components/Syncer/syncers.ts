@@ -6,13 +6,13 @@ import type { RA } from '../../utils/types';
 import { getAttribute } from '../../utils/utils';
 import { parseJavaClassName } from '../DataModel/resource';
 import { getModel, schema } from '../DataModel/schema';
+import type { LiteralField, Relationship } from '../DataModel/specifyField';
+import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Tables } from '../DataModel/types';
+import { silenceConsole } from '../Errors/interceptLogs';
 import type { BaseSpec, SpecToJson, Syncer } from './index';
 import { symbolOldInputs, syncer, xmlBuilder, xmlParser } from './index';
-import { silenceConsole } from '../Errors/interceptLogs';
 import { createXmlNode, renameXmlNode } from './xmlUtils';
-import { LiteralField, Relationship } from '../DataModel/specifyField';
-import { SpecifyModel } from '../DataModel/specifyModel';
 
 function getChildren(cell: Element, tagName: string): RA<Element> {
   const lowerTagName = tagName.toLowerCase();
@@ -104,9 +104,7 @@ export const syncers = {
         return cell;
       })
     ),
-  // FIXME: make sure to put new child after the last one
   xmlChildren: (tagName: string) =>
-    // FIXME: test creating new children
     syncer<Element, RA<Element>>(
       (cell) => getChildren(cell, tagName),
       ensureCell((rawNewChildren, cell) => {
@@ -125,10 +123,21 @@ export const syncers = {
           { length: children.length - newChildren.length },
           (_, index) => children[index].remove()
         );
+
+        /*
+         * Insert new nodes after the last child, not at the end of the element.
+         * This makes a difference if there are other xml nodes (with a different
+         * tag name) or comments after the last matching child
+         */
         const addedCount = newChildren.length - children.length;
-        Array.from({ length: addedCount }, (_, index) =>
-          cell.append(newChildren[addedCount + index])
+        const childrenToAdd = Array.from(
+          { length: addedCount },
+          (_, index) => newChildren[addedCount + index]
         );
+        childrenToAdd.forEach((child) =>
+          cell.insertBefore(child, cell.lastChild)
+        );
+
         return cell;
       })
     ),
@@ -240,52 +249,56 @@ export const syncers = {
           [key]: deserializer(object, oldValue),
         } as unknown as OBJECT)
     ),
-  /*change: <
-    KEY extends string,
-    RAW,
-    PARSED,
-    OBJECT extends { readonly [key in KEY]: RAW },
-    NEW_OBJECT extends {
-      readonly [key in keyof OBJECT]: key extends KEY ? PARSED : OBJECT[KEY];
-    }
-  >(
-    key: KEY,
-    serializer: (object: OBJECT) => PARSED,
-    deserializer: (object: NEW_OBJECT, oldValue: OBJECT | undefined) => RAW
-  ) =>
-    syncer<OBJECT,NEW_OBJECT>(
-      (object) =>
-        ({
-          ...object,
-          [key]: serializer(object),
-        } as unknown as NEW_OBJECT),
-      (object, oldValue) =>
-        ({
-          ...object,
-          [key]: deserializer(object, oldValue),
-        } as unknown as OBJECT)
-    ),*/
-  /*change: <
-    KEY extends string,
-    OBJECT extends SpecToJson<BaseSpec>,
-    NEW_OBJECT extends SpecToJson<BaseSpec>
-  >(
-    key: KEY,
-    serializer: (object: OBJECT) => NEW_OBJECT[KEY],
-    deserializer: (object: NEW_OBJECT, oldValue: OBJECT | undefined) => OBJECT[KEY]
-  ) =>
-    syncer<OBJECT,NEW_OBJECT>(
-      (object) =>
-        ({
-          ...object,
-          [key]: serializer(object),
-        } as unknown as NEW_OBJECT),
-      (object, oldValue) =>
-        ({
-          ...object,
-          [key]: deserializer(object, oldValue),
-        } as unknown as OBJECT)
-    ),*/
+  /*
+   *Change: <
+   *KEY extends string,
+   *RAW,
+   *PARSED,
+   *OBJECT extends { readonly [key in KEY]: RAW },
+   *NEW_OBJECT extends {
+   *  readonly [key in keyof OBJECT]: key extends KEY ? PARSED : OBJECT[KEY];
+   *}
+   *>(
+   *key: KEY,
+   *serializer: (object: OBJECT) => PARSED,
+   *deserializer: (object: NEW_OBJECT, oldValue: OBJECT | undefined) => RAW
+   *) =>
+   *syncer<OBJECT,NEW_OBJECT>(
+   *  (object) =>
+   *    ({
+   *      ...object,
+   *      [key]: serializer(object),
+   *    } as unknown as NEW_OBJECT),
+   *  (object, oldValue) =>
+   *    ({
+   *      ...object,
+   *      [key]: deserializer(object, oldValue),
+   *    } as unknown as OBJECT)
+   *),
+   */
+  /*
+   *Change: <
+   *KEY extends string,
+   *OBJECT extends SpecToJson<BaseSpec>,
+   *NEW_OBJECT extends SpecToJson<BaseSpec>
+   *>(
+   *key: KEY,
+   *serializer: (object: OBJECT) => NEW_OBJECT[KEY],
+   *deserializer: (object: NEW_OBJECT, oldValue: OBJECT | undefined) => OBJECT[KEY]
+   *) =>
+   *syncer<OBJECT,NEW_OBJECT>(
+   *  (object) =>
+   *    ({
+   *      ...object,
+   *      [key]: serializer(object),
+   *    } as unknown as NEW_OBJECT),
+   *  (object, oldValue) =>
+   *    ({
+   *      ...object,
+   *      [key]: deserializer(object, oldValue),
+   *    } as unknown as OBJECT)
+   *),
+   */
 } as const;
 
 /**
