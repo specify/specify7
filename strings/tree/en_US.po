@@ -159,13 +159,13 @@ msgstr ""
 "\"{nodeName:string}\" will no longer be a synonym of "
 "\"{synonymName:string}\"."
 
-#: components/TreeView/Row.tsx:215
-#: components/TreeView/Row.tsx:225
+#: components/TreeView/Row.tsx:220
+#: components/TreeView/Row.tsx:234
 #. Used in: Components > Tree View > Row
 msgid "acceptedName"
 msgstr "Preferred: {name:string}"
 
-#: components/TreeView/index.tsx:99
+#: components/TreeView/index.tsx:100
 #. Used in: Components > Tree View > Index
 msgid "treeViewTitle"
 msgstr "{treeName:string} Tree"
@@ -177,42 +177,42 @@ msgstr "{treeName:string} Tree"
 msgid "searchTreePlaceholder"
 msgstr "Search Tree"
 
-#: components/TreeView/Row.tsx:195
+#: components/TreeView/Row.tsx:200
 #. Used in: Components > Tree View > Row
 msgid "opened"
 msgstr "Opened"
 
-#: components/TreeView/Row.tsx:196
+#: components/TreeView/Row.tsx:201
 #. Used in: Components > Tree View > Row
 msgid "closed"
 msgstr "Closed"
 
-#: components/TreeView/Row.tsx:193
+#: components/TreeView/Row.tsx:198
 #. Used in: Components > Tree View > Row
 msgid "leafNode"
 msgstr "Leaf Node"
 
-#: components/TreeView/helpers.ts:206
+#: components/TreeView/helpers.ts:209
 #. 🟥Used to show tree node's direct and indirect usages. Used in: Components > Tree View > Helpers
 msgid "nodeStats"
 msgstr "({directCount:number|formatted}, {childCount:number|formatted})"
 
-#: components/TreeView/helpers.ts:205
+#: components/TreeView/helpers.ts:208
 #. 🟥Used to show leaf tree node's direct usages. Used in: Components > Tree View > Helpers
 msgid "leafNodeStats"
 msgstr "({directCount:number|formatted})"
 
-#: components/TreeView/helpers.ts:194
+#: components/TreeView/helpers.ts:197
 #. Used in: Components > Tree View > Helpers
 msgid "directCollectionObjectCount"
 msgstr "Direct Collection Object Count"
 
-#: components/TreeView/helpers.ts:200
+#: components/TreeView/helpers.ts:203
 #. Used in: Components > Tree View > Helpers
 msgid "indirectCollectionObjectCount"
 msgstr "Indirect Collection Object Count"
 
-#: components/TreeView/index.tsx:176
+#: components/TreeView/index.tsx:183
 #. Used in: Components > Tree View > Index
 msgid "editRanks"
 msgstr "Edit Ranks"

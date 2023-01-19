@@ -333,7 +333,7 @@ msgstr "Herramientas"
 #: components/Security/UserComponents.tsx:161
 #: components/Toolbar/Language.tsx:229
 #: components/Toolbar/Language.tsx:314
-#: components/TreeView/Row.tsx:191
+#: components/TreeView/Row.tsx:196
 #. Used in: Components > Attachments > Cell ⬤ Components > Attachments > Plugin ⬤ Components > Core > Context Loader ⬤ Components > Core > Contexts ⬤ Core > __tests__ > Contexts ⬤ Components > Form Cells > Form Table ⬤ Components > Form Commands > Show Transactions ⬤ Components > Form Fields > Combo Box ⬤ Components > Form Fields > Field ⬤ Components > Form Fields > Query Combo Box ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Delete Button ⬤ Components > Forms > Search Dialog ⬤ Components > Forms > Sub View ⬤ Components > Home Page > About Specify ⬤ Components > Interactions > Prep Return Row ⬤ Components > Leaflet > Index ⬤ Components > Molecules > Auto Complete ⬤ Components > Molecules > Formatted Resource ⬤ Components > Molecules > Index ⬤ Components > Permissions > Format Error ⬤ Components > Query Builder > Field Filter ⬤ Components > Query Builder > Results ⬤ Components > Schema Config > Index ⬤ Components > Security > Collection ⬤ Components > Security > Collection Components ⬤ Components > Security > Collection Role ⬤ Components > Security > Institution ⬤ Components > Security > Policies ⬤ Components > Security > Preview ⬤ Components > Security > Role Template ⬤ Components > Security > User Collections ⬤ Components > Security > User Components ⬤ Components > Toolbar > Language ⬤ Components > Tree View > Row
 msgid "loading"
 msgstr "Cargando…"
@@ -779,8 +779,8 @@ msgstr "{resource:string} <wrap>({count:number|formatted})</wrap>"
 #: components/Security/Collection.tsx:133
 #: components/Security/Institution.tsx:74
 #: components/Security/Role.tsx:113
-#: components/TreeView/helpers.ts:193
-#: components/TreeView/helpers.ts:199
+#: components/TreeView/helpers.ts:196
+#: components/TreeView/helpers.ts:202
 #: components/WorkBench/DataSetMeta.tsx:181
 #: components/WorkBench/DataSetMeta.tsx:187
 #: components/WorkBench/DataSetMeta.tsx:315

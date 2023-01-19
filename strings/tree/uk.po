@@ -185,14 +185,14 @@ msgstr "Десинонімізувати вузол"
 msgid "desynonymizeNodeMessage"
 msgstr "\"{nodeName:string}\" більше не буде синонімом \"{synonymName:string}\"."
 
-#: components/TreeView/Row.tsx:215
-#: components/TreeView/Row.tsx:225
+#: components/TreeView/Row.tsx:220
+#: components/TreeView/Row.tsx:234
 #. Used in: Components > Tree View > Row
 #, fuzzy
 msgid "acceptedName"
 msgstr "Бажано: {name:string}"
 
-#: components/TreeView/index.tsx:99
+#: components/TreeView/index.tsx:100
 #. Used in: Components > Tree View > Index
 #, fuzzy
 msgid "treeViewTitle"
@@ -206,49 +206,49 @@ msgstr "{treeName:string} Дерево"
 msgid "searchTreePlaceholder"
 msgstr "Дерево пошуку"
 
-#: components/TreeView/Row.tsx:195
+#: components/TreeView/Row.tsx:200
 #. Used in: Components > Tree View > Row
 #, fuzzy
 msgid "opened"
 msgstr "Відкрито"
 
-#: components/TreeView/Row.tsx:196
+#: components/TreeView/Row.tsx:201
 #. Used in: Components > Tree View > Row
 #, fuzzy
 msgid "closed"
 msgstr "ЗАЧИНЕНО"
 
-#: components/TreeView/Row.tsx:193
+#: components/TreeView/Row.tsx:198
 #. Used in: Components > Tree View > Row
 #, fuzzy
 msgid "leafNode"
 msgstr "Листковий вузол"
 
-#: components/TreeView/helpers.ts:206
+#: components/TreeView/helpers.ts:209
 #. 🟥Used to show tree node's direct and indirect usages. Used in: Components > Tree View > Helpers
 #, fuzzy
 msgid "nodeStats"
 msgstr "({directCount:number|formatted}, {childCount:number|formatted})"
 
-#: components/TreeView/helpers.ts:205
+#: components/TreeView/helpers.ts:208
 #. 🟥Used to show leaf tree node's direct usages. Used in: Components > Tree View > Helpers
 #, fuzzy
 msgid "leafNodeStats"
 msgstr "({directCount:number|formatted})"
 
-#: components/TreeView/helpers.ts:194
+#: components/TreeView/helpers.ts:197
 #. Used in: Components > Tree View > Helpers
 #, fuzzy
 msgid "directCollectionObjectCount"
 msgstr "Підрахунок об’єктів прямого збору"
 
-#: components/TreeView/helpers.ts:200
+#: components/TreeView/helpers.ts:203
 #. Used in: Components > Tree View > Helpers
 #, fuzzy
 msgid "indirectCollectionObjectCount"
 msgstr "Підрахунок об’єктів непрямого збору"
 
-#: components/TreeView/index.tsx:176
+#: components/TreeView/index.tsx:183
 #. Used in: Components > Tree View > Index
 #, fuzzy
 msgid "editRanks"
