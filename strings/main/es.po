@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-01-20 19:15+0000\n"
+"PO-Revision-Date: 2023-01-20 19:20+0000\n"
 "Last-Translator: gallegonovato <fran-carro@hotmail.es>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/main/"
 "es/>\n"
@@ -123,6 +123,5 @@ msgstr ""
 
 #. Used in: Components > Core > Main
 #: components/Core/Main.tsx:152
-#, fuzzy
 msgid "versionMismatchInstructions"
-msgstr "Instrucciones para resolver Especificar discrepancia de esquema"
+msgstr "Instrucciones para resolver la discrepancia de los esquema de Specify"
