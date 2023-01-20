@@ -1,31 +1,28 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-01-18 21:27+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
-"Language-Team: Spanish "
-"<https://hosted.weblate.org/projects/specify-7/development/es/>\n"
+"PO-Revision-Date: 2023-01-20 13:08+0000\n"
+"Last-Translator: gallegonovato <fran-carro@hotmail.es>\n"
+"Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
+"development/es/>\n"
 "Language: es\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.15.1-dev\n"
+"X-Generator: Weblate 4.15.1\n"
 
+#. Used in: Components > Developer > Crash Report Visualizer ⬤ Components > Router > Routes
 #: components/Developer/CrashReportVisualizer.tsx:21
 #: components/Router/Routes.tsx:410
-#. Used in: Components > Developer > Crash Report Visualizer ⬤ Components > Router > Routes
-#, fuzzy
 msgid "crashReportVisualizer"
-msgstr "Visualizador de informes de bloqueo"
+msgstr "Visualizador los informes de errores"
 
-#: components/Developer/CrashReportVisualizer.tsx:34
 #. Used in: Components > Developer > Crash Report Visualizer
-#, fuzzy
+#: components/Developer/CrashReportVisualizer.tsx:34
 msgid "downloadAsHtml"
-msgstr "Descargar como HTML"
+msgstr "Descargar en formato HTML"
 
-#: components/Developer/CrashReportMapper.tsx:131
 #. Used in: Components > Developer > Crash Report Mapper
-#, fuzzy
+#: components/Developer/CrashReportMapper.tsx:131
 msgid "details"
-msgstr "Detalles"
+msgstr "Más información"
