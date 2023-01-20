@@ -162,19 +162,6 @@ function TreeView<SCHEMA extends AnyTree>({
     'synonymColor'
   );
 
-  //Allow to collapse all the nodes to the root node
-  const [collapsed, setCollapsed] = React.useState(false);
-  function handleCollapse(): void {
-    setFocusPath([0]);
-    setConformation([]);
-    setCollapsed(!collapsed);
-  }
-  React.useEffect(() => {
-    if (collapsed === true) {
-      handleCollapse();
-    }
-  }, [collapsed]);
-
   return rows === undefined ? null : (
     <Container.Full>
       <header className="flex flex-wrap items-center gap-2">
@@ -195,7 +182,14 @@ function TreeView<SCHEMA extends AnyTree>({
         >
           {treeText.editRanks()}
         </Button.Small>
-        <Button.Small onClick={() => setCollapsed(!collapsed)}>
+        <Button.Small
+          disabled={conformation.length === 0}
+          onClick={(e): void => {
+            e.preventDefault;
+            setFocusPath([0]);
+            setConformation([]);
+          }}
+        >
           {treeText.collapseAll()}
         </Button.Small>
         <span className="-ml-2 flex-1" />
