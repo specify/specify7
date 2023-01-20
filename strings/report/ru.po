@@ -6,7 +6,7 @@ msgstr "Content-Type: text/plain\n"
 msgid "label"
 msgstr "Этикетка"
 
-#: components/Reports/index.tsx:146
+#: components/Reports/index.tsx:147
 #. Used in: Components > Reports > Index
 msgid "labels"
 msgstr "Этикетки"
@@ -18,8 +18,8 @@ msgstr "Отчет"
 
 #: components/Header/menuItemDefinitions.ts:95
 #: components/Reports/Parameters.tsx:85
-#: components/Reports/index.tsx:131
-#: components/Reports/index.tsx:137
+#: components/Reports/index.tsx:132
+#: components/Reports/index.tsx:138
 #: components/Router/OverlayRoutes.tsx:111
 #: components/UserPreferences/Definitions.tsx:1310
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Reports > Parameters ⬤ Components > Reports > Index ⬤ Components > Router > Overlay Routes ⬤ Components > User Preferences > Definitions

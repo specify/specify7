@@ -3,20 +3,20 @@ msgstr "Content-Type: text/plain\n"
 
 #: components/UserPreferences/Definitions.tsx:1451
 #: components/WorkBench/Template.tsx:118
-#: components/WorkBench/wbView.js:1876
+#: components/WorkBench/wbView.js:1877
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 msgid "dataMapper"
 msgstr "Mapeador de datos"
 
 #: components/WbPlanView/State.tsx:37
 #: components/WorkBench/wbView.js:259
-#: components/WorkBench/wbView.js:1966
+#: components/WorkBench/wbView.js:1967
 #. Used in: Components > Wb Plan View > State ⬤ Components > Work Bench > Wb View
 msgid "noUploadPlan"
 msgstr "No se define ningún plan de carga"
 
 #: components/WorkBench/wbView.js:273
-#: components/WorkBench/wbView.js:1967
+#: components/WorkBench/wbView.js:1968
 #. Used in: Components > Work Bench > Wb View
 msgid "noUploadPlanDescription"
 msgstr ""
@@ -34,12 +34,12 @@ msgstr "Columna sin asignar"
 msgid "notMapped"
 msgstr "NO MAPEADO"
 
-#: components/Molecules/TableIcon.tsx:99
+#: components/Molecules/TableIcon.tsx:96
 #. Used in: Components > Molecules > Table Icon
 msgid "unmapped"
 msgstr "sin mapear"
 
-#: components/Molecules/TableIcon.tsx:112
+#: components/Molecules/TableIcon.tsx:109
 #. Used in: Components > Molecules > Table Icon
 msgid "mapped"
 msgstr "Mapeado"
@@ -352,12 +352,12 @@ msgstr "Nueva columna {index:number}"
 msgid "noHeader"
 msgstr "(sin encabezado)"
 
-#: components/Toolbar/WbsDialog.tsx:198
+#: components/Toolbar/WbsDialog.tsx:199
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "copyPlan"
 msgstr "Copie el plan del conjunto de datos existente"
 
-#: components/Toolbar/WbsDialog.tsx:210
+#: components/Toolbar/WbsDialog.tsx:211
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "noPlansToCopyFrom"
 msgstr "No hay planes disponibles, continúe creando un plan de carga."

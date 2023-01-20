@@ -20,9 +20,9 @@ msgid "failedParsingFloat"
 msgstr "значення \"{value:string}\" не є дійсним значенням з плаваючою комою"
 
 #: components/WorkBench/resultsParser.ts:177
-#: components/WorkBench/wbView.js:850
-#: components/WorkBench/wbView.js:857
-#: components/WorkBench/wbView.js:1353
+#: components/WorkBench/wbView.js:851
+#: components/WorkBench/wbView.js:858
+#: components/WorkBench/wbView.js:1354
 #. Used in: Components > Work Bench > Results Parser ⬤ Components > Work Bench > Wb View
 #, fuzzy
 msgid "failedParsingPickList"
