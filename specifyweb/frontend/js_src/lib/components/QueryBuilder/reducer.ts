@@ -24,7 +24,7 @@ export type MainState = State<
   'MainState',
   {
     readonly fields: RA<QueryField>;
-    readonly showMappingView : boolean;
+    readonly showMappingView: boolean;
     readonly mappingView: MappingPath;
     readonly openedElement: {
       readonly line: number;
@@ -53,7 +53,7 @@ export const getInitialState = ({
 }): MainState => ({
   type: 'MainState',
   fields: parseQueryFields(query.fields ?? []),
-  showMappingView : getCache('queryBuilder', 'showMappingView') ?? true,
+  showMappingView: getCache('queryBuilder', 'showMappingView') ?? true,
   mappingView: ['0'],
   queryRunCount: autoRun ? 1 : 0,
   openedElement: { line: 1, index: undefined },
@@ -89,8 +89,6 @@ type Actions =
       }
     >
   | Action<'ChangeFieldsAction', { readonly fields: RA<QueryField> }>
-  | Action<'ChangeFieldsAction', { readonly fields: RA<QueryField> }>
-  | Action<'FocusLineAction', { readonly line: number }>
   | Action<'FocusLineAction', { readonly line: number }>
   | Action<'LineMoveAction', { line: number; direction: 'up' | 'down' }>
   | Action<
@@ -98,7 +96,6 @@ type Actions =
       { readonly line: number; readonly direction: 'down' | 'up' }
     >
   | Action<'ToggleMappingViewAction', { readonly isVisible: boolean }>
-  | Action<'RunQueryAction'>
   | Action<'RunQueryAction'>
   | Action<'SavedQueryAction'>;
 
@@ -151,10 +148,10 @@ export const reducer = generateReducer<MainState, Actions>({
             ...state.fields.slice(action.line + 2),
           ],
   }),
-  ToggleMappingViewAction: ({ action, state}) => ({
+  ToggleMappingViewAction: ({ action, state }) => ({
     ...state,
     showMappingView: setCache(
-      'queryBuilder', 
+      'queryBuilder',
       'showMappingView',
       action.isVisible
     ),

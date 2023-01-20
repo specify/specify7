@@ -10,7 +10,7 @@ import { LoadingContext } from '../Core/Contexts';
 import { fetchRelated } from '../DataModel/collection';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { idFromUrl } from '../DataModel/resource';
-import { getModelById } from '../DataModel/schema';
+import { getModelById, schema } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Attachment } from '../DataModel/types';
 import { ResourceView } from '../Forms/ResourceView';
@@ -20,6 +20,7 @@ import { fetchThumbnail } from './attachments';
 import { tablesWithAttachments } from './index';
 import { AttachmentPreview } from './Preview';
 import { originalAttachmentsView } from '../Forms/useViewDefinition';
+import { getField } from '../DataModel/helpers';
 
 export function AttachmentCell({
   attachment,
@@ -89,7 +90,9 @@ export function AttachmentCell({
         aria-pressed={isMetaOpen}
         className="absolute top-0 right-0"
         icon="informationCircle"
-        title={commonText('metadata')}
+        title={
+          getField(schema.models.WorkbenchTemplateMappingItem, 'metaData').label
+        }
         onClick={handleMetaToggle}
       />
       {isMetaOpen && (
@@ -111,7 +114,7 @@ export function AttachmentCell({
         <AttachmentPreview attachment={attachment} thumbnail={thumbnail} />
       ) : (
         <div className="flex h-10 w-10 items-center justify-center">
-          {commonText('loading')}
+          {commonText.loading()}
         </div>
       )}
     </div>

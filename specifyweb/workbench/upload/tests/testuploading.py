@@ -1,25 +1,28 @@
-from uuid import uuid4
-import io
 import csv
-from unittest import skip
+import io
 from datetime import datetime
 from decimal import Decimal
-from jsonschema import validate # type: ignore
+from unittest import skip
+from uuid import uuid4
 
-from specifyweb.specify.tree_extras import validate_tree_numbering
-from specifyweb.specify.auditlog import auditlog
+from jsonschema import validate  # type: ignore
+
 from specifyweb.specify import auditcodes
-
-from ..uploadable import Exclude, Auditor
-from ..upload_result import Uploaded, UploadResult, Matched, MatchedMultiple, NoMatch, FailedBusinessRule, ReportInfo, TreeInfo
-from ..upload_table import UploadTable, ScopedUploadTable, _to_many_filters_and_excludes, BoundUploadTable
-from ..tomany import ToManyRecord
-from ..treerecord import TreeRecord, BoundTreeRecord, TreeDefItemWithParseResults
-from ..upload import do_upload, do_upload_csv
-from ..parsing import filter_and_upload
-from ..upload_plan_schema import schema, parse_plan, parse_column_options
-
+from specifyweb.specify.auditlog import auditlog
+from specifyweb.specify.tree_extras import validate_tree_numbering
 from .base import UploadTestsBase, get_table
+from ..parsing import filter_and_upload
+from ..tomany import ToManyRecord
+from ..treerecord import TreeRecord, BoundTreeRecord, \
+    TreeDefItemWithParseResults
+from ..upload import do_upload, do_upload_csv
+from ..upload_plan_schema import schema, parse_plan, parse_column_options
+from ..upload_result import Uploaded, UploadResult, Matched, MatchedMultiple, \
+    NoMatch, FailedBusinessRule, ReportInfo, TreeInfo
+from ..upload_table import UploadTable, ScopedUploadTable, \
+    _to_many_filters_and_excludes, BoundUploadTable
+from ..uploadable import Exclude, Auditor
+
 
 class TreeMatchingTests(UploadTestsBase):
     def setUp(self) -> None:
@@ -169,14 +172,16 @@ class TreeMatchingTests(UploadTestsBase):
         self.assertEqual(
             results[0].record_result,
             FailedBusinessRule(
-                message="Missing or unmapped required tree parent rank value for ['County'].",
+                message='missingRequiredTreeParent',
+                payload={'names':['County']},
                 info=ReportInfo(tableName='Geography', columns=['City'], treeInfo=None)
             )
         )
         self.assertEqual(
             results[1].record_result,
             FailedBusinessRule(
-                message="Missing or unmapped required tree parent rank value for ['County'].",
+                message='missingRequiredTreeParent',
+                payload={'names':['County']},
                 info=ReportInfo(tableName='Geography', columns=['City'], treeInfo=None)
             )
         )

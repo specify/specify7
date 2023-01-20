@@ -183,11 +183,10 @@ export async function queryFromTree(
 
   const model = schema.models.CollectionObject;
   const query = createQuery(
-    queryText(
-      'treeQueryName',
-      model.label,
-      node.get('fullName') ?? node.get('name')
-    ),
+    queryText.treeQueryName({
+      tableName: model.label,
+      nodeFullName: node.get('fullName') ?? node.get('name'),
+    }),
     model
   );
 

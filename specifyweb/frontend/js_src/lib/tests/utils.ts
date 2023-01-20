@@ -75,12 +75,14 @@ export function theories<ARGUMENTS_TYPE extends RA<unknown>, RETURN_TYPE>(
   else describe(testFunction.name, () => items.forEach(runTest));
 }
 
+const testNameLengthLimit = 40;
+
 function createName(input: RA<unknown>, index: number): string {
   if (input.length === 1) {
     if (
       typeof input[0] === 'string' &&
       input[0].trim().length > 0 &&
-      input[0].length < 40
+      input[0].length < testNameLengthLimit
     )
       return input[0];
     else if (input[0] === null) return 'null';

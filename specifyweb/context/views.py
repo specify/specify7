@@ -5,6 +5,7 @@ Defines the resources that are provided by this subsystem
 import json
 import os
 import re
+from typing import List
 
 from django.conf import settings
 from django.contrib.auth import authenticate, login as auth_login, \
@@ -18,8 +19,7 @@ from django.utils.translation import gettext as _
 from django.views.decorators.cache import cache_control, never_cache
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_http_methods
-from django.views.i18n import set_language
-from typing import List
+from django.views.i18n import LANGUAGE_QUERY_PARAMETER
 
 from specifyweb.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, \
@@ -721,16 +721,113 @@ def api_endpoints_all(request):
 
 @require_http_methods(['GET', 'POST', 'HEAD'])
 @cache_control(max_age=86400, public=True)
+@openapi(schema={
+    "get": {
+        "parameters": {
+            "languages": {
+                "name": "languages",
+                "in": "query",
+                "description": "Comma separate list of languages",
+                "example": "en-us,uk-ua,ru-ru",
+                "required": False,
+                "schema": {
+                    "type": "string",
+                },
+            },
+        },
+        "responses": {
+            "200": {
+                "description": "List of available languages",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "object",
+                                "properties": {
+                                    "bidi": {
+                                        "type": "boolean",
+                                    },
+                                    "code": {
+                                        "type": "string",
+                                        "example": "uk",
+                                    },
+                                    "is_current": {
+                                        "description": "Is currently selected language",
+                                        "type": "boolean",
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Ukrainian",
+                                    },
+                                    "name_local": {
+                                        "type": "string",
+                                        "example": "Українська",
+                                    },
+                                    "name_translated": {
+                                        "type": "string",
+                                        "example": "Ukrainian",
+                                    },
+                                },
+                            },
+                        },
+                    }
+                },
+            }
+        }
+    },
+    'post': {
+        "requestBody": {
+            "required": True,
+            "description": "Login information",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "language": {
+                                "type": "string",
+                                "example": "uk-ua",
+                            },
+                        },
+                    }
+                }
+            }
+        },
+        "responses": {
+            "204": {"description": "Language changed"},
+        }
+    },
+})
 def languages(request):
     """Get List of available languages OR set current language."""
     if request.method == 'POST':
-        return set_language(request)
+        data = json.load(request)
+        language = data.get(LANGUAGE_QUERY_PARAMETER, settings.LANGUAGE_CODE)
+        # Based on django.views.i18n.set_language, but does not check for
+        # validity of language code. This allows front-end to enable a dev-only
+        # language like "underscore" or "double"
+        response = HttpResponse(status=204)
+        response.set_cookie(
+            settings.LANGUAGE_COOKIE_NAME,
+            language,
+            max_age=settings.LANGUAGE_COOKIE_AGE,
+            path=settings.LANGUAGE_COOKIE_PATH,
+            domain=settings.LANGUAGE_COOKIE_DOMAIN,
+        )
+        return response
     else:  # GET or HEAD
+        languages = request.GET.get('languages', None)
+        if languages is None:
+            languages = [code for code,name in settings.LANGUAGES]
+        else:
+            languages = languages.split(',')
+
         return JsonResponse({
             code:{
                 **get_language_info(code),
                 'is_current': code==request.LANGUAGE_CODE
-            } for code, name in settings.LANGUAGES
+            } for code in languages
         })
 
 @require_http_methods(['GET', 'HEAD'])

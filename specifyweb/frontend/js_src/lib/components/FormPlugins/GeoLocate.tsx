@@ -103,15 +103,15 @@ function GeoLocate({
 
   return data === undefined ? null : data === false ? (
     <Dialog
-      buttons={commonText('close')}
-      header={localityText('geographyRequiredDialogHeader')}
+      buttons={commonText.close()}
+      header={localityText.geographyRequired()}
       onClose={handleClose}
     >
-      {localityText('geographyRequiredDialogText')}
+      {localityText.geographyRequiredDescription()}
     </Dialog>
   ) : (
     <Dialog
-      buttons={commonText('close')}
+      buttons={commonText.close()}
       forwardRef={{
         container(container): void {
           if (container === null) return;
@@ -119,7 +119,7 @@ function GeoLocate({
           container.style.height = `${height}px`;
         },
       }}
-      header={localityText('geoLocate')}
+      header={localityText.geoLocate()}
       modal={false}
       onClose={handleClose}
       // REFACTOR: consider adding a hook to remember dialog size and position
@@ -135,7 +135,7 @@ function GeoLocate({
           'https://www.geo-locate.org/web/webgeoreflight.aspx',
           data
         ).replace(/%7c/gi, '|')}
-        title={localityText('geoLocate')}
+        title={localityText.geoLocate()}
       />
     </Dialog>
   );
@@ -218,7 +218,7 @@ export function GeoLocatePlugin({
         className="w-fit"
         onClick={handleToggle}
       >
-        {localityText('geoLocate')}
+        {localityText.geoLocate()}
       </Button.Small>
       {isOpen && <GeoLocate resource={resource} onClose={handleClose} />}
     </>

@@ -12,7 +12,12 @@ class Scoping(namedtuple('Scoping', 'obj')):
 
     def __call__(self):
         table = self.obj.__class__.__name__.lower()
-        return getattr(self, table, lambda: None)()
+        scope =  getattr(self, table, lambda: None)()
+        if scope is None:
+            inferred_scope = self._infer_scope()
+            if inferred_scope is None: return self._default_institution_scope()
+        return scope
+
 
 ################################################################################
 
@@ -38,6 +43,10 @@ class Scoping(namedtuple('Scoping', 'obj')):
     def dnasequence(self): return self._simple_collection_scope()
 
     def dnasequencing(self): return self._simple_collection_scope()
+
+    def exchangein(self): return self._simple_division_scope()
+
+    def exchangeout(self): return self._simple_division_scope()
 
     def fieldnotebook(self): return self._simple_discipline_scope()
 
@@ -75,3 +84,13 @@ class Scoping(namedtuple('Scoping', 'obj')):
 
     def _simple_collection_scope(self):
         return COLLECTION_SCOPE, self.obj.collectionmemberid
+
+    def _infer_scope(self):
+        if hasattr(self.obj, "division_id"): return self._simple_division_scope()
+        if hasattr(self.obj, "discipline_id") : return self._simple_discipline_scope()
+        if hasattr(self.obj, "collectionmemberid"): return self._simple_collection_scope()
+
+    # If the table has no scope, and scope can not be inferred then scope to institution
+    def _default_institution_scope(self):
+        institution = models.Institution.objects.get()
+        return INSTITUTION_SCOPE, institution.id

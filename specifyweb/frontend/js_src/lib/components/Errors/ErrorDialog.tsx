@@ -11,8 +11,12 @@ import { Dialog } from '../Molecules/Dialog';
 import { downloadFile } from '../Molecules/FilePicker';
 import { clearCache } from '../RouterCommands/CacheBuster';
 import { usePref } from '../UserPreferences/usePref';
+import { mainText } from '../../localization/main';
+import { headerText } from '../../localization/header';
+import { StringToJsx } from '../../localization/utils';
+import { LocalizedString } from 'typesafe-i18n';
 
-const supportEmail = 'support@specifysoftware.org';
+const supportEmail = 'support@specifysoftware.org' as LocalizedString;
 export const supportLink = (
   <Link.NewTab href={`mailto:${supportEmail}`} rel="noreferrer">
     {supportEmail}
@@ -20,8 +24,34 @@ export const supportLink = (
 );
 const errors = new Set<string>();
 
+const errorBody = (
+  <p>
+    <StringToJsx
+      string={mainText.errorResolutionDescription()}
+      components={{ email: supportLink }}
+    />
+    <br />
+    <br />
+    <StringToJsx
+      string={mainText.errorResolutionSecondDescription()}
+      components={{
+        memberLink: (label) => (
+          <Link.NewTab href="https://www.specifysoftware.org/members/#:~:text=Members%20can%20contact%20support%40specifysoftware.org%20for%20assistance%20updating.">
+            {label}
+          </Link.NewTab>
+        ),
+        discourseLink: (label) => (
+          <Link.NewTab href="https://discourse.specifysoftware.org/">
+            {label}
+          </Link.NewTab>
+        ),
+      }}
+    />
+  </p>
+);
+
 export function ErrorDialog({
-  header = commonText('errorBoundaryDialogHeader'),
+  header = mainText.errorOccurred(),
   children,
   copiableMessage,
   // Error dialog is only closable in Development
@@ -30,7 +60,7 @@ export function ErrorDialog({
 }: {
   readonly children: React.ReactNode;
   readonly copiableMessage: string;
-  readonly header?: string;
+  readonly header?: LocalizedString;
   readonly onClose?: () => void;
   readonly dismissable?: boolean;
 }): JSX.Element {
@@ -87,7 +117,7 @@ export function ErrorDialog({
               )
             }
           >
-            {commonText('downloadErrorMessage')}
+            {commonText.downloadErrorMessage()}
           </Button.Blue>
           <span className="-ml-2 flex-1" />
           <Label.Inline>
@@ -95,7 +125,7 @@ export function ErrorDialog({
               checked={clearCacheOnException}
               onValueChange={setClearCache}
             />
-            {commonText('clearCache')}
+            {headerText.clearCache()}
           </Label.Inline>
           <Button.Red
             onClick={(): void =>
@@ -107,7 +137,7 @@ export function ErrorDialog({
               )
             }
           >
-            {commonText('goToHomepage')}
+            {commonText.goToHomepage()}
           </Button.Red>
           {canClose && (
             <Button.Blue
@@ -120,7 +150,7 @@ export function ErrorDialog({
                 handleClose();
               }}
             >
-              {commonText('dismiss')}
+              {commonText.dismiss()}
             </Button.Blue>
           )}
         </>
@@ -130,31 +160,16 @@ export function ErrorDialog({
       onClose={undefined}
     >
       <p>
-        {commonText('errorBoundaryDialogText')}{' '}
-        {!canClose && commonText('errorBoundaryCriticalDialogText')}
+        {mainText.errorOccurredDescription()}{' '}
+        {!canClose && mainText.criticalErrorOccurredDescription()}
       </p>
       <br />
-      <p>
-        {commonText(
-          'errorBoundaryDialogSecondMessage',
-          supportLink,
-          (label) => (
-            <Link.NewTab href="https://www.specifysoftware.org/members/#:~:text=Members%20can%20contact%20support%40specifysoftware.org%20for%20assistance%20updating.">
-              {label}
-            </Link.NewTab>
-          ),
-          (label) => (
-            <Link.NewTab href="https://discourse.specifysoftware.org/">
-              {label}
-            </Link.NewTab>
-          )
-        )}
-      </p>
+      {errorBody}
       <details
         className="flex-1 whitespace-pre-wrap"
         open={process.env.NODE_ENV === 'development'}
       >
-        <summary>{commonText('errorMessage')}</summary>
+        <summary>{mainText.errorMessage()}</summary>
         {children}
       </details>
     </Dialog>

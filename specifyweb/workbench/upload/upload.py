@@ -1,26 +1,25 @@
-from contextlib import contextmanager
-import time
-import logging
 import csv
-from datetime import datetime, timezone
 import json
-from jsonschema import validate # type: ignore
+import logging
+import time
+from contextlib import contextmanager
+from datetime import datetime, timezone
+from typing import List, Dict, Union, Callable, Optional, Sized, Tuple, Any
 
-from typing import List, Dict, Union, Callable, Optional, Sized, Tuple, Any, Set
-
-from django.db import connection, transaction
+from django.db import transaction
 from django.db.utils import OperationalError, IntegrityError
 from django.utils.translation import gettext as _
+from jsonschema import validate  # type: ignore
 
 from specifyweb.specify import models
-from specifyweb.specify.datamodel import Table, datamodel
 from specifyweb.specify.auditlog import auditlog
+from specifyweb.specify.datamodel import Table
 from specifyweb.specify.tree_extras import renumber_tree, reset_fullnames
-
-from .uploadable import ScopedUploadable, Row, Disambiguation, Auditor
-from .upload_result import Uploaded, UploadResult, ParseFailures, json_to_UploadResult
-from .upload_plan_schema import schema, parse_plan_with_basetable
 from . import disambiguation
+from .upload_plan_schema import schema, parse_plan_with_basetable
+from .upload_result import Uploaded, UploadResult, ParseFailures, \
+    json_to_UploadResult
+from .uploadable import ScopedUploadable, Row, Disambiguation, Auditor
 from ..models import Spdataset
 
 Rows = Union[List[Row], csv.DictReader]
@@ -120,7 +119,7 @@ def do_upload_dataset(
         allow_partial: bool,
         progress: Optional[Progress]=None
 ) -> List[UploadResult]:
-    assert not ds.was_uploaded(), "Already uploaded!"
+    if ds.was_uploaded(): raise AssertionError("Dataset already uploaded", {"localizationKey" : "datasetAlreadyUploaded"})
     ds.rowresults = None
     ds.uploadresult = None
     ds.save(update_fields=['rowresults', 'uploadresult'])
@@ -146,7 +145,7 @@ def do_upload_dataset(
 
 def clear_disambiguation(ds: Spdataset) -> None:
     with transaction.atomic():
-        assert not ds.was_uploaded(), "Already uploaded!"
+        if ds.was_uploaded(): raise AssertionError("Dataset already uploaded!", {"localizationKey" : "datasetAlreadyUploaded"})
         ds.rowresults = None
         ds.uploadresult = None
         ds.save(update_fields=['rowresults', 'uploadresult'])
@@ -163,6 +162,7 @@ def create_record_set(ds: Spdataset, table: Table, results: List[UploadResult]):
     rs = getattr(models, 'Recordset').objects.create(
         collectionmemberid=ds.collection.id,
         dbtableid=table.tableId,
+        # TODO: make this value come from front-end
         name=_('WB Upload of %(data_set_name)s') %{'data_set_name':ds.name},
         specifyuser=ds.specifyuser,
         type=0,

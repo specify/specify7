@@ -1,6 +1,7 @@
 import { getMappingLineData } from '../navigator';
 import { theories } from '../../../tests/utils';
 import { requireContext } from '../../../tests/helpers';
+import { LocalizedString } from 'typesafe-i18n';
 
 requireContext();
 
@@ -18,7 +19,7 @@ theories(getMappingLineData, [
     out: [
       {
         customSelectSubtype: 'simple',
-        selectLabel: 'Collection Object',
+        selectLabel: 'Collection Object' as LocalizedString,
         fieldsData: {
           catalogNumber: {
             optionLabel: 'Cat #',
@@ -214,7 +215,7 @@ theories(getMappingLineData, [
       },
       {
         customSelectSubtype: 'toMany',
-        selectLabel: 'Determination',
+        selectLabel: 'Determination' as LocalizedString,
         fieldsData: {
           '#1': {
             optionLabel: '#1',
@@ -233,7 +234,7 @@ theories(getMappingLineData, [
       },
       {
         customSelectSubtype: 'simple',
-        selectLabel: 'Determination',
+        selectLabel: 'Determination' as LocalizedString,
         fieldsData: {
           determinedDate: {
             optionLabel: 'Date',
@@ -282,7 +283,7 @@ theories(getMappingLineData, [
       },
       {
         customSelectSubtype: 'tree',
-        selectLabel: 'Taxon',
+        selectLabel: 'Taxon' as LocalizedString,
         fieldsData: {
           $Kingdom: {
             optionLabel: 'Kingdom',
@@ -349,7 +350,7 @@ theories(getMappingLineData, [
       },
       {
         customSelectSubtype: 'simple',
-        selectLabel: 'Taxon',
+        selectLabel: 'Taxon' as LocalizedString,
         fieldsData: {
           author: {
             optionLabel: 'Author',

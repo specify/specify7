@@ -49,11 +49,11 @@ export function EditFormTables({
     <Dialog
       buttons={
         <>
-          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
-          <Submit.Blue form={id('form')}>{commonText('apply')}</Submit.Blue>
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+          <Submit.Blue form={id('form')}>{commonText.apply()}</Submit.Blue>
         </>
       }
-      header={formsText('selectSourceOfTables')}
+      header={formsText.selectSourceOfTables()}
       onClose={handleClose}
     >
       <Form
@@ -74,7 +74,7 @@ export function EditFormTables({
             name={id('radio')}
             onChange={handleLegacy}
           />
-          {formsText('inheritLegacySettings')}
+          {formsText.inheritLegacySettings()}
         </Label.Inline>
         <Label.Inline>
           <Input.Radio
@@ -82,7 +82,7 @@ export function EditFormTables({
             name={id('radio')}
             onChange={handleModern}
           />
-          {formsText('useCustomSettings')}
+          {formsText.useCustomSettings()}
         </Label.Inline>
       </Form>
     </Dialog>
@@ -122,7 +122,7 @@ function CustomEditTables({
   return (
     <TablesListEdit
       defaultTables={defaultFormTablesConfig}
-      header={formsText('configureDataEntryTables')}
+      header={formsText.configureDataEntryTables()}
       isNoRestrictionMode={false}
       models={models}
       onChange={handleChange}

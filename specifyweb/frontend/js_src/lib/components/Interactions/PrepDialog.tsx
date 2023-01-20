@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { useId } from '../../hooks/useId';
 import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
-import { formsText } from '../../localization/forms';
 import type { Preparations } from '../../utils/ajax/specifyApi';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
@@ -12,7 +11,7 @@ import { group, replaceItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Form } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
-import { serializeResource, toTable } from '../DataModel/helpers';
+import { getField, serializeResource, toTable } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceApiUrl, getResourceViewUrl } from '../DataModel/resource';
 import { schema, strictGetModel } from '../DataModel/schema';
@@ -27,6 +26,7 @@ import type {
 } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import { PrepDialogRow } from './PrepDialogRow';
+import { interactionsText } from '../../localization/interactions';
 
 export function PrepDialog({
   onClose: handleClose,
@@ -91,40 +91,42 @@ export function PrepDialog({
     <Dialog
       buttons={
         isReadOnly ? (
-          commonText('close')
+          commonText.close()
         ) : (
           <>
-            <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+            <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
             <Button.Blue
               disabled={!canSelectAll}
-              title={formsText('selectAllAvailablePreparations')}
+              title={interactionsText.selectAllAvailablePreparations()}
               onClick={(): void =>
                 setSelected(preparations.map(({ available }) => available))
               }
             >
-              {formsText('selectAll')}
+              {interactionsText.selectAll()}
             </Button.Blue>
             <Button.Blue
               disabled={!canDeselect}
-              title={commonText('clearAll')}
+              title={commonText.clearAll()}
               onClick={(): void => setSelected(Array.from(selected).fill(0))}
             >
-              {formsText('deselectAll')}
+              {interactionsText.deselectAll()}
             </Button.Blue>
             <Submit.Green
               form={id('form')}
               title={
                 typeof itemCollection === 'object'
-                  ? formsText('addItems')
-                  : formsText('createRecord', action.model.label)
+                  ? interactionsText.addItems()
+                  : interactionsText.createRecord({
+                      modelName: action.model.label,
+                    })
               }
             >
-              {commonText('apply')}
+              {commonText.apply()}
             </Submit.Green>
           </>
         )
       }
-      header={formsText('preparationsDialogTitle')}
+      header={interactionsText.preparations()}
       onClose={handleClose}
     >
       <Form
@@ -183,30 +185,23 @@ export function PrepDialog({
           <thead>
             <tr>
               <th scope="col">
-                <span className="sr-only">{formsText('selectAll')}</span>
+                <span className="sr-only">{interactionsText.selectAll()}</span>
               </th>
               <th scope="col">
                 {
-                  schema.models.CollectionObject.strictGetLiteralField(
-                    'catalogNumber'
-                  ).label
-                }
-              </th>
-              <th scope="col">
-                {
-                  schema.models.Determination.strictGetRelationship('taxon')
+                  getField(schema.models.CollectionObject, 'catalogNumber')
                     .label
                 }
               </th>
               <th scope="col">
-                {
-                  schema.models.Preparation.strictGetRelationship('prepType')
-                    .label
-                }
+                {getField(schema.models.Determination, 'taxon').label}
               </th>
-              <th scope="col">{commonText('selected')}</th>
-              <th scope="col">{formsText('available')}</th>
-              <th scope="col">{formsText('unavailable')}</th>
+              <th scope="col">
+                {getField(schema.models.Preparation, 'prepType').label}
+              </th>
+              <th scope="col">{commonText.selected()}</th>
+              <th scope="col">{interactionsText.available()}</th>
+              <th scope="col">{interactionsText.unavailable()}</th>
             </tr>
           </thead>
           <tbody>

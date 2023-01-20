@@ -2,13 +2,13 @@ import type React from 'react';
 import _ from 'underscore';
 
 import { ajax } from '../../utils/ajax';
-import { formatNumber } from '../Atoms/Internationalization';
 import { getTransitionDuration } from '../UserPreferences/Hooks';
 import { treeText } from '../../localization/tree';
 import { strictGetTreeDefinitionItems } from '../InitialContext/treeRanks';
 import type { RA, RR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { AnyTree } from '../DataModel/helperTypes';
+import { commonText } from '../../localization/common';
 
 export const fetchRows = async (fetchUrl: string) =>
   ajax<
@@ -190,15 +190,23 @@ export const formatTreeStats = (
   readonly text: string;
 } => ({
   title: filterArray([
-    `${treeText('directCollectionObjectCount')}: ${nodeStats.directCount}`,
+    commonText.colonLine({
+      label: treeText.directCollectionObjectCount(),
+      value: nodeStats.directCount.toString(),
+    }),
     isLeaf
       ? undefined
-      : `${treeText('indirectCollectionObjectCount')}: ${nodeStats.childCount}`,
+      : commonText.colonLine({
+          label: treeText.indirectCollectionObjectCount(),
+          value: nodeStats.childCount.toString(),
+        }),
   ]).join('\n'),
-  text: `(${filterArray([
-    nodeStats.directCount,
-    isLeaf ? undefined : formatNumber(nodeStats.childCount),
-  ]).join(', ')})`,
+  text: isLeaf
+    ? treeText.leafNodeStats({ directCount: nodeStats.directCount })
+    : treeText.nodeStats({
+        directCount: nodeStats.directCount,
+        childCount: nodeStats.childCount,
+      }),
 });
 
 /**

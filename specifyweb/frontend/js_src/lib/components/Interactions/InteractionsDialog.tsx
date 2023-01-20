@@ -16,7 +16,6 @@ import { f } from '../../utils/functools';
 import { getBooleanAttribute, getParsedAttribute } from '../../utils/utils';
 import { cachableUrl } from '../InitialContext';
 import { commonText } from '../../localization/common';
-import { formsText } from '../../localization/forms';
 import { fetchView } from '../FormParse';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
@@ -37,6 +36,8 @@ import { Link } from '../Atoms/Link';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { SerializedResource } from '../DataModel/helperTypes';
 import { TableIcon } from '../Molecules/TableIcon';
+import { LocalizedString } from 'typesafe-i18n';
+import { interactionsText } from '../../localization/interactions';
 
 export const interactionTables: ReadonlySet<keyof Tables> = new Set<
   keyof Tables
@@ -87,24 +88,43 @@ const supportedActions = [
 /**
  * Remap Specify 6 UI localization strings to Specify 7 UI localization strings
  */
-const stringLocalization = {
-  RET_LOAN: formsText('returnLoan'),
-  PRINT_INVOICE: formsText('printInvoice'),
-  LOAN_NO_PRP: formsText('loanWithoutPreparation'),
-  'InteractionsTask.LN_NO_PREP': formsText('loanWithoutPreparationDescription'),
-  'InteractionsTask.NEW_LN': formsText('createLoan'),
-  'InteractionsTask.EDT_LN': formsText('editLoan'),
-  'InteractionsTask.NEW_GFT': formsText('createdGift'),
-  'InteractionsTask.EDT_GFT': formsText('editGift'),
-  'InteractionsTask.CRE_IR': formsText('createInformationRequest'),
-  'InteractionsTask.PRT_INV': formsText('printInvoice'),
-};
+const stringLocalization = f.store(() => ({
+  RET_LOAN: interactionsText.returnLoan({
+    tableLoan: schema.models.Loan.label,
+  }),
+  PRINT_INVOICE: interactionsText.printInvoice(),
+  LOAN_NO_PRP: interactionsText.loanWithoutPreparation({
+    tableLoan: schema.models.Loan.label,
+    tablePreparation: schema.models.Preparation.label,
+  }),
+  'InteractionsTask.LN_NO_PREP':
+    interactionsText.loanWithoutPreparationDescription({
+      tableLoan: schema.models.Loan.label,
+      tablePreparation: schema.models.Preparation.label,
+    }),
+  'InteractionsTask.NEW_LN': interactionsText.createLoan({
+    tableLoan: schema.models.Loan.label,
+  }),
+  'InteractionsTask.EDT_LN': interactionsText.editLoan({
+    tableLoan: schema.models.Loan.label,
+  }),
+  'InteractionsTask.NEW_GFT': interactionsText.createdGift({
+    tableGift: schema.models.Gift.label,
+  }),
+  'InteractionsTask.EDT_GFT': interactionsText.editGift({
+    tableGift: schema.models.Gift.label,
+  }),
+  'InteractionsTask.CRE_IR': interactionsText.createInformationRequest({
+    tableInformationRequest: schema.models.InfoRequest.label,
+  }),
+  'InteractionsTask.PRT_INV': interactionsText.printInvoice(),
+}));
 
 export type InteractionEntry = {
   readonly action: typeof supportedActions[number] | undefined;
   readonly table: keyof Tables;
-  readonly label: string | undefined;
-  readonly tooltip: string | undefined;
+  readonly label: LocalizedString | undefined;
+  readonly tooltip: LocalizedString | undefined;
   readonly icon: string | undefined;
 };
 
@@ -220,11 +240,11 @@ function Interactions({
 
   return state.type === 'MainState' ? (
     <Dialog
-      buttons={commonText('cancel')}
+      buttons={commonText.cancel()}
       className={{
         container: dialogClassNames.narrowContainer,
       }}
-      header={commonText('interactions')}
+      header={interactionsText.interactions()}
       icon={<span className="text-blue-500">{icons.chat}</span>}
       onClose={handleClose}
     >
@@ -238,8 +258,8 @@ function Interactions({
                 key={index}
                 title={
                   typeof tooltip === 'string'
-                    ? stringLocalization[
-                        tooltip as keyof typeof stringLocalization
+                    ? stringLocalization()[
+                        tooltip as keyof ReturnType<typeof stringLocalization>
                       ] ?? tooltip
                     : undefined
                 }
@@ -263,12 +283,12 @@ function Interactions({
                     <TableIcon label={false} name={icon} />
                   ))}
                   {typeof label === 'string'
-                    ? stringLocalization[
-                        label as keyof typeof stringLocalization
+                    ? stringLocalization()[
+                        label as keyof ReturnType<typeof stringLocalization>
                       ] ?? label
                     : typeof table === 'string'
                     ? getModel(table)?.label
-                    : action}
+                    : (action as LocalizedString)}
                 </Link.Default>
               </li>
             ) : undefined

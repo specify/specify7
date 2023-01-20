@@ -26,6 +26,9 @@ import { className } from '../Atoms/className';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { SortConfig, SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import { Http } from '../../utils/ajax/definitions';
+import { wbPlanText } from '../../localization/wbPlan';
+import { schema } from '../DataModel/schema';
+import { getField } from '../DataModel/helpers';
 
 const createEmptyDataSet = async (): Promise<Dataset> =>
   ajax<Dataset>(
@@ -34,7 +37,7 @@ const createEmptyDataSet = async (): Promise<Dataset> =>
       method: 'POST',
       body: {
         name: await uniquifyDataSetName(
-          wbText('newDataSetName', new Date().toDateString())
+          wbText.newDataSetName({ date: new Date().toDateString() })
         ),
         importedfilename: '',
         columns: [],
@@ -66,11 +69,14 @@ export function DataSetMetaOverlay(): JSX.Element | null {
     true
   );
 
+  const navigate = useNavigate();
+
   return typeof dataset === 'object' ? (
     <DataSetMeta
       dataset={dataset}
       onChange={handleClose}
       onClose={handleClose}
+      onDeleted={ () => navigate('/specify/', {replace: true})}
     />
   ) : null;
 }
@@ -92,19 +98,19 @@ function TableHeader({
           scope="col"
         >
           <Button.LikeLink onClick={(): void => handleSort('name')}>
-            {commonText('name')}
+            {getField(schema.models.Workbench, 'name').label}
             <SortIndicator fieldName="name" sortConfig={sortConfig} />
           </Button.LikeLink>
         </th>
         <th scope="col">
           <Button.LikeLink onClick={(): void => handleSort('dateCreated')}>
-            {commonText('created')}
+            {getField(schema.models.Workbench, 'timestampCreated').label}
             <SortIndicator fieldName="dateCreated" sortConfig={sortConfig} />
           </Button.LikeLink>
         </th>
         <th scope="col">
           <Button.LikeLink onClick={(): void => handleSort('dateUploaded')}>
-            {commonText('uploaded')}
+            {getField(schema.models.Workbench, 'timestampModified').label}
             <SortIndicator fieldName="dateUploaded" sortConfig={sortConfig} />
           </Button.LikeLink>
         </th>
@@ -163,11 +169,11 @@ export function DataSetsDialog({
     <Dialog
       buttons={
         <>
-          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
           {canImport && (
             <>
               <Link.Blue href="/specify/workbench/import/">
-                {wbText('importFile')}
+                {wbText.importFile()}
               </Link.Blue>
               <Button.Blue
                 onClick={(): void =>
@@ -178,7 +184,7 @@ export function DataSetsDialog({
                   )
                 }
               >
-                {wbText('createNew')}
+                {wbText.createNew()}
               </Button.Blue>
             </>
           )}
@@ -189,8 +195,11 @@ export function DataSetsDialog({
       }}
       header={
         showTemplates
-          ? wbText('wbsDialogTemplatesDialogTitle')
-          : wbText('wbsDialogDefaultDialogTitle', datasets.length)
+          ? wbPlanText.copyPlan()
+          : commonText.countLine({
+              resource: wbText.dataSets(),
+              count: datasets.length,
+            })
       }
       icon={<span className="text-blue-500">{icons.table}</span>}
       onClose={handleClose}
@@ -198,9 +207,9 @@ export function DataSetsDialog({
       {datasets.length === 0 ? (
         <p>
           {showTemplates
-            ? wbText('wbsDialogEmptyTemplateDialogText')
-            : `${wbText('wbsDialogEmptyDefaultDialogText')} ${
-                canImport ? wbText('createDataSetInstructions') : ''
+            ? wbPlanText.noPlansToCopyFrom()
+            : `${wbText.wbsDialogEmpty()} ${
+                canImport ? wbText.createDataSetInstructions() : ''
               }`}
         </p>
       ) : (
@@ -246,11 +255,11 @@ export function DataSetsDialog({
                   <td>
                     {canImport && (
                       <Link.Icon
-                        aria-label={commonText('edit')}
+                        aria-label={commonText.edit()}
                         className={className.dataEntryEdit}
                         href={`/specify/overlay/workbench/${dataset.id}/meta/`}
                         icon="pencil"
-                        title={commonText('edit')}
+                        title={commonText.edit()}
                       />
                     )}
                   </td>

@@ -13,6 +13,7 @@ import { hasDerivedPermission, hasPermission } from '../Permissions/helpers';
 import type { Policy } from './Policy';
 import { processPolicies } from './policyConverter';
 import { Http } from '../../utils/ajax/definitions';
+import { LocalizedString } from 'typesafe-i18n';
 
 /** Fetching user policies */
 export function useUserPolicies(
@@ -151,7 +152,10 @@ export function useUserProviders(
           ? f
               .all({
                 allProviders: ajax<
-                  RA<{ readonly provider: string; readonly title: string }>
+                  RA<{
+                    readonly provider: string;
+                    readonly title: LocalizedString;
+                  }>
                 >('/accounts/oic_providers/', {
                   method: 'GET',
                   headers: { Accept: 'application/json' },
@@ -161,7 +165,7 @@ export function useUserProviders(
                     ? ajax<
                         RA<{
                           readonly provider: string;
-                          readonly title: string;
+                          readonly title: LocalizedString;
                         }>
                       >(`/accounts/oic_providers/${userId}/`, {
                         method: 'GET',

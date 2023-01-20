@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { commonText } from '../../localization/common';
 import { Http } from '../../utils/ajax/definitions';
 import type { RA, WritableArray } from '../../utils/types';
 import { jsonStringify } from '../../utils/utils';
@@ -12,6 +11,8 @@ import { PermissionError } from '../Permissions/PermissionDenied';
 import { unsafeTriggerNotFound } from '../Router/Router';
 import { ErrorDialog } from './ErrorDialog';
 import { produceStackTrace } from './stackTrace';
+import { mainText } from '../../localization/main';
+import { formatJsonBackendResponse } from './JsonError';
 
 export function formatError(
   error: unknown,
@@ -111,8 +112,7 @@ export function formatError(
 /** Format error message as JSON, HTML or plain text */
 function formatErrorResponse(error: string): JSX.Element {
   try {
-    const json = JSON.parse(error);
-    return <pre>{jsonStringify(json, 2)}</pre>;
+    return formatJsonBackendResponse(error);
   } catch {
     // Failed parsing error message as JSON
   }
@@ -140,8 +140,9 @@ export function handleAjaxError(
   if (userInformation.agent === null) throw error;
 
   if (strict) {
-    const isNotFoundError = response.status === Http.NOT_FOUND;
-    // FIXME: revert this change
+    const isNotFoundError =
+      response.status === Http.NOT_FOUND &&
+      process.env.NODE_ENV !== 'development';
     // In production, uncaught 404 errors redirect to the NOT FOUND page
     if (isNotFoundError && unsafeTriggerNotFound()) {
       Object.defineProperty(error, 'handledBy', {
@@ -182,7 +183,7 @@ export function handleAjaxError(
     displayError(({ onClose: handleClose }) => (
       <ErrorDialog
         copiableMessage={copiableMessage}
-        header={commonText('errorBoundaryDialogHeader')}
+        header={mainText.errorOccurred()}
         onClose={handleClose}
       >
         {errorObject}
@@ -196,7 +197,7 @@ export function handleAjaxError(
 }
 
 /** Create an iframe from HTML string */
-function ErrorIframe({
+export function ErrorIframe({
   children: error,
 }: {
   readonly children: string;
@@ -204,18 +205,14 @@ function ErrorIframe({
   const iframeRef = React.useRef<HTMLIFrameElement | null>(null);
   React.useEffect(() => {
     if (iframeRef.current === null) return;
-    const iframeDocument =
-      iframeRef.current.contentDocument ??
-      iframeRef.current.contentWindow?.document;
-    if (iframeDocument === undefined) return;
-    iframeDocument.body.innerHTML = error;
+    iframeRef.current.srcdoc = error;
   }, [error]);
 
   return (
     <iframe
-      className="h-full"
+      className="h-full w-full"
       ref={iframeRef}
-      title={commonText('errorBoundaryDialogHeader')}
+      title={mainText.errorOccurred()}
     />
   );
 }

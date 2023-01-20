@@ -8,6 +8,9 @@ import type { State } from 'typesafe-reducer';
 
 import type { Tables } from '../DataModel/types';
 import type { IR, RA, RR } from '../../utils/types';
+import { backEndText } from '../../localization/backEnd';
+import { formatList } from '../Atoms/Internationalization';
+import { LocalizedString } from 'typesafe-i18n';
 
 /*
  * If an UploadResult involves a tree record, this metadata indicates
@@ -158,3 +161,72 @@ export type UploadResult = {
     readonly toMany: IR<RA<UploadResult>>;
   };
 };
+
+/** Back-end sends a validation key. Front-end translates it */
+export function resolveValidationMessage(
+  key: string,
+  payload: IR<unknown>
+): LocalizedString {
+  if (key === 'failedParsingBoolean')
+    return backEndText.failedParsingBoolean({ value: payload.value as string });
+  else if (key === 'failedParsingDecimal')
+    return backEndText.failedParsingDecimal({ value: payload.value as string });
+  else if (key === 'failedParsingFloat')
+    return backEndText.failedParsingFloat({ value: payload.value as string });
+  else if (key === 'failedParsingPickList')
+    return backEndText.failedParsingPickList({
+      value: `"${payload.value as string}"`,
+    });
+  else if (key === 'failedParsingAgentType')
+    return backEndText.failedParsingAgentType({
+      badType: payload.badType as string,
+      validTypes: formatList((payload.validTypes as RA<string>) ?? []),
+    });
+  else if (key === 'pickListValueTooLong')
+    return backEndText.pickListValueTooLong({
+      pickList: payload.pickList as string,
+      maxLength: payload.maxLength as number,
+    });
+  else if (key === 'valueTooLong')
+    return backEndText.valueTooLong({
+      maxLength: payload.maxLength as number,
+    });
+  else if (key === 'invalidYear')
+    return backEndText.invalidYear({
+      value: payload.value as string,
+    });
+  else if (key === 'badDateFormat')
+    return backEndText.badDateFormat({
+      value: payload.value as string,
+      format: payload.format as string,
+    });
+  else if (key === 'coordinateBadFormat')
+    return backEndText.coordinateBadFormat({
+      value: payload.value as string,
+    });
+  else if (key === 'latitudeOutOfRange')
+    return backEndText.latitudeOutOfRange({
+      value: payload.value as string,
+    });
+  else if (key === 'longitudeOutOfRange')
+    return backEndText.longitudeOutOfRange({
+      value: payload.value as string,
+    });
+  else if (key === 'invalidPartialRecord')
+    return backEndText.invalidPartialRecord({
+      column: payload.column as string,
+    });
+  else if (key === 'fieldRequiredByUploadPlan')
+    return backEndText.fieldRequiredByUploadPlan();
+  else if (key === 'invalidTreeStructure')
+    return backEndText.invalidTreeStructure();
+  else if (key === 'missingRequiredTreeParent')
+    return backEndText.missingRequiredTreeParent({
+      names: formatList((payload.names as RA<string>) ?? []),
+    });
+  // This can happen for data sets created before 7.8.2
+  else
+    return `${key}${
+      Object.keys(payload).length === 0 ? '' : ` ${JSON.stringify(payload)}`
+    }`;
+}

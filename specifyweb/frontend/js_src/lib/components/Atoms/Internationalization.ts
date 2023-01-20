@@ -3,9 +3,9 @@
  */
 
 import { capitalize } from '../../utils/utils';
-import { commonText } from '../../localization/common';
-import { LANGUAGE } from '../../localization/utils';
 import type { RA } from '../../utils/types';
+import { LocalizedString } from 'typesafe-i18n';
+import { LANGUAGE } from '../../localization/utils/config';
 
 /* This is an incomplete definition. For complete, see MDN Docs */
 // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -108,15 +108,14 @@ const datePartLocalizer = new Intl.DisplayNames(LANGUAGE, {
   type: 'dateTimeField',
 });
 export const dateParts = {
-  fullDate: commonText('fullDate'),
   day: capitalize(datePartLocalizer.of('day')),
   month: capitalize(datePartLocalizer.of('month')),
   year: capitalize(datePartLocalizer.of('year')),
 } as const;
 
 const numberFormatter = new Intl.NumberFormat(LANGUAGE);
-export const formatNumber = (number: number): string =>
-  numberFormatter.format(number);
+export const formatNumber = (number: number): LocalizedString =>
+  numberFormatter.format(number) as LocalizedString;
 
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 export const MILLISECONDS = 1000;

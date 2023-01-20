@@ -16,6 +16,7 @@ import { schema } from '../DataModel/schema';
 import { fileToText } from '../Molecules/FilePicker';
 import { uniquifyHeaders } from '../WbPlanView/headerHelper';
 import type { Dataset } from '../WbPlanView/Wrapped';
+import { getField } from '../DataModel/helpers';
 
 /** Remove the extension from the file name */
 export const extractFileName = (fileName: string): string =>
@@ -53,7 +54,7 @@ export const getMaxDataSetLength = (): number | undefined =>
      * to check the length limit in both places. See more:
      * https://github.com/specify/specify7/issues/1203
      */
-    schema.models.RecordSet.strictGetLiteralField('name').length,
+    getField(schema.models.RecordSet, 'name').length,
     dataSetMaxLength
   );
 
@@ -63,7 +64,9 @@ export function extractHeader(
 ): { readonly rows: RA<RA<string>>; readonly header: RA<string> } {
   const header = hasHeader
     ? uniquifyHeaders(data[0].map(f.trim))
-    : Array.from(data[0], (_, index) => wbText('columnName', index + 1));
+    : Array.from(data[0], (_, index) =>
+        wbText.columnName({ columnIndex: index + 1 })
+      );
   const rows = hasHeader ? data.slice(1) : data;
   return { rows, header: Array.from(header) };
 }
@@ -103,7 +106,7 @@ export const parseCsv = async (
              */
             if (typeof error === 'object') reject(error);
             else if (maxWidth === 0 || rows.length === 0)
-              reject(new Error(wbText('corruptFile', file.name)));
+              reject(new Error(wbText.corruptFile({ fileName: file.name })));
             else
               resolve(
                 rows.map((row) => [
@@ -126,7 +129,7 @@ export const parseXls = async (
     worker.addEventListener('message', ({ data }) => {
       const rows = data as RA<RA<string>>;
       if (rows.length === 0 || rows[0].length === 0)
-        reject(new Error(wbText('corruptFile', file.name)));
+        reject(new Error(wbText.corruptFile({ fileName: file.name })));
       else resolve(rows);
     });
     worker.addEventListener('error', (error) =>

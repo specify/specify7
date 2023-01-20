@@ -2,7 +2,6 @@ import React from 'react';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useCachedState } from '../../hooks/useCachedState';
-import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
 import { Summary } from '../Atoms';
 import { className } from '../Atoms/className';
@@ -13,6 +12,7 @@ import { hasPermission } from '../Permissions/helpers';
 import { PreviewOperations } from './PreviewOperations';
 import { PreviewTables } from './PreviewTables';
 import { compressPermissionQuery } from './policyConverter';
+import { userText } from '../../localization/user';
 
 export type PreviewCell = Omit<PermissionsQueryItem, 'action'>;
 
@@ -58,11 +58,11 @@ export function PreviewPermissions({
   return query === false ? null : (
     <details open={isCollapsed}>
       <Summary className="text-xl" onToggle={setCollapsed}>
-        {adminText('userPermissionPreview')}
+        {userText.userPermissionPreview()}
       </Summary>
       {typeof query === 'object' ? (
         <>
-          {changesMade && <p>{adminText('outOfDateWarning')}</p>}
+          {changesMade && <p>{userText.outOfDateWarning()}</p>}
           <div className="flex flex-1 flex-wrap gap-4">
             <div>
               <PreviewTables
@@ -75,7 +75,7 @@ export function PreviewPermissions({
                   className={className.headerGray}
                   onToggle={setSystemCollapsed}
                 >
-                  {adminText('advancedTables')}
+                  {userText.advancedTables()}
                 </Summary>
                 <PreviewTables
                   getOpenRoleUrl={getOpenRoleUrl}
@@ -101,7 +101,7 @@ export function PreviewPermissions({
           </div>
         </>
       ) : (
-        commonText('loading')
+        commonText.loading()
       )}
     </details>
   );

@@ -9,6 +9,7 @@ import {
 } from '../cells';
 import { theories } from '../../../tests/utils';
 import { requireContext } from '../../../tests/helpers';
+import { LocalizedString } from 'typesafe-i18n';
 
 requireContext();
 
@@ -302,7 +303,7 @@ describe('parseFormCell', () => {
         // Labels are right aligned by default
         align: 'right',
         type: 'Label',
-        text: 'some text',
+        text: 'some text' as LocalizedString,
         title: undefined,
         labelForCellId: undefined,
         fieldName: undefined,
@@ -319,7 +320,7 @@ describe('parseFormCell', () => {
       cell({
         align: 'right',
         type: 'Label',
-        text: 'Find Next',
+        text: 'Find Next' as LocalizedString,
         title: undefined,
         labelForCellId: '42',
         fieldName: undefined,
@@ -337,7 +338,7 @@ describe('parseFormCell', () => {
     ).toEqual(
       cell({
         type: 'Separator',
-        label: 'Find Next',
+        label: 'Find Next' as LocalizedString,
         icon: '42',
         forClass: 'CollectionObject',
       })
@@ -407,7 +408,7 @@ describe('parseFormCell', () => {
               labelForCellId: '42',
               type: 'Label',
               fieldName: undefined,
-              text: 'Find Next',
+              text: 'Find Next' as LocalizedString,
               title: undefined,
             }),
             cell({

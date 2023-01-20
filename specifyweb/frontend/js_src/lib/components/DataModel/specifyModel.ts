@@ -32,6 +32,7 @@ import {
   type RelationshipDefinition,
 } from './specifyField';
 import { getCache } from '../../utils/cache';
+import { LocalizedString } from 'typesafe-i18n';
 
 type FieldAlias = {
   readonly vname: string;
@@ -177,21 +178,20 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
   public readonly ToOneCollection: CollectionConstructor<SCHEMA>;
 
   /** All table non-relationship fields */
-  // eslint-disable-next-line functional/prefer-readonly-type
-  public literalFields: RA<LiteralField> = [];
+  public readonly literalFields: RA<LiteralField> = [];
 
   /** All table relationships */
-  // eslint-disable-next-line functional/prefer-readonly-type
-  public relationships: RA<Relationship> = [];
+  public readonly relationships: RA<Relationship> = [];
 
   /** All table literal fields and relationships */
-  // eslint-disable-next-line functional/prefer-readonly-type
-  public fields: RA<LiteralField | Relationship> = [];
+  public readonly fields: RA<LiteralField | Relationship> = [];
+
+  public readonly field: IR<LiteralField | Relationship> = {};
 
   public readonly localization: SchemaLocalization;
 
   /** Localized name from the schema localization */
-  public readonly label: string;
+  public readonly label: LocalizedString;
 
   public constructor(tableDefinition: TableDefinition) {
     this.longName = tableDefinition.classname;
@@ -236,7 +236,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
         items: Object.fromEntries(
           Object.entries(this.localization.items).map(([fieldName, data]) => [
             fieldName,
-            { ...data, name: fieldName },
+            { ...data, name: fieldName as LocalizedString },
           ])
         ),
       };
@@ -244,7 +244,9 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
     (this.localization.items as R<SchemaLocalization['items'][string]>)[
       tableDefinition.idFieldName.toLowerCase()
     ] ??= {
-      name: useLabels ? commonText('id') : tableDefinition.idFieldName,
+      name: useLabels
+        ? commonText.id()
+        : (tableDefinition.idFieldName as LocalizedString),
       desc: null,
       format: null,
       picklistname: null,
@@ -263,12 +265,14 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
       readOnly: true,
     });
 
-    this.label = useLabels
-      ? typeof this.localization.name === 'string' &&
-        this.localization.name.length > 0
-        ? unescape(this.localization.name)
-        : camelToHuman(this.name)
-      : this.name;
+    this.label = (
+      useLabels
+        ? typeof this.localization.name === 'string' &&
+          this.localization.name.length > 0
+          ? unescape(this.localization.name)
+          : camelToHuman(this.name)
+        : this.name
+    ) as LocalizedString;
 
     this.isHidden = this.localization.ishidden;
 

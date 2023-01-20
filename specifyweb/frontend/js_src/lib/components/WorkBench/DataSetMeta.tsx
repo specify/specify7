@@ -15,7 +15,7 @@ import { uniquifyDataSetName } from '../../utils/uniquifyName';
 import { LoadingContext } from '../Core/Contexts';
 import { icons } from '../Atoms/Icons';
 import { formatNumber } from '../Atoms/Internationalization';
-import { Dialog } from '../Molecules/Dialog';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { createBackboneView } from '../Core/reactBackboneExtend';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { DateElement } from '../Molecules/DateElement';
@@ -32,6 +32,11 @@ import { FormattedResource } from '../Molecules/FormattedResource';
 import { useTitle } from '../Molecules/AppTitle';
 import { Http } from '../../utils/ajax/definitions';
 import { unsafeNavigate } from '../Router/Router';
+import { LocalizedString } from 'typesafe-i18n';
+import { schema } from '../DataModel/schema';
+import { StringToJsx } from '../../localization/utils';
+import { getField } from '../DataModel/helpers';
+import { hasPermission } from '../Permissions/helpers';
 
 // FEATURE: allow exporting/importing the mapping
 export function DataSetMeta({
@@ -39,11 +44,13 @@ export function DataSetMeta({
   getRowCount = (): number => dataset.rows.length,
   onClose: handleClose,
   onChange: handleChange,
+  onDeleted: handleDeleted,
 }: {
   readonly dataset: Dataset;
   readonly getRowCount?: () => number;
   readonly onClose: () => void;
-  readonly onChange: (dataSetName: string) => void;
+  readonly onChange: (dataSetName: LocalizedString) => void;
+  readonly onDeleted: () => void;
 }): JSX.Element | null {
   const id = useId('data-set-meta');
   const [name, setName] = React.useState(dataset.name);
@@ -51,16 +58,74 @@ export function DataSetMeta({
 
   const loading = React.useContext(LoadingContext);
 
-  return (
+  const [isDeleted, setIsDeleted] = React.useState(false);
+
+  const [showDeleteConfirm, setShowDeleteConfirm] = React.useState(false);
+
+  return isDeleted ? (
+    <Dialog
+      buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
+      header={wbText.dataSetDeleted()}
+      onClose={handleDeleted}
+    >
+      {wbText.dataSetDeletedDescription()}
+    </Dialog>
+  ) : showDeleteConfirm ? (
     <Dialog
       buttons={
         <>
-          <Button.DialogClose>{commonText('close')}</Button.DialogClose>
-          <Submit.Blue form={id('form')}>{commonText('save')}</Submit.Blue>
+          {hasPermission('/workbench/dataset', 'delete') && (
+            <Button.Red
+              onClick={() => {
+                loading(
+                  ping(
+                    `/api/workbench/dataset/${dataset.id}/`,
+                    {
+                      method: 'DELETE',
+                    },
+                    { expectedResponseCodes: [Http.NO_CONTENT, Http.NOT_FOUND] }
+                  ).then(() => {
+                    setIsDeleted(true);
+                  })
+                );
+              }}
+            >
+              {commonText.delete()}
+            </Button.Red>
+          )}
+          <span className="-ml-2 flex-1" />
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
         </>
       }
-      header={wbText('dataSetMetaDialogTitle')}
-      icon={<span className="text-blue-500">{icons.table}</span>}
+      className={{
+        container: dialogClassNames.narrowContainer,
+      }}
+      header={wbText.deleteDataSet()}
+      icon={<span className="text-blue-500"> {icons.table}</span>}
+      onClose={handleClose}
+    >
+      {wbText.deleteDataSetDescription()}
+    </Dialog>
+  ) : (
+    <Dialog
+      buttons={
+        <>
+          {hasPermission('/workbench/dataset', 'delete') && (
+            <Button.Red
+              onClick={() => {
+                setShowDeleteConfirm(true);
+              }}
+            >
+              {commonText.delete()}
+            </Button.Red>
+          )}
+          <span className="-ml-2 flex-1" />
+          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+          <Submit.Blue form={id('form')}>{commonText.save()}</Submit.Blue>
+        </>
+      }
+      header={wbText.dataSetMeta()}
+      icon={<span className="text-blue-500"> {icons.table}</span>}
       onClose={handleClose}
     >
       <Form
@@ -84,7 +149,7 @@ export function DataSetMeta({
                       // REFACTOR: replace this with a callback
                       overwriteReadOnly(dataset, 'name', uniqueName);
                       overwriteReadOnly(dataset, 'remarks', remarks.trim());
-                      return uniqueName;
+                      return uniqueName as LocalizedString;
                     })
                 )
             ).then(handleChange)
@@ -92,73 +157,135 @@ export function DataSetMeta({
         }
       >
         <Label.Block>
-          <b>{wbText('dataSetName')}</b>
+          <b>{wbText.dataSetName()}</b>
           <Input.Text
             maxLength={getMaxDataSetLength()}
             required
-            spellCheck="true"
+            spellCheck
             value={name}
-            onValueChange={setName}
+            onValueChange={(name): void => setName(name as LocalizedString)}
           />
         </Label.Block>
         <Label.Block>
-          <b>{wbText('remarks')}</b>
+          <b>{getField(schema.models.Workbench, 'remarks').label}:</b>
           <AutoGrowTextArea value={remarks} onValueChange={setRemarks} />
         </Label.Block>
         <div className="flex flex-col">
-          <b>{commonText('metadataInline')}</b>
+          <b>
+            {
+              getField(schema.models.WorkbenchTemplateMappingItem, 'metaData')
+                .label
+            }
+          </b>
           <span>
-            {wbText('numberOfRows')} <i>{formatNumber(getRowCount())}</i>
+            {commonText.colonLine({
+              label: wbText.numberOfRows(),
+              value: formatNumber(getRowCount()),
+            })}
           </span>
           <span>
-            {wbText('numberOfColumns')}{' '}
-            <i>{formatNumber(dataset.columns.length)}</i>
+            {commonText.colonLine({
+              label: wbText.numberOfColumns(),
+              value: formatNumber(dataset.columns.length),
+            })}
           </span>
           <span>
-            {wbText('created')}{' '}
-            <i>
-              <DateElement date={dataset.timestampcreated} flipDates />
-            </i>
+            <StringToJsx
+              string={commonText.jsxColonLine({
+                label: getField(schema.models.Workbench, 'timestampCreated')
+                  .label,
+              })}
+              components={{
+                wrap: (
+                  <i>
+                    <DateElement date={dataset.timestampcreated} flipDates />
+                  </i>
+                ),
+              }}
+            />
           </span>
           <span>
-            {wbText('modified')}{' '}
-            <i>
-              <DateElement date={dataset.timestampmodified} flipDates />
-            </i>
+            <StringToJsx
+              string={commonText.jsxColonLine({
+                label: getField(schema.models.Workbench, 'timestampModified')
+                  .label,
+              })}
+              components={{
+                wrap: (
+                  <i>
+                    <DateElement date={dataset.timestampmodified} flipDates />
+                  </i>
+                ),
+              }}
+            />
           </span>
           <span>
-            {wbText('uploaded')}{' '}
-            <i>
-              <DateElement
-                date={
-                  dataset.uploadresult?.success === true
-                    ? dataset.uploadresult?.timestamp
-                    : undefined
-                }
-                fallback={commonText('no')}
-                flipDates
-              />
-            </i>
+            <StringToJsx
+              string={commonText.jsxColonLine({
+                label: commonText.uploaded(),
+              })}
+              components={{
+                wrap: (
+                  <i>
+                    <DateElement
+                      date={
+                        dataset.uploadresult?.success === true
+                          ? dataset.uploadresult?.timestamp
+                          : undefined
+                      }
+                      fallback={commonText.no()}
+                      flipDates
+                    />
+                  </i>
+                ),
+              }}
+            />
           </span>
           <span>
-            {commonText('createdBy')}{' '}
-            <i>
-              <FormattedResource resourceUrl={dataset.createdbyagent} />
-            </i>
+            <StringToJsx
+              string={commonText.jsxColonLine({
+                label: getField(schema.models.Workbench, 'createdByAgent')
+                  .label,
+              })}
+              components={{
+                wrap: (
+                  <i>
+                    <FormattedResource resourceUrl={dataset.createdbyagent} />
+                  </i>
+                ),
+              }}
+            />
           </span>
           <span>
-            {commonText('modifiedBy')}{' '}
-            <i>
-              {typeof dataset.modifiedbyagent === 'string' ? (
-                <FormattedResource resourceUrl={dataset.modifiedbyagent} />
-              ) : (
-                commonText('notApplicable')
-              )}
-            </i>
+            <StringToJsx
+              string={commonText.jsxColonLine({
+                label: getField(schema.models.Workbench, 'modifiedByAgent')
+                  .label,
+              })}
+              components={{
+                wrap: (
+                  <i>
+                    {typeof dataset.modifiedbyagent === 'string' ? (
+                      <FormattedResource
+                        resourceUrl={dataset.modifiedbyagent}
+                      />
+                    ) : (
+                      commonText.notApplicable()
+                    )}
+                  </i>
+                ),
+              }}
+            />
           </span>
           <span>
-            {wbText('importedFileName')}{' '}
-            <i>{dataset.importedfilename || wbText('noFileName')}</i>
+            <StringToJsx
+              string={commonText.jsxColonLine({
+                label: wbText.importedFileName(),
+              })}
+              components={{
+                wrap: <i>{dataset.importedfilename || wbText.noFileName()}</i>,
+              }}
+            />
           </span>
         </div>
       </Form>
@@ -185,12 +312,17 @@ function DataSetName({
         {dataset.uploadplan !== null && (
           <TableIcon label name={dataset.uploadplan.baseTableName} />
         )}
-        {`${wbText('dataSet')} ${name}`}
+        {commonText.colonLine({
+          label: wbText.dataSet(),
+          value: name,
+        })}
         {dataset.uploadresult?.success === true && (
-          <span className="text-red-600">{wbText('dataSetUploadedLabel')}</span>
+          <span className="text-red-600">{wbText.dataSetUploadedLabel()}</span>
         )}
       </h2>
-      <Button.Small onClick={handleOpen}>{commonText('metadata')}</Button.Small>
+      <Button.Small onClick={handleOpen}>
+        {getField(schema.models.WorkbenchTemplateMappingItem, 'metaData').label}
+      </Button.Small>
       {showMeta && (
         <DataSetMeta
           dataset={dataset}
@@ -200,6 +332,7 @@ function DataSetName({
             setName(name);
           }}
           onClose={handleClose}
+          onDeleted={() => unsafeNavigate('/specify/', { replace: true })}
         />
       )}
     </>
@@ -232,23 +365,23 @@ function ChangeOwner({
 
   return users === undefined ? null : isChanged ? (
     <Dialog
-      buttons={commonText('close')}
-      header={wbText('dataSetOwnerChanged')}
+      buttons={commonText.close()}
+      header={wbText.dataSetOwnerChanged()}
       onClose={(): void => unsafeNavigate('/specify/', { replace: true })}
     >
-      <p>{wbText('dataSetOwnerChanged')}</p>
+      <p>{wbText.dataSetOwnerChanged()}</p>
     </Dialog>
   ) : (
     <Dialog
       buttons={
         <>
-          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
           <Submit.Blue disabled={newOwner === undefined} form={id('form')}>
-            {wbText('changeOwner')}
+            {wbText.changeOwner()}
           </Submit.Blue>
         </>
       }
-      header={wbText('changeDataSetOwnerDialogHeader')}
+      header={wbText.changeDataSetOwner()}
       onClose={handleClose}
     >
       <Form
@@ -269,7 +402,7 @@ function ChangeOwner({
         }
       >
         <Label.Block>
-          <p>{wbText('changeDataSetOwnerDialogText')}</p>
+          <p>{wbText.changeDataSetOwnerDescription()}</p>
           <Select
             size={10}
             value={newOwner}

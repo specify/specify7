@@ -112,17 +112,17 @@ export function QueryTables({
         <>
           {!isReadOnly && hasToolPermission('queryBuilder', 'create') ? (
             <Button.Green onClick={handleImporting}>
-              {commonText('import')}
+              {commonText.import()}
             </Button.Green>
           ) : undefined}
           <span className="-ml-2 flex-1" />
-          <Button.Gray onClick={handleClose}>{commonText('close')}</Button.Gray>
+          <Button.Gray onClick={handleClose}>{commonText.close()}</Button.Gray>
         </>
       }
       className={{
         container: dialogClassNames.narrowContainer,
       }}
-      header={queryText('newQueryName')}
+      header={queryText.newQueryName()}
       headerButtons={<DataEntry.Edit onClick={handleEditing} />}
       icon={<span className="text-blue-500">{icons.documentSearch}</span>}
       onClose={handleClose}

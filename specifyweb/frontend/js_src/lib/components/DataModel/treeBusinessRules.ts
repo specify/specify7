@@ -4,7 +4,7 @@ import { f } from '../../utils/functools';
 import type { SpecifyResource } from './legacyTypes';
 import { treeText } from '../../localization/tree';
 import { formatUrl } from '../Router/queryString';
-import {AnyTree} from './helperTypes';
+import { AnyTree } from './helperTypes';
 
 export const initializeTreeRecord = (
   resource: SpecifyResource<AnyTree>
@@ -90,7 +90,7 @@ const predictFullName = async (
         return {
           key: 'tree-structure',
           valid: false,
-          reason: treeText('badStructure'),
+          reason: treeText.badStructure(),
         } as const;
       else throw error;
     });

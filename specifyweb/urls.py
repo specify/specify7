@@ -21,7 +21,9 @@ from .workbench import urls as wb_urls
 from .statistics import urls as stat_urls
 
 urlpatterns = [
-    url(r'^favicon.ico', RedirectView.as_view(url='/static/img/fav_icon.png')),
+
+    # This will redirect all browsers looking for the favicon to the SVG.
+    url(r'^favicon.ico', RedirectView.as_view(url='/static/img/short_logo.svg')), 
 
     # just redirect root url to the main specify view
     url(r'^$', skip_collection_access_check(RedirectView.as_view(url='/specify/'))),

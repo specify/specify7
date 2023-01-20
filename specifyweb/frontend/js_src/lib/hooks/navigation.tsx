@@ -11,6 +11,7 @@ import type { GetOrSet, GetSet, RA } from '../utils/types';
 import { defined } from '../utils/types';
 import { removeItem } from '../utils/utils';
 import { locationToState } from '../components/Router/RouterState';
+import { LocalizedString } from 'typesafe-i18n';
 
 export function useSearchParameter(
   name: string | undefined
@@ -64,7 +65,7 @@ export function useSearchParameter(
 
 export function useUnloadProtect(
   isEnabled: boolean,
-  message: string
+  message: LocalizedString
 ): () => void {
   const [_unloadProtects, setUnloadProtects] = React.useContext(
     UnloadProtectsContext
@@ -89,7 +90,7 @@ export function useUnloadProtect(
 
 export const unsetUnloadProtect = (
   setUnloadProtects: GetOrSet<RA<string>>[1],
-  message: string
+  message: LocalizedString
 ) =>
   setUnloadProtects((unloadProtects) => {
     const index = unloadProtects.indexOf(message);

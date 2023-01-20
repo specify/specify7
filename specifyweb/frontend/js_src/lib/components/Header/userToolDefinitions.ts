@@ -1,43 +1,47 @@
-import type { UserTool } from '../Core/Main';
-import { sortFunction, split, toLowerCase } from '../../utils/utils';
-import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
+import { headerText } from '../../localization/header';
+import { preferencesText } from '../../localization/preferences';
+import { resourcesText } from '../../localization/resources';
+import { schemaText } from '../../localization/schema';
+import { userText } from '../../localization/user';
 import { welcomeText } from '../../localization/welcome';
+import type { IR, RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
+import { sortFunction, split, toLowerCase } from '../../utils/utils';
+import type { UserTool } from '../Core/Main';
+import { getDisciplineTrees } from '../InitialContext/treeRanks';
+import { fetchContext as fetchUserInfo } from '../InitialContext/userInformation';
 import { fetchContext as userPermission } from '../Permissions';
 import {
   hasPermission,
   hasTablePermission,
   hasToolPermission,
 } from '../Permissions/helpers';
-import { getDisciplineTrees } from '../InitialContext/treeRanks';
-import type { IR, RA } from '../../utils/types';
-import { filterArray } from '../../utils/types';
-import { fetchContext as fetchUserInfo } from '../InitialContext/userInformation';
 
 const rawUserTools: IR<RA<UserTool>> = {
-  [commonText('userAccount')]: [
+  [userText.userAccount()]: [
     {
-      title: commonText('logOut'),
+      title: userText.logOut(),
       url: '/accounts/logout/',
     },
     {
-      title: commonText('changePassword'),
+      title: userText.changePassword(),
       url: '/accounts/password_change/',
     },
   ],
-  [commonText('customization')]: [
+  [preferencesText.customization()]: [
     {
-      title: commonText('preferences'),
+      title: preferencesText.preferences(),
       url: '/specify/user-preferences/',
     },
     {
-      title: commonText('schemaConfig'),
+      title: schemaText.schemaConfig(),
       url: '/specify/schema-config/',
     },
   ],
-  [commonText('administration')]: [
+  [headerText.administration()]: [
     {
-      title: commonText('appResources'),
+      title: resourcesText.appResources(),
       url: '/specify/resources/',
       enabled: () =>
         hasToolPermission('resources', 'read') &&
@@ -46,11 +50,11 @@ const rawUserTools: IR<RA<UserTool>> = {
         hasTablePermission('SpecifyUser', 'read'),
     },
     {
-      title: adminText('securityPanel'),
+      title: userText.securityPanel(),
       url: '/specify/security/',
     },
     {
-      title: commonText('repairTree'),
+      title: headerText.repairTree(),
       url: '/specify/overlay/tree-repair/',
       enabled: () =>
         getDisciplineTrees().some((treeName) =>
@@ -58,51 +62,51 @@ const rawUserTools: IR<RA<UserTool>> = {
         ),
     },
     {
-      title: commonText('generateMasterKey'),
+      title: userText.generateMasterKey(),
       url: '/specify/overlay/master-key/',
     },
   ],
-  [commonText('export')]: [
+  [commonText.export()]: [
     {
-      title: commonText('makeDwca'),
+      title: headerText.makeDwca(),
       enabled: () => hasPermission('/export/dwca', 'execute'),
       url: '/specify/overlay/make-dwca/',
     },
     {
-      title: commonText('updateExportFeed'),
+      title: headerText.updateExportFeed(),
       enabled: () => hasPermission('/export/feed', 'force_update'),
       url: '/specify/overlay/force-update-feed/',
     },
   ],
-  [commonText('documentation')]: [
+  [headerText.documentation()]: [
     {
-      title: welcomeText('aboutSpecify'),
+      title: welcomeText.aboutSpecify(),
       url: '/specify/overlay/about/',
     },
     {
-      title: commonText('forum'),
+      title: headerText.forum(),
       url: 'https://discourse.specifysoftware.org/',
     },
     {
-      title: commonText('technicalDocumentation'),
+      title: headerText.technicalDocumentation(),
       url: 'https://github.com/specify/specify7/wiki',
     },
   ],
-  [commonText('developers')]: [
+  [headerText.developers()]: [
     {
-      title: commonText('databaseSchema'),
+      title: schemaText.databaseSchema(),
       url: '/specify/datamodel/',
     },
     {
-      title: commonText('clearCache'),
+      title: headerText.clearCache(),
       url: '/specify/command/clear-cache/',
     },
     {
-      title: commonText('tableApi'),
+      title: headerText.tableApi(),
       url: '/documentation/api/tables/',
     },
     {
-      title: commonText('operationsApi'),
+      title: headerText.operationsApi(),
       url: '/documentation/api/operations/',
     },
   ],

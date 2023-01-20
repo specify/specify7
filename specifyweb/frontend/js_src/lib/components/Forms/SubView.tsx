@@ -16,6 +16,9 @@ import { AnySchema } from '../DataModel/helperTypes';
 import { fail } from '../Errors/Crash';
 import { TableIcon } from '../Molecules/TableIcon';
 import { overwriteReadOnly } from '../../utils/types';
+import { attachmentSettingsPromise } from '../Attachments/attachments';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { attachmentRelatedTables } from '../Attachments';
 
 export const SubViewContext = React.createContext<
   | {
@@ -28,6 +31,8 @@ export const SubViewContext = React.createContext<
   | undefined
 >(undefined);
 SubViewContext.displayName = 'SubViewContext';
+
+const fetchAttachmentSettings = () => attachmentSettingsPromise;
 
 export function SubView({
   relationship,
@@ -177,6 +182,16 @@ export function SubView({
   );
 
   const [isOpen, _, handleClose, handleToggle] = useBooleanState(!isButton);
+
+  const [isAttachmentConfigured] = useAsyncState(fetchAttachmentSettings, true);
+
+  const isAttachmentTable = attachmentRelatedTables().includes(
+    relationship.relatedModel.name
+  );
+
+  const isAttachmentMisconfirgured =
+    isAttachmentTable && !isAttachmentConfigured;
+
   return (
     <SubViewContext.Provider value={contextValue}>
       {isButton && (
@@ -187,17 +202,19 @@ export function SubView({
           title={relationship.label}
           onClick={handleToggle}
         >
-          {/*
-           * Attachment table icons have lots of vertical white space, making
-           * them look overly small on the forms.
-           * See https://github.com/specify/specify7/issues/1259
-           * Thus, have to introduce some inconsistency here
-           */}
-          {parentFormType === 'form' && (
-            <TableIcon className="h-8 w-8" label={false} name={icon} />
-          )}
+          {
+            /*
+             * Attachment table icons have lots of vertical white space, making
+             * them look overly small on the forms.
+             * See https://github.com/specify/specify7/issues/1259
+             * Thus, have to introduce some inconsistency here
+             */
+            parentFormType === 'form' && (
+              <TableIcon className="h-8 w-8" label={false} name={icon} />
+            )
+          }
           <span className="rounded border-gray-500 bg-white p-1 font-bold dark:bg-neutral-800">
-            {collection?.models.length ?? commonText('loading')}
+            {collection?.models.length ?? commonText.loading()}
           </span>
         </Button.BorderedGray>
       )}
@@ -207,7 +224,9 @@ export function SubView({
           dialog={isButton ? 'nonModal' : false}
           formType={formType}
           mode={
-            relationship.isDependent() && initialMode !== 'view'
+            !isAttachmentMisconfirgured &&
+            relationship.isDependent() &&
+            initialMode !== 'view'
               ? 'edit'
               : 'view'
           }

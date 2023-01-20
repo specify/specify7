@@ -5,7 +5,6 @@ import { useLocation } from 'react-router-dom';
 import { ajax } from '../../utils/ajax';
 import type { Institution } from '../DataModel/types';
 import { sortFunction } from '../../utils/utils';
-import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import { schema } from '../DataModel/schema';
@@ -30,6 +29,8 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { SerializedResource } from '../DataModel/helperTypes';
 import { useTitle } from '../Molecules/AppTitle';
 import { policiesToTsv } from './registry';
+import { userText } from '../../localization/user';
+import { LocalizedString } from 'typesafe-i18n';
 
 export function SecurityInstitution(): JSX.Element | null {
   const { institution } = useOutletContext<SecurityOutlet>();
@@ -70,14 +71,17 @@ function InstitutionView({
         <>
           <div className="flex gap-2">
             <h3 className="text-2xl">
-              {`${schema.models.Institution.label}: ${institution.name ?? ''}`}
+              {commonText.colonLine({
+                label: schema.models.Institution.label,
+                value: institution.name ?? '',
+              })}
             </h3>
             <ViewInstitutionButton institution={institution} />
           </div>
           <div className="flex flex-1 flex-col gap-8 overflow-y-scroll">
             {hasPermission('/permissions/library/roles', 'read') && (
               <section className="flex flex-col gap-2">
-                <h4 className="text-xl">{adminText('userRoleLibrary')}</h4>
+                <h4 className="text-xl">{userText.userRoleLibrary()}</h4>
                 {typeof libraryRoles === 'object' ? (
                   <ul>
                     {Object.values(libraryRoles)
@@ -93,12 +97,12 @@ function InstitutionView({
                       ))}
                   </ul>
                 ) : (
-                  commonText('loading')
+                  commonText.loading()
                 )}
                 <div className="flex gap-2">
                   {hasPermission('/permissions/library/roles', 'create') && (
                     <Link.Green href="/specify/security/institution/role/create/">
-                      {commonText('create')}
+                      {commonText.create()}
                     </Link.Green>
                   )}
                   <SafeOutlet<SecurityOutlet> {...outletState} />
@@ -126,13 +130,13 @@ function InstitutionView({
                       )
                     }
                   >
-                    [DEV] Download policy list
+                    <>[DEV] Download policy list</>
                   </Button.Blue>
                 </div>
               </section>
             )}
             <section className="flex flex-col gap-2">
-              <h4 className="text-xl">{adminText('institutionUsers')}</h4>
+              <h4 className="text-xl">{userText.institutionUsers()}</h4>
               {typeof users === 'object' ? (
                 <>
                   <Ul>
@@ -147,11 +151,11 @@ function InstitutionView({
                             {`${user.name}`}
                             <span className="text-gray-500">{`${
                               admins?.admins.has(user.id) === true
-                                ? ` ${adminText('specifyAdmin')}`
+                                ? ` ${userText.specifyAdmin()}`
                                 : ''
                             }${
                               admins?.legacyAdmins.has(user.id) === true
-                                ? ` ${adminText('legacyAdmin')}`
+                                ? ` ${userText.legacyAdmin()}`
                                 : ''
                             }`}</span>
                           </>
@@ -174,16 +178,16 @@ function InstitutionView({
                   {hasTablePermission('SpecifyUser', 'create') && (
                     <div>
                       <Link.Green href="/specify/security/user/new/">
-                        {commonText('create')}
+                        {commonText.create()}
                       </Link.Green>
                     </div>
                   )}
                 </>
               ) : (
-                commonText('loading')
+                commonText.loading()
               )}
               {typeof users === 'object' && admins === undefined && (
-                <p>{adminText('loadingAdmins')}</p>
+                <p>{userText.loadingAdmins()}</p>
               )}
             </section>
           </div>
@@ -208,11 +212,11 @@ export function useAdmins():
           ? ajax<{
               readonly sp7_admins: RA<{
                 readonly userid: number;
-                readonly username: string;
+                readonly username: LocalizedString;
               }>;
               readonly sp6_admins: RA<{
                 readonly userid: number;
-                readonly username: string;
+                readonly username: LocalizedString;
               }>;
             }>('/permissions/list_admins/', {
               headers: { Accept: 'application/json' },

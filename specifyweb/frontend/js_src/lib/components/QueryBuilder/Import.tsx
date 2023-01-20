@@ -15,6 +15,7 @@ import { useNavigate } from 'react-router-dom';
 import { Form } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { SerializedResource } from '../DataModel/helperTypes';
+import { getField } from '../DataModel/helpers';
 
 export function QueryImport({
   onClose: handleClose,
@@ -27,8 +28,8 @@ export function QueryImport({
   const navigate = useNavigate();
   return typeof queries === 'object' ? (
     <Dialog
-      buttons={commonText('cancel')}
-      header={commonText('import')}
+      buttons={commonText.cancel()}
+      header={commonText.import()}
       icon={<span className="text-blue-500">{icons.documentSearch}</span>}
       onClose={handleClose}
     >
@@ -64,7 +65,7 @@ export function QueryImport({
                     getUniqueName(
                       queryResource.get('name'),
                       queries.map(({ name }) => name),
-                      schema.models.SpQuery.strictGetLiteralField('name').length
+                      getField(schema.models.SpQuery, 'name').length
                     )
                   )
                 )
@@ -77,7 +78,7 @@ export function QueryImport({
         />
         {/* This button is never actually clicked. */}
         <Submit.Green className="sr-only" disabled>
-          {commonText('import')}
+          {commonText.import()}
         </Submit.Green>
       </Form>
     </Dialog>

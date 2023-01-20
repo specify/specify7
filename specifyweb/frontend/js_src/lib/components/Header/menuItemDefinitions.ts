@@ -22,6 +22,13 @@ import {
 import { reportsAvailable } from '../Reports';
 import { filterUserTools } from './userToolDefinitions';
 import { getCache } from '../../utils/cache';
+import { headerText } from '../../localization/header';
+import { reportsText } from '../../localization/report';
+import { queryText } from '../../localization/query';
+import { interactionsText } from '../../localization/interactions';
+import { attachmentsText } from '../../localization/attachments';
+import { treeText } from '../../localization/tree';
+import { wbText } from '../../localization/workbench';
 
 export type MenuItemName =
   | 'attachments'
@@ -37,7 +44,7 @@ export type MenuItemName =
 const rawMenuItems: RR<MenuItemName, MenuItem> = {
   dataEntry: {
     url: '/specify/overlay/data-entry/',
-    title: commonText('dataEntry'),
+    title: headerText.dataEntry(),
     icon: icons.pencilAt,
     visibilityKey: 'showDataEntry',
     enabled: () =>
@@ -49,7 +56,7 @@ const rawMenuItems: RR<MenuItemName, MenuItem> = {
   },
   trees: {
     url: '/specify/overlay/trees/',
-    title: commonText('trees'),
+    title: treeText.trees(),
     icon: icons.tree,
     visibilityKey: 'showTrees',
     enabled: () =>
@@ -57,7 +64,7 @@ const rawMenuItems: RR<MenuItemName, MenuItem> = {
   },
   interactions: {
     url: '/specify/overlay/interactions/',
-    title: commonText('interactions'),
+    title: interactionsText.interactions(),
     icon: icons.chat,
     visibilityKey: 'showInteractions',
     enabled: () =>
@@ -70,7 +77,7 @@ const rawMenuItems: RR<MenuItemName, MenuItem> = {
   },
   queries: {
     url: '/specify/overlay/queries/',
-    title: commonText('queries'),
+    title: queryText.queries(),
     icon: icons.documentSearch,
     visibilityKey: 'showQueries',
     enabled: () =>
@@ -79,14 +86,14 @@ const rawMenuItems: RR<MenuItemName, MenuItem> = {
   },
   recordSets: {
     url: '/specify/overlay/record-sets/',
-    title: commonText('recordSets'),
+    title: commonText.recordSets(),
     icon: icons.collection,
     visibilityKey: 'showRecordSets',
     enabled: () => hasToolPermission('recordSets', 'read'),
   },
   reports: {
     url: '/specify/overlay/reports/',
-    title: commonText('reports'),
+    title: reportsText.reports(),
     icon: icons.documentReport,
     visibilityKey: 'showReports',
     enabled: async () =>
@@ -94,13 +101,13 @@ const rawMenuItems: RR<MenuItemName, MenuItem> = {
   },
   workBench: {
     url: '/specify/overlay/data-sets/',
-    title: commonText('workBench'),
+    title: wbText.workBench(),
     icon: icons.table,
     visibilityKey: 'showWorkBench',
   },
   attachments: {
     url: '/specify/attachments/',
-    title: commonText('attachments'),
+    title: attachmentsText.attachments(),
     icon: icons.photos,
     visibilityKey: 'showAttachments',
     async enabled(): Promise<boolean> {

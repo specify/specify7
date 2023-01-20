@@ -21,6 +21,9 @@ import { NO_CLONE } from '../Forms/ResourceView';
 import { Dialog } from '../Molecules/Dialog';
 import { usePref } from '../UserPreferences/usePref';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
+import { schemaText } from '../../localization/schema';
+import { interactionsText } from '../../localization/interactions';
+import { wbPlanText } from '../../localization/wbPlan';
 
 /**
  * Fields to always carry forward (unless "Deselect All" is pressed), but not
@@ -105,10 +108,10 @@ export function CarryForwardConfig({
               setGlobalEnabled(toggleItem(globalEnabled, model.name))
             }
           />
-          {formsText('carryForwardEnabled')}
+          {formsText.carryForwardEnabled()}
           <Button.Small
             className="ml-2"
-            title={formsText('carryForwardSettingsDescription')}
+            title={formsText.carryForwardSettingsDescription()}
             onClick={handleOpen}
           >
             {icons.cog}
@@ -117,7 +120,7 @@ export function CarryForwardConfig({
       ) : (
         <Button.Icon
           icon="cog"
-          title={formsText('carryForwardSettingsDescription')}
+          title={formsText.carryForwardSettingsDescription()}
           onClick={handleOpen}
         />
       )}
@@ -222,7 +225,7 @@ function CarryForwardConfigDialog({
               )
             }
           >
-            {formsText('selectAll')}
+            {interactionsText.selectAll()}
           </Button.Green>
           <Button.Green
             disabled={config.length === 0}
@@ -243,20 +246,22 @@ function CarryForwardConfigDialog({
               )
             }
           >
-            {formsText('deselectAll')}
+            {interactionsText.deselectAll()}
           </Button.Green>
-          <Submit.Blue form={id('form')}>{commonText('close')}</Submit.Blue>
+          <Submit.Blue form={id('form')} onClick={handleClose}>
+            {commonText.close()}
+          </Submit.Blue>
         </>
       }
-      header={`${formsText('carryForwardSettingsDescription')} (${
-        model.label
-      })`}
+      header={formsText.carryForwardTableSettingsDescription({
+        tableName: model.label,
+      })}
       onClose={handleClose}
     >
       <Form className="overflow-hidden" id={id('form')} onSubmit={handleClose}>
         <div className="flex flex-1 flex-col gap-2 overflow-y-auto">
           <CarryForwardCategory
-            header={commonText('fields')}
+            header={schemaText.fields()}
             model={model}
             carryForward={config}
             fields={literalFields}
@@ -264,7 +269,7 @@ function CarryForwardConfigDialog({
             onChange={handleChange}
           />
           <CarryForwardCategory
-            header={commonText('relationships')}
+            header={schemaText.relationships()}
             model={model}
             carryForward={config}
             fields={relationships}
@@ -277,7 +282,7 @@ function CarryForwardConfigDialog({
             checked={showHiddenFields}
             onValueChange={setShowHiddenFields}
           />
-          {commonText('revealHiddenFormFields')}
+          {wbPlanText.revealHiddenFormFields()}
         </Label.Inline>
       </Form>
     </Dialog>
@@ -310,7 +315,7 @@ function CarryForwardCategory({
               <Label.Inline
                 title={
                   isUnique
-                    ? formsText('carryForwardUniqueField')
+                    ? formsText.carryForwardUniqueField()
                     : field.getLocalizedDesc()
                 }
               >

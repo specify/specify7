@@ -26,6 +26,7 @@ import { useResourceView } from './BaseResourceView';
 import { DeleteButton } from './DeleteButton';
 import { SaveButton } from './Save';
 import { UnloadProtectDialog } from '../Router/Router';
+import { LocalizedString } from 'typesafe-i18n';
 
 /**
  * There is special behavior required when creating one of these resources,
@@ -130,7 +131,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
   readonly children?: JSX.Element;
   readonly isSubForm: boolean;
   readonly isDependent: boolean;
-  readonly title?: string;
+  readonly title?: LocalizedString;
 }): JSX.Element {
   const mode = augmentMode(
     initialMode,
@@ -181,11 +182,11 @@ export function ResourceView<SCHEMA extends AnySchema>({
   if (isDeleted)
     return (
       <Dialog
-        buttons={<Link.Blue href="/specify/">{commonText('close')}</Link.Blue>}
-        header={commonText('resourceDeletedDialogHeader')}
+        buttons={<Link.Blue href="/specify/">{commonText.close()}</Link.Blue>}
+        header={formsText.resourceDeleted()}
         onClose={(): void => navigate('/specify/', { replace: true })}
       >
-        {commonText('resourceDeletedDialogText')}
+        {formsText.resourceDeletedDescription()}
       </Dialog>
     );
 
@@ -305,11 +306,11 @@ export function ResourceView<SCHEMA extends AnySchema>({
             {extraButtons ?? <span className="-ml-2 flex-1" />}
             {isModified && !isDependent ? (
               <Button.Red onClick={handleClose}>
-                {commonText('cancel')}
+                {commonText.cancel()}
               </Button.Red>
             ) : (
               <Button.Blue onClick={handleClose}>
-                {commonText('close')}
+                {commonText.close()}
               </Button.Blue>
             )}
             {saveButtonElement}
@@ -348,7 +349,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
           onCancel={(): void => setShowUnloadProtect(false)}
           onConfirm={handleClose}
         >
-          {formsText('unsavedFormUnloadProtect')}
+          {formsText.unsavedFormUnloadProtect()}
         </UnloadProtectDialog>
       )}
     </Dialog>

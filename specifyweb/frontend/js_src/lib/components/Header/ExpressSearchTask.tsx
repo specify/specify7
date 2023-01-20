@@ -22,6 +22,7 @@ import {
   usePrimarySearch,
   useSecondarySearch,
 } from './ExpressSearchHooks';
+import { headerText } from '../../localization/header';
 
 export function ExpressSearchView(): JSX.Element {
   const [query = ''] = useSearchParameter('q');
@@ -37,12 +38,12 @@ export function ExpressSearchView(): JSX.Element {
     <Container.Full>
       {primaryResults !== false && (
         <TableResults
-          header={commonText('primarySearch')}
+          header={headerText.primarySearch()}
           queryResults={primaryResults}
         />
       )}
       <TableResults
-        header={commonText('secondarySearch')}
+        header={headerText.secondarySearch()}
         queryResults={secondaryResults}
       />
     </Container.Full>
@@ -60,9 +61,9 @@ function TableResults({
     <section className="flex flex-col gap-1">
       <H3>{header}</H3>
       {queryResults === undefined ? (
-        <p aria-live="polite">{commonText('running')}</p>
+        <p aria-live="polite">{commonText.running()}</p>
       ) : Object.keys(queryResults).length === 0 ? (
-        <p aria-live="polite">{commonText('noMatches')}</p>
+        <p aria-live="polite">{commonText.noMatches()}</p>
       ) : (
         queryResults.map((results, index) => (
           <TableResult key={index} {...results} />
@@ -109,7 +110,10 @@ function TableResult({
           hover:!text-white dark:bg-brand-500 hover:dark:!bg-brand-400
         `}
       >
-        {`${caption} (${tableResults.totalCount})`}
+        {commonText.countLine({
+          resource: caption,
+          count: tableResults.totalCount,
+        })}
       </summary>
       <ErrorBoundary dismissable>
         <QueryResults

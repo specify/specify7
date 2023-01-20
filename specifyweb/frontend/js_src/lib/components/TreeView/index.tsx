@@ -96,7 +96,7 @@ function TreeView<SCHEMA extends AnyTree>({
     setConformation(parsed);
   }, [setConformation]);
 
-  useTitle(treeText('treeViewTitle', table.label));
+  useTitle(treeText.treeViewTitle({ treeName: table.label }));
 
   // Node sort order
   const sortField = getPref(`${tableName as 'Geography'}.treeview_sort_field`);
@@ -173,7 +173,7 @@ function TreeView<SCHEMA extends AnyTree>({
           aria-pressed={isEditingRanks}
           onClick={handleToggleEditingRanks}
         >
-          {treeText('editRanks')}
+          {treeText.editRanks()}
         </Button.Small>
         <span className="-ml-2 flex-1" />
         <ErrorBoundary dismissable>

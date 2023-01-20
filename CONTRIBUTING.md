@@ -1,18 +1,38 @@
 # Guide to contributing to Specify Software
 
-Thank you for the interest in contributing to Specify's codebase! We welcome contributions of all kinds, including bug fixes, improvements, documentation, etc.
+Thank you for the interest in contributing to Specify's codebase! We welcome
+contributions of all kinds, including bug fixes, improvements, documentation,
+etc.
 
-We value contributions from all members of the community, regardless of experience level. Whether you are a seasoned open source contributor or a newcomer to the world of software development, your help is greatly appreciated.
+We value contributions from all members of the community, regardless of
+experience level. Whether you are a seasoned open source contributor or a
+newcomer to the world of software development, your help is greatly appreciated.
 
-To get started with contributing to Specify 7, this guide will provide you with the information you need to understand the project, its goals, and how you can help.
+To get started with contributing to Specify 7, this guide will provide you with
+the information you need to understand the project, its goals, and how you can
+help.
 
-We also encourage you to reach out to the Specify 7 team with any questions you may have. You can contact the team at support@specifysoftware.org.
+We also encourage you to reach out to the Specify 7 team with any questions you
+may have. You can contact the team at support@specifysoftware.org.
 
 ## Mission Statement
 
-The mission of the Specify Collections Consortium is to advance research and applied uses of the information associated with specimens and samples held in biological and earth science collections. With engagement and collaboration from its member institutions, the Consortium does this by engineering innovative, open-source software, and by offering training and services to members for the digitization, integration, and curation of collections data. By collaboratively creating and supporting robust platforms and tools, the Consortium advances the mobilization and engagement of collections data in broader research and computing initiatives for the benefit of its members, science, and society.
+The mission of the Specify Collections Consortium is to advance research and
+applied uses of the information associated with specimens and samples held in
+biological and earth science collections. With engagement and collaboration from
+its member institutions, the Consortium does this by engineering innovative,
+open-source software, and by offering training and services to members for the
+digitization, integration, and curation of collections data. By collaboratively
+creating and supporting robust platforms and tools, the Consortium advances the
+mobilization and engagement of collections data in broader research and
+computing initiatives for the benefit of its members, science, and society.
 
-_Our mission statement serves as a guiding principle for how our organization should operate. It defines what our organization stands for, what it values, and what its goals are. By developing in accordance with our mission statement, we ensure that our efforts are aligned with our core values and purpose. This helps us stay focused on our goals, and ensures that all of our efforts are working together to achieve our mission._
+_Our mission statement serves as a guiding principle for how our organization
+should operate. It defines what our organization stands for, what it values, and
+what its goals are. By developing in accordance with our mission statement, we
+ensure that our efforts are aligned with our core values and purpose. This helps
+us stay focused on our goals, and ensures that all of our efforts are working
+together to achieve our mission._
 
 ## Getting Started
 
@@ -51,6 +71,13 @@ Example workflow:
    `1234` is a number of GitHub issue
 5. We will review the changes and merge them into next release. You will receive
    credit in the release notes!
+   
+### First Steps
+
+It's recomended to start with issues that are labled with
+[good first issue](https://github.com/specify/specify7/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22)
+as those require less knowledge of the codebase and are as not urgent. These
+would prepare you for taking on larger GitHub issues.
 
 ## Code Documentation
 
@@ -69,7 +96,8 @@ directory and provides other meta information.
 Back-end uses Python and Django. It also works closely with a MySQL/MariaDB
 database both though Django ORM and though SQLAlchemy.
 
-Back-end root directory is [./specifyweb/](https://github.com/specify/specify7/tree/production/specifyweb)
+Back-end root directory
+is [./specifyweb/](https://github.com/specify/specify7/tree/production/specifyweb)
 
 ## IDE Setup
 
@@ -85,7 +113,8 @@ components easier.
 
 ## Code-Style
 
-We prefer functional programming paradigm. In our opinion, perfect code\* consist
+We prefer functional programming paradigm. In our opinion, perfect code\*
+consist
 of small and pure functions that have clear unit tests, and can be combined
 together to solve a complex task.
 
@@ -133,8 +162,8 @@ or posting a question on
 our [Discourse forum](https://discourse.specifysoftware.org/)
 as appropriate.
 
-| Contact Option | Link |
-|-------|-------------|
-| General Inquiry | [support@specifysoftware.org](mailto:support@specifysoftware.org) |
-| Bug Report | [GitHub Issue](https://github.com/specify/specify7/issues/new/choose) |
-| User Question | [Discourse Forum](https://discourse.specifysoftware.org/) |
+| Contact Option  | Link                                                                  |
+| --------------- | --------------------------------------------------------------------- |
+| General Inquiry | [support@specifysoftware.org](mailto:support@specifysoftware.org)     |
+| Bug Report      | [GitHub Issue](https://github.com/specify/specify7/issues/new/choose) |
+| User Question   | [Discourse Forum](https://discourse.specifysoftware.org/)             |

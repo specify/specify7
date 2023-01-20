@@ -74,7 +74,7 @@ const cellRenderers: {
         className="border-b border-gray-500"
         title={
           typeof forClass === 'string'
-            ? schema.models[forClass].localization.desc?.toString() ?? undefined
+            ? schema.models[forClass].localization.desc ?? undefined
             : undefined
         }
       >
@@ -228,8 +228,15 @@ const cellRenderers: {
   Blank() {
     return null;
   },
-  Unsupported({ cellData: { cellType = commonText('nullInline') } }) {
-    return <>{`${formsText('unsupportedCellType')} ${cellType}`}</>;
+  Unsupported({ cellData: { cellType = commonText.nullInline() } }) {
+    return (
+      <>
+        {commonText.colonLine({
+          label: formsText.unsupportedCellType(),
+          value: cellType,
+        })}
+      </>
+    );
   },
 };
 
