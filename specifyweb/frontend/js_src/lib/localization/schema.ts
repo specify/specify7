@@ -284,5 +284,9 @@ export const schemaText = createDictionary({
   },
   goToTop: {
     'en-us': 'Go to top',
+    'es-es': 'Ve arriba',
+    'fr-fr': 'Aller en haut',
+    'ru-ru': 'Перейти к началу',
+    'uk-ua': 'Перейти вгору',
   },
 } as const);
