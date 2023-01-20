@@ -43,7 +43,7 @@ export function MergeRecord({
             handleClose();
             setIds(new Set());
           }}
-          onDeleted={(removeId): void => {
+          onDismiss={(removeId): void => {
             const newItems = Array.from(ids).filter((id) => id !== removeId);
             if (newItems.length === 1) {
               navigate(
@@ -55,6 +55,7 @@ export function MergeRecord({
               );
             } else setIds(new Set(newItems));
           }}
+          onDeleted={undefined}
         />
       ) : (
         isOpen && (

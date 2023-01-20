@@ -64,13 +64,13 @@ export function MergingDialog({
   model,
   ids,
   onClose: handleClose,
-  onDeleted: handleDeleted,
   onDismiss: handleDismiss,
+  onDeleted: handleDeleted = handleDismiss,
 }: {
   readonly model: SpecifyModel;
   readonly ids: ReadonlySet<number>;
   readonly onClose: () => void;
-  readonly onDeleted: (id: number) => void;
+  readonly onDeleted: ((id: number) => void) | undefined;
   readonly onDismiss: (id: number) => void;
 }): JSX.Element | null {
   const records = useResources(model, ids);

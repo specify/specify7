@@ -195,7 +195,7 @@ function MergeDialog({
                 add
               ) : (
                 <tr aria-hidden>
-                  <td className="col-span-full my-8 border p-0" />
+                  <td className="col-span-full my-8 border !p-0" />
                 </tr>
               )
             }

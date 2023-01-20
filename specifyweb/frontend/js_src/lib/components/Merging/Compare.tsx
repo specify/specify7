@@ -87,8 +87,14 @@ export function MergeContainer({
     <Form className="overflow-hidden" id={id} onSubmit={handleSubmit}>
       <table
         className={`
-          grid-table grid-cols-[auto,repeat(var(--columns),minmax(15rem,1fr))]
-          gap-2 overflow-auto
+          grid-table
+          grid-cols-[auto,repeat(var(--columns),minmax(15rem,1fr))]
+          overflow-auto
+          [&_:is(th,td)]:p-1
+          [&_:is(td,th):nth-child(2)]:mr-1
+          [&_:is(td,th):nth-child(2)]:border-r
+          [&_:is(td,th):nth-child(2)]:border-gray-500
+          [&_:is(td,th):nth-child(2)]:pr-2
         `}
         style={
           {
