@@ -112,8 +112,8 @@ export function usePref<
   return useUnsafePref(
     category,
     subcategory,
-    item,
     // @ts-expect-error
+    item,
     getPrefMain,
     setUserPref
   ) as unknown as GetOrSet<
@@ -142,8 +142,8 @@ export function useCollectionPref<
   return useUnsafePref(
     category,
     subcategory,
-    item,
     // @ts-expect-error
+    item,
     getPrefMain,
     setUserPref
   ) as unknown as GetOrSet<
