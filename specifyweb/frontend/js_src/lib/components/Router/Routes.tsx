@@ -38,15 +38,15 @@ export const routes: RA<EnhancedRoute> = [
         index: true,
         title: schemaText.databaseSchema(),
         element: () =>
-          import('../Toolbar/Schema').then(
+          import('../Toolbar/DataModel').then(
             ({ DataModelTables }) => DataModelTables
           ),
       },
       {
         path: ':tableName',
         element: () =>
-          import('../Toolbar/Schema').then(
-            ({ DataModelTable }) => DataModelTable
+          import('../Toolbar/DataModel').then(
+            ({ DataModelRedirect }) => DataModelRedirect
           ),
       },
     ],
