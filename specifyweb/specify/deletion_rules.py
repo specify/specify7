@@ -2,7 +2,7 @@ from django.db import models
 
 """ Special Deletion Rules for table relationships 
     
-    Of the form: base_table : { relationship: action}
+    Of the form: base_table : { field_name: action}
 
     Possible Django actions (w/ django 2.2) are:
         CASCADE, PROTECT, SET_NULL, SET_DEFAULT, SET(...), DO_NOTHING
@@ -13,15 +13,15 @@ from django.db import models
     See .build_models.py for uses
 """
 SPECIAL_DELETION_RULES = {
-    'Spappresource' : {'spreports': models.CASCADE},
+    'Spappresource' : {'spreport': models.CASCADE},
 
-    'Recordset' : {'recordsetitems' : models.CASCADE},
+    'Recordset' : {'recordsetitem' : models.CASCADE},
 
     'Specifyuser' : {
         'agent' : models.SET_NULL,
-        'spAppResourceDirs' : models.CASCADE,
-        'spAppResources': models.CASCADE,
-        'spPrincipals': models.CASCADE,
+        'spAppResourceDir' : models.CASCADE,
+        'spAppResource': models.CASCADE,
+        'spPrincipal': models.CASCADE,
         },
 
     # Handle workbench deletion using raw sql in business rules.
@@ -34,23 +34,23 @@ SPECIAL_DELETION_RULES = {
 
     # System Tables
 
-    'Spauditlog' : {'fields' : models.CASCADE},
+    'Spauditlog' : {'field' : models.CASCADE},
 
-    'Spappresource' : {'spAppResourceDatas': models.CASCADE},
+    'Spappresource' : {'spAppResourceData': models.CASCADE},
     'Spappresourcedir' : {
-        'spPersistedAppResources': models.CASCADE,
-        'spPersistedViewSets' : models.CASCADE,
+        'spPersistedAppResource': models.CASCADE,
+        'spPersistedViewSet' : models.CASCADE,
         },
-    'Spviewsetobj' : {'spAppResourceDatas' : models.CASCADE},
+    'Spviewsetobj' : {'spAppResourceData' : models.CASCADE},
     
     'Splocalecontainer' : {
-        'items' : models.CASCADE,
-        'names' : models.CASCADE
+        'item' : models.CASCADE,
+        'name' : models.CASCADE
     },
     'Splocalecontaineritem' : {
-        'names' : models.CASCADE
+        'name' : models.CASCADE
     },
-    'SpQuery' : {"fields" : models.CASCADE},
+    'SpQuery' : {"field" : models.CASCADE},
 }
 
 """ Any additional desired delete blockers 
