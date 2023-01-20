@@ -28,19 +28,19 @@ export function StatsPageEditing({
         <>
           {typeof handleRemove === 'function' && (
             <Button.Red onClick={handleRemove}>
-              {commonText('remove')}
+              {commonText.remove()}
             </Button.Red>
           )}
           <span className="-ml-2 flex-1" />
-          <Button.Blue onClick={handleClose}>{commonText('close')}</Button.Blue>
+          <Button.Blue onClick={handleClose}>{commonText.close()}</Button.Blue>
           <Submit.Green form={id('form')}>
             {typeof handleRename === 'function'
-              ? commonText('save')
-              : commonText('add')}
+              ? commonText.save()
+              : commonText.add()}
           </Submit.Green>
         </>
       }
-      header={statsText('pageName')}
+      header={statsText.pageName()}
       onClose={handleClose}
       className={{ buttonContainer: 'flex-1' }}
     >
@@ -55,7 +55,7 @@ export function StatsPageEditing({
         }
       >
         <Label.Block>
-          {commonText('name')}
+          {statsText.name()}
           <Input.Text required value={pageName} onValueChange={setPageName} />
         </Label.Block>
       </Form>

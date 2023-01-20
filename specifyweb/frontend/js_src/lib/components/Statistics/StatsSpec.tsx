@@ -31,12 +31,12 @@ type StatsSpec =
  */
 // @ts-expect-error
 export const statsSpec: IR<StatsSpec> = {
-  [statsText('collection')]: {
+  [statsText.collection()]: {
     holdings: {
-      label: statsText('holdings'),
+      label: statsText.holdings(),
       categories: () => ({
         specimens: {
-          label: statsText('collectionObjects'),
+          label: statsText.collectionObjects(),
           spec: {
             type: 'QueryBuilderStat',
             tableName: 'CollectionObject',
@@ -50,7 +50,7 @@ export const statsSpec: IR<StatsSpec> = {
           },
         },
         preparations: {
-          label: statsText('preparations'),
+          label: statsText.preparations(),
           spec: {
             type: 'QueryBuilderStat',
             tableName: 'Preparation',
@@ -63,7 +63,7 @@ export const statsSpec: IR<StatsSpec> = {
           },
         },
         typeSpecimens: {
-          label: statsText('typeSpecimens'),
+          label: statsText.typeSpecimens(),
           spec: {
             type: 'QueryBuilderStat',
             tableName: 'Determination',
@@ -124,10 +124,10 @@ export const statsSpec: IR<StatsSpec> = {
       }),
     },
     preparations: {
-      label: statsText('preparations'),
+      label: statsText.preparations(),
       categories: () => ({
         phantomItem: {
-          label: statsText('preparations'),
+          label: statsText.preparations(),
           spec: {
             type: 'BackEndStat',
             pathToValue: undefined,
@@ -144,10 +144,10 @@ export const statsSpec: IR<StatsSpec> = {
       }),
     },
     loans: {
-      label: statsText('loans'),
+      label: statsText.loans(),
       categories: () => ({
         itemsOnLoans: {
-          label: statsText('itemsOnLoans'),
+          label: statsText.itemsOnLoans(),
           spec: {
             type: 'QueryBuilderStat',
             tableName: 'LoanPreparation',
@@ -164,7 +164,7 @@ export const statsSpec: IR<StatsSpec> = {
           },
         },
         openLoansCount: {
-          label: statsText('openLoans'),
+          label: statsText.openLoans(),
           spec: {
             type: 'QueryBuilderStat',
             tableName: 'Loan',
@@ -181,7 +181,7 @@ export const statsSpec: IR<StatsSpec> = {
           },
         },
         overdueLoansCount: {
-          label: statsText('overdueLoans'),
+          label: statsText.overdueLoans(),
           spec: {
             type: 'QueryBuilderStat',
             tableName: 'Loan',
@@ -205,10 +205,10 @@ export const statsSpec: IR<StatsSpec> = {
       }),
     },
     taxonomicTree: {
-      label: statsText('taxonomicTree'),
+      label: statsText.taxonomicTree(),
       categories: () => ({
         classesCount: {
-          label: statsText('classes'),
+          label: statsText.classes(),
           spec: {
             type: 'QueryBuilderStat',
             tableName: 'Taxon',
@@ -226,7 +226,7 @@ export const statsSpec: IR<StatsSpec> = {
           },
         },
         ordersCount: {
-          label: statsText('orders'),
+          label: statsText.orders(),
           spec: {
             type: 'QueryBuilderStat',
             tableName: 'Taxon',
@@ -244,7 +244,7 @@ export const statsSpec: IR<StatsSpec> = {
           },
         },
         familiesCount: {
-          label: statsText('families'),
+          label: statsText.families(),
           spec: {
             type: 'QueryBuilderStat',
             tableName: 'Taxon',
@@ -262,7 +262,7 @@ export const statsSpec: IR<StatsSpec> = {
           },
         },
         generaCount: {
-          label: statsText('genera'),
+          label: statsText.genera(),
           spec: {
             type: 'QueryBuilderStat',
             tableName: 'Taxon',
@@ -280,7 +280,7 @@ export const statsSpec: IR<StatsSpec> = {
           },
         },
         speciesCount: {
-          label: statsText('species'),
+          label: statsText.species(),
           spec: {
             type: 'QueryBuilderStat',
             tableName: 'Taxon',
@@ -300,10 +300,10 @@ export const statsSpec: IR<StatsSpec> = {
       }),
     },
     localityGeography: {
-      label: statsText('localityGeography'),
+      label: statsText.localityGeography(),
       categories: () => ({
         localityCount: {
-          label: statsText('localities'),
+          label: statsText.localities(),
           spec: {
             type: 'QueryBuilderStat',
             tableName: 'Locality',
@@ -319,7 +319,7 @@ export const statsSpec: IR<StatsSpec> = {
           },
         },
         geographyEntryCount: {
-          label: statsText('geographyEntries'),
+          label: statsText.geographyEntries(),
           spec: {
             type: 'QueryBuilderStat',
             tableName: 'Geography',
@@ -335,7 +335,7 @@ export const statsSpec: IR<StatsSpec> = {
           },
         },
         georeferencedLocalityCount: {
-          label: statsText('georeferencedLocalities'),
+          label: statsText.georeferencedLocalities(),
           spec: {
             type: 'QueryBuilderStat',
             tableName: 'Locality',
@@ -355,10 +355,10 @@ export const statsSpec: IR<StatsSpec> = {
       }),
     },
     typeSpecimens: {
-      label: statsText('typeSpecimens'),
+      label: statsText.typeSpecimens(),
       categories: () => ({
         phantomItem: {
-          label: statsText('typeSpecimens'),
+          label: statsText.typeSpecimens(),
           spec: {
             type: 'BackEndStat',
             pathToValue: undefined,
@@ -369,7 +369,7 @@ export const statsSpec: IR<StatsSpec> = {
       }),
     },
     catalogStats: {
-      label: statsText('computerization'),
+      label: statsText.computerization(),
       categories() {
         const currentDate = new Date();
         const initialDate = getDateInputValue(currentDate);
@@ -388,7 +388,7 @@ export const statsSpec: IR<StatsSpec> = {
 
         return {
           catalogedLastSevenDays: {
-            label: statsText('computerizedLastSevenDays'),
+            label: statsText.computerizedLastSevenDays(),
             spec: {
               type: 'QueryBuilderStat',
               tableName: 'CollectionObject',
@@ -405,7 +405,7 @@ export const statsSpec: IR<StatsSpec> = {
             },
           },
           catalogedLastMonth: {
-            label: statsText('computerizedLastMonth'),
+            label: statsText.computerizedLastMonth(),
             spec: {
               type: 'QueryBuilderStat',
               tableName: 'CollectionObject',
@@ -422,7 +422,7 @@ export const statsSpec: IR<StatsSpec> = {
             },
           },
           catalogedLastYear: {
-            label: statsText('computerizedLastYear'),
+            label: statsText.computerizedLastYear,
             spec: {
               type: 'QueryBuilderStat',
               tableName: 'CollectionObject',
@@ -442,13 +442,13 @@ export const statsSpec: IR<StatsSpec> = {
       },
     },
   },
-  [statsText('personal')]: {
+  [statsText.personal()]: {
     holdings: {
-      label: statsText('collection'),
+      label: statsText.collection(),
       categories: () =>
         ({
           ordersCount: {
-            label: statsText('orders'),
+            label: statsText.orders(),
             spec: {
               type: 'QueryBuilderStat',
               tableName: 'Taxon',
@@ -466,7 +466,7 @@ export const statsSpec: IR<StatsSpec> = {
             },
           },
           collectionObjectsCataloged: {
-            label: statsText('collectionObjectsCataloged'),
+            label: statsText.collectionObjectsCataloged(),
             spec: {
               type: 'QueryBuilderStat',
               tableName: 'CollectionObject',
@@ -480,7 +480,7 @@ export const statsSpec: IR<StatsSpec> = {
             },
           },
           collectionObjectsDetermined: {
-            label: statsText('collectionObjectsDetermined'),
+            label: statsText.collectionObjectsDetermined(),
             spec: {
               type: 'QueryBuilderStat',
               tableName: 'CollectionObject',
@@ -494,7 +494,7 @@ export const statsSpec: IR<StatsSpec> = {
             },
           },
           collectionObjectInventorized: {
-            label: statsText('collectionObjects'),
+            label: statsText.collectionObjects(),
             spec: {
               type: 'QueryBuilderStat',
               tableName: 'CollectionObject',

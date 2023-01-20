@@ -60,8 +60,8 @@ export function StatsPage(): JSX.Element | null {
   );
 
   const layout = {
-    [statsText('shared')]: collectionLayout,
-    [statsText('personal')]: personalLayout,
+    [statsText.shared()]: collectionLayout,
+    [statsText.personal()]: personalLayout,
   };
 
   const [state, setState] = React.useState<
@@ -232,7 +232,7 @@ export function StatsPage(): JSX.Element | null {
 
   const defaultStatsAddLeft = useDefaultStatsToAdd(
     layout[
-      activePage.isCollection ? statsText('shared') : statsText('personal')
+      activePage.isCollection ? statsText.shared() : statsText.personal()
     ]?.[activePage.pageIndex],
     defaultLayout
   );
@@ -386,11 +386,11 @@ export function StatsPage(): JSX.Element | null {
       }}
     >
       <div className="flex items-center gap-2">
-        <H2 className="text-2xl">{commonText('statistics')}</H2>
+        <H2 className="text-2xl">{statsText.statistics()}</H2>
         <span className="-ml-2 flex-1" />
         {pageLastUpdated !== undefined && (
           <span>
-            {`${statsText('lastUpdated')} `}
+            {`${statsText.lastUpdated()} `}
             <DateElement date={pageLastUpdated} />
           </span>
         )}
@@ -416,7 +416,7 @@ export function StatsPage(): JSX.Element | null {
             }
           }}
         >
-          {commonText('update')}
+          {commonText.update()}
         </Button.Blue>
         {Object.values(layout).every((layouts) => layouts !== undefined) && (
           <Button.Green
@@ -436,7 +436,7 @@ export function StatsPage(): JSX.Element | null {
               downloadFile(fileName, statsTsv).catch(softFail);
             }}
           >
-            {statsText('downloadAsTSV')}
+            {statsText.downloadAsTSV()}
           </Button.Green>
         )}
         {isEditing ? (
@@ -453,7 +453,7 @@ export function StatsPage(): JSX.Element | null {
                 }));
               }}
             >
-              {commonText('reset')}
+              {commonText.reset()}
             </Button.Red>
 
             <Button.Red
@@ -481,9 +481,9 @@ export function StatsPage(): JSX.Element | null {
                 });
               }}
             >
-              {commonText('cancel')}
+              {commonText.cancel()}
             </Button.Red>
-            <Submit.Blue>{commonText('save')}</Submit.Blue>
+            <Submit.Blue>{commonText.save()}</Submit.Blue>
           </>
         ) : (
           canEdit && (
@@ -499,7 +499,7 @@ export function StatsPage(): JSX.Element | null {
                 isEditingCollection.current = activePage.isCollection;
               }}
             >
-              {commonText('edit')}
+              {commonText.edit()}
             </Button.Blue>
           )
         )}
@@ -548,7 +548,7 @@ export function StatsPage(): JSX.Element | null {
                     {isEditing && canEditIndex(index === 0) && (
                       <StatsPageButton
                         isCurrent={false}
-                        label={commonText('add')}
+                        label={commonText.add()}
                         onClick={(): void => {
                           setState({
                             type: 'PageRenameState',

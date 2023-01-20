@@ -39,12 +39,12 @@ export function StatsResult({
   return (
     <>
       {statLabel === undefined ? (
-        <li>{commonText('loading')}</li>
+        <li>{commonText.loading()}</li>
       ) : typeof handleRemove === 'function' ? (
         <>
           <Button.Icon
             icon={isDefault ? 'x' : 'trash'}
-            title={isDefault ? commonText('remove') : commonText('delete')}
+            title={isDefault ? commonText.remove() : commonText.delete()}
             onClick={handleRemove}
           />
           <Input.Text
@@ -55,7 +55,7 @@ export function StatsResult({
             }}
           />
           <span className="self-center">
-            {statValue ?? commonText('loading')}
+            {statValue ?? commonText.loading()}
           </span>
         </>
       ) : (
@@ -68,7 +68,7 @@ export function StatsResult({
           >
             <span>{statLabel}</span>
             <span className="-ml-2 flex-1" />
-            <span>{statValue ?? commonText('loading')}</span>
+            <span>{statValue ?? commonText.loading()}</span>
           </Button.LikeLink>
         </li>
       )}

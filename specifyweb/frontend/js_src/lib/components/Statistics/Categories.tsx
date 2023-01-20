@@ -187,7 +187,7 @@ export function Categories({
                         />
                       ) : undefined
                     )
-                  : commonText('loading')}
+                  : commonText.loading()}
               </Ul>
               {typeof handleCategoryRename === 'function' ? (
                 <span className="-mt-2 flex-1" />
@@ -198,7 +198,7 @@ export function Categories({
                     variant={className.blueButton}
                     onClick={(): void => handleAdd(categoryIndex)}
                   >
-                    {commonText('add')}
+                    {commonText.add()}
                   </Button.Small>
                   <span className="-ml-2 flex-1" />
                   <Button.Small
@@ -217,7 +217,7 @@ export function Categories({
                       }
                     }}
                   >
-                    {'Delete All'}
+                    {statsText.deleteAll()}
                   </Button.Small>
                   <></>
                 </div>
@@ -231,7 +231,7 @@ export function Categories({
           className="!p-4 font-bold shadow-md shadow-gray-300"
           onClick={(): void => handleAdd(undefined)}
         >
-          {commonText('add')}
+          {commonText.add()}
         </Button.Gray>
       )}
       {removeCategory !== undefined && (
@@ -245,18 +245,18 @@ export function Categories({
                   closeRemoveDialog();
                 }}
               >
-                {commonText('delete')}
+                {commonText.delete()}
               </Button.Red>
               <span className="-ml-2 flex" />
               <Button.Blue onClick={closeRemoveDialog}>
-                {commonText('cancel')}
+                {commonText.cancel()}
               </Button.Blue>
             </div>
           }
           className={{ container: dialogClassNames.narrowContainer }}
           onClose={closeRemoveDialog}
         >
-          {statsText('customDeleteWarning')}
+          {statsText.customDeleteWarning()}
         </Dialog>
       )}
     </>

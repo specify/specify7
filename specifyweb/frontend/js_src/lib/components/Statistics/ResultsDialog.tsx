@@ -2,14 +2,14 @@ import React from 'react';
 
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
 
-import { SpQuery, SpQueryField, Tables } from '../DataModel/types';
+import type { SpQuery, SpQueryField, Tables } from '../DataModel/types';
 
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { Button } from '../Atoms/Button';
 import { commonText } from '../../localization/common';
-import { SpecifyResource } from '../DataModel/legacyTypes';
-import { RA } from '../../utils/types';
-import { SerializedResource } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { RA } from '../../utils/types';
+import type { SerializedResource } from '../DataModel/helperTypes';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 
 export function FrontEndStatsResultDialog({
@@ -42,7 +42,7 @@ export function FrontEndStatsResultDialog({
     <Dialog
       buttons={
         <>
-          <Button.DialogClose>{commonText('close')}</Button.DialogClose>
+          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
           {typeof handleSpecChange === 'function' &&
           queryData.fields !== undefined &&
           queryData.tableName !== undefined ? (
@@ -57,7 +57,7 @@ export function FrontEndStatsResultDialog({
                 }
               }}
             >
-              {commonText('save')}
+              {commonText.save()}
             </Button.Green>
           ) : null}
         </>
@@ -79,7 +79,7 @@ export function FrontEndStatsResultDialog({
           typeof handleSpecChange === 'function'
             ? (tableName, fields): void => {
                 setQueryData({
-                  tableName: tableName,
+                  tableName,
                   fields: fields.map((field) => ({
                     ...field,
                     path: QueryFieldSpec.fromStringId(

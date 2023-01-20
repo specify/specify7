@@ -36,16 +36,16 @@ export function AddStatDialog({
 }): JSX.Element | null {
   return Array.isArray(queries) || defaultStatsAddLeft !== undefined ? (
     <Dialog
-      buttons={<Button.DialogClose>{commonText('close')}</Button.DialogClose>}
+      buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
       className={{
         container: `${dialogClassNames.wideContainer}`,
         content: 'flex flex-col gap-8',
       }}
-      header={statsText('chooseStatistics')}
+      header={statsText.chooseStatistics()}
       onClose={handleClose}
     >
       <div>
-        <H3 className="text-lg">{statsText('selectFromQueries')}</H3>
+        <H3 className="text-lg">{statsText.selectFromQueries()}</H3>
         {Array.isArray(queries) && (
           <QueryList
             getQuerySelectCallback={(query) => () => {
@@ -76,7 +76,7 @@ export function AddStatDialog({
       <div>
         {defaultStatsAddLeft !== undefined && (
           <div>
-            <H3 className="text-xl">{statsText('selectFromDefault')}</H3>
+            <H3 className="text-xl">{statsText.selectFromDefault()}</H3>
             <Ul>
               {defaultStatsAddLeft.map((defaultLayoutPage, index) =>
                 defaultLayoutPage.categories.every(({ items }) =>

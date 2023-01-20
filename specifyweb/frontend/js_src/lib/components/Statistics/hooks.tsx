@@ -306,11 +306,11 @@ export function statsToTsv(
   if (Object.values(layout).some((layouts) => layouts === undefined))
     return undefined;
   const headers = [
-    statsText('source'),
-    statsText('pageName'),
-    statsText('categoryName'),
-    statsText('itemName'),
-    statsText('itemValue'),
+    statsText.source(),
+    statsText.pageName(),
+    statsText.categoryName(),
+    statsText.itemName(),
+    statsText.itemValue(),
   ];
   const statItems: WritableArray<WritableArray<number | string>> = [];
   let nameSpec = '';
