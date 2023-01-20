@@ -1,23 +1,30 @@
 msgid ""
-msgstr "Content-Type: text/plain\n"
+msgstr ""
+"Report-Msgid-Bugs-To: support@specifysoftware.org\n"
+"PO-Revision-Date: 2023-01-20 10:10+0000\n"
+"Last-Translator: gallegonovato <fran-carro@hotmail.es>\n"
+"Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
+"specifyNetwork/es/>\n"
+"Language: es\n"
+"Content-Type: text/plain\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.15.1\n"
 
+#. Used in: Components > Specify Network > Index
 #: components/SpecifyNetwork/index.tsx:235
 #: components/SpecifyNetwork/index.tsx:239
-#. Used in: Components > Specify Network > Index
-#, fuzzy
 msgid "specifyNetwork"
-msgstr "Especificar red"
+msgstr "Specify red"
 
+#. Used in: Components > Specify Network > Index
 #: components/SpecifyNetwork/index.tsx:228
-#. Used in: Components > Specify Network > Index
-#, fuzzy
 msgid "failedToOpenPopUp"
-msgstr "No se pudo abrir la página Especificar red"
+msgstr "Error al abrir la página Specify Red"
 
-#: components/SpecifyNetwork/index.tsx:231
 #. Used in: Components > Specify Network > Index
-#, fuzzy
+#: components/SpecifyNetwork/index.tsx:231
 msgid "failedToOpenPopUpDescription"
 msgstr ""
-"Asegúrese de que su navegador no esté bloqueando las ventanas emergentes y "
-"vuelva a intentarlo."
+"Asegúrate de que tu navegador no bloquea las ventanas emergentes e inténtalo "
+"de nuevo."
