@@ -46,8 +46,6 @@ export function TableIcon({
    * strictly necessary.
    */
   className = 'w-table-icon h-table-icon flex-shrink-0',
-  // FIXME: remove this before merging
-  legacy = false,
 }: {
   readonly name: string;
   /**
@@ -57,19 +55,14 @@ export function TableIcon({
    */
   readonly label: boolean | LocalizedString;
   readonly className?: string;
-  readonly legacy?: boolean;
 }): JSX.Element {
   const tableName = getModel(name)?.name;
-  if (typeof tableName === 'string' && !legacy)
+  if (typeof tableName === 'string')
     return <SvgIcon name={tableName} className={className} />;
 
   const tableIconSource = getIcon(name);
   const resolvedTableLabel =
-    label === false
-      ? undefined
-      : typeof label === 'string'
-      ? label
-      : getModel(name)?.label ?? '';
+    label === false ? undefined : typeof label === 'string' ? label : '';
   const role = typeof resolvedTableLabel === 'string' ? 'img' : undefined;
   const ariaHidden = resolvedTableLabel === undefined;
   if (typeof tableIconSource === 'string')

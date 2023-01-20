@@ -10,17 +10,14 @@ import { stringToColor } from './TableIcon';
 export function SvgIcon({
   name,
   className,
-  // FIXME: remove this
-  autoGenerate = false,
 }: {
   readonly name: keyof Tables;
   readonly className: string;
   readonly autoGenerate?: boolean;
 }) {
-  const shortName =
-    (autoGenerate ? undefined : nameMapper()[name]) ?? getShortName(name);
+  const shortName = nameMapper()[name] ?? getShortName(name);
   const autoName = name.startsWith(shortName[0]) ? name : shortName;
-  const [from, to] = (autoGenerate ? undefined : colorMapper()[name]) ?? [
+  const [from, to] = colorMapper()[name] ?? [
     stringToColor(autoName),
     stringToColor(autoName),
   ];
