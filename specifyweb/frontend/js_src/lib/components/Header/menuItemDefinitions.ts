@@ -29,6 +29,7 @@ import { interactionsText } from '../../localization/interactions';
 import { attachmentsText } from '../../localization/attachments';
 import { treeText } from '../../localization/tree';
 import { wbText } from '../../localization/workbench';
+import { statsText } from '../../localization/stats';
 
 export type MenuItemName =
   | 'attachments'
@@ -118,10 +119,10 @@ const rawMenuItems: RR<MenuItemName, MenuItem> = {
   },
   statistics: {
     url: '/specify/statistics/',
-    title: commonText('statistics'),
+    title: statsText.statistics(),
     icon: icons.stats,
-    visibilityKey: 'showStatistics'
-  }
+    visibilityKey: 'showStatistics',
+  },
 } as const;
 
 export const menuItemsPromise = fetchPermissions
