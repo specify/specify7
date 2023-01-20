@@ -124,4 +124,4 @@ msgstr ""
 #: components/Core/Main.tsx:152
 #. Used in: Components > Core > Main
 msgid "versionMismatchInstructions"
-msgstr "Instrucciones para resolver Especificar discrepancia de esquema"
+msgstr "Instrucciones para resolver la discrepancia de los esquema de Specify"
