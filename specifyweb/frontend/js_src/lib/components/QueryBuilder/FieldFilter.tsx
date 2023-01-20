@@ -1,4 +1,5 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
@@ -6,6 +7,8 @@ import { useTriggerState } from '../../hooks/useTriggerState';
 import { useValidation } from '../../hooks/useValidation';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
+import { databaseDateFormat } from '../../utils/dateFormat';
+import { dayjs } from '../../utils/dayJs';
 import { f } from '../../utils/functools';
 import type { Parser } from '../../utils/parser/definitions';
 import {
@@ -17,23 +20,20 @@ import type {
   ValidParseResult,
 } from '../../utils/parser/parse';
 import { parseValue } from '../../utils/parser/parse';
-import { reParse, parseRelativeDate } from '../../utils/relativeDate';
+import { parseRelativeDate, reParse } from '../../utils/relativeDate';
 import type { RA, RR } from '../../utils/types';
 import { removeKey } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Input, Select, selectMultipleSize } from '../Atoms/Form';
+import { getField } from '../DataModel/helpers';
 import { schema } from '../DataModel/schema';
+import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { PickListItemSimple } from '../FormFields/ComboBox';
 import { hasNativeErrors } from '../Forms/validationHelpers';
 import { AutoComplete } from '../Molecules/AutoComplete';
 import { fetchPickList, getPickListItems } from '../PickLists/fetch';
 import { mappingElementDivider } from '../WbPlanView/LineComponents';
 import type { QueryField } from './helpers';
-import { LiteralField, Relationship } from '../DataModel/specifyField';
-import { dayjs } from '../../utils/dayJs';
-import { databaseDateFormat } from '../../utils/dateFormat';
-import { LocalizedString } from 'typesafe-i18n';
-import { getField } from '../DataModel/helpers';
 
 /**
  * Formatters and aggregators don't yet support any filtering options.
@@ -160,6 +160,7 @@ function DateSplit({
         }}
       />
       <Input.Number
+        min={0}
         value={size}
         onBlur={({ target }) => {
           const newSize = Number.parseInt(extractValuesSimple<string>(target));
@@ -168,7 +169,6 @@ function DateSplit({
             handleChange?.(`today ${direction} ${newSize} ${type}`);
           }
         }}
-        min={0}
         onChange={({ target }) => {
           const newValue = extractValuesSimple<number>(target);
           setValues({
@@ -510,9 +510,9 @@ function SingleField({
       currentValue={currentValue}
       fieldName={fieldName}
       label={label}
+      listInput={listInput}
       parser={parser}
       pickListItems={pickListItems}
-      listInput={listInput}
       onChange={handleChange}
     />
   );
@@ -612,24 +612,24 @@ function Between({
     <>
       <SingleField
         currentValue={values[0] ?? ''}
+        enforceLengthLimit={enforceLengthLimit}
+        fieldName={fieldName}
+        label={queryText.startValue()}
         parser={parser}
         pickListItems={pickListItems}
-        fieldName={fieldName}
         terminatingField={terminatingField}
         onChange={updateValues?.bind(undefined, 0)}
-        enforceLengthLimit={enforceLengthLimit}
-        label={queryText.startValue()}
       />
       <span className="flex items-center">{queryText.and()}</span>
       <SingleField
         currentValue={values[1] ?? ''}
+        enforceLengthLimit={enforceLengthLimit}
+        fieldName={fieldName}
         label={queryText.endValue()}
         parser={parser}
         pickListItems={pickListItems}
-        fieldName={fieldName}
         terminatingField={terminatingField}
         onChange={updateValues?.bind(undefined, 1)}
-        enforceLengthLimit={enforceLengthLimit}
       />
     </>
   );
@@ -662,14 +662,14 @@ function In({
   return (
     <SingleField
       currentValue={currentValue}
+      enforceLengthLimit={enforceLengthLimit}
+      fieldName={fieldName}
+      label={queryText.startValue()}
+      listInput
       parser={pluralizedParser}
       pickListItems={pickListItems}
-      label={queryText.startValue()}
-      fieldName={fieldName}
-      listInput
       terminatingField={undefined}
       onChange={handleChange}
-      enforceLengthLimit={enforceLengthLimit}
     />
   );
 }
@@ -890,9 +890,9 @@ export function QueryLineFilter({
     <>
       {mappingElementDivider}
       <Component
+        currentValue={filter.startValue}
         enforceLengthLimit={enforceLengthLimit}
         fieldName={fieldName}
-        currentValue={filter.startValue}
         parser={parser}
         pickListItems={
           queryFieldFilters[filter.type].renderPickList
