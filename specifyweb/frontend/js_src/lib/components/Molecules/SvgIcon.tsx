@@ -151,6 +151,7 @@ const endsWith = <T,>(
 
 const nameMapper = f.store<Partial<RR<keyof Tables, string>>>(() => ({
   ...startsWith('Accession', 'Acc'),
+  ...startsWith('Workbench', 'WB'),
   ...startsWith('Attachment', 'Att'),
   ...startsWith('Disposal', 'Dsp'),
   ...startsWith('CollectingEventAttr', 'CeA'),
