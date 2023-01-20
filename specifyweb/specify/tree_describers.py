@@ -1,9 +1,9 @@
 #File Description and Notes:
 #1. tree_describers contain files which simulate a working tree in Specify7. The file was added to make testing for complicated tree functions (like squeezing intervals) easier.
-#2. The file is solely for testing the logic of tree functions and no classes and functions should be exported out of this file.
-#3. The file provides Tree and Node class which are functionally equivalent to Django objects, and provide a way to implement tree logic without directly accessing the database.
+#2. The file is solely for testing the logic of tree functions and no classes and functions should be exported out of this file, other than for testing purposes (see #5).
+#3. The file provides Tree and Node class which are minimally equivalent to Django objects, and provide a way to implement and test tree logic without directly accessing the database.
 #4. The logic implemented should be converted with appropriate Django wrappers during the actual usage.
-#5. The functions declared in this file shouldn't be used tor tests, instead use the Django functions implemented
+#5. Ideally, the functions declared in this file shouldn't be used tor tests, instead use the Django functions implemented
 
 class Node:
     def __init__(self, id, node_number, highest_child_node_number):
@@ -11,11 +11,6 @@ class Node:
         self.children = []
         self.node_number = node_number
         self.highest_child_node_number = highest_child_node_number
-
-    def get_possible_squeeze_size(self, tree):
-        return (
-                           self.highest_child_node_number - self.node_number) - tree.get_children_count(
-            self)
 
     def get_ordered_children(self):
         # Assume children are already ordered
@@ -39,12 +34,23 @@ class Tree:
     def add_element(self, element):
         self.elements.append(element)
 
-    def get_children_count(self, node):
-        count = 0
-        for x in self.elements:
-            if node.node_number < x.node_number <= node.highest_child_node_number:
-                count += 1
-        return count
+    def get_possible_squeeze_size(self, node):
+        return (
+                           node.highest_child_node_number - node.node_number) - self.get_children(
+            node)
+
+    def get_children(self, node, count_only=True):
+        children = []
+        for element in self.elements:
+            if node.node_number < element.node_number <= node.highest_child_node_number:
+                children.append(element)
+        return len(children) if count_only else children
+
+    def shift_subtree_by_steps(self, root_node, steps):
+        children = self.get_children(root_node, False)
+        for child in children:
+            child.node_number += steps
+            child.highest_child_node_number += steps
 
 
 # Constructing test tree
