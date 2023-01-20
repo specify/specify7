@@ -574,6 +574,21 @@ def print_paths(table, depth):
         print(r)
     print(sql)
 
+def squeeze_interval_by_size(interval_to_squeeze, count_to_squeeze):
+    if count_to_squeeze <= 0:
+        return
+    all_children = get_all_children(interval_to_squeeze.id)
+    squeeze_count = count_to_squeeze
+    for child in all_children:
+        squeeze_count = squeeze_count - ((child.highestchildren - child.nodenumber) - child.count_children())
+        if squeeze_count > 0:
+            squeeze_interval_by_size(interval_to_squeeze, squeeze_count)
+
+
+
+
+
+
 def renumber_tree(table):
     logger.info('renumbering tree')
     cursor = connection.cursor()
