@@ -13,7 +13,8 @@ import type { SortConfigs } from '../../utils/cache/definitions';
 import { syncFieldFormat } from '../../utils/fieldFormat';
 import { f } from '../../utils/functools';
 import { resolveParser } from '../../utils/parser/definitions';
-import type { RA, RR } from '../../utils/types';
+import type { IR, RA, RR } from '../../utils/types';
+import { ensure } from '../../utils/types';
 import { Container, H2, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { formatNumber } from '../Atoms/Internationalization';
@@ -41,7 +42,8 @@ function Table<
     | 'dataModelFields'
     | 'dataModelRelationships'
     | 'dataModelTables',
-  FIELD_NAME extends SortConfigs[SORT_CONFIG]
+  FIELD_NAME extends SortConfigs[SORT_CONFIG],
+  DATA extends Row<RR<FIELD_NAME, Value>>
 >({
   sortName,
   headers,
@@ -51,8 +53,8 @@ function Table<
 }: {
   readonly sortName: SORT_CONFIG;
   readonly headers: RR<FIELD_NAME, LocalizedString>;
-  readonly data: RA<Row<FIELD_NAME>>;
-  readonly getLink: ((row: Row<FIELD_NAME>) => string) | undefined;
+  readonly data: RA<DATA>;
+  readonly getLink: ((row: DATA) => string) | undefined;
   readonly className?: string | undefined;
 }): JSX.Element {
   const indexColumn = Object.keys(headers)[0];
@@ -202,26 +204,29 @@ type Value =
   | string
   | readonly [number | string | undefined, JSX.Element]
   | undefined;
-type Row<COLUMNS extends string> = RR<COLUMNS, Value>;
-const getFields = (
-  model: SpecifyModel
-): RA<Row<keyof ReturnType<typeof fieldColumns>>> =>
-  model.literalFields.map((field) => ({
-    name: field.name,
-    label: field.label,
-    description: field.getLocalizedDesc(),
-    isHidden: booleanFormatter(field.isHidden),
-    isReadOnly: booleanFormatter(field.isReadOnly),
-    isRequired: booleanFormatter(field.isRequired),
-    type: javaTypeToHuman(field.type, undefined),
-    length: [
-      field.length,
-      <span className="flex w-full justify-end tabular-nums">
-        {f.maybe(field.length, formatNumber)}
-      </span>,
-    ],
-    databaseColumn: field.databaseColumn,
-  }));
+type Row<SHAPE extends IR<Value>> = SHAPE;
+const getFields = (model: SpecifyModel) =>
+  ensure<RA<Row<RR<keyof ReturnType<typeof fieldColumns>, Value>>>>()(
+    model.literalFields.map(
+      (field) =>
+        ({
+          name: field.name,
+          label: field.label,
+          description: field.getLocalizedDesc(),
+          isHidden: booleanFormatter(field.isHidden),
+          isReadOnly: booleanFormatter(field.isReadOnly),
+          isRequired: booleanFormatter(field.isRequired),
+          type: javaTypeToHuman(field.type, undefined),
+          length: [
+            field.length,
+            <span className="flex w-full justify-end tabular-nums">
+              {f.maybe(field.length, formatNumber)}
+            </span>,
+          ],
+          databaseColumn: field.databaseColumn,
+        } as const)
+    )
+  );
 
 function DataModelFields({
   model,
@@ -260,28 +265,31 @@ const relationshipColumns = f.store(
     } as const)
 );
 
-const getRelationships = (
-  model: SpecifyModel
-): RA<Row<keyof ReturnType<typeof relationshipColumns>>> =>
-  model.relationships.map((field) => ({
-    name: field.name,
-    label: field.label,
-    description: field.getLocalizedDesc(),
-    isHidden: booleanFormatter(field.isHidden),
-    isReadOnly: booleanFormatter(field.isReadOnly),
-    isRequired: booleanFormatter(field.isRequired),
-    type: localizedRelationshipTypes[field.type] ?? field.type,
-    databaseColumn: field.databaseColumn,
-    relatedModel: [
-      field.relatedModel.name.toLowerCase(),
-      <>
-        <TableIcon label={false} name={field.relatedModel.name} />
-        {field.relatedModel.name}
-      </>,
-    ],
-    otherSideName: field.otherSideName,
-    isDependent: booleanFormatter(field.isDependent()),
-  }));
+const getRelationships = (model: SpecifyModel) =>
+  ensure<RA<Row<RR<keyof ReturnType<typeof relationshipColumns>, Value>>>>()(
+    model.relationships.map(
+      (field) =>
+        ({
+          name: field.name,
+          label: field.label,
+          description: field.getLocalizedDesc(),
+          isHidden: booleanFormatter(field.isHidden),
+          isReadOnly: booleanFormatter(field.isReadOnly),
+          isRequired: booleanFormatter(field.isRequired),
+          type: localizedRelationshipTypes[field.type] ?? field.type,
+          databaseColumn: field.databaseColumn,
+          relatedModel: [
+            field.relatedModel.name.toLowerCase(),
+            <>
+              <TableIcon label={false} name={field.relatedModel.name} />
+              {field.relatedModel.name}
+            </>,
+          ],
+          otherSideName: field.otherSideName,
+          isDependent: booleanFormatter(field.isDependent()),
+        } as const)
+    )
+  );
 
 function DataModelRelationships({
   model,
@@ -294,9 +302,7 @@ function DataModelRelationships({
       <H3 id={model.name.toLowerCase()}>{schemaText.relationships()}</H3>
       <Table
         data={data}
-        getLink={({ relatedModel }): string =>
-          `#${(relatedModel as readonly [string, JSX.Element])[0]}`
-        }
+        getLink={({ relatedModel }): string => `#${relatedModel[0]}`}
         headers={relationshipColumns()}
         sortName="dataModelRelationships"
       />
@@ -304,7 +310,7 @@ function DataModelRelationships({
   );
 }
 
-export const tableColumns = f.store(
+const tableColumns = f.store(
   () =>
     ({
       name: getField(schema.models.SpLocaleContainer, 'name').label,
@@ -316,37 +322,42 @@ export const tableColumns = f.store(
       relationshipCount: schemaText.relationshipCount(),
     } as const)
 );
-export const getTables = (): RA<Row<keyof ReturnType<typeof tableColumns>>> =>
-  Object.values(schema.models).map((model) => ({
-    name: [
-      model.name.toLowerCase(),
-      <>
-        <TableIcon label={false} name={model.name} />
-        {model.name}
-      </>,
-    ],
-    label: model.label,
-    isSystem: booleanFormatter(model.isSystem),
-    isHidden: booleanFormatter(model.isHidden),
-    tableId: [
-      model.tableId,
-      <span className="flex w-full justify-end tabular-nums">
-        {model.tableId}
-      </span>,
-    ],
-    fieldCount: [
-      model.fields.length,
-      <span className="flex w-full justify-end tabular-nums">
-        {formatNumber(model.fields.length)}
-      </span>,
-    ],
-    relationshipCount: [
-      model.relationships.length,
-      <span className="flex w-full justify-end tabular-nums">
-        {formatNumber(model.relationships.length)}
-      </span>,
-    ],
-  }));
+const getTables = () =>
+  ensure<RA<Row<RR<keyof ReturnType<typeof tableColumns>, Value>>>>()(
+    Object.values(schema.models).map(
+      (model) =>
+        ({
+          name: [
+            model.name.toLowerCase(),
+            <>
+              <TableIcon label={false} name={model.name} />
+              {model.name}
+            </>,
+          ],
+          label: model.label,
+          isSystem: booleanFormatter(model.isSystem),
+          isHidden: booleanFormatter(model.isHidden),
+          tableId: [
+            model.tableId,
+            <span className="flex w-full justify-end tabular-nums">
+              {model.tableId}
+            </span>,
+          ],
+          fieldCount: [
+            model.fields.length,
+            <span className="flex w-full justify-end tabular-nums">
+              {formatNumber(model.fields.length)}
+            </span>,
+          ],
+          relationshipCount: [
+            model.relationships.length,
+            <span className="flex w-full justify-end tabular-nums">
+              {formatNumber(model.relationships.length)}
+            </span>,
+          ],
+        } as const)
+    )
+  );
 
 export function DataModelTables(): JSX.Element {
   const tables = React.useMemo(getTables, []);
@@ -387,9 +398,7 @@ export function DataModelTables(): JSX.Element {
           <div id={topId}>
             <Table
               data={tables}
-              getLink={({ name }): string =>
-                `#${(name as readonly [string, JSX.Element])[0]}`
-              }
+              getLink={({ name }): string => `#${name[0]}`}
               headers={tableColumns()}
               sortName="dataModelTables"
             />
@@ -398,7 +407,7 @@ export function DataModelTables(): JSX.Element {
             <DataModelTable
               forwardRef={forwardRefs?.bind(undefined, index)}
               key={index}
-              tableName={(name as readonly [keyof Tables, JSX.Element])[0]}
+              tableName={name[0] as keyof Tables}
             />
           ))}
         </div>
@@ -424,14 +433,9 @@ export function DataModelAside({
     () =>
       isInOverlay || activeCategory === undefined
         ? undefined
-        : navigate(
-            `/specify/data-model/#${
-              (tables[activeCategory].name as readonly [string, JSX.Element])[0]
-            }`,
-            {
-              replace: true,
-            }
-          ),
+        : navigate(`/specify/data-model/#${tables[activeCategory].name[0]}`, {
+            replace: true,
+          }),
     [isInOverlay, tables, activeCategory]
   );
 
@@ -442,20 +446,17 @@ export function DataModelAside({
         divide-[color:var(--form-background)] overflow-y-auto md:flex
       `}
     >
-      {tables.map(({ name }, index) => {
-        const [tableName, jsxName] = name as readonly [string, JSX.Element];
-        return (
-          <Link.Gray
-            aria-current={currentIndex === index ? 'page' : undefined}
-            className="!justify-start"
-            href={`#${tableName}`}
-            key={index}
-            onClick={(): void => setFreezeCategory(index)}
-          >
-            {jsxName}
-          </Link.Gray>
-        );
-      })}
+      {tables.map(({ name: [tableName, jsxName] }, index) => (
+        <Link.Gray
+          aria-current={currentIndex === index ? 'page' : undefined}
+          className="!justify-start"
+          href={`#${tableName}`}
+          key={index}
+          onClick={(): void => setFreezeCategory(index)}
+        >
+          {jsxName}
+        </Link.Gray>
+      ))}
     </aside>
   );
 }
