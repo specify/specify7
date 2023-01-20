@@ -20,6 +20,7 @@ import { SubView } from '../Forms/SubView';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { AnySchema } from '../DataModel/helperTypes';
 import { TableIcon } from '../Molecules/TableIcon';
+import {ValueOf} from '../../utils/types';
 
 const cellRenderers: {
   readonly [KEY in keyof CellTypes]: (props: {
@@ -251,7 +252,7 @@ export function FormCell({
 }: {
   readonly resource: SpecifyResource<AnySchema>;
   readonly mode: FormMode;
-  readonly cellData: CellTypes[keyof CellTypes];
+  readonly cellData: ValueOf<CellTypes>;
   readonly id: string | undefined;
   readonly formatId: (id: string) => string;
   readonly formType: FormType;

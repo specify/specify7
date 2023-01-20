@@ -1,14 +1,13 @@
 import { Backbone } from '../../components/DataModel/backbone';
 import { promiseToXhr } from '../../components/DataModel/resourceApi';
 import { formatUrl } from '../../components/Router/queryString';
-import type { RA } from '../types';
+import type { RA, ValueOf } from '../types';
 import { defined } from '../types';
 import { Http } from './definitions';
 import type { AjaxErrorMode } from './index';
 import { ajax } from './index';
 
-let expectedResponseCodes: RA<typeof Http[keyof typeof Http]> | undefined =
-  undefined;
+let expectedResponseCodes: RA<ValueOf<typeof Http>> | undefined = undefined;
 let requestCallback: ((status: number) => void) | undefined;
 let errorMessageMode: AjaxErrorMode | undefined;
 
@@ -17,7 +16,7 @@ let errorMessageMode: AjaxErrorMode | undefined;
  * allows to partially intercept the call
  */
 export function hijackBackboneAjax<T>(
-  responseCodes: RA<typeof Http[keyof typeof Http]>,
+  responseCodes: RA<ValueOf<typeof Http>>,
   callback: () => T,
   successCallback?: (status: number) => void,
   errorMode: AjaxErrorMode = 'visible'

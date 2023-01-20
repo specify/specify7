@@ -8,7 +8,7 @@
 import type { State } from 'typesafe-reducer';
 
 import { getParsedAttribute } from '../../utils/utils';
-import type { IR } from '../../utils/types';
+import type {IR, ValueOf} from '../../utils/types';
 import { legacyLocalize } from '../InitialContext/legacyUiLocalization';
 import { f } from '../../utils/functools';
 
@@ -41,7 +41,7 @@ const commandTranslation: IR<keyof UiCommands> = {
 
 export type CommandDefinition = {
   readonly label: string | undefined;
-  readonly commandDefinition: UiCommands[keyof UiCommands];
+  readonly commandDefinition: ValueOf<UiCommands>;
 };
 
 export function parseUiCommand(cell: Element): CommandDefinition {

@@ -1,4 +1,4 @@
-import type { PartialBy } from '../../../utils/types';
+import type {PartialBy, ValueOf} from '../../../utils/types';
 import { strictParseXml } from '../../AppResources/codeMirrorLinters';
 import { schema } from '../../DataModel/schema';
 import type { CellTypes, FormCellDefinition } from '../cells';
@@ -95,7 +95,7 @@ theories(parseSpecifyProperties, [
 ]);
 
 const cell = (
-  cell: CellTypes[keyof CellTypes] &
+  cell: ValueOf<CellTypes> &
     PartialBy<
       FormCellDefinition,
       'align' | 'ariaLabel' | 'colSpan' | 'id' | 'visible'

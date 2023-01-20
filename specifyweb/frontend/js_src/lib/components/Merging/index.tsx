@@ -105,6 +105,7 @@ export function MergingDialog({
           >
             {mergingText.autoMerge()}
           </Button.Blue>
+          <ToggleMergeView />
           <span className="-ml-2 flex-1" />
           <Button.BorderedGray onClick={handleClose}>
             {commonText.cancel()}
@@ -190,12 +191,7 @@ export function MergeDialogContainer({
 }): JSX.Element {
   return (
     <Dialog
-      buttons={
-        <>
-          <ToggleMergeView />
-          {buttons}
-        </>
-      }
+      buttons={buttons}
       header={header}
       // Disable gradient because table headers have solid backgrounds
       specialMode="noGradient"
@@ -206,7 +202,7 @@ export function MergeDialogContainer({
   );
 }
 
-function ToggleMergeView(): JSX.Element {
+export function ToggleMergeView(): JSX.Element {
   const [showMatching = false, setShowMatching] = useCachedState(
     'merging',
     'showMatchingFields'

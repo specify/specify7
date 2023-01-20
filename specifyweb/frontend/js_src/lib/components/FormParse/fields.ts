@@ -16,7 +16,7 @@ import {
 import type { PluginDefinition } from './plugins';
 import { parseUiPlugin } from './plugins';
 import { legacyLocalize } from '../InitialContext/legacyUiLocalization';
-import type { IR } from '../../utils/types';
+import type {IR, ValueOf} from '../../utils/types';
 import { LocalizedString } from 'typesafe-i18n';
 import { reportsText } from '../../localization/report';
 
@@ -155,7 +155,7 @@ const fieldTypesTranslations: IR<keyof FieldTypes> = {
   browse: 'FilePicker',
 };
 
-export type FormFieldDefinition = FieldTypes[keyof FieldTypes] & {
+export type FormFieldDefinition = ValueOf<FieldTypes> & {
   readonly isReadOnly: boolean;
 };
 

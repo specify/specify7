@@ -1,16 +1,11 @@
 import React from 'react';
 
-import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
-import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import type { DeleteBlocker } from '../Forms/DeleteBlocked';
-import { DeleteBlockers } from '../Forms/DeleteBlocked';
-import { fetchBlockers } from '../Forms/DeleteButton';
 import { ResourceView } from '../Forms/ResourceView';
 import { DateElement } from '../Molecules/DateElement';
 import { dialogClassNames } from '../Molecules/Dialog';
@@ -18,6 +13,7 @@ import { FormattedResource } from '../Molecules/FormattedResource';
 import { TableIcon } from '../Molecules/TableIcon';
 import { MergeButton } from './Compare';
 import { mergingText } from '../../localization/merging';
+import { UsagesSection } from './Usages';
 
 export function MergingHeader({
   merged,
@@ -39,7 +35,7 @@ export function MergingHeader({
       />
       <tbody>
         <SummaryLines merged={merged} resources={resources} />
-        <UsagesLine resources={resources} />
+        <UsagesSection resources={resources} />
         <PreviewLine
           merged={merged}
           resources={resources}
@@ -151,46 +147,6 @@ export function MergeRow({
       </th>
       {children}
     </tr>
-  );
-}
-
-function UsagesLine({
-  resources,
-}: {
-  readonly resources: RA<SpecifyResource<AnySchema>>;
-}): JSX.Element {
-  return (
-    <MergeRow header={mergingText.referencesToRecord()}>
-      <td>{commonText.notApplicable()}</td>
-      {resources.map((resource, index) => (
-        <ResourceBlockers key={index} resource={resource} />
-      ))}
-    </MergeRow>
-  );
-}
-
-function ResourceBlockers({
-  resource,
-}: {
-  readonly resource: SpecifyResource<AnySchema>;
-}): JSX.Element {
-  const [blockers] = useAsyncState<RA<DeleteBlocker>>(
-    React.useCallback(async () => fetchBlockers(resource, true), [resource]),
-    false
-  );
-  return (
-    <td className="max-h-[theme(spacing.40)] flex-col !items-start">
-      {blockers === undefined ? (
-        commonText.loading()
-      ) : (
-        <DeleteBlockers
-          blockers={blockers}
-          resource={resource}
-          onClose={undefined}
-          onDeleted={f.void}
-        />
-      )}
-    </td>
   );
 }
 

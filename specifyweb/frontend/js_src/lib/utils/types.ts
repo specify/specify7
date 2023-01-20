@@ -19,6 +19,8 @@ export type GetOrSet<T> = readonly [
   (value: T | ((oldValue: T) => T)) => void
 ];
 
+export type ValueOf<T> = T[keyof T];
+
 /**
  * It is a widely used convention in TypeScript to use T[] to denote arrays.
  * However, this creates a mutable array type.

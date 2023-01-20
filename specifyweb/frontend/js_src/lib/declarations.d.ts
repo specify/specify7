@@ -5,7 +5,7 @@
 import type { Key, Path, To } from 'history';
 
 import type { LocationState } from './components/Router/RouterState';
-import type { IR, RA, RR } from './utils/types';
+import type { IR, RA, RR, ValueOf } from './utils/types';
 import type { localized } from 'typesafe-i18n/types/runtime/src/core';
 
 /**
@@ -47,7 +47,7 @@ declare global {
       object: DICTIONARY
     ): [
       keyof DICTIONARY extends number ? string : string & keyof DICTIONARY,
-      DICTIONARY[keyof DICTIONARY]
+      ValueOf<DICTIONARY>
     ][];
 
     // Array

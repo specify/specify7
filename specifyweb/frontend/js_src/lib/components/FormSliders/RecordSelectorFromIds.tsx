@@ -52,7 +52,6 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
    */
   readonly ids: RA<number | undefined>;
   readonly newResource: SpecifyResource<SCHEMA> | undefined;
-  readonly defaultIndex?: number;
   readonly title: LocalizedString | undefined;
   readonly headerButtons?: JSX.Element;
   readonly dialog: 'modal' | 'nonModal' | false;

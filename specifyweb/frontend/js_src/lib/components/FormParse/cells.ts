@@ -23,7 +23,7 @@ import { parseUiCommand } from './commands';
 import { getModel } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { legacyLocalize } from '../InitialContext/legacyUiLocalization';
-import type { IR, RA } from '../../utils/types';
+import type {IR, RA, ValueOf} from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { LocalizedString } from 'typesafe-i18n';
 
@@ -227,7 +227,7 @@ const processCellType: {
   }),
 };
 
-export type FormCellDefinition = CellTypes[keyof CellTypes] & {
+export type FormCellDefinition = ValueOf<CellTypes> & {
   readonly id: string | undefined;
   readonly align: typeof cellAlign[number];
   readonly colSpan: number;

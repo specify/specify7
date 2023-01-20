@@ -1,5 +1,5 @@
 import { f } from '../../utils/functools';
-import type { RA } from '../../utils/types';
+import type { RA, ValueOf } from '../../utils/types';
 import { defined } from '../../utils/types';
 import { isTreeResource } from '../InitialContext/treeRanks';
 import type {
@@ -130,7 +130,7 @@ export const toResource = <TABLE_NAME extends keyof Tables>(
  * that deal with generic schemas (accept AnySchema or a SCHEMA extends AnySchema)
  */
 export const getField = <
-  SCHEMA extends Tables[keyof Tables],
+  SCHEMA extends ValueOf<Tables>,
   FIELD extends TableFields<SCHEMA>
 >(
   model: SpecifyModel<SCHEMA>,

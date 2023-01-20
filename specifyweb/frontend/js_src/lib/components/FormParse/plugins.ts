@@ -13,6 +13,7 @@ import type { CoordinateType } from '../FormPlugins/LatLongUi';
 import { coordinateType } from '../FormPlugins/LatLongUi';
 import type { PartialDatePrecision } from '../FormPlugins/PartialDateUi';
 import { getParsedAttribute } from '../../utils/utils';
+import {ValueOf} from '../../utils/types';
 
 export type UiPlugins = {
   readonly LatLonUI: State<
@@ -133,7 +134,7 @@ const processUiPlugin: {
   }),
 };
 
-export type PluginDefinition = UiPlugins[keyof UiPlugins];
+export type PluginDefinition = ValueOf<UiPlugins>;
 
 export function parseUiPlugin(
   cell: Element,

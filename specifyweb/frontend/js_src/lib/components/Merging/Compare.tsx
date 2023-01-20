@@ -3,7 +3,7 @@ import React from 'react';
 import { deserializeResource } from '../../hooks/resource';
 import { useCachedState } from '../../hooks/useCachedState';
 import { treeText } from '../../localization/tree';
-import type { RA } from '../../utils/types';
+import type {RA, ValueOf} from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Form } from '../Atoms/Form';
@@ -269,7 +269,7 @@ function Field({
 
 function fieldToDefinition(
   field: LiteralField | Relationship
-): FieldTypes[keyof FieldTypes] {
+): ValueOf<FieldTypes> {
   if (field.isRelationship)
     return {
       type: 'QueryComboBox',

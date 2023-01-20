@@ -30,7 +30,7 @@ import {
   useMergeConformation,
 } from './Compare';
 import { mergeCellBackground, mergeHeaderClassName } from './Header';
-import { MergeDialogContainer } from './index';
+import { MergeDialogContainer, ToggleMergeView } from './index';
 import { f } from '../../utils/functools';
 import { serializeResource } from '../DataModel/helpers';
 import { mergingText } from '../../localization/merging';
@@ -161,6 +161,7 @@ function MergeDialog({
       header={mergingText.mergeFields({ field: relationship.label })}
       buttons={
         <>
+          <ToggleMergeView />
           <span className="-ml-2 flex-1" />
           <Submit.Gray form={id('form')}>{commonText.close()}</Submit.Gray>
         </>

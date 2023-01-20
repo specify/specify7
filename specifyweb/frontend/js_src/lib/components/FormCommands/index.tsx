@@ -18,6 +18,7 @@ import { AnySchema } from '../DataModel/helperTypes';
 import { toTable } from '../DataModel/helpers';
 import { LocalizedString } from 'typesafe-i18n';
 import { interactionsText } from '../../localization/interactions';
+import {ValueOf} from '../../utils/types';
 
 export function GenerateLabel({
   resource,
@@ -148,7 +149,7 @@ export function UiCommand({
   readonly resource: SpecifyResource<AnySchema>;
   readonly id: string | undefined;
   readonly label: LocalizedString | undefined;
-  readonly commandDefinition: UiCommands[keyof UiCommands];
+  readonly commandDefinition: ValueOf<UiCommands>;
 }): JSX.Element | null {
   const Command = commandRenderers[
     commandDefinition.type
