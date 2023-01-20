@@ -9,9 +9,11 @@ import { stringToColor } from './TableIcon';
 
 export function SvgIcon({
   name,
+  label,
   className,
 }: {
   readonly name: keyof Tables;
+  readonly label: string | undefined;
   readonly className: string;
   readonly autoGenerate?: boolean;
 }) {
@@ -29,10 +31,13 @@ export function SvgIcon({
   );
   return (
     <svg
+      aria-hidden={label === undefined}
+      role={label === undefined ? undefined : 'img'}
       className={className}
       viewBox={isAttachmentTable ? '0 0 1043.24 1040' : '0 0 1000 1000'}
       xmlns="http://www.w3.org/2000/svg"
     >
+      {typeof label === 'string' && <title>{label}</title>}
       <g>
         <radialGradient
           cx="512.8199"
@@ -320,7 +325,6 @@ const colorMapper = f.store<Partial<RR<keyof Tables, Gradient>>>(() => ({
   PickList: colors.lightBlue,
   PickListItem: colors.lightBlue,
   PrepType: colors.green,
-  PickList: colors.lightBlue,
   PreparationAttachment: colors.purple,
   PreparationAttr: colors.purple,
   PreparationAttribute: colors.purple,
