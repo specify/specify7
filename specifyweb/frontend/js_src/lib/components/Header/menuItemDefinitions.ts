@@ -1,6 +1,6 @@
 import { commonText } from '../../localization/common';
-import type { RR } from '../../utils/types';
-import { filterArray } from '../../utils/types';
+import type { IR } from '../../utils/types';
+import { ensure, filterArray } from '../../utils/types';
 import { icons } from '../Atoms/Icons';
 import {
   attachmentsAvailable,
@@ -31,18 +31,7 @@ import { treeText } from '../../localization/tree';
 import { wbText } from '../../localization/workbench';
 import { statsText } from '../../localization/stats';
 
-export type MenuItemName =
-  | 'attachments'
-  | 'dataEntry'
-  | 'interactions'
-  | 'queries'
-  | 'recordSets'
-  | 'reports'
-  | 'statistics'
-  | 'trees'
-  | 'workBench';
-
-const rawMenuItems: RR<MenuItemName, MenuItem> = {
+const rawMenuItems = ensure<IR<MenuItem>>()({
   dataEntry: {
     url: '/specify/overlay/data-entry/',
     title: headerText.dataEntry(),
@@ -123,7 +112,9 @@ const rawMenuItems: RR<MenuItemName, MenuItem> = {
     icon: icons.stats,
     visibilityKey: 'showStatistics',
   },
-} as const;
+} as const);
+
+export type MenuItemName = keyof typeof rawMenuItems;
 
 export const menuItemsPromise = fetchPermissions
   .then(async () =>
