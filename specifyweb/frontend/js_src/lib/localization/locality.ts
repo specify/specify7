@@ -12,14 +12,14 @@ export const localityText = createDictionary({
   openMap: {
     'en-us': 'Open Map',
     'ru-ru': 'Открыть карту',
-    'es-es': 'Abrir el mapa',
+    'es-es': 'Abrir mapa',
     'fr-fr': 'Ouvrir la carte',
     'uk-ua': 'Відкрийте карту',
   },
   geoMap: {
     'en-us': 'GeoMap',
     'ru-ru': 'Карта',
-    'es-es': 'GeoMap',
+    'es-es': 'Geomapa',
     'fr-fr': 'GéoCarte',
     'uk-ua': 'Геокарта',
   },
@@ -34,8 +34,8 @@ export const localityText = createDictionary({
       записей
     `,
     'es-es': `
-      GeoMap - Trazado {plotted:number|formatted} de {total:number|formatted}
-      registros
+      GeoMap - Registros trazados {plotted:number|formatted} de
+      {total:number|formatted}
     `,
     'fr-fr': `
       GeoMap - Tracé {plotted:number|formatted} de {total:number|formatted}
@@ -49,7 +49,7 @@ export const localityText = createDictionary({
   queryMapAll: {
     'en-us': 'GeoMap - Plotted {plotted:number|formatted} records',
     'ru-ru': 'Карта - Отображено {plotted:number|formatted} записей',
-    'es-es': 'GeoMap - Trazados {plotted:number|formatted} de registros',
+    'es-es': 'GeoMap - Registros trazados {plotted:number|formatted}',
     'fr-fr': 'GeoMap - Enregistrements tracés {plotted:number|formatted}',
     'uk-ua': 'GeoMap - Нанесені записи {plotted:number|formatted}.',
   },
