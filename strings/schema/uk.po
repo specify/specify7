@@ -4,8 +4,8 @@ msgstr "Content-Type: text/plain\n"
 #: components/SchemaConfig/Table.tsx:48
 #: components/Security/PreviewTables.tsx:68
 #: components/Security/registry.ts:67
-#: components/Toolbar/Schema.tsx:383
-#. Used in: Components > Schema Config > Table ⬤ Components > Security > Preview Tables ⬤ Components > Security > Registry ⬤ Components > Toolbar > Schema
+#: components/Toolbar/DataModel.tsx:467
+#. Used in: Components > Schema Config > Table ⬤ Components > Security > Preview Tables ⬤ Components > Security > Registry ⬤ Components > Toolbar > Data Model
 #, fuzzy
 msgid "table"
 msgstr "Таблиця"
@@ -59,8 +59,8 @@ msgstr "Поле"
 #: components/Forms/generateFormDefinition.ts:126
 #: components/SchemaConfig/Fields.tsx:35
 #: components/SchemaConfig/Fields.tsx:46
-#: components/Toolbar/Schema.tsx:221
-#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Toolbar > Schema
+#: components/Toolbar/DataModel.tsx:239
+#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Toolbar > Data Model
 #, fuzzy
 msgid "fields"
 msgstr "поля"
@@ -68,8 +68,8 @@ msgstr "поля"
 #: components/FormMeta/CarryForward.tsx:272
 #: components/Forms/generateFormDefinition.ts:164
 #: components/SchemaConfig/Fields.tsx:54
-#: components/Toolbar/Schema.tsx:281
-#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Toolbar > Schema
+#: components/Toolbar/DataModel.tsx:302
+#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Toolbar > Data Model
 #, fuzzy
 msgid "relationships"
 msgstr "стосунки"
@@ -84,10 +84,10 @@ msgstr "Підпис"
 #: components/SchemaConfig/Field.tsx:59
 #: components/SchemaConfig/Table.tsx:63
 #: components/Security/Role.tsx:138
-#: components/Toolbar/Schema.tsx:172
-#: components/Toolbar/Schema.tsx:237
-#: components/Toolbar/Schema.tsx:390
-#. Used in: Components > Schema Config > Field ⬤ Components > Schema Config > Table ⬤ Components > Security > Role ⬤ Components > Toolbar > Schema
+#: components/Toolbar/DataModel.tsx:191
+#: components/Toolbar/DataModel.tsx:255
+#: components/Toolbar/DataModel.tsx:474
+#. Used in: Components > Schema Config > Field ⬤ Components > Schema Config > Table ⬤ Components > Security > Role ⬤ Components > Toolbar > Data Model
 #, fuzzy
 msgid "description"
 msgstr "опис"
@@ -141,18 +141,18 @@ msgid "manyToMany"
 msgstr "багато-до-багатьох"
 
 #: components/SchemaConfig/Field.tsx:69
-#: components/Toolbar/Schema.tsx:178
-#: components/Toolbar/Schema.tsx:396
-#. Used in: Components > Schema Config > Field ⬤ Components > Toolbar > Schema
+#: components/Toolbar/DataModel.tsx:197
+#: components/Toolbar/DataModel.tsx:480
+#. Used in: Components > Schema Config > Field ⬤ Components > Toolbar > Data Model
 #, fuzzy
 msgid "fieldLength"
 msgstr "Довжина"
 
 #: components/FormMeta/index.tsx:64
-#: components/Toolbar/Schema.tsx:174
-#: components/Toolbar/Schema.tsx:239
-#: components/Toolbar/Schema.tsx:392
-#. Used in: Components > Form Meta > Index ⬤ Components > Toolbar > Schema
+#: components/Toolbar/DataModel.tsx:193
+#: components/Toolbar/DataModel.tsx:257
+#: components/Toolbar/DataModel.tsx:476
+#. Used in: Components > Form Meta > Index ⬤ Components > Toolbar > Data Model
 #, fuzzy
 msgid "readOnly"
 msgstr "Лише для читання"
@@ -189,72 +189,72 @@ msgstr "Визначений користувачем"
 msgid "addLanguage"
 msgstr "Додати мову"
 
-#: components/Toolbar/Schema.tsx:171
-#: components/Toolbar/Schema.tsx:236
-#: components/Toolbar/Schema.tsx:300
-#: components/Toolbar/Schema.tsx:384
-#: components/Toolbar/Schema.tsx:389
-#. Used in: Components > Toolbar > Schema
+#: components/Toolbar/DataModel.tsx:190
+#: components/Toolbar/DataModel.tsx:254
+#: components/Toolbar/DataModel.tsx:317
+#: components/Toolbar/DataModel.tsx:468
+#: components/Toolbar/DataModel.tsx:473
+#. Used in: Components > Toolbar > Data Model
 #, fuzzy
 msgid "fieldLabel"
 msgstr "Мітка"
 
-#: components/Toolbar/Schema.tsx:179
-#: components/Toolbar/Schema.tsx:243
-#: components/Toolbar/Schema.tsx:397
-#. Used in: Components > Toolbar > Schema
+#: components/Toolbar/DataModel.tsx:198
+#: components/Toolbar/DataModel.tsx:261
+#: components/Toolbar/DataModel.tsx:481
+#. Used in: Components > Toolbar > Data Model
 #, fuzzy
 msgid "databaseColumn"
 msgstr "Стовпець бази даних"
 
-#: components/Toolbar/Schema.tsx:244
-#: components/Toolbar/Schema.tsx:398
-#. Used in: Components > Toolbar > Schema
+#: components/Toolbar/DataModel.tsx:262
+#: components/Toolbar/DataModel.tsx:482
+#. Used in: Components > Toolbar > Data Model
 #, fuzzy
 msgid "relatedModel"
 msgstr "Пов'язана модель"
 
-#: components/Toolbar/Schema.tsx:245
-#: components/Toolbar/Schema.tsx:399
-#. Used in: Components > Toolbar > Schema
+#: components/Toolbar/DataModel.tsx:263
+#: components/Toolbar/DataModel.tsx:483
+#. Used in: Components > Toolbar > Data Model
 #, fuzzy
 msgid "otherSideName"
 msgstr "Інша сторона імені"
 
-#: components/Toolbar/Schema.tsx:246
-#: components/Toolbar/Schema.tsx:400
-#. Used in: Components > Toolbar > Schema
+#: components/Toolbar/DataModel.tsx:264
+#: components/Toolbar/DataModel.tsx:484
+#. Used in: Components > Toolbar > Data Model
 #, fuzzy
 msgid "dependent"
 msgstr "Утриманець"
 
-#: components/Toolbar/Schema.tsx:354
-#. Used in: Components > Toolbar > Schema
+#: components/Toolbar/DataModel.tsx:378
+#. Used in: Components > Toolbar > Data Model
 #, fuzzy
 msgid "downloadAsJson"
 msgstr "Завантажити як JSON"
 
-#: components/Toolbar/Schema.tsx:365
-#. Used in: Components > Toolbar > Schema
+#: components/Toolbar/DataModel.tsx:389
+#. Used in: Components > Toolbar > Data Model
 #, fuzzy
 msgid "downloadAsTsv"
 msgstr "Завантажити як TSV"
 
-#: components/Toolbar/Schema.tsx:303
-#: components/Toolbar/Schema.tsx:387
-#. Used in: Components > Toolbar > Schema
+#: components/Toolbar/DataModel.tsx:320
+#: components/Toolbar/DataModel.tsx:471
+#. Used in: Components > Toolbar > Data Model
 #, fuzzy
 msgid "tableId"
 msgstr "Ідентифікатор таблиці"
 
-#: components/Toolbar/Schema.tsx:304
-#. Used in: Components > Toolbar > Schema
+#: components/Toolbar/DataModel.tsx:321
+#. Used in: Components > Toolbar > Data Model
 #, fuzzy
 msgid "fieldCount"
 msgstr "Підрахунок полів"
 
-#: components/Toolbar/Schema.tsx:305
-#. Used in: Components > Toolbar > Schema
+#: components/Toolbar/DataModel.tsx:322
+#. Used in: Components > Toolbar > Data Model
 #, fuzzy
 msgid "relationshipCount"
 msgstr "Кількість стосунків"
@@ -278,3 +278,8 @@ msgstr "Вибрані таблиці"
 #, fuzzy
 msgid "possibleTables"
 msgstr "Можливі таблиці"
+
+#: components/Toolbar/DataModel.tsx:178
+#. Used in: Components > Toolbar > Data Model
+msgid "goToTop"
+msgstr ""

@@ -161,7 +161,7 @@ msgstr "Создать"
 #: components/Toolbar/QueryTablesEdit.tsx:139
 #: components/Toolbar/TreeRepair.tsx:78
 #: components/TreeView/Actions.tsx:354
-#: components/UserPreferences/index.tsx:90
+#: components/UserPreferences/index.tsx:85
 #: components/WbPlanView/MapperComponents.tsx:195
 #: components/WbPlanView/MapperComponents.tsx:412
 #: components/WbPlanView/State.tsx:36
@@ -216,7 +216,7 @@ msgstr "Очистить все"
 #: components/Security/MissingAgentsDialog.tsx:96
 #: components/Security/Role.tsx:213
 #: components/Security/UserCollections.tsx:73
-#: components/UserPreferences/index.tsx:88
+#: components/UserPreferences/index.tsx:83
 #: components/WbPlanView/Mapper.tsx:393
 #: components/WorkBench/DataSetMeta.tsx:124
 #: components/WorkBench/Template.tsx:173
@@ -716,7 +716,7 @@ msgid "collapseAll"
 msgstr "Свернуть все"
 
 #: components/Toolbar/QueryTablesEdit.tsx:136
-#: components/UserPreferences/index.tsx:184
+#: components/UserPreferences/index.tsx:177
 #. Used in: Components > Toolbar > Query Tables Edit ⬤ Components > User Preferences > Index
 msgid "reset"
 msgstr "Сброс"

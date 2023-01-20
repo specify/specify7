@@ -3,7 +3,7 @@ msgstr "Content-Type: text/plain\n"
 
 #: components/Header/userToolDefinitions.ts:34
 #: components/Router/Routes.tsx:327
-#: components/UserPreferences/index.tsx:61
+#: components/UserPreferences/index.tsx:60
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > User Preferences > Index
 #, fuzzy
 msgid "preferences"
@@ -605,7 +605,7 @@ msgstr ""
 "données ou une corruption de la base de données. Veuillez vous assurer que "
 "vous savez ce que vous faites"
 
-#: components/UserPreferences/index.tsx:204
+#: components/UserPreferences/index.tsx:197
 #. Used in: Components > User Preferences > Index
 #, fuzzy
 msgid "adminsOnlyPreference"
