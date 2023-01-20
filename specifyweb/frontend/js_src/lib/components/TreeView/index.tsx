@@ -184,8 +184,7 @@ function TreeView<SCHEMA extends AnyTree>({
         </Button.Small>
         <Button.Small
           disabled={conformation.length === 0}
-          onClick={(e): void => {
-            e.preventDefault;
+          onClick={(): void => {
             setFocusPath([0]);
             setConformation([]);
           }}
