@@ -259,7 +259,8 @@ export const mainText = createDictionary({
   versionMismatchInstructions: {
     'en-us': 'Instructions for resolving Specify schema mismatch',
     'ru-ru': 'Инструкции по устранению несоответствия схемы Specify',
-    'es-es': 'Instrucciones para resolver Especificar discrepancia de esquema',
+    'es-es':
+      'Instrucciones para resolver la discrepancia de los esquema de Specify',
     'fr-fr': "Instructions pour résoudre l'incompatibilité de schéma Spécifier",
     'uk-ua': 'Інструкції щодо вирішення Specify schema mismatch',
   },
