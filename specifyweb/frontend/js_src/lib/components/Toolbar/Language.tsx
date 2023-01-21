@@ -11,9 +11,9 @@ import { headerText } from '../../localization/header';
 import { StringToJsx } from '../../localization/utils';
 import type { Language } from '../../localization/utils/config';
 import {
+  completeLanguages,
   devLanguage,
   devLanguages,
-  disabledLanguages,
   LANGUAGE,
   languages,
 } from '../../localization/utils/config';
@@ -24,9 +24,10 @@ import { ping } from '../../utils/ajax/ping';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
+import { Button } from '../Atoms/Button';
 import { Select } from '../Atoms/Form';
+import { Link } from '../Atoms/Link';
 import { raise } from '../Errors/Crash';
-import { supportLink } from '../Errors/ErrorDialog';
 import { cachableUrl } from '../InitialContext';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { formatUrl } from '../Router/queryString';
@@ -59,14 +60,20 @@ export function LanguageSelection<LANGUAGES extends string>({
   isReadOnly = false,
   showDevLanguages: showDevelopmentLanguages = process.env.NODE_ENV ===
     'development',
+  // Whether the language picker is for the UI language (rather than schema)
+  isForInterface,
 }: {
   readonly value: LANGUAGES;
   readonly languages: IR<string> | undefined;
   readonly onChange: (language: LANGUAGES) => void;
   readonly isReadOnly?: boolean;
   readonly showDevLanguages?: boolean;
+  readonly isForInterface: boolean;
 }): JSX.Element {
   const [showSupportDialog, setShowSupportDialog] = React.useState(false);
+  const [warningLanguage, setWarningLanguage] = React.useState<
+    LANGUAGES | undefined
+  >(undefined);
 
   return (
     <>
@@ -82,9 +89,48 @@ export function LanguageSelection<LANGUAGES extends string>({
           <p>
             <StringToJsx
               components={{
-                emailLink: supportLink,
+                link: (label) => (
+                  <Link.NewTab href="https://discourse.specifysoftware.org/t/get-started-with-specify-7-localization/956">
+                    {label}
+                  </Link.NewTab>
+                ),
               }}
               string={headerText.helpLocalizeSpecifyDescription()}
+            />
+          </p>
+        </Dialog>
+      )}
+      {typeof warningLanguage === 'string' && (
+        <Dialog
+          buttons={
+            <>
+              <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+              <Button.Blue
+                onClick={(): void => {
+                  handleChange(warningLanguage);
+                  setWarningLanguage(undefined);
+                }}
+              >
+                {commonText.proceed()}
+              </Button.Blue>
+            </>
+          }
+          className={{
+            container: dialogClassNames.narrowContainer,
+          }}
+          header={headerText.incompleteLocalization()}
+          onClose={(): void => setWarningLanguage(undefined)}
+        >
+          <p>
+            <StringToJsx
+              components={{
+                link: (label) => (
+                  <Link.NewTab href="https://discourse.specifysoftware.org/t/get-started-with-specify-7-localization/956">
+                    {label}
+                  </Link.NewTab>
+                ),
+              }}
+              string={headerText.incompleteLocalizationDescription()}
             />
           </p>
         </Dialog>
@@ -94,20 +140,28 @@ export function LanguageSelection<LANGUAGES extends string>({
           aria-label={commonText.language()}
           disabled={isReadOnly}
           value={value}
-          onChange={({ target }): void =>
-            target.value === 'supportLocalization'
+          onValueChange={(value): void =>
+            value === 'supportLocalization'
               ? setShowSupportDialog(true)
-              : handleChange(target.value as LANGUAGES)
+              : f.has(completeLanguages, value)
+              ? handleChange(value as LANGUAGES)
+              : setWarningLanguage(value as LANGUAGES)
           }
         >
           {Object.entries(languages).map(([code, nameLocal]) => (
             <option key={code} value={code}>
-              {nameLocal} ({code})
+              {`${nameLocal} (${code}) ${
+                f.has(completeLanguages, code)
+                  ? ''
+                  : headerText.incompleteInline()
+              }`}
             </option>
           ))}
-          <option value="supportLocalization">
-            {headerText.helpLocalizeSpecify()}
-          </option>
+          {isForInterface && (
+            <option value="supportLocalization">
+              {headerText.helpLocalizeSpecify()}
+            </option>
+          )}
           {showDevelopmentLanguages && (
             <optgroup label="Development languages">
               {Object.entries(devLanguages).map(([code, name]) => (
@@ -151,10 +205,6 @@ export const LanguagePreferencesItem: PreferenceItemComponent<Language> =
           }).then(({ data }) =>
             Object.fromEntries(
               Object.entries(data)
-                .filter(
-                  ([code]) =>
-                    !f.has(disabledLanguages, code) || code === language
-                )
                 // eslint-disable-next-line @typescript-eslint/naming-convention
                 .map(([code, { name_local }]) => [code, name_local])
             )
@@ -174,6 +224,7 @@ export const LanguagePreferencesItem: PreferenceItemComponent<Language> =
     const isRedirecting = React.useContext(PreferencesContext) !== undefined;
     return (
       <LanguageSelection<Language>
+        isForInterface
         isReadOnly={isReadOnly || isRedirecting || languages === undefined}
         languages={languages ?? { loading: commonText.loading() }}
         value={language}
@@ -258,6 +309,7 @@ export const SchemaLanguagePreferenceItem: PreferenceItemComponent<string> =
     const languages = useSchemaLanguages(false);
     return (
       <LanguageSelection<string>
+        isForInterface={false}
         isReadOnly={isReadOnly || languages === undefined}
         languages={languages ?? { loading: commonText.loading() }}
         showDevLanguages={false}

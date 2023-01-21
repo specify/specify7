@@ -24,10 +24,12 @@ import { overrideAjax } from './ajax';
  * even in separate threads.
  */
 export const requireContext = (): void => {
-  overrideAjax('/permissions/registry/', operationPolicies);
+  overrideAjax('/permissions/registry/', operationPolicies, {}, true);
   overrideAjax(
     '/context/app.resource?name=leaflet-layers&quiet=',
-    defaultTileLayers
+    defaultTileLayers,
+    {},
+    true
   );
   beforeAll(async () => {
     unlockInitialContext('main');

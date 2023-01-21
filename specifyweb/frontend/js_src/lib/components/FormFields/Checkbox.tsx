@@ -71,7 +71,7 @@ export function SpecifyFormCheckbox({
 }: {
   readonly id: string | undefined;
   readonly name?: string | undefined;
-  readonly resource: SpecifyResource<AnySchema>;
+  readonly resource: SpecifyResource<AnySchema> | undefined;
   readonly field: LiteralField | undefined;
   readonly defaultValue: boolean | undefined;
   readonly isReadOnly: boolean;

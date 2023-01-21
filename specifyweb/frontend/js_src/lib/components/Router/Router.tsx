@@ -1,26 +1,30 @@
 import type { SafeLocation } from 'history';
 import React from 'react';
 import type { SafeNavigateFunction } from 'react-router';
-import { useLocation, useNavigate, useRoutes } from 'react-router-dom';
+import {
+  unstable_useBlocker as useBlocker,
+  useLocation,
+  useNavigate,
+  useRoutes,
+} from 'react-router-dom';
 
 import { commonText } from '../../localization/common';
 import { mainText } from '../../localization/main';
 import { toRelativeUrl } from '../../utils/ajax/helpers';
 import { listen } from '../../utils/events';
-import { f } from '../../utils/functools';
-import { setDevelopmentGlobal } from '../../utils/types';
+import { GetOrSet, RA, setDevelopmentGlobal } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
-import { unloadProtectEvents, UnloadProtectsContext } from '../Core/Contexts';
-import { softFail } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { Dialog } from '../Molecules/Dialog';
 import { getUserPref } from '../UserPreferences/helpers';
 import { NotFoundView } from './NotFoundView';
 import { overlayRoutes } from './OverlayRoutes';
-import { useRouterBlocker } from './RouterBlocker';
 import { toReactRoutes } from './RouterUtils';
 import { routes } from './Routes';
+import { softFail } from '../Errors/Crash';
+import { f } from '../../utils/functools';
+import { useErrorContext } from '../../hooks/useErrorContext';
 
 let unsafeNavigateFunction: SafeNavigateFunction | undefined;
 export const unsafeNavigate = (
@@ -55,6 +59,7 @@ export function Router(): JSX.Element {
   const isNotFoundPage =
     state?.type === 'NotFoundPage' ||
     background?.state?.type === 'NotFoundPage';
+  useErrorContext('location', location);
 
   /*
    * REFACTOR: replace usages of navigate with <a> where possible
@@ -76,7 +81,7 @@ export function Router(): JSX.Element {
 
   return (
     <>
-      <UnloadProtect background={background} />
+      <UnloadProtect />
       {isNotFound ? <NotFoundView /> : undefined}
       {typeof overlay === 'object' && (
         <Overlay background={background} overlay={overlay} />
@@ -206,76 +211,55 @@ export const OverlayContext = React.createContext<() => void>(
 );
 OverlayContext.displayName = 'OverlayContext';
 
-function UnloadProtect({
-  background,
-}: {
-  readonly background: SafeLocation | undefined;
-}): JSX.Element | null {
+function UnloadProtect(): JSX.Element | null {
   const unloadProtects = React.useContext(UnloadProtectsContext)!;
-  const [unloadProtect, setUnloadProtect] = React.useState<
-    { readonly resolve: () => void; readonly reject: () => void } | undefined
-  >(undefined);
+  const unloadProtectsRef = React.useContext(UnloadProtectsRefContext)!;
 
-  const isEmpty = unloadProtects.length === 0;
-  const isSet = unloadProtect !== undefined;
-  const shouldUnset = isEmpty && isSet;
-  React.useEffect(
-    () =>
-      shouldUnset
-        ? setUnloadProtect((blocker) => void blocker?.resolve())
-        : undefined,
-    [isEmpty, isSet]
-  );
-
-  const backgroundRef = React.useRef<SafeLocation | undefined>(background);
-  backgroundRef.current = background;
-
-  const { block, unblock } = useRouterBlocker(
-    React.useCallback(
-      async (location) =>
-        new Promise((resolve, reject) =>
-          hasUnloadProtect(location, backgroundRef.current)
-            ? setUnloadProtect({ resolve: () => resolve('unblock'), reject })
-            : resolve('ignore')
-        ),
+  const blocker = useBlocker(
+    React.useCallback<Exclude<Parameters<typeof useBlocker>[0], boolean>>(
+      ({ nextLocation, currentLocation }) =>
+        unloadProtectsRef.current.length > 0 &&
+        hasUnloadProtect(nextLocation, currentLocation),
       []
     )
   );
-  /*
-   * Need to use events rather than context because contexts take time to
-   * propagate, leading to false "Unsaved changes" warnings when unsetting
-   * unload protects and navigation are done one after another.
-   */
-  React.useEffect(() => unloadProtectEvents.on('blocked', block), [block]);
+
+  // Remove the blocker if nothing is blocking
+  const isEmpty = unloadProtects.length === 0;
+  const isSet = blocker.state === 'blocked';
+  const shouldUnset = isEmpty && isSet;
   React.useEffect(
-    () => unloadProtectEvents.on('unblocked', unblock),
-    [unblock]
+    () => (shouldUnset ? blocker.proceed() : undefined),
+    [isEmpty, isSet, blocker]
   );
 
-  return typeof unloadProtect === 'object' && unloadProtects.length > 0 ? (
-    <UnloadProtectDialog
-      onCancel={(): void => {
-        unloadProtect.reject();
-        setUnloadProtect(undefined);
-      }}
-      onConfirm={(): void => {
-        unloadProtect.resolve();
-        setUnloadProtect(undefined);
-      }}
-    >
-      {unloadProtects.at(-1)!}
-    </UnloadProtectDialog>
-  ) : null;
+  return (
+    <>
+      {blocker.state === 'blocked' && unloadProtects.length > 0 ? (
+        <UnloadProtectDialog
+          onCancel={(): void => blocker.reset()}
+          onConfirm={(): void => blocker.proceed()}
+        >
+          {unloadProtects.at(-1)!}
+        </UnloadProtectDialog>
+      ) : null}
+    </>
+  );
 }
 
 /** Decide whether a given URL change should trigger unload protect */
 const hasUnloadProtect = (
-  newLocation: SafeLocation,
-  background: SafeLocation | undefined
+  nextLocation: SafeLocation,
+  currentLocation: SafeLocation
 ): boolean =>
-  !pathIsOverlay(newLocation.pathname) &&
-  !isCurrentUrl(newLocation.pathname) &&
-  f.maybe(background, locationToUrl) !== locationToUrl(newLocation);
+  !pathIsOverlay(nextLocation.pathname) &&
+  !isCurrentUrl(nextLocation.pathname) &&
+  f.maybe(
+    currentLocation.state?.type === 'BackgroundLocation'
+      ? currentLocation.state.location
+      : undefined,
+    locationToUrl
+  ) !== locationToUrl(nextLocation);
 
 export function UnloadProtectDialog({
   children,
@@ -302,3 +286,21 @@ export function UnloadProtectDialog({
     </Dialog>
   );
 }
+
+/**
+ * List of current unload protects (used for preventing loss of unsaved changes)
+ */
+export const UnloadProtectsContext = React.createContext<
+  RA<string> | undefined
+>(undefined);
+UnloadProtectsContext.displayName = 'UnloadProtectsContext';
+
+export const UnloadProtectsRefContext = React.createContext<
+  { readonly current: RA<string> } | undefined
+>(undefined);
+UnloadProtectsRefContext.displayName = 'UnloadProtectsRefContext';
+
+export const SetUnloadProtectsContext = React.createContext<
+  GetOrSet<RA<string>>[1] | undefined
+>(undefined);
+SetUnloadProtectsContext.displayName = 'SetUnloadProtectsContext';

@@ -15,7 +15,7 @@ import { PickListComboBox } from './index';
 
 export function FormattersPickList(props: DefaultComboBoxProps): JSX.Element {
   const fetchItems = React.useCallback(async () => {
-    if (props.resource.get('type') !== PickListTypes.TABLE) return [];
+    if (props.resource?.get('type') !== PickListTypes.TABLE) return [];
     const { formatters } = await fetchFormatters;
     const model = getModel(props.resource.get('tableName') ?? '');
     return typeof model === 'object'
@@ -33,21 +33,24 @@ export function FormattersPickList(props: DefaultComboBoxProps): JSX.Element {
   );
   React.useEffect(
     () =>
-      resourceOn(
-        props.resource,
-        'change:tableName change:type',
-        (): void => {
-          if (props.resource.get('type') !== PickListTypes.TABLE)
-            props.resource.set('formatter', null as never);
-          fetchItems()
-            .then(setItems)
-            .catch((error) => {
-              setItems(undefined);
-              raise(error);
-            });
-        },
-        true
-      ),
+      props.resource === undefined
+        ? undefined
+        : resourceOn(
+            props.resource,
+            'change:tableName change:type',
+            (): void => {
+              if (props.resource === undefined) return;
+              if (props.resource.get('type') !== PickListTypes.TABLE)
+                props.resource.set('formatter', null as never);
+              fetchItems()
+                .then(setItems)
+                .catch((error) => {
+                  setItems(undefined);
+                  raise(error);
+                });
+            },
+            true
+          ),
     [props.resource, fetchItems, setItems]
   );
 

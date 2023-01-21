@@ -447,7 +447,11 @@ def return_loan_preps(collection, user, agent, data):
     commit = data['commit']
 
     tableid = spquery['contexttableid']
-    assert tableid == Loanpreparation.specify_model.tableId
+    if not (tableid == Loanpreparation.specify_model.tableId): raise AssertionError(
+        f"Unexpected tableId '{tableid}' in request. Expected {Loanpreparation.specify_model.tableId}",
+        {"tableId" : tableid,
+         "expectedTableId": Loanpreparation.specify_model.tableId,
+         "localizationKey" : "unexpectedTableId"})
 
     with models.session_context() as session:
         model = models.models_by_tableid[tableid]
@@ -573,7 +577,11 @@ def build_query(session, collection, user, tableid, field_specs,
     if recordsetid is not None:
         logger.debug("joining query to recordset: %s", recordsetid)
         recordset = session.query(models.RecordSet).get(recordsetid)
-        assert recordset.dbTableId == tableid
+        if not (recordset.dbTableId == tableid): raise AssertionError(
+            f"Unexpected tableId '{tableid}' in request. Expected '{recordset.dbTableId}'",
+            {"tableId" : tableid,
+             "expectedTableId" : recordset.dbTableId,
+             "localizationKey" : "unexpectedTableId"})
         query = query.join(models.RecordSetItem, models.RecordSetItem.recordId == id_field) \
                 .filter(models.RecordSetItem.recordSet == recordset)
 

@@ -32,6 +32,7 @@ import { LoadingContext } from '../Core/Contexts';
 import { toTable } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
+import { schema } from '../DataModel/schema';
 import type { LiteralField } from '../DataModel/specifyField';
 import type { Collection, SpecifyModel } from '../DataModel/specifyModel';
 import type {
@@ -197,10 +198,15 @@ export function InteractionDialog({
   return state.type === 'LoanReturnDoneState' ? (
     <Dialog
       buttons={commonText.close()}
-      header={interactionsText.returnedPreparations()}
+      header={interactionsText.returnedPreparations({
+        tablePreparation: schema.models.Preparation.label,
+      })}
       onClose={handleClose}
     >
-      {interactionsText.returnedAndSaved({ count: state.result })}
+      {interactionsText.returnedAndSaved({
+        count: state.result,
+        tablePreparation: schema.models.Preparation.label,
+      })}
     </Dialog>
   ) : state.type === 'PreparationSelectState' &&
     Object.keys(state.problems).length === 0 ? (

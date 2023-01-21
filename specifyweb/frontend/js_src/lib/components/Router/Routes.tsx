@@ -12,6 +12,7 @@ import type { RA } from '../../utils/types';
 import { WelcomeView } from '../HomePage';
 import { Redirect } from './Redirect';
 import type { EnhancedRoute } from './RouterUtils';
+import { developmentText } from '../../localization/development';
 
 // FEATURE: go over non-dynamic routes in all routers to make sure they have titles
 /* eslint-disable @typescript-eslint/promise-function-async */
@@ -36,15 +37,15 @@ export const routes: RA<EnhancedRoute> = [
         index: true,
         title: schemaText.databaseSchema(),
         element: () =>
-          import('../Toolbar/Schema').then(
+          import('../Toolbar/DataModel').then(
             ({ DataModelTables }) => DataModelTables
           ),
       },
       {
         path: ':tableName',
         element: () =>
-          import('../Toolbar/Schema').then(
-            ({ DataModelTable }) => DataModelTable
+          import('../Toolbar/DataModel').then(
+            ({ DataModelRedirect }) => DataModelRedirect
           ),
       },
     ],
@@ -396,6 +397,19 @@ export const routes: RA<EnhancedRoute> = [
         element: () =>
           import('../RouterCommands/CacheBuster').then(
             ({ CacheBuster }) => CacheBuster
+          ),
+      },
+    ],
+  },
+  {
+    path: 'developer',
+    children: [
+      {
+        path: 'crash-report-visualizer',
+        title: developmentText.crashReportVisualizer(),
+        element: () =>
+          import('../Developer/CrashReportVisualizer').then(
+            ({ CrashReportVisualizer }) => CrashReportVisualizer
           ),
       },
     ],

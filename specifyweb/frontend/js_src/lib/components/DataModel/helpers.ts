@@ -9,8 +9,8 @@ import type {
   AnyTree,
   SerializedModel,
   SerializedResource,
+  TableFields,
 } from './helperTypes';
-import type { TableFields } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
 import { parseResourceUrl, resourceToJson } from './resource';
 import { schema, strictGetModel } from './schema';
@@ -175,7 +175,7 @@ export async function fetchDistantRelated(
   fields: RA<LiteralField | Relationship> | undefined
 ): Promise<
   | {
-      readonly resource: SpecifyResource<AnySchema>;
+      readonly resource: SpecifyResource<AnySchema> | undefined;
       readonly field: LiteralField | Relationship | undefined;
     }
   | undefined
@@ -193,5 +193,11 @@ export async function fetchDistantRelated(
         );
 
   const field = fields?.at(-1);
-  return related === undefined ? undefined : { resource: related, field };
+  const relatedResource = related ?? undefined;
+  return relatedResource === undefined && field === undefined
+    ? undefined
+    : {
+        resource: relatedResource,
+        field,
+      };
 }

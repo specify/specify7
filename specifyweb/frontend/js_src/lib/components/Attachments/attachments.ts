@@ -29,6 +29,7 @@ export const attachmentSettingsPromise = load<AttachmentSettings | IR<never>>(
   'application/json'
 ).then((data) => {
   if (Object.keys(data).length > 0) settings = data as AttachmentSettings;
+  return attachmentsAvailable();
 });
 
 export const attachmentsAvailable = (): boolean => typeof settings === 'object';

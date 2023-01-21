@@ -9,7 +9,6 @@ import type { RA } from '../../utils/types';
 import { removeItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
-import { SetUnloadProtectsContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { FormMode } from '../FormParse';
@@ -17,6 +16,7 @@ import { ResourceView } from '../Forms/ResourceView';
 import { saveFormUnloadProtect } from '../Forms/Save';
 import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
+import { SetUnloadProtectsContext } from '../Router/Router';
 import type { RecordSelectorProps } from './RecordSelector';
 import { useRecordSelector } from './RecordSelector';
 

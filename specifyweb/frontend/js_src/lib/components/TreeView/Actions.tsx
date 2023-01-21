@@ -19,6 +19,7 @@ import { schema } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { DeleteButton } from '../Forms/DeleteButton';
 import { ResourceView } from '../Forms/ResourceView';
+import { getPref } from '../InitialContext/remotePrefs';
 import { Dialog } from '../Molecules/Dialog';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import type { Row } from './helpers';
@@ -56,6 +57,10 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
 
   const resourceName = `/tree/edit/${toLowerCase(tableName)}` as const;
   const isSynonym = typeof focusedRow?.acceptedId === 'number';
+
+  const doExpandSynonymActionsPref = getPref(
+    `sp7.allow_adding_child_to_synonymized_parent.${tableName}`
+  );
 
   const disableButtons =
     focusedRow === undefined || typeof currentAction === 'string';
@@ -113,7 +118,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
             addNew
             disabled={
               focusedRow === undefined ||
-              typeof focusedRow.acceptedId === 'number' ||
+              (doExpandSynonymActionsPref ? false : isSynonym) ||
               // Forbid adding children to the lowest rank
               ranks.at(-1) === focusedRow.rankId
             }
@@ -154,7 +159,9 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
             disabled={
               disableButtons ||
               isRoot ||
-              (!isSynonym && focusedRow.children > 0)
+              (doExpandSynonymActionsPref
+                ? false
+                : !isSynonym && focusedRow.children > 0)
             }
             onClick={(): void =>
               setAction(isSynonym ? 'desynonymize' : 'synonymize')

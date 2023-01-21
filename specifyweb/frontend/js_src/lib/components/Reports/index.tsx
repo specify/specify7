@@ -9,7 +9,7 @@ import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { split } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
-import { iconClassName, icons } from '../Atoms/Icons';
+import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { attachmentSettingsPromise } from '../Attachments/attachments';
 import { getField, serializeResource } from '../DataModel/helpers';
@@ -26,6 +26,7 @@ import { DateElement } from '../Molecules/DateElement';
 import { Dialog } from '../Molecules/Dialog';
 import { FormattedResource } from '../Molecules/FormattedResource';
 import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
+import { TableIcon } from '../Molecules/TableIcon';
 import { formatUrl } from '../Router/queryString';
 import { OverlayContext } from '../Router/Router';
 import { Report } from './Report';
@@ -137,7 +138,7 @@ export function ReportsView({
             <h2>{reportsText.reports()}</h2>
             <ReportRow
               cacheKey="listOfReports"
-              icon="/images/Reports32x32.png"
+              icon={<TableIcon label={false} name="Reports" />}
               resources={reports}
               onClick={setSelectedReport}
             />
@@ -146,7 +147,7 @@ export function ReportsView({
             <h2>{reportsText.labels()}</h2>
             <ReportRow
               cacheKey="listOfLabels"
-              icon="/images/Label32x32.png"
+              icon={<TableIcon label={false} name="Labels" />}
               resources={labels}
               onClick={setSelectedReport}
             />
@@ -164,7 +165,7 @@ function ReportRow({
   onClick: handleClick,
 }: {
   readonly resources: RA<SerializedResource<SpAppResource>>;
-  readonly icon: string;
+  readonly icon: JSX.Element;
   readonly cacheKey: 'listOfLabels' | 'listOfReports';
   readonly onClick: (resource: SerializedResource<SpAppResource>) => void;
 }): JSX.Element {
@@ -216,7 +217,7 @@ function ReportRow({
                 title={resource.description ?? undefined}
                 onClick={(): void => handleClick(resource)}
               >
-                <img alt="" className={iconClassName} src={icon} />
+                {icon}
                 {resource.name}
               </Button.LikeLink>
             </td>

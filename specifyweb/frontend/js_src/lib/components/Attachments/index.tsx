@@ -3,6 +3,7 @@
  */
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useCachedState } from '../../hooks/useCachedState';
@@ -19,20 +20,27 @@ import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
 import { getModel, schema } from '../DataModel/schema';
 import type { Tables } from '../DataModel/types';
 import { useMenuItem } from '../Header';
+import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { ProtectedTable } from '../Permissions/PermissionDenied';
 import { OrderPicker } from '../UserPreferences/Renderers';
+import { attachmentSettingsPromise } from './attachments';
 import { AttachmentGallery } from './Gallery';
+
+export const attachmentRelatedTables = f.store(() =>
+  Object.keys(schema.models).filter((tableName) =>
+    tableName.endsWith('Attachment')
+  )
+);
 
 const allTablesWithAttachments = f.store(() =>
   filterArray(
-    Object.keys(schema.models)
-      .filter((tableName) => tableName.endsWith('Attachment'))
-      .map((tableName) =>
-        getModel(tableName.slice(0, -1 * 'Attachment'.length))
-      )
+    attachmentRelatedTables().map((tableName) =>
+      getModel(tableName.slice(0, -1 * 'Attachment'.length))
+    )
   )
 );
+
 /** Exclude tables without read access*/
 export const tablesWithAttachments = f.store(() =>
   allTablesWithAttachments().filter((model) =>
@@ -46,11 +54,24 @@ const maxScale = 50;
 const defaultSortOrder = '-timestampCreated';
 const defaultFilter = { type: 'all' } as const;
 
-export function AttachmentsView(): JSX.Element {
-  return (
+const fetchSettings = async () => attachmentSettingsPromise;
+
+export function AttachmentsView(): JSX.Element | null {
+  const navigate = useNavigate();
+  const [isConfigured] = useAsyncState(fetchSettings, true);
+
+  return isConfigured === undefined ? null : isConfigured ? (
     <ProtectedTable action="read" tableName="Attachment">
       <Attachments />
     </ProtectedTable>
+  ) : (
+    <Dialog
+      buttons={commonText.close()}
+      header={attachmentsText.attachmentServerUnavailable()}
+      onClose={(): void => navigate('/specify/')}
+    >
+      {attachmentsText.attachmentServerUnavailableDescription()}
+    </Dialog>
   );
 }
 

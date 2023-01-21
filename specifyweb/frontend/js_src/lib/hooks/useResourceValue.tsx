@@ -41,7 +41,7 @@ export function useResourceValue<
   T extends boolean | number | string | null,
   INPUT extends Input = HTMLInputElement
 >(
-  resource: SpecifyResource<AnySchema>,
+  resource: SpecifyResource<AnySchema> | undefined,
   // If field is undefined, this hook behaves pretty much like useValidation()
   field: LiteralField | Relationship | undefined,
   // Default parser is usually coming from the form definition
@@ -72,7 +72,7 @@ export function useResourceValue<
   const [ignoreError, handleIgnoreError, handleDontIgnoreError] =
     useBooleanState();
   React.useEffect(() => {
-    if (field === undefined) return;
+    if (field === undefined || resource === undefined) return;
     const getBlockers = (): RA<string> =>
       resource.saveBlockers
         ?.blockersForField(field.name)
@@ -128,7 +128,7 @@ export function useResourceValue<
      *   infer implicit types
      */
     function updateValue(newValue: T, reportErrors = true) {
-      if (ignoreChangeRef.current) return;
+      if (ignoreChangeRef.current || resource === undefined) return;
 
       /*
        * Converting ref to state so that React.useEffect can be triggered
@@ -207,7 +207,7 @@ export function useResourceValue<
 
   // Listen for resource update. Set parser. Set default value
   React.useEffect(() => {
-    if (field === undefined) return;
+    if (field === undefined || resource === undefined) return;
 
     /*
      * Disable parser when validation is disabled. This is useful in search
@@ -265,7 +265,7 @@ export function useResourceValue<
 
   React.useEffect(
     () =>
-      typeof field === 'object'
+      typeof field === 'object' && typeof resource === 'object'
         ? resourceOn(
             resource,
             `change:${field.name}`,

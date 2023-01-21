@@ -6,7 +6,7 @@ import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { mainText } from '../../localization/main';
-import { UnloadProtectsContext } from '../Core/Contexts';
+import { UnloadProtectsContext } from '../Router/Router';
 import { usePref } from '../UserPreferences/usePref';
 
 export function AppTitle({ title }: { readonly title: LocalizedString }): null {

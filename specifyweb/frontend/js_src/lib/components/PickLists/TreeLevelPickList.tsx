@@ -65,6 +65,7 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
     undefined
   );
   React.useEffect(() => {
+    if (props.model === undefined) return undefined;
     const resource = toTreeTable(props.model);
     if (
       resource === undefined ||
@@ -111,11 +112,12 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
       defaultValue={props.defaultValue ?? items?.slice(-1)[0]?.value}
       isDisabled={
         props.isDisabled ||
+        props.model === undefined ||
         !isTreeResource(props.model) ||
         props.model.get('parent') === null
       }
       isRequired={
-        props.model.specifyModel.getRelationship('definitionItem')
+        props.model?.specifyModel.getRelationship('definitionItem')
           ?.isRequired ?? true
       }
       items={items}
