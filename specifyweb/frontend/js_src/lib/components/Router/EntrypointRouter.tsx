@@ -63,7 +63,7 @@ export const entrypointRoutes: RA<EnhancedRoute> = [
 ];
 /* eslint-enable @typescript-eslint/promise-function-async */
 
-const routes = toReactRoutes(entrypointRoutes);
+const routes = toReactRoutes(entrypointRoutes, false);
 const router = createBrowserRouter(routes);
 
 export function EntrypointRouter(): JSX.Element {

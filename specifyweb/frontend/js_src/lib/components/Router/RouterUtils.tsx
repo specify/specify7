@@ -1,20 +1,28 @@
 import React from 'react';
-import { Outlet, RouteObject } from 'react-router';
-
-import type { IR, RA, WritableArray } from '../../utils/types';
-import { LoadingScreen } from '../Molecules/Dialog';
-import { useTitle } from '../Molecules/AppTitle';
-import { LocalizedString } from 'typesafe-i18n';
 import {
   IndexRouteObject,
   NonIndexRouteObject,
-} from 'react-router/dist/lib/context';
+  Outlet,
+  RouteObject,
+} from 'react-router';
+
+import type { IR, RA, WritableArray } from '../../utils/types';
+import { useTitle } from '../Molecules/AppTitle';
+import { LoadingScreen } from '../Molecules/Dialog';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
+import { LocalizedString } from 'typesafe-i18n';
 
 /**
  * A wrapper for native React Routes object. Makes everything readonly.
  */
 export type EnhancedRoute = Readonly<
-  Omit<IndexRouteObject | NonIndexRouteObject, 'children' | 'element'>
+  Omit<
+    IndexRouteObject | NonIndexRouteObject,
+    /*
+     * Not using errorElement because of https://github.com/remix-run/react-router/discussions/9881
+     */
+    'children' | 'element' | 'errorElement'
+  >
 > & {
   readonly children?: RA<EnhancedRoute>;
   // Allow to define element as a function that returns an async
@@ -26,31 +34,51 @@ export type EnhancedRoute = Readonly<
   readonly title?: LocalizedString;
 };
 
+let index = 0;
+
 /** Convert EnhancedRoutes to RouteObjects */
 export const toReactRoutes = (
   enhancedRoutes: RA<EnhancedRoute>,
-  title?: LocalizedString
+  title?: LocalizedString,
+  dismissible: boolean = true
 ): WritableArray<RouteObject> =>
-  enhancedRoutes.map<IndexRouteObject | NonIndexRouteObject>(
-    ({ element: fetchElement, children, ...enhancedRoute }) => ({
+  enhancedRoutes.map<IndexRouteObject | NonIndexRouteObject>((data) => {
+    const { element: rawElement, children, ...enhancedRoute } = data;
+
+    const resolvedElement =
+      typeof rawElement === 'function' ? (
+        <Async
+          Element={React.lazy(async () =>
+            rawElement().then((element) => ({ default: element }))
+          )}
+          title={enhancedRoute.title ?? title}
+        />
+      ) : rawElement === undefined ? (
+        enhancedRoute.index ? (
+          <></>
+        ) : undefined
+      ) : (
+        rawElement
+      );
+
+    index += 1;
+
+    return {
+      id: index.toString(),
       ...enhancedRoute,
       index: enhancedRoute.index as unknown as false,
       children: Array.isArray(children)
         ? toReactRoutes(children, title)
         : undefined,
-      element:
-        typeof fetchElement === 'function' ? (
-          <Async
-            element={React.lazy(async () =>
-              fetchElement().then((element) => ({ default: element }))
-            )}
-            title={enhancedRoute.title ?? title}
-          />
-        ) : (
-          fetchElement
-        ),
-    })
-  );
+      element: (
+        resolvedElement === undefined ? undefined : (
+          <ErrorBoundary dismissible={dismissible}>
+            {resolvedElement}
+          </ErrorBoundary>
+        )
+      ),
+    };
+  });
 
 /**
  * Using this allows Webpack to split code bundles.
@@ -61,10 +89,10 @@ export const toReactRoutes = (
  * when any component is being loaded.
  */
 export function Async({
-  element: Element,
+  Element,
   title,
 }: {
-  readonly element: React.FunctionComponent;
+  readonly Element: React.FunctionComponent;
   readonly title: LocalizedString | undefined;
 }): JSX.Element {
   useTitle(title);
