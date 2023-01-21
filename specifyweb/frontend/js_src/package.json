@@ -1,6 +1,6 @@
 {
   "name": "specify7-frontend",
-  "version": "7.7.0",
+  "version": "7.8.5",
   "private": true,
   "description": "Specify software manages species and specimen data for biological research collections. As a database platform, it tracks specimen transactions, links images to specimen records and publishes data to the Internet.",
   "license": "GPL-2.0",

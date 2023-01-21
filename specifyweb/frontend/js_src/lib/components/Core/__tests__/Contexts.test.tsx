@@ -4,7 +4,6 @@ import React from 'react';
 import { commonText } from '../../../localization/common';
 import { LeakContext, mount } from '../../../tests/reactUtils';
 import { flippedPromise } from '../../../utils/promise';
-import { crash } from '../../Errors/Crash';
 import { Contexts, ErrorContext, LoadingContext } from '../Contexts';
 import { mainText } from '../../../localization/main';
 import {
@@ -66,6 +65,7 @@ test('<Contexts> provide a loading context', async () => {
   promise2.resolve();
 
   await waitForElementToBeRemoved(heading);
+  const { crash } = await import('../../Errors/Crash');
 
   // Loading can reject a promise
   const rejectedPromise = flippedPromise();

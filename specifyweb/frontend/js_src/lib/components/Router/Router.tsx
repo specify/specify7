@@ -24,7 +24,6 @@ import { routes } from './Routes';
 import { f } from '../../utils/functools';
 import { softFail } from '../Errors/Crash';
 import { mainText } from '../../localization/main';
-import { BlockerFunction } from '@remix-run/router/router';
 
 let unsafeNavigateFunction: SafeNavigateFunction | undefined;
 export const unsafeNavigate = (
@@ -215,7 +214,7 @@ function UnloadProtect(): JSX.Element | null {
   const unloadProtectsRef = React.useContext(UnloadProtectsRefContext)!;
 
   const blocker = useBlocker(
-    React.useCallback<BlockerFunction>(
+    React.useCallback<Exclude<Parameters<typeof useBlocker>[0], boolean>>(
       ({ nextLocation, currentLocation }) =>
         unloadProtectsRef.current.length > 0 &&
         hasUnloadProtect(nextLocation, currentLocation),
