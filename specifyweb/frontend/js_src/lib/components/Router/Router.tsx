@@ -1,8 +1,9 @@
-import type { Path } from '@remix-run/router/history';
+import type { Path } from '@remix-run/router';
+import { resolvePath } from '@remix-run/router';
 import type { SafeLocation } from 'history';
 import React from 'react';
 import type { SafeNavigateFunction } from 'react-router';
-import { resolvePath } from 'react-router';
+import { unstable_useBlocker as useBlocker } from 'react-router';
 import { useLocation, useNavigate, useRoutes } from 'react-router-dom';
 
 import { commonText } from '../../localization/common';
@@ -10,10 +11,10 @@ import { mainText } from '../../localization/main';
 import { toLocalUrl } from '../../utils/ajax/helpers';
 import { listen } from '../../utils/events';
 import { f } from '../../utils/functools';
+import type { GetOrSet, RA } from '../../utils/types';
 import { setDevelopmentGlobal } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
-import { unloadProtectEvents, UnloadProtectsContext } from '../Core/Contexts';
 import { error } from '../Errors/assert';
 import { crash, softFail } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
@@ -21,7 +22,6 @@ import { Dialog } from '../Molecules/Dialog';
 import { getUserPref } from '../UserPreferences/helpers';
 import { NotFoundView } from './NotFoundView';
 import { overlayRoutes } from './OverlayRoutes';
-import { useRouterBlocker } from './RouterBlocker';
 import { toReactRoutes } from './RouterUtils';
 import { routes } from './Routes';
 
@@ -82,7 +82,7 @@ export function Router(): JSX.Element {
   >(undefined);
   return (
     <SetSingleResourceContext.Provider value={setSingleResource}>
-      <UnloadProtect background={background} singleResource={singleResource} />
+      <UnloadProtect singleResource={singleResource} />
       {isNotFound ? <NotFoundView /> : undefined}
       {typeof overlay === 'object' && (
         <Overlay background={background} overlay={overlay} />
@@ -234,83 +234,69 @@ export const SetSingleResourceContext = React.createContext<
 SetSingleResourceContext.displayName = 'SetSingleResourceContext';
 
 function UnloadProtect({
-  background,
   singleResource,
 }: {
-  readonly background: SafeLocation | undefined;
   readonly singleResource: string | undefined;
 }): JSX.Element | null {
   const unloadProtects = React.useContext(UnloadProtectsContext)!;
-  const [unloadProtect, setUnloadProtect] = React.useState<
-    { readonly resolve: () => void; readonly reject: () => void } | undefined
-  >(undefined);
+  const unloadProtectsRef = React.useContext(UnloadProtectsRefContext)!;
 
-  const isEmpty = unloadProtects.length === 0;
-  const isSet = unloadProtect !== undefined;
-  const shouldUnset = isEmpty && isSet;
-  React.useEffect(
-    () =>
-      shouldUnset
-        ? setUnloadProtect((blocker) => void blocker?.resolve())
-        : undefined,
-    [shouldUnset]
-  );
-
-  const backgroundRef = React.useRef<SafeLocation | undefined>(background);
-  backgroundRef.current = background;
-
-  const { block, unblock } = useRouterBlocker(
-    React.useCallback(
-      async (location) =>
-        new Promise((resolve, reject) =>
-          hasUnloadProtect(location, backgroundRef.current, singleResource)
-            ? setUnloadProtect({ resolve: () => resolve('unblock'), reject })
-            : resolve('ignore')
-        ),
+  const blocker = useBlocker(
+    React.useCallback<Exclude<Parameters<typeof useBlocker>[0], boolean>>(
+      ({ nextLocation, currentLocation }) =>
+        unloadProtectsRef.current.length > 0 &&
+        hasUnloadProtect(nextLocation, currentLocation, singleResource),
       [singleResource]
     )
   );
-  /*
-   * Need to use events rather than context because contexts take time to
-   * propagate, leading to false "Unsaved changes" warnings when unsetting
-   * unload protects and navigation are done in the same cycle
-   */
-  React.useEffect(() => unloadProtectEvents.on('blocked', block), [block]);
+
+  // Remove the blocker if nothing is blocking
+  const isEmpty = unloadProtects.length === 0;
+  const isSet = blocker.state === 'blocked';
+  const shouldUnset = isEmpty && isSet;
   React.useEffect(
-    () => unloadProtectEvents.on('unblocked', unblock),
-    [unblock]
+    () => (shouldUnset ? blocker.proceed() : undefined),
+    [isEmpty, isSet, blocker]
   );
 
-  return typeof unloadProtect === 'object' && unloadProtects.length > 0 ? (
-    <UnloadProtectDialog
-      onCancel={(): void => {
-        unloadProtect.reject();
-        setUnloadProtect(undefined);
-      }}
-      onConfirm={(): void => {
-        unloadProtect.resolve();
-        setUnloadProtect(undefined);
-      }}
-    >
-      {unloadProtects.at(-1)!}
-    </UnloadProtectDialog>
-  ) : null;
+  return (
+    <>
+      {blocker.state === 'blocked' && unloadProtects.length > 0 ? (
+        <UnloadProtectDialog
+          onCancel={(): void => blocker.reset()}
+          onConfirm={(): void => blocker.proceed()}
+        >
+          {unloadProtects.at(-1)!}
+        </UnloadProtectDialog>
+      ) : null}
+    </>
+  );
 }
 
 /** Decide whether a given URL change should trigger unload protect */
 const hasUnloadProtect = (
-  newLocation: SafeLocation,
-  background: SafeLocation | undefined,
+  nextLocation: SafeLocation,
+  currentLocation: SafeLocation,
   singleResource: string | undefined
-) =>
+): boolean =>
   // Check for navigation within overlay
-  !pathIsOverlay(newLocation.pathname) &&
+  !pathIsOverlay(nextLocation.pathname) &&
   // Check for navigation that only changes query string / hash
-  !isCurrentUrl(newLocation.pathname) &&
+  !isCurrentUrl(nextLocation.pathname) &&
   // Check for exiting overlay
-  f.maybe(background, locationToUrl) !== locationToUrl(newLocation) &&
+  f.maybe(
+    currentLocation.state?.type === 'BackgroundLocation'
+      ? currentLocation.state.location
+      : undefined,
+    locationToUrl
+  ) !== locationToUrl(nextLocation) &&
   // Check for navigation within single resource
-  !isSingleResource(newLocation, singleResource);
+  !isSingleResource(nextLocation, singleResource);
+
+// Don't trigger unload protect if only query string or hash changes
+const isCurrentUrl = (relativeUrl: string): boolean =>
+  new URL(relativeUrl, globalThis.location.origin).pathname ===
+  globalThis.location.pathname;
 
 function isSingleResource(
   { pathname }: SafeLocation,
@@ -322,11 +308,6 @@ function isSingleResource(
     globalThis.location.pathname.startsWith(singleResource)
   );
 }
-
-// Don't trigger unload protect if only query string or hash changes
-const isCurrentUrl = (relativeUrl: string): boolean =>
-  new URL(relativeUrl, globalThis.location.origin).pathname ===
-  globalThis.location.pathname;
 
 export function UnloadProtectDialog({
   children,
@@ -353,3 +334,21 @@ export function UnloadProtectDialog({
     </Dialog>
   );
 }
+
+/**
+ * List of current unload protects (used for preventing loss of unsaved changes)
+ */
+export const UnloadProtectsContext = React.createContext<
+  RA<string> | undefined
+>(undefined);
+UnloadProtectsContext.displayName = 'UnloadProtectsContext';
+
+export const UnloadProtectsRefContext = React.createContext<
+  { readonly current: RA<string> } | undefined
+>(undefined);
+UnloadProtectsRefContext.displayName = 'UnloadProtectsRefContext';
+
+export const SetUnloadProtectsContext = React.createContext<
+  GetOrSet<RA<string>>[1] | undefined
+>(undefined);
+SetUnloadProtectsContext.displayName = 'SetUnloadProtectsContext';

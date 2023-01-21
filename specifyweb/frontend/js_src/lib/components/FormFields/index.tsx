@@ -1,12 +1,11 @@
 import React from 'react';
 
-import { useAsyncState } from '../../hooks/useAsyncState';
+import { useDistantRelated } from '../../hooks/resource';
 import { useResourceValue } from '../../hooks/useResourceValue';
 import type { Parser } from '../../utils/parser/definitions';
 import { getValidationAttributes } from '../../utils/parser/definitions';
 import type { IR, RA } from '../../utils/types';
 import { Input, Textarea } from '../Atoms/Form';
-import { fetchDistantRelated } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
@@ -23,7 +22,7 @@ import { QueryComboBox } from './QueryComboBox';
 
 const fieldRenderers: {
   readonly [KEY in keyof FieldTypes]: (props: {
-    readonly resource: SpecifyResource<AnySchema>;
+    readonly resource: SpecifyResource<AnySchema> | undefined;
     readonly mode: FormMode;
     readonly fieldDefinition: FieldTypes[KEY];
     readonly id: string | undefined;
@@ -41,15 +40,18 @@ const fieldRenderers: {
     field,
     fieldDefinition: { defaultValue, printOnSave, label },
   }) {
+    const table = resource?.specifyModel ?? field?.model;
     return printOnSave ? (
-      <PrintOnSave
-        defaultValue={defaultValue}
-        field={field}
-        id={id}
-        model={resource.specifyModel}
-        name={name}
-        text={label}
-      />
+      table === undefined ? null : (
+        <PrintOnSave
+          defaultValue={defaultValue}
+          field={field}
+          id={id}
+          model={table}
+          name={name}
+          text={label}
+        />
+      )
     ) : field?.isRelationship ? null : (
       <SpecifyFormCheckbox
         defaultValue={defaultValue}
@@ -228,13 +230,7 @@ export function FormField({
   const Render = fieldRenderers[
     fieldDefinition.type
   ] as typeof fieldRenderers.Checkbox;
-  const [data] = useAsyncState(
-    React.useCallback(
-      async () => fetchDistantRelated(resource, fields),
-      [resource, fields]
-    ),
-    false
-  );
+  const data = useDistantRelated(resource, fields);
   return (
     <ErrorBoundary dismissable>
       {data === undefined ? undefined : (

@@ -146,7 +146,9 @@ export function QueryLoanReturn({
           })
         }
       >
-        {interactionsText.returnLoan()}
+        {interactionsText.returnLoan({
+          tableLoan: schema.models.Loan.label,
+        })}
       </QueryButton>
       {state.type === 'Dialog' && Array.isArray(toReturn) ? (
         <Dialog

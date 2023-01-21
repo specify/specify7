@@ -187,10 +187,10 @@ export const preferencesText = createDictionary({
       второй шрифт будет использоваться, если первый не доступен и т.д
     `,
     'es-es': `
-      Puede especificar cualquier fuente que esté en su computadora, incluso si
-      no está en la lista. También se admite una lista de fuentes separadas por
-      comas, donde se usaría la segunda fuente si la primera no está disponible
-      y así sucesivamente.
+      Puede especificar cualquier fuente que tenga en su ordenador, aunque no
+      esté en la lista. También se admite una lista de fuentes separadas por
+      comas, en la que se utilizará la segunda fuente si la primera no está
+      disponible, etc
     `,
     'fr-fr': `
       Vous pouvez spécifier n'importe quelle police qui se trouve sur votre
@@ -624,7 +624,7 @@ export const preferencesText = createDictionary({
     `,
     'es-es': `
       Determina los títulos de los campos, las notas de uso y los títulos de las
-      tablas.
+      tablas
     `,
     'fr-fr': `
       Détermine les légendes des champs, les notes d'utilisation et les légendes
@@ -770,7 +770,7 @@ export const preferencesText = createDictionary({
   adminsOnlyPreference: {
     'en-us': "You don't have permission to change this option",
     'ru-ru': 'У вас недостаточно прав для изменения этого параметра.',
-    'es-es': 'No tienes permiso para cambiar esta opción.',
+    'es-es': 'No tiene permiso para cambiar esta opción',
     'fr-fr': "Vous n'êtes pas autorisé à modifier cette option",
     'uk-ua': 'Ви не маєте дозволу змінювати цей параметр',
   },
@@ -1162,7 +1162,7 @@ export const preferencesText = createDictionary({
   collectionSortOrderDescription: {
     'en-us': 'This determines the visual order of collections',
     'ru-ru': 'Это определяет порядок коллекций',
-    'es-es': 'Esto determina el orden visual de las colecciones.',
+    'es-es': 'Determina el orden visual de las colecciones',
     'fr-fr': "Ceci détermine l'ordre visuel des collections",
     'uk-ua': 'Це визначає візуальний порядок колекцій',
   },

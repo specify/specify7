@@ -32,7 +32,7 @@ export function UiField({
 }: {
   readonly id: string | undefined;
   readonly name: string | undefined;
-  readonly resource: SpecifyResource<AnySchema>;
+  readonly resource: SpecifyResource<AnySchema> | undefined;
   readonly mode: FormMode;
   readonly field: LiteralField | Relationship | undefined;
   readonly parser?: Parser;
@@ -44,14 +44,16 @@ export function UiField({
   const [aggregated] = useAsyncState(
     React.useCallback(
       async () =>
-        typeof field === 'object'
+        resource === undefined
+          ? false
+          : typeof field === 'object'
           ? 'models' in resource
             ? aggregate(resource as unknown as Collection<AnySchema>)
             : field.isRelationship && relationshipIsToMany(field)
             ? resource.rgetCollection(field.name).then(aggregate)
             : false
           : undefined,
-      [resource.specifyModel.name, resource, field]
+      [resource?.specifyModel.name, resource, field]
     ),
     false
   );
@@ -80,7 +82,7 @@ function Field({
   mode,
   parser: defaultParser,
 }: {
-  readonly resource: SpecifyResource<AnySchema>;
+  readonly resource: SpecifyResource<AnySchema> | undefined;
   readonly id: string | undefined;
   readonly name: string | undefined;
   readonly field: LiteralField | Relationship | undefined;
@@ -115,7 +117,7 @@ function Field({
         field?.isRelationship === true
           ? hasTablePermission(field.relatedModel.name, 'read')
             ? (
-                resource.rgetPromise(field.name) as Promise<
+                resource?.rgetPromise(field.name) as Promise<
                   SpecifyResource<AnySchema> | undefined
                 >
               )

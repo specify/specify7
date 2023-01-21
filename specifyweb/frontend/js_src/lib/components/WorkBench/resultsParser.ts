@@ -4,6 +4,7 @@
  * @module
  */
 
+import type { LocalizedString } from 'typesafe-i18n';
 import type { State } from 'typesafe-reducer';
 
 import { backEndText } from '../../localization/backEnd';
@@ -165,7 +166,7 @@ export type UploadResult = {
 export function resolveValidationMessage(
   key: string,
   payload: IR<unknown>
-): string {
+): LocalizedString {
   if (key === 'failedParsingBoolean')
     return backEndText.failedParsingBoolean({ value: payload.value as string });
   else if (key === 'failedParsingDecimal')

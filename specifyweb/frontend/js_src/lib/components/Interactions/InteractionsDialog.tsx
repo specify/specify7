@@ -89,19 +89,37 @@ const supportedActions = [
 /**
  * Remap Specify 6 UI localization strings to Specify 7 UI localization strings
  */
-const stringLocalization = {
-  RET_LOAN: interactionsText.returnLoan(),
+const stringLocalization = f.store(() => ({
+  RET_LOAN: interactionsText.returnLoan({
+    tableLoan: schema.models.Loan.label,
+  }),
   PRINT_INVOICE: interactionsText.printInvoice(),
-  LOAN_NO_PRP: interactionsText.loanWithoutPreparation(),
+  LOAN_NO_PRP: interactionsText.loanWithoutPreparation({
+    tableLoan: schema.models.Loan.label,
+    tablePreparation: schema.models.Preparation.label,
+  }),
   'InteractionsTask.LN_NO_PREP':
-    interactionsText.loanWithoutPreparationDescription(),
-  'InteractionsTask.NEW_LN': interactionsText.createLoan(),
-  'InteractionsTask.EDT_LN': interactionsText.editLoan(),
-  'InteractionsTask.NEW_GFT': interactionsText.createdGift(),
-  'InteractionsTask.EDT_GFT': interactionsText.editGift(),
-  'InteractionsTask.CRE_IR': interactionsText.createInformationRequest(),
+    interactionsText.loanWithoutPreparationDescription({
+      tableLoan: schema.models.Loan.label,
+      tablePreparation: schema.models.Preparation.label,
+    }),
+  'InteractionsTask.NEW_LN': interactionsText.createLoan({
+    tableLoan: schema.models.Loan.label,
+  }),
+  'InteractionsTask.EDT_LN': interactionsText.editLoan({
+    tableLoan: schema.models.Loan.label,
+  }),
+  'InteractionsTask.NEW_GFT': interactionsText.createdGift({
+    tableGift: schema.models.Gift.label,
+  }),
+  'InteractionsTask.EDT_GFT': interactionsText.editGift({
+    tableGift: schema.models.Gift.label,
+  }),
+  'InteractionsTask.CRE_IR': interactionsText.createInformationRequest({
+    tableInformationRequest: schema.models.InfoRequest.label,
+  }),
   'InteractionsTask.PRT_INV': interactionsText.printInvoice(),
-};
+}));
 
 export type InteractionEntry = {
   readonly action: typeof supportedActions[number] | undefined;
@@ -246,8 +264,8 @@ function Interactions({
                 key={index}
                 title={
                   typeof tooltip === 'string'
-                    ? stringLocalization[
-                        tooltip as keyof typeof stringLocalization
+                    ? stringLocalization()[
+                        tooltip as keyof ReturnType<typeof stringLocalization>
                       ] ?? tooltip
                     : undefined
                 }
@@ -271,8 +289,8 @@ function Interactions({
                     <TableIcon label={false} name={icon} />
                   ))}
                   {typeof label === 'string'
-                    ? stringLocalization[
-                        label as keyof typeof stringLocalization
+                    ? stringLocalization()[
+                        label as keyof ReturnType<typeof stringLocalization>
                       ] ?? label
                     : typeof table === 'string'
                     ? getModel(table)?.label

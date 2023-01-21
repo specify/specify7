@@ -1,5 +1,9 @@
 import React from 'react';
-import { Navigate, useRoutes } from 'react-router-dom';
+import {
+  createBrowserRouter,
+  Navigate,
+  RouterProvider,
+} from 'react-router-dom';
 
 import { commonText } from '../../localization/common';
 import { userText } from '../../localization/user';
@@ -60,7 +64,8 @@ export const entrypointRoutes: RA<EnhancedRoute> = [
 /* eslint-enable @typescript-eslint/promise-function-async */
 
 const routes = toReactRoutes(entrypointRoutes);
+const router = createBrowserRouter(routes);
 
 export function EntrypointRouter(): JSX.Element {
-  return useRoutes(routes) ?? <NotFoundView />;
+  return <RouterProvider router={router} />;
 }

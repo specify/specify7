@@ -23,11 +23,12 @@ export type QueryComboBoxTreeData = {
 };
 
 export function useTreeData(
-  resource: SpecifyResource<AnySchema>,
+  resource: SpecifyResource<AnySchema> | undefined,
   field: LiteralField | Relationship
 ): QueryComboBoxTreeData | false | undefined {
   const [treeData] = useAsyncState<QueryComboBoxTreeData | false>(
     React.useCallback(() => {
+      if (resource === undefined) return;
       const treeResource = toTreeTable(resource);
       if (
         treeResource === undefined ||

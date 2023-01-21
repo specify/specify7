@@ -12,8 +12,8 @@ import { webLinks } from '../FormPlugins/WebLink';
 import { fetchContext as fetchUiFormatters } from '../Forms/uiFormatters';
 import { fetchPickLists } from '../PickLists/definitions';
 import { formatAggregators } from './helpers';
-import { fetchSchemaLanguages } from '../Toolbar/Language';
 import { serializeResource } from '../DataModel/serializers';
+import { fetchSchemaLanguages } from '../Toolbar/Language';
 
 export type SchemaData = {
   readonly languages: IR<LocalizedString>;

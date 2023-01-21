@@ -34,12 +34,13 @@ export function PaleoLocationMapPlugin({
   resource,
 }: {
   readonly id: string | undefined;
-  readonly resource: SpecifyResource<AnySchema>;
+  readonly resource: SpecifyResource<AnySchema> | undefined;
 }): JSX.Element | null {
   const [state, setState] = React.useState<States>({ type: 'MainState' });
   const loading = React.useContext(LoadingContext);
 
-  return hasTablePermission('CollectingEvent', 'read') &&
+  return typeof resource === 'object' &&
+    hasTablePermission('CollectingEvent', 'read') &&
     hasTablePermission('Locality', 'read') &&
     hasTablePermission('PaleoContext', 'read') ? (
     <ErrorBoundary dismissable>

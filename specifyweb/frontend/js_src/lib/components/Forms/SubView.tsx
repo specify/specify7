@@ -1,11 +1,13 @@
 import React from 'react';
 
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
 import { overwriteReadOnly } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
+import { attachmentSettingsPromise } from '../Attachments/attachments';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
@@ -17,6 +19,7 @@ import type { SubViewSortField } from '../FormParse/cells';
 import { IntegratedRecordSelector } from '../FormSliders/IntegratedRecordSelector';
 import { TableIcon } from '../Molecules/TableIcon';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
+import { attachmentRelatedTables } from '../Attachments';
 
 export const SubViewContext = React.createContext<
   | {
@@ -31,6 +34,8 @@ export const SubViewContext = React.createContext<
   | undefined
 >(undefined);
 SubViewContext.displayName = 'SubViewContext';
+
+const fetchAttachmentSettings = async () => attachmentSettingsPromise;
 
 export function SubView({
   relationship,
@@ -185,6 +190,16 @@ export function SubView({
   );
 
   const [isOpen, _, handleClose, handleToggle] = useBooleanState(!isButton);
+
+  const [isAttachmentConfigured] = useAsyncState(fetchAttachmentSettings, true);
+
+  const isAttachmentTable = attachmentRelatedTables().includes(
+    relationship.relatedModel.name
+  );
+
+  const isAttachmentMisconfirgured =
+    isAttachmentTable && !isAttachmentConfigured;
+
   return (
     <SubViewContext.Provider value={contextValue}>
       {isButton && (
@@ -217,7 +232,9 @@ export function SubView({
           dialog={isButton ? 'nonModal' : false}
           formType={formType}
           mode={
-            relationship.isDependent() && initialMode !== 'view'
+            !isAttachmentMisconfirgured &&
+            relationship.isDependent() &&
+            initialMode !== 'view'
               ? 'edit'
               : 'view'
           }

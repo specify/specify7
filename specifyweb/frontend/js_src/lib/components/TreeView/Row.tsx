@@ -6,6 +6,7 @@ import { treeText } from '../../localization/tree';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
+import { getPref } from '../InitialContext/remotePrefs';
 import { getUserPref } from '../UserPreferences/helpers';
 import type { Conformations, KeyAction, Row, Stats } from './helpers';
 import { formatTreeStats, mapKey, scrollIntoView } from './helpers';
@@ -27,6 +28,7 @@ export function TreeRow({
   onAction: handleAction,
   setFocusedRow,
   synonymColor,
+  treeName,
 }: {
   readonly row: Row;
   readonly getRows: (parentId: number | 'null') => Promise<RA<Row>>;
@@ -49,6 +51,7 @@ export function TreeRow({
   readonly onAction: (action: Exclude<KeyAction, 'child' | 'toggle'>) => void;
   readonly setFocusedRow: (row: Row) => void;
   readonly synonymColor: string;
+  readonly treeName: string;
 }): JSX.Element {
   const [rows, setRows] = React.useState<RA<Row> | undefined>(undefined);
   const [childStats, setChildStats] = React.useState<Stats | undefined>(
@@ -124,6 +127,8 @@ export function TreeRow({
   const parentRankId = path.at(-1)?.rankId;
   const id = useId('tree-node');
   const isAction = actionRow === row;
+
+  const doIncludeAuthorPref = getPref(`TaxonTreeEditor.DisplayAuthor`);
 
   const handleRef = React.useCallback(
     (element: HTMLButtonElement | null): void => {
@@ -218,7 +223,11 @@ export function TreeRow({
                       : undefined
                   }
                 >
-                  {row.name}
+                  {doIncludeAuthorPref &&
+                  treeName === 'Taxon' &&
+                  typeof row.author === 'string'
+                    ? `${row.name} ${row.author}`
+                    : row.name}
                   {typeof row.acceptedId === 'number' && (
                     <span className="sr-only">
                       <br />
@@ -295,6 +304,7 @@ export function TreeRow({
               row={childRow}
               setFocusedRow={setFocusedRow}
               synonymColor={synonymColor}
+              treeName={treeName}
               onAction={(action): void => {
                 if (action === 'next')
                   if (typeof rows[index + 1] === 'object')

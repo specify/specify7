@@ -67,7 +67,7 @@ export function QueryComboBox({
   relatedModel: initialRelatedModel,
 }: {
   readonly id: string | undefined;
-  readonly resource: SpecifyResource<AnySchema>;
+  readonly resource: SpecifyResource<AnySchema> | undefined;
   readonly field: Relationship;
   readonly mode: FormMode;
   readonly formType: FormType;
@@ -78,7 +78,7 @@ export function QueryComboBox({
   readonly relatedModel?: SpecifyModel | undefined;
 }): JSX.Element {
   React.useEffect(() => {
-    if (!resource.isNew()) return;
+    if (resource === undefined || !resource.isNew()) return;
     if (field.name === 'cataloger') {
       const record = toTable(resource, 'CollectionObject');
       record?.set(
@@ -127,12 +127,14 @@ export function QueryComboBox({
   const [version, setVersion] = React.useState(0);
   React.useEffect(
     () =>
-      resourceOn(
-        resource,
-        'saved',
-        () => setVersion((version) => version + 1),
-        false
-      ),
+      resource === undefined
+        ? undefined
+        : resourceOn(
+            resource,
+            'saved',
+            () => setVersion((version) => version + 1),
+            false
+          ),
     [resource]
   );
 
@@ -150,13 +152,14 @@ export function QueryComboBox({
   }>(
     React.useCallback(
       async () =>
-        hasTablePermission(field.relatedModel.name, 'read') ||
-        /*
-         * If related resource is already provided, can display it
-         * Even if don't have read permission (i.e, Agent for current
-         * User)
-         */
-        typeof resource.getDependentResource(field.name) === 'object'
+        typeof resource === 'object' &&
+        (hasTablePermission(field.relatedModel.name, 'read') ||
+          /*
+           * If related resource is already provided, can display it
+           * Even if don't have read permission (i.e, Agent for current
+           * User)
+           */
+          typeof resource.getDependentResource(field.name) === 'object')
           ? resource
               .rgetPromise<string, AnySchema>(field.name)
               .then((resource) =>
@@ -205,7 +208,7 @@ export function QueryComboBox({
   >({ type: 'MainState' });
 
   const relatedCollectionId =
-    typeof collectionRelationships === 'object'
+    typeof collectionRelationships === 'object' && typeof resource === 'object'
       ? getRelatedCollectionId(collectionRelationships, resource, field.name)
       : undefined;
 
@@ -257,7 +260,7 @@ export function QueryComboBox({
 
   const fetchSource = React.useCallback(
     async (value: string): Promise<RA<AutoCompleteItem<string>>> =>
-      isLoaded && typeof typeSearch === 'object'
+      isLoaded && typeof typeSearch === 'object' && typeof resource === 'object'
         ? Promise.all(
             typeSearch.searchFields
               .map((fields) =>
@@ -447,7 +450,9 @@ export function QueryComboBox({
             <DataEntry.Search
               aria-pressed={state.type === 'SearchState'}
               onClick={
-                isLoaded && typeof typeSearch === 'object'
+                isLoaded &&
+                typeof typeSearch === 'object' &&
+                typeof resource === 'object'
                   ? (): void =>
                       setState({
                         type: 'SearchState',
@@ -528,7 +533,7 @@ export function QueryComboBox({
           onAdd={undefined}
           onClose={(): void => setState({ type: 'MainState' })}
           onDeleted={(): void => {
-            resource.set(field.name, null as never);
+            resource?.set(field.name, null as never);
             setState({ type: 'MainState' });
           }}
           onSaved={undefined}
@@ -549,13 +554,13 @@ export function QueryComboBox({
           onClose={(): void => setState({ type: 'MainState' })}
           onDeleted={undefined}
           onSaved={(): void => {
-            resource.set(field.name, state.resource as never);
+            resource?.set(field.name, state.resource as never);
             setState({ type: 'MainState' });
           }}
           onSaving={
             field.isDependent()
               ? (): false => {
-                  resource.set(field.name, state.resource as never);
+                  resource?.set(field.name, state.resource as never);
                   setState({ type: 'MainState' });
                   return false;
                 }

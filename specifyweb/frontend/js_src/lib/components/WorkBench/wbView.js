@@ -485,6 +485,7 @@ export const WBView = Backbone.View.extend({
                             label === ''
                               ? strictGetModel(tableName).label
                               : label;
+                          // REFACTOR: use new table icons
                           const tableIcon = getIcon(tableName) ?? unknownIcon;
 
                           return `<a
@@ -2266,7 +2267,9 @@ export const WBView = Backbone.View.extend({
           line.length === 2 ? [line[0], {}, line[1]] : line;
         setMetaCallback(
           'issues',
-          resolveValidationMessage(issueMessage, payload ?? {}),
+          whitespaceSensitive(
+            resolveValidationMessage(issueMessage, payload ?? {})
+          ),
           [column],
           resolveColumns
         );
@@ -2281,7 +2284,9 @@ export const WBView = Backbone.View.extend({
     else if (uploadStatus === 'FailedBusinessRule')
       setMetaCallback(
         'issues',
-        resolveValidationMessage(statusData.message, statusData.payload ?? {}),
+        whitespaceSensitive(
+          resolveValidationMessage(statusData.message, statusData.payload ?? {})
+        ),
         statusData.info.columns,
         resolveColumns
       );

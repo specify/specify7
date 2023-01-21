@@ -33,7 +33,7 @@ f.all({
     resolvedStackTrace = data;
     return data;
   })
-  // Not using softFail here to avoid circular dependency
+  // Can't use softFail here because of circular dependency
   .catch(console.error);
 
 /**

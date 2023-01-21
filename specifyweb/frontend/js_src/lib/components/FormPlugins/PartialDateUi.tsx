@@ -128,7 +128,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
   id,
   canChangePrecision = true,
 }: {
-  readonly resource: SpecifyResource<SCHEMA>;
+  readonly resource: SpecifyResource<SCHEMA> | undefined;
   readonly dateField: string & keyof SCHEMA['fields'];
   readonly precisionField: (string & keyof SCHEMA['fields']) | undefined;
   readonly defaultPrecision: PartialDatePrecision;
@@ -168,7 +168,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
 
   const [precision, setPrecision] = React.useState<PartialDatePrecision>(
     () =>
-      reversePrecision[resource.get(precisionField ?? '') as 1 | 2 | 3] ??
+      reversePrecision[resource?.get(precisionField ?? '') as 1 | 2 | 3] ??
       defaultPrecision
   );
 
@@ -180,7 +180,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
 
   const syncMoment = React.useCallback(
     (moment: ReturnType<typeof dayjs> | undefined) => {
-      const value = resource.get(dateField) ?? undefined;
+      const value = resource?.get(dateField) ?? undefined;
       const newMoment =
         value === undefined
           ? undefined
@@ -209,7 +209,12 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
   const isInitialized = React.useRef<boolean>(false);
 
   React.useEffect(() => {
-    if (typeof defaultValue === 'object' && resource.isNew())
+    if (resource === undefined) return;
+    if (
+      typeof defaultValue === 'object' &&
+      typeof resource === 'object' &&
+      resource.isNew()
+    )
       resource.set(dateField, getDateInputValue(defaultValue) as never, {
         silent: true,
       });
@@ -250,6 +255,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
   ]);
 
   React.useEffect(() => {
+    if (resource === undefined) return;
     /*
      * If resource changes, a new moment is set, but its value won't get
      * propagated on the first call to this useEffect.
@@ -354,6 +360,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
               setMoment(newMoment);
             }}
             onChange={({ target }): void => {
+              if (resource === undefined) return;
               const precision = target.value as PartialDatePrecision;
               setPrecision(precision);
               const precisionIndex = precisions[precision];

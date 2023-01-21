@@ -30,6 +30,7 @@ import { hasPermission } from '../Permissions/helpers';
 import { OverlayContext } from '../Router/Router';
 import type { Dataset, DatasetBrief } from '../WbPlanView/Wrapped';
 import { DataSetMeta } from '../WorkBench/DataSetMeta';
+import { TableIcon } from '../Molecules/TableIcon';
 
 const createEmptyDataSet = async (): Promise<Dataset> =>
   ajax<Dataset>(
@@ -77,7 +78,7 @@ export function DataSetMetaOverlay(): JSX.Element | null {
       dataset={dataset}
       onChange={handleClose}
       onClose={handleClose}
-      onDeleted={ () => navigate('/specify/', {replace: true})}
+      onDeleted={() => navigate('/specify/', { replace: true })}
     />
   ) : null;
 }
@@ -233,11 +234,7 @@ export function DataSetsDialog({
                           : undefined
                       }
                     >
-                      <img
-                        alt=""
-                        className="w-table-icon"
-                        src="/images/Workbench32x32.png"
-                      />
+                      <TableIcon name="Workbench" label={false} />
                       {dataset.name}
                     </Link.Default>
                   </td>

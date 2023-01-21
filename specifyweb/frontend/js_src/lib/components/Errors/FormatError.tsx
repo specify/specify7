@@ -11,6 +11,7 @@ import { formatPermissionsError } from '../Permissions/FormatError';
 import { PermissionError } from '../Permissions/PermissionDenied';
 import { unsafeTriggerNotFound } from '../Router/Router';
 import { ErrorDialog } from './ErrorDialog';
+import { formatJsonBackendResponse } from './JsonError';
 import { produceStackTrace } from './stackTrace';
 
 export function formatError(
@@ -111,8 +112,7 @@ export function formatError(
 /** Format error message as JSON, HTML or plain text */
 function formatErrorResponse(error: string): JSX.Element {
   try {
-    const json = JSON.parse(error);
-    return <pre>{jsonStringify(json, 2)}</pre>;
+    return formatJsonBackendResponse(error);
   } catch {
     // Failed parsing error message as JSON
   }
@@ -205,7 +205,7 @@ export function handleAjaxError(
 }
 
 /** Create an iframe from HTML string */
-function ErrorIframe({
+export function ErrorIframe({
   children: error,
 }: {
   readonly children: string;
@@ -213,16 +213,12 @@ function ErrorIframe({
   const iframeRef = React.useRef<HTMLIFrameElement | null>(null);
   React.useEffect(() => {
     if (iframeRef.current === null) return;
-    const iframeDocument =
-      iframeRef.current.contentDocument ??
-      iframeRef.current.contentWindow?.document;
-    if (iframeDocument === undefined) return;
-    iframeDocument.body.innerHTML = error;
+    iframeRef.current.srcdoc = error;
   }, [error]);
 
   return (
     <iframe
-      className="h-full"
+      className="h-full w-full"
       ref={iframeRef}
       title={mainText.errorOccurred()}
     />

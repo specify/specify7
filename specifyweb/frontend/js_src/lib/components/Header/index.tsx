@@ -6,26 +6,24 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useSearchParameter } from '../../hooks/navigation';
-import { useAsyncState } from '../../hooks/useAsyncState';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
-import { ajax } from '../../utils/ajax';
-import type { RA, RR } from '../../utils/types';
-import { sortFunction, toLowerCase } from '../../utils/utils';
+import type { RR } from '../../utils/types';
+import { sortFunction } from '../../utils/utils';
 import { Form, Input, Select } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
 import type { MenuItem } from '../Core/Main';
-import type { SerializedModel } from '../DataModel/helperTypes';
-import type { Collection } from '../DataModel/types';
+import { schema } from '../DataModel/schema';
+import { serializeResource } from '../DataModel/serializers';
+import { userInformation } from '../InitialContext/userInformation';
 import { toLargeSortConfig } from '../Molecules/Sorting';
 import { formatUrl } from '../Router/queryString';
 import { switchCollection } from '../RouterCommands/SwitchCollection';
 import { usePref } from '../UserPreferences/usePref';
-import type { MenuItemName } from './menuItemDefinitions';
-import { serializeResource } from '../DataModel/serializers';
 import { MenuContext } from './MenuContext';
+import type { MenuItemName } from './menuItemDefinitions';
 
 export function HeaderItems({
   menuItems,
@@ -96,40 +94,22 @@ function MenuItemComponent({
   ) : null;
 }
 
-type Collections = {
-  readonly available: RA<SerializedModel<Collection>>;
-  readonly current: number | null;
-};
-
 export function CollectionSelector(): JSX.Element {
-  const [collections] = useAsyncState<Collections>(
-    React.useCallback(
-      async () =>
-        ajax<Collections>('/context/collection/', {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          headers: { Accept: 'application/json' },
-        }).then(({ data }) => data),
-      []
-    ),
-    false
-  );
-
   const [sortOrder] = usePref('chooseCollection', 'general', 'sortOrder');
-  const sortedCollections = React.useMemo(() => {
-    if (collections === undefined) return undefined;
-    const { direction, fieldNames } = toLargeSortConfig(sortOrder);
-    return Array.from(collections.available)
-      .sort(
-        sortFunction(
-          (collection) =>
-            collection[
-              toLowerCase(fieldNames.join('.') as keyof Collection['fields'])
-            ],
-          direction === 'desc'
+  const { direction, fieldNames } = toLargeSortConfig(sortOrder);
+  const sortedCollections = React.useMemo(
+    () =>
+      Array.from(userInformation.availableCollections)
+        .sort(
+          sortFunction(
+            // FEATURE: this only works for direct fields right now
+            (collection) => collection[fieldNames.join('.') as 'id'],
+            direction === 'desc'
+          )
         )
-      )
-      .map(serializeResource);
-  }, [collections, sortOrder]);
+        .map(serializeResource),
+    [direction, fieldNames]
+  );
 
   const navigate = useNavigate();
   return (
@@ -137,16 +117,13 @@ export function CollectionSelector(): JSX.Element {
       aria-label={headerText.currentCollection()}
       className="flex-1"
       title={headerText.currentCollection()}
-      value={collections?.current ?? undefined}
+      value={schema.domainLevelIds.collection}
       onValueChange={(value): void =>
         switchCollection(navigate, Number.parseInt(value), '/specify/')
       }
     >
-      {collections === undefined && (
-        <option disabled>{commonText.loading()}</option>
-      )}
       {sortedCollections?.map(({ id, collectionName }) => (
-        <option key={id} value={id}>
+        <option key={id as number} value={id as number}>
           {collectionName}
         </option>
       ))}

@@ -6,12 +6,10 @@ import { mainText } from '../../../localization/main';
 import { LeakContext, mount } from '../../../tests/reactUtils';
 import { flippedPromise } from '../../../utils/promise';
 import {
-  Contexts,
-  ErrorContext,
-  LoadingContext,
   SetUnloadProtectsContext,
   UnloadProtectsContext,
-} from '../Contexts';
+} from '../../Router/Router';
+import { Contexts, ErrorContext, LoadingContext } from '../Contexts';
 
 jest.mock('../../Errors/Crash', () => ({
   ...jest.requireActual('../../Errors/Crash'),

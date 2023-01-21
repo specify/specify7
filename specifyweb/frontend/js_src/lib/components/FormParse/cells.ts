@@ -305,6 +305,7 @@ export function parseFormCell(
   const cellClass = getParsedAttribute(cellNode, 'type') ?? '';
   const cellType = cellTypeTranslation[cellClass.toLowerCase()];
 
+  // FEATURE: warn on IDs that include spaces and other unsupported characters
   const id = getParsedAttribute(cellNode, 'id');
   setLogContext({ id, type: cellType });
 

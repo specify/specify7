@@ -1,11 +1,11 @@
 import React from 'react';
 
+import { useDistantRelated } from '../../hooks/resource';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { f } from '../../utils/functools';
 import { DataEntry } from '../Atoms/DataEntry';
-import { fetchDistantRelated } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
@@ -106,17 +106,11 @@ const cellRenderers: {
     formType: parentFormType,
     cellData: { fieldNames, formType, isButton, icon, viewName, sortField },
   }) {
-    const [data] = useAsyncState(
-      React.useCallback(
-        async () =>
-          fetchDistantRelated(
-            rawResource,
-            rawResource.specifyModel.getFields(fieldNames?.join('.') ?? '')
-          ),
-        [rawResource, fieldNames]
-      ),
-      false
+    const fields = React.useMemo(
+      () => rawResource.specifyModel.getFields(fieldNames?.join('.') ?? ''),
+      [rawResource, fieldNames]
     );
+    const data = useDistantRelated(rawResource, fields);
 
     const relationship =
       data?.field?.isRelationship === true ? data.field : undefined;
@@ -149,6 +143,7 @@ const cellRenderers: {
         () =>
           typeof relationship === 'object' &&
           relationshipIsToMany(relationship) &&
+          typeof data?.resource === 'object' &&
           [
             'LoanPreparation',
             'GiftPreparation',

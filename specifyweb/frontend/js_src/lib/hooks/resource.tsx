@@ -1,11 +1,13 @@
 import React from 'react';
 
+import { fetchDistantRelated } from '../components/DataModel/helpers';
 import type {
   AnySchema,
   SerializedResource,
 } from '../components/DataModel/helperTypes';
 import type { SpecifyResource } from '../components/DataModel/legacyTypes';
 import { resourceOn } from '../components/DataModel/resource';
+import { serializeResource } from '../components/DataModel/serializers';
 import type {
   LiteralField,
   Relationship,
@@ -14,8 +16,7 @@ import {
   getValidationAttributes,
   resolveParser,
 } from '../utils/parser/definitions';
-import type { GetOrSet, IR } from '../utils/types';
-import { serializeResource } from '../components/DataModel/serializers';
+import type { GetOrSet, IR, RA } from '../utils/types';
 
 /**
  * A wrapper for Backbone.Resource that integrates with React.useState for
@@ -82,26 +83,55 @@ export function useSaveBlockers({
   resource,
   fieldName,
 }: {
-  readonly resource: SpecifyResource<AnySchema>;
+  readonly resource: SpecifyResource<AnySchema> | undefined;
   readonly fieldName: string;
 }): string {
   const [errors, setErrors] = React.useState<string>(
-    () => resource.saveBlockers?.getFieldErrors(fieldName).join('\n') ?? ''
+    () => resource?.saveBlockers?.getFieldErrors(fieldName).join('\n') ?? ''
   );
   React.useEffect(
     () =>
-      resourceOn(
-        resource,
-        'blockersChanged',
-        (): void =>
-          setErrors(
-            resource.saveBlockers?.getFieldErrors(fieldName).join('\n') ?? ''
+      resource === undefined
+        ? undefined
+        : resourceOn(
+            resource,
+            'blockersChanged',
+            (): void =>
+              setErrors(
+                resource.saveBlockers?.getFieldErrors(fieldName).join('\n') ??
+                  ''
+              ),
+            false
           ),
-        false
-      ),
     [resource, fieldName]
   );
   return errors;
+}
+
+export function useDistantRelated(
+  resource: SpecifyResource<AnySchema>,
+  fields: RA<LiteralField | Relationship> | undefined
+): Awaited<ReturnType<typeof fetchDistantRelated>> {
+  const [data, setData] =
+    React.useState<Awaited<ReturnType<typeof fetchDistantRelated>>>(undefined);
+  React.useEffect(() => {
+    if (fields === undefined || fields.length === 0) return undefined;
+    let destructorCalled = false;
+    const destructor = resourceOn(
+      resource,
+      `change:${fields[0].name}`,
+      async () =>
+        fetchDistantRelated(resource, fields)
+          .then((data) => (destructorCalled ? undefined : setData(data)))
+          .catch(fail),
+      true
+    );
+    return (): void => {
+      destructor();
+      destructorCalled = true;
+    };
+  }, [resource, fields]);
+  return data;
 }
 
 /**
