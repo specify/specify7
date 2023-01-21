@@ -209,7 +209,7 @@ function Overlay({
 
   return (
     <OverlayContext.Provider value={handleCloseOverlay}>
-      <ErrorBoundary dismissable>{overlay}</ErrorBoundary>
+      <ErrorBoundary dismissible>{overlay}</ErrorBoundary>
     </OverlayContext.Provider>
   );
 }

@@ -35,7 +35,7 @@ export class ErrorBoundary extends React.Component<
      * crash the whole application
      */
     readonly silentErrors?: boolean;
-    readonly dismissable?: boolean;
+    readonly dismissible?: boolean;
   },
   ErrorBoundaryState
 > {
@@ -75,7 +75,7 @@ export class ErrorBoundary extends React.Component<
               errorDetails
             )?.value,
           })}
-          dismissible={this.props.dismissable}
+          dismissible={this.props.dismissible}
           onClose={(): void => this.setState({ type: 'Silenced' })}
         >
           {this.state.error?.toString()}
