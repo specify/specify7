@@ -47,7 +47,9 @@ def get_collection(request=None):
         # A specific collection name is defined in the settings.
         return settings.WEB_ATTACHMENT_COLLECTION
 
-    if request is not None and settings.SEPARATE_WEB_ATTACHMENT_FOLDERS:
+    if request is not None \
+        and hasattr(settings, 'SEPARATE_WEB_ATTACHMENT_FOLDERS') \
+        and settings.SEPARATE_WEB_ATTACHMENT_FOLDERS:
         # We use the client's logged in collection.
         # This will work OK for saving and retrieving assets
         # attached to records scoped to the collection level.

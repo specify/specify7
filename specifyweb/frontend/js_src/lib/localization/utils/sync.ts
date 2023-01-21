@@ -1,13 +1,15 @@
+import type { GetTextTranslations } from 'gettext-parser';
 import gettextParser from 'gettext-parser';
 import fs from 'node:fs';
 import path from 'node:path';
+import type { LocalizedString } from 'typesafe-i18n';
+
 import { f } from '../../utils/functools';
 import { filterArray } from '../../utils/types';
 import { camelToHuman } from '../../utils/utils';
+import { languageCodeMapper, languages } from './config';
 import { whitespaceSensitive } from './index';
 import type { DictionaryUsages } from './scanUsages';
-import { languageCodeMapper, languages } from './config';
-import { LocalizedString } from 'typesafe-i18n';
 
 function formatFilePath(filePath: string): string {
   const parts = filePath.split('/');
@@ -31,17 +33,7 @@ function formatComment(rawComment: string | undefined): string | undefined {
 const trimPath = (filePath: string): string =>
   filePath.slice(filePath.indexOf('/lib/') + '/lib/'.length);
 
-export async function syncStrings(
-  localStrings: DictionaryUsages,
-  emitPath: string
-): Promise<void> {
-  if (fs.existsSync(emitPath) && fs.readdirSync(emitPath).length > 0)
-    throw new Error(`Can not run syncStrings on a non-empty directory`);
-
-  return emitPoFiles(localStrings, emitPath).catch(console.error);
-}
-
-const emitPoFiles = async (
+export const syncStrings = async (
   localStrings: DictionaryUsages,
   emitPath: string
 ): Promise<void> =>
@@ -51,7 +43,7 @@ const emitPoFiles = async (
       fs.mkdirSync(directoryPath, { recursive: true });
 
       languages.map(async (language) => {
-        const po = gettextParser.po.compile({
+        const spec = {
           charset: 'utf8',
           headers: {},
           translations: {
@@ -89,17 +81,77 @@ const emitPoFiles = async (
               ])
             ),
           },
-        });
+        };
 
-        return fs.promises.writeFile(
-          path.join(
-            directoryPath,
-            `${languageCodeMapper[language]}${gettextExtension}`
-          ),
-          po
+        const fileName = path.join(
+          directoryPath,
+          `${languageCodeMapper[language]}${gettextExtension}`
         );
+        const merged = await mergePoSpec(spec, fileName);
+        const po = gettextParser.po.compile(merged);
+        return fs.promises.writeFile(fileName, po);
       });
     })
-  ).then(f.void);
+  )
+    .then(f.void)
+    .catch(console.error);
 
 export const gettextExtension = '.po';
+
+async function mergePoSpec(
+  po: GetTextTranslations,
+  fileName: string
+): Promise<GetTextTranslations> {
+  const weblatePo = await fs.promises
+    .readFile(fileName)
+    .then((file) => file.toString())
+    .then((content) => gettextParser.po.parse(content))
+    .catch(() => undefined);
+  if (weblatePo === undefined) {
+    console.warn(
+      `Unable to find an existing PO file for ${fileName}, thus ` +
+        `merging won't be performed. This warning can be ignored if you are` +
+        `creating a new component.`
+    );
+    return po;
+  } else return mergeSpecs(po, weblatePo);
+}
+
+/**
+ * Weblate might have added a "fuzzy" flag or comments from translators.
+ * For the rest, local values should dominate.
+ */
+const mergeSpecs = (
+  po: GetTextTranslations,
+  weblatePo: GetTextTranslations
+): GetTextTranslations => ({
+  ...po,
+  ...weblatePo,
+  translations: {
+    // Exclude strings that are in weblate but not local (as they were removed)
+    '': Object.fromEntries(
+      Object.entries(po.translations[''] ?? {}).map(([key, local]) => {
+        const weblate = weblatePo.translations['']?.[key];
+        return [
+          key,
+          {
+            ...weblate,
+            ...local,
+            comments: Object.fromEntries(
+              Object.keys({
+                // Important that weblate goes first so that it dictates the order
+                ...weblate?.comments,
+                ...local.comments,
+              }).map((key) => [
+                key as keyof typeof local.comments,
+                local.comments?.[key as 'flag'] ||
+                  weblate?.comments?.[key as 'flag'] ||
+                  '',
+              ])
+            ) as typeof local['comments'],
+          },
+        ];
+      })
+    ),
+  },
+});

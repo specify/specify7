@@ -333,9 +333,9 @@ export const keysToLowerCase = <OBJECT extends IR<unknown>>(
       key.toLowerCase(),
       Array.isArray(value)
         ? value.map((value) =>
-          typeof value === 'object'  && value !== null ?
-            keysToLowerCase(value)
-          : (value as KeysToLowerCase<OBJECT>)
+            typeof value === 'object' && value !== null
+              ? keysToLowerCase(value)
+              : (value as KeysToLowerCase<OBJECT>)
           )
         : typeof value === 'object' && value !== null
         ? keysToLowerCase(value as IR<unknown>)
