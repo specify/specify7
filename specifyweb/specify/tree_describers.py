@@ -27,10 +27,43 @@ class Node:
         print(self.get_interval_str())
         for child in self.children:
             print('-----' * indent, end='')
-            child.print_node(indent + 1)
+            child.print_node_by_indent(indent + 1)
 
     def print_subtree(self):
         self.print_node_by_indent(1)
+
+    def get_initial_gap(self):
+        direct_children = self.get_ordered_children()
+        if len(direct_children) == 0:
+            return 0
+        first_child = direct_children[0]
+        return first_child.node_number - self.node_number - 1
+
+    def get_final_gap(self):
+        direct_children = self.get_ordered_children()
+        if len(direct_children) == 0:
+            return 0
+        last_child = direct_children[-1]
+        # Not subtracting 1 since hcnn don't have to be strictly lesser
+        return self.highest_child_node_number - last_child.highest_child_node_number
+
+    def get_interstitial_gap(self):
+        direct_children = self.get_ordered_children()
+        interstitial_gap = 0
+        previous_hcnn = None
+        inter_child_gap = 0
+        if len(direct_children) == 0:
+            return self.highest_child_node_number - self.node_number
+        for child in direct_children:
+            initial_gap = child.get_initial_gap()
+            final_gap = child.get_final_gap()
+            intra_child_gap = child.get_interstitial_gap()
+            if previous_hcnn is not None:
+                inter_child_gap += child.node_number - previous_hcnn - 1
+            previous_hcnn = child.highest_child_node_number
+            interstitial_gap += initial_gap + final_gap + intra_child_gap + inter_child_gap
+        return interstitial_gap
+
 
 
 class Tree:
@@ -44,7 +77,10 @@ class Tree:
     def get_possible_squeeze_size(self, node):
         possible_squeeze_size = 0
         node_number_basis = node.node_number
-        for direct_child in node.children:
+        direct_children = node.children
+        if len(direct_children) == 0:
+            return node.highest_child_node_number - node_number_basis
+        for direct_child in direct_children:
             possible_child_squeeze_size = self.get_possible_squeeze_size(direct_child)
             possible_squeeze_size += possible_child_squeeze_size + direct_child.node_number - node_number_basis - 1
             node_number_basis = direct_child.highest_child_node_number
@@ -64,50 +100,67 @@ class Tree:
             child.shift_interval(steps)
 
 
+
 # Constructing test tree
 test_node = Node(1, 1, 9)
 test_tree = Tree(test_node)
-child_node_1 = Node(2, 2, 8)
-child_node_children_1 = Node(3, 3, 3)
-child_node_children_2 = Node(3, 4, 4)
-child_node_1.children.append(child_node_children_1)
-child_node_1.children.append(child_node_children_2)
+child_node_1 = Node(2, 4, 5)
+child_node_2 = Node(3, 8, 9)
+child_node_1_child_1 = Node(4, 3, 3)
+#child_node_children_1 = Node(3, 4, 4)
+#child_node_children_2 = Node(3, 5, 5)
+#child_node_1.children.append(child_node_children_1)
+#child_node_1.children.append(child_node_children_2)
 test_node.children.append(child_node_1)
+test_node.children.append(child_node_2)
+#child_node_1.children.append(child_node_1_child_1)
 test_tree.add_element(test_node)
 test_tree.add_element(child_node_1)
-test_tree.add_element(child_node_children_1)
-test_tree.add_element(child_node_children_2)
+test_tree.add_element(child_node_2)
+#test_tree.add_element(child_node_2)
+#test_tree.add_element(child_node_1_child_1)
+#test_tree.add_element(child_node_children_1)
+#test_tree.add_element(child_node_children_2)
 
 #Additional Ideas
 #1. Rank children by the number of free nodes and pick one with the least updates - don't always be greedy and look at the future state
 #2. If no gap in the front, look at gaps which are at the back
 # (will allow tree to always accommodate current highest_child_node_number * step) and never run out until max int size reaches!
 
-def squeeze_interval_by_size(tree, interval_to_squeeze, squeeze_size):
-    possible_squeeze_size = tree.get_possible_squeeze_size(interval_to_squeeze)
-    ordered_children = interval_to_squeeze.get_ordered_children()
-    if squeeze_size > possible_squeeze_size:
+def squeeze_interval_by_gaps(tree, interval_to_squeeze: Node, squeeze_size):
+    max_initial_gap = interval_to_squeeze.get_initial_gap()
+    max_final_gap = interval_to_squeeze.get_final_gap()
+    max_interstitial_gap = interval_to_squeeze.get_interstitial_gap()
+    max_gap = max_initial_gap + max_final_gap + max_interstitial_gap
+
+    # shift the entire tree if the tree can't be squeezed - base condition during recursion (filter such trees during actual call)
+    if squeeze_size > max_gap:
         tree.shift_subtree_by_steps(interval_to_squeeze, squeeze_size)
         return 0
-    if len(ordered_children) == 0:
-        if interval_to_squeeze.node_number + squeeze_size <= interval_to_squeeze.highest_child_node_number:
-            interval_to_squeeze.node_number += squeeze_size
-            interval_to_squeeze.highest_child_node_number += squeeze_size
-            return squeeze_size
+
+    # min sets gap to 0 if previous gap is sufficient
+    initial_gap = min(max_initial_gap, squeeze_size)
+    interstitial_gap = min(max_interstitial_gap, squeeze_size - initial_gap)
+    final_gap = min(max_final_gap, squeeze_size - (interstitial_gap + initial_gap))
+    direct_children = interval_to_squeeze.get_ordered_children()
+    remaining_interstitial_gap = interstitial_gap
+    previous_child = None
+    for child in direct_children:
+        tree.shift_subtree_by_steps(child, final_gap)
+        possible_child_squeeze = tree.get_possible_squeeze_size(child)
+        if previous_child is None:
+            squeeze_child_by = min(possible_child_squeeze, remaining_interstitial_gap)
         else:
-            return 0
-    first_child = ordered_children[0]
-    gap = first_child.node_number - interval_to_squeeze.node_number
-    if gap <= squeeze_size:
-        squeeze_children_by = 1 + squeeze_size - gap
-        for child in ordered_children:
-            child_squeezed_by = squeeze_interval_by_size(tree, child, squeeze_children_by)
-            squeeze_children_by = squeeze_children_by - child_squeezed_by
+            interstitial_squeezed_by = min(child.node_number - previous_child.highest_child_node_number - 1, remaining_interstitial_gap)
+            squeeze_child_by = min(possible_child_squeeze, (remaining_interstitial_gap - interstitial_squeezed_by))
+            tree.shift_subtree_by_steps(previous_child, interstitial_squeezed_by + squeeze_child_by)
+        remaining_interstitial_gap = remaining_interstitial_gap - squeeze_child_by
+        squeeze_interval_by_gaps(tree, child, squeeze_child_by)
+        previous_child = child
     interval_to_squeeze.node_number += squeeze_size
-    return squeeze_size
 
 print('Before Squeeze')
 test_node.print_subtree()
-squeeze_interval_by_size(test_tree, test_node, 3)
+squeeze_interval_by_gaps(test_tree, test_node, 6)
 print('After Squeeze')
 test_node.print_subtree()
