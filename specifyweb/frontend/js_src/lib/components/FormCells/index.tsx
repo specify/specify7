@@ -205,7 +205,9 @@ const cellRenderers: {
       let destructorCalled = false;
       const watchFields = f.unique(
         filterArray(
-          definitions.map(({ condition }) => condition?.field[0].name)
+          definitions.map(({ condition }) =>
+            condition?.type === 'Value' ? condition?.field[0].name : undefined
+          )
         )
       );
 
@@ -214,6 +216,10 @@ const cellRenderers: {
           let foundIndex = 0;
           for (const [index, { condition }] of Object.entries(definitions)) {
             if (condition === undefined) continue;
+            if (condition.type === 'Always') {
+              foundIndex = Number.parseInt(index);
+              break;
+            }
             const value = await fetchPathAsString(resource, condition.field);
             if (!destructorCalled && value === condition.value) {
               foundIndex = Number.parseInt(index);

@@ -27,6 +27,7 @@ import { parseFormCell, processColumnDefinition } from './cells';
 import { postProcessFormDef } from './postProcessFormDef';
 import { webOnlyViews } from './webOnlyViews';
 import { LiteralField, Relationship } from '../DataModel/specifyField';
+import { State } from 'typesafe-reducer';
 
 export type ViewDescription = ParsedFormDefinition & {
   readonly formType: FormType;
@@ -320,10 +321,14 @@ function parseFormTableColumns(
 
 export type ConditionalFormDefinition = RA<{
   readonly condition:
-    | {
-        readonly field: RA<LiteralField | Relationship>;
-        readonly value: string;
-      }
+    | State<
+        'Value',
+        {
+          readonly field: RA<LiteralField | Relationship>;
+          readonly value: string;
+        }
+      >
+    | State<'Always'>
     | undefined;
   readonly definition: ParsedFormDefinition;
 }>;
@@ -367,16 +372,19 @@ export function parseFormDefinition(
       );
       const condition = getParsedAttribute(rows, 'condition')?.split('=');
       if (typeof condition === 'object') {
+        if (condition.length === 1 && condition[0] === 'always')
+          return { condition: { type: 'Always' }, definition } as const;
         const value = condition.slice(1).join('=');
         const parsedField = model.getFields(condition[0]);
         if (Array.isArray(parsedField)) {
           return {
             condition: {
+              type: 'Value',
               field: parsedField,
               value,
             },
             definition,
-          };
+          } as const;
         }
       }
       return {

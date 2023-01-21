@@ -368,8 +368,8 @@ describe('parseFormDefinition', () => {
       ).map(({ condition, ...rest }) => ({
         ...rest,
         condition:
-          condition === undefined
-            ? undefined
+          condition === undefined || condition.type !== 'Value'
+            ? condition
             : {
                 ...condition,
                 field: condition.field.map((field) => field.name),
@@ -382,6 +382,7 @@ describe('parseFormDefinition', () => {
       },
       {
         condition: {
+          type: 'Value',
           field: ['accession', 'accessionNumber'],
           value: '42',
         },
