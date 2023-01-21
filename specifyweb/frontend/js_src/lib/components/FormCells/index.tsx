@@ -19,7 +19,11 @@ import { RenderForm } from '../Forms/SpecifyForm';
 import { SubView } from '../Forms/SubView';
 import { TableIcon } from '../Molecules/TableIcon';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
+import { fetchPathAsString } from '../Formatters/aggregate';
 import { FormTableInteraction } from './FormTableInteraction';
+import { filterArray } from '../../utils/types';
+import { resourceOn } from '../DataModel/resource';
+import { softFail } from '../Errors/Crash';
 
 const cellRenderers: {
   readonly [KEY in keyof CellTypes]: (props: {
@@ -195,13 +199,52 @@ const cellRenderers: {
         />
       );
   },
-  Panel({ mode, formType, resource, cellData: { display, ...cellData } }) {
+  Panel({ mode, formType, resource, cellData: { display, definitions } }) {
+    const [definitionIndex, setDefinitionIndex] = React.useState(0);
+    React.useEffect(() => {
+      let destructorCalled = false;
+      const watchFields = f.unique(
+        filterArray(
+          definitions.map(({ condition }) => condition?.field[0].name)
+        )
+      );
+
+      const handleChange = () =>
+        Promise.resolve().then(async () => {
+          let foundIndex = 0;
+          for (const [index, { condition }] of Object.entries(definitions)) {
+            if (condition === undefined) continue;
+            const value = await fetchPathAsString(resource, condition.field);
+            if (!destructorCalled && value === condition.value) {
+              foundIndex = Number.parseInt(index);
+              break;
+            }
+          }
+          setDefinitionIndex(foundIndex);
+        });
+      handleChange().catch(softFail);
+
+      const destructors = watchFields.map((fieldName) =>
+        resourceOn(
+          resource,
+          `change:${fieldName}`,
+          () => handleChange().catch(softFail),
+          false
+        )
+      );
+
+      return (): void => {
+        destructors.forEach((destructor) => destructor());
+        destructorCalled = true;
+      };
+    }, [resource, definitions]);
+
     const form = (
       <RenderForm
         display={display}
         resource={resource}
         viewDefinition={{
-          ...cellData,
+          ...definitions[definitionIndex].definition,
           mode,
           formType,
           model: resource.specifyModel,

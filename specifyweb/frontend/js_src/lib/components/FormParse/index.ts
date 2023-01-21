@@ -205,7 +205,9 @@ const parseViewDefinitions = (
       return [
         name,
         defined(
-          parsed.querySelector('viewdef') ?? undefined,
+          parsed.tagName.toLowerCase() === 'viewdef'
+            ? parsed
+            : parsed.querySelector('viewdef') ?? undefined,
           `Unable to find a <viewdef> tag for a ${name} view definition`
         ),
       ];
@@ -317,8 +319,12 @@ function parseFormTableColumns(
 }
 
 export type ConditionalFormDefinition = RA<{
-  readonly field: RA<LiteralField | Relationship> | undefined;
-  readonly value: string | undefined;
+  readonly condition:
+    | {
+        readonly field: RA<LiteralField | Relationship>;
+        readonly value: string;
+      }
+    | undefined;
   readonly definition: ParsedFormDefinition;
 }>;
 
@@ -365,16 +371,17 @@ export function parseFormDefinition(
         const parsedField = model.getFields(condition[0]);
         if (Array.isArray(parsedField)) {
           return {
-            field: parsedField,
-            value,
+            condition: {
+              field: parsedField,
+              value,
+            },
             definition,
           };
         }
       }
       return {
         definition,
-        field: undefined,
-        value: undefined,
+        condition: undefined,
       };
     });
 

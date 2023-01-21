@@ -7,6 +7,7 @@ import { SpecifyResource } from '../DataModel/legacyTypes';
 import { f } from '../../utils/functools';
 import { sortFunction } from '../../utils/utils';
 import { fetchDistantRelated } from '../DataModel/helpers';
+import { LiteralField, Relationship } from '../DataModel/specifyField';
 
 export async function aggregate(
   collection: RA<SpecifyResource<AnySchema>> | Collection<AnySchema>,
@@ -44,29 +45,13 @@ export async function aggregate(
     console.error('Collection is incomplete');
 
   return Promise.all(
-    resources.map(async (resource) =>
+    resources.map((resource) =>
       f.all({
         formatted: format(resource, resolvedAggregator.formatter),
         sortValue:
           resolvedAggregator.sortField === undefined
             ? undefined
-            : fetchDistantRelated(resource, resolvedAggregator.sortField).then(
-                async (data) => {
-                  if (
-                    data === undefined ||
-                    data.field === undefined ||
-                    data.resource === undefined
-                  )
-                    return undefined;
-                  const { field, resource } = data;
-                  if (field.isRelationship) {
-                    const related = await resource.rgetPromise(field.name);
-                    if (typeof related === 'object' && related !== null)
-                      return format(related);
-                    else return undefined;
-                  } else return resource.get(field.name);
-                }
-              ),
+            : fetchPathAsString(resource, resolvedAggregator.sortField),
       })
     )
   ).then((entries) => {
@@ -85,6 +70,30 @@ export async function aggregate(
     }`;
   });
 }
+
+/**
+ * Climb the resource along the path, and convert the final result to a string
+ * (either using formatter, aggregator or toString())
+ */
+export const fetchPathAsString = (
+  resource: SpecifyResource<AnySchema>,
+  field: RA<LiteralField | Relationship>
+): Promise<string | undefined> =>
+  fetchDistantRelated(resource, field).then(async (data) => {
+    if (
+      data === undefined ||
+      data.field === undefined ||
+      data.resource === undefined
+    )
+      return undefined;
+    const { field, resource } = data;
+    if (field.isRelationship) {
+      const related = await resource.rgetPromise(field.name);
+      if (typeof related === 'object' && related !== null)
+        return format(related);
+      else return undefined;
+    } else return (resource.get(field.name) as number)?.toString() ?? undefined;
+  });
 
 const autoGenerateAggregator = (table: SpecifyModel): Aggregator => ({
   name: table.name,

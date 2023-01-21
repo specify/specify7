@@ -353,8 +353,7 @@ describe('parseFormDefinition', () => {
       parseFormDefinition(tinyFormView, schema.models.CollectionObject)
     ).toEqual([
       {
-        field: undefined,
-        value: undefined,
+        condition: undefined,
         definition: parsedTinyView,
       },
     ]);
@@ -366,19 +365,26 @@ describe('parseFormDefinition', () => {
       parseFormDefinition(
         conditionalTinyFormView,
         schema.models.CollectionObject
-      ).map(({ field, ...rest }) => ({
+      ).map(({ condition, ...rest }) => ({
         ...rest,
-        field: field?.map((field) => field.name),
+        condition:
+          condition === undefined
+            ? undefined
+            : {
+                ...condition,
+                field: condition.field.map((field) => field.name),
+              },
       }))
     ).toEqual([
       {
-        field: undefined,
-        value: undefined,
+        condition: undefined,
         definition: parsedTinyView,
       },
       {
-        field: ['accession', 'accessionNumber'],
-        value: '42',
+        condition: {
+          field: ['accession', 'accessionNumber'],
+          value: '42',
+        },
         definition: parsedConditionalTinyView,
       },
     ]);
