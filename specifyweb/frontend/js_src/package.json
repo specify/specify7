@@ -47,7 +47,7 @@
     "react-dom": "^18.2.0",
     "react-draggable": "^4.4.5",
     "react-modal": "^3.16.1",
-    "react-router-dom": "^6.6.1",
+    "react-router-dom": "^6.7.0",
     "typesafe-i18n": "^5.17.1",
     "typesafe-reducer": "^1.0.3",
     "underscore": "~1.8.3",
