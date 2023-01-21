@@ -418,7 +418,8 @@ function TableHeaderCell({
   readonly sortConfig: QueryField['sortType'];
   readonly onSortChange?: (sortType: QueryField['sortType']) => void;
 }): JSX.Element {
-  const tableName = fieldSpec?.getField()?.model.name;
+  // tableName refers to the table the filed is from, not the base table name of the query
+  const tableName = fieldSpec?.table?.name;
 
   const content =
     typeof fieldSpec === 'object' ? (

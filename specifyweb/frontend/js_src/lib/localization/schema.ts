@@ -282,4 +282,11 @@ export const schemaText = createDictionary({
     'fr-fr': 'Tableaux possibles',
     'uk-ua': 'Можливі таблиці',
   },
+  goToTop: {
+    'en-us': 'Go to top',
+    'es-es': 'Ve arriba',
+    'fr-fr': 'Aller en haut',
+    'ru-ru': 'Перейти к началу',
+    'uk-ua': 'Перейти вгору',
+  },
 } as const);
