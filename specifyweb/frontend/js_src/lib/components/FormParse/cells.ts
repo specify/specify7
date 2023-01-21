@@ -27,7 +27,7 @@ import type { CommandDefinition } from './commands';
 import { parseUiCommand } from './commands';
 import type { FormFieldDefinition } from './fields';
 import { parseFormField } from './fields';
-import type { FormType, ParsedFormDefinition } from './index';
+import type { ConditionalFormDefinition, FormType } from './index';
 import { parseFormDefinition } from './index';
 
 // Parse column width definitions
@@ -89,7 +89,10 @@ export type CellTypes = {
   >;
   readonly Panel: State<
     'Panel',
-    ParsedFormDefinition & { readonly display: 'block' | 'inline' }
+    {
+      readonly display: 'block' | 'inline';
+      readonly definitions: ConditionalFormDefinition;
+    }
   >;
   readonly Command: State<
     'Command',
@@ -242,12 +245,12 @@ const processCellType: {
       },
       true
     );
-    const definition = parseFormDefinition(cell, model);
+    const definitions = parseFormDefinition(cell, model);
     setLogContext(oldContext, true);
 
     return {
       type: 'Panel',
-      ...definition,
+      definitions,
       display:
         getParsedAttribute(cell, 'panelType')?.toLowerCase() === 'buttonbar'
           ? 'inline'

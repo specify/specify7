@@ -26,6 +26,7 @@ import type { FormCellDefinition } from './cells';
 import { parseFormCell, processColumnDefinition } from './cells';
 import { postProcessFormDef } from './postProcessFormDef';
 import { webOnlyViews } from './webOnlyViews';
+import { LiteralField, Relationship } from '../DataModel/specifyField';
 
 export type ViewDescription = ParsedFormDefinition & {
   readonly formType: FormType;
@@ -106,7 +107,10 @@ export function parseViewDefinition(
   if (resolved === undefined) return undefined;
   const { mode, formType, viewDefinition, model } = resolved;
   const parser =
-    formType === 'formTable' ? parseFormTableDefinition : parseFormDefinition;
+    formType === 'formTable'
+      ? parseFormTableDefinition
+      : (viewDefinition: Element, model: SpecifyModel) =>
+          parseFormDefinition(viewDefinition, model)[0].definition;
 
   const logIndexBefore = consoleLog.length;
   const parsed = parser(viewDefinition, model);
@@ -250,7 +254,7 @@ function parseFormTableDefinition(
   viewDefinition: Element,
   model: SpecifyModel
 ): ParsedFormDefinition {
-  const { rows } = parseFormDefinition(viewDefinition, model);
+  const { rows } = parseFormDefinition(viewDefinition, model)[0].definition;
   const labelsForCells = Object.fromEntries(
     filterArray(
       rows
@@ -312,6 +316,12 @@ function parseFormTableColumns(
   ];
 }
 
+export type ConditionalFormDefinition = RA<{
+  readonly field: RA<LiteralField | Relationship> | undefined;
+  readonly value: string | undefined;
+  readonly definition: ParsedFormDefinition;
+}>;
+
 /**
  * Can't use querySelectorAll here because it is not supported in JSDom
  * See https://github.com/jsdom/jsdom/issues/2998
@@ -319,51 +329,82 @@ function parseFormTableColumns(
 export function parseFormDefinition(
   viewDefinition: Element,
   model: SpecifyModel
-): ParsedFormDefinition {
+): ConditionalFormDefinition {
   setLogContext({
     tableName: model.name,
   });
-  return postProcessFormDef(
-    processColumnDefinition(getColumnDefinitions(viewDefinition)),
-    Array.from(
-      Array.from(viewDefinition.children).find(
-        ({ tagName }) => tagName === 'rows'
-      )?.children ?? []
-    )
-      .filter(({ tagName }) => tagName === 'row')
-      .map((row, index) => {
-        setLogContext({ row: index + 1 });
+  const parsed = Array.from(viewDefinition.children)
+    .filter(({ tagName }) => tagName === 'rows')
+    .map((rows, index) => {
+      setLogContext({ definitionIndex: index });
 
-        return Array.from(row.children)
-          .filter(({ tagName }) => tagName === 'cell')
-          .map((cell, index) => {
-            setLogContext({ cell: index + 1 });
+      const definition = postProcessFormDef(
+        processColumnDefinition(
+          getColumnDefinitions(rows) ??
+            getColumnDefinitions(viewDefinition) ??
+            ''
+        ),
+        Array.from(rows.children)
+          .filter(({ tagName }) => tagName === 'row')
+          .map((row, index) => {
+            setLogContext({ row: index + 1 });
 
-            return parseFormCell(model, cell);
-          });
-      }),
-    model
-  );
+            return Array.from(row.children)
+              .filter(({ tagName }) => tagName === 'cell')
+              .map((cell, index) => {
+                setLogContext({ cell: index + 1 });
+
+                return parseFormCell(model, cell);
+              });
+          }),
+        model
+      );
+      const condition = getParsedAttribute(rows, 'condition')?.split('=');
+      if (typeof condition === 'object') {
+        const value = condition.slice(1).join('=');
+        const parsedField = model.getFields(condition[0]);
+        if (Array.isArray(parsedField)) {
+          return {
+            field: parsedField,
+            value,
+            definition,
+          };
+        }
+      }
+      return {
+        definition,
+        field: undefined,
+        value: undefined,
+      };
+    });
+
+  setLogContext({
+    tableName: undefined,
+    definitionIndex: undefined,
+    row: undefined,
+    cell: undefined,
+  });
+  return parsed;
 }
 
-function getColumnDefinitions(viewDefinition: Element): string {
+function getColumnDefinitions(viewDefinition: Element): string | undefined {
   const definition =
     getColumnDefinition(
       viewDefinition,
       getPref('form.definition.columnSource')
     ) ?? getColumnDefinition(viewDefinition, undefined);
-  const resolved = definition ?? getParsedAttribute(viewDefinition, 'colDef');
-  if (resolved === undefined)
-    console.warn('Form definition does not contain column definition');
-  return resolved ?? '';
+  return definition ?? getParsedAttribute(viewDefinition, 'colDef');
 }
 
 const getColumnDefinition = (
   viewDefinition: Element,
   os: string | undefined
 ): string | undefined =>
-  viewDefinition.querySelector(
-    `columnDef${typeof os === 'string' ? `[os="${os}"]` : ''}`
+  // Can't use :scope > columnDef because js-dom doesn't support it
+  Array.from(viewDefinition.children).find(
+    (child) =>
+      child.tagName === 'columnDef' &&
+      (os === undefined || getParsedAttribute(child, 'os') === os)
   )?.textContent ?? undefined;
 
 export const exportsForTests = {
