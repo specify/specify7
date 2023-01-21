@@ -15,6 +15,14 @@
     @apply !transition-none !duration-0;
   }
 
+  body.dark {
+    color-scheme: dark;
+  }
+
+  body:not(.dark) {
+    color-scheme: light;
+  }
+
   body.no-rounded-corners *:not(.rounded-full) {
     @apply !rounded-none;
   }
