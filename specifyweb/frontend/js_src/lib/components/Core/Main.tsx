@@ -15,7 +15,6 @@ import { className } from '../Atoms/className';
 import { Link } from '../Atoms/Link';
 import { enableBusinessRules } from '../DataModel/businessRules';
 import { crash } from '../Errors/Crash';
-import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { CollectionSelector, ExpressSearch, HeaderItems } from '../Header';
 import type { MenuItemName } from '../Header/menuItemDefinitions';
 import { menuItemsPromise } from '../Header/menuItemDefinitions';
@@ -160,9 +159,7 @@ export function Main(): JSX.Element | null {
         )}
         {hasAgent ? (
           <main className="flex-1 overflow-auto" ref={mainRef}>
-            <ErrorBoundary dismissable>
-              <Router />
-            </ErrorBoundary>
+            <Router />
           </main>
         ) : (
           <Dialog

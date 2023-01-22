@@ -138,7 +138,7 @@ export function PreferencesContent({
           [category, { title, description = undefined, subCategories }],
           index
         ) => (
-          <ErrorBoundary dismissable key={category}>
+          <ErrorBoundary dismissible key={category}>
             <Container.Center
               className="gap-8 overflow-y-visible"
               forwardRef={forwardRefs?.bind(undefined, index)}
@@ -294,7 +294,7 @@ function Item({
     />
   );
   return 'renderer' in item ? (
-    <ErrorBoundary dismissable>{children}</ErrorBoundary>
+    <ErrorBoundary dismissible>{children}</ErrorBoundary>
   ) : (
     children
   );

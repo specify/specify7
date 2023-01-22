@@ -596,7 +596,7 @@ export function Mapper(props: {
             : lineData;
 
           return (
-            <ErrorBoundary dismissable key={line}>
+            <ErrorBoundary dismissible key={line}>
               <MappingLineComponent
                 headerName={headerName}
                 isFocused={line === state.focusedLine}

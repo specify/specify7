@@ -43,7 +43,7 @@ export function PaleoLocationMapPlugin({
     hasTablePermission('CollectingEvent', 'read') &&
     hasTablePermission('Locality', 'read') &&
     hasTablePermission('PaleoContext', 'read') ? (
-    <ErrorBoundary dismissable>
+    <ErrorBoundary dismissible>
       <Button.Small
         className="w-fit"
         id={id}

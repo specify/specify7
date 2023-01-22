@@ -71,7 +71,7 @@ export function LeafletPlugin({
   const [isOpen, _, handleClose, handleToggle] = useBooleanState();
 
   return (
-    <ErrorBoundary dismissable>
+    <ErrorBoundary dismissible>
       <Button.Small
         aria-pressed={isOpen}
         className="w-fit"

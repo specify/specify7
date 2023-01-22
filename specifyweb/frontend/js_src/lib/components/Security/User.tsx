@@ -238,7 +238,7 @@ function UserView({
             <section>
               <h4 className="text-xl">{userText.accountSetupOptions()}</h4>
               <div className="flex items-center gap-2">
-                <ErrorBoundary dismissable>
+                <ErrorBoundary dismissible>
                   {canSetPassword && (
                     <SetPassword
                       isNew={userResource.isNew()}
@@ -259,7 +259,7 @@ function UserView({
             <section>
               <h4 className="text-xl">{schema.models.Institution.label}</h4>
               <div className="flex flex-col gap-2">
-                <ErrorBoundary dismissable>
+                <ErrorBoundary dismissible>
                   <SetSuperAdmin
                     allActions={allActions}
                     institutionPolicies={institutionPolicies}
@@ -296,7 +296,7 @@ function UserView({
               </div>
             </section>
           )}
-          <ErrorBoundary dismissable>
+          <ErrorBoundary dismissible>
             {hasPermission('/admin/user/oic_providers', 'read') && (
               <UserIdentityProviders identityProviders={identityProviders} />
             )}
@@ -384,7 +384,7 @@ function UserView({
                   ) : undefined
                 }
                 {typeof userResource.id === 'number' && (
-                  <ErrorBoundary dismissable>
+                  <ErrorBoundary dismissible>
                     <PreviewPermissions
                       changesMade={previewAffected}
                       collectionId={collectionId}
@@ -396,7 +396,7 @@ function UserView({
               </>
             )}
           </SetPermissionContext>
-          <ErrorBoundary dismissable>
+          <ErrorBoundary dismissible>
             <LegacyPermissions mode={mode} userResource={userResource} />
           </ErrorBoundary>
         </>,
