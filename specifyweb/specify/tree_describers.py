@@ -5,6 +5,10 @@
 #4. The logic implemented should be converted with appropriate Django wrappers during the actual usage.
 #5. Ideally, the functions declared in this file shouldn't be used tor tests, instead use the Django functions implemented
 
+
+#Django Implementation Steps:
+#
+
 class Node:
     def __init__(self, id, node_number, highest_child_node_number):
         self.id = id
@@ -47,7 +51,7 @@ class Node:
         # Not subtracting 1 since hcnn don't have to be strictly lesser
         return self.highest_child_node_number - last_child.highest_child_node_number
 
-    def get_interstitial_gap(self):
+    def get_interstitial_gap_nn(self, tree):
         direct_children = self.get_ordered_children()
         interstitial_gap = 0
         previous_hcnn = None
@@ -55,17 +59,12 @@ class Node:
         if len(direct_children) == 0:
             return self.highest_child_node_number - self.node_number
         for child in direct_children:
-            initial_gap = child.get_initial_gap()
-            final_gap = child.get_final_gap()
-            intra_child_gap = child.get_interstitial_gap()
+            intra_child_gap = tree.get_gap_by_nn(child)
             if previous_hcnn is not None:
                 inter_child_gap = child.node_number - previous_hcnn - 1
             previous_hcnn = child.highest_child_node_number
-            interstitial_gap += initial_gap + final_gap + intra_child_gap + inter_child_gap
+            interstitial_gap += intra_child_gap + inter_child_gap
         return interstitial_gap
-
-    def get_total_gap(self):
-        return self.get_initial_gap() + self.get_final_gap() + self.get_interstitial_gap()
 
 class Tree:
     def __init__(self, root):
@@ -106,14 +105,14 @@ child_node_1_child_1 = Node(5, 4, 4)
 
 test_node.children.append(child_node_1)
 test_node.children.append(child_node_2)
-#test_node.children.append(child_node_3)
+test_node.children.append(child_node_3)
 child_node_1.children.append(child_node_1_child_1)
 
 test_tree = Tree(test_node)
 test_tree.add_element(test_node)
 test_tree.add_element(child_node_1)
 test_tree.add_element(child_node_2)
-#test_tree.add_element(child_node_3)
+test_tree.add_element(child_node_3)
 test_tree.add_element(child_node_1_child_1)
 
 #Additional Ideas
@@ -123,7 +122,7 @@ test_tree.add_element(child_node_1_child_1)
 def squeeze_interval(tree, interval_to_squeeze: Node, squeeze_size, forward=True):
     max_initial_gap = interval_to_squeeze.get_initial_gap() if forward else interval_to_squeeze.get_final_gap()
     max_final_gap = interval_to_squeeze.get_final_gap() if forward else interval_to_squeeze.get_initial_gap()
-    max_interstitial_gap = interval_to_squeeze.get_interstitial_gap()
+    max_interstitial_gap = interval_to_squeeze.get_interstitial_gap_nn(tree)
     max_gap = max_initial_gap + max_final_gap + max_interstitial_gap
     forward_unary = 1 if forward else -1
     # shift the entire tree if the tree can't be squeezed - base condition during recursion (filter such trees during actual call)
@@ -159,6 +158,6 @@ def squeeze_interval(tree, interval_to_squeeze: Node, squeeze_size, forward=True
 
 print('Before Squeeze')
 test_node.print_subtree()
-squeeze_interval(test_tree, test_node, 11, forward=False)
+squeeze_interval(test_tree, test_node, 9, forward=False)
 print('After Squeeze')
 test_node.print_subtree()
