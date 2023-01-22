@@ -10,7 +10,11 @@ import type { GetOrSet, GetSet, RA } from '../utils/types';
 import { defined } from '../utils/types';
 import { removeItem } from '../utils/utils';
 import { locationToState } from '../components/Router/RouterState';
-import { isOverlay, OverlayContext } from '../components/Router/Router';
+import {
+  isOverlay,
+  OverlayContext,
+  SetUnloadProtectsContext,
+} from '../components/Router/Router';
 
 export function useSearchParameter(
   name: string | undefined

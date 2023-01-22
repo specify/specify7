@@ -39,8 +39,8 @@ export function AppResourcesTabs({
   resource,
   directory,
   data,
-  isFullScreen,
-  onExitFullScreen: handleExitFullScreen,
+  index,
+  isFullScreen: [isFullScreen, handleChangeFullScreen],
   onChange: handleChange,
 }: {
   readonly label: LocalizedString;
@@ -51,12 +51,11 @@ export function AppResourcesTabs({
   readonly directory: SerializedResource<SpAppResourceDir>;
   readonly headerButtons: JSX.Element;
   readonly data: string | null;
-  readonly isFullScreen: boolean;
-  readonly onExitFullScreen: () => void;
-  readonly onChange: (data: string | null) => void;
+  readonly isFullScreen: GetSet<boolean>;
+  readonly index: GetSet<number>;
+  readonly onChange: (data: string | (() => string | null) | null) => void;
 }): JSX.Element {
   const tabs = useEditorTabs(resource);
-  const index = React.useState<number>(0);
   const children = (
     <Tabs
       index={index}
@@ -80,7 +79,7 @@ export function AppResourcesTabs({
   return isFullScreen ? (
     <Dialog
       buttons={
-        <Button.Blue onClick={handleExitFullScreen}>
+        <Button.Blue onClick={(): void => handleChangeFullScreen(false)}>
           {commonText.close()}
         </Button.Blue>
       }
@@ -193,7 +192,7 @@ export function Tabs({
       <Tab.Panels className="flex flex-1 overflow-hidden border border-brand-300 dark:border-none">
         {Object.values(tabs).map((element, index) => (
           <Tab.Panel className="flex flex-1 flex-col gap-4" key={index}>
-            <ErrorBoundary dismissable>{element}</ErrorBoundary>
+            <ErrorBoundary dismissible>{element}</ErrorBoundary>
           </Tab.Panel>
         ))}
       </Tab.Panels>

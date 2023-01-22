@@ -154,13 +154,18 @@ function AggregatorPreview({
   );
 
   return (
-    <>
+    <div
+      // Setting width prevents dialog resizing when output is loaded
+      className="flex w-[min(40rem,50vw)] flex-col gap-2"
+    >
       {resourcesText.preview()}
       <div>
         <Button.Green onClick={handleOpen}>{commonText.search()}</Button.Green>
       </div>
       {typeof aggregated === 'string' ? (
-        <output>{aggregated}</output>
+        <div className="rounded bg-[color:var(--form-background)] p-2">
+          <output>{aggregated}</output>
+        </div>
       ) : aggregated === undefined ? (
         <p>{commonText.loading()}</p>
       ) : undefined}
@@ -174,6 +179,6 @@ function AggregatorPreview({
           onSelected={setResources}
         />
       )}
-    </>
+    </div>
   );
 }

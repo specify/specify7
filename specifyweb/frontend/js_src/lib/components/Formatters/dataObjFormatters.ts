@@ -24,7 +24,7 @@ import {
 } from '../InitialContext';
 import { hasPathPermission, hasTablePermission } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
-import { xmlParser } from '../Syncer';
+import { createParser } from '../Syncer';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { aggregate } from './aggregate';
 import { fieldFormat } from './fieldFormat';
@@ -49,7 +49,7 @@ export const fetchFormatters: Promise<{
           ).then(({ data }) => data),
           schema: fetchContext,
         })
-        .then(({ definitions }) => xmlParser(formattersSpec())(definitions))
+        .then(({ definitions }) => createParser(formattersSpec())(definitions))
     : foreverFetch()
 );
 

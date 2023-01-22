@@ -35,7 +35,13 @@ export type AppResourceTabProps = {
   readonly directory: SerializedResource<SpAppResourceDir>;
   readonly data: string | null;
   readonly showValidationRef: React.MutableRefObject<(() => void) | null>;
-  readonly onChange: (data: string | null) => void;
+  /**
+   * Instead of returning a string value on change, you return a function
+   * that returns a string value. This way, if new value is stored in an
+   * internal structure that is expensive to convert to string, it won't be
+   * converted to string until it is necessary.
+   */
+  readonly onChange: (data: string | (() => string | null) | null) => void;
 };
 
 export function AppResourceTextEditor({

@@ -91,13 +91,12 @@ export function useAppResourceData(
   resource: SerializedResource<SpAppResource | SpViewSetObject>,
   initialData: string | undefined
 ): {
-  readonly resourceData: SerializedResource<SpAppResourceData> | undefined;
-  readonly setResourceData: (
-    newResource: SerializedResource<SpAppResourceData> | undefined
-  ) => void;
+  readonly resourceData: GetOrSet<
+    SerializedResource<SpAppResourceData> | undefined
+  >;
   readonly isChanged: boolean;
 } {
-  const initialValue = React.useRef<string | null>('');
+  const initialValue = React.useRef<string>('');
   const [resourceData, setResourceData] = useAsyncState<
     SerializedResource<SpAppResourceData>
   >(
@@ -126,8 +125,7 @@ export function useAppResourceData(
     true
   );
   return {
-    resourceData,
-    setResourceData,
+    resourceData: [resourceData, setResourceData],
     isChanged: initialValue.current !== resourceData?.data,
   };
 }

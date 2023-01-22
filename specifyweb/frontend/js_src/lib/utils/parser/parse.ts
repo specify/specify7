@@ -68,5 +68,5 @@ export function parseValue(
 export function parseBoolean(value: string): boolean {
   const boolParser = parserFromType('java.lang.Boolean');
   const parsed = parseValue(boolParser, undefined, value);
-  return parsed.isValid ? (parsed.parsed as boolean) : false;
+  return parsed.isValid && parsed.parsed === true;
 }
