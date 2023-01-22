@@ -3,30 +3,16 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { f } from '../../utils/functools';
 import { parseBoolean } from '../../utils/parser/parse';
 import type { RA } from '../../utils/types';
-import { getAttribute } from '../../utils/utils';
 import { parseJavaClassName } from '../DataModel/resource';
 import { getModel, schema } from '../DataModel/schema';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Tables } from '../DataModel/types';
-import { silenceConsole } from '../Errors/interceptLogs';
 import type { BaseSpec, SpecToJson, Syncer } from './index';
-import { symbolOldInputs, syncer, xmlBuilder, xmlParser } from './index';
-import { createXmlNode, renameXmlNode } from './xmlUtils';
-
-function getChildren(cell: Element, tagName: string): RA<Element> {
-  const lowerTagName = tagName.toLowerCase();
-  return Array.from(cell.children).filter(
-    ({ tagName }) => tagName.toLowerCase() === lowerTagName
-  );
-}
-
-const ensureCell =
-  <T>(
-    callback: (value: T, cell: Element) => Element
-  ): ((value: T, cell: Element | undefined) => Element) =>
-  (value, cell) =>
-    callback(value, cell ?? createXmlNode(temporaryNodeName));
+import { createBuilder, createParser, syncer } from './index';
+import type { SimpleXmlNode } from './xmlToJson';
+import { getAttribute } from './xmlUtils';
+import { mergeSimpleXmlNodes } from './mergeSimpleXmlNodes';
 
 export const syncers = {
   xmlAttribute: <MODE extends 'empty' | 'required' | 'skip'>(
@@ -34,7 +20,7 @@ export const syncers = {
     mode: MODE,
     trim = true
   ) =>
-    syncer<Element, LocalizedString | undefined>(
+    syncer<SimpleXmlNode, LocalizedString | undefined>(
       (cell) => {
         const rawValue = getAttribute(cell, attribute);
         const trimmed = trim ? rawValue?.trim() : rawValue;
@@ -44,18 +30,26 @@ export const syncers = {
           console.error(`Required attribute "${attribute}" is missing`);
         return trimmed;
       },
-      ensureCell((rawValue = '', cell) => {
+      (rawValue = '') => {
         const value = trim ? rawValue.trim() : rawValue;
-        if (mode === 'skip' && value === '') cell.removeAttribute(attribute);
-        else cell.setAttribute(attribute, value);
-        return cell;
-      })
+        return {
+          type: 'SimpleXmlNode',
+          tagName: '',
+          attributes: {
+            [attribute.toLowerCase()]:
+              mode === 'skip' && value === '' ? undefined : value,
+          },
+          content: { type: 'Children', children: {} },
+        };
+      }
     ),
-  xmlContent: syncer<Element, string | undefined>(
-    (cell) => cell.textContent?.trim() ?? undefined,
-    ensureCell((value, cell) => {
-      cell.textContent = value?.trim() ?? '';
-      return cell;
+  xmlContent: syncer<SimpleXmlNode, string | undefined>(
+    (cell) => (cell.content.type === 'Text' ? cell.content.string : undefined),
+    (value) => ({
+      type: 'SimpleXmlNode',
+      tagName: '',
+      attributes: {},
+      content: { type: 'Text', string: value?.trim() ?? '' },
     })
   ),
   default: <T>(
@@ -78,7 +72,7 @@ export const syncers = {
         console.error(`Unknown model: ${className ?? '(null)'}`);
       return model;
     },
-    (model, originalValue) => model?.longName ?? originalValue ?? ''
+    (model) => model?.longName ?? ''
   ),
   toBoolean: syncer<string, boolean>(parseBoolean, (value) => value.toString()),
   toDecimal: syncer<string, number | undefined>(
@@ -86,78 +80,56 @@ export const syncers = {
     (value) => value?.toString() ?? ''
   ),
   xmlChild: (tagName: string, mode: 'optional' | 'required' = 'required') =>
-    syncer<Element, Element | undefined>(
-      (cell: Element) => {
-        const children = getChildren(cell, tagName);
+    syncer<SimpleXmlNode, SimpleXmlNode | undefined>(
+      ({ content }) => {
+        if (content.type !== 'Children') {
+          if (mode === 'required')
+            console.error(`Unable to find a <${tagName} /> child`);
+          return undefined;
+        }
+        const children =
+          content.children[tagName] ??
+          content.children[tagName.toLowerCase()] ??
+          [];
+        const child = children[0];
+        if (child === undefined && mode === 'required')
+          console.error(`Unable to find a <${tagName} /> child`);
         if (children.length > 1)
           console.error(`Expected to find at most one <${tagName} /> child`);
-        if (children[0] === undefined && mode === 'required')
-          console.error(`Unable to find a <${tagName} /> child`);
-        return children[0];
+        return child;
       },
-      ensureCell((rawChild, cell) => {
-        const child = f.maybe(rawChild, ensureTagName(tagName));
-        const children = getChildren(cell, tagName);
-        if (child === undefined) children[0]?.remove();
-        else if (children.length === 0) cell.append(child);
-        else cell.replaceChild(children[0], child);
-        return cell;
+      (child) => ({
+        type: 'SimpleXmlNode',
+        tagName: '',
+        attributes: {},
+        content: {
+          type: 'Children',
+          children: { [tagName]: child === undefined ? [] : [child] },
+        },
       })
     ),
   xmlChildren: (tagName: string) =>
-    syncer<Element, RA<Element>>(
-      (cell) => getChildren(cell, tagName),
-      ensureCell((rawNewChildren, cell) => {
-        const newChildren = rawNewChildren.map(ensureTagName(tagName));
-
-        const children = getChildren(cell, tagName);
-        /*
-         * Try to replace as many as possible rather than removing and adding
-         * so as to preserve the comments adjacent to the elements.
-         */
-        Array.from(
-          { length: Math.min(newChildren.length, children.length) },
-          (_, index) => cell.replaceChild(children[index], newChildren[index])
-        );
-        Array.from(
-          { length: children.length - newChildren.length },
-          (_, index) => children[index].remove()
-        );
-
-        /*
-         * Insert new nodes after the last child, not at the end of the element.
-         * This makes a difference if there are other xml nodes (with a different
-         * tag name) or comments after the last matching child
-         */
-        const addedCount = newChildren.length - children.length;
-        const childrenToAdd = Array.from(
-          { length: addedCount },
-          (_, index) => newChildren[addedCount + index]
-        );
-        childrenToAdd.forEach((child) =>
-          cell.insertBefore(child, cell.lastChild)
-        );
-
-        return cell;
+    syncer<SimpleXmlNode, RA<SimpleXmlNode>>(
+      ({ content }) =>
+        content.type === 'Text'
+          ? []
+          : content.children[tagName] ??
+            content.children[tagName.toLowerCase()] ??
+            [],
+      (newChildren) => ({
+        type: 'SimpleXmlNode',
+        tagName: '',
+        attributes: {},
+        content: {
+          type: 'Children',
+          children: { [tagName]: newChildren },
+        },
       })
     ),
-  object<SPEC extends BaseSpec>(spec: SPEC) {
-    const parser = xmlParser(spec);
-    const builder = xmlBuilder(spec);
-    return syncer<Element, SpecToJson<SPEC>>(
-      parser,
-      ensureCell((shape, cell): Element => {
-        if (cell === undefined) silenceConsole(() => parser(cell));
-        const intermediates = (
-          cell as unknown as {
-            readonly [symbolOldInputs]: Record<keyof SPEC, unknown>;
-          }
-        )[symbolOldInputs];
-        if (intermediates === undefined)
-          throw new Error('Bad object structure');
-
-        return builder(shape, cell, intermediates);
-      })
+  object<SPEC extends BaseSpec<SimpleXmlNode>>(spec: SPEC) {
+    const builder = createBuilder<SimpleXmlNode, SPEC>(spec);
+    return syncer<SimpleXmlNode, SpecToJson<SPEC>>(createParser(spec), (spec) =>
+      mergeSimpleXmlNodes(builder(spec))
     );
   },
   map: <SYNCER extends Syncer<any, any>>(syncerDefinition: SYNCER) =>
@@ -166,10 +138,8 @@ export const syncers = {
       RA<ReturnType<SYNCER['serializer']>>
     >(
       (elements) => elements.map(syncerDefinition.serializer),
-      (elements, cells) =>
-        elements.map((element, index) =>
-          syncerDefinition.deserializer(element, cells?.[index])
-        )
+      (elements) =>
+        elements.map((element) => syncerDefinition.deserializer(element))
     ),
   maybe: <SYNCER extends Syncer<any, any>>(syncerDefinition: SYNCER) =>
     syncer<
@@ -177,15 +147,12 @@ export const syncers = {
       ReturnType<SYNCER['serializer']> | undefined
     >(
       (element) => f.maybe(element, syncerDefinition.serializer),
-      (element, cell) =>
-        element === undefined
-          ? undefined
-          : syncerDefinition.deserializer(element, cell)
+      (element) => f.maybe(element, syncerDefinition.deserializer)
     ),
   dependent: <
     KEY extends string,
-    OBJECT extends { readonly [key in KEY]: Element },
-    SUB_SPEC extends BaseSpec,
+    OBJECT extends { readonly [key in KEY]: SimpleXmlNode },
+    SUB_SPEC extends BaseSpec<SimpleXmlNode>,
     NEW_OBJECT extends Omit<OBJECT, KEY> & {
       readonly [key in KEY]: SpecToJson<SUB_SPEC>;
     }
@@ -199,7 +166,7 @@ export const syncers = {
           ...object,
           [key]: syncers.object(spec(object)).serializer(object[key]),
         } as unknown as NEW_OBJECT),
-      (object, oldInput) =>
+      (object) =>
         ({
           ...object,
           [key]: syncers
@@ -208,7 +175,7 @@ export const syncers = {
              * (they only differ by object[key])
              */
             .object(spec(object as unknown as OBJECT))
-            .deserializer(object[key], oldInput?.[key]),
+            .deserializer(object[key]),
         } as unknown as OBJECT)
     ),
   field: (tableName: keyof Tables | undefined) =>
@@ -235,7 +202,7 @@ export const syncers = {
   >(
     key: KEY,
     serializer: (object: OBJECT) => PARSED,
-    deserializer: (object: NEW_OBJECT, oldValue: OBJECT | undefined) => RAW
+    deserializer: (object: NEW_OBJECT) => RAW
   ) =>
     syncer<OBJECT, NEW_OBJECT>(
       (object) =>
@@ -243,71 +210,10 @@ export const syncers = {
           ...object,
           [key]: serializer(object),
         } as unknown as NEW_OBJECT),
-      (object, oldValue) =>
+      (object) =>
         ({
           ...object,
-          [key]: deserializer(object, oldValue),
+          [key]: deserializer(object),
         } as unknown as OBJECT)
     ),
-  /*
-   *Change: <
-   *KEY extends string,
-   *RAW,
-   *PARSED,
-   *OBJECT extends { readonly [key in KEY]: RAW },
-   *NEW_OBJECT extends {
-   *  readonly [key in keyof OBJECT]: key extends KEY ? PARSED : OBJECT[KEY];
-   *}
-   *>(
-   *key: KEY,
-   *serializer: (object: OBJECT) => PARSED,
-   *deserializer: (object: NEW_OBJECT, oldValue: OBJECT | undefined) => RAW
-   *) =>
-   *syncer<OBJECT,NEW_OBJECT>(
-   *  (object) =>
-   *    ({
-   *      ...object,
-   *      [key]: serializer(object),
-   *    } as unknown as NEW_OBJECT),
-   *  (object, oldValue) =>
-   *    ({
-   *      ...object,
-   *      [key]: deserializer(object, oldValue),
-   *    } as unknown as OBJECT)
-   *),
-   */
-  /*
-   *Change: <
-   *KEY extends string,
-   *OBJECT extends SpecToJson<BaseSpec>,
-   *NEW_OBJECT extends SpecToJson<BaseSpec>
-   *>(
-   *key: KEY,
-   *serializer: (object: OBJECT) => NEW_OBJECT[KEY],
-   *deserializer: (object: NEW_OBJECT, oldValue: OBJECT | undefined) => OBJECT[KEY]
-   *) =>
-   *syncer<OBJECT,NEW_OBJECT>(
-   *  (object) =>
-   *    ({
-   *      ...object,
-   *      [key]: serializer(object),
-   *    } as unknown as NEW_OBJECT),
-   *  (object, oldValue) =>
-   *    ({
-   *      ...object,
-   *      [key]: deserializer(object, oldValue),
-   *    } as unknown as OBJECT)
-   *),
-   */
 } as const;
-
-/**
- * If a new node was created by a downstream deserializer, rename it to the
- * desired tag name
- */
-const ensureTagName =
-  (tagName: string) =>
-  (child: Element): Element =>
-    child.tagName === temporaryNodeName ? renameXmlNode(child, tagName) : child;
-
-const temporaryNodeName = 'temporary'.toUpperCase();

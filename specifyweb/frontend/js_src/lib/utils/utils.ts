@@ -303,11 +303,11 @@ export const index = <T extends { readonly id: number }>(data: RA<T>): IR<T> =>
 export const escapeRegExp = (string: string): string =>
   string.replaceAll(/[$()*+.?[\\\]^{|}]/g, '\\$&');
 
-/** Fix for "getAttribute" being case-sensetive for non-HTML elements */
+// FIXME: refactor to use the other getAttribute
 export const getAttribute = (cell: Element, name: string): string | undefined =>
   cell.getAttribute(name.toLowerCase()) ?? cell.getAttribute(name) ?? undefined;
 
-/** Like getAttribute, but also trim the value and discard empty values */
+// FIXME: refactor to use the other getAttribute
 export const getParsedAttribute = (
   cell: Element,
   name: string
@@ -316,6 +316,7 @@ export const getParsedAttribute = (
     value.length === 0 ? undefined : (value as LocalizedString)
   );
 
+// FIXME: refactor to use the other getAttribute
 export const getBooleanAttribute = (
   cell: Element,
   name: string

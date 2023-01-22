@@ -8,7 +8,6 @@ import { fetchTreePath } from '../../utils/ajax/specifyApi';
 import type { IR, RA } from '../../utils/types';
 import { defined } from '../../utils/types';
 import { keysToLowerCase, removeKey } from '../../utils/utils';
-import { xmlToString } from '../AppResources/codeMirrorLinters';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import type { AnySchema } from '../DataModel/helperTypes';
@@ -23,6 +22,7 @@ import { load } from '../InitialContext';
 import { getIcon, unknownIcon } from '../InitialContext/icons';
 import { formatUrl } from '../Router/queryString';
 import { serializeResource } from '../DataModel/serializers';
+import { xmlToString } from '../Syncer/xmlUtils';
 
 export const webLinks = load<Element>(
   formatUrl('/context/app.resource', { name: 'WebLinks' }),

@@ -1,6 +1,4 @@
 import type { IR, RA } from '../../utils/types';
-import { strictParseXml } from '../AppResources/codeMirrorLinters';
-import { silenceConsole } from '../Errors/interceptLogs';
 
 /**
  * Transformer was the original name, but that clashes with Node.js
@@ -12,10 +10,7 @@ export type Syncer<RAW, PARSED> = {
 
 type Serializer<RAW, PARSED> = (input: RAW) => PARSED;
 
-type Deserializer<RAW, PARSED> = (
-  value: PARSED,
-  oldInput: RAW | undefined
-) => RAW;
+type Deserializer<RAW, PARSED> = (value: PARSED) => RAW;
 
 export const syncer = <RAW, PARSED>(
   serializer: Serializer<RAW, PARSED>,
@@ -23,6 +18,17 @@ export const syncer = <RAW, PARSED>(
 ): Syncer<RAW, PARSED> => ({
   serializer,
   deserializer,
+});
+
+/**
+ * Not sure yet whether this would be useful, but the fact that each syncer
+ * can be reversed is such a cool property!
+ */
+export const flipSyncer = <RAW, PARSED>(
+  syncer: Syncer<RAW, PARSED>
+): Syncer<PARSED, RAW> => ({
+  serializer: syncer.deserializer,
+  deserializer: syncer.serializer,
 });
 
 /**
@@ -63,50 +69,21 @@ export function pipe(
   ...syncers: RA<Syncer<unknown, unknown>>
 ): Syncer<unknown, unknown> {
   return {
-    serializer(value): unknown {
-      const values = [value];
-      syncers.forEach(({ serializer }, index) =>
-        values.push(serializer(values[index]))
-      );
-      oldInput = values.slice(0, -1);
-      return values.at(-1)!;
-    },
-    deserializer: (value, oldValues) =>
+    serializer: (value) =>
+      syncers.reduce((value, { serializer }) => serializer(value), value),
+    deserializer: (value) =>
       syncers.reduceRight(
-        (value, { deserializer }, index) =>
-          deserializer(value, (oldValues as RA<unknown>)[index]),
+        (value, { deserializer }) => deserializer(value),
         value
       ),
   };
 }
 
-let oldInput: unknown = undefined;
+export type BaseSpec<RAW = unknown> = IR<Syncer<RAW, any>>;
 
-export type BaseSpec = IR<Syncer<Element, any>>;
+export const createSpec = <SPEC extends BaseSpec>(spec: SPEC): SPEC => spec;
 
-export function createSpec<SPEC extends BaseSpec>(spec: SPEC): SPEC {
-  /**
-   * Make sure spec can handle empty XML elements without exceptions.
-   * This is needed to simulate adding new nodes to the XML (i.e, when adding a
-   * new formatter, it runs all serializers with an empty formatter tag)
-   */
-  if (process.env.NODE_ENV === 'development') {
-    const parser = xmlParser(spec);
-    try {
-      silenceConsole(() => parser(strictParseXml(`<test />`)));
-    } catch (error) {
-      console.error(error);
-      throw new Error(
-        `Spec is unable to handle empty XML elements. Error: ${
-          (error as Error).message
-        }`
-      );
-    }
-  }
-  return spec;
-}
-
-export type SpecToJson<SPEC extends BaseSpec> = {
+export type SpecToJson<SPEC extends BaseSpec<any>> = {
   readonly [KEY in string & keyof SPEC]: SPEC[KEY] extends Syncer<
     any,
     infer PARSED
@@ -115,57 +92,19 @@ export type SpecToJson<SPEC extends BaseSpec> = {
     : never;
 };
 
-export const symbolOldInputs: unique symbol = Symbol('Previous inputs');
-
-/**
- * Don't call this directly. Call syncers.object(spec) instead
- */
-export const xmlParser =
-  <SPEC extends BaseSpec>(spec: SPEC) =>
-  (cell: Element): SpecToJson<SPEC> => {
-    const intermediates: Partial<Record<keyof SPEC, unknown>> = {};
-    const object = Object.fromEntries(
-      Object.entries(spec).map(([key, syncer]) => {
-        oldInput = undefined;
-        const newValue = xmlPropertyParser(cell, syncer);
-        intermediates[key] = oldInput ?? cell;
-        oldInput = undefined;
-        return [key, newValue];
-      })
+export const createParser =
+  <RAW, SPEC extends BaseSpec<RAW>>(spec: SPEC) =>
+  (raw: RAW): SpecToJson<SPEC> =>
+    Object.fromEntries(
+      Object.entries(spec).map(([key, { serializer }]) => [
+        key,
+        serializer(raw),
+      ])
     );
-    Object.defineProperty(cell, symbolOldInputs, {
-      value: intermediates,
-      configurable: true,
-    });
-    return object;
-  };
 
-const xmlPropertyParser = <RAW, PARSED>(
-  cell: RAW,
-  { serializer }: Syncer<RAW, PARSED>
-): PARSED => serializer(cell);
-
-/**
- * Don't call this directly. Call syncers.object(spec) instead
- */
-export const xmlBuilder =
-  <SPEC extends BaseSpec>(spec: SPEC) =>
-  (
-    shape: SpecToJson<SPEC>,
-    cell: Element,
-    intermediates: Record<keyof SPEC, unknown>
-  ): Element => {
-    Object.entries(shape).forEach(([key, value]) => {
-      if (!(key in intermediates)) {
-        console.error(`Unexpected key ${key}. It's not in the spec`, {
-          cell,
-          shape,
-          spec,
-        });
-        return;
-      }
-      const { deserializer } = spec[key as keyof SPEC];
-      deserializer(value, intermediates[key] as Element);
-    });
-    return cell;
-  };
+export const createBuilder =
+  <RAW, SPEC extends BaseSpec<RAW>>(spec: SPEC) =>
+  (shape: SpecToJson<SPEC>): RA<RAW> =>
+    Object.entries(spec).map(([key, definition]) =>
+      definition.deserializer(shape[key])
+    );

@@ -2,10 +2,12 @@ import type { State } from 'typesafe-reducer';
 
 import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import { group, insertItem, replaceItem } from '../../utils/utils';
+import { group } from '../../utils/utils';
 import { error } from '../Errors/assert';
+import { fromSimpleXmlNode } from './fromSimpleXmlNode';
+import { xmlToString } from './xmlUtils';
 
-type XmlNode = State<
+export type XmlNode = State<
   'XmlNode',
   {
     readonly tagName: string;
@@ -17,6 +19,9 @@ type XmlNode = State<
 type Comment = State<'Comment', { readonly comment: string }>;
 type Text = State<'Text', { readonly string: string }>;
 
+/**
+ * Convert a mutable XML element to immutable JSON
+ */
 export const xmlToJson = (element: Element): XmlNode => ({
   type: 'XmlNode',
   tagName: element.tagName,
@@ -43,6 +48,9 @@ export const xmlToJson = (element: Element): XmlNode => ({
   ),
 });
 
+/**
+ * Reverse conversion to JSON
+ */
 export function jsonToXml(node: XmlNode): Element {
   const element = document.createElement(node.tagName);
   Object.entries(node.attributes).forEach(([name, value]) =>
@@ -63,10 +71,6 @@ export function jsonToXml(node: XmlNode): Element {
 /**
  * Like XmlNode, but even easier to work with, thanks to the following
  * assumptions:
- * - Comment notes are never included in SortedXmlNode as it's assumed they are
- *   never modified by it.
- * - All attributes and tagNames are case-insensitive (thus converted to lower
- *   case)
  * - Node can have either text content, or children nodes, but not both
  * - Nodes that have text content, can not have comments in between text content
  *   (i.e `<node>text<!--comment-->text</node>`)
@@ -75,8 +79,17 @@ export function jsonToXml(node: XmlNode): Element {
  *   affecting semantics
  * - The order of children of the same tagName matters, but the order of
  *   children of different tagNames does not matter
+ *
+ * Behavior to keep in mind:
  * - When merging SortedXmlNode back with XmlNode, the attributes in XmlNode
  *   are kept, unless they are explicitly set to undefined in "updated".
+ *   Similarly, all children in XmlNode are kept, unless there is an exploit
+ *   entry for that key in content.children object.
+ * - Comment notes are never included in SimpleXmlNode as it's assumed they are
+ *   never modified by it.
+ * - When converting to SimpleXmlNode, both lower case and camel case versions
+ *   of attributes and tag names are accepted. When converting back, attributes
+ *   are converted to lower case, but tag names are left as is.
  */
 export type SimpleXmlNode = State<
   'SimpleXmlNode',
@@ -87,11 +100,16 @@ export type SimpleXmlNode = State<
   }
 >;
 
-type SimpleChildren = State<
+export type SimpleChildren = State<
   'Children',
   { readonly children: IR<RA<SimpleXmlNode>> }
 >;
 
+// FIXME: use this everywhere instead of raw XML
+/**
+ * Convert jsonified XML into a simpler format that is easier to work with
+ * (but with some constraints - see definition of SimpleXmlNode)
+ */
 export function toSimpleXmlNode(node: XmlNode): SimpleXmlNode {
   const children = filterArray(
     node.children.map((node) => (node.type === 'XmlNode' ? node : undefined))
@@ -127,177 +145,16 @@ export function toSimpleXmlNode(node: XmlNode): SimpleXmlNode {
   };
 }
 
-/*
- * FIXME: a way to apply updates to xml
- * FIXME: a way to resolve xml node position to original position in the source
- * FIXME: a way to keep track of path (both json and xml)
- */
-
-export const fromSimpleXmlNode = (
-  old: XmlNode | undefined,
-  updated: SimpleXmlNode
-): XmlNode => formatXmlNode(fromSimpleNode(old, updated));
-
-const fromSimpleNode = (
-  old: XmlNode | undefined,
-  updated: SimpleXmlNode
-): XmlNode => ({
-  type: 'XmlNode',
-  tagName: updated.tagName,
-  attributes: Object.fromEntries(
-    filterArray(
-      Object.keys({
-        ...old?.attributes,
-        ...updated.attributes,
-      }).map((key) =>
-        key in updated.attributes && updated.attributes[key] === undefined
-          ? undefined
-          : [key.toLowerCase(), updated.attributes[key] ?? old!.attributes[key]]
-      )
-    )
-  ),
-  children: mergeChildren(old?.children ?? [], updated.content),
+export const createSimpleXmlNode = (tagName: string): SimpleXmlNode => ({
+  type: 'SimpleXmlNode',
+  tagName,
+  attributes: {},
+  content: { type: 'Children', children: {} },
 });
-
-function mergeChildren(
-  oldChildren: XmlNode['children'],
-  newChildren: SimpleXmlNode['content']
-): XmlNode['children'] {
-  if (newChildren.type === 'Text') {
-    const textNodes = filterArray(
-      oldChildren.map((cell, index) =>
-        cell.type === 'Text' ? ([cell, index] as const) : undefined
-      )
-    );
-    const nonEmptyNode = textNodes.find(
-      ([child]) => child.string.trim().length > 0
-    )?.[1];
-
-    return nonEmptyNode === undefined
-      ? [...oldChildren, newChildren]
-      : removeDuplicateText(
-          replaceItem(oldChildren, nonEmptyNode, newChildren),
-          nonEmptyNode
-        );
-  } else {
-    const writableChildren = Object.fromEntries(
-      Object.entries(newChildren.children).map(
-        ([tagName, items]) => [tagName, Array.from(items)] as const
-      )
-    );
-    const replacedChildren = filterArray(
-      oldChildren.map((child) => {
-        if (child.type !== 'XmlNode') return child;
-        const newChildren = writableChildren[child.tagName];
-        const newChild = newChildren?.shift();
-        return newChild === undefined
-          ? undefined
-          : fromSimpleXmlNode(child, newChild);
-      })
-    );
-    return Object.values(writableChildren)
-      .flat()
-      .reduce((children, newChild) => {
-        const insertionIndex = children.findLastIndex(
-          (child) =>
-            child.type === 'XmlNode' && child.tagName === newChild.tagName
-        );
-        const newNode = fromSimpleXmlNode(undefined, newChild);
-        return insertionIndex === -1
-          ? [...children, newNode]
-          : insertItem(children, insertionIndex + 1, newNode);
-      }, replacedChildren);
-  }
-}
 
 /**
- * If there was a comment in between text nodes, that information is
- * lost and all text nodes are concatenated into a single node.
- * Thus, need to make sure to remove all other text nodes
+ * Given original parsed XML and an array of updates, apply the updates and
+ * covert it all back to XML string
  */
-const removeDuplicateText = (
-  nodes: XmlNode['children'],
-  insertedNode: number
-): XmlNode['children'] =>
-  nodes.filter(
-    (node, index) =>
-      index === insertedNode ||
-      node.type !== 'Text' ||
-      node.string.trim().length === 0
-  );
-
-export const formatXmlNode = (
-  node: XmlNode,
-  indentation: string = ''
-): XmlNode => ({
-  ...node,
-  children: formatXmlChildren(node.children, indentation),
-});
-
-const indent = '\t';
-
-const formatXmlChildren = (
-  children: XmlNode['children'],
-  indentation: string
-): XmlNode['children'] =>
-  trimTextNodes([
-    ...children
-      .map((child) =>
-        child.type === 'Text'
-          ? { ...child, string: child.string.trim() }
-          : child.type === 'XmlNode'
-          ? formatXmlNode(child, `${indentation}${indent}`)
-          : child
-      )
-      .flatMap((child) => [
-        {
-          type: 'Text',
-          string: `\n${indentation}${indent}`,
-        } as const,
-        child,
-      ]),
-    {
-      type: 'Text',
-      string: `\n${indentation}`,
-    } as const,
-  ]);
-
-const trimTextNodes = (children: XmlNode['children']): XmlNode['children'] =>
-  removeWhitespaceNode(
-    children.reduce<XmlNode['children']>((children, child) => {
-      const lastChild = children.at(-1);
-      if (lastChild?.type === 'Text' && child.type === 'Text') {
-        const joinedString = `${lastChild.string}${child.string}`;
-        return [
-          ...children.slice(0, -1),
-          {
-            ...lastChild,
-            string: joinedString.trim() === '' ? child.string : joinedString,
-          },
-        ];
-      } else return [...children, child];
-    }, [])
-  );
-
-function removeWhitespaceNode(
-  children: XmlNode['children']
-): XmlNode['children'] {
-  if (children.length === 1 && children[0].type === 'Text') {
-    if (children[0].string.trim().length === 0) return [];
-    return [
-      {
-        ...children[0],
-        string: children[0].string.trim(),
-      },
-    ];
-  } else if (
-    children.length === 3 &&
-    children[1].type !== 'XmlNode' &&
-    children[0].type === 'Text' &&
-    children[2].type === 'Text' &&
-    children[0].string.trim().length === 0 &&
-    children[2].string.trim().length === 0
-  )
-    return [children[1]];
-  else return children;
-}
+export const updateXml = (old: XmlNode, updated: SimpleXmlNode): string =>
+  xmlToString(jsonToXml(fromSimpleXmlNode(old, updated)));

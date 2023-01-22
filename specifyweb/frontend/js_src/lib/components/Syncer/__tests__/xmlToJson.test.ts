@@ -1,13 +1,9 @@
 import { theories } from '../../../tests/utils';
 import { strictParseXml } from '../../AppResources/codeMirrorLinters';
+import { formatXmlNode } from '../formatXmlNode';
+import { fromSimpleXmlNode } from '../fromSimpleXmlNode';
 import type { SimpleXmlNode } from '../xmlToJson';
-import {
-  formatXmlNode,
-  fromSimpleXmlNode,
-  jsonToXml,
-  toSimpleXmlNode,
-  xmlToJson,
-} from '../xmlToJson';
+import { jsonToXml, toSimpleXmlNode, xmlToJson } from '../xmlToJson';
 
 test('XML to JSON and back', () => {
   const rawXml = `<test a="b">

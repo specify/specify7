@@ -1,14 +1,16 @@
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { f } from '../../utils/functools';
+import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { SpecToJson } from '../Syncer';
-import { createSpec, pipe, syncer } from '../Syncer';
+import { pipe, syncer } from '../Syncer';
 import { syncers } from '../Syncer/syncers';
-import { createXmlNode } from '../Syncer/xmlUtils';
-import { SpecifyModel } from '../DataModel/specifyModel';
+import type { SimpleXmlNode } from '../Syncer/xmlToJson';
+import { createSimpleXmlNode } from '../Syncer/xmlToJson';
+import { createXmlSpec } from '../Syncer/xmlUtils';
 
 export const formattersSpec = f.store(() =>
-  createSpec({
+  createXmlSpec({
     formatters: pipe(
       syncers.xmlChildren('format'),
       syncers.map(
@@ -30,7 +32,7 @@ export const formattersSpec = f.store(() =>
     ),
     aggregators: pipe(
       syncers.xmlChild('aggregators'),
-      syncers.default<Element>(() => createXmlNode('aggregators')),
+      syncers.default<SimpleXmlNode>(() => createSimpleXmlNode('aggregators')),
       syncers.xmlChildren('aggregator'),
       syncers.map(
         pipe(
@@ -41,12 +43,10 @@ export const formattersSpec = f.store(() =>
               table,
               sortField: syncers.field(table?.name).serializer(sortField),
             }),
-            ({ table, sortField, ...rest }, old) => ({
+            ({ table, sortField, ...rest }) => ({
               ...rest,
               table,
-              sortField: syncers
-                .field(table?.name)
-                .deserializer(sortField, old?.sortField),
+              sortField: syncers.field(table?.name).deserializer(sortField),
             })
           )
         )
@@ -63,7 +63,7 @@ export type Aggregator = SpecToJson<
 >['aggregators'][number];
 
 const formatterSpec = f.store(() =>
-  createSpec({
+  createXmlSpec({
     name: pipe(
       syncers.xmlAttribute('name', 'required'),
       syncers.default<LocalizedString>('')
@@ -81,13 +81,13 @@ const formatterSpec = f.store(() =>
     ),
     definition: pipe(
       syncers.xmlChild('switch'),
-      syncers.default<Element>(() => createXmlNode('switch'))
+      syncers.default<SimpleXmlNode>(() => createSimpleXmlNode('switch'))
     ),
   })
 );
 
 const switchSpec = ({ table }: SpecToJson<ReturnType<typeof formatterSpec>>) =>
-  createSpec({
+  createXmlSpec({
     isSingle: pipe(
       syncers.xmlAttribute('single', 'skip'),
       syncers.maybe(syncers.toBoolean)
@@ -104,7 +104,6 @@ const switchSpec = ({ table }: SpecToJson<ReturnType<typeof formatterSpec>>) =>
         } else return fields;
       }, f.id)
     ),
-    // FIXME: hide formatters that contain this
     external: syncers.xmlChild('external', 'optional'),
     fields: pipe(
       syncers.xmlChildren('fields'),
@@ -113,7 +112,7 @@ const switchSpec = ({ table }: SpecToJson<ReturnType<typeof formatterSpec>>) =>
   });
 
 const fieldsSpec = (table: SpecifyModel | undefined) =>
-  createSpec({
+  createXmlSpec({
     value: syncers.xmlAttribute('value', 'skip'),
     fields: pipe(
       syncers.xmlChildren('field'),
@@ -158,7 +157,7 @@ const fieldsSpec = (table: SpecifyModel | undefined) =>
   });
 
 const fieldSpec = (table: SpecifyModel | undefined) =>
-  createSpec({
+  createXmlSpec({
     separator: pipe(
       syncers.xmlAttribute('sep', 'skip'),
       syncers.default<LocalizedString>('')
@@ -170,7 +169,7 @@ const fieldSpec = (table: SpecifyModel | undefined) =>
   });
 
 const aggregatorSpec = f.store(() =>
-  createSpec({
+  createXmlSpec({
     name: pipe(
       syncers.xmlAttribute('name', 'required'),
       syncers.default<LocalizedString>('')

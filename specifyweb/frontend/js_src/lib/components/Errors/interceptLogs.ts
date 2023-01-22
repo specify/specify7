@@ -84,7 +84,6 @@ export function interceptLogs(): void {
     const defaultFunction = console[logType];
 
     console[logType] = (...args: RA<unknown>): void => {
-      if (isSilenced) return;
       const hasContext = Object.keys(context).length > 0;
       defaultFunction(...args, ...(hasContext ? [context] : []));
       consoleLog.push({
@@ -95,17 +94,4 @@ export function interceptLogs(): void {
       });
     };
   });
-}
-
-/**
- * Allows to temporary silence log output
- */
-let isSilenced = false;
-export function silenceConsole<T>(callback: () => T): T {
-  isSilenced = true;
-  try {
-    return callback();
-  } finally {
-    isSilenced = false;
-  }
 }
