@@ -9,7 +9,7 @@ import { f } from '../../utils/functools';
 import type { SerializedModel } from '../DataModel/helperTypes';
 import { schema } from '../DataModel/schema';
 import type { SpecifyUser } from '../DataModel/types';
-import { format } from '../Formatters/dataObjFormatters';
+import { format } from '../Formatters/index';
 import { userInformation } from '../InitialContext/userInformation';
 import { actionToLabel, resourceNameToLongLabel } from '../Security/utils';
 import { institutionPermissions } from './definitions';

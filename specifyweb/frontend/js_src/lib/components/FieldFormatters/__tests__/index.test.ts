@@ -1,7 +1,7 @@
 import { mockTime, requireContext } from '../../../tests/helpers';
 import { schema } from '../../DataModel/schema';
-import type { UiFormatter } from '../uiFormatters';
-import { fetchContext, getUiFormatters } from '../uiFormatters';
+import type { UiFormatter } from '../index';
+import { fetchContext, getUiFormatters } from '../index';
 
 mockTime();
 requireContext();

@@ -1,7 +1,7 @@
 import { filterArray, RA } from '../../utils/types';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { Collection, SpecifyModel } from '../DataModel/specifyModel';
-import { fetchFormatters, format } from './dataObjFormatters';
+import { fetchFormatters, format } from './index';
 import type { Aggregator } from './spec';
 import { SpecifyResource } from '../DataModel/legacyTypes';
 import { f } from '../../utils/functools';

@@ -26,7 +26,7 @@ import { getMappingLineData } from '../WbPlanView/navigator';
 import type { Aggregator, Formatter } from './spec';
 import type { FormatterTypesOutlet } from './Types';
 import { useAsyncState } from '../../hooks/useAsyncState';
-import { fetchContext as fetchFieldFormatters } from '../Forms/uiFormatters';
+import { fetchContext as fetchFieldFormatters } from '../FieldFormatters';
 
 export function FormattersPickList({
   table,

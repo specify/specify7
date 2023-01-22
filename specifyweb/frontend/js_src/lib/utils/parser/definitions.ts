@@ -10,7 +10,7 @@ import type {
   RelationshipType,
 } from '../../components/DataModel/specifyField';
 import { error } from '../../components/Errors/assert';
-import type { UiFormatter } from '../../components/Forms/uiFormatters';
+import type { UiFormatter } from '../../components/FieldFormatters';
 import { monthsPickList } from '../../components/PickLists/definitions';
 import { getUserPref } from '../../components/UserPreferences/helpers';
 import { commonText } from '../../localization/common';

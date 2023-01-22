@@ -14,6 +14,7 @@ import { mergeSimpleXmlNodes } from './mergeSimpleXmlNodes';
 import { pushContext } from '../Errors/logContext';
 import type { SimpleXmlNode } from './xmlToJson';
 import { getAttribute } from './xmlUtils';
+import { formatList } from '../Atoms/Internationalization';
 
 export const syncers = {
   xmlAttribute: <MODE extends 'empty' | 'required' | 'skip'>(
@@ -231,5 +232,22 @@ export const syncers = {
           ...object,
           [key]: deserializer(object),
         } as unknown as OBJECT)
+    ),
+  enum: <ITEM extends string>(items: RA<ITEM>, caseSensitive = false) =>
+    syncer<string, ITEM | undefined>(
+      (value) => {
+        const lowerValue = value.toLowerCase();
+        const item = caseSensitive
+          ? f.includes(items, value)
+            ? value
+            : undefined
+          : items.find((item) => item.toLowerCase() === lowerValue);
+        if (item === undefined)
+          console.error(
+            `Unknown value ${value}. Expected one of ${formatList(items)}`
+          );
+        return item;
+      },
+      (value) => value ?? ''
     ),
 } as const;

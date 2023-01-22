@@ -16,7 +16,7 @@ import { LoadingScreen } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { displaySpecifyNetwork, SpecifyNetworkBadge } from '../SpecifyNetwork';
 import { usePref } from '../UserPreferences/usePref';
-import { format } from '../Formatters/dataObjFormatters';
+import { format } from '../Formatters/index';
 import { RenderForm } from './SpecifyForm';
 import { useViewDefinition } from './useViewDefinition';
 

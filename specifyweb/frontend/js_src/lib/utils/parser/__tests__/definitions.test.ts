@@ -6,7 +6,7 @@ import type {
 import {
   formatterTypeMapper,
   UiFormatter,
-} from '../../../components/Forms/uiFormatters';
+} from '../../../components/FieldFormatters';
 import { setPref } from '../../../components/UserPreferences/helpers';
 import { formsText } from '../../../localization/forms';
 import { requireContext } from '../../../tests/helpers';

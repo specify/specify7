@@ -22,7 +22,7 @@ import { getResourceViewUrl } from '../DataModel/resource';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { error } from '../Errors/assert';
 import { raise } from '../Errors/Crash';
-import { format } from '../Formatters/dataObjFormatters';
+import { format } from '../Formatters/index';
 import { load } from '../InitialContext';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { ProtectedAction } from '../Permissions/PermissionDenied';

@@ -1,5 +1,5 @@
 import { requireContext } from '../../../tests/helpers';
-import { getUiFormatters } from '../../Forms/uiFormatters';
+import { getUiFormatters } from '../../FieldFormatters';
 import { getField } from '../helpers';
 import { schema, strictGetModel } from '../schema';
 

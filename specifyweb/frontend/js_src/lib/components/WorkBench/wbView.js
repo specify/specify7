@@ -38,7 +38,7 @@ import {wbText} from '../../localization/workbench';
 import {commonText} from '../../localization/common';
 import {showDialog} from '../Molecules/LegacyDialog';
 import {dialogClassNames} from '../Molecules/Dialog';
-import {format} from '../Formatters/dataObjFormatters';
+import {format} from '../Formatters/index';
 import {whitespaceSensitive} from '../../localization/utils';
 import {filterArray} from '../../utils/types';
 import {strictGetTreeDefinitionItems} from '../InitialContext/treeRanks';

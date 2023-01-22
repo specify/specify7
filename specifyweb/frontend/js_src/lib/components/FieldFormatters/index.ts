@@ -2,66 +2,61 @@
  * Parse and use Specify 6 UI Formatters
  */
 
-import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import {
-  escapeRegExp,
-  getAttribute,
-  getBooleanAttribute,
-  getParsedAttribute,
-} from '../../utils/utils';
+import { escapeRegExp } from '../../utils/utils';
 import { parseJavaClassName } from '../DataModel/resource';
 import { error } from '../Errors/assert';
 import { load } from '../InitialContext';
 import { formatUrl } from '../Router/queryString';
+import { runParser } from '../Syncer';
+import { toSimpleXmlNode, xmlToJson } from '../Syncer/xmlToJson';
+import { fieldFormattersSpec } from './spec';
+import { f } from '../../utils/functools';
 
 let uiFormatters: IR<UiFormatter>;
-export const fetchContext = load<Document>(
-  formatUrl('/context/app.resource', { name: 'UIFormatters' }),
-  'text/xml'
-).then((formatters) => {
-  uiFormatters = Object.fromEntries(
-    filterArray(
-      Array.from(formatters.getElementsByTagName('format'), (formatter) => {
-        const external = formatter
-          .getElementsByTagName('external')[0]
-          ?.textContent?.trim();
-        let resolvedFormatter;
-        if (typeof external === 'string') {
-          if (parseJavaClassName(external) === 'CatalogNumberUIFieldFormatter')
-            resolvedFormatter = new CatalogNumberNumeric();
-          else return undefined;
-        } else {
-          const fields = filterArray(
-            Array.from(formatter.getElementsByTagName('field'), (field) => {
-              const FieldClass =
-                formatterTypeMapper[
-                  (getParsedAttribute(field, 'type') ??
-                    '') as keyof typeof formatterTypeMapper
-                ];
-              if (FieldClass === undefined) return undefined;
-              return new FieldClass({
-                size: f.parseInt(getParsedAttribute(field, 'size')) ?? 1,
-                value: getAttribute(field, 'value') ?? ' ',
-                autoIncrement: getBooleanAttribute(field, 'inc') ?? false,
-                byYear: getBooleanAttribute(field, 'byYear') ?? false,
-                pattern: getAttribute(field, 'pattern') ?? '',
-              });
-            })
-          );
-          resolvedFormatter = new UiFormatter(
-            getBooleanAttribute(formatter, 'system') ?? false,
-            fields
-          );
-        }
+export const fetchContext = f
+  .all({
+    formatters: load<Element>(
+      formatUrl('/context/app.resource', { name: 'UIFormatters' }),
+      'text/xml'
+    ),
+    schema: import('../DataModel/schema').then(
+      async ({ fetchContext }) => fetchContext
+    ),
+  })
+  .then(({ formatters }) => {
+    uiFormatters = Object.fromEntries(
+      filterArray(
+        runParser(
+          fieldFormattersSpec(),
+          toSimpleXmlNode(xmlToJson(formatters))
+        ).formatters.map((formatter) => {
+          let resolvedFormatter;
+          if (typeof formatter.external === 'string') {
+            if (
+              parseJavaClassName(formatter.external) ===
+              'CatalogNumberUIFieldFormatter'
+            )
+              resolvedFormatter = new CatalogNumberNumeric();
+            else return undefined;
+          } else {
+            const fields = filterArray(
+              formatter.fields.map((field) =>
+                typeof field.type === 'string'
+                  ? new formatterTypeMapper[field.type](field)
+                  : undefined
+              )
+            );
+            resolvedFormatter = new UiFormatter(formatter.isSystem, fields);
+          }
 
-        return [getParsedAttribute(formatter, 'name') ?? '', resolvedFormatter];
-      })
-    )
-  );
-  return uiFormatters;
-});
+          return [formatter.name, resolvedFormatter];
+        })
+      )
+    );
+    return uiFormatters;
+  });
 export const getUiFormatters = () =>
   uiFormatters ?? error('Tried to access UI formatters before fetching them');
 

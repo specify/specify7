@@ -1,9 +1,5 @@
 import { requireContext } from '../../../tests/helpers';
-import {
-  exportsForTests,
-  fetchFormatters,
-  getMainTableFields,
-} from '../dataObjFormatters';
+import { exportsForTests, fetchFormatters, getMainTableFields } from '../index';
 import { Tables } from '../../DataModel/types';
 import { TableFields } from '../../DataModel/helperTypes';
 import { RA } from '../../../utils/types';

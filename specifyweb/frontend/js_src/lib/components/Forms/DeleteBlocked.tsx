@@ -12,7 +12,7 @@ import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
-import { format } from '../Formatters/dataObjFormatters';
+import { format } from '../Formatters/index';
 import { ResourceView } from './ResourceView';
 
 export type DeleteBlocker = {

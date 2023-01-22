@@ -16,7 +16,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { Collection } from '../DataModel/specifyModel';
 import { aggregate } from '../Formatters/aggregate';
-import { format } from '../Formatters/dataObjFormatters';
+import { format } from '../Formatters/index';
 import type { FormMode } from '../FormParse';
 import { hasTablePermission } from '../Permissions/helpers';
 import { usePref } from '../UserPreferences/usePref';

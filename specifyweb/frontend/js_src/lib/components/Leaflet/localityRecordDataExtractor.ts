@@ -11,7 +11,7 @@ import type { AnySchema, AnyTree } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Collection } from '../DataModel/specifyModel';
 import type { Locality } from '../DataModel/types';
-import { format } from '../Formatters/dataObjFormatters';
+import { format } from '../Formatters/index';
 import {
   strictGetTreeDefinitionItems,
   treeRanksPromise,

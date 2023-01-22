@@ -5,7 +5,7 @@ import { removeKey } from '../../utils/utils';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { LiteralField } from '../DataModel/specifyField';
 import type { PickList } from '../DataModel/types';
-import { getUiFormatters } from '../Forms/uiFormatters';
+import { getUiFormatters } from '../FieldFormatters';
 import { unsafeGetPickLists } from '../PickLists/definitions';
 import { fetchPickList, getPickListItems } from '../PickLists/fetch';
 

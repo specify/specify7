@@ -29,7 +29,7 @@ import {
   format,
   getMainTableFields,
   naiveFormatter,
-} from '../Formatters/dataObjFormatters';
+} from '../Formatters/index';
 import { ResourceView, RESTRICT_ADDING } from '../Forms/ResourceView';
 import type { QueryComboBoxFilter } from '../Forms/SearchDialog';
 import { SearchDialog } from '../Forms/SearchDialog';
