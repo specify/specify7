@@ -55,15 +55,19 @@ function serializeModel<SCHEMA extends AnySchema>(
   return addMissingFields(
     model.name,
     Object.fromEntries(
-      Object.entries(resource).map(([lowercaseFieldName, value]) => {
+      Object.entries(resource).map(([rawFieldName, value]) => {
+        const lowerCaseFieldName = rawFieldName.toLowerCase();
         let camelFieldName = fields.find(
-          (fieldName) => fieldName.toLowerCase() === lowercaseFieldName
+          (fieldName) => fieldName.toLowerCase() === lowerCaseFieldName
         );
         if (camelFieldName === undefined) {
-          camelFieldName = lowercaseFieldName;
-          if (!specialFields.has(lowercaseFieldName))
+          camelFieldName = rawFieldName;
+          if (
+            !specialFields.has(lowerCaseFieldName) &&
+            !specialFields.has(rawFieldName)
+          )
             console.warn(
-              `Trying to serialize unknown field ${lowercaseFieldName} for table ${model.name}`,
+              `Trying to serialize unknown field ${rawFieldName} for table ${model.name}`,
               resource
             );
         }
@@ -72,7 +76,7 @@ function serializeModel<SCHEMA extends AnySchema>(
           value !== null &&
           !specialFields.has(camelFieldName)
         ) {
-          const field = model.getField(lowercaseFieldName);
+          const field = model.getField(rawFieldName);
           const tableName =
             field === undefined || !field.isRelationship
               ? undefined
