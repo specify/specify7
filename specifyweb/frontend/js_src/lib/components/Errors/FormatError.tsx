@@ -3,7 +3,6 @@ import React from 'react';
 import { mainText } from '../../localization/main';
 import { Http } from '../../utils/ajax/definitions';
 import type { RA, WritableArray } from '../../utils/types';
-import { jsonStringify } from '../../utils/utils';
 import { displayError } from '../Core/Contexts';
 import { userInformation } from '../InitialContext/userInformation';
 import { join } from '../Molecules';
@@ -13,6 +12,7 @@ import { unsafeTriggerNotFound } from '../Router/Router';
 import { ErrorDialog } from './ErrorDialog';
 import { formatJsonBackendResponse } from './JsonError';
 import { produceStackTrace } from './stackTrace';
+import { toSafeObject } from './interceptLogs';
 
 export function formatError(
   error: unknown,
@@ -80,7 +80,7 @@ export function formatError(
       errorMessage.push(...statusTextArray);
       copiableMessage.push(error);
     } else {
-      const serialized = jsonStringify(error, 4);
+      const serialized = JSON.stringify(toSafeObject(error), null, 4);
       errorObject.push(
         <p className="raw" key="raw">
           {serialized}

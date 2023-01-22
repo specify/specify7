@@ -19,7 +19,6 @@ import {
 import { getModel } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Tables } from '../DataModel/types';
-import { getLogContext, setLogContext } from '../Errors/interceptLogs';
 import { legacyLocalize } from '../InitialContext/legacyUiLocalization';
 import { toLargeSortConfig } from '../Molecules/Sorting';
 import { hasPathPermission } from '../Permissions/helpers';
@@ -29,6 +28,12 @@ import type { FormFieldDefinition } from './fields';
 import { parseFormField } from './fields';
 import type { FormType, ParsedFormDefinition } from './index';
 import { parseFormDefinition } from './index';
+import {
+  addContext,
+  getLogContext,
+  pushContext,
+  setLogContext,
+} from '../Errors/logContext';
 
 // Parse column width definitions
 export const processColumnDefinition = (
@@ -126,7 +131,7 @@ const processCellType: {
     const fieldNames = fields?.map(({ name }) => name);
     const fieldsString = fieldNames?.join('.');
 
-    setLogContext({ field: fieldsString ?? rawFieldName });
+    addContext({ field: fieldsString ?? rawFieldName });
 
     const fieldDefinition = parseFormField({
       cell,
@@ -155,7 +160,6 @@ const processCellType: {
     const hasAccess =
       resolvedFields === undefined || hasPathPermission(resolvedFields, 'read');
 
-    setLogContext({ field: undefined });
     return hasAccess && fieldDefinition.type !== 'Blank'
       ? {
           type: 'Field',
@@ -236,14 +240,9 @@ const processCellType: {
   },
   Panel: ({ cell, model }) => {
     const oldContext = getLogContext();
-    setLogContext(
-      {
-        parent: oldContext,
-      },
-      true
-    );
+    pushContext({ type: 'Child', tagName: 'Panel' });
     const definition = parseFormDefinition(cell, model);
-    setLogContext(oldContext, true);
+    setLogContext(oldContext);
 
     return {
       type: 'Panel',
@@ -307,7 +306,7 @@ export function parseFormCell(
 
   // FEATURE: warn on IDs that include spaces and other unsupported characters
   const id = getParsedAttribute(cellNode, 'id');
-  setLogContext({ id, type: cellType });
+  addContext({ id, type: cellType });
 
   const parsedCell = processCellType[cellType] ?? processCellType.Unsupported;
   const properties = parseSpecifyProperties(

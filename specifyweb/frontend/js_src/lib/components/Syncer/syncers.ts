@@ -9,9 +9,9 @@ import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Tables } from '../DataModel/types';
 import type { BaseSpec, SpecToJson, Syncer } from './index';
-import { createBuilder, createParser, syncer } from './index';
+import { runBuilder, runParser, syncer } from './index';
 import { mergeSimpleXmlNodes } from './mergeSimpleXmlNodes';
-import { pushContext } from './pathContext';
+import { pushContext } from '../Errors/logContext';
 import type { SimpleXmlNode } from './xmlToJson';
 import { getAttribute } from './xmlUtils';
 
@@ -23,7 +23,10 @@ export const syncers = {
   ) =>
     syncer<SimpleXmlNode, LocalizedString | undefined>(
       (cell) => {
-        pushContext({ type: 'Attribute', attribute, extras: { cell } });
+        pushContext({
+          type: 'Attribute',
+          attribute,
+        });
         const rawValue = getAttribute(cell, attribute);
         const trimmed = trim ? rawValue?.trim() : rawValue;
         if (mode === 'required' && trimmed === '')
@@ -83,7 +86,7 @@ export const syncers = {
   xmlChild: (tagName: string, mode: 'optional' | 'required' = 'required') =>
     syncer<SimpleXmlNode, SimpleXmlNode | undefined>(
       ({ content }) => {
-        pushContext({ type: 'Child', tagName, extras: { content } });
+        pushContext({ type: 'Child', tagName });
 
         if (content.type !== 'Children') {
           if (mode === 'required')
@@ -114,7 +117,10 @@ export const syncers = {
   xmlChildren: (tagName: string) =>
     syncer<SimpleXmlNode, RA<SimpleXmlNode>>(
       ({ content }) => {
-        pushContext({ type: 'Children', tagName, extras: { content } });
+        pushContext({
+          type: 'Children',
+          tagName,
+        });
         return content.type === 'Text'
           ? []
           : content.children[tagName] ??
@@ -131,12 +137,11 @@ export const syncers = {
         },
       })
     ),
-  object<SPEC extends BaseSpec<SimpleXmlNode>>(spec: SPEC) {
-    const builder = createBuilder<SimpleXmlNode, SPEC>(spec);
-    return syncer<SimpleXmlNode, SpecToJson<SPEC>>(createParser(spec), (spec) =>
-      mergeSimpleXmlNodes(builder(spec))
-    );
-  },
+  object: <SPEC extends BaseSpec<SimpleXmlNode>>(spec: SPEC) =>
+    syncer<SimpleXmlNode, SpecToJson<SPEC>>(
+      (raw) => runParser(spec, raw),
+      (shape) => mergeSimpleXmlNodes(runBuilder(spec, shape))
+    ),
   map: <SYNCER extends Syncer<any, any>>({
     serializer,
     deserializer,
@@ -147,7 +152,7 @@ export const syncers = {
     >(
       (elements) =>
         elements.map((element, index) => {
-          pushContext({ type: 'Index', index, extras: { element } });
+          pushContext({ type: 'Index', index });
           return serializer(element);
         }),
       (elements) => elements.map(deserializer)

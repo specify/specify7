@@ -19,12 +19,12 @@ import {
 } from '../../utils/utils';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
-import { setLogContext } from '../Errors/interceptLogs';
 import { specialPickListMapping } from '../FormFields/ComboBox';
 import { legacyLocalize } from '../InitialContext/legacyUiLocalization';
 import { hasPermission, hasToolPermission } from '../Permissions/helpers';
 import type { PluginDefinition } from './plugins';
 import { parseUiPlugin } from './plugins';
+import { addContext } from '../Errors/logContext';
 
 export type FieldTypes = {
   readonly Checkbox: State<
@@ -260,7 +260,7 @@ export function parseFormField({
     console.warn('Field is missing uiType', cell);
     uiType = 'text';
   }
-  setLogContext({ fieldType: uiType });
+  addContext({ fieldType: uiType });
 
   let parser = processFieldType[fieldTypesTranslations[uiType.toLowerCase()]];
   if (parser === undefined) {
@@ -269,7 +269,6 @@ export function parseFormField({
   }
 
   const parseResult = parser({ cell, getProperty, model, fields });
-  setLogContext({ fieldType: undefined });
 
   const isReadOnly =
     (getBooleanAttribute(cell, 'readOnly') ??

@@ -24,12 +24,13 @@ import {
 } from '../InitialContext';
 import { hasPathPermission, hasTablePermission } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
-import { createParser } from '../Syncer';
+import { runParser } from '../Syncer';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { aggregate } from './aggregate';
 import { fieldFormat } from './fieldFormat';
 import type { Aggregator, Formatter } from './spec';
 import { formattersSpec } from './spec';
+import { toSimpleXmlNode, xmlToJson } from '../Syncer/xmlToJson';
 
 export const fetchFormatters: Promise<{
   readonly formatters: RA<Formatter>;
@@ -49,7 +50,9 @@ export const fetchFormatters: Promise<{
           ).then(({ data }) => data),
           schema: fetchContext,
         })
-        .then(({ definitions }) => createParser(formattersSpec())(definitions))
+        .then(({ definitions }) =>
+          runParser(formattersSpec(), toSimpleXmlNode(xmlToJson(definitions)))
+        )
     : foreverFetch()
 );
 
@@ -157,7 +160,7 @@ async function formatField(
     const data = await fetchDistantRelated(parentResource, fields);
     if (data === undefined) return '';
     const { resource, field } = data;
-    if (field === undefined) return '';
+    if (field === undefined || resource === undefined) return '';
 
     formatted = field.isRelationship
       ? await (relationshipIsToMany(field)

@@ -1,8 +1,8 @@
 import { errorContext } from '../../hooks/useErrorContext';
 import { f } from '../../utils/functools';
 import type { IR } from '../../utils/types';
-import { jsonStringify, removeKey } from '../../utils/utils';
-import { consoleLog } from './interceptLogs';
+import { removeKey } from '../../utils/utils';
+import { consoleLog, serializeConsoleLog, toSafeObject } from './interceptLogs';
 
 let resolvedStackTrace: IR<unknown> = { stackTrace: 'loading' };
 f.all({
@@ -40,17 +40,19 @@ f.all({
  * The stack trace is about 83KB in size
  */
 export const produceStackTrace = (message: unknown): string =>
-  jsonStringify({
-    message,
-    ...resolvedStackTrace,
-    href: globalThis.location.href,
-    consoleLog,
-    pageHtml: document.documentElement.outerHTML,
-    localStorage: { ...localStorage },
-    // Network log and page load telemetry
-    eventLog: globalThis.performance.getEntries(),
-    navigator: {
-      userAgent: navigator.userAgent,
-      language: navigator.language,
-    },
-  });
+  JSON.stringify(
+    toSafeObject({
+      message,
+      ...resolvedStackTrace,
+      href: globalThis.location.href,
+      consoleLog: serializeConsoleLog(consoleLog),
+      pageHtml: document.documentElement.outerHTML,
+      localStorage: { ...localStorage },
+      // Network log and page load telemetry
+      eventLog: globalThis.performance.getEntries(),
+      navigator: {
+        userAgent: navigator.userAgent,
+        language: navigator.language,
+      },
+    })
+  );

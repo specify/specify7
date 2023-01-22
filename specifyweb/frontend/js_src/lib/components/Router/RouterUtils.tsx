@@ -96,15 +96,16 @@ export const toReactRoutes = (
       children: Array.isArray(children)
         ? toReactRoutes(children, title)
         : undefined,
-      element: (
-        <ErrorBoundary dismissible={dismissible}>
-          {isSingleResource ? (
-            <SingleResource>{resolvedElement}</SingleResource>
-          ) : (
-            resolvedElement
-          )}
-        </ErrorBoundary>
-      ),
+      element:
+        resolvedElement === undefined ? undefined : (
+          <ErrorBoundary dismissible={dismissible}>
+            {isSingleResource ? (
+              <SingleResource>{resolvedElement}</SingleResource>
+            ) : (
+              resolvedElement
+            )}
+          </ErrorBoundary>
+        ),
     };
   });
 

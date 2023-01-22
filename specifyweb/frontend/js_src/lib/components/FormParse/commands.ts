@@ -15,9 +15,9 @@ import { formatList } from '../Atoms/Internationalization';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
-import { setLogContext } from '../Errors/interceptLogs';
 import { legacyLocalize } from '../InitialContext/legacyUiLocalization';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
+import { addContext } from '../Errors/logContext';
 
 export type UiCommands = {
   readonly GenerateLabel: State<'GenerateLabel'>;
@@ -87,7 +87,7 @@ export function parseUiCommand(
     processUiCommand[commandTranslation[label ?? '']] ??
     processUiCommand.Unsupported;
 
-  setLogContext({ command: label ?? name });
+  addContext({ command: label ?? name });
   const definition = uiCommand({ name, model });
   if (definition.type === 'WrongTable')
     console.error(
@@ -96,7 +96,6 @@ export function parseUiCommand(
       } form. Instead, try ` +
         `displaying it on the ${formatList(definition.supportedTables)} form`
     );
-  setLogContext({ command: undefined });
 
   return {
     commandDefinition: definition,

@@ -345,31 +345,5 @@ export const keysToLowerCase = <OBJECT extends IR<unknown>>(
     ])
   ) as unknown as KeysToLowerCase<OBJECT>;
 
-/**
- * A wrapper for JSON.stringify that can handle recursive objects
- *
- * Most of the time this in not needed. It is needed when serializing
- * unknown data type (i.e, in error messages)
- */
-export function jsonStringify(
-  object: unknown,
-  space: number | string | undefined = undefined
-): string {
-  const cache = new Set<unknown>();
-  return JSON.stringify(
-    object,
-    (_key, value) => {
-      if (typeof value === 'object' && value !== null)
-        if (cache.has(value)) return '[Circular]';
-        else {
-          cache.add(value);
-          return value;
-        }
-      else return value;
-    },
-    space
-  );
-}
-
 export const takeBetween = <T>(array: RA<T>, first: T, last: T): RA<T> =>
   array.slice(array.indexOf(first) + 1, array.indexOf(last) + 1);

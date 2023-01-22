@@ -6,7 +6,6 @@ import { commonText } from '../../localization/common';
 import { userText } from '../../localization/user';
 import { StringToJsx } from '../../localization/utils';
 import { f } from '../../utils/functools';
-import { jsonStringify } from '../../utils/utils';
 import type { SerializedModel } from '../DataModel/helperTypes';
 import { schema } from '../DataModel/schema';
 import type { SpecifyUser } from '../DataModel/types';
@@ -19,6 +18,7 @@ import {
   deserializeResource,
   serializeResource,
 } from '../DataModel/serializers';
+import { toSafeObject } from '../Errors/interceptLogs';
 
 export function formatPermissionsError(
   response: string,
@@ -44,7 +44,7 @@ export function formatPermissionsError(
         <FormatPermissionError error={error} url={url} />,
         [
           `Permission denied when fetching from ${url}`,
-          `Response: ${jsonStringify(error, '\t')}`,
+          `Response: ${JSON.stringify(toSafeObject(error), null, '\t')}`,
         ].join('\n'),
       ] as const)
     : undefined;

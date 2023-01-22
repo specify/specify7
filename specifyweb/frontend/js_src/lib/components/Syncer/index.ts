@@ -1,5 +1,10 @@
 import type { IR, RA } from '../../utils/types';
-import { getLogContext, setLogContext } from '../Errors/interceptLogs';
+import {
+  getLogContext,
+  pathKey,
+  pushContext,
+  setLogContext,
+} from '../Errors/logContext';
 
 /**
  * Transformer was the original name, but that clashes with Node.js
@@ -20,13 +25,13 @@ export const syncer = <RAW, PARSED>(
   serializer: (raw: RAW): PARSED => {
     const context = getLogContext();
     const result = serializer(raw);
-    setLogContext(context, false);
+    setLogContext(context);
     return result;
   },
   deserializer: (raw: PARSED): RAW => {
     const context = getLogContext();
     const result = deserializer(raw);
-    setLogContext(context, false);
+    setLogContext(context);
     return result;
   },
 });
@@ -103,19 +108,24 @@ export type SpecToJson<SPEC extends BaseSpec<any>> = {
     : never;
 };
 
-export const createParser =
-  <RAW, SPEC extends BaseSpec<RAW>>(spec: SPEC) =>
-  (raw: RAW): SpecToJson<SPEC> =>
-    Object.fromEntries(
-      Object.entries(spec).map(([key, { serializer }]) => [
-        key,
-        serializer(raw),
-      ])
-    );
+export const runParser = <RAW, SPEC extends BaseSpec<RAW>>(
+  spec: SPEC,
+  raw: RAW
+): SpecToJson<SPEC> => {
+  const logContext = getLogContext();
+  const path = logContext[pathKey];
+  if (!Array.isArray(path)) pushContext({ type: 'Root', node: path });
+  const result = Object.fromEntries(
+    Object.entries(spec).map(([key, { serializer }]) => [key, serializer(raw)])
+  );
+  setLogContext(logContext);
+  return result;
+};
 
-export const createBuilder =
-  <RAW, SPEC extends BaseSpec<RAW>>(spec: SPEC) =>
-  (shape: SpecToJson<SPEC>): RA<RAW> =>
-    Object.entries(spec).map(([key, definition]) =>
-      definition.deserializer(shape[key])
-    );
+export const runBuilder = <RAW, SPEC extends BaseSpec<RAW>>(
+  spec: SPEC,
+  shape: SpecToJson<SPEC>
+): RA<RAW> =>
+  Object.entries(spec).map(([key, definition]) =>
+    definition.deserializer(shape[key])
+  );

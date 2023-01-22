@@ -16,12 +16,12 @@ import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
-import { setLogContext } from '../Errors/interceptLogs';
 import type { CoordinateType } from '../FormPlugins/LatLongUi';
 import { coordinateType } from '../FormPlugins/LatLongUi';
 import { paleoPluginTables } from '../FormPlugins/PaleoLocation';
 import type { PartialDatePrecision } from '../FormPlugins/PartialDateUi';
 import { hasTablePermission } from '../Permissions/helpers';
+import { addContext } from '../Errors/logContext';
 
 export type UiPlugins = {
   readonly LatLonUI: State<
@@ -261,7 +261,7 @@ export function parseUiPlugin({
   const pluginName = (getProperty('name') ?? '') as keyof UiPlugins;
   const uiCommand = processUiPlugin[pluginName] ?? processUiPlugin.Unsupported;
 
-  setLogContext({ plugin: pluginName });
+  addContext({ plugin: pluginName });
   const { ignoreFieldName, ...result } = uiCommand({
     cell,
     getProperty,
@@ -284,6 +284,5 @@ export function parseUiPlugin({
         `If you need it for a label, consider using an id instead`
     );
 
-  setLogContext({ plugin: undefined });
   return result;
 }

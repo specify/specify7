@@ -18,7 +18,7 @@ import { strictGetModel } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { error } from '../Errors/assert';
 import type { LogMessage } from '../Errors/interceptLogs';
-import { consoleLog, setLogContext } from '../Errors/interceptLogs';
+import { consoleLog } from '../Errors/interceptLogs';
 import { cachableUrl } from '../InitialContext';
 import { getPref } from '../InitialContext/remotePrefs';
 import { formatUrl } from '../Router/queryString';
@@ -26,6 +26,12 @@ import type { FormCellDefinition } from './cells';
 import { parseFormCell, processColumnDefinition } from './cells';
 import { postProcessFormDef } from './postProcessFormDef';
 import { webOnlyViews } from './webOnlyViews';
+import {
+  addContext,
+  getLogContext,
+  pushContext,
+  setLogContext,
+} from '../Errors/logContext';
 
 export type ViewDescription = ParsedFormDefinition & {
   readonly formType: FormType;
@@ -101,17 +107,21 @@ export function parseViewDefinition(
   defaultType: FormType,
   originalMode: FormMode
 ): ViewDescription | undefined {
-  setLogContext({ viewName: view.name });
+  const logContext = getLogContext();
+  addContext({ view, defaultType, originalMode });
+
   const resolved = resolveViewDefinition(view, defaultType, originalMode);
   if (resolved === undefined) return undefined;
+  addContext({ resolved });
   const { mode, formType, viewDefinition, model } = resolved;
+
   const parser =
     formType === 'formTable' ? parseFormTableDefinition : parseFormDefinition;
 
   const logIndexBefore = consoleLog.length;
   const parsed = parser(viewDefinition, model);
   const errors = consoleLog.slice(logIndexBefore);
-  setLogContext({}, false);
+  setLogContext(logContext);
 
   return {
     mode,
@@ -320,10 +330,8 @@ export function parseFormDefinition(
   viewDefinition: Element,
   model: SpecifyModel
 ): ParsedFormDefinition {
-  setLogContext({
-    tableName: model.name,
-  });
-  return postProcessFormDef(
+  const context = getLogContext();
+  const data = postProcessFormDef(
     processColumnDefinition(getColumnDefinitions(viewDefinition)),
     Array.from(
       Array.from(viewDefinition.children).find(
@@ -332,18 +340,35 @@ export function parseFormDefinition(
     )
       .filter(({ tagName }) => tagName === 'row')
       .map((row, index) => {
-        setLogContext({ row: index + 1 });
+        const context = getLogContext();
+        pushContext({
+          type: 'Child',
+          tagName: 'row',
+          extras: { row: index + 1 },
+        });
 
-        return Array.from(row.children)
+        const data = Array.from(row.children)
           .filter(({ tagName }) => tagName === 'cell')
           .map((cell, index) => {
-            setLogContext({ cell: index + 1 });
+            const context = getLogContext();
+            pushContext({
+              type: 'Child',
+              tagName: 'cell',
+              extras: { row: index + 1 },
+            });
 
-            return parseFormCell(model, cell);
+            const data = parseFormCell(model, cell);
+
+            setLogContext(context);
+            return data;
           });
+        setLogContext(context);
+        return data;
       }),
     model
   );
+  setLogContext(context);
+  return data;
 }
 
 function getColumnDefinitions(viewDefinition: Element): string {
