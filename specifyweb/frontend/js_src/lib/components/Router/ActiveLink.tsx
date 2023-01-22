@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { Link } from '../Atoms/Link';
@@ -16,18 +16,23 @@ export function ActiveLink<T extends Parameters<typeof Link.Default>[0]>({
   readonly end?: boolean;
   readonly component?: (props: T) => JSX.Element;
 }): JSX.Element {
-  const location = useLocation();
-  const isActive =
-    location.pathname === props.href ||
-    `${location.pathname}${location.hash}` === props.href ||
-    location.hash === props.href ||
-    (!end &&
-      location.pathname.startsWith(props.href) &&
-      location.pathname.charAt(props.href.length) === '/');
+  const isActive = useIsActive(props.href, end);
   return (
     <LinkComponent
       {...(props as T)}
       aria-current={isActive ? ariaCurrent : undefined}
     />
+  );
+}
+
+export function useIsActive(href: string, end: boolean): boolean {
+  const location = useLocation();
+  return (
+    location.pathname === href ||
+    `${location.pathname}${location.hash}` === href ||
+    location.hash === href ||
+    (!end &&
+      location.pathname.startsWith(href) &&
+      location.pathname.charAt(href.length) === '/')
   );
 }
