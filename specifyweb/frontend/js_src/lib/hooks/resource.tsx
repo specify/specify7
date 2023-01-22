@@ -17,6 +17,7 @@ import {
   resolveParser,
 } from '../utils/parser/definitions';
 import type { GetOrSet, IR, RA } from '../utils/types';
+import { raise } from '../components/Errors/Crash';
 
 /**
  * A wrapper for Backbone.Resource that integrates with React.useState for
@@ -123,7 +124,7 @@ export function useDistantRelated(
       async () =>
         fetchDistantRelated(resource, fields)
           .then((data) => (destructorCalled ? undefined : setData(data)))
-          .catch(fail),
+          .catch(raise),
       true
     );
     return (): void => {

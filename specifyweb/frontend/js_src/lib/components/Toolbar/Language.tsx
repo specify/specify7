@@ -36,6 +36,7 @@ import type {
   PreferenceRendererProps,
 } from '../UserPreferences/Definitions';
 import { PreferencesContext, prefEvents } from '../UserPreferences/Hooks';
+import { raise } from '../Errors/Crash';
 
 export const handleLanguageChange = async (language: Language): Promise<void> =>
   ping(
@@ -234,7 +235,7 @@ export function LanguagePreferencesItem({
          * This is why it has an independent state and manually triggers
          * save button
          */
-        handleLanguageChange(language).catch(fail);
+        handleLanguageChange(language).catch(raise);
         setLanguage(language);
         prefEvents.trigger('update', {
           category,

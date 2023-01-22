@@ -2032,7 +2032,7 @@ export const WBView = Backbone.View.extend({
     }).render();
   },
   export() {
-    downloadDataSet(this.dataset).catch(fail);
+    downloadDataSet(this.dataset).catch(raise);
   },
   revertChanges() {
     const dialog = showDialog({

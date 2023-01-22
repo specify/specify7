@@ -11,11 +11,11 @@ import { QueryComboBox } from '../FormFields/QueryComboBox';
 import type { FormMode, FormType } from '../FormParse';
 import { hasTreeAccess } from '../Permissions/helpers';
 import { deserializeResource } from '../DataModel/serializers';
+import { parseXml } from '../AppResources/codeMirrorLinters';
 
-const template = document.createElement('template');
-template.innerHTML =
-  '<typesearch tableid="4" name="HostTaxon" searchfield="fullName" displaycols="fullName" format="%s" dataobjformatter="Taxon"/>';
-const hostTaxonTypeSearch = template.content.firstChild! as Element;
+const hostTaxonTypeSearch = parseXml(
+  '<typesearch tableid="4" name="HostTaxon" searchfield="fullName" displaycols="fullName" format="%s" dataobjformatter="Taxon"/>'
+);
 
 export function HostTaxon({
   resource,

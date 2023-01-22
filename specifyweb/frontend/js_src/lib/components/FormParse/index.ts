@@ -14,7 +14,7 @@ import { getParsedAttribute } from '../../utils/utils';
 import { parseXml } from '../AppResources/codeMirrorLinters';
 import { formatList } from '../Atoms/Internationalization';
 import { parseJavaClassName } from '../DataModel/resource';
-import { strictGetModel } from '../DataModel/schema';
+import { getModel, strictGetModel } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { error } from '../Errors/assert';
 import type { LogMessage } from '../Errors/interceptLogs';
@@ -73,14 +73,16 @@ export const fetchView = async (
     ? Promise.resolve(views[name])
     : ajax(
         /*
-         * NOTE: If getView hasn't yet been invoked, the view URLs won't be
+         * NOTE: If getView hasn't yet been invoked, the view URL won't be
          * marked as cachable
          */
         cachableUrl(
           formatUrl('/context/view.json', {
             name,
             // Don't spam the console with errors needlessly
-            ...(name in webOnlyViews() ? { quiet: '' } : {}),
+            ...(name in webOnlyViews() || getModel(name)?.isSystem === true
+              ? { quiet: '' }
+              : {}),
           })
         ),
         {
@@ -210,10 +212,12 @@ const parseViewDefinitions = (
         });
       return [
         name,
-        defined(
-          parsed.querySelector('viewdef') ?? undefined,
-          `Unable to find a <viewdef> tag for a ${name} view definition`
-        ),
+        parsed.tagName.toLowerCase() === 'viewdef'
+          ? parsed
+          : defined(
+              parsed.querySelector('viewdef') ?? undefined,
+              `Unable to find a <viewdef> tag for a ${name} view definition`
+            ),
       ];
     })
   );

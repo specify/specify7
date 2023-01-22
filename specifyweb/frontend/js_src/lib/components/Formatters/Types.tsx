@@ -50,7 +50,7 @@ export function FormatterTypes(): JSX.Element {
         (value): void => {
           const newData = { ...parsed, [resolvedType]: value };
           setParsed(newData);
-          handleChange(() => updateXml(xmlNode, deserializer(parsed)));
+          handleChange(() => updateXml(xmlNode, deserializer(newData)));
         },
       ]}
     />

@@ -159,7 +159,7 @@ const fieldsSpec = (table: SpecifyModel | undefined) =>
 const fieldSpec = (table: SpecifyModel | undefined) =>
   createXmlSpec({
     separator: pipe(
-      syncers.xmlAttribute('sep', 'skip'),
+      syncers.xmlAttribute('sep', 'skip', false),
       syncers.default<LocalizedString>('')
     ),
     aggregator: syncers.xmlAttribute('aggregator', 'skip'),

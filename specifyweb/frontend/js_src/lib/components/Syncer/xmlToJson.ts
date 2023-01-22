@@ -52,16 +52,20 @@ export const xmlToJson = (element: Element): XmlNode => ({
  * Reverse conversion to JSON
  */
 export function jsonToXml(node: XmlNode): Element {
-  const element = document.createElement(node.tagName);
+  const xmlDocument = document.implementation.createDocument(
+    null,
+    node.tagName
+  );
+  const element = xmlDocument.createElement(node.tagName);
   Object.entries(node.attributes).forEach(([name, value]) =>
     value === undefined ? undefined : element.setAttribute(name, value)
   );
   node.children.forEach((child) =>
     element.append(
       child.type === 'Text'
-        ? document.createTextNode(child.string)
+        ? xmlDocument.createTextNode(child.string)
         : child.type === 'Comment'
-        ? document.createComment(child.comment)
+        ? xmlDocument.createComment(child.comment)
         : jsonToXml(child)
     )
   );
