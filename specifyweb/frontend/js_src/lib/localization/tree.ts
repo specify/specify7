@@ -356,8 +356,5 @@ export const treeText = createDictionary({
     'es-es': 'Editar rangos',
     'fr-fr': 'Modifier les rangs',
     'uk-ua': 'Редагувати ранги',
-  },
-  collapseAll: {
-    'en-us': 'Collapse All',
   }
 } as const);
