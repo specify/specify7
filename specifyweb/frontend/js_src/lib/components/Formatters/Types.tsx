@@ -10,6 +10,7 @@ import { Tabs } from '../AppResources/Tabs';
 import { NotFoundView } from '../Router/NotFoundView';
 import { SafeOutlet } from '../Router/RouterUtils';
 import { useRoutePart } from '../Router/useRoutePart';
+import type { SpecToJson } from '../Syncer';
 import { syncers } from '../Syncer/syncers';
 import { toSimpleXmlNode, updateXml } from '../Syncer/xmlToJson';
 import { FormattersContext } from './index';
@@ -21,6 +22,7 @@ const types = ['formatter', 'aggregator'] as const;
 
 export type FormatterTypesOutlet = {
   readonly items: GetOrSet<RA<Aggregator | Formatter>>;
+  readonly parsed: SpecToJson<ReturnType<typeof formattersSpec>>;
 };
 
 export function FormatterTypes(): JSX.Element {
@@ -53,6 +55,7 @@ export function FormatterTypes(): JSX.Element {
           handleChange(() => updateXml(xmlNode, deserializer(newData)));
         },
       ]}
+      parsed={parsed}
     />
   );
   return indexType === -1 ? (

@@ -17,7 +17,7 @@ import { className } from '../Atoms/className';
 import { Form } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
-import { LoadingContext } from '../Core/Contexts';
+import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { hasPermission } from '../Permissions/helpers';
 import { PreferencesAside } from './Aside';
@@ -75,7 +75,7 @@ function Preferences(): JSX.Element {
           ref={scrollContainerRef}
         >
           <PreferencesAside activeCategory={visibleChild} />
-          <PreferencesContent forwardRefs={forwardRefs} isReadOnly={false} />
+          <PreferencesContent forwardRefs={forwardRefs} />
           <span className="flex-1" />
         </div>
         <div className="flex justify-end">
@@ -124,12 +124,11 @@ export function usePrefDefinitions() {
 }
 
 export function PreferencesContent({
-  isReadOnly,
   forwardRefs,
 }: {
-  readonly isReadOnly: boolean;
   readonly forwardRefs?: (index: number, element: HTMLElement | null) => void;
 }): JSX.Element {
+  const isReadOnly = React.useContext(ReadOnlyContext);
   const definitions = usePrefDefinitions();
   return (
     <div className="flex h-fit flex-col gap-6">

@@ -1,13 +1,14 @@
 import React from 'react';
+import { useOutletContext } from 'react-router';
 
-import { useAsyncState } from '../../hooks/useAsyncState';
 import { useId } from '../../hooks/useId';
 import { resourcesText } from '../../localization/resources';
 import { f } from '../../utils/functools';
 import type { GetSet, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { Ul } from '../Atoms';
-import { Input, Label } from '../Atoms/Form';
+import { Input } from '../Atoms/Form';
+import { ReadOnlyContext } from '../Core/Contexts';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { join } from '../Molecules';
@@ -22,30 +23,74 @@ import { handleMappingLineKey } from '../WbPlanView/Mapper';
 import type { FieldType } from '../WbPlanView/mappingHelpers';
 import { formattedEntry } from '../WbPlanView/mappingHelpers';
 import { getMappingLineData } from '../WbPlanView/navigator';
-import { fetchFormatters } from './dataObjFormatters';
-import type { Formatter } from './spec';
-
-const formattersFunction = async (): Promise<RA<Formatter>> =>
-  fetchFormatters.then(({ formatters }) => formatters);
+import type { Aggregator, Formatter } from './spec';
+import type { FormatterTypesOutlet } from './Types';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { fetchContext as fetchFieldFormatters } from '../Forms/uiFormatters';
 
 export function FormattersPickList({
-  isReadOnly,
+  table,
   value,
+  type,
   onChange: handleChange,
 }: {
-  readonly isReadOnly: boolean;
+  readonly table: SpecifyModel | undefined;
   readonly value: string | undefined;
+  readonly type: 'aggregators' | 'formatters';
   readonly onChange: (value: string) => void;
 }): JSX.Element {
+  const isReadOnly = React.useContext(ReadOnlyContext);
   const id = useId('formatters');
-  const [formatters] = useAsyncState(formattersFunction, false);
+  const { parsed } = useOutletContext<FormatterTypesOutlet>();
+  const allFormatters: RA<Aggregator | Formatter> = parsed[type];
+  const formatters = React.useMemo(
+    () => allFormatters.filter((formatter) => formatter.table === table),
+    [allFormatters, table]
+  );
+
   return (
-    <Label.Block>
-      {resourcesText.formatter()}
+    <>
       <Input.Text
         isReadOnly={isReadOnly}
         list={id('list')}
         min={0}
+        placeholder={resourcesText.defaultInline()}
+        step={1}
+        value={value}
+        onValueChange={handleChange}
+      />
+      <datalist id={id('list')}>
+        {formatters.map((formatter, index) => (
+          <option key={index} value={formatter.name}>
+            {formatter.title ?? formatter.name}
+          </option>
+        ))}
+      </datalist>
+    </>
+  );
+}
+
+const fetchFormattersFunction = async () =>
+  fetchFieldFormatters.then((formatters) => Object.values(formatters));
+
+export function FieldFormattersPickList({
+  value,
+  onChange: handleChange,
+}: {
+  readonly value: string | undefined;
+  readonly onChange: (value: string) => void;
+}): JSX.Element {
+  const isReadOnly = React.useContext(ReadOnlyContext);
+  const id = useId('formatters');
+  const [formatters] = useAsyncState(fetchFormattersFunction, false);
+
+  return (
+    <>
+      <Input.Text
+        isReadOnly={isReadOnly}
+        list={id('list')}
+        min={0}
+        placeholder={resourcesText.defaultInline()}
         step={1}
         value={value}
         onValueChange={handleChange}
@@ -57,7 +102,7 @@ export function FormattersPickList({
           </option>
         ))}
       </datalist>
-    </Label.Block>
+    </>
   );
 }
 

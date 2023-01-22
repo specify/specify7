@@ -32,7 +32,6 @@ import {
 
 export function AppResourcesTabs({
   label,
-  isReadOnly,
   showValidationRef,
   headerButtons,
   appResource,
@@ -44,7 +43,6 @@ export function AppResourcesTabs({
   onChange: handleChange,
 }: {
   readonly label: LocalizedString;
-  readonly isReadOnly: boolean;
   readonly showValidationRef: React.MutableRefObject<(() => void) | null>;
   readonly appResource: SpecifyResource<SpAppResource | SpViewSetObject>;
   readonly resource: SerializedResource<SpAppResource | SpViewSetObject>;
@@ -66,7 +64,6 @@ export function AppResourcesTabs({
             appResource={appResource}
             data={data}
             directory={directory}
-            isReadOnly={isReadOnly}
             key={index}
             resource={resource}
             showValidationRef={showValidationRef}

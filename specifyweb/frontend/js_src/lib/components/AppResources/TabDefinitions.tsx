@@ -27,9 +27,9 @@ import {
 import { PreferencesContext, useDarkMode } from '../UserPreferences/Hooks';
 import { useCodeMirrorExtensions } from './EditorComponents';
 import type { appResourceSubTypes } from './types';
+import { ReadOnlyContext } from '../Core/Contexts';
 
 export type AppResourceTabProps = {
-  readonly isReadOnly: boolean;
   readonly resource: SerializedResource<SpAppResource | SpViewSetObj>;
   readonly appResource: SpecifyResource<SpAppResource | SpViewSetObj>;
   readonly directory: SerializedResource<SpAppResourceDir>;
@@ -45,7 +45,6 @@ export type AppResourceTabProps = {
 };
 
 export function AppResourceTextEditor({
-  isReadOnly,
   resource,
   appResource,
   data,
@@ -79,6 +78,7 @@ export function AppResourceTextEditor({
     },
     [stateRestored]
   );
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return (
     <CodeMirror
       extensions={writable(extensions)}
@@ -87,6 +87,7 @@ export function AppResourceTextEditor({
       theme={isDarkMode ? okaidia : xcodeLight}
       value={data ?? ''}
       /*
+       * FEATURE: show validation errors when editing recognized XML file
        * FEATURE: provide supported attributes for autocomplete
        *   https://codemirror.net/examples/autocompletion/
        *   https://github.com/codemirror/lang-xml#api-reference
@@ -100,7 +101,6 @@ export function AppResourceTextEditor({
 }
 
 function UserPreferencesEditor({
-  isReadOnly,
   data,
   onChange: handleChange,
 }: AppResourceTabProps): JSX.Element {
@@ -134,7 +134,7 @@ function UserPreferencesEditor({
 
   return (
     <PreferencesContext.Provider value={preferencesContext}>
-      <PreferencesContent isReadOnly={isReadOnly} />
+      <PreferencesContent />
     </PreferencesContext.Provider>
   );
 }

@@ -14,10 +14,11 @@ import { NotFoundView } from '../Router/NotFoundView';
 import { resolveRelative } from '../Router/Router';
 import { AggregatorElement } from './Aggregator';
 import { FormatterElement } from './Formatter';
-import { FormattersContext } from './index';
 import type { Aggregator, Formatter } from './spec';
 import type { FormatterTypesOutlet } from './Types';
+import { ReadOnlyContext } from '../Core/Contexts';
 
+// FIXME: allow opening this in the schema editor
 export function FormatterWrapper(): JSX.Element {
   const { type, name } = useParams();
   const {
@@ -29,8 +30,7 @@ export function FormatterWrapper(): JSX.Element {
     setItems(replaceItem(items, index, newItem));
   const getSet = [item, setItem] as const;
 
-  const context = React.useContext(FormattersContext)!;
-  const isReadOnly = context.isReadOnly;
+  const isReadOnly = React.useContext(ReadOnlyContext);
   const navigate = useNavigate();
   const handleClose = (): void => navigate(resolveRelative('../../'));
   return index === -1 ? (
@@ -103,15 +103,9 @@ export function FormatterWrapper(): JSX.Element {
         {resourcesText.default()}
       </Label.Inline>
       {type === 'formatter' ? (
-        <FormatterElement
-          isReadOnly={isReadOnly}
-          item={getSet as GetSet<Formatter>}
-        />
+        <FormatterElement item={getSet as GetSet<Formatter>} />
       ) : (
-        <AggregatorElement
-          isReadOnly={isReadOnly}
-          item={getSet as GetSet<Aggregator>}
-        />
+        <AggregatorElement item={getSet as GetSet<Aggregator>} />
       )}
     </Dialog>
   );

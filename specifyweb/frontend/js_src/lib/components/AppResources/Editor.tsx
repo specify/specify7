@@ -10,7 +10,7 @@ import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
 import { Form } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
-import { LoadingContext } from '../Core/Contexts';
+import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { toTable } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { createResource } from '../DataModel/resource';
@@ -74,10 +74,9 @@ export function AppResourceEditor({
   useErrorContext('resourceData', resourceData);
 
   const [formElement, setForm] = React.useState<HTMLFormElement | null>(null);
-  const isReadOnly = !hasToolPermission(
-    'resources',
-    appResource.isNew() ? 'create' : 'update'
-  );
+  const isReadOnly =
+    React.useContext(ReadOnlyContext) ||
+    !hasToolPermission('resources', appResource.isNew() ? 'create' : 'update');
 
   const loading = React.useContext(LoadingContext);
 
@@ -163,24 +162,25 @@ export function AppResourceEditor({
         {headerButtons}
       </DataEntry.Header>
       <Form className="flex-1 overflow-hidden" forwardRef={setForm}>
-        <AppResourcesTabs
-          appResource={appResource}
-          data={resourceData.data}
-          directory={directory}
-          headerButtons={headerButtons}
-          isFullScreen={[isFullScreen, handleChangeFullScreen]}
-          index={[tabIndex, handleChangeTab]}
-          isReadOnly={isReadOnly}
-          label={formatted}
-          resource={resource}
-          showValidationRef={showValidationRef}
-          onChange={(data): void => {
-            lastData.current = data;
-            setPossiblyChanged(typeof data === 'function');
-            if (typeof data !== 'function')
-              setResourceData({ ...resourceData, data });
-          }}
-        />
+        <ReadOnlyContext.Provider value={isReadOnly}>
+          <AppResourcesTabs
+            appResource={appResource}
+            data={resourceData.data}
+            directory={directory}
+            headerButtons={headerButtons}
+            isFullScreen={[isFullScreen, handleChangeFullScreen]}
+            index={[tabIndex, handleChangeTab]}
+            label={formatted}
+            resource={resource}
+            showValidationRef={showValidationRef}
+            onChange={(data): void => {
+              lastData.current = data;
+              setPossiblyChanged(typeof data === 'function');
+              if (typeof data !== 'function')
+                setResourceData({ ...resourceData, data });
+            }}
+          />
+        </ReadOnlyContext.Provider>
       </Form>
       <DataEntry.Footer>
         {!appResource.isNew() && hasToolPermission('resources', 'delete') ? (

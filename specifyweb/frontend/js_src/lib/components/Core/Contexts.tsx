@@ -154,3 +154,8 @@ export const ErrorContext = React.createContext<
   (error: (props: { readonly onClose: () => void }) => JSX.Element) => void
 >(() => error('Not defined'));
 ErrorContext.displayName = 'ErrorContext';
+
+// REFACTOR: use this everywhere
+/** If true, renders everything below it as read only */
+export const ReadOnlyContext = React.createContext<boolean>(false);
+ReadOnlyContext.displayName = 'ReadOnlyContext';

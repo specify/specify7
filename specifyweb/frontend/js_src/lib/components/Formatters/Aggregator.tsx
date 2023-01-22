@@ -17,14 +17,14 @@ import { fetchCollection } from '../DataModel/collection';
 import { SpecifyResource } from '../DataModel/legacyTypes';
 import { AnySchema } from '../DataModel/helperTypes';
 import { deserializeResource } from '../DataModel/serializers';
+import { ReadOnlyContext } from '../Core/Contexts';
 
 export function AggregatorElement({
   item: [aggregator, setAggregator],
-  isReadOnly,
 }: {
   readonly item: GetSet<Aggregator>;
-  readonly isReadOnly: boolean;
 }): JSX.Element {
+  const isReadOnly = React.useContext(ReadOnlyContext);
   const [openIndex, setOpenIndex] = React.useState<number | undefined>(
     undefined
   );
@@ -75,17 +75,20 @@ export function AggregatorElement({
           />
         </Label.Block>
       )}
-      <FormattersPickList
-        // REFACTOR: create a readonly context, that would render everything below as readonly
-        isReadOnly={isReadOnly}
-        value={aggregator.formatter}
-        onChange={(formatter): void =>
-          setAggregator({
-            ...aggregator,
-            formatter,
-          })
-        }
-      />
+      <Label.Block>
+        {resourcesText.formatter()}
+        <FormattersPickList
+          table={aggregator.table}
+          type="formatters"
+          value={aggregator.formatter}
+          onChange={(formatter): void =>
+            setAggregator({
+              ...aggregator,
+              formatter,
+            })
+          }
+        />
+      </Label.Block>
       <Label.Block>
         {resourcesText.limit()}
         <Input.Number
@@ -112,7 +115,8 @@ export function AggregatorElement({
 const allowedMappings: RA<FieldType> = ['toOneIndependent', 'toOneDependent'];
 
 /*
- * FIXME: enforce no mappings to dependent fields
+ * FIXME: enforce no mappings to dependent fields (in sortField and
+ *   formatter.conditionField
  *   mappings: ['fields', 'toOneIndependent', 'toManyIndependent'],
  */
 const defaultPreviewSize = 4;

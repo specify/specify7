@@ -284,6 +284,9 @@ export const resourcesText = createDictionary({
   aggregator: {
     'en-us': 'Aggregator',
   },
+  defaultInline: {
+    'en-us': '(default)',
+  },
   sortField: {
     'en-us': 'Sort Field',
     'ru-ru': 'Поле сортировки',
@@ -291,6 +294,18 @@ export const resourcesText = createDictionary({
   preview: {
     'en-us': 'Preview:',
     'ru-ru': 'Предпросмотр:',
+  },
+  editorNotAvailable: {
+    'en-us': 'Visual editor is not available for this resource',
+  },
+  addDefinition: {
+    'en-us': 'Add definition',
+  },
+  conditionField: {
+    'en-us': 'Condition',
+  },
+  condition: {
+    'en-us': 'Condition',
   },
   wrongScopeWarning: {
     'en-us': `
