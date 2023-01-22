@@ -1,4 +1,5 @@
 import type { IR, RA } from '../../utils/types';
+import { getLogContext, setLogContext } from '../Errors/interceptLogs';
 
 /**
  * Transformer was the original name, but that clashes with Node.js
@@ -16,8 +17,18 @@ export const syncer = <RAW, PARSED>(
   serializer: Serializer<RAW, PARSED>,
   deserializer: Deserializer<RAW, PARSED>
 ): Syncer<RAW, PARSED> => ({
-  serializer,
-  deserializer,
+  serializer: (raw: RAW): PARSED => {
+    const context = getLogContext();
+    const result = serializer(raw);
+    setLogContext(context, false);
+    return result;
+  },
+  deserializer: (raw: PARSED): RAW => {
+    const context = getLogContext();
+    const result = deserializer(raw);
+    setLogContext(context, false);
+    return result;
+  },
 });
 
 /**

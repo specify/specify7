@@ -10,9 +10,10 @@ import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Tables } from '../DataModel/types';
 import type { BaseSpec, SpecToJson, Syncer } from './index';
 import { createBuilder, createParser, syncer } from './index';
+import { mergeSimpleXmlNodes } from './mergeSimpleXmlNodes';
+import { pushContext } from './pathContext';
 import type { SimpleXmlNode } from './xmlToJson';
 import { getAttribute } from './xmlUtils';
-import { mergeSimpleXmlNodes } from './mergeSimpleXmlNodes';
 
 export const syncers = {
   xmlAttribute: <MODE extends 'empty' | 'required' | 'skip'>(
@@ -22,6 +23,7 @@ export const syncers = {
   ) =>
     syncer<SimpleXmlNode, LocalizedString | undefined>(
       (cell) => {
+        pushContext({ type: 'Attribute', attribute, extras: { cell } });
         const rawValue = getAttribute(cell, attribute);
         const trimmed = trim ? rawValue?.trim() : rawValue;
         if (mode === 'required' && trimmed === '')
@@ -68,7 +70,6 @@ export const syncers = {
       const tableName = parseJavaClassName(className);
       const model = getModel(tableName ?? className);
       if (model === undefined)
-        // FIXME: add context to error messages
         console.error(`Unknown model: ${className ?? '(null)'}`);
       return model;
     },
@@ -82,6 +83,8 @@ export const syncers = {
   xmlChild: (tagName: string, mode: 'optional' | 'required' = 'required') =>
     syncer<SimpleXmlNode, SimpleXmlNode | undefined>(
       ({ content }) => {
+        pushContext({ type: 'Child', tagName, extras: { content } });
+
         if (content.type !== 'Children') {
           if (mode === 'required')
             console.error(`Unable to find a <${tagName} /> child`);
@@ -95,7 +98,7 @@ export const syncers = {
         if (child === undefined && mode === 'required')
           console.error(`Unable to find a <${tagName} /> child`);
         if (children.length > 1)
-          console.error(`Expected to find at most one <${tagName} /> child`);
+          console.warn(`Expected to find at most one <${tagName} /> child`);
         return child;
       },
       (child) => ({
@@ -110,12 +113,14 @@ export const syncers = {
     ),
   xmlChildren: (tagName: string) =>
     syncer<SimpleXmlNode, RA<SimpleXmlNode>>(
-      ({ content }) =>
-        content.type === 'Text'
+      ({ content }) => {
+        pushContext({ type: 'Children', tagName, extras: { content } });
+        return content.type === 'Text'
           ? []
           : content.children[tagName] ??
-            content.children[tagName.toLowerCase()] ??
-            [],
+              content.children[tagName.toLowerCase()] ??
+              [];
+      },
       (newChildren) => ({
         type: 'SimpleXmlNode',
         tagName: '',
@@ -132,14 +137,20 @@ export const syncers = {
       mergeSimpleXmlNodes(builder(spec))
     );
   },
-  map: <SYNCER extends Syncer<any, any>>(syncerDefinition: SYNCER) =>
+  map: <SYNCER extends Syncer<any, any>>({
+    serializer,
+    deserializer,
+  }: SYNCER) =>
     syncer<
       RA<Parameters<SYNCER['serializer']>[0]>,
       RA<ReturnType<SYNCER['serializer']>>
     >(
-      (elements) => elements.map(syncerDefinition.serializer),
       (elements) =>
-        elements.map((element) => syncerDefinition.deserializer(element))
+        elements.map((element, index) => {
+          pushContext({ type: 'Index', index, extras: { element } });
+          return serializer(element);
+        }),
+      (elements) => elements.map(deserializer)
     ),
   maybe: <SYNCER extends Syncer<any, any>>(syncerDefinition: SYNCER) =>
     syncer<

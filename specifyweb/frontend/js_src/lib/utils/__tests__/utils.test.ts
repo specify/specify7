@@ -226,6 +226,11 @@ theories(replaceItem, {
   'replace at the end': { in: [[1, 2, 3, 0], 3, 4], out: [1, 2, 3, 4] },
   'replace from the end': { in: [[1, 2, 3, 0], -1, 4], out: [1, 2, 3, 4] },
   'replace after the end': { in: [[1, 2, 3], 99, 4], out: [1, 2, 3, 4] },
+  'if empty array, inserts new item': { in: [[], 4, 'a'], out: ['a'] },
+  'if empty array, inserts new item, even for negative index': {
+    in: [[], -2, 'a'],
+    out: ['a'],
+  },
 });
 
 theories(removeItem, {

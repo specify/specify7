@@ -29,6 +29,7 @@ let contextTimeout: ReturnType<typeof setTimeout> | undefined = undefined;
 
 export const getLogContext = (): IR<unknown> => context;
 
+// REFACTOR: use pushContext and addContext instead of this
 export function setLogContext(
   newContext: IR<unknown>,
   merge: boolean = true
