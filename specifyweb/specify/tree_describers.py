@@ -88,6 +88,14 @@ class Tree:
         for child in children:
             child.shift_interval(steps)
 
+    def get_gap_by_nn(self, node: Node):
+        child_count = 0
+        for tree_element in self.elements:
+            if node.node_number < tree_element.node_number <= node.highest_child_node_number:
+                child_count += 1
+        gap = node.highest_child_node_number - node.node_number - child_count
+        return gap
+
 # Constructing test tree
 
 test_node = Node(1, 1, 15)
@@ -98,16 +106,15 @@ child_node_1_child_1 = Node(5, 4, 4)
 
 test_node.children.append(child_node_1)
 test_node.children.append(child_node_2)
-test_node.children.append(child_node_3)
-#child_node_1.children.append(child_node_1_child_1)
+#test_node.children.append(child_node_3)
+child_node_1.children.append(child_node_1_child_1)
 
 test_tree = Tree(test_node)
 test_tree.add_element(test_node)
 test_tree.add_element(child_node_1)
 test_tree.add_element(child_node_2)
-test_tree.add_element(child_node_3)
-#test_tree.add_element(child_node_1_child_1)
-
+#test_tree.add_element(child_node_3)
+test_tree.add_element(child_node_1_child_1)
 
 #Additional Ideas
 #1. Rank children by the number of free nodes and pick one with the least updates - don't always be greedy and look at the future state
@@ -131,10 +138,9 @@ def squeeze_interval(tree, interval_to_squeeze: Node, squeeze_size, forward=True
     remaining_interstitial_gap = interstitial_gap
     previous_child = None
     interstitial_squeezed_by = 0
-
     for index, child in enumerate(direct_children):
         tree.shift_subtree_by_steps(child, forward_unary * final_gap)
-        possible_child_squeeze = child.get_total_gap()
+        possible_child_squeeze = tree.get_gap_by_nn(child)
         if previous_child is None:
             squeeze_child_by = min(possible_child_squeeze, remaining_interstitial_gap)
         else:
