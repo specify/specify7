@@ -1,5 +1,5 @@
 import { SpQuery, SpQueryField, Tables } from '../DataModel/types';
-import type { GetOrSet, IR, RA, WritableArray } from '../../utils/types';
+import type { IR, RA, WritableArray } from '../../utils/types';
 import { useMultipleAsyncState } from '../../hooks/useAsyncState';
 import React from 'react';
 import { ajax } from '../../utils/ajax';
@@ -32,7 +32,7 @@ import { SerializedResource } from '../DataModel/helperTypes';
  * Fetch backend statistics from the API
  */
 export function useBackendApi(
-  categoryToFetch: RA<string>
+  categoryToFetch: RA<keyof typeof urlSpec>
 ): BackendStatsResult | undefined {
   const backEndStatPromises = React.useMemo(
     () =>
@@ -48,7 +48,9 @@ export function useBackendApi(
   return backendStat;
 }
 
-const backEndStatPromiseGenerator = (categoriesToFetch: RA<string>) =>
+const backEndStatPromiseGenerator = (
+  categoriesToFetch: RA<keyof typeof urlSpec>
+) =>
   Object.fromEntries(
     categoriesToFetch.map((key) => [
       key,
@@ -56,13 +58,13 @@ const backEndStatPromiseGenerator = (categoriesToFetch: RA<string>) =>
         throttledAjax<BackendStatsResult, string>(
           'backendStats',
           async () =>
-            ajax<BackendStatsResult>(urlSpec[key as keyof typeof urlSpec], {
+            ajax<BackendStatsResult>(urlSpec[key], {
               method: 'GET',
               headers: {
                 Accept: 'application/json',
               },
             }).then(({ data }) => data),
-          urlSpec[key as keyof typeof urlSpec]
+          urlSpec[key]
         ),
     ])
   );
@@ -115,6 +117,7 @@ export function useDefaultStatsToAdd(
     let statNotFound = false;
     const defaultLayoutFlagged = defaultLayout.map((defaultLayoutPage) => ({
       label: defaultLayoutPage.label,
+      lastUpdated: undefined,
       categories: defaultLayoutPage.categories.map(({ label, items }) => ({
         label,
         items: items?.map((defaultItem) => {
@@ -130,15 +133,10 @@ export function useDefaultStatsToAdd(
           if (!statNotFound) statNotFound = defaultStatNotFound;
           return {
             ...defaultItem,
-            ...(defaultStatNotFound
-              ? {
-                  isVisible: undefined,
-                }
-              : { isVisible: false }),
+            isVisible: defaultStatNotFound ? undefined : false,
           };
         }),
       })),
-      lastUpdated: undefined,
     }));
     return statNotFound ? defaultLayoutFlagged : undefined;
   }, [layout, defaultLayout]);
@@ -158,7 +156,7 @@ export const statSpecToItems = (
         categoryName,
         itemLabel: label,
         itemValue: undefined,
-        itemType: spec.type === 'BackEndStat' ? 'BackendStat' : 'QueryStat',
+        itemType: spec.type === 'BackEndStat' ? 'BackEndStat' : 'QueryStat',
         pathToValue: spec.type === 'BackEndStat' ? spec.pathToValue : undefined,
       }));
 
@@ -247,7 +245,7 @@ export function useResolveStatSpec(
     } else {
       const statSpecItem =
         statsSpec[item.pageName][item.categoryName].items[item.itemName];
-      return item.itemType === 'BackendStat'
+      return item.itemType === 'BackEndStat'
         ? {
             type: 'BackEndStat',
             pathToValue:
@@ -279,7 +277,7 @@ export function useCategoryToFetch(
         (items ?? []).forEach((item) => {
           if (
             item.type === 'DefaultStat' &&
-            item.itemType === 'BackendStat' &&
+            item.itemType === 'BackEndStat' &&
             item.itemValue === undefined
           )
             categoriesToFetch.push(item.categoryName);
@@ -368,7 +366,11 @@ export function useStatValueLoad<
 
 export function useUnknownCategory(
   backEndResponse: BackendStatsResult | undefined,
-  handleChange: GetOrSet<StatLayout[number]['categories']>[1],
+  handleChange: (
+    newCategories: (
+      oldCategory: StatLayout[number]['categories']
+    ) => StatLayout[number]['categories']
+  ) => void,
   statsSpec: StatsSpec
 ) {
   React.useLayoutEffect(() => {
@@ -403,7 +405,7 @@ export function useUnknownCategory(
                           categoryName,
                           itemLabel: itemName,
                           itemValue: spec.formatter(rawValue),
-                          itemType: 'BackendStat',
+                          itemType: 'BackEndStat',
                           pathToValue: itemName as keyof BackendStatsResult,
                         }))),
                 }))

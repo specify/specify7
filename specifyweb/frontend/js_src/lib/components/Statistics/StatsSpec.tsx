@@ -438,7 +438,7 @@ export const statsSpec: IR<StatsSpec> = {
             tableName: 'CollectionObject',
             fields: [
               {
-                path: 'cataloger.SpecifyUser.name',
+                path: 'cataloger.specifyuser.name',
                 startValue: userInformation.name,
                 operStart: queryFieldFilters.equal.id,
               },
@@ -452,7 +452,7 @@ export const statsSpec: IR<StatsSpec> = {
             tableName: 'CollectionObject',
             fields: [
               {
-                path: 'determinations.determiner.SpecifyUser.name',
+                path: 'determinations.determiner.specifyuser.name',
                 startValue: userInformation.name,
                 operStart: queryFieldFilters.equal.id,
               },
@@ -466,7 +466,7 @@ export const statsSpec: IR<StatsSpec> = {
             tableName: 'CollectionObject',
             fields: [
               {
-                path: 'inventorizedBy.SpecifyUser.name',
+                path: 'inventorizedBy.specifyuser.name',
                 startValue: userInformation.name,
                 operStart: queryFieldFilters.equal.id,
               },

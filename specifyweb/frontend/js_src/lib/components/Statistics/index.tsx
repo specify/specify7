@@ -118,9 +118,9 @@ export function StatsPage(): JSX.Element | null {
 
   const allCategories = React.useMemo(() => Object.keys(urlSpec), []);
 
-  const [categoriesToFetch, setCategoriesToFetch] = useTriggerState<RA<string>>(
-    categoriesToFetchInitially
-  );
+  const [categoriesToFetch, setCategoriesToFetch] = useTriggerState<
+    RA<keyof typeof urlSpec>
+  >(categoriesToFetchInitially as RA<keyof typeof urlSpec>);
   const backEndResponse = useBackendApi(categoriesToFetch);
   const defaultBackEndResponse = useBackendApi(allCategories);
   const statsSpec = useStatsSpec();
@@ -176,7 +176,7 @@ export function StatsPage(): JSX.Element | null {
       newCategories: (
         oldCategory: StatLayout[number]['categories']
       ) => StatLayout[number]['categories']
-    ): void => {
+    ): void =>
       setLayout((oldLayout: StatLayout | undefined) =>
         oldLayout === undefined
           ? undefined
@@ -186,8 +186,7 @@ export function StatsPage(): JSX.Element | null {
                 oldLayout[activePage.pageIndex].categories
               ),
             })
-      );
-    },
+      ),
     [activePage.pageIndex, setLayout]
   );
 
@@ -196,7 +195,7 @@ export function StatsPage(): JSX.Element | null {
       newCategories: (
         oldCategory: StatLayout[number]['categories']
       ) => StatLayout[number]['categories']
-    ): void => {
+    ): void =>
       setDefaultLayout((oldLayout: StatLayout | undefined) =>
         oldLayout === undefined
           ? undefined
@@ -204,8 +203,7 @@ export function StatsPage(): JSX.Element | null {
               ...oldLayout[0],
               categories: newCategories(oldLayout[0].categories),
             })
-      );
-    },
+      ),
     [setDefaultLayout]
   );
 
@@ -254,7 +252,7 @@ export function StatsPage(): JSX.Element | null {
     item: CustomStat | DefaultStat,
     categoryIndex?: number,
     itemIndex?: number
-  ): void => {
+  ): void =>
     handleChange((oldCategory) =>
       replaceItem(oldCategory, categoryIndex ?? -1, {
         ...oldCategory[categoryIndex ?? -1],
@@ -271,7 +269,6 @@ export function StatsPage(): JSX.Element | null {
               ),
       })
     );
-  };
 
   const modifyName = (
     item: CustomStat | DefaultStat
@@ -295,7 +292,7 @@ export function StatsPage(): JSX.Element | null {
       itemIndex: number,
       value: number | string,
       pageIndex: number
-    ) => {
+    ) =>
       setDefaultLayout((oldValue) =>
         f.maybe(oldValue, (oldValue) =>
           replaceItem(oldValue, pageIndex, {
@@ -318,12 +315,11 @@ export function StatsPage(): JSX.Element | null {
             ),
           })
         )
-      );
-    },
+      ),
     [setDefaultLayout]
   );
   const handleLoad = React.useCallback(
-    (categoryIndex: number, itemIndex: number, value: number | string) => {
+    (categoryIndex: number, itemIndex: number, value: number | string) =>
       handleChange((oldCategory) =>
         replaceItem(oldCategory, categoryIndex, {
           ...oldCategory[categoryIndex],
@@ -336,8 +332,7 @@ export function StatsPage(): JSX.Element | null {
             }
           ),
         })
-      );
-    },
+      ),
     [handleChange]
   );
 
@@ -472,21 +467,20 @@ export function StatsPage(): JSX.Element | null {
                         }
                         key={pageIndex}
                         label={label}
-                        onClick={(): void => {
+                        onClick={(): void =>
                           setActivePage({
                             isCollection: index === 0,
                             pageIndex,
-                          });
-                        }}
+                          })
+                        }
                         onRename={
                           isEditing && canEditIndex(index === 0)
-                            ? (): void => {
+                            ? (): void =>
                                 setState({
                                   type: 'PageRenameState',
                                   isCollection: index === 0,
                                   pageIndex,
-                                });
-                              }
+                                })
                             : undefined
                         }
                       />
@@ -495,13 +489,13 @@ export function StatsPage(): JSX.Element | null {
                       <StatsPageButton
                         isCurrent={false}
                         label={commonText.add()}
-                        onClick={(): void => {
+                        onClick={(): void =>
                           setState({
                             type: 'PageRenameState',
                             pageIndex: undefined,
                             isCollection: index === 0,
-                          });
-                        }}
+                          })
+                        }
                         onRename={undefined}
                       />
                     )}
@@ -649,7 +643,7 @@ export function StatsPage(): JSX.Element | null {
               }
               onRemove={
                 isEditing && canEditIndex(activePage.isCollection)
-                  ? (categoryIndex, itemIndex): void => {
+                  ? (categoryIndex, itemIndex): void =>
                       handleChange((oldCategory) =>
                         typeof itemIndex === 'number'
                           ? replaceItem(oldCategory, categoryIndex, {
@@ -660,8 +654,7 @@ export function StatsPage(): JSX.Element | null {
                               ),
                             })
                           : removeItem(oldCategory, categoryIndex)
-                      );
-                    }
+                      )
                   : undefined
               }
               onSpecChanged={(categoryIndex, itemIndex, fields): void =>

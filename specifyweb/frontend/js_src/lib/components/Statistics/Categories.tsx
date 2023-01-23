@@ -11,6 +11,7 @@ import { SerializedResource } from '../DataModel/helperTypes';
 import { SpQueryField } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { statsText } from '../../localization/stats';
+import { urlSpec } from './definitions';
 
 export function Categories({
   pageLayout,
@@ -159,9 +160,9 @@ export function Categories({
                                       itemValue: item.itemValue,
                                       itemType: item.itemType,
                                       pathToValue:
-                                        item.itemType === 'BackendStat' &&
+                                        item.itemType === 'BackEndStat' &&
                                         item.itemName === 'phantomItem'
-                                          ? item.itemLabel
+                                          ? (item.itemLabel as keyof typeof urlSpec)
                                           : undefined,
                                     })
                                 : undefined
