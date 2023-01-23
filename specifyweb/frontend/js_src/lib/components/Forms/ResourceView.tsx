@@ -229,7 +229,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
     typeof resource === 'object' &&
     !resource.isNew() &&
     hasTablePermission(resource.specifyModel.name, 'delete') ? (
-      <ErrorBoundary dismissable>
+      <ErrorBoundary dismissible>
         <DeleteButton
           deletionMessage={deletionMessage}
           resource={resource}

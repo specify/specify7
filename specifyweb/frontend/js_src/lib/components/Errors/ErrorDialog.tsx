@@ -69,7 +69,7 @@ export function ErrorDialog({
   readonly dismissible?: boolean;
 }): JSX.Element {
   const id = useId('error-dialog')('');
-  // If there is more than one error, all but the last one should be dismissable
+  // If there is more than one error, all but the last one should be dismissible
   const isLastError = React.useRef(errors.size === 0).current;
   React.useEffect(() => {
     errors.add(id);

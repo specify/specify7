@@ -161,7 +161,7 @@ export function Main(): JSX.Element | null {
         )}
         {hasAgent ? (
           <main className="flex-1 overflow-auto" ref={mainRef}>
-            <ErrorBoundary dismissable>
+            <ErrorBoundary dismissible>
               <Router />
             </ErrorBoundary>
           </main>

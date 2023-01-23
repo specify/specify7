@@ -84,7 +84,7 @@ export function QueryHeader({
           <ProtectedTable action="update" tableName="Loan">
             <ProtectedTable action="create" tableName="LoanReturnPreparation">
               <ProtectedTable action="read" tableName="LoanPreparation">
-                <ErrorBoundary dismissable>
+                <ErrorBoundary dismissible>
                   <QueryLoanReturn
                     fields={state.fields}
                     getQueryFieldRecords={getQueryFieldRecords}
