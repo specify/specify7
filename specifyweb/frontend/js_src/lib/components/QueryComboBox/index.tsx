@@ -22,14 +22,15 @@ import {
   getResourceApiUrl,
   resourceOn,
 } from '../DataModel/resource';
+import { serializeResource } from '../DataModel/serializers';
 import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
-import type { FormMode, FormType } from '../FormParse';
 import {
   format,
   getMainTableFields,
   naiveFormatter,
 } from '../Formatters/index';
+import type { FormMode, FormType } from '../FormParse';
 import { ResourceView, RESTRICT_ADDING } from '../Forms/ResourceView';
 import type { QueryComboBoxFilter } from '../Forms/SearchDialog';
 import { SearchDialog } from '../Forms/SearchDialog';
@@ -44,11 +45,11 @@ import {
   getQueryComboBoxConditions,
   getRelatedCollectionId,
   makeComboBoxQuery,
-} from './queryComboBoxUtils';
+} from './helpers';
+import type { TypeSearch } from './spec';
 import { useCollectionRelationships } from './useCollectionRelationships';
 import { useTreeData } from './useTreeData';
 import { useTypeSearch } from './useTypeSearch';
-import { serializeResource } from '../DataModel/serializers';
 
 /*
  * REFACTOR: split this component
@@ -73,7 +74,7 @@ export function QueryComboBox({
   readonly formType: FormType;
   readonly isRequired: boolean;
   readonly hasCloneButton?: boolean;
-  readonly typeSearch: Element | string | undefined;
+  readonly typeSearch: TypeSearch | string | undefined;
   readonly forceCollection: number | undefined;
   readonly relatedModel?: SpecifyModel | undefined;
 }): JSX.Element {
@@ -174,7 +175,7 @@ export function QueryComboBox({
                       : format(
                           resource,
                           typeof typeSearch === 'object'
-                            ? typeSearch.dataObjectFormatter
+                            ? typeSearch.formatter
                             : undefined
                         )
                     ).then((formatted) => ({
@@ -456,7 +457,7 @@ export function QueryComboBox({
                   ? (): void =>
                       setState({
                         type: 'SearchState',
-                        templateResource: new typeSearch.relatedModel.Resource(
+                        templateResource: new typeSearch.table.Resource(
                           {},
                           {
                             noBusinessRules: true,

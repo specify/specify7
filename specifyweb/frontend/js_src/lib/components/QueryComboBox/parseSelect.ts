@@ -11,7 +11,7 @@ export const columnToFieldMapper = (
 const reFrom = /from\s+(\w+)\s+(?:as\s+)?(\w+)/iu;
 const reJoin = /join\s+(\w+\.\w+)\s+(?:as\s+)?(\w+)/giu;
 
-function parseSqlQuery(sqlSelectQuery: string): IR<string> {
+export function parseSqlQuery(sqlSelectQuery: string): IR<string> {
   const [_match, table, tableAlias] = defined(
     reFrom.exec(sqlSelectQuery) ?? undefined,
     `Unable to parse SQL query: ${sqlSelectQuery}`

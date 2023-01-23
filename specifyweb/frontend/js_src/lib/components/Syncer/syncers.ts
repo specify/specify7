@@ -5,7 +5,7 @@ import { parseBoolean } from '../../utils/parser/parse';
 import type { RA } from '../../utils/types';
 import { formatList } from '../Atoms/Internationalization';
 import { parseJavaClassName } from '../DataModel/resource';
-import { getModel, schema } from '../DataModel/schema';
+import { getModel, getModelById, schema } from '../DataModel/schema';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Tables } from '../DataModel/types';
@@ -70,7 +70,7 @@ export const syncers = {
       (value) => value
     ),
   javaClassName: syncer<string, SpecifyModel | undefined>(
-    (className: string) => {
+    (className) => {
       const tableName = parseJavaClassName(className);
       const model = getModel(tableName ?? className);
       if (model === undefined)
@@ -80,13 +80,24 @@ export const syncers = {
     (model) => model?.longName ?? ''
   ),
   tableName: syncer<string, SpecifyModel | undefined>(
-    (tableName: string) => {
+    (tableName) => {
       const model = getModel(tableName);
       if (model === undefined)
         console.error(`Unknown model: ${tableName ?? '(null)'}`);
       return model;
     },
     (model) => model?.name ?? ''
+  ),
+  tableId: syncer<number, SpecifyModel | undefined>(
+    (tableId) => {
+      try {
+        return getModelById(tableId);
+      } catch (error) {
+        console.error(error);
+        return undefined;
+      }
+    },
+    (model) => model?.tableId ?? 0
   ),
   toBoolean: syncer<string, boolean>(parseBoolean, (value) => value.toString()),
   toDecimal: syncer<string, number | undefined>(
@@ -258,5 +269,10 @@ export const syncers = {
         return item;
       },
       (value) => value ?? ''
+    ),
+  split: (separator: string) =>
+    syncer<string, RA<string>>(
+      (value) => value.split(separator),
+      (value) => value.join(separator)
     ),
 } as const;

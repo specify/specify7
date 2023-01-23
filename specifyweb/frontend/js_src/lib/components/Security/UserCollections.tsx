@@ -26,7 +26,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
 import { schema } from '../DataModel/schema';
 import type { Collection, SpecifyUser } from '../DataModel/types';
-import { QueryComboBox } from '../FormFields/QueryComboBox';
+import { QueryComboBox } from '../QueryComboBox';
 import type { FormMode } from '../FormParse';
 import { Dialog } from '../Molecules/Dialog';
 import { collectionAccessResource } from '../Permissions/definitions';

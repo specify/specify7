@@ -18,7 +18,7 @@ import { usePref } from '../UserPreferences/usePref';
 import { PrintOnSave, SpecifyFormCheckbox } from './Checkbox';
 import { Combobox } from './ComboBox';
 import { UiField } from './Field';
-import { QueryComboBox } from './QueryComboBox';
+import { QueryComboBox } from '../QueryComboBox';
 
 const fieldRenderers: {
   readonly [KEY in keyof FieldTypes]: (props: {

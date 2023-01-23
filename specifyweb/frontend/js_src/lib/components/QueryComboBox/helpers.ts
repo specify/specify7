@@ -4,8 +4,7 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { idFromUrl } from '../DataModel/resource';
 import { schema } from '../DataModel/schema';
-import type { LiteralField, Relationship } from '../DataModel/specifyField';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { Relationship } from '../DataModel/specifyField';
 import type { SpQuery, SpQueryField } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
@@ -14,12 +13,13 @@ import { flippedSortTypes } from '../QueryBuilder/helpers';
 import { getUserPref } from '../UserPreferences/helpers';
 import type { CollectionRelationships } from './useCollectionRelationships';
 import type { QueryComboBoxTreeData } from './useTreeData';
+import { TypeSearch } from './spec';
 
 export function makeComboBoxQuery({
   fieldName,
   value,
   isTreeTable,
-  typeSearch: { relatedModel },
+  typeSearch: { table },
   specialConditions,
 }: {
   readonly fieldName: string;
@@ -33,8 +33,8 @@ export function makeComboBoxQuery({
     { noBusinessRules: true }
   );
   query.set('name', 'Ephemeral QueryCBX query');
-  query.set('contextName', relatedModel.name);
-  query.set('contextTableId', relatedModel.tableId);
+  query.set('contextName', table.name);
+  query.set('contextTableId', table.tableId);
   query.set('selectDistinct', false);
   query.set('countOnly', false);
   query.set('specifyUser', userInformation.resource_uri);
@@ -46,10 +46,7 @@ export function makeComboBoxQuery({
     'queryComboBox',
     isTreeTable ? 'treeSearchAlgorithm' : 'searchAlgorithm'
   );
-  const searchField = QueryFieldSpec.fromPath(
-    relatedModel.name,
-    fieldName.split('.')
-  )
+  const searchField = QueryFieldSpec.fromPath(table.name, fieldName.split('.'))
     .toSpQueryField()
     .set('isDisplay', false)
     .set('startValue', searchAlgorithm === 'contains' ? `%${value}%` : value)
@@ -60,7 +57,7 @@ export function makeComboBoxQuery({
         : queryFieldFilters.startsWith.id
     );
 
-  const displayField = QueryFieldSpec.fromPath(relatedModel.name, [])
+  const displayField = QueryFieldSpec.fromPath(table.name, [])
     .toSpQueryField()
     .set('isDisplay', true)
     .set('sortType', flippedSortTypes.ascending);
@@ -76,7 +73,7 @@ export function getQueryComboBoxConditions({
   collectionRelationships,
   treeData,
   subViewRelationship,
-  typeSearch: { relatedModel },
+  typeSearch: { table },
 }: {
   readonly resource: SpecifyResource<AnySchema>;
   readonly fieldName: string;
@@ -151,10 +148,7 @@ export function getQueryComboBoxConditions({
   )
     // Add condition for current collection
     fields.push(
-      QueryFieldSpec.fromStringId(
-        `${relatedModel.tableId}..collectionRelTypeId`,
-        true
-      )
+      QueryFieldSpec.fromStringId(`${table.tableId}..collectionRelTypeId`, true)
         .toSpQueryField()
         .set('isDisplay', false)
         .set('operStart', queryFieldFilters.in.id)
@@ -188,10 +182,3 @@ export const getRelatedCollectionId = (
           ''
       )
   )?.collection;
-
-export type TypeSearch = {
-  readonly title: string;
-  readonly searchFields: RA<RA<LiteralField | Relationship>>;
-  readonly relatedModel: SpecifyModel;
-  readonly dataObjectFormatter: string | undefined;
-};

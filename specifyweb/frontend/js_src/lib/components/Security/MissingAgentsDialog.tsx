@@ -17,7 +17,7 @@ import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import { fetchResource, idFromUrl } from '../DataModel/resource';
 import { schema } from '../DataModel/schema';
-import { QueryComboBox } from '../FormFields/QueryComboBox';
+import { QueryComboBox } from '../QueryComboBox';
 import type { FormMode } from '../FormParse';
 import { Dialog } from '../Molecules/Dialog';
 import { hasPermission } from '../Permissions/helpers';

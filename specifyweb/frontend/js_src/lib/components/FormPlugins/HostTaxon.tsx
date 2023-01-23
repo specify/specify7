@@ -7,14 +7,23 @@ import { fetchCollection } from '../DataModel/collection';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { CollectingEventAttribute } from '../DataModel/types';
-import { QueryComboBox } from '../FormFields/QueryComboBox';
+import { QueryComboBox } from '../QueryComboBox';
 import type { FormMode, FormType } from '../FormParse';
 import { hasTreeAccess } from '../Permissions/helpers';
 import { deserializeResource } from '../DataModel/serializers';
-import { parseXml } from '../AppResources/codeMirrorLinters';
+import { postProcessTypeSearch, TypeSearch } from '../QueryComboBox/spec';
+import { LocalizedString } from 'typesafe-i18n';
 
-const hostTaxonTypeSearch = parseXml(
-  '<typesearch tableid="4" name="HostTaxon" searchfield="fullName" displaycols="fullName" format="%s" dataobjformatter="Taxon"/>'
+const hostTaxonTypeSearch = f.store<TypeSearch>(() =>
+  postProcessTypeSearch({
+    name: 'HostTaxon' as LocalizedString,
+    table: schema.models.Taxon,
+    searchFields: ['fullName'],
+    displayFields: ['fullName'],
+    format: '%s' as LocalizedString,
+    formatter: 'Taxon' as LocalizedString,
+    query: undefined,
+  })
 );
 
 export function HostTaxon({
