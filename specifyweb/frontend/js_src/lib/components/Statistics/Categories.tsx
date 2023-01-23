@@ -114,37 +114,11 @@ export function Categories({
                       item.type === 'CustomStat' ||
                       item.isVisible === undefined ? (
                         <StatItem
-                          item={item}
                           categoryIndex={categoryIndex}
+                          item={item}
                           itemIndex={itemIndex}
                           key={itemIndex}
                           statsSpec={statsSpec}
-                          onValueLoad={handleValueLoad}
-                          onSpecChanged={
-                            !checkEmptyItems
-                              ? item.type === 'DefaultStat'
-                                ? handleClick !== undefined
-                                  ? (tableName, newFields, itemName): void => {
-                                      handleClick(
-                                        {
-                                          type: 'CustomStat',
-                                          itemLabel: itemName,
-                                          tableName,
-                                          fields: newFields,
-                                        },
-                                        categoryIndex,
-                                        itemIndex
-                                      );
-                                    }
-                                  : undefined
-                                : (_, fields) =>
-                                    handleSpecChanged(
-                                      categoryIndex,
-                                      itemIndex,
-                                      fields
-                                    )
-                              : undefined
-                          }
                           onClick={
                             item.type === 'CustomStat'
                               ? undefined
@@ -168,12 +142,6 @@ export function Categories({
                                 : undefined
                               : undefined
                           }
-                          onRemove={
-                            typeof handleRemove === 'function'
-                              ? (): void =>
-                                  handleRemove(categoryIndex, itemIndex)
-                              : undefined
-                          }
                           onItemRename={
                             typeof handleItemRename === 'function'
                               ? (newLabel): void => {
@@ -185,6 +153,38 @@ export function Categories({
                                 }
                               : undefined
                           }
+                          onRemove={
+                            typeof handleRemove === 'function'
+                              ? (): void =>
+                                  handleRemove(categoryIndex, itemIndex)
+                              : undefined
+                          }
+                          onSpecChanged={
+                            !checkEmptyItems
+                              ? item.type === 'DefaultStat'
+                                ? handleClick !== undefined
+                                  ? (querySpec, itemName): void => {
+                                      handleClick(
+                                        {
+                                          type: 'CustomStat',
+                                          itemLabel: itemName,
+                                          tableName: querySpec.tableName,
+                                          fields: querySpec.fields,
+                                        },
+                                        categoryIndex,
+                                        itemIndex
+                                      );
+                                    }
+                                  : undefined
+                                : (querySpec) =>
+                                    handleSpecChanged(
+                                      categoryIndex,
+                                      itemIndex,
+                                      querySpec.fields
+                                    )
+                              : undefined
+                          }
+                          onValueLoad={handleValueLoad}
                         />
                       ) : undefined
                     )

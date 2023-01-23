@@ -8,7 +8,7 @@ import {
   useQuerySpecToResource,
   useStatValueLoad,
 } from './hooks';
-import type { CustomStat, DefaultStat, StatsSpec } from './types';
+import type { CustomStat, DefaultStat, QuerySpec, StatsSpec } from './types';
 import { throttledAjax } from '../../utils/ajax/throttledAjax';
 import { BackendStatsResult } from './types';
 import { ajax } from '../../utils/ajax';
@@ -32,13 +32,7 @@ export function StatItem({
   readonly onRemove: (() => void) | undefined;
   readonly onClick: (() => void) | undefined;
   readonly onSpecChanged:
-    | ((
-        tableName: keyof Tables,
-        fields: RA<
-          Partial<SerializedResource<SpQueryField>> & { readonly path: string }
-        >,
-        itemName: string
-      ) => void)
+    | ((querySpec: QuerySpec, itemName: string) => void)
     | undefined;
   readonly onValueLoad:
     | ((
@@ -69,8 +63,8 @@ export function StatItem({
       onRemove={handleRemove}
       onSpecChanged={
         handleSpecChanged !== undefined
-          ? (tableName, fields) => {
-              handleSpecChanged(tableName, fields, item.itemLabel);
+          ? (querySpec) => {
+              handleSpecChanged(querySpec, item.itemLabel);
             }
           : undefined
       }
@@ -169,14 +163,7 @@ function QueryItem({
   readonly isDefault: boolean;
   readonly onClick: (() => void) | undefined;
   readonly onRemove: (() => void) | undefined;
-  readonly onSpecChanged:
-    | ((
-        tableName: keyof Tables,
-        fields: RA<
-          Partial<SerializedResource<SpQueryField>> & { readonly path: string }
-        >
-      ) => void)
-    | undefined;
+  readonly onSpecChanged: ((querySpec: QuerySpec) => void) | undefined;
   readonly onItemRename: ((newLabel: string) => void) | undefined;
   readonly onItemValueLoad: ((value: number | string) => void) | undefined;
 }): JSX.Element | null {

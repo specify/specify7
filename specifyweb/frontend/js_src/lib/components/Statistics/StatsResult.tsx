@@ -1,13 +1,12 @@
 import React from 'react';
-import type { SpQuery, SpQueryField, Tables } from '../DataModel/types';
+import type { SpQuery } from '../DataModel/types';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { FrontEndStatsResultDialog } from './ResultsDialog';
 import { Button } from '../Atoms/Button';
 import { SpecifyResource } from '../DataModel/legacyTypes';
 import { commonText } from '../../localization/common';
-import { SerializedResource } from '../DataModel/helperTypes';
-import { RA } from '../../utils/types';
 import { Input } from '../Atoms/Form';
+import { QuerySpec } from './types';
 
 export function StatsResult({
   statValue,
@@ -25,14 +24,7 @@ export function StatsResult({
   readonly isDefault: boolean;
   readonly onClick: (() => void) | undefined;
   readonly onRemove: (() => void) | undefined;
-  readonly onSpecChanged:
-    | ((
-        tableName: keyof Tables,
-        fields: RA<
-          Partial<SerializedResource<SpQueryField>> & { readonly path: string }
-        >
-      ) => void)
-    | undefined;
+  readonly onSpecChanged: ((querySpec: QuerySpec) => void) | undefined;
   readonly onItemRename: ((newLabel: string) => void) | undefined;
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();

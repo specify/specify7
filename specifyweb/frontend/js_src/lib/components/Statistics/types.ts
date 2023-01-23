@@ -50,6 +50,13 @@ export type StatSpecCalculated =
       >;
     };
 
+export type QuerySpec = {
+  readonly tableName: keyof Tables;
+  readonly fields: RA<
+    Partial<SerializedResource<SpQueryField>> & { readonly path: string }
+  >;
+};
+
 export type StatCategoryReturn = IR<{
   readonly label: string;
   readonly spec: StatItemSpec;

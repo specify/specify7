@@ -11,6 +11,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { RA } from '../../utils/types';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
+import { QuerySpec } from './types';
 
 export function FrontEndStatsResultDialog({
   query,
@@ -21,14 +22,7 @@ export function FrontEndStatsResultDialog({
   readonly query: SpecifyResource<SpQuery>;
   readonly onClose: () => void;
   readonly statLabel: string;
-  readonly onSpecChanged:
-    | ((
-        tableName: keyof Tables,
-        fields: RA<
-          Partial<SerializedResource<SpQueryField>> & { readonly path: string }
-        >
-      ) => void)
-    | undefined;
+  readonly onSpecChanged: ((querySpec: QuerySpec) => void) | undefined;
 }): JSX.Element | null {
   const [queryData, setQueryData] = React.useState<{
     readonly tableName: keyof Tables | undefined;
@@ -52,7 +46,10 @@ export function FrontEndStatsResultDialog({
                   queryData.tableName !== undefined &&
                   queryData.fields !== undefined
                 ) {
-                  handleSpecChange(queryData.tableName, queryData.fields);
+                  handleSpecChange({
+                    tableName: queryData.tableName,
+                    fields: queryData.fields,
+                  });
                   handleClose();
                 }
               }}
