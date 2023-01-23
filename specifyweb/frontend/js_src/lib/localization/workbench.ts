@@ -1321,7 +1321,7 @@ export const wbText = createDictionary({
     `,
     'en-us': 'WB upload of "{dataSet:string}"',
     'ru-ru': 'WB загрузка "{dataSet:string}"',
-    'es-es': 'Carga WB de "{dataSet:string}"',
+    'es-es': 'Carga de WB de "{dataSet:string}"',
     'fr-fr': 'Téléchargement WB de "{dataSet:string}"',
     'uk-ua': 'WB завантаження "{dataSet:string}"',
   },
