@@ -15,7 +15,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { CollectionObject } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
-import { SearchDialog } from '../Forms/SearchDialog';
+import { SearchDialog } from '../SearchDialog';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
@@ -72,7 +72,7 @@ export function CollectionOneToManyPlugin({
     <div
       className={`
         w-fit rounded bg-[color:var(--form-background)] p-2
-        ring-1 ring-gray-400 shadow-sm dark:ring-0
+        shadow-sm ring-1 ring-gray-400 dark:ring-0
       `}
     >
       <table className="grid-table grid-cols-[repeat(3,auto)] gap-2">

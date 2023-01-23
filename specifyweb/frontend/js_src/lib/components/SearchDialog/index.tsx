@@ -29,13 +29,22 @@ import { ProtectedAction } from '../Permissions/PermissionDenied';
 import { createQuery } from '../QueryBuilder';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
 import { formatUrl } from '../Router/queryString';
-import { RenderForm } from './SpecifyForm';
-import { useViewDefinition } from './useViewDefinition';
+import { RenderForm } from '../Forms/SpecifyForm';
+import { useViewDefinition } from '../Forms/useViewDefinition';
+import { xmlToSpec } from '../Syncer/xmlUtils';
+import { dialogsSpec } from './spec';
 
-const dialogDefinitions = load<Element>(
-  formatUrl('/context/app.resource', { name: 'DialogDefs' }),
-  'text/xml'
-);
+export const searchDialogDefinitions = f
+  .all({
+    xml: load<Element>(
+      formatUrl('/context/app.resource', { name: 'DialogDefs' }),
+      'text/xml'
+    ),
+    schema: import('../DataModel/schema').then(
+      async ({ fetchContext }) => fetchContext
+    ),
+  })
+  .then(({ xml }) => xmlToSpec(xml, dialogsSpec()).dialogs);
 
 const resourceLimit = 100;
 
@@ -66,13 +75,14 @@ export function SearchDialog<SCHEMA extends AnySchema>({
   const [viewName, setViewName] = useAsyncState(
     React.useCallback(
       async () =>
-        dialogDefinitions.then(
-          (element) =>
-            element
-              .querySelector(
-                `dialog[type="search"][name="${templateResource.specifyModel.searchDialog}"]`
-              )
-              ?.getAttribute('view') ?? false
+        searchDialogDefinitions.then(
+          (definitions) =>
+            definitions.find(
+              ({ type, name }) =>
+                type === 'search' &&
+                name.toLowerCase() ===
+                  templateResource.specifyModel.searchDialog?.toLowerCase()
+            )?.view ?? false
         ),
       [templateResource]
     ),

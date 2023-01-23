@@ -19,7 +19,7 @@ import type { SpecifyModel } from '../DataModel/specifyModel';
 import { FormMeta } from '../FormMeta';
 import type { FormMode } from '../FormParse';
 import type { FormCellDefinition, SubViewSortField } from '../FormParse/cells';
-import { SearchDialog } from '../Forms/SearchDialog';
+import { SearchDialog } from '../SearchDialog';
 import { RenderForm } from '../Forms/SpecifyForm';
 import { useViewDefinition } from '../Forms/useViewDefinition';
 import { loadingGif } from '../Molecules';

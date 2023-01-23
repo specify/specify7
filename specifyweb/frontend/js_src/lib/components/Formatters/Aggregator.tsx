@@ -6,7 +6,7 @@ import { resourcesText } from '../../localization/resources';
 import type { GetSet, RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
-import { SearchDialog } from '../Forms/SearchDialog';
+import { SearchDialog } from '../SearchDialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import type { FieldType } from '../WbPlanView/mappingHelpers';
 import { aggregate } from './aggregate';

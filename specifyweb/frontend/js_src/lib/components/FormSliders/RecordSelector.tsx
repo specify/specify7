@@ -8,7 +8,7 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
-import { SearchDialog } from '../Forms/SearchDialog';
+import { SearchDialog } from '../SearchDialog';
 import { Slider } from './Slider';
 
 function Search<SCHEMA extends AnySchema>({

@@ -16,7 +16,7 @@ import { LoadingContext } from '../Core/Contexts';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { SpecifyUser } from '../DataModel/types';
-import { SearchDialog } from '../Forms/SearchDialog';
+import { SearchDialog } from '../SearchDialog';
 import { userInformation } from '../InitialContext/userInformation';
 import { LoadingScreen } from '../Molecules/Dialog';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';

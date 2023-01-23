@@ -32,8 +32,8 @@ import {
 } from '../Formatters/index';
 import type { FormMode, FormType } from '../FormParse';
 import { ResourceView, RESTRICT_ADDING } from '../Forms/ResourceView';
-import type { QueryComboBoxFilter } from '../Forms/SearchDialog';
-import { SearchDialog } from '../Forms/SearchDialog';
+import type { QueryComboBoxFilter } from '../SearchDialog';
+import { SearchDialog } from '../SearchDialog';
 import { SubViewContext } from '../Forms/SubView';
 import { isTreeModel } from '../InitialContext/treeRanks';
 import { userInformation } from '../InitialContext/userInformation';
