@@ -210,25 +210,43 @@ export const localityText = createDictionary({
   degrees: {
     'en-us': 'DD.DDDD (32.7619)',
     'ru-ru': 'DD.DDDD (32.7619)',
+    'es-es': 'DD.DDDD (32.7619)',
+    'fr-fr': 'JJ.DDDD (32.7619)',
+    'uk-ua': 'DD.DDDD (32,7619)',
   },
   degreesMinutes: {
     'en-us': 'DD MMMM (32. 45.714)',
     'ru-ru': 'DD MMMM (32. 45.714)',
+    'es-es': 'DDMMMM (32. 45.714)',
+    'fr-fr': 'JJ MMMM (32. 45.714)',
+    'uk-ua': 'ДД ММММ (32. 45.714)',
   },
   degreesMinutesSeconds: {
     'en-us': 'DD MM SS.SS (32 45 42.84)',
     'ru-ru': 'DD MM SS.SS (32 45 42.84)',
+    'es-es': 'DD MM SS.SS (32 45 42,84)',
+    'fr-fr': 'JJ MM SS.SS (32 45 42.84)',
+    'uk-ua': 'ДД ММ СС.СС (32 45 42,84)',
   },
   degreesWithDirection: {
     'en-us': 'DD.DDDD N/S/E/W (32.7619 N)',
     'ru-ru': 'DD.DDDD N/S/E/W (32.7619 N)',
+    'es-es': 'DD.DDDD N/S/E/O (32.7619 N)',
+    'fr-fr': 'JJ.DDDD N/S/E/O (32,7619 N)',
+    'uk-ua': 'DD.DDDD Пн/Пд/З/З (32,7619 Пн)',
   },
   degreesMinutesWithDirection: {
     'en-us': 'DD MM.MM N/S/E/W (32 45.714 N)',
     'ru-ru': 'DD MM.MM N/S/E/W (32 45.714 N)',
+    'es-es': 'DD MM.MM N/S/E/O (32 45.714 N)',
+    'fr-fr': 'JJ MM.MM N/S/E/W (32 45.714 N)',
+    'uk-ua': 'ДД ММ.ХМ Пн/Пд/В/З (32 45,714 Пн)',
   },
   degreesMinutesSecondsWithDirection: {
     'en-us': 'DD MM SS.SS N/S/E/W (32 45 42.84 N)',
     'ru-ru': 'DD MM SS.SS N/S/E/W (32 45 42.84 N)',
+    'es-es': 'DD MM SS.SS N/S/E/W (32 45 42,84 N)',
+    'fr-fr': 'JJ MM SS.SS N/S/E/W (32 45 42.84 N)',
+    'uk-ua': 'DD MM SS.SS N/S/E/W (32 45 42.84 N)',
   },
 } as const);
