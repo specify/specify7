@@ -12,6 +12,7 @@ from specifyweb.businessrules.exceptions import TreeBusinessRuleException
 
 from time import perf_counter
 from  .auditcodes import TREE_MERGE, TREE_SYNONYMIZE, TREE_DESYNONYMIZE
+from .tree_utils import *
 
 @contextmanager
 def validate_node_numbers(table, revalidate_after=True):
@@ -117,6 +118,7 @@ class Tree(models.Model):
         t2 = perf_counter()
         logger.warning('time near the end block: ')
         logger.warning(t2-t1)
+
     def accepted_id_attr(self):
         return 'accepted{}_id'.format(self._meta.db_table)
 
@@ -135,22 +137,20 @@ def add_cte(id):
     return ("and ((( with recursive allchildren as ( select taxonid from taxon where parentid = {} union all select taxon.taxonid from taxon join allchildren on taxon.parentid = allchildren.taxonid) select count(*) from allchildren where allchildren.taxonid = t0.taxonid) > 0 ) or t0.taxonid = {})").format(id, id)
 
 
-
-
-def open_interval(model, parent_node_number, size):
+def open_interval(model, parent_node_number, size, node):
     """Open a space of given size in a tree model under the given parent.
     The insertion point will be directly after the parent_node_number.
     Returns the instertion point.
     """
     # All intervals to the right of parent node get shifted right by size.
-    #model.objects.filter(nodenumber__gt=parent_node_number).update(
-    #    nodenumber=F('nodenumber')+size,
-    #    highestchildnodenumber=F('highestchildnodenumber')+size,
-    #)
+    model.objects.filter(nodenumber__gt=parent_node_number).update(
+        nodenumber=F('nodenumber')+size,
+        highestchildnodenumber=F('highestchildnodenumber')+size,
+    )
     # All intervals containing the insertion point get expanded by size.
-    #model.objects.filter(nodenumber__lte=parent_node_number, highestchildnodenumber__gte=parent_node_number)\
-    #    .update(highestchildnodenumber=F('highestchildnodenumber')+size)
-
+    model.objects.filter(nodenumber__lte=parent_node_number, highestchildnodenumber__gte=parent_node_number)\
+        .update(highestchildnodenumber=F('highestchildnodenumber')+size)
+    squeeze_interval(node, 'taxon', 1)
     return parent_node_number + 1
 
 def move_interval(model, old_node_number, old_highest_child_node_number, new_node_number):
@@ -159,19 +159,19 @@ def move_interval(model, old_node_number, old_highest_child_node_number, new_nod
     at the destination. Leaves a gap at the old node number range.
     """
     delta = new_node_number - old_node_number
-    #model.objects.filter(nodenumber__gte=old_node_number, nodenumber__lte=old_highest_child_node_number)\
-    #    .update(nodenumber=F('nodenumber')+delta, highestchildnodenumber=F('highestchildnodenumber')+delta)
+    model.objects.filter(nodenumber__gte=old_node_number, nodenumber__lte=old_highest_child_node_number)\
+        .update(nodenumber=F('nodenumber')+delta, highestchildnodenumber=F('highestchildnodenumber')+delta)
 
 def close_interval(model, node_number, size):
     """Close a gap where an interval was removed."""
     # All intervals containing the gap get reduced by size.
-    #model.objects.filter(nodenumber__lte=node_number, highestchildnodenumber__gte=node_number)\
-    #    .update(highestchildnodenumber=F('highestchildnodenumber')-size)
+    model.objects.filter(nodenumber__lte=node_number, highestchildnodenumber__gte=node_number)\
+        .update(highestchildnodenumber=F('highestchildnodenumber')-size)
     # All intervals to the right of node_number get shifted left by size.
-    #model.objects.filter(nodenumber__gt=node_number).update(
-    #    nodenumber=F('nodenumber')-size,
-    #    highestchildnodenumber=F('highestchildnodenumber')-size,
-    #)
+    model.objects.filter(nodenumber__gt=node_number).update(
+        nodenumber=F('nodenumber')-size,
+        highestchildnodenumber=F('highestchildnodenumber')-size
+    )
 
 def adding_node(node):
     logger.info('adding node %s', node)
@@ -204,8 +204,8 @@ def adding_node(node):
                     "children": list(parent.children.values('id', 'fullname'))
                  }})
     return
-    #insertion_point = open_interval(model, parent.nodenumber, 1)
-    #node.highestchildnodenumber = node.nodenumber = insertion_point
+    insertion_point = open_interval(model, parent.nodenumber, 1, node)
+    node.highestchildnodenumber = node.nodenumber = insertion_point
 
 def moving_node(to_save):
     logger.info('moving node %s', to_save)
@@ -234,7 +234,7 @@ def moving_node(to_save):
                 "children": list(new_parent.children.values('id', 'fullname'))
              }})
 
-    insertion_point = open_interval(model, new_parent.nodenumber, size)
+    insertion_point = open_interval(model, new_parent.nodenumber, size, new_parent)
     # node interval will have moved if it is to the right of the insertion point
     # so fetch again
     current = model.objects.get(id=current.id)
@@ -266,7 +266,7 @@ def merge(node, into, agent):
         raise TreeBusinessRuleException(
             'Merging node "{node.fullname}" with synonymized node "{into.fullname}"'.format(node=node, into=into),
             {"tree" : "Taxon",
-             "localizationKey" : "nodeOperationToSynonymizedParent", 
+             "localizationKey" : "nodeOperationToSynonymizedParent",
              "operation" : "Merging",
              "node" : {
                 "id" : node.id,
