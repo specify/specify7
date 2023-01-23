@@ -3,7 +3,6 @@ import type { State } from 'typesafe-reducer';
 import type { IR, RA } from '../../utils/types';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpQueryField, Tables } from '../DataModel/types';
-import { urlSpec } from './definitions';
 
 export type CustomStat = State<
   'CustomStat',
@@ -36,7 +35,7 @@ export type StatLayout = RA<{
   readonly categories: RA<{
     readonly label: string;
     readonly items: RA<CustomStat | DefaultStat> | undefined;
-    readonly categoryToFetch?: keyof typeof urlSpec;
+    readonly categoryToFetch?: string;
   }>;
   readonly lastUpdated: string | undefined;
 }>;

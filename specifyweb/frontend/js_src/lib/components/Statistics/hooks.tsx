@@ -168,19 +168,16 @@ export function useDefaultLayout(statsSpec: StatsSpec): StatLayout {
       Object.entries(statsSpec).map(([pageName, pageStatsSpec]) => ({
         label: pageName,
         categories: Object.entries(pageStatsSpec).map(
-          ([categoryName, { label, items }]) => ({
-            label,
-            items: unknownCategories.includes(
-              categoryName as keyof typeof urlSpec
-            )
-              ? undefined
-              : statSpecToItems(categoryName, pageName, items),
-            categoryToFetch: unknownCategories.includes(
-              categoryName as keyof typeof urlSpec
-            )
-              ? (categoryName as keyof typeof urlSpec)
-              : undefined,
-          })
+          ([categoryName, { label, items }]) => {
+            const isUnknownCategory = unknownCategories.includes(categoryName);
+            return {
+              label,
+              items: isUnknownCategory
+                ? undefined
+                : statSpecToItems(categoryName, pageName, items),
+              categoryToFetch: isUnknownCategory ? categoryName : undefined,
+            };
+          }
         ),
         lastUpdated: undefined,
       })),
@@ -191,8 +188,8 @@ export function useDefaultLayout(statsSpec: StatsSpec): StatLayout {
 export function queryCountPromiseGenerator(
   query: SpecifyResource<SpQuery>
 ): () => Promise<string> {
-  return async () => {
-    const ajaxPromise = ajax<{
+  return async () =>
+    ajax<{
       readonly count: number;
     }>('/stored_query/ephemeral/', {
       method: 'POST',
@@ -205,8 +202,6 @@ export function queryCountPromiseGenerator(
         countOnly: true,
       }),
     }).then(({ data }) => formatNumber(data.count));
-    return ajaxPromise;
-  };
 }
 
 export const useQuerySpecToResource = (
@@ -396,22 +391,25 @@ export function useUnknownCategory(
                   items:
                     unknownCategory.items ??
                     (unknownCategory.categoryToFetch === undefined ||
-                    backEndResponse?.[unknownCategory.categoryToFetch] ===
-                      undefined ||
+                    backEndResponse?.[
+                      unknownCategory.categoryToFetch as keyof BackendStatsResult
+                    ] === undefined ||
                     unknownCategory.categoryToFetch !== categoryName
                       ? undefined
-                      : Object.entries(backEndResponse[categoryName]).map(
-                          ([itemName, rawValue]) => ({
-                            type: 'DefaultStat',
-                            pageName,
-                            itemName: 'phantomItem',
-                            categoryName,
-                            itemLabel: itemName,
-                            itemValue: spec.formatter(rawValue),
-                            itemType: 'BackendStat',
-                            pathToValue: itemName as keyof BackendStatsResult,
-                          })
-                        )),
+                      : Object.entries(
+                          backEndResponse[
+                            categoryName as keyof BackendStatsResult
+                          ]
+                        ).map(([itemName, rawValue]) => ({
+                          type: 'DefaultStat',
+                          pageName,
+                          itemName: 'phantomItem',
+                          categoryName,
+                          itemLabel: itemName,
+                          itemValue: spec.formatter(rawValue),
+                          itemType: 'BackendStat',
+                          pathToValue: itemName as keyof BackendStatsResult,
+                        }))),
                 }))
               );
             }

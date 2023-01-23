@@ -107,9 +107,14 @@ export function StatsPage(): JSX.Element | null {
     pageIndex: 0,
   });
 
-  const categoriesToFetchInitially = useCategoryToFetch(
-    activePage.isCollection ? collectionLayout : personalLayout
-  );
+  const setLayout = activePage.isCollection
+    ? setCollectionLayout
+    : setPersonalLayout;
+  const sourceLayout = activePage.isCollection
+    ? collectionLayout
+    : personalLayout;
+
+  const categoriesToFetchInitially = useCategoryToFetch(sourceLayout);
 
   const allCategories = React.useMemo(() => Object.keys(urlSpec), []);
 
@@ -166,12 +171,6 @@ export function StatsPage(): JSX.Element | null {
     ? undefined
     : personalLayout[activePage.pageIndex];
 
-  const setLayout = activePage.isCollection
-    ? setCollectionLayout
-    : setPersonalLayout;
-  const sourceLayout = activePage.isCollection
-    ? collectionLayout
-    : personalLayout;
   const handleChange = React.useCallback(
     (
       newCategories: (

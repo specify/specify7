@@ -1,5 +1,4 @@
 import { RA } from '../../utils/types';
-import { statsSpec } from './StatsSpec';
 
 export const urlSpec = {
   preparations: '/statistics/collection/preparations/',
@@ -8,7 +7,4 @@ export const urlSpec = {
   localityGeography: '/statistics/collection/locality_geography/',
 };
 
-export const unknownCategories: RA<keyof typeof statsSpec[string]> = [
-  'preparations',
-  'typeSpecimens',
-];
+export const unknownCategories: RA<string> = ['preparations', 'typeSpecimens'];
