@@ -97,16 +97,16 @@ export function Categories({
                 <Input.Text
                   required
                   value={label}
-                  onValueChange={(newname): void => {
-                    handleCategoryRename(newname, categoryIndex);
-                  }}
+                  onValueChange={(newname): void =>
+                    handleCategoryRename(newname, categoryIndex)
+                  }
                 />
               )}
               <Ul
                 className={
                   handleItemRename === undefined
                     ? 'flex-1 overflow-auto'
-                    : 'grid grid-cols-[auto_1fr_max-content] gap-2 overflow-auto '
+                    : 'grid grid-cols-[auto_1fr_max-content] gap-2 overflow-auto'
                 }
               >
                 {items !== undefined
