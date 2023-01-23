@@ -107,7 +107,7 @@ function BackEndItem({
 }: {
   readonly statValue: string | number | undefined;
   readonly urlToFetch: string;
-  readonly pathToValue: string;
+  readonly pathToValue: keyof BackendStatsResult;
   readonly statLabel: string;
   readonly isDefault: boolean;
   readonly formatter: (rawValue: any) => string;
@@ -128,9 +128,9 @@ function BackEndItem({
             },
           }).then(({ data }) => data),
         urlToFetch
-      ).then((data) => {
-        return formatter(data[pathToValue as keyof BackendStatsResult]);
-      }),
+      ).then((data) =>
+        formatter(data[pathToValue as keyof BackendStatsResult])
+      ),
     [pathToValue, urlToFetch]
   );
   useStatValueLoad(statValue, promiseGenerator, handleItemValueLoad);

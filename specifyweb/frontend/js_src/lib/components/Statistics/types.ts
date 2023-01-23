@@ -27,7 +27,7 @@ export type DefaultStat = State<
     readonly itemLabel: string;
     readonly itemValue: number | string | undefined;
     readonly isVisible?: boolean;
-    readonly pathToValue?: string;
+    readonly pathToValue?: keyof BackendStatsResult;
   }
 >;
 
@@ -90,7 +90,7 @@ export type BackendStatsResult = {
 export type BackEndStat = State<
   'BackEndStat',
   {
-    readonly pathToValue: string | undefined;
+    readonly pathToValue: keyof BackendStatsResult | undefined;
     readonly urlToFetch: string;
     readonly formatter: (rawResult: any) => string;
   }

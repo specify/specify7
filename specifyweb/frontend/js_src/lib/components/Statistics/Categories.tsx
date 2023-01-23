@@ -120,7 +120,7 @@ export function Categories({
                           statsSpec={statsSpec}
                           onValueLoad={handleValueLoad}
                           onSpecChanged={
-                            handleSpecChanged !== undefined
+                            !checkEmptyItems
                               ? item.type === 'DefaultStat'
                                 ? handleClick !== undefined
                                   ? (tableName, newFields, itemName): void => {
@@ -148,7 +148,7 @@ export function Categories({
                             item.type === 'CustomStat'
                               ? undefined
                               : typeof handleClick === 'function'
-                              ? handleSpecChanged === undefined
+                              ? checkEmptyItems
                                 ? (): void =>
                                     handleClick({
                                       type: 'DefaultStat',
@@ -168,10 +168,10 @@ export function Categories({
                               : undefined
                           }
                           onRemove={
-                            handleRemove === undefined
-                              ? undefined
-                              : (): void =>
+                            typeof handleRemove === 'function'
+                              ? (): void =>
                                   handleRemove(categoryIndex, itemIndex)
+                              : undefined
                           }
                           onItemRename={
                             typeof handleItemRename === 'function'
@@ -192,7 +192,8 @@ export function Categories({
               {typeof handleCategoryRename === 'function' ? (
                 <span className="-mt-2 flex-1" />
               ) : null}
-              {handleAdd !== undefined && handleRemove !== undefined ? (
+              {typeof handleAdd === 'function' &&
+              typeof handleRemove === 'function' ? (
                 <div className="flex gap-2">
                   <Button.Small
                     variant={className.blueButton}
@@ -210,9 +211,8 @@ export function Categories({
                           : (pageLayout.categories[categoryIndex].items?.some(
                               (item) => item.type === 'CustomStat'
                             ) as boolean);
-                      if (containsCustom) {
-                        setRemoveCategory({ categoryIndex });
-                      } else {
+                      if (containsCustom) setRemoveCategory({ categoryIndex });
+                      else {
                         handleRemove(categoryIndex, undefined);
                       }
                     }}

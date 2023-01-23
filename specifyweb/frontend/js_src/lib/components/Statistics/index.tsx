@@ -118,8 +118,8 @@ export function StatsPage(): JSX.Element | null {
   const [categoriesToFetch, setCategoriesToFetch] = useTriggerState<RA<string>>(
     categoriesToFetchInitially
   );
-  const backEndResponse = useBackendApi(categoriesToFetch, false);
-  const defaultBackEndResponse = useBackendApi(allCategories, false);
+  const backEndResponse = useBackendApi(categoriesToFetch);
+  const defaultBackEndResponse = useBackendApi(allCategories);
   const statsSpec = useStatsSpec();
   const defaultLayoutSpec = useDefaultLayout(statsSpec);
 
@@ -276,11 +276,10 @@ export function StatsPage(): JSX.Element | null {
     pageIndex: number
   ): StatLayout => {
     const lastUpdatedDate = new Date();
-    return layout.map((pageLayout, index) => ({
-      ...pageLayout,
-      lastUpdated:
-        pageIndex === index ? lastUpdatedDate.toJSON() : pageLayout.lastUpdated,
-    }));
+    return replaceItem(layout, pageIndex, {
+      ...layout[pageIndex],
+      lastUpdated: lastUpdatedDate.toJSON(),
+    });
   };
 
   const handleAdd = (

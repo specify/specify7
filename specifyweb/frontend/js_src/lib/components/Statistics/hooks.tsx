@@ -32,8 +32,7 @@ import { SerializedResource } from '../DataModel/helperTypes';
  * Fetch backend statistics from the API
  */
 export function useBackendApi(
-  categoryToFetch: RA<string>,
-  showDialog = false
+  categoryToFetch: RA<string>
 ): BackendStatsResult | undefined {
   const backEndStatPromises = React.useMemo(
     () =>
@@ -44,7 +43,7 @@ export function useBackendApi(
   );
   const [backendStat] = useMultipleAsyncState<BackendStatsResult>(
     backEndStatPromises,
-    showDialog
+    false
   );
   return backendStat;
 }
@@ -386,35 +385,35 @@ export function useUnknownCategory(
       Object.entries(pageSpec).forEach(([categoryName, categorySpec]) =>
         Object.entries(categorySpec.items ?? {}).forEach(
           ([itemName, { spec }]) => {
-            if (itemName === 'phantomItem' && spec.type === 'BackEndStat') {
-              if (Object.keys(backEndResponse ?? {}).includes(categoryName)) {
-                handleChange((oldCategory) =>
-                  oldCategory.map((unknownCategory) => {
-                    return {
-                      ...unknownCategory,
-                      items:
-                        unknownCategory.items ??
-                        (unknownCategory.categoryToFetch === undefined ||
-                        backEndResponse?.[unknownCategory.categoryToFetch] ===
-                          undefined ||
-                        unknownCategory.categoryToFetch !== categoryName
-                          ? undefined
-                          : Object.entries(backEndResponse[categoryName]).map(
-                              ([itemName, rawValue]) => ({
-                                type: 'DefaultStat',
-                                pageName,
-                                itemName: 'phantomItem',
-                                categoryName,
-                                itemLabel: itemName,
-                                itemValue: spec.formatter(rawValue),
-                                itemType: 'BackendStat',
-                                pathToValue: itemName,
-                              })
-                            )),
-                    };
-                  })
-                );
-              }
+            if (
+              itemName === 'phantomItem' &&
+              spec.type === 'BackEndStat' &&
+              Object.keys(backEndResponse ?? {}).includes(categoryName)
+            ) {
+              handleChange((oldCategory) =>
+                oldCategory.map((unknownCategory) => ({
+                  ...unknownCategory,
+                  items:
+                    unknownCategory.items ??
+                    (unknownCategory.categoryToFetch === undefined ||
+                    backEndResponse?.[unknownCategory.categoryToFetch] ===
+                      undefined ||
+                    unknownCategory.categoryToFetch !== categoryName
+                      ? undefined
+                      : Object.entries(backEndResponse[categoryName]).map(
+                          ([itemName, rawValue]) => ({
+                            type: 'DefaultStat',
+                            pageName,
+                            itemName: 'phantomItem',
+                            categoryName,
+                            itemLabel: itemName,
+                            itemValue: spec.formatter(rawValue),
+                            itemType: 'BackendStat',
+                            pathToValue: itemName as keyof BackendStatsResult,
+                          })
+                        )),
+                }))
+              );
             }
           }
         )
