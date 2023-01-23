@@ -484,20 +484,23 @@ export function QueryComboBox({
                               fieldName === 'rankId'
                                 ? {
                                     field: 'rankId',
-                                    operation: 'lessThan',
-                                    values: [startValue],
+                                    isNot: false,
+                                    operation: 'less',
+                                    value: startValue,
                                   }
                                 : fieldName === 'nodeNumber'
                                 ? {
                                     field: 'nodeNumber',
-                                    operation: 'notBetween',
-                                    values: startValue.split(','),
+                                    operation: 'between',
+                                    isNot: true,
+                                    value: startValue,
                                   }
                                 : fieldName === 'collectionRelTypeId'
                                 ? {
                                     field: 'id',
                                     operation: 'in',
-                                    values: startValue.split(','),
+                                    isNot: false,
+                                    value: startValue,
                                   }
                                 : f.error(`extended filter not created`, {
                                     fieldName,

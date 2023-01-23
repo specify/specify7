@@ -13,17 +13,21 @@ import { hasTreeAccess } from '../Permissions/helpers';
 import { deserializeResource } from '../DataModel/serializers';
 import { postProcessTypeSearch, TypeSearch } from '../QueryComboBox/spec';
 import { LocalizedString } from 'typesafe-i18n';
+import { defined } from '../../utils/types';
 
 const hostTaxonTypeSearch = f.store<TypeSearch>(() =>
-  postProcessTypeSearch({
-    name: 'HostTaxon' as LocalizedString,
-    table: schema.models.Taxon,
-    searchFields: ['fullName'],
-    displayFields: ['fullName'],
-    format: '%s' as LocalizedString,
-    formatter: 'Taxon' as LocalizedString,
-    query: undefined,
-  })
+  defined(
+    postProcessTypeSearch({
+      name: 'HostTaxon' as LocalizedString,
+      table: schema.models.Taxon,
+      searchFields: ['fullName'],
+      displayFields: ['fullName'],
+      format: '%s' as LocalizedString,
+      formatter: 'Taxon' as LocalizedString,
+      query: undefined,
+    }),
+    'Unable to parse host taxon type search'
+  )
 );
 
 export function HostTaxon({

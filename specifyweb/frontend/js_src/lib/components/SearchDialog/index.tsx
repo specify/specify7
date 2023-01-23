@@ -33,6 +33,12 @@ import { RenderForm } from '../Forms/SpecifyForm';
 import { useViewDefinition } from '../Forms/useViewDefinition';
 import { xmlToSpec } from '../Syncer/xmlUtils';
 import { dialogsSpec } from './spec';
+import { SpQueryField } from '../DataModel/types';
+import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
+import {
+  QueryFieldFilter,
+  queryFieldFilters,
+} from '../QueryBuilder/FieldFilter';
 
 export const searchDialogDefinitions = f
   .all({
@@ -49,9 +55,10 @@ export const searchDialogDefinitions = f
 const resourceLimit = 100;
 
 export type QueryComboBoxFilter<SCHEMA extends AnySchema> = {
-  readonly field: keyof CommonFields | keyof SCHEMA['fields'];
-  readonly operation: 'in' | 'lessThan' | 'notBetween' | 'notIn';
-  readonly values: RA<string>;
+  readonly field: string & (keyof CommonFields | keyof SCHEMA['fields']);
+  readonly isNot: boolean;
+  readonly operation: QueryFieldFilter & ('in' | 'less' | 'between');
+  readonly value: string;
 };
 
 /**
@@ -199,6 +206,7 @@ export function SearchDialog<SCHEMA extends AnySchema>({
   ) : viewName === false ? (
     <QueryBuilderSearch
       forceCollection={forceCollection}
+      extraFilters={extraFilters}
       model={templateResource.specifyModel}
       multiple={multiple}
       onClose={handleClose}
@@ -218,44 +226,52 @@ const filterResults = <SCHEMA extends AnySchema>(
     extraFilters.every((filter) => testFilter(result, filter))
   );
 
-const testFilter = <SCHEMA extends AnySchema>(
+function testFilter<SCHEMA extends AnySchema>(
   resource: SpecifyResource<SCHEMA>,
-  { operation, field, values }: QueryComboBoxFilter<SCHEMA>
-): boolean =>
-  operation === 'notBetween'
-    ? (resource.get(field) ?? 0) < values[0] ||
-      (resource.get(field) ?? 0) > values[1]
-    : operation === 'in'
-    ? values.some(f.equal(resource.get(field)))
-    : operation === 'notIn'
-    ? values.every(f.notEqual(resource.get(field)))
-    : operation === 'lessThan'
-    ? values.every((value) => (resource.get(field) ?? 0) < value)
-    : error('Invalid Query Combo Box search filter', {
-        filter: {
-          operation,
-          field,
-          values,
-        },
-        resource,
-      });
+  { operation, field, value, isNot }: QueryComboBoxFilter<SCHEMA>
+): boolean {
+  const values = value.split(',').map(f.trim);
+  const result =
+    operation === 'between'
+      ? (resource.get(field) ?? 0) >= values[0] &&
+        (resource.get(field) ?? 0) <= values[1]
+      : operation === 'in'
+      ? values.some(f.equal(resource.get(field)))
+      : operation === 'less'
+      ? values.every((value) => (resource.get(field) ?? 0) < value)
+      : error('Invalid Query Combo Box search filter', {
+          filter: {
+            operation,
+            field,
+            values,
+          },
+          resource,
+        });
+  return isNot ? !result : result;
+}
 
 function QueryBuilderSearch<SCHEMA extends AnySchema>({
   forceCollection,
+  extraFilters,
   model,
   onSelected: handleSelected,
   onClose: handleClose,
   multiple,
 }: {
   readonly forceCollection: number | undefined;
+  readonly extraFilters: RA<QueryComboBoxFilter<SCHEMA>>;
   readonly model: SpecifyModel<SCHEMA>;
   readonly onClose: () => void;
   readonly onSelected: (resources: RA<SpecifyResource<SCHEMA>>) => void;
   readonly multiple: boolean;
 }): JSX.Element {
   const query = React.useMemo(
-    () => createQuery(commonText.search(), model),
-    [model]
+    () =>
+      createQuery(commonText.search(), model).set(
+        'fields',
+        toQueryFields(model, extraFilters)
+      ),
+    [model, extraFilters]
   );
   const [selected, setSelected] = React.useState<RA<number>>([]);
   return (
@@ -292,3 +308,15 @@ function QueryBuilderSearch<SCHEMA extends AnySchema>({
     </Dialog>
   );
 }
+
+const toQueryFields = <SCHEMA extends AnySchema>(
+  model: SpecifyModel<SCHEMA>,
+  filters: RA<QueryComboBoxFilter<SCHEMA>>
+): RA<SpecifyResource<SpQueryField>> =>
+  filters.map(({ field, operation, isNot, value }) =>
+    QueryFieldSpec.fromPath(model.name, [field])
+      .toSpQueryField()
+      .set('operStart', queryFieldFilters[operation].id)
+      .set('isNot', isNot)
+      .set('startValue', value)
+  );

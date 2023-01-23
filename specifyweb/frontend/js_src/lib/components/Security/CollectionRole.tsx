@@ -230,8 +230,11 @@ function RoleUsers({
               extraFilters={[
                 {
                   field: 'id',
-                  operation: 'notIn',
-                  values: userRoles.map(({ userId }) => userId.toString()),
+                  isNot: true,
+                  operation: 'in',
+                  value: userRoles
+                    .map(({ userId }) => userId.toString())
+                    .join(','),
                 },
               ]}
               forceCollection={undefined}

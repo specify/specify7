@@ -22,7 +22,11 @@ export const globalEvents = eventListener<{
   readonly newResource: SpecifyResource<AnySchema>;
 }>();
 
-// FEATURE: consider replacing this with Query Builder
+/*
+ * FEATURE: consider replacing this with Query Builder
+ *   Unfortunately, express search query syntax does not match query builder's
+ *   syntax so behavior would differ.
+ */
 export const queryCbxExtendedSearch = async <SCHEMA extends AnySchema>(
   templateResource: SpecifyResource<SCHEMA>,
   forceCollection: number | undefined
