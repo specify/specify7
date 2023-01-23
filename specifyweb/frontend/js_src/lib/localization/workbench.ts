@@ -1315,4 +1315,14 @@ export const wbText = createDictionary({
     'fr-fr': 'Mise à jour des arbres...',
     'uk-ua': 'Оновлення дерев...',
   },
+  recordSetName: {
+    comment:
+      'Default name of the record that would be created based on upload results',
+    'en-us': 'WB upload of "{dataSet:string}"',
+    'ru-ru': 'WB загрузка "{dataSet:string}"',
+  },
+  ambiguousTaxaChild: {
+    'en-us': '{node:string} (in {parent:string})',
+    'ru-ru': '{node:string} (в {parent:string})',
+  },
 } as const);

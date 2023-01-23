@@ -207,4 +207,28 @@ export const localityText = createDictionary({
     'fr-fr': 'Basculer en plein écran',
     'uk-ua': 'Перемкнути повний екран',
   },
+  degrees: {
+    'en-us': 'DD.DDDD (32.7619)',
+    'ru-ru': 'DD.DDDD (32.7619)',
+  },
+  degreesMinutes: {
+    'en-us': 'DD MMMM (32. 45.714)',
+    'ru-ru': 'DD MMMM (32. 45.714)',
+  },
+  degreesMinutesSeconds: {
+    'en-us': 'DD MM SS.SS (32 45 42.84)',
+    'ru-ru': 'DD MM SS.SS (32 45 42.84)',
+  },
+  degreesWithDirection: {
+    'en-us': 'DD.DDDD N/S/E/W (32.7619 N)',
+    'ru-ru': 'DD.DDDD N/S/E/W (32.7619 N)',
+  },
+  degreesMinutesWithDirection: {
+    'en-us': 'DD MM.MM N/S/E/W (32 45.714 N)',
+    'ru-ru': 'DD MM.MM N/S/E/W (32 45.714 N)',
+  },
+  degreesMinutesSecondsWithDirection: {
+    'en-us': 'DD MM SS.SS N/S/E/W (32 45 42.84 N)',
+    'ru-ru': 'DD MM SS.SS N/S/E/W (32 45 42.84 N)',
+  },
 } as const);

@@ -22,7 +22,7 @@ import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { cachableUrl } from '../InitialContext';
 import { DateElement } from '../Molecules/DateElement';
 import { Dialog } from '../Molecules/Dialog';
-import { FormattedResource } from '../Molecules/FormattedResource';
+import { FormattedResourceUrl } from '../Molecules/FormattedResource';
 import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import { formatUrl } from '../Router/queryString';
 import { OverlayContext } from '../Router/Router';
@@ -225,7 +225,7 @@ function ReportRow({
               <DateElement date={resource.timestampCreated} />
             </td>
             <td>
-              <FormattedResource resourceUrl={resource.specifyUser} />
+              <FormattedResourceUrl resourceUrl={resource.specifyUser} />
             </td>
             <td>
               <Link.Icon
