@@ -1,5 +1,5 @@
 from django.db import connection
-from django.db.models import F, Q, ProtectedError
+from django.db.models import F
 
 def node_in_parent(parent_nn, parent_hcnn):
     return (
@@ -12,58 +12,54 @@ def node_in_parent(parent_nn, parent_hcnn):
 def get_initial_gap(node, tree):
     cursor = connection.cursor()
     sql_str = (
-        "select min(nodenumber)\n"
-        "from {tree}\n"
+        "select min(nodenumber) "
+        "from {tree} "
         "where {node_in_parent}"
     ).format(
         tree=tree,
-        parent_nn=node.node_number,
-        node_in_parent = node_in_parent(node.node_number,
-                                        node.highest_child_node_number
+        node_in_parent = node_in_parent(node.nodenumber,
+                                        node.highestchildnodenumber
                                         )
     )
     cursor.execute(sql_str)
-    is_empty_node = cursor.rowcount == 0
-    if is_empty_node:
-        return 0
     min_node_number, = cursor.fetchone()
-    return min_node_number - node.node_number  - 1
+    if min_node_number is None:
+        return 0
+    return min_node_number - node.nodenumber  - 1
 
 def get_final_gap(node, tree):
     cursor = connection.cursor()
     sql_str = (
-        "select max(highestchildnodenumber)\n"
-        "from {tree}\n"
+        "select max(highestchildnodenumber) "
+        "from {tree} "
         "where {node_in_parent}"
     ).format(
         tree=tree,
-        parent_nn = node.node_number,
-        node_in_parent=node_in_parent(node.node_number,
-                                      node.highest_child_node_number
+        node_in_parent=node_in_parent(node.nodenumber,
+                                      node.highestchildnodenumber
                                       )
     )
     cursor.execute(sql_str)
-    is_empty_node = cursor.rowcount == 0
-    if is_empty_node:
-        return 0
     max_hcnn, = cursor.fetchone()
-    return node.highest_child_node_number - max_hcnn
+    if max_hcnn is None:
+        return 0
+    return node.highestchildnodenumber - max_hcnn
 
 def get_total_gap(node, tree):
     cursor = connection.cursor()
     sql_str = (
-        "select count(*)\n"
-        "from {tree}\n"
+        "select count(*) "
+        "from {tree} "
         "where {node_in_parent}"
     ).format(
         tree=tree,
-        node_in_parent=node_in_parent(node.node_number,
-                                       node.highest_child_node_number
+        node_in_parent=node_in_parent(node.nodenumber,
+                                       node.highestchildnodenumber
                                        )
     )
     cursor.execute(sql_str)
     child_count, = cursor.fetchone()
-    return node.highest_child_node_number - node.node_number - child_count
+    return node.highestchildnodenumber - node.nodenumber - child_count
 
 def get_interstitial_gap_nn(node, tree):
     initial_gap = get_initial_gap(node, tree)
@@ -73,9 +69,9 @@ def get_interstitial_gap_nn(node, tree):
 
 def get_ordered_children(node):
     model = type(node)
-    ordered_children = list(model.object.filter(
-        nodenumber__gt=node.node_number,
-        highestchildnodenumber__lte=node.highest_child_node_number
+    ordered_children = list(model.objects.filter(
+        nodenumber__gt=node.nodenumber,
+        highestchildnodenumber__lte=node.highestchildnodenumber
     ).order_by('nodenumber'))
     return ordered_children
 
@@ -83,8 +79,8 @@ def shift_subtree_by_steps(node, step):
     model = type(node)
     if step == 0:
         return
-    model.objects.filter(nodenumber__gte=node.node_number,
-                         highestchildnodenumber__lte=node.highest_child_node_number
+    model.objects.filter(nodenumber__gte=node.nodenumber,
+                         highestchildnodenumber__lte=node.highestchildnodenumber
                          )\
         .update(
         nodenumber=F('nodenumber') + step,
@@ -115,7 +111,7 @@ def squeeze_interval(node_to_squeeze, tree, squeeze_size, forward=True):
         if previous_child is None:
             squeeze_child_by = min(possible_child_squeeze, remaining_interstitial_gap)
         else:
-            interstitial_squeezed_by = min((child.node_number - previous_child.highest_child_node_number) if forward else abs(child.highest_child_node_number - previous_child.node_number) - 1, remaining_interstitial_gap)
+            interstitial_squeezed_by = min((child.nodenumber - previous_child.highestchildnodenumber) if forward else abs(child.highestchildnodenumber - previous_child.nodenumber) - 1, remaining_interstitial_gap)
             squeeze_child_by = min(possible_child_squeeze, (remaining_interstitial_gap - interstitial_squeezed_by))
             for previous_children in direct_children[:index]:
                 shift_subtree_by_steps(previous_children, (interstitial_squeezed_by + squeeze_child_by)*forward_unary)
@@ -124,9 +120,9 @@ def squeeze_interval(node_to_squeeze, tree, squeeze_size, forward=True):
         previous_child = child
 
     if forward:
-        node_to_squeeze.node_number += squeeze_size
+        node_to_squeeze.nodenumber += squeeze_size
     else:
-        node_to_squeeze.highest_child_node_number -= squeeze_size
+        node_to_squeeze.highestchildnodenumber -= squeeze_size
 
 
 
