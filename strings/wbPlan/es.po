@@ -2,29 +2,29 @@ msgid ""
 msgstr "Content-Type: text/plain\n"
 
 #: components/UserPreferences/Definitions.tsx:1451
-#: components/WorkBench/Template.tsx:118
-#: components/WorkBench/wbView.js:1877
-#. Used in: Components > User Preferences > Definitions ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
+#: components/WorkBench/DevShowPlan.tsx:64
+#: components/WorkBench/Template.tsx:121
+#. Used in: Components > User Preferences > Definitions ⬤ Components > Work Bench > Dev Show Plan ⬤ Components > Work Bench > Template
 msgid "dataMapper"
 msgstr "Mapeador de datos"
 
 #: components/WbPlanView/State.tsx:37
-#: components/WorkBench/wbView.js:259
-#: components/WorkBench/wbView.js:1967
+#: components/WorkBench/wbView.js:261
+#: components/WorkBench/wbView.js:1872
 #. Used in: Components > Wb Plan View > State ⬤ Components > Work Bench > Wb View
 msgid "noUploadPlan"
 msgstr "No se define ningún plan de carga"
 
-#: components/WorkBench/wbView.js:273
-#: components/WorkBench/wbView.js:1968
+#: components/WorkBench/wbView.js:276
+#: components/WorkBench/wbView.js:1883
 #. Used in: Components > Work Bench > Wb View
 msgid "noUploadPlanDescription"
 msgstr ""
 "No se ha definido ningún plan de carga para este conjunto de datos. ¿Crear "
 "una ahora?"
 
-#: components/WorkBench/wbView.js:383
-#: components/WorkBench/wbView.js:384
+#: components/WorkBench/wbView.js:387
+#: components/WorkBench/wbView.js:388
 #. Used in: Components > Work Bench > Wb View
 msgid "unmappedColumn"
 msgstr "Columna sin asignar"

@@ -17,9 +17,9 @@ msgid "failedParsingFloat"
 msgstr "значение \"{value:string}\" не является допустимым числом с плавающей точкой"
 
 #: components/WorkBench/resultsParser.ts:177
-#: components/WorkBench/wbView.js:851
-#: components/WorkBench/wbView.js:858
-#: components/WorkBench/wbView.js:1354
+#: components/WorkBench/wbView.js:855
+#: components/WorkBench/wbView.js:862
+#: components/WorkBench/wbView.js:1358
 #. Used in: Components > Work Bench > Results Parser ⬤ Components > Work Bench > Wb View
 msgid "failedParsingPickList"
 msgstr ""

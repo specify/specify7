@@ -177,7 +177,7 @@ msgstr "No Data."
 msgid "recordSet"
 msgstr "Record Set"
 
-#: components/Toolbar/RecordSetEdit.tsx:38
+#: components/Toolbar/RecordSetEdit.tsx:40
 #. Used in: Components > Toolbar > Record Set Edit
 msgid "recordSetDeletionWarning"
 msgstr ""

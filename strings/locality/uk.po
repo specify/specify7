@@ -12,7 +12,7 @@ msgstr "Відкрийте карту"
 #: components/QueryBuilder/ToMap.tsx:59
 #: components/QueryBuilder/ToMap.tsx:241
 #: components/UserPreferences/Definitions.tsx:1525
-#: components/WorkBench/Template.tsx:226
+#: components/WorkBench/Template.tsx:229
 #. Used in: Components > Leaflet > Map ⬤ Components > Query Builder > To Map ⬤ Components > User Preferences > Definitions ⬤ Components > Work Bench > Template
 #, fuzzy
 msgid "geoMap"
@@ -74,24 +74,22 @@ msgstr "Шпильки"
 msgid "occurrencePolygons"
 msgstr "Багатокутники"
 
-#: components/FormPlugins/GeoLocate.tsx:122
-#: components/FormPlugins/GeoLocate.tsx:138
-#: components/FormPlugins/GeoLocate.tsx:221
-#: components/WorkBench/Template.tsx:216
-#: components/WorkBench/wbUtils.js:723
-#: components/WorkBench/wbUtils.js:731
-#. Used in: Components > Form Plugins > Geo Locate ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb Utils
+#: components/FormPlugins/GeoLocate.tsx:33
+#: components/Molecules/GeoLocate.tsx:81
+#: components/Molecules/GeoLocate.tsx:90
+#: components/WorkBench/Template.tsx:219
+#. Used in: Components > Form Plugins > Geo Locate ⬤ Components > Molecules > Geo Locate ⬤ Components > Work Bench > Template
 #, fuzzy
 msgid "geoLocate"
 msgstr "GEOLocate"
 
-#: components/FormPlugins/GeoLocate.tsx:107
+#: components/FormPlugins/GeoLocate.tsx:114
 #. Used in: Components > Form Plugins > Geo Locate
 #, fuzzy
 msgid "geographyRequired"
 msgstr "Географія повинна бути нанесена на карту"
 
-#: components/FormPlugins/GeoLocate.tsx:110
+#: components/FormPlugins/GeoLocate.tsx:117
 #. Used in: Components > Form Plugins > Geo Locate
 #, fuzzy
 msgid "geographyRequiredDescription"
@@ -168,3 +166,33 @@ msgstr "Довгота"
 #, fuzzy
 msgid "toggleFullScreen"
 msgstr "Перемкнути повний екран"
+
+#: components/WorkBench/CoordinateConverter.tsx:23
+#. Used in: Components > Work Bench > Coordinate Converter
+msgid "degrees"
+msgstr ""
+
+#: components/WorkBench/CoordinateConverter.tsx:28
+#. Used in: Components > Work Bench > Coordinate Converter
+msgid "degreesMinutes"
+msgstr ""
+
+#: components/WorkBench/CoordinateConverter.tsx:33
+#. Used in: Components > Work Bench > Coordinate Converter
+msgid "degreesMinutesSeconds"
+msgstr ""
+
+#: components/WorkBench/CoordinateConverter.tsx:38
+#. Used in: Components > Work Bench > Coordinate Converter
+msgid "degreesWithDirection"
+msgstr ""
+
+#: components/WorkBench/CoordinateConverter.tsx:43
+#. Used in: Components > Work Bench > Coordinate Converter
+msgid "degreesMinutesWithDirection"
+msgstr ""
+
+#: components/WorkBench/CoordinateConverter.tsx:48
+#. Used in: Components > Work Bench > Coordinate Converter
+msgid "degreesMinutesSecondsWithDirection"
+msgstr ""

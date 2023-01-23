@@ -4,7 +4,7 @@ msgstr "Content-Type: text/plain\n"
 #: components/QueryBuilder/Header.tsx:67
 #: components/QueryBuilder/Toolbar.tsx:61
 #: components/Reports/RecordSets.tsx:99
-#: components/Toolbar/RecordSetEdit.tsx:47
+#: components/Toolbar/RecordSetEdit.tsx:49
 #: components/TreeView/Actions.tsx:85
 #: components/TreeView/Actions.tsx:88
 #. Used in: Components > Query Builder > Header ⬤ Components > Query Builder > Toolbar ⬤ Components > Reports > Record Sets ⬤ Components > Toolbar > Record Set Edit ⬤ Components > Tree View > Actions
@@ -198,7 +198,8 @@ msgstr "Crear archivo KML"
 
 #: components/QueryBuilder/Components.tsx:215
 #: components/QueryBuilder/Results.tsx:500
-#. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Results
+#: components/WorkBench/RecordSet.tsx:36
+#. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Results ⬤ Components > Work Bench > Record Set
 #, fuzzy
 msgid "createRecordSet"
 msgstr "Crear conjunto de registros"

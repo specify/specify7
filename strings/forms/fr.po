@@ -211,7 +211,7 @@ msgstr "Pas de données."
 msgid "recordSet"
 msgstr "Jeu d'enregistrements"
 
-#: components/Toolbar/RecordSetEdit.tsx:38
+#: components/Toolbar/RecordSetEdit.tsx:40
 #. Used in: Components > Toolbar > Record Set Edit
 #, fuzzy
 msgid "recordSetDeletionWarning"

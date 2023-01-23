@@ -4,20 +4,20 @@ msgstr "Content-Type: text/plain\n"
 #: components/Header/menuItemDefinitions.ts:103
 #: components/Router/OverlayRoutes.tsx:117
 #: components/UserPreferences/Definitions.tsx:1327
-#: components/WorkBench/wbView.js:229
+#: components/WorkBench/wbView.js:230
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > User Preferences > Definitions ⬤ Components > Work Bench > Wb View
 msgid "workBench"
 msgstr "WorkBench"
 
+#: components/WorkBench/Components.tsx:40
 #: components/WorkBench/Status.tsx:75
-#: components/WorkBench/Template.tsx:145
-#: components/WorkBench/wbView.js:1933
-#. Used in: Components > Work Bench > Status ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
+#: components/WorkBench/Template.tsx:148
+#. Used in: Components > Work Bench > Components ⬤ Components > Work Bench > Status ⬤ Components > Work Bench > Template
 msgid "rollback"
 msgstr "Откат"
 
 #: components/WbPlanView/Mapper.tsx:379
-#: components/WorkBench/Template.tsx:127
+#: components/WorkBench/Template.tsx:130
 #. Used in: Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Template
 msgid "validate"
 msgstr "Проверить"
@@ -28,8 +28,8 @@ msgid "validation"
 msgstr "Проверка"
 
 #: components/WorkBench/Status.tsx:74
-#: components/WorkBench/Template.tsx:156
-#: components/WorkBench/wbView.js:1959
+#: components/WorkBench/Template.tsx:159
+#: components/WorkBench/wbView.js:1860
 #. Used in: Components > Work Bench > Status ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 msgid "upload"
 msgstr "Загрузка"
@@ -49,71 +49,71 @@ msgstr "Загрузка"
 msgid "validating"
 msgstr "Проверка"
 
-#: components/WorkBench/wbView.js:545
+#: components/WorkBench/wbView.js:549
 #. Used in: Components > Work Bench > Wb View
 msgid "disambiguate"
 msgstr "Устранить Неоднозначность"
 
-#: components/WorkBench/wbView.js:556
+#: components/WorkBench/wbView.js:560
 #. Used in: Components > Work Bench > Wb View
 msgid "fillDown"
 msgstr "Заполнить Вниз"
 
-#: components/WorkBench/wbView.js:564
+#: components/WorkBench/wbView.js:568
 #. Used in: Components > Work Bench > Wb View
 msgid "fillUp"
 msgstr "Заполнить Вверх"
 
-#: components/WorkBench/Template.tsx:166
-#: components/WorkBench/wbView.js:2040
+#: components/WorkBench/Template.tsx:169
+#: components/WorkBench/wbView.js:1949
 #. Used in: Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 msgid "revert"
 msgstr "Вернуть"
 
-#: components/WorkBench/wbView.js:2167
+#: components/WorkBench/wbView.js:2082
 #. Used in: Components > Work Bench > Wb View
 msgid "dataCheck"
 msgstr "Проверка данных"
 
-#: components/WorkBench/wbView.js:2161
-#: components/WorkBench/wbView.js:2164
+#: components/WorkBench/wbView.js:2076
+#: components/WorkBench/wbView.js:2079
 #. Used in: Components > Work Bench > Wb View
 msgid "dataCheckOn"
 msgstr "Проверка данных: вкл."
 
-#: components/WorkBench/DataSetMeta.tsx:380
-#: components/WorkBench/Template.tsx:193
+#: components/WorkBench/DataSetMeta.tsx:381
+#: components/WorkBench/Template.tsx:196
 #. Used in: Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Template
 msgid "changeOwner"
 msgstr "Сменить владельца"
 
-#: components/WorkBench/Template.tsx:208
+#: components/WorkBench/Template.tsx:211
 #. Used in: Components > Work Bench > Template
 msgid "convertCoordinates"
 msgstr "Преобразовать координаты"
 
-#: components/WorkBench/Template.tsx:234
+#: components/WorkBench/Template.tsx:237
 #. Used in: Components > Work Bench > Template
 msgid "navigation"
 msgstr "Навигация"
 
-#: components/WorkBench/Template.tsx:256
+#: components/WorkBench/Template.tsx:259
 #. Used in: Components > Work Bench > Template
 msgid "replace"
 msgstr "Заменять"
 
-#: components/WorkBench/Template.tsx:253
-#: components/WorkBench/Template.tsx:257
+#: components/WorkBench/Template.tsx:256
+#: components/WorkBench/Template.tsx:260
 #. Used in: Components > Work Bench > Template
 msgid "replacementValue"
 msgstr "Замена"
 
-#: components/WorkBench/Template.tsx:263
+#: components/WorkBench/Template.tsx:266
 #. Used in: Components > Work Bench > Template
 msgid "searchResults"
 msgstr "Результаты Поиска"
 
-#: components/WorkBench/Template.tsx:60
+#: components/WorkBench/Template.tsx:63
 #. Used in: Components > Work Bench > Template
 msgid "clickToToggle"
 msgstr "Нажмите, чтобы переключить видимость"
@@ -125,17 +125,17 @@ msgstr "Нажмите, чтобы переключить видимость"
 msgid "configureSearchReplace"
 msgstr "Настроить поиск и замену"
 
-#: components/WorkBench/Template.tsx:265
+#: components/WorkBench/Template.tsx:268
 #. Used in: Components > Work Bench > Template
 msgid "modifiedCells"
 msgstr "Модифицированные клетки"
 
-#: components/WorkBench/Template.tsx:267
+#: components/WorkBench/Template.tsx:270
 #. Used in: Components > Work Bench > Template
 msgid "newCells"
 msgstr "Новые клетки"
 
-#: components/WorkBench/Template.tsx:269
+#: components/WorkBench/Template.tsx:272
 #. Used in: Components > Work Bench > Template
 msgid "errorCells"
 msgstr "Ячейки с ошибками"
@@ -145,12 +145,12 @@ msgstr "Ячейки с ошибками"
 msgid "dataEditor"
 msgstr "Редактор данных"
 
-#: components/WorkBench/wbView.js:1597
+#: components/WorkBench/wbView.js:1571
 #. Used in: Components > Work Bench > Wb View
 msgid "noDisambiguationResults"
 msgstr "Невозможно устранить неуверенность"
 
-#: components/WorkBench/wbView.js:1598
+#: components/WorkBench/wbView.js:1574
 #. Used in: Components > Work Bench > Wb View
 msgid "noDisambiguationResultsDescription"
 msgstr ""
@@ -161,45 +161,45 @@ msgstr ""
 "добавить новые поля и значения в набор данных, чтобы разрешить "
 "двусмысленность."
 
-#: components/WorkBench/wbView.js:1652
-#. Used in: Components > Work Bench > Wb View
+#: components/WorkBench/Disambiguation.tsx:57
+#. Used in: Components > Work Bench > Disambiguation
 msgid "disambiguateMatches"
 msgstr "Устранение неоднозначности"
 
-#: components/WorkBench/wbView.js:1700
+#: components/WorkBench/wbView.js:1595
 #. Used in: Components > Work Bench > Wb View
 msgid "applyAllUnavailable"
 msgstr "«Применить все» недоступно, пока выполняется проверка данных."
 
-#: components/WorkBench/wbView.js:1916
-#. Used in: Components > Work Bench > Wb View
+#: components/WorkBench/Components.tsx:21
+#. Used in: Components > Work Bench > Components
 msgid "beginRollback"
 msgstr "Начать откат набора данных?"
 
-#: components/WorkBench/wbView.js:1917
-#. Used in: Components > Work Bench > Wb View
+#: components/WorkBench/Components.tsx:45
+#. Used in: Components > Work Bench > Components
 msgid "beginRollbackDescription"
 msgstr ""
 "Откат удалит новые записи данных, которые этот набор данных добавил в базу "
 "данных Specify. Весь откат будет отменен, если на загруженные данные "
 "ссылаются другие записи данных с момента они были загружены."
 
-#: components/WorkBench/wbView.js:1947
+#: components/WorkBench/wbView.js:1849
 #. Used in: Components > Work Bench > Wb View
 msgid "startUpload"
 msgstr "Начать загрузку набора данных?"
 
-#: components/WorkBench/wbView.js:1948
+#: components/WorkBench/wbView.js:1865
 #. Used in: Components > Work Bench > Wb View
 msgid "startUploadDescription"
 msgstr "Загрузка набора данных добавит данные в базу данных Specify."
 
-#: components/WorkBench/DataSetMeta.tsx:103
+#: components/WorkBench/DataSetMeta.tsx:102
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "deleteDataSet"
 msgstr "Удалить этот набор данных?"
 
-#: components/WorkBench/DataSetMeta.tsx:107
+#: components/WorkBench/DataSetMeta.tsx:106
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "deleteDataSetDescription"
 msgstr ""
@@ -207,242 +207,244 @@ msgstr ""
 "загрузки. План загрузки не будут доступным для повторного использования; "
 "Отката не будет возможным для загруженного набора данных."
 
-#: components/WorkBench/DataSetMeta.tsx:68
-#. Used in: Components > Work Bench > Data Set Meta
+#: components/WorkBench/DataSetMeta.tsx:67
+#: components/WorkBench/Template.tsx:319
+#. Used in: Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Template
 msgid "dataSetDeleted"
 msgstr "Набор данных успешно удален"
 
-#: components/WorkBench/DataSetMeta.tsx:71
-#. Used in: Components > Work Bench > Data Set Meta
+#: components/WorkBench/DataSetMeta.tsx:70
+#: components/WorkBench/Template.tsx:323
+#. Used in: Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Template
 msgid "dataSetDeletedDescription"
 msgstr "Набор данных успешно удален."
 
-#: components/WorkBench/wbView.js:2033
+#: components/WorkBench/wbView.js:1943
 #. Used in: Components > Work Bench > Wb View
 msgid "revertChanges"
 msgstr "Отменить несохраненные изменения?"
 
-#: components/WorkBench/wbView.js:2034
+#: components/WorkBench/wbView.js:1954
 #. Used in: Components > Work Bench > Wb View
 msgid "revertChangesDescription"
 msgstr ""
 "Это действие приведет к отмене всех изменений, внесенных в набор данных с "
 "момента последнего сохранение."
 
-#: components/WorkBench/wbView.js:2057
+#: components/WorkBench/wbView.js:1970
 #. Used in: Components > Work Bench > Wb View
 msgid "saving"
 msgstr "Сохранение..."
 
-#: components/WorkBench/Template.tsx:338
+#: components/WorkBench/Template.tsx:380
 #. Used in: Components > Work Bench > Template
 msgid "wbUnloadProtect"
 msgstr "Изменения в этом наборе данных не были сохранены."
 
-#: components/WorkBench/wbView.js:2271
+#: components/WorkBench/wbView.js:2186
 #. Used in: Components > Work Bench > Wb View
 msgid "noMatchErrorMessage"
 msgstr "Нет соответствующей записи для таблицы обязательного соответствия."
 
-#: components/WorkBench/wbView.js:2297
+#: components/WorkBench/wbView.js:2212
 #. Used in: Components > Work Bench > Wb View
 msgid "matchedMultipleErrorMessage"
 msgstr ""
 "Это значение соответствует двум или более существующим записям базы данных "
 "и совпадению"
 
-#: components/WorkBench/wbView.js:2499
+#: components/WorkBench/wbView.js:2413
 #. Used in: Components > Work Bench > Wb View
 msgid "validationNoErrors"
 msgstr "Проверка завершена без ошибок"
 
-#: components/WorkBench/wbView.js:2502
+#: components/WorkBench/wbView.js:2416
 #. Used in: Components > Work Bench > Wb View
 msgid "validationNoErrorsDescription"
 msgstr ""
 "Проверка завершена без ошибок. Этот набора данных готов к загрузке в базу "
 "данных."
 
-#: components/WorkBench/wbView.js:2505
-#: components/WorkBench/wbView.js:2516
+#: components/WorkBench/wbView.js:2419
+#: components/WorkBench/wbView.js:2430
 #. Used in: Components > Work Bench > Wb View
 msgid "validationReEditWarning"
 msgstr ""
 "Примечание: Если этот набор данных отредактирован и повторно сохранен, "
 "начать проверку снова, чтобы убедиться, что ошибок не было введено."
 
-#: components/WorkBench/wbView.js:2510
+#: components/WorkBench/wbView.js:2424
 #. Used in: Components > Work Bench > Wb View
 msgid "validationErrors"
 msgstr "Проверка завершена с ошибками"
 
-#: components/WorkBench/wbView.js:2513
+#: components/WorkBench/wbView.js:2427
 #. Used in: Components > Work Bench > Wb View
 msgid "validationErrorsDescription"
 msgstr "Проверка обнаружила ошибки в наборе данных."
 
-#: components/WorkBench/wbView.js:2523
+#: components/WorkBench/wbView.js:2437
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadSuccessful"
 msgstr "Загрузка завершена без ошибок"
 
-#: components/WorkBench/wbView.js:2524
+#: components/WorkBench/wbView.js:2438
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadSuccessfulDescription"
 msgstr ""
 "Нажмите кнопку «Результаты», чтобы увидеть количество новых записей "
 "добавлен в каждую таблицу базы данных"
 
-#: components/WorkBench/wbView.js:2527
+#: components/WorkBench/wbView.js:2441
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadErrors"
 msgstr "Ошибка загрузки из-за ошибок"
 
-#: components/WorkBench/wbView.js:2530
+#: components/WorkBench/wbView.js:2444
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadErrorsDescription"
 msgstr "Загрузка не удалась из-за одной или нескольких ошибок значений ячеек."
 
-#: components/WorkBench/wbView.js:2533
+#: components/WorkBench/wbView.js:2447
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadErrorsSecondDescription"
 msgstr ""
 "Проверте набор данных и наведите указатель мыши на каждую ячейку с ошибкой, "
 "затем сделайте соответствующие исправления, сохраните и повторите попытку."
 
-#: components/WorkBench/wbView.js:2538
+#: components/WorkBench/wbView.js:2452
 #. Used in: Components > Work Bench > Wb View
 msgid "dataSetRollback"
 msgstr "Набор данных был успешно откат"
 
-#: components/WorkBench/wbView.js:2539
+#: components/WorkBench/wbView.js:2453
 #. Used in: Components > Work Bench > Wb View
 msgid "dataSetRollbackDescription"
 msgstr ""
 "Этот набор данных отката сохранянен, и его можно редактировать или повторно "
 "загружать."
 
-#: components/WorkBench/wbView.js:2559
+#: components/WorkBench/wbView.js:2490
 #. Used in: Components > Work Bench > Wb View
 msgid "validationCanceled"
 msgstr "Проверка отменена"
 
-#: components/WorkBench/wbView.js:2565
+#: components/WorkBench/wbView.js:2499
 #. Used in: Components > Work Bench > Wb View
 msgid "validationCanceledDescription"
 msgstr "Проверка набора данных отменена."
 
-#: components/WorkBench/wbView.js:2561
+#: components/WorkBench/wbView.js:2492
 #. Used in: Components > Work Bench > Wb View
 msgid "rollbackCanceled"
 msgstr "Откат отменен"
 
-#: components/WorkBench/wbView.js:2567
+#: components/WorkBench/wbView.js:2501
 #. Used in: Components > Work Bench > Wb View
 msgid "rollbackCanceledDescription"
 msgstr "Откат набора данных отменен."
 
-#: components/WorkBench/wbView.js:2562
+#: components/WorkBench/wbView.js:2493
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadCanceled"
 msgstr "Загрузка отменена"
 
-#: components/WorkBench/wbView.js:2568
+#: components/WorkBench/wbView.js:2502
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadCanceledDescription"
 msgstr "Загрузка набора данных отменена."
 
-#: components/WorkBench/wbUtils.js:1032
-#. Used in: Components > Work Bench > Wb Utils
+#: components/WorkBench/CoordinateConverter.tsx:171
+#. Used in: Components > Work Bench > Coordinate Converter
 msgid "coordinateConverter"
 msgstr "Геокоординатный формат"
 
-#: components/WorkBench/wbUtils.js:1042
-#. Used in: Components > Work Bench > Wb Utils
+#: components/WorkBench/CoordinateConverter.tsx:180
+#. Used in: Components > Work Bench > Coordinate Converter
 msgid "coordinateConverterDescription"
 msgstr "Выберите предпочтительный формат геокоординат"
 
-#: components/WorkBench/wbView.js:670
+#: components/WorkBench/wbView.js:674
 #. 🟥When empty string is used as a default value for a column, this is shown instead. Used in: Components > Work Bench > Wb View
 msgid "emptyStringInline"
 msgstr "(пуста строка)"
 
-#: components/WorkBench/Template.tsx:133
-#: components/WorkBench/wbView.js:2397
+#: components/WorkBench/Template.tsx:136
+#: components/WorkBench/wbView.js:2312
 #. Used in: Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 msgid "wbUploadedUnavailable"
 msgstr "The data set must be validated or uploaded"
 
-#: components/WorkBench/wbView.js:279
+#: components/WorkBench/wbView.js:283
 #. Used in: Components > Work Bench > Wb View
 msgid "wbValidateUnavailable"
 msgstr ""
 "План загрузки должен быть определен до того, как этот набор данных может "
 "быть проверен"
 
-#: components/WorkBench/wbView.js:2392
+#: components/WorkBench/wbView.js:2307
 #. Used in: Components > Work Bench > Wb View
 msgid "unavailableWhileEditing"
 msgstr "Это действие требует сохранения всех изменений"
 
-#: components/WorkBench/wbView.js:2480
+#: components/WorkBench/wbView.js:2394
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadUnavailableWhileHasErrors"
 msgstr "Загрузка недоступна, в то время как в некоторых ячейках есть ошибки проверки"
 
-#: components/WorkBench/wbView.js:1754
+#: components/WorkBench/wbView.js:1690
 #. Used in: Components > Work Bench > Wb View
 msgid "unavailableWhileViewingResults"
 msgstr "Это действие недоступно при просмотре результатов загрузки"
 
-#: components/WorkBench/wbView.js:1721
+#: components/WorkBench/wbView.js:1658
 #. Used in: Components > Work Bench > Wb View
 msgid "unavailableWhileValidating"
 msgstr "Это действие недоступно, пока выполняется проверка данных"
 
-#: components/WorkBench/Template.tsx:206
-#: components/WorkBench/Template.tsx:214
-#: components/WorkBench/Template.tsx:224
+#: components/WorkBench/Template.tsx:209
+#: components/WorkBench/Template.tsx:217
+#: components/WorkBench/Template.tsx:227
 #. Used in: Components > Work Bench > Template
 msgid "unavailableWithoutLocality"
 msgstr "Этот инструмент требует, чтобы столбцы координат были сопоставлены"
 
-#: components/WorkBench/wbUtils.js:572
+#: components/WorkBench/wbUtils.js:554
 #. Used in: Components > Work Bench > Wb Utils
 msgid "unavailableWhenUploaded"
 msgstr "Этот инструмент не работает с загруженными наборами данных"
 
-#: components/WorkBench/wbView.js:2403
-#. Used in: Components > Work Bench > Wb View
+#: components/WorkBench/Template.tsx:316
+#. Used in: Components > Work Bench > Template
 msgid "dataSetDeletedOrNotFound"
 msgstr "Набор данных был удален другим сеансом."
 
-#: components/WorkBench/wbUtils.js:1070
-#. Used in: Components > Work Bench > Wb Utils
+#: components/WorkBench/CoordinateConverter.tsx:205
+#. Used in: Components > Work Bench > Coordinate Converter
 msgid "includeDmsSymbols"
 msgstr "Включить символы DMS"
 
-#: components/WorkBench/Results.tsx:54
+#: components/WorkBench/Results.tsx:40
 #. Used in: Components > Work Bench > Results
 msgid "uploadResults"
 msgstr "Результаты загрузки"
 
-#: components/WorkBench/Results.tsx:55
+#: components/WorkBench/Results.tsx:41
 #. Used in: Components > Work Bench > Results
 msgid "potentialUploadResults"
 msgstr "Возможные результаты загрузки"
 
-#: components/WorkBench/wbView.js:470
+#: components/WorkBench/wbView.js:474
 #. Used in: Components > Work Bench > Wb View
 msgid "noUploadResultsAvailable"
 msgstr "Для этой ячейки нет результатов загрузки"
 
-#: components/WorkBench/Results.tsx:59
+#: components/WorkBench/Results.tsx:45
 #. Used in: Components > Work Bench > Results
 msgid "wbUploadedDescription"
 msgstr "Количество новых записей, созданных в каждой таблице:"
 
-#: components/WorkBench/Results.tsx:60
+#: components/WorkBench/Results.tsx:46
 #. Used in: Components > Work Bench > Results
 msgid "wbUploadedPotentialDescription"
 msgstr "Количество новых записей, которые будут созданы в каждой таблице:"
@@ -632,59 +634,59 @@ msgstr "Используйте «Импортировать файл» или «
 msgid "createNew"
 msgstr "Создайте новый"
 
-#: components/WorkBench/DataSetMeta.tsx:127
+#: components/WorkBench/DataSetMeta.tsx:126
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSetMeta"
 msgstr "Свойства набора данных"
 
 #: components/WbPlanView/Mapper.tsx:401
-#: components/WorkBench/DataSetMeta.tsx:160
+#: components/WorkBench/DataSetMeta.tsx:159
 #. Used in: Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Data Set Meta
 msgid "dataSetName"
 msgstr "Название набора данных"
 
-#: components/WorkBench/DataSetMeta.tsx:182
+#: components/WorkBench/DataSetMeta.tsx:181
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "numberOfRows"
 msgstr "Количество рядов"
 
-#: components/WorkBench/DataSetMeta.tsx:188
+#: components/WorkBench/DataSetMeta.tsx:187
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "numberOfColumns"
 msgstr "Количество столбцов"
 
-#: components/WorkBench/DataSetMeta.tsx:283
+#: components/WorkBench/DataSetMeta.tsx:287
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "importedFileName"
 msgstr "Имя файла импорта"
 
-#: components/WorkBench/DataSetMeta.tsx:286
+#: components/WorkBench/DataSetMeta.tsx:284
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "noFileName"
 msgstr "(файл без имени)"
 
-#: components/WorkBench/DataSetMeta.tsx:384
+#: components/WorkBench/DataSetMeta.tsx:385
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "changeDataSetOwner"
 msgstr "Изменить владельца набора данных"
 
-#: components/WorkBench/DataSetMeta.tsx:405
+#: components/WorkBench/DataSetMeta.tsx:406
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "changeDataSetOwnerDescription"
 msgstr "Выберите нового владельца:"
 
-#: components/WorkBench/DataSetMeta.tsx:369
-#: components/WorkBench/DataSetMeta.tsx:372
+#: components/WorkBench/DataSetMeta.tsx:370
+#: components/WorkBench/DataSetMeta.tsx:373
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSetOwnerChanged"
 msgstr "Владелец набора данных изменен"
 
-#: components/WorkBench/DataSetMeta.tsx:316
+#: components/WorkBench/DataSetMeta.tsx:317
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSet"
 msgstr "Набор данных"
 
-#: components/WorkBench/DataSetMeta.tsx:320
+#: components/WorkBench/DataSetMeta.tsx:321
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSetUploadedLabel"
 msgstr "(Загружено, только для чтения)"
@@ -757,3 +759,13 @@ msgstr "Произошла ошибка во время {operationName:string}"
 #. Used in: Components > Work Bench > Status
 msgid "updatingTrees"
 msgstr "Обновление деревьев..."
+
+#: components/WorkBench/RecordSet.tsx:65
+#. 🟥Default name of the record that would be created based on upload results. Used in: Components > Work Bench > Record Set
+msgid "recordSetName"
+msgstr "WB загрузка \"{dataSet:string}\""
+
+#: components/WorkBench/Disambiguation.tsx:89
+#. Used in: Components > Work Bench > Disambiguation
+msgid "ambiguousTaxaChild"
+msgstr "{node:string} (в {parent:string})"

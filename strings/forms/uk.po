@@ -206,7 +206,7 @@ msgstr "Немає даних."
 msgid "recordSet"
 msgstr "Набір рекордів"
 
-#: components/Toolbar/RecordSetEdit.tsx:38
+#: components/Toolbar/RecordSetEdit.tsx:40
 #. Used in: Components > Toolbar > Record Set Edit
 #, fuzzy
 msgid "recordSetDeletionWarning"
