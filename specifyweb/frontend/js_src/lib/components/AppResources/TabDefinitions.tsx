@@ -17,7 +17,6 @@ import type {
   SpAppResourceDir,
   SpViewSetObj,
 } from '../DataModel/types';
-import { DataObjectFormatter } from '../Formatters';
 import { PreferencesContent } from '../UserPreferences';
 import type { UserPreferences } from '../UserPreferences/helpers';
 import {
@@ -28,6 +27,7 @@ import { PreferencesContext, useDarkMode } from '../UserPreferences/Hooks';
 import { useCodeMirrorExtensions } from './EditorComponents';
 import type { appResourceSubTypes } from './types';
 import { ReadOnlyContext } from '../Core/Contexts';
+import { DataObjectFormatter } from '../Formatters';
 
 export type AppResourceTabProps = {
   readonly resource: SerializedResource<SpAppResource | SpViewSetObj>;

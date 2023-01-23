@@ -12,7 +12,7 @@ import type {
   CollectionRelType,
 } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
-import { format } from '../Formatters/index';
+import { format } from '../Formatters/formatters';
 import { deserializeResource } from '../DataModel/serializers';
 
 export type CollectionRelData = {

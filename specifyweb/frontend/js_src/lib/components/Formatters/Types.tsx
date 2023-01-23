@@ -13,7 +13,7 @@ import { useRoutePart } from '../Router/useRoutePart';
 import type { SpecToJson } from '../Syncer';
 import { syncers } from '../Syncer/syncers';
 import { toSimpleXmlNode, updateXml } from '../Syncer/xmlToJson';
-import { FormattersContext } from './index';
+import { FormattersContext } from './formatters';
 import type { Aggregator, Formatter } from './spec';
 import { formattersSpec } from './spec';
 

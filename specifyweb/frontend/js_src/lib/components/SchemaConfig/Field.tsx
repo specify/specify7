@@ -4,6 +4,7 @@ import { commonText } from '../../localization/common';
 import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
 import { Input, Label } from '../Atoms/Form';
+import { ReadOnlyContext } from '../Core/Contexts';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { schema } from '../DataModel/schema';
@@ -24,7 +25,6 @@ export function SchemaConfigField({
   item,
   onChange: handleChange,
   onFormatted: handleFormatted,
-  isReadOnly,
 }: {
   readonly schemaData: SchemaData;
   readonly field: LiteralField | Relationship;
@@ -34,8 +34,8 @@ export function SchemaConfigField({
     value: boolean | string
   ) => void;
   readonly onFormatted: (format: ItemType, value: string | null) => void;
-  readonly isReadOnly: boolean;
 }): JSX.Element {
+  const isReadOnly = React.useContext(ReadOnlyContext);
   const canChangeIsRequired =
     !field.overrides.isRequired && !field.isRelationship;
   return (
@@ -100,7 +100,6 @@ export function SchemaConfigField({
       </Label.Inline>
       <SchemaConfigFormat
         field={field}
-        isReadOnly={isReadOnly}
         item={item}
         schemaData={schemaData}
         onFormatted={handleFormatted}

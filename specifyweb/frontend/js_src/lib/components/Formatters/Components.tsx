@@ -71,7 +71,7 @@ export function FormattersPickList({
 }
 
 const fetchFormattersFunction = async () =>
-  fetchFieldFormatters.then((formatters) => Object.values(formatters));
+  fetchFieldFormatters.then((formatters) => Object.keys(formatters));
 
 export function FieldFormattersPickList({
   value,

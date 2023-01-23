@@ -7,7 +7,7 @@ import { index } from '../../utils/utils';
 import { fetchCollection } from '../DataModel/collection';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpLocaleContainer, Tables } from '../DataModel/types';
-import { fetchFormatters } from '../Formatters/index';
+import { fetchFormatters } from '../Formatters/formatters';
 import { webLinks } from '../WebLinks';
 import { fetchContext as fetchUiFormatters } from '../FieldFormatters';
 import { fetchPickLists } from '../PickLists/definitions';

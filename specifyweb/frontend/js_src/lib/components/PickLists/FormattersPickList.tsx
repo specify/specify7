@@ -5,7 +5,7 @@ import type { RA } from '../../utils/types';
 import { resourceOn } from '../DataModel/resource';
 import { getModel } from '../DataModel/schema';
 import { raise } from '../Errors/Crash';
-import { fetchFormatters } from '../Formatters/index';
+import { fetchFormatters } from '../Formatters/formatters';
 import type {
   DefaultComboBoxProps,
   PickListItemSimple,
