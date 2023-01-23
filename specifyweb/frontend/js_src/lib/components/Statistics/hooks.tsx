@@ -1,5 +1,5 @@
 import { SpQuery, SpQueryField, Tables } from '../DataModel/types';
-import type { IR, RA, WritableArray } from '../../utils/types';
+import type { GetOrSet, IR, RA, WritableArray } from '../../utils/types';
 import { useMultipleAsyncState } from '../../hooks/useAsyncState';
 import React from 'react';
 import { ajax } from '../../utils/ajax';
@@ -84,7 +84,7 @@ export function useStatsSpec(): IR<
                 categoryName,
                 {
                   label,
-                  items: (categories as () => StatCategoryReturn)(),
+                  items: categories,
                 },
               ]
             )
@@ -368,11 +368,7 @@ export function useStatValueLoad<
 
 export function useUnknownCategory(
   backEndResponse: BackendStatsResult | undefined,
-  handleChange: (
-    newCategories: (
-      oldCategory: StatLayout[number]['categories']
-    ) => StatLayout[number]['categories']
-  ) => void,
+  handleChange: GetOrSet<StatLayout[number]['categories']>[1],
   statsSpec: StatsSpec
 ) {
   React.useLayoutEffect(() => {

@@ -54,10 +54,7 @@ export type StatCategoryReturn = IR<{
   readonly label: string;
   readonly spec: StatItemSpec;
 }>;
-export type ItemReturnSpec = {
-  readonly label: string;
-  readonly spec: StatItemSpec;
-};
+
 export type StatsSpec = IR<
   IR<{
     readonly label: string;

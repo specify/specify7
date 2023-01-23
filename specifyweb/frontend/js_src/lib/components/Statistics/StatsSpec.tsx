@@ -4,37 +4,21 @@ import { formatNumber } from '../Atoms/Internationalization';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { statsText } from '../../localization/stats';
 import { formattedEntry } from '../WbPlanView/mappingHelpers';
-import type { BackendStatsResult, StatCategoryReturn } from './types';
+import type { StatCategoryReturn } from './types';
 import { userInformation } from '../InitialContext/userInformation';
 import { ensure } from '../../utils/types';
 import { urlSpec } from './definitions';
 
-type StatsSpec =
-  | {
-      readonly [CATEGORY_NAME in keyof BackendStatsResult]: {
-        readonly label: string;
-        readonly categories: (
-          backendStatsResult: BackendStatsResult[CATEGORY_NAME] | undefined
-        ) => StatCategoryReturn;
-      };
-    }
-  | {
-      readonly [CATEGORY_NAME in string]: {
-        readonly label: string;
-        readonly categories: () => StatCategoryReturn;
-      };
-    };
+type StatsSpec = IR<{
+  readonly label: string;
+  readonly categories: StatCategoryReturn;
+}>;
 
-/*
- * TODO: Return objects directly instead of returning a callback since
- *  Code now supports relative dates
- */
-// @ts-expect-error
 export const statsSpec: IR<StatsSpec> = {
-  [statsText.collection()]: {
+  [statsText.collection() as string]: {
     holdings: {
       label: statsText.holdings(),
-      categories: () => ({
+      categories: {
         specimens: {
           label: statsText.collectionObjects(),
           spec: {
@@ -121,11 +105,11 @@ export const statsSpec: IR<StatsSpec> = {
             ],
           },
         },*/,
-      }),
+      },
     },
     preparations: {
       label: statsText.preparations(),
-      categories: () => ({
+      categories: {
         phantomItem: {
           label: statsText.preparations(),
           spec: {
@@ -141,11 +125,11 @@ export const statsSpec: IR<StatsSpec> = {
             }) => `${formatNumber(lots)} / ${formatNumber(total)}`,
           },
         },
-      }),
+      },
     },
     loans: {
       label: statsText.loans(),
-      categories: () => ({
+      categories: {
         itemsOnLoans: {
           label: statsText.itemsOnLoans(),
           spec: {
@@ -202,11 +186,11 @@ export const statsSpec: IR<StatsSpec> = {
             ],
           },
         },
-      }),
+      },
     },
     taxonomicTree: {
       label: statsText.taxonomicTree(),
-      categories: () => ({
+      categories: {
         classesCount: {
           label: statsText.classes(),
           spec: {
@@ -297,11 +281,11 @@ export const statsSpec: IR<StatsSpec> = {
             ],
           },
         },
-      }),
+      },
     },
     localityGeography: {
       label: statsText.localityGeography(),
-      categories: () => ({
+      categories: {
         localityCount: {
           label: statsText.localities(),
           spec: {
@@ -352,11 +336,11 @@ export const statsSpec: IR<StatsSpec> = {
             ],
           },
         },
-      }),
+      },
     },
     typeSpecimens: {
       label: statsText.typeSpecimens(),
-      categories: () => ({
+      categories: {
         phantomItem: {
           label: statsText.typeSpecimens(),
           spec: {
@@ -366,148 +350,130 @@ export const statsSpec: IR<StatsSpec> = {
             formatter: formatNumber,
           },
         },
-      }),
+      },
     },
     catalogStats: {
       label: statsText.computerization(),
-      categories() {
-        const currentDate = new Date();
-        const initialDate = getDateInputValue(currentDate);
-
-        const weekAgo = new Date();
-        weekAgo.setDate(weekAgo.getDate() - 7);
-        const initialDateSevenDaysPast = getDateInputValue(weekAgo);
-
-        const monthAgo = new Date();
-        monthAgo.setMonth(monthAgo.getMonth() - 1);
-        const initialDateMonthPast = getDateInputValue(monthAgo);
-
-        const yearAgo = new Date();
-        yearAgo.setFullYear(yearAgo.getFullYear() - 1);
-        const initialDateYearPast = getDateInputValue(yearAgo);
-
-        return {
-          catalogedLastSevenDays: {
-            label: statsText.computerizedLastSevenDays(),
-            spec: {
-              type: 'QueryBuilderStat',
-              tableName: 'CollectionObject',
-              fields: [
-                {
-                  path: formattedEntry,
-                },
-                {
-                  path: 'catalogedDate',
-                  operStart: queryFieldFilters.between.id,
-                  startValue: `${initialDateSevenDaysPast},${initialDate}`,
-                },
-              ],
-            },
+      categories: {
+        catalogedLastSevenDays: {
+          label: statsText.computerizedLastSevenDays(),
+          spec: {
+            type: 'QueryBuilderStat',
+            tableName: 'CollectionObject',
+            fields: [
+              {
+                path: formattedEntry,
+              },
+              {
+                path: 'catalogedDate',
+                operStart: queryFieldFilters.greaterOrEqual.id,
+                startValue: `today - 1 week`,
+              },
+            ],
           },
-          catalogedLastMonth: {
-            label: statsText.computerizedLastMonth(),
-            spec: {
-              type: 'QueryBuilderStat',
-              tableName: 'CollectionObject',
-              fields: [
-                {
-                  path: formattedEntry,
-                },
-                {
-                  path: 'catalogedDate',
-                  operStart: queryFieldFilters.between.id,
-                  startValue: `${initialDateMonthPast},${initialDate}`,
-                },
-              ],
-            },
+        },
+        catalogedLastMonth: {
+          label: statsText.computerizedLastMonth(),
+          spec: {
+            type: 'QueryBuilderStat',
+            tableName: 'CollectionObject',
+            fields: [
+              {
+                path: formattedEntry,
+              },
+              {
+                path: 'catalogedDate',
+                operStart: queryFieldFilters.greaterOrEqual.id,
+                startValue: `today - 1 month`,
+              },
+            ],
           },
-          catalogedLastYear: {
-            label: statsText.computerizedLastYear,
-            spec: {
-              type: 'QueryBuilderStat',
-              tableName: 'CollectionObject',
-              fields: [
-                {
-                  path: formattedEntry,
-                },
-                {
-                  path: 'catalogedDate',
-                  operStart: queryFieldFilters.between.id,
-                  startValue: `${initialDateYearPast},${initialDate}`,
-                },
-              ],
-            },
+        },
+        catalogedLastYear: {
+          label: statsText.computerizedLastYear(),
+          spec: {
+            type: 'QueryBuilderStat',
+            tableName: 'CollectionObject',
+            fields: [
+              {
+                path: formattedEntry,
+              },
+              {
+                path: 'catalogedDate',
+                operStart: queryFieldFilters.greaterOrEqual.id,
+                startValue: `today - 1 year`,
+              },
+            ],
           },
-        };
+        },
       },
     },
   },
-  [statsText.personal()]: {
+  [statsText.personal() as string]: {
     holdings: {
       label: statsText.collection(),
-      categories: () =>
-        ({
-          ordersCount: {
-            label: statsText.orders(),
-            spec: {
-              type: 'QueryBuilderStat',
-              tableName: 'Taxon',
-              fields: [
-                {
-                  path: formattedEntry,
-                },
-                {
-                  path: 'rankId',
-                  operStart: queryFieldFilters.equal.id,
-                  startValue: '100',
-                  isDisplay: false,
-                },
-              ],
-            },
+      categories: {
+        ordersCount: {
+          label: statsText.orders(),
+          spec: {
+            type: 'QueryBuilderStat',
+            tableName: 'Taxon',
+            fields: [
+              {
+                path: formattedEntry,
+              },
+              {
+                path: 'rankId',
+                operStart: queryFieldFilters.equal.id,
+                startValue: '100',
+                isDisplay: false,
+              },
+            ],
           },
-          collectionObjectsCataloged: {
-            label: statsText.collectionObjectsCataloged(),
-            spec: {
-              type: 'QueryBuilderStat',
-              tableName: 'CollectionObject',
-              fields: [
-                {
-                  path: 'cataloger.SpecifyUser.name',
-                  startvalue: userInformation.name,
-                  operstart: queryFieldFilters.equal.id,
-                },
-              ],
-            },
+        },
+        collectionObjectsCataloged: {
+          label: statsText.collectionObjectsCataloged(),
+          spec: {
+            type: 'QueryBuilderStat',
+            tableName: 'CollectionObject',
+            fields: [
+              {
+                path: 'cataloger.SpecifyUser.name',
+                startValue: userInformation.name,
+                operStart: queryFieldFilters.equal.id,
+              },
+            ],
           },
-          collectionObjectsDetermined: {
-            label: statsText.collectionObjectsDetermined(),
-            spec: {
-              type: 'QueryBuilderStat',
-              tableName: 'CollectionObject',
-              fields: [
-                {
-                  path: 'determinations.determiner.SpecifyUser.name',
-                  startvalue: userInformation.name,
-                  operstart: queryFieldFilters.equal.id,
-                },
-              ],
-            },
+        },
+        collectionObjectsDetermined: {
+          label: statsText.collectionObjectsDetermined(),
+          spec: {
+            type: 'QueryBuilderStat',
+            tableName: 'CollectionObject',
+            fields: [
+              {
+                path: 'determinations.determiner.SpecifyUser.name',
+                startValue: userInformation.name,
+                operStart: queryFieldFilters.equal.id,
+              },
+            ],
           },
-          collectionObjectInventorized: {
-            label: statsText.collectionObjects(),
-            spec: {
-              type: 'QueryBuilderStat',
-              tableName: 'CollectionObject',
-              fields: [
-                {
-                  path: 'inventorizedBy.SpecifyUser.name',
-                  startvalue: userInformation.name,
-                  operstart: queryFieldFilters.equal.id,
-                },
-              ],
-            },
+        },
+        collectionObjectInventorized: {
+          label: statsText.collectionObjects(),
+          spec: {
+            type: 'QueryBuilderStat',
+            tableName: 'CollectionObject',
+            fields: [
+              {
+                path: 'inventorizedBy.SpecifyUser.name',
+                startValue: userInformation.name,
+                operStart: queryFieldFilters.equal.id,
+              },
+            ],
           },
-        } as const),
+        },
+      } as const,
     },
   },
 };
