@@ -166,15 +166,18 @@ export function StatsPage(): JSX.Element | null {
     ? undefined
     : personalLayout[activePage.pageIndex];
 
+  const setLayout = activePage.isCollection
+    ? setCollectionLayout
+    : setPersonalLayout;
+  const sourceLayout = activePage.isCollection
+    ? collectionLayout
+    : personalLayout;
   const handleChange = React.useCallback(
     (
       newCategories: (
         oldCategory: StatLayout[number]['categories']
       ) => StatLayout[number]['categories']
     ): void => {
-      const setLayout = activePage.isCollection
-        ? setCollectionLayout
-        : setPersonalLayout;
       setLayout((oldLayout: StatLayout | undefined) =>
         oldLayout === undefined
           ? undefined
@@ -186,12 +189,7 @@ export function StatsPage(): JSX.Element | null {
             })
       );
     },
-    [
-      activePage.isCollection,
-      activePage.pageIndex,
-      setCollectionLayout,
-      setPersonalLayout,
-    ]
+    [activePage.pageIndex, setLayout]
   );
 
   const handleDefaultChange = React.useCallback(
@@ -364,19 +362,11 @@ export function StatsPage(): JSX.Element | null {
         <Button.Blue
           onClick={(): void => {
             cleanFulfilledRequests();
-            if (activePage.isCollection) {
-              setCollectionLayout((layout) =>
-                layout === undefined
-                  ? undefined
-                  : getValueUndefined(layout, activePage.pageIndex)
-              );
-            } else {
-              setPersonalLayout((layout) =>
-                layout === undefined
-                  ? undefined
-                  : getValueUndefined(layout, activePage.pageIndex)
-              );
-            }
+            setLayout((layout) =>
+              layout === undefined
+                ? undefined
+                : getValueUndefined(layout, activePage.pageIndex)
+            );
           }}
         >
           {commonText.update()}
@@ -533,15 +523,9 @@ export function StatsPage(): JSX.Element | null {
                 typeof state.pageIndex === 'number'
                   ? undefined
                   : (label): void => {
-                      const setLayout = state.isCollection
-                        ? setCollectionLayout
-                        : setPersonalLayout;
-                      const layout = state.isCollection
-                        ? collectionLayout
-                        : personalLayout;
-                      if (layout !== undefined) {
+                      if (sourceLayout !== undefined) {
                         setLayout([
-                          ...layout,
+                          ...sourceLayout,
                           {
                             label,
                             categories: [],
@@ -552,7 +536,7 @@ export function StatsPage(): JSX.Element | null {
                           type: 'EditingState',
                         });
                         setActivePage({
-                          pageIndex: layout.length,
+                          pageIndex: sourceLayout.length,
                           isCollection: state.isCollection,
                         });
                       }
@@ -565,13 +549,7 @@ export function StatsPage(): JSX.Element | null {
                   ? undefined
                   : () => {
                       if (state.pageIndex === undefined) return undefined;
-                      const setLayout = state.isCollection
-                        ? setCollectionLayout
-                        : setPersonalLayout;
-                      const layout = state.isCollection
-                        ? collectionLayout
-                        : personalLayout;
-                      if (layout !== undefined) {
+                      if (sourceLayout !== undefined) {
                         setLayout((oldLayout) =>
                           oldLayout === undefined
                             ? undefined
@@ -581,13 +559,13 @@ export function StatsPage(): JSX.Element | null {
                           type: 'EditingState',
                         });
                         setActivePage({
-                          ...(!state.isCollection && layout.length === 1
+                          ...(!state.isCollection && sourceLayout.length === 1
                             ? {
                                 pageIndex: 0,
                                 isCollection: true,
                               }
                             : {
-                                pageIndex: layout.length - 2,
+                                pageIndex: sourceLayout.length - 2,
                                 isCollection: state.isCollection,
                               }),
                         });
@@ -600,16 +578,10 @@ export function StatsPage(): JSX.Element | null {
                   ? undefined
                   : (value) => {
                       if (state.pageIndex === undefined) return undefined;
-                      const setLayout = state.isCollection
-                        ? setCollectionLayout
-                        : setPersonalLayout;
-                      const layout = state.isCollection
-                        ? collectionLayout
-                        : personalLayout;
-                      if (layout !== undefined) {
+                      if (sourceLayout !== undefined) {
                         setLayout(
-                          replaceItem(layout, state.pageIndex, {
-                            ...layout[state.pageIndex],
+                          replaceItem(sourceLayout, state.pageIndex, {
+                            ...sourceLayout[state.pageIndex],
                             label: value,
                           })
                         );
