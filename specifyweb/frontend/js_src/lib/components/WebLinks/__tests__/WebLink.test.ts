@@ -1,5 +1,5 @@
 import { requireContext } from '../../../tests/helpers';
-import { parseWebLink, webLinks } from '../WebLink';
+import { parseWebLink, webLinks } from '../index';
 
 requireContext();
 

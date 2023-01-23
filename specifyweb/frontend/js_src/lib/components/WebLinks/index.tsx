@@ -6,13 +6,17 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { isExternalUrl } from '../../utils/ajax/helpers';
 import { fetchTreePath } from '../../utils/ajax/specifyApi';
 import type { IR, RA } from '../../utils/types';
-import { defined } from '../../utils/types';
-import { keysToLowerCase, removeKey } from '../../utils/utils';
+import {
+  caseInsensitiveHash,
+  keysToLowerCase,
+  removeKey,
+} from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
+import { serializeResource } from '../DataModel/serializers';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Tables } from '../DataModel/types';
@@ -21,27 +25,28 @@ import type { FormMode, FormType } from '../FormParse';
 import { load } from '../InitialContext';
 import { getIcon, unknownIcon } from '../InitialContext/icons';
 import { formatUrl } from '../Router/queryString';
-import { serializeResource } from '../DataModel/serializers';
-import { xmlToString } from '../Syncer/xmlUtils';
+import { xmlToSpec } from '../Syncer/xmlUtils';
+import type { WebLink } from './spec';
+import { webLinksSpec } from './spec';
+import { f } from '../../utils/functools';
 
-export const webLinks = load<Element>(
-  formatUrl('/context/app.resource', { name: 'WebLinks' }),
-  'text/xml'
-).then((xml) =>
-  Object.fromEntries(
-    Array.from(
-      xml.querySelectorAll('vector > weblinkdef'),
-      (definition) =>
-        [
-          defined(
-            definition.querySelector(':scope > name')?.textContent ?? undefined,
-            `WebLink definition is missing a name: ${xmlToString(definition)}`
-          ),
-          definition,
-        ] as const
+export const webLinks = f
+  .all({
+    xml: load<Element>(
+      formatUrl('/context/app.resource', { name: 'WebLinks' }),
+      'text/xml'
+    ),
+    schema: import('../DataModel/schema').then(
+      async ({ fetchContext }) => fetchContext
+    ),
+  })
+  .then(({ xml }) =>
+    Object.fromEntries(
+      xmlToSpec(xml, webLinksSpec()).webLinks.map(
+        (webLink) => [webLink.name, webLink] as const
+      )
     )
-  )
-);
+  );
 
 const specialResourcesFields: {
   readonly [TABLE_NAME in keyof Tables]?: (
@@ -55,7 +60,7 @@ const specialResourcesFields: {
     })),
 };
 
-export function WebLink({
+export function WebLinkField({
   resource,
   id,
   name,
@@ -130,7 +135,7 @@ export function WebLink({
 
   const image = (
     <img
-      alt={typeof definition === 'object' ? definition.title : url}
+      alt={typeof definition === 'object' ? definition.description : webLink}
       className="max-h-[theme(spacing.5)] max-w-[theme(spacing.10)]"
       src={getIcon(icon) ?? unknownIcon}
     />
@@ -157,12 +162,12 @@ export function WebLink({
             href={url}
             rel={isExternal ? 'noopener' : undefined}
             target={isExternal ? '_blank' : undefined}
-            title={definition.title}
+            title={definition.description}
           >
             {image}
           </Link.Gray>
         ) : (
-          <Button.Gray title={definition.title} onClick={undefined}>
+          <Button.Gray title={definition.description} onClick={undefined}>
             {image}
           </Button.Gray>
         )
@@ -172,7 +177,7 @@ export function WebLink({
 }
 
 type ParsedWebLink = {
-  readonly title: LocalizedString;
+  readonly description: LocalizedString;
   readonly template: string;
   readonly args: RA<string>;
   readonly isExternal: boolean;
@@ -188,7 +193,9 @@ function useDefinition(
       const fieldInfo = model?.getField(fieldName ?? '');
       const webLinkName = fieldInfo?.getWebLinkName() ?? webLink;
       const definition = await webLinks.then(
-        (definitions) => definitions[webLinkName ?? '']
+        (definitions) =>
+          definitions[webLinkName ?? ''] ??
+          caseInsensitiveHash(definitions, webLinkName ?? '')
       );
       if (typeof definition === 'object')
         return parseWebLink(definition) ?? false;
@@ -206,31 +213,26 @@ function useDefinition(
   return definition;
 }
 
-export function parseWebLink(definition: Element): ParsedWebLink | undefined {
-  const title =
-    (definition
-      ?.querySelector(':scope > desc')
-      ?.textContent?.trim() as LocalizedString) ?? '';
-
+export function parseWebLink({
+  description,
+  url,
+  parameters,
+}: WebLink): ParsedWebLink | undefined {
   const template =
-    definition
-      ?.querySelector('baseURLStr')
-      ?.textContent?.trim()
-      .replaceAll(/<\s*this\s*>/gu, '<_this>')
+    url
+      ?.replaceAll(/<\s*this\s*>/gu, '<_this>')
       .replaceAll('AMP', '&')
       .replaceAll('<', '<%= ')
       .replaceAll('>', ' %>') ?? '';
 
-  const args = Array.from(
-    definition?.querySelectorAll('weblinkdefarg > name') ?? [],
-    (parameter) =>
-      parameter.textContent === 'this' ? '_this' : parameter.textContent ?? ''
+  const args = parameters.map(({ name }) =>
+    name === 'this' ? '_this' : name ?? ''
   );
 
   return template === undefined
     ? undefined
     : {
-        title,
+        description,
         template,
         args,
         isExternal: false,

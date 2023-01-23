@@ -3,18 +3,18 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { f } from '../../utils/functools';
 import { parseBoolean } from '../../utils/parser/parse';
 import type { RA } from '../../utils/types';
+import { formatList } from '../Atoms/Internationalization';
 import { parseJavaClassName } from '../DataModel/resource';
 import { getModel, schema } from '../DataModel/schema';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Tables } from '../DataModel/types';
+import { pushContext } from '../Errors/logContext';
 import type { BaseSpec, SpecToJson, Syncer } from './index';
 import { runBuilder, runParser, syncer } from './index';
 import { mergeSimpleXmlNodes } from './mergeSimpleXmlNodes';
-import { pushContext } from '../Errors/logContext';
 import type { SimpleXmlNode } from './xmlToJson';
 import { getAttribute } from './xmlUtils';
-import { formatList } from '../Atoms/Internationalization';
 
 export const syncers = {
   xmlAttribute: <MODE extends 'empty' | 'required' | 'skip'>(
@@ -78,6 +78,15 @@ export const syncers = {
       return model;
     },
     (model) => model?.longName ?? ''
+  ),
+  tableName: syncer<string, SpecifyModel | undefined>(
+    (tableName: string) => {
+      const model = getModel(tableName);
+      if (model === undefined)
+        console.error(`Unknown model: ${tableName ?? '(null)'}`);
+      return model;
+    },
+    (model) => model?.name ?? ''
   ),
   toBoolean: syncer<string, boolean>(parseBoolean, (value) => value.toString()),
   toDecimal: syncer<string, number | undefined>(

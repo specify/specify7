@@ -24,13 +24,12 @@ import {
 } from '../InitialContext';
 import { hasPathPermission, hasTablePermission } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
-import { runParser } from '../Syncer';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { aggregate } from './aggregate';
 import { fieldFormat } from './fieldFormat';
 import type { Aggregator, Formatter } from './spec';
 import { formattersSpec } from './spec';
-import { toSimpleXmlNode, xmlToJson } from '../Syncer/xmlToJson';
+import { xmlToSpec } from '../Syncer/xmlUtils';
 
 export const fetchFormatters: Promise<{
   readonly formatters: RA<Formatter>;
@@ -50,9 +49,7 @@ export const fetchFormatters: Promise<{
           ).then(({ data }) => data),
           schema: fetchContext,
         })
-        .then(({ definitions }) =>
-          runParser(formattersSpec(), toSimpleXmlNode(xmlToJson(definitions)))
-        )
+        .then(({ definitions }) => xmlToSpec(definitions, formattersSpec()))
     : foreverFetch()
 );
 

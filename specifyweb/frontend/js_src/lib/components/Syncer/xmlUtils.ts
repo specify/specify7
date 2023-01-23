@@ -2,8 +2,10 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { f } from '../../utils/functools';
 import { parseBoolean } from '../../utils/parser/parse';
-import type { BaseSpec } from './index';
+import type { BaseSpec, SpecToJson } from './index';
+import { runParser } from './index';
 import type { SimpleXmlNode, XmlNode } from './xmlToJson';
+import { toSimpleXmlNode, xmlToJson } from './xmlToJson';
 
 /** Get XML node attribute in a case-insensitive way */
 export const getAttribute = (
@@ -36,3 +38,8 @@ export const xmlToString = (xml: Node): string =>
 export const createXmlSpec = <SPEC extends BaseSpec<SimpleXmlNode>>(
   spec: SPEC
 ): SPEC => spec;
+
+export const xmlToSpec = <SPEC extends BaseSpec<SimpleXmlNode>>(
+  xml: Element,
+  spec: SPEC
+): SpecToJson<SPEC> => runParser(spec, toSimpleXmlNode(xmlToJson(xml)));

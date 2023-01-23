@@ -26,7 +26,7 @@ import { LatLongUi } from './LatLongUi';
 import { LeafletPlugin } from './Leaflet';
 import { PaleoLocationMapPlugin } from './PaleoLocation';
 import { PartialDateUi } from './PartialDateUi';
-import { WebLink } from './WebLink';
+import { WebLinkField } from '../WebLinks';
 
 const pluginRenderers: {
   readonly [KEY in keyof UiPlugins]: (props: {
@@ -132,7 +132,7 @@ const pluginRenderers: {
   }) {
     return (
       <ErrorBoundary dismissible>
-        <WebLink
+        <WebLinkField
           field={field}
           formType={formType}
           icon={icon}

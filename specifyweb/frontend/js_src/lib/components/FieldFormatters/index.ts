@@ -2,6 +2,7 @@
  * Parse and use Specify 6 UI Formatters
  */
 
+import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { escapeRegExp } from '../../utils/utils';
@@ -9,10 +10,8 @@ import { parseJavaClassName } from '../DataModel/resource';
 import { error } from '../Errors/assert';
 import { load } from '../InitialContext';
 import { formatUrl } from '../Router/queryString';
-import { runParser } from '../Syncer';
-import { toSimpleXmlNode, xmlToJson } from '../Syncer/xmlToJson';
+import { xmlToSpec } from '../Syncer/xmlUtils';
 import { fieldFormattersSpec } from './spec';
-import { f } from '../../utils/functools';
 
 let uiFormatters: IR<UiFormatter>;
 export const fetchContext = f
@@ -28,31 +27,30 @@ export const fetchContext = f
   .then(({ formatters }) => {
     uiFormatters = Object.fromEntries(
       filterArray(
-        runParser(
-          fieldFormattersSpec(),
-          toSimpleXmlNode(xmlToJson(formatters))
-        ).formatters.map((formatter) => {
-          let resolvedFormatter;
-          if (typeof formatter.external === 'string') {
-            if (
-              parseJavaClassName(formatter.external) ===
-              'CatalogNumberUIFieldFormatter'
-            )
-              resolvedFormatter = new CatalogNumberNumeric();
-            else return undefined;
-          } else {
-            const fields = filterArray(
-              formatter.fields.map((field) =>
-                typeof field.type === 'string'
-                  ? new formatterTypeMapper[field.type](field)
-                  : undefined
+        xmlToSpec(formatters, fieldFormattersSpec()).formatters.map(
+          (formatter) => {
+            let resolvedFormatter;
+            if (typeof formatter.external === 'string') {
+              if (
+                parseJavaClassName(formatter.external) ===
+                'CatalogNumberUIFieldFormatter'
               )
-            );
-            resolvedFormatter = new UiFormatter(formatter.isSystem, fields);
-          }
+                resolvedFormatter = new CatalogNumberNumeric();
+              else return undefined;
+            } else {
+              const fields = filterArray(
+                formatter.fields.map((field) =>
+                  typeof field.type === 'string'
+                    ? new formatterTypeMapper[field.type](field)
+                    : undefined
+                )
+              );
+              resolvedFormatter = new UiFormatter(formatter.isSystem, fields);
+            }
 
-          return [formatter.name, resolvedFormatter];
-        })
+            return [formatter.name, resolvedFormatter];
+          }
+        )
       )
     );
     return uiFormatters;
