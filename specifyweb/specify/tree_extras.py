@@ -12,7 +12,7 @@ from specifyweb.businessrules.exceptions import TreeBusinessRuleException
 
 from time import perf_counter
 from  .auditcodes import TREE_MERGE, TREE_SYNONYMIZE, TREE_DESYNONYMIZE
-from .tree_utils import *
+
 
 @contextmanager
 def validate_node_numbers(table, revalidate_after=True):

@@ -102,11 +102,9 @@ export function StatsPage(): JSX.Element | null {
   const [activePage, setActivePage] = React.useState<{
     readonly isCollection: boolean;
     readonly pageIndex: number;
-    readonly isPageUpdated: boolean;
   }>({
     isCollection: true,
     pageIndex: 0,
-    isPageUpdated: false,
   });
 
   const categoriesToFetchInitially = useCategoryToFetch(
@@ -241,6 +239,7 @@ export function StatsPage(): JSX.Element | null {
     layout: StatLayout,
     pageIndex: number
   ): StatLayout => {
+    const lastUpdatedDate = new Date();
     return layout.map((pageLayout, index) => ({
       label: pageLayout.label,
       categories: pageLayout.categories.map((category) => ({
@@ -250,36 +249,8 @@ export function StatsPage(): JSX.Element | null {
           itemValue: pageIndex === index ? undefined : item.itemValue,
         })),
       })),
-      lastUpdated: pageLayout.lastUpdated,
-    }));
-  };
-
-  const setLastUpdated = () => {
-    const setLayout = activePage.isCollection
-      ? setCollectionLayout
-      : setPersonalLayout;
-    if (Object.values(layout).some((layout) => layout !== undefined)) {
-      setLayout((layout) =>
-        layout === undefined
-          ? undefined
-          : getLastUpdated(layout, activePage.pageIndex)
-      );
-      setActivePage((currentState) => ({
-        ...currentState,
-        isPageUpdated: true,
-      }));
-    }
-  };
-
-  const getLastUpdated = (
-    layout: StatLayout,
-    pageIndex: number
-  ): StatLayout => {
-    const lastUpdatedDate = new Date();
-    return replaceItem(layout, pageIndex, {
-      ...layout[pageIndex],
       lastUpdated: lastUpdatedDate.toJSON(),
-    });
+    }));
   };
 
   const handleAdd = (
@@ -369,11 +340,8 @@ export function StatsPage(): JSX.Element | null {
           ),
         })
       );
-      if (!activePage.isPageUpdated) {
-        setLastUpdated();
-      }
     },
-    [activePage.isPageUpdated, handleChange]
+    [handleChange]
   );
 
   return collectionLayout === undefined ? null : (
@@ -396,10 +364,6 @@ export function StatsPage(): JSX.Element | null {
         <Button.Blue
           onClick={(): void => {
             cleanFulfilledRequests();
-            setActivePage((currentActiveSpec) => ({
-              ...currentActiveSpec,
-              isPageUpdated: false,
-            }));
             if (activePage.isCollection) {
               setCollectionLayout((layout) =>
                 layout === undefined
@@ -446,10 +410,6 @@ export function StatsPage(): JSX.Element | null {
                 setCollectionLayout(defaultLayoutSpec);
                 setPersonalLayout(defaultLayoutSpec);
                 setCategoriesToFetch(Object.keys(urlSpec));
-                setActivePage((activePageSpec) => ({
-                  ...activePageSpec,
-                  isPageUpdated: false,
-                }));
               }}
             >
               {commonText.reset()}
@@ -475,7 +435,6 @@ export function StatsPage(): JSX.Element | null {
                   return {
                     isCollection,
                     pageIndex: newIndex,
-                    isPageUpdated: false,
                   };
                 });
               }}
@@ -528,7 +487,6 @@ export function StatsPage(): JSX.Element | null {
                           setActivePage({
                             isCollection: index === 0,
                             pageIndex,
-                            isPageUpdated: false,
                           });
                         }}
                         onRename={
@@ -596,7 +554,6 @@ export function StatsPage(): JSX.Element | null {
                         setActivePage({
                           pageIndex: layout.length,
                           isCollection: state.isCollection,
-                          isPageUpdated: false,
                         });
                       }
                     }
@@ -624,7 +581,6 @@ export function StatsPage(): JSX.Element | null {
                           type: 'EditingState',
                         });
                         setActivePage({
-                          isPageUpdated: false,
                           ...(!state.isCollection && layout.length === 1
                             ? {
                                 pageIndex: 0,
