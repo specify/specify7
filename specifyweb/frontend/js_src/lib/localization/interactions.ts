@@ -20,7 +20,7 @@ export const interactionsText = createDictionary({
     'en-us': 'Add Items',
     'ru-ru': 'Добавить элементы',
     'es-es': 'Añadir elementos',
-    'fr-fr': 'Ajouter des articles',
+    'fr-fr': 'Ajouter des éléments',
     'uk-ua': 'Додати предмети',
   },
   recordReturn: {
@@ -61,10 +61,9 @@ export const interactionsText = createDictionary({
   byChoosingRecordSet: {
     comment: 'See documentation for syntax for plural rules',
     'en-us': 'By choosing a recordset ({{count:none | one | ??}} available)',
-    'ru-ru': 'Выбрав набор записей (доступно {count:number|formatted})',
+    'ru-ru': 'Выбрав набор записей (доступно {{count:none | one | ??}})',
     'es-es': `
-      Al seleccionar un conjunto de registros ({{count:none | one | ??}}
-      disponible)
+      Al elegir un conjunto de registros ({{count:none | one | ??}} available)
     `,
     'fr-fr': `
       En choisissant un jeu d'enregistrements ({{count:none | one | ??}}
@@ -193,7 +192,7 @@ export const interactionsText = createDictionary({
     'en-us': '{tableName:string}: {resource:string}',
     'ru-ru': '{tableName:string}: {resource:string}',
     'es-es': '{tableName:string}: {resource:string}',
-    'fr-fr': '{tableName:chaîne}: {ressource:chaîne}',
+    'fr-fr': '{tableName:string} : {resource:string}',
     'uk-ua': '{tableName:string}: {resource:string}',
   },
   resolvedLoans: {

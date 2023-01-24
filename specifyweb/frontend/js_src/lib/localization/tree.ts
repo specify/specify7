@@ -13,7 +13,7 @@ export const treeText = createDictionary({
     'en-us': 'Trees',
     'ru-ru': 'Деревья',
     'es-es': 'Árboles',
-    'fr-fr': 'Des arbres',
+    'fr-fr': 'Arbres',
     'uk-ua': 'дерева',
   },
   badStructure: {
@@ -27,7 +27,7 @@ export const treeText = createDictionary({
     'en-us': 'Move',
     'ru-ru': 'Переместить',
     'es-es': 'Moverse',
-    'fr-fr': 'Se déplacer',
+    'fr-fr': 'Déplacer',
     'uk-ua': 'рухатися',
   },
   merge: {
@@ -87,7 +87,7 @@ export const treeText = createDictionary({
     'en-us': 'Move "{nodeName:string}" here',
     'ru-ru': 'Переместите «{nodeName:string}» сюда',
     'es-es': 'Mueva "{nodeName:string}" aquí',
-    'fr-fr': 'Déplacez "{nodeName:string}" ici',
+    'fr-fr': 'Déplacer « {nodeName:string} » ici',
     'uk-ua': 'Перемістіть сюди "{nodeName:string}".',
   },
   nodeMoveMessage: {
@@ -117,7 +117,7 @@ export const treeText = createDictionary({
     'en-us': "Can't move this tree node here",
     'ru-ru': 'Невозможно переместить этот узел в этот узел',
     'es-es': 'No se puede mover este nodo de árbol aquí',
-    'fr-fr': "Impossible de déplacer ce nœud d'arbre ici",
+    'fr-fr': "Impossible de déplacer ce nœud d'arborescence ici",
     'uk-ua': 'Неможливо перемістити цей вузол дерева сюди',
   },
   cantMergeHere: {
@@ -152,21 +152,21 @@ export const treeText = createDictionary({
     'en-us': 'Select a new parent for "{nodeName:string}"',
     'ru-ru': 'Выберите нового родителя для «{nodeName:string}»',
     'es-es': 'Seleccione un nuevo padre para "{nodeName:string}"',
-    'fr-fr': 'Sélectionnez un nouveau parent pour "{nodeName:string}"',
+    'fr-fr': 'Sélectionnez un nouveau parent pour « {nodeName:string} »',
     'uk-ua': 'Виберіть новий батьківський елемент для "{nodeName:string}"',
   },
   mergeNode: {
     'en-us': 'Merge node',
     'ru-ru': 'Объединить',
     'es-es': 'Combinar nodo',
-    'fr-fr': 'Noeud de fusion',
+    'fr-fr': 'Fusionner le nœud',
     'uk-ua': 'Вузол злиття',
   },
   mergeNodeHere: {
     'en-us': 'Merge "{nodeName:string}" here',
     'ru-ru': 'Объедините «{nodeName:string}» здесь',
     'es-es': 'Combinar "{nodeName:string}" aquí',
-    'fr-fr': 'Fusionner "{nodeName:string}" ici',
+    'fr-fr': 'Fusionner « {nodeName:string} » ici',
     'uk-ua': 'Об\'єднайте "{nodeName:string}" тут',
   },
   mergeNodeHintMessage: {
@@ -289,14 +289,14 @@ export const treeText = createDictionary({
     'en-us': '{treeName:string} Tree',
     'ru-ru': '{treeName:string} Дерево',
     'es-es': '{treeName:string} Árbol',
-    'fr-fr': '{treeName:string} Arbre',
+    'fr-fr': 'Arbre {treeName:string}',
     'uk-ua': '{treeName:string} Дерево',
   },
   searchTreePlaceholder: {
     'en-us': 'Search Tree',
     'ru-ru': 'Поиск',
     'es-es': 'Árbol de búsqueda',
-    'fr-fr': 'Arbre de recherche',
+    'fr-fr': "Rechercher dans l'arbre",
     'uk-ua': 'Дерево пошуку',
   },
   opened: {

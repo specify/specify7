@@ -63,14 +63,14 @@ export const userText = createDictionary({
     'en-us': 'Change Password',
     'ru-ru': 'Изменить пароль',
     'es-es': 'Cambiar la contraseña',
-    'fr-fr': 'Changer le mot de passe',
+    'fr-fr': 'Modifier le mot de passe',
     'uk-ua': 'Змінити пароль',
   },
   oldPassword: {
     'en-us': 'Old password',
     'ru-ru': 'Предыдущий пароль',
     'es-es': 'Contraseña antigua',
-    'fr-fr': 'Ancien mot de passe',
+    'fr-fr': 'Mot de passe actuel',
     'uk-ua': 'Старий пароль',
   },
   newPassword: {
@@ -84,7 +84,7 @@ export const userText = createDictionary({
     'en-us': 'Repeat new password',
     'ru-ru': 'Повторите новый пароль',
     'es-es': 'Repita la nueva contraseña',
-    'fr-fr': 'Répété le nouveau mot de passe',
+    'fr-fr': 'Répéter le nouveau mot de passe',
     'uk-ua': 'Повторіть новий пароль',
   },
   logOut: {
@@ -210,7 +210,7 @@ export const userText = createDictionary({
     'en-us': 'User Password',
     'ru-ru': 'Пользовательский пароль',
     'es-es': 'Contraseña de usuario',
-    'fr-fr': "Mot de passe de l'utilisateur",
+    'fr-fr': 'Mot de passe utilisateur',
     'uk-ua': 'Пароль користувача',
   },
   generate: {
@@ -231,7 +231,7 @@ export const userText = createDictionary({
     'en-us': 'Master Key',
     'ru-ru': 'Мастер ключ',
     'es-es': 'Llave maestra',
-    'fr-fr': 'Passe-partout',
+    'fr-fr': 'Clé principale',
     'uk-ua': 'Головний ключ',
   },
   incorrectPassword: {
@@ -505,9 +505,7 @@ export const userText = createDictionary({
     'en-us': 'This option is unavailable for admin users',
     'ru-ru': 'Эта опция недоступна для администраторов.',
     'es-es': 'Esta opción no está disponible para usuarios administradores',
-    'fr-fr': `
-      Cette option n'est pas disponible pour les utilisateurs administrateurs
-    `,
+    'fr-fr': "Cette option n'est pas disponible pour les administrateurs",
     'uk-ua': 'Ця опція недоступна для адміністраторів',
   },
   configureCollectionAccess: {
@@ -535,7 +533,7 @@ export const userText = createDictionary({
     'en-us': 'User Roles',
     'ru-ru': 'Роли пользователей',
     'es-es': 'Roles del usuario',
-    'fr-fr': "Rôles d'utilisateur",
+    'fr-fr': 'Rôles utilisateur',
     'uk-ua': 'Ролі користувачів',
   },
   collectionUserRoles: {
@@ -549,7 +547,7 @@ export const userText = createDictionary({
     'en-us': 'Assigned User Roles',
     'ru-ru': 'Назначенные роли пользователя',
     'es-es': 'Roles de usuario asignados',
-    'fr-fr': "Rôles d'utilisateur attribués",
+    'fr-fr': 'Rôles utilisateur attribués',
     'uk-ua': 'Призначені ролі користувача',
   },
   rolePolicies: {
@@ -664,7 +662,7 @@ export const userText = createDictionary({
     'en-us': 'This collection',
     'ru-ru': 'Эта коллекция',
     'es-es': 'esta colección',
-    'fr-fr': 'Cette collecte',
+    'fr-fr': 'Cette collection',
     'uk-ua': 'Ця колекція',
   },
   allActions: {
@@ -678,7 +676,7 @@ export const userText = createDictionary({
     'en-us': 'Enable Collection Access',
     'ru-ru': 'Доступ к коллекции',
     'es-es': 'Habilitar acceso a la colección',
-    'fr-fr': "Activer l'accès à la collection",
+    'fr-fr': "Autoriser l'accès à la collection",
     'uk-ua': 'Увімкнути доступ до колекції',
   },
   createRole: {
@@ -699,7 +697,7 @@ export const userText = createDictionary({
     'en-us': 'From library:',
     'ru-ru': 'Из библиотеки:',
     'es-es': 'De la biblioteca:',
-    'fr-fr': 'De la bibliothèque :',
+    'fr-fr': 'Depuis la bibliothèque :',
     'uk-ua': 'З бібліотеки:',
   },
   fromExistingRole: {
@@ -748,7 +746,7 @@ export const userText = createDictionary({
     'en-us': 'User Invite Link',
     'ru-ru': 'Ссылка для приглашения пользователя',
     'es-es': 'Enlace de invitación de usuario',
-    'fr-fr': "Lien d'invitation de l'utilisateur",
+    'fr-fr': "Lien d'invitation utilisateur",
     'uk-ua': 'Посилання для запрошення користувача',
   },
   userInviteLinkDescription: {
@@ -788,7 +786,7 @@ export const userText = createDictionary({
     `,
     'fr-fr': `
       Aucun fournisseur d'identité externe n'est configuré. Vous pouvez en
-      configurer certains dans Spécifier 7 paramètres du serveur
+      configurer certains dans les paramètres du serveur de Specify 7
     `,
     'uk-ua': `
       Жодного зовнішнього постачальника ідентифікаційної інформації не
@@ -799,7 +797,7 @@ export const userText = createDictionary({
     'en-us': 'Specify 6 Permissions',
     'ru-ru': 'Specify 6 Разрешения',
     'es-es': 'Especificar 6 permisos',
-    'fr-fr': 'Spécifiez 6 autorisations',
+    'fr-fr': 'Autorisations de Specify 6',
     'uk-ua': 'Вкажіть 6 дозволів',
   },
   setPasswordBeforeSavePrompt: {
@@ -816,8 +814,8 @@ export const userText = createDictionary({
       contraseña no podrán iniciar sesión
     `,
     'fr-fr': `
-      Envisagez de définir un mot de passe pour cet utilisateur. Les
-      utilisateurs sans mot de passe ne pourront pas se connecter
+      Pensez à définir un mot de passe pour cet utilisateur. Les utilisateurs
+      sans mot de passe ne pourront pas se connecter
     `,
     'uk-ua': `
       Розгляньте можливість встановлення пароля для цього користувача.
@@ -863,7 +861,7 @@ export const userText = createDictionary({
     'en-us': 'Loading admins...',
     'ru-ru': 'Загрузка администраторов...',
     'es-es': 'Cargando administradores...',
-    'fr-fr': 'Chargement des administrateurs...',
+    'fr-fr': 'Chargement des administrateurs…',
     'uk-ua': 'Завантаження адміністраторів...',
   },
   specifyAdmin: {
@@ -943,14 +941,14 @@ export const userText = createDictionary({
     'en-us': 'Switch to horizontal layout',
     'ru-ru': 'Переключиться на горизонтальную раскладку',
     'es-es': 'Cambiar a diseño horizontal',
-    'fr-fr': 'Passer à la disposition horizontale',
+    'fr-fr': "Passer à l'affichage horizontal",
     'uk-ua': 'Перейти до горизонтального розташування',
   },
   switchToVerticalLayout: {
     'en-us': 'Switch to vertical layout',
     'ru-ru': 'Переключиться на вертикальную компоновку',
     'es-es': 'Cambiar a diseño vertical',
-    'fr-fr': 'Passer à la disposition verticale',
+    'fr-fr': "Passer à l'affichage vertical",
     'uk-ua': 'Переключитися на вертикальне розташування',
   },
   advancedTables: {

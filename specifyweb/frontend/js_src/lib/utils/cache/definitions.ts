@@ -66,6 +66,10 @@ export type CacheDefinitions = {
   readonly workbench: {
     readonly searchProperties: SearchPreferences;
   };
+  readonly coordinateConverter: {
+    readonly includeSymbols: boolean;
+    readonly applyAll: boolean;
+  };
   readonly tree: {
     readonly /** Open nodes in a given tree */
     [key in `conformations${AnyTree['tableName']}`]: Conformations;

@@ -18,7 +18,8 @@ from specifyweb.specify.api import create_obj, get_object_or_404, obj_to_data, \
 from specifyweb.specify.views import login_maybe_required, openapi
 from specifyweb.specify import models as specify_models
 from specifyweb.notifications.models import Message
-from specifyweb.permissions.permissions import PermissionTarget, PermissionTargetAction, check_permission_targets
+from specifyweb.permissions.permissions import PermissionTarget, PermissionTargetAction, \
+    check_permission_targets, check_table_permissions
 from . import models, tasks
 from .upload import upload as uploader, upload_plan_schema
 
@@ -33,6 +34,7 @@ class DataSetPT(PermissionTarget):
     unupload = PermissionTargetAction()
     validate = PermissionTargetAction()
     transfer = PermissionTargetAction()
+    create_recordset = PermissionTargetAction()
 
 def regularize_rows(ncols: int, rows: List[List]) -> List[List[str]]:
     n = ncols + 1 # extra row info such as disambiguation in hidden col at end
@@ -995,3 +997,67 @@ def transfer(request, ds_id: int) -> http.HttpResponse:
 
     ds.save()
     return http.HttpResponse(status=204)
+
+@openapi(schema={
+    'post': {
+        "requestBody": {
+            "required": True,
+            "description": "The name of the record set to create.",
+            "content": {
+                "application/x-www-form-urlencoded": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "description": "Name to give the new record set."
+                            },
+                        },
+                        'required': ['name'],
+                        'additionalProperties': False
+                    }
+                }
+            }
+        },
+        "responses": {
+            "201": {
+                "description": "Record set created successfully.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "number",
+                            "description": "The database id of the created record set."
+                        }
+                    }
+                }
+            },
+        }
+    },
+}, components=open_api_components)
+@login_maybe_required
+@require_POST
+def create_recordset(request, ds_id: int) -> http.HttpResponse:
+    Recordset = getattr(specify_models, 'Recordset')
+
+    ds = get_object_or_404(models.Spdataset, id=ds_id)
+    if ds.specifyuser != request.specify_user:
+        return http.HttpResponseForbidden()
+
+    if ds.uploadplan is None:
+        return http.HttpResponseBadRequest("data set is missing upload plan")
+
+    if ds.rowresults is None:
+        return http.HttpResponseBadRequest("data set is missing row upload results")
+
+    if 'name' not in request.POST:
+        return http.HttpResponseBadRequest("missing parameter: name")
+
+    name = request.POST['name']
+    if len(name) > Recordset._meta.get_field('name').max_length:
+        return http.HttpResponseBadRequest("name too long")
+
+    check_permission_targets(request.specify_collection.id, request.specify_user.id, [DataSetPT.create_recordset])
+    check_table_permissions(request.specify_collection, request.specify_user, Recordset, "create")
+
+    rs = uploader.create_recordset(ds, name)
+    return http.JsonResponse(rs.id, status=201, safe=False)

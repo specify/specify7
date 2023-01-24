@@ -163,6 +163,8 @@ export const formsText = createDictionary({
     'uk-ua': 'Неправильна форма',
   },
   unsupportedFormDescription: {
+    // FIXME: remove table names from here
+    // FIXME: scan all for usages of table names
     'en-us': `
       This plugin cannot be used on this form. Try moving it to the locality,
       collecting event or collection object forms.

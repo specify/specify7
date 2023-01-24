@@ -75,7 +75,7 @@ export function WbStatus({
     unuploading: wbText.rollback(),
   }[status.uploaderstatus.operation];
 
-  const standartalizedOperation = {
+  const standardizedOperation = {
     validating: wbText.validating(),
     uploading: wbText.uploading(),
     unuploading: wbText.rollingBack(),
@@ -120,7 +120,7 @@ export function WbStatus({
             });
     else
       message = wbText.wbStatusOperationProgress({
-        operationName: standartalizedOperation,
+        operationName: standardizedOperation,
         current,
         total,
       });

@@ -41,14 +41,14 @@ export const attachmentsText = createDictionary({
     'en-us': 'Order By',
     'ru-ru': 'Сортировать по',
     'es-es': 'ordenar por',
-    'fr-fr': 'Commandé par',
+    'fr-fr': 'Trier par',
     'uk-ua': 'Сортувати по',
   },
   uploadingInline: {
     'en-us': 'Uploading…',
     'ru-ru': 'Закачивание…',
     'es-es': 'Subiendo…',
-    'fr-fr': 'Téléchargement…',
+    'fr-fr': 'Envoi en cours…',
     'uk-ua': 'Завантаження…',
   },
   noAttachments: {

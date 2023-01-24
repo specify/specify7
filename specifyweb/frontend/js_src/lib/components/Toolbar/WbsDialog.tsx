@@ -29,6 +29,7 @@ import { Http } from '../../utils/ajax/definitions';
 import { wbPlanText } from '../../localization/wbPlan';
 import { schema } from '../DataModel/schema';
 import { getField } from '../DataModel/helpers';
+import { TableIcon } from '../Molecules/TableIcon';
 
 const createEmptyDataSet = async (): Promise<Dataset> =>
   ajax<Dataset>(
@@ -76,7 +77,7 @@ export function DataSetMetaOverlay(): JSX.Element | null {
       dataset={dataset}
       onChange={handleClose}
       onClose={handleClose}
-      onDeleted={ () => navigate('/specify/', {replace: true})}
+      onDeleted={() => navigate('/specify/', { replace: true })}
     />
   ) : null;
 }
@@ -232,11 +233,7 @@ export function DataSetsDialog({
                           : undefined
                       }
                     >
-                      <img
-                        alt=""
-                        className="w-table-icon"
-                        src="/images/Workbench32x32.png"
-                      />
+                      <TableIcon name="Workbench" label={false} />
                       {dataset.name}
                     </Link.Default>
                   </td>
