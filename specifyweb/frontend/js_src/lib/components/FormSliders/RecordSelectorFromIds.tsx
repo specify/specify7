@@ -142,28 +142,25 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
             if (ids.length === 1) handleClose();
           }
         : undefined,
-    onSlide:
-      typeof handleSlide === 'function'
-        ? (index, replace, callback): void => {
-            function doSlide(): void {
-              setIndex(index);
-              handleSlide?.(index, replace);
-              callback?.();
-            }
+    onSlide: (index, replace, callback): void => {
+      function doSlide(): void {
+        setIndex(index);
+        handleSlide?.(index, replace);
+        callback?.();
+      }
 
-            if (
-              currentResource?.needsSaved === true ||
-              /*
-               * If adding new resource that hasn't yet been modified, show a
-               * warning anyway because navigating away before saving in a
-               * RecordSet cancels the record adding process
-               */
-              currentResource?.isNew() === true
-            )
-              setUnloadProtect(() => doSlide);
-            else doSlide();
-          }
-        : undefined,
+      if (
+        currentResource?.needsSaved === true ||
+        /*
+         * If adding new resource that hasn't yet been modified, show a
+         * warning anyway because navigating away before saving in a
+         * RecordSet cancels the record adding process
+         */
+        currentResource?.isNew() === true
+      )
+        setUnloadProtect(() => doSlide);
+      else doSlide();
+    },
   });
 
   return (
