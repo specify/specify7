@@ -1,44 +1,50 @@
 msgid ""
-msgstr "Content-Type: text/plain\n"
+msgstr ""
+"Report-Msgid-Bugs-To: support@specifysoftware.org\n"
+"PO-Revision-Date: 2023-01-24 11:48+0000\n"
+"Last-Translator: Nathan <bonnemainsnathan@gmail.com>\n"
+"Language-Team: French <https://hosted.weblate.org/projects/specify-7/welcome/"
+"fr/>\n"
+"Language: fr\n"
+"Content-Type: text/plain\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 4.16-dev\n"
 
+#. Used in: Components > Home Page > Index ⬤ Components > Router > Routes
 #: components/HomePage/index.tsx:47
 #: components/Router/Routes.tsx:420
-#. Used in: Components > Home Page > Index ⬤ Components > Router > Routes
-#, fuzzy
 msgid "pageTitle"
 msgstr "Bienvenue"
 
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Home Page > About Specify ⬤ Components > Router > Overlay Routes
 #: components/Header/userToolDefinitions.ts:83
 #: components/HomePage/AboutSpecify.tsx:69
 #: components/Router/OverlayRoutes.tsx:164
-#. Used in: Components > Header > User Tool Definitions ⬤ Components > Home Page > About Specify ⬤ Components > Router > Overlay Routes
-#, fuzzy
 msgid "aboutSpecify"
-msgstr "À propos de Spécifier 7"
+msgstr "À propos de Specify 7"
 
-#: components/HomePage/AboutSpecify.tsx:57
 #. Used in: Components > Home Page > About Specify
-#, fuzzy
+#: components/HomePage/AboutSpecify.tsx:57
 msgid "downloadInformation"
-msgstr "Télécharger l'information"
+msgstr "Télécharger les informations"
 
+#. Used in: Components > Home Page > Taxon Tiles ⬤ Components > User Preferences > Renderers
 #: components/HomePage/TaxonTiles.tsx:55
 #: components/UserPreferences/Renderers.tsx:193
-#. Used in: Components > Home Page > Taxon Tiles ⬤ Components > User Preferences > Renderers
-#, fuzzy
 msgid "taxonTiles"
 msgstr "Tuiles Taxon"
 
-#: components/HomePage/TaxonTiles.tsx:51
 #. Used in: Components > Home Page > Taxon Tiles
+#: components/HomePage/TaxonTiles.tsx:51
 #, fuzzy
 msgid "taxonTilesDescription"
 msgstr ""
 "Affichage des taxons avec {count:number|formatted} ou plusieurs objets de "
 "collection"
 
-#: components/HomePage/AboutSpecify.tsx:76
 #. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:76
 #, fuzzy
 msgid "fullAddress"
 msgstr ""
@@ -48,8 +54,8 @@ msgstr ""
 "1345, boul. Jayhawk <br />\n"
 "Lawrence, KS 66045 États-Unis"
 
-#: components/HomePage/AboutSpecify.tsx:91
 #. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:91
 #, fuzzy
 msgid "disclosure"
 msgstr ""
@@ -63,8 +69,8 @@ msgstr ""
 "du Kansas. Spécifier a été soutenu de 1996 à 2018 par des subventions de la "
 "U.S. National Science Foundation."
 
-#: components/HomePage/AboutSpecify.tsx:92
 #. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:92
 #, fuzzy
 msgid "licence"
 msgstr ""
@@ -72,69 +78,59 @@ msgstr ""
 "Spécifier est livré avec ABSOLUMENT AUCUNE GARANTIE. Il s'agit d'un "
 "logiciel open source gratuit sous licence GNU General Public License v2."
 
-#: components/HomePage/AboutSpecify.tsx:95
 #. Used in: Components > Home Page > About Specify
-#, fuzzy
+#: components/HomePage/AboutSpecify.tsx:95
 msgid "systemInformation"
 msgstr "Informations système"
 
+#. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:99
-#. Used in: Components > Home Page > About Specify
-#, fuzzy
 msgid "specifyVersion"
-msgstr "Spécifiez 7 versions :"
+msgstr "Version de Specify 7 :"
 
-#: components/HomePage/AboutSpecify.tsx:100
 #. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:100
 #, fuzzy
 msgid "gitSha"
 msgstr "Git SHA :"
 
+#. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:101
-#. Used in: Components > Home Page > About Specify
-#, fuzzy
 msgid "buildDate"
-msgstr "Date de construction:"
+msgstr "Date de build :"
 
+#. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:103
-#. Used in: Components > Home Page > About Specify
-#, fuzzy
 msgid "specifySixVersion"
-msgstr "Spécifiez 6 versions :"
+msgstr "Version de Specify 6 :"
 
-#: components/HomePage/AboutSpecify.tsx:106
 #. Used in: Components > Home Page > About Specify
-#, fuzzy
+#: components/HomePage/AboutSpecify.tsx:106
 msgid "databaseVersion"
 msgstr "Version de la base de données :"
 
+#. Used in: Components > Home Page > About Specify ⬤ Components > Toolbar > Data Model
 #: components/HomePage/AboutSpecify.tsx:108
 #: components/Toolbar/DataModel.tsx:370
-#. Used in: Components > Home Page > About Specify ⬤ Components > Toolbar > Data Model
-#, fuzzy
 msgid "schemaVersion"
-msgstr "Version du schéma de base de données :"
+msgstr "Version du schéma de la base de données :"
 
-#: components/HomePage/AboutSpecify.tsx:113
 #. Used in: Components > Home Page > About Specify
-#, fuzzy
+#: components/HomePage/AboutSpecify.tsx:113
 msgid "databaseName"
-msgstr "Nom de la base de données:"
+msgstr "Nom de la base de données :"
 
-#: components/HomePage/AboutSpecify.tsx:135
 #. 🟥I believe ISA stands for Institution Service Agreement. Used in: Components > Home Page > About Specify
-#, fuzzy
+#: components/HomePage/AboutSpecify.tsx:135
 msgid "isaNumber"
 msgstr "Numéro ISA :"
 
+#. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:138
-#. Used in: Components > Home Page > About Specify
-#, fuzzy
 msgid "browser"
-msgstr "Navigateur:"
+msgstr "Navigateur :"
 
-#: components/HomePage/AboutSpecify.tsx:117
 #. Used in: Components > Home Page > About Specify
-#, fuzzy
+#: components/HomePage/AboutSpecify.tsx:117
 msgid "databaseCreationDate"
-msgstr "Date de création de la BD :"
+msgstr "Date de création de la base de données :"
