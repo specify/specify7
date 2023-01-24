@@ -27,10 +27,10 @@ export function AddStatDialog({
   readonly onAdd: (item: CustomStat | DefaultStat, itemIndex: number) => void;
   readonly onValueLoad:
     | ((
+        pageIndex: number,
         categoryIndex: number,
         itemIndex: number,
-        value: number | string,
-        pageIndex: number
+        value: number | string
       ) => void)
     | undefined;
 }): JSX.Element | null {
@@ -90,7 +90,7 @@ export function AddStatDialog({
                     pageIndex={index}
                     pageLayout={defaultLayoutPage}
                     statsSpec={statsSpec}
-                    onClick={(item: DefaultStat | CustomStat): void => {
+                    onClick={(item: CustomStat | DefaultStat): void => {
                       handleAdd(item, -1);
                       handleClose();
                     }}

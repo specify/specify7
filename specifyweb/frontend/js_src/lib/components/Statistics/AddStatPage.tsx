@@ -25,16 +25,16 @@ export function AddStatPage({
     | undefined;
   readonly onValueLoad:
     | ((
+        pageIndex: number,
         categoryIndex: number,
         itemIndex: number,
-        value: number | string,
-        pageIndex: number
+        value: number | string
       ) => void)
     | undefined;
 }): JSX.Element {
   const handleValueLoadPage = React.useCallback(
     (categoryIndex: number, itemIndex: number, value: number | string) => {
-      handleValueLoad?.(categoryIndex, itemIndex, value, pageIndex);
+      handleValueLoad?.(pageIndex, categoryIndex, itemIndex, value);
     },
     [handleValueLoad, pageIndex]
   );

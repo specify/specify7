@@ -288,10 +288,10 @@ export function StatsPage(): JSX.Element | null {
 
   const handleDefaultLoad = React.useCallback(
     (
+      pageIndex: number,
       categoryIndex: number,
       itemIndex: number,
-      value: number | string,
-      pageIndex: number
+      value: number | string
     ) =>
       setDefaultLayout((oldValue) =>
         f.maybe(oldValue, (oldValue) =>
