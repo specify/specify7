@@ -5,10 +5,6 @@
 #4. The logic implemented should be converted with appropriate Django wrappers during the actual usage.
 #5. Ideally, the functions declared in this file shouldn't be used tor tests, instead use the Django functions implemented
 
-
-#Django Implementation Steps:
-#
-
 class Node:
     def __init__(self, id, node_number, highest_child_node_number):
         self.id = id
@@ -119,8 +115,8 @@ test_tree.add_element(child_node_1_child_1)
 #1. Rank children by the number of free nodes and pick one with the least updates - don't always be greedy and look at the future state
 #2. If no gap in the front, look at gaps which are at the back (will allow tree to always accommodate current highest_child_node_number * step nodes) and never run out until max int size reaches!
 
-def squeeze_interval(tree, interval_to_squeeze: Node, squeeze_size, forward=True):
-    max_initial_gap = interval_to_squeeze.get_initial_gap() if forward else interval_to_squeeze.get_final_gap()
+def squeeze_interval(tree, interval_to_squeeze: Node, squeeze_size, initial_gap_offset=0, forward=True, shift_parent_interval=True):
+    max_initial_gap = (interval_to_squeeze.get_initial_gap() if forward else interval_to_squeeze.get_final_gap()) - initial_gap_offset
     max_final_gap = interval_to_squeeze.get_final_gap() if forward else interval_to_squeeze.get_initial_gap()
     max_interstitial_gap = interval_to_squeeze.get_interstitial_gap_nn(tree)
     max_gap = max_initial_gap + max_final_gap + max_interstitial_gap
@@ -148,16 +144,17 @@ def squeeze_interval(tree, interval_to_squeeze: Node, squeeze_size, forward=True
             for previous_children in direct_children[:index]:
                 tree.shift_subtree_by_steps(previous_children, (interstitial_squeezed_by + squeeze_child_by)*forward_unary)
         remaining_interstitial_gap = remaining_interstitial_gap - (squeeze_child_by + interstitial_squeezed_by)
-        squeeze_interval(tree, child, squeeze_child_by, forward)
+        squeeze_interval(tree, child, squeeze_child_by, initial_gap_offset=0,forward=forward)
         previous_child = child
 
-    if forward:
-        interval_to_squeeze.node_number += squeeze_size
-    else:
-        interval_to_squeeze.highest_child_node_number -= squeeze_size
+    if shift_parent_interval:
+        if forward:
+            interval_to_squeeze.node_number += squeeze_size
+        else:
+            interval_to_squeeze.highest_child_node_number -= squeeze_size
 
 print('Before Squeeze')
 test_node.print_subtree()
-squeeze_interval(test_tree, test_node, 9, forward=False)
+squeeze_interval(test_tree, test_node, 2, initial_gap_offset=1, shift_parent_interval=False, forward=False)
 print('After Squeeze')
 test_node.print_subtree()
