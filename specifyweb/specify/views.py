@@ -13,13 +13,13 @@ from django.db import IntegrityError, router, transaction, connection
 from django.db.models.deletion import Collector
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_http_methods, require_POST
-from specifyweb.businessrules.exceptions import BusinessRuleException
 
+from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, PermissionsException, check_permission_targets
-from specifyweb.workbench.upload.upload_result import FailedBusinessRule
 from . import api, models
 from .specify_jar import specify_jar
+
 
 def login_maybe_required(view):
     @wraps(view)
@@ -91,14 +91,19 @@ def delete_blockers(request, model, id):
     collector.delete_blockers = []
     collector.collect([obj])
     result = [
-        {
-            'table': sub_objs[0].__class__.__name__,
-            'field': field.name,
-            'id': sub_objs[0].id
-        }
-        for field, sub_objs in collector.delete_blockers
+        flatten([
+            {
+                'table': sub_obj.__class__.__name__,
+                'field': field.name,
+                'ids': sub_objs.id
+            }
+            for sub_obj in sub_objs
+        ] for field, sub_objs in collector.delete_blockers)
     ]
     return http.HttpResponse(api.toJson(result), content_type='application/json')
+
+def flatten(l):
+    return [item for sublist in l for item in sublist]
 
 @login_maybe_required
 @require_http_methods(['GET', 'HEAD'])
