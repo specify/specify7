@@ -13,7 +13,7 @@ export const queryText = createDictionary({
     'en-us': 'Query',
     'ru-ru': 'Запрос',
     'es-es': 'Consulta',
-    'fr-fr': 'Requete',
+    'fr-fr': 'Requête',
     'uk-ua': 'Запит',
   },
   queries: {
@@ -52,21 +52,21 @@ export const queryText = createDictionary({
     'en-us': 'Any',
     'ru-ru': 'Любой',
     'es-es': 'Ninguna',
-    'fr-fr': 'Tout',
+    'fr-fr': 'Tous',
     'uk-ua': 'Будь-який',
   },
   startValue: {
     'en-us': 'Start Value',
     'ru-ru': 'Начальное значение',
     'es-es': 'Valor inicial',
-    'fr-fr': 'Valeur de départ',
+    'fr-fr': 'Valeur de début',
     'uk-ua': 'Початкове значення',
   },
   endValue: {
     'en-us': 'End Value',
     'ru-ru': 'Конечное значение',
     'es-es': 'Valor final',
-    'fr-fr': 'Valeur finale',
+    'fr-fr': 'Valeur de fin',
     'uk-ua': 'Кінцеве значення',
   },
   saveQuery: {
@@ -80,7 +80,7 @@ export const queryText = createDictionary({
     'en-us': 'Save query as...',
     'ru-ru': 'Сохранить запрос как...',
     'es-es': 'Guardar consulta como...',
-    'fr-fr': 'Enregistrer la requête sous...',
+    'fr-fr': 'Enregistrer la requête sous…',
     'uk-ua': 'Зберегти запит як...',
   },
   saveClonedQueryDescription: {
@@ -161,7 +161,7 @@ export const queryText = createDictionary({
     'en-us': 'Unable to export to KML',
     'ru-ru': 'Невозможно экспортировать в KML',
     'es-es': 'No se puede exportar a KML',
-    'fr-fr': "Impossible d'exporter vers KML",
+    'fr-fr': "Impossible d'exporter au format KML",
     'uk-ua': 'Не вдалося експортувати в KML',
   },
   missingCoordinatesForKmlDescription: {
@@ -302,7 +302,7 @@ export const queryText = createDictionary({
     'en-us': 'Move Down',
     'ru-ru': 'Переместить вниз',
     'es-es': 'Mover hacia abajo',
-    'fr-fr': 'Descendre',
+    'fr-fr': 'Déplacer vers le bas',
     'uk-ua': 'Рухатися вниз',
   },
   sort: {
@@ -379,9 +379,9 @@ export const queryText = createDictionary({
       Use "_" para hacer coincidir un solo carácter
     `,
     'fr-fr': `
-      Utilisez "%" pour correspondre à n\'importe quel nombre de caractères.
+      Utilisez « % » pour correspondre à n'importe quel nombre de caractères.
 
-      Utilisez "_" pour correspondre à un seul caractère
+      Utilisez « _ » pour correspondre à un seul caractère
     `,
     'uk-ua': `
       Використовуйте "%", щоб відповідати будь-якій кількості символів.
@@ -484,7 +484,7 @@ export const queryText = createDictionary({
     'en-us': 'Empty',
     'ru-ru': 'Пустой',
     'es-es': 'Vacío',
-    'fr-fr': 'Vider',
+    'fr-fr': 'Vide',
     'uk-ua': 'Порожній',
   },
   and: {
@@ -498,14 +498,14 @@ export const queryText = createDictionary({
     'en-us': 'Starts With',
     'ru-ru': 'Начинается с',
     'es-es': 'Comienza con',
-    'fr-fr': 'Commence avec',
+    'fr-fr': 'Commence par',
     'uk-ua': 'Починається з',
   },
   or: {
     'en-us': 'or',
     'ru-ru': 'или',
     'es-es': 'o',
-    'fr-fr': 'ou alors',
+    'fr-fr': 'ou',
     'uk-ua': 'або',
   },
   yes: {
@@ -526,7 +526,7 @@ export const queryText = createDictionary({
     'en-us': 'Items have been returned',
     'ru-ru': 'Items have been returned',
     'es-es': 'Los artículos han sido devueltos',
-    'fr-fr': 'Les articles ont été retournés',
+    'fr-fr': 'Les éléments ont été retournés',
     'uk-ua': 'Товари повернуто',
   },
   queryResults: {
@@ -624,7 +624,7 @@ export const queryText = createDictionary({
       {maxLength:number|formatted}
     `,
     'fr-fr': `
-      La valeur du champ est trop longue. La longueur maximale autorisée est
+      La valeur du champ est trop longue. La longueur maximale autorisée est de
       {maxLength:number|formatted}
     `,
     'uk-ua': `

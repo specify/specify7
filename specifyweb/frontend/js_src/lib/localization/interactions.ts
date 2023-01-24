@@ -20,7 +20,7 @@ export const interactionsText = createDictionary({
     'en-us': 'Add Items',
     'ru-ru': 'Добавить элементы',
     'es-es': 'Añadir elementos',
-    'fr-fr': 'Ajouter des articles',
+    'fr-fr': 'Ajouter des éléments',
     'uk-ua': 'Додати предмети',
   },
   recordReturn: {

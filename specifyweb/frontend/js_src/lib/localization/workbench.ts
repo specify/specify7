@@ -20,7 +20,7 @@ export const wbText = createDictionary({
     'en-us': 'Roll Back',
     'ru-ru': 'Откат',
     'es-es': 'Retroceder',
-    'fr-fr': 'Retour en arriere',
+    'fr-fr': 'Rétablir',
     'uk-ua': 'Відкат',
   },
   validate: {
@@ -41,7 +41,7 @@ export const wbText = createDictionary({
     'en-us': 'Upload',
     'ru-ru': 'Загрузка',
     'es-es': 'Subir',
-    'fr-fr': 'Télécharger',
+    'fr-fr': 'Importer',
     'uk-ua': 'Завантажити',
   },
   rollingBack: {

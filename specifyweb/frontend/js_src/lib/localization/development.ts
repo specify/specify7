@@ -27,7 +27,7 @@ export const developmentText = createDictionary({
   details: {
     'en-us': 'Details',
     'es-es': 'Más información',
-    'fr-fr': 'Des détails',
+    'fr-fr': 'Informations',
     'ru-ru': 'Подробности',
     'uk-ua': 'Подробиці',
   },

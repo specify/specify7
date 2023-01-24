@@ -140,7 +140,7 @@ export const localityText = createDictionary({
     'en-us': 'NW Corner',
     'ru-ru': 'СЗ Угол',
     'es-es': 'Esquina noroeste',
-    'fr-fr': 'Coin nord-ouest',
+    'fr-fr': 'Coin NO',
     'uk-ua': 'NW Кут',
   },
   southEastCorner: {
@@ -169,7 +169,7 @@ export const localityText = createDictionary({
     'en-us': 'Line',
     'ru-ru': 'Линия',
     'es-es': 'Línea',
-    'fr-fr': 'La ligne',
+    'fr-fr': 'Ligne',
     'uk-ua': 'лінія',
   },
   rectangle: {
@@ -183,7 +183,7 @@ export const localityText = createDictionary({
     'en-us': 'Parsed',
     'ru-ru': 'Проверено',
     'es-es': 'analizado',
-    'fr-fr': 'analysé',
+    'fr-fr': 'Analysé',
     'uk-ua': 'Проаналізовано',
   },
   latitude: {
@@ -204,7 +204,7 @@ export const localityText = createDictionary({
     'en-us': 'Toggle Full Screen',
     'ru-ru': 'Включить полноэкранный режим',
     'es-es': 'Alternar pantalla completa',
-    'fr-fr': 'Basculer en plein écran',
+    'fr-fr': 'Passer en plein écran',
     'uk-ua': 'Перемкнути повний екран',
   },
   degrees: {
