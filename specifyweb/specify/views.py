@@ -95,7 +95,7 @@ def delete_blockers(request, model, id):
             {
                 'table': sub_obj.__class__.__name__,
                 'field': field.name,
-                'ids': sub_objs.id
+                'id': sub_obj.id
             }
             for sub_obj in sub_objs
         ] for field, sub_objs in collector.delete_blockers)
