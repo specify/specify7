@@ -1,7 +1,7 @@
 import { Button } from '../Atoms/Button';
 import React from 'react';
 
-export function StatsPageButton({
+export function StatsAsideButton({
   label,
   isCurrent,
   onClick: handleClick,
@@ -16,7 +16,7 @@ export function StatsPageButton({
     <div className="flex">
       <Button.Gray
         aria-current={isCurrent ? 'page' : undefined}
-        className="min-w-[theme(spacing.40)] flex-1 normal-case !justify-start"
+        className="min-w-[theme(spacing.40)] flex-1 !justify-start normal-case"
         onClick={handleClick}
       >
         {label}

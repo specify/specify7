@@ -20,7 +20,7 @@ import { useQueries } from '../Toolbar/Query';
 import { awaitPrefsSynced } from '../UserPreferences/helpers';
 import { useCollectionPref, usePref } from '../UserPreferences/usePref';
 import { AddStatDialog } from './AddStatDialog';
-import { StatsPageButton } from './Buttons';
+import { StatsAsideButton } from './Buttons';
 import { Categories } from './Categories';
 import {
   statsToTsv,
@@ -460,7 +460,7 @@ export function StatsPage(): JSX.Element | null {
                   <div className="flex flex-col gap-2">
                     <H3 className="text-lg font-bold">{parentLayoutName}</H3>
                     {parentLayout.map(({ label }, pageIndex) => (
-                      <StatsPageButton
+                      <StatsAsideButton
                         isCurrent={
                           activePage.pageIndex === pageIndex &&
                           activePage.isCollection === (index === 0)
@@ -486,7 +486,7 @@ export function StatsPage(): JSX.Element | null {
                       />
                     ))}
                     {isEditing && canEditIndex(index === 0) && (
-                      <StatsPageButton
+                      <StatsAsideButton
                         isCurrent={false}
                         label={commonText.add()}
                         onClick={(): void =>

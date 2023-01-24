@@ -62,11 +62,11 @@ export function Categories({
     | undefined;
 }): JSX.Element {
   const checkEmptyItems = handleSpecChanged === undefined;
-  const [removeCategory, setRemoveCategory] = React.useState<
-    { readonly categoryIndex: number } | undefined
+  const [removeCategoryIndex, setRemoveCategoryIndex] = React.useState<
+    number | undefined
   >(undefined);
   const closeRemoveDialog = (): void => {
-    setRemoveCategory(undefined);
+    setRemoveCategoryIndex(undefined);
   };
 
   /**
@@ -220,7 +220,7 @@ export function Categories({
                           : (pageLayout.categories[categoryIndex].items?.some(
                               (item) => item.type === 'CustomStat'
                             ) as boolean);
-                      if (containsCustom) setRemoveCategory({ categoryIndex });
+                      if (containsCustom) setRemoveCategoryIndex(categoryIndex);
                       else {
                         handleRemove(categoryIndex, undefined);
                       }
@@ -228,7 +228,6 @@ export function Categories({
                   >
                     {statsText.deleteAll()}
                   </Button.Small>
-                  <></>
                 </div>
               ) : null}
             </li>
@@ -243,14 +242,14 @@ export function Categories({
           {commonText.add()}
         </Button.Gray>
       )}
-      {removeCategory !== undefined && (
+      {removeCategoryIndex !== undefined && (
         <Dialog
           header="Category Contains Custom Statistics"
           buttons={
             <div className="flex flex-row gap-2">
               <Button.Red
                 onClick={(): void => {
-                  handleRemove?.(removeCategory.categoryIndex, undefined);
+                  handleRemove?.(removeCategoryIndex, undefined);
                   closeRemoveDialog();
                 }}
               >
