@@ -71,7 +71,8 @@ def get_ordered_children(node):
     model = type(node)
     ordered_children = list(model.objects.filter(
         nodenumber__gt=node.nodenumber,
-        highestchildnodenumber__lte=node.highestchildnodenumber
+        highestchildnodenumber__lte=node.highestchildnodenumber,
+        parent_id=node.id
     ).order_by('nodenumber'))
     return ordered_children
 
@@ -84,8 +85,8 @@ def shift_subtree_by_steps(node, step):
                          )\
         .update(
         nodenumber=F('nodenumber') + step,
-        highestchildnodenumber=F('highestchildnodenumber' + step
-    ))
+        highestchildnodenumber=F('highestchildnodenumber') + step
+    )
 
 def squeeze_interval(node_to_squeeze, tree, squeeze_size, forward=True):
     max_initial_gap = get_initial_gap(node_to_squeeze, tree) if forward else get_final_gap(node_to_squeeze, tree)

@@ -296,7 +296,7 @@ def repair_tree(request, tree):
     check_permission_targets(request.specify_collection.id, request.specify_user.id, [perm_target(tree).repair])
     tree_model = datamodel.get_table(tree)
     table = tree_model.name.lower()
-    tree_extras.renumber_tree(tree)
+    tree_extras.renumber_tree(table)
     tree_extras.validate_tree_numbering(table)
 
 
@@ -317,7 +317,7 @@ class GeographyMutationPT(PermissionTarget):
     repair = PermissionTargetAction()
 
 class StorageMutationPT(PermissionTarget):
-    resource = "/tree/edit/storage"
+    resource = "/tree/editx/storage"
     merge = PermissionTargetAction()
     move = PermissionTargetAction()
     synonymize = PermissionTargetAction()
