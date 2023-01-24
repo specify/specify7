@@ -43,7 +43,7 @@ export const formsText = createDictionary({
     'ru-ru': 'Значение должно быть уникальным в базе данных',
     'es-es': 'El valor debe ser único para la base de datos',
     'fr-fr': 'La valeur doit être unique à la base de données',
-    'uk-ua': 'Значення має бути унікальним для бази даних',
+    'uk-ua': 'Значення має бути унікальним в базі даних',
   },
   valuesOfMustBeUniqueToField: {
     'en-us': 'Values of {values:string} must be unique to {fieldName:string}',
@@ -66,7 +66,7 @@ export const formsText = createDictionary({
     'fr-fr': `
       Les valeurs de {values:string} doivent être uniques à la base de données
     `,
-    'uk-ua': 'Значення {values:string} мають бути унікальними для бази даних',
+    'uk-ua': 'Значення {values:string} мають бути унікальними в базі даних',
   },
   checkingIfResourceCanBeDeleted: {
     'en-us': 'Checking if resource can be deleted…',
@@ -80,7 +80,7 @@ export const formsText = createDictionary({
     'ru-ru': 'Удаление заблокировано',
     'es-es': 'Eliminar bloqueado',
     'fr-fr': 'Supprimer bloqué',
-    'uk-ua': 'Видалити заблокований',
+    'uk-ua': 'Видалення заблоковане',
   },
   deleteBlockedDescription: {
     'en-us': `
@@ -105,14 +105,14 @@ export const formsText = createDictionary({
     'ru-ru': 'Запись',
     'es-es': 'Registro',
     'fr-fr': 'Record',
-    'uk-ua': 'запис',
+    'uk-ua': 'Запис',
   },
   relationship: {
     'en-us': 'Relationship',
     'ru-ru': 'Связь',
     'es-es': 'Relación',
     'fr-fr': 'Relation amoureuse',
-    'uk-ua': 'стосунки',
+    'uk-ua': "Зв'язок",
   },
   paleoMap: {
     'en-us': 'Paleo Map',
@@ -126,7 +126,7 @@ export const formsText = createDictionary({
     'ru-ru': 'Требуется география',
     'es-es': 'Geografía requerida',
     'fr-fr': 'Géographie requise',
-    'uk-ua': "Географія обов'язкова",
+    'uk-ua': "Географія є обов'язковою",
   },
   paleoRequiresGeographyDescription: {
     'en-us': `
@@ -163,8 +163,6 @@ export const formsText = createDictionary({
     'uk-ua': 'Неправильна форма',
   },
   unsupportedFormDescription: {
-    // FIXME: remove table names from here
-    // FIXME: scan all for usages of table names
     'en-us': `
       This plugin cannot be used on this form. Try moving it to the locality,
       collecting event or collection object forms.
@@ -184,7 +182,7 @@ export const formsText = createDictionary({
     `,
     'uk-ua': `
       Цей плагін не можна використовувати в цій формі. Спробуйте перемістити
-      його до форми місцевості, збору подій чи об’єктів колекції.
+      його до форми місцевості, подій збору чи об’єктів колекції.
     `,
   },
   invalidDate: {
@@ -212,8 +210,8 @@ export const formsText = createDictionary({
       la base de données ?
     `,
     'uk-ua': `
-      Ви впевнені, що бажаєте остаточно видалити цей {tableName:string} із бази
-      даних?
+      Ви впевнені, що бажаєте остаточно видалити цей {tableName:string} запис з
+      бази даних?
     `,
   },
   deleteConfirmationDescription: {
@@ -239,7 +237,7 @@ export const formsText = createDictionary({
     'ru-ru': 'Месяц / Год',
     'es-es': 'Lunes / Año',
     'fr-fr': 'Lun / Année',
-    'uk-ua': 'пн / рік',
+    'uk-ua': 'Міс / Рік',
   },
   yearPlaceholder: {
     comment:
@@ -307,7 +305,7 @@ export const formsText = createDictionary({
       Seules les valeurs numériques sont prises en charge dans cette liste de
       sélection
     `,
-    'uk-ua': 'У цьому списку підтримуються лише числові значення',
+    'uk-ua': 'У цьому списку вибору підтримуються лише числові значення',
   },
   noData: {
     'en-us': 'No Data.',
@@ -321,7 +319,7 @@ export const formsText = createDictionary({
     'ru-ru': 'Набор объектов',
     'es-es': 'Conjunto de registros',
     'fr-fr': "Jeu d'enregistrements",
-    'uk-ua': 'Набір рекордів',
+    'uk-ua': 'Набір записів',
   },
   recordSetDeletionWarning: {
     'en-us': `
@@ -342,8 +340,8 @@ export const formsText = createDictionary({
       enregistrements référencés ne seront PAS supprimés de la base de données.
     `,
     'uk-ua': `
-      Набір записів "{recordSetName:string}" буде видалено. Записи, на які
-      посилаються, НЕ будуть видалені з бази даних.
+      Набір записів "{recordSetName:string}" буде видалено. Записи в цьому
+      наборі записів НЕ будуть видалені з бази даних.
     `,
   },
   saveRecordFirst: {

@@ -35,7 +35,7 @@ export const attachmentsText = createDictionary({
     'es-es': 'Configura tu servidor de archivos adjuntos',
     'fr-fr': 'Configurez votre serveur de pièces jointes',
     'ru-ru': 'Настройте свой сервер вложений',
-    'uk-ua': 'Налаштуйте сервер вкладень',
+    'uk-ua': 'Налаштуйте сервер прикріплень',
   },
   orderBy: {
     'en-us': 'Order By',
