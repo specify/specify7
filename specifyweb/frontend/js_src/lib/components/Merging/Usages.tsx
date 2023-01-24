@@ -1,5 +1,5 @@
 import { f } from '../../utils/functools';
-import { filterArray, RA, RR, ValueOf } from '../../utils/types';
+import { filterArray, RA, RR } from '../../utils/types';
 import { schema } from '../DataModel/schema';
 import { Tables } from '../DataModel/types';
 import { AnySchema } from '../DataModel/helperTypes';
@@ -23,6 +23,10 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { RecordSelectorFromIds } from '../FormSliders/RecordSelectorFromIds';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { Button } from '../Atoms/Button';
+import { Relationship } from '../DataModel/specifyField';
+import { softFail } from '../Errors/Crash';
+import { error } from '../Errors/assert';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 
 export function UsagesSection({
   resources,
@@ -80,20 +84,14 @@ const postProcessBlockers = async (
 > =>
   Promise.all(
     blockers.map(({ model, id }) => {
-      const replacementTable = tableReplacements()[model.name];
-      if (replacementTable === undefined)
+      const parentRelationship = parentTableRelationship()[model.name];
+      if (parentRelationship === undefined)
         return getResourceApiUrl(model.name, id);
-      const parentRelationships = findParentRelationships(
-        model,
-        schema.models[replacementTable]
-      );
-      if (parentRelationships.length !== 1)
-        throw new Error('Expected one parent relationship');
       return new schema.models[model.name].Resource({ id })
         .fetch()
         .then(
           (resource) =>
-            resource.get(parentRelationships[0].name as 'createdByAgent') ??
+            resource.get(parentRelationship.name as 'createdByAgent') ??
             undefined
         );
     })
@@ -110,30 +108,47 @@ const postProcessBlockers = async (
  * For example, if Agent is used in a AccessionAgent, instead of showing
  * AccessionAgent, show Accession
  */
-const tableReplacements = f.store<RR<keyof Tables, keyof Tables>>(() =>
-  Object.fromEntries(
-    filterArray(
-      Object.keys(schema.models).map((name) => {
-        if (name in overrides) {
-          const override = overrides[name];
-          if (override === undefined) return undefined;
-          else return [name, override];
-        }
-        /*
-         * i.e, for AccessionAgent, strip the "Agent" part and check if there
-         * is a table by the resulting name (i.e., Accession)
-         */
-        const potentialParentTable = name
-          .replace(/([a-z])([A-Z])/gu, '$1 $2')
-          .split(' ')
-          .slice(0, -1)
-          .join('');
-        if (potentialParentTable in schema.models)
-          return [name, potentialParentTable as keyof Tables];
-        else return undefined;
-      })
+export const parentTableRelationship = f.store<RR<keyof Tables, Relationship>>(
+  () =>
+    Object.fromEntries(
+      filterArray(
+        Object.entries(schema.models).map(([name, table]) => {
+          if (name in overrides) {
+            const override = overrides[name];
+            if (override === undefined) return undefined;
+            else return [name, override];
+          }
+          /*
+           * i.e, for AccessionAgent, strip the "Agent" part and check if there
+           * is a table by the resulting name (i.e., Accession)
+           */
+          const potentialParentTable = name
+            .replace(/([a-z])([A-Z])/gu, '$1 $2')
+            .split(' ')
+            .slice(0, -1)
+            .join('');
+          const relationships = table.relationships.filter(
+            (relationship) =>
+              relationship.relatedModel.name === potentialParentTable &&
+              // For some weird reason, some relationships to parent tables are -to-many. Ignore them
+              !relationshipIsToMany(relationship) &&
+              relationship.name !== 'createdByAgent' &&
+              relationship.name !== 'modifiedByAgent'
+          );
+          if (relationships.length > 1)
+            softFail(
+              error('Expected at most one parent relationship', {
+                relationships,
+                potentialParentTable,
+              })
+            );
+          const relationship = relationships.at(0);
+          if (relationship === undefined || relationshipIsToMany(relationship))
+            return undefined;
+          return [name, relationship];
+        })
+      )
     )
-  )
 );
 
 /**
@@ -142,36 +157,20 @@ const tableReplacements = f.store<RR<keyof Tables, keyof Tables>>(() =>
 const overrides: {
   readonly [TABLE_NAME in keyof Tables]?:
     | undefined
-    // Only allow tables that have an independent -to-one relationship with the parent
-    | (Exclude<ValueOf<Tables[TABLE_NAME]['toOneIndependent']>, null> &
-        AnySchema)['tableName'];
+    | keyof Tables[TABLE_NAME]['toOneIndependent'];
 } = {
-  BorrowReturnMaterial: 'BorrowMaterial',
+  BorrowReturnMaterial: 'borrowMaterial',
   CollectionObject: undefined,
   CollectionRelationship: undefined,
-  Collector: 'CollectingEvent',
-  Determiner: 'Determination',
-  FieldNotebookPage: 'FieldNotebookPageSet',
-  LatLonPolygon: 'Locality',
-  LoanReturnPreparation: 'LoanPreparation',
+  Collector: 'collectingEvent',
+  Determiner: 'determination',
+  FieldNotebookPage: 'pageSet',
+  LatLonPolygon: 'locality',
+  LoanReturnPreparation: 'loanPreparation',
   InstitutionNetwork: undefined,
-  PcrPerson: 'DNASequence',
+  PcrPerson: 'dnaSequence',
+  FieldNotebookPageSet: 'fieldNotebook',
 };
-
-/**
- * There should only be one, but returning all of them so that tests can
- * report that case as a bug
- */
-const findParentRelationships = (
-  { relationships }: SpecifyModel,
-  parentModel: SpecifyModel
-) =>
-  relationships.filter(
-    ({ relatedModel, name }) =>
-      relatedModel === parentModel &&
-      name !== 'createdByAgent' &&
-      name !== 'modifiedByAgent'
-  );
 
 function UsagesLine({
   tableName,
@@ -216,7 +215,5 @@ function UsagesLine({
 }
 
 export const exportsForTests = {
-  tableReplacements,
-  findParentRelationships,
   postProcessBlockers,
 };
