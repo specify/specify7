@@ -224,6 +224,7 @@ export const commonText = createDictionary({
     'uk-ua': 'Кінець',
   },
   update: {
+    comment: 'Verb',
     'en-us': 'Update',
     'ru-ru': 'Обновить',
     'es-es': 'Actualizar',
@@ -237,20 +238,6 @@ export const commonText = createDictionary({
     'fr-fr': '(liste tronquée)',
     'uk-ua': '(список скорочено)',
   },
-  expand: {
-    'en-us': 'Expand',
-    'ru-ru': 'Расширить',
-    'es-es': 'Expandir',
-    'fr-fr': 'Agrandir',
-    'uk-ua': 'Розгорнути',
-  },
-  contract: {
-    'en-us': 'Contract',
-    'ru-ru': 'Свернуть',
-    'es-es': 'Contrato',
-    'fr-fr': 'Contrat',
-    'uk-ua': 'Згорнути',
-  },
   fullDate: {
     'en-us': 'Full Date',
     'ru-ru': 'Полная дата',
@@ -259,6 +246,7 @@ export const commonText = createDictionary({
     'uk-ua': 'Повна дата',
   },
   view: {
+    comment: 'Verb',
     'en-us': 'View',
     'ru-ru': 'Смотреть',
     'es-es': 'Vista',
@@ -295,6 +283,7 @@ export const commonText = createDictionary({
     'uk-ua': 'Виберіть колекцію',
   },
   ascending: {
+    comment: 'As in "Ascending sort"',
     'en-us': 'Ascending',
     'ru-ru': 'По возрастанию',
     'es-es': 'ascendente',
@@ -302,6 +291,7 @@ export const commonText = createDictionary({
     'uk-ua': 'За зростанням',
   },
   descending: {
+    comment: 'As in "Descending sort"',
     'en-us': 'Descending',
     'ru-ru': 'По убыванию',
     'es-es': 'Descendente',
@@ -504,6 +494,21 @@ export const commonText = createDictionary({
     'es-es': 'Primario',
     'fr-fr': 'Principal',
     'uk-ua': 'Головний',
+  },
+  expand: {
+    'en-us': 'Expand',
+    'ru-ru': 'Расширить',
+    'es-es': 'Expandir',
+    'fr-fr': 'Agrandir',
+    'uk-ua': 'Розгорнути',
+  },
+  contract: {
+    comment: 'As in contract the list',
+    'en-us': 'Contract',
+    'ru-ru': 'Свернуть',
+    'es-es': 'Contrato',
+    'fr-fr': 'Contrat',
+    'uk-ua': 'Згорнути',
   },
   expandAll: {
     'en-us': 'Expand All',
