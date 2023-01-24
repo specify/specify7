@@ -202,5 +202,8 @@ export const statsText = createDictionary({
   name: {
     'en-us': 'Name',
   },
+  categoryContainsCustom: {
+    'en-us': 'Category Contains Custom Statistics',
+  },
 });
 /* eslint-enable @typescript-eslint/naming-convention */

@@ -8,20 +8,20 @@ import { Form, Input, Label } from '../Atoms/Form';
 import { statsText } from '../../localization/stats';
 
 export function StatsPageEditing({
-  label,
+  label = '',
   onRemove: handleRemove,
   onRename: handleRename,
   onClose: handleClose,
   onAdd: handleAdd,
 }: {
-  readonly label: string | undefined;
+  readonly label: string;
   readonly onRemove: (() => void) | undefined;
   readonly onRename: ((value: string) => void) | undefined;
   readonly onClose: () => void;
   readonly onAdd: ((label: string) => void) | undefined;
 }): JSX.Element {
   const id = useId('stats');
-  const [pageName, setPageName] = React.useState<string>(label ?? '');
+  const [pageName, setPageName] = React.useState<string>(label);
   return (
     <Dialog
       buttons={
@@ -42,7 +42,6 @@ export function StatsPageEditing({
       }
       header={statsText.pageName()}
       onClose={handleClose}
-      className={{ buttonContainer: 'flex-1' }}
     >
       <Form
         id={id('form')}

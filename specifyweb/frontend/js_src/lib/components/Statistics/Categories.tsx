@@ -65,7 +65,7 @@ export function Categories({
   const [removeCategoryIndex, setRemoveCategoryIndex] = React.useState<
     number | undefined
   >(undefined);
-  const closeRemoveDialog = (): void => {
+  const handleCloseRemoveDialog = (): void => {
     setRemoveCategoryIndex(undefined);
   };
 
@@ -88,11 +88,11 @@ export function Categories({
         ({ label, items }, categoryIndex) =>
           shouldShowCategory(items) && (
             <li
-              className={`${
+              className={
                 checkEmptyItems
                   ? ''
                   : 'flex h-auto max-h-80 flex-col content-center gap-2 rounded border-[1px] bg-[color:var(--form-foreground)] p-4 shadow-lg shadow-gray-300 transition hover:shadow-md hover:shadow-gray-400'
-              }`}
+              }
               key={categoryIndex}
             >
               {handleCategoryRename === undefined ? (
@@ -117,86 +117,79 @@ export function Categories({
                     : 'grid grid-cols-[auto_1fr_max-content] gap-2 overflow-auto'
                 }
               >
-                {items !== undefined
-                  ? items.map((item, itemIndex) =>
-                      item.type === 'CustomStat' ||
-                      item.isVisible === undefined ? (
-                        <StatItem
-                          categoryIndex={categoryIndex}
-                          item={item}
-                          itemIndex={itemIndex}
-                          key={itemIndex}
-                          statsSpec={statsSpec}
-                          onClick={
-                            item.type === 'CustomStat'
-                              ? undefined
-                              : typeof handleClick === 'function'
-                              ? checkEmptyItems
-                                ? (): void =>
-                                    handleClick({
-                                      type: 'DefaultStat',
-                                      pageName: item.pageName,
-                                      categoryName: item.categoryName,
-                                      itemName: item.itemName,
-                                      itemLabel: item.itemLabel,
-                                      itemValue: item.itemValue,
-                                      itemType: item.itemType,
-                                      pathToValue:
-                                        item.itemType === 'BackEndStat' &&
-                                        item.itemName === 'phantomItem'
-                                          ? (item.itemLabel as keyof typeof urlSpec)
-                                          : undefined,
-                                    })
-                                : undefined
-                              : undefined
-                          }
-                          onItemRename={
-                            typeof handleItemRename === 'function'
-                              ? (newLabel): void => {
-                                  handleItemRename(
+                {items?.map((item, itemIndex) =>
+                  item.type === 'CustomStat' || item.isVisible === undefined ? (
+                    <StatItem
+                      categoryIndex={categoryIndex}
+                      item={item}
+                      itemIndex={itemIndex}
+                      key={itemIndex}
+                      statsSpec={statsSpec}
+                      onClick={
+                        item.type === 'DefaultStat' &&
+                        typeof handleClick === 'function' &&
+                        checkEmptyItems
+                          ? (): void =>
+                              handleClick({
+                                type: 'DefaultStat',
+                                pageName: item.pageName,
+                                categoryName: item.categoryName,
+                                itemName: item.itemName,
+                                itemLabel: item.itemLabel,
+                                itemValue: item.itemValue,
+                                itemType: item.itemType,
+                                pathToValue:
+                                  item.itemType === 'BackEndStat' &&
+                                  item.itemName === 'phantomItem'
+                                    ? (item.itemLabel as keyof typeof urlSpec)
+                                    : undefined,
+                              })
+                          : undefined
+                      }
+                      onItemRename={
+                        typeof handleItemRename === 'function'
+                          ? (newLabel): void => {
+                              handleItemRename(
+                                categoryIndex,
+                                itemIndex,
+                                newLabel
+                              );
+                            }
+                          : undefined
+                      }
+                      onRemove={
+                        typeof handleRemove === 'function'
+                          ? (): void => handleRemove(categoryIndex, itemIndex)
+                          : undefined
+                      }
+                      onSpecChanged={
+                        !checkEmptyItems
+                          ? item.type === 'DefaultStat'
+                            ? handleClick !== undefined
+                              ? (querySpec, itemName): void =>
+                                  handleClick(
+                                    {
+                                      type: 'CustomStat',
+                                      itemLabel: itemName,
+                                      tableName: querySpec.tableName,
+                                      fields: querySpec.fields,
+                                    },
                                     categoryIndex,
-                                    itemIndex,
-                                    newLabel
-                                  );
-                                }
+                                    itemIndex
+                                  )
                               : undefined
-                          }
-                          onRemove={
-                            typeof handleRemove === 'function'
-                              ? (): void =>
-                                  handleRemove(categoryIndex, itemIndex)
-                              : undefined
-                          }
-                          onSpecChanged={
-                            !checkEmptyItems
-                              ? item.type === 'DefaultStat'
-                                ? handleClick !== undefined
-                                  ? (querySpec, itemName): void => {
-                                      handleClick(
-                                        {
-                                          type: 'CustomStat',
-                                          itemLabel: itemName,
-                                          tableName: querySpec.tableName,
-                                          fields: querySpec.fields,
-                                        },
-                                        categoryIndex,
-                                        itemIndex
-                                      );
-                                    }
-                                  : undefined
-                                : (querySpec) =>
-                                    handleSpecChanged(
-                                      categoryIndex,
-                                      itemIndex,
-                                      querySpec.fields
-                                    )
-                              : undefined
-                          }
-                          onValueLoad={handleValueLoad}
-                        />
-                      ) : undefined
-                    )
-                  : commonText.loading()}
+                            : (querySpec) =>
+                                handleSpecChanged(
+                                  categoryIndex,
+                                  itemIndex,
+                                  querySpec.fields
+                                )
+                          : undefined
+                      }
+                      onValueLoad={handleValueLoad}
+                    />
+                  ) : undefined
+                ) ?? commonText.loading()}
               </Ul>
               {typeof handleCategoryRename === 'function' ? (
                 <span className="-mt-2 flex-1" />
@@ -244,25 +237,25 @@ export function Categories({
       )}
       {removeCategoryIndex !== undefined && (
         <Dialog
-          header="Category Contains Custom Statistics"
+          header={statsText.categoryContainsCustom()}
+          className={{ container: dialogClassNames.narrowContainer }}
           buttons={
             <div className="flex flex-row gap-2">
               <Button.Red
                 onClick={(): void => {
                   handleRemove?.(removeCategoryIndex, undefined);
-                  closeRemoveDialog();
+                  handleCloseRemoveDialog();
                 }}
               >
                 {commonText.delete()}
               </Button.Red>
               <span className="-ml-2 flex" />
-              <Button.Blue onClick={closeRemoveDialog}>
+              <Button.Blue onClick={handleCloseRemoveDialog}>
                 {commonText.cancel()}
               </Button.Blue>
             </div>
           }
-          className={{ container: dialogClassNames.narrowContainer }}
-          onClose={closeRemoveDialog}
+          onClose={handleCloseRemoveDialog}
         >
           {statsText.customDeleteWarning()}
         </Dialog>

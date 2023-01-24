@@ -74,13 +74,13 @@ export function AddStatDialog({
         )}
       </div>
       <div>
-        {defaultStatsAddLeft !== undefined && (
+        {typeof defaultStatsAddLeft === 'object' && (
           <div>
             <H3 className="text-xl">{statsText.selectFromDefault()}</H3>
             <Ul>
               {defaultStatsAddLeft.map((defaultLayoutPage, index) =>
-                defaultLayoutPage.categories.every(({ items }) =>
-                  (items ?? []).every(
+                defaultLayoutPage.categories.every(({ items = [] }) =>
+                  items.every(
                     (item) =>
                       item.type === 'DefaultStat' && item.isVisible === false
                   )

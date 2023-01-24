@@ -109,10 +109,8 @@ export function useDefaultStatsToAdd(
     ) {
       return undefined;
     }
-    const listToUse = layout.categories.flatMap(({ items }) =>
-      (items ?? []).filter(
-        (item): item is DefaultStat => item.type === 'DefaultStat'
-      )
+    const listToUse = layout.categories.flatMap(({ items = [] }) =>
+      items.filter((item): item is DefaultStat => item.type === 'DefaultStat')
     );
     let statNotFound = false;
     const defaultLayoutFlagged = defaultLayout.map((defaultLayoutPage) => ({
