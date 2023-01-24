@@ -448,7 +448,7 @@ msgstr "Fin"
 #: components/PickLists/definitions.ts:41
 #: components/Security/PreviewTables.tsx:66
 #: components/Toolbar/ForceUpdate.tsx:45
-#. Used in: Components > Pick Lists > Definitions ⬤ Components > Security > Preview Tables ⬤ Components > Toolbar > Force Update
+#. 🟥Verb. Used in: Components > Pick Lists > Definitions ⬤ Components > Security > Preview Tables ⬤ Components > Toolbar > Force Update
 msgid "update"
 msgstr "Mettre à jour"
 
@@ -456,19 +456,6 @@ msgstr "Mettre à jour"
 #. Used in: Components > Toolbar > Record Sets
 msgid "listTruncated"
 msgstr "(liste tronquée)"
-
-#: components/FormCells/FormTable.tsx:202
-#: components/FormCells/FormTable.tsx:287
-#: components/FormCells/FormTable.tsx:289
-#. Used in: Components > Form Cells > Form Table
-msgid "expand"
-msgstr "Agrandir"
-
-#: components/FormCells/FormTable.tsx:256
-#: components/FormCells/FormTable.tsx:257
-#. Used in: Components > Form Cells > Form Table
-msgid "contract"
-msgstr "Contrat"
 
 #: components/FormPlugins/PartialDateUi.tsx:365
 #: components/WbPlanView/navigator.ts:541
@@ -488,7 +475,7 @@ msgstr "Date complète"
 #: components/Atoms/__tests__/index.test.tsx:14
 #: components/Atoms/__tests__/index.test.tsx:15
 #: components/TreeView/Actions.tsx:100
-#. Used in: Components > Atoms > Data Entry ⬤ Atoms > __tests__ > Button ⬤ Atoms > __tests__ > Index ⬤ Components > Tree View > Actions
+#. 🟥Verb. Used in: Components > Atoms > Data Entry ⬤ Atoms > __tests__ > Button ⬤ Atoms > __tests__ > Index ⬤ Components > Tree View > Actions
 msgid "view"
 msgstr "Affichage"
 
@@ -529,13 +516,13 @@ msgstr "Choisissez Collection"
 
 #: components/Molecules/Sorting.tsx:28
 #: components/UserPreferences/Renderers.tsx:106
-#. Used in: Components > Molecules > Sorting ⬤ Components > User Preferences > Renderers
+#. 🟥As in "Ascending sort". Used in: Components > Molecules > Sorting ⬤ Components > User Preferences > Renderers
 msgid "ascending"
 msgstr "Ascendant"
 
 #: components/Molecules/Sorting.tsx:29
 #: components/UserPreferences/Renderers.tsx:121
-#. Used in: Components > Molecules > Sorting ⬤ Components > User Preferences > Renderers
+#. 🟥As in "Descending sort". Used in: Components > Molecules > Sorting ⬤ Components > User Preferences > Renderers
 msgid "descending"
 msgstr "Descendant"
 
@@ -714,6 +701,19 @@ msgstr "Sélectionné"
 #. Used in: Components > Header > Index
 msgid "primary"
 msgstr "Principal"
+
+#: components/FormCells/FormTable.tsx:202
+#: components/FormCells/FormTable.tsx:287
+#: components/FormCells/FormTable.tsx:289
+#. Used in: Components > Form Cells > Form Table
+msgid "expand"
+msgstr "Agrandir"
+
+#: components/FormCells/FormTable.tsx:256
+#: components/FormCells/FormTable.tsx:257
+#. 🟥As in contract the list. Used in: Components > Form Cells > Form Table
+msgid "contract"
+msgstr "Contrat"
 
 #: components/AppResources/Aside.tsx:106
 #. Used in: Components > App Resources > Aside
