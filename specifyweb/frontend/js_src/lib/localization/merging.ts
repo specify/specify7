@@ -34,8 +34,8 @@ export const mergingText = createDictionary({
     'ru-ru': 'Новая объединенная запись',
   },
   duplicateRecord: {
-    'en-us': 'Duplicate {index:number|formatted}',
-    'ru-ru': 'Дубликат {index:number|formatted}',
+    'en-us': 'Preview {index:number|formatted}',
+    'ru-ru': 'Предпросмотр {index:number|formatted}',
   },
   nRecords: {
     'en-us': '{count:number|formatted} records',
