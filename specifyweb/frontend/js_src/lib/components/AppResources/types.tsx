@@ -57,7 +57,7 @@ export const appResourceSubTypes = {
     icon: icons.documentReport,
     label: reportsText.report(),
   },
-  userPreferences: {
+  user: {
     mimeType: 'application/json',
     name: 'UserPreferences',
     documentationUrl:

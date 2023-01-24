@@ -142,8 +142,8 @@ export const getCollectionPrefDefinition = getPrefDefinitionGenerator(
 
 /** Use usePref hook instead whenever possible as it comes with live updates */
 export const getPref = {
-  userPreferences: getUserPref,
-  collectionPreferences: getCollectionPref,
+  user: getUserPref,
+  collection: getCollectionPref,
 };
 
 export const preferenceGenerator = <PREFERENCE extends GenericPreferences>(
@@ -178,8 +178,8 @@ export const preference = {
   ),
 };
 export const getRawPreferences = {
-  userPreferences: (): PartialUserPreference => preference.user.preference,
-  collectionPreferences: (): PartialCollectionPreference =>
+  user: (): PartialUserPreference => preference.user.preference,
+  collection: (): PartialCollectionPreference =>
     preference.collection.preference,
 };
 
@@ -291,14 +291,16 @@ export const setPrefsGenerator = <PREFERENCE extends GenericPreferences>(
     return parsed;
   };
 export const setPref = {
-  userPreferences: setPrefsGenerator<typeof preferenceDefinitions>(
-    getRawPreferences.userPreferences,
+  user: setPrefsGenerator<typeof preferenceDefinitions>(
+    getRawPreferences.user,
     getPrefDefinition,
     true
   ),
-  collectionPreferences: setPrefsGenerator<
-    typeof collectionPreferenceDefinitions
-  >(getRawPreferences.collectionPreferences, getCollectionPrefDefinition, true),
+  collection: setPrefsGenerator<typeof collectionPreferenceDefinitions>(
+    getRawPreferences.collection,
+    getCollectionPrefDefinition,
+    true
+  ),
 };
 
 // Sync with back-end at most every 5s

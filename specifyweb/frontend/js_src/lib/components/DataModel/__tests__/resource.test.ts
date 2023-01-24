@@ -230,7 +230,7 @@ describe('getCarryOverPreference', () => {
       getFieldsToClone(schema.models.SpQuery)
     ));
   test('customize carry over fields', () => {
-    setPref.userPreferences('form', 'preferences', 'carryForward', {
+    setPref.user('form', 'preferences', 'carryForward', {
       Locality: ['localityName', 'text1'],
     });
     expect(getCarryOverPreference(schema.models.Locality, false)).toEqual([
@@ -277,7 +277,7 @@ describe('getUniqueFields', () => {
 });
 
 test('getFieldsToNotClone', () => {
-  setPref.userPreferences('form', 'preferences', 'carryForward', {
+  setPref.user('form', 'preferences', 'carryForward', {
     CollectionObject: getFieldsToClone(schema.models.CollectionObject).filter(
       (name) => name !== 'text1'
     ) as RA<TableFields<CollectionObject>>,

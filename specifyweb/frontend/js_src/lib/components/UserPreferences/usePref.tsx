@@ -105,8 +105,8 @@ export function usePref<
   Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
 > {
   const [getPrefMain, setUserPref] = React.useContext(PreferencesContext) ?? [
-    getPref.userPreferences,
-    setPref.userPreferences,
+    getPref.user,
+    setPref.user,
   ];
 
   return useUnsafePref(
@@ -137,7 +137,7 @@ export function useCollectionPref<
 > {
   const [getPrefMain, setUserPref] = React.useContext(
     CollectionPreferencesContext
-  ) ?? [getPref.collectionPreferences, setPref.collectionPreferences];
+  ) ?? [getPref.collection, setPref.collection];
 
   return useUnsafePref(
     category,

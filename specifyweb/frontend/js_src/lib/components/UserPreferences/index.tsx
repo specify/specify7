@@ -166,7 +166,7 @@ export function PreferencesContent({
                         <Button.Small
                           onClick={(): void =>
                             items.forEach(([name]) => {
-                              setPref.userPreferences(
+                              setPref.user(
                                 category,
                                 // @ts-expect-error
                                 subcategory,

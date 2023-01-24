@@ -122,9 +122,7 @@ function BackEndItem({
             },
           }).then(({ data }) => data),
         urlToFetch
-      ).then((data) =>
-        formatter(data[pathToValue as keyof BackendStatsResult])
-      ),
+      ).then((data) => formatter(data[pathToValue])),
     [pathToValue, urlToFetch]
   );
   useStatValueLoad(statValue, promiseGenerator, handleItemValueLoad);

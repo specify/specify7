@@ -127,7 +127,7 @@ const UserPreferencesEditor: AppResourceTab = function ({
               subcategory as string,
               item as string
             ) as PreferenceItem<any>
-          ).defaultValue) as unknown as typeof getPref.userPreferences,
+          ).defaultValue) as unknown as typeof getPref.user,
         ((
           category: string,
           subcategory: PropertyKey,
@@ -143,7 +143,7 @@ const UserPreferencesEditor: AppResourceTab = function ({
           );
           handleChange(JSON.stringify(preferences));
           return newValue;
-        }) as unknown as typeof setPref.userPreferences,
+        }) as unknown as typeof setPref.user,
       ];
     }, [handleChange])
   );
@@ -161,7 +161,7 @@ export const visualAppResourceEditors: RR<
 > = {
   label: undefined,
   report: undefined,
-  userPreferences: UserPreferencesEditor,
+  user: UserPreferencesEditor,
   defaultUserPreferences: UserPreferencesEditor,
   leafletLayers: undefined,
   rssExportFeed: undefined,

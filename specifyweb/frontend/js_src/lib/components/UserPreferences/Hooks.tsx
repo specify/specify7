@@ -24,8 +24,8 @@ export const prefEvents = eventListener<{
  */
 export const PreferencesContext = React.createContext<
   | readonly [
-      getPrefMain: typeof getPref.userPreferences,
-      setUserPref: typeof setPref.userPreferences
+      getPrefMain: typeof getPref.user,
+      setUserPref: typeof setPref.user
     ]
   | undefined
 >(undefined);
@@ -33,8 +33,8 @@ PreferencesContext.displayName = 'PreferencesContext';
 
 export const CollectionPreferencesContext = React.createContext<
   | readonly [
-      getPrefMain: typeof getPref.collectionPreferences,
-      setUserPref: typeof setPref.collectionPreferences
+      getPrefMain: typeof getPref.collection,
+      setUserPref: typeof setPref.collection
     ]
   | undefined
 >(undefined);

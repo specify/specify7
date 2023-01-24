@@ -253,7 +253,7 @@ describe('formatterToParser', () => {
       },
       name: 'altCatalogNumber',
     } as unknown as LiteralField;
-    setPref.userPreferences('form', 'preferences', 'autoNumbering', {
+    setPref.user('form', 'preferences', 'autoNumbering', {
       CollectionObject: [],
     });
     expect(formatterToParser(field, uiFormatter).value).toBeUndefined();

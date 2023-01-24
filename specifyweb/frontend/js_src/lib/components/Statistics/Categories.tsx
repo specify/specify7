@@ -68,17 +68,25 @@ export function Categories({
   const closeRemoveDialog = (): void => {
     setRemoveCategory(undefined);
   };
+
+  /**
+   *If checkEmptyItems is false, show category. Else, check if category contains custom stats
+   * or if it contains default stats which aren't isVisible as false
+   */
+  const shouldShowCategory = (
+    items: RA<CustomStat | DefaultStat> | undefined
+  ): boolean =>
+    !checkEmptyItems ||
+    (items ?? []).some(
+      (item) => item.type === 'CustomStat' || item.isVisible === undefined
+    );
   return pageLayout === undefined ? (
     <></>
   ) : (
     <>
       {pageLayout.categories.map(
         ({ label, items }, categoryIndex) =>
-          (!checkEmptyItems ||
-            (items ?? []).some(
-              (item) =>
-                item.type === 'CustomStat' || item.isVisible === undefined
-            )) && (
+          shouldShowCategory(items) && (
             <li
               className={`${
                 checkEmptyItems
