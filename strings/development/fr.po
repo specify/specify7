@@ -3,26 +3,26 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2023-01-24 11:48+0000\n"
 "Last-Translator: Nathan <bonnemainsnathan@gmail.com>\n"
-"Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
-"development/fr/>\n"
+"Language-Team: French "
+"<https://hosted.weblate.org/projects/specify-7/development/fr/>\n"
 "Language: fr\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 4.16-dev\n"
 
-#. Used in: Components > Developer > Crash Report Visualizer ⬤ Components > Router > Routes
 #: components/Developer/CrashReportVisualizer.tsx:21
 #: components/Router/Routes.tsx:410
+#. Used in: Components > Developer > Crash Report Visualizer ⬤ Components > Router > Routes
 msgid "crashReportVisualizer"
 msgstr "Visualiseur de rapport d'incident"
 
-#. Used in: Components > Developer > Crash Report Visualizer
 #: components/Developer/CrashReportVisualizer.tsx:34
+#. Used in: Components > Developer > Crash Report Visualizer
 msgid "downloadAsHtml"
 msgstr "Télécharger au format HTML"
 
-#. Used in: Components > Developer > Crash Report Mapper
 #: components/Developer/CrashReportMapper.tsx:131
+#. Used in: Components > Developer > Crash Report Mapper
 msgid "details"
 msgstr "Informations"
