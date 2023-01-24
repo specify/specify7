@@ -56,7 +56,7 @@ function Usages({
     false
   );
   return (
-    <td className="max-h-[theme(spacing.40)] flex-col !items-start">
+    <td className="h-[theme(spacing.40)] flex-col !items-start overflow-auto">
       {blockers === undefined ? (
         commonText.loading()
       ) : (
@@ -115,8 +115,9 @@ export const parentTableRelationship = f.store<RR<keyof Tables, Relationship>>(
         Object.entries(schema.models).map(([name, table]) => {
           if (name in overrides) {
             const override = overrides[name];
-            if (override === undefined) return undefined;
-            else return [name, override];
+            return override === undefined
+              ? undefined
+              : [name, table.strictGetRelationship(override)];
           }
           /*
            * i.e, for AccessionAgent, strip the "Agent" part and check if there
