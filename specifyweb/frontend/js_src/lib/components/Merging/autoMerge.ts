@@ -88,9 +88,9 @@ function mergeField(
           cautious
         );
     else return firstValue;
-  else if (typeof nonNullValues[0] === 'string') {
+  else if (nonNullValues.length > 0) {
     const uniqueValues = f.unique(values);
-    if (uniqueValues.length > 0 && cautious) return null;
+    if (uniqueValues.length > 1 && cautious) return null;
     return (
       nonNullValues.sort(
         sortFunction((string) =>
