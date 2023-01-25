@@ -136,24 +136,17 @@ function MergeDialog({
   }, [merged, relationship, mergedRecords]);
 
   const add = (
-    <tbody>
-      <tr>
-        <td />
-        <td>
-          <Button.Green
-            className="flex-1"
-            onClick={(): void =>
-              setMergedRecords([
-                ...mergedRecords,
-                new relationship.relatedModel.Resource(),
-              ])
-            }
-          >
-            {commonText.add()}
-          </Button.Green>
-        </td>
-      </tr>
-    </tbody>
+    <Button.Green
+      className="flex-1"
+      onClick={(): void =>
+        setMergedRecords([
+          ...mergedRecords,
+          new relationship.relatedModel.Resource(),
+        ])
+      }
+    >
+      {commonText.add()}
+    </Button.Green>
   );
 
   return (
@@ -187,51 +180,60 @@ function MergeDialog({
           </tr>
         </thead>
         {Array.from({ length: maxCount }, (_, index) => (
-          <SubViewLine
-            isFirst={index === 0}
-            isLast={index + 1 === maxCount}
-            extraJsx={
-              mergedRecords[index] === undefined &&
-              mergedRecords[index - 1] !== undefined ? (
-                add
-              ) : (
-                <tr aria-hidden>
-                  <td className="col-span-full my-8 border !p-0" />
-                </tr>
-              )
-            }
-            key={index}
-            merged={mergedRecords[index]}
-            resources={children.map((record) => record[index])}
-            onRemove={(): void =>
-              setMergedRecords(removeItem(mergedRecords, index))
-            }
-            onSlide={(columnIndex, direction): void => {
-              if (columnIndex === 0)
-                setMergedRecords(moveItem(mergedRecords, index, direction));
-              else
-                setChildren(
-                  replaceItem(
-                    children,
-                    columnIndex - 1,
-                    moveItem(
-                      direction === 'down' &&
-                        index + 1 === children[columnIndex - 1].length
-                        ? insertItem(
-                            children[columnIndex - 1],
-                            index + 1,
-                            undefined
-                          )
-                        : children[columnIndex - 1],
-                      index,
-                      direction
+          <React.Fragment key={index}>
+            <SubViewLine
+              isFirst={index === 0}
+              isLast={index + 1 === maxCount}
+              merged={mergedRecords[index]}
+              mergedJsx={
+                mergedRecords[index] === undefined &&
+                mergedRecords[index - 1] !== undefined
+                  ? add
+                  : undefined
+              }
+              resources={children.map((record) => record[index])}
+              onRemove={(): void =>
+                setMergedRecords(removeItem(mergedRecords, index))
+              }
+              onSlide={(columnIndex, direction): void => {
+                if (columnIndex === 0)
+                  setMergedRecords(moveItem(mergedRecords, index, direction));
+                else
+                  setChildren(
+                    replaceItem(
+                      children,
+                      columnIndex - 1,
+                      moveItem(
+                        direction === 'down' &&
+                          index + 1 === children[columnIndex - 1].length
+                          ? insertItem(
+                              children[columnIndex - 1],
+                              index + 1,
+                              undefined
+                            )
+                          : children[columnIndex - 1],
+                        index,
+                        direction
+                      )
                     )
-                  )
-                );
-            }}
-          />
+                  );
+              }}
+            />
+            <tbody>
+              <tr aria-hidden>
+                <td className="col-span-full my-8 border border-gray-500 !p-0" />
+              </tr>
+            </tbody>
+          </React.Fragment>
         ))}
-        {maxCount === mergedRecords.length && add}
+        {maxCount === mergedRecords.length && (
+          <tbody>
+            <tr>
+              <td />
+              <td>{add}</td>
+            </tr>
+          </tbody>
+        )}
       </MergeContainer>
     </MergeDialogContainer>
   );
@@ -301,16 +303,16 @@ function useChildren(
 function SubViewLine({
   isFirst,
   isLast,
-  extraJsx,
   merged,
+  mergedJsx,
   resources,
   onRemove: handleRemove,
   onSlide: handleSlide,
 }: {
   readonly isFirst: boolean;
   readonly isLast: boolean;
-  readonly extraJsx: JSX.Element;
   readonly merged: SpecifyResource<AnySchema> | undefined;
+  readonly mergedJsx: JSX.Element | undefined;
   readonly resources: RA<SpecifyResource<AnySchema> | undefined>;
   readonly onRemove: () => void;
   readonly onSlide: (index: number, direction: 'down' | 'up') => void;
@@ -324,12 +326,12 @@ function SubViewLine({
         isFirst={isFirst}
         isLast={isLast}
         merged={merged}
+        mergedJsx={mergedJsx}
         resources={resources}
         onRemove={handleRemove}
         onSlide={handleSlide}
       />
       <SubViewBody merged={merged} resources={resources} />
-      {extraJsx}
     </tbody>
   );
 }
@@ -338,6 +340,7 @@ function SubViewHeader({
   isFirst,
   isLast,
   merged,
+  mergedJsx,
   resources,
   onRemove: handleRemove,
   onSlide: handleSlide,
@@ -345,6 +348,7 @@ function SubViewHeader({
   readonly isFirst: boolean;
   readonly isLast: boolean;
   readonly merged: SpecifyResource<AnySchema> | undefined;
+  readonly mergedJsx?: JSX.Element;
   readonly resources: RA<SpecifyResource<AnySchema> | undefined>;
   readonly onRemove: () => void;
   readonly onSlide: (index: number, direction: 'down' | 'up') => void;
@@ -356,7 +360,7 @@ function SubViewHeader({
       </th>
       {[merged, ...resources].map((resource, index) =>
         resource === undefined ? (
-          <td key={index} />
+          <td key={index}>{index === 0 ? mergedJsx : undefined}</td>
         ) : (
           <td className="!items-stretch" key={index}>
             {index === 0 ? (
