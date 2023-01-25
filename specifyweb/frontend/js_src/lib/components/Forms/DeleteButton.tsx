@@ -20,6 +20,12 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import type { DeleteBlocker } from './DeleteBlocked';
 import { DeleteBlockers } from './DeleteBlocked';
 import { Http } from '../../utils/ajax/definitions';
+import { runQuery } from '../../utils/ajax/specifyApi';
+import { serializeResource } from '../DataModel/helpers';
+import { createQuery } from '../QueryBuilder';
+import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
+import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
+import { parentTableRelationship } from './parentTables';
 
 /**
  * A button to delele a resorce
@@ -113,12 +119,21 @@ export function DeleteButton<SCHEMA extends AnySchema>({
             {deletionMessage}
           </Dialog>
         ) : (
-          <DeleteBlockers
-            blockers={blockers}
-            resource={resource}
+          <Dialog
+            buttons={commonText.close()}
+            className={{
+              container: dialogClassNames.wideContainer,
+            }}
+            header={formsText.deleteBlocked()}
             onClose={handleClose}
-            onDeleted={(): void => setBlockers([])}
-          />
+          >
+            {formsText.deleteBlockedDescription()}
+            <DeleteBlockers
+              blockers={blockers}
+              resource={resource}
+              onCleared={(): void => setBlockers([])}
+            />
+          </Dialog>
         )
       ) : undefined}
     </>
@@ -133,7 +148,7 @@ export const fetchBlockers = async (
     RA<{
       readonly table: keyof Tables;
       readonly field: string;
-      readonly id: number;
+      readonly ids: RA<number>;
     }>
   >(
     `/api/delete_blockers/${resource.specifyModel.name.toLowerCase()}/${
@@ -151,8 +166,54 @@ export const fetchBlockers = async (
   ).then(({ data, status }) =>
     status === Http.NOT_FOUND
       ? []
-      : data.map(({ table, ...rest }) => ({
-          ...rest,
-          model: strictGetModel(table),
-        }))
+      : Promise.all(
+          data.map(async ({ ids, field, table: tableName }) => {
+            const table = strictGetModel(tableName);
+            const directRelationship = table.strictGetRelationship(field);
+            const parentRelationship =
+              parentTableRelationship()[directRelationship.model.name];
+            return {
+              directRelationship,
+              parentRelationship,
+              ids:
+                parentRelationship === undefined
+                  ? ids.map((id) => ({
+                      direct: id,
+                      parent: undefined,
+                    }))
+                  : await runQuery<[number, number]>(
+                      serializeResource(
+                        createQuery(
+                          'Delete blockers',
+                          directRelationship.model
+                        ).set('fields', [
+                          QueryFieldSpec.fromPath(
+                            directRelationship.model.name,
+                            [directRelationship.model.idField.name]
+                          )
+                            .toSpQueryField()
+                            .set('isDisplay', false)
+                            .set('operStart', queryFieldFilters.in.id)
+                            .set('startValue', ids.join(',')),
+                          QueryFieldSpec.fromPath(
+                            parentRelationship.model.name,
+                            [
+                              parentRelationship.name,
+                              parentRelationship.relatedModel.idField.name,
+                            ]
+                          ).toSpQueryField(),
+                        ])
+                      ),
+                      {
+                        limit: 0,
+                      }
+                    ).then((rows) =>
+                      rows.map(([direct, parent]) => ({
+                        direct,
+                        parent,
+                      }))
+                    ),
+            };
+          })
+        )
   );

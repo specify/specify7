@@ -348,7 +348,9 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
   public strictGetField(unparsedName: string): LiteralField | Relationship {
     const field = this.getField(unparsedName);
     if (field === undefined)
-      throw new Error(`Tried to get unknown field: ${unparsedName}`);
+      throw new Error(
+        `Tried to get unknown field "${unparsedName}" on table ${this.name}`
+      );
     return field;
   }
 

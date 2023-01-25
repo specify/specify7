@@ -394,3 +394,12 @@ export function jsonStringify(
 
 export const takeBetween = <T>(array: RA<T>, first: T, last: T): RA<T> =>
   array.slice(array.indexOf(first) + 1, array.indexOf(last) + 1);
+
+/**
+ * Split array into sub-arrays of at most chunkSize
+ * Behavior is undefined if chunkSize is less than 1 or not a decimal
+ */
+export const chunk = <T>(array: RA<T>, chunkSize: number): RA<RA<T>> =>
+  [...Array(Math.ceil(array.length / chunkSize))].map((_, index) =>
+    array.slice(index * chunkSize, (index + 1) * chunkSize)
+  );

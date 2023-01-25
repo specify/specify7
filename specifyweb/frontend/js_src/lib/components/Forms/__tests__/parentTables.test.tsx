@@ -1,10 +1,5 @@
-import { exportsForTests, parentTableRelationship } from '../Usages';
 import { requireContext } from '../../../tests/helpers';
-import { schema } from '../../DataModel/schema';
-import { overrideAjax } from '../../../tests/ajax';
-import { getResourceApiUrl } from '../../DataModel/resource';
-
-const { postProcessBlockers } = exportsForTests;
+import { parentTableRelationship } from '../parentTables';
 
 requireContext();
 
@@ -99,33 +94,3 @@ test('Parent table relationships are calculated properly', () =>
       "WorkbenchRowImage": "[relationship workbenchRow]",
     }
   `));
-
-const loanAgentId = 1;
-const loanId = 3;
-overrideAjax(`/api/specify/loanagent/${loanAgentId}/`, {
-  resource_uri: getResourceApiUrl('LoanAgent', loanAgentId),
-  id: loanAgentId,
-  loan: getResourceApiUrl('Loan', loanId),
-});
-test('postProcessBlockers', async () => {
-  const resources = await postProcessBlockers([
-    {
-      field: 'Agent',
-      model: schema.models.LoanAgent,
-      id: loanAgentId,
-    },
-    {
-      field: 'createdBy',
-      model: schema.models.CollectionObject,
-      id: 2,
-    },
-  ]);
-
-  expect(resources).toEqual([
-    { tableName: 'Loan', ids: [loanId] },
-    {
-      tableName: 'CollectionObject',
-      ids: [2],
-    },
-  ]);
-});

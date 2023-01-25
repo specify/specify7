@@ -1,190 +1,133 @@
 import React from 'react';
 
-import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
-import { formsText } from '../../localization/forms';
-import { f } from '../../utils/functools';
-import { GetOrSet, RA } from '../../utils/types';
+import { RA } from '../../utils/types';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Relationship } from '../DataModel/specifyField';
-import type { SpecifyModel } from '../DataModel/specifyModel';
-import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
-import { format } from './dataObjFormatters';
-import { ResourceView } from './ResourceView';
-import { getResourceViewUrl } from '../DataModel/resource';
-import { Link } from '../Atoms/Link';
+import { Ul } from '../Atoms';
+import { useTriggerState } from '../../hooks/useTriggerState';
+import { Button } from '../Atoms/Button';
+import { removeItem, replaceItem } from '../../utils/utils';
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { RecordSelectorFromIds } from '../FormSliders/RecordSelectorFromIds';
 
 export type DeleteBlocker = {
-  readonly model: SpecifyModel;
-  readonly field: string;
-  readonly id: number;
+  readonly directRelationship: Relationship;
+  readonly parentRelationship: Relationship | undefined;
+  readonly ids: RA<{
+    /*
+     * Blocker might be for "Determiner", but we would resolve it to
+     * "Determination" as that is a more interesting table.
+     */
+    readonly direct: number;
+    readonly parent: number | undefined;
+  }>;
 };
 
 export function DeleteBlockers({
   resource: parentResource,
-  blockers,
-  onClose: handleClose,
-  onDeleted: handleDeleted,
+  blockers: initialBlockers,
+  onCleared: handleCleared,
 }: {
   readonly resource: SpecifyResource<AnySchema>;
   readonly blockers: RA<DeleteBlocker>;
-  readonly onClose: () => void;
-  readonly onDeleted: () => void;
-}): JSX.Element | null {
-  const [preview, setPreview] = React.useState<
-    | {
-        readonly resource: SpecifyResource<AnySchema>;
-        readonly field: Relationship | undefined;
-      }
-    | undefined
-  >(undefined);
-
-  const [data, setData] = useFormattedBlockers(parentResource, blockers);
-
+  readonly onCleared: () => void;
+}): JSX.Element {
+  const [blockers, setBlockers] = useTriggerState(initialBlockers);
   React.useEffect(
     () =>
-      Array.isArray(data) && data.length === 0 ? handleDeleted() : undefined,
-    [data, handleDeleted]
+      Array.isArray(blockers) && blockers.length === 0
+        ? handleCleared()
+        : undefined,
+    [blockers, handleCleared]
   );
 
-  return Array.isArray(data) ? (
-    <>
-      <Dialog
-        buttons={commonText.close()}
-        className={{
-          container: dialogClassNames.wideContainer,
-        }}
-        header={formsText.deleteBlocked()}
-        onClose={handleClose}
-      >
-        {formsText.deleteBlockedDescription()}
-        {/* BUG: apply minmax(0,1fr) everywhere where necessary */}
-        <table className="grid-table grid-cols-[minmax(0,1fr),auto] gap-2">
-          <thead>
-            <tr>
-              <th scope="col">{formsText.record()}</th>
-              <th scope="col">{formsText.relationship()}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.map(({ formatted, field, resource }, index) => {
-              const fieldLabel =
-                typeof field === 'object' ? field.label : field;
-              const button = (
-                <Link.Default
-                  // BUG: consider applying these styles everywhere
-                  className="max-w-full overflow-auto text-left"
-                  href={getResourceViewUrl(
-                    resource.specifyModel.name,
-                    resource.id
-                  )}
-                  onClick={(event): void => {
-                    event.preventDefault();
-                    setPreview({
-                      resource,
-                      field: typeof field === 'object' ? field : undefined,
-                    });
-                  }}
-                >
-                  <TableIcon label name={resource.specifyModel.name} />
-                  {formatted}
-                </Link.Default>
-              );
-              return (
-                <tr key={index}>
-                  <td>{button}</td>
-                  <td>{fieldLabel}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </Dialog>
-      {typeof preview === 'object' ? (
+  return (
+    <Ul className="flex flex-col gap-2">
+      {blockers.map((blocker, blockerIndex) => (
         <BlockerPreview
-          field={preview.field}
+          blocker={blocker}
+          key={blockerIndex}
           parentResource={parentResource}
-          resource={preview.resource}
-          onClose={(): void => setPreview(undefined)}
-          onDeleted={(): void =>
-            setData(
-              data.filter(({ resource }) => resource !== preview.resource)
+          onDeleted={(resourceIndex): void =>
+            setBlockers(
+              replaceItem(blockers, blockerIndex, {
+                ...blockers[blockerIndex],
+                ids: removeItem(blockers[blockerIndex].ids, resourceIndex),
+              })
             )
           }
         />
-      ) : undefined}
-    </>
-  ) : null;
-}
-
-export function useFormattedBlockers(
-  parentResource: SpecifyResource<AnySchema>,
-  blockers: RA<DeleteBlocker> | undefined
-): GetOrSet<
-  | RA<{
-      readonly field: Relationship | string;
-      readonly resource: SpecifyResource<AnySchema>;
-      readonly formatted: string;
-    }>
-  | undefined
-> {
-  return useAsyncState(
-    React.useCallback(
-      async () =>
-        blockers === undefined
-          ? undefined
-          : Promise.all(
-              blockers.map(async ({ model, field, id }) => {
-                const resource = new model.Resource({ id });
-                return f.all({
-                  field: model.getRelationship(field) ?? field,
-                  resource,
-                  formatted: (await format(resource, undefined, true))!,
-                });
-              })
-            ),
-      [parentResource, blockers]
-    ),
-    true
+      ))}
+    </Ul>
   );
 }
 
 function BlockerPreview({
-  resource,
+  blocker: { directRelationship, parentRelationship, ids },
   parentResource,
-  field,
-  onClose: handleClose,
   onDeleted: handleDeleted,
 }: {
-  readonly resource: SpecifyResource<AnySchema>;
+  readonly blocker: DeleteBlocker;
   readonly parentResource: SpecifyResource<AnySchema>;
-  readonly field: Relationship | undefined;
-  readonly onClose: () => void;
-  readonly onDeleted: () => void;
+  readonly onDeleted: (index: number) => void;
 }): JSX.Element {
+  const [isOpen, handleOpen, handleClose] = useBooleanState();
+  const resolvedIds = React.useMemo(
+    () => ids.map(({ direct, parent = direct }) => parent),
+    [ids]
+  );
+
   return (
-    <ResourceView
-      dialog="modal"
-      isDependent={false}
-      isSubForm={false}
-      mode="edit"
-      resource={resource}
-      onAdd={undefined}
-      onClose={handleClose}
-      onDeleted={(): void => {
-        handleDeleted();
-        handleClose();
-      }}
-      onSaved={(): void => {
-        if (
-          typeof field === 'object' &&
-          resource.get(field.name) !== parentResource.get('resource_uri')
-        )
-          handleDeleted();
-        handleClose();
-      }}
-    />
+    <>
+      <li>
+        <Button.LikeLink onClick={handleOpen}>
+          <TableIcon
+            label
+            name={
+              parentRelationship?.relatedModel.name ??
+              directRelationship.model.name
+            }
+          />
+          {commonText.countLine({
+            resource:
+              parentRelationship === undefined
+                ? `${directRelationship.model.label} - ${directRelationship.label}`
+                : `${parentRelationship.label} - ${parentRelationship.model.label}`,
+            count: ids.length,
+          })}
+        </Button.LikeLink>
+      </li>
+      {isOpen && (
+        <RecordSelectorFromIds
+          ids={resolvedIds}
+          newResource={undefined}
+          defaultIndex={0}
+          title={undefined}
+          headerButtons={undefined}
+          dialog="modal"
+          isDependent={false}
+          mode="edit"
+          onClose={handleClose}
+          onClone={undefined}
+          model={parentRelationship?.relatedModel ?? directRelationship.model}
+          onAdd={undefined}
+          onDelete={handleDeleted}
+          onSlide={undefined}
+          onSaved={(resource): void => {
+            if (
+              parentRelationship === undefined &&
+              resource.get(directRelationship.name) !==
+                parentResource.get('resource_uri')
+            )
+              handleDeleted(resolvedIds.indexOf(resource.id));
+            handleClose();
+          }}
+          totalCount={ids.length}
+        />
+      )}
+    </>
   );
 }

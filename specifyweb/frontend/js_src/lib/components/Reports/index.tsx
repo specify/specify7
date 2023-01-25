@@ -184,6 +184,7 @@ function ReportRow({
   return resources.length === 0 ? (
     <p>{commonText.noResults()}</p>
   ) : (
+    // BUG: replace 1fr with minmax(0,1fr) everywhere where necessary
     <table className="grid-table grid-cols-[1fr_auto_auto_min-content] gap-2">
       <thead>
         <tr>

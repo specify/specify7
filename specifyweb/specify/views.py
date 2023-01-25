@@ -90,16 +90,15 @@ def delete_blockers(request, model, id):
     collector = Collector(using=using)
     collector.delete_blockers = []
     collector.collect([obj])
-    result = [
-        flatten([
+    result = flatten([
+        [
             {
-                'table': sub_obj.__class__.__name__,
+                'table': sub_objs[0].__class__.__name__,
                 'field': field.name,
-                'id': sub_obj.id
+                'ids': [sub_obj.id for sub_obj in sub_objs]
             }
-            for sub_obj in sub_objs
-        ] for field, sub_objs in collector.delete_blockers)
-    ]
+        ] for field, sub_objs in collector.delete_blockers
+    ])
     return http.HttpResponse(api.toJson(result), content_type='application/json')
 
 def flatten(l):
@@ -468,7 +467,7 @@ def agent_record_replacement(request: http.HttpRequest, old_agent_id, new_agent_
         """.replace('<db_name>', db_name)
         cursor.execute(sql_get_cols_ref_agent_id)
         foreign_key_cols = cursor.fetchall()
-        
+
         # Build query to update all of the records with foreign keys referencing the AgentID
         sql_update = ""
         for table_name, column_names in groupby(foreign_key_cols, lambda x: x[0]):
@@ -476,7 +475,7 @@ def agent_record_replacement(request: http.HttpRequest, old_agent_id, new_agent_
                 sql_set_clause = col + " = " + new_agent_id
                 sql_where_clause = col + " = " + old_agent_id
                 sql_update += "UPDATE " + table_name + " SET " + sql_set_clause + " WHERE " + sql_where_clause + ";\n"
-        
+
         # Execute update query for agent children
         try:
             cursor.execute(sql_update)
@@ -485,5 +484,5 @@ def agent_record_replacement(request: http.HttpRequest, old_agent_id, new_agent_
 
         # Dedupe by deleting the agent that is being replaced and updating the old AgentID to the new one
         cursor.execute("DELETE FROM agent WHERE AgentID=%s", [old_agent_id])
-        
+
         return http.HttpResponse('', status=204)

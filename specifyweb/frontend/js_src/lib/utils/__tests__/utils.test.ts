@@ -5,6 +5,7 @@ import {
   camelToKebab,
   capitalize,
   caseInsensitiveHash,
+  chunk,
   clamp,
   escapeRegExp,
   findArrayDivergencePoint,
@@ -364,4 +365,16 @@ theories(takeBetween, [
   { in: [['a', 'b', 'c'], 'a', 'b'], out: ['b'] },
   { in: [['a', 'b', 'c'], 'a', 'c'], out: ['b', 'c'] },
   { in: [['a', 'b', 'c'], 'a', 'd'], out: [] },
+]);
+
+theories(chunk, [
+  { in: [[], 4], out: [] },
+  {
+    in: [[1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 4],
+    out: [
+      [1, 2, 3, 4],
+      [5, 6, 7, 8],
+      [9, 10],
+    ],
+  },
 ]);
