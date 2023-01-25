@@ -69,9 +69,13 @@ export const backEndText = createDictionary({
     `,
   },
   failedParsingAgentType: {
-    comment: `Example: bad agent type: "ab". Expected one of "Person", "Group" or "Organization"`,
+    comment: `
+      Example: bad agent type: "ab". Expected one of "Person", "Group" or
+      "Organization"
+    `,
     'en-us': `
-      bad {agentTypeField:string}: "{badType:string}". Expected one of {validTypes:string}
+      bad {agentTypeField:string}: "{badType:string}". Expected one of
+      {validTypes:string}
     `,
     'ru-ru': `
       неверный {agentTypeField:string}: "{badType:string}". Ожидается один из
@@ -96,20 +100,20 @@ export const backEndText = createDictionary({
       {maxLength:number|formatted} for field
     `,
     'ru-ru': `
-      значение из {pickListTable:string} {pickList:string} длиннее максимального значения
-      {maxLength:number|formatted} для поля
+      значение из {pickListTable:string} {pickList:string} длиннее максимального
+      значения {maxLength:number|formatted} для поля
     `,
     'es-es': `
-      valor de la {pickListTable:string} {pickList:string} más largo que el máximo
-      de {maxLength:number|formatted} para el campo
+      valor de la {pickListTable:string} {pickList:string} más largo que el
+      máximo de {maxLength:number|formatted} para el campo
     `,
     'fr-fr': `
       valeur de la {pickListTable:string} {pickList:string} plus longue que le
       maximum de {maxLength:number|formatted} pour le champ
     `,
     'uk-ua': `
-      значення зі {pickListTable:string} {pickList:string} більше, ніж максимальне
-      значення {maxLength:number|formatted} для поля
+      значення зі {pickListTable:string} {pickList:string} більше, ніж
+      максимальне значення {maxLength:number|formatted} для поля
     `,
   },
   valueTooLong: {
@@ -425,12 +429,16 @@ export const backEndText = createDictionary({
     comment: 'Agent "Abc" is not a Specify User',
     'en-us':
       '{agentTable:string} {actor:string} is not a {specifyUserTable:string}',
-    'es-es':
-      'El {agentTable:string} {actor:string} no es un {specifyUserTable:string}',
-    'fr-fr':
-      "L'{agentTable:string} {actor:string} n'est pas un {specifyUserTable:string}",
-    'ru-ru':
-      '{agentTable:string} {actor:string} не является {specifyUserTable:string}',
+    'es-es': `
+      El {agentTable:string} {actor:string} no es un {specifyUserTable:string}
+    `,
+    'fr-fr': `
+      L'{agentTable:string} {actor:string} n'est pas un
+      {specifyUserTable:string}
+    `,
+    'ru-ru': `
+      {agentTable:string} {actor:string} не является {specifyUserTable:string}
+    `,
     'uk-ua':
       '{agentTable:string} {actor:string} не є {specifyUserTable:string}',
   },
@@ -457,22 +465,26 @@ export const backEndText = createDictionary({
     `,
   },
   invalidReportMimetype: {
-    'en-us':
-      "Can not create report: {mimeTypeField:string} not 'jrxml/label' or 'jrxml/report'",
+    'en-us': `
+      Can not create report: {mimeTypeField:string} not 'jrxml/label' or
+      'jrxml/report'
+    `,
     'es-es': `
       No se puede crear el informe: {mimeTypeField:string} no es 'jrxml/label' o
       'jrxml/report'
     `,
     'fr-fr': `
-      Impossible de créer le rapport : {mimeTypeField:string} différent de 'jrxml/label' ou
-      'jrxml/report'
+      Impossible de créer le rapport : {mimeTypeField:string} différent de
+      'jrxml/label' ou 'jrxml/report'
     `,
     'ru-ru': `
-      Невозможно создать отчет: {mimeTypeField:string} отличается от «jrxml/label» или
-      «jrxml/report»
+      Невозможно создать отчет: {mimeTypeField:string} отличается от
+      «jrxml/label» или «jrxml/report»
     `,
-    'uk-ua':
-      'Неможливо створити звіт: {mimeTypeField:string} не "jrxml/label" або "jrxml/report"',
+    'uk-ua': `
+      Неможливо створити звіт: {mimeTypeField:string} не "jrxml/label" або
+      "jrxml/report"
+    `,
   },
   fieldNotRelationship: {
     'en-us': 'Field {field:string} is not a Relationship',

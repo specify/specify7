@@ -28,9 +28,9 @@ export const headerText = createDictionary({
     comment: 'Example: Current Collection',
     'en-us': 'Current {collectionTable:string}',
     'ru-ru': 'Текущая {collectionTable:string}',
-    'es-es': '{collectionTable:string} actual',
-    'fr-fr': '{collectionTable:string} actuelle',
-    'uk-ua': 'Поточна {collectionTable:string}',
+    'es-es': 'Actual {collectionTable:string}',
+    'fr-fr': 'Courant {collectionTable:string}',
+    'uk-ua': 'Поточний {collectionTable:string}',
   },
   dataEntry: {
     'en-us': 'Data Entry',

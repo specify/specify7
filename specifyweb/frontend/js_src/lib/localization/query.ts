@@ -140,23 +140,23 @@ export const queryText = createDictionary({
     comment: 'Example: Creating a Record Set from Query',
     'en-us': 'Creating a {recordSetTable:string} from Query',
     'ru-ru': 'Создание {recordSetTable:string} из запроса',
-    'es-es': 'Creación de un {recordSetTable:string} a partir de una consulta',
-    'fr-fr': "Création d'un {recordSetTable:string} à partir de la requête",
-    'uk-ua': 'Створення {recordSetTable:string} з запиту',
+    'es-es': 'Creando un {recordSetTable:string} desde Query',
+    'fr-fr': "Création d'un {recordSetTable:string} à partir d'une requête",
+    'uk-ua': 'Створення {recordSetTable:string} із запиту',
   },
   recordSetToQueryDescription: {
     'en-us': 'Generating {recordSetTable:string}...',
     'ru-ru': 'Создание {recordSetTable:string}...',
     'es-es': 'Generando {recordSetTable:string}...',
-    'fr-fr': 'Génération du {recordSetTable:string}...',
+    'fr-fr': 'Génération de {recordSetTable:string}...',
     'uk-ua': 'Створення {recordSetTable:string}...',
   },
   recordSetCreated: {
     'en-us': '{recordSetTable:string} Created',
     'ru-ru': '{recordSetTable:string} Созданный',
-    'es-es': '{recordSetTable:string} creado',
+    'es-es': '{recordSetTable:string} Creado',
     'fr-fr': '{recordSetTable:string} créé',
-    'uk-ua': '{recordSetTable:string} створено',
+    'uk-ua': '{recordSetTable:string} Створено',
   },
   missingCoordinatesForKml: {
     'en-us': 'Unable to export to KML',
@@ -212,20 +212,26 @@ export const queryText = createDictionary({
   },
   queryRecordSetTitle: {
     comment: 'Used in query builder header when querying on record set',
-    'en-us':
-      'Query: "{queryName:string}" on {recordSetTable:string}: "{recordSetName:string}"',
+    'en-us': `
+      Query: "{queryName:string}" on
+      {recordSetTable:string}: "{recordSetName:string}"
+    `,
     'ru-ru': `
-      Запрос: "{queryName:string}" на {recordSetTable:string}: "{recordSetName:string}"
+      Запрос: "{queryName:string}" на
+      {recordSetTable:string}: "{recordSetName:string}"
     `,
     'es-es': `
-      Consulta: "{queryName:string}" en {recordSetTable:string}: "{recordSetName:string}"
+      Consulta: "{queryName:string}" en
+      {recordSetTable:string}: "{recordSetName:string}"
     `,
     'fr-fr': `
-      Requête : "{queryName:string}" sur le {recordSetTable:string}
-      : "{recordSetName:string}"
+      Requête : "{queryName:string}" sur
+      {recordSetTable:string} : "{recordSetName:string}"
     `,
-    'uk-ua':
-      'Запит: "{queryName:string}" у {recordSetTable:string}: "{recordSetName:string}"',
+    'uk-ua': `
+      Запит: "{queryName:string}" на
+      {recordSetTable:string}: "{recordSetName:string}"
+    `,
   },
   treeQueryName: {
     comment: 'Used in query builder header when querying on tree node usages',
@@ -273,9 +279,9 @@ export const queryText = createDictionary({
   createRecordSet: {
     'en-us': 'Create {recordSetTable:string}',
     'ru-ru': 'Сделать {recordSetTable:string}',
-    'es-es': 'Crear {recordSetTable:string}',
+    'es-es': 'Crear {modelName:string}',
     'fr-fr': 'Créer un {recordSetTable:string}',
-    'uk-ua': 'Створити {recordSetTable:string}',
+    'uk-ua': 'Створити {modelName:string}',
   },
   saveAs: {
     'en-us': 'Save As',

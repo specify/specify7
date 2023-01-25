@@ -38,19 +38,25 @@ export const welcomeText = createDictionary({
     'uk-ua': 'Taxon Tiles',
   },
   taxonTilesDescription: {
-    'en-us':
-      'Showing Taxa with {count:number|formatted} or more {collectionObjectTable:string} records',
+    'en-us': `
+      Showing Taxa with {count:number|formatted} or more
+      {collectionObjectTable:string} records
+    `,
     'ru-ru': `
-      Показаны таксоны с {count:number|formatted} или более {collectionObjectTable:string} записями
+      Показаны таксоны с {count:number|formatted} или более
+      {collectionObjectTable:string} записями
     `,
     'es-es': `
-      Mostrando taxones con {count:number|formatted} o más {collectionObjectTable:string} registros
+      Mostrando taxones con {count:number|formatted} o más
+      {collectionObjectTable:string} registros
     `,
     'fr-fr': `
-      Affichage des taxons avec {count:number|formatted} ou plus de {collectionObjectTable:string} enregistrements
+      Affichage des taxons avec {count:number|formatted} ou plusieurs
+      enregistrements {collectionObjectTable:string}
     `,
     'uk-ua': `
-      Показано таксони з {count:number|formatted} або більше {collectionObjectTable:string} записів
+      Показано таксони з {count:number|formatted} або більше
+      {collectionObjectTable:string} записів
     `,
   },
   fullAddress: {

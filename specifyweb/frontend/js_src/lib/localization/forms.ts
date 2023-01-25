@@ -131,29 +131,29 @@ export const formsText = createDictionary({
   },
   paleoRequiresGeographyDescription: {
     'en-us': `
-      The Paleo Map plugin requires that the {localityTable:string} have geographic
-      coordinates and that the paleo context have a geographic age with at least
-      a start time or and end time populated.
+      The Paleo Map plugin requires that the {localityTable:string} have
+      geographic coordinates and that the paleo context have a geographic age
+      with at least a start time or and end time populated.
     `,
     'ru-ru': `
-      Плагин Карта Палео требует, чтобы у {localityTable:string} были координаты и
-      что палеоконтекст имеет географический возраст с заполнено как минимум
+      Плагин Карта Палео требует, чтобы у {localityTable:string} были координаты
+      и что палеоконтекст имеет географический возраст с заполнено как минимум
       время начала или время окончания.
     `,
     'es-es': `
-      El complemento Paleo Map requiere que la {localityTable:string} tenga coordenadas
-      geográficas y que el contexto paleo tenga una edad geográfica con al menos
-      una hora de inicio o una hora de finalización poblada.
+      El complemento Paleo Map requiere que la {localityTable:string} tenga
+      coordenadas geográficas y que el contexto paleo tenga una edad geográfica
+      con al menos una hora de inicio o una hora de finalización poblada.
     `,
     'fr-fr': `
-      Le plugin Paleo Map nécessite que la {localityTable:string} ait des coordonnées
-      géographiques et que le contexte paléo ait un âge géographique avec au
-      moins une heure de début ou une heure de fin renseignées.
+      Le plugin Paleo Map nécessite que la {localityTable:string} ait des
+      coordonnées géographiques et que le contexte paléo ait un âge géographique
+      avec au moins une heure de début ou une heure de fin renseignées.
     `,
     'uk-ua': `
-      Плагін Paleo Map вимагає, щоб {localityTable:string} мала географічні координати, а
-      палеоконтекст мав географічний вік із заповненням принаймні початкового
-      або кінцевого часу.
+      Плагін Paleo Map вимагає, щоб {localityTable:string} мала географічні
+      координати, а палеоконтекст мав географічний вік із заповненням принаймні
+      початкового або кінцевого часу.
     `,
   },
   unsupportedForm: {
@@ -167,8 +167,8 @@ export const formsText = createDictionary({
     comment:
       'Example: ... Locality, Collecting Event or Collection Object forms.',
     'en-us': `
-      This plugin cannot be used on this form. Try moving it to the {tables:string}
-      forms.
+      This plugin cannot be used on this form. Try moving it to the
+      {tables:string} forms.
     `,
     'ru-ru': `
       Этот плагин нельзя использовать в этой форме. Попробуй переместить его на
@@ -273,11 +273,12 @@ export const formsText = createDictionary({
   },
   addToPickListConfirmationDescription: {
     'en-us': `
-      Add value "{value:string}" to the {pickListTable:string} named "{pickListName:string}"?
+      Add value "{value:string}" to the {pickListTable:string} named
+      "{pickListName:string}"?
     `,
     'ru-ru': `
-      Добавить значение "{value:string}" в {pickListTable:string}
-      "{pickListName:string}"?
+      Добавить значение "{value:string}" в
+      {pickListTable:string} "{pickListName:string}"?
     `,
     'es-es': `
       ¿Agregar el valor "{value:string}" a la {pickListTable:string} denominada
@@ -305,7 +306,8 @@ export const formsText = createDictionary({
       'В этом {pickListTable:string} допускаются только числовые значения',
     'es-es': 'Solo se admiten valores numéricos en esta {pickListTable:string}',
     'fr-fr': `
-      Seules les valeurs numériques sont prises en charge dans cette {pickListTable:string}
+      Seules les valeurs numériques sont prises en charge dans cette
+      {pickListTable:string}
     `,
     'uk-ua':
       'У цьому {pickListTable:string} підтримуються лише числові значення',
@@ -319,12 +321,12 @@ export const formsText = createDictionary({
   },
   recordSetDeletionWarning: {
     'en-us': `
-      The {recordSetTable:string} "{recordSetName:string}" will be deleted. The referenced
-      records will NOT be deleted from the database.
+      The {recordSetTable:string} "{recordSetName:string}" will be deleted. The
+      referenced records will NOT be deleted from the database.
     `,
     'ru-ru': `
-      {recordSetTable:string} "{recordSetName:string}" будет удален. Связанные записи не
-      будут удалены из базы данных.
+      {recordSetTable:string} "{recordSetName:string}" будет удален. Связанные
+      записи не будут удалены из базы данных.
     `,
     'es-es': `
       Se {recordSetTable:string} de registros "{recordSetName:string}". Los
@@ -336,8 +338,8 @@ export const formsText = createDictionary({
       enregistrements référencés ne seront PAS supprimés de la base de données.
     `,
     'uk-ua': `
-      {recordSetTable:string} "{recordSetName:string}" буде видалено. Записи в цьому
-      наборі записів НЕ будуть видалені з бази даних.
+      {recordSetTable:string} "{recordSetName:string}" буде видалено. Записи в
+      цьому наборі записів НЕ будуть видалені з бази даних.
     `,
   },
   saveRecordFirst: {
@@ -435,9 +437,8 @@ export const formsText = createDictionary({
   saveBlockedDescription: {
     'en-us': 'Form cannot be saved because of the following errors:',
     'ru-ru': 'Форма не может быть сохранена, из-за следующих ошибок:',
-    'es-es': `
-      El formulario no se puede guardar debido a los siguientes errores:
-    `,
+    'es-es':
+      'El formulario no se puede guardar debido a los siguientes errores:',
     'fr-fr': `
       Le formulaire ne peut pas être enregistré en raison des erreurs suivantes:
     `,
@@ -576,8 +577,10 @@ export const formsText = createDictionary({
     'uk-ua': 'Відкрити',
   },
   illegalBool: {
-    comment:
-      "Yes/No probably shouldn't be translated as Specify 7 does not support changing which values are recognized as Yes/No in a given language",
+    comment: `
+      Yes/No probably shouldn't be translated as Specify 7 does not support
+      changing which values are recognized as Yes/No in a given language
+    `,
     'en-us': 'Illegal value for a Yes/No field',
     'ru-ru': 'Недопустимое значение для поля Да / Нет',
     'es-es': 'Valor ilegal para un campo Sí/No',
@@ -742,9 +745,8 @@ export const formsText = createDictionary({
     'ru-ru': 'Этот объект уже присутствует в текущем {recordSetTable:string}',
     'es-es':
       'Este registro ya está presente en el {recordSetTable:string} actual',
-    'fr-fr': `
-      Cet enregistrement est déjà présent dans le {recordSetTable:string}
-    `,
+    'fr-fr':
+      'Cet enregistrement est déjà présent dans le {recordSetTable:string}',
     'uk-ua': 'Цей запис уже присутній у поточному {recordSetTable:string}',
   },
   addToRecordSet: {
