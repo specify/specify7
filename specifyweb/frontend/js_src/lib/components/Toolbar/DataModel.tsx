@@ -5,6 +5,7 @@
 import React from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
+import { commonText } from '../../localization/common';
 
 import { formsText } from '../../localization/forms';
 import { schemaText } from '../../localization/schema';
@@ -234,8 +235,23 @@ function DataModelFields({
   readonly model: SpecifyModel;
 }): JSX.Element {
   const data = React.useMemo(() => getFields(model), [model]);
+  const scope = React.useMemo(
+    () => model.getScopingRelationship()?.relatedModel.name,
+    []
+  );
   return (
     <>
+      <p>
+        {commonText.colonLine({
+          label: schemaText.fieldID(),
+          value: model.idField.name,
+        })}
+      </p>
+      {typeof scope === 'string' && (
+        <p>
+          {schemaText.scope()}: {scope}
+        </p>
+      )}
       <H3>{schemaText.fields()}</H3>
       <Table
         data={data}

@@ -289,4 +289,10 @@ export const schemaText = createDictionary({
     'ru-ru': 'Перейти к началу',
     'uk-ua': 'Перейти вгору',
   },
+  fieldID: {
+    'en-us': 'Field ID',
+  },
+  scope:{
+    'en-us': 'Scope'
+  }
 } as const);
