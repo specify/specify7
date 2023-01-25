@@ -5,7 +5,7 @@ import {initializeTreeRecord, treeBusinessRules} from './treeBusinessRules';
 import {businessRuleDefs} from './businessRuleDefs';
 
 import {formsText} from '../../localization/forms';
-import {formatList} from '../Atoms/Internationalization';
+import {formatConjunction} from '../Atoms/Internationalization';
 import {isTreeResource} from '../InitialContext/treeRanks';
 import {idFromUrl} from './resource';
 
@@ -170,7 +170,7 @@ var enabled = true;
                 ? {valid: true}
                 : {
                     valid: false,
-                    reason: formatList(_(invalids).pluck('reason'))
+                    reason: formatConjunction(_(invalids).pluck('reason'))
                 };
         });
     };
@@ -179,11 +179,11 @@ var enabled = true;
         if (fldInfo.length > 1)
           return parentFldInfo
             ? formsText.valuesOfMustBeUniqueToField({
-                values: formatList(fldInfo.map((fld) => fld.label)),
+                values: formatConjunction(fldInfo.map((fld) => fld.label)),
                 fieldName: parentFldInfo.label,
               })
             : formsText.valuesOfMustBeUniqueToDatabase({
-                values: formatList(fldInfo.map((fld) => fld.label))
+                values: formatConjunction(fldInfo.map((fld) => fld.label))
               });
         else
           return parentFldInfo

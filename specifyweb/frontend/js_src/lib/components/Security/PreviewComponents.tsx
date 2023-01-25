@@ -85,7 +85,9 @@ export function PermissionExplanation({
       >
         <div role="row">
           {[
-            userText.collectionUserRoles(),
+            userText.collectionUserRoles({
+              collectionTable: schema.models.Collection.label,
+            }),
             userText.action(),
             userText.resource(),
           ].map((label, index, { length }) => (

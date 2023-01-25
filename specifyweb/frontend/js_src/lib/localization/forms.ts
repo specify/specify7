@@ -122,35 +122,36 @@ export const formsText = createDictionary({
     'uk-ua': 'Карта Палео',
   },
   paleoRequiresGeography: {
-    'en-us': 'Geography Required',
-    'ru-ru': 'Требуется география',
-    'es-es': 'Geografía requerida',
-    'fr-fr': 'Géographie requise',
-    'uk-ua': "Географія є обов'язковою",
+    comment: 'Example: Geography Required',
+    'en-us': '{geographyTable:string} Required',
+    'ru-ru': 'Требуется {geographyTable:string}',
+    'es-es': '{geographyTable:string} requerida',
+    'fr-fr': '{geographyTable:string} requise',
+    'uk-ua': "{geographyTable:string} обов'язкова",
   },
   paleoRequiresGeographyDescription: {
     'en-us': `
-      The Paleo Map plugin requires that the locality have geographic
+      The Paleo Map plugin requires that the {localityTable:string} have geographic
       coordinates and that the paleo context have a geographic age with at least
       a start time or and end time populated.
     `,
     'ru-ru': `
-      Плагин Карта Палео требует, чтобы у населенного пункта были координаты и
+      Плагин Карта Палео требует, чтобы у {localityTable:string} были координаты и
       что палеоконтекст имеет географический возраст с заполнено как минимум
       время начала или время окончания.
     `,
     'es-es': `
-      El complemento Paleo Map requiere que la localidad tenga coordenadas
+      El complemento Paleo Map requiere que la {localityTable:string} tenga coordenadas
       geográficas y que el contexto paleo tenga una edad geográfica con al menos
       una hora de inicio o una hora de finalización poblada.
     `,
     'fr-fr': `
-      Le plugin Paleo Map nécessite que la localité ait des coordonnées
+      Le plugin Paleo Map nécessite que la {localityTable:string} ait des coordonnées
       géographiques et que le contexte paléo ait un âge géographique avec au
       moins une heure de début ou une heure de fin renseignées.
     `,
     'uk-ua': `
-      Плагін Paleo Map вимагає, щоб місцевість мала географічні координати, а
+      Плагін Paleo Map вимагає, щоб {localityTable:string} мала географічні координати, а
       палеоконтекст мав географічний вік із заповненням принаймні початкового
       або кінцевого часу.
     `,
@@ -163,26 +164,27 @@ export const formsText = createDictionary({
     'uk-ua': 'Неправильна форма',
   },
   unsupportedFormDescription: {
+    comment:
+      'Example: ... Locality, Collecting Event or Collection Object forms.',
     'en-us': `
-      This plugin cannot be used on this form. Try moving it to the locality,
-      collecting event or collection object forms.
+      This plugin cannot be used on this form. Try moving it to the {tables:string}
+      forms.
     `,
     'ru-ru': `
       Этот плагин нельзя использовать в этой форме. Попробуй переместить его на
-      форму местности, события сбора или объекта коллекции.
+      форму {tables:string}.
     `,
     'es-es': `
       Este complemento no se puede utilizar en este formulario. Intente moverlo
-      a la localidad, recolectando formas de eventos u objetos de colección.
+      a las formas {tables:string}.
     `,
     'fr-fr': `
       Ce plugin ne peut pas être utilisé sur ce formulaire. Essayez de le
-      déplacer vers la localité, en collectant des formulaires d'événement ou
-      d'objet de collection.
+      déplacer vers les formulaires {tables:string}.
     `,
     'uk-ua': `
       Цей плагін не можна використовувати в цій формі. Спробуйте перемістити
-      його до форми місцевості, подій збору чи об’єктів колекції.
+      його на форму {tables:string}.
     `,
   },
   invalidDate: {
@@ -263,30 +265,30 @@ export const formsText = createDictionary({
     'uk-ua': 'Встановити поточну дату',
   },
   addToPickListConfirmation: {
-    'en-us': 'Add to pick list?',
-    'ru-ru': 'Добавить в список выбора?',
-    'es-es': '¿Agregar a la lista de selección?',
-    'fr-fr': 'Ajouter à la liste de sélection ?',
-    'uk-ua': 'Додати до списку вибору?',
+    'en-us': 'Add to {pickListTable:string}?',
+    'ru-ru': 'Добавить в {pickListTable:string}?',
+    'es-es': '¿Agregar a la {pickListTable:string}?',
+    'fr-fr': 'Ajouter à la {pickListTable:string} ?',
+    'uk-ua': 'Додати до {pickListTable:string}?',
   },
   addToPickListConfirmationDescription: {
     'en-us': `
-      Add value "{value:string}" to the pick list named "{pickListName:string}"?
+      Add value "{value:string}" to the {pickListTable:string} named "{pickListName:string}"?
     `,
     'ru-ru': `
-      Добавить значение "{value:string}" в список выбора
+      Добавить значение "{value:string}" в {pickListTable:string}
       "{pickListName:string}"?
     `,
     'es-es': `
-      ¿Agregar el valor "{value:string}" a la lista de selección denominada
+      ¿Agregar el valor "{value:string}" a la {pickListTable:string} denominada
       "{pickListName:string}"?
     `,
     'fr-fr': `
-      Ajouter la valeur "{value:string}" à la liste de sélection nommée
+      Ajouter la valeur "{value:string}" à la {pickListTable:string} nommée
       "{pickListName:string}" ?
     `,
     'uk-ua': `
-      Додати значення "{value:string}" до списку вибору під назвою
+      Додати значення "{value:string}" до {pickListTable:string} під назвою
       "{pickListName:string}"?
     `,
   },
@@ -298,14 +300,15 @@ export const formsText = createDictionary({
     'uk-ua': 'Недійсний тип',
   },
   invalidNumericPicklistValue: {
-    'en-us': 'Only numeric values are supported in this pick list',
-    'ru-ru': 'В этом списке выбора допускаются только числовые значения',
-    'es-es': 'Solo se admiten valores numéricos en esta lista de selección',
+    'en-us': 'Only numeric values are supported in this {pickListTable:string}',
+    'ru-ru':
+      'В этом {pickListTable:string} допускаются только числовые значения',
+    'es-es': 'Solo se admiten valores numéricos en esta {pickListTable:string}',
     'fr-fr': `
-      Seules les valeurs numériques sont prises en charge dans cette liste de
-      sélection
+      Seules les valeurs numériques sont prises en charge dans cette {pickListTable:string}
     `,
-    'uk-ua': 'У цьому списку вибору підтримуються лише числові значення',
+    'uk-ua':
+      'У цьому {pickListTable:string} підтримуються лише числові значення',
   },
   noData: {
     'en-us': 'No Data.',
@@ -314,33 +317,26 @@ export const formsText = createDictionary({
     'fr-fr': 'Pas de données.',
     'uk-ua': 'Немає даних.',
   },
-  recordSet: {
-    'en-us': 'Record Set',
-    'ru-ru': 'Набор объектов',
-    'es-es': 'Conjunto de registros',
-    'fr-fr': "Jeu d'enregistrements",
-    'uk-ua': 'Набір записів',
-  },
   recordSetDeletionWarning: {
     'en-us': `
-      The record set "{recordSetName:string}" will be deleted. The referenced
+      The {recordSetTable:string} "{recordSetName:string}" will be deleted. The referenced
       records will NOT be deleted from the database.
     `,
     'ru-ru': `
-      Набор объектов "{recordSetName:string}" будет удален. Связанные записи не
+      {recordSetTable:string} "{recordSetName:string}" будет удален. Связанные записи не
       будут удалены из базы данных.
     `,
     'es-es': `
-      Se eliminará el conjunto de registros "{recordSetName:string}". Los
+      Se {recordSetTable:string} de registros "{recordSetName:string}". Los
       registros a los que se hace referencia NO se eliminarán de la base de
       datos.
     `,
     'fr-fr': `
-      Le jeu d\'enregistrements "{recordSetName:string}" sera supprimé. Les
+      Le {recordSetTable:string} "{recordSetName:string}" sera supprimé. Les
       enregistrements référencés ne seront PAS supprimés de la base de données.
     `,
     'uk-ua': `
-      Набір записів "{recordSetName:string}" буде видалено. Записи в цьому
+      {recordSetTable:string} "{recordSetName:string}" буде видалено. Записи в цьому
       наборі записів НЕ будуть видалені з бази даних.
     `,
   },
@@ -730,35 +726,37 @@ export const formsText = createDictionary({
     'uk-ua': '(видалено)',
   },
   duplicateRecordSetItem: {
-    'en-us': 'Duplicate Record Set Item',
-    'ru-ru': 'Дублирующий элемент набора записей',
-    'es-es': 'Elemento de conjunto de registros duplicados',
-    'fr-fr': "Élément de jeu d'enregistrements en double",
-    'uk-ua': 'Дубльований елемент набору записів',
+    comment: 'Example: Duplicate Record Set Item',
+    'en-us': 'Duplicate {recordSetItemTable:string}',
+    'ru-ru': 'Дублирующий {recordSetItemTable:string}',
+    'es-es': 'Elemento de {recordSetItemTable:string}',
+    'fr-fr': 'Élément de {recordSetItemTable:string}',
+    'uk-ua': 'Дубльований {recordSetItemTable:string}',
   },
   duplicateRecordSetItemDescription: {
-    'en-us': 'This record is already present in the current record set',
-    'ru-ru': 'Этот объект уже присутствует в текущем наборе записей',
+    'en-us':
+      'This record is already present in the current {recordSetTable:string}',
+    'ru-ru': 'Этот объект уже присутствует в текущем {recordSetTable:string}',
     'es-es':
-      'Este registro ya está presente en el conjunto de registros actual',
+      'Este registro ya está presente en el {recordSetTable:string} actual',
     'fr-fr': `
-      Cet enregistrement est déjà présent dans le jeu d'enregistrements actuel
+      Cet enregistrement est déjà présent dans le {recordSetTable:string}
     `,
-    'uk-ua': 'Цей запис уже присутній у поточному наборі записів',
+    'uk-ua': 'Цей запис уже присутній у поточному {recordSetTable:string}',
   },
   addToRecordSet: {
-    'en-us': 'Add to Record Set',
-    'ru-ru': 'Добавить в набор записей',
-    'es-es': 'Agregar al conjunto de registros',
-    'fr-fr': "Ajouter au jeu d'enregistrements",
-    'uk-ua': 'Додати до набору записів',
+    'en-us': 'Add to {recordSetTable:string}',
+    'ru-ru': 'Добавить в {recordSetTable:string}',
+    'es-es': 'Agregar al {recordSetTable:string}',
+    'fr-fr': 'Ajouter au {recordSetTable:string}',
+    'uk-ua': 'Додати до {recordSetTable:string}',
   },
   removeFromRecordSet: {
-    'en-us': 'Remove from Record Set',
-    'ru-ru': 'Удалить из набора записей',
-    'es-es': 'Eliminar del conjunto de registros',
-    'fr-fr': "Supprimer du jeu d'enregistrements",
-    'uk-ua': 'Видалити з набору записів',
+    'en-us': 'Remove from {recordSetTable:string}',
+    'ru-ru': 'Удалить из {recordSetTable:string}',
+    'es-es': 'Eliminar de {recordSetTable:string}',
+    'fr-fr': 'Supprimer du {recordSetTable:string}',
+    'uk-ua': 'Видалити з {recordSetTable:string}',
   },
   nothingFound: {
     'en-us': 'Nothing found',

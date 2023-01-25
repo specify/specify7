@@ -69,45 +69,46 @@ export const backEndText = createDictionary({
     `,
   },
   failedParsingAgentType: {
+    comment: `Example: bad agent type: "ab". Expected one of "Person", "Group" or "Organization"`,
     'en-us': `
-      bad agent type: "{badType:string}". Expected one of {validTypes:string}
+      bad {agentTypeField:string}: "{badType:string}". Expected one of {validTypes:string}
     `,
     'ru-ru': `
-      неверный тип агента: "{badType:string}". Ожидается один из
+      неверный {agentTypeField:string}: "{badType:string}". Ожидается один из
       {validTypes:string}
     `,
     'es-es': `
-      tipo de agente incorrecto: "{badType:string}". Esperaba uno de
+      tipo de {agentTypeField:string}: "{badType:string}". Esperaba uno de
       {validTypes:string}
     `,
     'fr-fr': `
-      mauvais type d\'agent : "{badType:string}". Attendu l\'un des
+      mauvais {agentTypeField:string} : "{badType:string}". Attendu l\'un des
       {validTypes:string}
     `,
     'uk-ua': `
-      поганий тип агента: "{badType:string}". Очікується один із
+      поганий {agentTypeField:string}: "{badType:string}". Очікується один із
       {validTypes:string}
     `,
   },
   pickListValueTooLong: {
     'en-us': `
-      value from picklist {pickList:string} longer than the max of
+      value from {pickListTable:string} {pickList:string} longer than the max of
       {maxLength:number|formatted} for field
     `,
     'ru-ru': `
-      значение из списка {pickList:string} длиннее максимального значения
+      значение из {pickListTable:string} {pickList:string} длиннее максимального значения
       {maxLength:number|formatted} для поля
     `,
     'es-es': `
-      valor de la lista de selección {pickList:string} más largo que el máximo
+      valor de la {pickListTable:string} {pickList:string} más largo que el máximo
       de {maxLength:number|formatted} para el campo
     `,
     'fr-fr': `
-      valeur de la liste de sélection {pickList:string} plus longue que le
+      valeur de la {pickListTable:string} {pickList:string} plus longue que le
       maximum de {maxLength:number|formatted} pour le champ
     `,
     'uk-ua': `
-      значення зі списку вибору {pickList:string} більше, ніж максимальне
+      значення зі {pickListTable:string} {pickList:string} більше, ніж максимальне
       значення {maxLength:number|formatted} для поля
     `,
   },
@@ -421,11 +422,17 @@ export const backEndText = createDictionary({
     'uk-ua': 'Ресурс {resource:string} уже в реєстрі дозволів',
   },
   actorIsNotSpecifyUser: {
-    'en-us': 'Agent {actor:string} is not a SpecifyUser',
-    'es-es': 'El agente {actor:string} no es un usuario especificado',
-    'fr-fr': "L'agent {actor:string} n'est pas un utilisateur spécifié",
-    'ru-ru': 'Агент {actor:string} не является SpecifyUser',
-    'uk-ua': 'Агент {actor:string} не є SpecifyUser',
+    comment: 'Agent "Abc" is not a Specify User',
+    'en-us':
+      '{agentTable:string} {actor:string} is not a {specifyUserTable:string}',
+    'es-es':
+      'El {agentTable:string} {actor:string} no es un {specifyUserTable:string}',
+    'fr-fr':
+      "L'{agentTable:string} {actor:string} n'est pas un {specifyUserTable:string}",
+    'ru-ru':
+      '{agentTable:string} {actor:string} не является {specifyUserTable:string}',
+    'uk-ua':
+      '{agentTable:string} {actor:string} не є {specifyUserTable:string}',
   },
   unexpectedCollectionType: {
     'en-us': `
@@ -451,21 +458,21 @@ export const backEndText = createDictionary({
   },
   invalidReportMimetype: {
     'en-us':
-      "Can not create report: mimetype not 'jrxml/label' or 'jrxml/report'",
+      "Can not create report: {mimeTypeField:string} not 'jrxml/label' or 'jrxml/report'",
     'es-es': `
-      No se puede crear el informe: mimetype no es 'jrxml/label' o
+      No se puede crear el informe: {mimeTypeField:string} no es 'jrxml/label' o
       'jrxml/report'
     `,
     'fr-fr': `
-      Impossible de créer le rapport : type MIME différent de 'jrxml/label' ou
+      Impossible de créer le rapport : {mimeTypeField:string} différent de 'jrxml/label' ou
       'jrxml/report'
     `,
     'ru-ru': `
-      Невозможно создать отчет: mimetype отличается от «jrxml/label» или
+      Невозможно создать отчет: {mimeTypeField:string} отличается от «jrxml/label» или
       «jrxml/report»
     `,
     'uk-ua':
-      'Неможливо створити звіт: тип mime не "jrxml/label" або "jrxml/report"',
+      'Неможливо створити звіт: {mimeTypeField:string} не "jrxml/label" або "jrxml/report"',
   },
   fieldNotRelationship: {
     'en-us': 'Field {field:string} is not a Relationship',

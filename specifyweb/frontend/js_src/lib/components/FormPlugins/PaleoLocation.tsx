@@ -14,6 +14,8 @@ import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { Dialog } from '../Molecules/Dialog';
 import { AnySchema } from '../DataModel/helperTypes';
 import { toTable, toTables } from '../DataModel/helpers';
+import { schema } from '../DataModel/schema';
+import { formatDisjunction } from '../Atoms/Internationalization';
 
 type States =
   | State<
@@ -59,16 +61,26 @@ export function PaleoLocationMapPlugin({
             })
           }
         >
-          {formsText.unsupportedFormDescription()}
+          {formsText.unsupportedFormDescription({
+            tables: formatDisjunction([
+              schema.models.Locality.label,
+              schema.models.CollectingEvent.label,
+              schema.models.CollectionObject.label,
+            ]),
+          })}
         </Dialog>
       )}
       {state.type === 'NoDataState' && (
         <Dialog
           buttons={commonText.close()}
-          header={formsText.paleoRequiresGeography()}
+          header={formsText.paleoRequiresGeography({
+            geographyTable: schema.models.Geography.label,
+          })}
           onClose={(): void => setState({ type: 'MainState' })}
         >
-          {formsText.paleoRequiresGeographyDescription()}
+          {formsText.paleoRequiresGeographyDescription({
+            localityTable: schema.models.Locality.label,
+          })}
         </Dialog>
       )}
       {state.type === 'LoadedState' && (
