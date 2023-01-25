@@ -16,7 +16,7 @@ export const mainText = createDictionary({
     'ru-ru': '{baseTitle:string} | Specify 7',
     'es-es': '{baseTitle:string} | Specify 7',
     'fr-fr': '{baseTitle:string} | Specify 7',
-    'uk-ua': '{baseTitle:string} | Вкажіть 7',
+    'uk-ua': '{baseTitle:string} | Specify 7',
   },
   baseAppTitle: {
     comment: 'Default page title',
@@ -24,7 +24,7 @@ export const mainText = createDictionary({
     'ru-ru': 'Specify 7',
     'es-es': 'Specify 7',
     'fr-fr': 'Specify 7',
-    'uk-ua': 'Вкажіть 7',
+    'uk-ua': 'Specify 7',
   },
   pageNotFound: {
     comment: 'Used in title',
@@ -70,7 +70,7 @@ export const mainText = createDictionary({
     'ru-ru': 'Вернуться на главную страницу',
     'es-es': 'Regresar a la página de inicio',
     'fr-fr': "Retour à la page d'accueil",
-    'uk-ua': 'Повернутися на головну сторінку',
+    'uk-ua': 'Повернутися на домашню сторінку',
   },
   errorOccurred: {
     'en-us': "Sorry, something's gone a bit wrong",
@@ -97,8 +97,8 @@ export const mainText = createDictionary({
       Specify 7 dont nous n'avons peut-être pas connaissance.
     `,
     'uk-ua': `
-      Вибачте, здається, ви зіткнулися з помилкою в Specify 7, про яку ми могли
-      не знати.
+      Вибачте, здається, ви зіткнулися з помилкою в Specify 7, про яку ми
+      могливо не знаємо.
     `,
   },
   criticalErrorOccurredDescription: {
@@ -173,9 +173,9 @@ export const mainText = createDictionary({
       <discourseLink>Forum communautaire</discourseLink>.
     `,
     'uk-ua': `
-      Користувачі <memberLink>учасниць </memberLink> можуть шукати відповіді на
-      запитання та звертатися за допомогою на нашому <discourseLink>Форумі
-      спільноти</discourseLink>.
+      Користувачі <memberLink>установ-членів</memberLink> можуть шукати
+      відповіді на запитання та звертатися за допомогою на нашому
+      <discourseLink>форумі</discourseLink>.
     `,
   },
   errorMessage: {
@@ -183,14 +183,14 @@ export const mainText = createDictionary({
     'ru-ru': 'Описание ошибки',
     'es-es': 'Mensaje de error',
     'fr-fr': "Message d'erreur",
-    'uk-ua': 'Повідомлення про помилку',
+    'uk-ua': 'Помилка',
   },
   leavePageConfirmation: {
     'en-us': 'Are you sure you want to leave this page?',
     'ru-ru': 'Вы уверены, что хотите покинуть эту страницу?',
     'es-es': '¿Seguro que quieres salir de esta página?',
     'fr-fr': 'Voulez-vous vraiment quitter cette page ?',
-    'uk-ua': 'Ви впевнені, що бажаєте залишити цю сторінку?',
+    'uk-ua': 'Ви впевнені, що бажаєте покинути цю сторінку?',
   },
   leavePageConfirmationDescription: {
     'en-us': 'Unsaved changes would be lost if your leave this page.',
@@ -201,14 +201,14 @@ export const mainText = createDictionary({
       Les modifications non enregistrées seront perdues si vous quittez cette
       page.
     `,
-    'uk-ua': 'Незбережені зміни буде втрачено, якщо ви залишите цю сторінку.',
+    'uk-ua': 'Незбережені зміни буде втрачено, якщо ви покинете цю сторінку.',
   },
   leave: {
     'en-us': 'Leave',
     'ru-ru': 'Покинуть',
     'es-es': 'Vete',
     'fr-fr': 'Quitter',
-    'uk-ua': 'Залишати',
+    'uk-ua': 'Покинути',
   },
   versionMismatch: {
     'en-us': 'Specify version does not match database version',
@@ -218,7 +218,7 @@ export const mainText = createDictionary({
     'fr-fr': `
       La version de Specify ne correspond pas à la version de la base de données
     `,
-    'uk-ua': 'Вказана версія не відповідає версії бази даних',
+    'uk-ua': 'Версія Specify не відповідає версії бази даних',
   },
   versionMismatchDescription: {
     'en-us': `
@@ -238,7 +238,7 @@ export const mainText = createDictionary({
       version {databaseVersion:string} de la base de données.
     `,
     'uk-ua': `
-      Укажіть версію {specifySixVersion:string} не відповідає версії бази даних
+      Версія Specify {specifySixVersion:string} не відповідає версії бази даних
       {databaseVersion:string}.
     `,
   },
@@ -263,6 +263,6 @@ export const mainText = createDictionary({
       'Instrucciones para resolver la discrepancia de los esquema de Specify',
     'fr-fr':
       "Instructions pour résoudre l'incompatibilité de schéma de Specify",
-    'uk-ua': 'Інструкції щодо вирішення Specify schema mismatch',
+    'uk-ua': 'Інструкції щодо вирішення невідповідності версій',
   },
 } as const);
