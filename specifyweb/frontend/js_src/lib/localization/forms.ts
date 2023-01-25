@@ -390,6 +390,7 @@ export const formsText = createDictionary({
     'uk-ua': 'Ця форма не збережена.',
   },
   saveConflict: {
+    comment: 'Meaning a conflict occurred when saving',
     'en-us': 'Save conflict',
     'ru-ru': 'Сохранить конфликт',
     'es-es': 'Guardar conflicto',
@@ -432,14 +433,13 @@ export const formsText = createDictionary({
     'uk-ua': 'Збереження заблоковано',
   },
   saveBlockedDescription: {
-    'en-us': 'Form cannot be saved while the following errors exist:',
-    'ru-ru': 'Форма не может быть сохранена, пока существуют следующие ошибки:',
+    'en-us': 'Form cannot be saved because of the following errors:',
+    'ru-ru': 'Форма не может быть сохранена, из-за следующих ошибок:',
     'es-es': `
-      El formulario no se puede guardar mientras existan los siguientes errores:
+      El formulario no se puede guardar debido a los siguientes errores:
     `,
     'fr-fr': `
-      Le formulaire ne peut pas être enregistré tant que les erreurs suivantes
-      existent :
+      Le formulaire ne peut pas être enregistré en raison des erreurs suivantes:
     `,
     'uk-ua': 'Форму неможливо зберегти, через помилки:',
   },
@@ -568,6 +568,7 @@ export const formsText = createDictionary({
     'uk-ua': 'Назва плагіна',
   },
   visit: {
+    comment: 'Meaning "Open"',
     'en-us': 'Visit',
     'ru-ru': 'Открыть',
     'es-es': 'Visitar',
@@ -575,6 +576,8 @@ export const formsText = createDictionary({
     'uk-ua': 'Відкрити',
   },
   illegalBool: {
+    comment:
+      "Yes/No probably shouldn't be translated as Specify 7 does not support changing which values are recognized as Yes/No in a given language",
     'en-us': 'Illegal value for a Yes/No field',
     'ru-ru': 'Недопустимое значение для поля Да / Нет',
     'es-es': 'Valor ilegal para un campo Sí/No',
@@ -766,6 +769,7 @@ export const formsText = createDictionary({
     'uk-ua': 'Нічого не знайдено',
   },
   carryForward: {
+    comment: 'Verb. Button label',
     'en-us': 'Carry Forward',
     'ru-ru': 'Перенести',
     'es-es': 'Llevar adelante',
@@ -794,11 +798,11 @@ export const formsText = createDictionary({
     'uk-ua': 'Налаштувати поля для перенесення',
   },
   carryForwardTableSettingsDescription: {
-    'en-us': 'Configure fields to carry forward ({tableName: string})',
-    'ru-ru': 'Настройте поля для клонирования ({tableName: string})',
-    'es-es': 'Configurar los campos a transferir ({tableName: string})',
-    'fr-fr': 'Configurer les champs à reporter ({tableName : string})',
-    'uk-ua': 'Налаштувати поля для перенесення ({tableName: string})',
+    'en-us': 'Configure fields to carry forward ({tableName:string})',
+    'ru-ru': 'Настройте поля для клонирования ({tableName:string})',
+    'es-es': 'Configurar los campos a transferir ({tableName:string})',
+    'fr-fr': 'Configurer les champs à reporter ({tableName :string})',
+    'uk-ua': 'Налаштувати поля для перенесення ({tableName:string})',
   },
   carryForwardUniqueField: {
     'en-us': 'This field must be unique. It can not be carried over',
@@ -912,7 +916,7 @@ export const formsText = createDictionary({
     'fr-fr': 'Utilisations de la liste de sélection "{pickList:string}"',
     'uk-ua': 'Використання списку вибору "{pickList:string}"',
   },
-  form: {
+  subForm: {
     'en-us': 'Subform',
     'ru-ru': 'Форма',
     'es-es': 'Subformulario',
@@ -1000,7 +1004,7 @@ export const formsText = createDictionary({
     'uk-ua': '{tableName:string} №{id:number}',
   },
   resourceDeleted: {
-    'en-us': 'Item deleted',
+    'en-us': 'Resource deleted',
     'ru-ru': 'Удалено',
     'es-es': 'Elemento eliminado',
     'fr-fr': 'Article supprimé',
