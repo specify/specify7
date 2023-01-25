@@ -239,6 +239,7 @@ function DataModelFields({
     () => model.getScopingRelationship()?.relatedModel.name,
     []
   );
+
   return (
     <>
       <p>
