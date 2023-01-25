@@ -100,13 +100,6 @@ export const formsText = createDictionary({
     'uk-ua':
       'Ресурс не можна видалити, оскільки на нього посилаються такі ресурси:',
   },
-  record: {
-    'en-us': 'Record',
-    'ru-ru': 'Запись',
-    'es-es': 'Registro',
-    'fr-fr': 'Record',
-    'uk-ua': 'запис',
-  },
   relationship: {
     'en-us': 'Relationship',
     'ru-ru': 'Связь',

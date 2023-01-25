@@ -114,31 +114,29 @@ test('fetchBlockers', async () => {
   const resources = await fetchBlockers(resource);
 
   expect(JSON.parse(JSON.stringify(resources))).toEqual([
-    [
-      {
-        directRelationship: '[relationship agent]',
-        ids: [
-          {
-            direct: 1,
-            parent: 3,
-          },
-        ],
-        parentRelationship: '[relationship loan]',
-      },
-      {
-        directRelationship: '[relationship createdByAgent]',
-        ids: [
-          {
-            direct: 2,
-          },
-          {
-            direct: 3,
-          },
-          {
-            direct: 4,
-          },
-        ],
-      },
-    ],
+    {
+      directRelationship: '[relationship agent]',
+      ids: [
+        {
+          direct: 1,
+          parent: 3,
+        },
+      ],
+      parentRelationship: '[relationship loan]',
+    },
+    {
+      directRelationship: '[relationship createdByAgent]',
+      ids: [
+        {
+          direct: 2,
+        },
+        {
+          direct: 3,
+        },
+        {
+          direct: 4,
+        },
+      ],
+    },
   ]);
 });
