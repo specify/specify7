@@ -14,7 +14,8 @@ msgstr ""
 
 #: components/Header/menuItemDefinitions.ts:103
 #: components/Router/OverlayRoutes.tsx:117
-#: components/UserPreferences/Definitions.tsx:1327
+#: components/UserPreferences/Definitions.tsx:479
+#: components/UserPreferences/Definitions.tsx:1344
 #: components/WorkBench/wbView.js:230
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > User Preferences > Definitions ⬤ Components > Work Bench > Wb View
 #, fuzzy
@@ -660,44 +661,44 @@ msgstr "Кодування символів:"
 msgid "delimiter"
 msgstr "роздільник:"
 
-#: components/UserPreferences/Definitions.tsx:1428
+#: components/UserPreferences/Definitions.tsx:1445
 #: components/WbImport/index.tsx:152
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "comma"
 msgstr "Кома"
 
-#: components/UserPreferences/Definitions.tsx:1436
+#: components/UserPreferences/Definitions.tsx:1453
 #: components/WbImport/index.tsx:154
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "semicolon"
 msgstr "Крапка з комою"
 
-#: components/UserPreferences/Definitions.tsx:1432
+#: components/UserPreferences/Definitions.tsx:1449
 #: components/WbImport/index.tsx:153
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "tab"
 msgstr "вкладка"
 
-#: components/UserPreferences/Definitions.tsx:1440
+#: components/UserPreferences/Definitions.tsx:1457
 #: components/WbImport/index.tsx:155
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "space"
 msgstr "космос"
 
-#: components/UserPreferences/Definitions.tsx:1444
+#: components/UserPreferences/Definitions.tsx:1461
 #: components/WbImport/index.tsx:156
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "pipe"
 msgstr "Труба"
 
-#: components/UserPreferences/Definitions.tsx:505
-#: components/UserPreferences/Definitions.tsx:526
-#: components/UserPreferences/Definitions.tsx:547
+#: components/UserPreferences/Definitions.tsx:522
+#: components/UserPreferences/Definitions.tsx:543
+#: components/UserPreferences/Definitions.tsx:564
 #: components/WbImport/index.tsx:193
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
@@ -904,7 +905,7 @@ msgstr "Під час {operationName:string} сталася помилка"
 msgid "updatingTrees"
 msgstr "Оновлення дерев..."
 
-#: components/WorkBench/RecordSet.tsx:65
+#: components/WorkBench/RecordSet.tsx:67
 #. 🟥Default name of the record that would be created based on upload results. Used in: Components > Work Bench > Record Set
 #, fuzzy
 msgid "recordSetName"

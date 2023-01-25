@@ -22,7 +22,7 @@ msgstr "Відкрийте карту"
 #: components/Leaflet/Map.tsx:23
 #: components/QueryBuilder/ToMap.tsx:59
 #: components/QueryBuilder/ToMap.tsx:241
-#: components/UserPreferences/Definitions.tsx:1525
+#: components/UserPreferences/Definitions.tsx:1542
 #: components/WorkBench/Template.tsx:229
 #. Used in: Components > Leaflet > Map ⬤ Components > Query Builder > To Map ⬤ Components > User Preferences > Definitions ⬤ Components > Work Bench > Template
 #, fuzzy
@@ -55,23 +55,23 @@ msgstr "Межі багатокутників"
 msgid "errorRadius"
 msgstr "Радіус помилки"
 
-#: components/FormPlugins/Leaflet.tsx:81
+#: components/FormPlugins/Leaflet.tsx:84
 #. Used in: Components > Form Plugins > Leaflet
 #, fuzzy
 msgid "showMap"
 msgstr "Показати карту"
 
-#: components/FormPlugins/Leaflet.tsx:40
+#: components/FormPlugins/Leaflet.tsx:41
 #. Used in: Components > Form Plugins > Leaflet
 #, fuzzy
 msgid "noCoordinates"
 msgstr "Без координат"
 
-#: components/FormPlugins/Leaflet.tsx:43
+#: components/FormPlugins/Leaflet.tsx:44
 #. Used in: Components > Form Plugins > Leaflet
 #, fuzzy
 msgid "notEnoughInformationToMap"
-msgstr "Місцевість повинна мати координати для нанесення на карту."
+msgstr "{localityTable:string} повинна мати координати для нанесення на карту."
 
 #: components/Leaflet/addOns.ts:93
 #. Used in: Components > Leaflet > Add Ons
@@ -98,9 +98,9 @@ msgstr "GEOLocate"
 #. Used in: Components > Form Plugins > Geo Locate
 #, fuzzy
 msgid "geographyRequired"
-msgstr "Географія повинна бути нанесена на карту"
+msgstr "{geographyTable:string} повинна бути нанесена на карту"
 
-#: components/FormPlugins/GeoLocate.tsx:117
+#: components/FormPlugins/GeoLocate.tsx:119
 #. Used in: Components > Form Plugins > Geo Locate
 #, fuzzy
 msgid "geographyRequiredDescription"

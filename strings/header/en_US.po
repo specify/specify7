@@ -12,15 +12,16 @@ msgid "currentUser"
 msgstr "Current User"
 
 #: components/Header/index.tsx:136
-#: components/Header/index.tsx:138
-#. Used in: Components > Header > Index
+#: components/Header/index.tsx:140
+#. 🟥Example: Current Collection. Used in: Components > Header > Index
 msgid "currentCollection"
-msgstr "Current Collection"
+msgstr "Current {collectionTable:string}"
 
 #: components/Header/Forms.tsx:63
 #: components/Header/menuItemDefinitions.ts:46
 #: components/Router/OverlayRoutes.tsx:44
-#. Used in: Components > Header > Forms ⬤ Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes
+#: components/UserPreferences/Definitions.tsx:434
+#. Used in: Components > Header > Forms ⬤ Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > User Preferences > Definitions
 msgid "dataEntry"
 msgstr "Data Entry"
 
@@ -175,7 +176,7 @@ msgstr "Operations API"
 #: components/AppResources/Create.tsx:112
 #: components/AppResources/Filters.tsx:156
 #: components/Header/userToolDefinitions.ts:81
-#: components/UserPreferences/Definitions.tsx:404
+#: components/UserPreferences/Definitions.tsx:405
 #. Used in: Components > App Resources > Create ⬤ Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > User Preferences > Definitions
 msgid "documentation"
 msgstr "Documentation"

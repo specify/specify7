@@ -24,7 +24,8 @@ msgstr "звіт"
 #: components/Reports/index.tsx:132
 #: components/Reports/index.tsx:138
 #: components/Router/OverlayRoutes.tsx:111
-#: components/UserPreferences/Definitions.tsx:1310
+#: components/UserPreferences/Definitions.tsx:488
+#: components/UserPreferences/Definitions.tsx:1327
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Reports > Parameters ⬤ Components > Reports > Index ⬤ Components > Router > Overlay Routes ⬤ Components > User Preferences > Definitions
 #, fuzzy
 msgid "reports"

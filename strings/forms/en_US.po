@@ -1,7 +1,7 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/UserPreferences/Definitions.tsx:573
+#: components/UserPreferences/Definitions.tsx:590
 #. Used in: Components > User Preferences > Definitions
 msgid "forms"
 msgstr "Forms"
@@ -67,37 +67,37 @@ msgstr "Record"
 msgid "relationship"
 msgstr "Relationship"
 
-#: components/FormPlugins/PaleoLocation.tsx:50
-#: components/FormPlugins/PaleoLocation.tsx:77
-#: components/FormPlugins/PaleoLocation.tsx:86
+#: components/FormPlugins/PaleoLocation.tsx:52
+#: components/FormPlugins/PaleoLocation.tsx:89
+#: components/FormPlugins/PaleoLocation.tsx:98
 #. Used in: Components > Form Plugins > Paleo Location
 msgid "paleoMap"
 msgstr "Paleo Map"
 
-#: components/FormPlugins/PaleoLocation.tsx:68
-#. Used in: Components > Form Plugins > Paleo Location
+#: components/FormPlugins/PaleoLocation.tsx:76
+#. 🟥Example: Geography Required. Used in: Components > Form Plugins > Paleo Location
 msgid "paleoRequiresGeography"
-msgstr "Geography Required"
+msgstr "{geographyTable:string} Required"
 
-#: components/FormPlugins/PaleoLocation.tsx:71
+#: components/FormPlugins/PaleoLocation.tsx:81
 #. Used in: Components > Form Plugins > Paleo Location
 msgid "paleoRequiresGeographyDescription"
 msgstr ""
-"The Paleo Map plugin requires that the locality have geographic coordinates "
-"and that the paleo context have a geographic age with at least a start time "
-"or and end time populated."
+"The Paleo Map plugin requires that the {localityTable:string} have "
+"geographic coordinates and that the paleo context have a geographic age "
+"with at least a start time or and end time populated."
 
-#: components/FormPlugins/PaleoLocation.tsx:55
+#: components/FormPlugins/PaleoLocation.tsx:57
 #. Used in: Components > Form Plugins > Paleo Location
 msgid "unsupportedForm"
 msgstr "Incorrect Form"
 
-#: components/FormPlugins/PaleoLocation.tsx:62
-#. Used in: Components > Form Plugins > Paleo Location
+#: components/FormPlugins/PaleoLocation.tsx:64
+#. 🟥Example: ... Locality, Collecting Event or Collection Object forms. Used in: Components > Form Plugins > Paleo Location
 msgid "unsupportedFormDescription"
 msgstr ""
-"This plugin cannot be used on this form. Try moving it to the locality, "
-"collecting event or collection object forms."
+"This plugin cannot be used on this form. Try moving it to the "
+"{tables:string} forms."
 
 #: components/FormPlugins/PartialDateUi.tsx:304
 #. Used in: Components > Form Plugins > Partial Date Ui
@@ -142,16 +142,16 @@ msgstr "Today"
 msgid "todayButtonDescription"
 msgstr "Set to current date"
 
-#: components/PickLists/index.tsx:300
+#: components/PickLists/index.tsx:302
 #. Used in: Components > Pick Lists > Index
 msgid "addToPickListConfirmation"
-msgstr "Add to pick list?"
+msgstr "Add to {pickListTable:string}?"
 
-#: components/PickLists/index.tsx:303
+#: components/PickLists/index.tsx:307
 #. Used in: Components > Pick Lists > Index
 msgid "addToPickListConfirmationDescription"
 msgstr ""
-"Add value \"{value:string}\" to the pick list named "
+"Add value \"{value:string}\" to the {pickListTable:string} named "
 "\"{pickListName:string}\"?"
 
 #: components/PickLists/index.tsx:269
@@ -162,7 +162,7 @@ msgstr "Invalid Type"
 #: components/PickLists/index.tsx:272
 #. Used in: Components > Pick Lists > Index
 msgid "invalidNumericPicklistValue"
-msgstr "Only numeric values are supported in this pick list"
+msgstr "Only numeric values are supported in this {pickListTable:string}"
 
 #: components/Attachments/Plugin.tsx:124
 #: components/FormCells/FormTable.tsx:181
@@ -171,18 +171,12 @@ msgstr "Only numeric values are supported in this pick list"
 msgid "noData"
 msgstr "No Data."
 
-#: components/FormSliders/RecordSet.tsx:299
-#: components/Toolbar/RecordSets.tsx:118
-#. Used in: Components > Form Sliders > Record Set ⬤ Components > Toolbar > Record Sets
-msgid "recordSet"
-msgstr "Record Set"
-
 #: components/Toolbar/RecordSetEdit.tsx:40
 #. Used in: Components > Toolbar > Record Set Edit
 msgid "recordSetDeletionWarning"
 msgstr ""
-"The record set \"{recordSetName:string}\" will be deleted. The referenced "
-"records will NOT be deleted from the database."
+"The {recordSetTable:string} \"{recordSetName:string}\" will be deleted. The "
+"referenced records will NOT be deleted from the database."
 
 #: components/FormCommands/index.tsx:39
 #: components/FormMeta/EditHistory.tsx:31
@@ -192,14 +186,14 @@ msgstr "Save record first"
 
 #: components/FormSliders/Slider.tsx:31
 #: components/FormSliders/Slider.tsx:33
-#: components/UserPreferences/Definitions.tsx:947
+#: components/UserPreferences/Definitions.tsx:964
 #. Used in: Components > Form Sliders > Slider ⬤ Components > User Preferences > Definitions
 msgid "firstRecord"
 msgstr "First Record"
 
 #: components/FormSliders/Slider.tsx:97
 #: components/FormSliders/Slider.tsx:99
-#: components/UserPreferences/Definitions.tsx:951
+#: components/UserPreferences/Definitions.tsx:968
 #. Used in: Components > Form Sliders > Slider ⬤ Components > User Preferences > Definitions
 msgid "lastRecord"
 msgstr "Last Record"
@@ -228,7 +222,7 @@ msgid "unsavedFormUnloadProtect"
 msgstr "This form has not been saved."
 
 #: components/Forms/Save.tsx:265
-#. Used in: Components > Forms > Save
+#. 🟥Meaning a conflict occurred when saving. Used in: Components > Forms > Save
 msgid "saveConflict"
 msgstr "Save conflict"
 
@@ -248,7 +242,7 @@ msgstr "Save blocked"
 #: components/Forms/Save.tsx:276
 #. Used in: Components > Forms > Save
 msgid "saveBlockedDescription"
-msgstr "Form cannot be saved while the following errors exist:"
+msgstr "Form cannot be saved because of the following errors:"
 
 #: components/FormCommands/index.tsx:120
 #. Used in: Components > Form Commands > Index
@@ -315,14 +309,14 @@ msgstr "Plugin name"
 
 #: components/Atoms/DataEntry.tsx:161
 #: components/Atoms/DataEntry.tsx:164
-#. Used in: Components > Atoms > Data Entry
+#. 🟥Meaning "Open". Used in: Components > Atoms > Data Entry
 msgid "visit"
 msgstr "Visit"
 
 #: utils/parser/definitions.ts:91
 #: utils/parser/__tests__/definitions.test.ts:169
 #: utils/parser/__tests__/definitions.test.ts:171
-#. Used in: Utils > Parser > Definitions ⬤ Parser > __tests__ > Definitions
+#. 🟥Yes/No probably shouldn't be translated as Specify 7 does not support changing which values are recognized as Yes/No in a given language. Used in: Utils > Parser > Definitions ⬤ Parser > __tests__ > Definitions
 msgid "illegalBool"
 msgstr "Illegal value for a Yes/No field"
 
@@ -408,17 +402,17 @@ msgstr "Unsupported cell type"
 msgid "additionalResultsOmitted"
 msgstr "Additional results omitted"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:254
+#: components/FormSliders/RecordSelectorFromIds.tsx:253
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "recordSelectorUnloadProtect"
 msgstr "Proceed without saving?"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:257
+#: components/FormSliders/RecordSelectorFromIds.tsx:256
 #. 🟥When in record set and current record is unsaved and try to navigate to another record. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "recordSelectorUnloadProtectDescription"
 msgstr "You might want to save this record before navigating away."
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:210
+#: components/FormSliders/RecordSelectorFromIds.tsx:209
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "creatingNewRecord"
 msgstr "Creating new record"
@@ -438,27 +432,25 @@ msgstr "Reverse"
 msgid "deletedInline"
 msgstr "(deleted)"
 
-#: components/FormSliders/RecordSet.tsx:386
-#. Used in: Components > Form Sliders > Record Set
+#: components/FormSliders/RecordSet.tsx:387
+#. 🟥Example: Duplicate Record Set Item. Used in: Components > Form Sliders > Record Set
 msgid "duplicateRecordSetItem"
-msgstr "Duplicate Record Set Item"
+msgstr "Duplicate {recordSetItemTable:string}"
 
-#: components/FormSliders/RecordSet.tsx:389
+#: components/FormSliders/RecordSet.tsx:392
 #. Used in: Components > Form Sliders > Record Set
 msgid "duplicateRecordSetItemDescription"
-msgstr "This record is already present in the current record set"
+msgstr "This record is already present in the current {recordSetTable:string}"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:184
-#: components/FormSliders/RecordSelectorFromIds.tsx:188
+#: components/FormSliders/RecordSelectorFromIds.tsx:172
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "addToRecordSet"
-msgstr "Add to Record Set"
+msgstr "Add to {recordSetTable:string}"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:197
-#: components/FormSliders/RecordSelectorFromIds.tsx:203
+#: components/FormSliders/RecordSelectorFromIds.tsx:177
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "removeFromRecordSet"
-msgstr "Remove from Record Set"
+msgstr "Remove from {recordSetTable:string}"
 
 #: components/Molecules/AutoComplete.tsx:522
 #. Used in: Components > Molecules > Auto Complete
@@ -466,7 +458,7 @@ msgid "nothingFound"
 msgstr "Nothing found"
 
 #: components/Forms/Save.tsx:234
-#. Used in: Components > Forms > Save
+#. 🟥Verb. Button label. Used in: Components > Forms > Save
 msgid "carryForward"
 msgstr "Carry Forward"
 
@@ -489,7 +481,7 @@ msgstr "Configure fields to carry forward"
 #: components/FormMeta/CarryForward.tsx:256
 #. Used in: Components > Form Meta > Carry Forward
 msgid "carryForwardTableSettingsDescription"
-msgstr "Configure fields to carry forward ({tableName: string})"
+msgstr "Configure fields to carry forward ({tableName:string})"
 
 #: components/FormMeta/CarryForward.tsx:318
 #. Used in: Components > Form Meta > Carry Forward
@@ -576,11 +568,11 @@ msgstr "Usages of \"{pickList:string}\" pick list"
 
 #: components/FormMeta/SubViewMeta.tsx:35
 #. Used in: Components > Form Meta > Sub View Meta
-msgid "form"
+msgid "subForm"
 msgstr "Subform"
 
 #: components/FormMeta/SubViewMeta.tsx:36
-#: components/UserPreferences/Definitions.tsx:958
+#: components/UserPreferences/Definitions.tsx:975
 #. Used in: Components > Form Meta > Sub View Meta ⬤ Components > User Preferences > Definitions
 msgid "formTable"
 msgstr "Grid"
@@ -642,7 +634,7 @@ msgstr "{tableName:string} #{id:number}"
 #: components/Forms/ResourceView.tsx:186
 #. Used in: Components > Forms > Resource View
 msgid "resourceDeleted"
-msgstr "Item deleted"
+msgstr "Resource deleted"
 
 #: components/Forms/ResourceView.tsx:189
 #. Used in: Components > Forms > Resource View

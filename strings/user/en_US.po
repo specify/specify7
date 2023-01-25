@@ -141,29 +141,29 @@ msgstr "Master Key"
 msgid "incorrectPassword"
 msgstr "Password was incorrect."
 
-#: components/Forms/OtherCollectionView.tsx:55
+#: components/Forms/OtherCollectionView.tsx:56
 #. Used in: Components > Forms > Other Collection View
 msgid "noAccessToResource"
 msgstr ""
-"You do not have access to any collection containing this resource through "
-"the currently logged in account"
+"You do not have access to any {collectionTable:string} containing this "
+"resource through the currently logged in account"
 
-#: components/Forms/OtherCollectionView.tsx:58
+#: components/Forms/OtherCollectionView.tsx:61
 #. Used in: Components > Forms > Other Collection View
 msgid "resourceInaccessible"
 msgstr ""
 "The requested resource cannot be accessed while logged into the current "
 "collection."
 
-#: components/Forms/OtherCollectionView.tsx:61
+#: components/Forms/OtherCollectionView.tsx:64
 #. Used in: Components > Forms > Other Collection View
 msgid "selectCollection"
 msgstr "Select one of the following collections:"
 
-#: components/Forms/OtherCollectionView.tsx:78
-#. Used in: Components > Forms > Other Collection View
+#: components/Forms/OtherCollectionView.tsx:82
+#. 🟥Example: You can login to the Collection, to proceed:. Used in: Components > Forms > Other Collection View
 msgid "loginToProceed"
-msgstr "You can login to the collection, to proceed:"
+msgstr "You can login to the {collectionTable:string}, to proceed:"
 
 #: components/Permissions/FormatError.tsx:31
 #: components/Permissions/PermissionDenied.tsx:232
@@ -202,7 +202,7 @@ msgstr ""
 #: components/Forms/DataTask.tsx:131
 #. Used in: Components > Forms > Data Task
 msgid "emptyRecordSetsReadOnly"
-msgstr "Cannot open empty Record Set when in Read-Only mode"
+msgstr "Cannot open empty {recordSetTable:string} when in Read-Only mode"
 
 #: components/Permissions/FormatError.tsx:115
 #. Used in: Components > Permissions > Format Error
@@ -253,15 +253,15 @@ msgstr "User must be saved as Manager first"
 msgid "users"
 msgstr "User Accounts"
 
-#: components/Security/Institution.tsx:139
+#: components/Security/Institution.tsx:140
 #. Used in: Components > Security > Institution
 msgid "institutionUsers"
-msgstr "User Accounts Defined in this Institution"
+msgstr "User Accounts Defined in this {institutionTable:string}"
 
-#: components/Security/Collection.tsx:152
+#: components/Security/Collection.tsx:153
 #. Used in: Components > Security > Collection
 msgid "collectionUsers"
-msgstr "User Accounts Assigned to this Collection"
+msgstr "User Accounts Assigned to this {collectionTable:string}"
 
 #: components/Security/SetPassword.tsx:40
 #: components/Security/SetPassword.tsx:92
@@ -282,10 +282,10 @@ msgstr "Passwords do not match."
 msgid "confirmPassword"
 msgstr "Confirm"
 
-#: components/Toolbar/Security.tsx:128
+#: components/Toolbar/Security.tsx:131
 #. Used in: Components > Toolbar > Security
 msgid "collections"
-msgstr "Collection(s)"
+msgstr "Collections"
 
 #: components/Security/UserCollections.tsx:129
 #. Used in: Components > Security > User Collections
@@ -314,11 +314,11 @@ msgstr "Institution Library of Role Templates"
 msgid "userRoles"
 msgstr "User Roles"
 
-#: components/Security/CollectionComponents.tsx:120
+#: components/Security/CollectionComponents.tsx:122
 #: components/Security/PreviewComponents.tsx:88
 #. Used in: Components > Security > Collection Components ⬤ Components > Security > Preview Components
 msgid "collectionUserRoles"
-msgstr "Collection User Roles"
+msgstr "{collectionTable:string} User Roles"
 
 #: components/Security/UserComponents.tsx:107
 #. Used in: Components > Security > User Components
@@ -330,7 +330,7 @@ msgstr "Assigned User Roles"
 msgid "rolePolicies"
 msgstr "Role Permission Policies"
 
-#: components/Security/PreviewComponents.tsx:143
+#: components/Security/PreviewComponents.tsx:145
 #. Used in: Components > Security > Preview Components
 msgid "userPolicies"
 msgstr "User Permission Policies"
@@ -360,37 +360,37 @@ msgstr "User's Permission Profile (read-only)"
 msgid "outOfDateWarning"
 msgstr "Note: preview may be out of date. Save changes to update the preview"
 
-#: components/Security/PreviewComponents.tsx:171
+#: components/Security/PreviewComponents.tsx:173
 #. Used in: Components > Security > Preview Components
 msgid "allUsers"
 msgstr "All Users"
 
-#: components/Security/PreviewComponents.tsx:172
+#: components/Security/PreviewComponents.tsx:174
 #. Used in: Components > Security > Preview Components
 msgid "thisUser"
 msgstr "This user"
 
 #: components/Permissions/FormatError.tsx:65
-#: components/Security/PreviewComponents.tsx:89
-#: components/Security/PreviewComponents.tsx:145
+#: components/Security/PreviewComponents.tsx:91
+#: components/Security/PreviewComponents.tsx:147
 #. Used in: Components > Permissions > Format Error ⬤ Components > Security > Preview Components
 msgid "action"
 msgstr "Action"
 
 #: components/Permissions/FormatError.tsx:66
-#: components/Security/PreviewComponents.tsx:90
-#: components/Security/PreviewComponents.tsx:146
+#: components/Security/PreviewComponents.tsx:92
+#: components/Security/PreviewComponents.tsx:148
 #: components/Security/utils.ts:100
 #. Used in: Components > Permissions > Format Error ⬤ Components > Security > Preview Components ⬤ Components > Security > Utils
 msgid "resource"
 msgstr "Resource"
 
-#: components/Security/PreviewComponents.tsx:174
+#: components/Security/PreviewComponents.tsx:176
 #. Used in: Components > Security > Preview Components
 msgid "allCollections"
 msgstr "All Collections"
 
-#: components/Security/PreviewComponents.tsx:175
+#: components/Security/PreviewComponents.tsx:177
 #. Used in: Components > Security > Preview Components
 msgid "thisCollection"
 msgstr "This collection"
@@ -508,17 +508,17 @@ msgstr "External identity providers:"
 msgid "allTables"
 msgstr "All tables"
 
-#: components/Security/Institution.tsx:190
+#: components/Security/Institution.tsx:194
 #. Used in: Components > Security > Institution
 msgid "loadingAdmins"
 msgstr "Loading admins..."
 
-#: components/Security/Institution.tsx:154
+#: components/Security/Institution.tsx:158
 #. 🟥Shown next to user name for admin users. Used in: Components > Security > Institution
 msgid "specifyAdmin"
 msgstr "(Specify 7 Admin)"
 
-#: components/Security/Institution.tsx:158
+#: components/Security/Institution.tsx:162
 #. 🟥Shown next to user name for admin users. Used in: Components > Security > Institution
 msgid "legacyAdmin"
 msgstr "(Specify 6 Admin)"

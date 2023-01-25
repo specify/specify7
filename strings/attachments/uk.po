@@ -15,7 +15,8 @@ msgstr ""
 #: components/Attachments/index.tsx:169
 #: components/Header/menuItemDefinitions.ts:109
 #: components/Router/Routes.tsx:165
-#. Used in: Components > Attachments > Index ⬤ Components > Header > Menu Item Definitions ⬤ Components > Router > Routes
+#: components/UserPreferences/Definitions.tsx:497
+#. Used in: Components > Attachments > Index ⬤ Components > Header > Menu Item Definitions ⬤ Components > Router > Routes ⬤ Components > User Preferences > Definitions
 msgid "attachments"
 msgstr "Прикріплення"
 
@@ -37,7 +38,7 @@ msgstr "Налаштуйте сервер прикріплень"
 
 #: components/Attachments/index.tsx:218
 #: components/FormMeta/SubViewMeta.tsx:41
-#: components/UserPreferences/Definitions.tsx:1072
+#: components/UserPreferences/Definitions.tsx:1089
 #. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > User Preferences > Definitions
 msgid "orderBy"
 msgstr "Сортувати по"

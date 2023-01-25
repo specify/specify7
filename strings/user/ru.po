@@ -141,27 +141,27 @@ msgstr "Мастер ключ"
 msgid "incorrectPassword"
 msgstr "Пароль неверный."
 
-#: components/Forms/OtherCollectionView.tsx:55
+#: components/Forms/OtherCollectionView.tsx:56
 #. Used in: Components > Forms > Other Collection View
 msgid "noAccessToResource"
 msgstr ""
-"У вас нет доступа ни к одной коллекции, содержащей этот ресурс через "
-"текущую учетную запись"
+"У вас нет доступа ни к одной {collectionTable:string}, содержащей этот "
+"ресурс через текущую учетную запись"
 
-#: components/Forms/OtherCollectionView.tsx:58
+#: components/Forms/OtherCollectionView.tsx:61
 #. Used in: Components > Forms > Other Collection View
 msgid "resourceInaccessible"
 msgstr "Запрошенный ресурс недоступен в текущей коллекция."
 
-#: components/Forms/OtherCollectionView.tsx:61
+#: components/Forms/OtherCollectionView.tsx:64
 #. Used in: Components > Forms > Other Collection View
 msgid "selectCollection"
 msgstr "Выберите одну из следующих коллекций:"
 
-#: components/Forms/OtherCollectionView.tsx:78
-#. Used in: Components > Forms > Other Collection View
+#: components/Forms/OtherCollectionView.tsx:82
+#. 🟥Example: You can login to the Collection, to proceed:. Used in: Components > Forms > Other Collection View
 msgid "loginToProceed"
-msgstr "Вы можете войти в коллекцию, чтобы продолжить:"
+msgstr "Вы можете войти в {collectionTable:string}, чтобы продолжить:"
 
 #: components/Permissions/FormatError.tsx:31
 #: components/Permissions/PermissionDenied.tsx:232
@@ -199,7 +199,7 @@ msgstr ""
 #. Used in: Components > Forms > Data Task
 #, fuzzy
 msgid "emptyRecordSetsReadOnly"
-msgstr "Невозможно открыть пустой набор записей в режиме только для чтения"
+msgstr "Невозможно открыть пустой {recordSetTable:string} в режиме только для чтения"
 
 #: components/Permissions/FormatError.tsx:115
 #. Used in: Components > Permissions > Format Error
@@ -250,12 +250,12 @@ msgstr "Сначала пользователь должен быть сохра
 msgid "users"
 msgstr "Пользователи"
 
-#: components/Security/Institution.tsx:139
+#: components/Security/Institution.tsx:140
 #. Used in: Components > Security > Institution
 msgid "institutionUsers"
 msgstr "Пользователи"
 
-#: components/Security/Collection.tsx:152
+#: components/Security/Collection.tsx:153
 #. Used in: Components > Security > Collection
 msgid "collectionUsers"
 msgstr "Пользователи"
@@ -279,7 +279,7 @@ msgstr "Пароли не соответствуют."
 msgid "confirmPassword"
 msgstr "Подтвердить"
 
-#: components/Toolbar/Security.tsx:128
+#: components/Toolbar/Security.tsx:131
 #. Used in: Components > Toolbar > Security
 msgid "collections"
 msgstr "Коллекции"
@@ -311,7 +311,7 @@ msgstr "Библиотека ролей пользователей"
 msgid "userRoles"
 msgstr "Роли пользователей"
 
-#: components/Security/CollectionComponents.tsx:120
+#: components/Security/CollectionComponents.tsx:122
 #: components/Security/PreviewComponents.tsx:88
 #. Used in: Components > Security > Collection Components ⬤ Components > Security > Preview Components
 msgid "collectionUserRoles"
@@ -327,7 +327,7 @@ msgstr "Назначенные роли пользователя"
 msgid "rolePolicies"
 msgstr "Политики"
 
-#: components/Security/PreviewComponents.tsx:143
+#: components/Security/PreviewComponents.tsx:145
 #. Used in: Components > Security > Preview Components
 msgid "userPolicies"
 msgstr "Политики"
@@ -361,37 +361,37 @@ msgstr ""
 "Примечание. Предварительный просмотр может быть устаревшим. Сохраните "
 "изменения, чтобы обновить предварительный просмотр"
 
-#: components/Security/PreviewComponents.tsx:171
+#: components/Security/PreviewComponents.tsx:173
 #. Used in: Components > Security > Preview Components
 msgid "allUsers"
 msgstr "Все пользователи"
 
-#: components/Security/PreviewComponents.tsx:172
+#: components/Security/PreviewComponents.tsx:174
 #. Used in: Components > Security > Preview Components
 msgid "thisUser"
 msgstr "Этот пользователь"
 
 #: components/Permissions/FormatError.tsx:65
-#: components/Security/PreviewComponents.tsx:89
-#: components/Security/PreviewComponents.tsx:145
+#: components/Security/PreviewComponents.tsx:91
+#: components/Security/PreviewComponents.tsx:147
 #. Used in: Components > Permissions > Format Error ⬤ Components > Security > Preview Components
 msgid "action"
 msgstr "Действие"
 
 #: components/Permissions/FormatError.tsx:66
-#: components/Security/PreviewComponents.tsx:90
-#: components/Security/PreviewComponents.tsx:146
+#: components/Security/PreviewComponents.tsx:92
+#: components/Security/PreviewComponents.tsx:148
 #: components/Security/utils.ts:100
 #. Used in: Components > Permissions > Format Error ⬤ Components > Security > Preview Components ⬤ Components > Security > Utils
 msgid "resource"
 msgstr "Ресурс"
 
-#: components/Security/PreviewComponents.tsx:174
+#: components/Security/PreviewComponents.tsx:176
 #. Used in: Components > Security > Preview Components
 msgid "allCollections"
 msgstr "Все коллекции"
 
-#: components/Security/PreviewComponents.tsx:175
+#: components/Security/PreviewComponents.tsx:177
 #. Used in: Components > Security > Preview Components
 msgid "thisCollection"
 msgstr "Эта коллекция"
@@ -509,17 +509,17 @@ msgstr "Внешние аутентификаторы:"
 msgid "allTables"
 msgstr "Все таблицы"
 
-#: components/Security/Institution.tsx:190
+#: components/Security/Institution.tsx:194
 #. Used in: Components > Security > Institution
 msgid "loadingAdmins"
 msgstr "Загрузка администраторов..."
 
-#: components/Security/Institution.tsx:154
+#: components/Security/Institution.tsx:158
 #. 🟥Shown next to user name for admin users. Used in: Components > Security > Institution
 msgid "specifyAdmin"
 msgstr "(Specify 7 Администратор)"
 
-#: components/Security/Institution.tsx:158
+#: components/Security/Institution.tsx:162
 #. 🟥Shown next to user name for admin users. Used in: Components > Security > Institution
 msgid "legacyAdmin"
 msgstr "(Specify 6 Администратор)"

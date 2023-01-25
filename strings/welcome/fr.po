@@ -29,19 +29,19 @@ msgstr "À propos de Specify 7"
 msgid "downloadInformation"
 msgstr "Télécharger les informations"
 
-#: components/HomePage/TaxonTiles.tsx:55
+#: components/HomePage/TaxonTiles.tsx:59
 #: components/UserPreferences/Renderers.tsx:193
 #. Used in: Components > Home Page > Taxon Tiles ⬤ Components > User Preferences > Renderers
 msgid "taxonTiles"
 msgstr "Tuiles Taxon"
 
-#: components/HomePage/TaxonTiles.tsx:51
+#: components/HomePage/TaxonTiles.tsx:52
 #. Used in: Components > Home Page > Taxon Tiles
 #, fuzzy
 msgid "taxonTilesDescription"
 msgstr ""
-"Affichage des taxons avec {count:number|formatted} ou plusieurs objets de "
-"collection"
+"Affichage des taxons avec {count:number|formatted} ou plus de "
+"{collectionObjectTable:string} enregistrements"
 
 #: components/HomePage/AboutSpecify.tsx:76
 #. Used in: Components > Home Page > About Specify

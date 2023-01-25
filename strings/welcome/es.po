@@ -19,16 +19,18 @@ msgstr "Acerca de Especificar 7"
 msgid "downloadInformation"
 msgstr "Descargar información"
 
-#: components/HomePage/TaxonTiles.tsx:55
+#: components/HomePage/TaxonTiles.tsx:59
 #: components/UserPreferences/Renderers.tsx:193
 #. Used in: Components > Home Page > Taxon Tiles ⬤ Components > User Preferences > Renderers
 msgid "taxonTiles"
 msgstr "Azulejos de taxón"
 
-#: components/HomePage/TaxonTiles.tsx:51
+#: components/HomePage/TaxonTiles.tsx:52
 #. Used in: Components > Home Page > Taxon Tiles
 msgid "taxonTilesDescription"
-msgstr "Mostrando taxones con {count:number|formatted} o más objetos de colección"
+msgstr ""
+"Mostrando taxones con {count:number|formatted} o más "
+"{collectionObjectTable:string} registros"
 
 #: components/HomePage/AboutSpecify.tsx:76
 #. Used in: Components > Home Page > About Specify

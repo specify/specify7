@@ -1,10 +1,10 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/QueryBuilder/Header.tsx:67
+#: components/QueryBuilder/Header.tsx:68
 #: components/QueryBuilder/Toolbar.tsx:61
 #: components/Reports/RecordSets.tsx:99
-#: components/Toolbar/RecordSetEdit.tsx:49
+#: components/Toolbar/RecordSetEdit.tsx:50
 #: components/TreeView/Actions.tsx:85
 #: components/TreeView/Actions.tsx:88
 #. Used in: Components > Query Builder > Header ⬤ Components > Query Builder > Toolbar ⬤ Components > Reports > Record Sets ⬤ Components > Toolbar > Record Set Edit ⬤ Components > Tree View > Actions
@@ -15,7 +15,8 @@ msgstr "Consulta"
 #: components/Header/menuItemDefinitions.ts:79
 #: components/Router/OverlayRoutes.tsx:80
 #: components/Toolbar/Query.tsx:96
-#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Query
+#: components/UserPreferences/Definitions.tsx:461
+#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Query ⬤ Components > User Preferences > Definitions
 #, fuzzy
 msgid "queries"
 msgstr "Consultas"
@@ -23,7 +24,7 @@ msgstr "Consultas"
 #: components/Forms/SearchDialog.tsx:108
 #: components/Forms/SearchDialog.tsx:270
 #: components/Security/registry.ts:196
-#: components/UserPreferences/Definitions.tsx:1241
+#: components/UserPreferences/Definitions.tsx:1258
 #. Used in: Components > Forms > Search Dialog ⬤ Components > Security > Registry ⬤ Components > User Preferences > Definitions
 #, fuzzy
 msgid "queryBuilder"
@@ -101,23 +102,23 @@ msgstr "Hay campos sin completar en la definición de consulta. ¿Quieres elimin
 msgid "queryUnloadProtect"
 msgstr "La definición de consulta nueva o modificada no se ha guardado"
 
-#: components/QueryBuilder/Components.tsx:250
-#. Used in: Components > Query Builder > Components
+#: components/QueryBuilder/Components.tsx:252
+#. 🟥Example: Creating a Record Set from Query. Used in: Components > Query Builder > Components
 #, fuzzy
 msgid "recordSetToQuery"
-msgstr "Creación de un conjunto de registros a partir de una consulta"
+msgstr "Creación de un {recordSetTable:string} a partir de una consulta"
 
-#: components/QueryBuilder/Components.tsx:253
+#: components/QueryBuilder/Components.tsx:257
 #. Used in: Components > Query Builder > Components
 #, fuzzy
 msgid "recordSetToQueryDescription"
-msgstr "Generando conjunto de registros..."
+msgstr "Generando {recordSetTable:string}..."
 
-#: components/QueryBuilder/Components.tsx:268
+#: components/QueryBuilder/Components.tsx:274
 #. Used in: Components > Query Builder > Components
 #, fuzzy
 msgid "recordSetCreated"
-msgstr "Conjunto de registros creado"
+msgstr "{recordSetTable:string} creado"
 
 #: components/QueryBuilder/Export.tsx:78
 #. Used in: Components > Query Builder > Export
@@ -157,7 +158,7 @@ msgstr "{value:string} (valor actual no válido)"
 #, fuzzy
 msgid "queryRecordSetTitle"
 msgstr ""
-"Consulta: \"{queryName:string}\" en conjunto de registros: "
+"Consulta: \"{queryName:string}\" en {recordSetTable:string}: "
 "\"{recordSetName:string}\""
 
 #: components/QueryBuilder/fromTree.ts:181
@@ -202,7 +203,7 @@ msgstr "Crear archivo KML"
 #. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Results ⬤ Components > Work Bench > Record Set
 #, fuzzy
 msgid "createRecordSet"
-msgstr "Crear conjunto de registros"
+msgstr "Crear {recordSetTable:string}"
 
 #: components/QueryBuilder/Components.tsx:106
 #. Used in: Components > Query Builder > Components
@@ -366,7 +367,7 @@ msgid "inDescription"
 msgstr "Una lista de valores separados por comas"
 
 #: components/QueryBuilder/FieldFilter.tsx:470
-#: components/UserPreferences/Definitions.tsx:1133
+#: components/UserPreferences/Definitions.tsx:1150
 #. Used in: Components > Query Builder > Field Filter ⬤ Components > User Preferences > Definitions
 #, fuzzy
 msgid "contains"
@@ -385,7 +386,7 @@ msgid "and"
 msgstr "y"
 
 #: components/QueryBuilder/FieldFilter.tsx:479
-#: components/UserPreferences/Definitions.tsx:1129
+#: components/UserPreferences/Definitions.tsx:1146
 #. Used in: Components > Query Builder > Field Filter ⬤ Components > User Preferences > Definitions
 #, fuzzy
 msgid "startsWith"
@@ -430,7 +431,7 @@ msgstr "Resultados de la consulta"
 msgid "browseInForms"
 msgstr "Navegar en Formularios"
 
-#: components/QueryBuilder/Header.tsx:79
+#: components/QueryBuilder/Header.tsx:80
 #. Used in: Components > Query Builder > Header
 #, fuzzy
 msgid "editQuery"

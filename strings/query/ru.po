@@ -1,10 +1,10 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/QueryBuilder/Header.tsx:67
+#: components/QueryBuilder/Header.tsx:68
 #: components/QueryBuilder/Toolbar.tsx:61
 #: components/Reports/RecordSets.tsx:99
-#: components/Toolbar/RecordSetEdit.tsx:49
+#: components/Toolbar/RecordSetEdit.tsx:50
 #: components/TreeView/Actions.tsx:85
 #: components/TreeView/Actions.tsx:88
 #. Used in: Components > Query Builder > Header ⬤ Components > Query Builder > Toolbar ⬤ Components > Reports > Record Sets ⬤ Components > Toolbar > Record Set Edit ⬤ Components > Tree View > Actions
@@ -14,14 +14,15 @@ msgstr "Запрос"
 #: components/Header/menuItemDefinitions.ts:79
 #: components/Router/OverlayRoutes.tsx:80
 #: components/Toolbar/Query.tsx:96
-#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Query
+#: components/UserPreferences/Definitions.tsx:461
+#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Query ⬤ Components > User Preferences > Definitions
 msgid "queries"
 msgstr "Запросы"
 
 #: components/Forms/SearchDialog.tsx:108
 #: components/Forms/SearchDialog.tsx:270
 #: components/Security/registry.ts:196
-#: components/UserPreferences/Definitions.tsx:1241
+#: components/UserPreferences/Definitions.tsx:1258
 #. Used in: Components > Forms > Search Dialog ⬤ Components > Security > Registry ⬤ Components > User Preferences > Definitions
 msgid "queryBuilder"
 msgstr "Конструктор запросов"
@@ -87,20 +88,20 @@ msgstr "В запросе есть незавершенные поля. Хоти
 msgid "queryUnloadProtect"
 msgstr "Новый или измененный запрос не был сохранен"
 
-#: components/QueryBuilder/Components.tsx:250
-#. Used in: Components > Query Builder > Components
+#: components/QueryBuilder/Components.tsx:252
+#. 🟥Example: Creating a Record Set from Query. Used in: Components > Query Builder > Components
 msgid "recordSetToQuery"
-msgstr "Создание набор объектов из запроса"
+msgstr "Создание {recordSetTable:string} из запроса"
 
-#: components/QueryBuilder/Components.tsx:253
+#: components/QueryBuilder/Components.tsx:257
 #. Used in: Components > Query Builder > Components
 msgid "recordSetToQueryDescription"
-msgstr "Создание набора объектов..."
+msgstr "Создание {recordSetTable:string}..."
 
-#: components/QueryBuilder/Components.tsx:268
+#: components/QueryBuilder/Components.tsx:274
 #. Used in: Components > Query Builder > Components
 msgid "recordSetCreated"
-msgstr "Набор Объектов Созданный"
+msgstr "{recordSetTable:string} Созданный"
 
 #: components/QueryBuilder/Export.tsx:78
 #. Used in: Components > Query Builder > Export
@@ -133,7 +134,9 @@ msgstr "{value:string} (текущее, недопустимое значени�
 #: components/QueryBuilder/Header.tsx:62
 #. 🟥Used in query builder header when querying on record set. Used in: Components > Query Builder > Header
 msgid "queryRecordSetTitle"
-msgstr "Запрос: \"{queryName:string}\" на наборе записей: \"{recordSetName:string}\""
+msgstr ""
+"Запрос: \"{queryName:string}\" на {recordSetTable:string}: "
+"\"{recordSetName:string}\""
 
 #: components/QueryBuilder/fromTree.ts:181
 #. 🟥Used in query builder header when querying on tree node usages. Used in: Components > Query Builder > From Tree
@@ -170,7 +173,7 @@ msgstr "Создать KML"
 #: components/WorkBench/RecordSet.tsx:36
 #. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Results ⬤ Components > Work Bench > Record Set
 msgid "createRecordSet"
-msgstr "Сделать набор объектов"
+msgstr "Сделать {recordSetTable:string}"
 
 #: components/QueryBuilder/Components.tsx:106
 #. Used in: Components > Query Builder > Components
@@ -309,7 +312,7 @@ msgid "inDescription"
 msgstr "Список значений, разделенных запятыми"
 
 #: components/QueryBuilder/FieldFilter.tsx:470
-#: components/UserPreferences/Definitions.tsx:1133
+#: components/UserPreferences/Definitions.tsx:1150
 #. Used in: Components > Query Builder > Field Filter ⬤ Components > User Preferences > Definitions
 msgid "contains"
 msgstr "Содержит"
@@ -325,7 +328,7 @@ msgid "and"
 msgstr "и"
 
 #: components/QueryBuilder/FieldFilter.tsx:479
-#: components/UserPreferences/Definitions.tsx:1129
+#: components/UserPreferences/Definitions.tsx:1146
 #. Used in: Components > Query Builder > Field Filter ⬤ Components > User Preferences > Definitions
 msgid "startsWith"
 msgstr "Начинается с"
@@ -363,7 +366,7 @@ msgstr "Результаты запроса"
 msgid "browseInForms"
 msgstr "Открыть записи"
 
-#: components/QueryBuilder/Header.tsx:79
+#: components/QueryBuilder/Header.tsx:80
 #. Used in: Components > Query Builder > Header
 msgid "editQuery"
 msgstr "Редактировать запрос"

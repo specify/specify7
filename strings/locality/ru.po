@@ -10,7 +10,7 @@ msgstr "Открыть карту"
 #: components/Leaflet/Map.tsx:23
 #: components/QueryBuilder/ToMap.tsx:59
 #: components/QueryBuilder/ToMap.tsx:241
-#: components/UserPreferences/Definitions.tsx:1525
+#: components/UserPreferences/Definitions.tsx:1542
 #: components/WorkBench/Template.tsx:229
 #. Used in: Components > Leaflet > Map ⬤ Components > Query Builder > To Map ⬤ Components > User Preferences > Definitions ⬤ Components > Work Bench > Template
 msgid "geoMap"
@@ -38,20 +38,22 @@ msgstr "Границы многоугольника"
 msgid "errorRadius"
 msgstr "Радиус ошибки"
 
-#: components/FormPlugins/Leaflet.tsx:81
+#: components/FormPlugins/Leaflet.tsx:84
 #. Used in: Components > Form Plugins > Leaflet
 msgid "showMap"
 msgstr "Показать карту"
 
-#: components/FormPlugins/Leaflet.tsx:40
+#: components/FormPlugins/Leaflet.tsx:41
 #. Used in: Components > Form Plugins > Leaflet
 msgid "noCoordinates"
 msgstr "Нет координат"
 
-#: components/FormPlugins/Leaflet.tsx:43
+#: components/FormPlugins/Leaflet.tsx:44
 #. Used in: Components > Form Plugins > Leaflet
 msgid "notEnoughInformationToMap"
-msgstr "Чтобы нанести на карту, необходимо указать координаты."
+msgstr ""
+"Чтобы нанести {localityTable:string} на карту, необходимо указать "
+"координаты."
 
 #: components/Leaflet/addOns.ts:93
 #. Used in: Components > Leaflet > Add Ons
@@ -74,9 +76,9 @@ msgstr "GEOLocate"
 #: components/FormPlugins/GeoLocate.tsx:114
 #. Used in: Components > Form Plugins > Geo Locate
 msgid "geographyRequired"
-msgstr "География должна быть связана"
+msgstr "{geographyTable:string} должна быть связана"
 
-#: components/FormPlugins/GeoLocate.tsx:117
+#: components/FormPlugins/GeoLocate.tsx:119
 #. Used in: Components > Form Plugins > Geo Locate
 msgid "geographyRequiredDescription"
 msgstr "Плагин GeoLocate требует, чтобы поле географии было заполнено."

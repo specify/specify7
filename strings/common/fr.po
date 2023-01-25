@@ -16,7 +16,7 @@ msgstr ""
 msgid "specifySeven"
 msgstr "Specify 7"
 
-#: components/UserPreferences/Definitions.tsx:1408
+#: components/UserPreferences/Definitions.tsx:1425
 #: components/WorkBench/DataSetMeta.tsx:232
 #: utils/parser/definitions.ts:99
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Work Bench > Data Set Meta ⬤ Utils > Parser > Definitions
@@ -26,7 +26,7 @@ msgstr "Non"
 #: components/AppResources/Create.tsx:61
 #: components/AppResources/Create.tsx:83
 #: components/AppResources/EditorComponents.tsx:84
-#: components/FormSliders/RecordSelectorFromIds.tsx:241
+#: components/FormSliders/RecordSelectorFromIds.tsx:240
 #: components/Forms/DeleteButton.tsx:101
 #: components/Forms/DeleteButton.tsx:125
 #: components/Forms/ResourceView.tsx:309
@@ -35,7 +35,7 @@ msgstr "Non"
 #: components/Interactions/InteractionsDialog.tsx:243
 #: components/Interactions/PrepDialog.tsx:97
 #: components/Interactions/PrepReturnDialog.tsx:114
-#: components/PickLists/index.tsx:297
+#: components/PickLists/index.tsx:299
 #: components/QueryBuilder/Components.tsx:151
 #: components/QueryBuilder/Edit.tsx:177
 #: components/QueryBuilder/FromMap.tsx:71
@@ -58,7 +58,7 @@ msgstr "Non"
 #: components/Toolbar/Language.tsx:107
 #: components/Toolbar/MasterKey.tsx:39
 #: components/Toolbar/Query.tsx:88
-#: components/Toolbar/RecordSets.tsx:174
+#: components/Toolbar/RecordSets.tsx:173
 #: components/Toolbar/TreeRepair.tsx:78
 #: components/Toolbar/WbsDialog.tsx:173
 #: components/TreeView/Actions.tsx:350
@@ -93,11 +93,11 @@ msgstr "Passer"
 
 #: components/PickLists/definitions.ts:40
 #: components/QueryBuilder/Edit.tsx:178
-#: components/Security/Collection.tsx:215
-#: components/Security/CollectionComponents.tsx:64
-#: components/Security/CollectionComponents.tsx:69
+#: components/Security/Collection.tsx:219
+#: components/Security/CollectionComponents.tsx:65
+#: components/Security/CollectionComponents.tsx:70
 #: components/Security/Institution.tsx:105
-#: components/Security/Institution.tsx:181
+#: components/Security/Institution.tsx:185
 #: components/Security/PreviewTables.tsx:65
 #: components/WorkBench/wbView.js:271
 #: components/WorkBench/wbView.js:1878
@@ -123,14 +123,14 @@ msgstr "Créer"
 #: components/FormMeta/index.tsx:90
 #: components/FormPlugins/CollectionRelOneToMany.tsx:181
 #: components/FormPlugins/GeoLocate.tsx:113
-#: components/FormPlugins/GeoLocate.tsx:123
-#: components/FormPlugins/Leaflet.tsx:39
-#: components/FormPlugins/PaleoLocation.tsx:54
-#: components/FormPlugins/PaleoLocation.tsx:67
-#: components/FormPlugins/PaleoLocation.tsx:76
+#: components/FormPlugins/GeoLocate.tsx:125
+#: components/FormPlugins/Leaflet.tsx:40
+#: components/FormPlugins/PaleoLocation.tsx:56
+#: components/FormPlugins/PaleoLocation.tsx:75
+#: components/FormPlugins/PaleoLocation.tsx:88
 #: components/FormPlugins/index.tsx:43
 #: components/FormPlugins/index.tsx:269
-#: components/FormSliders/RecordSet.tsx:385
+#: components/FormSliders/RecordSet.tsx:386
 #: components/Forms/DataTask.tsx:127
 #: components/Forms/DeleteBlocked.tsx:80
 #: components/Forms/ResourceView.tsx:185
@@ -147,7 +147,7 @@ msgstr "Créer"
 #: components/Interactions/PrepReturnDialog.tsx:69
 #: components/Leaflet/Map.tsx:25
 #: components/PickLists/index.tsx:268
-#: components/QueryBuilder/Components.tsx:267
+#: components/QueryBuilder/Components.tsx:273
 #: components/QueryBuilder/Edit.tsx:147
 #: components/QueryBuilder/Export.tsx:69
 #: components/QueryBuilder/Export.tsx:77
@@ -236,11 +236,10 @@ msgid "save"
 msgstr "Enregistrer"
 
 #: components/Atoms/DataEntry.tsx:134
-#: components/FormSliders/RecordSelectorFromIds.tsx:184
-#: components/FormSliders/RecordSelectorFromIds.tsx:188
+#: components/FormSliders/RecordSelectorFromIds.tsx:175
 #: components/Forms/Save.tsx:240
 #: components/Molecules/AutoComplete.tsx:514
-#: components/PickLists/index.tsx:295
+#: components/PickLists/index.tsx:297
 #: components/QueryBuilder/Wrapped.tsx:383
 #: components/SchemaConfig/Format.tsx:124
 #: components/SchemaConfig/Format.tsx:128
@@ -258,8 +257,7 @@ msgstr "Ajouter"
 msgid "open"
 msgstr "Ouvrir"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:198
-#: components/FormSliders/RecordSelectorFromIds.tsx:204
+#: components/FormSliders/RecordSelectorFromIds.tsx:180
 #: components/Forms/DeleteButton.tsx:96
 #: components/Forms/DeleteButton.tsx:122
 #: components/Header/Notifications.tsx:216
@@ -329,11 +327,11 @@ msgstr "Outils"
 #: components/QueryBuilder/Results.tsx:231
 #: components/SchemaConfig/index.tsx:163
 #: components/SchemaConfig/index.tsx:164
-#: components/Security/Collection.tsx:225
-#: components/Security/CollectionComponents.tsx:136
+#: components/Security/Collection.tsx:229
+#: components/Security/CollectionComponents.tsx:141
 #: components/Security/CollectionRole.tsx:246
 #: components/Security/Institution.tsx:100
-#: components/Security/Institution.tsx:187
+#: components/Security/Institution.tsx:191
 #: components/Security/Policies.tsx:185
 #: components/Security/Preview.tsx:104
 #: components/Security/RoleTemplate.tsx:172
@@ -376,9 +374,9 @@ msgstr "Supprimer"
 #: components/Forms/SearchDialog.tsx:111
 #: components/Forms/SearchDialog.tsx:114
 #: components/Forms/SearchDialog.tsx:246
-#: components/Header/index.tsx:171
-#: components/Header/index.tsx:176
-#: components/Header/index.tsx:181
+#: components/Header/index.tsx:175
+#: components/Header/index.tsx:180
+#: components/Header/index.tsx:185
 #: components/WorkBench/Template.tsx:247
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Search Dialog ⬤ Components > Header > Index ⬤ Components > Work Bench > Template
 msgid "search"
@@ -402,7 +400,7 @@ msgstr "N/A"
 
 #: components/Security/RoleTemplate.tsx:89
 #: components/Toolbar/Query.tsx:91
-#: components/Toolbar/RecordSets.tsx:179
+#: components/Toolbar/RecordSets.tsx:178
 #. Used in: Components > Security > Role Template ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets
 msgid "new"
 msgstr "Nouveau"
@@ -414,7 +412,7 @@ msgstr "Nouveau"
 #: components/SchemaConfig/Format.tsx:119
 #: components/Security/UserComponents.tsx:150
 #: components/Security/UserComponents.tsx:154
-#: components/Toolbar/RecordSets.tsx:273
+#: components/Toolbar/RecordSets.tsx:272
 #: components/Toolbar/WbsDialog.tsx:255
 #: components/Toolbar/WbsDialog.tsx:259
 #: components/TreeView/Actions.tsx:99
@@ -429,7 +427,7 @@ msgstr "Modifier"
 msgid "ignore"
 msgstr "Ignorer"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:250
+#: components/FormSliders/RecordSelectorFromIds.tsx:249
 #: components/Toolbar/Language.tsx:114
 #. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Toolbar > Language
 msgid "proceed"
@@ -452,7 +450,7 @@ msgstr "Fin"
 msgid "update"
 msgstr "Mettre à jour"
 
-#: components/Toolbar/RecordSets.tsx:164
+#: components/Toolbar/RecordSets.tsx:163
 #. Used in: Components > Toolbar > Record Sets
 msgid "listTruncated"
 msgstr "(liste tronquée)"
@@ -508,7 +506,7 @@ msgstr "Actions"
 
 #: components/ChooseCollection/index.tsx:124
 #: components/Router/EntrypointRouter.tsx:28
-#: components/UserPreferences/Definitions.tsx:1057
+#: components/UserPreferences/Definitions.tsx:1074
 #. Used in: Components > Choose Collection > Index ⬤ Components > Router > Entrypoint Router ⬤ Components > User Preferences > Definitions
 #, fuzzy
 msgid "chooseCollection"
@@ -529,17 +527,18 @@ msgstr "Descendant"
 #: components/Header/menuItemDefinitions.ts:88
 #: components/Router/OverlayRoutes.tsx:103
 #: components/Security/registry.ts:200
-#: components/Toolbar/RecordSets.tsx:186
-#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Security > Registry ⬤ Components > Toolbar > Record Sets
+#: components/Toolbar/RecordSets.tsx:185
+#: components/UserPreferences/Definitions.tsx:470
+#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Security > Registry ⬤ Components > Toolbar > Record Sets ⬤ Components > User Preferences > Definitions
 msgid "recordSets"
 msgstr "Ensembles d'enregistrements"
 
-#: components/Toolbar/RecordSets.tsx:263
+#: components/Toolbar/RecordSets.tsx:262
 #. Used in: Components > Toolbar > Record Sets
 msgid "recordCount"
 msgstr "Nombre d'enregistrements"
 
-#: components/Toolbar/RecordSets.tsx:136
+#: components/Toolbar/RecordSets.tsx:135
 #. Used in: Components > Toolbar > Record Sets
 msgid "size"
 msgstr "Taille"
@@ -572,8 +571,8 @@ msgstr "Inconnu"
 #: components/SchemaConfig/Languages.tsx:37
 #: components/SchemaConfig/Languages.tsx:88
 #: components/Toolbar/Language.tsx:140
-#: components/UserPreferences/Definitions.tsx:129
-#: components/UserPreferences/Definitions.tsx:591
+#: components/UserPreferences/Definitions.tsx:130
+#: components/UserPreferences/Definitions.tsx:608
 #. Used in: Components > Schema Config > Languages ⬤ Components > Toolbar > Language ⬤ Components > User Preferences > Definitions
 msgid "language"
 msgstr "Langue"
@@ -739,10 +738,10 @@ msgstr "Sélectionner"
 #: components/PickLists/definitions.ts:50
 #: components/SchemaConfig/Components.tsx:72
 #: components/SchemaConfig/Format.tsx:68
-#: components/Security/Collection.tsx:155
+#: components/Security/Collection.tsx:159
 #: components/Security/ImportExport.tsx:117
-#: components/Security/PreviewComponents.tsx:131
-#: components/Security/PreviewComponents.tsx:188
+#: components/Security/PreviewComponents.tsx:133
+#: components/Security/PreviewComponents.tsx:190
 #: components/Security/RoleTemplate.tsx:111
 #: components/UserPreferences/Renderers.tsx:105
 #. Used in: Components > Pick Lists > Definitions ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Format ⬤ Components > Security > Collection ⬤ Components > Security > Import Export ⬤ Components > Security > Preview Components ⬤ Components > Security > Role Template ⬤ Components > User Preferences > Renderers
@@ -762,7 +761,7 @@ msgstr "Aucun disponible"
 #: components/FormCells/FormTable.tsx:129
 #: components/Header/ExpressSearchTask.tsx:113
 #: components/Toolbar/Query.tsx:95
-#: components/Toolbar/RecordSets.tsx:185
+#: components/Toolbar/RecordSets.tsx:184
 #: components/Toolbar/WbsDialog.tsx:200
 #: components/WorkBench/wbView.js:2075
 #. 🟥Example usage: Record Sets (1,234). Used in: Components > App Resources > Filters ⬤ Components > Attachments > Index ⬤ Components > Form Cells > Form Table ⬤ Components > Header > Express Search Task ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Work Bench > Wb View
@@ -778,19 +777,19 @@ msgstr "{resource:string} <wrap>({count:number|formatted})</wrap>"
 #: components/FormCommands/index.tsx:132
 #: components/FormFields/useTypeSearch.tsx:87
 #: components/FormPlugins/index.tsx:278
-#: components/FormSliders/RecordSet.tsx:298
+#: components/FormSliders/RecordSet.tsx:299
 #: components/Forms/BaseResourceView.tsx:110
 #: components/Leaflet/index.ts:144
 #: components/Molecules/FilePicker.tsx:112
-#: components/QueryBuilder/Header.tsx:66
+#: components/QueryBuilder/Header.tsx:67
 #: components/QueryBuilder/ToForms.tsx:57
 #: components/SchemaConfig/Field.tsx:43
 #: components/SchemaConfig/Table.tsx:47
 #: components/Security/Collection.tsx:133
 #: components/Security/Institution.tsx:74
 #: components/Security/Role.tsx:113
-#: components/TreeView/helpers.ts:196
-#: components/TreeView/helpers.ts:202
+#: components/TreeView/helpers.ts:197
+#: components/TreeView/helpers.ts:205
 #: components/WorkBench/DataSetMeta.tsx:180
 #: components/WorkBench/DataSetMeta.tsx:186
 #: components/WorkBench/DataSetMeta.tsx:316

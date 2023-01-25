@@ -1,22 +1,22 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/WorkBench/resultsParser.ts:171
+#: components/WorkBench/resultsParser.ts:176
 #. Used in: Components > Work Bench > Results Parser
 msgid "failedParsingBoolean"
 msgstr "значение \"{value:string}\" не разрешается to True or False"
 
-#: components/WorkBench/resultsParser.ts:173
+#: components/WorkBench/resultsParser.ts:178
 #. Used in: Components > Work Bench > Results Parser
 msgid "failedParsingDecimal"
 msgstr "значение \"{value:string}\" не является допустимым чеслом"
 
-#: components/WorkBench/resultsParser.ts:175
+#: components/WorkBench/resultsParser.ts:180
 #. Used in: Components > Work Bench > Results Parser
 msgid "failedParsingFloat"
 msgstr "значение \"{value:string}\" не является допустимым числом с плавающей точкой"
 
-#: components/WorkBench/resultsParser.ts:177
+#: components/WorkBench/resultsParser.ts:182
 #: components/WorkBench/wbView.js:855
 #: components/WorkBench/wbView.js:862
 #: components/WorkBench/wbView.js:1358
@@ -26,85 +26,85 @@ msgstr ""
 "{value:string} не является допустимым значением в этом списке.\n"
 "Нажмите на стрелку, чтобы выбрать один из доступных вариантов."
 
-#: components/WorkBench/resultsParser.ts:181
-#. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:186
+#. 🟥Example: bad agent type: "ab". Expected one of "Person", "Group" or "Organization". Used in: Components > Work Bench > Results Parser
 msgid "failedParsingAgentType"
 msgstr ""
-"неверный тип агента: \"{badType:string}\". Ожидается один из "
+"неверный {agentTypeField:string}: \"{badType:string}\". Ожидается один из "
 "{validTypes:string}"
 
-#: components/WorkBench/resultsParser.ts:186
+#: components/WorkBench/resultsParser.ts:192
 #. Used in: Components > Work Bench > Results Parser
 msgid "pickListValueTooLong"
 msgstr ""
-"значение из списка {pickList:string} длиннее максимального значения "
-"{maxLength:number|formatted} для поля"
+"значение из {pickListTable:string} {pickList:string} длиннее максимального "
+"значения {maxLength:number|formatted} для поля"
 
-#: components/WorkBench/resultsParser.ts:191
+#: components/WorkBench/resultsParser.ts:198
 #. Used in: Components > Work Bench > Results Parser
 msgid "valueTooLong"
 msgstr "значение не должно быть длиннее {maxLength:number|formatted}"
 
-#: components/WorkBench/resultsParser.ts:195
+#: components/WorkBench/resultsParser.ts:202
 #. Used in: Components > Work Bench > Results Parser
 msgid "invalidYear"
 msgstr "значение даты должно содержать четырехзначный год: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:199
+#: components/WorkBench/resultsParser.ts:206
 #. Used in: Components > Work Bench > Results Parser
 msgid "badDateFormat"
 msgstr "неверное значение даты: {value:string}. ожидается: {format:string}"
 
-#: components/WorkBench/resultsParser.ts:204
+#: components/WorkBench/resultsParser.ts:211
 #. Used in: Components > Work Bench > Results Parser
 msgid "coordinateBadFormat"
 msgstr "неверное значение широты или долготы: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:208
+#: components/WorkBench/resultsParser.ts:215
 #. Used in: Components > Work Bench > Results Parser
 msgid "latitudeOutOfRange"
 msgstr "широта должна быть между -90 и 90. Фактически: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:212
+#: components/WorkBench/resultsParser.ts:219
 #. Used in: Components > Work Bench > Results Parser
 msgid "longitudeOutOfRange"
 msgstr "долгота должна быть между -180 и 180. Фактически: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:216
+#: components/WorkBench/resultsParser.ts:223
 #. Used in: Components > Work Bench > Results Parser
 msgid "invalidPartialRecord"
 msgstr "это поле должно быть пустым, если {column:string} пусто"
 
-#: components/WorkBench/resultsParser.ts:220
+#: components/WorkBench/resultsParser.ts:227
 #. Used in: Components > Work Bench > Results Parser
 msgid "fieldRequiredByUploadPlan"
 msgstr "поле обязательно для загрузки плана"
 
-#: components/WorkBench/resultsParser.ts:222
+#: components/WorkBench/resultsParser.ts:229
 #. Used in: Components > Work Bench > Results Parser
 msgid "invalidTreeStructure"
 msgstr "В дереве есть несколько веток с именем \"Uploaded\"!"
 
-#: components/WorkBench/resultsParser.ts:224
+#: components/WorkBench/resultsParser.ts:231
 #. Used in: Components > Work Bench > Results Parser
 msgid "missingRequiredTreeParent"
 msgstr ""
 "Отсутствует или не сопоставлено необходимое значение родительского ранга "
 "для дерева \"{names:string}\"."
 
-#: components/Errors/JsonError.tsx:65
+#: components/Errors/JsonError.tsx:67
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "showTraceback"
 msgstr "Показать трассировку"
 
-#: components/Errors/JsonError.tsx:191
+#: components/Errors/JsonError.tsx:193
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "fieldNotUnique"
 msgstr "{tableName:string} должен иметь уникальный {fieldName:string}"
 
-#: components/Errors/JsonError.tsx:196
+#: components/Errors/JsonError.tsx:198
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "childFieldNotUnique"
@@ -112,25 +112,25 @@ msgstr ""
 "{tableName:string} должен иметь уникальный {fieldName:string} в "
 "{parentField:string}"
 
-#: components/Errors/JsonError.tsx:156
+#: components/Errors/JsonError.tsx:158
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "deletingTreeRoot"
 msgstr "Невозможно удалить элемент определения дерева корневого уровня"
 
-#: components/Errors/JsonError.tsx:158
+#: components/Errors/JsonError.tsx:160
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "nodeParentInvalidRank"
 msgstr "Родительский элемент узла дерева имеет ранг выше, чем он сам"
 
-#: components/Errors/JsonError.tsx:160
+#: components/Errors/JsonError.tsx:162
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "nodeChildrenInvalidRank"
 msgstr "Ранг узла дерева больше, чем у некоторых его дочерних элементов"
 
-#: components/Errors/JsonError.tsx:162
+#: components/Errors/JsonError.tsx:164
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "nodeOperationToSynonymizedParent"
@@ -138,7 +138,7 @@ msgstr ""
 "{operation:string} узел '{nodeName:string}' для синонимизированного "
 "родителя '{parentName:string}'"
 
-#: components/Errors/JsonError.tsx:168
+#: components/Errors/JsonError.tsx:170
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "nodeSynonymizeToSynonymized"
@@ -146,13 +146,13 @@ msgstr ""
 "Синонимизация '{nodeName:string}' к синонимизированному узлу "
 "'{intoName:string}'"
 
-#: components/Errors/JsonError.tsx:173
+#: components/Errors/JsonError.tsx:175
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "nodeSynonimizeWithChildren"
 msgstr "Синонимизация узла '{nodeName:string}' с дочерними элементами"
 
-#: components/Errors/JsonError.tsx:152
+#: components/Errors/JsonError.tsx:154
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "badTreeStructureInvalidRanks"
@@ -160,7 +160,7 @@ msgstr ""
 "Плохая древовидная структура: найдено {badRanks:number} случаев, когда ранг "
 "узла не выше, чем у его родителя."
 
-#: components/Errors/JsonError.tsx:177
+#: components/Errors/JsonError.tsx:179
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "invalidNodeType"
@@ -168,19 +168,19 @@ msgstr ""
 "Неожиданный тип узла '{node:string}' во время {operation:string}. Ожидается "
 "'{nodeModel:string}'"
 
-#: components/Errors/JsonError.tsx:183
+#: components/Errors/JsonError.tsx:185
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "mergeAcrossTrees"
 msgstr "Слияние деревьев"
 
-#: components/Errors/JsonError.tsx:185
+#: components/Errors/JsonError.tsx:187
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "synonymizeAcrossTrees"
 msgstr "Синонимизация деревьев"
 
-#: components/Errors/JsonError.tsx:187
+#: components/Errors/JsonError.tsx:189
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "limitReachedDeterminingAccepted"
@@ -188,19 +188,19 @@ msgstr ""
 "Не удалось найти принятый таксон для синонимизированного таксона (id = "
 "{taxonId:number})"
 
-#: components/Errors/JsonError.tsx:202
+#: components/Errors/JsonError.tsx:204
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "resourceInPermissionRegistry"
 msgstr "Ресурс {resource:string} уже в реестре разрешений"
 
-#: components/Errors/JsonError.tsx:206
-#. Used in: Components > Errors > Json Error
+#: components/Errors/JsonError.tsx:208
+#. 🟥Agent "Abc" is not a Specify User. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "actorIsNotSpecifyUser"
-msgstr "Агент {actor:string} не является SpecifyUser"
+msgstr "{agentTable:string} {actor:string} не является {specifyUserTable:string}"
 
-#: components/Errors/JsonError.tsx:208
+#: components/Errors/JsonError.tsx:214
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "unexpectedCollectionType"
@@ -208,21 +208,21 @@ msgstr ""
 "Неожиданный тип коллекции \"{unexpectedTypeName:string}\". Ожидается "
 "'{collectionName:string}'"
 
-#: components/Errors/JsonError.tsx:213
+#: components/Errors/JsonError.tsx:219
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "invalidReportMimetype"
 msgstr ""
-"Невозможно создать отчет: mimetype отличается от «jrxml/label» или "
-"«jrxml/report»"
+"Невозможно создать отчет: {mimeTypeField:string} отличается от "
+"«jrxml/label» или «jrxml/report»"
 
-#: components/Errors/JsonError.tsx:215
+#: components/Errors/JsonError.tsx:223
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "fieldNotRelationship"
 msgstr "Поле {field:string} не является отношением"
 
-#: components/Errors/JsonError.tsx:217
+#: components/Errors/JsonError.tsx:225
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "unexpectedTableId"
@@ -230,13 +230,13 @@ msgstr ""
 "Неожиданный идентификатор таблицы '{tableId:string}' в запросе. Ожидается "
 "'{expectedTableId:string}'"
 
-#: components/Errors/JsonError.tsx:222
+#: components/Errors/JsonError.tsx:230
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "noCollectionInQuery"
 msgstr "Коллекция не найдена в запросе для таблицы {table:string}"
 
-#: components/Errors/JsonError.tsx:224
+#: components/Errors/JsonError.tsx:232
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "invalidDatePart"
@@ -244,7 +244,7 @@ msgstr ""
 "Недопустимая часть даты '{datePart:string}'. Ожидается один из "
 "{validDateParts:string}"
 
-#: components/Errors/JsonError.tsx:229
+#: components/Errors/JsonError.tsx:237
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "invalidUploadStatus"
@@ -252,7 +252,7 @@ msgstr ""
 "Неверный статус '{uploadStatus:string}' для {operation:string}. Ожидается "
 "{expectedUploadStatus:string}"
 
-#: components/Errors/JsonError.tsx:235
+#: components/Errors/JsonError.tsx:243
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "datasetAlreadyUploaded"

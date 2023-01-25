@@ -159,15 +159,15 @@ msgstr "Clé principale"
 msgid "incorrectPassword"
 msgstr "Le mot de passe était incorrect."
 
-#: components/Forms/OtherCollectionView.tsx:55
+#: components/Forms/OtherCollectionView.tsx:56
 #. Used in: Components > Forms > Other Collection View
 #, fuzzy
 msgid "noAccessToResource"
 msgstr ""
-"Vous n'avez accès à aucune collection contenant cette ressource via le "
-"compte actuellement connecté"
+"Vous n'avez accès à aucune {collectionTable:string} contenant cette "
+"ressource via le compte actuellement connecté"
 
-#: components/Forms/OtherCollectionView.tsx:58
+#: components/Forms/OtherCollectionView.tsx:61
 #. Used in: Components > Forms > Other Collection View
 #, fuzzy
 msgid "resourceInaccessible"
@@ -175,17 +175,17 @@ msgstr ""
 "Impossible d'accéder à la ressource demandée lorsque vous êtes connecté à "
 "la collection actuelle."
 
-#: components/Forms/OtherCollectionView.tsx:61
+#: components/Forms/OtherCollectionView.tsx:64
 #. Used in: Components > Forms > Other Collection View
 #, fuzzy
 msgid "selectCollection"
 msgstr "Sélectionnez l'une des collections suivantes :"
 
-#: components/Forms/OtherCollectionView.tsx:78
-#. Used in: Components > Forms > Other Collection View
+#: components/Forms/OtherCollectionView.tsx:82
+#. 🟥Example: You can login to the Collection, to proceed:. Used in: Components > Forms > Other Collection View
 #, fuzzy
 msgid "loginToProceed"
-msgstr "Vous pouvez vous connecter à la collection, pour continuer :"
+msgstr "Vous pouvez vous connecter à la {collectionTable:string}, pour continuer :"
 
 #: components/Permissions/FormatError.tsx:31
 #: components/Permissions/PermissionDenied.tsx:232
@@ -230,7 +230,7 @@ msgstr ""
 #. Used in: Components > Forms > Data Task
 #, fuzzy
 msgid "emptyRecordSetsReadOnly"
-msgstr "Impossible d'ouvrir un jeu d'enregistrements vide en mode lecture seule"
+msgstr "Impossible d'ouvrir un {recordSetTable:string} vide en mode lecture seule"
 
 #: components/Permissions/FormatError.tsx:115
 #. Used in: Components > Permissions > Format Error
@@ -291,17 +291,17 @@ msgstr "L'utilisateur doit d'abord être enregistré en tant que gestionnaire"
 msgid "users"
 msgstr "Comptes utilisateur"
 
-#: components/Security/Institution.tsx:139
+#: components/Security/Institution.tsx:140
 #. Used in: Components > Security > Institution
 #, fuzzy
 msgid "institutionUsers"
-msgstr "Comptes d'utilisateurs définis dans cette institution"
+msgstr "Comptes d'utilisateurs définis dans cette {institutionTable:string}"
 
-#: components/Security/Collection.tsx:152
+#: components/Security/Collection.tsx:153
 #. Used in: Components > Security > Collection
 #, fuzzy
 msgid "collectionUsers"
-msgstr "Comptes d'utilisateurs attribués à cette collection"
+msgstr "Comptes d'utilisateurs attribués à cette {collectionTable:string}"
 
 #: components/Security/SetPassword.tsx:40
 #: components/Security/SetPassword.tsx:92
@@ -322,10 +322,10 @@ msgstr "Les mots de passe ne correspondent pas."
 msgid "confirmPassword"
 msgstr "Confirmer"
 
-#: components/Toolbar/Security.tsx:128
+#: components/Toolbar/Security.tsx:131
 #. Used in: Components > Toolbar > Security
 msgid "collections"
-msgstr "Collection(s)"
+msgstr "Collections"
 
 #: components/Security/UserCollections.tsx:129
 #. Used in: Components > Security > User Collections
@@ -356,12 +356,12 @@ msgstr "Bibliothèque institutionnelle de modèles de rôles"
 msgid "userRoles"
 msgstr "Rôles utilisateur"
 
-#: components/Security/CollectionComponents.tsx:120
+#: components/Security/CollectionComponents.tsx:122
 #: components/Security/PreviewComponents.tsx:88
 #. Used in: Components > Security > Collection Components ⬤ Components > Security > Preview Components
 #, fuzzy
 msgid "collectionUserRoles"
-msgstr "Rôles des utilisateurs de collecte"
+msgstr "Rôles des utilisateurs de {collectionTable:string}"
 
 #: components/Security/UserComponents.tsx:107
 #. Used in: Components > Security > User Components
@@ -374,7 +374,7 @@ msgstr "Rôles utilisateur attribués"
 msgid "rolePolicies"
 msgstr "Politiques d'autorisation de rôle"
 
-#: components/Security/PreviewComponents.tsx:143
+#: components/Security/PreviewComponents.tsx:145
 #. Used in: Components > Security > Preview Components
 #, fuzzy
 msgid "userPolicies"
@@ -413,37 +413,37 @@ msgstr ""
 "Remarque : l'aperçu peut être obsolète. Enregistrer les modifications pour "
 "mettre à jour l'aperçu"
 
-#: components/Security/PreviewComponents.tsx:171
+#: components/Security/PreviewComponents.tsx:173
 #. Used in: Components > Security > Preview Components
 msgid "allUsers"
 msgstr "Tous les utilisateurs"
 
-#: components/Security/PreviewComponents.tsx:172
+#: components/Security/PreviewComponents.tsx:174
 #. Used in: Components > Security > Preview Components
 msgid "thisUser"
 msgstr "Cet utilisateur"
 
 #: components/Permissions/FormatError.tsx:65
-#: components/Security/PreviewComponents.tsx:89
-#: components/Security/PreviewComponents.tsx:145
+#: components/Security/PreviewComponents.tsx:91
+#: components/Security/PreviewComponents.tsx:147
 #. Used in: Components > Permissions > Format Error ⬤ Components > Security > Preview Components
 msgid "action"
 msgstr "Action"
 
 #: components/Permissions/FormatError.tsx:66
-#: components/Security/PreviewComponents.tsx:90
-#: components/Security/PreviewComponents.tsx:146
+#: components/Security/PreviewComponents.tsx:92
+#: components/Security/PreviewComponents.tsx:148
 #: components/Security/utils.ts:100
 #. Used in: Components > Permissions > Format Error ⬤ Components > Security > Preview Components ⬤ Components > Security > Utils
 msgid "resource"
 msgstr "Ressource"
 
-#: components/Security/PreviewComponents.tsx:174
+#: components/Security/PreviewComponents.tsx:176
 #. Used in: Components > Security > Preview Components
 msgid "allCollections"
 msgstr "Toutes les collections"
 
-#: components/Security/PreviewComponents.tsx:175
+#: components/Security/PreviewComponents.tsx:177
 #. Used in: Components > Security > Preview Components
 msgid "thisCollection"
 msgstr "Cette collection"
@@ -566,18 +566,18 @@ msgstr "Fournisseurs d'identité externes :"
 msgid "allTables"
 msgstr "Tous les tableaux"
 
-#: components/Security/Institution.tsx:190
+#: components/Security/Institution.tsx:194
 #. Used in: Components > Security > Institution
 msgid "loadingAdmins"
 msgstr "Chargement des administrateurs…"
 
-#: components/Security/Institution.tsx:154
+#: components/Security/Institution.tsx:158
 #. 🟥Shown next to user name for admin users. Used in: Components > Security > Institution
 #, fuzzy
 msgid "specifyAdmin"
 msgstr "(Précisez 7 administrateurs)"
 
-#: components/Security/Institution.tsx:158
+#: components/Security/Institution.tsx:162
 #. 🟥Shown next to user name for admin users. Used in: Components > Security > Institution
 #, fuzzy
 msgid "legacyAdmin"

@@ -22,18 +22,20 @@ msgstr "Про Specify 7"
 msgid "downloadInformation"
 msgstr "Завантажити інформацію"
 
-#: components/HomePage/TaxonTiles.tsx:55
+#: components/HomePage/TaxonTiles.tsx:59
 #: components/UserPreferences/Renderers.tsx:193
 #. Used in: Components > Home Page > Taxon Tiles ⬤ Components > User Preferences > Renderers
 #, fuzzy
 msgid "taxonTiles"
 msgstr "Taxon Tiles"
 
-#: components/HomePage/TaxonTiles.tsx:51
+#: components/HomePage/TaxonTiles.tsx:52
 #. Used in: Components > Home Page > Taxon Tiles
 #, fuzzy
 msgid "taxonTilesDescription"
-msgstr "Показано таксони з {count:number|formatted} або більше об’єктів колекції"
+msgstr ""
+"Показано таксони з {count:number|formatted} або більше "
+"{collectionObjectTable:string} записів"
 
 #: components/HomePage/AboutSpecify.tsx:76
 #. Used in: Components > Home Page > About Specify

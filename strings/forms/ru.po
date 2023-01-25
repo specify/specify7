@@ -1,7 +1,7 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/UserPreferences/Definitions.tsx:573
+#: components/UserPreferences/Definitions.tsx:590
 #. Used in: Components > User Preferences > Definitions
 msgid "forms"
 msgstr "Формы"
@@ -65,37 +65,37 @@ msgstr "Запись"
 msgid "relationship"
 msgstr "Связь"
 
-#: components/FormPlugins/PaleoLocation.tsx:50
-#: components/FormPlugins/PaleoLocation.tsx:77
-#: components/FormPlugins/PaleoLocation.tsx:86
+#: components/FormPlugins/PaleoLocation.tsx:52
+#: components/FormPlugins/PaleoLocation.tsx:89
+#: components/FormPlugins/PaleoLocation.tsx:98
 #. Used in: Components > Form Plugins > Paleo Location
 msgid "paleoMap"
 msgstr "Карта Палео"
 
-#: components/FormPlugins/PaleoLocation.tsx:68
-#. Used in: Components > Form Plugins > Paleo Location
+#: components/FormPlugins/PaleoLocation.tsx:76
+#. 🟥Example: Geography Required. Used in: Components > Form Plugins > Paleo Location
 msgid "paleoRequiresGeography"
-msgstr "Требуется география"
+msgstr "Требуется {geographyTable:string}"
 
-#: components/FormPlugins/PaleoLocation.tsx:71
+#: components/FormPlugins/PaleoLocation.tsx:81
 #. Used in: Components > Form Plugins > Paleo Location
 msgid "paleoRequiresGeographyDescription"
 msgstr ""
-"Плагин Карта Палео требует, чтобы у населенного пункта были координаты и "
-"что палеоконтекст имеет географический возраст с заполнено как минимум "
+"Плагин Карта Палео требует, чтобы у {localityTable:string} были координаты "
+"и что палеоконтекст имеет географический возраст с заполнено как минимум "
 "время начала или время окончания."
 
-#: components/FormPlugins/PaleoLocation.tsx:55
+#: components/FormPlugins/PaleoLocation.tsx:57
 #. Used in: Components > Form Plugins > Paleo Location
 msgid "unsupportedForm"
 msgstr "Неправильная форма"
 
-#: components/FormPlugins/PaleoLocation.tsx:62
-#. Used in: Components > Form Plugins > Paleo Location
+#: components/FormPlugins/PaleoLocation.tsx:64
+#. 🟥Example: ... Locality, Collecting Event or Collection Object forms. Used in: Components > Form Plugins > Paleo Location
 msgid "unsupportedFormDescription"
 msgstr ""
 "Этот плагин нельзя использовать в этой форме. Попробуй переместить его на "
-"форму местности, события сбора или объекта коллекции."
+"форму {tables:string}."
 
 #: components/FormPlugins/PartialDateUi.tsx:304
 #. Used in: Components > Form Plugins > Partial Date Ui
@@ -140,16 +140,16 @@ msgstr "Сегодня"
 msgid "todayButtonDescription"
 msgstr "Установить на текущую дату"
 
-#: components/PickLists/index.tsx:300
+#: components/PickLists/index.tsx:302
 #. Used in: Components > Pick Lists > Index
 msgid "addToPickListConfirmation"
-msgstr "Добавить в список выбора?"
+msgstr "Добавить в {pickListTable:string}?"
 
-#: components/PickLists/index.tsx:303
+#: components/PickLists/index.tsx:307
 #. Used in: Components > Pick Lists > Index
 msgid "addToPickListConfirmationDescription"
 msgstr ""
-"Добавить значение \"{value:string}\" в список выбора "
+"Добавить значение \"{value:string}\" в {pickListTable:string} "
 "\"{pickListName:string}\"?"
 
 #: components/PickLists/index.tsx:269
@@ -160,7 +160,7 @@ msgstr "Недействительный тип"
 #: components/PickLists/index.tsx:272
 #. Used in: Components > Pick Lists > Index
 msgid "invalidNumericPicklistValue"
-msgstr "В этом списке выбора допускаются только числовые значения"
+msgstr "В этом {pickListTable:string} допускаются только числовые значения"
 
 #: components/Attachments/Plugin.tsx:124
 #: components/FormCells/FormTable.tsx:181
@@ -169,18 +169,12 @@ msgstr "В этом списке выбора допускаются тольк�
 msgid "noData"
 msgstr "Нет данных."
 
-#: components/FormSliders/RecordSet.tsx:299
-#: components/Toolbar/RecordSets.tsx:118
-#. Used in: Components > Form Sliders > Record Set ⬤ Components > Toolbar > Record Sets
-msgid "recordSet"
-msgstr "Набор объектов"
-
 #: components/Toolbar/RecordSetEdit.tsx:40
 #. Used in: Components > Toolbar > Record Set Edit
 msgid "recordSetDeletionWarning"
 msgstr ""
-"Набор объектов \"{recordSetName:string}\" будет удален. Связанные записи не "
-"будут удалены из базы данных."
+"{recordSetTable:string} \"{recordSetName:string}\" будет удален. Связанные "
+"записи не будут удалены из базы данных."
 
 #: components/FormCommands/index.tsx:39
 #: components/FormMeta/EditHistory.tsx:31
@@ -190,14 +184,14 @@ msgstr "Сначала нужко сохранить запись"
 
 #: components/FormSliders/Slider.tsx:31
 #: components/FormSliders/Slider.tsx:33
-#: components/UserPreferences/Definitions.tsx:947
+#: components/UserPreferences/Definitions.tsx:964
 #. Used in: Components > Form Sliders > Slider ⬤ Components > User Preferences > Definitions
 msgid "firstRecord"
 msgstr "Первый объект"
 
 #: components/FormSliders/Slider.tsx:97
 #: components/FormSliders/Slider.tsx:99
-#: components/UserPreferences/Definitions.tsx:951
+#: components/UserPreferences/Definitions.tsx:968
 #. Used in: Components > Form Sliders > Slider ⬤ Components > User Preferences > Definitions
 msgid "lastRecord"
 msgstr "Последний объект"
@@ -226,7 +220,7 @@ msgid "unsavedFormUnloadProtect"
 msgstr "Эта форма не была сохранена."
 
 #: components/Forms/Save.tsx:265
-#. Used in: Components > Forms > Save
+#. 🟥Meaning a conflict occurred when saving. Used in: Components > Forms > Save
 msgid "saveConflict"
 msgstr "Сохранить конфликт"
 
@@ -246,7 +240,7 @@ msgstr "Сохранение заблокировано"
 #: components/Forms/Save.tsx:276
 #. Used in: Components > Forms > Save
 msgid "saveBlockedDescription"
-msgstr "Форма не может быть сохранена, пока существуют следующие ошибки:"
+msgstr "Форма не может быть сохранена, из-за следующих ошибок:"
 
 #: components/FormCommands/index.tsx:120
 #. Used in: Components > Form Commands > Index
@@ -313,14 +307,14 @@ msgstr "Название плагина"
 
 #: components/Atoms/DataEntry.tsx:161
 #: components/Atoms/DataEntry.tsx:164
-#. Used in: Components > Atoms > Data Entry
+#. 🟥Meaning "Open". Used in: Components > Atoms > Data Entry
 msgid "visit"
 msgstr "Открыть"
 
 #: utils/parser/definitions.ts:91
 #: utils/parser/__tests__/definitions.test.ts:169
 #: utils/parser/__tests__/definitions.test.ts:171
-#. Used in: Utils > Parser > Definitions ⬤ Parser > __tests__ > Definitions
+#. 🟥Yes/No probably shouldn't be translated as Specify 7 does not support changing which values are recognized as Yes/No in a given language. Used in: Utils > Parser > Definitions ⬤ Parser > __tests__ > Definitions
 msgid "illegalBool"
 msgstr "Недопустимое значение для поля Да / Нет"
 
@@ -406,17 +400,17 @@ msgstr "Неподдерживаемый тип ячейки"
 msgid "additionalResultsOmitted"
 msgstr "Дополнительные результаты опущены"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:254
+#: components/FormSliders/RecordSelectorFromIds.tsx:253
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "recordSelectorUnloadProtect"
 msgstr "Продолжить без сохранения?"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:257
+#: components/FormSliders/RecordSelectorFromIds.tsx:256
 #. 🟥When in record set and current record is unsaved and try to navigate to another record. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "recordSelectorUnloadProtectDescription"
 msgstr "Не забудьте сохранить эту запись, прежде чем закрыть ее."
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:210
+#: components/FormSliders/RecordSelectorFromIds.tsx:209
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "creatingNewRecord"
 msgstr "Создание новой записи"
@@ -436,27 +430,25 @@ msgstr "Обратный"
 msgid "deletedInline"
 msgstr "(удален)"
 
-#: components/FormSliders/RecordSet.tsx:386
-#. Used in: Components > Form Sliders > Record Set
+#: components/FormSliders/RecordSet.tsx:387
+#. 🟥Example: Duplicate Record Set Item. Used in: Components > Form Sliders > Record Set
 msgid "duplicateRecordSetItem"
-msgstr "Дублирующий элемент набора записей"
+msgstr "Дублирующий {recordSetItemTable:string}"
 
-#: components/FormSliders/RecordSet.tsx:389
+#: components/FormSliders/RecordSet.tsx:392
 #. Used in: Components > Form Sliders > Record Set
 msgid "duplicateRecordSetItemDescription"
-msgstr "Этот объект уже присутствует в текущем наборе записей"
+msgstr "Этот объект уже присутствует в текущем {recordSetTable:string}"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:184
-#: components/FormSliders/RecordSelectorFromIds.tsx:188
+#: components/FormSliders/RecordSelectorFromIds.tsx:172
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "addToRecordSet"
-msgstr "Добавить в набор записей"
+msgstr "Добавить в {recordSetTable:string}"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:197
-#: components/FormSliders/RecordSelectorFromIds.tsx:203
+#: components/FormSliders/RecordSelectorFromIds.tsx:177
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "removeFromRecordSet"
-msgstr "Удалить из набора записей"
+msgstr "Удалить из {recordSetTable:string}"
 
 #: components/Molecules/AutoComplete.tsx:522
 #. Used in: Components > Molecules > Auto Complete
@@ -464,7 +456,7 @@ msgid "nothingFound"
 msgstr "Ничего не найдено"
 
 #: components/Forms/Save.tsx:234
-#. Used in: Components > Forms > Save
+#. 🟥Verb. Button label. Used in: Components > Forms > Save
 msgid "carryForward"
 msgstr "Перенести"
 
@@ -487,7 +479,7 @@ msgstr "Настройте поля для клонирования"
 #: components/FormMeta/CarryForward.tsx:256
 #. Used in: Components > Form Meta > Carry Forward
 msgid "carryForwardTableSettingsDescription"
-msgstr "Настройте поля для клонирования ({tableName: string})"
+msgstr "Настройте поля для клонирования ({tableName:string})"
 
 #: components/FormMeta/CarryForward.tsx:318
 #. Used in: Components > Form Meta > Carry Forward
@@ -574,11 +566,11 @@ msgstr "Использование \"{pickList:string}\" списка выбор
 
 #: components/FormMeta/SubViewMeta.tsx:35
 #. Used in: Components > Form Meta > Sub View Meta
-msgid "form"
+msgid "subForm"
 msgstr "Форма"
 
 #: components/FormMeta/SubViewMeta.tsx:36
-#: components/UserPreferences/Definitions.tsx:958
+#: components/UserPreferences/Definitions.tsx:975
 #. Used in: Components > Form Meta > Sub View Meta ⬤ Components > User Preferences > Definitions
 msgid "formTable"
 msgstr "Таблица"

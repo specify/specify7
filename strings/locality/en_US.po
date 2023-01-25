@@ -10,7 +10,7 @@ msgstr "Open Map"
 #: components/Leaflet/Map.tsx:23
 #: components/QueryBuilder/ToMap.tsx:59
 #: components/QueryBuilder/ToMap.tsx:241
-#: components/UserPreferences/Definitions.tsx:1525
+#: components/UserPreferences/Definitions.tsx:1542
 #: components/WorkBench/Template.tsx:229
 #. Used in: Components > Leaflet > Map ⬤ Components > Query Builder > To Map ⬤ Components > User Preferences > Definitions ⬤ Components > Work Bench > Template
 msgid "geoMap"
@@ -38,20 +38,20 @@ msgstr "Polygon Boundaries"
 msgid "errorRadius"
 msgstr "Error Radius"
 
-#: components/FormPlugins/Leaflet.tsx:81
+#: components/FormPlugins/Leaflet.tsx:84
 #. Used in: Components > Form Plugins > Leaflet
 msgid "showMap"
 msgstr "Show Map"
 
-#: components/FormPlugins/Leaflet.tsx:40
+#: components/FormPlugins/Leaflet.tsx:41
 #. Used in: Components > Form Plugins > Leaflet
 msgid "noCoordinates"
 msgstr "No coordinates"
 
-#: components/FormPlugins/Leaflet.tsx:43
+#: components/FormPlugins/Leaflet.tsx:44
 #. Used in: Components > Form Plugins > Leaflet
 msgid "notEnoughInformationToMap"
-msgstr "Locality must have coordinates to be mapped."
+msgstr "{localityTable:string} must have coordinates to be mapped."
 
 #: components/Leaflet/addOns.ts:93
 #. Used in: Components > Leaflet > Add Ons
@@ -74,9 +74,9 @@ msgstr "GEOLocate"
 #: components/FormPlugins/GeoLocate.tsx:114
 #. Used in: Components > Form Plugins > Geo Locate
 msgid "geographyRequired"
-msgstr "Geography must be mapped"
+msgstr "{geographyTable:string} must be mapped"
 
-#: components/FormPlugins/GeoLocate.tsx:117
+#: components/FormPlugins/GeoLocate.tsx:119
 #. Used in: Components > Form Plugins > Geo Locate
 msgid "geographyRequiredDescription"
 msgstr "The GeoLocate plugin requires the geography field to be populated."

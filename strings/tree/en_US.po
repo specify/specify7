@@ -4,7 +4,8 @@ msgstr "Content-Type: text/plain\n"
 #: components/Header/menuItemDefinitions.ts:58
 #: components/Router/OverlayRoutes.tsx:52
 #: components/Toolbar/TreeRepair.tsx:45
-#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Tree Repair
+#: components/UserPreferences/Definitions.tsx:443
+#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Tree Repair ⬤ Components > User Preferences > Definitions
 msgid "trees"
 msgstr "Trees"
 
@@ -192,25 +193,25 @@ msgstr "Closed"
 msgid "leafNode"
 msgstr "Leaf Node"
 
-#: components/TreeView/helpers.ts:209
+#: components/TreeView/helpers.ts:214
 #. 🟥Used to show tree node's direct and indirect usages. Used in: Components > Tree View > Helpers
 msgid "nodeStats"
 msgstr "({directCount:number|formatted}, {childCount:number|formatted})"
 
-#: components/TreeView/helpers.ts:208
+#: components/TreeView/helpers.ts:213
 #. 🟥Used to show leaf tree node's direct usages. Used in: Components > Tree View > Helpers
 msgid "leafNodeStats"
 msgstr "({directCount:number|formatted})"
 
-#: components/TreeView/helpers.ts:197
-#. Used in: Components > Tree View > Helpers
+#: components/TreeView/helpers.ts:198
+#. 🟥Example: Direct Collection Object count. Used in: Components > Tree View > Helpers
 msgid "directCollectionObjectCount"
-msgstr "Direct Collection Object Count"
+msgstr "Direct {collectionObjectTable:string} Count"
 
-#: components/TreeView/helpers.ts:203
-#. Used in: Components > Tree View > Helpers
+#: components/TreeView/helpers.ts:206
+#. 🟥Example: Indirect Collection Object count. Used in: Components > Tree View > Helpers
 msgid "indirectCollectionObjectCount"
-msgstr "Indirect Collection Object Count"
+msgstr "Indirect {collectionObjectTable:string} Count"
 
 #: components/TreeView/index.tsx:183
 #. Used in: Components > Tree View > Index

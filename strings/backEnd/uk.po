@@ -1,25 +1,25 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/WorkBench/resultsParser.ts:171
+#: components/WorkBench/resultsParser.ts:176
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "failedParsingBoolean"
 msgstr "значення \"{value:string}\" не можна розв’язати як True або False"
 
-#: components/WorkBench/resultsParser.ts:173
+#: components/WorkBench/resultsParser.ts:178
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "failedParsingDecimal"
 msgstr "значення \"{value:string}\" не є дійсним десятковим значенням"
 
-#: components/WorkBench/resultsParser.ts:175
+#: components/WorkBench/resultsParser.ts:180
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "failedParsingFloat"
 msgstr "значення \"{value:string}\" не є дійсним значенням з плаваючою комою"
 
-#: components/WorkBench/resultsParser.ts:177
+#: components/WorkBench/resultsParser.ts:182
 #: components/WorkBench/wbView.js:855
 #: components/WorkBench/wbView.js:862
 #: components/WorkBench/wbView.js:1358
@@ -30,77 +30,77 @@ msgstr ""
 "{value:string} не є допустимим значенням у цьому полі списку вибору.\n"
 "Натисніть на стрілку, щоб вибрати серед доступних варіантів."
 
-#: components/WorkBench/resultsParser.ts:181
-#. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:186
+#. 🟥Example: bad agent type: "ab". Expected one of "Person", "Group" or "Organization". Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "failedParsingAgentType"
 msgstr ""
-"поганий тип агента: \"{badType:string}\". Очікується один із "
+"поганий {agentTypeField:string}: \"{badType:string}\". Очікується один із "
 "{validTypes:string}"
 
-#: components/WorkBench/resultsParser.ts:186
+#: components/WorkBench/resultsParser.ts:192
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "pickListValueTooLong"
 msgstr ""
-"значення зі списку вибору {pickList:string} більше, ніж максимальне "
-"значення {maxLength:number|formatted} для поля"
+"значення зі {pickListTable:string} {pickList:string} більше, ніж "
+"максимальне значення {maxLength:number|formatted} для поля"
 
-#: components/WorkBench/resultsParser.ts:191
+#: components/WorkBench/resultsParser.ts:198
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "valueTooLong"
 msgstr "довжина значення не повинна перевищувати {maxLength:number|formatted}"
 
-#: components/WorkBench/resultsParser.ts:195
+#: components/WorkBench/resultsParser.ts:202
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "invalidYear"
 msgstr "значення дати має містити чотири цифри року: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:199
+#: components/WorkBench/resultsParser.ts:206
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "badDateFormat"
 msgstr "неправильне значення дати: {value:string}. очікується: {format:string}"
 
-#: components/WorkBench/resultsParser.ts:204
+#: components/WorkBench/resultsParser.ts:211
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "coordinateBadFormat"
 msgstr "неправильне значення широти або довготи: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:208
+#: components/WorkBench/resultsParser.ts:215
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "latitudeOutOfRange"
 msgstr "широта має бути між -90 і 90. Фактична: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:212
+#: components/WorkBench/resultsParser.ts:219
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "longitudeOutOfRange"
 msgstr "довгота має бути між -180 і 180. Фактична: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:216
+#: components/WorkBench/resultsParser.ts:223
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "invalidPartialRecord"
 msgstr "це поле має бути порожнім, якщо {column:string} порожнє"
 
-#: components/WorkBench/resultsParser.ts:220
+#: components/WorkBench/resultsParser.ts:227
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "fieldRequiredByUploadPlan"
 msgstr "поле є обов’язковим для зіставлення плану завантаження"
 
-#: components/WorkBench/resultsParser.ts:222
+#: components/WorkBench/resultsParser.ts:229
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "invalidTreeStructure"
 msgstr "У дереві є кілька значень заповнювача \"Завантажено\"!"
 
-#: components/WorkBench/resultsParser.ts:224
+#: components/WorkBench/resultsParser.ts:231
 #. Used in: Components > Work Bench > Results Parser
 #, fuzzy
 msgid "missingRequiredTreeParent"
@@ -108,19 +108,19 @@ msgstr ""
 "Відсутнє або не зіставлене необхідне значення рангу батьківського дерева "
 "для \"{names:string}\"."
 
-#: components/Errors/JsonError.tsx:65
+#: components/Errors/JsonError.tsx:67
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "showTraceback"
 msgstr "Показати Traceback"
 
-#: components/Errors/JsonError.tsx:191
+#: components/Errors/JsonError.tsx:193
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "fieldNotUnique"
 msgstr "{tableName:string} має мати унікальний {fieldName:string}"
 
-#: components/Errors/JsonError.tsx:196
+#: components/Errors/JsonError.tsx:198
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "childFieldNotUnique"
@@ -128,25 +128,25 @@ msgstr ""
 "{tableName:string} повинен мати унікальний {fieldName:string} у "
 "{parentField:string}"
 
-#: components/Errors/JsonError.tsx:156
+#: components/Errors/JsonError.tsx:158
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "deletingTreeRoot"
 msgstr "Неможливо видалити елемент визначення дерева кореневого рівня"
 
-#: components/Errors/JsonError.tsx:158
+#: components/Errors/JsonError.tsx:160
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "nodeParentInvalidRank"
 msgstr "Батьківський вузол дерева має ранг, вищий за нього самого"
 
-#: components/Errors/JsonError.tsx:160
+#: components/Errors/JsonError.tsx:162
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "nodeChildrenInvalidRank"
 msgstr "Ранг вузла дерева більший, ніж у деяких його дочірніх вузлів"
 
-#: components/Errors/JsonError.tsx:162
+#: components/Errors/JsonError.tsx:164
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "nodeOperationToSynonymizedParent"
@@ -154,19 +154,19 @@ msgstr ""
 "{operation:string} вузол '{nodeName:string}' до синонімічного батьківського "
 "елемента '{parentName:string}'"
 
-#: components/Errors/JsonError.tsx:168
+#: components/Errors/JsonError.tsx:170
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "nodeSynonymizeToSynonymized"
 msgstr "Синонімізація '{nodeName:string}' до синонімічного вузла '{intoName:string}'"
 
-#: components/Errors/JsonError.tsx:173
+#: components/Errors/JsonError.tsx:175
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "nodeSynonimizeWithChildren"
 msgstr "Синонімізуючий вузол '{nodeName:string}', який має дітей"
 
-#: components/Errors/JsonError.tsx:152
+#: components/Errors/JsonError.tsx:154
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "badTreeStructureInvalidRanks"
@@ -174,7 +174,7 @@ msgstr ""
 "Погана структура дерева: знайдено {badRanks:number} випадків, коли ранг "
 "вузла не перевищує його батьківського рівня"
 
-#: components/Errors/JsonError.tsx:177
+#: components/Errors/JsonError.tsx:179
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "invalidNodeType"
@@ -182,19 +182,19 @@ msgstr ""
 "Неочікуваний тип вузла '{node:string}' під час {operation:string}. "
 "Очікується '{nodeModel:string}'"
 
-#: components/Errors/JsonError.tsx:183
+#: components/Errors/JsonError.tsx:185
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "mergeAcrossTrees"
 msgstr "Злиття між деревами"
 
-#: components/Errors/JsonError.tsx:185
+#: components/Errors/JsonError.tsx:187
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "synonymizeAcrossTrees"
 msgstr "Синонімізація між деревами"
 
-#: components/Errors/JsonError.tsx:187
+#: components/Errors/JsonError.tsx:189
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "limitReachedDeterminingAccepted"
@@ -202,19 +202,19 @@ msgstr ""
 "Не вдалося знайти прийнятний таксон для синонімічного таксону (id = "
 "{taxonId:number})"
 
-#: components/Errors/JsonError.tsx:202
+#: components/Errors/JsonError.tsx:204
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "resourceInPermissionRegistry"
 msgstr "Ресурс {resource:string} уже в реєстрі дозволів"
 
-#: components/Errors/JsonError.tsx:206
-#. Used in: Components > Errors > Json Error
+#: components/Errors/JsonError.tsx:208
+#. 🟥Agent "Abc" is not a Specify User. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "actorIsNotSpecifyUser"
-msgstr "Агент {actor:string} не є SpecifyUser"
+msgstr "{agentTable:string} {actor:string} не є {specifyUserTable:string}"
 
-#: components/Errors/JsonError.tsx:208
+#: components/Errors/JsonError.tsx:214
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "unexpectedCollectionType"
@@ -222,19 +222,21 @@ msgstr ""
 "Неочікуваний тип колекції \"{unexpectedTypeName:string}\". Очікується "
 "'{collectionName:string}'"
 
-#: components/Errors/JsonError.tsx:213
+#: components/Errors/JsonError.tsx:219
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "invalidReportMimetype"
-msgstr "Неможливо створити звіт: тип mime не \"jrxml/label\" або \"jrxml/report\""
+msgstr ""
+"Неможливо створити звіт: {mimeTypeField:string} не \"jrxml/label\" або "
+"\"jrxml/report\""
 
-#: components/Errors/JsonError.tsx:215
+#: components/Errors/JsonError.tsx:223
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "fieldNotRelationship"
 msgstr "Поле {field:string} не є зв’язком"
 
-#: components/Errors/JsonError.tsx:217
+#: components/Errors/JsonError.tsx:225
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "unexpectedTableId"
@@ -242,13 +244,13 @@ msgstr ""
 "Неочікуваний ідентифікатор таблиці \"{tableId:string}\" у запиті. "
 "Очікується '{expectedTableId:string}'"
 
-#: components/Errors/JsonError.tsx:222
+#: components/Errors/JsonError.tsx:230
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "noCollectionInQuery"
 msgstr "У запиті для таблиці {table:string} колекція не знайдена"
 
-#: components/Errors/JsonError.tsx:224
+#: components/Errors/JsonError.tsx:232
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "invalidDatePart"
@@ -256,7 +258,7 @@ msgstr ""
 "Недійсна частина дати \"{datePart:string}\". Очікується один із "
 "{validDateParts:string}"
 
-#: components/Errors/JsonError.tsx:229
+#: components/Errors/JsonError.tsx:237
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "invalidUploadStatus"
@@ -264,7 +266,7 @@ msgstr ""
 "Недійсний статус \"{uploadStatus:string}\" для {operation:string}. "
 "Очікується {expectedUploadStatus:string}"
 
-#: components/Errors/JsonError.tsx:235
+#: components/Errors/JsonError.tsx:243
 #. Used in: Components > Errors > Json Error
 #, fuzzy
 msgid "datasetAlreadyUploaded"

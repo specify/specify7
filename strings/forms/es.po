@@ -1,7 +1,7 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/UserPreferences/Definitions.tsx:573
+#: components/UserPreferences/Definitions.tsx:590
 #. Used in: Components > User Preferences > Definitions
 msgid "forms"
 msgstr "Formularios"
@@ -67,37 +67,37 @@ msgstr "Registro"
 msgid "relationship"
 msgstr "Relación"
 
-#: components/FormPlugins/PaleoLocation.tsx:50
-#: components/FormPlugins/PaleoLocation.tsx:77
-#: components/FormPlugins/PaleoLocation.tsx:86
+#: components/FormPlugins/PaleoLocation.tsx:52
+#: components/FormPlugins/PaleoLocation.tsx:89
+#: components/FormPlugins/PaleoLocation.tsx:98
 #. Used in: Components > Form Plugins > Paleo Location
 msgid "paleoMap"
 msgstr "Mapa paleolítico"
 
-#: components/FormPlugins/PaleoLocation.tsx:68
-#. Used in: Components > Form Plugins > Paleo Location
+#: components/FormPlugins/PaleoLocation.tsx:76
+#. 🟥Example: Geography Required. Used in: Components > Form Plugins > Paleo Location
 msgid "paleoRequiresGeography"
-msgstr "Geografía requerida"
+msgstr "{geographyTable:string} requerida"
 
-#: components/FormPlugins/PaleoLocation.tsx:71
+#: components/FormPlugins/PaleoLocation.tsx:81
 #. Used in: Components > Form Plugins > Paleo Location
 msgid "paleoRequiresGeographyDescription"
 msgstr ""
-"El complemento Paleo Map requiere que la localidad tenga coordenadas "
-"geográficas y que el contexto paleo tenga una edad geográfica con al menos "
-"una hora de inicio o una hora de finalización poblada."
+"El complemento Paleo Map requiere que la {localityTable:string} tenga "
+"coordenadas geográficas y que el contexto paleo tenga una edad geográfica "
+"con al menos una hora de inicio o una hora de finalización poblada."
 
-#: components/FormPlugins/PaleoLocation.tsx:55
+#: components/FormPlugins/PaleoLocation.tsx:57
 #. Used in: Components > Form Plugins > Paleo Location
 msgid "unsupportedForm"
 msgstr "Forma incorrecta"
 
-#: components/FormPlugins/PaleoLocation.tsx:62
-#. Used in: Components > Form Plugins > Paleo Location
+#: components/FormPlugins/PaleoLocation.tsx:64
+#. 🟥Example: ... Locality, Collecting Event or Collection Object forms. Used in: Components > Form Plugins > Paleo Location
 msgid "unsupportedFormDescription"
 msgstr ""
 "Este complemento no se puede utilizar en este formulario. Intente moverlo a "
-"la localidad, recolectando formas de eventos u objetos de colección."
+"las formas {tables:string}."
 
 #: components/FormPlugins/PartialDateUi.tsx:304
 #. Used in: Components > Form Plugins > Partial Date Ui
@@ -142,16 +142,16 @@ msgstr "Hoy"
 msgid "todayButtonDescription"
 msgstr "Establecer en la fecha actual"
 
-#: components/PickLists/index.tsx:300
+#: components/PickLists/index.tsx:302
 #. Used in: Components > Pick Lists > Index
 msgid "addToPickListConfirmation"
-msgstr "¿Agregar a la lista de selección?"
+msgstr "¿Agregar a la {pickListTable:string}?"
 
-#: components/PickLists/index.tsx:303
+#: components/PickLists/index.tsx:307
 #. Used in: Components > Pick Lists > Index
 msgid "addToPickListConfirmationDescription"
 msgstr ""
-"¿Agregar el valor \"{value:string}\" a la lista de selección denominada "
+"¿Agregar el valor \"{value:string}\" a la {pickListTable:string} denominada "
 "\"{pickListName:string}\"?"
 
 #: components/PickLists/index.tsx:269
@@ -162,7 +162,7 @@ msgstr "Tipo no válido"
 #: components/PickLists/index.tsx:272
 #. Used in: Components > Pick Lists > Index
 msgid "invalidNumericPicklistValue"
-msgstr "Solo se admiten valores numéricos en esta lista de selección"
+msgstr "Solo se admiten valores numéricos en esta {pickListTable:string}"
 
 #: components/Attachments/Plugin.tsx:124
 #: components/FormCells/FormTable.tsx:181
@@ -171,17 +171,11 @@ msgstr "Solo se admiten valores numéricos en esta lista de selección"
 msgid "noData"
 msgstr "Sin datos."
 
-#: components/FormSliders/RecordSet.tsx:299
-#: components/Toolbar/RecordSets.tsx:118
-#. Used in: Components > Form Sliders > Record Set ⬤ Components > Toolbar > Record Sets
-msgid "recordSet"
-msgstr "Conjunto de registros"
-
 #: components/Toolbar/RecordSetEdit.tsx:40
 #. Used in: Components > Toolbar > Record Set Edit
 msgid "recordSetDeletionWarning"
 msgstr ""
-"Se eliminará el conjunto de registros \"{recordSetName:string}\". Los "
+"Se {recordSetTable:string} de registros \"{recordSetName:string}\". Los "
 "registros a los que se hace referencia NO se eliminarán de la base de datos."
 
 #: components/FormCommands/index.tsx:39
@@ -192,14 +186,14 @@ msgstr "Guardar registro primero"
 
 #: components/FormSliders/Slider.tsx:31
 #: components/FormSliders/Slider.tsx:33
-#: components/UserPreferences/Definitions.tsx:947
+#: components/UserPreferences/Definitions.tsx:964
 #. Used in: Components > Form Sliders > Slider ⬤ Components > User Preferences > Definitions
 msgid "firstRecord"
 msgstr "primer registro"
 
 #: components/FormSliders/Slider.tsx:97
 #: components/FormSliders/Slider.tsx:99
-#: components/UserPreferences/Definitions.tsx:951
+#: components/UserPreferences/Definitions.tsx:968
 #. Used in: Components > Form Sliders > Slider ⬤ Components > User Preferences > Definitions
 msgid "lastRecord"
 msgstr "Último registro"
@@ -228,7 +222,7 @@ msgid "unsavedFormUnloadProtect"
 msgstr "Este formulario no ha sido guardado."
 
 #: components/Forms/Save.tsx:265
-#. Used in: Components > Forms > Save
+#. 🟥Meaning a conflict occurred when saving. Used in: Components > Forms > Save
 msgid "saveConflict"
 msgstr "Guardar conflicto"
 
@@ -248,7 +242,7 @@ msgstr "Guardar bloqueado"
 #: components/Forms/Save.tsx:276
 #. Used in: Components > Forms > Save
 msgid "saveBlockedDescription"
-msgstr "El formulario no se puede guardar mientras existan los siguientes errores:"
+msgstr "El formulario no se puede guardar debido a los siguientes errores:"
 
 #: components/FormCommands/index.tsx:120
 #. Used in: Components > Form Commands > Index
@@ -315,14 +309,14 @@ msgstr "Nombre del complemento"
 
 #: components/Atoms/DataEntry.tsx:161
 #: components/Atoms/DataEntry.tsx:164
-#. Used in: Components > Atoms > Data Entry
+#. 🟥Meaning "Open". Used in: Components > Atoms > Data Entry
 msgid "visit"
 msgstr "Visitar"
 
 #: utils/parser/definitions.ts:91
 #: utils/parser/__tests__/definitions.test.ts:169
 #: utils/parser/__tests__/definitions.test.ts:171
-#. Used in: Utils > Parser > Definitions ⬤ Parser > __tests__ > Definitions
+#. 🟥Yes/No probably shouldn't be translated as Specify 7 does not support changing which values are recognized as Yes/No in a given language. Used in: Utils > Parser > Definitions ⬤ Parser > __tests__ > Definitions
 msgid "illegalBool"
 msgstr "Valor ilegal para un campo Sí/No"
 
@@ -408,17 +402,17 @@ msgstr "Tipo de celda no compatible"
 msgid "additionalResultsOmitted"
 msgstr "Resultados adicionales omitidos"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:254
+#: components/FormSliders/RecordSelectorFromIds.tsx:253
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "recordSelectorUnloadProtect"
 msgstr "¿Continuar sin guardar?"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:257
+#: components/FormSliders/RecordSelectorFromIds.tsx:256
 #. 🟥When in record set and current record is unsaved and try to navigate to another record. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "recordSelectorUnloadProtectDescription"
 msgstr "Es posible que desee guardar este registro antes de navegar."
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:210
+#: components/FormSliders/RecordSelectorFromIds.tsx:209
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "creatingNewRecord"
 msgstr "Creando nuevo registro"
@@ -438,27 +432,25 @@ msgstr "Marcha atrás"
 msgid "deletedInline"
 msgstr "(borrado)"
 
-#: components/FormSliders/RecordSet.tsx:386
-#. Used in: Components > Form Sliders > Record Set
+#: components/FormSliders/RecordSet.tsx:387
+#. 🟥Example: Duplicate Record Set Item. Used in: Components > Form Sliders > Record Set
 msgid "duplicateRecordSetItem"
-msgstr "Elemento de conjunto de registros duplicados"
+msgstr "Elemento de {recordSetItemTable:string}"
 
-#: components/FormSliders/RecordSet.tsx:389
+#: components/FormSliders/RecordSet.tsx:392
 #. Used in: Components > Form Sliders > Record Set
 msgid "duplicateRecordSetItemDescription"
-msgstr "Este registro ya está presente en el conjunto de registros actual"
+msgstr "Este registro ya está presente en el {recordSetTable:string} actual"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:184
-#: components/FormSliders/RecordSelectorFromIds.tsx:188
+#: components/FormSliders/RecordSelectorFromIds.tsx:172
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "addToRecordSet"
-msgstr "Agregar al conjunto de registros"
+msgstr "Agregar al {recordSetTable:string}"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:197
-#: components/FormSliders/RecordSelectorFromIds.tsx:203
+#: components/FormSliders/RecordSelectorFromIds.tsx:177
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "removeFromRecordSet"
-msgstr "Eliminar del conjunto de registros"
+msgstr "Eliminar de {recordSetTable:string}"
 
 #: components/Molecules/AutoComplete.tsx:522
 #. Used in: Components > Molecules > Auto Complete
@@ -466,7 +458,7 @@ msgid "nothingFound"
 msgstr "Nada Encontrado"
 
 #: components/Forms/Save.tsx:234
-#. Used in: Components > Forms > Save
+#. 🟥Verb. Button label. Used in: Components > Forms > Save
 msgid "carryForward"
 msgstr "Llevar adelante"
 
@@ -489,7 +481,7 @@ msgstr "Configurar campos para transferir"
 #: components/FormMeta/CarryForward.tsx:256
 #. Used in: Components > Form Meta > Carry Forward
 msgid "carryForwardTableSettingsDescription"
-msgstr "Configurar los campos a transferir ({tableName: string})"
+msgstr "Configurar los campos a transferir ({tableName:string})"
 
 #: components/FormMeta/CarryForward.tsx:318
 #. Used in: Components > Form Meta > Carry Forward
@@ -576,11 +568,11 @@ msgstr "Usos de la lista de selección \"{pickList:string}\""
 
 #: components/FormMeta/SubViewMeta.tsx:35
 #. Used in: Components > Form Meta > Sub View Meta
-msgid "form"
+msgid "subForm"
 msgstr "Subformulario"
 
 #: components/FormMeta/SubViewMeta.tsx:36
-#: components/UserPreferences/Definitions.tsx:958
+#: components/UserPreferences/Definitions.tsx:975
 #. Used in: Components > Form Meta > Sub View Meta ⬤ Components > User Preferences > Definitions
 msgid "formTable"
 msgstr "Cuadrícula"
