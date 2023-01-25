@@ -61,9 +61,11 @@ function mergeField(
   cautious: boolean
 ) {
   const values = resources.map((resource) => resource[field.name]);
-  const nonNullValues = values.filter(
-    (value) =>
-      value !== undefined && value !== null && value !== false && value !== ''
+  const nonNullValues = f.unique(
+    values.filter(
+      (value) =>
+        value !== undefined && value !== null && value !== false && value !== ''
+    )
   );
   const firstValue = nonNullValues[0] ?? values[0];
   if (field.isRelationship)
@@ -88,17 +90,18 @@ function mergeField(
           cautious
         );
     else return firstValue;
-  else if (nonNullValues.length > 0) {
-    const uniqueValues = f.unique(values);
-    if (uniqueValues.length > 1 && cautious) return null;
+  // Don't try to merge conflicts
+  else if (nonNullValues.length > 1 && cautious) return null;
+  else if (nonNullValues.length > 0)
+    // Pick the longest value
     return (
-      nonNullValues.sort(
+      Array.from(nonNullValues).sort(
         sortFunction((string) =>
           typeof string === 'string' ? string.length : 0
         )
       )[0] ?? firstValue
     );
-  } else return firstValue;
+  else return firstValue;
 }
 
 /**
