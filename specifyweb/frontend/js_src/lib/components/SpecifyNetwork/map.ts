@@ -1,4 +1,3 @@
-import { ajax } from '../../utils/ajax';
 import type { CollectionObject, Taxon } from '../DataModel/types';
 import { f } from '../../utils/functools';
 import type { LocalityData } from '../Leaflet/helpers';
@@ -12,8 +11,12 @@ import {
 import { schema } from '../DataModel/schema';
 import { treeRanksPromise } from '../InitialContext/treeRanks';
 import type { RA } from '../../utils/types';
-import { userInformation } from '../InitialContext/userInformation';
-import { toTable } from '../DataModel/helpers';
+import { serializeResource, toTable } from '../DataModel/helpers';
+import { runQuery } from '../../utils/ajax/specifyApi';
+import { createQuery } from '../QueryBuilder';
+import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
+import { anyTreeRank, formatTreeRank } from '../WbPlanView/mappingHelpers';
+import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 
 export type OccurrenceData = {
   readonly collectionObjectId: number;
@@ -42,96 +45,57 @@ export const fetchLocalOccurrences = async (
 
   const parsedLocalityFields = parseLocalityPinFields(true);
 
-  const commonFieldConfig = {
-    isrelfld: false,
-    sorttype: 0,
-    isnot: false,
-  };
-
   await treeRanksPromise;
 
-  // REFACTOR: create this query on the fly
-  const {
-    data: { results },
-  } = await ajax<{
-    readonly results: RA<readonly [number, number, number, ...RA<string>]>;
-  }>('/stored_query/ephemeral/', {
-    method: 'POST',
-    headers: {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      Accept: 'application/json',
-    },
-    body: {
-      name: 'Lifemapper Local Occurrence query',
-      contextname: 'CollectionObject',
-      contexttableid: 1,
+  const results = await runQuery<
+    readonly [number, number, number, ...RA<string>]
+  >(
+    serializeResource(
+      createQuery(
+        'Lifemapper Local Occurrence query',
+        schema.models.CollectionObject
+      ).set('fields', [
+        QueryFieldSpec.fromPath('CollectionObject', [
+          'determinations',
+          'taxon',
+          formatTreeRank(anyTreeRank),
+          'id',
+        ])
+          .toSpQueryField()
+          .set('operStart', queryFieldFilters.equal.id)
+          .set('startValue', `${taxon.get('id')}`)
+          .set('isDisplay', false),
+        QueryFieldSpec.fromPath('CollectionObject', [
+          'determinations',
+          'isCurrent',
+        ])
+          .toSpQueryField()
+          .set('operStart', queryFieldFilters.true.id)
+          .set('isDisplay', false),
+        QueryFieldSpec.fromPath('CollectionObject', [
+          'collectingEvent',
+          'id',
+        ]).toSpQueryField(),
+        QueryFieldSpec.fromPath('CollectionObject', [
+          'collectingEvent',
+          'locality',
+          'id',
+        ]).toSpQueryField(),
+        ...parsedLocalityFields.map(([fieldName]) =>
+          QueryFieldSpec.fromPath('CollectionObject', [
+            'collectingEvent',
+            'locality',
+            fieldName,
+          ]).toSpQueryField()
+        ),
+      ])
+    ),
+    {
       limit: LIMIT + 1,
-      selectdistinct: false,
-      countonly: false,
-      specifyuser: userInformation.resource_uri,
-      isfavorite: true,
-      ordinal: 32_767,
-      formatauditrecids: false,
-      fields: [
-        {
-          ...commonFieldConfig,
-          tablelist: '1,9-determinations,4',
-          stringid: '1,9-determinations,4.taxon.taxonid',
-          fieldname: 'taxonid',
-          isdisplay: false,
-          startvalue: `${taxon.get('id')}`,
-          operstart: 1,
-          position: 0,
-        },
-        {
-          ...commonFieldConfig,
-          tablelist: '1,9-determinations',
-          stringid: '1,9-determinations.determination.isCurrent',
-          fieldname: 'isCurrent',
-          isdisplay: false,
-          startvalue: '',
-          operstart: 6,
-          position: 1,
-        },
-        {
-          ...commonFieldConfig,
-          tablelist: '1,10',
-          stringid: '1,10.collectingevent.collectingeventid',
-          fieldname: 'collectingeventid',
-          isdisplay: true,
-          startvalue: '',
-          operstart: 1,
-          position: 2,
-        },
-        {
-          ...commonFieldConfig,
-          isdisplay: true,
-          startvalue: '',
-          query: '/api/specify/spquery/',
-          position: 3,
-          tablelist: '1,10,2',
-          stringid: '1,10,2.locality.localityid',
-          fieldname: 'localityid',
-          operstart: 1,
-        },
-        ...parsedLocalityFields.map(([fieldName], index) => ({
-          ...commonFieldConfig,
-          isdisplay: true,
-          startvalue: '',
-          query: '/api/specify/spquery/',
-          position: 4 + index,
-          tablelist: '1,10,2',
-          stringid: `1,10,2.locality.${fieldName}`,
-          fieldname: fieldName,
-          operstart: 1,
-        })),
-      ],
-      offset: 0,
-    },
-  });
+    }
+  );
 
   return results
-    .slice(0, LIMIT)
     .map(
       ([
         collectionObjectId,

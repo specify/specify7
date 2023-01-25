@@ -16,9 +16,10 @@ import {
   queryFieldsToFieldSpecs,
   unParseQueryFields,
 } from './helpers';
-import type { QueryResultRow } from './Results';
 import { QueryResults } from './Results';
 import { SerializedResource } from '../DataModel/helperTypes';
+import { runQuery } from '../../utils/ajax/specifyApi';
+import { serializeResource } from '../DataModel/helpers';
 
 // TODO: [FEATURE] allow customizing this and other constants as make sense
 const fetchSize = 40;
@@ -56,22 +57,18 @@ export function QueryResultsWrapper({
 }): JSX.Element | null {
   const fetchResults = React.useCallback(
     async (fields: RA<SerializedResource<SpQueryField>>, offset: number) =>
-      ajax<{ readonly results: RA<QueryResultRow> }>(
-        '/stored_query/ephemeral/',
+      runQuery(
         {
-          method: 'POST',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          headers: { Accept: 'application/json' },
-          body: keysToLowerCase({
-            ...queryResource.toJSON(),
-            fields,
-            collectionId: forceCollection,
-            recordSetId,
-            limit: fetchSize,
-            offset,
-          }),
+          ...serializeResource(queryResource),
+          fields,
+        },
+        {
+          collectionId: forceCollection,
+          recordSetId,
+          limit: fetchSize,
+          offset,
         }
-      ).then(({ data }) => data.results),
+      ),
     [forceCollection, fields, baseTableName, queryResource, recordSetId]
   );
 

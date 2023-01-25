@@ -7,15 +7,18 @@ import type {
   AnySchema,
   AnyTree,
   SerializedModel,
+  SerializedResource,
 } from '../../components/DataModel/helperTypes';
 import type { SpecifyResource } from '../../components/DataModel/legacyTypes';
-import type { Tables } from '../../components/DataModel/types';
+import type { SpQuery, Tables } from '../../components/DataModel/types';
 import { formatUrl } from '../../components/Router/queryString';
 import { eventListener } from '../events';
 import type { IR, RA, RR } from '../types';
 import { filterArray } from '../types';
 import { formData } from './helpers';
 import { ajax } from './index';
+import { keysToLowerCase } from '../utils';
+import { QueryResultRow } from '../../components/QueryBuilder/Results';
 
 export const globalEvents = eventListener<{
   readonly initResource: SpecifyResource<AnySchema>;
@@ -161,6 +164,7 @@ export const fetchRows = async <
   }: CollectionFetchFilters<SCHEMA> & {
     readonly fields: FIELDS;
     readonly distinct?: boolean;
+    readonly limit?: number;
   },
   /**
    * Advanced filters, not type-safe.
@@ -217,3 +221,24 @@ type FieldsToTypes<
     | (FIELDS[FIELD][number] extends 'number' ? number : never)
     | (FIELDS[FIELD][number] extends 'null' ? null : never);
 };
+
+export const runQuery = <ROW_TYPE extends QueryResultRow>(
+  query: SerializedResource<SpQuery> | SerializedModel<SpQuery>,
+  extras: Partial<{
+    readonly collectionId: number;
+    readonly limit: number;
+    readonly offset: number;
+    readonly recordSetId: number;
+  }> = {}
+): Promise<RA<ROW_TYPE>> =>
+  ajax<{
+    readonly results: RA<ROW_TYPE>;
+  }>('/stored_query/ephemeral/', {
+    method: 'POST',
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    headers: { Accept: 'application/json' },
+    body: keysToLowerCase({
+      ...query,
+      ...extras,
+    }),
+  }).then(({ data }) => data.results);

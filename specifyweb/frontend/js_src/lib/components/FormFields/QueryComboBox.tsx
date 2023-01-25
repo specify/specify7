@@ -4,12 +4,10 @@ import type { State } from 'typesafe-reducer';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useResourceValue } from '../../hooks/useResourceValue';
 import { commonText } from '../../localization/common';
-import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { getValidationAttributes } from '../../utils/parser/definitions';
-import { keysToLowerCase } from '../../utils/utils';
 import { DataEntry } from '../Atoms/DataEntry';
 import { LoadingContext } from '../Core/Contexts';
 import { serializeResource, toTable } from '../DataModel/helpers';
@@ -49,6 +47,7 @@ import { useTreeData } from './useTreeData';
 import { useTypeSearch } from './useTypeSearch';
 import { userText } from '../../localization/user';
 import { LocalizedString } from 'typesafe-i18n';
+import { runQuery } from '../../utils/ajax/specifyApi';
 
 export function QueryComboBox({
   fieldName: initialFieldName = '',
@@ -308,20 +307,10 @@ function ProtectedQueryComboBox({
                 })),
               }))
               .map(async (query) =>
-                ajax<{
-                  readonly results: RA<
-                    readonly [id: number, label: LocalizedString]
-                  >;
-                }>('/stored_query/ephemeral/', {
-                  method: 'POST',
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  headers: { Accept: 'application/json' },
-                  body: keysToLowerCase({
-                    ...query,
-                    collectionId: forceCollection ?? relatedCollectionId,
-                    // REFACTOR: allow customizing these arbitrary limits
-                    limit: 1000,
-                  }),
+                runQuery<[id: number, label: LocalizedString]>(query, {
+                  collectionId: forceCollection ?? relatedCollectionId,
+                  // REFACTOR: allow customizing these arbitrary limits
+                  limit: 1000,
                 })
               )
           ).then((responses) =>
@@ -332,17 +321,15 @@ function ProtectedQueryComboBox({
              * REFACTOR: refactor to use OR queries across fields once
              *   supported
              */
-            responses
-              .flatMap(({ data: { results } }) => results)
-              .map(([id, label]) => ({
-                data: getResourceApiUrl(
-                  field.isRelationship
-                    ? field.relatedModel.name
-                    : resource.specifyModel.name,
-                  id
-                ),
-                label,
-              }))
+            responses.flat().map(([id, label]) => ({
+              data: getResourceApiUrl(
+                field.isRelationship
+                  ? field.relatedModel.name
+                  : resource.specifyModel.name,
+                id
+              ),
+              label,
+            }))
           )
         : [],
     [
