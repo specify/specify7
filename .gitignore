@@ -8,6 +8,7 @@ specifypanel/ve
 specifyweb/virtenv
 venv/
 seed-database
+docker-compose.yml
 
 /specifyweb/settings/local_settings.py
 /specifyweb/settings/local_specify_settings.py
