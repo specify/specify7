@@ -126,7 +126,7 @@ export const formsText = createDictionary({
     'en-us': '{geographyTable:string} Required',
     'ru-ru': 'Требуется {geographyTable:string}',
     'es-es': '{geographyTable:string} requerida',
-    'fr-fr': '{geographyTable:string} requise',
+    'fr-fr': '{geographyTable:string} Obligatoire',
     'uk-ua': "{geographyTable:string} обов'язкова",
   },
   paleoRequiresGeographyDescription: {
@@ -146,7 +146,7 @@ export const formsText = createDictionary({
       con al menos una hora de inicio o una hora de finalización poblada.
     `,
     'fr-fr': `
-      Le plugin Paleo Map nécessite que la {localityTable:string} ait des
+      Le plugin Paleo Map nécessite que le {localityTable:string} ait des
       coordonnées géographiques et que le contexte paléo ait un âge géographique
       avec au moins une heure de début ou une heure de fin renseignées.
     `,
@@ -268,7 +268,7 @@ export const formsText = createDictionary({
     'en-us': 'Add to {pickListTable:string}?',
     'ru-ru': 'Добавить в {pickListTable:string}?',
     'es-es': '¿Agregar a la {pickListTable:string}?',
-    'fr-fr': 'Ajouter à la {pickListTable:string} ?',
+    'fr-fr': 'Ajouter à {pickListTable:string} ?',
     'uk-ua': 'Додати до {pickListTable:string}?',
   },
   addToPickListConfirmationDescription: {
@@ -285,7 +285,7 @@ export const formsText = createDictionary({
       "{pickListName:string}"?
     `,
     'fr-fr': `
-      Ajouter la valeur "{value:string}" à la {pickListTable:string} nommée
+      Ajouter la valeur "{value:string}" au {pickListTable:string} nommé
       "{pickListName:string}" ?
     `,
     'uk-ua': `
@@ -306,7 +306,7 @@ export const formsText = createDictionary({
       'В этом {pickListTable:string} допускаются только числовые значения',
     'es-es': 'Solo se admiten valores numéricos en esta {pickListTable:string}',
     'fr-fr': `
-      Seules les valeurs numériques sont prises en charge dans cette
+      Seules les valeurs numériques sont prises en charge dans ce
       {pickListTable:string}
     `,
     'uk-ua':
@@ -440,9 +440,9 @@ export const formsText = createDictionary({
     'es-es':
       'El formulario no se puede guardar debido a los siguientes errores:',
     'fr-fr': `
-      Le formulaire ne peut pas être enregistré en raison des erreurs suivantes:
+      Impossible d'enregistrer le formulaire en raison des erreurs suivantes :
     `,
-    'uk-ua': 'Форму неможливо зберегти, через помилки:',
+    'uk-ua': 'Форму неможливо зберегти через такі помилки:',
   },
   unavailableCommandButton: {
     'en-us': 'Command N/A',
@@ -736,7 +736,7 @@ export const formsText = createDictionary({
     'en-us': 'Duplicate {recordSetItemTable:string}',
     'ru-ru': 'Дублирующий {recordSetItemTable:string}',
     'es-es': 'Elemento de {recordSetItemTable:string}',
-    'fr-fr': 'Élément de {recordSetItemTable:string}',
+    'fr-fr': 'Dupliquer {recordSetItemTable:string}',
     'uk-ua': 'Дубльований {recordSetItemTable:string}',
   },
   duplicateRecordSetItemDescription: {
@@ -745,22 +745,24 @@ export const formsText = createDictionary({
     'ru-ru': 'Этот объект уже присутствует в текущем {recordSetTable:string}',
     'es-es':
       'Este registro ya está presente en el {recordSetTable:string} actual',
-    'fr-fr':
-      'Cet enregistrement est déjà présent dans le {recordSetTable:string}',
+    'fr-fr': `
+      Cet enregistrement est déjà présent dans le courant
+      {recordSetTable:string}
+    `,
     'uk-ua': 'Цей запис уже присутній у поточному {recordSetTable:string}',
   },
   addToRecordSet: {
     'en-us': 'Add to {recordSetTable:string}',
     'ru-ru': 'Добавить в {recordSetTable:string}',
     'es-es': 'Agregar al {recordSetTable:string}',
-    'fr-fr': 'Ajouter au {recordSetTable:string}',
+    'fr-fr': 'Ajouter à {recordSetTable:string}',
     'uk-ua': 'Додати до {recordSetTable:string}',
   },
   removeFromRecordSet: {
     'en-us': 'Remove from {recordSetTable:string}',
     'ru-ru': 'Удалить из {recordSetTable:string}',
     'es-es': 'Eliminar de {recordSetTable:string}',
-    'fr-fr': 'Supprimer du {recordSetTable:string}',
+    'fr-fr': 'Supprimer de {recordSetTable:string}',
     'uk-ua': 'Видалити з {recordSetTable:string}',
   },
   nothingFound: {
@@ -803,7 +805,7 @@ export const formsText = createDictionary({
     'en-us': 'Configure fields to carry forward ({tableName:string})',
     'ru-ru': 'Настройте поля для клонирования ({tableName:string})',
     'es-es': 'Configurar los campos a transferir ({tableName:string})',
-    'fr-fr': 'Configurer les champs à reporter ({tableName :string})',
+    'fr-fr': 'Configurer les champs à reporter ({tableName:string})',
     'uk-ua': 'Налаштувати поля для перенесення ({tableName:string})',
   },
   carryForwardUniqueField: {
@@ -1007,10 +1009,10 @@ export const formsText = createDictionary({
   },
   resourceDeleted: {
     'en-us': 'Resource deleted',
-    'ru-ru': 'Удалено',
-    'es-es': 'Elemento eliminado',
-    'fr-fr': 'Article supprimé',
-    'uk-ua': 'Запис видалено',
+    'ru-ru': 'Ресурс удален',
+    'es-es': 'Recurso eliminado',
+    'fr-fr': 'Ressource supprimée',
+    'uk-ua': 'Ресурс видалено',
   },
   resourceDeletedDescription: {
     'en-us': 'Item was deleted successfully.',
