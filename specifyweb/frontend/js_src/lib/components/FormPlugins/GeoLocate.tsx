@@ -111,7 +111,9 @@ function GeoLocate({
   return data === undefined ? null : data === false ? (
     <Dialog
       buttons={commonText.close()}
-      header={localityText.geographyRequired()}
+      header={localityText.geographyRequired({
+        geographyTable: schema.models.Geography.label,
+      })}
       onClose={handleClose}
     >
       {localityText.geographyRequiredDescription()}

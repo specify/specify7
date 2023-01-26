@@ -25,11 +25,12 @@ export const headerText = createDictionary({
     'uk-ua': 'Поточний користувач',
   },
   currentCollection: {
-    'en-us': 'Current Collection',
-    'ru-ru': 'Текущая коллекция',
-    'es-es': 'Colección actual',
-    'fr-fr': 'Collection actuelle',
-    'uk-ua': 'Поточна колекція',
+    comment: 'Example: Current Collection',
+    'en-us': 'Current {collectionTable:string}',
+    'ru-ru': 'Текущая {collectionTable:string}',
+    'es-es': 'Actual {collectionTable:string}',
+    'fr-fr': 'Courant {collectionTable:string}',
+    'uk-ua': 'Поточний {collectionTable:string}',
   },
   dataEntry: {
     'en-us': 'Data Entry',

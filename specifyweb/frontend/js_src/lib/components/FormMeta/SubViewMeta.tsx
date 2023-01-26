@@ -32,7 +32,7 @@ export function SubViewMeta({
             handleChangeFormType(formType as FormType)
           }
         >
-          <option value="form">{formsText.form()}</option>
+          <option value="form">{formsText.subForm()}</option>
           <option value="formTable">{formsText.formTable()}</option>
         </Select>
       </Label.Block>

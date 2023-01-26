@@ -20,7 +20,7 @@ export const wbText = createDictionary({
     'en-us': 'Roll Back',
     'ru-ru': 'Откат',
     'es-es': 'Retroceder',
-    'fr-fr': 'Retour en arriere',
+    'fr-fr': 'Rétablir',
     'uk-ua': 'Відкат',
   },
   validate: {
@@ -41,7 +41,7 @@ export const wbText = createDictionary({
     'en-us': 'Upload',
     'ru-ru': 'Загрузка',
     'es-es': 'Subir',
-    'fr-fr': 'Télécharger',
+    'fr-fr': 'Importer',
     'uk-ua': 'Завантажити',
   },
   rollingBack: {
@@ -1316,13 +1316,20 @@ export const wbText = createDictionary({
     'uk-ua': 'Оновлення дерев...',
   },
   recordSetName: {
-    comment:
-      'Default name of the record that would be created based on upload results',
+    comment: `
+      Default name of the record that would be created based on upload results
+    `,
     'en-us': 'WB upload of "{dataSet:string}"',
     'ru-ru': 'WB загрузка "{dataSet:string}"',
+    'es-es': 'Carga de WB de "{dataSet:string}"',
+    'fr-fr': 'Téléchargement WB de "{dataSet:string}"',
+    'uk-ua': 'WB завантаження "{dataSet:string}"',
   },
   ambiguousTaxaChild: {
     'en-us': '{node:string} (in {parent:string})',
     'ru-ru': '{node:string} (в {parent:string})',
+    'es-es': '{node:string} (en {parent:string})',
+    'fr-fr': '{node:string} (dans {parent:string})',
+    'uk-ua': '{node:string} (у {parent:string})',
   },
 } as const);
