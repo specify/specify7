@@ -26,14 +26,14 @@ export const userText = createDictionary({
   password: {
     'en-us': 'Password',
     'ru-ru': 'Пароль',
-    'es-es': 'Contraseña',
+    'es-es': 'Clave',
     'fr-fr': 'Mot de passe',
     'uk-ua': 'Пароль',
   },
   collectionAccessDenied: {
     'en-us': 'You do not have access to this collection',
     'ru-ru': 'У вас нет доступа к этой коллекции',
-    'es-es': 'No tienes acceso a esta colección',
+    'es-es': 'No tienes acceso a esta colección.',
     'fr-fr': "Vous n'avez pas accès à cette collection",
     'uk-ua': 'Ви не маєте доступу до цієї колекції',
   },
@@ -47,8 +47,8 @@ export const userText = createDictionary({
       коллекции {collectionName:string}.
     `,
     'es-es': `
-      La cuenta que ha iniciado sesión actualmente no tiene acceso a la
-      colección {collectionName:string}.
+      La cuenta actualmente iniciada no tiene acceso a la colección
+      {collectionName:string}.
     `,
     'fr-fr': `
       Le compte actuellement connecté n'a pas accès à la collection
@@ -62,14 +62,14 @@ export const userText = createDictionary({
   changePassword: {
     'en-us': 'Change Password',
     'ru-ru': 'Изменить пароль',
-    'es-es': 'Cambiar la contraseña',
+    'es-es': 'Cambia la contraseña',
     'fr-fr': 'Modifier le mot de passe',
     'uk-ua': 'Змінити пароль',
   },
   oldPassword: {
     'en-us': 'Old password',
     'ru-ru': 'Предыдущий пароль',
-    'es-es': 'Contraseña antigua',
+    'es-es': 'Contraseña anterior',
     'fr-fr': 'Mot de passe actuel',
     'uk-ua': 'Старий пароль',
   },
@@ -83,7 +83,7 @@ export const userText = createDictionary({
   repeatPassword: {
     'en-us': 'Repeat new password',
     'ru-ru': 'Повторите новый пароль',
-    'es-es': 'Repita la nueva contraseña',
+    'es-es': 'repita la nueva contraseña',
     'fr-fr': 'Répéter le nouveau mot de passe',
     'uk-ua': 'Повторіть новий пароль',
   },
@@ -97,7 +97,7 @@ export const userText = createDictionary({
   setUserAgents: {
     'en-us': 'Set User Agents',
     'ru-ru': 'Настроить пользовательских агентов',
-    'es-es': 'Configurar los agentes de usuario',
+    'es-es': 'Establecer agentes de usuario',
     'fr-fr': 'Définir les agents utilisateurs',
     'uk-ua': 'Встановити агентів користувача',
   },
@@ -144,7 +144,7 @@ export const userText = createDictionary({
       провайдером в будущем.
     `,
     'es-es': `
-      Se le ha pedido que vincule un inicio de sesión externo a su cuenta de
+      Ha sido invitado a asociar un inicio de sesión externo a su cuenta de
       usuario Especificar. Esto le permitirá iniciar sesión en Specific con su
       proveedor elegido en el futuro.
     `,
@@ -162,7 +162,7 @@ export const userText = createDictionary({
   legacyLogin: {
     'en-us': 'Sign in with Specify Account',
     'ru-ru': 'Войти с помощью Профиля Specify',
-    'es-es': 'Iniciar sesión con una cuenta específica',
+    'es-es': 'Iniciar sesión con Especificar cuenta',
     'fr-fr': 'Connectez-vous avec Spécifiez le compte',
     'uk-ua': 'Увійдіть за допомогою Вказати обліковий запис',
   },
@@ -251,8 +251,8 @@ export const userText = createDictionary({
       ресурс через текущую учетную запись
     `,
     'es-es': `
-      No tiene acceso a ninguna {collectionTable:string} que contenga este
-      recurso a través de la cuenta actualmente registrada
+      No tiene acceso a ningún {collectionTable:string} que contenga este
+      recurso a través de la cuenta actualmente iniciada
     `,
     'fr-fr': `
       Vous n'avez accès à aucun {collectionTable:string} contenant cette
@@ -294,7 +294,7 @@ export const userText = createDictionary({
     'en-us': 'You can login to the {collectionTable:string}, to proceed:',
     'ru-ru': 'Вы можете войти в {collectionTable:string}, чтобы продолжить:',
     'es-es':
-      'Puede iniciar sesión en la {collectionTable:string}, para continuar:',
+      'Puede iniciar sesión en el {collectionTable:string}, para continuar:',
     'fr-fr': `
       Vous pouvez vous connecter au {collectionTable:string}, pour continuer :
     `,
@@ -372,7 +372,7 @@ export const userText = createDictionary({
   emptyRecordSetsReadOnly: {
     'en-us': 'Cannot open empty {recordSetTable:string} when in Read-Only mode',
     'es-es': `
-      No se puede abrir un {recordSetTable:string} vacío cuando está en modo de
+      No se puede abrir {recordSetTable:string} vacío cuando está en modo de
       solo lectura
     `,
     'fr-fr':
@@ -472,7 +472,7 @@ export const userText = createDictionary({
       Учетные записи пользователей, определенные в этом
       {institutionTable:string}
     `,
-    'es-es': 'Cuentas de usuario definidas en esta {institutionTable:string}',
+    'es-es': 'Cuentas de usuario definidas en este {institutionTable:string}',
     'fr-fr': "Comptes d'utilisateurs définis dans ce {institutionTable:string}",
     'uk-ua': `
       Облікові записи користувачів, визначені в цьому {institutionTable:string}
@@ -483,7 +483,7 @@ export const userText = createDictionary({
     'ru-ru': `
       Учетные записи пользователей, назначенные этому {collectionTable:string}
     `,
-    'es-es': 'Cuentas de usuario asignadas a esta {collectionTable:string}',
+    'es-es': 'Cuentas de usuario asignadas a este {collectionTable:string}',
     'fr-fr': "Comptes d'utilisateurs attribués à ce {collectionTable:string}",
     'uk-ua': `
       Облікові записи користувачів, призначені цьому {collectionTable:string}
@@ -555,7 +555,7 @@ export const userText = createDictionary({
   collectionUserRoles: {
     'en-us': '{collectionTable:string} User Roles',
     'ru-ru': '{collectionTable:string} Роли пользователей',
-    'es-es': 'Roles de usuario de {collectionTable:string}',
+    'es-es': '{collectionTable:string} Funciones de usuario',
     'fr-fr': "{collectionTable:string} Rôles d'utilisateur",
     'uk-ua': '{collectionTable:string} Ролі користувачів',
   },
@@ -991,8 +991,8 @@ export const userText = createDictionary({
       поэтому они удалены из этих списков.)
     `,
     'es-es': `
-      (Algunas políticas que se aplican solo a nivel institucional no están
-      presentes aquí a nivel de colección)
+      (Algunas políticas que se aplican solo a nivel de institución no están
+      presentes aquí a nivel de colección).
     `,
     'fr-fr': `
       (Certaines politiques qui s'appliquent uniquement au niveau de
