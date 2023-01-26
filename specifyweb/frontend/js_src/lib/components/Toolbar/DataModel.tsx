@@ -5,8 +5,8 @@
 import React from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
-import { commonText } from '../../localization/common';
 
+import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { schemaText } from '../../localization/schema';
 import { welcomeText } from '../../localization/welcome';
@@ -235,10 +235,7 @@ function DataModelFields({
   readonly model: SpecifyModel;
 }): JSX.Element {
   const data = React.useMemo(() => getFields(model), [model]);
-  const scope = React.useMemo(
-    () => model.getScopingRelationship()?.relatedModel.name,
-    []
-  );
+  const scope = model.getScopingRelationship()?.relatedModel.name;
 
   return (
     <>
@@ -314,16 +311,73 @@ function DataModelRelationships({
   readonly model: SpecifyModel;
 }): JSX.Element {
   const data = React.useMemo(() => getRelationships(model), [model]);
+
+  const [filteredDependentData, setFilteredDependentData] =
+    React.useState(data);
+  const [dependentFilter, setDependentFilter] = React.useState(false);
+
+  React.useEffect(() => {
+    if (dependentFilter === true) {
+      const dependentData = data
+        .filter((table) => table.isDependent === 'Yes')
+        .map((table) => table);
+      setFilteredDependentData(dependentData);
+    } else {
+      setFilteredDependentData(data);
+    }
+  }, [dependentFilter]);
+
   return (
     <>
-      <H3 id={model.name.toLowerCase()}>{schemaText.relationships()}</H3>
+      <div className="flex items-center">
+        <H3 id={model.name.toLowerCase()}>{schemaText.relationships()}</H3>
+        <DependentFilterButton
+          isPressed={dependentFilter}
+          onClick={(): void => setDependentFilter(!dependentFilter)}
+        >
+          {schemaText.showDependent()}
+        </DependentFilterButton>
+      </div>
       <Table
-        data={data}
+        data={filteredDependentData}
         getLink={({ relatedModel }): string => `#${relatedModel[0]}`}
         headers={relationshipColumns()}
         sortName="dataModelRelationships"
       />
     </>
+  );
+}
+
+function DependentFilterButton({
+  isPressed,
+  children,
+  onClick: handleClick,
+  className: newClasses,
+}: {
+  readonly isPressed: boolean;
+  readonly children: LocalizedString;
+  readonly onClick: () => void;
+  readonly className?: string;
+}): JSX.Element {
+  return (
+    <button
+      aria-pressed={isPressed}
+      className={`button aria-handled ml-2 inline-flex cursor-pointer items-center
+      justify-center gap-2 rounded px-2
+      py-1 capitalize shadow-sm 
+      active:brightness-80 disabled:bg-gray-200 disabled:text-gray-500 dark:disabled:!bg-neutral-700
+        ${
+          isPressed
+            ? 'bg-orange-400 text-white hover:bg-orange-500'
+            : 'hover:bg-gray-300 hover:dark:bg-neutral-600'
+        }
+        ${newClasses}
+      `}
+      type="button"
+      onClick={handleClick}
+    >
+      {children}
+    </button>
   );
 }
 

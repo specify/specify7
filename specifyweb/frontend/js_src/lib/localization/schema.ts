@@ -226,6 +226,9 @@ export const schemaText = createDictionary({
     'fr-fr': 'Dépendant',
     'uk-ua': 'Утриманець',
   },
+  showDependent: {
+    'en-us': 'Show Only Dependent'
+  },
   downloadAsJson: {
     'en-us': 'Download as JSON',
     'ru-ru': 'Скачать как JSON',
