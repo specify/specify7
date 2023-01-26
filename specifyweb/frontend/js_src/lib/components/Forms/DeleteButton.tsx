@@ -19,6 +19,7 @@ import { useLiveState } from '../../hooks/useLiveState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { AnySchema } from '../DataModel/helperTypes';
 import { loadingBar } from '../Molecules';
+import { treeText } from '../../localization/tree';
 
 const fetchBlockers = async (
   resource: SpecifyResource<AnySchema>
@@ -56,6 +57,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
   deferred: initialDeferred = false,
   component: ButtonComponent = Button.Gray,
   onDeleted: handleDeleted,
+  focusedName: focusName,
 }: {
   readonly resource: SpecifyResource<SCHEMA>;
   readonly deletionMessage?: React.ReactNode;
@@ -67,6 +69,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
   readonly deferred?: boolean;
   readonly component?: typeof Button['Gray'];
   readonly onDeleted?: () => void;
+  readonly focusedName?: string;
 }): JSX.Element {
   const [deferred, setDeferred] = useLiveState<boolean>(
     React.useCallback(() => initialDeferred, [initialDeferred, resource])
@@ -119,7 +122,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
                     loading(resource.destroy().then(handleDeleted));
                   }}
                 >
-                  {commonText.delete()}
+                  {commonText.delete()}{' '}
                 </Button.Red>
                 <span className="-ml-2 flex-1" />
                 <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
@@ -133,7 +136,10 @@ export function DeleteButton<SCHEMA extends AnySchema>({
             })}
             onClose={handleClose}
           >
-            {deletionMessage}
+            {deletionMessage}{' '}
+            {typeof focusName === 'string'
+              ? treeText.nodeToDelete({ nodeName: focusName })
+              : ''}
           </Dialog>
         ) : (
           <DeleteBlocked
