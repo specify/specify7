@@ -30,7 +30,7 @@ export const headerText = createDictionary({
     'ru-ru': 'Текущая {collectionTable:string}',
     'es-es': 'Actual {collectionTable:string}',
     'fr-fr': 'Courant {collectionTable:string}',
-    'uk-ua': 'Поточний {collectionTable:string}',
+    'uk-ua': 'Поточна {collectionTable:string}',
   },
   dataEntry: {
     'en-us': 'Data Entry',
@@ -67,14 +67,14 @@ export const headerText = createDictionary({
       '¿Actualizar todos los elementos de fuente de exportación RSS ahora?',
     'fr-fr':
       "Mettre à jour tous les éléments du flux d'exportation RSS maintenant ?",
-    'uk-ua': 'Оновити зараз усі елементи експорту RSS?',
+    'uk-ua': 'Оновити всі елементи RSS-експорту?',
   },
   feedExportStarted: {
     'en-us': 'Export feed update started',
     'ru-ru': 'Начато обновление фида экспорта',
     'es-es': 'Se inició la actualización del feed de exportación',
     'fr-fr': "La mise à jour du flux d'exportation a commencé",
-    'uk-ua': 'Розпочато оновлення каналу експорту',
+    'uk-ua': 'Оновлення каналу експорту розпочато',
   },
   feedExportStartedDescription: {
     'en-us': `
@@ -129,7 +129,7 @@ export const headerText = createDictionary({
     'ru-ru': 'Название ярлыка',
     'es-es': 'Nombre de etiqueta',
     'fr-fr': "Nom de l'étiquette",
-    'uk-ua': 'Назва мітки',
+    'uk-ua': 'Назва бірки',
   },
   reportName: {
     'en-us': 'Report Name',
@@ -143,7 +143,7 @@ export const headerText = createDictionary({
     'ru-ru': 'Создать новый ярлык',
     'es-es': 'Crear nueva etiqueta',
     'fr-fr': 'Créer une nouvelle étiquette',
-    'uk-ua': 'Створити нову мітку',
+    'uk-ua': 'Створити нову бірку',
   },
   createReport: {
     'en-us': 'Create new report',
@@ -157,7 +157,7 @@ export const headerText = createDictionary({
     'ru-ru': 'Ремонтное дерево',
     'es-es': 'Árbol de reparación',
     'fr-fr': 'Arbre de réparation',
-    'uk-ua': 'Ремонтне дерево',
+    'uk-ua': 'Ремонтувати дерево',
   },
   treeRepairComplete: {
     'en-us': 'Tree repair is complete.',
@@ -206,14 +206,14 @@ export const headerText = createDictionary({
     'ru-ru': 'Инструменты пользователя',
     'es-es': 'Herramientas de usuario',
     'fr-fr': 'Outils utilisateur',
-    'uk-ua': 'Інструменти користувача',
+    'uk-ua': 'Інструменти',
   },
   helpLocalizeSpecify: {
     'en-us': 'Help Localize Specify 7',
     'ru-ru': 'Помогите локализовать Укажите 7',
     'es-es': 'Ayuda Localizar Especificar 7',
     'fr-fr': 'Aide Localiser Spécifier 7',
-    'uk-ua': 'Допоможіть локалізувати Specify 7',
+    'uk-ua': 'Допоможіть перекласти Specify 7',
   },
   helpLocalizeSpecifyDescription: {
     'en-us': `
@@ -237,9 +237,8 @@ export const headerText = createDictionary({
       <link>voir les instructions</link>.
     `,
     'uk-ua': `
-      Ми будемо дуже вдячні за вашу підтримку в локалізації інтерфейсу
-      користувача Specify 7. Якщо ви зацікавлені, <link>перегляньте
-      інструкції</link>.
+      Ми будемо дуже вдячні за вашу підтримку в перекладі інтерфейсу Specify 7.
+      Якщо ви зацікавлені, <link>перегляньте інструкції</link>.
     `,
   },
   incompleteInline: {
@@ -247,7 +246,7 @@ export const headerText = createDictionary({
     'es-es': '(incompleto)',
     'fr-fr': '(incomplet)',
     'ru-ru': '(неполный)',
-    'uk-ua': '(неповний)',
+    'uk-ua': '(не закінчено)',
   },
   incompleteLocalization: {
     'en-us': 'Incomplete localization',
@@ -284,7 +283,7 @@ export const headerText = createDictionary({
     'uk-ua': `
       Переклад цією мовою ще не завершено. Деякі елементи можуть не мати
       локалізації або мати неправильну локалізацію. Якщо ви зацікавлені в тому,
-      щоб допомогти нам завершити локалізацію, <link>дотримуйтесь
+      щоб допомогти нам завершити локалізацію, будь ласка, <link>прочитайте
       інструкцій.</link>
     `,
   },
@@ -300,7 +299,7 @@ export const headerText = createDictionary({
     'ru-ru': 'Операционный API',
     'es-es': 'API de operaciones',
     'fr-fr': 'API des opérations',
-    'uk-ua': 'Операційний API',
+    'uk-ua': 'API операцій',
   },
   documentation: {
     'en-us': 'Documentation',
@@ -314,21 +313,21 @@ export const headerText = createDictionary({
     'ru-ru': 'Инструменты управления',
     'es-es': 'Herramientas administrativas',
     'fr-fr': 'Outils administratifs',
-    'uk-ua': 'Інструменти адміністрування',
+    'uk-ua': 'Адміністрування',
   },
   developers: {
     'en-us': 'Developer Resources',
     'ru-ru': 'Ресурсы для разработчиков',
     'es-es': 'Recursos para desarrolladores',
     'fr-fr': 'Ressources pour les développeurs',
-    'uk-ua': 'Ресурси для розробників',
+    'uk-ua': 'Для розробників',
   },
   forum: {
     'en-us': 'Community Forum',
     'ru-ru': 'форум сообщества',
     'es-es': 'foro de la Comunidad',
     'fr-fr': 'Forum de la communauté',
-    'uk-ua': 'Форум спільноти',
+    'uk-ua': 'Форум',
   },
   clearCache: {
     'en-us': 'Clear Browser Cache',
