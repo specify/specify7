@@ -167,15 +167,16 @@ def move_interval(model, old_node_number, old_highest_child_node_number, new_nod
         .update(nodenumber=F('nodenumber')+delta, highestchildnodenumber=F('highestchildnodenumber')+delta)
 
 def close_interval(model, node_number, size):
+    return
     """Close a gap where an interval was removed."""
     # All intervals containing the gap get reduced by size.
-    model.objects.filter(nodenumber__lte=node_number, highestchildnodenumber__gte=node_number)\
-        .update(highestchildnodenumber=F('highestchildnodenumber')-size)
+    #model.objects.filter(nodenumber__lte=node_number, highestchildnodenumber__gte=node_number)\
+    #    .update(highestchildnodenumber=F('highestchildnodenumber')-size)
     # All intervals to the right of node_number get shifted left by size.
-    model.objects.filter(nodenumber__gt=node_number).update(
-        nodenumber=F('nodenumber')-size,
-        highestchildnodenumber=F('highestchildnodenumber')-size
-    )
+    #model.objects.filter(nodenumber__gt=node_number).update(
+    #    nodenumber=F('nodenumber')-size,
+    #    highestchildnodenumber=F('highestchildnodenumber')-size
+    #)
 
 def adding_node(node):
     logger.info('adding node %s', node)
