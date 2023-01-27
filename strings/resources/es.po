@@ -61,20 +61,20 @@ msgstr "Escribe"
 msgid "userTypes"
 msgstr "Tipos de usuarios"
 
-#: components/AppResources/Aside.tsx:237
-#: components/AppResources/index.tsx:49
+#: components/AppResources/Aside.tsx:302
+#: components/AppResources/index.tsx:50
 #. Used in: Components > App Resources > Aside ⬤ Components > App Resources > Index
 #, fuzzy
 msgid "resources"
 msgstr "Recursos"
 
-#: components/AppResources/Aside.tsx:180
+#: components/AppResources/Aside.tsx:245
 #. Used in: Components > App Resources > Aside
 #, fuzzy
 msgid "subCategories"
 msgstr "Subcategorías"
 
-#: components/AppResources/Aside.tsx:247
+#: components/AppResources/Aside.tsx:312
 #: components/Router/Routes.tsx:210
 #. Used in: Components > App Resources > Aside ⬤ Components > Router > Routes
 #, fuzzy

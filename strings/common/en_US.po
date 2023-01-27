@@ -581,7 +581,7 @@ msgstr "Transactions"
 msgid "viewRecord"
 msgstr "View Record"
 
-#: components/AppResources/Aside.tsx:298
+#: components/AppResources/Aside.tsx:375
 #: components/FormCells/index.tsx:231
 #: components/FormCommands/index.tsx:115
 #: components/FormPlugins/index.tsx:261
@@ -702,12 +702,12 @@ msgstr "Expand"
 msgid "contract"
 msgstr "Contract"
 
-#: components/AppResources/Aside.tsx:106
+#: components/AppResources/Aside.tsx:171
 #. Used in: Components > App Resources > Aside
 msgid "expandAll"
 msgstr "Expand All"
 
-#: components/AppResources/Aside.tsx:109
+#: components/AppResources/Aside.tsx:174
 #: components/TreeView/index.tsx:193
 #. Used in: Components > App Resources > Aside ⬤ Components > Tree View > Index
 msgid "collapseAll"
@@ -757,7 +757,7 @@ msgstr "None available"
 msgid "countLine"
 msgstr "{resource:string} ({count:number|formatted})"
 
-#: components/AppResources/Aside.tsx:162
+#: components/AppResources/Aside.tsx:227
 #. 🟥Example usage: Record Sets (1,234). Used in: Components > App Resources > Aside
 msgid "jsxCountLine"
 msgstr "{resource:string} <wrap>({count:number|formatted})</wrap>"
