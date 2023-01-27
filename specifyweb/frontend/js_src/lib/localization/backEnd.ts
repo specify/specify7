@@ -297,16 +297,16 @@ export const backEndText = createDictionary({
       "{parentName:string}"
     `,
     'es-es': `
-      {operation:string} nodo '{nodeName:string}' a padre sinónimo
-      '{parentName:string}'
+      {operation:string} nodo "{nodeName:string}" a padre sinónimo
+      "{parentName:string}"
     `,
     'fr-fr': `
-      {operation:string} nœud '{nodeName:string}' vers le parent synonyme
-      '{parentName:string}'
+      Nœud {operation:string} "{nodeName:string}" vers le parent synonyme
+      "{parentName:string}"
     `,
     'ru-ru': `
-      {operation:string} узел '{nodeName:string}' для синонимизированного
-      родителя '{parentName:string}'
+      {operation:string} узел "{nodeName:string}" для синонимизированного
+      родителя "{parentName:string}"
     `,
     'uk-ua': `
       {operation:string} вузол "{nodeName:string}" до синонімічного
@@ -318,22 +318,25 @@ export const backEndText = createDictionary({
       Synonymizing "{nodeName:string}" to synonymized node "{intoName:string}"
     `,
     'es-es':
-      "Sinonimizar '{nodeName:string}' al nodo sinónimo '{intoName:string}'",
+      'Sinonimizar "{nodeName:string}" al nodo sinónimo "{intoName:string}"',
     'fr-fr': `
-      Synonymisation de '{nodeName:string}' en nœud synonyme '{intoName:string}'
+      Synonymisation de "{nodeName:string}" en nœud synonyme "{intoName:string}"
     `,
     'ru-ru': `
-      Синонимизация '{nodeName:string}' к синонимизированному узлу
-      '{intoName:string}'
+      Синонимизация "{nodeName:string}" к синонимизированному узлу
+      "{intoName:string}"
     `,
     'uk-ua':
       'Синонімізація "{nodeName:string}" до синоніма "{intoName:string}"',
   },
   nodeSynonimizeWithChildren: {
     'en-us': 'Synonymizing node "{nodeName:string}" which has children',
-    'es-es': "Sinonimizando el nodo '{nodeName:string}' que tiene hijos",
-    'fr-fr': "Synonymiser le nœud '{nodeName:string}' qui a des enfants",
-    'ru-ru': "Синонимизация узла '{nodeName:string}' с дочерними элементами",
+    'es-es': 'Nodo de sinonimización "{nodeName:string}" que tiene hijos',
+    'fr-fr': 'Nœud de synonyme "{nodeName:string}" qui a des enfants',
+    'ru-ru': `
+      Синонимизирующий узел "{nodeName:string}", у которого есть дочерние
+      элементы
+    `,
     'uk-ua': 'Синонімується вузол "{nodeName:string}", який має дітей',
   },
   badTreeStructureInvalidRanks: {
@@ -342,16 +345,17 @@ export const backEndText = createDictionary({
       rank is not greater than its parent
     `,
     'es-es': `
-      Estructura de árbol incorrecta: casos encontrados {badRanks:number} donde
-      el rango del nodo no es mayor que su padre
+      Estructura de árbol incorrecta: casos encontrados
+      {badRanks:number|formatted} donde el rango del nodo no es mayor que su
+      padre
     `,
     'fr-fr': `
-      Mauvaise structure d'arborescence : {badRanks:number} cas trouvés où le
-      rang du nœud n'est pas supérieur à celui de son parent
+      Mauvaise structure d'arborescence : {badRanks:number|formatted} cas
+      trouvés où le rang du nœud n'est pas supérieur à celui de son parent
     `,
     'ru-ru': `
-      Плохая древовидная структура: найдено {badRanks:number} случаев, когда
-      ранг узла не выше, чем у его родителя.
+      Плохая древовидная структура: найдено {badRanks:number|formatted}
+      случаев, когда ранг узла не выше, чем у его родителя.
     `,
     'uk-ua': `
       Погана структура дерева: знайдено {badRanks:number|formatted} випадків,
@@ -364,16 +368,16 @@ export const backEndText = createDictionary({
       Expected "{nodeModel:string}"
     `,
     'es-es': `
-      Tipo inesperado de nodo '{node:string}' durante {operation:string}. Se
-      esperaba '{nodeModel:string}'
+      Tipo inesperado de nodo "{node:string}" durante {operation:string}.
+      Esperado "{nodeModel:string}"
     `,
     'fr-fr': `
-      Type de nœud '{node:string}' inattendu pendant
-      {operation:string}. '{nodeModel:string}' attendu
+      Type de nœud inattendu "{node:string}" pendant
+      {operation:string}. "{nodeModel:string}" attendu
     `,
     'ru-ru': `
-      Неожиданный тип узла '{node:string}' во время {operation:string}.
-      Ожидается '{nodeModel:string}'
+      Неожиданный тип узла "{node:string}" во время {operation:string}.
+      Ожидается "{nodeModel:string}"
     `,
     'uk-ua': `
       Неочікуваний тип вузла "{node:string}" під час {operation:string}.
@@ -400,16 +404,16 @@ export const backEndText = createDictionary({
       {taxonId:number}
     `,
     'es-es': `
-      No se pudo encontrar el taxón aceptado para el taxón sinónimo (id
-      = {taxonId:number})
+      No se pudo encontrar el taxón aceptado para el taxón sinónimo con ID de
+      {taxonId:number}
     `,
     'fr-fr': `
-      Impossible de trouver le taxon accepté pour le taxon synonymisé (id
-      = {taxonId:number})
+      Impossible de trouver le taxon accepté pour le taxon synonymisé avec l'ID
+      {taxonId:number}
     `,
     'ru-ru': `
-      Не удалось найти принятый таксон для синонимизированного таксона (id
-      = {taxonId:number})
+      Не удалось найти принятый таксон для синонимизированного таксона с
+      идентификатором {taxonId:number}.
     `,
     'uk-ua':
       'Не вдалося знайти прийнятий таксон для синоніма (ІД: {taxonId:number})',
@@ -443,16 +447,16 @@ export const backEndText = createDictionary({
       "{collectionName:string}"
     `,
     'es-es': `
-      Tipo inesperado de colección '{unexpectedTypeName:string}'. Se esperaba
-      '{nombre_colección:cadena}'
+      Tipo inesperado de colección "{unexpectedTypeName:string}". Se esperaba
+      "{collectionName:string}"
     `,
     'fr-fr': `
-      Type de collection inattendu
-      '{unexpectedTypeName:string}'. '{collectionName:string}' attendu
+      Type de collecte inattendu
+      "{unexpectedTypeName:string}". "{collectionName:string}" attendu
     `,
     'ru-ru': `
       Неожиданный тип коллекции "{unexpectedTypeName:string}". Ожидается
-      \'{collectionName:string}\'
+      "{collectionName:string}"
     `,
     'uk-ua': `
       Неочікуваний тип колекції "{unexpectedTypeName:string}". Очікується
@@ -465,16 +469,16 @@ export const backEndText = createDictionary({
       or "jrxml/report"
     `,
     'es-es': `
-      No se puede crear el informe: {mimeTypeField:string} no 'jrxml/label' o
-      'jrxml/report'
+      No se puede crear el informe: {mimeTypeField:string} no es uno de
+      "jrxml/label" o "jrxml/report"
     `,
     'fr-fr': `
-      Impossible de créer un rapport : {mimeTypeField:string} n'est pas
-      'jrxml/label' ou 'jrxml/report'
+      Impossible de créer le rapport : {mimeTypeField:string} n\'est pas l\'un
+      des "jrxml/label" ou "jrxml/report"
     `,
     'ru-ru': `
-      Невозможно создать отчет: {mimeTypeField:string} не «jrxml/label» или
-      «jrxml/report»
+      Невозможно создать отчет: {mimeTypeField:string} не является одним из
+      "jrxml/label" или "jrxml/report"
     `,
     'uk-ua': `
       Не вдається створити звіт: {mimeTypeField:string} має бути "jrxml/label"
@@ -494,16 +498,16 @@ export const backEndText = createDictionary({
       "{expectedTableId:string}"
     `,
     'es-es': `
-      ID de tabla inesperado '{tableId:string}' en la solicitud. Se esperaba
-      '{expectedTableId:string}'
+      ID de tabla inesperado "{tableId:string}" en la solicitud. Se esperaba
+      "{expectedTableId:string}"
     `,
     'fr-fr': `
-      ID de table inattendu '{tableId:string}' dans la
-      demande. '{expectedTableId:string}' attendu
+      ID de table inattendu "{tableId:string}" dans la
+      demande. "{expectedTableId:string}" attendu
     `,
     'ru-ru': `
-      Неожиданный идентификатор таблицы '{tableId:string}' в запросе. Ожидается
-      '{expectedTableId:string}'
+      Неожиданный идентификатор таблицы "{tableId:string}" в запросе. Ожидается
+      "{expectedTableId:string}"
     `,
     'uk-ua': `
       Неочікуваний ІД таблиці "{tableId:string}" у запиті. Очікується
@@ -526,15 +530,15 @@ export const backEndText = createDictionary({
       {validDateParts:string}
     `,
     'es-es': `
-      Parte de fecha no válida '{datePart:string}'. Esperaba uno de
+      Parte de fecha no válida "{datePart:string}". Esperaba uno de
       {validDateParts:string}
     `,
     'fr-fr': `
-      Partie de date non valide '{datePart:string}'. Attendu l'un des
+      Partie de date non valide "{datePart:string}". Attendu l\'un des
       {validDateParts:string}
     `,
     'ru-ru': `
-      Недопустимая часть даты '{datePart:string}'. Ожидается один из
+      Недопустимая часть даты "{datePart:string}". Ожидается один из
       {validDateParts:string}
     `,
     'uk-ua': `
@@ -548,15 +552,15 @@ export const backEndText = createDictionary({
       {expectedUploadStatus:string}
     `,
     'es-es': `
-      Estado no válido '{uploadStatus:string}' para {operation:string}. Esperado
+      Estado no válido "{uploadStatus:string}" para {operation:string}. Esperado
       {expectedUploadStatus:string}
     `,
     'fr-fr': `
-      Statut '{uploadStatus:string}' non valide pour {operation:string}. Attendu
+      Statut invalide "{uploadStatus:string}" pour {operation:string}. Attendu
       {expectedUploadStatus:string}
     `,
     'ru-ru': `
-      Неверный статус '{uploadStatus:string}' для {operation:string}. Ожидается
+      Неверный статус "{uploadStatus:string}" для {operation:string}. Ожидается
       {expectedUploadStatus:string}
     `,
     'uk-ua': `
