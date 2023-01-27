@@ -42,21 +42,21 @@ export const headerText = createDictionary({
   makeDwca: {
     'en-us': 'Create DwC Archive',
     'ru-ru': 'Создать архив DwC',
-    'es-es': 'Crear archivo DwC',
+    'es-es': 'Crear un archivo DwC',
     'fr-fr': 'Créer une archive DwC',
     'uk-ua': 'Створити архів DwC',
   },
   updateExportFeed: {
     'en-us': 'Update RSS Feed',
     'ru-ru': 'Обновить RSS-канал',
-    'es-es': 'Actualizar fuente RSS',
+    'es-es': 'Actualizar la fuente RSS',
     'fr-fr': 'Mettre à jour le flux RSS',
     'uk-ua': 'Оновити RSS-канал',
   },
   updateExportFeedConfirmation: {
     'en-us': 'Update export feed?',
     'ru-ru': 'Обновить фид экспорта?',
-    'es-es': '¿Actualizar feed de exportación?',
+    'es-es': '¿Actualizar el canal de exportación?',
     'fr-fr': "Mettre à jour le flux d'exportation ?",
     'uk-ua': 'Оновити канал експорту?',
   },
@@ -64,7 +64,7 @@ export const headerText = createDictionary({
     'en-us': 'Update all RSS export feed items now?',
     'ru-ru': 'Обновить все элементы RSS-канала экспорта сейчас?',
     'es-es':
-      '¿Actualizar todos los elementos de fuente de exportación RSS ahora?',
+      '¿Actualizar todos los elementos de la fuente de exportación RSS ahora?',
     'fr-fr':
       "Mettre à jour tous les éléments du flux d'exportation RSS maintenant ?",
     'uk-ua': 'Оновити всі елементи RSS-експорту?',
@@ -72,7 +72,7 @@ export const headerText = createDictionary({
   feedExportStarted: {
     'en-us': 'Export feed update started',
     'ru-ru': 'Начато обновление фида экспорта',
-    'es-es': 'Se inició la actualización del feed de exportación',
+    'es-es': 'Se inició la actualización del canal de exportación',
     'fr-fr': "La mise à jour du flux d'exportation a commencé",
     'uk-ua': 'Оновлення каналу експорту розпочато',
   },
@@ -86,8 +86,8 @@ export const headerText = createDictionary({
       элемента фида.
     `,
     'es-es': `
-      Actualización iniciada. Recibirá una notificación por cada elemento de
-      feed actualizado.
+      Actualización iniciada. Recibirás una notificación cada vez que se
+      actualice un elemento del canal.
     `,
     'fr-fr': `
       La mise à jour a commencé. Vous recevrez une notification pour chaque
@@ -127,35 +127,35 @@ export const headerText = createDictionary({
   labelName: {
     'en-us': 'Label Name',
     'ru-ru': 'Название ярлыка',
-    'es-es': 'Nombre de etiqueta',
+    'es-es': 'Nombre de la etiqueta',
     'fr-fr': "Nom de l'étiquette",
     'uk-ua': 'Назва бірки',
   },
   reportName: {
     'en-us': 'Report Name',
     'ru-ru': 'Название отчета',
-    'es-es': 'Reportar nombre',
+    'es-es': 'Reportar el nombre',
     'fr-fr': 'Nom du rapport',
     'uk-ua': 'Назва звіту',
   },
   createLabel: {
     'en-us': 'Create new label',
     'ru-ru': 'Создать новый ярлык',
-    'es-es': 'Crear nueva etiqueta',
+    'es-es': 'Crear una nueva etiqueta',
     'fr-fr': 'Créer une nouvelle étiquette',
     'uk-ua': 'Створити нову бірку',
   },
   createReport: {
     'en-us': 'Create new report',
     'ru-ru': 'Создать новый отчет',
-    'es-es': 'Crear nuevo informe',
+    'es-es': 'Crear un nuevo informe',
     'fr-fr': 'Créer un nouveau rapport',
     'uk-ua': 'Створити новий звіт',
   },
   repairTree: {
     'en-us': 'Repair Tree',
     'ru-ru': 'Ремонтное дерево',
-    'es-es': 'Árbol de reparación',
+    'es-es': 'Árbol de la reparación',
     'fr-fr': 'Arbre de réparation',
     'uk-ua': 'Ремонтувати дерево',
   },
@@ -169,14 +169,14 @@ export const headerText = createDictionary({
   chooseDwca: {
     'en-us': 'Choose DwCA',
     'ru-ru': 'Выберите ДвКА',
-    'es-es': 'Elija DwCA',
+    'es-es': 'Elija un DwCA',
     'fr-fr': 'Choisissez DwCA',
     'uk-ua': 'Виберіть DwCA',
   },
   chooseMetadataResource: {
     'en-us': 'Choose Metadata resource',
     'ru-ru': 'Выберите ресурс метаданных',
-    'es-es': 'Elija el recurso de metadatos',
+    'es-es': 'Seleccione un recurso de los metadatos',
     'fr-fr': 'Choisissez la ressource de métadonnées',
     'uk-ua': 'Виберіть ресурс метаданих',
   },
@@ -204,14 +204,14 @@ export const headerText = createDictionary({
   userTools: {
     'en-us': 'User Tools',
     'ru-ru': 'Инструменты пользователя',
-    'es-es': 'Herramientas de usuario',
+    'es-es': 'Herramientas del usuario',
     'fr-fr': 'Outils utilisateur',
     'uk-ua': 'Інструменти',
   },
   helpLocalizeSpecify: {
     'en-us': 'Help Localize Specify 7',
     'ru-ru': 'Помогите локализовать Укажите 7',
-    'es-es': 'Ayuda Localizar Especificar 7',
+    'es-es': 'Ayuda a Localizar Especificar 7',
     'fr-fr': 'Aide Localiser Spécifier 7',
     'uk-ua': 'Допоможіть перекласти Specify 7',
   },
@@ -228,7 +228,7 @@ export const headerText = createDictionary({
     `,
     'es-es': `
       Estaríamos muy agradecidos por su apoyo para localizar la interfaz de
-      usuario de Specific 7. Si está interesado, <link> consulte las
+      usuario de Specific 7. Si está interesado, por favor <link> consulte las
       instrucciones </link>.
     `,
     'fr-fr': `
@@ -290,14 +290,14 @@ export const headerText = createDictionary({
   tableApi: {
     'en-us': 'Tables API',
     'ru-ru': 'API таблиц',
-    'es-es': 'API de tablas',
+    'es-es': 'API de las tablas',
     'fr-fr': 'API Tableaux',
     'uk-ua': 'API таблиць',
   },
   operationsApi: {
     'en-us': 'Operations API',
     'ru-ru': 'Операционный API',
-    'es-es': 'API de operaciones',
+    'es-es': 'API para las operaciones',
     'fr-fr': 'API des opérations',
     'uk-ua': 'API операцій',
   },
@@ -325,21 +325,21 @@ export const headerText = createDictionary({
   forum: {
     'en-us': 'Community Forum',
     'ru-ru': 'форум сообщества',
-    'es-es': 'foro de la Comunidad',
+    'es-es': 'Foro de la Comunidad',
     'fr-fr': 'Forum de la communauté',
     'uk-ua': 'Форум',
   },
   clearCache: {
     'en-us': 'Clear Browser Cache',
     'ru-ru': 'Очистить кеш браузера',
-    'es-es': 'Borrar caché del navegador',
+    'es-es': 'Borrar la caché del navegador',
     'fr-fr': 'Effacer le cache du navigateur',
     'uk-ua': 'Очистити кеш браузера',
   },
   cacheCleared: {
     'en-us': 'Cache has been cleared. Please reload the page.',
     'ru-ru': 'Кэш очищен. Пожалуйста, перезагрузите страницу.',
-    'es-es': 'Se ha borrado la memoria caché. Por favor recarga la página.',
+    'es-es': 'Se ha borrado la memoria caché. Por favor actualiza la página.',
     'fr-fr': 'Le cache a été vidé. Veuillez recharger la page.',
     'uk-ua': 'Кеш очищено. Перезавантажте сторінку.',
   },
