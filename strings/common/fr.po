@@ -720,7 +720,8 @@ msgid "expandAll"
 msgstr "Tout agrandir"
 
 #: components/AppResources/Aside.tsx:109
-#. Used in: Components > App Resources > Aside
+#: components/TreeView/index.tsx:193
+#. Used in: Components > App Resources > Aside ⬤ Components > Tree View > Index
 msgid "collapseAll"
 msgstr "Tout réduire"
 

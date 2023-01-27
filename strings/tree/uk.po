@@ -204,7 +204,7 @@ msgstr "\"{nodeName:string}\" більше не буде синонімом \"{s
 msgid "acceptedName"
 msgstr "Бажано: {name:string}"
 
-#: components/TreeView/index.tsx:100
+#: components/TreeView/index.tsx:101
 #. Used in: Components > Tree View > Index
 #, fuzzy
 msgid "treeViewTitle"
@@ -260,7 +260,7 @@ msgstr "Прямий підрахунок {collectionObjectTable:string}."
 msgid "indirectCollectionObjectCount"
 msgstr "Непрямий підрахунок {collectionObjectTable:string}."
 
-#: components/TreeView/index.tsx:183
+#: components/TreeView/index.tsx:184
 #. Used in: Components > Tree View > Index
 #, fuzzy
 msgid "editRanks"
