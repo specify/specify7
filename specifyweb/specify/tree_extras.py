@@ -142,15 +142,19 @@ def open_interval(model, parent_node_number, size, node):
     The insertion point will be directly after the parent_node_number.
     Returns the instertion point.
     """
+    t1 = perf_counter()
     # All intervals to the right of parent node get shifted right by size.
-    model.objects.filter(nodenumber__gt=parent_node_number).update(
-        nodenumber=F('nodenumber')+size,
-        highestchildnodenumber=F('highestchildnodenumber')+size,
-    )
+    #model.objects.filter(nodenumber__gt=parent_node_number).update(
+    #    nodenumber=F('nodenumber')+size,
+    #    highestchildnodenumber=F('highestchildnodenumber')+size,
+    #)
     # All intervals containing the insertion point get expanded by size.
-    model.objects.filter(nodenumber__lte=parent_node_number, highestchildnodenumber__gte=parent_node_number)\
-        .update(highestchildnodenumber=F('highestchildnodenumber')+size)
-    squeeze_interval(node, 'taxon', 1)
+    #model.objects.filter(nodenumber__lte=parent_node_number, highestchildnodenumber__gte=parent_node_number)\
+    #    .update(highestchildnodenumber=F('highestchildnodenumber')+size)
+    squeeze_interval_by_flatten(parent_node_number, 'taxon', size)
+    t2 = perf_counter()
+    logger.warning('took: ')
+    logger.warning(t2 - t1)
     return parent_node_number + 1
 
 def move_interval(model, old_node_number, old_highest_child_node_number, new_node_number):

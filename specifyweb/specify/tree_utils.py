@@ -1,5 +1,7 @@
 from django.db import connection
 from django.db.models import F
+import logging
+logger = logging.getLogger(__name__)
 
 def node_in_parent(parent_nn, parent_hcnn):
     return (
@@ -87,32 +89,55 @@ def shift_subtree_by_steps(node, step):
         nodenumber=F('nodenumber') + step,
         highestchildnodenumber=F('highestchildnodenumber') + step
     )
-def squeeze_interval_by_flatten(node_to_squeeze, tree, squeeze_size):
-    max_gap = get_total_gap(node_to_squeeze, tree)
+
+def get_deflated_phantom_index(node_to_squeeze, tree, squeeze_size):
     cursor = connection.cursor()
-    if max_gap > squeeze_size:
+
+    initial_index = node_to_squeeze
+    initial_gap = squeeze_size
+
+    cursor.execute(("set @phantom_index := {}").format(initial_index))
+    cursor.execute(("set @remaining_gap := {}").format(initial_gap))
+
+    cursor.execute(("select @remaining_gap := @remaining_gap - least(@remaining_gap, nodenumber - @phantom_index - 1), "
+                   "@phantom_index := @phantom_index + if(@remaining_gap = 0, 0, 1 + least(@remaining_gap, nodenumber - @phantom_index - 1))"
+                   " from taxon where nodenumber > {} ;"
+                   "set @phantom_index := @phantom_index + if (@remaining_gap > 0, @remaining_gap + 1, 0)"
+                    ).format(initial_index))
+    cursor.execute("select @phantom_index")
+    phantom_index, = cursor.fetchone()
+    return phantom_index
+
+def squeeze_interval_by_flatten(node_to_squeeze_nn, tree, squeeze_size):
+    if squeeze_size == 0:
         return
-    phantom_node = node_to_squeeze.nodenumber + squeeze_size
+    #max_gap = get_total_gap(node_to_squeeze_nn, tree)
+    #if max_gap > squeeze_size:
+    #    return
+    cursor = connection.cursor()
+    phantom_node = get_deflated_phantom_index(node_to_squeeze_nn, tree, squeeze_size)
     # Shifts intervals by cascading node numbers
-    current_rank_id = node_to_squeeze.rankid
+    current_rank_id = 140
     cursor.execute("set @nn := -1")
     cursor.execute(("set @mr := {}").format(current_rank_id))
     sql_str = (
         "update {table} t join "
         "(select "
                    "@nn := @nn + 1 as nn, p.id as id from "
-                   "(select taxonid as id from {table}"
+                   "(select taxonid as id from {table} "
                    "where nodenumber between {initial_nn} and "
                    "{final_nn} order by nodenumber) p ) "
-                   "r on t.taxonid = r.id"
+                   "r on t.taxonid = r.id "
                    "set "
-                   "nodenumber = r.nn + {final_nn}"
+                   "nodenumber = r.nn + {final_nn}, "
                    "highestchildnodenumber = r.nn + {final_nn}"
                    ).format(
         table=tree,
-        initial_nn=node_to_squeeze.nodenumber,
-        final_nn=phantom_node
+        initial_nn=node_to_squeeze_nn,
+        final_nn=phantom_node - 1
     )
+    logger.warning('sql str: ')
+    logger.warning(sql_str)
     cursor.execute(sql_str)
     #fetch max rank:
     cursor.execute('select @mr')
@@ -120,12 +145,14 @@ def squeeze_interval_by_flatten(node_to_squeeze, tree, squeeze_size):
     #fetch max nn changed
     cursor.execute('select @nn')
     max_nn_changed, = cursor.fetchone()
+
     cursor.execute("select "
                    "distinct rankid "
                    "from {table} "
-                   "where rankid between {rankid_current} and {max_rankid}"
-                   "order by rankid desc".format(table=tree, rankid_current=current_rank_id, max_rankid=max_rank))
+                   "where nodenumber between {initial_nn} and {final_nn} "
+                   "order by rankid desc".format(table=tree, initial_nn=node_to_squeeze_nn, final_nn=phantom_node - 1))
     ranks = [rank for (rank,) in cursor.fetchall()]
+    logger.warning(ranks)
     for rank in ranks:
         cursor.execute((
             "update {table} t join (\n"
@@ -142,7 +169,7 @@ def squeeze_interval_by_flatten(node_to_squeeze, tree, squeeze_size):
             destination=phantom_node + max_nn_changed
         ), {'rank': rank})
 
-    
+
 
 def squeeze_interval(node_to_squeeze, tree, squeeze_size, forward=True):
     max_initial_gap = get_initial_gap(node_to_squeeze, tree) if forward else get_final_gap(node_to_squeeze, tree)
