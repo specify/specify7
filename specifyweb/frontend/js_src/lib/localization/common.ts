@@ -575,7 +575,7 @@ export const commonText = createDictionary({
     'en-us': '{label:string}: {value:string}',
     'ru-ru': '{label:string}: {value:string}',
     'es-es': '{label:string}: {value:string}',
-    'fr-fr': '{label:string} : {value:string}',
+    'fr-fr': '{label:string}: {value:string}',
     'uk-ua': '{label:string}: {value:string}',
   },
   jsxColonLine: {

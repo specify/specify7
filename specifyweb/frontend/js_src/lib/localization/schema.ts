@@ -226,8 +226,8 @@ export const schemaText = createDictionary({
     'fr-fr': 'Dépendant',
     'uk-ua': 'Утриманець',
   },
-  showDependent: {
-    'en-us': 'Show Only Dependent'
+  independent: {
+    'en-us': 'Independent'
   },
   downloadAsJson: {
     'en-us': 'Download as JSON',
@@ -292,8 +292,8 @@ export const schemaText = createDictionary({
     'ru-ru': 'Перейти к началу',
     'uk-ua': 'Перейти вгору',
   },
-  fieldID: {
-    'en-us': 'Field ID',
+  idField: {
+    'en-us': 'ID Field',
   },
   scope:{
     'en-us': 'Scope'

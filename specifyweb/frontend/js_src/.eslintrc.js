@@ -8,7 +8,7 @@ module.exports = {
   root: true,
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    project: '/Users/carolinedenis/Desktop/specify7/specifyweb/frontend/js_src/tsconfig.eslint.json',
+    project: './tsconfig.eslint.json',
   },
   env: {
     browser: true,
