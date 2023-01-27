@@ -95,6 +95,8 @@ const missingLabelTextField = ensure<FormCellDefinition>()({
     max: undefined,
     step: undefined,
     type: 'Text',
+    minLength: undefined,
+    maxLength: undefined
   },
 } as const);
 

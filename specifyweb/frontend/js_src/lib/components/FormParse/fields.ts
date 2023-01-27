@@ -64,6 +64,8 @@ export type FieldTypes = {
       readonly min: number | undefined;
       readonly max: number | undefined;
       readonly step: number | undefined;
+      readonly minLength: number | undefined;
+      readonly maxLength: number | undefined;
     }
   >;
   readonly Plugin: State<
@@ -194,6 +196,8 @@ const processFieldType: {
       min: f.parseInt(getProperty('min')),
       max: f.parseInt(getProperty('max')),
       step: f.parseFloat(getProperty('step')),
+      minLength: f.parseInt(getProperty('minLength')),
+      maxLength: f.parseInt(getProperty('maxLength'))
     };
   },
   QueryComboBox({ getProperty, fields }) {
