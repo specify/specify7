@@ -25,6 +25,7 @@ export const parentTableRelationship = f.store<RR<keyof Tables, Relationship>>(
               ? undefined
               : [name, table.strictGetRelationship(override)];
           }
+
           /*
            * i.e, for AccessionAgent, strip the "Agent" part and check if there
            * is a table by the resulting name (i.e., Accession)
@@ -57,6 +58,7 @@ export const parentTableRelationship = f.store<RR<keyof Tables, Relationship>>(
       )
     )
 );
+
 /**
  * Some exceptions are required for the above algorithm
  */
@@ -65,15 +67,22 @@ const overrides: {
     | undefined
     | keyof Tables[TABLE_NAME]['toOneIndependent'];
 } = {
+  Address: 'agent',
+  Author: 'referenceWork',
+  CommonNameTx: 'taxon',
   BorrowReturnMaterial: 'borrowMaterial',
   CollectionObject: undefined,
   CollectionRelationship: undefined,
   Collector: 'collectingEvent',
+  DNASequencingRun: 'dnaSequence',
+  Exsiccata: 'referenceWork',
+  Extractor: 'dnaSequence',
   Determiner: 'determination',
   FieldNotebookPage: 'pageSet',
   LatLonPolygon: 'locality',
   LoanReturnPreparation: 'loanPreparation',
   InstitutionNetwork: undefined,
+  MaterialSample: 'preparation',
   PcrPerson: 'dnaSequence',
   FieldNotebookPageSet: 'fieldNotebook',
 };

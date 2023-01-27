@@ -15,7 +15,7 @@
 import type { Tables } from './types';
 import { load } from '../InitialContext';
 import type { SpecifyModel } from './specifyModel';
-import type { RA, RR, Writable } from '../../utils/types';
+import type { RR, Writable } from '../../utils/types';
 
 export type Schema = {
   readonly domainLevelIds: RR<typeof domainLevels[number], number>;
@@ -23,7 +23,13 @@ export type Schema = {
   readonly embeddedPaleoContext: boolean;
   readonly paleoContextChildTable: string;
   readonly catalogNumFormatName: string;
-  readonly orgHierarchy: RA<keyof Tables>;
+  readonly orgHierarchy: readonly [
+    'CollectionObject',
+    'Collection',
+    'Discipline',
+    'Division',
+    'Institution'
+  ];
   readonly models: {
     readonly [TABLE_NAME in keyof Tables]: SpecifyModel<Tables[TABLE_NAME]>;
   };

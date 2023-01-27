@@ -593,27 +593,23 @@ describe('getAggregator', () => {
 
 describe('getScopingRelationship', () => {
   test('can get scoping relationship when scoped to Collection Object', () =>
-    expect(schema.models.Determination.getScopingRelationship()?.name).toBe(
+    expect(schema.models.Determination.getDirectScope()?.name).toBe(
       'collectionObject'
     ));
   test('can get scoping relationship when scoped to Collection', () =>
-    expect(schema.models.CollectionObject.getScopingRelationship()?.name).toBe(
+    expect(schema.models.CollectionObject.getDirectScope()?.name).toBe(
       'collection'
     ));
   test('can get scoping relationship when scoped to Discipline', () =>
-    expect(schema.models.CollectingEvent.getScopingRelationship()?.name).toBe(
+    expect(schema.models.CollectingEvent.getDirectScope()?.name).toBe(
       'discipline'
     ));
   test('can get scoping relationship when scoped to Division', () =>
-    expect(schema.models.Discipline.getScopingRelationship()?.name).toBe(
-      'division'
-    ));
+    expect(schema.models.Discipline.getDirectScope()?.name).toBe('division'));
   test('can get scoping relationship when scoped to Institution', () =>
-    expect(schema.models.Division.getScopingRelationship()?.name).toBe(
-      'institution'
-    ));
+    expect(schema.models.Division.getDirectScope()?.name).toBe('institution'));
   test('returns undefined if table is not scoped', () =>
-    expect(schema.models.SpecifyUser.getScopingRelationship()).toBeUndefined());
+    expect(schema.models.SpecifyUser.getDirectScope()).toBeUndefined());
 });
 
 describe('getScopingPath', () => {
@@ -653,3 +649,16 @@ test('toJSON', () =>
   expect(schema.models.CollectionObject.toJSON()).toBe(
     '[table CollectionObject]'
   ));
+
+test('tableScoping', () =>
+  expect(
+    Object.fromEntries(
+      Object.entries(schema.models).map(([name, table]) => [
+        name,
+        table
+          .getScope()
+          ?.map(({ name }) => name)
+          .join(' > '),
+      ])
+    )
+  ).toMatchSnapshot());

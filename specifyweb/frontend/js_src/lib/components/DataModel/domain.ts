@@ -18,7 +18,7 @@ import { fail } from '../Errors/Crash';
  * Some tasks to do after a new resource is created
  */
 globalEvents.on('newResource', (resource) => {
-  const domainField = resource.specifyModel.getScopingRelationship();
+  const domainField = resource.specifyModel.getDirectScope();
   if (domainField === undefined) return;
 
   const domainFieldName =
@@ -91,7 +91,7 @@ export function getCollectionForResource(
   const collectionUrl = resource.get('collectionMemberId') as number | null;
   if (typeof collectionUrl === 'number') return collectionUrl;
 
-  const domainField = resource.specifyModel.getScopingRelationship();
+  const domainField = resource.specifyModel.getDirectScope();
   if (domainField === undefined) return undefined;
 
   const domainResourceId = idFromUrl(resource.get(domainField.name) ?? '');
@@ -108,7 +108,7 @@ export function getCollectionForResource(
 export const fetchCollectionsForResource = async (
   resource: SpecifyResource<AnySchema>
 ): Promise<RA<number> | undefined> =>
-  f.maybe(resource.specifyModel.getScopingRelationship(), async (domainField) =>
+  f.maybe(resource.specifyModel.getDirectScope(), async (domainField) =>
     (resource as SpecifyResource<CollectionObject>)
       ?.rgetPromise(domainField.name as 'collection')
       .then(async (resource) => {

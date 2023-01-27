@@ -118,6 +118,7 @@ function formatErrorResponse(error: string): JSX.Element {
     // Failed parsing error message as JSON
   }
   try {
+    // Check if error is proper HTML page
     const htmlElement = document.createElement('html');
     htmlElement.innerHTML = error;
     htmlElement.remove();
