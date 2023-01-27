@@ -208,7 +208,7 @@ export const treeText = createDictionary({
       récursivement.
     `,
     'uk-ua': `
-      Усі посилання на {treeName:string} вузол «{nodeName:string}» буде замінено
+      Усі посилання на вузол {treeName:string} «{nodeName:string}» буде замінено
       на «{parentName:string}», а всі нащадки «{nodeName:string}» буде
       переміщено до «{parentName:string}», а будь-які нащадки, що відповідають
       імені та рангу, будуть самі собою об'єднані рекурсивно.
