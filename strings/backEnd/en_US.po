@@ -3,240 +3,239 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2023-01-27 08:42+0000\n"
 "Last-Translator: Max Patiiuk <max@patii.uk>\n"
-"Language-Team: English (United States) <https://hosted.weblate.org/projects/"
-"specify-7/backEnd/en_US/>\n"
+"Language-Team: English (United States) "
+"<https://hosted.weblate.org/projects/specify-7/backEnd/en_US/>\n"
 "Language: en_US\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 4.16-dev\n"
 
-#. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:176
+#. Used in: Components > Work Bench > Results Parser
 msgid "failedParsingBoolean"
 msgstr "value \"{value:string}\" not resolvable to True or False"
 
-#. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:178
+#. Used in: Components > Work Bench > Results Parser
 msgid "failedParsingDecimal"
 msgstr "value \"{value:string}\" is not a valid decimal value"
 
-#. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:180
+#. Used in: Components > Work Bench > Results Parser
 msgid "failedParsingFloat"
 msgstr "value \"{value:string}\" is not a valid floating point value"
 
-#. Used in: Components > Work Bench > Results Parser ⬤ Components > Work Bench > Wb View
 #: components/WorkBench/resultsParser.ts:182
 #: components/WorkBench/wbView.js:855
 #: components/WorkBench/wbView.js:862
 #: components/WorkBench/wbView.js:1358
+#. Used in: Components > Work Bench > Results Parser ⬤ Components > Work Bench > Wb View
 msgid "failedParsingPickList"
 msgstr ""
 "{value:string} is not a legal value in this picklist field.\n"
 "Click on the arrow to choose among available options."
 
-#. 🟥Example: bad agent type: "ab". Expected one of "Person", "Group" or "Organization". Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:186
+#. 🟥Example: bad agent type: "ab". Expected one of "Person", "Group" or "Organization". Used in: Components > Work Bench > Results Parser
 msgid "failedParsingAgentType"
 msgstr ""
 "bad {agentTypeField:string}: \"{badType:string}\". Expected one of "
 "{validTypes:string}"
 
-#. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:192
+#. Used in: Components > Work Bench > Results Parser
 msgid "pickListValueTooLong"
 msgstr ""
 "value from {pickListTable:string} {pickList:string} longer than the max of "
 "{maxLength:number|formatted} for field"
 
-#. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:198
+#. Used in: Components > Work Bench > Results Parser
 msgid "valueTooLong"
 msgstr "value must not have length greater than {maxLength:number|formatted}"
 
-#. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:202
+#. Used in: Components > Work Bench > Results Parser
 msgid "invalidYear"
 msgstr "date value must contain four digit year: {value:string}"
 
-#. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:206
+#. Used in: Components > Work Bench > Results Parser
 msgid "badDateFormat"
 msgstr "bad date value: {value:string}. expected: {format:string}"
 
-#. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:211
+#. Used in: Components > Work Bench > Results Parser
 msgid "coordinateBadFormat"
 msgstr "bad latitude or longitude value: {value:string}"
 
-#. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:215
+#. Used in: Components > Work Bench > Results Parser
 msgid "latitudeOutOfRange"
 msgstr "latitude must be between -90 and 90. Actual: {value:string}"
 
-#. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:219
+#. Used in: Components > Work Bench > Results Parser
 msgid "longitudeOutOfRange"
 msgstr "longitude must be between -180 and 180. Actual: {value:string}"
 
-#. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:223
+#. Used in: Components > Work Bench > Results Parser
 msgid "invalidPartialRecord"
 msgstr "this field must be empty if {column:string} is empty"
 
-#. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:227
+#. Used in: Components > Work Bench > Results Parser
 msgid "fieldRequiredByUploadPlan"
 msgstr "field is required by upload plan mapping"
 
-#. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:229
+#. Used in: Components > Work Bench > Results Parser
 msgid "invalidTreeStructure"
 msgstr "There are multiple \"Uploaded\" placeholder values in the tree!"
 
-#. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:231
+#. Used in: Components > Work Bench > Results Parser
 msgid "missingRequiredTreeParent"
 msgstr "Missing or unmapped required tree parent rank value for \"{names:string}\"."
 
-#. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:67
+#. Used in: Components > Errors > Json Error
 msgid "showTraceback"
 msgstr "Show Traceback"
 
-#. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:193
+#. Used in: Components > Errors > Json Error
 msgid "fieldNotUnique"
 msgstr "{tableName:string} must have unique {fieldName:string}"
 
-#. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:198
+#. Used in: Components > Errors > Json Error
 msgid "childFieldNotUnique"
 msgstr ""
 "{tableName:string} must have unique {fieldName:string} in "
 "{parentField:string}"
 
-#. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:158
+#. Used in: Components > Errors > Json Error
 msgid "deletingTreeRoot"
 msgstr "Can not delete root level tree definition item"
 
-#. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:160
+#. Used in: Components > Errors > Json Error
 msgid "nodeParentInvalidRank"
 msgstr "Tree node's parent has rank greater than itself"
 
-#. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:162
+#. Used in: Components > Errors > Json Error
 msgid "nodeChildrenInvalidRank"
 msgstr "Tree node's rank is greater than some of its children"
 
-#. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:164
+#. Used in: Components > Errors > Json Error
 msgid "nodeOperationToSynonymizedParent"
 msgstr ""
-"{operation:string} node \"{nodeName:string}\" to synonymized parent \""
-"{parentName:string}\""
+"{operation:string} node \"{nodeName:string}\" to synonymized parent "
+"\"{parentName:string}\""
 
-#. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:170
-msgid "nodeSynonymizeToSynonymized"
-msgstr ""
-"Synonymizing \"{nodeName:string}\" to synonymized node \"{intoName:string}\""
-
 #. Used in: Components > Errors > Json Error
+msgid "nodeSynonymizeToSynonymized"
+msgstr "Synonymizing \"{nodeName:string}\" to synonymized node \"{intoName:string}\""
+
 #: components/Errors/JsonError.tsx:175
+#. Used in: Components > Errors > Json Error
 msgid "nodeSynonimizeWithChildren"
 msgstr "Synonymizing node \"{nodeName:string}\" which has children"
 
-#. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:154
+#. Used in: Components > Errors > Json Error
 msgid "badTreeStructureInvalidRanks"
 msgstr ""
 "Bad Tree Structure: Found {badRanks:number|formatted} cases where node rank "
 "is not greater than its parent"
 
-#. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:179
+#. Used in: Components > Errors > Json Error
 msgid "invalidNodeType"
 msgstr ""
 "Unexpected type of node \"{node:string}\" during {operation:string}. "
 "Expected \"{nodeModel:string}\""
 
-#. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:185
+#. Used in: Components > Errors > Json Error
 msgid "mergeAcrossTrees"
 msgstr "Merging across trees"
 
-#. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:187
+#. Used in: Components > Errors > Json Error
 msgid "synonymizeAcrossTrees"
 msgstr "Synonymizing across trees"
 
-#. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:189
+#. Used in: Components > Errors > Json Error
 msgid "limitReachedDeterminingAccepted"
 msgstr ""
 "Could not find accepted taxon for synonymized taxon with ID of "
 "{taxonId:number}"
 
-#. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:204
+#. Used in: Components > Errors > Json Error
 msgid "resourceInPermissionRegistry"
 msgstr "Resource {resource:string} already in Permissions registry"
 
-#. 🟥Agent "Abc" is not a Specify User. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:208
+#. 🟥Agent "Abc" is not a Specify User. Used in: Components > Errors > Json Error
 msgid "actorIsNotSpecifyUser"
 msgstr "{agentTable:string} {actor:string} is not a {specifyUserTable:string}"
 
-#. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:214
+#. Used in: Components > Errors > Json Error
 msgid "unexpectedCollectionType"
 msgstr ""
-"Unexpected type of collection \"{unexpectedTypeName:string}\". Expected \""
-"{collectionName:string}\""
+"Unexpected type of collection \"{unexpectedTypeName:string}\". Expected "
+"\"{collectionName:string}\""
 
-#. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:219
+#. Used in: Components > Errors > Json Error
 msgid "invalidReportMimetype"
 msgstr ""
 "Can not create report: {mimeTypeField:string} is not one of \"jrxml/label\" "
 "or \"jrxml/report\""
 
-#. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:223
+#. Used in: Components > Errors > Json Error
 msgid "fieldNotRelationship"
 msgstr "Field {field:string} is not a Relationship"
 
-#. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:225
+#. Used in: Components > Errors > Json Error
 msgid "unexpectedTableId"
 msgstr ""
-"Unexpected table id \"{tableId:string}\" in request. Expected \""
-"{expectedTableId:string}\""
+"Unexpected table id \"{tableId:string}\" in request. Expected "
+"\"{expectedTableId:string}\""
 
-#. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:230
+#. Used in: Components > Errors > Json Error
 msgid "noCollectionInQuery"
 msgstr "No Collection found in Query for table {table:string}"
 
-#. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:232
+#. Used in: Components > Errors > Json Error
 msgid "invalidDatePart"
 msgstr ""
 "Invalid date part \"{datePart:string}\". Expected one of "
 "{validDateParts:string}"
 
-#. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:237
+#. Used in: Components > Errors > Json Error
 msgid "invalidUploadStatus"
 msgstr ""
 "Invalid status \"{uploadStatus:string}\" for {operation:string}. Expected "
 "{expectedUploadStatus:string}"
 
-#. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:243
+#. Used in: Components > Errors > Json Error
 msgid "datasetAlreadyUploaded"
 msgstr "Dataset already uploaded"
