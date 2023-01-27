@@ -87,6 +87,62 @@ def shift_subtree_by_steps(node, step):
         nodenumber=F('nodenumber') + step,
         highestchildnodenumber=F('highestchildnodenumber') + step
     )
+def squeeze_interval_by_flatten(node_to_squeeze, tree, squeeze_size):
+    max_gap = get_total_gap(node_to_squeeze, tree)
+    cursor = connection.cursor()
+    if max_gap > squeeze_size:
+        return
+    phantom_node = node_to_squeeze.nodenumber + squeeze_size
+    # Shifts intervals by cascading node numbers
+    current_rank_id = node_to_squeeze.rankid
+    cursor.execute("set @nn := -1")
+    cursor.execute(("set @mr := {}").format(current_rank_id))
+    sql_str = (
+        "update {table} t join "
+        "(select "
+                   "@nn := @nn + 1 as nn, p.id as id from "
+                   "(select taxonid as id from {table}"
+                   "where nodenumber between {initial_nn} and "
+                   "{final_nn} order by nodenumber) p ) "
+                   "r on t.taxonid = r.id"
+                   "set "
+                   "nodenumber = r.nn + {final_nn}"
+                   "highestchildnodenumber = r.nn + {final_nn}"
+                   ).format(
+        table=tree,
+        initial_nn=node_to_squeeze.nodenumber,
+        final_nn=phantom_node
+    )
+    cursor.execute(sql_str)
+    #fetch max rank:
+    cursor.execute('select @mr')
+    max_rank, = cursor.fetchone()
+    #fetch max nn changed
+    cursor.execute('select @nn')
+    max_nn_changed, = cursor.fetchone()
+    cursor.execute("select "
+                   "distinct rankid "
+                   "from {table} "
+                   "where rankid between {rankid_current} and {max_rankid}"
+                   "order by rankid desc".format(table=tree, rankid_current=current_rank_id, max_rankid=max_rank))
+    ranks = [rank for (rank,) in cursor.fetchall()]
+    for rank in ranks:
+        cursor.execute((
+            "update {table} t join (\n"
+            "   select max(highestchildnodenumber) as hcnn, parentid\n"
+            "   from {table} where rankid > %(rank)s "
+            "   and nodenumber "
+            "   between {base} and {destination}"
+            "   group by parentid\n"
+            ") as sub on sub.parentid = t.{table}id\n"
+            "set highestchildnodenumber = hcnn where rankid = %(rank)s\n"
+        ).format(
+            table=tree,
+            base=phantom_node + 1,
+            destination=phantom_node + max_nn_changed
+        ), {'rank': rank})
+
+    
 
 def squeeze_interval(node_to_squeeze, tree, squeeze_size, forward=True):
     max_initial_gap = get_initial_gap(node_to_squeeze, tree) if forward else get_final_gap(node_to_squeeze, tree)
