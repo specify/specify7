@@ -138,12 +138,12 @@ class Tree:
 
 test_node = Node(1, None, 1, 15)
 child_node_1 = Node(2, test_node, 3, 6)
-#child_node_2 = Node(3, test_node, 9, 10)
+child_node_2 = Node(3, test_node, 9, 10)
 #child_node_3 = Node(4, test_node, 13, 13)
 #child_node_1_child_1 = Node(5, child_node_1, 4, 4)
 
 test_node.children.append(child_node_1)
-#test_node.children.append(child_node_2)
+test_node.children.append(child_node_2)
 #test_node.children.append(child_node_3)
 #child_node_1.children.append(child_node_1_child_1)
 
@@ -165,7 +165,22 @@ def squeeze_interval_by_ordering(tree: Tree, interval_to_squeeze: Node, squeeze_
         print(node.get_interval_str())
         node.node_number = node_index + phantom_nn
 
+        # 1 5 8 10
 
+def get_deflated_phantom_index(tree: Tree, initial_index, squeeze_size):
+    all_elements = tree.elements[1:] #temporary for testing
+    remaining_squeeze_size = squeeze_size
+    final_index = initial_index
+
+    for element in all_elements:
+        available_gap = element.node_number - final_index - 1
+        this_squeezed_by = min(remaining_squeeze_size, available_gap)
+        remaining_squeeze_size = remaining_squeeze_size - this_squeezed_by
+        final_index += this_squeezed_by + 1
+
+    if remaining_squeeze_size > 0:
+        final_index += remaining_squeeze_size + 1
+    return final_index
 
 # TODO: Extend logic to handle squeezes starting from arbitrary insertion points
 def squeeze_interval(tree, interval_to_squeeze: Node, squeeze_size, initial_gap_offset=0, forward=True, shift_parent_interval=True, apply_subtree_shift=True):
@@ -288,6 +303,6 @@ def open_interval(root_interval: Node, tree: Tree, size):
 
 print('Before Squeeze')
 test_node.print_subtree()
-squeeze_interval_by_ordering(test_tree, test_node, 7)
+print(get_deflated_phantom_index(test_tree, 1, 7))
 print('After Squeeze')
 test_node.print_subtree()
