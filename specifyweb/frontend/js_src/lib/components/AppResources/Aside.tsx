@@ -4,7 +4,7 @@ import { useCachedState } from '../../hooks/useCachedState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
-import { filterArray, RA, setDevelopmentGlobal } from '../../utils/types';
+import { filterArray, RA } from '../../utils/types';
 import { multiSortFunction, removeItem, replaceItem } from '../../utils/utils';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -31,7 +31,6 @@ import { StringToJsx } from '../../localization/utils';
 import { useParams } from 'react-router-dom';
 import { scrollIntoView } from '../TreeView/helpers';
 import { f } from '../../utils/functools';
-import { tree } from 'd3';
 
 export function AppResourcesAside({
   resources: initialResources,
