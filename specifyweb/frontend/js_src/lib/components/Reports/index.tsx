@@ -8,7 +8,7 @@ import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { split } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
-import { iconClassName, icons } from '../Atoms/Icons';
+import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { attachmentSettingsPromise } from '../Attachments/attachments';
 import { getField, serializeResource } from '../DataModel/helpers';
@@ -30,6 +30,8 @@ import { Report } from './Report';
 import { reportsText } from '../../localization/report';
 import { schema } from '../DataModel/schema';
 import { TableIcon } from '../Molecules/TableIcon';
+import { fetchResource, idFromUrl } from '../DataModel/resource';
+import { fetchCollection } from '../DataModel/collection';
 
 export const reportsAvailable = ajax<{ readonly available: boolean }>(
   cachableUrl('/context/report_runner_status.json'),
@@ -135,25 +137,31 @@ export function ReportsView({
       >
         <div className="flex flex-col gap-4">
           <section>
-            <div className="flex">
+            <div className="flex items-center gap-2">
               <h2>{reportsText.reports()}</h2>
-              <img src="/images/Reports32x32.png" className="ml-2 w-[1.5em]" />
+              <img
+                alt="report"
+                src="/images/Reports32x32.png"
+                className="w-[1.5em]"
+              />
             </div>
             <ReportRow
               cacheKey="listOfReports"
-              icon="CollectionObject"
               resources={reports}
               onClick={setSelectedReport}
             />
           </section>
           <section>
-            <div className="flex">
+            <div className="flex items-center gap-2">
               <h2>{reportsText.labels()}</h2>
-              <img src="/images/Label32x32.png" className="ml-2 w-[1.5em]" />
+              <img
+                alt="label"
+                src="/images/Label32x32.png"
+                className="w-[1.5em]"
+              />
             </div>
             <ReportRow
               cacheKey="listOfLabels"
-              icon="/images/Label32x32.png"
               resources={labels}
               onClick={setSelectedReport}
             />
@@ -166,12 +174,10 @@ export function ReportsView({
 
 function ReportRow({
   resources: unsortedResources,
-  icon,
   cacheKey,
   onClick: handleClick,
 }: {
   readonly resources: RA<SerializedResource<SpAppResource>>;
-  readonly icon: string;
   readonly cacheKey: 'listOfLabels' | 'listOfReports';
   readonly onClick: (resource: SerializedResource<SpAppResource>) => void;
 }): JSX.Element {
@@ -187,6 +193,7 @@ function ReportRow({
       ),
     [sortConfig, unsortedResources]
   );
+
   return resources.length === 0 ? (
     <p>{commonText.noResults()}</p>
   ) : (
@@ -223,8 +230,7 @@ function ReportRow({
                 title={resource.description ?? undefined}
                 onClick={(): void => handleClick(resource)}
               >
-                {/* <img alt="" className={iconClassName} src={icon} /> */}
-                <TableIcon label name={icon} />
+                <ReportRowImage appResource={resource} />
                 {resource.name}
               </Button.LikeLink>
             </td>
@@ -247,4 +253,39 @@ function ReportRow({
       </tbody>
     </table>
   );
+}
+
+function ReportRowImage({
+  appResource,
+}: {
+  readonly appResource: SerializedResource<SpAppResource>;
+}): JSX.Element {
+  const [baseTableName] = useAsyncState<string | false | undefined>(
+    React.useCallback(
+      async () =>
+        fetchCollection('SpReport', {
+          limit: 1,
+          appResource: appResource.id,
+        })
+          .then(({ records }) => records[0] ?? false)
+          .then((report) =>
+            typeof report === 'object'
+              ? f.maybe(idFromUrl(report.query ?? ''), async (id) =>
+                  fetchResource('SpQuery', id, false).then(
+                    (appResource) => appResource ?? false
+                  )
+                ) ?? false
+              : false
+          )
+          .then((query) => (query ? query.contextName : false)),
+      [appResource]
+    ),
+    false
+  );
+
+  if (typeof baseTableName === 'string') {
+    return <TableIcon label={true} name={baseTableName} />;
+  } else {
+    return <TableIcon label={true} name="/images/Label32x32.png" />;
+  }
 }
