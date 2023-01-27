@@ -1,8 +1,10 @@
 from django.db import models
+from typing import Dict
 
 from specifyweb.businessrules.exceptions import AbortSave
 from . import model_extras
 from .case_insensitive_bool import BooleanField, NullBooleanField
+from .datamodel import Datamodel, Table, Relationship, Field
 from .deletion_rules import SPECIAL_DELETION_RULES, ADDITIONAL_DELETE_BLOCKERS
 
 appname = __name__.split('.')[-2]
@@ -16,7 +18,7 @@ orderings = {
     'Collector': ('ordernumber',),
 }
 
-def make_model(module, table, datamodel):
+def make_model(module: str, table: Table, datamodel: Datamodel) -> models.base.ModelBase:
     """Returns a Django model class based on the
     definition of a Specify table.
     """
@@ -64,18 +66,16 @@ def make_model(module, table, datamodel):
 
     return model
 
-def make_id_field(column):
+def make_id_field(column: str) -> models.AutoField:
     return models.AutoField(primary_key=True, db_column=column.lower())
 
-def protect(collector, field, sub_objs, using):
+def protect(collector: models.deletion.Collector, field: models.Field, sub_objs: models.query.QuerySet, using:str):
     if hasattr(collector, 'delete_blockers'):
         collector.delete_blockers.append((field, sub_objs))
     else:
         models.PROTECT(collector, field, sub_objs, using)
 
-
-
-def make_relationship(modelname, rel, datamodel):
+def make_relationship(modelname : str, rel: Relationship, datamodel: Datamodel) -> models.ForeignKey or models.OneToOneField:
     """Return a Django relationship field for the given relationship definition.
 
     modelname - name of the model this field will be part of
@@ -107,7 +107,7 @@ def make_relationship(modelname, rel, datamodel):
         else:
             on_delete = protect
 
-    def make_to_one(Field):
+    def make_to_one(Field: type) -> models.ForeignKey or models.OneToOneField:
         """Setup a field of the given 'Field' type which can be either
         ForeignKey (many-to-one) or OneToOneField.
         """
@@ -134,7 +134,7 @@ class make_field(object):
     mechanism to factor out common aspects of Field configuration.
     """
     @classmethod
-    def get_field_class(cls, fld):
+    def get_field_class(cls: type, fld) -> models.Field:
         """Return the Django model field class to be used for
         the given field definition. Defaults to returning the
         'field_class' attribute of the class, but can be overridden
@@ -143,7 +143,7 @@ class make_field(object):
         return cls.field_class
 
     @classmethod
-    def make_args(cls, fld):
+    def make_args(cls, fld: Field)-> Dict[str, str or bool]:
         """Return a dict of arguments for the field constructor
         based on the XML definition. These are common arguements
         used by most field types.
@@ -154,7 +154,7 @@ class make_field(object):
             unique = fld.unique,
             null = not fld.required)
 
-    def __new__(cls, fld, fldargs):
+    def __new__(cls, fld: Field, fldargs: Dict[str, bool]):
         """Override the instance constructor to return configured instances
         of the appropriant Django model field for given parameters.
 
@@ -206,7 +206,7 @@ class make_decimal_field(make_field):
     field_class = models.DecimalField
 
     @classmethod
-    def make_args(cls, fld):
+    def make_args(cls, fld: Field):
         """Augment the standard field options with those specific
         to Decimal fields.
         """
@@ -224,7 +224,7 @@ class make_decimal_field(make_field):
 class make_boolean_field(make_field):
     """A specialization of make_field for Boolean type fields."""
     @classmethod
-    def get_field_class(cls, fld):
+    def get_field_class(cls, fld: Field):
         """Django differentiates between boolean fields which
         can contain nulls and those that cannot with different
         types.
@@ -232,7 +232,7 @@ class make_boolean_field(make_field):
         return BooleanField if fld.required else NullBooleanField
 
     @classmethod
-    def make_args(cls, fld):
+    def make_args(cls, fld: Field):
         """Make False the default as it was in Django 1.5"""
         args = super(make_boolean_field, cls).make_args(fld)
         if fld.required:
@@ -257,7 +257,9 @@ field_type_map = {
     'java.lang.Boolean': make_boolean_field,
     }
 
-def build_models(module, datamodel):
+# Build the table information as Django models
+# See .models.py
+def build_models(module : str, datamodel: Datamodel):
     return { model.specify_model.tableId: model
              for table in datamodel.tables
              for model in [ make_model(module, table, datamodel) ]}
