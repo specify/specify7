@@ -19,6 +19,10 @@ class Node:
         # Assume children are already ordered
         return self.children
 
+    def get_ordered_children_before_nn(self):
+        return filter(lambda child_node: child_node.node_number < self.node_number, self.children)
+
+
     def get_interval_str(self):
         return f"[{self.node_number}, {self.highest_child_node_number}]"
 
@@ -97,16 +101,23 @@ class Tree:
     def __init__(self, root):
         self.root = root
         self.elements = []
+        self.ordered_by_nn = []
 
     def add_element(self, element):
         self.elements.append(element)
 
-    def get_children(self, node, count_only=True):
+    def get_children(self, node_number, highest_child_node_number, count_only=True):
         children = []
         for element in self.elements:
-            if node.node_number < element.node_number <= node.highest_child_node_number:
+            if node_number < element.node_number <= highest_child_node_number:
                 children.append(element)
         return len(children) if count_only else children
+
+    def get_ordered_by_node_number(self, initial_nn, final_nn):
+        return filter(lambda node_element: initial_nn <= node_element.node_number <= final_nn, self.elements)
+
+    def get_node_before_nn(self, node_number):
+        return filter(lambda node: node.node_number <= node_number,self.elements)
 
     def shift_subtree_by_steps(self, root_node, steps):
         children = self.get_children(root_node, False)
@@ -146,6 +157,15 @@ test_tree.add_element(child_node_1)
 #Additional Ideas
 #1. Rank children by the number of free nodes and pick one with the least updates - don't always be greedy and look at the future state
 #2. If no gap in the front, look at gaps which are at the back (will allow tree to always accommodate current highest_child_node_number * step nodes) and never run out until max int size reaches!
+
+def squeeze_interval_by_ordering(tree: Tree, interval_to_squeeze: Node, squeeze_size):
+    phantom_nn = interval_to_squeeze.node_number + squeeze_size
+    nodes_to_move = tree.get_ordered_by_node_number(initial_nn=interval_to_squeeze.node_number, final_nn=phantom_nn)
+    for node_index, node in enumerate(nodes_to_move):
+        print(node.get_interval_str())
+        node.node_number = node_index + phantom_nn
+
+
 
 # TODO: Extend logic to handle squeezes starting from arbitrary insertion points
 def squeeze_interval(tree, interval_to_squeeze: Node, squeeze_size, initial_gap_offset=0, forward=True, shift_parent_interval=True, apply_subtree_shift=True):
@@ -266,8 +286,8 @@ def open_interval(root_interval: Node, tree: Tree, size):
     return -1
 
 
-print('Before Parent Open Interval')
+print('Before Squeeze')
 test_node.print_subtree()
-x = open_parent_intervals(child_node_1, test_tree, 1)
-print('After Parent Open Interval', x)
+squeeze_interval_by_ordering(test_tree, test_node, 7)
+print('After Squeeze')
 test_node.print_subtree()
