@@ -6,7 +6,6 @@ import type { RA } from '../../utils/types';
 import { removeItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
-import { SetUnloadProtectsContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { FormMode } from '../FormParse';
@@ -19,6 +18,7 @@ import { useTriggerState } from '../../hooks/useTriggerState';
 import { unsetUnloadProtect } from '../../hooks/navigation';
 import { saveFormUnloadProtect } from '../Forms/Save';
 import { LocalizedString } from 'typesafe-i18n';
+import { SetUnloadProtectsContext } from '../Router/Router';
 
 /**
  * A Wrapper for RecordSelector that allows to specify list of records by their

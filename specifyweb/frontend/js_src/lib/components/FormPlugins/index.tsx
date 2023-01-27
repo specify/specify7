@@ -67,7 +67,7 @@ const pluginRenderers: {
     },
   }) =>
     field === undefined || field.isRelationship ? null : (
-      <ErrorBoundary dismissable>
+      <ErrorBoundary dismissible>
         <PartialDateUi
           canChangePrecision={canChangePrecision && formType === 'form'}
           dateField={field.name}
@@ -87,7 +87,7 @@ const pluginRenderers: {
     if (resource === undefined) return null;
     const collectionObject = toTable(resource, 'CollectionObject');
     return collectionObject === undefined ? null : (
-      <ErrorBoundary dismissable>
+      <ErrorBoundary dismissible>
         <CollectionOneToManyPlugin
           formatting={formatting}
           relationship={relationship}
@@ -103,7 +103,7 @@ const pluginRenderers: {
     if (resource === undefined) return null;
     const collectionObject = toTable(resource, 'CollectionObject');
     return resource.isNew() || collectionObject === undefined ? null : (
-      <ErrorBoundary dismissable>
+      <ErrorBoundary dismissible>
         <CollectionOneToOnePlugin
           formatting={formatting}
           relationship={relationship}
@@ -116,7 +116,7 @@ const pluginRenderers: {
     if (resource === undefined) return null;
     const locality = toTable(resource, 'Locality');
     return locality === undefined ? null : (
-      <ErrorBoundary dismissable>
+      <ErrorBoundary dismissible>
         <GeoLocatePlugin resource={locality} />
       </ErrorBoundary>
     );
@@ -131,7 +131,7 @@ const pluginRenderers: {
     mode,
   }) {
     return (
-      <ErrorBoundary dismissable>
+      <ErrorBoundary dismissible>
         <WebLink
           field={field}
           formType={formType}
@@ -187,7 +187,7 @@ const pluginRenderers: {
     } else if (collectingEventAttribute === undefined) return null;
     else
       return (
-        <ErrorBoundary dismissable>
+        <ErrorBoundary dismissible>
           <HostTaxon
             formType={formType}
             id={id}
@@ -203,7 +203,7 @@ const pluginRenderers: {
     if (resource === undefined) return null;
     const locality = toTable(resource, 'Locality');
     return locality === undefined ? null : (
-      <ErrorBoundary dismissable>
+      <ErrorBoundary dismissible>
         <LeafletPlugin id={id} locality={locality} />
       </ErrorBoundary>
     );

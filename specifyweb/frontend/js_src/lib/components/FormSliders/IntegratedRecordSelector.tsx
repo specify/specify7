@@ -228,7 +228,7 @@ export function IntegratedRecordSelector({
                 ) : undefined}
                 {hasTablePermission(
                   relationship.relatedModel.name,
-                  isDependent ? 'create' : 'read'
+                  isDependent ? 'delete' : 'read'
                 ) && typeof handleRemove === 'function' ? (
                   <DataEntry.Remove
                     disabled={

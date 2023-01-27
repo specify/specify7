@@ -234,7 +234,7 @@ export function FormField({
   ] as typeof fieldRenderers.Checkbox;
   const data = useDistantRelated(resource, fields);
   return (
-    <ErrorBoundary dismissable>
+    <ErrorBoundary dismissible>
       {data === undefined ? undefined : (
         <Render
           mode={isReadOnly || data.resource !== resource ? 'view' : mode}

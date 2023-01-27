@@ -485,6 +485,7 @@ export const WBView = Backbone.View.extend({
                             label === ''
                               ? strictGetModel(tableName).label
                               : label;
+                          // REFACTOR: use new table icons
                           const tableIcon = getIcon(tableName) ?? unknownIcon;
 
                           return `<a

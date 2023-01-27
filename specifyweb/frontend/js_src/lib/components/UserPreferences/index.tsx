@@ -8,7 +8,6 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
-import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { preferencesText } from '../../localization/preferences';
 import { StringToJsx } from '../../localization/utils';
@@ -21,7 +20,7 @@ import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { hasPermission } from '../Permissions/helpers';
-import { PreferencesAside, useActiveCategory } from './Aside';
+import { PreferencesAside } from './Aside';
 import type {
   GenericPreferencesCategories,
   PreferenceItem,
@@ -36,13 +35,13 @@ import {
 import { prefEvents } from './Hooks';
 import { DefaultPreferenceItemRender } from './Renderers';
 import { usePref } from './usePref';
+import { useTopChild } from './useTopChild';
 
 function Preferences(): JSX.Element {
   const [changesMade, handleChangesMade] = useBooleanState();
   const [needsRestart, handleRestartNeeded] = useBooleanState();
 
   const loading = React.useContext(LoadingContext);
-  const id = useId('preferences');
   const navigate = useNavigate();
 
   React.useEffect(
@@ -54,7 +53,7 @@ function Preferences(): JSX.Element {
     [handleChangesMade, handleRestartNeeded]
   );
 
-  const { activeCategory, forwardRefs, containerRef } = useActiveCategory();
+  const { visibleChild, forwardRefs, scrollContainerRef } = useTopChild();
 
   return (
     <Container.FullGray>
@@ -73,14 +72,10 @@ function Preferences(): JSX.Element {
       >
         <div
           className="relative flex flex-col gap-6 overflow-y-auto md:flex-row"
-          ref={containerRef}
+          ref={scrollContainerRef}
         >
-          <PreferencesAside activeCategory={activeCategory} id={id} />
-          <PreferencesContent
-            forwardRefs={forwardRefs}
-            id={id}
-            isReadOnly={false}
-          />
+          <PreferencesAside activeCategory={visibleChild} />
+          <PreferencesContent forwardRefs={forwardRefs} isReadOnly={false} />
           <span className="flex-1" />
         </div>
         <div className="flex justify-end">
@@ -129,11 +124,9 @@ export function usePrefDefinitions() {
 }
 
 export function PreferencesContent({
-  id,
   isReadOnly,
   forwardRefs,
 }: {
-  readonly id: (prefix: string) => string;
   readonly isReadOnly: boolean;
   readonly forwardRefs?: (index: number, element: HTMLElement | null) => void;
 }): JSX.Element {
@@ -145,11 +138,11 @@ export function PreferencesContent({
           [category, { title, description = undefined, subCategories }],
           index
         ) => (
-          <ErrorBoundary dismissable key={category}>
+          <ErrorBoundary dismissible key={category}>
             <Container.Center
               className="gap-8 overflow-y-visible"
               forwardRef={forwardRefs?.bind(undefined, index)}
-              id={id(category)}
+              id={category}
             >
               <h3 className="text-2xl">{title}</h3>
               {description !== undefined && <p>{description}</p>}
@@ -301,7 +294,7 @@ function Item({
     />
   );
   return 'renderer' in item ? (
-    <ErrorBoundary dismissable>{children}</ErrorBoundary>
+    <ErrorBoundary dismissible>{children}</ErrorBoundary>
   ) : (
     children
   );

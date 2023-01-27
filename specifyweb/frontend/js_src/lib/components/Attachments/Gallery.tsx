@@ -78,7 +78,7 @@ export function AttachmentGallery({
           : loadingGif}
       </Container.Base>
       {typeof viewRecord === 'object' && (
-        <ErrorBoundary dismissable>
+        <ErrorBoundary dismissible>
           <ResourceView
             dialog="modal"
             isDependent={false}

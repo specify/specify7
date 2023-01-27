@@ -6,11 +6,7 @@ import { commonText } from '../../localization/common';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
-import {
-  legacyLoadingContext,
-  SetUnloadProtectsContext,
-  UnloadProtectsContext,
-} from '../Core/Contexts';
+import { legacyLoadingContext } from '../Core/Contexts';
 import { Dialog } from '../Molecules/Dialog';
 import { downloadFile } from '../Molecules/FilePicker';
 import { clearCache } from '../RouterCommands/CacheBuster';
@@ -19,6 +15,10 @@ import { mainText } from '../../localization/main';
 import { headerText } from '../../localization/header';
 import { StringToJsx } from '../../localization/utils';
 import { LocalizedString } from 'typesafe-i18n';
+import {
+  SetUnloadProtectsContext,
+  UnloadProtectsContext,
+} from '../Router/Router';
 
 const supportEmail = 'support@specifysoftware.org' as LocalizedString;
 export const supportLink = (
@@ -69,7 +69,7 @@ export function ErrorDialog({
   readonly dismissible?: boolean;
 }): JSX.Element {
   const id = useId('error-dialog')('');
-  // If there is more than one error, all but the last one should be dismissable
+  // If there is more than one error, all but the last one should be dismissible
   const isLastError = React.useRef(errors.size === 0).current;
   React.useEffect(() => {
     errors.add(id);

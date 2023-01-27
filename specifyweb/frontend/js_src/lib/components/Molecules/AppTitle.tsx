@@ -7,7 +7,7 @@ import React from 'react';
 import { usePref } from '../UserPreferences/usePref';
 import { mainText } from '../../localization/main';
 import { LocalizedString } from 'typesafe-i18n';
-import { UnloadProtectsContext } from '../Core/Contexts';
+import { UnloadProtectsContext } from '../Router/Router';
 
 export function AppTitle({ title }: { readonly title: LocalizedString }): null {
   const [updateTitle] = usePref('form', 'behavior', 'updatePageTitle');

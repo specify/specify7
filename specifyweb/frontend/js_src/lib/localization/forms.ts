@@ -155,36 +155,6 @@ export const formsText = createDictionary({
       або кінцевого часу.
     `,
   },
-  unsupportedForm: {
-    'en-us': 'Incorrect Form',
-    'ru-ru': 'Неправильная форма',
-    'es-es': 'Forma incorrecta',
-    'fr-fr': 'Forme incorrecte',
-    'uk-ua': 'Неправильна форма',
-  },
-  unsupportedFormDescription: {
-    'en-us': `
-      This plugin cannot be used on this form. Try moving it to the locality,
-      collecting event or collection object forms.
-    `,
-    'ru-ru': `
-      Этот плагин нельзя использовать в этой форме. Попробуй переместить его на
-      форму местности, события сбора или объекта коллекции.
-    `,
-    'es-es': `
-      Este complemento no se puede utilizar en este formulario. Intente moverlo
-      a la localidad, recolectando formas de eventos u objetos de colección.
-    `,
-    'fr-fr': `
-      Ce plugin ne peut pas être utilisé sur ce formulaire. Essayez de le
-      déplacer vers la localité, en collectant des formulaires d'événement ou
-      d'objet de collection.
-    `,
-    'uk-ua': `
-      Цей плагін не можна використовувати в цій формі. Спробуйте перемістити
-      його до форми місцевості, збору подій чи об’єктів колекції.
-    `,
-  },
   invalidDate: {
     'en-us': 'Invalid Date',
     'ru-ru': 'Недействительная дата',

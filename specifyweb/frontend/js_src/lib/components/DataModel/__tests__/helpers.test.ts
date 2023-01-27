@@ -45,6 +45,7 @@ describe('serializeResource', () => {
       firstName: null,
       groups: [],
       guid: null,
+      identifiers: [],
       initials: null,
       instContentContact: null,
       instTechContact: null,
@@ -57,6 +58,7 @@ describe('serializeResource', () => {
       modifiedByAgent: null,
       organization: null,
       remarks: null,
+      resource_uri: undefined,
       specifyUser: null,
       suffix: null,
       text1: null,
@@ -213,11 +215,6 @@ describe('fetchDistantRelated', () => {
     id: collectorId,
     agent: getResourceApiUrl('Agent', agentId),
   });
-  const agent = {
-    resource_uri: getResourceApiUrl('Agent', agentId),
-    id: agentId,
-    lastname: 'a',
-  };
 
   test('single field path', async () => {
     const resource = new schema.models.Collector.Resource({ id: collectorId });
@@ -230,11 +227,17 @@ describe('fetchDistantRelated', () => {
     );
   });
 
-  const emptyCollectorId = 1;
+  const emptyCollectorId = 2;
   overrideAjax(`/api/specify/collector/${emptyCollectorId}/`, {
     resource_uri: getResourceApiUrl('Collector', emptyCollectorId),
     id: emptyCollectorId,
   });
+  const agent = {
+    resource_uri: getResourceApiUrl('Agent', agentId),
+    id: agentId,
+    lastname: 'a',
+  };
+  overrideAjax(`/api/specify/agent/${agentId}/`, agent);
   test('valid field with missing related resource', async () => {
     const resource = new schema.models.Collector.Resource({
       id: emptyCollectorId,
@@ -243,7 +246,7 @@ describe('fetchDistantRelated', () => {
     const data = (await fetchDistantRelated(resource, [field]))!;
     expect(data.resource).toBe(resource);
     expect(data.field).toBe(field);
-    expect(data.resource).toBeUndefined();
+    expect(data.resource!.get(field.name)).toBeUndefined();
   });
 
   test('multi field path', async () => {
