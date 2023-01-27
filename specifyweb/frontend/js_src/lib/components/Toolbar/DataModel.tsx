@@ -241,13 +241,16 @@ function DataModelFields({
     <>
       <p>
         {commonText.colonLine({
-          label: schemaText.fieldID(),
+          label: schemaText.idField(),
           value: model.idField.name,
         })}
       </p>
       {typeof scope === 'string' && (
         <p>
-          {schemaText.scope()}: {scope}
+          {commonText.colonLine({
+            label: schemaText.scope(),
+            value: scope,
+          })}
         </p>
       )}
       <H3>{schemaText.fields()}</H3>
@@ -312,31 +315,60 @@ function DataModelRelationships({
 }): JSX.Element {
   const data = React.useMemo(() => getRelationships(model), [model]);
 
-  const [filteredDependentData, setFilteredDependentData] =
-    React.useState(data);
-  const [dependentFilter, setDependentFilter] = React.useState(false);
+  const [dependentFilter, setDependentFilter] = React.useState<
+    undefined | boolean
+  >(undefined);
 
-  React.useEffect(() => {
-    if (dependentFilter === true) {
-      const dependentData = data
-        .filter((table) => table.isDependent === 'Yes')
-        .map((table) => table);
-      setFilteredDependentData(dependentData);
-    } else {
-      setFilteredDependentData(data);
-    }
-  }, [dependentFilter]);
+  const filteredDependentData = React.useMemo(
+    () =>
+      typeof dependentFilter === 'boolean'
+        ? data.filter(
+            (relationship) =>
+              model.strictGetRelationship(relationship.name).isDependent() ===
+              dependentFilter
+          )
+        : data,
+    [dependentFilter]
+  );
 
   return (
     <>
-      <div className="flex items-center">
+      <div className="flex items-center gap-4">
         <H3 id={model.name.toLowerCase()}>{schemaText.relationships()}</H3>
-        <DependentFilterButton
-          isPressed={dependentFilter}
-          onClick={(): void => setDependentFilter(!dependentFilter)}
-        >
-          {schemaText.showDependent()}
-        </DependentFilterButton>
+        <div className="flex items-center gap-2">
+          <Button.Small
+            aria-pressed={
+              dependentFilter === true || dependentFilter === undefined
+            }
+            onClick={(): void =>
+              setDependentFilter(
+                dependentFilter === undefined
+                  ? true
+                  : dependentFilter === false
+                  ? true
+                  : undefined
+              )
+            }
+          >
+            {schemaText.dependent()}
+          </Button.Small>
+          <Button.Small
+            aria-pressed={
+              dependentFilter === false || dependentFilter === undefined
+            }
+            onClick={(): void =>
+              setDependentFilter(
+                dependentFilter === undefined
+                  ? false
+                  : dependentFilter === true
+                  ? false
+                  : undefined
+              )
+            }
+          >
+            {schemaText.independent()}
+          </Button.Small>
+        </div>
       </div>
       <Table
         data={filteredDependentData}
@@ -345,39 +377,6 @@ function DataModelRelationships({
         sortName="dataModelRelationships"
       />
     </>
-  );
-}
-
-function DependentFilterButton({
-  isPressed,
-  children,
-  onClick: handleClick,
-  className: newClasses,
-}: {
-  readonly isPressed: boolean;
-  readonly children: LocalizedString;
-  readonly onClick: () => void;
-  readonly className?: string;
-}): JSX.Element {
-  return (
-    <button
-      aria-pressed={isPressed}
-      className={`button aria-handled ml-2 inline-flex cursor-pointer items-center
-      justify-center gap-2 rounded px-2
-      py-1 capitalize shadow-sm 
-      active:brightness-80 disabled:bg-gray-200 disabled:text-gray-500 dark:disabled:!bg-neutral-700
-        ${
-          isPressed
-            ? 'bg-orange-400 text-white hover:bg-orange-500'
-            : 'hover:bg-gray-300 hover:dark:bg-neutral-600'
-        }
-        ${newClasses}
-      `}
-      type="button"
-      onClick={handleClick}
-    >
-      {children}
-    </button>
   );
 }
 
