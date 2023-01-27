@@ -163,7 +163,8 @@
 
   .link {
     @apply text-black dark:text-gray-200 cursor-pointer disabled:!ring-0
-      enabled:hover:text-brand-300 gap-2 inline-flex items-center active:underline;
+      enabled:hover:text-brand-300 gap-2 inline-flex items-center
+      active:underline text-left;
   }
 
   a.link {
