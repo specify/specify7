@@ -23,18 +23,14 @@ import type { Collection } from '../DataModel/specifyModel';
 import type { Accession } from '../DataModel/types';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { resourceToGeneric } from './autoMerge';
-import {
-  CompareField,
-  MergeButton,
-  MergeContainer,
-  useMergeConformation,
-} from './Compare';
+import { MergeContainer, useMergeConformation } from './Compare';
 import { mergeCellBackground, mergeHeaderClassName } from './Header';
 import { MergeDialogContainer, ToggleMergeView } from './index';
 import { f } from '../../utils/functools';
 import { serializeResource } from '../DataModel/helpers';
 import { mergingText } from '../../localization/merging';
 import { Submit } from '../Atoms/Submit';
+import { CompareField, MergeButton } from './CompareField';
 
 export function MergeSubviewButton({
   relationship,

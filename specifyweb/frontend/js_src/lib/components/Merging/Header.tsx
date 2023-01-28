@@ -11,9 +11,9 @@ import { DateElement } from '../Molecules/DateElement';
 import { dialogClassNames } from '../Molecules/Dialog';
 import { FormattedResource } from '../Molecules/FormattedResource';
 import { TableIcon } from '../Molecules/TableIcon';
-import { MergeButton } from './Compare';
 import { mergingText } from '../../localization/merging';
 import { UsagesSection } from './Usages';
+import { MergeButton } from './CompareField';
 
 export function MergingHeader({
   merged,
