@@ -365,11 +365,19 @@ export function MergeButton({
       disabled={isSame}
       title={treeText.merge()}
       variant={className.blueButton}
-      onClick={(): void =>
-        field === undefined
-          ? void to.bulkSet(resourceToGeneric(serializeResource(from), false))
-          : void to.set(field.name, from.get(field.name))
-      }
+      onClick={(): void => {
+        if (field === undefined)
+          to.bulkSet(resourceToGeneric(serializeResource(from), false));
+        else {
+          const dependentFields = Object.entries(strictDependentFields())
+            .filter(([_dependent, source]) => source === field.name)
+            .map(([dependent]) => dependent);
+          const allFields = [field.name, ...dependentFields];
+          allFields.forEach((fieldName) =>
+            to.set(fieldName, from.get(fieldName))
+          );
+        }
+      }}
     >
       {icons.chevronLeft}
     </Button.Small>
