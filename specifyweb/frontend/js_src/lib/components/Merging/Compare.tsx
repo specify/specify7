@@ -172,13 +172,15 @@ function findDiffering(
      */
     if (filteredFields.length > 0) return filteredFields;
   }
-  const nonEmptyFields = fields.filter((field) => {
-    const value =
-      field.isRelationship && field.isDependent()
-        ? records[0].getDependentResource(field.name)
-        : (records[0].get(field.name) as string);
-    return value !== undefined && value !== null && value !== '';
-  });
+  const nonEmptyFields = fields.filter((field) =>
+    records.some((record) => {
+      const value =
+        field.isRelationship && field.isDependent()
+          ? record.getDependentResource(field.name)
+          : (record.get(field.name) as string);
+      return value !== undefined && value !== null && value !== '';
+    })
+  );
   return nonEmptyFields.length === 0 ? fields : nonEmptyFields;
 }
 
