@@ -267,9 +267,15 @@ function Field({
             fieldName={field.name}
             /*
              * Don't use auto grow text area, but do display query combo box
-             * controls
+             * controls. Also, display precision picker
              */
-            formType={field.isRelationship ? 'form' : 'formTable'}
+            formType={
+              field.isRelationship ||
+              (fieldDefinition.type === 'Plugin' &&
+                fieldDefinition.pluginDefinition.type === 'PartialDateUI')
+                ? 'form'
+                : 'formTable'
+            }
             id={undefined}
             isRequired={false}
             mode={isReadOnly || typeof merged === 'object' ? 'view' : 'edit'}
@@ -315,6 +321,19 @@ function fieldToDefinition(
       type: 'ComboBox',
       defaultValue: undefined,
       pickList: undefined,
+    };
+  else if (field.isTemporal())
+    return {
+      type: 'Plugin',
+      pluginDefinition: {
+        type: 'PartialDateUI',
+        defaultValue: undefined,
+        dateField: field.name,
+        precisionField: Object.entries(strictDependentFields()).find(
+          ([_dependent, source]) => source === field.name
+        )?.[0],
+        defaultPrecision: 'full',
+      },
     };
   else
     return {
