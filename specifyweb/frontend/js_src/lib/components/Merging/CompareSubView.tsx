@@ -135,19 +135,20 @@ function MergeDialog({
     else merged.set(relationship.name, mergedRecords[0] as never);
   }, [merged, relationship, mergedRecords]);
 
-  const add = (
-    <Button.Green
-      className="flex-1"
-      onClick={(): void =>
-        setMergedRecords([
-          ...mergedRecords,
-          new relationship.relatedModel.Resource(),
-        ])
-      }
-    >
-      {commonText.add()}
-    </Button.Green>
-  );
+  const add =
+    relationshipIsToMany(relationship) || mergedRecords.length === 0 ? (
+      <Button.Green
+        className="flex-1"
+        onClick={(): void =>
+          setMergedRecords([
+            ...mergedRecords,
+            new relationship.relatedModel.Resource(),
+          ])
+        }
+      >
+        {commonText.add()}
+      </Button.Green>
+    ) : undefined;
 
   return (
     <MergeDialogContainer
@@ -182,8 +183,10 @@ function MergeDialog({
         {Array.from({ length: maxCount }, (_, index) => (
           <React.Fragment key={index}>
             <SubViewLine
-              isFirst={index === 0}
-              isLast={index + 1 === maxCount}
+              isFirst={index === 0 || !relationshipIsToMany(relationship)}
+              isLast={
+                index + 1 === maxCount || !relationshipIsToMany(relationship)
+              }
               merged={mergedRecords[index]}
               mergedJsx={
                 mergedRecords[index] === undefined &&
@@ -226,14 +229,14 @@ function MergeDialog({
             </tbody>
           </React.Fragment>
         ))}
-        {maxCount === mergedRecords.length && (
+        {maxCount === mergedRecords.length && typeof add === 'object' ? (
           <tbody>
             <tr>
               <td />
               <td>{add}</td>
             </tr>
           </tbody>
-        )}
+        ) : null}
       </MergeContainer>
     </MergeDialogContainer>
   );
