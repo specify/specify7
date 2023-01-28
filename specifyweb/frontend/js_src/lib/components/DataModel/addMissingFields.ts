@@ -1,5 +1,5 @@
 import { parserFromType } from '../../utils/parser/definitions';
-import type { RA } from '../../utils/types';
+import type { DeepPartial, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { formatUrl } from '../Router/queryString';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
@@ -26,7 +26,7 @@ type ResourceSpec = {
  */
 export function addMissingFields<TABLE_NAME extends keyof Tables>(
   tableName: TABLE_NAME,
-  record: Partial<SerializedResource<Tables[TABLE_NAME]>>,
+  record: DeepPartial<SerializedResource<Tables[TABLE_NAME]>>,
   {
     requiredFields = 'set',
     optionalFields = 'define',
@@ -104,14 +104,14 @@ function shouldIncludeField(
 }
 
 function handleRelationship<TABLE_NAME extends keyof Tables>(
-  record: Partial<SerializedResource<Tables[TABLE_NAME]>>,
+  record: DeepPartial<SerializedResource<Tables[TABLE_NAME]>>,
   field: Relationship,
   spec: ResourceSpec
 ) {
   if (relationshipIsToMany(field))
     if (field.isDependent()) {
       const records = record[field.name as keyof typeof record] as
-        | RA<Partial<SerializedResource<AnySchema>>>
+        | RA<DeepPartial<SerializedResource<AnySchema>>>
         | undefined;
       return (
         records?.map((record) =>

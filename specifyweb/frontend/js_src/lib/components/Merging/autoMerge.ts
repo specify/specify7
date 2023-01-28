@@ -11,12 +11,12 @@ import { strictDependentFields } from '../FormMeta/CarryForward';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { unMergeableFields } from './Compare';
 
-// FIXME: add tests for this file
 /**
  * Automatically merge n records into one. Used for smart defaults
  */
 export function autoMerge(
   model: SpecifyModel,
+  // REFACTOR: replace all usages of "resource" with "record" for consistency
   rawResources: RA<SerializedResource<AnySchema>>,
   /**
    * Only copy data into the merged record if it is the same between all records
