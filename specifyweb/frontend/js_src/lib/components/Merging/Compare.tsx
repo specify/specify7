@@ -20,6 +20,7 @@ import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { resourceToGeneric } from './autoMerge';
 import { MergeSubviewButton } from './CompareSubView';
 import { MergeRow, MergingHeader } from './Header';
+import { strictDependentFields } from '../FormMeta/CarryForward';
 
 export function CompareRecords({
   formId,
@@ -125,7 +126,8 @@ export function useMergeConformation(
           field.isDependent() ||
           !relationshipIsToMany(field))
     );
-    return findDiffering(showMatching, fields, records);
+    const differing = findDiffering(showMatching, fields, records);
+    return showMatching ? differing : hideDependent(differing);
   }, [showMatching, model, records]);
 }
 
@@ -136,6 +138,7 @@ export const unMergeableFields = new Set([
   'version',
 ]);
 
+// FIXME: add tests
 function findDiffering(
   showMatching: boolean,
   fields: RA<LiteralField | Relationship>,
@@ -178,6 +181,22 @@ function findDiffering(
   });
   return nonEmptyFields.length === 0 ? fields : nonEmptyFields;
 }
+
+// FIXME: add tests
+/**
+ * If date1 is already in the list of fields, don't also include date1precision
+ * as merging date1 should also merge date1precision.
+ */
+const hideDependent = (
+  fields: RA<LiteralField | Relationship>
+): RA<LiteralField | Relationship> =>
+  fields.filter(({ name }) => {
+    const sourceField = strictDependentFields()[name];
+    return (
+      sourceField === undefined ||
+      !fields.some(({ name }) => name === sourceField)
+    );
+  });
 
 export function CompareField({
   field,
