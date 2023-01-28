@@ -62,6 +62,15 @@ const dependentFieldSeeker = (suffix: string): IR<string> =>
       .filter(([_dependent, source]) => typeof source === 'string')
   ) as IR<string>;
 
+export const strictDependentFields = f.store<IR<string>>(() => ({
+  // Fields like endDatePrecision
+  ...dependentFieldSeeker('precision'),
+  // Fields like endDateVerbatim
+  ...dependentFieldSeeker('verbatim'),
+  // Fields like endDepthUnit
+  ...dependentFieldSeeker('unit'),
+}));
+
 /**
  * Dependent -> Source
  * When value in one field is based on another, don't show the dependent field in
@@ -72,12 +81,7 @@ export const dependentFields = f.store<IR<string>>(() => ({
   lat2text: 'latitude2',
   long1text: 'longitude1',
   long2text: 'longitude2',
-  // Fields like endDatePrecision
-  ...dependentFieldSeeker('precision'),
-  // Fields like endDateVerbatim
-  ...dependentFieldSeeker('verbatim'),
-  // Fields like endDepthUnit
-  ...dependentFieldSeeker('unit'),
+  ...strictDependentFields,
 }));
 
 export function CarryForwardConfig({

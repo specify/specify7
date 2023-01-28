@@ -1,15 +1,17 @@
 import { f } from '../../utils/functools';
-import type { RA } from '../../utils/types';
+import type { IR, RA } from '../../utils/types';
 import { multiSortFunction, sortFunction } from '../../utils/utils';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import { resourceToModel, specialFields } from '../DataModel/helpers';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
+import { getUniqueFields } from '../DataModel/resource';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
+import { strictDependentFields } from '../FormMeta/CarryForward';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { unMergeableFields } from './Compare';
-import { getUniqueFields } from '../DataModel/resource';
 
+// FIXME: add tests for this file
 /**
  * Automatically merge n records into one. Used for smart defaults
  */
@@ -20,20 +22,25 @@ export function autoMerge(
    * Only copy data into the merged record if it is the same between all records
    * Don't try to predict which record to get the data from.
    */
-  cautious: boolean = true
+  cautious = true
 ): SerializedResource<AnySchema> {
   if (rawResources.length === 1) return rawResources[0];
   const resources = sortResources(rawResources);
+  const allKeys = f
+    .unique(resources.flatMap(Object.keys))
+    .filter((fieldName) => !specialFields.has(fieldName))
+    .map((fieldName) => model.strictGetField(fieldName));
+
   return addMissingFields(
     model.name,
-    Object.fromEntries(
-      f
-        .unique(resources.flatMap(Object.keys))
-        .filter((fieldName) => !specialFields.has(fieldName))
-        .map((fieldName) => [
-          fieldName,
-          mergeField(model.strictGetField(fieldName), resources, cautious),
+    mergeDependentFields(
+      resources,
+      Object.fromEntries(
+        allKeys.map((field) => [
+          field.name,
+          mergeField(field, resources, cautious),
         ])
+      )
     )
   );
 }
@@ -61,17 +68,12 @@ function mergeField(
   cautious: boolean
 ) {
   const values = resources.map((resource) => resource[field.name]);
-  const nonNullValues = f.unique(
-    values.filter(
-      (value) =>
-        value !== undefined && value !== null && value !== false && value !== ''
-    )
-  );
-  const firstValue = nonNullValues[0] ?? values[0];
+  const nonFalsyValues = f.unique(values.filter(Boolean));
+  const firstValue = nonFalsyValues[0] ?? values[0];
   if (field.isRelationship)
     if (field.isDependent())
       if (relationshipIsToMany(field)) {
-        const records = nonNullValues as unknown as RA<
+        const records = nonFalsyValues as unknown as RA<
           RA<SerializedResource<AnySchema>>
         >;
         // Remove duplicates
@@ -86,16 +88,16 @@ function mergeField(
       } else
         return autoMerge(
           field.relatedModel,
-          nonNullValues as unknown as RA<SerializedResource<AnySchema>>,
+          nonFalsyValues as unknown as RA<SerializedResource<AnySchema>>,
           cautious
         );
     else return firstValue;
   // Don't try to merge conflicts
-  else if (nonNullValues.length > 1 && cautious) return null;
-  else if (nonNullValues.length > 0)
+  else if (nonFalsyValues.length > 1 && cautious) return null;
+  else if (nonFalsyValues.length > 0)
     // Pick the longest value
     return (
-      Array.from(nonNullValues).sort(
+      Array.from(nonFalsyValues).sort(
         sortFunction((string) =>
           typeof string === 'string' ? string.length : 0
         )
@@ -129,3 +131,36 @@ export const resourceToGeneric = (
       ])
   ) as SerializedResource<AnySchema>;
 };
+
+/**
+ * If date1 was gotten from the 2nd resource, then also get date1precision from
+ * the 2nd resource
+ */
+const mergeDependentFields = (
+  resources: RA<SerializedResource<AnySchema>>,
+  merged: IR<ReturnType<typeof mergeField>>
+): IR<ReturnType<typeof mergeField>> =>
+  Object.fromEntries(
+    Object.entries(merged).map(([fieldName, value]) => [
+      fieldName,
+      fieldName in strictDependentFields()
+        ? mergeDependentField(
+            resources,
+            fieldName,
+            merged[strictDependentFields()[fieldName]]
+          )
+        : value,
+    ])
+  );
+
+function mergeDependentField(
+  resources: RA<SerializedResource<AnySchema>>,
+  fieldName: string,
+  sourceValue: ReturnType<typeof mergeField>
+): ReturnType<typeof mergeField> {
+  const sourceField = strictDependentFields()[fieldName];
+  const sourceResource = resources.find(
+    (resource) => resource[sourceField] === sourceValue
+  );
+  return sourceResource?.[fieldName] ?? null;
+}
