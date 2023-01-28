@@ -109,10 +109,22 @@ export function useMergeConformation(
     'merging',
     'showMatchingFields'
   );
-  return React.useMemo(() => {
-    const differing = findDiffering(showMatching, model, records);
-    return showMatching ? differing : hideDependent(differing);
-  }, [showMatching, model, records]);
+  return React.useMemo(
+    () => findDiffering(showMatching, model, records),
+    [showMatching, model, records]
+  );
+}
+
+/**
+ * Decide which fields to display in the merging dialog
+ */
+function findDiffering(
+  showMatching: boolean,
+  model: SpecifyModel,
+  records: RA<SpecifyResource<AnySchema>>
+): RA<LiteralField | Relationship> {
+  const differing = findDifferingFields(showMatching, model, records);
+  return showMatching ? differing : hideDependent(differing);
 }
 
 export const unMergeableFields = new Set([
@@ -122,10 +134,7 @@ export const unMergeableFields = new Set([
   'version',
 ]);
 
-/**
- * Decide which fields to display in the merging dialog
- */
-function findDiffering(
+function findDifferingFields(
   showMatching: boolean,
   model: SpecifyModel,
   records: RA<SpecifyResource<AnySchema>>
