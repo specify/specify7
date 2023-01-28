@@ -257,45 +257,46 @@ function useChildren(
       const maxCount = Math.max(
         ...[mergedRecords, ...children].map((children) => children?.length ?? 0)
       );
-      return children
-        .map((records) =>
-          records?.reduce<
-            readonly [
-              RR<number, SpecifyResource<AnySchema>>,
-              RA<string | undefined>
-            ]
-          >(
-            ([mappings, mergedRecords], record) => {
-              const serialized = JSON.stringify(
+      // Try to match duplicate children to those of merged records
+      const mosaikChildren = children.map((records) =>
+        records?.reduce<
+          readonly [
+            RR<number, SpecifyResource<AnySchema>>,
+            RA<string | undefined>
+          ]
+        >(
+          ([mappings, mergedRecords], record) => {
+            const serialized = JSON.stringify(
+              resourceToGeneric(serializeResource(record), true)
+            );
+            const matchIndex = mergedRecords.indexOf(serialized);
+            return matchIndex === -1
+              ? [mappings, mergedRecords]
+              : [
+                  { ...mappings, [matchIndex]: record },
+                  replaceItem(mergedRecords, matchIndex, undefined),
+                ];
+          },
+          [
+            {},
+            mergedRecords
+              .map((record) =>
                 resourceToGeneric(serializeResource(record), true)
-              );
-              const matchIndex = mergedRecords.indexOf(serialized);
-              return [
-                { ...mappings, [matchIndex]: record },
-                matchIndex === -1
-                  ? mergedRecords
-                  : replaceItem(mergedRecords, matchIndex, undefined),
-              ];
-            },
-            [
-              {},
-              mergedRecords
-                .map((record) =>
-                  resourceToGeneric(serializeResource(record), true)
-                )
-                .map((resource) => JSON.stringify(resource)),
-            ]
-          )
+              )
+              .map((resource) => JSON.stringify(resource)),
+          ]
         )
-        .map((results, index) => {
-          if (results === undefined) return [];
-          const [mappings] = results;
-          const mapped = new Set(Object.values(mappings));
-          return [
-            ...Array.from({ length: maxCount }, (_, index) => mappings[index]),
-            ...(children[index]?.filter((record) => !mapped.has(record)) ?? []),
-          ];
-        });
+      );
+      // Append all unmatched children at the end
+      return mosaikChildren.map((results, index) => {
+        if (results === undefined) return [];
+        const [mappings] = results;
+        const mapped = new Set(Object.values(mappings));
+        return [
+          ...Array.from({ length: maxCount }, (_, index) => mappings[index]),
+          ...(children[index]?.filter((record) => !mapped.has(record)) ?? []),
+        ];
+      });
     }, [getChildren, resources, relationship])
   );
 }
