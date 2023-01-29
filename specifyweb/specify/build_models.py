@@ -97,7 +97,7 @@ def make_relationship(modelname : str, rel: Relationship, datamodel: Datamodel) 
         return None
 
     try:
-        on_delete = SPECIAL_DELETION_RULES[f"{modelname}"][f"{rel.name.lower()}"]
+        on_delete = SPECIAL_DELETION_RULES[f'{modelname.capitalize()}.{rel.name.lower()}']
     except KeyError:
         reverse = datamodel.reverse_relationship(rel)
 

@@ -21,6 +21,8 @@ from django.db import models
 """
 SPECIAL_DELETION_RULES = {
     'Agent.specifyuser' : models.SET_NULL,
+    'Borrow.addressOfRecord' : models.SET_NULL,
+    'Loanpreparation.preparation' : models.SET_NULL,
 
      # Handle workbench deletion using raw sql in business rules.
     'Workbenchrow.workbench': models.DO_NOTHING,
