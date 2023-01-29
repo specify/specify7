@@ -7,6 +7,7 @@ from .case_insensitive_bool import BooleanField, NullBooleanField
 from .datamodel import Datamodel, Table, Relationship, Field
 from .deletion_rules import SPECIAL_DELETION_RULES, ADDITIONAL_DELETE_BLOCKERS
 
+# this moduel's parent directory, 'specify'
 appname = __name__.split('.')[-2]
 
 orderings = {
@@ -18,7 +19,7 @@ orderings = {
     'Collector': ('ordernumber',),
 }
 
-def make_model(module: str, table: Table, datamodel: Datamodel) -> models.base.ModelBase:
+def make_model(module: str, table: Table, datamodel: Datamodel) -> models.Model:
     """Returns a Django model class based on the
     definition of a Specify table.
     """
@@ -96,18 +97,23 @@ def make_relationship(modelname : str, rel: Relationship, datamodel: Datamodel) 
         return None
 
     try:
-        on_delete = SPECIAL_DELETION_RULES[f"{rel.name.capitalize()}"][f"{modelname.lower()}"]
+        on_delete = SPECIAL_DELETION_RULES[f"{modelname}"][f"{rel.name.lower()}"]
     except KeyError:
         reverse = datamodel.reverse_relationship(rel)
 
         if reverse is not None and reverse.dependent:
+
+            # Example: Current `rel` is Accessionagent.accession, 
+            # Reverse (Accession.accessionAgents) is flagged as dependent 
+            # (see dependent_fields in .load_datamodel.py), so Cascade Accession Agent
+            # when deleting Accession 
             on_delete = models.CASCADE
         elif modelname in ADDITIONAL_DELETE_BLOCKERS.keys():
             on_delete = protect
         else:
             on_delete = protect
 
-    def make_to_one(Field: type) -> models.ForeignKey or models.OneToOneField:
+    def make_to_one(Field: (models.ForeignKey or models.OneToOneField)) -> models.ForeignKey or models.OneToOneField:
         """Setup a field of the given 'Field' type which can be either
         ForeignKey (many-to-one) or OneToOneField.
         """
@@ -259,7 +265,7 @@ field_type_map = {
 
 # Build the table information as Django models
 # See .models.py
-def build_models(module : str, datamodel: Datamodel):
+def build_models(module : str, datamodel: Datamodel) -> Dict[int, models.Model]:
     return { model.specify_model.tableId: model
              for table in datamodel.tables
              for model in [ make_model(module, table, datamodel) ]}

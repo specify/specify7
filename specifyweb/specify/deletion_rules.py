@@ -2,7 +2,14 @@ from django.db import models
 
 """ Special Deletion Rules for table relationships 
     
-    Of the form: base_table : { field_name: action}
+    Of the form: 'relatedTable.relName' : action, 
+        where relName is the field name of the relationship in relatedTable
+
+    For example, 'Accessionagent.accession' : models.CASCADE 
+        would delete the associated Accession Agent when Accession is deleted
+    
+    The field and relationship names can be viewed at
+        https://files.specifysoftware.org/schema/version/2.10/
 
     Possible Django actions (w/ django 2.2) are:
         CASCADE, PROTECT, SET_NULL, SET_DEFAULT, SET(...), DO_NOTHING
@@ -13,49 +20,31 @@ from django.db import models
     See .build_models.py for uses
 """
 SPECIAL_DELETION_RULES = {
-    'Spappresource' : {'spreport': models.CASCADE},
+    'Agent.specifyuser' : models.SET_NULL,
 
-    'Recordset' : {'recordsetitem' : models.CASCADE},
+     # Handle workbench deletion using raw sql in business rules.
+    'Workbenchrow.workbench': models.DO_NOTHING,
+    'Workbenchdataitem.workbenchrow': models.DO_NOTHING,
+    'Workbenchrowimage.workbenchrow': models.DO_NOTHING,
+    'Workbenchrowexportedrelationship.workbenchrow': models.DO_NOTHING,
 
-    'Specifyuser' : {
-        'agent' : models.SET_NULL,
-        'spAppResourceDir' : models.CASCADE,
-        'spAppResource': models.CASCADE,
-        'spPrincipal': models.CASCADE,
-        },
+    # These fields are not marked as dependent because the relationship
+    # can be null
+    'Spappresourcedir.specifyuser': models.CASCADE,
+    'Spappresource.specifyuser': models.CASCADE,
+    'Spappresourcedata.spappresource': models.CASCADE,
+    'Spappresourcedata.spviewsetobj': models.CASCADE,
 
-    # Handle workbench deletion using raw sql in business rules.
-    'Workbench' : {'workbenchrow': models.DO_NOTHING},
-    'Workbenchrow' : {
-        'workbenchdataitem' : models.DO_NOTHING,
-        'workbenchrowimage' : models.DO_NOTHING,
-        'workbenchrowexportedrelationship' : models.DO_NOTHING,
-    },
+    # In addition to these rules, Specify Cascades relationships tagged as dependent
+    # For the complete list, see the global variable called 
+    # dependent_fields in .load_datamodel.py 
 
-    # System Tables
-
-    'Spauditlog' : {'field' : models.CASCADE},
-
-    'Spappresource' : {'spAppResourceData': models.CASCADE},
-    'Spappresourcedir' : {
-        'spPersistedAppResource': models.CASCADE,
-        'spPersistedViewSet' : models.CASCADE,
-        },
-    'Spviewsetobj' : {'spAppResourceData' : models.CASCADE},
-    
-    'Splocalecontainer' : {
-        'item' : models.CASCADE,
-        'name' : models.CASCADE
-    },
-    'Splocalecontaineritem' : {
-        'name' : models.CASCADE
-    },
-    'SpQuery' : {"field" : models.CASCADE},
+    # If the field/relationship is not dependent and not defined here, then it is 
+    # protected
 }
 
 """ Any additional desired delete blockers 
 Of the form 'base_table': ['field_1_name', 'field_2_name', ...]
-Use the django attributes from the 'base_table' for field names
 
 See .build_models.py and .views.py for uses
 """
