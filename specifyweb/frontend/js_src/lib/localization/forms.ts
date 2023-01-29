@@ -104,7 +104,7 @@ export const formsText = createDictionary({
     'en-us': 'Record',
     'ru-ru': 'Запись',
     'es-es': 'Registro',
-    'fr-fr': 'Record',
+    'fr-fr': 'Enregistrer',
     'uk-ua': 'Запис',
   },
   relationship: {
@@ -714,14 +714,14 @@ export const formsText = createDictionary({
     'en-us': 'Forward',
     'ru-ru': 'Вперед',
     'es-es': 'Hacia adelante',
-    'fr-fr': 'Effronté',
+    'fr-fr': "Vers l'avant",
     'uk-ua': 'Вперед',
   },
   reverse: {
     'en-us': 'Reverse',
     'ru-ru': 'Обратный',
     'es-es': 'Marcha atrás',
-    'fr-fr': 'Inverse',
+    'fr-fr': 'Inverser',
     'uk-ua': 'Зворотний',
   },
   deletedInline: {
@@ -910,7 +910,7 @@ export const formsText = createDictionary({
     'en-us': 'Find usages',
     'ru-ru': 'Найти использование',
     'es-es': 'Buscar usos',
-    'fr-fr': 'Trouver des utilisations',
+    'fr-fr': 'Trouver des usages',
     'uk-ua': 'Знайти використання',
   },
   usagesOfPickList: {
