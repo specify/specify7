@@ -1,17 +1,17 @@
 import React from 'react';
 
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
-import { RA } from '../../utils/types';
+import type { RA } from '../../utils/types';
+import { removeItem, replaceItem } from '../../utils/utils';
+import { Ul } from '../Atoms';
+import { Button } from '../Atoms/Button';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Relationship } from '../DataModel/specifyField';
-import { TableIcon } from '../Molecules/TableIcon';
-import { Ul } from '../Atoms';
-import { useTriggerState } from '../../hooks/useTriggerState';
-import { Button } from '../Atoms/Button';
-import { removeItem, replaceItem } from '../../utils/utils';
-import { useBooleanState } from '../../hooks/useBooleanState';
 import { RecordSelectorFromIds } from '../FormSliders/RecordSelectorFromIds';
+import { TableIcon } from '../Molecules/TableIcon';
 
 export type DeleteBlocker = {
   readonly directRelationship: Relationship;
@@ -102,20 +102,20 @@ function BlockerPreview({
       </li>
       {isOpen && (
         <RecordSelectorFromIds
-          ids={resolvedIds}
-          newResource={undefined}
           defaultIndex={0}
-          title={undefined}
-          headerButtons={undefined}
           dialog="modal"
+          headerButtons={undefined}
+          ids={resolvedIds}
           isDependent={false}
           mode="edit"
-          onClose={handleClose}
-          onClone={undefined}
           model={parentRelationship?.relatedModel ?? directRelationship.model}
+          newResource={undefined}
+          title={undefined}
+          totalCount={ids.length}
           onAdd={undefined}
+          onClone={undefined}
+          onClose={handleClose}
           onDelete={handleDeleted}
-          onSlide={undefined}
           onSaved={(resource): void => {
             if (
               parentRelationship === undefined &&
@@ -125,7 +125,7 @@ function BlockerPreview({
               handleDeleted(resolvedIds.indexOf(resource.id));
             handleClose();
           }}
-          totalCount={ids.length}
+          onSlide={undefined}
         />
       )}
     </>
