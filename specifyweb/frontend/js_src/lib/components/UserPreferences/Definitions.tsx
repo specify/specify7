@@ -1314,6 +1314,30 @@ export const preferenceDefinitions = {
       },
     },
   },
+  recordMerging: {
+    title: mergingText.recordMerging(),
+    subCategories: {
+      agent: {
+        title: () => tableLabel('Agent'),
+        items: {
+          createVariants: defineItem<boolean>({
+            title: () =>
+              preferencesText.autoCreateVariants({
+                agentVariantTable: tableLabel('AgentVariant'),
+              }),
+            description: () =>
+              preferencesText.autoCreateVariantsDescription({
+                agentVariantTable: tableLabel('AgentVariant'),
+              }),
+            requiresReload: false,
+            visible: 'protected',
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+        },
+      },
+    },
+  },
   reports: {
     title: reportsText.reports(),
     subCategories: {

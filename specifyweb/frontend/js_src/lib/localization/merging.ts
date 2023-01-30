@@ -9,6 +9,10 @@ import { createDictionary } from './utils';
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
 export const mergingText = createDictionary({
+  recordMerging: {
+    'en-us': 'Record Merging',
+    'ru-ru': 'Объединение записей',
+  },
   mergeRecords: {
     'en-us': 'Merge Records',
     'ru-ru': 'Объединить записи',

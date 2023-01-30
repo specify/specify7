@@ -1379,4 +1379,18 @@ export const preferencesText = createDictionary({
     'fr-fr': 'Ne pas utiliser',
     'uk-ua': 'Не використовуйте',
   },
+  autoCreateVariants: {
+    'en-us': 'Automatically create {agentVariantTable:string} records',
+    'ru-ru': 'Автоматически создавать {agentVariantTable:string} записи',
+  },
+  autoCreateVariantsDescription: {
+    'en-us': `
+      When merging agents, automatically create {agentVariantTable:string}
+      records based on on the variations of first name/last name.
+    `,
+    'ru-ru': `
+      При слиянии агентов, автоматически создавать {agentVariantTable:string}
+      записи на основе вариаций имени/фамилии.
+    `,
+  },
 } as const);
