@@ -24,8 +24,7 @@ import { CompareRecords } from './Compare';
 import { mergingText } from '../../localization/merging';
 import { hijackBackboneAjax } from '../../utils/ajax/backboneAjax';
 import { deserializeResource } from '../../hooks/resource';
-import { autoMerge } from './autoMerge';
-import { useLiveState } from '../../hooks/useLiveState';
+import { autoMerge, postMergeResource } from './autoMerge';
 
 const recordMergingTables = new Set<keyof Tables>(['Agent']);
 
@@ -84,15 +83,20 @@ export function MergingDialog({
   const id = useId('merging-dialog');
   const loading = React.useContext(LoadingContext);
   const [error, setError] = React.useState<string | undefined>(undefined);
-  const [merged, setMerged] = useLiveState(
+  const [merged, setMerged] = useAsyncState(
     React.useCallback(
       () =>
         records === undefined
           ? undefined
-          : deserializeResource(autoMerge(model, records, true)),
+          : postMergeResource(records, autoMerge(model, records, true)).then(
+              (merged) =>
+                deserializeResource(merged as SerializedResource<AnySchema>)
+            ),
       [model, records]
-    )
+    ),
+    true
   );
+
   return records === undefined || merged === undefined ? null : (
     <MergeDialogContainer
       onClose={handleClose}
@@ -100,7 +104,13 @@ export function MergingDialog({
         <>
           <Button.Blue
             onClick={(): void =>
-              setMerged(deserializeResource(autoMerge(model, records, false)))
+              loading(
+                postMergeResource(records, autoMerge(model, records, false))
+                  .then((merged) =>
+                    deserializeResource(merged as SerializedResource<AnySchema>)
+                  )
+                  .then(setMerged)
+              )
             }
           >
             {mergingText.autoMerge()}

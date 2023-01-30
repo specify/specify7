@@ -1,5 +1,7 @@
+import { deserializeResource } from '../../hooks/resource';
 import { f } from '../../utils/functools';
-import type { IR, RA } from '../../utils/types';
+import type { IR, RA, RR } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { multiSortFunction, sortFunction } from '../../utils/utils';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import { resourceToModel, specialFields } from '../DataModel/helpers';
@@ -7,7 +9,9 @@ import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import { getUniqueFields } from '../DataModel/resource';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { AgentVariant, Tables } from '../DataModel/types';
 import { strictDependentFields } from '../FormMeta/CarryForward';
+import { format } from '../Forms/dataObjFormatters';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { unMergeableFields } from './Compare';
 
@@ -164,3 +168,45 @@ function mergeDependentField(
   );
   return sourceResource?.[fieldName] ?? null;
 }
+
+/**
+ * Table specific auto merge steps
+ */
+export const postMergeResource = async (
+  resources: RA<SerializedResource<AnySchema>>,
+  merged: IR<ReturnType<typeof mergeField>>
+): Promise<IR<ReturnType<typeof mergeField>>> =>
+  postProcessors[resources?.[0]._tableName]?.(resources, merged) ?? merged;
+
+const postProcessors: Partial<RR<keyof Tables, typeof postMergeResource>> = {
+  // Add agent variants
+  async Agent(resources, merged) {
+    const [formattedMerged, ...formattedResources] = await Promise.all(
+      [merged as SerializedResource<AnySchema>, ...resources].map(
+        async (resource) =>
+          format(deserializeResource(resource)).then((value) => value ?? '')
+      )
+    );
+    const final = formattedMerged.trim().toLowerCase();
+    // FEATURE: detect typos and exclude them from variants (#2913)
+    const variants = filterArray(
+      f.unique(formattedResources.map((formatted) => formatted?.trim()))
+    ).filter((name) => name.toLowerCase() !== final && name.length > 0);
+    const currentVariants = merged.variants as
+      | RA<SerializedResource<AgentVariant>>
+      | undefined;
+    const existingNames = currentVariants?.map(({ name }) => name);
+    const newVariants = variants.filter(
+      (variant) => existingNames?.includes(variant) === false
+    );
+    return {
+      ...merged,
+      variants: [
+        ...(currentVariants ?? []),
+        ...newVariants.map((name) =>
+          addMissingFields('AgentVariant', { name })
+        ),
+      ],
+    };
+  },
+};

@@ -227,7 +227,7 @@ async function formatField(
   const field = resource.specifyModel.strictGetField(fieldName) as LiteralField;
   if (typeof fieldFormatter === 'string' && fieldFormatter === '') return '';
 
-  // Check if formatter contains a table withouth read access
+  // Check if formatter contains a table without read access
   const noAccessTable = mappingPathToTableNames(
     resource.specifyModel.name,
     fieldName.split('.'),

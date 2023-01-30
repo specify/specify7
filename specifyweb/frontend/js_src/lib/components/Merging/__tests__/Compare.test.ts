@@ -17,7 +17,7 @@ describe('findDiffering', () => {
       .set('date1Precision', 2)
       .set('date2', '2020-01-01')
       // Include dependent if source is not visible
-      .set('date2precision', 1),
+      .set('date2Precision', 1),
     new schema.models.Agent.Resource()
       .set('lastName', '2')
       .set('firstName', '1')

@@ -3,7 +3,7 @@ import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
-import { defined, filterArray } from '../../utils/types';
+import { DeepPartial, defined, filterArray } from '../../utils/types';
 import { keysToLowerCase, removeKey } from '../../utils/utils';
 import { formatUrl } from '../Router/queryString';
 import { getUserPref } from '../UserPreferences/helpers';
@@ -69,7 +69,7 @@ export const deleteResource = async (
 
 export const createResource = async <TABLE_NAME extends keyof Tables>(
   tableName: TABLE_NAME,
-  data: Partial<SerializedResource<Tables[TABLE_NAME]>>
+  data: DeepPartial<SerializedResource<Tables[TABLE_NAME]>>
 ): Promise<SerializedResource<Tables[TABLE_NAME]>> =>
   ajax<SerializedModel<Tables[TABLE_NAME]>>(
     `/api/specify/${tableName.toLowerCase()}/`,
@@ -94,7 +94,7 @@ export const createResource = async <TABLE_NAME extends keyof Tables>(
 export const saveResource = async <TABLE_NAME extends keyof Tables>(
   tableName: TABLE_NAME,
   id: number,
-  data: Partial<SerializedResource<Tables[TABLE_NAME]>>,
+  data: DeepPartial<SerializedResource<Tables[TABLE_NAME]>>,
   handleConflict: (() => void) | void
 ): Promise<SerializedResource<Tables[TABLE_NAME]>> =>
   ajax<SerializedModel<Tables[TABLE_NAME]>>(
