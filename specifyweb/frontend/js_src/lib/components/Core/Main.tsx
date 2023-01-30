@@ -26,6 +26,7 @@ import { mainText } from '../../localization/main';
 import { headerText } from '../../localization/header';
 import { userText } from '../../localization/user';
 import { LocalizedString } from 'typesafe-i18n';
+import { OnlineStatus } from './OnlineStatus';
 
 export type UserTool = {
   readonly title: LocalizedString;
@@ -67,6 +68,8 @@ export function Main(): JSX.Element | null {
         .catch(crash),
     []
   );
+
+  const [onlineStatus, onlineOpen] = OnlineStatus();
 
   return menuItems === undefined ? null : (
     <>
@@ -176,6 +179,25 @@ export function Main(): JSX.Element | null {
         >
           {userText.noAgentDescription()}
         </Dialog>
+      )}
+
+      {onlineStatus === 'online' ? (
+        <div
+          className={`mr-2 flex items-center justify-end gap-2 ${
+            !onlineOpen ? 'hidden' : ''
+          }`}
+        >
+          <span
+            className="h-3 w-3 rounded-full bg-green-700"
+            aria-hidden
+          ></span>
+          <p>{onlineStatus}</p>
+        </div>
+      ) : (
+        <div className="mr-2 flex items-center justify-end gap-2">
+          <span className="h-3 w-3 rounded-full bg-red-700" aria-hidden></span>
+          <p>{onlineStatus}</p>
+        </div>
       )}
     </>
   );
