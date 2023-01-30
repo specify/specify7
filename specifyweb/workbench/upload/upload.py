@@ -24,7 +24,7 @@ from .uploadable import ScopedUploadable, Row, Disambiguation, Auditor
 from .upload_result import Uploaded, UploadResult, ParseFailures, json_to_UploadResult
 from .upload_plan_schema import schema, parse_plan_with_basetable
 from . import disambiguation
-from ..models import Spdataset, Spdatasetrowresult
+from ..models import Spdataset, Spdatasetrowresult, Spdatasetrow
 
 Progress = Callable[[UploadResult], None]
 
@@ -71,8 +71,6 @@ def no_savepoint():
     yield
 
 def unupload_dataset(ds: Spdataset, agent, progress: Optional[Progress]=None) -> None:
-    if ds.rowresults is None:
-        return
     results = list(ds.rowresults.values_list('result', flat=True))
     total = len(results)
     with transaction.atomic():
@@ -81,14 +79,12 @@ def unupload_dataset(ds: Spdataset, agent, progress: Optional[Progress]=None) ->
             if rsid is not None:
                 getattr(models, 'Recordset').objects.filter(id=rsid).delete()
 
-
         for i, row in enumerate(reversed(results)):
             logger.info(f"rolling back row {i+1} of {total}")
             upload_result = json_to_UploadResult(json.loads(row))
             if not upload_result.contains_failure():
                 unupload_record(upload_result, agent)
 
-            current += 1
             if progress is not None:
                 progress(upload_result)
         ds.uploadresult = None
@@ -200,13 +196,15 @@ def clear_disambiguation(ds: Spdataset) -> None:
         ds.uploadresult = None
         ds.save(update_fields=['uploadresult'])
 
+        dsr_queryset = Spdatasetrow.objects.filter(spdataset=ds.pk)
         ncols = len(ds.columns)
-        for row in ds.data:
+        for dsr in dsr_queryset:
+            row = dsr.data
             extra = json.loads(row[ncols]) if row[ncols] else None
             if extra:
                 extra['disambiguation'] = {}
             row[ncols] = extra and json.dumps(extra)
-        ds.save(update_fields=['data'])
+            dsr.save(update_fields=['data'])
 
 def create_record_set(ds: Spdataset, table: Table):
     rs = getattr(models, 'Recordset').objects.create(
