@@ -197,9 +197,8 @@ def batch_create(Model: Type[T], iterable: Iterable[T]) -> None:
 def clear_disambiguation(ds: Spdataset) -> None:
     with transaction.atomic():
         assert not ds.was_uploaded(), "Already uploaded!"
-        ds.rowresults = None
         ds.uploadresult = None
-        ds.save(update_fields=['rowresults', 'uploadresult'])
+        ds.save(update_fields=['uploadresult'])
 
         ncols = len(ds.columns)
         for row in ds.data:
