@@ -144,8 +144,16 @@ export function PreferencesContent({
               forwardRef={forwardRefs?.bind(undefined, index)}
               id={category}
             >
-              <h3 className="text-2xl">{title}</h3>
-              {description !== undefined && <p>{description}</p>}
+              <h3 className="text-2xl">
+                {typeof title === 'function' ? title() : title}
+              </h3>
+              {description !== undefined && (
+                <p>
+                  {typeof description === 'function'
+                    ? description()
+                    : description}
+                </p>
+              )}
               {subCategories.map(
                 ([subcategory, { title, description = undefined, items }]) => (
                   <section className="flex flex-col gap-4" key={subcategory}>
@@ -154,7 +162,7 @@ export function PreferencesContent({
                       <h4
                         className={`${className.headerGray} text-center text-xl`}
                       >
-                        {title}
+                        {typeof title === 'function' ? title() : title}
                       </h4>
                       <div className="flex flex-1 justify-end">
                         <Button.Small
@@ -178,7 +186,13 @@ export function PreferencesContent({
                         </Button.Small>
                       </div>
                     </div>
-                    {description !== undefined && <p>{description}</p>}
+                    {description !== undefined && (
+                      <p>
+                        {typeof description === 'function'
+                          ? description()
+                          : description}
+                      </p>
+                    )}
                     {items.map(([name, item]) => {
                       const canEdit =
                         !isReadOnly &&
@@ -204,11 +218,23 @@ export function PreferencesContent({
                                 justify-end text-right
                               `}
                             >
-                              <FormatString text={item.title} />
+                              <FormatString
+                                text={
+                                  typeof item.title === 'function'
+                                    ? item.title()
+                                    : item.title
+                                }
+                              />
                             </p>
                             {item.description !== undefined && (
                               <p className="flex flex-1 justify-end text-right text-gray-500">
-                                <FormatString text={item.description} />
+                                <FormatString
+                                  text={
+                                    typeof item.description === 'function'
+                                      ? item.description()
+                                      : item.description
+                                  }
+                                />
                               </p>
                             )}
                           </div>

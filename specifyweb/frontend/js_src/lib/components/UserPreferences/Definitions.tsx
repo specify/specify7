@@ -41,6 +41,9 @@ import { interactionsText } from '../../localization/interactions';
 import { resourcesText } from '../../localization/resources';
 import { attachmentsText } from '../../localization/attachments';
 import { getField } from '../DataModel/helpers';
+import { mergingText } from '../../localization/merging';
+import { schema } from '../DataModel/schema';
+import { camelToHuman } from '../../utils/utils';
 
 // Custom Renderer for a preference item
 export type PreferenceItemComponent<VALUE> = (props: {
@@ -54,14 +57,23 @@ export type PreferenceItemComponent<VALUE> = (props: {
 }) => JSX.Element;
 
 /**
+ * Have to be careful as preferences may be used before schema is loaded
+ */
+const tableLabel = (tableName: keyof Tables) =>
+  schema.models[tableName]?.label ?? camelToHuman(tableName);
+
+/**
  * Represents a single preference option
  *
  * The concept seems similar to the "Feature Gates" in Firefox:
  * https://firefox-source-docs.mozilla.org/toolkit/components/featuregates/featuregates/
  */
 export type PreferenceItem<VALUE> = {
-  readonly title: LocalizedString | JSX.Element;
-  readonly description?: LocalizedString | JSX.Element;
+  readonly title: LocalizedString | JSX.Element | (() => LocalizedString);
+  readonly description?:
+    | LocalizedString
+    | JSX.Element
+    | (() => LocalizedString);
   // Whether the page needs to be reloaded for this preference to apply
   readonly requiresReload: boolean;
   /*
@@ -110,11 +122,11 @@ const defineItem = <VALUE,>(
 ): PreferenceItem<VALUE> => definition;
 
 export type GenericPreferencesCategories = IR<{
-  readonly title: LocalizedString;
-  readonly description?: LocalizedString;
+  readonly title: LocalizedString | (() => LocalizedString);
+  readonly description?: LocalizedString | (() => LocalizedString);
   readonly subCategories: IR<{
-    readonly title: LocalizedString;
-    readonly description?: LocalizedString;
+    readonly title: LocalizedString | (() => LocalizedString);
+    readonly description?: LocalizedString | (() => LocalizedString);
     readonly items: IR<PreferenceItem<any>>;
   }>;
 }>;
@@ -933,7 +945,7 @@ export const preferenceDefinitions = {
         },
       },
       recordSet: {
-        title: '_recordSet' as LocalizedString,
+        title: () => tableLabel('RecordSet'),
         items: {
           recordToOpen: defineItem<'first' | 'last'>({
             title: preferencesText.recordSetRecordToOpen(),
@@ -1137,11 +1149,7 @@ export const preferenceDefinitions = {
         },
       },
       geography: {
-        /*
-         * This would be replaced with labels from schema once
-         * schema is loaded
-         */
-        title: '_Geography' as LocalizedString,
+        title: () => tableLabel('Geography'),
         items: {
           treeAccentColor: defineItem({
             title: preferencesText.treeAccentColor(),
@@ -1160,7 +1168,7 @@ export const preferenceDefinitions = {
         },
       },
       taxon: {
-        title: '_Taxon' as LocalizedString,
+        title: () => tableLabel('Taxon'),
         items: {
           treeAccentColor: defineItem({
             title: preferencesText.treeAccentColor(),
@@ -1179,7 +1187,7 @@ export const preferenceDefinitions = {
         },
       },
       storage: {
-        title: '_Storage' as LocalizedString,
+        title: () => tableLabel('Storage'),
         items: {
           treeAccentColor: defineItem({
             title: preferencesText.treeAccentColor(),
@@ -1198,7 +1206,7 @@ export const preferenceDefinitions = {
         },
       },
       geologicTimePeriod: {
-        title: '_GeologicTimePeriod' as LocalizedString,
+        title: () => tableLabel('GeologicTimePeriod'),
         items: {
           treeAccentColor: defineItem({
             title: preferencesText.treeAccentColor(),
@@ -1217,7 +1225,7 @@ export const preferenceDefinitions = {
         },
       },
       lithoStrat: {
-        title: '_LithoStrat' as LocalizedString,
+        title: () => tableLabel('LithoStrat'),
         items: {
           treeAccentColor: defineItem({
             title: preferencesText.treeAccentColor(),
@@ -1579,30 +1587,6 @@ export const preferenceDefinitions = {
 import('../DataModel/schema')
   .then(async ({ fetchContext, schema }) =>
     fetchContext.then(() => {
-      const trees = preferenceDefinitions.treeEditor.subCategories;
-      overwriteReadOnly(
-        trees.geography,
-        'title',
-        schema.models.Geography.label
-      );
-      overwriteReadOnly(trees.taxon, 'title', schema.models.Taxon.label);
-      overwriteReadOnly(trees.storage, 'title', schema.models.Storage.label);
-      overwriteReadOnly(
-        trees.geologicTimePeriod,
-        'title',
-        schema.models.GeologicTimePeriod.label
-      );
-      overwriteReadOnly(
-        trees.lithoStrat,
-        'title',
-        schema.models.LithoStrat.label
-      );
-      overwriteReadOnly(
-        preferenceDefinitions.form.subCategories.recordSet,
-        'title',
-        schema.models.RecordSet.label
-      );
-
       const treeSearchBehavior =
         preferenceDefinitions.treeEditor.subCategories.behavior.items
           .searchField;
