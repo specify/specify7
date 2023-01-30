@@ -14,6 +14,8 @@ import { isFunction } from '../utils/types';
 import { useAsyncState } from './useAsyncState';
 import { crash } from '../components/Errors/Crash';
 
+// FEATURE: cache formatted resources
+
 type Buckets = {
   readonly [TABLE_NAME in keyof Tables as `/api/specify/${TABLE_NAME}/`]?: Record<
     number,

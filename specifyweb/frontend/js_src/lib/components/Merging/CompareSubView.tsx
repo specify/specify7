@@ -31,6 +31,7 @@ import { serializeResource } from '../DataModel/helpers';
 import { mergingText } from '../../localization/merging';
 import { Submit } from '../Atoms/Submit';
 import { CompareField, MergeButton } from './CompareField';
+import { FormattedResource } from '../Molecules/FormattedResource';
 
 export function MergeSubviewButton({
   relationship,
@@ -169,9 +170,13 @@ function MergeDialog({
             <th className={mergeHeaderClassName} scope="col">
               {mergingText.mergedRecord()}
             </th>
-            {resources.map((_, index) => (
+            {resources.map((resource, index) => (
               <th className={mergeHeaderClassName} key={index} scope="col">
-                {mergingText.duplicateRecord({ index: index + 1 })}
+                {resource === undefined ? (
+                  mergingText.duplicateRecord({ index: index + 1 })
+                ) : (
+                  <FormattedResource resource={resource} />
+                )}
               </th>
             ))}
           </tr>
