@@ -1,4 +1,5 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { commonText } from '../../localization/common';
 import { f } from '../../utils/functools';
@@ -10,7 +11,6 @@ import { strictGetModel } from '../DataModel/schema';
 import { softFail } from '../Errors/Crash';
 import { format } from '../Forms/dataObjFormatters';
 import { hasTablePermission } from '../Permissions/helpers';
-import { LocalizedString } from 'typesafe-i18n';
 
 export function FormattedResourceUrl({
   resourceUrl,

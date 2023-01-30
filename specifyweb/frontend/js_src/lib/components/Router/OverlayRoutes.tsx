@@ -1,14 +1,15 @@
 import { commonText } from '../../localization/common';
+import { headerText } from '../../localization/header';
+import { interactionsText } from '../../localization/interactions';
+import { mergingText } from '../../localization/merging';
+import { queryText } from '../../localization/query';
+import { reportsText } from '../../localization/report';
+import { treeText } from '../../localization/tree';
+import { userText } from '../../localization/user';
 import { welcomeText } from '../../localization/welcome';
+import { wbText } from '../../localization/workbench';
 import type { RA } from '../../utils/types';
 import type { EnhancedRoute } from './RouterUtils';
-import { queryText } from '../../localization/query';
-import { headerText } from '../../localization/header';
-import { userText } from '../../localization/user';
-import { reportsText } from '../../localization/report';
-import { interactionsText } from '../../localization/interactions';
-import { treeText } from '../../localization/tree';
-import { wbText } from '../../localization/workbench';
 
 /* eslint-disable @typescript-eslint/promise-function-async */
 /**
@@ -166,6 +167,12 @@ export const overlayRoutes: RA<EnhancedRoute> = [
           import('../HomePage/AboutSpecify').then(
             ({ AboutOverlay }) => AboutOverlay
           ),
+      },
+      {
+        path: 'merge/:tableName/',
+        title: mergingText.mergeRecords(),
+        element: () =>
+          import('../Merging/index').then(({ MergingDialog }) => MergingDialog),
       },
     ],
   },

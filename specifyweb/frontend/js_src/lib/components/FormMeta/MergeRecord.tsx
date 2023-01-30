@@ -5,14 +5,16 @@ import { useSearchParameter } from '../../hooks/navigation';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useIsModified } from '../../hooks/useIsModified';
 import { formsText } from '../../localization/forms';
+import { mergingText } from '../../localization/merging';
 import { f } from '../../utils/functools';
+import { filterArray } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
 import { SearchDialog } from '../Forms/SearchDialog';
-import { MergingDialog } from '../Merging';
-import { mergingText } from '../../localization/merging';
+import { mergingQueryParameter } from '../Merging';
+import { formatUrl } from '../Router/queryString';
 
 export function MergeRecord({
   resource,
@@ -21,11 +23,24 @@ export function MergeRecord({
 }): JSX.Element {
   const isModified = useIsModified(resource);
   const [isOpen, handleOpen, handleClose] = useBooleanState();
-  const [ids, setIds] = React.useState<ReadonlySet<number>>(new Set());
 
   const navigate = useNavigate();
-  const [recordsetid] = useSearchParameter('recordsetid');
-  const recordSetId = f.parseInt(recordsetid);
+
+  const [rawRecordSetId] = useSearchParameter('recordsetid');
+  const recordSetId = f.parseInt(rawRecordSetId);
+
+  const [records = ''] = useSearchParameter(mergingQueryParameter, false);
+  const ids = React.useMemo(
+    () => filterArray(records.split(',').map(f.parseInt)),
+    [records]
+  );
+
+  const table = resource.specifyModel;
+  React.useEffect(() => {
+    if (ids.length === 1)
+      navigate(getResourceViewUrl(table.name, ids[0], recordSetId));
+  }, [ids, navigate, recordSetId, table]);
+
   return (
     <>
       <Button.Small
@@ -35,47 +50,30 @@ export function MergeRecord({
       >
         {mergingText.mergeRecords()}
       </Button.Small>
-      {ids.size > 0 ? (
-        <MergingDialog
-          ids={ids}
-          model={resource.specifyModel}
-          onClose={(): void => {
-            handleClose();
-            setIds(new Set());
-          }}
-          onDismiss={(removeId): void => {
-            const newItems = Array.from(ids).filter((id) => id !== removeId);
-            if (newItems.length === 1) {
-              navigate(
-                getResourceViewUrl(
-                  resource.specifyModel.name,
-                  newItems[0],
-                  recordSetId
-                )
-              );
-            } else setIds(new Set(newItems));
-          }}
-          onDeleted={undefined}
+      {isOpen && (
+        <SearchDialog
+          extraFilters={[
+            {
+              field: 'id',
+              operation: 'notIn',
+              values: [resource.id.toString()],
+            },
+          ]}
+          forceCollection={undefined}
+          model={table}
+          multiple
+          onClose={handleClose}
+          onSelected={(resources): void =>
+            navigate(
+              formatUrl(`/specify/overlay/merge/${table.name}`, {
+                [mergingQueryParameter]: [
+                  resource.id,
+                  ...resources.map(({ id }) => id),
+                ].join(','),
+              })
+            )
+          }
         />
-      ) : (
-        isOpen && (
-          <SearchDialog
-            extraFilters={[
-              {
-                field: 'id',
-                operation: 'notIn',
-                values: [resource.id.toString()],
-              },
-            ]}
-            forceCollection={undefined}
-            model={resource.specifyModel}
-            multiple
-            onClose={handleClose}
-            onSelected={(resources): void =>
-              setIds(new Set([resource.id, ...resources.map(({ id }) => id)]))
-            }
-          />
-        )
       )}
     </>
   );

@@ -20,7 +20,6 @@ export function CompareRecords({
   records,
   merged,
   onMerge: handleMerge,
-  onDeleted: handleDeleted,
   onDismiss: handleDismiss,
 }: {
   readonly formId: string;
@@ -31,7 +30,6 @@ export function CompareRecords({
     merged: SpecifyResource<AnySchema>,
     resources: RA<SpecifyResource<AnySchema>>
   ) => void;
-  readonly onDeleted: (id: number) => void;
   readonly onDismiss: (id: number) => void;
 }): JSX.Element {
   const resources = React.useMemo(
@@ -48,7 +46,6 @@ export function CompareRecords({
       <MergingHeader
         merged={merged}
         resources={resources}
-        onDeleted={handleDeleted}
         onDismiss={handleDismiss}
       />
       <tbody>

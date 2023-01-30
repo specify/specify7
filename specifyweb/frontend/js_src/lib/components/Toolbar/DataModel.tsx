@@ -29,13 +29,13 @@ import { downloadFile } from '../Molecules/FilePicker';
 import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import { TableIcon } from '../Molecules/TableIcon';
 import { NotFoundView } from '../Router/NotFoundView';
-import { locationToState } from '../Router/RouterState';
 import {
   javaTypeToHuman,
   localizedRelationshipTypes,
 } from '../SchemaConfig/helpers';
 import { useFrozenCategory } from '../UserPreferences/Aside';
 import { useTopChild } from '../UserPreferences/useTopChild';
+import { pathIsOverlay } from '../Router/Router';
 
 function Table<
   SORT_CONFIG extends
@@ -426,8 +426,7 @@ export function DataModelAside({
   const currentIndex = freezeCategory ?? activeCategory;
   const navigate = useNavigate();
   const location = useLocation();
-  const state = locationToState(location, 'BackgroundLocation');
-  const isInOverlay = typeof state === 'object';
+  const isInOverlay = pathIsOverlay(location.pathname);
 
   React.useEffect(
     () =>

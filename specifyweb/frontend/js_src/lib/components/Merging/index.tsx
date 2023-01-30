@@ -1,18 +1,23 @@
 import React from 'react';
 
+import { deserializeResource } from '../../hooks/resource';
+import { resourceEvents } from '../../hooks/store';
 import { useAsyncState } from '../../hooks/useAsyncState';
-import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
+import { mergingText } from '../../localization/merging';
 import { treeText } from '../../localization/tree';
 import { ajax } from '../../utils/ajax';
+import { hijackBackboneAjax } from '../../utils/ajax/backboneAjax';
 import { Http } from '../../utils/ajax/definitions';
 import type { RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { removeKey, sortFunction } from '../../utils/utils';
 import { ErrorMessage } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
+import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
@@ -20,56 +25,75 @@ import { fetchResource } from '../DataModel/resource';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Tables } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
-import { CompareRecords } from './Compare';
-import { mergingText } from '../../localization/merging';
-import { hijackBackboneAjax } from '../../utils/ajax/backboneAjax';
-import { deserializeResource } from '../../hooks/resource';
+import { formatUrl } from '../Router/queryString';
+import { OverlayContext } from '../Router/Router';
 import { autoMerge, postMergeResource } from './autoMerge';
+import { CompareRecords } from './Compare';
+import { useParams } from 'react-router-dom';
+import { getModel } from '../DataModel/schema';
+import { useSearchParameter } from '../../hooks/navigation';
+import { f } from '../../utils/functools';
 
 const recordMergingTables = new Set<keyof Tables>(['Agent']);
+
+export const mergingQueryParameter = 'records';
 
 export function RecordMerging({
   model,
   selectedRows,
-  onDeleted: handleDeleted,
-  onDismiss: handleDismiss,
 }: {
   readonly model: SpecifyModel;
   readonly selectedRows: ReadonlySet<number>;
-  readonly onDeleted: (id: number) => void;
-  readonly onDismiss: (id: number) => void;
 }): JSX.Element | null {
-  const [isOpen, _, handleClose, handleToggle] = useBooleanState();
-
   return recordMergingTables.has(model.name) ? (
-    <>
-      <Button.Small disabled={selectedRows.size < 2} onClick={handleToggle}>
+    selectedRows.size > 1 ? (
+      <Link.Small
+        href={formatUrl(`/specify/overlay/merge/${model.name}/`, {
+          [mergingQueryParameter]: Array.from(selectedRows).join(','),
+        })}
+      >
+        {mergingText.mergeRecords()}
+      </Link.Small>
+    ) : (
+      <Button.Small onClick={undefined}>
         {mergingText.mergeRecords()}
       </Button.Small>
-      {isOpen && (
-        <MergingDialog
-          ids={selectedRows}
-          model={model}
-          onClose={handleClose}
-          onDeleted={handleDeleted}
-          onDismiss={handleDismiss}
-        />
-      )}
-    </>
+    )
   ) : null;
 }
 
-export function MergingDialog({
+export function MergingDialog(): JSX.Element | null {
+  const { tableName = '' } = useParams();
+  const model = getModel(tableName);
+
+  const [rawIds = '', setIds] = useSearchParameter(mergingQueryParameter);
+  const ids = React.useMemo(
+    () => filterArray(rawIds.split(',').map(f.parseInt)),
+    [rawIds]
+  );
+  React.useEffect(
+    () =>
+      resourceEvents.on('deleted', (resource) =>
+        setIds(ids.filter((id) => id !== resource.id).join(','))
+      ),
+    [ids, setIds]
+  );
+
+  const handleDismiss = (dismissedId: number) =>
+    setIds(ids.filter((id) => id !== dismissedId).join(','));
+
+  return model === undefined ? null : (
+    <Merging model={model} ids={ids} onDismiss={handleDismiss} />
+  );
+}
+
+function Merging({
   model,
   ids,
-  onClose: handleClose,
   onDismiss: handleDismiss,
-  onDeleted: handleDeleted = handleDismiss,
 }: {
   readonly model: SpecifyModel;
-  readonly ids: ReadonlySet<number>;
-  readonly onClose: () => void;
-  readonly onDeleted: ((id: number) => void) | undefined;
+  readonly ids: RA<number>;
   readonly onDismiss: (id: number) => void;
 }): JSX.Element | null {
   const records = useResources(model, ids);
@@ -77,10 +101,11 @@ export function MergingDialog({
   if (initialRecords.current === undefined && records !== undefined)
     initialRecords.current = records;
 
+  const handleClose = React.useContext(OverlayContext);
   // Close the dialog when resources are deleted/unselected
   React.useEffect(
-    () => (ids.size < 2 ? handleClose() : undefined),
-    [ids.size, handleClose]
+    () => (ids.length < 2 ? handleClose() : undefined),
+    [ids, handleClose]
   );
 
   const id = useId('merging-dialog');
@@ -104,7 +129,6 @@ export function MergingDialog({
 
   return records === undefined || merged === undefined ? null : (
     <MergeDialogContainer
-      onClose={handleClose}
       buttons={
         <>
           <Button.Green
@@ -128,14 +152,14 @@ export function MergingDialog({
           <Submit.Blue form={id('form')}>{treeText.merge()}</Submit.Blue>
         </>
       }
+      onClose={handleClose}
     >
       {typeof error === 'string' && <ErrorMessage>{error}</ErrorMessage>}
       <CompareRecords
         formId={id('form')}
-        model={model}
         merged={merged}
+        model={model}
         records={records}
-        onDeleted={handleDeleted}
         onDismiss={handleDismiss}
         onMerge={(merged, rawResources): void => {
           /*
@@ -182,7 +206,7 @@ export function MergingDialog({
                   setError(response.data);
                   return;
                 }
-                handleDeleted(clone.id);
+                resourceEvents.trigger('deleted', clone);
               }
               setError(undefined);
             })
@@ -235,7 +259,7 @@ export function ToggleMergeView(): JSX.Element {
 
 function useResources(
   model: SpecifyModel,
-  selectedRows: ReadonlySet<number>
+  selectedRows: RA<number>
 ): RA<SerializedResource<AnySchema>> | undefined {
   /**
    * During merging, ids are removed from selectedRows one by one. Shouldn't
@@ -246,7 +270,7 @@ function useResources(
     React.useCallback(
       async () =>
         Promise.all(
-          Array.from(selectedRows, (id) => {
+          selectedRows.map((id) => {
             const resource = cached.current.find(
               (resource) => resource.id === id
             );

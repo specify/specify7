@@ -14,16 +14,15 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { mergingText } from '../../localization/merging';
 import { UsagesSection } from './Usages';
 import { MergeButton } from './CompareField';
+import { resourceEvents } from '../../hooks/store';
 
 export function MergingHeader({
   merged,
   resources,
-  onDeleted: handleDeleted,
   onDismiss: handleDismiss,
 }: {
   readonly merged: SpecifyResource<AnySchema>;
   readonly resources: RA<SpecifyResource<AnySchema>>;
-  readonly onDeleted: (id: number) => void;
   readonly onDismiss: (id: number) => void;
 }): JSX.Element {
   return (
@@ -36,11 +35,7 @@ export function MergingHeader({
       <tbody>
         <SummaryLines merged={merged} resources={resources} />
         <UsagesSection resources={resources} />
-        <PreviewLine
-          merged={merged}
-          resources={resources}
-          onDeleted={handleDeleted}
-        />
+        <PreviewLine merged={merged} resources={resources} />
       </tbody>
     </>
   );
@@ -153,11 +148,9 @@ export function MergeRow({
 function PreviewLine({
   merged,
   resources,
-  onDeleted: handleDeleted,
 }: {
   readonly merged: SpecifyResource<AnySchema>;
   readonly resources: RA<SpecifyResource<AnySchema>>;
-  readonly onDeleted: (id: number) => void;
 }): JSX.Element {
   return (
     <MergeRow header={mergingText.preview()}>
@@ -167,7 +160,6 @@ function PreviewLine({
           key={index}
           resource={resource}
           merged={merged === resource ? undefined : merged}
-          onDeleted={(): void => handleDeleted(resource.id)}
         />
       ))}
     </MergeRow>
@@ -178,12 +170,10 @@ function RecordPreview({
   resource,
   merged,
   index,
-  onDeleted: handleDeleted,
 }: {
   readonly resource: SpecifyResource<AnySchema>;
   readonly merged: SpecifyResource<AnySchema> | undefined;
   readonly index: number;
-  readonly onDeleted: () => void;
 }): JSX.Element {
   const [isOpen, _, handleClose, handleToggle] = useBooleanState(false);
 
@@ -213,7 +203,9 @@ function RecordPreview({
           resource={resource}
           onAdd={undefined}
           onClose={handleClose}
-          onDeleted={handleDeleted}
+          onDeleted={(): void =>
+            void resourceEvents.trigger('deleted', resource)
+          }
           onSaved={undefined}
         />
       )}

@@ -55,8 +55,23 @@ export function Router(): JSX.Element {
   const location = useLocation();
   unsafeLocation = location;
   const state = location.state;
-  const background =
+
+  /*
+   * BUG: direct calls to navigate() with overlay URL don't set
+   *    BackgroundLocation. This is a partial workaround, but it won't stand on
+   *    page reload
+   */
+  const previousLocation = React.useRef(location);
+  const rawBackground =
     state?.type === 'BackgroundLocation' ? state.location : undefined;
+  const backgroundRef = React.useRef(rawBackground);
+  if (!pathIsOverlay(location.pathname)) backgroundRef.current = undefined;
+  else if (rawBackground !== undefined) backgroundRef.current = rawBackground;
+  else if (!pathIsOverlay(previousLocation.current.pathname))
+    backgroundRef.current = previousLocation.current;
+  const background = backgroundRef.current;
+  previousLocation.current = location;
+
   const isNotFoundPage =
     state?.type === 'NotFoundPage' ||
     background?.state?.type === 'NotFoundPage';
@@ -95,7 +110,7 @@ export function Router(): JSX.Element {
   );
 }
 
-const pathIsOverlay = (relativeUrl: string): boolean =>
+export const pathIsOverlay = (relativeUrl: string): boolean =>
   relativeUrl.startsWith('/specify/overlay/');
 
 // Don't trigger unload protect if only query string or hash changes
@@ -109,7 +124,6 @@ function useLinkIntercept(background: SafeLocation | undefined): void {
 
   const resolvedLocation = React.useRef<SafeLocation>(background ?? location);
   React.useEffect(() => {
-    // REFACTOR: consider adding a set() util like in @vueuse/core
     resolvedLocation.current = background ?? location;
   }, [background, location]);
 
@@ -170,7 +184,7 @@ function parseClickEvent(
   return undefined;
 }
 
-const locationToUrl = (location: SafeLocation): string =>
+export const locationToUrl = (location: SafeLocation): string =>
   `${location.pathname}${location.search}${location.hash}`;
 
 function Overlay({

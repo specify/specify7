@@ -42,6 +42,7 @@ import { QueryToMap } from './ToMap';
 import { RecordMerging } from '../Merging';
 import { interactionsText } from '../../localization/interactions';
 import { LocalizedString } from 'typesafe-i18n';
+import { resourceEvents } from '../../hooks/store';
 
 export type QueryResultRow = RA<number | string | null>;
 
@@ -228,6 +229,9 @@ export function QueryResults({
   ) as RA<QueryResultRow> | undefined;
 
   // TEST: try deleting while records are being fetched
+  /**
+   * Note: this may be called with a recordId that is not part of qeury results
+   */
   function handleDelete(recordId: number): void {
     let removeCount = 0;
     setResults((results) => {
@@ -248,6 +252,11 @@ export function QueryResults({
         new Set(Array.from(selectedRows).filter((id) => id !== recordId))
     );
   }
+
+  React.useEffect(
+    () => resourceEvents.on('deleted', (resource) => handleDelete(resource.id)),
+    []
+  );
 
   return (
     <Container.Base className="w-full bg-[color:var(--form-background)]">
@@ -272,20 +281,7 @@ export function QueryResults({
           <>
             {hasPermission('/record/replace', 'update') &&
               hasTablePermission(model.name, 'update') && (
-                <RecordMerging
-                  model={model}
-                  selectedRows={selectedRows}
-                  onDeleted={handleDelete}
-                  onDismiss={(id): void =>
-                    setSelectedRows(
-                      new Set(
-                        Array.from(selectedRows).filter(
-                          (itemId) => itemId !== id
-                        )
-                      )
-                    )
-                  }
-                />
+                <RecordMerging model={model} selectedRows={selectedRows} />
               )}
             {hasToolPermission('recordSets', 'create') ? (
               selectedRows.size > 0 ? (

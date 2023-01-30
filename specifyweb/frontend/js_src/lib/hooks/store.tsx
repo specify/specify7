@@ -13,6 +13,13 @@ import type { GetOrSet } from '../utils/types';
 import { isFunction } from '../utils/types';
 import { useAsyncState } from './useAsyncState';
 import { crash } from '../components/Errors/Crash';
+import { eventListener } from '../utils/events';
+import { AnySchema } from '../components/DataModel/helperTypes';
+
+// FEATURE: use this everywhere
+export const resourceEvents = eventListener<{
+  readonly deleted: SpecifyResource<AnySchema>;
+}>();
 
 // FEATURE: cache formatted resources
 
