@@ -1,4 +1,5 @@
 import React from 'react';
+import { commonText } from '../../localization/common';
 
 const indicatorTimeOut = 3000;
 
@@ -42,12 +43,12 @@ export function OnlineStatus(): JSX.Element {
             className="h-3 w-3 rounded-full bg-green-700"
             aria-hidden
           ></span>
-          <p>{onlineStatus}</p>
+          <p>{commonText.online()}</p>
         </div>
       ) : onlineStatus === 'offline' ? (
         <div className="mr-2 flex items-center justify-end gap-2">
           <span className="h-3 w-3 rounded-full bg-red-700" aria-hidden></span>
-          <p>{onlineStatus}</p>
+          <p>{commonText.offline()}</p>
         </div>
       ) : undefined}
     </div>
