@@ -73,6 +73,9 @@ export function MergingDialog({
   readonly onDismiss: (id: number) => void;
 }): JSX.Element | null {
   const records = useResources(model, ids);
+  const initialRecords = React.useRef(records);
+  if (initialRecords.current === undefined && records !== undefined)
+    initialRecords.current = records;
 
   // Close the dialog when resources are deleted/unselected
   React.useEffect(
@@ -86,11 +89,13 @@ export function MergingDialog({
   const [merged, setMerged] = useAsyncState(
     React.useCallback(
       () =>
-        records === undefined
+        records === undefined || initialRecords.current === undefined
           ? undefined
-          : postMergeResource(records, autoMerge(model, records, true)).then(
-              (merged) =>
-                deserializeResource(merged as SerializedResource<AnySchema>)
+          : postMergeResource(
+              initialRecords.current,
+              autoMerge(model, initialRecords.current, true)
+            ).then((merged) =>
+              deserializeResource(merged as SerializedResource<AnySchema>)
             ),
       [model, records]
     ),
