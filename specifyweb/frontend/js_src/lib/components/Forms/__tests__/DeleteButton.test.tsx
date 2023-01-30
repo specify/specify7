@@ -1,9 +1,10 @@
 import { overrideAjax } from '../../../tests/ajax';
 import { fetchBlockers } from '../DeleteButton';
 import { schema } from '../../DataModel/schema';
-import { requireContext } from '../../../tests/helpers';
+import { mockTime, requireContext } from '../../../tests/helpers';
 
 requireContext();
+mockTime();
 
 const agentId = 2;
 const loanAgentId = 1;
@@ -58,7 +59,7 @@ overrideAjax(
           startvalue: '1',
           stringid: '53.loanagent.loanAgentId',
           tablelist: '53',
-          timestampcreated: '2023-01-25',
+          timestampcreated: '2022-08-31',
           timestampmodified: null,
           version: 1,
         },
@@ -85,7 +86,7 @@ overrideAjax(
           startvalue: '',
           stringid: '53,52.loan.loanId',
           tablelist: '53,52',
-          timestampcreated: '2023-01-25',
+          timestampcreated: '2022-08-31',
           timestampmodified: null,
           version: 1,
         },
@@ -102,7 +103,7 @@ overrideAjax(
       smushed: null,
       specifyuser: '/api/specify/specifyuser/2/',
       sqlstr: null,
-      timestampcreated: '2023-01-25',
+      timestampcreated: '2022-08-31',
       timestampmodified: null,
       version: 1,
     },

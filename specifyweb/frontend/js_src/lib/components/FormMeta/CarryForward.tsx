@@ -81,7 +81,7 @@ export const dependentFields = f.store<IR<string>>(() => ({
   lat2text: 'latitude2',
   long1text: 'longitude1',
   long2text: 'longitude2',
-  ...strictDependentFields,
+  ...strictDependentFields(),
 }));
 
 export function CarryForwardConfig({
