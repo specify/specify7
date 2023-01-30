@@ -227,7 +227,11 @@ export const schemaText = createDictionary({
     'uk-ua': 'Утриманець',
   },
   independent: {
-    'en-us': 'Independent'
+    'en-us': 'Independent',
+    'es-es': 'Independiente',
+    'fr-fr': 'Indépendant',
+    'ru-ru': 'Независимый',
+    'uk-ua': 'Незалежний',
   },
   downloadAsJson: {
     'en-us': 'Download as JSON',
@@ -294,8 +298,16 @@ export const schemaText = createDictionary({
   },
   idField: {
     'en-us': 'ID Field',
+    'es-es': 'Campo de identificación',
+    'fr-fr': "Champ d'identification",
+    'ru-ru': 'Поле идентификатора',
+    'uk-ua': 'Поле ID',
   },
-  scope:{
-    'en-us': 'Scope'
-  }
+  scope: {
+    'en-us': 'Scope',
+    'es-es': 'Alcance',
+    'fr-fr': 'Portée',
+    'ru-ru': 'Сфера',
+    'uk-ua': 'Область застосування',
+  },
 } as const);
