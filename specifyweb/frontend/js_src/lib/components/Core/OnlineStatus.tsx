@@ -1,14 +1,17 @@
 import React from 'react';
 
-export function OnlineStatus(): [string, boolean] {
-  const [onlineStatus, setOnlineStatus] = React.useState<'online' | 'offline'>(
-    'online'
-  );
+const indicatorTimeOut = 3000;
+
+export function OnlineStatus(): JSX.Element {
+  const [onlineStatus, setOnlineStatus] = React.useState<
+    'online' | 'offline' | 'normal'
+  >('normal');
+
   React.useEffect(() => {
     setTimeout(() => {
       setOnlineOpen(!onlineOpen);
-    }, 3000);
-  }, [onlineStatus === 'online']);
+    }, indicatorTimeOut);
+  }, [onlineStatus]);
 
   const [onlineOpen, setOnlineOpen] = React.useState(true);
 
@@ -18,8 +21,6 @@ export function OnlineStatus(): [string, boolean] {
       setOnlineStatus(condition);
     }
 
-    updateOnlineStatus();
-
     window.addEventListener('online', updateOnlineStatus);
     window.addEventListener('offline', updateOnlineStatus);
 
@@ -28,5 +29,27 @@ export function OnlineStatus(): [string, boolean] {
       window.removeEventListener('offline', updateOnlineStatus);
     };
   }, [onlineStatus]);
-  return [onlineStatus, onlineOpen];
+
+  return (
+    <div className="absolute right-0 bottom-0">
+      {onlineStatus === 'online' ? (
+        <div
+          className={`mr-2 flex items-center justify-end gap-2 ${
+            onlineOpen ? '' : 'hidden'
+          }`}
+        >
+          <span
+            className="h-3 w-3 rounded-full bg-green-700"
+            aria-hidden
+          ></span>
+          <p>{onlineStatus}</p>
+        </div>
+      ) : onlineStatus === 'offline' ? (
+        <div className="mr-2 flex items-center justify-end gap-2">
+          <span className="h-3 w-3 rounded-full bg-red-700" aria-hidden></span>
+          <p>{onlineStatus}</p>
+        </div>
+      ) : undefined}
+    </div>
+  );
 }

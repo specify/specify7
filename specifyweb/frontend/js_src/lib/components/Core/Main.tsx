@@ -69,8 +69,6 @@ export function Main(): JSX.Element | null {
     []
   );
 
-  const [onlineStatus, onlineOpen] = OnlineStatus();
-
   return menuItems === undefined ? null : (
     <>
       <Button.Small
@@ -180,25 +178,7 @@ export function Main(): JSX.Element | null {
           {userText.noAgentDescription()}
         </Dialog>
       )}
-
-      {onlineStatus === 'online' ? (
-        <div
-          className={`mr-2 flex items-center justify-end gap-2 ${
-            !onlineOpen ? 'hidden' : ''
-          }`}
-        >
-          <span
-            className="h-3 w-3 rounded-full bg-green-700"
-            aria-hidden
-          ></span>
-          <p>{onlineStatus}</p>
-        </div>
-      ) : (
-        <div className="mr-2 flex items-center justify-end gap-2">
-          <span className="h-3 w-3 rounded-full bg-red-700" aria-hidden></span>
-          <p>{onlineStatus}</p>
-        </div>
-      )}
+      <OnlineStatus />
     </>
   );
 }
