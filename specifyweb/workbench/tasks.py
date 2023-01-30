@@ -57,10 +57,6 @@ def upload(self, collection_id: int, uploading_agent_id: int, ds_id: int, no_com
 @app.task(base=LogErrorsTask, bind=True)
 def unupload(self, ds_id: int, agent_id: int) -> None:
 
-    def progress(current: int, total: Optional[int]) -> None:
-        if not self.request.called_directly:
-            self.update_state(state='PROGRESS', meta={'current': current, 'total': total})
-
     with transaction.atomic():
         ds = Spdataset.objects.get(id=ds_id)
         agent = getattr(models, 'Agent').objects.get(id=agent_id)
