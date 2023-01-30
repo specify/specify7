@@ -102,7 +102,7 @@ export function MergingDialog({
       onClose={handleClose}
       buttons={
         <>
-          <Button.Blue
+          <Button.Green
             onClick={(): void =>
               loading(
                 postMergeResource(records, autoMerge(model, records, false))
@@ -113,8 +113,8 @@ export function MergingDialog({
               )
             }
           >
-            {mergingText.autoMerge()}
-          </Button.Blue>
+            {mergingText.autoPopulate()}
+          </Button.Green>
           <ToggleMergeView />
           <span className="-ml-2 flex-1" />
           <Button.BorderedGray onClick={handleClose}>

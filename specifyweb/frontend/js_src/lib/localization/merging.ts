@@ -50,8 +50,8 @@ export const mergingText = createDictionary({
     'en-us': 'Merge {field:string}',
     'ru-ru': 'Объединить {field:string}',
   },
-  autoMerge: {
-    'en-us': 'Auto-merge',
+  autoPopulate: {
+    'en-us': 'Auto-populate',
   },
   dismissFromMerging: {
     'en-us': 'Dismiss from merging',
