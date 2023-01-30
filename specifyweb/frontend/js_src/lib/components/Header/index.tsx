@@ -133,9 +133,13 @@ export function CollectionSelector(): JSX.Element {
   const navigate = useNavigate();
   return (
     <Select
-      aria-label={headerText.currentCollection()}
+      aria-label={headerText.currentCollection({
+        collectionTable: schema.models.Collection.label,
+      })}
       className="flex-1"
-      title={headerText.currentCollection()}
+      title={headerText.currentCollection({
+        collectionTable: schema.models.Collection.label,
+      })}
       value={schema.domainLevelIds.collection}
       onValueChange={(value): void =>
         switchCollection(navigate, Number.parseInt(value), '/specify/')

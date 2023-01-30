@@ -22,7 +22,7 @@ import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { cachableUrl } from '../InitialContext';
 import { DateElement } from '../Molecules/DateElement';
 import { Dialog } from '../Molecules/Dialog';
-import { FormattedResource } from '../Molecules/FormattedResource';
+import { FormattedResourceUrl } from '../Molecules/FormattedResource';
 import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import { formatUrl } from '../Router/queryString';
 import { OverlayContext } from '../Router/Router';
@@ -147,6 +147,7 @@ export function ReportsView({
             </div>
             <ReportRow
               cacheKey="listOfReports"
+              icon={<TableIcon name="Reports" label={false} />}
               resources={reports}
               onClick={setSelectedReport}
             />
@@ -162,6 +163,7 @@ export function ReportsView({
             </div>
             <ReportRow
               cacheKey="listOfLabels"
+              icon={<TableIcon name="Labels" label={false} />}
               resources={labels}
               onClick={setSelectedReport}
             />
@@ -178,6 +180,7 @@ function ReportRow({
   onClick: handleClick,
 }: {
   readonly resources: RA<SerializedResource<SpAppResource>>;
+  readonly icon: JSX.Element;
   readonly cacheKey: 'listOfLabels' | 'listOfReports';
   readonly onClick: (resource: SerializedResource<SpAppResource>) => void;
 }): JSX.Element {
@@ -231,6 +234,7 @@ function ReportRow({
                 onClick={(): void => handleClick(resource)}
               >
                 <ReportRowImage appResource={resource} />
+                {icon}
                 {resource.name}
               </Button.LikeLink>
             </td>
@@ -238,7 +242,7 @@ function ReportRow({
               <DateElement date={resource.timestampCreated} />
             </td>
             <td>
-              <FormattedResource resourceUrl={resource.specifyUser} />
+              <FormattedResourceUrl resourceUrl={resource.specifyUser} />
             </td>
             <td>
               <Link.Icon

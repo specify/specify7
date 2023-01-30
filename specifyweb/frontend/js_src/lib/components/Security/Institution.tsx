@@ -136,7 +136,11 @@ function InstitutionView({
               </section>
             )}
             <section className="flex flex-col gap-2">
-              <h4 className="text-xl">{userText.institutionUsers()}</h4>
+              <h4 className="text-xl">
+                {userText.institutionUsers({
+                  institutionTable: schema.models.Institution.label,
+                })}
+              </h4>
               {typeof users === 'object' ? (
                 <>
                   <Ul>

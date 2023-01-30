@@ -8,6 +8,7 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { useId } from '../../hooks/useId';
+import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
 import type { RA } from '../../utils/types';
 import { caseInsensitiveHash, toggleItem } from '../../utils/utils';
@@ -32,6 +33,7 @@ import { supportsBackdropBlur } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { ProtectedTree } from '../Permissions/PermissionDenied';
 import { NotFoundView } from '../Router/NotFoundView';
+import { formatUrl } from '../Router/queryString';
 import { EditTreeDefinition } from '../Toolbar/TreeRepair';
 import {
   useHighContrast,
@@ -101,13 +103,19 @@ function TreeView<SCHEMA extends AnyTree>({
   // Node sort order
   const sortField = getPref(`${tableName as 'Geography'}.treeview_sort_field`);
 
+  const includeAuthor = getPref(`TaxonTreeEditor.DisplayAuthor`);
+
   const baseUrl = `/api/specify_tree/${tableName.toLowerCase()}/${
     treeDefinition.id
   }`;
 
   const getRows = React.useCallback(
     async (parentId: number | 'null') =>
-      fetchRows(`${baseUrl}/${parentId}/${sortField}`),
+      fetchRows(
+        formatUrl(`${baseUrl}/${parentId}/${sortField}/`, {
+          includeAuthor: includeAuthor.toString(),
+        })
+      ),
     [baseUrl, sortField]
   );
 
@@ -174,6 +182,15 @@ function TreeView<SCHEMA extends AnyTree>({
           onClick={handleToggleEditingRanks}
         >
           {treeText.editRanks()}
+        </Button.Small>
+        <Button.Small
+          disabled={conformation.length === 0}
+          onClick={(): void => {
+            setFocusPath([0]);
+            setConformation([]);
+          }}
+        >
+          {commonText.collapseAll()}
         </Button.Small>
         <span className="-ml-2 flex-1" />
         <ErrorBoundary dismissable>
@@ -291,6 +308,7 @@ function TreeView<SCHEMA extends AnyTree>({
               row={row}
               setFocusedRow={setFocusedRow}
               synonymColor={synonymColor}
+              treeName={tableName}
               onAction={(action): void => {
                 if (action === 'next')
                   if (rows[index + 1] === undefined) return undefined;

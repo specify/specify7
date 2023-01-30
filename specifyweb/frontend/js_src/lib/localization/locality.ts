@@ -82,11 +82,17 @@ export const localityText = createDictionary({
     'uk-ua': 'Без координат',
   },
   notEnoughInformationToMap: {
-    'en-us': 'Locality must have coordinates to be mapped.',
-    'ru-ru': 'Чтобы нанести на карту, необходимо указать координаты.',
-    'es-es': 'La localidad debe tener coordenadas para ser mapeada.',
-    'fr-fr': 'La localité doit avoir des coordonnées pour être cartographiée.',
-    'uk-ua': 'Місцевість повинна мати координати для нанесення на карту.',
+    'en-us': '{localityTable:string} must have coordinates to be mapped.',
+    'ru-ru': `
+      Чтобы нанести {localityTable:string} на карту, необходимо указать
+      координаты.
+    `,
+    'es-es': '{localityTable:string} debe tener coordenadas para ser mapeado.',
+    'fr-fr': `
+      La {localityTable:string} doit avoir des coordonnées pour être
+      cartographiée.
+    `,
+    'uk-ua': '{localityTable:string} має мати координати для відображення.',
   },
   occurrencePoints: {
     'en-us': 'Pins',
@@ -110,11 +116,11 @@ export const localityText = createDictionary({
     'uk-ua': 'GEOLocate',
   },
   geographyRequired: {
-    'en-us': 'Geography must be mapped',
-    'ru-ru': 'География должна быть связана',
-    'es-es': 'La geografía debe ser mapeada',
-    'fr-fr': 'La géographie doit être cartographiée',
-    'uk-ua': 'Географія повинна бути нанесена на карту',
+    'en-us': '{geographyTable:string} must be mapped',
+    'ru-ru': '{geographyTable:string} должна быть связана',
+    'es-es': '{geographyTable:string} debe estar mapeado',
+    'fr-fr': '{geographyTable:string} doit être mappé',
+    'uk-ua': '{geographyTable:string} має бути зіставлено',
   },
   geographyRequiredDescription: {
     'en-us':
@@ -140,7 +146,7 @@ export const localityText = createDictionary({
     'en-us': 'NW Corner',
     'ru-ru': 'СЗ Угол',
     'es-es': 'Esquina noroeste',
-    'fr-fr': 'Coin nord-ouest',
+    'fr-fr': 'Coin NO',
     'uk-ua': 'NW Кут',
   },
   southEastCorner: {
@@ -169,7 +175,7 @@ export const localityText = createDictionary({
     'en-us': 'Line',
     'ru-ru': 'Линия',
     'es-es': 'Línea',
-    'fr-fr': 'La ligne',
+    'fr-fr': 'Ligne',
     'uk-ua': 'лінія',
   },
   rectangle: {
@@ -183,7 +189,7 @@ export const localityText = createDictionary({
     'en-us': 'Parsed',
     'ru-ru': 'Проверено',
     'es-es': 'analizado',
-    'fr-fr': 'analysé',
+    'fr-fr': 'Analysé',
     'uk-ua': 'Проаналізовано',
   },
   latitude: {
@@ -204,7 +210,49 @@ export const localityText = createDictionary({
     'en-us': 'Toggle Full Screen',
     'ru-ru': 'Включить полноэкранный режим',
     'es-es': 'Alternar pantalla completa',
-    'fr-fr': 'Basculer en plein écran',
+    'fr-fr': 'Passer en plein écran',
     'uk-ua': 'Перемкнути повний екран',
+  },
+  degrees: {
+    'en-us': 'DD.DDDD (32.7619)',
+    'ru-ru': 'DD.DDDD (32.7619)',
+    'es-es': 'DD.DDDD (32.7619)',
+    'fr-fr': 'JJ.DDDD (32.7619)',
+    'uk-ua': 'DD.DDDD (32,7619)',
+  },
+  degreesMinutes: {
+    'en-us': 'DD MMMM (32. 45.714)',
+    'ru-ru': 'DD MMMM (32. 45.714)',
+    'es-es': 'DDMMMM (32. 45.714)',
+    'fr-fr': 'JJ MMMM (32. 45.714)',
+    'uk-ua': 'ДД ММММ (32. 45.714)',
+  },
+  degreesMinutesSeconds: {
+    'en-us': 'DD MM SS.SS (32 45 42.84)',
+    'ru-ru': 'DD MM SS.SS (32 45 42.84)',
+    'es-es': 'DD MM SS.SS (32 45 42,84)',
+    'fr-fr': 'JJ MM SS.SS (32 45 42.84)',
+    'uk-ua': 'ДД ММ СС.СС (32 45 42,84)',
+  },
+  degreesWithDirection: {
+    'en-us': 'DD.DDDD N/S/E/W (32.7619 N)',
+    'ru-ru': 'DD.DDDD N/S/E/W (32.7619 N)',
+    'es-es': 'DD.DDDD N/S/E/O (32.7619 N)',
+    'fr-fr': 'JJ.DDDD N/S/E/O (32,7619 N)',
+    'uk-ua': 'DD.DDDD Пн/Пд/З/З (32,7619 Пн)',
+  },
+  degreesMinutesWithDirection: {
+    'en-us': 'DD MM.MM N/S/E/W (32 45.714 N)',
+    'ru-ru': 'DD MM.MM N/S/E/W (32 45.714 N)',
+    'es-es': 'DD MM.MM N/S/E/O (32 45.714 N)',
+    'fr-fr': 'JJ MM.MM N/S/E/W (32 45.714 N)',
+    'uk-ua': 'ДД ММ.ХМ Пн/Пд/В/З (32 45,714 Пн)',
+  },
+  degreesMinutesSecondsWithDirection: {
+    'en-us': 'DD MM SS.SS N/S/E/W (32 45 42.84 N)',
+    'ru-ru': 'DD MM SS.SS N/S/E/W (32 45 42.84 N)',
+    'es-es': 'DD MM SS.SS N/S/E/W (32 45 42,84 N)',
+    'fr-fr': 'JJ MM SS.SS N/S/E/W (32 45 42.84 N)',
+    'uk-ua': 'DD MM SS.SS N/S/E/W (32 45 42.84 N)',
   },
 } as const);

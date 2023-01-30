@@ -116,7 +116,7 @@ const fieldRenderers: {
           isReadOnly={mode === 'view'}
           name={fieldName}
           required={'required' in validationAttributes && mode !== 'search'}
-          rows={rows}
+          rows={formType === 'formTable' ? 1 : rows}
           value={value?.toString() ?? ''}
           onBlur={(): void => updateValue(value?.toString() ?? '')}
           onValueChange={(value): void => updateValue(value, false)}
