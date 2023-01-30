@@ -33,6 +33,7 @@ import {
 } from './specifyField';
 import { getCache } from '../../utils/cache';
 import { LocalizedString } from 'typesafe-i18n';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 
 type FieldAlias = {
   readonly vname: string;
@@ -402,7 +403,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
       .map((fieldName) => this.getField(fieldName))
       .find(
         (field): field is Relationship =>
-          typeof field === 'object' && field.type === 'many-to-one'
+          field?.isRelationship === true && (!relationshipIsToMany(field))
       );
   }
 
