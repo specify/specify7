@@ -654,7 +654,7 @@ msgstr "Імпорт"
 msgid "dismiss"
 msgstr "Відхилити"
 
-#: components/DataModel/specifyModel.ts:248
+#: components/DataModel/specifyModel.ts:249
 #: components/WbPlanView/navigator.ts:421
 #. Used in: Components > Data Model > Specify Model ⬤ Components > Wb Plan View > Navigator
 msgid "id"
@@ -788,13 +788,15 @@ msgstr "{resource:string} <wrap>({count:number|formatted})</wrap>"
 #: components/Security/Collection.tsx:133
 #: components/Security/Institution.tsx:74
 #: components/Security/Role.tsx:113
+#: components/Toolbar/DataModel.tsx:243
+#: components/Toolbar/DataModel.tsx:250
 #: components/TreeView/helpers.ts:197
 #: components/TreeView/helpers.ts:205
 #: components/WorkBench/DataSetMeta.tsx:180
 #: components/WorkBench/DataSetMeta.tsx:186
 #: components/WorkBench/DataSetMeta.tsx:316
 #: components/WorkBench/Results.tsx:88
-#. 🟥Example usage: "Created by: Full Name" OR "Record Set: Record Set Name". Used in: Components > Form Cells > Index ⬤ Components > Form Commands > Index ⬤ Components > Form Fields > Use Type Search ⬤ Components > Form Plugins > Index ⬤ Components > Form Sliders > Record Set ⬤ Components > Forms > Base Resource View ⬤ Components > Leaflet > Index ⬤ Components > Molecules > File Picker ⬤ Components > Query Builder > Header ⬤ Components > Query Builder > To Forms ⬤ Components > Schema Config > Field ⬤ Components > Schema Config > Table ⬤ Components > Security > Collection ⬤ Components > Security > Institution ⬤ Components > Security > Role ⬤ Components > Tree View > Helpers ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Results
+#. 🟥Example usage: "Created by: Full Name" OR "Record Set: Record Set Name". Used in: Components > Form Cells > Index ⬤ Components > Form Commands > Index ⬤ Components > Form Fields > Use Type Search ⬤ Components > Form Plugins > Index ⬤ Components > Form Sliders > Record Set ⬤ Components > Forms > Base Resource View ⬤ Components > Leaflet > Index ⬤ Components > Molecules > File Picker ⬤ Components > Query Builder > Header ⬤ Components > Query Builder > To Forms ⬤ Components > Schema Config > Field ⬤ Components > Schema Config > Table ⬤ Components > Security > Collection ⬤ Components > Security > Institution ⬤ Components > Security > Role ⬤ Components > Toolbar > Data Model ⬤ Components > Tree View > Helpers ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Results
 msgid "colonLine"
 msgstr "{label:string}: {value:string}"
 

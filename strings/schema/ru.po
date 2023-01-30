@@ -15,7 +15,7 @@ msgstr ""
 #: components/SchemaConfig/Table.tsx:48
 #: components/Security/PreviewTables.tsx:68
 #: components/Security/registry.ts:67
-#: components/Toolbar/DataModel.tsx:467
+#: components/Toolbar/DataModel.tsx:537
 #. Used in: Components > Schema Config > Table ⬤ Components > Security > Preview Tables ⬤ Components > Security > Registry ⬤ Components > Toolbar > Data Model
 msgid "table"
 msgstr "Таблица"
@@ -63,7 +63,7 @@ msgstr "Поле"
 #: components/Forms/generateFormDefinition.ts:126
 #: components/SchemaConfig/Fields.tsx:35
 #: components/SchemaConfig/Fields.tsx:46
-#: components/Toolbar/DataModel.tsx:239
+#: components/Toolbar/DataModel.tsx:256
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Toolbar > Data Model
 msgid "fields"
 msgstr "Поля"
@@ -71,7 +71,7 @@ msgstr "Поля"
 #: components/FormMeta/CarryForward.tsx:272
 #: components/Forms/generateFormDefinition.ts:164
 #: components/SchemaConfig/Fields.tsx:54
-#: components/Toolbar/DataModel.tsx:302
+#: components/Toolbar/DataModel.tsx:337
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Toolbar > Data Model
 msgid "relationships"
 msgstr "Отношения"
@@ -85,9 +85,9 @@ msgstr "Подпись"
 #: components/SchemaConfig/Field.tsx:59
 #: components/SchemaConfig/Table.tsx:63
 #: components/Security/Role.tsx:138
-#: components/Toolbar/DataModel.tsx:191
-#: components/Toolbar/DataModel.tsx:255
-#: components/Toolbar/DataModel.tsx:474
+#: components/Toolbar/DataModel.tsx:192
+#: components/Toolbar/DataModel.tsx:272
+#: components/Toolbar/DataModel.tsx:544
 #. Used in: Components > Schema Config > Field ⬤ Components > Schema Config > Table ⬤ Components > Security > Role ⬤ Components > Toolbar > Data Model
 msgid "description"
 msgstr "Описание"
@@ -133,16 +133,16 @@ msgid "manyToMany"
 msgstr "Многие-ко-многим"
 
 #: components/SchemaConfig/Field.tsx:69
-#: components/Toolbar/DataModel.tsx:197
-#: components/Toolbar/DataModel.tsx:480
+#: components/Toolbar/DataModel.tsx:198
+#: components/Toolbar/DataModel.tsx:550
 #. Used in: Components > Schema Config > Field ⬤ Components > Toolbar > Data Model
 msgid "fieldLength"
 msgstr "Длина"
 
 #: components/FormMeta/index.tsx:64
-#: components/Toolbar/DataModel.tsx:193
-#: components/Toolbar/DataModel.tsx:257
-#: components/Toolbar/DataModel.tsx:476
+#: components/Toolbar/DataModel.tsx:194
+#: components/Toolbar/DataModel.tsx:274
+#: components/Toolbar/DataModel.tsx:546
 #. Used in: Components > Form Meta > Index ⬤ Components > Toolbar > Data Model
 msgid "readOnly"
 msgstr "Только чтение"
@@ -174,62 +174,68 @@ msgstr "Создано пользователем"
 msgid "addLanguage"
 msgstr "Добавить язык"
 
-#: components/Toolbar/DataModel.tsx:190
-#: components/Toolbar/DataModel.tsx:254
-#: components/Toolbar/DataModel.tsx:317
-#: components/Toolbar/DataModel.tsx:468
-#: components/Toolbar/DataModel.tsx:473
+#: components/Toolbar/DataModel.tsx:191
+#: components/Toolbar/DataModel.tsx:271
+#: components/Toolbar/DataModel.tsx:387
+#: components/Toolbar/DataModel.tsx:538
+#: components/Toolbar/DataModel.tsx:543
 #. Used in: Components > Toolbar > Data Model
 msgid "fieldLabel"
 msgstr "Локализованный"
 
-#: components/Toolbar/DataModel.tsx:198
-#: components/Toolbar/DataModel.tsx:261
-#: components/Toolbar/DataModel.tsx:481
+#: components/Toolbar/DataModel.tsx:199
+#: components/Toolbar/DataModel.tsx:278
+#: components/Toolbar/DataModel.tsx:551
 #. Used in: Components > Toolbar > Data Model
 msgid "databaseColumn"
 msgstr "Столбец базы данных"
 
-#: components/Toolbar/DataModel.tsx:262
-#: components/Toolbar/DataModel.tsx:482
+#: components/Toolbar/DataModel.tsx:279
+#: components/Toolbar/DataModel.tsx:552
 #. Used in: Components > Toolbar > Data Model
 msgid "relatedModel"
 msgstr "Родственная Таблица"
 
-#: components/Toolbar/DataModel.tsx:263
-#: components/Toolbar/DataModel.tsx:483
+#: components/Toolbar/DataModel.tsx:280
+#: components/Toolbar/DataModel.tsx:553
 #. Used in: Components > Toolbar > Data Model
 msgid "otherSideName"
 msgstr "Имя другой стороны"
 
-#: components/Toolbar/DataModel.tsx:264
-#: components/Toolbar/DataModel.tsx:484
+#: components/Toolbar/DataModel.tsx:281
+#: components/Toolbar/DataModel.tsx:353
+#: components/Toolbar/DataModel.tsx:554
 #. Used in: Components > Toolbar > Data Model
 msgid "dependent"
 msgstr "Зависимый"
 
-#: components/Toolbar/DataModel.tsx:378
+#: components/Toolbar/DataModel.tsx:369
+#. Used in: Components > Toolbar > Data Model
+msgid "independent"
+msgstr ""
+
+#: components/Toolbar/DataModel.tsx:448
 #. Used in: Components > Toolbar > Data Model
 msgid "downloadAsJson"
 msgstr "Скачать как JSON"
 
-#: components/Toolbar/DataModel.tsx:389
+#: components/Toolbar/DataModel.tsx:459
 #. Used in: Components > Toolbar > Data Model
 msgid "downloadAsTsv"
 msgstr "Скачать как TSV"
 
-#: components/Toolbar/DataModel.tsx:320
-#: components/Toolbar/DataModel.tsx:471
+#: components/Toolbar/DataModel.tsx:390
+#: components/Toolbar/DataModel.tsx:541
 #. Used in: Components > Toolbar > Data Model
 msgid "tableId"
 msgstr "Идентификатор"
 
-#: components/Toolbar/DataModel.tsx:321
+#: components/Toolbar/DataModel.tsx:391
 #. Used in: Components > Toolbar > Data Model
 msgid "fieldCount"
 msgstr "Количество полей"
 
-#: components/Toolbar/DataModel.tsx:322
+#: components/Toolbar/DataModel.tsx:392
 #. Used in: Components > Toolbar > Data Model
 msgid "relationshipCount"
 msgstr "Количество отношений"
@@ -251,8 +257,18 @@ msgstr "Выбранные таблицы"
 msgid "possibleTables"
 msgstr "Возможные таблицы"
 
-#: components/Toolbar/DataModel.tsx:178
+#: components/Toolbar/DataModel.tsx:179
 #. Used in: Components > Toolbar > Data Model
 #, fuzzy
 msgid "goToTop"
 msgstr "Перейти к началу"
+
+#: components/Toolbar/DataModel.tsx:244
+#. Used in: Components > Toolbar > Data Model
+msgid "idField"
+msgstr ""
+
+#: components/Toolbar/DataModel.tsx:251
+#. Used in: Components > Toolbar > Data Model
+msgid "scope"
+msgstr ""

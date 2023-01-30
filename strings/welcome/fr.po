@@ -110,7 +110,7 @@ msgid "databaseVersion"
 msgstr "Version de la base de données :"
 
 #: components/HomePage/AboutSpecify.tsx:108
-#: components/Toolbar/DataModel.tsx:370
+#: components/Toolbar/DataModel.tsx:440
 #. Used in: Components > Home Page > About Specify ⬤ Components > Toolbar > Data Model
 msgid "schemaVersion"
 msgstr "Version du schéma de la base de données :"
