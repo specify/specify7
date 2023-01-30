@@ -234,7 +234,6 @@ function ReportRow({
                 onClick={(): void => handleClick(resource)}
               >
                 <ReportRowImage appResource={resource} />
-                {icon}
                 {resource.name}
               </Button.LikeLink>
             </td>
