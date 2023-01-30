@@ -39,7 +39,7 @@ import { sortTypes } from './helpers';
 import { QueryResultsTable } from './ResultsTable';
 import { QueryToForms } from './ToForms';
 import { QueryToMap } from './ToMap';
-import { RecordMerging } from '../Merging';
+import { RecordMergingLink } from '../Merging';
 import { interactionsText } from '../../localization/interactions';
 import { LocalizedString } from 'typesafe-i18n';
 import { resourceEvents } from '../../hooks/store';
@@ -281,7 +281,7 @@ export function QueryResults({
           <>
             {hasPermission('/record/replace', 'update') &&
               hasTablePermission(model.name, 'update') && (
-                <RecordMerging model={model} selectedRows={selectedRows} />
+                <RecordMergingLink model={model} selectedRows={selectedRows} />
               )}
             {hasToolPermission('recordSets', 'create') ? (
               selectedRows.size > 0 ? (

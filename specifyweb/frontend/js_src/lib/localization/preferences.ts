@@ -1379,6 +1379,12 @@ export const preferencesText = createDictionary({
     'fr-fr': 'Ne pas utiliser',
     'uk-ua': 'Не використовуйте',
   },
+  autoPopulateDescription: {
+    'en-us':
+      'Auto populate the merged record with values from duplicates when opening the merging dialog',
+    'ru-ru':
+      'Автоматически заполнять объединенную запись значениями из дубликатов при открытии диалога объединения',
+  },
   autoCreateVariants: {
     'en-us': 'Automatically create {agentVariantTable:string} records',
     'ru-ru': 'Автоматически создавать {agentVariantTable:string} записи',

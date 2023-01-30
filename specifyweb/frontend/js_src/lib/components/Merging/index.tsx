@@ -33,12 +33,13 @@ import { useParams } from 'react-router-dom';
 import { getModel } from '../DataModel/schema';
 import { useSearchParameter } from '../../hooks/navigation';
 import { f } from '../../utils/functools';
+import { getUserPref } from '../UserPreferences/helpers';
 
 const recordMergingTables = new Set<keyof Tables>(['Agent']);
 
 export const mergingQueryParameter = 'records';
 
-export function RecordMerging({
+export function RecordMergingLink({
   model,
   selectedRows,
 }: {
@@ -118,7 +119,11 @@ function Merging({
           ? undefined
           : postMergeResource(
               initialRecords.current,
-              autoMerge(model, initialRecords.current, true)
+              autoMerge(
+                model,
+                initialRecords.current,
+                getUserPref('recordMerging', 'behavior', 'autoPopulate')
+              )
             ).then((merged) =>
               deserializeResource(merged as SerializedResource<AnySchema>)
             ),

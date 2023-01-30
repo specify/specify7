@@ -1317,6 +1317,19 @@ export const preferenceDefinitions = {
   recordMerging: {
     title: mergingText.recordMerging(),
     subCategories: {
+      behavior: {
+        title: preferencesText.behavior(),
+        items: {
+          autoPopulate: defineItem<boolean>({
+            title: mergingText.autoPopulate(),
+            description: preferencesText.autoPopulateDescription(),
+            requiresReload: false,
+            visible: 'protected',
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+        },
+      },
       agent: {
         title: () => tableLabel('Agent'),
         items: {
