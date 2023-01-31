@@ -72,12 +72,12 @@ export function FrontEndStatsResultDialog({
         query={query}
         recordSet={undefined}
         forceCollection={undefined}
-        onFieldModify={
+        onChange={
           typeof handleSpecChange === 'function'
-            ? (tableName, fields): void => {
+            ? (query): void => {
                 setQueryData({
-                  tableName,
-                  fields: fields.map((field) => ({
+                  tableName: query.contextName as keyof Tables,
+                  fields: query.fields.map((field) => ({
                     ...field,
                     path: QueryFieldSpec.fromStringId(
                       field.stringId,
