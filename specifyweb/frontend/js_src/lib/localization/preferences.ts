@@ -1319,6 +1319,7 @@ export const preferencesText = createDictionary({
     'uk-ua': "Визначати автоматично на основі формату номеру об'єкта",
   },
   use: {
+    comment: 'Verb',
     'en-us': 'Use',
     'ru-ru': 'Использовать',
     'es-es': 'Usar',
