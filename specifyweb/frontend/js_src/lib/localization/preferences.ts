@@ -230,7 +230,7 @@ export const preferencesText = createDictionary({
     'en-us': 'Field background',
     'ru-ru': 'Фон поля',
     'es-es': 'Fondo de campo',
-    'fr-fr': 'Fond de terrain',
+    'fr-fr': 'Fond de champ',
     'uk-ua': 'Поле фону',
   },
   disabledFieldBackground: {
