@@ -1,6 +1,3 @@
-import type { SpQueryField, Tables } from '../DataModel/types';
-import type { RA } from '../../utils/types';
-import type { SerializedResource } from '../DataModel/helperTypes';
 import { StatsResult } from './StatsResult';
 import React from 'react';
 import {
@@ -9,7 +6,7 @@ import {
   useStatValueLoad,
 } from './hooks';
 import type { CustomStat, DefaultStat, QuerySpec, StatsSpec } from './types';
-import { throttledAjax } from '../../utils/ajax/throttledAjax';
+import { throttledPromise } from '../../utils/ajax/throttledPromise';
 import { BackendStatsResult } from './types';
 import { ajax } from '../../utils/ajax';
 import { useResolveStatSpec } from './hooks';
@@ -50,11 +47,10 @@ export function StatItem({
   );
   const statsSpecCalculated = useResolveStatSpec(item, statsSpec);
 
-  return statsSpecCalculated.type === 'QueryStat' ? (
+  return statsSpecCalculated.type === 'QueryBuilderStat' ? (
     <QueryItem
       isDefault={item.type === 'DefaultStat'}
-      tableName={statsSpecCalculated.tableName}
-      fields={statsSpecCalculated.fields}
+      queryStatSpec={statsSpecCalculated.querySpec}
       statLabel={item.itemLabel}
       statValue={item.itemValue}
       onClick={handleClick}
@@ -112,7 +108,7 @@ function BackEndItem({
 }): JSX.Element {
   const promiseGenerator = React.useCallback(
     () =>
-      throttledAjax<BackendStatsResult, string>(
+      throttledPromise<BackendStatsResult, string>(
         'backendStats',
         async () =>
           ajax<BackendStatsResult>(urlToFetch, {
@@ -143,8 +139,7 @@ function BackEndItem({
 function QueryItem({
   statValue,
   statLabel,
-  tableName,
-  fields,
+  queryStatSpec,
   onClick: handleClick,
   onRemove: handleRemove,
   onSpecChanged: handleSpecChanged,
@@ -153,10 +148,7 @@ function QueryItem({
   onItemValueLoad: handleItemValueLoad,
 }: {
   readonly statValue: string | number | undefined;
-  readonly tableName: keyof Tables;
-  readonly fields: RA<
-    Partial<SerializedResource<SpQueryField>> & { readonly path: string }
-  >;
+  readonly queryStatSpec: QuerySpec;
   readonly statLabel: string;
   readonly isDefault: boolean;
   readonly onClick: (() => void) | undefined;
@@ -165,13 +157,13 @@ function QueryItem({
   readonly onItemRename: ((newLabel: string) => void) | undefined;
   readonly onItemValueLoad: ((value: number | string) => void) | undefined;
 }): JSX.Element | null {
-  const query = useQuerySpecToResource(statLabel, tableName, fields);
+  const query = useQuerySpecToResource(statLabel, queryStatSpec);
   const promiseGenerator = React.useCallback(
     async () =>
-      throttledAjax<number | string | undefined, string>(
+      throttledPromise<number | string | undefined, string>(
         'queryStats',
         queryCountPromiseGenerator(query),
-        JSON.stringify({ tableName, fields })
+        JSON.stringify(queryStatSpec)
       ),
     [query]
   );

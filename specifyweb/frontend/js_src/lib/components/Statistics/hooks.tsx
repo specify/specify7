@@ -1,4 +1,4 @@
-import { SpQuery, SpQueryField, Tables } from '../DataModel/types';
+import { SpQuery } from '../DataModel/types';
 import type { IR, RA, WritableArray } from '../../utils/types';
 import { useMultipleAsyncState } from '../../hooks/useAsyncState';
 import React from 'react';
@@ -10,9 +10,10 @@ import type {
   CustomStat,
   DefaultStat,
   QueryBuilderStat,
+  QuerySpec,
   StatCategoryReturn,
+  StatItemSpec,
   StatLayout,
-  StatSpecCalculated,
   StatsSpec,
 } from './types';
 import { SpecifyResource } from '../DataModel/legacyTypes';
@@ -26,7 +27,6 @@ import { keysToLowerCase } from '../../utils/utils';
 import { statsText } from '../../localization/stats';
 import { throttledPromise } from '../../utils/ajax/throttledPromise';
 import { unknownCategories, urlSpec } from './definitions';
-import { SerializedResource } from '../DataModel/helperTypes';
 
 /**
  * Fetch backend statistics from the API
@@ -202,23 +202,20 @@ export function queryCountPromiseGenerator(
 
 export const useQuerySpecToResource = (
   label: string,
-  tableName: keyof Tables,
-  fields: RA<
-    Partial<SerializedResource<SpQueryField>> & { readonly path: string }
-  >
+  querySpec: QuerySpec
 ): SpecifyResource<SpQuery> =>
   React.useMemo(
     () =>
       deserializeResource(
         addMissingFields('SpQuery', {
           name: label,
-          contextName: tableName,
-          contextTableId: schema.models[tableName].tableId,
+          contextName: querySpec.tableName,
+          contextTableId: schema.models[querySpec.tableName].tableId,
           countOnly: false,
           selectDistinct: false,
-          fields: fields.map(({ path, ...field }, index) =>
+          fields: querySpec.fields.map(({ path, ...field }, index) =>
             serializeResource(
-              makeQueryField(tableName, path, {
+              makeQueryField(querySpec.tableName, path, {
                 ...field,
                 position: index,
               })
@@ -226,19 +223,18 @@ export const useQuerySpecToResource = (
           ),
         })
       ),
-    [label, tableName, fields]
+    [label, querySpec]
   );
 
 export function useResolveStatSpec(
   item: CustomStat | DefaultStat,
   statsSpec: StatsSpec
-): StatSpecCalculated {
+): StatItemSpec {
   return React.useMemo(() => {
     if (item.type === 'CustomStat') {
       return {
-        type: 'QueryStat',
-        tableName: item.tableName,
-        fields: item.fields,
+        type: 'QueryBuilderStat',
+        querySpec: item.querySpec,
       };
     } else {
       const statSpecItem =
@@ -253,9 +249,8 @@ export function useResolveStatSpec(
             formatter: (statSpecItem.spec as BackEndStat).formatter,
           }
         : {
-            type: 'QueryStat',
-            tableName: (statSpecItem.spec as QueryBuilderStat).tableName,
-            fields: (statSpecItem.spec as QueryBuilderStat).fields,
+            type: 'QueryBuilderStat',
+            querySpec: (statSpecItem.spec as QueryBuilderStat).querySpec,
           };
     }
   }, [item]);

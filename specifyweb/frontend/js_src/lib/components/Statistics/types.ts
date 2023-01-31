@@ -8,10 +8,7 @@ export type CustomStat = State<
   'CustomStat',
   {
     readonly itemLabel: string;
-    readonly tableName: keyof Tables;
-    readonly fields: RA<
-      Partial<SerializedResource<SpQueryField>> & { readonly path: string }
-    >;
+    readonly querySpec: QuerySpec;
     readonly itemValue?: number | string | undefined;
   }
 >;
@@ -40,16 +37,6 @@ export type StatLayout = RA<{
   readonly lastUpdated: string | undefined;
 }>;
 
-export type StatSpecCalculated =
-  | BackEndStat
-  | {
-      readonly type: 'QueryStat';
-      readonly tableName: keyof Tables;
-      readonly fields: RA<
-        Partial<SerializedResource<SpQueryField>> & { readonly path: string }
-      >;
-    };
-
 export type QuerySpec = {
   readonly tableName: keyof Tables;
   readonly fields: RA<
@@ -71,10 +58,7 @@ export type StatsSpec = IR<
 export type QueryBuilderStat = State<
   'QueryBuilderStat',
   {
-    readonly tableName: keyof Tables;
-    readonly fields: RA<
-      Partial<SerializedResource<SpQueryField>> & { readonly path: string }
-    >;
+    readonly querySpec: QuerySpec;
   }
 >;
 export type BackendStatsResult = {

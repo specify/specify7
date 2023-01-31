@@ -171,8 +171,10 @@ export function Categories({
                                     {
                                       type: 'CustomStat',
                                       itemLabel: itemName,
-                                      tableName: querySpec.tableName,
-                                      fields: querySpec.fields,
+                                      querySpec: {
+                                        tableName: querySpec.tableName,
+                                        fields: querySpec.fields,
+                                      },
                                     },
                                     categoryIndex,
                                     itemIndex

@@ -53,16 +53,18 @@ export function AddStatDialog({
                 {
                   type: 'CustomStat',
                   itemLabel: query.name,
-                  tableName: query.contextName as keyof Tables,
-                  fields: query.fields.map((field) => ({
-                    ...field,
-                    path: QueryFieldSpec.fromStringId(
-                      field.stringId,
-                      field.isRelFld ?? false
-                    )
-                      .toMappingPath()
-                      .join('.'),
-                  })),
+                  querySpec: {
+                    tableName: query.contextName as keyof Tables,
+                    fields: query.fields.map((field) => ({
+                      ...field,
+                      path: QueryFieldSpec.fromStringId(
+                        field.stringId,
+                        field.isRelFld ?? false
+                      )
+                        .toMappingPath()
+                        .join('.'),
+                    })),
+                  },
                 },
                 -1
               );
