@@ -57,7 +57,6 @@ function GeoLocate({
   const [clicked, handleClicked] = useBooleanState();
   const handleUpdate = React.useCallback(
     ({ latitude, longitude, uncertainty, polygon }: GeoLocatePayload) => {
-      if (typeof data !== 'object') return;
       handleClicked();
 
       resource.set('lat1text', latitude);
@@ -105,7 +104,7 @@ function GeoLocate({
         );
       else handleClose();
     },
-    [loading]
+    [loading, resource, handleClicked]
   );
 
   return data === undefined ? null : data === false ? (
