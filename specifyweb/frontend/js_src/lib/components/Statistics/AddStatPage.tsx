@@ -21,8 +21,7 @@ export function AddStatPage({
         categoryIndex?: number,
         itemIndex?: number
       ) => void)
-    | ((item: CustomStat | DefaultStat) => void)
-    | undefined;
+    | ((item: CustomStat | DefaultStat) => void);
   readonly onValueLoad:
     | ((
         pageIndex: number,

@@ -61,6 +61,7 @@ export function StatItem({
         handleSpecChanged !== undefined
           ? (querySpec) => {
               handleSpecChanged(querySpec, item.itemLabel);
+              console.log('query spec is', querySpec);
             }
           : undefined
       }

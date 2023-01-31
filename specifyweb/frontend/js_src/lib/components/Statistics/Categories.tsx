@@ -1,4 +1,10 @@
-import type { CustomStat, DefaultStat, StatLayout, StatsSpec } from './types';
+import type {
+  CustomStat,
+  DefaultStat,
+  QuerySpec,
+  StatLayout,
+  StatsSpec,
+} from './types';
 import { H3, Ul } from '../Atoms';
 import { Input } from '../Atoms/Form';
 import { StatItem } from './StatItems';
@@ -7,8 +13,6 @@ import { className } from '../Atoms/className';
 import { commonText } from '../../localization/common';
 import React from 'react';
 import { RA } from '../../utils/types';
-import { SerializedResource } from '../DataModel/helperTypes';
-import { SpQueryField } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { statsText } from '../../localization/stats';
 import { urlSpec } from './definitions';
@@ -33,8 +37,7 @@ export function Categories({
         categoryIndex?: number,
         itemIndex?: number
       ) => void)
-    | ((item: CustomStat | DefaultStat) => void)
-    | undefined;
+    | ((item: CustomStat | DefaultStat) => void);
   readonly onRemove:
     | ((categoryIndex: number, itemIndex: number | undefined) => void)
     | undefined;
@@ -42,13 +45,7 @@ export function Categories({
     | ((newName: string, categoryIndex: number) => void)
     | undefined;
   readonly onSpecChanged:
-    | ((
-        categoryIndex: number,
-        itemIndex: number,
-        fields: RA<
-          Partial<SerializedResource<SpQueryField>> & { readonly path: string }
-        >
-      ) => void)
+    | ((categoryIndex: number, itemIndex: number, querySpec: QuerySpec) => void)
     | undefined;
   readonly onValueLoad:
     | ((
@@ -184,7 +181,7 @@ export function Categories({
                                 handleSpecChanged(
                                   categoryIndex,
                                   itemIndex,
-                                  querySpec.fields
+                                  querySpec
                                 )
                           : undefined
                       }

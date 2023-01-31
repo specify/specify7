@@ -657,7 +657,7 @@ export function StatsPage(): JSX.Element | null {
                       )
                   : undefined
               }
-              onSpecChanged={(categoryIndex, itemIndex, fields): void =>
+              onSpecChanged={(categoryIndex, itemIndex, querySpec): void =>
                 handleChange((oldCategory) =>
                   replaceItem(oldCategory, categoryIndex, {
                     ...oldCategory[categoryIndex],
@@ -670,7 +670,7 @@ export function StatsPage(): JSX.Element | null {
                           .type === 'DefaultStat'
                           ? {}
                           : {
-                              fields,
+                              querySpec,
                               itemValue: undefined,
                             }),
                       }
