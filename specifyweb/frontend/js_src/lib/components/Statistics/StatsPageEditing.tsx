@@ -14,7 +14,7 @@ export function StatsPageEditing({
   onClose: handleClose,
   onAdd: handleAdd,
 }: {
-  readonly label: string;
+  readonly label: string | undefined;
   readonly onRemove: (() => void) | undefined;
   readonly onRename: ((value: string) => void) | undefined;
   readonly onClose: () => void;

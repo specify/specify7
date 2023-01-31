@@ -35,7 +35,7 @@ import { StatsPageEditing } from './StatsPageEditing';
 import type { CustomStat, DefaultStat, StatLayout } from './types';
 import { urlSpec } from './definitions';
 import { RA } from '../../utils/types';
-import { cleanFulfilledRequests } from '../../utils/ajax/throttledAjax';
+import { cleanFulfilledRequests } from '../../utils/ajax/throttledPromise';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { getUniqueName } from '../../utils/uniquifyName';
 
@@ -129,7 +129,7 @@ export function StatsPage(): JSX.Element | null {
   /*
    * Initial Load For Collection and Personal Pages
    * If collection and personal layout are undefined initially, then we need to fetch all unknown categories.
-   * It is simpler to make the promise twice since throttledAjax returns the previous promise if the spec is same
+   * It is simpler to make the promise twice since throttledPromise returns the previous promise if the spec is same
    *
    */
   React.useEffect(() => {

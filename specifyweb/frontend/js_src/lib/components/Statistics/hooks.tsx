@@ -24,7 +24,7 @@ import { schema } from '../DataModel/schema';
 import { makeQueryField } from '../QueryBuilder/fromTree';
 import { keysToLowerCase } from '../../utils/utils';
 import { statsText } from '../../localization/stats';
-import { throttledAjax } from '../../utils/ajax/throttledAjax';
+import { throttledPromise } from '../../utils/ajax/throttledPromise';
 import { unknownCategories, urlSpec } from './definitions';
 import { SerializedResource } from '../DataModel/helperTypes';
 
@@ -55,7 +55,7 @@ const backEndStatPromiseGenerator = (
     categoriesToFetch.map((key) => [
       key,
       async () =>
-        throttledAjax<BackendStatsResult, string>(
+        throttledPromise<BackendStatsResult, string>(
           'backendStats',
           async () =>
             ajax<BackendStatsResult>(urlSpec[key], {
