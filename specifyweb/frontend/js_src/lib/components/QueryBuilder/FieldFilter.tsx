@@ -2,13 +2,10 @@ import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
-import { useBooleanState } from '../../hooks/useBooleanState';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { useValidation } from '../../hooks/useValidation';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
-import { databaseDateFormat } from '../../utils/dateFormat';
-import { dayjs } from '../../utils/dayJs';
 import { f } from '../../utils/functools';
 import type { Parser } from '../../utils/parser/definitions';
 import {
@@ -20,20 +17,19 @@ import type {
   ValidParseResult,
 } from '../../utils/parser/parse';
 import { parseValue } from '../../utils/parser/parse';
-import { parseRelativeDate, reParse } from '../../utils/relativeDate';
 import type { RA, RR } from '../../utils/types';
 import { removeKey } from '../../utils/utils';
-import { Button } from '../Atoms/Button';
 import { Input, Select, selectMultipleSize } from '../Atoms/Form';
 import { getField } from '../DataModel/helpers';
 import { schema } from '../DataModel/schema';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { PickListItemSimple } from '../FormFields/ComboBox';
 import { hasNativeErrors } from '../Forms/validationHelpers';
-import { AutoComplete } from '../Molecules/AutoComplete';
 import { fetchPickList, getPickListItems } from '../PickLists/fetch';
 import { mappingElementDivider } from '../WbPlanView/LineComponents';
 import type { QueryField } from './helpers';
+import { DateQueryInputField } from './RelativeDate';
+import { SpecifyUserAutoComplete } from './SpecifyUserAutoComplete';
 
 /**
  * Formatters and aggregators don't yet support any filtering options.
@@ -68,232 +64,7 @@ export const filtersWithDefaultValue = new Set<QueryFieldFilter>([
   'in',
 ]);
 
-const relativeDateItems = {
-  direction: [
-    { value: '+', title: queryText.future() },
-    {
-      value: '-',
-      title: queryText.past(),
-    },
-  ],
-  type: [
-    {
-      value: 'day',
-      title: queryText.day(),
-    },
-    { value: 'week', title: queryText.week() },
-    {
-      value: 'month',
-      title: queryText.month(),
-    },
-    {
-      value: 'year',
-      title: queryText.year(),
-    },
-  ],
-};
-
-function PickListSimple({
-  pickListItems,
-  value,
-  onBlur: handleBlur,
-  onChange: handleChange,
-}: {
-  readonly pickListItems: RA<PickListItemSimple>;
-  readonly value: string;
-  readonly onBlur: ({ target }: React.ChangeEvent<HTMLSelectElement>) => void;
-  readonly onChange: (value: string) => void;
-}): JSX.Element {
-  return (
-    <Select value={value} onBlur={handleBlur} onValueChange={handleChange}>
-      {pickListItems.map(({ title, value }) => (
-        <option key={value} value={value}>
-          {title}
-        </option>
-      ))}
-    </Select>
-  );
-}
-
-function extractValuesSimple<TYPE>(
-  target: HTMLInputElement | HTMLSelectElement
-): TYPE {
-  return target.value as unknown as TYPE;
-}
-
-function DateSplit({
-  onChange: handleChange,
-  parsed,
-  onLiveChange: handleLiveChange,
-}: {
-  readonly parsed: {
-    readonly direction: string;
-    readonly type: string;
-    readonly size: number;
-  };
-  readonly onChange: ((newValue: string) => void) | undefined;
-  readonly onLiveChange: (() => void) | undefined;
-}): JSX.Element {
-  const [values, setValues] = useTriggerState<{
-    readonly direction: string;
-    readonly type: string;
-    readonly size: number;
-  }>(parsed);
-  const direction = values.direction;
-  const size = values.size;
-  const type = values.type;
-
-  return (
-    <div className="flex flex-row gap-1">
-      <PickListSimple
-        pickListItems={relativeDateItems.direction}
-        value={resolveItem(relativeDateItems.direction, direction)}
-        onBlur={({ target }) => {
-          const newValue = extractValuesSimple<string>(target);
-          setValues({ ...values, direction: newValue });
-          handleChange?.(`today ${newValue} ${size} ${type}`);
-        }}
-        onChange={(newValue) => {
-          setValues({ ...values, direction: newValue });
-          handleLiveChange?.();
-        }}
-      />
-      <Input.Number
-        min={0}
-        value={size}
-        onBlur={({ target }) => {
-          const newSize = Number.parseInt(extractValuesSimple<string>(target));
-          if (!Number.isNaN(newSize) && newSize >= 0) {
-            setValues({ ...values, size: newSize });
-            handleChange?.(`today ${direction} ${newSize} ${type}`);
-          }
-        }}
-        onValueChange={(value) => {
-          setValues({
-            ...values,
-            size: value,
-          });
-          handleLiveChange?.();
-        }}
-      />
-      <PickListSimple
-        pickListItems={relativeDateItems.type}
-        value={resolveItem(relativeDateItems.type, type)}
-        onBlur={({ target }) => {
-          const newValue = extractValuesSimple<string>(target);
-          setValues({ ...values, type: newValue });
-          handleChange?.(`today ${direction} ${size} ${newValue}`);
-        }}
-        onChange={(newValue) => {
-          setValues({ ...values, type: newValue });
-          handleLiveChange?.();
-        }}
-      />
-    </div>
-  );
-}
-
-function DateQueryInputField({
-  currentValue,
-  label,
-  parser,
-  onChange: handleChange,
-  fieldName,
-}: {
-  readonly currentValue: string;
-  readonly label?: string;
-  readonly parser: Parser;
-  readonly fieldName: string;
-  readonly onChange: ((newValue: string) => void) | undefined;
-}): JSX.Element | null {
-  const [date, setDate] = React.useState<{
-    readonly absolute: string | undefined;
-    readonly relative: string | undefined;
-  }>({
-    absolute: reParse.test(currentValue) ? undefined : currentValue,
-    relative: reParse.test(currentValue) ? currentValue : undefined,
-  });
-
-  const parsed = React.useMemo(() => {
-    if (date.relative !== undefined) {
-      const parsedValue = reParse.exec(date.relative.toLowerCase())?.slice(1);
-      return parsedValue !== undefined
-        ? {
-            direction: parsedValue[0],
-            size: Number.parseInt(parsedValue[1]),
-            type: parsedValue[2],
-          }
-        : undefined;
-    }
-    return undefined;
-  }, [date.relative]);
-
-  const [isAbsolute, _, __, toggleAbsolute] = useBooleanState(
-    parsed === undefined
-  );
-
-  return (
-    <div className="flex items-center">
-      <Button.Icon
-        icon="switch"
-        title="switch"
-        onClick={() => {
-          toggleAbsolute();
-          if (!isAbsolute) {
-            if (reParse.test(currentValue)) {
-              const parsedDate = dayjs(parseRelativeDate(currentValue)).format(
-                databaseDateFormat
-              );
-              handleChange?.(parsedDate);
-              setDate((oldState) => ({
-                absolute:
-                  oldState.absolute === '' || oldState.absolute === undefined
-                    ? parsedDate
-                    : oldState.absolute,
-                relative: currentValue,
-              }));
-            }
-          } else {
-            setDate((oldState) => ({
-              relative:
-                parsed === undefined ? 'today + 0 day' : oldState.relative,
-              absolute: currentValue,
-            }));
-            if (parsed === undefined) {
-              handleChange?.('today + 0 day');
-            }
-          }
-        }}
-      />
-      {isAbsolute ? (
-        <QueryInputField
-          currentValue={date.absolute ?? currentValue}
-          fieldName={fieldName}
-          label={label}
-          parser={parser}
-          pickListItems={undefined}
-          onChange={handleChange}
-        />
-      ) : !isAbsolute && parsed !== undefined ? (
-        <DateSplit
-          parsed={parsed}
-          onChange={handleChange}
-          onLiveChange={
-            date.absolute === undefined
-              ? undefined
-              : (): void =>
-                  setDate((oldValue) => ({
-                    ...oldValue,
-                    absolute: undefined,
-                  }))
-          }
-        />
-      ) : undefined}
-    </div>
-  );
-}
-
-function QueryInputField({
+export function QueryInputField({
   currentValue,
   // Used only to help browsers with autocomplet
   fieldName,
@@ -410,8 +181,8 @@ function QueryInputField({
             ? value
                 .split(',')
                 .map(f.trim)
-                .map((value) => resolveItem(pickListItems, value))
-            : resolveItem(pickListItems, value)
+                .map((value) => resolvePickListItem(pickListItems, value))
+            : resolvePickListItem(pickListItems, value)
         }
       >
         <option value="" />
@@ -446,7 +217,7 @@ function QueryInputField({
   );
 }
 
-const resolveItem = (
+const resolvePickListItem = (
   items: RA<PickListItemSimple>,
   currentValue: string
 ): string =>
@@ -476,10 +247,9 @@ function SingleField({
    * This prop is not used here, but defined here because of "typeof SingleField"
    * in queryFieldFilters
    */
-
   readonly enforceLengthLimit: boolean;
 }): JSX.Element {
-  if (parser.type === 'date') {
+  if (parser.type === 'date')
     return (
       <DateQueryInputField
         currentValue={currentValue}
@@ -489,78 +259,29 @@ function SingleField({
         onChange={handleChange}
       />
     );
-  }
-  if (
+  else if (
     terminatingField?.isRelationship === false &&
     terminatingField.name === 'name' &&
     terminatingField.model.name === 'SpecifyUser'
-  ) {
+  )
     return (
       <SpecifyUserAutoComplete
         startValue={currentValue}
         onChange={handleChange}
       />
     );
-  }
-  return (
-    <QueryInputField
-      currentValue={currentValue}
-      fieldName={fieldName}
-      label={label}
-      listInput={listInput}
-      parser={parser}
-      pickListItems={pickListItems}
-      onChange={handleChange}
-    />
-  );
-}
-
-function SpecifyUserAutoComplete({
-  startValue,
-  onChange: handleChange,
-}: {
-  readonly startValue: string;
-  readonly onChange: ((newValue: string) => void) | undefined;
-}): JSX.Element {
-  const valueRef = React.useRef<string>(startValue);
-  const items = [
-    {
-      label: 'Current User',
-      searchValue: 'Current User',
-      data: 'currentSpecifyUserName',
-    },
-  ];
-  const label =
-    items.find((item) => item.data === startValue)?.label ?? startValue;
-  return (
-    <div className="flex items-center">
-      <AutoComplete<string>
-        aria-label={undefined}
-        delay={0}
-        filterItems
-        inputProps={{
-          onBlur: () => {
-            const data =
-              items.find(
-                (item) =>
-                  item.label === valueRef.current ||
-                  item.searchValue === valueRef.current
-              )?.data ?? valueRef.current;
-            handleChange?.(data);
-          },
-        }}
-        minLength={0}
-        pendingValueRef={valueRef}
-        onChange={({ data }): void => handleChange?.(data)}
-        onNewValue={(data) => {
-          handleChange?.(data);
-        }}
-        source={items}
-        // OnCleared={}
-        value={label}
+  else
+    return (
+      <QueryInputField
+        currentValue={currentValue}
+        fieldName={fieldName}
+        label={label}
+        listInput={listInput}
+        parser={parser}
+        pickListItems={pickListItems}
+        onChange={handleChange}
       />
-    </div>
-  );
+    );
 }
 
 function Between({
@@ -875,7 +596,7 @@ export function QueryLineFilter({
     if (pickListItems === undefined || pickListItems === false) return;
     const newStartValue = filter.startValue
       .split(',')
-      .map((value) => resolveItem(pickListItems, value))
+      .map((value) => resolvePickListItem(pickListItems, value))
       .join(',');
     if (newStartValue !== filter.startValue) handleChange?.(newStartValue);
   }, [pickListItems, filter]);
