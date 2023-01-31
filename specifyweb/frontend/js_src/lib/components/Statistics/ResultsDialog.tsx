@@ -1,62 +1,59 @@
 import React from 'react';
 
-import { QueryBuilder } from '../QueryBuilder/Wrapped';
-
-import type { SpQuery, SpQueryField, Tables } from '../DataModel/types';
-
-import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { Button } from '../Atoms/Button';
+import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
-import type { RA } from '../../utils/types';
+import { Button } from '../Atoms/Button';
+import { serializeResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { SpQuery, Tables } from '../DataModel/types';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
-import { QuerySpec } from './types';
+import { QueryBuilder } from '../QueryBuilder/Wrapped';
+import type { QuerySpec } from './types';
+
+export const queryToSpec = (query: SerializedResource<SpQuery>): QuerySpec => ({
+  tableName: query.contextName as keyof Tables,
+  fields: query.fields.map((field) => ({
+    ...field,
+    path: QueryFieldSpec.fromStringId(field.stringId, field.isRelFld ?? false)
+      .toMappingPath()
+      .join('.'),
+  })),
+});
 
 export function FrontEndStatsResultDialog({
-  query,
+  query: originalQuery,
   onClose: handleClose,
   statLabel,
-  onSpecChanged: handleSpecChange,
+  onEdit: handleEdit,
 }: {
   readonly query: SpecifyResource<SpQuery>;
   readonly onClose: () => void;
   readonly statLabel: string;
-  readonly onSpecChanged: ((querySpec: QuerySpec) => void) | undefined;
+  readonly onEdit: ((querySpec: QuerySpec) => void) | undefined;
 }): JSX.Element | null {
-  const [queryData, setQueryData] = React.useState<{
-    readonly tableName: keyof Tables | undefined;
-    readonly fields:
-      | undefined
-      | RA<
-          Partial<SerializedResource<SpQueryField>> & { readonly path: string }
-        >;
-  }>({ tableName: undefined, fields: undefined });
-  return typeof query === 'object' ? (
+  const [query, setQuery] = useLiveState(
+    React.useCallback(
+      () => queryToSpec(serializeResource(originalQuery)),
+      [originalQuery]
+    )
+  );
+  return (
     <Dialog
       buttons={
         <>
           <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-          {typeof handleSpecChange === 'function' &&
-          queryData.fields !== undefined &&
-          queryData.tableName !== undefined ? (
+          {typeof handleEdit === 'function' && (
             <Button.Green
               onClick={(): void => {
-                if (
-                  queryData.tableName !== undefined &&
-                  queryData.fields !== undefined
-                ) {
-                  handleSpecChange({
-                    tableName: queryData.tableName,
-                    fields: queryData.fields,
-                  });
-                  handleClose();
-                }
+                handleEdit(query);
+                handleClose();
               }}
             >
               {commonText.save()}
             </Button.Green>
-          ) : null}
+          )}
         </>
       }
       className={{
@@ -67,30 +64,17 @@ export function FrontEndStatsResultDialog({
     >
       <QueryBuilder
         autoRun
+        forceCollection={undefined}
         isEmbedded
         isReadOnly={false}
-        query={query}
+        query={originalQuery}
         recordSet={undefined}
-        forceCollection={undefined}
         onChange={
-          typeof handleSpecChange === 'function'
-            ? (query): void => {
-                setQueryData({
-                  tableName: query.contextName as keyof Tables,
-                  fields: query.fields.map((field) => ({
-                    ...field,
-                    path: QueryFieldSpec.fromStringId(
-                      field.stringId,
-                      field.isRelFld ?? false
-                    )
-                      .toMappingPath()
-                      .join('.'),
-                  })),
-                });
-              }
+          typeof handleEdit === 'function'
+            ? (query): void => setQuery(queryToSpec(query))
             : undefined
         }
       />
     </Dialog>
-  ) : null;
+  );
 }

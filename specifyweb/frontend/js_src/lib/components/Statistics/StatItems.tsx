@@ -1,15 +1,21 @@
-import { StatsResult } from './StatsResult';
 import React from 'react';
+
+import { ajax } from '../../utils/ajax';
+import { throttledPromise } from '../../utils/ajax/throttledPromise';
 import {
   queryCountPromiseGenerator,
-  useQuerySpecToResource,
+  querySpecToResource,
+  useResolvedStatSpec,
   useStatValueLoad,
 } from './hooks';
-import type { CustomStat, DefaultStat, QuerySpec, StatsSpec } from './types';
-import { throttledPromise } from '../../utils/ajax/throttledPromise';
-import { BackendStatsResult } from './types';
-import { ajax } from '../../utils/ajax';
-import { useResolveStatSpec } from './hooks';
+import { StatsResult } from './StatsResult';
+import type {
+  BackendStatsResult,
+  CustomStat,
+  DefaultStat,
+  QuerySpec,
+  StatsSpec,
+} from './types';
 
 export function StatItem({
   statsSpec,
@@ -18,9 +24,9 @@ export function StatItem({
   itemIndex,
   onRemove: handleRemove,
   onClick: handleClick,
-  onSpecChanged: handleSpecChanged,
-  onValueLoad: handleValueLoad,
-  onItemRename: handleItemRename,
+  onEdit: handleEdit,
+  onLoad: onLoad,
+  onRename: handleRename,
 }: {
   readonly statsSpec: StatsSpec;
   readonly item: CustomStat | DefaultStat;
@@ -28,159 +34,162 @@ export function StatItem({
   readonly itemIndex: number;
   readonly onRemove: (() => void) | undefined;
   readonly onClick: (() => void) | undefined;
-  readonly onSpecChanged:
+  readonly onEdit:
     | ((querySpec: QuerySpec, itemName: string) => void)
     | undefined;
-  readonly onValueLoad:
+  readonly onLoad:
     | ((
         categoryIndex: number,
         itemIndex: number,
         value: number | string
       ) => void)
     | undefined;
-  readonly onItemRename: ((newLabel: string) => void) | undefined;
+  readonly onRename: ((newLabel: string) => void) | undefined;
 }): JSX.Element | null {
-  const handleItemValueLoad = React.useCallback(
-    (value: number | string) =>
-      handleValueLoad?.(categoryIndex, itemIndex, value),
-    [handleValueLoad, categoryIndex, itemIndex]
+  const handleLoad = React.useCallback(
+    (value: number | string) => onLoad?.(categoryIndex, itemIndex, value),
+    [onLoad, categoryIndex, itemIndex]
   );
-  const statsSpecCalculated = useResolveStatSpec(item, statsSpec);
+  const resolvedSpec = useResolvedStatSpec(item, statsSpec);
 
-  return statsSpecCalculated.type === 'QueryBuilderStat' ? (
+  return resolvedSpec.type === 'QueryBuilderStat' ? (
     <QueryItem
       isDefault={item.type === 'DefaultStat'}
-      queryStatSpec={statsSpecCalculated.querySpec}
-      statLabel={item.itemLabel}
-      statValue={item.itemValue}
+      label={item.label}
+      querySpec={resolvedSpec.querySpec}
+      value={item.itemValue}
       onClick={handleClick}
-      onItemRename={handleItemRename}
-      onItemValueLoad={handleItemValueLoad}
-      onRemove={handleRemove}
-      onSpecChanged={
-        handleSpecChanged !== undefined
+      onEdit={
+        handleEdit !== undefined
           ? (querySpec) => {
-              handleSpecChanged(querySpec, item.itemLabel);
+              handleEdit(querySpec, item.label);
               console.log('query spec is', querySpec);
             }
           : undefined
       }
+      onLoad={handleLoad}
+      onRemove={handleRemove}
+      onRename={handleRename}
     />
   ) : item.type === 'DefaultStat' &&
-    statsSpecCalculated.type === 'BackEndStat' &&
-    statsSpecCalculated.pathToValue !== undefined ? (
+    resolvedSpec.type === 'BackEndStat' &&
+    resolvedSpec.pathToValue !== undefined ? (
     <BackEndItem
-      formatter={statsSpecCalculated.formatter}
+      fetchUrl={resolvedSpec.fetchUrl}
+      formatter={resolvedSpec.formatter}
       isDefault
-      pathToValue={statsSpecCalculated.pathToValue}
-      statLabel={item.itemLabel}
-      statValue={item.itemValue}
-      urlToFetch={statsSpecCalculated.urlToFetch}
+      label={item.label}
+      pathToValue={resolvedSpec.pathToValue}
+      value={item.itemValue}
       onClick={handleClick}
-      onItemRename={handleItemRename}
-      onItemValueLoad={handleItemValueLoad}
+      onRename={handleRename}
+      onLoad={handleLoad}
       onRemove={handleRemove}
     />
   ) : null;
 }
 
 function BackEndItem({
-  statValue,
-  urlToFetch,
+  value,
+  fetchUrl,
   pathToValue,
   formatter,
-  statLabel,
+  label,
   isDefault,
   onClick: handleClick,
   onRemove: handleRemove,
-  onItemRename: handleItemRename,
-  onItemValueLoad: handleItemValueLoad,
+  onRename: handleRename,
+  onLoad: handleLoad,
 }: {
-  readonly statValue: string | number | undefined;
-  readonly urlToFetch: string;
+  readonly value: number | string | undefined;
+  readonly fetchUrl: string;
   readonly pathToValue: keyof BackendStatsResult;
-  readonly statLabel: string;
+  readonly label: string;
   readonly isDefault: boolean;
   readonly formatter: (rawValue: any) => string;
   readonly onClick: (() => void) | undefined;
   readonly onRemove: (() => void) | undefined;
-  readonly onItemRename: ((newLabel: string) => void) | undefined;
-  readonly onItemValueLoad: ((value: number | string) => void) | undefined;
+  readonly onRename: ((newLabel: string) => void) | undefined;
+  readonly onLoad: ((value: number | string) => void) | undefined;
 }): JSX.Element {
   const promiseGenerator = React.useCallback(
     () =>
       throttledPromise<BackendStatsResult, string>(
         'backendStats',
         async () =>
-          ajax<BackendStatsResult>(urlToFetch, {
+          ajax<BackendStatsResult>(fetchUrl, {
             method: 'GET',
             headers: {
               Accept: 'application/json',
             },
           }).then(({ data }) => data),
-        urlToFetch
+        fetchUrl
       ).then((data) => formatter(data[pathToValue])),
-    [pathToValue, urlToFetch]
+    [pathToValue, fetchUrl]
   );
-  useStatValueLoad(statValue, promiseGenerator, handleItemValueLoad);
+  useStatValueLoad(value, promiseGenerator, handleLoad);
   return (
     <StatsResult
       isDefault={isDefault}
       query={undefined}
-      statLabel={statLabel}
-      statValue={statValue}
+      statLabel={label}
+      statValue={value}
       onClick={handleClick}
-      onItemRename={handleItemRename}
+      onRename={handleRename}
       onRemove={handleRemove}
-      onSpecChanged={undefined}
+      onEdit={undefined}
     />
   );
 }
 
 function QueryItem({
-  statValue,
-  statLabel,
-  queryStatSpec,
+  value,
+  label,
+  querySpec,
   onClick: handleClick,
   onRemove: handleRemove,
-  onSpecChanged: handleSpecChanged,
-  onItemRename: handleItemRename,
+  onEdit: handleEdit,
+  onRename: handleRename,
   isDefault,
-  onItemValueLoad: handleItemValueLoad,
+  onLoad: handleLoad,
 }: {
-  readonly statValue: string | number | undefined;
-  readonly queryStatSpec: QuerySpec;
-  readonly statLabel: string;
+  readonly value: number | string | undefined;
+  readonly querySpec: QuerySpec;
+  readonly label: string;
   readonly isDefault: boolean;
   readonly onClick: (() => void) | undefined;
   readonly onRemove: (() => void) | undefined;
-  readonly onSpecChanged: ((querySpec: QuerySpec) => void) | undefined;
-  readonly onItemRename: ((newLabel: string) => void) | undefined;
-  readonly onItemValueLoad: ((value: number | string) => void) | undefined;
+  readonly onEdit: ((querySpec: QuerySpec) => void) | undefined;
+  readonly onRename: ((newLabel: string) => void) | undefined;
+  readonly onLoad: ((value: number | string) => void) | undefined;
 }): JSX.Element | null {
-  const query = useQuerySpecToResource(statLabel, queryStatSpec);
+  const query = React.useMemo(
+    () => querySpecToResource(label, querySpec),
+    [label, querySpec]
+  );
+
   const promiseGenerator = React.useCallback(
     async () =>
       throttledPromise<number | string | undefined, string>(
         'queryStats',
         queryCountPromiseGenerator(query),
-        JSON.stringify(queryStatSpec)
+        JSON.stringify(querySpec)
       ),
     [query]
   );
 
-  useStatValueLoad(statValue, promiseGenerator, handleItemValueLoad);
+  useStatValueLoad(value, promiseGenerator, handleLoad);
 
   return (
     <StatsResult
       isDefault={isDefault}
       query={query}
-      statLabel={statLabel}
-      statValue={statValue}
+      statLabel={label}
+      statValue={value}
       onClick={handleClick}
-      onItemRename={handleItemRename}
+      onRename={handleRename}
       onRemove={handleRemove}
-      onSpecChanged={handleSpecChanged}
+      onEdit={handleEdit}
     />
   );
 }

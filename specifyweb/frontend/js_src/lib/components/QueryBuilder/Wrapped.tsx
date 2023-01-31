@@ -151,6 +151,7 @@ export function QueryBuilder({
         },
       ],
     });
+
   const isEmpty = state.fields.every(
     ({ mappingPath }) => !mappingPathIsComplete(mappingPath)
   );

@@ -278,11 +278,11 @@ export function StatsPage(): JSX.Element | null {
     }
     const itemsLabelMatched = pageLayout.categories
       .flatMap(({ items }) => items ?? [])
-      .map((anyItem) => anyItem.itemLabel)
+      .map((anyItem) => anyItem.label)
       .filter(Boolean);
     return {
       ...item,
-      itemLabel: getUniqueName(item.itemLabel, itemsLabelMatched),
+      label: getUniqueName(item.label, itemsLabelMatched),
     };
   };
 
@@ -621,7 +621,7 @@ export function StatsPage(): JSX.Element | null {
                   : undefined
               }
               onClick={handleAdd}
-              onItemRename={
+              onRename={
                 isEditing && canEditIndex(activePage.isCollection)
                   ? (categoryIndex, itemIndex, newLabel): void =>
                       handleChange((oldCategory) =>
@@ -634,7 +634,7 @@ export function StatsPage(): JSX.Element | null {
                               ...(oldCategory[categoryIndex].items ?? [])[
                                 itemIndex
                               ],
-                              itemLabel: newLabel,
+                              label: newLabel,
                             }
                           ),
                         })
@@ -657,7 +657,7 @@ export function StatsPage(): JSX.Element | null {
                       )
                   : undefined
               }
-              onSpecChanged={(categoryIndex, itemIndex, querySpec): void =>
+              onEdit={(categoryIndex, itemIndex, querySpec): void =>
                 handleChange((oldCategory) =>
                   replaceItem(oldCategory, categoryIndex, {
                     ...oldCategory[categoryIndex],
@@ -678,7 +678,7 @@ export function StatsPage(): JSX.Element | null {
                   })
                 )
               }
-              onValueLoad={handleLoad}
+              onLoad={handleLoad}
             />
           </div>
         </div>
@@ -716,7 +716,7 @@ export function StatsPage(): JSX.Element | null {
                   }))
             );
           }}
-          onValueLoad={handleDefaultLoad}
+          onLoad={handleDefaultLoad}
         />
       )}
     </Form>

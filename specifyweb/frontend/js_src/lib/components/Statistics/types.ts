@@ -7,7 +7,7 @@ import type { SpQueryField, Tables } from '../DataModel/types';
 export type CustomStat = State<
   'CustomStat',
   {
-    readonly itemLabel: string;
+    readonly label: string;
     readonly querySpec: QuerySpec;
     readonly itemValue?: number | string | undefined;
   }
@@ -20,7 +20,7 @@ export type DefaultStat = State<
     readonly pageName: string;
     readonly categoryName: string;
     readonly itemName: string;
-    readonly itemLabel: string;
+    readonly label: string;
     readonly itemValue: number | string | undefined;
     readonly isVisible?: boolean;
     readonly pathToValue?: keyof BackendStatsResult;
@@ -78,7 +78,7 @@ export type BackEndStat = State<
   'BackEndStat',
   {
     readonly pathToValue: keyof BackendStatsResult | undefined;
-    readonly urlToFetch: string;
+    readonly fetchUrl: string;
     readonly formatter: (rawResult: any) => string;
   }
 >;

@@ -1,6 +1,6 @@
 import type { RA } from '../../utils/types';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import type { SpQuery, Tables } from '../DataModel/types';
+import type { SpQuery } from '../DataModel/types';
 import type { CustomStat, DefaultStat, StatLayout, StatsSpec } from './types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { Button } from '../Atoms/Button';
@@ -9,8 +9,8 @@ import { statsText } from '../../localization/stats';
 import { H3, Ul } from '../Atoms';
 import { QueryList } from '../Toolbar/Query';
 import React from 'react';
-import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { AddStatPage } from './AddStatPage';
+import { queryToSpec } from './ResultsDialog';
 
 export function AddStatDialog({
   defaultStatsAddLeft,
@@ -18,14 +18,14 @@ export function AddStatDialog({
   queries,
   onClose: handleClose,
   onAdd: handleAdd,
-  onValueLoad: handleValueLoad,
+  onLoad: onLoad,
 }: {
   readonly queries: RA<SerializedResource<SpQuery>> | undefined;
   readonly defaultStatsAddLeft: StatLayout | undefined;
   readonly statsSpec: StatsSpec;
   readonly onClose: () => void;
   readonly onAdd: (item: CustomStat | DefaultStat, itemIndex: number) => void;
-  readonly onValueLoad:
+  readonly onLoad:
     | ((
         pageIndex: number,
         categoryIndex: number,
@@ -52,19 +52,8 @@ export function AddStatDialog({
               handleAdd(
                 {
                   type: 'CustomStat',
-                  itemLabel: query.name,
-                  querySpec: {
-                    tableName: query.contextName as keyof Tables,
-                    fields: query.fields.map((field) => ({
-                      ...field,
-                      path: QueryFieldSpec.fromStringId(
-                        field.stringId,
-                        field.isRelFld ?? false
-                      )
-                        .toMappingPath()
-                        .join('.'),
-                    })),
-                  },
+                  label: query.name,
+                  querySpec: queryToSpec(query),
                 },
                 -1
               );
@@ -96,7 +85,7 @@ export function AddStatDialog({
                       handleAdd(item, -1);
                       handleClose();
                     }}
-                    onValueLoad={handleValueLoad}
+                    onLoad={onLoad}
                   />
                 )
               )}

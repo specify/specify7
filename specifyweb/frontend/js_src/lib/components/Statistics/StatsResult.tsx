@@ -14,8 +14,8 @@ export function StatsResult({
   statLabel,
   onClick: handleClick,
   onRemove: handleRemove,
-  onSpecChanged: handleSpecChanged,
-  onItemRename: handleItemRename,
+  onEdit: handleEdit,
+  onRename: handleRename,
   isDefault,
 }: {
   readonly statValue: string | number | undefined;
@@ -24,8 +24,8 @@ export function StatsResult({
   readonly isDefault: boolean;
   readonly onClick: (() => void) | undefined;
   readonly onRemove: (() => void) | undefined;
-  readonly onSpecChanged: ((querySpec: QuerySpec) => void) | undefined;
-  readonly onItemRename: ((newLabel: string) => void) | undefined;
+  readonly onEdit: ((querySpec: QuerySpec) => void) | undefined;
+  readonly onRename: ((newLabel: string) => void) | undefined;
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   return (
@@ -43,7 +43,7 @@ export function StatsResult({
             required
             value={statLabel}
             onValueChange={(newname): void => {
-              handleItemRename?.(newname);
+              handleRename?.(newname);
             }}
           />
           <span className="self-center">
@@ -70,7 +70,7 @@ export function StatsResult({
           query={query}
           onClose={handleClose}
           statLabel={statLabel}
-          onSpecChanged={handleSpecChanged}
+          onEdit={handleEdit}
         />
       ) : undefined}
     </>

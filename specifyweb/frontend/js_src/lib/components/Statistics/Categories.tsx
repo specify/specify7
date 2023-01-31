@@ -24,9 +24,9 @@ export function Categories({
   onClick: handleClick,
   onRemove: handleRemove,
   onCategoryRename: handleCategoryRename,
-  onItemRename: handleItemRename,
-  onSpecChanged: handleSpecChanged,
-  onValueLoad: handleValueLoad,
+  onRename: handleRename,
+  onEdit: handleEdit,
+  onLoad: onLoad,
 }: {
   readonly pageLayout: StatLayout[number] | undefined;
   readonly statsSpec: StatsSpec;
@@ -44,30 +44,28 @@ export function Categories({
   readonly onCategoryRename:
     | ((newName: string, categoryIndex: number) => void)
     | undefined;
-  readonly onSpecChanged:
+  readonly onEdit:
     | ((categoryIndex: number, itemIndex: number, querySpec: QuerySpec) => void)
     | undefined;
-  readonly onValueLoad:
+  readonly onLoad:
     | ((
         categoryIndex: number,
         itemIndex: number,
         value: number | string
       ) => void)
     | undefined;
-  readonly onItemRename:
+  readonly onRename:
     | ((categoryIndex: number, itemIndex: number, newLabel: string) => void)
     | undefined;
-}): JSX.Element {
-  const checkEmptyItems = handleSpecChanged === undefined;
+}): JSX.Element | null {
+  const checkEmptyItems = handleEdit === undefined;
   const [removeCategoryIndex, setRemoveCategoryIndex] = React.useState<
     number | undefined
   >(undefined);
-  const handleCloseRemoveDialog = (): void => {
-    setRemoveCategoryIndex(undefined);
-  };
+  const handleCloseRemoveDialog = (): void => setRemoveCategoryIndex(undefined);
 
   /**
-   *If checkEmptyItems is false, show category. Else, check if category contains custom stats
+   * If checkEmptyItems is false, show category. Else, check if category contains custom stats
    * or if it contains default stats which aren't isVisible as false
    */
   const shouldShowCategory = (
@@ -77,9 +75,7 @@ export function Categories({
     (items ?? []).some(
       (item) => item.type === 'CustomStat' || item.isVisible === undefined
     );
-  return pageLayout === undefined ? (
-    <></>
-  ) : (
+  return pageLayout === undefined ? null : (
     <>
       {pageLayout.categories.map(
         ({ label, items }, categoryIndex) =>
@@ -109,7 +105,7 @@ export function Categories({
               )}
               <Ul
                 className={
-                  handleItemRename === undefined
+                  handleRename === undefined
                     ? 'flex-1 overflow-auto'
                     : 'grid grid-cols-[auto_1fr_max-content] gap-2 overflow-auto'
                 }
@@ -132,25 +128,21 @@ export function Categories({
                                 pageName: item.pageName,
                                 categoryName: item.categoryName,
                                 itemName: item.itemName,
-                                itemLabel: item.itemLabel,
+                                label: item.label,
                                 itemValue: item.itemValue,
                                 itemType: item.itemType,
                                 pathToValue:
                                   item.itemType === 'BackEndStat' &&
                                   item.itemName === 'phantomItem'
-                                    ? (item.itemLabel as keyof typeof urlSpec)
+                                    ? (item.label as keyof typeof urlSpec)
                                     : undefined,
                               })
                           : undefined
                       }
-                      onItemRename={
-                        typeof handleItemRename === 'function'
+                      onRename={
+                        typeof handleRename === 'function'
                           ? (newLabel): void => {
-                              handleItemRename(
-                                categoryIndex,
-                                itemIndex,
-                                newLabel
-                              );
+                              handleRename(categoryIndex, itemIndex, newLabel);
                             }
                           : undefined
                       }
@@ -159,33 +151,29 @@ export function Categories({
                           ? (): void => handleRemove(categoryIndex, itemIndex)
                           : undefined
                       }
-                      onSpecChanged={
-                        !checkEmptyItems
-                          ? item.type === 'DefaultStat'
-                            ? handleClick !== undefined
-                              ? (querySpec, itemName): void =>
-                                  handleClick(
-                                    {
-                                      type: 'CustomStat',
-                                      itemLabel: itemName,
-                                      querySpec: {
-                                        tableName: querySpec.tableName,
-                                        fields: querySpec.fields,
-                                      },
+                      onEdit={
+                        checkEmptyItems
+                          ? undefined
+                          : item.type === 'DefaultStat'
+                          ? handleClick === undefined
+                            ? undefined
+                            : (querySpec, itemName): void =>
+                                handleClick(
+                                  {
+                                    type: 'CustomStat',
+                                    label: itemName,
+                                    querySpec: {
+                                      tableName: querySpec.tableName,
+                                      fields: querySpec.fields,
                                     },
-                                    categoryIndex,
-                                    itemIndex
-                                  )
-                              : undefined
-                            : (querySpec) =>
-                                handleSpecChanged(
+                                  },
                                   categoryIndex,
-                                  itemIndex,
-                                  querySpec
+                                  itemIndex
                                 )
-                          : undefined
+                          : (querySpec): void =>
+                              handleEdit(categoryIndex, itemIndex, querySpec)
                       }
-                      onValueLoad={handleValueLoad}
+                      onLoad={onLoad}
                     />
                   ) : undefined
                 ) ?? commonText.loading()}
@@ -207,15 +195,11 @@ export function Categories({
                     variant={className.redButton}
                     onClick={(): void => {
                       const containsCustom =
-                        pageLayout.categories[categoryIndex].items === undefined
-                          ? false
-                          : (pageLayout.categories[categoryIndex].items?.some(
-                              (item) => item.type === 'CustomStat'
-                            ) as boolean);
+                        pageLayout.categories[categoryIndex].items?.some(
+                          (item) => item.type === 'CustomStat'
+                        ) ?? false;
                       if (containsCustom) setRemoveCategoryIndex(categoryIndex);
-                      else {
-                        handleRemove(categoryIndex, undefined);
-                      }
+                      else handleRemove(categoryIndex, undefined);
                     }}
                   >
                     {statsText.deleteAll()}

@@ -152,7 +152,7 @@ export const statSpecToItems = (
         pageName,
         itemName,
         categoryName,
-        itemLabel: label,
+        label: label,
         itemValue: undefined,
         itemType: spec.type === 'BackEndStat' ? 'BackEndStat' : 'QueryStat',
         pathToValue: spec.type === 'BackEndStat' ? spec.pathToValue : undefined,
@@ -200,33 +200,29 @@ export function queryCountPromiseGenerator(
     }).then(({ data }) => formatNumber(data.count));
 }
 
-export const useQuerySpecToResource = (
+export const querySpecToResource = (
   label: string,
   querySpec: QuerySpec
 ): SpecifyResource<SpQuery> =>
-  React.useMemo(
-    () =>
-      deserializeResource(
-        addMissingFields('SpQuery', {
-          name: label,
-          contextName: querySpec.tableName,
-          contextTableId: schema.models[querySpec.tableName].tableId,
-          countOnly: false,
-          selectDistinct: false,
-          fields: querySpec.fields.map(({ path, ...field }, index) =>
-            serializeResource(
-              makeQueryField(querySpec.tableName, path, {
-                ...field,
-                position: index,
-              })
-            )
-          ),
-        })
+  deserializeResource(
+    addMissingFields('SpQuery', {
+      name: label,
+      contextName: querySpec.tableName,
+      contextTableId: schema.models[querySpec.tableName].tableId,
+      countOnly: false,
+      selectDistinct: false,
+      fields: querySpec.fields.map(({ path, ...field }, index) =>
+        serializeResource(
+          makeQueryField(querySpec.tableName, path, {
+            ...field,
+            position: index,
+          })
+        )
       ),
-    [label, querySpec]
+    })
   );
 
-export function useResolveStatSpec(
+export function useResolvedStatSpec(
   item: CustomStat | DefaultStat,
   statsSpec: StatsSpec
 ): StatItemSpec {
@@ -245,7 +241,7 @@ export function useResolveStatSpec(
             pathToValue:
               item.pathToValue ??
               (statSpecItem.spec as BackEndStat).pathToValue,
-            urlToFetch: (statSpecItem.spec as BackEndStat).urlToFetch,
+            fetchUrl: (statSpecItem.spec as BackEndStat).fetchUrl,
             formatter: (statSpecItem.spec as BackEndStat).formatter,
           }
         : {
@@ -308,9 +304,9 @@ export function statsToTsv(
           const categoryLabel =
             category.label === undefined ? '' : category.label;
           if (category.items === undefined) return;
-          category.items.forEach(({ itemLabel, itemValue }) => {
+          category.items.forEach(({ label, itemValue }) => {
             if (itemValue === undefined) return;
-            const newItemLabel = itemLabel === undefined ? '' : itemLabel;
+            const newItemLabel = label === undefined ? '' : label;
             if (
               layoutSourceIndex === sourceIndex &&
               pageIndex === layoutPageIndex
@@ -339,21 +335,20 @@ export function useStatValueLoad<
 >(
   statValue: string | number | undefined,
   promiseGenerator: () => Promise<PROMISE_TYPE>,
-  handleValueLoad: ((value: number | string) => void) | undefined
+  onLoad: ((value: number | string) => void) | undefined
 ) {
-  const shouldFetch =
-    statValue === undefined && typeof handleValueLoad === 'function';
+  const shouldFetch = statValue === undefined && typeof onLoad === 'function';
   React.useEffect(() => {
     if (!shouldFetch) return undefined;
     let destructorCalled = false;
     promiseGenerator().then((value) => {
       if (value === undefined || destructorCalled) return;
-      handleValueLoad?.(value);
+      onLoad?.(value);
     });
     return (): void => {
       destructorCalled = true;
     };
-  }, [promiseGenerator, statValue, handleValueLoad]);
+  }, [promiseGenerator, statValue, onLoad]);
 }
 
 export function useUnknownCategory(
@@ -395,7 +390,7 @@ export function useUnknownCategory(
                           pageName,
                           itemName: 'phantomItem',
                           categoryName,
-                          itemLabel: itemName,
+                          label: itemName,
                           itemValue: spec.formatter(rawValue),
                           itemType: 'BackEndStat',
                           pathToValue: itemName as keyof BackendStatsResult,

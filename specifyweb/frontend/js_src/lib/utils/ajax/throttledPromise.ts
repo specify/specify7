@@ -31,7 +31,7 @@ export const networkRequestsSpec: RR<
   },
 };
 
-export async function throttledAjax<T, S>(
+export async function throttledPromise<T, S>(
   key: keyof typeof networkRequestsSpec,
   promiseGenerator: () => Promise<T>,
   promiseSpec: S

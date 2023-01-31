@@ -9,7 +9,7 @@ export function AddStatPage({
   pageLayout,
   statsSpec,
   onClick: handleClick,
-  onValueLoad: handleValueLoad,
+  onLoad: onLoad,
 }: {
   readonly pageLabel: string;
   readonly pageIndex: number;
@@ -22,7 +22,7 @@ export function AddStatPage({
         itemIndex?: number
       ) => void)
     | ((item: CustomStat | DefaultStat) => void);
-  readonly onValueLoad:
+  readonly onLoad:
     | ((
         pageIndex: number,
         categoryIndex: number,
@@ -31,11 +31,11 @@ export function AddStatPage({
       ) => void)
     | undefined;
 }): JSX.Element {
-  const handleValueLoadPage = React.useCallback(
+  const onLoadPage = React.useCallback(
     (categoryIndex: number, itemIndex: number, value: number | string) => {
-      handleValueLoad?.(pageIndex, categoryIndex, itemIndex, value);
+      onLoad?.(pageIndex, categoryIndex, itemIndex, value);
     },
-    [handleValueLoad, pageIndex]
+    [onLoad, pageIndex]
   );
   return (
     <li key={pageIndex}>
@@ -47,10 +47,10 @@ export function AddStatPage({
           onClick={handleClick}
           onRemove={undefined}
           onCategoryRename={undefined}
-          onItemRename={undefined}
+          onRename={undefined}
           onAdd={undefined}
-          onSpecChanged={undefined}
-          onValueLoad={handleValueLoadPage}
+          onEdit={undefined}
+          onLoad={onLoadPage}
         />
       </Ul>
     </li>
