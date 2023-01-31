@@ -28,7 +28,7 @@ import { SerializedResource } from '../DataModel/helperTypes';
 import {
   preferenceDefinitions,
   PreferenceItem,
-} from '../UserPreferences/Definitions';
+} from '../UserPreferences/UserDefinitions';
 
 export type AppResourceTab = (props: {
   readonly isReadOnly: boolean;

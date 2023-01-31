@@ -25,8 +25,8 @@ import { PreferencesAside, useActiveCategory } from './Aside';
 import type {
   GenericPreferencesCategories,
   PreferenceItem,
-} from './Definitions';
-import { preferenceDefinitions } from './Definitions';
+} from './UserDefinitions';
+import { preferenceDefinitions } from './UserDefinitions';
 import {
   awaitPrefsSynced,
   getPrefDefinition,

@@ -6,8 +6,8 @@ import { ajax } from '../../utils/ajax';
 import { ping } from '../../utils/ajax/ping';
 import { cacheEvents, getCache, setCache } from '../../utils/cache';
 import { MILLISECONDS } from '../Atoms/Internationalization';
-import type { GenericPreferences, PreferenceItem } from './Definitions';
-import { preferenceDefinitions } from './Definitions';
+import type { GenericPreferences, PreferenceItem } from './UserDefinitions';
+import { preferenceDefinitions } from './UserDefinitions';
 import { prefEvents } from './Hooks';
 import { f } from '../../utils/functools';
 import { keysToLowerCase, replaceKey } from '../../utils/utils';
@@ -20,7 +20,7 @@ import { fail } from '../Errors/Crash';
 import { parseValue } from '../../utils/parser/parse';
 import { Http } from '../../utils/ajax/definitions';
 import { preferencesPromiseGenerator } from './preferencesFetch';
-import { collectionPreferenceDefinitions } from './CollectionPreferenceDefinitions';
+import { collectionPreferenceDefinitions } from './CollectionDefinitions';
 
 export const getPrefDefinitionGenerator =
   <PREFERENCE extends GenericPreferences>(preferenceDefinitions: PREFERENCE) =>

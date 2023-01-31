@@ -21,7 +21,7 @@ import { getSystemInfo } from '../InitialContext/systemInfo';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { Router } from '../Router/Router';
-import type { Preferences } from '../UserPreferences/Definitions';
+import type { Preferences } from '../UserPreferences/UserDefinitions';
 import { mainText } from '../../localization/main';
 import { headerText } from '../../localization/header';
 import { userText } from '../../localization/user';

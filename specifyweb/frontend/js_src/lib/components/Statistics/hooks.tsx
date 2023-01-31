@@ -333,11 +333,11 @@ export function statsToTsv(
 export function useStatValueLoad<
   PROMISE_TYPE extends string | number | undefined
 >(
-  statValue: string | number | undefined,
+  value: string | number | undefined,
   promiseGenerator: () => Promise<PROMISE_TYPE>,
   onLoad: ((value: number | string) => void) | undefined
 ) {
-  const shouldFetch = statValue === undefined && typeof onLoad === 'function';
+  const shouldFetch = value === undefined && typeof onLoad === 'function';
   React.useEffect(() => {
     if (!shouldFetch) return undefined;
     let destructorCalled = false;
@@ -348,7 +348,7 @@ export function useStatValueLoad<
     return (): void => {
       destructorCalled = true;
     };
-  }, [promiseGenerator, statValue, onLoad]);
+  }, [promiseGenerator, value, onLoad]);
 }
 
 export function useUnknownCategory(

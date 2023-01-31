@@ -1,8 +1,8 @@
 import React from 'react';
 
 import { eventListener } from '../../utils/events';
-import type { PreferenceItem } from './Definitions';
-import type { setPref, getPref } from './helpers';
+import type { PreferenceItem } from './UserDefinitions';
+import type { getPref, setPref } from './helpers';
 import { getUserPref } from './helpers';
 import { usePref } from './usePref';
 

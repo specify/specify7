@@ -25,12 +25,12 @@ export const queryToSpec = (query: SerializedResource<SpQuery>): QuerySpec => ({
 export function FrontEndStatsResultDialog({
   query: originalQuery,
   onClose: handleClose,
-  statLabel,
+  label,
   onEdit: handleEdit,
 }: {
   readonly query: SpecifyResource<SpQuery>;
   readonly onClose: () => void;
-  readonly statLabel: string;
+  readonly label: string;
   readonly onEdit: ((querySpec: QuerySpec) => void) | undefined;
 }): JSX.Element | null {
   const [query, setQuery] = useLiveState(
@@ -59,7 +59,7 @@ export function FrontEndStatsResultDialog({
       className={{
         container: dialogClassNames.wideContainer,
       }}
-      header={statLabel}
+      header={label}
       onClose={handleClose}
     >
       <QueryBuilder

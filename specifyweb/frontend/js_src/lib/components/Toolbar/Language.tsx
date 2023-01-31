@@ -36,7 +36,7 @@ import { languageSeparator } from '../SchemaConfig/Languages';
 import type {
   PreferenceItem,
   PreferenceItemComponent,
-} from '../UserPreferences/Definitions';
+} from '../UserPreferences/UserDefinitions';
 import { PreferencesContext, prefEvents } from '../UserPreferences/Hooks';
 
 export const handleLanguageChange = async (language: Language): Promise<void> =>

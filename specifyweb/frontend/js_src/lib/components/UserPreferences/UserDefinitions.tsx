@@ -44,7 +44,7 @@ import { statsText } from '../../localization/stats';
 import { getField } from '../DataModel/helpers';
 
 import { StatLayout } from '../Statistics/types';
-import { collectionPreferenceDefinitions } from './CollectionPreferenceDefinitions';
+import { collectionPreferenceDefinitions } from './CollectionDefinitions';
 
 // Custom Renderer for a preference item
 export type PreferenceItemComponent<VALUE> = (props: {

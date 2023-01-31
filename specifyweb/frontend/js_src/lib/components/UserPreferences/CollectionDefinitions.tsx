@@ -2,7 +2,7 @@ import { preferencesText } from '../../localization/preferences';
 import { StatLayout } from '../Statistics/types';
 import { error } from '../Errors/assert';
 import React from 'react';
-import { defineItem, GenericPreferences } from './Definitions';
+import { defineItem, GenericPreferences } from './UserDefinitions';
 import { ensure } from '../../utils/types';
 import { statsText } from '../../localization/stats';
 

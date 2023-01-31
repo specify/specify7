@@ -6,14 +6,14 @@ import type {
   GenericPreferences,
   preferenceDefinitions,
   Preferences,
-} from './Definitions';
+} from './UserDefinitions';
 import { getPref, setPref } from './helpers';
 import {
   CollectionPreferencesContext,
   PreferencesContext,
   prefEvents,
 } from './Hooks';
-import { collectionPreferenceDefinitions } from './CollectionPreferenceDefinitions';
+import { collectionPreferenceDefinitions } from './CollectionDefinitions';
 
 /**
  * React Hook to listen to preferences changes

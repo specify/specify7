@@ -132,8 +132,8 @@ function BackEndItem({
     <StatsResult
       isDefault={isDefault}
       query={undefined}
-      statLabel={label}
-      statValue={value}
+      label={label}
+      value={value}
       onClick={handleClick}
       onRename={handleRename}
       onRemove={handleRemove}
@@ -184,8 +184,8 @@ function QueryItem({
     <StatsResult
       isDefault={isDefault}
       query={query}
-      statLabel={label}
-      statValue={value}
+      label={label}
+      value={value}
       onClick={handleClick}
       onRename={handleRename}
       onRemove={handleRemove}

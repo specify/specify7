@@ -9,18 +9,18 @@ import { Input } from '../Atoms/Form';
 import { QuerySpec } from './types';
 
 export function StatsResult({
-  statValue,
+  value,
   query,
-  statLabel,
+  label,
   onClick: handleClick,
   onRemove: handleRemove,
   onEdit: handleEdit,
   onRename: handleRename,
   isDefault,
 }: {
-  readonly statValue: string | number | undefined;
+  readonly value: string | number | undefined;
   readonly query: SpecifyResource<SpQuery> | undefined;
-  readonly statLabel: string | undefined;
+  readonly label: string | undefined;
   readonly isDefault: boolean;
   readonly onClick: (() => void) | undefined;
   readonly onRemove: (() => void) | undefined;
@@ -30,7 +30,7 @@ export function StatsResult({
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   return (
     <>
-      {statLabel === undefined ? (
+      {label === undefined ? (
         <li>{commonText.loading()}</li>
       ) : typeof handleRemove === 'function' ? (
         <>
@@ -39,16 +39,8 @@ export function StatsResult({
             title={isDefault ? commonText.remove() : commonText.delete()}
             onClick={handleRemove}
           />
-          <Input.Text
-            required
-            value={statLabel}
-            onValueChange={(newname): void => {
-              handleRename?.(newname);
-            }}
-          />
-          <span className="self-center">
-            {statValue ?? commonText.loading()}
-          </span>
+          <Input.Text required value={label} onValueChange={handleRename} />
+          <span className="self-center">{value ?? commonText.loading()}</span>
         </>
       ) : (
         <li className="flex gap-2">
@@ -58,18 +50,18 @@ export function StatsResult({
               handleClick ?? (query === undefined ? undefined : handleOpen)
             }
           >
-            <span>{statLabel}</span>
+            <span>{label}</span>
             <span className="-ml-2 flex-1" />
-            <span>{statValue ?? commonText.loading()}</span>
+            <span>{value ?? commonText.loading()}</span>
           </Button.LikeLink>
         </li>
       )}
 
-      {isOpen && query !== undefined && statLabel !== undefined ? (
+      {isOpen && query !== undefined && label !== undefined ? (
         <FrontEndStatsResultDialog
           query={query}
           onClose={handleClose}
-          statLabel={statLabel}
+          label={label}
           onEdit={handleEdit}
         />
       ) : undefined}

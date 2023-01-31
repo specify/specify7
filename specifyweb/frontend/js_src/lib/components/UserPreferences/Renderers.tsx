@@ -26,7 +26,10 @@ import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Collection } from '../DataModel/types';
 import { AutoComplete } from '../Molecules/AutoComplete';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
-import type { PreferenceItem, PreferenceItemComponent } from './Definitions';
+import type {
+  PreferenceItem,
+  PreferenceItemComponent,
+} from './UserDefinitions';
 import { getPrefDefinition } from './helpers';
 import { usePref } from './usePref';
 
