@@ -71,12 +71,12 @@ msgstr "Polygons"
 msgid "geoLocate"
 msgstr "GEOLocate"
 
-#: components/FormPlugins/GeoLocate.tsx:114
+#: components/FormPlugins/GeoLocate.tsx:113
 #. Used in: Components > Form Plugins > Geo Locate
 msgid "geographyRequired"
 msgstr "{geographyTable:string} must be mapped"
 
-#: components/FormPlugins/GeoLocate.tsx:119
+#: components/FormPlugins/GeoLocate.tsx:118
 #. Used in: Components > Form Plugins > Geo Locate
 msgid "geographyRequiredDescription"
 msgstr "The GeoLocate plugin requires the geography field to be populated."

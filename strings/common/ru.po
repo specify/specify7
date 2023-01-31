@@ -112,8 +112,8 @@ msgstr "Создать"
 #: components/FormMeta/PickListUsages.tsx:44
 #: components/FormMeta/index.tsx:90
 #: components/FormPlugins/CollectionRelOneToMany.tsx:181
-#: components/FormPlugins/GeoLocate.tsx:113
-#: components/FormPlugins/GeoLocate.tsx:125
+#: components/FormPlugins/GeoLocate.tsx:112
+#: components/FormPlugins/GeoLocate.tsx:124
 #: components/FormPlugins/Leaflet.tsx:40
 #: components/FormPlugins/PaleoLocation.tsx:56
 #: components/FormPlugins/PaleoLocation.tsx:75

@@ -73,12 +73,12 @@ msgstr "Полигоны"
 msgid "geoLocate"
 msgstr "GEOLocate"
 
-#: components/FormPlugins/GeoLocate.tsx:114
+#: components/FormPlugins/GeoLocate.tsx:113
 #. Used in: Components > Form Plugins > Geo Locate
 msgid "geographyRequired"
 msgstr "{geographyTable:string} должна быть связана"
 
-#: components/FormPlugins/GeoLocate.tsx:119
+#: components/FormPlugins/GeoLocate.tsx:118
 #. Used in: Components > Form Plugins > Geo Locate
 msgid "geographyRequiredDescription"
 msgstr "Плагин GeoLocate требует, чтобы поле географии было заполнено."

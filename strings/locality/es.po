@@ -93,13 +93,13 @@ msgstr "polígonos"
 msgid "geoLocate"
 msgstr "GEOlocalizar"
 
-#: components/FormPlugins/GeoLocate.tsx:114
+#: components/FormPlugins/GeoLocate.tsx:113
 #. Used in: Components > Form Plugins > Geo Locate
 #, fuzzy
 msgid "geographyRequired"
 msgstr "{geographyTable:string} debe estar mapeado"
 
-#: components/FormPlugins/GeoLocate.tsx:119
+#: components/FormPlugins/GeoLocate.tsx:118
 #. Used in: Components > Form Plugins > Geo Locate
 #, fuzzy
 msgid "geographyRequiredDescription"

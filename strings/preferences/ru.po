@@ -853,7 +853,7 @@ msgstr "Определить автоматически на основе фор
 #: components/UserPreferences/Definitions.tsx:527
 #: components/UserPreferences/Definitions.tsx:548
 #: components/UserPreferences/Definitions.tsx:569
-#. Used in: Components > User Preferences > Definitions
+#. 🟥Verb. Used in: Components > User Preferences > Definitions
 msgid "use"
 msgstr "Использовать"
 
