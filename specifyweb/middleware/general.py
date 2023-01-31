@@ -1,7 +1,11 @@
 import traceback
-from typing import Optional, Dict
+import json
+from typing import Optional, Dict, List
 from django import http
+from django.core import serializers
+from django.db.models import QuerySet
 from django.conf import settings
+from django.forms.models import model_to_dict
 
 class SpecifyExceptionWrapper():
     def __init__(self, exception : Exception) -> None:
@@ -13,10 +17,14 @@ class SpecifyExceptionWrapper():
     def to_json(self) -> Dict:
         result = {
             'exception' : self.exception.__class__.__name__,
-            'message' : self.message,
-            'data' : self.data,
+            'message' : str(self.message),
+            'data' : str(self.data),
             'traceback' : traceback.format_exc()
             }
+
+        if isinstance(self.data, QuerySet):
+            result['data'] = serialize_django_obj(self.data)
+
         from ..specify import api
         return api.toJson(result)
 
@@ -51,3 +59,22 @@ class GeneralMiddleware:
             except TypeError as e:
                 exception = SpecifyExceptionWrapper(e)
                 return http.HttpResponse(exception.to_json(), status=exception.status_code)
+
+
+def serialize_django_obj(django_obj) -> Dict[str, str or int or List[str]]:
+    from django.db.models.base import ModelState
+
+    if isinstance(django_obj, QuerySet):
+        parsed_data = json.loads(serializers.serialize('json', django_obj, use_natural_foreign_keys=True))
+        parsed_data = [
+            {
+                "Model" : resource['model'].split(".")[1].capitalize(),
+                "Id" : resource['pk'],
+                "Non-Null Fields" : [f"{field} : {value}" for field, value in resource['fields'].items() if value is not None]
+            }
+            for resource in parsed_data
+        ]
+    elif hasattr(django_obj, "_state") and isinstance(django_obj.__dict__['_state'], ModelState):
+        parsed_data = model_to_dict(django_obj)
+    else: return django_obj
+    return parsed_data
