@@ -271,15 +271,14 @@ export function useCategoryToFetch(
           if (
             item.type === 'DefaultStat' &&
             item.itemType === 'BackEndStat' &&
-            item.itemValue === undefined
+            item.itemValue === undefined &&
+            item.itemName === 'phantomItem'
           )
             categoriesToFetch.push(item.categoryName);
         });
       })
     );
-    return categoriesToFetch.filter((categoryToFetch) =>
-      unknownCategories.includes(categoryToFetch as keyof typeof urlSpec)
-    );
+    return categoriesToFetch;
   }, [layout]);
 }
 

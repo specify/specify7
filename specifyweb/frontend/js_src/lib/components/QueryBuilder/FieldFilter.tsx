@@ -102,10 +102,10 @@ function PickListSimple({
   readonly pickListItems: RA<PickListItemSimple>;
   readonly value: string;
   readonly onBlur: ({ target }: React.ChangeEvent<HTMLSelectElement>) => void;
-  readonly onChange: ({ target }: React.ChangeEvent<HTMLSelectElement>) => void;
+  readonly onChange: (value: string) => void;
 }): JSX.Element {
   return (
-    <Select value={value} onBlur={handleBlur} onChange={handleChange}>
+    <Select value={value} onBlur={handleBlur} onValueChange={handleChange}>
       {pickListItems.map(({ title, value }) => (
         <option key={value} value={value}>
           {title}
@@ -153,8 +153,7 @@ function DateSplit({
           setValues({ ...values, direction: newValue });
           handleChange?.(`today ${newValue} ${size} ${type}`);
         }}
-        onChange={({ target }) => {
-          const newValue = extractValuesSimple<string>(target);
+        onChange={(newValue) => {
           setValues({ ...values, direction: newValue });
           handleLiveChange?.();
         }}
@@ -169,11 +168,10 @@ function DateSplit({
             handleChange?.(`today ${direction} ${newSize} ${type}`);
           }
         }}
-        onChange={({ target }) => {
-          const newValue = extractValuesSimple<number>(target);
+        onValueChange={(value) => {
           setValues({
             ...values,
-            size: newValue,
+            size: value,
           });
           handleLiveChange?.();
         }}
@@ -186,8 +184,7 @@ function DateSplit({
           setValues({ ...values, type: newValue });
           handleChange?.(`today ${direction} ${size} ${newValue}`);
         }}
-        onChange={({ target }) => {
-          const newValue = extractValuesSimple<string>(target);
+        onChange={(newValue) => {
           setValues({ ...values, type: newValue });
           handleLiveChange?.();
         }}

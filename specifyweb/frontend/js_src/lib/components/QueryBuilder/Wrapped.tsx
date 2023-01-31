@@ -148,7 +148,7 @@ export function QueryBuilder({
     queryText.queryUnloadProtect()
   );
 
-  const handleAddField = (mappingPath = state.mappingView): void => {
+  const handleAddField = (mappingPath = state.mappingView): void =>
     dispatch({
       type: 'ChangeFieldsAction',
       fields: [
@@ -168,7 +168,6 @@ export function QueryBuilder({
         },
       ],
     });
-  };
   const isEmpty = state.fields.every(
     ({ mappingPath }) => !mappingPathIsComplete(mappingPath)
   );
