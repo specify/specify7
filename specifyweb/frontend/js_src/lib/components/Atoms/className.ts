@@ -12,7 +12,7 @@ export const dialogIconTriggers = {
 };
 
 const buttonClassName = 'button';
-const grayButton = `${buttonClassName} hover:bg-gray-400 bg-gray-300 text-gray-800 shadow-sm
+const grayButton = `${buttonClassName} hover:bg-gray-400 bg-gray-100 text-gray-800 shadow-sm
     dark:bg-neutral-600 dark:text-gray-100 hover:dark:bg-neutral-500`;
 const containerBaseUnstyled = `flex flex-col gap-4 overflow-scroll
   overflow-x-auto [overflow-y:overlay] [scrollbar-gutter:stable]`;
