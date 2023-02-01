@@ -22,6 +22,7 @@ import { loadingBar } from '../Molecules';
 import { treeText } from '../../localization/tree';
 import { FormattedResource } from '../Molecules/FormattedResource';
 import { StringToJsx } from '../../localization/utils';
+import { TableIcon } from '../Molecules/TableIcon';
 
 const fetchBlockers = async (
   resource: SpecifyResource<AnySchema>
@@ -87,6 +88,8 @@ export function DeleteButton<SCHEMA extends AnySchema>({
 
   const isBlocked = Array.isArray(blockers) && blockers.length > 0;
 
+  const iconName = resource.specifyModel.name;
+
   return (
     <>
       <ButtonComponent
@@ -137,19 +140,22 @@ export function DeleteButton<SCHEMA extends AnySchema>({
             })}
             onClose={handleClose}
           >
-            {deletionMessage}{' '}
-            <StringToJsx
-              components={{
-                wrap: (
-                  <i>
-                    <FormattedResource resource={resource} asLink={false} />
-                  </i>
-                ),
-              }}
-              string={commonText.jsxColonLine({
-                label: treeText.resourceToDelete(),
-              })}
-            />
+            {deletionMessage}
+            <div>
+              <StringToJsx
+                components={{
+                  wrap: (
+                    <i className="flex items-center gap-2">
+                      <TableIcon name={iconName} label={false} />
+                      <FormattedResource resource={resource} asLink={false} />
+                    </i>
+                  ),
+                }}
+                string={commonText.jsxColonLine({
+                  label: treeText.resourceToDelete(),
+                })}
+              />
+            </div>
           </Dialog>
         ) : (
           <DeleteBlocked
