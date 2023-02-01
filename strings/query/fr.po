@@ -370,7 +370,7 @@ msgid "or"
 msgstr "ou"
 
 #: utils/__tests__/fieldFormat.test.ts:88
-#: utils/parser/definitions.ts:98
+#: utils/parser/definitions.ts:99
 #. Used in: Utils > __tests__ > Field Format ⬤ Utils > Parser > Definitions
 msgid "yes"
 msgstr "Oui"

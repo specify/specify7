@@ -19,7 +19,7 @@ msgstr "Specify 7"
 
 #: components/UserPreferences/Definitions.tsx:1425
 #: components/WorkBench/DataSetMeta.tsx:232
-#: utils/parser/definitions.ts:99
+#: utils/parser/definitions.ts:100
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Work Bench > Data Set Meta ⬤ Utils > Parser > Definitions
 msgid "no"
 msgstr "Ні"
@@ -456,7 +456,7 @@ msgstr "Оновити"
 msgid "listTruncated"
 msgstr "(список скорочено)"
 
-#: components/FormPlugins/PartialDateUi.tsx:365
+#: components/FormPlugins/PartialDateUi.tsx:362
 #: components/WbPlanView/navigator.ts:541
 #. Used in: Components > Form Plugins > Partial Date Ui ⬤ Components > Wb Plan View > Navigator
 msgid "fullDate"

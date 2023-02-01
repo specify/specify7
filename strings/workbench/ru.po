@@ -535,8 +535,8 @@ msgstr "Предварительный просмотр набора данны�
 msgid "errorImporting"
 msgstr "При импорте файла произошли следующие ошибки:"
 
-#: components/WbImport/helpers.ts:109
-#: components/WbImport/helpers.ts:132
+#: components/WbImport/helpers.ts:111
+#: components/WbImport/helpers.ts:136
 #. Used in: Components > Wb Import > Helpers
 msgid "corruptFile"
 msgstr "Файл {fileName:string} поврежден или не содержит данных!"
@@ -605,7 +605,7 @@ msgstr "Первая строка является заголовок:"
 msgid "importFile"
 msgstr "Импортировать файл"
 
-#: components/WbImport/helpers.ts:68
+#: components/WbImport/helpers.ts:70
 #. Used in: Components > Wb Import > Helpers
 msgid "columnName"
 msgstr "Столбец {columnIndex:number}"

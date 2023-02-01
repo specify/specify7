@@ -642,8 +642,8 @@ msgstr "Попередній перегляд набору даних"
 msgid "errorImporting"
 msgstr "Під час імпортування файлу виникли такі помилки:"
 
-#: components/WbImport/helpers.ts:109
-#: components/WbImport/helpers.ts:132
+#: components/WbImport/helpers.ts:111
+#: components/WbImport/helpers.ts:136
 #. Used in: Components > Wb Import > Helpers
 #, fuzzy
 msgid "corruptFile"
@@ -724,7 +724,7 @@ msgstr "Перший рядок – заголовок:"
 msgid "importFile"
 msgstr "Імпорт файлу"
 
-#: components/WbImport/helpers.ts:68
+#: components/WbImport/helpers.ts:70
 #. Used in: Components > Wb Import > Helpers
 #, fuzzy
 msgid "columnName"

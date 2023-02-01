@@ -99,7 +99,7 @@ msgstr ""
 "This plugin cannot be used on this form. Try moving it to the "
 "{tables:string} forms."
 
-#: components/FormPlugins/PartialDateUi.tsx:304
+#: components/FormPlugins/PartialDateUi.tsx:301
 #. Used in: Components > Form Plugins > Partial Date Ui
 msgid "invalidDate"
 msgstr "Invalid Date"
@@ -116,28 +116,28 @@ msgstr ""
 msgid "deleteConfirmationDescription"
 msgstr "This action cannot be undone."
 
+#: components/FormPlugins/PartialDateUi.tsx:331
 #: components/FormPlugins/PartialDateUi.tsx:334
-#: components/FormPlugins/PartialDateUi.tsx:337
 #. Used in: Components > Form Plugins > Partial Date Ui
 msgid "datePrecision"
 msgstr "Date Precision"
 
-#: components/FormPlugins/PartialDateUi.tsx:366
+#: components/FormPlugins/PartialDateUi.tsx:363
 #. 🟥A placeholder for partial date field when "month /year" type is selected. Visible only in browsers that don't support the "month" input type. Used in: Components > Form Plugins > Partial Date Ui
 msgid "monthYear"
 msgstr "Mon / Year"
 
-#: components/FormPlugins/PartialDateUi.tsx:382
+#: components/FormPlugins/PartialDateUi.tsx:379
 #. 🟥A placeholder for partial date field when "year" type is selected. Used in: Components > Form Plugins > Partial Date Ui
 msgid "yearPlaceholder"
 msgstr "YYYY"
 
-#: components/FormPlugins/PartialDateUi.tsx:414
+#: components/FormPlugins/PartialDateUi.tsx:411
 #. Used in: Components > Form Plugins > Partial Date Ui
 msgid "today"
 msgstr "Today"
 
-#: components/FormPlugins/PartialDateUi.tsx:416
+#: components/FormPlugins/PartialDateUi.tsx:413
 #. Used in: Components > Form Plugins > Partial Date Ui
 msgid "todayButtonDescription"
 msgstr "Set to current date"
@@ -313,7 +313,7 @@ msgstr "Plugin name"
 msgid "visit"
 msgstr "Visit"
 
-#: utils/parser/definitions.ts:91
+#: utils/parser/definitions.ts:92
 #: utils/parser/__tests__/definitions.test.ts:169
 #: utils/parser/__tests__/definitions.test.ts:171
 #. 🟥Yes/No probably shouldn't be translated as Specify 7 does not support changing which values are recognized as Yes/No in a given language. Used in: Utils > Parser > Definitions ⬤ Parser > __tests__ > Definitions
@@ -338,18 +338,18 @@ msgstr "Field is required."
 msgid "invalidValue"
 msgstr "Invalid value"
 
-#: components/FormPlugins/PartialDateUi.tsx:301
-#: components/FormPlugins/PartialDateUi.tsx:303
-#: utils/parser/definitions.ts:179
-#: utils/parser/definitions.ts:181
-#: utils/parser/definitions.ts:302
+#: components/FormPlugins/PartialDateUi.tsx:298
+#: components/FormPlugins/PartialDateUi.tsx:300
+#: utils/parser/definitions.ts:180
+#: utils/parser/definitions.ts:182
+#: utils/parser/definitions.ts:303
 #: utils/parser/__tests__/definitions.test.ts:71
 #: utils/parser/__tests__/parse.test.ts:209
 #. 🟥Used in field validation messages on the form. Used in: Components > Form Plugins > Partial Date Ui ⬤ Utils > Parser > Definitions ⬤ Parser > __tests__ > Definitions ⬤ Parser > __tests__ > Parse
 msgid "requiredFormat"
 msgstr "Required Format: {format:string}."
 
-#: utils/parser/definitions.ts:47
+#: utils/parser/definitions.ts:48
 #: utils/parser/__tests__/parse.test.ts:120
 #: utils/parser/__tests__/parse.test.ts:139
 #: utils/parser/__tests__/parse.test.ts:162

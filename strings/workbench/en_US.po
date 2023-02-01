@@ -530,8 +530,8 @@ msgstr "Preview Dataset"
 msgid "errorImporting"
 msgstr "The following error(s) occurred while importing the file:"
 
-#: components/WbImport/helpers.ts:109
-#: components/WbImport/helpers.ts:132
+#: components/WbImport/helpers.ts:111
+#: components/WbImport/helpers.ts:136
 #. Used in: Components > Wb Import > Helpers
 msgid "corruptFile"
 msgstr "The file {fileName:string} is corrupt or contains no data!"
@@ -600,7 +600,7 @@ msgstr "First Row is Header:"
 msgid "importFile"
 msgstr "Import file"
 
-#: components/WbImport/helpers.ts:68
+#: components/WbImport/helpers.ts:70
 #. Used in: Components > Wb Import > Helpers
 msgid "columnName"
 msgstr "Column {columnIndex:number}"

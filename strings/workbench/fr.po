@@ -661,8 +661,8 @@ msgstr "Aperçu de l'ensemble de données"
 msgid "errorImporting"
 msgstr "Les erreurs suivantes se sont produites lors de l'importation du fichier :"
 
-#: components/WbImport/helpers.ts:109
-#: components/WbImport/helpers.ts:132
+#: components/WbImport/helpers.ts:111
+#: components/WbImport/helpers.ts:136
 #. Used in: Components > Wb Import > Helpers
 #, fuzzy
 msgid "corruptFile"
@@ -743,7 +743,7 @@ msgstr "La première ligne est l'en-tête :"
 msgid "importFile"
 msgstr "Importer le fichier"
 
-#: components/WbImport/helpers.ts:68
+#: components/WbImport/helpers.ts:70
 #. Used in: Components > Wb Import > Helpers
 #, fuzzy
 msgid "columnName"

@@ -559,8 +559,8 @@ msgstr "Vista previa del conjunto de datos"
 msgid "errorImporting"
 msgstr "Se produjeron los siguientes errores al importar el archivo:"
 
-#: components/WbImport/helpers.ts:109
-#: components/WbImport/helpers.ts:132
+#: components/WbImport/helpers.ts:111
+#: components/WbImport/helpers.ts:136
 #. Used in: Components > Wb Import > Helpers
 msgid "corruptFile"
 msgstr "¡El archivo {fileName:string} está corrupto o no contiene datos!"
@@ -629,7 +629,7 @@ msgstr "La primera fila es el encabezado:"
 msgid "importFile"
 msgstr "Importar archivo"
 
-#: components/WbImport/helpers.ts:68
+#: components/WbImport/helpers.ts:70
 #. Used in: Components > Wb Import > Helpers
 msgid "columnName"
 msgstr "Columna {columnIndex:number}"
