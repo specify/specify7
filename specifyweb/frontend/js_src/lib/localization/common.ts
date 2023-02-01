@@ -588,4 +588,10 @@ export const commonText = createDictionary({
     'fr-fr': '{label:string} : <wrap />',
     'uk-ua': '{label:string}: <wrap />',
   },
+  online: {
+    'en-us': 'online'
+  },
+  offline: {
+    'en-us': 'offline'
+  }
 } as const);

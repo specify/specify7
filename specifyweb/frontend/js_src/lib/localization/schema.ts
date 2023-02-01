@@ -298,10 +298,6 @@ export const schemaText = createDictionary({
   },
   idField: {
     'en-us': 'ID Field',
-    'es-es': 'Campo de identificación',
-    'fr-fr': "Champ d'identification",
-    'ru-ru': 'Поле идентификатора',
-    'uk-ua': 'Поле ID',
   },
   scope: {
     'en-us': 'Scope',

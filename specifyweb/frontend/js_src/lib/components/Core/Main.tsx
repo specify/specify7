@@ -26,6 +26,7 @@ import { mainText } from '../../localization/main';
 import { headerText } from '../../localization/header';
 import { userText } from '../../localization/user';
 import { LocalizedString } from 'typesafe-i18n';
+import { OnlineStatus } from './OnlineStatus';
 
 export type UserTool = {
   readonly title: LocalizedString;
@@ -177,6 +178,7 @@ export function Main(): JSX.Element | null {
           {userText.noAgentDescription()}
         </Dialog>
       )}
+      <OnlineStatus />
     </>
   );
 }
