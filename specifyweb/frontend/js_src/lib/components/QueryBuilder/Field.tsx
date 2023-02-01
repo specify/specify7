@@ -233,6 +233,9 @@ export function QueryLine({
 
   const hasAny = field.filters.some(({ type }) => type === 'any');
 
+  const lightGrayButton = `${className.grayButton} hover:!bg-gray-400 !bg-gray-100 !text-gray-800 !shadow-sm
+    dark:!bg-neutral-600 dark:!text-gray-100 hover:dark:!bg-neutral-500`;
+
   return (
     <li
       aria-current={isFocused ? 'location' : undefined}
@@ -322,7 +325,7 @@ export function QueryLine({
                         variant={
                           field.filters.length > 1
                             ? className.blueButton
-                            : className.grayButton
+                            : lightGrayButton
                         }
                         onClick={(): void =>
                           handleFilterChange(field.filters.length, {
@@ -370,7 +373,7 @@ export function QueryLine({
                     variant={
                       field.filters[index].isNot
                         ? className.redButton
-                        : className.grayButton
+                        : lightGrayButton
                     }
                     onClick={(): void =>
                       handleFilterChange(index, {
@@ -477,7 +480,7 @@ export function QueryLine({
           className={`aria-handled ${isFieldComplete ? '' : 'invisible'}`}
           title={queryText.showButtonDescription()}
           variant={
-            field.isDisplay ? className.greenButton : className.grayButton
+            field.isDisplay ? className.greenButton : lightGrayButton
           }
           onClick={handleChange?.bind(undefined, {
             ...field,
