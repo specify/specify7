@@ -142,7 +142,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
               components={{
                 wrap: (
                   <i>
-                    <FormattedResource resource={resource} />
+                    <FormattedResource resource={resource} asLink={false} />
                   </i>
                 ),
               }}

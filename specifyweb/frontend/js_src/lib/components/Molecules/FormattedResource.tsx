@@ -28,14 +28,17 @@ export function FormattedResourceUrl({
 export function FormattedResource({
   resource,
   fallback = commonText.loading(),
+  asLink = true,
 }: {
   readonly resource: SpecifyResource<AnySchema>;
   readonly fallback?: string;
+  readonly asLink?: boolean;
 }): JSX.Element {
   const formatted = useFormatted(resource) ?? fallback;
 
   return typeof resource === 'object' &&
-    hasTablePermission(resource.specifyModel.name, 'read') ? (
+    hasTablePermission(resource.specifyModel.name, 'read') &&
+    asLink === true ? (
     <Link.NewTab href={resource.viewUrl()}>{formatted}</Link.NewTab>
   ) : (
     <>{formatted}</>
