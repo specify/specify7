@@ -89,7 +89,7 @@ function ProtectedQueryComboBox({
   readonly isRequired: boolean;
   readonly hasCloneButton?: boolean;
   readonly typeSearch: Element | string | undefined;
-  readonly forceCollection: number | undefined;
+  readonly forceCollection: number | undefined | false;
   readonly relatedModel: SpecifyModel | undefined;
 }): JSX.Element {
   React.useEffect(() => {
@@ -319,7 +319,10 @@ function ProtectedQueryComboBox({
                   headers: { Accept: 'application/json' },
                   body: keysToLowerCase({
                     ...query,
-                    collectionId: forceCollection ?? relatedCollectionId,
+                    collectionId:
+                      forceCollection === false
+                        ? undefined
+                        : forceCollection ?? relatedCollectionId,
                     // REFACTOR: allow customizing these arbitrary limits
                     limit: 1000,
                   }),
@@ -597,7 +600,11 @@ function ProtectedQueryComboBox({
       {state.type === 'SearchState' ? (
         <SearchDialog
           extraFilters={state.extraConditions}
-          forceCollection={forceCollection ?? relatedCollectionId}
+          forceCollection={
+            forceCollection === false
+              ? undefined
+              : forceCollection ?? relatedCollectionId
+          }
           multiple={false}
           templateResource={state.templateResource}
           onClose={(): void => setState({ type: 'MainState' })}
