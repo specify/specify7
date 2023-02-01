@@ -111,7 +111,6 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
             nodeId={focusedRow?.nodeId}
             tableName={tableName}
             onDeleted={handleRefresh}
-            focusedRowName={focusedRow?.name}
           />
         </li>
       ) : undefined}
@@ -428,13 +427,11 @@ function NodeDeleteButton({
   tableName,
   nodeId,
   onDeleted: handleDeleted,
-  focusedRowName: focusedName,
 }: {
   readonly disabled: boolean;
   readonly tableName: AnyTree['tableName'];
   readonly nodeId: number | undefined;
   readonly onDeleted: () => void;
-  readonly focusedRowName: string | undefined;
 }): JSX.Element {
   const resource = React.useMemo(
     () =>
@@ -452,7 +449,6 @@ function NodeDeleteButton({
       deferred
       resource={resource}
       onDeleted={handleDeleted}
-      focusedName={focusedName}
     />
   );
 }

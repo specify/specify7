@@ -1,7 +1,6 @@
 import React from 'react';
 
 import type { SpQuery } from '../DataModel/types';
-import { format } from '../Forms/dataObjFormatters';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
@@ -13,10 +12,10 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { createQuery } from '../QueryBuilder';
-import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { AnySchema } from '../DataModel/helperTypes';
 import { formattedEntry } from '../WbPlanView/mappingHelpers';
+import { useFormatted } from '../../hooks/useFormatted';
 
 export function EditHistory({
   resource,
@@ -116,16 +115,4 @@ function useEditHistoryQuery(
         : undefined,
     [resource, formatted]
   );
-}
-function useFormatted(
-  resource: SpecifyResource<AnySchema>
-): string | undefined {
-  const [formatted] = useAsyncState(
-    React.useCallback(
-      async () => format(resource, undefined, true),
-      [resource]
-    ),
-    true
-  );
-  return formatted;
 }

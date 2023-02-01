@@ -43,14 +43,16 @@ export function useAsyncState<T>(
   React.useLayoutEffect(() => {
     // If callback changes, state is reset while new state is fetching
     setState(undefined);
-    const wrapped = loadingScreen
-      ? loading
-      : (promise: Promise<unknown>): void => void promise.catch(crash);
-    wrapped(
-      Promise.resolve(callback()).then((newState) =>
-        destructorCalled ? undefined : setState(newState)
-      )
+
+    const promise = Promise.resolve(callback()).then((newState) =>
+      destructorCalled ? undefined : setState(newState)
     );
+
+    if (loadingScreen) {
+      loading(promise);
+    } else {
+      promise.catch(crash);
+    }
 
     let destructorCalled = false;
     return (): void => {

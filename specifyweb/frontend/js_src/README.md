@@ -82,7 +82,6 @@ development. Many IDEs have plugins for closer integration.
   Highly customizable code linter
 
   Config file is located in [`./.eslintrc`](./.eslintrc.js). The config file
-  
   get's most rules and plugins from
   [@maxxxxxdlp/eslint-config](https://www.npmjs.com/package/@maxxxxxdlp/eslint-config)
 
