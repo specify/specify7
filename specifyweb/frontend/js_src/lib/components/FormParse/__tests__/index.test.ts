@@ -5,7 +5,7 @@ import type { RA } from '../../../utils/types';
 import { ensure } from '../../../utils/types';
 import { strictParseXml } from '../../AppResources/codeMirrorLinters';
 import { schema } from '../../DataModel/schema';
-import { getPref } from '../../InitialContext/remotePrefs';
+import { getRemotePref } from '../../InitialContext/remotePrefs';
 import type { FormCellDefinition } from '../cells';
 import type { ViewDefinition } from '../index';
 import {
@@ -331,7 +331,7 @@ describe('getColumnDefinitions', () => {
         strictParseXml(
           `<viewdef>
             <columnDef os="abc">A</columnDef>
-            <columnDef os="${getPref(
+            <columnDef os="${getRemotePref(
               'form.definition.columnSource'
             )}">B</columnDef>
           </viewdef>`

@@ -22,11 +22,8 @@ import { LoadingContext } from '../Core/Contexts';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { hasPermission } from '../Permissions/helpers';
 import { PreferencesAside, useActiveCategory } from './Aside';
-import type {
-  GenericPreferencesCategories,
-  PreferenceItem,
-} from './UserDefinitions';
-import { preferenceDefinitions } from './UserDefinitions';
+import type { GenericPreferences, PreferenceItem } from './UserDefinitions';
+import { userPreferenceDefinitions } from './UserDefinitions';
 import {
   awaitPrefsSynced,
   getPrefDefinition,
@@ -99,25 +96,26 @@ function Preferences(): JSX.Element {
 export function usePrefDefinitions() {
   return React.useMemo(
     () =>
-      Object.entries(preferenceDefinitions as GenericPreferencesCategories)
+      Object.entries(userPreferenceDefinitions as GenericPreferences)
         .map(
           ([category, { subCategories, ...categoryData }]) =>
             [
-              category as unknown as keyof typeof preferenceDefinitions,
+              category,
               {
                 ...categoryData,
                 subCategories: Object.entries(subCategories)
-                  .map(([subCategory, { items, ...subCategoryData }]) => {
-                    return [
-                      subCategory,
-                      {
-                        ...subCategoryData,
-                        items: Object.entries(items).filter(
-                          ([_name, { visible }]) => visible !== false
-                        ),
-                      },
-                    ] as const;
-                  })
+                  .map(
+                    ([subCategory, { items, ...subCategoryData }]) =>
+                      [
+                        subCategory,
+                        {
+                          ...subCategoryData,
+                          items: Object.entries(items).filter(
+                            ([_name, { visible }]) => visible !== false
+                          ),
+                        },
+                      ] as const
+                  )
                   .filter(([_name, { items }]) => items.length > 0),
               },
             ] as const
@@ -168,21 +166,16 @@ export function PreferencesContent({
                             items.forEach(([name]) => {
                               setPref.user(
                                 category,
-                                // @ts-expect-error
                                 subcategory,
                                 name,
                                 /*
                                  * Need to get default value via this
                                  * function as defaults may be changed
                                  */
-
-                                (
-                                  getPrefDefinition(
-                                    category,
-                                    // @ts-expect-error
-                                    subcategory,
-                                    name
-                                  ) as unknown as PreferenceItem<any>
+                                getPrefDefinition.user(
+                                  category,
+                                  subcategory,
+                                  name
                                 ).defaultValue
                               );
                             })

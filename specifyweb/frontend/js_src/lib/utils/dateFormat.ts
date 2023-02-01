@@ -2,11 +2,11 @@
  * Read the preferred date format from remote prefs
  */
 
-import { getPref } from '../components/InitialContext/remotePrefs';
+import { getRemotePref } from '../components/InitialContext/remotePrefs';
 
 export const databaseDateFormat = 'YYYY-MM-DD';
 export const fullDateFormat = (): string =>
-  getPref('ui.formatting.scrdateformat');
+  getRemotePref('ui.formatting.scrdateformat');
 
 export const monthFormat = (): string =>
-  getPref('ui.formatting.scrmonthformat');
+  getRemotePref('ui.formatting.scrmonthformat');

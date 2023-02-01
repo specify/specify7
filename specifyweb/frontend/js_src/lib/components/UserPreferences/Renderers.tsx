@@ -218,7 +218,7 @@ export const WelcomePageModePreferenceItem: PreferenceItemComponent<WelcomePageM
     isReadOnly,
   }) {
     const [source, setSource] = usePref('welcomePage', 'general', 'source');
-    const sourceDefinition = getPrefDefinition(
+    const sourceDefinition = getPrefDefinition.user(
       'welcomePage',
       'general',
       'source'

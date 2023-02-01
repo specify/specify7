@@ -15,10 +15,7 @@ import type {
   SpQuery,
   Tables,
 } from '../../components/DataModel/types';
-import type {
-  PartialUserPreference,
-  PartialCollectionPreference,
-} from '../../components/UserPreferences/helpers';
+import { PreferenceValues } from '../../components/UserPreferences/helpers';
 import type { Conformations } from '../../components/TreeView/helpers';
 import type { IR, RA } from '../types';
 import { ensure } from '../types';
@@ -115,15 +112,15 @@ export type CacheDefinitions = {
      * causing Specify to flash user its white mode, or font size to change
      * on the fly.
      */
-    readonly cached: PartialUserPreference;
+    readonly cached: PreferenceValues['user'];
     /**
      * Admins may change default preferences. These defaults override original
      * defaults for items for which these are provided
      */
-    readonly defaultCached: PartialUserPreference;
+    readonly defaultCached: PreferenceValues['user'];
   };
   readonly collectionPreferences: {
-    readonly cached: PartialCollectionPreference;
+    readonly cached: PreferenceValues['collection'];
   };
   readonly securityTool: {
     readonly policiesLayout: 'horizontal' | 'vertical';

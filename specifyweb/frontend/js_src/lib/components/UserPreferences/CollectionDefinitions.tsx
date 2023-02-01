@@ -1,10 +1,12 @@
-import { preferencesText } from '../../localization/preferences';
-import { StatLayout } from '../Statistics/types';
-import { error } from '../Errors/assert';
 import React from 'react';
-import { defineItem, GenericPreferences } from './UserDefinitions';
-import { ensure } from '../../utils/types';
+
+import { preferencesText } from '../../localization/preferences';
 import { statsText } from '../../localization/stats';
+import { ensure } from '../../utils/types';
+import { error } from '../Errors/assert';
+import type { StatLayout } from '../Statistics/types';
+import type { GenericPreferences } from './UserDefinitions';
+import { definePref } from './UserDefinitions';
 
 export const collectionPreferenceDefinitions = {
   statistics: {
@@ -13,14 +15,14 @@ export const collectionPreferenceDefinitions = {
       appearance: {
         title: preferencesText.appearance(),
         items: {
-          layout: defineItem<StatLayout | undefined>({
+          layout: definePref<StatLayout | undefined>({
             title: 'Defines the layout of the stats page',
             requiresReload: false,
             visible: false,
             defaultValue: undefined,
             renderer: () => <>{error('This should not get called')}</>,
           }),
-          defaultLayout: defineItem<StatLayout | undefined>({
+          defaultLayout: definePref<StatLayout | undefined>({
             title: 'Defines the default layout of the stats page',
             requiresReload: false,
             visible: false,
@@ -31,6 +33,6 @@ export const collectionPreferenceDefinitions = {
       },
     },
   },
-};
+} as const;
 
 ensure<GenericPreferences>()(collectionPreferenceDefinitions);

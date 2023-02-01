@@ -23,7 +23,7 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { AnySchema, AnyTree } from '../DataModel/helperTypes';
 import { LocalizedString } from 'typesafe-i18n';
 import { queryText } from '../../localization/query';
-import { getPref } from '../InitialContext/remotePrefs';
+import { getRemotePref } from '../InitialContext/remotePrefs';
 
 type Action = 'add' | 'desynonymize' | 'edit' | 'merge' | 'move' | 'synonymize';
 
@@ -58,7 +58,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
   const resourceName = `/tree/edit/${toLowerCase(tableName)}` as const;
   const isSynonym = typeof focusedRow?.acceptedId === 'number';
 
-  const doExpandSynonymActionsPref = getPref(
+  const doExpandSynonymActionsPref = getRemotePref(
     `sp7.allow_adding_child_to_synonymized_parent.${
       tableName as AnyTree['tableName']
     }`

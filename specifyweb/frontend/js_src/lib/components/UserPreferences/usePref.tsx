@@ -4,8 +4,8 @@ import type { GetOrSet } from '../../utils/types';
 import type {
   CollectionPreferences,
   GenericPreferences,
-  preferenceDefinitions,
   Preferences,
+  userPreferenceDefinitions,
 } from './UserDefinitions';
 import { getPref, setPref } from './helpers';
 import {
@@ -14,6 +14,8 @@ import {
   prefEvents,
 } from './Hooks';
 import { collectionPreferenceDefinitions } from './CollectionDefinitions';
+
+// FIXME: refactor this file
 
 /**
  * React Hook to listen to preferences changes
@@ -93,7 +95,7 @@ function useUnsafePref<
 
 export function usePref<
   CATEGORY extends keyof Preferences,
-  SUBCATEGORY extends CATEGORY extends keyof typeof preferenceDefinitions
+  SUBCATEGORY extends CATEGORY extends keyof typeof userPreferenceDefinitions
     ? keyof Preferences[CATEGORY]['subCategories'] & string
     : never,
   ITEM extends keyof Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items']
@@ -118,7 +120,7 @@ export function usePref<
     setUserPref
   ) as unknown as GetOrSet<
     // @ts-expect-error
-    typeof preferenceDefinitions[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
+    typeof userPreferenceDefinitions[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
   >;
 }
 

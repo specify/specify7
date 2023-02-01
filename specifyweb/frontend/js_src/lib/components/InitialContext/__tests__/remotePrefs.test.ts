@@ -2,7 +2,7 @@ import { requireContext } from '../../../tests/helpers';
 import {
   fetchContext,
   getCollectionPref,
-  getPref,
+  getRemotePref,
   remotePrefsDefinitions,
 } from '../remotePrefs';
 
@@ -13,11 +13,11 @@ test('fetches and parses remotePrefs correctly', async () =>
 
 describe('Parsing Remote Prefs', () => {
   test('parses boolean value', () =>
-    expect(getPref('auditing.do_audits')).toBe(false));
+    expect(getRemotePref('auditing.do_audits')).toBe(false));
   test('parses numeric value', () =>
-    expect(getPref('attachment.preview_size')).toBe(123));
+    expect(getRemotePref('attachment.preview_size')).toBe(123));
   test('uses default value if pref is not set', () =>
-    expect(getPref('form.definition.columnSource')).toBe(
+    expect(getRemotePref('form.definition.columnSource')).toBe(
       remotePrefsDefinitions()['form.definition.columnSource'].defaultValue
     ));
 });

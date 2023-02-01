@@ -4,6 +4,7 @@ import type { RA } from '../../utils/types';
 import { keysToLowerCase } from '../../utils/utils';
 import { cachableUrl } from '../InitialContext';
 
+// FIXME: figure out what to do with this file
 export type Resource = {
   readonly id: number;
   readonly metadata: string | null;

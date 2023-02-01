@@ -5,7 +5,7 @@ import { load } from '../InitialContext';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { commonText } from '../../localization/common';
 import { formatUrl } from '../Router/queryString';
-import { getPref } from '../InitialContext/remotePrefs';
+import { getRemotePref } from '../InitialContext/remotePrefs';
 import { schema } from '../DataModel/schema';
 import type { IR } from '../../utils/types';
 import { handleAjaxResponse } from '../../utils/ajax/response';
@@ -90,7 +90,7 @@ export type AttachmentThumbnail = {
 
 export const fetchThumbnail = async (
   attachment: SerializedResource<Attachment>,
-  scale = getPref('attachment.preview_size')
+  scale = getRemotePref('attachment.preview_size')
 ): Promise<AttachmentThumbnail | undefined> =>
   typeof attachment.mimeType === 'string' &&
   !thumbnailable.has(attachment.mimeType)
@@ -209,7 +209,7 @@ export async function uploadFile(
     mimetype: fixMimeType(file.type),
     origfilename: file.name,
     title: file.name,
-    isPublic: getPref('attachment.is_public_default'),
+    isPublic: getRemotePref('attachment.is_public_default'),
   });
 }
 

@@ -25,7 +25,7 @@ import type { SpecifyModel } from '../DataModel/specifyModel';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { ResourceView } from '../Forms/ResourceView';
 import { useMenuItem } from '../Header';
-import { getPref } from '../InitialContext/remotePrefs';
+import { getRemotePref } from '../InitialContext/remotePrefs';
 import { isTreeModel, treeRanksPromise } from '../InitialContext/treeRanks';
 import { useTitle } from '../Molecules/AppTitle';
 import { supportsBackdropBlur } from '../Molecules/Dialog';
@@ -99,7 +99,9 @@ function TreeView<SCHEMA extends AnyTree>({
   useTitle(treeText.treeViewTitle({ treeName: table.label }));
 
   // Node sort order
-  const sortField = getPref(`${tableName as 'Geography'}.treeview_sort_field`);
+  const sortField = getRemotePref(
+    `${tableName as 'Geography'}.treeview_sort_field`
+  );
 
   const baseUrl = `/api/specify_tree/${tableName.toLowerCase()}/${
     treeDefinition.id
@@ -111,7 +113,7 @@ function TreeView<SCHEMA extends AnyTree>({
     [baseUrl, sortField]
   );
 
-  const statsThreshold = getPref(
+  const statsThreshold = getRemotePref(
     `TreeEditor.Rank.Threshold.${tableName as 'Geography'}`
   );
   const getStats = React.useCallback(

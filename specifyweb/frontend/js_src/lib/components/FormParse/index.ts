@@ -14,7 +14,7 @@ import { strictGetModel } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { error } from '../Errors/assert';
 import { cachableUrl } from '../InitialContext';
-import { getPref } from '../InitialContext/remotePrefs';
+import { getRemotePref } from '../InitialContext/remotePrefs';
 import { formatUrl } from '../Router/queryString';
 import type { FormCellDefinition } from './cells';
 import { parseFormCell, processColumnDefinition } from './cells';
@@ -315,7 +315,7 @@ function getColumnDefinitions(viewDefinition: Element): string {
   const definition =
     getColumnDefinition(
       viewDefinition,
-      getPref('form.definition.columnSource')
+      getRemotePref('form.definition.columnSource')
     ) ?? getColumnDefinition(viewDefinition, undefined);
   return defined(
     definition ?? getParsedAttribute(viewDefinition, 'colDef'),

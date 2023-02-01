@@ -9,7 +9,7 @@ import React from 'react';
 import type { SpAppResource, SpViewSetObj } from '../DataModel/types';
 import { f } from '../../utils/functools';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import type { PartialUserPreference } from '../UserPreferences/helpers';
+import type { PartialUserPreferences } from '../UserPreferences/helpers';
 import {
   getPref,
   getPrefDefinition,
@@ -26,8 +26,8 @@ import { useLiveState } from '../../hooks/useLiveState';
 import { appResourceSubTypes } from './types';
 import { SerializedResource } from '../DataModel/helperTypes';
 import {
-  preferenceDefinitions,
   PreferenceItem,
+  userPreferenceDefinitions,
 } from '../UserPreferences/UserDefinitions';
 
 export type AppResourceTab = (props: {
@@ -104,12 +104,13 @@ const UserPreferencesEditor: AppResourceTab = function ({
     React.ContextType<typeof PreferencesContext>
   >(
     React.useCallback(() => {
+      // FIXME: remove as many type casts as possible
       const preferences = JSON.parse(
         data || '{}'
-      ) as unknown as PartialUserPreference;
-      const setPrefs = setPrefsGenerator<typeof preferenceDefinitions>(
+      ) as unknown as PartialUserPreferences;
+      const setPrefs = setPrefsGenerator<typeof userPreferenceDefinitions>(
         () => preferences,
-        getPrefDefinition,
+        getPrefDefinition.user,
         false
       );
       return [
@@ -121,7 +122,7 @@ const UserPreferencesEditor: AppResourceTab = function ({
           // @ts-expect-error
           preferences[category]?.[subcategory as string]?.[item as string] ??
           (
-            getPrefDefinition(
+            getPrefDefinition.user(
               // @ts-expect-error
               category,
               subcategory as string,
