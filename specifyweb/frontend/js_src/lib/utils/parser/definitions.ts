@@ -15,13 +15,14 @@ import { monthsPickList } from '../../components/PickLists/definitions';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { queryText } from '../../localization/query';
-import { databaseDateFormat, fullDateFormat } from '../dateFormat';
+import { fullDateFormat } from './dateFormat';
 import { dayjs } from '../dayJs';
 import { f } from '../functools';
 import { parseRelativeDate } from '../relativeDate';
 import type { IR, RA, RR } from '../types';
 import { filterArray } from '../types';
 import { getUserPref } from '../../components/UserPreferences/helpers';
+import { databaseDateFormat } from './dateConfig';
 
 /** Makes sure a wrapped function would receive a string value */
 export const stringGuard =
