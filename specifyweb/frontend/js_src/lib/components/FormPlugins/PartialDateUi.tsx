@@ -371,7 +371,6 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
         isReadOnly={isReadOnly}
         value={inputValue}
         onBlur={f.zero(handleChange)}
-        onDatePaste={handleChange}
         onValueChange={setInputValue}
         {...(precision === 'year'
           ? {
