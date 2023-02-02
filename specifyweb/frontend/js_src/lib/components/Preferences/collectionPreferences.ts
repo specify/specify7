@@ -4,6 +4,7 @@ import { cacheEvents, getCache, setCache } from '../../utils/cache';
 import { MILLISECONDS } from '../Atoms/Internationalization';
 import { BasePreferences } from './BasePreferences';
 import { collectionPreferenceDefinitions } from './CollectionDefinitions';
+import { softFail } from '../Errors/Crash';
 
 const cacheKey = 'collectionPreferences';
 const throttleRate = 5 * MILLISECONDS;
@@ -20,7 +21,7 @@ export const collectionPreferences = new BasePreferences({
 collectionPreferences.setRaw(getCache(cacheKey, 'cached') ?? {});
 collectionPreferences.events.on(
   'update',
-  _.throttle(
+  _.debounce(
     () =>
       setCache(cacheKey, 'cached', {
         ...collectionPreferences.getRaw(),
@@ -28,6 +29,7 @@ collectionPreferences.events.on(
     throttleRate
   )
 );
+collectionPreferences.fetch().catch(softFail);
 
 cacheEvents.on('change', ({ category, key }) => {
   if (category !== cacheKey) return;

@@ -43,8 +43,8 @@ export const preferencesPromise = contextUnlockedPromise.then(
       ? Promise.all([
           userPreferences.fetch(),
           collectionPreferences.fetch(),
-        ]).then(f.void)
-      : foreverFetch<void>()
+        ]).then(f.true)
+      : foreverFetch<true>()
 );
 
 function Preferences(): JSX.Element {
@@ -323,9 +323,9 @@ function Item({
 }
 
 export function PreferencesWrapper(): JSX.Element | null {
-  const [preferences] = useAsyncState(
+  const [hasFetched] = useAsyncState(
     React.useCallback(async () => preferencesPromise, []),
     true
   );
-  return typeof preferences === 'object' ? <Preferences /> : null;
+  return hasFetched === true ? <Preferences /> : null;
 }

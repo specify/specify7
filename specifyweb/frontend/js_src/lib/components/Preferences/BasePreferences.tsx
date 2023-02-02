@@ -17,6 +17,7 @@ import { formatUrl } from '../Router/queryString';
 import type { GenericPreferences, PreferenceItem } from './UserDefinitions';
 
 /* eslint-disable functional/no-this-expression */
+// TESTS: add tests for user preferences
 
 // eslint-disable-next-line functional/no-class
 export class BasePreferences<DEFINITIONS extends GenericPreferences> {
@@ -122,8 +123,9 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
   }
 
   public setRaw(values: PartialPreferences<DEFINITIONS>): void {
+    const hasChanged = JSON.stringify(values) !== JSON.stringify(this.values);
     this.values = values;
-    this.events.trigger('update', undefined);
+    if (hasChanged) this.events.trigger('update', undefined);
     setDevelopmentGlobal(this.options.developmentGlobal, this.values);
   }
 
@@ -132,8 +134,9 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
   }
 
   public setDefaults(values: PartialPreferences<DEFINITIONS>): void {
+    const hasChanged = JSON.stringify(values) !== JSON.stringify(this.defaults);
     this.defaults = values;
-    this.events.trigger('update', undefined);
+    if (hasChanged) this.events.trigger('update', undefined);
   }
 
   /**

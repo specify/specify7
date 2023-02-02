@@ -4,6 +4,7 @@ import { cacheEvents, getCache, setCache } from '../../utils/cache';
 import { MILLISECONDS } from '../Atoms/Internationalization';
 import { BasePreferences } from './BasePreferences';
 import { userPreferenceDefinitions } from './UserDefinitions';
+import { softFail } from '../Errors/Crash';
 
 const cacheKey = 'userPreferences';
 const throttleRate = 5 * MILLISECONDS;
@@ -24,13 +25,14 @@ userPreferences.setRaw(getCache(cacheKey, 'cached') ?? {});
 userPreferences.setDefaults(getCache(cacheKey, 'defaultCached') ?? {});
 userPreferences.events.on(
   'update',
-  _.throttle(() => {
+  _.debounce(() => {
     setCache(cacheKey, 'cached', {
       ...userPreferences.getRaw(),
     });
     setCache(cacheKey, 'defaultCached', userPreferences.getDefaults());
   }, throttleRate)
 );
+userPreferences.fetch().catch(softFail);
 
 cacheEvents.on('change', ({ category, key }) => {
   if (category !== cacheKey) return;
