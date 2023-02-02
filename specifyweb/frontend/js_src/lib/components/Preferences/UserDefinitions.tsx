@@ -3,20 +3,34 @@
  */
 
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
+import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
+import { headerText } from '../../localization/header';
+import { interactionsText } from '../../localization/interactions';
+import { localityText } from '../../localization/locality';
 import { preferencesText } from '../../localization/preferences';
 import { queryText } from '../../localization/query';
+import { reportsText } from '../../localization/report';
+import { resourcesText } from '../../localization/resources';
+import { schemaText } from '../../localization/schema';
+import { statsText } from '../../localization/stats';
+import type { Language } from '../../localization/utils/config';
+import { LANGUAGE } from '../../localization/utils/config';
+import { wbPlanText } from '../../localization/wbPlan';
 import { wbText } from '../../localization/workbench';
 import type { Parser } from '../../utils/parser/definitions';
-import type { IR, RA } from '../../utils/types';
-import { defined, ensure, overwriteReadOnly, RR } from '../../utils/types';
+import type { IR, RA, RR } from '../../utils/types';
+import { defined, ensure, overwriteReadOnly } from '../../utils/types';
 import { Link } from '../Atoms/Link';
+import { getField } from '../DataModel/helpers';
+import type { TableFields } from '../DataModel/helperTypes';
 import type { JavaType } from '../DataModel/specifyField';
-import type { Collection } from '../DataModel/types';
-import { Tables } from '../DataModel/types';
+import type { Collection, Tables } from '../DataModel/types';
 import { error, softError } from '../Errors/assert';
+import type { StatLayout } from '../Statistics/types';
 import {
   LanguagePreferencesItem,
   SchemaLanguagePreferenceItem,
@@ -29,22 +43,6 @@ import {
   FontFamilyPreferenceItem,
   WelcomePageModePreferenceItem,
 } from './Renderers';
-import { TableFields } from '../DataModel/helperTypes';
-import { schemaText } from '../../localization/schema';
-import { headerText } from '../../localization/header';
-import { LocalizedString } from 'typesafe-i18n';
-import { Language, LANGUAGE } from '../../localization/utils/config';
-import { reportsText } from '../../localization/report';
-import { wbPlanText } from '../../localization/wbPlan';
-import { localityText } from '../../localization/locality';
-import { interactionsText } from '../../localization/interactions';
-import { resourcesText } from '../../localization/resources';
-import { attachmentsText } from '../../localization/attachments';
-import { statsText } from '../../localization/stats';
-import { getField } from '../DataModel/helpers';
-
-import { StatLayout } from '../Statistics/types';
-import { collectionPreferenceDefinitions } from './CollectionDefinitions';
 
 // Custom Renderer for a preference item
 export type PreferenceItemComponent<VALUE> = (props: {
@@ -64,8 +62,8 @@ export type PreferenceItemComponent<VALUE> = (props: {
  * https://firefox-source-docs.mozilla.org/toolkit/components/featuregates/featuregates/
  */
 export type PreferenceItem<VALUE> = {
-  readonly title: LocalizedString | JSX.Element;
-  readonly description?: LocalizedString | JSX.Element;
+  readonly title: JSX.Element | LocalizedString;
+  readonly description?: JSX.Element | LocalizedString;
   // Whether the page needs to be reloaded for this preference to apply
   readonly requiresReload: boolean;
   /*
@@ -505,7 +503,7 @@ export const userPreferenceDefinitions = {
       createInteractions: {
         title: preferencesText.createInteractions(),
         items: {
-          useSpaceAsDelimiter: definePref<'true' | 'false' | 'auto'>({
+          useSpaceAsDelimiter: definePref<'auto' | 'false' | 'true'>({
             title: preferencesText.useSpaceAsDelimiter(),
             requiresReload: false,
             visible: true,
@@ -526,7 +524,7 @@ export const userPreferenceDefinitions = {
               },
             ],
           }),
-          useCommaAsDelimiter: definePref<'true' | 'false' | 'auto'>({
+          useCommaAsDelimiter: definePref<'auto' | 'false' | 'true'>({
             title: preferencesText.useCommaAsDelimiter(),
             requiresReload: false,
             visible: true,
@@ -547,7 +545,7 @@ export const userPreferenceDefinitions = {
               },
             ],
           }),
-          useNewLineAsDelimiter: definePref<'true' | 'false' | 'auto'>({
+          useNewLineAsDelimiter: definePref<'auto' | 'false' | 'true'>({
             title: preferencesText.useNewLineAsDelimiter(),
             requiresReload: false,
             visible: true,
@@ -1672,10 +1670,5 @@ import('../DataModel/schema')
     })
   )
   .catch(console.error);
-
-export type Preferences = GenericPreferences & typeof userPreferenceDefinitions;
-
-export type CollectionPreferences = GenericPreferences &
-  typeof collectionPreferenceDefinitions;
 
 ensure<GenericPreferences>()(userPreferenceDefinitions);

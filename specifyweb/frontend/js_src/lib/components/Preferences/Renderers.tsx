@@ -30,8 +30,7 @@ import type {
   PreferenceItem,
   PreferenceItemComponent,
 } from './UserDefinitions';
-import { getPrefDefinition } from './helpers';
-import { usePref } from './usePref';
+import { userPreferences } from './userPreferences';
 
 export const ColorPickerPreferenceItem: PreferenceItemComponent<string> =
   function ColorPickerPreferenceItem({
@@ -217,8 +216,12 @@ export const WelcomePageModePreferenceItem: PreferenceItemComponent<WelcomePageM
     onChange: handleChange,
     isReadOnly,
   }) {
-    const [source, setSource] = usePref('welcomePage', 'general', 'source');
-    const sourceDefinition = getPrefDefinition.user(
+    const [source, setSource] = userPreferences.use(
+      'welcomePage',
+      'general',
+      'source'
+    );
+    const sourceDefinition = userPreferences.definition(
       'welcomePage',
       'general',
       'source'

@@ -22,7 +22,7 @@ import { dateParts } from '../Atoms/Internationalization';
 import { useSaveBlockers } from '../../hooks/resource';
 import { useValidation } from '../../hooks/useValidation';
 import { AnySchema } from '../DataModel/helperTypes';
-import { usePref } from '../UserPreferences/usePref';
+import { userPreferences } from '../Preferences/userPreferences';
 
 export function isInputSupported(type: string): boolean {
   const input = document.createElement('input');
@@ -135,8 +135,16 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
   readonly id: string | undefined;
   readonly canChangePrecision?: boolean;
 }): JSX.Element {
-  const [useDatePicker] = usePref('form', 'ui', 'useAccessibleFullDatePicker');
-  const [useMonthPicker] = usePref('form', 'ui', 'useAccessibleMonthPicker');
+  const [useDatePicker] = userPreferences.use(
+    'form',
+    'ui',
+    'useAccessibleFullDatePicker'
+  );
+  const [useMonthPicker] = userPreferences.use(
+    'form',
+    'ui',
+    'useAccessibleMonthPicker'
+  );
   const {
     dateType,
     dateSupported,
@@ -374,7 +382,6 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
         isReadOnly={isReadOnly}
         value={inputValue}
         onBlur={f.zero(handleChange)}
-        onDatePaste={handleChange}
         onValueChange={setInputValue}
         {...(precision === 'year'
           ? {

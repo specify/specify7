@@ -31,13 +31,13 @@ import { fail } from '../Errors/Crash';
 import { supportLink } from '../Errors/ErrorDialog';
 import { cachableUrl } from '../InitialContext';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { formatUrl } from '../Router/queryString';
-import { languageSeparator } from '../SchemaConfig/Languages';
 import type {
   PreferenceItem,
   PreferenceItemComponent,
-} from '../UserPreferences/UserDefinitions';
-import { PreferencesContext, prefEvents } from '../UserPreferences/Hooks';
+} from '../Preferences/UserDefinitions';
+import { userPreferences } from '../Preferences/userPreferences';
+import { formatUrl } from '../Router/queryString';
+import { languageSeparator } from '../SchemaConfig/Languages';
 
 export const handleLanguageChange = async (language: Language): Promise<void> =>
   ping(
@@ -215,7 +215,8 @@ export const LanguagePreferencesItem: PreferenceItemComponent<Language> =
      * When editing someone else's user preferences, disable the language
      * selector, since language preference is stored in session storage.
      */
-    const isRedirecting = React.useContext(PreferencesContext) !== undefined;
+    const isRedirecting =
+      React.useContext(userPreferences.Context) !== undefined;
     return (
       <LanguageSelection<Language>
         isForInterface
@@ -231,7 +232,7 @@ export const LanguagePreferencesItem: PreferenceItemComponent<Language> =
            */
           handleLanguageChange(language).catch(fail);
           setLanguage(language);
-          prefEvents.trigger('update', {
+          userPreferences.events.trigger('update', {
             category,
             subcategory,
             item,

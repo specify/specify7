@@ -1,15 +1,18 @@
 import type {
   JavaType,
   LiteralField,
+  Relationship,
 } from '../../../components/DataModel/specifyField';
-import { Relationship } from '../../../components/DataModel/specifyField';
 import {
   formatterTypeMapper,
   UiFormatter,
 } from '../../../components/Forms/uiFormatters';
+import { userPreferences } from '../../../components/Preferences/userPreferences';
 import { formsText } from '../../../localization/forms';
 import { requireContext } from '../../../tests/helpers';
+import { theories } from '../../../tests/utils';
 import { f } from '../../functools';
+import { removeKey } from '../../utils';
 import type { Parser } from '../definitions';
 import {
   browserifyRegex,
@@ -26,9 +29,6 @@ import {
   stringGuard,
   validators,
 } from '../definitions';
-import { theories } from '../../../tests/utils';
-import { removeKey } from '../../utils';
-import { setPref } from '../../../components/UserPreferences/helpers';
 
 requireContext();
 
@@ -253,7 +253,7 @@ describe('formatterToParser', () => {
       },
       name: 'altCatalogNumber',
     } as unknown as LiteralField;
-    setPref.user('form', 'preferences', 'autoNumbering', {
+    userPreferences.set('form', 'preferences', 'autoNumbering', {
       CollectionObject: [],
     });
     expect(formatterToParser(field, uiFormatter).value).toBeUndefined();
@@ -286,13 +286,13 @@ theories(pluralizeParser, [
     in: [{ title: 'a', pattern: /^a$/u }],
     out: {
       title: 'a',
-      pattern: new RegExp('^(?:|\\s*(?:a)\\s*(?:,\\s*(?:a)\\s*)*)$', 'u'),
+      pattern: new RegExp('^(?:|\\s*a\\s*(?:,\\s*a\\s*)*)$', 'u'),
     },
   },
 ]);
 
 theories(pluralizeRegex, [
-  [[/^a$/u], new RegExp('^(?:|\\s*(?:a)\\s*(?:,\\s*(?:a)\\s*)*)$', 'u')],
+  [[/^a$/u], new RegExp('^(?:|\\s*a\\s*(?:,\\s*a\\s*)*)$', 'u')],
 ]);
 
 theories(lengthToRegex, [

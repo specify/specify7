@@ -22,7 +22,6 @@ import { ProtectedTable, ProtectedTool } from '../Permissions/PermissionDenied';
 import { NotFoundView } from '../Router/NotFoundView';
 import { formatUrl } from '../Router/queryString';
 import { switchCollection } from '../RouterCommands/SwitchCollection';
-import { usePref } from '../UserPreferences/usePref';
 import { OtherCollection } from './OtherCollectionView';
 import { ViewResourceById } from './ShowResource';
 import { useSearchParameter } from '../../hooks/navigation';
@@ -34,6 +33,7 @@ import { Dialog } from '../Molecules/Dialog';
 import { commonText } from '../../localization/common';
 import { userText } from '../../localization/user';
 import { getField } from '../DataModel/helpers';
+import { userPreferences } from '../Preferences/userPreferences';
 
 export function ViewRecordSet(): JSX.Element {
   const { id, index } = useParams();
@@ -86,7 +86,11 @@ function DisplayRecordSet({
   readonly recordSet: SpecifyResource<RecordSet>;
   readonly resourceIndex: number;
 }): null | JSX.Element {
-  const [recordToOpen] = usePref('form', 'recordSet', 'recordToOpen');
+  const [recordToOpen] = userPreferences.use(
+    'form',
+    'recordSet',
+    'recordToOpen'
+  );
   const navigate = useNavigate();
 
   const [isReadOnly = false] = useCachedState('forms', 'readOnlyMode');

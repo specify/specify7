@@ -12,7 +12,6 @@ import { className } from '../Atoms/className';
 import { unloadProtectEvents, UnloadProtectsContext } from '../Core/Contexts';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { Dialog } from '../Molecules/Dialog';
-import { getUserPref } from '../UserPreferences/helpers';
 import { NotFoundView } from './NotFoundView';
 import { overlayRoutes } from './OverlayRoutes';
 import { useRouterBlocker } from './RouterBlocker';
@@ -20,6 +19,7 @@ import { toReactRoutes } from './RouterUtils';
 import { routes } from './Routes';
 import { f } from '../../utils/functools';
 import { mainText } from '../../localization/main';
+import { userPreferences } from '../Preferences/userPreferences';
 
 let unsafeNavigateFunction: SafeNavigateFunction | undefined;
 export const unsafeNavigate = (
@@ -143,7 +143,11 @@ function parseClickEvent(
     (link.target === '' ||
       link.target === '_self' ||
       (event.altKey &&
-        getUserPref('general', 'behavior', 'altClickToSupressNewTab'))) &&
+        userPreferences.get(
+          'general',
+          'behavior',
+          'altClickToSupressNewTab'
+        ))) &&
     // Can add this class name to links to prevent react-router from handling them
     !link.classList.contains(className.navigationHandled)
   ) {

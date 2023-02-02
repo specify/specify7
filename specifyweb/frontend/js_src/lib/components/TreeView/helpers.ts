@@ -2,7 +2,7 @@ import type React from 'react';
 import _ from 'underscore';
 
 import { ajax } from '../../utils/ajax';
-import { getTransitionDuration } from '../UserPreferences/Hooks';
+import { getTransitionDuration } from '../Preferences/Hooks';
 import { treeText } from '../../localization/tree';
 import { strictGetTreeDefinitionItems } from '../InitialContext/treeRanks';
 import type { RA, RR } from '../../utils/types';

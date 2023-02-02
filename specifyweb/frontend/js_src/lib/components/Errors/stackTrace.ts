@@ -23,8 +23,11 @@ f.all({
   remotePrefs: import('../InitialContext/remotePrefs').then(
     ({ remotePrefs }) => remotePrefs
   ),
-  preferences: import('../UserPreferences/helpers').then(
-    ({ rawPreferences }) => rawPreferences
+  userPreferences: import('../Preferences/userPreferences').then(
+    ({ userPreferences }) => userPreferences.getRaw()
+  ),
+  collectionPreferences: import('../Preferences/collectionPreferences').then(
+    ({ collectionPreferences }) => collectionPreferences.getRaw()
   ),
   userInformation: import('../InitialContext/userInformation').then(
     ({ userInformation }) => userInformation

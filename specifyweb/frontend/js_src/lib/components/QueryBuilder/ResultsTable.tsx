@@ -12,8 +12,8 @@ import type { SpecifyModel } from '../DataModel/specifyModel';
 import { getAuditRecordFormatter } from './AuditLogFormatter';
 import type { QueryFieldSpec } from './fieldSpec';
 import { queryIdField, QueryResultRow } from './Results';
-import { usePref } from '../UserPreferences/usePref';
 import { syncFieldFormat } from '../../utils/fieldFormat';
+import { userPreferences } from '../Preferences/userPreferences';
 
 export function QueryResultsTable({
   model,
@@ -104,7 +104,7 @@ function Row({
     ),
     false
   );
-  const [condenseQueryResults] = usePref(
+  const [condenseQueryResults] = userPreferences.use(
     'queryBuilder',
     'appearance',
     'condenseQueryResults'

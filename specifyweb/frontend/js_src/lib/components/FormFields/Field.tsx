@@ -25,8 +25,8 @@ import { getResourceAndField } from '../../hooks/resource';
 import { SpecifyFormCheckbox } from './Checkbox';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { AnySchema } from '../DataModel/helperTypes';
-import { usePref } from '../UserPreferences/usePref';
 import { userText } from '../../localization/user';
+import { userPreferences } from '../Preferences/userPreferences';
 
 export function UiField({
   id,
@@ -211,7 +211,7 @@ function Field({
     false
   );
 
-  const [rightAlignNumberFields] = usePref(
+  const [rightAlignNumberFields] = userPreferences.use(
     'form',
     'ui',
     'rightAlignNumberFields'

@@ -11,9 +11,9 @@ import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { ViewDescription } from '../FormParse';
 import { Dialog } from '../Molecules/Dialog';
 import { ProtectedTool } from '../Permissions/PermissionDenied';
-import { usePref } from '../UserPreferences/usePref';
 import { toggleItem } from '../../utils/utils';
 import { resourcesText } from '../../localization/resources';
+import { userPreferences } from '../Preferences/userPreferences';
 
 export function Definition({
   model,
@@ -65,7 +65,7 @@ function FormDefinitionDialog({
 }
 
 function UseAutoForm({ model }: { readonly model: SpecifyModel }): JSX.Element {
-  const [rawConfig, setGlobalConfig] = usePref(
+  const [rawConfig, setGlobalConfig] = userPreferences.use(
     'form',
     'preferences',
     'useCustomForm'

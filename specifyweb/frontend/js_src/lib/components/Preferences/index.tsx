@@ -12,6 +12,7 @@ import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { preferencesText } from '../../localization/preferences';
 import { StringToJsx } from '../../localization/utils';
+import { f } from '../../utils/functools';
 import { Container, H2, Key } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
@@ -20,19 +21,31 @@ import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
+import { contextUnlockedPromise, foreverFetch } from '../InitialContext';
 import { hasPermission } from '../Permissions/helpers';
 import { PreferencesAside, useActiveCategory } from './Aside';
+import { collectionPreferences } from './collectionPreferences';
+import { DefaultPreferenceItemRender } from './Renderers';
 import type { GenericPreferences, PreferenceItem } from './UserDefinitions';
 import { userPreferenceDefinitions } from './UserDefinitions';
-import {
-  awaitPrefsSynced,
-  getPrefDefinition,
-  preferencesPromise,
-  setPref,
-} from './helpers';
-import { prefEvents } from './Hooks';
-import { DefaultPreferenceItemRender } from './Renderers';
-import { usePref } from './usePref';
+import { userPreferences } from './userPreferences';
+
+/**
+ * Fetch app resource that stores current user preferences
+ *
+ * If app resource data with user preferences does not exists does not exist,
+ * check if SpAppResourceDir and SpAppResource exist and create them if needed,
+ * then, create the app resource data itself
+ */
+export const preferencesPromise = contextUnlockedPromise.then(
+  async (entrypoint) =>
+    entrypoint === 'main'
+      ? Promise.all([
+          userPreferences.fetch(),
+          collectionPreferences.fetch(),
+        ]).then(f.void)
+      : foreverFetch<void>()
+);
 
 function Preferences(): JSX.Element {
   const [changesMade, handleChangesMade] = useBooleanState();
@@ -44,7 +57,7 @@ function Preferences(): JSX.Element {
 
   React.useEffect(
     () =>
-      prefEvents.on('update', (payload) => {
+      userPreferences.events.on('update', (payload) => {
         if (payload?.definition?.requiresReload === true) handleRestartNeeded();
         handleChangesMade();
       }),
@@ -60,11 +73,13 @@ function Preferences(): JSX.Element {
         className="contents"
         onSubmit={(): void =>
           loading(
-            awaitPrefsSynced().then(() =>
-              needsRestart
-                ? globalThis.location.assign('/specify/')
-                : navigate('/specify/')
-            )
+            userPreferences
+              .awaitSynced()
+              .then(() =>
+                needsRestart
+                  ? globalThis.location.assign('/specify/')
+                  : navigate('/specify/')
+              )
           )
         }
       >
@@ -164,18 +179,18 @@ export function PreferencesContent({
                         <Button.Small
                           onClick={(): void =>
                             items.forEach(([name]) => {
-                              setPref.user(
-                                category,
-                                subcategory,
-                                name,
+                              userPreferences.set(
+                                category as 'general',
+                                subcategory as 'ui',
+                                name as 'theme',
                                 /*
                                  * Need to get default value via this
                                  * function as defaults may be changed
                                  */
-                                getPrefDefinition.user(
-                                  category,
-                                  subcategory,
-                                  name
+                                userPreferences.definition(
+                                  category as 'general',
+                                  subcategory as 'ui',
+                                  name as 'theme'
                                 ).defaultValue
                               );
                             })
@@ -283,7 +298,7 @@ function Item({
 }): JSX.Element {
   const Renderer =
     'renderer' in item ? item.renderer : DefaultPreferenceItemRender;
-  const [value, setValue] = usePref(
+  const [value, setValue] = userPreferences.use(
     // Asserting types just to simplify typing
     category as 'general',
     subcategory as 'ui',

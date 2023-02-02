@@ -21,11 +21,11 @@ import { getSystemInfo } from '../InitialContext/systemInfo';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { Router } from '../Router/Router';
-import type { Preferences } from '../UserPreferences/UserDefinitions';
 import { mainText } from '../../localization/main';
 import { headerText } from '../../localization/header';
 import { userText } from '../../localization/user';
 import { LocalizedString } from 'typesafe-i18n';
+import { userPreferenceDefinitions } from '../Preferences/UserDefinitions';
 
 export type UserTool = {
   readonly title: LocalizedString;
@@ -39,7 +39,7 @@ export type MenuItem = UserTool & {
    * A name of the user preference key responsible for determining whether
    * the menu item is visible
    */
-  readonly visibilityKey: keyof Preferences['header']['subCategories']['menu']['items'];
+  readonly visibilityKey: keyof typeof userPreferenceDefinitions['header']['subCategories']['menu']['items'];
 };
 
 /*

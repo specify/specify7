@@ -33,11 +33,7 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { ProtectedTree } from '../Permissions/PermissionDenied';
 import { NotFoundView } from '../Router/NotFoundView';
 import { EditTreeDefinition } from '../Toolbar/TreeRepair';
-import {
-  useHighContrast,
-  useReducedTransparency,
-} from '../UserPreferences/Hooks';
-import { usePref } from '../UserPreferences/usePref';
+import { useHighContrast, useReducedTransparency } from '../Preferences/Hooks';
 import { TreeViewActions } from './Actions';
 import type { Conformations, Row, Stats } from './helpers';
 import {
@@ -48,6 +44,7 @@ import {
 } from './helpers';
 import { TreeRow } from './Row';
 import { TreeViewSearch } from './Search';
+import { userPreferences } from '../Preferences/userPreferences';
 
 const treeToPref = {
   Geography: 'geography',
@@ -146,12 +143,12 @@ function TreeView<SCHEMA extends AnyTree>({
 
   const reduceTransparency = useReducedTransparency();
   const highContrast = useHighContrast();
-  const [treeAccentColor] = usePref(
+  const [treeAccentColor] = userPreferences.use(
     'treeEditor',
     treeToPref[tableName],
     'treeAccentColor'
   );
-  const [synonymColor] = usePref(
+  const [synonymColor] = userPreferences.use(
     'treeEditor',
     treeToPref[tableName],
     'synonymColor'

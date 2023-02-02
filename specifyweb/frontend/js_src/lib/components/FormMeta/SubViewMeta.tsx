@@ -4,7 +4,7 @@ import { formsText } from '../../localization/forms';
 import type { FormType } from '../FormParse';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { Label, Select } from '../Atoms/Form';
-import { OrderPicker } from '../UserPreferences/Renderers';
+import { OrderPicker } from '../Preferences/Renderers';
 import type { SubViewContext } from '../Forms/SubView';
 import { attachmentsText } from '../../localization/attachments';
 import { schema } from '../DataModel/schema';

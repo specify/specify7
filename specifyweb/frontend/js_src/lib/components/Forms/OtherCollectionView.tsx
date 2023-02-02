@@ -11,16 +11,20 @@ import { switchCollection } from '../RouterCommands/SwitchCollection';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { Button } from '../Atoms/Button';
 import { SerializedResource } from '../DataModel/helperTypes';
-import { usePref } from '../UserPreferences/usePref';
 import { userText } from '../../localization/user';
 import { LocalizedString } from 'typesafe-i18n';
+import { userPreferences } from '../Preferences/userPreferences';
 
 /**
  * Even though available collections do not change during lifecycle of a page,
  * their sort order may
  */
 export function useAvailableCollections(): RA<SerializedResource<Collection>> {
-  const [sortOrder] = usePref('chooseCollection', 'general', 'sortOrder');
+  const [sortOrder] = userPreferences.use(
+    'chooseCollection',
+    'general',
+    'sortOrder'
+  );
   const isReverseSort = sortOrder.startsWith('-');
   const sortField = (isReverseSort ? sortOrder.slice(1) : sortOrder) as string &
     keyof Collection['fields'];

@@ -9,7 +9,7 @@ import type { SpQuery } from '../DataModel/types';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { RunReport } from './Run';
-import { usePref } from '../UserPreferences/usePref';
+import { userPreferences } from '../Preferences/userPreferences';
 
 export function ReportForRecord({
   query: rawQuery,
@@ -26,7 +26,7 @@ export function ReportForRecord({
   readonly resourceId: number;
   readonly onClose: () => void;
 }): JSX.Element {
-  const [clearQueryFilters] = usePref(
+  const [clearQueryFilters] = userPreferences.use(
     'reports',
     'behavior',
     'clearQueryFilters'

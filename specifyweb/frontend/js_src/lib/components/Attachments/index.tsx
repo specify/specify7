@@ -19,7 +19,7 @@ import type { Tables } from '../DataModel/types';
 import { useMenuItem } from '../Header';
 import { hasTablePermission } from '../Permissions/helpers';
 import { ProtectedTable } from '../Permissions/PermissionDenied';
-import { OrderPicker } from '../UserPreferences/Renderers';
+import { OrderPicker } from '../Preferences/Renderers';
 import { AttachmentGallery } from './Gallery';
 import { schemaText } from '../../localization/schema';
 import { attachmentsText } from '../../localization/attachments';

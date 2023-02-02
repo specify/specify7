@@ -1,12 +1,12 @@
 import { getDateInputValue } from '../../utils/dayJs';
 import type { IR } from '../../utils/types';
+import { ensure } from '../../utils/types';
 import { formatNumber } from '../Atoms/Internationalization';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { statsText } from '../../localization/stats';
 import { formattedEntry } from '../WbPlanView/mappingHelpers';
 import type { StatCategoryReturn } from './types';
 import { userInformation } from '../InitialContext/userInformation';
-import { ensure } from '../../utils/types';
 import { urlSpec } from './definitions';
 
 type StatsSpec = IR<{
@@ -79,7 +79,7 @@ export const statsSpec: IR<StatsSpec> = {
           spec: {
             type: 'BackEndStat',
             pathToValue: undefined,
-            urlToFetch: urlSpec.preparations,
+            fetchUrl: urlSpec.preparations,
             formatter: ({
               lots,
               total,
@@ -332,7 +332,7 @@ export const statsSpec: IR<StatsSpec> = {
           spec: {
             type: 'BackEndStat',
             pathToValue: undefined,
-            urlToFetch: urlSpec.typeSpecimens,
+            fetchUrl: urlSpec.typeSpecimens,
             formatter: formatNumber,
           },
         },

@@ -11,9 +11,9 @@ import { userInformation } from '../InitialContext/userInformation';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { flippedSortTypes } from '../QueryBuilder/helpers';
-import { getUserPref } from '../UserPreferences/helpers';
 import type { CollectionRelationships } from './useCollectionRelationships';
 import { QueryComboBoxTreeData } from './useTreeData';
+import { userPreferences } from '../Preferences/userPreferences';
 
 export function makeComboBoxQuery({
   fieldName,
@@ -41,7 +41,7 @@ export function makeComboBoxQuery({
   query.set('isFavorite', false);
   query.set('ordinal', null);
 
-  const searchAlgorithm = getUserPref(
+  const searchAlgorithm = userPreferences.get(
     'form',
     'queryComboBox',
     isTreeTable ? 'treeSearchAlgorithm' : 'searchAlgorithm'

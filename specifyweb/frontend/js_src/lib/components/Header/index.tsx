@@ -20,11 +20,11 @@ import type { MenuItem } from '../Core/Main';
 import { switchCollection } from '../RouterCommands/SwitchCollection';
 import { useSearchParameter } from '../../hooks/navigation';
 import { Submit } from '../Atoms/Submit';
-import { usePref } from '../UserPreferences/usePref';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { headerText } from '../../localization/header';
 import { userInformation } from '../InitialContext/userInformation';
 import { schema } from '../DataModel/schema';
+import { userPreferences } from '../Preferences/userPreferences';
 
 let activeMenuItems: WritableArray<MenuItemName> = [];
 
@@ -78,7 +78,7 @@ function MenuItemComponent({
   visibilityKey,
   isActive,
 }: MenuItem & { readonly isActive: boolean }): JSX.Element | null {
-  const [isVisible] = usePref('header', 'menu', visibilityKey);
+  const [isVisible] = userPreferences.use('header', 'menu', visibilityKey);
   return isVisible ? (
     <Link.Default
       aria-current={isActive ? 'page' : undefined}
@@ -116,7 +116,11 @@ function MenuItemComponent({
 }
 
 export function CollectionSelector(): JSX.Element {
-  const [sortOrder] = usePref('chooseCollection', 'general', 'sortOrder');
+  const [sortOrder] = userPreferences.use(
+    'chooseCollection',
+    'general',
+    'sortOrder'
+  );
   const isReverseSort = sortOrder.startsWith('-');
   const sortField = (isReverseSort ? sortOrder.slice(1) : sortOrder) as string &
     keyof Collection['fields'];

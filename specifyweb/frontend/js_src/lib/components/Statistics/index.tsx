@@ -1,9 +1,13 @@
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 
+import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
 import { statsText } from '../../localization/stats';
+import { cleanFulfilledRequests } from '../../utils/ajax/throttledPromise';
 import { f } from '../../utils/functools';
+import type { RA } from '../../utils/types';
+import { getUniqueName } from '../../utils/uniquifyName';
 import { removeItem, removeKey, replaceItem } from '../../utils/utils';
 import { H2, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -16,12 +20,12 @@ import { userInformation } from '../InitialContext/userInformation';
 import { DateElement } from '../Molecules/DateElement';
 import { downloadFile } from '../Molecules/FilePicker';
 import { hasPermission } from '../Permissions/helpers';
+import { userPreferences } from '../Preferences/userPreferences';
 import { useQueries } from '../Toolbar/Query';
-import { awaitPrefsSynced } from '../UserPreferences/helpers';
-import { useCollectionPref, usePref } from '../UserPreferences/usePref';
 import { AddStatDialog } from './AddStatDialog';
 import { StatsAsideButton } from './Buttons';
 import { Categories } from './Categories';
+import { urlSpec } from './definitions';
 import {
   statsToTsv,
   useBackendApi,
@@ -33,27 +37,23 @@ import {
 } from './hooks';
 import { StatsPageEditing } from './StatsPageEditing';
 import type { CustomStat, DefaultStat, StatLayout } from './types';
-import { urlSpec } from './definitions';
-import { RA } from '../../utils/types';
-import { cleanFulfilledRequests } from '../../utils/ajax/throttledPromise';
-import { useTriggerState } from '../../hooks/useTriggerState';
-import { getUniqueName } from '../../utils/uniquifyName';
+import { collectionPreferences } from '../Preferences/collectionPreferences';
 
 export function StatsPage(): JSX.Element | null {
   useMenuItem('statistics');
-  const [collectionLayout, setCollectionLayout] = useCollectionPref(
+  const [collectionLayout, setCollectionLayout] = collectionPreferences.use(
     'statistics',
     'appearance',
     'layout'
   );
 
-  const [personalLayout, setPersonalLayout] = usePref(
+  const [personalLayout, setPersonalLayout] = userPreferences.use(
     'statistics',
     'appearance',
     'layout'
   );
 
-  const [defaultLayout, setDefaultLayout] = useCollectionPref(
+  const [defaultLayout, setDefaultLayout] = collectionPreferences.use(
     'statistics',
     'appearance',
     'defaultLayout'
@@ -73,6 +73,10 @@ export function StatsPage(): JSX.Element | null {
         }
       >
     | State<
+        'DeletingCategoryState',
+        { readonly categoryContainsCustom: boolean }
+      >
+    | State<
         'PageRenameState',
         {
           readonly pageIndex: number | undefined;
@@ -81,10 +85,6 @@ export function StatsPage(): JSX.Element | null {
       >
     | State<'DefaultState'>
     | State<'EditingState'>
-    | State<
-        'DeletingCategoryState',
-        { readonly categoryContainsCustom: boolean }
-      >
   >({ type: 'DefaultState' });
 
   const isAddingItem = state.type === 'AddingState';
@@ -341,7 +341,10 @@ export function StatsPage(): JSX.Element | null {
       className={className.containerFullGray}
       onSubmit={(): void => {
         setState({ type: 'DefaultState' });
-        awaitPrefsSynced().catch(softFail);
+        Promise.all([
+          userPreferences.awaitSynced(),
+          collectionPreferences.awaitSynced(),
+        ]).catch(softFail);
       }}
     >
       <div className="flex items-center gap-2">
@@ -621,42 +624,6 @@ export function StatsPage(): JSX.Element | null {
                   : undefined
               }
               onClick={handleAdd}
-              onRename={
-                isEditing && canEditIndex(activePage.isCollection)
-                  ? (categoryIndex, itemIndex, newLabel): void =>
-                      handleChange((oldCategory) =>
-                        replaceItem(oldCategory, categoryIndex, {
-                          ...oldCategory[categoryIndex],
-                          items: replaceItem(
-                            oldCategory[categoryIndex].items ?? [],
-                            itemIndex,
-                            {
-                              ...(oldCategory[categoryIndex].items ?? [])[
-                                itemIndex
-                              ],
-                              label: newLabel,
-                            }
-                          ),
-                        })
-                      )
-                  : undefined
-              }
-              onRemove={
-                isEditing && canEditIndex(activePage.isCollection)
-                  ? (categoryIndex, itemIndex): void =>
-                      handleChange((oldCategory) =>
-                        typeof itemIndex === 'number'
-                          ? replaceItem(oldCategory, categoryIndex, {
-                              ...oldCategory[categoryIndex],
-                              items: removeItem(
-                                oldCategory[categoryIndex].items ?? [],
-                                itemIndex
-                              ),
-                            })
-                          : removeItem(oldCategory, categoryIndex)
-                      )
-                  : undefined
-              }
               onEdit={(categoryIndex, itemIndex, querySpec): void =>
                 handleChange((oldCategory) =>
                   replaceItem(oldCategory, categoryIndex, {
@@ -679,6 +646,42 @@ export function StatsPage(): JSX.Element | null {
                 )
               }
               onLoad={handleLoad}
+              onRemove={
+                isEditing && canEditIndex(activePage.isCollection)
+                  ? (categoryIndex, itemIndex): void =>
+                      handleChange((oldCategory) =>
+                        typeof itemIndex === 'number'
+                          ? replaceItem(oldCategory, categoryIndex, {
+                              ...oldCategory[categoryIndex],
+                              items: removeItem(
+                                oldCategory[categoryIndex].items ?? [],
+                                itemIndex
+                              ),
+                            })
+                          : removeItem(oldCategory, categoryIndex)
+                      )
+                  : undefined
+              }
+              onRename={
+                isEditing && canEditIndex(activePage.isCollection)
+                  ? (categoryIndex, itemIndex, newLabel): void =>
+                      handleChange((oldCategory) =>
+                        replaceItem(oldCategory, categoryIndex, {
+                          ...oldCategory[categoryIndex],
+                          items: replaceItem(
+                            oldCategory[categoryIndex].items ?? [],
+                            itemIndex,
+                            {
+                              ...(oldCategory[categoryIndex].items ?? [])[
+                                itemIndex
+                              ],
+                              label: newLabel,
+                            }
+                          ),
+                        })
+                      )
+                  : undefined
+              }
             />
           </div>
         </div>

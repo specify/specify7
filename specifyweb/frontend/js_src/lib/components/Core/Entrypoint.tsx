@@ -9,7 +9,7 @@ import { interceptLogs } from '../Errors/interceptLogs';
 import type { getEntrypointName } from '../InitialContext';
 import { unlockInitialContext } from '../InitialContext';
 import { EntrypointRouter } from '../Router/EntrypointRouter';
-import { SetCssVariables } from '../UserPreferences/ApplyPreferences';
+import { SetCssVariables } from '../Preferences/ApplyPreferences';
 import { Contexts } from './Contexts';
 
 function entrypoint(): void {

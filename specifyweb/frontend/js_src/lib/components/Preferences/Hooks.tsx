@@ -1,44 +1,7 @@
 import React from 'react';
 
 import { eventListener } from '../../utils/events';
-import type { PreferenceItem } from './UserDefinitions';
-import type { getPref, setPref } from './helpers';
-import { getUserPref } from './helpers';
-import { usePref } from './usePref';
-
-export const prefEvents = eventListener<{
-  readonly update:
-    | {
-        readonly category: string | number | symbol;
-        readonly subcategory: string | number | symbol;
-        readonly item: string | number | symbol;
-        readonly definition: PreferenceItem<unknown>;
-      }
-    | undefined;
-  readonly synchronized: undefined;
-}>();
-
-/*
- * This allows to overwrite where user preferences are stored
- * Used when editing user preferences for another user in AppResources
- */
-export const PreferencesContext = React.createContext<
-  | readonly [
-      getPrefMain: typeof getPref.user,
-      setUserPref: typeof setPref.user
-    ]
-  | undefined
->(undefined);
-PreferencesContext.displayName = 'PreferencesContext';
-
-export const CollectionPreferencesContext = React.createContext<
-  | readonly [
-      getPrefMain: typeof getPref.collection,
-      setUserPref: typeof setPref.collection
-    ]
-  | undefined
->(undefined);
-CollectionPreferencesContext.displayName = 'CollectionPreferencesContext';
+import { userPreferences } from './userPreferences';
 
 function useMedia(query: string): boolean {
   const media = React.useMemo(() => globalThis.matchMedia(query), [query]);
@@ -55,13 +18,13 @@ function useMedia(query: string): boolean {
 }
 
 export function useReducedMotion(): boolean {
-  const [pref] = usePref('general', 'ui', 'reduceMotion');
+  const [pref] = userPreferences.use('general', 'ui', 'reduceMotion');
   const media = useMedia('(prefers-reduced-motion: reduce)');
   return pref === 'system' ? media : pref === 'reduce';
 }
 
 export function useHighContrast(): boolean {
-  const [pref] = usePref('general', 'ui', 'contrast');
+  const [pref] = userPreferences.use('general', 'ui', 'contrast');
   const media = useMedia('(prefers-contrast: more)');
   return pref === 'system' ? media : pref === 'more';
 }
@@ -77,7 +40,7 @@ export function useTransitionDuration(): number {
 }
 
 function shouldReduceMotion(): boolean {
-  const pref = getUserPref('general', 'ui', 'reduceMotion');
+  const pref = userPreferences.get('general', 'ui', 'reduceMotion');
   return pref === 'system'
     ? globalThis.matchMedia('(prefers-reduced-motion: reduce)').matches
     : pref === 'reduce';
@@ -87,13 +50,17 @@ export const getTransitionDuration = (): number =>
   shouldReduceMotion() ? 0 : defaultTransitionDuration;
 
 export function useDarkMode(): boolean {
-  const [theme] = usePref('general', 'ui', 'theme');
+  const [theme] = userPreferences.use('general', 'ui', 'theme');
   const media = useMedia('(prefers-color-scheme: dark)');
   return theme === 'system' ? media : theme === 'dark';
 }
 
 export function useReducedTransparency(): boolean {
-  const [reduceTransparency] = usePref('general', 'ui', 'reduceTransparency');
+  const [reduceTransparency] = userPreferences.use(
+    'general',
+    'ui',
+    'reduceTransparency'
+  );
   const media = useMedia('(prefers-reduced-transparency: reduce)');
   return reduceTransparency === 'system'
     ? media

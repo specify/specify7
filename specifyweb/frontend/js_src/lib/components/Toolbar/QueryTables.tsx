@@ -17,8 +17,8 @@ import { Link } from '../Atoms/Link';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { SerializedResource } from '../DataModel/helperTypes';
 import { TableIcon } from '../Molecules/TableIcon';
-import { usePref } from '../UserPreferences/usePref';
 import { queryText } from '../../localization/query';
+import { userPreferences } from '../Preferences/userPreferences';
 
 export const defaultQueryTablesConfig: RA<keyof Tables> = [
   'Accession',
@@ -73,7 +73,11 @@ export const defaultQueryTablesConfig: RA<keyof Tables> = [
 ];
 
 export function useQueryModels(): GetSet<RA<SpecifyModel>> {
-  const [tables, setTables] = usePref('queryBuilder', 'general', 'shownTables');
+  const [tables, setTables] = userPreferences.use(
+    'queryBuilder',
+    'general',
+    'shownTables'
+  );
   const visibleTables =
     tables.length === 0
       ? defaultQueryTablesConfig.map(strictGetModel)

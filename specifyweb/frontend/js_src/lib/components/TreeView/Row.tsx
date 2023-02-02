@@ -2,13 +2,13 @@ import React from 'react';
 
 import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
-import { getUserPref } from '../UserPreferences/helpers';
 import type { Conformations, KeyAction, Row, Stats } from './helpers';
 import { formatTreeStats, mapKey, scrollIntoView } from './helpers';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
 import { useId } from '../../hooks/useId';
+import { userPreferences } from '../Preferences/userPreferences';
 
 export function TreeRow({
   row,
@@ -129,7 +129,7 @@ export function TreeRow({
     (element: HTMLButtonElement | null): void => {
       if (element === null) return;
       element.focus();
-      if (getUserPref('treeEditor', 'behavior', 'autoScroll'))
+      if (userPreferences.get('treeEditor', 'behavior', 'autoScroll'))
         scrollIntoView(element);
     },
     []

@@ -25,9 +25,9 @@ import { Button } from '../Atoms/Button';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { appResourceSubTypes, appResourceTypes } from './types';
 import { SerializedResource } from '../DataModel/helperTypes';
-import { usePref } from '../UserPreferences/usePref';
 import { notificationsText } from '../../localization/notifications';
 import { LocalizedString } from 'typesafe-i18n';
+import { userPreferences } from '../Preferences/userPreferences';
 
 export const appResourceIcon = (
   type: ReturnType<typeof getResourceType>
@@ -133,9 +133,21 @@ export function useCodeMirrorExtensions(
   resource: SerializedResource<SpAppResource | SpViewSetObj>,
   appResource: SpecifyResource<SpAppResource | SpViewSetObj>
 ): RA<Extension> {
-  const [lineWrap] = usePref('appResources', 'behavior', 'lineWrap');
-  const [indentSize] = usePref('appResources', 'behavior', 'indentSize');
-  const [indentWithTab] = usePref('appResources', 'behavior', 'indentWithTab');
+  const [lineWrap] = userPreferences.use(
+    'appResources',
+    'behavior',
+    'lineWrap'
+  );
+  const [indentSize] = userPreferences.use(
+    'appResources',
+    'behavior',
+    'indentSize'
+  );
+  const [indentWithTab] = userPreferences.use(
+    'appResources',
+    'behavior',
+    'indentWithTab'
+  );
   const indentCharacter = indentWithTab ? '\t' : ' '.repeat(indentSize);
 
   const mode = getAppResourceExtension(resource);

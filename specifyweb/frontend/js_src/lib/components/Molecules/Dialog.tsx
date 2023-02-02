@@ -16,13 +16,13 @@ import {
   useHighContrast,
   useReducedTransparency,
   useTransitionDuration,
-} from '../UserPreferences/Hooks';
+} from '../Preferences/Hooks';
 import { className, dialogIconTriggers } from '../Atoms/className';
 import { Button, DialogContext } from '../Atoms/Button';
 import { useId } from '../../hooks/useId';
 import { useTitle } from './AppTitle';
-import { usePref } from '../UserPreferences/usePref';
 import { LocalizedString } from 'typesafe-i18n';
+import { userPreferences } from '../Preferences/userPreferences';
 
 /**
  * Modal dialog with a loading bar
@@ -152,24 +152,28 @@ export function Dialog({
 }): JSX.Element {
   const id = useId('modal');
 
-  const [modifyTitle] = usePref('general', 'dialog', 'updatePageTitle');
+  const [modifyTitle] = userPreferences.use(
+    'general',
+    'dialog',
+    'updatePageTitle'
+  );
   useTitle(modal && isOpen && modifyTitle ? header : undefined);
 
   const reduceTransparency = useReducedTransparency();
-  const [transparentDialog] = usePref(
+  const [transparentDialog] = userPreferences.use(
     'general',
     'dialog',
     'transparentBackground'
   );
-  const [blurContentBehindDialog] = usePref(
+  const [blurContentBehindDialog] = userPreferences.use(
     'general',
     'dialog',
     'blurContentBehindDialog'
   );
-  const [showIcon] = usePref('general', 'dialog', 'showIcon');
+  const [showIcon] = userPreferences.use('general', 'dialog', 'showIcon');
 
-  const [closeOnEsc] = usePref('general', 'dialog', 'closeOnEsc');
-  const [closeOnOutsideClick] = usePref(
+  const [closeOnEsc] = userPreferences.use('general', 'dialog', 'closeOnEsc');
+  const [closeOnOutsideClick] = userPreferences.use(
     'general',
     'dialog',
     'closeOnOutsideClick'

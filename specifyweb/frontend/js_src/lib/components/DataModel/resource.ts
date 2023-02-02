@@ -6,7 +6,6 @@ import type { RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import { keysToLowerCase, removeKey } from '../../utils/utils';
 import { formatUrl } from '../Router/queryString';
-import { getUserPref } from '../UserPreferences/helpers';
 import { addMissingFields } from './addMissingFields';
 import { businessRuleDefs } from './businessRuleDefs';
 import { serializeResource } from './helpers';
@@ -21,6 +20,7 @@ import { getModel, schema } from './schema';
 import type { SpecifyModel } from './specifyModel';
 import type { Tables } from './types';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
+import { userPreferences } from '../Preferences/userPreferences';
 
 /*
  * REFACTOR: experiment with an object singleton:
@@ -247,8 +247,9 @@ const getCarryOverPreference = (
 ): RA<string> =>
   (cloneAll
     ? undefined
-    : getUserPref('form', 'preferences', 'carryForward')?.[model.name]) ??
-  getFieldsToClone(model);
+    : userPreferences.get('form', 'preferences', 'carryForward')?.[
+        model.name
+      ]) ?? getFieldsToClone(model);
 
 export const getFieldsToClone = (model: SpecifyModel): RA<string> =>
   model.fields

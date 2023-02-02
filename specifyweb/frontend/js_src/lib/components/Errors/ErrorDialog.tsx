@@ -10,11 +10,11 @@ import { legacyLoadingContext, UnloadProtectsContext } from '../Core/Contexts';
 import { Dialog } from '../Molecules/Dialog';
 import { downloadFile } from '../Molecules/FilePicker';
 import { clearCache } from '../RouterCommands/CacheBuster';
-import { usePref } from '../UserPreferences/usePref';
 import { mainText } from '../../localization/main';
 import { headerText } from '../../localization/header';
 import { StringToJsx } from '../../localization/utils';
 import { LocalizedString } from 'typesafe-i18n';
+import { userPreferences } from '../Preferences/userPreferences';
 
 const supportEmail = 'support@specifysoftware.org' as LocalizedString;
 export const supportLink = (
@@ -72,7 +72,7 @@ export function ErrorDialog({
     return (): void => void errors.delete(id);
   }, [id]);
 
-  const [canDismiss] = usePref(
+  const [canDismiss] = userPreferences.use(
     'general',
     'application',
     'allowDismissingErrors'

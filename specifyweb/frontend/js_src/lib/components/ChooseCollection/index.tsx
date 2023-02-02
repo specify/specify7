@@ -19,9 +19,9 @@ import type { SerializedModel } from '../DataModel/helperTypes';
 import type { Collection } from '../DataModel/types';
 import { formatUrl } from '../Router/queryString';
 import { scrollIntoView } from '../TreeView/helpers';
-import { usePref } from '../UserPreferences/usePref';
 import { SplashScreen } from '../Core/SplashScreen';
 import { userText } from '../../localization/user';
+import { userPreferences } from '../Preferences/userPreferences';
 
 export function ChooseCollection(): JSX.Element {
   return React.useMemo(
@@ -64,7 +64,11 @@ function Wrapped({
     [initialValue]
   );
 
-  const [sortOrder] = usePref('chooseCollection', 'general', 'sortOrder');
+  const [sortOrder] = userPreferences.use(
+    'chooseCollection',
+    'general',
+    'sortOrder'
+  );
   const isReverseSort = sortOrder.startsWith('-');
   const sortField = (isReverseSort ? sortOrder.slice(1) : sortOrder) as string &
     keyof Collection['fields'];
@@ -98,7 +102,11 @@ function Wrapped({
    * submit the form as soon as loaded
    */
   const formRef = React.useRef<HTMLFormElement | null>(null);
-  const [alwaysPrompt] = usePref('chooseCollection', 'general', 'alwaysPrompt');
+  const [alwaysPrompt] = userPreferences.use(
+    'chooseCollection',
+    'general',
+    'alwaysPrompt'
+  );
   React.useEffect(() => {
     if (f.parseInt(initialValue ?? '') === undefined) return;
     else if (!alwaysPrompt || sortedCollections.length === 1)

@@ -19,11 +19,11 @@ import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { NO_CLONE } from '../Forms/ResourceView';
 import { Dialog } from '../Molecules/Dialog';
-import { usePref } from '../UserPreferences/usePref';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { schemaText } from '../../localization/schema';
 import { interactionsText } from '../../localization/interactions';
 import { wbPlanText } from '../../localization/wbPlan';
+import { userPreferences } from '../Preferences/userPreferences';
 
 /**
  * Fields to always carry forward (unless "Deselect All" is pressed), but not
@@ -90,7 +90,7 @@ export function CarryForwardConfig({
   readonly type: 'button' | 'cog';
 }): JSX.Element | null {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
-  const [globalEnabled, setGlobalEnabled] = usePref(
+  const [globalEnabled, setGlobalEnabled] = userPreferences.use(
     'form',
     'preferences',
     'enableCarryForward'
@@ -147,13 +147,13 @@ function CarryForwardConfigDialog({
   readonly parentModel: SpecifyModel | undefined;
   readonly onClose: () => void;
 }): JSX.Element {
-  const [showHiddenFields, setShowHiddenFields] = usePref(
+  const [showHiddenFields, setShowHiddenFields] = userPreferences.use(
     'form',
     'preferences',
     'carryForwardShowHidden'
   );
 
-  const [globalConfig, setGlobalConfig] = usePref(
+  const [globalConfig, setGlobalConfig] = userPreferences.use(
     'form',
     'preferences',
     'carryForward'

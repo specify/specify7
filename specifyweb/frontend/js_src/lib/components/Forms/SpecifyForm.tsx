@@ -16,7 +16,7 @@ import { FormCell } from '../FormCells';
 import type { ViewDescription } from '../FormParse';
 import { loadingGif } from '../Molecules';
 import { unsafeTriggerNotFound } from '../Router/Router';
-import { usePref } from '../UserPreferences/usePref';
+import { userPreferences } from '../Preferences/userPreferences';
 
 const FormLoadingContext = React.createContext<boolean>(false);
 FormLoadingContext.displayName = 'FormLoadingContext';
@@ -74,12 +74,12 @@ export function RenderForm<SCHEMA extends AnySchema>({
   const isAlreadyLoading = React.useContext(FormLoadingContext);
   const showLoading =
     !isAlreadyLoading && (!formIsLoaded || isLoading || isShowingOldResource);
-  const [flexibleColumnWidth] = usePref(
+  const [flexibleColumnWidth] = userPreferences.use(
     'form',
     'definition',
     'flexibleColumnWidth'
   );
-  const [language] = usePref('form', 'schema', 'language');
+  const [language] = userPreferences.use('form', 'schema', 'language');
   return (
     <FormLoadingContext.Provider value={isAlreadyLoading || showLoading}>
       <div

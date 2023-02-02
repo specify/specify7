@@ -7,24 +7,26 @@
 import type hot from 'handsontable';
 import type { State } from 'typesafe-reducer';
 
-import type { AppResourceFilters } from '../../components/AppResources/filtersHelpers';
 import type { AppResourcesConformation } from '../../components/AppResources/Aside';
-import type { SearchPreferences } from '../../components/WorkBench/AdvancedSearch';
+import type { AppResourceFilters } from '../../components/AppResources/filtersHelpers';
+import type { AnyTree } from '../../components/DataModel/helperTypes';
 import type {
   Attachment,
   SpQuery,
   Tables,
 } from '../../components/DataModel/types';
-import { PreferenceValues } from '../../components/UserPreferences/helpers';
-import type { Conformations } from '../../components/TreeView/helpers';
-import type { IR, RA } from '../types';
-import { ensure } from '../types';
-import { AnyTree } from '../../components/DataModel/helperTypes';
-import {
+import type {
   LeafletCacheSalt,
   MarkerLayerName,
 } from '../../components/Leaflet/addOns';
-import { SortConfig } from '../../components/Molecules/Sorting';
+import type { SortConfig } from '../../components/Molecules/Sorting';
+import type { PartialPreferences } from '../../components/Preferences/BasePreferences';
+import type { collectionPreferenceDefinitions } from '../../components/Preferences/CollectionDefinitions';
+import type { userPreferenceDefinitions } from '../../components/Preferences/UserDefinitions';
+import type { Conformations } from '../../components/TreeView/helpers';
+import type { SearchPreferences } from '../../components/WorkBench/AdvancedSearch';
+import type { IR, RA } from '../types';
+import { ensure } from '../types';
 
 /** The types of cached values are defined here */
 export type CacheDefinitions = {
@@ -67,13 +69,13 @@ export type CacheDefinitions = {
     readonly searchProperties: SearchPreferences;
   };
   readonly tree: {
-    readonly /** Open nodes in a given tree */
-    [key in `conformations${AnyTree['tableName']}`]: Conformations;
-  } & {
     readonly [key in `focusPath${AnyTree['tableName']}`]: RA<number>;
   } & {
     readonly /** Collapsed ranks in a given tree */
     [key in `collapsedRanks${AnyTree['tableName']}`]: RA<number>;
+  } & {
+    readonly /** Open nodes in a given tree */
+    [key in `conformations${AnyTree['tableName']}`]: Conformations;
   };
   readonly workBenchSortConfig: {
     readonly /**
@@ -112,15 +114,17 @@ export type CacheDefinitions = {
      * causing Specify to flash user its white mode, or font size to change
      * on the fly.
      */
-    readonly cached: PreferenceValues['user'];
+    readonly cached: PartialPreferences<typeof userPreferenceDefinitions>;
     /**
      * Admins may change default preferences. These defaults override original
      * defaults for items for which these are provided
      */
-    readonly defaultCached: PreferenceValues['user'];
+    readonly defaultCached: PartialPreferences<
+      typeof userPreferenceDefinitions
+    >;
   };
   readonly collectionPreferences: {
-    readonly cached: PreferenceValues['collection'];
+    readonly cached: PartialPreferences<typeof collectionPreferenceDefinitions>;
   };
   readonly securityTool: {
     readonly policiesLayout: 'horizontal' | 'vertical';

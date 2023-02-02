@@ -42,8 +42,8 @@ import { mutateLineData, smoothScroll, unParseQueryFields } from './helpers';
 import { getInitialState, reducer } from './reducer';
 import { QueryResultsWrapper } from './ResultsWrapper';
 import { QueryToolbar } from './Toolbar';
-import { usePref } from '../UserPreferences/usePref';
 import { SerializedResource } from '../DataModel/helperTypes';
+import { userPreferences } from '../Preferences/userPreferences';
 
 const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 
@@ -225,7 +225,7 @@ export function QueryBuilder({
     undefined
   );
 
-  const [stickyScrolling] = usePref(
+  const [stickyScrolling] = userPreferences.use(
     'queryBuilder',
     'behavior',
     'stickyScrolling'

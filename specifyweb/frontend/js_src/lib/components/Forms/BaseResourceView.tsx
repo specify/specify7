@@ -15,12 +15,12 @@ import { FormMeta } from '../FormMeta';
 import type { FormMode } from '../FormParse';
 import { TableIcon } from '../Molecules/TableIcon';
 import { displaySpecifyNetwork, SpecifyNetworkBadge } from '../SpecifyNetwork';
-import { usePref } from '../UserPreferences/usePref';
 import { format } from './dataObjFormatters';
 import { RenderForm } from './SpecifyForm';
 import { useViewDefinition } from './useViewDefinition';
 import { LoadingScreen } from '../Molecules/Dialog';
 import { LocalizedString } from 'typesafe-i18n';
+import { userPreferences } from '../Preferences/userPreferences';
 
 export type ResourceViewProps<SCHEMA extends AnySchema> = {
   readonly isLoading?: boolean;
@@ -97,8 +97,16 @@ export function useResourceView<SCHEMA extends AnySchema>({
       <p>{formsText.noData()}</p>
     );
 
-  const [tableNameInTitle] = usePref('form', 'behavior', 'tableNameInTitle');
-  const [formHeaderFormat] = usePref('form', 'behavior', 'formHeaderFormat');
+  const [tableNameInTitle] = userPreferences.use(
+    'form',
+    'behavior',
+    'tableNameInTitle'
+  );
+  const [formHeaderFormat] = userPreferences.use(
+    'form',
+    'behavior',
+    'formHeaderFormat'
+  );
   const formattedTableName =
     resource === undefined
       ? ''

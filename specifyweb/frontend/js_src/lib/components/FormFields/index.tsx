@@ -19,7 +19,7 @@ import { Combobox, resolvePickListField } from './ComboBox';
 import { UiField } from './Field';
 import { QueryComboBox } from './QueryComboBox';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
-import { usePref } from '../UserPreferences/usePref';
+import { userPreferences } from '../Preferences/userPreferences';
 
 const fieldRenderers: {
   readonly [KEY in keyof FieldTypes]: (props: {
@@ -97,7 +97,11 @@ const fieldRenderers: {
       [parser]
     );
 
-    const [autoGrow] = usePref('form', 'behavior', 'textAreaAutoGrow');
+    const [autoGrow] = userPreferences.use(
+      'form',
+      'behavior',
+      'textAreaAutoGrow'
+    );
     const Component =
       autoGrow && formType !== 'formTable' ? AutoGrowTextArea : Textarea;
 

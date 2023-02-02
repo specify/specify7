@@ -14,7 +14,6 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { commonText } from '../../localization/common';
 import { specifyNetworkText } from '../../localization/specifyNetwork';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
-import { getUserPref } from '../UserPreferences/helpers';
 import type { OccurrenceData } from './map';
 import { fetchLocalOccurrences } from './map';
 import {
@@ -32,6 +31,7 @@ import { AnySchema } from '../DataModel/helperTypes';
 import { toTable } from '../DataModel/helpers';
 import { softFail } from '../Errors/Crash';
 import { leafletLayersPromise } from '../Leaflet/layers';
+import { userPreferences } from '../Preferences/userPreferences';
 
 type LoadedAction = Action<'LoadedAction', { readonly version: string }>;
 
@@ -138,7 +138,7 @@ type OutgoingMessage =
 export const displaySpecifyNetwork = (
   resource: SpecifyResource<AnySchema> | undefined
 ): resource is SpecifyResource<CollectionObject> | SpecifyResource<Taxon> =>
-  getUserPref('form', 'ui', 'specifyNetworkBadge') &&
+  userPreferences.get('form', 'ui', 'specifyNetworkBadge') &&
   hasTablePermission('Locality', 'read') &&
   hasPermission('/querybuilder/query', 'execute') &&
   resource?.isNew() === false &&

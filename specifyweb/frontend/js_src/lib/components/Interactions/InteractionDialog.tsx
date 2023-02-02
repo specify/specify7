@@ -41,7 +41,6 @@ import {
   parseValue,
   ValidParseResult,
 } from '../../utils/parser/parse';
-import { usePref } from '../UserPreferences/usePref';
 import {
   getValidationAttributes,
   Parser,
@@ -50,6 +49,7 @@ import {
 } from '../../utils/parser/definitions';
 import { interactionsText } from '../../localization/interactions';
 import { schema } from '../DataModel/schema';
+import { userPreferences } from '../Preferences/userPreferences';
 
 export function InteractionDialog({
   recordSetsPromise,
@@ -352,22 +352,22 @@ function useParser(searchField: LiteralField | undefined): {
   readonly split: (values: string) => RA<string>;
   readonly attributes: IR<string>;
 } {
-  const [useSpaceAsDelimiter] = usePref(
+  const [useSpaceAsDelimiter] = userPreferences.use(
     'interactions',
     'createInteractions',
     'useSpaceAsDelimiter'
   );
-  const [useCommaAsDelimiter] = usePref(
+  const [useCommaAsDelimiter] = userPreferences.use(
     'interactions',
     'createInteractions',
     'useCommaAsDelimiter'
   );
-  const [useNewLineAsDelimiter] = usePref(
+  const [useNewLineAsDelimiter] = userPreferences.use(
     'interactions',
     'createInteractions',
     'useNewLineAsDelimiter'
   );
-  const [useCustomDelimiters] = usePref(
+  const [useCustomDelimiters] = userPreferences.use(
     'interactions',
     'createInteractions',
     'useCustomDelimiters'

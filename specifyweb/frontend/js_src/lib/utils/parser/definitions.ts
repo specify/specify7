@@ -21,7 +21,7 @@ import { f } from '../functools';
 import { parseRelativeDate } from '../relativeDate';
 import type { IR, RA, RR } from '../types';
 import { filterArray } from '../types';
-import { getUserPref } from '../../components/UserPreferences/helpers';
+import { userPreferences } from '../../components/Preferences/userPreferences';
 
 /** Makes sure a wrapped function would receive a string value */
 export const stringGuard =
@@ -303,7 +303,7 @@ export function formatterToParser(
     format: formatter.pattern() ?? formatter.valueOrWild(),
   });
 
-  const autoNumberingConfig = getUserPref(
+  const autoNumberingConfig = userPreferences.get(
     'form',
     'preferences',
     'autoNumbering'

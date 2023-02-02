@@ -6,34 +6,29 @@ import type { ReactCodeMirrorRef } from '@uiw/react-codemirror';
 import CodeMirror from '@uiw/react-codemirror';
 import React from 'react';
 
-import type { SpAppResource, SpViewSetObj } from '../DataModel/types';
-import { f } from '../../utils/functools';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
-import type { PartialUserPreferences } from '../UserPreferences/helpers';
-import {
-  getPref,
-  getPrefDefinition,
-  setPref,
-  setPrefsGenerator,
-} from '../UserPreferences/helpers';
-import type { RR } from '../../utils/types';
-import { writable } from '../../utils/types';
-import { useCodeMirrorExtensions } from './EditorComponents';
-import { PreferencesContext, useDarkMode } from '../UserPreferences/Hooks';
-import { PreferencesContent } from '../UserPreferences';
 import { useId } from '../../hooks/useId';
 import { useLiveState } from '../../hooks/useLiveState';
-import { appResourceSubTypes } from './types';
-import { SerializedResource } from '../DataModel/helperTypes';
-import {
-  PreferenceItem,
-  userPreferenceDefinitions,
-} from '../UserPreferences/UserDefinitions';
+import { f } from '../../utils/functools';
+import type { RR } from '../../utils/types';
+import { writable } from '../../utils/types';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type {
+  SpAppResource,
+  SpViewSetObj as SpViewSetObject,
+} from '../DataModel/types';
+import { PreferencesContent } from '../Preferences';
+import { BasePreferences } from '../Preferences/BasePreferences';
+import { useDarkMode } from '../Preferences/Hooks';
+import { userPreferenceDefinitions } from '../Preferences/UserDefinitions';
+import { userPreferences } from '../Preferences/userPreferences';
+import { useCodeMirrorExtensions } from './EditorComponents';
+import type { appResourceSubTypes } from './types';
 
 export type AppResourceTab = (props: {
   readonly isReadOnly: boolean;
-  readonly resource: SerializedResource<SpAppResource | SpViewSetObj>;
-  readonly appResource: SpecifyResource<SpAppResource | SpViewSetObj>;
+  readonly resource: SerializedResource<SpAppResource | SpViewSetObject>;
+  readonly appResource: SpecifyResource<SpAppResource | SpViewSetObject>;
   readonly data: string | null;
   readonly showValidationRef: React.MutableRefObject<(() => void) | null>;
   readonly onChange: (data: string | null) => void;
@@ -100,59 +95,30 @@ const UserPreferencesEditor: AppResourceTab = function ({
   onChange: handleChange,
 }): JSX.Element {
   const id = useId('user-preferences');
-  const [preferencesContext] = useLiveState<
-    React.ContextType<typeof PreferencesContext>
-  >(
+  const [preferencesContext] = useLiveState<typeof userPreferences>(
     React.useCallback(() => {
-      // FIXME: remove as many type casts as possible
-      const preferences = JSON.parse(
-        data || '{}'
-      ) as unknown as PartialUserPreferences;
-      const setPrefs = setPrefsGenerator<typeof userPreferenceDefinitions>(
-        () => preferences,
-        getPrefDefinition.user,
-        false
+      const userPreferences = new BasePreferences({
+        definitions: userPreferenceDefinitions,
+        values: {
+          resourceName: 'UserPreferences',
+          fetchUrl: '/context/user_resource/',
+        },
+        defaultValues: undefined,
+        developmentGlobal: '_editingUserPreferences',
+        syncChanges: false,
+      });
+      userPreferences.setRaw(
+        JSON.parse(data === null || data.length === 0 ? '{}' : data)
       );
-      return [
-        ((
-          category: string,
-          subcategory: PropertyKey,
-          item: PropertyKey
-        ): unknown =>
-          // @ts-expect-error
-          preferences[category]?.[subcategory as string]?.[item as string] ??
-          (
-            getPrefDefinition.user(
-              // @ts-expect-error
-              category,
-              subcategory as string,
-              item as string
-            ) as PreferenceItem<any>
-          ).defaultValue) as unknown as typeof getPref.user,
-        ((
-          category: string,
-          subcategory: PropertyKey,
-          item: PropertyKey,
-          value: unknown
-        ): void => {
-          const newValue = setPrefs(
-            // @ts-expect-error
-            category,
-            subcategory as string,
-            item as string,
-            value
-          );
-          handleChange(JSON.stringify(preferences));
-          return newValue;
-        }) as unknown as typeof setPref.user,
-      ];
+      return userPreferences;
     }, [handleChange])
   );
 
+  const Context = userPreferences.Context;
   return (
-    <PreferencesContext.Provider value={preferencesContext}>
+    <Context.Provider value={preferencesContext}>
       <PreferencesContent id={id} isReadOnly={isReadOnly} />
-    </PreferencesContext.Provider>
+    </Context.Provider>
   );
 };
 

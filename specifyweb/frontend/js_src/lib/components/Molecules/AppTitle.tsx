@@ -3,10 +3,9 @@
  */
 
 import React from 'react';
-
-import { usePref } from '../UserPreferences/usePref';
 import { mainText } from '../../localization/main';
 import { LocalizedString } from 'typesafe-i18n';
+import { userPreferences } from '../Preferences/userPreferences';
 
 export function AppTitle({
   title,
@@ -15,7 +14,11 @@ export function AppTitle({
   readonly title: LocalizedString;
   readonly type?: 'form';
 }): null {
-  const [updateTitle] = usePref('form', 'behavior', 'updatePageTitle');
+  const [updateTitle] = userPreferences.use(
+    'form',
+    'behavior',
+    'updatePageTitle'
+  );
   useTitle(type !== 'form' || updateTitle ? title : undefined);
   return null;
 }

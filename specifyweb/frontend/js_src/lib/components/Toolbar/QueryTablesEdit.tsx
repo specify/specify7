@@ -11,17 +11,17 @@ import { Dialog } from '../Molecules/Dialog';
 import { defaultQueryTablesConfig, useQueryModels } from './QueryTables';
 import { Button } from '../Atoms/Button';
 import { Label, Select } from '../Atoms/Form';
-import { usePref } from '../UserPreferences/usePref';
 import { f } from '../../utils/functools';
 import { schemaText } from '../../localization/schema';
 import { LocalizedString } from 'typesafe-i18n';
+import { userPreferences } from '../Preferences/userPreferences';
 
 export function QueryTablesEdit({
   onClose: handleClose,
 }: {
   readonly onClose: () => void;
 }): JSX.Element {
-  const [isNoRestrictionMode] = usePref(
+  const [isNoRestrictionMode] = userPreferences.use(
     'queryBuilder',
     'general',
     'noRestrictionsMode'

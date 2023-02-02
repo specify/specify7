@@ -21,11 +21,11 @@ import { useId } from '../../hooks/useId';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { TableIcon } from '../Molecules/TableIcon';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
-import { usePref } from '../UserPreferences/usePref';
 import { ButtonWithConfirmation } from './Components';
 import { whitespaceSensitive } from '../../localization/utils';
 import { schemaText } from '../../localization/schema';
 import { wbPlanText } from '../../localization/wbPlan';
+import { userPreferences } from '../Preferences/userPreferences';
 
 export function MappingsControlPanel({
   showHiddenFields,
@@ -181,7 +181,7 @@ export function EmptyDataSetDialog({
 }: {
   readonly lineCount: number;
 }): JSX.Element | null {
-  const [dialogEnabled] = usePref(
+  const [dialogEnabled] = userPreferences.use(
     'workBench',
     'wbPlanView',
     'showNewDataSetWarning'
