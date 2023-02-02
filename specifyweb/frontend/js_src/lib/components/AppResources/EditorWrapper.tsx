@@ -18,7 +18,7 @@ import { useResourcesTree } from './hooks';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { SerializedResource } from '../DataModel/helperTypes';
 import { NotFoundView } from '../Router/NotFoundView';
-import { locationToState, useStableLocation } from '../Router/RouterState';
+import { locationToState } from '../Router/RouterState';
 
 export function AppResourceView(): JSX.Element {
   return <Wrapper mode="appResources" />;
@@ -36,7 +36,7 @@ export function Wrapper({
   const {
     getSet: [resources, setResources],
   } = useOutletContext<AppResourcesOutlet>();
-  const location = useStableLocation(useLocation());
+  const location = useLocation();
   const navigate = useNavigate();
   const state = locationToState(location, 'AppResource');
   const resource = useAppResource(state?.resource, resources, mode);

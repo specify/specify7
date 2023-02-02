@@ -513,6 +513,11 @@ export function QueryBuilder({
               });
               runQuery('regular', fields);
             }}
+            onReRun={(): void =>
+              dispatch({
+                type: 'RunQueryAction',
+              })
+            }
           />
         )}
       </Form>

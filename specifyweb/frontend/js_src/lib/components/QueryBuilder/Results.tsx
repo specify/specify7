@@ -42,7 +42,6 @@ import { QueryToMap } from './ToMap';
 import { RecordMergingLink } from '../Merging';
 import { interactionsText } from '../../localization/interactions';
 import { LocalizedString } from 'typesafe-i18n';
-import { resourceEvents } from '../../hooks/store';
 
 export type QueryResultRow = RA<number | string | null>;
 
@@ -59,6 +58,7 @@ export function QueryResults({
   sortConfig,
   onSelected: handleSelected,
   onSortChange: handleSortChange,
+  onReRun: handleReRun,
   createRecordSet,
   extraButtons,
   tableClassName = '',
@@ -86,6 +86,7 @@ export function QueryResults({
     fieldSpec: QueryFieldSpec,
     direction: 'ascending' | 'descending' | undefined
   ) => void;
+  readonly onReRun: () => void;
   readonly createRecordSet: JSX.Element | undefined;
   readonly extraButtons: JSX.Element | undefined;
   readonly tableClassName?: string;
@@ -230,32 +231,30 @@ export function QueryResults({
 
   // TEST: try deleting while records are being fetched
   /**
-   * Note: this may be called with a recordId that is not part of qeury results
+   * Note: this may be called with a recordId that is not part of query results
    */
-  function handleDelete(recordId: number): void {
-    let removeCount = 0;
-    setResults((results) => {
-      if (!Array.isArray(results) || totalCount === undefined) return;
-      const newResults = results.filter(
-        (result) => result?.[queryIdField] !== recordId
+  const handleDelete = React.useCallback(
+    (recordId: number): void => {
+      let removeCount = 0;
+      setResults((results) => {
+        if (!Array.isArray(results) || totalCount === undefined) return;
+        const newResults = results.filter(
+          (result) => result?.[queryIdField] !== recordId
+        );
+        removeCount = results.length - newResults.length;
+        resultsRef.current = newResults;
+        return newResults;
+      });
+      if (removeCount === 0) return;
+      setTotalCount((totalCount) =>
+        totalCount === undefined ? undefined : totalCount - removeCount
       );
-      removeCount = results.length - newResults.length;
-      resultsRef.current = newResults;
-      return newResults;
-    });
-    if (removeCount === 0) return;
-    setTotalCount((totalCount) =>
-      totalCount === undefined ? undefined : totalCount - removeCount
-    );
-    setSelectedRows(
-      (selectedRows) =>
-        new Set(Array.from(selectedRows).filter((id) => id !== recordId))
-    );
-  }
-
-  React.useEffect(
-    () => resourceEvents.on('deleted', (resource) => handleDelete(resource.id)),
-    []
+      setSelectedRows(
+        (selectedRows) =>
+          new Set(Array.from(selectedRows).filter((id) => id !== recordId))
+      );
+    },
+    [setResults, setTotalCount, totalCount]
   );
 
   return (
@@ -281,7 +280,12 @@ export function QueryResults({
           <>
             {hasPermission('/record/replace', 'update') &&
               hasTablePermission(model.name, 'update') && (
-                <RecordMergingLink model={model} selectedRows={selectedRows} />
+                <RecordMergingLink
+                  table={model}
+                  selectedRows={selectedRows}
+                  onMerged={handleReRun}
+                  onDeleted={handleDelete}
+                />
               )}
             {hasToolPermission('recordSets', 'create') ? (
               selectedRows.size > 0 ? (

@@ -19,7 +19,7 @@ import { ProtectedTable } from '../Permissions/PermissionDenied';
 import { NotFoundView } from '../Router/NotFoundView';
 import { CheckLoggedInCollection, ViewResourceByGuid } from './DataTask';
 import { ResourceView } from './ResourceView';
-import { locationToState, useStableLocation } from '../Router/RouterState';
+import { locationToState } from '../Router/RouterState';
 
 export function ShowResource({
   resource,
@@ -106,7 +106,7 @@ export function ViewResourceById({
   readonly id: string | undefined;
 }): JSX.Element {
   const model = getModel(tableName);
-  const location = useStableLocation(useLocation());
+  const location = useLocation();
   const state = locationToState(location, 'RecordSet');
   const record = React.useMemo(
     () => f.maybe(state?.resource, deserializeResource),

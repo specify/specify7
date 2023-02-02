@@ -26,7 +26,7 @@ import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Tables } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import { formatUrl } from '../Router/queryString';
-import { OverlayContext } from '../Router/Router';
+import { OverlayContext, OverlayLocation } from '../Router/Router';
 import { autoMerge, postMergeResource } from './autoMerge';
 import { CompareRecords } from './Compare';
 import { useParams } from 'react-router-dom';
@@ -40,16 +40,47 @@ const recordMergingTables = new Set<keyof Tables>(['Agent']);
 export const mergingQueryParameter = 'records';
 
 export function RecordMergingLink({
-  model,
+  table,
   selectedRows,
+  // Called when merging dialog closed, only if some records were merged
+  onMerged: handleMerged,
+  onDeleted: handleDeleted,
 }: {
-  readonly model: SpecifyModel;
+  readonly table: SpecifyModel;
   readonly selectedRows: ReadonlySet<number>;
+  readonly onMerged: () => void;
+  readonly onDeleted: (resourceId: number) => void;
 }): JSX.Element | null {
-  return recordMergingTables.has(model.name) ? (
+  const overlayLocation = React.useContext(OverlayLocation);
+  const [records] = useSearchParameter(mergingQueryParameter, overlayLocation);
+  const oldRecords = React.useRef(records);
+  const needUpdateQueryResults = React.useRef(false);
+  React.useEffect(() => {
+    if (oldRecords.current === undefined && records !== undefined)
+      needUpdateQueryResults.current = false;
+    // Detect agent merging dialog getting closed after some records are merged
+    else if (
+      records === undefined &&
+      oldRecords.current !== undefined &&
+      needUpdateQueryResults.current
+    )
+      handleMerged();
+    oldRecords.current = records;
+  }, [records]);
+
+  React.useEffect(
+    () =>
+      resourceEvents.on('deleted', (resource) => {
+        needUpdateQueryResults.current = true;
+        handleDeleted(resource.id);
+      }),
+    [handleDeleted]
+  );
+
+  return recordMergingTables.has(table.name) ? (
     selectedRows.size > 1 ? (
       <Link.Small
-        href={formatUrl(`/specify/overlay/merge/${model.name}/`, {
+        href={formatUrl(`/specify/overlay/merge/${table.name}/`, {
           [mergingQueryParameter]: Array.from(selectedRows).join(','),
         })}
       >

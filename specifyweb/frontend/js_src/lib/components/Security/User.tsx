@@ -72,11 +72,11 @@ import {
   useUserProviders,
 } from './UserPolicyHooks';
 import { anyResource, getAllActions } from './utils';
-import { locationToState, useStableLocation } from '../Router/RouterState';
+import { locationToState } from '../Router/RouterState';
 import { userText } from '../../localization/user';
 
 export function SecurityUser(): JSX.Element {
-  const location = useStableLocation(useLocation());
+  const location = useLocation();
   const state = locationToState(location, 'SecurityUser');
   const { userId = '' } = useParams();
   const {

@@ -17,7 +17,7 @@ import { RoleView } from './Role';
 import type { SecurityOutlet } from '../Toolbar/Security';
 import { decompressPolicies } from './policyConverter';
 import { Http } from '../../utils/ajax/definitions';
-import { locationToState, useStableLocation } from '../Router/RouterState';
+import { locationToState } from '../Router/RouterState';
 
 const closeUrl = '/specify/security/institution/';
 
@@ -78,7 +78,7 @@ export function SecurityLibraryRole(): JSX.Element {
 function useRole(
   libraryRoles: IR<Role> | undefined
 ): NewRole | Role | false | undefined {
-  const location = useStableLocation(useLocation());
+  const location = useLocation();
   const state = locationToState(location, 'SecurityRole');
   const role = state?.role;
   const { roleId } = useParams();

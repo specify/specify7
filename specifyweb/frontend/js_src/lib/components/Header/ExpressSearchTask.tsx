@@ -23,6 +23,7 @@ import {
   useSecondarySearch,
 } from './ExpressSearchHooks';
 import { headerText } from '../../localization/header';
+import { f } from '../../utils/functools';
 
 export function ExpressSearchView(): JSX.Element {
   const [query = ''] = useSearchParameter('q');
@@ -132,6 +133,8 @@ function TableResult({
           queryResource={undefined}
           tableClassName="max-h-[70vh]"
           totalCount={tableResults.totalCount}
+          // Note, results won't be refreshed after doing record merging
+          onReRun={f.void}
         />
       </ErrorBoundary>
     </details>

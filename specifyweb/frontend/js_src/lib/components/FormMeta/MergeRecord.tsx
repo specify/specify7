@@ -15,6 +15,7 @@ import { getResourceViewUrl } from '../DataModel/resource';
 import { SearchDialog } from '../Forms/SearchDialog';
 import { mergingQueryParameter } from '../Merging';
 import { formatUrl } from '../Router/queryString';
+import { OverlayLocation } from '../Router/Router';
 
 export function MergeRecord({
   resource,
@@ -29,7 +30,11 @@ export function MergeRecord({
   const [rawRecordSetId] = useSearchParameter('recordsetid');
   const recordSetId = f.parseInt(rawRecordSetId);
 
-  const [records = ''] = useSearchParameter(mergingQueryParameter, false);
+  const overlayLocation = React.useContext(OverlayLocation);
+  const [records = ''] = useSearchParameter(
+    mergingQueryParameter,
+    overlayLocation
+  );
   const ids = React.useMemo(
     () => filterArray(records.split(',').map(f.parseInt)),
     [records]

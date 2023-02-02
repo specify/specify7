@@ -9,21 +9,16 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { UnloadProtectsContext } from '../components/Core/Contexts';
 import { formatUrl, parseUrl } from '../components/Router/queryString';
 import { locationToUrl } from '../components/Router/Router';
-import { useStableLocation } from '../components/Router/RouterState';
 import type { GetOrSet, GetSet, RA } from '../utils/types';
 import { removeItem, removeKey } from '../utils/utils';
+import { SafeLocation } from 'history';
 
 export function useSearchParameter(
   name: string | undefined,
-  stable = true
+  overrideLocation?: SafeLocation
 ): GetSet<string | undefined> {
   const location = useLocation();
-  const stableLocation = useStableLocation(location);
-  /*
-   * If non-overlay listens for a query string, and you open an overlay, the
-   * previous query string value should be used
-   */
-  const resolvedLocation = stable ? stableLocation : location;
+  const resolvedLocation = overrideLocation ?? location;
   const url = locationToUrl(resolvedLocation);
   const parameters = React.useMemo(() => parseUrl(url), [url]);
   const value = parameters[name ?? ''];

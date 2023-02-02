@@ -94,7 +94,9 @@ export function Router(): JSX.Element {
     (main === undefined && overlay === undefined) || isNotFoundPage;
 
   return (
-    <>
+    <OverlayLocation.Provider
+      value={pathIsOverlay(location.pathname) ? location : undefined}
+    >
       <UnloadProtect background={background} />
       {isNotFound ? (
         <NotFoundView />
@@ -106,7 +108,7 @@ export function Router(): JSX.Element {
           {main}
         </>
       )}
-    </>
+    </OverlayLocation.Provider>
   );
 }
 
@@ -224,10 +226,23 @@ function defaultOverlayContext() {
 
 export const isOverlay = (overlayContext: () => void): boolean =>
   overlayContext !== defaultOverlayContext;
+
+/**
+ * When in overlay, this context provides a function that closes the overlay.
+ */
 export const OverlayContext = React.createContext<() => void>(
   defaultOverlayContext
 );
 OverlayContext.displayName = 'OverlayContext';
+
+/**
+ * Regardless of whether component is in overlay or not, if any overlay is open,
+ * this will provide location of that component
+ */
+export const OverlayLocation = React.createContext<SafeLocation | undefined>(
+  undefined
+);
+OverlayLocation.displayName = 'OverlayLocation';
 
 function UnloadProtect({
   background,

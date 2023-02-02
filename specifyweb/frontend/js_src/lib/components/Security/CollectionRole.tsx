@@ -23,7 +23,7 @@ import type { SecurityCollectionOutlet, UserRoles } from './Collection';
 import { userText } from '../../localization/user';
 import { NewRole, Role, RoleView } from './Role';
 import { decompressPolicies } from './policyConverter';
-import { locationToState, useStableLocation } from '../Router/RouterState';
+import { locationToState } from '../Router/RouterState';
 import { createCollectionRole } from './CreateRole';
 import { Http } from '../../utils/ajax/definitions';
 
@@ -48,7 +48,7 @@ export const updateCollectionRole = async (
 export function SecurityCollectionRole(): JSX.Element {
   const loading = React.useContext(LoadingContext);
   const navigate = useNavigate();
-  const location = useStableLocation(useLocation());
+  const location = useLocation();
   const state = locationToState(location, 'SecurityRole');
   const initialRole = state?.role;
 

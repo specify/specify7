@@ -36,6 +36,7 @@ export function QueryResultsWrapper({
   forceCollection,
   onSelected: handleSelected,
   onSortChange: handleSortChange,
+  onReRun: handleReRun,
 }: {
   readonly baseTableName: keyof Tables;
   readonly model: SpecifyModel;
@@ -54,6 +55,7 @@ export function QueryResultsWrapper({
      */
     newFields: RA<QueryField>
   ) => void;
+  readonly onReRun: () => void;
 }): JSX.Element | null {
   const fetchResults = React.useCallback(
     async (fields: RA<SerializedResource<SpQueryField>>, offset: number) =>
@@ -77,7 +79,8 @@ export function QueryResultsWrapper({
    * the query results until query is reRun
    */
   const [props, setProps] = React.useState<
-    Omit<Parameters<typeof QueryResults>[0], 'totalCount'> | undefined
+    | Omit<Parameters<typeof QueryResults>[0], 'totalCount' | 'onReRun'>
+    | undefined
   >(undefined);
 
   const [totalCount, setTotalCount] = React.useState<number | undefined>(
@@ -185,7 +188,11 @@ export function QueryResultsWrapper({
   ) : (
     <div className="flex flex-1 snap-start overflow-hidden">
       <ErrorBoundary dismissible>
-        <QueryResults {...props} totalCount={totalCount} />
+        <QueryResults
+          {...props}
+          totalCount={totalCount}
+          onReRun={handleReRun}
+        />
       </ErrorBoundary>
     </div>
   );
