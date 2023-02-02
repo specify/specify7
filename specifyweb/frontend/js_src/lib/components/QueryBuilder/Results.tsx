@@ -497,7 +497,9 @@ function CreateRecordSet({
           });
         }}
       >
-        {queryText.createRecordSet()}
+        {queryText.createRecordSet({
+          recordSetTable: schema.models.RecordSet.label,
+        })}
       </Button.Small>
       {state.type === 'Editing' && (
         <ResourceView
@@ -543,7 +545,7 @@ function CreateRecordSet({
           }}
         />
       )}
-      {state.type === 'Saving' && recordSetFromQueryLoading}
+      {state.type === 'Saving' && recordSetFromQueryLoading()}
       {state.type === 'Saved' && (
         <RecordSetCreated
           recordSet={state.recordSet}

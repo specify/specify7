@@ -233,9 +233,13 @@ export function CollectionSelector({
     />
   ) : (
     <Select
-      aria-label={headerText.currentCollection()}
+      aria-label={headerText.currentCollection({
+        collectionTable: schema.models.Collection.label,
+      })}
       className="col-span-2 flex-1"
-      title={headerText.currentCollection()}
+      title={headerText.currentCollection({
+        collectionTable: schema.models.Collection.label,
+      })}
       value={schema.domainLevelIds.collection}
       onValueChange={(value): void =>
         switchCollection(navigate, Number.parseInt(value), '/specify/')

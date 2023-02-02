@@ -61,6 +61,7 @@ export function QueryHeader({
         {typeof recordSet === 'object'
           ? queryText.queryRecordSetTitle({
               queryName: query.name,
+              recordSetTable: schema.models.RecordSet.label,
               recordSetName: recordSet.get('name'),
             })
           : commonText.colonLine({

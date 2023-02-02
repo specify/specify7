@@ -9,6 +9,7 @@ import type { RA, RR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { AnyTree } from '../DataModel/helperTypes';
 import { commonText } from '../../localization/common';
+import { schema } from '../DataModel/schema';
 
 export const fetchRows = async (fetchUrl: string) =>
   ajax<
@@ -23,7 +24,7 @@ export const fetchRows = async (fetchUrl: string) =>
         number | null,
         string | null,
         string,
-        number,
+        number
       ]
     >
   >(fetchUrl, {
@@ -42,7 +43,7 @@ export const fetchRows = async (fetchUrl: string) =>
           acceptedId = undefined,
           acceptedName = undefined,
           author = undefined,
-          children
+          children,
         ],
         index,
         { length }
@@ -194,13 +195,17 @@ export const formatTreeStats = (
 } => ({
   title: filterArray([
     commonText.colonLine({
-      label: treeText.directCollectionObjectCount(),
+      label: treeText.directCollectionObjectCount({
+        collectionObjectTable: schema.models.CollectionObject.label,
+      }),
       value: nodeStats.directCount.toString(),
     }),
     isLeaf
       ? undefined
       : commonText.colonLine({
-          label: treeText.indirectCollectionObjectCount(),
+          label: treeText.indirectCollectionObjectCount({
+            collectionObjectTable: schema.models.CollectionObject.label,
+          }),
           value: nodeStats.childCount.toString(),
         }),
   ]).join('\n'),

@@ -1,42 +1,41 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
-import { ping } from '../../utils/ajax/ping';
-import { formData } from '../../utils/ajax/helpers';
-import { Backbone } from '../DataModel/backbone';
-import { fetchCollection } from '../DataModel/collection';
-import type { SpecifyUser } from '../DataModel/types';
-import { commonText } from '../../localization/common';
-import { wbText } from '../../localization/workbench';
-import type { RA } from '../../utils/types';
-import { overwriteReadOnly } from '../../utils/types';
-import { userInformation } from '../InitialContext/userInformation';
-import { getMaxDataSetLength } from '../WbImport/helpers';
-import { uniquifyDataSetName } from '../../utils/uniquifyName';
-import { LoadingContext } from '../Core/Contexts';
-import { icons } from '../Atoms/Icons';
-import { formatNumber } from '../Atoms/Internationalization';
-import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { createBackboneView } from '../Core/reactBackboneExtend';
-import type { Dataset } from '../WbPlanView/Wrapped';
-import { DateElement } from '../Molecules/DateElement';
-import { Button } from '../Atoms/Button';
-import { Form, Input, Label, Select } from '../Atoms/Form';
-import { Submit } from '../Atoms/Submit';
-import { useId } from '../../hooks/useId';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
-import { SerializedResource } from '../DataModel/helperTypes';
-import { TableIcon } from '../Molecules/TableIcon';
-import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
-import { FormattedResource } from '../Molecules/FormattedResource';
-import { useTitle } from '../Molecules/AppTitle';
-import { Http } from '../../utils/ajax/definitions';
-import { unsafeNavigate } from '../Router/Router';
-import { LocalizedString } from 'typesafe-i18n';
-import { schema } from '../DataModel/schema';
+import { useId } from '../../hooks/useId';
+import { commonText } from '../../localization/common';
 import { StringToJsx } from '../../localization/utils';
+import { wbText } from '../../localization/workbench';
+import { Http } from '../../utils/ajax/definitions';
+import { formData } from '../../utils/ajax/helpers';
+import { ping } from '../../utils/ajax/ping';
+import type { RA } from '../../utils/types';
+import { overwriteReadOnly } from '../../utils/types';
+import { uniquifyDataSetName } from '../../utils/uniquifyName';
+import { Button } from '../Atoms/Button';
+import { Form, Input, Label, Select } from '../Atoms/Form';
+import { icons } from '../Atoms/Icons';
+import { formatNumber } from '../Atoms/Internationalization';
+import { Submit } from '../Atoms/Submit';
+import { LoadingContext } from '../Core/Contexts';
+import { Backbone } from '../DataModel/backbone';
+import { fetchCollection } from '../DataModel/collection';
 import { getField } from '../DataModel/helpers';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import { schema } from '../DataModel/schema';
+import type { SpecifyUser } from '../DataModel/types';
+import { userInformation } from '../InitialContext/userInformation';
+import { useTitle } from '../Molecules/AppTitle';
+import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
+import { DateElement } from '../Molecules/DateElement';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { FormattedResourceUrl } from '../Molecules/FormattedResource';
+import { TableIcon } from '../Molecules/TableIcon';
 import { hasPermission } from '../Permissions/helpers';
+import { unsafeNavigate } from '../Router/Router';
+import { getMaxDataSetLength } from '../WbImport/helpers';
+import type { Dataset } from '../WbPlanView/Wrapped';
 
 // FEATURE: allow exporting/importing the mapping
 export function DataSetMeta({
@@ -191,10 +190,6 @@ export function DataSetMeta({
           </span>
           <span>
             <StringToJsx
-              string={commonText.jsxColonLine({
-                label: getField(schema.models.Workbench, 'timestampCreated')
-                  .label,
-              })}
               components={{
                 wrap: (
                   <i>
@@ -202,14 +197,14 @@ export function DataSetMeta({
                   </i>
                 ),
               }}
+              string={commonText.jsxColonLine({
+                label: getField(schema.models.Workbench, 'timestampCreated')
+                  .label,
+              })}
             />
           </span>
           <span>
             <StringToJsx
-              string={commonText.jsxColonLine({
-                label: getField(schema.models.Workbench, 'timestampModified')
-                  .label,
-              })}
               components={{
                 wrap: (
                   <i>
@@ -217,13 +212,14 @@ export function DataSetMeta({
                   </i>
                 ),
               }}
+              string={commonText.jsxColonLine({
+                label: getField(schema.models.Workbench, 'timestampModified')
+                  .label,
+              })}
             />
           </span>
           <span>
             <StringToJsx
-              string={commonText.jsxColonLine({
-                label: commonText.uploaded(),
-              })}
               components={{
                 wrap: (
                   <i>
@@ -239,34 +235,35 @@ export function DataSetMeta({
                   </i>
                 ),
               }}
+              string={commonText.jsxColonLine({
+                label: commonText.uploaded(),
+              })}
             />
           </span>
           <span>
             <StringToJsx
+              components={{
+                wrap: (
+                  <i>
+                    <FormattedResourceUrl
+                      resourceUrl={dataset.createdbyagent}
+                    />
+                  </i>
+                ),
+              }}
               string={commonText.jsxColonLine({
                 label: getField(schema.models.Workbench, 'createdByAgent')
                   .label,
               })}
-              components={{
-                wrap: (
-                  <i>
-                    <FormattedResource resourceUrl={dataset.createdbyagent} />
-                  </i>
-                ),
-              }}
             />
           </span>
           <span>
             <StringToJsx
-              string={commonText.jsxColonLine({
-                label: getField(schema.models.Workbench, 'modifiedByAgent')
-                  .label,
-              })}
               components={{
                 wrap: (
                   <i>
                     {typeof dataset.modifiedbyagent === 'string' ? (
-                      <FormattedResource
+                      <FormattedResourceUrl
                         resourceUrl={dataset.modifiedbyagent}
                       />
                     ) : (
@@ -275,16 +272,20 @@ export function DataSetMeta({
                   </i>
                 ),
               }}
+              string={commonText.jsxColonLine({
+                label: getField(schema.models.Workbench, 'modifiedByAgent')
+                  .label,
+              })}
             />
           </span>
           <span>
             <StringToJsx
-              string={commonText.jsxColonLine({
-                label: wbText.importedFileName(),
-              })}
               components={{
                 wrap: <i>{dataset.importedfilename || wbText.noFileName()}</i>,
               }}
+              string={commonText.jsxColonLine({
+                label: wbText.importedFileName(),
+              })}
             />
           </span>
         </div>
@@ -422,30 +423,28 @@ function ChangeOwner({
   );
 }
 
-const WrappedDataSetName = createBackboneView(DataSetName);
-const ChangeOwnerView = createBackboneView(ChangeOwner);
-
 // A wrapper for DS Meta for embedding in the WB
 export const DataSetNameView = Backbone.View.extend({
   __name__: 'DataSetNameView',
   render() {
-    this.dataSetMeta = new WrappedDataSetName({
-      el: this.el.getElementsByClassName('wb-name-container')[0],
-      dataset: this.options.dataset,
-      getRowCount: this.options.getRowCount,
-    }).render();
+    this.dataSetMeta = this.options.display(
+      <DataSetName
+        dataset={this.options.dataset}
+        getRowCount={this.options.getRowCount}
+      />,
+      this.el.getElementsByClassName('wb-name-container')[0]
+    );
     return this;
   },
   changeOwner() {
-    const handleClose = (): void => void this.changeOwnerView.remove();
-    this.changeOwnerView = new ChangeOwnerView({
-      dataset: this.options.dataset,
-      onClose: handleClose,
-    }).render();
+    const handleClose = (): void => void this.changeOwnerView();
+    this.changeOwnerView = this.options.display(
+      <ChangeOwner dataset={this.options.dataset} onClose={handleClose} />
+    );
   },
   remove() {
-    this.dataSetMeta.remove();
-    this.changeOwnerView?.remove();
+    this.dataSetMeta();
+    this.changeOwnerView?.();
     Backbone.View.prototype.remove.call(this);
   },
 });
