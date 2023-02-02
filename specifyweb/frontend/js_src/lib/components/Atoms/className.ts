@@ -14,6 +14,8 @@ export const dialogIconTriggers = {
 const buttonClassName = 'button';
 const grayButton = `${buttonClassName} hover:bg-gray-400 bg-gray-300 text-gray-800 shadow-sm
     dark:bg-neutral-600 dark:text-gray-100 hover:dark:bg-neutral-500`;
+const lightGrayButton = `${buttonClassName} hover:bg-gray-400 bg-gray-100 text-gray-800 shadow-sm
+    dark:bg-neutral-600 dark:text-gray-100 hover:dark:bg-neutral-500`;
 const containerBaseUnstyled = `flex flex-col gap-4 overflow-scroll
   overflow-x-auto [overflow-y:overlay] [scrollbar-gutter:stable]`;
 const containerBase = `${containerBaseUnstyled} bg-[color:var(--form-foreground)]
@@ -52,6 +54,7 @@ export const className = {
   link: 'link',
   icon: 'icon link',
   grayButton,
+  lightGrayButton,
   niceButton,
   smallButton: `${niceButton} !py-1 !px-2`,
   borderedGrayButton,
