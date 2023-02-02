@@ -1008,4 +1008,11 @@ export const formsText = createDictionary({
     'fr-fr': "L'élément a été supprimé avec succès.",
     'uk-ua': 'Елемент успішно видалено.',
   },
+  dateRange: {
+    'en-us': '(range: {from:string} - {to:string})',
+    'ru-ru': '(диапазон: {from:string} - {to:string})',
+    'es-es': '(rango: {from:string} - {to:string})',
+    'fr-fr': '(gamme: {from:string} - {to:string})',
+    'uk-ua': '(діапазон: {from:string} - {to:string})',
+  },
 } as const);

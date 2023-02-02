@@ -12,6 +12,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Relationship } from '../DataModel/specifyField';
 import { RecordSelectorFromIds } from '../FormSliders/RecordSelectorFromIds';
 import { TableIcon } from '../Molecules/TableIcon';
+import { DateRange } from './DateRange';
 
 export type DeleteBlocker = {
   readonly directRelationship: Relationship;
@@ -80,6 +81,7 @@ function BlockerPreview({
     [ids]
   );
 
+  const table = parentRelationship?.relatedModel ?? directRelationship.model;
   return (
     <>
       <li>
@@ -97,7 +99,8 @@ function BlockerPreview({
                 ? `${directRelationship.model.label} - ${directRelationship.label}`
                 : `${parentRelationship.label} - ${parentRelationship.model.label}`,
             count: ids.length,
-          })}
+          })}{' '}
+          <DateRange ids={resolvedIds} table={table} />
         </Button.LikeLink>
       </li>
       {isOpen && (
@@ -108,7 +111,7 @@ function BlockerPreview({
           ids={resolvedIds}
           isDependent={false}
           mode="edit"
-          model={parentRelationship?.relatedModel ?? directRelationship.model}
+          model={table}
           newResource={undefined}
           title={undefined}
           totalCount={ids.length}
