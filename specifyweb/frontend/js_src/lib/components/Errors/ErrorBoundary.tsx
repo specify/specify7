@@ -45,6 +45,12 @@ export class ErrorBoundary extends React.Component<
     error: Error,
     errorInfo: { readonly componentStack: string }
   ): void {
+    // Reload the page if webpack bundle is stale
+    if (
+      process.env.NODE_ENV === 'development' &&
+      error.name === 'ChunkLoadError'
+    )
+      globalThis.location.reload();
     console.error(error.toString());
     this.setState({
       type: 'Error',
