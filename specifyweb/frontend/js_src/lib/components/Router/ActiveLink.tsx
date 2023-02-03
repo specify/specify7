@@ -12,17 +12,22 @@ export function ActiveLink<T extends Parameters<typeof Link.Default>[0]>({
   'aria-current': ariaCurrent = 'page',
   end = false,
   activeOverride,
+  className,
   ...props
-}: T & {
+}: Omit<T, 'className'> & {
   readonly end?: boolean;
   readonly activeOverride?: boolean;
   readonly component?: (props: T) => JSX.Element;
+  readonly className?: string | ((isActive: boolean) => string);
 }): JSX.Element {
   const rawIsActive = useIsActive(props.href, end);
   const isActive = activeOverride ?? rawIsActive;
   return (
     <LinkComponent
       {...(props as T)}
+      className={
+        typeof className === 'function' ? className(isActive) : className
+      }
       aria-current={isActive ? ariaCurrent : undefined}
     />
   );

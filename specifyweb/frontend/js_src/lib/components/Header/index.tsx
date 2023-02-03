@@ -162,15 +162,15 @@ export function MenuButton({
   readonly onClick: string | (() => void);
   readonly props?: TagProps<'a'> & TagProps<'button'>;
 }): JSX.Element | null {
+  const getClassName = (isActive: boolean): string => `
+    p-4
+    ${isActive ? 'bg-brand-300 !text-white' : 'text-gray-700'}
+    ${className.ariaHandled}
+    ${extraProps?.className ?? ''}
+  `;
   const props = {
     ...extraProps,
     'aria-current': isActive ? 'page' : undefined,
-    className: `
-      p-4
-      ${isActive ? 'bg-brand-300 !text-white' : 'text-gray-700'}
-      ${className.ariaHandled}
-      ${extraProps?.className ?? ''}
-    `,
     title: isCollapsed ? title : undefined,
   } as const;
   const children = (
@@ -191,12 +191,17 @@ export function MenuButton({
     <ActiveLink
       {...props}
       activeOverride={isActive ? true : undefined}
+      className={getClassName}
       href={handleClick}
     >
       {children}
     </ActiveLink>
   ) : (
-    <Button.LikeLink onClick={handleClick} {...props}>
+    <Button.LikeLink
+      onClick={handleClick}
+      {...props}
+      className={getClassName(isActive)}
+    >
       {children}
     </Button.LikeLink>
   );
