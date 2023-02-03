@@ -4,7 +4,8 @@
  * @module
  */
 
-import { LocalizedString } from 'typesafe-i18n';
+import type { LocalizedString } from 'typesafe-i18n';
+
 import type { KeysToLowerCase } from '../components/DataModel/helperTypes';
 import { f } from './functools';
 import type { IR, RA, RR } from './types';
@@ -123,7 +124,7 @@ export const caseInsensitiveHash = <
 
 /** Generate a sort function for Array.prototype.sort */
 export const sortFunction =
-  <T, V extends boolean | number | string | null | undefined>(
+  <T, V extends Date | boolean | number | string | null | undefined>(
     mapper: (value: T) => V,
     reverse = false
   ): ((left: T, right: T) => -1 | 0 | 1) =>
@@ -400,6 +401,7 @@ export const takeBetween = <T>(array: RA<T>, first: T, last: T): RA<T> =>
  * Behavior is undefined if chunkSize is less than 1 or not a decimal
  */
 export const chunk = <T>(array: RA<T>, chunkSize: number): RA<RA<T>> =>
-  [...Array(Math.ceil(array.length / chunkSize))].map((_, index) =>
-    array.slice(index * chunkSize, (index + 1) * chunkSize)
+  Array.from(
+    Array.from({ length: Math.ceil(array.length / chunkSize) }),
+    (_, index) => array.slice(index * chunkSize, (index + 1) * chunkSize)
   );

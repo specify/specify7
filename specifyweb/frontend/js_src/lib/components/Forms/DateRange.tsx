@@ -83,12 +83,13 @@ function useRange(
         ).then((rawDates) => {
           const dates = rawDates
             .filter((date) => typeof date === 'string')
-            .sort(sortFunction((date) => date));
+            .map((date) => new Date(date!))
+            .sort(sortFunction(f.id));
           return dates.length === 0
             ? undefined
             : {
-                from: new Date(dates[0]!).toLocaleDateString(),
-                to: new Date(dates.at(-1)!).toLocaleDateString(),
+                from: dates[0].toLocaleDateString(),
+                to: dates.at(-1)!.toLocaleDateString(),
               };
         }),
       [table, ids, dateFields]
