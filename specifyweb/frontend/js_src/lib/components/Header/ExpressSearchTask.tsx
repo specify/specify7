@@ -64,7 +64,7 @@ export function ExpressSearchView(): JSX.Element {
         </Form>
       </div>
       {query.length > 0 ? (
-        <div className="p-4">
+        <div className="flex flex-col gap-8 p-4">
           {primaryResults !== false && (
             <TableResults
               header={headerText.primarySearch()}
@@ -96,7 +96,7 @@ function TableResults({
   readonly queryResults: RA<RawExpressSearchResult> | undefined;
 }): JSX.Element {
   return (
-    <section className="flex flex-col gap-1">
+    <section className="flex flex-col gap-4">
       <H3>{header}</H3>
       {queryResults === undefined ? (
         <p aria-live="polite">{commonText.running()}</p>

@@ -43,7 +43,7 @@ export function LoadingScreen(): null {
   return null;
 }
 
-const commonContainer = 'rounded resize max-w-[90%] shadow-2xl shadow-gray-500';
+const commonContainer = 'rounded resize max-w-[90%] shadow-lg shadow-gray-500';
 export const dialogClassNames = {
   fullScreen: '!transform-none !w-full !h-full',
   freeContainer: `${commonContainer} max-h-[90%]`,

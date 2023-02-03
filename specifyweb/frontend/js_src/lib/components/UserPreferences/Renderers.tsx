@@ -18,14 +18,13 @@ import {
   parserFromType,
 } from '../../utils/parser/definitions';
 import { parseValue } from '../../utils/parser/parse';
-import { Input, Select } from '../Atoms/Form';
+import { Input, Select, Textarea } from '../Atoms/Form';
 import { iconClassName } from '../Atoms/Icons';
 import type { AnySchema } from '../DataModel/helperTypes';
 import { schema } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Collection } from '../DataModel/types';
 import { AutoComplete } from '../Molecules/AutoComplete';
-import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import type { PreferenceItem, PreferenceItemComponent } from './Definitions';
 import { getPrefDefinition } from './helpers';
 import { usePref } from './usePref';
@@ -296,7 +295,7 @@ export const DefaultPreferenceItemRender: PreferenceItemComponent<any> =
         onValueChange={handleChange}
       />
     ) : parser?.type === 'text' ? (
-      <AutoGrowTextArea
+      <Textarea
         forwardRef={validationRef}
         {...(validationAttributes ?? { type: 'text' })}
         isReadOnly={isReadOnly}
