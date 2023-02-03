@@ -1,56 +1,12 @@
 from django import http
 from specifyweb.specify.views import openapi
 from django.http import HttpResponse
-from . import utils
 
 from specifyweb.specify.views import login_maybe_required
 import logging
 
 logger = logging.getLogger(__name__)
 from django.db import connection
-from time import perf_counter
-
-@login_maybe_required
-@openapi(schema={
-    'get': {
-        'responses': {
-            '200': {
-                'description': 'Returns Global Collection Holding Stats for Specify',
-                'content': {
-                    'application/json': {
-                        'schema': {
-                            'type': 'object',
-                            'properties': {
-                                'familiesRepresented': {
-                                    'type': 'integer'
-                                },
-                                'generaRepresented': {
-                                    'type': 'integer'
-                                },
-                                'speciesRepresented': {
-                                    'type': 'integer'
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }}, )
-def collection_holdings(request) -> HttpResponse:
-    t1 = perf_counter()
-    holding_dict = {
-        'fRStr': utils.get_tree_rank_stats_str(140, request),
-        'gRStr': utils.get_tree_rank_stats_str(180, request),
-        'spStr': utils.get_tree_rank_stats_str(220, request),
-        'fr':  utils.get_tree_rank_stats(140, request), #families
-        'gr': utils.get_tree_rank_stats(180, request), #utils.get_tree_rank_stats(180, request), #genera
-        'sr': utils.get_tree_rank_stats(220, request), #utils.get_tree_rank_stats(220, request) #species
-    }
-    t2 = perf_counter()
-    logger.warning('this took: ')
-    logger.warning(t2-t1)
-    return http.JsonResponse(holding_dict)
 
 @login_maybe_required
 @openapi(schema={
@@ -171,16 +127,3 @@ def collection_type_specimens(request) -> HttpResponse:
 
 def collection_user():
     return http.Http404
-
-def node_number_rework(request) -> HttpResponse:
-    cursor = connection.cursor()
-    utils.node_number_rework_test(request)
-    full_name = ''
-
-    cursor.execute(
-        """
-        SELECT distinct t.taxonid, nodenumber, highestchildnodenumber
-        FROM 
-        """
-    )
-
