@@ -10,17 +10,14 @@ from django.conf import settings
 
 from specifyweb.businessrules.exceptions import TreeBusinessRuleException
 
-from time import perf_counter
 from  .auditcodes import TREE_MERGE, TREE_SYNONYMIZE, TREE_DESYNONYMIZE
-
 
 @contextmanager
 def validate_node_numbers(table, revalidate_after=True):
     try:
         validate_tree_numbering(table)
     except AssertionError:
-        print('assert')
-        #renumber_tree(table)
+        renumber_tree(table)
     yield
     if revalidate_after:
         validate_tree_numbering(table)
@@ -105,8 +102,6 @@ class Tree(models.Model):
                     "children": list(self.children.values('id', 'rankid', 'fullname').filter(parent=self, parent__rankid__gte=F('rankid')))
                  }})
 
-        print(self.parent_id, self.name, self.definitionitem_id, prev_self.name, prev_self.definitionitem_id, prev_self.parent_id)
-        t1 = perf_counter()
         if prev_self is None:
              reset_fullnames(self.definition, null_only=True)
         elif (
@@ -114,10 +109,7 @@ class Tree(models.Model):
             or prev_self.definitionitem_id != self.definitionitem_id
             or prev_self.parent_id != self.parent_id
         ):
-            reset_fullnames(self.definition, self_id=self.id)
-        t2 = perf_counter()
-        logger.warning('time near the end block: ')
-        logger.warning(t2-t1)
+            reset_fullnames(self.definition)
 
     def accepted_id_attr(self):
         return 'accepted{}_id'.format(self._meta.db_table)
@@ -131,19 +123,13 @@ class Tree(models.Model):
         setattr(self, self.accepted_id_attr(), value)
 
 
-def add_cte(id):
-    if id is None:
-        return ""
-    return ("and ((( with recursive allchildren as ( select taxonid from taxon where parentid = {} union all select taxon.taxonid from taxon join allchildren on taxon.parentid = allchildren.taxonid) select count(*) from allchildren where allchildren.taxonid = t0.taxonid) > 0 ) or t0.taxonid = {})").format(id, id)
 
-
-def open_interval(model, parent_node_number, size, node):
+def open_interval(model, parent_node_number, size):
     """Open a space of given size in a tree model under the given parent.
     The insertion point will be directly after the parent_node_number.
     Returns the instertion point.
     """
     # All intervals to the right of parent node get shifted right by size.
-
     model.objects.filter(nodenumber__gt=parent_node_number).update(
         nodenumber=F('nodenumber')+size,
         highestchildnodenumber=F('highestchildnodenumber')+size,
@@ -171,7 +157,7 @@ def close_interval(model, node_number, size):
     # All intervals to the right of node_number get shifted left by size.
     model.objects.filter(nodenumber__gt=node_number).update(
         nodenumber=F('nodenumber')-size,
-        highestchildnodenumber=F('highestchildnodenumber')-size
+        highestchildnodenumber=F('highestchildnodenumber')-size,
     )
 
 def adding_node(node):
@@ -179,11 +165,10 @@ def adding_node(node):
     model = type(node)
     parent = model.objects.select_for_update().get(id=node.parent.id)
     if parent.accepted_id is not None:
-        # This business rule can be overriden by a remote pref.
         from specifyweb.context.remote_prefs import get_remote_prefs
-        remote_prefs = get_remote_prefs()
+        # This business rule can be overriden by a remote pref.
         pattern = r'^sp7\.allow_adding_child_to_synonymized_parent\.' + node.specify_model.name + '=(.+)'
-        override = re.search(pattern, remote_prefs, re.MULTILINE)
+        override = re.search(pattern, get_remote_prefs(), re.MULTILINE)
         if override is None or override.group(1).lower() != "true":
             raise TreeBusinessRuleException(
                 f'Adding node "{node.fullname}" to synonymized parent "{parent.fullname}"',
@@ -204,8 +189,8 @@ def adding_node(node):
                     "parentid": parent.parent.id,
                     "children": list(parent.children.values('id', 'fullname'))
                  }})
-    return
-    insertion_point = open_interval(model, parent.nodenumber, 1, node)
+
+    insertion_point = open_interval(model, parent.nodenumber, 1)
     node.highestchildnodenumber = node.nodenumber = insertion_point
 
 def moving_node(to_save):
@@ -235,7 +220,7 @@ def moving_node(to_save):
                 "children": list(new_parent.children.values('id', 'fullname'))
              }})
 
-    insertion_point = open_interval(model, new_parent.nodenumber, size, new_parent)
+    insertion_point = open_interval(model, new_parent.nodenumber, size)
     # node interval will have moved if it is to the right of the insertion point
     # so fetch again
     current = model.objects.get(id=current.id)
@@ -255,14 +240,14 @@ def merge(node, into, agent):
     from . import models
     logger.info('merging %s into %s', node, into)
     model = type(node)
-    #if not type(into) is model: raise AssertionError(
-    #    f"Unexpected type of node '{into.__class__.__name__}', during merge. Expected '{model.__class__.__name__}'",
-    #    {"node" : into.__class__.__name__,
-    #    "nodeModel" : model.__class__.__name__,
-    #    "operation" : "merge",
-    #    "localizationKey" : "invalidNodeType"})
+    if not type(into) is model: raise AssertionError(
+        f"Unexpected type of node '{into.__class__.__name__}', during merge. Expected '{model.__class__.__name__}'",
+        {"node" : into.__class__.__name__,
+        "nodeModel" : model.__class__.__name__,
+        "operation" : "merge",
+        "localizationKey" : "invalidNodeType"})
     target = model.objects.select_for_update().get(id=into.id)
-    #if not (node.definition_id == target.definition_id): raise AssertionError("merging across trees", {"localizationKey" : "mergeAcrossTrees"})
+    if not (node.definition_id == target.definition_id): raise AssertionError("merging across trees", {"localizationKey" : "mergeAcrossTrees"})
     if into.accepted_id is not None:
         raise TreeBusinessRuleException(
             'Merging node "{node.fullname}" with synonymized node "{into.fullname}"'.format(node=node, into=into),
@@ -304,22 +289,22 @@ def merge(node, into, agent):
         except ProtectedError as e:
             related_model_name, field_name = re.search(r"'(\w+)\.(\w+)'$", e.args[0]).groups()
             related_model = getattr(models, related_model_name)
-            #assert related_model != model or field_name != 'parent', 'children were added during merge'
+            assert related_model != model or field_name != 'parent', 'children were added during merge'
             related_model.objects.filter(**{field_name: node}).update(**{field_name: target})
 
-    #assert False, "failed to move all referrences to merged tree node"
+    assert False, "failed to move all referrences to merged tree node"
 
 def synonymize(node, into, agent):
     logger.info('synonymizing %s to %s', node, into)
     model = type(node)
-    #if not type(into) is model: raise AssertionError(
-    #    f"Unexpected type '{into.__class__.__name__}', during synonymize. Expected '{model.__class__.__name__}'",
-    #    {"node" : into.__class__.__name__,
-    #    "nodeModel" : model.__class__.__name__,
-    #    "operation" : "synonymize",
-    #    "localizationKey" : "invalidNodeType"})
+    if not type(into) is model: raise AssertionError(
+        f"Unexpected type '{into.__class__.__name__}', during synonymize. Expected '{model.__class__.__name__}'",
+        {"node" : into.__class__.__name__,
+        "nodeModel" : model.__class__.__name__,
+        "operation" : "synonymize",
+        "localizationKey" : "invalidNodeType"})
     target = model.objects.select_for_update().get(id=into.id)
-    #if not (node.definition_id == target.definition_id): raise AssertionError("synonymizing across trees", {"localizationKey" : "synonymizeAcrossTrees"})
+    if not (node.definition_id == target.definition_id): raise AssertionError("synonymizing across trees", {"localizationKey" : "synonymizeAcrossTrees"})
     if target.accepted_id is not None:
         raise TreeBusinessRuleException(
             'Synonymizing "{node.fullname}" to synonymized node "{into.fullname}"'.format(node=node, into=into),
@@ -342,11 +327,22 @@ def synonymize(node, into, agent):
     node.accepted_id = target.id
     node.isaccepted = False
     node.save()
-    if node.children.count() > 0:
+
+    # This check can be disabled by a remote pref
+    from specifyweb.context.remote_prefs import get_remote_prefs
+    pattern = r'^sp7\.allow_adding_child_to_synonymized_parent\.' + node.specify_model.name + '=(.+)'
+    override = re.search(pattern, get_remote_prefs(), re.MULTILINE)
+    if node.children.count() > 0 and (override is None or override.group(1).lower() != "true"):
         raise TreeBusinessRuleException(
             'Synonymizing node "{node.fullname}" which has children'.format(node=node),
             {"tree" : "Taxon",
              "localizationKey" : "nodeSynonimizeWithChildren",
+             "node" : {
+                "id" : node.id,
+                "rankid" : node.rankid,
+                "fullName" : node.fullname,
+                "children": list(node.children.values('id', 'fullname'))
+             },
              "parent" : {
                 "id" : into.id,
                 "rankid" : into.rankid,
@@ -469,15 +465,13 @@ def definition_joins(table, depth):
         for j in range(depth)
     ])
 
-
-def reset_fullnames(treedef, null_only=False, self_id=None):
+def reset_fullnames(treedef, null_only=False):
     table = treedef.treeentries.model._meta.db_table
     depth = treedef.treedefitems.count()
     reverse = treedef.fullnamedirection == -1
-    return set_fullnames(table, treedef.id, depth, self_id, reverse, null_only)
+    return set_fullnames(table, treedef.id, depth, reverse, null_only)
 
-
-def set_fullnames(table, treedefid, depth, self_id, reverse=False, null_only=False):
+def set_fullnames(table, treedefid, depth, reverse=False, null_only=False):
     logger.info('set_fullnames: %s', (table, treedefid, depth, reverse))
     if depth < 1:
         return
@@ -491,7 +485,6 @@ def set_fullnames(table, treedefid, depth, self_id, reverse=False, null_only=Fal
         "and t0.{table}treedefid = {treedefid}\n"
         "and t0.acceptedid is null\n"
         "{null_only}\n"
-        "{cte_expr}"
     ).format(
         root=depth-1,
         table=table,
@@ -500,10 +493,7 @@ def set_fullnames(table, treedefid, depth, self_id, reverse=False, null_only=Fal
         parent_joins=parent_joins(table, depth),
         definition_joins=definition_joins(table, depth),
         null_only="and t0.fullname is null" if null_only else "",
-        cte_expr=add_cte(self_id)
-
     )
-    logger.warning(sql)
     logger.debug('fullname update sql:\n%s', sql)
     return cursor.execute(sql)
 
@@ -532,14 +522,14 @@ def predict_fullname(table, depth, parentid, defitemid, name, reverse=False):
 def validate_tree_numbering(table):
     logger.info('validating tree')
     cursor = connection.cursor()
-    #cursor.execute(
-    #    "select count(*), count(distinct nodenumber), count(highestchildnodenumber)\n"
-    #    "from {table}".format(table=table)
-    #)
-   # node_count, nn_count, hcnn_count = cursor.fetchone()
-    #assert node_count == nn_count == hcnn_count, \
-    #    "found {} nodes but {} nodenumbers and {} highestchildnodenumbers" \
-    #    .format(node_count, nn_count, hcnn_count)
+    cursor.execute(
+        "select count(*), count(distinct nodenumber), count(highestchildnodenumber)\n"
+        "from {table}".format(table=table)
+    )
+    node_count, nn_count, hcnn_count = cursor.fetchone()
+    assert node_count == nn_count == hcnn_count, \
+        "found {} nodes but {} nodenumbers and {} highestchildnodenumbers" \
+        .format(node_count, nn_count, hcnn_count)
 
     cursor.execute((
         "select count(*) from {table} t join {table} p on t.parentid = p.{table}id\n"
@@ -547,18 +537,17 @@ def validate_tree_numbering(table):
         "and t.acceptedid is null"
     ).format(table=table))
     bad_ranks_count, = cursor.fetchone()
-    logger.warning(bad_ranks_count)
-    #assert bad_ranks_count == 0, \
-     #   "found {} cases where node rank is not greater than it's parent." \
-     #   .format(bad_ranks_count)
+    assert bad_ranks_count == 0, \
+        "found {} cases where node rank is not greater than it's parent." \
+        .format(bad_ranks_count)
 
-    #cursor.execute((
-    #    "select count(*) from {table} t join {table} p on t.parentid = p.{table}id\n"
-    #    "where t.nodenumber not between p.nodenumber and p.highestchildnodenumber\n"
-    #).format(table=table))
-    #not_nested_count, = cursor.fetchone()
-    #assert not_nested_count == 0, \
-     #   "found {} nodenumbers not nested by parent".format(not_nested_count)
+    cursor.execute((
+        "select count(*) from {table} t join {table} p on t.parentid = p.{table}id\n"
+        "where t.nodenumber not between p.nodenumber and p.highestchildnodenumber\n"
+    ).format(table=table))
+    not_nested_count, = cursor.fetchone()
+    assert not_nested_count == 0, \
+        "found {} nodenumbers not nested by parent".format(not_nested_count)
 
 def path_expr(table, depth):
     return CONCAT([ID(table, i) for i in reversed(list(range(depth)))], ',')
@@ -612,14 +601,15 @@ def renumber_tree(table):
     }
     bad_ranks_count = cursor.rowcount
     formattedResults["badRanks"] = bad_ranks_count
-    #if bad_ranks_count > 0 : raise AssertionError(
-     #   f"Bad Tree Structure: Found {bad_ranks_count} case(s) where node rank is not greater than it's parent",
-      #  formattedResults)
+    if bad_ranks_count > 0 : raise AssertionError(
+        f"Bad Tree Structure: Found {bad_ranks_count} case(s) where node rank is not greater than it's parent",
+        formattedResults)
 
     # Get the tree ranks in leaf -> root order.
     cursor.execute("select distinct rankid from {} order by rankid desc".format(table))
     ranks = [rank for (rank,) in cursor.fetchall()]
     depth = len(ranks)
+
     # Construct a path enumeration for each node and set the
     # nodenumbers according to the lexical ordering of the paths. This
     # ensures ancestor node numbers come before descendents and
