@@ -10,6 +10,7 @@ import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
 import { useId } from '../../hooks/useId';
 import { getPref } from '../InitialContext/remotePrefs';
+import { className } from '../Atoms/className';
 
 export function TreeRow({
   row,
@@ -157,8 +158,9 @@ export function TreeRow({
               aria-describedby={rankNameId(rankId.toString())}
               aria-pressed={isLoading ? 'mixed' : displayChildren}
               className={`
-                aria-handled -mb-[12px] -ml-[5px] mt-2
+                -mb-[12px] -ml-[5px] mt-2
                 whitespace-nowrap rounded border border-transparent
+                ${className.ariaHandled}
                 ${
                   isAction
                     ? 'outline outline-1 outline-red-500'

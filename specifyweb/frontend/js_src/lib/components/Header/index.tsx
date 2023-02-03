@@ -3,72 +3,40 @@
  */
 
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
-import { headerText } from '../../localization/header';
-import { listen } from '../../utils/events';
 import type { RR } from '../../utils/types';
-import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
-import { className } from '../Atoms/className';
-import { Form, Input, Select } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
-import { Link } from '../Atoms/Link';
+import type { TagProps } from '../Atoms/wrapper';
 import { MenuContext } from '../Core/Contexts';
 import type { MenuItem } from '../Core/Main';
-import { serializeResource } from '../DataModel/helpers';
-import { schema } from '../DataModel/schema';
-import type { Collection } from '../DataModel/types';
-import { userInformation } from '../InitialContext/userInformation';
-import { formatUrl } from '../Router/queryString';
-import { switchCollection } from '../RouterCommands/SwitchCollection';
+import { ActiveLink } from '../Router/ActiveLink';
 import { usePref } from '../UserPreferences/usePref';
 import type { MenuItemName } from './menuItemDefinitions';
 import { Notifications } from './Notifications';
 import { UserTools } from './UserTools';
-
-const collapseThreshold = 900;
+import { className } from '../Atoms/className';
 
 export function Header({
   menuItems,
 }: {
   readonly menuItems: RR<MenuItemName, MenuItem>;
 }): JSX.Element {
-  const [rawIsCollapsed = false, setIsCollapsed] = useCachedState(
+  const [isCollapsed = false, setIsCollapsed] = useCachedState(
     'header',
     'isCollapsed'
   );
 
-  // Collapse the menu on narrow screens
-  const [forceCollapse, setForceCollapse] = React.useState(false);
-  React.useEffect(() => {
-    if (rawIsCollapsed) {
-      setForceCollapse(false);
-      return undefined;
-    }
-    const handleChange = (): void =>
-      document.body.clientWidth < collapseThreshold
-        ? setForceCollapse(true)
-        : setForceCollapse(false);
-    handleChange();
-    return listen(window, 'resize', handleChange);
-  }, [rawIsCollapsed, setIsCollapsed]);
-
-  const isCollapsed = rawIsCollapsed || forceCollapse;
-  const title = isCollapsed ? commonText.expand() : commonText.collapse();
-
   return (
     <header
-      className={`flex [z-index:1] print:hidden ${className.hasAltBackground}`}
-    >
-      <div
-        className={`
-        flex flex-1 flex-col bg-gray-200 dark:bg-neutral-800
-        ${isCollapsed ? '' : 'w-72 gap-2'}
+      className={`
+        flex shadow-md shadow-gray-400 [z-index:1] print:hidden
       `}
-      >
+    >
+      <div className="flex flex-1 flex-col bg-gray-100 dark:bg-neutral-900">
         <h1 className="contents">
           <a
             className={`
@@ -97,53 +65,31 @@ export function Header({
             <span className="sr-only">{commonText.goToHomepage()}</span>
           </a>
         </h1>
-        <div
-          className={
-            isCollapsed
-              ? 'flex flex-1 flex-col gap-2 overflow-auto'
-              : 'contents'
-          }
-        >
+        <nav className="flex flex-1 flex-col overflow-auto">
           <HeaderItems isCollapsed={isCollapsed} menuItems={menuItems} />
-          <div
-            className={`
-            grid
-            ${isCollapsed ? '' : 'grid-cols-[1fr_min-content] gap-2 p-4'}
-          `}
-          >
-            <CollectionSelector
-              onClick={
-                isCollapsed ? (): void => setIsCollapsed(false) : undefined
-              }
-            />
-            <UserTools isCollapsed={isCollapsed} />
-            <Notifications isCollapsed={isCollapsed} />
-            {isCollapsed ? (
-              <Link.Icon
-                className="p-4"
-                href="/specify/express-search/"
-                icon="search"
-                title={commonText.search()}
-              />
-            ) : (
-              <ExpressSearchLine />
-            )}
-          </div>
-        </div>
+          <span className="flex-1" />
+          <MenuButton
+            icon={icons.archive}
+            isCollapsed={isCollapsed}
+            title={commonText.chooseCollection()}
+            onClick="/specify/overlay/choose-collection/"
+          />
+          <UserTools isCollapsed={isCollapsed} />
+          <Notifications isCollapsed={isCollapsed} />
+          <MenuButton
+            icon={icons.search}
+            isCollapsed={isCollapsed}
+            title={commonText.search()}
+            onClick="/specify/express-search/"
+          />
+          <MenuButton
+            icon={isCollapsed ? icons.arrowRight : icons.arrowLeft}
+            isCollapsed={isCollapsed}
+            title={isCollapsed ? commonText.expand() : commonText.collapse()}
+            onClick={(): void => setIsCollapsed(!isCollapsed)}
+          />
+        </nav>
       </div>
-      {forceCollapse ? (
-        <div className="h-full w-1.5 bg-brand-200 dark:bg-brand-400" />
-      ) : (
-        <button
-          aria-label={title}
-          className="flex h-full w-1.5 items-center bg-brand-200 dark:bg-brand-400"
-          title={title}
-          type="button"
-          onClick={(): void => setIsCollapsed(!isCollapsed)}
-        >
-          <span className="h-6 w-6 rounded-full bg-brand-400 dark:bg-brand-500" />
-        </button>
-      )}
     </header>
   );
 }
@@ -157,10 +103,7 @@ function HeaderItems({
 }): JSX.Element {
   const [activeMenuItem] = React.useContext(MenuContext);
   return (
-    <nav
-      aria-label={commonText.primary()}
-      className={`flex flex-1 flex-col ${isCollapsed ? '' : 'overflow-auto'}`}
-    >
+    <>
       {Object.entries(menuItems).map(([name, menuItem]) => (
         <MenuItemComponent
           isCollapsed={isCollapsed}
@@ -169,7 +112,7 @@ function HeaderItems({
           isActive={name === activeMenuItem}
         />
       ))}
-    </nav>
+    </>
   );
 }
 
@@ -186,97 +129,69 @@ function MenuItemComponent({
 }): JSX.Element | null {
   const [isVisible] = usePref('header', 'menu', visibilityKey);
   return isVisible ? (
-    <Link.Default
-      aria-current={isActive ? 'page' : undefined}
-      aria-label={isCollapsed ? title : undefined}
-      className={`
-        relative p-4 text-gray-700 active:bg-white dark:text-neutral-300
-        active:dark:bg-neutral-600
-        ${isActive ? 'bg-white dark:bg-neutral-600' : ''}
-      `}
-      href={url}
-      key={url}
-      title={isCollapsed ? title : undefined}
-    >
-      {icon}
-      {isCollapsed ? undefined : title}
-    </Link.Default>
+    <MenuButton
+      icon={icon}
+      isActive={isActive}
+      isCollapsed={isCollapsed}
+      title={title}
+      onClick={url}
+    />
   ) : null;
 }
 
-export function CollectionSelector({
+export function MenuButton({
+  title,
+  icon,
+  isActive = false,
+  isCollapsed,
+  preventOverflow = false,
   onClick: handleClick,
+  props: extraProps,
 }: {
-  readonly onClick?: () => void;
-}): JSX.Element {
-  const [sortOrder] = usePref('chooseCollection', 'general', 'sortOrder');
-  const isReverseSort = sortOrder.startsWith('-');
-  const sortField = (isReverseSort ? sortOrder.slice(1) : sortOrder) as string &
-    keyof Collection['fields'];
-  const sortedCollections = React.useMemo(
-    () =>
-      Array.from(userInformation.availableCollections)
-        .sort(
-          sortFunction((collection) => collection[sortField], isReverseSort)
-        )
-        .map(serializeResource),
-    [isReverseSort, sortField]
+  readonly title: LocalizedString;
+  readonly icon: JSX.Element;
+  readonly isCollapsed: boolean;
+  readonly isActive?: boolean;
+  readonly preventOverflow?: boolean;
+  readonly onClick: string | (() => void);
+  readonly props?: TagProps<'a'> & TagProps<'button'>;
+}): JSX.Element | null {
+  const props = {
+    ...extraProps,
+    'aria-current': isActive ? 'page' : undefined,
+    className: `
+      p-4
+      ${isActive ? 'bg-brand-300 !text-white' : 'text-gray-700'}
+      ${className.ariaHandled}
+      ${extraProps?.className ?? ''}
+    `,
+    title: isCollapsed ? title : undefined,
+  } as const;
+  const children = (
+    <>
+      {icon}
+      {preventOverflow && !isCollapsed ? (
+        <span className="relative flex w-full flex-1 items-center">
+          <span className="absolute w-[inherit] overflow-hidden text-ellipsis">
+            {title}
+          </span>
+        </span>
+      ) : (
+        <span className={isCollapsed ? 'sr-only' : undefined}>{title}</span>
+      )}
+    </>
   );
-
-  const navigate = useNavigate();
-  return typeof handleClick === 'function' ? (
-    <Button.Icon
-      className="p-4"
-      icon="archive"
-      title={commonText.chooseCollection()}
-      onClick={handleClick}
-    />
-  ) : (
-    <Select
-      aria-label={headerText.currentCollection({
-        collectionTable: schema.models.Collection.label,
-      })}
-      className="col-span-2 flex-1"
-      title={headerText.currentCollection({
-        collectionTable: schema.models.Collection.label,
-      })}
-      value={schema.domainLevelIds.collection}
-      onValueChange={(value): void =>
-        switchCollection(navigate, Number.parseInt(value), '/specify/')
-      }
+  return typeof handleClick === 'string' ? (
+    <ActiveLink
+      {...props}
+      activeOverride={isActive ? true : undefined}
+      href={handleClick}
     >
-      {sortedCollections?.map(({ id, collectionName }) => (
-        <option key={id as number} value={id as number}>
-          {collectionName}
-        </option>
-      ))}
-    </Select>
-  );
-}
-
-function ExpressSearchLine(): JSX.Element {
-  const [query, setQuery] = React.useState('');
-  return (
-    <Form className="contents">
-      <Input.Generic
-        aria-label={commonText.search()}
-        autoComplete="on"
-        className="flex-1"
-        // Name is for autocomplete purposes only
-        name="searchQuery"
-        placeholder={commonText.search()}
-        type="search"
-        value={query}
-        onValueChange={setQuery}
-      />
-      <Link.Small
-        aria-label={commonText.search()}
-        href={formatUrl('/specify/express-search/', { q: query })}
-        title={commonText.search()}
-        onClick={(): void => setQuery('')}
-      >
-        {icons.search}
-      </Link.Small>
-    </Form>
+      {children}
+    </ActiveLink>
+  ) : (
+    <Button.LikeLink onClick={handleClick} {...props}>
+      {children}
+    </Button.LikeLink>
   );
 }

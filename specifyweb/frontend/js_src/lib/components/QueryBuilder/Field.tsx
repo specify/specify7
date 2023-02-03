@@ -314,7 +314,8 @@ export function QueryLine({
                         aria-label={queryText.or()}
                         aria-pressed={field.filters.length > 1}
                         className={`
-                          aria-handled print:hidden
+                          print:hidden
+                          ${className.ariaHandled}
                           ${isFieldComplete ? '' : 'invisible'}
                         `}
                         disabled={handleChange === undefined}
@@ -364,7 +365,7 @@ export function QueryLine({
                   <Button.Small
                     aria-label={queryText.negate()}
                     aria-pressed={field.filters[index].isNot}
-                    className="aria-handled"
+                    className={className.ariaHandled}
                     disabled={handleChange === undefined}
                     title={queryText.negate()}
                     variant={
@@ -474,7 +475,9 @@ export function QueryLine({
         <Button.Small
           aria-label={queryText.showButtonDescription()}
           aria-pressed={field.isDisplay}
-          className={`aria-handled ${isFieldComplete ? '' : 'invisible'}`}
+          className={`${className.ariaHandled} ${
+            isFieldComplete ? '' : 'invisible'
+          }`}
           title={queryText.showButtonDescription()}
           variant={
             field.isDisplay ? className.greenButton : className.grayButton

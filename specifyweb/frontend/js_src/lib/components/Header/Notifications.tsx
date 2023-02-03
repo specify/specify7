@@ -12,10 +12,10 @@ import type { IR, RA } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
-import { formatNumber } from '../Atoms/Internationalization';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { DateElement } from '../Molecules/DateElement';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { MenuButton } from './index';
 import type { GenericNotification } from './NotificationRenderers';
 import { notificationRenderers } from './NotificationRenderers';
 
@@ -132,31 +132,27 @@ export function Notifications({
           count: notifications.length,
         })
       : notificationsText.notificationsLoading();
-  const buttonProps = {
-    'aria-label': title,
-    'aria-live': 'polite',
-    className: `
-      ${
-        unreadCount > 0
-          ? '[&:not(:hover)]:!text-brand-300 [&:not(:hover)]:dark:!text-brand-400'
-          : ''
-      }
-      ${isCollapsed ? 'p-4' : ''}
-    `,
-    disabled: notificationCount === 0,
-    title,
-    onClick: handleOpen,
-  } as const;
   return (
     <>
-      {isCollapsed ? (
-        <Button.Icon icon="bell" {...buttonProps} />
-      ) : (
-        <Button.Small {...buttonProps}>
-          {unreadCount > 0 ? formatNumber(unreadCount) : undefined}
-          {icons.bell}
-        </Button.Small>
-      )}
+      <MenuButton
+        icon={icons.bell}
+        isActive={isOpen}
+        isCollapsed={isCollapsed}
+        title={title}
+        onClick={handleOpen}
+        props={{
+          'aria-live': 'polite',
+          className: `
+          ${
+            unreadCount > 0
+              ? '[&:not(:hover)]:!text-brand-300 [&:not(:hover)]:dark:!text-brand-400'
+              : ''
+          }
+          ${isCollapsed ? 'p-4' : ''}
+        `,
+          disabled: notificationCount === 0,
+        }}
+      />
       {Array.isArray(notifications) && (
         <Dialog
           buttons={commonText.close()}

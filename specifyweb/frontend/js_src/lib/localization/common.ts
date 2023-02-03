@@ -502,6 +502,13 @@ export const commonText = createDictionary({
     'fr-fr': 'Agrandir',
     'uk-ua': 'Розгорнути',
   },
+  expandAll: {
+    'en-us': 'Expand All',
+    'ru-ru': 'Развернуть все',
+    'es-es': 'Expandir todo',
+    'fr-fr': 'Tout agrandir',
+    'uk-ua': 'Розгорнути всі',
+  },
   contract: {
     comment: 'As in contract the list',
     'en-us': 'Contract',
@@ -510,12 +517,8 @@ export const commonText = createDictionary({
     'fr-fr': 'Contrat',
     'uk-ua': 'Згорнути',
   },
-  expandAll: {
-    'en-us': 'Expand All',
-    'ru-ru': 'Развернуть все',
-    'es-es': 'Expandir todo',
-    'fr-fr': 'Tout agrandir',
-    'uk-ua': 'Розгорнути всі',
+  collapse: {
+    'en-us': 'Collapse',
   },
   collapseAll: {
     'en-us': 'Collapse All',

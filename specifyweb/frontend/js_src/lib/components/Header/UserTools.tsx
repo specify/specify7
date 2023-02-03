@@ -1,7 +1,12 @@
 import React from 'react';
+import { useLocation } from 'react-router';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
+import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
+import { formsText } from '../../localization/forms';
+import { headerText } from '../../localization/header';
+import { userText } from '../../localization/user';
 import { isExternalUrl } from '../../utils/ajax/helpers';
 import type { IR, RA } from '../../utils/types';
 import { H3, Ul } from '../Atoms';
@@ -12,56 +17,50 @@ import type { UserTool } from '../Core/Main';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
 import { OverlayContext } from '../Router/Router';
+import { MenuButton } from './index';
 import { userToolsPromise } from './userToolDefinitions';
-import { formsText } from '../../localization/forms';
-import { useCachedState } from '../../hooks/useCachedState';
-import { headerText } from '../../localization/header';
-import { userText } from '../../localization/user';
 
 export function UserTools({
   isCollapsed,
 }: {
   readonly isCollapsed: boolean;
 }): JSX.Element {
-  const userTools = isCollapsed ? (
-    <Link.Icon
-      className="flex-1 p-4"
-      title={headerText.userTools()}
-      icon="cog"
-      href="/specify/overlay/user-tools/"
-    />
-  ) : (
-    <Link.Small
-      className={`
-        text-overflow-ellipsis flex-1
-        !justify-start overflow-hidden whitespace-nowrap normal-case
-      `}
-      href="/specify/overlay/user-tools/"
-      title={
-        userInformation.isauthenticated ? headerText.currentUser() : undefined
-      }
-    >
-      {userInformation.isauthenticated
-        ? userInformation.name
-        : headerText.userTools()}
-    </Link.Small>
+  const { pathname } = useLocation();
+  const [userTools] = useAsyncState(fetchUserTools, true);
+  const isInUserTool = userTools?.some((group) =>
+    Object.values(group)
+      .flat()
+      .some(({ url }) => pathname.startsWith(url))
   );
-  return userInformation.isauthenticated ? (
-    userTools
-  ) : (
-    <div className="flex gap-2">
-      {userTools}
-      {isCollapsed ? (
-        <Link.Icon
-          className="p-4"
-          href="/accounts/logout/"
-          icon="logout"
-          title={userText.logIn()}
+  return (
+    <>
+      {userInformation.isauthenticated ? (
+        <MenuButton
+          icon={icons.userCircle}
+          isCollapsed={isCollapsed}
+          isActive={isInUserTool}
+          preventOverflow
+          title={userInformation.name}
+          onClick="/specify/overlay/user-tools/"
         />
       ) : (
-        <Link.Small href="/accounts/logout/">{userText.logIn()}</Link.Small>
+        <>
+          <MenuButton
+            icon={icons.cog}
+            isActive={isInUserTool}
+            isCollapsed={isCollapsed}
+            title={headerText.userTools()}
+            onClick="/specify/overlay/user-tools/"
+          />
+          <MenuButton
+            icon={icons.login}
+            isCollapsed={isCollapsed}
+            title={userText.logIn()}
+            onClick="/accounts/login/"
+          />
+        </>
       )}
-    </div>
+    </>
   );
 }
 

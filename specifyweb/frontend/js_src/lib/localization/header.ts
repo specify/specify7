@@ -202,10 +202,10 @@ export const headerText = createDictionary({
     'uk-ua': 'Вторинний пошук',
   },
   userTools: {
-    'en-us': 'User Tools',
-    'ru-ru': 'Инструменты пользователя',
-    'es-es': 'Herramientas del usuario',
-    'fr-fr': 'Outils utilisateur',
+    'en-us': 'Tools',
+    'ru-ru': 'Инструменты',
+    'es-es': 'Herramientas',
+    'fr-fr': 'Outils',
     'uk-ua': 'Інструменти',
   },
   helpLocalizeSpecify: {

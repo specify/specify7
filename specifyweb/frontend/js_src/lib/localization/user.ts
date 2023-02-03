@@ -9,6 +9,9 @@ import { createDictionary } from './utils';
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
 export const userText = createDictionary({
+  user: {
+    'en-us': 'User',
+  },
   logIn: {
     'en-us': 'Log In',
     'ru-ru': 'Авторизоваться',

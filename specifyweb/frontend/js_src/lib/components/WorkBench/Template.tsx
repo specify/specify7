@@ -57,8 +57,9 @@ function Navigation({
       </Button.Small>
       <Button.Small
         className={`
-          wb-navigation-text aria-handled grid grid-cols-[auto_1fr_auto_1fr_auto] items-center
+          wb-navigation-text grid grid-cols-[auto_1fr_auto_1fr_auto] items-center
           ring-0 hover:brightness-70
+          ${className.ariaHandled}
         `}
         title={wbText.clickToToggle()}
         variant="bg-inherit text-gray-800 dark:text-gray-100"

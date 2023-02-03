@@ -11,12 +11,15 @@ export function ActiveLink<T extends Parameters<typeof Link.Default>[0]>({
   component: LinkComponent = Link.Default,
   'aria-current': ariaCurrent = 'page',
   end = false,
+  activeOverride,
   ...props
 }: T & {
   readonly end?: boolean;
+  readonly activeOverride?: boolean;
   readonly component?: (props: T) => JSX.Element;
 }): JSX.Element {
-  const isActive = useIsActive(props.href, end);
+  const rawIsActive = useIsActive(props.href, end);
+  const isActive = activeOverride ?? rawIsActive;
   return (
     <LinkComponent
       {...(props as T)}

@@ -10,7 +10,10 @@ import { filterArray } from '../../utils/types';
 import { sortFunction, split, toLowerCase } from '../../utils/utils';
 import type { UserTool } from '../Core/Main';
 import { getDisciplineTrees } from '../InitialContext/treeRanks';
-import { fetchContext as fetchUserInfo } from '../InitialContext/userInformation';
+import {
+  fetchContext as fetchUserInfo,
+  userInformation,
+} from '../InitialContext/userInformation';
 import { fetchContext as userPermission } from '../Permissions';
 import {
   hasPermission,
@@ -23,10 +26,17 @@ const rawUserTools: IR<RA<UserTool>> = {
     {
       title: userText.logOut(),
       url: '/accounts/logout/',
+      enabled: () => userInformation.isauthenticated,
     },
     {
       title: userText.changePassword(),
       url: '/accounts/password_change/',
+      enabled: () => userInformation.isauthenticated,
+    },
+    {
+      title: userText.logIn(),
+      url: '/accounts/login/',
+      enabled: () => !userInformation.isauthenticated,
     },
   ],
   [preferencesText.customization()]: [
