@@ -18,6 +18,7 @@ import {
   parserFromType,
 } from '../../utils/parser/definitions';
 import { parseValue } from '../../utils/parser/parse';
+import type { RA } from '../../utils/types';
 import { Input, Select, Textarea } from '../Atoms/Form';
 import { iconClassName } from '../Atoms/Icons';
 import type { AnySchema } from '../DataModel/helperTypes';
@@ -25,9 +26,12 @@ import { schema } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Collection } from '../DataModel/types';
 import { AutoComplete } from '../Molecules/AutoComplete';
+import { ListEdit } from '../Toolbar/QueryTablesEdit';
 import type { PreferenceItem, PreferenceItemComponent } from './Definitions';
 import { getPrefDefinition } from './helpers';
 import { usePref } from './usePref';
+import { headerText } from '../../localization/header';
+import { useMenuItems, useUserTools } from '../Header/menuItemProcessing';
 
 export const ColorPickerPreferenceItem: PreferenceItemComponent<string> =
   function ColorPickerPreferenceItem({
@@ -243,6 +247,61 @@ export const WelcomePageModePreferenceItem: PreferenceItemComponent<WelcomePageM
           />
         ) : undefined}
       </>
+    );
+  };
+
+export type MenuPreferences = {
+  readonly visible: RA<string>;
+  /**
+   * Need to explicitly keep track of hidden items so that when future Specify
+   * versions add new items to menu, they are visible by default
+   */
+  readonly hidden: RA<string>;
+};
+
+export const HeaderItemsPreferenceItem: PreferenceItemComponent<MenuPreferences> =
+  function HeaderItemsPreferenceItem({
+    value,
+    onChange: handleChange,
+    isReadOnly,
+  }) {
+    const menuItems = useMenuItems();
+    const rawUserTools = useUserTools();
+    const userTools = React.useMemo(
+      () =>
+        rawUserTools === undefined
+          ? undefined
+          : Object.values(rawUserTools)
+              .flatMap((entries) => Object.values(entries))
+              .flat(),
+      [rawUserTools]
+    );
+
+    const defaultItems = menuItems?.map(({ name }) => name) ?? [];
+    return menuItems === undefined || userTools === undefined ? (
+      <>{commonText.loading()}</>
+    ) : (
+      <ListEdit
+        allItems={[...menuItems, ...userTools].map(({ name, title }) => ({
+          name,
+          label: title,
+        }))}
+        defaultValues={defaultItems}
+        isReadOnly={isReadOnly}
+        selectedValues={
+          value.visible.length === 0 ? defaultItems : value.visible
+        }
+        onChange={(selectedItems): void =>
+          handleChange({
+            visible: selectedItems,
+            hidden: defaultItems.filter(
+              (item) => !selectedItems.includes(item)
+            ),
+          })
+        }
+        selectedLabel={headerText.menuItems()}
+        availableLabel={headerText.userTools()}
+      />
     );
   };
 

@@ -184,19 +184,18 @@ export function PreferencesContent({
                         !isReadOnly &&
                         (item.visible !== 'protected' ||
                           hasPermission('/preferences/user', 'edit_protected'));
-                      return (
-                        <label
-                          className={`
+                      const props = {
+                        className: `
                             flex items-start gap-2
                             ${canEdit ? '' : '!cursor-not-allowed'}
-                          `}
-                          key={name}
-                          title={
-                            canEdit
-                              ? undefined
-                              : preferencesText.adminsOnlyPreference()
-                          }
-                        >
+                          `,
+                        key: name,
+                        title: canEdit
+                          ? undefined
+                          : preferencesText.adminsOnlyPreference(),
+                      } as const;
+                      const children = (
+                        <>
                           <div className="flex flex-1 flex-col gap-2">
                             <p
                               className={`
@@ -226,7 +225,12 @@ export function PreferencesContent({
                               subcategory={subcategory}
                             />
                           </div>
-                        </label>
+                        </>
+                      );
+                      return 'container' in item && item.container === 'div' ? (
+                        <div {...props}>{children}</div>
+                      ) : (
+                        <label {...props}>{children}</label>
                       );
                     })}
                   </section>

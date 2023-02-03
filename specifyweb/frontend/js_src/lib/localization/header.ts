@@ -17,6 +17,9 @@ export const headerText = createDictionary({
     'fr-fr': 'Aller au contenu',
     'uk-ua': 'Перейти до вмісту',
   },
+  main: {
+    'en-us': 'Main',
+  },
   currentUser: {
     'en-us': 'Current User',
     'ru-ru': 'Текущий пользователь',
@@ -201,8 +204,15 @@ export const headerText = createDictionary({
     'fr-fr': 'Recherche secondaire',
     'uk-ua': 'Вторинний пошук',
   },
+  menuItems: {
+    'en-us': 'Menu Items',
+    'ru-ru': 'Элементы меню',
+    'es-es': 'Elementos de menú',
+    'fr-fr': 'Éléments de menu',
+    'uk-ua': 'Елементи меню',
+  },
   userTools: {
-    'en-us': 'Tools',
+    'en-us': 'User Tools',
     'ru-ru': 'Инструменты',
     'es-es': 'Herramientas',
     'fr-fr': 'Outils',

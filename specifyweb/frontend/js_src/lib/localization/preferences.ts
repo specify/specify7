@@ -366,21 +366,6 @@ export const preferencesText = createDictionary({
     'fr-fr': 'Menu de niveau supérieur',
     'uk-ua': 'Меню верхнього рівня',
   },
-  menu: {
-    'en-us': 'Menu',
-    'ru-ru': 'Меню',
-    'es-es': 'Menú',
-    'fr-fr': 'Menu',
-    'uk-ua': 'Меню',
-  },
-  showMenuItem: {
-    comment: 'Example: Show Data Entry. Or: Show Interactions. Or: Show Trees',
-    'en-us': 'Show {menuItem:string}',
-    'ru-ru': 'Показать {menuItem:string}',
-    'es-es': 'Mostrar {menuItem:string}',
-    'fr-fr': 'Afficher {menuItem:string}',
-    'uk-ua': 'Показати {menuItem:string}',
-  },
   application: {
     'en-us': 'Application',
     'ru-ru': 'Программа',

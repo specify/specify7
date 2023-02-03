@@ -7,23 +7,22 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
-import type { RR } from '../../utils/types';
+import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
+import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
 import type { TagProps } from '../Atoms/wrapper';
 import { MenuContext } from '../Core/Contexts';
 import type { MenuItem } from '../Core/Main';
 import { ActiveLink } from '../Router/ActiveLink';
 import { usePref } from '../UserPreferences/usePref';
-import type { MenuItemName } from './menuItemDefinitions';
 import { Notifications } from './Notifications';
 import { UserTools } from './UserTools';
-import { className } from '../Atoms/className';
 
 export function Header({
   menuItems,
 }: {
-  readonly menuItems: RR<MenuItemName, MenuItem>;
+  readonly menuItems: RA<MenuItem>;
 }): JSX.Element {
   const [rawIsCollapsed = false, setIsCollapsed] = useCachedState(
     'header',
@@ -43,8 +42,9 @@ export function Header({
     <header
       className={`
         flex bg-gray-100 shadow-md shadow-gray-400 [z-index:1]
-        dark:bg-neutral-900 print:hidden
-        ${position === 'top' ? '' : 'flex-col'}
+        dark:border-neutral-700 dark:bg-neutral-900
+        print:hidden
+        ${position === 'top' ? 'dark:border-b' : 'flex-col dark:border-r'}
       `}
     >
       <h1 className="contents">
@@ -116,45 +116,23 @@ function HeaderItems({
   menuItems,
   isCollapsed,
 }: {
-  readonly menuItems: RR<MenuItemName, MenuItem>;
+  readonly menuItems: RA<MenuItem>;
   readonly isCollapsed: boolean;
 }): JSX.Element {
   const [activeMenuItem] = React.useContext(MenuContext);
   return (
     <>
-      {Object.entries(menuItems).map(([name, menuItem]) => (
-        <MenuItemComponent
-          isCollapsed={isCollapsed}
-          key={name}
+      {menuItems.map(({ url, name, ...menuItem }) => (
+        <MenuButton
           {...menuItem}
           isActive={name === activeMenuItem}
+          isCollapsed={isCollapsed}
+          key={name}
+          onClick={url}
         />
       ))}
     </>
   );
-}
-
-function MenuItemComponent({
-  title,
-  url,
-  icon,
-  visibilityKey,
-  isActive,
-  isCollapsed,
-}: MenuItem & {
-  readonly isCollapsed: boolean;
-  readonly isActive: boolean;
-}): JSX.Element | null {
-  const [isVisible] = usePref('header', 'menu', visibilityKey);
-  return isVisible ? (
-    <MenuButton
-      icon={icon}
-      isActive={isActive}
-      isCollapsed={isCollapsed}
-      title={title}
-      onClick={url}
-    />
-  ) : null;
 }
 
 export function MenuButton({

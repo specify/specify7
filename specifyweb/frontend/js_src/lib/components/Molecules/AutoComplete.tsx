@@ -386,9 +386,7 @@ export function AutoComplete<T>({
             pendingValueRef.current = value;
         }}
         {...inputProps}
-        onBlur={(event: React.FocusEvent<HTMLInputElement>): void =>
-          withHandleBlur(inputProps?.onBlur).onBlur(event)
-        }
+        onBlur={withHandleBlur(inputProps?.onBlur).onBlur}
         /*
          * Padding for the button. Using "em" so as to match @tailwind/forms
          * styles for <select>

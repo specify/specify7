@@ -6,7 +6,6 @@ import { wbText } from '../../localization/workbench';
 import type { RA } from '../../utils/types';
 import { Redirect } from './Redirect';
 import type { EnhancedRoute } from './RouterUtils';
-import { WelcomeView } from '../HomePage';
 import { schemaText } from '../../localization/schema';
 import { headerText } from '../../localization/header';
 import { userText } from '../../localization/user';
@@ -418,7 +417,7 @@ export const routes: RA<EnhancedRoute> = [
   {
     index: true,
     title: welcomeText.pageTitle(),
-    element: <WelcomeView />,
+    element: () => import('../HomePage').then(({ WelcomeView }) => WelcomeView),
   },
   /*
    * The "*" route (the 404 case) was not added, as otherwise it would be
