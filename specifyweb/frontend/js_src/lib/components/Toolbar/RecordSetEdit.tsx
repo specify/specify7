@@ -6,7 +6,7 @@ import { ResourceView } from '../Forms/ResourceView';
 import { formsText } from '../../localization/forms';
 import { hasToolPermission } from '../Permissions/helpers';
 import { Button } from '../Atoms/Button';
-import { getModelById } from '../DataModel/schema';
+import { getModelById, schema } from '../DataModel/schema';
 import React from 'react';
 import { userInformation } from '../InitialContext/userInformation';
 import { QueryListDialog, useQueries } from './Query';
@@ -18,11 +18,13 @@ export function EditRecordSet({
   isReadOnly,
   onClose: handleClose,
   onDeleted: handleDeleted,
+  onSaving: handleSaving,
 }: {
   readonly recordSet: SpecifyResource<RecordSet>;
   readonly isReadOnly: boolean;
   readonly onClose: () => void;
   readonly onDeleted?: () => void;
+  readonly onSaving?: Parameters<typeof ResourceView>[0]['onSaving'];
 }): JSX.Element {
   const navigate = useNavigate();
   const [isQuerying, handleOpenQuery, handleCloseQuery] = useBooleanState();
@@ -36,6 +38,7 @@ export function EditRecordSet({
     <ResourceView
       // BUG: the message is stale if record set is renamed
       deletionMessage={formsText.recordSetDeletionWarning({
+        recordSetTable: schema.models.RecordSet.label,
         recordSetName: recordSet.get('name') ?? '',
       })}
       dialog="modal"
@@ -64,6 +67,7 @@ export function EditRecordSet({
         handleDeleted?.();
         handleClose();
       }}
+      onSaving={handleSaving}
       onSaved={(): void => navigate(`/specify/record-set/${recordSet.id}/`)}
     />
   );

@@ -4,7 +4,6 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { Button } from '../Atoms/Button';
-import { formatList } from '../Atoms/Internationalization';
 import { toTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -16,6 +15,7 @@ import { ReportsView } from '../Reports';
 import { ShowLoansCommand } from './ShowTransactions';
 import { LocalizedString } from 'typesafe-i18n';
 import { interactionsText } from '../../localization/interactions';
+import { formatDisjunction } from '../Atoms/Internationalization';
 
 export function GenerateLabel({
   resource,
@@ -145,7 +145,7 @@ const commandRenderers: {
         >
           {formsText.wrongTableForCommand({
             currentTable: resource.specifyModel.name,
-            correctTable: formatList(supportedTables),
+            correctTable: formatDisjunction(supportedTables),
           })}
         </Dialog>
       </>

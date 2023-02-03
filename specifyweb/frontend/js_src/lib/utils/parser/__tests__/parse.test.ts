@@ -5,7 +5,7 @@ import type { Parser } from '../definitions';
 import { resolveParser } from '../definitions';
 import type { InvalidParseResult, ValidParseResult } from '../parse';
 import { parseValue } from '../parse';
-import { fullDateFormat } from '../../dateFormat';
+import { fullDateFormat } from '../dateFormat';
 
 requireContext();
 

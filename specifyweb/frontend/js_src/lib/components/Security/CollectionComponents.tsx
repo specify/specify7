@@ -23,6 +23,7 @@ import type { Role } from './Role';
 import { deserializeResource } from '../DataModel/helpers';
 import { userText } from '../../localization/user';
 import { LocalizedString } from 'typesafe-i18n';
+import { schema } from '../DataModel/schema';
 
 /**
  * Display a button to open current user
@@ -118,7 +119,11 @@ export function CollectionRoles({
 
   return (
     <section className="flex flex-col gap-1">
-      <h4 className="text-xl">{userText.collectionUserRoles()}</h4>
+      <h4 className="text-xl">
+        {userText.collectionUserRoles({
+          collectionTable: schema.models.Collection.label,
+        })}
+      </h4>
       {typeof roles === 'object' ? (
         <Ul>
           {Object.values(roles)

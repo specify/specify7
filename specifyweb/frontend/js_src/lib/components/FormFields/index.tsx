@@ -99,18 +99,20 @@ const fieldRenderers: {
       autoGrow && formType !== 'formTable' ? AutoGrowTextArea : Textarea;
 
     return (
-      <Component
-        {...validationAttributes}
-        forwardRef={validationRef}
-        id={id}
-        isReadOnly={mode === 'view' || field === undefined}
-        name={name}
-        required={'required' in validationAttributes && mode !== 'search'}
-        rows={rows}
-        value={value?.toString() ?? ''}
-        onBlur={(): void => updateValue(value?.toString() ?? '')}
-        onValueChange={(value): void => updateValue(value, false)}
-      />
+      <ErrorBoundary dismissible>
+        <Component
+          {...validationAttributes}
+          forwardRef={validationRef}
+          id={id}
+          isReadOnly={mode === 'view' || field === undefined}
+          name={name}
+          required={'required' in validationAttributes && mode !== 'search'}
+          rows={formType === 'formTable' ? 1 : rows}
+          value={value?.toString() ?? ''}
+          onBlur={(): void => updateValue(value?.toString() ?? '')}
+          onValueChange={(value): void => updateValue(value, false)}
+        />
+      </ErrorBoundary>
     );
   },
   ComboBox({

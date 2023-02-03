@@ -11,7 +11,6 @@ import { f } from '../../utils/functools';
 import { parseRelativeDate } from '../../utils/relativeDate';
 import type { RA } from '../../utils/types';
 import { getParsedAttribute } from '../../utils/utils';
-import { formatList } from '../Atoms/Internationalization';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
@@ -22,6 +21,7 @@ import { paleoPluginTables } from '../FormPlugins/PaleoLocation';
 import type { PartialDatePrecision } from '../FormPlugins/PartialDateUi';
 import { hasTablePermission } from '../Permissions/helpers';
 import { LiteralField, Relationship } from '../DataModel/specifyField';
+import { formatDisjunction } from '../Atoms/Internationalization';
 
 export type UiPlugins = {
   readonly LatLonUI: State<
@@ -272,7 +272,7 @@ export function parseUiPlugin({
   if (result.type === 'WrongTable')
     console.error(
       `Can't display ${pluginName} on ${model.name} form. Instead, try ` +
-        `displaying it on the ${formatList(result.supportedTables)} form`
+        `displaying it on the ${formatDisjunction(result.supportedTables)} form`
     );
   if (ignoreFieldName === true && fields !== undefined)
     console.warn(

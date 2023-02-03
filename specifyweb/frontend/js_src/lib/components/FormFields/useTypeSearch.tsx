@@ -5,7 +5,7 @@ import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
 import { filterArray } from '../../utils/types';
 import { getParsedAttribute } from '../../utils/utils';
-import { formatList } from '../Atoms/Internationalization';
+import { formatConjunction } from '../Atoms/Internationalization';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { load } from '../InitialContext';
@@ -88,7 +88,7 @@ async function parseTypeSearch(
   return {
     title: commonText.colonLine({
       label: queryText.searchFields(),
-      value: formatList(fieldTitles),
+      value: formatConjunction(fieldTitles),
     }),
     searchFields,
     relatedModel,

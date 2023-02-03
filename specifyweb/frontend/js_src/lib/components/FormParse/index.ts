@@ -22,8 +22,8 @@ import { postProcessFormDef } from './postProcessFormDef';
 import { Http } from '../../utils/ajax/definitions';
 import { webOnlyViews } from './webOnlyViews';
 import { consoleLog, LogMessage, setLogContext } from '../Errors/interceptLogs';
-import { formatList } from '../Atoms/Internationalization';
 import { LocalizedString } from 'typesafe-i18n';
+import { formatDisjunction } from '../Atoms/Internationalization';
 
 export type ViewDescription = ParsedFormDefinition & {
   readonly formType: FormType;
@@ -172,7 +172,7 @@ export function resolveViewDefinition(
     console.warn(
       `Unknown form type ${
         newFormType ?? '(null)'
-      }. Expected one of ${formatList(formTypes)}`
+      }. Expected one of ${formatDisjunction(formTypes)}`
     );
 
   return {

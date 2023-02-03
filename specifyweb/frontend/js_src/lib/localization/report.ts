@@ -62,14 +62,14 @@ export const reportsText = createDictionary({
     'en-us': 'Fix',
     'ru-ru': 'Исправить',
     'es-es': 'Arreglar',
-    'fr-fr': 'Réparer',
+    'fr-fr': 'Corriger',
     'uk-ua': 'Виправити',
   },
   chooseFile: {
     'en-us': 'Choose file',
     'ru-ru': 'Выберите файл',
     'es-es': 'Elija el archivo',
-    'fr-fr': 'Choisir le fichier',
+    'fr-fr': 'Sélectionner un fichier',
     'uk-ua': 'Виберіть файл',
   },
   reportParameters: {
@@ -83,7 +83,7 @@ export const reportsText = createDictionary({
     'en-us': 'Run Report',
     'ru-ru': 'Запустить репорт',
     'es-es': 'Sacar un reporte',
-    'fr-fr': "Rapport d'exécution",
+    'fr-fr': 'Effectuer le rapport',
     'uk-ua': 'Запустити звіт',
   },
   missingReportQuery: {

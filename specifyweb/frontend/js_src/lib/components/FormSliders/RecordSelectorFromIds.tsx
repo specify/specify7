@@ -19,6 +19,7 @@ import { unsetUnloadProtect } from '../../hooks/navigation';
 import { saveFormUnloadProtect } from '../Forms/Save';
 import { LocalizedString } from 'typesafe-i18n';
 import { SetUnloadProtectsContext } from '../Router/Router';
+import { schema } from '../DataModel/schema';
 
 /**
  * A Wrapper for RecordSelector that allows to specify list of records by their
@@ -167,6 +168,16 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
         : undefined,
   });
 
+  const addLabel = isInRecordSet
+    ? formsText.addToRecordSet({
+        recordSetTable: schema.models.RecordSet.label,
+      })
+    : commonText.add();
+  const removeLabel = isInRecordSet
+    ? formsText.removeFromRecordSet({
+        recordSetTable: schema.models.RecordSet.label,
+      })
+    : commonText.delete();
   return (
     <>
       <ResourceView
@@ -180,29 +191,17 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
             {hasTablePermission(model.name, isDependent ? 'create' : 'read') &&
             typeof handleAdding === 'function' ? (
               <DataEntry.Add
-                aria-label={
-                  isInRecordSet ? formsText.addToRecordSet() : commonText.add()
-                }
+                aria-label={addLabel}
                 disabled={mode === 'view'}
-                title={
-                  isInRecordSet ? formsText.addToRecordSet() : commonText.add()
-                }
+                title={addLabel}
                 onClick={handleAdding}
               />
             ) : undefined}
             {typeof handleRemove === 'function' && canRemove ? (
               <DataEntry.Remove
-                aria-label={
-                  isInRecordSet
-                    ? formsText.removeFromRecordSet()
-                    : commonText.delete()
-                }
+                aria-label={removeLabel}
                 disabled={resource === undefined || mode === 'view'}
-                title={
-                  isInRecordSet
-                    ? formsText.removeFromRecordSet()
-                    : commonText.delete()
-                }
+                title={removeLabel}
                 onClick={(): void => handleRemove('minusButton')}
               />
             ) : undefined}

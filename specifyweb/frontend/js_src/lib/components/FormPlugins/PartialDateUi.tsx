@@ -1,10 +1,6 @@
 import React from 'react';
 
-import {
-  databaseDateFormat,
-  fullDateFormat,
-  monthFormat,
-} from '../../utils/dateFormat';
+import { fullDateFormat, monthFormat } from '../../utils/parser/dateFormat';
 import { dayjs, getDateInputValue } from '../../utils/dayJs';
 import { f } from '../../utils/functools';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -23,6 +19,7 @@ import { useSaveBlockers } from '../../hooks/resource';
 import { useValidation } from '../../hooks/useValidation';
 import { AnySchema } from '../DataModel/helperTypes';
 import { usePref } from '../UserPreferences/usePref';
+import { databaseDateFormat } from '../../utils/parser/dateConfig';
 
 export function isInputSupported(type: string): boolean {
   const input = document.createElement('input');

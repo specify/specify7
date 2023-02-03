@@ -4,7 +4,7 @@ import { useCachedState } from '../../hooks/useCachedState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
-import type { RA } from '../../utils/types';
+import { filterArray, RA } from '../../utils/types';
 import { multiSortFunction, removeItem, replaceItem } from '../../utils/utils';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -17,7 +17,7 @@ import type {
   SpViewSetObj as SpViewSetObject,
 } from '../DataModel/types';
 import { hasToolPermission } from '../Permissions/helpers';
-import { ActiveLink } from '../Router/ActiveLink';
+import { ActiveLink, useIsActive } from '../Router/ActiveLink';
 import { appResourceIcon } from './EditorComponents';
 import { useFilteredAppResources } from './Filters';
 import type { AppResourceFilters as AppResourceFiltersType } from './filtersHelpers';
@@ -29,6 +29,9 @@ import { appResourceSubTypes } from './types';
 import { resourcesText } from '../../localization/resources';
 import { StringToJsx } from '../../localization/utils';
 import { LocalizedString } from 'typesafe-i18n';
+import { useParams } from 'react-router-dom';
+import { scrollIntoView } from '../TreeView/helpers';
+import { f } from '../../utils/functools';
 
 export function AppResourcesAside({
   resources: initialResources,
@@ -52,6 +55,8 @@ export function AppResourcesAside({
   const resources = useFilteredAppResources(initialResources, initialFilters);
   const resourcesTree = useResourcesTree(resources);
   useErrorContext('appResourcesTree', resourcesTree);
+
+  useOpenCurrent(conformations, setConformations, resourcesTree);
 
   return (
     <aside
@@ -82,6 +87,66 @@ export function AppResourcesAside({
       </div>
     </aside>
   );
+}
+
+function useOpenCurrent(
+  conformation: RA<AppResourcesConformation>,
+  setConformations: (value: RA<AppResourcesConformation>) => void,
+  resourcesTree: AppResourcesTree
+): void {
+  const { id } = useParams();
+  React.useEffect(() => {
+    const idNum = f.parseInt(id);
+
+    if (idNum === undefined) return;
+
+    function updateConformation(
+      category: AppResourcesTree[number],
+      conformation: AppResourcesConformation | undefined
+    ): AppResourcesConformation | undefined {
+      const childrenConformation = filterArray(
+        category.subCategories.map((item) =>
+          updateConformation(
+            item,
+            conformation?.children.find(
+              (conformation) => conformation.key === category.key
+            )
+          )
+        )
+      );
+
+      if (
+        containsId(category) ||
+        conformation !== undefined ||
+        childrenConformation.length > 0
+      ) {
+        return {
+          key: category.key,
+          children: childrenConformation,
+        };
+      } else return undefined;
+    }
+
+    function containsId(category: AppResourcesTree[number]): boolean {
+      return (
+        category.appResources.some(
+          (appResources) => appResources.id === idNum!
+        ) ||
+        category.viewSets.some((appResources) => appResources.id === idNum!)
+      );
+    }
+
+    setConformations(
+      filterArray(
+        resourcesTree.map((tree) =>
+          updateConformation(
+            tree,
+            conformation.find((conformation) => conformation.key === tree.key)
+          )
+        )
+      )
+    );
+  }, [setConformations, resourcesTree, id]);
 }
 
 export type AppResourcesConformation = {
@@ -282,6 +347,17 @@ function ResourceItem({
     getAppResourceMode(resource) === 'appResources'
       ? `/specify/resources/app-resource/${resource.id}/`
       : `/specify/resources/view-set/${resource.id}/`;
+
+  const [link, setLink] = React.useState<HTMLElement | null>(null);
+
+  const isActive = useIsActive(url, false);
+
+  React.useEffect(() => {
+    if (isActive && link) {
+      scrollIntoView(link);
+    }
+  }, [link]);
+
   return (
     <ActiveLink
       className="[&:not([aria-current]):not(:hover)]:!text-neutral-500"
@@ -294,6 +370,7 @@ function ResourceItem({
             }
           : undefined
       }
+      forwardRef={setLink}
     >
       {appResourceIcon(resource.type)}
       {(resource.name as LocalizedString) || commonText.nullInline()}

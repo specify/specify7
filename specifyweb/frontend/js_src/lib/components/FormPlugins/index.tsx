@@ -5,7 +5,6 @@ import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
-import { formatList } from '../Atoms/Internationalization';
 import { AttachmentsPlugin } from '../Attachments/Plugin';
 import { toTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
@@ -27,6 +26,7 @@ import { LeafletPlugin } from './Leaflet';
 import { PaleoLocationMapPlugin } from './PaleoLocation';
 import { PartialDateUi } from './PartialDateUi';
 import { WebLink } from './WebLink';
+import { formatDisjunction } from '../Atoms/Internationalization';
 
 const pluginRenderers: {
   readonly [KEY in keyof UiPlugins]: (props: {
@@ -302,7 +302,7 @@ export function WrongPluginTable({
       >
         {formsText.wrongTableForPlugin({
           currentTable: resource.specifyModel.name,
-          correctTable: formatList(supportedTables),
+          supportedTables: formatDisjunction(supportedTables),
         })}
       </Dialog>
     </>

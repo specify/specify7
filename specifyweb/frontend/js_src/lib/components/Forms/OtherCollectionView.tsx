@@ -15,6 +15,7 @@ import { usePref } from '../UserPreferences/usePref';
 import { toLargeSortConfig } from '../Molecules/Sorting';
 import { userText } from '../../localization/user';
 import { LocalizedString } from 'typesafe-i18n';
+import { schema } from '../DataModel/schema';
 
 /**
  * Even though available collections do not change during lifecycle of a page,
@@ -54,7 +55,9 @@ export function OtherCollection({
     <Container.FullGray>
       <Container.Center>
         {collections.length === 0 ? (
-          userText.noAccessToResource()
+          userText.noAccessToResource({
+            collectionTable: schema.models.Collection.label,
+          })
         ) : (
           <>
             <p>{userText.resourceInaccessible()}</p>
@@ -77,7 +80,11 @@ export function OtherCollection({
               </>
             ) : (
               <>
-                <p>{userText.loginToProceed()}</p>
+                <p>
+                  {userText.loginToProceed({
+                    collectionTable: schema.models.Collection.label,
+                  })}
+                </p>
                 <div>
                   <Button.Blue
                     onClick={(): void =>

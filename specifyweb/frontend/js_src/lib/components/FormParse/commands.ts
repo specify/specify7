@@ -16,8 +16,8 @@ import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import { Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import { SpecifyModel } from '../DataModel/specifyModel';
-import { formatList } from '../Atoms/Internationalization';
 import { LocalizedString } from 'typesafe-i18n';
+import { formatDisjunction } from '../Atoms/Internationalization';
 
 export type UiCommands = {
   readonly GenerateLabel: State<'GenerateLabel'>;
@@ -94,7 +94,9 @@ export function parseUiCommand(
       `Can't display ${label ?? name ?? 'plugin'} on ${
         model.name
       } form. Instead, try ` +
-        `displaying it on the ${formatList(definition.supportedTables)} form`
+        `displaying it on the ${formatDisjunction(
+          definition.supportedTables
+        )} form`
     );
   setLogContext({ command: undefined });
 

@@ -3,7 +3,8 @@ import { theories } from '../../../tests/utils';
 import {
   compareStrings,
   dateParts,
-  formatList,
+  formatConjunction,
+  formatDisjunction,
   formatNumber,
   getRelativeDate,
   months,
@@ -26,11 +27,18 @@ test('localized month names are retried', () => {
   ]);
 });
 
-theories(formatList, [
+theories(formatConjunction, [
   { in: [[]], out: '' },
   { in: [['a']], out: 'a' },
   { in: [['a', 'b']], out: 'a and b' },
   { in: [['a', 'b', 'c']], out: 'a, b, and c' },
+]);
+
+theories(formatDisjunction, [
+  { in: [[]], out: '' },
+  { in: [['a']], out: 'a' },
+  { in: [['a', 'b']], out: 'a or b' },
+  { in: [['a', 'b', 'c']], out: 'a, b, or c' },
 ]);
 
 describe('dateLocalizer', () => {

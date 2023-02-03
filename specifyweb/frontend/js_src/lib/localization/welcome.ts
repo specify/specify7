@@ -20,14 +20,14 @@ export const welcomeText = createDictionary({
     'en-us': 'About Specify 7',
     'ru-ru': 'О Specify 7',
     'es-es': 'Acerca de Especificar 7',
-    'fr-fr': 'À propos de Spécifier 7',
+    'fr-fr': 'À propos de Specify 7',
     'uk-ua': 'Про Specify 7',
   },
   downloadInformation: {
     'en-us': 'Download Information',
     'ru-ru': 'Скачать информацию',
     'es-es': 'Descargar información',
-    'fr-fr': "Télécharger l'information",
+    'fr-fr': 'Télécharger les informations',
     'uk-ua': 'Завантажити інформацію',
   },
   taxonTiles: {
@@ -38,21 +38,25 @@ export const welcomeText = createDictionary({
     'uk-ua': 'Taxon Tiles',
   },
   taxonTilesDescription: {
-    'en-us':
-      'Showing Taxa with {count:number|formatted} or more Collection Objects',
+    'en-us': `
+      Showing Taxa with {count:number|formatted} or more
+      {collectionObjectTable:string} records
+    `,
     'ru-ru': `
-      Показаны таксоны с {count:number|formatted} или более коллекционными
-      объектами
+      Показаны таксоны с {count:number|formatted} или более
+      {collectionObjectTable:string} записями
     `,
     'es-es': `
-      Mostrando taxones con {count:number|formatted} o más objetos de colección
+      Mostrando taxones con {count:number|formatted} o más
+      {collectionObjectTable:string} registros
     `,
     'fr-fr': `
-      Affichage des taxons avec {count:number|formatted} ou plusieurs objets de
-      collection
+      Affichage des taxons avec {count:number|formatted} ou plusieurs
+      enregistrements {collectionObjectTable:string}
     `,
     'uk-ua': `
-      Показано таксони з {count:number|formatted} або більше об’єктів колекції
+      Показано таксони з {count:number|formatted} або більше
+      {collectionObjectTable:string} записів
     `,
   },
   fullAddress: {
@@ -210,7 +214,7 @@ export const welcomeText = createDictionary({
     'en-us': 'Specify 7 Version:',
     'ru-ru': 'Specify 7 Версия:',
     'es-es': 'Especifique la versión 7:',
-    'fr-fr': 'Spécifiez 7 versions :',
+    'fr-fr': 'Version de Specify 7 :',
     'uk-ua': 'Вкажіть 7 версію:',
   },
   gitSha: {
@@ -224,14 +228,14 @@ export const welcomeText = createDictionary({
     'en-us': 'Build Date:',
     'ru-ru': 'Дата сборки:',
     'es-es': 'La fecha de construcción:',
-    'fr-fr': 'Date de construction:',
+    'fr-fr': 'Date de build :',
     'uk-ua': 'Дата збірки:',
   },
   specifySixVersion: {
     'en-us': 'Specify 6 Version:',
     'ru-ru': 'Specify 6 Версия:',
     'es-es': 'Especifique 6 Versión:',
-    'fr-fr': 'Spécifiez 6 versions :',
+    'fr-fr': 'Version de Specify 6 :',
     'uk-ua': 'Вкажіть 6 версію:',
   },
   databaseVersion: {
@@ -245,14 +249,14 @@ export const welcomeText = createDictionary({
     'en-us': 'DB Schema Version:',
     'ru-ru': 'Версия схемы базы данных:',
     'es-es': 'Versión del esquema de base de datos:',
-    'fr-fr': 'Version du schéma de base de données :',
+    'fr-fr': 'Version du schéma de la base de données :',
     'uk-ua': 'Версія схеми БД:',
   },
   databaseName: {
     'en-us': 'Database Name:',
     'ru-ru': 'Имя базы данных:',
     'es-es': 'Nombre de la base de datos:',
-    'fr-fr': 'Nom de la base de données:',
+    'fr-fr': 'Nom de la base de données :',
     'uk-ua': "Ім'я бази даних:",
   },
   isaNumber: {
@@ -267,14 +271,14 @@ export const welcomeText = createDictionary({
     'en-us': 'Browser:',
     'ru-ru': 'Браузер:',
     'es-es': 'Navegador:',
-    'fr-fr': 'Navigateur:',
+    'fr-fr': 'Navigateur :',
     'uk-ua': 'Браузер:',
   },
   databaseCreationDate: {
     'en-us': 'DB Creation Date:',
     'ru-ru': 'Дата создания базы данных:',
     'es-es': 'Fecha de creación de la base de datos:',
-    'fr-fr': 'Date de création de la BD :',
+    'fr-fr': 'Date de création de la base de données :',
     'uk-ua': 'Дата створення БД:',
   },
 } as const);

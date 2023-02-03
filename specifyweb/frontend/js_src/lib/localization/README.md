@@ -89,6 +89,9 @@ cognitive overhead of working with localization files (thus killing bugs)
   otherwise (e.x, in case of `S2N` or other proper nouns that contain numbers or
   capitalized letters)
 
+- Don't use `'` in place of quotes because Weblate seems to get confused by
+  them. Instead, use `"`. When `'` is part of a word, Weblate is ok.
+
 - Prefer full terms rather than acronyms or shortened variants. Some people may
   be unfamiliar with the acronyms used.
 

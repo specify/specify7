@@ -128,7 +128,9 @@ function DisplayRecordSet({
         header={userText.permissionDeniedError()}
         onClose={(): void => navigate('/specify/')}
       >
-        {userText.emptyRecordSetsReadOnly()}
+        {userText.emptyRecordSetsReadOnly({
+          recordSetTable: schema.models.RecordSet.label,
+        })}
       </Dialog>
     </>
   ) : null;

@@ -22,7 +22,6 @@ import {Button} from '../Atoms/Button';
 import {Link} from '../Atoms/Link';
 import {getModel, schema, strictGetModel} from '../DataModel/schema';
 import {DataSetNameView} from './DataSetMeta';
-import {WbUploaded} from './Results';
 import {WBUtils} from './wbUtils';
 import {
   formatToManyIndex,
@@ -37,9 +36,7 @@ import {getTableFromMappingPath} from '../WbPlanView/navigator';
 import {getIcon, unknownIcon} from '../InitialContext/icons';
 import {wbText} from '../../localization/workbench';
 import {commonText} from '../../localization/common';
-import {showDialog} from '../Molecules/LegacyDialog';
-import {dialogClassNames} from '../Molecules/Dialog';
-import {format} from '../Forms/dataObjFormatters';
+import {Dialog} from '../Molecules/Dialog';
 import {iconClassName, legacyNonJsxIcons} from '../Atoms/Icons';
 import {whitespaceSensitive} from '../../localization/utils';
 import {filterArray} from '../../utils/types';
@@ -59,12 +56,17 @@ import {getCache, setCache} from '../../utils/cache';
 import {f} from '../../utils/functools';
 import {pathStartsWith} from '../WbPlanView/helpers';
 import {getUserPref} from '../UserPreferences/helpers';
-import {createBackboneView} from '../Core/reactBackboneExtend';
 import {WbStatus} from './Status';
 import {crash} from '../Errors/Crash';
 import {loadingBar} from '../Molecules';
 import {Http} from '../../utils/ajax/definitions';
 import {downloadDataSet} from './helpers';
+import {CreateRecordSetButton} from './RecordSet';
+import {WbUploaded} from './Results';
+import {getSelectedLast, getSelectedRegions} from './hotHelpers';
+import {DevShowPlan} from './DevShowPlan';
+import {RollbackConfirmation} from './Components';
+import {DisambiguationDialog} from './Disambiguation';
 import {LANGUAGE} from '../../localization/utils/config';
 import {resolveValidationMessage} from './resultsParser';
 import {backEndText} from '../../localization/backEnd';
@@ -86,8 +88,6 @@ const defaultMetaValues = Object.freeze([
 ]);
 
 // REFACTOR: when rewriting to React, add ErrorBoundaries for these two:
-const WbUploadedView = createBackboneView(WbUploaded);
-const WbStatusView = createBackboneView(WbStatus);
 
 // REFACTOR: rewrite to React
 export const WBView = Backbone.View.extend({
@@ -156,6 +156,7 @@ export const WBView = Backbone.View.extend({
     this.datasetmeta = new DataSetNameView({
       dataset: this.dataset,
       el: this.el,
+      display: this.options.display,
       getRowCount: () =>
         this.hot === undefined
           ? this.dataset.rows.length
@@ -255,23 +256,26 @@ export const WBView = Backbone.View.extend({
               !(this.mappings?.lines.length > 0) &&
               hasPermission('/workbench/dataset', 'update')
             ) {
-              const dialog = showDialog({
-                header: wbPlanText.noUploadPlan(),
-                onClose: () => dialog.remove(),
-                buttons: (
-                  <>
-                    <Button.DialogClose>
-                      {commonText.close()}
-                    </Button.DialogClose>
-                    <Link.Blue
-                      href={`/specify/workbench/plan/${this.dataset.id}/`}
-                    >
-                      {commonText.create()}
-                    </Link.Blue>
-                  </>
-                ),
-                content: wbPlanText.noUploadPlanDescription(),
-              });
+              const dialog = this.options.display(
+                <Dialog
+                  header={wbPlanText.noUploadPlan()}
+                  onClose={() => dialog()}
+                  buttons={
+                    <>
+                      <Button.DialogClose>
+                        {commonText.close()}
+                      </Button.DialogClose>
+                      <Link.Blue
+                        href={`/specify/workbench/plan/${this.dataset.id}/`}
+                      >
+                        {commonText.create()}
+                      </Link.Blue>
+                    </>
+                  }
+                >
+                  {wbPlanText.noUploadPlanDescription()}
+                </Dialog>
+              );
               this.$('.wb-validate, .wb-data-check')
                 .prop('disabled', true)
                 .prop(
@@ -454,7 +458,7 @@ export const WBView = Backbone.View.extend({
                     isCommand: false,
                     renderer: (_hot, wrapper) => {
                       const { endRow: visualRow, endCol: visualCol } =
-                        this.wbutils.getSelectedRegions().slice(-1)[0];
+                        getSelectedRegions(this.hot).slice(-1)[0];
                       const physicalRow = this.hot.toPhysicalRow(visualRow);
                       const physicalCol = this.hot.toPhysicalColumn(visualCol);
 
@@ -532,7 +536,7 @@ export const WBView = Backbone.View.extend({
                       )
                         return true;
                       // Or if called on the last row
-                      const selectedRegions = this.wbutils.getSelectedRegions();
+                      const selectedRegions = getSelectedRegions(this.hot);
                       return (
                         selectedRegions.length === 1 &&
                         selectedRegions[0].startRow === this.data.length - 1 &&
@@ -619,7 +623,7 @@ export const WBView = Backbone.View.extend({
     this.hot = undefined;
     this.wbutils.remove();
     this.datasetmeta.remove();
-    this.uploadedView?.handleClose();
+    this.uploadedView?.();
     this.wbstatus?.();
     this.stopLiveValidation();
     globalThis.removeEventListener('resize', this.handleResize);
@@ -1478,7 +1482,7 @@ export const WBView = Backbone.View.extend({
   isAmbiguousCell() {
     if (!this.mappings) return false;
 
-    const [visualRow, visualCol] = this.wbutils.getSelectedLast();
+    const [visualRow, visualCol] = getSelectedLast(this.hot);
     const physicalRow = this.hot.toPhysicalRow(visualRow);
     const physicalCol = this.hot.toPhysicalColumn(visualCol);
     const da = this.getDisambiguation(physicalRow);
@@ -1557,136 +1561,27 @@ export const WBView = Backbone.View.extend({
       filters: { id__in: matches.ids.join(',') },
     });
 
-    const doDA = (selected) => {
-      this.setDisambiguation(
-        physicalRow,
-        matches.mappingPath,
-        Number.parseInt(selected)
-      );
-      this.startValidateRow(physicalRow);
-    };
-    const doAll = (selected) => {
-      // Loop backwards so the live validation will go from top to bottom
-      for (let visualRow = this.data.length - 1; visualRow >= 0; visualRow--) {
-        const physicalRow = this.hot.toPhysicalRow(visualRow);
-        if (
-          !this.uploadResults.ambiguousMatches[physicalRow]?.find(
-            ({ key, mappingPath }) =>
-              key === matches.key &&
-              typeof this.getDisambiguation(physicalRow)[
-                mappingPathToString(mappingPath)
-              ] !== 'number'
-          )
-        )
-          continue;
-        this.setDisambiguation(
-          physicalRow,
-          matches.mappingPath,
-          Number.parseInt(selected)
-        );
-        this.startValidateRow(physicalRow);
-      }
-    };
-
     (hasTablePermission(model.name, 'read')
       ? resources.fetch({ limit: 0 })
       : Promise.resolve()
     ).then(() => {
       if (resources.length === 0) {
-        const dialog = showDialog({
-          header: wbText.noDisambiguationResults(),
-          content: wbText.noDisambiguationResultsDescription(),
-          buttons: commonText.close(),
-          onClose: () => dialog.remove(),
-        });
+        const dialog = this.options.display(
+          <Dialog
+            header={wbText.noDisambiguationResults()}
+            buttons={commonText.close()}
+            onClose={() => dialog()}
+          >{wbText.noDisambiguationResultsDescription()}</Dialog>
+        );
         return;
       }
 
-      const content = $('<div class="contents">');
-      resources.forEach((resource) => {
-        const row = $(
-          `<div class="py-1 flex items-center gap-2">
-            <label class="contents">
-              <input
-                type="radio"
-                class="da-option"
-                name="disambiguate" value="${resource.id}"
-              >
-              <span class="label">${resource.id}</span>
-            <label/>
-          ${
-            hasTablePermission(model.name, 'read')
-              ? `<a
-            href="${resource.viewUrl()}"
-            target="_blank"
-            title="${commonText.view()}"
-            aria-label="${commonText.view()}"
-          >
-            <span
-              title="${commonText.opensInNewTab()}"
-              aria-label="${commonText.opensInNewTab()}"
-            >${legacyNonJsxIcons.link}</span>
-          </a>`
-              : ''
-          }
-        </div>`
-        ).appendTo(content);
-        if (
-          typeof model.getField('rankid') === 'object' &&
-          hasTablePermission(model.name, 'read')
-        )
-          resource
-            .rget('parent.fullname')
-            .then((parentName) =>
-              row
-                .find('.label')
-                .text(`${resource.get('fullname')} (in ${parentName})`)
-            );
-        else
-          format(resource, undefined, true).then((formatted) =>
-            row.find('.label').text(formatted)
-          );
-      });
-
-      const dialog = showDialog({
-        header: wbText.disambiguateMatches(),
-        onClose: () => {
-          dialog.remove();
-          globalThis.clearInterval(interval);
-        },
-        content,
-        buttons: (
-          <>
-            <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-            <Button.Blue
-              onClick={() => {
-                const selected = $('input.da-option:checked', content).val();
-                if (selected != null) {
-                  doDA(selected);
-                  dialog.remove();
-                  globalThis.clearInterval(interval);
-                }
-              }}
-            >
-              {commonText.apply()}
-            </Button.Blue>
-            <Button.Blue
-              id="applyAllButton"
-              onClick={() => {
-                const selected = $('input.da-option:checked', content).val();
-                if (selected != null) {
-                  doAll(selected);
-                  dialog.remove();
-                  globalThis.clearInterval(interval);
-                }
-              }}
-            >
-              {commonText.applyAll()}
-            </Button.Blue>
-          </>
-        ),
-      });
-
+      // Re-enable this once live validation is available again:
+      /*
+       * Disable "Apply All" if validation is still in progress.
+       * This is because we don't know all matches until validation is done
+       */
+      /*
       let applyAllAvailable = true;
       const applyAllButton = content.find('#applyAllButton');
 
@@ -1703,6 +1598,44 @@ export const WBView = Backbone.View.extend({
       };
 
       const interval = globalThis.setInterval(updateIt, 100);
+      // onClose: globalThis.clearInterval(interval);
+      */
+
+      const dialog = this.options.display(<DisambiguationDialog
+        matches={resources.models}
+        onClose={() => dialog()}
+        onSelected={(selected)=>{
+          this.setDisambiguation(
+            physicalRow,
+            matches.mappingPath,
+            selected.id
+          );
+          this.startValidateRow(physicalRow);
+        }}
+        onSelectedAll={(selected)=>{
+          // Loop backwards so the live validation will go from top to bottom
+          for (let visualRow = this.data.length - 1; visualRow >= 0; visualRow--) {
+            const physicalRow = this.hot.toPhysicalRow(visualRow);
+            if (
+              !this.uploadResults.ambiguousMatches[physicalRow]?.find(
+                ({ key, mappingPath }) =>
+                  key === matches.key &&
+                  typeof this.getDisambiguation(physicalRow)[
+                    mappingPathToString(mappingPath)
+                  ] !== 'number'
+              )
+            )
+              continue;
+            this.setDisambiguation(
+              physicalRow,
+              matches.mappingPath,
+              selected.id
+            );
+            this.startValidateRow(physicalRow);
+          }
+        }}
+      />);
+
     });
   },
 
@@ -1711,17 +1644,20 @@ export const WBView = Backbone.View.extend({
     if (!this.dataset.rowresults) return;
 
     if (this.uploadedView !== undefined) {
-      this.uploadedView.handleClose();
+      this.uploadedView();
       return;
     }
 
     if (this.liveValidationStack.length > 0) {
-      const dialog = showDialog({
-        header: commonText.results(),
-        content: wbText.unavailableWhileValidating(),
-        onClose: () => dialog.remove(),
-        buttons: commonText.close(),
-      });
+      const dialog = this.options.display(
+        <Dialog
+          header={commonText.results()}
+          onClose={() => dialog()}
+          buttons={commonText.close()}
+        >
+          {wbText.unavailableWhileValidating()}
+        </Dialog>
+      );
       return;
     }
 
@@ -1852,58 +1788,39 @@ export const WBView = Backbone.View.extend({
         (effectCleanup) => effectCleanup?.()
       );
 
-    const handleClose = () => {
-      this.uploadedView.remove();
-      this.uploadedView = undefined;
-      runCleanup();
-    };
-    this.uploadedView = new WbUploadedView({
-      recordCounts: this.uploadResults.recordCounts,
-      isUploaded: this.isUploaded,
-      onClose: handleClose,
-    }).render();
-
-    uploadedViewWrapper.append(this.uploadedView.el);
-    this.uploadedView.handleClose = handleClose;
+    const container = document.createElement('div');
+    this.uploadedView = this.options.display(
+      <WbUploaded
+        recordCounts={this.uploadResults.recordCounts}
+        isUploaded={this.isUploaded}
+        dataSetId={this.dataset.id}
+        dataSetName={this.dataset.name}
+        onClose={() => this.uploadedView()}
+      />,
+      container,
+      () => {
+        this.uploadedView = undefined;
+        runCleanup();
+      }
+    );
+    uploadedViewWrapper.append(container);
 
     runEffects();
   },
   // For debugging only
   showPlan() {
-    const dataset = this.dataset;
-    const planJson = JSON.stringify(dataset.uploadplan, null, 4);
-    const textarea = $('<textarea cols="120" rows="50">').text(planJson)[0];
-    const dialog = showDialog({
-      header: wbPlanText.dataMapper(),
-      content: textarea,
-      onClose: () => dialog.remove(),
-      buttons: (
-        <>
-          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-          <Button.Green
-            onClick={() => {
-              dataset.uploadplan =
-                textarea.value.length === 0 ? null : JSON.parse(textarea.value);
-              ping(
-                `/api/workbench/dataset/${dataset.id}/`,
-                {
-                  method: 'PUT',
-                  body: { uploadplan: dataset.uploadplan },
-                },
-                { expectedResponseCodes: [Http.NO_CONTENT, Http.NOT_FOUND] }
-              )
-                .then(this.checkDeletedFail.bind(this))
-                .then(() => {
-                  this.trigger('refresh');
-                  dialog.remove();
-                });
-            }}
-          >
-            {commonText.save()}
-          </Button.Green>
-        </>
-      ),
-    });
+    const dialog = this.options.display(
+      <DevShowPlan
+        dataSetId={this.dataset.id}
+        uploadPlan={this.dataset.uploadplan}
+        onClose={() => dialog()}
+        onChanged={(plan) => {
+          this.dataset.uploadplan = plan;
+          this.trigger('refresh');
+        }}
+        onDeleted={this.options.onDeleted}
+      />
+    );
   },
   changeOwner() {
     this.datasetmeta.changeOwner();
@@ -1912,29 +1829,13 @@ export const WBView = Backbone.View.extend({
   // Actions
   // aka Rollback
   unupload() {
-    const dialog = showDialog({
-      header: wbText.beginRollback(),
-      content: wbText.beginRollbackDescription(),
-      className: {
-        container: dialogClassNames.narrowContainer,
-      },
-      onClose: () => dialog.remove(),
-      buttons: (
-        <>
-          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Button.Red
-            onClick={() => {
-              ping(`/api/workbench/unupload/${this.dataset.id}/`, {
-                method: 'POST',
-              }).then(() => this.openStatus('unupload'));
-              dialog.remove();
-            }}
-          >
-            {wbText.rollback()}
-          </Button.Red>
-        </>
-      ),
-    });
+    const dialog = this.options.display(
+      <RollbackConfirmation
+        dataSetId={this.dataset.id}
+        onClose={() => dialog()}
+        onRollback={() => this.openStatus('unupload')}
+      />
+    );
   },
   // BUG: disable the button if there is nothing to upload
   upload(event) {
@@ -1943,39 +1844,45 @@ export const WBView = Backbone.View.extend({
       : 'validate';
     if (this.mappings?.lines.length > 0) {
       if (mode === 'upload') {
-        const dialog = showDialog({
-          header: wbText.startUpload(),
-          content: wbText.startUploadDescription(),
-          onClose: () => dialog.remove(),
-          buttons: (
-            <>
-              <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-              <Button.Blue
-                onClick={() => {
-                  this.startUpload(mode);
-                  dialog.remove();
-                }}
-              >
-                {wbText.upload()}
-              </Button.Blue>
-            </>
-          ),
-        });
+        const dialog = this.options.display(
+          <Dialog
+            header={wbText.startUpload()}
+            onClose={() => dialog()}
+            buttons={
+              <>
+                <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+                <Button.Blue
+                  onClick={() => {
+                    this.startUpload(mode);
+                    dialog();
+                  }}
+                >
+                  {wbText.upload()}
+                </Button.Blue>
+              </>
+            }
+          >
+            {wbText.startUploadDescription()}
+          </Dialog>
+        );
       } else this.startUpload(mode);
     } else {
-      const dialog = showDialog({
-        header: wbPlanText.noUploadPlan(),
-        content: wbPlanText.noUploadPlanDescription(),
-        onClose: () => dialog.remove(),
-        buttons: (
-          <>
-            <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-            <Link.Blue href={`/specify/workbench/plan/${this.dataset.id}/`}>
-              {commonText.create()}
-            </Link.Blue>
-          </>
-        ),
-      });
+      const dialog = this.options.display(
+        <Dialog
+          header={wbPlanText.noUploadPlan()}
+          onClose={() => dialog()}
+          buttons={
+            <>
+              <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+              <Link.Blue href={`/specify/workbench/plan/${this.dataset.id}/`}>
+                {commonText.create()}
+              </Link.Blue>
+            </>
+          }
+        >
+          {wbPlanText.noUploadPlanDescription()}
+        </Dialog>
+      );
     }
   },
   startUpload(mode) {
@@ -1995,53 +1902,58 @@ export const WBView = Backbone.View.extend({
       .then(() => this.openStatus(mode));
   },
   openStatus(mode) {
-    this.wbstatus = new WbStatusView({
-      dataset: {
-        ...this.dataset,
-        // Create initial status if it doesn't exist yet
-        uploaderstatus: {
-          uploaderstatus:
-            this.dataset.uploaderstatus === null
-              ? {
-                  operation: {
-                    validate: 'validating',
-                    upload: 'uploading',
-                    unupload: 'unuploading',
-                  }[mode],
-                  taskid: '',
-                }
-              : this.dataset.uploaderstatus,
-          taskstatus: 'PENDING',
-          taskinfo: {
-            current: 1,
-            total: 1,
+    this.wbstatus = this.options.display(
+      <WbStatus
+        dataset={{
+          ...this.dataset,
+          // Create initial status if it doesn't exist yet
+          uploaderstatus: {
+            uploaderstatus:
+              this.dataset.uploaderstatus === null
+                ? {
+                    operation: {
+                      validate: 'validating',
+                      upload: 'uploading',
+                      unupload: 'unuploading',
+                    }[mode],
+                    taskid: '',
+                  }
+                : this.dataset.uploaderstatus,
+            taskstatus: 'PENDING',
+            taskinfo: {
+              current: 1,
+              total: 1,
+            },
           },
-        },
-      },
-      onFinished: (wasAborted) => {
-        this.wbstatus.remove();
-        this.wbstatus = undefined;
-        this.trigger('refresh', mode, wasAborted);
-      },
-    }).render();
+        }}
+        onFinished={(wasAborted) => {
+          this.wbstatus?.();
+          this.wbstatus = undefined;
+          this.trigger('refresh', mode, wasAborted);
+        }}
+      />
+    );
   },
   export() {
     downloadDataSet(this.dataset).catch(fail);
   },
   revertChanges() {
-    const dialog = showDialog({
-      header: wbText.revertChanges(),
-      content: wbText.revertChangesDescription(),
-      onClose: () => dialog.remove(),
-      buttons: (
-        <>
-          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Button.Red onClick={() => this.trigger('refresh')}>
-            {wbText.revert()}
-          </Button.Red>
-        </>
-      ),
-    });
+    const dialog = this.options.display(
+      <Dialog
+        header={wbText.revertChanges()}
+        onClose={() => dialog()}
+        buttons={
+          <>
+            <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+            <Button.Red onClick={() => this.trigger('refresh')}>
+              {wbText.revert()}
+            </Button.Red>
+          </>
+        }
+      >
+        {wbText.revertChangesDescription()}
+      </Dialog>
+    );
   },
   saveClicked() {
     this.save();
@@ -2053,12 +1965,15 @@ export const WBView = Backbone.View.extend({
     this.updateValidationButton();
 
     // Show saving progress bar
-    const dialog = showDialog({
-      header: wbText.saving(),
-      onClose: () => dialog.remove(),
-      content: loadingBar,
-      buttons: undefined,
-    });
+    const dialog = this.options.display(
+      <Dialog
+        header={wbText.saving()}
+        onClose={() => dialog()}
+        buttons={undefined}
+      >
+        {loadingBar}
+      </Dialog>
+    );
 
     // Send data
     return ping(
@@ -2076,7 +1991,7 @@ export const WBView = Backbone.View.extend({
         this.wbutils.searchCells({ key: 'SettingsChange' });
         this.hot.render();
       })
-      .finally(() => dialog.remove());
+      .finally(() => dialog());
   },
 
   // Validation
@@ -2399,8 +2314,7 @@ export const WBView = Backbone.View.extend({
   },
   // Check if AJAX failed because Data Set was deleted
   checkDeletedFail(statusCode) {
-    if (statusCode === Http.NOT_FOUND)
-      this.$el.empty().append(wbText.dataSetDeletedOrNotFound());
+    if (statusCode === Http.NOT_FOUND) this.options.onDeleted();
     return statusCode === Http.NOT_FOUND;
   },
   // Check if AJAX failed because Data Set was modified by other session
@@ -2540,12 +2454,28 @@ export const WBView = Backbone.View.extend({
       },
     };
 
-    const dialog = showDialog({
-      header: messages[this.refreshInitiatedBy].header,
-      content: messages[this.refreshInitiatedBy].message,
-      onClose: () => dialog.remove(),
-      buttons: commonText.close(),
-    });
+    const dialog = this.options.display(
+      <Dialog
+        header={messages[this.refreshInitiatedBy].header}
+        onClose={() => dialog()}
+        buttons={
+          <>
+            {cellCounts.invalidCells === 0 &&
+            this.refreshInitiatedBy === 'upload' ? (
+              <CreateRecordSetButton
+                dataSetId={this.dataset.id}
+                dataSetName={this.dataset.name}
+                onClose={() => dialog()}
+                small={false}
+              />
+            ) : undefined}
+            <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+          </>
+        }
+      >
+        {messages[this.refreshInitiatedBy].message}
+      </Dialog>
+    );
 
     this.refreshInitiatedBy = undefined;
     this.refreshInitiatorAborted = false;
@@ -2553,22 +2483,25 @@ export const WBView = Backbone.View.extend({
   operationAbortedMessage() {
     if (!this.refreshInitiatedBy || !this.refreshInitiatorAborted) return;
 
-    const dialog = showDialog({
-      header:
-        this.refreshInitiatedBy === 'validate'
+    const dialog = this.options.display(
+      <Dialog
+        header={
+          this.refreshInitiatedBy === 'validate'
           ? wbText.validationCanceled()
           : this.refreshInitiatedBy === 'unupload'
           ? wbText.rollbackCanceled()
-          : wbText.uploadCanceled(),
-      content:
-        this.refreshInitiatedBy === 'validate'
+          : wbText.uploadCanceled()
+        }
+        onClose={() => dialog()}
+        buttons={commonText.close()}
+      >
+        {this.refreshInitiatedBy === 'validate'
           ? wbText.validationCanceledDescription()
           : this.refreshInitiatedBy === 'unupload'
           ? wbText.rollbackCanceledDescription()
-          : wbText.uploadCanceledDescription(),
-      onClose: () => dialog.remove(),
-      buttons: commonText.close(),
-    });
+          : wbText.uploadCanceledDescription()}
+      </Dialog>
+    );
     this.refreshInitiatedBy = undefined;
     this.refreshInitiatorAborted = false;
   },

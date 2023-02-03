@@ -218,7 +218,8 @@ function eventHandlerForToOne(related, field) {
               typeof (oldValue??'') !== 'object' &&
               typeof (newValue??'') !== 'object'
             ) {
-                if(
+                if (oldValue === newValue) return this;
+                else if(
                   /*
                    * Don't trigger unload protect if:
                    *  - value didn't change
