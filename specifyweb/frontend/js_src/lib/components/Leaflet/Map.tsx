@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from 'underscore';
 
-import { useAsyncState } from '../../hooks/useAsyncState';
+import { usePromise } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import type { RA } from '../../utils/types';
@@ -41,10 +41,7 @@ export function LeafletMap({
     (() => void) | undefined
   >(undefined);
   const [isFullScreen, __, ___, handleToggleFullScreen] = useBooleanState();
-  const [tileLayers] = useAsyncState(
-    React.useCallback(async () => leafletLayersPromise, []),
-    true
-  );
+  const [tileLayers] = usePromise(leafletLayersPromise, true);
 
   const handleClickRef =
     React.useRef<typeof handleMarkerClick>(handleMarkerClick);

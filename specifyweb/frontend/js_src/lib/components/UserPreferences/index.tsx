@@ -6,7 +6,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
 
-import { useAsyncState } from '../../hooks/useAsyncState';
+import { usePromise } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { preferencesText } from '../../localization/preferences';
@@ -305,9 +305,6 @@ function Item({
 }
 
 export function PreferencesWrapper(): JSX.Element | null {
-  const [preferences] = useAsyncState(
-    React.useCallback(async () => preferencesPromise, []),
-    true
-  );
+  const [preferences] = usePromise(preferencesPromise, true);
   return typeof preferences === 'object' ? <Preferences /> : null;
 }

@@ -28,7 +28,7 @@ import { Button } from '../Atoms/Button';
 import { Ul } from '../Atoms';
 import { Link } from '../Atoms/Link';
 import { DataEntry } from '../Atoms/DataEntry';
-import { useAsyncState } from '../../hooks/useAsyncState';
+import { usePromise } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { FilterTablesByEndsWith } from '../DataModel/helperTypes';
 import { TableIcon } from '../Molecules/TableIcon';
@@ -65,10 +65,7 @@ export function TreeSelectDialog({
   readonly permissionName: 'read' | 'repair';
 }): JSX.Element | null {
   const loading = React.useContext(LoadingContext);
-  const [treeRanks] = useAsyncState(
-    React.useCallback(async () => treeRanksPromise, []),
-    true
-  );
+  const [treeRanks] = usePromise(treeRanksPromise, true);
   const [isFinished, setIsFinished] = useBooleanState();
 
   return typeof treeRanks === 'object' ? (

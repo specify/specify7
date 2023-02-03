@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 
 import { useSearchParameter } from '../../hooks/navigation';
 import { deserializeResource } from '../../hooks/resource';
-import { useAsyncState } from '../../hooks/useAsyncState';
+import { useAsyncState, usePromise } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { useErrorContext } from '../../hooks/useErrorContext';
@@ -368,13 +368,11 @@ function EditTreeRank({
   );
 }
 
-const fetchTreeRanks = async (): typeof treeRanksPromise => treeRanksPromise;
-
 export function TreeViewWrapper(): JSX.Element | null {
   useMenuItem('trees');
   const { tableName = '' } = useParams();
   const treeName = getModel(tableName)?.name;
-  const [treeDefinitions] = useAsyncState(fetchTreeRanks, true);
+  const [treeDefinitions] = usePromise(treeRanksPromise, true);
   useErrorContext('treeDefinitions', treeDefinitions);
 
   const treeDefinition =

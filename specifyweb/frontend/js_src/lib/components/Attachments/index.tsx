@@ -4,7 +4,7 @@
 
 import React from 'react';
 
-import { useAsyncState } from '../../hooks/useAsyncState';
+import { useAsyncState, usePromise } from '../../hooks/useAsyncState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { useCollection } from '../../hooks/useCollection';
 import { commonText } from '../../localization/common';
@@ -53,11 +53,9 @@ const maxScale = 50;
 const defaultSortOrder = '-timestampCreated';
 const defaultFilter = { type: 'all' } as const;
 
-const fetchSettings = () => attachmentSettingsPromise;
-
 export function AttachmentsView(): JSX.Element | null {
   const navigate = useNavigate();
-  const [isConfigured] = useAsyncState(fetchSettings, true);
+  const [isConfigured] = usePromise(attachmentSettingsPromise, true);
 
   return isConfigured === undefined ? null : isConfigured ? (
     <ProtectedTable action="read" tableName="Attachment">

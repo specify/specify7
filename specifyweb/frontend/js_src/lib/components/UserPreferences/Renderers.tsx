@@ -32,6 +32,8 @@ import { getPrefDefinition } from './helpers';
 import { usePref } from './usePref';
 import { headerText } from '../../localization/header';
 import { useMenuItems, useUserTools } from '../Header/menuItemProcessing';
+import { rawMenuItemsPromise } from '../Header/menuItemDefinitions';
+import { usePromise } from '../../hooks/useAsyncState';
 
 export const ColorPickerPreferenceItem: PreferenceItemComponent<string> =
   function ColorPickerPreferenceItem({
@@ -265,19 +267,23 @@ export const HeaderItemsPreferenceItem: PreferenceItemComponent<MenuPreferences>
     onChange: handleChange,
     isReadOnly,
   }) {
+    const [rawMenuItems] = usePromise(rawMenuItemsPromise, false);
     const menuItems = useMenuItems();
     const rawUserTools = useUserTools();
     const userTools = React.useMemo(
       () =>
-        rawUserTools === undefined
+        rawUserTools === undefined || menuItems === undefined
           ? undefined
           : Object.values(rawUserTools)
               .flatMap((entries) => Object.values(entries))
-              .flat(),
-      [rawUserTools]
+              .flat()
+              .filter(
+                ({ name }) => !menuItems.some((item) => item.name === name)
+              ),
+      [rawUserTools, menuItems]
     );
 
-    const defaultItems = menuItems?.map(({ name }) => name) ?? [];
+    const defaultItems = rawMenuItems?.map(({ name }) => name) ?? [];
     return menuItems === undefined || userTools === undefined ? (
       <>{commonText.loading()}</>
     ) : (

@@ -103,7 +103,7 @@ const rawMenuItems = ensure<IR<Omit<MenuItem, 'name'>>>()({
   },
 } as const);
 
-export type MenuItemName = keyof typeof rawMenuItems;
+export type MenuItemName = keyof typeof rawMenuItems | 'search';
 
 /**
  * Don't use this directly. Use useMenuItems() instead

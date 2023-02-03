@@ -3,19 +3,24 @@
  */
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { useSearchParameter } from '../../hooks/navigation';
+import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { ajax } from '../../utils/ajax';
-import type { IR, RA } from '../../utils/types';
+import type { GetSet, IR, RA } from '../../utils/types';
 import { Container, H2, H3 } from '../Atoms';
 import { Form, Input } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
+import { WelcomeView } from '../HomePage';
+import { Dialog } from '../Molecules/Dialog';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { QueryResults } from '../QueryBuilder/Results';
 import { formatUrl, parseUrl } from '../Router/queryString';
+import { OverlayContext } from '../Router/Router';
 import type {
   QueryTableResult,
   RawExpressSearchResult,
@@ -25,11 +30,59 @@ import {
   usePrimarySearch,
   useSecondarySearch,
 } from './ExpressSearchHooks';
-import { WelcomeView } from '../HomePage';
+import { useMenuItem } from './useMenuItem';
+
+export function ExpressSearchOverlay(): JSX.Element {
+  useMenuItem('search');
+  const [query = ''] = useSearchParameter('q');
+  const value = React.useState(query);
+  const [pendingQuery] = value;
+  const navigate = useNavigate();
+  const formId = useId('express-search')('form');
+  const handleClose = React.useContext(OverlayContext);
+  return (
+    <Dialog
+      buttons={<Submit.Blue form={formId}>{commonText.search()}</Submit.Blue>}
+      header={headerText.expressSearch()}
+      onClose={handleClose}
+    >
+      <Form
+        id={formId}
+        onSubmit={(): void =>
+          navigate(formatUrl('/specify/express-search/', { q: pendingQuery }))
+        }
+      >
+        <SearchField value={value} />
+      </Form>
+    </Dialog>
+  );
+}
+
+function SearchField({
+  value: [value, setValue],
+}: {
+  readonly value: GetSet<string>;
+}): JSX.Element {
+  return (
+    <Input.Generic
+      aria-label={commonText.search()}
+      autoComplete="on"
+      className="flex-1"
+      // Name is for autocomplete purposes only
+      name="searchQuery"
+      placeholder={commonText.search()}
+      required
+      type="search"
+      value={value}
+      onValueChange={setValue}
+    />
+  );
+}
 
 export function ExpressSearchView(): JSX.Element {
   const [query = '', setQuery] = useSearchParameter('q');
-  const [pendingQuery, setPendingQuery] = React.useState(query);
+  const value = React.useState(query);
+  const [pendingQuery] = value;
 
   const primaryResults = usePrimarySearch(query);
   const secondaryResults = useSecondarySearch(query);
@@ -48,18 +101,7 @@ export function ExpressSearchView(): JSX.Element {
       <div className="flex flex-col gap-2 p-4">
         <H2>{headerText.expressSearch()}</H2>
         <Form onSubmit={(): void => setQuery(pendingQuery)}>
-          <Input.Generic
-            aria-label={commonText.search()}
-            autoComplete="on"
-            className="flex-1"
-            // Name is for autocomplete purposes only
-            name="searchQuery"
-            placeholder={commonText.search()}
-            required
-            type="search"
-            value={pendingQuery}
-            onValueChange={setPendingQuery}
-          />
+          <SearchField value={value} />
           <Submit.Blue className="sr-only">{commonText.search()}</Submit.Blue>
         </Form>
       </div>

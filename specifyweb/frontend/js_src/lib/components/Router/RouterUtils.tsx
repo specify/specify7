@@ -21,11 +21,6 @@ export type EnhancedRoute = Readonly<
    * preferences
    */
   readonly title?: LocalizedString;
-  /*
-   * Add an explicit way of opting out from displaying the path in user
-   * preferences (this is the case implicitly if title is missing)
-   */
-  readonly navigatable?: boolean;
 };
 
 /** Convert EnhancedRoutes to RouteObjects */

@@ -488,13 +488,6 @@ export const commonText = createDictionary({
     'fr-fr': 'Sélectionné',
     'uk-ua': 'Вибрано',
   },
-  primary: {
-    'en-us': 'Primary',
-    'ru-ru': 'Основной',
-    'es-es': 'Primario',
-    'fr-fr': 'Principal',
-    'uk-ua': 'Головний',
-  },
   expand: {
     'en-us': 'Expand',
     'ru-ru': 'Расширить',
@@ -508,14 +501,6 @@ export const commonText = createDictionary({
     'es-es': 'Expandir todo',
     'fr-fr': 'Tout agrandir',
     'uk-ua': 'Розгорнути всі',
-  },
-  contract: {
-    comment: 'As in contract the list',
-    'en-us': 'Contract',
-    'ru-ru': 'Свернуть',
-    'es-es': 'Contrato',
-    'fr-fr': 'Contrat',
-    'uk-ua': 'Згорнути',
   },
   collapse: {
     'en-us': 'Collapse',

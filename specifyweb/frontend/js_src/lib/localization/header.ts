@@ -20,13 +20,6 @@ export const headerText = createDictionary({
   main: {
     'en-us': 'Main',
   },
-  currentUser: {
-    'en-us': 'Current User',
-    'ru-ru': 'Текущий пользователь',
-    'es-es': 'Usuario actual',
-    'fr-fr': 'Utilisateur actuel',
-    'uk-ua': 'Поточний користувач',
-  },
   currentCollection: {
     comment: 'Example: Current Collection',
     'en-us': 'Current {collectionTable:string}',

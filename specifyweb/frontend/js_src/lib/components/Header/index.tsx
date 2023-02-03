@@ -20,6 +20,7 @@ import { Notifications } from './Notifications';
 import { UserTools } from './UserTools';
 import { schema } from '../DataModel/schema';
 import { userInformation } from '../InitialContext/userInformation';
+import { MenuItemName } from './menuItemDefinitions';
 
 export function Header({
   menuItems,
@@ -57,6 +58,7 @@ export function Header({
     []
   );
 
+  const [activeMenuItem] = React.useContext(MenuContext);
   return (
     <header
       className={`
@@ -110,7 +112,11 @@ export function Header({
           ${isHorizontal ? '' : 'flex-col'}
         `}
       >
-        <HeaderItems isCollapsed={isCollapsed} menuItems={menuItems} />
+        <HeaderItems
+          activeMenuItem={activeMenuItem}
+          isCollapsed={isCollapsed}
+          menuItems={menuItems}
+        />
         <span className="flex-1" />
         <MenuButton
           icon={icons.archive}
@@ -125,7 +131,8 @@ export function Header({
           icon={icons.search}
           isCollapsed={isCollapsed}
           title={commonText.search()}
-          onClick="/specify/express-search/"
+          onClick="/specify/overlay/express-search/"
+          isActive={activeMenuItem === 'search'}
         />
         {!isHorizontal && (
           <MenuButton
@@ -147,11 +154,12 @@ export function Header({
 function HeaderItems({
   menuItems,
   isCollapsed,
+  activeMenuItem,
 }: {
   readonly menuItems: RA<MenuItem>;
   readonly isCollapsed: boolean;
+  readonly activeMenuItem: MenuItemName | undefined;
 }): JSX.Element {
-  const [activeMenuItem] = React.useContext(MenuContext);
   return (
     <>
       {menuItems.map(({ url, name, ...menuItem }) => (

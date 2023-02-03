@@ -6,6 +6,7 @@ import { queryText } from '../../localization/query';
 import { schemaText } from '../../localization/schema';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { split } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Label, Select } from '../Atoms/Form';
@@ -96,7 +97,7 @@ type Item = {
 
 export function ListEdit({
   defaultValues,
-  selectedValues,
+  selectedValues: rawSelectedValues,
   allItems,
   selectedLabel,
   availableLabel,
@@ -117,8 +118,10 @@ export function ListEdit({
     );
 
   const selectedItems = allItems.filter(({ name }) =>
-    selectedValues.includes(name)
+    rawSelectedValues.includes(name)
   );
+  // Like rawSelectedValues, but sorted
+  const selectedValues = selectedItems.map(({ name }) => name);
   const possibleItems = allItems.filter(
     ({ name }) => !selectedValues.includes(name)
   );
@@ -157,17 +160,21 @@ export function ListEdit({
       (name) => possibleSubset.includes(name)
     );
     handleChange([...selectedValues, ...toAdd]);
-    setPossibleSubset(remaining.slice(0, 1));
+    const newIndex = possibleItems.findIndex(
+      ({ name }) => name === possibleSubset[0]
+    );
+    setPossibleSubset(filterArray([remaining[newIndex]]));
+    setSelectedSubset(possibleSubset);
   }
 
   function handleRemove(): void {
-    handleChange(
-      selectedValues.filter((name) => !selectedSubset.includes(name))
+    const newSelectedItems = selectedValues.filter(
+      (name) => !selectedSubset.includes(name)
     );
-    const firstPossible = selectedValues
-      .filter((item) => !selectedValues.includes(item))
-      .slice(0, 1);
-    setSelectedSubset(firstPossible);
+    handleChange(newSelectedItems);
+    const newIndex = selectedValues.indexOf(selectedSubset[0]);
+    setSelectedSubset(filterArray([newSelectedItems[newIndex]]));
+    setPossibleSubset(selectedSubset);
   }
 
   return (

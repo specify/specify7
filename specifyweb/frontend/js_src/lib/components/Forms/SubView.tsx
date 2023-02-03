@@ -17,7 +17,7 @@ import { fail } from '../Errors/Crash';
 import { TableIcon } from '../Molecules/TableIcon';
 import { overwriteReadOnly } from '../../utils/types';
 import { attachmentSettingsPromise } from '../Attachments/attachments';
-import { useAsyncState } from '../../hooks/useAsyncState';
+import { usePromise } from '../../hooks/useAsyncState';
 import { attachmentRelatedTables } from '../Attachments';
 
 export const SubViewContext = React.createContext<
@@ -31,8 +31,6 @@ export const SubViewContext = React.createContext<
   | undefined
 >(undefined);
 SubViewContext.displayName = 'SubViewContext';
-
-const fetchAttachmentSettings = () => attachmentSettingsPromise;
 
 export function SubView({
   relationship,
@@ -183,7 +181,7 @@ export function SubView({
 
   const [isOpen, _, handleClose, handleToggle] = useBooleanState(!isButton);
 
-  const [isAttachmentConfigured] = useAsyncState(fetchAttachmentSettings, true);
+  const [isAttachmentConfigured] = usePromise(attachmentSettingsPromise, true);
 
   const isAttachmentTable = attachmentRelatedTables().includes(
     relationship.relatedModel.name

@@ -5,7 +5,7 @@
 
 import React from 'react';
 
-import { useAsyncState } from '../../hooks/useAsyncState';
+import { usePromise } from '../../hooks/useAsyncState';
 import { headerText } from '../../localization/header';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
@@ -20,11 +20,9 @@ const itemsPromise = f.all({
   menuItems: rawMenuItemsPromise,
   userTools: rawUserToolsPromise,
 });
-const fetchItems = () => itemsPromise;
-
 export function useMenuItems(): RA<MenuItem> | undefined {
   const [preference] = usePref('header', 'appearance', 'items');
-  const [items] = useAsyncState(fetchItems, false);
+  const [items] = usePromise(itemsPromise, false);
   return React.useMemo(() => {
     if (items === undefined) return undefined;
     const { menuItems, userTools } = items;
@@ -56,24 +54,23 @@ export function useMenuItems(): RA<MenuItem> | undefined {
 
 export function useUserTools(): IR<IR<MenuItem>> | undefined {
   const [{ visible }] = usePref('header', 'appearance', 'items');
-  return useAsyncState(
-    React.useCallback(async () => {
-      const { menuItems, userTools } = await itemsPromise;
-      return {
-        // If some menu items are hidden, they should be displayed in user tools
-        [headerText.main()]:
-          visible.length === 0
-            ? {}
-            : Object.fromEntries(
-                menuItems
-                  .filter(({ name }) => !visible.includes(name))
-                  .map((item) => [item.name, item])
-              ),
-        ...userTools,
-      };
-    }, [visible]),
-    false
-  )[0];
+  const [items] = usePromise(itemsPromise, false);
+  return React.useMemo(() => {
+    if (items === undefined) return undefined;
+    const { menuItems, userTools } = items;
+    return {
+      // If some menu items are hidden, they should be displayed in user tools
+      [headerText.main()]:
+        visible.length === 0
+          ? {}
+          : Object.fromEntries(
+              menuItems
+                .filter(({ name }) => !visible.includes(name))
+                .map((item) => [item.name, item])
+            ),
+      ...userTools,
+    };
+  }, [visible, items]);
 }
 
 export const filterMenuItems = async (

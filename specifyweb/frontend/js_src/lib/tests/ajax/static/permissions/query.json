@@ -344,7 +344,7 @@
       "matching_role_policies": []
     },
     {
-      "resource": "/tree/mutation/taxon",
+      "resource": "/tree/edit/taxon",
       "action": "merge",
       "allowed": true,
       "matching_user_policies": [
@@ -364,7 +364,7 @@
       "matching_role_policies": []
     },
     {
-      "resource": "/tree/mutation/taxon",
+      "resource": "/tree/edit/taxon",
       "action": "move",
       "allowed": true,
       "matching_user_policies": [
@@ -384,7 +384,7 @@
       "matching_role_policies": []
     },
     {
-      "resource": "/tree/mutation/taxon",
+      "resource": "/tree/edit/taxon",
       "action": "synonymize",
       "allowed": true,
       "matching_user_policies": [
@@ -398,7 +398,7 @@
       "matching_role_policies": []
     },
     {
-      "resource": "/tree/mutation/taxon",
+      "resource": "/tree/edit/taxon",
       "action": "desynonymize",
       "allowed": true,
       "matching_user_policies": [
@@ -412,7 +412,7 @@
       "matching_role_policies": []
     },
     {
-      "resource": "/tree/mutation/taxon",
+      "resource": "/tree/edit/taxon",
       "action": "repair",
       "allowed": true,
       "matching_user_policies": [
@@ -426,7 +426,7 @@
       "matching_role_policies": []
     },
     {
-      "resource": "/tree/mutation/geography",
+      "resource": "/tree/edit/geography",
       "action": "merge",
       "allowed": true,
       "matching_user_policies": [
@@ -446,7 +446,7 @@
       "matching_role_policies": []
     },
     {
-      "resource": "/tree/mutation/geography",
+      "resource": "/tree/edit/geography",
       "action": "move",
       "allowed": true,
       "matching_user_policies": [
@@ -466,7 +466,7 @@
       "matching_role_policies": []
     },
     {
-      "resource": "/tree/mutation/geography",
+      "resource": "/tree/edit/geography",
       "action": "synonymize",
       "allowed": true,
       "matching_user_policies": [
@@ -480,7 +480,7 @@
       "matching_role_policies": []
     },
     {
-      "resource": "/tree/mutation/geography",
+      "resource": "/tree/edit/geography",
       "action": "desynonymize",
       "allowed": true,
       "matching_user_policies": [
@@ -494,7 +494,7 @@
       "matching_role_policies": []
     },
     {
-      "resource": "/tree/mutation/geography",
+      "resource": "/tree/edit/geography",
       "action": "repair",
       "allowed": true,
       "matching_user_policies": [
@@ -508,7 +508,7 @@
       "matching_role_policies": []
     },
     {
-      "resource": "/tree/mutation/storage",
+      "resource": "/tree/edit/storage",
       "action": "merge",
       "allowed": true,
       "matching_user_policies": [
@@ -528,7 +528,7 @@
       "matching_role_policies": []
     },
     {
-      "resource": "/tree/mutation/storage",
+      "resource": "/tree/edit/storage",
       "action": "move",
       "allowed": true,
       "matching_user_policies": [
@@ -548,7 +548,7 @@
       "matching_role_policies": []
     },
     {
-      "resource": "/tree/mutation/storage",
+      "resource": "/tree/edit/storage",
       "action": "synonymize",
       "allowed": true,
       "matching_user_policies": [
@@ -562,7 +562,7 @@
       "matching_role_policies": []
     },
     {
-      "resource": "/tree/mutation/storage",
+      "resource": "/tree/edit/storage",
       "action": "desynonymize",
       "allowed": true,
       "matching_user_policies": [
@@ -576,7 +576,7 @@
       "matching_role_policies": []
     },
     {
-      "resource": "/tree/mutation/storage",
+      "resource": "/tree/edit/storage",
       "action": "repair",
       "allowed": true,
       "matching_user_policies": [
@@ -590,7 +590,7 @@
       "matching_role_policies": []
     },
     {
-      "resource": "/tree/mutation/geologictimeperiod",
+      "resource": "/tree/edit/geologictimeperiod",
       "action": "merge",
       "allowed": true,
       "matching_user_policies": [
@@ -610,7 +610,7 @@
       "matching_role_policies": []
     },
     {
-      "resource": "/tree/mutation/geologictimeperiod",
+      "resource": "/tree/edit/geologictimeperiod",
       "action": "move",
       "allowed": true,
       "matching_user_policies": [
@@ -630,7 +630,7 @@
       "matching_role_policies": []
     },
     {
-      "resource": "/tree/mutation/geologictimeperiod",
+      "resource": "/tree/edit/geologictimeperiod",
       "action": "synonymize",
       "allowed": true,
       "matching_user_policies": [
@@ -644,7 +644,7 @@
       "matching_role_policies": []
     },
     {
-      "resource": "/tree/mutation/geologictimeperiod",
+      "resource": "/tree/edit/geologictimeperiod",
       "action": "desynonymize",
       "allowed": true,
       "matching_user_policies": [
@@ -658,7 +658,7 @@
       "matching_role_policies": []
     },
     {
-      "resource": "/tree/mutation/geologictimeperiod",
+      "resource": "/tree/edit/geologictimeperiod",
       "action": "repair",
       "allowed": true,
       "matching_user_policies": [
@@ -672,7 +672,7 @@
       "matching_role_policies": []
     },
     {
-      "resource": "/tree/mutation/lithostrat",
+      "resource": "/tree/edit/lithostrat",
       "action": "merge",
       "allowed": true,
       "matching_user_policies": [
@@ -692,7 +692,7 @@
       "matching_role_policies": []
     },
     {
-      "resource": "/tree/mutation/lithostrat",
+      "resource": "/tree/edit/lithostrat",
       "action": "move",
       "allowed": true,
       "matching_user_policies": [
@@ -712,7 +712,7 @@
       "matching_role_policies": []
     },
     {
-      "resource": "/tree/mutation/lithostrat",
+      "resource": "/tree/edit/lithostrat",
       "action": "synonymize",
       "allowed": true,
       "matching_user_policies": [
@@ -726,7 +726,7 @@
       "matching_role_policies": []
     },
     {
-      "resource": "/tree/mutation/lithostrat",
+      "resource": "/tree/edit/lithostrat",
       "action": "desynonymize",
       "allowed": true,
       "matching_user_policies": [
@@ -740,7 +740,7 @@
       "matching_role_policies": []
     },
     {
-      "resource": "/tree/mutation/lithostrat",
+      "resource": "/tree/edit/lithostrat",
       "action": "repair",
       "allowed": true,
       "matching_user_policies": [

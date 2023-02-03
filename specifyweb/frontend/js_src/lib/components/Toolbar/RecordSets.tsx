@@ -2,7 +2,7 @@ import React from 'react';
 import type { State } from 'typesafe-reducer';
 
 import { deserializeResource } from '../../hooks/resource';
-import { useAsyncState } from '../../hooks/useAsyncState';
+import { useAsyncState, usePromise } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
@@ -86,10 +86,7 @@ export function RecordSetsDialog({
     'name'
   );
 
-  const [unsortedData] = useAsyncState(
-    React.useCallback(async () => recordSetsPromise, [recordSetsPromise]),
-    true
-  );
+  const [unsortedData] = usePromise(recordSetsPromise, true);
   const data = React.useMemo(
     () =>
       typeof unsortedData === 'object'

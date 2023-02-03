@@ -15,10 +15,10 @@ import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import type { MenuItem } from '../Core/Main';
 import { userInformation } from '../InitialContext/userInformation';
-import { Dialog } from '../Molecules/Dialog';
+import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { OverlayContext } from '../Router/Router';
 import { MenuButton } from './index';
-import { useUserTools } from './menuItemProcessing';
+import { useMenuItems, useUserTools } from './menuItemProcessing';
 import { locationToState } from '../Router/RouterState';
 
 export function UserTools({
@@ -27,10 +27,15 @@ export function UserTools({
   readonly isCollapsed: boolean;
 }): JSX.Element {
   const { pathname } = useLocation();
-  const userTools = useUserTools();
-  const isInUserTool = Object.values(userTools ?? {})
+  const userTools = useUserTools() ?? {};
+  const menuItems = useMenuItems() ?? [];
+  const isInUserTool = Object.values(userTools)
     .flatMap((group) => Object.values(group))
-    .some(({ url }) => pathname.startsWith(url));
+    .some(
+      ({ url, name }) =>
+        pathname.startsWith(url) &&
+        !menuItems.some((item) => item.name === name)
+    );
   return (
     <>
       {userInformation.isauthenticated ? (
@@ -96,7 +101,9 @@ export function UserToolsOverlay(): JSX.Element | null {
         ))}
       </nav>
     </Dialog>
-  ) : null;
+  ) : (
+    <LoadingScreen />
+  );
 }
 
 function useProcessedUserTools(): RA<IR<RA<MenuItem>>> | undefined {
@@ -147,7 +154,7 @@ function UserToolsColumn({
                     href={url}
                     aria-current={
                       typeof backgroundLocation === 'string' &&
-                      url.startsWith(backgroundLocation)
+                      backgroundLocation.startsWith(url)
                         ? 'page'
                         : undefined
                     }
