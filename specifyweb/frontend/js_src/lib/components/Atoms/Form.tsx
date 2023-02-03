@@ -1,7 +1,6 @@
 import type React from 'react';
 import { dayjs } from '../../utils/dayJs';
 import { databaseDateFormat } from '../../utils/parser/dateConfig';
-import { fullDateFormat } from '../../utils/parser/dateFormat';
 import { parseRelativeDate } from '../../utils/relativeDate';
 
 import type { RA } from '../../utils/types';
@@ -178,7 +177,7 @@ export const Input = {
         if (input.type === 'date') {
           input.type = 'text';
           const parsed = parseDate('full', input.value);
-          if (parsed.isValid()) input.value = parsed.format(fullDateFormat());
+          if (parsed.isValid()) input.value = parsed.format(databaseDateFormat);
         }
         props.onDoubleClick?.(event);
       },
@@ -188,11 +187,12 @@ export const Input = {
           const relativeDate = parseRelativeDate(input.value);
           if (relativeDate !== undefined) {
             const parsed = dayjs(relativeDate);
-            if (parsed.isValid()) input.value = parsed.format(fullDateFormat());
+            if (parsed.isValid())
+              input.value = parsed.format(databaseDateFormat);
           }
           input.type = 'date';
         }
-        props.onBlur?.(event);
+        withHandleBlur(props.onBlur).onBlur(event);
       },
       readOnly: isReadOnly,
     })

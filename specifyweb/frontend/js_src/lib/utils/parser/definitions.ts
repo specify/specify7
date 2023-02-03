@@ -166,7 +166,7 @@ export const parsers = f.store(
     'java.sql.Timestamp': {
       type: 'date',
       minLength: fullDateFormat().length,
-      maxLength: fullDateFormat().length,
+      // maxLength: fullDateFormat().length,
       formatters: [
         formatter.toLowerCase,
         stringGuard((value) =>

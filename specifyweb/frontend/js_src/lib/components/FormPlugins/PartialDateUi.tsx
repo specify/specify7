@@ -319,7 +319,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
     const input = inputRef.current;
     if (isReadOnly || input === null) return;
 
-    const value = initialValue ?? inputValue.trim();
+    const value = initialValue ?? input.value.trim();
 
     setMoment(value.length > 0 ? parseDate(precision, value) : undefined);
   }
