@@ -445,14 +445,16 @@ export const preferenceDefinitions = {
       appearance: {
         title: preferencesText.appearance(),
         items: {
-          position: defineItem<'top' | 'left'>({
+          position: defineItem<'top' | 'bottom' | 'right' | 'left'>({
             title: preferencesText.position(),
             requiresReload: false,
             visible: true,
             defaultValue: 'left',
             values: [
-              { value: 'top', title: preferencesText.top() },
               { value: 'left', title: preferencesText.left() },
+              { value: 'top', title: preferencesText.top() },
+              { value: 'right', title: preferencesText.right() },
+              { value: 'bottom', title: preferencesText.bottom() },
             ],
           }),
           items: defineItem<MenuPreferences>({

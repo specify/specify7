@@ -1324,7 +1324,13 @@ export const preferencesText = createDictionary({
   top: {
     'en-us': 'Top',
   },
+  bottom: {
+    'en-us': 'Bottom',
+  },
   left: {
     'en-us': 'Left',
+  },
+  right: {
+    'en-us': 'Right',
   },
 } as const);

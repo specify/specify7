@@ -31,13 +31,22 @@ export function Header({
     'isCollapsed'
   );
   const [position] = usePref('header', 'appearance', 'position');
+  const isHorizontal = position === 'top' || position === 'bottom';
   // Top menu is only available as collapsed
-  const isCollapsed = rawIsCollapsed || position === 'top';
+  const isCollapsed = rawIsCollapsed || isHorizontal;
 
   React.useLayoutEffect(() => {
     const root = document.getElementById('root');
     if (root === null) throw new Error('Unable to find root element');
-    root.classList.toggle('flex-col', position === 'top');
+    const classNames = {
+      top: 'flex-col',
+      left: 'flex-row',
+      bottom: 'flex-col-reverse',
+      right: 'flex-row-reverse',
+    };
+    Object.entries(classNames).forEach(([key, className]) =>
+      root.classList.toggle(className, position === key)
+    );
   }, [position]);
 
   const collectionLabel = React.useMemo(
@@ -54,7 +63,16 @@ export function Header({
         flex bg-gray-100 shadow-md shadow-gray-400 [z-index:1]
         dark:border-neutral-700 dark:bg-neutral-900
         print:hidden
-        ${position === 'top' ? 'dark:border-b' : 'flex-col dark:border-r'}
+        ${isHorizontal ? '' : 'flex-col'}
+        ${
+          position === 'left'
+            ? 'dark:border-r'
+            : position === 'top'
+            ? 'dark:border-b'
+            : position === 'right'
+            ? 'dark:border-l'
+            : 'dark:border-t'
+        }
       `}
     >
       <h1 className="contents">
@@ -79,7 +97,7 @@ export function Header({
             className={`
               hover:animate-hue-rotate
               ${isCollapsed ? '' : 'hidden'}
-              ${position === 'top' ? 'w-10' : ''}
+              ${isHorizontal ? 'w-10' : ''}
             `}
             src="/static/img/short_logo.svg"
           />
@@ -89,7 +107,7 @@ export function Header({
       <nav
         className={`
           flex flex-1 overflow-auto
-          ${position === 'top' ? '' : 'flex-col'}
+          ${isHorizontal ? '' : 'flex-col'}
         `}
       >
         <HeaderItems isCollapsed={isCollapsed} menuItems={menuItems} />
@@ -109,9 +127,13 @@ export function Header({
           title={commonText.search()}
           onClick="/specify/express-search/"
         />
-        {position !== 'top' && (
+        {!isHorizontal && (
           <MenuButton
-            icon={isCollapsed ? icons.arrowRight : icons.arrowLeft}
+            icon={
+              isCollapsed === (position === 'left')
+                ? icons.arrowRight
+                : icons.arrowLeft
+            }
             isCollapsed={isCollapsed}
             title={isCollapsed ? commonText.expand() : commonText.collapse()}
             onClick={(): void => setIsCollapsed(!isCollapsed)}
