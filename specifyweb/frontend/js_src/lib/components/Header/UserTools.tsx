@@ -19,6 +19,7 @@ import { Dialog } from '../Molecules/Dialog';
 import { OverlayContext } from '../Router/Router';
 import { MenuButton } from './index';
 import { useUserTools } from './menuItemProcessing';
+import { locationToState } from '../Router/RouterState';
 
 export function UserTools({
   isCollapsed,
@@ -127,6 +128,9 @@ function UserToolsColumn({
 }: {
   readonly groups: IR<RA<MenuItem>>;
 }): JSX.Element {
+  const location = useLocation();
+  const state = locationToState(location, 'BackgroundLocation');
+  const backgroundLocation = state?.location?.pathname;
   return (
     <div className="flex flex-1 flex-col gap-4">
       {Object.entries(groups).map(([groupName, userTools]) => (
@@ -139,7 +143,15 @@ function UserToolsColumn({
               const LinkComponent = isExternalLink ? Link.NewTab : Link.Default;
               return (
                 <li key={url}>
-                  <LinkComponent href={url}>
+                  <LinkComponent
+                    href={url}
+                    aria-current={
+                      typeof backgroundLocation === 'string' &&
+                      url.startsWith(backgroundLocation)
+                        ? 'page'
+                        : undefined
+                    }
+                  >
                     {icon}
                     {title}
                   </LinkComponent>
