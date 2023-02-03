@@ -1333,4 +1333,13 @@ export const preferencesText = createDictionary({
     'fr-fr': 'Ne pas utiliser',
     'uk-ua': 'Не використовувати',
   },
+  position: {
+    'en-us': 'Position',
+  },
+  top: {
+    'en-us': 'Top',
+  },
+  left: {
+    'en-us': 'Left',
+  },
 } as const);

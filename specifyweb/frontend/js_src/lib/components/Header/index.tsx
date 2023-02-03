@@ -25,71 +25,89 @@ export function Header({
 }: {
   readonly menuItems: RR<MenuItemName, MenuItem>;
 }): JSX.Element {
-  const [isCollapsed = false, setIsCollapsed] = useCachedState(
+  const [rawIsCollapsed = false, setIsCollapsed] = useCachedState(
     'header',
     'isCollapsed'
   );
+  const [position] = usePref('header', 'appearance', 'position');
+  // Top menu is only available as collapsed
+  const isCollapsed = rawIsCollapsed || position === 'top';
+
+  React.useLayoutEffect(() => {
+    const root = document.getElementById('root');
+    if (root === null) throw new Error('Unable to find root element');
+    root.classList.toggle('flex-col', position === 'top');
+  }, [position]);
 
   return (
     <header
       className={`
-        flex shadow-md shadow-gray-400 [z-index:1] print:hidden
+        flex bg-gray-100 shadow-md shadow-gray-400 [z-index:1]
+        dark:bg-neutral-900 print:hidden
+        ${position === 'top' ? '' : 'flex-col'}
       `}
     >
-      <div className="flex flex-1 flex-col bg-gray-100 dark:bg-neutral-900">
-        <h1 className="contents">
-          <a
-            className={`
+      <h1 className="contents">
+        <a
+          className={`
               flex items-center
               ${isCollapsed ? 'p-2' : 'p-4'}
             `}
-            href="/specify/"
-          >
-            {/* Both logs are loaded to prevent flickering on collapse/expand */}
-            <img
-              alt=""
-              className={`
+          href="/specify/"
+        >
+          {/* Both logs are loaded to prevent flickering on collapse/expand */}
+          <img
+            alt=""
+            className={`
                 hover:animate-hue-rotate
                 ${isCollapsed ? 'hidden' : ''}
               `}
-              src="/static/img/logo.svg"
-            />
-            <img
-              alt=""
-              className={`
-                hover:animate-hue-rotate
-                ${isCollapsed ? '' : 'hidden'}
-              `}
-              src="/static/img/short_logo.svg"
-            />
-            <span className="sr-only">{commonText.goToHomepage()}</span>
-          </a>
-        </h1>
-        <nav className="flex flex-1 flex-col overflow-auto">
-          <HeaderItems isCollapsed={isCollapsed} menuItems={menuItems} />
-          <span className="flex-1" />
-          <MenuButton
-            icon={icons.archive}
-            isCollapsed={isCollapsed}
-            title={commonText.chooseCollection()}
-            onClick="/specify/overlay/choose-collection/"
+            src="/static/img/logo.svg"
           />
-          <UserTools isCollapsed={isCollapsed} />
-          <Notifications isCollapsed={isCollapsed} />
-          <MenuButton
-            icon={icons.search}
-            isCollapsed={isCollapsed}
-            title={commonText.search()}
-            onClick="/specify/express-search/"
+          <img
+            alt=""
+            className={`
+              hover:animate-hue-rotate
+              ${isCollapsed ? '' : 'hidden'}
+              ${position === 'top' ? 'w-10' : ''}
+            `}
+            src="/static/img/short_logo.svg"
           />
+          <span className="sr-only">{commonText.goToHomepage()}</span>
+        </a>
+      </h1>
+      <nav
+        className={`
+          flex flex-1 overflow-auto
+          ${position === 'top' ? '' : 'flex-col'}
+        `}
+      >
+        <HeaderItems isCollapsed={isCollapsed} menuItems={menuItems} />
+        <span className="flex-1" />
+        {/* FIXME: display current collection name */}
+        <MenuButton
+          icon={icons.archive}
+          isCollapsed={isCollapsed}
+          title={commonText.chooseCollection()}
+          onClick="/specify/overlay/choose-collection/"
+        />
+        <UserTools isCollapsed={isCollapsed} />
+        <Notifications isCollapsed={isCollapsed} />
+        <MenuButton
+          icon={icons.search}
+          isCollapsed={isCollapsed}
+          title={commonText.search()}
+          onClick="/specify/express-search/"
+        />
+        {position !== 'top' && (
           <MenuButton
             icon={isCollapsed ? icons.arrowRight : icons.arrowLeft}
             isCollapsed={isCollapsed}
             title={isCollapsed ? commonText.expand() : commonText.collapse()}
             onClick={(): void => setIsCollapsed(!isCollapsed)}
           />
-        </nav>
-      </div>
+        )}
+      </nav>
     </header>
   );
 }

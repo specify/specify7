@@ -45,6 +45,10 @@ const foreverPromise = new Promise<any>(() => {
  */
 export const foreverFetch = async <T>(): Promise<T> => foreverPromise;
 
+/**
+ * Initial context is locked by default so that front-end does not try to fetch
+ * current user and other context while the user is not authenticated
+ */
 export const unlockInitialContext = (entrypoint: typeof entrypointName): void =>
   unlock(entrypoint);
 

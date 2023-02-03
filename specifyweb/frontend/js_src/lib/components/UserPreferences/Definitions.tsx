@@ -426,6 +426,21 @@ export const preferenceDefinitions = {
   header: {
     title: preferencesText.header(),
     subCategories: {
+      appearance: {
+        title: preferencesText.appearance(),
+        items: {
+          position: defineItem<'top' | 'left'>({
+            title: preferencesText.position(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 'left',
+            values: [
+              { value: 'top', title: preferencesText.top() },
+              { value: 'left', title: preferencesText.left() },
+            ],
+          }),
+        },
+      },
       menu: {
         title: preferencesText.menu(),
         items: {
