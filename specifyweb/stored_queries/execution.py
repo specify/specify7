@@ -23,6 +23,8 @@ from . import models
 from .format import ObjectFormatter
 from .query_construct import QueryConstruct
 from .queryfield import QueryField
+from .relative_date_utils import apply_absolute_date
+from .field_spec_maps import apply_specify_user_name
 from ..notifications.models import Message
 from ..specify.models import Collection
 from ..permissions.permissions import check_table_permissions
@@ -100,48 +102,6 @@ def filter_by_collection(model, query, collection):
     return query
 
 
-relative_date_re = "today\s*([+-])\s*(\d+)\s*(second|minute|hour|day|week|month|year)"
-def apply_absolute_date(query_field):
-    if query_field.fieldspec.date_part is None or query_field.fieldspec.date_part != 'Full Date':
-        return query_field
-
-    field_value = query_field.value
-    new_field_value = ','.join([relative_to_absolute_date(value_split) for value_split in field_value.split(',')])
-    return query_field._replace(value=new_field_value)
-
-def apply_specify_user_name(query_field, user):
-    if query_field.fieldspec.is_specify_username_end():
-        if query_field.value == 'currentSpecifyUserName':
-            return query_field._replace(value=user.name)
-    return query_field
-
-def relative_to_absolute_date(raw_date_value):
-    date_parse = re.findall(relative_date_re, raw_date_value)
-    if len(date_parse) == 0:
-        return raw_date_value
-
-    direction = date_parse[0][0]
-    size = date_parse[0][1]
-    type = date_parse[0][2]
-    offset = (1 if direction == '+' else -1) * int(size)
-    delta = timedelta()
-    if type == 'second':
-        delta = timedelta(seconds=offset)
-    elif type == 'minute':
-        delta = timedelta(minutes=offset)
-    elif type == 'hour':
-        delta = timedelta(hours=offset)
-    elif type == 'day':
-        delta = timedelta(days=offset)
-    elif type == 'week':
-        delta = timedelta(weeks=offset)
-    elif type == 'month':
-        delta = timedelta(days=offset * 30)
-    elif type == 'year':
-        delta = timedelta(days=offset * 365)
-    timenow = datetime.now()
-    newtime = timenow + delta
-    return newtime.date().isoformat()
 
 EphemeralField = namedtuple('EphemeralField', "stringId isRelFld operStart startValue isNot isDisplay sortType formatName")
 
