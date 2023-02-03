@@ -18,6 +18,8 @@ import { ActiveLink } from '../Router/ActiveLink';
 import { usePref } from '../UserPreferences/usePref';
 import { Notifications } from './Notifications';
 import { UserTools } from './UserTools';
+import { schema } from '../DataModel/schema';
+import { userInformation } from '../InitialContext/userInformation';
 
 export function Header({
   menuItems,
@@ -37,6 +39,14 @@ export function Header({
     if (root === null) throw new Error('Unable to find root element');
     root.classList.toggle('flex-col', position === 'top');
   }, [position]);
+
+  const collectionLabel = React.useMemo(
+    () =>
+      userInformation.availableCollections.find(
+        ({ id }) => id === schema.domainLevelIds.collection
+      )?.collectionName ?? commonText.chooseCollection(),
+    []
+  );
 
   return (
     <header
@@ -84,12 +94,12 @@ export function Header({
       >
         <HeaderItems isCollapsed={isCollapsed} menuItems={menuItems} />
         <span className="flex-1" />
-        {/* FIXME: display current collection name */}
         <MenuButton
           icon={icons.archive}
           isCollapsed={isCollapsed}
-          title={commonText.chooseCollection()}
+          title={collectionLabel}
           onClick="/specify/overlay/choose-collection/"
+          preventOverflow
         />
         <UserTools isCollapsed={isCollapsed} />
         <Notifications isCollapsed={isCollapsed} />
@@ -168,7 +178,7 @@ export function MenuButton({
       {icon}
       {preventOverflow && !isCollapsed ? (
         <span className="relative flex w-full flex-1 items-center">
-          <span className="absolute w-[inherit] overflow-hidden text-ellipsis">
+          <span className="absolute w-[inherit] overflow-hidden text-ellipsis whitespace-nowrap">
             {title}
           </span>
         </span>
