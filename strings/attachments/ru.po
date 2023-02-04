@@ -3,8 +3,8 @@ msgstr "Content-Type: text/plain\n"
 
 #: components/Attachments/index.tsx:169
 #: components/Header/menuItemDefinitions.ts:109
-#: components/Router/Routes.tsx:165
-#: components/UserPreferences/Definitions.tsx:497
+#: components/Router/Routes.tsx:162
+#: components/UserPreferences/Definitions.tsx:510
 #. Used in: Components > Attachments > Index ⬤ Components > Header > Menu Item Definitions ⬤ Components > Router > Routes ⬤ Components > User Preferences > Definitions
 msgid "attachments"
 msgstr "Вложения"
@@ -14,7 +14,7 @@ msgstr "Вложения"
 msgid "scale"
 msgstr "Масштаб"
 
-#: components/Attachments/Plugin.tsx:119
+#: components/Attachments/Plugin.tsx:107
 #: components/Attachments/index.tsx:69
 #. Used in: Components > Attachments > Plugin ⬤ Components > Attachments > Index
 msgid "attachmentServerUnavailable"
@@ -27,13 +27,13 @@ msgid "attachmentServerUnavailableDescription"
 msgstr "Настройте свой сервер вложений"
 
 #: components/Attachments/index.tsx:218
-#: components/FormMeta/SubViewMeta.tsx:41
-#: components/UserPreferences/Definitions.tsx:1089
+#: components/FormMeta/SubViewMeta.tsx:42
+#: components/UserPreferences/Definitions.tsx:1102
 #. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > User Preferences > Definitions
 msgid "orderBy"
 msgstr "Сортировать по"
 
-#: components/Attachments/Plugin.tsx:143
+#: components/Attachments/Plugin.tsx:131
 #. Used in: Components > Attachments > Plugin
 msgid "uploadingInline"
 msgstr "Закачивание…"

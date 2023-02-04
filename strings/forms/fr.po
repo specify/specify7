@@ -11,44 +11,44 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 4.16-dev\n"
 
-#: components/UserPreferences/Definitions.tsx:590
+#: components/UserPreferences/Definitions.tsx:603
 #. Used in: Components > User Preferences > Definitions
 #, fuzzy
 msgid "forms"
 msgstr "Formes"
 
 #: components/Atoms/DataEntry.tsx:139
-#: components/Forms/Save.tsx:228
+#: components/Forms/Save.tsx:229
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Save
 #, fuzzy
 msgid "clone"
 msgstr "Cloner"
 
-#: components/Forms/Save.tsx:229
+#: components/Forms/Save.tsx:230
 #. Used in: Components > Forms > Save
 #, fuzzy
 msgid "cloneDescription"
 msgstr "Créer une copie complète de l'enregistrement actuel"
 
-#: components/DataModel/businessRules.js:190
+#: components/DataModel/businessRules.js:195
 #. Used in: Components > Data Model > Business Rules
 #, fuzzy
 msgid "valueMustBeUniqueToField"
 msgstr "La valeur doit être unique pour {fieldName:string}"
 
-#: components/DataModel/businessRules.js:191
+#: components/DataModel/businessRules.js:196
 #. Used in: Components > Data Model > Business Rules
 #, fuzzy
 msgid "valueMustBeUniqueToDatabase"
 msgstr "La valeur doit être unique à la base de données"
 
-#: components/DataModel/businessRules.js:181
+#: components/DataModel/businessRules.js:186
 #. Used in: Components > Data Model > Business Rules
 #, fuzzy
 msgid "valuesOfMustBeUniqueToField"
 msgstr "Les valeurs de {values:string} doivent être uniques à {fieldName:string}"
 
-#: components/DataModel/businessRules.js:185
+#: components/DataModel/businessRules.js:190
 #. Used in: Components > Data Model > Business Rules
 #, fuzzy
 msgid "valuesOfMustBeUniqueToDatabase"
@@ -89,21 +89,21 @@ msgstr "Enregistrer"
 msgid "relationship"
 msgstr "Relation amoureuse"
 
-#: components/FormPlugins/PaleoLocation.tsx:52
-#: components/FormPlugins/PaleoLocation.tsx:89
-#: components/FormPlugins/PaleoLocation.tsx:98
+#: components/FormPlugins/PaleoLocation.tsx:53
+#: components/FormPlugins/PaleoLocation.tsx:87
+#: components/FormPlugins/PaleoLocation.tsx:96
 #. Used in: Components > Form Plugins > Paleo Location
 #, fuzzy
 msgid "paleoMap"
 msgstr "Carte paléo"
 
-#: components/FormPlugins/PaleoLocation.tsx:76
+#: components/FormPlugins/PaleoLocation.tsx:74
 #. 🟥Example: Geography Required. Used in: Components > Form Plugins > Paleo Location
 #, fuzzy
 msgid "paleoRequiresGeography"
 msgstr "{geographyTable:string} Obligatoire"
 
-#: components/FormPlugins/PaleoLocation.tsx:81
+#: components/FormPlugins/PaleoLocation.tsx:79
 #. Used in: Components > Form Plugins > Paleo Location
 #, fuzzy
 msgid "paleoRequiresGeographyDescription"
@@ -112,21 +112,7 @@ msgstr ""
 "coordonnées géographiques et que le contexte paléo ait un âge géographique "
 "avec au moins une heure de début ou une heure de fin renseignées."
 
-#: components/FormPlugins/PaleoLocation.tsx:57
-#. Used in: Components > Form Plugins > Paleo Location
-#, fuzzy
-msgid "unsupportedForm"
-msgstr "Forme incorrecte"
-
-#: components/FormPlugins/PaleoLocation.tsx:64
-#. 🟥Example: ... Locality, Collecting Event or Collection Object forms. Used in: Components > Form Plugins > Paleo Location
-#, fuzzy
-msgid "unsupportedFormDescription"
-msgstr ""
-"Ce plugin ne peut pas être utilisé sur ce formulaire. Essayez de le "
-"déplacer vers les formulaires {tables:string}."
-
-#: components/FormPlugins/PartialDateUi.tsx:301
+#: components/FormPlugins/PartialDateUi.tsx:307
 #. Used in: Components > Form Plugins > Partial Date Ui
 #, fuzzy
 msgid "invalidDate"
@@ -146,58 +132,56 @@ msgstr ""
 msgid "deleteConfirmationDescription"
 msgstr "Cette action ne peut pas être annulée."
 
-#: components/FormPlugins/PartialDateUi.tsx:331
-#: components/FormPlugins/PartialDateUi.tsx:334
+#: components/FormPlugins/PartialDateUi.tsx:337
+#: components/FormPlugins/PartialDateUi.tsx:340
 #. Used in: Components > Form Plugins > Partial Date Ui
 #, fuzzy
 msgid "datePrecision"
 msgstr "Précision de la date"
 
-#: components/FormPlugins/PartialDateUi.tsx:363
+#: components/FormPlugins/PartialDateUi.tsx:370
 #. 🟥A placeholder for partial date field when "month /year" type is selected. Visible only in browsers that don't support the "month" input type. Used in: Components > Form Plugins > Partial Date Ui
 #, fuzzy
 msgid "monthYear"
 msgstr "Lun / Année"
 
-#: components/FormPlugins/PartialDateUi.tsx:379
+#: components/FormPlugins/PartialDateUi.tsx:386
 #. 🟥A placeholder for partial date field when "year" type is selected. Used in: Components > Form Plugins > Partial Date Ui
 #, fuzzy
 msgid "yearPlaceholder"
 msgstr "AAAA"
 
-#: components/FormPlugins/PartialDateUi.tsx:411
+#: components/FormPlugins/PartialDateUi.tsx:418
 #. Used in: Components > Form Plugins > Partial Date Ui
 #, fuzzy
 msgid "today"
 msgstr "Aujourd'hui"
 
-#: components/FormPlugins/PartialDateUi.tsx:413
+#: components/FormPlugins/PartialDateUi.tsx:420
 #. Used in: Components > Form Plugins > Partial Date Ui
 #, fuzzy
 msgid "todayButtonDescription"
 msgstr "Définir à la date actuelle"
 
-#: components/PickLists/index.tsx:302
+#: components/PickLists/index.tsx:303
 #. Used in: Components > Pick Lists > Index
 #, fuzzy
 msgid "addToPickListConfirmation"
 msgstr "Ajouter à {pickListTable:string} ?"
 
-#: components/PickLists/index.tsx:307
+#: components/PickLists/index.tsx:308
 #. Used in: Components > Pick Lists > Index
 #, fuzzy
 msgid "addToPickListConfirmationDescription"
 msgstr ""
-"Ajouter la valeur \"{value:string}\" au {pickListTable:string} nommé "
-"\"{pickListName:string}\" ?"
 
-#: components/PickLists/index.tsx:269
+#: components/PickLists/index.tsx:270
 #. Used in: Components > Pick Lists > Index
 #, fuzzy
 msgid "invalidType"
 msgstr "Type invalide"
 
-#: components/PickLists/index.tsx:272
+#: components/PickLists/index.tsx:273
 #. Used in: Components > Pick Lists > Index
 #, fuzzy
 msgid "invalidNumericPicklistValue"
@@ -205,9 +189,9 @@ msgstr ""
 "Seules les valeurs numériques sont prises en charge dans ce "
 "{pickListTable:string}"
 
-#: components/Attachments/Plugin.tsx:124
-#: components/FormCells/FormTable.tsx:181
-#: components/Forms/BaseResourceView.tsx:97
+#: components/Attachments/Plugin.tsx:112
+#: components/FormCells/FormTable.tsx:187
+#: components/Forms/BaseResourceView.tsx:95
 #. Used in: Components > Attachments > Plugin ⬤ Components > Form Cells > Form Table ⬤ Components > Forms > Base Resource View
 #, fuzzy
 msgid "noData"
@@ -221,7 +205,7 @@ msgstr ""
 "Le {recordSetTable:string} \"{recordSetName:string}\" sera supprimé. Les "
 "enregistrements référencés ne seront PAS supprimés de la base de données."
 
-#: components/FormCommands/index.tsx:39
+#: components/FormCommands/index.tsx:37
 #: components/FormMeta/EditHistory.tsx:31
 #. Used in: Components > Form Commands > Index ⬤ Components > Form Meta > Edit History
 #, fuzzy
@@ -230,7 +214,7 @@ msgstr "Enregistrer d'abord l'enregistrement"
 
 #: components/FormSliders/Slider.tsx:31
 #: components/FormSliders/Slider.tsx:33
-#: components/UserPreferences/Definitions.tsx:964
+#: components/UserPreferences/Definitions.tsx:977
 #. Used in: Components > Form Sliders > Slider ⬤ Components > User Preferences > Definitions
 #, fuzzy
 msgid "firstRecord"
@@ -238,7 +222,7 @@ msgstr "Premier enregistrement"
 
 #: components/FormSliders/Slider.tsx:97
 #: components/FormSliders/Slider.tsx:99
-#: components/UserPreferences/Definitions.tsx:968
+#: components/UserPreferences/Definitions.tsx:981
 #. Used in: Components > Form Sliders > Slider ⬤ Components > User Preferences > Definitions
 #, fuzzy
 msgid "lastRecord"
@@ -265,19 +249,19 @@ msgid "currentRecord"
 msgstr "Objet actuel (hors de {total:number|formatted})"
 
 #: components/Forms/ResourceView.tsx:352
-#: components/Forms/Save.tsx:28
+#: components/Forms/Save.tsx:29
 #. Used in: Components > Forms > Resource View ⬤ Components > Forms > Save
 #, fuzzy
 msgid "unsavedFormUnloadProtect"
 msgstr "Ce formulaire n'a pas été enregistré."
 
-#: components/Forms/Save.tsx:265
+#: components/Forms/Save.tsx:266
 #. 🟥Meaning a conflict occurred when saving. Used in: Components > Forms > Save
 #, fuzzy
 msgid "saveConflict"
 msgstr "Enregistrer le conflit"
 
-#: components/Forms/Save.tsx:268
+#: components/Forms/Save.tsx:269
 #. Used in: Components > Forms > Save
 #, fuzzy
 msgid "saveConflictDescription"
@@ -287,37 +271,39 @@ msgstr ""
 "page doit être rechargée pour éviter l'enregistrement de données "
 "incohérentes."
 
-#: components/Forms/Save.tsx:273
+#: components/Forms/Save.tsx:274
 #. Used in: Components > Forms > Save
 #, fuzzy
 msgid "saveBlocked"
 msgstr "Sauvegarde bloquée"
 
-#: components/Forms/Save.tsx:276
+#: components/Forms/Save.tsx:277
 #. Used in: Components > Forms > Save
 #, fuzzy
 msgid "saveBlockedDescription"
 msgstr "Impossible d'enregistrer le formulaire en raison des erreurs suivantes :"
 
-#: components/FormCommands/index.tsx:120
+#: components/FormCommands/index.tsx:112
+#: components/FormCommands/index.tsx:138
 #. Used in: Components > Form Commands > Index
 #, fuzzy
 msgid "unavailableCommandButton"
 msgstr "Commande N/A"
 
-#: components/FormCommands/index.tsx:124
+#: components/FormCommands/index.tsx:116
+#: components/FormCommands/index.tsx:142
 #. Used in: Components > Form Commands > Index
 #, fuzzy
 msgid "commandUnavailable"
 msgstr "Commande non disponible"
 
-#: components/FormCommands/index.tsx:128
+#: components/FormCommands/index.tsx:120
 #. Used in: Components > Form Commands > Index
 #, fuzzy
 msgid "commandUnavailableDescription"
 msgstr "Cette commande n'est actuellement pas disponible pour Spécifier 7."
 
-#: components/FormCommands/index.tsx:130
+#: components/FormCommands/index.tsx:122
 #. Used in: Components > Form Commands > Index
 #, fuzzy
 msgid "commandUnavailableSecondDescription"
@@ -325,33 +311,34 @@ msgstr ""
 "Il a probablement été inclus sur ce formulaire à partir de Spécifier 6 et "
 "peut être pris en charge à l'avenir."
 
-#: components/FormCommands/index.tsx:133
+#: components/FormCommands/index.tsx:125
 #. Used in: Components > Form Commands > Index
 #, fuzzy
 msgid "commandName"
 msgstr "Nom de la commande"
 
-#: components/FormPlugins/index.tsx:40
-#: components/FormPlugins/index.tsx:266
+#: components/FormPlugins/index.tsx:223
+#: components/FormPlugins/index.tsx:295
 #. Used in: Components > Form Plugins > Index
 #, fuzzy
 msgid "unavailablePluginButton"
 msgstr "Plug-in N/A"
 
-#: components/FormPlugins/index.tsx:44
-#: components/FormPlugins/index.tsx:270
-#. Used in: Components > Form Plugins > Index
+#: components/FormPlugins/PaleoLocation.tsx:58
+#: components/FormPlugins/index.tsx:227
+#: components/FormPlugins/index.tsx:299
+#. Used in: Components > Form Plugins > Paleo Location ⬤ Components > Form Plugins > Index
 #, fuzzy
 msgid "pluginNotAvailable"
 msgstr "Plug-in non disponible"
 
-#: components/FormPlugins/index.tsx:274
+#: components/FormPlugins/index.tsx:231
 #. Used in: Components > Form Plugins > Index
 #, fuzzy
 msgid "pluginNotAvailableDescription"
 msgstr "Ce plugin est actuellement indisponible pour Spécifier 7"
 
-#: components/FormPlugins/index.tsx:276
+#: components/FormPlugins/index.tsx:233
 #. Used in: Components > Form Plugins > Index
 #, fuzzy
 msgid "pluginNotAvailableSecondDescription"
@@ -359,15 +346,21 @@ msgstr ""
 "Il a probablement été inclus sur ce formulaire à partir de Spécifier 6 et "
 "peut être pris en charge à l'avenir."
 
-#: components/FormPlugins/index.tsx:48
-#. Used in: Components > Form Plugins > Index
+#: components/FormPlugins/PaleoLocation.tsx:65
+#: components/FormPlugins/index.tsx:303
+#. 🟥Example: ... Locality, Collecting Event or Collection Object forms. Used in: Components > Form Plugins > Paleo Location ⬤ Components > Form Plugins > Index
 #, fuzzy
 msgid "wrongTableForPlugin"
 msgstr ""
-"Le plugin ne peut pas être utilisé sur le formulaire {currentTable:string}. "
-"Il ne peut être utilisé que sur le formulaire {correctTable:string}."
+"Ce plugin ne peut pas être utilisé sur le formulaire {currentTable:string}. "
+"Essayez de le déplacer sur les formulaires {supportedTables:string}."
 
-#: components/FormPlugins/index.tsx:279
+#: components/FormCommands/index.tsx:146
+#. Used in: Components > Form Commands > Index
+msgid "wrongTableForCommand"
+msgstr ""
+
+#: components/FormPlugins/index.tsx:236
 #. Used in: Components > Form Plugins > Index
 #, fuzzy
 msgid "pluginName"
@@ -398,7 +391,7 @@ msgstr "Valeur illégale pour un champ Oui/Non"
 msgid "requiredField"
 msgstr "Champ requis."
 
-#: components/FormPlugins/LatLongUi.tsx:85
+#: components/FormPlugins/LatLongUi.tsx:90
 #: utils/parser/__tests__/definitions.test.ts:188
 #: utils/parser/__tests__/definitions.test.ts:190
 #: utils/parser/__tests__/definitions.test.ts:206
@@ -408,8 +401,8 @@ msgstr "Champ requis."
 msgid "invalidValue"
 msgstr "valeur invalide"
 
-#: components/FormPlugins/PartialDateUi.tsx:298
-#: components/FormPlugins/PartialDateUi.tsx:300
+#: components/FormPlugins/PartialDateUi.tsx:304
+#: components/FormPlugins/PartialDateUi.tsx:306
 #: utils/parser/definitions.ts:180
 #: utils/parser/definitions.ts:182
 #: utils/parser/definitions.ts:303
@@ -471,7 +464,7 @@ msgstr "Tableau entier"
 msgid "fieldFromTable"
 msgstr "Champ de la table"
 
-#: components/FormCells/index.tsx:235
+#: components/FormCells/index.tsx:231
 #. Used in: Components > Form Cells > Index
 #, fuzzy
 msgid "unsupportedCellType"
@@ -551,7 +544,7 @@ msgstr "Supprimer de {recordSetTable:string}"
 msgid "nothingFound"
 msgstr "Rien n'a été trouvé"
 
-#: components/Forms/Save.tsx:234
+#: components/Forms/Save.tsx:235
 #. 🟥Verb. Button label. Used in: Components > Forms > Save
 #, fuzzy
 msgid "carryForward"
@@ -563,7 +556,7 @@ msgstr "Reporter"
 msgid "carryForwardEnabled"
 msgstr "Afficher le bouton Reporter"
 
-#: components/Forms/Save.tsx:235
+#: components/Forms/Save.tsx:236
 #. Used in: Components > Forms > Save
 #, fuzzy
 msgid "carryForwardDescription"
@@ -600,7 +593,7 @@ msgstr "Afficher le bouton Cloner"
 msgid "addButtonEnabled"
 msgstr "Afficher le bouton Ajouter"
 
-#: components/Forms/Save.tsx:241
+#: components/Forms/Save.tsx:242
 #. Used in: Components > Forms > Save
 #, fuzzy
 msgid "addButtonDescription"
@@ -656,7 +649,7 @@ msgstr "Configuration du formulaire"
 msgid "formState"
 msgstr "État du formulaire"
 
-#: components/FormMeta/index.tsx:175
+#: components/FormMeta/index.tsx:176
 #. Used in: Components > Form Meta > Index
 #, fuzzy
 msgid "recordInformation"
@@ -681,19 +674,19 @@ msgstr "Trouver des usages"
 msgid "usagesOfPickList"
 msgstr "Utilisations de la liste de sélection \"{pickList:string}\""
 
-#: components/FormMeta/SubViewMeta.tsx:35
+#: components/FormMeta/SubViewMeta.tsx:36
 #. Used in: Components > Form Meta > Sub View Meta
 msgid "subForm"
 msgstr "Sous-formulaire"
 
-#: components/FormMeta/SubViewMeta.tsx:36
-#: components/UserPreferences/Definitions.tsx:975
+#: components/FormMeta/SubViewMeta.tsx:37
+#: components/UserPreferences/Definitions.tsx:988
 #. Used in: Components > Form Meta > Sub View Meta ⬤ Components > User Preferences > Definitions
 #, fuzzy
 msgid "formTable"
 msgstr "Grille"
 
-#: components/FormMeta/index.tsx:151
+#: components/FormMeta/index.tsx:152
 #. Used in: Components > Form Meta > Index
 #, fuzzy
 msgid "subviewConfiguration"
@@ -717,14 +710,14 @@ msgstr "Copie Spécifiez 6 paramètres"
 msgid "useCustomSettings"
 msgstr "Utiliser les paramètres personnalisés"
 
-#: components/FormMeta/ReadOnlyMode.tsx:19
+#: components/FormMeta/ReadOnlyMode.tsx:20
 #: components/Header/UserTools.tsx:62
 #. Used in: Components > Form Meta > Read Only Mode ⬤ Components > Header > User Tools
 #, fuzzy
 msgid "disableReadOnly"
 msgstr "Désactiver le mode lecture seule"
 
-#: components/FormMeta/ReadOnlyMode.tsx:19
+#: components/FormMeta/ReadOnlyMode.tsx:20
 #. Used in: Components > Form Meta > Read Only Mode
 #, fuzzy
 msgid "enableReadOnly"
@@ -743,15 +736,15 @@ msgstr "Configurer les tables de saisie de données"
 msgid "formMeta"
 msgstr "Méta formulaire"
 
-#: components/AppResources/Editor.tsx:176
-#: components/Forms/BaseResourceView.tsx:106
-#: components/Forms/dataObjFormatters.ts:151
+#: components/AppResources/Editor.tsx:179
+#: components/Forms/BaseResourceView.tsx:104
+#: components/Forms/dataObjFormatters.ts:149
 #. Used in: Components > App Resources > Editor ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Data Obj Formatters
 #, fuzzy
 msgid "newResourceTitle"
 msgstr "Nouveau {tableName:string}"
 
-#: components/Forms/dataObjFormatters.ts:152
+#: components/Forms/dataObjFormatters.ts:150
 #. 🟥When resource does not have a formatter defined, this formatter is used. Used in: Components > Forms > Data Obj Formatters
 #, fuzzy
 msgid "resourceFormatter"

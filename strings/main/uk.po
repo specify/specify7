@@ -12,12 +12,12 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 4.16-dev\n"
 
-#: components/Molecules/AppTitle.tsx:47
+#: components/Molecules/AppTitle.tsx:49
 #. 🟥Formatting for the title in the web page title bar. Used in: Components > Molecules > App Title
 msgid "appTitle"
 msgstr "{baseTitle:string} | Specify 7"
 
-#: components/Molecules/AppTitle.tsx:46
+#: components/Molecules/AppTitle.tsx:48
 #. 🟥Default page title. Used in: Components > Molecules > App Title
 msgid "baseAppTitle"
 msgstr "Specify 7"
@@ -45,28 +45,28 @@ msgstr ""
 msgid "returnToHomepage"
 msgstr "Повернутися на домашню сторінку"
 
-#: components/Errors/ErrorDialog.tsx:54
+#: components/Errors/ErrorDialog.tsx:58
 #: components/Errors/FormatError.tsx:186
 #: components/Errors/FormatError.tsx:215
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Errors > Format Error
 msgid "errorOccurred"
 msgstr "Вибачте, щось пішло не так"
 
-#: components/Errors/ErrorDialog.tsx:163
+#: components/Errors/ErrorDialog.tsx:166
 #. Used in: Components > Errors > Error Dialog
 msgid "errorOccurredDescription"
 msgstr ""
 "Вибачте, здається, ви зіткнулися з помилкою в Specify 7, про яку ми могливо "
 "не знаємо."
 
-#: components/Errors/ErrorDialog.tsx:164
+#: components/Errors/ErrorDialog.tsx:167
 #. Used in: Components > Errors > Error Dialog
 msgid "criticalErrorOccurredDescription"
 msgstr ""
 "Щоб уникнути пошкодження записів даних, нам потрібно почати знову з "
 "безпечного місця – домашньої сторінки."
 
-#: components/Errors/ErrorDialog.tsx:30
+#: components/Errors/ErrorDialog.tsx:34
 #. Used in: Components > Errors > Error Dialog
 msgid "errorResolutionDescription"
 msgstr ""
@@ -74,7 +74,7 @@ msgstr ""
 "даних Specify Cloud, завантажте повідомлення про помилку та надішліть його "
 "на <email />."
 
-#: components/Errors/ErrorDialog.tsx:36
+#: components/Errors/ErrorDialog.tsx:40
 #. 🟥Careful with the <xml> tags when localizing. Used in: Components > Errors > Error Dialog
 msgid "errorResolutionSecondDescription"
 msgstr ""
@@ -82,13 +82,13 @@ msgstr ""
 "на запитання та звертатися за допомогою на нашому "
 "<discourseLink>форумі</discourseLink>."
 
-#: components/Core/__tests__/Contexts.test.tsx:37
-#: components/Errors/ErrorDialog.tsx:172
+#: components/Core/__tests__/Contexts.test.tsx:34
+#: components/Errors/ErrorDialog.tsx:175
 #. Used in: Core > __tests__ > Contexts ⬤ Components > Errors > Error Dialog
 msgid "errorMessage"
 msgstr "Помилка"
 
-#: components/Router/Router.tsx:297
+#: components/Router/Router.tsx:280
 #. Used in: Components > Router > Router
 msgid "leavePageConfirmation"
 msgstr "Ви впевнені, що бажаєте покинути цю сторінку?"
@@ -98,29 +98,29 @@ msgstr "Ви впевнені, що бажаєте покинути цю сто�
 msgid "leavePageConfirmationDescription"
 msgstr "Незбережені зміни буде втрачено, якщо ви покинете цю сторінку."
 
-#: components/Router/Router.tsx:293
+#: components/Router/Router.tsx:276
 #. Used in: Components > Router > Router
 msgid "leave"
 msgstr "Покинути"
 
-#: components/Core/Main.tsx:140
+#: components/Core/Main.tsx:146
 #. Used in: Components > Core > Main
 msgid "versionMismatch"
 msgstr "Версія Specify не відповідає версії бази даних"
 
-#: components/Core/Main.tsx:144
+#: components/Core/Main.tsx:150
 #. Used in: Components > Core > Main
 msgid "versionMismatchDescription"
 msgstr ""
 "Версія Specify {specifySixVersion:string} не відповідає версії бази даних "
 "{databaseVersion:string}."
 
-#: components/Core/Main.tsx:149
+#: components/Core/Main.tsx:155
 #. Used in: Components > Core > Main
 msgid "versionMismatchSecondDescription"
 msgstr "Тому деякі функції Specify 7 можуть не працювати належним чином."
 
-#: components/Core/Main.tsx:152
+#: components/Core/Main.tsx:158
 #. Used in: Components > Core > Main
 msgid "versionMismatchInstructions"
 msgstr "Інструкції щодо вирішення невідповідності версій"

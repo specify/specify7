@@ -13,10 +13,10 @@ msgstr ""
 "X-Generator: Weblate 4.16-dev\n"
 
 #: components/Header/menuItemDefinitions.ts:66
-#: components/Interactions/InteractionsDialog.tsx:247
+#: components/Interactions/InteractionsDialog.tsx:253
 #: components/Router/OverlayRoutes.tsx:60
-#: components/UserPreferences/Definitions.tsx:452
-#: components/UserPreferences/Definitions.tsx:509
+#: components/UserPreferences/Definitions.tsx:465
+#: components/UserPreferences/Definitions.tsx:522
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Router > Overlay Routes ⬤ Components > User Preferences > Definitions
 #, fuzzy
 msgid "interactions"
@@ -90,7 +90,7 @@ msgstr "Додати непов’язаний елемент"
 msgid "preparations"
 msgstr "препарати"
 
-#: components/FormCommands/index.tsx:105
+#: components/FormCommands/index.tsx:98
 #. Used in: Components > Form Commands > Index
 #, fuzzy
 msgid "preparationsCanNotBeReturned"
@@ -227,7 +227,7 @@ msgstr ""
 #: components/FormMeta/CarryForward.tsx:249
 #: components/Interactions/PrepDialog.tsx:112
 #: components/Interactions/PrepReturnDialog.tsx:145
-#: components/QueryBuilder/Results.tsx:235
+#: components/QueryBuilder/Results.tsx:236
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Return Dialog ⬤ Components > Query Builder > Results
 #, fuzzy
 msgid "deselectAll"
@@ -245,57 +245,57 @@ msgstr "в наявності"
 msgid "unavailable"
 msgstr "Недоступний"
 
-#: components/Interactions/InteractionsDialog.tsx:92
+#: components/Interactions/InteractionsDialog.tsx:93
 #: components/QueryBuilder/LoanReturn.tsx:149
 #. 🟥Example: Return Loan records. Used in: Components > Interactions > Interactions Dialog ⬤ Components > Query Builder > Loan Return
 #, fuzzy
 msgid "returnLoan"
 msgstr "Повернути записи {tableLoan:string}."
 
-#: components/Interactions/InteractionsDialog.tsx:95
-#: components/Interactions/InteractionsDialog.tsx:120
+#: components/Interactions/InteractionsDialog.tsx:96
+#: components/Interactions/InteractionsDialog.tsx:121
 #. Used in: Components > Interactions > Interactions Dialog
 #, fuzzy
 msgid "printInvoice"
 msgstr "Роздрукувати рахунок-фактуру"
 
-#: components/Interactions/InteractionsDialog.tsx:96
+#: components/Interactions/InteractionsDialog.tsx:97
 #. 🟥Example: Loan records w/o Preparation records. Used in: Components > Interactions > Interactions Dialog
 #, fuzzy
 msgid "loanWithoutPreparation"
 msgstr "{tableLoan:string} без записів {tablePreparation:string}."
 
-#: components/Interactions/InteractionsDialog.tsx:101
+#: components/Interactions/InteractionsDialog.tsx:102
 #. 🟥Example: Create a Loan records with no Preparation records. Used in: Components > Interactions > Interactions Dialog
 #, fuzzy
 msgid "loanWithoutPreparationDescription"
 msgstr "Створіть {tableLoan:string} без записів {tablePreparation:string}."
 
-#: components/Interactions/InteractionsDialog.tsx:105
+#: components/Interactions/InteractionsDialog.tsx:106
 #. 🟥Example: Create a Loan. Used in: Components > Interactions > Interactions Dialog
 #, fuzzy
 msgid "createLoan"
 msgstr "Створити {tableLoan:string}"
 
-#: components/Interactions/InteractionsDialog.tsx:108
+#: components/Interactions/InteractionsDialog.tsx:109
 #. 🟥Example: Edit a Loan. Used in: Components > Interactions > Interactions Dialog
 #, fuzzy
 msgid "editLoan"
 msgstr "Редагувати {tableLoan:string}"
 
-#: components/Interactions/InteractionsDialog.tsx:111
+#: components/Interactions/InteractionsDialog.tsx:112
 #. 🟥Example: Create a Gift. Used in: Components > Interactions > Interactions Dialog
 #, fuzzy
 msgid "createdGift"
 msgstr "Створити {tableGift:string}"
 
-#: components/Interactions/InteractionsDialog.tsx:114
+#: components/Interactions/InteractionsDialog.tsx:115
 #. 🟥Example: Edit a Gift. Used in: Components > Interactions > Interactions Dialog
 #, fuzzy
 msgid "editGift"
 msgstr "Редагувати {tableGift:string}"
 
-#: components/Interactions/InteractionsDialog.tsx:117
+#: components/Interactions/InteractionsDialog.tsx:118
 #. 🟥Example: Create a Infrormation Request. Used in: Components > Interactions > Interactions Dialog
 #, fuzzy
 msgid "createInformationRequest"

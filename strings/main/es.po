@@ -11,12 +11,12 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 4.15.1\n"
 
-#: components/Molecules/AppTitle.tsx:47
+#: components/Molecules/AppTitle.tsx:49
 #. 🟥Formatting for the title in the web page title bar. Used in: Components > Molecules > App Title
 msgid "appTitle"
 msgstr "{baseTitle:string} | Specify 7"
 
-#: components/Molecules/AppTitle.tsx:46
+#: components/Molecules/AppTitle.tsx:48
 #. 🟥Default page title. Used in: Components > Molecules > App Title
 msgid "baseAppTitle"
 msgstr "Specify 7"
@@ -44,28 +44,28 @@ msgstr ""
 msgid "returnToHomepage"
 msgstr "Regresar a la página de inicio"
 
-#: components/Errors/ErrorDialog.tsx:54
+#: components/Errors/ErrorDialog.tsx:58
 #: components/Errors/FormatError.tsx:186
 #: components/Errors/FormatError.tsx:215
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Errors > Format Error
 msgid "errorOccurred"
 msgstr "Lo siento, algo salió mal"
 
-#: components/Errors/ErrorDialog.tsx:163
+#: components/Errors/ErrorDialog.tsx:166
 #. Used in: Components > Errors > Error Dialog
 msgid "errorOccurredDescription"
 msgstr ""
 "Lo sentimos, parece que ha encontrado un error en Specify 7 del que no "
 "somos conscientes."
 
-#: components/Errors/ErrorDialog.tsx:164
+#: components/Errors/ErrorDialog.tsx:167
 #. Used in: Components > Errors > Error Dialog
 msgid "criticalErrorOccurredDescription"
 msgstr ""
 "Para evitar corromper los registros de datos, tenemos que empezar de nuevo "
 "desde un punto seguro--la página de inicio."
 
-#: components/Errors/ErrorDialog.tsx:30
+#: components/Errors/ErrorDialog.tsx:34
 #. Used in: Components > Errors > Error Dialog
 msgid "errorResolutionDescription"
 msgstr ""
@@ -73,7 +73,7 @@ msgstr ""
 "informática. Si se trata de una base de datos de Specify Cloud, descargue "
 "el mensaje de error y envíelo a <email />."
 
-#: components/Errors/ErrorDialog.tsx:36
+#: components/Errors/ErrorDialog.tsx:40
 #. 🟥Careful with the <xml> tags when localizing. Used in: Components > Errors > Error Dialog
 msgid "errorResolutionSecondDescription"
 msgstr ""
@@ -81,13 +81,13 @@ msgstr ""
 "pueden buscar preguntas respondidas y pedir ayuda en nuestro "
 "<discourseLink>Foro</discourseLink>."
 
-#: components/Core/__tests__/Contexts.test.tsx:37
-#: components/Errors/ErrorDialog.tsx:172
+#: components/Core/__tests__/Contexts.test.tsx:34
+#: components/Errors/ErrorDialog.tsx:175
 #. Used in: Core > __tests__ > Contexts ⬤ Components > Errors > Error Dialog
 msgid "errorMessage"
 msgstr "Mensaje de error"
 
-#: components/Router/Router.tsx:297
+#: components/Router/Router.tsx:280
 #. Used in: Components > Router > Router
 msgid "leavePageConfirmation"
 msgstr "¿Seguro que quieres salir de esta página?"
@@ -97,31 +97,31 @@ msgstr "¿Seguro que quieres salir de esta página?"
 msgid "leavePageConfirmationDescription"
 msgstr "Los cambios no guardados se perderán si abandona esta página."
 
-#: components/Router/Router.tsx:293
+#: components/Router/Router.tsx:276
 #. Used in: Components > Router > Router
 msgid "leave"
 msgstr "Vete"
 
-#: components/Core/Main.tsx:140
+#: components/Core/Main.tsx:146
 #. Used in: Components > Core > Main
 msgid "versionMismatch"
 msgstr "La versión de Specify no coincide con la versión de la base de datos"
 
-#: components/Core/Main.tsx:144
+#: components/Core/Main.tsx:150
 #. Used in: Components > Core > Main
 msgid "versionMismatchDescription"
 msgstr ""
 "La versión de Specify {specifySixVersion:string} no coincide con la versión "
 "de la base de datos {databaseVersion:string}."
 
-#: components/Core/Main.tsx:149
+#: components/Core/Main.tsx:155
 #. Used in: Components > Core > Main
 msgid "versionMismatchSecondDescription"
 msgstr ""
 "Por lo tanto, es posible que algunas funciones de Specific 7 no funcionen "
 "correctamente."
 
-#: components/Core/Main.tsx:152
+#: components/Core/Main.tsx:158
 #. Used in: Components > Core > Main
 msgid "versionMismatchInstructions"
 msgstr "Instrucciones para resolver la discrepancia de los esquema de Specify"

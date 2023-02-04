@@ -10,7 +10,7 @@ msgstr "Open Map"
 #: components/Leaflet/Map.tsx:23
 #: components/QueryBuilder/ToMap.tsx:59
 #: components/QueryBuilder/ToMap.tsx:241
-#: components/UserPreferences/Definitions.tsx:1542
+#: components/UserPreferences/Definitions.tsx:1555
 #: components/WorkBench/Template.tsx:229
 #. Used in: Components > Leaflet > Map ⬤ Components > Query Builder > To Map ⬤ Components > User Preferences > Definitions ⬤ Components > Work Bench > Template
 msgid "geoMap"
@@ -81,61 +81,61 @@ msgstr "{geographyTable:string} must be mapped"
 msgid "geographyRequiredDescription"
 msgstr "The GeoLocate plugin requires the geography field to be populated."
 
-#: components/FormPlugins/LatLongUi.tsx:268
+#: components/FormPlugins/LatLongUi.tsx:273
 #. Used in: Components > Form Plugins > Lat Long Ui
 msgid "coordinates"
 msgstr "Coordinates"
 
-#: components/FormPlugins/LatLongUi.tsx:271
+#: components/FormPlugins/LatLongUi.tsx:276
 #. 🟥Represents coordinates. Careful with translation. Used in: Components > Form Plugins > Lat Long Ui
 msgid "northWestCorner"
 msgstr "NW Corner"
 
-#: components/FormPlugins/LatLongUi.tsx:283
+#: components/FormPlugins/LatLongUi.tsx:288
 #. 🟥Represents coordinates. Careful with translation. Used in: Components > Form Plugins > Lat Long Ui
 msgid "southEastCorner"
 msgstr "SE Corner"
 
-#: components/FormPlugins/LatLongUi.tsx:239
 #: components/FormPlugins/LatLongUi.tsx:244
+#: components/FormPlugins/LatLongUi.tsx:249
 #. Used in: Components > Form Plugins > Lat Long Ui
 msgid "coordinateType"
 msgstr "Coordinate Type"
 
-#: components/FormPlugins/LatLongUi.tsx:251
+#: components/FormPlugins/LatLongUi.tsx:256
 #. Used in: Components > Form Plugins > Lat Long Ui
 msgid "point"
 msgstr "Point"
 
-#: components/FormPlugins/LatLongUi.tsx:252
+#: components/FormPlugins/LatLongUi.tsx:257
 #. Used in: Components > Form Plugins > Lat Long Ui
 msgid "line"
 msgstr "Line"
 
-#: components/FormPlugins/LatLongUi.tsx:253
+#: components/FormPlugins/LatLongUi.tsx:258
 #. Used in: Components > Form Plugins > Lat Long Ui
 msgid "rectangle"
 msgstr "Rectangle"
 
-#: components/FormPlugins/LatLongUi.tsx:259
+#: components/FormPlugins/LatLongUi.tsx:264
 #. Used in: Components > Form Plugins > Lat Long Ui
 msgid "parsed"
 msgstr "Parsed"
 
-#: components/FormPlugins/LatLongUi.tsx:165
-#: components/FormPlugins/LatLongUi.tsx:257
+#: components/FormPlugins/LatLongUi.tsx:170
+#: components/FormPlugins/LatLongUi.tsx:262
 #. Used in: Components > Form Plugins > Lat Long Ui
 msgid "latitude"
 msgstr "Latitude"
 
-#: components/FormPlugins/LatLongUi.tsx:179
-#: components/FormPlugins/LatLongUi.tsx:258
+#: components/FormPlugins/LatLongUi.tsx:184
+#: components/FormPlugins/LatLongUi.tsx:263
 #. Used in: Components > Form Plugins > Lat Long Ui
 msgid "longitude"
 msgstr "Longitude"
 
-#: components/AppResources/Editor.tsx:95
-#: components/AppResources/Editor.tsx:97
+#: components/AppResources/Editor.tsx:98
+#: components/AppResources/Editor.tsx:100
 #: components/Leaflet/extend.ts:36
 #: components/Leaflet/extend.ts:37
 #. Used in: Components > App Resources > Editor ⬤ Components > Leaflet > Extend

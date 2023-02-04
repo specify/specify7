@@ -11,38 +11,38 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 4.16-dev\n"
 
-#: components/UserPreferences/Definitions.tsx:590
+#: components/UserPreferences/Definitions.tsx:603
 #. Used in: Components > User Preferences > Definitions
 msgid "forms"
 msgstr "Formularios"
 
 #: components/Atoms/DataEntry.tsx:139
-#: components/Forms/Save.tsx:228
+#: components/Forms/Save.tsx:229
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Save
 msgid "clone"
 msgstr "Clon"
 
-#: components/Forms/Save.tsx:229
+#: components/Forms/Save.tsx:230
 #. Used in: Components > Forms > Save
 msgid "cloneDescription"
 msgstr "Crear una copia completa del registro actual"
 
-#: components/DataModel/businessRules.js:190
+#: components/DataModel/businessRules.js:195
 #. Used in: Components > Data Model > Business Rules
 msgid "valueMustBeUniqueToField"
 msgstr "El valor debe ser único para {fieldName:string}"
 
-#: components/DataModel/businessRules.js:191
+#: components/DataModel/businessRules.js:196
 #. Used in: Components > Data Model > Business Rules
 msgid "valueMustBeUniqueToDatabase"
 msgstr "El valor debe ser único para la base de datos"
 
-#: components/DataModel/businessRules.js:181
+#: components/DataModel/businessRules.js:186
 #. Used in: Components > Data Model > Business Rules
 msgid "valuesOfMustBeUniqueToField"
 msgstr "Los valores de {values:string} deben ser únicos para {fieldName:string}"
 
-#: components/DataModel/businessRules.js:185
+#: components/DataModel/businessRules.js:190
 #. Used in: Components > Data Model > Business Rules
 msgid "valuesOfMustBeUniqueToDatabase"
 msgstr "Los valores de {values:string} deben ser únicos para la base de datos"
@@ -77,19 +77,19 @@ msgstr "Registro"
 msgid "relationship"
 msgstr "Relación"
 
-#: components/FormPlugins/PaleoLocation.tsx:52
-#: components/FormPlugins/PaleoLocation.tsx:89
-#: components/FormPlugins/PaleoLocation.tsx:98
+#: components/FormPlugins/PaleoLocation.tsx:53
+#: components/FormPlugins/PaleoLocation.tsx:87
+#: components/FormPlugins/PaleoLocation.tsx:96
 #. Used in: Components > Form Plugins > Paleo Location
 msgid "paleoMap"
 msgstr "Mapa paleolítico"
 
-#: components/FormPlugins/PaleoLocation.tsx:76
+#: components/FormPlugins/PaleoLocation.tsx:74
 #. 🟥Example: Geography Required. Used in: Components > Form Plugins > Paleo Location
 msgid "paleoRequiresGeography"
 msgstr "{geographyTable:string} requerida"
 
-#: components/FormPlugins/PaleoLocation.tsx:81
+#: components/FormPlugins/PaleoLocation.tsx:79
 #. Used in: Components > Form Plugins > Paleo Location
 msgid "paleoRequiresGeographyDescription"
 msgstr ""
@@ -97,19 +97,7 @@ msgstr ""
 "coordenadas geográficas y que el contexto paleo tenga una edad geográfica "
 "con al menos una hora de inicio o una hora de finalización poblada."
 
-#: components/FormPlugins/PaleoLocation.tsx:57
-#. Used in: Components > Form Plugins > Paleo Location
-msgid "unsupportedForm"
-msgstr "Forma incorrecta"
-
-#: components/FormPlugins/PaleoLocation.tsx:64
-#. 🟥Example: ... Locality, Collecting Event or Collection Object forms. Used in: Components > Form Plugins > Paleo Location
-msgid "unsupportedFormDescription"
-msgstr ""
-"Este complemento no se puede utilizar en este formulario. Intente moverlo a "
-"las formas {tables:string}."
-
-#: components/FormPlugins/PartialDateUi.tsx:301
+#: components/FormPlugins/PartialDateUi.tsx:307
 #. Used in: Components > Form Plugins > Partial Date Ui
 msgid "invalidDate"
 msgstr "Fecha invalida"
@@ -126,57 +114,57 @@ msgstr ""
 msgid "deleteConfirmationDescription"
 msgstr "Esta acción no se puede deshacer."
 
-#: components/FormPlugins/PartialDateUi.tsx:331
-#: components/FormPlugins/PartialDateUi.tsx:334
+#: components/FormPlugins/PartialDateUi.tsx:337
+#: components/FormPlugins/PartialDateUi.tsx:340
 #. Used in: Components > Form Plugins > Partial Date Ui
 msgid "datePrecision"
 msgstr "Precisión de fecha"
 
-#: components/FormPlugins/PartialDateUi.tsx:363
+#: components/FormPlugins/PartialDateUi.tsx:370
 #. 🟥A placeholder for partial date field when "month /year" type is selected. Visible only in browsers that don't support the "month" input type. Used in: Components > Form Plugins > Partial Date Ui
 msgid "monthYear"
 msgstr "Lunes / Año"
 
-#: components/FormPlugins/PartialDateUi.tsx:379
+#: components/FormPlugins/PartialDateUi.tsx:386
 #. 🟥A placeholder for partial date field when "year" type is selected. Used in: Components > Form Plugins > Partial Date Ui
 msgid "yearPlaceholder"
 msgstr "AAAA"
 
-#: components/FormPlugins/PartialDateUi.tsx:411
+#: components/FormPlugins/PartialDateUi.tsx:418
 #. Used in: Components > Form Plugins > Partial Date Ui
 msgid "today"
 msgstr "Hoy"
 
-#: components/FormPlugins/PartialDateUi.tsx:413
+#: components/FormPlugins/PartialDateUi.tsx:420
 #. Used in: Components > Form Plugins > Partial Date Ui
 msgid "todayButtonDescription"
 msgstr "Establecer en la fecha actual"
 
-#: components/PickLists/index.tsx:302
+#: components/PickLists/index.tsx:303
 #. Used in: Components > Pick Lists > Index
 msgid "addToPickListConfirmation"
 msgstr "¿Agregar a la {pickListTable:string}?"
 
-#: components/PickLists/index.tsx:307
+#: components/PickLists/index.tsx:308
 #. Used in: Components > Pick Lists > Index
 msgid "addToPickListConfirmationDescription"
 msgstr ""
 "¿Agregar el valor \"{value:string}\" a la {pickListTable:string} denominada "
 "\"{pickListName:string}\"?"
 
-#: components/PickLists/index.tsx:269
+#: components/PickLists/index.tsx:270
 #. Used in: Components > Pick Lists > Index
 msgid "invalidType"
 msgstr "Tipo no válido"
 
-#: components/PickLists/index.tsx:272
+#: components/PickLists/index.tsx:273
 #. Used in: Components > Pick Lists > Index
 msgid "invalidNumericPicklistValue"
 msgstr "Solo se admiten valores numéricos en esta {pickListTable:string}"
 
-#: components/Attachments/Plugin.tsx:124
-#: components/FormCells/FormTable.tsx:181
-#: components/Forms/BaseResourceView.tsx:97
+#: components/Attachments/Plugin.tsx:112
+#: components/FormCells/FormTable.tsx:187
+#: components/Forms/BaseResourceView.tsx:95
 #. Used in: Components > Attachments > Plugin ⬤ Components > Form Cells > Form Table ⬤ Components > Forms > Base Resource View
 msgid "noData"
 msgstr "Sin datos."
@@ -188,7 +176,7 @@ msgstr ""
 "Se {recordSetTable:string} de registros \"{recordSetName:string}\". Los "
 "registros a los que se hace referencia NO se eliminarán de la base de datos."
 
-#: components/FormCommands/index.tsx:39
+#: components/FormCommands/index.tsx:37
 #: components/FormMeta/EditHistory.tsx:31
 #. Used in: Components > Form Commands > Index ⬤ Components > Form Meta > Edit History
 msgid "saveRecordFirst"
@@ -196,14 +184,14 @@ msgstr "Guardar registro primero"
 
 #: components/FormSliders/Slider.tsx:31
 #: components/FormSliders/Slider.tsx:33
-#: components/UserPreferences/Definitions.tsx:964
+#: components/UserPreferences/Definitions.tsx:977
 #. Used in: Components > Form Sliders > Slider ⬤ Components > User Preferences > Definitions
 msgid "firstRecord"
 msgstr "primer registro"
 
 #: components/FormSliders/Slider.tsx:97
 #: components/FormSliders/Slider.tsx:99
-#: components/UserPreferences/Definitions.tsx:968
+#: components/UserPreferences/Definitions.tsx:981
 #. Used in: Components > Form Sliders > Slider ⬤ Components > User Preferences > Definitions
 msgid "lastRecord"
 msgstr "Último registro"
@@ -226,17 +214,17 @@ msgid "currentRecord"
 msgstr "Objeto actual (de {total:number|formatted})"
 
 #: components/Forms/ResourceView.tsx:352
-#: components/Forms/Save.tsx:28
+#: components/Forms/Save.tsx:29
 #. Used in: Components > Forms > Resource View ⬤ Components > Forms > Save
 msgid "unsavedFormUnloadProtect"
 msgstr "Este formulario no ha sido guardado."
 
-#: components/Forms/Save.tsx:265
+#: components/Forms/Save.tsx:266
 #. 🟥Meaning a conflict occurred when saving. Used in: Components > Forms > Save
 msgid "saveConflict"
 msgstr "Guardar conflicto"
 
-#: components/Forms/Save.tsx:268
+#: components/Forms/Save.tsx:269
 #. Used in: Components > Forms > Save
 msgid "saveConflictDescription"
 msgstr ""
@@ -244,75 +232,84 @@ msgstr ""
 "usuario o en otra pestaña del navegador y están desactualizados. La página "
 "debe volver a cargarse para evitar que se guarden datos incoherentes."
 
-#: components/Forms/Save.tsx:273
+#: components/Forms/Save.tsx:274
 #. Used in: Components > Forms > Save
 msgid "saveBlocked"
 msgstr "Guardar bloqueado"
 
-#: components/Forms/Save.tsx:276
+#: components/Forms/Save.tsx:277
 #. Used in: Components > Forms > Save
 msgid "saveBlockedDescription"
 msgstr "El formulario no se puede guardar debido a los siguientes errores:"
 
-#: components/FormCommands/index.tsx:120
+#: components/FormCommands/index.tsx:112
+#: components/FormCommands/index.tsx:138
 #. Used in: Components > Form Commands > Index
 msgid "unavailableCommandButton"
 msgstr "Comando N/A"
 
-#: components/FormCommands/index.tsx:124
+#: components/FormCommands/index.tsx:116
+#: components/FormCommands/index.tsx:142
 #. Used in: Components > Form Commands > Index
 msgid "commandUnavailable"
 msgstr "Comando no disponible"
 
-#: components/FormCommands/index.tsx:128
+#: components/FormCommands/index.tsx:120
 #. Used in: Components > Form Commands > Index
 msgid "commandUnavailableDescription"
 msgstr "Este comando no está disponible actualmente para Especificar 7."
 
-#: components/FormCommands/index.tsx:130
+#: components/FormCommands/index.tsx:122
 #. Used in: Components > Form Commands > Index
 msgid "commandUnavailableSecondDescription"
 msgstr ""
 "Probablemente se incluyó en este formulario de Especificar 6 y es posible "
 "que se admita en el futuro."
 
-#: components/FormCommands/index.tsx:133
+#: components/FormCommands/index.tsx:125
 #. Used in: Components > Form Commands > Index
 msgid "commandName"
 msgstr "Nombre del comando"
 
-#: components/FormPlugins/index.tsx:40
-#: components/FormPlugins/index.tsx:266
+#: components/FormPlugins/index.tsx:223
+#: components/FormPlugins/index.tsx:295
 #. Used in: Components > Form Plugins > Index
 msgid "unavailablePluginButton"
 msgstr "Complemento N/A"
 
-#: components/FormPlugins/index.tsx:44
-#: components/FormPlugins/index.tsx:270
-#. Used in: Components > Form Plugins > Index
+#: components/FormPlugins/PaleoLocation.tsx:58
+#: components/FormPlugins/index.tsx:227
+#: components/FormPlugins/index.tsx:299
+#. Used in: Components > Form Plugins > Paleo Location ⬤ Components > Form Plugins > Index
 msgid "pluginNotAvailable"
 msgstr "Complemento no disponible"
 
-#: components/FormPlugins/index.tsx:274
+#: components/FormPlugins/index.tsx:231
 #. Used in: Components > Form Plugins > Index
 msgid "pluginNotAvailableDescription"
 msgstr "Este complemento no está disponible actualmente para Specific 7"
 
-#: components/FormPlugins/index.tsx:276
+#: components/FormPlugins/index.tsx:233
 #. Used in: Components > Form Plugins > Index
 msgid "pluginNotAvailableSecondDescription"
 msgstr ""
 "Probablemente se incluyó en este formulario de Especificar 6 y es posible "
 "que se admita en el futuro."
 
-#: components/FormPlugins/index.tsx:48
-#. Used in: Components > Form Plugins > Index
+#: components/FormPlugins/PaleoLocation.tsx:65
+#: components/FormPlugins/index.tsx:303
+#. 🟥Example: ... Locality, Collecting Event or Collection Object forms. Used in: Components > Form Plugins > Paleo Location ⬤ Components > Form Plugins > Index
 msgid "wrongTableForPlugin"
 msgstr ""
-"El complemento no se puede usar en el formulario {currentTable:string}. "
-"Solo se puede utilizar en el formulario {correctTable:string}."
+"Este complemento no se puede usar en el formulario {currentTable:string}. "
+"Intente moverlo a los formularios {supportedTables:string}."
 
-#: components/FormPlugins/index.tsx:279
+#: components/FormCommands/index.tsx:146
+#. Used in: Components > Form Commands > Index
+msgid "wrongTableForCommand"
+msgstr ""
+
+#: components/FormPlugins/index.tsx:236
 #. Used in: Components > Form Plugins > Index
 msgid "pluginName"
 msgstr "Nombre del complemento"
@@ -339,7 +336,7 @@ msgstr "Valor ilegal para un campo Sí/No"
 msgid "requiredField"
 msgstr "Se requiere campo."
 
-#: components/FormPlugins/LatLongUi.tsx:85
+#: components/FormPlugins/LatLongUi.tsx:90
 #: utils/parser/__tests__/definitions.test.ts:188
 #: utils/parser/__tests__/definitions.test.ts:190
 #: utils/parser/__tests__/definitions.test.ts:206
@@ -348,8 +345,8 @@ msgstr "Se requiere campo."
 msgid "invalidValue"
 msgstr "valor no válido"
 
-#: components/FormPlugins/PartialDateUi.tsx:298
-#: components/FormPlugins/PartialDateUi.tsx:300
+#: components/FormPlugins/PartialDateUi.tsx:304
+#: components/FormPlugins/PartialDateUi.tsx:306
 #: utils/parser/definitions.ts:180
 #: utils/parser/definitions.ts:182
 #: utils/parser/definitions.ts:303
@@ -402,7 +399,7 @@ msgstr "Toda la mesa"
 msgid "fieldFromTable"
 msgstr "Campo de la tabla"
 
-#: components/FormCells/index.tsx:235
+#: components/FormCells/index.tsx:231
 #. Used in: Components > Form Cells > Index
 msgid "unsupportedCellType"
 msgstr "Tipo de celda no compatible"
@@ -467,7 +464,7 @@ msgstr "Eliminar de {recordSetTable:string}"
 msgid "nothingFound"
 msgstr "Nada Encontrado"
 
-#: components/Forms/Save.tsx:234
+#: components/Forms/Save.tsx:235
 #. 🟥Verb. Button label. Used in: Components > Forms > Save
 msgid "carryForward"
 msgstr "Llevar adelante"
@@ -477,7 +474,7 @@ msgstr "Llevar adelante"
 msgid "carryForwardEnabled"
 msgstr "Mostrar el botón Transferir"
 
-#: components/Forms/Save.tsx:235
+#: components/Forms/Save.tsx:236
 #. Used in: Components > Forms > Save
 msgid "carryForwardDescription"
 msgstr "Crear un nuevo registro con ciertos campos transferidos"
@@ -508,7 +505,7 @@ msgstr "Mostrar botón Clonar"
 msgid "addButtonEnabled"
 msgstr "Mostrar el botón Agregar"
 
-#: components/Forms/Save.tsx:241
+#: components/Forms/Save.tsx:242
 #. Used in: Components > Forms > Save
 msgid "addButtonDescription"
 msgstr "Crear un nuevo registro en blanco"
@@ -555,7 +552,7 @@ msgstr "Configuración de formulario"
 msgid "formState"
 msgstr "Estado del formulario"
 
-#: components/FormMeta/index.tsx:175
+#: components/FormMeta/index.tsx:176
 #. Used in: Components > Form Meta > Index
 msgid "recordInformation"
 msgstr "Información de registro"
@@ -576,18 +573,18 @@ msgstr "Buscar usos"
 msgid "usagesOfPickList"
 msgstr "Usos de la lista de selección \"{pickList:string}\""
 
-#: components/FormMeta/SubViewMeta.tsx:35
+#: components/FormMeta/SubViewMeta.tsx:36
 #. Used in: Components > Form Meta > Sub View Meta
 msgid "subForm"
 msgstr "Subformulario"
 
-#: components/FormMeta/SubViewMeta.tsx:36
-#: components/UserPreferences/Definitions.tsx:975
+#: components/FormMeta/SubViewMeta.tsx:37
+#: components/UserPreferences/Definitions.tsx:988
 #. Used in: Components > Form Meta > Sub View Meta ⬤ Components > User Preferences > Definitions
 msgid "formTable"
 msgstr "Cuadrícula"
 
-#: components/FormMeta/index.tsx:151
+#: components/FormMeta/index.tsx:152
 #. Used in: Components > Form Meta > Index
 msgid "subviewConfiguration"
 msgstr "Subvista"
@@ -607,13 +604,13 @@ msgstr "Copiar Especificar 6 configuraciones"
 msgid "useCustomSettings"
 msgstr "Usar configuraciones personalizadas"
 
-#: components/FormMeta/ReadOnlyMode.tsx:19
+#: components/FormMeta/ReadOnlyMode.tsx:20
 #: components/Header/UserTools.tsx:62
 #. Used in: Components > Form Meta > Read Only Mode ⬤ Components > Header > User Tools
 msgid "disableReadOnly"
 msgstr "Deshabilitar el modo de solo lectura"
 
-#: components/FormMeta/ReadOnlyMode.tsx:19
+#: components/FormMeta/ReadOnlyMode.tsx:20
 #. Used in: Components > Form Meta > Read Only Mode
 msgid "enableReadOnly"
 msgstr "Habilitar el modo de solo lectura"
@@ -629,14 +626,14 @@ msgstr "Configurar tablas de entrada de datos"
 msgid "formMeta"
 msgstr "Formulario Meta"
 
-#: components/AppResources/Editor.tsx:176
-#: components/Forms/BaseResourceView.tsx:106
-#: components/Forms/dataObjFormatters.ts:151
+#: components/AppResources/Editor.tsx:179
+#: components/Forms/BaseResourceView.tsx:104
+#: components/Forms/dataObjFormatters.ts:149
 #. Used in: Components > App Resources > Editor ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Data Obj Formatters
 msgid "newResourceTitle"
 msgstr "Nuevo {tableName:string}"
 
-#: components/Forms/dataObjFormatters.ts:152
+#: components/Forms/dataObjFormatters.ts:150
 #. 🟥When resource does not have a formatter defined, this formatter is used. Used in: Components > Forms > Data Obj Formatters
 msgid "resourceFormatter"
 msgstr "{tableName:string} #{id:number}"

@@ -1,7 +1,7 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/AppResources/types.tsx:50
+#: components/AppResources/types.tsx:52
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "label"
@@ -13,7 +13,7 @@ msgstr "Мітка"
 msgid "labels"
 msgstr "етикетки"
 
-#: components/AppResources/types.tsx:58
+#: components/AppResources/types.tsx:60
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "report"
@@ -24,8 +24,8 @@ msgstr "звіт"
 #: components/Reports/index.tsx:132
 #: components/Reports/index.tsx:138
 #: components/Router/OverlayRoutes.tsx:111
-#: components/UserPreferences/Definitions.tsx:488
-#: components/UserPreferences/Definitions.tsx:1327
+#: components/UserPreferences/Definitions.tsx:501
+#: components/UserPreferences/Definitions.tsx:1340
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Reports > Parameters ⬤ Components > Reports > Index ⬤ Components > Router > Overlay Routes ⬤ Components > User Preferences > Definitions
 #, fuzzy
 msgid "reports"
@@ -104,9 +104,9 @@ msgstr "Не вдалося знайти запис SpReport для цього �
 msgid "generateLabel"
 msgstr "Створити мітку"
 
-#: components/FormMeta/index.tsx:145
-#: components/FormParse/fields.ts:97
-#: components/FormParse/__tests__/fields.test.ts:136
+#: components/FormMeta/index.tsx:146
+#: components/FormParse/fields.ts:119
+#: components/FormParse/__tests__/fields.test.ts:130
 #. Used in: Components > Form Meta > Index ⬤ Components > Form Parse > Fields ⬤ Form Parse > __tests__ > Fields
 #, fuzzy
 msgid "generateLabelOnSave"
@@ -118,7 +118,7 @@ msgstr "Створити мітку під час збереження"
 msgid "generateReport"
 msgstr "Створити звіт"
 
-#: components/FormMeta/index.tsx:144
+#: components/FormMeta/index.tsx:145
 #. Used in: Components > Form Meta > Index
 #, fuzzy
 msgid "generateReportOnSave"

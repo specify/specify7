@@ -14,8 +14,8 @@ msgstr ""
 
 #: components/Header/menuItemDefinitions.ts:103
 #: components/Router/OverlayRoutes.tsx:117
-#: components/UserPreferences/Definitions.tsx:479
-#: components/UserPreferences/Definitions.tsx:1344
+#: components/UserPreferences/Definitions.tsx:492
+#: components/UserPreferences/Definitions.tsx:1357
 #: components/WorkBench/wbView.js:230
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > User Preferences > Definitions ⬤ Components > Work Bench > Wb View
 #, fuzzy
@@ -618,7 +618,7 @@ msgstr "Замінити всі збіги"
 msgid "replaceNext"
 msgstr "Замінити наступне входження"
 
-#: components/Router/Routes.tsx:179
+#: components/Router/Routes.tsx:176
 #. Used in: Components > Router > Routes
 #, fuzzy
 msgid "importDataSet"
@@ -661,44 +661,44 @@ msgstr "Кодування символів:"
 msgid "delimiter"
 msgstr "роздільник:"
 
-#: components/UserPreferences/Definitions.tsx:1445
+#: components/UserPreferences/Definitions.tsx:1458
 #: components/WbImport/index.tsx:152
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "comma"
 msgstr "Кома"
 
-#: components/UserPreferences/Definitions.tsx:1453
+#: components/UserPreferences/Definitions.tsx:1466
 #: components/WbImport/index.tsx:154
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "semicolon"
 msgstr "Крапка з комою"
 
-#: components/UserPreferences/Definitions.tsx:1449
+#: components/UserPreferences/Definitions.tsx:1462
 #: components/WbImport/index.tsx:153
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "tab"
 msgstr "вкладка"
 
-#: components/UserPreferences/Definitions.tsx:1457
+#: components/UserPreferences/Definitions.tsx:1470
 #: components/WbImport/index.tsx:155
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "space"
 msgstr "Простір"
 
-#: components/UserPreferences/Definitions.tsx:1461
+#: components/UserPreferences/Definitions.tsx:1474
 #: components/WbImport/index.tsx:156
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "pipe"
 msgstr "Труба"
 
-#: components/UserPreferences/Definitions.tsx:522
-#: components/UserPreferences/Definitions.tsx:543
-#: components/UserPreferences/Definitions.tsx:564
+#: components/UserPreferences/Definitions.tsx:535
+#: components/UserPreferences/Definitions.tsx:556
+#: components/UserPreferences/Definitions.tsx:577
 #: components/WbImport/index.tsx:193
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 #, fuzzy

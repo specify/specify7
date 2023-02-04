@@ -4,9 +4,9 @@ msgstr "Content-Type: text/plain\n"
 #: components/AppResources/Filters.tsx:72
 #: components/AppResources/Filters.tsx:119
 #: components/Header/userToolDefinitions.ts:44
-#: components/Router/Routes.tsx:202
-#: components/Security/registry.ts:204
-#: components/UserPreferences/Definitions.tsx:1506
+#: components/Router/Routes.tsx:199
+#: components/Security/registry.ts:208
+#: components/UserPreferences/Definitions.tsx:1519
 #. Used in: Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Security > Registry ⬤ Components > User Preferences > Definitions
 #, fuzzy
 msgid "appResources"
@@ -14,7 +14,7 @@ msgstr "Ресурси програми"
 
 #: components/FormMeta/Definition.tsx:29
 #: components/FormMeta/Definition.tsx:55
-#: components/UserPreferences/Definitions.tsx:672
+#: components/UserPreferences/Definitions.tsx:685
 #. Used in: Components > Form Meta > Definition ⬤ Components > User Preferences > Definitions
 #, fuzzy
 msgid "formDefinition"
@@ -23,7 +23,7 @@ msgstr "Визначення форми"
 #: components/AppResources/EditorComponents.tsx:36
 #: components/AppResources/Filters.tsx:60
 #: components/AppResources/Filters.tsx:103
-#: components/AppResources/types.tsx:25
+#: components/AppResources/types.tsx:27
 #. Used in: Components > App Resources > Editor Components ⬤ Components > App Resources > Filters ⬤ Components > App Resources > Types
 #, fuzzy
 msgid "formDefinitions"
@@ -48,7 +48,7 @@ msgstr "Глобальні ресурси"
 msgid "disciplineResources"
 msgstr "Дисциплінарні ресурси"
 
-#: components/AppResources/Create.tsx:90
+#: components/AppResources/Create.tsx:87
 #: components/SchemaConfig/Field.tsx:73
 #. Used in: Components > App Resources > Create ⬤ Components > Schema Config > Field
 #, fuzzy
@@ -61,99 +61,99 @@ msgstr "Тип"
 msgid "userTypes"
 msgstr "Типи користувачів"
 
-#: components/AppResources/Aside.tsx:302
+#: components/AppResources/Aside.tsx:303
 #: components/AppResources/index.tsx:50
 #. Used in: Components > App Resources > Aside ⬤ Components > App Resources > Index
 #, fuzzy
 msgid "resources"
 msgstr "Ресурси"
 
-#: components/AppResources/Aside.tsx:245
+#: components/AppResources/Aside.tsx:246
 #. Used in: Components > App Resources > Aside
 #, fuzzy
 msgid "subCategories"
 msgstr "Підкатегорії"
 
-#: components/AppResources/Aside.tsx:312
-#: components/Router/Routes.tsx:210
+#: components/AppResources/Aside.tsx:313
+#: components/Router/Routes.tsx:207
 #. Used in: Components > App Resources > Aside ⬤ Components > Router > Routes
 #, fuzzy
 msgid "addResource"
 msgstr "Додати ресурс"
 
-#: components/AppResources/types.tsx:20
+#: components/AppResources/types.tsx:22
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "appResource"
 msgstr "Ресурс програми"
 
-#: components/AppResources/types.tsx:90
+#: components/AppResources/types.tsx:92
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "rssExportFeed"
 msgstr "Канал експорту RSS"
 
-#: components/AppResources/types.tsx:98
+#: components/AppResources/types.tsx:100
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "expressSearchConfig"
 msgstr "Конфігурація експрес-пошуку"
 
-#: components/AppResources/types.tsx:106
+#: components/AppResources/types.tsx:108
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "webLinks"
 msgstr "Веб-посилання"
 
-#: components/AppResources/types.tsx:114
+#: components/AppResources/types.tsx:116
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "uiFormatters"
 msgstr "Форматери полів"
 
-#: components/AppResources/types.tsx:122
+#: components/AppResources/types.tsx:124
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "dataObjectFormatters"
 msgstr "Форматувальники записів"
 
-#: components/AppResources/types.tsx:130
+#: components/AppResources/types.tsx:132
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "searchDialogDefinitions"
 msgstr "Визначення діалогового вікна пошуку"
 
-#: components/AppResources/types.tsx:138
+#: components/AppResources/types.tsx:140
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "dataEntryTables"
 msgstr "Таблиці введення даних"
 
-#: components/AppResources/types.tsx:146
+#: components/AppResources/types.tsx:148
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "interactionsTables"
 msgstr "Таблиці взаємодій"
 
-#: components/AppResources/types.tsx:153
+#: components/AppResources/types.tsx:155
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "otherXmlResource"
 msgstr "Інший ресурс XML"
 
-#: components/AppResources/types.tsx:160
+#: components/AppResources/types.tsx:162
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "otherJsonResource"
 msgstr "Інший ресурс JSON"
 
-#: components/AppResources/types.tsx:167
+#: components/AppResources/types.tsx:169
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "otherPropertiesResource"
 msgstr "Ресурс інших властивостей"
 
-#: components/AppResources/types.tsx:174
+#: components/AppResources/types.tsx:176
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "otherAppResource"
@@ -173,7 +173,7 @@ msgstr "Фільтри"
 msgid "custom"
 msgstr "Custom"
 
-#: components/AppResources/types.tsx:82
+#: components/AppResources/types.tsx:84
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "leafletLayers"
@@ -191,8 +191,8 @@ msgstr "Текстовий редактор"
 msgid "visualEditor"
 msgstr "Візуальний редактор"
 
-#: components/AppResources/Create.tsx:62
-#: components/AppResources/Create.tsx:84
+#: components/AppResources/Create.tsx:59
+#: components/AppResources/Create.tsx:81
 #. Used in: Components > App Resources > Create
 #, fuzzy
 msgid "selectResourceType"

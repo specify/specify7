@@ -11,8 +11,8 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 4.16-dev\n"
 
-#: components/HomePage/index.tsx:47
-#: components/Router/Routes.tsx:420
+#: components/HomePage/index.tsx:49
+#: components/Router/Routes.tsx:417
 #. Used in: Components > Home Page > Index ⬤ Components > Router > Routes
 msgid "pageTitle"
 msgstr "Bienvenue"

@@ -4,16 +4,16 @@ msgstr "Content-Type: text/plain\n"
 #: components/AppResources/Filters.tsx:72
 #: components/AppResources/Filters.tsx:119
 #: components/Header/userToolDefinitions.ts:44
-#: components/Router/Routes.tsx:202
-#: components/Security/registry.ts:204
-#: components/UserPreferences/Definitions.tsx:1506
+#: components/Router/Routes.tsx:199
+#: components/Security/registry.ts:208
+#: components/UserPreferences/Definitions.tsx:1519
 #. Used in: Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Security > Registry ⬤ Components > User Preferences > Definitions
 msgid "appResources"
 msgstr "App Resources"
 
 #: components/FormMeta/Definition.tsx:29
 #: components/FormMeta/Definition.tsx:55
-#: components/UserPreferences/Definitions.tsx:672
+#: components/UserPreferences/Definitions.tsx:685
 #. Used in: Components > Form Meta > Definition ⬤ Components > User Preferences > Definitions
 msgid "formDefinition"
 msgstr "Form Definition"
@@ -21,7 +21,7 @@ msgstr "Form Definition"
 #: components/AppResources/EditorComponents.tsx:36
 #: components/AppResources/Filters.tsx:60
 #: components/AppResources/Filters.tsx:103
-#: components/AppResources/types.tsx:25
+#: components/AppResources/types.tsx:27
 #. Used in: Components > App Resources > Editor Components ⬤ Components > App Resources > Filters ⬤ Components > App Resources > Types
 msgid "formDefinitions"
 msgstr "Form Definitions"
@@ -42,7 +42,7 @@ msgstr "Global Resources"
 msgid "disciplineResources"
 msgstr "Discipline Resources"
 
-#: components/AppResources/Create.tsx:90
+#: components/AppResources/Create.tsx:87
 #: components/SchemaConfig/Field.tsx:73
 #. Used in: Components > App Resources > Create ⬤ Components > Schema Config > Field
 msgid "type"
@@ -53,84 +53,84 @@ msgstr "Type"
 msgid "userTypes"
 msgstr "User Types"
 
-#: components/AppResources/Aside.tsx:302
+#: components/AppResources/Aside.tsx:303
 #: components/AppResources/index.tsx:50
 #. Used in: Components > App Resources > Aside ⬤ Components > App Resources > Index
 msgid "resources"
 msgstr "Resources"
 
-#: components/AppResources/Aside.tsx:245
+#: components/AppResources/Aside.tsx:246
 #. Used in: Components > App Resources > Aside
 msgid "subCategories"
 msgstr "Sub-categories"
 
-#: components/AppResources/Aside.tsx:312
-#: components/Router/Routes.tsx:210
+#: components/AppResources/Aside.tsx:313
+#: components/Router/Routes.tsx:207
 #. Used in: Components > App Resources > Aside ⬤ Components > Router > Routes
 msgid "addResource"
 msgstr "Add Resource"
 
-#: components/AppResources/types.tsx:20
+#: components/AppResources/types.tsx:22
 #. Used in: Components > App Resources > Types
 msgid "appResource"
 msgstr "App Resource"
 
-#: components/AppResources/types.tsx:90
+#: components/AppResources/types.tsx:92
 #. Used in: Components > App Resources > Types
 msgid "rssExportFeed"
 msgstr "RSS Export Feed"
 
-#: components/AppResources/types.tsx:98
+#: components/AppResources/types.tsx:100
 #. Used in: Components > App Resources > Types
 msgid "expressSearchConfig"
 msgstr "Express Search Config"
 
-#: components/AppResources/types.tsx:106
+#: components/AppResources/types.tsx:108
 #. Used in: Components > App Resources > Types
 msgid "webLinks"
 msgstr "Web Links"
 
-#: components/AppResources/types.tsx:114
+#: components/AppResources/types.tsx:116
 #. Used in: Components > App Resources > Types
 msgid "uiFormatters"
 msgstr "Field formatters"
 
-#: components/AppResources/types.tsx:122
+#: components/AppResources/types.tsx:124
 #. Used in: Components > App Resources > Types
 msgid "dataObjectFormatters"
 msgstr "Record Formatters"
 
-#: components/AppResources/types.tsx:130
+#: components/AppResources/types.tsx:132
 #. Used in: Components > App Resources > Types
 msgid "searchDialogDefinitions"
 msgstr "Search Dialog Definitions"
 
-#: components/AppResources/types.tsx:138
+#: components/AppResources/types.tsx:140
 #. Used in: Components > App Resources > Types
 msgid "dataEntryTables"
 msgstr "Data Entry Tables"
 
-#: components/AppResources/types.tsx:146
+#: components/AppResources/types.tsx:148
 #. Used in: Components > App Resources > Types
 msgid "interactionsTables"
 msgstr "Interactions Tables"
 
-#: components/AppResources/types.tsx:153
+#: components/AppResources/types.tsx:155
 #. Used in: Components > App Resources > Types
 msgid "otherXmlResource"
 msgstr "Other XML Resource"
 
-#: components/AppResources/types.tsx:160
+#: components/AppResources/types.tsx:162
 #. Used in: Components > App Resources > Types
 msgid "otherJsonResource"
 msgstr "Other JSON Resource"
 
-#: components/AppResources/types.tsx:167
+#: components/AppResources/types.tsx:169
 #. Used in: Components > App Resources > Types
 msgid "otherPropertiesResource"
 msgstr "Other Properties Resource"
 
-#: components/AppResources/types.tsx:174
+#: components/AppResources/types.tsx:176
 #. Used in: Components > App Resources > Types
 msgid "otherAppResource"
 msgstr "Other Resource"
@@ -147,7 +147,7 @@ msgstr "Filters"
 msgid "custom"
 msgstr "Custom"
 
-#: components/AppResources/types.tsx:82
+#: components/AppResources/types.tsx:84
 #. Used in: Components > App Resources > Types
 msgid "leafletLayers"
 msgstr "Leaflet Layers"
@@ -162,8 +162,8 @@ msgstr "Text Editor"
 msgid "visualEditor"
 msgstr "Visual Editor"
 
-#: components/AppResources/Create.tsx:62
-#: components/AppResources/Create.tsx:84
+#: components/AppResources/Create.tsx:59
+#: components/AppResources/Create.tsx:81
 #. Used in: Components > App Resources > Create
 msgid "selectResourceType"
 msgstr "Select Resource Type"

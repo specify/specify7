@@ -1,12 +1,12 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/Molecules/AppTitle.tsx:47
+#: components/Molecules/AppTitle.tsx:49
 #. 🟥Formatting for the title in the web page title bar. Used in: Components > Molecules > App Title
 msgid "appTitle"
 msgstr "{baseTitle:string} | Specify 7"
 
-#: components/Molecules/AppTitle.tsx:46
+#: components/Molecules/AppTitle.tsx:48
 #. 🟥Default page title. Used in: Components > Molecules > App Title
 msgid "baseAppTitle"
 msgstr "Specify 7"
@@ -34,28 +34,28 @@ msgstr ""
 msgid "returnToHomepage"
 msgstr "Return to homepage"
 
-#: components/Errors/ErrorDialog.tsx:54
+#: components/Errors/ErrorDialog.tsx:58
 #: components/Errors/FormatError.tsx:186
 #: components/Errors/FormatError.tsx:215
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Errors > Format Error
 msgid "errorOccurred"
 msgstr "Sorry, something's gone a bit wrong"
 
-#: components/Errors/ErrorDialog.tsx:163
+#: components/Errors/ErrorDialog.tsx:166
 #. Used in: Components > Errors > Error Dialog
 msgid "errorOccurredDescription"
 msgstr ""
 "We're sorry, it seems you have encountered an error in Specify 7 that we "
 "may not be aware of."
 
-#: components/Errors/ErrorDialog.tsx:164
+#: components/Errors/ErrorDialog.tsx:167
 #. Used in: Components > Errors > Error Dialog
 msgid "criticalErrorOccurredDescription"
 msgstr ""
 "To avoid corrupting data records, we need to start again from a safe "
 "spot--the Home page."
 
-#: components/Errors/ErrorDialog.tsx:30
+#: components/Errors/ErrorDialog.tsx:34
 #. Used in: Components > Errors > Error Dialog
 msgid "errorResolutionDescription"
 msgstr ""
@@ -63,7 +63,7 @@ msgstr ""
 "Specify Cloud database, please download the error message and send it to "
 "<email />."
 
-#: components/Errors/ErrorDialog.tsx:36
+#: components/Errors/ErrorDialog.tsx:40
 #. 🟥Careful with the <xml> tags when localizing. Used in: Components > Errors > Error Dialog
 msgid "errorResolutionSecondDescription"
 msgstr ""
@@ -71,13 +71,13 @@ msgstr ""
 "answered questions and ask for help on our <discourseLink>Community "
 "Forum</discourseLink>."
 
-#: components/Core/__tests__/Contexts.test.tsx:37
-#: components/Errors/ErrorDialog.tsx:172
+#: components/Core/__tests__/Contexts.test.tsx:34
+#: components/Errors/ErrorDialog.tsx:175
 #. Used in: Core > __tests__ > Contexts ⬤ Components > Errors > Error Dialog
 msgid "errorMessage"
 msgstr "Error Message"
 
-#: components/Router/Router.tsx:297
+#: components/Router/Router.tsx:280
 #. Used in: Components > Router > Router
 msgid "leavePageConfirmation"
 msgstr "Are you sure you want to leave this page?"
@@ -87,29 +87,29 @@ msgstr "Are you sure you want to leave this page?"
 msgid "leavePageConfirmationDescription"
 msgstr "Unsaved changes would be lost if your leave this page."
 
-#: components/Router/Router.tsx:293
+#: components/Router/Router.tsx:276
 #. Used in: Components > Router > Router
 msgid "leave"
 msgstr "Leave"
 
-#: components/Core/Main.tsx:140
+#: components/Core/Main.tsx:146
 #. Used in: Components > Core > Main
 msgid "versionMismatch"
 msgstr "Specify version does not match database version"
 
-#: components/Core/Main.tsx:144
+#: components/Core/Main.tsx:150
 #. Used in: Components > Core > Main
 msgid "versionMismatchDescription"
 msgstr ""
 "The Specify version {specifySixVersion:string} does not match the database "
 "version {databaseVersion:string}."
 
-#: components/Core/Main.tsx:149
+#: components/Core/Main.tsx:155
 #. Used in: Components > Core > Main
 msgid "versionMismatchSecondDescription"
 msgstr "Some features of Specify 7 may therefore fail to operate correctly."
 
-#: components/Core/Main.tsx:152
+#: components/Core/Main.tsx:158
 #. Used in: Components > Core > Main
 msgid "versionMismatchInstructions"
 msgstr "Instructions for resolving Specify schema mismatch"

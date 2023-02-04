@@ -15,13 +15,13 @@ msgstr ""
 #: components/Header/menuItemDefinitions.ts:58
 #: components/Router/OverlayRoutes.tsx:52
 #: components/Toolbar/TreeRepair.tsx:45
-#: components/UserPreferences/Definitions.tsx:443
+#: components/UserPreferences/Definitions.tsx:456
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Tree Repair ⬤ Components > User Preferences > Definitions
 #, fuzzy
 msgid "trees"
 msgstr "дерева"
 
-#: components/DataModel/treeBusinessRules.ts:93
+#: components/DataModel/treeBusinessRules.ts:95
 #. Used in: Components > Data Model > Tree Business Rules
 #, fuzzy
 msgid "badStructure"
@@ -236,25 +236,25 @@ msgstr "ЗАЧИНЕНО"
 msgid "leafNode"
 msgstr "Листковий вузол"
 
-#: components/TreeView/helpers.ts:214
+#: components/TreeView/helpers.ts:215
 #. 🟥Used to show tree node's direct and indirect usages. Used in: Components > Tree View > Helpers
 #, fuzzy
 msgid "nodeStats"
 msgstr "({directCount:number|formatted}, {childCount:number|formatted})"
 
-#: components/TreeView/helpers.ts:213
+#: components/TreeView/helpers.ts:214
 #. 🟥Used to show leaf tree node's direct usages. Used in: Components > Tree View > Helpers
 #, fuzzy
 msgid "leafNodeStats"
 msgstr "({directCount:number|formatted})"
 
-#: components/TreeView/helpers.ts:198
+#: components/TreeView/helpers.ts:199
 #. 🟥Example: Direct Collection Object count. Used in: Components > Tree View > Helpers
 #, fuzzy
 msgid "directCollectionObjectCount"
 msgstr "Прямий підрахунок {collectionObjectTable:string}."
 
-#: components/TreeView/helpers.ts:206
+#: components/TreeView/helpers.ts:207
 #. 🟥Example: Indirect Collection Object count. Used in: Components > Tree View > Helpers
 #, fuzzy
 msgid "indirectCollectionObjectCount"

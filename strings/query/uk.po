@@ -26,16 +26,16 @@ msgstr "Запит"
 #: components/Header/menuItemDefinitions.ts:79
 #: components/Router/OverlayRoutes.tsx:80
 #: components/Toolbar/Query.tsx:96
-#: components/UserPreferences/Definitions.tsx:461
+#: components/UserPreferences/Definitions.tsx:474
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Query ⬤ Components > User Preferences > Definitions
 #, fuzzy
 msgid "queries"
 msgstr "Запити"
 
 #: components/Forms/SearchDialog.tsx:108
-#: components/Forms/SearchDialog.tsx:270
-#: components/Security/registry.ts:196
-#: components/UserPreferences/Definitions.tsx:1258
+#: components/Forms/SearchDialog.tsx:271
+#: components/Security/registry.ts:200
+#: components/UserPreferences/Definitions.tsx:1271
 #. Used in: Components > Forms > Search Dialog ⬤ Components > Security > Registry ⬤ Components > User Preferences > Definitions
 #, fuzzy
 msgid "queryBuilder"
@@ -49,7 +49,7 @@ msgstr "Конструктор запитів"
 msgid "newQueryName"
 msgstr "Новий запит"
 
-#: components/FormFields/useTypeSearch.tsx:88
+#: components/FormFields/useTypeSearch.tsx:90
 #. 🟥Used in a Query Combo Box's hover-over message to show which fields are being searched on. Used in: Components > Form Fields > Use Type Search
 #, fuzzy
 msgid "searchFields"
@@ -155,7 +155,7 @@ msgstr ""
 "Коли файл експорту буде завершено та готовий до завантаження, з’явиться "
 "сповіщення."
 
-#: components/PickLists/index.tsx:205
+#: components/PickLists/index.tsx:206
 #: components/SchemaConfig/Components.tsx:85
 #. 🟥Used when selected pick list value is not one of allowed values. Used in: Components > Pick Lists > Index ⬤ Components > Schema Config > Components
 #, fuzzy
@@ -170,7 +170,7 @@ msgstr ""
 "Запит: \"{queryName:string}\" на {recordSetTable:string}: "
 "\"{recordSetName:string}\""
 
-#: components/QueryBuilder/fromTree.ts:181
+#: components/QueryBuilder/fromTree.ts:185
 #. 🟥Used in query builder header when querying on tree node usages. Used in: Components > Query Builder > From Tree
 #, fuzzy
 msgid "treeQueryName"
@@ -207,7 +207,7 @@ msgid "createKml"
 msgstr "Створіть KML"
 
 #: components/QueryBuilder/Components.tsx:215
-#: components/QueryBuilder/Results.tsx:500
+#: components/QueryBuilder/Results.tsx:501
 #: components/WorkBench/RecordSet.tsx:36
 #. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Results ⬤ Components > Work Bench > Record Set
 #, fuzzy
@@ -376,7 +376,7 @@ msgid "inDescription"
 msgstr "Список значень, розділених комами"
 
 #: components/QueryBuilder/FieldFilter.tsx:470
-#: components/UserPreferences/Definitions.tsx:1150
+#: components/UserPreferences/Definitions.tsx:1163
 #. Used in: Components > Query Builder > Field Filter ⬤ Components > User Preferences > Definitions
 #, fuzzy
 msgid "contains"
@@ -395,7 +395,7 @@ msgid "and"
 msgstr "і"
 
 #: components/QueryBuilder/FieldFilter.tsx:479
-#: components/UserPreferences/Definitions.tsx:1146
+#: components/UserPreferences/Definitions.tsx:1159
 #. Used in: Components > Query Builder > Field Filter ⬤ Components > User Preferences > Definitions
 #, fuzzy
 msgid "startsWith"

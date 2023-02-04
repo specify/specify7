@@ -12,7 +12,7 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 4.16-dev\n"
 
-#: components/Core/Main.tsx:82
+#: components/Core/Main.tsx:89
 #. 🟥For accessibility purposes. Allows jumping to page content. Used in: Components > Core > Main
 msgid "skipToContent"
 msgstr "Перейти до вмісту"
@@ -22,8 +22,8 @@ msgstr "Перейти до вмісту"
 msgid "currentUser"
 msgstr "Поточний користувач"
 
-#: components/Header/index.tsx:136
-#: components/Header/index.tsx:140
+#: components/Header/index.tsx:138
+#: components/Header/index.tsx:142
 #. 🟥Example: Current Collection. Used in: Components > Header > Index
 msgid "currentCollection"
 msgstr "Поточна {collectionTable:string}"
@@ -31,7 +31,7 @@ msgstr "Поточна {collectionTable:string}"
 #: components/Header/Forms.tsx:63
 #: components/Header/menuItemDefinitions.ts:46
 #: components/Router/OverlayRoutes.tsx:44
-#: components/UserPreferences/Definitions.tsx:434
+#: components/UserPreferences/Definitions.tsx:447
 #. Used in: Components > Header > Forms ⬤ Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > User Preferences > Definitions
 msgid "dataEntry"
 msgstr "Введення даних"
@@ -185,11 +185,11 @@ msgstr "API таблиць"
 msgid "operationsApi"
 msgstr "API операцій"
 
-#: components/AppResources/Create.tsx:91
-#: components/AppResources/Create.tsx:112
+#: components/AppResources/Create.tsx:88
+#: components/AppResources/Create.tsx:109
 #: components/AppResources/Filters.tsx:156
 #: components/Header/userToolDefinitions.ts:81
-#: components/UserPreferences/Definitions.tsx:405
+#: components/UserPreferences/Definitions.tsx:418
 #. Used in: Components > App Resources > Create ⬤ Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > User Preferences > Definitions
 msgid "documentation"
 msgstr "Документація"
@@ -209,9 +209,9 @@ msgstr "Для розробників"
 msgid "forum"
 msgstr "Форум"
 
-#: components/Errors/ErrorDialog.tsx:128
+#: components/Errors/ErrorDialog.tsx:131
 #: components/Header/userToolDefinitions.ts:101
-#: components/Router/Routes.tsx:397
+#: components/Router/Routes.tsx:394
 #: components/RouterCommands/CacheBuster.tsx:42
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Router Commands > Cache Buster
 msgid "clearCache"

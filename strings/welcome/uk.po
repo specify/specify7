@@ -1,8 +1,8 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/HomePage/index.tsx:47
-#: components/Router/Routes.tsx:420
+#: components/HomePage/index.tsx:49
+#: components/Router/Routes.tsx:417
 #. Used in: Components > Home Page > Index ⬤ Components > Router > Routes
 #, fuzzy
 msgid "pageTitle"

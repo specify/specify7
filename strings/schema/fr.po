@@ -13,31 +13,31 @@ msgstr ""
 
 #: components/SchemaConfig/Table.tsx:48
 #: components/Security/PreviewTables.tsx:68
-#: components/Security/registry.ts:67
+#: components/Security/registry.ts:70
 #: components/Toolbar/DataModel.tsx:537
 #. Used in: Components > Schema Config > Table ⬤ Components > Security > Preview Tables ⬤ Components > Security > Registry ⬤ Components > Toolbar > Data Model
 msgid "table"
 msgstr "Tableau"
 
 #: components/Attachments/index.tsx:203
-#: components/Router/Routes.tsx:361
+#: components/Router/Routes.tsx:358
 #: components/SchemaConfig/Tables.tsx:55
 #. Used in: Components > Attachments > Index ⬤ Components > Router > Routes ⬤ Components > Schema Config > Tables
 msgid "tables"
 msgstr "Tableaux"
 
-#: components/UserPreferences/Definitions.tsx:654
+#: components/UserPreferences/Definitions.tsx:667
 #: components/WbPlanView/MapperComponents.tsx:436
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Plan View > Mapper Components
 msgid "tableName"
 msgstr "Nom du tableau"
 
 #: components/Header/userToolDefinitions.ts:38
-#: components/Router/Routes.tsx:335
+#: components/Router/Routes.tsx:332
 #: components/SchemaConfig/Components.tsx:27
 #: components/SchemaConfig/Languages.tsx:34
-#: components/Security/registry.ts:192
-#: components/UserPreferences/Definitions.tsx:605
+#: components/Security/registry.ts:196
+#: components/UserPreferences/Definitions.tsx:618
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Languages ⬤ Components > Security > Registry ⬤ Components > User Preferences > Definitions
 msgid "schemaConfig"
 msgstr "Configuration du schéma"
@@ -59,7 +59,7 @@ msgid "field"
 msgstr "Champ"
 
 #: components/FormMeta/CarryForward.tsx:264
-#: components/Forms/generateFormDefinition.ts:126
+#: components/Forms/generateFormDefinition.ts:127
 #: components/SchemaConfig/Fields.tsx:35
 #: components/SchemaConfig/Fields.tsx:46
 #: components/Toolbar/DataModel.tsx:256
@@ -68,7 +68,7 @@ msgid "fields"
 msgstr "Champs"
 
 #: components/FormMeta/CarryForward.tsx:272
-#: components/Forms/generateFormDefinition.ts:164
+#: components/Forms/generateFormDefinition.ts:165
 #: components/SchemaConfig/Fields.tsx:54
 #: components/Toolbar/DataModel.tsx:337
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Toolbar > Data Model
@@ -166,7 +166,7 @@ msgstr "Lien Web"
 msgid "userDefined"
 msgstr "Défini par l'utilisateur"
 
-#: components/Router/Routes.tsx:350
+#: components/Router/Routes.tsx:347
 #: components/SchemaConfig/Languages.tsx:27
 #: components/SchemaConfig/Languages.tsx:73
 #. Used in: Components > Router > Routes ⬤ Components > Schema Config > Languages
@@ -241,8 +241,8 @@ msgid "relationshipCount"
 msgstr "Nombre de relations"
 
 #: components/Header/userToolDefinitions.ts:97
-#: components/Router/Routes.tsx:35
-#: components/Router/Routes.tsx:39
+#: components/Router/Routes.tsx:34
+#: components/Router/Routes.tsx:38
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes
 msgid "databaseSchema"
 msgstr "Schéma de base de données"
@@ -266,7 +266,7 @@ msgstr "Aller en haut"
 #. Used in: Components > Toolbar > Data Model
 #, fuzzy
 msgid "idField"
-msgstr "Champ d'identification"
+msgstr ""
 
 #: components/Toolbar/DataModel.tsx:251
 #. Used in: Components > Toolbar > Data Model
