@@ -174,8 +174,6 @@ export type SortConfigs = {
     | 'tableId';
 };
 
-const cacheDefinitions = {} as unknown as CacheDefinitions;
-
 // Some circular types can't be expressed without interfaces
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 interface CacheValueDict extends IR<CacheValue> {}
@@ -191,8 +189,9 @@ type CacheValue =
   | string
   | null
   | undefined;
+
 /**
  * This will trigger a TypeScript type error if any cache definition
  * contains a value that is not JSON-Serializable.
  */
-ensure<IR<IR<CacheValue>>>()(cacheDefinitions);
+ensure<IR<IR<CacheValue>>>()({} as unknown as CacheDefinitions);

@@ -136,8 +136,9 @@ function MetaDialog({
         {subView === undefined && (
           <PrintOnSave
             defaultValue={false}
-            fieldName={undefined}
             id={undefined}
+            name={undefined}
+            field={undefined}
             model={resource.specifyModel}
             text={
               interactionTables.has(resource.specifyModel.name)

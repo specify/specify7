@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { deserializeResource } from '../../hooks/resource';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { localityText } from '../../localization/locality';
@@ -11,7 +10,11 @@ import { DataEntry } from '../Atoms/DataEntry';
 import { Form } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { LoadingContext } from '../Core/Contexts';
-import { serializeResource, toTable } from '../DataModel/helpers';
+import {
+  deserializeResource,
+  serializeResource,
+  toTable,
+} from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { createResource } from '../DataModel/resource';
 import type {
@@ -90,7 +93,7 @@ export function AppResourceEditor({
   const headerButtons = (
     <>
       <AppResourceEditButton title={title}>{form()}</AppResourceEditButton>
-      <AppTitle title={formatted} type="form" />
+      <AppTitle title={formatted} />
       <Button.Blue
         aria-label={localityText.toggleFullScreen()}
         aria-pressed={isFullScreen}

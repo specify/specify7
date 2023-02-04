@@ -21,7 +21,7 @@ const typeSearches = load<Element>(
 
 export function useTypeSearch(
   initialTypeSearch: Element | string | undefined,
-  field: LiteralField | Relationship | undefined,
+  field: LiteralField | Relationship,
   initialRelatedModel: SpecifyModel | undefined
 ): TypeSearch | false | undefined {
   const relatedModel =
@@ -67,8 +67,10 @@ async function parseTypeSearch(
               : f.id
           ) ?? [];
   const searchFields = rawSearchFieldsNames
-    .map((searchField) => relatedModel.getFields(searchField))
+    .map((searchField) => relatedModel.getFields(searchField) ?? [])
     .filter(({ length }) => length > 0);
+
+  if (searchFields.length === 0) return false;
 
   /*
    * Can't use generateMappingPathPreview here as that function expects

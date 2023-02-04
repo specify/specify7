@@ -9,6 +9,7 @@ import type { Input as InputType } from '../DataModel/saveBlockers';
 import { parseDate } from '../FormPlugins/PartialDateUi';
 import { className } from './className';
 import { wrap } from './wrapper';
+import { fullDateFormat } from '../../utils/parser/dateFormat';
 
 export const Label = {
   Block: wrap('Label.Block', 'label', className.label),
@@ -177,7 +178,7 @@ export const Input = {
         if (input.type === 'date') {
           input.type = 'text';
           const parsed = parseDate('full', input.value);
-          if (parsed.isValid()) input.value = parsed.format(databaseDateFormat);
+          if (parsed.isValid()) input.value = parsed.format(fullDateFormat());
         }
         props.onDoubleClick?.(event);
       },

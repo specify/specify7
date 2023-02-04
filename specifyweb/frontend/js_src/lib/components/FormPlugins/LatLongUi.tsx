@@ -10,6 +10,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
 import type { Locality } from '../DataModel/types';
 import type { FormMode } from '../FormParse';
+import { schema } from '../DataModel/schema';
 import { LocalizedString } from 'typesafe-i18n';
 
 export const coordinateType = ['Point', 'Line', 'Rectangle'] as const;
@@ -33,7 +34,11 @@ function Coordinate({
   readonly onFormatted: (value: string | undefined) => void;
 }): JSX.Element {
   const { value, updateValue, validationRef, setValidation, parser } =
-    useResourceValue(resource, coordinateTextField, undefined);
+    useResourceValue(
+      resource,
+      schema.models.Locality.strictGetField(coordinateTextField),
+      undefined
+    );
   const isChanging = React.useRef<boolean>(false);
   React.useEffect(
     () =>

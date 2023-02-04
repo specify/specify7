@@ -99,6 +99,7 @@ export const months = getMonthNames('long');
 
 const conjunctionFormatter = new Intl.ListFormat(LANGUAGE, {
   style: 'long',
+  // REFACTOR: evaluate usages to use conjunction vs disjunction
   type: 'conjunction',
 });
 export const formatConjunction = (list: RA<string>): string =>

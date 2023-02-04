@@ -2,14 +2,28 @@
  * Defines front-end only fields and misc front-end only schema mutations
  */
 
-import type { RA } from '../../utils/types';
+import type { IR, RA, RR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import type { FilterTablesByEndsWith } from './helperTypes';
+import type { FilterTablesByEndsWith, TableFields } from './helperTypes';
 import { schema } from './schema';
 import { LiteralField, Relationship } from './specifyField';
 import type { SpecifyModel } from './specifyModel';
 import type { Tables } from './types';
 import { getField } from './helpers';
+
+export const schemaAliases: {
+  readonly [TABLE_NAME in keyof Tables]?: IR<TableFields<Tables[TABLE_NAME]>>;
+} & RR<'', IR<string>> = {
+  '': {
+    divisionCBX: 'division',
+  },
+  PickList: {
+    fieldsCBX: 'fieldName',
+    formatterCBX: 'formatter',
+    tablesCBX: 'tableName',
+    typesCBX: 'type',
+  },
+};
 
 const treeDefinitionFields = [
   'fullNameSeparator',

@@ -13,7 +13,7 @@ import { PickListTypes } from './definitions';
 export function FieldsPickList(props: DefaultComboBoxProps): JSX.Element {
   const getItems = React.useCallback(
     () =>
-      props.resource.get('type') === PickListTypes.FIELDS
+      props.resource?.get('type') === PickListTypes.FIELDS
         ? getModel(props.resource.get('tableName') ?? '')?.fields.map(
             (field) => ({
               value: field.name,
@@ -26,16 +26,19 @@ export function FieldsPickList(props: DefaultComboBoxProps): JSX.Element {
   const [items, setItems] = React.useState<RA<PickListItemSimple>>(getItems);
   React.useEffect(
     () =>
-      resourceOn(
-        props.resource,
-        'change:tableName change:type',
-        () => {
-          if (props.resource.get('type') !== PickListTypes.FIELDS)
-            props.resource.set('fieldName', null as never);
-          setItems(getItems);
-        },
-        true
-      ),
+      props.resource === undefined
+        ? undefined
+        : resourceOn(
+            props.resource,
+            'change:tableName change:type',
+            () => {
+              if (props.resource === undefined) return;
+              if (props.resource.get('type') !== PickListTypes.FIELDS)
+                props.resource.set('fieldName', null as never);
+              setItems(getItems);
+            },
+            true
+          ),
     [props.resource, getItems]
   );
 

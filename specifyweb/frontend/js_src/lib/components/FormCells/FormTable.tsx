@@ -16,15 +16,14 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { FormMode } from '../FormParse';
-import type { FormCellDefinition } from '../FormParse/cells';
+import type { FormCellDefinition, SubViewSortField } from '../FormParse/cells';
 import { FormMeta } from '../FormMeta';
 import { SearchDialog } from '../Forms/SearchDialog';
 import { RenderForm } from '../Forms/SpecifyForm';
 import { useViewDefinition } from '../Forms/useViewDefinition';
 import { loadingGif } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
-import type { SortConfig } from '../Molecules/Sorting';
-import { SortIndicator } from '../Molecules/Sorting';
+import { SortConfig, SortIndicator } from '../Molecules/Sorting';
 import { hasTablePermission } from '../Permissions/helpers';
 import { usePref } from '../UserPreferences/usePref';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
@@ -41,12 +40,17 @@ const cellToLabel = (
   text: cell.ariaLabel,
   title:
     cell.type === 'Field' || cell.type === 'SubView'
-      ? model.getField(cell.fieldName ?? '')?.getLocalizedDesc()
+      ? model.getField(cell.fieldNames?.join('.') ?? '')?.getLocalizedDesc()
       : undefined,
 });
 
 const cellClassName =
   'sticky top-0 bg-[color:var(--form-foreground)] z-10 h-full -mx-1 pl-1 pt-1';
+
+const defaultSort: SubViewSortField = {
+  fieldNames: ['id'],
+  direction: 'asc',
+};
 
 // REFACTOR: split this component into smaller
 /**
@@ -63,7 +67,7 @@ export function FormTable<SCHEMA extends AnySchema>({
   viewName = relationship.relatedModel.view,
   dialog,
   onClose: handleClose,
-  sortField = 'id',
+  sortField = defaultSort,
   onFetchMore: handleFetchMore,
 }: {
   readonly relationship: Relationship;
@@ -78,15 +82,17 @@ export function FormTable<SCHEMA extends AnySchema>({
   readonly viewName?: string;
   readonly dialog: 'modal' | 'nonModal' | false;
   readonly onClose: () => void;
-  readonly sortField: string | undefined;
+  readonly sortField: SubViewSortField | undefined;
   readonly onFetchMore: (() => Promise<void>) | undefined;
 }): JSX.Element {
   const [sortConfig, setSortConfig] = React.useState<SortConfig<string>>({
-    sortField: sortField.startsWith('-') ? sortField.slice(1) : sortField,
-    ascending: !sortField.startsWith('-'),
+    sortField: sortField.fieldNames.join('.'),
+    ascending: sortField.direction === 'asc',
   });
+
   const resources = Array.from(unsortedResources).sort(
     sortFunction(
+      // FEATURE: handle related fields
       (resource) => resource.get(sortConfig.sortField),
       !sortConfig.ascending
     )
@@ -208,7 +214,9 @@ export function FormTable<SCHEMA extends AnySchema>({
               );
               const isSortable =
                 cell.type === 'Field' || cell.type === 'SubView';
-              const fieldName = isSortable ? cell.fieldName : undefined;
+              const fieldName = isSortable
+                ? cell.fieldNames?.join('.')
+                : undefined;
               return (
                 <DataEntry.Cell
                   align="center"

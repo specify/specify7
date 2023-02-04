@@ -31,17 +31,17 @@ import { AttachmentCell } from './Cell';
 import { attachmentsText } from '../../localization/attachments';
 
 export function AttachmentsPlugin({
+  id,
+  name,
   resource,
   onUploadComplete: handleUploadComplete,
   mode = 'edit',
-  id,
-  name,
 }: {
+  readonly id?: string;
+  readonly name?: string;
   readonly resource: SpecifyResource<AnySchema> | undefined;
   readonly onUploadComplete?: (attachment: SpecifyResource<Attachment>) => void;
   readonly mode: FormMode;
-  readonly id?: string;
-  readonly name?: string;
 }): JSX.Element {
   const [state, setState] = useAsyncState<
     | State<'AddAttachment'>
@@ -52,32 +52,20 @@ export function AttachmentsPlugin({
     | State<'FileUpload', { readonly file: File }>
     | State<'Unavailable'>
   >(
-    React.useCallback(
-      async () =>
-        attachmentSettingsPromise.then(() =>
-          attachmentsAvailable()
-            ? // REFACTOR: this is hard to read. Also other usages of f.maybe
-              (
-                f.maybe(
-                  f.maybe(resource, (resource) =>
-                    toTable(resource, 'Attachment')
-                  ),
-                  async (attachment) => attachment
-                ) ??
-                resource?.rgetPromise('attachment') ??
-                Promise.resolve(null)
-              ).then((attachment) => {
-                if (attachment === null) return { type: 'AddAttachment' };
-                const serialized = serializeResource(attachment);
-                return {
-                  type: 'DisplayAttachment',
-                  attachment: serialized,
-                };
-              })
-            : { type: 'Unavailable' }
-        ),
-      [resource]
-    ),
+    React.useCallback(async () => {
+      await attachmentSettingsPromise;
+      if (!attachmentsAvailable()) return { type: 'Unavailable' };
+      const attachment =
+        f.maybe(resource, (resource) => toTable(resource, 'Attachment')) ??
+        (await resource?.rgetPromise('attachment'));
+      if (attachment === undefined || attachment === null)
+        return { type: 'AddAttachment' };
+      const serialized = serializeResource(attachment);
+      return {
+        type: 'DisplayAttachment',
+        attachment: serialized,
+      };
+    }, [resource]),
     true
   );
   useErrorContext('attachmentPluginState', state);

@@ -36,7 +36,7 @@ export const headerText = createDictionary({
     'en-us': 'Data Entry',
     'ru-ru': 'Ввод данных',
     'es-es': 'Entrada de datos',
-    'fr-fr': 'Saisie des données',
+    'fr-fr': 'La saisie des données',
     'uk-ua': 'Введення даних',
   },
   makeDwca: {

@@ -23,6 +23,7 @@ import {
   fetchOtherCollectionData,
   processColRelationships,
 } from './collectionRelData';
+import { softFail } from '../Errors/Crash';
 import { userText } from '../../localization/user';
 
 export function CollectionOneToManyPlugin({
@@ -39,7 +40,7 @@ export function CollectionOneToManyPlugin({
       async () =>
         fetchOtherCollectionData(resource, relationship, formatting).catch(
           (error) => {
-            console.error(error);
+            softFail(error);
             return false;
           }
         ),
@@ -74,7 +75,7 @@ export function CollectionOneToManyPlugin({
         ring-1 ring-gray-400 shadow-sm dark:ring-0
       `}
     >
-      <table className={`grid-table grid-cols-[repeat(3,auto)] gap-2`}>
+      <table className="grid-table grid-cols-[repeat(3,auto)] gap-2">
         <thead>
           <tr>
             <th scope="col">{schema.models.CollectionObject.label}</th>

@@ -26,6 +26,7 @@ import {
   mappingPathIsComplete,
   mutateMappingPath,
 } from './helpers';
+import { softFail } from '../Errors/Crash';
 
 const modifyLine = (
   state: MappingState,
@@ -226,7 +227,7 @@ export const reducer = generateReducer<MappingState, MappingActions>({
   }),
   FocusLineAction: ({ state, action }) => {
     if (action.line >= state.lines.length)
-      throw new Error(`Tried to focus a line that doesn't exist`);
+      softFail(new Error(`Tried to focus a line that doesn't exist`));
 
     const focusedLineMappingPath = state.lines[action.line].mappingPath;
     return {

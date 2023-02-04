@@ -6,6 +6,7 @@ import { className } from './className';
 import type { IconProps } from './Icons';
 import { icons } from './Icons';
 import { wrap } from './wrapper';
+import { softFail } from '../Errors/Crash';
 
 export const DialogContext = React.createContext<(() => void) | undefined>(
   undefined
@@ -24,10 +25,12 @@ function DialogCloseButton({
   ...props
 }: Omit<Parameters<typeof Button.Gray>[0], 'onClick'> & {
   readonly component?: typeof Button.Gray;
-}): JSX.Element {
+}): JSX.Element | null {
   const handleClose = React.useContext(DialogContext);
-  if (handleClose === undefined)
-    throw new Error("Dialog's handleClose prop is undefined");
+  if (handleClose === undefined) {
+    softFail(new Error("Dialog's handleClose prop is undefined"));
+    return null;
+  }
   return <ButtonComponent {...props} onClick={handleClose} />;
 }
 

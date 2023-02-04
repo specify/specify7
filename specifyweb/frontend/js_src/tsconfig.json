@@ -20,6 +20,26 @@
       "es2021",
       "esnext"
     ],
+    /*
+     * I was trying to prevent pollution of global namespace with Jest
+     * functions. Without this line, typescript WILL NOT throw an error if you
+     * use a function like "test", "fail" or "describe" OUTSIDE of a test file.
+     * This results in runtime errors - BAD.
+     *   "typeRoots": [],
+     *
+     * You can explicitly specify exceptions under "types"
+     *   "types": ["leaflet.markercluster"],
+     *
+     * Unfortunately, that requires explicit type imports in test files, and my
+     * IDE is struggle to auto-import Jest. One solution is to disable type
+     * checking in tsconfig.json used by IDE but readable it in the
+     * tsconfig.json used by tests.
+     *   "exclude": ["node_modules", "**\/*.test.ts", "**\/*.test.tsx"],
+     *
+     * However, that results in IDE and tests reporting different TypeScript
+     * errors. This feature request proposes a better solution:
+     * https://github.com/microsoft/TypeScript/issues/37053
+     */
     "module": "CommonJS",
     "noEmit": true,
     "sourceMap": true,

@@ -12,6 +12,7 @@ import { useErrorContext } from '../../hooks/useErrorContext';
 import { Button } from '../Atoms/Button';
 import { SerializedResource } from '../DataModel/helperTypes';
 import { usePref } from '../UserPreferences/usePref';
+import { toLargeSortConfig } from '../Molecules/Sorting';
 import { userText } from '../../localization/user';
 import { LocalizedString } from 'typesafe-i18n';
 import { schema } from '../DataModel/schema';
@@ -22,16 +23,17 @@ import { schema } from '../DataModel/schema';
  */
 export function useAvailableCollections(): RA<SerializedResource<Collection>> {
   const [sortOrder] = usePref('chooseCollection', 'general', 'sortOrder');
-  const isReverseSort = sortOrder.startsWith('-');
-  const sortField = (isReverseSort ? sortOrder.slice(1) : sortOrder) as string &
-    keyof Collection['fields'];
-  const collections = React.useMemo(
-    () =>
-      Array.from(userInformation.availableCollections).sort(
-        sortFunction((collection) => collection[sortField], isReverseSort)
-      ),
-    [userInformation.availableCollections, isReverseSort, sortField]
-  );
+  const collections = React.useMemo(() => {
+    const { direction, fieldNames } = toLargeSortConfig(sortOrder);
+    return Array.from(userInformation.availableCollections).sort(
+      // FEATURE: support sorting by related model
+      sortFunction(
+        (collection) =>
+          collection[fieldNames.join('.') as keyof Collection['fields']],
+        direction === 'desc'
+      )
+    );
+  }, [userInformation.availableCollections, sortOrder]);
   useErrorContext('collections', collections);
   return collections;
 }

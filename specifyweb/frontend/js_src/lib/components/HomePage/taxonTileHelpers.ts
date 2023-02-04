@@ -11,6 +11,7 @@ import {
 import { index, sortFunction } from '../../utils/utils';
 import type { RA, RR, WritableArray } from '../../utils/types';
 import { filterArray } from '../../utils/types';
+import { softFail } from '../Errors/Crash';
 
 type Node = {
   readonly id: number;
@@ -94,7 +95,7 @@ const TILE_LIMIT = 1000;
 function findRoot(nodes: RA<PairedNode>): PairedNode {
   const roots = nodes.filter(({ parentId }) => parentId === null);
   if (roots.length > 1)
-    console.error('Detected more than one tree root', { roots });
+    softFail(new Error('Detected more than one tree root'), { roots });
   return roots[0];
 }
 

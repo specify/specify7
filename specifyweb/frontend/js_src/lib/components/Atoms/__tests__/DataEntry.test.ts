@@ -4,6 +4,7 @@ import { f } from '../../../utils/functools';
 import { SpecifyResource } from '../../DataModel/legacyTypes';
 import { AnySchema } from '../../DataModel/helperTypes';
 import { snapshot } from '../../../tests/reactUtils';
+import { SpecifyModel } from '../../DataModel/specifyModel';
 
 theories(columnDefinitionsToCss, [
   { in: [[1, 2, 3], true], out: '1fr 2fr 3fr' },
@@ -16,7 +17,7 @@ snapshot(DataEntry.Grid, {
     columns: [1, 2, 3, undefined],
     formType: 'form',
     mode: 'edit',
-    model: undefined,
+    model: undefined as unknown as SpecifyModel,
   },
   flexibleColumnWidth: true,
   display: 'block',

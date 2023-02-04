@@ -7,32 +7,34 @@ import React from 'react';
 import { usePref } from '../UserPreferences/usePref';
 import { mainText } from '../../localization/main';
 import { LocalizedString } from 'typesafe-i18n';
+import { UnloadProtectsContext } from '../Router/Router';
 
-export function AppTitle({
-  title,
-  type,
-}: {
-  readonly title: LocalizedString;
-  readonly type?: 'form';
-}): null {
+export function AppTitle({ title }: { readonly title: LocalizedString }): null {
   const [updateTitle] = usePref('form', 'behavior', 'updatePageTitle');
-  useTitle(type !== 'form' || updateTitle ? title : undefined);
+  useTitle(updateTitle ? title : undefined);
   return null;
 }
 
 /** Set title of the webpage. Restores previous title on component destruction */
 export function useTitle(title: LocalizedString | undefined): void {
+  const [unsavedIndicator] = usePref('general', 'behavior', 'unsavedIndicator');
+  const blockers = React.useContext(UnloadProtectsContext)!;
+  const isBlocked = unsavedIndicator && blockers.length > 0;
+  const id = React.useRef({});
   // Change page's title
   React.useEffect(() => {
-    const id = {};
-    if (typeof title === 'string') titleStack.set(id, title);
+    if (typeof title === 'string')
+      titleStack.set(id.current, `${isBlocked ? '*' : ''}${title}`);
     refreshTitle();
     return (): void => {
-      titleStack.delete(id);
+      titleStack.delete(id.current);
       refreshTitle();
     };
-  }, [title]);
+  }, [title, isBlocked]);
 }
+
+const refreshTitle = (): void =>
+  setTitle(Array.from(titleStack.values()).at(-1) ?? '');
 
 /**
  * Store all tiles in a stack. This allows to restore previous title when curren
@@ -46,6 +48,3 @@ function setTitle(title: LocalizedString | ''): void {
       ? mainText.baseAppTitle()
       : mainText.appTitle({ baseTitle: title });
 }
-
-const refreshTitle = (): void =>
-  setTitle(Array.from(titleStack.values()).at(-1) ?? '');

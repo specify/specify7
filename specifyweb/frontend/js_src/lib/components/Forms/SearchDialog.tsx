@@ -28,8 +28,8 @@ import { useId } from '../../hooks/useId';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { AnySchema, CommonFields } from '../DataModel/helperTypes';
-import { fail } from '../Errors/Crash';
 import { useViewDefinition } from './useViewDefinition';
+import { fail } from '../Errors/Crash';
 import { LocalizedString } from 'typesafe-i18n';
 
 const dialogDefinitions = load<Element>(
@@ -213,13 +213,14 @@ const testFilter = <SCHEMA extends AnySchema>(
   { operation, field, values }: QueryComboBoxFilter<SCHEMA>
 ): boolean =>
   operation === 'notBetween'
-    ? resource.get(field) < values[0] || resource.get(field) > values[1]
+    ? (resource.get(field) ?? 0) < values[0] ||
+      (resource.get(field) ?? 0) > values[1]
     : operation === 'in'
     ? values.some(f.equal(resource.get(field)))
     : operation === 'notIn'
     ? values.every(f.notEqual(resource.get(field)))
     : operation === 'lessThan'
-    ? values.every((value) => resource.get(field) < value)
+    ? values.every((value) => (resource.get(field) ?? 0) < value)
     : error('Invalid Query Combo Box search filter', {
         filter: {
           operation,
