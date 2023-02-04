@@ -15,16 +15,16 @@ export const mainText = createDictionary({
     'en-us': '{baseTitle:string} | Specify 7',
     'ru-ru': '{baseTitle:string} | Specify 7',
     'es-es': '{baseTitle:string} | Specify 7',
-    'fr-fr': '{baseTitle:string} | Précisez 7',
-    'uk-ua': '{baseTitle:string} | Вкажіть 7',
+    'fr-fr': '{baseTitle:string} | Specify 7',
+    'uk-ua': '{baseTitle:string} | Specify 7',
   },
   baseAppTitle: {
     comment: 'Default page title',
     'en-us': 'Specify 7',
     'ru-ru': 'Specify 7',
     'es-es': 'Specify 7',
-    'fr-fr': 'Précisez 7',
-    'uk-ua': 'Вкажіть 7',
+    'fr-fr': 'Specify 7',
+    'uk-ua': 'Specify 7',
   },
   pageNotFound: {
     comment: 'Used in title',
@@ -39,7 +39,7 @@ export const mainText = createDictionary({
     'en-us': 'Oops! Nothing was found',
     'ru-ru': 'Ой! Ничего не найдено',
     'es-es': '¡Uy! No se encontró nada',
-    'fr-fr': "Oops! Rien n'a été trouvé",
+    'fr-fr': "Oups ! Rien n'a été trouvé",
     'uk-ua': 'Ой! Нічого не знайдено',
   },
   pageNotFoundDescription: {
@@ -70,13 +70,13 @@ export const mainText = createDictionary({
     'ru-ru': 'Вернуться на главную страницу',
     'es-es': 'Regresar a la página de inicio',
     'fr-fr': "Retour à la page d'accueil",
-    'uk-ua': 'Повернутися на головну сторінку',
+    'uk-ua': 'Повернутися на домашню сторінку',
   },
   errorOccurred: {
     'en-us': "Sorry, something's gone a bit wrong",
     'ru-ru': 'Произошла неожиданная ошибка',
     'es-es': 'Lo siento, algo salió mal',
-    'fr-fr': "Désolé, quelque chose s'est un peu mal passé",
+    'fr-fr': "Désolé, une erreur s'est produite",
     'uk-ua': 'Вибачте, щось пішло не так',
   },
   errorOccurredDescription: {
@@ -94,11 +94,11 @@ export const mainText = createDictionary({
     `,
     'fr-fr': `
       Nous sommes désolés, il semble que vous ayez rencontré une erreur dans
-      Spécifier 7 dont nous n'avons peut-être pas connaissance.
+      Specify 7 dont nous n'avons peut-être pas connaissance.
     `,
     'uk-ua': `
-      Вибачте, здається, ви зіткнулися з помилкою в Specify 7, про яку ми могли
-      не знати.
+      Вибачте, здається, ви зіткнулися з помилкою в Specify 7, про яку ми
+      могливо не знаємо.
     `,
   },
   criticalErrorOccurredDescription: {
@@ -141,8 +141,8 @@ export const mainText = createDictionary({
     `,
     'fr-fr': `
       Si ce problème persiste, veuillez contacter votre support informatique.
-      S'il s'agit d'une base de données Spécifier le cloud, veuillez télécharger
-      le message d'erreur et l'envoyer à <email />.
+      S'il s'agit d'une base de données Specify Cloud, veuillez télécharger le
+      message d'erreur et l'envoyer à <email />.
     `,
     'uk-ua': `
       Якщо проблема не зникне, зверніться до служби підтримки ІТ. Якщо це база
@@ -173,9 +173,9 @@ export const mainText = createDictionary({
       <discourseLink>Forum communautaire</discourseLink>.
     `,
     'uk-ua': `
-      Користувачі <memberLink>учасниць </memberLink> можуть шукати відповіді на
-      запитання та звертатися за допомогою на нашому <discourseLink>Форумі
-      спільноти</discourseLink>.
+      Користувачі <memberLink>установ-членів</memberLink> можуть шукати
+      відповіді на запитання та звертатися за допомогою на нашому
+      <discourseLink>форумі</discourseLink>.
     `,
   },
   errorMessage: {
@@ -183,14 +183,14 @@ export const mainText = createDictionary({
     'ru-ru': 'Описание ошибки',
     'es-es': 'Mensaje de error',
     'fr-fr': "Message d'erreur",
-    'uk-ua': 'Повідомлення про помилку',
+    'uk-ua': 'Помилка',
   },
   leavePageConfirmation: {
     'en-us': 'Are you sure you want to leave this page?',
     'ru-ru': 'Вы уверены, что хотите покинуть эту страницу?',
     'es-es': '¿Seguro que quieres salir de esta página?',
     'fr-fr': 'Voulez-vous vraiment quitter cette page ?',
-    'uk-ua': 'Ви впевнені, що бажаєте залишити цю сторінку?',
+    'uk-ua': 'Ви впевнені, що бажаєте покинути цю сторінку?',
   },
   leavePageConfirmationDescription: {
     'en-us': 'Unsaved changes would be lost if your leave this page.',
@@ -201,14 +201,14 @@ export const mainText = createDictionary({
       Les modifications non enregistrées seront perdues si vous quittez cette
       page.
     `,
-    'uk-ua': 'Незбережені зміни буде втрачено, якщо ви залишите цю сторінку.',
+    'uk-ua': 'Незбережені зміни буде втрачено, якщо ви покинете цю сторінку.',
   },
   leave: {
     'en-us': 'Leave',
     'ru-ru': 'Покинуть',
     'es-es': 'Vete',
-    'fr-fr': 'Laisser',
-    'uk-ua': 'Залишати',
+    'fr-fr': 'Quitter',
+    'uk-ua': 'Покинути',
   },
   versionMismatch: {
     'en-us': 'Specify version does not match database version',
@@ -216,9 +216,9 @@ export const mainText = createDictionary({
     'es-es':
       'La versión de Specify no coincide con la versión de la base de datos',
     'fr-fr': `
-      La version spécifiée ne correspond pas à la version de la base de données
+      La version de Specify ne correspond pas à la version de la base de données
     `,
-    'uk-ua': 'Вказана версія не відповідає версії бази даних',
+    'uk-ua': 'Версія Specify не відповідає версії бази даних',
   },
   versionMismatchDescription: {
     'en-us': `
@@ -234,11 +234,11 @@ export const mainText = createDictionary({
       versión de la base de datos {databaseVersion:string}.
     `,
     'fr-fr': `
-      La version Spécifier {specifySixVersion:string} ne correspond pas à la
-      version de la base de données {databaseVersion:string}.
+      La version {specifySixVersion:string} de Specify ne correspond pas à la
+      version {databaseVersion:string} de la base de données.
     `,
     'uk-ua': `
-      Укажіть версію {specifySixVersion:string} не відповідає версії бази даних
+      Версія Specify {specifySixVersion:string} не відповідає версії бази даних
       {databaseVersion:string}.
     `,
   },
@@ -251,7 +251,7 @@ export const mainText = createDictionary({
       correctamente.
     `,
     'fr-fr': `
-      Certaines fonctionnalités de Spécifier 7 peuvent donc ne pas fonctionner
+      Certaines fonctionnalités de Specify 7 peuvent donc ne pas fonctionner
       correctement.
     `,
     'uk-ua': 'Тому деякі функції Specify 7 можуть не працювати належним чином.',
@@ -261,7 +261,8 @@ export const mainText = createDictionary({
     'ru-ru': 'Инструкции по устранению несоответствия схемы Specify',
     'es-es':
       'Instrucciones para resolver la discrepancia de los esquema de Specify',
-    'fr-fr': "Instructions pour résoudre l'incompatibilité de schéma Spécifier",
-    'uk-ua': 'Інструкції щодо вирішення Specify schema mismatch',
+    'fr-fr':
+      "Instructions pour résoudre l'incompatibilité de schéma de Specify",
+    'uk-ua': 'Інструкції щодо вирішення невідповідності версій',
   },
 } as const);

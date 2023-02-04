@@ -11,13 +11,13 @@ import type { State } from 'typesafe-reducer';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import { getParsedAttribute } from '../../utils/utils';
-import { formatList } from '../Atoms/Internationalization';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import { setLogContext } from '../Errors/interceptLogs';
 import { legacyLocalize } from '../InitialContext/legacyUiLocalization';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
+import { formatDisjunction } from '../Atoms/Internationalization';
 
 export type UiCommands = {
   readonly GenerateLabel: State<'GenerateLabel'>;
@@ -94,7 +94,9 @@ export function parseUiCommand(
       `Can't display ${label ?? name ?? 'plugin'} on ${
         model.name
       } form. Instead, try ` +
-        `displaying it on the ${formatList(definition.supportedTables)} form`
+        `displaying it on the ${formatDisjunction(
+          definition.supportedTables
+        )} form`
     );
   setLogContext({ command: undefined });
 

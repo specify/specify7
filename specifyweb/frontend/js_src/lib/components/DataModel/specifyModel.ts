@@ -10,6 +10,7 @@ import type { IR, R, RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import { camelToHuman } from '../../utils/utils';
 import { error } from '../Errors/assert';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import {
   DependentCollection,
   LazyCollection,
@@ -32,8 +33,8 @@ import { getTableOverwrite, modelViews } from './schemaOverrides';
 import type { Relationship } from './specifyField';
 import {
   type FieldDefinition,
-  type RelationshipDefinition,
   LiteralField,
+  type RelationshipDefinition,
 } from './specifyField';
 
 type FieldAlias = {
@@ -420,7 +421,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
       .map((fieldName) => this.getField(fieldName))
       .find(
         (field): field is Relationship =>
-          typeof field === 'object' && field.type === 'many-to-one'
+          field?.isRelationship === true && !relationshipIsToMany(field)
       );
   }
 

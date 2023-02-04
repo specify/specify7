@@ -12,7 +12,7 @@ import type { IR, R, RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import { getParsedAttribute } from '../../utils/utils';
 import { parseXml } from '../AppResources/codeMirrorLinters';
-import { formatList } from '../Atoms/Internationalization';
+import { formatDisjunction } from '../Atoms/Internationalization';
 import { parseJavaClassName } from '../DataModel/resource';
 import { strictGetModel } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
@@ -174,7 +174,7 @@ export function resolveViewDefinition(
     console.warn(
       `Unknown form type ${
         newFormType ?? '(null)'
-      }. Expected one of ${formatList(formTypes)}`
+      }. Expected one of ${formatDisjunction(formTypes)}`
     );
 
   return {

@@ -61,6 +61,7 @@ export function QueryHeader({
         {typeof recordSet === 'object'
           ? queryText.queryRecordSetTitle({
               queryName: query.name,
+              recordSetTable: schema.models.RecordSet.label,
               recordSetName: recordSet.get('name'),
             })
           : commonText.colonLine({
@@ -84,7 +85,7 @@ export function QueryHeader({
           <ProtectedTable action="update" tableName="Loan">
             <ProtectedTable action="create" tableName="LoanReturnPreparation">
               <ProtectedTable action="read" tableName="LoanPreparation">
-                <ErrorBoundary dismissable>
+                <ErrorBoundary dismissible>
                   <QueryLoanReturn
                     fields={state.fields}
                     getQueryFieldRecords={getQueryFieldRecords}

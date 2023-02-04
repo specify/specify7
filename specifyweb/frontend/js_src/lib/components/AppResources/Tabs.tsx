@@ -68,7 +68,7 @@ export function AppResourcesTabs({
       <Tab.Panels className="h-full overflow-auto border border-brand-300 dark:border-none">
         {tabs.map(({ component: Component }, index) => (
           <Tab.Panel className="h-full" key={index}>
-            <ErrorBoundary dismissable>
+            <ErrorBoundary dismissible>
               <Component
                 appResource={appResource}
                 data={data}

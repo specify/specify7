@@ -7,6 +7,7 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { useId } from '../../hooks/useId';
+import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
 import type { RA } from '../../utils/types';
 import { caseInsensitiveHash, toggleItem } from '../../utils/utils';
@@ -182,8 +183,17 @@ function TreeView<SCHEMA extends AnyTree>({
         >
           {treeText.editRanks()}
         </Button.Small>
+        <Button.Small
+          disabled={conformation.length === 0}
+          onClick={(): void => {
+            setFocusPath([0]);
+            setConformation([]);
+          }}
+        >
+          {commonText.collapseAll()}
+        </Button.Small>
         <span className="-ml-2 flex-1" />
-        <ErrorBoundary dismissable>
+        <ErrorBoundary dismissible>
           <TreeViewActions<SCHEMA>
             actionRow={actionRow}
             focusedRow={focusedRow}

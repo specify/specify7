@@ -6,15 +6,16 @@ import { formsText } from '../../localization/forms';
 import { f } from '../../utils/functools';
 import { filterArray } from '../../utils/types';
 import { Button } from '../Atoms/Button';
-import { formatList } from '../Atoms/Internationalization';
 import { LoadingContext } from '../Core/Contexts';
-import { toTable, toTables } from '../DataModel/helpers';
-import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Locality } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
+import { AnySchema } from '../DataModel/helperTypes';
+import { toTable, toTables } from '../DataModel/helpers';
+import { schema } from '../DataModel/schema';
+import { formatDisjunction } from '../Atoms/Internationalization';
 
 type States =
   | State<
@@ -43,7 +44,7 @@ export function PaleoLocationMapPlugin({
     hasTablePermission('CollectingEvent', 'read') &&
     hasTablePermission('Locality', 'read') &&
     hasTablePermission('PaleoContext', 'read') ? (
-    <ErrorBoundary dismissable>
+    <ErrorBoundary dismissible>
       <Button.Small
         className="w-fit"
         id={id}
@@ -63,17 +64,21 @@ export function PaleoLocationMapPlugin({
         >
           {formsText.wrongTableForPlugin({
             currentTable: resource.specifyModel.name,
-            correctTable: formatList(paleoPluginTables),
+            supportedTables: formatDisjunction(paleoPluginTables),
           })}
         </Dialog>
       )}
       {state.type === 'NoDataState' && (
         <Dialog
           buttons={commonText.close()}
-          header={formsText.paleoRequiresGeography()}
+          header={formsText.paleoRequiresGeography({
+            geographyTable: schema.models.Geography.label,
+          })}
           onClose={(): void => setState({ type: 'MainState' })}
         >
-          {formsText.paleoRequiresGeographyDescription()}
+          {formsText.paleoRequiresGeographyDescription({
+            localityTable: schema.models.Locality.label,
+          })}
         </Dialog>
       )}
       {state.type === 'LoadedState' && (

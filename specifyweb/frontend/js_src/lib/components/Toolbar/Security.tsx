@@ -100,7 +100,7 @@ export function SecurityPanel(): JSX.Element | null {
       <H2 className="text-2xl">{userText.securityPanel()}</H2>
       <div className="flex h-0 flex-1 gap-4">
         <Aside institution={institution} />
-        <ErrorBoundary dismissable>
+        <ErrorBoundary dismissible>
           <SafeOutlet<SecurityOutlet> {...context} />
         </ErrorBoundary>
       </div>
@@ -125,7 +125,11 @@ function Aside({
         </section>
       )}
       <section>
-        <H3>{userText.collections()}</H3>
+        <H3>
+          {availableCollections.length === 0
+            ? schema.models.Collection.label
+            : userText.collections()}
+        </H3>
         <ul>
           {availableCollections.map((collection, index) => (
             <li key={index}>

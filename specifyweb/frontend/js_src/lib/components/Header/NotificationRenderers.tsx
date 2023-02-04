@@ -23,7 +23,7 @@ export const notificationRenderers: IR<
       <>
         {notificationsText.feedItemUpdated()}
         <Link.Green
-          className="w-fit"
+          className="w-fit normal-case"
           download
           href={`/static/depository/export_feed/${filename}`}
         >

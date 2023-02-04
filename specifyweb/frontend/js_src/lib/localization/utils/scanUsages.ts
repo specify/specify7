@@ -15,7 +15,7 @@ import path from 'node:path';
 
 import type { LocalizedString } from 'typesafe-i18n';
 
-import { formatList } from '../../components/Atoms/Internationalization';
+import { formatConjunction } from '../../components/Atoms/Internationalization';
 import { f } from '../../utils/functools';
 import type { IR, R, RA, RR, WritableArray } from '../../utils/types';
 import { filterArray } from '../../utils/types';
@@ -157,7 +157,7 @@ export async function scanUsages(
     usages.length > 1
       ? error(
           `Key "${stringKey}" is used in multiple dictionaries: ` +
-            `${formatList(usages)}\n` +
+            `${formatConjunction(usages)}\n` +
             `Unfortunately, that is not allowed because Weblate get's confused by it`
         )
       : undefined
@@ -178,8 +178,8 @@ export async function scanUsages(
                     [
                       `A string for an undefined language "${language}" was `,
                       `found for key ${dictionaryName}.${key}\n`,
-                      `Defined languages: ${formatList(languages)}\n`,
-                      `Allowed meta keys: ${formatList(
+                      `Defined languages: ${formatConjunction(languages)}\n`,
+                      `Allowed meta keys: ${formatConjunction(
                         localizationMetaKeys
                       )}\n`,
                       `If you want to add a new language, add it to the `,

@@ -21,6 +21,7 @@ import {
   deleteResource,
   getResourceViewUrl,
 } from '../DataModel/resource';
+import { schema } from '../DataModel/schema';
 import type { RecordSet as RecordSetSchema } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import type { FormMode } from '../FormParse';
@@ -296,7 +297,7 @@ function RecordSet<SCHEMA extends AnySchema>({
         model={currentRecord.specifyModel}
         newResource={currentRecord.isNew() ? currentRecord : undefined}
         title={commonText.colonLine({
-          label: formsText.recordSet(),
+          label: schema.models.RecordSet.label,
           value: recordSet.get('name'),
         })}
         totalCount={totalCount}
@@ -383,10 +384,14 @@ function RecordSet<SCHEMA extends AnySchema>({
       {hasDuplicate && (
         <Dialog
           buttons={commonText.close()}
-          header={formsText.duplicateRecordSetItem()}
+          header={formsText.duplicateRecordSetItem({
+            recordSetItemTable: schema.models.RecordSetItem.label,
+          })}
           onClose={handleDismissDuplicate}
         >
-          {formsText.duplicateRecordSetItemDescription()}
+          {formsText.duplicateRecordSetItemDescription({
+            recordSetTable: schema.models.RecordSet.label,
+          })}
         </Dialog>
       )}
     </>

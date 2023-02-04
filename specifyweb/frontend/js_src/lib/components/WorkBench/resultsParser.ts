@@ -9,7 +9,12 @@ import type { State } from 'typesafe-reducer';
 
 import { backEndText } from '../../localization/backEnd';
 import type { IR, RA, RR } from '../../utils/types';
-import { formatList } from '../Atoms/Internationalization';
+import {
+  formatConjunction,
+  formatDisjunction,
+} from '../Atoms/Internationalization';
+import { getField } from '../DataModel/helpers';
+import { schema } from '../DataModel/schema';
 import type { Tables } from '../DataModel/types';
 
 /*
@@ -179,11 +184,13 @@ export function resolveValidationMessage(
     });
   else if (key === 'failedParsingAgentType')
     return backEndText.failedParsingAgentType({
+      agentTypeField: getField(schema.models.Agent, 'agentType').label,
       badType: payload.badType as string,
-      validTypes: formatList((payload.validTypes as RA<string>) ?? []),
+      validTypes: formatDisjunction((payload.validTypes as RA<string>) ?? []),
     });
   else if (key === 'pickListValueTooLong')
     return backEndText.pickListValueTooLong({
+      pickListTable: schema.models.PickList.label,
       pickList: payload.pickList as string,
       maxLength: payload.maxLength as number,
     });
@@ -222,7 +229,7 @@ export function resolveValidationMessage(
     return backEndText.invalidTreeStructure();
   else if (key === 'missingRequiredTreeParent')
     return backEndText.missingRequiredTreeParent({
-      names: formatList((payload.names as RA<string>) ?? []),
+      names: formatConjunction((payload.names as RA<string>) ?? []),
     });
   // This can happen for data sets created before 7.8.2
   else

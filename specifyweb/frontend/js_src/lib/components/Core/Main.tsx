@@ -27,6 +27,7 @@ import { userInformation } from '../InitialContext/userInformation';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { Router } from '../Router/Router';
 import type { Preferences } from '../UserPreferences/Definitions';
+import { OnlineStatus } from './OnlineStatus';
 
 export type UserTool = {
   readonly title: LocalizedString;
@@ -160,7 +161,7 @@ export function Main(): JSX.Element | null {
         )}
         {hasAgent ? (
           <main className="flex-1 overflow-auto" ref={mainRef}>
-            <ErrorBoundary dismissable>
+            <ErrorBoundary dismissible>
               <Router />
             </ErrorBoundary>
           </main>
@@ -183,6 +184,8 @@ export function Main(): JSX.Element | null {
             {userText.noAgentDescription()}
           </Dialog>
         )}
+
+        <OnlineStatus />
       </SetMenuContext.Provider>
     </MenuContext.Provider>
   );

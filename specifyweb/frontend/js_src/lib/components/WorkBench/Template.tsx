@@ -5,11 +5,12 @@
 
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { useUnloadProtect } from '../../hooks/navigation';
 import { useAsyncState } from '../../hooks/useAsyncState';
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { commonText } from '../../localization/common';
 import { localityText } from '../../localization/locality';
@@ -17,7 +18,8 @@ import { wbPlanText } from '../../localization/wbPlan';
 import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
-import type { GetSet } from '../../utils/types';
+import type { GetSet, RA } from '../../utils/types';
+import { replaceItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Input } from '../Atoms/Form';
@@ -25,7 +27,8 @@ import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
 import { useMenuItem } from '../Header';
 import { treeRanksPromise } from '../InitialContext/treeRanks';
-import { legacyDialogs } from '../Molecules/LegacyDialog';
+import { Dialog } from '../Molecules/Dialog';
+import { Portal } from '../Molecules/Portal';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import { NotFoundView } from '../Router/NotFoundView';
 import type { Dataset } from '../WbPlanView/Wrapped';
@@ -295,14 +298,41 @@ export function WorkBench(): JSX.Element | null {
   const [dataSet, setDataSet] = useDataSet(dataSetId);
   useErrorContext('dataSet', dataSet);
   const loading = React.useContext(LoadingContext);
-  useWbView(dataSet, treeRanksLoaded, container, () =>
-    loading(fetchDataSet(dataSet!.id).then(setDataSet))
+  const [isDeleted, handleDeleted] = useBooleanState();
+  const [isDeletedConfirmation, handleDeletedConfirmation] = useBooleanState();
+  const portals = useWbView(
+    dataSet,
+    treeRanksLoaded,
+    container,
+    handleDeleted,
+    handleDeletedConfirmation,
+    () => loading(fetchDataSet(dataSet!.id).then(setDataSet))
   );
 
+  const navigate = useNavigate();
   return dataSetId === undefined ? (
     <NotFoundView />
+  ) : isDeleted ? (
+    <>{wbText.dataSetDeletedOrNotFound()}</>
+  ) : isDeletedConfirmation ? (
+    <Dialog
+      buttons={commonText.close()}
+      header={wbText.dataSetDeleted()}
+      onClose={(): void => navigate('/specify/', { replace: true })}
+    >
+      {wbText.dataSetDeletedDescription()}
+    </Dialog>
   ) : (
-    <div className="contents" ref={setContainer} />
+    <>
+      <div className="contents" ref={setContainer} />
+      {portals.map((portal, index) =>
+        portal === undefined ? undefined : (
+          <Portal element={portal.element} key={index}>
+            {portal.jsx}
+          </Portal>
+        )
+      )}
+    </>
   );
 }
 
@@ -329,8 +359,20 @@ function useWbView(
   dataSet: Dataset | undefined,
   treeRanksLoaded: boolean,
   container: HTMLElement | null,
+  handleDeleted: () => void,
+  handleDeletedConfirmation: () => void,
   handleRefresh: () => void
-): void {
+): RA<
+  | { readonly jsx: JSX.Element; readonly element: HTMLElement | undefined }
+  | undefined
+> {
+  const [portals, setPortals] = React.useState<
+    RA<
+      | { readonly jsx: JSX.Element; readonly element: HTMLElement | undefined }
+      | undefined
+    >
+  >([]);
+
   const mode = React.useRef<string | undefined>(undefined);
   const wasAborted = React.useRef<boolean>(false);
 
@@ -349,6 +391,23 @@ function useWbView(
       refreshInitiatedBy: mode.current,
       refreshInitiatorAborted: wasAborted.current,
       onSetUnloadProtect: setUnloadProtect,
+      onDeleted: handleDeleted,
+      onDeletedConfirmation: handleDeletedConfirmation,
+      display(
+        jsx: JSX.Element,
+        element?: HTMLElement,
+        destructor?: () => void
+      ) {
+        let index = 0;
+        setPortals((portals) => {
+          index = portals.length;
+          return [...portals, { jsx, element }];
+        });
+        return () => {
+          setPortals((portals) => replaceItem(portals, index, undefined));
+          destructor?.();
+        };
+      },
     })
       .on('refresh', (newMode: string | undefined, newWasAborted = false) => {
         setUnloadProtect(false);
@@ -357,9 +416,8 @@ function useWbView(
         handleRefresh();
       })
       .render();
-    return () => {
-      view.remove();
-      legacyDialogs.forEach((destructor) => destructor());
-    };
+    return () => view.remove();
   }, [treeRanksLoaded, container, dataSet]);
+
+  return portals;
 }

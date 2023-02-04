@@ -4,6 +4,70 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## Unreleased
+
+Coming in the next few months:
+
+- [Duplicate record merging tool](https://discourse.specifysoftware.org/t/record-merging-in-specify-7/939/9)
+- [Statistics page](https://discourse.specifysoftware.org/t/statistics-panel-for-specify-7/828)
+- [User Interface for editing Data Object Formatters and other XML resources](https://github.com/specify/specify7/pull/2796)
+- [And a lot more features](https://github.com/specify/specify7/pulls)
+
+## [7.8.6](https://github.com/specify/specify7/compare/v7.8.5...HEAD) (Unreleased)
+
+## [7.8.5](https://github.com/specify/specify7/compare/v7.8.4...v7.8.5) (January 31 2022)
+
+### Added
+
+- Taxon Author can now be displayed in the tree
+  viewer ([#1121](https://github.com/specify/specify7/issues/1121)) - _Requested
+  by Geneva, New Mexico, Unitec, Agriculture and Agri-Food Canada, CSIRO, RBGE
+  and many others_
+- After a WorkBench upload, creation of a Record Set is now
+  optional ([#1848](https://github.com/specify/specify7/issues/1848)) -
+  _Requested by Auburn_
+- Spanish localization has been improved - thanks
+  to [@gallegonovato](https://github.com/gallegonovato) ([commits](https://github.com/specify/specify7/commits?author=gallegonovato)).
+  If you would like to contribute too,
+  please [see the instructions](https://discourse.specifysoftware.org/t/get-started-with-specify-7-localization/956)
+- To be more security conscious, Specify 7 source code is now regularly scanned
+  by GitHub's CodeQL tool, which is designed to find security
+  vulnerabilities ([commit](https://github.com/specify/specify7/commit/9465b9e0972fcc7b03cfa1aadf50cc1a20749ee9))
+- Added a "Collapse All" button to tree
+  viewer ([#2050](https://github.com/specify/specify7/issues/2050)) - _Requested
+  by CSIRO_
+
+### Changed
+
+- Data Model viewer has been redesigned to work better with printing the page
+  and to support `Ctrl+F` across fields in different
+  tables, along with other usability improvements ([#2855](https://github.com/specify/specify7/issues/2855))
+- Low resolution PNG table icons have been replaced with modern SVG icons. For
+  most tables the new icons look similar. Attachments icons have been modified
+  to make text more
+  readable. ([#2368](https://github.com/specify/specify7/issues/2368))
+- Large text fields in grid view now maintain consistent
+  height ([#2765](https://github.com/specify/specify7/issues/2765)) - Fixed by @cdamyx
+
+### Fixed
+
+- Permissions for dependent resources now cascade like
+  expected ([#2007](https://github.com/specify/specify7/issues/2007))
+- Lines in remote prefs that follow a commented out line were not parsed
+  correctly. This is now
+  fixed ([commit](https://github.com/specify/specify7/commit/91b80b709fe4bd8a546a7c4d756df91de17fff88))
+- Fixed values that start with a number (`5A`) being incorrectly coerced into a
+  number (`5`) (for visual purposes
+  only) ([#2805](https://github.com/specify/specify7/issues/2805)) - _Reported
+  by RBGE_
+- Fixed the `(formatted)` column in query results not having a table
+  icon ([#2536](https://github.com/specify/specify7/issues/2536))
+- All references to table names anywhere in the interface are now using the
+  table name you chose in the schema
+  configuration ([#2420](https://github.com/specify/specify7/issues/2420)
+  and [commit](https://github.com/specify/specify7/commit/a579909285a7c5b35dc1d32cd99f4919f654a688)) -
+  _Reported by RGBE_
+
 ## [7.8.4](https://github.com/specify/specify7/compare/v7.8.3...v7.8.4) (18 January 2023)
 
 ### Added
@@ -66,7 +130,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   twice ([#2770](https://github.com/specify/specify7/pull/2770))
 - Separator icons now display correctly on the
   forms ([#2074](https://github.com/specify/specify7/issues/2074))
-- Exporting the data model to TSV now is exported properly ([#2815](https://github.com/specify/specify7/issues/2815))
+- Exporting the data model to TSV now is exported
+  properly ([#2815](https://github.com/specify/specify7/issues/2815))
 
 ## [7.8.3](https://github.com/specify/specify7/compare/v7.8.2...v7.8.3) (9 January 2023)
 
@@ -603,7 +668,7 @@ bugs: https://github.com/specify/webportal-installer/issues?q=is%3Aopen+is%3Aiss
   and MySQL 8.x is resolved.
 
   Specify 6 does not yet support MySQL
-  8. ([#476](https://github.com/specify/specify7/issues/476))
+    8. ([#476](https://github.com/specify/specify7/issues/476))
 
 ## [7.3.0](https://github.com/specify/specify7/compare/v7.2.1...v7.3.0) (12 October 2017)
 

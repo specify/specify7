@@ -43,6 +43,7 @@ function AppResourcesView({
   readonly getSet: GetOrSet<AppResources>;
 }): JSX.Element {
   const [resources] = getSet;
+
   return (
     <Container.FullGray>
       <div className="flex items-center gap-4">

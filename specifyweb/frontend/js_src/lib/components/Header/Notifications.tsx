@@ -176,7 +176,7 @@ export function Notifications(): JSX.Element {
            */}
           <p>{notificationsText.mostRecentNotificationsTop()}</p>
           {notifications.map((notification, index) => (
-            <ErrorBoundary dismissable key={index}>
+            <ErrorBoundary dismissible key={index}>
               <NotificationComponent
                 notification={notification}
                 onDelete={(promise): void => {

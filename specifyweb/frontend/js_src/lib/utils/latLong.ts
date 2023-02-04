@@ -168,6 +168,9 @@ export class Coord {
   }
 }
 
+export type ConversionFunction = keyof Coord &
+  ('toDegs' | 'toDegsMins' | 'toDegsMinsSecs');
+
 export class Lat extends Coord {
   public isValid(): boolean {
     const decDegs = this.toDegs();

@@ -6,7 +6,7 @@ import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { interactionsText } from '../../localization/interactions';
 import { Button } from '../Atoms/Button';
-import { formatList } from '../Atoms/Internationalization';
+import { formatDisjunction } from '../Atoms/Internationalization';
 import { toTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -73,7 +73,7 @@ const commandRenderers: {
           {label}
         </Button.Small>
         {showLoans && (
-          <ErrorBoundary dismissable>
+          <ErrorBoundary dismissible>
             <ShowLoansCommand preparation={preparation} onClose={handleHide} />
           </ErrorBoundary>
         )}
@@ -145,7 +145,7 @@ const commandRenderers: {
         >
           {formsText.wrongTableForCommand({
             currentTable: resource.specifyModel.name,
-            correctTable: formatList(supportedTables),
+            correctTable: formatDisjunction(supportedTables),
           })}
         </Dialog>
       </>

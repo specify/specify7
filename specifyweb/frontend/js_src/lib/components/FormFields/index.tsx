@@ -99,18 +99,20 @@ const fieldRenderers: {
       autoGrow && formType !== 'formTable' ? AutoGrowTextArea : Textarea;
 
     return (
-      <Component
-        {...validationAttributes}
-        forwardRef={validationRef}
-        id={id}
-        isReadOnly={mode === 'view' || field === undefined}
-        name={name}
-        required={'required' in validationAttributes && mode !== 'search'}
-        rows={rows}
-        value={value?.toString() ?? ''}
-        onBlur={(): void => updateValue(value?.toString() ?? '')}
-        onValueChange={(value): void => updateValue(value, false)}
-      />
+      <ErrorBoundary dismissible>
+        <Component
+          {...validationAttributes}
+          forwardRef={validationRef}
+          id={id}
+          isReadOnly={mode === 'view' || field === undefined}
+          name={name}
+          required={'required' in validationAttributes && mode !== 'search'}
+          rows={formType === 'formTable' ? 1 : rows}
+          value={value?.toString() ?? ''}
+          onBlur={(): void => updateValue(value?.toString() ?? '')}
+          onValueChange={(value): void => updateValue(value, false)}
+        />
+      </ErrorBoundary>
     );
   },
   ComboBox({
@@ -165,7 +167,7 @@ const fieldRenderers: {
     name,
     field,
     isRequired,
-    fieldDefinition: { defaultValue, min, max, step },
+    fieldDefinition: { defaultValue, min, max, step, maxLength, minLength },
   }) {
     const parser = React.useMemo<Parser>(
       () => ({
@@ -174,8 +176,10 @@ const fieldRenderers: {
         max,
         step,
         required: isRequired,
+        maxLength,
+        minLength,
       }),
-      [defaultValue, min, max, step, isRequired]
+      [defaultValue, min, max, step, isRequired, maxLength, minLength]
     );
     return (
       <UiField
@@ -232,7 +236,7 @@ export function FormField({
   ] as typeof fieldRenderers.Checkbox;
   const data = useDistantRelated(resource, fields);
   return (
-    <ErrorBoundary dismissable>
+    <ErrorBoundary dismissible>
       {data === undefined ? undefined : (
         <Render
           mode={isReadOnly || data.resource !== resource ? 'view' : mode}

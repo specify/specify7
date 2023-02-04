@@ -270,7 +270,9 @@ function AddingToPicklist({
       header={formsText.invalidType()}
       onClose={handleClose}
     >
-      {formsText.invalidNumericPicklistValue()}
+      {formsText.invalidNumericPicklistValue({
+        pickListTable: schema.models.PickList.label,
+      })}
     </Dialog>
   ) : (
     <Dialog
@@ -298,10 +300,13 @@ function AddingToPicklist({
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
         </>
       }
-      header={formsText.addToPickListConfirmation()}
+      header={formsText.addToPickListConfirmation({
+        pickListTable: schema.models.PickList.label,
+      })}
       onClose={handleClose}
     >
       {formsText.addToPickListConfirmationDescription({
+        pickListTable: schema.models.PickList.label,
         value,
         pickListName: pickList.get('name'),
       })}

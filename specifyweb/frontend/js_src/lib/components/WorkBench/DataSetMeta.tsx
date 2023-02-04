@@ -19,7 +19,6 @@ import { icons } from '../Atoms/Icons';
 import { formatNumber } from '../Atoms/Internationalization';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
-import { createBackboneView } from '../Core/reactBackboneExtend';
 import { Backbone } from '../DataModel/backbone';
 import { fetchCollection } from '../DataModel/collection';
 import { getField } from '../DataModel/helpers';
@@ -31,7 +30,7 @@ import { useTitle } from '../Molecules/AppTitle';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { DateElement } from '../Molecules/DateElement';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { FormattedResource } from '../Molecules/FormattedResource';
+import { FormattedResourceUrl } from '../Molecules/FormattedResource';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasPermission } from '../Permissions/helpers';
 import { unsafeNavigate } from '../Router/Router';
@@ -246,7 +245,9 @@ export function DataSetMeta({
               components={{
                 wrap: (
                   <i>
-                    <FormattedResource resourceUrl={dataset.createdbyagent} />
+                    <FormattedResourceUrl
+                      resourceUrl={dataset.createdbyagent}
+                    />
                   </i>
                 ),
               }}
@@ -262,7 +263,7 @@ export function DataSetMeta({
                 wrap: (
                   <i>
                     {typeof dataset.modifiedbyagent === 'string' ? (
-                      <FormattedResource
+                      <FormattedResourceUrl
                         resourceUrl={dataset.modifiedbyagent}
                       />
                     ) : (
@@ -422,30 +423,28 @@ function ChangeOwner({
   );
 }
 
-const WrappedDataSetName = createBackboneView(DataSetName);
-const ChangeOwnerView = createBackboneView(ChangeOwner);
-
 // A wrapper for DS Meta for embedding in the WB
 export const DataSetNameView = Backbone.View.extend({
   __name__: 'DataSetNameView',
   render() {
-    this.dataSetMeta = new WrappedDataSetName({
-      el: this.el.getElementsByClassName('wb-name-container')[0],
-      dataset: this.options.dataset,
-      getRowCount: this.options.getRowCount,
-    }).render();
+    this.dataSetMeta = this.options.display(
+      <DataSetName
+        dataset={this.options.dataset}
+        getRowCount={this.options.getRowCount}
+      />,
+      this.el.getElementsByClassName('wb-name-container')[0]
+    );
     return this;
   },
   changeOwner() {
-    const handleClose = (): void => void this.changeOwnerView.remove();
-    this.changeOwnerView = new ChangeOwnerView({
-      dataset: this.options.dataset,
-      onClose: handleClose,
-    }).render();
+    const handleClose = (): void => void this.changeOwnerView();
+    this.changeOwnerView = this.options.display(
+      <ChangeOwner dataset={this.options.dataset} onClose={handleClose} />
+    );
   },
   remove() {
-    this.dataSetMeta.remove();
-    this.changeOwnerView?.remove();
+    this.dataSetMeta();
+    this.changeOwnerView?.();
     Backbone.View.prototype.remove.call(this);
   },
 });

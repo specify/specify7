@@ -19,6 +19,7 @@ import {
   resolveParser,
 } from '../utils/parser/definitions';
 import type { GetOrSet, IR, RA } from '../utils/types';
+import { raise } from '../components/Errors/Crash';
 
 /**
  * A wrapper for Backbone.Resource that integrates with React.useState for
@@ -117,15 +118,20 @@ export function useDistantRelated(
   const [data, setData] =
     React.useState<Awaited<ReturnType<typeof fetchDistantRelated>>>(undefined);
   React.useEffect(() => {
-    if (fields === undefined || fields.length === 0) return undefined;
     let destructorCalled = false;
+    const handleChange = (): void =>
+      void fetchDistantRelated(resource, fields)
+        .then((data) => (destructorCalled ? undefined : setData(data)))
+        .catch(raise);
+
+    if (fields === undefined || fields.length === 0) {
+      handleChange();
+      return undefined;
+    }
     const destructor = resourceOn(
       resource,
       `change:${fields[0].name}`,
-      () =>
-        fetchDistantRelated(resource, fields)
-          .then((data) => (destructorCalled ? undefined : setData(data)))
-          .catch(fail),
+      handleChange,
       true
     );
     return (): void => {

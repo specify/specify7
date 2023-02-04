@@ -16,6 +16,7 @@ import { queryText } from '../../localization/query';
 import { reportsText } from '../../localization/report';
 import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
+import { treeText } from '../../localization/tree';
 import type { Language } from '../../localization/utils/config';
 import { LANGUAGE } from '../../localization/utils/config';
 import { wbPlanText } from '../../localization/wbPlan';
@@ -437,56 +438,72 @@ export const preferenceDefinitions = {
         title: preferencesText.menu(),
         items: {
           showDataEntry: defineItem<boolean>({
-            title: preferencesText.showDataEntry(),
-            requiresReload: false,
-            visible: true,
-            defaultValue: true,
-            type: 'java.lang.Boolean',
-          }),
-          showInteractions: defineItem<boolean>({
-            title: preferencesText.showInteractions(),
+            title: preferencesText.showMenuItem({
+              menuItem: headerText.dataEntry(),
+            }),
             requiresReload: false,
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
           showTrees: defineItem<boolean>({
-            title: preferencesText.showTrees(),
+            title: preferencesText.showMenuItem({
+              menuItem: treeText.trees(),
+            }),
             requiresReload: false,
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
-          showRecordSets: defineItem<boolean>({
-            title: preferencesText.showRecordSets(),
+          showInteractions: defineItem<boolean>({
+            title: preferencesText.showMenuItem({
+              menuItem: interactionsText.interactions(),
+            }),
             requiresReload: false,
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
           showQueries: defineItem<boolean>({
-            title: preferencesText.showQueries(),
+            title: preferencesText.showMenuItem({
+              menuItem: queryText.queries(),
+            }),
             requiresReload: false,
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
-          showReports: defineItem<boolean>({
-            title: preferencesText.showReports(),
-            requiresReload: false,
-            visible: true,
-            defaultValue: true,
-            type: 'java.lang.Boolean',
-          }),
-          showAttachments: defineItem<boolean>({
-            title: preferencesText.showAttachments(),
+          showRecordSets: defineItem<boolean>({
+            title: preferencesText.showMenuItem({
+              menuItem: commonText.recordSets(),
+            }),
             requiresReload: false,
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
           showWorkBench: defineItem<boolean>({
-            title: preferencesText.showWorkBench(),
+            title: preferencesText.showMenuItem({
+              menuItem: wbText.workBench(),
+            }),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
+          showReports: defineItem<boolean>({
+            title: preferencesText.showMenuItem({
+              menuItem: reportsText.reports(),
+            }),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
+          showAttachments: defineItem<boolean>({
+            title: preferencesText.showMenuItem({
+              menuItem: attachmentsText.attachments(),
+            }),
             requiresReload: false,
             visible: true,
             defaultValue: true,
