@@ -6,6 +6,7 @@ import React from 'react';
 
 import { commonText } from '../../localization/common';
 import type { RR } from '../../utils/types';
+import { GetOrSet } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Link } from '../Atoms/Link';
@@ -26,6 +27,8 @@ import { mainText } from '../../localization/main';
 import { headerText } from '../../localization/header';
 import { userText } from '../../localization/user';
 import { LocalizedString } from 'typesafe-i18n';
+import { f } from '../../utils/functools';
+import { OnlineStatus } from './OnlineStatus';
 
 export type UserTool = {
   readonly title: LocalizedString;
@@ -68,115 +71,133 @@ export function Main(): JSX.Element | null {
     []
   );
 
+  const [menuContext, setMenuContext] = React.useState<
+    MenuItemName | undefined
+  >(undefined);
   return menuItems === undefined ? null : (
-    <>
-      <Button.Small
-        className="sr-only !absolute top-0 left-0 z-10 !p-2 focus:not-sr-only"
-        onClick={(): void => {
-          if (!mainRef.current) return;
-          mainRef.current.setAttribute('tabindex', '-1');
-          mainRef.current.focus();
-          mainRef.current.removeAttribute('tabindex');
-        }}
-      >
-        {headerText.skipToContent()}
-      </Button.Small>
+    <MenuContext.Provider value={menuContext}>
+      <SetMenuContext.Provider value={setMenuContext}>
+        <Button.Small
+          className="sr-only !absolute top-0 left-0 z-10 !p-2 focus:not-sr-only"
+          onClick={(): void => {
+            if (!mainRef.current) return;
+            mainRef.current.setAttribute('tabindex', '-1');
+            mainRef.current.focus();
+            mainRef.current.removeAttribute('tabindex');
+          }}
+        >
+          {headerText.skipToContent()}
+        </Button.Small>
 
-      <header
-        className={`
+        <header
+          className={`
           flex flex-col border-b-[5px]
           border-b-brand-200 bg-gray-200 shadow-md shadow-gray-400 [z-index:1] 
           dark:border-b-brand-400 dark:bg-neutral-800 print:hidden 2xl:flex-row
           ${className.hasAltBackground}
         `}
-      >
-        <div className="flex w-full items-center justify-between 2xl:contents">
-          <h1 className="contents">
-            <a className="order-1 m-4 flex items-center" href="/specify/">
-              <img
-                alt=""
-                className="h-16 hover:animate-hue-rotate"
-                src="/static/img/logo.svg"
-              />
-              <span className="sr-only">{commonText.goToHomepage()}</span>
-            </a>
-          </h1>
-          <div
-            className={`
+        >
+          <div className="flex w-full items-center justify-between 2xl:contents">
+            <h1 className="contents">
+              <a className="order-1 m-4 flex items-center" href="/specify/">
+                <img
+                  alt=""
+                  className="h-16 hover:animate-hue-rotate"
+                  src="/static/img/logo.svg"
+                />
+                <span className="sr-only">{commonText.goToHomepage()}</span>
+              </a>
+            </h1>
+            <div
+              className={`
               2xl:w-max-[350px] order-3 m-4 flex min-w-[275px] flex-col gap-2
             `}
-          >
-            <div className="flex items-center justify-end gap-2">
-              {/* FEATURE: display user tools for anonymous users */}
-              {userInformation.isauthenticated ? (
-                <UserTools />
-              ) : (
-                <Link.Default
-                  href="/accounts/login/"
-                  className={className.navigationHandled}
-                >
-                  {userText.logIn()}
-                </Link.Default>
-              )}
-              <CollectionSelector />
-            </div>
-            <div className="flex items-center justify-end gap-2">
-              <Notifications />
-              <ExpressSearch />
+            >
+              <div className="flex items-center justify-end gap-2">
+                {/* FEATURE: display user tools for anonymous users */}
+                {userInformation.isauthenticated ? (
+                  <UserTools />
+                ) : (
+                  <Link.Default href="/accounts/login/">
+                    {userText.logIn()}
+                  </Link.Default>
+                )}
+                <CollectionSelector />
+              </div>
+              <div className="flex items-center justify-end gap-2">
+                <Notifications />
+                <ExpressSearch />
+              </div>
             </div>
           </div>
-        </div>
-        <HeaderItems menuItems={menuItems} />
-      </header>
+          <HeaderItems menuItems={menuItems} />
+        </header>
 
-      {showVersionMismatch && (
-        <Dialog
-          buttons={
-            <Button.Orange onClick={(): void => setShowVersionMismatch(false)}>
-              {commonText.close()}
-            </Button.Orange>
-          }
-          forceToTop
-          header={mainText.versionMismatch()}
-          onClose={(): void => setShowVersionMismatch(false)}
-        >
-          <p>
-            {mainText.versionMismatchDescription({
-              specifySixVersion: getSystemInfo().specify6_version,
-              databaseVersion: getSystemInfo().database_version,
-            })}
-          </p>
-          <p>{mainText.versionMismatchSecondDescription()}</p>
-          <p>
-            <Link.NewTab href="https://discourse.specifysoftware.org/t/resolve-specify-7-schema-version-mismatch/884">
-              {mainText.versionMismatchInstructions()}
-            </Link.NewTab>
-          </p>
-        </Dialog>
-      )}
-      {hasAgent ? (
-        <main className="flex-1 overflow-auto" ref={mainRef}>
-          <ErrorBoundary dismissable>
-            <Router />
-          </ErrorBoundary>
-        </main>
-      ) : (
-        <Dialog
-          buttons={
-            <Button.DialogClose component={Button.Red}>
-              {userText.logOut()}
-            </Button.DialogClose>
-          }
-          className={{
-            container: `${dialogClassNames.narrowContainer}`,
-          }}
-          forceToTop
-          header={userText.noAgent()}
-          onClose={(): void => globalThis.location.assign('/accounts/logout/')}
-        >
-          {userText.noAgentDescription()}
-        </Dialog>
-      )}
-    </>
+        {showVersionMismatch && (
+          <Dialog
+            buttons={
+              <Button.Orange
+                onClick={(): void => setShowVersionMismatch(false)}
+              >
+                {commonText.close()}
+              </Button.Orange>
+            }
+            forceToTop
+            header={mainText.versionMismatch()}
+            onClose={(): void => setShowVersionMismatch(false)}
+          >
+            <p>
+              {mainText.versionMismatchDescription({
+                specifySixVersion: getSystemInfo().specify6_version,
+                databaseVersion: getSystemInfo().database_version,
+              })}
+            </p>
+            <p>{mainText.versionMismatchSecondDescription()}</p>
+            <p>
+              <Link.NewTab href="https://discourse.specifysoftware.org/t/resolve-specify-7-schema-version-mismatch/884">
+                {mainText.versionMismatchInstructions()}
+              </Link.NewTab>
+            </p>
+          </Dialog>
+        )}
+        {hasAgent ? (
+          <main className="flex-1 overflow-auto" ref={mainRef}>
+            <ErrorBoundary dismissible>
+              <Router />
+            </ErrorBoundary>
+          </main>
+        ) : (
+          <Dialog
+            buttons={
+              <Button.DialogClose component={Button.Red}>
+                {userText.logOut()}
+              </Button.DialogClose>
+            }
+            className={{
+              container: `${dialogClassNames.narrowContainer}`,
+            }}
+            forceToTop
+            header={userText.noAgent()}
+            onClose={(): void =>
+              globalThis.location.assign('/accounts/logout/')
+            }
+          >
+            {userText.noAgentDescription()}
+          </Dialog>
+        )}
+
+        <OnlineStatus />
+      </SetMenuContext.Provider>
+    </MenuContext.Provider>
   );
 }
+
+/** Identifies active menu item */
+export const MenuContext = React.createContext<MenuItemName | undefined>(
+  undefined
+);
+MenuContext.displayName = 'MenuContext';
+export const SetMenuContext = React.createContext<
+  GetOrSet<MenuItemName | undefined>[1]
+>(f.never);
+SetMenuContext.displayName = 'SetMenuContext';

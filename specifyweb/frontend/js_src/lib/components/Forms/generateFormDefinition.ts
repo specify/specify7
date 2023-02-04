@@ -13,6 +13,7 @@ import { filterArray } from '../../utils/types';
 import { resolveParser } from '../../utils/parser/definitions';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { AnySchema, TableFields } from '../DataModel/helperTypes';
+import { hasTablePermission } from '../Permissions/helpers';
 import { schemaText } from '../../localization/schema';
 
 /**
@@ -138,7 +139,7 @@ function generateForm(
                   type: 'Label',
                   text: field.label,
                   labelForCellId: field.name,
-                  fieldName: field.name,
+                  fieldNames: [field.name],
                   title: field.getLocalizedDesc(),
                   ...cellAttributes,
                 },
@@ -167,51 +168,55 @@ function generateForm(
               forClass: undefined,
             },
           ],
-      ...relationships.flatMap(
-        (field) =>
-          [
+      ...relationships
+        .filter(({ relatedModel }) =>
+          hasTablePermission(relatedModel.name, 'read')
+        )
+        .flatMap(
+          (field) =>
             [
-              {
-                type: 'Label',
-                text: field.label,
-                labelForCellId: field.name,
-                fieldName: field.name,
-                title: field.getLocalizedDesc(),
-                ...cellAttributes,
-              },
-            ],
-            [
-              relationshipIsToMany(field)
-                ? ({
-                    ...cellAttributes,
-                    id: field.name,
-                    type: 'SubView',
-                    formType: 'form',
-                    mode,
-                    fieldName: field.name,
-                    viewName: undefined,
-                    isButton: true,
-                    icon: undefined,
-                    isRequired: false,
-                    sortField: 'id',
-                  } as const)
-                : ({
-                    ...cellAttributes,
-                    id: field.name,
-                    type: 'Field',
-                    fieldName: field.name,
-                    fieldDefinition: {
-                      type: 'QueryComboBox',
-                      hasCloneButton: false,
-                      typeSearch: undefined,
-                      isReadOnly: mode === 'view',
-                    },
-                    isRequired: false,
-                    viewName: undefined,
-                  } as const),
-            ],
-          ] as const
-      ),
+              [
+                {
+                  type: 'Label',
+                  text: field.label,
+                  labelForCellId: field.name,
+                  fieldNames: [field.name],
+                  title: field.getLocalizedDesc(),
+                  ...cellAttributes,
+                },
+              ],
+              [
+                relationshipIsToMany(field)
+                  ? ({
+                      ...cellAttributes,
+                      id: field.name,
+                      type: 'SubView',
+                      formType: 'form',
+                      mode,
+                      fieldNames: [field.name],
+                      viewName: undefined,
+                      isButton: true,
+                      icon: undefined,
+                      isRequired: false,
+                      sortField: { fieldNames: ['id'], direction: 'asc' },
+                    } as const)
+                  : ({
+                      ...cellAttributes,
+                      id: field.name,
+                      type: 'Field',
+                      fieldNames: [field.name],
+                      fieldDefinition: {
+                        type: 'QueryComboBox',
+                        hasCloneButton: false,
+                        typeSearch: undefined,
+                        isReadOnly: mode === 'view',
+                      },
+                      isRequired: false,
+                      viewName: undefined,
+                    } as const),
+              ],
+            ] as const
+        ),
     ]),
   };
 }
@@ -226,7 +231,7 @@ function getFieldDefinition(
   return {
     ...cellAttributes,
     type: 'Field',
-    fieldName: field.name,
+    fieldNames: [field.name],
     isRequired: false,
     ariaLabel: undefined,
     fieldDefinition: {
@@ -256,6 +261,8 @@ function getFieldDefinition(
             min: parser.min,
             max: parser.max,
             step: parser.step,
+            minLength: parser.minLength,
+            maxLength: parser.maxLength
           }),
     },
   };

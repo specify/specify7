@@ -1,6 +1,5 @@
 import { fetchCollection } from './collection';
 import type { CollectionObject } from './types';
-import { f } from '../../utils/functools';
 import { capitalize, takeBetween } from '../../utils/utils';
 import type { SpecifyResource } from './legacyTypes';
 import { hasTablePermission } from '../Permissions/helpers';
@@ -105,30 +104,31 @@ export function getCollectionForResource(
  * If resource has a getScopingRelationship, find all collections that resource
  * belongs too
  */
-export const fetchCollectionsForResource = async (
+export async function fetchCollectionsForResource(
   resource: SpecifyResource<AnySchema>
-): Promise<RA<number> | undefined> =>
-  f.maybe(resource.specifyModel.getScopingRelationship(), async (domainField) =>
-    (resource as SpecifyResource<CollectionObject>)
-      ?.rgetPromise(domainField.name as 'collection')
-      .then(async (resource) => {
-        if (resource === undefined || resource === null) return undefined;
-        if (resource.specifyModel.name === 'Collection') return [resource.id];
-        const fieldsBetween = takeBetween(
-          schema.orgHierarchy,
-          'Collection',
-          resource.specifyModel.name
-        )
-          .map((level) => level.toLowerCase())
-          .join('__');
-        return fieldsBetween.length === 0
-          ? undefined
-          : fetchCollection(
-              'Collection',
-              { limit: 0 },
-              {
-                [fieldsBetween]: resource.id.toString(),
-              }
-            ).then(({ records }) => records.map(({ id }) => id));
-      })
-  ) ?? Promise.resolve(undefined);
+): Promise<RA<number> | undefined> {
+  const domainField = resource.specifyModel.getScopingRelationship();
+  if (domainField === undefined) return undefined;
+  const domainResource = await (
+    resource as SpecifyResource<CollectionObject>
+  )?.rgetPromise(domainField.name as 'collection');
+  if (domainResource === undefined || domainResource === null) return undefined;
+  if (domainResource.specifyModel.name === 'Collection')
+    return [domainResource.id];
+  const fieldsBetween = takeBetween(
+    schema.orgHierarchy,
+    'Collection',
+    domainResource.specifyModel.name
+  )
+    .map((level) => level.toLowerCase())
+    .join('__');
+  return fieldsBetween.length === 0
+    ? undefined
+    : fetchCollection(
+        'Collection',
+        { limit: 0 },
+        {
+          [fieldsBetween]: domainResource.id.toString(),
+        }
+      ).then(({ records }) => records.map(({ id }) => id));
+}

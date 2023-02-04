@@ -28,6 +28,7 @@ import { useAppResourceCount, useResourcesTree } from './hooks';
 import { appResourceSubTypes } from './types';
 import { resourcesText } from '../../localization/resources';
 import { StringToJsx } from '../../localization/utils';
+import { LocalizedString } from 'typesafe-i18n';
 import { useParams } from 'react-router-dom';
 import { scrollIntoView } from '../TreeView/helpers';
 import { f } from '../../utils/functools';
@@ -372,7 +373,7 @@ function ResourceItem({
       forwardRef={setLink}
     >
       {appResourceIcon(resource.type)}
-      {resource.name || commonText.nullInline()}
+      {(resource.name as LocalizedString) || commonText.nullInline()}
     </ActiveLink>
   );
 }

@@ -1333,4 +1333,33 @@ export const preferencesText = createDictionary({
     'fr-fr': 'Ne pas utiliser',
     'uk-ua': 'Не використовувати',
   },
+  showUnsavedIndicator: {
+    'en-us': 'Show unsaved changes indicator',
+    'ru-ru': 'Показывать индикатор несохраненных изменений',
+    'es-es': 'Mostrar indicador de cambios no guardados',
+    'fr-fr': "Afficher l'indicateur de modifications non enregistrées",
+    'uk-ua': 'Показати індикатор незбережених змін',
+  },
+  showUnsavedIndicatorDescription: {
+    'en-us': `
+      Show an "*" in the tab title when there are unsaved changes in the current
+      tab
+    `,
+    'es-es': `
+      Mostrar un "*" en el título de la pestaña cuando haya cambios sin guardar
+      en la pestaña actual
+    `,
+    'fr-fr': `
+      Afficher un \"*\" dans le titre de l'onglet lorsqu'il y a des
+      modifications non enregistrées dans l'onglet actuel
+    `,
+    'ru-ru': `
+      Показывать «*» в заголовке вкладки, если на текущей вкладке есть
+      несохраненные изменения.
+    `,
+    'uk-ua': `
+      Показувати «*» у заголовку вкладки, якщо в поточній вкладці є незбережені
+      зміни
+    `,
+  },
 } as const);

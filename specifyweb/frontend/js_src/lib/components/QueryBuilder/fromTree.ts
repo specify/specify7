@@ -1,4 +1,3 @@
-import { error } from '../Errors/assert';
 import { queryFieldFilters } from './FieldFilter';
 import { createQuery } from './index';
 import type {
@@ -13,10 +12,11 @@ import { flippedSortTypes } from './helpers';
 import { QueryFieldSpec } from './fieldSpec';
 import { getTreeModel, schema } from '../DataModel/schema';
 import { getDomainResource } from '../InitialContext/treeRanks';
-import type { RA, RR } from '../../utils/types';
+import type { IR, RA, RR } from '../../utils/types';
 import { defined } from '../../utils/types';
 import { formatTreeRank } from '../WbPlanView/mappingHelpers';
 import { AnyTree, SerializedResource } from '../DataModel/helperTypes';
+import { softFail } from '../Errors/Crash';
 
 function makeField(
   path: string,
@@ -148,18 +148,22 @@ const defaultFields: RR<
   },
 };
 
-const fetchPaleoPath = async (): Promise<string | undefined> =>
-  hasTablePermission('Discipline', 'read')
-    ? {
-        collectionobject: 'paleoContext',
-        collectingevent: 'collectingevent.paleoContext',
-        locality: 'collectingevent.locality.paleoContext',
-      }[
-        (await getDomainResource('discipline')?.fetch())?.get(
-          'paleoContextChildTable'
-        ) ?? ''
-      ] ?? error('unknown paleoContext child table')
-    : undefined;
+async function fetchPaleoPath(): Promise<string | undefined> {
+  if (!hasTablePermission('Discipline', 'read')) return undefined;
+  const paths: IR<string> = {
+    collectionobject: 'paleoContext',
+    collectingevent: 'collectingevent.paleoContext',
+    locality: 'collectingevent.locality.paleoContext',
+  };
+  const paleoContextTable =
+    (await getDomainResource('discipline')?.fetch())?.get(
+      'paleoContextChildTable'
+    ) ?? '';
+  const paleoPath = paths[paleoContextTable];
+  if (paleoPath === undefined)
+    softFail(new Error('unknown paleoContext child table'));
+  return paleoPath;
+}
 
 /**
  * Generate a Query for fetchign Collection Objects associated with a given
