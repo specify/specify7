@@ -21,6 +21,9 @@ import { UserTools } from './UserTools';
 import { schema } from '../DataModel/schema';
 import { userInformation } from '../InitialContext/userInformation';
 import { MenuItemName } from './menuItemDefinitions';
+import { listen } from '../../utils/events';
+
+const collapseThreshold = 900;
 
 export function Header({
   menuItems,
@@ -31,10 +34,26 @@ export function Header({
     'header',
     'isCollapsed'
   );
+
+  // Collapse the menu on narrow screens
+  const [forceCollapse, setForceCollapse] = React.useState(false);
+  React.useEffect(() => {
+    if (rawIsCollapsed) {
+      setForceCollapse(false);
+      return undefined;
+    }
+    const handleChange = (): void =>
+      document.body.clientWidth < collapseThreshold
+        ? setForceCollapse(true)
+        : setForceCollapse(false);
+    handleChange();
+    return listen(window, 'resize', handleChange);
+  }, [rawIsCollapsed, setIsCollapsed]);
+
   const [position] = usePref('header', 'appearance', 'position');
   const isHorizontal = position === 'top' || position === 'bottom';
   // Top menu is only available as collapsed
-  const isCollapsed = rawIsCollapsed || isHorizontal;
+  const isCollapsed = rawIsCollapsed || isHorizontal || forceCollapse;
 
   React.useLayoutEffect(() => {
     const root = document.getElementById('root');
@@ -134,7 +153,7 @@ export function Header({
           onClick="/specify/overlay/express-search/"
           isActive={activeMenuItem === 'search'}
         />
-        {!isHorizontal && (
+        {!isHorizontal && !forceCollapse ? (
           <MenuButton
             icon={
               isCollapsed === (position === 'left')
@@ -145,7 +164,7 @@ export function Header({
             title={isCollapsed ? commonText.expand() : commonText.collapse()}
             onClick={(): void => setIsCollapsed(!isCollapsed)}
           />
-        )}
+        ) : undefined}
       </nav>
     </header>
   );
