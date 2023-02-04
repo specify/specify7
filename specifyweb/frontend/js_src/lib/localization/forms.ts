@@ -542,8 +542,8 @@ export const formsText = createDictionary({
       может быть использована только на форме {correctTable:string}.
     `,
     'es-es': `
-      El comando no se puede utilizar en el formulario {currentTable:string}.
-      Solo se puede usar en el formulario {correctTable:string}.
+      El comando no puede utilizarse en el formulario {currentTable:string}.
+      Sólo puede utilizarse en el formulario {correctTable:string}.
     `,
     'fr-fr': `
       La commande ne peut pas être utilisée sur le formulaire
@@ -997,7 +997,7 @@ export const formsText = createDictionary({
     `,
     'en-us': '{tableName:string} #{id:number}',
     'ru-ru': '{tableName:string} #{id:number}',
-    'es-es': '{tableName:string} #{id:number}',
+    'es-es': '{tableName:string} №{id:number}',
     'fr-fr': '{tableName:string} #{id:number}',
     'uk-ua': '{tableName:string} №{id:number}',
   },
