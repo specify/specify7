@@ -51,7 +51,7 @@ export const queryText = createDictionary({
   any: {
     'en-us': 'Any',
     'ru-ru': 'Любой',
-    'es-es': 'Ninguna',
+    'es-es': 'Alguna',
     'fr-fr': 'Tous',
     'uk-ua': 'Будь-який',
   },
@@ -279,9 +279,9 @@ export const queryText = createDictionary({
   createRecordSet: {
     'en-us': 'Create {recordSetTable:string}',
     'ru-ru': 'Сделать {recordSetTable:string}',
-    'es-es': 'Crear {modelName:string}',
+    'es-es': 'Crear {recordSetTable:string}',
     'fr-fr': 'Créer un {recordSetTable:string}',
-    'uk-ua': 'Створити {modelName:string}',
+    'uk-ua': 'Створити {recordSetTable:string}',
   },
   saveAs: {
     'en-us': 'Save As',
@@ -314,7 +314,7 @@ export const queryText = createDictionary({
   sort: {
     'en-us': 'Sort',
     'ru-ru': 'Сортировать',
-    'es-es': 'Tipo',
+    'es-es': 'Clasificar',
     'fr-fr': 'Trier',
     'uk-ua': 'Сортувати',
   },
@@ -358,14 +358,14 @@ export const queryText = createDictionary({
     'ru-ru': '(отформатирован)',
     'es-es': '(formateado)',
     'fr-fr': '(formaté)',
-    'uk-ua': '(відформатований)',
+    'uk-ua': '(відформатовано)',
   },
   like: {
     'en-us': 'Like',
     'ru-ru': 'Подобно',
-    'es-es': 'Me gusta',
+    'es-es': 'Como',
     'fr-fr': 'Comme',
-    'uk-ua': 'Люблю',
+    'uk-ua': 'Подобається',
   },
   likeDescription: {
     comment: 'Explains the use of special symbols for the "like" query filter',
@@ -407,7 +407,7 @@ export const queryText = createDictionary({
     'ru-ru': 'Больше чем',
     'es-es': 'Mas grande que',
     'fr-fr': 'Plus grand que',
-    'uk-ua': 'Більш чим',
+    'uk-ua': 'Більше, ніж, величніше ніж, крутіший за',
   },
   lessThan: {
     'en-us': 'Less than',
@@ -606,7 +606,7 @@ export const queryText = createDictionary({
     'ru-ru': 'Синонимизированный узел дерева',
     'es-es': 'Árbol Sinonimizar',
     'fr-fr': "Synonymiser l'arbre",
-    'uk-ua': 'Синонімізувати дерево',
+    'uk-ua': 'Дерево синонімізувати',
   },
   treeDesynonymize: {
     comment: 'Audit Log Action Type',

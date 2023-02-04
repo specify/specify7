@@ -1,7 +1,6 @@
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 
-import { deserializeResource } from '../../hooks/resource';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useInfiniteScroll } from '../../hooks/useInfiniteScroll';
 import { useTriggerState } from '../../hooks/useTriggerState';
@@ -12,13 +11,13 @@ import type { R, RA } from '../../utils/types';
 import { removeItem, removeKey } from '../../utils/utils';
 import { Container, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
-import { serializeResource } from '../DataModel/helpers';
+import { deserializeResource, serializeResource } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { createResource } from '../DataModel/resource';
 import { schema, strictGetModel } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { RecordSet, SpQuery, Tables } from '../DataModel/types';
-import { fail } from '../Errors/Crash';
+import { fail, softFail } from '../Errors/Crash';
 import { recordSetView } from '../FormParse/webOnlyViews';
 import { ResourceView } from '../Forms/ResourceView';
 import { treeRanksPromise } from '../InitialContext/treeRanks';
@@ -166,8 +165,10 @@ export function QueryResults({
             process.env.NODE_ENV === 'development' &&
             newResults.length > fetchSize
           )
-            throw new Error(
-              `Returned ${newResults.length} results, when expected at most ${fetchSize}`
+            softFail(
+              new Error(
+                `Returned ${newResults.length} results, when expected at most ${fetchSize}`
+              )
             );
 
           // Results might have changed while fetching

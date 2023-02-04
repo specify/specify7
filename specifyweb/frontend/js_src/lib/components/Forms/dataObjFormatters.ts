@@ -26,11 +26,9 @@ import {
   contextUnlockedPromise,
   foreverFetch,
 } from '../InitialContext';
-import {
-  hasTablePermission,
-  mappingPathToTableNames,
-} from '../Permissions/helpers';
+import { hasPathPermission, hasTablePermission } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
+import { softFail } from '../Errors/Crash';
 import { userText } from '../../localization/user';
 import { LocalizedString } from 'typesafe-i18n';
 import { formsText } from '../../localization/forms';
@@ -224,34 +222,37 @@ async function formatField(
   resource: SpecifyResource<AnySchema>,
   tryBest: boolean
 ): Promise<string> {
-  const field = resource.specifyModel.strictGetField(fieldName) as LiteralField;
   if (typeof fieldFormatter === 'string' && fieldFormatter === '') return '';
 
-  // Check if formatter contains a table withouth read access
-  const noAccessTable = mappingPathToTableNames(
-    resource.specifyModel.name,
-    fieldName.split('.'),
-    true
-  ).find((tableName) => !hasTablePermission(tableName, 'read'));
+  const fields = resource.specifyModel.getFields(fieldName);
+  if (fields === undefined)
+    throw new Error(`Tried to get unknown field: ${fieldName}`);
+  const field = fields.at(-1)!;
+  if (field.isRelationship)
+    throw new Error(
+      `Unexpected formatting of a relationship field ${fieldName}`
+    );
 
-  const formatted =
-    typeof noAccessTable === 'string'
-      ? tryBest
-        ? naiveFormatter(schema.models[noAccessTable].label, resource.id)
-        : userText.noPermission()
-      : await (
-          resource.rgetPromise(fieldName) as Promise<
-            SpecifyResource<AnySchema> | string | undefined
-          >
-        ).then(async (value) =>
-          formatter.length > 0 && typeof value === 'object'
-            ? (await format(value, formatter)) ?? ''
-            : fieldFormat(
-                field,
-                resolveParser(field),
-                value as string | undefined
-              )
-        );
+  const hasPermission = hasPathPermission(fields, 'read');
+
+  const formatted = hasPermission
+    ? await (
+        resource.rgetPromise(fieldName) as Promise<
+          SpecifyResource<AnySchema> | string | undefined
+        >
+      ).then(async (value) =>
+        formatter.length > 0 && typeof value === 'object'
+          ? (await format(value, formatter)) ?? ''
+          : fieldFormat(
+              field,
+              resolveParser(field),
+              value as string | undefined
+            )
+      )
+    : tryBest
+    ? naiveFormatter(resource.specifyModel.name, resource.id)
+    : userText.noPermission();
+
   return formatted === '' ? '' : `${separator}${formatted}`;
 }
 
@@ -307,13 +308,15 @@ export async function aggregate(
         className === collection.model.specifyModel.longName && isDefault
     );
 
-  if (aggregator === undefined) throw new Error('Aggregator not found');
+  if (aggregator === undefined) softFail(new Error('Aggregator not found'));
 
   if (!collection.isComplete()) console.error('Collection is incomplete');
 
   return Promise.all(
     collection.models.map(async (resource) =>
-      format(resource, aggregator.format)
+      format(resource, aggregator?.format)
     )
-  ).then((formatted) => filterArray(formatted).join(aggregator.separator));
+  ).then((formatted) =>
+    filterArray(formatted).join(aggregator?.separator ?? ', ')
+  );
 }

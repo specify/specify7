@@ -1,11 +1,10 @@
 import React from 'react';
 import { omit } from 'underscore';
 
-import { deserializeResource } from '../../hooks/resource';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { f } from '../../utils/functools';
 import { jsonStringify } from '../../utils/utils';
-import { serializeResource } from '../DataModel/helpers';
+import { deserializeResource, serializeResource } from '../DataModel/helpers';
 import type { SerializedModel } from '../DataModel/helperTypes';
 import { schema } from '../DataModel/schema';
 import type { SpecifyUser } from '../DataModel/types';
@@ -129,22 +128,17 @@ function CollectionName({
   readonly collectionId: number | undefined;
 }): JSX.Element {
   const [formatted] = useAsyncState(
-    React.useCallback(
-      () =>
-        typeof collectionId === 'number'
-          ? format(
-              f.maybe(
-                userInformation.availableCollections.find(
-                  ({ id }) => id === collectionId
-                ),
-                deserializeResource
-              ) ?? new schema.models.Collection.Resource({ id: collectionId }),
-              undefined,
-              true
-            )
-          : schema.models.Institution.label,
-      [collectionId]
-    ),
+    React.useCallback(() => {
+      if (collectionId === undefined) return schema.models.Institution.label;
+      const collection =
+        f.maybe(
+          userInformation.availableCollections.find(
+            ({ id }) => id === collectionId
+          ),
+          deserializeResource
+        ) ?? new schema.models.Collection.Resource({ id: collectionId });
+      return format(collection, undefined, true);
+    }, [collectionId]),
     false
   );
   return <>{formatted ?? commonText.loading()}</>;

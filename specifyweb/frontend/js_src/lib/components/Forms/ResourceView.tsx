@@ -16,7 +16,6 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Tables } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import type { FormMode } from '../FormParse';
-import { AppTitle } from '../Molecules/AppTitle';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { ReportsView } from '../Reports';
@@ -27,6 +26,7 @@ import { DeleteButton } from './DeleteButton';
 import { SaveButton } from './Save';
 import { UnloadProtectDialog } from '../Router/Router';
 import { LocalizedString } from 'typesafe-i18n';
+import { AppTitle } from '../Molecules/AppTitle';
 
 /**
  * There is special behavior required when creating one of these resources,
@@ -229,7 +229,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
     typeof resource === 'object' &&
     !resource.isNew() &&
     hasTablePermission(resource.specifyModel.name, 'delete') ? (
-      <ErrorBoundary dismissable>
+      <ErrorBoundary dismissible>
         <DeleteButton
           deletionMessage={deletionMessage}
           resource={resource}
@@ -280,7 +280,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
       <Container.FullGray>
         <Container.Center className="!w-auto">
           <DataEntry.Header>
-            <AppTitle title={titleOverride ?? formatted} type="form" />
+            <AppTitle title={titleOverride ?? formatted} />
             <DataEntry.Title>{titleOverride ?? jsxFormatted}</DataEntry.Title>
             {headerComponents}
           </DataEntry.Header>

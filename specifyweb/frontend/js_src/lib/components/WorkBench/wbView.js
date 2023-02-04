@@ -1935,7 +1935,7 @@ export const WBView = Backbone.View.extend({
     );
   },
   export() {
-    downloadDataSet(this.dataset).catch(crash);
+    downloadDataSet(this.dataset).catch(fail);
   },
   revertChanges() {
     const dialog = this.options.display(
@@ -2232,10 +2232,10 @@ export const WBView = Backbone.View.extend({
         ]);
       });
     } else
-      throw new Error(
+      fail(new Error(
         `Trying to parse unknown uploadStatus type "${uploadStatus}" at
         row ${this.hot.toVisualRow(physicalRow)}`
-      );
+      ));
 
     Object.entries(uploadResult.toOne).forEach(([fieldName, uploadResult]) =>
       this.parseRowValidationResults(

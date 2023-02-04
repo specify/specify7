@@ -2,19 +2,17 @@
  * Pick list item fetching code
  */
 
-import { deserializeResource } from '../../hooks/resource';
 import { fetchRows } from '../../utils/ajax/specifyApi';
 import { f } from '../../utils/functools';
 import type { R, RA } from '../../utils/types';
 import { defined } from '../../utils/types';
 import { sortFunction, toLowerCase } from '../../utils/utils';
 import { fetchCollection } from '../DataModel/collection';
-import { serializeResource } from '../DataModel/helpers';
+import { deserializeResource, serializeResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema, strictGetModel } from '../DataModel/schema';
 import type { PickList, PickListItem, Tables } from '../DataModel/types';
-import { error } from '../Errors/assert';
 import type { PickListItemSimple } from '../FormFields/ComboBox';
 import { format } from '../Forms/dataObjFormatters';
 import { hasTablePermission, hasToolPermission } from '../Permissions/helpers';
@@ -24,6 +22,7 @@ import {
   PickListTypes,
   unsafeGetPickLists,
 } from './definitions';
+import { softFail } from '../Errors/Crash';
 
 const pickListFetchPromises: R<Promise<undefined | SpecifyResource<PickList>>> =
   {};
@@ -84,13 +83,15 @@ async function fetchPickListItems(
     pickList.get('readOnly') ? pickList.get('sizeLimit') ?? 0 : 0
   );
 
-  if (type === PickListTypes.ITEMS)
-    return serializeResource(pickList).pickListItems ?? [];
-  else if (type === PickListTypes.TABLE)
+  if (type === PickListTypes.TABLE)
     items = await fetchFromTable(pickList, limit);
   else if (type === PickListTypes.FIELDS)
     items = await fetchFromField(pickList, limit);
-  else error('Unknown picklist type', { pickList });
+  else {
+    if (type !== PickListTypes.ITEMS)
+      softFail(new Error('Unknown picklist type'), { pickList });
+    return serializeResource(pickList).pickListItems ?? [];
+  }
 
   return items.map(({ value, title }) => createPickListItem(value, title));
 }

@@ -261,7 +261,6 @@ test('save', async () => {
 /*
  * TEST: test the handler for when .save() fails
  * TEST: changing collection resource or adding/removing to collection triggers change in parent resource
- * TEST: getResourceAndField
  */
 
 describe('placeInSameHierarchy', () => {

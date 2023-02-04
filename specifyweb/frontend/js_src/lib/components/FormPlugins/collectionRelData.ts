@@ -1,4 +1,3 @@
-import { deserializeResource } from '../../hooks/resource';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
@@ -11,6 +10,8 @@ import type {
   CollectionRelType,
 } from '../DataModel/types';
 import { format } from '../Forms/dataObjFormatters';
+import { softFail } from '../Errors/Crash';
+import { deserializeResource } from '../DataModel/helpers';
 import { LocalizedString } from 'typesafe-i18n';
 
 export type CollectionRelData = {
@@ -58,7 +59,7 @@ export async function fetchOtherCollectionData(
   resource: SpecifyResource<CollectionObject>,
   relationship: string,
   formatting: string | undefined
-): Promise<CollectionRelData> {
+): Promise<CollectionRelData | undefined> {
   const { relationshipType, left, right } = await fetchCollection(
     'CollectionRelType',
     { name: relationship, limit: 1 }
@@ -83,12 +84,18 @@ export async function fetchOtherCollectionData(
     side = 'right';
     otherSide = 'left';
     relatedCollection = left;
-  } else
-    throw new Error(
-      "Related collection plugin used with relation that doesn't match current collection"
+  } else {
+    softFail(
+      new Error(
+        "Related collection plugin used with relation that doesn't match current collection"
+      )
     );
-  if (relatedCollection === null)
-    throw new Error('Unable to determine collection for the other side');
+    return undefined;
+  }
+  if (relatedCollection === null) {
+    softFail(new Error('Unable to determine collection for the other side'));
+    return undefined;
+  }
 
   const otherCollection = relatedCollection;
   const formattedCollection = format(otherCollection);

@@ -165,7 +165,7 @@ export const strictGetModel = (name: string): SpecifyModel =>
 export function getTreeModel(name: string): SpecifyModel<AnyTree> | undefined {
   const model = getModel(name);
   if (typeof model === 'object' && !isTreeModel(model.name))
-    throw new Error('Not a tree model');
+    throw new Error(`${name} is not a tree model`);
   return model as unknown as SpecifyModel<AnyTree> | undefined;
 }
 

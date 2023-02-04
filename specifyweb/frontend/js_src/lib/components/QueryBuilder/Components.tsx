@@ -42,7 +42,7 @@ export function SaveQueryButtons({
   readonly isReadOnly: boolean;
   readonly fields: RA<QueryField>;
   readonly saveRequired: boolean;
-  readonly isValid: () => void;
+  readonly isValid: () => boolean;
   readonly queryResource: SpecifyResource<SpQuery>;
   readonly unsetUnloadProtect: () => void;
   readonly getQueryFieldRecords:

@@ -110,7 +110,9 @@ const cell = (
 });
 
 describe('parseFormCell', () => {
-  test('base case', () =>
+  test('base case', () => {
+    const consoleWarn = jest.fn();
+    jest.spyOn(console, 'warn').mockImplementation(consoleWarn);
     expect(
       parseFormCell(schema.models.CollectionObject, strictParseXml('<cell />'))
     ).toEqual(
@@ -118,9 +120,12 @@ describe('parseFormCell', () => {
         type: 'Unsupported',
         cellType: undefined,
       })
-    ));
+    );
+  });
 
-  test('unsupported cell with some attributes', () =>
+  test('unsupported cell with some attributes', () => {
+    const consoleWarn = jest.fn();
+    jest.spyOn(console, 'warn').mockImplementation(consoleWarn);
     expect(
       parseFormCell(
         schema.models.CollectionObject,
@@ -138,7 +143,8 @@ describe('parseFormCell', () => {
         type: 'Unsupported',
         cellType: ' test2 ',
       })
-    ));
+    );
+  });
 
   test('invisible field', () =>
     expect(
@@ -155,7 +161,7 @@ describe('parseFormCell', () => {
         align: 'right',
         visible: false,
         type: 'Field',
-        fieldName: 'catalogNumber',
+        fieldNames: ['catalogNumber'],
         isRequired: true,
         fieldDefinition: {
           defaultValue: undefined,
@@ -164,6 +170,8 @@ describe('parseFormCell', () => {
           min: undefined,
           step: undefined,
           type: 'Text',
+          maxLength: undefined,
+          minLength: undefined
         },
       })
     ));
@@ -180,7 +188,7 @@ describe('parseFormCell', () => {
       cell({
         type: 'Field',
         isRequired: true,
-        fieldName: 'collectionMemberId',
+        fieldNames: ['collectionMemberId'],
         fieldDefinition: {
           defaultValue: undefined,
           isReadOnly: false,
@@ -188,11 +196,15 @@ describe('parseFormCell', () => {
           min: undefined,
           step: undefined,
           type: 'Text',
+          maxLength: undefined,
+          minLength: undefined
         },
       })
     ));
 
-  test('unknown field', () =>
+  test('unknown field', () => {
+    const consoleError = jest.fn();
+    jest.spyOn(console, 'error').mockImplementation(consoleError);
     expect(
       parseFormCell(
         schema.models.CollectionObject,
@@ -200,45 +212,39 @@ describe('parseFormCell', () => {
       )
     ).toEqual(
       cell({
-        type: 'Field',
-        isRequired: false,
-        fieldName: 'this',
-        fieldDefinition: {
-          defaultValue: undefined,
-          isReadOnly: false,
-          max: undefined,
-          min: undefined,
-          step: undefined,
-          type: 'Text',
-        },
+        type: 'Blank',
       })
-    ));
+    );
+  });
 
-  test('fieldName unset by LatLonUI plugin', () =>
+  test('unknown field with default value', () => {
+    const consoleError = jest.fn();
+    jest.spyOn(console, 'error').mockImplementation(consoleError);
     expect(
       parseFormCell(
-        schema.models.Locality,
+        schema.models.CollectionObject,
         strictParseXml(
-          '<cell type="field" uiType="plugin" name="localityName" initialize=";;;name  =  LatLonUI;;;;" readOnly="true" />'
+          '<cell type="field" uiType="text" name="this" default="A" />'
         )
       )
     ).toEqual(
       cell({
         type: 'Field',
-        // The field is required by the data model
-        isRequired: true,
-        fieldName: undefined,
+        isRequired: false,
+        fieldNames: undefined,
         fieldDefinition: {
-          type: 'Plugin',
-          isReadOnly: true,
-          pluginDefinition: {
-            type: 'LatLonUI',
-            step: undefined,
-            latLongType: 'Point',
-          },
+          defaultValue: 'A',
+          isReadOnly: false,
+          max: undefined,
+          min: undefined,
+          step: undefined,
+          type: 'Text',
+          maxLength: undefined,
+          minLength: undefined
         },
       })
-    ));
+    );
+  });
 
   test('relationship field names are parsed correctly', () =>
     expect(
@@ -253,7 +259,7 @@ describe('parseFormCell', () => {
         type: 'Field',
         // The field is required by the data model
         isRequired: false,
-        fieldName: 'agent.lastName',
+        fieldNames: ['agent', 'lastName'],
         fieldDefinition: {
           defaultValue: undefined,
           isReadOnly: false,
@@ -261,6 +267,8 @@ describe('parseFormCell', () => {
           min: undefined,
           step: undefined,
           type: 'Text',
+          minLength: undefined,
+          maxLength: undefined
         },
       })
     ));
@@ -277,14 +285,15 @@ describe('parseFormCell', () => {
       cell({
         type: 'Field',
         isRequired: false,
-        fieldName: 'catalogeddate',
+        fieldNames: ['catalogedDate'],
         fieldDefinition: {
           type: 'Plugin',
           isReadOnly: false,
           pluginDefinition: {
             type: 'PartialDateUI',
             defaultValue: undefined,
-            dateField: 'catalogeddate',
+            dateFields: ['catalogedDate'],
+            canChangePrecision: true,
             precisionField: undefined,
             defaultPrecision: 'full',
           },
@@ -306,7 +315,7 @@ describe('parseFormCell', () => {
         text: 'some text' as LocalizedString,
         title: undefined,
         labelForCellId: undefined,
-        fieldName: undefined,
+        fieldNames: undefined,
       })
     ));
 
@@ -323,7 +332,7 @@ describe('parseFormCell', () => {
         text: 'Find Next' as LocalizedString,
         title: undefined,
         labelForCellId: '42',
-        fieldName: undefined,
+        fieldNames: undefined,
       })
     ));
 
@@ -354,7 +363,7 @@ describe('parseFormCell', () => {
       cell({
         type: 'SubView',
         formType: 'form',
-        fieldName: 'determinations',
+        fieldNames: ['determinations'],
         viewName: undefined,
         isButton: false,
         icon: undefined,
@@ -374,11 +383,11 @@ describe('parseFormCell', () => {
       cell({
         type: 'SubView',
         formType: 'formTable',
-        fieldName: 'determinations',
+        fieldNames: ['determinations'],
         viewName: 'testView',
         isButton: true,
         icon: 'test',
-        sortField: '-isCurrent',
+        sortField: { fieldNames: ['isCurrent'], direction: 'desc' },
       })
     ));
 
@@ -407,7 +416,7 @@ describe('parseFormCell', () => {
               align: 'right',
               labelForCellId: '42',
               type: 'Label',
-              fieldName: undefined,
+              fieldNames: undefined,
               text: 'Find Next' as LocalizedString,
               title: undefined,
             }),
@@ -441,7 +450,7 @@ describe('parseFormCell', () => {
   test('Command', () =>
     expect(
       parseFormCell(
-        schema.models.CollectionObject,
+        schema.models.Loan,
         strictParseXml(
           '<cell type="command" name="ReturnLoan" label="generateLabelBtn" />'
         )
@@ -453,7 +462,7 @@ describe('parseFormCell', () => {
           commandDefinition: {
             type: 'ReturnLoan',
           },
-          label: 'generateLabelBtn',
+          label: 'generateLabelBtn' as LocalizedString,
         },
       })
     ));

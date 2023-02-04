@@ -30,21 +30,17 @@ export function WbPlanViewWrapper(): JSX.Element | null {
   useMenuItem('workBench');
 
   const [dataSet] = useAsyncState<Dataset | false>(
-    React.useCallback(
-      () =>
-        f.maybe(f.parseInt(id), async (dataSetId) =>
-          ajax<Dataset>(
-            `/api/workbench/dataset/${dataSetId}/`,
-            {
-              headers: { Accept: 'application/json' },
-            },
-            { expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }
-          ).then(({ data, status }) =>
-            status === Http.NOT_FOUND ? false : data
-          )
-        ) ?? false,
-      [id]
-    ),
+    React.useCallback(() => {
+      const dataSetId = f.parseInt(id);
+      if (dataSetId === undefined) return false;
+      return ajax<Dataset>(
+        `/api/workbench/dataset/${dataSetId}/`,
+        {
+          headers: { Accept: 'application/json' },
+        },
+        { expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }
+      ).then(({ data, status }) => (status === Http.NOT_FOUND ? false : data));
+    }, [id]),
     true
   );
   useErrorContext('dataSet', dataSet);
