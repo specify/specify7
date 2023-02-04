@@ -257,6 +257,7 @@ export const formsText = createDictionary({
       Додати значення "{value:string}" до {pickListTable:string} під назвою
       "{pickListName:string}"?
     `,
+    'fr-fr': '',
   },
   invalidType: {
     'en-us': 'Invalid Type',
@@ -507,8 +508,8 @@ export const formsText = createDictionary({
     comment:
       'Example: ... Locality, Collecting Event or Collection Object forms.',
     'en-us': `
-      This plugin cannot be used on the {currentTable:string} form. Try moving it to the
-      {supportedTables:string} forms.
+      This plugin cannot be used on the {currentTable:string} form. Try moving
+      it to the {supportedTables:string} forms.
     `,
     'ru-ru': `
       Этот плагин нельзя использовать на форме {currentTable:string}. Попробуйте
@@ -519,12 +520,13 @@ export const formsText = createDictionary({
       Intente moverlo a los formularios {supportedTables:string}.
     `,
     'fr-fr': `
-      Ce plugin ne peut pas être utilisé sur le formulaire {currentTable:string}.
-      Essayez de le déplacer sur les formulaires {supportedTables:string}.
+      Ce plugin ne peut pas être utilisé sur le formulaire
+      {currentTable:string}. Essayez de le déplacer sur les formulaires
+      {supportedTables:string}.
     `,
     'uk-ua': `
-      Цей плагін не може бути використаний на формі {currentTable:string}. Спробуйте
-      перемістити його на форми {supportedTables:string}.
+      Цей плагін не може бути використаний на формі {currentTable:string}.
+      Спробуйте перемістити його на форми {supportedTables:string}.
     `,
   },
   wrongTableForCommand: {
@@ -536,6 +538,9 @@ export const formsText = createDictionary({
       Команда не может быть использована на форме {currentTable:string}. Она
       может быть использована только на форме {correctTable:string}.
     `,
+    'es-es': '',
+    'fr-fr': '',
+    'uk-ua': '',
   },
   pluginName: {
     'en-us': 'Plugin name',
