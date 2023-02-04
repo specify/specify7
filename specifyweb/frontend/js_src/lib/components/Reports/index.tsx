@@ -118,7 +118,7 @@ export function ReportsView({
 
   return typeof appResources === 'object' && attachmentSettings ? (
     typeof selectedReport === 'object' ? (
-      <ErrorBoundary dismissable>
+      <ErrorBoundary dismissible>
         <Report
           appResource={selectedReport}
           model={model}

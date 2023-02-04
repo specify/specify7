@@ -8,6 +8,7 @@ import {
 import { formatUrl } from '../Router/queryString';
 import L from './extend';
 import { Http } from '../../utils/ajax/definitions';
+import { softFail } from '../Errors/Crash';
 
 export const leafletLayersEndpoint =
   'https://files.specifysoftware.org/specify7/7.7.0/leaflet-layers.json';
@@ -157,7 +158,7 @@ export const leafletLayersPromise: Promise<typeof defaultTileLayers> =
           )
           .then(parseLayersFromJson)
           .catch((error) => {
-            console.error(error);
+            softFail(error);
             return defaultTileLayers;
           })
       : foreverFetch<typeof defaultTileLayers>()

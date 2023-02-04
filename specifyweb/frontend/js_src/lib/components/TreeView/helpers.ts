@@ -8,6 +8,7 @@ import { strictGetTreeDefinitionItems } from '../InitialContext/treeRanks';
 import type { RA, RR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { AnyTree } from '../DataModel/helperTypes';
+import { softFail } from '../Errors/Crash';
 import { commonText } from '../../localization/common';
 import { schema } from '../DataModel/schema';
 
@@ -118,7 +119,7 @@ export function deserializeConformation(
   try {
     return JSON.parse(serialized) as Conformations;
   } catch {
-    console.error('bad tree conformation:', serialized);
+    softFail(new Error('bad tree conformation:'), serialized);
     return undefined;
   }
 }

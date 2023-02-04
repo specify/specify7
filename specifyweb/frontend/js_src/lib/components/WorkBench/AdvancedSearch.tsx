@@ -208,7 +208,7 @@ export function WbAdvancedSearch({
   }, [searchPreferences]);
 
   return (
-    <ErrorBoundary dismissable>
+    <ErrorBoundary dismissible>
       <Button.Small
         aria-haspopup="dialog"
         aria-label={wbText.configureSearchReplace()}

@@ -115,7 +115,7 @@ export function RoleView({
           value: role.name,
         })}
       </h3>
-      <AppTitle title={role.name} type="form" />
+      <AppTitle title={role.name} />
       <Link.Default href={closeUrl}>
         {icons.arrowLeft}
         {parentName}

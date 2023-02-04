@@ -4,7 +4,7 @@ import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
 import { f } from '../../utils/functools';
 import type { IR, RA, RR } from '../../utils/types';
-import { filterArray } from '../../utils/types';
+import { defined, filterArray } from '../../utils/types';
 import { replaceItem, replaceKey, sortFunction } from '../../utils/utils';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -256,14 +256,15 @@ export function LegacyPermissions({
         <Combobox
           defaultValue={undefined}
           field={userType}
-          fieldName={userType.name}
-          formType="form"
           id={undefined}
           isDisabled={false}
           isRequired
           mode={mode}
           model={userResource}
-          pickListName={undefined}
+          pickListName={defined(
+            userType.getPickList(),
+            'UserType pick list not found'
+          )}
           resource={userResource}
         />
       </Label.Block>

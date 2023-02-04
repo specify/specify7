@@ -270,13 +270,12 @@ export function CollectionAccess({
         {schema.models.Agent.label}
         {typeof collectionAddress === 'object' ? (
           <QueryComboBox
-            fieldName="agent"
+            field={schema.models.Address.strictGetRelationship('agent')}
             forceCollection={collectionId}
             formType="form"
             id={undefined}
             isRequired={hasCollectionAccess || isSuperAdmin}
             mode={mode === 'view' || !canAssignAgent ? 'view' : 'edit'}
-            relatedModel={schema.models.Agent}
             resource={collectionAddress}
             typeSearch={undefined}
           />

@@ -8,9 +8,9 @@ import { hasTreeAccess } from '../Permissions/helpers';
 import { schema } from '../DataModel/schema';
 import { Input } from '../Atoms/Form';
 import { QueryComboBox } from '../FormFields/QueryComboBox';
-import { deserializeResource } from '../../hooks/resource';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { CollectingEventAttribute } from '../DataModel/types';
+import { deserializeResource } from '../DataModel/helpers';
 
 const template = document.createElement('template');
 template.innerHTML =
@@ -53,7 +53,9 @@ export function HostTaxon({
     <Input.Text isReadOnly />
   ) : hasTreeAccess('Taxon', 'read') ? (
     <QueryComboBox
-      fieldName="hostTaxon"
+      field={schema.models.CollectingEventAttribute.strictGetRelationship(
+        'hostTaxon'
+      )}
       forceCollection={rightSideCollection}
       formType={formType}
       id={id}

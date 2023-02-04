@@ -15,10 +15,10 @@ import { hasTablePermission } from '../Permissions/helpers';
 import type { RecordSelectorProps } from './RecordSelector';
 import { useRecordSelector } from './RecordSelector';
 import { useTriggerState } from '../../hooks/useTriggerState';
-import { UnloadProtectsContext } from '../Core/Contexts';
 import { unsetUnloadProtect } from '../../hooks/navigation';
 import { saveFormUnloadProtect } from '../Forms/Save';
 import { LocalizedString } from 'typesafe-i18n';
+import { SetUnloadProtectsContext } from '../Router/Router';
 import { schema } from '../DataModel/schema';
 
 /**
@@ -108,7 +108,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   const [unloadProtect, setUnloadProtect] = React.useState<
     (() => void) | undefined
   >(undefined);
-  const [_, setUnloadProtects] = React.useContext(UnloadProtectsContext)!;
+  const setUnloadProtects = React.useContext(SetUnloadProtectsContext)!;
 
   const {
     dialogs,

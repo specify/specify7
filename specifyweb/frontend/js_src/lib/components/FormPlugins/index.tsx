@@ -1,207 +1,161 @@
 import React from 'react';
 
-import type { Tables } from '../DataModel/types';
-import { f } from '../../utils/functools';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
+import type { RA } from '../../utils/types';
+import { Button } from '../Atoms/Button';
+import { AttachmentsPlugin } from '../Attachments/Plugin';
+import { toTable } from '../DataModel/helpers';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { LiteralField, Relationship } from '../DataModel/specifyField';
+import type { Tables } from '../DataModel/types';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import type { FormMode, FormType } from '../FormParse';
 import type { FieldTypes } from '../FormParse/fields';
 import type { UiPlugins } from '../FormParse/plugins';
+import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
-import { AttachmentsPlugin } from '../Attachments/Plugin';
-import { Button } from '../Atoms/Button';
 import { CollectionOneToManyPlugin } from './CollectionRelOneToMany';
 import { CollectionOneToOnePlugin } from './CollectionRelOneToOne';
-import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { GeoLocatePlugin } from './GeoLocate';
 import { HostTaxon } from './HostTaxon';
 import { LatLongUi } from './LatLongUi';
 import { LeafletPlugin } from './Leaflet';
-import { Dialog } from '../Molecules/Dialog';
 import { PaleoLocationMapPlugin } from './PaleoLocation';
 import { PartialDateUi } from './PartialDateUi';
 import { WebLink } from './WebLink';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { AnySchema } from '../DataModel/helperTypes';
-import { toTable } from '../DataModel/helpers';
-
-function WrongTable({
-  resource,
-  allowedTable,
-}: {
-  readonly resource: SpecifyResource<AnySchema>;
-  readonly allowedTable: keyof Tables;
-}): JSX.Element {
-  const [isVisible, handleShow, handleHide] = useBooleanState();
-  return (
-    <>
-      <Button.Small onClick={handleShow}>
-        {formsText.unavailablePluginButton()}
-      </Button.Small>
-      <Dialog
-        buttons={commonText.close()}
-        header={formsText.pluginNotAvailable()}
-        isOpen={isVisible}
-        onClose={handleHide}
-      >
-        {formsText.wrongTableForPlugin({
-          currentTable: resource.specifyModel.name,
-          correctTable: allowedTable,
-        })}
-      </Dialog>
-    </>
-  );
-}
+import { formatDisjunction } from '../Atoms/Internationalization';
 
 const pluginRenderers: {
   readonly [KEY in keyof UiPlugins]: (props: {
-    readonly resource: SpecifyResource<AnySchema>;
+    readonly resource: SpecifyResource<AnySchema> | undefined;
     readonly id: string | undefined;
+    readonly name: string | undefined;
     readonly pluginDefinition: UiPlugins[KEY];
-    readonly fieldName: string | undefined;
+    readonly field: LiteralField | Relationship | undefined;
     readonly formType: FormType;
     readonly mode: FormMode;
     readonly isRequired: boolean;
   }) => JSX.Element | null;
 } = {
   LatLonUI({ resource, mode, id, pluginDefinition: { step, latLongType } }) {
-    return (
-      f.maybe(toTable(resource, 'Locality'), (locality) => (
-        <LatLongUi
-          id={id}
-          mode={mode}
-          resource={locality}
-          step={step}
-          latLongType={latLongType}
-        />
-      )) ?? <WrongTable allowedTable="Locality" resource={resource} />
+    if (resource === undefined) return null;
+    const locality = toTable(resource, 'Locality');
+    return locality === undefined ? null : (
+      <LatLongUi
+        id={id}
+        latLongType={latLongType}
+        mode={mode}
+        resource={locality}
+        step={step}
+      />
     );
   },
   PartialDateUI: ({
     id,
     resource,
     mode,
-    fieldName,
     formType,
+    field,
     pluginDefinition: {
       defaultValue,
-      dateField,
       defaultPrecision,
       precisionField,
+      canChangePrecision,
     },
-  }) => {
-    const field = dateField ?? fieldName;
-    if (field === undefined) {
-      console.error(
-        "Can't display PartialDateUi because initialize.df is not set"
-      );
-      return null;
-    } else
-      return (
-        <ErrorBoundary dismissable>
-          <PartialDateUi
-            canChangePrecision={formType === 'form'}
-            dateField={field}
-            defaultPrecision={defaultPrecision}
-            defaultValue={defaultValue}
-            id={id}
-            isReadOnly={mode === 'view'}
-            precisionField={precisionField}
-            resource={resource}
-          />
-        </ErrorBoundary>
-      );
-  },
+  }) =>
+    field === undefined || field.isRelationship ? null : (
+      <ErrorBoundary dismissible>
+        <PartialDateUi
+          canChangePrecision={canChangePrecision && formType === 'form'}
+          dateField={field.name}
+          defaultPrecision={defaultPrecision}
+          defaultValue={defaultValue}
+          id={id}
+          isReadOnly={mode === 'view'}
+          precisionField={precisionField}
+          resource={resource}
+        />
+      </ErrorBoundary>
+    ),
   CollectionRelOneToManyPlugin({
     resource,
     pluginDefinition: { relationship, formatting },
   }) {
-    if (relationship === undefined) {
-      console.error(
-        "Can't display CollectionRelOneToManyPlugin because initialize.relname is not set"
-      );
-      return null;
-    } else
-      return !hasTablePermission('CollectionRelationship', 'read') ||
-        !hasTablePermission('CollectionRelType', 'read')
-        ? null
-        : f.maybe(toTable(resource, 'CollectionObject'), (collectionObject) => (
-            <ErrorBoundary dismissable>
-              <CollectionOneToManyPlugin
-                relationship={relationship}
-                resource={collectionObject}
-                formatting={formatting}
-              />
-            </ErrorBoundary>
-          )) ?? (
-            <WrongTable allowedTable="CollectionObject" resource={resource} />
-          );
+    if (resource === undefined) return null;
+    const collectionObject = toTable(resource, 'CollectionObject');
+    return collectionObject === undefined ? null : (
+      <ErrorBoundary dismissible>
+        <CollectionOneToManyPlugin
+          formatting={formatting}
+          relationship={relationship}
+          resource={collectionObject}
+        />
+      </ErrorBoundary>
+    );
   },
   ColRelTypePlugin({
     resource,
     pluginDefinition: { relationship, formatting },
   }) {
-    if (relationship === undefined) {
-      console.error(
-        "Can't display CollectionRelOneToManyPlugin because initialize.relname is not set"
-      );
-      return null;
-    } else
-      return resource.isNew() ||
-        !hasTablePermission('CollectionRelationship', 'read') ||
-        !hasTablePermission('CollectionRelType', 'read')
-        ? null
-        : f.maybe(toTable(resource, 'CollectionObject'), (collectionObject) => (
-            <ErrorBoundary dismissable>
-              <CollectionOneToOnePlugin
-                relationship={relationship}
-                resource={collectionObject}
-                formatting={formatting}
-              />
-            </ErrorBoundary>
-          )) ?? (
-            <WrongTable allowedTable="CollectionObject" resource={resource} />
-          );
+    if (resource === undefined) return null;
+    const collectionObject = toTable(resource, 'CollectionObject');
+    return resource.isNew() || collectionObject === undefined ? null : (
+      <ErrorBoundary dismissible>
+        <CollectionOneToOnePlugin
+          formatting={formatting}
+          relationship={relationship}
+          resource={collectionObject}
+        />
+      </ErrorBoundary>
+    );
   },
   LocalityGeoRef({ resource }) {
-    return (
-      f.maybe(toTable(resource, 'Locality'), (locality) => (
-        <ErrorBoundary dismissable>
-          <GeoLocatePlugin resource={locality} />
-        </ErrorBoundary>
-      )) ?? <WrongTable allowedTable="Locality" resource={resource} />
+    if (resource === undefined) return null;
+    const locality = toTable(resource, 'Locality');
+    return locality === undefined ? null : (
+      <ErrorBoundary dismissible>
+        <GeoLocatePlugin resource={locality} />
+      </ErrorBoundary>
     );
   },
   WebLinkButton({
     resource,
-    fieldName,
+    id,
+    name,
+    field,
     pluginDefinition: { webLink, icon },
     formType,
     mode,
-    id,
   }) {
     return (
-      <ErrorBoundary dismissable>
+      <ErrorBoundary dismissible>
         <WebLink
-          fieldName={fieldName}
+          field={field}
           formType={formType}
           icon={icon}
           id={id}
           mode={mode}
+          name={name}
           resource={resource}
           webLink={webLink}
         />
       </ErrorBoundary>
     );
   },
-  AttachmentPlugin({ resource, mode, id, fieldName }) {
+  AttachmentPlugin({ resource, mode, id, name }) {
+    /*
+     * Even though this permission is checked at form parse, still have to check
+     * it as webOnlyViews.ts uses this plugin for ObjectAttachment view
+     */
     if (hasTablePermission('Attachment', 'read'))
       return (
         <AttachmentsPlugin
           id={id}
           mode={mode}
-          name={fieldName}
+          name={name}
           resource={resource}
         />
       );
@@ -220,44 +174,47 @@ const pluginRenderers: {
     isRequired,
     pluginDefinition: { relationship },
   }) {
+    if (resource === undefined) return null;
+    const collectingEventAttribute = toTable(
+      resource,
+      'CollectingEventAttribute'
+    );
     if (relationship === undefined) {
       console.error(
         "Can't display HostTaxonPlugin because initialize.relname is not set"
       );
       return null;
-    } else if (!hasTablePermission('CollectionRelType', 'read')) return null;
+    } else if (collectingEventAttribute === undefined) return null;
     else
       return (
-        f.maybe(
-          toTable(resource, 'CollectingEventAttribute'),
-          (collectingEventAttribute) => (
-            <ErrorBoundary dismissable>
-              <HostTaxon
-                formType={formType}
-                id={id}
-                isRequired={isRequired}
-                mode={mode}
-                relationship={relationship}
-                resource={collectingEventAttribute}
-              />
-            </ErrorBoundary>
-          )
-        ) ?? (
-          <WrongTable
-            allowedTable="CollectingEventAttribute"
-            resource={resource}
+        <ErrorBoundary dismissible>
+          <HostTaxon
+            formType={formType}
+            id={id}
+            isRequired={isRequired}
+            mode={mode}
+            relationship={relationship}
+            resource={collectingEventAttribute}
           />
-        )
+        </ErrorBoundary>
       );
   },
   LocalityGoogleEarth({ resource, id }) {
-    return (
-      f.maybe(toTable(resource, 'Locality'), (locality) => (
+    if (resource === undefined) return null;
+    const locality = toTable(resource, 'Locality');
+    return locality === undefined ? null : (
+      <ErrorBoundary dismissible>
         <LeafletPlugin id={id} locality={locality} />
-      )) ?? <WrongTable allowedTable="Locality" resource={resource} />
+      </ErrorBoundary>
     );
   },
   PaleoMap: PaleoLocationMapPlugin,
+  WrongTable({ resource, pluginDefinition: { supportedTables } }) {
+    if (resource === undefined) return null;
+    return (
+      <WrongPluginTable resource={resource} supportedTables={supportedTables} />
+    );
+  },
   Unsupported({ pluginDefinition: { name = commonText.nullInline() }, id }) {
     const [isVisible, handleShow, handleHide] = useBooleanState();
     return (
@@ -283,22 +240,25 @@ const pluginRenderers: {
       </>
     );
   },
+  Blank: () => null,
 };
 
 export function FormPlugin({
   id,
+  name,
   resource,
   mode,
   fieldDefinition,
-  fieldName,
+  field,
   formType,
   isRequired,
 }: {
   readonly id: string | undefined;
-  readonly resource: SpecifyResource<AnySchema>;
+  readonly name: string | undefined;
+  readonly resource: SpecifyResource<AnySchema> | undefined;
   readonly mode: FormMode;
   readonly fieldDefinition: FieldTypes['Plugin'];
-  readonly fieldName: string | undefined;
+  readonly field: LiteralField | Relationship | undefined;
   readonly formType: FormType;
   readonly isRequired: boolean;
 }): JSX.Element {
@@ -307,15 +267,44 @@ export function FormPlugin({
   ] as typeof pluginRenderers.AttachmentPlugin;
   return (
     <Renderer
-      fieldName={fieldName}
+      field={field}
       formType={formType}
       id={id}
       isRequired={isRequired}
       mode={mode}
+      name={name}
       pluginDefinition={
         fieldDefinition.pluginDefinition as UiPlugins['AttachmentPlugin']
       }
       resource={resource}
     />
+  );
+}
+
+export function WrongPluginTable({
+  resource,
+  supportedTables,
+}: {
+  readonly resource: SpecifyResource<AnySchema>;
+  readonly supportedTables: RA<keyof Tables>;
+}): JSX.Element {
+  const [isVisible, handleShow, handleHide] = useBooleanState();
+  return (
+    <>
+      <Button.Small onClick={handleShow}>
+        {formsText.unavailablePluginButton()}
+      </Button.Small>
+      <Dialog
+        buttons={commonText.close()}
+        header={formsText.pluginNotAvailable()}
+        isOpen={isVisible}
+        onClose={handleHide}
+      >
+        {formsText.wrongTableForPlugin({
+          currentTable: resource.specifyModel.name,
+          supportedTables: formatDisjunction(supportedTables),
+        })}
+      </Dialog>
+    </>
   );
 }

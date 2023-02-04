@@ -2,11 +2,10 @@ import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { useSearchParameter } from '../../hooks/navigation';
-import { deserializeResource } from '../../hooks/resource';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { f } from '../../utils/functools';
-import { serializeResource } from '../DataModel/helpers';
+import { deserializeResource, serializeResource } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceViewUrl } from '../DataModel/resource';

@@ -3,43 +3,48 @@
  */
 
 import React from 'react';
-
-import { commonText } from '../../localization/common';
-import { formsText } from '../../localization/forms';
 import { preferencesText } from '../../localization/preferences';
 import { queryText } from '../../localization/query';
-import { wbText } from '../../localization/workbench';
-import type { Parser } from '../../utils/parser/definitions';
-import type { IR, RA } from '../../utils/types';
-import { defined, ensure, overwriteReadOnly, RR } from '../../utils/types';
-import { Link } from '../Atoms/Link';
-import type { JavaType } from '../DataModel/specifyField';
-import type { Collection } from '../DataModel/types';
-import { Tables } from '../DataModel/types';
-import { error, softError } from '../Errors/assert';
+import { LocalizedString } from 'typesafe-i18n';
+import { JavaType } from '../DataModel/specifyField';
+import { Parser } from '../../utils/parser/definitions';
 import {
-  LanguagePreferencesItem,
-  SchemaLanguagePreferenceItem,
-} from '../Toolbar/Language';
-import type { WelcomePageMode } from './Renderers';
+  defined,
+  ensure,
+  IR,
+  overwriteReadOnly,
+  RA,
+  RR,
+} from '../../utils/types';
+import { LANGUAGE, Language } from '../../localization/utils/config';
+import { commonText } from '../../localization/common';
+import { headerText } from '../../localization/header';
+import { wbText } from '../../localization/workbench';
 import {
   CollectionSortOrderPreferenceItem,
   ColorPickerPreferenceItem,
   defaultFont,
   FontFamilyPreferenceItem,
+  WelcomePageMode,
   WelcomePageModePreferenceItem,
 } from './Renderers';
 import { TableFields } from '../DataModel/helperTypes';
-import { schemaText } from '../../localization/schema';
-import { headerText } from '../../localization/header';
-import { LocalizedString } from 'typesafe-i18n';
-import { Language, LANGUAGE } from '../../localization/utils/config';
-import { reportsText } from '../../localization/report';
-import { wbPlanText } from '../../localization/wbPlan';
+import {
+  LanguagePreferencesItem,
+  SchemaLanguagePreferenceItem,
+} from '../Toolbar/Language';
 import { localityText } from '../../localization/locality';
-import { interactionsText } from '../../localization/interactions';
-import { resourcesText } from '../../localization/resources';
 import { attachmentsText } from '../../localization/attachments';
+import { formsText } from '../../localization/forms';
+import { reportsText } from '../../localization/report';
+import { Collection, Tables } from '../DataModel/types';
+import { resourcesText } from '../../localization/resources';
+import { softFail } from '../Errors/Crash';
+import { schemaText } from '../../localization/schema';
+import { wbPlanText } from '../../localization/wbPlan';
+import { error, softError } from '../Errors/assert';
+import { interactionsText } from '../../localization/interactions';
+import { Link } from '../Atoms/Link';
 import { getField } from '../DataModel/helpers';
 import { treeText } from '../../localization/tree';
 
@@ -383,6 +388,14 @@ export const preferenceDefinitions = {
             description: preferencesText.altClickToSupressNewTabDescription({
               altKeyName,
             }),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
+          unsavedIndicator: defineItem<boolean>({
+            title: preferencesText.showUnsavedIndicator(),
+            description: preferencesText.showUnsavedIndicatorDescription(),
             requiresReload: false,
             visible: true,
             defaultValue: true,
@@ -1126,12 +1139,12 @@ export const preferenceDefinitions = {
               {
                 value: 'name',
                 // Replaced with localized version once schema is loaded
-                title: '_name',
+                title: '_name' as LocalizedString,
               },
               {
                 value: 'fullName',
                 // Replaced with localized version once schema is loaded
-                title: '_fullName',
+                title: '_fullName' as LocalizedString,
               },
             ],
           }),
@@ -1592,6 +1605,8 @@ export const preferenceDefinitions = {
   },
 } as const;
 
+ensure<GenericPreferencesCategories>()(preferenceDefinitions);
+
 // Use tree table labels as titles for the tree editor sections
 import('../DataModel/schema')
   .then(async ({ fetchContext, schema }) =>
@@ -1653,9 +1668,7 @@ import('../DataModel/schema')
       } else softError('Unable to replace the tree preferences item title');
     })
   )
-  .catch(console.error);
+  .catch(softFail);
 
 export type Preferences = GenericPreferencesCategories &
   typeof preferenceDefinitions;
-
-ensure<GenericPreferencesCategories>()(preferenceDefinitions);
