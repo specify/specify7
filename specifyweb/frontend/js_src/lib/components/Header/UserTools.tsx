@@ -18,24 +18,16 @@ import { userInformation } from '../InitialContext/userInformation';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { OverlayContext } from '../Router/Router';
 import { MenuButton } from './index';
-import { useMenuItems, useUserTools } from './menuItemProcessing';
+import { useUserTools } from './menuItemProcessing';
 import { locationToState } from '../Router/RouterState';
 
 export function UserTools({
   isCollapsed,
+  isInUserTool,
 }: {
   readonly isCollapsed: boolean;
+  readonly isInUserTool: boolean;
 }): JSX.Element {
-  const { pathname } = useLocation();
-  const userTools = useUserTools() ?? {};
-  const menuItems = useMenuItems() ?? [];
-  const isInUserTool = Object.values(userTools)
-    .flatMap((group) => Object.values(group))
-    .some(
-      ({ url, name }) =>
-        pathname.startsWith(url) &&
-        !menuItems.some((item) => item.name === name)
-    );
   return (
     <>
       {userInformation.isauthenticated ? (

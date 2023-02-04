@@ -22,6 +22,8 @@ import { schema } from '../DataModel/schema';
 import { userInformation } from '../InitialContext/userInformation';
 import { MenuItemName } from './menuItemDefinitions';
 import { listen } from '../../utils/events';
+import { useLocation } from 'react-router-dom';
+import { useUserTools } from './menuItemProcessing';
 
 const collapseThreshold = 900;
 
@@ -34,6 +36,16 @@ export function Header({
     'header',
     'isCollapsed'
   );
+
+  const { pathname } = useLocation();
+  const userTools = useUserTools() ?? {};
+  const isInUserTool = Object.values(userTools)
+    .flatMap((group) => Object.values(group))
+    .some(
+      ({ url, name }) =>
+        pathname.startsWith(url) &&
+        !menuItems.some((item) => item.name === name)
+    );
 
   // Collapse the menu on narrow screens
   const [forceCollapse, setForceCollapse] = React.useState(false);
@@ -144,7 +156,7 @@ export function Header({
           onClick="/specify/overlay/choose-collection/"
           preventOverflow
         />
-        <UserTools isCollapsed={isCollapsed} />
+        <UserTools isCollapsed={isCollapsed} isInUserTool={isInUserTool} />
         <Notifications isCollapsed={isCollapsed} />
         <MenuButton
           icon={icons.search}
