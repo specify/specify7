@@ -234,6 +234,7 @@ jobs:
           set -e
 
       - name: Reformat all code with Prettier
+        if: steps.changed.outputs.changed
         working-directory: specifyweb/frontend/js_src
         run: |
           npx prettier --write --minify `echo "${{steps.changed.outputs.changed}}" | tr " " "\n"`
