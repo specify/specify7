@@ -7,8 +7,7 @@ import { statsText } from '../../localization/stats';
 import { formattedEntry } from '../WbPlanView/mappingHelpers';
 import type { StatCategoryReturn } from './types';
 import { userInformation } from '../InitialContext/userInformation';
-import { urlSpec } from './definitions';
-
+import { f } from '../../utils/functools';
 type StatsSpec = IR<{
   readonly label: string;
   readonly categories: StatCategoryReturn;
@@ -79,14 +78,20 @@ export const statsSpec: IR<StatsSpec> = {
           spec: {
             type: 'BackEndStat',
             pathToValue: undefined,
-            fetchUrl: urlSpec.preparations,
-            formatter: ({
-              lots,
-              total,
-            }: {
-              readonly lots: number;
-              readonly total: number;
-            }) => `${formatNumber(lots)} / ${formatNumber(total)}`,
+            fetchUrl: `/statistics/collection/preparations/`,
+            formatter: (
+              prep:
+                | {
+                    readonly lots: number;
+                    readonly total: number;
+                  }
+                | undefined
+            ) =>
+              f.maybe(
+                prep,
+                (prep) =>
+                  `${formatNumber(prep.lots)} / ${formatNumber(prep.total)}`
+              ),
           },
         },
       },
@@ -263,7 +268,8 @@ export const statsSpec: IR<StatsSpec> = {
         },
       },
     },
-    localityGeography: {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    locality_geography: {
       label: statsText.localityGeography(),
       categories: {
         localityCount: {
@@ -324,7 +330,8 @@ export const statsSpec: IR<StatsSpec> = {
         },
       },
     },
-    typeSpecimens: {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    type_specimens: {
       label: statsText.typeSpecimens(),
       categories: {
         phantomItem: {
@@ -332,8 +339,9 @@ export const statsSpec: IR<StatsSpec> = {
           spec: {
             type: 'BackEndStat',
             pathToValue: undefined,
-            fetchUrl: urlSpec.typeSpecimens,
-            formatter: formatNumber,
+            fetchUrl: `/statistics/collection/type_specimens/`,
+            formatter: (rawNumber: number | undefined) =>
+              f.maybe(rawNumber, formatNumber),
           },
         },
       },

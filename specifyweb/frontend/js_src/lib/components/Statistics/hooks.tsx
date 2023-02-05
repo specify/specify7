@@ -26,13 +26,13 @@ import { makeQueryField } from '../QueryBuilder/fromTree';
 import { keysToLowerCase } from '../../utils/utils';
 import { statsText } from '../../localization/stats';
 import { throttledPromise } from '../../utils/ajax/throttledPromise';
-import { unknownCategories, urlSpec } from './definitions';
+import { dynamicCategories } from './definitions';
 
 /**
  * Fetch backend statistics from the API
  */
 export function useBackendApi(
-  categoryToFetch: RA<keyof typeof urlSpec>
+  categoryToFetch: RA<string>
 ): BackendStatsResult | undefined {
   const backEndStatPromises = React.useMemo(
     () =>
@@ -48,9 +48,7 @@ export function useBackendApi(
   return backendStat;
 }
 
-const backEndStatPromiseGenerator = (
-  categoriesToFetch: RA<keyof typeof urlSpec>
-) =>
+const backEndStatPromiseGenerator = (categoriesToFetch: RA<string>) =>
   Object.fromEntries(
     categoriesToFetch.map((key) => [
       key,
@@ -58,13 +56,13 @@ const backEndStatPromiseGenerator = (
         throttledPromise<BackendStatsResult, string>(
           'backendStats',
           async () =>
-            ajax<BackendStatsResult>(urlSpec[key], {
+            ajax<BackendStatsResult>(`/statistics/collection/${key}/`, {
               method: 'GET',
               headers: {
                 Accept: 'application/json',
               },
             }).then(({ data }) => data),
-          urlSpec[key]
+          `/statistics/collection/${key}/`
         ),
     ])
   );
@@ -165,7 +163,7 @@ export function useDefaultLayout(statsSpec: StatsSpec): StatLayout {
         label: pageName,
         categories: Object.entries(pageStatsSpec).map(
           ([categoryName, { label, items }]) => {
-            const isUnknownCategory = unknownCategories.includes(categoryName);
+            const isUnknownCategory = dynamicCategories.includes(categoryName);
             return {
               label,
               items: isUnknownCategory
@@ -252,30 +250,38 @@ export function useResolvedStatSpec(
   }, [item]);
 }
 
-export function useCategoryToFetch(
-  layout: StatLayout | undefined
-): WritableArray<string> {
-  return React.useMemo(() => {
-    if (layout === undefined) return [];
-    const categoriesToFetch: WritableArray<string> = [];
-    layout.forEach((pageLayout) =>
-      pageLayout.categories.forEach(({ items, categoryToFetch }) => {
-        if (items === undefined && categoryToFetch !== undefined) {
-          categoriesToFetch.push(categoryToFetch);
-        }
-        (items ?? []).forEach((item) => {
-          if (
-            item.type === 'DefaultStat' &&
-            item.itemType === 'BackEndStat' &&
-            item.itemValue === undefined &&
-            item.itemName === 'phantomItem'
-          )
-            categoriesToFetch.push(item.categoryName);
-        });
-      })
-    );
-    return categoriesToFetch;
-  }, [layout]);
+export function setAbsentCategoriesToFetch(
+  layout: StatLayout | undefined,
+  currentCategoriesToFetch: RA<string>,
+  setCategoriesToFetch: (currentCategories: RA<string>) => void
+) {
+  if (layout === undefined) return;
+  const categoriesToFetch: WritableArray<string> = [];
+  layout.forEach((pageLayout) =>
+    pageLayout.categories.forEach(({ items, categoryToFetch }) => {
+      if (items === undefined && categoryToFetch !== undefined) {
+        categoriesToFetch.push(categoryToFetch);
+      }
+      (items ?? []).forEach((item) => {
+        if (
+          item.type === 'DefaultStat' &&
+          item.itemType === 'BackEndStat' &&
+          item.itemValue === undefined &&
+          item.itemName === 'phantomItem'
+        )
+          categoriesToFetch.push(item.categoryName);
+      });
+    })
+  );
+  const notCurrentlyFetching = Array.from(new Set(categoriesToFetch)).filter(
+    (categoryToFetch) => !currentCategoriesToFetch.includes(categoryToFetch)
+  );
+  if (notCurrentlyFetching.length > 0) {
+    setCategoriesToFetch([
+      ...currentCategoriesToFetch,
+      ...notCurrentlyFetching,
+    ]);
+  }
 }
 
 export function statsToTsv(

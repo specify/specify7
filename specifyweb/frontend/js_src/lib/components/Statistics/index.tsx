@@ -1,7 +1,5 @@
 import React from 'react';
 import type { State } from 'typesafe-reducer';
-
-import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
 import { statsText } from '../../localization/stats';
 import { cleanFulfilledRequests } from '../../utils/ajax/throttledPromise';
@@ -25,11 +23,11 @@ import { useQueries } from '../Toolbar/Query';
 import { AddStatDialog } from './AddStatDialog';
 import { StatsAsideButton } from './Buttons';
 import { Categories } from './Categories';
-import { urlSpec } from './definitions';
+import { dynamicCategories } from './definitions';
 import {
   statsToTsv,
   useBackendApi,
-  useCategoryToFetch,
+  setAbsentCategoriesToFetch,
   useDefaultLayout,
   useDefaultStatsToAdd,
   useStatsSpec,
@@ -114,13 +112,16 @@ export function StatsPage(): JSX.Element | null {
     ? collectionLayout
     : personalLayout;
 
-  const categoriesToFetchInitially = useCategoryToFetch(sourceLayout);
+  const allCategories = React.useMemo(() => dynamicCategories, []);
+  const [categoriesToFetch, setCategoriesToFetch] = React.useState<RA<string>>(
+    []
+  );
 
-  const allCategories = React.useMemo(() => Object.keys(urlSpec), []);
-
-  const [categoriesToFetch, setCategoriesToFetch] = useTriggerState<
-    RA<keyof typeof urlSpec>
-  >(categoriesToFetchInitially as RA<keyof typeof urlSpec>);
+  setAbsentCategoriesToFetch(
+    sourceLayout,
+    categoriesToFetch,
+    setCategoriesToFetch
+  );
   const backEndResponse = useBackendApi(categoriesToFetch);
   const defaultBackEndResponse = useBackendApi(allCategories);
   const statsSpec = useStatsSpec();
@@ -364,6 +365,7 @@ export function StatsPage(): JSX.Element | null {
                 ? undefined
                 : getValueUndefined(layout, activePage.pageIndex)
             );
+            setCategoriesToFetch([]);
           }}
         >
           {commonText.update()}
@@ -396,7 +398,7 @@ export function StatsPage(): JSX.Element | null {
                 cleanFulfilledRequests();
                 setCollectionLayout(defaultLayoutSpec);
                 setPersonalLayout(defaultLayoutSpec);
-                setCategoriesToFetch(Object.keys(urlSpec));
+                setCategoriesToFetch(dynamicCategories);
               }}
             >
               {commonText.reset()}
@@ -646,21 +648,18 @@ export function StatsPage(): JSX.Element | null {
                 )
               }
               onLoad={handleLoad}
-              onRemove={
-                isEditing && canEditIndex(activePage.isCollection)
-                  ? (categoryIndex, itemIndex): void =>
-                      handleChange((oldCategory) =>
-                        typeof itemIndex === 'number'
-                          ? replaceItem(oldCategory, categoryIndex, {
-                              ...oldCategory[categoryIndex],
-                              items: removeItem(
-                                oldCategory[categoryIndex].items ?? [],
-                                itemIndex
-                              ),
-                            })
-                          : removeItem(oldCategory, categoryIndex)
-                      )
-                  : undefined
+              onRemove={(categoryIndex, itemIndex): void =>
+                handleChange((oldCategory) =>
+                  typeof itemIndex === 'number'
+                    ? replaceItem(oldCategory, categoryIndex, {
+                        ...oldCategory[categoryIndex],
+                        items: removeItem(
+                          oldCategory[categoryIndex].items ?? [],
+                          itemIndex
+                        ),
+                      })
+                    : removeItem(oldCategory, categoryIndex)
+                )
               }
               onRename={
                 isEditing && canEditIndex(activePage.isCollection)

@@ -23,7 +23,7 @@ export type DefaultStat = State<
     readonly label: string;
     readonly itemValue: number | string | undefined;
     readonly isVisible?: boolean;
-    readonly pathToValue?: keyof BackendStatsResult;
+    readonly pathToValue?: string;
   }
 >;
 
@@ -62,24 +62,18 @@ export type QueryBuilderStat = State<
   }
 >;
 export type BackendStatsResult = {
-  readonly holdings: {
-    readonly familiesRepresented: number;
-    readonly generaRepresented: number;
-    readonly speciesRepresented: number;
-  };
   readonly preparations: IR<{
     readonly lots: number;
     readonly total: number;
   }>;
-  readonly localityGeography: { readonly countries: number };
   readonly typeSpecimens: IR<number>;
 };
 export type BackEndStat = State<
   'BackEndStat',
   {
-    readonly pathToValue: keyof BackendStatsResult | undefined;
+    readonly pathToValue: string | undefined;
     readonly fetchUrl: string;
-    readonly formatter: (rawResult: any) => string;
+    readonly formatter: (rawResult: any) => string | undefined;
   }
 >;
 export type StatItemSpec = BackEndStat | QueryBuilderStat;

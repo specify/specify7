@@ -15,7 +15,6 @@ import React from 'react';
 import { RA } from '../../utils/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { statsText } from '../../localization/stats';
-import { urlSpec } from './definitions';
 
 export function Categories({
   pageLayout,
@@ -134,7 +133,7 @@ export function Categories({
                                 pathToValue:
                                   item.itemType === 'BackEndStat' &&
                                   item.itemName === 'phantomItem'
-                                    ? (item.label as keyof typeof urlSpec)
+                                    ? item.label
                                     : undefined,
                               })
                           : undefined
@@ -181,8 +180,7 @@ export function Categories({
               {typeof handleCategoryRename === 'function' ? (
                 <span className="-mt-2 flex-1" />
               ) : null}
-              {typeof handleAdd === 'function' &&
-              typeof handleRemove === 'function' ? (
+              {typeof handleAdd === 'function' ? (
                 <div className="flex gap-2">
                   <Button.Small
                     variant={className.blueButton}
@@ -199,7 +197,7 @@ export function Categories({
                           (item) => item.type === 'CustomStat'
                         ) ?? false;
                       if (containsCustom) setRemoveCategoryIndex(categoryIndex);
-                      else handleRemove(categoryIndex, undefined);
+                      else handleRemove?.(categoryIndex, undefined);
                     }}
                   >
                     {statsText.deleteAll()}
