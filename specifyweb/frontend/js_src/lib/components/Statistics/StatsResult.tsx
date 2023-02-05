@@ -32,7 +32,7 @@ export function StatsResult({
     <>
       {label === undefined ? (
         <li>{commonText.loading()}</li>
-      ) : typeof handleRemove === 'function' ? (
+      ) : typeof handleRename === 'function' ? (
         <>
           <Button.Icon
             icon={isDefault ? 'x' : 'trash'}

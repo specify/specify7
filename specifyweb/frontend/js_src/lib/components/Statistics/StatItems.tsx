@@ -63,7 +63,6 @@ export function StatItem({
         handleEdit !== undefined
           ? (querySpec) => {
               handleEdit(querySpec, item.label);
-              console.log('query spec is', querySpec);
             }
           : undefined
       }
@@ -103,7 +102,7 @@ function BackEndItem({
 }: {
   readonly value: number | string | undefined;
   readonly fetchUrl: string;
-  readonly pathToValue: keyof BackendStatsResult;
+  readonly pathToValue: string;
   readonly label: string;
   readonly isDefault: boolean;
   readonly formatter: (rawValue: any) => string;
@@ -124,8 +123,14 @@ function BackEndItem({
             },
           }).then(({ data }) => data),
         fetchUrl
-      ).then((data) => formatter(data[pathToValue])),
-    [pathToValue, fetchUrl]
+      ).then((data) => {
+        const fetchValue = formatter(
+          data[pathToValue as keyof BackendStatsResult]
+        );
+        if (fetchValue === undefined) handleRemove?.();
+        return fetchValue;
+      }),
+    [pathToValue, fetchUrl, handleRemove]
   );
   useStatValueLoad(value, promiseGenerator, handleLoad);
   return (
