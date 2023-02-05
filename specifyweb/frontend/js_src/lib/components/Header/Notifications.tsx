@@ -14,7 +14,7 @@ import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { DateElement } from '../Molecules/DateElement';
-import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { Dialog, dialogClassNames, LoadingScreen } from '../Molecules/Dialog';
 import { MenuButton } from './index';
 import type { GenericNotification } from './NotificationRenderers';
 import { notificationRenderers } from './NotificationRenderers';
@@ -31,7 +31,7 @@ export function Notifications({
     RA<GenericNotification> | undefined
   >(undefined);
 
-  const notificationCount = notifications?.length ?? 0;
+  const notificationCount = notifications?.length;
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   const freezeFetchPromise = React.useRef<Promise<void> | undefined>(undefined);
 
@@ -142,18 +142,14 @@ export function Notifications({
         onClick={handleOpen}
         props={{
           'aria-live': 'polite',
-          className: `
-          ${
+          className:
             unreadCount > 0
               ? '[&:not(:hover)]:!text-brand-300 [&:not(:hover)]:dark:!text-brand-400'
-              : ''
-          }
-          ${isCollapsed ? 'p-4' : ''}
-        `,
+              : undefined,
           disabled: notificationCount === 0,
         }}
       />
-      {Array.isArray(notifications) && (
+      {Array.isArray(notifications) ? (
         <Dialog
           buttons={commonText.close()}
           className={{
@@ -206,7 +202,9 @@ export function Notifications({
             </ErrorBoundary>
           ))}
         </Dialog>
-      )}
+      ) : isOpen ? (
+        <LoadingScreen />
+      ) : undefined}
     </>
   );
 }
