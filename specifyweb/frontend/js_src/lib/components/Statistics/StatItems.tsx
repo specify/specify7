@@ -105,7 +105,7 @@ function BackEndItem({
   readonly pathToValue: string;
   readonly label: string;
   readonly isDefault: boolean;
-  readonly formatter: (rawValue: any) => string;
+  readonly formatter: (rawValue: any) => string | undefined;
   readonly onClick: (() => void) | undefined;
   readonly onRemove: (() => void) | undefined;
   readonly onRename: ((newLabel: string) => void) | undefined;
@@ -124,7 +124,7 @@ function BackEndItem({
           }).then(({ data }) => data),
         fetchUrl
       ).then((data) => {
-        const fetchValue = formatter(
+        const fetchValue = formatter?.(
           data[pathToValue as keyof BackendStatsResult]
         );
         if (fetchValue === undefined) handleRemove?.();
