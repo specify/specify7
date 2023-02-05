@@ -626,26 +626,32 @@ export function StatsPage(): JSX.Element | null {
                   : undefined
               }
               onClick={handleAdd}
-              onEdit={(categoryIndex, itemIndex, querySpec): void =>
-                handleChange((oldCategory) =>
-                  replaceItem(oldCategory, categoryIndex, {
-                    ...oldCategory[categoryIndex],
-                    items: replaceItem(
-                      oldCategory[categoryIndex].items ?? [],
-                      itemIndex,
-                      {
-                        ...(oldCategory[categoryIndex].items ?? [])[itemIndex],
-                        ...((oldCategory[categoryIndex].items ?? [])[itemIndex]
-                          .type === 'DefaultStat'
-                          ? {}
-                          : {
-                              querySpec,
-                              itemValue: undefined,
-                            }),
-                      }
-                    ),
-                  })
-                )
+              onEdit={
+                isEditing
+                  ? undefined
+                  : (categoryIndex, itemIndex, querySpec): void =>
+                      handleChange((oldCategory) =>
+                        replaceItem(oldCategory, categoryIndex, {
+                          ...oldCategory[categoryIndex],
+                          items: replaceItem(
+                            oldCategory[categoryIndex].items ?? [],
+                            itemIndex,
+                            {
+                              ...(oldCategory[categoryIndex].items ?? [])[
+                                itemIndex
+                              ],
+                              ...((oldCategory[categoryIndex].items ?? [])[
+                                itemIndex
+                              ].type === 'DefaultStat'
+                                ? {}
+                                : {
+                                    querySpec,
+                                    itemValue: undefined,
+                                  }),
+                            }
+                          ),
+                        })
+                      )
               }
               onLoad={handleLoad}
               onRemove={(categoryIndex, itemIndex): void =>

@@ -1,5 +1,6 @@
 import { Button } from '../Atoms/Button';
 import React from 'react';
+import { commonText } from '../../localization/common';
 
 export function StatsAsideButton({
   label,
@@ -22,7 +23,7 @@ export function StatsAsideButton({
         {label}
       </Button.Gray>
       <Button.Icon
-        title="remove"
+        title={commonText.edit()}
         icon="pencil"
         className={handleRename === undefined ? 'invisible' : undefined}
         onClick={handleRename}

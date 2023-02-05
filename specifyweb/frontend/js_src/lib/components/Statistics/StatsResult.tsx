@@ -28,6 +28,10 @@ export function StatsResult({
   readonly onRename: ((newLabel: string) => void) | undefined;
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
+  const isDisabled = handleEdit === undefined && handleRename === undefined;
+  const handleClickResolved = isDisabled
+    ? undefined
+    : handleClick ?? (query === undefined ? undefined : handleOpen);
   return (
     <>
       {label === undefined ? (
@@ -45,10 +49,12 @@ export function StatsResult({
       ) : (
         <li className="flex gap-2">
           <Button.LikeLink
-            className="flex-1"
-            onClick={
-              handleClick ?? (query === undefined ? undefined : handleOpen)
-            }
+            className={`flex-1 ${
+              handleClickResolved === undefined
+                ? 'cursor-text active:no-underline'
+                : ''
+            }`}
+            onClick={handleClickResolved}
           >
             <span>{label}</span>
             <span className="-ml-2 flex-1" />

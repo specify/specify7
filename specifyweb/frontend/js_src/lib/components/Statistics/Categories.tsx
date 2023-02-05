@@ -57,7 +57,7 @@ export function Categories({
     | ((categoryIndex: number, itemIndex: number, newLabel: string) => void)
     | undefined;
 }): JSX.Element | null {
-  const checkEmptyItems = handleEdit === undefined;
+  const checkEmptyItems = handleRemove === undefined;
   const [removeCategoryIndex, setRemoveCategoryIndex] = React.useState<
     number | undefined
   >(undefined);
@@ -138,20 +138,8 @@ export function Categories({
                               })
                           : undefined
                       }
-                      onRename={
-                        typeof handleRename === 'function'
-                          ? (newLabel): void => {
-                              handleRename(categoryIndex, itemIndex, newLabel);
-                            }
-                          : undefined
-                      }
-                      onRemove={
-                        typeof handleRemove === 'function'
-                          ? (): void => handleRemove(categoryIndex, itemIndex)
-                          : undefined
-                      }
                       onEdit={
-                        checkEmptyItems
+                        checkEmptyItems || handleEdit === undefined
                           ? undefined
                           : item.type === 'DefaultStat'
                           ? handleClick === undefined
@@ -170,9 +158,21 @@ export function Categories({
                                   itemIndex
                                 )
                           : (querySpec): void =>
-                              handleEdit(categoryIndex, itemIndex, querySpec)
+                              handleEdit?.(categoryIndex, itemIndex, querySpec)
                       }
                       onLoad={onLoad}
+                      onRemove={
+                        typeof handleRemove === 'function'
+                          ? (): void => handleRemove(categoryIndex, itemIndex)
+                          : undefined
+                      }
+                      onRename={
+                        typeof handleRename === 'function'
+                          ? (newLabel): void => {
+                              handleRename(categoryIndex, itemIndex, newLabel);
+                            }
+                          : undefined
+                      }
                     />
                   ) : undefined
                 ) ?? commonText.loading()}
