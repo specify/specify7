@@ -5,30 +5,30 @@
  * On any modifications, please check if documentation needs to be updated.
  */
 
+import type { LocalizedString } from 'typesafe-i18n';
 import type { State } from 'typesafe-reducer';
 
-import type { Tables } from '../DataModel/types';
 import { f } from '../../utils/functools';
+import type { IR, RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import {
   getAttribute,
   getBooleanAttribute,
   getParsedAttribute,
 } from '../../utils/utils';
-import type { FormType, ParsedFormDefinition } from './index';
-import { parseFormDefinition } from './index';
-import type { FormFieldDefinition } from './fields';
-import { parseFormField } from './fields';
-import type { CommandDefinition } from './commands';
-import { parseUiCommand } from './commands';
 import { getModel } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
-import { legacyLocalize } from '../InitialContext/legacyUiLocalization';
-import type { IR, RA } from '../../utils/types';
-import { filterArray } from '../../utils/types';
+import type { Tables } from '../DataModel/types';
 import { getLogContext, setLogContext } from '../Errors/interceptLogs';
-import { hasPathPermission } from '../Permissions/helpers';
+import { legacyLocalize } from '../InitialContext/legacyUiLocalization';
 import { toLargeSortConfig } from '../Molecules/Sorting';
-import { LocalizedString } from 'typesafe-i18n';
+import { hasPathPermission } from '../Permissions/helpers';
+import type { CommandDefinition } from './commands';
+import { parseUiCommand } from './commands';
+import type { FormFieldDefinition } from './fields';
+import { parseFormField } from './fields';
+import type { FormType, ParsedFormDefinition } from './index';
+import { parseFormDefinition } from './index';
 
 // Parse column width definitions
 export const processColumnDefinition = (
@@ -156,16 +156,16 @@ const processCellType: {
       resolvedFields === undefined || hasPathPermission(resolvedFields, 'read');
 
     setLogContext({ field: undefined });
-    if (hasAccess && fieldDefinition.type !== 'Blank')
-      return {
-        type: 'Field',
-        fieldNames: resolvedFields?.map(({ name }) => name),
-        fieldDefinition,
-        isRequired:
-          (getBooleanAttribute(cell, 'isRequired') ?? false) ||
-          (fields?.at(-1)?.localization.isrequired ?? false),
-      };
-    else return { type: 'Blank' };
+    return hasAccess && fieldDefinition.type !== 'Blank'
+      ? {
+          type: 'Field',
+          fieldNames: resolvedFields?.map(({ name }) => name),
+          fieldDefinition,
+          isRequired:
+            (getBooleanAttribute(cell, 'isRequired') ?? false) ||
+            (fields?.at(-1)?.localization.isrequired ?? false),
+        }
+      : { type: 'Blank' };
   },
   Label: ({ cell }) => ({
     type: 'Label',

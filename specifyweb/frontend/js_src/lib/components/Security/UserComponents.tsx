@@ -2,6 +2,7 @@ import React from 'react';
 
 import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
+import { userText } from '../../localization/user';
 import { f } from '../../utils/functools';
 import type { IR, RA, RR } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
@@ -11,6 +12,7 @@ import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Input, Label } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
+import { getField } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { SpecifyUser } from '../DataModel/types';
@@ -26,8 +28,6 @@ import type { Policy } from './Policy';
 import type { Role } from './Role';
 import { UserCollections } from './UserCollections';
 import { anyResource } from './utils';
-import { userText } from '../../localization/user';
-import { getField } from '../DataModel/helpers';
 
 export function SetSuperAdmin({
   institutionPolicies,

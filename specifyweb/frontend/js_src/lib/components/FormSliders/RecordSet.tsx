@@ -21,16 +21,16 @@ import {
   deleteResource,
   getResourceViewUrl,
 } from '../DataModel/resource';
+import { schema } from '../DataModel/schema';
 import type { RecordSet as RecordSetSchema } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import type { FormMode } from '../FormParse';
 import { Dialog } from '../Molecules/Dialog';
 import { hasToolPermission } from '../Permissions/helpers';
+import { locationToState, useStableLocation } from '../Router/RouterState';
 import { EditRecordSet } from '../Toolbar/RecordSetEdit';
 import type { RecordSelectorProps } from './RecordSelector';
 import { RecordSelectorFromIds } from './RecordSelectorFromIds';
-import { locationToState, useStableLocation } from '../Router/RouterState';
-import { schema } from '../DataModel/schema';
 
 export function RecordSetWrapper<SCHEMA extends AnySchema>({
   recordSet,

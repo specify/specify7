@@ -1,8 +1,8 @@
 import React from 'react';
 
 import { commonText } from '../../../localization/common';
-import { Container, ErrorMessage, H2, H3, Key, Summary, Ul } from '../index';
 import { mount, snapshot } from '../../../tests/reactUtils';
+import { Container, ErrorMessage, H2, H3, Key, Summary, Ul } from '../index';
 
 snapshot(ErrorMessage, { children: commonText.view() });
 snapshot(Container.FullGray, { children: commonText.view() });

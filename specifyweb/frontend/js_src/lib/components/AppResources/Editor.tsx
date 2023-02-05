@@ -2,6 +2,7 @@ import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useErrorContext } from '../../hooks/useErrorContext';
+import { formsText } from '../../localization/forms';
 import { localityText } from '../../localization/locality';
 import { getUniqueName } from '../../utils/uniquifyName';
 import { Container } from '../Atoms';
@@ -38,7 +39,6 @@ import {
 import { getResourceType } from './filtersHelpers';
 import { useAppResourceData } from './hooks';
 import { AppResourcesTabs } from './Tabs';
-import { formsText } from '../../localization/forms';
 
 export function AppResourceEditor({
   resource,

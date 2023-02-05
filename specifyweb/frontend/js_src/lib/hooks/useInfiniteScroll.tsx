@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { fail } from '../components/Errors/Crash';
+import { raise } from '../components/Errors/Crash';
 import { useBooleanState } from './useBooleanState';
 
 /**
@@ -30,7 +30,7 @@ export function useInfiniteScroll(
       scroller.current.scrollHeight !== 0 &&
       scroller.current.scrollHeight <= scroller.current.clientHeight
     )
-      doFetch().catch(fail);
+      doFetch().catch(raise);
     handleFetched();
   }, [scroller, handleFetching, handleFetched]);
 

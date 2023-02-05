@@ -1,5 +1,5 @@
-import { ajax } from './index';
 import type { PartialBy } from '../types';
+import { ajax } from './index';
 
 /**
  * A wrapper for "ajax" for when response data is not needed

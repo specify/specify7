@@ -1,21 +1,21 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import type { SpQuery } from '../DataModel/types';
-import { f } from '../../utils/functools';
-import { removeKey, replaceKey } from '../../utils/utils';
 import { commonText } from '../../localization/common';
-import { schema } from '../DataModel/schema';
+import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { getUniqueName } from '../../utils/uniquifyName';
-import { LoadingContext } from '../Core/Contexts';
-import { FilePicker, fileToText } from '../Molecules/FilePicker';
-import { icons } from '../Atoms/Icons';
-import { Dialog, LoadingScreen } from '../Molecules/Dialog';
-import { useNavigate } from 'react-router-dom';
+import { removeKey, replaceKey } from '../../utils/utils';
 import { Form } from '../Atoms/Form';
+import { icons } from '../Atoms/Icons';
 import { Submit } from '../Atoms/Submit';
-import { SerializedResource } from '../DataModel/helperTypes';
+import { LoadingContext } from '../Core/Contexts';
 import { getField } from '../DataModel/helpers';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import { schema } from '../DataModel/schema';
+import type { SpQuery } from '../DataModel/types';
+import { Dialog, LoadingScreen } from '../Molecules/Dialog';
+import { FilePicker, fileToText } from '../Molecules/FilePicker';
 
 export function QueryImport({
   onClose: handleClose,

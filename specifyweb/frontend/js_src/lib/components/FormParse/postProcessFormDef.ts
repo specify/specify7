@@ -1,10 +1,11 @@
+import type { LocalizedString } from 'typesafe-i18n';
+
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { CellTypes, FormCellDefinition } from './cells';
 import type { ParsedFormDefinition } from './index';
-import { LocalizedString } from 'typesafe-i18n';
 
 type LabelCell = CellTypes['Label'] & FormCellDefinition;
 

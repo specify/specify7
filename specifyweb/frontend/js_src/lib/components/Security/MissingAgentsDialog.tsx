@@ -1,27 +1,27 @@
 import React from 'react';
 
-import { ajax } from '../../utils/ajax';
-import { f } from '../../utils/functools';
-import { sortFunction } from '../../utils/utils';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
-import type { FormMode } from '../FormParse';
-import { hasPermission } from '../Permissions/helpers';
-import { fetchResource, idFromUrl } from '../DataModel/resource';
-import { schema } from '../DataModel/schema';
+import { userText } from '../../localization/user';
+import { ajax } from '../../utils/ajax';
+import { Http } from '../../utils/ajax/definitions';
+import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import { LoadingContext } from '../Core/Contexts';
-import { Dialog } from '../Molecules/Dialog';
-import { QueryComboBox } from '../FormFields/QueryComboBox';
-import type { UserAgents } from './UserHooks';
-import { Button } from '../Atoms/Button';
-import { Submit } from '../Atoms/Submit';
-import { Form, Label } from '../Atoms/Form';
+import { sortFunction } from '../../utils/utils';
 import { ErrorMessage, Ul } from '../Atoms';
-import { useId } from '../../hooks/useId';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { Http } from '../../utils/ajax/definitions';
-import { userText } from '../../localization/user';
+import { Button } from '../Atoms/Button';
+import { Form, Label } from '../Atoms/Form';
+import { Submit } from '../Atoms/Submit';
+import { LoadingContext } from '../Core/Contexts';
+import { fetchResource, idFromUrl } from '../DataModel/resource';
+import { schema } from '../DataModel/schema';
+import { QueryComboBox } from '../FormFields/QueryComboBox';
+import type { FormMode } from '../FormParse';
+import { Dialog } from '../Molecules/Dialog';
+import { hasPermission } from '../Permissions/helpers';
+import type { UserAgents } from './UserHooks';
 
 export type SetAgentsResponse = Partial<{
   readonly AgentInUseException: RA<number>;

@@ -14,6 +14,7 @@ import { caseInsensitiveHash, toggleItem } from '../../utils/utils';
 import { Container, H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
+import { deserializeResource } from '../DataModel/helpers';
 import type {
   AnyTree,
   FilterTablesByEndsWith,
@@ -49,7 +50,6 @@ import {
 } from './helpers';
 import { TreeRow } from './Row';
 import { TreeViewSearch } from './Search';
-import { deserializeResource } from '../DataModel/helpers';
 
 const treeToPref = {
   Geography: 'geography',

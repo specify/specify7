@@ -1,5 +1,5 @@
-import { exportsForTests } from '../InteractionsDialog';
 import { requireContext } from '../../../tests/helpers';
+import { exportsForTests } from '../InteractionsDialog';
 
 const { fetchEntries } = exportsForTests;
 

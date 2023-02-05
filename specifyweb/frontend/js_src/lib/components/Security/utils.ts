@@ -1,4 +1,8 @@
+import type { LocalizedString } from 'typesafe-i18n';
+
+import { userText } from '../../localization/user';
 import { ajax } from '../../utils/ajax';
+import { Http } from '../../utils/ajax/definitions';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import {
@@ -19,9 +23,6 @@ import type { RoleBase } from './Collection';
 import { processPolicies } from './policyConverter';
 import { getRegistriesFromPath } from './registry';
 import type { Role } from './Role';
-import { Http } from '../../utils/ajax/definitions';
-import { userText } from '../../localization/user';
-import { LocalizedString } from 'typesafe-i18n';
 
 export type BackEndRole = Omit<Role, 'policies'> & {
   readonly policies: IR<RA<string>>;

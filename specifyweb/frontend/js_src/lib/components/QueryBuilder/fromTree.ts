@@ -1,22 +1,22 @@
-import { queryFieldFilters } from './FieldFilter';
-import { createQuery } from './index';
+import { queryText } from '../../localization/query';
+import type { IR, RA, RR } from '../../utils/types';
+import { defined } from '../../utils/types';
+import type { AnyTree, SerializedResource } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { getTreeModel, schema } from '../DataModel/schema';
 import type {
   SpQuery,
   SpQueryField,
   TaxonTreeDefItem,
 } from '../DataModel/types';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { queryText } from '../../localization/query';
-import { hasTablePermission } from '../Permissions/helpers';
-import { flippedSortTypes } from './helpers';
-import { QueryFieldSpec } from './fieldSpec';
-import { getTreeModel, schema } from '../DataModel/schema';
-import { getDomainResource } from '../InitialContext/treeRanks';
-import type { IR, RA, RR } from '../../utils/types';
-import { defined } from '../../utils/types';
-import { formatTreeRank } from '../WbPlanView/mappingHelpers';
-import { AnyTree, SerializedResource } from '../DataModel/helperTypes';
 import { softFail } from '../Errors/Crash';
+import { getDomainResource } from '../InitialContext/treeRanks';
+import { hasTablePermission } from '../Permissions/helpers';
+import { formatTreeRank } from '../WbPlanView/mappingHelpers';
+import { queryFieldFilters } from './FieldFilter';
+import { QueryFieldSpec } from './fieldSpec';
+import { flippedSortTypes } from './helpers';
+import { createQuery } from './index';
 
 function makeField(
   path: string,

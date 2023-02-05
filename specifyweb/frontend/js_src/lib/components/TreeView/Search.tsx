@@ -1,22 +1,22 @@
 import React from 'react';
 
-import { ajax } from '../../utils/ajax';
-import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
-import { sortFunction } from '../../utils/utils';
 import { treeText } from '../../localization/tree';
+import { ajax } from '../../utils/ajax';
 import type { IR, RA } from '../../utils/types';
-import { AutoComplete } from '../Molecules/AutoComplete';
-import {
+import { sortFunction } from '../../utils/utils';
+import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
+import type {
   AnyTree,
   FilterTablesByEndsWith,
   SerializedResource,
 } from '../DataModel/helperTypes';
+import { AutoComplete } from '../Molecules/AutoComplete';
 import { usePref } from '../UserPreferences/usePref';
 
 const getSearchField = (
   searchCaseSensitive: boolean,
-  searchField: 'name' | 'fullName',
-  searchAlgorithm: 'startsWith' | 'contains'
+  searchField: 'fullName' | 'name',
+  searchAlgorithm: 'contains' | 'startsWith'
 ): string =>
   `${searchField}__${searchCaseSensitive ? '' : 'i'}${searchAlgorithm}`;
 
@@ -57,7 +57,12 @@ export function TreeViewSearch<SCHEMA extends AnyTree>({
       {/* A React component that is also a TypeScript generic */}
       <AutoComplete<SerializedResource<SCHEMA>>
         filterItems={false}
-        value={searchValue}
+        forwardRef={forwardRef}
+        inputProps={{
+          'aria-label': treeText.searchTreePlaceholder(),
+          placeholder: treeText.searchTreePlaceholder(),
+          title: treeText.searchTreePlaceholder(),
+        }}
         source={async (value) =>
           fetchCollection(
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
@@ -86,10 +91,10 @@ export function TreeViewSearch<SCHEMA extends AnyTree>({
             })
           )
         }
-        onCleared={(): void => setSearchValue('')}
+        value={searchValue}
         onChange={({ label, data }): void => {
           setSearchValue(label as string);
-          ajax<IR<{ readonly rankid: number; readonly id: number } | string>>(
+          ajax<IR<string | { readonly rankid: number; readonly id: number }>>(
             `/api/specify_tree/${tableName.toLowerCase()}/${data.id}/path/`,
             {
               headers: { Accept: 'application/json' },
@@ -112,12 +117,7 @@ export function TreeViewSearch<SCHEMA extends AnyTree>({
             )
             .catch(console.error);
         }}
-        forwardRef={forwardRef}
-        inputProps={{
-          'aria-label': treeText.searchTreePlaceholder(),
-          placeholder: treeText.searchTreePlaceholder(),
-          title: treeText.searchTreePlaceholder(),
-        }}
+        onCleared={(): void => setSearchValue('')}
       />
     </div>
   );

@@ -187,7 +187,7 @@ async function getGeoLocateData(
           ...(Array.isArray(point)
             ? {
                 points: filterArray([...point, uncertainty])
-                  .map((part) => part.toString().replace(/[:|]/gu, ' '))
+                  .map((part) => part.toString().replaceAll(/[:|]/gu, ' '))
                   .join('|'),
               }
             : {}),

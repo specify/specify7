@@ -1,3 +1,16 @@
+import type { LocalizedString } from 'typesafe-i18n';
+
+import { commonText } from '../../localization/common';
+import { queryText } from '../../localization/query';
+import { resourcesText } from '../../localization/resources';
+import { schemaText } from '../../localization/schema';
+import { userText } from '../../localization/user';
+import { f } from '../../utils/functools';
+import type { IR, R, RA } from '../../utils/types';
+import { ensure } from '../../utils/types';
+import { lowerToHuman } from '../../utils/utils';
+import { schema } from '../DataModel/schema';
+import type { Tables } from '../DataModel/types';
 import {
   frontEndPermissions,
   institutionPermissions,
@@ -14,17 +27,6 @@ import {
   tablePermissionsPrefix,
   toolPermissionPrefix,
 } from './utils';
-import { schemaText } from '../../localization/schema';
-import { userText } from '../../localization/user';
-import { LocalizedString } from 'typesafe-i18n';
-import { resourcesText } from '../../localization/resources';
-import { ensure, IR, R, RA } from '../../utils/types';
-import { schema } from '../DataModel/schema';
-import { commonText } from '../../localization/common';
-import { f } from '../../utils/functools';
-import { lowerToHuman } from '../../utils/utils';
-import { queryText } from '../../localization/query';
-import { Tables } from '../DataModel/types';
 
 /**
  * Convert a part like ['table','locality'] to an array of information for

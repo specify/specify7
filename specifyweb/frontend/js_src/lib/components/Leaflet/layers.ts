@@ -1,5 +1,7 @@
 import { ajax } from '../../utils/ajax';
+import { Http } from '../../utils/ajax/definitions';
 import type { IR, RR } from '../../utils/types';
+import { softFail } from '../Errors/Crash';
 import {
   cachableUrl,
   contextUnlockedPromise,
@@ -7,8 +9,6 @@ import {
 } from '../InitialContext';
 import { formatUrl } from '../Router/queryString';
 import L from './extend';
-import { Http } from '../../utils/ajax/definitions';
-import { softFail } from '../Errors/Crash';
 
 export const leafletLayersEndpoint =
   'https://files.specifysoftware.org/specify7/7.7.0/leaflet-layers.json';
@@ -137,7 +137,7 @@ export const preferredOverlay = 'Labels and boundaries';
 export const leafletLayersPromise: Promise<typeof defaultTileLayers> =
   contextUnlockedPromise.then(async (entrypoint) =>
     entrypoint === 'main'
-      ? ajax<string>(
+      ? ajax(
           cachableUrl(
             formatUrl('/context/app.resource', {
               name: 'leaflet-layers',

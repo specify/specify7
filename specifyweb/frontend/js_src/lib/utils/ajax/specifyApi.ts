@@ -171,7 +171,7 @@ export const fetchRows = async <
    */
   advancedFilters: IR<number | string> = {}
 ): Promise<RA<FieldsToTypes<FIELDS>>> => {
-  const { data } = await ajax<RA<RA<string | null | number | boolean>>>(
+  const { data } = await ajax<RA<RA<boolean | number | string | null>>>(
     formatUrl(
       `/api/specify_rows/${tableName.toLowerCase()}/`,
       Object.fromEntries(
@@ -211,9 +211,13 @@ export const fetchRows = async <
 type FieldsToTypes<
   FIELDS extends IR<RA<'boolean' | 'null' | 'number' | 'string'>>
 > = {
-  [FIELD in keyof FIELDS]:
-    | (FIELDS[FIELD][number] extends 'boolean' ? boolean : never)
-    | (FIELDS[FIELD][number] extends 'string' ? string : never)
-    | (FIELDS[FIELD][number] extends 'number' ? number : never)
-    | (FIELDS[FIELD][number] extends 'null' ? null : never);
+  readonly [FIELD in keyof FIELDS]: FIELDS[FIELD][number] extends 'boolean'
+    ? boolean
+    : FIELDS[FIELD][number] | never extends 'null'
+    ? null
+    : FIELDS[FIELD][number] | never extends 'number'
+    ? number
+    : FIELDS[FIELD][number] | never extends 'string'
+    ? string
+    : never;
 };

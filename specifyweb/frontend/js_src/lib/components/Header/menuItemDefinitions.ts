@@ -1,4 +1,12 @@
+import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
+import { headerText } from '../../localization/header';
+import { interactionsText } from '../../localization/interactions';
+import { queryText } from '../../localization/query';
+import { reportsText } from '../../localization/report';
+import { treeText } from '../../localization/tree';
+import { wbText } from '../../localization/workbench';
+import { getCache } from '../../utils/cache';
 import type { RR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { icons } from '../Atoms/Icons';
@@ -21,14 +29,6 @@ import {
 } from '../Permissions/helpers';
 import { reportsAvailable } from '../Reports';
 import { filterUserTools } from './userToolDefinitions';
-import { getCache } from '../../utils/cache';
-import { headerText } from '../../localization/header';
-import { reportsText } from '../../localization/report';
-import { queryText } from '../../localization/query';
-import { interactionsText } from '../../localization/interactions';
-import { attachmentsText } from '../../localization/attachments';
-import { treeText } from '../../localization/tree';
-import { wbText } from '../../localization/workbench';
 
 export type MenuItemName =
   | 'attachments'

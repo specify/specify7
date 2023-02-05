@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useId } from '../../hooks/useId';
 import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
+import { interactionsText } from '../../localization/interactions';
 import type { Preparations } from '../../utils/ajax/specifyApi';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
@@ -26,7 +27,6 @@ import type {
 } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import { PrepDialogRow } from './PrepDialogRow';
-import { interactionsText } from '../../localization/interactions';
 
 export function PrepDialog({
   onClose: handleClose,
