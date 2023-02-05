@@ -41,15 +41,17 @@ export function useBackendApi(
         : backEndStatPromiseGenerator(categoryToFetch),
     [categoryToFetch]
   );
-  const [backendStat] = useMultipleAsyncState<BackendStatsResult>(
-    backEndStatPromises,
-    false
-  );
+  const [backendStat] = useMultipleAsyncState<
+    BackendStatsResult,
+    IR<() => Promise<BackendStatsResult>>
+  >(backEndStatPromises, false);
   return backendStat;
 }
 
-const backEndStatPromiseGenerator = (categoriesToFetch: RA<string>) =>
-  Object.fromEntries(
+function backEndStatPromiseGenerator(
+  categoriesToFetch: RA<string>
+): IR<() => Promise<BackendStatsResult>> {
+  return Object.fromEntries(
     categoriesToFetch.map((key) => [
       key,
       async () =>
@@ -66,6 +68,7 @@ const backEndStatPromiseGenerator = (categoriesToFetch: RA<string>) =>
         ),
     ])
   );
+}
 
 export function useStatsSpec(): IR<
   IR<{

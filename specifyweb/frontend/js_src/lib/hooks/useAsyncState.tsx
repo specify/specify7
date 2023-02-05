@@ -1,4 +1,4 @@
-import { GetOrSet, IR } from '../utils/types';
+import { GetOrSet } from '../utils/types';
 import React from 'react';
 import { LoadingContext } from '../components/Core/Contexts';
 import { crash } from '../components/Errors/Crash';
@@ -65,11 +65,16 @@ export function useAsyncState<T>(
  * Like useAsyncState, but cooler
  *
  */
-export function useMultipleAsyncState<T>(
-  callback: IR<() => Promise<T>> | undefined,
+export function useMultipleAsyncState<
+  K,
+  T extends Record<any, () => Promise<K>>
+>(
+  callback: T | undefined,
   loadingScreen: boolean
-): GetOrSet<T | undefined> {
-  const [state, setState] = React.useState<T | undefined>(undefined);
+): GetOrSet<Record<keyof T, K> | undefined> {
+  const [state, setState] = React.useState<Record<keyof T, K> | undefined>(
+    undefined
+  );
   const loading = React.useContext(LoadingContext);
 
   React.useLayoutEffect(() => {
@@ -80,18 +85,20 @@ export function useMultipleAsyncState<T>(
     if (callback === undefined) return;
     const callbackEntries = Object.entries(callback);
     const wrappedPromise = Promise.all(
-      callbackEntries.map(([key, promiseGenerator]) =>
+      callbackEntries.map(async ([key, promiseGenerator]) =>
         promiseGenerator().then((data) => {
           if (destructorCalled) return undefined;
-          // @ts-ignore
-          setState((oldState) => ({
-            ...oldState,
-            [key]: data,
-          }));
+          setState(
+            (oldState) =>
+              ({
+                ...oldState,
+                [key]: data,
+              } as Record<keyof T, K>)
+          );
           return undefined;
         })
       )
-    ).then(() => {});
+    );
     wrapped(wrappedPromise);
     let destructorCalled = false;
     return (): void => {

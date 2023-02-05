@@ -61,13 +61,8 @@ export type QueryBuilderStat = State<
     readonly querySpec: QuerySpec;
   }
 >;
-export type BackendStatsResult = {
-  readonly preparations: IR<{
-    readonly lots: number;
-    readonly total: number;
-  }>;
-  readonly typeSpecimens: IR<number>;
-};
+export type BackendStatsResult = IR<any>;
+
 export type BackEndStat = State<
   'BackEndStat',
   {
