@@ -50,10 +50,6 @@ export function Header({
   // Collapse the menu on narrow screens
   const [forceCollapse, setForceCollapse] = React.useState(false);
   React.useEffect(() => {
-    if (rawIsCollapsed) {
-      setForceCollapse(false);
-      return undefined;
-    }
     const handleChange = (): void =>
       document.body.clientWidth < collapseThreshold
         ? setForceCollapse(true)
