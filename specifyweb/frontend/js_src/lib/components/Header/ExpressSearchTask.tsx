@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { useSearchParameter } from '../../hooks/navigation';
 import { useId } from '../../hooks/useId';
+import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { ajax } from '../../utils/ajax';
@@ -81,7 +82,7 @@ function SearchField({
 
 export function ExpressSearchView(): JSX.Element {
   const [query = '', setQuery] = useSearchParameter('q');
-  const value = React.useState(query);
+  const value = useTriggerState(query);
   const [pendingQuery] = value;
 
   const primaryResults = usePrimarySearch(query);
