@@ -73,7 +73,7 @@ export function Main({
             </ErrorBoundary>
           </main>
         ) : (
-          missingAgent
+          <MissingAgent />
         )}
 
         <VersionMismatch />
@@ -83,23 +83,25 @@ export function Main({
   );
 }
 
-const missingAgent = (
-  <Dialog
-    buttons={
-      <Button.DialogClose component={Button.Red}>
-        {userText.logOut()}
-      </Button.DialogClose>
-    }
-    className={{
-      container: `${dialogClassNames.narrowContainer}`,
-    }}
-    forceToTop
-    header={userText.noAgent()}
-    onClose={(): void => globalThis.location.assign('/accounts/logout/')}
-  >
-    {userText.noAgentDescription()}
-  </Dialog>
-);
+function MissingAgent(): JSX.Element {
+  return (
+    <Dialog
+      buttons={
+        <Button.DialogClose component={Button.Red}>
+          {userText.logOut()}
+        </Button.DialogClose>
+      }
+      className={{
+        container: `${dialogClassNames.narrowContainer}`,
+      }}
+      forceToTop
+      header={userText.noAgent()}
+      onClose={(): void => globalThis.location.assign('/accounts/logout/')}
+    >
+      {userText.noAgentDescription()}
+    </Dialog>
+  );
+}
 
 /** Identifies active menu item */
 export const MenuContext = React.createContext<MenuItemName | undefined>(
