@@ -30,13 +30,11 @@ export function Categories({
   readonly pageLayout: StatLayout[number] | undefined;
   readonly statsSpec: StatsSpec;
   readonly onAdd: ((categoryIndex: number | undefined) => void) | undefined;
-  readonly onClick:
-    | ((
-        item: CustomStat | DefaultStat,
-        categoryIndex?: number,
-        itemIndex?: number
-      ) => void)
-    | ((item: CustomStat | DefaultStat) => void);
+  readonly onClick: (
+    item: CustomStat | DefaultStat,
+    categoryIndex?: number,
+    itemIndex?: number
+  ) => void;
   readonly onRemove:
     | ((categoryIndex: number, itemIndex: number | undefined) => void)
     | undefined;
@@ -218,8 +216,6 @@ export function Categories({
       )}
       {removeCategoryIndex !== undefined && (
         <Dialog
-          header={statsText.categoryContainsCustom()}
-          className={{ container: dialogClassNames.narrowContainer }}
           buttons={
             <div className="flex flex-row gap-2">
               <Button.Red
@@ -236,6 +232,8 @@ export function Categories({
               </Button.Blue>
             </div>
           }
+          className={{ container: dialogClassNames.narrowContainer }}
+          header={statsText.categoryContainsCustom()}
           onClose={handleCloseRemoveDialog}
         >
           {statsText.customDeleteWarning()}

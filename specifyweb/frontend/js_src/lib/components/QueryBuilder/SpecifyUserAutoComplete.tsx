@@ -27,6 +27,7 @@ export function SpecifyUserAutoComplete({
       <AutoComplete<string>
         aria-label={undefined}
         delay={0}
+        disabled={handleChange === undefined}
         filterItems
         inputProps={{
           onBlur: (): void =>

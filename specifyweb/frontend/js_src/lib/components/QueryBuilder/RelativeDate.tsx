@@ -9,9 +9,8 @@ import { useTriggerState } from '../../hooks/useTriggerState';
 import { queryText } from '../../localization/query';
 import { databaseDateFormat } from '../../utils/dateFormat';
 import { dayjs } from '../../utils/dayJs';
-import { f } from '../../utils/functools';
 import type { Parser } from '../../utils/parser/definitions';
-import { parseRelativeDate, reParse } from '../../utils/relativeDate';
+import { parseRelativeDate, relativeDateRegex } from '../../utils/relativeDate';
 import { Button } from '../Atoms/Button';
 import { Input, Select } from '../Atoms/Form';
 import { QueryInputField } from './FieldFilter';
@@ -30,15 +29,17 @@ export function DateQueryInputField({
   readonly onChange: ((newValue: string) => void) | undefined;
 }): JSX.Element | null {
   const [absolute, setAbsolute] = React.useState(() =>
-    reParse.test(currentValue) ? undefined : currentValue
+    relativeDateRegex.test(currentValue) ? undefined : currentValue
   );
   const [relative, setRelative] = React.useState(() =>
-    reParse.test(currentValue) ? currentValue : undefined
+    relativeDateRegex.test(currentValue) ? currentValue : undefined
   );
 
   const parsed = React.useMemo(() => {
     if (relative !== undefined) {
-      const parsedValue = reParse.exec(relative.toLowerCase())?.slice(1);
+      const parsedValue = relativeDateRegex
+        .exec(relative.toLowerCase())
+        ?.slice(1);
       return typeof parsedValue === 'object'
         ? {
             direction: parsedValue[0],
@@ -57,18 +58,19 @@ export function DateQueryInputField({
   return (
     <div className="flex items-center">
       <Button.Icon
+        disabled={handleChange === undefined}
         icon="switch"
         title="switch"
         onClick={(): void => {
           toggleAbsolute();
           if (!isAbsolute) {
-            if (reParse.test(currentValue)) {
+            if (relativeDateRegex.test(currentValue)) {
               const parsedDate = dayjs(parseRelativeDate(currentValue)).format(
                 databaseDateFormat
               );
               handleChange?.(parsedDate);
               setRelative(currentValue);
-              setAbsolute((oldAbsolute) => oldAbsolute || parsedDate);
+              setAbsolute((oldAbsolute) => oldAbsolute ?? parsedDate);
             }
           } else {
             setRelative((oldRelative) =>
@@ -124,19 +126,18 @@ function DateSplit({
     readonly size: number;
   }>(parsed);
   const { direction, size, type } = values;
-
+  const commitChange = () =>
+    handleChange?.(`today ${direction} ${size} ${type}`);
   return (
     <div className="flex flex-row gap-1">
       <Select
         value={direction}
-        onBlur={({ target }): void => {
-          setValues({ ...values, direction: target.value });
-          handleChange?.(`today ${target.value} ${size} ${type}`);
-        }}
+        onBlur={commitChange}
         onValueChange={(newValue): void => {
           setValues({ ...values, direction: newValue });
           handleChanging?.();
         }}
+        disabled={handleChange === undefined}
       >
         <option value="+">{queryText.future()}</option>
         <option value="-">{queryText.past()}</option>
@@ -144,11 +145,7 @@ function DateSplit({
       <Input.Number
         min={0}
         value={size}
-        onBlur={({ target }): void => {
-          const newSize = f.parseInt(target.value);
-          if (newSize === undefined) return;
-          handleChange?.(`today ${direction} ${newSize} ${type}`);
-        }}
+        onBlur={commitChange}
         onValueChange={(value): void => {
           setValues({
             ...values,
@@ -156,17 +153,16 @@ function DateSplit({
           });
           handleChanging?.();
         }}
+        disabled={handleChange === undefined}
       />
       <Select
         value={type}
-        onBlur={({ target }): void => {
-          setValues({ ...values, type: target.value });
-          handleChange?.(`today ${direction} ${size} ${target.value}`);
-        }}
+        onBlur={commitChange}
         onValueChange={(newValue) => {
           setValues({ ...values, type: newValue });
           handleChanging?.();
         }}
+        disabled={handleChange === undefined}
       >
         <option value="day">{queryText.day()}</option>
         <option value="week">{queryText.week()}</option>
