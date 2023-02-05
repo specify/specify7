@@ -195,11 +195,12 @@ jobs:
         run: rm -rf ./localization-strings
 
       - name: Get relative path of all changed files
+        working-directory: specifyweb/frontend/js_src
         id: changed
         run: |
           # Strip specifyweb/frontend/js_src/ from every file name
           changed_files=`sed 's/specifyweb\/frontend\/js_src\///g' <<< "${{ needs.changes.outputs.frontend_changes }}"`
-          
+
           # Convert to array
           IFS=' ' read -r -a split_files <<< "$changed_files"
           
@@ -207,10 +208,10 @@ jobs:
           for file in "${split_files[@]}"; do
               if [ ! -e "$file" ]; then
                   echo "File was removed: $file"
-                  files=("${split_files[@]/$file}")
+                  split_files=("${split_files[@]/$file}")
               fi
           done
-          
+
           # Convert back to string
           changed="${files[*]}"
           
