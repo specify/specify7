@@ -17,6 +17,7 @@ export const collectionPreferences = new BasePreferences({
   },
   defaultValues: undefined,
   developmentGlobal: '_collectionPreferences',
+  syncChanges: true,
 });
 collectionPreferences.setRaw(getCache(cacheKey, 'cached') ?? {});
 collectionPreferences.events.on(

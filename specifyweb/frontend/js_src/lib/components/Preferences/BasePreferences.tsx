@@ -324,7 +324,7 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
           )
         )
         .then(() => {
-          this.syncPromise === undefined;
+          this.syncPromise = undefined;
           // If there were additional changes while syncing
           if (this.isSyncPending) this.sync().catch(fail);
         });

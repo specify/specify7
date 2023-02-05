@@ -20,6 +20,7 @@ export const userPreferences = new BasePreferences({
     fetchUrl: '/context/app.resource',
   },
   developmentGlobal: '_userPreferences',
+  syncChanges: true,
 });
 userPreferences.setRaw(getCache(cacheKey, 'cached') ?? {});
 userPreferences.setDefaults(getCache(cacheKey, 'defaultCached') ?? {});
