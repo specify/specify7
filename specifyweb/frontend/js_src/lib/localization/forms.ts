@@ -178,7 +178,7 @@ export const formsText = createDictionary({
     `,
     'fr-fr': `
       Êtes-vous sûr de vouloir supprimer définitivement ce {tableName:string} de
-      la base de données?
+      la base de données ?
     `,
     'uk-ua': `
       Ви впевнені, що бажаєте остаточно видалити цей {tableName:string} запис з

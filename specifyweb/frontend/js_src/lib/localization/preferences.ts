@@ -1336,7 +1336,7 @@ export const preferencesText = createDictionary({
   showUnsavedIndicator: {
     'en-us': 'Show unsaved changes indicator',
     'ru-ru': 'Показывать индикатор несохраненных изменений',
-    'es-es': 'Mostrar indicador de cambios no guardados',
+    'es-es': 'Mostrar el indicador de cambios no guardados',
     'fr-fr': "Afficher l'indicateur de modifications non enregistrées",
     'uk-ua': 'Показати індикатор незбережених змін',
   },
@@ -1346,7 +1346,7 @@ export const preferencesText = createDictionary({
       tab
     `,
     'es-es': `
-      Mostrar un "*" en el título de la pestaña cuando haya cambios sin guardar
+      Mostrar un "*" en el título de la pestaña cuando hay cambios sin guardar
       en la pestaña actual
     `,
     'fr-fr': `
