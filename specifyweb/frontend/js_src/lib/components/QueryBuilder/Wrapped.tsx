@@ -18,7 +18,7 @@ import { Form } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getModelById } from '../DataModel/schema';
-import type { RecordSet, SpQuery } from '../DataModel/types';
+import type { RecordSet, SpQuery, SpQueryField } from '../DataModel/types';
 import { useMenuItem } from '../Header';
 import { isTreeModel, treeRanksPromise } from '../InitialContext/treeRanks';
 import { useTitle } from '../Molecules/AppTitle';
@@ -42,8 +42,8 @@ import { mutateLineData, smoothScroll, unParseQueryFields } from './helpers';
 import { getInitialState, reducer } from './reducer';
 import { QueryResultsWrapper } from './ResultsWrapper';
 import { QueryToolbar } from './Toolbar';
-import { SerializedResource } from '../DataModel/helperTypes';
 import { userPreferences } from '../Preferences/userPreferences';
+import { SerializedResource } from '../DataModel/helperTypes';
 
 const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 
@@ -78,7 +78,11 @@ export function QueryBuilder({
   readonly isEmbedded?: boolean;
   readonly autoRun?: boolean;
   readonly onSelected?: (selected: RA<number>) => void;
-  readonly onChange?: (query: SerializedResource<SpQuery>) => void;
+  readonly onChange?: ({
+    fields,
+  }: {
+    readonly fields: RA<SerializedResource<SpQueryField>>;
+  }) => void;
 }): JSX.Element | null {
   useMenuItem('queries');
 
@@ -105,7 +109,11 @@ export function QueryBuilder({
       state: buildInitialState(),
     });
   }, [buildInitialState]);
-  React.useEffect(() => handleChange?.(query), [query]);
+  React.useEffect(() => {
+    handleChange?.({
+      fields: unParseQueryFields(state.baseTableName, state.fields),
+    });
+  }, [state]);
   useErrorContext('state', state);
 
   /**

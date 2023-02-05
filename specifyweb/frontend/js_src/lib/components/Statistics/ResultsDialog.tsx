@@ -11,15 +11,21 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
 import type { QuerySpec } from './types';
+import { RA } from '../../utils/types';
+import { SpQueryField } from '../DataModel/types';
 
-export const queryToSpec = (query: SerializedResource<SpQuery>): QuerySpec => ({
-  tableName: query.contextName as keyof Tables,
-  fields: query.fields.map((field) => ({
+const addPath = (
+  fields: RA<SerializedResource<SpQueryField>>
+): RA<Partial<SerializedResource<SpQueryField>> & { readonly path: string }> =>
+  fields.map((field) => ({
     ...field,
     path: QueryFieldSpec.fromStringId(field.stringId, field.isRelFld ?? false)
       .toMappingPath()
       .join('.'),
-  })),
+  }));
+export const queryToSpec = (query: SerializedResource<SpQuery>): QuerySpec => ({
+  tableName: query.contextName as keyof Tables,
+  fields: addPath(query.fields),
 });
 
 export function FrontEndStatsResultDialog({
@@ -71,7 +77,11 @@ export function FrontEndStatsResultDialog({
         recordSet={undefined}
         onChange={
           typeof handleEdit === 'function'
-            ? (query): void => setQuery(queryToSpec(query))
+            ? ({ fields }): void =>
+                setQuery({
+                  tableName: query.tableName,
+                  fields: addPath(fields),
+                })
             : undefined
         }
       />
