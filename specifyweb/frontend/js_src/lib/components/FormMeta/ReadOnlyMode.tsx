@@ -9,6 +9,7 @@ export function ReadOnlyMode(): JSX.Element {
     'forms',
     'readOnlyMode'
   );
+
   return (
     <Button.Small
       onClick={(): void => {

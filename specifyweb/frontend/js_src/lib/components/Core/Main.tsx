@@ -7,7 +7,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { headerText } from '../../localization/header';
 import { userText } from '../../localization/user';
-import type { RA } from '../../utils/types';
+import type { GetOrSet, RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { enableBusinessRules } from '../DataModel/businessRules';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
@@ -17,6 +17,8 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { Router } from '../Router/Router';
 import { OnlineStatus } from './OnlineStatus';
 import { VersionMismatch } from './VersionMismatch';
+import { MenuItemName } from '../Header/menuItemDefinitions';
+import { f } from '../../utils/functools';
 
 export type MenuItem = {
   readonly title: LocalizedString;
@@ -44,34 +46,40 @@ export function Main({
     console.groupEnd();
   }, []);
 
+  const [menuContext, setMenuContext] = React.useState<
+    MenuItemName | undefined
+  >(undefined);
+
   return (
-    <>
-      <Button.Small
-        className="sr-only !absolute top-0 left-0 z-10 !p-2 focus:not-sr-only"
-        onClick={(): void => {
-          if (!mainRef.current) return;
-          mainRef.current.setAttribute('tabindex', '-1');
-          mainRef.current.focus();
-          mainRef.current.removeAttribute('tabindex');
-        }}
-      >
-        {headerText.skipToContent()}
-      </Button.Small>
-      <Header menuItems={menuItems} />
+    <MenuContext.Provider value={menuContext}>
+      <SetMenuContext.Provider value={setMenuContext}>
+        <Button.Small
+          className="sr-only !absolute top-0 left-0 z-10 !p-2 focus:not-sr-only"
+          onClick={(): void => {
+            if (!mainRef.current) return;
+            mainRef.current.setAttribute('tabindex', '-1');
+            mainRef.current.focus();
+            mainRef.current.removeAttribute('tabindex');
+          }}
+        >
+          {headerText.skipToContent()}
+        </Button.Small>
+        <Header menuItems={menuItems} />
 
-      {hasAgent ? (
-        <main className="flex-1 overflow-auto" ref={mainRef}>
-          <ErrorBoundary dismissable>
-            <Router />
-          </ErrorBoundary>
-        </main>
-      ) : (
-        missingAgent
-      )}
+        {hasAgent ? (
+          <main className="flex-1 overflow-auto" ref={mainRef}>
+            <ErrorBoundary dismissible>
+              <Router />
+            </ErrorBoundary>
+          </main>
+        ) : (
+          missingAgent
+        )}
 
-      <VersionMismatch />
-      <OnlineStatus />
-    </>
+        <VersionMismatch />
+        <OnlineStatus />
+      </SetMenuContext.Provider>
+    </MenuContext.Provider>
   );
 }
 
@@ -92,3 +100,13 @@ const missingAgent = (
     {userText.noAgentDescription()}
   </Dialog>
 );
+
+/** Identifies active menu item */
+export const MenuContext = React.createContext<MenuItemName | undefined>(
+  undefined
+);
+MenuContext.displayName = 'MenuContext';
+export const SetMenuContext = React.createContext<
+  GetOrSet<MenuItemName | undefined>[1]
+>(f.never);
+SetMenuContext.displayName = 'SetMenuContext';

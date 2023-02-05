@@ -13,9 +13,10 @@ import { IntegratedRecordSelector } from '../FormSliders/IntegratedRecordSelecto
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { AnySchema } from '../DataModel/helperTypes';
-import { fail } from '../Errors/Crash';
+import { fail, softFail } from '../Errors/Crash';
 import { TableIcon } from '../Molecules/TableIcon';
 import { overwriteReadOnly } from '../../utils/types';
+import { SubViewSortField } from '../FormParse/cells';
 import { attachmentSettingsPromise } from '../Attachments/attachments';
 import { usePromise } from '../../hooks/useAsyncState';
 import { attachmentRelatedTables } from '../Attachments';
@@ -24,9 +25,11 @@ export const SubViewContext = React.createContext<
   | {
       readonly relationship: Relationship | undefined;
       readonly formType: FormType;
-      readonly sortField: string | undefined;
+      readonly sortField: SubViewSortField | undefined;
       readonly handleChangeFormType: (formType: FormType) => void;
-      readonly handleChangeSortField: (sortField: string | undefined) => void;
+      readonly handleChangeSortField: (
+        sortField: SubViewSortField | undefined
+      ) => void;
     }
   | undefined
 >(undefined);
@@ -51,7 +54,7 @@ export function SubView({
   readonly isButton: boolean;
   readonly icon: string | undefined;
   readonly viewName: string | undefined;
-  readonly sortField: string | undefined;
+  readonly sortField: SubViewSortField | undefined;
 }): JSX.Element {
   const [sortField, setSortField] = useTriggerState(initialSortField);
 
@@ -73,16 +76,17 @@ export function SubView({
                 field: relationship.getReverse(),
               }) as Collection<AnySchema>;
             if (sortField === undefined) return collection;
-            const isReverse = sortField.startsWith('-');
-            const fieldName = sortField.startsWith('-')
-              ? sortField.slice(1)
-              : sortField;
+            // BUG: this does not look into related tables
+            const field = sortField.fieldNames[0];
             // Overwriting the models on the collection
             overwriteReadOnly(
               collection,
               'models',
               Array.from(collection.models).sort(
-                sortFunction((resource) => resource.get(fieldName), isReverse)
+                sortFunction(
+                  (resource) => resource.get(field),
+                  sortField.direction === 'desc'
+                )
               )
             );
             return collection;
@@ -97,12 +101,16 @@ export function SubView({
          */
         const resource = await parentResource.rgetPromise(relationship.name);
         const reverse = relationship.getReverse();
-        if (reverse === undefined)
-          throw new Error(
-            `Can't render a SubView for ` +
-              `${relationship.model.name}.${relationship.name} because ` +
-              `reverse relationship does not exist`
+        if (reverse === undefined) {
+          softFail(
+            new Error(
+              `Can't render a SubView for ` +
+                `${relationship.model.name}.${relationship.name} because ` +
+                `reverse relationship does not exist`
+            )
           );
+          return undefined;
+        }
         const collection = (
           relationship.isDependent()
             ? new relationship.relatedModel.DependentCollection({

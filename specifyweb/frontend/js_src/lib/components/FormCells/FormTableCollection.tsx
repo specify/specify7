@@ -49,11 +49,12 @@ export function FormTableCollection({
         resource: collection.related,
       }
     );
+    return null;
   }
   const isToOne =
     typeof relationship === 'object' && !relationshipIsToMany(relationship);
   const disableAdding = isToOne && records.length > 0;
-  return typeof relationship === 'object' ? (
+  return (
     <FormTable
       isDependent={isDependent}
       relationship={relationship}
@@ -76,5 +77,5 @@ export function FormTableCollection({
       onFetchMore={collection.isComplete() ? undefined : handleFetchMore}
       {...props}
     />
-  ) : null;
+  );
 }

@@ -3,32 +3,33 @@ import { useNavigate } from 'react-router-dom';
 
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
-import { sortFunction } from '../../utils/utils';
+import { sortFunction, toLowerCase } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Select } from '../Atoms/Form';
 import { serializeResource } from '../DataModel/helpers';
 import { schema } from '../DataModel/schema';
-import type { Collection } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
 import { OverlayContext } from '../Router/Router';
 import { switchCollection } from '../RouterCommands/SwitchCollection';
 import { usePref } from '../UserPreferences/usePref';
+import { toLargeSortConfig } from '../Molecules/Sorting';
 
 export function ChooseCollection(): JSX.Element {
   const [sortOrder] = usePref('chooseCollection', 'general', 'sortOrder');
-  const isReverseSort = sortOrder.startsWith('-');
-  const sortField = (isReverseSort ? sortOrder.slice(1) : sortOrder) as string &
-    keyof Collection['fields'];
-  const sortedCollections = React.useMemo(
-    () =>
-      Array.from(userInformation.availableCollections)
-        .sort(
-          sortFunction((collection) => collection[sortField], isReverseSort)
+  const sortedCollections = React.useMemo(() => {
+    const { direction, fieldNames } = toLargeSortConfig(sortOrder);
+    return Array.from(userInformation.availableCollections)
+      .sort(
+        sortFunction(
+          (collection) =>
+            collection[toLowerCase(fieldNames.join('.') as 'description')],
+          direction === 'desc'
         )
-        .map(serializeResource),
-    [isReverseSort, sortField]
-  );
+      )
+      .map(serializeResource);
+  }, [sortOrder]);
+
   const handleClose = React.useContext(OverlayContext);
   const navigate = useNavigate();
   return (

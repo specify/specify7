@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useCachedState } from '../../hooks/useCachedState';
-import { useStableState } from '../../hooks/useContextState';
+import { useStateForContext } from '../../hooks/useStateForContext';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { wbText } from '../../localization/workbench';
 import type { GetSet, RA } from '../../utils/types';
@@ -65,7 +65,7 @@ function FilePicked({ file }: { readonly file: File }): JSX.Element {
 
 function CsvPicked({ file }: { readonly file: File }): JSX.Element {
   const [encoding, setEncoding] = React.useState<string>('utf-8');
-  const getSetDelimiter = useStableState<string | undefined>(undefined);
+  const getSetDelimiter = useStateForContext<string | undefined>(undefined);
   const preview = useCsvPreview(file, encoding, getSetDelimiter);
   const loading = React.useContext(LoadingContext);
   const navigate = useNavigate();

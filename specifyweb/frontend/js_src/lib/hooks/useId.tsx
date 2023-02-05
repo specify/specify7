@@ -1,4 +1,4 @@
-import {R} from '../utils/types';
+import { R } from '../utils/types';
 import React from 'react';
 
 const idStore: R<number> = {};

@@ -5,6 +5,7 @@ import { split } from '../../utils/utils';
 import type { Input as InputType } from '../DataModel/saveBlockers';
 import { className } from './className';
 import { wrap } from './wrapper';
+import { softFail } from '../Errors/Crash';
 
 export const Label = {
   Block: wrap('Label.Block', 'label', className.label),
@@ -59,6 +60,7 @@ export const withHandleBlur = <TYPE extends InputType>(
     handleBlur?.(event);
   },
 });
+
 export const Input = {
   Radio: wrap<
     'input',
@@ -193,7 +195,7 @@ export const Input = {
               );
             handleDatePaste(value);
           } catch (error: unknown) {
-            console.error(error);
+            softFail(error);
           }
 
           event.preventDefault();

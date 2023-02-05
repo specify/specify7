@@ -23,8 +23,7 @@ describe('getCollectionForResource', () => {
      * Prevent Collection object from being associated with current collection
      * automatically
      */
-    // @ts-expect-error Unsetting a required field
-    collectionObject.set('collection', null);
+    collectionObject.set('collection', null as never);
     expect(getCollectionForResource(collectionObject)).toBeUndefined();
   });
   test('Locality from current discipline', () => {

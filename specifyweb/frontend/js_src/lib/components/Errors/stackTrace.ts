@@ -2,7 +2,6 @@ import { errorContext } from '../../hooks/useErrorContext';
 import { f } from '../../utils/functools';
 import type { IR } from '../../utils/types';
 import { jsonStringify, removeKey } from '../../utils/utils';
-import { softFail } from './Crash';
 import { consoleLog } from './interceptLogs';
 
 let resolvedStackTrace: IR<unknown> = { stackTrace: 'loading' };
@@ -34,7 +33,8 @@ f.all({
     resolvedStackTrace = data;
     return data;
   })
-  .catch(softFail);
+  // Can't use softFail here because of circular dependency
+  .catch(console.error);
 
 /**
  * The stack trace is about 83KB in size

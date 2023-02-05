@@ -173,7 +173,7 @@ export function EditTreeDefinition({
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   return (
-    <ErrorBoundary dismissable>
+    <ErrorBoundary dismissible>
       <DataEntry.Edit onClick={handleOpen} />
       {isOpen && (
         <ResourceView

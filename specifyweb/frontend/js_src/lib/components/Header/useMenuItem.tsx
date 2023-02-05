@@ -1,8 +1,8 @@
 import { writable, WritableArray } from '../../utils/types';
 import { MenuItemName } from './menuItemDefinitions';
 import React from 'react';
-import { MenuContext } from '../Core/Contexts';
 import { removeItem } from '../../utils/utils';
+import { SetMenuContext } from '../Core/Main';
 
 let activeMenuItems: WritableArray<MenuItemName> = [];
 
@@ -11,7 +11,7 @@ let activeMenuItems: WritableArray<MenuItemName> = [];
  * hook is active
  */
 export function useMenuItem(menuItem: MenuItemName): void {
-  const [_menuItem, setMenuItem] = React.useContext(MenuContext);
+  const setMenuItem = React.useContext(SetMenuContext);
   React.useEffect(() => {
     activeMenuItems.push(menuItem);
     setMenuItem(menuItem);

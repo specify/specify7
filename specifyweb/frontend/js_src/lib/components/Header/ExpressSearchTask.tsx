@@ -195,7 +195,7 @@ function TableResult({
           count: tableResults.totalCount,
         })}
       </summary>
-      <ErrorBoundary dismissable>
+      <ErrorBoundary dismissible>
         <QueryResults
           createRecordSet={undefined}
           extraButtons={undefined}

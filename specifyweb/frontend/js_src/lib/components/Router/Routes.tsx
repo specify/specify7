@@ -73,7 +73,6 @@ export const routes: RA<EnhancedRoute> = [
         children: [
           {
             index: true,
-            element: <></>,
           },
           {
             path: 'role',
@@ -124,7 +123,6 @@ export const routes: RA<EnhancedRoute> = [
         children: [
           {
             index: true,
-            element: <></>,
           },
           {
             path: 'role/',

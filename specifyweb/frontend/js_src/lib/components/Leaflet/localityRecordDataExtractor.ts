@@ -138,10 +138,10 @@ async function recursiveResourceResolve(
       treeTableName as 'Geography',
       false
     );
-    const currentRank = tableRanks.find(
-      ({ rankId }) => rankId === resource.get('rankId')
+    const currentRank = defined(
+      tableRanks.find(({ rankId }) => rankId === resource.get('rankId')),
+      'Failed to find matching tree rank'
     );
-    if (currentRank === undefined) throw new Error('Failed to fetch tree name');
     const currentRankName = formatTreeRank(currentRank.name);
     return [
       [

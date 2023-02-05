@@ -26,7 +26,7 @@ export const userText = createDictionary({
   password: {
     'en-us': 'Password',
     'ru-ru': 'Пароль',
-    'es-es': 'Clave',
+    'es-es': 'Contraseña',
     'fr-fr': 'Mot de passe',
     'uk-ua': 'Пароль',
   },
@@ -378,7 +378,7 @@ export const userText = createDictionary({
     'fr-fr':
       "Impossible d'ouvrir {recordSetTable:string} vide en mode lecture seule",
     'ru-ru': `
-      Невозможно открыть пустой {recordSetTable:string} в режиме только для
+      Не удается открыть пустой {recordSetTable:string} в режиме только для
       чтения
     `,
     'uk-ua': `
@@ -457,7 +457,7 @@ export const userText = createDictionary({
     'es-es': 'El usuario debe guardarse primero como Administrador',
     'fr-fr':
       "L'utilisateur doit d'abord être enregistré en tant que gestionnaire",
-    'uk-ua': 'Спочатку потрібно зберегти користувача як менеджера',
+    'uk-ua': 'Спочатку користувача потрібно зберегти як менеджера',
   },
   users: {
     'en-us': 'User Accounts',
@@ -542,7 +542,7 @@ export const userText = createDictionary({
     'en-us': 'Institution Library of Role Templates',
     'ru-ru': 'Библиотека ролей пользователей',
     'es-es': 'Biblioteca institucional de plantillas de roles',
-    'fr-fr': 'Bibliothèque institutionnelle de modèles de rôles',
+    'fr-fr': 'Bibliothèque institutionnelle de modèles de rôle',
     'uk-ua': 'Бібліотека шаблонів ролей установи',
   },
   userRoles: {
@@ -864,7 +864,7 @@ export const userText = createDictionary({
     'ru-ru': 'Внешние аутентификаторы:',
     'es-es': 'Proveedores de identidad externos:',
     'fr-fr': "Fournisseurs d'identité externes :",
-    'uk-ua': 'Постачальники зовнішньої ідентифікації:',
+    'uk-ua': 'Зовнішні постачальники ідентифікаційної інформації:',
   },
   allTables: {
     'en-us': 'All tables',

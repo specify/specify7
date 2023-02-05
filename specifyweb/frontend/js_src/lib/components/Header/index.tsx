@@ -12,8 +12,8 @@ import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
 import type { TagProps } from '../Atoms/wrapper';
-import { MenuContext } from '../Core/Contexts';
 import type { MenuItem } from '../Core/Main';
+import { MenuContext } from '../Core/Main';
 import { ActiveLink } from '../Router/ActiveLink';
 import { usePref } from '../UserPreferences/usePref';
 import { Notifications } from './Notifications';
@@ -89,7 +89,7 @@ export function Header({
     []
   );
 
-  const [activeMenuItem] = React.useContext(MenuContext);
+  const activeMenuItem = React.useContext(MenuContext);
   return (
     <header
       className={`

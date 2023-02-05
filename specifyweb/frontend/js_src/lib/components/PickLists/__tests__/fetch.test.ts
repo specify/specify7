@@ -1,8 +1,10 @@
-import { deserializeResource } from '../../../hooks/resource';
 import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
 import { addMissingFields } from '../../DataModel/addMissingFields';
-import { serializeResource } from '../../DataModel/helpers';
+import {
+  deserializeResource,
+  serializeResource,
+} from '../../DataModel/helpers';
 import { getResourceApiUrl } from '../../DataModel/resource';
 import {
   createPickListItem,
