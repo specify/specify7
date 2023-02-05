@@ -6,7 +6,7 @@ msgstr "Content-Type: text/plain\n"
 msgid "specifySeven"
 msgstr "Specify 7"
 
-#: components/UserPreferences/Definitions.tsx:1438
+#: components/UserPreferences/Definitions.tsx:1433
 #: components/WorkBench/DataSetMeta.tsx:232
 #: utils/parser/definitions.ts:100
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Work Bench > Data Set Meta ⬤ Utils > Parser > Definitions
@@ -36,7 +36,7 @@ msgstr "No"
 #: components/Reports/Report.tsx:239
 #: components/Reports/Report.tsx:326
 #: components/Reports/index.tsx:131
-#: components/Router/Router.tsx:275
+#: components/Router/Router.tsx:277
 #: components/Security/ImportExport.tsx:81
 #: components/Security/MissingAgentsDialog.tsx:93
 #: components/Security/Role.tsx:194
@@ -50,9 +50,9 @@ msgstr "No"
 #: components/Toolbar/Query.tsx:88
 #: components/Toolbar/RecordSets.tsx:172
 #: components/Toolbar/TreeRepair.tsx:78
-#: components/Toolbar/WbsDialog.tsx:173
-#: components/TreeView/Actions.tsx:350
-#: components/TreeView/Actions.tsx:366
+#: components/Toolbar/WbsDialog.tsx:174
+#: components/TreeView/Actions.tsx:348
+#: components/TreeView/Actions.tsx:364
 #: components/WbPlanView/Mapper.tsx:386
 #: components/WbPlanView/MapperComponents.tsx:316
 #: components/WbPlanView/MapperComponents.tsx:342
@@ -68,7 +68,7 @@ msgstr "No"
 msgid "cancel"
 msgstr "Cancel"
 
-#: components/SchemaConfig/Languages.tsx:68
+#: components/SchemaConfig/Languages.tsx:70
 #: components/SchemaConfig/Tables.tsx:51
 #: components/Toolbar/Dwca.tsx:88
 #: components/Toolbar/Dwca.tsx:94
@@ -98,14 +98,14 @@ msgstr "Create"
 #: components/AppResources/EditorComponents.tsx:59
 #: components/AppResources/Filters.tsx:84
 #: components/AppResources/Tabs.tsx:90
-#: components/Attachments/index.tsx:68
-#: components/Core/Main.tsx:142
-#: components/FormCells/FormTable.tsx:433
+#: components/Attachments/index.tsx:69
+#: components/Core/Main.tsx:141
+#: components/FormCells/FormTable.tsx:434
 #: components/FormCommands/ShowTransactions.tsx:104
 #: components/FormCommands/index.tsx:94
 #: components/FormCommands/index.tsx:115
 #: components/FormCommands/index.tsx:141
-#: components/FormFields/QueryComboBox.tsx:513
+#: components/FormFields/QueryComboBox.tsx:515
 #: components/FormMeta/AutoNumbering.tsx:91
 #: components/FormMeta/CarryForward.tsx:252
 #: components/FormMeta/Definition.tsx:54
@@ -131,12 +131,12 @@ msgstr "Create"
 #: components/Forms/SearchDialog.tsx:255
 #: components/Header/Notifications.tsx:141
 #: components/Header/UserTools.tsx:50
-#: components/HomePage/AboutSpecify.tsx:61
+#: components/HomePage/AboutSpecify.tsx:60
 #: components/Interactions/InteractionDialog.tsx:200
 #: components/Interactions/InteractionDialog.tsx:232
 #: components/Interactions/PrepDialog.tsx:94
 #: components/Interactions/PrepReturnDialog.tsx:69
-#: components/Leaflet/Map.tsx:25
+#: components/Leaflet/Map.tsx:26
 #: components/PickLists/index.tsx:269
 #: components/QueryBuilder/Components.tsx:273
 #: components/QueryBuilder/Edit.tsx:147
@@ -162,7 +162,7 @@ msgstr "Create"
 #: components/Toolbar/QueryTables.tsx:119
 #: components/Toolbar/QueryTablesEdit.tsx:139
 #: components/Toolbar/TreeRepair.tsx:78
-#: components/TreeView/Actions.tsx:354
+#: components/TreeView/Actions.tsx:352
 #: components/UserPreferences/index.tsx:85
 #: components/WbPlanView/MapperComponents.tsx:195
 #: components/WbPlanView/MapperComponents.tsx:412
@@ -175,7 +175,7 @@ msgstr "Create"
 #: components/WorkBench/GeoLocate.tsx:87
 #: components/WorkBench/Results.tsx:70
 #: components/WorkBench/Status.tsx:87
-#: components/WorkBench/Template.tsx:321
+#: components/WorkBench/Template.tsx:319
 #: components/WorkBench/wbView.js:266
 #: components/WorkBench/wbView.js:1572
 #: components/WorkBench/wbView.js:1656
@@ -226,7 +226,7 @@ msgstr "Clear all"
 msgid "save"
 msgstr "Save"
 
-#: components/Atoms/DataEntry.tsx:134
+#: components/Atoms/DataEntry.tsx:136
 #: components/FormSliders/RecordSelectorFromIds.tsx:175
 #: components/Forms/Save.tsx:241
 #: components/Molecules/AutoComplete.tsx:514
@@ -234,7 +234,7 @@ msgstr "Save"
 #: components/QueryBuilder/Wrapped.tsx:383
 #: components/SchemaConfig/Format.tsx:124
 #: components/SchemaConfig/Format.tsx:128
-#: components/SchemaConfig/Languages.tsx:70
+#: components/SchemaConfig/Languages.tsx:72
 #: components/Security/CollectionRole.tsx:224
 #: components/Security/Policies.tsx:179
 #: components/Toolbar/QueryTablesEdit.tsx:183
@@ -255,7 +255,7 @@ msgstr "Open"
 #: components/PickLists/definitions.ts:42
 #: components/Security/PreviewTables.tsx:67
 #: components/Security/Role.tsx:223
-#: components/TreeView/Actions.tsx:444
+#: components/TreeView/Actions.tsx:442
 #: components/WorkBench/DataSetMeta.tsx:92
 #: components/WorkBench/DataSetMeta.tsx:118
 #. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Forms > Delete Button ⬤ Components > Header > Notifications ⬤ Components > Pick Lists > Definitions ⬤ Components > Security > Preview Tables ⬤ Components > Security > Role ⬤ Components > Tree View > Actions ⬤ Components > Work Bench > Data Set Meta
@@ -273,7 +273,7 @@ msgstr "Next"
 msgid "previous"
 msgstr "Previous"
 
-#: components/Security/registry.ts:76
+#: components/Security/registry.ts:78
 #. Used in: Components > Security > Registry
 msgid "tool"
 msgstr "Tool"
@@ -287,14 +287,14 @@ msgstr "Tools"
 #: components/Attachments/Cell.tsx:119
 #: components/Attachments/Plugin.tsx:105
 #: components/Core/ContextLoader.tsx:47
-#: components/Core/Contexts.tsx:118
+#: components/Core/Contexts.tsx:120
 #: components/Core/__tests__/Contexts.test.tsx:62
-#: components/Core/__tests__/Contexts.test.tsx:74
-#: components/FormCells/FormTable.tsx:185
+#: components/Core/__tests__/Contexts.test.tsx:73
+#: components/FormCells/FormTable.tsx:186
 #: components/FormCommands/ShowTransactions.tsx:55
-#: components/FormFields/ComboBox.tsx:132
+#: components/FormFields/ComboBox.tsx:135
 #: components/FormFields/Field.tsx:170
-#: components/FormFields/QueryComboBox.tsx:371
+#: components/FormFields/QueryComboBox.tsx:373
 #: components/FormPlugins/CollectionRelOneToMany.tsx:152
 #: components/Forms/BaseResourceView.tsx:51
 #: components/Forms/DeleteButton.tsx:103
@@ -310,7 +310,7 @@ msgstr "Tools"
 #: components/Molecules/AutoComplete.tsx:430
 #: components/Molecules/FormattedResource.tsx:17
 #: components/Molecules/FormattedResource.tsx:32
-#: components/Molecules/index.tsx:23
+#: components/Molecules/index.tsx:24
 #: components/Permissions/FormatError.tsx:144
 #: components/Permissions/FormatError.tsx:171
 #: components/QueryBuilder/FieldFilter.tsx:564
@@ -344,9 +344,9 @@ msgstr "Loading…"
 msgid "uploaded"
 msgstr "Uploaded"
 
-#: components/Atoms/DataEntry.tsx:149
-#: components/FormCells/FormTable.tsx:350
-#: components/FormCells/FormTable.tsx:359
+#: components/Atoms/DataEntry.tsx:151
+#: components/FormCells/FormTable.tsx:351
+#: components/FormCells/FormTable.tsx:360
 #: components/FormPlugins/CollectionRelOneToMany.tsx:130
 #: components/QueryBuilder/Components.tsx:150
 #: components/QueryBuilder/Field.tsx:243
@@ -361,7 +361,7 @@ msgstr "Uploaded"
 msgid "remove"
 msgstr "Remove"
 
-#: components/Atoms/DataEntry.tsx:144
+#: components/Atoms/DataEntry.tsx:146
 #: components/Forms/SearchDialog.tsx:111
 #: components/Forms/SearchDialog.tsx:114
 #: components/Forms/SearchDialog.tsx:247
@@ -396,7 +396,7 @@ msgstr "N/A"
 msgid "new"
 msgstr "New"
 
-#: components/Atoms/DataEntry.tsx:136
+#: components/Atoms/DataEntry.tsx:138
 #: components/Reports/index.tsx:232
 #: components/Reports/index.tsx:235
 #: components/SchemaConfig/Format.tsx:115
@@ -404,9 +404,9 @@ msgstr "New"
 #: components/Security/UserComponents.tsx:150
 #: components/Security/UserComponents.tsx:154
 #: components/Toolbar/RecordSets.tsx:271
-#: components/Toolbar/WbsDialog.tsx:255
-#: components/Toolbar/WbsDialog.tsx:259
-#: components/TreeView/Actions.tsx:99
+#: components/Toolbar/WbsDialog.tsx:256
+#: components/Toolbar/WbsDialog.tsx:260
+#: components/TreeView/Actions.tsx:97
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Reports > Index ⬤ Components > Schema Config > Format ⬤ Components > Security > User Components ⬤ Components > Toolbar > Record Sets ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Tree View > Actions
 msgid "edit"
 msgstr "Edit"
@@ -446,13 +446,13 @@ msgstr "Update"
 msgid "listTruncated"
 msgstr "(list truncated)"
 
-#: components/FormPlugins/PartialDateUi.tsx:369
+#: components/FormPlugins/PartialDateUi.tsx:371
 #: components/WbPlanView/navigator.ts:541
 #. Used in: Components > Form Plugins > Partial Date Ui ⬤ Components > Wb Plan View > Navigator
 msgid "fullDate"
 msgstr "Full Date"
 
-#: components/Atoms/DataEntry.tsx:135
+#: components/Atoms/DataEntry.tsx:137
 #: components/Atoms/__tests__/Button.test.tsx:13
 #: components/Atoms/__tests__/index.test.tsx:7
 #: components/Atoms/__tests__/index.test.tsx:8
@@ -463,7 +463,7 @@ msgstr "Full Date"
 #: components/Atoms/__tests__/index.test.tsx:13
 #: components/Atoms/__tests__/index.test.tsx:14
 #: components/Atoms/__tests__/index.test.tsx:15
-#: components/TreeView/Actions.tsx:100
+#: components/TreeView/Actions.tsx:98
 #. 🟥Verb. Used in: Components > Atoms > Data Entry ⬤ Atoms > __tests__ > Button ⬤ Atoms > __tests__ > Index ⬤ Components > Tree View > Actions
 msgid "view"
 msgstr "View"
@@ -481,15 +481,15 @@ msgstr "View"
 msgid "opensInNewTab"
 msgstr "(opens in a new tab)"
 
-#: components/Core/Main.tsx:108
+#: components/Core/Main.tsx:107
 #: components/Errors/ErrorDialog.tsx:143
 #: components/Permissions/PermissionDenied.tsx:214
-#: components/RouterCommands/CacheBuster.tsx:37
+#: components/RouterCommands/CacheBuster.tsx:36
 #. Used in: Components > Core > Main ⬤ Components > Errors > Error Dialog ⬤ Components > Permissions > Permission Denied ⬤ Components > Router Commands > Cache Buster
 msgid "goToHomepage"
 msgstr "Go to Home Page"
 
-#: components/FormCells/FormTable.tsx:253
+#: components/FormCells/FormTable.tsx:254
 #: components/QueryBuilder/Edit.tsx:96
 #. Used in: Components > Form Cells > Form Table ⬤ Components > Query Builder > Edit
 msgid "actions"
@@ -497,7 +497,7 @@ msgstr "Actions"
 
 #: components/ChooseCollection/index.tsx:124
 #: components/Router/EntrypointRouter.tsx:32
-#: components/UserPreferences/Definitions.tsx:1087
+#: components/UserPreferences/Definitions.tsx:1082
 #. Used in: Components > Choose Collection > Index ⬤ Components > Router > Entrypoint Router ⬤ Components > User Preferences > Definitions
 msgid "chooseCollection"
 msgstr "Choose Collection"
@@ -516,9 +516,9 @@ msgstr "Descending"
 
 #: components/Header/menuItemDefinitions.ts:88
 #: components/Router/OverlayRoutes.tsx:103
-#: components/Security/registry.ts:204
+#: components/Security/registry.ts:206
 #: components/Toolbar/RecordSets.tsx:184
-#: components/UserPreferences/Definitions.tsx:483
+#: components/UserPreferences/Definitions.tsx:478
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Security > Registry ⬤ Components > Toolbar > Record Sets ⬤ Components > User Preferences > Definitions
 msgid "recordSets"
 msgstr "Record Sets"
@@ -559,15 +559,15 @@ msgid "unknown"
 msgstr "Unknown"
 
 #: components/SchemaConfig/Languages.tsx:37
-#: components/SchemaConfig/Languages.tsx:88
+#: components/SchemaConfig/Languages.tsx:90
 #: components/Toolbar/Language.tsx:140
-#: components/UserPreferences/Definitions.tsx:135
-#: components/UserPreferences/Definitions.tsx:621
+#: components/UserPreferences/Definitions.tsx:130
+#: components/UserPreferences/Definitions.tsx:616
 #. Used in: Components > Schema Config > Languages ⬤ Components > Toolbar > Language ⬤ Components > User Preferences > Definitions
 msgid "language"
 msgstr "Language"
 
-#: components/SchemaConfig/Languages.tsx:99
+#: components/SchemaConfig/Languages.tsx:101
 #. Used in: Components > Schema Config > Languages
 msgid "country"
 msgstr "Country"
@@ -600,16 +600,16 @@ msgstr "Choose a file or drag it here"
 msgid "selectedFileName"
 msgstr "Selected file"
 
-#: components/Attachments/index.tsx:188
-#: components/Attachments/index.tsx:191
-#: components/Security/registry.ts:107
-#: components/Security/registry.ts:135
+#: components/Attachments/index.tsx:189
+#: components/Attachments/index.tsx:192
+#: components/Security/registry.ts:109
+#: components/Security/registry.ts:137
 #. Used in: Components > Attachments > Index ⬤ Components > Security > Registry
 msgid "all"
 msgstr "All"
 
-#: components/Attachments/index.tsx:197
-#: components/Attachments/index.tsx:200
+#: components/Attachments/index.tsx:198
+#: components/Attachments/index.tsx:201
 #. Used in: Components > Attachments > Index
 msgid "unused"
 msgstr "Unused"
@@ -644,13 +644,13 @@ msgstr "Import"
 msgid "dismiss"
 msgstr "Dismiss"
 
-#: components/DataModel/specifyModel.ts:258
+#: components/DataModel/specifyModel.ts:259
 #: components/WbPlanView/navigator.ts:421
 #. Used in: Components > Data Model > Specify Model ⬤ Components > Wb Plan View > Navigator
 msgid "id"
 msgstr "ID"
 
-#: components/Attachments/index.tsx:171
+#: components/Attachments/index.tsx:172
 #: components/QueryBuilder/Field.tsx:389
 #: components/QueryBuilder/Field.tsx:398
 #. Used in: Components > Attachments > Index ⬤ Components > Query Builder > Field
@@ -690,15 +690,15 @@ msgstr "Selected"
 msgid "primary"
 msgstr "Primary"
 
-#: components/FormCells/FormTable.tsx:208
-#: components/FormCells/FormTable.tsx:295
-#: components/FormCells/FormTable.tsx:297
+#: components/FormCells/FormTable.tsx:209
+#: components/FormCells/FormTable.tsx:296
+#: components/FormCells/FormTable.tsx:298
 #. Used in: Components > Form Cells > Form Table
 msgid "expand"
 msgstr "Expand"
 
-#: components/FormCells/FormTable.tsx:264
 #: components/FormCells/FormTable.tsx:265
+#: components/FormCells/FormTable.tsx:267
 #. 🟥As in contract the list. Used in: Components > Form Cells > Form Table
 msgid "contract"
 msgstr "Contract"
@@ -746,19 +746,19 @@ msgstr "None available"
 #: components/AppResources/Filters.tsx:102
 #: components/AppResources/Filters.tsx:118
 #: components/AppResources/Filters.tsx:144
-#: components/Attachments/index.tsx:187
-#: components/Attachments/index.tsx:196
-#: components/FormCells/FormTable.tsx:135
+#: components/Attachments/index.tsx:188
+#: components/Attachments/index.tsx:197
+#: components/FormCells/FormTable.tsx:136
 #: components/Header/ExpressSearchTask.tsx:113
 #: components/Toolbar/Query.tsx:95
 #: components/Toolbar/RecordSets.tsx:183
-#: components/Toolbar/WbsDialog.tsx:200
+#: components/Toolbar/WbsDialog.tsx:201
 #: components/WorkBench/wbView.js:2075
 #. 🟥Example usage: Record Sets (1,234). Used in: Components > App Resources > Filters ⬤ Components > Attachments > Index ⬤ Components > Form Cells > Form Table ⬤ Components > Header > Express Search Task ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Work Bench > Wb View
 msgid "countLine"
 msgstr "{resource:string} ({count:number|formatted})"
 
-#: components/AppResources/Aside.tsx:228
+#: components/AppResources/Aside.tsx:231
 #. 🟥Example usage: Record Sets (1,234). Used in: Components > App Resources > Aside
 msgid "jsxCountLine"
 msgstr "{resource:string} <wrap>({count:number|formatted})</wrap>"

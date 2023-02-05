@@ -65,7 +65,7 @@ msgstr "Query export to CSV completed."
 msgid "queryExportToKmlCompleted"
 msgstr "Query export to KML completed."
 
-#: components/Header/NotificationRenderers.tsx:108
+#: components/Header/NotificationRenderers.tsx:118
 #. Used in: Components > Header > Notification Renderers
 msgid "dataSetOwnershipTransferred"
 msgstr ""

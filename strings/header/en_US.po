@@ -1,7 +1,7 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/Core/Main.tsx:89
+#: components/Core/Main.tsx:88
 #. 🟥For accessibility purposes. Allows jumping to page content. Used in: Components > Core > Main
 msgid "skipToContent"
 msgstr "Skip to Content"
@@ -20,7 +20,7 @@ msgstr "Current {collectionTable:string}"
 #: components/Header/Forms.tsx:63
 #: components/Header/menuItemDefinitions.ts:46
 #: components/Router/OverlayRoutes.tsx:44
-#: components/UserPreferences/Definitions.tsx:447
+#: components/UserPreferences/Definitions.tsx:442
 #. Used in: Components > Header > Forms ⬤ Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > User Preferences > Definitions
 msgid "dataEntry"
 msgstr "Data Entry"
@@ -176,7 +176,7 @@ msgstr "Operations API"
 #: components/AppResources/Create.tsx:109
 #: components/AppResources/Filters.tsx:156
 #: components/Header/userToolDefinitions.ts:81
-#: components/UserPreferences/Definitions.tsx:418
+#: components/UserPreferences/Definitions.tsx:413
 #. Used in: Components > App Resources > Create ⬤ Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > User Preferences > Definitions
 msgid "documentation"
 msgstr "Documentation"
@@ -199,12 +199,12 @@ msgstr "Community Forum"
 #: components/Errors/ErrorDialog.tsx:131
 #: components/Header/userToolDefinitions.ts:101
 #: components/Router/Routes.tsx:394
-#: components/RouterCommands/CacheBuster.tsx:42
+#: components/RouterCommands/CacheBuster.tsx:41
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Router Commands > Cache Buster
 msgid "clearCache"
 msgstr "Clear Browser Cache"
 
-#: components/RouterCommands/CacheBuster.tsx:45
+#: components/RouterCommands/CacheBuster.tsx:44
 #. Used in: Components > Router Commands > Cache Buster
 msgid "cacheCleared"
 msgstr "Cache has been cleared. Please reload the page."

@@ -7,10 +7,10 @@ msgstr "Content-Type: text/plain\n"
 msgid "openMap"
 msgstr "Открыть карту"
 
-#: components/Leaflet/Map.tsx:23
+#: components/Leaflet/Map.tsx:24
 #: components/QueryBuilder/ToMap.tsx:59
 #: components/QueryBuilder/ToMap.tsx:241
-#: components/UserPreferences/Definitions.tsx:1555
+#: components/UserPreferences/Definitions.tsx:1550
 #: components/WorkBench/Template.tsx:229
 #. Used in: Components > Leaflet > Map ⬤ Components > Query Builder > To Map ⬤ Components > User Preferences > Definitions ⬤ Components > Work Bench > Template
 msgid "geoMap"

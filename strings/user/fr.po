@@ -12,7 +12,7 @@ msgstr ""
 "X-Generator: Weblate 4.16-dev\n"
 
 #: components/ChooseCollection/index.tsx:168
-#: components/Core/Main.tsx:122
+#: components/Core/Main.tsx:121
 #: components/Login/OicLogin.tsx:86
 #: components/Login/index.tsx:154
 #: components/Permissions/PermissionDenied.tsx:230
@@ -33,13 +33,13 @@ msgstr "Nom d'utilisateur"
 msgid "password"
 msgstr "Mot de passe"
 
-#: components/FormFields/QueryComboBox.tsx:514
+#: components/FormFields/QueryComboBox.tsx:516
 #: components/FormPlugins/CollectionRelOneToMany.tsx:183
 #. Used in: Components > Form Fields > Query Combo Box ⬤ Components > Form Plugins > Collection Rel One To Many
 msgid "collectionAccessDenied"
 msgstr "Vous n'avez pas accès à cette collection"
 
-#: components/FormFields/QueryComboBox.tsx:517
+#: components/FormFields/QueryComboBox.tsx:519
 #: components/FormPlugins/CollectionRelOneToMany.tsx:186
 #. Used in: Components > Form Fields > Query Combo Box ⬤ Components > Form Plugins > Collection Rel One To Many
 msgid "collectionAccessDeniedDescription"
@@ -70,7 +70,7 @@ msgstr "Nouveau mot de passe"
 msgid "repeatPassword"
 msgstr "Répéter le nouveau mot de passe"
 
-#: components/Core/Main.tsx:173
+#: components/Core/Main.tsx:172
 #: components/Header/userToolDefinitions.ts:24
 #. Used in: Components > Core > Main ⬤ Components > Header > User Tool Definitions
 msgid "logOut"
@@ -82,13 +82,13 @@ msgstr "Se déconnecter"
 msgid "setUserAgents"
 msgstr "Définir les agents utilisateurs"
 
-#: components/Core/Main.tsx:180
+#: components/Core/Main.tsx:179
 #. Used in: Components > Core > Main
 #, fuzzy
 msgid "noAgent"
 msgstr "L'utilisateur actuel n'a pas d'agent assigné"
 
-#: components/Core/Main.tsx:185
+#: components/Core/Main.tsx:184
 #. Used in: Components > Core > Main
 #, fuzzy
 msgid "noAgentDescription"
@@ -203,8 +203,8 @@ msgstr ""
 "session actuelle a été déconnectée."
 
 #: components/FormFields/Field.tsx:125
-#: components/FormFields/QueryComboBox.tsx:184
-#: components/Forms/dataObjFormatters.ts:254
+#: components/FormFields/QueryComboBox.tsx:186
+#: components/Forms/dataObjFormatters.ts:255
 #. 🟥Used in field formatter if user doesn't have read access to the related table. Used in: Components > Form Fields > Field ⬤ Components > Form Fields > Query Combo Box ⬤ Components > Forms > Data Obj Formatters
 #, fuzzy
 msgid "noPermission"
@@ -223,7 +223,7 @@ msgstr "Erreur d'autorisation refusée"
 msgid "permissionDeniedDescription"
 msgstr ""
 "Vous ne disposez d'aucune stratégie ni d'aucun rôle vous autorisant à "
-"effectuer l'action suivante :"
+"effectuer l'action suivante:"
 
 #: components/Forms/DataTask.tsx:131
 #. Used in: Components > Forms > Data Task
@@ -231,7 +231,7 @@ msgstr ""
 msgid "emptyRecordSetsReadOnly"
 msgstr "Impossible d'ouvrir {recordSetTable:string} vide en mode lecture seule"
 
-#: components/Permissions/FormatError.tsx:114
+#: components/Permissions/FormatError.tsx:117
 #. Used in: Components > Permissions > Format Error
 #, fuzzy
 msgid "permissionDeniedForUrl"
@@ -283,7 +283,7 @@ msgstr "Enregistrez d'abord l'utilisateur"
 msgid "mustBeManager"
 msgstr "L'utilisateur doit d'abord être enregistré en tant que gestionnaire"
 
-#: components/AppResources/tree.ts:211
+#: components/AppResources/tree.ts:212
 #: components/Security/CollectionRole.tsx:198
 #. Used in: Components > App Resources > Tree ⬤ Components > Security > Collection Role
 #, fuzzy
@@ -409,7 +409,7 @@ msgstr "Profil d'autorisation de l'utilisateur (lecture seule)"
 #, fuzzy
 msgid "outOfDateWarning"
 msgstr ""
-"Remarque : l'aperçu peut être obsolète. Enregistrer les modifications pour "
+"Remarque: l'aperçu peut être obsolète. Enregistrer les modifications pour "
 "mettre à jour l'aperçu"
 
 #: components/Security/PreviewComponents.tsx:173
@@ -432,7 +432,7 @@ msgstr "Action"
 #: components/Permissions/FormatError.tsx:65
 #: components/Security/PreviewComponents.tsx:92
 #: components/Security/PreviewComponents.tsx:148
-#: components/Security/utils.ts:100
+#: components/Security/utils.ts:101
 #. Used in: Components > Permissions > Format Error ⬤ Components > Security > Preview Components ⬤ Components > Security > Utils
 msgid "resource"
 msgstr "Ressource"
@@ -447,7 +447,7 @@ msgstr "Toutes les collections"
 msgid "thisCollection"
 msgstr "Cette collection"
 
-#: components/Security/utils.ts:143
+#: components/Security/utils.ts:144
 #. Used in: Components > Security > Utils
 msgid "allActions"
 msgstr "Toutes les actions"
@@ -560,7 +560,7 @@ msgstr "Veuillez définir les agents suivants avant de continuer :"
 msgid "externalIdentityProviders"
 msgstr "Fournisseurs d'identité externes :"
 
-#: components/Security/registry.ts:106
+#: components/Security/registry.ts:108
 #. Used in: Components > Security > Registry
 msgid "allTables"
 msgstr "Tous les tableaux"
@@ -625,12 +625,12 @@ msgid "switchToVerticalLayout"
 msgstr "Passer à l'affichage vertical"
 
 #: components/Security/Preview.tsx:78
-#: components/Security/registry.ts:72
+#: components/Security/registry.ts:74
 #. Used in: Components > Security > Preview ⬤ Components > Security > Registry
 msgid "advancedTables"
 msgstr "Tableaux avancés"
 
-#: components/Security/utils.ts:131
+#: components/Security/utils.ts:132
 #. Used in: Components > Security > Utils
 #, fuzzy
 msgid "excludedInstitutionalPolicies"

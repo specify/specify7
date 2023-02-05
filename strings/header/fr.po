@@ -11,7 +11,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 4.16-dev\n"
 
-#: components/Core/Main.tsx:89
+#: components/Core/Main.tsx:88
 #. 🟥For accessibility purposes. Allows jumping to page content. Used in: Components > Core > Main
 #, fuzzy
 msgid "skipToContent"
@@ -33,7 +33,7 @@ msgstr "Courant {collectionTable:string}"
 #: components/Header/Forms.tsx:63
 #: components/Header/menuItemDefinitions.ts:46
 #: components/Router/OverlayRoutes.tsx:44
-#: components/UserPreferences/Definitions.tsx:447
+#: components/UserPreferences/Definitions.tsx:442
 #. Used in: Components > Header > Forms ⬤ Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > User Preferences > Definitions
 #, fuzzy
 msgid "dataEntry"
@@ -219,7 +219,7 @@ msgstr "API des opérations"
 #: components/AppResources/Create.tsx:109
 #: components/AppResources/Filters.tsx:156
 #: components/Header/userToolDefinitions.ts:81
-#: components/UserPreferences/Definitions.tsx:418
+#: components/UserPreferences/Definitions.tsx:413
 #. Used in: Components > App Resources > Create ⬤ Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > User Preferences > Definitions
 #, fuzzy
 msgid "documentation"
@@ -246,13 +246,13 @@ msgstr "Forum de la communauté"
 #: components/Errors/ErrorDialog.tsx:131
 #: components/Header/userToolDefinitions.ts:101
 #: components/Router/Routes.tsx:394
-#: components/RouterCommands/CacheBuster.tsx:42
+#: components/RouterCommands/CacheBuster.tsx:41
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Router Commands > Cache Buster
 #, fuzzy
 msgid "clearCache"
 msgstr "Effacer le cache du navigateur"
 
-#: components/RouterCommands/CacheBuster.tsx:45
+#: components/RouterCommands/CacheBuster.tsx:44
 #. Used in: Components > Router Commands > Cache Buster
 #, fuzzy
 msgid "cacheCleared"

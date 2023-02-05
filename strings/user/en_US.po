@@ -2,7 +2,7 @@ msgid ""
 msgstr "Content-Type: text/plain\n"
 
 #: components/ChooseCollection/index.tsx:168
-#: components/Core/Main.tsx:122
+#: components/Core/Main.tsx:121
 #: components/Login/OicLogin.tsx:86
 #: components/Login/index.tsx:154
 #: components/Permissions/PermissionDenied.tsx:230
@@ -23,13 +23,13 @@ msgstr "Username"
 msgid "password"
 msgstr "Password"
 
-#: components/FormFields/QueryComboBox.tsx:514
+#: components/FormFields/QueryComboBox.tsx:516
 #: components/FormPlugins/CollectionRelOneToMany.tsx:183
 #. Used in: Components > Form Fields > Query Combo Box ⬤ Components > Form Plugins > Collection Rel One To Many
 msgid "collectionAccessDenied"
 msgstr "You do not have access to this collection"
 
-#: components/FormFields/QueryComboBox.tsx:517
+#: components/FormFields/QueryComboBox.tsx:519
 #: components/FormPlugins/CollectionRelOneToMany.tsx:186
 #. Used in: Components > Form Fields > Query Combo Box ⬤ Components > Form Plugins > Collection Rel One To Many
 msgid "collectionAccessDeniedDescription"
@@ -60,7 +60,7 @@ msgstr "New password"
 msgid "repeatPassword"
 msgstr "Repeat new password"
 
-#: components/Core/Main.tsx:173
+#: components/Core/Main.tsx:172
 #: components/Header/userToolDefinitions.ts:24
 #. Used in: Components > Core > Main ⬤ Components > Header > User Tool Definitions
 msgid "logOut"
@@ -71,12 +71,12 @@ msgstr "Log Out"
 msgid "setUserAgents"
 msgstr "Set User Agents"
 
-#: components/Core/Main.tsx:180
+#: components/Core/Main.tsx:179
 #. Used in: Components > Core > Main
 msgid "noAgent"
 msgstr "Current user does not have an agent assigned"
 
-#: components/Core/Main.tsx:185
+#: components/Core/Main.tsx:184
 #. Used in: Components > Core > Main
 msgid "noAgentDescription"
 msgstr "Please log in as admin and assign an agent to this user"
@@ -179,8 +179,8 @@ msgstr ""
 "been logged out."
 
 #: components/FormFields/Field.tsx:125
-#: components/FormFields/QueryComboBox.tsx:184
-#: components/Forms/dataObjFormatters.ts:254
+#: components/FormFields/QueryComboBox.tsx:186
+#: components/Forms/dataObjFormatters.ts:255
 #. 🟥Used in field formatter if user doesn't have read access to the related table. Used in: Components > Form Fields > Field ⬤ Components > Form Fields > Query Combo Box ⬤ Components > Forms > Data Obj Formatters
 msgid "noPermission"
 msgstr "NO PERMISSION"
@@ -203,7 +203,7 @@ msgstr ""
 msgid "emptyRecordSetsReadOnly"
 msgstr "Cannot open empty {recordSetTable:string} when in Read-Only mode"
 
-#: components/Permissions/FormatError.tsx:114
+#: components/Permissions/FormatError.tsx:117
 #. Used in: Components > Permissions > Format Error
 msgid "permissionDeniedForUrl"
 msgstr "Permission denied when accessing <url />"
@@ -246,7 +246,7 @@ msgstr "Save user first"
 msgid "mustBeManager"
 msgstr "User must be saved as Manager first"
 
-#: components/AppResources/tree.ts:211
+#: components/AppResources/tree.ts:212
 #: components/Security/CollectionRole.tsx:198
 #. Used in: Components > App Resources > Tree ⬤ Components > Security > Collection Role
 msgid "users"
@@ -379,7 +379,7 @@ msgstr "Action"
 #: components/Permissions/FormatError.tsx:65
 #: components/Security/PreviewComponents.tsx:92
 #: components/Security/PreviewComponents.tsx:148
-#: components/Security/utils.ts:100
+#: components/Security/utils.ts:101
 #. Used in: Components > Permissions > Format Error ⬤ Components > Security > Preview Components ⬤ Components > Security > Utils
 msgid "resource"
 msgstr "Resource"
@@ -394,7 +394,7 @@ msgstr "All Collections"
 msgid "thisCollection"
 msgstr "This collection"
 
-#: components/Security/utils.ts:143
+#: components/Security/utils.ts:144
 #. Used in: Components > Security > Utils
 msgid "allActions"
 msgstr "All Actions"
@@ -502,7 +502,7 @@ msgstr "Please set the following agents before proceeding:"
 msgid "externalIdentityProviders"
 msgstr "External identity providers:"
 
-#: components/Security/registry.ts:106
+#: components/Security/registry.ts:108
 #. Used in: Components > Security > Registry
 msgid "allTables"
 msgstr "All tables"
@@ -558,12 +558,12 @@ msgid "switchToVerticalLayout"
 msgstr "Switch to vertical layout"
 
 #: components/Security/Preview.tsx:78
-#: components/Security/registry.ts:72
+#: components/Security/registry.ts:74
 #. Used in: Components > Security > Preview ⬤ Components > Security > Registry
 msgid "advancedTables"
 msgstr "Advanced tables"
 
-#: components/Security/utils.ts:131
+#: components/Security/utils.ts:132
 #. Used in: Components > Security > Utils
 msgid "excludedInstitutionalPolicies"
 msgstr "Excluded institutional policies:"

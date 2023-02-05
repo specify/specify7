@@ -1,33 +1,33 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/Attachments/index.tsx:169
+#: components/Attachments/index.tsx:170
 #: components/Header/menuItemDefinitions.ts:109
 #: components/Router/Routes.tsx:162
-#: components/UserPreferences/Definitions.tsx:510
+#: components/UserPreferences/Definitions.tsx:505
 #. Used in: Components > Attachments > Index ⬤ Components > Header > Menu Item Definitions ⬤ Components > Router > Routes ⬤ Components > User Preferences > Definitions
 msgid "attachments"
 msgstr "Archivos adjuntos"
 
-#: components/Attachments/index.tsx:229
+#: components/Attachments/index.tsx:230
 #. Used in: Components > Attachments > Index
 msgid "scale"
 msgstr "Escala"
 
 #: components/Attachments/Plugin.tsx:107
-#: components/Attachments/index.tsx:69
+#: components/Attachments/index.tsx:70
 #. Used in: Components > Attachments > Plugin ⬤ Components > Attachments > Index
 msgid "attachmentServerUnavailable"
 msgstr "Servidor de archivos adjuntos no disponible"
 
-#: components/Attachments/index.tsx:72
+#: components/Attachments/index.tsx:73
 #. Used in: Components > Attachments > Index
 msgid "attachmentServerUnavailableDescription"
 msgstr "Configura tu servidor de archivos adjuntos"
 
-#: components/Attachments/index.tsx:218
+#: components/Attachments/index.tsx:219
 #: components/FormMeta/SubViewMeta.tsx:42
-#: components/UserPreferences/Definitions.tsx:1102
+#: components/UserPreferences/Definitions.tsx:1097
 #. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > User Preferences > Definitions
 msgid "orderBy"
 msgstr "ordenar por"

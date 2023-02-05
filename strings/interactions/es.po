@@ -14,8 +14,8 @@ msgstr ""
 #: components/Header/menuItemDefinitions.ts:66
 #: components/Interactions/InteractionsDialog.tsx:253
 #: components/Router/OverlayRoutes.tsx:60
-#: components/UserPreferences/Definitions.tsx:465
-#: components/UserPreferences/Definitions.tsx:522
+#: components/UserPreferences/Definitions.tsx:460
+#: components/UserPreferences/Definitions.tsx:517
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Router > Overlay Routes ⬤ Components > User Preferences > Definitions
 msgid "interactions"
 msgstr "Interacciones"

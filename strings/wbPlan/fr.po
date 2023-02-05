@@ -1,7 +1,7 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/UserPreferences/Definitions.tsx:1481
+#: components/UserPreferences/Definitions.tsx:1476
 #: components/WorkBench/DevShowPlan.tsx:64
 #: components/WorkBench/Template.tsx:121
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Work Bench > Dev Show Plan ⬤ Components > Work Bench > Template
@@ -419,13 +419,13 @@ msgstr "Nouvelle colonne {index:number}"
 msgid "noHeader"
 msgstr "(aucun en-tête)"
 
-#: components/Toolbar/WbsDialog.tsx:199
+#: components/Toolbar/WbsDialog.tsx:200
 #. Used in: Components > Toolbar > Wbs Dialog
 #, fuzzy
 msgid "copyPlan"
 msgstr "Copier le plan à partir d'un ensemble de données existant"
 
-#: components/Toolbar/WbsDialog.tsx:211
+#: components/Toolbar/WbsDialog.tsx:212
 #. Used in: Components > Toolbar > Wbs Dialog
 #, fuzzy
 msgid "noPlansToCopyFrom"

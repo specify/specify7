@@ -14,8 +14,8 @@ msgstr ""
 
 #: components/Header/menuItemDefinitions.ts:103
 #: components/Router/OverlayRoutes.tsx:117
-#: components/UserPreferences/Definitions.tsx:492
-#: components/UserPreferences/Definitions.tsx:1357
+#: components/UserPreferences/Definitions.tsx:487
+#: components/UserPreferences/Definitions.tsx:1352
 #: components/WorkBench/wbView.js:230
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > User Preferences > Definitions ⬤ Components > Work Bench > Wb View
 #, fuzzy
@@ -257,7 +257,7 @@ msgstr ""
 "доступним для завантаженого набору даних."
 
 #: components/WorkBench/DataSetMeta.tsx:67
-#: components/WorkBench/Template.tsx:319
+#: components/WorkBench/Template.tsx:320
 #. Used in: Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Template
 #, fuzzy
 msgid "dataSetDeleted"
@@ -484,9 +484,9 @@ msgstr "Ця дія недоступна під час перегляду рез
 msgid "unavailableWhileValidating"
 msgstr "Ця дія недоступна, поки триває перевірка даних"
 
-#: components/WorkBench/Template.tsx:209
-#: components/WorkBench/Template.tsx:217
-#: components/WorkBench/Template.tsx:227
+#: components/WorkBench/Template.tsx:208
+#: components/WorkBench/Template.tsx:216
+#: components/WorkBench/Template.tsx:226
 #. Used in: Components > Work Bench > Template
 #, fuzzy
 msgid "unavailableWithoutLocality"
@@ -661,44 +661,44 @@ msgstr "Кодування символів:"
 msgid "delimiter"
 msgstr "роздільник:"
 
-#: components/UserPreferences/Definitions.tsx:1458
+#: components/UserPreferences/Definitions.tsx:1453
 #: components/WbImport/index.tsx:152
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "comma"
 msgstr "Кома"
 
-#: components/UserPreferences/Definitions.tsx:1466
+#: components/UserPreferences/Definitions.tsx:1461
 #: components/WbImport/index.tsx:154
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "semicolon"
 msgstr "Крапка з комою"
 
-#: components/UserPreferences/Definitions.tsx:1462
+#: components/UserPreferences/Definitions.tsx:1457
 #: components/WbImport/index.tsx:153
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "tab"
 msgstr "вкладка"
 
-#: components/UserPreferences/Definitions.tsx:1470
+#: components/UserPreferences/Definitions.tsx:1465
 #: components/WbImport/index.tsx:155
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "space"
 msgstr "Простір"
 
-#: components/UserPreferences/Definitions.tsx:1474
+#: components/UserPreferences/Definitions.tsx:1469
 #: components/WbImport/index.tsx:156
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "pipe"
 msgstr "Труба"
 
-#: components/UserPreferences/Definitions.tsx:535
-#: components/UserPreferences/Definitions.tsx:556
-#: components/UserPreferences/Definitions.tsx:577
+#: components/UserPreferences/Definitions.tsx:530
+#: components/UserPreferences/Definitions.tsx:551
+#: components/UserPreferences/Definitions.tsx:572
 #: components/WbImport/index.tsx:193
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
@@ -717,7 +717,7 @@ msgstr "Назва нового набору даних:"
 msgid "firstRowIsHeader"
 msgstr "Перший рядок – заголовок:"
 
-#: components/Toolbar/WbsDialog.tsx:177
+#: components/Toolbar/WbsDialog.tsx:178
 #: components/WbImport/index.tsx:238
 #. Used in: Components > Toolbar > Wbs Dialog ⬤ Components > Wb Import > Index
 #, fuzzy
@@ -730,31 +730,31 @@ msgstr "Імпорт файлу"
 msgid "columnName"
 msgstr "Колонка {columnIndex:number}"
 
-#: components/Toolbar/WbsDialog.tsx:41
+#: components/Toolbar/WbsDialog.tsx:42
 #. Used in: Components > Toolbar > Wbs Dialog
 #, fuzzy
 msgid "newDataSetName"
 msgstr "Новий набір даних {date}"
 
-#: components/Toolbar/WbsDialog.tsx:201
+#: components/Toolbar/WbsDialog.tsx:202
 #. Used in: Components > Toolbar > Wbs Dialog
 #, fuzzy
 msgid "dataSets"
 msgstr "Набори даних WorkBench"
 
-#: components/Toolbar/WbsDialog.tsx:212
+#: components/Toolbar/WbsDialog.tsx:213
 #. Used in: Components > Toolbar > Wbs Dialog
 #, fuzzy
 msgid "wbsDialogEmpty"
 msgstr "Наразі не існує наборів даних."
 
-#: components/Toolbar/WbsDialog.tsx:213
+#: components/Toolbar/WbsDialog.tsx:214
 #. Used in: Components > Toolbar > Wbs Dialog
 #, fuzzy
 msgid "createDataSetInstructions"
 msgstr "Використовуйте «Імпортувати файл» або «Створити новий», щоб створити новий."
 
-#: components/Toolbar/WbsDialog.tsx:188
+#: components/Toolbar/WbsDialog.tsx:189
 #. Used in: Components > Toolbar > Wbs Dialog
 #, fuzzy
 msgid "createNew"

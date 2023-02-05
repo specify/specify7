@@ -77,7 +77,7 @@ msgstr "Експорт запиту в CSV завершено."
 msgid "queryExportToKmlCompleted"
 msgstr "Експорт запиту в KML завершено."
 
-#: components/Header/NotificationRenderers.tsx:108
+#: components/Header/NotificationRenderers.tsx:118
 #. Used in: Components > Header > Notification Renderers
 #, fuzzy
 msgid "dataSetOwnershipTransferred"

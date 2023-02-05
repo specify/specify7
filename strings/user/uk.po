@@ -13,7 +13,7 @@ msgstr ""
 "X-Generator: Weblate 4.16-dev\n"
 
 #: components/ChooseCollection/index.tsx:168
-#: components/Core/Main.tsx:122
+#: components/Core/Main.tsx:121
 #: components/Login/OicLogin.tsx:86
 #: components/Login/index.tsx:154
 #: components/Permissions/PermissionDenied.tsx:230
@@ -37,14 +37,14 @@ msgstr "Ім'я користувача"
 msgid "password"
 msgstr "Пароль"
 
-#: components/FormFields/QueryComboBox.tsx:514
+#: components/FormFields/QueryComboBox.tsx:516
 #: components/FormPlugins/CollectionRelOneToMany.tsx:183
 #. Used in: Components > Form Fields > Query Combo Box ⬤ Components > Form Plugins > Collection Rel One To Many
 #, fuzzy
 msgid "collectionAccessDenied"
 msgstr "Ви не маєте доступу до цієї колекції"
 
-#: components/FormFields/QueryComboBox.tsx:517
+#: components/FormFields/QueryComboBox.tsx:519
 #: components/FormPlugins/CollectionRelOneToMany.tsx:186
 #. Used in: Components > Form Fields > Query Combo Box ⬤ Components > Form Plugins > Collection Rel One To Many
 #, fuzzy
@@ -80,7 +80,7 @@ msgstr "Новий пароль"
 msgid "repeatPassword"
 msgstr "Повторіть новий пароль"
 
-#: components/Core/Main.tsx:173
+#: components/Core/Main.tsx:172
 #: components/Header/userToolDefinitions.ts:24
 #. Used in: Components > Core > Main ⬤ Components > Header > User Tool Definitions
 #, fuzzy
@@ -93,13 +93,13 @@ msgstr "Вийти"
 msgid "setUserAgents"
 msgstr "Встановити агентів користувача"
 
-#: components/Core/Main.tsx:180
+#: components/Core/Main.tsx:179
 #. Used in: Components > Core > Main
 #, fuzzy
 msgid "noAgent"
 msgstr "Поточний користувач не має призначеного агента"
 
-#: components/Core/Main.tsx:185
+#: components/Core/Main.tsx:184
 #. Used in: Components > Core > Main
 #, fuzzy
 msgid "noAgentDescription"
@@ -219,8 +219,8 @@ msgstr ""
 "із системи."
 
 #: components/FormFields/Field.tsx:125
-#: components/FormFields/QueryComboBox.tsx:184
-#: components/Forms/dataObjFormatters.ts:254
+#: components/FormFields/QueryComboBox.tsx:186
+#: components/Forms/dataObjFormatters.ts:255
 #. 🟥Used in field formatter if user doesn't have read access to the related table. Used in: Components > Form Fields > Field ⬤ Components > Form Fields > Query Combo Box ⬤ Components > Forms > Data Obj Formatters
 #, fuzzy
 msgid "noPermission"
@@ -249,7 +249,7 @@ msgstr ""
 "Неможливо відкрити порожній {recordSetTable:string} у режимі лише для "
 "читання"
 
-#: components/Permissions/FormatError.tsx:114
+#: components/Permissions/FormatError.tsx:117
 #. Used in: Components > Permissions > Format Error
 #, fuzzy
 msgid "permissionDeniedForUrl"
@@ -300,7 +300,7 @@ msgstr "Спочатку збережіть користувача"
 msgid "mustBeManager"
 msgstr "Спочатку користувача потрібно зберегти як менеджера"
 
-#: components/AppResources/tree.ts:211
+#: components/AppResources/tree.ts:212
 #: components/Security/CollectionRole.tsx:198
 #. Used in: Components > App Resources > Tree ⬤ Components > Security > Collection Role
 #, fuzzy
@@ -459,7 +459,7 @@ msgstr "Дія"
 #: components/Permissions/FormatError.tsx:65
 #: components/Security/PreviewComponents.tsx:92
 #: components/Security/PreviewComponents.tsx:148
-#: components/Security/utils.ts:100
+#: components/Security/utils.ts:101
 #. Used in: Components > Permissions > Format Error ⬤ Components > Security > Preview Components ⬤ Components > Security > Utils
 #, fuzzy
 msgid "resource"
@@ -477,7 +477,7 @@ msgstr "Всі колекції"
 msgid "thisCollection"
 msgstr "Ця колекція"
 
-#: components/Security/utils.ts:143
+#: components/Security/utils.ts:144
 #. Used in: Components > Security > Utils
 #, fuzzy
 msgid "allActions"
@@ -605,7 +605,7 @@ msgstr "Перш ніж продовжити, установіть такі аг
 msgid "externalIdentityProviders"
 msgstr "Зовнішні постачальники ідентифікаційної інформації:"
 
-#: components/Security/registry.ts:106
+#: components/Security/registry.ts:108
 #. Used in: Components > Security > Registry
 #, fuzzy
 msgid "allTables"
@@ -674,13 +674,13 @@ msgid "switchToVerticalLayout"
 msgstr "Переключитися на вертикальне розташування"
 
 #: components/Security/Preview.tsx:78
-#: components/Security/registry.ts:72
+#: components/Security/registry.ts:74
 #. Used in: Components > Security > Preview ⬤ Components > Security > Registry
 #, fuzzy
 msgid "advancedTables"
 msgstr "Розширені таблиці"
 
-#: components/Security/utils.ts:131
+#: components/Security/utils.ts:132
 #. Used in: Components > Security > Utils
 #, fuzzy
 msgid "excludedInstitutionalPolicies"

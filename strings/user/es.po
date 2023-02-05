@@ -12,7 +12,7 @@ msgstr ""
 "X-Generator: Weblate 4.16-dev\n"
 
 #: components/ChooseCollection/index.tsx:168
-#: components/Core/Main.tsx:122
+#: components/Core/Main.tsx:121
 #: components/Login/OicLogin.tsx:86
 #: components/Login/index.tsx:154
 #: components/Permissions/PermissionDenied.tsx:230
@@ -36,14 +36,14 @@ msgstr "Nombre de usuario"
 msgid "password"
 msgstr "Contraseña"
 
-#: components/FormFields/QueryComboBox.tsx:514
+#: components/FormFields/QueryComboBox.tsx:516
 #: components/FormPlugins/CollectionRelOneToMany.tsx:183
 #. Used in: Components > Form Fields > Query Combo Box ⬤ Components > Form Plugins > Collection Rel One To Many
 #, fuzzy
 msgid "collectionAccessDenied"
 msgstr "No tienes acceso a esta colección."
 
-#: components/FormFields/QueryComboBox.tsx:517
+#: components/FormFields/QueryComboBox.tsx:519
 #: components/FormPlugins/CollectionRelOneToMany.tsx:186
 #. Used in: Components > Form Fields > Query Combo Box ⬤ Components > Form Plugins > Collection Rel One To Many
 #, fuzzy
@@ -79,7 +79,7 @@ msgstr "Nueva contraseña"
 msgid "repeatPassword"
 msgstr "repita la nueva contraseña"
 
-#: components/Core/Main.tsx:173
+#: components/Core/Main.tsx:172
 #: components/Header/userToolDefinitions.ts:24
 #. Used in: Components > Core > Main ⬤ Components > Header > User Tool Definitions
 #, fuzzy
@@ -92,13 +92,13 @@ msgstr "Cerrar sesión"
 msgid "setUserAgents"
 msgstr "Establecer agentes de usuario"
 
-#: components/Core/Main.tsx:180
+#: components/Core/Main.tsx:179
 #. Used in: Components > Core > Main
 #, fuzzy
 msgid "noAgent"
 msgstr "El usuario actual no tiene un agente asignado"
 
-#: components/Core/Main.tsx:185
+#: components/Core/Main.tsx:184
 #. Used in: Components > Core > Main
 #, fuzzy
 msgid "noAgentDescription"
@@ -218,8 +218,8 @@ msgstr ""
 "sido cerrada."
 
 #: components/FormFields/Field.tsx:125
-#: components/FormFields/QueryComboBox.tsx:184
-#: components/Forms/dataObjFormatters.ts:254
+#: components/FormFields/QueryComboBox.tsx:186
+#: components/Forms/dataObjFormatters.ts:255
 #. 🟥Used in field formatter if user doesn't have read access to the related table. Used in: Components > Form Fields > Field ⬤ Components > Form Fields > Query Combo Box ⬤ Components > Forms > Data Obj Formatters
 #, fuzzy
 msgid "noPermission"
@@ -248,7 +248,7 @@ msgstr ""
 "No se puede abrir {recordSetTable:string} vacío cuando está en modo de solo "
 "lectura"
 
-#: components/Permissions/FormatError.tsx:114
+#: components/Permissions/FormatError.tsx:117
 #. Used in: Components > Permissions > Format Error
 #, fuzzy
 msgid "permissionDeniedForUrl"
@@ -299,7 +299,7 @@ msgstr "Guardar usuario primero"
 msgid "mustBeManager"
 msgstr "El usuario debe guardarse primero como Administrador"
 
-#: components/AppResources/tree.ts:211
+#: components/AppResources/tree.ts:212
 #: components/Security/CollectionRole.tsx:198
 #. Used in: Components > App Resources > Tree ⬤ Components > Security > Collection Role
 #, fuzzy
@@ -460,7 +460,7 @@ msgstr "Acción"
 #: components/Permissions/FormatError.tsx:65
 #: components/Security/PreviewComponents.tsx:92
 #: components/Security/PreviewComponents.tsx:148
-#: components/Security/utils.ts:100
+#: components/Security/utils.ts:101
 #. Used in: Components > Permissions > Format Error ⬤ Components > Security > Preview Components ⬤ Components > Security > Utils
 #, fuzzy
 msgid "resource"
@@ -478,7 +478,7 @@ msgstr "Todas las colecciones"
 msgid "thisCollection"
 msgstr "esta colección"
 
-#: components/Security/utils.ts:143
+#: components/Security/utils.ts:144
 #. Used in: Components > Security > Utils
 #, fuzzy
 msgid "allActions"
@@ -606,7 +606,7 @@ msgstr "Configure los siguientes agentes antes de continuar:"
 msgid "externalIdentityProviders"
 msgstr "Proveedores de identidad externos:"
 
-#: components/Security/registry.ts:106
+#: components/Security/registry.ts:108
 #. Used in: Components > Security > Registry
 #, fuzzy
 msgid "allTables"
@@ -675,13 +675,13 @@ msgid "switchToVerticalLayout"
 msgstr "Cambiar a diseño vertical"
 
 #: components/Security/Preview.tsx:78
-#: components/Security/registry.ts:72
+#: components/Security/registry.ts:74
 #. Used in: Components > Security > Preview ⬤ Components > Security > Registry
 #, fuzzy
 msgid "advancedTables"
 msgstr "Tablas avanzadas"
 
-#: components/Security/utils.ts:131
+#: components/Security/utils.ts:132
 #. Used in: Components > Security > Utils
 #, fuzzy
 msgid "excludedInstitutionalPolicies"

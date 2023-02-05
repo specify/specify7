@@ -11,7 +11,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 4.16-dev\n"
 
-#: components/Core/Main.tsx:89
+#: components/Core/Main.tsx:88
 #. 🟥For accessibility purposes. Allows jumping to page content. Used in: Components > Core > Main
 msgid "skipToContent"
 msgstr "Saltar al contenido"
@@ -30,7 +30,7 @@ msgstr "Actual {collectionTable:string}"
 #: components/Header/Forms.tsx:63
 #: components/Header/menuItemDefinitions.ts:46
 #: components/Router/OverlayRoutes.tsx:44
-#: components/UserPreferences/Definitions.tsx:447
+#: components/UserPreferences/Definitions.tsx:442
 #. Used in: Components > Header > Forms ⬤ Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > User Preferences > Definitions
 msgid "dataEntry"
 msgstr "Entrada de datos"
@@ -191,7 +191,7 @@ msgstr "API para las operaciones"
 #: components/AppResources/Create.tsx:109
 #: components/AppResources/Filters.tsx:156
 #: components/Header/userToolDefinitions.ts:81
-#: components/UserPreferences/Definitions.tsx:418
+#: components/UserPreferences/Definitions.tsx:413
 #. Used in: Components > App Resources > Create ⬤ Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > User Preferences > Definitions
 msgid "documentation"
 msgstr "Documentación"
@@ -214,12 +214,12 @@ msgstr "Foro de la Comunidad"
 #: components/Errors/ErrorDialog.tsx:131
 #: components/Header/userToolDefinitions.ts:101
 #: components/Router/Routes.tsx:394
-#: components/RouterCommands/CacheBuster.tsx:42
+#: components/RouterCommands/CacheBuster.tsx:41
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Router Commands > Cache Buster
 msgid "clearCache"
 msgstr "Borrar la caché del navegador"
 
-#: components/RouterCommands/CacheBuster.tsx:45
+#: components/RouterCommands/CacheBuster.tsx:44
 #. Used in: Components > Router Commands > Cache Buster
 msgid "cacheCleared"
 msgstr "Se ha borrado la memoria caché. Por favor actualiza la página."

@@ -13,14 +13,14 @@ msgstr ""
 
 #: components/SchemaConfig/Table.tsx:48
 #: components/Security/PreviewTables.tsx:68
-#: components/Security/registry.ts:70
+#: components/Security/registry.ts:72
 #: components/Toolbar/DataModel.tsx:537
 #. Used in: Components > Schema Config > Table ⬤ Components > Security > Preview Tables ⬤ Components > Security > Registry ⬤ Components > Toolbar > Data Model
 #, fuzzy
 msgid "table"
 msgstr "Mesa"
 
-#: components/Attachments/index.tsx:203
+#: components/Attachments/index.tsx:204
 #: components/Router/Routes.tsx:358
 #: components/SchemaConfig/Tables.tsx:55
 #. Used in: Components > Attachments > Index ⬤ Components > Router > Routes ⬤ Components > Schema Config > Tables
@@ -28,7 +28,7 @@ msgstr "Mesa"
 msgid "tables"
 msgstr "Mesas"
 
-#: components/UserPreferences/Definitions.tsx:667
+#: components/UserPreferences/Definitions.tsx:662
 #: components/WbPlanView/MapperComponents.tsx:436
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Plan View > Mapper Components
 #, fuzzy
@@ -39,8 +39,8 @@ msgstr "Nombre de la tabla"
 #: components/Router/Routes.tsx:332
 #: components/SchemaConfig/Components.tsx:27
 #: components/SchemaConfig/Languages.tsx:34
-#: components/Security/registry.ts:196
-#: components/UserPreferences/Definitions.tsx:618
+#: components/Security/registry.ts:198
+#: components/UserPreferences/Definitions.tsx:613
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Languages ⬤ Components > Security > Registry ⬤ Components > User Preferences > Definitions
 #, fuzzy
 msgid "schemaConfig"
@@ -65,7 +65,7 @@ msgstr "Cambiar tabla base"
 msgid "field"
 msgstr "Campo"
 
-#: components/FormMeta/CarryForward.tsx:264
+#: components/FormMeta/CarryForward.tsx:266
 #: components/Forms/generateFormDefinition.ts:127
 #: components/SchemaConfig/Fields.tsx:35
 #: components/SchemaConfig/Fields.tsx:46
@@ -75,7 +75,7 @@ msgstr "Campo"
 msgid "fields"
 msgstr "Los campos"
 
-#: components/FormMeta/CarryForward.tsx:272
+#: components/FormMeta/CarryForward.tsx:274
 #: components/Forms/generateFormDefinition.ts:165
 #: components/SchemaConfig/Fields.tsx:54
 #: components/Toolbar/DataModel.tsx:337
@@ -126,25 +126,25 @@ msgstr "Formato de tabla"
 msgid "tableAggregation"
 msgstr "Agregación de tablas"
 
-#: components/SchemaConfig/helpers.ts:121
+#: components/SchemaConfig/helpers.ts:124
 #. Used in: Components > Schema Config > Helpers
 #, fuzzy
 msgid "oneToOne"
 msgstr "Cara a cara"
 
-#: components/SchemaConfig/helpers.ts:122
+#: components/SchemaConfig/helpers.ts:125
 #. Used in: Components > Schema Config > Helpers
 #, fuzzy
 msgid "oneToMany"
 msgstr "Uno a muchos"
 
-#: components/SchemaConfig/helpers.ts:123
+#: components/SchemaConfig/helpers.ts:126
 #. Used in: Components > Schema Config > Helpers
 #, fuzzy
 msgid "manyToOne"
 msgstr "muchos a uno"
 
-#: components/SchemaConfig/helpers.ts:124
+#: components/SchemaConfig/helpers.ts:127
 #. Used in: Components > Schema Config > Helpers
 #, fuzzy
 msgid "manyToMany"
@@ -193,7 +193,7 @@ msgstr "Usuario definido"
 
 #: components/Router/Routes.tsx:347
 #: components/SchemaConfig/Languages.tsx:27
-#: components/SchemaConfig/Languages.tsx:73
+#: components/SchemaConfig/Languages.tsx:75
 #. Used in: Components > Router > Routes ⬤ Components > Schema Config > Languages
 #, fuzzy
 msgid "addLanguage"

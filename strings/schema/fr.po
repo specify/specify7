@@ -13,20 +13,20 @@ msgstr ""
 
 #: components/SchemaConfig/Table.tsx:48
 #: components/Security/PreviewTables.tsx:68
-#: components/Security/registry.ts:70
+#: components/Security/registry.ts:72
 #: components/Toolbar/DataModel.tsx:537
 #. Used in: Components > Schema Config > Table ⬤ Components > Security > Preview Tables ⬤ Components > Security > Registry ⬤ Components > Toolbar > Data Model
 msgid "table"
 msgstr "Tableau"
 
-#: components/Attachments/index.tsx:203
+#: components/Attachments/index.tsx:204
 #: components/Router/Routes.tsx:358
 #: components/SchemaConfig/Tables.tsx:55
 #. Used in: Components > Attachments > Index ⬤ Components > Router > Routes ⬤ Components > Schema Config > Tables
 msgid "tables"
 msgstr "Tableaux"
 
-#: components/UserPreferences/Definitions.tsx:667
+#: components/UserPreferences/Definitions.tsx:662
 #: components/WbPlanView/MapperComponents.tsx:436
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Plan View > Mapper Components
 msgid "tableName"
@@ -36,8 +36,8 @@ msgstr "Nom du tableau"
 #: components/Router/Routes.tsx:332
 #: components/SchemaConfig/Components.tsx:27
 #: components/SchemaConfig/Languages.tsx:34
-#: components/Security/registry.ts:196
-#: components/UserPreferences/Definitions.tsx:618
+#: components/Security/registry.ts:198
+#: components/UserPreferences/Definitions.tsx:613
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Languages ⬤ Components > Security > Registry ⬤ Components > User Preferences > Definitions
 msgid "schemaConfig"
 msgstr "Configuration du schéma"
@@ -58,7 +58,7 @@ msgstr "Modifier la base de tableau"
 msgid "field"
 msgstr "Champ"
 
-#: components/FormMeta/CarryForward.tsx:264
+#: components/FormMeta/CarryForward.tsx:266
 #: components/Forms/generateFormDefinition.ts:127
 #: components/SchemaConfig/Fields.tsx:35
 #: components/SchemaConfig/Fields.tsx:46
@@ -67,7 +67,7 @@ msgstr "Champ"
 msgid "fields"
 msgstr "Champs"
 
-#: components/FormMeta/CarryForward.tsx:272
+#: components/FormMeta/CarryForward.tsx:274
 #: components/Forms/generateFormDefinition.ts:165
 #: components/SchemaConfig/Fields.tsx:54
 #: components/Toolbar/DataModel.tsx:337
@@ -111,22 +111,22 @@ msgstr "Format de tableau"
 msgid "tableAggregation"
 msgstr "Agrégation de tableaux"
 
-#: components/SchemaConfig/helpers.ts:121
+#: components/SchemaConfig/helpers.ts:124
 #. Used in: Components > Schema Config > Helpers
 msgid "oneToOne"
 msgstr "Un à un"
 
-#: components/SchemaConfig/helpers.ts:122
+#: components/SchemaConfig/helpers.ts:125
 #. Used in: Components > Schema Config > Helpers
 msgid "oneToMany"
 msgstr "Un à plusieurs"
 
-#: components/SchemaConfig/helpers.ts:123
+#: components/SchemaConfig/helpers.ts:126
 #. Used in: Components > Schema Config > Helpers
 msgid "manyToOne"
 msgstr "Plusieurs à un"
 
-#: components/SchemaConfig/helpers.ts:124
+#: components/SchemaConfig/helpers.ts:127
 #. Used in: Components > Schema Config > Helpers
 msgid "manyToMany"
 msgstr "Plusieurs à plusieurs"
@@ -168,7 +168,7 @@ msgstr "Défini par l'utilisateur"
 
 #: components/Router/Routes.tsx:347
 #: components/SchemaConfig/Languages.tsx:27
-#: components/SchemaConfig/Languages.tsx:73
+#: components/SchemaConfig/Languages.tsx:75
 #. Used in: Components > Router > Routes ⬤ Components > Schema Config > Languages
 msgid "addLanguage"
 msgstr "Ajouter une langue"

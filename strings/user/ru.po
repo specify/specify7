@@ -13,7 +13,7 @@ msgstr ""
 "X-Generator: Weblate 4.16-dev\n"
 
 #: components/ChooseCollection/index.tsx:168
-#: components/Core/Main.tsx:122
+#: components/Core/Main.tsx:121
 #: components/Login/OicLogin.tsx:86
 #: components/Login/index.tsx:154
 #: components/Permissions/PermissionDenied.tsx:230
@@ -34,13 +34,13 @@ msgstr "Имя пользователя"
 msgid "password"
 msgstr "Пароль"
 
-#: components/FormFields/QueryComboBox.tsx:514
+#: components/FormFields/QueryComboBox.tsx:516
 #: components/FormPlugins/CollectionRelOneToMany.tsx:183
 #. Used in: Components > Form Fields > Query Combo Box ⬤ Components > Form Plugins > Collection Rel One To Many
 msgid "collectionAccessDenied"
 msgstr "У вас нет доступа к этой коллекции"
 
-#: components/FormFields/QueryComboBox.tsx:517
+#: components/FormFields/QueryComboBox.tsx:519
 #: components/FormPlugins/CollectionRelOneToMany.tsx:186
 #. Used in: Components > Form Fields > Query Combo Box ⬤ Components > Form Plugins > Collection Rel One To Many
 msgid "collectionAccessDeniedDescription"
@@ -71,7 +71,7 @@ msgstr "iНовый пароль"
 msgid "repeatPassword"
 msgstr "Повторите новый пароль"
 
-#: components/Core/Main.tsx:173
+#: components/Core/Main.tsx:172
 #: components/Header/userToolDefinitions.ts:24
 #. Used in: Components > Core > Main ⬤ Components > Header > User Tool Definitions
 msgid "logOut"
@@ -82,12 +82,12 @@ msgstr "Выйти"
 msgid "setUserAgents"
 msgstr "Настроить пользовательских агентов"
 
-#: components/Core/Main.tsx:180
+#: components/Core/Main.tsx:179
 #. Used in: Components > Core > Main
 msgid "noAgent"
 msgstr "Текущему пользователю не назначен агент"
 
-#: components/Core/Main.tsx:185
+#: components/Core/Main.tsx:184
 #. Used in: Components > Core > Main
 msgid "noAgentDescription"
 msgstr "Пожалуйста, войдите как администратор и назначьте агента этому пользователю"
@@ -186,8 +186,8 @@ msgid "sessionTimeOutDescription"
 msgstr "У вас недостаточно прав для этого действия, или текещий сеанс был отключен."
 
 #: components/FormFields/Field.tsx:125
-#: components/FormFields/QueryComboBox.tsx:184
-#: components/Forms/dataObjFormatters.ts:254
+#: components/FormFields/QueryComboBox.tsx:186
+#: components/Forms/dataObjFormatters.ts:255
 #. 🟥Used in field formatter if user doesn't have read access to the related table. Used in: Components > Form Fields > Field ⬤ Components > Form Fields > Query Combo Box ⬤ Components > Forms > Data Obj Formatters
 msgid "noPermission"
 msgstr "ОТСУТСТВУЕТ РАЗРЕШЕНИЕ"
@@ -211,7 +211,7 @@ msgstr ""
 msgid "emptyRecordSetsReadOnly"
 msgstr "Не удается открыть пустой {recordSetTable:string} в режиме только для чтения"
 
-#: components/Permissions/FormatError.tsx:114
+#: components/Permissions/FormatError.tsx:117
 #. Used in: Components > Permissions > Format Error
 msgid "permissionDeniedForUrl"
 msgstr "Разрешение не было дано при доступе к <url />"
@@ -254,7 +254,7 @@ msgstr "Сначала нужко сохранить пользователя"
 msgid "mustBeManager"
 msgstr "Сначала пользователь должен быть сохранен как менеджер"
 
-#: components/AppResources/tree.ts:211
+#: components/AppResources/tree.ts:212
 #: components/Security/CollectionRole.tsx:198
 #. Used in: Components > App Resources > Tree ⬤ Components > Security > Collection Role
 msgid "users"
@@ -394,7 +394,7 @@ msgstr "Действие"
 #: components/Permissions/FormatError.tsx:65
 #: components/Security/PreviewComponents.tsx:92
 #: components/Security/PreviewComponents.tsx:148
-#: components/Security/utils.ts:100
+#: components/Security/utils.ts:101
 #. Used in: Components > Permissions > Format Error ⬤ Components > Security > Preview Components ⬤ Components > Security > Utils
 msgid "resource"
 msgstr "Ресурс"
@@ -409,7 +409,7 @@ msgstr "Все коллекции"
 msgid "thisCollection"
 msgstr "Эта коллекция"
 
-#: components/Security/utils.ts:143
+#: components/Security/utils.ts:144
 #. Used in: Components > Security > Utils
 msgid "allActions"
 msgstr "Все действия"
@@ -517,7 +517,7 @@ msgstr "Прежде чем продолжить, установите след�
 msgid "externalIdentityProviders"
 msgstr "Внешние аутентификаторы:"
 
-#: components/Security/registry.ts:106
+#: components/Security/registry.ts:108
 #. Used in: Components > Security > Registry
 msgid "allTables"
 msgstr "Все таблицы"
@@ -575,12 +575,12 @@ msgid "switchToVerticalLayout"
 msgstr "Переключиться на вертикальную компоновку"
 
 #: components/Security/Preview.tsx:78
-#: components/Security/registry.ts:72
+#: components/Security/registry.ts:74
 #. Used in: Components > Security > Preview ⬤ Components > Security > Registry
 msgid "advancedTables"
 msgstr "Дополнительные таблицы"
 
-#: components/Security/utils.ts:131
+#: components/Security/utils.ts:132
 #. Used in: Components > Security > Utils
 msgid "excludedInstitutionalPolicies"
 msgstr "Исключенные институциональные политики:"

@@ -9,14 +9,14 @@ msgid "pageTitle"
 msgstr "Ласкаво просимо"
 
 #: components/Header/userToolDefinitions.ts:83
-#: components/HomePage/AboutSpecify.tsx:69
+#: components/HomePage/AboutSpecify.tsx:68
 #: components/Router/OverlayRoutes.tsx:164
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Home Page > About Specify ⬤ Components > Router > Overlay Routes
 #, fuzzy
 msgid "aboutSpecify"
 msgstr "Про Specify 7"
 
-#: components/HomePage/AboutSpecify.tsx:57
+#: components/HomePage/AboutSpecify.tsx:56
 #. Used in: Components > Home Page > About Specify
 #, fuzzy
 msgid "downloadInformation"
@@ -37,7 +37,7 @@ msgstr ""
 "Показано таксони з {count:number|formatted} або більше "
 "{collectionObjectTable:string} записів"
 
-#: components/HomePage/AboutSpecify.tsx:76
+#: components/HomePage/AboutSpecify.tsx:79
 #. Used in: Components > Home Page > About Specify
 #, fuzzy
 msgid "fullAddress"

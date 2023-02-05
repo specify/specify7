@@ -15,8 +15,8 @@ msgstr ""
 #: components/AppResources/Filters.tsx:119
 #: components/Header/userToolDefinitions.ts:44
 #: components/Router/Routes.tsx:199
-#: components/Security/registry.ts:208
-#: components/UserPreferences/Definitions.tsx:1519
+#: components/Security/registry.ts:210
+#: components/UserPreferences/Definitions.tsx:1514
 #. Used in: Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Security > Registry ⬤ Components > User Preferences > Definitions
 #, fuzzy
 msgid "appResources"
@@ -24,7 +24,7 @@ msgstr "Ressources d'application"
 
 #: components/FormMeta/Definition.tsx:29
 #: components/FormMeta/Definition.tsx:55
-#: components/UserPreferences/Definitions.tsx:685
+#: components/UserPreferences/Definitions.tsx:680
 #. Used in: Components > Form Meta > Definition ⬤ Components > User Preferences > Definitions
 msgid "formDefinition"
 msgstr "Définition du formulaire"
@@ -43,12 +43,12 @@ msgstr "Définitions de formulaire"
 msgid "loadFile"
 msgstr "Fichier de chargement"
 
-#: components/AppResources/tree.ts:23
+#: components/AppResources/tree.ts:24
 #. Used in: Components > App Resources > Tree
 msgid "globalResources"
 msgstr "Ressources globales"
 
-#: components/AppResources/tree.ts:29
+#: components/AppResources/tree.ts:30
 #. Used in: Components > App Resources > Tree
 msgid "disciplineResources"
 msgstr "Ressources de discipline"
@@ -59,7 +59,7 @@ msgstr "Ressources de discipline"
 msgid "type"
 msgstr "Type"
 
-#: components/AppResources/tree.ts:203
+#: components/AppResources/tree.ts:204
 #. Used in: Components > App Resources > Tree
 msgid "userTypes"
 msgstr "Types d'utilisateur"
@@ -181,12 +181,12 @@ msgstr "Éditeur visuel"
 msgid "selectResourceType"
 msgstr "Sélectionnez le type de ressource"
 
-#: components/AppResources/tree.ts:101
+#: components/AppResources/tree.ts:102
 #. Used in: Components > App Resources > Tree
 msgid "globalPreferences"
 msgstr "Préférences globales"
 
-#: components/AppResources/tree.ts:103
+#: components/AppResources/tree.ts:104
 #. Used in: Components > App Resources > Tree
 msgid "remotePreferences"
 msgstr "Préférences distantes"

@@ -65,7 +65,7 @@ msgstr ""
 "Para evitar corromper los registros de datos, tenemos que empezar de nuevo "
 "desde un punto seguro--la página de inicio."
 
-#: components/Errors/ErrorDialog.tsx:34
+#: components/Errors/ErrorDialog.tsx:35
 #. Used in: Components > Errors > Error Dialog
 msgid "errorResolutionDescription"
 msgstr ""
@@ -73,7 +73,7 @@ msgstr ""
 "informática. Si se trata de una base de datos de Specify Cloud, descargue "
 "el mensaje de error y envíelo a <email />."
 
-#: components/Errors/ErrorDialog.tsx:40
+#: components/Errors/ErrorDialog.tsx:52
 #. 🟥Careful with the <xml> tags when localizing. Used in: Components > Errors > Error Dialog
 msgid "errorResolutionSecondDescription"
 msgstr ""
@@ -87,7 +87,7 @@ msgstr ""
 msgid "errorMessage"
 msgstr "Mensaje de error"
 
-#: components/Router/Router.tsx:280
+#: components/Router/Router.tsx:282
 #. Used in: Components > Router > Router
 msgid "leavePageConfirmation"
 msgstr "¿Seguro que quieres salir de esta página?"
@@ -97,31 +97,31 @@ msgstr "¿Seguro que quieres salir de esta página?"
 msgid "leavePageConfirmationDescription"
 msgstr "Los cambios no guardados se perderán si abandona esta página."
 
-#: components/Router/Router.tsx:276
+#: components/Router/Router.tsx:278
 #. Used in: Components > Router > Router
 msgid "leave"
 msgstr "Vete"
 
-#: components/Core/Main.tsx:146
+#: components/Core/Main.tsx:145
 #. Used in: Components > Core > Main
 msgid "versionMismatch"
 msgstr "La versión de Specify no coincide con la versión de la base de datos"
 
-#: components/Core/Main.tsx:150
+#: components/Core/Main.tsx:149
 #. Used in: Components > Core > Main
 msgid "versionMismatchDescription"
 msgstr ""
 "La versión de Specify {specifySixVersion:string} no coincide con la versión "
 "de la base de datos {databaseVersion:string}."
 
-#: components/Core/Main.tsx:155
+#: components/Core/Main.tsx:154
 #. Used in: Components > Core > Main
 msgid "versionMismatchSecondDescription"
 msgstr ""
 "Por lo tanto, es posible que algunas funciones de Specific 7 no funcionen "
 "correctamente."
 
-#: components/Core/Main.tsx:158
+#: components/Core/Main.tsx:157
 #. Used in: Components > Core > Main
 msgid "versionMismatchInstructions"
 msgstr "Instrucciones para resolver la discrepancia de los esquema de Specify"

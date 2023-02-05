@@ -65,7 +65,7 @@ msgstr ""
 "Pour éviter de corrompre les enregistrements de données, nous devons "
 "recommencer à partir d'un endroit sûr : la page d'accueil."
 
-#: components/Errors/ErrorDialog.tsx:34
+#: components/Errors/ErrorDialog.tsx:35
 #. Used in: Components > Errors > Error Dialog
 msgid "errorResolutionDescription"
 msgstr ""
@@ -73,7 +73,7 @@ msgstr ""
 "S'il s'agit d'une base de données Specify Cloud, veuillez télécharger le "
 "message d'erreur et l'envoyer à <email />."
 
-#: components/Errors/ErrorDialog.tsx:40
+#: components/Errors/ErrorDialog.tsx:52
 #. 🟥Careful with the <xml> tags when localizing. Used in: Components > Errors > Error Dialog
 msgid "errorResolutionSecondDescription"
 msgstr ""
@@ -87,7 +87,7 @@ msgstr ""
 msgid "errorMessage"
 msgstr "Message d'erreur"
 
-#: components/Router/Router.tsx:280
+#: components/Router/Router.tsx:282
 #. Used in: Components > Router > Router
 msgid "leavePageConfirmation"
 msgstr "Voulez-vous vraiment quitter cette page ?"
@@ -99,31 +99,31 @@ msgstr ""
 "Les modifications non enregistrées seront perdues si vous quittez cette "
 "page."
 
-#: components/Router/Router.tsx:276
+#: components/Router/Router.tsx:278
 #. Used in: Components > Router > Router
 msgid "leave"
 msgstr "Quitter"
 
-#: components/Core/Main.tsx:146
+#: components/Core/Main.tsx:145
 #. Used in: Components > Core > Main
 msgid "versionMismatch"
 msgstr "La version de Specify ne correspond pas à la version de la base de données"
 
-#: components/Core/Main.tsx:150
+#: components/Core/Main.tsx:149
 #. Used in: Components > Core > Main
 msgid "versionMismatchDescription"
 msgstr ""
 "La version {specifySixVersion:string} de Specify ne correspond pas à la "
 "version {databaseVersion:string} de la base de données."
 
-#: components/Core/Main.tsx:155
+#: components/Core/Main.tsx:154
 #. Used in: Components > Core > Main
 msgid "versionMismatchSecondDescription"
 msgstr ""
 "Certaines fonctionnalités de Specify 7 peuvent donc ne pas fonctionner "
 "correctement."
 
-#: components/Core/Main.tsx:158
+#: components/Core/Main.tsx:157
 #. Used in: Components > Core > Main
 msgid "versionMismatchInstructions"
 msgstr "Instructions pour résoudre l'incompatibilité de schéma de Specify"

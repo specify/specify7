@@ -5,8 +5,8 @@ msgstr "Content-Type: text/plain\n"
 #: components/AppResources/Filters.tsx:119
 #: components/Header/userToolDefinitions.ts:44
 #: components/Router/Routes.tsx:199
-#: components/Security/registry.ts:208
-#: components/UserPreferences/Definitions.tsx:1519
+#: components/Security/registry.ts:210
+#: components/UserPreferences/Definitions.tsx:1514
 #. Used in: Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Security > Registry ⬤ Components > User Preferences > Definitions
 #, fuzzy
 msgid "appResources"
@@ -14,7 +14,7 @@ msgstr "Recursos de la aplicación"
 
 #: components/FormMeta/Definition.tsx:29
 #: components/FormMeta/Definition.tsx:55
-#: components/UserPreferences/Definitions.tsx:685
+#: components/UserPreferences/Definitions.tsx:680
 #. Used in: Components > Form Meta > Definition ⬤ Components > User Preferences > Definitions
 #, fuzzy
 msgid "formDefinition"
@@ -36,13 +36,13 @@ msgstr "Definiciones de formulario"
 msgid "loadFile"
 msgstr "Cargar archivo"
 
-#: components/AppResources/tree.ts:23
+#: components/AppResources/tree.ts:24
 #. Used in: Components > App Resources > Tree
 #, fuzzy
 msgid "globalResources"
 msgstr "Recursos globales"
 
-#: components/AppResources/tree.ts:29
+#: components/AppResources/tree.ts:30
 #. Used in: Components > App Resources > Tree
 #, fuzzy
 msgid "disciplineResources"
@@ -55,7 +55,7 @@ msgstr "Recursos de disciplina"
 msgid "type"
 msgstr "Escribe"
 
-#: components/AppResources/tree.ts:203
+#: components/AppResources/tree.ts:204
 #. Used in: Components > App Resources > Tree
 #, fuzzy
 msgid "userTypes"
@@ -198,13 +198,13 @@ msgstr "editor visual"
 msgid "selectResourceType"
 msgstr "Seleccionar tipo de recurso"
 
-#: components/AppResources/tree.ts:101
+#: components/AppResources/tree.ts:102
 #. Used in: Components > App Resources > Tree
 #, fuzzy
 msgid "globalPreferences"
 msgstr "Preferencias globales"
 
-#: components/AppResources/tree.ts:103
+#: components/AppResources/tree.ts:104
 #. Used in: Components > App Resources > Tree
 #, fuzzy
 msgid "remotePreferences"

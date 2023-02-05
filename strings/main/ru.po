@@ -55,7 +55,7 @@ msgstr ""
 "Чтобы избежать повреждения записей данных, нам нужно начать заново с "
 "безопасного места — домашней страницы."
 
-#: components/Errors/ErrorDialog.tsx:34
+#: components/Errors/ErrorDialog.tsx:35
 #. Used in: Components > Errors > Error Dialog
 msgid "errorResolutionDescription"
 msgstr ""
@@ -63,7 +63,7 @@ msgstr ""
 "это база данных Specify Cloud, загрузите сообщение об ошибке и отправьте "
 "его на <email />."
 
-#: components/Errors/ErrorDialog.tsx:40
+#: components/Errors/ErrorDialog.tsx:52
 #. 🟥Careful with the <xml> tags when localizing. Used in: Components > Errors > Error Dialog
 msgid "errorResolutionSecondDescription"
 msgstr ""
@@ -77,7 +77,7 @@ msgstr ""
 msgid "errorMessage"
 msgstr "Описание ошибки"
 
-#: components/Router/Router.tsx:280
+#: components/Router/Router.tsx:282
 #. Used in: Components > Router > Router
 msgid "leavePageConfirmation"
 msgstr "Вы уверены, что хотите покинуть эту страницу?"
@@ -87,29 +87,29 @@ msgstr "Вы уверены, что хотите покинуть эту стр�
 msgid "leavePageConfirmationDescription"
 msgstr "Несохраненные изменения будут потеряны, если вы покинете эту страницу."
 
-#: components/Router/Router.tsx:276
+#: components/Router/Router.tsx:278
 #. Used in: Components > Router > Router
 msgid "leave"
 msgstr "Покинуть"
 
-#: components/Core/Main.tsx:146
+#: components/Core/Main.tsx:145
 #. Used in: Components > Core > Main
 msgid "versionMismatch"
 msgstr "Specify версия не соответствует версии базы данных"
 
-#: components/Core/Main.tsx:150
+#: components/Core/Main.tsx:149
 #. Used in: Components > Core > Main
 msgid "versionMismatchDescription"
 msgstr ""
 "Specify версия {specifySixVersion:string} не соответствует версии базы "
 "данных {databaseVersion:string}."
 
-#: components/Core/Main.tsx:155
+#: components/Core/Main.tsx:154
 #. Used in: Components > Core > Main
 msgid "versionMismatchSecondDescription"
 msgstr "Поэтому некоторые функции Specify 7 могут неработать."
 
-#: components/Core/Main.tsx:158
+#: components/Core/Main.tsx:157
 #. Used in: Components > Core > Main
 msgid "versionMismatchInstructions"
 msgstr "Инструкции по устранению несоответствия схемы Specify"

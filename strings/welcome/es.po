@@ -8,13 +8,13 @@ msgid "pageTitle"
 msgstr "Bienvenidos"
 
 #: components/Header/userToolDefinitions.ts:83
-#: components/HomePage/AboutSpecify.tsx:69
+#: components/HomePage/AboutSpecify.tsx:68
 #: components/Router/OverlayRoutes.tsx:164
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Home Page > About Specify ⬤ Components > Router > Overlay Routes
 msgid "aboutSpecify"
 msgstr "Acerca de Especificar 7"
 
-#: components/HomePage/AboutSpecify.tsx:57
+#: components/HomePage/AboutSpecify.tsx:56
 #. Used in: Components > Home Page > About Specify
 msgid "downloadInformation"
 msgstr "Descargar información"
@@ -32,7 +32,7 @@ msgstr ""
 "Mostrando taxones con {count:number|formatted} o más "
 "{collectionObjectTable:string} registros"
 
-#: components/HomePage/AboutSpecify.tsx:76
+#: components/HomePage/AboutSpecify.tsx:79
 #. Used in: Components > Home Page > About Specify
 msgid "fullAddress"
 msgstr ""

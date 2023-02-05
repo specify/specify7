@@ -4,9 +4,9 @@ msgstr "Content-Type: text/plain\n"
 #: components/QueryBuilder/Header.tsx:68
 #: components/QueryBuilder/Toolbar.tsx:61
 #: components/Reports/RecordSets.tsx:99
-#: components/Toolbar/RecordSetEdit.tsx:50
-#: components/TreeView/Actions.tsx:85
-#: components/TreeView/Actions.tsx:88
+#: components/Toolbar/RecordSetEdit.tsx:51
+#: components/TreeView/Actions.tsx:83
+#: components/TreeView/Actions.tsx:86
 #. Used in: Components > Query Builder > Header ⬤ Components > Query Builder > Toolbar ⬤ Components > Reports > Record Sets ⬤ Components > Toolbar > Record Set Edit ⬤ Components > Tree View > Actions
 msgid "query"
 msgstr "Запрос"
@@ -14,15 +14,15 @@ msgstr "Запрос"
 #: components/Header/menuItemDefinitions.ts:79
 #: components/Router/OverlayRoutes.tsx:80
 #: components/Toolbar/Query.tsx:96
-#: components/UserPreferences/Definitions.tsx:474
+#: components/UserPreferences/Definitions.tsx:469
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Query ⬤ Components > User Preferences > Definitions
 msgid "queries"
 msgstr "Запросы"
 
 #: components/Forms/SearchDialog.tsx:108
 #: components/Forms/SearchDialog.tsx:271
-#: components/Security/registry.ts:200
-#: components/UserPreferences/Definitions.tsx:1271
+#: components/Security/registry.ts:202
+#: components/UserPreferences/Definitions.tsx:1266
 #. Used in: Components > Forms > Search Dialog ⬤ Components > Security > Registry ⬤ Components > User Preferences > Definitions
 msgid "queryBuilder"
 msgstr "Конструктор запросов"
@@ -312,7 +312,7 @@ msgid "inDescription"
 msgstr "Список значений, разделенных запятыми"
 
 #: components/QueryBuilder/FieldFilter.tsx:470
-#: components/UserPreferences/Definitions.tsx:1163
+#: components/UserPreferences/Definitions.tsx:1158
 #. Used in: Components > Query Builder > Field Filter ⬤ Components > User Preferences > Definitions
 msgid "contains"
 msgstr "Содержит"
@@ -328,7 +328,7 @@ msgid "and"
 msgstr "и"
 
 #: components/QueryBuilder/FieldFilter.tsx:479
-#: components/UserPreferences/Definitions.tsx:1159
+#: components/UserPreferences/Definitions.tsx:1154
 #. Used in: Components > Query Builder > Field Filter ⬤ Components > User Preferences > Definitions
 msgid "startsWith"
 msgstr "Начинается с"
@@ -371,7 +371,7 @@ msgstr "Открыть записи"
 msgid "editQuery"
 msgstr "Редактировать запрос"
 
-#: components/Toolbar/QueryTablesEdit.tsx:35
+#: components/Toolbar/QueryTablesEdit.tsx:33
 #. Used in: Components > Toolbar > Query Tables Edit
 msgid "configureQueryTables"
 msgstr "Настроить видимые таблицы запроса"

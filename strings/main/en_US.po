@@ -55,7 +55,7 @@ msgstr ""
 "To avoid corrupting data records, we need to start again from a safe "
 "spot--the Home page."
 
-#: components/Errors/ErrorDialog.tsx:34
+#: components/Errors/ErrorDialog.tsx:35
 #. Used in: Components > Errors > Error Dialog
 msgid "errorResolutionDescription"
 msgstr ""
@@ -63,7 +63,7 @@ msgstr ""
 "Specify Cloud database, please download the error message and send it to "
 "<email />."
 
-#: components/Errors/ErrorDialog.tsx:40
+#: components/Errors/ErrorDialog.tsx:52
 #. 🟥Careful with the <xml> tags when localizing. Used in: Components > Errors > Error Dialog
 msgid "errorResolutionSecondDescription"
 msgstr ""
@@ -77,7 +77,7 @@ msgstr ""
 msgid "errorMessage"
 msgstr "Error Message"
 
-#: components/Router/Router.tsx:280
+#: components/Router/Router.tsx:282
 #. Used in: Components > Router > Router
 msgid "leavePageConfirmation"
 msgstr "Are you sure you want to leave this page?"
@@ -87,29 +87,29 @@ msgstr "Are you sure you want to leave this page?"
 msgid "leavePageConfirmationDescription"
 msgstr "Unsaved changes would be lost if your leave this page."
 
-#: components/Router/Router.tsx:276
+#: components/Router/Router.tsx:278
 #. Used in: Components > Router > Router
 msgid "leave"
 msgstr "Leave"
 
-#: components/Core/Main.tsx:146
+#: components/Core/Main.tsx:145
 #. Used in: Components > Core > Main
 msgid "versionMismatch"
 msgstr "Specify version does not match database version"
 
-#: components/Core/Main.tsx:150
+#: components/Core/Main.tsx:149
 #. Used in: Components > Core > Main
 msgid "versionMismatchDescription"
 msgstr ""
 "The Specify version {specifySixVersion:string} does not match the database "
 "version {databaseVersion:string}."
 
-#: components/Core/Main.tsx:155
+#: components/Core/Main.tsx:154
 #. Used in: Components > Core > Main
 msgid "versionMismatchSecondDescription"
 msgstr "Some features of Specify 7 may therefore fail to operate correctly."
 
-#: components/Core/Main.tsx:158
+#: components/Core/Main.tsx:157
 #. Used in: Components > Core > Main
 msgid "versionMismatchInstructions"
 msgstr "Instructions for resolving Specify schema mismatch"

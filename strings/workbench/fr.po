@@ -13,8 +13,8 @@ msgstr ""
 
 #: components/Header/menuItemDefinitions.ts:103
 #: components/Router/OverlayRoutes.tsx:117
-#: components/UserPreferences/Definitions.tsx:492
-#: components/UserPreferences/Definitions.tsx:1357
+#: components/UserPreferences/Definitions.tsx:487
+#: components/UserPreferences/Definitions.tsx:1352
 #: components/WorkBench/wbView.js:230
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > User Preferences > Definitions ⬤ Components > Work Bench > Wb View
 #, fuzzy
@@ -260,7 +260,7 @@ msgstr ""
 "données téléchargé."
 
 #: components/WorkBench/DataSetMeta.tsx:67
-#: components/WorkBench/Template.tsx:319
+#: components/WorkBench/Template.tsx:320
 #. Used in: Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Template
 #, fuzzy
 msgid "dataSetDeleted"
@@ -503,9 +503,9 @@ msgstr ""
 "Cette action n'est pas disponible lorsque la vérification des données est "
 "en cours"
 
-#: components/WorkBench/Template.tsx:209
-#: components/WorkBench/Template.tsx:217
-#: components/WorkBench/Template.tsx:227
+#: components/WorkBench/Template.tsx:208
+#: components/WorkBench/Template.tsx:216
+#: components/WorkBench/Template.tsx:226
 #. Used in: Components > Work Bench > Template
 #, fuzzy
 msgid "unavailableWithoutLocality"
@@ -680,44 +680,44 @@ msgstr "Encodage de caractère:"
 msgid "delimiter"
 msgstr "Délimiteur :"
 
-#: components/UserPreferences/Definitions.tsx:1458
+#: components/UserPreferences/Definitions.tsx:1453
 #: components/WbImport/index.tsx:152
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "comma"
 msgstr "Virgule"
 
-#: components/UserPreferences/Definitions.tsx:1466
+#: components/UserPreferences/Definitions.tsx:1461
 #: components/WbImport/index.tsx:154
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "semicolon"
 msgstr "Point-virgule"
 
-#: components/UserPreferences/Definitions.tsx:1462
+#: components/UserPreferences/Definitions.tsx:1457
 #: components/WbImport/index.tsx:153
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "tab"
 msgstr "Languette"
 
-#: components/UserPreferences/Definitions.tsx:1470
+#: components/UserPreferences/Definitions.tsx:1465
 #: components/WbImport/index.tsx:155
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "space"
 msgstr "Espace"
 
-#: components/UserPreferences/Definitions.tsx:1474
+#: components/UserPreferences/Definitions.tsx:1469
 #: components/WbImport/index.tsx:156
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "pipe"
 msgstr "Tuyau"
 
-#: components/UserPreferences/Definitions.tsx:535
-#: components/UserPreferences/Definitions.tsx:556
-#: components/UserPreferences/Definitions.tsx:577
+#: components/UserPreferences/Definitions.tsx:530
+#: components/UserPreferences/Definitions.tsx:551
+#: components/UserPreferences/Definitions.tsx:572
 #: components/WbImport/index.tsx:193
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
@@ -736,7 +736,7 @@ msgstr "Nom du nouvel ensemble de données :"
 msgid "firstRowIsHeader"
 msgstr "La première ligne est l'en-tête :"
 
-#: components/Toolbar/WbsDialog.tsx:177
+#: components/Toolbar/WbsDialog.tsx:178
 #: components/WbImport/index.tsx:238
 #. Used in: Components > Toolbar > Wbs Dialog ⬤ Components > Wb Import > Index
 #, fuzzy
@@ -749,25 +749,25 @@ msgstr "Importer le fichier"
 msgid "columnName"
 msgstr "Colonne {columnIndex:number}"
 
-#: components/Toolbar/WbsDialog.tsx:41
+#: components/Toolbar/WbsDialog.tsx:42
 #. Used in: Components > Toolbar > Wbs Dialog
 #, fuzzy
 msgid "newDataSetName"
 msgstr "Nouvel ensemble de données {date}"
 
-#: components/Toolbar/WbsDialog.tsx:201
+#: components/Toolbar/WbsDialog.tsx:202
 #. Used in: Components > Toolbar > Wbs Dialog
 #, fuzzy
 msgid "dataSets"
 msgstr "Ensembles de données WorkBench"
 
-#: components/Toolbar/WbsDialog.tsx:212
+#: components/Toolbar/WbsDialog.tsx:213
 #. Used in: Components > Toolbar > Wbs Dialog
 #, fuzzy
 msgid "wbsDialogEmpty"
 msgstr "Actuellement, aucun ensemble de données n'existe."
 
-#: components/Toolbar/WbsDialog.tsx:213
+#: components/Toolbar/WbsDialog.tsx:214
 #. Used in: Components > Toolbar > Wbs Dialog
 #, fuzzy
 msgid "createDataSetInstructions"
@@ -775,7 +775,7 @@ msgstr ""
 "Utilisez \"Importer un fichier\" ou \"Créer un nouveau\" pour en créer un "
 "nouveau."
 
-#: components/Toolbar/WbsDialog.tsx:188
+#: components/Toolbar/WbsDialog.tsx:189
 #. Used in: Components > Toolbar > Wbs Dialog
 #, fuzzy
 msgid "createNew"
