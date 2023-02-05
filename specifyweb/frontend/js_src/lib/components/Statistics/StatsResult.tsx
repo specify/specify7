@@ -28,7 +28,10 @@ export function StatsResult({
   readonly onRename: ((newLabel: string) => void) | undefined;
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
-  const isDisabled = handleEdit === undefined && handleRename === undefined;
+  const isDisabled =
+    handleEdit === undefined &&
+    handleRename === undefined &&
+    handleClick === undefined;
   const handleClickResolved = isDisabled
     ? undefined
     : handleClick ?? (query === undefined ? undefined : handleOpen);
