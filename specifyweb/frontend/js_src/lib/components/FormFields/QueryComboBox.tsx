@@ -1,14 +1,16 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 import type { State } from 'typesafe-reducer';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useResourceValue } from '../../hooks/useResourceValue';
 import { commonText } from '../../localization/common';
+import { userText } from '../../localization/user';
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
+import { getValidationAttributes } from '../../utils/parser/definitions';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import { getValidationAttributes } from '../../utils/parser/definitions';
 import { keysToLowerCase } from '../../utils/utils';
 import { DataEntry } from '../Atoms/DataEntry';
 import { LoadingContext } from '../Core/Contexts';
@@ -46,11 +48,11 @@ import {
 import { useCollectionRelationships } from './useCollectionRelationships';
 import { useTreeData } from './useTreeData';
 import { useTypeSearch } from './useTypeSearch';
-import { userText } from '../../localization/user';
-import { LocalizedString } from 'typesafe-i18n';
 
-// REFACTOR: split this component
-// TEST: add tests for this
+/*
+ * REFACTOR: split this component
+ * TEST: add tests for this
+ */
 export function QueryComboBox({
   id,
   resource,
@@ -527,12 +529,12 @@ export function QueryComboBox({
           isSubForm={false}
           mode={mode}
           resource={formatted.resource}
+          onAdd={undefined}
           onClose={(): void => setState({ type: 'MainState' })}
           onDeleted={(): void => {
             resource?.set(field.name, null as never);
             setState({ type: 'MainState' });
           }}
-          onAdd={undefined}
           onSaved={undefined}
           onSaving={
             field.isDependent()
@@ -547,13 +549,13 @@ export function QueryComboBox({
           isSubForm={false}
           mode={mode}
           resource={state.resource}
+          onAdd={undefined}
           onClose={(): void => setState({ type: 'MainState' })}
           onDeleted={undefined}
           onSaved={(): void => {
             resource?.set(field.name, state.resource as never);
             setState({ type: 'MainState' });
           }}
-          onAdd={undefined}
           onSaving={
             field.isDependent()
               ? (): false => {

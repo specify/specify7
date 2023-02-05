@@ -1,6 +1,7 @@
-import { Input } from '../Form';
 import React from 'react';
+
 import { mount } from '../../../tests/reactUtils';
+import { Input } from '../Form';
 
 test('Input.Text emits onValueChange', async () => {
   const handleValueChange = jest.fn();

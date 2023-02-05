@@ -3,51 +3,45 @@
  */
 
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
+
+import { attachmentsText } from '../../localization/attachments';
+import { commonText } from '../../localization/common';
+import { formsText } from '../../localization/forms';
+import { headerText } from '../../localization/header';
+import { interactionsText } from '../../localization/interactions';
+import { localityText } from '../../localization/locality';
 import { preferencesText } from '../../localization/preferences';
 import { queryText } from '../../localization/query';
-import { LocalizedString } from 'typesafe-i18n';
-import { JavaType } from '../DataModel/specifyField';
-import { Parser } from '../../utils/parser/definitions';
-import {
-  defined,
-  ensure,
-  IR,
-  overwriteReadOnly,
-  RA,
-  RR,
-} from '../../utils/types';
-import { LANGUAGE, Language } from '../../localization/utils/config';
-import { commonText } from '../../localization/common';
-import { headerText } from '../../localization/header';
+import { reportsText } from '../../localization/report';
+import { resourcesText } from '../../localization/resources';
+import { schemaText } from '../../localization/schema';
+import type { Language } from '../../localization/utils/config';
+import { LANGUAGE } from '../../localization/utils/config';
+import { wbPlanText } from '../../localization/wbPlan';
 import { wbText } from '../../localization/workbench';
+import type { Parser } from '../../utils/parser/definitions';
+import type { IR, RA, RR } from '../../utils/types';
+import { defined, ensure, overwriteReadOnly } from '../../utils/types';
+import { Link } from '../Atoms/Link';
+import { getField } from '../DataModel/helpers';
+import type { TableFields } from '../DataModel/helperTypes';
+import type { JavaType } from '../DataModel/specifyField';
+import type { Collection, Tables } from '../DataModel/types';
+import { error, softError } from '../Errors/assert';
+import {
+  LanguagePreferencesItem,
+  SchemaLanguagePreferenceItem,
+} from '../Toolbar/Language';
+import type { MenuPreferences, WelcomePageMode } from './Renderers';
 import {
   CollectionSortOrderPreferenceItem,
   ColorPickerPreferenceItem,
   defaultFont,
   FontFamilyPreferenceItem,
   HeaderItemsPreferenceItem,
-  MenuPreferences,
-  WelcomePageMode,
   WelcomePageModePreferenceItem,
 } from './Renderers';
-import { TableFields } from '../DataModel/helperTypes';
-import {
-  LanguagePreferencesItem,
-  SchemaLanguagePreferenceItem,
-} from '../Toolbar/Language';
-import { localityText } from '../../localization/locality';
-import { attachmentsText } from '../../localization/attachments';
-import { formsText } from '../../localization/forms';
-import { reportsText } from '../../localization/report';
-import { Collection, Tables } from '../DataModel/types';
-import { resourcesText } from '../../localization/resources';
-import { softFail } from '../Errors/Crash';
-import { schemaText } from '../../localization/schema';
-import { wbPlanText } from '../../localization/wbPlan';
-import { error, softError } from '../Errors/assert';
-import { interactionsText } from '../../localization/interactions';
-import { Link } from '../Atoms/Link';
-import { getField } from '../DataModel/helpers';
 
 // Custom Renderer for a preference item
 export type PreferenceItemComponent<VALUE> = (props: {
@@ -67,8 +61,8 @@ export type PreferenceItemComponent<VALUE> = (props: {
  * https://firefox-source-docs.mozilla.org/toolkit/components/featuregates/featuregates/
  */
 export type PreferenceItem<VALUE> = {
-  readonly title: LocalizedString | JSX.Element;
-  readonly description?: LocalizedString | JSX.Element;
+  readonly title: JSX.Element | LocalizedString;
+  readonly description?: JSX.Element | LocalizedString;
   // Whether the page needs to be reloaded for this preference to apply
   readonly requiresReload: boolean;
   /*
@@ -458,7 +452,7 @@ export const preferenceDefinitions = {
       appearance: {
         title: preferencesText.appearance(),
         items: {
-          position: defineItem<'top' | 'bottom' | 'right' | 'left'>({
+          position: defineItem<'bottom' | 'left' | 'right' | 'top'>({
             title: preferencesText.position(),
             requiresReload: false,
             visible: true,
@@ -491,7 +485,7 @@ export const preferenceDefinitions = {
       createInteractions: {
         title: preferencesText.createInteractions(),
         items: {
-          useSpaceAsDelimiter: defineItem<'true' | 'false' | 'auto'>({
+          useSpaceAsDelimiter: defineItem<'auto' | 'false' | 'true'>({
             title: preferencesText.useSpaceAsDelimiter(),
             requiresReload: false,
             visible: true,
@@ -512,7 +506,7 @@ export const preferenceDefinitions = {
               },
             ],
           }),
-          useCommaAsDelimiter: defineItem<'true' | 'false' | 'auto'>({
+          useCommaAsDelimiter: defineItem<'auto' | 'false' | 'true'>({
             title: preferencesText.useCommaAsDelimiter(),
             requiresReload: false,
             visible: true,
@@ -533,7 +527,7 @@ export const preferenceDefinitions = {
               },
             ],
           }),
-          useNewLineAsDelimiter: defineItem<'true' | 'false' | 'auto'>({
+          useNewLineAsDelimiter: defineItem<'auto' | 'false' | 'true'>({
             title: preferencesText.useNewLineAsDelimiter(),
             requiresReload: false,
             visible: true,
@@ -1670,7 +1664,8 @@ import('../DataModel/schema')
       } else softError('Unable to replace the tree preferences item title');
     })
   )
-  .catch(softFail);
+  // Not using softFail here to avoid circular dependency
+  .catch(console.error);
 
 export type Preferences = GenericPreferencesCategories &
   typeof preferenceDefinitions;

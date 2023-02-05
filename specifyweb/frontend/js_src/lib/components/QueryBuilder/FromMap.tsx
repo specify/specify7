@@ -1,14 +1,14 @@
 import L from 'leaflet';
 import React from 'react';
 
-import { f } from '../../utils/functools';
-import { insertItem, replaceItem } from '../../utils/utils';
 import { commonText } from '../../localization/common';
-import type { QueryField } from './helpers';
+import { f } from '../../utils/functools';
 import type { RA, Writable, WritableArray } from '../../utils/types';
-import { mappingPathToString } from '../WbPlanView/mappingHelpers';
+import { insertItem, replaceItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { LeafletMap } from '../Leaflet/Map';
+import { mappingPathToString } from '../WbPlanView/mappingHelpers';
+import type { QueryField } from './helpers';
 
 const emptyArray: RA<never> = [];
 const defaultPoint = [0, 10] as const;
@@ -74,8 +74,8 @@ export function QueryFromMap({
       }
       forwardRef={setMap}
       localityPoints={emptyArray}
-      onMarkerClick={f.never}
       onClose={handleClose}
+      onMarkerClick={f.never}
     />
   );
 }

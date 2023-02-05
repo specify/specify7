@@ -7,8 +7,9 @@
 
 import React from 'react';
 import type { State } from 'typesafe-reducer';
-import { produceStackTrace } from './stackTrace';
+
 import { ErrorDialog } from './ErrorDialog';
+import { produceStackTrace } from './stackTrace';
 
 type ErrorBoundaryState =
   | State<

@@ -12,8 +12,8 @@ import { StringToJsx } from '../../localization/utils';
 import type { Language } from '../../localization/utils/config';
 import {
   completeLanguages,
-  devLanguage as developmentLanguage,
-  devLanguages as developmentLanguages,
+  devLanguage,
+  devLanguages,
   LANGUAGE,
   languages,
 } from '../../localization/utils/config';
@@ -27,7 +27,7 @@ import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Select } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
-import { fail } from '../Errors/Crash';
+import { raise } from '../Errors/Crash';
 import { cachableUrl } from '../InitialContext';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { formatUrl } from '../Router/queryString';
@@ -164,7 +164,7 @@ export function LanguageSelection<LANGUAGES extends string>({
           )}
           {showDevelopmentLanguages && (
             <optgroup label="Development languages">
-              {Object.entries(developmentLanguages).map(([code, name]) => (
+              {Object.entries(devLanguages).map(([code, name]) => (
                 <option key={code} value={code}>
                   {name}
                 </option>
@@ -214,7 +214,7 @@ export const LanguagePreferencesItem: PreferenceItemComponent<Language> =
       false
     );
     const [language, setLanguage] = React.useState(
-      (developmentLanguage as Language) ?? LANGUAGE
+      (devLanguage as Language) ?? LANGUAGE
     );
 
     /**
@@ -235,7 +235,7 @@ export const LanguagePreferencesItem: PreferenceItemComponent<Language> =
            * This is why it has an independent state and manually triggers
            * save button
            */
-          handleLanguageChange(language).catch(fail);
+          handleLanguageChange(language).catch(raise);
           setLanguage(language);
           prefEvents.trigger('update', {
             category,

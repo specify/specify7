@@ -1,25 +1,25 @@
 import React from 'react';
 
-import { aggregate, format } from '../Forms/dataObjFormatters';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useResourceValue } from '../../hooks/useResourceValue';
 import { commonText } from '../../localization/common';
-import type { FormMode } from '../FormParse';
-import { hasTablePermission } from '../Permissions/helpers';
-import type { LiteralField, Relationship } from '../DataModel/specifyField';
-import type { Collection } from '../DataModel/specifyModel';
-import type { IR } from '../../utils/types';
+import { userText } from '../../localization/user';
 import type { Parser } from '../../utils/parser/definitions';
 import {
   getValidationAttributes,
   mergeParsers,
 } from '../../utils/parser/definitions';
-import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
+import type { IR } from '../../utils/types';
 import { Input } from '../Atoms/Form';
-import { useResourceValue } from '../../hooks/useResourceValue';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { AnySchema } from '../DataModel/helperTypes';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { LiteralField, Relationship } from '../DataModel/specifyField';
+import type { Collection } from '../DataModel/specifyModel';
+import type { FormMode } from '../FormParse';
+import { aggregate, format } from '../Forms/dataObjFormatters';
+import { hasTablePermission } from '../Permissions/helpers';
 import { usePref } from '../UserPreferences/usePref';
-import { userText } from '../../localization/user';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 
 export function UiField({
   id,
@@ -61,9 +61,9 @@ export function UiField({
     <Field
       field={field}
       id={id}
-      name={name}
       mode={mode}
       model={resource}
+      name={name}
       parser={parser}
       resource={resource}
     />

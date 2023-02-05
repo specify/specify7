@@ -7,18 +7,18 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { headerText } from '../../localization/header';
 import { userText } from '../../localization/user';
+import { f } from '../../utils/functools';
 import type { GetOrSet, RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { enableBusinessRules } from '../DataModel/businessRules';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { Header } from '../Header';
+import type { MenuItemName } from '../Header/menuItemDefinitions';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { Router } from '../Router/Router';
 import { OnlineStatus } from './OnlineStatus';
 import { VersionMismatch } from './VersionMismatch';
-import { MenuItemName } from '../Header/menuItemDefinitions';
-import { f } from '../../utils/functools';
 
 export type MenuItem = {
   readonly title: LocalizedString;

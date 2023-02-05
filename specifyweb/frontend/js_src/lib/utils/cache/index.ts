@@ -16,9 +16,9 @@
  * @module
  */
 
-import type { CacheDefinitions } from './definitions';
 import { eventListener } from '../events';
 import type { R } from '../types';
+import type { CacheDefinitions } from './definitions';
 
 /** The data structure that would store all the cache */
 const cache: R<unknown> = {};

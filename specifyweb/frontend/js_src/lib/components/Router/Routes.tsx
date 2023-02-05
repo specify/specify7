@@ -1,17 +1,17 @@
 import React from 'react';
 
+import { attachmentsText } from '../../localization/attachments';
+import { developmentText } from '../../localization/development';
+import { headerText } from '../../localization/header';
+import { preferencesText } from '../../localization/preferences';
 import { resourcesText } from '../../localization/resources';
+import { schemaText } from '../../localization/schema';
+import { userText } from '../../localization/user';
 import { welcomeText } from '../../localization/welcome';
 import { wbText } from '../../localization/workbench';
 import type { RA } from '../../utils/types';
 import { Redirect } from './Redirect';
 import type { EnhancedRoute } from './RouterUtils';
-import { schemaText } from '../../localization/schema';
-import { headerText } from '../../localization/header';
-import { userText } from '../../localization/user';
-import { preferencesText } from '../../localization/preferences';
-import { attachmentsText } from '../../localization/attachments';
-import { developmentText } from '../../localization/development';
 
 // FEATURE: go over non-dynamic routes in all routers to make sure they have titles
 /* eslint-disable @typescript-eslint/promise-function-async */

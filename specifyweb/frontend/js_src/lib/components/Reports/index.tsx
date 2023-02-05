@@ -3,6 +3,7 @@ import React from 'react';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
+import { reportsText } from '../../localization/report';
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
@@ -16,6 +17,7 @@ import type {
   SerializedModel,
   SerializedResource,
 } from '../DataModel/helperTypes';
+import { schema } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { SpAppResource } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
@@ -24,12 +26,10 @@ import { DateElement } from '../Molecules/DateElement';
 import { Dialog } from '../Molecules/Dialog';
 import { FormattedResourceUrl } from '../Molecules/FormattedResource';
 import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
+import { TableIcon } from '../Molecules/TableIcon';
 import { formatUrl } from '../Router/queryString';
 import { OverlayContext } from '../Router/Router';
 import { Report } from './Report';
-import { reportsText } from '../../localization/report';
-import { schema } from '../DataModel/schema';
-import { TableIcon } from '../Molecules/TableIcon';
 
 export const reportsAvailable = contextUnlockedPromise.then((entrypoint) =>
   entrypoint === 'main'
@@ -142,7 +142,7 @@ export function ReportsView({
             <h2>{reportsText.reports()}</h2>
             <ReportRow
               cacheKey="listOfReports"
-              icon={<TableIcon name="Reports" label={false} />}
+              icon={<TableIcon label={false} name="Reports" />}
               resources={reports}
               onClick={setSelectedReport}
             />
@@ -151,7 +151,7 @@ export function ReportsView({
             <h2>{reportsText.labels()}</h2>
             <ReportRow
               cacheKey="listOfLabels"
-              icon={<TableIcon name="Labels" label={false} />}
+              icon={<TableIcon label={false} name="Labels" />}
               resources={labels}
               onClick={setSelectedReport}
             />

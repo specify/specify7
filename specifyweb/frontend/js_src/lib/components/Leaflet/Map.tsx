@@ -1,18 +1,19 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 import _ from 'underscore';
 
 import { usePromise } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
+import { localityText } from '../../localization/locality';
 import type { RA } from '../../utils/types';
-import { showLeafletMap } from './index';
-import { addFullScreenButton, LeafletInstance } from './addOns';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import type { LeafletInstance } from './addOns';
+import { addFullScreenButton } from './addOns';
 import type L from './extend';
 import type { LocalityData } from './helpers';
+import { showLeafletMap } from './index';
 import { leafletLayersPromise } from './layers';
-import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { LocalizedString } from 'typesafe-i18n';
-import { localityText } from '../../localization/locality';
 
 const resizeThrottle = 250;
 

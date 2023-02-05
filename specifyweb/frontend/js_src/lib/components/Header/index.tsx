@@ -3,10 +3,12 @@
  */
 
 import React from 'react';
+import { useLocation } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
+import { listen } from '../../utils/events';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
@@ -14,16 +16,14 @@ import { icons } from '../Atoms/Icons';
 import type { TagProps } from '../Atoms/wrapper';
 import type { MenuItem } from '../Core/Main';
 import { MenuContext } from '../Core/Main';
-import { ActiveLink } from '../Router/ActiveLink';
-import { usePref } from '../UserPreferences/usePref';
-import { Notifications } from './Notifications';
-import { UserTools } from './UserTools';
 import { schema } from '../DataModel/schema';
 import { userInformation } from '../InitialContext/userInformation';
-import { MenuItemName } from './menuItemDefinitions';
-import { listen } from '../../utils/events';
-import { useLocation } from 'react-router-dom';
+import { ActiveLink } from '../Router/ActiveLink';
+import { usePref } from '../UserPreferences/usePref';
+import type { MenuItemName } from './menuItemDefinitions';
 import { useUserTools } from './menuItemProcessing';
+import { Notifications } from './Notifications';
+import { UserTools } from './UserTools';
 
 const collapseThreshold = 900;
 
@@ -152,18 +152,18 @@ export function Header({
         <MenuButton
           icon={icons.archive}
           isCollapsed={isCollapsed}
+          preventOverflow
           title={collectionLabel}
           onClick="/specify/overlay/choose-collection/"
-          preventOverflow
         />
         <UserTools isCollapsed={isCollapsed} isInUserTool={isInUserTool} />
         <Notifications isCollapsed={isCollapsed} />
         <MenuButton
           icon={icons.search}
+          isActive={activeMenuItem === 'search'}
           isCollapsed={isCollapsed}
           title={commonText.search()}
           onClick="/specify/overlay/express-search/"
-          isActive={activeMenuItem === 'search'}
         />
         {!isHorizontal && !forceCollapse ? (
           <MenuButton

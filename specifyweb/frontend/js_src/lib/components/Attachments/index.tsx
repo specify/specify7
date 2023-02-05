@@ -3,11 +3,14 @@
  */
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { useAsyncState, usePromise } from '../../hooks/useAsyncState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { useCollection } from '../../hooks/useCollection';
+import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
+import { schemaText } from '../../localization/schema';
 import { f } from '../../utils/functools';
 import { filterArray } from '../../utils/types';
 import { Container, H2 } from '../Atoms';
@@ -16,16 +19,13 @@ import { Input, Label, Select } from '../Atoms/Form';
 import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
 import { getModel, schema } from '../DataModel/schema';
 import type { Tables } from '../DataModel/types';
+import { useMenuItem } from '../Header/useMenuItem';
+import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { ProtectedTable } from '../Permissions/PermissionDenied';
 import { OrderPicker } from '../UserPreferences/Renderers';
-import { AttachmentGallery } from './Gallery';
-import { schemaText } from '../../localization/schema';
-import { attachmentsText } from '../../localization/attachments';
-import { useMenuItem } from '../Header/useMenuItem';
 import { attachmentSettingsPromise } from './attachments';
-import { Dialog } from '../Molecules/Dialog';
-import { useNavigate } from 'react-router-dom';
+import { AttachmentGallery } from './Gallery';
 
 export const attachmentRelatedTables = f.store(() =>
   Object.keys(schema.models).filter((tableName) =>

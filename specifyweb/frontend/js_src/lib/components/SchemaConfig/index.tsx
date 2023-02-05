@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 
 import { useUnloadProtect } from '../../hooks/navigation';
 import { commonText } from '../../localization/common';
+import { schemaText } from '../../localization/schema';
 import { ping } from '../../utils/ajax/ping';
 import type { PartialBy } from '../../utils/types';
 import { Container } from '../Atoms';
@@ -24,7 +25,6 @@ import {
 } from './Hooks';
 import type { SchemaData } from './SetupHooks';
 import { SchemaConfigTable } from './Table';
-import { schemaText } from '../../localization/schema';
 
 export type SpLocaleItemString = SerializedResource<SpLocaleItemStr>;
 export type NewSpLocaleItemString = PartialBy<SpLocaleItemString, 'id'>;

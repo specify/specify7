@@ -1,4 +1,5 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { f } from '../../utils/functools';
@@ -17,7 +18,6 @@ import type {
 } from '../DataModel/types';
 import { getAppResourceCount, getAppResourceMode } from './helpers';
 import { getAppResourceTree } from './tree';
-import { LocalizedString } from 'typesafe-i18n';
 
 export type AppResources = {
   readonly directories: RA<SerializedResource<SpAppResourceDir>>;
@@ -133,7 +133,7 @@ export function useAppResourceData(
 }
 
 const fixLineBreaks = (string: string): string =>
-  string.replace(/[\n\r]+/gu, '\n');
+  string.replaceAll(/[\n\r]+/gu, '\n');
 
 export const getAppResourceExtension = (
   resource: SerializedResource<SpAppResource | SpViewSetObject>

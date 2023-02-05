@@ -79,11 +79,11 @@ export function TablesListEdit({
     >
       <ListEdit
         allItems={allTables}
-        defaultValues={defaultTables}
-        selectedValues={selectedModels.map(({ name }) => name)}
-        selectedLabel={schemaText.selectedTables()}
         availableLabel={schemaText.possibleTables()}
+        defaultValues={defaultTables}
         isReadOnly={false}
+        selectedLabel={schemaText.selectedTables()}
+        selectedValues={selectedModels.map(({ name }) => name)}
         onChange={handleChanged}
       />
     </Dialog>
@@ -197,10 +197,10 @@ export function ListEdit({
         {selectedLabel}
         <Select
           className="flex-1"
+          disabled={isReadOnly}
           multiple
           size={10}
           value={selectedSubset}
-          disabled={isReadOnly}
           onValuesChange={(tables): void =>
             setSelectedSubset(tables as RA<keyof Tables>)
           }
@@ -232,9 +232,9 @@ export function ListEdit({
         {availableLabel}
         <Select
           className="flex-1"
+          disabled={isReadOnly}
           multiple
           size={10}
-          disabled={isReadOnly}
           value={possibleSubset}
           onValuesChange={(tables): void =>
             setPossibleSubset(tables as RA<keyof Tables>)

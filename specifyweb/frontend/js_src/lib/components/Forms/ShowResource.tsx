@@ -12,13 +12,13 @@ import { getResourceViewUrl } from '../DataModel/resource';
 import { getModel, schema } from '../DataModel/schema';
 import type { RecordSet } from '../DataModel/types';
 import { RecordSetWrapper } from '../FormSliders/RecordSet';
+import { useMenuItem } from '../Header/useMenuItem';
 import { interactionTables } from '../Interactions/InteractionsDialog';
 import { ProtectedTable } from '../Permissions/PermissionDenied';
 import { NotFoundView } from '../Router/NotFoundView';
+import { locationToState, useStableLocation } from '../Router/RouterState';
 import { CheckLoggedInCollection, ViewResourceByGuid } from './DataTask';
 import { ResourceView } from './ResourceView';
-import { locationToState, useStableLocation } from '../Router/RouterState';
-import { useMenuItem } from '../Header/useMenuItem';
 
 export function ShowResource({
   resource,
@@ -137,8 +137,8 @@ export function ViewResourceById({
         tableName={model.name}
       >
         <CheckLoggedInCollection
-          resource={resource}
           isInRecordSet={isInRecordSet}
+          resource={resource}
         >
           <ShowResource resource={resource} />
         </CheckLoggedInCollection>

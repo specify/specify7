@@ -1,8 +1,8 @@
 import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
+import { addMissingFields } from '../addMissingFields';
 import { fetchCollection, fetchRelated } from '../collection';
 import { getResourceApiUrl } from '../resource';
-import { addMissingFields } from '../addMissingFields';
 
 requireContext();
 

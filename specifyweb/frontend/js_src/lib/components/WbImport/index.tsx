@@ -6,6 +6,7 @@
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useCachedState } from '../../hooks/useCachedState';
@@ -17,6 +18,7 @@ import { Container, H2, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Input, Select } from '../Atoms/Form';
 import { LoadingContext } from '../Core/Contexts';
+import { useMenuItem } from '../Header/useMenuItem';
 import { loadingGif } from '../Molecules';
 import type { AutoCompleteItem } from '../Molecules/AutoComplete';
 import { AutoComplete } from '../Molecules/AutoComplete';
@@ -32,8 +34,6 @@ import {
   parseXls,
   wbImportPreviewSize,
 } from './helpers';
-import { LocalizedString } from 'typesafe-i18n';
-import { useMenuItem } from '../Header/useMenuItem';
 
 export function WbImportView(): JSX.Element {
   useMenuItem('workBench');
@@ -94,8 +94,8 @@ function CsvPicked({ file }: { readonly file: File }): JSX.Element {
         onChange={setEncoding}
       />
       <ChooseDelimiter
-        isDisabled={!Array.isArray(preview)}
         getSetDelimiter={getSetDelimiter}
+        isDisabled={!Array.isArray(preview)}
       />
     </Layout>
   );
@@ -179,9 +179,9 @@ function ChooseDelimiter({
       <AutoComplete<string>
         aria-label={undefined}
         delay={0}
+        disabled={disabled}
         filterItems
         forwardRef={inputRef}
-        disabled={disabled}
         inputProps={{
           onBlur: () => {
             if (state === undefined) handleChange(undefined);

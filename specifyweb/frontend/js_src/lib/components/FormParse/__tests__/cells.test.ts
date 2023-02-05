@@ -1,3 +1,7 @@
+import type { LocalizedString } from 'typesafe-i18n';
+
+import { requireContext } from '../../../tests/helpers';
+import { theories } from '../../../tests/utils';
 import type { PartialBy } from '../../../utils/types';
 import { strictParseXml } from '../../AppResources/codeMirrorLinters';
 import { schema } from '../../DataModel/schema';
@@ -7,9 +11,6 @@ import {
   parseSpecifyProperties,
   processColumnDefinition,
 } from '../cells';
-import { theories } from '../../../tests/utils';
-import { requireContext } from '../../../tests/helpers';
-import { LocalizedString } from 'typesafe-i18n';
 
 requireContext();
 
@@ -111,8 +112,7 @@ const cell = (
 
 describe('parseFormCell', () => {
   test('base case', () => {
-    const consoleWarn = jest.fn();
-    jest.spyOn(console, 'warn').mockImplementation(consoleWarn);
+    jest.spyOn(console, 'warn').mockImplementation();
     expect(
       parseFormCell(schema.models.CollectionObject, strictParseXml('<cell />'))
     ).toEqual(
@@ -124,8 +124,7 @@ describe('parseFormCell', () => {
   });
 
   test('unsupported cell with some attributes', () => {
-    const consoleWarn = jest.fn();
-    jest.spyOn(console, 'warn').mockImplementation(consoleWarn);
+    jest.spyOn(console, 'warn').mockImplementation();
     expect(
       parseFormCell(
         schema.models.CollectionObject,
@@ -203,8 +202,7 @@ describe('parseFormCell', () => {
     ));
 
   test('unknown field', () => {
-    const consoleError = jest.fn();
-    jest.spyOn(console, 'error').mockImplementation(consoleError);
+    jest.spyOn(console, 'error').mockImplementation();
     expect(
       parseFormCell(
         schema.models.CollectionObject,
@@ -218,8 +216,7 @@ describe('parseFormCell', () => {
   });
 
   test('unknown field with default value', () => {
-    const consoleError = jest.fn();
-    jest.spyOn(console, 'error').mockImplementation(consoleError);
+    jest.spyOn(console, 'error').mockImplementation();
     expect(
       parseFormCell(
         schema.models.CollectionObject,

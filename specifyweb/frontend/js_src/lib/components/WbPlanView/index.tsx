@@ -5,19 +5,19 @@
  */
 
 import React from 'react';
+import { useParams } from 'react-router-dom';
 
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useErrorContext } from '../../hooks/useErrorContext';
 import { ajax } from '../../utils/ajax';
+import { Http } from '../../utils/ajax/definitions';
 import { f } from '../../utils/functools';
-import { hasPermission } from '../Permissions/helpers';
+import { useMenuItem } from '../Header/useMenuItem';
 import { treeRanksPromise } from '../InitialContext/treeRanks';
+import { hasPermission } from '../Permissions/helpers';
 import { NotFoundView } from '../Router/NotFoundView';
 import type { Dataset } from './Wrapped';
 import { WbPlanView } from './Wrapped';
-import { useParams } from 'react-router-dom';
-import { useErrorContext } from '../../hooks/useErrorContext';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { Http } from '../../utils/ajax/definitions';
-import { useMenuItem } from '../Header/useMenuItem';
 
 const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 

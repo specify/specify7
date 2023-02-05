@@ -1,8 +1,8 @@
 import React from 'react';
 
+import { overwriteReadOnly } from '../../utils/types';
 import { className } from '../Atoms/className';
 import { Textarea } from '../Atoms/Form';
-import { overwriteReadOnly } from '../../utils/types';
 
 export function AutoGrowTextArea({
   containerClassName = '',

@@ -1,10 +1,11 @@
-import { ajax } from './ajax';
+import type { LocalizedString } from 'typesafe-i18n';
+
 import type { DatasetBrief } from '../components/WbPlanView/Wrapped';
+import { ajax } from './ajax';
 import { f } from './functools';
-import { escapeRegExp } from './utils';
 import type { RA } from './types';
 import { filterArray } from './types';
-import { LocalizedString } from 'typesafe-i18n';
+import { escapeRegExp } from './utils';
 
 const MAX_NAME_LENGTH = 64;
 

@@ -17,9 +17,9 @@ import type { MenuItem } from '../Core/Main';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { OverlayContext } from '../Router/Router';
+import { locationToState } from '../Router/RouterState';
 import { MenuButton } from './index';
 import { useUserTools } from './menuItemProcessing';
-import { locationToState } from '../Router/RouterState';
 
 export function UserTools({
   isCollapsed,
@@ -143,13 +143,13 @@ function UserToolsColumn({
               return (
                 <li key={url}>
                   <LinkComponent
-                    href={url}
                     aria-current={
                       typeof backgroundLocation === 'string' &&
                       backgroundLocation.startsWith(url)
                         ? 'page'
                         : undefined
                     }
+                    href={url}
                   >
                     {icon}
                     {title}

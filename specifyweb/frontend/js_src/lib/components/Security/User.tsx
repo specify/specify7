@@ -8,6 +8,7 @@ import { useErrorContext } from '../../hooks/useErrorContext';
 import { useIsModified } from '../../hooks/useIsModified';
 import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
+import { userText } from '../../localization/user';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { formData } from '../../utils/ajax/helpers';
@@ -48,6 +49,7 @@ import {
   ProtectedAction,
   ProtectedTable,
 } from '../Permissions/PermissionDenied';
+import { locationToState, useStableLocation } from '../Router/RouterState';
 import type { SecurityOutlet } from '../Toolbar/Security';
 import type { SetAgentsResponse } from './MissingAgentsDialog';
 import { MissingAgentsDialog } from './MissingAgentsDialog';
@@ -71,8 +73,6 @@ import {
   useUserProviders,
 } from './UserPolicyHooks';
 import { anyResource, getAllActions } from './utils';
-import { locationToState, useStableLocation } from '../Router/RouterState';
-import { userText } from '../../localization/user';
 
 export function SecurityUser(): JSX.Element {
   const location = useStableLocation(useLocation());

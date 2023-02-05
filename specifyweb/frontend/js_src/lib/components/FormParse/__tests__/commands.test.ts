@@ -1,14 +1,13 @@
-import { parseUiCommand } from '../commands';
-import { strictParseXml } from '../../AppResources/codeMirrorLinters';
 import { requireContext } from '../../../tests/helpers';
+import { strictParseXml } from '../../AppResources/codeMirrorLinters';
 import { schema } from '../../DataModel/schema';
+import { parseUiCommand } from '../commands';
 
 requireContext();
 
 describe('parseUiCommand', () => {
   test('Simplest case', () => {
-    const consoleError = jest.fn();
-    jest.spyOn(console, 'error').mockImplementation(consoleError);
+    jest.spyOn(console, 'error').mockImplementation();
     expect(
       parseUiCommand(strictParseXml('<cell />'), schema.models.CollectionObject)
     ).toEqual({
@@ -21,8 +20,7 @@ describe('parseUiCommand', () => {
   });
 
   test('Unsupported command', () => {
-    const consoleError = jest.fn();
-    jest.spyOn(console, 'error').mockImplementation(consoleError);
+    jest.spyOn(console, 'error').mockImplementation();
     expect(
       parseUiCommand(
         strictParseXml('<cell name="test" label="test2" />'),

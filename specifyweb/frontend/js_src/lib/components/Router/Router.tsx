@@ -9,6 +9,7 @@ import {
 } from 'react-router-dom';
 
 import { commonText } from '../../localization/common';
+import { mainText } from '../../localization/main';
 import { toRelativeUrl } from '../../utils/ajax/helpers';
 import { listen } from '../../utils/events';
 import { GetOrSet, RA, setDevelopmentGlobal } from '../../utils/types';
@@ -20,9 +21,9 @@ import { NotFoundView } from './NotFoundView';
 import { overlayRoutes } from './OverlayRoutes';
 import { toReactRoutes } from './RouterUtils';
 import { routes } from './Routes';
-import { f } from '../../utils/functools';
 import { softFail } from '../Errors/Crash';
-import { mainText } from '../../localization/main';
+import { f } from '../../utils/functools';
+import { useErrorContext } from '../../hooks/useErrorContext';
 
 let unsafeNavigateFunction: SafeNavigateFunction | undefined;
 export const unsafeNavigate = (
@@ -57,6 +58,7 @@ export function Router(): JSX.Element {
   const isNotFoundPage =
     state?.type === 'NotFoundPage' ||
     background?.state?.type === 'NotFoundPage';
+  useErrorContext('location', location);
 
   /*
    * REFACTOR: replace usages of navigate with <a> where possible

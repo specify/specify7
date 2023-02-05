@@ -7,22 +7,22 @@ import React from 'react';
 import Draggable from 'react-draggable';
 import type { Props } from 'react-modal';
 import Modal from 'react-modal';
+import type { LocalizedString } from 'typesafe-i18n';
 
+import { useId } from '../../hooks/useId';
 import { listen } from '../../utils/events';
 import { KEY } from '../../utils/utils';
-import { LoadingContext } from '../Core/Contexts';
+import { Button, DialogContext } from '../Atoms/Button';
+import { className, dialogIconTriggers } from '../Atoms/className';
 import { dialogIcons } from '../Atoms/Icons';
+import { LoadingContext } from '../Core/Contexts';
 import {
   useHighContrast,
   useReducedTransparency,
   useTransitionDuration,
 } from '../UserPreferences/Hooks';
-import { className, dialogIconTriggers } from '../Atoms/className';
-import { Button, DialogContext } from '../Atoms/Button';
-import { useId } from '../../hooks/useId';
-import { useTitle } from './AppTitle';
 import { usePref } from '../UserPreferences/usePref';
-import { LocalizedString } from 'typesafe-i18n';
+import { useTitle } from './AppTitle';
 
 /**
  * Modal dialog with a loading bar
