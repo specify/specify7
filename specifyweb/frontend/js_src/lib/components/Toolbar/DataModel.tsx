@@ -35,6 +35,7 @@ import {
   javaTypeToHuman,
   localizedRelationshipTypes,
 } from '../SchemaConfig/helpers';
+import { scrollIntoView } from '../TreeView/helpers';
 import { useFrozenCategory } from '../UserPreferences/Aside';
 import { useTopChild } from '../UserPreferences/useTopChild';
 
@@ -431,7 +432,27 @@ const getTables = () =>
 
 export function DataModelTables(): JSX.Element {
   const tables = React.useMemo(getTables, []);
-  const { visibleChild, forwardRefs, scrollContainerRef } = useTopChild();
+  const {
+    visibleChild,
+    setVisibleChild,
+    forwardRefs,
+    scrollContainerRef,
+    references,
+  } = useTopChild();
+
+  const location = useLocation();
+
+  React.useEffect(() => {
+    const active = location.hash.replace('#', '').toLowerCase();
+    const activeIndex = tables.findIndex(
+      ({ name }) => name[0].toLowerCase() === active
+    );
+    if (activeIndex !== -1) {
+      setVisibleChild(activeIndex);
+      const currentRef = references.current?.[activeIndex];
+      if (currentRef !== undefined) scrollIntoView(currentRef);
+    }
+  }, []);
 
   return (
     <Container.Full className="pt-0">
@@ -509,6 +530,13 @@ export function DataModelAside({
     [isInOverlay, tables, activeCategory]
   );
 
+  const [link, setLink] = React.useState<HTMLElement | null>(null);
+  React.useEffect(() => {
+    if (link) {
+      scrollIntoView(link);
+    }
+  }, [link]);
+
   return (
     <aside
       className={`
@@ -523,6 +551,7 @@ export function DataModelAside({
           href={`#${tableName}`}
           key={index}
           onClick={(): void => setFreezeCategory(index)}
+          forwardRef={currentIndex === index ? setLink : undefined}
         >
           {jsxName}
         </Link.Gray>

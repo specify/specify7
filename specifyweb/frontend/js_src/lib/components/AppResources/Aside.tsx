@@ -31,6 +31,8 @@ import { StringToJsx } from '../../localization/utils';
 import { useParams } from 'react-router-dom';
 import { scrollIntoView } from '../TreeView/helpers';
 import { f } from '../../utils/functools';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { clearCache } from '../RouterCommands/CacheBuster';
 
 export function AppResourcesAside({
   resources: initialResources,
