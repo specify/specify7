@@ -26,7 +26,7 @@ import { getMappingLineData } from './navigator';
 
 /** Use table name instead of field name for the following fields: */
 const fieldsToHide = new Set<string>([
-  'name',
+  // 'name',
   'fullName',
   'localityName',
   formattedEntry,
@@ -120,7 +120,7 @@ export function generateMappingPathPreview(
     parentTableName = camelToHuman(databaseParentTableName),
   ] = mappingPathSubset(fieldLabels);
 
-  const fieldNameFormatted = fieldsToHide.has(databaseFieldName)
+  const fieldNameFormatted = fieldsToHide.has(databaseFieldName) || (databaseTableOrRankName !== 'CollectionObject' && databaseFieldName === 'name')
     ? undefined
     : fieldName;
   // Treat fields whose label is single word as generic
@@ -135,7 +135,7 @@ export function generateMappingPathPreview(
       : fieldIsGeneric
       ? tableOrRankName
       : undefined;
-  const tableNameFormatted = tablesToHide.has(databaseTableOrRankName)
+  const tableNameFormatted = tablesToHide.has(databaseTableOrRankName) && databaseFieldName !== formattedEntry
     ? [parentTableName || tableNameNonEmpty]
     : genericTables.has(databaseTableOrRankName)
     ? [parentTableName, tableNameNonEmpty]
