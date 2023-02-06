@@ -49,7 +49,7 @@ class Spdatasetrow(models.Model):
             models.UniqueConstraint(fields=['spdataset', 'rownumber'], name='unique_rownumber_row')
         ]
         indexes = [
-            models.Index(fields=['spdataset'])
+            models.Index(fields=['spdataset'], name='spdataset_idx')
         ]
 
 class Spdatasetrowresult(models.Model):
@@ -64,6 +64,6 @@ class Spdatasetrowresult(models.Model):
             models.UniqueConstraint(fields=['spdataset', 'rownumber'], name='unique_rownumber_result')
         ]
         indexes = [
-            models.Index(fields=['spdataset'])
+            models.Index(fields=['spdataset'], name='spdataset_idx')
         ]
         

@@ -474,6 +474,7 @@ def dataset(request, ds_id: str) -> http.HttpResponse:
             rows=list(ds.rows.values_list('data', flat=True)),
             uploadplan=ds.uploadplan and json.loads(ds.uploadplan),
             uploaderstatus=status,
+            uploadresult=ds.uploadresult,
             rowresults=[json.loads(r) for r in ds.rowresults.values_list('result', flat=True)],
             remarks=ds.remarks,
             importedfilename=ds.importedfilename,
@@ -668,7 +669,6 @@ def upload(request, ds_id, no_commit: bool, allow_partial: bool) -> http.HttpRes
     ])
 
     with transaction.atomic():
-        ds = models.Spdataset.objects.select_for_update().get(id=ds_id)
         if models.Spdatasetlock.objects.select_for_update().filter(spdataset=ds):
             return http.HttpResponse('dataset in use by uploader.', status=409)
         if ds.collection != request.specify_collection:
@@ -723,7 +723,6 @@ def unupload(request, ds_id: int) -> http.HttpResponse:
     check_permission_targets(request.specify_collection.id, request.specify_user.id, [DataSetPT.unupload])
 
     with transaction.atomic():
-        ds = models.Spdataset.objects.select_for_update().get(id=ds_id)
         if models.Spdatasetlock.objects.select_for_update().filter(spdataset=ds):
             return http.HttpResponse('dataset in use by uploader.', status=409)
         if not ds.was_uploaded():
@@ -820,14 +819,14 @@ def status(request, ds_id: int) -> http.HttpResponse:
 def abort(request, ds_id: int) -> http.HttpResponse:
     "Aborts any ongoing uploader operation for dataset <ds_id>."
     ds = get_object_or_404(models.Spdataset, id=ds_id)
+    if ds.specifyuser != request.specify_user:
+        return http.HttpResponseForbidden()
+
     try:
         lock = models.Spdatasetlock.objects.get(spdataset=ds)
         # We don't use select_for_update here because we don't want to block
         # on the locking transaction. That would defeat the purpose!
     except models.Spdatasetlock.DoesNotExist:
-        return http.HttpResponseForbidden()
-
-    if ds.uploaderstatus is None:
         return http.HttpResponse('not running', content_type='text/plain')
 
     task = {
