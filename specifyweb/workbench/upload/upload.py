@@ -70,7 +70,7 @@ def no_savepoint():
     yield
 
 def unupload_dataset(ds: Spdataset, agent, progress: Optional[Progress]=None) -> None:
-    results = list(ds.rowresults.values_list('result', flat=True))
+    results = Spdatasetrowresult.objects.filter(spdataset=ds.id).values_list('result', flat=True)
     total = len(results)
     with transaction.atomic():
         if ds.uploadresult is not None:
@@ -195,7 +195,7 @@ def clear_disambiguation(ds: Spdataset) -> None:
         ds.uploadresult = None
         ds.save(update_fields=['uploadresult'])
 
-        dsr_queryset = Spdatasetrow.objects.filter(spdataset=ds.pk)
+        dsr_queryset = Spdatasetrow.objects.filter(spdataset=ds.id)
         ncols = len(ds.columns)
         for dsr in dsr_queryset:
             row = dsr.data
