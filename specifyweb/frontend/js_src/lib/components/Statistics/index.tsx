@@ -31,7 +31,7 @@ import {
   useDefaultLayout,
   useDefaultStatsToAdd,
   useStatsSpec,
-  useUnknownCategory,
+  useDynamicCategorySetter,
 } from './hooks';
 import { StatsPageEditing } from './StatsPageEditing';
 import type { CustomStat, DefaultStat, StatLayout } from './types';
@@ -209,8 +209,12 @@ export function StatsPage(): JSX.Element | null {
   );
 
   // Used to set unknown categories once for layout initially, and every time for default layout
-  useUnknownCategory(backEndResponse, handleChange, statsSpec);
-  useUnknownCategory(defaultBackEndResponse, handleDefaultChange, statsSpec);
+  useDynamicCategorySetter(backEndResponse, handleChange, statsSpec);
+  useDynamicCategorySetter(
+    defaultBackEndResponse,
+    handleDefaultChange,
+    statsSpec
+  );
 
   const filters = React.useMemo(
     () => ({

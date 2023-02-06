@@ -1,8 +1,20 @@
-import { SpQuery } from '../DataModel/types';
-import type { IR, RA, WritableArray } from '../../utils/types';
-import { useMultipleAsyncState } from '../../hooks/useAsyncState';
 import React from 'react';
+
+import { deserializeResource } from '../../hooks/resource';
+import { useMultipleAsyncState } from '../../hooks/useAsyncState';
+import { statsText } from '../../localization/stats';
 import { ajax } from '../../utils/ajax';
+import { throttledPromise } from '../../utils/ajax/throttledPromise';
+import type { IR, RA, WritableArray } from '../../utils/types';
+import { keysToLowerCase } from '../../utils/utils';
+import { formatNumber } from '../Atoms/Internationalization';
+import { addMissingFields } from '../DataModel/addMissingFields';
+import { serializeResource } from '../DataModel/helpers';
+import { SpecifyResource } from '../DataModel/legacyTypes';
+import { schema } from '../DataModel/schema';
+import type { SpQuery } from '../DataModel/types';
+import { makeQueryField } from '../QueryBuilder/fromTree';
+import { dynamicCategories } from './definitions';
 import { statsSpec } from './StatsSpec';
 import type {
   BackEndStat,
@@ -16,17 +28,6 @@ import type {
   StatLayout,
   StatsSpec,
 } from './types';
-import { SpecifyResource } from '../DataModel/legacyTypes';
-import { serializeResource } from '../DataModel/helpers';
-import { formatNumber } from '../Atoms/Internationalization';
-import { deserializeResource } from '../../hooks/resource';
-import { addMissingFields } from '../DataModel/addMissingFields';
-import { schema } from '../DataModel/schema';
-import { makeQueryField } from '../QueryBuilder/fromTree';
-import { keysToLowerCase } from '../../utils/utils';
-import { statsText } from '../../localization/stats';
-import { throttledPromise } from '../../utils/ajax/throttledPromise';
-import { dynamicCategories } from './definitions';
 
 /**
  * Fetch backend statistics from the API
@@ -360,7 +361,7 @@ export function useStatValueLoad<
   }, [promiseGenerator, value, onLoad]);
 }
 
-export function useUnknownCategory(
+export function useDynamicCategorySetter(
   backEndResponse: BackendStatsResult | undefined,
   handleChange: (
     newCategories: (
@@ -385,25 +386,22 @@ export function useUnknownCategory(
                   items:
                     unknownCategory.items ??
                     (unknownCategory.categoryToFetch === undefined ||
-                    backEndResponse?.[
-                      unknownCategory.categoryToFetch as keyof BackendStatsResult
-                    ] === undefined ||
+                    backEndResponse?.[unknownCategory.categoryToFetch] ===
+                      undefined ||
                     unknownCategory.categoryToFetch !== categoryName
                       ? undefined
-                      : Object.entries(
-                          backEndResponse[
-                            categoryName as keyof BackendStatsResult
-                          ]
-                        ).map(([itemName, rawValue]) => ({
-                          type: 'DefaultStat',
-                          pageName,
-                          itemName: 'phantomItem',
-                          categoryName,
-                          label: itemName,
-                          itemValue: spec.formatter(rawValue),
-                          itemType: 'BackEndStat',
-                          pathToValue: itemName as keyof BackendStatsResult,
-                        }))),
+                      : Object.entries(backEndResponse[categoryName]).map(
+                          ([itemName, rawValue]) => ({
+                            type: 'DefaultStat',
+                            pageName,
+                            itemName: 'phantomItem',
+                            categoryName,
+                            label: itemName,
+                            itemValue: spec.formatter(rawValue),
+                            itemType: 'BackEndStat',
+                            pathToValue: itemName,
+                          })
+                        )),
                 }))
               );
             }
