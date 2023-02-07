@@ -5,6 +5,7 @@ import type { State } from 'typesafe-reducer';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { commonText } from '../../localization/common';
+import { userText } from '../../localization/user';
 import { removeItem, sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
@@ -13,6 +14,7 @@ import { LoadingContext } from '../Core/Contexts';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { CollectionObject } from '../DataModel/types';
+import { softFail } from '../Errors/Crash';
 import { SearchDialog } from '../Forms/SearchDialog';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
@@ -23,8 +25,6 @@ import {
   fetchOtherCollectionData,
   processColRelationships,
 } from './collectionRelData';
-import { softFail } from '../Errors/Crash';
-import { userText } from '../../localization/user';
 
 export function CollectionOneToManyPlugin({
   resource,

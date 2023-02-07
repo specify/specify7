@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`derivedFields 1`] = `
+exports[`dependentFields 1`] = `
 {
   "GGBN_concentrationUnit": "GGBN_concentration",
   "GGBN_volumeUnit": "GGBN_volume",

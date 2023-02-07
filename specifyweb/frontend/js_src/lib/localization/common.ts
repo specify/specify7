@@ -590,7 +590,7 @@ export const commonText = createDictionary({
   },
   online: {
     'en-us': 'online',
-    'es-es': 'en línea',
+    'es-es': 'conectado',
     'fr-fr': 'en ligne',
     'ru-ru': 'онлайн',
     'uk-ua': 'онлайн',

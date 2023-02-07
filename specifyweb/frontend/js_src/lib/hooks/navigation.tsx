@@ -2,6 +2,7 @@
  * A wrapper for Backbone's routing API
  */
 
+import type { SafeLocation } from 'history';
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
@@ -13,7 +14,6 @@ import {
 } from '../components/Router/Router';
 import type { GetOrSet, GetSet, RA } from '../utils/types';
 import { removeItem, removeKey } from '../utils/utils';
-import { SafeLocation } from 'history';
 
 export function useSearchParameter(
   name: string | undefined,

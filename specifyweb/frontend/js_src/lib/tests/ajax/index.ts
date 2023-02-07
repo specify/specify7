@@ -1,9 +1,9 @@
 import fs from 'node:fs';
 import path from 'node:path';
+
 import { afterAll, beforeAll, expect } from '@jest/globals';
 
-import type { ajax, AjaxResponseObject } from '../../utils/ajax';
-import { MimeType } from '../../utils/ajax';
+import type { ajax, AjaxResponseObject, MimeType } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { handleAjaxResponse } from '../../utils/ajax/response';
 import { f } from '../../utils/functools';
@@ -103,7 +103,7 @@ export async function ajaxMock<RESPONSE_TYPE>(
   const overwrittenData =
     overrides[url]?.[requestMethod] ??
     overrides[urlWithoutQuery]?.[requestMethod];
-  if (typeof overwrittenData !== 'undefined') {
+  if (overwrittenData !== undefined) {
     const { data, responseCode, body } = overwrittenData;
     if (body !== undefined) expect(requestBody).toEqual(body);
     const value = data();
@@ -116,11 +116,21 @@ export async function ajaxMock<RESPONSE_TYPE>(
     );
   }
 
-  const parsedPath = path.parse(`${basePath}/lib/tests/ajax/static${url}`);
+  /*
+   * Get rid of the ? character as it is not allowed in file names on
+   * Windows.
+   */
+  const [splitUrl, queryString = ''] = url.split('?');
+  const parsedPath = path.parse(`${basePath}/lib/tests/ajax/static${splitUrl}`);
+  const directoryName =
+    queryString === ''
+      ? parsedPath.dir
+      : path.join(parsedPath.dir, parsedPath.base);
+  const fileName = queryString === '' ? parsedPath.base : queryString;
 
   // Find a directory that matches the part name in the URL
   const files = await fs.promises
-    .readdir(parsedPath.dir, {
+    .readdir(directoryName, {
       withFileTypes: true,
     })
     .catch(() => []);
@@ -132,11 +142,11 @@ export async function ajaxMock<RESPONSE_TYPE>(
        * Compare file name from the URL to a file in the found directory with
        * and without the file extension
        */
-      (parsedPath.base === dirent.name ||
-        parsedPath.base === splitFileName(dirent.name).fileName)
+      (fileName === dirent.name ||
+        fileName === splitFileName(dirent.name).fileName)
   )?.name;
 
-  if (typeof targetFile === 'undefined')
+  if (targetFile === undefined)
     throw new Error(
       `No static source found for URL ${url} [${requestMethod}].\n` +
         `You can mock it by creating a file in ./lib/tests/ajax/static\n` +

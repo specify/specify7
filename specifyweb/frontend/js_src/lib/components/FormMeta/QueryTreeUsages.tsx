@@ -1,10 +1,10 @@
 import React from 'react';
 
-import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { formsText } from '../../localization/forms';
 import { Link } from '../Atoms/Link';
+import type { AnyTree } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { ProtectedAction } from '../Permissions/PermissionDenied';
-import { AnyTree } from '../DataModel/helperTypes';
 
 export function QueryTreeUsages({
   resource,

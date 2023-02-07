@@ -1,11 +1,11 @@
 import { formsText } from '../../../localization/forms';
 import { mockTime, requireContext } from '../../../tests/helpers';
 import type { IR } from '../../types';
+import { fullDateFormat } from '../dateFormat';
 import type { Parser } from '../definitions';
 import { resolveParser } from '../definitions';
 import type { InvalidParseResult, ValidParseResult } from '../parse';
 import { parseValue } from '../parse';
-import { fullDateFormat } from '../dateFormat';
 
 requireContext();
 

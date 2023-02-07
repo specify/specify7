@@ -5,8 +5,8 @@ import { getCache, setCache } from '../../utils/cache';
 import type { IR, RA, RR } from '../../utils/types';
 import { overwriteReadOnly } from '../../utils/types';
 import { capitalize, KEY } from '../../utils/utils';
-import type { LeafletMarker, MarkerGroups } from './index';
 import L from './extend';
+import type { LeafletMarker, MarkerGroups } from './index';
 import { preferredBaseLayer, preferredOverlay } from './layers';
 
 export type LeafletCacheSalt = 'CoMap' | 'MainMap';

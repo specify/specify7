@@ -1,4 +1,5 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useUnloadProtect } from '../../hooks/navigation';
 import { useBooleanState } from '../../hooks/useBooleanState';
@@ -22,9 +23,8 @@ import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { smoothScroll } from '../QueryBuilder/helpers';
 import { usePref } from '../UserPreferences/usePref';
-import { FORBID_ADDING, NO_CLONE } from './ResourceView';
-import { LocalizedString } from 'typesafe-i18n';
 import { FormContext } from './BaseResourceView';
+import { FORBID_ADDING, NO_CLONE } from './ResourceView';
 
 export const saveFormUnloadProtect = formsText.unsavedFormUnloadProtect();
 

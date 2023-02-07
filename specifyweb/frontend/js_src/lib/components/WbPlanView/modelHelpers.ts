@@ -5,17 +5,17 @@
  * @module
  */
 
-import type { MappingPath } from './Mapper';
-import type { Tables } from '../DataModel/types';
+import type { IR, RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { group } from '../../utils/utils';
 import { strictGetModel } from '../DataModel/schema';
 import type { Relationship } from '../DataModel/specifyField';
+import type { Tables } from '../DataModel/types';
 import {
   getTreeDefinitionItems,
   isTreeModel,
 } from '../InitialContext/treeRanks';
-import type { IR, RA } from '../../utils/types';
-import { filterArray } from '../../utils/types';
+import type { MappingPath } from './Mapper';
 import {
   formatTreeRank,
   getNumberFromToManyIndex,
@@ -73,7 +73,7 @@ export function findRequiredMissingFields(
       )
     );
   // Handle trees
-  else if (isTreeModel(tableName) && !valueIsTreeRank(path.at(-1)!))
+  else if (isTreeModel(tableName) && !valueIsTreeRank(path.at(-1)))
     return (
       getTreeDefinitionItems(tableName as 'Geography', false)?.flatMap(
         ({ name: rankName }) => {

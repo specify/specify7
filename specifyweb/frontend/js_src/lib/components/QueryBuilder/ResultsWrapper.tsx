@@ -1,12 +1,15 @@
 import React from 'react';
 
 import { ajax } from '../../utils/ajax';
+import { runQuery } from '../../utils/ajax/specifyApi';
 import type { RA } from '../../utils/types';
 import { keysToLowerCase, replaceItem } from '../../utils/utils';
+import { serializeResource } from '../DataModel/helpers';
+import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { SpQuery, SpQueryField, Tables } from '../DataModel/types';
-import { fail } from '../Errors/Crash';
+import { raise } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { loadingGif } from '../Molecules';
 import type { QueryField } from './helpers';
@@ -17,9 +20,6 @@ import {
   unParseQueryFields,
 } from './helpers';
 import { QueryResults } from './Results';
-import { SerializedResource } from '../DataModel/helperTypes';
-import { runQuery } from '../../utils/ajax/specifyApi';
-import { serializeResource } from '../DataModel/helpers';
 
 // TODO: [FEATURE] allow customizing this and other constants as make sense
 const fetchSize = 40;
@@ -79,7 +79,7 @@ export function QueryResultsWrapper({
    * the query results until query is reRun
    */
   const [props, setProps] = React.useState<
-    | Omit<Parameters<typeof QueryResults>[0], 'totalCount' | 'onReRun'>
+    | Omit<Parameters<typeof QueryResults>[0], 'onReRun' | 'totalCount'>
     | undefined
   >(undefined);
 
@@ -117,7 +117,7 @@ export function QueryResultsWrapper({
       }),
     })
       .then(({ data }) => setTotalCount(data.count))
-      .catch(fail);
+      .catch(raise);
 
     const displayedFields = allFields.filter((field) => field.isDisplay);
     const isCountOnly =
@@ -169,7 +169,7 @@ export function QueryResultsWrapper({
           onSelected: handleSelected,
         })
       )
-      .catch(fail);
+      .catch(raise);
   }, [
     fields,
     baseTableName,

@@ -194,7 +194,7 @@ describe('mappedFind', () => {
     ).toBe(2);
   });
   test('Not found a value', () => {
-    expect(mappedFind([undefined, undefined, undefined], f.id)).toBe(undefined);
+    expect(mappedFind([undefined, undefined, undefined], f.id)).toBeUndefined();
   });
 });
 
@@ -294,12 +294,12 @@ describe('getAttribute', () => {
   test('Get existing attribute', () => {
     const input = document.createElement('input');
     input.setAttribute('data-someattribute', '1');
-    expect(getAttribute(input, 'data-someAttribute')).toEqual('1');
+    expect(getAttribute(input, 'data-someAttribute')).toBe('1');
   });
   test('Get non-existent attribute', () => {
     const input = document.createElement('input');
     input.setAttribute('data-someattribute', '1');
-    expect(getAttribute(input, 'data-attr')).toEqual(undefined);
+    expect(getAttribute(input, 'data-attr')).toBeUndefined();
   });
 });
 
@@ -307,27 +307,27 @@ describe('getParsedAttribute', () => {
   test('Get existing attribute', () => {
     const input = document.createElement('input');
     input.setAttribute('data-someattribute', '1');
-    expect(getParsedAttribute(input, 'data-someAttribute')).toEqual('1');
+    expect(getParsedAttribute(input, 'data-someAttribute')).toBe('1');
   });
   test('Trim attribute', () => {
     const input = document.createElement('input');
     input.setAttribute('data-someattribute', '  1  ');
-    expect(getParsedAttribute(input, 'data-someAttribute')).toEqual('1');
+    expect(getParsedAttribute(input, 'data-someAttribute')).toBe('1');
   });
   test('Ignore blank attributes', () => {
     const input = document.createElement('input');
     input.setAttribute('data-someattribute', '');
-    expect(getParsedAttribute(input, 'data-someAttribute')).toEqual(undefined);
+    expect(getParsedAttribute(input, 'data-someAttribute')).toBeUndefined();
   });
   test('Ignore whitespace-only attributes', () => {
     const input = document.createElement('input');
     input.setAttribute('data-someattribute', '    ');
-    expect(getParsedAttribute(input, 'data-someAttribute')).toEqual(undefined);
+    expect(getParsedAttribute(input, 'data-someAttribute')).toBeUndefined();
   });
   test('Get non-existent attribute', () => {
     const input = document.createElement('input');
     input.setAttribute('data-someattribute', '1');
-    expect(getParsedAttribute(input, 'data-attr')).toEqual(undefined);
+    expect(getParsedAttribute(input, 'data-attr')).toBeUndefined();
   });
 });
 
@@ -335,27 +335,27 @@ describe('getBooleanAttribute', () => {
   test('Get existing true attribute', () => {
     const input = document.createElement('input');
     input.setAttribute('data-someattribute', 'TRUE');
-    expect(getBooleanAttribute(input, 'data-someAttribute')).toEqual(true);
+    expect(getBooleanAttribute(input, 'data-someAttribute')).toBe(true);
   });
   test('Get existing false attribute', () => {
     const input = document.createElement('input');
     input.setAttribute('data-someattribute', 'faLse');
-    expect(getBooleanAttribute(input, 'data-someAttribute')).toEqual(false);
+    expect(getBooleanAttribute(input, 'data-someAttribute')).toBe(false);
   });
   test('Get existing false attribute with whitespace', () => {
     const input = document.createElement('input');
     input.setAttribute('data-someattribute', '\tfalSe\n');
-    expect(getBooleanAttribute(input, 'data-someAttribute')).toEqual(false);
+    expect(getBooleanAttribute(input, 'data-someAttribute')).toBe(false);
   });
   test('Treat all non-boolean as false', () => {
     const input = document.createElement('input');
     input.setAttribute('data-someattribute', '\tAbc\n');
-    expect(getBooleanAttribute(input, 'data-someAttribute')).toEqual(false);
+    expect(getBooleanAttribute(input, 'data-someAttribute')).toBe(false);
   });
   test('Get non-existent attribute', () => {
     const input = document.createElement('input');
     input.setAttribute('data-someattribute', '1');
-    expect(getBooleanAttribute(input, 'data-attr')).toEqual(undefined);
+    expect(getBooleanAttribute(input, 'data-attr')).toBeUndefined();
   });
 });
 

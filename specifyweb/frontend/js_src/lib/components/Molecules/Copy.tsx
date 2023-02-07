@@ -1,10 +1,10 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { Button } from '../Atoms/Button';
 import { softFail } from '../Errors/Crash';
-import { LocalizedString } from 'typesafe-i18n';
 
 const copyMessageTimeout = 3000;
 

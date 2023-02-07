@@ -1,20 +1,20 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
-import type { Tables } from '../DataModel/types';
-import { split } from '../../utils/utils';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
-import { schema } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import { schemaText } from '../../localization/schema';
+import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
-import { Dialog } from '../Molecules/Dialog';
-import { defaultQueryTablesConfig, useQueryModels } from './QueryTables';
+import { split } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Label, Select } from '../Atoms/Form';
+import { schema } from '../DataModel/schema';
+import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { Tables } from '../DataModel/types';
+import { Dialog } from '../Molecules/Dialog';
 import { usePref } from '../UserPreferences/usePref';
-import { f } from '../../utils/functools';
-import { schemaText } from '../../localization/schema';
-import { LocalizedString } from 'typesafe-i18n';
+import { defaultQueryTablesConfig, useQueryModels } from './QueryTables';
 
 export function QueryTablesEdit({
   onClose: handleClose,
@@ -30,9 +30,9 @@ export function QueryTablesEdit({
   return (
     <TablesListEdit
       defaultTables={defaultQueryTablesConfig}
+      header={queryText.configureQueryTables()}
       isNoRestrictionMode={isNoRestrictionMode}
       models={models}
-      header={queryText.configureQueryTables()}
       onChange={setModels}
       onClose={handleClose}
     />

@@ -5,26 +5,26 @@
  * On any modifications, please check if documentation needs to be updated.
  */
 
+import type { LocalizedString } from 'typesafe-i18n';
 import type { State } from 'typesafe-reducer';
 
+import { reportsText } from '../../localization/report';
 import { f } from '../../utils/functools';
+import { parserFromType } from '../../utils/parser/definitions';
+import type { IR, RA, ValueOf } from '../../utils/types';
 import {
   getAttribute,
   getBooleanAttribute,
   getParsedAttribute,
 } from '../../utils/utils';
+import type { LiteralField, Relationship } from '../DataModel/specifyField';
+import type { SpecifyModel } from '../DataModel/specifyModel';
+import { setLogContext } from '../Errors/interceptLogs';
+import { specialPickListMapping } from '../FormFields/ComboBox';
+import { legacyLocalize } from '../InitialContext/legacyUiLocalization';
+import { hasPermission, hasToolPermission } from '../Permissions/helpers';
 import type { PluginDefinition } from './plugins';
 import { parseUiPlugin } from './plugins';
-import { legacyLocalize } from '../InitialContext/legacyUiLocalization';
-import { LocalizedString } from 'typesafe-i18n';
-import { parserFromType } from '../../utils/parser/definitions';
-import { LiteralField, Relationship } from '../DataModel/specifyField';
-import { hasPermission, hasToolPermission } from '../Permissions/helpers';
-import type { IR, RA, ValueOf } from '../../utils/types';
-import { specialPickListMapping } from '../FormFields/ComboBox';
-import { SpecifyModel } from '../DataModel/specifyModel';
-import { reportsText } from '../../localization/report';
-import { setLogContext } from '../Errors/interceptLogs';
 
 export type FieldTypes = {
   readonly Checkbox: State<
@@ -204,15 +204,16 @@ const processFieldType: {
     if (fields === undefined) {
       console.error('Trying to render a query combobox without a field name');
       return { type: 'Blank' };
-    } else if (fields.at(-1)?.isRelationship !== true) {
-      console.error('QueryComboBox can only be used to display a relationship');
-      return { type: 'Blank' };
-    } else
+    } else if (fields.at(-1)?.isRelationship === true) {
       return {
         type: 'QueryComboBox',
         hasCloneButton: getProperty('cloneBtn')?.toLowerCase() === 'true',
         typeSearch: getProperty('name'),
       };
+    } else {
+      console.error('QueryComboBox can only be used to display a relationship');
+      return { type: 'Blank' };
+    }
   },
   Plugin: ({ cell, getProperty, model, fields }) => ({
     type: 'Plugin',
@@ -253,10 +254,10 @@ export function parseFormField({
   model,
   fields,
 }: {
-  cell: Element;
-  getProperty: (name: string) => string | undefined;
-  model: SpecifyModel;
-  fields: RA<LiteralField | Relationship> | undefined;
+  readonly cell: Element;
+  readonly getProperty: (name: string) => string | undefined;
+  readonly model: SpecifyModel;
+  readonly fields: RA<LiteralField | Relationship> | undefined;
 }): FormFieldDefinition {
   let uiType: string | undefined = getParsedAttribute(cell, 'uiType');
   if (uiType === undefined) {

@@ -1,7 +1,10 @@
 import React from 'react';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
+import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
+import { formsText } from '../../localization/forms';
+import { headerText } from '../../localization/header';
 import { isExternalUrl } from '../../utils/ajax/helpers';
 import type { IR, RA } from '../../utils/types';
 import { H3, Ul } from '../Atoms';
@@ -14,9 +17,6 @@ import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
 import { OverlayContext } from '../Router/Router';
 import { userToolsPromise } from './userToolDefinitions';
-import { formsText } from '../../localization/forms';
-import { useCachedState } from '../../hooks/useCachedState';
-import { headerText } from '../../localization/header';
 
 export function UserTools(): JSX.Element {
   // REFACTOR: get rid of usages of "px" units in the header

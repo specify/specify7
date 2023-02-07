@@ -70,7 +70,9 @@ export function Contexts({
           holders.current = holders.current.filter((item) => item !== holderId);
           if (holders.current.length === 0) handleLoaded();
         })
-        .catch(crash);
+        .catch((error) => {
+          crash(error);
+        });
     },
     [handleLoading, handleLoaded]
   );

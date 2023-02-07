@@ -13,6 +13,7 @@ import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema, strictGetModel } from '../DataModel/schema';
 import type { PickList, PickListItem, Tables } from '../DataModel/types';
+import { softFail } from '../Errors/Crash';
 import type { PickListItemSimple } from '../FormFields/ComboBox';
 import { format } from '../Forms/dataObjFormatters';
 import { hasTablePermission, hasToolPermission } from '../Permissions/helpers';
@@ -22,14 +23,13 @@ import {
   PickListTypes,
   unsafeGetPickLists,
 } from './definitions';
-import { softFail } from '../Errors/Crash';
 
-const pickListFetchPromises: R<Promise<undefined | SpecifyResource<PickList>>> =
+const pickListFetchPromises: R<Promise<SpecifyResource<PickList> | undefined>> =
   {};
 
 export async function fetchPickList(
   pickListName: string
-): Promise<undefined | SpecifyResource<PickList>> {
+): Promise<SpecifyResource<PickList> | undefined> {
   pickListFetchPromises[pickListName] ??= unsafeFetchPickList(pickListName);
   return pickListFetchPromises[pickListName];
 }
@@ -55,7 +55,7 @@ async function unsafeFetchPickList(
     unsafeGetPickLists()[pickListName] = pickList;
   }
 
-  if (typeof pickList === 'undefined') return undefined;
+  if (pickList === undefined) return undefined;
 
   pickList.set('pickListItems', await fetchPickListItems(pickList));
 

@@ -23,9 +23,7 @@ export const serializeResource = <SCHEMA extends AnySchema>(
   resource: SerializedModel<SCHEMA> | SpecifyResource<SCHEMA>
 ): SerializedResource<SCHEMA> =>
   serializeModel<SCHEMA>(
-    'toJSON' in resource
-      ? resourceToJson(resource as SpecifyResource<SCHEMA>)
-      : (resource as SerializedModel<SCHEMA>),
+    'toJSON' in resource ? resourceToJson(resource) : resource,
     (resource as SpecifyResource<SCHEMA>)?.specifyModel?.name
   );
 
@@ -168,8 +166,7 @@ export const deserializeResource = <SCHEMA extends AnySchema>(
      * a typechecking performance issue (it was taking 5s to typecheck this
      * line according to TypeScript trace analyzer)
      */
-    (serializedResource as SerializedResource<SCHEMA>)
-      ._tableName as keyof Tables
+    (serializedResource as SerializedResource<SCHEMA>)._tableName
   ].Resource(removeKey(serializedResource, '_tableName' as 'id'));
 
 /**

@@ -250,7 +250,10 @@ export const formsText = createDictionary({
       Додати значення "{value:string}" до {pickListTable:string} під назвою
       "{pickListName:string}"?
     `,
-    'fr-fr': '',
+    'fr-fr': `
+      Ajouter la valeur "{value:string}" au {pickListTable:string} nommé
+      "{pickListName:string}" ?
+    `,
   },
   invalidType: {
     'en-us': 'Invalid Type',
@@ -514,7 +517,7 @@ export const formsText = createDictionary({
     `,
     'fr-fr': `
       Ce plugin ne peut pas être utilisé sur le formulaire
-      {currentTable:string}. Essayez de le déplacer sur les formulaires
+      {currentTable:string}. Essayez de le déplacer vers les formulaires
       {supportedTables:string}.
     `,
     'uk-ua': `
@@ -531,9 +534,19 @@ export const formsText = createDictionary({
       Команда не может быть использована на форме {currentTable:string}. Она
       может быть использована только на форме {correctTable:string}.
     `,
-    'es-es': '',
-    'fr-fr': '',
-    'uk-ua': '',
+    'es-es': `
+      El comando no puede utilizarse en el formulario {currentTable:string}.
+      Sólo puede utilizarse en el formulario {correctTable:string}.
+    `,
+    'fr-fr': `
+      La commande ne peut pas être utilisée sur le formulaire
+      {currentTable:string}. Il ne peut être utilisé que sur le formulaire
+      {correctTable:string}.
+    `,
+    'uk-ua': `
+      Команду не можна використовувати у формі {currentTable:string}. Його можна
+      використовувати лише у формі {correctTable:string}.
+    `,
   },
   pluginName: {
     'en-us': 'Plugin name',
@@ -977,7 +990,7 @@ export const formsText = createDictionary({
     `,
     'en-us': '{tableName:string} #{id:number}',
     'ru-ru': '{tableName:string} #{id:number}',
-    'es-es': '{tableName:string} #{id:number}',
+    'es-es': '{tableName:string} №{id:number}',
     'fr-fr': '{tableName:string} #{id:number}',
     'uk-ua': '{tableName:string} №{id:number}',
   },

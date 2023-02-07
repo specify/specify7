@@ -39,7 +39,6 @@ import { formsText } from '../../localization/forms';
 import { reportsText } from '../../localization/report';
 import { Collection, Tables } from '../DataModel/types';
 import { resourcesText } from '../../localization/resources';
-import { softFail } from '../Errors/Crash';
 import { schemaText } from '../../localization/schema';
 import { wbPlanText } from '../../localization/wbPlan';
 import { error, softError } from '../Errors/assert';
@@ -1689,7 +1688,8 @@ import('../DataModel/schema')
       } else softError('Unable to replace the tree preferences item title');
     })
   )
-  .catch(softFail);
+  // Not using softFail here to avoid circular dependency
+  .catch(console.error);
 
 export type Preferences = GenericPreferencesCategories &
   typeof preferenceDefinitions;

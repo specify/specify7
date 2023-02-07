@@ -2,15 +2,15 @@
  * Type definitions for files that aren't yet converted to TypeScript
  */
 
-import type { SaveBlockers } from './saveBlockers';
-import type { Collection, SpecifyModel } from './specifyModel';
 import type { IR, RA } from '../../utils/types';
-import {
+import type {
   AnySchema,
   CommonFields,
   SerializedModel,
   SerializedResource,
 } from './helperTypes';
+import type { SaveBlockers } from './saveBlockers';
+import type { Collection, SpecifyModel } from './specifyModel';
 
 /*
  * FEATURE: need to improve the typing to handle the following:
@@ -166,8 +166,8 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
     fieldName: FIELD_NAME
   ): Collection<SCHEMA['toManyDependent'][FIELD_NAME][number]> | undefined;
   save(props?: {
-    onSaveConflict?: () => void;
-    errorOnAlreadySaving?: boolean;
+    readonly onSaveConflict?: () => void;
+    readonly errorOnAlreadySaving?: boolean;
   }): Promise<SpecifyResource<SCHEMA>>;
   destroy(): Promise<void>;
   fetch(): Promise<SpecifyResource<SCHEMA>>;

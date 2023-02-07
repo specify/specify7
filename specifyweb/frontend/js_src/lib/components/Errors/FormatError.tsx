@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { mainText } from '../../localization/main';
 import { Http } from '../../utils/ajax/definitions';
 import type { RA, WritableArray } from '../../utils/types';
 import { jsonStringify } from '../../utils/utils';
@@ -10,10 +11,9 @@ import { formatPermissionsError } from '../Permissions/FormatError';
 import { PermissionError } from '../Permissions/PermissionDenied';
 import { unsafeTriggerNotFound } from '../Router/Router';
 import { ErrorDialog } from './ErrorDialog';
-import { produceStackTrace } from './stackTrace';
-import { mainText } from '../../localization/main';
 import { formatJsonBackendResponse } from './JsonError';
 import { AjaxErrorMode } from '../../utils/ajax';
+import { produceStackTrace } from './stackTrace';
 
 export function formatError(
   error: unknown,

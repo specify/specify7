@@ -2,22 +2,22 @@ import React from 'react';
 import { useOutletContext } from 'react-router';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
+import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
 import { f } from '../../utils/functools';
-import { removeKey, replaceKey } from '../../utils/utils';
-import { schema } from '../DataModel/schema';
 import type { GetOrSet, IR } from '../../utils/types';
 import { defined } from '../../utils/types';
+import { removeKey, replaceKey } from '../../utils/utils';
 import { LoadingContext } from '../Core/Contexts';
+import { schema } from '../DataModel/schema';
 import { LoadingScreen } from '../Molecules/Dialog';
 import { NotFoundView } from '../Router/NotFoundView';
+import { locationToState } from '../Router/RouterState';
+import type { SecurityOutlet } from '../Toolbar/Security';
 import { createLibraryRole } from './CreateLibraryRole';
+import { decompressPolicies } from './policyConverter';
 import type { NewRole, Role } from './Role';
 import { RoleView } from './Role';
-import type { SecurityOutlet } from '../Toolbar/Security';
-import { decompressPolicies } from './policyConverter';
-import { Http } from '../../utils/ajax/definitions';
-import { locationToState } from '../Router/RouterState';
 
 const closeUrl = '/specify/security/institution/';
 
@@ -37,9 +37,9 @@ export function SecurityLibraryRole(): JSX.Element {
       parentName={institution.name ?? schema.models.Institution.label}
       permissionName="/permissions/library/roles"
       role={role}
+      roleUsers={undefined}
       userRoles={undefined}
       onAddUsers={undefined}
-      roleUsers={undefined}
       onDelete={(): void =>
         typeof role.id === 'number'
           ? loading(

@@ -1,8 +1,9 @@
-import { GetOrSet } from '../utils/types';
 import React from 'react';
+
 import { LoadingContext } from '../components/Core/Contexts';
+import { raise } from '../components/Errors/Crash';
 import { f } from '../utils/functools';
-import { fail } from '../components/Errors/Crash';
+import type { GetOrSet } from '../utils/types';
 
 /**
  * Like React.useState, but initial value is retrieved asynchronously
@@ -48,7 +49,7 @@ export function useAsyncState<T>(
     wrapped(
       Promise.resolve(callback())
         .then((newState) => (destructorCalled ? undefined : setState(newState)))
-        .catch(fail)
+        .catch(raise)
     );
 
     let destructorCalled = false;

@@ -5,26 +5,26 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { serializeResource } from '../DataModel/helpers';
-import { removeItem, sortFunction } from '../../utils/utils';
+import { useSearchParameter } from '../../hooks/navigation';
+import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
-import type { MenuItemName } from './menuItemDefinitions';
-import { formatUrl } from '../Router/queryString';
+import { headerText } from '../../localization/header';
 import type { RR, WritableArray } from '../../utils/types';
 import { writable } from '../../utils/types';
+import { removeItem, sortFunction } from '../../utils/utils';
 import { Form, Input, Select } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
+import { Submit } from '../Atoms/Submit';
 import type { MenuItem } from '../Core/Main';
 import { MenuContext, SetMenuContext } from '../Core/Main';
-import { Submit } from '../Atoms/Submit';
-import { usePref } from '../UserPreferences/usePref';
-import { useTriggerState } from '../../hooks/useTriggerState';
-import { headerText } from '../../localization/header';
-import { toLargeSortConfig } from '../Molecules/Sorting';
-import { switchCollection } from '../RouterCommands/SwitchCollection';
-import { useSearchParameter } from '../../hooks/navigation';
+import { serializeResource } from '../DataModel/helpers';
 import { schema } from '../DataModel/schema';
 import { userInformation } from '../InitialContext/userInformation';
+import { toLargeSortConfig } from '../Molecules/Sorting';
+import { formatUrl } from '../Router/queryString';
+import { switchCollection } from '../RouterCommands/SwitchCollection';
+import { usePref } from '../UserPreferences/usePref';
+import type { MenuItemName } from './menuItemDefinitions';
 
 let activeMenuItems: WritableArray<MenuItemName> = [];
 

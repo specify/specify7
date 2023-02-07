@@ -2,13 +2,12 @@
  * Fixes for various issues with default TypeScript declaration fils
  */
 
+import type * as H from 'history';
 import type { To } from 'history';
-import * as H from 'history';
-
-import type { IR, RA, RR, ValueOf } from './utils/types';
 import type { localized } from 'typesafe-i18n/types/runtime/src/core';
+
 import type { SafeLocationState } from './components/Router/RouterState';
-import { SafeLocationState } from './components/Router/RouterState';
+import type { IR, RA, RR, ValueOf } from './utils/types';
 
 /**
  * Typescript does not recognize the definition overwrite when using
@@ -65,7 +64,7 @@ declare global {
   }
 
   interface PromiseConstructor {
-    all<T>(values: Iterable<T | PromiseLike<T>>): Promise<RA<Awaited<T>>>;
+    all<T>(values: Iterable<PromiseLike<T> | T>): Promise<RA<Awaited<T>>>;
   }
 }
 
@@ -91,7 +90,7 @@ declare module 'react-router' {
 }
 
 declare module 'history' {
-  export type SafeLocation = H.Location<SafeLocationState>;
+  export type SafeLocation = Location<SafeLocationState>;
 }
 
 declare module 'typesafe-i18n' {

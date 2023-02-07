@@ -2,11 +2,11 @@ import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import type { RA } from '../../utils/types';
+import { softFail } from '../Errors/Crash';
 import { className } from './className';
 import type { IconProps } from './Icons';
 import { icons } from './Icons';
 import { wrap } from './wrapper';
-import { softFail } from '../Errors/Crash';
 
 export const DialogContext = React.createContext<(() => void) | undefined>(
   undefined
@@ -44,7 +44,7 @@ const button = (name: string, className: string) =>
       readonly children?:
         | JSX.Element
         | LocalizedString
-        | RA<JSX.Element | LocalizedString | undefined | false>;
+        | RA<JSX.Element | LocalizedString | false | undefined>;
       readonly title?: LocalizedString | undefined;
       readonly 'aria-label'?: LocalizedString | undefined;
     }

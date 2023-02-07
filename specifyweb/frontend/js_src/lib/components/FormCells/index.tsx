@@ -1,26 +1,26 @@
 import React from 'react';
 
-import { f } from '../../utils/functools';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { useDistantRelated } from '../../hooks/resource';
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
+import { f } from '../../utils/functools';
+import { DataEntry } from '../Atoms/DataEntry';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { schema } from '../DataModel/schema';
+import type { Collection } from '../DataModel/specifyModel';
+import { UiCommand } from '../FormCommands';
+import { FormField } from '../FormFields';
 import type { FormMode, FormType } from '../FormParse';
 import { fetchView, resolveViewDefinition } from '../FormParse';
 import type { cellAlign, CellTypes } from '../FormParse/cells';
-import { schema } from '../DataModel/schema';
-import type { Collection } from '../DataModel/specifyModel';
-import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
-import { DataEntry } from '../Atoms/DataEntry';
-import { FormTableInteraction } from './FormTableInteraction';
 import { RenderForm } from '../Forms/SpecifyForm';
-import { UiCommand } from '../FormCommands';
-import { FormField } from '../FormFields';
 import { SubView } from '../Forms/SubView';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { AnySchema } from '../DataModel/helperTypes';
 import { TableIcon } from '../Molecules/TableIcon';
 import { ValueOf } from '../../utils/types';
-import { useDistantRelated } from '../../hooks/resource';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
+import { FormTableInteraction } from './FormTableInteraction';
 
 const cellRenderers: {
   readonly [KEY in keyof CellTypes]: (props: {

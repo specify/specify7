@@ -16,9 +16,9 @@ import { useMenuItem } from '../Header';
 import { interactionTables } from '../Interactions/InteractionsDialog';
 import { ProtectedTable } from '../Permissions/PermissionDenied';
 import { NotFoundView } from '../Router/NotFoundView';
+import { locationToState } from '../Router/RouterState';
 import { CheckLoggedInCollection, ViewResourceByGuid } from './DataTask';
 import { ResourceView } from './ResourceView';
-import { locationToState } from '../Router/RouterState';
 
 export function ShowResource({
   resource,
@@ -137,8 +137,8 @@ export function ViewResourceById({
         tableName={model.name}
       >
         <CheckLoggedInCollection
-          resource={resource}
           isInRecordSet={isInRecordSet}
+          resource={resource}
         >
           <ShowResource resource={resource} />
         </CheckLoggedInCollection>

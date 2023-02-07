@@ -5,11 +5,14 @@
  */
 
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
-import type { Tables } from '../DataModel/types';
+import { useId } from '../../hooks/useId';
+import { wbPlanText } from '../../localization/wbPlan';
 import type { IR, R, RA } from '../../utils/types';
-import type { MappingLineData } from './navigator';
 import { Button } from '../Atoms/Button';
+import { icons } from '../Atoms/Icons';
+import type { Tables } from '../DataModel/types';
 import type {
   CustomSelectElementOptionProps,
   CustomSelectElementPropsClosed,
@@ -21,11 +24,8 @@ import {
   customSelectTypes,
   SuggestionBox,
 } from './CustomSelectElement';
-import { icons } from '../Atoms/Icons';
 import type { AutoMapperSuggestion } from './Mapper';
-import { useId } from '../../hooks/useId';
-import { LocalizedString } from 'typesafe-i18n';
-import { wbPlanText } from '../../localization/wbPlan';
+import type { MappingLineData } from './navigator';
 
 export type HtmlGeneratorFieldData = {
   readonly optionLabel: JSX.Element | string;

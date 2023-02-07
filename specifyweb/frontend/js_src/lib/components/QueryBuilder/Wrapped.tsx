@@ -23,6 +23,7 @@ import { useMenuItem } from '../Header';
 import { isTreeModel, treeRanksPromise } from '../InitialContext/treeRanks';
 import { useTitle } from '../Molecules/AppTitle';
 import { hasPermission } from '../Permissions/helpers';
+import { usePref } from '../UserPreferences/usePref';
 import { getMappedFields, mappingPathIsComplete } from '../WbPlanView/helpers';
 import { getMappingLineProps } from '../WbPlanView/LineComponents';
 import { MappingView } from '../WbPlanView/MapperComponents';
@@ -42,7 +43,6 @@ import { mutateLineData, smoothScroll, unParseQueryFields } from './helpers';
 import { getInitialState, reducer } from './reducer';
 import { QueryResultsWrapper } from './ResultsWrapper';
 import { QueryToolbar } from './Toolbar';
-import { usePref } from '../UserPreferences/usePref';
 
 const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 
@@ -268,18 +268,33 @@ export function QueryBuilder({
           recordSet={recordSet}
           saveRequired={saveRequired}
           state={state}
-          unsetUnloadProtect={unsetUnloadProtect}
-          onSaved={(): void => dispatch({ type: 'SavedQueryAction' })}
-          onTriedToSave={handleTriedToSave}
           toggleMapping={(): void =>
             dispatch({
               type: 'ToggleMappingViewAction',
               isVisible: !state.showMappingView,
             })
           }
+          unsetUnloadProtect={unsetUnloadProtect}
+          onSaved={(): void => dispatch({ type: 'SavedQueryAction' })}
+          onTriedToSave={handleTriedToSave}
         />
       )}
       <Form
+        className={`
+          -mx-4 grid h-full gap-4 overflow-y-auto px-4
+          ${stickyScrolling ? 'snap-y snap-proximity' : ''}
+          ${resultsShown ? 'grid-rows-[100%_100%]' : 'grid-rows-[100%]'}
+        `}
+        forwardRef={setForm}
+        onScroll={(): void =>
+          /*
+           * Dividing by 4 results in button appearing only once user scrolled
+           * 50% past the first half of the page
+           */
+          form === null || form.scrollTop < form.scrollHeight / 4
+            ? handleScrollTop()
+            : handleScrolledDown()
+        }
         onSubmit={(): void => {
           /*
            * If a filter for a query field was changed, and the <input> is
@@ -313,21 +328,6 @@ export function QueryBuilder({
             handleQueryRunPending();
           } else runQuery('regular');
         }}
-        onScroll={(): void =>
-          /*
-           * Dividing by 4 results in button appearing only once user scrolled
-           * 50% past the first half of the page
-           */
-          form === null || form.scrollTop < form.scrollHeight / 4
-            ? handleScrollTop()
-            : handleScrolledDown()
-        }
-        forwardRef={setForm}
-        className={`
-          -mx-4 grid h-full gap-4 overflow-y-auto px-4
-          ${stickyScrolling ? 'snap-y snap-proximity' : ''}
-          ${resultsShown ? 'grid-rows-[100%_100%]' : 'grid-rows-[100%]'}
-        `}
       >
         <div className="flex snap-start flex-col gap-4 overflow-hidden">
           {state.showMappingView && (

@@ -2,11 +2,11 @@
  * Fetch basic server information
  */
 
-import { ping } from '../../utils/ajax/ping';
-import { load } from './index';
-import { formatUrl } from '../Router/queryString';
-import { softFail } from '../Errors/Crash';
 import { Http } from '../../utils/ajax/definitions';
+import { ping } from '../../utils/ajax/ping';
+import { softFail } from '../Errors/Crash';
+import { formatUrl } from '../Router/queryString';
+import { load } from './index';
 
 type SystemInfo = {
   readonly version: string;

@@ -1,22 +1,22 @@
-import type { CollectionObject, Taxon } from '../DataModel/types';
+import { runQuery } from '../../utils/ajax/specifyApi';
 import { f } from '../../utils/functools';
-import type { LocalityData } from '../Leaflet/helpers';
+import type { RA } from '../../utils/types';
+import { serializeResource, toTable } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { schema } from '../DataModel/schema';
+import type { CollectionObject, Taxon } from '../DataModel/types';
+import { treeRanksPromise } from '../InitialContext/treeRanks';
+import type { LocalityData } from '../Leaflet/helpers';
 import {
   defaultRecordFilterFunction,
   fetchLocalityDataFromResource,
   formatLocalityDataObject,
   parseLocalityPinFields,
 } from '../Leaflet/localityRecordDataExtractor';
-import { schema } from '../DataModel/schema';
-import { treeRanksPromise } from '../InitialContext/treeRanks';
-import type { RA } from '../../utils/types';
-import { serializeResource, toTable } from '../DataModel/helpers';
-import { runQuery } from '../../utils/ajax/specifyApi';
 import { createQuery } from '../QueryBuilder';
+import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { anyTreeRank, formatTreeRank } from '../WbPlanView/mappingHelpers';
-import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 
 export type OccurrenceData = {
   readonly collectionObjectId: number;

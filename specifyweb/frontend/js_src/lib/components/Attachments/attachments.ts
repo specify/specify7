@@ -1,17 +1,17 @@
-import { ajax } from '../../utils/ajax';
-import type { Attachment } from '../DataModel/types';
-import { getIcon, unknownIcon } from '../InitialContext/icons';
-import { load } from '../InitialContext';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { commonText } from '../../localization/common';
-import { formatUrl } from '../Router/queryString';
-import { getPref } from '../InitialContext/remotePrefs';
-import { schema } from '../DataModel/schema';
-import type { IR } from '../../utils/types';
-import { handleAjaxResponse } from '../../utils/ajax/response';
-import { SerializedResource } from '../DataModel/helperTypes';
+import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
+import { handleAjaxResponse } from '../../utils/ajax/response';
+import type { IR } from '../../utils/types';
 import { getField } from '../DataModel/helpers';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { schema } from '../DataModel/schema';
+import type { Attachment } from '../DataModel/types';
+import { load } from '../InitialContext';
+import { getIcon, unknownIcon } from '../InitialContext/icons';
+import { getPref } from '../InitialContext/remotePrefs';
+import { formatUrl } from '../Router/queryString';
 
 type AttachmentSettings = {
   readonly collection: string;

@@ -6,25 +6,25 @@ import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { ajax } from '../../utils/ajax';
+import { Http } from '../../utils/ajax/definitions';
+import { runQuery } from '../../utils/ajax/specifyApi';
 import type { RA } from '../../utils/types';
 import { overwriteReadOnly } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
 import { LoadingContext } from '../Core/Contexts';
+import { serializeResource } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { strictGetModel } from '../DataModel/schema';
 import type { Tables } from '../DataModel/types';
 import { loadingBar } from '../Molecules';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { createQuery } from '../QueryBuilder';
+import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
+import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import type { DeleteBlocker } from './DeleteBlocked';
 import { DeleteBlockers } from './DeleteBlocked';
-import { Http } from '../../utils/ajax/definitions';
-import { runQuery } from '../../utils/ajax/specifyApi';
-import { serializeResource } from '../DataModel/helpers';
-import { createQuery } from '../QueryBuilder';
-import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
-import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { parentTableRelationship } from './parentTables';
 
 /**
@@ -181,7 +181,7 @@ export const fetchBlockers = async (
                       direct: id,
                       parent: undefined,
                     }))
-                  : await runQuery<[number, number]>(
+                  : await runQuery<readonly [number, number]>(
                       serializeResource(
                         createQuery(
                           'Delete blockers',

@@ -1,7 +1,7 @@
 import { requireContext } from '../../../tests/helpers';
 import { getUiFormatters } from '../../Forms/uiFormatters';
-import { schema, strictGetModel } from '../schema';
 import { getField } from '../helpers';
+import { schema, strictGetModel } from '../schema';
 
 requireContext();
 
@@ -83,18 +83,18 @@ test('databaseColumn is set correctly', () =>
 test('field localization is retrieved correctly if exists', () =>
   expect(schema.models.CollectionObject.getField('accession')?.localization)
     .toMatchInlineSnapshot(`
-    {
-      "desc": "Accession",
-      "format": null,
-      "ishidden": false,
-      "isrequired": false,
-      "isuiformatter": false,
-      "name": "Accession #",
-      "picklistname": null,
-      "type": "ManyToOne",
-      "weblinkname": null,
-    }
-  `));
+      {
+        "desc": "Accession",
+        "format": null,
+        "ishidden": false,
+        "isrequired": false,
+        "isuiformatter": false,
+        "name": "Accession #",
+        "picklistname": null,
+        "type": "ManyToOne",
+        "weblinkname": null,
+      }
+    `));
 
 test('field localization is empty when does not exist', () =>
   expect(

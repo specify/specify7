@@ -6,7 +6,9 @@ import React from 'react';
 
 import { useSearchParameter } from '../../hooks/navigation';
 import { commonText } from '../../localization/common';
+import { headerText } from '../../localization/header';
 import { ajax } from '../../utils/ajax';
+import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import { Container, H3 } from '../Atoms';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
@@ -22,8 +24,6 @@ import {
   usePrimarySearch,
   useSecondarySearch,
 } from './ExpressSearchHooks';
-import { headerText } from '../../localization/header';
-import { f } from '../../utils/functools';
 
 export function ExpressSearchView(): JSX.Element {
   const [query = ''] = useSearchParameter('q');

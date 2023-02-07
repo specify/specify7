@@ -1,10 +1,12 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 import type { State } from 'typesafe-reducer';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useInfiniteScroll } from '../../hooks/useInfiniteScroll';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
+import { interactionsText } from '../../localization/interactions';
 import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
 import type { R, RA } from '../../utils/types';
@@ -17,10 +19,11 @@ import { createResource } from '../DataModel/resource';
 import { schema, strictGetModel } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { RecordSet, SpQuery, Tables } from '../DataModel/types';
-import { fail, softFail } from '../Errors/Crash';
+import { raise, softFail } from '../Errors/Crash';
 import { recordSetView } from '../FormParse/webOnlyViews';
 import { ResourceView } from '../Forms/ResourceView';
 import { treeRanksPromise } from '../InitialContext/treeRanks';
+import { RecordMergingLink } from '../Merging';
 import { loadingGif } from '../Molecules';
 import { SortIndicator } from '../Molecules/Sorting';
 import { TableIcon } from '../Molecules/TableIcon';
@@ -38,9 +41,6 @@ import { sortTypes } from './helpers';
 import { QueryResultsTable } from './ResultsTable';
 import { QueryToForms } from './ToForms';
 import { QueryToMap } from './ToMap';
-import { RecordMergingLink } from '../Merging';
-import { interactionsText } from '../../localization/interactions';
-import { LocalizedString } from 'typesafe-i18n';
 
 export type QueryResultRow = RA<number | string | null>;
 
@@ -202,7 +202,7 @@ export function QueryResults({
             return handleFetchMore(index);
           return newResults;
         })
-        .catch(fail);
+        .catch(raise);
 
       return fetchersRef.current[fetchIndex];
     },
@@ -282,10 +282,10 @@ export function QueryResults({
             {hasPermission('/record/replace', 'update') &&
               hasTablePermission(model.name, 'update') && (
                 <RecordMergingLink
-                  table={model}
                   selectedRows={selectedRows}
-                  onMerged={handleReRun}
+                  table={model}
                   onDeleted={handleDelete}
+                  onMerged={handleReRun}
                 />
               )}
             {hasToolPermission('recordSets', 'create') ? (
@@ -449,7 +449,7 @@ function TableHeaderCell({
   readonly sortConfig: QueryField['sortType'];
   readonly onSortChange?: (sortType: QueryField['sortType']) => void;
 }): JSX.Element {
-  // tableName refers to the table the filed is from, not the base table name of the query
+  // TableName refers to the table the filed is from, not the base table name of the query
   const tableName = fieldSpec?.table?.name;
 
   const content =
@@ -570,7 +570,7 @@ function CreateRecordSet({
               )
               .catch((error) => {
                 setState({ type: 'Main' });
-                fail(error);
+                raise(error);
               });
             return false;
           }}

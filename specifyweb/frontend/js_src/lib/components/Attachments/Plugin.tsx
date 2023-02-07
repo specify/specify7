@@ -5,30 +5,30 @@
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useErrorContext } from '../../hooks/useErrorContext';
+import { attachmentsText } from '../../localization/attachments';
+import { commonText } from '../../localization/common';
+import { formsText } from '../../localization/forms';
+import { f } from '../../utils/functools';
+import { Progress } from '../Atoms';
+import { serializeResource, toTable } from '../DataModel/helpers';
+import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { Attachment } from '../DataModel/types';
 import { error } from '../Errors/assert';
+import { raise } from '../Errors/Crash';
+import type { FormMode } from '../FormParse';
+import { loadingBar } from '../Molecules';
+import { Dialog } from '../Molecules/Dialog';
+import { FilePicker } from '../Molecules/FilePicker';
+import { hasTablePermission } from '../Permissions/helpers';
 import {
   attachmentsAvailable,
   attachmentSettingsPromise,
   uploadFile,
 } from './attachments';
-import type { Attachment } from '../DataModel/types';
-import { serializeResource, toTable } from '../DataModel/helpers';
-import { f } from '../../utils/functools';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { commonText } from '../../localization/common';
-import { formsText } from '../../localization/forms';
-import type { FormMode } from '../FormParse';
-import { hasTablePermission } from '../Permissions/helpers';
-import { Progress } from '../Atoms';
-import { FilePicker } from '../Molecules/FilePicker';
-import { Dialog } from '../Molecules/Dialog';
-import { useErrorContext } from '../../hooks/useErrorContext';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { AnySchema, SerializedResource } from '../DataModel/helperTypes';
-import { fail } from '../Errors/Crash';
-import { loadingBar } from '../Molecules';
 import { AttachmentCell } from './Cell';
-import { attachmentsText } from '../../localization/attachments';
 
 export function AttachmentsPlugin({
   id,
@@ -44,11 +44,11 @@ export function AttachmentsPlugin({
   readonly mode: FormMode;
 }): JSX.Element {
   const [state, setState] = useAsyncState<
-    | State<'AddAttachment'>
     | State<
         'DisplayAttachment',
         { readonly attachment: SerializedResource<Attachment> }
       >
+    | State<'AddAttachment'>
     | State<'FileUpload', { readonly file: File }>
     | State<'Unavailable'>
   >(
@@ -92,7 +92,7 @@ export function AttachmentsPlugin({
             })
             .catch((error) => {
               setState({ type: 'Unavailable' });
-              fail(error);
+              raise(error);
             })
             .finally(() => setUploadProgress(undefined))
         : undefined,

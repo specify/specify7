@@ -45,13 +45,13 @@ export function QueryToForms({
       {isOpen && typeof totalCount === 'number' ? (
         <RecordSelectorFromIds
           canRemove={false}
+          defaultIndex={0}
           dialog="modal"
           ids={ids}
           isDependent={false}
           isInRecordSet={false}
           mode="edit"
           model={model}
-          defaultIndex={0}
           newResource={undefined}
           title={commonText.colonLine({
             label: queryText.queryResults(),

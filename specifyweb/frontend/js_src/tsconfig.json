@@ -40,7 +40,7 @@
      * errors. This feature request proposes a better solution:
      * https://github.com/microsoft/TypeScript/issues/37053
      */
-    "module": "CommonJS",
+    "module": "commonjs",
     "noEmit": true,
     "sourceMap": true,
     "target": "esnext",

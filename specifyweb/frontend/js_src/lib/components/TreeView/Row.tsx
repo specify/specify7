@@ -1,15 +1,15 @@
 import React from 'react';
 
+import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
-import { getUserPref } from '../UserPreferences/helpers';
-import type { Conformations, KeyAction, Row, Stats } from './helpers';
-import { formatTreeStats, mapKey, scrollIntoView } from './helpers';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
-import { useId } from '../../hooks/useId';
 import { getPref } from '../InitialContext/remotePrefs';
+import { getUserPref } from '../UserPreferences/helpers';
+import type { Conformations, KeyAction, Row, Stats } from './helpers';
+import { formatTreeStats, mapKey, scrollIntoView } from './helpers';
 
 export function TreeRow({
   row,
@@ -226,7 +226,7 @@ export function TreeRow({
                   {doIncludeAuthorPref &&
                   treeName === 'Taxon' &&
                   typeof row.author === 'string'
-                    ? row.name + ' ' + row.author
+                    ? `${row.name} ${row.author}`
                     : row.name}
                   {typeof row.acceptedId === 'number' && (
                     <span className="sr-only">
