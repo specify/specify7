@@ -360,7 +360,7 @@ export const preferencesText = createDictionary({
     `,
   },
   header: {
-    'en-us': 'Top Level Menu',
+    'en-us': 'Navigation Menu',
     'ru-ru': 'Главное меню',
     'es-es': 'Menú de nivel superior',
     'fr-fr': 'Menu de niveau supérieur',
