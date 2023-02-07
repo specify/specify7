@@ -211,6 +211,13 @@ export const headerText = createDictionary({
     'fr-fr': 'Outils',
     'uk-ua': 'Інструменти',
   },
+  userToolsForUser: {
+    'en-us': 'User Tools ({userName:string})',
+    'ru-ru': 'Инструменты ({userName:string})',
+    'es-es': 'Herramientas ({userName:string})',
+    'fr-fr': 'Outils ({userName:string})',
+    'uk-ua': 'Інструменти ({userName:string})',
+  },
   helpLocalizeSpecify: {
     'en-us': 'Help Localize Specify 7',
     'ru-ru': 'Помогите локализовать Укажите 7',

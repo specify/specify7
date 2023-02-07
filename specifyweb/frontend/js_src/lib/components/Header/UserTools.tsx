@@ -73,7 +73,11 @@ export function UserToolsOverlay(): JSX.Element | null {
   return Array.isArray(userTools) ? (
     <Dialog
       buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
-      header={headerText.userTools()}
+      header={
+        userInformation.isauthenticated
+          ? headerText.userToolsForUser({ userName: userInformation.name })
+          : headerText.userTools()
+      }
       icon={<span className="text-blue-500">{icons.cog}</span>}
       onClose={handleClose}
     >
