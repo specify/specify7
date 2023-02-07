@@ -15,7 +15,7 @@ import { scrollIntoView } from '../TreeView/helpers';
 export function useTopChild(): {
   readonly visibleChild: number | undefined;
   readonly setVisibleChild: (visibleChild: number | undefined) => void;
-  readonly references: React.Object<WritableArray<HTMLElement | undefined>>;
+  readonly references: React.RefObject<WritableArray<HTMLElement | undefined>>;
   readonly forwardRefs: (index: number, element: HTMLElement | null) => void;
   readonly scrollContainerRef: React.RefCallback<HTMLDivElement | null>;
 } {

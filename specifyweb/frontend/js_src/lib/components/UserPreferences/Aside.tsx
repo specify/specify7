@@ -16,7 +16,7 @@ export function PreferencesAside({
 }: {
   readonly activeCategory: number | undefined;
   readonly setActiveCategory: (activeCategory: number | undefined) => void;
-  readonly references: React.Object<WritableArray<HTMLElement | undefined>>;
+  readonly references: React.RefObject<WritableArray<HTMLElement | undefined>>;
 }): JSX.Element {
   const definitions = usePrefDefinitions();
   const navigate = useNavigate();
@@ -42,8 +42,8 @@ export function PreferencesAside({
 
   React.useEffect(() => {
     const active = location.hash.replace('#', '').toLowerCase();
-    const activeIndex = Object.keys(definitions).findIndex(
-      (name) => name.toLowerCase() === active
+    const activeIndex = definitions.findIndex(
+      ([name]) => name.toLowerCase() === active
     );
     if (activeIndex !== -1) {
       setActiveCategory(activeIndex);

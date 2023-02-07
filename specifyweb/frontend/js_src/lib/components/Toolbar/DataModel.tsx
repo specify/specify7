@@ -30,7 +30,6 @@ import { downloadFile } from '../Molecules/FilePicker';
 import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import { TableIcon } from '../Molecules/TableIcon';
 import { NotFoundView } from '../Router/NotFoundView';
-import { locationToState } from '../Router/RouterState';
 import {
   javaTypeToHuman,
   localizedRelationshipTypes,
@@ -171,7 +170,7 @@ function DataModelTable({
   ) : (
     <section className="flex flex-col gap-4" ref={forwardRef}>
       <div className="flex items-center gap-4">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2" id={tableName}>
           <TableIcon label={false} name={model.name} />
           <H2 className="text-2xl" id={model.name.toLowerCase()}>
             {model.name}
@@ -432,13 +431,8 @@ const getTables = () =>
 
 export function DataModelTables(): JSX.Element {
   const tables = React.useMemo(getTables, []);
-  const {
-    visibleChild,
-    setVisibleChild,
-    forwardRefs,
-    scrollContainerRef,
-    references,
-  } = useTopChild();
+  const { visibleChild, forwardRefs, scrollContainerRef, references } =
+    useTopChild();
 
   const location = useLocation();
 
@@ -448,7 +442,6 @@ export function DataModelTables(): JSX.Element {
       ({ name }) => name[0].toLowerCase() === active
     );
     if (activeIndex !== -1) {
-      setVisibleChild(activeIndex);
       const currentRef = references.current?.[activeIndex];
       if (currentRef !== undefined) scrollIntoView(currentRef);
     }
@@ -515,27 +508,6 @@ export function DataModelAside({
   const tables = React.useMemo(getTables, []);
   const [freezeCategory, setFreezeCategory] = useFrozenCategory();
   const currentIndex = freezeCategory ?? activeCategory;
-  const navigate = useNavigate();
-  const location = useLocation();
-  const state = locationToState(location, 'BackgroundLocation');
-  const isInOverlay = typeof state === 'object';
-
-  React.useEffect(
-    () =>
-      isInOverlay || activeCategory === undefined
-        ? undefined
-        : navigate(`/specify/data-model/#${tables[activeCategory].name[0]}`, {
-            replace: true,
-          }),
-    [isInOverlay, tables, activeCategory]
-  );
-
-  const [link, setLink] = React.useState<HTMLElement | null>(null);
-  React.useEffect(() => {
-    if (link) {
-      scrollIntoView(link);
-    }
-  }, [link]);
 
   return (
     <aside
@@ -551,7 +523,6 @@ export function DataModelAside({
           href={`#${tableName}`}
           key={index}
           onClick={(): void => setFreezeCategory(index)}
-          forwardRef={currentIndex === index ? setLink : undefined}
         >
           {jsxName}
         </Link.Gray>
