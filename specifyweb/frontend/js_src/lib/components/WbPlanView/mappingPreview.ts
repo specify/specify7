@@ -36,7 +36,15 @@ const fieldsToHide = new Set<string>([
  * Use table name alongside field label (if field label consists of a single
  * word) for the following fields:
  */
-const genericFields = new Set<string>([]);
+const genericFields = new Set<string>([
+  'timestampCreated',
+  'timestampModified',
+  'createdByAgent',
+  'modifiedByAgent',
+  'guid',
+  'version',
+  'id',
+]);
 
 /**
  * If field label consists of a single word, it would be treated as generic
@@ -125,8 +133,7 @@ export function generateMappingPathPreview(
     : fieldName;
   // Treat fields whose label is single word as generic
   const fieldIsGeneric =
-    (genericFields.has(databaseFieldName) &&
-      fieldNameFormatted?.split(' ').length === 1) ||
+    genericFields.has(databaseFieldName) ||
     (fieldNameFormatted?.split(' ').length === 1 &&
       !nonGenericFields.has(databaseFieldName));
   const tableNameNonEmpty =
