@@ -12,7 +12,7 @@ import { H3, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Submit } from '../Atoms/Submit';
-import { FormContext, LoadingContext } from '../Core/Contexts';
+import { LoadingContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
@@ -24,6 +24,7 @@ import { smoothScroll } from '../QueryBuilder/helpers';
 import { usePref } from '../UserPreferences/usePref';
 import { FORBID_ADDING, NO_CLONE } from './ResourceView';
 import { LocalizedString } from 'typesafe-i18n';
+import { FormContext } from './BaseResourceView';
 
 export const saveFormUnloadProtect = formsText.unsavedFormUnloadProtect();
 

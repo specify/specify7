@@ -7,16 +7,19 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { usePref } from '../UserPreferences/usePref';
+import { LiteralField, Relationship } from '../DataModel/specifyField';
 
 export function PrintOnSave({
   id,
-  fieldName,
+  name,
+  field,
   model,
   text,
   defaultValue,
 }: {
   readonly id: string | undefined;
-  readonly fieldName: string | undefined;
+  readonly name: string | undefined;
+  readonly field: LiteralField | Relationship | undefined;
   readonly model: SpecifyModel;
   readonly text: string | undefined;
   readonly defaultValue: boolean | undefined;
@@ -43,12 +46,12 @@ export function PrintOnSave({
     <Input.Checkbox
       checked={entry === true}
       id={id}
-      name={fieldName}
+      name={name}
       onValueChange={handleChange}
     />
   );
   return typeof text === 'string' ? (
-    <Label.Inline title={model.getField(fieldName ?? '')?.getLocalizedDesc()}>
+    <Label.Inline title={field?.getLocalizedDesc()}>
       {input}
       {text}
     </Label.Inline>
@@ -60,14 +63,16 @@ export function PrintOnSave({
 export function SpecifyFormCheckbox({
   id,
   resource,
-  fieldName,
+  name,
+  field,
   defaultValue,
   isReadOnly,
   text,
 }: {
   readonly id: string | undefined;
-  readonly resource: SpecifyResource<AnySchema>;
-  readonly fieldName: string;
+  readonly name?: string | undefined;
+  readonly resource: SpecifyResource<AnySchema> | undefined;
+  readonly field: LiteralField | undefined;
   readonly defaultValue: boolean | undefined;
   readonly isReadOnly: boolean;
   readonly text: string | undefined;
@@ -78,7 +83,7 @@ export function SpecifyFormCheckbox({
     validationRef,
   } = useResourceValue<boolean | string>(
     resource,
-    fieldName,
+    field,
     React.useMemo(() => ({ value: defaultValue }), [defaultValue])
   );
   const isChecked =
@@ -89,20 +94,14 @@ export function SpecifyFormCheckbox({
       checked={isChecked}
       forwardRef={validationRef}
       id={id}
-      isReadOnly={
-        isReadOnly || resource.specifyModel.getField(fieldName)?.isReadOnly
-      }
-      name={fieldName}
+      isReadOnly={isReadOnly || field?.isReadOnly !== false}
+      name={name}
       onValueChange={updateValue}
       // Checkbox cannot be required as checkbox does not have a "null" state
     />
   );
   return typeof text === 'string' ? (
-    <Label.Inline
-      title={resource.specifyModel
-        .getField(fieldName ?? '')
-        ?.getLocalizedDesc()}
-    >
+    <Label.Inline title={field?.getLocalizedDesc()}>
       {input}
       {text}
     </Label.Inline>

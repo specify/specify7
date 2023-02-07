@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { deserializeResource } from '../../hooks/resource';
 import { resourceEvents } from '../../hooks/store';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useCachedState } from '../../hooks/useCachedState';
@@ -34,6 +33,7 @@ import { getModel } from '../DataModel/schema';
 import { useSearchParameter } from '../../hooks/navigation';
 import { f } from '../../utils/functools';
 import { getUserPref } from '../UserPreferences/helpers';
+import { deserializeResource } from '../DataModel/helpers';
 
 const recordMergingTables = new Set<keyof Tables>(['Agent']);
 

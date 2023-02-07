@@ -12,8 +12,10 @@ import { useErrorContext } from '../../hooks/useErrorContext';
 import { Button } from '../Atoms/Button';
 import { SerializedResource } from '../DataModel/helperTypes';
 import { usePref } from '../UserPreferences/usePref';
+import { toLargeSortConfig } from '../Molecules/Sorting';
 import { userText } from '../../localization/user';
 import { LocalizedString } from 'typesafe-i18n';
+import { schema } from '../DataModel/schema';
 
 /**
  * Even though available collections do not change during lifecycle of a page,
@@ -21,16 +23,17 @@ import { LocalizedString } from 'typesafe-i18n';
  */
 export function useAvailableCollections(): RA<SerializedResource<Collection>> {
   const [sortOrder] = usePref('chooseCollection', 'general', 'sortOrder');
-  const isReverseSort = sortOrder.startsWith('-');
-  const sortField = (isReverseSort ? sortOrder.slice(1) : sortOrder) as string &
-    keyof Collection['fields'];
-  const collections = React.useMemo(
-    () =>
-      Array.from(userInformation.availableCollections).sort(
-        sortFunction((collection) => collection[sortField], isReverseSort)
-      ),
-    [userInformation.availableCollections, isReverseSort, sortField]
-  );
+  const collections = React.useMemo(() => {
+    const { direction, fieldNames } = toLargeSortConfig(sortOrder);
+    return Array.from(userInformation.availableCollections).sort(
+      // FEATURE: support sorting by related model
+      sortFunction(
+        (collection) =>
+          collection[fieldNames.join('.') as keyof Collection['fields']],
+        direction === 'desc'
+      )
+    );
+  }, [userInformation.availableCollections, sortOrder]);
   useErrorContext('collections', collections);
   return collections;
 }
@@ -52,7 +55,9 @@ export function OtherCollection({
     <Container.FullGray>
       <Container.Center>
         {collections.length === 0 ? (
-          userText.noAccessToResource()
+          userText.noAccessToResource({
+            collectionTable: schema.models.Collection.label,
+          })
         ) : (
           <>
             <p>{userText.resourceInaccessible()}</p>
@@ -75,7 +80,11 @@ export function OtherCollection({
               </>
             ) : (
               <>
-                <p>{userText.loginToProceed()}</p>
+                <p>
+                  {userText.loginToProceed({
+                    collectionTable: schema.models.Collection.label,
+                  })}
+                </p>
                 <div>
                   <Button.Blue
                     onClick={(): void =>

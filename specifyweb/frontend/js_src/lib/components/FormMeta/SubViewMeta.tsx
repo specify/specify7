@@ -1,11 +1,12 @@
 import React from 'react';
 
 import { formsText } from '../../localization/forms';
-import type { FormType } from '../FormParse';
-import type { SpecifyModel } from '../DataModel/specifyModel';
 import { Label, Select } from '../Atoms/Form';
-import { OrderPicker } from '../UserPreferences/Renderers';
+import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { FormType } from '../FormParse';
 import type { SubViewContext } from '../Forms/SubView';
+import { OrderPicker } from '../UserPreferences/Renderers';
+import { toLargeSortConfig, toSmallSortConfig } from '../Molecules/Sorting';
 import { attachmentsText } from '../../localization/attachments';
 import { schema } from '../DataModel/schema';
 import { getField } from '../DataModel/helpers';
@@ -32,7 +33,7 @@ export function SubViewMeta({
             handleChangeFormType(formType as FormType)
           }
         >
-          <option value="form">{formsText.form()}</option>
+          <option value="form">{formsText.subForm()}</option>
           <option value="formTable">{formsText.formTable()}</option>
         </Select>
       </Label.Block>
@@ -41,8 +42,12 @@ export function SubViewMeta({
         {attachmentsText.orderBy()}
         <OrderPicker
           model={model}
-          order={sortField}
-          onChange={handleChangeSortField}
+          order={
+            sortField === undefined ? undefined : toSmallSortConfig(sortField)
+          }
+          onChange={(sortField): void =>
+            handleChangeSortField(toLargeSortConfig(sortField))
+          }
         />
       </Label.Block>
     </>

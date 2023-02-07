@@ -82,11 +82,17 @@ export const localityText = createDictionary({
     'uk-ua': 'Без координат',
   },
   notEnoughInformationToMap: {
-    'en-us': 'Locality must have coordinates to be mapped.',
-    'ru-ru': 'Чтобы нанести на карту, необходимо указать координаты.',
-    'es-es': 'La localidad debe tener coordenadas para ser mapeada.',
-    'fr-fr': 'La localité doit avoir des coordonnées pour être cartographiée.',
-    'uk-ua': 'Місцевість повинна мати координати для нанесення на карту.',
+    'en-us': '{localityTable:string} must have coordinates to be mapped.',
+    'ru-ru': `
+      Чтобы нанести {localityTable:string} на карту, необходимо указать
+      координаты.
+    `,
+    'es-es': '{localityTable:string} debe tener coordenadas para ser mapeado.',
+    'fr-fr': `
+      La {localityTable:string} doit avoir des coordonnées pour être
+      cartographiée.
+    `,
+    'uk-ua': '{localityTable:string} має мати координати для відображення.',
   },
   occurrencePoints: {
     'en-us': 'Pins',
@@ -110,11 +116,11 @@ export const localityText = createDictionary({
     'uk-ua': 'GEOLocate',
   },
   geographyRequired: {
-    'en-us': 'Geography must be mapped',
-    'ru-ru': 'География должна быть связана',
-    'es-es': 'La geografía debe ser mapeada',
-    'fr-fr': 'La géographie doit être cartographiée',
-    'uk-ua': 'Географія повинна бути нанесена на карту',
+    'en-us': '{geographyTable:string} must be mapped',
+    'ru-ru': '{geographyTable:string} должна быть связана',
+    'es-es': '{geographyTable:string} debe estar mapeado',
+    'fr-fr': '{geographyTable:string} doit être mappé',
+    'uk-ua': '{geographyTable:string} має бути зіставлено',
   },
   geographyRequiredDescription: {
     'en-us':

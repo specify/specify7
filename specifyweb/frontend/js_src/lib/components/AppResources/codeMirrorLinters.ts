@@ -51,8 +51,8 @@ export function strictParseXml(xml: string): Element {
 }
 
 const xmlErrorParsers = [
-  /(?<message>[^\n]+)\n[^\n]+\nLine Number (?<line>\d+), Column (?<column>\d+)/,
-  /error on line (?<line>\d+) at column (?<column>\d+): (?<message>[\s\S]*)*/,
+  /(?<message>[^\n]+)\n[^\n]+\nLine Number (?<line>\d+), Column (?<column>\d+)/u,
+  /error on line (?<line>\d+) at column (?<column>\d+): (?<message>[\S\s]*)/u,
 ];
 
 const formatXmlError = (text: Text, error: string): Diagnostic =>

@@ -70,6 +70,7 @@ function Field({
     }),
     [field]
   );
+  const fields = React.useMemo(() => [field], [field]);
   return resource === undefined ? (
     <td />
   ) : (
@@ -82,7 +83,7 @@ function Field({
         <div className="flex flex-1 items-center justify-center">
           <FormField
             fieldDefinition={fieldDefinition}
-            fieldName={field.name}
+            fields={fields}
             /*
              * Don't use auto grow text area, but do display query combo box
              * controls. Also, display precision picker
@@ -115,6 +116,7 @@ function Field({
 function fieldToDefinition(
   field: LiteralField | Relationship
 ): ValueOf<FieldTypes> {
+  const pickList = field.getPickList();
   if (field.isRelationship)
     return {
       type: 'QueryComboBox',
@@ -134,11 +136,11 @@ function fieldToDefinition(
       defaultValue: undefined,
       rows: undefined,
     };
-  else if (typeof field.getPickList() === 'string')
+  else if (typeof pickList === 'string')
     return {
       type: 'ComboBox',
       defaultValue: undefined,
-      pickList: undefined,
+      pickList,
     };
   else if (field.isTemporal())
     return {
@@ -146,11 +148,12 @@ function fieldToDefinition(
       pluginDefinition: {
         type: 'PartialDateUI',
         defaultValue: undefined,
-        dateField: field.name,
+        dateFields: [field.name],
         precisionField: Object.entries(strictDependentFields()).find(
           ([_dependent, source]) => source === field.name
         )?.[0],
         defaultPrecision: 'full',
+        canChangePrecision: true,
       },
     };
   else
@@ -159,6 +162,8 @@ function fieldToDefinition(
       defaultValue: undefined,
       min: undefined,
       max: undefined,
+      minLength: undefined,
+      maxLength: undefined,
       step: undefined,
     };
 }

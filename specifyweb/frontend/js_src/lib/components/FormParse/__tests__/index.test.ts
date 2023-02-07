@@ -34,7 +34,7 @@ const {
 
 requireContext();
 
-const altViews = ensure<ViewDefinition['altviews']>()({
+const altViews = {
   'Preparation Table View': {
     name: 'Preparation Table View',
     viewdef: 'Preparation Table',
@@ -56,7 +56,9 @@ const altViews = ensure<ViewDefinition['altviews']>()({
     mode: 'edit',
     default: 'true',
   },
-} as const);
+} as const;
+
+ensure<ViewDefinition['altviews']>()(altViews);
 
 const formView =
   strictParseXml(`<viewdef type="form" class="edu.ku.brc.specify.datamodel.CollectionObject">
@@ -66,8 +68,8 @@ const formView =
         <cell type="label" labelFor="tt" label="test" />
       </row> 
       <row>
-        <cell type="field" uiType="text" colSpan="4" align="right" id="tt" />
-        <cell type="field" uiType="checkbox" label="2" colSpan="1" align="right" />
+        <cell type="field" name=" catalogNumber " uiType="text" colSpan="4" align="right" id="tt" />
+        <cell type="field" name="accession.text1" uiType="checkbox" label="2" colSpan="1" align="right" />
       </row> 
     </rows>
   </viewdef>`);
@@ -178,8 +180,11 @@ describe('fetchView', () => {
     }
   );
 
-  test('handles 404 errors gracefully', async () =>
-    expect(fetchView(notFoundViewName)).resolves.toBeUndefined());
+  test('handles 404 errors gracefully', async () => {
+    const consoleError = jest.fn();
+    jest.spyOn(console, 'error').mockImplementation(consoleError);
+    expect(fetchView(notFoundViewName)).resolves.toBeUndefined();
+  });
 
   const frontEndOnlyView = spAppResourceView;
   overrideAjax(
@@ -195,6 +200,8 @@ describe('fetchView', () => {
 });
 
 test('parseViewDefinition', () => {
+  const consoleWarn = jest.fn();
+  jest.spyOn(console, 'warn').mockImplementation(consoleWarn);
   const result = parseViewDefinition(
     {
       ...viewDefinition,
@@ -209,6 +216,7 @@ test('parseViewDefinition', () => {
   expect(result.model?.name).toBe(schema.models.CollectionObject.name);
   expect(removeKey(result, 'model')).toEqual({
     ...parsedTinyView,
+    errors: [],
     mode: 'view',
     formType: 'form',
     viewSetId: undefined,
@@ -249,52 +257,50 @@ theories(resolveAltView, [
   },
 ]);
 
-theories(parseFormTableDefinition, [
-  {
-    in: [formView, undefined],
-    out: {
-      columns: [1, undefined, undefined],
-      rows: [
-        [
-          {
-            ...baseCell,
-            align: 'center',
-            colSpan: 2,
-            id: 'tt',
-            type: 'Field',
-            fieldDefinition: {
-              type: 'Text',
-              min: undefined,
-              max: undefined,
-              step: undefined,
-              isReadOnly: false,
-              defaultValue: undefined,
-            },
-            fieldName: undefined,
-            isRequired: false,
-            ariaLabel: 'test' as LocalizedString,
+test('parseFormTableDefinition', () =>
+  expect(
+    parseFormTableDefinition(formView, schema.models.CollectionObject)
+  ).toEqual({
+    columns: [1, undefined, undefined],
+    rows: [
+      [
+        {
+          ...baseCell,
+          align: 'center',
+          colSpan: 2,
+          id: 'tt',
+          type: 'Field',
+          fieldDefinition: {
+            type: 'Text',
+            min: undefined,
+            max: undefined,
+            step: undefined,
+            isReadOnly: false,
+            defaultValue: undefined,
           },
-          {
-            ...baseCell,
-            align: 'center',
-            colSpan: 1,
-            type: 'Field',
-            fieldDefinition: {
-              type: 'Checkbox',
-              label: undefined,
-              printOnSave: false,
-              defaultValue: false,
-              isReadOnly: false,
-            },
-            fieldName: undefined,
-            isRequired: false,
-            ariaLabel: '2' as LocalizedString,
+          fieldNames: ['catalogNumber'],
+          isRequired: false,
+          ariaLabel: 'test' as LocalizedString,
+        },
+        {
+          ...baseCell,
+          align: 'center',
+          colSpan: 1,
+          type: 'Field',
+          fieldDefinition: {
+            type: 'Checkbox',
+            label: undefined,
+            printOnSave: false,
+            defaultValue: false,
+            isReadOnly: false,
           },
-        ],
+          fieldNames: ['accession', 'text1'],
+          isRequired: false,
+          ariaLabel: '2' as LocalizedString,
+        },
       ],
-    },
-  },
-]);
+    ],
+  }));
 
 const formTableColumns = [
   { colSpan: 1 },
@@ -316,12 +322,13 @@ theories(parseFormTableColumns, {
   },
 });
 
-theories(parseFormDefinition, [
-  {
-    in: [tinyFormView, undefined],
-    out: parsedTinyView,
-  },
-]);
+test('parseFormDefinition', () => {
+  const consoleWarn = jest.fn();
+  jest.spyOn(console, 'warn').mockImplementation(consoleWarn);
+  expect(
+    parseFormDefinition(tinyFormView, schema.models.CollectionObject)
+  ).toEqual(parsedTinyView);
+});
 
 describe('getColumnDefinitions', () => {
   requireContext();

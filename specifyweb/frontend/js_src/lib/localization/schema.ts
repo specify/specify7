@@ -145,7 +145,7 @@ export const schemaText = createDictionary({
   fieldLength: {
     'en-us': 'Length',
     'ru-ru': 'Длина',
-    'es-es': 'Longitud',
+    'es-es': 'Largo',
     'fr-fr': 'Longueur',
     'uk-ua': 'Довжина',
   },
@@ -226,6 +226,13 @@ export const schemaText = createDictionary({
     'fr-fr': 'Dépendant',
     'uk-ua': 'Утриманець',
   },
+  independent: {
+    'en-us': 'Independent',
+    'es-es': 'Independiente',
+    'fr-fr': 'Indépendant',
+    'ru-ru': 'Независимый',
+    'uk-ua': 'Незалежний',
+  },
   downloadAsJson: {
     'en-us': 'Download as JSON',
     'ru-ru': 'Скачать как JSON',
@@ -288,5 +295,19 @@ export const schemaText = createDictionary({
     'fr-fr': 'Aller en haut',
     'ru-ru': 'Перейти к началу',
     'uk-ua': 'Перейти вгору',
+  },
+  idField: {
+    'en-us': 'ID Field',
+    'es-es': 'Campo de identificación',
+    'fr-fr': "Champ d'identification",
+    'ru-ru': 'Поле идентификатора',
+    'uk-ua': 'Поле ID',
+  },
+  scope: {
+    'en-us': 'Scope',
+    'es-es': 'Alcance',
+    'fr-fr': 'Portée',
+    'ru-ru': 'Сфера',
+    'uk-ua': 'Область застосування',
   },
 } as const);

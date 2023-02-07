@@ -29,7 +29,7 @@ import {
   valueIsToManyIndex,
   valueIsTreeRank,
 } from '../WbPlanView/mappingHelpers';
-import { error } from '../Errors/assert';
+import { fail } from '../Errors/Crash';
 
 const reStringId = /^([^.]*)\.([^.]*)\.(.*)$/;
 
@@ -230,7 +230,7 @@ export class QueryFieldSpec {
       joinPath.push(field);
       if (field.isRelationship) node = field.relatedModel;
       else if (index + 1 !== path.length)
-        error('Bad query field spec path', { baseTableName, path });
+        fail(new Error('Bad query field spec path'), { baseTableName, path });
       return true;
     });
 

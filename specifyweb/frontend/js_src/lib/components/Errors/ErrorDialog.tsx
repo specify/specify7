@@ -6,7 +6,7 @@ import { commonText } from '../../localization/common';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
-import { legacyLoadingContext, UnloadProtectsContext } from '../Core/Contexts';
+import { legacyLoadingContext } from '../Core/Contexts';
 import { Dialog } from '../Molecules/Dialog';
 import { downloadFile } from '../Molecules/FilePicker';
 import { clearCache } from '../RouterCommands/CacheBuster';
@@ -15,6 +15,10 @@ import { mainText } from '../../localization/main';
 import { headerText } from '../../localization/header';
 import { StringToJsx } from '../../localization/utils';
 import { LocalizedString } from 'typesafe-i18n';
+import {
+  SetUnloadProtectsContext,
+  UnloadProtectsContext,
+} from '../Router/Router';
 
 const supportEmail = 'support@specifysoftware.org' as LocalizedString;
 export const supportLink = (
@@ -88,9 +92,8 @@ export function ErrorDialog({
     'clearCacheOnException'
   );
 
-  const [unloadProtects = [], setUnloadProtects] = React.useContext(
-    UnloadProtectsContext
-  )!;
+  const unloadProtects = React.useContext(UnloadProtectsContext)!;
+  const setUnloadProtects = React.useContext(SetUnloadProtectsContext)!;
   /**
    * Clear unload protects when error occurs, but return them back if error
    * is dismissed

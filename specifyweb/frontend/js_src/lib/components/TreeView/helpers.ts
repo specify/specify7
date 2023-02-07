@@ -8,7 +8,9 @@ import { strictGetTreeDefinitionItems } from '../InitialContext/treeRanks';
 import type { RA, RR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { AnyTree } from '../DataModel/helperTypes';
+import { softFail } from '../Errors/Crash';
 import { commonText } from '../../localization/common';
+import { schema } from '../DataModel/schema';
 
 export const fetchRows = async (fetchUrl: string) =>
   ajax<
@@ -23,7 +25,7 @@ export const fetchRows = async (fetchUrl: string) =>
         number | null,
         string | null,
         string,
-        number,
+        number
       ]
     >
   >(fetchUrl, {
@@ -42,7 +44,7 @@ export const fetchRows = async (fetchUrl: string) =>
           acceptedId = undefined,
           acceptedName = undefined,
           author = undefined,
-          children
+          children,
         ],
         index,
         { length }
@@ -117,7 +119,7 @@ export function deserializeConformation(
   try {
     return JSON.parse(serialized) as Conformations;
   } catch {
-    console.error('bad tree conformation:', serialized);
+    softFail(new Error('bad tree conformation:'), serialized);
     return undefined;
   }
 }
@@ -194,13 +196,17 @@ export const formatTreeStats = (
 } => ({
   title: filterArray([
     commonText.colonLine({
-      label: treeText.directCollectionObjectCount(),
+      label: treeText.directCollectionObjectCount({
+        collectionObjectTable: schema.models.CollectionObject.label,
+      }),
       value: nodeStats.directCount.toString(),
     }),
     isLeaf
       ? undefined
       : commonText.colonLine({
-          label: treeText.indirectCollectionObjectCount(),
+          label: treeText.indirectCollectionObjectCount({
+            collectionObjectTable: schema.models.CollectionObject.label,
+          }),
           value: nodeStats.childCount.toString(),
         }),
   ]).join('\n'),

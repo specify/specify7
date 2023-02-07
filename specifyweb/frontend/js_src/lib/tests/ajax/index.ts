@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { afterAll, beforeAll, expect } from '@jest/globals';
 
 import type { ajax, AjaxResponseObject } from '../../utils/ajax';
 import { MimeType } from '../../utils/ajax';
@@ -37,7 +38,8 @@ export function overrideAjax(
     readonly responseCode?: number;
     readonly method?: string;
     readonly body?: unknown;
-  } = {}
+  } = {},
+  allowOverride = false
 ): void {
   if (!url.startsWith('/'))
     throw new Error(
@@ -45,6 +47,14 @@ export function overrideAjax(
     );
   beforeAll(() => {
     overrides[url] ??= {};
+    if (typeof overrides[url]![method] === 'object' && !allowOverride)
+      throw new Error(
+        /*
+         * This prevent accidentally calling overrideAjax twice with the same
+         * URL in the same scope
+         */
+        `Can\'t override ${url} [${method}] as there already is an override for that URL`
+      );
     overrides[url]![method] = {
       data: typeof response === 'function' ? response : () => response,
       responseCode,

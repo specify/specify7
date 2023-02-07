@@ -33,7 +33,9 @@ export function CreateRecordSetButton({
     <ProtectedAction action="create_recordset" resource="/workbench/dataset">
       <ProtectedTool action="create" tool="recordSets">
         <ButtonComponent onClick={handleOpen}>
-          {queryText.createRecordSet()}
+          {queryText.createRecordSet({
+            recordSetTable: schema.models.RecordSet.label,
+          })}
         </ButtonComponent>
         {isOpen && (
           <CreateRecordSetDialog

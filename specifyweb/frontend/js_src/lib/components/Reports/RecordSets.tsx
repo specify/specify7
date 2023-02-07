@@ -37,7 +37,7 @@ export function ReportRecordSets({
   React.useEffect(
     () =>
       query !== undefined && (tableId === undefined || tableId < 0)
-        ? error("Couldn't determine table id for report")
+        ? error("Couldn't determine base table for report")
         : undefined,
     [tableId, query]
   );

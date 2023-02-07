@@ -208,7 +208,7 @@ export const treeText = createDictionary({
       récursivement.
     `,
     'uk-ua': `
-      Усі посилання на {treeName:string} вузол «{nodeName:string}» буде замінено
+      Усі посилання на вузол {treeName:string} «{nodeName:string}» буде замінено
       на «{parentName:string}», а всі нащадки «{nodeName:string}» буде
       переміщено до «{parentName:string}», а будь-які нащадки, що відповідають
       імені та рангу, будуть самі собою об'єднані рекурсивно.
@@ -337,18 +337,20 @@ export const treeText = createDictionary({
     'uk-ua': '({directCount:number|formatted})',
   },
   directCollectionObjectCount: {
-    'en-us': 'Direct Collection Object Count',
-    'ru-ru': 'Количество прямых объектов коллекции',
-    'es-es': 'Recuento de objetos de colección directa',
-    'fr-fr': "Nombre d'objets de collecte directe",
-    'uk-ua': 'Підрахунок об’єктів прямого збору',
+    comment: 'Example: Direct Collection Object count',
+    'en-us': 'Direct {collectionObjectTable:string} Count',
+    'ru-ru': 'Количество прямых {collectionObjectTable:string}',
+    'es-es': 'Recuento directo {collectionObjectTable:string}',
+    'fr-fr': 'Comptage direct {collectionObjectTable:string}',
+    'uk-ua': 'Прямий підрахунок {collectionObjectTable:string}.',
   },
   indirectCollectionObjectCount: {
-    'en-us': 'Indirect Collection Object Count',
-    'ru-ru': 'Количество непрямых объектов коллекции',
-    'es-es': 'Recuento de objetos de colección indirecta',
-    'fr-fr': "Nombre d'objets de la collection indirecte",
-    'uk-ua': 'Підрахунок об’єктів непрямого збору',
+    comment: 'Example: Indirect Collection Object count',
+    'en-us': 'Indirect {collectionObjectTable:string} Count',
+    'ru-ru': 'Количество непрямых {collectionObjectTable:string}',
+    'es-es': 'Recuento indirecto {collectionObjectTable:string}',
+    'fr-fr': 'Comptage {collectionObjectTable:string} indirect',
+    'uk-ua': 'Непрямий підрахунок {collectionObjectTable:string}.',
   },
   editRanks: {
     'en-us': 'Edit Ranks',

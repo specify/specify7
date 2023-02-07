@@ -19,7 +19,6 @@ import {
   resourceOn,
 } from '../DataModel/resource';
 import type { Relationship } from '../DataModel/specifyField';
-import { LiteralField } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { FormMode, FormType } from '../FormParse';
 import {
@@ -49,26 +48,9 @@ import { userText } from '../../localization/user';
 import { LocalizedString } from 'typesafe-i18n';
 import { runQuery } from '../../utils/ajax/specifyApi';
 
-export function QueryComboBox({
-  fieldName: initialFieldName = '',
-  ...props
-}: Omit<Parameters<typeof ProtectedQueryComboBox>[0], 'field'> & {
-  readonly fieldName: string | undefined;
-}): JSX.Element | null {
-  const field = props.resource.specifyModel.getField(initialFieldName);
-  if (field === undefined) {
-    console.error(
-      `Trying to render a query combo box on the ` +
-        `${props.resource.specifyModel.name} form with unknown field: ${initialFieldName}`,
-      { id: props.id }
-    );
-    return null;
-  } else return <ProtectedQueryComboBox {...props} field={field} />;
-}
-
 // REFACTOR: split this component
 // TEST: add tests for this
-function ProtectedQueryComboBox({
+export function QueryComboBox({
   id,
   resource,
   field,
@@ -81,18 +63,18 @@ function ProtectedQueryComboBox({
   relatedModel: initialRelatedModel,
 }: {
   readonly id: string | undefined;
-  readonly resource: SpecifyResource<AnySchema>;
-  readonly field: LiteralField | Relationship;
+  readonly resource: SpecifyResource<AnySchema> | undefined;
+  readonly field: Relationship;
   readonly mode: FormMode;
   readonly formType: FormType;
   readonly isRequired: boolean;
   readonly hasCloneButton?: boolean;
   readonly typeSearch: Element | string | undefined;
   readonly forceCollection: number | undefined;
-  readonly relatedModel: SpecifyModel | undefined;
+  readonly relatedModel?: SpecifyModel | undefined;
 }): JSX.Element {
   React.useEffect(() => {
-    if (!resource.isNew()) return;
+    if (resource === undefined || !resource.isNew()) return;
     if (field.name === 'cataloger') {
       const record = toTable(resource, 'CollectionObject');
       record?.set(
@@ -128,7 +110,7 @@ function ProtectedQueryComboBox({
     collectionRelationships !== undefined &&
     typeSearch !== undefined;
   const { value, updateValue, validationRef, inputRef, parser } =
-    useResourceValue(resource, field.name, undefined);
+    useResourceValue(resource, field, undefined);
 
   /**
    * When resource is saved, a new instance of dependent resources is created.
@@ -141,12 +123,14 @@ function ProtectedQueryComboBox({
   const [version, setVersion] = React.useState(0);
   React.useEffect(
     () =>
-      resourceOn(
-        resource,
-        'saved',
-        () => setVersion((version) => version + 1),
-        false
-      ),
+      resource === undefined
+        ? undefined
+        : resourceOn(
+            resource,
+            'saved',
+            () => setVersion((version) => version + 1),
+            false
+          ),
     [resource]
   );
 
@@ -164,14 +148,14 @@ function ProtectedQueryComboBox({
   }>(
     React.useCallback(
       async () =>
-        !field.isRelationship ||
-        hasTablePermission(field.relatedModel.name, 'read') ||
-        /*
-         * If related resource is already provided, can display it
-         * Even if don't have read permission (i.e, Agent for current
-         * User)
-         */
-        field.isDependent()
+        typeof resource === 'object' &&
+        (hasTablePermission(field.relatedModel.name, 'read') ||
+          /*
+           * If related resource is already provided, can display it
+           * Even if don't have read permission (i.e, Agent for current
+           * User)
+           */
+          field.isDependent())
           ? resource
               .rgetPromise<string, AnySchema>(field.name)
               .then((resource) =>
@@ -192,12 +176,7 @@ function ProtectedQueryComboBox({
                     ).then((formatted) => ({
                       label:
                         formatted ??
-                        naiveFormatter(
-                          field.isRelationship
-                            ? field.relatedModel.label
-                            : resource.specifyModel.label,
-                          resource.id
-                        ),
+                        naiveFormatter(field.relatedModel.label, resource.id),
                       resource,
                     }))
               )
@@ -224,7 +203,7 @@ function ProtectedQueryComboBox({
   >({ type: 'MainState' });
 
   const relatedCollectionId =
-    typeof collectionRelationships === 'object'
+    typeof collectionRelationships === 'object' && typeof resource === 'object'
       ? getRelatedCollectionId(collectionRelationships, resource, field.name)
       : undefined;
 
@@ -248,41 +227,42 @@ function ProtectedQueryComboBox({
 
   const subViewRelationship = React.useContext(SubViewContext)?.relationship;
   const pendingValueRef = React.useRef('');
-  const pendingValueToResource = (
+
+  function pendingValueToResource(
     relationship: Relationship
-  ): SpecifyResource<AnySchema> =>
-    new relationship.relatedModel.Resource(
+  ): SpecifyResource<AnySchema> {
+    const fieldName =
+      (typeof typeSearch === 'object'
+        ? typeSearch?.searchFields.find(
+            ([searchField]) =>
+              !searchField.isRelationship &&
+              searchField.model === relationship.relatedModel &&
+              !searchField.isReadOnly
+          )?.[0].name
+        : undefined) ??
+      getMainTableFields(relationship.relatedModel.name)[0]?.name;
+    return new relationship.relatedModel.Resource(
       /*
        * If some value is currently in the input field, try to figure out which
        * field it is intended for and populate that field in the new resource.
        * Most of the time, that field is determined based on the search field
        */
-      f.maybe(
-        (typeof typeSearch === 'object'
-          ? typeSearch.searchFields.find(
-              ([searchField]) =>
-                !searchField.isRelationship &&
-                searchField.model === relationship.relatedModel &&
-                !searchField.isReadOnly
-            )?.[0].name
-          : undefined) ??
-          getMainTableFields(relationship.relatedModel.name)[0]?.name,
-        (fieldName) => ({ [fieldName]: pendingValueRef.current })
-      ) ?? {}
+      typeof fieldName === 'string'
+        ? { [fieldName]: pendingValueRef.current }
+        : {}
     );
+  }
 
   const fetchSource = React.useCallback(
     async (value: string): Promise<RA<AutoCompleteItem<string>>> =>
-      isLoaded && typeof typeSearch === 'object'
+      isLoaded && typeof typeSearch === 'object' && typeof resource === 'object'
         ? Promise.all(
             typeSearch.searchFields
               .map((fields) =>
                 makeComboBoxQuery({
                   fieldName: fields.map(({ name }) => name).join('.'),
                   value,
-                  isTreeTable:
-                    field.isRelationship &&
-                    isTreeModel(field.relatedModel.name),
+                  isTreeTable: isTreeModel(field.relatedModel.name),
                   typeSearch,
                   specialConditions: getQueryComboBoxConditions({
                     resource,
@@ -322,12 +302,7 @@ function ProtectedQueryComboBox({
              *   supported
              */
             responses.flat().map(([id, label]) => ({
-              data: getResourceApiUrl(
-                field.isRelationship
-                  ? field.relatedModel.name
-                  : resource.specifyModel.name,
-                id
-              ),
+              data: getResourceApiUrl(field.relatedModel.name, id),
               label,
             }))
           )
@@ -346,7 +321,6 @@ function ProtectedQueryComboBox({
   );
 
   const canAdd =
-    field?.isRelationship === true &&
     !RESTRICT_ADDING.has(field.relatedModel.name) &&
     hasTablePermission(field.relatedModel.name, 'create');
 
@@ -429,7 +403,6 @@ function ProtectedQueryComboBox({
             {canAdd ? (
               <DataEntry.Add
                 aria-pressed={state.type === 'AddResourceState'}
-                disabled={field?.isRelationship !== true}
                 onClick={(): void =>
                   state.type === 'AddResourceState'
                     ? setState({ type: 'MainState' })
@@ -460,7 +433,9 @@ function ProtectedQueryComboBox({
             <DataEntry.Search
               aria-pressed={state.type === 'SearchState'}
               onClick={
-                isLoaded && typeof typeSearch === 'object'
+                isLoaded &&
+                typeof typeSearch === 'object' &&
+                typeof resource === 'object'
                   ? (): void =>
                       setState({
                         type: 'SearchState',
@@ -480,10 +455,6 @@ function ProtectedQueryComboBox({
                             subViewRelationship,
                           })
                             .map(serializeResource)
-                            /*
-                             * Send special conditions to dialog
-                             * extremely skimpy. will work only for current known cases
-                             */
                             .map(({ fieldName, startValue }) =>
                               fieldName === 'rankId'
                                 ? {
@@ -537,7 +508,7 @@ function ProtectedQueryComboBox({
           resource={formatted.resource}
           onClose={(): void => setState({ type: 'MainState' })}
           onDeleted={(): void => {
-            resource.set(field.name, null as never);
+            resource?.set(field.name, null as never);
             setState({ type: 'MainState' });
           }}
           onAdd={undefined}
@@ -558,14 +529,14 @@ function ProtectedQueryComboBox({
           onClose={(): void => setState({ type: 'MainState' })}
           onDeleted={undefined}
           onSaved={(): void => {
-            resource.set(field.name, state.resource as never);
+            resource?.set(field.name, state.resource as never);
             setState({ type: 'MainState' });
           }}
           onAdd={undefined}
           onSaving={
             field.isDependent()
               ? (): false => {
-                  resource.set(field.name, state.resource as never);
+                  resource?.set(field.name, state.resource as never);
                   setState({ type: 'MainState' });
                   return false;
                 }

@@ -2,12 +2,12 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 
 import { useSearchParameter } from '../../hooks/navigation';
-import { deserializeResource } from '../../hooks/resource';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { useId } from '../../hooks/useId';
+import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
 import type { RA } from '../../utils/types';
 import { caseInsensitiveHash, toggleItem } from '../../utils/utils';
@@ -49,6 +49,7 @@ import {
 } from './helpers';
 import { TreeRow } from './Row';
 import { TreeViewSearch } from './Search';
+import { deserializeResource } from '../DataModel/helpers';
 
 const treeToPref = {
   Geography: 'geography',
@@ -181,6 +182,15 @@ function TreeView<SCHEMA extends AnyTree>({
           onClick={handleToggleEditingRanks}
         >
           {treeText.editRanks()}
+        </Button.Small>
+        <Button.Small
+          disabled={conformation.length === 0}
+          onClick={(): void => {
+            setFocusPath([0]);
+            setConformation([]);
+          }}
+        >
+          {commonText.collapseAll()}
         </Button.Small>
         <span className="-ml-2 flex-1" />
         <ErrorBoundary dismissible>

@@ -6,7 +6,7 @@ import { ResourceView } from '../Forms/ResourceView';
 import { formsText } from '../../localization/forms';
 import { hasToolPermission } from '../Permissions/helpers';
 import { Button } from '../Atoms/Button';
-import { getModelById } from '../DataModel/schema';
+import { getModelById, schema } from '../DataModel/schema';
 import React from 'react';
 import { userInformation } from '../InitialContext/userInformation';
 import { QueryListDialog, useQueries } from './Query';
@@ -38,6 +38,7 @@ export function EditRecordSet({
     <ResourceView
       // BUG: the message is stale if record set is renamed
       deletionMessage={formsText.recordSetDeletionWarning({
+        recordSetTable: schema.models.RecordSet.label,
         recordSetName: recordSet.get('name') ?? '',
       })}
       dialog="modal"

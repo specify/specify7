@@ -12,7 +12,6 @@ import type { RA } from '../../utils/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { LoadingContext } from '../Core/Contexts';
 import { downloadFile } from '../Molecules/FilePicker';
-import { deserializeResource } from '../../hooks/resource';
 import { ResourceView } from '../Forms/ResourceView';
 import { createLibraryRole } from './CreateLibraryRole';
 import { ImportExport } from './ImportExport';
@@ -29,6 +28,7 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { SerializedResource } from '../DataModel/helperTypes';
 import { useTitle } from '../Molecules/AppTitle';
 import { policiesToTsv } from './registry';
+import { deserializeResource } from '../DataModel/helpers';
 import { userText } from '../../localization/user';
 import { LocalizedString } from 'typesafe-i18n';
 
@@ -54,7 +54,7 @@ function InstitutionView({
 
   const admins = useAdmins();
 
-  useTitle(institution.name ?? undefined);
+  useTitle((institution.name as LocalizedString) ?? undefined);
   const loading = React.useContext(LoadingContext);
   const location = useLocation();
   const isOverlay = location.pathname.startsWith(
@@ -107,7 +107,7 @@ function InstitutionView({
                   )}
                   <SafeOutlet<SecurityOutlet> {...outletState} />
                   <ImportExport
-                    baseName={institution.name ?? ''}
+                    baseName={(institution.name as LocalizedString) ?? ''}
                     collectionId={schema.domainLevelIds.collection}
                     permissionName="/permissions/library/roles"
                     roles={libraryRoles}
@@ -136,7 +136,11 @@ function InstitutionView({
               </section>
             )}
             <section className="flex flex-col gap-2">
-              <h4 className="text-xl">{userText.institutionUsers()}</h4>
+              <h4 className="text-xl">
+                {userText.institutionUsers({
+                  institutionTable: schema.models.Institution.label,
+                })}
+              </h4>
               {typeof users === 'object' ? (
                 <>
                   <Ul>

@@ -1,6 +1,8 @@
+import { overrideAjax } from '../../../tests/ajax';
 import { mockTime, requireContext } from '../../../tests/helpers';
 import { addMissingFields } from '../addMissingFields';
 import {
+  fetchDistantRelated,
   isResourceOfType,
   serializeResource,
   toResource,
@@ -8,6 +10,7 @@ import {
   toTables,
   toTreeTable,
 } from '../helpers';
+import { getResourceApiUrl } from '../resource';
 import { schema } from '../schema';
 import type { Tables } from '../types';
 
@@ -185,5 +188,75 @@ describe('toTables', () => {
     expect(
       toTables(resource, ['CollectionObject', 'Accession'])
     ).toBeUndefined();
+  });
+});
+
+describe('fetchDistantRelated', () => {
+  test('empty path', async () => {
+    const resource = new schema.models.Agent.Resource();
+    await expect(fetchDistantRelated(resource, [])).resolves.toEqual({
+      resource,
+      field: undefined,
+    });
+  });
+
+  test('undefined path', async () => {
+    const resource = new schema.models.Agent.Resource();
+    await expect(fetchDistantRelated(resource, undefined)).resolves.toEqual({
+      resource,
+      field: undefined,
+    });
+  });
+
+  const collectorId = 1;
+  const agentId = 2;
+  overrideAjax(`/api/specify/collector/${collectorId}/`, {
+    resource_uri: getResourceApiUrl('Collector', collectorId),
+    id: collectorId,
+    agent: getResourceApiUrl('Agent', agentId),
+  });
+
+  test('single field path', async () => {
+    const resource = new schema.models.Collector.Resource({ id: collectorId });
+    const field = schema.models.Collector.strictGetField('agent');
+    const data = (await fetchDistantRelated(resource, [field]))!;
+    expect(data.resource).toBe(resource);
+    expect(data.field).toBe(field);
+    expect(data.resource!.get('agent')).toBe(
+      getResourceApiUrl('Agent', agentId)
+    );
+  });
+
+  const emptyCollectorId = 2;
+  overrideAjax(`/api/specify/collector/${emptyCollectorId}/`, {
+    resource_uri: getResourceApiUrl('Collector', emptyCollectorId),
+    id: emptyCollectorId,
+  });
+  const agent = {
+    resource_uri: getResourceApiUrl('Agent', agentId),
+    id: agentId,
+    lastname: 'a',
+  };
+  overrideAjax(`/api/specify/agent/${agentId}/`, agent);
+  test('valid field with missing related resource', async () => {
+    const resource = new schema.models.Collector.Resource({
+      id: emptyCollectorId,
+    });
+    const field = schema.models.Collector.strictGetField('agent');
+    const data = (await fetchDistantRelated(resource, [field]))!;
+    expect(data.resource).toBe(resource);
+    expect(data.field).toBe(field);
+    expect(data.resource!.get(field.name)).toBeUndefined();
+  });
+
+  test('multi field path', async () => {
+    const resource = new schema.models.Collector.Resource({ id: collectorId });
+    const fields = [
+      schema.models.Collector.strictGetField('agent'),
+      schema.models.Agent.strictGetField('lastName'),
+    ];
+    const data = (await fetchDistantRelated(resource, fields))!;
+    expect(data.resource!.toJSON()).toEqual(agent);
+    expect(data.field).toBe(fields.at(-1));
   });
 });

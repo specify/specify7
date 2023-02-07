@@ -135,7 +135,7 @@ export const sortFunction =
     if (leftValue === rightValue) return 0;
     return typeof leftValue === 'string' && typeof rightValue === 'string'
       ? (leftValue.localeCompare(rightValue) as -1 | 0 | 1)
-      : leftValue > rightValue
+      : (leftValue ?? 0) > (rightValue ?? 0)
       ? 1
       : -1;
   };

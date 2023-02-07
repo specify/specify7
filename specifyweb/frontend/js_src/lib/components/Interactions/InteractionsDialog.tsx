@@ -36,6 +36,7 @@ import { Link } from '../Atoms/Link';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { SerializedResource } from '../DataModel/helperTypes';
 import { TableIcon } from '../Molecules/TableIcon';
+import { softFail } from '../Errors/Crash';
 import { LocalizedString } from 'typesafe-i18n';
 import { interactionsText } from '../../localization/interactions';
 
@@ -200,6 +201,18 @@ function Interactions({
         const model = isRecordSetAction
           ? schema.models.CollectionObject
           : schema.models.Loan;
+        const actionModel =
+          table.toLowerCase() === 'loan'
+            ? schema.models.Loan
+            : table.toLowerCase() === 'gift'
+            ? schema.models.Gift
+            : table.toLowerCase() === 'disposal'
+            ? schema.models.Disposal
+            : undefined;
+        if (actionModel === undefined) {
+          softFail(new Error(`Unknown interaction table: ${table}`));
+          return;
+        }
         setState({
           type: 'InteractionState',
           recordSetsPromise: fetchCollection('RecordSet', {
@@ -211,14 +224,7 @@ function Interactions({
             limit: 5000,
           }),
           table: model.name,
-          actionModel:
-            table.toLowerCase() === 'loan'
-              ? schema.models.Loan
-              : table.toLowerCase() === 'gift'
-              ? schema.models.Gift
-              : table.toLowerCase() === 'disposal'
-              ? schema.models.Disposal
-              : error(`Unknown interaction table: ${table}`),
+          actionModel,
           action,
         });
       }

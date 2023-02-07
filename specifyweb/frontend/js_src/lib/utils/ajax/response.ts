@@ -1,5 +1,5 @@
 import { parseXml } from '../../components/AppResources/codeMirrorLinters';
-import { formatList } from '../../components/Atoms/Internationalization';
+import { formatConjunction } from '../../components/Atoms/Internationalization';
 import { handleAjaxError } from '../../components/Errors/FormatError';
 import { f } from '../functools';
 import type { RA } from '../types';
@@ -71,7 +71,7 @@ export function handleAjaxResponse<RESPONSE_TYPE = string>({
         statusText: filterArray([
           `Invalid response code ${response.status}. Expected ${
             expectedResponseCodes.length === 1 ? '' : 'one of '
-          }${formatList(
+          }${formatConjunction(
             Array.from(expectedResponseCodes)
               .sort(sortFunction(f.id))
               .map(f.toString)

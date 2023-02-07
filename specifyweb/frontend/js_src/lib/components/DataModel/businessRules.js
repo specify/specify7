@@ -3,9 +3,10 @@ import {globalEvents} from '../../utils/ajax/specifyApi';
 import {SaveBlockers} from './saveBlockers';
 import {initializeTreeRecord, treeBusinessRules} from './treeBusinessRules';
 import {businessRuleDefs} from './businessRuleDefs';
+import {flippedPromise} from '../../utils/promise';
 
 import {formsText} from '../../localization/forms';
-import {formatList} from '../Atoms/Internationalization';
+import {formatConjunction} from '../Atoms/Internationalization';
 import {isTreeResource} from '../InitialContext/treeRanks';
 import {idFromUrl} from './resource';
 
@@ -97,7 +98,11 @@ var enabled = true;
 
             // If another change happens while the previous check is pending,
             // that check is superseded by checking the new value.
-            this.fieldChangePromises[fieldName] && resoleFlippedPromise(this.fieldChangePromises[fieldName], 'superseded');
+            /*
+             * If another change happens while the previous check is pending,
+             * that check is superseded by checking the new value.
+             */
+            this.fieldChangePromises[fieldName] && this.fieldChangePromises[fieldName].resolve('superseded');
             this.fieldChangePromises[fieldName] = thisCheck;
 
             var checks = [
@@ -108,11 +113,11 @@ var enabled = true;
             if(isTreeResource(this.resource))
                 checks.push(treeBusinessRules(this.resource, fieldName));
 
-            Promise.all(checks).then(function(results) {
+            Promise.all(checks).then((results) =>
                 // Only process these results if the change has not been superseded.
-                return (thisCheck === this.fieldChangePromises[fieldName]) &&
-                    this.processCheckFieldResults(fieldName, results);
-            }.bind(this)).then(function() { resoleFlippedPromise(thisCheck,'finished'); });
+                (thisCheck === this.fieldChangePromises[fieldName]) &&
+                this.processCheckFieldResults(fieldName, results)
+            ).then(function() { thisCheck.resolve('finished'); });
         },
         processCheckFieldResults: function(fieldName, results) {
             var resource = this.resource;
@@ -170,7 +175,7 @@ var enabled = true;
                 ? {valid: true}
                 : {
                     valid: false,
-                    reason: formatList(_(invalids).pluck('reason'))
+                    reason: formatConjunction(_(invalids).pluck('reason'))
                 };
         });
     };
@@ -179,11 +184,11 @@ var enabled = true;
         if (fldInfo.length > 1)
           return parentFldInfo
             ? formsText.valuesOfMustBeUniqueToField({
-                values: formatList(fldInfo.map((fld) => fld.label)),
+                values: formatConjunction(fldInfo.map((fld) => fld.label)),
                 fieldName: parentFldInfo.label,
               })
             : formsText.valuesOfMustBeUniqueToDatabase({
-                values: formatList(fldInfo.map((fld) => fld.label))
+                values: formatConjunction(fldInfo.map((fld) => fld.label))
               });
         else
           return parentFldInfo
@@ -297,21 +302,3 @@ var enabled = true;
 export function enableBusinessRules(e) {
     return enabled = e;
 }
-
-// REFACTOR: replace this with flippedPromise util in ../../utils/promise.ts
-/**
- * A promise that can be resolved from outside the promise
- * This is probably an anti-pattern and is included here only for compatability
- * with the legacy promise implementation (Q.js)
- */
-function flippedPromise() {
-  const promise = new Promise((resolve) =>
-      globalThis.setTimeout(() => {
-          promise.resolve = resolve;
-      }, 0)
-  );
-  return promise;
-}
-
-const resoleFlippedPromise = (promise, ...args) =>
-  globalThis.setTimeout(()=>promise.resolve(...args), 0);

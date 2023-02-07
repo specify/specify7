@@ -1,7 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { deserializeResource } from '../../hooks/resource';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { commonText } from '../../localization/common';
@@ -21,7 +20,10 @@ import { updateCollectionRole } from './CollectionRole';
 import { createCollectionRole } from './CreateRole';
 import { ImportExport } from './ImportExport';
 import type { Role } from './Role';
+import { deserializeResource } from '../DataModel/helpers';
 import { userText } from '../../localization/user';
+import { LocalizedString } from 'typesafe-i18n';
+import { schema } from '../DataModel/schema';
 
 /**
  * Display a button to open current user
@@ -117,7 +119,11 @@ export function CollectionRoles({
 
   return (
     <section className="flex flex-col gap-1">
-      <h4 className="text-xl">{userText.collectionUserRoles()}</h4>
+      <h4 className="text-xl">
+        {userText.collectionUserRoles({
+          collectionTable: schema.models.Collection.label,
+        })}
+      </h4>
       {typeof roles === 'object' ? (
         <Ul>
           {Object.values(roles)
@@ -153,7 +159,7 @@ export function CollectionRoles({
         ) : undefined}
         {children}
         <ImportExport
-          baseName={collection.collectionName ?? ''}
+          baseName={(collection.collectionName as LocalizedString) ?? ''}
           collectionId={collection.id}
           permissionName="/permissions/roles"
           roles={roles}

@@ -1,10 +1,9 @@
 import React from 'react';
 
-import { deserializeResource } from '../../hooks/resource';
 import { useCachedState } from '../../hooks/useCachedState';
 import type { RA } from '../../utils/types';
 import { Form } from '../Atoms/Form';
-import { specialFields } from '../DataModel/helpers';
+import { deserializeResource, specialFields } from '../DataModel/helpers';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';

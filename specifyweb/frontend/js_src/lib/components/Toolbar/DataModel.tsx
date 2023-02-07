@@ -6,6 +6,7 @@ import React from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
 
+import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { schemaText } from '../../localization/schema';
 import { welcomeText } from '../../localization/welcome';
@@ -234,8 +235,24 @@ function DataModelFields({
   readonly model: SpecifyModel;
 }): JSX.Element {
   const data = React.useMemo(() => getFields(model), [model]);
+  const scope = model.getScopingPath();
+
   return (
     <>
+      <p>
+        {commonText.colonLine({
+          label: schemaText.idField(),
+          value: model.idField.name,
+        })}
+      </p>
+      {Array.isArray(scope) && (
+        <p>
+          {commonText.colonLine({
+            label: schemaText.scope(),
+            value: scope.join(' > '),
+          })}
+        </p>
+      )}
       <H3>{schemaText.fields()}</H3>
       <Table
         data={data}
@@ -297,11 +314,64 @@ function DataModelRelationships({
   readonly model: SpecifyModel;
 }): JSX.Element {
   const data = React.useMemo(() => getRelationships(model), [model]);
+
+  const [dependentFilter, setDependentFilter] = React.useState<
+    undefined | boolean
+  >(undefined);
+
+  const filteredDependentData = React.useMemo(
+    () =>
+      typeof dependentFilter === 'boolean'
+        ? data.filter(
+            (relationship) =>
+              model.strictGetRelationship(relationship.name).isDependent() ===
+              dependentFilter
+          )
+        : data,
+    [dependentFilter]
+  );
+
   return (
     <>
-      <H3 id={model.name.toLowerCase()}>{schemaText.relationships()}</H3>
+      <div className="flex items-center gap-4">
+        <H3 id={model.name.toLowerCase()}>{schemaText.relationships()}</H3>
+        <div className="flex items-center gap-2">
+          <Button.Small
+            aria-pressed={
+              dependentFilter === true || dependentFilter === undefined
+            }
+            onClick={(): void =>
+              setDependentFilter(
+                dependentFilter === undefined
+                  ? true
+                  : dependentFilter === false
+                  ? true
+                  : undefined
+              )
+            }
+          >
+            {schemaText.dependent()}
+          </Button.Small>
+          <Button.Small
+            aria-pressed={
+              dependentFilter === false || dependentFilter === undefined
+            }
+            onClick={(): void =>
+              setDependentFilter(
+                dependentFilter === undefined
+                  ? false
+                  : dependentFilter === true
+                  ? false
+                  : undefined
+              )
+            }
+          >
+            {schemaText.independent()}
+          </Button.Small>
+        </div>
+      </div>
       <Table
-        data={data}
+        data={filteredDependentData}
         getLink={({ relatedModel }): string => `#${relatedModel[0]}`}
         headers={relationshipColumns()}
         sortName="dataModelRelationships"

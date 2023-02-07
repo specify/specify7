@@ -58,8 +58,7 @@ type PureLocationState =
       }
     >
   | State<'NotFoundPage'>;
-
-export type LocationState = PureLocationState | undefined;
+export type SafeLocationState = PureLocationState | undefined;
 
 /**
  * For non-overlay components, opening an overlay changes the location,

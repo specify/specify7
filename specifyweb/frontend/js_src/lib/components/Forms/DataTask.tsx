@@ -128,7 +128,9 @@ function DisplayRecordSet({
         header={userText.permissionDeniedError()}
         onClose={(): void => navigate('/specify/')}
       >
-        {userText.emptyRecordSetsReadOnly()}
+        {userText.emptyRecordSetsReadOnly({
+          recordSetTable: schema.models.RecordSet.label,
+        })}
       </Dialog>
     </>
   ) : null;
@@ -198,7 +200,7 @@ function ViewByCatalogProtected(): JSX.Element | null {
       if (collection === undefined) {
         console.error(
           `Unable to find the collection with code ${collectionCode}\n` +
-            `Please make sure collection code is specificed correctly and ` +
+            `Please make sure collection code is specified correctly and ` +
             `the user has access to the collection.`
         );
         return false;

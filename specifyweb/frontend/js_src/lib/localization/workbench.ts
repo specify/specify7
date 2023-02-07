@@ -1008,8 +1008,8 @@ export const wbText = createDictionary({
     'en-us': 'Space',
     'ru-ru': 'Пробел',
     'es-es': 'Espacio',
-    'fr-fr': 'Espacer',
-    'uk-ua': 'космос',
+    'fr-fr': 'Espace',
+    'uk-ua': 'Простір',
   },
   pipe: {
     'en-us': 'Pipe',
@@ -1123,7 +1123,7 @@ export const wbText = createDictionary({
     'ru-ru': 'Количество столбцов',
     'es-es': 'Número de columnas',
     'fr-fr': 'Le nombre de colonnes',
-    'uk-ua': 'Кількість стовпців',
+    'uk-ua': 'Кількість колон',
   },
   importedFileName: {
     'en-us': 'Import file name',

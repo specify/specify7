@@ -32,6 +32,7 @@ import {
   type RelationshipDefinition,
 } from './specifyField';
 import { getCache } from '../../utils/cache';
+import { schemaAliases } from './schemaExtras';
 import { LocalizedString } from 'typesafe-i18n';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { parentTableRelationship } from '../Forms/parentTables';
@@ -140,7 +141,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
 
   public readonly searchDialog?: string;
 
-  public readonly fieldAliases: RA<FieldAlias>;
+  public readonly fieldAliases: IR<string>;
 
   /**
    * A Backbone model resource for accessing the API for items of this type.
@@ -207,7 +208,15 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
     this.searchDialog = tableDefinition.searchDialog ?? undefined;
     this.tableId = tableDefinition.tableId;
     this.isSystem = tableDefinition.system;
-    this.fieldAliases = tableDefinition.fieldAliases;
+    this.fieldAliases = Object.fromEntries(
+      Object.entries({
+        ...Object.fromEntries(
+          tableDefinition.fieldAliases.map(({ aname, vname }) => [vname, aname])
+        ),
+        ...schemaAliases[''],
+        ...schemaAliases[this.name],
+      }).map(([alias, fieldName]) => [alias.toLowerCase(), fieldName])
+    );
 
     this.Resource = ResourceBase.extend(
       { __name__: `${this.name}Resource` },
@@ -303,15 +312,17 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
   public getField(
     unparsedName: string
   ): LiteralField | Relationship | undefined {
-    return this.getFields(unparsedName).at(-1);
+    return this.getFields(unparsedName)?.at(-1);
   }
 
   // REFACTOR: use this where appropriate
-  public getFields(unparsedName: string): RA<LiteralField | Relationship> {
-    if (unparsedName === '') return [];
+  public getFields(
+    unparsedName: string
+  ): RA<LiteralField | Relationship> | undefined {
+    if (unparsedName === '') return undefined;
     if (typeof unparsedName !== 'string') throw new Error('Invalid field name');
 
-    const splitName = unparsedName.toLowerCase().split('.');
+    const splitName = unparsedName.toLowerCase().trim().split('.');
     let fields = filterArray([
       this.fields.find((field) => field.name.toLowerCase() === splitName[0]),
     ]);
@@ -324,10 +335,17 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
       )
         return [this.idField];
 
-      const alias = this.fieldAliases.find(
-        (alias) => alias.vname.toLowerCase() === splitName[0]
-      );
-      if (typeof alias === 'object') fields = this.getFields(alias.aname);
+      const alias = this.fieldAliases[splitName[0]];
+      if (typeof alias === 'string') {
+        const aliasFields = this.getFields(
+          [alias, ...splitName.slice(1)].join('.')
+        );
+        if (Array.isArray(aliasFields)) fields = aliasFields;
+        else
+          console.warn(
+            `Alias ${unparsedName} was resolved to unknown field ${alias}`
+          );
+      }
     }
 
     // Handle calls like localityModel.getField('Locality.localityName')
@@ -336,16 +354,15 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
       splitName[0].toLowerCase() === this.name.toLowerCase()
     )
       return this.getFields(splitName.slice(1).join('.'));
-    if (splitName.length === 1) return fields;
-    else if (fields.length === 0) return [];
-    else if (splitName.length > 1 && fields[0].isRelationship)
-      return [
-        ...fields,
-        ...defined(fields[0].relatedModel).getFields(
-          splitName.slice(1).join('.')
-        ),
-      ];
-    else throw new Error(`Field ${unparsedName} is not a relationship`);
+    else if (fields.length === 0) return undefined;
+    else if (splitName.length === 1) return fields;
+    else if (splitName.length > 1 && fields[0].isRelationship) {
+      const subFields = defined(fields[0].relatedModel).getFields(
+        splitName.slice(1).join('.')
+      );
+      if (subFields === undefined) return undefined;
+      return [...fields, ...subFields];
+    } else throw new Error(`Field ${unparsedName} is not a relationship`);
   }
 
   public strictGetField(unparsedName: string): LiteralField | Relationship {

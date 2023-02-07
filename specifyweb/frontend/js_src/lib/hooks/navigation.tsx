@@ -6,9 +6,11 @@ import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
 
-import { UnloadProtectsContext } from '../components/Core/Contexts';
 import { formatUrl, parseUrl } from '../components/Router/queryString';
-import { locationToUrl } from '../components/Router/Router';
+import {
+  locationToUrl,
+  SetUnloadProtectsContext,
+} from '../components/Router/Router';
 import type { GetOrSet, GetSet, RA } from '../utils/types';
 import { removeItem, removeKey } from '../utils/utils';
 import { SafeLocation } from 'history';
@@ -64,9 +66,7 @@ export function useUnloadProtect(
   isEnabled: boolean,
   message: LocalizedString
 ): () => void {
-  const [_unloadProtects, setUnloadProtects] = React.useContext(
-    UnloadProtectsContext
-  )!;
+  const setUnloadProtects = React.useContext(SetUnloadProtectsContext)!;
 
   const handleRemove = React.useCallback(
     (): void => unsetUnloadProtect(setUnloadProtects, message),

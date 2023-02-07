@@ -575,7 +575,7 @@ export const commonText = createDictionary({
     'en-us': '{label:string}: {value:string}',
     'ru-ru': '{label:string}: {value:string}',
     'es-es': '{label:string}: {value:string}',
-    'fr-fr': '{label:string} : {value:string}',
+    'fr-fr': '{label:string}: {value:string}',
     'uk-ua': '{label:string}: {value:string}',
   },
   jsxColonLine: {
@@ -587,5 +587,19 @@ export const commonText = createDictionary({
     'es-es': '{label:string}: <wrap />',
     'fr-fr': '{label:string} : <wrap />',
     'uk-ua': '{label:string}: <wrap />',
+  },
+  online: {
+    'en-us': 'online',
+    'es-es': 'en línea',
+    'fr-fr': 'en ligne',
+    'ru-ru': 'онлайн',
+    'uk-ua': 'онлайн',
+  },
+  offline: {
+    'en-us': 'offline',
+    'es-es': 'desconectado',
+    'fr-fr': 'hors ligne',
+    'ru-ru': 'не в сети',
+    'uk-ua': 'офлайн',
   },
 } as const);

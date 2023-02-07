@@ -2,11 +2,13 @@
  * Fixes for various issues with default TypeScript declaration fils
  */
 
-import type { Key, Path, To } from 'history';
+import type { To } from 'history';
+import * as H from 'history';
 
-import type { LocationState } from './components/Router/RouterState';
 import type { IR, RA, RR, ValueOf } from './utils/types';
 import type { localized } from 'typesafe-i18n/types/runtime/src/core';
+import type { SafeLocationState } from './components/Router/RouterState';
+import { SafeLocationState } from './components/Router/RouterState';
 
 /**
  * Typescript does not recognize the definition overwrite when using
@@ -73,7 +75,7 @@ declare module 'react-router' {
     to: To,
     options?: {
       readonly replace?: boolean;
-      readonly state?: LocationState;
+      readonly state?: SafeLocationState;
     }
   ) => void;
 
@@ -81,21 +83,15 @@ declare module 'react-router' {
     to: To,
     options?: {
       readonly replace?: boolean;
-      readonly state?: LocationState;
+      readonly state?: SafeLocationState;
     }
   ) => void;
 
-  export declare function useLocation(): Path & {
-    readonly state: LocationState;
-    readonly key: Key;
-  };
+  export declare function useLocation(): H.Location<SafeLocationState>;
 }
 
 declare module 'history' {
-  export type SafeLocation = Path & {
-    readonly state: LocationState;
-    readonly key: Key;
-  };
+  export type SafeLocation = H.Location<SafeLocationState>;
 }
 
 declare module 'typesafe-i18n' {

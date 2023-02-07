@@ -24,7 +24,6 @@ export const routes: RA<EnhancedRoute> = [
         ({ ExpressSearchView }) => ExpressSearchView
       ),
     title: headerText.expressSearch(),
-    navigatable: false,
   },
   {
     path: 'express_search',
@@ -75,7 +74,6 @@ export const routes: RA<EnhancedRoute> = [
         children: [
           {
             index: true,
-            element: <></>,
           },
           {
             path: 'role',
@@ -126,7 +124,6 @@ export const routes: RA<EnhancedRoute> = [
         children: [
           {
             index: true,
-            element: <></>,
           },
           {
             path: 'role/',

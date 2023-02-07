@@ -1,10 +1,13 @@
-import { deserializeResource } from '../../hooks/resource';
 import { f } from '../../utils/functools';
 import type { IR, RA, RR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { multiSortFunction, sortFunction } from '../../utils/utils';
 import { addMissingFields } from '../DataModel/addMissingFields';
-import { resourceToModel, specialFields } from '../DataModel/helpers';
+import {
+  deserializeResource,
+  resourceToModel,
+  specialFields,
+} from '../DataModel/helpers';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import { getUniqueFields } from '../DataModel/resource';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';

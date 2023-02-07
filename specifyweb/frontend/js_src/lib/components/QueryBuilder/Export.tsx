@@ -52,7 +52,7 @@ export function QueryExportButtons({
           .map(({ mappingPath }) =>
             generateMappingPathPreview(baseTableName, mappingPath)
           ),
-        recordSetId: recordSetId,
+        recordSetId,
       }),
     });
   }

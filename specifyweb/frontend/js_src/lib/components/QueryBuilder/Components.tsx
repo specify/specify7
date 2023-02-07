@@ -42,7 +42,7 @@ export function SaveQueryButtons({
   readonly isReadOnly: boolean;
   readonly fields: RA<QueryField>;
   readonly saveRequired: boolean;
-  readonly isValid: () => void;
+  readonly isValid: () => boolean;
   readonly queryResource: SpecifyResource<SpQuery>;
   readonly unsetUnloadProtect: () => void;
   readonly getQueryFieldRecords:
@@ -212,7 +212,9 @@ export function MakeRecordSetButton({
           setRecordSet(recordSet);
         }}
       >
-        {queryText.createRecordSet()}
+        {queryText.createRecordSet({
+          recordSetTable: schema.models.RecordSet.label,
+        })}
       </QueryButton>
       {state === 'editing' || state === 'saving' ? (
         <>
@@ -231,7 +233,7 @@ export function MakeRecordSetButton({
               onSaving={(): void => setState('saving')}
             />
           )}
-          {state === 'saving' && recordSetFromQueryLoading}
+          {state === 'saving' && recordSetFromQueryLoading()}
         </>
       ) : undefined}
       {state === 'saved' && typeof recordSet === 'object' ? (
@@ -244,16 +246,20 @@ export function MakeRecordSetButton({
   );
 }
 
-export const recordSetFromQueryLoading = (
+export const recordSetFromQueryLoading = f.store(() => (
   <Dialog
     buttons={undefined}
-    header={queryText.recordSetToQuery()}
+    header={queryText.recordSetToQuery({
+      recordSetTable: schema.models.RecordSet.label,
+    })}
     onClose={undefined}
   >
-    {queryText.recordSetToQueryDescription()}
+    {queryText.recordSetToQueryDescription({
+      recordSetTable: schema.models.RecordSet.label,
+    })}
     {loadingBar}
   </Dialog>
-);
+));
 
 export function RecordSetCreated({
   recordSet,
@@ -265,7 +271,9 @@ export function RecordSetCreated({
   return (
     <Dialog
       buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
-      header={queryText.recordSetCreated()}
+      header={queryText.recordSetCreated({
+        recordSetTable: schema.models.RecordSet.label,
+      })}
       onClose={handleClose}
     >
       <Link.Default href={`/specify/record-set/${recordSet.id}/`}>

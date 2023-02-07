@@ -24,7 +24,7 @@ export const webOnlyViews = f.store(() =>
           {
             id: undefined,
             type: 'Field',
-            fieldName: undefined,
+            fieldNames: undefined,
             fieldDefinition: {
               isReadOnly: false,
               type: 'Plugin',

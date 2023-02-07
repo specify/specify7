@@ -17,6 +17,8 @@ import { fileToText } from '../Molecules/FilePicker';
 import { uniquifyHeaders } from '../WbPlanView/headerHelper';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { getField } from '../DataModel/helpers';
+import { fullDateFormat } from '../../utils/parser/dateFormat';
+import { databaseDateFormat } from '../../utils/parser/dateConfig';
 
 /** Remove the extension from the file name */
 export const extractFileName = (fileName: string): string =>
@@ -125,7 +127,9 @@ export const parseXls = async (
 ): Promise<RA<RA<string>>> =>
   new Promise((resolve, reject) => {
     const worker = new ImportXLSWorker();
-    worker.postMessage({ file, previewSize: limit });
+    const dateFormat =
+      fullDateFormat() === databaseDateFormat ? undefined : fullDateFormat();
+    worker.postMessage({ file, previewSize: limit, dateFormat });
     worker.addEventListener('message', ({ data }) => {
       const rows = data as RA<RA<string>>;
       if (rows.length === 0 || rows[0].length === 0)
