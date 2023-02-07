@@ -660,13 +660,6 @@ export const userText = createDictionary({
     'fr-fr': 'Action',
     'uk-ua': 'Дія',
   },
-  resource: {
-    'en-us': 'Resource',
-    'ru-ru': 'Ресурс',
-    'es-es': 'Recurso',
-    'fr-fr': 'Ressource',
-    'uk-ua': 'Ресурс',
-  },
   allCollections: {
     'en-us': 'All Collections',
     'ru-ru': 'Все коллекции',

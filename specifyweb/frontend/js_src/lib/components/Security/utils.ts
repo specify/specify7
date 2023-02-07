@@ -6,6 +6,7 @@ import { Http } from '../../utils/ajax/definitions';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import {
+  camelToHuman,
   lowerToHuman,
   replaceKey,
   sortFunction,
@@ -84,6 +85,21 @@ export const fetchUserRoles = async (
           .sort(sortFunction(({ roleId }) => roleId))
   );
 
+/**
+ * Convert a path like "/table/agent" into "Table > Agent"
+ */
+export function resourceNameToLongLabel(resource: string): string {
+  const parts = resourceNameToParts(resource);
+  return parts
+    .map((_, index) =>
+      resourceNameToLabel(partsToResourceName(parts.slice(0, index + 1)))
+    )
+    .join(' > ');
+}
+
+/**
+ * Convert "/table" into "Table" and "/table/agent" into "Agent"
+ */
 export function resourceNameToLabel(resource: string): LocalizedString {
   if (
     /*
@@ -97,19 +113,10 @@ export function resourceNameToLabel(resource: string): LocalizedString {
   else {
     const parts = resourceNameToParts(resource);
     return (
-      getRegistriesFromPath(parts)[parts.length - 1]?.[parts.at(-1)!].label ??
-      userText.resource()
+      getRegistriesFromPath(parts)[parts.length - 1]?.[parts.at(-1)!]?.label ??
+      camelToHuman(resource)
     );
   }
-}
-
-export function resourceNameToLongLabel(resource: string): string {
-  const parts = resourceNameToParts(resource);
-  return parts
-    .map((_, index) =>
-      resourceNameToLabel(partsToResourceName(parts.slice(0, index + 1)))
-    )
-    .join(' > ');
 }
 
 /** Like getRegistriesFromPath, but excludes institutional policies */
