@@ -71,7 +71,7 @@ def no_savepoint():
     yield
 
 def unupload_dataset(ds: Spdataset, agent, progress: Optional[Progress]=None) -> None:
-    results = Spdatasetrowresult.objects.filter(spdataset=ds.id).values_list('result', flat=True)
+    results = list(Spdatasetrowresult.objects.filter(spdataset=ds.id).values_list('result', flat=True))
     total = len(results)
     with transaction.atomic():
         if ds.uploadresult is not None:
@@ -240,7 +240,6 @@ def get_ds_upload_plan(collection, ds: Spdataset) -> Tuple[Table, ScopedUploadab
     validate(plan, schema)
     base_table, plan = parse_plan_with_basetable(collection, plan)
     return base_table, plan.apply_scoping(collection)
-
 
 def do_upload(
         collection,
