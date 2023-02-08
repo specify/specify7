@@ -218,9 +218,9 @@ msgstr ""
 "У вас немає достатніх привілеїв для цієї дії, або ваш поточний сеанс вийшов "
 "із системи."
 
-#: components/FormFields/Field.tsx:125
+#: components/FormFields/Field.tsx:121
 #: components/FormFields/QueryComboBox.tsx:186
-#: components/Forms/dataObjFormatters.ts:255
+#: components/Forms/dataObjFormatters.ts:256
 #. 🟥Used in field formatter if user doesn't have read access to the related table. Used in: Components > Form Fields > Field ⬤ Components > Form Fields > Query Combo Box ⬤ Components > Forms > Data Obj Formatters
 #, fuzzy
 msgid "noPermission"

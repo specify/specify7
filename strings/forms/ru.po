@@ -629,12 +629,12 @@ msgstr "Мета-данные формы"
 
 #: components/AppResources/Editor.tsx:179
 #: components/Forms/BaseResourceView.tsx:104
-#: components/Forms/dataObjFormatters.ts:150
+#: components/Forms/dataObjFormatters.ts:149
 #. Used in: Components > App Resources > Editor ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Data Obj Formatters
 msgid "newResourceTitle"
 msgstr "Новый {tableName:string}"
 
-#: components/Forms/dataObjFormatters.ts:151
+#: components/Forms/dataObjFormatters.ts:150
 #. 🟥When resource does not have a formatter defined, this formatter is used. Used in: Components > Forms > Data Obj Formatters
 msgid "resourceFormatter"
 msgstr "{tableName:string} #{id:number}"

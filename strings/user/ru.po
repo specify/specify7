@@ -185,9 +185,9 @@ msgstr "Insufficient Privileges"
 msgid "sessionTimeOutDescription"
 msgstr "У вас недостаточно прав для этого действия, или текещий сеанс был отключен."
 
-#: components/FormFields/Field.tsx:125
+#: components/FormFields/Field.tsx:121
 #: components/FormFields/QueryComboBox.tsx:186
-#: components/Forms/dataObjFormatters.ts:255
+#: components/Forms/dataObjFormatters.ts:256
 #. 🟥Used in field formatter if user doesn't have read access to the related table. Used in: Components > Form Fields > Field ⬤ Components > Form Fields > Query Combo Box ⬤ Components > Forms > Data Obj Formatters
 msgid "noPermission"
 msgstr "ОТСУТСТВУЕТ РАЗРЕШЕНИЕ"

@@ -217,9 +217,9 @@ msgstr ""
 "Carece de suficientes privilegios para esa acción, o su sesión actual ha "
 "sido cerrada."
 
-#: components/FormFields/Field.tsx:125
+#: components/FormFields/Field.tsx:121
 #: components/FormFields/QueryComboBox.tsx:186
-#: components/Forms/dataObjFormatters.ts:255
+#: components/Forms/dataObjFormatters.ts:256
 #. 🟥Used in field formatter if user doesn't have read access to the related table. Used in: Components > Form Fields > Field ⬤ Components > Form Fields > Query Combo Box ⬤ Components > Forms > Data Obj Formatters
 #, fuzzy
 msgid "noPermission"
