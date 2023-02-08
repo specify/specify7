@@ -22,8 +22,7 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { LiteralField } from '../DataModel/specifyField';
-import type { Collection } from '../DataModel/specifyModel';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { Collection, SpecifyModel } from '../DataModel/specifyModel';
 import type { Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import {
@@ -226,13 +225,15 @@ async function formatField(
   if (typeof fieldFormatter === 'string' && fieldFormatter === '') return '';
 
   const fields = resource.specifyModel.getFields(fieldName);
-  if (fields === undefined)
-    throw new Error(`Tried to get unknown field: ${fieldName}`);
+  if (fields === undefined) {
+    console.error(`Tried to get unknown field: ${fieldName}`);
+    return '';
+  }
   const field = fields.at(-1)!;
-  if (field.isRelationship)
-    throw new Error(
-      `Unexpected formatting of a relationship field ${fieldName}`
-    );
+  if (field.isRelationship) {
+    console.error(`Unexpected formatting of a relationship field ${fieldName}`);
+    return '';
+  }
 
   const hasPermission = hasPathPermission(fields, 'read');
 
