@@ -2,7 +2,7 @@ import React from 'react';
 import type { State } from 'typesafe-reducer';
 import { commonText } from '../../localization/common';
 import { statsText } from '../../localization/stats';
-import { cleanFulfilledRequests } from '../../utils/ajax/throttledPromise';
+import { cleanMaybeFulfilled } from '../../utils/ajax/throttledPromise';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { getUniqueName } from '../../utils/uniquifyName';
@@ -363,7 +363,7 @@ export function StatsPage(): JSX.Element | null {
         )}
         <Button.Blue
           onClick={(): void => {
-            cleanFulfilledRequests();
+            cleanMaybeFulfilled();
             setLayout((layout) =>
               layout === undefined
                 ? undefined
@@ -399,7 +399,7 @@ export function StatsPage(): JSX.Element | null {
           <>
             <Button.Red
               onClick={(): void => {
-                cleanFulfilledRequests();
+                cleanMaybeFulfilled();
                 setCollectionLayout(defaultLayoutSpec);
                 setPersonalLayout(defaultLayoutSpec);
                 setCategoriesToFetch(dynamicCategories);

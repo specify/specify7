@@ -113,7 +113,7 @@ function BackEndItem({
 }): JSX.Element {
   const promiseGenerator = React.useCallback(
     () =>
-      throttledPromise<BackendStatsResult, string>(
+      throttledPromise<BackendStatsResult>(
         'backendStats',
         async () =>
           ajax<BackendStatsResult>(fetchUrl, {
@@ -124,9 +124,7 @@ function BackEndItem({
           }).then(({ data }) => data),
         fetchUrl
       ).then((data) => {
-        const fetchValue = formatter?.(
-          data[pathToValue as keyof BackendStatsResult]
-        );
+        const fetchValue = formatter?.(data[pathToValue]);
         if (fetchValue === undefined) handleRemove?.();
         return fetchValue;
       }),
@@ -175,7 +173,7 @@ function QueryItem({
 
   const promiseGenerator = React.useCallback(
     async () =>
-      throttledPromise<number | string | undefined, string>(
+      throttledPromise<number | string | undefined>(
         'queryStats',
         queryCountPromiseGenerator(query),
         JSON.stringify(querySpec)

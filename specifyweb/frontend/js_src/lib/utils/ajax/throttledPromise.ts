@@ -1,60 +1,52 @@
 import { RR, WritableArray } from '../types';
 
-export type PromiseWithSpec<T, S> = Promise<T> & { spec: S };
-const currentRequestsGenerator = <T, S>(): WritableArray<
-  PromiseWithSpec<T, S>
-> => [];
+export type PromiseWithSpec<T> = Promise<T> & {
+  spec: string | number;
+};
+const currentRequestsGenerator = <T>(): WritableArray<PromiseWithSpec<T>> => [];
 
-let fulfilledPromises: WritableArray<PromiseWithSpec<any, any>> = [];
+let maybeFulfilled: WritableArray<PromiseWithSpec<any>> = [];
 
-export const cleanFulfilledRequests = (): void => {
-  fulfilledPromises = [];
+export const cleanMaybeFulfilled = (): void => {
+  maybeFulfilled = [];
 };
 
 export const networkRequestsSpec: RR<
   'backendStats' | 'queryStats',
   {
-    readonly currentRequests: WritableArray<PromiseWithSpec<any, any>>;
+    readonly currentRequests: WritableArray<PromiseWithSpec<any>>;
     readonly maxFetchCount: number;
   }
 > = {
   queryStats: {
     maxFetchCount: 10,
-    currentRequests: currentRequestsGenerator<
-      number | string | undefined,
-      string
-    >(),
+    currentRequests: currentRequestsGenerator<number | string | undefined>(),
   },
   backendStats: {
     maxFetchCount: 1,
-    currentRequests: currentRequestsGenerator<number, string>(),
+    currentRequests: currentRequestsGenerator<number>(),
   },
 };
 
-export async function throttledPromise<T, S>(
+export async function throttledPromise<T>(
   key: keyof typeof networkRequestsSpec,
   promiseGenerator: () => Promise<T>,
-  promiseSpec: S
+  promiseSpec: number | string
 ): Promise<T> {
   const { maxFetchCount, currentRequests } = networkRequestsSpec[key];
   while (currentRequests.length > maxFetchCount) {
     await Promise.any(currentRequests);
   }
-  const promiseInFulfilled = fulfilledPromises.find(
+  const promiseInFulfilled = maybeFulfilled.find(
     (fulfilledPromise) => fulfilledPromise.spec === promiseSpec
   );
   if (promiseInFulfilled !== undefined) return promiseInFulfilled;
 
-  const promiseInAwaiting = currentRequests.find(
-    (awaitingPromise) => awaitingPromise.spec === promiseSpec
-  );
-  if (promiseInAwaiting !== undefined) return promiseInAwaiting;
-
   const newPromise = promiseGenerator().finally(() => {
     currentRequests.splice(currentRequests.indexOf(newPromise), 1);
-    fulfilledPromises.push(newPromise);
-  }) as PromiseWithSpec<T, S>;
+  }) as PromiseWithSpec<T>;
   newPromise.spec = promiseSpec;
   currentRequests.push(newPromise);
+  maybeFulfilled.push(newPromise);
   return newPromise;
 }
