@@ -378,15 +378,19 @@ export function StatsPage(): JSX.Element | null {
           <Button.Green
             onClick={(): void => {
               const date = new Date();
-              const statsTsvSpec = statsToTsv(
+              const sourceIndex = activePage.isCollection ? 0 : 1;
+              const pageIndex = activePage.pageIndex;
+              const statsTsv = statsToTsv(
                 layout,
                 activePage.isCollection ? 0 : 1,
                 activePage.pageIndex
               );
-              const statsTsv = statsTsvSpec?.statsTsv;
-              const nameSpec = statsTsvSpec?.nameSpec;
-              if (statsTsv === undefined || nameSpec === undefined) return;
-              const fileName = `Specify 7 Statistics ${nameSpec} ${date.toDateString()} ${
+              const sourceName = Object.keys(layout)[sourceIndex];
+              const pageName =
+                Object.values(layout)[sourceIndex]?.[pageIndex].label;
+              const fileName = `Specify 7 Statistics ${sourceName} ${
+                pageName ?? ''
+              } ${date.toDateString()} ${
                 date.toTimeString().split(' ')[0]
               }.tsv`;
               downloadFile(fileName, statsTsv).catch(softFail);
@@ -456,7 +460,7 @@ export function StatsPage(): JSX.Element | null {
         )}
       </div>
       <div className="flex flex-col overflow-hidden">
-        <div className="flex flex-col gap-2 overflow-y-hidden  md:flex-row">
+        <div className="flex flex-col gap-2 overflow-y-hidden md:flex-row">
           <aside
             className={`
                  top-0 flex min-w-fit flex-1 flex-col divide-y-4 !divide-[color:var(--form-background)]

@@ -56,7 +56,7 @@ function backEndStatPromiseGenerator(
     categoriesToFetch.map((key) => [
       key,
       async () =>
-        throttledPromise<BackendStatsResult, string>(
+        throttledPromise<BackendStatsResult>(
           'backendStats',
           async () =>
             ajax<BackendStatsResult>(`/statistics/collection/${key}/`, {
@@ -290,54 +290,31 @@ export function setAbsentCategoriesToFetch(
 
 export function statsToTsv(
   layout: IR<StatLayout | undefined>,
-  sourceIndex: number,
-  layoutPageIndex: number
-): { readonly statsTsv: string; readonly nameSpec: string } | undefined {
-  if (Object.values(layout).some((layouts) => layouts === undefined))
-    return undefined;
+  layoutPageIndex: number,
+  sourceIndex: number
+): string {
   const headers = [
-    statsText.source(),
-    statsText.pageName(),
     statsText.categoryName(),
     statsText.itemName(),
     statsText.itemValue(),
   ];
-  const statItems: WritableArray<WritableArray<number | string>> = [];
-  let nameSpec = '';
-  Object.entries(layout as IR<StatLayout>).forEach(
-    ([sourceName, layouts], layoutSourceIndex) =>
-      layouts.forEach((layout, pageIndex) => {
-        if (layout === undefined) return;
-        const layoutLabel = layout.label === undefined ? '' : layout.label;
-        layout.categories.forEach((category) => {
-          if (category === undefined) return;
-          const categoryLabel =
-            category.label === undefined ? '' : category.label;
-          if (category.items === undefined) return;
-          category.items.forEach(({ label, itemValue }) => {
-            if (itemValue === undefined) return;
-            const newItemLabel = label === undefined ? '' : label;
-            if (
-              layoutSourceIndex === sourceIndex &&
-              pageIndex === layoutPageIndex
-            ) {
-              nameSpec = `${sourceName} ${layoutLabel}`;
-              statItems.push([
-                sourceName,
-                layoutLabel,
-                categoryLabel,
-                newItemLabel,
-                itemValue.toString(),
-              ]);
-            }
-          });
-        });
-      })
+  const statItems = Object.entries(layout as IR<StatLayout>).flatMap(
+    ([_, layouts], layoutSourceIndex) =>
+      (layoutSourceIndex === sourceIndex ? layouts : []).flatMap(
+        (page, pageIndex) =>
+          (pageIndex === layoutPageIndex ? page.categories : []).flatMap(
+            (category) =>
+              (category.items ?? [])
+                .filter((item) => item.itemValue !== undefined)
+                .map((item) =>
+                  [category.label, item.label, item.itemValue?.toString()].map(
+                    (display) => display ?? ''
+                  )
+                )
+          )
+      )
   );
-  return {
-    statsTsv: [headers, ...statItems].map((line) => line.join('\t')).join('\n'),
-    nameSpec,
-  };
+  return [headers, ...statItems].map((line) => line.join('\t')).join('\n');
 }
 
 export function useStatValueLoad<
