@@ -19,6 +19,10 @@ export const headerText = createDictionary({
   },
   main: {
     'en-us': 'Main',
+    'es-es': 'Principal',
+    'fr-fr': 'Principal',
+    'ru-ru': 'Основной',
+    'uk-ua': 'Головна',
   },
   currentCollection: {
     comment: 'Example: Current Collection',
@@ -208,7 +212,7 @@ export const headerText = createDictionary({
     'en-us': 'User Tools',
     'ru-ru': 'Инструменты',
     'es-es': 'Herramientas',
-    'fr-fr': 'Outils',
+    'fr-fr': 'Outils utilisateur',
     'uk-ua': 'Інструменти',
   },
   userToolsForUser: {

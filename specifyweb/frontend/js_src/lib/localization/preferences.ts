@@ -361,10 +361,10 @@ export const preferencesText = createDictionary({
   },
   header: {
     'en-us': 'Navigation Menu',
-    'ru-ru': 'Главное меню',
-    'es-es': 'Menú de nivel superior',
-    'fr-fr': 'Menu de niveau supérieur',
-    'uk-ua': 'Меню верхнього рівня',
+    'ru-ru': 'Меню навигации',
+    'es-es': 'Menú de Navegación',
+    'fr-fr': 'le menu de navigation',
+    'uk-ua': 'Навігаційне меню',
   },
   application: {
     'en-us': 'Application',
@@ -1320,18 +1320,38 @@ export const preferencesText = createDictionary({
   },
   position: {
     'en-us': 'Position',
+    'es-es': 'Posición',
+    'fr-fr': 'Position',
+    'ru-ru': 'Позиция',
+    'uk-ua': 'Позиція',
   },
   top: {
     'en-us': 'Top',
+    'es-es': 'Arriba',
+    'fr-fr': 'Haut',
+    'ru-ru': 'Вершина',
+    'uk-ua': 'Топ',
   },
   bottom: {
     'en-us': 'Bottom',
+    'es-es': 'Abajo',
+    'fr-fr': 'Bas',
+    'ru-ru': 'Нижний',
+    'uk-ua': 'Дно',
   },
   left: {
     'en-us': 'Left',
+    'es-es': 'Izquierda',
+    'fr-fr': 'Gauche',
+    'ru-ru': 'Левый',
+    'uk-ua': 'Ліворуч',
   },
   right: {
     'en-us': 'Right',
+    'es-es': 'Bien',
+    'fr-fr': 'Droite',
+    'ru-ru': 'Верно',
+    'uk-ua': 'правильно',
   },
   showUnsavedIndicator: {
     'en-us': 'Show unsaved changes indicator',
@@ -1350,7 +1370,7 @@ export const preferencesText = createDictionary({
       en la pestaña actual
     `,
     'fr-fr': `
-      Afficher un "*" dans le titre de l'onglet lorsqu'il y a des
+      Afficher un \"*\" dans le titre de l'onglet lorsqu'il y a des
       modifications non enregistrées dans l'onglet actuel
     `,
     'ru-ru': `
