@@ -10,7 +10,7 @@ jest.mock('../../../components/Errors/FormatError', () => ({
 describe('handleAjaxResponse', () => {
   test('Empty response', () => {
     const response = handleAjaxResponse<Document>({
-      expectedResponseCodes: [Http.NO_CONTENT],
+      expectedErrors: [],
       accept: 'text/plain',
       response: new Response(undefined, {
         status: Http.NO_CONTENT,
@@ -32,7 +32,7 @@ describe('handleAjaxResponse', () => {
 
   test('Plain text response', () => {
     const response = handleAjaxResponse<Document>({
-      expectedResponseCodes: [Http.OK],
+      expectedErrors: [],
       accept: 'text/plain',
       response: new Response('', {
         status: Http.OK,
@@ -54,7 +54,7 @@ describe('handleAjaxResponse', () => {
 
   test('JSON response', () => {
     const response = handleAjaxResponse<{ readonly foo: 'bar' }>({
-      expectedResponseCodes: [Http.OK],
+      expectedErrors: [],
       accept: 'application/json',
       response: new Response('', {
         status: Http.OK,
@@ -78,7 +78,7 @@ describe('handleAjaxResponse', () => {
 
   test('XML response', () => {
     const response = handleAjaxResponse<Document>({
-      expectedResponseCodes: [Http.OK],
+      expectedErrors: [],
       accept: 'text/xml',
       response: new Response('', {
         status: Http.OK,
@@ -103,7 +103,7 @@ describe('handleAjaxResponse', () => {
 
   test('Expected 404 error', () => {
     const response = handleAjaxResponse<Document>({
-      expectedResponseCodes: [Http.NOT_FOUND],
+      expectedErrors: [Http.NOT_FOUND],
       accept: 'text/plain',
       response: new Response('', {
         status: Http.NOT_FOUND,
@@ -126,7 +126,7 @@ describe('handleAjaxResponse', () => {
   test('Unexpected 503 response', () => {
     jest.spyOn(console, 'error').mockImplementation();
     handleAjaxResponse<Document>({
-      expectedResponseCodes: [Http.OK],
+      expectedErrors: [],
       accept: 'text/plain',
       response: new Response('', {
         status: Http.UNAVAILABLE,
@@ -153,7 +153,7 @@ describe('handleAjaxResponse', () => {
   test('Unexpected 404 response', () => {
     jest.spyOn(console, 'error').mockImplementation();
     handleAjaxResponse<Document>({
-      expectedResponseCodes: [Http.OK, Http.NO_CONTENT],
+      expectedErrors: [],
       accept: 'text/plain',
       response: new Response('', {
         status: Http.NOT_FOUND,
@@ -180,7 +180,7 @@ describe('handleAjaxResponse', () => {
   test('Permission error', () => {
     jest.spyOn(console, 'error').mockImplementation();
     handleAjaxResponse<Document>({
-      expectedResponseCodes: [Http.OK],
+      expectedErrors: [],
       accept: 'text/plain',
       response: new Response('', {
         status: Http.FORBIDDEN,
@@ -203,7 +203,7 @@ describe('handleAjaxResponse', () => {
   test('JSON response with syntax error', () => {
     jest.spyOn(console, 'error').mockImplementation();
     handleAjaxResponse<Document>({
-      expectedResponseCodes: [Http.OK],
+      expectedErrors: [],
       accept: 'application/json',
       response: new Response('', {
         status: Http.OK,
@@ -226,7 +226,7 @@ describe('handleAjaxResponse', () => {
   test('XML response with syntax error', () => {
     jest.spyOn(console, 'error').mockImplementation();
     handleAjaxResponse<Document>({
-      expectedResponseCodes: [Http.OK],
+      expectedErrors: [],
       accept: 'text/xml',
       response: new Response('', {
         status: Http.OK,

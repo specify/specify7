@@ -55,7 +55,7 @@ export function MasterKeyOverlay(): JSX.Element | null {
                 Accept: 'text/plain',
               },
               errorMode: 'dismissible',
-              expectedResponseCodes: [Http.FORBIDDEN, Http.OK],
+              expectedErrors: [Http.FORBIDDEN],
             })
               .then(({ data, status }) =>
                 status === Http.FORBIDDEN

@@ -148,7 +148,6 @@ export const leafletLayersPromise: Promise<typeof defaultTileLayers> =
           {
             headers: { Accept: 'text/plain' },
             errorMode: 'silent',
-            expectedResponseCodes: [Http.OK, Http.NO_CONTENT],
           }
         )
           .then(({ data, status }) =>

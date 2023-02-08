@@ -5,7 +5,6 @@
  */
 
 import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
@@ -74,7 +73,6 @@ export async function savePlan({
     body: {
       uploadplan: uploadPlan,
     },
-    expectedResponseCodes: [Http.NO_CONTENT],
   }).then(async () =>
     newlyAddedHeaders.length === 0
       ? Promise.resolve()
@@ -92,7 +90,6 @@ export async function savePlan({
                 ),
               ],
             },
-            expectedResponseCodes: [Http.NO_CONTENT],
           }).then(f.void)
         )
   );

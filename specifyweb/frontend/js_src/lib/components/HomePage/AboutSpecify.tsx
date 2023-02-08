@@ -174,7 +174,7 @@ function GitSha(): JSX.Element {
             accept: 'text/plain',
           },
           errorMode: 'dismissible',
-          expectedResponseCodes: [Http.OK, Http.NOT_FOUND],
+          expectedErrors: [Http.NOT_FOUND],
         }).then(({ data, status }) =>
           status === Http.NOT_FOUND ? false : (data as LocalizedString)
         ),
@@ -209,7 +209,7 @@ function BuildDate(): JSX.Element {
             accept: 'text/plain',
           },
           errorMode: 'dismissible',
-          expectedResponseCodes: [Http.OK, Http.NOT_FOUND],
+          expectedErrors: [Http.NOT_FOUND],
         }).then(({ data, status }) =>
           status === Http.NOT_FOUND ? commonText.unknown() : data
         ),

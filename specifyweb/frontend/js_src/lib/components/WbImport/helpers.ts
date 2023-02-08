@@ -8,7 +8,6 @@ import ImportXLSWorker from 'worker-loader!./xls.worker';
 
 import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/definitions';
 import { f } from '../../utils/functools';
 import { databaseDateFormat } from '../../utils/parser/dateConfig';
 import { fullDateFormat } from '../../utils/parser/dateFormat';
@@ -184,7 +183,6 @@ export const createDataSet = async ({
           rows,
         },
         errorMode: 'dismissible',
-        expectedResponseCodes: [Http.CREATED],
       });
     })
     .then(({ data }) => data);

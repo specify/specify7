@@ -7,7 +7,7 @@ import { Http } from './definitions';
 import type { AjaxErrorMode, AjaxMethod } from './index';
 import { ajax } from './index';
 
-let expectedResponseCodes: RA<ValueOf<typeof Http>> | undefined = undefined;
+let expectedErrors: RA<ValueOf<typeof Http>> | undefined = undefined;
 let requestCallback: ((status: number) => void) | undefined;
 let errorMessageMode: AjaxErrorMode | undefined;
 
@@ -16,17 +16,17 @@ let errorMessageMode: AjaxErrorMode | undefined;
  * allows to partially intercept the call
  */
 export function hijackBackboneAjax<T>(
-  responseCodes: RA<ValueOf<typeof Http>>,
+  expectedErrorCodes: RA<ValueOf<typeof Http>>,
   callback: () => T,
   successCallback?: (status: number) => void,
   errorMode: AjaxErrorMode = 'visible'
 ): T {
-  expectedResponseCodes = responseCodes;
+  expectedErrors = expectedErrorCodes;
   requestCallback = successCallback;
   errorMessageMode = errorMode;
   const value = callback();
   requestCallback = undefined;
-  expectedResponseCodes = undefined;
+  expectedErrors = undefined;
   errorMessageMode = undefined;
   return value;
 }
@@ -57,11 +57,7 @@ Backbone.ajax = function (request): JQueryXHR {
               : undefined,
         },
         body: request.type === 'GET' ? undefined : request.data,
-        expectedResponseCodes: expectedResponseCodes ?? [
-          Http.OK,
-          Http.CREATED,
-          Http.NO_CONTENT,
-        ],
+        expectedErrors,
         errorMode: errorMessageMode,
       }
     )

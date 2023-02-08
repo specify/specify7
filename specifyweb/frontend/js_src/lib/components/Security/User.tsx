@@ -448,10 +448,7 @@ function UserView({
                           idFromUrl(address.get('agent') ?? '')
                         )
                       ),
-                      expectedResponseCodes: [
-                        Http.NO_CONTENT,
-                        Http.BAD_REQUEST,
-                      ],
+                      expectedErrors: [Http.BAD_REQUEST],
                     })
                   : Promise.resolve({
                       data: '',
@@ -472,10 +469,7 @@ function UserView({
                             method: 'PUT',
                             body: decompressPolicies(institutionPolicies),
                             headers: { Accept: 'text/plain' },
-                            expectedResponseCodes: [
-                              Http.NO_CONTENT,
-                              Http.BAD_REQUEST,
-                            ],
+                            expectedErrors: [Http.BAD_REQUEST],
                           }
                         ).then(({ data, status }) => {
                           /*
@@ -510,7 +504,6 @@ function UserView({
                             ? ping(`/api/set_password/${userResource.id}/`, {
                                 method: 'POST',
                                 body: formData({ password }),
-                                expectedResponseCodes: [Http.NO_CONTENT],
                               })
                             : undefined,
                           ...Object.entries(userRoles ?? {})
@@ -530,7 +523,6 @@ function UserView({
                                       body: roles.map(({ roleId }) => ({
                                         id: roleId,
                                       })),
-                                      expectedResponseCodes: [Http.NO_CONTENT],
                                     }
                                   )
                                 : undefined
@@ -550,7 +542,6 @@ function UserView({
                                     {
                                       method: 'PUT',
                                       body: decompressPolicies(policies),
-                                      expectedResponseCodes: [Http.NO_CONTENT],
                                     }
                                   )
                                 : undefined

@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/definitions';
 import type { GetOrSet, IR } from '../../utils/types';
 import { removeKey } from '../../utils/utils';
 import { decompressPolicies, processPolicies } from './policyConverter';
@@ -20,7 +19,6 @@ export const createLibraryRole = async (
       policies: decompressPolicies(role.policies),
     },
     headers: { Accept: 'application/json' },
-    expectedResponseCodes: [Http.CREATED],
   }).then(({ data: role }) =>
     handleChange((roles) => ({
       ...roles,

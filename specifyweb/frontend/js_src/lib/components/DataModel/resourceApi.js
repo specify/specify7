@@ -569,7 +569,7 @@ function eventHandlerForToOne(related, field) {
               .then(()=>resource.trigger('saved'));
             resource._save =
               typeof handleSaveConflict === 'function'
-                ? hijackBackboneAjax([Http.OK, Http.CONFLICT, Http.CREATED], save, (status) =>{
+                ? hijackBackboneAjax([Http.CONFLICT], save, (status) =>{
                       if(status === Http.CONFLICT) {
                           handleSaveConflict()
                           errorHandled = true;

@@ -211,7 +211,7 @@ function Merging({
           const clones = resources.slice(1);
           loading(
             hijackBackboneAjax(
-              [Http.OK],
+              [],
               async () => target.save(),
               undefined,
               'dismissible'
@@ -232,7 +232,7 @@ function Merging({
                     headers: {
                       Accept: 'text/plain',
                     },
-                    expectedResponseCodes: [Http.NO_CONTENT, Http.NOT_ALLOWED],
+                    expectedErrors: [Http.NOT_ALLOWED],
                     errorMode: 'dismissible',
                   }
                 );

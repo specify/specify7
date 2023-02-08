@@ -2,7 +2,6 @@
  * Fetch basic server information
  */
 
-import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
 import { softFail } from '../Errors/Crash';
 import { formatUrl } from '../Router/queryString';
@@ -51,7 +50,7 @@ export const fetchContext = load<SystemInfo>(
          */
         false
       ),
-      { errorMode: 'silent', expectedResponseCodes: [Http.NO_CONTENT] }
+      { errorMode: 'silent' }
     ).catch(softFail);
   return systemInfo;
 });

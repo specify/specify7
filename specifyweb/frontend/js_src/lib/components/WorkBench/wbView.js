@@ -1240,7 +1240,7 @@ export const WBView = Backbone.View.extend({
         method: 'PUT',
         body: { visualorder: columnOrder },
         errorMode: 'dismissible',
-        expectedResponseCodes: [Http.NO_CONTENT, Http.NOT_FOUND],
+        expectedErrors: [Http.NOT_FOUND],
       }).then(this.checkDeletedFail.bind(this));
     }
   },
@@ -1895,7 +1895,7 @@ export const WBView = Backbone.View.extend({
     this.updateValidationButton();
     ping(`/api/workbench/${mode}/${this.dataset.id}/`, {
       method: 'POST',
-      expectedResponseCodes: [Http.OK, Http.NOT_FOUND, Http.CONFLICT],
+      expectedErrors: [Http.NOT_FOUND, Http.CONFLICT],
     })
       .then((statusCode) => {
         this.checkDeletedFail(statusCode);
@@ -1981,7 +1981,7 @@ export const WBView = Backbone.View.extend({
     return ping(`/api/workbench/rows/${this.dataset.id}/`, {
       method: 'PUT',
       body: this.data,
-      expectedResponseCodes: [Http.NO_CONTENT, Http.NOT_FOUND],
+      expectedErrors: [Http.NOT_FOUND],
     })
       .then((status) => this.checkDeletedFail(status))
       .then(() => {

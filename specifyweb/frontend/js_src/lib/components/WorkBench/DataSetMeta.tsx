@@ -79,7 +79,7 @@ export function DataSetMeta({
                   ping(`/api/workbench/dataset/${dataset.id}/`, {
                     method: 'DELETE',
                     errorMode: 'dismissible',
-                    expectedResponseCodes: [Http.NO_CONTENT, Http.NOT_FOUND],
+                    expectedErrors: [Http.NOT_FOUND],
                   }).then(() => setIsDeleted(true))
                 );
               }}
@@ -133,7 +133,6 @@ export function DataSetMeta({
                     ping(`/api/workbench/dataset/${dataset.id}/`, {
                       method: 'PUT',
                       body: { name: uniqueName, remarks: remarks.trim() },
-                      expectedResponseCodes: [Http.NO_CONTENT],
                     }).then(() => {
                       // REFACTOR: replace this with a callback
                       overwriteReadOnly(dataset, 'name', uniqueName);
@@ -384,7 +383,6 @@ function ChangeOwner({
               body: formData({
                 specifyuserid: newOwner!,
               }),
-              expectedResponseCodes: [Http.NO_CONTENT],
             }).then(() => setIsChanged(true))
           )
         }

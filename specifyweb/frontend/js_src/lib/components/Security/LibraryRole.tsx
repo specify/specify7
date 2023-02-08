@@ -2,7 +2,6 @@ import React from 'react';
 import { useOutletContext } from 'react-router';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
-import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
 import { f } from '../../utils/functools';
 import type { GetOrSet, IR } from '../../utils/types';
@@ -45,7 +44,6 @@ export function SecurityLibraryRole(): JSX.Element {
           ? loading(
               ping(`/permissions/library_role/${role.id}/`, {
                 method: 'DELETE',
-                expectedResponseCodes: [Http.NO_CONTENT],
               })
                 .then((): void =>
                   handleChangeLibraryRoles(
@@ -106,7 +104,6 @@ export const updateLibraryRole = async (
       ...role,
       policies: decompressPolicies(role.policies),
     },
-    expectedResponseCodes: [Http.NO_CONTENT],
   }).then((): void =>
     handleChange((roles) =>
       replaceKey(defined(roles), role.id.toString(), role)

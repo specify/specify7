@@ -188,7 +188,7 @@ export async function uploadFile(
       xhr.readyState === DONE
         ? resolve(
             handleAjaxResponse({
-              expectedResponseCodes: [Http.OK],
+              expectedErrors: [],
               accept: undefined,
               response: {
                 ok: xhr.status === Http.OK,

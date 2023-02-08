@@ -18,7 +18,7 @@ export type AjaxResponseObject<RESPONSE_TYPE> = {
    */
   readonly data: RESPONSE_TYPE;
   readonly response: Response;
-  // One of expectedResponseCodes
+  // One of expectedErrors
   readonly status: number;
 };
 
@@ -57,12 +57,12 @@ export type AjaxProps = Omit<RequestInit, 'body' | 'headers' | 'method'> & {
    * Validates and parses response as XML if 'Accept' header is 'text/xml'
    */
   readonly headers: IR<string | undefined> & { readonly Accept?: MimeType };
-  // FIXME: consider include ok,no_response,created by default
+  // REFACTOR: consider including ok,no_response,created by default
   /**
-   * Throw if returned response code is not what expected
-   * If you want to manually handle some error, add that error code here
+   * Throw if returned response code is an error, and is not on this list.
+   * If you want to manually handle some error, add the HTTP code to this list
    */
-  readonly expectedResponseCodes?: RA<number>;
+  readonly expectedErrors?: RA<number>;
   /**
    * If 'visible', spawn a modal error message dialog on crash
    * If 'silent', don't show the error dialog
@@ -91,7 +91,7 @@ export async function ajax<RESPONSE_TYPE = string>(
     headers: { Accept: accept, ...headers },
     method = 'GET',
     /** Ajax-specific options that are not passed to fetch() */
-    expectedResponseCodes = [Http.OK],
+    expectedErrors = [],
     errorMode = safeMethods.has(method) ? 'dismissible' : 'visible',
     ...options
   }: AjaxProps
@@ -106,7 +106,7 @@ export async function ajax<RESPONSE_TYPE = string>(
     return ajaxMock(url, {
       headers: { Accept: accept, ...headers },
       method,
-      expectedResponseCodes,
+      expectedErrors,
       errorMode,
       ...options,
     });
@@ -138,7 +138,7 @@ export async function ajax<RESPONSE_TYPE = string>(
     .then(
       ([response, text]: readonly [Response, string]) =>
         handleAjaxResponse<RESPONSE_TYPE>({
-          expectedResponseCodes,
+          expectedErrors,
           accept,
           errorMode,
           response,
@@ -152,7 +152,7 @@ export async function ajax<RESPONSE_TYPE = string>(
         });
         Object.defineProperty(response, 'url', { value: url });
         return handleAjaxResponse({
-          expectedResponseCodes,
+          expectedErrors,
           accept,
           errorMode,
           response,

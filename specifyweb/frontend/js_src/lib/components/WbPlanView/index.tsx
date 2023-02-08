@@ -35,7 +35,7 @@ export function WbPlanViewWrapper(): JSX.Element | null {
       if (dataSetId === undefined) return false;
       return ajax<Dataset>(`/api/workbench/dataset/${dataSetId}/`, {
         headers: { Accept: 'application/json' },
-        expectedResponseCodes: [Http.OK, Http.NOT_FOUND],
+        expectedErrors: [Http.NOT_FOUND],
       }).then(({ data, status }) => (status === Http.NOT_FOUND ? false : data));
     }, [id]),
     true

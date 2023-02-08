@@ -211,7 +211,6 @@ async function syncPreferences(): Promise<void> {
       metaData: '',
       data: JSON.stringify(preferences),
     }),
-    expectedResponseCodes: [Http.NO_CONTENT],
   }).then(() => {
     // If there were additional changes while syncing
     if (isSyncPending) syncPreferences().catch(softFail);
@@ -282,7 +281,6 @@ export const preferencesPromise = contextUnlockedPromise.then(
                         metaData: '',
                         data: '{}',
                       }),
-                      expectedResponseCodes: [Http.CREATED],
                     })
                 ).then(({ data }) => data)
               ),
@@ -293,7 +291,6 @@ export const preferencesPromise = contextUnlockedPromise.then(
               }),
               {
                 headers: { Accept: 'text/plain' },
-                expectedResponseCodes: [Http.NO_CONTENT, Http.OK],
                 errorMode: 'silent',
               }
             )

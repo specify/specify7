@@ -1,5 +1,5 @@
 /* An enum of HTTP status codes back-end commonly returns */
-import type { RR } from '../types';
+import type { RR, ValueOf } from '../types';
 
 export const Http = {
   // You may add other codes as needed
@@ -23,7 +23,9 @@ export const Http = {
 /**
  * Human-friendly explanation of a likely cause of a given HTTP code
  */
-export const httpCodeToErrorMessage: RR<number, string> = {
+export const httpCodeToErrorMessage: RR<ValueOf<typeof Http>, string> = {
+  [Http.OK]:
+    'This error is likely caused by a bug in Specify. Please report it.',
   [Http.CREATED]:
     'This error is likely caused by a bug in Specify. Please report it.',
   [Http.NO_CONTENT]:
@@ -35,6 +37,11 @@ export const httpCodeToErrorMessage: RR<number, string> = {
     deleted or moved to a different location.
   `,
   [Http.FORBIDDEN]: `
+    This error happened because you tried to access a resource you don't have
+    access to, or your session has expired. Please try logging in again, or
+    repeat the action as a user with more permissions
+  `,
+  [Http.NOT_ALLOWED]: `
     This error happened because you tried to access a resource you don't have
     access to, or your session has expired. Please try logging in again, or
     repeat the action as a user with more permissions

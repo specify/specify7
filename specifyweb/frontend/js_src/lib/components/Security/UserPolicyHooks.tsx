@@ -60,7 +60,7 @@ export function useUserPolicies(
                      * permission query to complete, query anyway and silently
                      * handle the permission denied error
                      */
-                    expectedResponseCodes: [Http.OK, Http.FORBIDDEN],
+                    expectedErrors: [Http.FORBIDDEN],
                   }
                 ).then(
                   ({ data, status }) =>

@@ -8,7 +8,6 @@ import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { queryText } from '../../localization/query';
 import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/definitions';
 import { formData } from '../../utils/ajax/helpers';
 import { f } from '../../utils/functools';
 import { Button } from '../Atoms/Button';
@@ -197,7 +196,6 @@ function QueryExport({
                 Accept: 'application/json',
               },
               errorMode: 'dismissible',
-              expectedResponseCodes: [Http.CREATED],
             })
               .then(async ({ data: reportJson }) => {
                 const report = new schema.models.SpReport.Resource(reportJson);

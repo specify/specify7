@@ -12,13 +12,13 @@ import type { AjaxErrorMode, AjaxResponseObject, MimeType } from './index';
  * Handle network response (parse the data, handle possible errors)
  */
 export function handleAjaxResponse<RESPONSE_TYPE = string>({
-  expectedResponseCodes,
+  expectedErrors,
   accept,
   response,
   errorMode,
   text,
 }: {
-  readonly expectedResponseCodes: RA<number>;
+  readonly expectedErrors: RA<number>;
   readonly accept: MimeType | undefined;
   readonly response: Response;
   readonly errorMode: AjaxErrorMode;
@@ -26,7 +26,7 @@ export function handleAjaxResponse<RESPONSE_TYPE = string>({
 }): AjaxResponseObject<RESPONSE_TYPE> {
   // BUG: silence all errors if the page begun reloading
   try {
-    if (expectedResponseCodes.includes(response.status)) {
+    if (response.ok || expectedErrors.includes(response.status)) {
       if (response.ok && accept === 'application/json') {
         try {
           return { data: JSON.parse(text), response, status: response.status };
@@ -69,13 +69,17 @@ export function handleAjaxResponse<RESPONSE_TYPE = string>({
       throw {
         type: 'invalidResponseCode',
         statusText: filterArray([
-          `Invalid response code ${response.status}. Expected ${
-            expectedResponseCodes.length === 1 ? '' : 'one of '
-          }${formatConjunction(
-            Array.from(expectedResponseCodes)
-              .sort(sortFunction(f.id))
-              .map(f.toString)
-          )}.`,
+          `Invalid response code ${response.status}. ${
+            expectedErrors.length > 0
+              ? `Expected ${
+                  expectedErrors.length === 1 ? '' : 'one of '
+                }${formatConjunction(
+                  Array.from(expectedErrors)
+                    .sort(sortFunction(f.id))
+                    .map(f.toString)
+                )}.`
+              : ''
+          }`,
           httpCodeToErrorMessage[response.status],
           'Response:',
         ]),

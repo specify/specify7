@@ -43,7 +43,7 @@ export function DevShowPlan({
                 ping(`/api/workbench/dataset/${dataSetId}/`, {
                   method: 'PUT',
                   body: { uploadplan: plan },
-                  expectedResponseCodes: [Http.NO_CONTENT, Http.NOT_FOUND],
+                  expectedErrors: [Http.NOT_FOUND],
                 })
                   .then((status) =>
                     status === Http.NOT_FOUND

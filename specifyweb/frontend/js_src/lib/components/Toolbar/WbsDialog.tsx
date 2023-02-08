@@ -12,7 +12,6 @@ import { commonText } from '../../localization/common';
 import { wbPlanText } from '../../localization/wbPlan';
 import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/definitions';
 import type { RA } from '../../utils/types';
 import { uniquifyDataSetName } from '../../utils/uniquifyName';
 import { Button } from '../Atoms/Button';
@@ -46,7 +45,6 @@ const createEmptyDataSet = async (): Promise<Dataset> =>
     headers: {
       Accept: 'application/json',
     },
-    expectedResponseCodes: [Http.CREATED],
   }).then(({ data }) => data);
 
 /** Wrapper for Data Set Meta */

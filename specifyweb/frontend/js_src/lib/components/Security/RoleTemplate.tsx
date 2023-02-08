@@ -6,7 +6,6 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import { userText } from '../../localization/user';
 import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/definitions';
 import { getUniqueName } from '../../utils/uniquifyName';
 import { keysToLowerCase, sortFunction } from '../../utils/utils';
 import { H3, Ul } from '../Atoms';
@@ -148,7 +147,6 @@ export function CreateRole({
                                       libraryRoleId: role.id,
                                       name: roleName,
                                     }),
-                                    expectedResponseCodes: [Http.CREATED],
                                   }
                                 ).then(({ data }) => data)
                             ).then((newRole) =>

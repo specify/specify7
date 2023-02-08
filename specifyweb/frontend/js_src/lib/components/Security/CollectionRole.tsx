@@ -5,7 +5,6 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { userText } from '../../localization/user';
-import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
 import type { GetOrSet, IR, RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
@@ -38,7 +37,6 @@ export const updateCollectionRole = async (
       ...role,
       policies: decompressPolicies(role.policies),
     },
-    expectedResponseCodes: [Http.NO_CONTENT],
   }).then((): void =>
     setRoles(replaceKey(defined(roles), role.id.toString(), role))
   );
@@ -92,7 +90,6 @@ export function SecurityCollectionRole(): JSX.Element {
                 body: [...currentUserRoles, role.id].map((id) => ({
                   id,
                 })),
-                expectedResponseCodes: [Http.NO_CONTENT],
               }).then(() => ({
                 userIndex,
                 updatedRoles: {
@@ -141,7 +138,6 @@ export function SecurityCollectionRole(): JSX.Element {
           ? loading(
               ping(`/permissions/role/${role.id}/`, {
                 method: 'DELETE',
-                expectedResponseCodes: [Http.NO_CONTENT],
               })
                 .then((): void =>
                   navigate(`/specify/security/collection/${collection.id}/`, {

@@ -38,7 +38,7 @@ export const fetchRoles = async (
      * read permission. Instead of waiting for permission query to complete,
      * query anyway and silently handle the permission denied error
      */
-    expectedResponseCodes: [Http.OK, Http.FORBIDDEN],
+    expectedErrors: [Http.FORBIDDEN],
   }).then(({ data, status }) =>
     status === Http.FORBIDDEN
       ? undefined
@@ -63,7 +63,7 @@ export const fetchUserRoles = async (
        * read permission. Instead of waiting for permission query to complete,
        * query anyway and silently handle the permission denied error
        */
-      expectedResponseCodes: [Http.OK, Http.FORBIDDEN],
+      expectedErrors: [Http.FORBIDDEN],
     }
   ).then(({ data, status }) =>
     status === Http.FORBIDDEN

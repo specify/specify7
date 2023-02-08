@@ -4,7 +4,6 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { queryText } from '../../localization/query';
 import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/definitions';
 import { formData } from '../../utils/ajax/helpers';
 import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
@@ -83,7 +82,6 @@ function CreateRecordSetDialog({
             headers: { Accept: 'application/json' },
             body: formData({ name: recordSet.get('name') }),
             errorMode: 'dismissible',
-            expectedResponseCodes: [Http.CREATED],
           }).then(({ data }) => unsafeNavigate(`/specify/record-set/${data}/`))
         );
         return false;

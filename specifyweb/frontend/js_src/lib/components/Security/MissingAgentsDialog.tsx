@@ -122,11 +122,11 @@ export function MissingAgentsDialog({
                       idFromUrl(address.get('agent') ?? '')
                     )
                   ),
-                  expectedResponseCodes: [Http.NO_CONTENT, Http.BAD_REQUEST],
+                  expectedErrors: [Http.BAD_REQUEST],
                 }).then(({ data, status }) =>
-                  status === Http.NO_CONTENT
-                    ? handleClose()
-                    : setResponse(JSON.parse(data))
+                  status === Http.BAD_REQUEST
+                    ? setResponse(JSON.parse(data))
+                    : handleClose()
                 )
               )
         }

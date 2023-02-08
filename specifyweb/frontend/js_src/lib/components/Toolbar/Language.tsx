@@ -19,7 +19,6 @@ import {
 } from '../../localization/utils/config';
 import { ajax } from '../../utils/ajax';
 import { csrfToken } from '../../utils/ajax/csrfToken';
-import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
@@ -46,7 +45,6 @@ export const handleLanguageChange = async (language: Language): Promise<void> =>
       csrfmiddlewaretoken: csrfToken,
     },
     errorMode: 'dismissible',
-    expectedResponseCodes: [Http.NO_CONTENT],
   }).then(f.void);
 
 export function LanguageSelection<LANGUAGES extends string>({

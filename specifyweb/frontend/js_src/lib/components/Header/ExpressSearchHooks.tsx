@@ -26,7 +26,7 @@ export function usePrimarySearch(
       async () =>
         ajax<IR<QueryTableResult>>(ajaxUrl, {
           headers: { Accept: 'application/json' },
-          expectedResponseCodes: [Http.OK, Http.FORBIDDEN],
+          expectedErrors: [Http.FORBIDDEN],
         }).then(({ data, status }) =>
           status === Http.FORBIDDEN
             ? false
@@ -95,7 +95,7 @@ export function useSecondarySearch(
                 });
                 return ajax<RelatedTableResult>(ajaxUrl, {
                   headers: { Accept: 'application/json' },
-                  expectedResponseCodes: [Http.OK, Http.FORBIDDEN],
+                  expectedErrors: [Http.FORBIDDEN],
                 }).then(({ data, status }) =>
                   status === Http.FORBIDDEN
                     ? undefined
