@@ -129,9 +129,8 @@ export function DeleteButton<SCHEMA extends AnySchema>({
           >
             {formsText.deleteBlockedDescription()}
             <DeleteBlockers
-              blockers={blockers}
+              blockers={[blockers, setBlockers]}
               resource={resource}
-              onCleared={(): void => setBlockers([])}
             />
           </Dialog>
         )

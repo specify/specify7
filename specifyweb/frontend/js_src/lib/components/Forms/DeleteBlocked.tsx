@@ -1,9 +1,8 @@
 import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
-import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
-import type { RA } from '../../utils/types';
+import type { GetSet, RA } from '../../utils/types';
 import { removeItem, replaceItem } from '../../utils/utils';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -29,22 +28,11 @@ export type DeleteBlocker = {
 
 export function DeleteBlockers({
   resource: parentResource,
-  blockers: initialBlockers,
-  onCleared: handleCleared,
+  blockers: [blockers, setBlockers],
 }: {
   readonly resource: SpecifyResource<AnySchema>;
-  readonly blockers: RA<DeleteBlocker>;
-  readonly onCleared: () => void;
+  readonly blockers: GetSet<RA<DeleteBlocker>>;
 }): JSX.Element {
-  const [blockers, setBlockers] = useTriggerState(initialBlockers);
-  React.useEffect(
-    () =>
-      Array.isArray(blockers) && blockers.length === 0
-        ? handleCleared()
-        : undefined,
-    [blockers, handleCleared]
-  );
-
   return (
     <Ul className="flex flex-col gap-2">
       {blockers.map((blocker, blockerIndex) => (
@@ -57,7 +45,7 @@ export function DeleteBlockers({
               replaceItem(blockers, blockerIndex, {
                 ...blockers[blockerIndex],
                 ids: removeItem(blockers[blockerIndex].ids, resourceIndex),
-              })
+              }).filter(({ ids }) => ids.length > 0)
             )
           }
         />

@@ -8,7 +8,6 @@ import React from 'react';
 import { fetchBlockers } from '../Forms/DeleteButton';
 import { MergeRow } from './Header';
 import { DeleteBlockers } from '../Forms/DeleteBlocked';
-import { f } from '../../utils/functools';
 
 export function UsagesSection({
   resources,
@@ -30,7 +29,7 @@ function Usages({
 }: {
   readonly resource: SpecifyResource<AnySchema>;
 }): JSX.Element {
-  const [blockers] = useAsyncState(
+  const [blockers, setBlockers] = useAsyncState(
     React.useCallback(async () => fetchBlockers(resource, true), [resource]),
     false
   );
@@ -41,8 +40,7 @@ function Usages({
       ) : (
         <DeleteBlockers
           resource={resource}
-          blockers={blockers}
-          onCleared={f.void}
+          blockers={[blockers, setBlockers]}
         />
       )}
     </td>

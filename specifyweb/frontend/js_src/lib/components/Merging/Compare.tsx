@@ -125,6 +125,13 @@ function findDiffering(
 
 export const unMergeableFields = new Set([
   ...specialFields,
+  /*
+   * FEATURE: remove this from here to allow merging guids.
+   *    This was disabled for now as back-end does not allow front-end to
+   *    modify GUIDs.
+   *    See https://github.com/specify/specify7/issues/2907#issuecomment-1416916477
+   */
+  'guid',
   'timestampCreated',
   'timestampModified',
   'version',
