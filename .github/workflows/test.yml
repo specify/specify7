@@ -213,7 +213,7 @@ jobs:
           done
 
           # Convert back to string
-          changed="${files[*]}"
+          changed="${split_files[*]}"
           
           echo "Changed front-end files: ${changed}"
           echo "changed=${changed}" >> $GITHUB_OUTPUT
