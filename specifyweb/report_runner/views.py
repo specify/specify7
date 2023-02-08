@@ -115,7 +115,9 @@ def create(request):
 
 @transaction.atomic
 def create_report(user_id, discipline_id, query_id, mimetype, name):
-    assert mimetype in ("jrxml/label", "jrxml/report")
+    if mimetype not in ("jrxml/label", "jrxml/report"): raise AssertionError(
+        "Can not create report: mimetype not 'jrxml/label' or 'jrxml/report'", 
+        {"localizationKey" : "invalidReportMimetype"})
     query = Spquery.objects.get(id=query_id)
     try:
         spappdir = Spappresourcedir.objects.get(discipline_id=discipline_id, collection_id=None)
@@ -153,7 +155,7 @@ def template_report_for_query(query_id, name):
            or field.isRelFld \
            or fieldspec.tree_rank \
            or fieldspec.date_part \
-           or field_type in ("java.sql.Timestamp", "java.util.Calendar", "java.util.Date"):
+           or field_type in ("java.sql.Timestamp", "java.util.Calendar", "java.util.Date", "text"):
             field_type = 'java.lang.String'
 
         return dict(stringid=field.stringId, field_type=field_type)

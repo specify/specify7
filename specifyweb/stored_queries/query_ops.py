@@ -1,7 +1,7 @@
 from collections import namedtuple
 import sqlalchemy
 
-from specifyweb.specify.uiformatters import CNNField
+from specifyweb.specify.uiformatters import CNNField, FormatMismatch
 
 
 class QueryOps(namedtuple("QueryOps", "uiformatter")):
@@ -33,8 +33,14 @@ class QueryOps(namedtuple("QueryOps", "uiformatter")):
         return getattr(self, self.OPERATIONS[op_num])
 
     def format(self, value):
-        if self.uiformatter is None: return value
-        return self.uiformatter.canonicalize(self.uiformatter.parse(value))
+        if self.uiformatter is not None:
+            try:
+                value = self.uiformatter.canonicalize(self.uiformatter.parse(value))
+            except FormatMismatch:
+                # If the value doesn't match the formatter
+                # just use it as it literally appears.
+                pass
+        return value
 
     def op_like(self, field, value):
         return field.like(value)

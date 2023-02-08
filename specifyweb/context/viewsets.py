@@ -18,19 +18,19 @@ def get_view(collection, user, viewname):
     """Return the data for the named view for the given user logged into the given collection."""
     logger.debug("get_view %s %s %s", collection, user, viewname)
     # setup a generator that looks for the view in the proper discovery order
-    matches = ((viewset, view, src, level)
+    matches = ((id, viewset, view, src, level)
                # db first, then disk
                for get_viewsets, src in ((get_viewsets_from_db, 'db'), (load_viewsets, 'disk'))
                # then by directory level
                for level in AR.DIR_LEVELS
                # then in the viewset files in a given directory level
-               for viewset in get_viewsets(collection, user, level)
+               for id, viewset in get_viewsets(collection, user, level)
                # finally in the list of views in the file
                for view in viewset.findall('views/view[@name=%s]' % quoteattr(viewname)))
 
     # take the first view from the generator
     try:
-        viewset, view, source, level = next(matches)
+        id, viewset, view, source, level = next(matches)
     except StopIteration:
         raise Http404("view: %s not found" % viewname)
 
@@ -70,6 +70,7 @@ def get_view(collection, user, viewname):
     data['viewsetName'] = viewset.attrib['name']
     data['viewsetLevel'] = level
     data['viewsetSource'] = source
+    data['viewsetId'] = id
     return data
 
 def get_viewsets_from_db(collection, user, level):
@@ -85,7 +86,7 @@ def get_viewsets_from_db(collection, user, level):
     def viewsets():
         for o in objs:
             try:
-                yield ElementTree.fromstring(force_bytes(o.data))
+                yield o.spviewsetobj.id, ElementTree.fromstring(force_bytes(o.data))
             except Exception as e:
                 logger.error("Bad XML in view set: %s\n%s  id = %s", e, o, o.id)
 
@@ -105,7 +106,7 @@ def load_viewsets(collection, user, level):
     def viewsets():
         for f in registry.findall('file'):
             try:
-                yield get_viewset_from_file(path, f.attrib['file'])
+                yield None, get_viewset_from_file(path, f.attrib['file'])
             except Exception:
                 pass
 

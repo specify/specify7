@@ -66,12 +66,19 @@ def query(request, id):
 @never_cache
 def ephemeral(request):
     """Executes and returns the results of the query provided as JSON in the POST body."""
-    check_permission_targets(request.specify_collection.id, request.specify_user.id, [QueryBuilderPt.execute])
     try:
         spquery = json.load(request)
     except ValueError as e:
         return HttpResponseBadRequest(e)
-    data = run_ephemeral_query(request.specify_collection, request.specify_user, spquery)
+
+    if 'collectionid' in spquery:
+        collection = Collection.objects.get(pk=spquery['collectionid'])
+        logger.debug('forcing collection to %s', collection.collectionname)
+    else:
+        collection = request.specify_collection
+
+    check_permission_targets(collection.id, request.specify_user.id, [QueryBuilderPt.execute])
+    data = run_ephemeral_query(collection, request.specify_user, spquery)
     return HttpResponse(toJson(data), content_type='application/json')
 
 

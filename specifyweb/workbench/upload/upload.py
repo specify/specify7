@@ -1,26 +1,24 @@
-from contextlib import contextmanager
-import time
-import logging
 import csv
-from datetime import datetime, timezone
 import json
-from jsonschema import validate # type: ignore
+import logging
+import time
+from contextlib import contextmanager
+from datetime import datetime, timezone
+from typing import List, Dict, Union, Callable, Optional, Sized, Tuple, Any
 
-from typing import List, Dict, Union, Callable, Optional, Sized, Tuple, Any, Set
-
-from django.db import connection, transaction
+from django.db import transaction
 from django.db.utils import OperationalError, IntegrityError
-from django.utils.translation import gettext as _
+from jsonschema import validate  # type: ignore
 
 from specifyweb.specify import models
-from specifyweb.specify.datamodel import Table, datamodel
 from specifyweb.specify.auditlog import auditlog
+from specifyweb.specify.datamodel import Table
 from specifyweb.specify.tree_extras import renumber_tree, reset_fullnames
-
-from .uploadable import ScopedUploadable, Row, Disambiguation, Auditor
-from .upload_result import Uploaded, UploadResult, ParseFailures, json_to_UploadResult
-from .upload_plan_schema import schema, parse_plan_with_basetable
 from . import disambiguation
+from .upload_plan_schema import schema, parse_plan_with_basetable
+from .upload_result import Uploaded, UploadResult, ParseFailures, \
+    json_to_UploadResult
+from .uploadable import ScopedUploadable, Row, Disambiguation, Auditor
 from ..models import Spdataset
 
 Rows = Union[List[Row], csv.DictReader]
@@ -58,12 +56,6 @@ def unupload_dataset(ds: Spdataset, agent, progress: Optional[Progress]=None) ->
     total = len(results)
     current = 0
     with transaction.atomic():
-        if ds.uploadresult is not None:
-            rsid = ds.uploadresult.get('recordsetid', None)
-            if rsid is not None:
-                getattr(models, 'Recordset').objects.filter(id=rsid).delete()
-
-
         for row in reversed(results):
             logger.info(f"rolling back row {current} of {total}")
             upload_result = json_to_UploadResult(row)
@@ -120,7 +112,7 @@ def do_upload_dataset(
         allow_partial: bool,
         progress: Optional[Progress]=None
 ) -> List[UploadResult]:
-    assert not ds.was_uploaded(), "Already uploaded!"
+    if ds.was_uploaded(): raise AssertionError("Dataset already uploaded", {"localizationKey" : "datasetAlreadyUploaded"})
     ds.rowresults = None
     ds.uploadresult = None
     ds.save(update_fields=['rowresults', 'uploadresult'])
@@ -133,11 +125,10 @@ def do_upload_dataset(
     results = do_upload(collection, rows, upload_plan, uploading_agent_id, disambiguation, no_commit, allow_partial, progress)
     success = not any(r.contains_failure() for r in results)
     if not no_commit:
-        rs = create_record_set(ds, base_table, results) if results and success else None
         ds.uploadresult = {
             'success': success,
             'timestamp': datetime.now(timezone.utc).isoformat(),
-            'recordsetid': rs and rs.id,
+            'recordsetid': None,
             'uploadingAgentId': uploading_agent_id,
         }
     ds.rowresults = json.dumps([r.to_json() for r in results])
@@ -146,7 +137,7 @@ def do_upload_dataset(
 
 def clear_disambiguation(ds: Spdataset) -> None:
     with transaction.atomic():
-        assert not ds.was_uploaded(), "Already uploaded!"
+        if ds.was_uploaded(): raise AssertionError("Dataset already uploaded!", {"localizationKey" : "datasetAlreadyUploaded"})
         ds.rowresults = None
         ds.uploadresult = None
         ds.save(update_fields=['rowresults', 'uploadresult'])
@@ -159,18 +150,22 @@ def clear_disambiguation(ds: Spdataset) -> None:
             row[ncols] = extra and json.dumps(extra)
         ds.save(update_fields=['data'])
 
-def create_record_set(ds: Spdataset, table: Table, results: List[UploadResult]):
+def create_recordset(ds: Spdataset, name: str):
+    table, upload_plan = get_ds_upload_plan(ds.collection, ds)
+    assert ds.rowresults is not None
+    results = json.loads(ds.rowresults)
+
     rs = getattr(models, 'Recordset').objects.create(
         collectionmemberid=ds.collection.id,
         dbtableid=table.tableId,
-        name=_('WB Upload of %(data_set_name)s') %{'data_set_name':ds.name},
+        name=name,
         specifyuser=ds.specifyuser,
         type=0,
     )
     Rsi = getattr(models, 'Recordsetitem')
     Rsi.objects.bulk_create([
         Rsi(order=i, recordid=r.get_id(), recordset=rs)
-        for i, r in enumerate(results)
+        for i, r in enumerate(map(json_to_UploadResult, results))
         if isinstance(r.record_result, Uploaded)
     ])
     return rs

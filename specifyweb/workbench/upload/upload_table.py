@@ -1,18 +1,20 @@
 
-from functools import reduce
-
 import logging
-from typing import List, Dict, Any, NamedTuple, Union, Optional, Set, Tuple, NoReturn
+from functools import reduce
+from typing import List, Dict, Any, NamedTuple, Union, Optional, Set
+
 from django.db import transaction, IntegrityError
 
-from specifyweb.specify import models
 from specifyweb.businessrules.exceptions import BusinessRuleException
-
-from .parsing import parse_many, ParseResult, ParseFailure
-from .uploadable import FilterPack, Exclude, Row, Uploadable, ScopedUploadable, BoundUploadable, Disambiguation, Auditor
-from .upload_result import UploadResult, Uploaded, NoMatch, Matched, MatchedMultiple, NullRecord, FailedBusinessRule, ReportInfo, PicklistAddition, ParseFailures, PropagatedFailure
-from .tomany import ToManyRecord, ScopedToManyRecord, BoundToManyRecord
+from specifyweb.specify import models
 from .column_options import ColumnOptions, ExtendedColumnOptions
+from .parsing import parse_many, ParseResult, ParseFailure
+from .tomany import ToManyRecord, ScopedToManyRecord, BoundToManyRecord
+from .upload_result import UploadResult, Uploaded, NoMatch, Matched, \
+    MatchedMultiple, NullRecord, FailedBusinessRule, ReportInfo, \
+    PicklistAddition, ParseFailures, PropagatedFailure
+from .uploadable import FilterPack, Exclude, Row, Uploadable, ScopedUploadable, \
+    BoundUploadable, Disambiguation, Auditor
 
 logger = logging.getLogger(__name__)
 
@@ -317,7 +319,7 @@ class BoundUploadTable(NamedTuple):
         missing_requireds = [
             # TODO: there should probably be a different structure for
             # missing required fields than ParseFailure
-            ParseFailure(parsedField.missing_required, parsedField.column)
+            ParseFailure(parsedField.missing_required, {}, parsedField.column)
             for parsedField in self.parsedFields
             if parsedField.missing_required is not None
         ]
@@ -362,7 +364,7 @@ class BoundUploadTable(NamedTuple):
                 })
                 picklist_additions = self._do_picklist_additions()
             except (BusinessRuleException, IntegrityError) as e:
-                return UploadResult(FailedBusinessRule(str(e), info), toOneResults, {})
+                return UploadResult(FailedBusinessRule(str(e), {}, info), toOneResults, {})
 
         self.auditor.insert(uploaded, self.uploadingAgentId, None)
 
