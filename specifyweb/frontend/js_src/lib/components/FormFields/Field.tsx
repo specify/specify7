@@ -62,7 +62,6 @@ export function UiField({
       field={field}
       id={id}
       mode={mode}
-      model={resource}
       name={name}
       parser={parser}
       resource={resource}
@@ -77,7 +76,6 @@ function Field({
   id,
   name,
   field,
-  model,
   mode,
   parser: defaultParser,
 }: {
@@ -85,7 +83,6 @@ function Field({
   readonly id: string | undefined;
   readonly name: string | undefined;
   readonly field: LiteralField | Relationship | undefined;
-  readonly model?: SpecifyResource<AnySchema>;
   readonly mode: FormMode;
   readonly parser?: Parser;
 }): JSX.Element {
@@ -106,7 +103,6 @@ function Field({
 
   const isReadOnly =
     mode === 'view' ||
-    resource !== model ||
     field?.isRelationship === true ||
     (field?.isReadOnly === true && mode !== 'search');
 
