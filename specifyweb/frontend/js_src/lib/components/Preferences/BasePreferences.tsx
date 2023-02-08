@@ -12,7 +12,11 @@ import { filterArray, setDevelopmentGlobal } from '../../utils/types';
 import { keysToLowerCase, replaceKey } from '../../utils/utils';
 import { MILLISECONDS } from '../Atoms/Internationalization';
 import { fail } from '../Errors/Crash';
-import { cachableUrl } from '../InitialContext';
+import {
+  cachableUrl,
+  contextUnlockedPromise,
+  foreverFetch,
+} from '../InitialContext';
 import { formatUrl } from '../Router/queryString';
 import type { GenericPreferences, PreferenceItem } from './UserDefinitions';
 
@@ -85,37 +89,42 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
    * Fetch preferences from back-end and update local cache with fetched values
    */
   async fetch(): Promise<ResourceWithData> {
-    if (typeof this.resourcePromise === 'object') return this.resourcePromise;
+    return contextUnlockedPromise.then((entryPoint) => {
+      if (entryPoint === 'main') {
+        if (typeof this.resourcePromise === 'object')
+          return this.resourcePromise;
 
-    const { values, defaultValues } = this.options;
+        const { values, defaultValues } = this.options;
 
-    const valuesResource = fetchResourceId(
-      values.fetchUrl,
-      values.resourceName
-    ).then(async (appResourceId) =>
-      typeof appResourceId === 'number'
-        ? fetchResourceData(values.fetchUrl, appResourceId)
-        : createResource(values.fetchUrl, values.resourceName)
-    );
+        const valuesResource = fetchResourceId(
+          values.fetchUrl,
+          values.resourceName
+        ).then(async (appResourceId) =>
+          typeof appResourceId === 'number'
+            ? fetchResourceData(values.fetchUrl, appResourceId)
+            : createResource(values.fetchUrl, values.resourceName)
+        );
 
-    const defaultValuesResource =
-      defaultValues === undefined
-        ? undefined
-        : fetchDefaultResourceData(
-            defaultValues.fetchUrl,
-            defaultValues.resourceName
-          ).then((data) => {
-            this.defaults = data ?? this.defaults;
+        const defaultValuesResource =
+          defaultValues === undefined
+            ? undefined
+            : fetchDefaultResourceData(
+                defaultValues.fetchUrl,
+                defaultValues.resourceName
+              ).then((data) => {
+                this.defaults = data ?? this.defaults;
+              });
+
+        this.resourcePromise = f
+          .all({ valuesResource, defaultValuesResource })
+          .then(({ valuesResource }) => {
+            this.setRaw(JSON.parse(valuesResource.data ?? '{}'));
+            return valuesResource;
           });
 
-    this.resourcePromise = f
-      .all({ valuesResource, defaultValuesResource })
-      .then(({ valuesResource }) => {
-        this.setRaw(JSON.parse(valuesResource.data ?? '{}'));
-        return valuesResource;
-      });
-
-    return this.resourcePromise;
+        return this.resourcePromise;
+      } else return foreverFetch();
+    });
   }
 
   public getRaw(): PartialPreferences<DEFINITIONS> {

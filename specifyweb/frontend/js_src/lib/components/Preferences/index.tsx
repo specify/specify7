@@ -21,7 +21,6 @@ import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import { contextUnlockedPromise, foreverFetch } from '../InitialContext';
 import { hasPermission } from '../Permissions/helpers';
 import { PreferencesAside, useActiveCategory } from './Aside';
 import { collectionPreferences } from './collectionPreferences';
@@ -37,15 +36,10 @@ import { userPreferences } from './userPreferences';
  * check if SpAppResourceDir and SpAppResource exist and create them if needed,
  * then, create the app resource data itself
  */
-export const preferencesPromise = contextUnlockedPromise.then(
-  async (entrypoint) =>
-    entrypoint === 'main'
-      ? Promise.all([
-          userPreferences.fetch(),
-          collectionPreferences.fetch(),
-        ]).then(f.true)
-      : foreverFetch<true>()
-);
+const preferencesPromise = Promise.all([
+  userPreferences.fetch(),
+  collectionPreferences.fetch(),
+]).then(f.true);
 
 function Preferences(): JSX.Element {
   const [changesMade, handleChangesMade] = useBooleanState();
