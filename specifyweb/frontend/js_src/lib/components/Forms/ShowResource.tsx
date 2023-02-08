@@ -12,7 +12,7 @@ import { getResourceViewUrl } from '../DataModel/resource';
 import { getModel, schema } from '../DataModel/schema';
 import type { RecordSet } from '../DataModel/types';
 import { RecordSetWrapper } from '../FormSliders/RecordSet';
-import { useMenuItem } from '../Header';
+import { useMenuItem } from '../Header/useMenuItem';
 import { interactionTables } from '../Interactions/InteractionsDialog';
 import { ProtectedTable } from '../Permissions/PermissionDenied';
 import { NotFoundView } from '../Router/NotFoundView';

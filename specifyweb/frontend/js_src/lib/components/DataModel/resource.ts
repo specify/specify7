@@ -198,6 +198,10 @@ export const resourceToJson = <SCHEMA extends AnySchema>(
  * zero-to-one
  * business rules and validation
  * prevent fetching multiple at the same time
+ * have separate types for new resource and resource (and on new resource
+ * required fields can be undefined and and id is undefined). Potentially,
+ * NewResource should extend Resource type since NewResource can turn into
+ * Resource when saved, so components should be able to handle that
  */
 
 /**

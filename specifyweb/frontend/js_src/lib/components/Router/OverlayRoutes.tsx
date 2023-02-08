@@ -40,6 +40,22 @@ export const overlayRoutes: RA<EnhancedRoute> = [
           ),
       },
       {
+        path: 'express-search',
+        title: headerText.expressSearch(),
+        element: () =>
+          import('../Header/ExpressSearchTask').then(
+            ({ ExpressSearchOverlay }) => ExpressSearchOverlay
+          ),
+      },
+      {
+        path: 'choose-collection',
+        title: commonText.chooseCollection(),
+        element: () =>
+          import('../Header/ChooseCollection').then(
+            ({ ChooseCollection }) => ChooseCollection
+          ),
+      },
+      {
         path: 'data-entry',
         title: headerText.dataEntry(),
         element: () =>

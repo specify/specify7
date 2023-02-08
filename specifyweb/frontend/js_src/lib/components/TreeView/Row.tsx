@@ -5,6 +5,7 @@ import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
+import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
 import { getPref } from '../InitialContext/remotePrefs';
 import { getUserPref } from '../UserPreferences/helpers';
@@ -157,8 +158,9 @@ export function TreeRow({
               aria-describedby={rankNameId(rankId.toString())}
               aria-pressed={isLoading ? 'mixed' : displayChildren}
               className={`
-                aria-handled -mb-[12px] -ml-[5px] mt-2
+                -mb-[12px] -ml-[5px] mt-2
                 whitespace-nowrap rounded border border-transparent
+                ${className.ariaHandled}
                 ${
                   isAction
                     ? 'outline outline-1 outline-red-500'

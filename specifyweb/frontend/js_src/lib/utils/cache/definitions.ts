@@ -28,6 +28,9 @@ import { ensure } from '../types';
 
 /** The types of cached values are defined here */
 export type CacheDefinitions = {
+  readonly header: {
+    readonly isCollapsed: boolean;
+  };
   readonly general: {
     readonly clearCacheOnException: boolean;
   };

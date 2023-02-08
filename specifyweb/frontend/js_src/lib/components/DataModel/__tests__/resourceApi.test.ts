@@ -193,7 +193,7 @@ describe('needsSaved', () => {
       id: collectionObjectId,
     });
     expect(resource.needsSaved).toBe(false);
-    resource.set('catalogNumber', '123');
+    resource.set('text1', 'a');
     expect(resource.needsSaved).toBe(true);
   });
 
@@ -266,7 +266,7 @@ test('save', async () => {
 describe('placeInSameHierarchy', () => {
   test('simple case', async () => {
     const collectionObject = new schema.models.CollectionObject.Resource({
-      id: 100,
+      id: collectionObjectId,
     });
     const locality = new schema.models.Locality.Resource();
     const hierarchyResource = await locality.placeInSameHierarchy(
@@ -278,7 +278,7 @@ describe('placeInSameHierarchy', () => {
 
   test('undefined if Collection Object has no collection', async () => {
     const collectionObject = new schema.models.CollectionObject.Resource({
-      id: 100,
+      id: collectionObjectId,
       resource_uri: collectionObjectUrl,
     });
     const locality = new schema.models.Locality.Resource();

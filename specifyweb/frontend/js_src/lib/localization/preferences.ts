@@ -360,26 +360,11 @@ export const preferencesText = createDictionary({
     `,
   },
   header: {
-    'en-us': 'Top Level Menu',
+    'en-us': 'Navigation Menu',
     'ru-ru': 'Главное меню',
     'es-es': 'Menú de nivel superior',
     'fr-fr': 'Menu de niveau supérieur',
     'uk-ua': 'Меню верхнього рівня',
-  },
-  menu: {
-    'en-us': 'Menu',
-    'ru-ru': 'Меню',
-    'es-es': 'Menú',
-    'fr-fr': 'Menu',
-    'uk-ua': 'Меню',
-  },
-  showMenuItem: {
-    comment: 'Example: Show Data Entry. Or: Show Interactions. Or: Show Trees',
-    'en-us': 'Show {menuItem:string}',
-    'ru-ru': 'Показать {menuItem:string}',
-    'es-es': 'Mostrar {menuItem:string}',
-    'fr-fr': 'Afficher {menuItem:string}',
-    'uk-ua': 'Показати {menuItem:string}',
   },
   application: {
     'en-us': 'Application',
@@ -1333,6 +1318,21 @@ export const preferencesText = createDictionary({
     'fr-fr': 'Ne pas utiliser',
     'uk-ua': 'Не використовувати',
   },
+  position: {
+    'en-us': 'Position',
+  },
+  top: {
+    'en-us': 'Top',
+  },
+  bottom: {
+    'en-us': 'Bottom',
+  },
+  left: {
+    'en-us': 'Left',
+  },
+  right: {
+    'en-us': 'Right',
+  },
   showUnsavedIndicator: {
     'en-us': 'Show unsaved changes indicator',
     'ru-ru': 'Показывать индикатор несохраненных изменений',
@@ -1350,7 +1350,7 @@ export const preferencesText = createDictionary({
       en la pestaña actual
     `,
     'fr-fr': `
-      Afficher un \"*\" dans le titre de l'onglet lorsqu'il y a des
+      Afficher un "*" dans le titre de l'onglet lorsqu'il y a des
       modifications non enregistrées dans l'onglet actuel
     `,
     'ru-ru': `
