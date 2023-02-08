@@ -8,7 +8,6 @@ import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { queryText } from '../../localization/query';
 import { queryCbxExtendedSearch } from '../../utils/ajax/specifyApi';
-import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Ul } from '../Atoms';
@@ -226,9 +225,12 @@ const testFilter = <SCHEMA extends AnySchema>(
     ? (resource.get(field) ?? 0) < values[0] ||
       (resource.get(field) ?? 0) > values[1]
     : operation === 'in'
-    ? values.some(f.equal(resource.get(field)))
+    ? // Cast numbers to strings
+      // eslint-disable-next-line eqeqeq
+      values.some((value) => value == resource.get(field))
     : operation === 'notIn'
-    ? values.every(f.notEqual(resource.get(field)))
+    ? // eslint-disable-next-line eqeqeq
+      values.every((value) => value == resource.get(field))
     : operation === 'lessThan'
     ? values.every((value) => (resource.get(field) ?? 0) < value)
     : error('Invalid Query Combo Box search filter', {

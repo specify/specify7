@@ -47,7 +47,7 @@ export function Toasts({
       {toasts.length > 0 && (
         <div
           className={`
-            absolute top-0 right-0 z-20 flex max-h-full w-full max-w-[30rem]
+            absolute top-0 right-0 z-[10000] flex max-h-full w-full max-w-[30rem]
             flex-col gap-2 overflow-auto p-4
           `}
         >
