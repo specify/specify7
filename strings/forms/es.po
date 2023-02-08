@@ -436,7 +436,7 @@ msgstr "Hacia adelante"
 msgid "reverse"
 msgstr "Marcha atrás"
 
-#: components/QueryBuilder/AuditLogFormatter.tsx:45
+#: components/QueryBuilder/AuditLogFormatter.tsx:47
 #. Used in: Components > Query Builder > Audit Log Formatter
 msgid "deletedInline"
 msgstr "(borrado)"

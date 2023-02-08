@@ -514,7 +514,7 @@ msgstr "Vers l'avant"
 msgid "reverse"
 msgstr "Inverser"
 
-#: components/QueryBuilder/AuditLogFormatter.tsx:45
+#: components/QueryBuilder/AuditLogFormatter.tsx:47
 #. Used in: Components > Query Builder > Audit Log Formatter
 #, fuzzy
 msgid "deletedInline"
