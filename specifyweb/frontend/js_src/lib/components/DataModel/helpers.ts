@@ -17,6 +17,7 @@ import { schema, strictGetModel } from './schema';
 import type { LiteralField, Relationship } from './specifyField';
 import type { SpecifyModel } from './specifyModel';
 import type { Tables } from './types';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 
 /** Like resource.toJSON(), but keys are converted to camel case */
 export const serializeResource = <SCHEMA extends AnySchema>(
@@ -180,6 +181,21 @@ export async function fetchDistantRelated(
     }
   | undefined
 > {
+  if (
+    Array.isArray(fields) &&
+    fields.some(
+      (field) =>
+        field.isRelationship &&
+        relationshipIsToMany(field) &&
+        field !== fields.at(-1)
+    )
+  ) {
+    console.error(
+      'Can not index inside of a -to-many relationship. Use an aggregator instead'
+    );
+    return undefined;
+  }
+
   const related =
     fields === undefined || fields.length === 0
       ? resource
