@@ -42,7 +42,8 @@ export function FormattedResource({
     false
   );
   return typeof resource === 'object' &&
-    hasTablePermission(resource.specifyModel.name, 'read') ? (
+    hasTablePermission(resource.specifyModel.name, 'read') &&
+    !resource.isNew() ? (
     <Link.NewTab href={resource.viewUrl()}>{formatted}</Link.NewTab>
   ) : (
     <>{formatted}</>

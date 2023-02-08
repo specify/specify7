@@ -168,7 +168,7 @@ function eventHandlerForToOne(related, field) {
         },
         viewUrl() {
             // Returns the url for viewing this resource in the UI
-            if (!_.isNumber(this.id)) softFail(new Error("viewUrl called on resource w/out id"), this);
+            if (!_.isNumber(this.id)) softFail(new Error("viewUrl called on resource without id"), this);
             return getResourceViewUrl(this.specifyModel.name, this.id);
         },
         get(attribute) {
