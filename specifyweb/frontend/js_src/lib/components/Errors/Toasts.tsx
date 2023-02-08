@@ -3,12 +3,12 @@ import type { LocalizedString } from 'typesafe-i18n';
 import type { State } from 'typesafe-reducer';
 
 import { commonText } from '../../localization/common';
+import { mainText } from '../../localization/main';
 import type { GetOrSet, RA } from '../../utils/types';
 import { removeItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { dialogIcons } from '../Atoms/Icons';
 import { error } from './assert';
-import { mainText } from '../../localization/main';
 
 type ErrorToast = State<
   'Error',

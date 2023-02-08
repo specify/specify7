@@ -2,8 +2,8 @@ import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
 import { f } from '../../utils/functools';
-import type { RA } from '../../utils/types';
-import { DeepPartial, defined, filterArray } from '../../utils/types';
+import type { DeepPartial, RA } from '../../utils/types';
+import { defined, filterArray } from '../../utils/types';
 import { keysToLowerCase, removeKey } from '../../utils/utils';
 import { formatUrl } from '../Router/queryString';
 import { getUserPref } from '../UserPreferences/helpers';
@@ -48,7 +48,7 @@ export const fetchResource = async <
 > =>
   ajax<SerializedModel<SCHEMA>>(
     `/api/specify/${tableName.toLowerCase()}/${id}/`,
-    // eslint-disable-next-line @typescript-eslint/naming-convention
+
     {
       headers: { Accept: 'application/json' },
       expectedErrors: strict ? undefined : [Http.NOT_FOUND],
@@ -100,9 +100,9 @@ export const saveResource = async <TABLE_NAME extends keyof Tables>(
       method: 'PUT',
       body: keysToLowerCase(addMissingFields(tableName, data)),
       headers: { Accept: 'application/json' },
-      expectedErrors: [
-        ...(typeof handleConflict === 'function' ? [Http.CONFLICT] : []),
-      ],
+      expectedErrors: Array.from(
+        typeof handleConflict === 'function' ? [Http.CONFLICT] : []
+      ),
     }
   ).then(({ data: response, status }) => {
     if (status === Http.CONFLICT) {

@@ -1,5 +1,7 @@
 import React from 'react';
+import { useParams } from 'react-router-dom';
 
+import { useSearchParameter } from '../../hooks/navigation';
 import { resourceEvents } from '../../hooks/store';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useCachedState } from '../../hooks/useCachedState';
@@ -10,6 +12,7 @@ import { treeText } from '../../localization/tree';
 import { ajax } from '../../utils/ajax';
 import { hijackBackboneAjax } from '../../utils/ajax/backboneAjax';
 import { Http } from '../../utils/ajax/definitions';
+import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { removeKey, sortFunction } from '../../utils/utils';
@@ -19,21 +22,18 @@ import { Input, Label } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
+import { deserializeResource } from '../DataModel/helpers';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import { fetchResource } from '../DataModel/resource';
+import { getModel } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Tables } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import { formatUrl } from '../Router/queryString';
 import { OverlayContext, OverlayLocation } from '../Router/Router';
+import { getUserPref } from '../UserPreferences/helpers';
 import { autoMerge, postMergeResource } from './autoMerge';
 import { CompareRecords } from './Compare';
-import { useParams } from 'react-router-dom';
-import { getModel } from '../DataModel/schema';
-import { useSearchParameter } from '../../hooks/navigation';
-import { f } from '../../utils/functools';
-import { getUserPref } from '../UserPreferences/helpers';
-import { deserializeResource } from '../DataModel/helpers';
 
 const recordMergingTables = new Set<keyof Tables>(['Agent']);
 
@@ -115,7 +115,7 @@ export function MergingDialog(): JSX.Element | null {
     setIds(ids.filter((id) => id !== dismissedId).join(','));
 
   return model === undefined ? null : (
-    <Merging model={model} ids={ids} onDismiss={handleDismiss} />
+    <Merging ids={ids} model={model} onDismiss={handleDismiss} />
   );
 }
 

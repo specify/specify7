@@ -1,7 +1,7 @@
 import { parseXml } from '../../components/AppResources/codeMirrorLinters';
 import { handleAjaxError } from '../../components/Errors/FormatError';
-import type { RA } from '../types';
-import { filterArray, ValueOf } from '../types';
+import type { RA, ValueOf } from '../types';
+import { filterArray } from '../types';
 import { Http, httpCodeToErrorMessage } from './definitions';
 import type { AjaxErrorMode, AjaxResponseObject, MimeType } from './index';
 

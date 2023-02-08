@@ -64,7 +64,7 @@ export function Notifications(): JSX.Element {
             >
           >(
             `/notifications/messages/`,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
+
             {
               headers: { Accept: 'application/json' },
               /*

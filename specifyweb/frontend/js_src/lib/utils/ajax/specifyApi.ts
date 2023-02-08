@@ -11,14 +11,14 @@ import type {
 } from '../../components/DataModel/helperTypes';
 import type { SpecifyResource } from '../../components/DataModel/legacyTypes';
 import type { SpQuery, Tables } from '../../components/DataModel/types';
+import type { QueryResultRow } from '../../components/QueryBuilder/Results';
 import { formatUrl } from '../../components/Router/queryString';
 import { eventListener } from '../events';
 import type { IR, RA, RR } from '../types';
 import { filterArray } from '../types';
+import { keysToLowerCase } from '../utils';
 import { formData } from './helpers';
 import { ajax } from './index';
-import { keysToLowerCase } from '../utils';
-import { QueryResultRow } from '../../components/QueryBuilder/Results';
 
 export const globalEvents = eventListener<{
   readonly initResource: SpecifyResource<AnySchema>;
@@ -227,8 +227,8 @@ type FieldsToTypes<
     : never;
 };
 
-export const runQuery = <ROW_TYPE extends QueryResultRow>(
-  query: SerializedResource<SpQuery> | SerializedModel<SpQuery>,
+export const runQuery = async <ROW_TYPE extends QueryResultRow>(
+  query: SerializedModel<SpQuery> | SerializedResource<SpQuery>,
   extras: Partial<{
     readonly collectionId: number;
     readonly limit: number;

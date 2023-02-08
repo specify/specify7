@@ -7,13 +7,13 @@ import {removeKey} from '../../utils/utils';
 import {assert} from '../Errors/assert';
 import {softFail} from '../Errors/Crash';
 import {Backbone} from './backbone';
+import {specialFields} from './helpers';
 import {
     getFieldsToNotClone,
     getResourceApiUrl,
     getResourceViewUrl,
     resourceFromUrl
 } from './resource';
-import {specialFields} from './helpers';
 
 function eventHandlerForToOne(related, field) {
         return function(event) {
@@ -58,11 +58,12 @@ function eventHandlerForToOne(related, field) {
                 break;
             }
             case 'add':
-            case 'remove':
+            case 'remove': {
                 // Annotate add and remove events with the field in which they occurred
                 args[0] = `${event}:${field.name.toLowerCase()}`;
                 this.trigger.apply(this, args);
                 break;
+            }
             }
             }
     }
@@ -605,7 +606,7 @@ function eventHandlerForToOne(related, field) {
                 }
             });
             if(typeof this.get('resource_uri') !== 'string')
-                json['_tableName'] = this.specifyModel.name;
+                json._tableName = this.specifyModel.name;
             return json;
         },
         // Caches a reference to Promise so as not to start fetching twice

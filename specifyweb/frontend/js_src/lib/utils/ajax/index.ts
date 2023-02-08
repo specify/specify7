@@ -31,13 +31,13 @@ export type AjaxErrorMode = 'dismissible' | 'silent' | 'visible';
 const pendingRequests: R<Promise<unknown> | undefined> = {};
 
 export type AjaxMethod =
-  | 'OPTIONS'
+  | 'DELETE'
   | 'GET'
   | 'HEAD'
-  | 'PUT'
+  | 'OPTIONS'
+  | 'PATCH'
   | 'POST'
-  | 'DELETE'
-  | 'PATCH';
+  | 'PUT';
 
 const safeMethods: ReadonlySet<AjaxMethod> = new Set([
   'OPTIONS',

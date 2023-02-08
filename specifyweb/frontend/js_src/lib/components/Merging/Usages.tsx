@@ -1,13 +1,14 @@
-import { RA } from '../../utils/types';
-import { AnySchema } from '../DataModel/helperTypes';
-import { SpecifyResource } from '../DataModel/legacyTypes';
-import { mergingText } from '../../localization/merging';
-import { commonText } from '../../localization/common';
-import { useAsyncState } from '../../hooks/useAsyncState';
 import React from 'react';
+
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { commonText } from '../../localization/common';
+import { mergingText } from '../../localization/merging';
+import type { RA } from '../../utils/types';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { DeleteBlockers } from '../Forms/DeleteBlocked';
 import { fetchBlockers } from '../Forms/DeleteButton';
 import { MergeRow } from './Header';
-import { DeleteBlockers } from '../Forms/DeleteBlocked';
 
 export function UsagesSection({
   resources,
@@ -39,8 +40,8 @@ function Usages({
         commonText.loading()
       ) : (
         <DeleteBlockers
-          resource={resource}
           blockers={[blockers, setBlockers]}
+          resource={resource}
         />
       )}
     </td>

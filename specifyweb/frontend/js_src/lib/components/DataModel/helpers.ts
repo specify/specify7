@@ -3,6 +3,7 @@ import type { RA, ValueOf } from '../../utils/types';
 import { defined } from '../../utils/types';
 import { removeKey } from '../../utils/utils';
 import { isTreeResource } from '../InitialContext/treeRanks';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { addMissingFields } from './addMissingFields';
 import type {
   AnySchema,
@@ -17,7 +18,6 @@ import { schema, strictGetModel } from './schema';
 import type { LiteralField, Relationship } from './specifyField';
 import type { SpecifyModel } from './specifyModel';
 import type { Tables } from './types';
-import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 
 /** Like resource.toJSON(), but keys are converted to camel case */
 export const serializeResource = <SCHEMA extends AnySchema>(
@@ -45,9 +45,7 @@ export function resourceToModel<SCHEMA extends AnySchema = AnySchema>(
       tableName ??
         (resource as SerializedResource<SCHEMA>)._tableName ??
         parseResourceUrl(
-          'resource_uri' in resource
-            ? ((resource as SerializedResource<SCHEMA>).resource_uri as string)
-            : ''
+          'resource_uri' in resource ? (resource.resource_uri as string) : ''
         )?.[0],
       `Unable to serialize resource because table name is unknown.${
         process.env.NODE_ENV === 'test'
