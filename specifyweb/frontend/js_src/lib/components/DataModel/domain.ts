@@ -1,4 +1,3 @@
-import { globalEvents } from '../../utils/ajax/specifyApi';
 import type { RA } from '../../utils/types';
 import { capitalize, takeBetween } from '../../utils/utils';
 import { raise } from '../Errors/Crash';
@@ -16,7 +15,7 @@ import type { CollectionObject } from './types';
 /**
  * Some tasks to do after a new resource is created
  */
-globalEvents.on('newResource', (resource) => {
+export function initializeResource(resource: SpecifyResource<AnySchema>): void {
   const domainField = resource.specifyModel.getScopingRelationship();
   if (domainField === undefined) return;
 
@@ -75,7 +74,7 @@ globalEvents.on('newResource', (resource) => {
         determinations.add(new schema.models.Determination.Resource())
       )
       .catch(raise);
-});
+}
 
 /**
  * @returns a list of collections the resource belongs too.
