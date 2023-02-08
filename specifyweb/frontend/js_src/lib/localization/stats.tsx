@@ -24,7 +24,6 @@ export const statsText = createDictionary({
   },
   preparations: {
     'en-us': 'Preparations',
-    'ru-ru': 'Подготовка',
   },
   synonymize: {
     'en-us': 'Synonymize',
@@ -32,27 +31,26 @@ export const statsText = createDictionary({
   },
   typeSpecimens: {
     'en-us': 'Type Specimens',
-    'ru-ru': 'Типовые образцы',
   },
   familiesRepresented: {
     'en-us': 'Families Represented',
-    'ru-ru': 'Представленные семьи',
+    'ru-ru': 'Семей',
   },
   generaRepresented: {
     'en-us': 'Genera Represented',
-    'ru-ru': 'Представленные роды',
+    'ru-ru': 'Родов',
   },
   speciesRepresented: {
     'en-us': 'Species Represented',
-    'ru-ru': 'Представленные виды',
+    'ru-ru': 'Видов',
   },
   loans: {
     'en-us': 'Loans',
-    'ru-ru': 'Кредиты',
+    'ru-ru': 'Заемы',
   },
   itemsOnLoans: {
     'en-us': 'Items on Loans',
-    'ru-ru': 'Предметы в кредит',
+    'ru-ru': 'Предметы в Займы',
   },
   openLoans: {
     'en-us': 'Open Loans',
@@ -72,7 +70,7 @@ export const statsText = createDictionary({
   },
   orders: {
     'en-us': 'Orders',
-    'ru-ru': 'Заказы',
+    'ru-ru': 'Отряды',
   },
   families: {
     'en-us': 'Families',
@@ -84,7 +82,7 @@ export const statsText = createDictionary({
   },
   species: {
     'en-us': 'Species',
-    'ru-ru': 'Разновидность',
+    'ru-ru': 'Разновидносты',
   },
   localityGeography: {
     'en-us': 'Locality / Geography',
@@ -116,7 +114,7 @@ export const statsText = createDictionary({
   },
   computerizedLastMonth: {
     'en-us': 'Computerized Last Month',
-    'ru-ru': 'Компьютеризировано за последние 30 дней',
+    'ru-ru': 'Компьютеризировано за последний месяц',
   },
   computerizedLastYear: {
     'en-us': 'Computerized Last Year',
@@ -127,7 +125,7 @@ export const statsText = createDictionary({
     'ru-ru': 'Выберите статистику',
   },
   selectFromQueries: {
-    'en-us': `${'Select ' + 'From ' + ' Queries'}`,
+    'en-us': `Select From Queries`,
     'ru-ru': 'Выбрать из запросов',
   },
   selectFromDefault: {

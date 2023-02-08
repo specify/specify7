@@ -10,7 +10,7 @@ import { queryText } from '../../localization/query';
 import { databaseDateFormat } from '../../utils/dateFormat';
 import { dayjs } from '../../utils/dayJs';
 import type { Parser } from '../../utils/parser/definitions';
-import { parseRelativeDate, relativeDateRegex } from '../../utils/relativeDate';
+import { parseRelativeDate, reRelativeDate } from '../../utils/relativeDate';
 import { Button } from '../Atoms/Button';
 import { Input, Select } from '../Atoms/Form';
 import { QueryInputField } from './FieldFilter';
@@ -29,17 +29,15 @@ export function DateQueryInputField({
   readonly onChange: ((newValue: string) => void) | undefined;
 }): JSX.Element | null {
   const [absolute, setAbsolute] = React.useState(() =>
-    relativeDateRegex.test(currentValue) ? undefined : currentValue
+    reRelativeDate.test(currentValue) ? undefined : currentValue
   );
   const [relative, setRelative] = React.useState(() =>
-    relativeDateRegex.test(currentValue) ? currentValue : undefined
+    reRelativeDate.test(currentValue) ? currentValue : undefined
   );
 
   const parsed = React.useMemo(() => {
     if (relative !== undefined) {
-      const parsedValue = relativeDateRegex
-        .exec(relative.toLowerCase())
-        ?.slice(1);
+      const parsedValue = reRelativeDate.exec(relative.toLowerCase())?.slice(1);
       return typeof parsedValue === 'object'
         ? {
             direction: parsedValue[0],
@@ -64,7 +62,7 @@ export function DateQueryInputField({
         onClick={(): void => {
           toggleAbsolute();
           if (!isAbsolute) {
-            if (relativeDateRegex.test(currentValue)) {
+            if (reRelativeDate.test(currentValue)) {
               const parsedDate = dayjs(parseRelativeDate(currentValue)).format(
                 databaseDateFormat
               );

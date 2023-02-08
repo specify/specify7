@@ -65,20 +65,17 @@ export function useAsyncState<T>(
  * Like useAsyncState, but cooler
  *
  */
-export function useMultipleAsyncState<
-  K,
-  T extends Record<any, () => Promise<K>>
->(
-  callback: T | undefined,
+export function useMultipleAsyncState<RESPONSE extends Record<any, unknown>>(
+  callback: {
+    readonly [K in keyof RESPONSE]: () => Promise<RESPONSE[K]>;
+  },
   loadingScreen: boolean
-): GetOrSet<Record<keyof T, K> | undefined> {
-  const [state, setState] = React.useState<Record<keyof T, K> | undefined>(
-    undefined
-  );
+): GetOrSet<Partial<RESPONSE>> {
+  const [state, setState] = React.useState<Partial<RESPONSE>>({});
   const loading = React.useContext(LoadingContext);
 
   React.useLayoutEffect(() => {
-    setState(undefined);
+    setState({});
     const wrapped = loadingScreen
       ? loading
       : (promise: Promise<unknown>): void => void promise.catch(crash);
@@ -88,13 +85,10 @@ export function useMultipleAsyncState<
       callbackEntries.map(async ([key, promiseGenerator]) =>
         promiseGenerator().then((data) => {
           if (destructorCalled) return undefined;
-          setState(
-            (oldState) =>
-              ({
-                ...oldState,
-                [key]: data,
-              } as Record<keyof T, K>)
-          );
+          setState((oldState) => ({
+            ...oldState,
+            [key]: data,
+          }));
           return undefined;
         })
       )

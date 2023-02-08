@@ -25,13 +25,13 @@ import { StatsAsideButton } from './Buttons';
 import { Categories } from './Categories';
 import { dynamicCategories } from './definitions';
 import {
+  setAbsentCategoriesToFetch,
   statsToTsv,
   useBackendApi,
-  setAbsentCategoriesToFetch,
   useDefaultLayout,
   useDefaultStatsToAdd,
-  useStatsSpec,
   useDynamicCategorySetter,
+  useStatsSpec,
 } from './hooks';
 import { StatsPageEditing } from './StatsPageEditing';
 import type { CustomStat, DefaultStat, StatLayout } from './types';
@@ -129,9 +129,10 @@ export function StatsPage(): JSX.Element | null {
 
   /*
    * Initial Load For Collection and Personal Pages
-   * If collection and personal layout are undefined initially, then we need to fetch all unknown categories.
-   * It is simpler to make the promise twice since throttledPromise returns the previous promise if the spec is same
-   *
+   * If collection and personal layout are undefined initially, then we need to
+   * fetch all unknown categories.
+   * It is simpler to make the promise twice since throttledPromise returns the
+   * previous promise if the spec is same
    */
   React.useEffect(() => {
     if (collectionLayout === undefined) {

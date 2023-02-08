@@ -8,6 +8,7 @@ import { formattedEntry } from '../WbPlanView/mappingHelpers';
 import type { StatCategoryReturn } from './types';
 import { userInformation } from '../InitialContext/userInformation';
 import { f } from '../../utils/functools';
+
 type StatsSpec = IR<{
   readonly label: string;
   readonly categories: StatCategoryReturn;
@@ -87,11 +88,9 @@ export const statsSpec: IR<StatsSpec> = {
                   }
                 | undefined
             ) =>
-              f.maybe(
-                prep,
-                (prep) =>
-                  `${formatNumber(prep.lots)} / ${formatNumber(prep.total)}`
-              ),
+              prep === undefined
+                ? undefined
+                : `${formatNumber(prep.lots)} / ${formatNumber(prep.total)}`,
           },
         },
       },
@@ -270,6 +269,7 @@ export const statsSpec: IR<StatsSpec> = {
     },
     // eslint-disable-next-line @typescript-eslint/naming-convention
     locality_geography: {
+      // FEATURE: refactor all strings to use localized table names
       label: statsText.localityGeography(),
       categories: {
         localityCount: {

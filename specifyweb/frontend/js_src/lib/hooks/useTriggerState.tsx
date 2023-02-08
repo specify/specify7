@@ -2,10 +2,9 @@ import { GetOrSet } from '../utils/types';
 import React from 'react';
 
 /**
- * @remarks
- *
  * Like React.useState, but updates the state whenever default value changes
  *
+ * @remarks
  * During usage, make sure defaultValue isn't passed by reference.
  * If it does, either use useLiveState with callback or instead memoize defaultValue
  * with React.useMemo and then pass.
