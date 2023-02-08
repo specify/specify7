@@ -367,8 +367,8 @@ function eventHandlerForToOne(related, field) {
                 return undefined;
             }
             }
-            softFail("unhandled setting of relationship field", fieldName,
-                          "on", this, "value is", value);
+            if(!field.isVirtual)
+                softFail('Unhandled setting of relationship field', {fieldName,value,resource:this});
             return value;
         },
         _handleUri(value, fieldName) {
