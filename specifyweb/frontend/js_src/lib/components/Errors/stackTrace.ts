@@ -48,7 +48,10 @@ export const produceStackTrace = (message: unknown): string =>
     pageHtml: document.documentElement.outerHTML,
     localStorage: { ...localStorage },
     // Network log and page load telemetry
-    eventLog: globalThis.performance.getEntries(),
+    eventLog:
+      process.env.NODE_ENV === 'test'
+        ? []
+        : globalThis.performance.getEntries(),
     navigator: {
       userAgent: navigator.userAgent,
       language: navigator.language,

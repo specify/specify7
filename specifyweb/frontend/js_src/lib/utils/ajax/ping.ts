@@ -10,7 +10,7 @@ import { ajax } from './index';
  */
 export const ping = async (
   url: string,
-  options: PartialBy<AjaxProps, 'headers'>
+  options?: PartialBy<AjaxProps, 'headers'>
 ): Promise<number> =>
   ajax<never>(url, {
     ...options,

@@ -126,7 +126,7 @@ describe('handleAjaxResponse', () => {
   test('Unexpected 503 response', () => {
     jest.spyOn(console, 'error').mockImplementation();
     handleAjaxResponse<Document>({
-      expectedErrors: [],
+      expectedErrors: [Http.NOT_FOUND],
       accept: 'text/plain',
       response: new Response('', {
         status: Http.UNAVAILABLE,
@@ -139,7 +139,7 @@ describe('handleAjaxResponse', () => {
       {
         type: 'invalidResponseCode',
         statusText: [
-          `Invalid response code ${Http.UNAVAILABLE}. Expected ${Http.OK}.`,
+          `Invalid response code ${Http.UNAVAILABLE}.`,
           httpCodeToErrorMessage[Http.UNAVAILABLE],
           'Response:',
         ],
@@ -166,7 +166,7 @@ describe('handleAjaxResponse', () => {
       {
         type: 'invalidResponseCode',
         statusText: [
-          `Invalid response code ${Http.NOT_FOUND}. Expected one of ${Http.OK} and ${Http.NO_CONTENT}.`,
+          `Invalid response code ${Http.NOT_FOUND}.`,
           httpCodeToErrorMessage[Http.NOT_FOUND],
           'Response:',
         ],

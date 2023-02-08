@@ -49,7 +49,7 @@ describe('fetchResource', () => {
       serializeResource(baseAgentRecord)
     ));
   test('not found case', async () =>
-    expect(fetchResource('Agent', 2)).resolves.toBeUndefined());
+    expect(fetchResource('Agent', 2, false)).resolves.toBeUndefined());
 });
 
 overrideAjax('/api/specify/locality/1/', '', {

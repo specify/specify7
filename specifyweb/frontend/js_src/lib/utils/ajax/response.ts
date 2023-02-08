@@ -1,10 +1,7 @@
 import { parseXml } from '../../components/AppResources/codeMirrorLinters';
-import { formatConjunction } from '../../components/Atoms/Internationalization';
 import { handleAjaxError } from '../../components/Errors/FormatError';
-import { f } from '../functools';
 import type { RA } from '../types';
-import { filterArray } from '../types';
-import { sortFunction } from '../utils';
+import { filterArray, ValueOf } from '../types';
 import { Http, httpCodeToErrorMessage } from './definitions';
 import type { AjaxErrorMode, AjaxResponseObject, MimeType } from './index';
 
@@ -69,18 +66,8 @@ export function handleAjaxResponse<RESPONSE_TYPE = string>({
       throw {
         type: 'invalidResponseCode',
         statusText: filterArray([
-          `Invalid response code ${response.status}. ${
-            expectedErrors.length > 0
-              ? `Expected ${
-                  expectedErrors.length === 1 ? '' : 'one of '
-                }${formatConjunction(
-                  Array.from(expectedErrors)
-                    .sort(sortFunction(f.id))
-                    .map(f.toString)
-                )}.`
-              : ''
-          }`,
-          httpCodeToErrorMessage[response.status],
+          `Invalid response code ${response.status}.`,
+          httpCodeToErrorMessage[response.status as ValueOf<typeof Http>],
           'Response:',
         ]),
         responseText: text,
