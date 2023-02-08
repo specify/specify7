@@ -114,21 +114,16 @@ export function MissingAgentsDialog({
           mode === 'view'
             ? undefined
             : loading(
-                ajax(
-                  `/api/set_agents/${userId}/`,
-                  {
-                    method: 'POST',
-                    headers: {},
-                    body: filterArray(
-                      userAgents!.map(({ address }) =>
-                        idFromUrl(address.get('agent') ?? '')
-                      )
-                    ),
-                  },
-                  {
-                    expectedResponseCodes: [Http.NO_CONTENT, Http.BAD_REQUEST],
-                  }
-                ).then(({ data, status }) =>
+                ajax(`/api/set_agents/${userId}/`, {
+                  method: 'POST',
+                  headers: {},
+                  body: filterArray(
+                    userAgents!.map(({ address }) =>
+                      idFromUrl(address.get('agent') ?? '')
+                    )
+                  ),
+                  expectedResponseCodes: [Http.NO_CONTENT, Http.BAD_REQUEST],
+                }).then(({ data, status }) =>
                   status === Http.NO_CONTENT
                     ? handleClose()
                     : setResponse(JSON.parse(data))

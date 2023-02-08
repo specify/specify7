@@ -78,15 +78,13 @@ function CreateRecordSetDialog({
       onSaving={(unsetUnloadProtect): false => {
         unsetUnloadProtect();
         loading(
-          ajax<number>(
-            `/api/workbench/create_recordset/${dataSetId}/`,
-            {
-              method: 'POST',
-              headers: { Accept: 'application/json' },
-              body: formData({ name: recordSet.get('name') }),
-            },
-            { expectedResponseCodes: [Http.CREATED] }
-          ).then(({ data }) => unsafeNavigate(`/specify/record-set/${data}/`))
+          ajax<number>(`/api/workbench/create_recordset/${dataSetId}/`, {
+            method: 'POST',
+            headers: { Accept: 'application/json' },
+            body: formData({ name: recordSet.get('name') }),
+            errorMode: 'dismissible',
+            expectedResponseCodes: [Http.CREATED],
+          }).then(({ data }) => unsafeNavigate(`/specify/record-set/${data}/`))
         );
         return false;
       }}

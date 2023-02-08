@@ -232,8 +232,6 @@ function Merging({
                     headers: {
                       Accept: 'text/plain',
                     },
-                  },
-                  {
                     expectedResponseCodes: [Http.NO_CONTENT, Http.NOT_ALLOWED],
                     errorMode: 'dismissible',
                   }
@@ -245,6 +243,7 @@ function Merging({
                 resourceEvents.trigger('deleted', clone);
               }
               setError(undefined);
+              handleClose();
             })
           );
         }}

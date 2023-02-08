@@ -51,6 +51,7 @@ export const queryCbxExtendedSearch = async <SCHEMA extends AnySchema>(
     ),
     {
       headers: { Accept: 'application/json' },
+      errorMode: 'dismissible',
     }
   ).then(({ data: results }) =>
     results.map((result) => new templateResource.specifyModel.Resource(result))
@@ -245,4 +246,5 @@ export const runQuery = <ROW_TYPE extends QueryResultRow>(
       ...query,
       ...extras,
     }),
+    errorMode: 'dismissible',
   }).then(({ data }) => data.results);

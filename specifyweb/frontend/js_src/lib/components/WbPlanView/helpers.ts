@@ -69,41 +69,31 @@ export async function savePlan({
 
   const dataSetRequestUrl = `/api/workbench/dataset/${dataset.id}/`;
 
-  return ping(
-    dataSetRequestUrl,
-    {
-      method: 'PUT',
-      body: {
-        uploadplan: uploadPlan,
-      },
+  return ping(dataSetRequestUrl, {
+    method: 'PUT',
+    body: {
+      uploadplan: uploadPlan,
     },
-    {
-      expectedResponseCodes: [Http.NO_CONTENT],
-    }
-  ).then(async () =>
+    expectedResponseCodes: [Http.NO_CONTENT],
+  }).then(async () =>
     newlyAddedHeaders.length === 0
       ? Promise.resolve()
       : ajax<Dataset>(dataSetRequestUrl, {
           headers: { Accept: 'application/json' },
         }).then(async ({ data: { columns, visualorder } }) =>
-          ping(
-            dataSetRequestUrl,
-            {
-              method: 'PUT',
-              body: {
-                visualorder: [
-                  ...(visualorder ??
-                    Object.keys(dataset.columns).map(f.unary(Number.parseInt))),
-                  ...newlyAddedHeaders.map((headerName) =>
-                    columns.indexOf(headerName)
-                  ),
-                ],
-              },
+          ping(dataSetRequestUrl, {
+            method: 'PUT',
+            body: {
+              visualorder: [
+                ...(visualorder ??
+                  Object.keys(dataset.columns).map(f.unary(Number.parseInt))),
+                ...newlyAddedHeaders.map((headerName) =>
+                  columns.indexOf(headerName)
+                ),
+              ],
             },
-            {
-              expectedResponseCodes: [Http.NO_CONTENT],
-            }
-          ).then(f.void)
+            expectedResponseCodes: [Http.NO_CONTENT],
+          }).then(f.void)
         )
   );
 }

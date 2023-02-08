@@ -31,20 +31,15 @@ export type BackEndRole = Omit<Role, 'policies'> & {
 export const fetchRoles = async (
   collectionId: number
 ): Promise<RA<Role> | undefined> =>
-  ajax<RA<BackEndRole>>(
-    `/permissions/roles/${collectionId}/`,
-    {
-      headers: { Accept: 'application/json' },
-    },
-    {
-      /*
-       * When looking at a different collection, it is not yet know if user has
-       * read permission. Instead of waiting for permission query to complete,
-       * query anyway and silently handle the permission denied error
-       */
-      expectedResponseCodes: [Http.OK, Http.FORBIDDEN],
-    }
-  ).then(({ data, status }) =>
+  ajax<RA<BackEndRole>>(`/permissions/roles/${collectionId}/`, {
+    headers: { Accept: 'application/json' },
+    /*
+     * When looking at a different collection, it is not yet know if user has
+     * read permission. Instead of waiting for permission query to complete,
+     * query anyway and silently handle the permission denied error
+     */
+    expectedResponseCodes: [Http.OK, Http.FORBIDDEN],
+  }).then(({ data, status }) =>
     status === Http.FORBIDDEN
       ? undefined
       : data
@@ -63,8 +58,6 @@ export const fetchUserRoles = async (
     `/permissions/user_roles/${collectionId}/${userId}`,
     {
       headers: { Accept: 'application/json' },
-    },
-    {
       /*
        * When looking at a different collection, it is not yet know if user has
        * read permission. Instead of waiting for permission query to complete,

@@ -54,8 +54,6 @@ export function useUserPolicies(
                   `/permissions/user_policies/${collection.id}/${userResource.id}/`,
                   {
                     headers: { Accept: 'application/json' },
-                  },
-                  {
                     /*
                      * When looking at a different collection, it is not yet
                      * know if user has read permission. Instead of waiting for
@@ -157,7 +155,6 @@ export function useUserProviders(
                     readonly title: LocalizedString;
                   }>
                 >('/accounts/oic_providers/', {
-                  method: 'GET',
                   headers: { Accept: 'application/json' },
                 }).then(({ data }) => data),
                 userProviders:
@@ -168,7 +165,6 @@ export function useUserProviders(
                           readonly title: LocalizedString;
                         }>
                       >(`/accounts/oic_providers/${userId}/`, {
-                        method: 'GET',
                         headers: { Accept: 'application/json' },
                       }).then(({ data }) => data)
                     : [],

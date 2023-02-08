@@ -57,6 +57,7 @@ export const load = async <T>(path: string, mimeType: MimeType): Promise<T> =>
     const { ajax } = await import('../../utils/ajax');
 
     const { data } = await ajax<T>(cachableUrl(path), {
+      errorMode: 'visible',
       headers: { Accept: mimeType },
     });
     const endTime = Date.now();

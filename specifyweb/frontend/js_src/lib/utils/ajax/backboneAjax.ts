@@ -57,8 +57,6 @@ Backbone.ajax = function (request): JQueryXHR {
               : undefined,
         },
         body: request.type === 'GET' ? undefined : request.data,
-      },
-      {
         expectedResponseCodes: expectedResponseCodes ?? [
           Http.OK,
           Http.CREATED,

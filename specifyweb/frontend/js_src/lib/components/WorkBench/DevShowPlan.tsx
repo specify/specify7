@@ -40,14 +40,11 @@ export function DevShowPlan({
               const plan =
                 uploadPlan.length === 0 ? null : JSON.parse(uploadPlan);
               loading(
-                ping(
-                  `/api/workbench/dataset/${dataSetId}/`,
-                  {
-                    method: 'PUT',
-                    body: { uploadplan: plan },
-                  },
-                  { expectedResponseCodes: [Http.NO_CONTENT, Http.NOT_FOUND] }
-                )
+                ping(`/api/workbench/dataset/${dataSetId}/`, {
+                  method: 'PUT',
+                  body: { uploadplan: plan },
+                  expectedResponseCodes: [Http.NO_CONTENT, Http.NOT_FOUND],
+                })
                   .then((status) =>
                     status === Http.NOT_FOUND
                       ? handleDeleted()

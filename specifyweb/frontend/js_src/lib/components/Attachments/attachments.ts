@@ -76,7 +76,6 @@ function iconForMimeType(mimeType: string): {
 const fetchToken = async (filename: string): Promise<string | undefined> =>
   settings?.token_required_for_get === true
     ? ajax(formatUrl('/attachment_gw/get_token/', { filename }), {
-        method: 'GET',
         headers: { Accept: 'text/plain' },
       }).then(({ data }) => data)
     : Promise.resolve(undefined);
@@ -153,7 +152,6 @@ export async function uploadFile(
       fileName: file.name,
     }),
     {
-      method: 'GET',
       headers: { Accept: 'application/json' },
     }
   );

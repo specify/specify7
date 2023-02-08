@@ -90,7 +90,6 @@ function TableResult({
           offset: offset.toString(),
         }),
         {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           headers: { Accept: 'application/json' },
         }
       ).then(

@@ -15,13 +15,12 @@ import { Dialog } from '../Molecules/Dialog';
 export const clearCache = async (): Promise<true> =>
   Promise.all(
     Array.from(cachableUrls, async (endpoint) =>
-      ping(
-        endpoint,
-        { method: 'HEAD', cache: 'no-cache' },
-        {
-          expectedResponseCodes: [Http.OK, Http.NOT_FOUND, Http.NO_CONTENT],
-        }
-      ).then(() => console.log(`Cleaned cache from ${endpoint}`))
+      ping(endpoint, {
+        method: 'HEAD',
+        cache: 'no-cache',
+        errorMode: 'silent',
+        expectedResponseCodes: [Http.OK, Http.NOT_FOUND, Http.NO_CONTENT],
+      }).then(() => console.log(`Cleaned cache from ${endpoint}`))
     )
   ).then(() => {
     localStorage.clear();

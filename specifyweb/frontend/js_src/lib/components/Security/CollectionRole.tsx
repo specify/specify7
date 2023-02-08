@@ -32,17 +32,14 @@ export const updateCollectionRole = async (
   [roles, setRoles]: GetOrSet<IR<Role> | undefined>,
   role: Role
 ): Promise<void> =>
-  ping(
-    `/permissions/role/${role.id}/`,
-    {
-      method: 'PUT',
-      body: {
-        ...role,
-        policies: decompressPolicies(role.policies),
-      },
+  ping(`/permissions/role/${role.id}/`, {
+    method: 'PUT',
+    body: {
+      ...role,
+      policies: decompressPolicies(role.policies),
     },
-    { expectedResponseCodes: [Http.NO_CONTENT] }
-  ).then((): void =>
+    expectedResponseCodes: [Http.NO_CONTENT],
+  }).then((): void =>
     setRoles(replaceKey(defined(roles), role.id.toString(), role))
   );
 
@@ -90,16 +87,13 @@ export function SecurityCollectionRole(): JSX.Element {
           // Noop if user is already part of this role
           return currentUserRoles.includes(role.id!)
             ? undefined
-            : ping(
-                `/permissions/user_roles/${collection.id}/${user.id}/`,
-                {
-                  method: 'PUT',
-                  body: [...currentUserRoles, role.id].map((id) => ({
-                    id,
-                  })),
-                },
-                { expectedResponseCodes: [Http.NO_CONTENT] }
-              ).then(() => ({
+            : ping(`/permissions/user_roles/${collection.id}/${user.id}/`, {
+                method: 'PUT',
+                body: [...currentUserRoles, role.id].map((id) => ({
+                  id,
+                })),
+                expectedResponseCodes: [Http.NO_CONTENT],
+              }).then(() => ({
                 userIndex,
                 updatedRoles: {
                   ...userRoles[userIndex],
@@ -145,13 +139,10 @@ export function SecurityCollectionRole(): JSX.Element {
       onDelete={(): void =>
         typeof role.id === 'number'
           ? loading(
-              ping(
-                `/permissions/role/${role.id}/`,
-                {
-                  method: 'DELETE',
-                },
-                { expectedResponseCodes: [Http.NO_CONTENT] }
-              )
+              ping(`/permissions/role/${role.id}/`, {
+                method: 'DELETE',
+                expectedResponseCodes: [Http.NO_CONTENT],
+              })
                 .then((): void =>
                   navigate(`/specify/security/collection/${collection.id}/`, {
                     replace: true,

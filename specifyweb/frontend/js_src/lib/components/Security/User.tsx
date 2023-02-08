@@ -440,24 +440,19 @@ function UserView({
                */
               loading(
                 (hasPermission('/admin/user/agents', 'update')
-                  ? ajax(
-                      `/api/set_agents/${userResource.id}/`,
-                      {
-                        method: 'POST',
-                        headers: {},
-                        body: filterArray(
-                          userAgents!.map(({ address }) =>
-                            idFromUrl(address.get('agent') ?? '')
-                          )
-                        ),
-                      },
-                      {
-                        expectedResponseCodes: [
-                          Http.NO_CONTENT,
-                          Http.BAD_REQUEST,
-                        ],
-                      }
-                    )
+                  ? ajax(`/api/set_agents/${userResource.id}/`, {
+                      method: 'POST',
+                      headers: {},
+                      body: filterArray(
+                        userAgents!.map(({ address }) =>
+                          idFromUrl(address.get('agent') ?? '')
+                        )
+                      ),
+                      expectedResponseCodes: [
+                        Http.NO_CONTENT,
+                        Http.BAD_REQUEST,
+                      ],
+                    })
                   : Promise.resolve({
                       data: '',
                       status: Http.NO_CONTENT,
@@ -477,8 +472,6 @@ function UserView({
                             method: 'PUT',
                             body: decompressPolicies(institutionPolicies),
                             headers: { Accept: 'text/plain' },
-                          },
-                          {
                             expectedResponseCodes: [
                               Http.NO_CONTENT,
                               Http.BAD_REQUEST,
@@ -514,16 +507,11 @@ function UserView({
                     canContinue === true
                       ? Promise.all([
                           typeof password === 'string' && password !== ''
-                            ? ping(
-                                `/api/set_password/${userResource.id}/`,
-                                {
-                                  method: 'POST',
-                                  body: formData({ password }),
-                                },
-                                {
-                                  expectedResponseCodes: [Http.NO_CONTENT],
-                                }
-                              )
+                            ? ping(`/api/set_password/${userResource.id}/`, {
+                                method: 'POST',
+                                body: formData({ password }),
+                                expectedResponseCodes: [Http.NO_CONTENT],
+                              })
                             : undefined,
                           ...Object.entries(userRoles ?? {})
                             .filter(
@@ -542,8 +530,6 @@ function UserView({
                                       body: roles.map(({ roleId }) => ({
                                         id: roleId,
                                       })),
-                                    },
-                                    {
                                       expectedResponseCodes: [Http.NO_CONTENT],
                                     }
                                   )
@@ -564,8 +550,6 @@ function UserView({
                                     {
                                       method: 'PUT',
                                       body: decompressPolicies(policies),
-                                    },
-                                    {
                                       expectedResponseCodes: [Http.NO_CONTENT],
                                     }
                                   )

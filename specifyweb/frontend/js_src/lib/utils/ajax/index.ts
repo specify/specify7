@@ -4,8 +4,6 @@ import { Http } from './definitions';
 import { csrfSafeMethod, isExternalUrl } from './helpers';
 import { handleAjaxResponse } from './response';
 
-// REFACTOR: add a central place for all API endpoint definitions
-
 // FEATURE: make all back-end endpoints accept JSON
 
 export type MimeType = 'application/json' | 'text/plain' | 'text/xml';
@@ -32,6 +30,47 @@ export type AjaxErrorMode = 'dismissible' | 'silent' | 'visible';
  */
 const pendingRequests: R<Promise<unknown> | undefined> = {};
 
+type AjaxMethod =
+  | 'OPTIONS'
+  | 'GET'
+  | 'HEAD'
+  | 'PUT'
+  | 'POST'
+  | 'DELETE'
+  | 'PATCH';
+
+const safeMethods: ReadonlySet<AjaxMethod> = new Set([
+  'OPTIONS',
+  'GET',
+  'HEAD',
+]);
+
+export type AjaxProps = Omit<RequestInit, 'body' | 'headers' | 'method'> & {
+  readonly method?: AjaxMethod;
+  /**
+   * If object is passed to body, it is stringified and proper HTTP header is set
+   * Can wrap request body object in formData() to encode body as form data
+   */
+  readonly body?: FormData | IR<unknown> | RA<unknown> | string;
+  /**
+   * Validates and parses response as JSON if 'Accept' header is 'application/json'
+   * Validates and parses response as XML if 'Accept' header is 'text/xml'
+   */
+  readonly headers: IR<string | undefined> & { readonly Accept?: MimeType };
+  // FIXME: consider include ok,no_response,created by default
+  /**
+   * Throw if returned response code is not what expected
+   * If you want to manually handle some error, add that error code here
+   */
+  readonly expectedResponseCodes?: RA<number>;
+  /**
+   * If 'visible', spawn a modal error message dialog on crash
+   * If 'silent', don't show the error dialog
+   * If 'dismissible', show the error dialog, but allow closing it
+   */
+  readonly errorMode?: AjaxErrorMode;
+};
+
 /**
  * All front-end network requests should go through this utility.
  *
@@ -44,42 +83,19 @@ const pendingRequests: R<Promise<unknown> | undefined> = {};
  * Parsers JSON and XML responses
  * Handlers errors (including permission errors)
  */
+// "errorMode" is optional for "GET" requests
 export async function ajax<RESPONSE_TYPE = string>(
   url: string,
   /** These options are passed directly to fetch() */
   {
     headers: { Accept: accept, ...headers },
     method = 'GET',
-    ...options
-  }: Omit<RequestInit, 'body' | 'headers'> & {
-    /**
-     * If object is passed to body, it is stringified and proper HTTP header is set
-     * Can wrap request body object in formData() to encode body as form data
-     */
-    readonly body?: FormData | IR<unknown> | RA<unknown> | string;
-    /**
-     * Validates and parses response as JSON if 'Accept' header is 'application/json'
-     * Validates and parses response as XML if 'Accept' header is 'text/xml'
-     */
-    readonly headers: IR<string | undefined> & { readonly Accept?: MimeType };
-  },
-  /** Ajax-specific options that are not passed to fetch() */
-  {
+    /** Ajax-specific options that are not passed to fetch() */
     expectedResponseCodes = [Http.OK],
-    errorMode = 'silent',
-  }: {
-    /**
-     * Throw if returned response code is not what expected
-     * If you want to manually handle some error, add that error code here
-     */
-    readonly expectedResponseCodes?: RA<number>;
-    /**
-     * If 'visible', spawn a modal error message dialog on crash
-     * If 'silent', don't show the error dialog
-     * If 'dismissible', show the error dialog, but allow closing it
-     */
-    readonly errorMode?: AjaxErrorMode;
-  } = {}
+    // FIXME: consider getting rid of "silent" once dismissible errors are banners
+    errorMode = safeMethods.has(method) ? 'dismissible' : 'visible',
+    ...options
+  }: AjaxProps
 ): Promise<AjaxResponseObject<RESPONSE_TYPE>> {
   /**
    * When running in a test environment, mock the calls rather than make
@@ -88,15 +104,13 @@ export async function ajax<RESPONSE_TYPE = string>(
   // REFACTOR: replace this with a mock
   if (process.env.NODE_ENV === 'test') {
     const { ajaxMock } = await import('../../tests/ajax');
-    return ajaxMock(
-      url,
-      {
-        headers: { Accept: accept, ...headers },
-        method,
-        ...options,
-      },
-      { expectedResponseCodes }
-    );
+    return ajaxMock(url, {
+      headers: { Accept: accept, ...headers },
+      method,
+      expectedResponseCodes,
+      errorMode,
+      ...options,
+    });
   }
   if (method === 'GET' && typeof pendingRequests[url] === 'object')
     return pendingRequests[url] as Promise<AjaxResponseObject<RESPONSE_TYPE>>;

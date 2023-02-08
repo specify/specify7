@@ -51,7 +51,6 @@ export const fetchContext = load<SystemInfo>(
          */
         false
       ),
-      {},
       { errorMode: 'silent', expectedResponseCodes: [Http.NO_CONTENT] }
     ).catch(softFail);
   return systemInfo;

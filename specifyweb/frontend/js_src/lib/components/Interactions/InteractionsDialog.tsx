@@ -136,6 +136,7 @@ const fetchEntries = f.store(
   async (): Promise<RA<InteractionEntry>> =>
     ajax<Element>(url, {
       headers: { Accept: 'text/xml' },
+      errorMode: 'dismissible',
     }).then<RA<InteractionEntry>>(async ({ data }) =>
       Promise.all(
         Array.from(data.querySelectorAll('entry'), async (entry) => {

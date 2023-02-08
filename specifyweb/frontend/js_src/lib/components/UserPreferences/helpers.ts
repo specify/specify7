@@ -202,21 +202,17 @@ function requestPreferencesSync(): void {
 async function syncPreferences(): Promise<void> {
   await preferencesPromise;
   isSyncPending = false;
-  return ping(
-    `/context/user_resource/${userResource.id}/`,
-    {
-      method: 'PUT',
-      body: keysToLowerCase({
-        name: resourceName,
-        mimeType: 'application/json',
-        metaData: '',
-        data: JSON.stringify(preferences),
-      }),
-    },
-    {
-      expectedResponseCodes: [Http.NO_CONTENT],
-    }
-  ).then(() => {
+  return ping(`/context/user_resource/${userResource.id}/`, {
+    method: 'PUT',
+    errorMode: 'dismissible',
+    body: keysToLowerCase({
+      name: resourceName,
+      mimeType: 'application/json',
+      metaData: '',
+      data: JSON.stringify(preferences),
+    }),
+    expectedResponseCodes: [Http.NO_CONTENT],
+  }).then(() => {
     // If there were additional changes while syncing
     if (isSyncPending) syncPreferences().catch(softFail);
     else {
@@ -277,20 +273,17 @@ export const preferencesPromise = contextUnlockedPromise.then(
                         headers: { Accept: 'application/json' },
                       }
                     )
-                  : ajax<ResourceWithData>(
-                      '/context/user_resource/',
-                      {
-                        headers: { Accept: 'application/json' },
-                        method: 'POST',
-                        body: keysToLowerCase({
-                          name: resourceName,
-                          mimeType,
-                          metaData: '',
-                          data: '{}',
-                        }),
-                      },
-                      { expectedResponseCodes: [Http.CREATED] }
-                    )
+                  : ajax<ResourceWithData>('/context/user_resource/', {
+                      headers: { Accept: 'application/json' },
+                      method: 'POST',
+                      body: keysToLowerCase({
+                        name: resourceName,
+                        mimeType,
+                        metaData: '',
+                        data: '{}',
+                      }),
+                      expectedResponseCodes: [Http.CREATED],
+                    })
                 ).then(({ data }) => data)
               ),
             defaultItems: ajax(
@@ -300,8 +293,6 @@ export const preferencesPromise = contextUnlockedPromise.then(
               }),
               {
                 headers: { Accept: 'text/plain' },
-              },
-              {
                 expectedResponseCodes: [Http.NO_CONTENT, Http.OK],
                 errorMode: 'silent',
               }

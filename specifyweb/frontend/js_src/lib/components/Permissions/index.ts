@@ -113,6 +113,7 @@ export const queryUserPermissions = async (
       }>('/permissions/query/', {
         headers: { Accept: 'application/json' },
         method: 'POST',
+        errorMode: 'dismissible',
         body: {
           collectionid: collectionId,
           userid: userId,

@@ -39,19 +39,15 @@ import type {
 import { PreferencesContext, prefEvents } from '../UserPreferences/Hooks';
 
 export const handleLanguageChange = async (language: Language): Promise<void> =>
-  ping(
-    '/context/language/',
-    {
-      method: 'POST',
-      body: {
-        language,
-        csrfmiddlewaretoken: csrfToken,
-      },
+  ping('/context/language/', {
+    method: 'POST',
+    body: {
+      language,
+      csrfmiddlewaretoken: csrfToken,
     },
-    {
-      expectedResponseCodes: [Http.NO_CONTENT],
-    }
-  ).then(f.void);
+    errorMode: 'dismissible',
+    expectedResponseCodes: [Http.NO_CONTENT],
+  }).then(f.void);
 
 export function LanguageSelection<LANGUAGES extends string>({
   value,
@@ -200,7 +196,6 @@ export const LanguagePreferencesItem: PreferenceItemComponent<Language> =
               readonly code: string;
             }>
           >(url, {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             headers: { Accept: 'application/json' },
           }).then(({ data }) =>
             Object.fromEntries(
@@ -260,7 +255,6 @@ export function useSchemaLanguages(
             readonly language: string;
           }>
         >('/context/schema/language/', {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           headers: { Accept: 'application/json' },
           cache: 'no-cache',
         })

@@ -88,12 +88,8 @@ export async function ajaxMock<RESPONSE_TYPE>(
     method: requestMethod = 'GET',
     body: requestBody,
     headers: { Accept: accept },
-  }: Parameters<typeof ajax>[1],
-  {
     expectedResponseCodes = [Http.OK],
-  }: {
-    readonly expectedResponseCodes?: RA<number>;
-  } = {}
+  }: Parameters<typeof ajax>[1]
 ): Promise<AjaxResponseObject<RESPONSE_TYPE>> {
   if (url.startsWith('https://stats.specifycloud.org/capture'))
     return formatResponse('', accept, expectedResponseCodes);

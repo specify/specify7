@@ -23,18 +23,15 @@ export const createCollectionRole = async (
           ...(role as Role),
         },
       }))
-    : ajax<BackEndRole>(
-        `/permissions/roles/${collectionId}/`,
-        {
-          method: 'POST',
-          body: {
-            ...removeKey(role, 'id'),
-            policies: decompressPolicies(role.policies),
-          },
-          headers: { Accept: 'application/json' },
+    : ajax<BackEndRole>(`/permissions/roles/${collectionId}/`, {
+        method: 'POST',
+        body: {
+          ...removeKey(role, 'id'),
+          policies: decompressPolicies(role.policies),
         },
-        { expectedResponseCodes: [Http.CREATED] }
-      ).then(({ data: role }) =>
+        headers: { Accept: 'application/json' },
+        expectedResponseCodes: [Http.CREATED],
+      }).then(({ data: role }) =>
         setRoles((roles) => ({
           ...roles,
           [role.id]: {

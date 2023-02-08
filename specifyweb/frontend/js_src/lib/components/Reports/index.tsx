@@ -35,8 +35,8 @@ export const reportsAvailable = ajax<{ readonly available: boolean }>(
   cachableUrl('/context/report_runner_status.json'),
   {
     headers: { Accept: 'application/json' },
-  },
-  { errorMode: 'silent' }
+    errorMode: 'silent',
+  }
 )
   .then(({ data }) => data.available)
   .catch(() => false);

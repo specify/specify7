@@ -33,27 +33,21 @@ import { DataSetMeta } from '../WorkBench/DataSetMeta';
 import { TableIcon } from '../Molecules/TableIcon';
 
 const createEmptyDataSet = async (): Promise<Dataset> =>
-  ajax<Dataset>(
-    '/api/workbench/dataset/',
-    {
-      method: 'POST',
-      body: {
-        name: await uniquifyDataSetName(
-          wbText.newDataSetName({ date: new Date().toDateString() })
-        ),
-        importedfilename: '',
-        columns: [],
-        rows: [],
-      },
-      headers: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        Accept: 'application/json',
-      },
+  ajax<Dataset>('/api/workbench/dataset/', {
+    method: 'POST',
+    body: {
+      name: await uniquifyDataSetName(
+        wbText.newDataSetName({ date: new Date().toDateString() })
+      ),
+      importedfilename: '',
+      columns: [],
+      rows: [],
     },
-    {
-      expectedResponseCodes: [Http.CREATED],
-    }
-  ).then(({ data }) => data);
+    headers: {
+      Accept: 'application/json',
+    },
+    expectedResponseCodes: [Http.CREATED],
+  }).then(({ data }) => data);
 
 /** Wrapper for Data Set Meta */
 export function DataSetMetaOverlay(): JSX.Element | null {
@@ -63,7 +57,6 @@ export function DataSetMetaOverlay(): JSX.Element | null {
     React.useCallback(
       async () =>
         ajax<Dataset>(`/api/workbench/dataset/${dataSetId}/`, {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           headers: { Accept: 'application/json' },
         }).then(({ data }) => data),
       [dataSetId]
@@ -137,7 +130,6 @@ export function DataSetsDialog({
       async () =>
         ajax<RA<DatasetBrief>>(
           `/api/workbench/dataset/${showTemplates ? '?with_plan' : ''}`,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           { headers: { Accept: 'application/json' } }
         ).then(({ data }) => data),
       [showTemplates]

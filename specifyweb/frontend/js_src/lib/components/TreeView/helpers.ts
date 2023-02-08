@@ -76,14 +76,11 @@ export type Stats = RR<
  * Fetch tree node usage stats
  */
 export const fetchStats = async (url: string): Promise<Stats> =>
-  ajax<RA<readonly [number, number, number]>>(
-    url,
-    {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      headers: { Accept: 'application/json' },
-    },
-    { errorMode: 'silent' }
-  )
+  ajax<RA<readonly [number, number, number]>>(url, {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    headers: { Accept: 'application/json' },
+    errorMode: 'silent',
+  })
     .then(({ data }) =>
       Object.fromEntries(
         data.map(([childId, directCount, allCount]) => [

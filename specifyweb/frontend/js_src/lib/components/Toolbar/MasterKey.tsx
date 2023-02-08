@@ -48,20 +48,15 @@ export function MasterKeyOverlay(): JSX.Element | null {
         id={id('form')}
         onSubmit={(): void =>
           loading(
-            ajax(
-              '/api/master_key/',
-              {
-                method: 'POST',
-                body: formData({ password }),
-                headers: {
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  Accept: 'text/plain',
-                },
+            ajax('/api/master_key/', {
+              method: 'POST',
+              body: formData({ password }),
+              headers: {
+                Accept: 'text/plain',
               },
-              {
-                expectedResponseCodes: [Http.FORBIDDEN, Http.OK],
-              }
-            )
+              errorMode: 'dismissible',
+              expectedResponseCodes: [Http.FORBIDDEN, Http.OK],
+            })
               .then(({ data, status }) =>
                 status === Http.FORBIDDEN
                   ? setValidation(userText.incorrectPassword())

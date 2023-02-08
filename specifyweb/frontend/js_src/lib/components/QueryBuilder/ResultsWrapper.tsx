@@ -108,6 +108,7 @@ export function QueryResultsWrapper({
       method: 'POST',
       // eslint-disable-next-line @typescript-eslint/naming-convention
       headers: { Accept: 'application/json' },
+      errorMode: 'dismissible',
       body: keysToLowerCase({
         ...queryResource.toJSON(),
         collectionId: forceCollection,

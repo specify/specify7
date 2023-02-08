@@ -46,7 +46,6 @@ function TemplateSelection({
         onDataSetSelect={(id: number): void =>
           loading(
             ajax<Dataset>(`/api/workbench/dataset/${id}/`, {
-              // eslint-disable-next-line @typescript-eslint/naming-convention
               headers: { Accept: 'application/json' },
             }).then(({ data: { uploadplan, columns, visualorder } }) =>
               uploadplan === null

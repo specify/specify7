@@ -13,18 +13,15 @@ export const createLibraryRole = async (
   handleChange: GetOrSet<IR<Role> | undefined>[1],
   role: NewRole
 ): Promise<void> =>
-  ajax<BackEndRole>(
-    `/permissions/library_roles/`,
-    {
-      method: 'POST',
-      body: {
-        ...removeKey(role, 'id'),
-        policies: decompressPolicies(role.policies),
-      },
-      headers: { Accept: 'application/json' },
+  ajax<BackEndRole>(`/permissions/library_roles/`, {
+    method: 'POST',
+    body: {
+      ...removeKey(role, 'id'),
+      policies: decompressPolicies(role.policies),
     },
-    { expectedResponseCodes: [Http.CREATED] }
-  ).then(({ data: role }) =>
+    headers: { Accept: 'application/json' },
+    expectedResponseCodes: [Http.CREATED],
+  }).then(({ data: role }) =>
     handleChange((roles) => ({
       ...roles,
       [role.id]: {

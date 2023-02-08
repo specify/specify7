@@ -148,8 +148,6 @@ export function CreateRole({
                                       libraryRoleId: role.id,
                                       name: roleName,
                                     }),
-                                  },
-                                  {
                                     expectedResponseCodes: [Http.CREATED],
                                   }
                                 ).then(({ data }) => data)

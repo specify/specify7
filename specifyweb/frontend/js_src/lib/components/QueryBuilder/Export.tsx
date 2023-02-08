@@ -54,6 +54,7 @@ export function QueryExportButtons({
           ),
         recordSetId,
       }),
+      errorMode: 'dismissible',
     });
   }
 

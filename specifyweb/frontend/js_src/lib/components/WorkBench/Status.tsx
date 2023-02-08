@@ -143,8 +143,9 @@ export function WbStatus({
               setAborted('pending');
               ajax<'not running' | 'ok'>(
                 `/api/workbench/abort/${dataset.id}/`,
-                { method: 'POST', headers: { Accept: 'application/json' } },
                 {
+                  method: 'POST',
+                  headers: { Accept: 'application/json' },
                   expectedResponseCodes: [Http.UNAVAILABLE, Http.OK],
                   errorMode: 'silent',
                 }

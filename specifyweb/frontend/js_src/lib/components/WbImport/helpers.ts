@@ -172,21 +172,19 @@ export const createDataSet = async ({
   uniquifyDataSetName(dataSetName)
     .then(async (dataSetName) => {
       const { rows, header } = extractHeader(data, hasHeader);
-      return ajax<Dataset>(
-        '/api/workbench/dataset/',
-        {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-          },
-          body: {
-            name: dataSetName,
-            importedfilename: fileName,
-            columns: header,
-            rows,
-          },
+      return ajax<Dataset>('/api/workbench/dataset/', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
         },
-        { expectedResponseCodes: [Http.CREATED] }
-      );
+        body: {
+          name: dataSetName,
+          importedfilename: fileName,
+          columns: header,
+          rows,
+        },
+        errorMode: 'dismissible',
+        expectedResponseCodes: [Http.CREATED],
+      });
     })
     .then(({ data }) => data);

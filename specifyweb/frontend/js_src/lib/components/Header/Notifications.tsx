@@ -65,16 +65,18 @@ export function Notifications(): JSX.Element {
           >(
             `/notifications/messages/`,
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            { headers: { Accept: 'application/json' } },
-            /*
-             * Don't show modal error dialog on errors. Several reasons why:
-             *  - Request may fail if Django migrations weren't run
-             *  - Request is initialized automatically, not by user, thus having
-             *    an error dialog appear out of blue could be confusing/unexpected
-             *  - Notifications is not a critical component, so if it fails, it
-             *    shouldn't bring down entire application
-             */
-            { errorMode: 'silent' }
+            {
+              headers: { Accept: 'application/json' },
+              /*
+               * Don't show modal error dialog on errors. Several reasons why:
+               *  - Request may fail if Django migrations weren't run
+               *  - Request is initialized automatically, not by user, thus having
+               *    an error dialog appear out of blue could be confusing/unexpected
+               *  - Notifications is not a critical component, so if it fails, it
+               *    shouldn't bring down entire application
+               */
+              errorMode: 'silent',
+            }
           )
         )
         .then(({ data: notifications }) => {
@@ -155,17 +157,14 @@ export function Notifications(): JSX.Element {
                 read: true,
               }))
             );
-            freezeFetchPromise.current = ping(
-              '/notifications/mark_read/',
-              {
-                method: 'POST',
-                body: formData({
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  last_seen: notifications[0]!.timestamp,
-                }),
-              },
-              { errorMode: 'silent' }
-            ).then(() => undefined);
+            freezeFetchPromise.current = ping('/notifications/mark_read/', {
+              method: 'POST',
+              body: formData({
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                last_seen: notifications[0]!.timestamp,
+              }),
+              errorMode: 'silent',
+            }).then(() => undefined);
           }}
         >
           {/*
@@ -216,15 +215,12 @@ function NotificationComponent({
           title={commonText.delete()}
           onClick={(): void =>
             handleDelete(
-              ping(
-                '/notifications/delete/',
-                {
-                  method: 'POST',
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  body: formData({ message_id: notification.messageId }),
-                },
-                { errorMode: 'silent' }
-              ).then(f.void)
+              ping('/notifications/delete/', {
+                method: 'POST',
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                body: formData({ message_id: notification.messageId }),
+                errorMode: 'dismissible',
+              }).then(f.void)
             )
           }
         />

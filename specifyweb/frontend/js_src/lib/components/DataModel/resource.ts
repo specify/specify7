@@ -49,8 +49,10 @@ export const fetchResource = async <
   ajax<SerializedModel<SCHEMA>>(
     `/api/specify/${tableName.toLowerCase()}/${id}/`,
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    { headers: { Accept: 'application/json' } },
-    strict ? undefined : { expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }
+    {
+      headers: { Accept: 'application/json' },
+      expectedResponseCodes: strict ? undefined : [Http.OK, Http.NOT_FOUND],
+    }
   ).then(({ data: record, status }) =>
     status === Http.NOT_FOUND ? undefined! : serializeResource(record)
   );
@@ -59,13 +61,10 @@ export const deleteResource = async (
   tableName: keyof Tables,
   id: number
 ): Promise<void> =>
-  ping(
-    `/api/specify/${tableName.toLowerCase()}/${id}/`,
-    {
-      method: 'DELETE',
-    },
-    { expectedResponseCodes: [Http.NO_CONTENT] }
-  ).then(f.void);
+  ping(`/api/specify/${tableName.toLowerCase()}/${id}/`, {
+    method: 'DELETE',
+    expectedResponseCodes: [Http.NO_CONTENT],
+  }).then(f.void);
 
 export const createResource = async <TABLE_NAME extends keyof Tables>(
   tableName: TABLE_NAME,
@@ -87,8 +86,8 @@ export const createResource = async <TABLE_NAME extends keyof Tables>(
         )
       ),
       headers: { Accept: 'application/json' },
-    },
-    { expectedResponseCodes: [Http.CREATED] }
+      expectedResponseCodes: [Http.CREATED],
+    }
   ).then(({ data }) => serializeResource(data));
 
 export const saveResource = async <TABLE_NAME extends keyof Tables>(
@@ -103,8 +102,6 @@ export const saveResource = async <TABLE_NAME extends keyof Tables>(
       method: 'PUT',
       body: keysToLowerCase(addMissingFields(tableName, data)),
       headers: { Accept: 'application/json' },
-    },
-    {
       expectedResponseCodes: [
         Http.OK,
         ...(typeof handleConflict === 'function' ? [Http.CONFLICT] : []),

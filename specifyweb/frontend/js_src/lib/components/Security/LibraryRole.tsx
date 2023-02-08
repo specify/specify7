@@ -43,13 +43,10 @@ export function SecurityLibraryRole(): JSX.Element {
       onDelete={(): void =>
         typeof role.id === 'number'
           ? loading(
-              ping(
-                `/permissions/library_role/${role.id}/`,
-                {
-                  method: 'DELETE',
-                },
-                { expectedResponseCodes: [Http.NO_CONTENT] }
-              )
+              ping(`/permissions/library_role/${role.id}/`, {
+                method: 'DELETE',
+                expectedResponseCodes: [Http.NO_CONTENT],
+              })
                 .then((): void =>
                   handleChangeLibraryRoles(
                     removeKey(libraryRoles, role.id!.toString())
@@ -103,17 +100,14 @@ export const updateLibraryRole = async (
   handleChange: GetOrSet<IR<Role> | undefined>[1],
   role: Role
 ): Promise<void> =>
-  ping(
-    `/permissions/library_role/${role.id}/`,
-    {
-      method: 'PUT',
-      body: {
-        ...role,
-        policies: decompressPolicies(role.policies),
-      },
+  ping(`/permissions/library_role/${role.id}/`, {
+    method: 'PUT',
+    body: {
+      ...role,
+      policies: decompressPolicies(role.policies),
     },
-    { expectedResponseCodes: [Http.NO_CONTENT] }
-  ).then((): void =>
+    expectedResponseCodes: [Http.NO_CONTENT],
+  }).then((): void =>
     handleChange((roles) =>
       replaceKey(defined(roles), role.id.toString(), role)
     )

@@ -33,13 +33,10 @@ export function WbPlanViewWrapper(): JSX.Element | null {
     React.useCallback(() => {
       const dataSetId = f.parseInt(id);
       if (dataSetId === undefined) return false;
-      return ajax<Dataset>(
-        `/api/workbench/dataset/${dataSetId}/`,
-        {
-          headers: { Accept: 'application/json' },
-        },
-        { expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }
-      ).then(({ data, status }) => (status === Http.NOT_FOUND ? false : data));
+      return ajax<Dataset>(`/api/workbench/dataset/${dataSetId}/`, {
+        headers: { Accept: 'application/json' },
+        expectedResponseCodes: [Http.OK, Http.NOT_FOUND],
+      }).then(({ data, status }) => (status === Http.NOT_FOUND ? false : data));
     }, [id]),
     true
   );

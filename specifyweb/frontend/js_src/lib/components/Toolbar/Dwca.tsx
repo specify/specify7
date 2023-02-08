@@ -136,4 +136,5 @@ const startExport = async (
       definition,
       ...(typeof metadata === 'string' ? { metadata } : {}),
     }),
+    errorMode: 'dismissible',
   }).then(f.void);

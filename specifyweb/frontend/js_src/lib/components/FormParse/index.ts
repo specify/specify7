@@ -80,8 +80,6 @@ export const fetchView = async (
         {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           headers: { Accept: 'text/plain' },
-        },
-        {
           expectedResponseCodes: [Http.OK, Http.NOT_FOUND, Http.NO_CONTENT],
         }
       ).then(({ data, status }) => {

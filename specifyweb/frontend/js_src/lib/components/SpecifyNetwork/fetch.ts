@@ -45,14 +45,11 @@ export const fetchOccurrenceName = async (
         readonly records: RA<{
           readonly records: RA<IR<string>>;
         }>;
-      }>(
-        formatOccurrenceDataRequest(resource.get('guid')),
-        {
-          mode: 'cors',
-          headers: { Accept: 'application/json' },
-        },
-        { errorMode: 'silent' }
-      )
+      }>(formatOccurrenceDataRequest(resource.get('guid')), {
+        mode: 'cors',
+        headers: { Accept: 'application/json' },
+        errorMode: 'silent',
+      })
     )
     .then(({ data }) =>
       data.records

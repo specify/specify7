@@ -24,16 +24,10 @@ export function usePrimarySearch(
   const [primaryResults] = useAsyncState<RA<RawExpressSearchResult> | false>(
     React.useCallback(
       async () =>
-        ajax<IR<QueryTableResult>>(
-          ajaxUrl,
-          {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            headers: { Accept: 'application/json' },
-          },
-          {
-            expectedResponseCodes: [Http.OK, Http.FORBIDDEN],
-          }
-        ).then(({ data, status }) =>
+        ajax<IR<QueryTableResult>>(ajaxUrl, {
+          headers: { Accept: 'application/json' },
+          expectedResponseCodes: [Http.OK, Http.FORBIDDEN],
+        }).then(({ data, status }) =>
           status === Http.FORBIDDEN
             ? false
             : Object.entries(data)
@@ -54,11 +48,9 @@ export function usePrimarySearch(
 
 const relatedSearchesPromise = contextUnlockedPromise.then(async (entrypoint) =>
   entrypoint === 'main'
-    ? ajax<RA<string>>(
-        '/context/available_related_searches.json',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        { headers: { Accept: 'application/json' } }
-      ).then(({ data }) => data)
+    ? ajax<RA<string>>('/context/available_related_searches.json', {
+        headers: { Accept: 'application/json' },
+      }).then(({ data }) => data)
     : foreverFetch<RA<string>>()
 );
 export const expressSearchFetchSize = 40;
@@ -101,16 +93,10 @@ export function useSecondarySearch(
                   name,
                   limit: expressSearchFetchSize.toString(),
                 });
-                return ajax<RelatedTableResult>(
-                  ajaxUrl,
-                  {
-                    // eslint-disable-next-line @typescript-eslint/naming-convention
-                    headers: { Accept: 'application/json' },
-                  },
-                  {
-                    expectedResponseCodes: [Http.OK, Http.FORBIDDEN],
-                  }
-                ).then(({ data, status }) =>
+                return ajax<RelatedTableResult>(ajaxUrl, {
+                  headers: { Accept: 'application/json' },
+                  expectedResponseCodes: [Http.OK, Http.FORBIDDEN],
+                }).then(({ data, status }) =>
                   status === Http.FORBIDDEN
                     ? undefined
                     : ([ajaxUrl, data] as const)

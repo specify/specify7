@@ -157,8 +157,6 @@ export const fetchBlockers = async (
     {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       headers: { Accept: 'application/json' },
-    },
-    {
       expectedResponseCodes: expectFailure
         ? [Http.NOT_FOUND, Http.OK]
         : [Http.OK],

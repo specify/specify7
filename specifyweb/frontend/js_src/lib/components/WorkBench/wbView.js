@@ -1236,14 +1236,12 @@ export const WBView = Backbone.View.extend({
       columnOrder.some((i, index) => i !== this.dataset.visualorder[index])
     ) {
       this.dataset.visualorder = columnOrder;
-      ping(
-        `/api/workbench/dataset/${this.dataset.id}/`,
-        {
-          method: 'PUT',
-          body: { visualorder: columnOrder },
-        },
-        { expectedResponseCodes: [Http.NO_CONTENT, Http.NOT_FOUND] }
-      ).then(this.checkDeletedFail.bind(this));
+      ping(`/api/workbench/dataset/${this.dataset.id}/`, {
+        method: 'PUT',
+        body: { visualorder: columnOrder },
+        errorMode: 'dismissible',
+        expectedResponseCodes: [Http.NO_CONTENT, Http.NOT_FOUND],
+      }).then(this.checkDeletedFail.bind(this));
     }
   },
   // Do not scroll the viewport to the last column after inserting a row
@@ -1571,7 +1569,9 @@ export const WBView = Backbone.View.extend({
             header={wbText.noDisambiguationResults()}
             buttons={commonText.close()}
             onClose={() => dialog()}
-          >{wbText.noDisambiguationResultsDescription()}</Dialog>
+          >
+            {wbText.noDisambiguationResultsDescription()}
+          </Dialog>
         );
         return;
       }
@@ -1601,41 +1601,46 @@ export const WBView = Backbone.View.extend({
       // onClose: globalThis.clearInterval(interval);
       */
 
-      const dialog = this.options.display(<DisambiguationDialog
-        matches={resources.models}
-        onClose={() => dialog()}
-        onSelected={(selected)=>{
-          this.setDisambiguation(
-            physicalRow,
-            matches.mappingPath,
-            selected.id
-          );
-          this.startValidateRow(physicalRow);
-        }}
-        onSelectedAll={(selected)=>{
-          // Loop backwards so the live validation will go from top to bottom
-          for (let visualRow = this.data.length - 1; visualRow >= 0; visualRow--) {
-            const physicalRow = this.hot.toPhysicalRow(visualRow);
-            if (
-              !this.uploadResults.ambiguousMatches[physicalRow]?.find(
-                ({ key, mappingPath }) =>
-                  key === matches.key &&
-                  typeof this.getDisambiguation(physicalRow)[
-                    mappingPathToString(mappingPath)
-                  ] !== 'number'
-              )
-            )
-              continue;
+      const dialog = this.options.display(
+        <DisambiguationDialog
+          matches={resources.models}
+          onClose={() => dialog()}
+          onSelected={(selected) => {
             this.setDisambiguation(
               physicalRow,
               matches.mappingPath,
               selected.id
             );
             this.startValidateRow(physicalRow);
-          }
-        }}
-      />);
-
+          }}
+          onSelectedAll={(selected) => {
+            // Loop backwards so the live validation will go from top to bottom
+            for (
+              let visualRow = this.data.length - 1;
+              visualRow >= 0;
+              visualRow--
+            ) {
+              const physicalRow = this.hot.toPhysicalRow(visualRow);
+              if (
+                !this.uploadResults.ambiguousMatches[physicalRow]?.find(
+                  ({ key, mappingPath }) =>
+                    key === matches.key &&
+                    typeof this.getDisambiguation(physicalRow)[
+                      mappingPathToString(mappingPath)
+                    ] !== 'number'
+                )
+              )
+                continue;
+              this.setDisambiguation(
+                physicalRow,
+                matches.mappingPath,
+                selected.id
+              );
+              this.startValidateRow(physicalRow);
+            }
+          }}
+        />
+      );
     });
   },
 
@@ -1888,13 +1893,10 @@ export const WBView = Backbone.View.extend({
   startUpload(mode) {
     this.stopLiveValidation();
     this.updateValidationButton();
-    ping(
-      `/api/workbench/${mode}/${this.dataset.id}/`,
-      {
-        method: 'POST',
-      },
-      { expectedResponseCodes: [Http.OK, Http.NOT_FOUND, Http.CONFLICT] }
-    )
+    ping(`/api/workbench/${mode}/${this.dataset.id}/`, {
+      method: 'POST',
+      expectedResponseCodes: [Http.OK, Http.NOT_FOUND, Http.CONFLICT],
+    })
       .then((statusCode) => {
         this.checkDeletedFail(statusCode);
         this.checkConflictFail(statusCode);
@@ -1976,14 +1978,11 @@ export const WBView = Backbone.View.extend({
     );
 
     // Send data
-    return ping(
-      `/api/workbench/rows/${this.dataset.id}/`,
-      {
-        method: 'PUT',
-        body: this.data,
-      },
-      { expectedResponseCodes: [Http.NO_CONTENT, Http.NOT_FOUND] }
-    )
+    return ping(`/api/workbench/rows/${this.dataset.id}/`, {
+      method: 'PUT',
+      body: this.data,
+      expectedResponseCodes: [Http.NO_CONTENT, Http.NOT_FOUND],
+    })
       .then((status) => this.checkDeletedFail(status))
       .then(() => {
         this.spreadSheetUpToDate();
@@ -2232,10 +2231,12 @@ export const WBView = Backbone.View.extend({
         ]);
       });
     } else
-      raise(new Error(
-        `Trying to parse unknown uploadStatus type "${uploadStatus}" at
+      raise(
+        new Error(
+          `Trying to parse unknown uploadStatus type "${uploadStatus}" at
         row ${this.hot.toVisualRow(physicalRow)}`
-      ));
+        )
+      );
 
     Object.entries(uploadResult.toOne).forEach(([fieldName, uploadResult]) =>
       this.parseRowValidationResults(
@@ -2487,10 +2488,10 @@ export const WBView = Backbone.View.extend({
       <Dialog
         header={
           this.refreshInitiatedBy === 'validate'
-          ? wbText.validationCanceled()
-          : this.refreshInitiatedBy === 'unupload'
-          ? wbText.rollbackCanceled()
-          : wbText.uploadCanceled()
+            ? wbText.validationCanceled()
+            : this.refreshInitiatedBy === 'unupload'
+            ? wbText.rollbackCanceled()
+            : wbText.uploadCanceled()
         }
         onClose={() => dialog()}
         buttons={commonText.close()}
