@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-02-08 17:06+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2023-02-08 21:39+0000\n"
+"Last-Translator: gallegonovato <fran-carro@hotmail.es>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/header/"
 "es/>\n"
 "Language: es\n"
@@ -18,9 +18,8 @@ msgstr "Saltar al contenido"
 
 #. Used in: Components > Header > Menu Item Processing
 #: components/Header/menuItemProcessing.ts:63
-#, fuzzy
 msgid "main"
-msgstr "Principal"
+msgstr "Inicio"
 
 #. 🟥Example: Current Collection. Used in: Components > Header > Choose Collection
 #: components/Header/ChooseCollection.tsx:42
