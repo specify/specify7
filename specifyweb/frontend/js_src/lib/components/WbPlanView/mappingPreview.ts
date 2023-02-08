@@ -26,7 +26,6 @@ import { getMappingLineData } from './navigator';
 
 /** Use table name instead of field name for the following fields: */
 const fieldsToHide = new Set<string>([
-  // 'name',
   'fullName',
   'localityName',
   formattedEntry,
