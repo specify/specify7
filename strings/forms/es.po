@@ -11,7 +11,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 4.16-dev\n"
 
-#: components/UserPreferences/Definitions.tsx:598
+#: components/UserPreferences/Definitions.tsx:564
 #. Used in: Components > User Preferences > Definitions
 msgid "forms"
 msgstr "Formularios"
@@ -184,14 +184,14 @@ msgstr "Guardar registro primero"
 
 #: components/FormSliders/Slider.tsx:31
 #: components/FormSliders/Slider.tsx:33
-#: components/UserPreferences/Definitions.tsx:972
+#: components/UserPreferences/Definitions.tsx:953
 #. Used in: Components > Form Sliders > Slider ⬤ Components > User Preferences > Definitions
 msgid "firstRecord"
 msgstr "primer registro"
 
 #: components/FormSliders/Slider.tsx:97
 #: components/FormSliders/Slider.tsx:99
-#: components/UserPreferences/Definitions.tsx:976
+#: components/UserPreferences/Definitions.tsx:957
 #. Used in: Components > Form Sliders > Slider ⬤ Components > User Preferences > Definitions
 msgid "lastRecord"
 msgstr "Último registro"
@@ -366,37 +366,37 @@ msgstr "Formato requerido: {format:string}."
 msgid "inputTypeNumber"
 msgstr "El valor debe ser un número"
 
-#: components/PickLists/definitions.ts:27
+#: components/PickLists/definitions.ts:26
 #. Used in: Components > Pick Lists > Definitions
 msgid "organization"
 msgstr "Organización"
 
-#: components/PickLists/definitions.ts:28
+#: components/PickLists/definitions.ts:27
 #. Used in: Components > Pick Lists > Definitions
 msgid "person"
 msgstr "Persona"
 
-#: components/PickLists/definitions.ts:29
+#: components/PickLists/definitions.ts:28
 #. Used in: Components > Pick Lists > Definitions
 msgid "other"
 msgstr "Otro"
 
-#: components/PickLists/definitions.ts:30
+#: components/PickLists/definitions.ts:29
 #. Used in: Components > Pick Lists > Definitions
 msgid "group"
 msgstr "Grupo"
 
-#: components/PickLists/definitions.ts:34
+#: components/PickLists/definitions.ts:33
 #. Used in: Components > Pick Lists > Definitions
 msgid "userDefinedItems"
 msgstr "Elementos definidos por el usuario"
 
-#: components/PickLists/definitions.ts:35
+#: components/PickLists/definitions.ts:34
 #. Used in: Components > Pick Lists > Definitions
 msgid "entireTable"
 msgstr "Toda la mesa"
 
-#: components/PickLists/definitions.ts:36
+#: components/PickLists/definitions.ts:35
 #. Used in: Components > Pick Lists > Definitions
 msgid "fieldFromTable"
 msgstr "Campo de la tabla"
@@ -426,12 +426,12 @@ msgstr "Es posible que desee guardar este registro antes de navegar."
 msgid "creatingNewRecord"
 msgstr "Creando nuevo registro"
 
-#: components/PickLists/definitions.ts:137
+#: components/PickLists/definitions.ts:138
 #. Used in: Components > Pick Lists > Definitions
 msgid "forward"
 msgstr "Hacia adelante"
 
-#: components/PickLists/definitions.ts:136
+#: components/PickLists/definitions.ts:137
 #. Used in: Components > Pick Lists > Definitions
 msgid "reverse"
 msgstr "Marcha atrás"
@@ -461,7 +461,7 @@ msgstr "Agregar al {recordSetTable:string}"
 msgid "removeFromRecordSet"
 msgstr "Eliminar de {recordSetTable:string}"
 
-#: components/Molecules/AutoComplete.tsx:522
+#: components/Molecules/AutoComplete.tsx:520
 #. Used in: Components > Molecules > Auto Complete
 msgid "nothingFound"
 msgstr "Nada Encontrado"
@@ -581,7 +581,7 @@ msgid "subForm"
 msgstr "Subformulario"
 
 #: components/FormMeta/SubViewMeta.tsx:37
-#: components/UserPreferences/Definitions.tsx:983
+#: components/UserPreferences/Definitions.tsx:964
 #. Used in: Components > Form Meta > Sub View Meta ⬤ Components > User Preferences > Definitions
 msgid "formTable"
 msgstr "Cuadrícula"
@@ -607,7 +607,7 @@ msgid "useCustomSettings"
 msgstr "Usar configuraciones personalizadas"
 
 #: components/FormMeta/ReadOnlyMode.tsx:20
-#: components/Header/UserTools.tsx:62
+#: components/Header/UserTools.tsx:91
 #. Used in: Components > Form Meta > Read Only Mode ⬤ Components > Header > User Tools
 msgid "disableReadOnly"
 msgstr "Deshabilitar el modo de solo lectura"

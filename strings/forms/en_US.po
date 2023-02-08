@@ -1,7 +1,7 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/UserPreferences/Definitions.tsx:598
+#: components/UserPreferences/Definitions.tsx:564
 #. Used in: Components > User Preferences > Definitions
 msgid "forms"
 msgstr "Forms"
@@ -174,14 +174,14 @@ msgstr "Save record first"
 
 #: components/FormSliders/Slider.tsx:31
 #: components/FormSliders/Slider.tsx:33
-#: components/UserPreferences/Definitions.tsx:972
+#: components/UserPreferences/Definitions.tsx:953
 #. Used in: Components > Form Sliders > Slider ⬤ Components > User Preferences > Definitions
 msgid "firstRecord"
 msgstr "First Record"
 
 #: components/FormSliders/Slider.tsx:97
 #: components/FormSliders/Slider.tsx:99
-#: components/UserPreferences/Definitions.tsx:976
+#: components/UserPreferences/Definitions.tsx:957
 #. Used in: Components > Form Sliders > Slider ⬤ Components > User Preferences > Definitions
 msgid "lastRecord"
 msgstr "Last Record"
@@ -356,37 +356,37 @@ msgstr "Required Format: {format:string}."
 msgid "inputTypeNumber"
 msgstr "Value must be a number"
 
-#: components/PickLists/definitions.ts:27
+#: components/PickLists/definitions.ts:26
 #. Used in: Components > Pick Lists > Definitions
 msgid "organization"
 msgstr "Organization"
 
-#: components/PickLists/definitions.ts:28
+#: components/PickLists/definitions.ts:27
 #. Used in: Components > Pick Lists > Definitions
 msgid "person"
 msgstr "Person"
 
-#: components/PickLists/definitions.ts:29
+#: components/PickLists/definitions.ts:28
 #. Used in: Components > Pick Lists > Definitions
 msgid "other"
 msgstr "Other"
 
-#: components/PickLists/definitions.ts:30
+#: components/PickLists/definitions.ts:29
 #. Used in: Components > Pick Lists > Definitions
 msgid "group"
 msgstr "Group"
 
-#: components/PickLists/definitions.ts:34
+#: components/PickLists/definitions.ts:33
 #. Used in: Components > Pick Lists > Definitions
 msgid "userDefinedItems"
 msgstr "User Defined Items"
 
-#: components/PickLists/definitions.ts:35
+#: components/PickLists/definitions.ts:34
 #. Used in: Components > Pick Lists > Definitions
 msgid "entireTable"
 msgstr "Entire Table"
 
-#: components/PickLists/definitions.ts:36
+#: components/PickLists/definitions.ts:35
 #. Used in: Components > Pick Lists > Definitions
 msgid "fieldFromTable"
 msgstr "Field From Table"
@@ -416,12 +416,12 @@ msgstr "You might want to save this record before navigating away."
 msgid "creatingNewRecord"
 msgstr "Creating new record"
 
-#: components/PickLists/definitions.ts:137
+#: components/PickLists/definitions.ts:138
 #. Used in: Components > Pick Lists > Definitions
 msgid "forward"
 msgstr "Forward"
 
-#: components/PickLists/definitions.ts:136
+#: components/PickLists/definitions.ts:137
 #. Used in: Components > Pick Lists > Definitions
 msgid "reverse"
 msgstr "Reverse"
@@ -451,7 +451,7 @@ msgstr "Add to {recordSetTable:string}"
 msgid "removeFromRecordSet"
 msgstr "Remove from {recordSetTable:string}"
 
-#: components/Molecules/AutoComplete.tsx:522
+#: components/Molecules/AutoComplete.tsx:520
 #. Used in: Components > Molecules > Auto Complete
 msgid "nothingFound"
 msgstr "Nothing found"
@@ -571,7 +571,7 @@ msgid "subForm"
 msgstr "Subform"
 
 #: components/FormMeta/SubViewMeta.tsx:37
-#: components/UserPreferences/Definitions.tsx:983
+#: components/UserPreferences/Definitions.tsx:964
 #. Used in: Components > Form Meta > Sub View Meta ⬤ Components > User Preferences > Definitions
 msgid "formTable"
 msgstr "Grid"
@@ -597,7 +597,7 @@ msgid "useCustomSettings"
 msgstr "Use custom settings"
 
 #: components/FormMeta/ReadOnlyMode.tsx:20
-#: components/Header/UserTools.tsx:62
+#: components/Header/UserTools.tsx:91
 #. Used in: Components > Form Meta > Read Only Mode ⬤ Components > Header > User Tools
 msgid "disableReadOnly"
 msgstr "Disable read-only mode"

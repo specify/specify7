@@ -1,11 +1,10 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/Header/menuItemDefinitions.ts:58
-#: components/Router/OverlayRoutes.tsx:52
+#: components/Header/menuItemDefinitions.ts:51
+#: components/Router/OverlayRoutes.tsx:68
 #: components/Toolbar/TreeRepair.tsx:45
-#: components/UserPreferences/Definitions.tsx:451
-#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Tree Repair ⬤ Components > User Preferences > Definitions
+#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Tree Repair
 msgid "trees"
 msgstr "Деревья"
 
@@ -158,8 +157,8 @@ msgstr "Отменить синонимизацию"
 msgid "desynonymizeNodeMessage"
 msgstr "«{nodeName:string}» больше не будет синонимом «{synonymName:string}»."
 
-#: components/TreeView/Row.tsx:220
-#: components/TreeView/Row.tsx:234
+#: components/TreeView/Row.tsx:222
+#: components/TreeView/Row.tsx:236
 #. Used in: Components > Tree View > Row
 msgid "acceptedName"
 msgstr "Предпочтительний: {name:string}"
@@ -176,17 +175,17 @@ msgstr "{treeName:string} Дерево"
 msgid "searchTreePlaceholder"
 msgstr "Поиск"
 
-#: components/TreeView/Row.tsx:200
+#: components/TreeView/Row.tsx:202
 #. Used in: Components > Tree View > Row
 msgid "opened"
 msgstr "Открыт"
 
-#: components/TreeView/Row.tsx:201
+#: components/TreeView/Row.tsx:203
 #. Used in: Components > Tree View > Row
 msgid "closed"
 msgstr "Закрыт"
 
-#: components/TreeView/Row.tsx:198
+#: components/TreeView/Row.tsx:200
 #. Used in: Components > Tree View > Row
 msgid "leafNode"
 msgstr "Угловой узел"

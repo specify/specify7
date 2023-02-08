@@ -87,7 +87,7 @@ msgstr ""
 msgid "errorMessage"
 msgstr "Mensaje de error"
 
-#: components/Router/Router.tsx:282
+#: components/Router/Router.tsx:278
 #. Used in: Components > Router > Router
 msgid "leavePageConfirmation"
 msgstr "¿Seguro que quieres salir de esta página?"
@@ -97,31 +97,31 @@ msgstr "¿Seguro que quieres salir de esta página?"
 msgid "leavePageConfirmationDescription"
 msgstr "Los cambios no guardados se perderán si abandona esta página."
 
-#: components/Router/Router.tsx:278
+#: components/Router/Router.tsx:274
 #. Used in: Components > Router > Router
 msgid "leave"
 msgstr "Vete"
 
-#: components/Core/Main.tsx:145
-#. Used in: Components > Core > Main
+#: components/Core/VersionMismatch.tsx:22
+#. Used in: Components > Core > Version Mismatch
 msgid "versionMismatch"
 msgstr "La versión de Specify no coincide con la versión de la base de datos"
 
-#: components/Core/Main.tsx:149
-#. Used in: Components > Core > Main
+#: components/Core/VersionMismatch.tsx:26
+#. Used in: Components > Core > Version Mismatch
 msgid "versionMismatchDescription"
 msgstr ""
 "La versión de Specify {specifySixVersion:string} no coincide con la versión "
 "de la base de datos {databaseVersion:string}."
 
-#: components/Core/Main.tsx:154
-#. Used in: Components > Core > Main
+#: components/Core/VersionMismatch.tsx:31
+#. Used in: Components > Core > Version Mismatch
 msgid "versionMismatchSecondDescription"
 msgstr ""
 "Por lo tanto, es posible que algunas funciones de Specific 7 no funcionen "
 "correctamente."
 
-#: components/Core/Main.tsx:157
-#. Used in: Components > Core > Main
+#: components/Core/VersionMismatch.tsx:34
+#. Used in: Components > Core > Version Mismatch
 msgid "versionMismatchInstructions"
 msgstr "Instrucciones para resolver la discrepancia de los esquema de Specify"

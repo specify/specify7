@@ -11,7 +11,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 4.16-dev\n"
 
-#: components/UserPreferences/Definitions.tsx:598
+#: components/UserPreferences/Definitions.tsx:564
 #. Used in: Components > User Preferences > Definitions
 #, fuzzy
 msgid "forms"
@@ -216,7 +216,7 @@ msgstr "Enregistrer d'abord l'enregistrement"
 
 #: components/FormSliders/Slider.tsx:31
 #: components/FormSliders/Slider.tsx:33
-#: components/UserPreferences/Definitions.tsx:972
+#: components/UserPreferences/Definitions.tsx:953
 #. Used in: Components > Form Sliders > Slider ⬤ Components > User Preferences > Definitions
 #, fuzzy
 msgid "firstRecord"
@@ -224,7 +224,7 @@ msgstr "Premier enregistrement"
 
 #: components/FormSliders/Slider.tsx:97
 #: components/FormSliders/Slider.tsx:99
-#: components/UserPreferences/Definitions.tsx:976
+#: components/UserPreferences/Definitions.tsx:957
 #. Used in: Components > Form Sliders > Slider ⬤ Components > User Preferences > Definitions
 #, fuzzy
 msgid "lastRecord"
@@ -428,43 +428,43 @@ msgstr "Format requis : {format:string}."
 msgid "inputTypeNumber"
 msgstr "La valeur doit être un nombre"
 
-#: components/PickLists/definitions.ts:27
+#: components/PickLists/definitions.ts:26
 #. Used in: Components > Pick Lists > Definitions
 #, fuzzy
 msgid "organization"
 msgstr "Organisme"
 
-#: components/PickLists/definitions.ts:28
+#: components/PickLists/definitions.ts:27
 #. Used in: Components > Pick Lists > Definitions
 #, fuzzy
 msgid "person"
 msgstr "La personne"
 
-#: components/PickLists/definitions.ts:29
+#: components/PickLists/definitions.ts:28
 #. Used in: Components > Pick Lists > Definitions
 #, fuzzy
 msgid "other"
 msgstr "Autre"
 
-#: components/PickLists/definitions.ts:30
+#: components/PickLists/definitions.ts:29
 #. Used in: Components > Pick Lists > Definitions
 #, fuzzy
 msgid "group"
 msgstr "Groupe"
 
-#: components/PickLists/definitions.ts:34
+#: components/PickLists/definitions.ts:33
 #. Used in: Components > Pick Lists > Definitions
 #, fuzzy
 msgid "userDefinedItems"
 msgstr "Éléments définis par l'utilisateur"
 
-#: components/PickLists/definitions.ts:35
+#: components/PickLists/definitions.ts:34
 #. Used in: Components > Pick Lists > Definitions
 #, fuzzy
 msgid "entireTable"
 msgstr "Tableau entier"
 
-#: components/PickLists/definitions.ts:36
+#: components/PickLists/definitions.ts:35
 #. Used in: Components > Pick Lists > Definitions
 #, fuzzy
 msgid "fieldFromTable"
@@ -502,13 +502,13 @@ msgstr ""
 msgid "creatingNewRecord"
 msgstr "Création d'un nouvel enregistrement"
 
-#: components/PickLists/definitions.ts:137
+#: components/PickLists/definitions.ts:138
 #. Used in: Components > Pick Lists > Definitions
 #, fuzzy
 msgid "forward"
 msgstr "Vers l'avant"
 
-#: components/PickLists/definitions.ts:136
+#: components/PickLists/definitions.ts:137
 #. Used in: Components > Pick Lists > Definitions
 #, fuzzy
 msgid "reverse"
@@ -544,7 +544,7 @@ msgstr "Ajouter à {recordSetTable:string}"
 msgid "removeFromRecordSet"
 msgstr "Supprimer de {recordSetTable:string}"
 
-#: components/Molecules/AutoComplete.tsx:522
+#: components/Molecules/AutoComplete.tsx:520
 #. Used in: Components > Molecules > Auto Complete
 #, fuzzy
 msgid "nothingFound"
@@ -686,7 +686,7 @@ msgid "subForm"
 msgstr "Sous-formulaire"
 
 #: components/FormMeta/SubViewMeta.tsx:37
-#: components/UserPreferences/Definitions.tsx:983
+#: components/UserPreferences/Definitions.tsx:964
 #. Used in: Components > Form Meta > Sub View Meta ⬤ Components > User Preferences > Definitions
 #, fuzzy
 msgid "formTable"
@@ -717,7 +717,7 @@ msgid "useCustomSettings"
 msgstr "Utiliser les paramètres personnalisés"
 
 #: components/FormMeta/ReadOnlyMode.tsx:20
-#: components/Header/UserTools.tsx:62
+#: components/Header/UserTools.tsx:91
 #. Used in: Components > Form Meta > Read Only Mode ⬤ Components > Header > User Tools
 #, fuzzy
 msgid "disableReadOnly"

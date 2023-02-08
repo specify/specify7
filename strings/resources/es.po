@@ -13,10 +13,10 @@ msgstr ""
 
 #: components/AppResources/Filters.tsx:72
 #: components/AppResources/Filters.tsx:119
-#: components/Header/userToolDefinitions.ts:44
-#: components/Router/Routes.tsx:199
+#: components/Header/userToolDefinitions.ts:60
+#: components/Router/Routes.tsx:198
 #: components/Security/registry.ts:210
-#: components/UserPreferences/Definitions.tsx:1514
+#: components/UserPreferences/Definitions.tsx:1515
 #. Used in: Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Security > Registry ⬤ Components > User Preferences > Definitions
 #, fuzzy
 msgid "appResources"
@@ -24,7 +24,7 @@ msgstr "Recursos de la aplicación"
 
 #: components/FormMeta/Definition.tsx:29
 #: components/FormMeta/Definition.tsx:55
-#: components/UserPreferences/Definitions.tsx:680
+#: components/UserPreferences/Definitions.tsx:648
 #. Used in: Components > Form Meta > Definition ⬤ Components > User Preferences > Definitions
 #, fuzzy
 msgid "formDefinition"
@@ -85,7 +85,7 @@ msgid "subCategories"
 msgstr "Subcategorías"
 
 #: components/AppResources/Aside.tsx:313
-#: components/Router/Routes.tsx:207
+#: components/Router/Routes.tsx:206
 #. Used in: Components > App Resources > Aside ⬤ Components > Router > Routes
 #, fuzzy
 msgid "addResource"

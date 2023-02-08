@@ -12,7 +12,7 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 4.16-dev\n"
 
-#: components/UserPreferences/Definitions.tsx:598
+#: components/UserPreferences/Definitions.tsx:564
 #. Used in: Components > User Preferences > Definitions
 msgid "forms"
 msgstr "Форми"
@@ -183,14 +183,14 @@ msgstr "Спочатку збережіть запис"
 
 #: components/FormSliders/Slider.tsx:31
 #: components/FormSliders/Slider.tsx:33
-#: components/UserPreferences/Definitions.tsx:972
+#: components/UserPreferences/Definitions.tsx:953
 #. Used in: Components > Form Sliders > Slider ⬤ Components > User Preferences > Definitions
 msgid "firstRecord"
 msgstr "Перший запис"
 
 #: components/FormSliders/Slider.tsx:97
 #: components/FormSliders/Slider.tsx:99
-#: components/UserPreferences/Definitions.tsx:976
+#: components/UserPreferences/Definitions.tsx:957
 #. Used in: Components > Form Sliders > Slider ⬤ Components > User Preferences > Definitions
 msgid "lastRecord"
 msgstr "Останній запис"
@@ -366,37 +366,37 @@ msgstr "Необхідний формат: {format:string}."
 msgid "inputTypeNumber"
 msgstr "Значення має бути числом"
 
-#: components/PickLists/definitions.ts:27
+#: components/PickLists/definitions.ts:26
 #. Used in: Components > Pick Lists > Definitions
 msgid "organization"
 msgstr "Організація"
 
-#: components/PickLists/definitions.ts:28
+#: components/PickLists/definitions.ts:27
 #. Used in: Components > Pick Lists > Definitions
 msgid "person"
 msgstr "Особа"
 
-#: components/PickLists/definitions.ts:29
+#: components/PickLists/definitions.ts:28
 #. Used in: Components > Pick Lists > Definitions
 msgid "other"
 msgstr "Інший"
 
-#: components/PickLists/definitions.ts:30
+#: components/PickLists/definitions.ts:29
 #. Used in: Components > Pick Lists > Definitions
 msgid "group"
 msgstr "Група"
 
-#: components/PickLists/definitions.ts:34
+#: components/PickLists/definitions.ts:33
 #. Used in: Components > Pick Lists > Definitions
 msgid "userDefinedItems"
 msgstr "Елементи визначені користувачем"
 
-#: components/PickLists/definitions.ts:35
+#: components/PickLists/definitions.ts:34
 #. Used in: Components > Pick Lists > Definitions
 msgid "entireTable"
 msgstr "Ціла таблиця"
 
-#: components/PickLists/definitions.ts:36
+#: components/PickLists/definitions.ts:35
 #. Used in: Components > Pick Lists > Definitions
 msgid "fieldFromTable"
 msgstr "Поле з таблиці"
@@ -426,12 +426,12 @@ msgstr "Можливо, ви хочете зберегти цей запис, п
 msgid "creatingNewRecord"
 msgstr "Створення нового запису"
 
-#: components/PickLists/definitions.ts:137
+#: components/PickLists/definitions.ts:138
 #. Used in: Components > Pick Lists > Definitions
 msgid "forward"
 msgstr "Вперед"
 
-#: components/PickLists/definitions.ts:136
+#: components/PickLists/definitions.ts:137
 #. Used in: Components > Pick Lists > Definitions
 msgid "reverse"
 msgstr "Зворотний"
@@ -461,7 +461,7 @@ msgstr "Додати до {recordSetTable:string}"
 msgid "removeFromRecordSet"
 msgstr "Видалити з {recordSetTable:string}"
 
-#: components/Molecules/AutoComplete.tsx:522
+#: components/Molecules/AutoComplete.tsx:520
 #. Used in: Components > Molecules > Auto Complete
 msgid "nothingFound"
 msgstr "Нічого не знайдено"
@@ -581,7 +581,7 @@ msgid "subForm"
 msgstr "Підформа"
 
 #: components/FormMeta/SubViewMeta.tsx:37
-#: components/UserPreferences/Definitions.tsx:983
+#: components/UserPreferences/Definitions.tsx:964
 #. Used in: Components > Form Meta > Sub View Meta ⬤ Components > User Preferences > Definitions
 msgid "formTable"
 msgstr "Сітка"
@@ -607,7 +607,7 @@ msgid "useCustomSettings"
 msgstr "Використовуйте інші налаштування"
 
 #: components/FormMeta/ReadOnlyMode.tsx:20
-#: components/Header/UserTools.tsx:62
+#: components/Header/UserTools.tsx:91
 #. Used in: Components > Form Meta > Read Only Mode ⬤ Components > Header > User Tools
 msgid "disableReadOnly"
 msgstr "Вимкнути режим \"Лише для читання\""

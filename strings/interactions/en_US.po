@@ -1,11 +1,10 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/Header/menuItemDefinitions.ts:66
+#: components/Header/menuItemDefinitions.ts:58
 #: components/Interactions/InteractionsDialog.tsx:253
-#: components/Router/OverlayRoutes.tsx:60
-#: components/UserPreferences/Definitions.tsx:460
-#: components/UserPreferences/Definitions.tsx:517
+#: components/Router/OverlayRoutes.tsx:76
+#: components/UserPreferences/Definitions.tsx:483
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Router > Overlay Routes ⬤ Components > User Preferences > Definitions
 msgid "interactions"
 msgstr "Interactions"

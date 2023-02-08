@@ -11,11 +11,10 @@ msgstr "Content-Type: text/plain\n"
 msgid "query"
 msgstr "Запрос"
 
-#: components/Header/menuItemDefinitions.ts:79
-#: components/Router/OverlayRoutes.tsx:80
+#: components/Header/menuItemDefinitions.ts:70
+#: components/Router/OverlayRoutes.tsx:96
 #: components/Toolbar/Query.tsx:96
-#: components/UserPreferences/Definitions.tsx:469
-#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Query ⬤ Components > User Preferences > Definitions
+#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Query
 msgid "queries"
 msgstr "Запросы"
 
@@ -28,7 +27,7 @@ msgid "queryBuilder"
 msgstr "Конструктор запросов"
 
 #: components/QueryBuilder/index.tsx:132
-#: components/Router/OverlayRoutes.tsx:95
+#: components/Router/OverlayRoutes.tsx:111
 #: components/Toolbar/QueryTables.tsx:125
 #. Used in: Components > Query Builder > Index ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Query Tables
 msgid "newQueryName"
@@ -185,46 +184,46 @@ msgstr "Сохранить как"
 msgid "anyRank"
 msgstr "(любой ранг)"
 
-#: components/QueryBuilder/Field.tsx:520
-#: components/QueryBuilder/Field.tsx:521
-#: components/Toolbar/QueryTablesEdit.tsx:150
+#: components/QueryBuilder/Field.tsx:523
+#: components/QueryBuilder/Field.tsx:524
+#: components/Toolbar/QueryTablesEdit.tsx:186
 #. Used in: Components > Query Builder > Field ⬤ Components > Toolbar > Query Tables Edit
 msgid "moveUp"
 msgstr "Переместить вверх"
 
-#: components/QueryBuilder/Field.tsx:527
-#: components/QueryBuilder/Field.tsx:528
-#: components/Toolbar/QueryTablesEdit.tsx:156
+#: components/QueryBuilder/Field.tsx:530
+#: components/QueryBuilder/Field.tsx:531
+#: components/Toolbar/QueryTablesEdit.tsx:192
 #. Used in: Components > Query Builder > Field ⬤ Components > Toolbar > Query Tables Edit
 msgid "moveDown"
 msgstr "Переместить вниз"
 
-#: components/QueryBuilder/Field.tsx:495
-#: components/QueryBuilder/Field.tsx:503
+#: components/QueryBuilder/Field.tsx:498
+#: components/QueryBuilder/Field.tsx:506
 #. Used in: Components > Query Builder > Field
 msgid "sort"
 msgstr "Сортировать"
 
-#: components/QueryBuilder/Field.tsx:492
-#: components/QueryBuilder/Field.tsx:500
+#: components/QueryBuilder/Field.tsx:495
+#: components/QueryBuilder/Field.tsx:503
 #. Used in: Components > Query Builder > Field
 msgid "ascendingSort"
 msgstr "Сортировка по возрастанию"
 
-#: components/QueryBuilder/Field.tsx:494
-#: components/QueryBuilder/Field.tsx:502
+#: components/QueryBuilder/Field.tsx:497
+#: components/QueryBuilder/Field.tsx:505
 #. Used in: Components > Query Builder > Field
 msgid "descendingSort"
 msgstr "Сортировка по убыванию"
 
-#: components/QueryBuilder/Field.tsx:365
-#: components/QueryBuilder/Field.tsx:369
+#: components/QueryBuilder/Field.tsx:366
+#: components/QueryBuilder/Field.tsx:370
 #. Used in: Components > Query Builder > Field
 msgid "negate"
 msgstr "Отрицать"
 
-#: components/QueryBuilder/Field.tsx:475
-#: components/QueryBuilder/Field.tsx:478
+#: components/QueryBuilder/Field.tsx:476
+#: components/QueryBuilder/Field.tsx:481
 #. Used in: Components > Query Builder > Field
 msgid "showButtonDescription"
 msgstr "Показывать в результатах"
@@ -312,7 +311,7 @@ msgid "inDescription"
 msgstr "Список значений, разделенных запятыми"
 
 #: components/QueryBuilder/FieldFilter.tsx:470
-#: components/UserPreferences/Definitions.tsx:1158
+#: components/UserPreferences/Definitions.tsx:1148
 #. Used in: Components > Query Builder > Field Filter ⬤ Components > User Preferences > Definitions
 msgid "contains"
 msgstr "Содержит"
@@ -328,14 +327,14 @@ msgid "and"
 msgstr "и"
 
 #: components/QueryBuilder/FieldFilter.tsx:479
-#: components/UserPreferences/Definitions.tsx:1154
+#: components/UserPreferences/Definitions.tsx:1144
 #. Used in: Components > Query Builder > Field Filter ⬤ Components > User Preferences > Definitions
 msgid "startsWith"
 msgstr "Начинается с"
 
 #: components/QueryBuilder/Field.tsx:314
-#: components/QueryBuilder/Field.tsx:321
-#: components/QueryBuilder/Field.tsx:348
+#: components/QueryBuilder/Field.tsx:322
+#: components/QueryBuilder/Field.tsx:349
 #. Used in: Components > Query Builder > Field
 msgid "or"
 msgstr "или"
@@ -371,7 +370,7 @@ msgstr "Открыть записи"
 msgid "editQuery"
 msgstr "Редактировать запрос"
 
-#: components/Toolbar/QueryTablesEdit.tsx:33
+#: components/Toolbar/QueryTablesEdit.tsx:34
 #. Used in: Components > Toolbar > Query Tables Edit
 msgid "configureQueryTables"
 msgstr "Настроить видимые таблицы запроса"
@@ -392,22 +391,22 @@ msgstr "Определите отчет на основе запроса"
 msgid "exportQueryAsLabel"
 msgstr "Определите метку на основе запроса"
 
-#: components/PickLists/definitions.ts:43
+#: components/PickLists/definitions.ts:42
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 msgid "treeMerge"
 msgstr "Слияние узлов дерева"
 
-#: components/PickLists/definitions.ts:44
+#: components/PickLists/definitions.ts:43
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 msgid "treeMove"
 msgstr "Перемещение узла дерева"
 
-#: components/PickLists/definitions.ts:45
+#: components/PickLists/definitions.ts:44
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 msgid "treeSynonymize"
 msgstr "Синонимизированный узел дерева"
 
-#: components/PickLists/definitions.ts:46
+#: components/PickLists/definitions.ts:45
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 msgid "treeDesynonymize"
 msgstr "Отменено синонимизацию узла дерева"

@@ -11,8 +11,8 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 4.16-dev\n"
 
-#: components/QueryBuilder/Field.tsx:466
 #: components/QueryBuilder/Field.tsx:467
+#: components/QueryBuilder/Field.tsx:468
 #. Used in: Components > Query Builder > Field
 msgid "openMap"
 msgstr "Ouvrir la carte"
@@ -20,8 +20,8 @@ msgstr "Ouvrir la carte"
 #: components/Leaflet/Map.tsx:24
 #: components/QueryBuilder/ToMap.tsx:59
 #: components/QueryBuilder/ToMap.tsx:241
-#: components/UserPreferences/Definitions.tsx:1550
-#: components/WorkBench/Template.tsx:229
+#: components/UserPreferences/Definitions.tsx:1551
+#: components/WorkBench/Template.tsx:230
 #. Used in: Components > Leaflet > Map ⬤ Components > Query Builder > To Map ⬤ Components > User Preferences > Definitions ⬤ Components > Work Bench > Template
 #, fuzzy
 msgid "geoMap"
@@ -83,7 +83,7 @@ msgstr "Polygones"
 #: components/FormPlugins/GeoLocate.tsx:33
 #: components/Molecules/GeoLocate.tsx:81
 #: components/Molecules/GeoLocate.tsx:90
-#: components/WorkBench/Template.tsx:219
+#: components/WorkBench/Template.tsx:220
 #. Used in: Components > Form Plugins > Geo Locate ⬤ Components > Molecules > Geo Locate ⬤ Components > Work Bench > Template
 #, fuzzy
 msgid "geoLocate"

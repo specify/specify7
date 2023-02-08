@@ -1,38 +1,37 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/Core/Main.tsx:88
+#: components/Core/Main.tsx:65
 #. 🟥For accessibility purposes. Allows jumping to page content. Used in: Components > Core > Main
 msgid "skipToContent"
 msgstr "Перейти к содержанию"
 
-#: components/Header/UserTools.tsx:30
-#. Used in: Components > Header > User Tools
-msgid "currentUser"
-msgstr "Текущий пользователь"
+#: components/Header/menuItemProcessing.ts:63
+#. Used in: Components > Header > Menu Item Processing
+msgid "main"
+msgstr ""
 
-#: components/Header/index.tsx:138
-#: components/Header/index.tsx:142
-#. 🟥Example: Current Collection. Used in: Components > Header > Index
+#: components/Header/ChooseCollection.tsx:42
+#: components/Header/ChooseCollection.tsx:46
+#. 🟥Example: Current Collection. Used in: Components > Header > Choose Collection
 msgid "currentCollection"
 msgstr "Текущая {collectionTable:string}"
 
 #: components/Header/Forms.tsx:63
-#: components/Header/menuItemDefinitions.ts:46
-#: components/Router/OverlayRoutes.tsx:44
-#: components/UserPreferences/Definitions.tsx:442
-#. Used in: Components > Header > Forms ⬤ Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > User Preferences > Definitions
+#: components/Header/menuItemDefinitions.ts:40
+#: components/Router/OverlayRoutes.tsx:60
+#. Used in: Components > Header > Forms ⬤ Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes
 msgid "dataEntry"
 msgstr "Ввод данных"
 
-#: components/Header/userToolDefinitions.ts:71
-#: components/Router/OverlayRoutes.tsx:148
+#: components/Header/userToolDefinitions.ts:91
+#: components/Router/OverlayRoutes.tsx:164
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 msgid "makeDwca"
 msgstr "Создать архив DwC"
 
-#: components/Header/userToolDefinitions.ts:76
-#: components/Router/OverlayRoutes.tsx:156
+#: components/Header/userToolDefinitions.ts:97
+#: components/Router/OverlayRoutes.tsx:172
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 msgid "updateExportFeed"
 msgstr "Обновить RSS-канал"
@@ -89,14 +88,14 @@ msgstr "Создать новый ярлык"
 msgid "createReport"
 msgstr "Создать новый отчет"
 
-#: components/Header/userToolDefinitions.ts:57
-#: components/Router/OverlayRoutes.tsx:132
-#: components/Toolbar/TreeRepair.tsx:165
+#: components/Header/userToolDefinitions.ts:75
+#: components/Router/OverlayRoutes.tsx:148
+#: components/Toolbar/TreeRepair.tsx:162
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Tree Repair
 msgid "repairTree"
 msgstr "Ремонтное дерево"
 
-#: components/Toolbar/TreeRepair.tsx:160
+#: components/Toolbar/TreeRepair.tsx:157
 #. Used in: Components > Toolbar > Tree Repair
 msgid "treeRepairComplete"
 msgstr "Ремонт дерева завершен."
@@ -111,26 +110,41 @@ msgstr "Выберите ДвКА"
 msgid "chooseMetadataResource"
 msgstr "Выберите ресурс метаданных"
 
-#: components/Router/Routes.tsx:26
-#. Used in: Components > Router > Routes
+#: components/Header/ExpressSearchTask.tsx:47
+#: components/Header/ExpressSearchTask.tsx:103
+#: components/Router/OverlayRoutes.tsx:44
+#: components/Router/Routes.tsx:25
+#. Used in: Components > Header > Express Search Task ⬤ Components > Router > Overlay Routes ⬤ Components > Router > Routes
 msgid "expressSearch"
 msgstr "Экспресс-поиск"
 
-#: components/Header/ExpressSearchTask.tsx:41
+#: components/Header/ExpressSearchTask.tsx:113
 #. Used in: Components > Header > Express Search Task
 msgid "primarySearch"
 msgstr "Основной поиск"
 
-#: components/Header/ExpressSearchTask.tsx:46
+#: components/Header/ExpressSearchTask.tsx:119
 #. Used in: Components > Header > Express Search Task
 msgid "secondarySearch"
 msgstr "Вторичный поиск"
 
-#: components/Header/UserTools.tsx:51
+#: components/UserPreferences/Renderers.tsx:308
+#. Used in: Components > User Preferences > Renderers
+msgid "menuItems"
+msgstr "Элементы меню"
+
+#: components/Header/UserTools.tsx:48
+#: components/Header/UserTools.tsx:79
 #: components/Router/OverlayRoutes.tsx:36
-#. Used in: Components > Header > User Tools ⬤ Components > Router > Overlay Routes
+#: components/UserPreferences/Renderers.tsx:309
+#. Used in: Components > Header > User Tools ⬤ Components > Router > Overlay Routes ⬤ Components > User Preferences > Renderers
 msgid "userTools"
-msgstr "Инструменты пользователя"
+msgstr "Инструменты"
+
+#: components/Header/UserTools.tsx:78
+#. Used in: Components > Header > User Tools
+msgid "userToolsForUser"
+msgstr "Инструменты ({userName:string})"
 
 #: components/Toolbar/Language.tsx:86
 #: components/Toolbar/Language.tsx:162
@@ -164,12 +178,12 @@ msgstr ""
 "отсутствовать локализация или они имеют неправильную локализацию. Если вы "
 "хотите помочь нам завершить локализацию, <link>следуйте инструкциям.</link>"
 
-#: components/Header/userToolDefinitions.ts:105
+#: components/Header/userToolDefinitions.ts:132
 #. Used in: Components > Header > User Tool Definitions
 msgid "tableApi"
 msgstr "API таблиц"
 
-#: components/Header/userToolDefinitions.ts:109
+#: components/Header/userToolDefinitions.ts:137
 #. Used in: Components > Header > User Tool Definitions
 msgid "operationsApi"
 msgstr "Операционный API"
@@ -177,30 +191,30 @@ msgstr "Операционный API"
 #: components/AppResources/Create.tsx:88
 #: components/AppResources/Create.tsx:109
 #: components/AppResources/Filters.tsx:156
-#: components/Header/userToolDefinitions.ts:81
-#: components/UserPreferences/Definitions.tsx:413
+#: components/Header/userToolDefinitions.ts:103
+#: components/UserPreferences/Definitions.tsx:427
 #. Used in: Components > App Resources > Create ⬤ Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > User Preferences > Definitions
 msgid "documentation"
 msgstr "Документация"
 
-#: components/Header/userToolDefinitions.ts:42
+#: components/Header/userToolDefinitions.ts:58
 #. Used in: Components > Header > User Tool Definitions
 msgid "administration"
 msgstr "Инструменты управления"
 
-#: components/Header/userToolDefinitions.ts:95
+#: components/Header/userToolDefinitions.ts:120
 #. Used in: Components > Header > User Tool Definitions
 msgid "developers"
 msgstr "Ресурсы для разработчиков"
 
-#: components/Header/userToolDefinitions.ts:87
+#: components/Header/userToolDefinitions.ts:110
 #. Used in: Components > Header > User Tool Definitions
 msgid "forum"
 msgstr "форум сообщества"
 
 #: components/Errors/ErrorDialog.tsx:131
-#: components/Header/userToolDefinitions.ts:101
-#: components/Router/Routes.tsx:394
+#: components/Header/userToolDefinitions.ts:127
+#: components/Router/Routes.tsx:393
 #: components/RouterCommands/CacheBuster.tsx:41
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Router Commands > Cache Buster
 msgid "clearCache"
@@ -211,7 +225,7 @@ msgstr "Очистить кеш браузера"
 msgid "cacheCleared"
 msgstr "Кэш очищен. Пожалуйста, перезагрузите страницу."
 
-#: components/Header/userToolDefinitions.ts:91
+#: components/Header/userToolDefinitions.ts:115
 #. Used in: Components > Header > User Tool Definitions
 msgid "technicalDocumentation"
 msgstr "Технические документы"

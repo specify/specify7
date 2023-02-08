@@ -1,25 +1,25 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/Header/Notifications.tsx:146
+#: components/Header/Notifications.tsx:159
 #. Used in: Components > Header > Notifications
 #, fuzzy
 msgid "notifications"
 msgstr "Сповіщення"
 
-#: components/Header/Notifications.tsx:134
+#: components/Header/Notifications.tsx:131
 #. 🟥Used for button label in the top menu. Used in: Components > Header > Notifications
 #, fuzzy
 msgid "notificationsCount"
 msgstr "Сповіщення: {count:number|formatted}"
 
-#: components/Header/Notifications.tsx:137
+#: components/Header/Notifications.tsx:134
 #. 🟥Used for button label in the top menu when notification count is loading. Used in: Components > Header > Notifications
 #, fuzzy
 msgid "notificationsLoading"
 msgstr "Сповіщення: …"
 
-#: components/Header/Notifications.tsx:177
+#: components/Header/Notifications.tsx:190
 #. Used in: Components > Header > Notifications
 #, fuzzy
 msgid "mostRecentNotificationsTop"

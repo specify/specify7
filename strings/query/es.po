@@ -22,11 +22,10 @@ msgstr ""
 msgid "query"
 msgstr "Consulta"
 
-#: components/Header/menuItemDefinitions.ts:79
-#: components/Router/OverlayRoutes.tsx:80
+#: components/Header/menuItemDefinitions.ts:70
+#: components/Router/OverlayRoutes.tsx:96
 #: components/Toolbar/Query.tsx:96
-#: components/UserPreferences/Definitions.tsx:469
-#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Query ⬤ Components > User Preferences > Definitions
+#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Query
 #, fuzzy
 msgid "queries"
 msgstr "Consultas"
@@ -41,7 +40,7 @@ msgid "queryBuilder"
 msgstr "Consultor de construcción"
 
 #: components/QueryBuilder/index.tsx:132
-#: components/Router/OverlayRoutes.tsx:95
+#: components/Router/OverlayRoutes.tsx:111
 #: components/Toolbar/QueryTables.tsx:125
 #. Used in: Components > Query Builder > Index ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Query Tables
 #, fuzzy
@@ -227,52 +226,52 @@ msgstr "Guardar como"
 msgid "anyRank"
 msgstr "(cualquier rango)"
 
-#: components/QueryBuilder/Field.tsx:520
-#: components/QueryBuilder/Field.tsx:521
-#: components/Toolbar/QueryTablesEdit.tsx:150
+#: components/QueryBuilder/Field.tsx:523
+#: components/QueryBuilder/Field.tsx:524
+#: components/Toolbar/QueryTablesEdit.tsx:186
 #. Used in: Components > Query Builder > Field ⬤ Components > Toolbar > Query Tables Edit
 #, fuzzy
 msgid "moveUp"
 msgstr "Ascender"
 
-#: components/QueryBuilder/Field.tsx:527
-#: components/QueryBuilder/Field.tsx:528
-#: components/Toolbar/QueryTablesEdit.tsx:156
+#: components/QueryBuilder/Field.tsx:530
+#: components/QueryBuilder/Field.tsx:531
+#: components/Toolbar/QueryTablesEdit.tsx:192
 #. Used in: Components > Query Builder > Field ⬤ Components > Toolbar > Query Tables Edit
 #, fuzzy
 msgid "moveDown"
 msgstr "Mover hacia abajo"
 
-#: components/QueryBuilder/Field.tsx:495
-#: components/QueryBuilder/Field.tsx:503
+#: components/QueryBuilder/Field.tsx:498
+#: components/QueryBuilder/Field.tsx:506
 #. Used in: Components > Query Builder > Field
 #, fuzzy
 msgid "sort"
 msgstr "Clasificar"
 
-#: components/QueryBuilder/Field.tsx:492
-#: components/QueryBuilder/Field.tsx:500
+#: components/QueryBuilder/Field.tsx:495
+#: components/QueryBuilder/Field.tsx:503
 #. Used in: Components > Query Builder > Field
 #, fuzzy
 msgid "ascendingSort"
 msgstr "orden ascendente"
 
-#: components/QueryBuilder/Field.tsx:494
-#: components/QueryBuilder/Field.tsx:502
+#: components/QueryBuilder/Field.tsx:497
+#: components/QueryBuilder/Field.tsx:505
 #. Used in: Components > Query Builder > Field
 #, fuzzy
 msgid "descendingSort"
 msgstr "orden descendente"
 
-#: components/QueryBuilder/Field.tsx:365
-#: components/QueryBuilder/Field.tsx:369
+#: components/QueryBuilder/Field.tsx:366
+#: components/QueryBuilder/Field.tsx:370
 #. Used in: Components > Query Builder > Field
 #, fuzzy
 msgid "negate"
 msgstr "Negar"
 
-#: components/QueryBuilder/Field.tsx:475
-#: components/QueryBuilder/Field.tsx:478
+#: components/QueryBuilder/Field.tsx:476
+#: components/QueryBuilder/Field.tsx:481
 #. Used in: Components > Query Builder > Field
 #, fuzzy
 msgid "showButtonDescription"
@@ -377,7 +376,7 @@ msgid "inDescription"
 msgstr "Una lista de valores separados por comas"
 
 #: components/QueryBuilder/FieldFilter.tsx:470
-#: components/UserPreferences/Definitions.tsx:1158
+#: components/UserPreferences/Definitions.tsx:1148
 #. Used in: Components > Query Builder > Field Filter ⬤ Components > User Preferences > Definitions
 #, fuzzy
 msgid "contains"
@@ -396,15 +395,15 @@ msgid "and"
 msgstr "y"
 
 #: components/QueryBuilder/FieldFilter.tsx:479
-#: components/UserPreferences/Definitions.tsx:1154
+#: components/UserPreferences/Definitions.tsx:1144
 #. Used in: Components > Query Builder > Field Filter ⬤ Components > User Preferences > Definitions
 #, fuzzy
 msgid "startsWith"
 msgstr "Comienza con"
 
 #: components/QueryBuilder/Field.tsx:314
-#: components/QueryBuilder/Field.tsx:321
-#: components/QueryBuilder/Field.tsx:348
+#: components/QueryBuilder/Field.tsx:322
+#: components/QueryBuilder/Field.tsx:349
 #. Used in: Components > Query Builder > Field
 #, fuzzy
 msgid "or"
@@ -447,7 +446,7 @@ msgstr "Navegar en Formularios"
 msgid "editQuery"
 msgstr "Editar consulta"
 
-#: components/Toolbar/QueryTablesEdit.tsx:33
+#: components/Toolbar/QueryTablesEdit.tsx:34
 #. Used in: Components > Toolbar > Query Tables Edit
 #, fuzzy
 msgid "configureQueryTables"
@@ -472,25 +471,25 @@ msgstr "Definir informe basado en consulta"
 msgid "exportQueryAsLabel"
 msgstr "Definir etiqueta basada en consulta"
 
-#: components/PickLists/definitions.ts:43
+#: components/PickLists/definitions.ts:42
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #, fuzzy
 msgid "treeMerge"
 msgstr "Fusión de árboles"
 
-#: components/PickLists/definitions.ts:44
+#: components/PickLists/definitions.ts:43
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #, fuzzy
 msgid "treeMove"
 msgstr "Mover árbol"
 
-#: components/PickLists/definitions.ts:45
+#: components/PickLists/definitions.ts:44
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #, fuzzy
 msgid "treeSynonymize"
 msgstr "Árbol Sinonimizar"
 
-#: components/PickLists/definitions.ts:46
+#: components/PickLists/definitions.ts:45
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #, fuzzy
 msgid "treeDesynonymize"

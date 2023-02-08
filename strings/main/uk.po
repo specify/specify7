@@ -88,7 +88,7 @@ msgstr ""
 msgid "errorMessage"
 msgstr "Помилка"
 
-#: components/Router/Router.tsx:282
+#: components/Router/Router.tsx:278
 #. Used in: Components > Router > Router
 msgid "leavePageConfirmation"
 msgstr "Ви впевнені, що бажаєте покинути цю сторінку?"
@@ -98,29 +98,29 @@ msgstr "Ви впевнені, що бажаєте покинути цю сто�
 msgid "leavePageConfirmationDescription"
 msgstr "Незбережені зміни буде втрачено, якщо ви покинете цю сторінку."
 
-#: components/Router/Router.tsx:278
+#: components/Router/Router.tsx:274
 #. Used in: Components > Router > Router
 msgid "leave"
 msgstr "Покинути"
 
-#: components/Core/Main.tsx:145
-#. Used in: Components > Core > Main
+#: components/Core/VersionMismatch.tsx:22
+#. Used in: Components > Core > Version Mismatch
 msgid "versionMismatch"
 msgstr "Версія Specify не відповідає версії бази даних"
 
-#: components/Core/Main.tsx:149
-#. Used in: Components > Core > Main
+#: components/Core/VersionMismatch.tsx:26
+#. Used in: Components > Core > Version Mismatch
 msgid "versionMismatchDescription"
 msgstr ""
 "Версія Specify {specifySixVersion:string} не відповідає версії бази даних "
 "{databaseVersion:string}."
 
-#: components/Core/Main.tsx:154
-#. Used in: Components > Core > Main
+#: components/Core/VersionMismatch.tsx:31
+#. Used in: Components > Core > Version Mismatch
 msgid "versionMismatchSecondDescription"
 msgstr "Тому деякі функції Specify 7 можуть не працювати належним чином."
 
-#: components/Core/Main.tsx:157
-#. Used in: Components > Core > Main
+#: components/Core/VersionMismatch.tsx:34
+#. Used in: Components > Core > Version Mismatch
 msgid "versionMismatchInstructions"
 msgstr "Інструкції щодо вирішення невідповідності версій"

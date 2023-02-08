@@ -1,9 +1,9 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/UserPreferences/Definitions.tsx:1476
+#: components/UserPreferences/Definitions.tsx:1477
 #: components/WorkBench/DevShowPlan.tsx:64
-#: components/WorkBench/Template.tsx:121
+#: components/WorkBench/Template.tsx:122
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Work Bench > Dev Show Plan ⬤ Components > Work Bench > Template
 msgid "dataMapper"
 msgstr "Сопоставления"

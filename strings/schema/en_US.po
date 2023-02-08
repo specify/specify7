@@ -9,25 +9,25 @@ msgstr "Content-Type: text/plain\n"
 msgid "table"
 msgstr "Table"
 
-#: components/Attachments/index.tsx:204
-#: components/Router/Routes.tsx:358
+#: components/Attachments/index.tsx:201
+#: components/Router/Routes.tsx:357
 #: components/SchemaConfig/Tables.tsx:55
 #. Used in: Components > Attachments > Index ⬤ Components > Router > Routes ⬤ Components > Schema Config > Tables
 msgid "tables"
 msgstr "Tables"
 
-#: components/UserPreferences/Definitions.tsx:662
+#: components/UserPreferences/Definitions.tsx:630
 #: components/WbPlanView/MapperComponents.tsx:436
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Plan View > Mapper Components
 msgid "tableName"
 msgstr "Table Name"
 
-#: components/Header/userToolDefinitions.ts:38
-#: components/Router/Routes.tsx:332
+#: components/Header/userToolDefinitions.ts:53
+#: components/Router/Routes.tsx:331
 #: components/SchemaConfig/Components.tsx:27
 #: components/SchemaConfig/Languages.tsx:34
 #: components/Security/registry.ts:198
-#: components/UserPreferences/Definitions.tsx:613
+#: components/UserPreferences/Definitions.tsx:580
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Languages ⬤ Components > Security > Registry ⬤ Components > User Preferences > Definitions
 msgid "schemaConfig"
 msgstr "Schema Config"
@@ -156,7 +156,7 @@ msgstr "Web Link"
 msgid "userDefined"
 msgstr "User Defined"
 
-#: components/Router/Routes.tsx:347
+#: components/Router/Routes.tsx:346
 #: components/SchemaConfig/Languages.tsx:27
 #: components/SchemaConfig/Languages.tsx:75
 #. Used in: Components > Router > Routes ⬤ Components > Schema Config > Languages
@@ -229,19 +229,19 @@ msgstr "Field count"
 msgid "relationshipCount"
 msgstr "Relationship count"
 
-#: components/Header/userToolDefinitions.ts:97
-#: components/Router/Routes.tsx:34
-#: components/Router/Routes.tsx:38
+#: components/Header/userToolDefinitions.ts:122
+#: components/Router/Routes.tsx:33
+#: components/Router/Routes.tsx:37
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes
 msgid "databaseSchema"
 msgstr "Database Schema"
 
-#: components/Toolbar/QueryTablesEdit.tsx:161
+#: components/Toolbar/QueryTablesEdit.tsx:85
 #. Used in: Components > Toolbar > Query Tables Edit
 msgid "selectedTables"
 msgstr "Selected Tables"
 
-#: components/Toolbar/QueryTablesEdit.tsx:195
+#: components/Toolbar/QueryTablesEdit.tsx:82
 #. Used in: Components > Toolbar > Query Tables Edit
 msgid "possibleTables"
 msgstr "Possible Tables"

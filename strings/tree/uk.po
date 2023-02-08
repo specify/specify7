@@ -12,11 +12,10 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 4.16-dev\n"
 
-#: components/Header/menuItemDefinitions.ts:58
-#: components/Router/OverlayRoutes.tsx:52
+#: components/Header/menuItemDefinitions.ts:51
+#: components/Router/OverlayRoutes.tsx:68
 #: components/Toolbar/TreeRepair.tsx:45
-#: components/UserPreferences/Definitions.tsx:451
-#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Tree Repair ⬤ Components > User Preferences > Definitions
+#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Tree Repair
 #, fuzzy
 msgid "trees"
 msgstr "дерева"
@@ -197,8 +196,8 @@ msgstr "Десинонімізувати вузол"
 msgid "desynonymizeNodeMessage"
 msgstr "\"{nodeName:string}\" більше не буде синонімом \"{synonymName:string}\"."
 
-#: components/TreeView/Row.tsx:220
-#: components/TreeView/Row.tsx:234
+#: components/TreeView/Row.tsx:222
+#: components/TreeView/Row.tsx:236
 #. Used in: Components > Tree View > Row
 #, fuzzy
 msgid "acceptedName"
@@ -218,19 +217,19 @@ msgstr "{treeName:string} Дерево"
 msgid "searchTreePlaceholder"
 msgstr "Дерево пошуку"
 
-#: components/TreeView/Row.tsx:200
+#: components/TreeView/Row.tsx:202
 #. Used in: Components > Tree View > Row
 #, fuzzy
 msgid "opened"
 msgstr "Відкрито"
 
-#: components/TreeView/Row.tsx:201
+#: components/TreeView/Row.tsx:203
 #. Used in: Components > Tree View > Row
 #, fuzzy
 msgid "closed"
 msgstr "ЗАЧИНЕНО"
 
-#: components/TreeView/Row.tsx:198
+#: components/TreeView/Row.tsx:200
 #. Used in: Components > Tree View > Row
 #, fuzzy
 msgid "leafNode"

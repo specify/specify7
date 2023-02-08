@@ -13,13 +13,14 @@ msgstr ""
 "X-Generator: Weblate 4.16-dev\n"
 
 #: components/ChooseCollection/index.tsx:168
-#: components/Core/Main.tsx:121
-#: components/Login/OicLogin.tsx:86
+#: components/Header/UserTools.tsx:54
+#: components/Header/userToolDefinitions.ts:40
+#: components/Login/OicLogin.tsx:84
 #: components/Login/index.tsx:154
 #: components/Permissions/PermissionDenied.tsx:230
 #: components/Router/EntrypointRouter.tsx:22
 #: components/Router/EntrypointRouter.tsx:27
-#. Used in: Components > Choose Collection > Index ⬤ Components > Core > Main ⬤ Components > Login > Oic Login ⬤ Components > Login > Index ⬤ Components > Permissions > Permission Denied ⬤ Components > Router > Entrypoint Router
+#. Used in: Components > Choose Collection > Index ⬤ Components > Header > User Tools ⬤ Components > Header > User Tool Definitions ⬤ Components > Login > Oic Login ⬤ Components > Login > Index ⬤ Components > Permissions > Permission Denied ⬤ Components > Router > Entrypoint Router
 #, fuzzy
 msgid "logIn"
 msgstr "Увійти"
@@ -53,7 +54,7 @@ msgstr ""
 "Обліковий запис, який зараз увійшов, не має доступу до колекції "
 "{collectionName:string}."
 
-#: components/Header/userToolDefinitions.ts:28
+#: components/Header/userToolDefinitions.ts:34
 #: components/PasswordChange/index.tsx:99
 #: components/Router/EntrypointRouter.tsx:40
 #: components/Security/SetPassword.tsx:92
@@ -80,8 +81,8 @@ msgstr "Новий пароль"
 msgid "repeatPassword"
 msgstr "Повторіть новий пароль"
 
-#: components/Core/Main.tsx:172
-#: components/Header/userToolDefinitions.ts:24
+#: components/Core/Main.tsx:91
+#: components/Header/userToolDefinitions.ts:28
 #. Used in: Components > Core > Main ⬤ Components > Header > User Tool Definitions
 #, fuzzy
 msgid "logOut"
@@ -93,26 +94,26 @@ msgstr "Вийти"
 msgid "setUserAgents"
 msgstr "Встановити агентів користувача"
 
-#: components/Core/Main.tsx:179
+#: components/Core/Main.tsx:98
 #. Used in: Components > Core > Main
 #, fuzzy
 msgid "noAgent"
 msgstr "Поточний користувач не має призначеного агента"
 
-#: components/Core/Main.tsx:184
+#: components/Core/Main.tsx:101
 #. Used in: Components > Core > Main
 #, fuzzy
 msgid "noAgentDescription"
 msgstr "Будь ласка, увійдіть як адміністратор і призначте агента цьому користувачеві"
 
-#: components/Login/OicLogin.tsx:47
+#: components/Login/OicLogin.tsx:46
 #: components/Login/index.tsx:117
 #. Used in: Components > Login > Oic Login ⬤ Components > Login > Index
 #, fuzzy
 msgid "helloMessage"
 msgstr "Привіт, {userName:string}!"
 
-#: components/Login/OicLogin.tsx:49
+#: components/Login/OicLogin.tsx:48
 #. Used in: Components > Login > Oic Login
 #, fuzzy
 msgid "oicWelcomeMessage"
@@ -121,7 +122,7 @@ msgstr ""
 "користувача Specify. Це дозволить вам увійти в систему Specify з вибраним "
 "постачальником надалі."
 
-#: components/Login/OicLogin.tsx:82
+#: components/Login/OicLogin.tsx:80
 #. Used in: Components > Login > Oic Login
 #, fuzzy
 msgid "legacyLogin"
@@ -137,8 +138,8 @@ msgstr ""
 "можете ввести їх нижче, щоб пов’язати цього користувача з обліковим записом "
 "{providerName:string} для майбутніх входів."
 
-#: components/Header/userToolDefinitions.ts:65
-#: components/Router/OverlayRoutes.tsx:140
+#: components/Header/userToolDefinitions.ts:84
+#: components/Router/OverlayRoutes.tsx:156
 #: components/Toolbar/MasterKey.tsx:43
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Master Key
 #, fuzzy
@@ -263,7 +264,7 @@ msgstr ""
 "Увійшовши в систему користувач не отримав доступ до жодної колекції в цій "
 "базі даних. Ви повинні увійти як інший користувач."
 
-#: components/Header/userToolDefinitions.ts:22
+#: components/Header/userToolDefinitions.ts:26
 #. Used in: Components > Header > User Tool Definitions
 #, fuzzy
 msgid "userAccount"
@@ -359,8 +360,8 @@ msgstr "Ця опція недоступна для адміністраторі
 msgid "configureCollectionAccess"
 msgstr "Виберіть доступ до колекції користувачів"
 
-#: components/Header/userToolDefinitions.ts:53
-#: components/Router/Routes.tsx:64
+#: components/Header/userToolDefinitions.ts:70
+#: components/Router/Routes.tsx:63
 #: components/Toolbar/Security.tsx:100
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Toolbar > Security
 #, fuzzy
@@ -459,8 +460,7 @@ msgstr "Дія"
 #: components/Permissions/FormatError.tsx:65
 #: components/Security/PreviewComponents.tsx:92
 #: components/Security/PreviewComponents.tsx:148
-#: components/Security/utils.ts:101
-#. Used in: Components > Permissions > Format Error ⬤ Components > Security > Preview Components ⬤ Components > Security > Utils
+#. Used in: Components > Permissions > Format Error ⬤ Components > Security > Preview Components
 #, fuzzy
 msgid "resource"
 msgstr "Ресурс"
@@ -477,7 +477,7 @@ msgstr "Всі колекції"
 msgid "thisCollection"
 msgstr "Ця колекція"
 
-#: components/Security/utils.ts:144
+#: components/Security/utils.ts:151
 #. Used in: Components > Security > Utils
 #, fuzzy
 msgid "allActions"
@@ -489,14 +489,14 @@ msgstr "Усі дії"
 msgid "collectionAccess"
 msgstr "Увімкнути доступ до колекції"
 
-#: components/Router/Routes.tsx:133
+#: components/Router/Routes.tsx:132
 #: components/Security/RoleTemplate.tsx:96
 #. Used in: Components > Router > Routes ⬤ Components > Security > Role Template
 #, fuzzy
 msgid "createRole"
 msgstr "Створити роль"
 
-#: components/Router/Routes.tsx:141
+#: components/Router/Routes.tsx:140
 #: components/Security/RoleTemplate.tsx:83
 #. Used in: Components > Router > Routes ⬤ Components > Security > Role Template
 #, fuzzy
@@ -680,7 +680,7 @@ msgstr "Переключитися на вертикальне розташув�
 msgid "advancedTables"
 msgstr "Розширені таблиці"
 
-#: components/Security/utils.ts:132
+#: components/Security/utils.ts:139
 #. Used in: Components > Security > Utils
 #, fuzzy
 msgid "excludedInstitutionalPolicies"

@@ -12,38 +12,37 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 4.16-dev\n"
 
-#: components/Core/Main.tsx:88
+#: components/Core/Main.tsx:65
 #. 🟥For accessibility purposes. Allows jumping to page content. Used in: Components > Core > Main
 msgid "skipToContent"
 msgstr "Перейти до вмісту"
 
-#: components/Header/UserTools.tsx:30
-#. Used in: Components > Header > User Tools
-msgid "currentUser"
-msgstr "Поточний користувач"
+#: components/Header/menuItemProcessing.ts:63
+#. Used in: Components > Header > Menu Item Processing
+msgid "main"
+msgstr ""
 
-#: components/Header/index.tsx:138
-#: components/Header/index.tsx:142
-#. 🟥Example: Current Collection. Used in: Components > Header > Index
+#: components/Header/ChooseCollection.tsx:42
+#: components/Header/ChooseCollection.tsx:46
+#. 🟥Example: Current Collection. Used in: Components > Header > Choose Collection
 msgid "currentCollection"
 msgstr "Поточна {collectionTable:string}"
 
 #: components/Header/Forms.tsx:63
-#: components/Header/menuItemDefinitions.ts:46
-#: components/Router/OverlayRoutes.tsx:44
-#: components/UserPreferences/Definitions.tsx:442
-#. Used in: Components > Header > Forms ⬤ Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > User Preferences > Definitions
+#: components/Header/menuItemDefinitions.ts:40
+#: components/Router/OverlayRoutes.tsx:60
+#. Used in: Components > Header > Forms ⬤ Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes
 msgid "dataEntry"
 msgstr "Введення даних"
 
-#: components/Header/userToolDefinitions.ts:71
-#: components/Router/OverlayRoutes.tsx:148
+#: components/Header/userToolDefinitions.ts:91
+#: components/Router/OverlayRoutes.tsx:164
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 msgid "makeDwca"
 msgstr "Створити архів DwC"
 
-#: components/Header/userToolDefinitions.ts:76
-#: components/Router/OverlayRoutes.tsx:156
+#: components/Header/userToolDefinitions.ts:97
+#: components/Router/OverlayRoutes.tsx:172
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 msgid "updateExportFeed"
 msgstr "Оновити RSS-канал"
@@ -100,14 +99,14 @@ msgstr "Створити нову бірку"
 msgid "createReport"
 msgstr "Створити новий звіт"
 
-#: components/Header/userToolDefinitions.ts:57
-#: components/Router/OverlayRoutes.tsx:132
-#: components/Toolbar/TreeRepair.tsx:165
+#: components/Header/userToolDefinitions.ts:75
+#: components/Router/OverlayRoutes.tsx:148
+#: components/Toolbar/TreeRepair.tsx:162
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Tree Repair
 msgid "repairTree"
 msgstr "Ремонтувати дерево"
 
-#: components/Toolbar/TreeRepair.tsx:160
+#: components/Toolbar/TreeRepair.tsx:157
 #. Used in: Components > Toolbar > Tree Repair
 msgid "treeRepairComplete"
 msgstr "Ремонт дерева завершено."
@@ -122,26 +121,41 @@ msgstr "Виберіть DwCA"
 msgid "chooseMetadataResource"
 msgstr "Виберіть ресурс метаданих"
 
-#: components/Router/Routes.tsx:26
-#. Used in: Components > Router > Routes
+#: components/Header/ExpressSearchTask.tsx:47
+#: components/Header/ExpressSearchTask.tsx:103
+#: components/Router/OverlayRoutes.tsx:44
+#: components/Router/Routes.tsx:25
+#. Used in: Components > Header > Express Search Task ⬤ Components > Router > Overlay Routes ⬤ Components > Router > Routes
 msgid "expressSearch"
 msgstr "Експрес-пошук"
 
-#: components/Header/ExpressSearchTask.tsx:41
+#: components/Header/ExpressSearchTask.tsx:113
 #. Used in: Components > Header > Express Search Task
 msgid "primarySearch"
 msgstr "Первинний пошук"
 
-#: components/Header/ExpressSearchTask.tsx:46
+#: components/Header/ExpressSearchTask.tsx:119
 #. Used in: Components > Header > Express Search Task
 msgid "secondarySearch"
 msgstr "Вторинний пошук"
 
-#: components/Header/UserTools.tsx:51
+#: components/UserPreferences/Renderers.tsx:308
+#. Used in: Components > User Preferences > Renderers
+msgid "menuItems"
+msgstr "Елементи меню"
+
+#: components/Header/UserTools.tsx:48
+#: components/Header/UserTools.tsx:79
 #: components/Router/OverlayRoutes.tsx:36
-#. Used in: Components > Header > User Tools ⬤ Components > Router > Overlay Routes
+#: components/UserPreferences/Renderers.tsx:309
+#. Used in: Components > Header > User Tools ⬤ Components > Router > Overlay Routes ⬤ Components > User Preferences > Renderers
 msgid "userTools"
 msgstr "Інструменти"
+
+#: components/Header/UserTools.tsx:78
+#. Used in: Components > Header > User Tools
+msgid "userToolsForUser"
+msgstr "Інструменти ({userName:string})"
 
 #: components/Toolbar/Language.tsx:86
 #: components/Toolbar/Language.tsx:162
@@ -175,12 +189,12 @@ msgstr ""
 "щоб допомогти нам завершити локалізацію, будь ласка, <link>прочитайте "
 "інструкцій.</link>"
 
-#: components/Header/userToolDefinitions.ts:105
+#: components/Header/userToolDefinitions.ts:132
 #. Used in: Components > Header > User Tool Definitions
 msgid "tableApi"
 msgstr "API таблиць"
 
-#: components/Header/userToolDefinitions.ts:109
+#: components/Header/userToolDefinitions.ts:137
 #. Used in: Components > Header > User Tool Definitions
 msgid "operationsApi"
 msgstr "API операцій"
@@ -188,30 +202,30 @@ msgstr "API операцій"
 #: components/AppResources/Create.tsx:88
 #: components/AppResources/Create.tsx:109
 #: components/AppResources/Filters.tsx:156
-#: components/Header/userToolDefinitions.ts:81
-#: components/UserPreferences/Definitions.tsx:413
+#: components/Header/userToolDefinitions.ts:103
+#: components/UserPreferences/Definitions.tsx:427
 #. Used in: Components > App Resources > Create ⬤ Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > User Preferences > Definitions
 msgid "documentation"
 msgstr "Документація"
 
-#: components/Header/userToolDefinitions.ts:42
+#: components/Header/userToolDefinitions.ts:58
 #. Used in: Components > Header > User Tool Definitions
 msgid "administration"
 msgstr "Адміністрування"
 
-#: components/Header/userToolDefinitions.ts:95
+#: components/Header/userToolDefinitions.ts:120
 #. Used in: Components > Header > User Tool Definitions
 msgid "developers"
 msgstr "Для розробників"
 
-#: components/Header/userToolDefinitions.ts:87
+#: components/Header/userToolDefinitions.ts:110
 #. Used in: Components > Header > User Tool Definitions
 msgid "forum"
 msgstr "Форум"
 
 #: components/Errors/ErrorDialog.tsx:131
-#: components/Header/userToolDefinitions.ts:101
-#: components/Router/Routes.tsx:394
+#: components/Header/userToolDefinitions.ts:127
+#: components/Router/Routes.tsx:393
 #: components/RouterCommands/CacheBuster.tsx:41
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Router Commands > Cache Buster
 msgid "clearCache"
@@ -222,7 +236,7 @@ msgstr "Очистити кеш браузера"
 msgid "cacheCleared"
 msgstr "Кеш очищено. Перезавантажте сторінку."
 
-#: components/Header/userToolDefinitions.ts:91
+#: components/Header/userToolDefinitions.ts:115
 #. Used in: Components > Header > User Tool Definitions
 msgid "technicalDocumentation"
 msgstr "Технічні документи"

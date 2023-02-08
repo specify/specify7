@@ -13,13 +13,14 @@ msgstr ""
 "X-Generator: Weblate 4.16-dev\n"
 
 #: components/ChooseCollection/index.tsx:168
-#: components/Core/Main.tsx:121
-#: components/Login/OicLogin.tsx:86
+#: components/Header/UserTools.tsx:54
+#: components/Header/userToolDefinitions.ts:40
+#: components/Login/OicLogin.tsx:84
 #: components/Login/index.tsx:154
 #: components/Permissions/PermissionDenied.tsx:230
 #: components/Router/EntrypointRouter.tsx:22
 #: components/Router/EntrypointRouter.tsx:27
-#. Used in: Components > Choose Collection > Index ⬤ Components > Core > Main ⬤ Components > Login > Oic Login ⬤ Components > Login > Index ⬤ Components > Permissions > Permission Denied ⬤ Components > Router > Entrypoint Router
+#. Used in: Components > Choose Collection > Index ⬤ Components > Header > User Tools ⬤ Components > Header > User Tool Definitions ⬤ Components > Login > Oic Login ⬤ Components > Login > Index ⬤ Components > Permissions > Permission Denied ⬤ Components > Router > Entrypoint Router
 msgid "logIn"
 msgstr "Авторизоваться"
 
@@ -48,7 +49,7 @@ msgstr ""
 "Учетная запись, вошедшая в систему в данный момент, не имеет доступа к "
 "коллекции {collectionName:string}."
 
-#: components/Header/userToolDefinitions.ts:28
+#: components/Header/userToolDefinitions.ts:34
 #: components/PasswordChange/index.tsx:99
 #: components/Router/EntrypointRouter.tsx:40
 #: components/Security/SetPassword.tsx:92
@@ -71,8 +72,8 @@ msgstr "iНовый пароль"
 msgid "repeatPassword"
 msgstr "Повторите новый пароль"
 
-#: components/Core/Main.tsx:172
-#: components/Header/userToolDefinitions.ts:24
+#: components/Core/Main.tsx:91
+#: components/Header/userToolDefinitions.ts:28
 #. Used in: Components > Core > Main ⬤ Components > Header > User Tool Definitions
 msgid "logOut"
 msgstr "Выйти"
@@ -82,23 +83,23 @@ msgstr "Выйти"
 msgid "setUserAgents"
 msgstr "Настроить пользовательских агентов"
 
-#: components/Core/Main.tsx:179
+#: components/Core/Main.tsx:98
 #. Used in: Components > Core > Main
 msgid "noAgent"
 msgstr "Текущему пользователю не назначен агент"
 
-#: components/Core/Main.tsx:184
+#: components/Core/Main.tsx:101
 #. Used in: Components > Core > Main
 msgid "noAgentDescription"
 msgstr "Пожалуйста, войдите как администратор и назначьте агента этому пользователю"
 
-#: components/Login/OicLogin.tsx:47
+#: components/Login/OicLogin.tsx:46
 #: components/Login/index.tsx:117
 #. Used in: Components > Login > Oic Login ⬤ Components > Login > Index
 msgid "helloMessage"
 msgstr "Привет, {userName:string}!"
 
-#: components/Login/OicLogin.tsx:49
+#: components/Login/OicLogin.tsx:48
 #. Used in: Components > Login > Oic Login
 msgid "oicWelcomeMessage"
 msgstr ""
@@ -106,7 +107,7 @@ msgstr ""
 "пользователя Specify. Это позволит вам войти в Specify с выбранным вами "
 "провайдером в будущем."
 
-#: components/Login/OicLogin.tsx:82
+#: components/Login/OicLogin.tsx:80
 #. Used in: Components > Login > Oic Login
 msgid "legacyLogin"
 msgstr "Войти с помощью Профиля Specify"
@@ -120,8 +121,8 @@ msgstr ""
 "пароль, вы можете ввести их ниже, чтобы связать этого пользователя с вашей "
 "учетной записью {providerName:string} для будущих входов в систему."
 
-#: components/Header/userToolDefinitions.ts:65
-#: components/Router/OverlayRoutes.tsx:140
+#: components/Header/userToolDefinitions.ts:84
+#: components/Router/OverlayRoutes.tsx:156
 #: components/Toolbar/MasterKey.tsx:43
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Master Key
 msgid "generateMasterKey"
@@ -223,7 +224,7 @@ msgstr ""
 "Пользователь, вошедший в систему, не получил доступа ни к каким коллекциям "
 "в этой базе данных. Вы должны войти в систему как другой пользователь."
 
-#: components/Header/userToolDefinitions.ts:22
+#: components/Header/userToolDefinitions.ts:26
 #. Used in: Components > Header > User Tool Definitions
 msgid "userAccount"
 msgstr "Учетная запись"
@@ -306,8 +307,8 @@ msgstr "Эта опция недоступна для администратор
 msgid "configureCollectionAccess"
 msgstr "Выберите доступ к коллекциям"
 
-#: components/Header/userToolDefinitions.ts:53
-#: components/Router/Routes.tsx:64
+#: components/Header/userToolDefinitions.ts:70
+#: components/Router/Routes.tsx:63
 #: components/Toolbar/Security.tsx:100
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Toolbar > Security
 msgid "securityPanel"
@@ -394,8 +395,7 @@ msgstr "Действие"
 #: components/Permissions/FormatError.tsx:65
 #: components/Security/PreviewComponents.tsx:92
 #: components/Security/PreviewComponents.tsx:148
-#: components/Security/utils.ts:101
-#. Used in: Components > Permissions > Format Error ⬤ Components > Security > Preview Components ⬤ Components > Security > Utils
+#. Used in: Components > Permissions > Format Error ⬤ Components > Security > Preview Components
 msgid "resource"
 msgstr "Ресурс"
 
@@ -409,7 +409,7 @@ msgstr "Все коллекции"
 msgid "thisCollection"
 msgstr "Эта коллекция"
 
-#: components/Security/utils.ts:144
+#: components/Security/utils.ts:151
 #. Used in: Components > Security > Utils
 msgid "allActions"
 msgstr "Все действия"
@@ -419,13 +419,13 @@ msgstr "Все действия"
 msgid "collectionAccess"
 msgstr "Доступ к коллекции"
 
-#: components/Router/Routes.tsx:133
+#: components/Router/Routes.tsx:132
 #: components/Security/RoleTemplate.tsx:96
 #. Used in: Components > Router > Routes ⬤ Components > Security > Role Template
 msgid "createRole"
 msgstr "Создать роль"
 
-#: components/Router/Routes.tsx:141
+#: components/Router/Routes.tsx:140
 #: components/Security/RoleTemplate.tsx:83
 #. Used in: Components > Router > Routes ⬤ Components > Security > Role Template
 msgid "newRole"
@@ -580,7 +580,7 @@ msgstr "Переключиться на вертикальную компоно�
 msgid "advancedTables"
 msgstr "Дополнительные таблицы"
 
-#: components/Security/utils.ts:132
+#: components/Security/utils.ts:139
 #. Used in: Components > Security > Utils
 msgid "excludedInstitutionalPolicies"
 msgstr "Исключенные институциональные политики:"

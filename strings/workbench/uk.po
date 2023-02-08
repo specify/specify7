@@ -12,10 +12,9 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 4.16-dev\n"
 
-#: components/Header/menuItemDefinitions.ts:103
-#: components/Router/OverlayRoutes.tsx:117
-#: components/UserPreferences/Definitions.tsx:487
-#: components/UserPreferences/Definitions.tsx:1352
+#: components/Header/menuItemDefinitions.ts:91
+#: components/Router/OverlayRoutes.tsx:133
+#: components/UserPreferences/Definitions.tsx:1353
 #: components/WorkBench/wbView.js:230
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > User Preferences > Definitions ⬤ Components > Work Bench > Wb View
 #, fuzzy
@@ -24,14 +23,14 @@ msgstr "WorkBench"
 
 #: components/WorkBench/Components.tsx:40
 #: components/WorkBench/Status.tsx:75
-#: components/WorkBench/Template.tsx:148
+#: components/WorkBench/Template.tsx:149
 #. Used in: Components > Work Bench > Components ⬤ Components > Work Bench > Status ⬤ Components > Work Bench > Template
 #, fuzzy
 msgid "rollback"
 msgstr "Відкат"
 
 #: components/WbPlanView/Mapper.tsx:379
-#: components/WorkBench/Template.tsx:130
+#: components/WorkBench/Template.tsx:131
 #. Used in: Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Template
 #, fuzzy
 msgid "validate"
@@ -44,7 +43,7 @@ msgid "validation"
 msgstr "Перевірка"
 
 #: components/WorkBench/Status.tsx:74
-#: components/WorkBench/Template.tsx:159
+#: components/WorkBench/Template.tsx:160
 #: components/WorkBench/wbView.js:1860
 #. Used in: Components > Work Bench > Status ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 #, fuzzy
@@ -87,7 +86,7 @@ msgstr "Заповнити вниз"
 msgid "fillUp"
 msgstr "Заповнювати"
 
-#: components/WorkBench/Template.tsx:169
+#: components/WorkBench/Template.tsx:170
 #: components/WorkBench/wbView.js:1949
 #. Used in: Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 #, fuzzy
@@ -108,44 +107,44 @@ msgid "dataCheckOn"
 msgstr "Перевірка даних: увімкнено"
 
 #: components/WorkBench/DataSetMeta.tsx:381
-#: components/WorkBench/Template.tsx:196
+#: components/WorkBench/Template.tsx:197
 #. Used in: Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Template
 #, fuzzy
 msgid "changeOwner"
 msgstr "Змінити власника"
 
-#: components/WorkBench/Template.tsx:211
+#: components/WorkBench/Template.tsx:212
 #. Used in: Components > Work Bench > Template
 #, fuzzy
 msgid "convertCoordinates"
 msgstr "Перетворення координат"
 
-#: components/WorkBench/Template.tsx:237
+#: components/WorkBench/Template.tsx:238
 #. Used in: Components > Work Bench > Template
 #, fuzzy
 msgid "navigation"
 msgstr "Навігація"
 
-#: components/WorkBench/Template.tsx:259
+#: components/WorkBench/Template.tsx:260
 #. Used in: Components > Work Bench > Template
 #, fuzzy
 msgid "replace"
 msgstr "Замінити"
 
-#: components/WorkBench/Template.tsx:256
-#: components/WorkBench/Template.tsx:260
+#: components/WorkBench/Template.tsx:257
+#: components/WorkBench/Template.tsx:261
 #. Used in: Components > Work Bench > Template
 #, fuzzy
 msgid "replacementValue"
 msgstr "Відновна вартість"
 
-#: components/WorkBench/Template.tsx:266
+#: components/WorkBench/Template.tsx:267
 #. Used in: Components > Work Bench > Template
 #, fuzzy
 msgid "searchResults"
 msgstr "Результати пошуку"
 
-#: components/WorkBench/Template.tsx:63
+#: components/WorkBench/Template.tsx:64
 #. Used in: Components > Work Bench > Template
 #, fuzzy
 msgid "clickToToggle"
@@ -159,19 +158,19 @@ msgstr "Натисніть, щоб увімкнути видимість"
 msgid "configureSearchReplace"
 msgstr "Налаштувати пошук і заміну"
 
-#: components/WorkBench/Template.tsx:268
+#: components/WorkBench/Template.tsx:269
 #. Used in: Components > Work Bench > Template
 #, fuzzy
 msgid "modifiedCells"
 msgstr "Модифіковані клітини"
 
-#: components/WorkBench/Template.tsx:270
+#: components/WorkBench/Template.tsx:271
 #. Used in: Components > Work Bench > Template
 #, fuzzy
 msgid "newCells"
 msgstr "Нові клітини"
 
-#: components/WorkBench/Template.tsx:272
+#: components/WorkBench/Template.tsx:273
 #. Used in: Components > Work Bench > Template
 #, fuzzy
 msgid "errorCells"
@@ -257,14 +256,14 @@ msgstr ""
 "доступним для завантаженого набору даних."
 
 #: components/WorkBench/DataSetMeta.tsx:67
-#: components/WorkBench/Template.tsx:320
+#: components/WorkBench/Template.tsx:321
 #. Used in: Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Template
 #, fuzzy
 msgid "dataSetDeleted"
 msgstr "Набір даних успішно видалено"
 
 #: components/WorkBench/DataSetMeta.tsx:70
-#: components/WorkBench/Template.tsx:323
+#: components/WorkBench/Template.tsx:324
 #. Used in: Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Template
 #, fuzzy
 msgid "dataSetDeletedDescription"
@@ -290,7 +289,7 @@ msgstr ""
 msgid "saving"
 msgstr "Збереження..."
 
-#: components/WorkBench/Template.tsx:380
+#: components/WorkBench/Template.tsx:381
 #. Used in: Components > Work Bench > Template
 #, fuzzy
 msgid "wbUnloadProtect"
@@ -447,7 +446,7 @@ msgstr "Виберіть потрібний формат геокоордина�
 msgid "emptyStringInline"
 msgstr "(порожній рядок)"
 
-#: components/WorkBench/Template.tsx:136
+#: components/WorkBench/Template.tsx:137
 #: components/WorkBench/wbView.js:2312
 #. Used in: Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 #, fuzzy
@@ -484,9 +483,9 @@ msgstr "Ця дія недоступна під час перегляду рез
 msgid "unavailableWhileValidating"
 msgstr "Ця дія недоступна, поки триває перевірка даних"
 
-#: components/WorkBench/Template.tsx:208
-#: components/WorkBench/Template.tsx:216
-#: components/WorkBench/Template.tsx:226
+#: components/WorkBench/Template.tsx:209
+#: components/WorkBench/Template.tsx:217
+#: components/WorkBench/Template.tsx:227
 #. Used in: Components > Work Bench > Template
 #, fuzzy
 msgid "unavailableWithoutLocality"
@@ -498,7 +497,7 @@ msgstr "Цей інструмент вимагає відображення ст
 msgid "unavailableWhenUploaded"
 msgstr "Цей інструмент не працює із завантаженими наборами даних"
 
-#: components/WorkBench/Template.tsx:316
+#: components/WorkBench/Template.tsx:317
 #. Used in: Components > Work Bench > Template
 #, fuzzy
 msgid "dataSetDeletedOrNotFound"
@@ -618,7 +617,7 @@ msgstr "Замінити всі збіги"
 msgid "replaceNext"
 msgstr "Замінити наступне входження"
 
-#: components/Router/Routes.tsx:176
+#: components/Router/Routes.tsx:175
 #. Used in: Components > Router > Routes
 #, fuzzy
 msgid "importDataSet"
@@ -661,44 +660,44 @@ msgstr "Кодування символів:"
 msgid "delimiter"
 msgstr "роздільник:"
 
-#: components/UserPreferences/Definitions.tsx:1453
+#: components/UserPreferences/Definitions.tsx:1454
 #: components/WbImport/index.tsx:152
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "comma"
 msgstr "Кома"
 
-#: components/UserPreferences/Definitions.tsx:1461
+#: components/UserPreferences/Definitions.tsx:1462
 #: components/WbImport/index.tsx:154
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "semicolon"
 msgstr "Крапка з комою"
 
-#: components/UserPreferences/Definitions.tsx:1457
+#: components/UserPreferences/Definitions.tsx:1458
 #: components/WbImport/index.tsx:153
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "tab"
 msgstr "вкладка"
 
-#: components/UserPreferences/Definitions.tsx:1465
+#: components/UserPreferences/Definitions.tsx:1466
 #: components/WbImport/index.tsx:155
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "space"
 msgstr "Простір"
 
-#: components/UserPreferences/Definitions.tsx:1469
+#: components/UserPreferences/Definitions.tsx:1470
 #: components/WbImport/index.tsx:156
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "pipe"
 msgstr "Труба"
 
-#: components/UserPreferences/Definitions.tsx:530
-#: components/UserPreferences/Definitions.tsx:551
-#: components/UserPreferences/Definitions.tsx:572
+#: components/UserPreferences/Definitions.tsx:496
+#: components/UserPreferences/Definitions.tsx:517
+#: components/UserPreferences/Definitions.tsx:538
 #: components/WbImport/index.tsx:193
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
