@@ -90,8 +90,8 @@ export function Main(): JSX.Element | null {
 
         <header
           className={`
-          flex flex-col border-b-[5px]
-          border-b-brand-200 bg-gray-200 shadow-md shadow-gray-400 [z-index:1] 
+          z-[1] flex flex-col
+          border-b-[5px] border-b-brand-200 bg-gray-200 shadow-md shadow-gray-400
           dark:border-b-brand-400 dark:bg-neutral-800 print:hidden 2xl:flex-row
           ${className.hasAltBackground}
         `}

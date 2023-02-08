@@ -163,7 +163,7 @@ export function Notifications(): JSX.Element {
                 // eslint-disable-next-line @typescript-eslint/naming-convention
                 last_seen: notifications[0]!.timestamp,
               }),
-              errorMode: 'silent',
+              errorMode: 'dismissible',
             }).then(() => undefined);
           }}
         >

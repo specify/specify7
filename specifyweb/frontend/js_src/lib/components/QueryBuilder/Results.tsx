@@ -464,8 +464,8 @@ function TableHeaderCell({
     ) : undefined;
   return (
     <div
-      className="sticky w-full min-w-max border-b border-gray-500
-        bg-brand-100 p-1 [inset-block-start:_0] [z-index:2] dark:bg-brand-500"
+      className="sticky z-[2] w-full min-w-max border-b
+        border-gray-500 bg-brand-100 p-1 [inset-block-start:_0] dark:bg-brand-500"
       role={typeof content === 'object' ? `columnheader` : 'cell'}
     >
       {typeof handleSortChange === 'function' ? (

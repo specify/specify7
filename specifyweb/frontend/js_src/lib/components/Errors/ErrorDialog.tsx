@@ -1,6 +1,7 @@
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
@@ -13,12 +14,14 @@ import { Link } from '../Atoms/Link';
 import { legacyLoadingContext } from '../Core/Contexts';
 import { Dialog } from '../Molecules/Dialog';
 import { downloadFile } from '../Molecules/FilePicker';
-import { clearCache } from '../RouterCommands/CacheBuster';
-import { usePref } from '../UserPreferences/usePref';
 import {
   SetUnloadProtectsContext,
   UnloadProtectsContext,
 } from '../Router/Router';
+import { clearCache } from '../RouterCommands/CacheBuster';
+import { usePref } from '../UserPreferences/usePref';
+import type { ToastMessage } from './Toasts';
+import { SetToastsContext } from './Toasts';
 
 const supportEmail = 'support@specifysoftware.org' as LocalizedString;
 export const supportLink = (
@@ -38,12 +41,12 @@ const errorBody = (
     <br />
     <StringToJsx
       components={{
-        memberLink: (label) => (
+        memberLink: (label): JSX.Element => (
           <Link.NewTab href="https://www.specifysoftware.org/members/#:~:text=Members%20can%20contact%20support%40specifysoftware.org%20for%20assistance%20updating.">
             {label}
           </Link.NewTab>
         ),
-        discourseLink: (label) => (
+        discourseLink: (label): JSX.Element => (
           <Link.NewTab href="https://discourse.specifysoftware.org/">
             {label}
           </Link.NewTab>
@@ -67,7 +70,7 @@ export function ErrorDialog({
   readonly header?: LocalizedString;
   readonly onClose?: () => void;
   readonly dismissible?: boolean;
-}): JSX.Element {
+}): JSX.Element | null {
   const id = useId('error-dialog')('');
   // If there is more than one error, all but the last one should be dismissible
   const isLastError = React.useRef(errors.size === 0).current;
@@ -81,9 +84,10 @@ export function ErrorDialog({
     'application',
     'allowDismissingErrors'
   );
+  const isDismissible = dismissible && typeof handleClose === 'function';
   const canClose =
     (canDismiss ||
-      dismissible ||
+      isDismissible ||
       process.env.NODE_ENV === 'development' ||
       !isLastError) &&
     typeof handleClose === 'function';
@@ -101,7 +105,23 @@ export function ErrorDialog({
   const initialUnloadProtects = React.useRef(unloadProtects);
   React.useCallback(() => setUnloadProtects?.([]), [setUnloadProtects]);
 
-  return (
+  // Display dismissible errors as toasts
+  const [showAsDialog, handleShowAsDialog] = useBooleanState(!isDismissible);
+  const setToasts = React.useContext(SetToastsContext);
+  React.useEffect(() => {
+    if (showAsDialog || handleClose === undefined) return undefined;
+    const toast: ToastMessage = {
+      type: 'Error',
+      message: header,
+      onDismiss: handleClose,
+      onClick: handleShowAsDialog,
+    };
+    setToasts((oldToasts) => [...oldToasts, toast]);
+    return (): void =>
+      setToasts((oldToasts) => oldToasts.filter((item) => item !== toast));
+  }, [showAsDialog, header, handleClose, handleShowAsDialog, setToasts]);
+
+  return isDismissible && !showAsDialog ? null : (
     <Dialog
       buttons={
         <>

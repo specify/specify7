@@ -173,7 +173,7 @@ function GitSha(): JSX.Element {
           headers: {
             accept: 'text/plain',
           },
-          errorMode: 'silent',
+          errorMode: 'dismissible',
           expectedResponseCodes: [Http.OK, Http.NOT_FOUND],
         }).then(({ data, status }) =>
           status === Http.NOT_FOUND ? false : (data as LocalizedString)
@@ -208,7 +208,7 @@ function BuildDate(): JSX.Element {
           headers: {
             accept: 'text/plain',
           },
-          errorMode: 'silent',
+          errorMode: 'dismissible',
           expectedResponseCodes: [Http.OK, Http.NOT_FOUND],
         }).then(({ data, status }) =>
           status === Http.NOT_FOUND ? commonText.unknown() : data

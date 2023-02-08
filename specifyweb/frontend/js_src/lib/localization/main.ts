@@ -79,6 +79,9 @@ export const mainText = createDictionary({
     'fr-fr': "Désolé, une erreur s'est produite",
     'uk-ua': 'Вибачте, щось пішло не так',
   },
+  clickToSeeDetails: {
+    'en-us': 'Click to see details',
+  },
   errorOccurredDescription: {
     'en-us': `
       We're sorry, it seems you have encountered an error in Specify 7 that we

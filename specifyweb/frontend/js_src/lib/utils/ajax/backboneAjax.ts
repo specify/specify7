@@ -4,7 +4,7 @@ import { formatUrl } from '../../components/Router/queryString';
 import type { RA, ValueOf } from '../types';
 import { defined } from '../types';
 import { Http } from './definitions';
-import type { AjaxErrorMode } from './index';
+import type { AjaxErrorMode, AjaxMethod } from './index';
 import { ajax } from './index';
 
 let expectedResponseCodes: RA<ValueOf<typeof Http>> | undefined = undefined;
@@ -48,7 +48,7 @@ Backbone.ajax = function (request): JQueryXHR {
         ? formatUrl(url, request.data ?? {})
         : url,
       {
-        method: request.type,
+        method: request.type as AjaxMethod,
         headers: {
           Accept: request.type === 'DELETE' ? 'text/plain' : 'application/json',
           'Content-Type':

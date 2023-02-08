@@ -7,6 +7,7 @@ import { setDevelopmentGlobal } from '../../utils/types';
 import { error } from '../Errors/assert';
 import { crash } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
+import { Toasts } from '../Errors/Toasts';
 import { loadingBar } from '../Molecules';
 import { Dialog, dialogClassNames, LoadingScreen } from '../Molecules/Dialog';
 import {
@@ -123,25 +124,27 @@ export function Contexts({
     <UnloadProtectsContext.Provider value={unloadProtects}>
       <UnloadProtectsRefContext.Provider value={unloadProtectsRef}>
         <SetUnloadProtectsContext.Provider value={handleChangeUnloadProtects}>
-          <ErrorBoundary>
-            <ErrorContext.Provider value={handleError}>
-              {errors}
-              <LoadingContext.Provider value={loadingHandler}>
-                <Dialog
-                  buttons={undefined}
-                  className={{ container: dialogClassNames.narrowContainer }}
-                  header={commonText.loading()}
-                  isOpen={isLoading}
-                  onClose={undefined}
-                >
-                  {loadingBar}
-                </Dialog>
-                <React.Suspense fallback={<LoadingScreen />}>
-                  {children}
-                </React.Suspense>
-              </LoadingContext.Provider>
-            </ErrorContext.Provider>
-          </ErrorBoundary>
+          <Toasts>
+            <ErrorBoundary>
+              <ErrorContext.Provider value={handleError}>
+                {errors}
+                <LoadingContext.Provider value={loadingHandler}>
+                  <Dialog
+                    buttons={undefined}
+                    className={{ container: dialogClassNames.narrowContainer }}
+                    header={commonText.loading()}
+                    isOpen={isLoading}
+                    onClose={undefined}
+                  >
+                    {loadingBar}
+                  </Dialog>
+                  <React.Suspense fallback={<LoadingScreen />}>
+                    {children}
+                  </React.Suspense>
+                </LoadingContext.Provider>
+              </ErrorContext.Provider>
+            </ErrorBoundary>
+          </Toasts>
         </SetUnloadProtectsContext.Provider>
       </UnloadProtectsRefContext.Provider>
     </UnloadProtectsContext.Provider>
@@ -150,7 +153,7 @@ export function Contexts({
 
 /**
  * Display a modal loading dialog while promise is resolving.
- * Also, catch and handle erros if promise is rejected.
+ * Also, catch and handle errors if promise is rejected.
  * If multiple promises are resolving at the same time, the dialog is
  * visible until all promises are resolved.
  * This prevents having more than one loading dialog visible at the same time.

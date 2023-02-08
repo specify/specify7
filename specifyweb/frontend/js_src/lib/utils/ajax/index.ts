@@ -30,7 +30,7 @@ export type AjaxErrorMode = 'dismissible' | 'silent' | 'visible';
  */
 const pendingRequests: R<Promise<unknown> | undefined> = {};
 
-type AjaxMethod =
+export type AjaxMethod =
   | 'OPTIONS'
   | 'GET'
   | 'HEAD'
@@ -92,7 +92,6 @@ export async function ajax<RESPONSE_TYPE = string>(
     method = 'GET',
     /** Ajax-specific options that are not passed to fetch() */
     expectedResponseCodes = [Http.OK],
-    // FIXME: consider getting rid of "silent" once dismissible errors are banners
     errorMode = safeMethods.has(method) ? 'dismissible' : 'visible',
     ...options
   }: AjaxProps
