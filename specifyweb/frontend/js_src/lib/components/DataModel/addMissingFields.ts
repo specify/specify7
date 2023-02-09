@@ -7,6 +7,7 @@ import type { AnySchema, SerializedResource } from './helperTypes';
 import { strictGetModel } from './schema';
 import type { LiteralField, Relationship } from './specifyField';
 import type { Tables } from './types';
+import { getScopingResource } from './domain';
 
 type ResourceSpec = {
   readonly requiredFields: 'define' | 'omit' | 'set';
@@ -44,6 +45,8 @@ export function addMissingFields<TABLE_NAME extends keyof Tables>(
     optionalRelationships,
   };
 
+  const scoping = getScopingResource(model);
+
   return {
     // This is needed to preserve unknown fields
     ...record,
@@ -70,6 +73,12 @@ export function addMissingFields<TABLE_NAME extends keyof Tables>(
         )
       )
     ) as SerializedResource<Tables[TABLE_NAME]>),
+    ...(scoping === undefined
+      ? undefined
+      : {
+          [scoping.relationship.name]:
+            record[scoping.relationship.name as 'id'] ?? scoping.resourceUrl,
+        }),
     /*
      * REFACTOR: convert all usages of this to camel case
      */
