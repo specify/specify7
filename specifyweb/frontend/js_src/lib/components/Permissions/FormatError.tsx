@@ -1,11 +1,13 @@
 import React from 'react';
 import { omit } from 'underscore';
 
-import { deserializeResource } from '../../hooks/resource';
 import { useAsyncState } from '../../hooks/useAsyncState';
+import { commonText } from '../../localization/common';
+import { userText } from '../../localization/user';
+import { StringToJsx } from '../../localization/utils';
 import { f } from '../../utils/functools';
 import { jsonStringify } from '../../utils/utils';
-import { serializeResource } from '../DataModel/helpers';
+import { deserializeResource, serializeResource } from '../DataModel/helpers';
 import type { SerializedModel } from '../DataModel/helperTypes';
 import { schema } from '../DataModel/schema';
 import type { SpecifyUser } from '../DataModel/types';
@@ -14,9 +16,6 @@ import { userInformation } from '../InitialContext/userInformation';
 import { actionToLabel, resourceNameToLongLabel } from '../Security/utils';
 import { institutionPermissions } from './definitions';
 import type { PermissionErrorSchema } from './PermissionDenied';
-import { userText } from '../../localization/user';
-import { StringToJsx } from '../../localization/utils';
-import { commonText } from '../../localization/common';
 
 export function formatPermissionsError(
   response: string,
@@ -112,10 +111,10 @@ export function FormatPermissionError({
       {typeof url === 'string' && (
         <p>
           <StringToJsx
-            string={userText.permissionDeniedForUrl()}
             components={{
               url: <code>{url}</code>,
             }}
+            string={userText.permissionDeniedForUrl()}
           />
         </p>
       )}
@@ -129,22 +128,17 @@ function CollectionName({
   readonly collectionId: number | undefined;
 }): JSX.Element {
   const [formatted] = useAsyncState(
-    React.useCallback(
-      () =>
-        typeof collectionId === 'number'
-          ? format(
-              f.maybe(
-                userInformation.availableCollections.find(
-                  ({ id }) => id === collectionId
-                ),
-                deserializeResource
-              ) ?? new schema.models.Collection.Resource({ id: collectionId }),
-              undefined,
-              true
-            )
-          : schema.models.Institution.label,
-      [collectionId]
-    ),
+    React.useCallback(() => {
+      if (collectionId === undefined) return schema.models.Institution.label;
+      const collection =
+        f.maybe(
+          userInformation.availableCollections.find(
+            ({ id }) => id === collectionId
+          ),
+          deserializeResource
+        ) ?? new schema.models.Collection.Resource({ id: collectionId });
+      return format(collection, undefined, true);
+    }, [collectionId]),
     false
   );
   return <>{formatted ?? commonText.loading()}</>;

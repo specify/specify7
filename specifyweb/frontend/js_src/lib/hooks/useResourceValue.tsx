@@ -1,21 +1,25 @@
 import React from 'react';
 
+import { className } from '../components/Atoms/className';
+import type { AnySchema } from '../components/DataModel/helperTypes';
+import type { SpecifyResource } from '../components/DataModel/legacyTypes';
+import { resourceOn } from '../components/DataModel/resource';
+import type { Input } from '../components/DataModel/saveBlockers';
+import type {
+  LiteralField,
+  Relationship,
+} from '../components/DataModel/specifyField';
 import { getDateInputValue } from '../utils/dayJs';
 import { listen } from '../utils/events';
 import { f } from '../utils/functools';
-import type { SpecifyResource } from '../components/DataModel/legacyTypes';
-import { parseRelativeDate } from '../utils/relativeDate';
-import { resourceOn } from '../components/DataModel/resource';
-import type { Input } from '../components/DataModel/saveBlockers';
-import type { RA } from '../utils/types';
 import type { Parser } from '../utils/parser/definitions';
 import { mergeParsers, resolveParser } from '../utils/parser/definitions';
-import { className } from '../components/Atoms/className';
-import { FormContext } from '../components/Core/Contexts';
-import { useValidation } from './useValidation';
-import { useBooleanState } from './useBooleanState';
-import { AnySchema } from '../components/DataModel/helperTypes';
 import { parseValue } from '../utils/parser/parse';
+import { parseRelativeDate } from '../utils/relativeDate';
+import type { RA } from '../utils/types';
+import { useBooleanState } from './useBooleanState';
+import { useValidation } from './useValidation';
+import { FormContext } from '../components/Forms/BaseResourceView';
 
 /**
  * A hook to integrate an Input with a field on a Backbone resource
@@ -37,9 +41,9 @@ export function useResourceValue<
   T extends boolean | number | string | null,
   INPUT extends Input = HTMLInputElement
 >(
-  resource: SpecifyResource<AnySchema>,
-  // If fieldName is undefined, this hook behaves pretty much like useValidation()
-  fieldName: string | undefined,
+  resource: SpecifyResource<AnySchema> | undefined,
+  // If field is undefined, this hook behaves pretty much like useValidation()
+  field: LiteralField | Relationship | undefined,
   // Default parser is usually coming from the form definition
   defaultParser: Parser | undefined
 ): ReturnType<typeof useValidation> & {
@@ -57,18 +61,6 @@ export function useResourceValue<
 
   const [value, setValue] = React.useState<T | undefined>(undefined);
 
-  const field = React.useMemo(() => {
-    if (typeof fieldName === 'string') {
-      const field = resource.specifyModel.getField(fieldName);
-      if (field === undefined)
-        console.error(
-          `${fieldName} does not exist on ${resource.specifyModel.name}`,
-          { resource }
-        );
-      return field;
-    } else return undefined;
-  }, [fieldName, resource]);
-
   const [{ triedToSubmit }] = React.useContext(FormContext);
 
   /*
@@ -80,7 +72,7 @@ export function useResourceValue<
   const [ignoreError, handleIgnoreError, handleDontIgnoreError] =
     useBooleanState();
   React.useEffect(() => {
-    if (field === undefined) return;
+    if (field === undefined || resource === undefined) return;
     const getBlockers = (): RA<string> =>
       resource.saveBlockers
         ?.blockersForField(field.name)
@@ -136,7 +128,7 @@ export function useResourceValue<
      *   infer implicit types
      */
     function updateValue(newValue: T, reportErrors = true) {
-      if (ignoreChangeRef.current) return;
+      if (ignoreChangeRef.current || resource === undefined) return;
 
       /*
        * Converting ref to state so that React.useEffect can be triggered
@@ -215,7 +207,7 @@ export function useResourceValue<
 
   // Listen for resource update. Set parser. Set default value
   React.useEffect(() => {
-    if (field === undefined) return;
+    if (field === undefined || resource === undefined) return;
 
     /*
      * Disable parser when validation is disabled. This is useful in search
@@ -273,7 +265,7 @@ export function useResourceValue<
 
   React.useEffect(
     () =>
-      typeof field === 'object'
+      typeof field === 'object' && typeof resource === 'object'
         ? resourceOn(
             resource,
             `change:${field.name}`,

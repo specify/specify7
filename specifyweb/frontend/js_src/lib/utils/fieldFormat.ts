@@ -5,8 +5,8 @@ import { unsafeGetPickLists } from '../components/PickLists/definitions';
 import { fetchPickList, getPickListItems } from '../components/PickLists/fetch';
 import type { Parser } from './parser/definitions';
 import { resolveParser } from './parser/definitions';
-import { removeKey } from './utils';
 import { parseValue } from './parser/parse';
+import { removeKey } from './utils';
 
 /*
  * BUG: when formatting a date field, it uses the databaseDateFormat rather
@@ -92,7 +92,7 @@ export function syncFieldFormat(
   parser: Parser | undefined,
   value: boolean | number | string | null | undefined
 ): string {
-  if (typeof value === 'undefined' || value === null) return '';
+  if (value === undefined || value === null) return '';
 
   // Find Pick List Item Title
   const pickListName = parser?.pickListName ?? field?.getPickList();

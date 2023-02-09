@@ -57,7 +57,7 @@ import {f} from '../../utils/functools';
 import {pathStartsWith} from '../WbPlanView/helpers';
 import {getUserPref} from '../UserPreferences/helpers';
 import {WbStatus} from './Status';
-import {crash} from '../Errors/Crash';
+import {crash, raise} from '../Errors/Crash';
 import {loadingBar} from '../Molecules';
 import {Http} from '../../utils/ajax/definitions';
 import {downloadDataSet} from './helpers';
@@ -1935,7 +1935,7 @@ export const WBView = Backbone.View.extend({
     );
   },
   export() {
-    downloadDataSet(this.dataset).catch(crash);
+    downloadDataSet(this.dataset).catch(raise);
   },
   revertChanges() {
     const dialog = this.options.display(
@@ -2232,10 +2232,10 @@ export const WBView = Backbone.View.extend({
         ]);
       });
     } else
-      throw new Error(
+      raise(new Error(
         `Trying to parse unknown uploadStatus type "${uploadStatus}" at
         row ${this.hot.toVisualRow(physicalRow)}`
-      );
+      ));
 
     Object.entries(uploadResult.toOne).forEach(([fieldName, uploadResult]) =>
       this.parseRowValidationResults(

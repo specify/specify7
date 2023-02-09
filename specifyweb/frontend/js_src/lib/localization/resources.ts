@@ -54,7 +54,7 @@ export const resourcesText = createDictionary({
   type: {
     'en-us': 'Type',
     'ru-ru': 'Тип',
-    'es-es': 'Escribe',
+    'es-es': 'Tipo',
     'fr-fr': 'Type',
     'uk-ua': 'Тип',
   },

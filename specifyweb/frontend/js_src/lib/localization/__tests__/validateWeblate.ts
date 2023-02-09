@@ -2,8 +2,8 @@ import { program } from 'commander';
 
 import { f } from '../../utils/functools';
 import { scanUsages } from '../utils/scanUsages';
-import { checkComponents } from '../utils/validateWeblate';
 import { testLogging } from '../utils/testLogging';
+import { checkComponents } from '../utils/validateWeblate';
 
 program
   .name('Validate Weblate config')

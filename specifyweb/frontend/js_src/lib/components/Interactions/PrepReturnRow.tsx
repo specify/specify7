@@ -3,16 +3,16 @@ import React from 'react';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
+import { interactionsText } from '../../localization/interactions';
 import { fieldFormat } from '../../utils/fieldFormat';
 import { Button } from '../Atoms/Button';
 import { Input } from '../Atoms/Form';
+import { getField } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { LoanPreparation } from '../DataModel/types';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import type { PrepReturnRowState } from './PrepReturnDialog';
-import { interactionsText } from '../../localization/interactions';
-import { getField } from '../DataModel/helpers';
 
 export function PrepReturnRow({
   preparation,

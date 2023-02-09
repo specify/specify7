@@ -39,6 +39,10 @@ const addBaseTableName = (
 export const uniqueMappingPaths = (
   mappingPaths: RA<MappingPath | undefined>
 ): RA<MappingPath> =>
+  /*
+   * See https://github.com/freaktechnik/eslint-plugin-array-func/issues/344
+   */
+  // eslint-disable-next-line array-func/from-map
   Array.from(
     new Set(filterArray(mappingPaths).map(mappingPathToString)),
     splitJoinedMappingPath
@@ -240,16 +244,16 @@ function reshapeLocalityData(localityData: LocalityData): LocalityData {
 
       const { headerName, value } = localityDataEntries[index].field;
 
-      if (groupName in aggregated)
-        aggregated[groupName] = {
-          ...aggregated[groupName],
-          value: `${value} ${aggregated[groupName].value}`,
-        };
-      else
-        aggregated[groupName] = {
-          headerName,
-          value,
-        };
+      aggregated[groupName] =
+        groupName in aggregated
+          ? {
+              ...aggregated[groupName],
+              value: `${value} ${aggregated[groupName].value}`,
+            }
+          : {
+              headerName,
+              value,
+            };
 
       return aggregated;
     },

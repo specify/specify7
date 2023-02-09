@@ -10,9 +10,12 @@ Coming in the next few months:
 
 - [Duplicate record merging tool](https://discourse.specifysoftware.org/t/record-merging-in-specify-7/939/9)
 - [Statistics page](https://discourse.specifysoftware.org/t/statistics-panel-for-specify-7/828)
+- [User Interface for editing Data Object Formatters and other XML resources](https://github.com/specify/specify7/pull/2796)
 - [And a lot more features](https://github.com/specify/specify7/pulls)
 
-## [7.8.5](https://github.com/specify/specify7/compare/v7.8.4...HEAD) (Unreleased)
+## [7.8.6](https://github.com/specify/specify7/compare/v7.8.5...HEAD) (Unreleased)
+
+## [7.8.5](https://github.com/specify/specify7/compare/v7.8.4...v7.8.5) (January 31 2022)
 
 ### Added
 
@@ -30,16 +33,21 @@ Coming in the next few months:
 - To be more security conscious, Specify 7 source code is now regularly scanned
   by GitHub's CodeQL tool, which is designed to find security
   vulnerabilities ([commit](https://github.com/specify/specify7/commit/9465b9e0972fcc7b03cfa1aadf50cc1a20749ee9))
+- Added a "Collapse All" button to tree
+  viewer ([#2050](https://github.com/specify/specify7/issues/2050)) - _Requested
+  by CSIRO_
 
 ### Changed
 
 - Data Model viewer has been redesigned to work better with printing the page
   and to support `Ctrl+F` across fields in different
-  tables ([#1831](https://github.com/specify/specify7/issues/1831))
+  tables, along with other usability improvements ([#2855](https://github.com/specify/specify7/issues/2855))
 - Low resolution PNG table icons have been replaced with modern SVG icons. For
   most tables the new icons look similar. Attachments icons have been modified
   to make text more
   readable. ([#2368](https://github.com/specify/specify7/issues/2368))
+- Large text fields in grid view now maintain consistent
+  height ([#2765](https://github.com/specify/specify7/issues/2765)) - Fixed by @cdamyx
 
 ### Fixed
 
@@ -57,7 +65,8 @@ Coming in the next few months:
 - All references to table names anywhere in the interface are now using the
   table name you chose in the schema
   configuration ([#2420](https://github.com/specify/specify7/issues/2420)
-  and [commit](https://github.com/specify/specify7/commit/a579909285a7c5b35dc1d32cd99f4919f654a688)) - _Reported by RGBE_
+  and [commit](https://github.com/specify/specify7/commit/a579909285a7c5b35dc1d32cd99f4919f654a688)) -
+  _Reported by RGBE_
 
 ## [7.8.4](https://github.com/specify/specify7/compare/v7.8.3...v7.8.4) (18 January 2023)
 

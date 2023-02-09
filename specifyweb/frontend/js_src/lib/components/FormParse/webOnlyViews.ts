@@ -1,12 +1,12 @@
 import { f } from '../../utils/functools';
+import type { IR } from '../../utils/types';
+import { ensure } from '../../utils/types';
+import { schema } from '../DataModel/schema';
 import {
   autoGenerateViewDefinition,
   getFieldsForAutoView,
 } from '../Forms/generateFormDefinition';
 import type { ParsedFormDefinition } from './index';
-import { schema } from '../DataModel/schema';
-import type { IR } from '../../utils/types';
-import { ensure } from '../../utils/types';
 
 /**
  * Definitions for front-end form views.
@@ -24,7 +24,7 @@ export const webOnlyViews = f.store(() =>
           {
             id: undefined,
             type: 'Field',
-            fieldName: undefined,
+            fieldNames: undefined,
             fieldDefinition: {
               isReadOnly: false,
               type: 'Plugin',

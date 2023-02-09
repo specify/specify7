@@ -1,12 +1,16 @@
 import React from 'react';
-import { Navigate, useRoutes } from 'react-router-dom';
+import {
+  createBrowserRouter,
+  Navigate,
+  RouterProvider,
+} from 'react-router-dom';
 
 import { commonText } from '../../localization/common';
+import { userText } from '../../localization/user';
 import type { RA } from '../../utils/types';
 import { NotFoundView } from './NotFoundView';
 import type { EnhancedRoute } from './RouterUtils';
 import { toReactRoutes } from './RouterUtils';
-import { userText } from '../../localization/user';
 
 /* eslint-disable @typescript-eslint/promise-function-async */
 export const entrypointRoutes: RA<EnhancedRoute> = [
@@ -59,7 +63,9 @@ export const entrypointRoutes: RA<EnhancedRoute> = [
 ];
 /* eslint-enable @typescript-eslint/promise-function-async */
 
+const routes = toReactRoutes(entrypointRoutes, undefined, false);
+const router = createBrowserRouter(routes);
+
 export function EntrypointRouter(): JSX.Element {
-  const routes = React.useMemo(() => toReactRoutes(entrypointRoutes), []);
-  return useRoutes(routes) ?? <NotFoundView />;
+  return <RouterProvider router={router} />;
 }

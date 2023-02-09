@@ -5,20 +5,20 @@
 import type { Action, State } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
 
-import type { MappingPath } from '../WbPlanView/Mapper';
-import type { SpQuery, Tables } from '../DataModel/types';
-import { replaceItem } from '../../utils/utils';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
-import type { QueryField } from './helpers';
-import { parseQueryFields } from './helpers';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import { getCache, setCache } from '../../utils/cache';
 import type { RA } from '../../utils/types';
+import { replaceItem } from '../../utils/utils';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpQuery, Tables } from '../DataModel/types';
 import {
   mappingPathIsComplete,
   mutateMappingPath,
 } from '../WbPlanView/helpers';
-import { SerializedResource } from '../DataModel/helperTypes';
-import { getCache, setCache } from '../../utils/cache';
+import type { MappingPath } from '../WbPlanView/Mapper';
+import type { QueryField } from './helpers';
+import { parseQueryFields } from './helpers';
 
 export type MainState = State<
   'MainState',
@@ -66,14 +66,13 @@ export const getInitialState = ({
 });
 
 type Actions =
-  | Action<'ResetStateAction', { readonly state: MainState }>
   | Action<
       'ChangeFieldAction',
       { readonly line: number; readonly field: QueryField }
     >
   | Action<
       'ChangeOpenedElementAction',
-      { line: number; index: number | undefined }
+      { readonly line: number; readonly index: number | undefined }
     >
   | Action<
       'ChangeSelectElementValueAction',
@@ -88,16 +87,20 @@ type Actions =
         readonly currentTableName: keyof Tables | undefined;
       }
     >
-  | Action<'ChangeFieldsAction', { readonly fields: RA<QueryField> }>
-  | Action<'FocusLineAction', { readonly line: number }>
-  | Action<'LineMoveAction', { line: number; direction: 'up' | 'down' }>
   | Action<
       'LineMoveAction',
       { readonly line: number; readonly direction: 'down' | 'up' }
     >
-  | Action<'ToggleMappingViewAction', { readonly isVisible: boolean }>
+  | Action<'ChangeFieldsAction', { readonly fields: RA<QueryField> }>
+  | Action<'FocusLineAction', { readonly line: number }>
+  | Action<
+      'LineMoveAction',
+      { readonly line: number; readonly direction: 'down' | 'up' }
+    >
+  | Action<'ResetStateAction', { readonly state: MainState }>
   | Action<'RunQueryAction'>
-  | Action<'SavedQueryAction'>;
+  | Action<'SavedQueryAction'>
+  | Action<'ToggleMappingViewAction', { readonly isVisible: boolean }>;
 
 export const reducer = generateReducer<MainState, Actions>({
   ResetStateAction: ({ action: { state } }) => state,

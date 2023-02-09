@@ -17,12 +17,12 @@ export const headerText = createDictionary({
     'fr-fr': 'Aller au contenu',
     'uk-ua': 'Перейти до вмісту',
   },
-  currentUser: {
-    'en-us': 'Current User',
-    'ru-ru': 'Текущий пользователь',
-    'es-es': 'Usuario actual',
-    'fr-fr': 'Utilisateur actuel',
-    'uk-ua': 'Поточний користувач',
+  main: {
+    'en-us': 'Main',
+    'es-es': 'Inicio',
+    'fr-fr': 'Principal',
+    'ru-ru': 'Основной',
+    'uk-ua': 'Головна',
   },
   currentCollection: {
     comment: 'Example: Current Collection',
@@ -36,7 +36,7 @@ export const headerText = createDictionary({
     'en-us': 'Data Entry',
     'ru-ru': 'Ввод данных',
     'es-es': 'Entrada de datos',
-    'fr-fr': 'Saisie des données',
+    'fr-fr': 'La saisie des données',
     'uk-ua': 'Введення даних',
   },
   makeDwca: {
@@ -201,12 +201,26 @@ export const headerText = createDictionary({
     'fr-fr': 'Recherche secondaire',
     'uk-ua': 'Вторинний пошук',
   },
+  menuItems: {
+    'en-us': 'Menu Items',
+    'ru-ru': 'Элементы меню',
+    'es-es': 'Elementos de menú',
+    'fr-fr': 'Éléments de menu',
+    'uk-ua': 'Елементи меню',
+  },
   userTools: {
     'en-us': 'User Tools',
-    'ru-ru': 'Инструменты пользователя',
-    'es-es': 'Herramientas del usuario',
+    'ru-ru': 'Инструменты',
+    'es-es': 'Herramientas',
     'fr-fr': 'Outils utilisateur',
     'uk-ua': 'Інструменти',
+  },
+  userToolsForUser: {
+    'en-us': 'User Tools ({userName:string})',
+    'ru-ru': 'Инструменты ({userName:string})',
+    'es-es': 'Herramientas ({userName:string})',
+    'fr-fr': 'Outils ({userName:string})',
+    'uk-ua': 'Інструменти ({userName:string})',
   },
   helpLocalizeSpecify: {
     'en-us': 'Help Localize Specify 7',

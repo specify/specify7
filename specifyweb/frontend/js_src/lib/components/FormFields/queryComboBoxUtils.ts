@@ -13,7 +13,7 @@ import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { flippedSortTypes } from '../QueryBuilder/helpers';
 import { getUserPref } from '../UserPreferences/helpers';
 import type { CollectionRelationships } from './useCollectionRelationships';
-import { QueryComboBoxTreeData } from './useTreeData';
+import type { QueryComboBoxTreeData } from './useTreeData';
 
 export function makeComboBoxQuery({
   fieldName,

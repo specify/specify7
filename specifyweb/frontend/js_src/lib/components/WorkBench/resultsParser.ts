@@ -4,18 +4,18 @@
  * @module
  */
 
+import type { LocalizedString } from 'typesafe-i18n';
 import type { State } from 'typesafe-reducer';
 
-import type { Tables } from '../DataModel/types';
-import type { IR, RA, RR } from '../../utils/types';
 import { backEndText } from '../../localization/backEnd';
+import type { IR, RA, RR } from '../../utils/types';
 import {
   formatConjunction,
   formatDisjunction,
 } from '../Atoms/Internationalization';
-import { LocalizedString } from 'typesafe-i18n';
 import { getField } from '../DataModel/helpers';
 import { schema } from '../DataModel/schema';
+import type { Tables } from '../DataModel/types';
 
 /*
  * If an UploadResult involves a tree record, this metadata indicates

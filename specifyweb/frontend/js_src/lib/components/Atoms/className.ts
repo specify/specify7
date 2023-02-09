@@ -44,9 +44,12 @@ export const className = {
    * place, the validation errors do not get permanently silenced
    */
   notSubmittedForm: 'not-submitted',
+  /*
+   * Used to disable default aria-current="page" styles for links and
+   * aria-pressed="true" for buttons
+   */
+  ariaHandled: 'aria-handled',
   notTouchedInput: 'not-touched',
-  // Disable default link click intercept action
-  navigationHandled: 'navigation-handled',
   label: 'flex flex-col',
   labelForCheckbox: 'cursor-pointer inline-flex gap-1 items-center',
   textArea: 'max-w-full min-w-[theme(spacing.20)] min-h-[theme(spacing.8)]',

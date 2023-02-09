@@ -1,26 +1,26 @@
+import BackboneBase from 'backbone';
 import $ from 'jquery';
 import _ from 'underscore';
-import BackboneBase from 'backbone';
 
 // https://stackoverflow.com/questions/14866014/debugging-javascript-backbone-and-marionette
 
     function createNamedConstructor(name, constructor) {
-        var fn = new Function('constructor', 'return function ' + name + ' () {\n'
-                              + '    // wrapper function created dynamically for "' + name + '"\n'
-                              + '    // constructor to allow instances to be identified in the debugger\n'
-                              + '    constructor.apply(this, arguments);\n'
-                              + '};');
-        return fn(constructor);
+        const function_ = new Function('constructor', `return function ${  name  } () {\n`
+                              + `    // wrapper function created dynamically for "${  name  }"\n`
+                              + `    // constructor to allow instances to be identified in the debugger\n`
+                              + `    constructor.apply(this, arguments);\n`
+                              + `};`);
+        return function_(constructor);
     }
 
-    var originalExtend = BackboneBase.View.extend;
-    var nameProp = '__name__';
-    var newExtend = function(protoProps, classProps) {
-        if (protoProps && protoProps.hasOwnProperty(nameProp)) {
+    const originalExtend = BackboneBase.View.extend;
+    const nameProperty = '__name__';
+    const newExtend = function(protoProps, classProps) {
+        if (protoProps && protoProps.hasOwnProperty(nameProperty)) {
             // BUG: check that name is a valid identifier
-            var name = protoProps[nameProp];
-            // wrap constructor from protoProps if supplied or 'this' (thi function we are extending)
-            var constructor = protoProps.hasOwnProperty('constructor') ? protoProps.constructor : this;
+            const name = protoProps[nameProperty];
+            // Wrap constructor from protoProps if supplied or 'this' (thi function we are extending)
+            const constructor = protoProps.hasOwnProperty('constructor') ? protoProps.constructor : this;
             protoProps = _.extend(protoProps, {
                 constructor: createNamedConstructor(name, constructor)
             });
@@ -33,4 +33,6 @@ import BackboneBase from 'backbone';
     BackboneBase.Model.extend = BackboneBase.Collection.extend = BackboneBase.Router.extend = BackboneBase.View.extend = newExtend;
 
 BackboneBase.$ = $;
-export const Backbone = BackboneBase;
+
+
+export {default as Backbone} from 'backbone';

@@ -5,18 +5,18 @@
 
 import React from 'react';
 
-import { ajax } from '../../utils/ajax';
-import { error } from '../Errors/assert';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
+import { ajax } from '../../utils/ajax';
+import { Http } from '../../utils/ajax/definitions';
 import { Progress } from '../Atoms';
-import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import type { Dataset, Status } from '../WbPlanView/Wrapped';
 import { Button } from '../Atoms/Button';
 import { Label } from '../Atoms/Form';
+import { error } from '../Errors/assert';
 import { softFail } from '../Errors/Crash';
 import { useTitle } from '../Molecules/AppTitle';
-import { Http } from '../../utils/ajax/definitions';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import type { Dataset, Status } from '../WbPlanView/Wrapped';
 
 // How often to query back-end
 const REFRESH_RATE = 2000;
@@ -152,7 +152,7 @@ export function WbStatus({
                 .then(({ data, status }) =>
                   status === Http.OK && ['ok', 'not running'].includes(data)
                     ? setAborted(true)
-                    : error('Invalid response')
+                    : error('Invalid WbStatus response', { status, data })
                 )
                 .catch(() => setAborted('failed'));
             }}

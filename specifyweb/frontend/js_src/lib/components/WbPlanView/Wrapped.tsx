@@ -6,22 +6,22 @@
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import type { LocalizedString } from 'typesafe-i18n';
 import type { State } from 'typesafe-reducer';
 
-import type { Tables } from '../DataModel/types';
+import { useErrorContext } from '../../hooks/useErrorContext';
+import { useLiveState } from '../../hooks/useLiveState';
 import type { IR, RA } from '../../utils/types';
-import type { UploadPlan } from './uploadPlanParser';
-import { getLinesFromHeaders, getLinesFromUploadPlan } from './linesGetter';
-import { savePlan } from './helpers';
-import type { UploadResult } from '../WorkBench/resultsParser';
+import type { Tables } from '../DataModel/types';
+import { useTitle } from '../Molecules/AppTitle';
 import { ProtectedAction } from '../Permissions/PermissionDenied';
+import type { UploadResult } from '../WorkBench/resultsParser';
+import { savePlan } from './helpers';
+import { getLinesFromHeaders, getLinesFromUploadPlan } from './linesGetter';
 import type { MappingLine } from './Mapper';
 import { Mapper } from './Mapper';
 import { BaseTableSelection } from './State';
-import { useErrorContext } from '../../hooks/useErrorContext';
-import { useLiveState } from '../../hooks/useLiveState';
-import { useTitle } from '../Molecules/AppTitle';
-import { LocalizedString } from 'typesafe-i18n';
+import type { UploadPlan } from './uploadPlanParser';
 
 // General definitions
 export type Status = {

@@ -3,45 +3,45 @@
  */
 
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
+import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
+import { headerText } from '../../localization/header';
+import { interactionsText } from '../../localization/interactions';
+import { localityText } from '../../localization/locality';
 import { preferencesText } from '../../localization/preferences';
 import { queryText } from '../../localization/query';
+import { reportsText } from '../../localization/report';
+import { resourcesText } from '../../localization/resources';
+import { schemaText } from '../../localization/schema';
+import type { Language } from '../../localization/utils/config';
+import { LANGUAGE } from '../../localization/utils/config';
+import { wbPlanText } from '../../localization/wbPlan';
 import { wbText } from '../../localization/workbench';
 import type { Parser } from '../../utils/parser/definitions';
-import type { IR, RA } from '../../utils/types';
-import { defined, ensure, overwriteReadOnly, RR } from '../../utils/types';
+import type { IR, RA, RR } from '../../utils/types';
+import { defined, ensure, overwriteReadOnly } from '../../utils/types';
 import { Link } from '../Atoms/Link';
+import { getField } from '../DataModel/helpers';
+import type { TableFields } from '../DataModel/helperTypes';
 import type { JavaType } from '../DataModel/specifyField';
-import type { Collection } from '../DataModel/types';
-import { Tables } from '../DataModel/types';
+import type { Collection, Tables } from '../DataModel/types';
 import { error, softError } from '../Errors/assert';
 import {
   LanguagePreferencesItem,
   SchemaLanguagePreferenceItem,
 } from '../Toolbar/Language';
-import type { WelcomePageMode } from './Renderers';
+import type { MenuPreferences, WelcomePageMode } from './Renderers';
 import {
   CollectionSortOrderPreferenceItem,
   ColorPickerPreferenceItem,
   defaultFont,
   FontFamilyPreferenceItem,
+  HeaderItemsPreferenceItem,
   WelcomePageModePreferenceItem,
 } from './Renderers';
-import { TableFields } from '../DataModel/helperTypes';
-import { schemaText } from '../../localization/schema';
-import { headerText } from '../../localization/header';
-import { LocalizedString } from 'typesafe-i18n';
-import { Language, LANGUAGE } from '../../localization/utils/config';
-import { reportsText } from '../../localization/report';
-import { wbPlanText } from '../../localization/wbPlan';
-import { localityText } from '../../localization/locality';
-import { interactionsText } from '../../localization/interactions';
-import { resourcesText } from '../../localization/resources';
-import { attachmentsText } from '../../localization/attachments';
-import { getField } from '../DataModel/helpers';
-import { treeText } from '../../localization/tree';
 
 // Custom Renderer for a preference item
 export type PreferenceItemComponent<VALUE> = (props: {
@@ -61,8 +61,8 @@ export type PreferenceItemComponent<VALUE> = (props: {
  * https://firefox-source-docs.mozilla.org/toolkit/components/featuregates/featuregates/
  */
 export type PreferenceItem<VALUE> = {
-  readonly title: LocalizedString | JSX.Element;
-  readonly description?: LocalizedString | JSX.Element;
+  readonly title: JSX.Element | LocalizedString;
+  readonly description?: JSX.Element | LocalizedString;
   // Whether the page needs to be reloaded for this preference to apply
   readonly requiresReload: boolean;
   /*
@@ -87,6 +87,11 @@ export type PreferenceItem<VALUE> = {
     }
   | {
       readonly renderer: PreferenceItemComponent<VALUE>;
+      /**
+       * Use "label" if renderer displays only a single interactive element
+       * Otherwise, use "div"
+       */
+      readonly container: 'div' | 'label';
     }
   | {
       readonly values:
@@ -132,6 +137,7 @@ export const preferenceDefinitions = {
             visible: true,
             defaultValue: LANGUAGE,
             renderer: LanguagePreferencesItem,
+            container: 'label',
           }),
           theme: defineItem<'dark' | 'light' | 'system'>({
             title: preferencesText.theme(),
@@ -250,6 +256,7 @@ export const preferenceDefinitions = {
             visible: true,
             defaultValue: defaultFont,
             renderer: FontFamilyPreferenceItem,
+            container: 'label',
           }),
         },
       },
@@ -262,6 +269,7 @@ export const preferenceDefinitions = {
             visible: true,
             defaultValue: '#ffffff',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
           darkBackground: defineItem({
             title: preferencesText.darkBackground(),
@@ -269,6 +277,7 @@ export const preferenceDefinitions = {
             visible: true,
             defaultValue: '#171717',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
           accentColor1: defineItem({
             title: preferencesText.accentColor1(),
@@ -276,6 +285,7 @@ export const preferenceDefinitions = {
             visible: true,
             defaultValue: '#ffcda3',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
           accentColor2: defineItem({
             title: preferencesText.accentColor2(),
@@ -283,6 +293,7 @@ export const preferenceDefinitions = {
             visible: true,
             defaultValue: '#ff9742',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
           accentColor3: defineItem({
             title: preferencesText.accentColor3(),
@@ -290,6 +301,7 @@ export const preferenceDefinitions = {
             visible: true,
             defaultValue: '#ff811a',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
           accentColor4: defineItem({
             title: preferencesText.accentColor4(),
@@ -297,6 +309,7 @@ export const preferenceDefinitions = {
             visible: true,
             defaultValue: '#d15e00',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
           accentColor5: defineItem({
             title: preferencesText.accentColor5(),
@@ -304,6 +317,7 @@ export const preferenceDefinitions = {
             visible: true,
             defaultValue: '#703200',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
           roundedCorners: defineItem<boolean>({
             title: preferencesText.roundedCorners(),
@@ -388,6 +402,14 @@ export const preferenceDefinitions = {
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
+          unsavedIndicator: defineItem<boolean>({
+            title: preferencesText.showUnsavedIndicator(),
+            description: preferencesText.showUnsavedIndicatorDescription(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
         },
       },
     },
@@ -409,6 +431,7 @@ export const preferenceDefinitions = {
             visible: true,
             defaultValue: 'default',
             renderer: WelcomePageModePreferenceItem,
+            container: 'div',
           }),
           // FEATURE: allow selecting attachments
           source: defineItem<string>({
@@ -426,80 +449,31 @@ export const preferenceDefinitions = {
   header: {
     title: preferencesText.header(),
     subCategories: {
-      menu: {
-        title: preferencesText.menu(),
+      appearance: {
+        title: preferencesText.appearance(),
         items: {
-          showDataEntry: defineItem<boolean>({
-            title: preferencesText.showMenuItem({
-              menuItem: headerText.dataEntry(),
-            }),
+          position: defineItem<'bottom' | 'left' | 'right' | 'top'>({
+            title: preferencesText.position(),
             requiresReload: false,
             visible: true,
-            defaultValue: true,
-            type: 'java.lang.Boolean',
+            defaultValue: 'left',
+            values: [
+              { value: 'left', title: preferencesText.left() },
+              { value: 'top', title: preferencesText.top() },
+              { value: 'right', title: preferencesText.right() },
+              { value: 'bottom', title: preferencesText.bottom() },
+            ],
           }),
-          showTrees: defineItem<boolean>({
-            title: preferencesText.showMenuItem({
-              menuItem: treeText.trees(),
-            }),
+          items: defineItem<MenuPreferences>({
+            title: preferencesText.position(),
             requiresReload: false,
             visible: true,
-            defaultValue: true,
-            type: 'java.lang.Boolean',
-          }),
-          showInteractions: defineItem<boolean>({
-            title: preferencesText.showMenuItem({
-              menuItem: interactionsText.interactions(),
-            }),
-            requiresReload: false,
-            visible: true,
-            defaultValue: true,
-            type: 'java.lang.Boolean',
-          }),
-          showQueries: defineItem<boolean>({
-            title: preferencesText.showMenuItem({
-              menuItem: queryText.queries(),
-            }),
-            requiresReload: false,
-            visible: true,
-            defaultValue: true,
-            type: 'java.lang.Boolean',
-          }),
-          showRecordSets: defineItem<boolean>({
-            title: preferencesText.showMenuItem({
-              menuItem: commonText.recordSets(),
-            }),
-            requiresReload: false,
-            visible: true,
-            defaultValue: true,
-            type: 'java.lang.Boolean',
-          }),
-          showWorkBench: defineItem<boolean>({
-            title: preferencesText.showMenuItem({
-              menuItem: wbText.workBench(),
-            }),
-            requiresReload: false,
-            visible: true,
-            defaultValue: true,
-            type: 'java.lang.Boolean',
-          }),
-          showReports: defineItem<boolean>({
-            title: preferencesText.showMenuItem({
-              menuItem: reportsText.reports(),
-            }),
-            requiresReload: false,
-            visible: true,
-            defaultValue: true,
-            type: 'java.lang.Boolean',
-          }),
-          showAttachments: defineItem<boolean>({
-            title: preferencesText.showMenuItem({
-              menuItem: attachmentsText.attachments(),
-            }),
-            requiresReload: false,
-            visible: true,
-            defaultValue: true,
-            type: 'java.lang.Boolean',
+            defaultValue: {
+              visible: [],
+              hidden: [],
+            },
+            renderer: HeaderItemsPreferenceItem,
+            container: 'div',
           }),
         },
       },
@@ -511,7 +485,7 @@ export const preferenceDefinitions = {
       createInteractions: {
         title: preferencesText.createInteractions(),
         items: {
-          useSpaceAsDelimiter: defineItem<'true' | 'false' | 'auto'>({
+          useSpaceAsDelimiter: defineItem<'auto' | 'false' | 'true'>({
             title: preferencesText.useSpaceAsDelimiter(),
             requiresReload: false,
             visible: true,
@@ -532,7 +506,7 @@ export const preferenceDefinitions = {
               },
             ],
           }),
-          useCommaAsDelimiter: defineItem<'true' | 'false' | 'auto'>({
+          useCommaAsDelimiter: defineItem<'auto' | 'false' | 'true'>({
             title: preferencesText.useCommaAsDelimiter(),
             requiresReload: false,
             visible: true,
@@ -553,7 +527,7 @@ export const preferenceDefinitions = {
               },
             ],
           }),
-          useNewLineAsDelimiter: defineItem<'true' | 'false' | 'auto'>({
+          useNewLineAsDelimiter: defineItem<'auto' | 'false' | 'true'>({
             title: preferencesText.useNewLineAsDelimiter(),
             requiresReload: false,
             visible: true,
@@ -598,6 +572,7 @@ export const preferenceDefinitions = {
             visible: false,
             defaultValue: 'legacy',
             renderer: () => <>{error('This should not get called')}</>,
+            container: 'div',
           }),
         },
       },
@@ -611,6 +586,7 @@ export const preferenceDefinitions = {
             visible: true,
             defaultValue: 'en',
             renderer: SchemaLanguagePreferenceItem,
+            container: 'label',
           }),
         },
       },
@@ -709,6 +685,7 @@ export const preferenceDefinitions = {
             visible: true,
             defaultValue: defaultFont,
             renderer: FontFamilyPreferenceItem,
+            container: 'label',
           }),
           maxWidth: defineItem<number>({
             title: preferencesText.maxFormWidth(),
@@ -768,6 +745,7 @@ export const preferenceDefinitions = {
             visible: true,
             defaultValue: '#e5e7eb',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
           disabled: defineItem({
             title: preferencesText.disabledFieldBackground(),
@@ -775,6 +753,7 @@ export const preferenceDefinitions = {
             visible: true,
             defaultValue: '#ffffff',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
           invalid: defineItem({
             title: preferencesText.invalidFieldBackground(),
@@ -782,6 +761,7 @@ export const preferenceDefinitions = {
             visible: true,
             defaultValue: '#f87171',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
           required: defineItem({
             title: preferencesText.requiredFieldBackground(),
@@ -789,6 +769,7 @@ export const preferenceDefinitions = {
             visible: true,
             defaultValue: '#bfdbfe',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
           darkDefault: defineItem({
             title: preferencesText.darkFieldBackground(),
@@ -796,6 +777,7 @@ export const preferenceDefinitions = {
             visible: true,
             defaultValue: '#404040',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
           darkDisabled: defineItem({
             title: preferencesText.darkDisabledFieldBackground(),
@@ -803,6 +785,7 @@ export const preferenceDefinitions = {
             visible: true,
             defaultValue: '#171717',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
           darkInvalid: defineItem({
             title: preferencesText.darkInvalidFieldBackground(),
@@ -810,6 +793,7 @@ export const preferenceDefinitions = {
             visible: true,
             defaultValue: '#991b1b',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
           darkRequired: defineItem({
             title: preferencesText.darkRequiredFieldBackground(),
@@ -817,6 +801,7 @@ export const preferenceDefinitions = {
             visible: true,
             defaultValue: '#1e3a8a',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
         },
       },
@@ -829,6 +814,7 @@ export const preferenceDefinitions = {
             visible: true,
             defaultValue: '#ffffff',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
           background: defineItem({
             title: preferencesText.background(),
@@ -836,6 +822,7 @@ export const preferenceDefinitions = {
             visible: true,
             defaultValue: '#e5e7eb',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
           darkForeground: defineItem({
             title: preferencesText.darkForeground(),
@@ -843,6 +830,7 @@ export const preferenceDefinitions = {
             visible: true,
             defaultValue: '#171717',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
           darkBackground: defineItem({
             title: preferencesText.darkBackground(),
@@ -850,6 +838,7 @@ export const preferenceDefinitions = {
             visible: true,
             defaultValue: '#262626',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
         },
       },
@@ -1003,6 +992,7 @@ export const preferenceDefinitions = {
             visible: false,
             defaultValue: {},
             renderer: () => <>{error('This should not get called')}</>,
+            container: 'div',
           }),
           carryForward: defineItem<{
             readonly [TABLE_NAME in keyof Tables]?: RA<
@@ -1014,6 +1004,7 @@ export const preferenceDefinitions = {
             visible: false,
             defaultValue: {},
             renderer: () => <>{error('This should not get called')}</>,
+            container: 'div',
           }),
           enableCarryForward: defineItem<RA<keyof Tables>>({
             title: <>enableCarryForward</>,
@@ -1021,6 +1012,7 @@ export const preferenceDefinitions = {
             visible: false,
             defaultValue: [],
             renderer: () => <>{error('This should not get called')}</>,
+            container: 'div',
           }),
           /*
            * Can temporary disable clone for a given table
@@ -1033,6 +1025,7 @@ export const preferenceDefinitions = {
             visible: false,
             defaultValue: [],
             renderer: () => <>{error('This should not get called')}</>,
+            container: 'div',
           }),
           disableAdd: defineItem<RA<keyof Tables>>({
             title: <>disableAdd</>,
@@ -1040,6 +1033,7 @@ export const preferenceDefinitions = {
             visible: false,
             defaultValue: [],
             renderer: () => <>{error('This should not get called')}</>,
+            container: 'div',
           }),
           autoNumbering: defineItem<{
             readonly [TABLE_NAME in keyof Tables]?: RA<
@@ -1051,6 +1045,7 @@ export const preferenceDefinitions = {
             visible: false,
             defaultValue: {},
             renderer: () => <>{error('This should not get called')}</>,
+            container: 'div',
           }),
           useCustomForm: defineItem<RA<keyof Tables>>({
             title: <>useCustomForm</>,
@@ -1058,6 +1053,7 @@ export const preferenceDefinitions = {
             visible: false,
             defaultValue: [],
             renderer: () => <>{error('This should not get called')}</>,
+            container: 'div',
           }),
           carryForwardShowHidden: defineItem<boolean>({
             title: <>carryForwardShowHidden</>,
@@ -1065,6 +1061,7 @@ export const preferenceDefinitions = {
             visible: false,
             defaultValue: false,
             type: 'java.lang.Boolean',
+            container: 'div',
           }),
         },
       },
@@ -1092,6 +1089,7 @@ export const preferenceDefinitions = {
             visible: true,
             defaultValue: 'collectionName',
             renderer: CollectionSortOrderPreferenceItem,
+            container: 'label',
           }),
         },
       },
@@ -1126,12 +1124,12 @@ export const preferenceDefinitions = {
               {
                 value: 'name',
                 // Replaced with localized version once schema is loaded
-                title: '_name',
+                title: '_name' as LocalizedString,
               },
               {
                 value: 'fullName',
                 // Replaced with localized version once schema is loaded
-                title: '_fullName',
+                title: '_fullName' as LocalizedString,
               },
             ],
           }),
@@ -1166,6 +1164,7 @@ export const preferenceDefinitions = {
             visible: true,
             defaultValue: '#f79245',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
           synonymColor: defineItem({
             title: preferencesText.synonymColor(),
@@ -1173,6 +1172,7 @@ export const preferenceDefinitions = {
             visible: true,
             defaultValue: '#dc2626',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
         },
       },
@@ -1185,6 +1185,7 @@ export const preferenceDefinitions = {
             visible: true,
             defaultValue: '#f79245',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
           synonymColor: defineItem({
             title: preferencesText.synonymColor(),
@@ -1192,6 +1193,7 @@ export const preferenceDefinitions = {
             visible: true,
             defaultValue: '#dc2626',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
         },
       },
@@ -1204,6 +1206,7 @@ export const preferenceDefinitions = {
             visible: true,
             defaultValue: '#f79245',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
           synonymColor: defineItem({
             title: preferencesText.synonymColor(),
@@ -1211,6 +1214,7 @@ export const preferenceDefinitions = {
             visible: true,
             defaultValue: '#dc2626',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
         },
       },
@@ -1223,6 +1227,7 @@ export const preferenceDefinitions = {
             visible: true,
             defaultValue: '#f79245',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
           synonymColor: defineItem({
             title: preferencesText.synonymColor(),
@@ -1230,6 +1235,7 @@ export const preferenceDefinitions = {
             visible: true,
             defaultValue: '#dc2626',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
         },
       },
@@ -1242,6 +1248,7 @@ export const preferenceDefinitions = {
             visible: true,
             defaultValue: '#f79245',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
           synonymColor: defineItem({
             title: preferencesText.synonymColor(),
@@ -1249,6 +1256,7 @@ export const preferenceDefinitions = {
             visible: true,
             defaultValue: '#dc2626',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
         },
       },
@@ -1289,6 +1297,7 @@ export const preferenceDefinitions = {
             visible: false,
             defaultValue: [],
             renderer: () => <>{error('This should not get called')}</>,
+            container: 'div',
           }),
         },
       },
@@ -1592,6 +1601,8 @@ export const preferenceDefinitions = {
   },
 } as const;
 
+ensure<GenericPreferencesCategories>()(preferenceDefinitions);
+
 // Use tree table labels as titles for the tree editor sections
 import('../DataModel/schema')
   .then(async ({ fetchContext, schema }) =>
@@ -1653,9 +1664,8 @@ import('../DataModel/schema')
       } else softError('Unable to replace the tree preferences item title');
     })
   )
+  // Not using softFail here to avoid circular dependency
   .catch(console.error);
 
 export type Preferences = GenericPreferencesCategories &
   typeof preferenceDefinitions;
-
-ensure<GenericPreferencesCategories>()(preferenceDefinitions);
