@@ -323,7 +323,7 @@ export function QueryLine({
                         variant={
                           field.filters.length > 1
                             ? className.blueButton
-                            : className.grayButton
+                            : className.lightGrayButton
                         }
                         onClick={(): void =>
                           handleFilterChange(field.filters.length, {
@@ -371,7 +371,7 @@ export function QueryLine({
                     variant={
                       field.filters[index].isNot
                         ? className.redButton
-                        : className.grayButton
+                        : className.lightGrayButton
                     }
                     onClick={(): void =>
                       handleFilterChange(index, {
@@ -480,7 +480,7 @@ export function QueryLine({
           }`}
           title={queryText.showButtonDescription()}
           variant={
-            field.isDisplay ? className.greenButton : className.grayButton
+            field.isDisplay ? className.greenButton : className.lightGrayButton
           }
           onClick={handleChange?.bind(undefined, {
             ...field,
