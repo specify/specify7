@@ -98,14 +98,14 @@ export function AttachmentsPlugin({
     [setState, state, resource, handleUploadComplete]
   );
 
-  //use React.useEffect to save the modification before closing the window
-  React.useEffect(() => {
-    return (): void => {
-      if (state?.type === 'DisplayAttachment') {
-        if (state.attachment?.needsSaved) state.attachment.save();
-      }
-    };
-  }, [state]);
+  // Use React.useEffect to save the modification before closing the window
+  React.useEffect(
+    () => (): void => {
+      if (state?.type === 'DisplayAttachment' && state.attachment?.needsSaved)
+        state.attachment.save();
+    },
+    [state]
+  );
 
   const filePickerContainer = React.useRef<HTMLDivElement | null>(null);
 

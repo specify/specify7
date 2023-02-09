@@ -3,7 +3,8 @@ import React from 'react';
 import type { SerializedCollection } from '../components/DataModel/collection';
 import type { AnySchema } from '../components/DataModel/helperTypes';
 import { f } from '../utils/functools';
-import { defined, GetOrSet } from '../utils/types';
+import type { GetOrSet } from '../utils/types';
+import { defined } from '../utils/types';
 import { useAsyncState } from './useAsyncState';
 
 /**

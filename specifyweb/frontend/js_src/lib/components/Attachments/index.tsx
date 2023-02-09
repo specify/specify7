@@ -241,12 +241,12 @@ function Attachments(): JSX.Element {
           collection.totalCount === collection.records.length
         }
         scale={scale}
-        onFetchMore={fetchMore}
         onChange={(records): void =>
           collection === undefined
             ? undefined
             : setCollection({ records, totalCount: collection.totalCount })
         }
+        onFetchMore={fetchMore}
       />
     </Container.FullGray>
   );

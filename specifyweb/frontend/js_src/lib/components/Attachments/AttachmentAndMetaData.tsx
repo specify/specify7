@@ -1,9 +1,10 @@
 import React from 'react';
-import { LocalizedString } from 'typesafe-i18n';
+import type { LocalizedString } from 'typesafe-i18n';
+
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { serializeResource } from '../DataModel/helpers';
-import { SpecifyResource } from '../DataModel/legacyTypes';
-import { Attachment } from '../DataModel/types';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { Attachment } from '../DataModel/types';
 import { ResourceView } from '../Forms/ResourceView';
 import { originalAttachmentsView } from '../Forms/useViewDefinition';
 import { loadingGif } from '../Molecules';
@@ -34,14 +35,14 @@ export function AttachmentAndMetaData({
             className="h-full w-full border-0"
             src={originalUrl}
             title={title}
-          ></iframe>
+          />
         )}
       </div>
       <div>
         <ResourceView
           dialog={false}
           isDependent={false}
-          isSubForm={true}
+          isSubForm
           mode="edit"
           resource={attachment}
           title={title}

@@ -71,11 +71,11 @@ export function AttachmentGallery({
           <AttachmentCell
             attachment={attachment}
             key={index}
-            onViewRecord={(model, id): void =>
-              setViewRecord(new model.Resource({ id }))
-            }
             onChange={(newAttachment): void =>
               handleChange(replaceItem(attachments, index, newAttachment))
+            }
+            onViewRecord={(model, id): void =>
+              setViewRecord(new model.Resource({ id }))
             }
           />
         ))}

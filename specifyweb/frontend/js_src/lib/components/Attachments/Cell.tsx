@@ -52,10 +52,10 @@ export function AttachmentCell({
             title={model?.label}
             onClick={(): void =>
               loading(
-                //fetch related CollectionObjectAttachment tables
+                // Fetch related CollectionObjectAttachment tables
                 fetchRelated(attachment, `${model!.name as 'agent'}Attachments`)
                   .then(({ records }) =>
-                    //get key id of CollectionObject with URL value
+                    // Get key id of CollectionObject with URL value
                     typeof records[0] === 'object'
                       ? idFromUrl(
                           caseInsensitiveHash(

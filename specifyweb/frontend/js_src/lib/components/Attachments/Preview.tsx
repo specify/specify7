@@ -22,7 +22,7 @@ export function AttachmentPreview({
   readonly attachment: SerializedResource<Attachment>;
   readonly onChange: (attachment: SerializedResource<Attachment>) => void;
 }): JSX.Element {
-  //open and close attachmentDialog
+  // Open and close attachmentDialog
   const [seen, setSeen] = React.useState(false);
   const togglePop = (): void => {
     setSeen(!seen);
@@ -58,7 +58,7 @@ export function AttachmentPreview({
   return (
     <>
       <div className={className}>{children}</div>
-      {seen === true ? (
+      {seen ? (
         <AttachmentDialog
           attachment={attachment}
           togglePop={togglePop}
@@ -78,7 +78,7 @@ function AttachmentDialog({
   readonly togglePop: () => void;
   readonly onChange: (attachment: SerializedResource<Attachment>) => void;
 }): JSX.Element {
-  //attachment is a JSON object. Need to deserilize it
+  // Attachment is a JSON object. Need to deserilize it
   const resource = React.useMemo(
     () => deserializeResource(attachment),
     [attachment]
@@ -106,7 +106,7 @@ function AttachmentDialog({
                 handleChange(serializeResource(resource));
                 togglePop();
               }}
-            ></SaveButton>
+            />
           )}
         </>
       }
