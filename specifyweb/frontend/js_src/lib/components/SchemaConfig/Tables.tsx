@@ -1,8 +1,11 @@
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
+import { schemaText } from '../../localization/schema';
+import { wbPlanText } from '../../localization/wbPlan';
 import { sortFunction } from '../../utils/utils';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -12,9 +15,6 @@ import { schema } from '../DataModel/schema';
 import { Dialog } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { formatUrl } from '../Router/queryString';
-import { schemaText } from '../../localization/schema';
-import { LocalizedString } from 'typesafe-i18n';
-import { wbPlanText } from '../../localization/wbPlan';
 
 export function SchemaConfigTables(): JSX.Element {
   const { language = '' } = useParams();

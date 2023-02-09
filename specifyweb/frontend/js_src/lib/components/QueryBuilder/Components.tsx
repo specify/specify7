@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
+import { wbPlanText } from '../../localization/wbPlan';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
@@ -16,17 +17,16 @@ import type {
   SpQueryField,
   Tables,
 } from '../DataModel/types';
+import { recordSetView } from '../FormParse/webOnlyViews';
 import { ResourceView } from '../Forms/ResourceView';
 import { userInformation } from '../InitialContext/userInformation';
 import { loadingBar } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
+import { ButtonWithConfirmation } from '../WbPlanView/Components';
 import { mappingPathIsComplete } from '../WbPlanView/helpers';
 import type { QueryField } from './helpers';
 import { QuerySaveDialog } from './Save';
-import { ButtonWithConfirmation } from '../WbPlanView/Components';
-import { recordSetView } from '../FormParse/webOnlyViews';
-import { wbPlanText } from '../../localization/wbPlan';
 
 export function SaveQueryButtons({
   isReadOnly,
@@ -122,8 +122,8 @@ export function ToggleMappingViewButton({
   return (
     <Button.Small
       aria-pressed={!showMappingView}
-      onClick={handleClick}
       disabled={fields.length === 0 && showMappingView}
+      onClick={handleClick}
     >
       {showMappingView
         ? wbPlanText.hideFieldMapper()

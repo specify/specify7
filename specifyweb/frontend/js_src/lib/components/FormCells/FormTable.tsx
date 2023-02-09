@@ -1,4 +1,5 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 import type { State } from 'typesafe-reducer';
 
 import { useId } from '../../hooks/useId';
@@ -15,20 +16,20 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
+import { FormMeta } from '../FormMeta';
 import type { FormMode } from '../FormParse';
 import type { FormCellDefinition, SubViewSortField } from '../FormParse/cells';
-import { FormMeta } from '../FormMeta';
 import { SearchDialog } from '../Forms/SearchDialog';
 import { RenderForm } from '../Forms/SpecifyForm';
 import { useViewDefinition } from '../Forms/useViewDefinition';
 import { loadingGif } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
-import { SortConfig, SortIndicator } from '../Molecules/Sorting';
+import type { SortConfig } from '../Molecules/Sorting';
+import { SortIndicator } from '../Molecules/Sorting';
 import { hasTablePermission } from '../Permissions/helpers';
 import { usePref } from '../UserPreferences/usePref';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { FormCell } from './index';
-import { LocalizedString } from 'typesafe-i18n';
 
 const cellToLabel = (
   model: SpecifyModel,
@@ -120,7 +121,7 @@ export function FormTable<SCHEMA extends AnySchema>({
       : undefined;
   const rowsRef = React.useRef<HTMLDivElement | null>(null);
   React.useEffect(() => {
-    if (typeof addedResource.current === 'undefined') return;
+    if (addedResource.current === undefined) return;
     const resourceIndex = resources.indexOf(addedResource.current);
     addedResource.current = undefined;
     if (resourceIndex === -1 || rowsRef.current === null) return;
@@ -261,9 +262,9 @@ export function FormTable<SCHEMA extends AnySchema>({
                     <>
                       <div className="h-full" role="cell">
                         <Button.Small
-                          aria-label={commonText.contract()}
-                          title={commonText.contract()}
+                          aria-label={commonText.collapse()}
                           className="h-full"
+                          title={commonText.collapse()}
                           onClick={(): void =>
                             setExpandedRecords({
                               ...isExpanded,

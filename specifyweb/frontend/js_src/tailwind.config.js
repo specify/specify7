@@ -3,11 +3,13 @@
  * https://github.com/tailwindlabs/tailwindcss/blob/master/stubs/defaultConfig.stub.js
  */
 
-// REFACTOR: evaluate usages of arbitrary values in class names
-// REFACTOR: consider changing defaults for values (i.e ring-1)
-// REFACTOR: add col-span-{n} and col-span-[full-1]
-// REFACTOR: modify grid-col-{n} to resolve to grid-template-columns:repeat(n,auto)
-//    instead of grid-template-columns:repeat(n,1fr)
+/*
+ * REFACTOR: evaluate usages of arbitrary values in class names
+ * REFACTOR: consider changing defaults for values (i.e ring-1)
+ * REFACTOR: add col-span-{n} and col-span-[full-1]
+ * REFACTOR: modify grid-col-{n} to resolve to grid-template-columns:repeat(n,auto)
+ *    instead of grid-template-columns:repeat(n,1fr)
+ */
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ['./lib/**/*.{ts,tsx,js}'],
@@ -79,7 +81,5 @@ module.exports = {
       },
     },
   },
-  plugins: [
-    require('@tailwindcss/forms'),
-  ],
+  plugins: [require('@tailwindcss/forms')],
 };

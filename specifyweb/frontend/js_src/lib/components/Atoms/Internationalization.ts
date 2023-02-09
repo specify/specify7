@@ -2,10 +2,11 @@
  * Various tools to help internationalize the application
  */
 
-import { capitalize } from '../../utils/utils';
-import type { RA } from '../../utils/types';
-import { LocalizedString } from 'typesafe-i18n';
+import type { LocalizedString } from 'typesafe-i18n';
+
 import { LANGUAGE } from '../../localization/utils/config';
+import type { RA } from '../../utils/types';
+import { capitalize } from '../../utils/utils';
 
 /* This is an incomplete definition. For complete, see MDN Docs */
 // eslint-disable-next-line @typescript-eslint/no-namespace

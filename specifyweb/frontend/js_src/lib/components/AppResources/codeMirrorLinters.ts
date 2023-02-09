@@ -4,8 +4,8 @@ import { linter } from '@codemirror/lint';
 import type { Extension, Text } from '@codemirror/state';
 import type { EditorView } from 'codemirror';
 
-import { mappedFind } from '../../utils/utils';
 import type { RA } from '../../utils/types';
+import { mappedFind } from '../../utils/utils';
 
 export const createLinter =
   (handler: (view: EditorView) => RA<Diagnostic>) =>
@@ -52,7 +52,7 @@ export function strictParseXml(xml: string): Element {
 
 const xmlErrorParsers = [
   /(?<message>[^\n]+)\n[^\n]+\nLine Number (?<line>\d+), Column (?<column>\d+)/u,
-  /error on line (?<line>\d+) at column (?<column>\d+): (?<message>[\S\s]*)/u,
+  /error on line (?<line>\d+) at column (?<column>\d+): (?<message>[\s\S]*)/u,
 ];
 
 const formatXmlError = (text: Text, error: string): Diagnostic =>

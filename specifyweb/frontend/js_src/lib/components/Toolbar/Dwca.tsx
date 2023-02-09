@@ -3,9 +3,11 @@
  */
 
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
+import { headerText } from '../../localization/header';
 import { formData } from '../../utils/ajax/helpers';
 import { ping } from '../../utils/ajax/ping';
 import { f } from '../../utils/functools';
@@ -20,8 +22,6 @@ import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpAppResource } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import { OverlayContext } from '../Router/Router';
-import { headerText } from '../../localization/header';
-import { LocalizedString } from 'typesafe-i18n';
 
 export function MakeDwcaOverlay(): JSX.Element | null {
   const [resources] = useAppResources();

@@ -1,7 +1,8 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
-import { useStateForContext } from '../../hooks/useStateForContext';
 import { useId } from '../../hooks/useId';
+import { useStateForContext } from '../../hooks/useStateForContext';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { Form } from '../Atoms/Form';
@@ -11,14 +12,13 @@ import { resourceOn } from '../DataModel/resource';
 import { softFail } from '../Errors/Crash';
 import { FormMeta } from '../FormMeta';
 import type { FormMode } from '../FormParse';
+import { LoadingScreen } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { displaySpecifyNetwork, SpecifyNetworkBadge } from '../SpecifyNetwork';
 import { usePref } from '../UserPreferences/usePref';
 import { format } from './dataObjFormatters';
 import { RenderForm } from './SpecifyForm';
 import { useViewDefinition } from './useViewDefinition';
-import { LoadingScreen } from '../Molecules/Dialog';
-import { LocalizedString } from 'typesafe-i18n';
 
 export type ResourceViewProps<SCHEMA extends AnySchema> = {
   readonly isLoading?: boolean;

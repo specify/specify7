@@ -1,10 +1,10 @@
+import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
+import { overwriteReadOnly } from '../../../utils/types';
+import { getResourceApiUrl } from '../resource';
 import { schema } from '../schema';
 import type { Collection } from '../specifyModel';
 import type { Accession, Agent } from '../types';
-import { getResourceApiUrl } from '../resource';
-import { overrideAjax } from '../../../tests/ajax';
-import { overwriteReadOnly } from '../../../utils/types';
 
 requireContext();
 

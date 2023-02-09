@@ -9,11 +9,11 @@ import {
 } from 'react-router-dom';
 
 import { commonText } from '../../localization/common';
+import { mainText } from '../../localization/main';
 import { toRelativeUrl } from '../../utils/ajax/helpers';
 import { listen } from '../../utils/events';
 import { GetOrSet, RA, setDevelopmentGlobal } from '../../utils/types';
 import { Button } from '../Atoms/Button';
-import { className } from '../Atoms/className';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { Dialog } from '../Molecules/Dialog';
 import { getUserPref } from '../UserPreferences/helpers';
@@ -21,9 +21,9 @@ import { NotFoundView } from './NotFoundView';
 import { overlayRoutes } from './OverlayRoutes';
 import { toReactRoutes } from './RouterUtils';
 import { routes } from './Routes';
-import { f } from '../../utils/functools';
 import { softFail } from '../Errors/Crash';
-import { mainText } from '../../localization/main';
+import { f } from '../../utils/functools';
+import { useErrorContext } from '../../hooks/useErrorContext';
 
 let unsafeNavigateFunction: SafeNavigateFunction | undefined;
 export const unsafeNavigate = (
@@ -58,6 +58,7 @@ export function Router(): JSX.Element {
   const isNotFoundPage =
     state?.type === 'NotFoundPage' ||
     background?.state?.type === 'NotFoundPage';
+  useErrorContext('location', location);
 
   /*
    * REFACTOR: replace usages of navigate with <a> where possible
@@ -138,8 +139,7 @@ function parseClickEvent(
     // Check if link already has an onClick that called event.preventDefault()
     !event.defaultPrevented &&
     link !== null &&
-    link.href.length > 0 &&
-    link.getAttribute('href')?.startsWith('#') === false &&
+    link.getAttribute('href')?.startsWith('/specify/') === true &&
     link.getAttribute('download') === null &&
     !event.metaKey &&
     !event.shiftKey &&
@@ -147,9 +147,7 @@ function parseClickEvent(
     (link.target === '' ||
       link.target === '_self' ||
       (event.altKey &&
-        getUserPref('general', 'behavior', 'altClickToSupressNewTab'))) &&
-    // Can add this class name to links to prevent react-router from handling them
-    !link.classList.contains(className.navigationHandled)
+        getUserPref('general', 'behavior', 'altClickToSupressNewTab')))
   ) {
     // Don't handle absolute URLs that lead to a different origin
     const relativeUrl = toRelativeUrl(link.href);
@@ -302,3 +300,5 @@ export const SetUnloadProtectsContext = React.createContext<
   GetOrSet<RA<string>>[1] | undefined
 >(undefined);
 SetUnloadProtectsContext.displayName = 'SetUnloadProtectsContext';
+
+export const exportsForTests = { parseClickEvent };

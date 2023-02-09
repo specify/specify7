@@ -5,9 +5,9 @@ import { f } from '../../utils/functools';
 import { Input, Label } from '../Atoms/Form';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { usePref } from '../UserPreferences/usePref';
-import { LiteralField, Relationship } from '../DataModel/specifyField';
 
 export function PrintOnSave({
   id,

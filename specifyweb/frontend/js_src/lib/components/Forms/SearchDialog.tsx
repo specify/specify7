@@ -1,36 +1,36 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
-import { error } from '../Errors/assert';
-import { format } from './dataObjFormatters';
-import { f } from '../../utils/functools';
-import { sortFunction } from '../../utils/utils';
-import { load } from '../InitialContext';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { queryText } from '../../localization/query';
-import { formatUrl } from '../Router/queryString';
-import { getResourceViewUrl } from '../DataModel/resource';
 import { queryCbxExtendedSearch } from '../../utils/ajax/specifyApi';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
-import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { ProtectedAction } from '../Permissions/PermissionDenied';
-import { QueryBuilder } from '../QueryBuilder/Wrapped';
-import { createQuery } from '../QueryBuilder';
-import { RenderForm } from './SpecifyForm';
+import { sortFunction } from '../../utils/utils';
+import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Form } from '../Atoms/Form';
-import { Ul } from '../Atoms';
 import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
-import { useId } from '../../hooks/useId';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { AnySchema, CommonFields } from '../DataModel/helperTypes';
+import type { AnySchema, CommonFields } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { getResourceViewUrl } from '../DataModel/resource';
+import type { SpecifyModel } from '../DataModel/specifyModel';
+import { error } from '../Errors/assert';
+import { raise } from '../Errors/Crash';
+import { load } from '../InitialContext';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { ProtectedAction } from '../Permissions/PermissionDenied';
+import { createQuery } from '../QueryBuilder';
+import { QueryBuilder } from '../QueryBuilder/Wrapped';
+import { formatUrl } from '../Router/queryString';
+import { format } from './dataObjFormatters';
+import { RenderForm } from './SpecifyForm';
 import { useViewDefinition } from './useViewDefinition';
-import { fail } from '../Errors/Crash';
-import { LocalizedString } from 'typesafe-i18n';
 
 const dialogDefinitions = load<Element>(
   formatUrl('/context/app.resource', { name: 'DialogDefs' }),
@@ -135,7 +135,7 @@ export function SearchDialog<SCHEMA extends AnySchema>({
                 )
               )
             )
-            .catch(fail)
+            .catch(raise)
             .finally(handleLoaded);
         }}
       >
@@ -272,12 +272,12 @@ function QueryBuilderSearch<SCHEMA extends AnySchema>({
       onClose={handleClose}
     >
       <QueryBuilder
+        forceCollection={forceCollection}
         isEmbedded
         isReadOnly={false}
         query={query}
         recordSet={undefined}
         onSelected={setSelected}
-        forceCollection={forceCollection}
       />
     </Dialog>
   );

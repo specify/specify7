@@ -1,14 +1,14 @@
-import { csrfSafeMethod, isExternalUrl } from './helpers';
-import { csrfToken } from './csrfToken';
 import type { IR, RA } from '../types';
-import { handleAjaxResponse } from './response';
+import { csrfToken } from './csrfToken';
 import { Http } from './definitions';
+import { csrfSafeMethod, isExternalUrl } from './helpers';
+import { handleAjaxResponse } from './response';
 
 // REFACTOR: add a central place for all API endpoint definitions
 
 // FEATURE: make all back-end endpoints accept JSON
 
-export type MimeType = 'application/json' | 'text/xml' | 'text/plain';
+export type MimeType = 'application/json' | 'text/plain' | 'text/xml';
 
 export type AjaxResponseObject<RESPONSE_TYPE> = {
   /*

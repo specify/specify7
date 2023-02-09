@@ -1,4 +1,5 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
@@ -10,7 +11,6 @@ import { strictGetModel } from '../DataModel/schema';
 import { softFail } from '../Errors/Crash';
 import { format } from '../Forms/dataObjFormatters';
 import { hasTablePermission } from '../Permissions/helpers';
-import { LocalizedString } from 'typesafe-i18n';
 
 export function FormattedResourceUrl({
   resourceUrl,
@@ -42,7 +42,8 @@ export function FormattedResource({
     false
   );
   return typeof resource === 'object' &&
-    hasTablePermission(resource.specifyModel.name, 'read') ? (
+    hasTablePermission(resource.specifyModel.name, 'read') &&
+    !resource.isNew() ? (
     <Link.NewTab href={resource.viewUrl()}>{formatted}</Link.NewTab>
   ) : (
     <>{formatted}</>

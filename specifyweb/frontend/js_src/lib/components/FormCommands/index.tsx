@@ -1,9 +1,12 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
+import { interactionsText } from '../../localization/interactions';
 import { Button } from '../Atoms/Button';
+import { formatDisjunction } from '../Atoms/Internationalization';
 import { toTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -13,9 +16,6 @@ import { LoanReturn } from '../Interactions/PrepReturnDialog';
 import { Dialog } from '../Molecules/Dialog';
 import { ReportsView } from '../Reports';
 import { ShowLoansCommand } from './ShowTransactions';
-import { LocalizedString } from 'typesafe-i18n';
-import { interactionsText } from '../../localization/interactions';
-import { formatDisjunction } from '../Atoms/Internationalization';
 
 export function GenerateLabel({
   resource,

@@ -1,5 +1,5 @@
-import {schema} from './schema';
 import {interactionBusinessRules} from './interactionBusinessRules';
+import {schema} from './schema';
 
 export const businessRuleDefs = Object.freeze({
         Accession: {
@@ -31,40 +31,48 @@ export const businessRuleDefs = Object.freeze({
         },
         BorrowMaterial: {
             customChecks: {
-                quantityreturned: function(borrowmaterial) {
-                    var returned = borrowmaterial.get('quantityreturned');
-                    var newval;
+                quantityreturned(borrowmaterial) {
+                    const returned = borrowmaterial.get('quantityreturned');
+                    let newval;
                     if (returned > borrowmaterial.get('quantity')) {
-                        /*return {
-                         valid: false,
-                         reason: 'value must be < ' + borrowmaterial.get('quantity')
-                         };*/
+                        /*
+                         *Return {
+                         *valid: false,
+                         *reason: 'value must be < ' + borrowmaterial.get('quantity')
+                         *};
+                         */
                         newval = borrowmaterial.get('quantity');
                     }
                     if (returned > borrowmaterial.get('quantityresolved')) {
-                        /*return {
-                         valid: false,
-                         reason: 'quantity returned must be less than or equal to quantity resolved'
-                         };*/
+                        /*
+                         *Return {
+                         *valid: false,
+                         *reason: 'quantity returned must be less than or equal to quantity resolved'
+                         *};
+                         */
                         newval = borrowmaterial.get('quantityresolved');
                     }
                     newval && borrowmaterial.set('quantityreturned', newval);
                 },
-                quantityresolved: function(borrowmaterial) {
-                    var resolved = borrowmaterial.get('quantityresolved');
-                    var newval;
+                quantityresolved(borrowmaterial) {
+                    const resolved = borrowmaterial.get('quantityresolved');
+                    let newval;
                     if (resolved > borrowmaterial.get('quantity')) {
-                        /*return {
-                         valid: false,
-                         reason: 'value must be < ' + borrowmaterial.get('quantity')
-                         };*/
+                        /*
+                         *Return {
+                         *valid: false,
+                         *reason: 'value must be < ' + borrowmaterial.get('quantity')
+                         *};
+                         */
                         newval = borrowmaterial.get('quantity');
                     }
                     if (resolved < borrowmaterial.get('quantityreturned')) {
-                        /*return {
-                         valid: false,
-                         reason: 'quantity resolved must be greater than or equal to quantity returned'
-                         };*/
+                        /*
+                         *Return {
+                         *valid: false,
+                         *reason: 'quantity resolved must be greater than or equal to quantity returned'
+                         *};
+                         */
                         newval = borrowmaterial.get('quantityreturned');
                     }
                     newval && borrowmaterial.set('quantityresolved', newval);
@@ -83,8 +91,8 @@ export const businessRuleDefs = Object.freeze({
                 catalognumber: 'collection',
                 guid: 'institution',
             },
-            customInit: function(collectionObject) {
-                var ceField = collectionObject.specifyModel.getField('collectingevent');
+            customInit(collectionObject) {
+                const ceField = collectionObject.specifyModel.getField('collectingevent');
                 if (ceField.isDependent() && collectionObject.get('collectingevent') == null) {
                     collectionObject.set('collectingevent', new schema.models.CollectingEvent.Resource());
                 }
@@ -96,26 +104,30 @@ export const businessRuleDefs = Object.freeze({
             }
         },
         Determination: {
-            onRemoved: function(det, detCollection) {
-                // Example usage:
-                // if (detCollection.related.specifyModel.name == 'CollectionObject') {
-                //     var collectionobject = detCollection.related;
-                //     console.log("removed determination", det, "from collection object", collectionobject);
-                // }
+            onRemoved(det, detCollection) {
+                /*
+                 * Example usage:
+                 * if (detCollection.related.specifyModel.name == 'CollectionObject') {
+                 *     var collectionobject = detCollection.related;
+                 *     console.log("removed determination", det, "from collection object", collectionobject);
+                 * }
+                 */
             },
-            onAdded: function(det, detCollection) {
-                // Example usage:
-                // if (detCollection.related.specifyModel.name == 'CollectionObject') {
-                //     var collectionobject = detCollection.related;
-                //     console.log("added determination", det, "to collection object", collectionobject);
-                // }
+            onAdded(det, detCollection) {
+                /*
+                 * Example usage:
+                 * if (detCollection.related.specifyModel.name == 'CollectionObject') {
+                 *     var collectionobject = detCollection.related;
+                 *     console.log("added determination", det, "to collection object", collectionobject);
+                 * }
+                 */
             },
-            customInit: function(determination) {
+            customInit(determination) {
                 if (determination.isNew()) {
                     const setCurrent = function() {
                         determination.set('iscurrent', true);
                         if (determination.collection != null) {
-                            determination.collection.each(function(other) {
+                            determination.collection.each((other) => {
                                 if (other.cid !== determination.cid) {
                                     other.set('iscurrent', false);
                                 }
@@ -131,14 +143,14 @@ export const businessRuleDefs = Object.freeze({
                     taxon => taxon == null ?
                         { valid: true, action() { determination.set('preferredtaxon', null); }}
                     : (function recur(taxon) {
-                        return taxon.get('acceptedtaxon') != null ?
-                            taxon.rget('acceptedtaxon', true).then(recur)
-                            : { valid: true, action() { determination.set('preferredtaxon', taxon); }};
+                        return taxon.get('acceptedtaxon') == null ?
+                            { valid: true, action() { determination.set('preferredtaxon', taxon); }}
+                            : taxon.rget('acceptedtaxon', true).then(recur);
                     })(taxon)),
 
-                iscurrent: function(determination) {
+                iscurrent(determination) {
                     if (determination.get('iscurrent') && (determination.collection != null)) {
-                        determination.collection.each(function(other) {
+                        determination.collection.each((other) => {
                             if (other.cid !== determination.cid) {
                                 other.set('iscurrent', false);
                             }
@@ -174,7 +186,7 @@ export const businessRuleDefs = Object.freeze({
         },
         GiftPreparation: {
             customChecks: {
-                quantity: function(iprep) {
+                quantity(iprep) {
                     interactionBusinessRules.checkPrepAvailability(iprep);
                 }
             }
@@ -193,21 +205,23 @@ export const businessRuleDefs = Object.freeze({
                 agent: {field: 'loan', otherfields: ['role']}
             }
         },
-        /* might be able to use something like this to check when form is loaded after add-items or create-new for invalid amounts due to
-         changes in other sessions */
+        /*
+         * Might be able to use something like this to check when form is loaded after add-items or create-new for invalid amounts due to
+         * changes in other sessions 
+         */
         LoanPreparation: {
             customChecks:  {
-                quantity: function(iprep) {
+                quantity(iprep) {
                     interactionBusinessRules.checkPrepAvailability(iprep);
                 }
             }
 
         },
         LoanReturnPreparation: {
-            onRemoved: function(loanreturnprep, collection) {
+            onRemoved(loanreturnprep, collection) {
                 interactionBusinessRules.updateLoanPrep(loanreturnprep, collection);
             },
-            customInit: function(loanreturnprep) {
+            customInit(loanreturnprep) {
                 interactionBusinessRules.totalLoaned = undefined;
                 interactionBusinessRules.totalResolved = undefined;
                 interactionBusinessRules.returned = undefined;
@@ -216,17 +230,17 @@ export const businessRuleDefs = Object.freeze({
                 loanreturnprep.get('quantityresolved') == null && loanreturnprep.set('quantityresolved', 0);
             },
             customChecks: {
-                quantityreturned: function(loanreturnprep) {
-                    var returned = loanreturnprep.get('quantityreturned');
-                    var previousReturned = interactionBusinessRules.previousReturned[loanreturnprep.cid]
+                quantityreturned(loanreturnprep) {
+                    const returned = loanreturnprep.get('quantityreturned');
+                    const previousReturned = interactionBusinessRules.previousReturned[loanreturnprep.cid]
                             ? interactionBusinessRules.previousReturned[loanreturnprep.cid]
                             : 0;
                     if (returned != previousReturned) {
-                        var delta = returned - previousReturned;
-                        var resolved = loanreturnprep.get('quantityresolved');
-                        var totalLoaned = interactionBusinessRules.getTotalLoaned(loanreturnprep);
-                        var totalResolved = interactionBusinessRules.getTotalResolved(loanreturnprep);
-                        var max = totalLoaned - totalResolved;
+                        const delta = returned - previousReturned;
+                        let resolved = loanreturnprep.get('quantityresolved');
+                        const totalLoaned = interactionBusinessRules.getTotalLoaned(loanreturnprep);
+                        const totalResolved = interactionBusinessRules.getTotalResolved(loanreturnprep);
+                        const max = totalLoaned - totalResolved;
                         if (delta + resolved > max) {
                             loanreturnprep.set('quantityreturned', previousReturned);
                         } else {
@@ -238,16 +252,16 @@ export const businessRuleDefs = Object.freeze({
                         interactionBusinessRules.updateLoanPrep(loanreturnprep, loanreturnprep.collection);
                     }
                 },
-                quantityresolved: function(loanreturnprep) {
-                    var resolved = loanreturnprep.get('quantityresolved');
-                    var previousResolved = interactionBusinessRules.previousResolved[loanreturnprep.cid]
+                quantityresolved(loanreturnprep) {
+                    const resolved = loanreturnprep.get('quantityresolved');
+                    const previousResolved = interactionBusinessRules.previousResolved[loanreturnprep.cid]
                             ? interactionBusinessRules.previousResolved[loanreturnprep.cid]
                             : 0;
                     if (resolved != previousResolved) {
-                        var returned = loanreturnprep.get('quantityreturned');
-                        var totalLoaned = interactionBusinessRules.getTotalLoaned(loanreturnprep);
-                        var totalResolved = interactionBusinessRules.getTotalResolved(loanreturnprep);
-                        var max = totalLoaned - totalResolved;
+                        const returned = loanreturnprep.get('quantityreturned');
+                        const totalLoaned = interactionBusinessRules.getTotalLoaned(loanreturnprep);
+                        const totalResolved = interactionBusinessRules.getTotalResolved(loanreturnprep);
+                        const max = totalLoaned - totalResolved;
                         if (resolved > max) {
                             loanreturnprep.set('quantityresolved', previousResolved);
                         }

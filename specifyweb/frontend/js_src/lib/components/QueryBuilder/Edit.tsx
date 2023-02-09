@@ -1,33 +1,33 @@
 import React from 'react';
-
-import { ajax } from '../../utils/ajax';
-import { formData } from '../../utils/ajax/helpers';
-import { error } from '../Errors/assert';
-import type { SpQuery, SpReport } from '../DataModel/types';
-import { f } from '../../utils/functools';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { commonText } from '../../localization/common';
-import { hasPermission } from '../Permissions/helpers';
-import { schema } from '../DataModel/schema';
-import { LoadingContext } from '../Core/Contexts';
-import { downloadFile } from '../Molecules/FilePicker';
-import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { ResourceView } from '../Forms/ResourceView';
 import { useNavigate } from 'react-router-dom';
-import { DataEntry } from '../Atoms/DataEntry';
-import { Button } from '../Atoms/Button';
-import { Form, Input } from '../Atoms/Form';
-import { Submit } from '../Atoms/Submit';
-import { useId } from '../../hooks/useId';
+
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
-import { SerializedResource } from '../DataModel/helperTypes';
-import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
-import { Http } from '../../utils/ajax/definitions';
-import { deserializeResource } from '../DataModel/helpers';
+import { useId } from '../../hooks/useId';
+import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { queryText } from '../../localization/query';
+import { ajax } from '../../utils/ajax';
+import { Http } from '../../utils/ajax/definitions';
+import { formData } from '../../utils/ajax/helpers';
+import { f } from '../../utils/functools';
+import { Button } from '../Atoms/Button';
+import { DataEntry } from '../Atoms/DataEntry';
+import { Form, Input } from '../Atoms/Form';
+import { Submit } from '../Atoms/Submit';
+import { LoadingContext } from '../Core/Contexts';
+import { deserializeResource } from '../DataModel/helpers';
 import { getField } from '../DataModel/helpers';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { schema } from '../DataModel/schema';
+import type { SpQuery, SpReport } from '../DataModel/types';
+import { error } from '../Errors/assert';
+import { ResourceView } from '../Forms/ResourceView';
+import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { downloadFile } from '../Molecules/FilePicker';
+import { hasPermission } from '../Permissions/helpers';
 
 export function QueryEditButton({
   query,

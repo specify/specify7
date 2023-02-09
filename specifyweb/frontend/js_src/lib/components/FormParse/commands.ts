@@ -5,18 +5,18 @@
  * On any modifications, please check if documentation needs to be updated.
  */
 
+import type { LocalizedString } from 'typesafe-i18n';
 import type { State } from 'typesafe-reducer';
 
-import { getParsedAttribute } from '../../utils/utils';
-import type { IR, RA } from '../../utils/types';
-import { legacyLocalize } from '../InitialContext/legacyUiLocalization';
 import { f } from '../../utils/functools';
-import { setLogContext } from '../Errors/interceptLogs';
-import { hasPermission, hasTablePermission } from '../Permissions/helpers';
-import { Tables } from '../DataModel/types';
+import type { IR, RA } from '../../utils/types';
+import { getParsedAttribute } from '../../utils/utils';
+import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
-import { SpecifyModel } from '../DataModel/specifyModel';
-import { LocalizedString } from 'typesafe-i18n';
+import { setLogContext } from '../Errors/interceptLogs';
+import { legacyLocalize } from '../InitialContext/legacyUiLocalization';
+import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import { formatDisjunction } from '../Atoms/Internationalization';
 
 export type UiCommands = {

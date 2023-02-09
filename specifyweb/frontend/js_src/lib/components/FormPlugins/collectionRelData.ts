@@ -1,6 +1,9 @@
+import type { LocalizedString } from 'typesafe-i18n';
+
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
+import { deserializeResource } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type {
@@ -9,10 +12,8 @@ import type {
   CollectionRelationship,
   CollectionRelType,
 } from '../DataModel/types';
-import { format } from '../Forms/dataObjFormatters';
 import { softFail } from '../Errors/Crash';
-import { deserializeResource } from '../DataModel/helpers';
-import { LocalizedString } from 'typesafe-i18n';
+import { format } from '../Forms/dataObjFormatters';
 
 export type CollectionRelData = {
   readonly relationshipType: SpecifyResource<CollectionRelType>;

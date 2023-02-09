@@ -1,7 +1,8 @@
-import { getMappingLineData } from '../navigator';
-import { theories } from '../../../tests/utils';
+import type { LocalizedString } from 'typesafe-i18n';
+
 import { requireContext } from '../../../tests/helpers';
-import { LocalizedString } from 'typesafe-i18n';
+import { theories } from '../../../tests/utils';
+import { getMappingLineData } from '../navigator';
 
 requireContext();
 

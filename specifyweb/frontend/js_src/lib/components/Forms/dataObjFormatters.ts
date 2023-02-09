@@ -2,6 +2,10 @@
  * Format a resource using resource formatters defined in Specify 6
  */
 
+import type { LocalizedString } from 'typesafe-i18n';
+
+import { formsText } from '../../localization/forms';
+import { userText } from '../../localization/user';
 import { ajax } from '../../utils/ajax';
 import { fieldFormat } from '../../utils/fieldFormat';
 import { resolveParser } from '../../utils/parser/definitions';
@@ -18,9 +22,9 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { LiteralField } from '../DataModel/specifyField';
-import type { Collection } from '../DataModel/specifyModel';
-import { SpecifyModel } from '../DataModel/specifyModel';
+import type { Collection, SpecifyModel } from '../DataModel/specifyModel';
 import type { Tables } from '../DataModel/types';
+import { softFail } from '../Errors/Crash';
 import {
   cachableUrl,
   contextUnlockedPromise,
@@ -28,10 +32,6 @@ import {
 } from '../InitialContext';
 import { hasPathPermission, hasTablePermission } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
-import { softFail } from '../Errors/Crash';
-import { userText } from '../../localization/user';
-import { LocalizedString } from 'typesafe-i18n';
-import { formsText } from '../../localization/forms';
 
 export type Formatter = {
   readonly name: string | undefined;
@@ -208,7 +208,7 @@ export async function format<SCHEMA extends AnySchema>(
   return isEmptyResource
     ? automaticFormatter ?? undefined
     : Promise.all(
-        fields.map((field) => formatField(field, resource, tryBest))
+        fields.map(async (field) => formatField(field, resource, tryBest))
       ).then((values) => values.join('') as LocalizedString);
 }
 
@@ -225,13 +225,15 @@ async function formatField(
   if (typeof fieldFormatter === 'string' && fieldFormatter === '') return '';
 
   const fields = resource.specifyModel.getFields(fieldName);
-  if (fields === undefined)
-    throw new Error(`Tried to get unknown field: ${fieldName}`);
+  if (fields === undefined) {
+    console.error(`Tried to get unknown field: ${fieldName}`);
+    return '';
+  }
   const field = fields.at(-1)!;
-  if (field.isRelationship)
-    throw new Error(
-      `Unexpected formatting of a relationship field ${fieldName}`
-    );
+  if (field.isRelationship) {
+    console.error(`Unexpected formatting of a relationship field ${fieldName}`);
+    return '';
+  }
 
   const hasPermission = hasPathPermission(fields, 'read');
 

@@ -17,15 +17,14 @@ import { schema, strictGetModel } from './schema';
 import type { LiteralField, Relationship } from './specifyField';
 import type { SpecifyModel } from './specifyModel';
 import type { Tables } from './types';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 
 /** Like resource.toJSON(), but keys are converted to camel case */
 export const serializeResource = <SCHEMA extends AnySchema>(
   resource: SerializedModel<SCHEMA> | SpecifyResource<SCHEMA>
 ): SerializedResource<SCHEMA> =>
   serializeModel<SCHEMA>(
-    'toJSON' in resource
-      ? resourceToJson(resource as SpecifyResource<SCHEMA>)
-      : (resource as SerializedModel<SCHEMA>),
+    'toJSON' in resource ? resourceToJson(resource) : resource,
     (resource as SpecifyResource<SCHEMA>)?.specifyModel?.name
   );
 
@@ -162,8 +161,7 @@ export const deserializeResource = <SCHEMA extends AnySchema>(
      * a typechecking performance issue (it was taking 5s to typecheck this
      * line according to TypeScript trace analyzer)
      */
-    (serializedResource as SerializedResource<SCHEMA>)
-      ._tableName as keyof Tables
+    (serializedResource as SerializedResource<SCHEMA>)._tableName
   ].Resource(removeKey(serializedResource, '_tableName' as 'id'));
 
 /**
@@ -183,6 +181,21 @@ export async function fetchDistantRelated(
     }
   | undefined
 > {
+  if (
+    Array.isArray(fields) &&
+    fields.some(
+      (field) =>
+        field.isRelationship &&
+        relationshipIsToMany(field) &&
+        field !== fields.at(-1)
+    )
+  ) {
+    console.error(
+      'Can not index inside of a -to-many relationship. Use an aggregator instead'
+    );
+    return undefined;
+  }
+
   const related =
     fields === undefined || fields.length === 0
       ? resource

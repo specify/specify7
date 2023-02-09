@@ -6,11 +6,12 @@
  * REFACTOR: reduce reliance on this
  */
 
+import type { LocalizedString } from 'typesafe-i18n';
+
+import { LANGUAGE } from '../../localization/utils/config';
+import { getProperty } from '../../utils/javaProperties';
 import { mappedFind } from '../../utils/utils';
 import { load } from './index';
-import { getProperty } from '../../utils/javaProperties';
-import { LocalizedString } from 'typesafe-i18n';
-import { LANGUAGE } from '../../localization/utils/config';
 
 const bundleLanguages = ['en', 'ru', 'uk', 'pt'];
 const locale =

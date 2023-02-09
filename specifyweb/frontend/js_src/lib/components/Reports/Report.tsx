@@ -1,4 +1,5 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
@@ -6,6 +7,7 @@ import { useErrorContext } from '../../hooks/useErrorContext';
 import { useId } from '../../hooks/useId';
 import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
+import { reportsText } from '../../localization/report';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
@@ -27,6 +29,7 @@ import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { SpAppResource, SpQuery } from '../DataModel/types';
 import { error } from '../Errors/assert';
+import { unknownIcon } from '../InitialContext/icons';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { ReportForRecord } from './ForRecord';
 import { ReportRecordSets } from './RecordSets';

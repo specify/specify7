@@ -1,6 +1,6 @@
-import { group, sortFunction } from '../utils/utils';
 import { schema } from '../components/DataModel/schema';
 import { setDevelopmentGlobal } from '../utils/types';
+import { group, sortFunction } from '../utils/utils';
 
 const javaTypeToTypeScript = {
   text: 'string',

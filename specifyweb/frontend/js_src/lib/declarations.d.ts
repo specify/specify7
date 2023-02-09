@@ -3,12 +3,12 @@
  */
 
 import type { To } from 'history';
-import * as H from 'history';
-
-import type { IR, RA, RR } from './utils/types';
+import type * as H from 'history';
 import type { localized } from 'typesafe-i18n/types/runtime/src/core';
+
 import type { SafeLocationState } from './components/Router/RouterState';
-import { SafeLocationState } from './components/Router/RouterState';
+import type { SafeLocationState } from './components/Router/RouterState';
+import type { IR, RA, RR } from './utils/types';
 
 /**
  * Typescript does not recognize the definition overwrite when using
@@ -87,7 +87,7 @@ declare module 'react-router' {
 }
 
 declare module 'history' {
-  export type SafeLocation = H.Location<SafeLocationState>;
+  export type SafeLocation = Location<SafeLocationState>;
 }
 
 declare module 'typesafe-i18n' {

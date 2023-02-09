@@ -1,20 +1,20 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
-import { fetchCollection } from '../DataModel/collection';
-import type { SpLocaleContainer } from '../DataModel/types';
-import { serializeResource } from '../DataModel/helpers';
-import { fetchFormatters } from '../Forms/dataObjFormatters';
-import { index } from '../../utils/utils';
-import { fetchPickLists } from '../PickLists/definitions';
-import { formatAggregators } from './helpers';
+import { useAsyncState } from '../../hooks/useAsyncState';
 import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import { fetchContext as fetchUiFormatters } from '../Forms/uiFormatters';
-import { useSchemaLanguages } from '../Toolbar/Language';
+import { index } from '../../utils/utils';
+import { fetchCollection } from '../DataModel/collection';
+import { serializeResource } from '../DataModel/helpers';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import type { SpLocaleContainer } from '../DataModel/types';
 import { webLinks } from '../FormPlugins/WebLink';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { SerializedResource } from '../DataModel/helperTypes';
-import { LocalizedString } from 'typesafe-i18n';
+import { fetchFormatters } from '../Forms/dataObjFormatters';
+import { fetchContext as fetchUiFormatters } from '../Forms/uiFormatters';
+import { fetchPickLists } from '../PickLists/definitions';
+import { useSchemaLanguages } from '../Toolbar/Language';
+import { formatAggregators } from './helpers';
 
 export type SchemaData = {
   readonly languages: IR<LocalizedString>;

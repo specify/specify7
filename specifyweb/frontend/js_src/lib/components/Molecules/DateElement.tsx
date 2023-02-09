@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { getRelativeDate } from '../Atoms/Internationalization';
 import { LANGUAGE } from '../../localization/utils/config';
+import { getRelativeDate } from '../Atoms/Internationalization';
 
 const longDate = new Intl.DateTimeFormat(LANGUAGE, {
   dateStyle: 'full',
