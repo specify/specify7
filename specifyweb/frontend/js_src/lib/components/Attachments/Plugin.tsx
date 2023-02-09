@@ -12,8 +12,8 @@ import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { f } from '../../utils/functools';
 import { Progress } from '../Atoms';
-import { serializeResource, toTable } from '../DataModel/helpers';
-import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
+import { toTable } from '../DataModel/helpers';
+import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Attachment } from '../DataModel/types';
 import { error } from '../Errors/assert';
@@ -23,12 +23,12 @@ import { loadingBar } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
 import { FilePicker } from '../Molecules/FilePicker';
 import { hasTablePermission } from '../Permissions/helpers';
+import { AttachmentAndMetaData } from './AttachmentAndMetaData';
 import {
   attachmentsAvailable,
   attachmentSettingsPromise,
   uploadFile,
 } from './attachments';
-import { AttachmentCell } from './Cell';
 
 export function AttachmentsPlugin({
   id,
@@ -46,7 +46,7 @@ export function AttachmentsPlugin({
   const [state, setState] = useAsyncState<
     | State<
         'DisplayAttachment',
-        { readonly attachment: SerializedResource<Attachment> }
+        { readonly attachment: SpecifyResource<Attachment> }
       >
     | State<'AddAttachment'>
     | State<'FileUpload', { readonly file: File }>
@@ -60,10 +60,9 @@ export function AttachmentsPlugin({
         (await resource?.rgetPromise('attachment'));
       if (attachment === undefined || attachment === null)
         return { type: 'AddAttachment' };
-      const serialized = serializeResource(attachment);
       return {
         type: 'DisplayAttachment',
-        attachment: serialized,
+        attachment,
       };
     }, [resource]),
     true
@@ -86,7 +85,7 @@ export function AttachmentsPlugin({
                 resource?.set('attachment', attachment as never);
                 setState({
                   type: 'DisplayAttachment',
-                  attachment: serializeResource(attachment),
+                  attachment,
                 });
               }
             })
@@ -98,6 +97,15 @@ export function AttachmentsPlugin({
         : undefined,
     [setState, state, resource, handleUploadComplete]
   );
+
+  //use React.useEffect to save the modification before closing the window
+  React.useEffect(() => {
+    return (): void => {
+      if (state?.type === 'DisplayAttachment') {
+        if (state.attachment?.needsSaved) state.attachment.save();
+      }
+    };
+  }, [state]);
 
   const filePickerContainer = React.useRef<HTMLDivElement | null>(null);
 
@@ -142,10 +150,7 @@ export function AttachmentsPlugin({
       ) : state.type === 'DisplayAttachment' ? (
         // Padding bottom prevents the shadow from being cut off
         <div className="flex h-full items-center justify-center pb-5">
-          <AttachmentCell
-            attachment={state.attachment}
-            onViewRecord={undefined}
-          />
+          <AttachmentAndMetaData attachment={state.attachment} />
         </div>
       ) : (
         error('Unhandled case', { state })

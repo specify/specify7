@@ -211,6 +211,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
         onSaving={handleSaving}
       />
     ) : undefined;
+
   const report =
     state.type === 'Report' && typeof resource === 'object' ? (
       <ReportsView
@@ -223,6 +224,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
         }}
       />
     ) : undefined;
+
   const deleteButton =
     !isDependent &&
     !isSubForm &&
@@ -343,15 +345,17 @@ export function ResourceView<SCHEMA extends AnySchema>({
         else handleClose();
       }}
     >
-      {form(children, 'overflow-y-hidden')}
-      {showUnloadProtect && (
-        <UnloadProtectDialog
-          onCancel={(): void => setShowUnloadProtect(false)}
-          onConfirm={handleClose}
-        >
-          {formsText.unsavedFormUnloadProtect()}
-        </UnloadProtectDialog>
-      )}
+      <div className="flex items-center">
+        {form(children, 'overflow-y-hidden')}
+        {showUnloadProtect && (
+          <UnloadProtectDialog
+            onCancel={(): void => setShowUnloadProtect(false)}
+            onConfirm={handleClose}
+          >
+            {formsText.unsavedFormUnloadProtect()}
+          </UnloadProtectDialog>
+        )}
+      </div>
     </Dialog>
   );
 }

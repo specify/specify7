@@ -16,6 +16,9 @@ export const attachmentsText = createDictionary({
     'fr-fr': 'Pièces jointes',
     'uk-ua': 'Прикріплення',
   },
+  attachmentPreview: {
+    'en-us': 'Attachment Preview',
+  },
   scale: {
     'en-us': 'Scale',
     'ru-ru': 'Масштаб',

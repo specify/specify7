@@ -2,6 +2,7 @@ import React from 'react';
 
 import { attachmentsText } from '../../localization/attachments';
 import type { RA } from '../../utils/types';
+import { replaceItem } from '../../utils/utils';
 import { Container } from '../Atoms';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -19,11 +20,13 @@ export function AttachmentGallery({
   onFetchMore: handleFetchMore,
   scale,
   isComplete,
+  onChange: handleChange,
 }: {
   readonly attachments: RA<SerializedResource<Attachment>>;
   readonly onFetchMore: () => Promise<void>;
   readonly scale: number;
   readonly isComplete: boolean;
+  readonly onChange: (attachments: RA<SerializedResource<Attachment>>) => void;
 }): JSX.Element {
   const containerRef = React.useRef<HTMLElement | null>(null);
 
@@ -70,6 +73,9 @@ export function AttachmentGallery({
             key={index}
             onViewRecord={(model, id): void =>
               setViewRecord(new model.Resource({ id }))
+            }
+            onChange={(newAttachment): void =>
+              handleChange(replaceItem(attachments, index, newAttachment))
             }
           />
         ))}

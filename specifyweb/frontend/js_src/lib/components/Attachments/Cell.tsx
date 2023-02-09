@@ -1,5 +1,4 @@
 import React from 'react';
-import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
@@ -8,14 +7,11 @@ import { caseInsensitiveHash } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
 import { fetchRelated } from '../DataModel/collection';
-import { deserializeResource, getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { idFromUrl } from '../DataModel/resource';
-import { getModelById, schema } from '../DataModel/schema';
+import { getModelById } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Attachment } from '../DataModel/types';
-import { ResourceView } from '../Forms/ResourceView';
-import { originalAttachmentsView } from '../Forms/useViewDefinition';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasTablePermission } from '../Permissions/helpers';
 import { fetchThumbnail } from './attachments';
@@ -25,11 +21,13 @@ import { AttachmentPreview } from './Preview';
 export function AttachmentCell({
   attachment,
   onViewRecord: handleViewRecord,
+  onChange: handleChange,
 }: {
   readonly attachment: SerializedResource<Attachment>;
   readonly onViewRecord:
     | ((model: SpecifyModel, recordId: number) => void)
     | undefined;
+  readonly onChange: (attachment: SerializedResource<Attachment>) => void;
 }): JSX.Element {
   const model =
     typeof attachment.tableID === 'number'
@@ -41,16 +39,9 @@ export function AttachmentCell({
     false
   );
 
-  const [isMetaOpen, _, handleMetaClose, handleMetaToggle] = useBooleanState();
-  const title = (attachment.title || thumbnail?.alt) as
-    | LocalizedString
-    | undefined;
-  const loading = React.useContext(LoadingContext);
+  const [_, handleMetaToggle] = useBooleanState();
 
-  const resource = React.useMemo(
-    () => deserializeResource(attachment),
-    [attachment]
-  );
+  const loading = React.useContext(LoadingContext);
 
   return (
     <div className="relative">
@@ -60,60 +51,37 @@ export function AttachmentCell({
             className="absolute top-0 left-0"
             title={model?.label}
             onClick={(): void =>
-              model === undefined
-                ? handleMetaToggle()
-                : loading(
-                    fetchRelated(
-                      attachment,
-                      `${model.name as 'agent'}Attachments`
-                    )
-                      .then(({ records }) =>
-                        typeof records[0] === 'object'
-                          ? idFromUrl(
-                              caseInsensitiveHash(
-                                records[0],
-                                model.name as 'agent'
-                              ) ?? ''
-                            )
-                          : undefined
-                      )
-                      .then((id) =>
-                        typeof id === 'number'
-                          ? handleViewRecord(model, id)
-                          : handleMetaToggle()
-                      )
+              loading(
+                //fetch related CollectionObjectAttachment tables
+                fetchRelated(attachment, `${model!.name as 'agent'}Attachments`)
+                  .then(({ records }) =>
+                    //get key id of CollectionObject with URL value
+                    typeof records[0] === 'object'
+                      ? idFromUrl(
+                          caseInsensitiveHash(
+                            records[0],
+                            model!.name as 'agent'
+                          ) ?? ''
+                        )
+                      : undefined
                   )
+                  .then((id) =>
+                    typeof id === 'number'
+                      ? handleViewRecord(model!, id)
+                      : handleMetaToggle()
+                  )
+              )
             }
           >
             <TableIcon label name={model?.name ?? 'Attachment'} />
           </Button.LikeLink>
         )}
-      <Button.Icon
-        aria-pressed={isMetaOpen}
-        className="absolute top-0 right-0"
-        icon="informationCircle"
-        title={
-          getField(schema.models.WorkbenchTemplateMappingItem, 'metaData').label
-        }
-        onClick={handleMetaToggle}
-      />
-      {isMetaOpen && (
-        <ResourceView
-          dialog="modal"
-          isDependent={false}
-          isSubForm={false}
-          mode="edit"
-          resource={resource}
-          title={title}
-          viewName={originalAttachmentsView}
-          onAdd={undefined}
-          onClose={handleMetaClose}
-          onDeleted={undefined}
-          onSaved={undefined}
-        />
-      )}
       {typeof thumbnail === 'object' ? (
-        <AttachmentPreview attachment={attachment} thumbnail={thumbnail} />
+        <AttachmentPreview
+          attachment={attachment}
+          thumbnail={thumbnail}
+          onChange={handleChange}
+        />
       ) : (
         <div className="flex h-10 w-10 items-center justify-center">
           {commonText.loading()}
