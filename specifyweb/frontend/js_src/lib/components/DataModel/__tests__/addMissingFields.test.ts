@@ -4,8 +4,8 @@ import { mockTime, requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
 import { addMissingFields } from '../addMissingFields';
 import type { AnySchema, SerializedResource } from '../helperTypes';
-import type { Agent } from '../types';
 import { getResourceApiUrl } from '../resource';
+import type { Agent } from '../types';
 
 mockTime();
 requireContext();
