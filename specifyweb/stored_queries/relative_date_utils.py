@@ -21,8 +21,7 @@ def relative_to_absolute_date(raw_date_value):
     type = date_parse[0][2]
     offset = (1 if direction == '+' else -1) * int(size)
     delta = timedelta()
-    if type == 'secon' \
-               'd':
+    if type == 'second':
         delta = timedelta(seconds=offset)
     elif type == 'minute':
         delta = timedelta(minutes=offset)
