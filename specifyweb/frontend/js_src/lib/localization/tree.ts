@@ -360,6 +360,10 @@ export const treeText = createDictionary({
     'uk-ua': 'Редагувати ранги',
   },
   resourceToDelete: {
-    'en-us': `This will permanently delete the following resource`,
+    'en-us': 'This will permanently delete the following resource',
+    'es-es': 'Esto eliminará permanentemente el siguiente recurso',
+    'fr-fr': 'Cela supprimera définitivement la ressource suivante',
+    'ru-ru': 'Это навсегда удалит следующий ресурс',
+    'uk-ua': 'Це призведе до остаточного видалення наступного ресурсу',
   },
 } as const);
