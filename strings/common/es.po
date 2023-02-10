@@ -43,10 +43,10 @@ msgstr "No"
 #: components/QueryBuilder/Import.tsx:31
 #: components/QueryBuilder/LoanReturn.tsx:160
 #: components/Reports/Parameters.tsx:81
-#: components/Reports/Report.tsx:212
-#: components/Reports/Report.tsx:239
-#: components/Reports/Report.tsx:326
-#: components/Reports/index.tsx:135
+#: components/Reports/Report.tsx:199
+#: components/Reports/Report.tsx:226
+#: components/Reports/Report.tsx:313
+#: components/Reports/index.tsx:150
 #: components/Router/Router.tsx:273
 #: components/Security/ImportExport.tsx:81
 #: components/Security/MissingAgentsDialog.tsx:93
@@ -156,8 +156,8 @@ msgstr "Crear"
 #: components/QueryBuilder/LoanReturn.tsx:157
 #: components/QueryBuilder/LoanReturn.tsx:226
 #: components/QueryBuilder/Save.tsx:65
-#: components/Reports/Report.tsx:113
-#: components/Reports/Report.tsx:122
+#: components/Reports/Report.tsx:50
+#: components/Reports/Report.tsx:59
 #: components/SchemaConfig/Languages.tsx:31
 #: components/Security/Role.tsx:197
 #: components/Security/SetPassword.tsx:36
@@ -223,7 +223,7 @@ msgstr "Limpiar todo"
 #: components/Forms/Save.tsx:256
 #: components/QueryBuilder/FromMap.tsx:72
 #: components/QueryBuilder/Save.tsx:66
-#: components/Reports/Report.tsx:327
+#: components/Reports/Report.tsx:314
 #: components/SchemaConfig/Components.tsx:36
 #: components/Security/MissingAgentsDialog.tsx:96
 #: components/Security/Role.tsx:213
@@ -389,7 +389,7 @@ msgstr "Buscar"
 
 #: components/FormCommands/ShowTransactions.tsx:45
 #: components/Forms/SearchDialog.tsx:156
-#: components/Reports/index.tsx:189
+#: components/Reports/index.tsx:209
 #. Used in: Components > Form Commands > Show Transactions ⬤ Components > Forms > Search Dialog ⬤ Components > Reports > Index
 msgid "noResults"
 msgstr "Sin resultados"
@@ -411,8 +411,8 @@ msgid "new"
 msgstr "Nuevo"
 
 #: components/Atoms/DataEntry.tsx:138
-#: components/Reports/index.tsx:236
-#: components/Reports/index.tsx:239
+#: components/Reports/index.tsx:261
+#: components/Reports/index.tsx:264
 #: components/SchemaConfig/Format.tsx:115
 #: components/SchemaConfig/Format.tsx:119
 #: components/Security/UserComponents.tsx:150
@@ -426,7 +426,7 @@ msgid "edit"
 msgstr "Editar"
 
 #: components/Interactions/InteractionDialog.tsx:337
-#: components/Reports/Report.tsx:214
+#: components/Reports/Report.tsx:201
 #: components/Security/UserComponents.tsx:183
 #. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Reports > Report ⬤ Components > Security > User Components
 msgid "ignore"
