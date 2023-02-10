@@ -36,7 +36,7 @@ export function SchemaConfigMain(): JSX.Element {
   const { language: rawLanguage = '', tableName = '' } = useParams();
   const model = strictGetModel(tableName);
 
-  useTitle(schemaText.schemaViewTitle({ tableName: tableName }));
+  useTitle(schemaText.schemaViewTitle({ tableName }));
 
   const schemaData = useOutletContext<SchemaData>();
   const isReadOnly =

@@ -311,6 +311,6 @@ export const schemaText = createDictionary({
     'uk-ua': 'Область застосування',
   },
   schemaViewTitle: {
-    'en-us': 'Schema Config: {tableName:string}'
+    'en-us': 'Schema Config: {tableName:string}',
   },
 } as const);
