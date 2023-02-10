@@ -482,8 +482,8 @@ msgstr "Fecha completa"
 msgid "view"
 msgstr "Vista"
 
-#: components/Atoms/Link.tsx:43
 #: components/Atoms/Link.tsx:44
+#: components/Atoms/Link.tsx:45
 #: components/Leaflet/index.ts:157
 #: components/Leaflet/index.ts:161
 #: components/Leaflet/index.ts:162
