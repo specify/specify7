@@ -160,7 +160,6 @@ export function ReportsView({
             <ReportRow
               cacheKey="listOfReports"
               fallbackIcon="Reports"
-              icon={<TableIcon label={false} name="Reports" />}
               resources={reports}
               onClick={setSelectedReport}
             />
@@ -171,7 +170,6 @@ export function ReportsView({
             </div>
             <ReportRow
               cacheKey="listOfLabels"
-              icon={<TableIcon label={false} name="Labels" />}
               resources={labels}
               fallbackIcon="Labels"
               onClick={setSelectedReport}
