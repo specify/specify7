@@ -18,17 +18,22 @@ import {
   parserFromType,
 } from '../../utils/parser/definitions';
 import { parseValue } from '../../utils/parser/parse';
-import { Input, Select } from '../Atoms/Form';
+import type { RA } from '../../utils/types';
+import { Input, Select, Textarea } from '../Atoms/Form';
 import { iconClassName } from '../Atoms/Icons';
 import type { AnySchema } from '../DataModel/helperTypes';
 import { schema } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Collection } from '../DataModel/types';
 import { AutoComplete } from '../Molecules/AutoComplete';
-import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
+import { ListEdit } from '../Toolbar/QueryTablesEdit';
 import type { PreferenceItem, PreferenceItemComponent } from './Definitions';
 import { getPrefDefinition } from './helpers';
 import { usePref } from './usePref';
+import { headerText } from '../../localization/header';
+import { useMenuItems, useUserTools } from '../Header/menuItemProcessing';
+import { rawMenuItemsPromise } from '../Header/menuItemDefinitions';
+import { usePromise } from '../../hooks/useAsyncState';
 
 export const ColorPickerPreferenceItem: PreferenceItemComponent<string> =
   function ColorPickerPreferenceItem({
@@ -247,6 +252,65 @@ export const WelcomePageModePreferenceItem: PreferenceItemComponent<WelcomePageM
     );
   };
 
+export type MenuPreferences = {
+  readonly visible: RA<string>;
+  /**
+   * Need to explicitly keep track of hidden items so that when future Specify
+   * versions add new items to menu, they are visible by default
+   */
+  readonly hidden: RA<string>;
+};
+
+export const HeaderItemsPreferenceItem: PreferenceItemComponent<MenuPreferences> =
+  function HeaderItemsPreferenceItem({
+    value,
+    onChange: handleChange,
+    isReadOnly,
+  }) {
+    const [rawMenuItems] = usePromise(rawMenuItemsPromise, false);
+    const menuItems = useMenuItems();
+    const rawUserTools = useUserTools();
+    const userTools = React.useMemo(
+      () =>
+        rawUserTools === undefined || menuItems === undefined
+          ? undefined
+          : Object.values(rawUserTools)
+              .flatMap((entries) => Object.values(entries))
+              .flat()
+              .filter(
+                ({ name }) => !menuItems.some((item) => item.name === name)
+              ),
+      [rawUserTools, menuItems]
+    );
+
+    const defaultItems = rawMenuItems?.map(({ name }) => name) ?? [];
+    return menuItems === undefined || userTools === undefined ? (
+      <>{commonText.loading()}</>
+    ) : (
+      <ListEdit
+        allItems={[...menuItems, ...userTools].map(({ name, title }) => ({
+          name,
+          label: title,
+        }))}
+        defaultValues={defaultItems}
+        isReadOnly={isReadOnly}
+        selectedValues={
+          value.visible.length === 0 ? defaultItems : value.visible
+        }
+        onChange={(selectedItems): void =>
+          handleChange({
+            visible: selectedItems,
+            hidden: defaultItems.filter(
+              (item) => !selectedItems.includes(item)
+            ),
+          })
+        }
+        selectedLabel={headerText.menuItems()}
+        availableLabel={headerText.userTools()}
+      />
+    );
+  };
+
 // BUG: either make inputs required, or handle no value case
 export const DefaultPreferenceItemRender: PreferenceItemComponent<any> =
   function ({ definition, value, onChange: handleChange, isReadOnly }) {
@@ -296,7 +360,7 @@ export const DefaultPreferenceItemRender: PreferenceItemComponent<any> =
         onValueChange={handleChange}
       />
     ) : parser?.type === 'text' ? (
-      <AutoGrowTextArea
+      <Textarea
         forwardRef={validationRef}
         {...(validationAttributes ?? { type: 'text' })}
         isReadOnly={isReadOnly}

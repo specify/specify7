@@ -10,7 +10,7 @@ export function SplashScreen({
   return (
     <div
       className={`
-        flex h-full items-center justify-center overflow-y-auto
+        flex w-full items-center justify-center overflow-y-auto
         bg-gray-400 dark:bg-neutral-900
       `}
     >

@@ -26,7 +26,6 @@ import { getMappingLineData } from './navigator';
 
 /** Use table name instead of field name for the following fields: */
 const fieldsToHide = new Set<string>([
-  'name',
   'fullName',
   'localityName',
   formattedEntry,
@@ -36,7 +35,15 @@ const fieldsToHide = new Set<string>([
  * Use table name alongside field label (if field label consists of a single
  * word) for the following fields:
  */
-const genericFields = new Set<string>([]);
+const genericFields = new Set<string>([
+  'timestampCreated',
+  'timestampModified',
+  'createdByAgent',
+  'modifiedByAgent',
+  'guid',
+  'version',
+  'id',
+]);
 
 /**
  * If field label consists of a single word, it would be treated as generic
@@ -120,13 +127,15 @@ export function generateMappingPathPreview(
     parentTableName = camelToHuman(databaseParentTableName),
   ] = mappingPathSubset(fieldLabels);
 
-  const fieldNameFormatted = fieldsToHide.has(databaseFieldName)
-    ? undefined
-    : fieldName;
+  const fieldNameFormatted =
+    fieldsToHide.has(databaseFieldName) ||
+    (databaseTableOrRankName !== 'CollectionObject' &&
+      databaseFieldName === 'name')
+      ? undefined
+      : fieldName;
   // Treat fields whose label is single word as generic
   const fieldIsGeneric =
-    (genericFields.has(databaseFieldName) &&
-      fieldNameFormatted?.split(' ').length === 1) ||
+    genericFields.has(databaseFieldName) ||
     (fieldNameFormatted?.split(' ').length === 1 &&
       !nonGenericFields.has(databaseFieldName));
   const tableNameNonEmpty =
@@ -135,11 +144,13 @@ export function generateMappingPathPreview(
       : fieldIsGeneric
       ? tableOrRankName
       : undefined;
-  const tableNameFormatted = tablesToHide.has(databaseTableOrRankName)
-    ? [parentTableName || tableNameNonEmpty]
-    : genericTables.has(databaseTableOrRankName)
-    ? [parentTableName, tableNameNonEmpty]
-    : [tableNameNonEmpty];
+  const tableNameFormatted =
+    tablesToHide.has(databaseTableOrRankName) &&
+    databaseFieldName !== formattedEntry
+      ? [parentTableName || tableNameNonEmpty]
+      : genericTables.has(databaseTableOrRankName)
+      ? [parentTableName, tableNameNonEmpty]
+      : [tableNameNonEmpty];
 
   return filterArray([
     ...(valueIsTreeRank(databaseTableOrRankName)

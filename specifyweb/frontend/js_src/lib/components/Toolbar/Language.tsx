@@ -137,7 +137,7 @@ export function LanguageSelection<LANGUAGES extends string>({
           onValueChange={(value): void =>
             value === 'supportLocalization'
               ? setShowSupportDialog(true)
-              : f.has(completeLanguages, value)
+              : !isForInterface || f.has(completeLanguages, value)
               ? handleChange(value as LANGUAGES)
               : setWarningLanguage(value as LANGUAGES)
           }
@@ -145,7 +145,7 @@ export function LanguageSelection<LANGUAGES extends string>({
           {Object.entries(languages).map(([code, nameLocal]) => (
             <option key={code} value={code}>
               {`${nameLocal} (${code}) ${
-                f.has(completeLanguages, code)
+                !isForInterface || f.has(completeLanguages, code)
                   ? ''
                   : headerText.incompleteInline()
               }`}

@@ -11,21 +11,27 @@ import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
+import { icons } from '../Atoms/Icons';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { DateElement } from '../Molecules/DateElement';
-import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { Dialog, dialogClassNames, LoadingScreen } from '../Molecules/Dialog';
+import { MenuButton } from './index';
 import type { GenericNotification } from './NotificationRenderers';
 import { notificationRenderers } from './NotificationRenderers';
 
 const INITIAL_INTERVAL = 5000;
 const INTERVAL_MULTIPLIER = 1.1;
 
-export function Notifications(): JSX.Element {
+export function Notifications({
+  isCollapsed,
+}: {
+  readonly isCollapsed: boolean;
+}): JSX.Element {
   const [notifications, setNotifications] = React.useState<
     RA<GenericNotification> | undefined
   >(undefined);
 
-  const notificationCount = notifications?.length ?? 0;
+  const notificationCount = notifications?.length;
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   const freezeFetchPromise = React.useRef<Promise<void> | undefined>(undefined);
 
@@ -121,24 +127,31 @@ export function Notifications(): JSX.Element {
     };
   }, [isOpen]);
 
-  const hasUnread = notifications?.some(({ read }) => !read) ?? false;
-  const buttonRef = React.useRef<HTMLButtonElement | null>(null);
+  const unreadCount = notifications?.filter(({ read }) => !read).length ?? 0;
+  const title =
+    typeof notifications?.length === 'number'
+      ? notificationsText.notificationsCount({
+          count: notifications.length,
+        })
+      : notificationsText.notificationsLoading();
   return (
     <>
-      <Button.Small
-        aria-live="polite"
-        className={`${hasUnread ? 'bg-brand-300 dark:bg-brand-400' : ''}`}
-        disabled={notificationCount === 0}
-        forwardRef={buttonRef}
+      <MenuButton
+        icon={icons.bell}
+        isActive={isOpen}
+        isCollapsed={isCollapsed}
+        title={title}
         onClick={handleOpen}
-      >
-        {typeof notifications?.length === 'number'
-          ? notificationsText.notificationsCount({
-              count: notifications.length,
-            })
-          : notificationsText.notificationsLoading()}
-      </Button.Small>
-      {Array.isArray(notifications) && (
+        props={{
+          'aria-live': 'polite',
+          className:
+            unreadCount > 0
+              ? '[&:not(:hover)]:!text-brand-300 [&:not(:hover)]:dark:!text-brand-400'
+              : undefined,
+          disabled: notificationCount === 0,
+        }}
+      />
+      {Array.isArray(notifications) ? (
         <Dialog
           buttons={commonText.close()}
           className={{
@@ -188,7 +201,9 @@ export function Notifications(): JSX.Element {
             </ErrorBoundary>
           ))}
         </Dialog>
-      )}
+      ) : isOpen ? (
+        <LoadingScreen />
+      ) : undefined}
     </>
   );
 }

@@ -60,3 +60,13 @@ export function useAsyncState<T>(
 
   return [state, setState];
 }
+
+export function usePromise<T>(
+  promise: Promise<T>,
+  loadingScreen: boolean
+): GetOrSet<T | undefined> {
+  return useAsyncState(
+    React.useCallback(async () => promise, [promise]),
+    loadingScreen
+  );
+}

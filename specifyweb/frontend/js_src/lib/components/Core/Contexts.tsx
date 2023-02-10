@@ -107,6 +107,7 @@ export function Contexts({
   }, [handleError]);
 
   const [unloadProtects, setUnloadProtects] = React.useState<RA<string>>([]);
+
   const unloadProtectsRef = React.useRef(unloadProtects);
   const handleChangeUnloadProtects = React.useCallback(
     (value: RA<string> | ((oldValue: RA<string>) => RA<string>)): void => {

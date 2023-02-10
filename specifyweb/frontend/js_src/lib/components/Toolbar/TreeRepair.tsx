@@ -6,7 +6,7 @@ import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { useSearchParameter } from '../../hooks/navigation';
-import { useAsyncState } from '../../hooks/useAsyncState';
+import { usePromise } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
@@ -65,10 +65,7 @@ export function TreeSelectDialog({
   readonly permissionName: 'read' | 'repair';
 }): JSX.Element | null {
   const loading = React.useContext(LoadingContext);
-  const [treeRanks] = useAsyncState(
-    React.useCallback(async () => treeRanksPromise, []),
-    true
-  );
+  const [treeRanks] = usePromise(treeRanksPromise, true);
   const [isFinished, setIsFinished] = useBooleanState();
 
   return typeof treeRanks === 'object' ? (

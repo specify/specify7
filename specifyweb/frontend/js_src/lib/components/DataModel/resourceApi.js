@@ -169,7 +169,7 @@ function eventHandlerForToOne(related, field) {
         },
         viewUrl() {
             // Returns the url for viewing this resource in the UI
-            if (!_.isNumber(this.id)) softFail(new Error("viewUrl called on resource w/out id"), this);
+            if (!_.isNumber(this.id)) softFail(new Error("viewUrl called on resource without id"), this);
             return getResourceViewUrl(this.specifyModel.name, this.id);
         },
         get(attribute) {
@@ -378,8 +378,8 @@ function eventHandlerForToOne(related, field) {
                 return undefined;
             }
             }
-            softFail("unhandled setting of relationship field", fieldName,
-                          "on", this, "value is", value);
+            if(!field.isVirtual)
+                softFail('Unhandled setting of relationship field', {fieldName,value,resource:this});
             return value;
         },
         _handleUri(value, fieldName) {

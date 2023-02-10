@@ -166,12 +166,12 @@ function MergeDialog({
       >
         <thead>
           <tr>
-            <td className={mergeHeaderClassName} />
-            <th className={mergeHeaderClassName} scope="col">
+            <td className={mergeHeaderClassName()} />
+            <th className={mergeHeaderClassName()} scope="col">
               {mergingText.mergedRecord()}
             </th>
             {resources.map((resource, index) => (
-              <th className={mergeHeaderClassName} key={index} scope="col">
+              <th className={mergeHeaderClassName()} key={index} scope="col">
                 {resource === undefined ? (
                   mergingText.duplicateRecord({ index: index + 1 })
                 ) : (
@@ -360,7 +360,7 @@ function SubViewHeader({
 }): JSX.Element {
   return (
     <tr>
-      <th className={mergeCellBackground} scope="row">
+      <th className={mergeCellBackground()} scope="row">
         <span className="sr-only">{mergingText.subViewControls()}</span>
       </th>
       {[merged, ...resources].map((resource, index) =>

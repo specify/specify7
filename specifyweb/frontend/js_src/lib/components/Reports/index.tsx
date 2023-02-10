@@ -21,7 +21,7 @@ import { schema } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { SpAppResource } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import { cachableUrl } from '../InitialContext';
+import { cachableUrl, contextUnlockedPromise } from '../InitialContext';
 import { DateElement } from '../Molecules/DateElement';
 import { Dialog } from '../Molecules/Dialog';
 import { FormattedResourceUrl } from '../Molecules/FormattedResource';
@@ -31,15 +31,18 @@ import { formatUrl } from '../Router/queryString';
 import { OverlayContext } from '../Router/Router';
 import { Report } from './Report';
 
-export const reportsAvailable = ajax<{ readonly available: boolean }>(
-  cachableUrl('/context/report_runner_status.json'),
-  {
-    headers: { Accept: 'application/json' },
-    errorMode: 'dismissible',
-  }
-)
-  .then(({ data }) => data.available)
-  .catch(() => false);
+export const reportsAvailable = contextUnlockedPromise.then((entrypoint) =>
+  entrypoint === 'main'
+    ? ajax<{ readonly available: boolean }>(
+        cachableUrl('/context/report_runner_status.json'),
+        {
+          headers: { Accept: 'application/json' },
+        }
+      )
+        .then(({ data }) => data.available)
+        .catch(() => false)
+    : false
+);
 
 export function ReportsOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);

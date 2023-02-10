@@ -15,6 +15,7 @@ import { mergingText } from '../../localization/merging';
 import { UsagesSection } from './Usages';
 import { MergeButton } from './CompareField';
 import { resourceEvents } from '../../hooks/store';
+import { f } from '../../utils/functools';
 
 export function MergingHeader({
   merged,
@@ -41,8 +42,13 @@ export function MergingHeader({
   );
 }
 
-export const mergeCellBackground = dialogClassNames.solidBackground;
-export const mergeHeaderClassName = `sticky top-0 ${mergeCellBackground} z-[20]`;
+// "f.store" needed to resolve a circular dependency
+export const mergeCellBackground = f.store(
+  () => dialogClassNames.solidBackground
+);
+export const mergeHeaderClassName = f.store(
+  () => `sticky top-0 ${mergeCellBackground()} z-[20]`
+);
 
 function HeaderLine({
   merged,
@@ -56,11 +62,11 @@ function HeaderLine({
   return (
     <thead>
       <tr>
-        <td className={mergeCellBackground} />
+        <td className={mergeCellBackground()} />
         {[merged, ...resources].map((resource, index) => (
           <th
             className={`
-              ${mergeHeaderClassName}
+              ${mergeHeaderClassName()}
               ${
                 index === 0
                   ? 'font-extrabold text-black dark:text-white'
@@ -134,7 +140,7 @@ export function MergeRow({
     <tr>
       <th
         className={`
-          sticky left-0 text-left ${mergeCellBackground} z-[10]
+          sticky left-0 text-left ${mergeCellBackground()} z-[10]
         `}
         scope="row"
       >

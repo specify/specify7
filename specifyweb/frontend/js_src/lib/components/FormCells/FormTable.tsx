@@ -261,9 +261,9 @@ export function FormTable<SCHEMA extends AnySchema>({
                     <>
                       <div className="h-full" role="cell">
                         <Button.Small
-                          aria-label={commonText.contract()}
+                          aria-label={commonText.collapse()}
                           className="h-full"
-                          title={commonText.contract()}
+                          title={commonText.collapse()}
                           onClick={(): void =>
                             setExpandedRecords({
                               ...isExpanded,

@@ -12,7 +12,7 @@ import { useErrorContext } from '../../hooks/useErrorContext';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { f } from '../../utils/functools';
-import { useMenuItem } from '../Header';
+import { useMenuItem } from '../Header/useMenuItem';
 import { treeRanksPromise } from '../InitialContext/treeRanks';
 import { hasPermission } from '../Permissions/helpers';
 import { NotFoundView } from '../Router/NotFoundView';
