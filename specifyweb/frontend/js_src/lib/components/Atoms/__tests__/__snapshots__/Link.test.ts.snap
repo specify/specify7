@@ -110,6 +110,7 @@ exports[`Link.NewTab renders without errors 1`] = `
   <a
     class="link"
     href="#"
+    rel="noopener"
     target="_blank"
   >
     Link
