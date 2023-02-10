@@ -10,6 +10,7 @@ import { Http } from '../../utils/ajax/definitions';
 import { runQuery } from '../../utils/ajax/specifyApi';
 import type { RA } from '../../utils/types';
 import { overwriteReadOnly } from '../../utils/types';
+import { group } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
 import { LoadingContext } from '../Core/Contexts';
@@ -139,11 +140,11 @@ export function DeleteButton<SCHEMA extends AnySchema>({
   );
 }
 
-export const fetchBlockers = async (
+export async function fetchBlockers(
   resource: SpecifyResource<AnySchema>,
   expectFailure: boolean = false
-): Promise<RA<DeleteBlocker>> =>
-  ajax<
+): Promise<RA<DeleteBlocker>> {
+  const { data, status } = await ajax<
     RA<{
       readonly table: keyof Tables;
       readonly field: string;
@@ -158,57 +159,56 @@ export const fetchBlockers = async (
       headers: { Accept: 'application/json' },
       expectedErrors: expectFailure ? [Http.NOT_FOUND] : [],
     }
-  ).then(({ data, status }) =>
-    status === Http.NOT_FOUND
-      ? []
-      : Promise.all(
-          data.map(async ({ ids, field, table: tableName }) => {
-            const table = strictGetModel(tableName);
-            const directRelationship = table.strictGetRelationship(field);
-            const parentRelationship =
-              parentTableRelationship()[directRelationship.model.name];
-            return {
-              directRelationship,
-              parentRelationship,
-              ids:
-                parentRelationship === undefined
-                  ? ids.map((id) => ({
-                      direct: id,
-                      parent: undefined,
-                    }))
-                  : await runQuery<readonly [number, number]>(
-                      serializeResource(
-                        createQuery(
-                          'Delete blockers',
-                          directRelationship.model
-                        ).set('fields', [
-                          QueryFieldSpec.fromPath(
-                            directRelationship.model.name,
-                            [directRelationship.model.idField.name]
-                          )
-                            .toSpQueryField()
-                            .set('isDisplay', false)
-                            .set('operStart', queryFieldFilters.in.id)
-                            .set('startValue', ids.join(',')),
-                          QueryFieldSpec.fromPath(
-                            parentRelationship.model.name,
-                            [
-                              parentRelationship.name,
-                              parentRelationship.relatedModel.idField.name,
-                            ]
-                          ).toSpQueryField(),
-                        ])
-                      ),
-                      {
-                        limit: 0,
-                      }
-                    ).then((rows) =>
-                      rows.map(([direct, parent]) => ({
-                        direct,
-                        parent,
-                      }))
-                    ),
-            };
-          })
-        )
   );
+  if (status === Http.NOT_FOUND) return [];
+
+  const blockersPromise = data.map(async ({ ids, field, table: tableName }) => {
+    const table = strictGetModel(tableName);
+    const directRelationship = table.strictGetRelationship(field);
+    const parentRelationship =
+      parentTableRelationship()[directRelationship.model.name];
+    return [
+      parentRelationship?.relatedModel ?? directRelationship.model,
+      {
+        directRelationship,
+        parentRelationship,
+        ids:
+          parentRelationship === undefined
+            ? ids.map((id) => ({
+                direct: id,
+                parent: undefined,
+              }))
+            : await runQuery<readonly [number, number]>(
+                serializeResource(
+                  createQuery('Delete blockers', directRelationship.model).set(
+                    'fields',
+                    [
+                      QueryFieldSpec.fromPath(directRelationship.model.name, [
+                        directRelationship.model.idField.name,
+                      ])
+                        .toSpQueryField()
+                        .set('isDisplay', false)
+                        .set('operStart', queryFieldFilters.in.id)
+                        .set('startValue', ids.join(',')),
+                      QueryFieldSpec.fromPath(parentRelationship.model.name, [
+                        parentRelationship.name,
+                        parentRelationship.relatedModel.idField.name,
+                      ]).toSpQueryField(),
+                    ]
+                  )
+                ),
+                {
+                  limit: 0,
+                }
+              ).then((rows) =>
+                rows.map(([direct, parent]) => ({
+                  direct,
+                  parent,
+                }))
+              ),
+      },
+    ] as const;
+  });
+  const blockers = await Promise.all(blockersPromise);
+  return group(blockers).map(([table, blockers]) => ({ table, blockers }));
+}
