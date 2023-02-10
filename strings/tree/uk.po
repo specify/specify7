@@ -264,3 +264,8 @@ msgstr "Непрямий підрахунок {collectionObjectTable:string}."
 #, fuzzy
 msgid "editRanks"
 msgstr "Редагувати ранги"
+
+#: components/Forms/DeleteButton.tsx:155
+#. Used in: Components > Forms > Delete Button
+msgid "resourceToDelete"
+msgstr ""

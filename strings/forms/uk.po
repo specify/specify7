@@ -48,13 +48,13 @@ msgstr "Значення {values:string} мають бути унікальни�
 msgid "valuesOfMustBeUniqueToDatabase"
 msgstr "Значення {values:string} мають бути унікальними в базі даних"
 
-#: components/Forms/DeleteButton.tsx:106
+#: components/Forms/DeleteButton.tsx:113
 #. Used in: Components > Forms > Delete Button
 msgid "checkingIfResourceCanBeDeleted"
 msgstr "Перевірка можливості видалення ресурсу…"
 
 #: components/Forms/DeleteBlocked.tsx:84
-#: components/Forms/DeleteButton.tsx:89
+#: components/Forms/DeleteButton.tsx:96
 #. Used in: Components > Forms > Delete Blocked ⬤ Components > Forms > Delete Button
 msgid "deleteBlocked"
 msgstr "Видалення заблоковане"
@@ -101,14 +101,14 @@ msgstr ""
 msgid "invalidDate"
 msgstr "Недійсна дата"
 
-#: components/Forms/DeleteButton.tsx:131
+#: components/Forms/DeleteButton.tsx:138
 #. Used in: Components > Forms > Delete Button
 msgid "deleteConfirmation"
 msgstr ""
 "Ви впевнені, що бажаєте остаточно видалити цей {tableName:string} запис з "
 "бази даних?"
 
-#: components/Forms/DeleteButton.tsx:55
+#: components/Forms/DeleteButton.tsx:59
 #. Used in: Components > Forms > Delete Button
 msgid "deleteConfirmationDescription"
 msgstr "Цю дію не можна скасувати."
@@ -176,7 +176,7 @@ msgstr ""
 "цьому наборі записів НЕ будуть видалені з бази даних."
 
 #: components/FormCommands/index.tsx:37
-#: components/FormMeta/EditHistory.tsx:32
+#: components/FormMeta/EditHistory.tsx:31
 #. Used in: Components > Form Commands > Index ⬤ Components > Form Meta > Edit History
 msgid "saveRecordFirst"
 msgstr "Спочатку збережіть запис"
@@ -533,13 +533,13 @@ msgstr "Використовувати автоматично створену �
 msgid "useFieldLabels"
 msgstr "Використовуйте локалізовані назви полів"
 
-#: components/FormMeta/EditHistory.tsx:35
-#: components/FormMeta/EditHistory.tsx:58
+#: components/FormMeta/EditHistory.tsx:34
+#: components/FormMeta/EditHistory.tsx:57
 #. Used in: Components > Form Meta > Edit History
 msgid "historyOfEdits"
 msgstr "Історія редагувань"
 
-#: components/FormMeta/EditHistory.tsx:82
+#: components/FormMeta/EditHistory.tsx:81
 #. Used in: Components > Form Meta > Edit History
 msgid "historyOfEditsQueryName"
 msgstr "Історія редагувань для \"{formattedRecord:string}\""

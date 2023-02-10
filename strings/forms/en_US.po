@@ -37,13 +37,13 @@ msgstr "Values of {values:string} must be unique to {fieldName:string}"
 msgid "valuesOfMustBeUniqueToDatabase"
 msgstr "Values of {values:string} must be unique to database"
 
-#: components/Forms/DeleteButton.tsx:106
+#: components/Forms/DeleteButton.tsx:113
 #. Used in: Components > Forms > Delete Button
 msgid "checkingIfResourceCanBeDeleted"
 msgstr "Checking if resource can be deleted…"
 
 #: components/Forms/DeleteBlocked.tsx:84
-#: components/Forms/DeleteButton.tsx:89
+#: components/Forms/DeleteButton.tsx:96
 #. Used in: Components > Forms > Delete Blocked ⬤ Components > Forms > Delete Button
 msgid "deleteBlocked"
 msgstr "Delete blocked"
@@ -92,14 +92,14 @@ msgstr ""
 msgid "invalidDate"
 msgstr "Invalid Date"
 
-#: components/Forms/DeleteButton.tsx:131
+#: components/Forms/DeleteButton.tsx:138
 #. Used in: Components > Forms > Delete Button
 msgid "deleteConfirmation"
 msgstr ""
 "Are you sure you want to permanently delete this {tableName:string} from "
 "the database?"
 
-#: components/Forms/DeleteButton.tsx:55
+#: components/Forms/DeleteButton.tsx:59
 #. Used in: Components > Forms > Delete Button
 msgid "deleteConfirmationDescription"
 msgstr "This action cannot be undone."
@@ -167,7 +167,7 @@ msgstr ""
 "referenced records will NOT be deleted from the database."
 
 #: components/FormCommands/index.tsx:37
-#: components/FormMeta/EditHistory.tsx:32
+#: components/FormMeta/EditHistory.tsx:31
 #. Used in: Components > Form Commands > Index ⬤ Components > Form Meta > Edit History
 msgid "saveRecordFirst"
 msgstr "Save record first"
@@ -523,13 +523,13 @@ msgstr "Use Auto Generated Form"
 msgid "useFieldLabels"
 msgstr "Use localized field labels"
 
-#: components/FormMeta/EditHistory.tsx:35
-#: components/FormMeta/EditHistory.tsx:58
+#: components/FormMeta/EditHistory.tsx:34
+#: components/FormMeta/EditHistory.tsx:57
 #. Used in: Components > Form Meta > Edit History
 msgid "historyOfEdits"
 msgstr "History of edits"
 
-#: components/FormMeta/EditHistory.tsx:82
+#: components/FormMeta/EditHistory.tsx:81
 #. Used in: Components > Form Meta > Edit History
 msgid "historyOfEditsQueryName"
 msgstr "History of edits for \"{formattedRecord:string}\""

@@ -27,8 +27,8 @@ msgstr "No"
 #: components/AppResources/Create.tsx:80
 #: components/AppResources/EditorComponents.tsx:84
 #: components/FormSliders/RecordSelectorFromIds.tsx:240
-#: components/Forms/DeleteButton.tsx:101
-#: components/Forms/DeleteButton.tsx:125
+#: components/Forms/DeleteButton.tsx:108
+#: components/Forms/DeleteButton.tsx:132
 #: components/Forms/ResourceView.tsx:309
 #: components/Forms/SearchDialog.tsx:105
 #: components/Header/ChooseCollection.tsx:37
@@ -120,7 +120,7 @@ msgstr "Crear"
 #: components/FormMeta/AutoNumbering.tsx:91
 #: components/FormMeta/CarryForward.tsx:252
 #: components/FormMeta/Definition.tsx:54
-#: components/FormMeta/EditHistory.tsx:54
+#: components/FormMeta/EditHistory.tsx:53
 #: components/FormMeta/PickListUsages.tsx:44
 #: components/FormMeta/index.tsx:90
 #: components/FormPlugins/CollectionRelOneToMany.tsx:182
@@ -260,13 +260,13 @@ msgid "open"
 msgstr "Abrir"
 
 #: components/FormSliders/RecordSelectorFromIds.tsx:180
-#: components/Forms/DeleteButton.tsx:96
-#: components/Forms/DeleteButton.tsx:122
+#: components/Forms/DeleteButton.tsx:103
+#: components/Forms/DeleteButton.tsx:129
 #: components/Header/Notifications.tsx:231
 #: components/PickLists/definitions.ts:41
 #: components/Security/PreviewTables.tsx:67
 #: components/Security/Role.tsx:223
-#: components/TreeView/Actions.tsx:442
+#: components/TreeView/Actions.tsx:443
 #: components/WorkBench/DataSetMeta.tsx:92
 #: components/WorkBench/DataSetMeta.tsx:118
 #. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Forms > Delete Button ⬤ Components > Header > Notifications ⬤ Components > Pick Lists > Definitions ⬤ Components > Security > Preview Tables ⬤ Components > Security > Role ⬤ Components > Tree View > Actions ⬤ Components > Work Bench > Data Set Meta
@@ -308,7 +308,7 @@ msgstr "Herramientas"
 #: components/FormFields/QueryComboBox.tsx:373
 #: components/FormPlugins/CollectionRelOneToMany.tsx:152
 #: components/Forms/BaseResourceView.tsx:51
-#: components/Forms/DeleteButton.tsx:103
+#: components/Forms/DeleteButton.tsx:110
 #: components/Forms/SearchDialog.tsx:154
 #: components/Forms/SubView.tsx:223
 #: components/HomePage/AboutSpecify.tsx:165
@@ -319,8 +319,8 @@ msgstr "Herramientas"
 #: components/Interactions/PrepReturnRow.tsx:100
 #: components/Leaflet/index.ts:167
 #: components/Molecules/AutoComplete.tsx:428
-#: components/Molecules/FormattedResource.tsx:17
-#: components/Molecules/FormattedResource.tsx:32
+#: components/Molecules/FormattedResource.tsx:15
+#: components/Molecules/FormattedResource.tsx:30
 #: components/Molecules/index.tsx:24
 #: components/Permissions/FormatError.tsx:144
 #: components/Permissions/FormatError.tsx:171
@@ -803,13 +803,14 @@ msgstr "{resource:string} <wrap>({count:number|formatted})</wrap>"
 msgid "colonLine"
 msgstr "{label:string}: {value:string}"
 
+#: components/Forms/DeleteButton.tsx:154
 #: components/WorkBench/DataSetMeta.tsx:200
 #: components/WorkBench/DataSetMeta.tsx:215
 #: components/WorkBench/DataSetMeta.tsx:238
 #: components/WorkBench/DataSetMeta.tsx:254
 #: components/WorkBench/DataSetMeta.tsx:275
 #: components/WorkBench/DataSetMeta.tsx:286
-#. 🟥Example usage: "Created by: Full Name" OR "Record Set: Record Set Name". Used in: Components > Work Bench > Data Set Meta
+#. 🟥Example usage: "Created by: Full Name" OR "Record Set: Record Set Name". Used in: Components > Forms > Delete Button ⬤ Components > Work Bench > Data Set Meta
 msgid "jsxColonLine"
 msgstr "{label:string}: <wrap />"
 

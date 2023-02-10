@@ -214,3 +214,8 @@ msgstr "Количество непрямых {collectionObjectTable:string}"
 #. Used in: Components > Tree View > Index
 msgid "editRanks"
 msgstr "Изменить ранги"
+
+#: components/Forms/DeleteButton.tsx:155
+#. Used in: Components > Forms > Delete Button
+msgid "resourceToDelete"
+msgstr ""

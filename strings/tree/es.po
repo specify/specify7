@@ -264,3 +264,8 @@ msgstr "Recuento indirecto {collectionObjectTable:string}"
 #, fuzzy
 msgid "editRanks"
 msgstr "Editar rangos"
+
+#: components/Forms/DeleteButton.tsx:155
+#. Used in: Components > Forms > Delete Button
+msgid "resourceToDelete"
+msgstr ""

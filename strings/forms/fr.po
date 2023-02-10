@@ -54,14 +54,14 @@ msgstr "Les valeurs de {values:string} doivent être uniques à {fieldName:strin
 msgid "valuesOfMustBeUniqueToDatabase"
 msgstr "Les valeurs de {values:string} doivent être uniques à la base de données"
 
-#: components/Forms/DeleteButton.tsx:106
+#: components/Forms/DeleteButton.tsx:113
 #. Used in: Components > Forms > Delete Button
 #, fuzzy
 msgid "checkingIfResourceCanBeDeleted"
 msgstr "Vérification si la ressource peut être supprimée…"
 
 #: components/Forms/DeleteBlocked.tsx:84
-#: components/Forms/DeleteButton.tsx:89
+#: components/Forms/DeleteButton.tsx:96
 #. Used in: Components > Forms > Delete Blocked ⬤ Components > Forms > Delete Button
 #, fuzzy
 msgid "deleteBlocked"
@@ -118,7 +118,7 @@ msgstr ""
 msgid "invalidDate"
 msgstr "Date invalide"
 
-#: components/Forms/DeleteButton.tsx:131
+#: components/Forms/DeleteButton.tsx:138
 #. Used in: Components > Forms > Delete Button
 #, fuzzy
 msgid "deleteConfirmation"
@@ -126,7 +126,7 @@ msgstr ""
 "Êtes-vous sûr de vouloir supprimer définitivement ce {tableName:string} de "
 "la base de données ?"
 
-#: components/Forms/DeleteButton.tsx:55
+#: components/Forms/DeleteButton.tsx:59
 #. Used in: Components > Forms > Delete Button
 #, fuzzy
 msgid "deleteConfirmationDescription"
@@ -208,7 +208,7 @@ msgstr ""
 "enregistrements référencés ne seront PAS supprimés de la base de données."
 
 #: components/FormCommands/index.tsx:37
-#: components/FormMeta/EditHistory.tsx:32
+#: components/FormMeta/EditHistory.tsx:31
 #. Used in: Components > Form Commands > Index ⬤ Components > Form Meta > Edit History
 #, fuzzy
 msgid "saveRecordFirst"
@@ -630,14 +630,14 @@ msgstr "Utiliser le formulaire généré automatiquement"
 msgid "useFieldLabels"
 msgstr "Utiliser des étiquettes de champ localisées"
 
-#: components/FormMeta/EditHistory.tsx:35
-#: components/FormMeta/EditHistory.tsx:58
+#: components/FormMeta/EditHistory.tsx:34
+#: components/FormMeta/EditHistory.tsx:57
 #. Used in: Components > Form Meta > Edit History
 #, fuzzy
 msgid "historyOfEdits"
 msgstr "Historique des modifications"
 
-#: components/FormMeta/EditHistory.tsx:82
+#: components/FormMeta/EditHistory.tsx:81
 #. Used in: Components > Form Meta > Edit History
 #, fuzzy
 msgid "historyOfEditsQueryName"
