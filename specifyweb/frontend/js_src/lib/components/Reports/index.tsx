@@ -170,8 +170,8 @@ export function ReportsView({
             </div>
             <ReportRow
               cacheKey="listOfLabels"
-              resources={labels}
               fallbackIcon="Labels"
+              resources={labels}
               onClick={setSelectedReport}
             />
           </section>
