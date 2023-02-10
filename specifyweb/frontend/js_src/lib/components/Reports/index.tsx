@@ -19,7 +19,7 @@ import type {
 } from '../DataModel/helperTypes';
 import { schema } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
-import type { SpAppResource } from '../DataModel/types';
+import type { SpAppResource, SpQuery, SpReport } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { cachableUrl, contextUnlockedPromise } from '../InitialContext';
 import { DateElement } from '../Molecules/DateElement';
@@ -60,6 +60,12 @@ export function ReportsOverlay(): JSX.Element {
 const fetchAttachmentSettings = async (): Promise<true> =>
   attachmentSettingsPromise.then(f.true);
 
+export type ReportEntry = {
+  readonly appResource: SerializedResource<SpAppResource>;
+  readonly report: SerializedResource<SpReport> | undefined;
+  readonly query: SerializedResource<SpQuery> | undefined;
+};
+
 export function ReportsView({
   // If resource ID is provided, model must be too
   model,
@@ -72,11 +78,15 @@ export function ReportsView({
   readonly autoSelectSingle: boolean;
   readonly onClose: () => void;
 }): JSX.Element | null {
-  const [appResources] = useAsyncState(
+  const [resources] = useAsyncState(
     React.useCallback(
       async () =>
         ajax<{
-          readonly objects: RA<SerializedModel<SpAppResource>>;
+          readonly objects: RA<{
+            readonly app_resource: SerializedModel<SpAppResource>;
+            readonly report: SerializedModel<SpReport> | null;
+            readonly query: SerializedModel<SpQuery> | null;
+          }>;
         }>(
           formatUrl(
             typeof model === 'object'
@@ -91,8 +101,13 @@ export function ReportsView({
           }
         ).then(({ data: { objects } }) =>
           split(
-            objects.map(serializeResource),
-            (resource) => resource.mimeType?.includes('report') === true
+            objects.map<ReportEntry>((entry) => ({
+              appResource: serializeResource(entry.app_resource),
+              report: f.maybe(entry.report ?? undefined, serializeResource),
+              query: f.maybe(entry.query ?? undefined, serializeResource),
+            })),
+            ({ appResource }) =>
+              appResource.mimeType?.includes('report') === true
           )
         ),
       [model]
@@ -105,11 +120,11 @@ export function ReportsView({
       () =>
         // Select the first one automatically
         autoSelectSingle &&
-        Array.isArray(appResources) &&
-        appResources.flat().length === 1
-          ? appResources.flat()[0]
+        Array.isArray(resources) &&
+        resources.flat().length === 1
+          ? resources.flat()[0]
           : undefined,
-      [autoSelectSingle, appResources]
+      [autoSelectSingle, resources]
     )
   );
 
@@ -118,14 +133,14 @@ export function ReportsView({
     true
   );
 
-  const [labels, reports] = appResources ?? [[], []];
+  const [labels, reports] = resources ?? [[], []];
 
-  return typeof appResources === 'object' && attachmentSettings ? (
+  return typeof resources === 'object' && attachmentSettings ? (
     typeof selectedReport === 'object' ? (
       <ErrorBoundary dismissible>
         <Report
-          appResource={selectedReport}
           model={model}
+          resource={selectedReport}
           resourceId={resourceId}
           onClose={handleClose}
         />
@@ -139,19 +154,23 @@ export function ReportsView({
       >
         <div className="flex flex-col gap-4">
           <section>
-            <h2>{reportsText.reports()}</h2>
+            <div className="flex items-center gap-2">
+              <h2>{reportsText.reports()}</h2>
+            </div>
             <ReportRow
               cacheKey="listOfReports"
-              icon={<TableIcon label={false} name="Reports" />}
+              fallbackIcon="Reports"
               resources={reports}
               onClick={setSelectedReport}
             />
           </section>
           <section>
-            <h2>{reportsText.labels()}</h2>
+            <div className="flex items-center gap-2">
+              <h2>{reportsText.labels()}</h2>
+            </div>
             <ReportRow
               cacheKey="listOfLabels"
-              icon={<TableIcon label={false} name="Labels" />}
+              fallbackIcon="Labels"
               resources={labels}
               onClick={setSelectedReport}
             />
@@ -164,14 +183,14 @@ export function ReportsView({
 
 function ReportRow({
   resources: unsortedResources,
-  icon,
   cacheKey,
+  fallbackIcon,
   onClick: handleClick,
 }: {
-  readonly resources: RA<SerializedResource<SpAppResource>>;
-  readonly icon: JSX.Element;
+  readonly resources: RA<ReportEntry>;
   readonly cacheKey: 'listOfLabels' | 'listOfReports';
-  readonly onClick: (resource: SerializedResource<SpAppResource>) => void;
+  readonly fallbackIcon: 'Labels' | 'Reports';
+  readonly onClick: (resource: ReportEntry) => void;
 }): JSX.Element {
   const [sortConfig, handleSort, applySortConfig] = useSortConfig(
     cacheKey,
@@ -181,10 +200,11 @@ function ReportRow({
     () =>
       applySortConfig(
         unsortedResources,
-        (record) => record[sortConfig.sortField]
+        ({ appResource }) => appResource[sortConfig.sortField]
       ),
     [sortConfig, unsortedResources]
   );
+
   return resources.length === 0 ? (
     <p>{commonText.noResults()}</p>
   ) : (
@@ -213,28 +233,33 @@ function ReportRow({
         </tr>
       </thead>
       <tbody>
-        {resources.map((resource) => (
-          <tr key={resource.id}>
+        {resources.map((entry) => (
+          <tr key={entry.appResource.id}>
             <td>
               <Button.LikeLink
                 className="flex-1"
-                title={resource.description ?? undefined}
-                onClick={(): void => handleClick(resource)}
+                title={entry.appResource.description ?? undefined}
+                onClick={(): void => handleClick(entry)}
               >
-                {icon}
-                {resource.name}
+                <TableIcon
+                  label
+                  name={entry.query?.contextName ?? fallbackIcon}
+                />
+                {entry.appResource.name}
               </Button.LikeLink>
             </td>
             <td>
-              <DateElement date={resource.timestampCreated} />
+              <DateElement date={entry.appResource.timestampCreated} />
             </td>
             <td>
-              <FormattedResourceUrl resourceUrl={resource.specifyUser} />
+              <FormattedResourceUrl
+                resourceUrl={entry.appResource.specifyUser}
+              />
             </td>
             <td>
               <Link.Icon
                 aria-label={commonText.edit()}
-                href={`/specify/resources/app-resource/${resource.id}/`}
+                href={`/specify/resources/app-resource/${entry.appResource.id}/`}
                 icon="pencil"
                 title={commonText.edit()}
               />
