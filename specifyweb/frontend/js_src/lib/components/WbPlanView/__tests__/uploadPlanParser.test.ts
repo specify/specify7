@@ -1,11 +1,11 @@
-import type { MappingLine } from '../Mapper';
-import { schema } from '../../DataModel/schema';
-import type { IR, RA } from '../../../utils/types';
-import type { UploadPlan } from '../uploadPlanParser';
-import { parseUploadPlan } from '../uploadPlanParser';
 import mappingLines1 from '../../../tests/fixtures/mappinglines.1.json';
 import uploadPlan1 from '../../../tests/fixtures/uploadplan.1.json';
 import { requireContext } from '../../../tests/helpers';
+import type { IR, RA } from '../../../utils/types';
+import { schema } from '../../DataModel/schema';
+import type { MappingLine } from '../Mapper';
+import type { UploadPlan } from '../uploadPlanParser';
+import { parseUploadPlan } from '../uploadPlanParser';
 
 requireContext();
 

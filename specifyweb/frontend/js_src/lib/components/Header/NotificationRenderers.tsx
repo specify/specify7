@@ -1,10 +1,10 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
-import type { IR } from '../../utils/types';
-import { Link } from '../Atoms/Link';
 import { notificationsText } from '../../localization/notifications';
 import { StringToJsx } from '../../localization/utils';
-import { LocalizedString } from 'typesafe-i18n';
+import type { IR } from '../../utils/types';
+import { Link } from '../Atoms/Link';
 
 export type GenericNotification = {
   readonly messageId: string;
@@ -23,7 +23,7 @@ export const notificationRenderers: IR<
       <>
         {notificationsText.feedItemUpdated()}
         <Link.Green
-          className="w-fit"
+          className="w-fit normal-case"
           download
           href={`/static/depository/export_feed/${filename}`}
         >
@@ -105,7 +105,6 @@ export const notificationRenderers: IR<
   'dataset-ownership-transferred'(notification) {
     return (
       <StringToJsx
-        string={notificationsText.dataSetOwnershipTransferred()}
         components={{
           userName: <i>{notification.payload['previous-owner-name']}</i>,
           dataSetName: (
@@ -116,6 +115,7 @@ export const notificationRenderers: IR<
             </Link.Default>
           ),
         }}
+        string={notificationsText.dataSetOwnershipTransferred()}
       />
     );
   },

@@ -81,8 +81,8 @@ development. Many IDEs have plugins for closer integration.
 
   Highly customizable code linter
 
-  Config file is located in [`./.eslintrc`](./.eslintrc.js). The config file
-  get's most rules and plugins from
+  Config file is located in [`./eslint.config.js`](./eslint.config.js). The
+  config file get's most rules and plugins from
   [@maxxxxxdlp/eslint-config](https://www.npmjs.com/package/@maxxxxxdlp/eslint-config)
 
   Configure your IDE to run ESLint on the following files:
@@ -90,6 +90,12 @@ development. Many IDEs have plugins for closer integration.
   ```
   {**/*,*}.{ts,tsx,jsx,xml,json,md,css,html,yaml,yml}
   ```
+
+  > **NOTE** We are using a FlatConfig for ESLint. It is not yet supported by
+  > WebStorm ( and by extension PyCharm), but will be in the next release. Until
+  > then, a compatability layer was provided. You will need to explicitly tell
+  > your IDE to use the ./lib/scripts/eslint-compat ESLint package, rather than
+  > the one in node_modules
 
 - TypeScript
 

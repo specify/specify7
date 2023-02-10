@@ -5,27 +5,30 @@
  * On any modifications, please check if documentation needs to be updated.
  */
 
+import type { LocalizedString } from 'typesafe-i18n';
 import type { State } from 'typesafe-reducer';
 
-import type { Tables } from '../DataModel/types';
 import { f } from '../../utils/functools';
+import type { IR, RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import {
   getAttribute,
   getBooleanAttribute,
   getParsedAttribute,
 } from '../../utils/utils';
-import type { FormType, ParsedFormDefinition } from './index';
-import { parseFormDefinition } from './index';
-import type { FormFieldDefinition } from './fields';
-import { parseFormField } from './fields';
-import type { CommandDefinition } from './commands';
-import { parseUiCommand } from './commands';
 import { getModel } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { Tables } from '../DataModel/types';
+import { getLogContext, setLogContext } from '../Errors/interceptLogs';
 import { legacyLocalize } from '../InitialContext/legacyUiLocalization';
-import type { IR, RA } from '../../utils/types';
-import { filterArray } from '../../utils/types';
-import { LocalizedString } from 'typesafe-i18n';
+import { toLargeSortConfig } from '../Molecules/Sorting';
+import { hasPathPermission } from '../Permissions/helpers';
+import type { CommandDefinition } from './commands';
+import { parseUiCommand } from './commands';
+import type { FormFieldDefinition } from './fields';
+import { parseFormField } from './fields';
+import type { FormType, ParsedFormDefinition } from './index';
+import { parseFormDefinition } from './index';
 
 // Parse column width definitions
 export const processColumnDefinition = (
@@ -37,13 +40,13 @@ export const processColumnDefinition = (
   )
     .split(',')
     .filter((_, index) => index % 2 === 0)
-    .map((definition) => /(\d+)px/.exec(definition)?.[1] ?? '')
+    .map((definition) => /(\d+)px/u.exec(definition)?.[1] ?? '')
     .map(f.parseInt);
 
 export const parseSpecifyProperties = (props = ''): IR<string> =>
   Object.fromEntries(
     filterArray(
-      props.split(';').map((line) => /([^=]+)=(.+)/.exec(line)?.slice(1, 3))
+      props.split(';').map((line) => /([^=]+)=(.+)/u.exec(line)?.slice(1, 3))
     ).map(([key, value]) => [key.trim().toLowerCase(), value.trim()])
   );
 
@@ -51,7 +54,7 @@ export type CellTypes = {
   readonly Field: State<
     'Field',
     {
-      readonly fieldName: string | undefined;
+      readonly fieldNames: RA<string> | undefined;
       readonly fieldDefinition: FormFieldDefinition;
       readonly isRequired: boolean;
     }
@@ -62,7 +65,7 @@ export type CellTypes = {
       readonly text: LocalizedString | undefined;
       readonly title: LocalizedString | undefined;
       readonly labelForCellId: string | undefined;
-      readonly fieldName: string | undefined;
+      readonly fieldNames: RA<string> | undefined;
     }
   >;
   readonly Separator: State<
@@ -76,12 +79,12 @@ export type CellTypes = {
   readonly SubView: State<
     'SubView',
     {
-      readonly fieldName: string | undefined;
+      readonly fieldNames: RA<string> | undefined;
       readonly formType: FormType;
       readonly isButton: boolean;
       readonly icon: string | undefined;
       readonly viewName: string | undefined;
-      readonly sortField: string | undefined;
+      readonly sortField: SubViewSortField | undefined;
     }
   >;
   readonly Panel: State<
@@ -103,51 +106,66 @@ export type CellTypes = {
   readonly Blank: State<'Blank'>;
 };
 
+export type SubViewSortField = {
+  readonly direction: 'asc' | 'desc';
+  readonly fieldNames: RA<string>;
+};
+
 export const cellAlign = ['left', 'center', 'right'] as const;
 
 const processCellType: {
   readonly [KEY in keyof CellTypes]: (props: {
     readonly cell: Element;
-    readonly model: SpecifyModel | undefined;
+    readonly model: SpecifyModel;
     readonly getProperty: (name: string) => string | undefined;
-  }) => CellTypes[KEY];
+  }) => CellTypes[KEY | 'Blank'];
 } = {
   Field({ cell, model, getProperty }) {
-    let rawFieldName: string | undefined = getParsedAttribute(cell, 'name');
-    const parts = rawFieldName?.split('.') ?? [];
-    /*
-     * If model is attachment, and field name is attachment.type, replace it
-     * with "type"
-     */
-    if (
-      parts.length > 1 &&
-      parts[0].toLowerCase() === model?.name.toLowerCase()
-    )
-      rawFieldName = parts.slice(1).join('.');
+    const rawFieldName = getParsedAttribute(cell, 'name');
     const fields = model?.getFields(rawFieldName ?? '');
-    const fieldDefinition = parseFormField(cell, getProperty);
+    const fieldNames = fields?.map(({ name }) => name);
+    const fieldsString = fieldNames?.join('.');
+
+    setLogContext({ field: fieldsString ?? rawFieldName });
+
+    const fieldDefinition = parseFormField({
+      cell,
+      getProperty,
+      model,
+      fields,
+    });
+
     /*
      * Some plugins overwrite the fieldName. In such cases, the [name] attribute
      * is commonly "this"
      */
-    const fieldName =
-      fieldDefinition.type === 'Plugin' &&
-      fieldDefinition.pluginDefinition.type === 'LatLonUI'
-        ? undefined
-        : (fieldDefinition.type === 'Plugin' &&
-          fieldDefinition.pluginDefinition.type === 'PartialDateUI'
-            ? fieldDefinition.pluginDefinition.dateField
-            : undefined) ??
-          (fields?.map(({ name }) => name).join('.') || rawFieldName);
-    return {
-      type: 'Field',
-      // REFACTOR: consider changing this to an array
-      fieldName,
-      fieldDefinition,
-      isRequired:
-        (getBooleanAttribute(cell, 'isRequired') ?? false) ||
-        (fields?.at(-1)?.localization.isrequired ?? false),
-    };
+    const resolvedFields =
+      (fieldDefinition.type === 'Plugin' &&
+      fieldDefinition.pluginDefinition.type === 'PartialDateUI'
+        ? model.getFields(fieldDefinition.pluginDefinition.dateFields.join('.'))
+        : undefined) ?? fields;
+
+    if (
+      resolvedFields === undefined &&
+      (fieldDefinition.type !== 'Plugin' ||
+        fieldDefinition.pluginDefinition.type === 'PartialDateUI')
+    )
+      console.error(`Unknown field: ${rawFieldName ?? '(null)'}`);
+
+    const hasAccess =
+      resolvedFields === undefined || hasPathPermission(resolvedFields, 'read');
+
+    setLogContext({ field: undefined });
+    return hasAccess && fieldDefinition.type !== 'Blank'
+      ? {
+          type: 'Field',
+          fieldNames: resolvedFields?.map(({ name }) => name),
+          fieldDefinition,
+          isRequired:
+            (getBooleanAttribute(cell, 'isRequired') ?? false) ||
+            (fields?.at(-1)?.localization.isrequired ?? false),
+        }
+      : { type: 'Blank' };
   },
   Label: ({ cell }) => ({
     type: 'Label',
@@ -157,7 +175,7 @@ const processCellType: {
     title: undefined,
     labelForCellId: getParsedAttribute(cell, 'labelFor'),
     // This would be set in postProcessRows
-    fieldName: undefined,
+    fieldNames: undefined,
   }),
   Separator: ({ cell }) => ({
     type: 'Separator',
@@ -170,9 +188,8 @@ const processCellType: {
   }),
   SubView({ cell, model, getProperty }) {
     const rawFieldName = getParsedAttribute(cell, 'name');
-    const formType = getParsedAttribute(cell, 'defaultType') ?? '';
-    const field = model?.getField(rawFieldName ?? '');
-    if (field === undefined)
+    const fields = model.getFields(rawFieldName ?? '');
+    if (fields === undefined) {
       console.error(
         `Unknown field ${rawFieldName ?? '(null)'} when parsing form SubView`,
         {
@@ -180,40 +197,66 @@ const processCellType: {
           model,
         }
       );
-    const rawSortField = getProperty('sortField') ?? '';
-    const sortField = field?.isRelationship
-      ? field?.relatedModel?.getField(rawSortField)?.name ??
-        // Cut away the negative sign
-        field?.relatedModel?.getField(rawSortField.slice(1))?.name
-      : undefined;
-    const isDescSort = rawSortField?.startsWith('-') ?? false;
-    const formattedSortField =
-      typeof sortField === 'string'
-        ? isDescSort
-          ? `-${sortField}`
-          : sortField
-        : undefined;
+      return { type: 'Blank' };
+    }
+    const relationship = fields.at(-1);
+    if (relationship?.isRelationship === false) {
+      console.error('SubView can only be used to display a relationship');
+      return { type: 'Blank' };
+    } else if (fields.at(-1)?.type === 'many-to-many') {
+      // ResourceApi does not support .rget() on a many-to-many
+      console.error('Many-to-many relationships are not supported');
+      return { type: 'Blank' };
+    }
+
+    const hasAccess = hasPathPermission(fields, 'read');
+    if (!hasAccess) return { type: 'Blank' };
+
+    const rawSortField = getProperty('sortField');
+    const parsedSort = f.maybe(rawSortField, toLargeSortConfig);
+    const sortFields = relationship!.relatedModel.getFields(
+      parsedSort?.fieldNames.join('.') ?? ''
+    );
+    const formType = getParsedAttribute(cell, 'defaultType') ?? '';
     return {
       type: 'SubView',
       formType: formType?.toLowerCase() === 'table' ? 'formTable' : 'form',
-      fieldName: field?.name,
+      fieldNames: fields?.map(({ name }) => name),
       viewName: getParsedAttribute(cell, 'viewName'),
       isButton: getProperty('btn')?.toLowerCase() === 'true',
       icon: getProperty('icon'),
-      sortField: formattedSortField,
+      sortField:
+        sortFields === undefined
+          ? undefined
+          : {
+              direction: parsedSort?.direction ?? 'asc',
+              fieldNames: sortFields.map(({ name }) => name),
+            },
     };
   },
-  Panel: ({ cell, model }) => ({
-    type: 'Panel',
-    ...parseFormDefinition(cell, model),
-    display:
-      getParsedAttribute(cell, 'panelType')?.toLowerCase() === 'buttonbar'
-        ? 'inline'
-        : 'block',
-  }),
-  Command: ({ cell }) => ({
+  Panel: ({ cell, model }) => {
+    const oldContext = getLogContext();
+    setLogContext(
+      {
+        parent: oldContext,
+      },
+      true
+    );
+    const definition = parseFormDefinition(cell, model);
+    setLogContext(oldContext, true);
+
+    return {
+      type: 'Panel',
+      ...definition,
+      display:
+        getParsedAttribute(cell, 'panelType')?.toLowerCase() === 'buttonbar'
+          ? 'inline'
+          : 'block',
+    };
+  },
+  Command: ({ cell, model }) => ({
     type: 'Command',
-    commandDefinition: parseUiCommand(cell),
+    commandDefinition: parseUiCommand(cell, model),
   }),
   /**
    * This function never actually gets called
@@ -221,10 +264,15 @@ const processCellType: {
    * cells than defined columns
    */
   Blank: () => ({ type: 'Blank' }),
-  Unsupported: ({ cell }) => ({
-    type: 'Unsupported',
-    cellType: getAttribute(cell, 'type'),
-  }),
+  Unsupported: ({ cell }) => {
+    console.warn(
+      `Unsupported cell type: ${getParsedAttribute(cell, 'type') ?? '(null)'}`
+    );
+    return {
+      type: 'Unsupported',
+      cellType: getAttribute(cell, 'type'),
+    };
+  },
 };
 
 export type FormCellDefinition = CellTypes[keyof CellTypes] & {
@@ -249,15 +297,18 @@ const cellTypeTranslation: IR<keyof CellTypes> = {
  * Parse form cell XML into a JSON structure
  *
  * Does not depend on FormMode, FormType
- * Depends on SpecifyModel only for figuring out if field is required in
- * the schema
  */
 export function parseFormCell(
-  model: SpecifyModel | undefined,
+  model: SpecifyModel,
   cellNode: Element
 ): FormCellDefinition {
   const cellClass = getParsedAttribute(cellNode, 'type') ?? '';
   const cellType = cellTypeTranslation[cellClass.toLowerCase()];
+
+  // FEATURE: warn on IDs that include spaces and other unsupported characters
+  const id = getParsedAttribute(cellNode, 'id');
+  setLogContext({ id, type: cellType });
+
   const parsedCell = processCellType[cellType] ?? processCellType.Unsupported;
   const properties = parseSpecifyProperties(
     getAttribute(cellNode, 'initialize') ?? ''
@@ -266,8 +317,9 @@ export function parseFormCell(
     properties[name.toLowerCase()];
   const colSpan = f.parseInt(getParsedAttribute(cellNode, 'colSpan'));
   const align = getProperty('align')?.toLowerCase();
+
   return {
-    id: getParsedAttribute(cellNode, 'id'),
+    id,
     colSpan: typeof colSpan === 'number' ? Math.ceil(colSpan / 2) : 1,
     align: f.includes(cellAlign, align)
       ? align

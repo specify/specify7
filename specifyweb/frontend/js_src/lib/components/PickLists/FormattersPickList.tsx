@@ -1,21 +1,21 @@
 import React from 'react';
 
-import { fetchFormatters } from '../Forms/dataObjFormatters';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import type { RA } from '../../utils/types';
 import { resourceOn } from '../DataModel/resource';
 import { getModel } from '../DataModel/schema';
-import type { RA } from '../../utils/types';
+import { raise } from '../Errors/Crash';
 import type {
   DefaultComboBoxProps,
   PickListItemSimple,
 } from '../FormFields/ComboBox';
-import { PickListComboBox } from './index';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { fail } from '../Errors/Crash';
+import { fetchFormatters } from '../Forms/dataObjFormatters';
 import { PickListTypes } from './definitions';
+import { PickListComboBox } from './index';
 
 export function FormattersPickList(props: DefaultComboBoxProps): JSX.Element {
   const fetchItems = React.useCallback(async () => {
-    if (props.resource.get('type') !== PickListTypes.TABLE) return [];
+    if (props.resource?.get('type') !== PickListTypes.TABLE) return [];
     const { formatters } = await fetchFormatters;
     const model = getModel(props.resource.get('tableName') ?? '');
     return typeof model === 'object'
@@ -33,21 +33,24 @@ export function FormattersPickList(props: DefaultComboBoxProps): JSX.Element {
   );
   React.useEffect(
     () =>
-      resourceOn(
-        props.resource,
-        'change:tableName change:type',
-        (): void => {
-          if (props.resource.get('type') !== PickListTypes.TABLE)
-            props.resource.set('formatter', null as never);
-          fetchItems()
-            .then(setItems)
-            .catch((error) => {
-              setItems(undefined);
-              fail(error);
-            });
-        },
-        true
-      ),
+      props.resource === undefined
+        ? undefined
+        : resourceOn(
+            props.resource,
+            'change:tableName change:type',
+            (): void => {
+              if (props.resource === undefined) return;
+              if (props.resource.get('type') !== PickListTypes.TABLE)
+                props.resource.set('formatter', null as never);
+              fetchItems()
+                .then(setItems)
+                .catch((error) => {
+                  setItems(undefined);
+                  raise(error);
+                });
+            },
+            true
+          ),
     [props.resource, fetchItems, setItems]
   );
 

@@ -4,9 +4,9 @@
  * See more: https://docs.djangoproject.com/en/4.0/ref/csrf/
  */
 
+import { f } from '../functools';
 import { setDevelopmentGlobal } from '../types';
 import { readCookie } from './cookies';
-import { f } from '../functools';
 
 /**
  * Back-end passes initial data to front-end though templates as JSON in

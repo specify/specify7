@@ -1,35 +1,32 @@
 import React from 'react';
 import { useOutletContext } from 'react-router';
 import { useNavigate, useParams } from 'react-router-dom';
-import type { SpAppResourceDir } from '../DataModel/types';
-import { serializeResource } from '../DataModel/helpers';
+
+import { commonText } from '../../localization/common';
+import { headerText } from '../../localization/header';
+import { resourcesText } from '../../localization/resources';
 import { f } from '../../utils/functools';
 import { mappedFind } from '../../utils/utils';
-import { commonText } from '../../localization/common';
-import { userInformation } from '../InitialContext/userInformation';
-import type { AppResourcesOutlet } from './index';
-import type { AppResourcesTree } from './hooks';
-import { useResourcesTree } from './hooks';
 import { Ul } from '../Atoms';
-import { Dialog } from '../Molecules/Dialog';
-import { NotFoundView } from '../Router/NotFoundView';
-import { deserializeResource } from '../../hooks/resource';
-import { ResourceView } from '../Forms/ResourceView';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
-import {
-  appResourceSubTypes,
-  AppResourceType,
-  appResourceTypes,
-} from './types';
-import { SerializedResource } from '../DataModel/helperTypes';
 import { addMissingFields } from '../DataModel/addMissingFields';
+import { deserializeResource, serializeResource } from '../DataModel/helpers';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import type { SpAppResourceDir } from '../DataModel/types';
 import {
   spAppResourceView,
   spViewSetNameView,
 } from '../FormParse/webOnlyViews';
-import { headerText } from '../../localization/header';
-import { resourcesText } from '../../localization/resources';
+import { ResourceView } from '../Forms/ResourceView';
+import { userInformation } from '../InitialContext/userInformation';
+import { Dialog } from '../Molecules/Dialog';
+import { NotFoundView } from '../Router/NotFoundView';
+import type { AppResourcesTree } from './hooks';
+import { useResourcesTree } from './hooks';
+import type { AppResourcesOutlet } from './index';
+import type { AppResourceType } from './types';
+import { appResourceSubTypes, appResourceTypes } from './types';
 
 /**
  * Check if one type is a subtype of another
@@ -180,9 +177,9 @@ function EditAppResource({
           ? spAppResourceView
           : spViewSetNameView
       }
+      onAdd={undefined}
       onClose={(): void => navigate('/specify/resources/')}
       onDeleted={undefined}
-      onAdd={undefined}
       onSaved={f.never}
       onSaving={(unsetUnloadProtect): false => {
         unsetUnloadProtect();

@@ -5,19 +5,19 @@
  */
 
 import React from 'react';
+import { useParams } from 'react-router-dom';
 
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useErrorContext } from '../../hooks/useErrorContext';
 import { ajax } from '../../utils/ajax';
+import { Http } from '../../utils/ajax/definitions';
 import { f } from '../../utils/functools';
-import { hasPermission } from '../Permissions/helpers';
+import { useMenuItem } from '../Header/useMenuItem';
 import { treeRanksPromise } from '../InitialContext/treeRanks';
+import { hasPermission } from '../Permissions/helpers';
 import { NotFoundView } from '../Router/NotFoundView';
 import type { Dataset } from './Wrapped';
 import { WbPlanView } from './Wrapped';
-import { useParams } from 'react-router-dom';
-import { useMenuItem } from '../Header';
-import { useErrorContext } from '../../hooks/useErrorContext';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { Http } from '../../utils/ajax/definitions';
 
 const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 
@@ -30,21 +30,17 @@ export function WbPlanViewWrapper(): JSX.Element | null {
   useMenuItem('workBench');
 
   const [dataSet] = useAsyncState<Dataset | false>(
-    React.useCallback(
-      () =>
-        f.maybe(f.parseInt(id), async (dataSetId) =>
-          ajax<Dataset>(
-            `/api/workbench/dataset/${dataSetId}/`,
-            {
-              headers: { Accept: 'application/json' },
-            },
-            { expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }
-          ).then(({ data, status }) =>
-            status === Http.NOT_FOUND ? false : data
-          )
-        ) ?? false,
-      [id]
-    ),
+    React.useCallback(() => {
+      const dataSetId = f.parseInt(id);
+      if (dataSetId === undefined) return false;
+      return ajax<Dataset>(
+        `/api/workbench/dataset/${dataSetId}/`,
+        {
+          headers: { Accept: 'application/json' },
+        },
+        { expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }
+      ).then(({ data, status }) => (status === Http.NOT_FOUND ? false : data));
+    }, [id]),
     true
   );
   useErrorContext('dataSet', dataSet);

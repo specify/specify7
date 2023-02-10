@@ -4,9 +4,9 @@ import { useId } from '../../hooks/useId';
 import { csrfToken } from '../../utils/ajax/csrfToken';
 import type { IR } from '../../utils/types';
 import { keysToLowerCase } from '../../utils/utils';
+import { xmlToString } from '../AppResources/codeMirrorLinters';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpQuery } from '../DataModel/types';
-import { xmlToString } from '../AppResources/codeMirrorLinters';
 
 export function RunReport({
   query,

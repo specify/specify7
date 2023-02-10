@@ -1,10 +1,11 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import type { LocalizedString } from 'typesafe-i18n';
 
-import { deserializeResource } from '../../hooks/resource';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { commonText } from '../../localization/common';
+import { userText } from '../../localization/user';
 import type { GetOrSet, IR } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Ul } from '../Atoms';
@@ -12,7 +13,9 @@ import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
 import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
+import { deserializeResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
+import { schema } from '../DataModel/schema';
 import type { Collection } from '../DataModel/types';
 import { ResourceView } from '../Forms/ResourceView';
 import { userInformation } from '../InitialContext/userInformation';
@@ -21,8 +24,6 @@ import { updateCollectionRole } from './CollectionRole';
 import { createCollectionRole } from './CreateRole';
 import { ImportExport } from './ImportExport';
 import type { Role } from './Role';
-import { userText } from '../../localization/user';
-import { schema } from '../DataModel/schema';
 
 /**
  * Display a button to open current user
@@ -158,7 +159,7 @@ export function CollectionRoles({
         ) : undefined}
         {children}
         <ImportExport
-          baseName={collection.collectionName ?? ''}
+          baseName={(collection.collectionName as LocalizedString) ?? ''}
           collectionId={collection.id}
           permissionName="/permissions/roles"
           roles={roles}

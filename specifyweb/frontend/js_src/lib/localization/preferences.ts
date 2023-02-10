@@ -200,9 +200,9 @@ export const preferencesText = createDictionary({
     `,
     'uk-ua': `
       Ви можете вказати будь-який шрифт, який є на вашому комп'ютері, навіть
-      якщо його немає в списку. Також підтримується розділений комами список
-      шрифтів, у якому використовуватиметься другий шрифт, якщо перший
-      недоступний тощо.
+      якщо його немає в списку. Також підтримується список шрифтів розділений
+      комами, у якому використовуватиметься другий шрифт, якщо перший
+      недоступний тощо
     `,
   },
   defaultFont: {
@@ -230,7 +230,7 @@ export const preferencesText = createDictionary({
     'en-us': 'Field background',
     'ru-ru': 'Фон поля',
     'es-es': 'Fondo de campo',
-    'fr-fr': 'Fond de terrain',
+    'fr-fr': 'Fond de champ',
     'uk-ua': 'Поле фону',
   },
   disabledFieldBackground: {
@@ -360,26 +360,11 @@ export const preferencesText = createDictionary({
     `,
   },
   header: {
-    'en-us': 'Top Level Menu',
-    'ru-ru': 'Главное меню',
-    'es-es': 'Menú de nivel superior',
-    'fr-fr': 'Menu de niveau supérieur',
-    'uk-ua': 'Меню верхнього рівня',
-  },
-  menu: {
-    'en-us': 'Menu',
-    'ru-ru': 'Меню',
-    'es-es': 'Menú',
-    'fr-fr': 'Menu',
-    'uk-ua': 'Меню',
-  },
-  showMenuItem: {
-    comment: 'Example: Show Data Entry. Or: Show Interactions. Or: Show Trees',
-    'en-us': 'Show {menuItem:string}',
-    'ru-ru': 'Показать {menuItem:string}',
-    'es-es': 'Mostrar {menuItem:string}',
-    'fr-fr': 'Afficher {menuItem:string}',
-    'uk-ua': 'Показати {menuItem:string}',
+    'en-us': 'Navigation Menu',
+    'ru-ru': 'Меню навигации',
+    'es-es': 'Menú de Navegación',
+    'fr-fr': 'le menu de navigation',
+    'uk-ua': 'Навігаційне меню',
   },
   application: {
     'en-us': 'Application',
@@ -606,7 +591,7 @@ export const preferencesText = createDictionary({
     'fr-fr': `
       Mettre l'interface à l'échelle pour correspondre à la taille de la police
     `,
-    'uk-ua': 'Масштабуйте інтерфейс відповідно до розміру шрифту',
+    'uk-ua': 'Масштабувати інтерфейс відповідно до розміру шрифту',
   },
   welcomePage: {
     'en-us': 'Home Page',
@@ -839,7 +824,7 @@ export const preferencesText = createDictionary({
     'es-es':
       'Dirección de movimiento cuando se presiona la tecla <key>Tab</key>',
     'fr-fr': 'Sens du mouvement lorsque la touche <key>Tab</key> est enfoncée',
-    'uk-ua': 'Напрямок руху при натисканні клавіші <key>Tab</key>.',
+    'uk-ua': 'Напрямок руху при натисканні клавіші <key>Tab</key>',
   },
   tabMoveDirectionDescription: {
     'en-us': `
@@ -884,7 +869,7 @@ export const preferencesText = createDictionary({
       'Dirección de movimiento cuando se presiona la tecla <key>Enter</key>',
     'fr-fr':
       'Sens du mouvement lorsque la touche <key>Enter</key> est enfoncée',
-    'uk-ua': 'Напрямок руху, коли натиснуто клавішу <key>Enter</key>.',
+    'uk-ua': 'Напрямок руху, коли натиснуто клавішу <key>Enter</key>',
   },
   enterMoveDirectionDescription: {
     'en-us': `
@@ -941,14 +926,14 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Показать таблицы без доступа «Чтение»',
     'es-es': 'Mostrar tablas sin acceso de "Lectura"',
     'fr-fr': 'Afficher les tableaux sans accès "Lecture"',
-    'uk-ua': 'Показувати таблиці без доступу «Читання».',
+    'uk-ua': 'Показувати таблиці до яких ви не маєте «Читання» доступу',
   },
   showNoAccessTables: {
     'en-us': 'Show tables without "Create" access',
     'ru-ru': 'Показать таблицы без доступа «Создать»',
     'es-es': 'Mostrar tablas sin acceso "Crear"',
     'fr-fr': 'Afficher les tableaux sans accès "Créer"',
-    'uk-ua': 'Показувати таблиці без доступу «Створити».',
+    'uk-ua': 'Показувати таблиці до яких ви не маєте «Створити» достопу',
   },
   textAreaAutoGrow: {
     'en-us': 'Text boxes grow automatically',
@@ -1046,7 +1031,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Закрыть при нажатии клавиши <key>ESC</key>',
     'es-es': 'Cerrar al pulsar la tecla <key>ESC</key>',
     'fr-fr': 'Fermer en appuyant sur la touche <key>ESC</key>',
-    'uk-ua': 'Закрийте після натискання клавіші <key>ESC</key>.',
+    'uk-ua': 'Закривати після натискання клавіші <key>ESC</key>',
   },
   closeOnOutsideClick: {
     'en-us': 'Close on outside click',
@@ -1162,7 +1147,7 @@ export const preferencesText = createDictionary({
       normalement dans un nouvel onglet pour l'ouvrir dans l'onglet actuel
     `,
     'uk-ua': `
-      <key>{altKeyName:string}</key>+<key>Натисніть </key> посилання, яке
+      <key>{altKeyName:string}</key>+<key>Натисніть</key> на посилання, яке
       зазвичай відкривається в новій вкладці, щоб відкрити його в поточній
       вкладці
     `,
@@ -1172,7 +1157,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Сделать диалоги формы серым фоном',
     'es-es': 'Hacer que los diálogos de formulario atenúen el fondo',
     'fr-fr': "Griser l'arrière-plan des boîtes de dialogue de formulaire",
-    'uk-ua': 'Зробіть діалогові вікна форми сірими',
+    'uk-ua': 'Зробити фон діалогових вікон сірими',
   },
   autoScrollTree: {
     'en-us': 'Auto scroll tree to focused node',
@@ -1180,14 +1165,15 @@ export const preferencesText = createDictionary({
       'Автоматически прокручивать страницу до сфокусированного узла дерева',
     'es-es': 'Árbol de desplazamiento automático al nodo enfocado',
     'fr-fr': "Défilement automatique de l'arborescence vers le nœud ciblé",
-    'uk-ua': 'Автоматичне прокручування дерева до виділеного вузла',
+    'uk-ua':
+      'Автоматично перемістити зображену частину дерева до виділеного вузла',
   },
   lineWrap: {
     'en-us': 'Line wrap',
     'ru-ru': 'Перенос строк',
     'es-es': 'Envoltura de línea',
     'fr-fr': 'Retour à la ligne',
-    'uk-ua': 'Обтікання лініями',
+    'uk-ua': 'Переносити лінії',
   },
   indentSize: {
     'en-us': 'Indent size',
@@ -1201,7 +1187,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Используйте <key>Tab</key> для отступа',
     'es-es': 'Aplicar sangría con <key>Tab</key>',
     'fr-fr': 'Retrait avec <key>Tab</key>',
-    'uk-ua': 'Відступ із <key>Tab</key>',
+    'uk-ua': '<key>Tab</key> добавляє відступ',
   },
   formHeaderFormat: {
     'en-us': 'Form header format',
@@ -1253,39 +1239,39 @@ export const preferencesText = createDictionary({
     'uk-ua': 'Поле пошуку',
   },
   createInteractions: {
-    'en-us': 'Create interactions',
+    'en-us': 'Creating an interaction',
     'ru-ru': 'Создать взаимодействия',
     'es-es': 'Crear interacciones',
     'fr-fr': 'Créer des interactions',
-    'uk-ua': 'Створюйте взаємодії',
+    'uk-ua': 'Створення взаємодії',
   },
   useSpaceAsDelimiter: {
     'en-us': 'Use space as delimiter',
     'ru-ru': 'Использовать пробел как разделитель',
     'es-es': 'Usar espacio como delimitador',
     'fr-fr': "Utiliser l'espace comme délimiteur",
-    'uk-ua': 'Використовуйте пробіл як роздільник',
+    'uk-ua': 'Використовувати пробіл як роздільник',
   },
   useCommaAsDelimiter: {
     'en-us': 'Use comma as delimiter',
     'ru-ru': 'Использовать запятую как разделитель',
     'es-es': 'Usar coma como delimitador',
     'fr-fr': 'Utiliser la virgule comme délimiteur',
-    'uk-ua': 'Використовуйте кому як роздільник',
+    'uk-ua': 'Використовувати кому як роздільник',
   },
   useNewLineAsDelimiter: {
     'en-us': 'Use new line as delimiter',
     'ru-ru': 'Использовать новую строку как разделитель',
     'es-es': 'Usar nueva línea como delimitador',
     'fr-fr': 'Utiliser une nouvelle ligne comme délimiteur',
-    'uk-ua': 'Використовуйте новий рядок як роздільник',
+    'uk-ua': 'Використовувати новий рядок як роздільник',
   },
   useCustomDelimiters: {
     'en-us': 'Use custom delimiters',
     'ru-ru': 'Использовать пользовательские разделители',
     'es-es': 'Usar delimitadores personalizados',
     'fr-fr': 'Utiliser des délimiteurs personnalisés',
-    'uk-ua': 'Використовуйте спеціальні роздільники',
+    'uk-ua': 'Використовувати спеціальні роздільники',
   },
   useCustomDelimitersDescription: {
     'en-us': `
@@ -1305,8 +1291,8 @@ export const preferencesText = createDictionary({
       Mettre un délimiteur par ligne
     `,
     'uk-ua': `
-      Список роздільників, які слід використовувати на додаток до визначених
-      вище. Поставте один роздільник на рядок
+      Список роздільників, які слід використовувати додатково до тих що є
+      визначеними вище. Вкажіть один роздільник на рядок
     `,
   },
   detectAutomaticallyDescription: {
@@ -1315,20 +1301,85 @@ export const preferencesText = createDictionary({
     'es-es': 'Detectar automáticamente según el formato del número de catálogo',
     'fr-fr':
       'Détecter automatiquement en fonction du format du numéro de catalogue',
-    'uk-ua': 'Визначати автоматично на основі формату номера каталогу',
+    'uk-ua': "Визначати автоматично на основі формату номеру об'єкта",
   },
   use: {
+    comment: 'Verb',
     'en-us': 'Use',
     'ru-ru': 'Использовать',
     'es-es': 'Usar',
     'fr-fr': 'Utiliser',
-    'uk-ua': 'використання',
+    'uk-ua': 'Використовувати',
   },
   dontUse: {
     'en-us': 'Don’t use',
     'ru-ru': 'Не использовать',
     'es-es': 'no usar',
     'fr-fr': 'Ne pas utiliser',
-    'uk-ua': 'Не використовуйте',
+    'uk-ua': 'Не використовувати',
+  },
+  position: {
+    'en-us': 'Position',
+    'es-es': 'Posición',
+    'fr-fr': 'Position',
+    'ru-ru': 'Позиция',
+    'uk-ua': 'Позиція',
+  },
+  top: {
+    'en-us': 'Top',
+    'es-es': 'Arriba',
+    'fr-fr': 'Haut',
+    'ru-ru': 'Вершина',
+    'uk-ua': 'Топ',
+  },
+  bottom: {
+    'en-us': 'Bottom',
+    'es-es': 'Abajo',
+    'fr-fr': 'Bas',
+    'ru-ru': 'Нижний',
+    'uk-ua': 'Дно',
+  },
+  left: {
+    'en-us': 'Left',
+    'es-es': 'Izquierda',
+    'fr-fr': 'Gauche',
+    'ru-ru': 'Левый',
+    'uk-ua': 'Ліворуч',
+  },
+  right: {
+    'en-us': 'Right',
+    'es-es': 'Bien',
+    'fr-fr': 'Droite',
+    'ru-ru': 'Верно',
+    'uk-ua': 'правильно',
+  },
+  showUnsavedIndicator: {
+    'en-us': 'Show unsaved changes indicator',
+    'ru-ru': 'Показывать индикатор несохраненных изменений',
+    'es-es': 'Mostrar el indicador de cambios no guardados',
+    'fr-fr': "Afficher l'indicateur de modifications non enregistrées",
+    'uk-ua': 'Показати індикатор незбережених змін',
+  },
+  showUnsavedIndicatorDescription: {
+    'en-us': `
+      Show an "*" in the tab title when there are unsaved changes in the current
+      tab
+    `,
+    'es-es': `
+      Mostrar un "*" en el título de la pestaña cuando hay cambios sin guardar
+      en la pestaña actual
+    `,
+    'fr-fr': `
+      Afficher un \"*\" dans le titre de l'onglet lorsqu'il y a des
+      modifications non enregistrées dans l'onglet actuel
+    `,
+    'ru-ru': `
+      Показывать «*» в заголовке вкладки, если на текущей вкладке есть
+      несохраненные изменения.
+    `,
+    'uk-ua': `
+      Показувати «*» у заголовку вкладки, якщо в поточній вкладці є незбережені
+      зміни
+    `,
   },
 } as const);

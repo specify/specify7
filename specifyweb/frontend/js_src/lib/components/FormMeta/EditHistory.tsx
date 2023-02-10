@@ -13,7 +13,7 @@ import { QueryBuilder } from '../QueryBuilder/Wrapped';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { createQuery } from '../QueryBuilder';
 import { useBooleanState } from '../../hooks/useBooleanState';
-import { AnySchema } from '../DataModel/helperTypes';
+import type { AnySchema } from '../DataModel/helperTypes';
 import { formattedEntry } from '../WbPlanView/mappingHelpers';
 import { useFormatted } from '../../hooks/useFormatted';
 
@@ -26,10 +26,10 @@ export function EditHistory({
   return (
     <>
       <Button.Small
+        className="normal-case"
         disabled={resource.isNew()}
         title={resource.isNew() ? formsText.saveRecordFirst() : undefined}
         onClick={handleOpen}
-        className="normal-case"
       >
         {formsText.historyOfEdits()}
       </Button.Small>
@@ -59,11 +59,11 @@ function RecordHistoryDialog({
     >
       <QueryBuilder
         autoRun
+        forceCollection={undefined}
         isEmbedded
         isReadOnly={false}
         query={query}
         recordSet={undefined}
-        forceCollection={undefined}
       />
     </Dialog>
   ) : null;

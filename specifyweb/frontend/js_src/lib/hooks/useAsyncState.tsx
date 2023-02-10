@@ -1,7 +1,8 @@
-import { GetOrSet } from '../utils/types';
 import React from 'react';
+
 import { LoadingContext } from '../components/Core/Contexts';
-import { crash } from '../components/Errors/Crash';
+import { raise } from '../components/Errors/Crash';
+import type { GetOrSet } from '../utils/types';
 
 /**
  * Like React.useState, but initial value is retrieved asynchronously
@@ -51,7 +52,7 @@ export function useAsyncState<T>(
     if (loadingScreen) {
       loading(promise);
     } else {
-      promise.catch(crash);
+      promise.catch(raise);
     }
 
     let destructorCalled = false;
@@ -61,4 +62,14 @@ export function useAsyncState<T>(
   }, [callback, loading, loadingScreen]);
 
   return [state, setState];
+}
+
+export function usePromise<T>(
+  promise: Promise<T>,
+  loadingScreen: boolean
+): GetOrSet<T | undefined> {
+  return useAsyncState(
+    React.useCallback(async () => promise, [promise]),
+    loadingScreen
+  );
 }

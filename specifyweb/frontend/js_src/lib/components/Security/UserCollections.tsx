@@ -9,6 +9,7 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
+import { userText } from '../../localization/user';
 import { ajax } from '../../utils/ajax';
 import { ping } from '../../utils/ajax/ping';
 import type { IR, RA } from '../../utils/types';
@@ -32,7 +33,6 @@ import { collectionAccessResource } from '../Permissions/definitions';
 import { hasPermission } from '../Permissions/helpers';
 import type { Policy } from './Policy';
 import type { UserAgents } from './UserHooks';
-import { userText } from '../../localization/user';
 
 function UserCollectionsUi({
   userId,
@@ -270,13 +270,12 @@ export function CollectionAccess({
         {schema.models.Agent.label}
         {typeof collectionAddress === 'object' ? (
           <QueryComboBox
-            fieldName="agent"
+            field={schema.models.Address.strictGetRelationship('agent')}
             forceCollection={collectionId}
             formType="form"
             id={undefined}
             isRequired={hasCollectionAccess || isSuperAdmin}
             mode={mode === 'view' || !canAssignAgent ? 'view' : 'edit'}
-            relatedModel={schema.models.Agent}
             resource={collectionAddress}
             typeSearch={undefined}
           />
