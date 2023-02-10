@@ -48,7 +48,7 @@ export function PreferencesAside({
     if (activeIndex !== -1) {
       setActiveCategory(activeIndex);
       const currentRef = references.current?.[activeIndex];
-      if (currentRef !== undefined) scrollIntoView(currentRef);
+      if (currentRef !== undefined) scrollIntoView(currentRef, 'start');
     }
   }, []);
 

@@ -443,7 +443,7 @@ export function DataModelTables(): JSX.Element {
     );
     if (activeIndex !== -1) {
       const currentRef = references.current?.[activeIndex];
-      if (currentRef !== undefined) scrollIntoView(currentRef);
+      if (currentRef !== undefined) scrollIntoView(currentRef, 'start');
     }
   }, []);
 

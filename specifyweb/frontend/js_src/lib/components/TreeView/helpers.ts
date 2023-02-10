@@ -141,7 +141,7 @@ export function serializeConformation(
 const throttleRate = 250;
 export const scrollIntoView = _.throttle(function scrollIntoView(
   element: HTMLElement,
-  mode: ScrollLogicalPosition = 'start'
+  mode: ScrollLogicalPosition = 'center'
 ): void {
   try {
     element.scrollIntoView({
