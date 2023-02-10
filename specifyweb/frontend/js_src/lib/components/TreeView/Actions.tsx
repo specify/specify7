@@ -438,6 +438,7 @@ function NodeDeleteButton({
         : undefined,
     [tableName, nodeId]
   );
+
   return disabled || resource === undefined ? (
     <Button.Small onClick={undefined}>{commonText.delete()}</Button.Small>
   ) : (

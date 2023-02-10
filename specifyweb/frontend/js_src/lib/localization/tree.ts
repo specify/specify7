@@ -359,4 +359,7 @@ export const treeText = createDictionary({
     'fr-fr': 'Modifier les rangs',
     'uk-ua': 'Редагувати ранги',
   },
+  resourceToDelete: {
+    'en-us': `This will permanently delete the following resource`,
+  },
 } as const);
