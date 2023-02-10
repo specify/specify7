@@ -96,6 +96,8 @@ export type Collection<SCHEMA extends AnySchema> = {
   getTotalCount(): Promise<number>;
   // eslint-disable-next-line @typescript-eslint/naming-convention
   toJSON<V extends IR<unknown>>(): RA<V>;
+  any(callback: (others: SpecifyResource<SCHEMA>) => boolean): boolean;
+  each(callback: (other: SpecifyResource<SCHEMA>) => void): void;
   add(resource: RA<SpecifyResource<SCHEMA>> | SpecifyResource<SCHEMA>): void;
   remove(resource: SpecifyResource<SCHEMA>): void;
   fetch(filter?: { readonly limit: number }): Promise<Collection<SCHEMA>>;
@@ -403,7 +405,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
       .map((fieldName) => this.getField(fieldName))
       .find(
         (field): field is Relationship =>
-          field?.isRelationship === true && (!relationshipIsToMany(field))
+          field?.isRelationship === true && !relationshipIsToMany(field)
       );
   }
 

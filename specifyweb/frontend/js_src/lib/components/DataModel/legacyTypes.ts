@@ -10,7 +10,9 @@ import {
   CommonFields,
   SerializedModel,
   SerializedResource,
+  TableFields,
 } from './helperTypes';
+import { BusinessRuleMgr } from './businessRules';
 
 /*
  * FEATURE: need to improve the typing to handle the following:
@@ -29,13 +31,13 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   readonly saveBlockers?: Readonly<SaveBlockers<SCHEMA>>;
   readonly parent?: SpecifyResource<SCHEMA>;
   readonly noBusinessRules: boolean;
-  readonly collection: {
-    readonly related: SpecifyResource<SCHEMA>;
-  };
-  readonly businessRuleMgr?: {
-    readonly pending: Promise<void>;
-    readonly checkField: (fieldName: string) => Promise<void>;
-  };
+  readonly _fetch?: unknown;
+  readonly _save?: unknown;
+  readonly changed?: { [FIELDNAME in TableFields<SCHEMA>]?: string | number };
+  readonly collection: Collection<SCHEMA>;
+  readonly businessRuleMgr?:
+    | BusinessRuleMgr<SCHEMA>
+    | BusinessRuleMgr<AnySchema>;
   /*
    * Shorthand method signature is used to prevent
    * https://github.com/microsoft/TypeScript/issues/48339
@@ -184,7 +186,11 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   placeInSameHierarchy(
     resource: SpecifyResource<AnySchema>
   ): SpecifyResource<AnySchema> | undefined;
-  on(eventName: string, callback: (...args: RA<never>) => void): void;
+  on(
+    eventName: string,
+    callback: (...args: RA<never>) => void,
+    thisArg?: any
+  ): void;
   once(eventName: string, callback: (...args: RA<never>) => void): void;
   off(eventName?: string, callback?: (...args: RA<never>) => void): void;
   trigger(eventName: string, ...args: RA<unknown>): void;

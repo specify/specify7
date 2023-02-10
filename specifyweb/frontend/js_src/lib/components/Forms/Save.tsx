@@ -144,40 +144,42 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     }
 
     loading(
-      (resource.businessRuleMgr?.pending ?? Promise.resolve()).then(() => {
-        const blockingResources = Array.from(
-          resource.saveBlockers?.blockingResources ?? []
-        );
-        blockingResources.forEach((resource) =>
-          resource.saveBlockers?.fireDeferredBlockers()
-        );
-        if (blockingResources.length > 0) {
-          setShowBlockedDialog(true);
-          return;
+      (resource.businessRuleMgr?.pendingPromises ?? Promise.resolve()).then(
+        () => {
+          const blockingResources = Array.from(
+            resource.saveBlockers?.blockingResources ?? []
+          );
+          blockingResources.forEach((resource) =>
+            resource.saveBlockers?.fireDeferredBlockers()
+          );
+          if (blockingResources.length > 0) {
+            setShowBlockedDialog(true);
+            return;
+          }
+
+          /*
+           * Save process is canceled if false was returned. This also allows to
+           * implement custom save behavior
+           */
+          if (handleSaving?.(unsetUnloadProtect) === false) return;
+
+          setIsSaving(true);
+          return resource
+            .save({ onSaveConflict: hasSaveConflict })
+            .catch((error_) =>
+              // FEATURE: if form save fails, should make the error message dismissable (if safe)
+              Object.getOwnPropertyDescriptor(error_ ?? {}, 'handledBy')
+                ?.value === hasSaveConflict
+                ? undefined
+                : error(error_)
+            )
+            .finally(() => {
+              unsetUnloadProtect();
+              handleSaved?.();
+              setIsSaving(false);
+            });
         }
-
-        /*
-         * Save process is canceled if false was returned. This also allows to
-         * implement custom save behavior
-         */
-        if (handleSaving?.(unsetUnloadProtect) === false) return;
-
-        setIsSaving(true);
-        return resource
-          .save({ onSaveConflict: hasSaveConflict })
-          .catch((error_) =>
-            // FEATURE: if form save fails, should make the error message dismissable (if safe)
-            Object.getOwnPropertyDescriptor(error_ ?? {}, 'handledBy')
-              ?.value === hasSaveConflict
-              ? undefined
-              : error(error_)
-          )
-          .finally(() => {
-            unsetUnloadProtect();
-            handleSaved?.();
-            setIsSaving(false);
-          });
-      })
+      )
     );
   }
 
