@@ -1,10 +1,16 @@
 name: Dockerize
 
-on: [push]
+on:
+  push:
+  pull_request:
 
 jobs:
   dockerize:
     runs-on: ubuntu-latest
+    # "push" event is not triggered for forks, so need to listen for
+    # pull_requests, but only for external ones, so as not to run the action
+    # twice
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork == true
     steps:
       - name: Checkout
         uses: actions/checkout@v3
