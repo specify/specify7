@@ -1,0 +1,295 @@
+import { f } from '../../utils/functools';
+import { overwriteReadOnly } from '../../utils/types';
+import { AnySchema, TableFields } from './helperTypes';
+import { interactionBusinessRules } from './interactionBusinessRules';
+import { SpecifyResource } from './legacyTypes';
+import { BusinessRuleResult } from './businessRules';
+import { schema } from './schema';
+import { Collection } from './specifyModel';
+import {
+  BorrowMaterial,
+  CollectionObject,
+  Determination,
+  GiftPreparation,
+  LoanPreparation,
+  LoanReturnPreparation,
+  Tables,
+  Taxon,
+} from './types';
+import * as uniquenessRules from './uniquness_rules.json';
+
+export type BusinessRuleDefs<SCHEMA extends AnySchema> = {
+  readonly onRemoved?: (
+    resource: SpecifyResource<SCHEMA>,
+    collection: Collection<SCHEMA>
+  ) => void;
+  readonly uniqueIn?: { [key: string]: string };
+  readonly customInit?: (resource: SpecifyResource<SCHEMA>) => void;
+  readonly fieldChecks?: {
+    [FIELDNAME in TableFields<SCHEMA> as Lowercase<FIELDNAME>]?: (
+      resource: SpecifyResource<SCHEMA>
+    ) => Promise<BusinessRuleResult | undefined> | void;
+  };
+};
+
+type MappedBusinessRuleDefs = {
+  [TABLE in keyof Tables]?: BusinessRuleDefs<Tables[TABLE]>;
+};
+
+function assignUniquenessRules(
+  mappedRules: MappedBusinessRuleDefs
+): MappedBusinessRuleDefs {
+  Object.keys(uniquenessRules).forEach((table) => {
+    if (mappedRules[table] == undefined)
+      overwriteReadOnly(mappedRules, table, {});
+
+    overwriteReadOnly(mappedRules[table]!, 'uniqueIn', uniquenessRules[table]);
+  });
+  return mappedRules;
+}
+
+export const businessRuleDefs = f.store(
+  (): MappedBusinessRuleDefs =>
+    assignUniquenessRules({
+      BorrowMaterial: {
+        fieldChecks: {
+          quantityreturned: (
+            borrowMaterial: SpecifyResource<BorrowMaterial>
+          ): void => {
+            const returned = borrowMaterial.get('quantityReturned');
+            const resolved = borrowMaterial.get('quantityResolved');
+            const quantity = borrowMaterial.get('quantity');
+            var newVal: number | undefined = undefined;
+            if (quantity && returned && returned > quantity) {
+              newVal = quantity;
+            }
+            if (returned && resolved && returned > resolved) {
+              newVal = resolved;
+            }
+
+            newVal && borrowMaterial.set('quantityReturned', newVal);
+          },
+          quantityresolved: (
+            borrowMaterial: SpecifyResource<BorrowMaterial>
+          ): void => {
+            const resolved = borrowMaterial.get('quantityResolved');
+            const quantity = borrowMaterial.get('quantity');
+            const returned = borrowMaterial.get('quantityReturned');
+            var newVal: number | undefined = undefined;
+            if (resolved && quantity && resolved > quantity) {
+              newVal = quantity;
+            }
+            if (resolved && returned && resolved < returned) {
+              newVal = returned;
+            }
+
+            newVal && borrowMaterial.set('quantityResolved', newVal);
+          },
+        },
+      },
+
+      CollectionObject: {
+        customInit: function (
+          collectionObject: SpecifyResource<CollectionObject>
+        ): void {
+          var ceField =
+            collectionObject.specifyModel.getField('collectingEvent');
+          if (
+            ceField?.isDependent() &&
+            collectionObject.get('collectingEvent') == undefined
+          ) {
+            collectionObject.set(
+              'collectingEvent',
+              new schema.models.CollectingEvent.Resource()
+            );
+          }
+        },
+      },
+
+      Determination: {
+        customInit: (determinaton: SpecifyResource<Determination>): void => {
+          if (determinaton.isNew()) {
+            const setCurrent = () => {
+              determinaton.set('isCurrent', true);
+              if (determinaton.collection != null) {
+                determinaton.collection.each(
+                  (other: SpecifyResource<Determination>) => {
+                    if (other.cid !== determinaton.cid) {
+                      other.set('isCurrent', false);
+                    }
+                  }
+                );
+              }
+            };
+            if (determinaton.collection !== null) setCurrent();
+            determinaton.on('add', setCurrent);
+          }
+        },
+        fieldChecks: {
+          taxon: (
+            determination: SpecifyResource<Determination>
+          ): Promise<BusinessRuleResult> | void | undefined => {
+            return determination
+              .rget('taxon', true)
+              .then((taxon: SpecifyResource<Taxon> | null) =>
+                taxon == null
+                  ? {
+                      valid: true,
+                      action: () => {
+                        determination.set('preferredTaxon', null);
+                      },
+                    }
+                  : (function recur(
+                      taxon: SpecifyResource<Taxon>
+                    ): BusinessRuleResult {
+                      return taxon.get('acceptedTaxon') == null
+                        ? {
+                            valid: true,
+                            action: () => {
+                              determination.set('preferredTaxon', taxon);
+                            },
+                          }
+                        : taxon.rget('acceptedtaxon', true).then(recur);
+                    })(taxon)
+              );
+          },
+          iscurrent: (
+            determination: SpecifyResource<Determination>
+          ): Promise<BusinessRuleResult> | void => {
+            if (
+              determination.get('isCurrent') &&
+              determination.collection != null
+            ) {
+              determination.collection.each(
+                (other: SpecifyResource<Determination>) => {
+                  if (other.cid !== determination.cid) {
+                    other.set('isCurrent', false);
+                  }
+                }
+              );
+            }
+            if (
+              determination.collection != null &&
+              !determination.collection.any(
+                (c: SpecifyResource<Determination>) => c.get('isCurrent')
+              )
+            ) {
+              determination.set('isCurrent', true);
+            }
+            return Promise.resolve({ valid: true });
+          },
+        },
+      },
+      GiftPreparation: {
+        fieldChecks: {
+          quantity: (iprep: SpecifyResource<GiftPreparation>): void => {
+            interactionBusinessRules.checkPrepAvailability(iprep);
+          },
+        },
+      },
+      LoanPreparation: {
+        fieldChecks: {
+          quantity: (iprep: SpecifyResource<LoanPreparation>): void => {
+            interactionBusinessRules.checkPrepAvailability(iprep);
+          },
+        },
+      },
+      LoanReturnPreparation: {
+        onRemoved: (
+          loanReturnPrep: SpecifyResource<LoanReturnPreparation>,
+          collection: Collection<LoanReturnPreparation>
+        ): void => {
+          interactionBusinessRules.updateLoanPrep(loanReturnPrep, collection);
+        },
+        customInit: (
+          resource: SpecifyResource<LoanReturnPreparation>
+        ): void => {
+          interactionBusinessRules.totalLoaned = undefined;
+          interactionBusinessRules.totalResolved = undefined;
+          interactionBusinessRules.returned = undefined;
+          interactionBusinessRules.resolved = undefined;
+          resource.get('quantityReturned') == null &&
+            resource.set('quantityReturned', 0);
+          resource.get('quantityResolved') == null &&
+            resource.set('quantityResolved', 0);
+        },
+        fieldChecks: {
+          quantityreturned: (
+            loanReturnPrep: SpecifyResource<LoanReturnPreparation>
+          ): Promise<BusinessRuleResult> | void => {
+            var returned = loanReturnPrep.get('quantityReturned');
+            var previousReturned = interactionBusinessRules.previousReturned[
+              Number(loanReturnPrep.cid)
+            ]
+              ? interactionBusinessRules.previousReturned[
+                  Number(loanReturnPrep.cid)
+                ]
+              : 0;
+            if (returned !== null && returned != previousReturned) {
+              var delta = returned - previousReturned;
+              var resolved = loanReturnPrep.get('quantityResolved');
+              var totalLoaned =
+                interactionBusinessRules.getTotalLoaned(loanReturnPrep);
+              var totalResolved =
+                interactionBusinessRules.getTotalResolved(loanReturnPrep);
+              var max = totalLoaned - totalResolved;
+              if (resolved !== null && delta + resolved > max) {
+                loanReturnPrep.set('quantityReturned', previousReturned);
+              } else {
+                resolved = loanReturnPrep.get('quantityResolved')! + delta;
+                interactionBusinessRules.previousResolved[
+                  Number(loanReturnPrep.cid)
+                ] = resolved;
+                loanReturnPrep.set('quantityResolved', resolved);
+              }
+              interactionBusinessRules.previousReturned[
+                Number(loanReturnPrep.cid)
+              ] = loanReturnPrep.get('quantityReturned');
+              interactionBusinessRules.updateLoanPrep(
+                loanReturnPrep,
+                loanReturnPrep.collection
+              );
+            }
+          },
+          quantityresolved: (
+            loanReturnPrep: SpecifyResource<LoanReturnPreparation>
+          ): Promise<BusinessRuleResult> | void => {
+            var resolved = loanReturnPrep.get('quantityResolved');
+            var previousResolved = interactionBusinessRules.previousResolved[
+              Number(loanReturnPrep.cid)
+            ]
+              ? interactionBusinessRules.previousResolved[
+                  Number(loanReturnPrep.cid)
+                ]
+              : 0;
+            if (resolved != previousResolved) {
+              var returned = loanReturnPrep.get('quantityReturned');
+              var totalLoaned =
+                interactionBusinessRules.getTotalLoaned(loanReturnPrep);
+              var totalResolved =
+                interactionBusinessRules.getTotalResolved(loanReturnPrep);
+              var max = totalLoaned - totalResolved;
+              if (resolved !== null && returned !== null) {
+                if (resolved > max) {
+                  loanReturnPrep.set('quantityResolved', previousResolved);
+                }
+                if (resolved < returned) {
+                  interactionBusinessRules.previousReturned[
+                    Number(loanReturnPrep.cid)
+                  ] = resolved;
+                  loanReturnPrep.set('quantityReturned', resolved);
+                }
+              }
+              interactionBusinessRules.previousResolved[
+                Number(loanReturnPrep.cid)
+              ] = loanReturnPrep.get('quantityResolved');
+              interactionBusinessRules.updateLoanPrep(
+                loanReturnPrep,
+                loanReturnPrep.collection
+              );
+            }
+          },
+        },
+      },
+    } as const)
+);
