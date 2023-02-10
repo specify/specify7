@@ -310,4 +310,7 @@ export const schemaText = createDictionary({
     'ru-ru': 'Сфера',
     'uk-ua': 'Область застосування',
   },
+  schemaViewTitle: {
+    'en-us': 'Schema Config: {tableName:string}'
+  },
 } as const);

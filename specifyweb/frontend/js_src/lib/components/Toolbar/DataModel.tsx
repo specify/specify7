@@ -165,6 +165,7 @@ function DataModelTable({
   readonly forwardRef?: (element: HTMLElement | null) => void;
 }): JSX.Element {
   const model = getModel(tableName);
+
   return model === undefined ? (
     <NotFoundView />
   ) : (
