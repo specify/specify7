@@ -1,4 +1,6 @@
+import json
 from django.core.exceptions import ObjectDoesNotExist
+from typing import Dict
 from specifyweb.specify import models
 from .orm_signal_handler import orm_signal_handler
 from .exceptions import BusinessRuleException
@@ -27,6 +29,7 @@ def make_uniqueness_rule(model_name, parent_field, unique_field):
     else:
         @orm_signal_handler('pre_save', model_name)
         def check_unique(instance):
+            if isinstance(parent_field, dict): return
             try:
                 parent = getattr(instance, parent_field + '_id', None)
             except ObjectDoesNotExist:
@@ -52,71 +55,18 @@ def make_uniqueness_rule(model_name, parent_field, unique_field):
                      "conflicting" : list(conflicts.values_list('id', flat=True)[:100])})
     return check_unique
 
-UNIQUENESS_RULES = {
-    'Accession': {
-        'accessionnumber': ['division'],
-        },
-    'Appraisal': {
-        'appraisalnumber': ['accession'],
-        },
-    'Author': {
-        'agent': ['referencework'],
-        'ordernumber': ['referencework'],
-        },
-    'Collection': {
-        'collectionname': ['discipline'],
-        'code': ['discipline'],
-        },
-    'Collectionobject': {
-        'catalognumber': ['collection'],
-        },
-    'Collector': {
-        'agent': ['collectingevent'],
-        },
-    'Discipline': {
-        'name': ['division'],
-        },
-    'Division': {
-        'name': ['institution'],
-        },
-    'Gift': {
-        'giftnumber': ['discipline'],
-        },
-    'Groupperson': {
-        'member': ['group'],
-        },
-    'Institution': {
-        'name': [None],
-        },
-    'Loan': {
-        'loannumber': ['discipline'],
-        },
-    'Permit': {
-        'permitnumber': [None],
-        },
-    'Picklist': {
-        'name': ['collection'],
-        },
-    'Preptype': {
-        'name': ['collection'],
-        },
-    'Repositoryagreement': {
-        'repositoryagreementnumber': ['division'],
-        },
-    'Spappresourcedata': {
-        'spappresource': [None],
-        },
-    }
+RAW_UNIQUENESS_RULES: Dict[str, Dict[str, list]] = json.load(open('specifyweb/frontend/js_src/lib/components/DataModel/uniquness_rules.json'))
 
+def parse_uniqueness_rules():
+    PARSED_UNIQUENESS_RULES = {}
+    for table, value in RAW_UNIQUENESS_RULES.items():
+        table = table.lower().capitalize()
+        if hasattr(models, table):
+            PARSED_UNIQUENESS_RULES[table] = value
 
-# This check is provided to support the Specify 6.8.01
-# datamodel (schema version 2.9). When support for that
-# version is dropped it can be removed and this definition
-# can be included in the block above.
-if hasattr(models, 'Determiner'):
-    UNIQUENESS_RULES['Determiner'] = {
-        'agent': ['determination'],
-    }
+    return PARSED_UNIQUENESS_RULES
+
+UNIQUENESS_RULES = parse_uniqueness_rules()
 
 
 uniqueness_rules = [make_uniqueness_rule(model, parent_field, unique_field)
