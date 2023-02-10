@@ -1,6 +1,19 @@
+/**
+ * Definitions for all menu items and user tools
+ */
+
+import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
+import { headerText } from '../../localization/header';
+import { interactionsText } from '../../localization/interactions';
+import { queryText } from '../../localization/query';
+import { reportsText } from '../../localization/report';
+import { statsText } from '../../localization/stats';
+import { treeText } from '../../localization/tree';
+import { wbText } from '../../localization/workbench';
+import { getCache } from '../../utils/cache';
 import type { IR } from '../../utils/types';
-import { ensure, filterArray } from '../../utils/types';
+import { ensure } from '../../utils/types';
 import { icons } from '../Atoms/Icons';
 import {
   attachmentsAvailable,
@@ -20,23 +33,13 @@ import {
   hasTreeAccess,
 } from '../Permissions/helpers';
 import { reportsAvailable } from '../Reports';
-import { filterUserTools } from './userToolDefinitions';
-import { getCache } from '../../utils/cache';
-import { headerText } from '../../localization/header';
-import { reportsText } from '../../localization/report';
-import { queryText } from '../../localization/query';
-import { interactionsText } from '../../localization/interactions';
-import { attachmentsText } from '../../localization/attachments';
-import { treeText } from '../../localization/tree';
-import { wbText } from '../../localization/workbench';
-import { statsText } from '../../localization/stats';
+import { filterMenuItems } from './menuItemProcessing';
 
-const rawMenuItems = ensure<IR<MenuItem>>()({
+const rawMenuItems = ensure<IR<Omit<MenuItem, 'name'>>>()({
   dataEntry: {
     url: '/specify/overlay/data-entry/',
     title: headerText.dataEntry(),
     icon: icons.pencilAt,
-    visibilityKey: 'showDataEntry',
     enabled: () =>
       getCache('forms', 'readOnlyMode') !== true &&
       // Show DataEntry only if has "create" permission to at least one table
@@ -48,7 +51,6 @@ const rawMenuItems = ensure<IR<MenuItem>>()({
     url: '/specify/overlay/trees/',
     title: treeText.trees(),
     icon: icons.tree,
-    visibilityKey: 'showTrees',
     enabled: () =>
       getDisciplineTrees().some((treeName) => hasTreeAccess(treeName, 'read')),
   },
@@ -56,7 +58,6 @@ const rawMenuItems = ensure<IR<MenuItem>>()({
     url: '/specify/overlay/interactions/',
     title: interactionsText.interactions(),
     icon: icons.chat,
-    visibilityKey: 'showInteractions',
     enabled: () =>
       getCache('forms', 'readOnlyMode') !== true &&
       hasToolPermission('recordSets', 'read') &&
@@ -69,7 +70,6 @@ const rawMenuItems = ensure<IR<MenuItem>>()({
     url: '/specify/overlay/queries/',
     title: queryText.queries(),
     icon: icons.documentSearch,
-    visibilityKey: 'showQueries',
     enabled: () =>
       hasToolPermission('queryBuilder', 'read') ||
       hasPermission('/querybuilder/query', 'execute'),
@@ -78,14 +78,12 @@ const rawMenuItems = ensure<IR<MenuItem>>()({
     url: '/specify/overlay/record-sets/',
     title: commonText.recordSets(),
     icon: icons.collection,
-    visibilityKey: 'showRecordSets',
     enabled: () => hasToolPermission('recordSets', 'read'),
   },
   reports: {
     url: '/specify/overlay/reports/',
     title: reportsText.reports(),
     icon: icons.documentReport,
-    visibilityKey: 'showReports',
     enabled: async () =>
       hasPermission('/report', 'execute') && (await reportsAvailable),
   },
@@ -93,13 +91,11 @@ const rawMenuItems = ensure<IR<MenuItem>>()({
     url: '/specify/overlay/data-sets/',
     title: wbText.workBench(),
     icon: icons.table,
-    visibilityKey: 'showWorkBench',
   },
   attachments: {
     url: '/specify/attachments/',
     title: attachmentsText.attachments(),
     icon: icons.photos,
-    visibilityKey: 'showAttachments',
     async enabled(): Promise<boolean> {
       if (!hasTablePermission('Attachment', 'read')) return false;
       await attachmentSettingsPromise;
@@ -109,24 +105,15 @@ const rawMenuItems = ensure<IR<MenuItem>>()({
   statistics: {
     url: '/specify/statistics/',
     title: statsText.statistics(),
-    icon: icons.stats,
-    visibilityKey: 'showStatistics',
+    icon: icons.chartBar,
   },
 } as const);
 
-export type MenuItemName = keyof typeof rawMenuItems;
+export type MenuItemName = keyof typeof rawMenuItems | 'search';
 
-export const menuItemsPromise = fetchPermissions
-  .then(async () =>
-    filterUserTools(
-      Object.entries(rawMenuItems).map(([name, entry]) => ({
-        ...entry,
-        name,
-      }))
-    )
-  )
-  .then((entries) =>
-    Object.fromEntries(
-      filterArray(entries).map(({ name, ...entry }) => [name, entry])
-    )
-  );
+/**
+ * Don't use this directly. Use useMenuItems() instead
+ */
+export const rawMenuItemsPromise = fetchPermissions.then(async () =>
+  filterMenuItems(rawMenuItems)
+);

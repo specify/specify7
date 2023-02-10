@@ -1,5 +1,6 @@
-import { GetOrSet } from '../utils/types';
 import React from 'react';
+
+import type { GetOrSet } from '../utils/types';
 
 /**
  * Like React.useState, but updates the state whenever default value changes

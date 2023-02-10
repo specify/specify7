@@ -1,4 +1,12 @@
-import type { AppResources, AppResourcesTree } from './hooks';
+import type { LocalizedString } from 'typesafe-i18n';
+
+import { resourcesText } from '../../localization/resources';
+import { userText } from '../../localization/user';
+import type { RA } from '../../utils/types';
+import { sortFunction } from '../../utils/utils';
+import { addMissingFields } from '../DataModel/addMissingFields';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import { getResourceApiUrl } from '../DataModel/resource';
 import type {
   Collection,
   Discipline,
@@ -6,15 +14,8 @@ import type {
   SpAppResourceDir,
   SpViewSetObj,
 } from '../DataModel/types';
-import { sortFunction } from '../../utils/utils';
-import { resourcesText } from '../../localization/resources';
 import { userTypes } from '../PickLists/definitions';
-import type { RA } from '../../utils/types';
-import { SerializedResource } from '../DataModel/helperTypes';
-import { addMissingFields } from '../DataModel/addMissingFields';
-import { userText } from '../../localization/user';
-import { LocalizedString } from 'typesafe-i18n';
-import { getResourceApiUrl } from '../DataModel/resource';
+import type { AppResources, AppResourcesTree } from './hooks';
 
 export const getAppResourceTree = (
   resources: AppResources
@@ -159,7 +160,7 @@ export const getScopedAppResources = (
         discipline: discipline.resource_uri,
       });
     return {
-      label: discipline.name ?? '',
+      label: (discipline.name as LocalizedString) ?? '',
       key: `discipline_${discipline.id}`,
       directory,
       ...mergeDirectories(directories, resources),
@@ -187,7 +188,7 @@ const getDisciplineAppResources = (
           discipline: collection.discipline,
         });
       return {
-        label: collection.collectionName ?? '',
+        label: (collection.collectionName as LocalizedString) ?? '',
         key: `collection_${collection.id}`,
         directory,
         ...mergeDirectories(directories, resources),
@@ -266,7 +267,7 @@ const getUserResources = (
         });
 
       return {
-        label: user.name,
+        label: user.name as LocalizedString,
         key: `collection_${collection.id}_user_${user.id}`,
         directory,
         ...mergeDirectories(directories, resources),

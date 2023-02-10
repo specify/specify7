@@ -12,8 +12,8 @@ import { StringToJsx } from '../../localization/utils';
 import type { Language } from '../../localization/utils/config';
 import {
   completeLanguages,
-  devLanguage as developmentLanguage,
-  devLanguages as developmentLanguages,
+  devLanguage,
+  devLanguages,
   LANGUAGE,
   languages,
 } from '../../localization/utils/config';
@@ -27,8 +27,7 @@ import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Select } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
-import { fail } from '../Errors/Crash';
-import { supportLink } from '../Errors/ErrorDialog';
+import { raise } from '../Errors/Crash';
 import { cachableUrl } from '../InitialContext';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import type {
@@ -90,7 +89,11 @@ export function LanguageSelection<LANGUAGES extends string>({
           <p>
             <StringToJsx
               components={{
-                emailLink: supportLink,
+                link: (label) => (
+                  <Link.NewTab href="https://discourse.specifysoftware.org/t/get-started-with-specify-7-localization/956">
+                    {label}
+                  </Link.NewTab>
+                ),
               }}
               string={headerText.helpLocalizeSpecifyDescription()}
             />
@@ -112,6 +115,9 @@ export function LanguageSelection<LANGUAGES extends string>({
               </Button.Blue>
             </>
           }
+          className={{
+            container: dialogClassNames.narrowContainer,
+          }}
           header={headerText.incompleteLocalization()}
           onClose={(): void => setWarningLanguage(undefined)}
         >
@@ -137,7 +143,7 @@ export function LanguageSelection<LANGUAGES extends string>({
           onValueChange={(value): void =>
             value === 'supportLocalization'
               ? setShowSupportDialog(true)
-              : f.has(completeLanguages, value)
+              : !isForInterface || f.has(completeLanguages, value)
               ? handleChange(value as LANGUAGES)
               : setWarningLanguage(value as LANGUAGES)
           }
@@ -145,7 +151,7 @@ export function LanguageSelection<LANGUAGES extends string>({
           {Object.entries(languages).map(([code, nameLocal]) => (
             <option key={code} value={code}>
               {`${nameLocal} (${code}) ${
-                f.has(completeLanguages, code)
+                !isForInterface || f.has(completeLanguages, code)
                   ? ''
                   : headerText.incompleteInline()
               }`}
@@ -158,7 +164,7 @@ export function LanguageSelection<LANGUAGES extends string>({
           )}
           {showDevelopmentLanguages && (
             <optgroup label="Development languages">
-              {Object.entries(developmentLanguages).map(([code, name]) => (
+              {Object.entries(devLanguages).map(([code, name]) => (
                 <option key={code} value={code}>
                   {name}
                 </option>
@@ -208,7 +214,7 @@ export const LanguagePreferencesItem: PreferenceItemComponent<Language> =
       false
     );
     const [language, setLanguage] = React.useState(
-      (developmentLanguage as Language) ?? LANGUAGE
+      (devLanguage as Language) ?? LANGUAGE
     );
 
     /**
@@ -230,7 +236,7 @@ export const LanguagePreferencesItem: PreferenceItemComponent<Language> =
            * This is why it has an independent state and manually triggers
            * save button
            */
-          handleLanguageChange(language).catch(fail);
+          handleLanguageChange(language).catch(raise);
           setLanguage(language);
           userPreferences.events.trigger('update', {
             category,

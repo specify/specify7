@@ -10,13 +10,15 @@ import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { f } from '../../utils/functools';
+import { databaseDateFormat } from '../../utils/parser/dateConfig';
+import { fullDateFormat } from '../../utils/parser/dateFormat';
 import type { GetSet, IR, RA } from '../../utils/types';
 import { uniquifyDataSetName } from '../../utils/uniquifyName';
+import { getField } from '../DataModel/helpers';
 import { schema } from '../DataModel/schema';
 import { fileToText } from '../Molecules/FilePicker';
 import { uniquifyHeaders } from '../WbPlanView/headerHelper';
 import type { Dataset } from '../WbPlanView/Wrapped';
-import { getField } from '../DataModel/helpers';
 
 /** Remove the extension from the file name */
 export const extractFileName = (fileName: string): string =>
@@ -125,7 +127,9 @@ export const parseXls = async (
 ): Promise<RA<RA<string>>> =>
   new Promise((resolve, reject) => {
     const worker = new ImportXLSWorker();
-    worker.postMessage({ file, previewSize: limit });
+    const dateFormat =
+      fullDateFormat() === databaseDateFormat ? undefined : fullDateFormat();
+    worker.postMessage({ file, previewSize: limit, dateFormat });
     worker.addEventListener('message', ({ data }) => {
       const rows = data as RA<RA<string>>;
       if (rows.length === 0 || rows[0].length === 0)

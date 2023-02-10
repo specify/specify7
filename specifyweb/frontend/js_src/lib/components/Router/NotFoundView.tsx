@@ -1,11 +1,11 @@
 import React from 'react';
 
+import { mainText } from '../../localization/main';
 import { Http } from '../../utils/ajax/definitions';
 import { Container } from '../Atoms';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { useTitle } from '../Molecules/AppTitle';
-import { mainText } from '../../localization/main';
 
 export function NotFoundView({
   container = true,

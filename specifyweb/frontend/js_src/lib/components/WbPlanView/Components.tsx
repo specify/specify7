@@ -1,4 +1,5 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { Button } from '../Atoms/Button';
@@ -6,9 +7,8 @@ import { schema } from '../DataModel/schema';
 import type { Tables } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
-import { MappingElement } from './LineComponents';
-import { LocalizedString } from 'typesafe-i18n';
 import { userPreferences } from '../Preferences/userPreferences';
+import { MappingElement } from './LineComponents';
 
 export function ListOfBaseTables({
   onChange: handleChange,

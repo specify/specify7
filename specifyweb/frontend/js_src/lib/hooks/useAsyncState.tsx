@@ -1,7 +1,9 @@
-import { GetOrSet } from '../utils/types';
 import React from 'react';
+
 import { LoadingContext } from '../components/Core/Contexts';
-import { crash } from '../components/Errors/Crash';
+import { crash, raise } from '../components/Errors/Crash';
+import { f } from '../utils/functools';
+import type { GetOrSet } from '../utils/types';
 
 /**
  * Like React.useState, but initial value is retrieved asynchronously
@@ -43,13 +45,11 @@ export function useAsyncState<T>(
   React.useLayoutEffect(() => {
     // If callback changes, state is reset while new state is fetching
     setState(undefined);
-    const wrapped = loadingScreen
-      ? loading
-      : (promise: Promise<unknown>): void => void promise.catch(crash);
+    const wrapped = loadingScreen ? loading : f.id;
     wrapped(
-      Promise.resolve(callback()).then((newState) =>
-        destructorCalled ? undefined : setState(newState)
-      )
+      Promise.resolve(callback())
+        .then((newState) => (destructorCalled ? undefined : setState(newState)))
+        .catch(raise)
     );
 
     let destructorCalled = false;
@@ -66,9 +66,11 @@ export function useAsyncState<T>(
  *
  */
 export function useMultipleAsyncState<RESPONSE extends Record<any, unknown>>(
-  callback: {
-    readonly [K in keyof RESPONSE]: () => Promise<RESPONSE[K]>;
-  },
+  callbacks:
+    | {
+        readonly [K in keyof RESPONSE]: () => Promise<RESPONSE[K]>;
+      }
+    | undefined,
   loadingScreen: boolean
 ): GetOrSet<Partial<RESPONSE>> {
   const [state, setState] = React.useState<Partial<RESPONSE>>({});
@@ -79,8 +81,8 @@ export function useMultipleAsyncState<RESPONSE extends Record<any, unknown>>(
     const wrapped = loadingScreen
       ? loading
       : (promise: Promise<unknown>): void => void promise.catch(crash);
-    if (callback === undefined) return;
-    const callbackEntries = Object.entries(callback);
+    if (callbacks === undefined) return;
+    const callbackEntries = Object.entries(callbacks);
     const wrappedPromise = Promise.all(
       callbackEntries.map(async ([key, promiseGenerator]) =>
         promiseGenerator().then((data) => {
@@ -98,7 +100,17 @@ export function useMultipleAsyncState<RESPONSE extends Record<any, unknown>>(
     return (): void => {
       destructorCalled = true;
     };
-  }, [callback, loading, loadingScreen]);
+  }, [callbacks, loading, loadingScreen]);
 
   return [state, setState];
+}
+
+export function usePromise<T>(
+  promise: Promise<T>,
+  loadingScreen: boolean
+): GetOrSet<T | undefined> {
+  return useAsyncState(
+    React.useCallback(async () => promise, [promise]),
+    loadingScreen
+  );
 }

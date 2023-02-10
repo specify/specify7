@@ -2,12 +2,14 @@ import type L from 'leaflet';
 import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { localityText } from '../../localization/locality';
 import { eventListener } from '../../utils/events';
 import { f } from '../../utils/functools';
 import type { RA, WritableArray } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { Progress } from '../Atoms';
 import { Button } from '../Atoms/Button';
+import { getResourceViewUrl } from '../DataModel/resource';
 import { schema } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Tables } from '../DataModel/types';
@@ -20,9 +22,9 @@ import {
   fetchLocalityDataFromResource,
   formatLocalityDataObject,
 } from '../Leaflet/localityRecordDataExtractor';
+import { LeafletMap } from '../Leaflet/Map';
 import { findLocalityColumnsInDataSet } from '../Leaflet/wbLocalityDataExtractor';
 import { LoadingScreen } from '../Molecules/Dialog';
-import { LeafletMap } from '../Leaflet/Map';
 import { defaultColumnOptions } from '../WbPlanView/linesGetter';
 import type { SplitMappingPath } from '../WbPlanView/mappingHelpers';
 import {
@@ -32,8 +34,6 @@ import {
 import type { QueryFieldSpec } from './fieldSpec';
 import type { QueryResultRow } from './Results';
 import { queryIdField } from './Results';
-import { getResourceViewUrl } from '../DataModel/resource';
-import { localityText } from '../../localization/locality';
 
 export function QueryToMap({
   results,
@@ -62,8 +62,8 @@ export function QueryToMap({
         <Dialog
           localityMappings={localityMappings}
           results={results}
-          totalCount={totalCount}
           tableName={model.name}
+          totalCount={totalCount}
           onClose={handleClose}
           onFetchMore={selectedRows.size > 0 ? undefined : handleFetchMore}
         />
@@ -243,8 +243,8 @@ function Dialog({
       headerButtons={
         typeof totalCount === 'number' && totalCount !== results.length ? (
           <Progress
-            className="flex-1"
             aria-hidden
+            className="flex-1"
             max={totalCount}
             value={results.length}
           />

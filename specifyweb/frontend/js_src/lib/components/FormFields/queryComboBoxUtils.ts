@@ -8,12 +8,12 @@ import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { SpQuery, SpQueryField } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
+import { userPreferences } from '../Preferences/userPreferences';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { flippedSortTypes } from '../QueryBuilder/helpers';
 import type { CollectionRelationships } from './useCollectionRelationships';
-import { QueryComboBoxTreeData } from './useTreeData';
-import { userPreferences } from '../Preferences/userPreferences';
+import type { QueryComboBoxTreeData } from './useTreeData';
 
 export function makeComboBoxQuery({
   fieldName,

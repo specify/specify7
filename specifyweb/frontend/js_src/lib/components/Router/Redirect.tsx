@@ -10,6 +10,9 @@ import { toRelativeUrl } from '../../utils/ajax/helpers';
  * Preserves current query string and hash
  *
  * Handles URL params too
+ *
+ * REFACTOR: migrate to using react-routers redirects instead
+ *  See https://reactrouter.com/en/6.7.0/start/overview#redirects
  */
 export function Redirect({ to }: { readonly to: string }): null {
   const { search, hash } = useLocation();

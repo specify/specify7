@@ -6,7 +6,6 @@ import type { ReactCodeMirrorRef } from '@uiw/react-codemirror';
 import CodeMirror from '@uiw/react-codemirror';
 import React from 'react';
 
-import { useId } from '../../hooks/useId';
 import { useLiveState } from '../../hooks/useLiveState';
 import { f } from '../../utils/functools';
 import type { RR } from '../../utils/types';
@@ -94,7 +93,6 @@ const UserPreferencesEditor: AppResourceTab = function ({
   data,
   onChange: handleChange,
 }): JSX.Element {
-  const id = useId('user-preferences');
   const [preferencesContext] = useLiveState<typeof userPreferences>(
     React.useCallback(() => {
       const userPreferences = new BasePreferences({
@@ -117,7 +115,7 @@ const UserPreferencesEditor: AppResourceTab = function ({
   const Context = userPreferences.Context;
   return (
     <Context.Provider value={preferencesContext}>
-      <PreferencesContent id={id} isReadOnly={isReadOnly} />
+      <PreferencesContent isReadOnly={isReadOnly} />
     </Context.Provider>
   );
 };

@@ -8,9 +8,11 @@ import { userPreferences } from '../Preferences/userPreferences';
 
 const taxonTiles = f.store(() => (
   <Async
-    element={async (): Promise<React.FunctionComponent> =>
-      import('./TaxonTiles').then(({ TaxonTiles }) => TaxonTiles)
-    }
+    Element={React.lazy(async () =>
+      import('./TaxonTiles').then(({ TaxonTiles }) => ({
+        default: TaxonTiles,
+      }))
+    )}
     title={undefined}
   />
 ));
@@ -21,7 +23,7 @@ export function WelcomeView(): JSX.Element {
   return (
     <div
       className={`
-        mx-auto flex h-full max-w-[1000px] flex-col justify-center gap-4  p-4
+        mx-auto flex h-full w-full max-w-[1000px] flex-col justify-center gap-4 p-4
       `}
     >
       <div

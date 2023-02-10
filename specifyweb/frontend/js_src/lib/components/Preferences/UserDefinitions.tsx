@@ -35,12 +35,13 @@ import {
   LanguagePreferencesItem,
   SchemaLanguagePreferenceItem,
 } from '../Toolbar/Language';
-import type { WelcomePageMode } from './Renderers';
+import type { MenuPreferences, WelcomePageMode } from './Renderers';
 import {
   CollectionSortOrderPreferenceItem,
   ColorPickerPreferenceItem,
   defaultFont,
   FontFamilyPreferenceItem,
+  HeaderItemsPreferenceItem,
   WelcomePageModePreferenceItem,
 } from './Renderers';
 
@@ -88,6 +89,11 @@ export type PreferenceItem<VALUE> = {
     }
   | {
       readonly renderer: PreferenceItemComponent<VALUE>;
+      /**
+       * Use "label" if renderer displays only a single interactive element
+       * Otherwise, use "div"
+       */
+      readonly container: 'div' | 'label';
     }
   | {
       readonly values:
@@ -133,6 +139,7 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: LANGUAGE,
             renderer: LanguagePreferencesItem,
+            container: 'label',
           }),
           theme: definePref<'dark' | 'light' | 'system'>({
             title: preferencesText.theme(),
@@ -251,6 +258,7 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: defaultFont,
             renderer: FontFamilyPreferenceItem,
+            container: 'label',
           }),
         },
       },
@@ -263,6 +271,7 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: '#ffffff',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
           darkBackground: definePref({
             title: preferencesText.darkBackground(),
@@ -270,6 +279,7 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: '#171717',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
           accentColor1: definePref({
             title: preferencesText.accentColor1(),
@@ -277,6 +287,7 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: '#ffcda3',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
           accentColor2: definePref({
             title: preferencesText.accentColor2(),
@@ -284,6 +295,7 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: '#ff9742',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
           accentColor3: definePref({
             title: preferencesText.accentColor3(),
@@ -291,6 +303,7 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: '#ff811a',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
           accentColor4: definePref({
             title: preferencesText.accentColor4(),
@@ -298,6 +311,7 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: '#d15e00',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
           accentColor5: definePref({
             title: preferencesText.accentColor5(),
@@ -305,6 +319,7 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: '#703200',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
           roundedCorners: definePref<boolean>({
             title: preferencesText.roundedCorners(),
@@ -389,6 +404,14 @@ export const userPreferenceDefinitions = {
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
+          unsavedIndicator: definePref<boolean>({
+            title: preferencesText.showUnsavedIndicator(),
+            description: preferencesText.showUnsavedIndicatorDescription(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
         },
       },
     },
@@ -410,6 +433,7 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: 'default',
             renderer: WelcomePageModePreferenceItem,
+            container: 'div',
           }),
           // FEATURE: allow selecting attachments
           source: definePref<string>({
@@ -427,71 +451,31 @@ export const userPreferenceDefinitions = {
   header: {
     title: preferencesText.header(),
     subCategories: {
-      menu: {
-        title: preferencesText.menu(),
+      appearance: {
+        title: preferencesText.appearance(),
         items: {
-          showDataEntry: definePref<boolean>({
-            title: preferencesText.showDataEntry(),
+          position: definePref<'bottom' | 'left' | 'right' | 'top'>({
+            title: preferencesText.position(),
             requiresReload: false,
             visible: true,
-            defaultValue: true,
-            type: 'java.lang.Boolean',
+            defaultValue: 'left',
+            values: [
+              { value: 'left', title: preferencesText.left() },
+              { value: 'top', title: preferencesText.top() },
+              { value: 'right', title: preferencesText.right() },
+              { value: 'bottom', title: preferencesText.bottom() },
+            ],
           }),
-          showInteractions: definePref<boolean>({
-            title: preferencesText.showInteractions(),
+          items: definePref<MenuPreferences>({
+            title: preferencesText.position(),
             requiresReload: false,
             visible: true,
-            defaultValue: true,
-            type: 'java.lang.Boolean',
-          }),
-          showTrees: definePref<boolean>({
-            title: preferencesText.showTrees(),
-            requiresReload: false,
-            visible: true,
-            defaultValue: true,
-            type: 'java.lang.Boolean',
-          }),
-          showRecordSets: definePref<boolean>({
-            title: preferencesText.showRecordSets(),
-            requiresReload: false,
-            visible: true,
-            defaultValue: true,
-            type: 'java.lang.Boolean',
-          }),
-          showQueries: definePref<boolean>({
-            title: preferencesText.showQueries(),
-            requiresReload: false,
-            visible: true,
-            defaultValue: true,
-            type: 'java.lang.Boolean',
-          }),
-          showReports: definePref<boolean>({
-            title: preferencesText.showReports(),
-            requiresReload: false,
-            visible: true,
-            defaultValue: true,
-            type: 'java.lang.Boolean',
-          }),
-          showAttachments: definePref<boolean>({
-            title: preferencesText.showAttachments(),
-            requiresReload: false,
-            visible: true,
-            defaultValue: true,
-            type: 'java.lang.Boolean',
-          }),
-          showWorkBench: definePref<boolean>({
-            title: preferencesText.showWorkBench(),
-            requiresReload: false,
-            visible: true,
-            defaultValue: true,
-            type: 'java.lang.Boolean',
-          }),
-          showStatistics: definePref<boolean>({
-            title: statsText.showStatistics(),
-            requiresReload: false,
-            visible: true,
-            defaultValue: true,
-            type: 'java.lang.Boolean',
+            defaultValue: {
+              visible: [],
+              hidden: [],
+            },
+            renderer: HeaderItemsPreferenceItem,
+            container: 'div',
           }),
         },
       },
@@ -590,6 +574,7 @@ export const userPreferenceDefinitions = {
             visible: false,
             defaultValue: 'legacy',
             renderer: () => <>{error('This should not get called')}</>,
+            container: 'div',
           }),
         },
       },
@@ -603,6 +588,7 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: 'en',
             renderer: SchemaLanguagePreferenceItem,
+            container: 'label',
           }),
         },
       },
@@ -701,6 +687,7 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: defaultFont,
             renderer: FontFamilyPreferenceItem,
+            container: 'label',
           }),
           maxWidth: definePref<number>({
             title: preferencesText.maxFormWidth(),
@@ -760,6 +747,7 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: '#e5e7eb',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
           disabled: definePref({
             title: preferencesText.disabledFieldBackground(),
@@ -767,6 +755,7 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: '#ffffff',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
           invalid: definePref({
             title: preferencesText.invalidFieldBackground(),
@@ -774,6 +763,7 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: '#f87171',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
           required: definePref({
             title: preferencesText.requiredFieldBackground(),
@@ -781,6 +771,7 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: '#bfdbfe',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
           darkDefault: definePref({
             title: preferencesText.darkFieldBackground(),
@@ -788,6 +779,7 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: '#404040',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
           darkDisabled: definePref({
             title: preferencesText.darkDisabledFieldBackground(),
@@ -795,6 +787,7 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: '#171717',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
           darkInvalid: definePref({
             title: preferencesText.darkInvalidFieldBackground(),
@@ -802,6 +795,7 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: '#991b1b',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
           darkRequired: definePref({
             title: preferencesText.darkRequiredFieldBackground(),
@@ -809,6 +803,7 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: '#1e3a8a',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
         },
       },
@@ -821,6 +816,7 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: '#ffffff',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
           background: definePref({
             title: preferencesText.background(),
@@ -828,6 +824,7 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: '#e5e7eb',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
           darkForeground: definePref({
             title: preferencesText.darkForeground(),
@@ -835,6 +832,7 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: '#171717',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
           darkBackground: definePref({
             title: preferencesText.darkBackground(),
@@ -842,6 +840,7 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: '#262626',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
         },
       },
@@ -995,6 +994,7 @@ export const userPreferenceDefinitions = {
             visible: false,
             defaultValue: {},
             renderer: () => <>{error('This should not get called')}</>,
+            container: 'div',
           }),
           carryForward: definePref<{
             readonly [TABLE_NAME in keyof Tables]?: RA<
@@ -1006,6 +1006,7 @@ export const userPreferenceDefinitions = {
             visible: false,
             defaultValue: {},
             renderer: () => <>{error('This should not get called')}</>,
+            container: 'div',
           }),
           enableCarryForward: definePref<RA<keyof Tables>>({
             title: <>enableCarryForward</>,
@@ -1013,6 +1014,7 @@ export const userPreferenceDefinitions = {
             visible: false,
             defaultValue: [],
             renderer: () => <>{error('This should not get called')}</>,
+            container: 'div',
           }),
           /*
            * Can temporary disable clone for a given table
@@ -1025,6 +1027,7 @@ export const userPreferenceDefinitions = {
             visible: false,
             defaultValue: [],
             renderer: () => <>{error('This should not get called')}</>,
+            container: 'div',
           }),
           disableAdd: definePref<RA<keyof Tables>>({
             title: <>disableAdd</>,
@@ -1032,6 +1035,7 @@ export const userPreferenceDefinitions = {
             visible: false,
             defaultValue: [],
             renderer: () => <>{error('This should not get called')}</>,
+            container: 'div',
           }),
           autoNumbering: definePref<{
             readonly [TABLE_NAME in keyof Tables]?: RA<
@@ -1043,6 +1047,7 @@ export const userPreferenceDefinitions = {
             visible: false,
             defaultValue: {},
             renderer: () => <>{error('This should not get called')}</>,
+            container: 'div',
           }),
           useCustomForm: definePref<RA<keyof Tables>>({
             title: <>useCustomForm</>,
@@ -1050,6 +1055,7 @@ export const userPreferenceDefinitions = {
             visible: false,
             defaultValue: [],
             renderer: () => <>{error('This should not get called')}</>,
+            container: 'div',
           }),
           carryForwardShowHidden: definePref<boolean>({
             title: <>carryForwardShowHidden</>,
@@ -1057,6 +1063,7 @@ export const userPreferenceDefinitions = {
             visible: false,
             defaultValue: false,
             type: 'java.lang.Boolean',
+            container: 'div',
           }),
         },
       },
@@ -1084,6 +1091,7 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: 'collectionName',
             renderer: CollectionSortOrderPreferenceItem,
+            container: 'label',
           }),
         },
       },
@@ -1118,12 +1126,12 @@ export const userPreferenceDefinitions = {
               {
                 value: 'name',
                 // Replaced with localized version once schema is loaded
-                title: '_name',
+                title: '_name' as LocalizedString,
               },
               {
                 value: 'fullName',
                 // Replaced with localized version once schema is loaded
-                title: '_fullName',
+                title: '_fullName' as LocalizedString,
               },
             ],
           }),
@@ -1158,6 +1166,7 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: '#f79245',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
           synonymColor: definePref({
             title: preferencesText.synonymColor(),
@@ -1165,6 +1174,7 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: '#dc2626',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
         },
       },
@@ -1177,6 +1187,7 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: '#f79245',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
           synonymColor: definePref({
             title: preferencesText.synonymColor(),
@@ -1184,6 +1195,7 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: '#dc2626',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
         },
       },
@@ -1196,6 +1208,7 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: '#f79245',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
           synonymColor: definePref({
             title: preferencesText.synonymColor(),
@@ -1203,6 +1216,7 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: '#dc2626',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
         },
       },
@@ -1215,6 +1229,7 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: '#f79245',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
           synonymColor: definePref({
             title: preferencesText.synonymColor(),
@@ -1222,6 +1237,7 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: '#dc2626',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
         },
       },
@@ -1234,6 +1250,7 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: '#f79245',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
           synonymColor: definePref({
             title: preferencesText.synonymColor(),
@@ -1241,6 +1258,7 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: '#dc2626',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
           }),
         },
       },
@@ -1281,6 +1299,7 @@ export const userPreferenceDefinitions = {
             visible: false,
             defaultValue: [],
             renderer: () => <>{error('This should not get called')}</>,
+            container: 'div',
           }),
         },
       },
@@ -1542,6 +1561,7 @@ export const userPreferenceDefinitions = {
             visible: false,
             defaultValue: undefined,
             renderer: () => <>{error('This should not get called')}</>,
+            container: 'label',
           }),
           defaultLayout: definePref<StatLayout | undefined>({
             title: 'Defines the layout of the default stats',
@@ -1549,6 +1569,7 @@ export const userPreferenceDefinitions = {
             visible: false,
             defaultValue: undefined,
             renderer: () => <>{error('This should not get called')}</>,
+            container: 'label',
           }),
         },
       },
@@ -1669,6 +1690,7 @@ import('../DataModel/schema')
       } else softError('Unable to replace the tree preferences item title');
     })
   )
+  // Not using softFail here to avoid circular dependency
   .catch(console.error);
 
 ensure<GenericPreferences>()(userPreferenceDefinitions);

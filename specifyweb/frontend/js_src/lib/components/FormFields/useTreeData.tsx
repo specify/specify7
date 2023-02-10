@@ -23,18 +23,19 @@ export type QueryComboBoxTreeData = {
 };
 
 export function useTreeData(
-  resource: SpecifyResource<AnySchema>,
-  field: LiteralField | Relationship | undefined
+  resource: SpecifyResource<AnySchema> | undefined,
+  field: LiteralField | Relationship
 ): QueryComboBoxTreeData | false | undefined {
   const [treeData] = useAsyncState<QueryComboBoxTreeData | false>(
     React.useCallback(() => {
+      if (resource === undefined) return;
       const treeResource = toTreeTable(resource);
       if (
         treeResource === undefined ||
         !hasTreeAccess(treeResource.specifyModel.name, 'read')
       )
         return false;
-      if (field?.name === 'parent') {
+      if (field.name === 'parent') {
         return f.all({
           lowestChildRank: treeResource.isNew()
             ? Promise.resolve(undefined)
@@ -59,11 +60,11 @@ export function useTreeData(
             }))
           ),
         });
-      } else if (field?.name === 'acceptedParent') {
+      } else if (field.name === 'acceptedParent') {
         // Don't need to do anything. Form system prevents lookups/edits
       } else if (
-        field?.name === 'hybridParent1' ||
-        field?.name === 'hybridParent2'
+        field.name === 'hybridParent1' ||
+        field.name === 'hybridParent2'
       ) {
         /*
          * No idea what restrictions there should be, the only obviously

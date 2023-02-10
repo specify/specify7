@@ -1,71 +1,41 @@
 import React from 'react';
 
-import { aggregate, format } from '../Forms/dataObjFormatters';
-import { f } from '../../utils/functools';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useResourceValue } from '../../hooks/useResourceValue';
 import { commonText } from '../../localization/common';
-import type { FormMode } from '../FormParse';
-import { hasPathPermission, hasTablePermission } from '../Permissions/helpers';
-import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
-import { parseRelativeDate } from '../../utils/relativeDate';
-import type { LiteralField, Relationship } from '../DataModel/specifyField';
-import type { Collection } from '../DataModel/specifyModel';
-import type { IR } from '../../utils/types';
+import { userText } from '../../localization/user';
 import type { Parser } from '../../utils/parser/definitions';
 import {
   getValidationAttributes,
   mergeParsers,
-  parserFromType,
 } from '../../utils/parser/definitions';
-import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
+import type { IR } from '../../utils/types';
 import { Input } from '../Atoms/Form';
-import { useResourceValue } from '../../hooks/useResourceValue';
-import { PartialDateUi } from '../FormPlugins/PartialDateUi';
-import { getResourceAndField } from '../../hooks/resource';
-import { SpecifyFormCheckbox } from './Checkbox';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { AnySchema } from '../DataModel/helperTypes';
-import { userText } from '../../localization/user';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { LiteralField, Relationship } from '../DataModel/specifyField';
+import type { Collection } from '../DataModel/specifyModel';
+import type { FormMode } from '../FormParse';
+import { aggregate, format } from '../Forms/dataObjFormatters';
+import { hasTablePermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 
 export function UiField({
   id,
+  name,
   resource,
   mode,
-  fieldName,
+  field,
   parser,
 }: {
   readonly id: string | undefined;
-  readonly resource: SpecifyResource<AnySchema>;
+  readonly name: string | undefined;
+  readonly resource: SpecifyResource<AnySchema> | undefined;
   readonly mode: FormMode;
-  readonly fieldName: string | undefined;
+  readonly field: LiteralField | Relationship | undefined;
   readonly parser?: Parser;
 }): JSX.Element {
-  const hasAccess = React.useMemo(
-    () =>
-      typeof fieldName !== 'string' ||
-      hasPathPermission(
-        resource.specifyModel.name,
-        fieldName.split('.'),
-        'read'
-      ),
-    [resource.specifyModel.name, fieldName]
-  );
-
-  const [data] = useAsyncState(
-    React.useCallback(
-      async () =>
-        hasAccess
-          ? getResourceAndField(resource, fieldName).catch((error) => {
-              console.error(error);
-              return undefined;
-            })
-          : undefined,
-      [resource, fieldName]
-    ),
-    false
-  );
-
   /*
    * If tried to render a -to-many field, display a readOnly aggregated
    * collection
@@ -73,102 +43,52 @@ export function UiField({
   const [aggregated] = useAsyncState(
     React.useCallback(
       async () =>
-        hasAccess && typeof data === 'object' && typeof fieldName === 'string'
-          ? 'models' in data.resource
-            ? aggregate(data.resource as unknown as Collection<AnySchema>)
-            : QueryFieldSpec.fromPath(
-                resource.specifyModel.name,
-                fieldName.split('.')
-              ).joinPath.some(
-                (field) => field.isRelationship && relationshipIsToMany(field)
-              )
-            ? data.resource.rgetCollection(data.field.name).then(aggregate)
+        resource === undefined
+          ? false
+          : typeof field === 'object'
+          ? 'models' in resource
+            ? aggregate(resource as unknown as Collection<AnySchema>)
+            : field.isRelationship && relationshipIsToMany(field)
+            ? resource.rgetCollection(field.name).then(aggregate)
             : false
           : undefined,
-      [hasAccess, resource.specifyModel.name, data, fieldName]
+      [resource?.specifyModel.name, resource, field]
     ),
     false
   );
 
-  const fieldType = React.useMemo(
-    () =>
-      typeof data === 'object' && !data.field.isRelationship
-        ? parserFromType(data.field.type).type
-        : undefined,
-    [data]
-  );
-
-  const defaultDate = React.useMemo(
-    () =>
-      f.maybe(
-        parser?.value?.toString().trim().toLowerCase(),
-        parseRelativeDate
-      ),
-    [parser?.value]
-  );
-
-  return hasAccess ? (
-    data === undefined ? (
-      <Input.Text disabled id={id} value={aggregated?.toString() ?? ''} />
-    ) : fieldType === 'date' ? (
-      <PartialDateUi
-        canChangePrecision={false}
-        dateField={data.field.name}
-        defaultPrecision="full"
-        defaultValue={defaultDate}
-        id={id}
-        isReadOnly={mode === 'view' || data.resource !== resource}
-        precisionField={undefined}
-        resource={data.resource}
-      />
-    ) : fieldType === 'checkbox' ? (
-      <SpecifyFormCheckbox
-        defaultValue={
-          parser?.value === true ||
-          // Not sure if this branch can ever happen:
-          parser?.value?.toString().toLowerCase() === 'true'
-        }
-        fieldName={data.field.name}
-        id={id}
-        isReadOnly={resource !== data.resource}
-        resource={data.resource}
-        text={undefined}
-      />
-    ) : aggregated === false ? (
-      <Field
-        field={data.field}
-        id={id}
-        mode={mode}
-        model={resource}
-        parser={parser}
-        resource={data.resource}
-      />
-    ) : (
-      <Input.Text disabled id={id} value={aggregated?.toString() ?? ''} />
-    )
+  return aggregated === false ? (
+    <Field
+      field={field}
+      id={id}
+      mode={mode}
+      name={name}
+      parser={parser}
+      resource={resource}
+    />
   ) : (
-    <Input.Text disabled id={id} value={userText.noPermission()} />
+    <Input.Text disabled id={id} value={aggregated?.toString() ?? ''} />
   );
 }
 
 function Field({
-  id,
   resource,
-  model,
-  mode,
+  id,
+  name,
   field,
+  mode,
   parser: defaultParser,
 }: {
+  readonly resource: SpecifyResource<AnySchema> | undefined;
   readonly id: string | undefined;
-  readonly resource: SpecifyResource<AnySchema>;
-  readonly model?: SpecifyResource<AnySchema>;
-  readonly mode: FormMode;
+  readonly name: string | undefined;
   readonly field: LiteralField | Relationship | undefined;
+  readonly mode: FormMode;
   readonly parser?: Parser;
 }): JSX.Element {
   const { value, updateValue, validationRef, parser } = useResourceValue(
     resource,
-    field?.name,
+    field,
     defaultParser
   );
 
@@ -183,7 +103,6 @@ function Field({
 
   const isReadOnly =
     mode === 'view' ||
-    resource !== model ||
     field?.isRelationship === true ||
     (field?.isReadOnly === true && mode !== 'search');
 
@@ -193,7 +112,7 @@ function Field({
         field?.isRelationship === true
           ? hasTablePermission(field.relatedModel.name, 'read')
             ? (
-                resource.rgetPromise(field.name) as Promise<
+                resource?.rgetPromise(field.name) as Promise<
                   SpecifyResource<AnySchema> | undefined
                 >
               )
@@ -219,7 +138,7 @@ function Field({
   return (
     <Input.Generic
       forwardRef={validationRef}
-      name={field?.name}
+      name={name}
       {...validationAttributes}
       // This is undefined when resource.noValidation = true
       className={

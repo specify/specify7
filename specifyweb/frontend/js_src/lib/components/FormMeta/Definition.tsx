@@ -4,6 +4,8 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
+import { resourcesText } from '../../localization/resources';
+import { toggleItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
@@ -11,8 +13,6 @@ import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { ViewDescription } from '../FormParse';
 import { Dialog } from '../Molecules/Dialog';
 import { ProtectedTool } from '../Permissions/PermissionDenied';
-import { toggleItem } from '../../utils/utils';
-import { resourcesText } from '../../localization/resources';
 import { userPreferences } from '../Preferences/userPreferences';
 
 export function Definition({

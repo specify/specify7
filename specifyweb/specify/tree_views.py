@@ -1,23 +1,21 @@
-from functools import wraps, reduce
 from collections import namedtuple
+from functools import wraps, reduce
 
+from django.db import transaction
+from django.http import HttpResponse
 from django.views.decorators.http import require_GET, require_POST
-from django.http import HttpResponse, Http404
-from django.db import connection, transaction
-
-from .views import login_maybe_required, openapi
-from .api import get_object_or_404, obj_to_data, toJson
-from .models import datamodel
-from .auditcodes import TREE_MOVE
-from . import tree_extras
-
+from sqlalchemy import sql, distinct
 from sqlalchemy.orm import aliased
-from sqlalchemy import sql, types, distinct, case
 
-from specifyweb.stored_queries import models
 from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.permissions.permissions import PermissionTarget, \
-    PermissionTargetAction, check_permission_targets, check_table_permissions
+    PermissionTargetAction, check_permission_targets
+from specifyweb.stored_queries import models
+from . import tree_extras
+from .api import get_object_or_404, obj_to_data, toJson
+from .auditcodes import TREE_MOVE
+from .models import datamodel
+from .views import login_maybe_required, openapi
 
 
 def tree_mutation(mutation):

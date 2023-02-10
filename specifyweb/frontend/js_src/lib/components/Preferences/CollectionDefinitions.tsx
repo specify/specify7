@@ -21,6 +21,7 @@ export const collectionPreferenceDefinitions = {
             visible: false,
             defaultValue: undefined,
             renderer: () => <>{error('This should not get called')}</>,
+            container: 'label',
           }),
           defaultLayout: definePref<StatLayout | undefined>({
             title: 'Defines the default layout of the stats page',
@@ -28,6 +29,7 @@ export const collectionPreferenceDefinitions = {
             visible: false,
             defaultValue: undefined,
             renderer: () => <>{error('This should not get called')}</>,
+            container: 'label',
           }),
         },
       },

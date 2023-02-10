@@ -3,39 +3,46 @@
  */
 
 import React from 'react';
-import { mainText } from '../../localization/main';
-import { LocalizedString } from 'typesafe-i18n';
-import { userPreferences } from '../Preferences/userPreferences';
+import type { LocalizedString } from 'typesafe-i18n';
 
-export function AppTitle({
-  title,
-  type,
-}: {
-  readonly title: LocalizedString;
-  readonly type?: 'form';
-}): null {
+import { mainText } from '../../localization/main';
+import { userPreferences } from '../Preferences/userPreferences';
+import { UnloadProtectsContext } from '../Router/Router';
+
+export function AppTitle({ title }: { readonly title: LocalizedString }): null {
   const [updateTitle] = userPreferences.use(
     'form',
     'behavior',
     'updatePageTitle'
   );
-  useTitle(type !== 'form' || updateTitle ? title : undefined);
+  useTitle(updateTitle ? title : undefined);
   return null;
 }
 
 /** Set title of the webpage. Restores previous title on component destruction */
 export function useTitle(title: LocalizedString | undefined): void {
+  const [unsavedIndicator] = userPreferences.use(
+    'general',
+    'behavior',
+    'unsavedIndicator'
+  );
+  const blockers = React.useContext(UnloadProtectsContext)!;
+  const isBlocked = unsavedIndicator && blockers.length > 0;
+  const id = React.useRef({});
   // Change page's title
   React.useEffect(() => {
-    const id = {};
-    if (typeof title === 'string') titleStack.set(id, title);
+    if (title === undefined) return undefined;
+    titleStack.set(id.current, `${isBlocked ? '*' : ''}${title}`);
     refreshTitle();
     return (): void => {
-      titleStack.delete(id);
+      titleStack.delete(id.current);
       refreshTitle();
     };
-  }, [title]);
+  }, [title, isBlocked]);
 }
+
+const refreshTitle = (): void =>
+  setTitle(Array.from(titleStack.values()).at(-1) ?? '');
 
 /**
  * Store all tiles in a stack. This allows to restore previous title when curren
@@ -49,6 +56,3 @@ function setTitle(title: LocalizedString | ''): void {
       ? mainText.baseAppTitle()
       : mainText.appTitle({ baseTitle: title });
 }
-
-const refreshTitle = (): void =>
-  setTitle(Array.from(titleStack.values()).at(-1) ?? '');

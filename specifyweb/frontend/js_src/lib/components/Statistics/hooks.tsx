@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { deserializeResource } from '../../hooks/resource';
 import { useMultipleAsyncState } from '../../hooks/useAsyncState';
 import { statsText } from '../../localization/stats';
 import { ajax } from '../../utils/ajax';
@@ -9,7 +8,7 @@ import type { IR, RA, WritableArray } from '../../utils/types';
 import { keysToLowerCase } from '../../utils/utils';
 import { formatNumber } from '../Atoms/Internationalization';
 import { addMissingFields } from '../DataModel/addMissingFields';
-import { serializeResource } from '../DataModel/helpers';
+import { deserializeResource, serializeResource } from '../DataModel/helpers';
 import { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { SpQuery } from '../DataModel/types';
@@ -42,10 +41,7 @@ export function useBackendApi(
         : backEndStatPromiseGenerator(categoryToFetch),
     [categoryToFetch]
   );
-  const [backendStat] = useMultipleAsyncState<
-    BackendStatsResult,
-    IR<() => Promise<BackendStatsResult>>
-  >(backEndStatPromises, false);
+  const [backendStat] = useMultipleAsyncState(backEndStatPromises, false);
   return backendStat;
 }
 

@@ -4,6 +4,9 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
+import { interactionsText } from '../../localization/interactions';
+import { schemaText } from '../../localization/schema';
+import { wbPlanText } from '../../localization/wbPlan';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
@@ -19,11 +22,8 @@ import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { NO_CLONE } from '../Forms/ResourceView';
 import { Dialog } from '../Molecules/Dialog';
-import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
-import { schemaText } from '../../localization/schema';
-import { interactionsText } from '../../localization/interactions';
-import { wbPlanText } from '../../localization/wbPlan';
 import { userPreferences } from '../Preferences/userPreferences';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 
 /**
  * Fields to always carry forward (unless "Deselect All" is pressed), but not
@@ -261,18 +261,18 @@ function CarryForwardConfigDialog({
       <Form className="overflow-hidden" id={id('form')} onSubmit={handleClose}>
         <div className="flex flex-1 flex-col gap-2 overflow-y-auto">
           <CarryForwardCategory
-            header={schemaText.fields()}
-            model={model}
             carryForward={config}
             fields={literalFields}
+            header={schemaText.fields()}
+            model={model}
             uniqueFields={uniqueFields}
             onChange={handleChange}
           />
           <CarryForwardCategory
-            header={schemaText.relationships()}
-            model={model}
             carryForward={config}
             fields={relationships}
+            header={schemaText.relationships()}
+            model={model}
             uniqueFields={uniqueFields}
             onChange={handleChange}
           />

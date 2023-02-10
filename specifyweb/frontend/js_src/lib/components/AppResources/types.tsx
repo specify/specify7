@@ -1,11 +1,13 @@
-import { ensure, IR, RR } from '../../utils/types';
-import { AppResourceMode } from './helpers';
-import { icons } from '../Atoms/Icons';
-import { resourcesText } from '../../localization/resources';
-import { Tables } from '../DataModel/types';
+import type { LocalizedString } from 'typesafe-i18n';
+
 import { preferencesText } from '../../localization/preferences';
-import { LocalizedString } from 'typesafe-i18n';
 import { reportsText } from '../../localization/report';
+import { resourcesText } from '../../localization/resources';
+import type { IR, RR } from '../../utils/types';
+import { ensure } from '../../utils/types';
+import { icons } from '../Atoms/Icons';
+import type { Tables } from '../DataModel/types';
+import type { AppResourceMode } from './helpers';
 
 export type AppResourceType = {
   readonly tableName: keyof Tables & ('SpAppResource' | 'SpViewSetObj');

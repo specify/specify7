@@ -6,10 +6,10 @@ import { serializeResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { SpQuery } from '../DataModel/types';
+import { userPreferences } from '../Preferences/userPreferences';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { RunReport } from './Run';
-import { userPreferences } from '../Preferences/userPreferences';
 
 export function ReportForRecord({
   query: rawQuery,

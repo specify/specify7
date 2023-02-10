@@ -1,22 +1,25 @@
 import React from 'react';
+
 import { backEndText } from '../../localization/backEnd';
 import { preferencesText } from '../../localization/preferences';
 import { jsonStringify } from '../../utils/utils';
 import { className } from '../Atoms/className';
+import { getField } from '../DataModel/helpers';
+import { schema } from '../DataModel/schema';
 import { TableIcon } from '../Molecules/TableIcon';
 
 type JsonResponse = {
-  exception: string;
-  message: string;
-  data: any;
-  formattedData: string;
-  traceback: string;
+  readonly exception: string;
+  readonly message: string;
+  readonly data: any;
+  readonly formattedData: string;
+  readonly traceback: string;
 };
 
 function createJsonResponse(error: string): JsonResponse {
   const json = JSON.parse(error);
   const hasLocalizationKey = typeof json.data?.localizationKey === 'string';
-  const jsonResponse = {
+  return {
     exception: json.exception,
     message: hasLocalizationKey
       ? resolveBackendLocalization(json)
@@ -25,7 +28,6 @@ function createJsonResponse(error: string): JsonResponse {
     formattedData: jsonStringify(json.data, 2),
     traceback: json.traceback,
   };
-  return jsonResponse;
 }
 
 export function formatJsonBackendResponse(error: string): JSX.Element {
@@ -52,7 +54,7 @@ function JsonBackendResponseFooter({
   readonly response: JsonResponse;
   readonly isDataOpen?: boolean;
 }): JSX.Element {
-  const hasData = response.data == null ? false : true;
+  const hasData = response.data != null;
   return (
     <>
       {hasData && (
@@ -82,11 +84,11 @@ function BusinessRuleExceptionHeader({
 }): JSX.Element {
   return (
     <>
-      <div className={`flex space-x-2`}>
-        <TableIcon name={table} label={false} />
+      <div className="flex space-x-2">
+        <TableIcon label={false} name={table} />
         <h2 className={className.headerPrimary}>{exception}</h2>
       </div>
-      <div className={`flex space-x-2`}>
+      <div className="flex space-x-2">
         <em className={className.label} title={message}>
           {message}
         </em>
@@ -106,7 +108,7 @@ function formatBasicResponse(error: string): JSX.Element {
       <em className={className.label} title={response.message}>
         {response.message}
       </em>
-      <JsonBackendResponseFooter isDataOpen={true} response={response} />
+      <JsonBackendResponseFooter isDataOpen response={response} />
     </>
   );
 }
@@ -116,8 +118,8 @@ function formatBusinessRuleException(error: string): JSX.Element {
   const table: string = response.data.table;
   return (
     <>
-      <BusinessRuleExceptionHeader table={table} response={response} />
-      <JsonBackendResponseFooter response={response} isDataOpen={true} />
+      <BusinessRuleExceptionHeader response={response} table={table} />
+      <JsonBackendResponseFooter isDataOpen response={response} />
     </>
   );
 }
@@ -134,8 +136,8 @@ function formatTreeBusinessRuleException(error: string): JSX.Element {
   const table: string = response.data.tree;
   return (
     <>
-      <BusinessRuleExceptionHeader table={table} response={response} />
-      <JsonBackendResponseFooter response={response} isDataOpen={true} />
+      <BusinessRuleExceptionHeader response={response} table={table} />
+      <JsonBackendResponseFooter isDataOpen response={response} />
     </>
   );
 }
@@ -203,14 +205,20 @@ function resolveBackendLocalization(jsonResponseData: any): string {
       resource: jsonResponseData.resource,
     });
   else if (localizationKey === 'actorIsNotSpecifyUser')
-    return backEndText.actorIsNotSpecifyUser({ actor: jsonResponseData.actor });
+    return backEndText.actorIsNotSpecifyUser({
+      agentTable: schema.models.Agent.label,
+      specifyUserTable: schema.models.SpecifyUser.label,
+      actor: jsonResponseData.actor,
+    });
   else if (localizationKey === 'unexpectedCollectionType')
     return backEndText.unexpectedCollectionType({
       unexpectedTypeName: jsonResponseData.unexpectedTypeName,
       collectionName: jsonResponseData.collectionName,
     });
   else if (localizationKey === 'invalidReportMimetype')
-    return backEndText.invalidReportMimetype();
+    return backEndText.invalidReportMimetype({
+      mimeTypeField: getField(schema.models.SpAppResource, 'mimeType').label,
+    });
   else if (localizationKey === 'fieldNotRelationship')
     return backEndText.fieldNotRelationship({ field: jsonResponseData.field });
   else if (localizationKey === 'unexpectedTableId')

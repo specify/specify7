@@ -6,10 +6,11 @@
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useCachedState } from '../../hooks/useCachedState';
-import { useStableState } from '../../hooks/useContextState';
+import { useStateForContext } from '../../hooks/useStateForContext';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { wbText } from '../../localization/workbench';
 import type { GetSet, RA } from '../../utils/types';
@@ -17,7 +18,7 @@ import { Container, H2, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Input, Select } from '../Atoms/Form';
 import { LoadingContext } from '../Core/Contexts';
-import { useMenuItem } from '../Header';
+import { useMenuItem } from '../Header/useMenuItem';
 import { loadingGif } from '../Molecules';
 import type { AutoCompleteItem } from '../Molecules/AutoComplete';
 import { AutoComplete } from '../Molecules/AutoComplete';
@@ -33,7 +34,6 @@ import {
   parseXls,
   wbImportPreviewSize,
 } from './helpers';
-import { LocalizedString } from 'typesafe-i18n';
 
 export function WbImportView(): JSX.Element {
   useMenuItem('workBench');
@@ -65,7 +65,7 @@ function FilePicked({ file }: { readonly file: File }): JSX.Element {
 
 function CsvPicked({ file }: { readonly file: File }): JSX.Element {
   const [encoding, setEncoding] = React.useState<string>('utf-8');
-  const getSetDelimiter = useStableState<string | undefined>(undefined);
+  const getSetDelimiter = useStateForContext<string | undefined>(undefined);
   const preview = useCsvPreview(file, encoding, getSetDelimiter);
   const loading = React.useContext(LoadingContext);
   const navigate = useNavigate();
@@ -94,8 +94,8 @@ function CsvPicked({ file }: { readonly file: File }): JSX.Element {
         onChange={setEncoding}
       />
       <ChooseDelimiter
-        isDisabled={!Array.isArray(preview)}
         getSetDelimiter={getSetDelimiter}
+        isDisabled={!Array.isArray(preview)}
       />
     </Layout>
   );
@@ -179,9 +179,9 @@ function ChooseDelimiter({
       <AutoComplete<string>
         aria-label={undefined}
         delay={0}
+        disabled={disabled}
         filterItems
         forwardRef={inputRef}
-        disabled={disabled}
         inputProps={{
           onBlur: () => {
             if (state === undefined) handleChange(undefined);

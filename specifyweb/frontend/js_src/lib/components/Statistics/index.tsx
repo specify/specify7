@@ -1,5 +1,6 @@
 import React from 'react';
 import type { State } from 'typesafe-reducer';
+
 import { commonText } from '../../localization/common';
 import { statsText } from '../../localization/stats';
 import { cleanMaybeFulfilled } from '../../utils/ajax/throttledPromise';
@@ -13,11 +14,12 @@ import { className } from '../Atoms/className';
 import { Form } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { softFail } from '../Errors/Crash';
-import { useMenuItem } from '../Header';
+import { useMenuItem } from '../Header/useMenuItem';
 import { userInformation } from '../InitialContext/userInformation';
 import { DateElement } from '../Molecules/DateElement';
 import { downloadFile } from '../Molecules/FilePicker';
 import { hasPermission } from '../Permissions/helpers';
+import { collectionPreferences } from '../Preferences/collectionPreferences';
 import { userPreferences } from '../Preferences/userPreferences';
 import { useQueries } from '../Toolbar/Query';
 import { AddStatDialog } from './AddStatDialog';
@@ -35,7 +37,6 @@ import {
 } from './hooks';
 import { StatsPageEditing } from './StatsPageEditing';
 import type { CustomStat, DefaultStat, StatLayout } from './types';
-import { collectionPreferences } from '../Preferences/collectionPreferences';
 
 export function StatsPage(): JSX.Element | null {
   useMenuItem('statistics');

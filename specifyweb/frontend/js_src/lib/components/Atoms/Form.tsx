@@ -3,6 +3,7 @@ import type React from 'react';
 import type { RA } from '../../utils/types';
 import { split } from '../../utils/utils';
 import type { Input as InputType } from '../DataModel/saveBlockers';
+import { softFail } from '../Errors/Crash';
 import { className } from './className';
 import { wrap } from './wrapper';
 
@@ -59,6 +60,7 @@ export const withHandleBlur = <TYPE extends InputType>(
     handleBlur?.(event);
   },
 });
+
 export const Input = {
   Radio: wrap<
     'input',
@@ -193,7 +195,7 @@ export const Input = {
               );
             handleDatePaste(value);
           } catch (error: unknown) {
-            console.error(error);
+            softFail(error);
           }
 
           event.preventDefault();

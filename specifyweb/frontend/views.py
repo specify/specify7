@@ -1,15 +1,13 @@
-import os
 import logging
+import os
 
-from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
-from django.views.decorators.csrf import ensure_csrf_cookie
-from django.http import HttpResponse, HttpResponseRedirect
-from django.template import loader
 from django.conf import settings
-from django.utils import translation, crypto
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
+from django.shortcuts import render
+from django.template import loader
 from django.utils.translation import gettext as _
-
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 DIR = os.path.dirname(__file__)
 
@@ -19,6 +17,16 @@ login_maybe_required = (
     (lambda func: func) if settings.ANONYMOUS_USER else login_required
 )
 
+def open_search(request):
+    return HttpResponse(f"""<?xml version="1.0"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/" xmlns:moz="http://www.mozilla.org/2006/browser/search/">
+  <ShortName>Specify 7</ShortName>
+  <Description>Biological Collections Data Management Platform</Description>
+  <InputEncoding>UTF-8</InputEncoding>
+  <Image height="16" width="16" type="image/png">/static/img/fav_icon.png</Image>
+  <Url type="text/html" method="get" template="{request.build_absolute_uri('/specify/express-search/?q=')}{'{searchTerms}'}" />
+  <moz:SearchForm>{request.build_absolute_uri('/specify/express-search/')}</moz:SearchForm>
+</OpenSearchDescription>""",content_type='text/xml')
 
 @login_maybe_required
 @ensure_csrf_cookie

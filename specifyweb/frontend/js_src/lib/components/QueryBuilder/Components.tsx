@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
+import { wbPlanText } from '../../localization/wbPlan';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
@@ -16,17 +17,16 @@ import type {
   SpQueryField,
   Tables,
 } from '../DataModel/types';
+import { recordSetView } from '../FormParse/webOnlyViews';
 import { ResourceView } from '../Forms/ResourceView';
 import { userInformation } from '../InitialContext/userInformation';
 import { loadingBar } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
+import { ButtonWithConfirmation } from '../WbPlanView/Components';
 import { mappingPathIsComplete } from '../WbPlanView/helpers';
 import type { QueryField } from './helpers';
 import { QuerySaveDialog } from './Save';
-import { ButtonWithConfirmation } from '../WbPlanView/Components';
-import { recordSetView } from '../FormParse/webOnlyViews';
-import { wbPlanText } from '../../localization/wbPlan';
 
 export function SaveQueryButtons({
   isReadOnly,
@@ -42,7 +42,7 @@ export function SaveQueryButtons({
   readonly isReadOnly: boolean;
   readonly fields: RA<QueryField>;
   readonly saveRequired: boolean;
-  readonly isValid: () => void;
+  readonly isValid: () => boolean;
   readonly queryResource: SpecifyResource<SpQuery>;
   readonly unsetUnloadProtect: () => void;
   readonly getQueryFieldRecords:
@@ -122,8 +122,8 @@ export function ToggleMappingViewButton({
   return (
     <Button.Small
       aria-pressed={!showMappingView}
-      onClick={handleClick}
       disabled={fields.length === 0 && showMappingView}
+      onClick={handleClick}
     >
       {showMappingView
         ? wbPlanText.hideFieldMapper()
@@ -212,7 +212,9 @@ export function MakeRecordSetButton({
           setRecordSet(recordSet);
         }}
       >
-        {queryText.createRecordSet()}
+        {queryText.createRecordSet({
+          recordSetTable: schema.models.RecordSet.label,
+        })}
       </QueryButton>
       {state === 'editing' || state === 'saving' ? (
         <>
@@ -231,7 +233,7 @@ export function MakeRecordSetButton({
               onSaving={(): void => setState('saving')}
             />
           )}
-          {state === 'saving' && recordSetFromQueryLoading}
+          {state === 'saving' && recordSetFromQueryLoading()}
         </>
       ) : undefined}
       {state === 'saved' && typeof recordSet === 'object' ? (
@@ -244,16 +246,20 @@ export function MakeRecordSetButton({
   );
 }
 
-export const recordSetFromQueryLoading = (
+export const recordSetFromQueryLoading = f.store(() => (
   <Dialog
     buttons={undefined}
-    header={queryText.recordSetToQuery()}
+    header={queryText.recordSetToQuery({
+      recordSetTable: schema.models.RecordSet.label,
+    })}
     onClose={undefined}
   >
-    {queryText.recordSetToQueryDescription()}
+    {queryText.recordSetToQueryDescription({
+      recordSetTable: schema.models.RecordSet.label,
+    })}
     {loadingBar}
   </Dialog>
-);
+));
 
 export function RecordSetCreated({
   recordSet,
@@ -265,7 +271,9 @@ export function RecordSetCreated({
   return (
     <Dialog
       buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
-      header={queryText.recordSetCreated()}
+      header={queryText.recordSetCreated({
+        recordSetTable: schema.models.RecordSet.label,
+      })}
       onClose={handleClose}
     >
       <Link.Default href={`/specify/record-set/${recordSet.id}/`}>

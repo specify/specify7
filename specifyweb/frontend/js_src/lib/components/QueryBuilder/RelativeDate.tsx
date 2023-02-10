@@ -7,13 +7,13 @@ import React from 'react';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { queryText } from '../../localization/query';
-import { databaseDateFormat } from '../../utils/dateFormat';
 import { dayjs } from '../../utils/dayJs';
 import type { Parser } from '../../utils/parser/definitions';
 import { parseRelativeDate, reRelativeDate } from '../../utils/relativeDate';
 import { Button } from '../Atoms/Button';
 import { Input, Select } from '../Atoms/Form';
 import { QueryInputField } from './FieldFilter';
+import { databaseDateFormat } from '../../utils/parser/dateConfig';
 
 export function DateQueryInputField({
   currentValue,
@@ -57,7 +57,7 @@ export function DateQueryInputField({
     <div className="flex items-center">
       <Button.Icon
         disabled={handleChange === undefined}
-        icon="switch"
+        icon="selector"
         title="switch"
         onClick={(): void => {
           toggleAbsolute();

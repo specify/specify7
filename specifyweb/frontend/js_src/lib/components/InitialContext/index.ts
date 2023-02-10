@@ -3,9 +3,9 @@
  */
 
 import type { MimeType } from '../../utils/ajax';
-import { formatNumber, MILLISECONDS } from '../Atoms/Internationalization';
 import { f } from '../../utils/functools';
 import { defined } from '../../utils/types';
+import { formatNumber, MILLISECONDS } from '../Atoms/Internationalization';
 
 /**
  * This belongs to ./components/toolbar/cachebuster.tsx but was moved here
@@ -45,6 +45,10 @@ const foreverPromise = new Promise<any>(() => {
  */
 export const foreverFetch = async <T>(): Promise<T> => foreverPromise;
 
+/**
+ * Initial context is locked by default so that front-end does not try to fetch
+ * current user and other context while the user is not authenticated
+ */
 export const unlockInitialContext = (entrypoint: typeof entrypointName): void =>
   unlock(entrypoint);
 
@@ -63,7 +67,7 @@ export const load = async <T>(path: string, mimeType: MimeType): Promise<T> =>
     const timePassed = endTime - startTime;
     // A very crude detection mechanism
     const isCached = timePassed < 100;
-    // eslint-disable-next-line no-console
+
     console.log(
       `${path} %c[${
         isCached

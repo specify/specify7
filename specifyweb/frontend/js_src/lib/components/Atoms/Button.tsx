@@ -2,6 +2,7 @@ import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import type { RA } from '../../utils/types';
+import { softFail } from '../Errors/Crash';
 import { className } from './className';
 import type { IconProps } from './Icons';
 import { icons } from './Icons';
@@ -24,10 +25,12 @@ function DialogCloseButton({
   ...props
 }: Omit<Parameters<typeof Button.Gray>[0], 'onClick'> & {
   readonly component?: typeof Button.Gray;
-}): JSX.Element {
+}): JSX.Element | null {
   const handleClose = React.useContext(DialogContext);
-  if (handleClose === undefined)
-    throw new Error("Dialog's handleClose prop is undefined");
+  if (handleClose === undefined) {
+    softFail(new Error("Dialog's handleClose prop is undefined"));
+    return null;
+  }
   return <ButtonComponent {...props} onClick={handleClose} />;
 }
 
@@ -41,7 +44,7 @@ const button = (name: string, className: string) =>
       readonly children?:
         | JSX.Element
         | LocalizedString
-        | RA<JSX.Element | LocalizedString | undefined | false>;
+        | RA<JSX.Element | LocalizedString | false | undefined>;
       readonly title?: LocalizedString | undefined;
       readonly 'aria-label'?: LocalizedString | undefined;
     }

@@ -1,15 +1,17 @@
 import React from 'react';
 import { useOutletContext } from 'react-router';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { commonText } from '../../localization/common';
+import { userText } from '../../localization/user';
 import type { GetOrSet, IR, RA } from '../../utils/types';
 import { defined } from '../../utils/types';
 import { index } from '../../utils/utils';
 import { Container, Ul } from '../Atoms';
-import { formatList } from '../Atoms/Internationalization';
+import { formatConjunction } from '../Atoms/Internationalization';
 import { Link } from '../Atoms/Link';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { schema } from '../DataModel/schema';
@@ -34,8 +36,6 @@ import {
 } from './CollectionHooks';
 import type { Role } from './Role';
 import { fetchRoles } from './utils';
-import { userText } from '../../localization/user';
-import { LocalizedString } from 'typesafe-i18n';
 
 export type RoleBase = {
   readonly roleId: number;
@@ -149,7 +149,11 @@ export function CollectionView({
               </CollectionRoles>
             )}
             <section className="flex flex-col gap-2">
-              <h4 className="text-xl">{userText.collectionUsers()}</h4>
+              <h4 className="text-xl">
+                {userText.collectionUsers({
+                  collectionTable: schema.models.Collection.label,
+                })}
+              </h4>
               {typeof mergedUsers === 'object' ? (
                 mergedUsers.length === 0 ? (
                   commonText.none()
@@ -165,7 +169,7 @@ export function CollectionView({
                             {userName}
                             {roles.length > 0 && (
                               <span className="text-gray-500">
-                                {`(${formatList(
+                                {`(${formatConjunction(
                                   roles.map(({ roleName }) => roleName)
                                 )})`}
                               </span>

@@ -4,13 +4,22 @@
 
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import type { State } from 'typesafe-reducer';
+
+import { useSearchParameter } from '../../hooks/navigation';
 import { useAsyncState } from '../../hooks/useAsyncState';
+import { useCachedState } from '../../hooks/useCachedState';
+import { commonText } from '../../localization/common';
+import { userText } from '../../localization/user';
 import { f } from '../../utils/functools';
+import type { RA } from '../../utils/types';
+import { LoadingContext } from '../Core/Contexts';
 import { fetchCollection } from '../DataModel/collection';
 import {
   fetchCollectionsForResource,
   getCollectionForResource,
 } from '../DataModel/domain';
+import { getField } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
@@ -18,22 +27,14 @@ import { getModel, getModelById, schema } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { CollectionObject, RecordSet } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
+import { Dialog } from '../Molecules/Dialog';
 import { ProtectedTable, ProtectedTool } from '../Permissions/PermissionDenied';
+import { userPreferences } from '../Preferences/userPreferences';
 import { NotFoundView } from '../Router/NotFoundView';
 import { formatUrl } from '../Router/queryString';
 import { switchCollection } from '../RouterCommands/SwitchCollection';
 import { OtherCollection } from './OtherCollectionView';
 import { ViewResourceById } from './ShowResource';
-import { useSearchParameter } from '../../hooks/navigation';
-import { RA } from '../../utils/types';
-import { State } from 'typesafe-reducer';
-import { LoadingContext } from '../Core/Contexts';
-import { useCachedState } from '../../hooks/useCachedState';
-import { Dialog } from '../Molecules/Dialog';
-import { commonText } from '../../localization/common';
-import { userText } from '../../localization/user';
-import { getField } from '../DataModel/helpers';
-import { userPreferences } from '../Preferences/userPreferences';
 
 export function ViewRecordSet(): JSX.Element {
   const { id, index } = useParams();
@@ -85,7 +86,7 @@ function DisplayRecordSet({
 }: {
   readonly recordSet: SpecifyResource<RecordSet>;
   readonly resourceIndex: number;
-}): null | JSX.Element {
+}): JSX.Element | null {
   const [recordToOpen] = userPreferences.use(
     'form',
     'recordSet',
@@ -106,7 +107,7 @@ function DisplayRecordSet({
           orderBy: recordToOpen === 'first' ? 'id' : '-id',
           limit: 1,
         }).then(({ records }) =>
-          isReadOnly === true && records.length === 0
+          isReadOnly && records.length === 0
             ? setReadOnlyState(true)
             : navigate(
                 formatUrl(
@@ -126,15 +127,15 @@ function DisplayRecordSet({
     true
   );
   return readOnlyState ? (
-    <>
-      <Dialog
-        buttons={commonText.close()}
-        header={userText.permissionDeniedError()}
-        onClose={(): void => navigate('/specify/')}
-      >
-        {userText.emptyRecordSetsReadOnly()}
-      </Dialog>
-    </>
+    <Dialog
+      buttons={commonText.close()}
+      header={userText.permissionDeniedError()}
+      onClose={(): void => navigate('/specify/')}
+    >
+      {userText.emptyRecordSetsReadOnly({
+        recordSetTable: schema.models.RecordSet.label,
+      })}
+    </Dialog>
   ) : null;
 }
 
@@ -202,7 +203,7 @@ function ViewByCatalogProtected(): JSX.Element | null {
       if (collection === undefined) {
         console.error(
           `Unable to find the collection with code ${collectionCode}\n` +
-            `Please make sure collection code is specificed correctly and ` +
+            `Please make sure collection code is specified correctly and ` +
             `the user has access to the collection.`
         );
         return false;
@@ -282,8 +283,8 @@ export function CheckLoggedInCollection({
 }): JSX.Element | null {
   const [otherCollections, setOtherCollections] = React.useState<
     | State<'Accessible'>
-    | State<'Loading'>
     | State<'Inaccessible', { readonly collectionIds: RA<number> }>
+    | State<'Loading'>
   >({ type: 'Loading' });
   const loading = React.useContext(LoadingContext);
   React.useEffect(() => {

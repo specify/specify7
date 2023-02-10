@@ -1,18 +1,17 @@
-import { fetchCollection } from './collection';
-import type { CollectionObject } from './types';
-import { f } from '../../utils/functools';
+import { globalEvents } from '../../utils/ajax/specifyApi';
+import type { RA } from '../../utils/types';
 import { capitalize, takeBetween } from '../../utils/utils';
-import type { SpecifyResource } from './legacyTypes';
-import { hasTablePermission } from '../Permissions/helpers';
+import { raise } from '../Errors/Crash';
 import { getCollectionPref } from '../InitialContext/remotePrefs';
+import { getDomainResource } from '../InitialContext/treeRanks';
+import { hasTablePermission } from '../Permissions/helpers';
+import { fetchCollection } from './collection';
+import { toTable } from './helpers';
+import type { AnySchema } from './helperTypes';
+import type { SpecifyResource } from './legacyTypes';
 import { getResourceApiUrl, idFromUrl } from './resource';
 import { schema } from './schema';
-import { globalEvents } from '../../utils/ajax/specifyApi';
-import { getDomainResource } from '../InitialContext/treeRanks';
-import type { RA } from '../../utils/types';
-import { AnySchema } from './helperTypes';
-import { toTable } from './helpers';
-import { fail } from '../Errors/Crash';
+import type { CollectionObject } from './types';
 
 /**
  * Some tasks to do after a new resource is created
@@ -64,7 +63,7 @@ globalEvents.on('newResource', (resource) => {
       .then((preparations) =>
         preparations.add(new schema.models.Preparation.Resource())
       )
-      .catch(fail);
+      .catch(raise);
 
   if (
     getCollectionPref('CO_CREATE_DET', colId) &&
@@ -75,7 +74,7 @@ globalEvents.on('newResource', (resource) => {
       .then((determinations) =>
         determinations.add(new schema.models.Determination.Resource())
       )
-      .catch(fail);
+      .catch(raise);
 });
 
 /**
@@ -105,30 +104,31 @@ export function getCollectionForResource(
  * If resource has a getScopingRelationship, find all collections that resource
  * belongs too
  */
-export const fetchCollectionsForResource = async (
+export async function fetchCollectionsForResource(
   resource: SpecifyResource<AnySchema>
-): Promise<RA<number> | undefined> =>
-  f.maybe(resource.specifyModel.getScopingRelationship(), async (domainField) =>
-    (resource as SpecifyResource<CollectionObject>)
-      ?.rgetPromise(domainField.name as 'collection')
-      .then(async (resource) => {
-        if (resource === undefined || resource === null) return undefined;
-        if (resource.specifyModel.name === 'Collection') return [resource.id];
-        const fieldsBetween = takeBetween(
-          schema.orgHierarchy,
-          'Collection',
-          resource.specifyModel.name
-        )
-          .map((level) => level.toLowerCase())
-          .join('__');
-        return fieldsBetween.length === 0
-          ? undefined
-          : fetchCollection(
-              'Collection',
-              { limit: 0 },
-              {
-                [fieldsBetween]: resource.id.toString(),
-              }
-            ).then(({ records }) => records.map(({ id }) => id));
-      })
-  ) ?? Promise.resolve(undefined);
+): Promise<RA<number> | undefined> {
+  const domainField = resource.specifyModel.getScopingRelationship();
+  if (domainField === undefined) return undefined;
+  const domainResource = await (
+    resource as SpecifyResource<CollectionObject>
+  )?.rgetPromise(domainField.name as 'collection');
+  if (domainResource === undefined || domainResource === null) return undefined;
+  if (domainResource.specifyModel.name === 'Collection')
+    return [domainResource.id];
+  const fieldsBetween = takeBetween(
+    schema.orgHierarchy,
+    'Collection',
+    domainResource.specifyModel.name
+  )
+    .map((level) => level.toLowerCase())
+    .join('__');
+  return fieldsBetween.length === 0
+    ? undefined
+    : fetchCollection(
+        'Collection',
+        { limit: 0 },
+        {
+          [fieldsBetween]: domainResource.id.toString(),
+        }
+      ).then(({ records }) => records.map(({ id }) => id));
+}

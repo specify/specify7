@@ -6,20 +6,20 @@
 
 import { commonText } from '../../localization/common';
 import type { RA, WritableArray } from '../../utils/types';
+import { className } from '../Atoms/className';
 import { legacyNonJsxIcons } from '../Atoms/Icons';
+import { userPreferences } from '../Preferences/userPreferences';
 import { splitJoinedMappingPath } from '../WbPlanView/mappingHelpers';
+import type { LeafletInstance } from './addOns';
 import {
   addMarkersToMap,
   addPrintMapButton,
-  LeafletInstance,
   rememberSelectedBaseLayers,
 } from './addOns';
 import { mappingLocalityColumns } from './config';
 import L from './extend';
 import type { Field, LocalityData } from './helpers';
-import { leafletLayersPromise } from './layers';
-import { className } from '../Atoms/className';
-import { userPreferences } from '../Preferences/userPreferences';
+import type { leafletLayersPromise } from './layers';
 
 const DEFAULT_ZOOM = 5;
 
@@ -180,7 +180,7 @@ export const formatLocalityData = (
           </a>`,
         ]
       : []),
-    [...(isLoaded ? [] : [commonText.loading()])],
+    Array.from(isLoaded ? [] : [commonText.loading()]),
   ].join('<br>');
 
 export function getMarkersFromLocalityData({

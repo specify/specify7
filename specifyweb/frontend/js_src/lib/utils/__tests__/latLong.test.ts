@@ -169,7 +169,7 @@ describe('latLongUtils', () => {
           const result = type.parse(formatted)!;
           if (type === Coord || givenType === Coord || givenType === type)
             expect([result.sign, ...result.components]).toEqual(components);
-          else expect(result).toBe(undefined);
+          else expect(result).toBeUndefined();
         })
       );
     }));

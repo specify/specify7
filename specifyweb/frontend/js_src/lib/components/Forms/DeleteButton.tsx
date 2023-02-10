@@ -1,24 +1,24 @@
 import React from 'react';
 
-import { ajax } from '../../utils/ajax';
-import type { Tables } from '../DataModel/types';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
-import { strictGetModel } from '../DataModel/schema';
+import { ajax } from '../../utils/ajax';
 import type { RA } from '../../utils/types';
 import { overwriteReadOnly } from '../../utils/types';
 import { Button } from '../Atoms/Button';
+import { icons } from '../Atoms/Icons';
 import { LoadingContext } from '../Core/Contexts';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { strictGetModel } from '../DataModel/schema';
+import type { Tables } from '../DataModel/types';
+import { loadingBar } from '../Molecules';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import type { DeleteBlocker } from './DeleteBlocked';
 import { DeleteBlocked } from './DeleteBlocked';
-import { icons } from '../Atoms/Icons';
-import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { useLiveState } from '../../hooks/useLiveState';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { AnySchema } from '../DataModel/helperTypes';
-import { loadingBar } from '../Molecules';
 
 const fetchBlockers = async (
   resource: SpecifyResource<AnySchema>

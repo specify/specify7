@@ -1,16 +1,16 @@
 import React from 'react';
 
+import { attachmentsText } from '../../localization/attachments';
 import type { RA } from '../../utils/types';
 import { Container } from '../Atoms';
+import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Attachment } from '../DataModel/types';
+import { raise } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { ResourceView } from '../Forms/ResourceView';
 import { loadingGif } from '../Molecules';
 import { AttachmentCell } from './Cell';
-import { AnySchema, SerializedResource } from '../DataModel/helperTypes';
-import { fail } from '../Errors/Crash';
-import { attachmentsText } from '../../localization/attachments';
 
 const preFetchDistance = 200;
 
@@ -33,7 +33,7 @@ export function AttachmentGallery({
       containerRef.current !== null &&
       containerRef.current.scrollTop + preFetchDistance >
         containerRef.current.scrollHeight - containerRef.current.clientHeight
-        ? handleFetchMore().catch(fail)
+        ? handleFetchMore().catch(raise)
         : undefined,
     [handleFetchMore]
   );
@@ -43,7 +43,7 @@ export function AttachmentGallery({
       // Fetch attachments while scroll bar is not visible
       void (containerRef.current?.scrollHeight ===
       containerRef.current?.clientHeight
-        ? fillPage().catch(fail)
+        ? fillPage().catch(raise)
         : undefined),
     [fillPage, attachments]
   );
@@ -78,16 +78,16 @@ export function AttachmentGallery({
           : loadingGif}
       </Container.Base>
       {typeof viewRecord === 'object' && (
-        <ErrorBoundary dismissable>
+        <ErrorBoundary dismissible>
           <ResourceView
             dialog="modal"
             isDependent={false}
             isSubForm={false}
             mode="edit"
             resource={viewRecord}
+            onAdd={undefined}
             onClose={(): void => setViewRecord(undefined)}
             onDeleted={undefined}
-            onAdd={undefined}
             onSaved={undefined}
           />
         </ErrorBoundary>

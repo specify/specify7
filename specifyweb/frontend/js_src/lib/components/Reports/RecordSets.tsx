@@ -1,6 +1,7 @@
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 
+import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
 import type { IR } from '../../utils/types';
 import { Button } from '../Atoms/Button';
@@ -11,9 +12,8 @@ import { error } from '../Errors/assert';
 import { softFail } from '../Errors/Crash';
 import { parseSpecifyProperties } from '../FormParse/cells';
 import { userInformation } from '../InitialContext/userInformation';
-import { QueryParametersDialog } from './Parameters';
 import { RecordSetsDialog } from '../Toolbar/RecordSets';
-import { queryText } from '../../localization/query';
+import { QueryParametersDialog } from './Parameters';
 
 export function ReportRecordSets({
   query,
@@ -37,7 +37,7 @@ export function ReportRecordSets({
   React.useEffect(
     () =>
       query !== undefined && (tableId === undefined || tableId < 0)
-        ? error("Couldn't determine table id for report")
+        ? error("Couldn't determine base table for report")
         : undefined,
     [tableId, query]
   );

@@ -1,8 +1,8 @@
-import { Input } from '../../components/DataModel/saveBlockers';
-import { formsText } from '../../localization/forms';
+import type { Input } from '../../components/DataModel/saveBlockers';
 import { hasNativeErrors } from '../../components/Forms/validationHelpers';
+import { formsText } from '../../localization/forms';
 import { mappedFind } from '../utils';
-import { Parser } from './definitions';
+import type { Parser } from './definitions';
 
 export type ValidParseResult = {
   readonly value: string;

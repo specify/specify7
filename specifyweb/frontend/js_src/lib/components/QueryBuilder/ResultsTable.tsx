@@ -2,6 +2,7 @@ import React from 'react';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useLiveState } from '../../hooks/useLiveState';
+import { syncFieldFormat } from '../../utils/fieldFormat';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Input } from '../Atoms/Form';
@@ -9,11 +10,11 @@ import { Link } from '../Atoms/Link';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpecifyModel } from '../DataModel/specifyModel';
+import { userPreferences } from '../Preferences/userPreferences';
 import { getAuditRecordFormatter } from './AuditLogFormatter';
 import type { QueryFieldSpec } from './fieldSpec';
-import { queryIdField, QueryResultRow } from './Results';
-import { syncFieldFormat } from '../../utils/fieldFormat';
-import { userPreferences } from '../Preferences/userPreferences';
+import type { QueryResultRow } from './Results';
+import { queryIdField } from './Results';
 
 export function QueryResultsTable({
   model,

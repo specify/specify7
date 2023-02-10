@@ -11,7 +11,7 @@ import type { GetOrSet, RA } from '../../utils/types';
 import { filterArray, setDevelopmentGlobal } from '../../utils/types';
 import { keysToLowerCase, replaceKey } from '../../utils/utils';
 import { MILLISECONDS } from '../Atoms/Internationalization';
-import { fail } from '../Errors/Crash';
+import { softFail } from '../Errors/Crash';
 import {
   cachableUrl,
   contextUnlockedPromise,
@@ -89,7 +89,7 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
    * Fetch preferences from back-end and update local cache with fetched values
    */
   async fetch(): Promise<ResourceWithData> {
-    return contextUnlockedPromise.then((entryPoint) => {
+    return contextUnlockedPromise.then(async (entryPoint) => {
       if (entryPoint === 'main') {
         if (typeof this.resourcePromise === 'object')
           return this.resourcePromise;
@@ -295,14 +295,15 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
 
   /** Update back-end with front-end changes in a throttled manner */
   private requestSync() {
-    if (typeof this.syncPromise !== 'undefined') this.isSyncPending = true;
-    else {
+    if (this.syncPromise === undefined) {
       if (typeof this.syncTimeoutInstance === 'number')
         globalThis.clearTimeout(this.syncTimeoutInstance);
       this.syncTimeoutInstance = globalThis.setTimeout(
-        (): void => void this.sync().catch(fail),
+        (): void => void this.sync().catch(softFail),
         syncTimeout
       );
+    } else {
+      this.isSyncPending = true;
     }
   }
 
@@ -335,7 +336,7 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
         .then(() => {
           this.syncPromise = undefined;
           // If there were additional changes while syncing
-          if (this.isSyncPending) this.sync().catch(fail);
+          if (this.isSyncPending) this.sync().catch(softFail);
         });
     return this.syncPromise;
   }
@@ -477,7 +478,7 @@ const fetchDefaultResourceData = async (
   )
     .then(({ data, status }) => (status === Http.OK ? JSON.parse(data) : {}))
     .catch((error) => {
-      console.error(error);
+      softFail(error);
       return {};
     });
 

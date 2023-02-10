@@ -7,12 +7,18 @@ import React from 'react';
 import type { Action, State } from 'typesafe-reducer';
 import { generateDispatch } from 'typesafe-reducer';
 
-import type { CollectionObject, Taxon } from '../DataModel/types';
-import { f } from '../../utils/functools';
-import type { LocalityData } from '../Leaflet/helpers';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { specifyNetworkText } from '../../localization/specifyNetwork';
+import { f } from '../../utils/functools';
+import type { IR, RA, RR } from '../../utils/types';
+import { Link } from '../Atoms/Link';
+import { toTable } from '../DataModel/helpers';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { CollectionObject, Taxon } from '../DataModel/types';
+import { getSystemInfo } from '../InitialContext/systemInfo';
+import type { LocalityData } from '../Leaflet/helpers';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import type { OccurrenceData } from './map';
 import { fetchLocalOccurrences } from './map';
@@ -21,17 +27,11 @@ import {
   formatLifemapperViewPageRequest,
   snServer,
 } from './fetch';
-import { getSystemInfo } from '../InitialContext/systemInfo';
-import type { IR, RA, RR } from '../../utils/types';
-import { Link } from '../Atoms/Link';
-import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import { Dialog, LoadingScreen } from '../Molecules/Dialog';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { AnySchema } from '../DataModel/helperTypes';
-import { toTable } from '../DataModel/helpers';
-import { softFail } from '../Errors/Crash';
-import { leafletLayersPromise } from '../Leaflet/layers';
 import { userPreferences } from '../Preferences/userPreferences';
+import { leafletLayersPromise } from '../Leaflet/layers';
+import { Dialog, LoadingScreen } from '../Molecules/Dialog';
+import { softFail } from '../Errors/Crash';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
 
 type LoadedAction = Action<'LoadedAction', { readonly version: string }>;
 

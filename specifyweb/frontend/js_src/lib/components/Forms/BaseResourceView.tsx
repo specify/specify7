@@ -1,26 +1,24 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
-import { useStableState } from '../../hooks/useContextState';
 import { useId } from '../../hooks/useId';
+import { useStateForContext } from '../../hooks/useStateForContext';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { Form } from '../Atoms/Form';
-import type { FormMetaType } from '../Core/Contexts';
-import { FormContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
-import { fail } from '../Errors/Crash';
+import { softFail } from '../Errors/Crash';
 import { FormMeta } from '../FormMeta';
 import type { FormMode } from '../FormParse';
+import { LoadingScreen } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
+import { userPreferences } from '../Preferences/userPreferences';
 import { displaySpecifyNetwork, SpecifyNetworkBadge } from '../SpecifyNetwork';
 import { format } from './dataObjFormatters';
 import { RenderForm } from './SpecifyForm';
 import { useViewDefinition } from './useViewDefinition';
-import { LoadingScreen } from '../Molecules/Dialog';
-import { LocalizedString } from 'typesafe-i18n';
-import { userPreferences } from '../Preferences/userPreferences';
 
 export type ResourceViewProps<SCHEMA extends AnySchema> = {
   readonly isLoading?: boolean;
@@ -62,7 +60,7 @@ export function useResourceView<SCHEMA extends AnySchema>({
                 setFormatted(title ?? '');
                 return undefined;
               })
-              .catch(fail);
+              .catch(softFail);
           },
           true
         )
@@ -71,7 +69,7 @@ export function useResourceView<SCHEMA extends AnySchema>({
 
   const id = useId('resource-view');
   const [form, setForm] = React.useState<HTMLFormElement | null>(null);
-  const formMeta = useStableState<FormMetaType>({
+  const formMeta = useStateForContext<FormMetaType>({
     triedToSubmit: false,
   });
 
@@ -158,3 +156,27 @@ export function useResourceView<SCHEMA extends AnySchema>({
     ) : undefined,
   };
 }
+
+export type FormMetaType = {
+  /*
+   * Whether user tried to submit a form. This causes deferred save blockers
+   * to appear
+   */
+  readonly triedToSubmit: boolean;
+};
+export const FormContext = React.createContext<
+  readonly [
+    meta: FormMetaType,
+    setMeta:
+      | ((
+          newState: FormMetaType | ((oldMeta: FormMetaType) => FormMetaType)
+        ) => void)
+      | undefined
+  ]
+>([
+  {
+    triedToSubmit: false,
+  },
+  undefined,
+]);
+FormContext.displayName = 'FormContext';
