@@ -1,7 +1,10 @@
 import React from 'react';
 
+import { resourceEvents } from '../../hooks/store';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
+import { mergingText } from '../../localization/merging';
+import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import type { AnySchema } from '../DataModel/helperTypes';
@@ -11,11 +14,8 @@ import { DateElement } from '../Molecules/DateElement';
 import { dialogClassNames } from '../Molecules/Dialog';
 import { FormattedResource } from '../Molecules/FormattedResource';
 import { TableIcon } from '../Molecules/TableIcon';
-import { mergingText } from '../../localization/merging';
-import { UsagesSection } from './Usages';
 import { MergeButton } from './CompareField';
-import { resourceEvents } from '../../hooks/store';
-import { f } from '../../utils/functools';
+import { UsagesSection } from './Usages';
 
 export function MergingHeader({
   merged,
@@ -82,8 +82,8 @@ function HeaderLine({
             </span>
             {index === 0 ? undefined : (
               <Button.Icon
-                title={mergingText.dismissFromMerging()}
                 icon="x"
+                title={mergingText.dismissFromMerging()}
                 onClick={() => handleDismiss(resource.id)}
               />
             )}
@@ -164,8 +164,8 @@ function PreviewLine({
         <RecordPreview
           index={index}
           key={index}
-          resource={resource}
           merged={merged === resource ? undefined : merged}
+          resource={resource}
         />
       ))}
     </MergeRow>
@@ -194,19 +194,19 @@ function RecordPreview({
       )}
       <Button.Gray
         aria-pressed={isOpen}
-        onClick={handleToggle}
         className="flex-1"
+        onClick={handleToggle}
       >
         {title}
       </Button.Gray>
       {isOpen && (
         <ResourceView
-          title={(formatted) => `${title}: ${formatted}`}
           dialog="nonModal"
           isDependent={false}
           isSubForm={false}
           mode={index === 0 ? 'edit' : 'view'}
           resource={resource}
+          title={(formatted) => `${title}: ${formatted}`}
           onAdd={undefined}
           onClose={handleClose}
           onDeleted={(): void =>

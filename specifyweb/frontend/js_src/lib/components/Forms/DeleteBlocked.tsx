@@ -95,8 +95,8 @@ function TableBlockersPreview({
       {blockers.length === 1 ? (
         <BlockerPreview
           blocker={blockers[0]}
-          parentResource={parentResource}
           includeTableName
+          parentResource={parentResource}
           onDeleted={(resourceIndex): void => handleDeleted(0, resourceIndex)}
         />
       ) : (
@@ -108,9 +108,9 @@ function TableBlockersPreview({
             {blockers.map((blocker, blockerIndex) => (
               <BlockerPreview
                 blocker={blocker}
+                includeTableName={false}
                 key={blockerIndex}
                 parentResource={parentResource}
-                includeTableName={false}
                 onDeleted={(resourceIndex): void =>
                   handleDeleted(0, resourceIndex)
                 }

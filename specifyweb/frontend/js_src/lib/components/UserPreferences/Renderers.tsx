@@ -5,9 +5,11 @@
 
 import React from 'react';
 
+import { usePromise } from '../../hooks/useAsyncState';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { useValidation } from '../../hooks/useValidation';
 import { commonText } from '../../localization/common';
+import { headerText } from '../../localization/header';
 import { preferencesText } from '../../localization/preferences';
 import { welcomeText } from '../../localization/welcome';
 import { getAvailableFonts } from '../../utils/fonts';
@@ -25,15 +27,13 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import { schema } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Collection } from '../DataModel/types';
+import { rawMenuItemsPromise } from '../Header/menuItemDefinitions';
+import { useMenuItems, useUserTools } from '../Header/menuItemProcessing';
 import { AutoComplete } from '../Molecules/AutoComplete';
 import { ListEdit } from '../Toolbar/QueryTablesEdit';
 import type { PreferenceItem, PreferenceItemComponent } from './Definitions';
 import { getPrefDefinition } from './helpers';
 import { usePref } from './usePref';
-import { headerText } from '../../localization/header';
-import { useMenuItems, useUserTools } from '../Header/menuItemProcessing';
-import { rawMenuItemsPromise } from '../Header/menuItemDefinitions';
-import { usePromise } from '../../hooks/useAsyncState';
 
 export const ColorPickerPreferenceItem: PreferenceItemComponent<string> =
   function ColorPickerPreferenceItem({
@@ -292,8 +292,10 @@ export const HeaderItemsPreferenceItem: PreferenceItemComponent<MenuPreferences>
           name,
           label: title,
         }))}
+        availableLabel={headerText.userTools()}
         defaultValues={defaultItems}
         isReadOnly={isReadOnly}
+        selectedLabel={headerText.menuItems()}
         selectedValues={
           value.visible.length === 0 ? defaultItems : value.visible
         }
@@ -305,8 +307,6 @@ export const HeaderItemsPreferenceItem: PreferenceItemComponent<MenuPreferences>
             ),
           })
         }
-        selectedLabel={headerText.menuItems()}
-        availableLabel={headerText.userTools()}
       />
     );
   };

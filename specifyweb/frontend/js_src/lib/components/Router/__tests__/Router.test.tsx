@@ -1,11 +1,11 @@
-import { exportsForTests } from '../Router';
 import { theories } from '../../../tests/utils';
 import { f } from '../../../utils/functools';
+import { exportsForTests } from '../Router';
 
 const { parseClickEvent: parseEvent } = exportsForTests;
 
 const parseClickEvent = (
-  link: string | Element,
+  link: Element | string,
   extras?: Partial<MouseEvent>
 ): ReturnType<typeof parseEvent> =>
   parseEvent({

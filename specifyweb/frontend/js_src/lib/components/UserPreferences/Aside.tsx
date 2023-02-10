@@ -5,8 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import { listen } from '../../utils/events';
 import type { GetSet } from '../../utils/types';
 import { Link } from '../Atoms/Link';
-import { usePrefDefinitions } from './index';
 import { pathIsOverlay } from '../Router/Router';
+import { usePrefDefinitions } from './index';
 
 export function PreferencesAside({
   activeCategory,

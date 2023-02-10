@@ -1,7 +1,7 @@
 import { overrideAjax } from '../../../tests/ajax';
-import { fetchBlockers } from '../DeleteButton';
-import { schema } from '../../DataModel/schema';
 import { mockTime, requireContext } from '../../../tests/helpers';
+import { schema } from '../../DataModel/schema';
+import { fetchBlockers } from '../DeleteButton';
 
 requireContext();
 mockTime();
@@ -96,7 +96,7 @@ overrideAjax(
       limit: 0,
       modifiedbyagent: null,
       name: 'Delete blockers',
-      ordinal: 32767,
+      ordinal: 32_767,
       remarks: null,
       searchsynonymy: null,
       selectdistinct: false,

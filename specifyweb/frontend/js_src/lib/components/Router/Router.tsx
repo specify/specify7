@@ -8,12 +8,16 @@ import {
   useRoutes,
 } from 'react-router-dom';
 
+import { useErrorContext } from '../../hooks/useErrorContext';
 import { commonText } from '../../localization/common';
 import { mainText } from '../../localization/main';
 import { toRelativeUrl } from '../../utils/ajax/helpers';
 import { listen } from '../../utils/events';
-import { GetOrSet, RA, setDevelopmentGlobal } from '../../utils/types';
+import { f } from '../../utils/functools';
+import type { GetOrSet, RA } from '../../utils/types';
+import { setDevelopmentGlobal } from '../../utils/types';
 import { Button } from '../Atoms/Button';
+import { softFail } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { Dialog } from '../Molecules/Dialog';
 import { getUserPref } from '../UserPreferences/helpers';
@@ -21,9 +25,6 @@ import { NotFoundView } from './NotFoundView';
 import { overlayRoutes } from './OverlayRoutes';
 import { toReactRoutes } from './RouterUtils';
 import { routes } from './Routes';
-import { softFail } from '../Errors/Crash';
-import { f } from '../../utils/functools';
-import { useErrorContext } from '../../hooks/useErrorContext';
 
 let unsafeNavigateFunction: SafeNavigateFunction | undefined;
 export const unsafeNavigate = (

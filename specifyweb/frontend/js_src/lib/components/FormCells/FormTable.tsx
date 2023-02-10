@@ -420,8 +420,8 @@ export function FormTable<SCHEMA extends AnySchema>({
         <SearchDialog
           extraFilters={undefined}
           forceCollection={undefined}
-          multiple
           model={relationship.relatedModel}
+          multiple
           onClose={(): void => setState({ type: 'MainState' })}
           onSelected={handleAddResources}
         />

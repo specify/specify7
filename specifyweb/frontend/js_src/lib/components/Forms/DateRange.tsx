@@ -1,18 +1,19 @@
-import { RA } from '../../utils/types';
-import { Tables } from '../DataModel/types';
-import { SpecifyModel } from '../DataModel/specifyModel';
-import { f } from '../../utils/functools';
-import { schema } from '../DataModel/schema';
-import { useAsyncState } from '../../hooks/useAsyncState';
 import React from 'react';
-import { serializeResource } from '../DataModel/helpers';
-import { createQuery } from '../QueryBuilder';
+
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { formsText } from '../../localization/forms';
 import { runQuery } from '../../utils/ajax/specifyApi';
+import { f } from '../../utils/functools';
+import type { RA } from '../../utils/types';
+import { sortFunction } from '../../utils/utils';
+import { serializeResource } from '../DataModel/helpers';
+import { schema } from '../DataModel/schema';
+import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { Tables } from '../DataModel/types';
+import { createQuery } from '../QueryBuilder';
+import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { flippedSortTypes } from '../QueryBuilder/helpers';
-import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
-import { sortFunction } from '../../utils/utils';
-import { formsText } from '../../localization/forms';
 
 export function DateRange({
   table,
@@ -23,7 +24,7 @@ export function DateRange({
 }): JSX.Element | null {
   const dateFields = rangeDateFields()[table.name];
   return dateFields === undefined ? null : (
-    <DateRangeComponent table={table} ids={ids} dateFields={dateFields} />
+    <DateRangeComponent dateFields={dateFields} ids={ids} table={table} />
   );
 }
 

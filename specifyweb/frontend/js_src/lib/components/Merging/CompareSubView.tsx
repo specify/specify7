@@ -4,6 +4,8 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { useId } from '../../hooks/useId';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
+import { mergingText } from '../../localization/merging';
+import { f } from '../../utils/functools';
 import type { GetOrSet, RA, RR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import {
@@ -15,23 +17,21 @@ import {
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
+import { Submit } from '../Atoms/Submit';
+import { serializeResource } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
 import type { Relationship } from '../DataModel/specifyField';
 import type { Collection } from '../DataModel/specifyModel';
 import type { Accession } from '../DataModel/types';
+import { FormattedResource } from '../Molecules/FormattedResource';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { resourceToGeneric } from './autoMerge';
 import { MergeContainer, useMergeConformation } from './Compare';
+import { CompareField, MergeButton } from './CompareField';
 import { mergeCellBackground, mergeHeaderClassName } from './Header';
 import { MergeDialogContainer, ToggleMergeView } from './index';
-import { f } from '../../utils/functools';
-import { serializeResource } from '../DataModel/helpers';
-import { mergingText } from '../../localization/merging';
-import { Submit } from '../Atoms/Submit';
-import { CompareField, MergeButton } from './CompareField';
-import { FormattedResource } from '../Molecules/FormattedResource';
 
 export function MergeSubviewButton({
   relationship,
@@ -149,7 +149,6 @@ function MergeDialog({
 
   return (
     <MergeDialogContainer
-      header={mergingText.mergeFields({ field: relationship.label })}
       buttons={
         <>
           <ToggleMergeView />
@@ -157,6 +156,7 @@ function MergeDialog({
           <Submit.Gray form={id('form')}>{commonText.close()}</Submit.Gray>
         </>
       }
+      header={mergingText.mergeFields({ field: relationship.label })}
       onClose={handleClose}
     >
       <MergeContainer

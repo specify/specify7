@@ -386,6 +386,14 @@ export function AutoComplete<T>({
             pendingValueRef.current = value;
         }}
         {...inputProps}
+        displayValue={(item: AutoCompleteItem<T> | null): string =>
+          typeof item === 'string'
+            ? item
+            : typeof item?.label === 'string'
+            ? item.label
+            : item?.searchValue ?? ''
+        }
+        ref={forwardChildRef}
         onBlur={withHandleBlur(inputProps?.onBlur).onBlur}
         /*
          * Padding for the button. Using "em" so as to match @tailwind/forms
@@ -396,14 +404,6 @@ export function AutoComplete<T>({
           ${inputProps.className ?? ''}
           w-full pr-[1.5em]
         `}
-        displayValue={(item: AutoCompleteItem<T> | null): string =>
-          typeof item === 'string'
-            ? item
-            : typeof item?.label === 'string'
-            ? item.label
-            : item?.searchValue ?? ''
-        }
-        ref={forwardChildRef}
       />
       {listHasItems && !disabled ? toggleButton : undefined}
       {/*

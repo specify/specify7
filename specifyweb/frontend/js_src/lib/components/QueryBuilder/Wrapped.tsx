@@ -505,6 +505,11 @@ export function QueryBuilder({
             queryResource={queryResource}
             queryRunCount={state.queryRunCount}
             recordSetId={recordSet?.id}
+            onReRun={(): void =>
+              dispatch({
+                type: 'RunQueryAction',
+              })
+            }
             onSelected={handleSelected}
             onSortChange={(fields): void => {
               dispatch({
@@ -513,11 +518,6 @@ export function QueryBuilder({
               });
               runQuery('regular', fields);
             }}
-            onReRun={(): void =>
-              dispatch({
-                type: 'RunQueryAction',
-              })
-            }
           />
         )}
       </Form>
