@@ -5,6 +5,8 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
+import { treeText } from '../../localization/tree';
+import { StringToJsx } from '../../localization/utils';
 import { ajax } from '../../utils/ajax';
 import type { RA } from '../../utils/types';
 import { overwriteReadOnly } from '../../utils/types';
@@ -17,12 +19,10 @@ import { strictGetModel } from '../DataModel/schema';
 import type { Tables } from '../DataModel/types';
 import { loadingBar } from '../Molecules';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { FormattedResource } from '../Molecules/FormattedResource';
+import { TableIcon } from '../Molecules/TableIcon';
 import type { DeleteBlocker } from './DeleteBlocked';
 import { DeleteBlocked } from './DeleteBlocked';
-import { FormattedResource } from '../Molecules/FormattedResource';
-import { StringToJsx } from '../../localization/utils';
-import { TableIcon } from '../Molecules/TableIcon';
-import { treeText } from '../../localization/tree';
 
 const fetchBlockers = async (
   resource: SpecifyResource<AnySchema>
@@ -146,8 +146,8 @@ export function DeleteButton<SCHEMA extends AnySchema>({
                 components={{
                   wrap: (
                     <i className="flex items-center gap-2">
-                      <TableIcon name={iconName} label={false} />
-                      <FormattedResource resource={resource} asLink={false} />
+                      <TableIcon label={false} name={iconName} />
+                      <FormattedResource asLink={false} resource={resource} />
                     </i>
                   ),
                 }}

@@ -1,21 +1,21 @@
 import React from 'react';
 
-import type { SpQuery } from '../DataModel/types';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { useFormatted } from '../../hooks/useFormatted';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
-import { flippedSortTypes } from '../QueryBuilder/helpers';
-import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
-import { schema } from '../DataModel/schema';
 import { Button } from '../Atoms/Button';
-import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { QueryBuilder } from '../QueryBuilder/Wrapped';
-import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
-import { createQuery } from '../QueryBuilder';
-import { useBooleanState } from '../../hooks/useBooleanState';
 import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { schema } from '../DataModel/schema';
+import type { SpQuery } from '../DataModel/types';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { createQuery } from '../QueryBuilder';
+import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
+import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
+import { flippedSortTypes } from '../QueryBuilder/helpers';
+import { QueryBuilder } from '../QueryBuilder/Wrapped';
 import { formattedEntry } from '../WbPlanView/mappingHelpers';
-import { useFormatted } from '../../hooks/useFormatted';
 
 export function EditHistory({
   resource,

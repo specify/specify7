@@ -1,5 +1,7 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
+import { useFormatted } from '../../hooks/useFormatted';
 import { commonText } from '../../localization/common';
 import { Link } from '../Atoms/Link';
 import type { AnySchema } from '../DataModel/helperTypes';
@@ -7,8 +9,6 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { strictParseResourceUrl } from '../DataModel/resource';
 import { strictGetModel } from '../DataModel/schema';
 import { hasTablePermission } from '../Permissions/helpers';
-import { LocalizedString } from 'typesafe-i18n';
-import { useFormatted } from '../../hooks/useFormatted';
 
 export function FormattedResourceUrl({
   resourceUrl,
@@ -38,7 +38,7 @@ export function FormattedResource({
 
   return typeof resource === 'object' &&
     hasTablePermission(resource.specifyModel.name, 'read') &&
-    asLink === true &&
+    asLink &&
     !resource.isNew() ? (
     <Link.NewTab href={resource.viewUrl()}>{formatted}</Link.NewTab>
   ) : (
