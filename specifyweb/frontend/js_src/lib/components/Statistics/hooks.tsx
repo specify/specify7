@@ -223,7 +223,7 @@ export const querySpecToResource = (
 export function useResolvedStatSpec(
   item: CustomStat | DefaultStat,
   statsSpec: StatsSpec
-): StatItemSpec {
+): StatItemSpec | undefined {
   return React.useMemo(() => {
     if (item.type === 'CustomStat') {
       return {
@@ -232,8 +232,10 @@ export function useResolvedStatSpec(
       };
     } else {
       const statSpecItem =
-        statsSpec[item.pageName][item.categoryName].items[item.itemName];
-      return item.itemType === 'BackEndStat'
+        statsSpec[item.pageName]?.[item.categoryName]?.items?.[item.itemName];
+      return statSpecItem === undefined
+        ? undefined
+        : item.itemType === 'BackEndStat'
         ? {
             type: 'BackEndStat',
             pathToValue:

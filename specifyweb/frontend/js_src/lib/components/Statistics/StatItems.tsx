@@ -52,7 +52,8 @@ export function StatItem({
   );
   const resolvedSpec = useResolvedStatSpec(item, statsSpec);
 
-  return resolvedSpec.type === 'QueryBuilderStat' ? (
+  return resolvedSpec?.type === 'QueryBuilderStat' &&
+    resolvedSpec.querySpec !== undefined ? (
     <QueryItem
       isDefault={item.type === 'DefaultStat'}
       label={item.label}
@@ -70,9 +71,9 @@ export function StatItem({
       onRemove={handleRemove}
       onRename={handleRename}
     />
-  ) : item.type === 'DefaultStat' &&
-    resolvedSpec.type === 'BackEndStat' &&
-    resolvedSpec.pathToValue !== undefined ? (
+  ) : item?.type === 'DefaultStat' &&
+    resolvedSpec?.type === 'BackEndStat' &&
+    resolvedSpec?.pathToValue !== undefined ? (
     <BackEndItem
       fetchUrl={resolvedSpec.fetchUrl}
       formatter={resolvedSpec.formatter}
