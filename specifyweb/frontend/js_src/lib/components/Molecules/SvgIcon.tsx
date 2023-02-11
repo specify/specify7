@@ -62,7 +62,7 @@ export function SvgIcon({
         <text
           dominantBaseline="central"
           fill="#FFFFFF"
-          fontFamily="Francois One"
+          fontFamily="Francois One,sans-serif"
           fontSize={`${fontSize}px`}
           textAnchor="middle"
           x="50%"
