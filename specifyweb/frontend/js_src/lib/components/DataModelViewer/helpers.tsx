@@ -1,10 +1,12 @@
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+
 import { schemaText } from '../../localization/schema';
 import { syncFieldFormat } from '../../utils/fieldFormat';
 import { f } from '../../utils/functools';
 import { resolveParser } from '../../utils/parser/definitions';
-import { ensure, IR, RA, RR } from '../../utils/types';
+import type { IR, RA, RR } from '../../utils/types';
+import { ensure } from '../../utils/types';
 import { formatNumber } from '../Atoms/Internationalization';
 import { getField } from '../DataModel/helpers';
 import { schema } from '../DataModel/schema';

@@ -1,16 +1,19 @@
 import React from 'react';
+
 import { schemaText } from '../../localization/schema';
-import { ensure, RA, RR } from '../../utils/types';
+import { f } from '../../utils/functools';
+import type { RA, RR } from '../../utils/types';
+import { ensure } from '../../utils/types';
 import { H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { getField } from '../DataModel/helpers';
 import { schema } from '../DataModel/schema';
-import { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyModel } from '../DataModel/specifyModel';
 import { TableIcon } from '../Molecules/TableIcon';
 import { localizedRelationshipTypes } from '../SchemaConfig/helpers';
-import { booleanFormatter, Row, Value } from './helpers';
+import type { Row, Value } from './helpers';
+import { booleanFormatter } from './helpers';
 import { TableList } from './TableList';
-import { f } from '../../utils/functools';
 
 export function DataModelRelationships({
   model,
@@ -20,14 +23,14 @@ export function DataModelRelationships({
   const data = React.useMemo(() => getRelationships(model), [model]);
 
   const [dependentFilter, setDependentFilter] = React.useState<
-    undefined | boolean
+    boolean | undefined
   >(undefined);
 
   const filteredDependentData = React.useMemo(
     () =>
       typeof dependentFilter === 'boolean'
         ? data.filter(
-            (relationship: { name: string }) =>
+            (relationship: { readonly name: string }) =>
               model.strictGetRelationship(relationship.name).isDependent() ===
               dependentFilter
           )
@@ -48,9 +51,9 @@ export function DataModelRelationships({
               setDependentFilter(
                 dependentFilter === undefined
                   ? true
-                  : dependentFilter === false
-                  ? true
-                  : undefined
+                  : dependentFilter
+                  ? undefined
+                  : true
               )
             }
           >
@@ -64,7 +67,7 @@ export function DataModelRelationships({
               setDependentFilter(
                 dependentFilter === undefined
                   ? false
-                  : dependentFilter === true
+                  : dependentFilter
                   ? false
                   : undefined
               )

@@ -1,9 +1,12 @@
-import { getField } from '../DataModel/helpers';
-import { schemaText } from '../../localization/schema';
-import { schema } from '../DataModel/schema';
 import { formsText } from '../../localization/forms';
+import { schemaText } from '../../localization/schema';
+import { getField } from '../DataModel/helpers';
+import { schema } from '../DataModel/schema';
+import {
+  javaTypeToHuman,
+  localizedRelationshipTypes,
+} from '../SchemaConfig/helpers';
 import { booleanFormatter } from './helpers';
-import { javaTypeToHuman, localizedRelationshipTypes } from '../SchemaConfig/helpers';
 
 export const dataModelToTsv = (): string =>
   [

@@ -1,9 +1,10 @@
 import React from 'react';
+
 import { schemaText } from '../../localization/schema';
 import { H2 } from '../Atoms';
 import { Link } from '../Atoms/Link';
 import { getModel } from '../DataModel/schema';
-import { Tables } from '../DataModel/types';
+import type { Tables } from '../DataModel/types';
 import { TableIcon } from '../Molecules/TableIcon';
 import { NotFoundView } from '../Router/NotFoundView';
 import { DataModelFields } from './Fields';

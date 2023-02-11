@@ -1,11 +1,12 @@
 import React from 'react';
-import { LocalizedString } from 'typesafe-i18n';
-import { SortConfigs } from '../../utils/cache/definitions';
-import { RA, RR } from '../../utils/types';
+import type { LocalizedString } from 'typesafe-i18n';
+
+import type { SortConfigs } from '../../utils/cache/definitions';
+import type { RA, RR } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
-import { Row, Value } from './helpers';
+import type { Row, Value } from './helpers';
 
 export function TableList<
   SORT_CONFIG extends

@@ -1,15 +1,18 @@
 import React from 'react';
+
 import { commonText } from '../../localization/common';
 import { schemaText } from '../../localization/schema';
 import { f } from '../../utils/functools';
-import { ensure, RA, RR } from '../../utils/types';
+import type { RA, RR } from '../../utils/types';
+import { ensure } from '../../utils/types';
 import { H3 } from '../Atoms';
 import { formatNumber } from '../Atoms/Internationalization';
 import { getField } from '../DataModel/helpers';
 import { schema } from '../DataModel/schema';
-import { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyModel } from '../DataModel/specifyModel';
 import { javaTypeToHuman } from '../SchemaConfig/helpers';
-import { booleanFormatter, Row, Value } from './helpers';
+import type { Row, Value } from './helpers';
+import { booleanFormatter } from './helpers';
 import { TableList } from './TableList';
 
 export function DataModelFields({

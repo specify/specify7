@@ -1,17 +1,18 @@
 import React from 'react';
+
 import { schemaText } from '../../localization/schema';
 import { welcomeText } from '../../localization/welcome';
 import { Container, H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
-import { Tables } from '../DataModel/types';
+import type { Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import { getSystemInfo } from '../InitialContext/systemInfo';
 import { downloadFile } from '../Molecules/FilePicker';
 import { useTopChild } from '../UserPreferences/useTopChild';
 import { DataModelAside } from './Aside';
-import { DataModelTable } from './Table';
 import { getTables, tableColumns } from './helpers';
+import { DataModelTable } from './Table';
 import { TableList } from './TableList';
 
 export const topId = 'tables';

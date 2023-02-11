@@ -1,9 +1,10 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { locationToState } from '../Router/RouterState';
-import { getTables } from './helpers';
-import { useFrozenCategory } from '../UserPreferences/Aside';
+
 import { Link } from '../Atoms/Link';
+import { locationToState } from '../Router/RouterState';
+import { useFrozenCategory } from '../UserPreferences/Aside';
+import { getTables } from './helpers';
 
 export function DataModelAside({
   activeCategory,
