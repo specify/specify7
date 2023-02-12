@@ -1571,7 +1571,9 @@ export const WBView = Backbone.View.extend({
             header={wbText.noDisambiguationResults()}
             buttons={commonText.close()}
             onClose={() => dialog()}
-          >{wbText.noDisambiguationResultsDescription()}</Dialog>
+          >
+            {wbText.noDisambiguationResultsDescription()}
+          </Dialog>
         );
         return;
       }
@@ -1601,41 +1603,54 @@ export const WBView = Backbone.View.extend({
       // onClose: globalThis.clearInterval(interval);
       */
 
-      const dialog = this.options.display(<DisambiguationDialog
-        matches={resources.models}
-        onClose={() => dialog()}
-        onSelected={(selected)=>{
-          this.setDisambiguation(
-            physicalRow,
-            matches.mappingPath,
-            selected.id
-          );
-          this.startValidateRow(physicalRow);
-        }}
-        onSelectedAll={(selected)=>{
-          // Loop backwards so the live validation will go from top to bottom
-          for (let visualRow = this.data.length - 1; visualRow >= 0; visualRow--) {
-            const physicalRow = this.hot.toPhysicalRow(visualRow);
-            if (
-              !this.uploadResults.ambiguousMatches[physicalRow]?.find(
-                ({ key, mappingPath }) =>
-                  key === matches.key &&
-                  typeof this.getDisambiguation(physicalRow)[
-                    mappingPathToString(mappingPath)
-                  ] !== 'number'
-              )
-            )
-              continue;
+      const dialog = this.options.display(
+        <DisambiguationDialog
+          matches={resources.models}
+          onClose={() => dialog()}
+          onSelected={(selected) => {
             this.setDisambiguation(
               physicalRow,
               matches.mappingPath,
               selected.id
             );
             this.startValidateRow(physicalRow);
-          }
-        }}
-      />);
-
+          }}
+          onSelectedAll={(selected) => {
+            /*
+             * BUG: this is critical path. optimize. it's too slow right now.
+             *   Profiler says that most problem is in this.setDisambiguation
+             *   due to setDataAtCell calls. It calls that function for each row
+             *   right now. Refactoring to call it once for all would be better
+             */
+            // Loop backwards so the live validation will go from top to bottom
+            this.hot.batch(() => {
+              for (
+                let visualRow = this.data.length - 1;
+                visualRow >= 0;
+                visualRow--
+              ) {
+                const physicalRow = this.hot.toPhysicalRow(visualRow);
+                if (
+                  !this.uploadResults.ambiguousMatches[physicalRow]?.find(
+                    ({ key, mappingPath }) =>
+                      key === matches.key &&
+                      typeof this.getDisambiguation(physicalRow)[
+                        mappingPathToString(mappingPath)
+                      ] !== 'number'
+                  )
+                )
+                  continue;
+                this.setDisambiguation(
+                  physicalRow,
+                  matches.mappingPath,
+                  selected.id
+                );
+                this.startValidateRow(physicalRow);
+              }
+            });
+          }}
+        />
+      );
     });
   },
 
@@ -2232,10 +2247,12 @@ export const WBView = Backbone.View.extend({
         ]);
       });
     } else
-      raise(new Error(
-        `Trying to parse unknown uploadStatus type "${uploadStatus}" at
+      raise(
+        new Error(
+          `Trying to parse unknown uploadStatus type "${uploadStatus}" at
         row ${this.hot.toVisualRow(physicalRow)}`
-      ));
+        )
+      );
 
     Object.entries(uploadResult.toOne).forEach(([fieldName, uploadResult]) =>
       this.parseRowValidationResults(
@@ -2487,10 +2504,10 @@ export const WBView = Backbone.View.extend({
       <Dialog
         header={
           this.refreshInitiatedBy === 'validate'
-          ? wbText.validationCanceled()
-          : this.refreshInitiatedBy === 'unupload'
-          ? wbText.rollbackCanceled()
-          : wbText.uploadCanceled()
+            ? wbText.validationCanceled()
+            : this.refreshInitiatedBy === 'unupload'
+            ? wbText.rollbackCanceled()
+            : wbText.uploadCanceled()
         }
         onClose={() => dialog()}
         buttons={commonText.close()}
