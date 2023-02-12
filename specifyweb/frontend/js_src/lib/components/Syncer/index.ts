@@ -114,7 +114,8 @@ export const runParser = <RAW, SPEC extends BaseSpec<RAW>>(
 ): SpecToJson<SPEC> => {
   const logContext = getLogContext();
   const path = logContext[pathKey];
-  if (!Array.isArray(path)) pushContext({ type: 'Root', node: path });
+  if (!Array.isArray(path))
+    pushContext({ type: 'Root', node: [raw], extras: { spec } });
   const result = Object.fromEntries(
     Object.entries(spec).map(([key, { serializer }]) => [key, serializer(raw)])
   );

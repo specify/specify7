@@ -1,19 +1,20 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { f } from '../../utils/functools';
+import { defined } from '../../utils/types';
 import { Input } from '../Atoms/Form';
 import { fetchCollection } from '../DataModel/collection';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
+import { deserializeResource } from '../DataModel/serializers';
 import type { CollectingEventAttribute } from '../DataModel/types';
-import { QueryComboBox } from '../QueryComboBox';
 import type { FormMode, FormType } from '../FormParse';
 import { hasTreeAccess } from '../Permissions/helpers';
-import { deserializeResource } from '../DataModel/serializers';
-import { postProcessTypeSearch, TypeSearch } from '../QueryComboBox/spec';
-import { LocalizedString } from 'typesafe-i18n';
-import { defined } from '../../utils/types';
+import { QueryComboBox } from '../QueryComboBox';
+import type { TypeSearch } from '../QueryComboBox/spec';
+import { postProcessTypeSearch } from '../QueryComboBox/spec';
 
 const hostTaxonTypeSearch = f.store<TypeSearch>(() =>
   defined(
@@ -76,7 +77,7 @@ export function HostTaxon({
       mode={mode}
       relatedModel={schema.models.Taxon}
       resource={resource}
-      typeSearch={hostTaxonTypeSearch}
+      typeSearch={hostTaxonTypeSearch()}
     />
   ) : null;
 }

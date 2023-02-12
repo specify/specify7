@@ -20,25 +20,23 @@ import type { AnySchema, CommonFields } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
 import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpQueryField } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import { raise } from '../Errors/Crash';
 import { format } from '../Formatters/formatters';
+import { RenderForm } from '../Forms/SpecifyForm';
+import { useViewDefinition } from '../Forms/useViewDefinition';
 import { load } from '../InitialContext';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { ProtectedAction } from '../Permissions/PermissionDenied';
 import { createQuery } from '../QueryBuilder';
+import type { QueryFieldFilter } from '../QueryBuilder/FieldFilter';
+import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
+import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
 import { formatUrl } from '../Router/queryString';
-import { RenderForm } from '../Forms/SpecifyForm';
-import { useViewDefinition } from '../Forms/useViewDefinition';
 import { xmlToSpec } from '../Syncer/xmlUtils';
 import { dialogsSpec } from './spec';
-import { SpQueryField } from '../DataModel/types';
-import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
-import {
-  QueryFieldFilter,
-  queryFieldFilters,
-} from '../QueryBuilder/FieldFilter';
 
 export const searchDialogDefinitions = f
   .all({
@@ -57,7 +55,7 @@ const resourceLimit = 100;
 export type QueryComboBoxFilter<SCHEMA extends AnySchema> = {
   readonly field: string & (keyof CommonFields | keyof SCHEMA['fields']);
   readonly isNot: boolean;
-  readonly operation: QueryFieldFilter & ('in' | 'less' | 'between');
+  readonly operation: QueryFieldFilter & ('between' | 'in' | 'less');
   readonly value: string;
 };
 
@@ -205,8 +203,8 @@ export function SearchDialog<SCHEMA extends AnySchema>({
     </Dialog>
   ) : viewName === false ? (
     <QueryBuilderSearch
-      forceCollection={forceCollection}
       extraFilters={extraFilters}
+      forceCollection={forceCollection}
       model={templateResource.specifyModel}
       multiple={multiple}
       onClose={handleClose}

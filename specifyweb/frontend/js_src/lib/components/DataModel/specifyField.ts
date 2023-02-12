@@ -183,18 +183,6 @@ abstract class FieldBase {
       : (unescape(description) as LocalizedString);
   }
 
-  // Returns the name of the UIFormatter for the field from the schema config.
-  public getFormat(): string | undefined {
-    return this.localization.format ?? undefined;
-  }
-
-  // Returns the UIFormatter for the field specified in the schema config.
-  public getUiFormatter(): UiFormatter | undefined {
-    return this.isRelationship
-      ? undefined
-      : getUiFormatters()[this.getFormat() ?? ''];
-  }
-
   /*
    * Returns the name of the picklist definition if any is assigned to the field
    * by the schema configuration.
@@ -249,6 +237,16 @@ export class LiteralField extends FieldBase {
   public constructor(model: SpecifyModel, fieldDefinition: FieldDefinition) {
     super(model, fieldDefinition);
     this.type = fieldDefinition.type;
+  }
+
+  // Returns the name of the UIFormatter for the field from the schema config.
+  public getFormat(): string | undefined {
+    return this.localization.format ?? undefined;
+  }
+
+  // Returns the UIFormatter for the field specified in the schema config.
+  public getUiFormatter(): UiFormatter | undefined {
+    return getUiFormatters()[this.getFormat() ?? ''];
   }
 }
 

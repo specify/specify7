@@ -223,11 +223,7 @@ function Field({
         />
       </td>
       <td>
-        <FieldFormatter
-          table={table}
-          field={[field, handleChange]}
-          isReadOnly={isReadOnly}
-        />
+        <FieldFormatter table={table} field={[field, handleChange]} />
       </td>
     </tr>
   );
@@ -236,13 +232,11 @@ function Field({
 function FieldFormatter({
   table,
   field: [field, handleChange],
-  isReadOnly,
 }: {
   readonly table: SpecifyModel;
   readonly field: GetSet<
     Formatter['definition']['fields'][number]['fields'][number]
   >;
-  readonly isReadOnly: boolean;
 }): JSX.Element | null {
   const lastField = field.field?.at(-1);
   if (lastField === undefined) return null;

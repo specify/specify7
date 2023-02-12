@@ -56,8 +56,8 @@ test('XML to JSON and back', () => {
   const newRawXml = `<test a="b">
 \t<child1 b="c">
 \t\t<!-- comment <b /> -->
-\t\t<bar></bar>
-\t\t<bar></bar>
+\t\t<bar/>
+\t\t<bar/>
 \t\ttext
 \t</child1>
 \t<child2>text</child2>
@@ -74,7 +74,7 @@ const formatXml = (xml: string): string =>
 theories(formatXml, [
   {
     in: ['<a b="c"><b></b></a>'],
-    out: '<a b="c">\n\t<b></b>\n</a>',
+    out: '<a b="c">\n\t<b/>\n</a>',
   },
   {
     in: ['<a>a<!-- comment -->a</a>'],

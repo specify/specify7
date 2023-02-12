@@ -27,7 +27,7 @@ const webLinkSpec = f.store(() =>
       syncers.default<LocalizedString>('')
     ),
     table: pipe(
-      syncers.xmlChild('tableName', 'required'),
+      syncers.xmlChild('tableName', 'optional'),
       syncers.maybe(syncers.xmlContent),
       syncers.maybe(syncers.tableName)
     ),
@@ -79,13 +79,13 @@ const argumentSpec = f.store(() =>
 const usedBySpec = f.store(() =>
   createXmlSpec({
     table: pipe(
-      syncers.xmlChild('name', 'required'),
+      syncers.xmlChild('tableName', 'required'),
       syncers.maybe(syncers.xmlContent),
       syncers.default<LocalizedString>(''),
       syncers.tableName
     ),
     fieldName: pipe(
-      syncers.xmlChild('title', 'required'),
+      syncers.xmlChild('fieldName', 'required'),
       syncers.maybe(syncers.xmlContent)
     ),
   })

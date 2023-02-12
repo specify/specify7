@@ -1,4 +1,5 @@
 import { mockTime, requireContext } from '../../../tests/helpers';
+import { getField } from '../../DataModel/helpers';
 import { schema } from '../../DataModel/schema';
 import type { UiFormatter } from '../index';
 import { fetchContext, getUiFormatters } from '../index';
@@ -10,7 +11,7 @@ test('formatters are fetched and parsed correctly', async () =>
   expect(fetchContext).resolves.toMatchSnapshot());
 
 const getFormatter = (): UiFormatter | undefined =>
-  schema.models.CollectionObject.getField('catalogNumber')?.getUiFormatter();
+  getField(schema.models.CollectionObject, 'catalogNumber')?.getUiFormatter();
 
 const getSecondFormatter = (): UiFormatter | undefined =>
   getUiFormatters().AccessionNumber;

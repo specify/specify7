@@ -45,7 +45,11 @@ export const fetchContext = f
                     : undefined
                 )
               );
-              resolvedFormatter = new UiFormatter(formatter.isSystem, fields);
+              resolvedFormatter = new UiFormatter(
+                formatter.isSystem,
+                formatter.title ?? formatter.name,
+                fields
+              );
             }
 
             return [formatter.name, resolvedFormatter];
@@ -55,18 +59,15 @@ export const fetchContext = f
     );
     return uiFormatters;
   });
-export const getUiFormatters = () =>
+export const getUiFormatters = (): typeof uiFormatters =>
   uiFormatters ?? error('Tried to access UI formatters before fetching them');
 
 export class UiFormatter {
-  public readonly fields: RA<Field>;
-
-  public readonly isSystem: boolean;
-
-  public constructor(isSystem: boolean, fields: RA<Field>) {
-    this.isSystem = isSystem;
-    this.fields = fields;
-  }
+  public constructor(
+    public readonly isSystem: boolean,
+    public readonly title: string,
+    public readonly fields: RA<Field>
+  ) {}
 
   /**
    * Value or wildcard (placeholders)
@@ -233,7 +234,7 @@ class CatalogNumberNumericField extends NumericField {
 
 class CatalogNumberNumeric extends UiFormatter {
   public constructor() {
-    super(true, [
+    super(true, 'Catalog Number Numeric', [
       new CatalogNumberNumericField({
         size: 9,
         autoIncrement: true,

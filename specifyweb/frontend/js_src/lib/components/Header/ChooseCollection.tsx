@@ -6,14 +6,14 @@ import { headerText } from '../../localization/header';
 import { sortFunction, toLowerCase } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Select } from '../Atoms/Form';
-import { serializeResource } from '../DataModel/helpers';
 import { schema } from '../DataModel/schema';
+import { serializeResource } from '../DataModel/serializers';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
+import { toLargeSortConfig } from '../Molecules/Sorting';
 import { OverlayContext } from '../Router/Router';
 import { switchCollection } from '../RouterCommands/SwitchCollection';
 import { usePref } from '../UserPreferences/usePref';
-import { toLargeSortConfig } from '../Molecules/Sorting';
 
 export function ChooseCollection(): JSX.Element {
   const [sortOrder] = usePref('chooseCollection', 'general', 'sortOrder');

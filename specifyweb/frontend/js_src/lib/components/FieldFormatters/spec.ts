@@ -67,11 +67,12 @@ const formatterSpec = f.store(() =>
       syncers.default<LocalizedString>('')
     ),
     title: syncers.xmlAttribute('title', 'empty'),
-    javaClass: syncers.xmlAttribute('class', 'required'),
+    // Some special formatters don't have a class name
+    javaClass: syncers.xmlAttribute('class', 'skip'),
     // BUG: enforce no relationship fields
     rawField: syncers.xmlAttribute('fieldName', 'skip'),
     isDefault: pipe(
-      syncers.xmlAttribute('default', 'required'),
+      syncers.xmlAttribute('default', 'skip'),
       syncers.default<LocalizedString>(''),
       syncers.toBoolean
     ),
@@ -99,13 +100,13 @@ const fieldSpec = f.store(() =>
       syncers.enum(Object.keys(formatterTypeMapper))
     ),
     size: pipe(
-      syncers.xmlAttribute('size', 'required'),
+      syncers.xmlAttribute('size', 'skip'),
       syncers.default<LocalizedString>(''),
       syncers.toDecimal,
       syncers.default<number>(1)
     ),
     value: pipe(
-      syncers.xmlAttribute('value', 'required'),
+      syncers.xmlAttribute('value', 'skip'),
       syncers.default<LocalizedString>(' ')
     ),
     byYear: pipe(

@@ -20,12 +20,12 @@ import { getModel, schema } from '../DataModel/schema';
 import type { Tables } from '../DataModel/types';
 import { hasTablePermission } from '../Permissions/helpers';
 import { useNavigate } from 'react-router-dom';
-import { useMenuItem } from '../Header/useMenuItem';
 import { Dialog } from '../Molecules/Dialog';
 import { ProtectedTable } from '../Permissions/PermissionDenied';
 import { OrderPicker } from '../UserPreferences/Renderers';
 import { AttachmentGallery } from './Gallery';
 import { attachmentSettingsPromise } from './attachments';
+import { useMenuItem } from '../Header/MenuContext';
 
 export const attachmentRelatedTables = f.store(() =>
   Object.keys(schema.models).filter((tableName) =>

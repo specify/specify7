@@ -41,6 +41,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       },
     ],
     "isSystem": true,
+    "title": "AccessionNumber",
   },
   "AccessionNumberByYear": UiFormatter {
     "fields": [
@@ -81,6 +82,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       },
     ],
     "isSystem": true,
+    "title": "AccessionNumberByYear",
   },
   "AccessionStringFormatter": UiFormatter {
     "fields": [
@@ -93,6 +95,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       },
     ],
     "isSystem": true,
+    "title": "AccessionStringFormatter",
   },
   "CatalogNumber": UiFormatter {
     "fields": [
@@ -119,6 +122,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       },
     ],
     "isSystem": false,
+    "title": "CatalogNumber",
   },
   "CatalogNumberAlphaNumByYear": UiFormatter {
     "fields": [
@@ -145,6 +149,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       },
     ],
     "isSystem": false,
+    "title": "CatalogNumberAlphaNumByYear",
   },
   "CatalogNumberNumeric": CatalogNumberNumeric {
     "fields": [
@@ -157,6 +162,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       },
     ],
     "isSystem": true,
+    "title": "Catalog Number Numeric",
   },
   "CatalogNumberNumericRegex": UiFormatter {
     "fields": [
@@ -169,10 +175,12 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       },
     ],
     "isSystem": false,
+    "title": "CatalogNumberNumericRegex",
   },
   "Date": UiFormatter {
     "fields": [],
     "isSystem": true,
+    "title": "Date",
   },
   "DeaccessionNumber": UiFormatter {
     "fields": [
@@ -213,6 +221,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       },
     ],
     "isSystem": true,
+    "title": "DeaccessionNumber",
   },
   "GiftNumber": UiFormatter {
     "fields": [
@@ -239,6 +248,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       },
     ],
     "isSystem": true,
+    "title": "GiftNumber",
   },
   "InfoRequestNumber": UiFormatter {
     "fields": [
@@ -265,6 +275,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       },
     ],
     "isSystem": true,
+    "title": "InfoRequestNumber",
   },
   "KUITeach": CatalogNumberNumeric {
     "fields": [
@@ -277,6 +288,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       },
     ],
     "isSystem": true,
+    "title": "Catalog Number Numeric",
   },
   "LoanNumber": UiFormatter {
     "fields": [
@@ -303,6 +315,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       },
     ],
     "isSystem": true,
+    "title": "LoanNumber",
   },
   "NumericBigDecimal": UiFormatter {
     "fields": [
@@ -315,6 +328,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       },
     ],
     "isSystem": true,
+    "title": "NumericBigDecimal",
   },
   "NumericByte": UiFormatter {
     "fields": [
@@ -327,6 +341,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       },
     ],
     "isSystem": true,
+    "title": "NumericByte",
   },
   "NumericDouble": UiFormatter {
     "fields": [
@@ -339,6 +354,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       },
     ],
     "isSystem": true,
+    "title": "NumericDouble",
   },
   "NumericFloat": UiFormatter {
     "fields": [
@@ -351,6 +367,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       },
     ],
     "isSystem": true,
+    "title": "NumericFloat",
   },
   "NumericInteger": UiFormatter {
     "fields": [
@@ -363,6 +380,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       },
     ],
     "isSystem": true,
+    "title": "NumericInteger",
   },
   "NumericLong": UiFormatter {
     "fields": [
@@ -375,6 +393,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       },
     ],
     "isSystem": true,
+    "title": "NumericLong",
   },
   "NumericShort": UiFormatter {
     "fields": [
@@ -387,22 +406,27 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       },
     ],
     "isSystem": true,
+    "title": "NumericShort",
   },
   "PartialDate": UiFormatter {
     "fields": [],
     "isSystem": false,
+    "title": "PartialDate",
   },
   "PartialDateMonth": UiFormatter {
     "fields": [],
     "isSystem": false,
+    "title": "PartialDateMonth",
   },
   "PartialDateYear": UiFormatter {
     "fields": [],
     "isSystem": false,
+    "title": "PartialDateYear",
   },
   "SearchDate": UiFormatter {
     "fields": [],
     "isSystem": true,
+    "title": "SearchDate",
   },
 }
 `;

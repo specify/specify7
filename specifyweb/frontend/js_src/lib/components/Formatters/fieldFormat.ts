@@ -46,19 +46,19 @@ export async function fieldFormat(
 }
 
 function uiFormatter(
-  field: LiteralField | undefined,
+  field: Partial<LiteralField> | undefined,
   value: string,
   formatter?: string
 ): string | undefined {
   const uiFormatter =
-    getUiFormatters()[formatter ?? ''] ?? field?.getUiFormatter();
+    getUiFormatters()[formatter ?? ''] ?? field?.getUiFormatter?.();
   if (typeof uiFormatter === 'object') {
     const formatted = uiFormatter.format(value?.toString() ?? '');
     if (typeof formatted === 'string') return formatted;
     else
       console.error(
         `Invalid value for ${
-          formatter ?? field?.getFormat() ?? ''
+          formatter ?? field?.getFormat?.() ?? ''
         } formatter: ${value}`,
         { field }
       );

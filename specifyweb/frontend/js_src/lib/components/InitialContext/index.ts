@@ -68,14 +68,16 @@ export const load = async <T>(path: string, mimeType: MimeType): Promise<T> =>
     // A very crude detection mechanism
     const isCached = timePassed < 100;
 
-    console.log(
-      `${path} %c[${
-        isCached
-          ? 'cached'
-          : `${formatNumber(f.round(timePassed / MILLISECONDS, 0.01))}s`
-      }]`,
-      `color: ${isCached ? '#9fa' : '#f99'}`
-    );
+    // So as not to spam the tests
+    if (process.env.NODE_ENV !== 'test')
+      console.log(
+        `${path} %c[${
+          isCached
+            ? 'cached'
+            : `${formatNumber(f.round(timePassed / MILLISECONDS, 0.01))}s`
+        }]`,
+        `color: ${isCached ? '#9fa' : '#f99'}`
+      );
     return data;
   });
 

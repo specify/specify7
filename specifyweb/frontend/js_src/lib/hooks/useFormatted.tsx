@@ -1,8 +1,9 @@
 import React from 'react';
-import { AnySchema } from '../components/DataModel/helperTypes';
-import { SpecifyResource } from '../components/DataModel/legacyTypes';
+
+import type { AnySchema } from '../components/DataModel/helperTypes';
+import type { SpecifyResource } from '../components/DataModel/legacyTypes';
 import { softFail } from '../components/Errors/Crash';
-import { format } from '../components/Forms/dataObjFormatters';
+import { format } from '../components/Formatters/formatters';
 import { useAsyncState } from './useAsyncState';
 
 export function useFormatted(

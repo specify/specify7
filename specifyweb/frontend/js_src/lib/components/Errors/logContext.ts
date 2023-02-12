@@ -42,15 +42,15 @@ export const pushContext = (part: PathPart): void =>
 function modifyContext(
   callback: (path: RA<BasePathPart>) => RA<BasePathPart>
 ): void {
-  const logContext = getLogContext()[pathKey] ?? [];
-  const path: RA<BasePathPart> = Array.isArray(logContext)
-    ? logContext
-    : logContext === undefined
+  const rawPath = getLogContext()[pathKey] ?? [];
+  const path: RA<BasePathPart> = Array.isArray(rawPath)
+    ? rawPath
+    : rawPath === undefined
     ? []
-    : [logContext];
+    : [rawPath];
   const newPath = callback(path);
   setLogContext({
-    ...logContext,
+    ...getLogContext(),
     [pathKey]: newPath.length === 0 ? undefined : newPath,
   });
 }

@@ -4,7 +4,7 @@ import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
 import { filterArray } from '../../utils/types';
-import { formatList } from '../Atoms/Internationalization';
+import { formatConjunction } from '../Atoms/Internationalization';
 import { error } from '../Errors/assert';
 import type { SpecToJson } from '../Syncer';
 import { pipe, syncer } from '../Syncer';
@@ -71,7 +71,7 @@ export function postProcessTypeSearch({
     table,
     title: commonText.colonLine({
       label: queryText.searchFields(),
-      value: formatList(fieldTitles),
+      value: formatConjunction(fieldTitles),
     }),
     searchFields: parsedSearchFields,
   };
@@ -96,8 +96,8 @@ const typeSearchSpec = f.store(() =>
       syncers.xmlAttribute('displayCols', 'required'),
       syncers.maybe(syncers.split(','))
     ),
-    format: syncers.xmlAttribute('format', 'required'),
-    formatter: syncers.xmlAttribute('dataObjFormatter', 'required'),
+    format: syncers.xmlAttribute('format', 'empty'),
+    formatter: syncers.xmlAttribute('dataObjFormatter', 'empty'),
     query: syncers.xmlContent,
   })
 );

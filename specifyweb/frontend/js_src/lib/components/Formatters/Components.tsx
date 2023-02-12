@@ -1,6 +1,7 @@
 import React from 'react';
 import { useOutletContext } from 'react-router';
 
+import { usePromise } from '../../hooks/useAsyncState';
 import { useId } from '../../hooks/useId';
 import { resourcesText } from '../../localization/resources';
 import { f } from '../../utils/functools';
@@ -11,6 +12,7 @@ import { Input } from '../Atoms/Form';
 import { ReadOnlyContext } from '../Core/Contexts';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
+import { fetchContext as fetchFieldFormatters } from '../FieldFormatters';
 import { join } from '../Molecules';
 import { mutateLineData } from '../QueryBuilder/helpers';
 import { emptyMapping, mutateMappingPath } from '../WbPlanView/helpers';
@@ -25,8 +27,6 @@ import { formattedEntry } from '../WbPlanView/mappingHelpers';
 import { getMappingLineData } from '../WbPlanView/navigator';
 import type { Aggregator, Formatter } from './spec';
 import type { FormatterTypesOutlet } from './Types';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { fetchContext as fetchFieldFormatters } from '../FieldFormatters';
 
 export function FormattersPickList({
   table,
@@ -70,9 +70,6 @@ export function FormattersPickList({
   );
 }
 
-const fetchFormattersFunction = async () =>
-  fetchFieldFormatters.then((formatters) => Object.keys(formatters));
-
 export function FieldFormattersPickList({
   value,
   onChange: handleChange,
@@ -82,7 +79,7 @@ export function FieldFormattersPickList({
 }): JSX.Element {
   const isReadOnly = React.useContext(ReadOnlyContext);
   const id = useId('formatters');
-  const [formatters] = useAsyncState(fetchFormattersFunction, false);
+  const [formatters] = usePromise(fetchFieldFormatters, false);
 
   return (
     <>
@@ -96,9 +93,9 @@ export function FieldFormattersPickList({
         onValueChange={handleChange}
       />
       <datalist id={id('list')}>
-        {formatters?.map((formatter, index) => (
-          <option key={index} value={formatter.name}>
-            {formatter.title ?? formatter.name}
+        {Object.entries(formatters ?? {}).map(([name, formatter]) => (
+          <option key={name} value={name}>
+            {formatter.title ?? name}
           </option>
         ))}
       </datalist>

@@ -31,7 +31,7 @@ import {
   usePrimarySearch,
   useSecondarySearch,
 } from './ExpressSearchHooks';
-import { useMenuItem } from './useMenuItem';
+import { useMenuItem } from './MenuContext';
 
 export function ExpressSearchOverlay(): JSX.Element {
   useMenuItem('search');

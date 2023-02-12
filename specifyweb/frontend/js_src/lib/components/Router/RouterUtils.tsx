@@ -9,6 +9,7 @@ import { useLocation, useParams } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import type { IR, RA, WritableArray } from '../../utils/types';
+import { softFail } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { useTitle } from '../Molecules/AppTitle';
 import { LoadingScreen } from '../Molecules/Dialog';
@@ -67,8 +68,10 @@ export const toReactRoutes = (
       (typeof enhancedRoute.path !== 'string' ||
         !enhancedRoute.path.endsWith('*'))
     )
-      throw new Error(
-        '"isSingleResource" only has effect for path\'s that end with "*"'
+      softFail(
+        new Error(
+          '"isSingleResource" only has effect for path\'s that end with "*"'
+        )
       );
 
     const resolvedElement =
@@ -97,6 +100,7 @@ export const toReactRoutes = (
         ? toReactRoutes(children, title)
         : undefined,
       element:
+        process.env.NODE_ENV === 'test' ||
         resolvedElement === undefined ? undefined : (
           <ErrorBoundary dismissible={dismissible}>
             {isSingleResource ? (

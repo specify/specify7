@@ -259,7 +259,8 @@ export function resolveParser(
   )
     parser = parsers()[fullField.datePart] as Parser;
 
-  const formatter = field.getUiFormatter?.();
+  const formatter =
+    field.isRelationship === false ? field.getUiFormatter?.() : undefined;
   return mergeParsers(parser, {
     pickListName: field.getPickList?.(),
     // Don't make checkboxes required
@@ -323,7 +324,8 @@ export function formatterToParser(
     title,
     formatters: [stringGuard(formatter.parse.bind(formatter))],
     validators: [
-      (value) => (value === undefined || value === null ? title : undefined),
+      (value): string | undefined =>
+        value === undefined || value === null ? title : undefined,
     ],
     placeholder: formatter.pattern() ?? undefined,
     parser: (value: unknown): string =>

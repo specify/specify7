@@ -67,7 +67,7 @@ const formatterFields = [
     pattern: '\\d{1,2}',
   }),
 ];
-const uiFormatter = new UiFormatter(false, formatterFields);
+const uiFormatter = new UiFormatter(false, 'test', formatterFields);
 const title = formsText.requiredFormat({ format: uiFormatter.pattern()! });
 
 describe('resolveParser', () => {
@@ -108,6 +108,7 @@ describe('resolveParser', () => {
   });
   test('UiFormatter is converted to parser', () => {
     const field = {
+      isRelationship: false,
       type: 'java.lang.String',
       getUiFormatter: () => uiFormatter,
     } as unknown as LiteralField;

@@ -3,13 +3,17 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { f } from '../../utils/functools';
 import { parseBoolean } from '../../utils/parser/parse';
 import type { RA } from '../../utils/types';
-import { formatList } from '../Atoms/Internationalization';
+import { formatDisjunction } from '../Atoms/Internationalization';
 import { parseJavaClassName } from '../DataModel/resource';
 import { getModel, getModelById, schema } from '../DataModel/schema';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Tables } from '../DataModel/types';
-import { pushContext } from '../Errors/logContext';
+import {
+  getLogContext,
+  pushContext,
+  setLogContext,
+} from '../Errors/logContext';
 import type { BaseSpec, SpecToJson, Syncer } from './index';
 import { runBuilder, runParser, syncer } from './index';
 import { mergeSimpleXmlNodes } from './mergeSimpleXmlNodes';
@@ -173,8 +177,11 @@ export const syncers = {
     >(
       (elements) =>
         elements.map((element, index) => {
+          const context = getLogContext();
           pushContext({ type: 'Index', index });
-          return serializer(element);
+          const result = serializer(element);
+          setLogContext(context);
+          return result;
         }),
       (elements) => elements.map(deserializer)
     ),
@@ -264,7 +271,9 @@ export const syncers = {
           : items.find((item) => item.toLowerCase() === lowerValue);
         if (item === undefined)
           console.error(
-            `Unknown value ${value}. Expected one of ${formatList(items)}`
+            `Unknown value ${value}. Expected one of ${formatDisjunction(
+              items
+            )}`
           );
         return item;
       },
