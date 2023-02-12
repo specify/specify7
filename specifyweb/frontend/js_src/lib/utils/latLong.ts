@@ -12,8 +12,8 @@
  */
 
 import { f } from './functools';
-import { mappedFind, toLowerCase } from './utils';
 import type { RA } from './types';
+import { mappedFind, toLowerCase } from './utils';
 
 const Parts = {
   DEGS: 1,
@@ -167,6 +167,9 @@ export class Coord {
     return result?.isValid() === true ? result : undefined;
   }
 }
+
+export type ConversionFunction = keyof Coord &
+  ('toDegs' | 'toDegsMins' | 'toDegsMinsSecs');
 
 export class Lat extends Coord {
   public isValid(): boolean {

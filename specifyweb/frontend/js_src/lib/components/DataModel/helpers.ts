@@ -1,27 +1,30 @@
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
+import { removeKey } from '../../utils/utils';
 import { isTreeResource } from '../InitialContext/treeRanks';
+import { addMissingFields } from './addMissingFields';
 import type {
   AnySchema,
   AnyTree,
   SerializedModel,
   SerializedResource,
+  TableFields,
 } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
 import { parseResourceUrl, resourceToJson } from './resource';
-import { strictGetModel } from './schema';
+import { schema, strictGetModel } from './schema';
+import type { LiteralField, Relationship } from './specifyField';
+import type { SpecifyModel } from './specifyModel';
 import type { Tables } from './types';
-import { addMissingFields } from './addMissingFields';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 
 /** Like resource.toJSON(), but keys are converted to camel case */
 export const serializeResource = <SCHEMA extends AnySchema>(
   resource: SerializedModel<SCHEMA> | SpecifyResource<SCHEMA>
 ): SerializedResource<SCHEMA> =>
   serializeModel<SCHEMA>(
-    typeof resource.toJSON === 'function'
-      ? resourceToJson(resource as SpecifyResource<SCHEMA>)
-      : (resource as SerializedModel<SCHEMA>),
+    'toJSON' in resource ? resourceToJson(resource) : resource,
     (resource as SpecifyResource<SCHEMA>)?.specifyModel?.name
   );
 
@@ -40,12 +43,19 @@ function serializeModel<SCHEMA extends AnySchema>(
   const model = strictGetModel(
     defined(
       (tableName as SCHEMA['tableName']) ??
-        resource._tableName ??
-        parseResourceUrl((resource.resource_uri as string) ?? '')?.[0],
-      `Unable to serialize resource because table name is unknown.` +
-        (process.env.NODE_ENV === 'test'
+        ('_tableName' in resource
+          ? (resource as SerializedResource<SCHEMA>)._tableName
+          : undefined) ??
+        parseResourceUrl(
+          'resource_uri' in resource
+            ? (resource as { readonly resource_uri: string }).resource_uri ?? ''
+            : ''
+        )?.[0],
+      `Unable to serialize resource because table name is unknown.${
+        process.env.NODE_ENV === 'test'
           ? `\nMake sure your test file calls requireContext();`
-          : '')
+          : ''
+      }`
     )
   );
   const fields = [...model.fields.map(({ name }) => name), model.idField.name];
@@ -84,7 +94,10 @@ function serializeModel<SCHEMA extends AnySchema>(
                     tableName
                   )
                 )
-              : serializeModel(value as SerializedModel<AnySchema>, tableName),
+              : serializeModel(
+                  value as unknown as SerializedModel<AnySchema>,
+                  tableName
+                ),
           ];
         } else return [camelFieldName, value];
       })
@@ -113,6 +126,21 @@ export const toResource = <TABLE_NAME extends keyof Tables>(
     ? (resource as SerializedResource<Tables[TABLE_NAME]>)
     : undefined;
 
+/**
+ * The model.field has a very broad type to reduce type conflicts in components
+ * that deal with generic schemas (accept AnySchema or a SCHEMA extends AnySchema)
+ */
+export const getField = <
+  SCHEMA extends Tables[keyof Tables],
+  FIELD extends TableFields<SCHEMA>
+>(
+  model: SpecifyModel<SCHEMA>,
+  name: FIELD
+): FIELD extends keyof SCHEMA['fields'] ? LiteralField : Relationship =>
+  model.field[name] as FIELD extends keyof SCHEMA['fields']
+    ? LiteralField
+    : Relationship;
+
 export const toTreeTable = (
   resource: SpecifyResource<AnySchema>
 ): SpecifyResource<AnyTree> | undefined =>
@@ -123,3 +151,69 @@ export const toTables = <TABLE_NAME extends keyof Tables>(
   tableNames: RA<TABLE_NAME>
 ): SpecifyResource<Tables[TABLE_NAME]> | undefined =>
   f.includes(tableNames, resource.specifyModel.name) ? resource : undefined;
+
+export const deserializeResource = <SCHEMA extends AnySchema>(
+  serializedResource: SerializedModel<SCHEMA> | SerializedResource<SCHEMA>
+): SpecifyResource<SCHEMA> =>
+  new schema.models[
+    /**
+     * This assertion, while not required by TypeScript, is needed to fix
+     * a typechecking performance issue (it was taking 5s to typecheck this
+     * line according to TypeScript trace analyzer)
+     */
+    (serializedResource as SerializedResource<SCHEMA>)._tableName
+  ].Resource(removeKey(serializedResource, '_tableName' as 'id'));
+
+/**
+ * Example usage:
+ * resource: Collector
+ * fields: agent -> lastName
+ * Would return [agent, lastName] if agent exists
+ *
+ */
+export async function fetchDistantRelated(
+  resource: SpecifyResource<AnySchema>,
+  fields: RA<LiteralField | Relationship> | undefined
+): Promise<
+  | {
+      readonly resource: SpecifyResource<AnySchema> | undefined;
+      readonly field: LiteralField | Relationship | undefined;
+    }
+  | undefined
+> {
+  if (
+    Array.isArray(fields) &&
+    fields.some(
+      (field) =>
+        field.isRelationship &&
+        relationshipIsToMany(field) &&
+        field !== fields.at(-1)
+    )
+  ) {
+    console.error(
+      'Can not index inside of a -to-many relationship. Use an aggregator instead'
+    );
+    return undefined;
+  }
+
+  const related =
+    fields === undefined || fields.length === 0
+      ? resource
+      : fields.length === 1
+      ? await resource.fetch()
+      : await resource.rgetPromise(
+          fields
+            .slice(0, -1)
+            .map(({ name }) => name)
+            .join('.')
+        );
+
+  const field = fields?.at(-1);
+  const relatedResource = related ?? undefined;
+  return relatedResource === undefined && field === undefined
+    ? undefined
+    : {
+        resource: relatedResource,
+        field,
+      };
+}

@@ -1,5 +1,8 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
+import { unsetUnloadProtect } from '../../hooks/navigation';
+import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import type { RA } from '../../utils/types';
@@ -8,17 +11,15 @@ import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { schema } from '../DataModel/schema';
 import type { FormMode } from '../FormParse';
 import { ResourceView } from '../Forms/ResourceView';
+import { saveFormUnloadProtect } from '../Forms/Save';
 import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
+import { SetUnloadProtectsContext } from '../Router/Router';
 import type { RecordSelectorProps } from './RecordSelector';
 import { useRecordSelector } from './RecordSelector';
-import { useTriggerState } from '../../hooks/useTriggerState';
-import { UnloadProtectsContext } from '../Core/Contexts';
-import { unsetUnloadProtect } from '../../hooks/navigation';
-import { saveFormUnloadProtect } from '../Forms/Save';
-import { LocalizedString } from 'typesafe-i18n';
 
 /**
  * A Wrapper for RecordSelector that allows to specify list of records by their
@@ -107,7 +108,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   const [unloadProtect, setUnloadProtect] = React.useState<
     (() => void) | undefined
   >(undefined);
-  const [_, setUnloadProtects] = React.useContext(UnloadProtectsContext)!;
+  const setUnloadProtects = React.useContext(SetUnloadProtectsContext)!;
 
   const {
     dialogs,
@@ -167,6 +168,16 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
         : undefined,
   });
 
+  const addLabel = isInRecordSet
+    ? formsText.addToRecordSet({
+        recordSetTable: schema.models.RecordSet.label,
+      })
+    : commonText.add();
+  const removeLabel = isInRecordSet
+    ? formsText.removeFromRecordSet({
+        recordSetTable: schema.models.RecordSet.label,
+      })
+    : commonText.delete();
   return (
     <>
       <ResourceView
@@ -180,29 +191,17 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
             {hasTablePermission(model.name, isDependent ? 'create' : 'read') &&
             typeof handleAdding === 'function' ? (
               <DataEntry.Add
-                aria-label={
-                  isInRecordSet ? formsText.addToRecordSet() : commonText.add()
-                }
+                aria-label={addLabel}
                 disabled={mode === 'view'}
-                title={
-                  isInRecordSet ? formsText.addToRecordSet() : commonText.add()
-                }
+                title={addLabel}
                 onClick={handleAdding}
               />
             ) : undefined}
             {typeof handleRemove === 'function' && canRemove ? (
               <DataEntry.Remove
-                aria-label={
-                  isInRecordSet
-                    ? formsText.removeFromRecordSet()
-                    : commonText.delete()
-                }
+                aria-label={removeLabel}
                 disabled={resource === undefined || mode === 'view'}
-                title={
-                  isInRecordSet
-                    ? formsText.removeFromRecordSet()
-                    : commonText.delete()
-                }
+                title={removeLabel}
                 onClick={(): void => handleRemove('minusButton')}
               />
             ) : undefined}
@@ -224,13 +223,13 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
         resource={resource}
         title={title}
         viewName={viewName}
+        onAdd={handleClone}
         onClose={handleClose}
         onDeleted={
           resource?.isNew() === true || hasTablePermission(model.name, 'delete')
             ? handleRemove?.bind(undefined, 'deleteButton')
             : undefined
         }
-        onAdd={handleClone}
         onSaved={(): void => handleSaved(resource!)}
       />
       {dialogs}

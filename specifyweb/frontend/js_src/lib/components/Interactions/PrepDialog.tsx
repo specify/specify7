@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useId } from '../../hooks/useId';
 import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
+import { interactionsText } from '../../localization/interactions';
 import type { Preparations } from '../../utils/ajax/specifyApi';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
@@ -11,7 +12,7 @@ import { group, replaceItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Form } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
-import { serializeResource, toTable } from '../DataModel/helpers';
+import { getField, serializeResource, toTable } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceApiUrl, getResourceViewUrl } from '../DataModel/resource';
 import { schema, strictGetModel } from '../DataModel/schema';
@@ -26,7 +27,6 @@ import type {
 } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import { PrepDialogRow } from './PrepDialogRow';
-import { interactionsText } from '../../localization/interactions';
 
 export function PrepDialog({
   onClose: handleClose,
@@ -189,22 +189,15 @@ export function PrepDialog({
               </th>
               <th scope="col">
                 {
-                  schema.models.CollectionObject.strictGetLiteralField(
-                    'catalogNumber'
-                  ).label
-                }
-              </th>
-              <th scope="col">
-                {
-                  schema.models.Determination.strictGetRelationship('taxon')
+                  getField(schema.models.CollectionObject, 'catalogNumber')
                     .label
                 }
               </th>
               <th scope="col">
-                {
-                  schema.models.Preparation.strictGetRelationship('prepType')
-                    .label
-                }
+                {getField(schema.models.Determination, 'taxon').label}
+              </th>
+              <th scope="col">
+                {getField(schema.models.Preparation, 'prepType').label}
               </th>
               <th scope="col">{commonText.selected()}</th>
               <th scope="col">{interactionsText.available()}</th>

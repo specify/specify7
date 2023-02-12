@@ -1,10 +1,10 @@
 import { Http } from '../../utils/ajax/definitions';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
+import { sortFunction } from '../../utils/utils';
 import { syncBranch, weblateBranch } from './config';
 import type { DictionaryUsages } from './scanUsages';
 import { testLogging } from './testLogging';
-import { sortFunction } from '../../utils/utils';
 
 const { error, warn } = testLogging;
 
@@ -58,8 +58,16 @@ export async function checkComponents(
     (name) => !localComponents.includes(name)
   );
   unusedComponents.forEach((name) =>
+    /*
+     * Maybe there is a better way to handle this, but for now this forces
+     * developer's intervention to manually resolve the issue.
+     * I.e, delete the old component from Weblate, or fix the naming
+     * inconsistency
+     */
     error(
-      `Found a project ${name} in the remote, but it's not present on the current branch`
+      `Found a project "${name}" in Weblate, but it's not present on ` +
+        `the current branch. If you intentionally removed it, make sure to also ` +
+        `remove it from Weblate.`
     )
   );
 
@@ -72,6 +80,12 @@ export async function checkComponents(
 const createMissingComponents = async (names: RA<string>): Promise<void> =>
   Promise.all(names.map(async (name) => createComponent(name))).then(f.void);
 
+/**
+ * Note, if this fails with "File not found error", it means the *.po file for
+ * a given component is not on the weblate-localization branch. The test.yml
+ * GitHub action on production branch is responsible for creating the *.po
+ * file.
+ */
 async function createComponent(name: string): Promise<void> {
   warn(`Creating a component for "${name}"`);
   const { addons, ...settings } = getComponentSettings(name);
@@ -119,6 +133,7 @@ const getComponentSettings = (name: string): IR<unknown> => ({
   license_url: 'https://spdx.org/licenses/GPL-2.0-only.html',
   merge_style: 'rebase',
   name,
+  new_lang: 'url',
   push_branch: weblateBranch,
   push_on_commit: true,
   repo: 'https://github.com/specify/specify7/',

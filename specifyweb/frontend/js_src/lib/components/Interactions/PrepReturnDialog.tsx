@@ -3,6 +3,7 @@ import React from 'react';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
+import { interactionsText } from '../../localization/interactions';
 import { getDateInputValue } from '../../utils/dayJs';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
@@ -10,6 +11,7 @@ import { replaceItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Form } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
+import { getField } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { Loan, LoanPreparation } from '../DataModel/types';
@@ -19,7 +21,6 @@ import { RenderForm } from '../Forms/SpecifyForm';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
 import { PrepReturnRow } from './PrepReturnRow';
-import { interactionsText } from '../../localization/interactions';
 
 export const loanReturnPrepForm = f.store(
   (): ViewDescription =>
@@ -213,22 +214,15 @@ function PreparationReturn({
               <td />
               <th className="text-center" scope="col">
                 {
-                  schema.models.CollectionObject.strictGetLiteralField(
-                    'catalogNumber'
-                  ).label
-                }
-              </th>
-              <th className="text-center" scope="col">
-                {
-                  schema.models.Determination.strictGetRelationship('taxon')
+                  getField(schema.models.CollectionObject, 'catalogNumber')
                     .label
                 }
               </th>
               <th className="text-center" scope="col">
-                {
-                  schema.models.Preparation.strictGetRelationship('prepType')
-                    .label
-                }
+                {getField(schema.models.Determination, 'taxon').label}
+              </th>
+              <th className="text-center" scope="col">
+                {getField(schema.models.Preparation, 'prepType').label}
               </th>
               <th className="text-center" scope="col">
                 {interactionsText.unresolved()}

@@ -4,8 +4,9 @@
  * Icons are stored in https://github.com/specify/specify6/tree/master/src/edu/ku/brc/specify/images
  */
 
-import { load } from './index';
 import type { RA } from '../../utils/types';
+import { softFail } from '../Errors/Crash';
+import { load } from './index';
 
 const iconGroups = {} as Record<IconGroup, Document>;
 
@@ -39,12 +40,13 @@ const iconDirectories = {
 
 export const unknownIcon = '/images/unknown.png';
 
-export function getIcon(icon: string): string | undefined {
+export function getIcon(name: string): string | undefined {
   for (const [group, xml] of Object.entries(iconGroups)) {
-    const iconFile = findIconInXml(icon, xml)?.getAttribute('file');
+    const iconFile = findIconInXml(name, xml)?.getAttribute('file');
     if (typeof iconFile === 'string')
       return `${iconDirectories[group]}${iconFile}`;
   }
+  console.warn(`Unable to find the icon ${name}`);
   return undefined;
 }
 
@@ -53,9 +55,13 @@ function findIconInXml(
   xml: Document,
   cycleDetect: RA<string> = []
 ): Element | undefined {
-  if (cycleDetect.includes(icon))
-    throw new Error('Circular reference in icon definitions');
-  const iconNode = xml.querySelector(`icon[name="${icon}"]`);
+  if (cycleDetect.includes(icon)) {
+    softFail(new Error('Circular reference in icon definitions'));
+    return undefined;
+  }
+  const iconNode = xml.querySelector(
+    `icon[name="${icon}"],icon[file="${icon}"]`
+  );
   const alias = iconNode?.getAttribute('alias');
   return typeof alias === 'string'
     ? findIconInXml(alias, xml, [...cycleDetect, icon])

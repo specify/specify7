@@ -43,7 +43,9 @@ def deleting_user(sender, instance, **kwargs):
     nonpersonal_appresources = user.spappresources.filter(spappresourcedir__ispersonal=False)
     if nonpersonal_appresources.exists():
         raise BusinessRuleException(
-            f"user {user.name} owns nonpersonal appresources {[r.name for r in nonpersonal_appresources]}"
+            f"user {user.name} owns nonpersonal appresources {[r.name for r in nonpersonal_appresources]}",
+            {"table" : user.__class__.__name__,
+             "userid" : user.id}
         )
 
     cursor = connection.cursor()

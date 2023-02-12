@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { commonText } from '../../localization/common';
+import { userText } from '../../localization/user';
 import { ajax } from '../../utils/ajax';
 import type { IR } from '../../utils/types';
 import { Button } from '../Atoms/Button';
@@ -11,7 +12,6 @@ import type { SpecifyUser } from '../DataModel/types';
 import { CopyButton } from '../Molecules/Copy';
 import { Dialog } from '../Molecules/Dialog';
 import { hasPermission } from '../Permissions/helpers';
-import { userText } from '../../localization/user';
 
 /**
  * Generate an invite link for a given user to connect their Specify account to

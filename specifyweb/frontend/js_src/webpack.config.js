@@ -2,7 +2,7 @@
  * WebPack config for development and production
  */
 
-const path = require('path');
+const path = require('node:path');
 const webpack = require('webpack');
 const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 
@@ -11,21 +11,21 @@ const outputPath = path.resolve(__dirname, 'dist');
 // 1MB in bytes
 const mb = 1024 * 1024;
 
-module.exports = (_env, argv) =>
+module.exports = (_environment, argv) =>
   /** @type { import('webpack').Configuration } */ ({
     module: {
       rules: [
         {
-          test: /\.(png|gif|jpg|jpeg|svg)$/,
+          test: /\.(png|gif|jpg|jpeg|svg)$/u,
           type: 'asset',
         },
         {
-          test: /\.css$/,
+          test: /\.css$/u,
           use: ['style-loader', 'css-loader', 'postcss-loader'],
         },
         {
-          test: /\.[tj]sx?$/,
-          exclude: /(node_modules)/,
+          test: /\.[jt]sx?$/u,
+          exclude: /(node_modules)/u,
           use: [
             {
               loader: 'babel-loader?+cacheDirectory',
@@ -67,7 +67,7 @@ module.exports = (_env, argv) =>
       ...(process.env.NODE_ENV === 'production'
         ? [
             new webpack.optimize.MinChunkSizePlugin({
-              minChunkSize: 10000, // Minimum number of characters
+              minChunkSize: 10_000, // Minimum number of characters
             }),
           ]
         : []),

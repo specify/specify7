@@ -1,6 +1,6 @@
-import { getAutoNumberingFields } from '../AutoNumbering';
 import { requireContext } from '../../../tests/helpers';
 import { schema } from '../../DataModel/schema';
+import { getAutoNumberingFields } from '../AutoNumbering';
 
 requireContext();
 

@@ -1,21 +1,4 @@
-{% load raven %} {% load script_manifest %} {% load i18n %}
-<!DOCTYPE html>
-{% get_current_language as LANGUAGE_CODE %}
-<html lang="{{ LANGUAGE_CODE }}">
-  <head>
-    <meta charset="utf-8" />
-    <script id="entrypoint-name">"main"</script>
-    {% if use_raven %}
-    <script src="//cdn.ravenjs.com/1.1.16/raven.min.js"></script>
-    <script>
-      Raven.config("{% sentry_public_dsn %}").install();
-    </script>
-    {% endif %}
-    <script src="{% script_src 'main.js' %}"></script>
-  </head>
-
-  <body>
-    <div id="root"></div>
-    <div id="portal-root"></div>
-  </body>
-</html>
+{% include "head.html" %}
+"main"
+{% include "body.html" %}
+{% include "footer.html" %}

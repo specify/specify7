@@ -1,19 +1,21 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import type { LocalizedString } from 'typesafe-i18n';
 
-import type { Collection } from '../DataModel/types';
-import { sortFunction } from '../../utils/utils';
+import { useErrorContext } from '../../hooks/useErrorContext';
+import { userText } from '../../localization/user';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import { userInformation } from '../InitialContext/userInformation';
+import { sortFunction } from '../../utils/utils';
 import { Container, Ul } from '../Atoms';
-import { useNavigate } from 'react-router-dom';
-import { switchCollection } from '../RouterCommands/SwitchCollection';
-import { useErrorContext } from '../../hooks/useErrorContext';
 import { Button } from '../Atoms/Button';
-import { SerializedResource } from '../DataModel/helperTypes';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import { schema } from '../DataModel/schema';
+import type { Collection } from '../DataModel/types';
+import { userInformation } from '../InitialContext/userInformation';
+import { toLargeSortConfig } from '../Molecules/Sorting';
+import { switchCollection } from '../RouterCommands/SwitchCollection';
 import { usePref } from '../UserPreferences/usePref';
-import { userText } from '../../localization/user';
-import { LocalizedString } from 'typesafe-i18n';
 
 /**
  * Even though available collections do not change during lifecycle of a page,
@@ -21,16 +23,17 @@ import { LocalizedString } from 'typesafe-i18n';
  */
 export function useAvailableCollections(): RA<SerializedResource<Collection>> {
   const [sortOrder] = usePref('chooseCollection', 'general', 'sortOrder');
-  const isReverseSort = sortOrder.startsWith('-');
-  const sortField = (isReverseSort ? sortOrder.slice(1) : sortOrder) as string &
-    keyof Collection['fields'];
-  const collections = React.useMemo(
-    () =>
-      Array.from(userInformation.availableCollections).sort(
-        sortFunction((collection) => collection[sortField], isReverseSort)
-      ),
-    [userInformation.availableCollections, isReverseSort, sortField]
-  );
+  const collections = React.useMemo(() => {
+    const { direction, fieldNames } = toLargeSortConfig(sortOrder);
+    return Array.from(userInformation.availableCollections).sort(
+      // FEATURE: support sorting by related model
+      sortFunction(
+        (collection) =>
+          collection[fieldNames.join('.') as keyof Collection['fields']],
+        direction === 'desc'
+      )
+    );
+  }, [sortOrder]);
   useErrorContext('collections', collections);
   return collections;
 }
@@ -52,7 +55,9 @@ export function OtherCollection({
     <Container.FullGray>
       <Container.Center>
         {collections.length === 0 ? (
-          userText.noAccessToResource()
+          userText.noAccessToResource({
+            collectionTable: schema.models.Collection.label,
+          })
         ) : (
           <>
             <p>{userText.resourceInaccessible()}</p>
@@ -75,7 +80,11 @@ export function OtherCollection({
               </>
             ) : (
               <>
-                <p>{userText.loginToProceed()}</p>
+                <p>
+                  {userText.loginToProceed({
+                    collectionTable: schema.models.Collection.label,
+                  })}
+                </p>
                 <div>
                   <Button.Blue
                     onClick={(): void =>

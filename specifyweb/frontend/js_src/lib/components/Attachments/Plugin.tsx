@@ -5,79 +5,67 @@
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useErrorContext } from '../../hooks/useErrorContext';
+import { attachmentsText } from '../../localization/attachments';
+import { commonText } from '../../localization/common';
+import { formsText } from '../../localization/forms';
+import { f } from '../../utils/functools';
+import { Progress } from '../Atoms';
+import { serializeResource, toTable } from '../DataModel/helpers';
+import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { Attachment } from '../DataModel/types';
 import { error } from '../Errors/assert';
+import { raise } from '../Errors/Crash';
+import type { FormMode } from '../FormParse';
+import { loadingBar } from '../Molecules';
+import { Dialog } from '../Molecules/Dialog';
+import { FilePicker } from '../Molecules/FilePicker';
+import { hasTablePermission } from '../Permissions/helpers';
 import {
   attachmentsAvailable,
   attachmentSettingsPromise,
   uploadFile,
 } from './attachments';
-import type { Attachment } from '../DataModel/types';
-import { serializeResource, toTable } from '../DataModel/helpers';
-import { f } from '../../utils/functools';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { commonText } from '../../localization/common';
-import { formsText } from '../../localization/forms';
-import type { FormMode } from '../FormParse';
-import { hasTablePermission } from '../Permissions/helpers';
-import { Progress } from '../Atoms';
-import { FilePicker } from '../Molecules/FilePicker';
-import { Dialog } from '../Molecules/Dialog';
-import { useErrorContext } from '../../hooks/useErrorContext';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { AnySchema, SerializedResource } from '../DataModel/helperTypes';
-import { fail } from '../Errors/Crash';
-import { loadingBar } from '../Molecules';
 import { AttachmentCell } from './Cell';
-import { attachmentsText } from '../../localization/attachments';
 
 export function AttachmentsPlugin({
+  id,
+  name,
   resource,
   onUploadComplete: handleUploadComplete,
   mode = 'edit',
-  id,
-  name,
 }: {
+  readonly id?: string;
+  readonly name?: string;
   readonly resource: SpecifyResource<AnySchema> | undefined;
   readonly onUploadComplete?: (attachment: SpecifyResource<Attachment>) => void;
   readonly mode: FormMode;
-  readonly id?: string;
-  readonly name?: string;
 }): JSX.Element {
   const [state, setState] = useAsyncState<
-    | State<'AddAttachment'>
     | State<
         'DisplayAttachment',
         { readonly attachment: SerializedResource<Attachment> }
       >
+    | State<'AddAttachment'>
     | State<'FileUpload', { readonly file: File }>
     | State<'Unavailable'>
   >(
-    React.useCallback(
-      async () =>
-        attachmentSettingsPromise.then(() =>
-          attachmentsAvailable()
-            ? // REFACTOR: this is hard to read. Also other usages of f.maybe
-              (
-                f.maybe(
-                  f.maybe(resource, (resource) =>
-                    toTable(resource, 'Attachment')
-                  ),
-                  async (attachment) => attachment
-                ) ??
-                resource?.rgetPromise('attachment') ??
-                Promise.resolve(null)
-              ).then((attachment) => {
-                if (attachment === null) return { type: 'AddAttachment' };
-                const serialized = serializeResource(attachment);
-                return {
-                  type: 'DisplayAttachment',
-                  attachment: serialized,
-                };
-              })
-            : { type: 'Unavailable' }
-        ),
-      [resource]
-    ),
+    React.useCallback(async () => {
+      await attachmentSettingsPromise;
+      if (!attachmentsAvailable()) return { type: 'Unavailable' };
+      const attachment =
+        f.maybe(resource, (resource) => toTable(resource, 'Attachment')) ??
+        (await resource?.rgetPromise('attachment'));
+      if (attachment === undefined || attachment === null)
+        return { type: 'AddAttachment' };
+      const serialized = serializeResource(attachment);
+      return {
+        type: 'DisplayAttachment',
+        attachment: serialized,
+      };
+    }, [resource]),
     true
   );
   useErrorContext('attachmentPluginState', state);
@@ -104,7 +92,7 @@ export function AttachmentsPlugin({
             })
             .catch((error) => {
               setState({ type: 'Unavailable' });
-              fail(error);
+              raise(error);
             })
             .finally(() => setUploadProgress(undefined))
         : undefined,

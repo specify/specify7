@@ -1,17 +1,31 @@
 import React from 'react';
 
-import type { Tables } from '../DataModel/types';
-import { replaceItem } from '../../utils/utils';
 import { commonText } from '../../localization/common';
+import { localityText } from '../../localization/locality';
 import { queryText } from '../../localization/query';
-import type { QueryField } from './helpers';
-import { mutateLineData, sortTypes } from './helpers';
-import type { DatePart } from './fieldSpec';
-import { getModel, schema } from '../DataModel/schema';
-import type { RA } from '../../utils/types';
-import { filterArray } from '../../utils/types';
+import { whitespaceSensitive } from '../../localization/utils';
+import { f } from '../../utils/functools';
 import type { Parser } from '../../utils/parser/definitions';
 import { resolveParser } from '../../utils/parser/definitions';
+import type { RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
+import { replaceItem } from '../../utils/utils';
+import { Button } from '../Atoms/Button';
+import { className } from '../Atoms/className';
+import { Select } from '../Atoms/Form';
+import { iconClassName, icons } from '../Atoms/Icons';
+import { getModel, schema } from '../DataModel/schema';
+import type { Tables } from '../DataModel/types';
+import { join } from '../Molecules';
+import { customSelectElementBackground } from '../WbPlanView/CustomSelectElement';
+import { mappingPathIsComplete } from '../WbPlanView/helpers';
+import {
+  getMappingLineProps,
+  MappingElement,
+  mappingElementDivider,
+  mappingElementDividerClassName,
+} from '../WbPlanView/LineComponents';
+import type { MappingPath } from '../WbPlanView/Mapper';
 import {
   mappingPathToString,
   parsePartialField,
@@ -21,29 +35,15 @@ import {
   getMappingLineData,
   getTableFromMappingPath,
 } from '../WbPlanView/navigator';
-import { mappingPathIsComplete } from '../WbPlanView/helpers';
-import { join } from '../Molecules';
-import { customSelectElementBackground } from '../WbPlanView/CustomSelectElement';
-import { iconClassName, icons } from '../Atoms/Icons';
 import type { QueryFieldFilter, QueryFieldType } from './FieldFilter';
 import {
   filtersWithDefaultValue,
   queryFieldFilters,
   QueryLineFilter,
 } from './FieldFilter';
-import {
-  getMappingLineProps,
-  MappingElement,
-  mappingElementDivider,
-  mappingElementDividerClassName,
-} from '../WbPlanView/LineComponents';
-import type { MappingPath } from '../WbPlanView/Mapper';
-import { Button } from '../Atoms/Button';
-import { className } from '../Atoms/className';
-import { Select } from '../Atoms/Form';
-import { f } from '../../utils/functools';
-import { whitespaceSensitive } from '../../localization/utils';
-import { localityText } from '../../localization/locality';
+import type { DatePart } from './fieldSpec';
+import type { QueryField } from './helpers';
+import { mutateLineData, sortTypes } from './helpers';
 
 // REFACTOR: split this component into smaller components
 export function QueryLine({
@@ -314,7 +314,8 @@ export function QueryLine({
                         aria-label={queryText.or()}
                         aria-pressed={field.filters.length > 1}
                         className={`
-                          aria-handled print:hidden
+                          print:hidden
+                          ${className.ariaHandled}
                           ${isFieldComplete ? '' : 'invisible'}
                         `}
                         disabled={handleChange === undefined}
@@ -322,7 +323,7 @@ export function QueryLine({
                         variant={
                           field.filters.length > 1
                             ? className.blueButton
-                            : className.grayButton
+                            : className.lightGrayButton
                         }
                         onClick={(): void =>
                           handleFilterChange(field.filters.length, {
@@ -364,13 +365,13 @@ export function QueryLine({
                   <Button.Small
                     aria-label={queryText.negate()}
                     aria-pressed={field.filters[index].isNot}
-                    className="aria-handled"
+                    className={className.ariaHandled}
                     disabled={handleChange === undefined}
                     title={queryText.negate()}
                     variant={
                       field.filters[index].isNot
                         ? className.redButton
-                        : className.grayButton
+                        : className.lightGrayButton
                     }
                     onClick={(): void =>
                       handleFilterChange(index, {
@@ -474,10 +475,12 @@ export function QueryLine({
         <Button.Small
           aria-label={queryText.showButtonDescription()}
           aria-pressed={field.isDisplay}
-          className={`aria-handled ${isFieldComplete ? '' : 'invisible'}`}
+          className={`${className.ariaHandled} ${
+            isFieldComplete ? '' : 'invisible'
+          }`}
           title={queryText.showButtonDescription()}
           variant={
-            field.isDisplay ? className.greenButton : className.grayButton
+            field.isDisplay ? className.greenButton : className.lightGrayButton
           }
           onClick={handleChange?.bind(undefined, {
             ...field,

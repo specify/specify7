@@ -34,10 +34,10 @@ export function PickListComboBox(
   }
 ): JSX.Element {
   const getValue = React.useCallback(() => {
-    const value = props.resource.get(props.field.name);
+    const value = props.resource?.get(props.field.name);
     return typeof value === 'object'
       ? (value as SpecifyResource<AnySchema>)?.url() ?? null
-      : (value as number | string)?.toString() ?? null;
+      : (value as number | string | undefined)?.toString() ?? null;
   }, [props.resource, props.field?.name]);
 
   const relatedModel = props.field.isRelationship
@@ -63,7 +63,7 @@ export function PickListComboBox(
   const validationAttributes = useValidationAttributes(props.field);
   const updateValue = React.useCallback(
     (value: string): void =>
-      void props.resource.set(
+      void props.resource?.set(
         props.field.name,
         (value === '' && !props.isRequired
           ? null
@@ -76,6 +76,7 @@ export function PickListComboBox(
 
   // Listen for field value change
   React.useEffect(() => {
+    if (props.resource === undefined) return undefined;
     void props.resource.businessRuleMgr?.checkField(props.field.name);
     return resourceOn(
       props.resource,
@@ -88,7 +89,7 @@ export function PickListComboBox(
   // Set default value
   React.useEffect(() => {
     if (
-      props.resource.isNew() &&
+      props.resource?.isNew() === true &&
       typeof props.defaultValue === 'string' &&
       Array.isArray(items) &&
       !Boolean(props.resource.get(props.field.name))
@@ -140,7 +141,7 @@ export function PickListComboBox(
       updateValue(value);
     else if (props.pickList?.get('type') === PickListTypes.ITEMS)
       setPendingNewValue(value);
-    else throw new Error('adding item to wrong type of picklist');
+    else throw new Error('Adding item to wrong type of picklist');
   }
 
   const currentValue = items?.find((item) => item.value === value);
@@ -269,7 +270,9 @@ function AddingToPicklist({
       header={formsText.invalidType()}
       onClose={handleClose}
     >
-      {formsText.invalidNumericPicklistValue()}
+      {formsText.invalidNumericPicklistValue({
+        pickListTable: schema.models.PickList.label,
+      })}
     </Dialog>
   ) : (
     <Dialog
@@ -297,10 +300,13 @@ function AddingToPicklist({
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
         </>
       }
-      header={formsText.addToPickListConfirmation()}
+      header={formsText.addToPickListConfirmation({
+        pickListTable: schema.models.PickList.label,
+      })}
       onClose={handleClose}
     >
       {formsText.addToPickListConfirmationDescription({
+        pickListTable: schema.models.PickList.label,
         value,
         pickListName: pickList.get('name'),
       })}

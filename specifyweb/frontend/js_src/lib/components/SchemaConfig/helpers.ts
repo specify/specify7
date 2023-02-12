@@ -1,22 +1,23 @@
-import type {
-  ItemType,
-  NewSpLocaleItemString,
-  SpLocaleItemString,
-} from './index';
-import type { DataObjectFormatter } from './SetupHooks';
-import type { SpLocaleContainerItem, Tables } from '../DataModel/types';
-import type { Aggregator, Formatter } from '../Forms/dataObjFormatters';
+import type { LocalizedString } from 'typesafe-i18n';
+
+import { schemaText } from '../../localization/schema';
+import type { IR, RA } from '../../utils/types';
+import { addMissingFields } from '../DataModel/addMissingFields';
+import type { SerializedResource } from '../DataModel/helperTypes';
 import { parseJavaClassName } from '../DataModel/resource';
 import type {
   JavaType,
   LiteralField,
   Relationship,
 } from '../DataModel/specifyField';
-import type { IR, RA } from '../../utils/types';
-import { SerializedResource } from '../DataModel/helperTypes';
-import { addMissingFields } from '../DataModel/addMissingFields';
-import { schemaText } from '../../localization/schema';
-import { LocalizedString } from 'typesafe-i18n';
+import type { SpLocaleContainerItem, Tables } from '../DataModel/types';
+import type { Aggregator, Formatter } from '../Forms/dataObjFormatters';
+import type {
+  ItemType,
+  NewSpLocaleItemString,
+  SpLocaleItemString,
+} from './index';
+import type { DataObjectFormatter } from './SetupHooks';
 
 let newStringId = 1;
 const defaultLanguage = 'en';
@@ -99,9 +100,11 @@ export function getItemType(
 ): ItemType {
   if (item.webLinkName !== null) return 'webLink';
   else if (item.pickListName !== null) return 'pickList';
-  // eslint-disable-next-line no-negated-condition
-  else if (item.format !== null) return 'formatted';
-  else return 'none';
+  else if (item.format === null) {
+    return 'none';
+  } else {
+    return 'formatted';
+  }
 }
 
 const webLinkTypes = new Set<JavaType>(['text', 'java.lang.String']);

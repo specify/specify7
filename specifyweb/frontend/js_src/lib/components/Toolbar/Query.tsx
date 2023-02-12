@@ -5,28 +5,29 @@
 import React from 'react';
 import { useOutletContext } from 'react-router';
 
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { commonText } from '../../localization/common';
+import { queryText } from '../../localization/query';
+import type { RA } from '../../utils/types';
+import { Button } from '../Atoms/Button';
+import { icons } from '../Atoms/Icons';
+import { Link } from '../Atoms/Link';
 import type { CollectionFetchFilters } from '../DataModel/collection';
 import { fetchCollection } from '../DataModel/collection';
-import type { SpQuery } from '../DataModel/types';
-import { commonText } from '../../localization/common';
-import { hasPermission, hasToolPermission } from '../Permissions/helpers';
+import { getField } from '../DataModel/helpers';
+import type { SerializedResource } from '../DataModel/helperTypes';
 import { getModelById, schema } from '../DataModel/schema';
-import type { RA } from '../../utils/types';
+import type { SpQuery } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
-import { icons } from '../Atoms/Icons';
+import { DateElement } from '../Molecules/DateElement';
 import { Dialog } from '../Molecules/Dialog';
+import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
+import { TableIcon } from '../Molecules/TableIcon';
+import { hasPermission, hasToolPermission } from '../Permissions/helpers';
 import { QueryEditButton } from '../QueryBuilder/Edit';
-import { QueryTables } from './QueryTables';
 import { OverlayContext } from '../Router/Router';
 import { SafeOutlet } from '../Router/RouterUtils';
-import { DateElement } from '../Molecules/DateElement';
-import { Button } from '../Atoms/Button';
-import { Link } from '../Atoms/Link';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { SerializedResource } from '../DataModel/helperTypes';
-import { TableIcon } from '../Molecules/TableIcon';
-import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
-import { queryText } from '../../localization/query';
+import { QueryTables } from './QueryTables';
 
 export function QueriesOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -136,7 +137,7 @@ function QueryList({
             scope="col"
           >
             <Button.LikeLink onClick={(): void => handleSort('name')}>
-              {schema.models.SpQuery.strictGetLiteralField('name').label}
+              {getField(schema.models.SpQuery, 'name').label}
               <SortIndicator fieldName="name" sortConfig={sortConfig} />
             </Button.LikeLink>
           </th>
@@ -144,7 +145,7 @@ function QueryList({
             <Button.LikeLink
               onClick={(): void => handleSort('timestampCreated')}
             >
-              {schema.models.SpQuery.strictGetField('timestampCreated').label}
+              {getField(schema.models.SpQuery, 'timestampCreated').label}
               <SortIndicator
                 fieldName="timestampCreated"
                 sortConfig={sortConfig}
@@ -155,7 +156,7 @@ function QueryList({
             <Button.LikeLink
               onClick={(): void => handleSort('timestampModified')}
             >
-              {schema.models.SpQuery.strictGetField('timestampModified').label}
+              {getField(schema.models.SpQuery, 'timestampModified').label}
               <SortIndicator
                 fieldName="timestampModified"
                 sortConfig={sortConfig}

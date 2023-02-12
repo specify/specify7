@@ -5,15 +5,15 @@
  * @module
  */
 
-import type { MappingPath } from '../WbPlanView/Mapper';
 import { Coord } from '../../utils/latLong';
-import { isValidAccuracy } from './index';
-import { mappingLocalityColumns, requiredLocalityColumns } from './config';
 import type { IR, RA } from '../../utils/types';
+import type { MappingPath } from '../WbPlanView/Mapper';
 import {
   mappingPathToString,
   valueIsTreeRank,
 } from '../WbPlanView/mappingHelpers';
+import { mappingLocalityColumns, requiredLocalityColumns } from './config';
+import { isValidAccuracy } from './index';
 
 export type Field<T extends Readonly<unknown>> = {
   readonly headerName: string;
@@ -22,7 +22,7 @@ export type Field<T extends Readonly<unknown>> = {
 
 export type LocalityData = IR<Field<number | string>>;
 
-export const getField = (
+export const getLocalityField = (
   row: RA<string>,
   headers: RA<string>,
   localityColumns: IR<string>,

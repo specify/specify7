@@ -23,8 +23,8 @@ import type { Field, LocalityData } from './helpers';
 import {
   findRanksInMappings,
   formatCoordinate,
-  getField,
   getLocalityData,
+  getLocalityField,
 } from './helpers';
 
 const addBaseTableName = (
@@ -39,6 +39,10 @@ const addBaseTableName = (
 export const uniqueMappingPaths = (
   mappingPaths: RA<MappingPath | undefined>
 ): RA<MappingPath> =>
+  /*
+   * See https://github.com/freaktechnik/eslint-plugin-array-func/issues/344
+   */
+  // eslint-disable-next-line array-func/from-map
   Array.from(
     new Set(filterArray(mappingPaths).map(mappingPathToString)),
     splitJoinedMappingPath
@@ -154,17 +158,21 @@ const findLocalityColumns = (
     )
   );
 
-export function getLocalityColumnsFromSelectedCells(
-  localityColumnGroups: RA<IR<string>>,
+/**
+ * Filter down localityColumns to only include the ones that were selected.
+ * If selected cells are not from any localityColumns groups, select all of them
+ */
+export function getSelectedLocalityColumns(
+  localityColumns: RA<IR<string>>,
   selectedHeaders: RA<string>
 ): RA<IR<string>> {
-  const localityColumns = localityColumnGroups.filter((localityColumns) =>
+  const selectedGroups = localityColumns.filter((localityColumns) =>
     Object.values(localityColumns).some((localityColumn) =>
       selectedHeaders.includes(localityColumn)
     )
   );
 
-  return localityColumns.length === 0 ? localityColumnGroups : localityColumns;
+  return selectedGroups.length === 0 ? localityColumns : selectedGroups;
 }
 
 type SplitMappingPaths = RA<
@@ -236,16 +244,16 @@ function reshapeLocalityData(localityData: LocalityData): LocalityData {
 
       const { headerName, value } = localityDataEntries[index].field;
 
-      if (groupName in aggregated)
-        aggregated[groupName] = {
-          ...aggregated[groupName],
-          value: `${value} ${aggregated[groupName].value}`,
-        };
-      else
-        aggregated[groupName] = {
-          headerName,
-          value,
-        };
+      aggregated[groupName] =
+        groupName in aggregated
+          ? {
+              ...aggregated[groupName],
+              value: `${value} ${aggregated[groupName].value}`,
+            }
+          : {
+              headerName,
+              value,
+            };
 
       return aggregated;
     },
@@ -280,7 +288,7 @@ export function getLocalityCoordinate(
 ): LocalityData | false {
   const getFieldCurried = (fieldName: string): Field<string> => ({
     headerName: localityColumns[fieldName],
-    value: getField(row, headers, localityColumns, fieldName),
+    value: getLocalityField(row, headers, localityColumns, fieldName),
   });
   const formatCoordinateCurried = (fieldName: string): Field<number> => ({
     headerName: localityColumns[fieldName],

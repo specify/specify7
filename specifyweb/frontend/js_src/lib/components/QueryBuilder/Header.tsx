@@ -1,9 +1,11 @@
 import React from 'react';
 
+import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import type { RA } from '../../utils/types';
 import { H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
+import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
@@ -20,7 +22,6 @@ import { QueryEditButton } from './Edit';
 import { smoothScroll } from './helpers';
 import { QueryLoanReturn } from './LoanReturn';
 import type { MainState } from './reducer';
-import { commonText } from '../../localization/common';
 
 export function QueryHeader({
   recordSet,
@@ -60,6 +61,7 @@ export function QueryHeader({
         {typeof recordSet === 'object'
           ? queryText.queryRecordSetTitle({
               queryName: query.name,
+              recordSetTable: schema.models.RecordSet.label,
               recordSetName: recordSet.get('name'),
             })
           : commonText.colonLine({
@@ -83,7 +85,7 @@ export function QueryHeader({
           <ProtectedTable action="update" tableName="Loan">
             <ProtectedTable action="create" tableName="LoanReturnPreparation">
               <ProtectedTable action="read" tableName="LoanPreparation">
-                <ErrorBoundary dismissable>
+                <ErrorBoundary dismissible>
                   <QueryLoanReturn
                     fields={state.fields}
                     getQueryFieldRecords={getQueryFieldRecords}
@@ -116,8 +118,8 @@ export function QueryHeader({
           onTriedToSave={(): boolean => {
             handleTriedToSave();
             const fieldLengthLimit =
-              schema.models.SpQueryField.strictGetLiteralField('startValue')
-                .length ?? Number.POSITIVE_INFINITY;
+              getField(schema.models.SpQueryField, 'startValue').length ??
+              Number.POSITIVE_INFINITY;
             return state.fields.every((field) =>
               field.filters.every(
                 ({ startValue }) => startValue.length < fieldLengthLimit

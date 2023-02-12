@@ -2,20 +2,20 @@
  * Fetch back-end pick lists and define front-end pick lists
  */
 
-import { deserializeResource } from '../../hooks/resource';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
+import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
 import type { IR, R, RA } from '../../utils/types';
 import { months } from '../Atoms/Internationalization';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import { fetchCollection } from '../DataModel/collection';
+import { deserializeResource, getField } from '../DataModel/helpers';
 import type { SerializedResource, TableFields } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { PickList, PickListItem, Tables } from '../DataModel/types';
 import { hasToolPermission } from '../Permissions/helpers';
-import { queryText } from '../../localization/query';
 
 let pickLists: R<SpecifyResource<PickList> | undefined> = {};
 
@@ -47,7 +47,7 @@ const auditLogActions = [
 
 const pickListSortTypes = f.store(() => [
   commonText.none(),
-  schema.models.PickListItem.strictGetField('title').label,
+  getField(schema.models.PickListItem, 'title').label,
   commonText.ordinal(),
 ]);
 
@@ -100,9 +100,11 @@ export const pickListTablesPickList = f.store(() =>
   )
 );
 
+export const monthsPickListName = '_Months';
+
 export const monthsPickList = f.store(() =>
   definePicklist(
-    '_Months',
+    monthsPickListName,
     months.map((title, index) =>
       createPickListItem((index + 1).toString(), title)
     )

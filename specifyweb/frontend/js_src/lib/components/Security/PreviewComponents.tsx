@@ -1,6 +1,8 @@
 import React from 'react';
 
 import { useId } from '../../hooks/useId';
+import { commonText } from '../../localization/common';
+import { userText } from '../../localization/user';
 import type { IR } from '../../utils/types';
 import { Input } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
@@ -10,8 +12,6 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { tableActions } from '../Permissions/definitions';
 import type { PreviewCell } from './Preview';
 import { actionToLabel, resourceNameToLabel } from './utils';
-import { commonText } from '../../localization/common';
-import { userText } from '../../localization/user';
 
 export function PreviewRow({
   row,
@@ -85,7 +85,9 @@ export function PermissionExplanation({
       >
         <div role="row">
           {[
-            userText.collectionUserRoles(),
+            userText.collectionUserRoles({
+              collectionTable: schema.models.Collection.label,
+            }),
             userText.action(),
             userText.resource(),
           ].map((label, index, { length }) => (

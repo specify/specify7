@@ -1,25 +1,26 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
-import type { SpLocaleContainerItem } from '../DataModel/types';
-import { f } from '../../utils/functools';
-import { KEY, sortFunction, split } from '../../utils/utils';
+import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
-import { hasToolPermission } from '../Permissions/helpers';
-import { getItemType, isFormatterAvailable } from './helpers';
-import type { LiteralField, Relationship } from '../DataModel/specifyField';
+import { schemaText } from '../../localization/schema';
+import { f } from '../../utils/functools';
 import type { IR, RA, RR } from '../../utils/types';
-import type { ItemType } from './index';
-import { PickList } from './Components';
-import type { SchemaData } from './SetupHooks';
-import type { WithFetchedStrings } from '../Toolbar/SchemaConfig';
-import { Link } from '../Atoms/Link';
+import { KEY, sortFunction, split } from '../../utils/utils';
 import { className } from '../Atoms/className';
 import { Input, Label } from '../Atoms/Form';
-import { useId } from '../../hooks/useId';
-import { SerializedResource } from '../DataModel/helperTypes';
-import { schemaText } from '../../localization/schema';
-import { LocalizedString } from 'typesafe-i18n';
+import { Link } from '../Atoms/Link';
+import { getField } from '../DataModel/helpers';
+import type { SerializedResource } from '../DataModel/helperTypes';
 import { schema } from '../DataModel/schema';
+import type { LiteralField, Relationship } from '../DataModel/specifyField';
+import type { SpLocaleContainerItem } from '../DataModel/types';
+import { hasToolPermission } from '../Permissions/helpers';
+import type { WithFetchedStrings } from '../Toolbar/SchemaConfig';
+import { PickList } from './Components';
+import { getItemType, isFormatterAvailable } from './helpers';
+import type { ItemType } from './index';
+import type { SchemaData } from './SetupHooks';
 
 export function SchemaConfigFormat({
   schemaData,
@@ -80,7 +81,8 @@ export function SchemaConfigFormat({
                     `${name} ${value}${
                       isSystem
                         ? ` (${
-                            schema.models.SpLocaleContainerItem.strictGetField(
+                            getField(
+                              schema.models.SpLocaleContainerItem,
                               'isSystem'
                             ).label
                           })`
@@ -102,8 +104,8 @@ export function SchemaConfigFormat({
           value: item.pickListName,
           values: {
             [schemaText.userDefined()]: userPickLists,
-            [schema.models.SpLocaleContainerItem.strictGetField('isSystem')
-              .label]: systemPickLists,
+            [getField(schema.models.SpLocaleContainerItem, 'isSystem').label]:
+              systemPickLists,
           },
           extraComponents: (
             <>

@@ -1,10 +1,24 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import type { LocalizedString } from 'typesafe-i18n';
 import type { State } from 'typesafe-reducer';
 
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { commonText } from '../../localization/common';
+import { interactionsText } from '../../localization/interactions';
 import { ajax } from '../../utils/ajax';
-import { error } from '../Errors/assert';
+import { f } from '../../utils/functools';
+import type { RA } from '../../utils/types';
+import { defined, filterArray } from '../../utils/types';
+import { getBooleanAttribute, getParsedAttribute } from '../../utils/utils';
+import { Ul } from '../Atoms';
+import { icons } from '../Atoms/Icons';
+import { Link } from '../Atoms/Link';
 import { fetchCollection } from '../DataModel/collection';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import { getResourceViewUrl, parseJavaClassName } from '../DataModel/resource';
+import { getModel, schema, strictGetModel } from '../DataModel/schema';
+import type { SpecifyModel } from '../DataModel/specifyModel';
 import type {
   Disposal,
   Gift,
@@ -12,32 +26,19 @@ import type {
   RecordSet,
   Tables,
 } from '../DataModel/types';
-import { f } from '../../utils/functools';
-import { getBooleanAttribute, getParsedAttribute } from '../../utils/utils';
-import { cachableUrl } from '../InitialContext';
-import { commonText } from '../../localization/common';
-import { fetchView } from '../FormParse';
-import { hasPermission, hasTablePermission } from '../Permissions/helpers';
-import { formatUrl } from '../Router/queryString';
-import { getResourceViewUrl, parseJavaClassName } from '../DataModel/resource';
-import { getModel, schema, strictGetModel } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
-import type { RA } from '../../utils/types';
-import { defined, filterArray } from '../../utils/types';
-import { userInformation } from '../InitialContext/userInformation';
-import { Ul } from '../Atoms';
+import { error } from '../Errors/assert';
+import { softFail } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import { icons } from '../Atoms/Icons';
-import { InteractionDialog } from './InteractionDialog';
+import { fetchView } from '../FormParse';
+import { cachableUrl } from '../InitialContext';
+import { userInformation } from '../InitialContext/userInformation';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { ReportsView } from '../Reports';
-import { OverlayContext } from '../Router/Router';
-import { Link } from '../Atoms/Link';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { SerializedResource } from '../DataModel/helperTypes';
 import { TableIcon } from '../Molecules/TableIcon';
-import { LocalizedString } from 'typesafe-i18n';
-import { interactionsText } from '../../localization/interactions';
+import { hasPermission, hasTablePermission } from '../Permissions/helpers';
+import { ReportsView } from '../Reports';
+import { formatUrl } from '../Router/queryString';
+import { OverlayContext } from '../Router/Router';
+import { InteractionDialog } from './InteractionDialog';
 
 export const interactionTables: ReadonlySet<keyof Tables> = new Set<
   keyof Tables
@@ -88,19 +89,37 @@ const supportedActions = [
 /**
  * Remap Specify 6 UI localization strings to Specify 7 UI localization strings
  */
-const stringLocalization = {
-  RET_LOAN: interactionsText.returnLoan(),
+const stringLocalization = f.store(() => ({
+  RET_LOAN: interactionsText.returnLoan({
+    tableLoan: schema.models.Loan.label,
+  }),
   PRINT_INVOICE: interactionsText.printInvoice(),
-  LOAN_NO_PRP: interactionsText.loanWithoutPreparation(),
+  LOAN_NO_PRP: interactionsText.loanWithoutPreparation({
+    tableLoan: schema.models.Loan.label,
+    tablePreparation: schema.models.Preparation.label,
+  }),
   'InteractionsTask.LN_NO_PREP':
-    interactionsText.loanWithoutPreparationDescription(),
-  'InteractionsTask.NEW_LN': interactionsText.createLoan(),
-  'InteractionsTask.EDT_LN': interactionsText.editLoan(),
-  'InteractionsTask.NEW_GFT': interactionsText.createdGift(),
-  'InteractionsTask.EDT_GFT': interactionsText.editGift(),
-  'InteractionsTask.CRE_IR': interactionsText.createInformationRequest(),
+    interactionsText.loanWithoutPreparationDescription({
+      tableLoan: schema.models.Loan.label,
+      tablePreparation: schema.models.Preparation.label,
+    }),
+  'InteractionsTask.NEW_LN': interactionsText.createLoan({
+    tableLoan: schema.models.Loan.label,
+  }),
+  'InteractionsTask.EDT_LN': interactionsText.editLoan({
+    tableLoan: schema.models.Loan.label,
+  }),
+  'InteractionsTask.NEW_GFT': interactionsText.createdGift({
+    tableGift: schema.models.Gift.label,
+  }),
+  'InteractionsTask.EDT_GFT': interactionsText.editGift({
+    tableGift: schema.models.Gift.label,
+  }),
+  'InteractionsTask.CRE_IR': interactionsText.createInformationRequest({
+    tableInformationRequest: schema.models.InfoRequest.label,
+  }),
   'InteractionsTask.PRT_INV': interactionsText.printInvoice(),
-};
+}));
 
 export type InteractionEntry = {
   readonly action: typeof supportedActions[number] | undefined;
@@ -182,6 +201,18 @@ function Interactions({
         const model = isRecordSetAction
           ? schema.models.CollectionObject
           : schema.models.Loan;
+        const actionModel =
+          table.toLowerCase() === 'loan'
+            ? schema.models.Loan
+            : table.toLowerCase() === 'gift'
+            ? schema.models.Gift
+            : table.toLowerCase() === 'disposal'
+            ? schema.models.Disposal
+            : undefined;
+        if (actionModel === undefined) {
+          softFail(new Error(`Unknown interaction table: ${table}`));
+          return;
+        }
         setState({
           type: 'InteractionState',
           recordSetsPromise: fetchCollection('RecordSet', {
@@ -193,14 +224,7 @@ function Interactions({
             limit: 5000,
           }),
           table: model.name,
-          actionModel:
-            table.toLowerCase() === 'loan'
-              ? schema.models.Loan
-              : table.toLowerCase() === 'gift'
-              ? schema.models.Gift
-              : table.toLowerCase() === 'disposal'
-              ? schema.models.Disposal
-              : error(`Unknown interaction table: ${table}`),
+          actionModel,
           action,
         });
       }
@@ -240,8 +264,8 @@ function Interactions({
                 key={index}
                 title={
                   typeof tooltip === 'string'
-                    ? stringLocalization[
-                        tooltip as keyof typeof stringLocalization
+                    ? stringLocalization()[
+                        tooltip as keyof ReturnType<typeof stringLocalization>
                       ] ?? tooltip
                     : undefined
                 }
@@ -265,8 +289,8 @@ function Interactions({
                     <TableIcon label={false} name={icon} />
                   ))}
                   {typeof label === 'string'
-                    ? stringLocalization[
-                        label as keyof typeof stringLocalization
+                    ? stringLocalization()[
+                        label as keyof ReturnType<typeof stringLocalization>
                       ] ?? label
                     : typeof table === 'string'
                     ? getModel(table)?.label
@@ -308,7 +332,7 @@ export function InteractionsOverlay(): JSX.Element | null {
   const handleClose = React.useContext(OverlayContext);
 
   return typeof entries === 'object' ? (
-    <ErrorBoundary dismissable>
+    <ErrorBoundary dismissible>
       <Interactions entries={entries} onClose={handleClose} />
     </ErrorBoundary>
   ) : null;

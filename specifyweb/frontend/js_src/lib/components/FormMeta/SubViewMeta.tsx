@@ -1,13 +1,15 @@
 import React from 'react';
 
-import { formsText } from '../../localization/forms';
-import type { FormType } from '../FormParse';
-import type { SpecifyModel } from '../DataModel/specifyModel';
-import { Label, Select } from '../Atoms/Form';
-import { OrderPicker } from '../UserPreferences/Renderers';
-import type { SubViewContext } from '../Forms/SubView';
 import { attachmentsText } from '../../localization/attachments';
+import { formsText } from '../../localization/forms';
+import { Label, Select } from '../Atoms/Form';
+import { getField } from '../DataModel/helpers';
 import { schema } from '../DataModel/schema';
+import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { FormType } from '../FormParse';
+import type { SubViewContext } from '../Forms/SubView';
+import { toLargeSortConfig, toSmallSortConfig } from '../Molecules/Sorting';
+import { OrderPicker } from '../UserPreferences/Renderers';
 
 export function SubViewMeta({
   subView,
@@ -24,14 +26,14 @@ export function SubViewMeta({
   return (
     <>
       <Label.Block>
-        {schema.models.SpLocaleContainerItem.strictGetField('type').label}
+        {getField(schema.models.SpLocaleContainerItem, 'type').label}
         <Select
           value={formType}
           onValueChange={(formType): void =>
             handleChangeFormType(formType as FormType)
           }
         >
-          <option value="form">{formsText.form()}</option>
+          <option value="form">{formsText.subForm()}</option>
           <option value="formTable">{formsText.formTable()}</option>
         </Select>
       </Label.Block>
@@ -40,8 +42,12 @@ export function SubViewMeta({
         {attachmentsText.orderBy()}
         <OrderPicker
           model={model}
-          order={sortField}
-          onChange={handleChangeSortField}
+          order={
+            sortField === undefined ? undefined : toSmallSortConfig(sortField)
+          }
+          onChange={(sortField): void =>
+            handleChangeSortField(toLargeSortConfig(sortField))
+          }
         />
       </Label.Block>
     </>

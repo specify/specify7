@@ -1,9 +1,10 @@
+import type { LocalizedString } from 'typesafe-i18n';
+
 import { mockTime, requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
 import { addMissingFields } from '../addMissingFields';
 import type { AnySchema, SerializedResource } from '../helperTypes';
 import type { Agent } from '../types';
-import { LocalizedString } from 'typesafe-i18n';
 
 mockTime();
 requireContext();
@@ -89,6 +90,7 @@ theories(addMissingFields, [
       firstName: null,
       groups: [],
       guid: null,
+      identifiers: [],
       initials: null,
       instContentContact: null,
       instTechContact: null,
@@ -101,6 +103,7 @@ theories(addMissingFields, [
       modifiedByAgent: null,
       organization: null,
       remarks: null,
+      resource_uri: undefined,
       specifyUser: null,
       suffix: null,
       text1: 'abc' as LocalizedString,

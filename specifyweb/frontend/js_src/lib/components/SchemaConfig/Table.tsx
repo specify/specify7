@@ -1,6 +1,9 @@
 import React from 'react';
 
+import { commonText } from '../../localization/common';
+import { schemaText } from '../../localization/schema';
 import { Input, Label } from '../Atoms/Form';
+import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { schema } from '../DataModel/schema';
 import type { SpLocaleContainer, Tables } from '../DataModel/types';
@@ -10,11 +13,11 @@ import { SchemaConfigColumn } from './Fields';
 import { filterFormatters } from './helpers';
 import type { NewSpLocaleItemString, SpLocaleItemString } from './index';
 import type { SchemaData } from './SetupHooks';
-import { schemaText } from '../../localization/schema';
-import { commonText } from '../../localization/common';
 
-export const maxSchemaValueLength =
-  schema.models.SpLocaleItemStr.strictGetLiteralField('text').length;
+export const maxSchemaValueLength = getField(
+  schema.models.SpLocaleItemStr,
+  'text'
+).length;
 
 export function SchemaConfigTable({
   schemaData,

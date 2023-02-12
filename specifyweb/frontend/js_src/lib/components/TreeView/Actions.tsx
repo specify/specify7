@@ -1,28 +1,29 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
-import { ping } from '../../utils/ajax/ping';
-import { formData } from '../../utils/ajax/helpers';
-import { toLowerCase } from '../../utils/utils';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
+import { queryText } from '../../localization/query';
 import { treeText } from '../../localization/tree';
-import { hasPermission, hasTablePermission } from '../Permissions/helpers';
-import { schema } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
-import type { Row } from './helpers';
-import { checkMoveViolatesEnforced } from './helpers';
+import { formData } from '../../utils/ajax/helpers';
+import { ping } from '../../utils/ajax/ping';
 import type { RA } from '../../utils/types';
-import { LoadingContext } from '../Core/Contexts';
-import { DeleteButton } from '../Forms/DeleteButton';
-import { Dialog } from '../Molecules/Dialog';
-import { ResourceView } from '../Forms/ResourceView';
+import { toLowerCase } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
-import { useLiveState } from '../../hooks/useLiveState';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { AnySchema, AnyTree } from '../DataModel/helperTypes';
-import { LocalizedString } from 'typesafe-i18n';
-import { queryText } from '../../localization/query';
+import { LoadingContext } from '../Core/Contexts';
+import type { AnySchema, AnyTree } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { schema } from '../DataModel/schema';
+import type { SpecifyModel } from '../DataModel/specifyModel';
+import { DeleteButton } from '../Forms/DeleteButton';
+import { ResourceView } from '../Forms/ResourceView';
+import { getPref } from '../InitialContext/remotePrefs';
+import { Dialog } from '../Molecules/Dialog';
+import { hasPermission, hasTablePermission } from '../Permissions/helpers';
+import type { Row } from './helpers';
+import { checkMoveViolatesEnforced } from './helpers';
 
 type Action = 'add' | 'desynonymize' | 'edit' | 'merge' | 'move' | 'synonymize';
 
@@ -57,6 +58,10 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
   const resourceName = `/tree/edit/${toLowerCase(tableName)}` as const;
   const isSynonym = typeof focusedRow?.acceptedId === 'number';
 
+  const doExpandSynonymActionsPref = getPref(
+    `sp7.allow_adding_child_to_synonymized_parent.${tableName}`
+  );
+
   const disableButtons =
     focusedRow === undefined || typeof currentAction === 'string';
   return currentAction === undefined ||
@@ -85,8 +90,8 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
       <li className="contents">
         <EditRecordDialog<SCHEMA>
           addNew={false}
-          isRoot={isRoot}
           disabled={focusedRow === undefined}
+          isRoot={isRoot}
           label={
             hasTablePermission(tableName, 'update')
               ? commonText.edit()
@@ -113,7 +118,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
             addNew
             disabled={
               focusedRow === undefined ||
-              typeof focusedRow.acceptedId === 'number' ||
+              (doExpandSynonymActionsPref ? false : isSynonym) ||
               // Forbid adding children to the lowest rank
               ranks.at(-1) === focusedRow.rankId
             }
@@ -154,7 +159,9 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
             disabled={
               disableButtons ||
               isRoot ||
-              (!isSynonym && focusedRow.children > 0)
+              (doExpandSynonymActionsPref
+                ? false
+                : !isSynonym && focusedRow.children > 0)
             }
             onClick={(): void =>
               setAction(isSynonym ? 'desynonymize' : 'synonymize')
@@ -431,6 +438,7 @@ function NodeDeleteButton({
         : undefined,
     [tableName, nodeId]
   );
+
   return disabled || resource === undefined ? (
     <Button.Small onClick={undefined}>{commonText.delete()}</Button.Small>
   ) : (

@@ -1,4 +1,5 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useTriggerState } from '../../hooks/useTriggerState';
@@ -19,13 +20,13 @@ import { parseValue } from '../../utils/parser/parse';
 import type { RA, RR } from '../../utils/types';
 import { removeKey } from '../../utils/utils';
 import { Input, Select, selectMultipleSize } from '../Atoms/Form';
+import { getField } from '../DataModel/helpers';
 import { schema } from '../DataModel/schema';
 import type { PickListItemSimple } from '../FormFields/ComboBox';
 import { hasNativeErrors } from '../Forms/validationHelpers';
 import { fetchPickList, getPickListItems } from '../PickLists/fetch';
 import { mappingElementDivider } from '../WbPlanView/LineComponents';
 import type { QueryField } from './helpers';
-import { LocalizedString } from 'typesafe-i18n';
 
 /**
  * Formatters and aggregators don't yet support any filtering options.
@@ -202,12 +203,12 @@ function QueryInputField({
       {/* This invisible input is used to set the height */}
       <Input.Text aria-hidden className="invisible w-0" />
       <Input.Generic
+        // This is the actual input that is visible to user
         {...commonProps}
         {...validationAttributes}
-        type={listInput ? 'text' : validationAttributes.type}
-        // This is the actual input that is visible to user
-        value={value}
         className={`!absolute inset-0 ${commonProps.className}`}
+        type={listInput ? 'text' : validationAttributes.type}
+        value={value}
       />
     </span>
   );
@@ -333,7 +334,7 @@ function In({
     () => ({
       ...pluralizeParser(parser),
       maxLength: enforceLengthLimit
-        ? schema.models.SpQueryField.strictGetLiteralField('startValue').length
+        ? getField(schema.models.SpQueryField, 'startValue').length
         : undefined,
     }),
     [parser, enforceLengthLimit]

@@ -1,34 +1,34 @@
 import React from 'react';
 
-import { getResourceAndField } from '../../hooks/resource';
-import { useAsyncState } from '../../hooks/useAsyncState';
+import { useDistantRelated } from '../../hooks/resource';
 import { useResourceValue } from '../../hooks/useResourceValue';
-import type { IR } from '../../utils/types';
 import type { Parser } from '../../utils/parser/definitions';
 import { getValidationAttributes } from '../../utils/parser/definitions';
+import type { IR, RA } from '../../utils/types';
 import { Input, Textarea } from '../Atoms/Form';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import type { FormMode, FormType } from '../FormParse';
 import type { FieldTypes, FormFieldDefinition } from '../FormParse/fields';
 import { FormPlugin } from '../FormPlugins';
-import { hasPathPermission, hasPermission } from '../Permissions/helpers';
-import { PrintOnSave, SpecifyFormCheckbox } from './Checkbox';
-import { Combobox, resolvePickListField } from './ComboBox';
-import { UiField } from './Field';
-import { QueryComboBox } from './QueryComboBox';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { usePref } from '../UserPreferences/usePref';
+import { PrintOnSave, SpecifyFormCheckbox } from './Checkbox';
+import { Combobox } from './ComboBox';
+import { UiField } from './Field';
+import { QueryComboBox } from './QueryComboBox';
 
 const fieldRenderers: {
   readonly [KEY in keyof FieldTypes]: (props: {
-    readonly resource: SpecifyResource<AnySchema>;
+    readonly resource: SpecifyResource<AnySchema> | undefined;
     readonly mode: FormMode;
     readonly fieldDefinition: FieldTypes[KEY];
     readonly id: string | undefined;
     readonly isRequired: boolean;
-    readonly fieldName: string | undefined;
+    readonly name: string | undefined;
+    readonly field: LiteralField | Relationship | undefined;
     readonly formType: FormType;
   }) => JSX.Element | null;
 } = {
@@ -36,50 +36,47 @@ const fieldRenderers: {
     id,
     resource,
     mode,
-    fieldName,
+    name,
+    field,
     fieldDefinition: { defaultValue, printOnSave, label },
   }) {
-    if (printOnSave)
-      return hasPermission('/report', 'execute') ? (
+    const table = resource?.specifyModel ?? field?.model;
+    return printOnSave ? (
+      table === undefined ? null : (
         <PrintOnSave
           defaultValue={defaultValue}
-          fieldName={fieldName}
+          field={field}
           id={id}
-          model={resource.specifyModel}
+          model={table}
+          name={name}
           text={label}
         />
-      ) : null;
-    else if (fieldName === undefined) {
-      console.error(
-        `Trying to render a checkbox on a ${resource.specifyModel.name} form without a field name`
-      );
-      return null;
-    } else
-      return (
-        <ErrorBoundary dismissable>
-          <SpecifyFormCheckbox
-            defaultValue={defaultValue}
-            fieldName={fieldName}
-            id={id}
-            isReadOnly={mode === 'view'}
-            resource={resource}
-            text={label}
-          />
-        </ErrorBoundary>
-      );
+      )
+    ) : field?.isRelationship ? null : (
+      <SpecifyFormCheckbox
+        defaultValue={defaultValue}
+        field={field}
+        id={id}
+        isReadOnly={mode === 'view'}
+        name={name}
+        resource={resource}
+        text={label}
+      />
+    );
   },
   TextArea({
     id,
+    name,
     resource,
     mode,
-    fieldName,
+    field,
     isRequired,
     fieldDefinition: { defaultValue, rows },
     formType,
   }) {
     const { value, updateValue, validationRef, parser } = useResourceValue(
       resource,
-      fieldName,
+      field,
       React.useMemo(
         () => ({
           value: defaultValue,
@@ -101,22 +98,16 @@ const fieldRenderers: {
     const Component =
       autoGrow && formType !== 'formTable' ? AutoGrowTextArea : Textarea;
 
-    if (fieldName === undefined)
-      console.error(
-        `Trying to render a text area on the ${resource.specifyModel.name} form with unknown field name`,
-        { id, defaultValue }
-      );
-
     return (
-      <ErrorBoundary dismissable>
+      <ErrorBoundary dismissible>
         <Component
           {...validationAttributes}
           forwardRef={validationRef}
           id={id}
-          isReadOnly={mode === 'view'}
-          name={fieldName}
+          isReadOnly={mode === 'view' || field === undefined}
+          name={name}
           required={'required' in validationAttributes && mode !== 'search'}
-          rows={rows}
+          rows={formType === 'formTable' ? 1 : rows}
           value={value?.toString() ?? ''}
           onBlur={(): void => updateValue(value?.toString() ?? '')}
           onValueChange={(value): void => updateValue(value, false)}
@@ -128,52 +119,22 @@ const fieldRenderers: {
     id,
     resource,
     mode,
-    fieldName,
+    field,
     isRequired,
-    formType,
     fieldDefinition: { defaultValue, pickList },
   }) {
-    const resolvedFieldName = React.useMemo(
-      () => resolvePickListField(resource, fieldName),
-      [resource, fieldName]
-    );
-    const field = React.useMemo(
-      () =>
-        resolvedFieldName === undefined
-          ? undefined
-          : resource.specifyModel.getField(resolvedFieldName),
-      [resource.specifyModel, resolvedFieldName]
-    );
-    const [resolvedResource] = useAsyncState(
-      React.useCallback(
-        async () =>
-          getResourceAndField(resource, resolvedFieldName).then(
-            (values) => values?.resource ?? false
-          ),
-        [resource, resolvedFieldName]
-      ),
-      false
-    );
-    return (
-      <ErrorBoundary dismissable>
-        <Combobox
-          defaultValue={defaultValue}
-          field={field}
-          fieldName={resolvedFieldName}
-          formType={formType}
-          id={id}
-          isDisabled={resolvedFieldName === undefined}
-          isRequired={isRequired}
-          mode={mode}
-          model={resource}
-          pickListName={pickList}
-          resource={
-            resolvedResource === false || resolvedResource === undefined
-              ? resource
-              : resolvedResource
-          }
-        />
-      </ErrorBoundary>
+    return field === undefined ? null : (
+      <Combobox
+        defaultValue={defaultValue}
+        field={field}
+        id={id}
+        isDisabled={false}
+        isRequired={isRequired}
+        mode={mode}
+        model={resource}
+        pickListName={pickList}
+        resource={resource}
+      />
     );
   },
   QueryComboBox({
@@ -181,61 +142,59 @@ const fieldRenderers: {
     resource,
     mode,
     formType,
-    fieldName,
+    field,
     isRequired,
     fieldDefinition: { hasCloneButton, typeSearch },
   }) {
-    return typeof fieldName !== 'string' ||
-      hasPathPermission(
-        resource.specifyModel.name,
-        fieldName.split('.'),
-        'read'
-      ) ? (
+    return field === undefined || !field.isRelationship ? null : (
       <QueryComboBox
-        fieldName={fieldName}
+        field={field}
         forceCollection={undefined}
         formType={formType}
         hasCloneButton={hasCloneButton}
         id={id}
         isRequired={isRequired}
         mode={mode}
-        relatedModel={undefined}
         resource={resource}
         typeSearch={typeSearch}
       />
-    ) : null;
+    );
   },
   Text({
     id,
     resource,
     mode,
-    fieldName,
+    name,
+    field,
     isRequired,
-    fieldDefinition: { defaultValue, min, max, step },
+    fieldDefinition: { defaultValue, min, max, step, maxLength, minLength },
   }) {
+    const parser = React.useMemo<Parser>(
+      () => ({
+        value: defaultValue,
+        min,
+        max,
+        step,
+        required: isRequired,
+        maxLength,
+        minLength,
+      }),
+      [defaultValue, min, max, step, isRequired, maxLength, minLength]
+    );
     return (
-      <ErrorBoundary dismissable>
-        <UiField
-          fieldName={fieldName}
-          id={id}
-          mode={mode}
-          parser={React.useMemo<Parser>(
-            () => ({
-              value: defaultValue,
-              min,
-              max,
-              step,
-              required: isRequired,
-            }),
-            [defaultValue, min, max, step, isRequired]
-          )}
-          resource={resource}
-        />
-      </ErrorBoundary>
+      <UiField
+        field={field}
+        id={id}
+        mode={mode}
+        name={name}
+        parser={parser}
+        resource={resource}
+      />
     );
   },
   Plugin: FormPlugin,
-  FilePicker({ id, mode, fieldName, isRequired }) {
+  FilePicker({ id, mode, name, isRequired }) {
+    // FEATURE: consider replacing this with AttachmentsPlugin for some field names
     /*
      * Not sure how this is supposed to work, thus the field is rendered as
      * disabled
@@ -248,16 +207,19 @@ const fieldRenderers: {
         disabled
         id={id}
         isReadOnly={mode === 'view'}
-        name={fieldName}
+        name={name}
         required={isRequired}
         type="file"
       />
     );
   },
+  Blank: () => null,
 };
 
 export function FormField({
   mode,
+  resource,
+  fields,
   fieldDefinition: { isReadOnly, ...fieldDefinition },
   ...rest
 }: {
@@ -265,19 +227,27 @@ export function FormField({
   readonly mode: FormMode;
   readonly id: string | undefined;
   readonly fieldDefinition: FormFieldDefinition;
-  readonly fieldName: string | undefined;
+  readonly fields: RA<LiteralField | Relationship> | undefined;
   readonly isRequired: boolean;
   readonly formType: FormType;
 }): JSX.Element {
   const Render = fieldRenderers[
     fieldDefinition.type
   ] as typeof fieldRenderers.Checkbox;
+  const data = useDistantRelated(resource, fields);
   return (
-    <Render
-      mode={isReadOnly ? 'view' : mode}
-      {...rest}
-      fieldDefinition={fieldDefinition as FieldTypes['Checkbox']}
-      isRequired={rest.isRequired && mode !== 'search'}
-    />
+    <ErrorBoundary dismissible>
+      {data === undefined ? undefined : (
+        <Render
+          mode={isReadOnly || data.resource !== resource ? 'view' : mode}
+          {...rest}
+          field={data.field}
+          fieldDefinition={fieldDefinition as FieldTypes['Checkbox']}
+          isRequired={rest.isRequired && mode !== 'search'}
+          name={fields?.map(({ name }) => name).join('.')}
+          resource={data.resource}
+        />
+      )}
+    </ErrorBoundary>
   );
 }

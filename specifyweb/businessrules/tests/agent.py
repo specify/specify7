@@ -66,32 +66,3 @@ class AgentTests(ApiTests):
                 firstname="Test",
                 lastname="Agent",
                 division=self.division)
-
-
-    def test_other_and_group_do_not_have_addresses(self):
-        from specifyweb.specify.agent_types import agent_types
-        agent = models.Agent.objects.create(
-            agenttype=agent_types.index('Person'),
-            firstname="Test",
-            lastname="Agent",
-            division=self.division)
-
-        agent.addresses.create(address="somewhere")
-
-        models.Address.objects.get(agent=agent)
-
-        agent.agenttype = agent_types.index('Other')
-        agent.save()
-
-        with self.assertRaises(models.Address.DoesNotExist):
-            models.Address.objects.get(agent=agent)
-
-        agent.addresses.create(address="somewhere")
-
-        models.Address.objects.get(agent=agent)
-
-        agent.agenttype = agent_types.index('Group')
-        agent.save()
-
-        with self.assertRaises(models.Address.DoesNotExist):
-            models.Address.objects.get(agent=agent)

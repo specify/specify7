@@ -1,18 +1,18 @@
 import React from 'react';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
+import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
 import { filterArray } from '../../utils/types';
 import { getParsedAttribute } from '../../utils/utils';
-import { formatList } from '../Atoms/Internationalization';
+import { formatConjunction } from '../Atoms/Internationalization';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { load } from '../InitialContext';
 import { formatUrl } from '../Router/queryString';
 import { columnToFieldMapper } from './parseSelect';
 import type { TypeSearch } from './queryComboBoxUtils';
-import { commonText } from '../../localization/common';
 
 const typeSearches = load<Element>(
   formatUrl('/context/app.resource', { name: 'TypeSearches' }),
@@ -21,12 +21,12 @@ const typeSearches = load<Element>(
 
 export function useTypeSearch(
   initialTypeSearch: Element | string | undefined,
-  field: LiteralField | Relationship | undefined,
+  field: LiteralField | Relationship,
   initialRelatedModel: SpecifyModel | undefined
 ): TypeSearch | false | undefined {
   const relatedModel =
     initialRelatedModel ??
-    (field?.isRelationship === true ? field.relatedModel : undefined);
+    (field?.isRelationship ? field.relatedModel : undefined);
   const [typeSearch] = useAsyncState<TypeSearch | false>(
     React.useCallback(
       () =>
@@ -67,8 +67,10 @@ async function parseTypeSearch(
               : f.id
           ) ?? [];
   const searchFields = rawSearchFieldsNames
-    .map((searchField) => relatedModel.getFields(searchField))
+    .map((searchField) => relatedModel.getFields(searchField) ?? [])
     .filter(({ length }) => length > 0);
+
+  if (searchFields.length === 0) return false;
 
   /*
    * Can't use generateMappingPathPreview here as that function expects
@@ -86,7 +88,7 @@ async function parseTypeSearch(
   return {
     title: commonText.colonLine({
       label: queryText.searchFields(),
-      value: formatList(fieldTitles),
+      value: formatConjunction(fieldTitles),
     }),
     searchFields,
     relatedModel,

@@ -1,20 +1,21 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 import type { State } from 'typesafe-reducer';
 
+import { interactionsText } from '../../localization/interactions';
 import type { Preparations } from '../../utils/ajax/specifyApi';
 import { getInteractionsForPrepId } from '../../utils/ajax/specifyApi';
 import { syncFieldFormat } from '../../utils/fieldFormat';
 import type { RA, RR } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Input } from '../Atoms/Form';
+import { formatNumber } from '../Atoms/Internationalization';
 import { LoadingContext } from '../Core/Contexts';
+import { getField } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { ExchangeOut, Gift, Loan } from '../DataModel/types';
 import { ResourceView } from '../Forms/ResourceView';
-import { LocalizedString } from 'typesafe-i18n';
-import { formatNumber } from '../Atoms/Internationalization';
-import { interactionsText } from '../../localization/interactions';
 
 export function PrepDialogRow({
   preparation,
@@ -65,9 +66,7 @@ export function PrepDialogRow({
         </td>
         <td className="justify-end tabular-nums">
           {syncFieldFormat(
-            schema.models.CollectionObject.strictGetLiteralField(
-              'catalogNumber'
-            ),
+            getField(schema.models.CollectionObject, 'catalogNumber'),
             undefined,
             preparation.catalogNumber
           )}

@@ -2,15 +2,17 @@ import React from 'react';
 
 import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
+import { userText } from '../../localization/user';
 import { f } from '../../utils/functools';
 import type { IR, RA, RR } from '../../utils/types';
-import { filterArray } from '../../utils/types';
+import { defined, filterArray } from '../../utils/types';
 import { replaceItem, replaceKey, sortFunction } from '../../utils/utils';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Input, Label } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
+import { getField } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { SpecifyUser } from '../DataModel/types';
@@ -26,7 +28,6 @@ import type { Policy } from './Policy';
 import type { Role } from './Role';
 import { UserCollections } from './UserCollections';
 import { anyResource } from './utils';
-import { userText } from '../../localization/user';
 
 export function SetSuperAdmin({
   institutionPolicies,
@@ -230,7 +231,7 @@ export function LegacyPermissions({
       [admins, userResource.id]
     )
   );
-  const userType = schema.models.SpecifyUser.strictGetLiteralField('userType');
+  const userType = getField(schema.models.SpecifyUser, 'userType');
   return (
     <section className="flex flex-col gap-2">
       <h4 className="text-xl">{userText.legacyPermissions()}</h4>
@@ -255,14 +256,15 @@ export function LegacyPermissions({
         <Combobox
           defaultValue={undefined}
           field={userType}
-          fieldName={userType.name}
-          formType="form"
           id={undefined}
           isDisabled={false}
           isRequired
           mode={mode}
           model={userResource}
-          pickListName={undefined}
+          pickListName={defined(
+            userType.getPickList(),
+            'UserType pick list not found'
+          )}
           resource={userResource}
         />
       </Label.Block>

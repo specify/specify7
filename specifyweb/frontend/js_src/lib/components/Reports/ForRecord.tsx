@@ -8,8 +8,8 @@ import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { SpQuery } from '../DataModel/types';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
-import { RunReport } from './Run';
 import { usePref } from '../UserPreferences/usePref';
+import { RunReport } from './Run';
 
 export function ReportForRecord({
   query: rawQuery,

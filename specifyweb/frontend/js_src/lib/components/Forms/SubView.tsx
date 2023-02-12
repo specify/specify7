@@ -1,29 +1,35 @@
 import React from 'react';
 
-import { sortFunction } from '../../utils/utils';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { usePromise } from '../../hooks/useAsyncState';
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
-import type { FormMode, FormType } from '../FormParse';
+import { overwriteReadOnly } from '../../utils/types';
+import { sortFunction } from '../../utils/utils';
+import { Button } from '../Atoms/Button';
+import { attachmentRelatedTables } from '../Attachments';
+import { attachmentSettingsPromise } from '../Attachments/attachments';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
 import type { Relationship } from '../DataModel/specifyField';
 import type { Collection } from '../DataModel/specifyModel';
-import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
-import { Button } from '../Atoms/Button';
+import { raise, softFail } from '../Errors/Crash';
+import type { FormMode, FormType } from '../FormParse';
+import type { SubViewSortField } from '../FormParse/cells';
 import { IntegratedRecordSelector } from '../FormSliders/IntegratedRecordSelector';
-import { useTriggerState } from '../../hooks/useTriggerState';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { AnySchema } from '../DataModel/helperTypes';
-import { fail } from '../Errors/Crash';
 import { TableIcon } from '../Molecules/TableIcon';
-import { overwriteReadOnly } from '../../utils/types';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 
 export const SubViewContext = React.createContext<
   | {
       readonly relationship: Relationship | undefined;
       readonly formType: FormType;
-      readonly sortField: string | undefined;
+      readonly sortField: SubViewSortField | undefined;
       readonly handleChangeFormType: (formType: FormType) => void;
-      readonly handleChangeSortField: (sortField: string | undefined) => void;
+      readonly handleChangeSortField: (
+        sortField: SubViewSortField | undefined
+      ) => void;
     }
   | undefined
 >(undefined);
@@ -48,7 +54,7 @@ export function SubView({
   readonly isButton: boolean;
   readonly icon: string | undefined;
   readonly viewName: string | undefined;
-  readonly sortField: string | undefined;
+  readonly sortField: SubViewSortField | undefined;
 }): JSX.Element {
   const [sortField, setSortField] = useTriggerState(initialSortField);
 
@@ -70,16 +76,17 @@ export function SubView({
                 field: relationship.getReverse(),
               }) as Collection<AnySchema>;
             if (sortField === undefined) return collection;
-            const isReverse = sortField.startsWith('-');
-            const fieldName = sortField.startsWith('-')
-              ? sortField.slice(1)
-              : sortField;
+            // BUG: this does not look into related tables
+            const field = sortField.fieldNames[0];
             // Overwriting the models on the collection
             overwriteReadOnly(
               collection,
               'models',
               Array.from(collection.models).sort(
-                sortFunction((resource) => resource.get(fieldName), isReverse)
+                sortFunction(
+                  (resource) => resource.get(field),
+                  sortField.direction === 'desc'
+                )
               )
             );
             return collection;
@@ -94,12 +101,16 @@ export function SubView({
          */
         const resource = await parentResource.rgetPromise(relationship.name);
         const reverse = relationship.getReverse();
-        if (reverse === undefined)
-          throw new Error(
-            `Can't render a SubView for ` +
-              `${relationship.model.name}.${relationship.name} because ` +
-              `reverse relationship does not exist`
+        if (reverse === undefined) {
+          softFail(
+            new Error(
+              `Can't render a SubView for ` +
+                `${relationship.model.name}.${relationship.name} because ` +
+                `reverse relationship does not exist`
+            )
           );
+          return undefined;
+        }
         const collection = (
           relationship.isDependent()
             ? new relationship.relatedModel.DependentCollection({
@@ -157,7 +168,7 @@ export function SubView({
                 ? setCollection(collection)
                 : undefined
             )
-            .catch(fail);
+            .catch(raise);
         },
         true
       ),
@@ -177,6 +188,16 @@ export function SubView({
   );
 
   const [isOpen, _, handleClose, handleToggle] = useBooleanState(!isButton);
+
+  const [isAttachmentConfigured] = usePromise(attachmentSettingsPromise, true);
+
+  const isAttachmentTable = attachmentRelatedTables().includes(
+    relationship.relatedModel.name
+  );
+
+  const isAttachmentMisconfirgured =
+    isAttachmentTable && !isAttachmentConfigured;
+
   return (
     <SubViewContext.Provider value={contextValue}>
       {isButton && (
@@ -209,7 +230,9 @@ export function SubView({
           dialog={isButton ? 'nonModal' : false}
           formType={formType}
           mode={
-            relationship.isDependent() && initialMode !== 'view'
+            !isAttachmentMisconfirgured &&
+            relationship.isDependent() &&
+            initialMode !== 'view'
               ? 'edit'
               : 'view'
           }

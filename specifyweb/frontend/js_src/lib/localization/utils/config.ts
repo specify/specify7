@@ -1,5 +1,5 @@
-import { f } from '../../utils/functools';
 import { readCookie } from '../../utils/ajax/cookies';
+import { f } from '../../utils/functools';
 import { setDevelopmentGlobal } from '../../utils/types';
 
 /**
@@ -7,8 +7,15 @@ import { setDevelopmentGlobal } from '../../utils/types';
  * (weblate uses unconventional codes)
  *
  * To add new language, define it in this list
+ *
  */
 export const languageCodeMapper = {
+  /*
+   * IMPORTANT
+   * On any changes here, also update the "LANGUAGES" array in
+   * /specifyweb/settings/__init__.py. Otherwise, Django won't let select newly
+   * added language
+   */
   'en-us': 'en_US',
   'ru-ru': 'ru',
   'uk-ua': 'uk',
@@ -18,10 +25,11 @@ export const languageCodeMapper = {
 
 export const languages = Object.keys(languageCodeMapper);
 
-/** This allows to hide unfinished localizations in production */
-export const disabledLanguages = new Set(
-  process.env.NODE_ENV === 'development' ? [] : ['uk-ua', 'fr-fr', 'es-es']
-);
+/**
+ * If user choose any language not in this list, a warning would be shown
+ * saying the localization is not yet complete.
+ */
+export const completeLanguages = new Set(['en-us', 'ru-ru']);
 
 /**
  * These languages are available in development only. Used for testing
@@ -47,8 +55,10 @@ export type Language = typeof languages[number];
 
 export const DEFAULT_LANGUAGE = 'en-us';
 
-// Django does not allow invalid language codes, so can't read them from
-// <html lang="..."> tag. Instead, we read them from cookies directly
+/*
+ * Django does not allow invalid language codes, so can't read them from
+ * <html lang="..."> tag. Instead, we read them from cookies directly
+ */
 const cookieLanguage = readCookie('language');
 export const devLanguage = f.includes(Object.keys(devLanguages), cookieLanguage)
   ? cookieLanguage

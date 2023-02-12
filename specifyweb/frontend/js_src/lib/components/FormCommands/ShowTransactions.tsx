@@ -1,20 +1,21 @@
 import React from 'react';
 
-import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
-import { f } from '../../utils/functools';
-import { sortFunction } from '../../utils/utils';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
-import { hasTablePermission } from '../Permissions/helpers';
+import { interactionsText } from '../../localization/interactions';
+import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
+import { sortFunction } from '../../utils/utils';
 import { H3, Ul } from '../Atoms';
 import { Link } from '../Atoms/Link';
+import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
+import { deserializeResource } from '../DataModel/helpers';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { schema } from '../DataModel/schema';
+import type { Preparation } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
-import { deserializeResource } from '../../hooks/resource';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { AnySchema } from '../DataModel/helperTypes';
-import { Preparation } from '../DataModel/types';
-import { interactionsText } from '../../localization/interactions';
+import { hasTablePermission } from '../Permissions/helpers';
 
 function List({
   resources,
@@ -104,19 +105,31 @@ export function ShowLoansCommand({
       header={commonText.transactions()}
       onClose={handleClose}
     >
-      <H3>{interactionsText.openLoans()}</H3>
+      <H3>
+        {interactionsText.openLoans({
+          loanTable: schema.models.Loan.label,
+        })}
+      </H3>
       <List
         displayFieldName="loanNumber"
         fieldName="loan"
         resources={data.openLoans ?? []}
       />
-      <H3>{interactionsText.resolvedLoans()}</H3>
+      <H3>
+        {interactionsText.resolvedLoans({
+          loanTable: schema.models.Loan.label,
+        })}
+      </H3>
       <List
         displayFieldName="loanNumber"
         fieldName="loan"
         resources={data.resolvedLoans ?? []}
       />
-      <H3>{interactionsText.gifts()}</H3>
+      <H3>
+        {interactionsText.gifts({
+          giftTable: schema.models.Gift.label,
+        })}
+      </H3>
       <List
         displayFieldName="giftNumber"
         fieldName="gift"
@@ -124,7 +137,12 @@ export function ShowLoansCommand({
       />
       {Array.isArray(data.exchanges) && data.exchanges.length > 0 && (
         <>
-          <H3>{interactionsText.exchanges()}</H3>
+          <H3>
+            {interactionsText.exchanges({
+              exhangeInTable: schema.models.ExchangeIn.label,
+              exhangeOutTable: schema.models.ExchangeOut.label,
+            })}
+          </H3>
           <List
             displayFieldName="exchangeOutNumber"
             fieldName="exchange"

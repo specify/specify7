@@ -8,6 +8,7 @@ import { Button } from '../Atoms/Button';
 import { Form, Input, Label } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
+import { getField } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { SpQuery } from '../DataModel/types';
@@ -80,12 +81,10 @@ export function QuerySaveDialog({
         }
       >
         <Label.Block>
-          {schema.models.SpQuery.strictGetLiteralField('name').label}
+          {getField(schema.models.SpQuery, 'name').label}
           <Input.Text
             autoComplete="on"
-            maxLength={
-              schema.models.SpQuery.strictGetLiteralField('name').length
-            }
+            maxLength={getField(schema.models.SpQuery, 'name').length}
             name="queryName"
             required
             spellCheck="true"

@@ -1,19 +1,20 @@
 import type Leaflet from 'leaflet';
 import React from 'react';
 
-import type { Locality } from '../DataModel/types';
-import { formatLocalityData } from '../Leaflet';
-import type { LocalityData } from '../Leaflet/helpers';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { fetchLocalityDataFromResource } from '../Leaflet/localityRecordDataExtractor';
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { localityText } from '../../localization/locality';
 import { Button } from '../Atoms/Button';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { Locality } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
+import { formatLocalityData } from '../Leaflet';
+import type { LocalityData } from '../Leaflet/helpers';
+import { fetchLocalityDataFromResource } from '../Leaflet/localityRecordDataExtractor';
 import { LeafletMap } from '../Leaflet/Map';
 import { Dialog } from '../Molecules/Dialog';
 import { useAsyncState } from '../../hooks/useAsyncState';
-import { useBooleanState } from '../../hooks/useBooleanState';
+import { schema } from '../DataModel/schema';
 
 function LeafletDialog({
   locality,
@@ -40,11 +41,14 @@ function LeafletDialog({
       header={localityText.noCoordinates()}
       onClose={handleClose}
     >
-      {localityText.notEnoughInformationToMap()}
+      {localityText.notEnoughInformationToMap({
+        localityTable: schema.models.Locality.label,
+      })}
     </Dialog>
   ) : (
     <LeafletMap
       localityPoints={[localityData]}
+      onClose={handleClose}
       onMarkerClick={async (_, { target: marker }): Promise<void> => {
         fullLocalityData.current ??= await fetchLocalityDataFromResource(
           locality
@@ -56,7 +60,6 @@ function LeafletDialog({
             formatLocalityData(fullLocalityData.current, undefined, true)
           );
       }}
-      onClose={handleClose}
     />
   );
 }
@@ -71,7 +74,7 @@ export function LeafletPlugin({
   const [isOpen, _, handleClose, handleToggle] = useBooleanState();
 
   return (
-    <ErrorBoundary dismissable>
+    <ErrorBoundary dismissible>
       <Button.Small
         aria-pressed={isOpen}
         className="w-fit"

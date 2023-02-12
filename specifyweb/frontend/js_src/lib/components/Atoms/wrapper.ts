@@ -9,8 +9,10 @@ type RawTagProps<TAG extends keyof React.ReactHTML> = Exclude<
 
 /**
  * Forbid using regular "ref" since it needs to be forwarded
+ *
  * React.forwardRef has some typing issues when used with generics:
  * https://stackoverflow.com/questions/58469229/react-with-typescript-generics-while-using-react-forwardref/58473012
+ *
  * Instead, provide ref as a forwardRef. This does not change the runtime
  * behaviour
  */

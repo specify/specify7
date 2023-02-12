@@ -2,10 +2,11 @@
  * Various tools to help internationalize the application
  */
 
-import { capitalize } from '../../utils/utils';
-import type { RA } from '../../utils/types';
-import { LocalizedString } from 'typesafe-i18n';
+import type { LocalizedString } from 'typesafe-i18n';
+
 import { LANGUAGE } from '../../localization/utils/config';
+import type { RA } from '../../utils/types';
+import { capitalize } from '../../utils/utils';
 
 /* This is an incomplete definition. For complete, see MDN Docs */
 // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -97,12 +98,20 @@ function getMonthNames(monthFormat: 'long' | 'short'): RA<string> {
 // Localized month names
 export const months = getMonthNames('long');
 
-const listFormatter = new Intl.ListFormat(LANGUAGE, {
+const conjunctionFormatter = new Intl.ListFormat(LANGUAGE, {
   style: 'long',
+  // REFACTOR: evaluate usages to use conjunction vs disjunction
   type: 'conjunction',
 });
-export const formatList = (list: RA<string>): string =>
-  listFormatter.format(list);
+export const formatConjunction = (list: RA<string>): string =>
+  conjunctionFormatter.format(list);
+
+const disjunctionFormatter = new Intl.ListFormat(LANGUAGE, {
+  style: 'long',
+  type: 'disjunction',
+});
+export const formatDisjunction = (list: RA<string>): string =>
+  disjunctionFormatter.format(list);
 
 const datePartLocalizer = new Intl.DisplayNames(LANGUAGE, {
   type: 'dateTimeField',

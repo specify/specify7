@@ -1,5 +1,4 @@
 from django.conf.urls import include, url
-from django.contrib.auth import views as auth_views
 from django.views.generic.base import RedirectView
 
 from .accounts import urls as accounts_urls
@@ -9,6 +8,7 @@ from .context import urls as context_urls
 from .export import urls as export_urls
 from .express_search import urls as es_urls
 from .frontend import urls as frontend_urls, doc_urls
+from .frontend.views import open_search as search_view
 from .interactions import urls as interaction_urls
 from .notifications import urls as notification_urls
 from .permissions import urls as permissions_urls
@@ -20,10 +20,14 @@ from .stored_queries import urls as query_urls
 from .workbench import urls as wb_urls
 
 urlpatterns = [
-    url(r'^favicon.ico', RedirectView.as_view(url='/static/img/fav_icon.png')),
+
+    # This will redirect all browsers looking for the favicon to the SVG.
+    url(r'^favicon.ico', RedirectView.as_view(url='/static/img/short_logo.svg')), 
 
     # just redirect root url to the main specify view
     url(r'^$', skip_collection_access_check(RedirectView.as_view(url='/specify/'))),
+
+    url(r'^opensearch.xml$', search_view),
 
     # This is the main specify view.
     # Every URL beginning with '/specify/' is handled

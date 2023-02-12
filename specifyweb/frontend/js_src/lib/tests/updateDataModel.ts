@@ -1,5 +1,6 @@
-import { group, sortFunction } from '../utils/utils';
 import { schema } from '../components/DataModel/schema';
+import { setDevelopmentGlobal } from '../utils/types';
+import { group, sortFunction } from '../utils/utils';
 
 const javaTypeToTypeScript = {
   text: 'string',
@@ -26,7 +27,7 @@ const keyOrder = [
   'toManyIndependent',
 ];
 
-export function regenerate(): string {
+function regenerate(): string {
   const index = `export type Tables = {${Object.keys(schema.models)
     .map((tableName) => `readonly ${tableName}: ${tableName}`)
     .join(';')}};`;
@@ -74,3 +75,7 @@ export function regenerate(): string {
     .join(';');
   return `${index}${models}`;
 }
+
+setDevelopmentGlobal('_regenerateSchema', (): void => {
+  document.body.textContent = regenerate();
+});

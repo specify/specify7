@@ -1,24 +1,24 @@
 import React from 'react';
 
-import type { SpQuery, Tables } from '../DataModel/types';
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { queryText } from '../../localization/query';
 import { commonText } from '../../localization/common';
-import { hasTablePermission, hasToolPermission } from '../Permissions/helpers';
+import type { GetSet, RA } from '../../utils/types';
+import { Ul } from '../Atoms';
+import { Button } from '../Atoms/Button';
+import { DataEntry } from '../Atoms/DataEntry';
+import { icons } from '../Atoms/Icons';
+import { Link } from '../Atoms/Link';
+import type { SerializedResource } from '../DataModel/helperTypes';
 import { getModelById, strictGetModel } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
-import type { GetSet, RA } from '../../utils/types';
-import { icons } from '../Atoms/Icons';
+import type { SpQuery, Tables } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { QueryImport } from '../QueryBuilder/Import';
-import { QueryTablesEdit } from './QueryTablesEdit';
-import { Button } from '../Atoms/Button';
-import { Ul } from '../Atoms';
-import { DataEntry } from '../Atoms/DataEntry';
-import { Link } from '../Atoms/Link';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { SerializedResource } from '../DataModel/helperTypes';
 import { TableIcon } from '../Molecules/TableIcon';
+import { hasTablePermission, hasToolPermission } from '../Permissions/helpers';
+import { QueryImport } from '../QueryBuilder/Import';
 import { usePref } from '../UserPreferences/usePref';
-import { queryText } from '../../localization/query';
+import { QueryTablesEdit } from './QueryTablesEdit';
 
 export const defaultQueryTablesConfig: RA<keyof Tables> = [
   'Accession',
@@ -129,7 +129,7 @@ export function QueryTables({
     >
       <Ul className="flex flex-col gap-1">
         {tables.map(({ name, label }, index) => (
-          <li key={index} className="contents">
+          <li className="contents" key={index}>
             <Link.Default href={`/specify/query/new/${name.toLowerCase()}/`}>
               <TableIcon label={false} name={name} />
               {label}

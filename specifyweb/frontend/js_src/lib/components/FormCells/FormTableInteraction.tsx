@@ -1,6 +1,11 @@
 import React from 'react';
 
+import type { RA } from '../../utils/types';
 import { fetchCollection } from '../DataModel/collection';
+import { getField } from '../DataModel/helpers';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import { schema } from '../DataModel/schema';
+import type { Collection, SpecifyModel } from '../DataModel/specifyModel';
 import type {
   Disposal,
   DisposalPreparation,
@@ -10,13 +15,16 @@ import type {
   LoanPreparation,
   RecordSet,
 } from '../DataModel/types';
-import { schema } from '../DataModel/schema';
-import type { Collection, SpecifyModel } from '../DataModel/specifyModel';
-import type { RA } from '../../utils/types';
+import type { SubViewSortField } from '../FormParse/cells';
 import { userInformation } from '../InitialContext/userInformation';
 import { InteractionDialog } from '../Interactions/InteractionDialog';
-import { SerializedResource } from '../DataModel/helperTypes';
+import { toSmallSortConfig } from '../Molecules/Sorting';
 import { FormTableCollection } from './FormTableCollection';
+
+const defaultOrder: SubViewSortField = {
+  fieldNames: ['timestampCreated'],
+  direction: 'desc',
+};
 
 export function FormTableInteraction(
   props: Omit<
@@ -48,7 +56,8 @@ export function FormTableInteraction(
           }
           model={schema.models.CollectionObject}
           recordSetsPromise={recordSetsPromise}
-          searchField={schema.models.CollectionObject.strictGetLiteralField(
+          searchField={getField(
+            schema.models.CollectionObject,
             'catalogNumber'
           )}
           onClose={(): void => setRecordSetsPromise(undefined)}
@@ -63,8 +72,9 @@ export function FormTableInteraction(
               type: 0,
               dbTableId: schema.models.CollectionObject.tableId,
               domainFilter: true,
-              orderBy:
-                (props.sortField as '-timestampCreated') ?? '-timestampCreated',
+              orderBy: toSmallSortConfig(
+                props.sortField ?? defaultOrder
+              ) as 'name',
               limit: 5000,
             })
           )

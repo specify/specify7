@@ -13,21 +13,25 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
+import type { LocalizedString } from 'typesafe-i18n';
+
+import { formatConjunction } from '../../components/Atoms/Internationalization';
+import { f } from '../../utils/functools';
 import type { IR, R, RA, RR, WritableArray } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { group, split } from '../../utils/utils';
-import {
+import type { Language } from './config';
+import { DEFAULT_LANGUAGE, languages } from './config';
+import type {
   LocalizationDictionary as LanguageDictionary,
   LocalizationEntry,
+} from './index';
+import {
   localizationMetaKeys,
   rawDictionary,
   whitespaceSensitive,
 } from './index';
-import { f } from '../../utils/functools';
-import { formatList } from '../../components/Atoms/Internationalization';
 import { testLogging } from './testLogging';
-import { DEFAULT_LANGUAGE, Language, languages } from './config';
-import { LocalizedString } from 'typesafe-i18n';
 
 if (process.argv[1] === undefined)
   throw new Error('Unable to find the path of the current directory');
@@ -137,7 +141,7 @@ export type DictionaryUsages = IR<{
 }>;
 
 export async function scanUsages(
-  mode: 'verbose' | 'normal' | 'silent'
+  mode: 'normal' | 'silent' | 'verbose'
 ): Promise<DictionaryUsages | undefined> {
   const debug = mode === 'verbose' ? console.log : () => undefined;
   const warn = mode === 'silent' ? () => undefined : globalWarn;
@@ -153,7 +157,7 @@ export async function scanUsages(
     usages.length > 1
       ? error(
           `Key "${stringKey}" is used in multiple dictionaries: ` +
-            `${formatList(usages)}\n` +
+            `${formatConjunction(usages)}\n` +
             `Unfortunately, that is not allowed because Weblate get's confused by it`
         )
       : undefined
@@ -161,67 +165,65 @@ export async function scanUsages(
 
   const dictionaries: DictionaryUsages = Object.fromEntries(
     Object.entries(entries).map(
-      ([categoryName, { dictionaryName, strings }]) => {
-        return [
-          dictionaryName,
-          {
-            categoryName,
-            strings: Object.fromEntries(
-              Object.entries(strings).map(([key, strings]) => {
-                Object.keys(strings)
-                  .filter((key) => !f.has(expectedKeys, key))
-                  .forEach((language) =>
-                    error(
-                      [
-                        `A string for an undefined language ${language} was `,
-                        `found for key ${dictionaryName}.${key}\n`,
-                        `Defined languages: ${formatList(languages)}\n`,
-                        `Allowed meta keys: ${formatList(
-                          localizationMetaKeys
-                        )}\n`,
-                        `If you want to add a new language, add it to the `,
-                        `languages array in ./localization/utils.tsx`,
-                      ].join('')
-                    )
+      ([categoryName, { dictionaryName, strings }]) => [
+        dictionaryName,
+        {
+          categoryName,
+          strings: Object.fromEntries(
+            Object.entries(strings).map(([key, strings]) => {
+              Object.keys(strings)
+                .filter((key) => !f.has(expectedKeys, key))
+                .forEach((language) =>
+                  error(
+                    [
+                      `A string for an undefined language "${language}" was `,
+                      `found for key ${dictionaryName}.${key}\n`,
+                      `Defined languages: ${formatConjunction(languages)}\n`,
+                      `Allowed meta keys: ${formatConjunction(
+                        localizationMetaKeys
+                      )}\n`,
+                      `If you want to add a new language, add it to the `,
+                      `languages array in ./localization/utils.tsx`,
+                    ].join('')
+                  )
+                );
+
+              // Search for blacklisted characters
+              Object.entries(strings).forEach(([language, string]) => {
+                if (f.includes(localizationMetaKeys, language)) return;
+
+                characterBlacklist[language]
+                  ?.split('')
+                  .forEach((character) =>
+                    string!.toString().toLowerCase().includes(character)
+                      ? error(
+                          [
+                            `String ${dictionaryName}.${key} for language `,
+                            `${language} contains a blacklisted character `,
+                            `"${character}"`,
+                          ].join('')
+                        )
+                      : undefined
                   );
+              });
 
-                // Search for blacklisted characters
-                Object.entries(strings).forEach(([language, string]) => {
-                  if (f.includes(localizationMetaKeys, language)) return;
-
-                  characterBlacklist[language]
-                    ?.split('')
-                    .forEach((character) =>
-                      string!.toString().toLowerCase().includes(character)
-                        ? error(
-                            [
-                              `String ${dictionaryName}.${key} for language `,
-                              `${language} contains a blacklisted character `,
-                              `"${character}"`,
-                            ].join('')
-                          )
-                        : undefined
-                    );
-                });
-
-                return [
-                  key,
-                  {
-                    strings: {
-                      ...strings,
-                      comment: f.maybe(
-                        strings.comment as LocalizedString,
-                        whitespaceSensitive
-                      ),
-                    },
-                    usages: [],
+              return [
+                key,
+                {
+                  strings: {
+                    ...strings,
+                    comment: f.maybe(
+                      strings.comment as LocalizedString,
+                      whitespaceSensitive
+                    ),
                   },
-                ];
-              })
-            ),
-          },
-        ];
-      }
+                  usages: [],
+                },
+              ];
+            })
+          ),
+        },
+      ]
     )
   );
 
@@ -290,7 +292,7 @@ export async function scanUsages(
         // Matched the declaration of a dictionary (i.e, const commonText = ...)
         if (followingCharacter === '=') return;
         // Matched a comment (i.e, // dictionaryText \n someOtherLine)
-        if (followingCharacter.match(/\w/u)) return;
+        if (/\w/u.test(followingCharacter)) return;
         if (followingCharacter !== '.') {
           report(
             `Unexpected dynamic usage of a ${dictionaryName} dictionary\n`,
@@ -374,30 +376,28 @@ export async function scanUsages(
     >
   > = {};
 
-  Object.entries(dictionaries).forEach(
-    ([fileName, { strings }]) =>
-      Object.entries(strings).forEach(([key, { strings }]) => {
-        languages.forEach((language) => {
-          const value = strings[language];
+  Object.entries(dictionaries).forEach(([fileName, { strings }]) =>
+    Object.entries(strings).forEach(([key, { strings }]) => {
+      languages.forEach((language) => {
+        const value = strings[language];
 
-          if (value === undefined) {
-            todo(
-              `Missing localization string for key ${fileName}.${key} for ` +
-                `language ${language}`
-            );
-            return;
-          }
+        if (value === undefined) {
+          todo(
+            `Missing localization string for key ${fileName}.${key} for ` +
+              `language ${language}`
+          );
+          return;
+        }
 
-          compoundDictionaries[language] ??= {};
-          compoundDictionaries[language]![value.toLowerCase()] ??= [];
-          compoundDictionaries[language]![value.toLowerCase()].push({
-            fileName,
-            key,
-            originalValue: value,
-          });
+        compoundDictionaries[language] ??= {};
+        compoundDictionaries[language]![value.toLowerCase()] ??= [];
+        compoundDictionaries[language]![value.toLowerCase()].push({
+          fileName,
+          key,
+          originalValue: value,
         });
-      }),
-    {}
+      });
+    })
   );
 
   Object.entries(compoundDictionaries).forEach(([language, valueDictionary]) =>
@@ -467,6 +467,5 @@ export async function scanUsages(
     warn(`Errors: ${getErrorCount()}`);
   }
 
-  if (getErrorCount() > 0) return undefined;
-  else return dictionaries;
+  return getErrorCount() > 0 ? undefined : dictionaries;
 }
