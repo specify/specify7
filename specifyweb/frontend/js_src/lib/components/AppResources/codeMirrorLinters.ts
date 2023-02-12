@@ -45,6 +45,7 @@ export function parseXml(string: string): Element | string {
 
 export function strictParseXml(xml: string): Element {
   const parsed = parseXml(xml);
+  // eslint-disable-next-line functional/no-throw-statement
   if (typeof parsed === 'string') throw new Error(parsed);
   else return parsed;
 }

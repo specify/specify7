@@ -101,14 +101,18 @@ export function AppResourceTextEditor({
 }
 
 function UserPreferencesEditor({
-  data,
+  data: initialData,
   onChange: handleChange,
 }: AppResourceTabProps): JSX.Element {
   const [preferencesContext] = useLiveState<
     React.ContextType<typeof PreferencesContext>
   >(
     React.useCallback(() => {
-      const preferences = JSON.parse(data || '{}') as UserPreferences;
+      const preferences = JSON.parse(
+        typeof initialData === 'string' && initialData.length > 0
+          ? initialData
+          : '{}'
+      ) as UserPreferences;
       const setPrefs = setPrefsGenerator(() => preferences, false);
       return [
         (
@@ -129,6 +133,11 @@ function UserPreferencesEditor({
           handleChange(JSON.stringify(preferences));
         },
       ];
+      /*
+       * For simplicity and performance reasons assume initialData is not
+       * changed by the parent, except as a result of handleChange call
+       */
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [handleChange])
   );
 

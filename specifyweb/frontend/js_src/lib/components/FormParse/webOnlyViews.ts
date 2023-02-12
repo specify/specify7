@@ -63,12 +63,14 @@ export const webOnlyViews = f.store(() =>
         'spReports',
       ])
     ),
+    // Hide non-name fields
     [spAppResourceView]: autoGenerateViewDefinition(
       schema.models.SpAppResource,
       'form',
       'edit',
       ['name']
     ),
+    // Hide non-name fields
     [spViewSetNameView]: autoGenerateViewDefinition(
       schema.models.SpViewSetObj,
       'form',

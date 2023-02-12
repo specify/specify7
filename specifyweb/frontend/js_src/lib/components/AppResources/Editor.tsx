@@ -29,7 +29,7 @@ import { DeleteButton } from '../Forms/DeleteButton';
 import { SaveButton } from '../Forms/Save';
 import { AppTitle } from '../Molecules/AppTitle';
 import { hasToolPermission } from '../Permissions/helpers';
-import { isAppResourceSubType } from './Create';
+import { isXmlSubType } from './Create';
 import {
   AppResourceDownload,
   AppResourceEditButton,
@@ -128,7 +128,7 @@ export function AppResourceEditor({
             if (typeof resource === 'object' && mimeType !== '') {
               const currentType = resource.get('mimeType') ?? '';
               // Don't widen the type unnecessarily
-              if (isAppResourceSubType(mimeType, currentType)) return;
+              if (isXmlSubType(mimeType, currentType)) return;
               resource?.set('mimeType', mimeType);
             }
           }}
@@ -221,13 +221,13 @@ export function AppResourceEditor({
               showValidationRef.current?.();
             }}
             onSaving={(unsetUnloadProtect): false => {
-              unsetUnloadProtect();
-
               loading(
                 (typeof directory.id === 'number'
                   ? Promise.resolve(directory)
                   : createResource('SpAppResourceDir', directory)
                 ).then(async (resourceDirectory) => {
+                  unsetUnloadProtect();
+
                   if (appResource.isNew())
                     appResource.set(
                       'spAppResourceDir',

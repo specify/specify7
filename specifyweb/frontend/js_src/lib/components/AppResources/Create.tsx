@@ -32,9 +32,9 @@ import {
 } from '../DataModel/serializers';
 
 /**
- * Check if one type is a subtype of another
+ * Check if app resource is a sub type of XML
  */
-export const isAppResourceSubType = (type: string, subType: string): boolean =>
+export const isXmlSubType = (type: string, subType: string): boolean =>
   type === 'text/xml' && subType.includes('xml');
 
 export function CreateAppResource(): JSX.Element {
@@ -129,6 +129,10 @@ export function CreateAppResource(): JSX.Element {
   );
 }
 
+/**
+ * Traverse the recursive AppResourceTree structure in search of a directory
+ * with a given searchKey
+ */
 export const findAppResourceDirectory = (
   tree: AppResourcesTree,
   searchKey: string
@@ -176,6 +180,7 @@ function EditAppResource({
       mode="edit"
       resource={resource}
       viewName={
+        // Special views that include only "name" field
         type.tableName === 'SpAppResource'
           ? spAppResourceView
           : spViewSetNameView
@@ -183,6 +188,7 @@ function EditAppResource({
       onAdd={undefined}
       onClose={(): void => navigate('/specify/resources/')}
       onDeleted={undefined}
+      // eslint-disable-next-line react/jsx-handler-names
       onSaved={f.never}
       onSaving={(unsetUnloadProtect): false => {
         unsetUnloadProtect();

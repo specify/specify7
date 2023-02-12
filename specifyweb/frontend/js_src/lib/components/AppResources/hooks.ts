@@ -87,6 +87,9 @@ export function useAppResourceCount(
   );
 }
 
+/**
+ * Fetch resource contents
+ */
 export function useAppResourceData(
   resource: SerializedResource<SpAppResource | SpViewSetObject>,
   initialData: string | undefined
@@ -115,6 +118,10 @@ export function useAppResourceData(
               limit: 1,
               [relationshipName]: resource.id,
             }).then(({ records }) =>
+              /*
+               * For some reason, app resource can have multiple app resource
+               * datas (but it never does in practice)
+               */
               typeof records[0] === 'object' ? records[0] : newResource
             )
           : newResource;

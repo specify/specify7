@@ -1,37 +1,35 @@
 import React from 'react';
+import { useParams } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
-import {
-  AppResources,
-  AppResourcesTree,
-  useAppResourceCount,
-  useResourcesTree,
-} from './hooks';
-import { multiSortFunction, removeItem, replaceItem } from '../../utils/utils';
+
+import { useCachedState } from '../../hooks/useCachedState';
 import { useErrorContext } from '../../hooks/useErrorContext';
-import { filterArray, RA } from '../../utils/types';
+import { useId } from '../../hooks/useId';
+import { commonText } from '../../localization/common';
+import { resourcesText } from '../../localization/resources';
+import { StringToJsx } from '../../localization/utils';
+import { f } from '../../utils/functools';
+import type { RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
+import { multiSortFunction, removeItem, replaceItem } from '../../utils/utils';
+import { Ul } from '../Atoms';
+import { Button } from '../Atoms/Button';
+import { className } from '../Atoms/className';
+import { icons } from '../Atoms/Icons';
+import { Link } from '../Atoms/Link';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import type { SpAppResource, SpViewSetObj } from '../DataModel/types';
+import { hasToolPermission } from '../Permissions/helpers';
 import { ActiveLink, useIsActive } from '../Router/ActiveLink';
-import { SpAppResource, SpViewSetObj } from '../DataModel/types';
-import { useFilteredAppResources } from './Filters';
 import { scrollIntoView } from '../TreeView/helpers';
+import { appResourceIcon } from './EditorComponents';
+import { useFilteredAppResources } from './Filters';
 import type { AppResourceFilters as AppResourceFiltersType } from './filtersHelpers';
 import { getResourceType } from './filtersHelpers';
-import { resourcesText } from '../../localization/resources';
-import { commonText } from '../../localization/common';
-import { appResourceSubTypes } from './types';
 import { buildAppResourceConformation, getAppResourceMode } from './helpers';
-import { f } from '../../utils/functools';
-import { StringToJsx } from '../../localization/utils';
-import { hasToolPermission } from '../Permissions/helpers';
-import { icons } from '../Atoms/Icons';
-import { appResourceIcon } from './EditorComponents';
-import { Ul } from '../Atoms';
-import { useCachedState } from '../../hooks/useCachedState';
-import { SerializedResource } from '../DataModel/helperTypes';
-import { useParams } from 'react-router-dom';
-import { Button } from '../Atoms/Button';
-import { useId } from '../../hooks/useId';
-import { Link } from '../Atoms/Link';
-import { className } from '../Atoms/className';
+import type { AppResources, AppResourcesTree } from './hooks';
+import { useAppResourceCount, useResourcesTree } from './hooks';
+import { appResourceSubTypes } from './types';
 
 export function AppResourcesAside({
   resources: initialResources,
@@ -89,6 +87,9 @@ export function AppResourcesAside({
   );
 }
 
+/**
+ * Unfold the app resources tree to current resource when the page loads
+ */
 function useOpenCurrent(
   conformation: RA<AppResourcesConformation>,
   setConformations: (value: RA<AppResourcesConformation>) => void,
@@ -96,9 +97,9 @@ function useOpenCurrent(
 ): void {
   const { id } = useParams();
   React.useEffect(() => {
-    const idNum = f.parseInt(id);
+    const idNumber = f.parseInt(id);
 
-    if (idNum === undefined) return;
+    if (idNumber === undefined) return;
 
     function updateConformation(
       category: AppResourcesTree[number],
@@ -115,24 +116,22 @@ function useOpenCurrent(
         )
       );
 
-      if (
-        containsId(category) ||
+      return containsId(category) ||
         conformation !== undefined ||
         childrenConformation.length > 0
-      ) {
-        return {
-          key: category.key,
-          children: childrenConformation,
-        };
-      } else return undefined;
+        ? {
+            key: category.key,
+            children: childrenConformation,
+          }
+        : undefined;
     }
 
     function containsId(category: AppResourcesTree[number]): boolean {
       return (
         category.appResources.some(
-          (appResources) => appResources.id === idNum!
+          (appResources) => appResources.id === idNumber!
         ) ||
-        category.viewSets.some((appResources) => appResources.id === idNum!)
+        category.viewSets.some((appResources) => appResources.id === idNumber!)
       );
     }
 
@@ -146,6 +145,11 @@ function useOpenCurrent(
         )
       )
     );
+    /*
+     * Not listening to conformation changes to that this only runs on page
+     * start up
+     */
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setConformations, resourcesTree, id]);
 }
 
@@ -210,6 +214,11 @@ function TreeItem({
       aria-labelledby={id('label')}
       className="flex flex-col gap-2"
       id={id('li')}
+      /*
+       * LOW: add aria-selected for focused row (currently that is denoted by
+       *   button being focused
+       */
+      // eslint-disable-next-line jsx-a11y/no-noninteractive-element-to-interactive-role, jsx-a11y/role-has-required-aria-props
       role="treeitem"
     >
       <Button.LikeLink
@@ -226,6 +235,7 @@ function TreeItem({
       >
         <StringToJsx
           components={{
+            // eslint-disable-next-line react/no-unstable-nested-components
             wrap: (count) => <span className="text-neutral-500">{count}</span>,
           }}
           string={commonText.jsxCountLine({
@@ -291,7 +301,9 @@ function TreeItemResources({
         type: getResourceType(resource),
       })).sort(
         multiSortFunction(
+          // Put view sets first. Sort by type
           ({ type }) => (type === 'viewSet' ? -1 : subTypes.indexOf(type)),
+          // Secondary sort by name
           ({ name }) => name
         )
       ),
@@ -353,14 +365,17 @@ function ResourceItem({
   const isActive = useIsActive(url, false);
 
   React.useEffect(() => {
-    if (isActive && link) {
-      scrollIntoView(link);
-    }
+    if (isActive && link) scrollIntoView(link);
+    /*
+     * Scroll into view on mount only
+     */
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [link]);
 
   return (
     <ActiveLink
       className="[&:not([aria-current]):not(:hover)]:!text-neutral-500"
+      forwardRef={setLink}
       href={url}
       mode="startsWith"
       onClick={
@@ -371,10 +386,11 @@ function ResourceItem({
             }
           : undefined
       }
-      forwardRef={setLink}
     >
       {appResourceIcon(resource.type)}
-      {(resource.name as LocalizedString) || commonText.nullInline()}
+      {typeof resource.name === 'string'
+        ? (resource.name as LocalizedString)
+        : commonText.nullInline()}
     </ActiveLink>
   );
 }

@@ -20,7 +20,7 @@ import {
   countAppResources,
   defaultAppResourceFilters,
   filterAppResources,
-  hasAllAppResources,
+  isAllAppResourceTypes,
 } from './filtersHelpers';
 import type { AppResources } from './hooks';
 import { appResourceSubTypes, appResourceTypes } from './types';
@@ -35,7 +35,7 @@ export function AppResourcesFilters({
     'filters'
   );
 
-  const showAllResources = hasAllAppResources(filters.appResources);
+  const showAllResources = isAllAppResourceTypes(filters.appResources);
   const handleToggleResources = (): void =>
     setFilters({
       ...filters,
@@ -179,7 +179,7 @@ function RadioButton({
   readonly onClick: () => void;
 }): JSX.Element {
   return (
-    // REFACTOR: this should use Button.Small
+    // REFACTOR: this should reuse Button.Small
     <button
       aria-pressed={isPressed}
       className={`
@@ -204,12 +204,20 @@ export function useFilteredAppResources(
 ): AppResources {
   const [filters, setFilters] = useCachedState('appResources', 'filters');
 
+  /*
+   * Allows to temporary override configured app resource filters. Before
+   * unmount, previous value is returned
+   */
   React.useEffect(() => {
     if (initialFilters === defaultAppResourceFilters) return undefined;
     setFilters(initialFilters);
     const oldFilter = filters;
     return (): void => setFilters(oldFilter);
-  }, [setFilters]);
+    /*
+     * Only run this on mount
+     */
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [setFilters, initialFilters]);
 
   const nonNullFilters = filters ?? initialFilters;
   return React.useMemo(
