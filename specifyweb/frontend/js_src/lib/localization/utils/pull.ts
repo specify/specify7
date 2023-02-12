@@ -6,16 +6,16 @@ import gettextParser from 'gettext-parser';
 import prettier from 'prettier';
 import type { LocalizedString } from 'typesafe-i18n';
 
-import { formatList } from '../../components/Atoms/Internationalization';
+import { formatConjunction } from '../../components/Atoms/Internationalization';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { group } from '../../utils/utils';
-import type { ExtractedStrings } from '../utils/scanUsages';
-import { dictionaryExtension, extractStrings } from '../utils/scanUsages';
 import { languageCodeMapper } from './config';
 import type { LocalizationEntry } from './index';
 import { whitespaceSensitive } from './index';
+import type { ExtractedStrings } from './scanUsages';
+import { dictionaryExtension, extractStrings } from './scanUsages';
 import { gettextExtension } from './sync';
 import { testLogging } from './testLogging';
 
@@ -56,7 +56,7 @@ function ensureConsistency(
   if (missingLocalComponents.length > 0)
     error(
       `Weblate has some components which are not defined ` +
-        `locally: ${formatList(missingLocalComponents)}`
+        `locally: ${formatConjunction(missingLocalComponents)}`
     );
 
   const missingRemoteComponents = Object.keys(dictionaries).filter(
@@ -65,7 +65,7 @@ function ensureConsistency(
   if (missingRemoteComponents.length > 0)
     error(
       `Local repository has some components that are absent in ` +
-        `Weblate: ${formatList(missingRemoteComponents)}`
+        `Weblate: ${formatConjunction(missingRemoteComponents)}`
     );
 }
 
@@ -97,7 +97,7 @@ async function parseDictionary(
   if (unknownLanguages.length > 0)
     error(
       `Weblate has some languages for "${component}" component which are ` +
-        `not defined locally: ${formatList(unknownLanguages)}`
+        `not defined locally: ${formatConjunction(unknownLanguages)}`
     );
 
   const presentLanguages = languageFiles.map(
@@ -109,7 +109,7 @@ async function parseDictionary(
   if (missingLanguages.length > 0)
     error(
       `Some defined languages for "${component}" component are missing ` +
-        `in Weblate: ${formatList(missingLanguages)}`
+        `in Weblate: ${formatConjunction(missingLanguages)}`
     );
 
   const entries = await Promise.all(

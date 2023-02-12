@@ -4,6 +4,7 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { welcomeText } from '../../localization/welcome';
 import { ajax } from '../../utils/ajax';
 import type { RA } from '../../utils/types';
+import { schema } from '../DataModel/schema';
 import {
   getTreeDefinitionItems,
   treeRanksPromise,
@@ -48,7 +49,10 @@ export function TaxonTiles(): JSX.Element {
         className="absolute top-3 left-3 z-10 border bg-white px-2 py-0 opacity-80 dark:bg-black"
         title={
           typeof treeData === 'object'
-            ? welcomeText.taxonTilesDescription({ count: treeData.threshold })
+            ? welcomeText.taxonTilesDescription({
+                collectionObjectTable: schema.models.CollectionObject.label,
+                count: treeData.threshold,
+              })
             : undefined
         }
       >

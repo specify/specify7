@@ -35,20 +35,20 @@ export const attachmentsText = createDictionary({
     'es-es': 'Configura tu servidor de archivos adjuntos',
     'fr-fr': 'Configurez votre serveur de pièces jointes',
     'ru-ru': 'Настройте свой сервер вложений',
-    'uk-ua': 'Налаштуйте сервер вкладень',
+    'uk-ua': 'Налаштуйте сервер прикріплень',
   },
   orderBy: {
     'en-us': 'Order By',
     'ru-ru': 'Сортировать по',
     'es-es': 'ordenar por',
-    'fr-fr': 'Commandé par',
+    'fr-fr': 'Trier par',
     'uk-ua': 'Сортувати по',
   },
   uploadingInline: {
     'en-us': 'Uploading…',
     'ru-ru': 'Закачивание…',
     'es-es': 'Subiendo…',
-    'fr-fr': 'Téléchargement…',
+    'fr-fr': 'Envoi en cours…',
     'uk-ua': 'Завантаження…',
   },
   noAttachments: {

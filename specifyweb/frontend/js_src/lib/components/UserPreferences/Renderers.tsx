@@ -5,9 +5,11 @@
 
 import React from 'react';
 
+import { usePromise } from '../../hooks/useAsyncState';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { useValidation } from '../../hooks/useValidation';
 import { commonText } from '../../localization/common';
+import { headerText } from '../../localization/header';
 import { preferencesText } from '../../localization/preferences';
 import { welcomeText } from '../../localization/welcome';
 import { getAvailableFonts } from '../../utils/fonts';
@@ -18,14 +20,17 @@ import {
   parserFromType,
 } from '../../utils/parser/definitions';
 import { parseValue } from '../../utils/parser/parse';
-import { Input, Select } from '../Atoms/Form';
+import type { RA } from '../../utils/types';
+import { Input, Select, Textarea } from '../Atoms/Form';
 import { iconClassName } from '../Atoms/Icons';
 import type { AnySchema } from '../DataModel/helperTypes';
 import { schema } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Collection } from '../DataModel/types';
+import { rawMenuItemsPromise } from '../Header/menuItemDefinitions';
+import { useMenuItems, useUserTools } from '../Header/menuItemProcessing';
 import { AutoComplete } from '../Molecules/AutoComplete';
-import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
+import { ListEdit } from '../Toolbar/QueryTablesEdit';
 import type { PreferenceItem, PreferenceRendererProps } from './Definitions';
 import { getPrefDefinition } from './helpers';
 import { usePref } from './usePref';
@@ -55,6 +60,60 @@ export function ColorPickerPreferenceItem({
         onValueChange={handleChange}
       />
     </div>
+  );
+}
+
+export type MenuPreferences = {
+  readonly visible: RA<string>;
+  /**
+   * Need to explicitly keep track of hidden items so that when future Specify
+   * versions add new items to menu, they are visible by default
+   */
+  readonly hidden: RA<string>;
+};
+
+export function HeaderItemsPreferenceItem({
+  value,
+  onChange: handleChange,
+  isReadOnly,
+}: PreferenceRendererProps<MenuPreferences>): JSX.Element {
+  const [rawMenuItems] = usePromise(rawMenuItemsPromise, false);
+  const menuItems = useMenuItems();
+  const rawUserTools = useUserTools();
+  const userTools = React.useMemo(
+    () =>
+      rawUserTools === undefined || menuItems === undefined
+        ? undefined
+        : Object.values(rawUserTools)
+            .flatMap((entries) => Object.values(entries))
+            .flat()
+            .filter(
+              ({ name }) => !menuItems.some((item) => item.name === name)
+            ),
+    [rawUserTools, menuItems]
+  );
+
+  const defaultItems = rawMenuItems?.map(({ name }) => name) ?? [];
+  return menuItems === undefined || userTools === undefined ? (
+    <>{commonText.loading()}</>
+  ) : (
+    <ListEdit
+      allItems={[...menuItems, ...userTools].map(({ name, title }) => ({
+        name,
+        label: title,
+      }))}
+      availableLabel={headerText.userTools()}
+      defaultValues={defaultItems}
+      isReadOnly={isReadOnly}
+      selectedLabel={headerText.menuItems()}
+      selectedValues={value.visible.length === 0 ? defaultItems : value.visible}
+      onChange={(selectedItems): void =>
+        handleChange({
+          visible: selectedItems,
+          hidden: defaultItems.filter((item) => !selectedItems.includes(item)),
+        })
+      }
+    />
   );
 }
 
@@ -298,7 +357,7 @@ export function DefaultPreferenceItemRender({
       onValueChange={handleChange}
     />
   ) : parser?.type === 'text' ? (
-    <AutoGrowTextArea
+    <Textarea
       forwardRef={validationRef}
       {...(validationAttributes ?? { type: 'text' })}
       isReadOnly={isReadOnly}

@@ -158,17 +158,21 @@ const findLocalityColumns = (
     )
   );
 
-export function getLocalityColumnsFromSelectedCells(
-  localityColumnGroups: RA<IR<string>>,
+/**
+ * Filter down localityColumns to only include the ones that were selected.
+ * If selected cells are not from any localityColumns groups, select all of them
+ */
+export function getSelectedLocalityColumns(
+  localityColumns: RA<IR<string>>,
   selectedHeaders: RA<string>
 ): RA<IR<string>> {
-  const localityColumns = localityColumnGroups.filter((localityColumns) =>
+  const selectedGroups = localityColumns.filter((localityColumns) =>
     Object.values(localityColumns).some((localityColumn) =>
       selectedHeaders.includes(localityColumn)
     )
   );
 
-  return localityColumns.length === 0 ? localityColumnGroups : localityColumns;
+  return selectedGroups.length === 0 ? localityColumns : selectedGroups;
 }
 
 type SplitMappingPaths = RA<

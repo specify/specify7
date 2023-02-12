@@ -1,19 +1,19 @@
 import React from 'react';
-import type { RouteObject } from 'react-router';
-import { Outlet, useOutletContext } from 'react-router';
 import type {
   IndexRouteObject,
   NonIndexRouteObject,
-} from 'react-router/dist/lib/context';
+  RouteObject,
+} from 'react-router';
+import { Outlet, useOutletContext } from 'react-router';
+import { useLocation, useParams } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import type { IR, RA, WritableArray } from '../../utils/types';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { useTitle } from '../Molecules/AppTitle';
 import { LoadingScreen } from '../Molecules/Dialog';
 import { SetSingleResourceContext } from './Router';
-import { useLocation, useParams } from 'react-router-dom';
 import { useStableLocation } from './RouterState';
-import { ErrorBoundary } from '../Errors/ErrorBoundary';
 
 /**
  * A wrapper for native React Routes object. Makes everything readonly.
@@ -121,7 +121,6 @@ export function Async({
   Element,
   title,
 }: {
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly Element: React.FunctionComponent;
   readonly title: LocalizedString | undefined;
 }): JSX.Element {

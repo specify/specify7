@@ -564,7 +564,7 @@ export const wbPlanText = createDictionary({
     'es-es': 'Requerir datos para que coincidan con los registros existentes',
     'fr-fr':
       'Exiger que les données correspondent aux enregistrements existants',
-    'uk-ua': 'Вимагати відповідності даних існуючим записам',
+    'uk-ua': 'Вимагати, щоб дані відповідали існуючим записам',
   },
   matchingLogicUnavailable: {
     'en-us': 'Matching logic is unavailable for current mappings',

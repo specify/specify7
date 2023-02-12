@@ -13,7 +13,7 @@ export const treeText = createDictionary({
     'en-us': 'Trees',
     'ru-ru': 'Деревья',
     'es-es': 'Árboles',
-    'fr-fr': 'Des arbres',
+    'fr-fr': 'Arbres',
     'uk-ua': 'дерева',
   },
   badStructure: {
@@ -27,7 +27,7 @@ export const treeText = createDictionary({
     'en-us': 'Move',
     'ru-ru': 'Переместить',
     'es-es': 'Moverse',
-    'fr-fr': 'Se déplacer',
+    'fr-fr': 'Déplacer',
     'uk-ua': 'рухатися',
   },
   merge: {
@@ -87,7 +87,7 @@ export const treeText = createDictionary({
     'en-us': 'Move "{nodeName:string}" here',
     'ru-ru': 'Переместите «{nodeName:string}» сюда',
     'es-es': 'Mueva "{nodeName:string}" aquí',
-    'fr-fr': 'Déplacez "{nodeName:string}" ici',
+    'fr-fr': 'Déplacer « {nodeName:string} » ici',
     'uk-ua': 'Перемістіть сюди "{nodeName:string}".',
   },
   nodeMoveMessage: {
@@ -117,7 +117,7 @@ export const treeText = createDictionary({
     'en-us': "Can't move this tree node here",
     'ru-ru': 'Невозможно переместить этот узел в этот узел',
     'es-es': 'No se puede mover este nodo de árbol aquí',
-    'fr-fr': "Impossible de déplacer ce nœud d'arbre ici",
+    'fr-fr': "Impossible de déplacer ce nœud d'arborescence ici",
     'uk-ua': 'Неможливо перемістити цей вузол дерева сюди',
   },
   cantMergeHere: {
@@ -139,7 +139,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Невозможно объединить в синонимы',
     'es-es': 'No se puede fusionar en sinónimos',
     'fr-fr': 'Impossible de fusionner en synonymes',
-    'uk-ua': 'Не можна об’єднувати в синоніми',
+    'uk-ua': 'Неможливо злити в синоніми',
   },
   cantSynonymizeSynonym: {
     'en-us': "Can't synonymize with a synonym",
@@ -152,21 +152,21 @@ export const treeText = createDictionary({
     'en-us': 'Select a new parent for "{nodeName:string}"',
     'ru-ru': 'Выберите нового родителя для «{nodeName:string}»',
     'es-es': 'Seleccione un nuevo padre para "{nodeName:string}"',
-    'fr-fr': 'Sélectionnez un nouveau parent pour "{nodeName:string}"',
+    'fr-fr': 'Sélectionnez un nouveau parent pour « {nodeName:string} »',
     'uk-ua': 'Виберіть новий батьківський елемент для "{nodeName:string}"',
   },
   mergeNode: {
     'en-us': 'Merge node',
     'ru-ru': 'Объединить',
     'es-es': 'Combinar nodo',
-    'fr-fr': 'Noeud de fusion',
+    'fr-fr': 'Fusionner le nœud',
     'uk-ua': 'Вузол злиття',
   },
   mergeNodeHere: {
     'en-us': 'Merge "{nodeName:string}" here',
     'ru-ru': 'Объедините «{nodeName:string}» здесь',
     'es-es': 'Combinar "{nodeName:string}" aquí',
-    'fr-fr': 'Fusionner "{nodeName:string}" ici',
+    'fr-fr': 'Fusionner « {nodeName:string} » ici',
     'uk-ua': 'Об\'єднайте "{nodeName:string}" тут',
   },
   mergeNodeHintMessage: {
@@ -208,7 +208,7 @@ export const treeText = createDictionary({
       récursivement.
     `,
     'uk-ua': `
-      Усі посилання на {treeName:string} вузол «{nodeName:string}» буде замінено
+      Усі посилання на вузол {treeName:string} «{nodeName:string}» буде замінено
       на «{parentName:string}», а всі нащадки «{nodeName:string}» буде
       переміщено до «{parentName:string}», а будь-які нащадки, що відповідають
       імені та рангу, будуть самі собою об'єднані рекурсивно.
@@ -289,14 +289,14 @@ export const treeText = createDictionary({
     'en-us': '{treeName:string} Tree',
     'ru-ru': '{treeName:string} Дерево',
     'es-es': '{treeName:string} Árbol',
-    'fr-fr': '{treeName:string} Arbre',
+    'fr-fr': 'Arbre {treeName:string}',
     'uk-ua': '{treeName:string} Дерево',
   },
   searchTreePlaceholder: {
     'en-us': 'Search Tree',
     'ru-ru': 'Поиск',
     'es-es': 'Árbol de búsqueda',
-    'fr-fr': 'Arbre de recherche',
+    'fr-fr': "Rechercher dans l'arbre",
     'uk-ua': 'Дерево пошуку',
   },
   opened: {
@@ -337,18 +337,20 @@ export const treeText = createDictionary({
     'uk-ua': '({directCount:number|formatted})',
   },
   directCollectionObjectCount: {
-    'en-us': 'Direct Collection Object Count',
-    'ru-ru': 'Количество прямых объектов коллекции',
-    'es-es': 'Recuento de objetos de colección directa',
-    'fr-fr': "Nombre d'objets de collecte directe",
-    'uk-ua': 'Підрахунок об’єктів прямого збору',
+    comment: 'Example: Direct Collection Object count',
+    'en-us': 'Direct {collectionObjectTable:string} Count',
+    'ru-ru': 'Количество прямых {collectionObjectTable:string}',
+    'es-es': 'Recuento directo {collectionObjectTable:string}',
+    'fr-fr': 'Comptage direct {collectionObjectTable:string}',
+    'uk-ua': 'Прямий підрахунок {collectionObjectTable:string}.',
   },
   indirectCollectionObjectCount: {
-    'en-us': 'Indirect Collection Object Count',
-    'ru-ru': 'Количество непрямых объектов коллекции',
-    'es-es': 'Recuento de objetos de colección indirecta',
-    'fr-fr': "Nombre d'objets de la collection indirecte",
-    'uk-ua': 'Підрахунок об’єктів непрямого збору',
+    comment: 'Example: Indirect Collection Object count',
+    'en-us': 'Indirect {collectionObjectTable:string} Count',
+    'ru-ru': 'Количество непрямых {collectionObjectTable:string}',
+    'es-es': 'Recuento indirecto {collectionObjectTable:string}',
+    'fr-fr': 'Comptage {collectionObjectTable:string} indirect',
+    'uk-ua': 'Непрямий підрахунок {collectionObjectTable:string}.',
   },
   editRanks: {
     'en-us': 'Edit Ranks',
@@ -356,5 +358,12 @@ export const treeText = createDictionary({
     'es-es': 'Editar rangos',
     'fr-fr': 'Modifier les rangs',
     'uk-ua': 'Редагувати ранги',
+  },
+  resourceToDelete: {
+    'en-us': 'This will permanently delete the following resource',
+    'es-es': 'Esto eliminará permanentemente el siguiente recurso',
+    'fr-fr': 'Cela supprimera définitivement la ressource suivante',
+    'ru-ru': 'Это навсегда удалит следующий ресурс',
+    'uk-ua': 'Це призведе до остаточного видалення наступного ресурсу',
   },
 } as const);

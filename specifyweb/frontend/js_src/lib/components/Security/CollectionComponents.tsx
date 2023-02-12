@@ -14,6 +14,7 @@ import { DataEntry } from '../Atoms/DataEntry';
 import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
 import type { SerializedResource } from '../DataModel/helperTypes';
+import { schema } from '../DataModel/schema';
 import type { Collection } from '../DataModel/types';
 import { ResourceView } from '../Forms/ResourceView';
 import { userInformation } from '../InitialContext/userInformation';
@@ -118,7 +119,11 @@ export function CollectionRoles({
 
   return (
     <section className="flex flex-col gap-1">
-      <h4 className="text-xl">{userText.collectionUserRoles()}</h4>
+      <h4 className="text-xl">
+        {userText.collectionUserRoles({
+          collectionTable: schema.models.Collection.label,
+        })}
+      </h4>
       {typeof roles === 'object' ? (
         <Ul>
           {Object.values(roles)

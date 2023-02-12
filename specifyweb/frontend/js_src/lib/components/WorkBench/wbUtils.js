@@ -7,36 +7,21 @@
  */
 
 import $ from 'jquery';
-import React from 'react';
 import _ from 'underscore';
-
-import { commonText } from '../../localization/common';
-import { localityText } from '../../localization/locality';
-import { wbText } from '../../localization/workbench';
-import { f } from '../../utils/functools';
-import { Lat, Long } from '../../utils/latLong';
-import { filterArray } from '../../utils/types';
-import { camelToKebab, clamp, sortFunction } from '../../utils/utils';
-import { Ul } from '../Atoms';
-import { Button } from '../Atoms/Button';
-import { Input, Label } from '../Atoms/Form';
-import { createBackboneView } from '../Core/reactBackboneExtend';
-import { Backbone } from '../DataModel/backbone';
-import { LeafletMap } from '../Leaflet/Map';
+import React from 'react';
 import {
   findLocalityColumnsInDataSet,
   getLocalitiesDataFromSpreadsheet,
-  getLocalityColumnsFromSelectedCells,
-  getLocalityCoordinate,
 } from '../Leaflet/wbLocalityDataExtractor';
-import { showDialog } from '../Molecules/LegacyDialog';
-import {
-  getInitialSearchPreferences,
-  WbAdvancedSearch,
-} from './AdvancedSearch';
-
-const wbSearchView = createBackboneView(WbAdvancedSearch);
-const LeafletMapView = createBackboneView(LeafletMap);
+import {Backbone} from '../DataModel/backbone';
+import {camelToKebab, clamp} from '../../utils/utils';
+import {getInitialSearchPreferences, WbAdvancedSearch,} from './AdvancedSearch';
+import {wbText} from '../../localization/workbench';
+import {LeafletMap} from '../Leaflet/Map';
+import {filterArray} from '../../utils/types';
+import {getSelectedLocalities, WbGeoLocate} from './GeoLocate';
+import {CoordinateConverter} from './CoordinateConverter';
+import {getSelectedLast, getVisualHeaders} from './hotHelpers';
 
 // REFACTOR: rewrite to React
 export const WBUtils = Backbone.View.extend({
@@ -69,60 +54,47 @@ export const WBUtils = Backbone.View.extend({
   render() {
     let initialNavigationDirection =
       this.searchPreferences.navigation.direction;
-    this.advancedSearch = new wbSearchView({
-      el: this.el.getElementsByClassName('wb-advanced-search-wrapper')[0],
-      initialSearchPreferences: this.searchPreferences,
-      onChange: (newSearchPreferences) => {
-        this.searchPreferences = newSearchPreferences;
-        if (
-          this.searchPreferences.navigation.direction !==
-          initialNavigationDirection
-        ) {
-          this.wbview.flushIndexedCellData = true;
-          initialNavigationDirection =
-            this.searchPreferences.navigation.direction;
-        }
-        if (this.searchPreferences.search.liveUpdate)
-          this.searchCells({
-            key: 'SettingsChange',
-          });
-      },
-    }).render();
+    this.advancedSearch = this.wbview.options.display(
+      <WbAdvancedSearch
+        initialSearchPreferences={this.searchPreferences}
+        onChange={(newSearchPreferences) => {
+          this.searchPreferences = newSearchPreferences;
+          if (
+            this.searchPreferences.navigation.direction !==
+            initialNavigationDirection
+          ) {
+            this.wbview.flushIndexedCellData = true;
+            initialNavigationDirection =
+              this.searchPreferences.navigation.direction;
+          }
+          if (this.searchPreferences.search.liveUpdate)
+            this.searchCells({
+              key: 'SettingsChange',
+            });
+        }}
+      />,
+      this.el.getElementsByClassName('wb-advanced-search-wrapper')[0]
+    );
 
     return this;
   },
   remove() {
-    this.advancedSearch.remove();
+    this.advancedSearch();
     Backbone.View.prototype.remove.call(this);
   },
-  getSelectedLast() {
-    let [currentRow, currentCol] = this.wbview.hot.getSelectedLast() ?? [0, 0];
-    /*
-     * This.wbview.getSelectedLast() returns -1 when column's header or row's
-     * number cell is selected
-     *
-     */
-    if (currentRow < 0) currentRow = 0;
-    if (currentCol < 0) currentCol = 0;
-    return [currentRow, currentCol];
-  },
+
   cellIsType(metaArray, type) {
     switch (type) {
-      case 'invalidCells': {
+      case 'invalidCells':
         return this.wbview.getCellMetaFromArray(metaArray, 'issues').length > 0;
-      }
-      case 'newCells': {
+      case 'newCells':
         return this.wbview.getCellMetaFromArray(metaArray, 'isNew');
-      }
-      case 'modifiedCells': {
+      case 'modifiedCells':
         return this.wbview.getCellMetaFromArray(metaArray, 'isModified');
-      }
-      case 'searchResults': {
+      case 'searchResults':
         return this.wbview.getCellMetaFromArray(metaArray, 'isSearchResult');
-      }
-      default: {
+      default:
         return false;
-      }
     }
   },
   navigateCells(
@@ -165,7 +137,8 @@ export const WBUtils = Backbone.View.extend({
         ? visualRow
         : visualCol;
 
-    const [currentRow, currentCol] = currentCell ?? this.getSelectedLast();
+    const [currentRow, currentCol] =
+      currentCell ?? getSelectedLast(this.wbview.hot);
 
     const [currentTransposedRow, currentTransposedCol] = [
       resolveIndex(currentRow, currentCol, true),
@@ -269,7 +242,7 @@ export const WBUtils = Backbone.View.extend({
     const newState = this.el.classList.contains(cssClassName);
     const indicator =
       buttonContainer.getElementsByClassName('wb-navigation-text')[0];
-    indicator.setAttribute('aria-pressed', newState);
+    indicator.setAttribute('aria-pressed', newState ? 'true' : 'false');
     indicator.classList[newState ? 'add' : 'remove']('brightness-50');
     return newState;
   },
@@ -407,7 +380,7 @@ export const WBUtils = Backbone.View.extend({
       }
     }
 
-    navigationTotalElement.textContent = resultsCount;
+    navigationTotalElement.textContent = resultsCount.toString();
 
     // Navigate to the first search result when hitting Enter
     if (event.key === 'Enter')
@@ -469,7 +442,7 @@ export const WBUtils = Backbone.View.extend({
           },
           false
         );
-      const [currentRow, currentCol] = this.getSelectedLast();
+      const [currentRow, currentCol] = getSelectedLast(this.wbview.hot);
       const physicalRow = this.wbview.hot.toPhysicalRow(currentRow);
       const physicalCol = this.wbview.hot.toPhysicalColumn(currentCol);
       let nextCell;
@@ -588,237 +561,43 @@ export const WBUtils = Backbone.View.extend({
       }
     }
   },
-  getVisualHeaders() {
-    return this.wbview.dataset.columns.map(
-      (_, index, columns) => columns[this.wbview.hot.toPhysicalColumn(index)]
-    );
-  },
-  getGeoLocateQueryURL({ localityColumns, visualRow }) {
-    let queryString = '';
-    const visualHeaders = this.getVisualHeaders();
-
-    const localityData =
-      getLocalityCoordinate(
-        this.wbview.hot.getDataAtRow(visualRow),
-        visualHeaders,
-        localityColumns
-      ) || {};
-
-    if (localityData['locality.geography.$country.name'])
-      queryString += `&country=${localityData['locality.geography.$country.name'].value}`;
-    if (localityData['locality.geography.$state.name'])
-      queryString += `&state=${localityData['locality.geography.$state.name'].value}`;
-    if (localityData['locality.geography.$county.name'])
-      queryString += `&county=${localityData['locality.geography.$county.name'].value}`;
-    if (localityData['locality.localityname'])
-      queryString += `&locality=${localityData['locality.localityname'].value}`;
-    if (
-      localityData['locality.latitude1'] &&
-      localityData['locality.longitude1']
-    )
-      queryString += `&points=${localityData['locality.latitude1'].value}|${localityData['locality.longitude1'].value}`;
-
-    return `https://www.geo-locate.org/web/WebGeoreflight.aspx?v=1&w=900&h=400&georef=run${queryString}`;
-  },
-  getSelectedRegions() {
-    const selectedRegions = this.wbview.hot.getSelected() || [[0, 0, 0, 0]];
-
-    return selectedRegions
-      .map((values) => values.map((value) => Math.max(0, value)))
-      .map(([startRow, startCol, endRow, endCol]) => ({
-        startRow: Math.min(startRow, endRow),
-        endRow: Math.max(startRow, endRow),
-        startCol: Math.min(startCol, endCol),
-        endCol: Math.max(startCol, endCol),
-      }));
-  },
-  // Generate Locality iterator. Able to handle multiple localities in a row
-  getSelectedLocalities(
-    // If false, treat single cell selection as entire spreadsheet selection
-    allowSingleCell
-  ) {
-    const selectedRegions = this.getSelectedRegions();
-
-    const selectedHeaders = f
-      .unique(
-        selectedRegions.flatMap(({ startCol, endCol }) =>
-          Array.from(
-            { length: endCol - startCol + 1 },
-            (_, index) => startCol + index
-          )
-        )
-      )
-      .sort(sortFunction(f.id))
-      .map(
-        (visualCol) =>
-          this.wbview.dataset.columns[
-            this.wbview.hot.toPhysicalColumn(visualCol)
-          ]
-      );
-
-    const selectedRows = f
-      .unique(
-        selectedRegions.flatMap(({ startRow, endRow }) =>
-          Array.from(
-            { length: endRow - startRow + 1 },
-            (_, index) => startRow + index
-          )
-        )
-      )
-      .sort(sortFunction(f.id));
-
-    const selectAll =
-      !allowSingleCell &&
-      selectedHeaders.length === 1 &&
-      selectedRows.length === 1;
-
-    const localityColumnGroups = selectAll
-      ? this.localityColumns
-      : getLocalityColumnsFromSelectedCells(
-          this.localityColumns,
-          selectedHeaders
-        );
-    if (localityColumnGroups.length === 0) return undefined;
-
-    const visualRows = selectAll
-      ? Array.from({ length: this.wbview.hot.countRows() }, (_, index) => index)
-      : selectedRows;
-    const length = visualRows.length * localityColumnGroups.length;
-
-    return {
-      localityIndex: 0,
-      length,
-      isFirst: (index) => index === 0,
-      isLast: (index) => index + 1 >= length,
-      visualRows,
-      selectedHeaders,
-      localityColumnGroups,
-      parseLocalityIndex: (localityIndex) => ({
-        localityColumns:
-          localityColumnGroups[localityIndex % localityColumnGroups.length],
-        visualRow:
-          visualRows[Math.floor(localityIndex / localityColumnGroups.length)],
-      }),
-    };
-  },
 
   showGeoLocate(event) {
-    // Don't allow opening more than one window)
+    // don't allow opening more than one window)
     if (this.geoLocateDialog !== undefined) {
-      this.geoLocateDialog.remove();
-      this.geoLocateDialog = undefined;
-      event.target.setAttribute('aria-pressed', false);
+      this.geoLocateDialog();
       return;
     }
 
+    this.geoLocateDialog = this.wbview.options.display(
+      <WbGeoLocate
+        hot={this.wbview.hot}
+        columns={this.wbview.dataset.columns}
+        localityColumns={this.localityColumns}
+        onClose={() => this.geoLocateDialog()}
+      />,
+      undefined,
+      () => {
+        event.target.setAttribute('aria-pressed', false);
+        this.geoLocateDialog = undefined;
+      }
+    );
+
     event.target.setAttribute('aria-pressed', true);
-
-    const selection = this.getSelectedLocalities(true);
-
-    if (selection === undefined) return;
-
-    const getGeoLocateQueryURL = (localityIndex) =>
-      this.getGeoLocateQueryURL(selection.parseLocalityIndex(localityIndex));
-
-    const handleDelete = () => {
-      globalThis.removeEventListener('message', handleGeolocateResult, false);
-      event.target.setAttribute('aria-pressed', false);
-      this.geoLocateDialog.remove();
-      this.geoLocateDialog = undefined;
-    };
-
-    const content = $('<div>');
-    this.geoLocateDialog = showDialog({
-      header: localityText.geoLocate(),
-      content,
-      buttons: commonText.close(),
-      onClose: handleDelete,
-    });
-
-    const updateGeolocate = (localityIndex) =>
-      content.html(`<iframe class="w-[914px] h-[627px]"
-        title="${localityText.geoLocate()}"
-        src="${getGeoLocateQueryURL(localityIndex)}"
-      ></iframe>`);
-
-    const updateSelectedRow = (localityIndex) =>
-      this.wbview.hot.selectRows(
-        selection.parseLocalityIndex(localityIndex).visualRow
-      );
-
-    const updateButtons = (localityIndex) =>
-      this.geoLocateDialog.updateProps({
-        buttons: (
-          <>
-            <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-            <Button.Blue
-              disabled={selection.isFirst(localityIndex)}
-              onClick={() => updateGeoLocate(localityIndex - 1)}
-            >
-              {commonText.previous()}
-            </Button.Blue>
-            <Button.Blue
-              disabled={selection.isLast(localityIndex)}
-              onClick={() => updateGeoLocate(localityIndex + 1)}
-            >
-              {commonText.next()}
-            </Button.Blue>
-          </>
-        ),
-      });
-
-    function updateGeoLocate(newLocalityIndex) {
-      selection.localityIndex = newLocalityIndex;
-      updateGeolocate(newLocalityIndex);
-      updateSelectedRow(newLocalityIndex);
-      updateButtons(newLocalityIndex);
-    }
-
-    updateGeoLocate(selection.localityIndex);
-
-    const visualHeaders = this.getVisualHeaders();
-    const handleGeolocateResult = (event) => {
-      /*
-       * This may happen if the message was sent by someone other than GeoLocate,
-       * (i.e, a React DevTools plugin)
-       */
-      if (typeof event.data !== 'string') return;
-      const dataColumns = event.data?.split('|') ?? [];
-      if (dataColumns.length !== 4 || event.data === '|||') return;
-
-      const { visualRow, localityColumns } = selection.parseLocalityIndex(
-        selection.localityIndex
-      );
-
-      this.wbview.hot.setDataAtCell(
-        [
-          'locality.latitude1',
-          'locality.longitude1',
-          'locality.latlongaccuracy',
-        ]
-          .map((fieldName, index) => [
-            visualRow,
-            visualHeaders.indexOf(localityColumns[fieldName]),
-            dataColumns[index],
-          ])
-          .filter(([, visualCol]) => visualCol !== -1)
-      );
-
-      if (selection.length === 1) handleDelete();
-    };
-
-    globalThis.window.addEventListener('message', handleGeolocateResult, false);
   },
   showLeafletMap(event) {
     if (this.geoMapDialog !== undefined) {
-      this.geoMapDialog.remove();
-      this.geoMapDialog = undefined;
-      event.target.setAttribute('aria-pressed', false);
+      this.geoMapDialog();
       return;
     }
     event.target.setAttribute('aria-pressed', true);
 
-    const selection = this.getSelectedLocalities(false);
+    const selection = getSelectedLocalities(
+      this.wbview.hot,
+      this.wbview.dataset.columns,
+      this.localityColumns,
+      false
+    );
 
     if (selection === undefined) return;
 
@@ -827,92 +606,34 @@ export const WBUtils = Backbone.View.extend({
       selection.visualRows.map((visualRow) =>
         this.wbview.hot.getDataAtRow(visualRow)
       ),
-      this.getVisualHeaders(),
+      getVisualHeaders(this.wbview.hot, this.wbview.dataset.columns),
       selection.visualRows
     );
 
-    this.geoMapDialog = new LeafletMapView({
-      localityPoints,
-      onMarkerClick: (localityPoint) => {
-        const rowNumber = localityPoints[localityPoint].rowNumber.value;
-        if (typeof rowNumber !== 'number')
-          throw new Error('rowNumber must be a number');
-        const [_currentRow, currentCol] = this.getSelectedLast();
-        this.wbview.hot.scrollViewportTo(rowNumber, currentCol);
-        // Select entire row
-        this.wbview.hot.selectRows(rowNumber);
-      },
-      onClose: () => {
-        this.geoMapDialog.remove();
+    this.geoMapDialog = this.wbview.options.display(
+      <LeafletMap
+        localityPoints={localityPoints}
+        onMarkerClick={(localityPoint) => {
+          const rowNumber = localityPoints[localityPoint].rowNumber.value;
+          if (typeof rowNumber !== 'number')
+            throw new Error('rowNumber must be a number');
+          const [_currentRow, currentCol] = getSelectedLast(this.wbview.hot);
+          this.wbview.hot.scrollViewportTo(rowNumber, currentCol);
+          // Select entire row
+          this.wbview.hot.selectRows(rowNumber);
+        }}
+        onClose={() => this.geoMapDialog()}
+        modal={false}
+      />,
+      undefined,
+      ()=>{
         this.geoMapDialog = undefined;
         event.target.setAttribute('aria-pressed', false);
-      },
-      modal: false,
-    }).render();
+      }
+    );
   },
   showCoordinateConversion() {
     if (this.wbview.coordinateConverterView !== undefined) return;
-
-    // List of coordinate columns
-    const columnsToWorkWith = Object.keys(
-      this.wbview.mappings.coordinateColumns
-    ).map((physicalCol) =>
-      this.wbview.hot.toVisualColumn(Number.parseInt(physicalCol))
-    );
-
-    if (columnsToWorkWith.length === 0)
-      throw new Error('Unable to find Coordinate columns');
-
-    let selectedRegions;
-    let selectedCells;
-    const getSelectedCells = () => {
-      if (
-        JSON.stringify(this.getSelectedRegions()) ===
-        JSON.stringify(selectedRegions)
-      )
-        return selectedCells;
-
-      selectedRegions = this.getSelectedRegions();
-      selectedCells = selectedRegions
-        .flatMap(({ startRow, endRow, startCol, endCol }) =>
-          Array.from({ length: endRow - startRow + 1 }, (_, rowIndex) =>
-            Array.from({ length: endCol - startCol + 1 }, (_, colIndex) => [
-              startRow + rowIndex,
-              startCol + colIndex,
-            ])
-          )
-        )
-        .flat()
-        .reduce((indexedCells, [visualRow, visualCol]) => {
-          if (!columnsToWorkWith.includes(visualCol)) return indexedCells;
-          indexedCells[visualRow] ??= new Set();
-          indexedCells[visualRow].add(visualCol);
-          return indexedCells;
-        }, {});
-      return selectedCells;
-    };
-
-    if (Object.keys(getSelectedCells()).length === 0)
-      this.wbview.hot.scrollViewportTo(
-        this.getSelectedLast()[0],
-        columnsToWorkWith[0]
-      );
-
-    const toPhysicalCol = this.wbview.dataset.columns.map((_, visualCol) =>
-      this.wbview.hot.toPhysicalColumn(visualCol)
-    );
-
-    const originalState = columnsToWorkWith.flatMap((visualCol) =>
-      Array.from({ length: this.wbview.hot.countRows() }, (_, visualRow) => {
-        const physicalRow = this.wbview.hot.toPhysicalRow(visualRow);
-        const physicalCol = toPhysicalCol[visualCol];
-        return [
-          visualRow,
-          visualCol,
-          this.wbview.data[physicalRow][physicalCol],
-        ];
-      })
-    );
 
     const buttons = [
       'wb-leafletmap',
@@ -928,178 +649,24 @@ export const WBUtils = Backbone.View.extend({
     });
     this.el.classList.add('wb-focus-coordinates');
 
-    let numberOfChanges = 0;
-
-    const cleanUp = () => {
-      buttons.map(([button, isDisabled]) => (button.disabled = isDisabled));
-      this.wbview.hot.updateSettings({
-        readOnly: originalReadOnlyState,
-      });
-      this.wbview.isReadOnly = originalReadOnlyState;
-      this.el.classList.remove('wb-focus-coordinates');
-    };
-
-    const handleClose = () => {
-      this.wbview.coordinateConverterView.remove();
-      this.wbview.coordinateConverterView = undefined;
-      cleanUp();
-    };
-
-    const options = [
-      {
-        optionName: 'DD.DDDD (32.7619)',
-        conversionFunctionName: 'toDegs',
-        showCardinalDirection: false,
-      },
-      {
-        optionName: 'DD MMMM (32. 45.714)',
-        conversionFunctionName: 'toDegsMins',
-        showCardinalDirection: false,
-      },
-      {
-        optionName: 'DD MM SS.SS (32 45 42.84)',
-        conversionFunctionName: 'toDegsMinsSecs',
-        showCardinalDirection: false,
-      },
-      {
-        optionName: 'DD.DDDD N/S/E/W (32.7619 N)',
-        conversionFunctionName: 'toDegs',
-        showCardinalDirection: true,
-      },
-      {
-        optionName: 'DD MM.MM N/S/E/W (32 45.714 N)',
-        conversionFunctionName: 'toDegsMins',
-        showCardinalDirection: true,
-      },
-      {
-        optionName: 'DD MM SS.SS N/S/E/W (32 45 42.84 N)',
-        conversionFunctionName: 'toDegsMinsSecs',
-        showCardinalDirection: true,
-      },
-    ];
-
-    const revertChanges = () => {
-      this.wbview.hot.batch(() =>
-        Array.from({ length: numberOfChanges }).forEach(() =>
-          this.wbview.hot.undo()
-        )
-      );
-      handleClose();
-    };
-    // FEATURE: remember these two options
-    let includeSymbols = false;
-    let applyToAll = true;
-
-    let conversionFunctionName = undefined;
-    let showCardinalDirection = false;
-    const handleChange = () => {
-      const includeSymbolsFunction = includeSymbols
-        ? (coordinate) => coordinate
-        : (coordinate) => coordinate.replaceAll(/[^\s\w\-.]/g, '');
-      const lastChar = (value) => value.at(-1);
-      const removeLastChar = (value) => value.slice(0, -1);
-      const endsWith = (value, charset) => charset.includes(lastChar(value));
-      const stripCardinalDirections = (finalValue) =>
-        showCardinalDirection
-          ? finalValue
-          : endsWith(finalValue, 'SW')
-          ? `-${removeLastChar(finalValue)}`
-          : endsWith(finalValue, 'NE')
-          ? removeLastChar(finalValue)
-          : finalValue;
-
-      const selectedCells = getSelectedCells();
-      const changes = originalState
-        .map(([visualRow, visualCol, originalValue]) => {
-          let value = originalValue;
-          if (
-            originalValue !== null &&
-            (applyToAll || selectedCells[visualRow]?.has(visualCol))
-          ) {
-            const columnRole =
-              this.wbview.mappings.coordinateColumns[toPhysicalCol[visualCol]];
-            const coordinate = (columnRole === 'Lat' ? Lat : Long).parse(
-              originalValue
-            );
-            if (typeof coordinate === 'object')
-              value = includeSymbolsFunction(
-                stripCardinalDirections(
-                  coordinate[conversionFunctionName]().format()
-                )
-              ).trim();
-          }
-          return [visualRow, visualCol, value];
-        })
-        .filter(([visualRow, visualCol, value]) => {
-          const physicalRow = this.wbview.hot.toPhysicalRow(visualRow);
-          const physicalCol = toPhysicalCol[visualCol];
-          return value !== this.wbview.data[physicalRow][physicalCol];
+    this.wbview.coordinateConverterView = this.wbview.options.display(
+      <CoordinateConverter
+        hot={this.wbview.hot}
+        data={this.wbview.data}
+        columns={this.wbview.dataset.columns}
+        coordinateColumns={this.wbview.mappings.coordinateColumns}
+        onClose={() => this.wbview.coordinateConverterView()}
+      />,
+      undefined,
+      () => {
+        this.wbview.coordinateConverterView = undefined;
+        buttons.map(([button, isDisabled]) => (button.disabled = isDisabled));
+        this.wbview.hot.updateSettings({
+          readOnly: originalReadOnlyState,
         });
-      if (changes.length > 0) {
-        numberOfChanges += 1;
-        this.wbview.hot.setDataAtCell(changes);
+        this.wbview.isReadOnly = originalReadOnlyState;
+        this.el.classList.remove('wb-focus-coordinates');
       }
-    };
-
-    this.wbview.coordinateConverterView = showDialog({
-      modal: false,
-      header: wbText.coordinateConverter(),
-      onClose: revertChanges,
-      buttons: (
-        <>
-          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Button.Blue onClick={handleClose}>{commonText.apply()}</Button.Blue>
-        </>
-      ),
-      content: (
-        <>
-          {wbText.coordinateConverterDescription()}
-          <Ul>
-            {Object.values(options).map((entry, optionIndex) => (
-              <li key={optionIndex}>
-                <Label.Inline>
-                  <Input.Radio
-                    name="latLongFormat"
-                    onChange={() => {
-                      conversionFunctionName = entry.conversionFunctionName;
-                      showCardinalDirection = entry.showCardinalDirection;
-                      handleChange();
-                    }}
-                  />
-                  {entry.optionName}
-                </Label.Inline>
-              </li>
-            ))}
-            <br />
-            <li>
-              <Label.Inline>
-                <Input.Checkbox
-                  defaultChecked={includeSymbols}
-                  onValueChange={(newValue) => {
-                    includeSymbols = newValue;
-                    if (typeof conversionFunctionName === 'string')
-                      handleChange();
-                  }}
-                />
-                {wbText.includeDmsSymbols()}
-              </Label.Inline>
-            </li>
-            <li>
-              <Label.Inline>
-                <Input.Checkbox
-                  defaultChecked={applyToAll}
-                  onValueChange={(newValue) => {
-                    applyToAll = newValue;
-                    if (typeof conversionFunctionName === 'string')
-                      handleChange();
-                  }}
-                />
-                {commonText.applyAll()}
-              </Label.Inline>
-            </li>
-          </Ul>
-        </>
-      ),
-    });
+    );
   },
 });

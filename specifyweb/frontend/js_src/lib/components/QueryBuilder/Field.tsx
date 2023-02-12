@@ -306,7 +306,8 @@ export function QueryLine({
                         aria-label={queryText.or()}
                         aria-pressed={field.filters.length > 1}
                         className={`
-                          aria-handled print:hidden
+                          print:hidden
+                          ${className.ariaHandled}
                           ${isFieldComplete ? '' : 'invisible'}
                         `}
                         disabled={handleChange === undefined}
@@ -314,7 +315,7 @@ export function QueryLine({
                         variant={
                           field.filters.length > 1
                             ? className.blueButton
-                            : className.grayButton
+                            : className.lightGrayButton
                         }
                         onClick={(): void =>
                           handleFilterChange(field.filters.length, {
@@ -356,13 +357,13 @@ export function QueryLine({
                   <Button.Small
                     aria-label={queryText.negate()}
                     aria-pressed={field.filters[index].isNot}
-                    className="aria-handled"
+                    className={className.ariaHandled}
                     disabled={handleChange === undefined}
                     title={queryText.negate()}
                     variant={
                       field.filters[index].isNot
                         ? className.redButton
-                        : className.grayButton
+                        : className.lightGrayButton
                     }
                     onClick={(): void =>
                       handleFilterChange(index, {
@@ -466,10 +467,12 @@ export function QueryLine({
         <Button.Small
           aria-label={queryText.showButtonDescription()}
           aria-pressed={field.isDisplay}
-          className={`aria-handled ${isFieldComplete ? '' : 'invisible'}`}
+          className={`${className.ariaHandled} ${
+            isFieldComplete ? '' : 'invisible'
+          }`}
           title={queryText.showButtonDescription()}
           variant={
-            field.isDisplay ? className.greenButton : className.grayButton
+            field.isDisplay ? className.greenButton : className.lightGrayButton
           }
           onClick={handleChange?.bind(undefined, {
             ...field,

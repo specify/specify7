@@ -10,6 +10,7 @@ import { sortFunction } from '../../utils/utils';
 import { Container, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import type { SerializedResource } from '../DataModel/helperTypes';
+import { schema } from '../DataModel/schema';
 import type { Collection } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { toLargeSortConfig } from '../Molecules/Sorting';
@@ -32,7 +33,7 @@ export function useAvailableCollections(): RA<SerializedResource<Collection>> {
         direction === 'desc'
       )
     );
-  }, [userInformation.availableCollections, sortOrder]);
+  }, [sortOrder]);
   useErrorContext('collections', collections);
   return collections;
 }
@@ -54,7 +55,9 @@ export function OtherCollection({
     <Container.FullGray>
       <Container.Center>
         {collections.length === 0 ? (
-          userText.noAccessToResource()
+          userText.noAccessToResource({
+            collectionTable: schema.models.Collection.label,
+          })
         ) : (
           <>
             <p>{userText.resourceInaccessible()}</p>
@@ -77,7 +80,11 @@ export function OtherCollection({
               </>
             ) : (
               <>
-                <p>{userText.loginToProceed()}</p>
+                <p>
+                  {userText.loginToProceed({
+                    collectionTable: schema.models.Collection.label,
+                  })}
+                </p>
                 <div>
                   <Button.Blue
                     onClick={(): void =>

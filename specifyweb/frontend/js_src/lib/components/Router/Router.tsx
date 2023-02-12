@@ -6,6 +6,7 @@ import type { SafeNavigateFunction } from 'react-router';
 import { unstable_useBlocker as useBlocker } from 'react-router';
 import { useLocation, useNavigate, useRoutes } from 'react-router-dom';
 
+import { useErrorContext } from '../../hooks/useErrorContext';
 import { commonText } from '../../localization/common';
 import { mainText } from '../../localization/main';
 import { toLocalUrl } from '../../utils/ajax/helpers';
@@ -14,7 +15,6 @@ import { f } from '../../utils/functools';
 import type { GetOrSet, RA } from '../../utils/types';
 import { setDevelopmentGlobal } from '../../utils/types';
 import { Button } from '../Atoms/Button';
-import { className } from '../Atoms/className';
 import { error } from '../Errors/assert';
 import { crash, softFail } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
@@ -58,6 +58,7 @@ export function Router(): JSX.Element {
   const isNotFoundPage =
     state?.type === 'NotFoundPage' ||
     background?.state?.type === 'NotFoundPage';
+  useErrorContext('location', location);
 
   /*
    * REFACTOR: replace usages of navigate with <a> where possible
@@ -136,8 +137,7 @@ function parseClickEvent(
     // Check if link already has an onClick that called event.preventDefault()
     !event.defaultPrevented &&
     link !== null &&
-    link.href.length > 0 &&
-    link.getAttribute('href')?.startsWith('#') === false &&
+    link.getAttribute('href')?.startsWith('/specify/') === true &&
     link.getAttribute('download') === null &&
     !event.metaKey &&
     !event.shiftKey &&
@@ -145,9 +145,7 @@ function parseClickEvent(
     (link.target === '' ||
       link.target === '_self' ||
       (event.altKey &&
-        getUserPref('general', 'behavior', 'altClickToSupressNewTab'))) &&
-    // Can add this class name to links to prevent react-router from handling them
-    !link.classList.contains(className.navigationHandled)
+        getUserPref('general', 'behavior', 'altClickToSupressNewTab')))
   ) {
     // Don't handle absolute URLs that lead to a different origin
     const localUrl = toLocalUrl(link.href);
@@ -352,3 +350,5 @@ export const SetUnloadProtectsContext = React.createContext<
   GetOrSet<RA<string>>[1] | undefined
 >(undefined);
 SetUnloadProtectsContext.displayName = 'SetUnloadProtectsContext';
+
+export const exportsForTests = { parseClickEvent };

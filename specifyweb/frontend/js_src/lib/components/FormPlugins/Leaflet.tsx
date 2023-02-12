@@ -1,7 +1,6 @@
 import type Leaflet from 'leaflet';
 import React from 'react';
 
-import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { localityText } from '../../localization/locality';
@@ -14,6 +13,8 @@ import type { LocalityData } from '../Leaflet/helpers';
 import { fetchLocalityDataFromResource } from '../Leaflet/localityRecordDataExtractor';
 import { LeafletMap } from '../Leaflet/Map';
 import { Dialog } from '../Molecules/Dialog';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { schema } from '../DataModel/schema';
 
 function LeafletDialog({
   locality,
@@ -40,7 +41,9 @@ function LeafletDialog({
       header={localityText.noCoordinates()}
       onClose={handleClose}
     >
-      {localityText.notEnoughInformationToMap()}
+      {localityText.notEnoughInformationToMap({
+        localityTable: schema.models.Locality.label,
+      })}
     </Dialog>
   ) : (
     <LeafletMap

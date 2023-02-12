@@ -10,7 +10,8 @@ theories(generateMappingPathPreview, [
   [['CollectionObject', ['guid']], 'Collection Object GUID'],
   [['CollectionObject', ['void']], 'Collection Object Void'],
   [['CollectionObject', ['someNonExistentField']], 'Some Non Existent Field'],
-  [['CollectionObject', ['name']], 'Collection Object'],
+  [['CollectionObject', ['name']], 'Collection Object Name'],
+  [['Geography', ['name']], 'Geography'],
   [['CollectionObject', ['someDnaSequence']], 'Some DNA Sequence'],
   [['CollectionObject', ['accession', 'accessionNumber']], 'Accession #'],
   [
@@ -18,6 +19,7 @@ theories(generateMappingPathPreview, [
     'Accession Agents Role',
   ],
   [['SpAuditLog', ['modifiedByAgent', formattedEntry]], 'Modified By Agent'],
+  [['Agent', ['addresses', formattedEntry]], 'Addresses'],
   [['SpAuditLog', ['fields', formattedEntry]], 'Fields'],
   [['Taxon', [formatTreeRank('Kingdom'), formattedEntry]], 'Kingdom'],
   [['Taxon', [formatTreeRank(anyTreeRank), formattedEntry]], 'Taxon'],

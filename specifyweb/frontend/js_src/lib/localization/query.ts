@@ -13,7 +13,7 @@ export const queryText = createDictionary({
     'en-us': 'Query',
     'ru-ru': 'Запрос',
     'es-es': 'Consulta',
-    'fr-fr': 'Requete',
+    'fr-fr': 'Requête',
     'uk-ua': 'Запит',
   },
   queries: {
@@ -51,22 +51,22 @@ export const queryText = createDictionary({
   any: {
     'en-us': 'Any',
     'ru-ru': 'Любой',
-    'es-es': 'Ninguna',
-    'fr-fr': 'Tout',
+    'es-es': 'Alguna',
+    'fr-fr': 'Tous',
     'uk-ua': 'Будь-який',
   },
   startValue: {
     'en-us': 'Start Value',
     'ru-ru': 'Начальное значение',
     'es-es': 'Valor inicial',
-    'fr-fr': 'Valeur de départ',
+    'fr-fr': 'Valeur de début',
     'uk-ua': 'Початкове значення',
   },
   endValue: {
     'en-us': 'End Value',
     'ru-ru': 'Конечное значение',
     'es-es': 'Valor final',
-    'fr-fr': 'Valeur finale',
+    'fr-fr': 'Valeur de fin',
     'uk-ua': 'Кінцеве значення',
   },
   saveQuery: {
@@ -80,7 +80,7 @@ export const queryText = createDictionary({
     'en-us': 'Save query as...',
     'ru-ru': 'Сохранить запрос как...',
     'es-es': 'Guardar consulta como...',
-    'fr-fr': 'Enregistrer la requête sous...',
+    'fr-fr': 'Enregistrer la requête sous…',
     'uk-ua': 'Зберегти запит як...',
   },
   saveClonedQueryDescription: {
@@ -137,31 +137,32 @@ export const queryText = createDictionary({
     'uk-ua': 'Нове або змінене визначення запиту не було збережено',
   },
   recordSetToQuery: {
-    'en-us': 'Creating a Record Set from Query',
-    'ru-ru': 'Создание набор объектов из запроса',
-    'es-es': 'Creación de un conjunto de registros a partir de una consulta',
-    'fr-fr': "Création d'un jeu d'enregistrements à partir d'une requête",
-    'uk-ua': 'Створення набору записів із запиту',
+    comment: 'Example: Creating a Record Set from Query',
+    'en-us': 'Creating a {recordSetTable:string} from Query',
+    'ru-ru': 'Создание {recordSetTable:string} из запроса',
+    'es-es': 'Creando un {recordSetTable:string} desde Query',
+    'fr-fr': "Création d'un {recordSetTable:string} à partir d'une requête",
+    'uk-ua': 'Створення {recordSetTable:string} із запиту',
   },
   recordSetToQueryDescription: {
-    'en-us': 'Generating Record Set...',
-    'ru-ru': 'Создание набора объектов...',
-    'es-es': 'Generando conjunto de registros...',
-    'fr-fr': "Génération du jeu d'enregistrements...",
-    'uk-ua': 'Створення набору записів...',
+    'en-us': 'Generating {recordSetTable:string}...',
+    'ru-ru': 'Создание {recordSetTable:string}...',
+    'es-es': 'Generando {recordSetTable:string}...',
+    'fr-fr': 'Génération de {recordSetTable:string}...',
+    'uk-ua': 'Створення {recordSetTable:string}...',
   },
   recordSetCreated: {
-    'en-us': 'Record Set Created',
-    'ru-ru': 'Набор Объектов Созданный',
-    'es-es': 'Conjunto de registros creado',
-    'fr-fr': "Jeu d'enregistrements créé",
-    'uk-ua': 'Набір записів створено',
+    'en-us': '{recordSetTable:string} Created',
+    'ru-ru': '{recordSetTable:string} Созданный',
+    'es-es': '{recordSetTable:string} Creado',
+    'fr-fr': '{recordSetTable:string} créé',
+    'uk-ua': '{recordSetTable:string} Створено',
   },
   missingCoordinatesForKml: {
     'en-us': 'Unable to export to KML',
     'ru-ru': 'Невозможно экспортировать в KML',
     'es-es': 'No se puede exportar a KML',
-    'fr-fr': "Impossible d'exporter vers KML",
+    'fr-fr': "Impossible d'exporter au format KML",
     'uk-ua': 'Не вдалося експортувати в KML',
   },
   missingCoordinatesForKmlDescription: {
@@ -211,21 +212,26 @@ export const queryText = createDictionary({
   },
   queryRecordSetTitle: {
     comment: 'Used in query builder header when querying on record set',
-    'en-us':
-      'Query: "{queryName:string}" on Record Set: "{recordSetName:string}"',
+    'en-us': `
+      Query: "{queryName:string}" on
+      {recordSetTable:string}: "{recordSetName:string}"
+    `,
     'ru-ru': `
-      Запрос: "{queryName:string}" на наборе записей: "{recordSetName:string}"
+      Запрос: "{queryName:string}" на
+      {recordSetTable:string}: "{recordSetName:string}"
     `,
     'es-es': `
-      Consulta: "{queryName:string}" en conjunto de
-      registros: "{recordSetName:string}"
+      Consulta: "{queryName:string}" en
+      {recordSetTable:string}: "{recordSetName:string}"
     `,
     'fr-fr': `
-      Requête : "{queryName:string}" sur le jeu d\'enregistrements
-      : "{recordSetName:string}"
+      Requête : "{queryName:string}" sur
+      {recordSetTable:string} : "{recordSetName:string}"
     `,
-    'uk-ua':
-      'Запит: "{queryName:string}" у наборі записів: "{recordSetName:string}"',
+    'uk-ua': `
+      Запит: "{queryName:string}" на
+      {recordSetTable:string}: "{recordSetName:string}"
+    `,
   },
   treeQueryName: {
     comment: 'Used in query builder header when querying on tree node usages',
@@ -271,11 +277,11 @@ export const queryText = createDictionary({
     'uk-ua': 'Створіть KML',
   },
   createRecordSet: {
-    'en-us': 'Create Record Set',
-    'ru-ru': 'Сделать набор объектов',
-    'es-es': 'Crear conjunto de registros',
-    'fr-fr': "Créer un jeu d'enregistrements",
-    'uk-ua': 'Створити набір записів',
+    'en-us': 'Create {recordSetTable:string}',
+    'ru-ru': 'Сделать {recordSetTable:string}',
+    'es-es': 'Crear {recordSetTable:string}',
+    'fr-fr': 'Créer un {recordSetTable:string}',
+    'uk-ua': 'Створити {recordSetTable:string}',
   },
   saveAs: {
     'en-us': 'Save As',
@@ -302,13 +308,13 @@ export const queryText = createDictionary({
     'en-us': 'Move Down',
     'ru-ru': 'Переместить вниз',
     'es-es': 'Mover hacia abajo',
-    'fr-fr': 'Descendre',
+    'fr-fr': 'Déplacer vers le bas',
     'uk-ua': 'Рухатися вниз',
   },
   sort: {
     'en-us': 'Sort',
     'ru-ru': 'Сортировать',
-    'es-es': 'Tipo',
+    'es-es': 'Clasificar',
     'fr-fr': 'Trier',
     'uk-ua': 'Сортувати',
   },
@@ -352,14 +358,14 @@ export const queryText = createDictionary({
     'ru-ru': '(отформатирован)',
     'es-es': '(formateado)',
     'fr-fr': '(formaté)',
-    'uk-ua': '(відформатований)',
+    'uk-ua': '(відформатовано)',
   },
   like: {
     'en-us': 'Like',
     'ru-ru': 'Подобно',
-    'es-es': 'Me gusta',
+    'es-es': 'Como',
     'fr-fr': 'Comme',
-    'uk-ua': 'Люблю',
+    'uk-ua': 'Подобається',
   },
   likeDescription: {
     comment: 'Explains the use of special symbols for the "like" query filter',
@@ -379,9 +385,9 @@ export const queryText = createDictionary({
       Use "_" para hacer coincidir un solo carácter
     `,
     'fr-fr': `
-      Utilisez "%" pour correspondre à n\'importe quel nombre de caractères.
+      Utilisez « % » pour correspondre à n'importe quel nombre de caractères.
 
-      Utilisez "_" pour correspondre à un seul caractère
+      Utilisez « _ » pour correspondre à un seul caractère
     `,
     'uk-ua': `
       Використовуйте "%", щоб відповідати будь-якій кількості символів.
@@ -401,7 +407,7 @@ export const queryText = createDictionary({
     'ru-ru': 'Больше чем',
     'es-es': 'Mas grande que',
     'fr-fr': 'Plus grand que',
-    'uk-ua': 'Більш чим',
+    'uk-ua': 'Більше, ніж, величніше ніж, крутіший за',
   },
   lessThan: {
     'en-us': 'Less than',
@@ -484,7 +490,7 @@ export const queryText = createDictionary({
     'en-us': 'Empty',
     'ru-ru': 'Пустой',
     'es-es': 'Vacío',
-    'fr-fr': 'Vider',
+    'fr-fr': 'Vide',
     'uk-ua': 'Порожній',
   },
   and: {
@@ -498,14 +504,14 @@ export const queryText = createDictionary({
     'en-us': 'Starts With',
     'ru-ru': 'Начинается с',
     'es-es': 'Comienza con',
-    'fr-fr': 'Commence avec',
+    'fr-fr': 'Commence par',
     'uk-ua': 'Починається з',
   },
   or: {
     'en-us': 'or',
     'ru-ru': 'или',
     'es-es': 'o',
-    'fr-fr': 'ou alors',
+    'fr-fr': 'ou',
     'uk-ua': 'або',
   },
   yes: {
@@ -526,7 +532,7 @@ export const queryText = createDictionary({
     'en-us': 'Items have been returned',
     'ru-ru': 'Items have been returned',
     'es-es': 'Los artículos han sido devueltos',
-    'fr-fr': 'Les articles ont été retournés',
+    'fr-fr': 'Les éléments ont été retournés',
     'uk-ua': 'Товари повернуто',
   },
   queryResults: {
@@ -600,7 +606,7 @@ export const queryText = createDictionary({
     'ru-ru': 'Синонимизированный узел дерева',
     'es-es': 'Árbol Sinonimizar',
     'fr-fr': "Synonymiser l'arbre",
-    'uk-ua': 'Синонімізувати дерево',
+    'uk-ua': 'Дерево синонімізувати',
   },
   treeDesynonymize: {
     comment: 'Audit Log Action Type',
@@ -624,7 +630,7 @@ export const queryText = createDictionary({
       {maxLength:number|formatted}
     `,
     'fr-fr': `
-      La valeur du champ est trop longue. La longueur maximale autorisée est
+      La valeur du champ est trop longue. La longueur maximale autorisée est de
       {maxLength:number|formatted}
     `,
     'uk-ua': `

@@ -38,12 +38,12 @@ const errorBody = (
     <br />
     <StringToJsx
       components={{
-        memberLink: (label) => (
+        memberLink: (label): JSX.Element => (
           <Link.NewTab href="https://www.specifysoftware.org/members/#:~:text=Members%20can%20contact%20support%40specifysoftware.org%20for%20assistance%20updating.">
             {label}
           </Link.NewTab>
         ),
-        discourseLink: (label) => (
+        discourseLink: (label): JSX.Element => (
           <Link.NewTab href="https://discourse.specifysoftware.org/">
             {label}
           </Link.NewTab>

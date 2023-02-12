@@ -4,6 +4,8 @@ import { backEndText } from '../../localization/backEnd';
 import { preferencesText } from '../../localization/preferences';
 import { className } from '../Atoms/className';
 import { TableIcon } from '../Molecules/TableIcon';
+import { schema } from '../DataModel/schema';
+import { getField } from '../DataModel/helpers';
 
 type JsonResponse = {
   readonly exception: string;
@@ -202,14 +204,20 @@ function resolveBackendLocalization(jsonResponseData: any): string {
       resource: jsonResponseData.resource,
     });
   else if (localizationKey === 'actorIsNotSpecifyUser')
-    return backEndText.actorIsNotSpecifyUser({ actor: jsonResponseData.actor });
+    return backEndText.actorIsNotSpecifyUser({
+      agentTable: schema.models.Agent.label,
+      specifyUserTable: schema.models.SpecifyUser.label,
+      actor: jsonResponseData.actor,
+    });
   else if (localizationKey === 'unexpectedCollectionType')
     return backEndText.unexpectedCollectionType({
       unexpectedTypeName: jsonResponseData.unexpectedTypeName,
       collectionName: jsonResponseData.collectionName,
     });
   else if (localizationKey === 'invalidReportMimetype')
-    return backEndText.invalidReportMimetype();
+    return backEndText.invalidReportMimetype({
+      mimeTypeField: getField(schema.models.SpAppResource, 'mimeType').label,
+    });
   else if (localizationKey === 'fieldNotRelationship')
     return backEndText.fieldNotRelationship({ field: jsonResponseData.field });
   else if (localizationKey === 'unexpectedTableId')

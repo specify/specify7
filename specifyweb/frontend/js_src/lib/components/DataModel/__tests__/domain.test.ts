@@ -7,8 +7,17 @@ import {
 } from '../domain';
 import { getResourceApiUrl } from '../resource';
 import { schema } from '../schema';
+import { monthsPickListName } from '../../PickLists/definitions';
 
 requireContext();
+
+overrideAjax(
+  `/api/specify/picklist/?domainfilter=false&name=${monthsPickListName}&collection=4&offset=0`,
+  {
+    meta: { total_count: 0 },
+    objects: [],
+  }
+);
 
 describe('getCollectionForResource', () => {
   test('Collection Object', () => {

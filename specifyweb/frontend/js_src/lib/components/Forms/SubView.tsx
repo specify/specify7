@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useAsyncState } from '../../hooks/useAsyncState';
+import { usePromise } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
@@ -34,8 +34,6 @@ export const SubViewContext = React.createContext<
   | undefined
 >(undefined);
 SubViewContext.displayName = 'SubViewContext';
-
-const fetchAttachmentSettings = async () => attachmentSettingsPromise;
 
 export function SubView({
   relationship,
@@ -191,13 +189,13 @@ export function SubView({
 
   const [isOpen, _, handleClose, handleToggle] = useBooleanState(!isButton);
 
-  const [isAttachmentConfigured] = useAsyncState(fetchAttachmentSettings, true);
+  const [isAttachmentConfigured] = usePromise(attachmentSettingsPromise, true);
 
   const isAttachmentTable = attachmentRelatedTables().includes(
     relationship.relatedModel.name
   );
 
-  const isAttachmentMisconfirgured =
+  const isAttachmentMisconfigured =
     isAttachmentTable && !isAttachmentConfigured;
 
   return (
@@ -232,7 +230,7 @@ export function SubView({
           dialog={isButton ? 'nonModal' : false}
           formType={formType}
           mode={
-            !isAttachmentMisconfirgured &&
+            !isAttachmentMisconfigured &&
             relationship.isDependent() &&
             initialMode !== 'view'
               ? 'edit'

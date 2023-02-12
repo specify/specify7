@@ -261,6 +261,8 @@ function getFieldDefinition(
             min: parser.min,
             max: parser.max,
             step: parser.step,
+            minLength: parser.minLength,
+            maxLength: parser.maxLength
           }),
     },
   };

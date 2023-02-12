@@ -1,34 +1,37 @@
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
-
-import { useCachedState } from '../../hooks/useCachedState';
-import { useErrorContext } from '../../hooks/useErrorContext';
-import { useId } from '../../hooks/useId';
-import { commonText } from '../../localization/common';
-import { resourcesText } from '../../localization/resources';
-import { StringToJsx } from '../../localization/utils';
-import type { RA } from '../../utils/types';
+import {
+  AppResources,
+  AppResourcesTree,
+  useAppResourceCount,
+  useResourcesTree,
+} from './hooks';
 import { multiSortFunction, removeItem, replaceItem } from '../../utils/utils';
-import { Ul } from '../Atoms';
-import { Button } from '../Atoms/Button';
-import { className } from '../Atoms/className';
-import { icons } from '../Atoms/Icons';
-import { Link } from '../Atoms/Link';
-import type { SerializedResource } from '../DataModel/helperTypes';
-import type {
-  SpAppResource,
-  SpViewSetObj as SpViewSetObject,
-} from '../DataModel/types';
-import { hasToolPermission } from '../Permissions/helpers';
-import { ActiveLink } from '../Router/ActiveLink';
-import { appResourceIcon } from './EditorComponents';
+import { useErrorContext } from '../../hooks/useErrorContext';
+import { filterArray, RA } from '../../utils/types';
+import { ActiveLink, useIsActive } from '../Router/ActiveLink';
+import { SpAppResource, SpViewSetObj } from '../DataModel/types';
 import { useFilteredAppResources } from './Filters';
+import { scrollIntoView } from '../TreeView/helpers';
 import type { AppResourceFilters as AppResourceFiltersType } from './filtersHelpers';
 import { getResourceType } from './filtersHelpers';
-import { buildAppResourceConformation, getAppResourceMode } from './helpers';
-import type { AppResources, AppResourcesTree } from './hooks';
-import { useAppResourceCount, useResourcesTree } from './hooks';
+import { resourcesText } from '../../localization/resources';
+import { commonText } from '../../localization/common';
 import { appResourceSubTypes } from './types';
+import { buildAppResourceConformation, getAppResourceMode } from './helpers';
+import { f } from '../../utils/functools';
+import { StringToJsx } from '../../localization/utils';
+import { hasToolPermission } from '../Permissions/helpers';
+import { icons } from '../Atoms/Icons';
+import { appResourceIcon } from './EditorComponents';
+import { Ul } from '../Atoms';
+import { useCachedState } from '../../hooks/useCachedState';
+import { SerializedResource } from '../DataModel/helperTypes';
+import { useParams } from 'react-router-dom';
+import { Button } from '../Atoms/Button';
+import { useId } from '../../hooks/useId';
+import { Link } from '../Atoms/Link';
+import { className } from '../Atoms/className';
 
 export function AppResourcesAside({
   resources: initialResources,
@@ -42,7 +45,7 @@ export function AppResourcesAside({
   readonly initialFilters?: AppResourceFiltersType;
   readonly isEmbedded: boolean;
   readonly onOpen?: (
-    resource: SerializedResource<SpAppResource | SpViewSetObject>
+    resource: SerializedResource<SpAppResource | SpViewSetObj>
   ) => void;
 }): JSX.Element {
   const [conformations = [], setConformations] = useCachedState(
@@ -52,6 +55,8 @@ export function AppResourcesAside({
   const resources = useFilteredAppResources(initialResources, initialFilters);
   const resourcesTree = useResourcesTree(resources);
   useErrorContext('appResourcesTree', resourcesTree);
+
+  useOpenCurrent(conformations, setConformations, resourcesTree);
 
   return (
     <aside
@@ -82,6 +87,66 @@ export function AppResourcesAside({
       </div>
     </aside>
   );
+}
+
+function useOpenCurrent(
+  conformation: RA<AppResourcesConformation>,
+  setConformations: (value: RA<AppResourcesConformation>) => void,
+  resourcesTree: AppResourcesTree
+): void {
+  const { id } = useParams();
+  React.useEffect(() => {
+    const idNum = f.parseInt(id);
+
+    if (idNum === undefined) return;
+
+    function updateConformation(
+      category: AppResourcesTree[number],
+      conformation: AppResourcesConformation | undefined
+    ): AppResourcesConformation | undefined {
+      const childrenConformation = filterArray(
+        category.subCategories.map((item) =>
+          updateConformation(
+            item,
+            conformation?.children.find(
+              (conformation) => conformation.key === category.key
+            )
+          )
+        )
+      );
+
+      if (
+        containsId(category) ||
+        conformation !== undefined ||
+        childrenConformation.length > 0
+      ) {
+        return {
+          key: category.key,
+          children: childrenConformation,
+        };
+      } else return undefined;
+    }
+
+    function containsId(category: AppResourcesTree[number]): boolean {
+      return (
+        category.appResources.some(
+          (appResources) => appResources.id === idNum!
+        ) ||
+        category.viewSets.some((appResources) => appResources.id === idNum!)
+      );
+    }
+
+    setConformations(
+      filterArray(
+        resourcesTree.map((tree) =>
+          updateConformation(
+            tree,
+            conformation.find((conformation) => conformation.key === tree.key)
+          )
+        )
+      )
+    );
+  }, [setConformations, resourcesTree, id]);
 }
 
 export type AppResourcesConformation = {
@@ -125,7 +190,7 @@ function TreeItem({
   readonly isReadOnly: boolean;
   readonly onFold: (conformations: RA<AppResourcesConformation>) => void;
   readonly onOpen:
-    | ((resource: SerializedResource<SpAppResource | SpViewSetObject>) => void)
+    | ((resource: SerializedResource<SpAppResource | SpViewSetObj>) => void)
     | undefined;
 }): JSX.Element {
   const { label, key, subCategories } = resourcesTree;
@@ -214,7 +279,7 @@ function TreeItemResources({
   readonly resourcesTree: AppResourcesTree[number];
   readonly isReadOnly: boolean;
   readonly onOpen:
-    | ((resource: SerializedResource<SpAppResource | SpViewSetObject>) => void)
+    | ((resource: SerializedResource<SpAppResource | SpViewSetObj>) => void)
     | undefined;
 }): JSX.Element | null {
   const { appResources, viewSets, directory, key } = resourcesTree;
@@ -271,17 +336,28 @@ function ResourceItem({
   resource,
   onOpen: handleOpen,
 }: {
-  readonly resource: SerializedResource<SpAppResource | SpViewSetObject> & {
+  readonly resource: SerializedResource<SpAppResource | SpViewSetObj> & {
     readonly type: ReturnType<typeof getResourceType>;
   };
   readonly onOpen:
-    | ((resource: SerializedResource<SpAppResource | SpViewSetObject>) => void)
+    | ((resource: SerializedResource<SpAppResource | SpViewSetObj>) => void)
     | undefined;
 }): JSX.Element {
   const url =
     getAppResourceMode(resource) === 'appResources'
       ? `/specify/resources/app-resource/${resource.id}/`
       : `/specify/resources/view-set/${resource.id}/`;
+
+  const [link, setLink] = React.useState<HTMLElement | null>(null);
+
+  const isActive = useIsActive(url, false);
+
+  React.useEffect(() => {
+    if (isActive && link) {
+      scrollIntoView(link);
+    }
+  }, [link]);
+
   return (
     <ActiveLink
       className="[&:not([aria-current]):not(:hover)]:!text-neutral-500"
@@ -295,6 +371,7 @@ function ResourceItem({
             }
           : undefined
       }
+      forwardRef={setLink}
     >
       {appResourceIcon(resource.type)}
       {(resource.name as LocalizedString) || commonText.nullInline()}

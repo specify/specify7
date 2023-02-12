@@ -10,6 +10,7 @@ import { useLiveState } from '../../hooks/useLiveState';
 import { f } from '../../utils/functools';
 import type { RR } from '../../utils/types';
 import { writable } from '../../utils/types';
+import { ReadOnlyContext } from '../Core/Contexts';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type {
@@ -17,6 +18,7 @@ import type {
   SpAppResourceDir,
   SpViewSetObj,
 } from '../DataModel/types';
+import { DataObjectFormatter } from '../Formatters';
 import { PreferencesContent } from '../UserPreferences';
 import type { UserPreferences } from '../UserPreferences/helpers';
 import {
@@ -26,8 +28,6 @@ import {
 import { PreferencesContext, useDarkMode } from '../UserPreferences/Hooks';
 import { useCodeMirrorExtensions } from './EditorComponents';
 import type { appResourceSubTypes } from './types';
-import { ReadOnlyContext } from '../Core/Contexts';
-import { DataObjectFormatter } from '../Formatters';
 
 export type AppResourceTabProps = {
   readonly resource: SerializedResource<SpAppResource | SpViewSetObj>;

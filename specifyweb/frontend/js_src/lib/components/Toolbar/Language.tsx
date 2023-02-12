@@ -27,6 +27,7 @@ import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Select } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
+import { raise } from '../Errors/Crash';
 import { cachableUrl } from '../InitialContext';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { formatUrl } from '../Router/queryString';
@@ -36,7 +37,6 @@ import type {
   PreferenceRendererProps,
 } from '../UserPreferences/Definitions';
 import { PreferencesContext, prefEvents } from '../UserPreferences/Hooks';
-import { raise } from '../Errors/Crash';
 
 export const handleLanguageChange = async (language: Language): Promise<void> =>
   ping(
@@ -143,7 +143,7 @@ export function LanguageSelection<LANGUAGES extends string>({
           onValueChange={(value): void =>
             value === 'supportLocalization'
               ? setShowSupportDialog(true)
-              : f.has(completeLanguages, value)
+              : !isForInterface || f.has(completeLanguages, value)
               ? handleChange(value as LANGUAGES)
               : setWarningLanguage(value as LANGUAGES)
           }
@@ -151,7 +151,7 @@ export function LanguageSelection<LANGUAGES extends string>({
           {Object.entries(languages).map(([code, nameLocal]) => (
             <option key={code} value={code}>
               {`${nameLocal} (${code}) ${
-                f.has(completeLanguages, code)
+                !isForInterface || f.has(completeLanguages, code)
                   ? ''
                   : headerText.incompleteInline()
               }`}

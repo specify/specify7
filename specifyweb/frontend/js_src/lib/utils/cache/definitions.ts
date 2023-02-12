@@ -28,6 +28,9 @@ import { ensure } from '../types';
 
 /** The types of cached values are defined here */
 export type CacheDefinitions = {
+  readonly header: {
+    readonly isCollapsed: boolean;
+  };
   readonly general: {
     readonly clearCacheOnException: boolean;
   };
@@ -65,6 +68,10 @@ export type CacheDefinitions = {
   };
   readonly workbench: {
     readonly searchProperties: SearchPreferences;
+  };
+  readonly coordinateConverter: {
+    readonly includeSymbols: boolean;
+    readonly applyAll: boolean;
   };
   readonly tree: {
     readonly [key in `focusPath${AnyTree['tableName']}`]: RA<number>;

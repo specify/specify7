@@ -18,6 +18,7 @@ const needAuditLogFormatting = (fieldSpecs: RA<QueryFieldSpec>): boolean =>
     ['SpAuditLog', 'SpAuditLogField'].includes(table.name)
   );
 
+// REFACTOR: replace with <FormattedResourceUrl />
 async function resourceToLink(
   model: SpecifyModel,
   id: number
@@ -31,7 +32,8 @@ async function resourceToLink(
         .fetch()
         .then(async (resource) => format(resource, undefined, true))
         .then((string) =>
-          hasTablePermission(resource.specifyModel.name, 'read') ? (
+          hasTablePermission(resource.specifyModel.name, 'read') &&
+          !resource.isNew() ? (
             <Link.NewTab href={resource.viewUrl()}>{string}</Link.NewTab>
           ) : (
             string

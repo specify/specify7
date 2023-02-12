@@ -169,6 +169,8 @@ describe('parseFormCell', () => {
           min: undefined,
           step: undefined,
           type: 'Text',
+          maxLength: undefined,
+          minLength: undefined
         },
       })
     ));
@@ -193,6 +195,8 @@ describe('parseFormCell', () => {
           min: undefined,
           step: undefined,
           type: 'Text',
+          maxLength: undefined,
+          minLength: undefined
         },
       })
     ));
@@ -232,6 +236,8 @@ describe('parseFormCell', () => {
           min: undefined,
           step: undefined,
           type: 'Text',
+          maxLength: undefined,
+          minLength: undefined
         },
       })
     );
@@ -258,6 +264,8 @@ describe('parseFormCell', () => {
           min: undefined,
           step: undefined,
           type: 'Text',
+          minLength: undefined,
+          maxLength: undefined
         },
       })
     ));

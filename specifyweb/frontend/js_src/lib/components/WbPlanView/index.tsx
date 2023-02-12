@@ -12,12 +12,12 @@ import { useErrorContext } from '../../hooks/useErrorContext';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { f } from '../../utils/functools';
+import { useMenuItem } from '../Header/MenuContext';
 import { treeRanksPromise } from '../InitialContext/treeRanks';
 import { hasPermission } from '../Permissions/helpers';
 import { NotFoundView } from '../Router/NotFoundView';
 import type { Dataset } from './Wrapped';
 import { WbPlanView } from './Wrapped';
-import { useMenuItem } from '../Header/MenuContext';
 
 const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 

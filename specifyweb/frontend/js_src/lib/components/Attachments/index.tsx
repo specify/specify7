@@ -4,7 +4,7 @@
 
 import React from 'react';
 
-import { useAsyncState } from '../../hooks/useAsyncState';
+import { useAsyncState, usePromise } from '../../hooks/useAsyncState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { useCollection } from '../../hooks/useCollection';
 import { attachmentsText } from '../../localization/attachments';
@@ -19,12 +19,12 @@ import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
 import { getModel, schema } from '../DataModel/schema';
 import type { Tables } from '../DataModel/types';
 import { hasTablePermission } from '../Permissions/helpers';
+import { useNavigate } from 'react-router-dom';
+import { useMenuItem } from '../Header/useMenuItem';
+import { Dialog } from '../Molecules/Dialog';
 import { ProtectedTable } from '../Permissions/PermissionDenied';
 import { OrderPicker } from '../UserPreferences/Renderers';
 import { AttachmentGallery } from './Gallery';
-import { useMenuItem } from '../Header/MenuContext';
-import { Dialog } from '../Molecules/Dialog';
-import { useNavigate } from 'react-router-dom';
 import { attachmentSettingsPromise } from './attachments';
 
 export const attachmentRelatedTables = f.store(() =>
@@ -53,11 +53,9 @@ const maxScale = 50;
 const defaultSortOrder = '-timestampCreated';
 const defaultFilter = { type: 'all' } as const;
 
-const fetchSettings = () => attachmentSettingsPromise;
-
 export function AttachmentsView(): JSX.Element | null {
   const navigate = useNavigate();
-  const [isConfigured] = useAsyncState(fetchSettings, true);
+  const [isConfigured] = usePromise(attachmentSettingsPromise, true);
 
   return isConfigured === undefined ? null : isConfigured ? (
     <ProtectedTable action="read" tableName="Attachment">

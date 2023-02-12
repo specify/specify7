@@ -5,7 +5,7 @@ import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
-import { formatList } from '../Atoms/Internationalization';
+import { formatDisjunction } from '../Atoms/Internationalization';
 import { AttachmentsPlugin } from '../Attachments/Plugin';
 import { toTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
@@ -18,6 +18,7 @@ import type { FieldTypes } from '../FormParse/fields';
 import type { UiPlugins } from '../FormParse/plugins';
 import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
+import { WebLinkField } from '../WebLinks';
 import { CollectionOneToManyPlugin } from './CollectionRelOneToMany';
 import { CollectionOneToOnePlugin } from './CollectionRelOneToOne';
 import { GeoLocatePlugin } from './GeoLocate';
@@ -26,7 +27,6 @@ import { LatLongUi } from './LatLongUi';
 import { LeafletPlugin } from './Leaflet';
 import { PaleoLocationMapPlugin } from './PaleoLocation';
 import { PartialDateUi } from './PartialDateUi';
-import { WebLinkField } from '../WebLinks';
 
 const pluginRenderers: {
   readonly [KEY in keyof UiPlugins]: (props: {
@@ -302,7 +302,7 @@ export function WrongPluginTable({
       >
         {formsText.wrongTableForPlugin({
           currentTable: resource.specifyModel.name,
-          correctTable: formatList(supportedTables),
+          supportedTables: formatDisjunction(supportedTables),
         })}
       </Dialog>
     </>

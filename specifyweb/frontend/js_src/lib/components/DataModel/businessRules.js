@@ -3,7 +3,7 @@ import _ from 'underscore';
 import {formsText} from '../../localization/forms';
 import {globalEvents} from '../../utils/ajax/specifyApi';
 import {flippedPromise} from '../../utils/promise';
-import {formatList} from '../Atoms/Internationalization';
+import {formatConjunction} from '../Atoms/Internationalization';
 import {isTreeResource} from '../InitialContext/treeRanks';
 import {businessRuleDefs} from './businessRuleDefs';
 import {idFromUrl} from './resource';
@@ -176,7 +176,7 @@ let enabled = true;
                 ? {valid: true}
                 : {
                     valid: false,
-                    reason: formatList(_(invalids).pluck('reason'))
+                    reason: formatConjunction(_(invalids).pluck('reason'))
                 };
         });
     };
@@ -185,11 +185,11 @@ let enabled = true;
         if (fldInfo.length > 1)
           return parentFldInfo
             ? formsText.valuesOfMustBeUniqueToField({
-                values: formatList(fldInfo.map((fld) => fld.label)),
+                values: formatConjunction(fldInfo.map((fld) => fld.label)),
                 fieldName: parentFldInfo.label,
               })
             : formsText.valuesOfMustBeUniqueToDatabase({
-                values: formatList(fldInfo.map((fld) => fld.label))
+                values: formatConjunction(fldInfo.map((fld) => fld.label))
               });
         else
           return parentFldInfo

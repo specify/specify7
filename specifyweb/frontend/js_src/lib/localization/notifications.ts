@@ -13,7 +13,7 @@ export const notificationsText = createDictionary({
     'en-us': 'Notifications',
     'ru-ru': 'Уведомления',
     'es-es': 'Notificaciones',
-    'fr-fr': 'Avis',
+    'fr-fr': 'Notifications',
     'uk-ua': 'Сповіщення',
   },
   notificationsCount: {
@@ -31,14 +31,14 @@ export const notificationsText = createDictionary({
     'en-us': 'Notifications: …',
     'ru-ru': 'Уведомлений: …',
     'es-es': 'Notificaciones: …',
-    'fr-fr': 'Notifications : …',
+    'fr-fr': 'Notifications : …',
     'uk-ua': 'Сповіщення: …',
   },
   mostRecentNotificationsTop: {
     'en-us': '(Ordered from most recent to the oldest.)',
     'ru-ru': '(В порядке от самого последнего к самому старому.)',
     'es-es': '(Ordenados del más reciente al más antiguo.)',
-    'fr-fr': '(Classé du plus récent au plus ancien.)',
+    'fr-fr': '(De la plus récente à la plus ancienne.)',
     'uk-ua': '(У порядку від останнього до найстарішого.)',
   },
   exception: {

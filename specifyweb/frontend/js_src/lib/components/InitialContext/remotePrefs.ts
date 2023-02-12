@@ -11,6 +11,7 @@ import type { IR, R, RA } from '../../utils/types';
 import { defined } from '../../utils/types';
 import type { JavaType } from '../DataModel/specifyField';
 import { cachableUrl, contextUnlockedPromise } from './index';
+import { databaseDateFormat } from '../../utils/parser/dateConfig';
 
 const preferences: R<string> = {};
 
@@ -115,7 +116,7 @@ export const remotePrefsDefinitions = f.store(
     ({
       'ui.formatting.scrdateformat': {
         description: 'Full Date format',
-        defaultValue: 'YYYY-MM-DD',
+        defaultValue: databaseDateFormat,
         formatters: [formatter.trim, formatter.toUpperCase],
         // Indicates that this remote pref is shared with Specify 6
         isLegacy: true,

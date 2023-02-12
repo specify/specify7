@@ -5,41 +5,26 @@
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
-import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
-import { mainText } from '../../localization/main';
 import { userText } from '../../localization/user';
-import type { RR } from '../../utils/types';
+import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
-import { className } from '../Atoms/className';
-import { Link } from '../Atoms/Link';
 import { enableBusinessRules } from '../DataModel/businessRules';
-import { crash } from '../Errors/Crash';
-import { CollectionSelector, ExpressSearch, HeaderItems } from '../Header';
+import { MenuContext, SetMenuContext } from '../Header/MenuContext';
 import type { MenuItemName } from '../Header/menuItemDefinitions';
-import { menuItemsPromise } from '../Header/menuItemDefinitions';
-import { Notifications } from '../Header/Notifications';
-import { UserTools } from '../Header/UserTools';
-import { getSystemInfo } from '../InitialContext/systemInfo';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { Router } from '../Router/Router';
-import type { Preferences } from '../UserPreferences/Definitions';
-import { MenuContext, SetMenuContext } from '../Header/MenuContext';
+import { OnlineStatus } from './OnlineStatus';
+import { VersionMismatch } from './VersionMismatch';
+import { Header } from '../Header';
 
-export type UserTool = {
+export type MenuItem = {
   readonly title: LocalizedString;
   readonly url: string;
   readonly enabled?: () => Promise<boolean> | boolean;
-};
-
-export type MenuItem = UserTool & {
   readonly icon: JSX.Element;
-  /*
-   * A name of the user preference key responsible for determining whether
-   * the menu item is visible
-   */
-  readonly visibilityKey: keyof Preferences['header']['subCategories']['menu']['items'];
+  readonly name: string;
 };
 
 /*
@@ -47,31 +32,24 @@ export type MenuItem = UserTool & {
  *  should be done in .tsx files so that a Loading Dialog can be displayed)
  */
 
-export function Main(): JSX.Element | null {
-  const [menuItems, setMenuItems] = React.useState<
-    RR<MenuItemName, MenuItem> | undefined
-  >(undefined);
-  const [showVersionMismatch, setShowVersionMismatch] = React.useState(
-    getSystemInfo().specify6_version !== getSystemInfo().database_version
-  );
-
+export function Main({
+  menuItems,
+}: {
+  readonly menuItems: RA<MenuItem>;
+}): JSX.Element {
   const [hasAgent] = React.useState(userInformation.agent !== null);
 
   const mainRef = React.useRef<HTMLElement | null>(null);
-  React.useEffect(
-    () =>
-      void menuItemsPromise
-        .then(setMenuItems)
-        .then(() => enableBusinessRules(true))
-        .then(console.groupEnd)
-        .catch(crash),
-    []
-  );
+  React.useEffect(() => {
+    enableBusinessRules(true);
+    console.groupEnd();
+  }, []);
 
   const [menuContext, setMenuContext] = React.useState<
     MenuItemName | undefined
   >(undefined);
-  return menuItems === undefined ? null : (
+
+  return (
     <MenuContext.Provider value={menuContext}>
       <SetMenuContext.Provider value={setMenuContext}>
         <Button.Small
@@ -85,102 +63,39 @@ export function Main(): JSX.Element | null {
         >
           {headerText.skipToContent()}
         </Button.Small>
+        <Header menuItems={menuItems} />
 
-        <header
-          className={`
-          flex flex-col border-b-[5px]
-          border-b-brand-200 bg-gray-200 shadow-md shadow-gray-400 [z-index:1] 
-          dark:border-b-brand-400 dark:bg-neutral-800 print:hidden 2xl:flex-row
-          ${className.hasAltBackground}
-        `}
-        >
-          <div className="flex w-full items-center justify-between 2xl:contents">
-            <h1 className="contents">
-              <a className="order-1 m-4 flex items-center" href="/specify/">
-                <img
-                  alt=""
-                  className="h-16 hover:animate-hue-rotate"
-                  src="/static/img/logo.svg"
-                />
-                <span className="sr-only">{commonText.goToHomepage()}</span>
-              </a>
-            </h1>
-            <div
-              className={`
-              2xl:w-max-[350px] order-3 m-4 flex min-w-[275px] flex-col gap-2
-            `}
-            >
-              <div className="flex items-center justify-end gap-2">
-                {/* FEATURE: display user tools for anonymous users */}
-                {userInformation.isauthenticated ? (
-                  <UserTools />
-                ) : (
-                  <Link.Default href="/accounts/login/">
-                    {userText.logIn()}
-                  </Link.Default>
-                )}
-                <CollectionSelector />
-              </div>
-              <div className="flex items-center justify-end gap-2">
-                <Notifications />
-                <ExpressSearch />
-              </div>
-            </div>
-          </div>
-          <HeaderItems menuItems={menuItems} />
-        </header>
-
-        {showVersionMismatch && (
-          <Dialog
-            buttons={
-              <Button.Orange
-                onClick={(): void => setShowVersionMismatch(false)}
-              >
-                {commonText.close()}
-              </Button.Orange>
-            }
-            forceToTop
-            header={mainText.versionMismatch()}
-            onClose={(): void => setShowVersionMismatch(false)}
-          >
-            <p>
-              {mainText.versionMismatchDescription({
-                specifySixVersion: getSystemInfo().specify6_version,
-                databaseVersion: getSystemInfo().database_version,
-              })}
-            </p>
-            <p>{mainText.versionMismatchSecondDescription()}</p>
-            <p>
-              <Link.NewTab href="https://discourse.specifysoftware.org/t/resolve-specify-7-schema-version-mismatch/884">
-                {mainText.versionMismatchInstructions()}
-              </Link.NewTab>
-            </p>
-          </Dialog>
-        )}
         {hasAgent ? (
           <main className="flex-1 overflow-auto" ref={mainRef}>
             <Router />
           </main>
         ) : (
-          <Dialog
-            buttons={
-              <Button.DialogClose component={Button.Red}>
-                {userText.logOut()}
-              </Button.DialogClose>
-            }
-            className={{
-              container: `${dialogClassNames.narrowContainer}`,
-            }}
-            forceToTop
-            header={userText.noAgent()}
-            onClose={(): void =>
-              globalThis.location.assign('/accounts/logout/')
-            }
-          >
-            {userText.noAgentDescription()}
-          </Dialog>
+          <MissingAgent />
         )}
+
+        <VersionMismatch />
+        <OnlineStatus />
       </SetMenuContext.Provider>
     </MenuContext.Provider>
+  );
+}
+
+function MissingAgent(): JSX.Element {
+  return (
+    <Dialog
+      buttons={
+        <Button.DialogClose component={Button.Red}>
+          {userText.logOut()}
+        </Button.DialogClose>
+      }
+      className={{
+        container: `${dialogClassNames.narrowContainer}`,
+      }}
+      forceToTop
+      header={userText.noAgent()}
+      onClose={(): void => globalThis.location.assign('/accounts/logout/')}
+    >
+      {userText.noAgentDescription()}
+    </Dialog>
   );
 }

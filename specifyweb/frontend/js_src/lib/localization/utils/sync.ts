@@ -63,7 +63,11 @@ export const syncStrings = async (
                       formatComment(strings.comment),
                       `Used in: ${f
                         .unique(
-                          usages.map(({ filePath }) => formatFilePath(filePath))
+                          usages.map(({ filePath }) =>
+                            filePath === '__tests__'
+                              ? 'Tests'
+                              : formatFilePath(filePath)
+                          )
                         )
                         .join(' ⬤ ')}`,
                     ]).join(' '),

@@ -14,9 +14,9 @@ import { getField } from '../DataModel/helpers';
 import type { SerializedResource, TableFields } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
+import { deserializeResource } from '../DataModel/serializers';
 import type { PickList, PickListItem, Tables } from '../DataModel/types';
 import { hasToolPermission } from '../Permissions/helpers';
-import { deserializeResource } from '../DataModel/serializers';
 
 let pickLists: R<SpecifyResource<PickList> | undefined> = {};
 
@@ -101,9 +101,11 @@ export const pickListTablesPickList = f.store(() =>
   )
 );
 
+export const monthsPickListName = '_Months';
+
 export const monthsPickList = f.store(() =>
   definePicklist(
-    '_Months',
+    monthsPickListName,
     months.map((title, index) =>
       createPickListItem((index + 1).toString(), title)
     )

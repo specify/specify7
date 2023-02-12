@@ -9,19 +9,19 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
 import { getModel, schema } from '../DataModel/schema';
+import {
+  deserializeResource,
+  serializeResource,
+} from '../DataModel/serializers';
 import type { RecordSet } from '../DataModel/types';
 import { RecordSetWrapper } from '../FormSliders/RecordSet';
+import { useMenuItem } from '../Header/MenuContext';
 import { interactionTables } from '../Interactions/InteractionsDialog';
 import { ProtectedTable } from '../Permissions/PermissionDenied';
 import { NotFoundView } from '../Router/NotFoundView';
 import { locationToState, useStableLocation } from '../Router/RouterState';
 import { CheckLoggedInCollection, ViewResourceByGuid } from './DataTask';
 import { ResourceView } from './ResourceView';
-import {
-  deserializeResource,
-  serializeResource,
-} from '../DataModel/serializers';
-import { useMenuItem } from '../Header/MenuContext';
 
 export function ShowResource({
   resource,

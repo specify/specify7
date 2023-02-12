@@ -1,9 +1,8 @@
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 
-import { useAsyncState } from '../../hooks/useAsyncState';
+import { useAsyncState, usePromise } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
-import { formsText } from '../../localization/forms';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
@@ -87,10 +86,7 @@ export function RecordSetsDialog({
     'name'
   );
 
-  const [unsortedData] = useAsyncState(
-    React.useCallback(async () => recordSetsPromise, [recordSetsPromise]),
-    true
-  );
+  const [unsortedData] = usePromise(recordSetsPromise, true);
   const data = React.useMemo(
     () =>
       typeof unsortedData === 'object'
@@ -115,7 +111,7 @@ export function RecordSetsDialog({
               <tr>
                 <th scope="col">
                   <Button.LikeLink onClick={(): void => handleSort('name')}>
-                    {formsText.recordSet()}
+                    {schema.models.RecordSet.label}
                     <SortIndicator fieldName="name" sortConfig={sortConfig} />
                   </Button.LikeLink>
                 </th>
