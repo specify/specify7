@@ -27,6 +27,9 @@ import type {
   StatLayout,
   StatsSpec,
 } from './types';
+import { Http } from '../../utils/ajax/definitions';
+import { commonText } from '../../localization/common';
+import { userText } from '../../localization/user';
 
 /**
  * Fetch backend statistics from the API
@@ -181,21 +184,27 @@ export function useDefaultLayout(statsSpec: StatsSpec): StatLayout {
 
 export function queryCountPromiseGenerator(
   query: SpecifyResource<SpQuery>
-): () => Promise<string> {
+): () => Promise<string | undefined> {
   return async () =>
     ajax<{
       readonly count: number;
-    }>('/stored_query/ephemeral/', {
-      method: 'POST',
-      headers: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        Accept: 'application/json',
+    }>(
+      '/stored_query/ephemeral/',
+      {
+        method: 'POST',
+        headers: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          Accept: 'application/json',
+        },
+        body: keysToLowerCase({
+          ...serializeResource(query),
+          countOnly: true,
+        }),
       },
-      body: keysToLowerCase({
-        ...serializeResource(query),
-        countOnly: true,
-      }),
-    }).then(({ data }) => formatNumber(data.count));
+      { expectedResponseCodes: [Http.FORBIDDEN, Http.OK] }
+    ).then(({ data, status }) =>
+      status === Http.FORBIDDEN ? undefined : formatNumber(data.count)
+    );
 }
 
 export const querySpecToResource = (
@@ -327,8 +336,8 @@ export function useStatValueLoad<
     if (!shouldFetch) return undefined;
     let destructorCalled = false;
     promiseGenerator().then((value) => {
-      if (value === undefined || destructorCalled) return;
-      onLoad?.(value);
+      if (destructorCalled) return;
+      onLoad?.(value ?? userText.noPermission());
     });
     return (): void => {
       destructorCalled = true;

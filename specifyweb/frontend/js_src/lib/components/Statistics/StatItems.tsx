@@ -16,6 +16,8 @@ import type {
   QuerySpec,
   StatsSpec,
 } from './types';
+import { hasTablePermission } from '../Permissions/helpers';
+import { userText } from '../../localization/user';
 
 export function StatItem({
   statsSpec,
@@ -167,6 +169,10 @@ function QueryItem({
   readonly onRename: ((newLabel: string) => void) | undefined;
   readonly onLoad: ((value: number | string) => void) | undefined;
 }): JSX.Element | null {
+  const overRideValue = hasTablePermission(querySpec.tableName, 'read')
+    ? value
+    : userText.noPermission();
+
   const query = React.useMemo(
     () => querySpecToResource(label, querySpec),
     [label, querySpec]
@@ -182,14 +188,14 @@ function QueryItem({
     [query]
   );
 
-  useStatValueLoad(value, promiseGenerator, handleLoad);
+  useStatValueLoad(overRideValue, promiseGenerator, handleLoad);
 
   return (
     <StatsResult
       isDefault={isDefault}
       query={query}
       label={label}
-      value={value}
+      value={overRideValue}
       onClick={handleClick}
       onRename={handleRename}
       onRemove={handleRemove}
