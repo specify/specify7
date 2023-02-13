@@ -1,10 +1,10 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-02-04 00:54+0000\n"
+"PO-Revision-Date: 2023-02-13 17:39+0000\n"
 "Last-Translator: Anonymous <noreply@weblate.org>\n"
-"Language-Team: Russian "
-"<https://hosted.weblate.org/projects/specify-7/schema/ru/>\n"
+"Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/schema/"
+"ru/>\n"
 "Language: ru\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -12,271 +12,272 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 4.16-dev\n"
 
+#. Used in: Components > Schema Config > Table ⬤ Components > Security > Preview Tables ⬤ Components > Security > Registry ⬤ Components > Toolbar > Data Model
 #: components/SchemaConfig/Table.tsx:48
 #: components/Security/PreviewTables.tsx:68
 #: components/Security/registry.ts:72
 #: components/Toolbar/DataModel.tsx:538
-#. Used in: Components > Schema Config > Table ⬤ Components > Security > Preview Tables ⬤ Components > Security > Registry ⬤ Components > Toolbar > Data Model
 msgid "table"
 msgstr "Таблица"
 
+#. Used in: Components > Attachments > Index ⬤ Components > Router > Routes ⬤ Components > Schema Config > Tables
 #: components/Attachments/index.tsx:201
 #: components/Router/Routes.tsx:357
 #: components/SchemaConfig/Tables.tsx:55
-#. Used in: Components > Attachments > Index ⬤ Components > Router > Routes ⬤ Components > Schema Config > Tables
 msgid "tables"
 msgstr "Таблицы"
 
+#. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Plan View > Mapper Components
 #: components/UserPreferences/Definitions.tsx:630
 #: components/WbPlanView/MapperComponents.tsx:436
-#. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Plan View > Mapper Components
 msgid "tableName"
 msgstr "Имя таблицы"
 
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Languages ⬤ Components > Security > Registry ⬤ Components > User Preferences > Definitions
 #: components/Header/userToolDefinitions.ts:53
 #: components/Router/Routes.tsx:331
 #: components/SchemaConfig/Components.tsx:27
 #: components/SchemaConfig/Languages.tsx:34
 #: components/Security/registry.ts:198
 #: components/UserPreferences/Definitions.tsx:580
-#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Languages ⬤ Components > Security > Registry ⬤ Components > User Preferences > Definitions
 msgid "schemaConfig"
 msgstr "Конфигурация схемы"
 
-#: components/SchemaConfig/index.tsx:75
 #. Used in: Components > Schema Config > Index
+#: components/SchemaConfig/index.tsx:75
 msgid "unsavedSchemaUnloadProtect"
 msgstr "Изменения схемы не сохранены"
 
+#. Used in: Components > Schema Config > Components ⬤ Components > Wb Plan View > Mapper Components
 #: components/SchemaConfig/Components.tsx:33
 #: components/WbPlanView/MapperComponents.tsx:318
-#. Used in: Components > Schema Config > Components ⬤ Components > Wb Plan View > Mapper Components
 msgid "changeBaseTable"
 msgstr "Изменить базовую таблицу"
 
-#: components/SchemaConfig/Field.tsx:44
 #. Used in: Components > Schema Config > Field
+#: components/SchemaConfig/Field.tsx:44
 msgid "field"
 msgstr "Поле"
 
+#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Toolbar > Data Model
 #: components/FormMeta/CarryForward.tsx:266
 #: components/Forms/generateFormDefinition.ts:127
 #: components/SchemaConfig/Fields.tsx:35
 #: components/SchemaConfig/Fields.tsx:46
 #: components/Toolbar/DataModel.tsx:257
-#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Toolbar > Data Model
 msgid "fields"
 msgstr "Поля"
 
+#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Toolbar > Data Model
 #: components/FormMeta/CarryForward.tsx:274
 #: components/Forms/generateFormDefinition.ts:165
 #: components/SchemaConfig/Fields.tsx:54
 #: components/Toolbar/DataModel.tsx:338
-#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Toolbar > Data Model
 msgid "relationships"
 msgstr "Отношения"
 
+#. Used in: Components > Schema Config > Field ⬤ Components > Schema Config > Table
 #: components/SchemaConfig/Field.tsx:49
 #: components/SchemaConfig/Table.tsx:53
-#. Used in: Components > Schema Config > Field ⬤ Components > Schema Config > Table
 msgid "caption"
 msgstr "Подпись"
 
+#. Used in: Components > Schema Config > Field ⬤ Components > Schema Config > Table ⬤ Components > Security > Role ⬤ Components > Toolbar > Data Model
 #: components/SchemaConfig/Field.tsx:59
 #: components/SchemaConfig/Table.tsx:63
 #: components/Security/Role.tsx:138
 #: components/Toolbar/DataModel.tsx:193
 #: components/Toolbar/DataModel.tsx:273
 #: components/Toolbar/DataModel.tsx:545
-#. Used in: Components > Schema Config > Field ⬤ Components > Schema Config > Table ⬤ Components > Security > Role ⬤ Components > Toolbar > Data Model
 msgid "description"
 msgstr "Описание"
 
-#: components/SchemaConfig/Table.tsx:110
 #. Used in: Components > Schema Config > Table
+#: components/SchemaConfig/Table.tsx:110
 msgid "hideTable"
 msgstr "Скрыть таблицу"
 
-#: components/SchemaConfig/Field.tsx:88
 #. Used in: Components > Schema Config > Field
+#: components/SchemaConfig/Field.tsx:88
 msgid "hideField"
 msgstr "Скрыть поле"
 
-#: components/SchemaConfig/Table.tsx:73
 #. Used in: Components > Schema Config > Table
+#: components/SchemaConfig/Table.tsx:73
 msgid "tableFormat"
 msgstr "Формат таблицы"
 
-#: components/SchemaConfig/Table.tsx:87
 #. Used in: Components > Schema Config > Table
+#: components/SchemaConfig/Table.tsx:87
 msgid "tableAggregation"
 msgstr "Агрегация таблиц"
 
-#: components/SchemaConfig/helpers.ts:124
 #. Used in: Components > Schema Config > Helpers
+#: components/SchemaConfig/helpers.ts:124
 msgid "oneToOne"
 msgstr "Один к одному"
 
-#: components/SchemaConfig/helpers.ts:125
 #. Used in: Components > Schema Config > Helpers
+#: components/SchemaConfig/helpers.ts:125
 msgid "oneToMany"
 msgstr "Один ко многим"
 
-#: components/SchemaConfig/helpers.ts:126
 #. Used in: Components > Schema Config > Helpers
+#: components/SchemaConfig/helpers.ts:126
 msgid "manyToOne"
 msgstr "Многие к одному"
 
-#: components/SchemaConfig/helpers.ts:127
 #. Used in: Components > Schema Config > Helpers
+#: components/SchemaConfig/helpers.ts:127
 msgid "manyToMany"
 msgstr "Многие-ко-многим"
 
+#. Used in: Components > Schema Config > Field ⬤ Components > Toolbar > Data Model
 #: components/SchemaConfig/Field.tsx:69
 #: components/Toolbar/DataModel.tsx:199
 #: components/Toolbar/DataModel.tsx:551
-#. Used in: Components > Schema Config > Field ⬤ Components > Toolbar > Data Model
 msgid "fieldLength"
 msgstr "Длина"
 
+#. Used in: Components > Form Meta > Index ⬤ Components > Toolbar > Data Model
 #: components/FormMeta/index.tsx:64
 #: components/Toolbar/DataModel.tsx:195
 #: components/Toolbar/DataModel.tsx:275
 #: components/Toolbar/DataModel.tsx:547
-#. Used in: Components > Form Meta > Index ⬤ Components > Toolbar > Data Model
 msgid "readOnly"
 msgstr "Только чтение"
 
-#: components/SchemaConfig/Format.tsx:53
 #. Used in: Components > Schema Config > Format
+#: components/SchemaConfig/Format.tsx:53
 msgid "fieldFormat"
 msgstr "Формат поля"
 
-#: components/SchemaConfig/Format.tsx:73
 #. Used in: Components > Schema Config > Format
+#: components/SchemaConfig/Format.tsx:73
 msgid "formatted"
 msgstr "Форматирован"
 
-#: components/SchemaConfig/Format.tsx:97
 #. Used in: Components > Schema Config > Format
+#: components/SchemaConfig/Format.tsx:97
 msgid "webLink"
 msgstr "Интернет-ссылка"
 
-#: components/SchemaConfig/Format.tsx:106
 #. Used in: Components > Schema Config > Format
+#: components/SchemaConfig/Format.tsx:106
 msgid "userDefined"
 msgstr "Создано пользователем"
 
+#. Used in: Components > Router > Routes ⬤ Components > Schema Config > Languages
 #: components/Router/Routes.tsx:346
 #: components/SchemaConfig/Languages.tsx:27
 #: components/SchemaConfig/Languages.tsx:75
-#. Used in: Components > Router > Routes ⬤ Components > Schema Config > Languages
 msgid "addLanguage"
 msgstr "Добавить язык"
 
+#. Used in: Components > Toolbar > Data Model
 #: components/Toolbar/DataModel.tsx:192
 #: components/Toolbar/DataModel.tsx:272
 #: components/Toolbar/DataModel.tsx:388
 #: components/Toolbar/DataModel.tsx:539
 #: components/Toolbar/DataModel.tsx:544
-#. Used in: Components > Toolbar > Data Model
 msgid "fieldLabel"
 msgstr "Локализованный"
 
+#. Used in: Components > Toolbar > Data Model
 #: components/Toolbar/DataModel.tsx:200
 #: components/Toolbar/DataModel.tsx:279
 #: components/Toolbar/DataModel.tsx:552
-#. Used in: Components > Toolbar > Data Model
 msgid "databaseColumn"
 msgstr "Столбец базы данных"
 
+#. Used in: Components > Toolbar > Data Model
 #: components/Toolbar/DataModel.tsx:280
 #: components/Toolbar/DataModel.tsx:553
-#. Used in: Components > Toolbar > Data Model
 msgid "relatedModel"
 msgstr "Родственная Таблица"
 
+#. Used in: Components > Toolbar > Data Model
 #: components/Toolbar/DataModel.tsx:281
 #: components/Toolbar/DataModel.tsx:554
-#. Used in: Components > Toolbar > Data Model
 msgid "otherSideName"
 msgstr "Имя другой стороны"
 
+#. Used in: Components > Toolbar > Data Model
 #: components/Toolbar/DataModel.tsx:282
 #: components/Toolbar/DataModel.tsx:354
 #: components/Toolbar/DataModel.tsx:555
-#. Used in: Components > Toolbar > Data Model
 msgid "dependent"
 msgstr "Зависимый"
 
-#: components/Toolbar/DataModel.tsx:370
 #. Used in: Components > Toolbar > Data Model
+#: components/Toolbar/DataModel.tsx:370
 #, fuzzy
 msgid "independent"
 msgstr "Независимый"
 
-#: components/Toolbar/DataModel.tsx:449
 #. Used in: Components > Toolbar > Data Model
+#: components/Toolbar/DataModel.tsx:449
 msgid "downloadAsJson"
 msgstr "Скачать как JSON"
 
-#: components/Toolbar/DataModel.tsx:460
 #. Used in: Components > Toolbar > Data Model
+#: components/Toolbar/DataModel.tsx:460
 msgid "downloadAsTsv"
 msgstr "Скачать как TSV"
 
+#. Used in: Components > Toolbar > Data Model
 #: components/Toolbar/DataModel.tsx:391
 #: components/Toolbar/DataModel.tsx:542
-#. Used in: Components > Toolbar > Data Model
 msgid "tableId"
 msgstr "Идентификатор"
 
-#: components/Toolbar/DataModel.tsx:392
 #. Used in: Components > Toolbar > Data Model
+#: components/Toolbar/DataModel.tsx:392
 msgid "fieldCount"
 msgstr "Количество полей"
 
-#: components/Toolbar/DataModel.tsx:393
 #. Used in: Components > Toolbar > Data Model
+#: components/Toolbar/DataModel.tsx:393
 msgid "relationshipCount"
 msgstr "Количество отношений"
 
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes
 #: components/Header/userToolDefinitions.ts:122
 #: components/Router/Routes.tsx:33
 #: components/Router/Routes.tsx:37
-#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes
 msgid "databaseSchema"
 msgstr "Database Schema"
 
-#: components/Toolbar/QueryTablesEdit.tsx:85
 #. Used in: Components > Toolbar > Query Tables Edit
+#: components/Toolbar/QueryTablesEdit.tsx:85
 msgid "selectedTables"
 msgstr "Выбранные таблицы"
 
-#: components/Toolbar/QueryTablesEdit.tsx:82
 #. Used in: Components > Toolbar > Query Tables Edit
+#: components/Toolbar/QueryTablesEdit.tsx:82
 msgid "possibleTables"
 msgstr "Возможные таблицы"
 
-#: components/Toolbar/DataModel.tsx:180
 #. Used in: Components > Toolbar > Data Model
+#: components/Toolbar/DataModel.tsx:180
 #, fuzzy
 msgid "goToTop"
 msgstr "Перейти к началу"
 
-#: components/Toolbar/DataModel.tsx:245
 #. Used in: Components > Toolbar > Data Model
+#: components/Toolbar/DataModel.tsx:245
 #, fuzzy
 msgid "idField"
 msgstr "Поле идентификатора"
 
-#: components/Toolbar/DataModel.tsx:252
 #. Used in: Components > Toolbar > Data Model
+#: components/Toolbar/DataModel.tsx:252
 #, fuzzy
 msgid "scope"
 msgstr "Сфера"
 
-#: components/SchemaConfig/index.tsx:39
 #. Used in: Components > Schema Config > Index
+#: components/SchemaConfig/index.tsx:39
+#, fuzzy
 msgid "schemaViewTitle"
-msgstr ""
+msgstr "Конфигурация схемы: {tableName:string}"
