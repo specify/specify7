@@ -168,8 +168,8 @@
        ]
     },
     "Preparation":{
-       "barCode":[
-          "collection"
+       "barcode":[
+          "collectionmemberid"
        ]
     },
     "PrepType":{

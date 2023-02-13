@@ -1,7 +1,13 @@
 import { f } from '../../utils/functools';
 import { overwriteReadOnly } from '../../utils/types';
 import { AnySchema, TableFields } from './helperTypes';
-import { interactionBusinessRules } from './interactionBusinessRules';
+import {
+  checkPrepAvailability,
+  getTotalLoaned,
+  getTotalResolved,
+  interactionCache,
+  updateLoanPrep,
+} from './interactionBusinessRules';
 import { SpecifyResource } from './legacyTypes';
 import { BusinessRuleResult } from './businessRules';
 import { schema } from './schema';
@@ -183,14 +189,14 @@ export const businessRuleDefs = f.store(
       GiftPreparation: {
         fieldChecks: {
           quantity: (iprep: SpecifyResource<GiftPreparation>): void => {
-            interactionBusinessRules.checkPrepAvailability(iprep);
+            checkPrepAvailability(iprep);
           },
         },
       },
       LoanPreparation: {
         fieldChecks: {
           quantity: (iprep: SpecifyResource<LoanPreparation>): void => {
-            interactionBusinessRules.checkPrepAvailability(iprep);
+            checkPrepAvailability(iprep);
           },
         },
       },
@@ -199,15 +205,11 @@ export const businessRuleDefs = f.store(
           loanReturnPrep: SpecifyResource<LoanReturnPreparation>,
           collection: Collection<LoanReturnPreparation>
         ): void => {
-          interactionBusinessRules.updateLoanPrep(loanReturnPrep, collection);
+          updateLoanPrep(loanReturnPrep, collection);
         },
         customInit: (
           resource: SpecifyResource<LoanReturnPreparation>
         ): void => {
-          interactionBusinessRules.totalLoaned = undefined;
-          interactionBusinessRules.totalResolved = undefined;
-          interactionBusinessRules.returned = undefined;
-          interactionBusinessRules.resolved = undefined;
           resource.get('quantityReturned') == null &&
             resource.set('quantityReturned', 0);
           resource.get('quantityResolved') == null &&
@@ -216,77 +218,61 @@ export const businessRuleDefs = f.store(
         fieldChecks: {
           quantityreturned: (
             loanReturnPrep: SpecifyResource<LoanReturnPreparation>
-          ): Promise<BusinessRuleResult> | void => {
+          ): void => {
             var returned = loanReturnPrep.get('quantityReturned');
-            var previousReturned = interactionBusinessRules.previousReturned[
+            var previousReturned = interactionCache().previousReturned[
               Number(loanReturnPrep.cid)
             ]
-              ? interactionBusinessRules.previousReturned[
-                  Number(loanReturnPrep.cid)
-                ]
+              ? interactionCache().previousReturned[Number(loanReturnPrep.cid)]
               : 0;
             if (returned !== null && returned != previousReturned) {
               var delta = returned - previousReturned;
               var resolved = loanReturnPrep.get('quantityResolved');
-              var totalLoaned =
-                interactionBusinessRules.getTotalLoaned(loanReturnPrep);
-              var totalResolved =
-                interactionBusinessRules.getTotalResolved(loanReturnPrep);
+              var totalLoaned = getTotalLoaned(loanReturnPrep);
+              var totalResolved = getTotalResolved(loanReturnPrep);
               var max = totalLoaned - totalResolved;
               if (resolved !== null && delta + resolved > max) {
                 loanReturnPrep.set('quantityReturned', previousReturned);
               } else {
                 resolved = loanReturnPrep.get('quantityResolved')! + delta;
-                interactionBusinessRules.previousResolved[
+                interactionCache().previousResolved[
                   Number(loanReturnPrep.cid)
                 ] = resolved;
                 loanReturnPrep.set('quantityResolved', resolved);
               }
-              interactionBusinessRules.previousReturned[
-                Number(loanReturnPrep.cid)
-              ] = loanReturnPrep.get('quantityReturned');
-              interactionBusinessRules.updateLoanPrep(
-                loanReturnPrep,
-                loanReturnPrep.collection
-              );
+              interactionCache().previousReturned[Number(loanReturnPrep.cid)] =
+                loanReturnPrep.get('quantityReturned');
+              updateLoanPrep(loanReturnPrep, loanReturnPrep.collection);
             }
           },
           quantityresolved: (
             loanReturnPrep: SpecifyResource<LoanReturnPreparation>
-          ): Promise<BusinessRuleResult> | void => {
+          ): void => {
             var resolved = loanReturnPrep.get('quantityResolved');
-            var previousResolved = interactionBusinessRules.previousResolved[
+            var previousResolved = interactionCache().previousResolved[
               Number(loanReturnPrep.cid)
             ]
-              ? interactionBusinessRules.previousResolved[
-                  Number(loanReturnPrep.cid)
-                ]
+              ? interactionCache().previousResolved[Number(loanReturnPrep.cid)]
               : 0;
             if (resolved != previousResolved) {
               var returned = loanReturnPrep.get('quantityReturned');
-              var totalLoaned =
-                interactionBusinessRules.getTotalLoaned(loanReturnPrep);
-              var totalResolved =
-                interactionBusinessRules.getTotalResolved(loanReturnPrep);
+              var totalLoaned = getTotalLoaned(loanReturnPrep);
+              var totalResolved = getTotalResolved(loanReturnPrep);
               var max = totalLoaned - totalResolved;
               if (resolved !== null && returned !== null) {
                 if (resolved > max) {
                   loanReturnPrep.set('quantityResolved', previousResolved);
                 }
                 if (resolved < returned) {
-                  interactionBusinessRules.previousReturned[
+                  interactionCache().previousReturned[
                     Number(loanReturnPrep.cid)
                   ] = resolved;
                   loanReturnPrep.set('quantityReturned', resolved);
                 }
               }
-              interactionBusinessRules.previousResolved[
-                Number(loanReturnPrep.cid)
-              ] = loanReturnPrep.get('quantityResolved');
-              interactionBusinessRules.updateLoanPrep(
-                loanReturnPrep,
-                loanReturnPrep.collection
-              );
+              interactionCache().previousResolved[Number(loanReturnPrep.cid)] =
+                loanReturnPrep.get('quantityResolved');
+              updateLoanPrep(loanReturnPrep, loanReturnPrep.collection);
             }
           },
         },
