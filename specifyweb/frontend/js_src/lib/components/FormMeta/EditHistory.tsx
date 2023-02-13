@@ -62,7 +62,6 @@ function RecordHistoryDialog({
         autoRun
         forceCollection={undefined}
         isEmbedded
-        isReadOnly={false}
         query={query}
         recordSet={undefined}
       />

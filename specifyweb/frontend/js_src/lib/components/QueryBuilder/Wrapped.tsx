@@ -23,7 +23,7 @@ import type { RecordSet, SpQuery, SpQueryField } from '../DataModel/types';
 import { useMenuItem } from '../Header/useMenuItem';
 import { isTreeModel, treeRanksPromise } from '../InitialContext/treeRanks';
 import { useTitle } from '../Molecules/AppTitle';
-import { hasPermission } from '../Permissions/helpers';
+import { hasPermission, hasToolPermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
 import { getMappedFields, mappingPathIsComplete } from '../WbPlanView/helpers';
 import { getMappingLineProps } from '../WbPlanView/LineComponents';
@@ -62,7 +62,6 @@ const pendingState = {
 // REFACTOR: split this component
 export function QueryBuilder({
   query: queryResource,
-  isReadOnly,
   recordSet,
   forceCollection,
   isEmbedded = false,
@@ -72,7 +71,6 @@ export function QueryBuilder({
   onChange: handleChange,
 }: {
   readonly query: SpecifyResource<SpQuery>;
-  readonly isReadOnly: boolean;
   readonly recordSet?: SpecifyResource<RecordSet>;
   readonly forceCollection: number | undefined;
   readonly isEmbedded?: boolean;
@@ -85,7 +83,12 @@ export function QueryBuilder({
   }) => void;
 }): JSX.Element | null {
   useMenuItem('queries');
-
+  const isReadOnly =
+    !hasPermission('/querybuilder/query', 'execute') &&
+    !hasToolPermission(
+      'queryBuilder',
+      queryResource.isNew() ? 'create' : 'update'
+    );
   const [treeRanksLoaded = false] = useAsyncState(fetchTreeRanks, true);
 
   const [query, setQuery] = useResource(queryResource);
