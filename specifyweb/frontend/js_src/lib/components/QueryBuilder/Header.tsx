@@ -19,7 +19,7 @@ import {
 } from '../Permissions/PermissionDenied';
 import { SaveQueryButtons, ToggleMappingViewButton } from './Components';
 import { QueryEditButton } from './Edit';
-import { smoothScroll } from './helpers';
+import { smoothScroll, isSpecial } from './helpers';
 import { QueryLoanReturn } from './LoanReturn';
 import type { MainState } from './reducer';
 
@@ -54,6 +54,7 @@ export function QueryHeader({
   readonly onSaved: () => void;
   readonly toggleMapping: () => void;
 }): JSX.Element {
+  const isQuerySpecial = isSpecial(state.baseTableName, state.fields);
   return (
     <header className="flex items-center gap-2 whitespace-nowrap">
       <TableIcon label name={state.baseTableName} />
@@ -110,6 +111,7 @@ export function QueryHeader({
           fields={state.fields}
           getQueryFieldRecords={getQueryFieldRecords}
           isReadOnly={isReadOnly}
+          isSpecial={isQuerySpecial}
           isValid={(): boolean => form?.reportValidity() ?? false}
           queryResource={queryResource}
           saveRequired={saveRequired}
