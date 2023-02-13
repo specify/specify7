@@ -1,5 +1,5 @@
 import type { IR, RA } from '../../utils/types';
-import type { Tables } from './types';
+import type { Preparation, Tables } from './types';
 
 /**
  * Represents a schema for any table
@@ -51,6 +51,19 @@ export type AnyTree = Extract<
   {
     readonly toOneIndependent: {
       readonly definitionItem: AnySchema;
+    };
+  }
+>;
+
+export type AnyInteractionPreparation = Extract<
+  Tables[keyof Tables],
+  {
+    readonly toOneIndependent: {
+      readonly preparation: Preparation | null;
+    };
+  } & {
+    readonly fields: {
+      readonly quantity: number | null;
     };
   }
 >;

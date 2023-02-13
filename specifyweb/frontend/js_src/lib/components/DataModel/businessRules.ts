@@ -13,6 +13,7 @@ import { formsText } from '../../localization/forms';
 import { LiteralField, Relationship } from './specifyField';
 import { idFromUrl } from './resource';
 import { globalEvents } from '../../utils/ajax/specifyApi';
+import { Tables } from './types';
 
 var enabled: boolean = true;
 
@@ -37,7 +38,8 @@ export class BusinessRuleMgr<SCHEMA extends AnySchema> {
 
   public constructor(resource: SpecifyResource<SCHEMA>) {
     this.resource = resource;
-    this.rules = businessRuleDefs()[this.resource.specifyModel.name];
+    this.rules =
+      businessRuleDefs()[this.resource.specifyModel.name as keyof Tables];
   }
 
   private addPromise(promise: Promise<BusinessRuleResult | void>): void {
@@ -73,12 +75,12 @@ export class BusinessRuleMgr<SCHEMA extends AnySchema> {
     this.resource.on('remove', this.removed, this);
   }
 
-  public checkField(fieldName: string) {
+  public async checkField(fieldName: string) {
     fieldName = fieldName.toLocaleLowerCase();
     const thisCheck: Promise<BusinessRuleResult> = flippedPromise();
     this.addPromise(thisCheck);
 
-    this.fieldChangePromises[fieldName] &&
+    (await this.fieldChangePromises[fieldName]) &&
       resolveFlippedPromise(this.fieldChangePromises[fieldName], 'superseded');
     this.fieldChangePromises[fieldName] = thisCheck;
 
@@ -113,10 +115,13 @@ export class BusinessRuleMgr<SCHEMA extends AnySchema> {
     return Promise.all(
       results.map((result) => {
         if (!result) return null;
+        if (result.key == undefined) {
+          return null;
+        }
         if (result.valid === false) {
-          this.resource.saveBlockers?.add(result.key, fieldName, result.reason);
+          this.resource.saveBlockers!.add(result.key, fieldName, result.reason);
         } else {
-          this.resource.saveBlockers?.remove(result.key);
+          this.resource.saveBlockers!.remove(result.key);
           return result.action && result.action();
         }
       })
@@ -125,7 +130,6 @@ export class BusinessRuleMgr<SCHEMA extends AnySchema> {
 
   private checkUnique(fieldName: string): Promise<BusinessRuleResult> {
     const _this = this;
-
     var toOneFields: RA<any> =
       (this.rules?.uniqueIn && this.rules.uniqueIn[fieldName]) ?? [];
 
@@ -276,7 +280,7 @@ export class BusinessRuleMgr<SCHEMA extends AnySchema> {
             result &&
             hasSameValue(
               fieldValue,
-              fieldNames[index],
+              fieldNames![index],
               fieldIsToOne[index],
               fieldIds[index]
             )
@@ -311,8 +315,8 @@ export class BusinessRuleMgr<SCHEMA extends AnySchema> {
       return this.resource.rget(toOneField).then((related) => {
         if (!related) return Promise.resolve({ valid: true });
         var filters = {};
-        for (var f = 0; f < fieldNames.length; f++) {
-          filters[fieldNames[f]] = fieldIds[f] || fieldValues[f];
+        for (var f = 0; f < fieldNames!.length; f++) {
+          filters[fieldNames![f]] = fieldIds[f] || fieldValues[f];
         }
         const others = new this.resource.specifyModel.ToOneCollection({
           related: related,
@@ -407,8 +411,8 @@ export function attachBusinessRules(
   resource: SpecifyResource<AnySchema>
 ): void {
   const businessRuleManager = new BusinessRuleMgr(resource);
-  overwriteReadOnly(resource, 'businessRuleMgr', businessRuleManager);
   overwriteReadOnly(resource, 'saveBlockers', new SaveBlockers(resource));
+  overwriteReadOnly(resource, 'businessRuleMgr', businessRuleManager);
   businessRuleManager.setUpManager();
 }
 
