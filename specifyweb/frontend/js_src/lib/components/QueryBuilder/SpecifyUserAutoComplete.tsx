@@ -3,7 +3,7 @@ import React from 'react';
 import { userText } from '../../localization/user';
 import { AutoComplete } from '../Molecules/AutoComplete';
 
-const currentUserValue = 'currentSpecifyUserName';
+export const currentUserValue = 'currentSpecifyUserName';
 const items = [
   {
     label: userText.currentUser(),

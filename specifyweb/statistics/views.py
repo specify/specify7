@@ -1,7 +1,9 @@
 from django import http
+
+from specifyweb.permissions.permissions import check_table_permissions
 from specifyweb.specify.views import openapi
 from django.http import HttpResponse
-
+from ..specify.models import Preparation, Determination
 from specifyweb.specify.views import login_maybe_required
 import logging
 
@@ -26,6 +28,7 @@ from django.db import connection
         }
     }}, )
 def collection_preparations(request) -> HttpResponse:
+    check_table_permissions(request.specify_collection, request.specify_user, Preparation, "read")
     cursor = connection.cursor()
     # PREP_BY_TYPE_LOTS
     cursor.execute(
@@ -107,6 +110,8 @@ def collection_locality_geography(request) -> HttpResponse:
         }
     }}, )
 def collection_type_specimens(request) -> HttpResponse:
+    check_table_permissions(request.specify_collection, request.specify_user,
+                            Determination, "read")
     cursor = connection.cursor()
     # TYPE_SPEC_CNT
     cursor.execute(

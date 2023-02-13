@@ -21,6 +21,7 @@ import type { MappingLineData } from '../WbPlanView/navigator';
 import type { QueryFieldFilter } from './FieldFilter';
 import { queryFieldFilters } from './FieldFilter';
 import { QueryFieldSpec } from './fieldSpec';
+import { currentUserValue } from './SpecifyUserAutoComplete';
 
 export type SortTypes = 'ascending' | 'descending' | undefined;
 export const sortTypes: RA<SortTypes> = [undefined, 'ascending', 'descending'];
@@ -319,4 +320,34 @@ export function smoothScroll(element: HTMLElement, top: number): void {
       behavior: getTransitionDuration() === 0 ? 'auto' : 'smooth',
     });
   else element.scrollTop = element.scrollHeight;
+}
+
+export function isSpecial(
+  baseTableName: keyof Tables,
+  fields: RA<QueryField>
+): boolean {
+  const fieldSpecsMapped = queryFieldsToFieldSpecs(baseTableName, fields);
+  const containsOr = fieldSpecsMapped.some(
+    ([field]) => field.filters.length > 1
+  );
+  const containsRelativeDate = fieldSpecsMapped.some(
+    ([field, fieldSpec]) =>
+      field.filters.some(({ startValue }) => startValue.includes('today')) &&
+      fieldSpec.datePart === 'fullDate'
+  );
+  console.log(fieldSpecsMapped);
+  const containsSpecifyUserName = fieldSpecsMapped.some(([field]) => {
+    const includesUserValue = field.filters.some(({ startValue }) =>
+      startValue.includes(currentUserValue)
+    );
+    const terminatingField = schema.models[baseTableName].getField(
+      mappingPathToString(field.mappingPath)
+    );
+    const endsWithSpecifyUser =
+      terminatingField?.isRelationship === false &&
+      terminatingField.name === 'name' &&
+      terminatingField.model.name === 'SpecifyUser';
+    return endsWithSpecifyUser && includesUserValue;
+  });
+  return containsOr || containsRelativeDate || containsSpecifyUserName;
 }
