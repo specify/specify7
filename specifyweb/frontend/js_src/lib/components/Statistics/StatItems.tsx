@@ -18,6 +18,13 @@ import type {
 } from './types';
 import { hasTablePermission } from '../Permissions/helpers';
 import { userText } from '../../localization/user';
+import { Http } from '../../utils/ajax/definitions';
+import { Tables } from '../DataModel/types';
+
+const overRideValue = (
+  tableName: keyof Tables,
+  value: string | number | undefined
+) => (hasTablePermission(tableName, 'read') ? value : userText.noPermission());
 
 export function StatItem({
   statsSpec,
@@ -77,6 +84,7 @@ export function StatItem({
     resolvedSpec?.type === 'BackEndStat' &&
     resolvedSpec?.pathToValue !== undefined ? (
     <BackEndItem
+      tableName={resolvedSpec.tableName}
       fetchUrl={resolvedSpec.fetchUrl}
       formatter={resolvedSpec.formatter}
       isDefault
@@ -93,6 +101,7 @@ export function StatItem({
 
 function BackEndItem({
   value,
+  tableName,
   fetchUrl,
   pathToValue,
   formatter,
@@ -106,6 +115,7 @@ function BackEndItem({
   readonly value: number | string | undefined;
   readonly fetchUrl: string;
   readonly pathToValue: string;
+  readonly tableName: keyof Tables;
   readonly label: string;
   readonly isDefault: boolean;
   readonly formatter: (rawValue: any) => string | undefined;
@@ -114,32 +124,42 @@ function BackEndItem({
   readonly onRename: ((newLabel: string) => void) | undefined;
   readonly onLoad: ((value: number | string) => void) | undefined;
 }): JSX.Element {
+  const overRiddenValue = overRideValue(tableName, value);
   const promiseGenerator = React.useCallback(
     () =>
-      throttledPromise<BackendStatsResult>(
+      throttledPromise<BackendStatsResult | undefined>(
         'backendStats',
         async () =>
-          ajax<BackendStatsResult>(fetchUrl, {
-            method: 'GET',
-            headers: {
-              Accept: 'application/json',
+          ajax<BackendStatsResult | undefined>(
+            fetchUrl,
+            {
+              method: 'GET',
+              headers: {
+                Accept: 'application/json',
+              },
             },
-          }).then(({ data }) => data),
+            { expectedResponseCodes: [Http.OK, Http.FORBIDDEN] }
+          ).then(({ data, status }) =>
+            status === Http.FORBIDDEN ? undefined : data
+          ),
         fetchUrl
       ).then((data) => {
-        const fetchValue = formatter?.(data[pathToValue]);
+        const fetchValue =
+          data === undefined
+            ? userText.noPermission()
+            : formatter?.(data[pathToValue]);
         if (fetchValue === undefined) handleRemove?.();
         return fetchValue;
       }),
     [pathToValue, fetchUrl, handleRemove]
   );
-  useStatValueLoad(value, promiseGenerator, handleLoad);
+  useStatValueLoad(overRiddenValue, promiseGenerator, handleLoad);
   return (
     <StatsResult
       isDefault={isDefault}
       query={undefined}
       label={label}
-      value={value}
+      value={overRiddenValue}
       onClick={handleClick}
       onRename={handleRename}
       onRemove={handleRemove}
@@ -169,9 +189,7 @@ function QueryItem({
   readonly onRename: ((newLabel: string) => void) | undefined;
   readonly onLoad: ((value: number | string) => void) | undefined;
 }): JSX.Element | null {
-  const overRideValue = hasTablePermission(querySpec.tableName, 'read')
-    ? value
-    : userText.noPermission();
+  const overRiddenValue = overRideValue(querySpec.tableName, value);
 
   const query = React.useMemo(
     () => querySpecToResource(label, querySpec),
@@ -188,14 +206,14 @@ function QueryItem({
     [query]
   );
 
-  useStatValueLoad(overRideValue, promiseGenerator, handleLoad);
+  useStatValueLoad(overRiddenValue, promiseGenerator, handleLoad);
 
   return (
     <StatsResult
       isDefault={isDefault}
       query={query}
       label={label}
-      value={overRideValue}
+      value={overRiddenValue}
       onClick={handleClick}
       onRename={handleRename}
       onRemove={handleRemove}

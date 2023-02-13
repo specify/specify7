@@ -69,6 +69,7 @@ export type BackEndStat = State<
     readonly pathToValue: string | undefined;
     readonly fetchUrl: string;
     readonly formatter: (rawResult: any) => string | undefined;
+    readonly tableName: keyof Tables;
   }
 >;
 export type StatItemSpec = BackEndStat | QueryBuilderStat;

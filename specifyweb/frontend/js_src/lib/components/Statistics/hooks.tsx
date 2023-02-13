@@ -28,7 +28,6 @@ import type {
   StatsSpec,
 } from './types';
 import { Http } from '../../utils/ajax/definitions';
-import { commonText } from '../../localization/common';
 import { userText } from '../../localization/user';
 
 /**
@@ -50,20 +49,26 @@ export function useBackendApi(
 
 function backEndStatPromiseGenerator(
   categoriesToFetch: RA<string>
-): IR<() => Promise<BackendStatsResult>> {
+): IR<() => Promise<BackendStatsResult | undefined>> {
   return Object.fromEntries(
     categoriesToFetch.map((key) => [
       key,
       async () =>
-        throttledPromise<BackendStatsResult>(
+        throttledPromise<BackendStatsResult | undefined>(
           'backendStats',
           async () =>
-            ajax<BackendStatsResult>(`/statistics/collection/${key}/`, {
-              method: 'GET',
-              headers: {
-                Accept: 'application/json',
+            ajax<BackendStatsResult>(
+              `/statistics/collection/${key}/`,
+              {
+                method: 'GET',
+                headers: {
+                  Accept: 'application/json',
+                },
               },
-            }).then(({ data }) => data),
+              { expectedResponseCodes: [Http.OK, Http.FORBIDDEN] }
+            ).then(({ data, status }) =>
+              status === Http.FORBIDDEN ? undefined : data
+            ),
           `/statistics/collection/${key}/`
         ),
     ])
@@ -252,6 +257,7 @@ export function useResolvedStatSpec(
               (statSpecItem.spec as BackEndStat).pathToValue,
             fetchUrl: (statSpecItem.spec as BackEndStat).fetchUrl,
             formatter: (statSpecItem.spec as BackEndStat).formatter,
+            tableName: (statSpecItem.spec as BackEndStat).tableName,
           }
         : {
             type: 'QueryBuilderStat',

@@ -80,6 +80,7 @@ export const statsSpec: IR<StatsSpec> = {
             type: 'BackEndStat',
             pathToValue: undefined,
             fetchUrl: `/statistics/collection/preparations/`,
+            tableName: 'Preparation',
             formatter: (
               prep:
                 | {
@@ -340,6 +341,7 @@ export const statsSpec: IR<StatsSpec> = {
             type: 'BackEndStat',
             pathToValue: undefined,
             fetchUrl: `/statistics/collection/type_specimens/`,
+            tableName: 'Determination',
             formatter: (rawNumber: number | undefined) =>
               f.maybe(rawNumber, formatNumber),
           },
