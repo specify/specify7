@@ -11,7 +11,7 @@ import { reportsText } from '../../localization/report';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
-import { getAttribute, group, replaceKey } from '../../utils/utils';
+import { group, replaceKey } from '../../utils/utils';
 import { parseXml } from '../AppResources/codeMirrorLinters';
 import { H3, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -266,7 +266,7 @@ function ParametersDialog({
           filterArray(
             Array.from(
               definition.querySelectorAll('parameter[isForPrompting="true"]'),
-              (parameter) => getAttribute(parameter, 'name')
+              (parameter) => parameter.getAttribute('name')
             )
           ).map((name) => [name, ''])
         ),

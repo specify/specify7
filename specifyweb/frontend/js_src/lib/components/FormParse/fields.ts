@@ -12,19 +12,20 @@ import { reportsText } from '../../localization/report';
 import { f } from '../../utils/functools';
 import { parserFromType } from '../../utils/parser/definitions';
 import type { IR, RA } from '../../utils/types';
+import type { LiteralField, Relationship } from '../DataModel/specifyField';
+import type { SpecifyModel } from '../DataModel/specifyModel';
+import { addContext } from '../Errors/logContext';
+import { specialPickListMapping } from '../FormFields/ComboBox';
+import { legacyLocalize } from '../InitialContext/legacyUiLocalization';
+import { hasPermission, hasToolPermission } from '../Permissions/helpers';
+import type { SimpleXmlNode } from '../Syncer/xmlToJson';
 import {
   getAttribute,
   getBooleanAttribute,
   getParsedAttribute,
-} from '../../utils/utils';
-import type { LiteralField, Relationship } from '../DataModel/specifyField';
-import type { SpecifyModel } from '../DataModel/specifyModel';
-import { specialPickListMapping } from '../FormFields/ComboBox';
-import { legacyLocalize } from '../InitialContext/legacyUiLocalization';
-import { hasPermission, hasToolPermission } from '../Permissions/helpers';
+} from '../Syncer/xmlUtils';
 import type { PluginDefinition } from './plugins';
 import { parseUiPlugin } from './plugins';
-import { addContext } from '../Errors/logContext';
 
 export type FieldTypes = {
   readonly Checkbox: State<
@@ -79,7 +80,7 @@ export type FieldTypes = {
 };
 
 const withStringDefault = (
-  cell: Element
+  cell: SimpleXmlNode
 ): {
   readonly defaultValue: string | undefined;
 } => ({
@@ -88,7 +89,7 @@ const withStringDefault = (
 
 const processFieldType: {
   readonly [KEY in keyof FieldTypes]: (payload: {
-    readonly cell: Element;
+    readonly cell: SimpleXmlNode;
     readonly getProperty: (name: string) => string | undefined;
     readonly model: SpecifyModel;
     readonly fields: RA<LiteralField | Relationship> | undefined;
@@ -197,7 +198,7 @@ const processFieldType: {
       max: f.parseInt(getProperty('max')),
       step: f.parseFloat(getProperty('step')),
       minLength: f.parseInt(getProperty('minLength')),
-      maxLength: f.parseInt(getProperty('maxLength'))
+      maxLength: f.parseInt(getProperty('maxLength')),
     };
   },
   QueryComboBox({ getProperty, fields }) {
@@ -254,7 +255,7 @@ export function parseFormField({
   model,
   fields,
 }: {
-  readonly cell: Element;
+  readonly cell: SimpleXmlNode;
   readonly getProperty: (name: string) => string | undefined;
   readonly model: SpecifyModel;
   readonly fields: RA<LiteralField | Relationship> | undefined;

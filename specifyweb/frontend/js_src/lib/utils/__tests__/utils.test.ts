@@ -8,9 +8,6 @@ import {
   clamp,
   escapeRegExp,
   findArrayDivergencePoint,
-  getAttribute,
-  getBooleanAttribute,
-  getParsedAttribute,
   group,
   index,
   insertItem,
@@ -30,6 +27,8 @@ import {
   unCapitalize,
   upperToKebab,
 } from '../utils';
+
+/* eslint-disable @typescript-eslint/no-magic-numbers */
 
 theories(capitalize, {
   'simple case': { in: ['capitalize'], out: 'Capitalize' },
@@ -156,7 +155,7 @@ test('multiSortFunction', () => {
 
 theories(split, [
   {
-    in: [[1, 2, 3, 4, 5, 6, 7, 8], (value: number) => value % 2 === 0],
+    in: [[1, 2, 3, 4, 5, 6, 7, 8], (value: number): boolean => value % 2 === 0],
     out: [
       [1, 3, 5, 7],
       [2, 4, 6, 8],
@@ -287,75 +286,6 @@ theories(escapeRegExp, [
   },
 ]);
 
-describe('getAttribute', () => {
-  test('Get existing attribute', () => {
-    const input = document.createElement('input');
-    input.setAttribute('data-someattribute', '1');
-    expect(getAttribute(input, 'data-someAttribute')).toBe('1');
-  });
-  test('Get non-existent attribute', () => {
-    const input = document.createElement('input');
-    input.setAttribute('data-someattribute', '1');
-    expect(getAttribute(input, 'data-attr')).toBeUndefined();
-  });
-});
-
-describe('getParsedAttribute', () => {
-  test('Get existing attribute', () => {
-    const input = document.createElement('input');
-    input.setAttribute('data-someattribute', '1');
-    expect(getParsedAttribute(input, 'data-someAttribute')).toBe('1');
-  });
-  test('Trim attribute', () => {
-    const input = document.createElement('input');
-    input.setAttribute('data-someattribute', '  1  ');
-    expect(getParsedAttribute(input, 'data-someAttribute')).toBe('1');
-  });
-  test('Ignore blank attributes', () => {
-    const input = document.createElement('input');
-    input.setAttribute('data-someattribute', '');
-    expect(getParsedAttribute(input, 'data-someAttribute')).toBeUndefined();
-  });
-  test('Ignore whitespace-only attributes', () => {
-    const input = document.createElement('input');
-    input.setAttribute('data-someattribute', '    ');
-    expect(getParsedAttribute(input, 'data-someAttribute')).toBeUndefined();
-  });
-  test('Get non-existent attribute', () => {
-    const input = document.createElement('input');
-    input.setAttribute('data-someattribute', '1');
-    expect(getParsedAttribute(input, 'data-attr')).toBeUndefined();
-  });
-});
-
-describe('getBooleanAttribute', () => {
-  test('Get existing true attribute', () => {
-    const input = document.createElement('input');
-    input.setAttribute('data-someattribute', 'TRUE');
-    expect(getBooleanAttribute(input, 'data-someAttribute')).toBe(true);
-  });
-  test('Get existing false attribute', () => {
-    const input = document.createElement('input');
-    input.setAttribute('data-someattribute', 'faLse');
-    expect(getBooleanAttribute(input, 'data-someAttribute')).toBe(false);
-  });
-  test('Get existing false attribute with whitespace', () => {
-    const input = document.createElement('input');
-    input.setAttribute('data-someattribute', '\tfalSe\n');
-    expect(getBooleanAttribute(input, 'data-someAttribute')).toBe(false);
-  });
-  test('Treat all non-boolean as false', () => {
-    const input = document.createElement('input');
-    input.setAttribute('data-someattribute', '\tAbc\n');
-    expect(getBooleanAttribute(input, 'data-someAttribute')).toBe(false);
-  });
-  test('Get non-existent attribute', () => {
-    const input = document.createElement('input');
-    input.setAttribute('data-someattribute', '1');
-    expect(getBooleanAttribute(input, 'data-attr')).toBeUndefined();
-  });
-});
-
 theories(takeBetween, [
   { in: [[], '', ''], out: [] },
   { in: [['a'], '', ''], out: [] },
@@ -363,3 +293,5 @@ theories(takeBetween, [
   { in: [['a', 'b', 'c'], 'a', 'c'], out: ['b', 'c'] },
   { in: [['a', 'b', 'c'], 'a', 'd'], out: [] },
 ]);
+
+/* eslint-enable @typescript-eslint/no-magic-numbers */

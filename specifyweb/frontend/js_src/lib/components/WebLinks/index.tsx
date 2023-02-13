@@ -4,7 +4,6 @@ import _ from 'underscore';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { isExternalUrl } from '../../utils/ajax/helpers';
-import { fetchTreePath } from '../../utils/ajax/specifyApi';
 import type { IR, RA } from '../../utils/types';
 import {
   caseInsensitiveHash,
@@ -14,6 +13,7 @@ import {
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import type { AnySchema } from '../DataModel/helperTypes';
+import { AnyTree } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
 import { serializeResource } from '../DataModel/serializers';
@@ -29,6 +29,7 @@ import { xmlToSpec } from '../Syncer/xmlUtils';
 import type { WebLink } from './spec';
 import { webLinksSpec } from './spec';
 import { f } from '../../utils/functools';
+import { ajax } from '../../utils/ajax';
 
 export const webLinks = f
   .all({
@@ -59,6 +60,27 @@ const specialResourcesFields: {
       species: path?.Species?.name,
     })),
 };
+
+const fetchTreePath = async (treeResource: SpecifyResource<AnyTree>) =>
+  typeof treeResource.id === 'number'
+    ? ajax<{
+        readonly Genus?: {
+          readonly name: string;
+        };
+        readonly Species?: {
+          readonly name: string;
+        };
+      }>(
+        `/api/specify_tree/${treeResource.specifyModel.name.toLowerCase()}/${
+          treeResource.id
+        }/path/`,
+        {
+          headers: {
+            Accept: 'application/json',
+          },
+        }
+      ).then(({ data }) => data)
+    : undefined;
 
 export function WebLinkField({
   resource,

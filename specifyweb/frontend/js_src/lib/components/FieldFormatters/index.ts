@@ -2,7 +2,6 @@
  * Parse and use Specify 6 UI Formatters
  */
 
-import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { escapeRegExp } from '../../utils/utils';
@@ -14,51 +13,47 @@ import { xmlToSpec } from '../Syncer/xmlUtils';
 import { fieldFormattersSpec } from './spec';
 
 let uiFormatters: IR<UiFormatter>;
-export const fetchContext = f
-  .all({
-    formatters: load<Element>(
-      formatUrl('/context/app.resource', { name: 'UIFormatters' }),
-      'text/xml'
-    ),
-    schema: import('../DataModel/schema').then(
-      async ({ fetchContext }) => fetchContext
-    ),
-  })
-  .then(({ formatters }) => {
-    uiFormatters = Object.fromEntries(
-      filterArray(
-        xmlToSpec(formatters, fieldFormattersSpec()).formatters.map(
-          (formatter) => {
-            let resolvedFormatter;
-            if (typeof formatter.external === 'string') {
-              if (
-                parseJavaClassName(formatter.external) ===
-                'CatalogNumberUIFieldFormatter'
+export const fetchContext = Promise.all([
+  load<Element>(
+    formatUrl('/context/app.resource', { name: 'UIFormatters' }),
+    'text/xml'
+  ),
+  import('../DataModel/schema').then(async ({ fetchContext }) => fetchContext),
+]).then(([formatters]) => {
+  uiFormatters = Object.fromEntries(
+    filterArray(
+      xmlToSpec(formatters, fieldFormattersSpec()).formatters.map(
+        (formatter) => {
+          let resolvedFormatter;
+          if (typeof formatter.external === 'string') {
+            if (
+              parseJavaClassName(formatter.external) ===
+              'CatalogNumberUIFieldFormatter'
+            )
+              resolvedFormatter = new CatalogNumberNumeric();
+            else return undefined;
+          } else {
+            const fields = filterArray(
+              formatter.fields.map((field) =>
+                typeof field.type === 'string'
+                  ? new formatterTypeMapper[field.type](field)
+                  : undefined
               )
-                resolvedFormatter = new CatalogNumberNumeric();
-              else return undefined;
-            } else {
-              const fields = filterArray(
-                formatter.fields.map((field) =>
-                  typeof field.type === 'string'
-                    ? new formatterTypeMapper[field.type](field)
-                    : undefined
-                )
-              );
-              resolvedFormatter = new UiFormatter(
-                formatter.isSystem,
-                formatter.title ?? formatter.name,
-                fields
-              );
-            }
-
-            return [formatter.name, resolvedFormatter];
+            );
+            resolvedFormatter = new UiFormatter(
+              formatter.isSystem,
+              formatter.title ?? formatter.name,
+              fields
+            );
           }
-        )
+
+          return [formatter.name, resolvedFormatter];
+        }
       )
-    );
-    return uiFormatters;
-  });
+    )
+  );
+  return uiFormatters;
+});
 export const getUiFormatters = (): typeof uiFormatters =>
   uiFormatters ?? error('Tried to access UI formatters before fetching them');
 

@@ -5,7 +5,6 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
-import { fetchRows } from '../../utils/ajax/specifyApi';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
@@ -31,6 +30,7 @@ import { EditRecordSet } from '../Toolbar/RecordSetEdit';
 import type { RecordSelectorProps } from './RecordSelector';
 import { RecordSelectorFromIds } from './RecordSelectorFromIds';
 import { serializeResource } from '../DataModel/serializers';
+import { fetchRows } from '../Interactions/helpers';
 
 export function RecordSetWrapper<SCHEMA extends AnySchema>({
   recordSet,

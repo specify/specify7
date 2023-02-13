@@ -10,18 +10,19 @@ import type { State } from 'typesafe-reducer';
 import { f } from '../../utils/functools';
 import { parseRelativeDate } from '../../utils/relativeDate';
 import type { RA } from '../../utils/types';
-import { getParsedAttribute } from '../../utils/utils';
 import { formatDisjunction } from '../Atoms/Internationalization';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
+import { addContext } from '../Errors/logContext';
 import type { CoordinateType } from '../FormPlugins/LatLongUi';
 import { coordinateType } from '../FormPlugins/LatLongUi';
 import { paleoPluginTables } from '../FormPlugins/PaleoLocation';
 import type { PartialDatePrecision } from '../FormPlugins/PartialDateUi';
 import { hasTablePermission } from '../Permissions/helpers';
-import { addContext } from '../Errors/logContext';
+import type { SimpleXmlNode } from '../Syncer/xmlToJson';
+import { getParsedAttribute } from '../Syncer/xmlUtils';
 
 export type UiPlugins = {
   readonly LatLonUI: State<
@@ -89,7 +90,7 @@ export type UiPlugins = {
 
 const processUiPlugin: {
   readonly [KEY in keyof UiPlugins]: (props: {
-    readonly cell: Element;
+    readonly cell: SimpleXmlNode;
     readonly getProperty: (name: string) => string | undefined;
     readonly defaultValue: string | undefined;
     readonly model: SpecifyModel;
@@ -252,7 +253,7 @@ export function parseUiPlugin({
   fields,
   ...rest
 }: {
-  readonly cell: Element;
+  readonly cell: SimpleXmlNode;
   readonly getProperty: (name: string) => string | undefined;
   readonly defaultValue: string | undefined;
   readonly model: SpecifyModel;

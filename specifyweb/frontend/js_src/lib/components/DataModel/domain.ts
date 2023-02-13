@@ -1,9 +1,9 @@
-import { globalEvents } from '../../utils/ajax/specifyApi';
 import type { RA } from '../../utils/types';
 import { capitalize, takeBetween } from '../../utils/utils';
 import { raise } from '../Errors/Crash';
 import { getCollectionPref } from '../InitialContext/remotePrefs';
 import { getDomainResource } from '../InitialContext/treeRanks';
+import { getTablePermissions } from '../Permissions';
 import { hasTablePermission } from '../Permissions/helpers';
 import { fetchCollection } from './collection';
 import { toTable } from './helpers';
@@ -16,7 +16,7 @@ import type { CollectionObject } from './types';
 /**
  * Some tasks to do after a new resource is created
  */
-globalEvents.on('newResource', (resource) => {
+export function initializeResource(resource: SpecifyResource<AnySchema>): void {
   const domainField = resource.specifyModel.getScopingRelationship();
   if (domainField === undefined) return;
 
@@ -38,8 +38,13 @@ globalEvents.on('newResource', (resource) => {
     );
 
   // Need to make sure parentResource isn't null to fix issue introduced by 8abf5d5
-  if (!hasTablePermission(capitalize(domainFieldName), 'read')) return;
   if (parentResource === undefined) return;
+  if (
+    // Make sure permissions are loaded
+    Object.keys(getTablePermissions()).length > 0 &&
+    !hasTablePermission(capitalize(domainFieldName), 'read')
+  )
+    return;
 
   const collectionObject = toTable(resource, 'CollectionObject');
   if (collectionObject === undefined) return;
@@ -75,7 +80,7 @@ globalEvents.on('newResource', (resource) => {
         determinations.add(new schema.models.Determination.Resource())
       )
       .catch(raise);
-});
+}
 
 /**
  * @returns a list of collections the resource belongs too.

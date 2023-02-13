@@ -2,7 +2,6 @@
  * Pick list item fetching code
  */
 
-import { fetchRows } from '../../utils/ajax/specifyApi';
 import { f } from '../../utils/functools';
 import type { R, RA } from '../../utils/types';
 import { defined } from '../../utils/types';
@@ -26,6 +25,7 @@ import {
   deserializeResource,
   serializeResource,
 } from '../DataModel/serializers';
+import { fetchRows } from '../Interactions/helpers';
 
 const pickListFetchPromises: R<Promise<SpecifyResource<PickList> | undefined>> =
   {};

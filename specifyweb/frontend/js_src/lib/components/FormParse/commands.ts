@@ -10,7 +10,6 @@ import type { State } from 'typesafe-reducer';
 
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
-import { getParsedAttribute } from '../../utils/utils';
 import { formatDisjunction } from '../Atoms/Internationalization';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Tables } from '../DataModel/types';
@@ -18,6 +17,8 @@ import { error } from '../Errors/assert';
 import { addContext } from '../Errors/logContext';
 import { legacyLocalize } from '../InitialContext/legacyUiLocalization';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
+import type { SimpleXmlNode } from '../Syncer/xmlToJson';
+import { getParsedAttribute } from '../Syncer/xmlUtils';
 
 export type UiCommands = {
   readonly GenerateLabel: State<'GenerateLabel'>;
@@ -77,7 +78,7 @@ export type CommandDefinition = {
 };
 
 export function parseUiCommand(
-  cell: Element,
+  cell: SimpleXmlNode,
   model: SpecifyModel
 ): CommandDefinition {
   const name = getParsedAttribute(cell, 'name');

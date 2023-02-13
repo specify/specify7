@@ -4,8 +4,6 @@
  * @module
  */
 
-import type { LocalizedString } from 'typesafe-i18n';
-
 import type { KeysToLowerCase } from '../components/DataModel/helperTypes';
 import { f } from './functools';
 import type { IR, RA, RR } from './types';
@@ -302,29 +300,6 @@ export const index = <T extends { readonly id: number }>(data: RA<T>): IR<T> =>
 /** Escape all characters that have special meaning in regular expressions */
 export const escapeRegExp = (string: string): string =>
   string.replaceAll(/[$()*+.?[\\\]^{|}]/g, '\\$&');
-
-// FIXME: refactor to use the other getAttribute
-export const getAttribute = (cell: Element, name: string): string | undefined =>
-  cell.getAttribute(name.toLowerCase()) ?? cell.getAttribute(name) ?? undefined;
-
-// FIXME: refactor to use the other getAttribute
-export const getParsedAttribute = (
-  cell: Element,
-  name: string
-): LocalizedString | undefined =>
-  f.maybe(getAttribute(cell, name)?.trim(), (value) =>
-    value.length === 0 ? undefined : (value as LocalizedString)
-  );
-
-// FIXME: refactor to use the other getAttribute
-export const getBooleanAttribute = (
-  cell: Element,
-  name: string
-): boolean | undefined =>
-  f.maybe(
-    getParsedAttribute(cell, name),
-    (value) => value.toLowerCase() === 'true'
-  );
 
 /** Recursively convert keys on an object to lowercase */
 export const keysToLowerCase = <OBJECT extends IR<unknown>>(

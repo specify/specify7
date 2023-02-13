@@ -11,29 +11,30 @@ import type { State } from 'typesafe-reducer';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import {
-  getAttribute,
-  getBooleanAttribute,
-  getParsedAttribute,
-} from '../../utils/utils';
 import { getModel } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Tables } from '../DataModel/types';
-import { legacyLocalize } from '../InitialContext/legacyUiLocalization';
-import { toLargeSortConfig } from '../Molecules/Sorting';
-import { hasPathPermission } from '../Permissions/helpers';
-import type { CommandDefinition } from './commands';
-import { parseUiCommand } from './commands';
-import type { FormFieldDefinition } from './fields';
-import { parseFormField } from './fields';
-import type { FormType, ParsedFormDefinition } from './index';
-import { parseFormDefinition } from './index';
 import {
   addContext,
   getLogContext,
   pushContext,
   setLogContext,
 } from '../Errors/logContext';
+import { legacyLocalize } from '../InitialContext/legacyUiLocalization';
+import { toLargeSortConfig } from '../Molecules/Sorting';
+import { hasPathPermission } from '../Permissions/helpers';
+import type { SimpleXmlNode } from '../Syncer/xmlToJson';
+import {
+  getAttribute,
+  getBooleanAttribute,
+  getParsedAttribute,
+} from '../Syncer/xmlUtils';
+import type { CommandDefinition } from './commands';
+import { parseUiCommand } from './commands';
+import type { FormFieldDefinition } from './fields';
+import { parseFormField } from './fields';
+import type { FormType, ParsedFormDefinition } from './index';
+import { parseFormDefinition } from './index';
 
 // Parse column width definitions
 export const processColumnDefinition = (
@@ -120,7 +121,7 @@ export const cellAlign = ['left', 'center', 'right'] as const;
 
 const processCellType: {
   readonly [KEY in keyof CellTypes]: (props: {
-    readonly cell: Element;
+    readonly cell: SimpleXmlNode;
     readonly model: SpecifyModel;
     readonly getProperty: (name: string) => string | undefined;
   }) => CellTypes[KEY | 'Blank'];
@@ -299,7 +300,7 @@ const cellTypeTranslation: IR<keyof CellTypes> = {
  */
 export function parseFormCell(
   model: SpecifyModel,
-  cellNode: Element
+  cellNode: SimpleXmlNode
 ): FormCellDefinition {
   const cellClass = getParsedAttribute(cellNode, 'type') ?? '';
   const cellType = cellTypeTranslation[cellClass.toLowerCase()];

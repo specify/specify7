@@ -59,7 +59,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
         path: 'data-entry',
         title: headerText.dataEntry(),
         element: () =>
-          import('../Header/Forms').then(
+          import('../DataEntryTables').then(
             ({ FormsDialogOverlay }) => FormsDialogOverlay
           ),
       },

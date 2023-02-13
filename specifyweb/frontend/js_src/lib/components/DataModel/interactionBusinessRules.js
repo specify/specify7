@@ -1,8 +1,8 @@
 import _ from 'underscore';
 
-import {getPrepAvailability} from '../../utils/ajax/specifyApi';
 import {idFromUrl} from './resource';
 import {schema} from './schema';
+import {getPrepAvailability} from '../Interactions/helpers';
 
 export const interactionBusinessRules = {
         previousReturned: [],

@@ -7,7 +7,6 @@ import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { queryText } from '../../localization/query';
-import { queryCbxExtendedSearch } from '../../utils/ajax/specifyApi';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
@@ -37,6 +36,7 @@ import { QueryBuilder } from '../QueryBuilder/Wrapped';
 import { formatUrl } from '../Router/queryString';
 import { xmlToSpec } from '../Syncer/xmlUtils';
 import { dialogsSpec } from './spec';
+import { queryCbxExtendedSearch } from './helpers';
 
 export const searchDialogDefinitions = f
   .all({

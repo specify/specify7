@@ -10,7 +10,6 @@ import { Http } from '../../utils/ajax/definitions';
 import { f } from '../../utils/functools';
 import type { IR, R, RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
-import { getParsedAttribute } from '../../utils/utils';
 import { parseXml } from '../AppResources/codeMirrorLinters';
 import { formatDisjunction } from '../Atoms/Internationalization';
 import { parseJavaClassName } from '../DataModel/resource';
@@ -19,19 +18,22 @@ import type { SpecifyModel } from '../DataModel/specifyModel';
 import { error } from '../Errors/assert';
 import type { LogMessage } from '../Errors/interceptLogs';
 import { consoleLog } from '../Errors/interceptLogs';
-import { cachableUrl } from '../InitialContext';
-import { getPref } from '../InitialContext/remotePrefs';
-import { formatUrl } from '../Router/queryString';
-import type { FormCellDefinition } from './cells';
-import { parseFormCell, processColumnDefinition } from './cells';
-import { postProcessFormDef } from './postProcessFormDef';
-import { webOnlyViews } from './webOnlyViews';
 import {
   addContext,
   getLogContext,
   pushContext,
   setLogContext,
 } from '../Errors/logContext';
+import { cachableUrl } from '../InitialContext';
+import { getPref } from '../InitialContext/remotePrefs';
+import { formatUrl } from '../Router/queryString';
+import type { SimpleXmlNode } from '../Syncer/xmlToJson';
+import { toSimpleXmlNode, xmlToJson } from '../Syncer/xmlToJson';
+import { getParsedAttribute } from '../Syncer/xmlUtils';
+import type { FormCellDefinition } from './cells';
+import { parseFormCell, processColumnDefinition } from './cells';
+import { postProcessFormDef } from './postProcessFormDef';
+import { webOnlyViews } from './webOnlyViews';
 
 export type ViewDescription = ParsedFormDefinition & {
   readonly formType: FormType;
@@ -141,7 +143,7 @@ export function resolveViewDefinition(
   mode: FormMode
 ):
   | {
-      readonly viewDefinition: Element;
+      readonly viewDefinition: SimpleXmlNode;
       readonly formType: FormType;
       readonly mode: FormMode;
       readonly model: SpecifyModel;
@@ -160,19 +162,19 @@ export function resolveViewDefinition(
     mode
   );
 
-  const definition =
-    viewDefinition?.getElementsByTagName('definition')[0]?.textContent;
+  const definition = viewDefinition.children.definition?.at(0)?.text;
   const actualViewDefinition =
     typeof definition === 'string'
-      ? viewDefinitions[definition]
+      ? toSimpleXmlNode(xmlToJson(viewDefinitions[definition]))
       : viewDefinition;
 
   if (actualViewDefinition === undefined) return undefined;
+  const actualDefinition = actualViewDefinition;
 
   const newFormType = getParsedAttribute(viewDefinition, 'type');
   const modelName = parseJavaClassName(
     defined(
-      getParsedAttribute(actualViewDefinition, 'class'),
+      getParsedAttribute(actualDefinition, 'class'),
       'Form definition does not contain a class attribute'
     )
   );
@@ -190,7 +192,7 @@ export function resolveViewDefinition(
     );
 
   return {
-    viewDefinition: actualViewDefinition,
+    viewDefinition: actualDefinition,
     formType: resolvedFormType ?? 'form',
     mode: mode === 'search' ? mode : altView.mode,
     model: strictGetModel(
@@ -229,7 +231,7 @@ function resolveAltView(
   mode: FormMode
 ): {
   readonly altView: ViewDefinition['altviews'][number];
-  readonly viewDefinition: Element;
+  readonly viewDefinition: SimpleXmlNode;
 } {
   let altViews: RA<AltView> = Object.values(rawAltViews).filter(
     (altView) => altView.mode === mode
@@ -240,9 +242,8 @@ function resolveAltView(
   let altView = altViews.find((altView) => {
     viewDefinition = viewDefinitions[altView.viewdef];
     return (
-      typeof viewDefinition === 'object' &&
-      getParsedAttribute(viewDefinition, 'type')?.toLowerCase() ===
-        formType.toLowerCase()
+      viewDefinition?.getAttribute('type')?.toLowerCase() ===
+      formType.toLowerCase()
     );
   });
   if (altView === undefined || viewDefinition === undefined) {
@@ -250,7 +251,10 @@ function resolveAltView(
     altView = altViews[0];
     viewDefinition = viewDefinitions[altView.viewdef];
   }
-  return { altView, viewDefinition };
+  return {
+    altView,
+    viewDefinition: toSimpleXmlNode(xmlToJson(viewDefinition)),
+  };
 }
 
 export type ParsedFormDefinition = {
@@ -261,7 +265,7 @@ export type ParsedFormDefinition = {
 };
 
 function parseFormTableDefinition(
-  viewDefinition: Element,
+  viewDefinition: SimpleXmlNode,
   model: SpecifyModel
 ): ParsedFormDefinition {
   const { rows } = parseFormDefinition(viewDefinition, model);
@@ -310,7 +314,7 @@ function parseFormTableDefinition(
 }
 
 function parseFormTableColumns(
-  viewDefinition: Element,
+  viewDefinition: SimpleXmlNode,
   row: RA<FormCellDefinition>
 ): RA<number | undefined> {
   const columnCount = f.sum(row.map(({ colSpan }) => colSpan));
@@ -326,56 +330,46 @@ function parseFormTableColumns(
   ];
 }
 
-/**
- * Can't use querySelectorAll here because it is not supported in JSDom
- * See https://github.com/jsdom/jsdom/issues/2998
- */
 export function parseFormDefinition(
-  viewDefinition: Element,
+  viewDefinition: SimpleXmlNode,
   model: SpecifyModel
 ): ParsedFormDefinition {
   const context = getLogContext();
+  const rowsContainer = viewDefinition?.children?.rows.at(0);
+  const rows = rowsContainer?.children?.row ?? [];
   const data = postProcessFormDef(
     processColumnDefinition(getColumnDefinitions(viewDefinition)),
-    Array.from(
-      Array.from(viewDefinition.children).find(
-        ({ tagName }) => tagName === 'rows'
-      )?.children ?? []
-    )
-      .filter(({ tagName }) => tagName === 'row')
-      .map((row, index) => {
+    rows.map((row, index) => {
+      const context = getLogContext();
+      pushContext({
+        type: 'Child',
+        tagName: 'row',
+        extras: { row: index + 1 },
+      });
+
+      const data = row.children.cell?.map((cell, index) => {
         const context = getLogContext();
         pushContext({
           type: 'Child',
-          tagName: 'row',
+          tagName: 'cell',
           extras: { row: index + 1 },
         });
 
-        const data = Array.from(row.children)
-          .filter(({ tagName }) => tagName === 'cell')
-          .map((cell, index) => {
-            const context = getLogContext();
-            pushContext({
-              type: 'Child',
-              tagName: 'cell',
-              extras: { row: index + 1 },
-            });
+        const data = parseFormCell(model, cell);
 
-            const data = parseFormCell(model, cell);
-
-            setLogContext(context);
-            return data;
-          });
         setLogContext(context);
         return data;
-      }),
+      });
+      setLogContext(context);
+      return data ?? [];
+    }),
     model
   );
   setLogContext(context);
   return data;
 }
 
-function getColumnDefinitions(viewDefinition: Element): string {
+function getColumnDefinitions(viewDefinition: SimpleXmlNode): string {
   const definition =
     getColumnDefinition(
       viewDefinition,
@@ -388,12 +382,12 @@ function getColumnDefinitions(viewDefinition: Element): string {
 }
 
 const getColumnDefinition = (
-  viewDefinition: Element,
+  viewDefinition: SimpleXmlNode,
   os: string | undefined
 ): string | undefined =>
-  viewDefinition.querySelector(
-    `columnDef${typeof os === 'string' ? `[os="${os}"]` : ''}`
-  )?.textContent ?? undefined;
+  viewDefinition.children.columnDef?.find((child) =>
+    typeof os === 'string' ? getParsedAttribute(child, 'os') === os : true
+  )?.text;
 
 export const exportsForTests = {
   views,

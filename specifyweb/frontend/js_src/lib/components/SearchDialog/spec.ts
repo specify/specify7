@@ -36,12 +36,7 @@ const dialogSpec = f.store(() =>
     view: syncers.xmlAttribute('view', 'skip'),
     viewSet: syncers.xmlAttribute('viewSet', 'skip'),
     // Note, not all class="" refer to table names
-    /*
-     * Table: pipe(
-     *   syncers.xmlAttribute('class', 'skip'),
-     *   syncers.maybe(syncers.javaClassName)
-     * ),
-     */
+    table: syncers.xmlAttribute('class', 'skip'),
     idField: syncers.xmlAttribute('idField', 'skip'),
     helpContext: syncers.xmlAttribute('helpContext', 'skip'),
   })

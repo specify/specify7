@@ -2,7 +2,6 @@ import _ from 'underscore';
 
 import {hijackBackboneAjax} from '../../utils/ajax/backboneAjax';
 import {Http} from '../../utils/ajax/definitions';
-import {globalEvents} from '../../utils/ajax/specifyApi';
 import {removeKey} from '../../utils/utils';
 import {assert} from '../Errors/assert';
 import {softFail} from '../Errors/Crash';
@@ -14,6 +13,8 @@ import {
     resourceFromUrl
 } from './resource';
 import {errorHandledBy} from '../Errors/FormatError';
+import {attachBusinessRules} from './businessRules';
+import {initializeResource} from './domain';
 
 function eventHandlerForToOne(related, field) {
         return function(event) {
@@ -102,9 +103,9 @@ function eventHandlerForToOne(related, field) {
                 }
             });
 
-            globalEvents.trigger('initResource', this);
+            if(!this.noBusinessRules) attachBusinessRules(this);
             if(this.isNew())
-                globalEvents.trigger('newResource', this);
+                initializeResource(this);
             /*
              * Business rules may set some fields on resource creation
              * Those default values should not trigger unload protect
