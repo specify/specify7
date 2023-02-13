@@ -63,7 +63,7 @@ export type RelationshipDefinition = {
   readonly dependent: boolean;
   readonly name: string;
   readonly otherSideName?: string;
-  readonly relatedTableName: keyof Tables | 'UserGroupScope';
+  readonly relatedModelName: keyof Tables | 'UserGroupScope';
   readonly required: boolean;
   readonly type: RelationshipType;
   readonly readOnly?: boolean;
@@ -278,9 +278,9 @@ export class Relationship extends FieldBase {
     const relatedTableName =
       table.name === 'SpPrincipal' &&
       relationshipDefinition.name === 'scope' &&
-      relationshipDefinition.relatedTableName === 'UserGroupScope'
+      relationshipDefinition.relatedModelName === 'UserGroupScope'
         ? 'Division'
-        : relationshipDefinition.relatedTableName;
+        : relationshipDefinition.relatedModelName;
     this.relatedTable = strictGetTable(relatedTableName);
 
     if (isTreeTable(this.table.name)) this.overrides.isReadOnly = true;

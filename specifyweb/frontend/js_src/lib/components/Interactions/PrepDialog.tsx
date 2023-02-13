@@ -33,16 +33,13 @@ export function PrepDialog({
   onClose: handleClose,
   isReadOnly,
   preparations: rawPreparations,
-  action,
+  table,
   itemCollection,
 }: {
   readonly onClose: () => void;
   readonly isReadOnly: boolean;
   readonly preparations: Preparations;
-  readonly action: {
-    readonly table: SpecifyTable<Disposal | Gift | Loan>;
-    readonly name?: string;
-  };
+  readonly table: SpecifyTable<Disposal | Gift | Loan>;
   readonly itemCollection?: Collection<
     DisposalPreparation | GiftPreparation | LoanPreparation
   >;
@@ -118,7 +115,7 @@ export function PrepDialog({
                 typeof itemCollection === 'object'
                   ? interactionsText.addItems()
                   : interactionsText.createRecord({
-                      tableName: action.table.label,
+                      tableName: table.label,
                     })
               }
             >
@@ -134,7 +131,7 @@ export function PrepDialog({
         id={id('form')}
         onSubmit={(): void => {
           const itemTable = strictGetTable(
-            `${action.table.name}Preparation`
+            `${table.name}Preparation`
           ) as SpecifyTable<
             DisposalPreparation | GiftPreparation | LoanPreparation
           >;
@@ -158,7 +155,7 @@ export function PrepDialog({
             itemCollection.add(items);
             handleClose();
           } else {
-            const interaction = new action.table.Resource();
+            const interaction = new table.Resource();
             const loan = toTable(interaction, 'Loan');
             loan?.set(
               'loanPreparations',
@@ -173,7 +170,7 @@ export function PrepDialog({
               'disposalPreparations',
               items as RA<SpecifyResource<DisposalPreparation>>
             );
-            navigate(getResourceViewUrl(action.table.name, undefined), {
+            navigate(getResourceViewUrl(table.name, undefined), {
               state: {
                 type: 'RecordSet',
                 resource: serializeResource(interaction),

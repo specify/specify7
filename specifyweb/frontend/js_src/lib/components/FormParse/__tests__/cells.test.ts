@@ -11,6 +11,11 @@ import {
   processColumnDefinition,
 } from '../cells';
 import { tables } from '../../DataModel/tables';
+import {
+  SimpleXmlNode,
+  toSimpleXmlNode,
+  xmlToJson,
+} from '../../Syncer/xmlToJson';
 
 requireContext();
 
@@ -110,12 +115,13 @@ const cell = (
   ...cell,
 });
 
+const xml = (xml: string): SimpleXmlNode =>
+  toSimpleXmlNode(xmlToJson(strictParseXml(xml)));
+
 describe('parseFormCell', () => {
   test('base case', () => {
     jest.spyOn(console, 'warn').mockImplementation();
-    expect(
-      parseFormCell(tables.CollectionObject, strictParseXml('<cell />'))
-    ).toEqual(
+    expect(parseFormCell(tables.CollectionObject, xml('<cell />'))).toEqual(
       cell({
         type: 'Unsupported',
         cellType: undefined,
@@ -128,7 +134,7 @@ describe('parseFormCell', () => {
     expect(
       parseFormCell(
         tables.CollectionObject,
-        strictParseXml(
+        xml(
           '<cell invisible="true" type=" test2 " initialize="align=Center" colSpan=" 5 " id="test" />'
         )
       )
@@ -149,7 +155,7 @@ describe('parseFormCell', () => {
     expect(
       parseFormCell(
         tables.CollectionObject,
-        strictParseXml(
+        xml(
           '<cell type=" field " uiType="text" invisible="true" name="CatalogNumber" isRequired="TRuE " initialize="align=RIGHT" colSpan=" 5 " id="test" />'
         )
       )
@@ -179,7 +185,7 @@ describe('parseFormCell', () => {
     expect(
       parseFormCell(
         tables.CollectionObject,
-        strictParseXml(
+        xml(
           '<cell type="field" uiType="text" name="  CollectionObject.CollectionMemberId  " />'
         )
       )
@@ -206,7 +212,7 @@ describe('parseFormCell', () => {
     expect(
       parseFormCell(
         tables.CollectionObject,
-        strictParseXml('<cell type="field" uiType="text" name="this" />')
+        xml('<cell type="field" uiType="text" name="this" />')
       )
     ).toEqual(
       cell({
@@ -220,9 +226,7 @@ describe('parseFormCell', () => {
     expect(
       parseFormCell(
         tables.CollectionObject,
-        strictParseXml(
-          '<cell type="field" uiType="text" name="this" default="A" />'
-        )
+        xml('<cell type="field" uiType="text" name="this" default="A" />')
       )
     ).toEqual(
       cell({
@@ -247,9 +251,7 @@ describe('parseFormCell', () => {
     expect(
       parseFormCell(
         tables.Collector,
-        strictParseXml(
-          '<cell type="field" uiType="text" name="agent.lastName" />'
-        )
+        xml('<cell type="field" uiType="text" name="agent.lastName" />')
       )
     ).toEqual(
       cell({
@@ -274,7 +276,7 @@ describe('parseFormCell', () => {
     expect(
       parseFormCell(
         tables.CollectionObject,
-        strictParseXml(
+        xml(
           '<cell type="field" uiType="plugin" initialize="name=PartialDateUI;df=catalogedDate" />'
         )
       )
@@ -302,7 +304,7 @@ describe('parseFormCell', () => {
     expect(
       parseFormCell(
         tables.CollectionObject,
-        strictParseXml('<cell type="Label" label="some text" />')
+        xml('<cell type="Label" label="some text" />')
       )
     ).toEqual(
       cell({
@@ -320,7 +322,7 @@ describe('parseFormCell', () => {
     expect(
       parseFormCell(
         tables.CollectionObject,
-        strictParseXml('<cell type="Label" label="FINDNEXT" labelfor=" 42" />')
+        xml('<cell type="Label" label="FINDNEXT" labelfor=" 42" />')
       )
     ).toEqual(
       cell({
@@ -337,7 +339,7 @@ describe('parseFormCell', () => {
     expect(
       parseFormCell(
         tables.CollectionObject,
-        strictParseXml(
+        xml(
           '<cell type="separator"   label="FINDNEXT" name="unused" additional="unused" icon=" 42" forClass=" CollectionObject" />'
         )
       )
@@ -354,7 +356,7 @@ describe('parseFormCell', () => {
     expect(
       parseFormCell(
         tables.CollectionObject,
-        strictParseXml('<cell type="subView" name="determinationS "  />')
+        xml('<cell type="subView" name="determinationS "  />')
       )
     ).toEqual(
       cell({
@@ -372,7 +374,7 @@ describe('parseFormCell', () => {
     expect(
       parseFormCell(
         tables.CollectionObject,
-        strictParseXml(
+        xml(
           '<cell type="subView" name="determinations" defaultType="table" viewName="testView " initialize="sortField=-iscurrent ;btn=true  ; icon=test" />'
         )
       )
@@ -392,7 +394,7 @@ describe('parseFormCell', () => {
     expect(
       parseFormCell(
         tables.CollectionObject,
-        strictParseXml(
+        xml(
           `<cell type="panel" colDef="1px,2px,2px">
             <rows>
               <row>
@@ -431,9 +433,7 @@ describe('parseFormCell', () => {
     expect(
       parseFormCell(
         tables.CollectionObject,
-        strictParseXml(
-          '<cell type="panel" colDef="p:g,2px,2px" panelType="buttonBar" />'
-        )
+        xml('<cell type="panel" colDef="p:g,2px,2px" panelType="buttonBar" />')
       )
     ).toEqual(
       cell({
@@ -448,7 +448,7 @@ describe('parseFormCell', () => {
     expect(
       parseFormCell(
         tables.Loan,
-        strictParseXml(
+        xml(
           '<cell type="command" name="ReturnLoan" label="generateLabelBtn" />'
         )
       )
@@ -468,7 +468,7 @@ describe('parseFormCell', () => {
     expect(
       parseFormCell(
         tables.CollectionObject,
-        strictParseXml('<cell type="blank" name="ignored" />')
+        xml('<cell type="blank" name="ignored" />')
       )
     ).toEqual(cell({ type: 'Blank' })));
 });

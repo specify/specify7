@@ -43,7 +43,7 @@ describe('LazyCollection', () => {
 
   test('can create a new instance', () => {
     const collection = new tables.Agent.LazyCollection() as Collection<Agent>;
-    expect(collection.model.specifyTable).toBe(tables.Agent);
+    expect(collection.table.specifyTable).toBe(tables.Agent);
   });
 
   test('can fetch', async () => {

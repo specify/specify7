@@ -10,14 +10,21 @@ import { toTable } from './helpers';
 import type { AnySchema } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
 import { getResourceApiUrl, idFromUrl } from './resource';
+import { schema } from './schema';
 import { tables } from './tables';
 import type { CollectionObject } from './types';
-import { schema } from './schema';
 
 /**
  * Some tasks to do after a new resource is created
  */
 export function initializeResource(resource: SpecifyResource<AnySchema>): void {
+  // Resources created before initial context is loaded are not scoped
+  if (
+    Object.keys(getTablePermissions()).length === 0 ||
+    schema.domainLevelIds === undefined
+  )
+    return;
+
   const domainField = resource.specifyTable.getScopingRelationship();
   if (domainField === undefined) return;
 
@@ -40,12 +47,7 @@ export function initializeResource(resource: SpecifyResource<AnySchema>): void {
 
   // Need to make sure parentResource isn't null to fix issue introduced by 8abf5d5
   if (parentResource === undefined) return;
-  if (
-    // Make sure permissions are loaded
-    Object.keys(getTablePermissions()).length > 0 &&
-    !hasTablePermission(capitalize(domainFieldName), 'read')
-  )
-    return;
+  if (!hasTablePermission(capitalize(domainFieldName), 'read')) return;
 
   const collectionObject = toTable(resource, 'CollectionObject');
   if (collectionObject === undefined) return;

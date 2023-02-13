@@ -81,14 +81,14 @@ export function SpecifyFormCheckbox({
     value = false,
     updateValue,
     validationRef,
-  } = useResourceValue<boolean | string>(
+  } = useResourceValue<boolean | string | null>(
     resource,
     field,
     React.useMemo(() => ({ value: defaultValue }), [defaultValue])
   );
 
   const isChecked = React.useMemo(
-    () => parseBoolean(value.toString()),
+    () => (value === null ? false : parseBoolean(value?.toString())),
     [value]
   );
 

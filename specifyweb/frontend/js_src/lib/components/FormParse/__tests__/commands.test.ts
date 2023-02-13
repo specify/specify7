@@ -2,15 +2,21 @@ import { requireContext } from '../../../tests/helpers';
 import { strictParseXml } from '../../AppResources/codeMirrorLinters';
 import { parseUiCommand } from '../commands';
 import { tables } from '../../DataModel/tables';
+import {
+  SimpleXmlNode,
+  toSimpleXmlNode,
+  xmlToJson,
+} from '../../Syncer/xmlToJson';
 
 requireContext();
+
+const xml = (xml: string): SimpleXmlNode =>
+  toSimpleXmlNode(xmlToJson(strictParseXml(xml)));
 
 describe('parseUiCommand', () => {
   test('Simplest case', () => {
     jest.spyOn(console, 'error').mockImplementation();
-    expect(
-      parseUiCommand(strictParseXml('<cell />'), tables.CollectionObject)
-    ).toEqual({
+    expect(parseUiCommand(xml('<cell />'), tables.CollectionObject)).toEqual({
       commandDefinition: {
         type: 'Unsupported',
         name: undefined,
@@ -23,7 +29,7 @@ describe('parseUiCommand', () => {
     jest.spyOn(console, 'error').mockImplementation();
     expect(
       parseUiCommand(
-        strictParseXml('<cell name="test" label="test2" />'),
+        xml('<cell name="test" label="test2" />'),
         tables.CollectionObject
       )
     ).toEqual({
@@ -38,7 +44,7 @@ describe('parseUiCommand', () => {
   test('Generate Label', () =>
     expect(
       parseUiCommand(
-        strictParseXml('<cell name="generateLabelBtn" label="FINDNEXT" />'),
+        xml('<cell name="generateLabelBtn" label="FINDNEXT" />'),
         tables.CollectionObject
       )
     ).toEqual({
@@ -51,7 +57,7 @@ describe('parseUiCommand', () => {
   test('Show Loans Command', () =>
     expect(
       parseUiCommand(
-        strictParseXml('<cell name="someName" label="ShowLoansBtn" />'),
+        xml('<cell name="someName" label="ShowLoansBtn" />'),
         tables.Preparation
       )
     ).toEqual({
@@ -64,7 +70,7 @@ describe('parseUiCommand', () => {
   test('Return Loan Command', () =>
     expect(
       parseUiCommand(
-        strictParseXml('<cell name="ReturnLoan" label="generateLabelBtn" />'),
+        xml('<cell name="ReturnLoan" label="generateLabelBtn" />'),
         tables.Loan
       )
     ).toEqual({

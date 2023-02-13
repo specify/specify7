@@ -18,7 +18,7 @@ export async function aggregate(
   if (allResources.length === 0) return '';
   const targetTable = Array.isArray(collection)
     ? collection[0].specifyTable
-    : collection.model.specifyTable;
+    : collection.table.specifyTable;
 
   const { aggregators } = await fetchFormatters;
 

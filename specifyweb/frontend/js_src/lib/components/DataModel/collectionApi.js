@@ -20,7 +20,7 @@ const Base =  Backbone.Collection.extend({
         collection.field = options.field;
         collection.related = options.related;
 
-        assert(collection.field.table === collection.model.specifyTable, "field doesn't belong to table");
+        assert(collection.field.table === collection.table.specifyTable, "field doesn't belong to table");
         assert(collection.field.relatedTable === collection.related.specifyTable, "field is not to related resource");
     }
 

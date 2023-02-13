@@ -149,7 +149,7 @@ describe('rgetCollection', () => {
       id: addressOfRecordId,
     });
     const accessions = await resource.rgetCollection('accessions');
-    expect(accessions.model.specifyTable).toBe(tables.Accession);
+    expect(accessions.table.specifyTable).toBe(tables.Accession);
     expect(accessions.models).toHaveLength(2);
     expect(accessions.models[1].populated).toBe(true);
     expect(accessions.toJSON()).toEqual(accessionsResponse);

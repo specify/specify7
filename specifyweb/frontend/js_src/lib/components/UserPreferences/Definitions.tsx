@@ -482,6 +482,19 @@ export const preferenceDefinitions = {
   interactions: {
     title: interactionsText.interactions(),
     subCategories: {
+      general: {
+        title: preferencesText.general(),
+        items: {
+          shownTables: defineItem<RA<number> | 'legacy'>({
+            title: <>_shownTables</>,
+            requiresReload: false,
+            visible: false,
+            defaultValue: 'legacy',
+            renderer: () => <>{error('This should not get called')}</>,
+            container: 'div',
+          }),
+        },
+      },
       createInteractions: {
         title: preferencesText.createInteractions(),
         items: {

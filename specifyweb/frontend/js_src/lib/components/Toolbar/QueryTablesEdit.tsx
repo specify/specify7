@@ -11,11 +11,11 @@ import { split } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Label, Select } from '../Atoms/Form';
 import type { SpecifyTable } from '../DataModel/specifyTable';
+import { tables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import { usePref } from '../UserPreferences/usePref';
 import { defaultQueryTablesConfig, useQueryTables } from './QueryTables';
-import { tables } from '../DataModel/tables';
 
 export function QueryTablesEdit({
   onClose: handleClose,
@@ -97,7 +97,7 @@ type Item = {
 
 export function ListEdit({
   defaultValues,
-  selectedValues: rawSelectedValues,
+  selectedValues,
   allItems,
   selectedLabel,
   availableLabel,
@@ -117,11 +117,9 @@ export function ListEdit({
       JSON.stringify(items) === JSON.stringify(defaultValues) ? [] : items
     );
 
-  const selectedItems = allItems.filter(({ name }) =>
-    rawSelectedValues.includes(name)
+  const selectedItems = filterArray(
+    selectedValues.map((name) => allItems.find((item) => item.name === name))
   );
-  // Like rawSelectedValues, but sorted
-  const selectedValues = selectedItems.map(({ name }) => name);
   const possibleItems = allItems.filter(
     ({ name }) => !selectedValues.includes(name)
   );

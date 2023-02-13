@@ -215,7 +215,7 @@ type Gradient = readonly [from: string, to: string];
 
 const colors: IR<Gradient> = {
   // Taxon
-  red: ['#C1272D', '75272D'],
+  red: ['#C1272D', '#75272D'],
   // Storage
   blue: ['#0071BC', '#2E3192'],
   // Audit Log

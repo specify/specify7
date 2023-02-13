@@ -65,7 +65,7 @@ export const schemaExtras: {
       required: false,
       type: 'one-to-many',
       otherSideName: 'Cataloger',
-      relatedTableName: 'CollectionObject',
+      relatedModelName: 'CollectionObject',
       dependent: false,
     });
     catalogerOf.isHidden = true;
@@ -78,7 +78,7 @@ export const schemaExtras: {
       required: false,
       type: 'one-to-many',
       otherSideName: 'Collection',
-      relatedTableName: 'CollectionObject',
+      relatedModelName: 'CollectionObject',
       dependent: false,
     });
     collectionObjects.isHidden = true;
@@ -91,7 +91,7 @@ export const schemaExtras: {
       required: false,
       type: 'one-to-one',
       otherSideName: 'CollectionObject',
-      relatedTableName: 'Determination',
+      relatedModelName: 'Determination',
       readOnly: true,
       dependent: false,
     });
@@ -144,7 +144,7 @@ export const schemaExtras: {
       required: false,
       type: 'one-to-many',
       otherSideName: 'Division',
-      relatedTableName: 'Accession',
+      relatedModelName: 'Accession',
       dependent: false,
     });
     accessions.isHidden = true;
@@ -289,7 +289,7 @@ export const schemaExtras: {
       required: false,
       type: 'one-to-many',
       otherSideName: 'PrepType',
-      relatedTableName: 'Preparation',
+      relatedModelName: 'Preparation',
       dependent: false,
     });
     preparations.isHidden = true;
@@ -334,7 +334,7 @@ export const schemaExtras: {
       required: false,
       type: 'one-to-many',
       otherSideName: 'preferredTaxon',
-      relatedTableName: 'Determination',
+      relatedModelName: 'Determination',
       dependent: false,
     });
     preferredTaxonOf.isHidden = true;
@@ -348,7 +348,7 @@ export const schemaExtras: {
       required: false,
       type: 'one-to-many',
       otherSideName: 'addressOfRecord',
-      relatedTableName: 'Borrow',
+      relatedModelName: 'Borrow',
       dependent: false,
     });
     borrow.isHidden = true;

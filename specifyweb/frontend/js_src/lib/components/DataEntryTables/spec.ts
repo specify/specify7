@@ -1,5 +1,3 @@
-import type { LocalizedString } from 'typesafe-i18n';
-
 import { f } from '../../utils/functools';
 import { pipe } from '../Syncer';
 import { syncers } from '../Syncer/syncers';
@@ -20,14 +18,6 @@ export const dataEntryItems = f.store(() =>
 
 const dataEntryItem = f.store(() =>
   createXmlSpec({
-    title: pipe(
-      syncers.xmlAttribute('title', 'empty'),
-      syncers.default<LocalizedString>('')
-    ),
     viewName: syncers.xmlAttribute('view', 'required'),
-    icon: pipe(
-      syncers.xmlAttribute('iconName', 'empty'),
-      syncers.default<LocalizedString>('')
-    ),
   })
 );

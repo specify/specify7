@@ -5,6 +5,7 @@ import { useValidation } from '../../hooks/useValidation';
 import { commonText } from '../../localization/common';
 import { interactionsText } from '../../localization/interactions';
 import { ajax } from '../../utils/ajax';
+import { formData } from '../../utils/ajax/helpers';
 import { f } from '../../utils/functools';
 import type { Parser } from '../../utils/parser/definitions';
 import {
@@ -30,13 +31,10 @@ import type { SerializedResource } from '../DataModel/helperTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
 import type { LiteralField } from '../DataModel/specifyField';
 import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
+import { tables } from '../DataModel/tables';
 import type {
-  CollectionObject,
-  Disposal,
   DisposalPreparation,
-  Gift,
   GiftPreparation,
-  Loan,
   LoanPreparation,
   RecordSet,
 } from '../DataModel/types';
@@ -51,30 +49,23 @@ import {
   getPrepsAvailableForLoanRs,
 } from './helpers';
 import { PrepDialog } from './PrepDialog';
-import { tables } from '../DataModel/tables';
 
 export function InteractionDialog({
-  table,
   onClose: handleClose,
-  action,
+  actionTable,
+  isLoanReturn = false,
   itemCollection,
 }: {
-  readonly table: SpecifyTable<CollectionObject | Disposal | Gift | Loan>;
   readonly onClose: () => void;
-  readonly action: {
-    readonly table: SpecifyTable<Disposal | Gift | Loan>;
-    readonly name?: string;
-  };
+  readonly actionTable: SpecifyTable;
+  readonly isLoanReturn?: boolean;
   readonly itemCollection?: Collection<
     DisposalPreparation | GiftPreparation | LoanPreparation
   >;
 }): JSX.Element {
-  const searchField = table.strictGetLiteralField(
-    table.name === 'Loan'
-      ? 'loanNumber'
-      : table.name === 'Disposal'
-      ? 'disposalNumber'
-      : 'catalogNumber'
+  const itemTable = isLoanReturn ? tables.Loan : tables.CollectionObject;
+  const searchField = itemTable.strictGetLiteralField(
+    itemTable.name === 'Loan' ? 'loanNumber' : 'catalogNumber'
   );
   const { parser, split, attributes } = useParser(searchField);
 
@@ -95,7 +86,7 @@ export function InteractionDialog({
       fetchCollection('RecordSet', {
         specifyUser: userInformation.id,
         type: 0,
-        dbTableId: table.tableId,
+        dbTableId: itemTable.tableId,
         domainFilter: true,
         orderBy: '-timestampCreated',
         limit: 5000,
@@ -113,17 +104,17 @@ export function InteractionDialog({
     recordSet: SerializedResource<RecordSet> | undefined
   ): void {
     const items = catalogNumbers.split('\n');
-    if (table.name === 'Loan')
+    if (itemTable.name === 'Loan')
       loading(
         ajax<readonly [preprsReturned: number, loansClosed: number]>(
           '/interactions/loan_return_all/',
           {
             method: 'POST',
             headers: { Accept: 'application/json' },
-            body: {
+            body: formData({
               recordSetId: recordSet?.id ?? undefined,
               loanNumbers: recordSet === undefined ? items : undefined,
-            },
+            }),
           }
         ).then(({ data }) =>
           setState({
@@ -171,7 +162,7 @@ export function InteractionDialog({
     }
     if (prepsData.length === 0) {
       if (recordSet === undefined && typeof itemCollection === 'object') {
-        const item = new itemCollection.model.specifyTable.Resource();
+        const item = new itemCollection.table.specifyTable.Resource();
         f.maybe(toTable(item, 'LoanPreparation'), (loanPreparation) => {
           loanPreparation.set('quantityReturned', 0);
           loanPreparation.set('quantityResolved', 0);
@@ -227,12 +218,12 @@ export function InteractionDialog({
   ) : state.type === 'PreparationSelectState' &&
     Object.keys(state.problems).length === 0 ? (
     <PrepDialog
-      action={action}
-      // BUG: make this readOnly if don't have necessary permissions
-      isReadOnly={false}
       itemCollection={itemCollection}
       preparations={state.entries}
       onClose={handleClose}
+      table={actionTable}
+      // BUG: make this readOnly if don't have necessary permissions
+      isReadOnly={false}
     />
   ) : (
     <RecordSetsDialog
@@ -254,7 +245,7 @@ export function InteractionDialog({
                 >
                   {interactionsText.addUnassociated()}
                 </Button.Blue>
-              ) : table.name === 'Loan' || action.table.name === 'Loan' ? (
+              ) : itemTable.name === 'Loan' || actionTable.name === 'Loan' ? (
                 <Link.Blue href={getResourceViewUrl('Loan')}>
                   {interactionsText.withoutPreparations()}
                 </Link.Blue>
@@ -264,99 +255,102 @@ export function InteractionDialog({
           header={
             typeof itemCollection === 'object'
               ? interactionsText.addItems()
-              : table.name === 'Loan'
-              ? interactionsText.recordReturn({ tableName: table.label })
-              : interactionsText.createRecord({ tableName: action.table.name })
+              : itemTable.name === 'Loan'
+              ? interactionsText.recordReturn({ tableName: itemTable.label })
+              : interactionsText.createRecord({ tableName: actionTable.name })
           }
           onClose={handleClose}
         >
-          <details>
-            <summary>
-              {interactionsText.byChoosingRecordSet({ count: totalCount })}
-            </summary>
-            {children}
-          </details>
-          <details>
-            <summary>
-              {interactionsText.byEnteringNumbers({
-                fieldName: searchField.label,
-              })}
-            </summary>
-            <div className="flex flex-col gap-2">
-              <AutoGrowTextArea
-                forwardRef={validationRef}
-                spellCheck={false}
-                value={catalogNumbers}
-                onBlur={(): void => {
-                  const parseResults = split(catalogNumbers).map((value) =>
-                    parseValue(parser, inputRef.current ?? undefined, value)
-                  );
-                  const errorMessages = parseResults
-                    .filter(
-                      (result): result is InvalidParseResult => !result.isValid
-                    )
-                    .map(({ reason, value }) => `${reason} (${value})`);
-                  if (errorMessages.length > 0) {
-                    setValidation(errorMessages);
-                    return;
-                  }
+          <div className="flex flex-col gap-8">
+            <details>
+              <summary>
+                {interactionsText.byChoosingRecordSet({ count: totalCount })}
+              </summary>
+              {children}
+            </details>
+            <details>
+              <summary>
+                {interactionsText.byEnteringNumbers({
+                  fieldName: searchField.label,
+                })}
+              </summary>
+              <div className="flex flex-col gap-2">
+                <AutoGrowTextArea
+                  forwardRef={validationRef}
+                  spellCheck={false}
+                  value={catalogNumbers}
+                  onBlur={(): void => {
+                    const parseResults = split(catalogNumbers).map((value) =>
+                      parseValue(parser, inputRef.current ?? undefined, value)
+                    );
+                    const errorMessages = parseResults
+                      .filter(
+                        (result): result is InvalidParseResult =>
+                          !result.isValid
+                      )
+                      .map(({ reason, value }) => `${reason} (${value})`);
+                    if (errorMessages.length > 0) {
+                      setValidation(errorMessages);
+                      return;
+                    }
 
-                  const parsed = f
-                    .unique(
-                      (parseResults as RA<ValidParseResult>)
-                        .filter(({ parsed }) => parsed !== null)
-                        .map(({ parsed }) =>
-                          (parsed as number | string).toString()
-                        )
-                        .sort(sortFunction(f.id))
-                    )
-                    .join('\n');
-                  setCatalogNumbers(parsed);
-                }}
-                onValueChange={setCatalogNumbers}
-                {...attributes}
-              />
-              <div>
-                <Button.Blue
-                  disabled={
-                    catalogNumbers.length === 0 ||
-                    inputRef.current?.validity.valid !== true
-                  }
-                  onClick={(): void => handleProceed(undefined)}
-                >
-                  {commonText.next()}
-                </Button.Blue>
+                    const parsed = f
+                      .unique(
+                        (parseResults as RA<ValidParseResult>)
+                          .filter(({ parsed }) => parsed !== null)
+                          .map(({ parsed }) =>
+                            (parsed as number | string).toString()
+                          )
+                          .sort(sortFunction(f.id))
+                      )
+                      .join('\n');
+                    setCatalogNumbers(parsed);
+                  }}
+                  onValueChange={setCatalogNumbers}
+                  {...attributes}
+                />
+                <div>
+                  <Button.Blue
+                    disabled={
+                      catalogNumbers.length === 0 ||
+                      inputRef.current?.validity.valid !== true
+                    }
+                    onClick={(): void => handleProceed(undefined)}
+                  >
+                    {commonText.next()}
+                  </Button.Blue>
+                </div>
+                {state.type === 'PreparationSelectState' &&
+                Object.keys(state.problems).length > 0 ? (
+                  <>
+                    {interactionsText.problemsFound()}
+                    {Object.entries(state.problems).map(
+                      ([header, problems], index) => (
+                        <React.Fragment key={index}>
+                          <H3>{header}</H3>
+                          {problems.map((problem, index) => (
+                            <p key={index}>{problem}</p>
+                          ))}
+                        </React.Fragment>
+                      )
+                    )}
+                    <div>
+                      <Button.Blue
+                        onClick={(): void =>
+                          setState({
+                            ...state,
+                            problems: {},
+                          })
+                        }
+                      >
+                        {commonText.ignore()}
+                      </Button.Blue>
+                    </div>
+                  </>
+                ) : undefined}
               </div>
-              {state.type === 'PreparationSelectState' &&
-              Object.keys(state.problems).length > 0 ? (
-                <>
-                  {interactionsText.problemsFound()}
-                  {Object.entries(state.problems).map(
-                    ([header, problems], index) => (
-                      <React.Fragment key={index}>
-                        <H3>{header}</H3>
-                        {problems.map((problem, index) => (
-                          <p key={index}>{problem}</p>
-                        ))}
-                      </React.Fragment>
-                    )
-                  )}
-                  <div>
-                    <Button.Blue
-                      onClick={(): void =>
-                        setState({
-                          ...state,
-                          problems: {},
-                        })
-                      }
-                    >
-                      {commonText.ignore()}
-                    </Button.Blue>
-                  </div>
-                </>
-              ) : undefined}
-            </div>
-          </details>
+            </details>
+          </div>
         </Dialog>
       )}
     </RecordSetsDialog>

@@ -977,6 +977,13 @@ export const formsText = createDictionary({
     'fr-fr': 'Configurer les tables de saisie de données',
     'uk-ua': 'Налаштувати доступні таблиці введення даних',
   },
+  configureInteractionTables: {
+    'en-us': 'Configure interaction tables',
+    'ru-ru': 'Настроить таблицы взаимодействия',
+    'es-es': 'Configurar tablas de interacción',
+    'fr-fr': "Configurer les tables d'interaction",
+    'uk-ua': 'Налаштувати таблиці взаємодії',
+  },
   formMeta: {
     'en-us': 'Form Meta',
     'ru-ru': 'Мета-данные формы',

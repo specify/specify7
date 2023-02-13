@@ -8,14 +8,14 @@ import { DataEntry } from '../Atoms/DataEntry';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { getResourceViewUrl } from '../DataModel/resource';
-import { strictGetTable } from '../DataModel/tables';
 import type { SpecifyTable } from '../DataModel/specifyTable';
+import { strictGetTable } from '../DataModel/tables';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasTablePermission } from '../Permissions/helpers';
 import { OverlayContext } from '../Router/Router';
 import { EditFormTables } from './Edit';
-import { useDataEntryForms } from './fetch';
+import { useDataEntryTables } from './fetchTables';
 
 export function FormsDialogOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -32,12 +32,12 @@ export function FormsDialog({
   readonly onSelected?: (table: SpecifyTable) => void;
   readonly onClose: () => void;
 }): JSX.Element | null {
-  const forms = useDataEntryForms();
+  const tables = useDataEntryTables('form');
   const [isEditing, handleEditing] = useBooleanState();
 
   return isEditing ? (
-    <EditFormTables onClose={handleClose} />
-  ) : Array.isArray(forms) ? (
+    <EditFormTables type="form" onClose={handleClose} />
+  ) : Array.isArray(tables) ? (
     <Dialog
       buttons={commonText.cancel()}
       className={{ container: dialogClassNames.narrowContainer }}
@@ -48,9 +48,9 @@ export function FormsDialog({
     >
       <nav>
         <Ul className="flex flex-col gap-1">
-          {forms
-            .filter(({ table }) => hasTablePermission(table.name, 'create'))
-            .map(({ table, title = table.label, icon = table.name }, index) => (
+          {tables
+            .filter((table) => hasTablePermission(table.name, 'create'))
+            .map((table, index) => (
               <li className="contents" key={index}>
                 <Link.Default
                   href={getResourceViewUrl(table.name)}
@@ -63,8 +63,8 @@ export function FormsDialog({
                       : undefined
                   }
                 >
-                  <TableIcon label={false} name={icon} />
-                  {title}
+                  <TableIcon label={false} name={table.name} />
+                  {table.label}
                 </Link.Default>
               </li>
             ))}

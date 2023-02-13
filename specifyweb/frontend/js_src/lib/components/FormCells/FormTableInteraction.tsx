@@ -1,13 +1,10 @@
 import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
-import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
+import type { Collection } from '../DataModel/specifyTable';
 import type {
-  Disposal,
   DisposalPreparation,
-  Gift,
   GiftPreparation,
-  Loan,
   LoanPreparation,
 } from '../DataModel/types';
 import { InteractionDialog } from '../Interactions/InteractionDialog';
@@ -24,11 +21,7 @@ export function FormTableInteraction(
     <>
       {isOpen && typeof props.collection.related === 'object' ? (
         <InteractionDialog
-          action={{
-            table: props.collection.related.specifyTable as SpecifyTable<
-              Disposal | Gift | Loan
-            >,
-          }}
+          actionTable={props.collection.related.specifyTable}
           itemCollection={
             props.collection as Collection<
               DisposalPreparation | GiftPreparation | LoanPreparation

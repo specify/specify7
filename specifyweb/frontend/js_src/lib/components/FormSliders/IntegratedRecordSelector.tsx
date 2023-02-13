@@ -104,7 +104,7 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
   const state = useRecordSelector({
     ...rest,
     index,
-    table: collection.model.specifyTable,
+    table: collection.table.specifyTable,
     records,
     relatedResource: isDependent ? collection.related : undefined,
     totalCount: collection._totalCount ?? records.length,

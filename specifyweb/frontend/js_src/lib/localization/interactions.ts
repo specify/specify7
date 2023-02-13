@@ -294,11 +294,4 @@ export const interactionsText = createDictionary({
     'ru-ru': 'Вернуть записи {tableLoan:string}',
     'uk-ua': 'Повернути записи {tableLoan:string}.',
   },
-  printInvoice: {
-    'en-us': 'Print Invoice',
-    'ru-ru': 'Распечатать Накладную',
-    'es-es': 'Imprimir factura',
-    'fr-fr': "La facture d'impression",
-    'uk-ua': 'Роздрукувати рахунок-фактуру',
-  },
 } as const);

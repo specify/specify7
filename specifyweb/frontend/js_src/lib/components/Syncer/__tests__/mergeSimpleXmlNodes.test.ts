@@ -6,10 +6,8 @@ const base: SimpleXmlNode = {
   type: 'SimpleXmlNode',
   tagName: 'test',
   attributes: {},
-  content: {
-    type: 'Children',
-    children: {},
-  },
+  text: undefined,
+  children: {},
 };
 
 theories(mergeSimpleXmlNodes, [
@@ -19,43 +17,34 @@ theories(mergeSimpleXmlNodes, [
         {
           ...base,
           attributes: { a: 'a1' },
-          content: {
-            type: 'Children',
-            children: {
-              test: [
-                {
-                  ...base,
-                },
-              ],
-            },
+          children: {
+            test: [
+              {
+                ...base,
+              },
+            ],
           },
         },
         {
           ...base,
           attributes: { a: 'a2' },
-          content: {
-            type: 'Children',
-            children: {
-              test: [
-                {
-                  ...base,
-                },
-              ],
-            },
+          children: {
+            test: [
+              {
+                ...base,
+              },
+            ],
           },
         },
         {
           ...base,
           attributes: { b: 'b1' },
-          content: {
-            type: 'Children',
-            children: {
-              test2: [
-                {
-                  ...base,
-                },
-              ],
-            },
+          children: {
+            test2: [
+              {
+                ...base,
+              },
+            ],
           },
         },
       ],
@@ -65,42 +54,34 @@ theories(mergeSimpleXmlNodes, [
         a: 'a2',
         b: 'b1',
       },
-      content: {
-        children: {
-          test: [
-            {
-              attributes: {},
-              content: {
-                children: {},
-                type: 'Children',
-              },
-              tagName: 'test',
-              type: 'SimpleXmlNode',
-            },
-            {
-              attributes: {},
-              content: {
-                children: {},
-                type: 'Children',
-              },
-              tagName: 'test',
-              type: 'SimpleXmlNode',
-            },
-          ],
-          test2: [
-            {
-              attributes: {},
-              content: {
-                children: {},
-                type: 'Children',
-              },
-              tagName: 'test',
-              type: 'SimpleXmlNode',
-            },
-          ],
-        },
-        type: 'Children',
+      children: {
+        test: [
+          {
+            attributes: {},
+            children: {},
+            text: undefined,
+            tagName: 'test',
+            type: 'SimpleXmlNode',
+          },
+          {
+            attributes: {},
+            children: {},
+            text: undefined,
+            tagName: 'test',
+            type: 'SimpleXmlNode',
+          },
+        ],
+        test2: [
+          {
+            attributes: {},
+            children: {},
+            text: undefined,
+            tagName: 'test',
+            type: 'SimpleXmlNode',
+          },
+        ],
       },
+      text: undefined,
       tagName: 'test',
       type: 'SimpleXmlNode',
     },
@@ -111,26 +92,18 @@ theories(mergeSimpleXmlNodes, [
       [
         {
           ...base,
-          content: {
-            type: 'Text',
-            string: 'a',
-          },
+          text: 'a',
         },
         {
           ...base,
-          content: {
-            type: 'Text',
-            string: 'b',
-          },
+          text: 'b',
         },
       ],
     ],
     out: {
       attributes: {},
-      content: {
-        string: 'a b',
-        type: 'Text',
-      },
+      text: 'Text',
+      children: {},
       tagName: 'test',
       type: 'SimpleXmlNode',
     },

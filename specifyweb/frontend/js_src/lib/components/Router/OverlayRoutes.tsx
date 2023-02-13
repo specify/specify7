@@ -83,10 +83,17 @@ export const overlayRoutes: RA<EnhancedRoute> = [
               ),
           },
           {
-            path: ':action',
+            path: 'return-loan',
             element: () =>
               import('../Interactions/InteractionsDialog').then(
-                ({ InteractionsOverlay }) => InteractionsOverlay
+                ({ InteractionLoanReturn }) => InteractionLoanReturn
+              ),
+          },
+          {
+            path: 'create/:tableName',
+            element: () =>
+              import('../Interactions/InteractionsDialog').then(
+                ({ InteractionAction }) => InteractionAction
               ),
           },
         ],

@@ -9,31 +9,24 @@ import { filterArray } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Form, Input, Label } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
-import { getTable, getTableById } from '../DataModel/tables';
 import type { SpecifyTable } from '../DataModel/specifyTable';
-import type { Tables } from '../DataModel/types';
+import { getTable, getTableById } from '../DataModel/tables';
 import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
-import { usePref } from '../UserPreferences/usePref';
 import { TablesListEdit } from '../Toolbar/QueryTablesEdit';
+import { usePref } from '../UserPreferences/usePref';
+import { defaultVisibleForms } from './fetchTables';
 
-export const defaultFormTablesConfig: RA<keyof Tables> = [
-  'CollectionObject',
-  'CollectingEvent',
-  'Locality',
-  'Taxon',
-  'Agent',
-  'Geography',
-  'DNASequence',
-  'ReferenceWork',
-];
+export type TableType = 'form' | 'interactions';
 
 export function EditFormTables({
   onClose: handleClose,
+  type,
 }: {
   readonly onClose: () => void;
+  readonly type: TableType;
 }): JSX.Element {
-  const [tables, setTables] = useFormTables();
+  const [tables, setTables] = useFormTables(type);
   const [showPrompt, handleProceed] = useBooleanState();
   const [isLegacy, handleLegacy, handleModern] = useBooleanState(
     tables === 'legacy'
@@ -42,6 +35,7 @@ export function EditFormTables({
   return showPrompt && Array.isArray(tables) ? (
     <CustomEditTables
       tables={tables}
+      type={type}
       onChange={setTables}
       onClose={handleClose}
     />
@@ -89,13 +83,15 @@ export function EditFormTables({
   );
 }
 
-export function useFormTables(): GetSet<RA<SpecifyTable> | 'legacy'> {
-  const [tables, setTables] = usePref('form', 'general', 'shownTables');
+export function useFormTables(
+  type: TableType
+): GetSet<RA<SpecifyTable> | 'legacy'> {
+  const [tables, setTables] = usePref(type, 'general', 'shownTables');
   const visibleTables =
     tables === 'legacy'
       ? []
       : tables.length === 0
-      ? filterArray(defaultFormTablesConfig.map(getTable))
+      ? filterArray(defaultVisibleForms[type].map(getTable))
       : tables.map(getTableById);
   const accessibleTables = visibleTables.filter(({ name }) =>
     hasTablePermission(name, 'read')
@@ -112,17 +108,23 @@ export function useFormTables(): GetSet<RA<SpecifyTable> | 'legacy'> {
 
 function CustomEditTables({
   tables,
+  type,
   onChange: handleChange,
   onClose: handleClose,
 }: {
   readonly tables: RA<SpecifyTable>;
+  readonly type: TableType;
   readonly onChange: (tables: RA<SpecifyTable>) => void;
   readonly onClose: () => void;
 }): JSX.Element {
   return (
     <TablesListEdit
-      defaultTables={defaultFormTablesConfig}
-      header={formsText.configureDataEntryTables()}
+      defaultTables={defaultVisibleForms[type]}
+      header={
+        type === 'form'
+          ? formsText.configureDataEntryTables()
+          : formsText.configureInteractionTables()
+      }
       isNoRestrictionMode={false}
       tables={tables}
       onChange={handleChange}

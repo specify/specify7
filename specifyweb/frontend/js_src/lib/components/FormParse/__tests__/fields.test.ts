@@ -7,15 +7,23 @@ import { getField } from '../../DataModel/helpers';
 import { parseFormField } from '../fields';
 import { generateInit } from './helpers';
 import { tables } from '../../DataModel/tables';
+import {
+  SimpleXmlNode,
+  toSimpleXmlNode,
+  xmlToJson,
+} from '../../Syncer/xmlToJson';
 
 requireContext();
 
+const xml = (xml: string): SimpleXmlNode =>
+  toSimpleXmlNode(xmlToJson(strictParseXml(xml)));
+
 const parse = (
-  xml: string,
+  xmlString: string,
   parameters: Partial<Parameters<typeof parseFormField>[0]>
 ): ReturnType<typeof parseFormField> =>
   parseFormField({
-    cell: strictParseXml(xml),
+    cell: xml(xmlString),
     getProperty: generateInit({}),
     table: tables.CollectionObject,
     fields: [tables.CollectionObject.strictGetField('catalogNumber')],
@@ -267,7 +275,7 @@ describe('parseFormField', () => {
 test('parseFormField handles fields without uiType', () => {
   const consoleWarn = jest.fn();
   jest.spyOn(console, 'warn').mockImplementation(consoleWarn);
-  const cell = strictParseXml('<cell />');
+  const cell = xml('<cell />');
   expect(
     parseFormField({
       cell,

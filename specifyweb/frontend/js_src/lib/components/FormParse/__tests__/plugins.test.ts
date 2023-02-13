@@ -1,13 +1,18 @@
 import { mockTime, requireContext } from '../../../tests/helpers';
 import { strictParseXml } from '../../AppResources/codeMirrorLinters';
+import { tables } from '../../DataModel/tables';
+import type { SimpleXmlNode } from '../../Syncer/xmlToJson';
+import { toSimpleXmlNode, xmlToJson } from '../../Syncer/xmlToJson';
 import { parseUiPlugin } from '../plugins';
 import { generateInit } from './helpers';
-import { tables } from '../../DataModel/tables';
 
 mockTime();
 requireContext();
 
-const cell = strictParseXml(`<cell formatting="test" />`);
+const xml = (xml: string): SimpleXmlNode =>
+  toSimpleXmlNode(xmlToJson(strictParseXml(xml)));
+
+const cell = xml(`<cell formatting="test" />`);
 
 const parse = (
   props: Partial<Parameters<typeof parseUiPlugin>[0]>
