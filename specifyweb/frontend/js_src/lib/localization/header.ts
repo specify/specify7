@@ -47,7 +47,7 @@ export const headerText = createDictionary({
     'uk-ua': 'Створити архів DwC',
   },
   updateExportFeed: {
-    'en-us': 'Update RSS Feed',
+    'en-us': 'Update DwC-A Feed',
     'ru-ru': 'Обновить RSS-канал',
     'es-es': 'Actualizar la fuente RSS',
     'fr-fr': 'Mettre à jour le flux RSS',
