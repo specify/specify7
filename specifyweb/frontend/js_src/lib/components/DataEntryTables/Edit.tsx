@@ -15,7 +15,7 @@ import type { Tables } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { usePref } from '../UserPreferences/usePref';
-import { TablesListEdit } from './QueryTablesEdit';
+import { TablesListEdit } from '../Toolbar/QueryTablesEdit';
 
 export const defaultFormTablesConfig: RA<keyof Tables> = [
   'CollectionObject',

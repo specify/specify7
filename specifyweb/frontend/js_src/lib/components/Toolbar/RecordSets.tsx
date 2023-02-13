@@ -15,7 +15,7 @@ import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getModelById, schema } from '../DataModel/schema';
 import type { RecordSet } from '../DataModel/types';
-import { FormsDialog } from '../Header/Forms';
+import { FormsDialog } from '../DataEntryTables';
 import { userInformation } from '../InitialContext/userInformation';
 import { DateElement } from '../Molecules/DateElement';
 import { Dialog } from '../Molecules/Dialog';
