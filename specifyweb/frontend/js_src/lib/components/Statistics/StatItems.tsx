@@ -211,7 +211,9 @@ function QueryItem({
   return (
     <StatsResult
       isDefault={isDefault}
-      query={query}
+      query={
+        hasTablePermission(querySpec.tableName, 'read') ? query : undefined
+      }
       label={label}
       value={overRiddenValue}
       onClick={handleClick}

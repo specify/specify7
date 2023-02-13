@@ -72,7 +72,6 @@ export function FrontEndStatsResultDialog({
         autoRun
         forceCollection={undefined}
         isEmbedded
-        isReadOnly={false}
         query={originalQuery}
         recordSet={undefined}
         onChange={
