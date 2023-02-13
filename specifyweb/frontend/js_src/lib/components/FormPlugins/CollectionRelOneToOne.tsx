@@ -1,10 +1,11 @@
 import React from 'react';
 
-import type { CollectionObject } from '../DataModel/types';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { Link } from '../Atoms/Link';
-import {useAsyncState} from '../../hooks/useAsyncState';
-import {fetchOtherCollectionData} from './collectionRelData';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { CollectionObject } from '../DataModel/types';
+import { softFail } from '../Errors/Crash';
+import { fetchOtherCollectionData } from './collectionRelData';
 
 export function CollectionOneToOnePlugin({
   resource,
@@ -20,7 +21,7 @@ export function CollectionOneToOnePlugin({
       async () =>
         fetchOtherCollectionData(resource, relationship, formatting).catch(
           (error) => {
-            console.error(error);
+            softFail(error);
             return undefined;
           }
         ),

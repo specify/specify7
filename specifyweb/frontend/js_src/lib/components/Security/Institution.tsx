@@ -1,36 +1,36 @@
 import React from 'react';
 import { useOutletContext } from 'react-router';
 import { useLocation } from 'react-router-dom';
+import type { LocalizedString } from 'typesafe-i18n';
 
-import { ajax } from '../../utils/ajax';
-import type { Institution } from '../DataModel/types';
-import { sortFunction } from '../../utils/utils';
-import { commonText } from '../../localization/common';
-import { hasPermission, hasTablePermission } from '../Permissions/helpers';
-import { schema } from '../DataModel/schema';
-import type { RA } from '../../utils/types';
-import { userInformation } from '../InitialContext/userInformation';
-import { LoadingContext } from '../Core/Contexts';
-import { downloadFile } from '../Molecules/FilePicker';
-import { deserializeResource } from '../../hooks/resource';
-import { ResourceView } from '../Forms/ResourceView';
-import { createLibraryRole } from './CreateLibraryRole';
-import { ImportExport } from './ImportExport';
-import { updateLibraryRole } from './LibraryRole';
-import type { SecurityOutlet } from '../Toolbar/Security';
-import { SafeOutlet } from '../Router/RouterUtils';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { useErrorContext } from '../../hooks/useErrorContext';
-import { Link } from '../Atoms/Link';
+import { commonText } from '../../localization/common';
+import { userText } from '../../localization/user';
+import { ajax } from '../../utils/ajax';
+import type { RA } from '../../utils/types';
+import { sortFunction } from '../../utils/utils';
 import { Container, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { SerializedResource } from '../DataModel/helperTypes';
+import { Link } from '../Atoms/Link';
+import { LoadingContext } from '../Core/Contexts';
+import { deserializeResource } from '../DataModel/helpers';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import { schema } from '../DataModel/schema';
+import type { Institution } from '../DataModel/types';
+import { ResourceView } from '../Forms/ResourceView';
+import { userInformation } from '../InitialContext/userInformation';
 import { useTitle } from '../Molecules/AppTitle';
+import { downloadFile } from '../Molecules/FilePicker';
+import { hasPermission, hasTablePermission } from '../Permissions/helpers';
+import { SafeOutlet } from '../Router/RouterUtils';
+import type { SecurityOutlet } from '../Toolbar/Security';
+import { createLibraryRole } from './CreateLibraryRole';
+import { ImportExport } from './ImportExport';
+import { updateLibraryRole } from './LibraryRole';
 import { policiesToTsv } from './registry';
-import { userText } from '../../localization/user';
-import { LocalizedString } from 'typesafe-i18n';
 
 export function SecurityInstitution(): JSX.Element | null {
   const { institution } = useOutletContext<SecurityOutlet>();
@@ -54,7 +54,7 @@ function InstitutionView({
 
   const admins = useAdmins();
 
-  useTitle(institution.name ?? undefined);
+  useTitle((institution.name as LocalizedString) ?? undefined);
   const loading = React.useContext(LoadingContext);
   const location = useLocation();
   const isOverlay = location.pathname.startsWith(
@@ -107,7 +107,7 @@ function InstitutionView({
                   )}
                   <SafeOutlet<SecurityOutlet> {...outletState} />
                   <ImportExport
-                    baseName={institution.name ?? ''}
+                    baseName={(institution.name as LocalizedString) ?? ''}
                     collectionId={schema.domainLevelIds.collection}
                     permissionName="/permissions/library/roles"
                     roles={libraryRoles}

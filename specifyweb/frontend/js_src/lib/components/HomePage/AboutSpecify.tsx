@@ -1,7 +1,9 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
+import { StringToJsx } from '../../localization/utils';
 import { welcomeText } from '../../localization/welcome';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
@@ -19,8 +21,6 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { downloadFile } from '../Molecules/FilePicker';
 import { hasTablePermission } from '../Permissions/helpers';
 import { OverlayContext } from '../Router/Router';
-import { StringToJsx } from '../../localization/utils';
-import { LocalizedString } from 'typesafe-i18n';
 
 export function AboutOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -39,7 +39,6 @@ function AboutDialog({
   const loading = React.useContext(LoadingContext);
   return (
     <Dialog
-      icon="info"
       buttons={
         <>
           <Button.Green
@@ -67,16 +66,17 @@ function AboutDialog({
         header: 'text-3xl',
       }}
       header={welcomeText.aboutSpecify()}
+      icon="info"
       isOpen={isOpen}
       onClose={handleClose}
     >
       <p>
         <b>
           <StringToJsx
-            string={welcomeText.fullAddress()}
             components={{
               br: <br />,
             }}
+            string={welcomeText.fullAddress()}
           />
         </b>
       </p>

@@ -1,9 +1,9 @@
-import type { AppResourcesConformation } from './Aside';
-import type { AppResourcesTree } from './hooks';
-import type { SpAppResource, SpViewSetObj } from '../DataModel/types';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
-import { SerializedResource } from '../DataModel/helperTypes';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import type { SpAppResource, SpViewSetObj } from '../DataModel/types';
+import type { AppResourcesConformation } from './Aside';
+import type { AppResourcesTree } from './hooks';
 
 export type AppResourceMode = 'appResources' | 'viewSets';
 

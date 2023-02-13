@@ -1,4 +1,5 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { ajax } from '../../utils/ajax';
@@ -9,7 +10,6 @@ import { fetchResource } from '../DataModel/resource';
 import { userInformation } from '../InitialContext/userInformation';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import type { UserRoles } from './Collection';
-import { LocalizedString } from 'typesafe-i18n';
 
 type User = { readonly userId: number; readonly userName: LocalizedString };
 

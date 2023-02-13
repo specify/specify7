@@ -1,16 +1,16 @@
+import type { SafeLocation } from 'history';
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { AnySchema } from '../DataModel/helperTypes';
+import type { AnySchema } from '../DataModel/helperTypes';
 import type {
   SpAppResource,
   SpecifyUser,
   SpViewSetObj as SpViewSetObject,
 } from '../DataModel/types';
+import type { NewRole, Role } from '../Security/Role';
 import { isOverlay, OverlayContext } from './Router';
-import { NewRole, Role } from '../Security/Role';
-import { SafeLocation } from 'history';
 
 /*
  * Symbol() would be better suites for this, but it can't be used because
@@ -32,16 +32,16 @@ type PureLocationState =
       }
     >
   | State<
+      'Command',
+      {
+        readonly nextUrl: string;
+      }
+    >
+  | State<
       'RecordSet',
       {
         readonly resource: SerializedResource<AnySchema> | undefined;
         readonly recordSetItemIndex?: number;
-      }
-    >
-  | State<
-      'Command',
-      {
-        readonly nextUrl: string;
       }
     >
   | State<
@@ -58,8 +58,7 @@ type PureLocationState =
       }
     >
   | State<'NotFoundPage'>;
-
-export type LocationState = PureLocationState | undefined;
+export type SafeLocationState = PureLocationState | undefined;
 
 /**
  * For non-overlay components, opening an overlay changes the location,

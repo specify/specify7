@@ -179,11 +179,11 @@ function RadioButton({
   readonly onClick: () => void;
 }): JSX.Element {
   return (
-    //REFACTOR: this should use Button.Small
+    // REFACTOR: this should use Button.Small
     <button
       aria-pressed={isPressed}
       className={`
-        ${className.niceButton} aria-handled
+        ${className.niceButton} ${className.ariaHandled}
         ${
           isPressed
             ? className.blueButton

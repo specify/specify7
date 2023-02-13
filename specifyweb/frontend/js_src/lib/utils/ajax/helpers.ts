@@ -1,4 +1,4 @@
-import { IR, RA } from '../types';
+import type { IR, RA } from '../types';
 
 // These HTTP methods do not require CSRF protection
 export const csrfSafeMethod = new Set(['GET', 'HEAD', 'OPTIONS', 'TRACE']);

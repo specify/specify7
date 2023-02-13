@@ -1,6 +1,6 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
-import { deserializeResource } from '../../hooks/resource';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
@@ -8,19 +8,19 @@ import { caseInsensitiveHash } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
 import { fetchRelated } from '../DataModel/collection';
+import { deserializeResource, getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { idFromUrl } from '../DataModel/resource';
 import { getModelById, schema } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Attachment } from '../DataModel/types';
 import { ResourceView } from '../Forms/ResourceView';
+import { originalAttachmentsView } from '../Forms/useViewDefinition';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasTablePermission } from '../Permissions/helpers';
 import { fetchThumbnail } from './attachments';
 import { tablesWithAttachments } from './index';
 import { AttachmentPreview } from './Preview';
-import { originalAttachmentsView } from '../Forms/useViewDefinition';
-import { getField } from '../DataModel/helpers';
 
 export function AttachmentCell({
   attachment,
@@ -42,7 +42,9 @@ export function AttachmentCell({
   );
 
   const [isMetaOpen, _, handleMetaClose, handleMetaToggle] = useBooleanState();
-  const title = attachment.title || thumbnail?.alt;
+  const title = (attachment.title || thumbnail?.alt) as
+    | LocalizedString
+    | undefined;
   const loading = React.useContext(LoadingContext);
 
   const resource = React.useMemo(
@@ -104,9 +106,9 @@ export function AttachmentCell({
           resource={resource}
           title={title}
           viewName={originalAttachmentsView}
+          onAdd={undefined}
           onClose={handleMetaClose}
           onDeleted={undefined}
-          onAdd={undefined}
           onSaved={undefined}
         />
       )}

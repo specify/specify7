@@ -4,8 +4,9 @@
  * Icons are stored in https://github.com/specify/specify6/tree/master/src/edu/ku/brc/specify/images
  */
 
-import { load } from './index';
 import type { RA } from '../../utils/types';
+import { softFail } from '../Errors/Crash';
+import { load } from './index';
 
 const iconGroups = {} as Record<IconGroup, Document>;
 
@@ -54,9 +55,13 @@ function findIconInXml(
   xml: Document,
   cycleDetect: RA<string> = []
 ): Element | undefined {
-  if (cycleDetect.includes(icon))
-    throw new Error('Circular reference in icon definitions');
-  const iconNode = xml.querySelector(`icon[name="${icon}"],icon[file="${icon}"]`);
+  if (cycleDetect.includes(icon)) {
+    softFail(new Error('Circular reference in icon definitions'));
+    return undefined;
+  }
+  const iconNode = xml.querySelector(
+    `icon[name="${icon}"],icon[file="${icon}"]`
+  );
   const alias = iconNode?.getAttribute('alias');
   return typeof alias === 'string'
     ? findIconInXml(alias, xml, [...cycleDetect, icon])

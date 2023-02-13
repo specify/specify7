@@ -11,6 +11,7 @@ import { className } from '../Atoms/className';
 import { Input, Label, Select } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { tableActions } from '../Permissions/definitions';
+import { getRegistriesFromPath } from './registry';
 import {
   actionToLabel,
   anyResource,
@@ -18,7 +19,6 @@ import {
   partsToResourceName,
   resourceNameToParts,
 } from './utils';
-import { getRegistriesFromPath } from './registry';
 
 export type Policy = {
   readonly resource: string;

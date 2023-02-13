@@ -6,7 +6,7 @@ import { keysToLowerCase, replaceItem } from '../../utils/utils';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { SpQuery, Tables } from '../DataModel/types';
-import { fail } from '../Errors/Crash';
+import { raise } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { loadingGif } from '../Molecules';
 import type { QueryField } from './helpers';
@@ -112,7 +112,7 @@ export function QueryResultsWrapper({
       }),
     })
       .then(({ data }) => setTotalCount(data.count))
-      .catch(fail);
+      .catch(raise);
 
     const displayedFields = allFields.filter((field) => field.isDisplay);
     const isCountOnly =
@@ -162,7 +162,7 @@ export function QueryResultsWrapper({
           onSelected: handleSelected,
         })
       )
-      .catch(fail);
+      .catch(raise);
   }, [
     fields,
     baseTableName,
@@ -180,7 +180,7 @@ export function QueryResultsWrapper({
     )
   ) : (
     <div className="flex flex-1 snap-start overflow-hidden">
-      <ErrorBoundary dismissable>
+      <ErrorBoundary dismissible>
         <QueryResults {...props} totalCount={totalCount} />
       </ErrorBoundary>
     </div>

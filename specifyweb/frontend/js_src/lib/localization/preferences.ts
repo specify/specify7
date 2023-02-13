@@ -230,7 +230,7 @@ export const preferencesText = createDictionary({
     'en-us': 'Field background',
     'ru-ru': 'Фон поля',
     'es-es': 'Fondo de campo',
-    'fr-fr': 'Fond de terrain',
+    'fr-fr': 'Fond de champ',
     'uk-ua': 'Поле фону',
   },
   disabledFieldBackground: {
@@ -360,26 +360,11 @@ export const preferencesText = createDictionary({
     `,
   },
   header: {
-    'en-us': 'Top Level Menu',
-    'ru-ru': 'Главное меню',
-    'es-es': 'Menú de nivel superior',
-    'fr-fr': 'Menu de niveau supérieur',
-    'uk-ua': 'Меню верхнього рівня',
-  },
-  menu: {
-    'en-us': 'Menu',
-    'ru-ru': 'Меню',
-    'es-es': 'Menú',
-    'fr-fr': 'Menu',
-    'uk-ua': 'Меню',
-  },
-  showMenuItem: {
-    comment: 'Example: Show Data Entry. Or: Show Interactions. Or: Show Trees',
-    'en-us': 'Show {menuItem:string}',
-    'ru-ru': 'Показать {menuItem:string}',
-    'es-es': 'Mostrar {menuItem:string}',
-    'fr-fr': 'Afficher {menuItem:string}',
-    'uk-ua': 'Показати {menuItem:string}',
+    'en-us': 'Navigation Menu',
+    'ru-ru': 'Меню навигации',
+    'es-es': 'Menú de Navegación',
+    'fr-fr': 'le menu de navigation',
+    'uk-ua': 'Навігаційне меню',
   },
   application: {
     'en-us': 'Application',
@@ -1319,6 +1304,7 @@ export const preferencesText = createDictionary({
     'uk-ua': "Визначати автоматично на основі формату номеру об'єкта",
   },
   use: {
+    comment: 'Verb',
     'en-us': 'Use',
     'ru-ru': 'Использовать',
     'es-es': 'Usar',
@@ -1331,5 +1317,69 @@ export const preferencesText = createDictionary({
     'es-es': 'no usar',
     'fr-fr': 'Ne pas utiliser',
     'uk-ua': 'Не використовувати',
+  },
+  position: {
+    'en-us': 'Position',
+    'es-es': 'Posición',
+    'fr-fr': 'Position',
+    'ru-ru': 'Позиция',
+    'uk-ua': 'Позиція',
+  },
+  top: {
+    'en-us': 'Top',
+    'es-es': 'Arriba',
+    'fr-fr': 'Haut',
+    'ru-ru': 'Вершина',
+    'uk-ua': 'Топ',
+  },
+  bottom: {
+    'en-us': 'Bottom',
+    'es-es': 'Abajo',
+    'fr-fr': 'Bas',
+    'ru-ru': 'Нижний',
+    'uk-ua': 'Дно',
+  },
+  left: {
+    'en-us': 'Left',
+    'es-es': 'Izquierda',
+    'fr-fr': 'Gauche',
+    'ru-ru': 'Левый',
+    'uk-ua': 'Ліворуч',
+  },
+  right: {
+    'en-us': 'Right',
+    'es-es': 'Derecha',
+    'fr-fr': 'Droite',
+    'ru-ru': 'Верно',
+    'uk-ua': 'правильно',
+  },
+  showUnsavedIndicator: {
+    'en-us': 'Show unsaved changes indicator',
+    'ru-ru': 'Показывать индикатор несохраненных изменений',
+    'es-es': 'Mostrar el indicador de cambios no guardados',
+    'fr-fr': "Afficher l'indicateur de modifications non enregistrées",
+    'uk-ua': 'Показати індикатор незбережених змін',
+  },
+  showUnsavedIndicatorDescription: {
+    'en-us': `
+      Show an "*" in the tab title when there are unsaved changes in the current
+      tab
+    `,
+    'es-es': `
+      Mostrar un "*" en el título de la pestaña cuando hay cambios sin guardar
+      en la pestaña actual
+    `,
+    'fr-fr': `
+      Afficher un \"*\" dans le titre de l'onglet lorsqu'il y a des
+      modifications non enregistrées dans l'onglet actuel
+    `,
+    'ru-ru': `
+      Показывать «*» в заголовке вкладки, если на текущей вкладке есть
+      несохраненные изменения.
+    `,
+    'uk-ua': `
+      Показувати «*» у заголовку вкладки, якщо в поточній вкладці є незбережені
+      зміни
+    `,
   },
 } as const);

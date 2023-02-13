@@ -2,8 +2,7 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 
 import { useSearchParameter } from '../../hooks/navigation';
-import { deserializeResource } from '../../hooks/resource';
-import { useAsyncState } from '../../hooks/useAsyncState';
+import { useAsyncState, usePromise } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { useErrorContext } from '../../hooks/useErrorContext';
@@ -15,6 +14,7 @@ import { caseInsensitiveHash, toggleItem } from '../../utils/utils';
 import { Container, H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
+import { deserializeResource } from '../DataModel/helpers';
 import type {
   AnyTree,
   FilterTablesByEndsWith,
@@ -25,7 +25,7 @@ import { getModel, schema } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { ResourceView } from '../Forms/ResourceView';
-import { useMenuItem } from '../Header';
+import { useMenuItem } from '../Header/useMenuItem';
 import { getPref } from '../InitialContext/remotePrefs';
 import { isTreeModel, treeRanksPromise } from '../InitialContext/treeRanks';
 import { useTitle } from '../Molecules/AppTitle';
@@ -193,7 +193,7 @@ function TreeView<SCHEMA extends AnyTree>({
           {commonText.collapseAll()}
         </Button.Small>
         <span className="-ml-2 flex-1" />
-        <ErrorBoundary dismissable>
+        <ErrorBoundary dismissible>
           <TreeViewActions<SCHEMA>
             actionRow={actionRow}
             focusedRow={focusedRow}
@@ -368,13 +368,11 @@ function EditTreeRank({
   );
 }
 
-const fetchTreeRanks = async (): typeof treeRanksPromise => treeRanksPromise;
-
 export function TreeViewWrapper(): JSX.Element | null {
   useMenuItem('trees');
   const { tableName = '' } = useParams();
   const treeName = getModel(tableName)?.name;
-  const [treeDefinitions] = useAsyncState(fetchTreeRanks, true);
+  const [treeDefinitions] = usePromise(treeRanksPromise, true);
   useErrorContext('treeDefinitions', treeDefinitions);
 
   const treeDefinition =
