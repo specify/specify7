@@ -3,7 +3,7 @@ import React from 'react';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { f } from '../../utils/functools';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import { softFail } from '../Errors/Crash';
 import type { FormMode, FormType, ViewDescription } from '../FormParse';
 import { fetchView, parseViewDefinition } from '../FormParse';
@@ -24,14 +24,14 @@ export const originalAttachmentsView = 'originalObjectAttachment';
  * for alternative purposes (i.e a different renderer)
  */
 export function useViewDefinition({
-  model,
+  table,
   viewName,
   // If can't find the view by viewName, could use a fallback view name
   fallbackViewName,
   formType,
   mode,
 }: {
-  readonly model: SpecifyModel | undefined;
+  readonly table: SpecifyTable | undefined;
   readonly viewName?: string;
   readonly fallbackViewName?: string;
   readonly formType: FormType;
@@ -39,34 +39,34 @@ export function useViewDefinition({
 }): ViewDescription | undefined {
   const [globalConfig] = usePref('form', 'preferences', 'useCustomForm');
   const useGeneratedForm =
-    Array.isArray(globalConfig) && f.includes(globalConfig, model?.name);
+    Array.isArray(globalConfig) && f.includes(globalConfig, table?.name);
   const [viewDefinition] = useAsyncState<ViewDescription>(
     React.useCallback(async () => {
-      if (model === undefined) return undefined;
+      if (table === undefined) return undefined;
       else if (viewName === 'ObjectAttachment')
         return {
           ...webOnlyViews().ObjectAttachment,
-          model,
+          table: table,
           formType,
           mode,
         };
       else if (useGeneratedForm)
-        return autoGenerateViewDefinition(model, formType, mode);
-      const resolvedViewName = viewName ?? model.view;
-      return fetchViewDefinition(resolvedViewName, model, formType, mode)
+        return autoGenerateViewDefinition(table, formType, mode);
+      const resolvedViewName = viewName ?? table.view;
+      return fetchViewDefinition(resolvedViewName, table, formType, mode)
         .then(
           (definition) =>
             definition ??
             (typeof fallbackViewName === 'string' &&
             fallbackViewName !== resolvedViewName
-              ? fetchViewDefinition(fallbackViewName, model, formType, mode)
+              ? fetchViewDefinition(fallbackViewName, table, formType, mode)
               : undefined)
         )
         .then(
           (definition) =>
-            definition ?? autoGenerateViewDefinition(model, formType, mode)
+            definition ?? autoGenerateViewDefinition(table, formType, mode)
         );
-    }, [useGeneratedForm, viewName, formType, mode, model]),
+    }, [useGeneratedForm, viewName, formType, mode, table]),
     false
   );
 
@@ -76,7 +76,7 @@ export function useViewDefinition({
 
 const fetchViewDefinition = async (
   viewName: string,
-  model: SpecifyModel,
+  table: SpecifyTable,
   formType: FormType,
   mode: FormMode
 ): Promise<ViewDescription | undefined> =>
@@ -90,9 +90,9 @@ const fetchViewDefinition = async (
     )
     .then((viewDefinition) => {
       if (typeof viewDefinition === 'object') {
-        if (viewDefinition.model !== model)
+        if (viewDefinition.table !== table)
           softFail(
-            new Error('View definition model does not match resource model')
+            new Error('View definition table does not match resource table')
           );
         return viewDefinition;
       } else
@@ -103,7 +103,7 @@ const fetchViewDefinition = async (
             rows,
             formType,
             mode,
-            model,
+            table,
           })
         );
     });

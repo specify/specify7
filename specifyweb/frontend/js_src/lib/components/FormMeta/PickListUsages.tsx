@@ -5,7 +5,6 @@ import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { Button } from '../Atoms/Button';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
 import type { PickList, SpQuery } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { createQuery } from '../QueryBuilder';
@@ -14,6 +13,7 @@ import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { flippedSortTypes } from '../QueryBuilder/helpers';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
 import { formattedEntry } from '../WbPlanView/mappingHelpers';
+import { tables } from '../DataModel/tables';
 
 export function PickListUsages({
   pickList,
@@ -45,7 +45,7 @@ function PickListUsagesDialog({
       className={{
         container: dialogClassNames.wideContainer,
       }}
-      header={pickList.specifyModel.label}
+      header={pickList.specifyTable.label}
       onClose={handleClose}
     >
       <QueryBuilder
@@ -67,7 +67,7 @@ function usePickListQuery(
     () =>
       createQuery(
         formsText.usagesOfPickList({ pickList: resource.get('name') }),
-        schema.models.SpLocaleContainerItem
+        tables.SpLocaleContainerItem
       ).set('fields', [
         QueryFieldSpec.fromPath('SpLocaleContainerItem', [
           'container',

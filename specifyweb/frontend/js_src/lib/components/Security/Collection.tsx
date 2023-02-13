@@ -14,7 +14,6 @@ import { Container, Ul } from '../Atoms';
 import { formatConjunction } from '../Atoms/Internationalization';
 import { Link } from '../Atoms/Link';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { schema } from '../DataModel/schema';
 import type { Collection } from '../DataModel/types';
 import { useAvailableCollections } from '../Forms/OtherCollectionView';
 import { userInformation } from '../InitialContext/userInformation';
@@ -36,6 +35,7 @@ import {
 } from './CollectionHooks';
 import type { Role } from './Role';
 import { fetchRoles } from './utils';
+import { tables } from '../DataModel/tables';
 
 export type RoleBase = {
   readonly roleId: number;
@@ -131,7 +131,7 @@ export function CollectionView({
           <div className="flex gap-2">
             <h3 className="text-2xl">
               {commonText.colonLine({
-                label: schema.models.Collection.label,
+                label: tables.Collection.label,
                 value: collection.collectionName ?? '',
               })}
             </h3>
@@ -151,7 +151,7 @@ export function CollectionView({
             <section className="flex flex-col gap-2">
               <h4 className="text-xl">
                 {userText.collectionUsers({
-                  collectionTable: schema.models.Collection.label,
+                  collectionTable: tables.Collection.label,
                 })}
               </h4>
               {typeof mergedUsers === 'object' ? (

@@ -13,10 +13,10 @@ import { fetchCollection } from '../DataModel/collection';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource, TableFields } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
 import { deserializeResource } from '../DataModel/serializers';
 import type { PickList, PickListItem, Tables } from '../DataModel/types';
 import { hasToolPermission } from '../Permissions/helpers';
+import { tables } from '../DataModel/tables';
 
 let pickLists: R<SpecifyResource<PickList> | undefined> = {};
 
@@ -48,7 +48,7 @@ const auditLogActions = [
 
 const pickListSortTypes = f.store(() => [
   commonText.none(),
-  getField(schema.models.PickListItem, 'title').label,
+  getField(tables.PickListItem, 'title').label,
   commonText.ordinal(),
 ]);
 
@@ -82,7 +82,7 @@ export function definePicklist(
   name: string,
   items: RA<SerializedResource<PickListItem>>
 ): SpecifyResource<PickList> {
-  const pickList = new schema.models.PickList.Resource();
+  const pickList = new tables.PickList.Resource();
   pickList.set('name', name);
   pickList.set('readOnly', true);
   pickList.set('isSystem', true);
@@ -95,7 +95,7 @@ export function definePicklist(
 export const pickListTablesPickList = f.store(() =>
   definePicklist(
     '_TablesByName',
-    Object.values(schema.models).map(({ name, label }) =>
+    Object.values(tables).map(({ name, label }) =>
       createPickListItem(name.toLowerCase(), label)
     )
   )
@@ -142,7 +142,7 @@ export const getFrontEndPickLists = f.store<{
   // Like pickListTablesPickList, but indexed by tableId
   const tablesPickList = definePicklist(
     '_Tables',
-    Object.values(schema.models).map(({ tableId, label }) =>
+    Object.values(tables).map(({ tableId, label }) =>
       createPickListItem(tableId.toString(), label)
     )
   );

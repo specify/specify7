@@ -17,7 +17,6 @@ import { DataEntry } from '../Atoms/DataEntry';
 import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { schema } from '../DataModel/schema';
 import type { Institution } from '../DataModel/types';
 import { ResourceView } from '../Forms/ResourceView';
 import { userInformation } from '../InitialContext/userInformation';
@@ -31,6 +30,8 @@ import { ImportExport } from './ImportExport';
 import { updateLibraryRole } from './LibraryRole';
 import { policiesToTsv } from './registry';
 import { deserializeResource } from '../DataModel/serializers';
+import { schema } from '../DataModel/schema';
+import { tables } from '../DataModel/tables';
 
 export function SecurityInstitution(): JSX.Element | null {
   const { institution } = useOutletContext<SecurityOutlet>();
@@ -72,7 +73,7 @@ function InstitutionView({
           <div className="flex gap-2">
             <h3 className="text-2xl">
               {commonText.colonLine({
-                label: schema.models.Institution.label,
+                label: tables.Institution.label,
                 value: institution.name ?? '',
               })}
             </h3>
@@ -138,7 +139,7 @@ function InstitutionView({
             <section className="flex flex-col gap-2">
               <h4 className="text-xl">
                 {userText.institutionUsers({
-                  institutionTable: schema.models.Institution.label,
+                  institutionTable: tables.Institution.label,
                 })}
               </h4>
               {typeof users === 'object' ? (

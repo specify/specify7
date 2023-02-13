@@ -12,7 +12,6 @@ import { DataEntry } from '../Atoms/DataEntry';
 import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
 import type { CollectionObject } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import { SearchDialog } from '../SearchDialog';
@@ -25,6 +24,7 @@ import {
   fetchOtherCollectionData,
   processColRelationships,
 } from './collectionRelData';
+import { tables } from '../DataModel/tables';
 
 export function CollectionOneToManyPlugin({
   resource,
@@ -78,8 +78,8 @@ export function CollectionOneToManyPlugin({
       <table className="grid-table grid-cols-[repeat(3,auto)] gap-2">
         <thead>
           <tr>
-            <th scope="col">{schema.models.CollectionObject.label}</th>
-            <th scope="col">{schema.models.Collection.label}</th>
+            <th scope="col">{tables.CollectionObject.label}</th>
+            <th scope="col">{tables.Collection.label}</th>
             <td />
           </tr>
         </thead>
@@ -164,14 +164,13 @@ export function CollectionOneToManyPlugin({
                 ? { type: 'MainState' }
                 : {
                     type: 'SearchState',
-                    templateResource:
-                      new schema.models.CollectionObject.Resource(
-                        {},
-                        {
-                          noBusinessRules: true,
-                          noValidation: true,
-                        }
-                      ),
+                    templateResource: new tables.CollectionObject.Resource(
+                      {},
+                      {
+                        noBusinessRules: true,
+                        noValidation: true,
+                      }
+                    ),
                   }
             )
           }
@@ -197,7 +196,7 @@ export function CollectionOneToManyPlugin({
           onClose={(): void => setState({ type: 'MainState' })}
           onSelected={(addedResources): void => {
             const addedRelationships = addedResources.map((addedResource) => {
-              const toAdd = new schema.models.CollectionRelationship.Resource();
+              const toAdd = new tables.CollectionRelationship.Resource();
               toAdd.set(`${data.otherSide}Side`, addedResource);
               toAdd.set(`${data.side}Side`, resource);
               toAdd.set(

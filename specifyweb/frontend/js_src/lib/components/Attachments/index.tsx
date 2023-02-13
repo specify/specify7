@@ -16,7 +16,7 @@ import { Container, H2 } from '../Atoms';
 import { className } from '../Atoms/className';
 import { Input, Label, Select } from '../Atoms/Form';
 import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
-import { getModel, schema } from '../DataModel/schema';
+import { getTable, tables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { hasTablePermission } from '../Permissions/helpers';
 import { useNavigate } from 'react-router-dom';
@@ -28,22 +28,20 @@ import { attachmentSettingsPromise } from './attachments';
 import { useMenuItem } from '../Header/MenuContext';
 
 export const attachmentRelatedTables = f.store(() =>
-  Object.keys(schema.models).filter((tableName) =>
-    tableName.endsWith('Attachment')
-  )
+  Object.keys(tables).filter((tableName) => tableName.endsWith('Attachment'))
 );
 
 const allTablesWithAttachments = f.store(() =>
   filterArray(
     attachmentRelatedTables().map((tableName) =>
-      getModel(tableName.slice(0, -1 * 'Attachment'.length))
+      getTable(tableName.slice(0, -1 * 'Attachment'.length))
     )
   )
 );
 /** Exclude tables without read access*/
 export const tablesWithAttachments = f.store(() =>
-  allTablesWithAttachments().filter((model) =>
-    hasTablePermission(model.name, 'read')
+  allTablesWithAttachments().filter((table) =>
+    hasTablePermission(table.name, 'read')
   )
 );
 
@@ -144,7 +142,7 @@ function Attachments(): JSX.Element {
             ? { tableId__isNull: 'true' }
             : filter.type === 'byTable'
             ? {
-                tableId: schema.models[filter.tableName].tableId,
+                tableId: tables[filter.tableName].tableId,
               }
             : allTablesWithAttachments().length ===
               tablesWithAttachments().length
@@ -216,7 +214,7 @@ function Attachments(): JSX.Element {
           {attachmentsText.orderBy()}
           <div>
             <OrderPicker
-              model={schema.models.Attachment}
+              table={tables.Attachment}
               order={order}
               onChange={setOrder}
             />

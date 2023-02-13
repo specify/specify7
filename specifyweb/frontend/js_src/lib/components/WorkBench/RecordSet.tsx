@@ -8,13 +8,13 @@ import { Http } from '../../utils/ajax/definitions';
 import { formData } from '../../utils/ajax/helpers';
 import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
-import { schema } from '../DataModel/schema';
 import {
   ProtectedAction,
   ProtectedTool,
 } from '../Permissions/PermissionDenied';
 import { unsafeNavigate } from '../Router/Router';
 import { EditRecordSet } from '../Toolbar/RecordSetEdit';
+import { tables } from '../DataModel/tables';
 
 export function CreateRecordSetButton({
   dataSetId,
@@ -34,7 +34,7 @@ export function CreateRecordSetButton({
       <ProtectedTool action="create" tool="recordSets">
         <ButtonComponent onClick={handleOpen}>
           {queryText.createRecordSet({
-            recordSetTable: schema.models.RecordSet.label,
+            recordSetTable: tables.RecordSet.label,
           })}
         </ButtonComponent>
         {isOpen && (
@@ -63,7 +63,7 @@ function CreateRecordSetDialog({
 }): JSX.Element {
   const recordSet = React.useMemo(
     () =>
-      new schema.models.RecordSet.Resource({
+      new tables.RecordSet.Resource({
         name: wbText.recordSetName({ dataSet: dataSetName }),
       }),
     [dataSetId]

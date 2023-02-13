@@ -14,7 +14,7 @@ import {
 } from './resource';
 import {errorHandledBy} from '../Errors/FormatError';
 import {attachBusinessRules} from './businessRules';
-import {initializeResource} from './domain';
+import {initializeResource} from './scoping';
 
 function eventHandlerForToOne(related, field) {
         return function(event) {
@@ -77,7 +77,7 @@ function eventHandlerForToOne(related, field) {
         _save: null,        // Stores reference to the ajax deferred while the resource is being saved
 
         constructor() {
-            this.specifyModel = this.constructor.specifyModel;
+            this.specifyTable = this.constructor.specifyTable;
             this.dependentResources = {};   // References to related objects referred to by field in this resource
             Reflect.apply(Backbone.Model, this, arguments); // TEST: check if this is necessary
         },
@@ -122,7 +122,7 @@ function eventHandlerForToOne(related, field) {
         async clone(cloneAll = false) {
             const self = this;
 
-            const exemptFields = getFieldsToNotClone(this.specifyModel, cloneAll).map(fieldName=>fieldName.toLowerCase());
+            const exemptFields = getFieldsToNotClone(this.specifyTable, cloneAll).map(fieldName=>fieldName.toLowerCase());
 
             const newResource = new this.constructor(
               removeKey(
@@ -137,7 +137,7 @@ function eventHandlerForToOne(related, field) {
 
             await Promise.all(Object.entries(self.dependentResources).map(async ([fieldName,related])=>{
                 if(exemptFields.includes(fieldName)) return;
-                const field = self.specifyModel.getField(fieldName);
+                const field = self.specifyTable.getField(fieldName);
                 switch (field.type) {
                 case 'many-to-one': {
                     /*
@@ -166,15 +166,15 @@ function eventHandlerForToOne(related, field) {
             return newResource;
         },
         url() {
-            return getResourceApiUrl(this.specifyModel.name, this.id);
+            return getResourceApiUrl(this.specifyTable.name, this.id);
         },
         viewUrl() {
             // Returns the url for viewing this resource in the UI
             if (!_.isNumber(this.id)) softFail(new Error("viewUrl called on resource without id"), this);
-            return getResourceViewUrl(this.specifyModel.name, this.id);
+            return getResourceViewUrl(this.specifyTable.name, this.id);
         },
         get(attribute) {
-            if(attribute.toLowerCase() === this.specifyModel.idField.name.toLowerCase())
+            if(attribute.toLowerCase() === this.specifyTable.idField.name.toLowerCase())
                 return this.id;
             // Case insensitive
             return Backbone.Model.prototype.get.call(this, attribute.toLowerCase());
@@ -290,10 +290,10 @@ function eventHandlerForToOne(related, field) {
             if(fieldName === '_tablename') return ['_tablename', undefined];
             if (_(['id', 'resource_uri', 'recordset_info']).contains(fieldName)) return [fieldName, value]; // Special fields
 
-            const field = this.specifyModel.getField(fieldName);
+            const field = this.specifyTable.getField(fieldName);
             if (!field) {
                 console.warn("setting unknown field", fieldName, "on",
-                             this.specifyModel.name, "value is", value);
+                             this.specifyTable.name, "value is", value);
                 return [fieldName, value];
             }
 
@@ -305,7 +305,7 @@ function eventHandlerForToOne(related, field) {
                   : (typeof value === 'number'
                   ? this._handleUri(
                       // Back-end sends SpPrincipal.scope as a number, rather than as a URL
-                      getResourceApiUrl(field.model.name, value),
+                      getResourceApiUrl(field.table.name, value),
                       fieldName
                     )
                   : this._handleInlineDataOrResource(value, fieldName));
@@ -314,8 +314,8 @@ function eventHandlerForToOne(related, field) {
         },
         _handleInlineDataOrResource(value, fieldName) {
             // BUG: check type of value
-            const field = this.specifyModel.getField(fieldName);
-            const relatedModel = field.relatedModel;
+            const field = this.specifyTable.getField(fieldName);
+            const relatedTable = field.relatedTable;
             // BUG: don't do anything for virtual fields
 
             switch (field.type) {
@@ -324,7 +324,7 @@ function eventHandlerForToOne(related, field) {
                 const collectionOptions = { related: this, field: field.getReverse() };
 
                 if (field.isDependent()) {
-                    const collection = new relatedModel.DependentCollection(collectionOptions, value);
+                    const collection = new relatedTable.DependentCollection(collectionOptions, value);
                     this.storeDependent(field, collection);
                 } else {
                     console.warn("got unexpected inline data for independent collection field",{collection:this,field,value});
@@ -343,7 +343,7 @@ function eventHandlerForToOne(related, field) {
                 }
 
                 const toOne = (value instanceof ResourceBase) ? value :
-                    new relatedModel.Resource(value, {parse: true});
+                    new relatedTable.Resource(value, {parse: true});
 
                 field.isDependent() && this.storeDependent(field, toOne);
                 this.trigger(`change:${  fieldName}`, this);
@@ -357,7 +357,7 @@ function eventHandlerForToOne(related, field) {
                  */
                 const oneTo = _.isArray(value) ?
                     (value.length === 0 ? null :
-                     new relatedModel.Resource(_.first(value), {parse: true}))
+                     new relatedTable.Resource(_.first(value), {parse: true}))
                 : (value || null);  // In case it was undefined
 
                 assert(oneTo == null || oneTo instanceof ResourceBase);
@@ -374,7 +374,7 @@ function eventHandlerForToOne(related, field) {
             return value;
         },
         _handleUri(value, fieldName) {
-            const field = this.specifyModel.getField(fieldName);
+            const field = this.specifyTable.getField(fieldName);
             const oldRelated = this.dependentResources[fieldName];
 
             if (field.isDependent()) {
@@ -443,11 +443,11 @@ function eventHandlerForToOne(related, field) {
         },
         async _rget(path, options) {
             let fieldName = path[0].toLowerCase();
-            const field = this.specifyModel.getField(fieldName);
+            const field = this.specifyTable.getField(fieldName);
             field && (fieldName = field.name.toLowerCase()); // In case fieldName is an alias
             let value = this.get(fieldName);
             field || console.warn("accessing unknown field", fieldName, "in",
-                                  this.specifyModel.name, "value is",
+                                  this.specifyTable.name, "value is",
                                   value);
 
             /*
@@ -463,7 +463,7 @@ function eventHandlerForToOne(related, field) {
             }
 
             const _this = this;
-            const related = field.relatedModel;
+            const related = field.relatedTable;
             switch (field.type) {
             case 'one-to-one':
             case 'many-to-one': {
@@ -588,7 +588,7 @@ function eventHandlerForToOne(related, field) {
             const json = Backbone.Model.prototype.toJSON.apply(self, arguments);
 
             _.each(self.dependentResources, (related, fieldName) => {
-                const field = self.specifyModel.getField(fieldName);
+                const field = self.specifyTable.getField(fieldName);
                 if (field.type === 'zero-to-one') {
                     json[fieldName] = related ? [related.toJSON()] : [];
                 } else {
@@ -628,8 +628,8 @@ function eventHandlerForToOne(related, field) {
         },
         async placeInSameHierarchy(other) {
             const self = this;
-            const myPath = self.specifyModel.getScopingPath();
-            const otherPath = other.specifyModel.getScopingPath();
+            const myPath = self.specifyTable.getScopingPath();
+            const otherPath = other.specifyTable.getScopingPath();
             if (!myPath || !otherPath) return undefined;
             if (myPath.length > otherPath.length) return undefined;
             const diff = _(otherPath).rest(myPath.length - 1).reverse();

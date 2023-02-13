@@ -22,7 +22,6 @@ import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
 import { getField } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
 import type { SpecifyUser } from '../DataModel/types';
 import { AppTitle } from '../Molecules/AppTitle';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
@@ -32,6 +31,7 @@ import type { UserRoles } from './Collection';
 import { ImportExport } from './ImportExport';
 import { SecurityPolicies, SecurityPoliciesWrapper } from './Policies';
 import type { Policy } from './Policy';
+import { tables } from '../DataModel/tables';
 
 export type NewRole = {
   readonly id: number | undefined;
@@ -123,7 +123,7 @@ export function RoleView({
       <div className="flex flex-1 flex-col gap-2 overflow-auto">
         {!isReadOnly && (
           <Label.Block className={className.limitedWidth}>
-            {getField(schema.models.SpPermission, 'name').label}
+            {getField(tables.SpPermission, 'name').label}
             <Input.Text
               maxLength={roleNameMaxLength}
               required

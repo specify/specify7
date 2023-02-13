@@ -7,7 +7,6 @@ import { Input, Label } from '../Atoms/Form';
 import { ReadOnlyContext } from '../Core/Contexts';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { schema } from '../DataModel/schema';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpLocaleContainerItem } from '../DataModel/types';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
@@ -18,6 +17,7 @@ import { javaTypeToHuman } from './helpers';
 import type { ItemType } from './index';
 import type { SchemaData } from './schemaData';
 import { maxSchemaValueLength } from './Table';
+import { tables } from '../DataModel/tables';
 
 export function SchemaConfigField({
   schemaData,
@@ -75,7 +75,7 @@ export function SchemaConfigField({
           isReadOnly
           value={javaTypeToHuman(
             field.type,
-            field.isRelationship ? field.relatedModel.name : undefined
+            field.isRelationship ? field.relatedTable.name : undefined
           )}
         />
       </Label.Block>
@@ -96,7 +96,7 @@ export function SchemaConfigField({
           isReadOnly={isReadOnly}
           onValueChange={(value): void => handleChange('isRequired', value)}
         />
-        {getField(schema.models.SpLocaleContainerItem, 'isRequired').label}
+        {getField(tables.SpLocaleContainerItem, 'isRequired').label}
       </Label.Inline>
       <SchemaConfigFormat
         field={field}

@@ -21,12 +21,12 @@ import type { RA, RR } from '../../utils/types';
 import { removeKey } from '../../utils/utils';
 import { Input, Select, selectMultipleSize } from '../Atoms/Form';
 import { getField } from '../DataModel/helpers';
-import { schema } from '../DataModel/schema';
 import type { PickListItemSimple } from '../FormFields/ComboBox';
 import { hasNativeErrors } from '../Forms/validationHelpers';
 import { fetchPickList, getPickListItems } from '../PickLists/fetch';
 import { mappingElementDivider } from '../WbPlanView/LineComponents';
 import type { QueryField } from './helpers';
+import { tables } from '../DataModel/tables';
 
 /**
  * Formatters and aggregators don't yet support any filtering options.
@@ -334,7 +334,7 @@ function In({
     () => ({
       ...pluralizeParser(parser),
       maxLength: enforceLengthLimit
-        ? getField(schema.models.SpQueryField, 'startValue').length
+        ? getField(tables.SpQueryField, 'startValue').length
         : undefined,
     }),
     [parser, enforceLengthLimit]

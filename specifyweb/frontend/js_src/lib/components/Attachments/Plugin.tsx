@@ -80,7 +80,7 @@ export function AttachmentsPlugin({
         ? void uploadFile(state.file, setUploadProgress)
             .then((attachment) => {
               if (typeof resource === 'object')
-                attachment?.set('tableID', resource.specifyModel.tableId);
+                attachment?.set('tableID', resource.specifyTable.tableId);
               if (attachment === undefined) setState({ type: 'Unavailable' });
               else {
                 handleUploadComplete?.(attachment);

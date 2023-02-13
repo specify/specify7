@@ -142,7 +142,7 @@ export const displaySpecifyNetwork = (
   hasTablePermission('Locality', 'read') &&
   hasPermission('/querybuilder/query', 'execute') &&
   resource?.isNew() === false &&
-  ['Taxon', 'CollectionObject'].includes(resource.specifyModel.name);
+  ['Taxon', 'CollectionObject'].includes(resource.specifyTable.name);
 
 function SpecifyNetwork({
   resource,

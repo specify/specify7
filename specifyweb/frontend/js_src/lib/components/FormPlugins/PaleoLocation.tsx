@@ -14,8 +14,8 @@ import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { AnySchema } from '../DataModel/helperTypes';
 import { toTable, toTables } from '../DataModel/helpers';
-import { schema } from '../DataModel/schema';
 import { formatDisjunction } from '../Atoms/Internationalization';
+import { tables } from '../DataModel/tables';
 
 type States =
   | State<
@@ -63,7 +63,7 @@ export function PaleoLocationMapPlugin({
           }
         >
           {formsText.wrongTableForPlugin({
-            currentTable: resource.specifyModel.name,
+            currentTable: resource.specifyTable.name,
             supportedTables: formatDisjunction(paleoPluginTables),
           })}
         </Dialog>
@@ -72,12 +72,12 @@ export function PaleoLocationMapPlugin({
         <Dialog
           buttons={commonText.close()}
           header={formsText.paleoRequiresGeography({
-            geographyTable: schema.models.Geography.label,
+            geographyTable: tables.Geography.label,
           })}
           onClose={(): void => setState({ type: 'MainState' })}
         >
           {formsText.paleoRequiresGeographyDescription({
-            localityTable: schema.models.Locality.label,
+            localityTable: tables.Locality.label,
           })}
         </Dialog>
       )}

@@ -7,15 +7,15 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { formsText } from '../../localization/forms';
 import { userText } from '../../localization/user';
 import { ajax } from '../../utils/ajax';
-import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { KEY, multiSortFunction, sortFunction } from '../../utils/utils';
 import { fetchDistantRelated } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { fetchContext, schema } from '../DataModel/schema';
+import { fetchContext as fetchSchema, tables } from '../DataModel/tables';
+import { fetchContext as fetchDomain } from '../DataModel/schema';
 import type { LiteralField } from '../DataModel/specifyField';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { Tables } from '../DataModel/types';
 import {
   cachableUrl,
@@ -24,32 +24,31 @@ import {
 } from '../InitialContext';
 import { hasPathPermission, hasTablePermission } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
+import { xmlToSpec } from '../Syncer/xmlUtils';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { aggregate } from './aggregate';
 import { fieldFormat } from './fieldFormat';
 import type { Aggregator, Formatter } from './spec';
 import { formattersSpec } from './spec';
-import { xmlToSpec } from '../Syncer/xmlUtils';
 
 export const fetchFormatters: Promise<{
   readonly formatters: RA<Formatter>;
   readonly aggregators: RA<Aggregator>;
 }> = contextUnlockedPromise.then(async (entrypoint) =>
   entrypoint === 'main'
-    ? f
-        .all({
-          definitions: ajax<Element>(
-            cachableUrl(
-              formatUrl('/context/app.resource', { name: 'DataObjFormatters' })
-            ),
-            {
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              headers: { Accept: 'text/xml' },
-            }
-          ).then(({ data }) => data),
-          schema: fetchContext,
-        })
-        .then(({ definitions }) => xmlToSpec(definitions, formattersSpec()))
+    ? Promise.all([
+        ajax<Element>(
+          cachableUrl(
+            formatUrl('/context/app.resource', { name: 'DataObjFormatters' })
+          ),
+          {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            headers: { Accept: 'text/xml' },
+          }
+        ).then(({ data }) => data),
+        fetchSchema,
+        fetchDomain,
+      ]).then(([definitions]) => xmlToSpec(definitions, formattersSpec()))
     : foreverFetch()
 );
 
@@ -84,23 +83,23 @@ export async function format<SCHEMA extends AnySchema>(
   tryBest = false
 ): Promise<LocalizedString | undefined> {
   if (typeof resource !== 'object' || resource === null) return undefined;
-  if (hasTablePermission(resource.specifyModel.name, 'read'))
+  if (hasTablePermission(resource.specifyTable.name, 'read'))
     await resource.fetch();
   const resolvedFormatterName =
-    formatterName ?? resource.specifyModel.getFormat();
+    formatterName ?? resource.specifyTable.getFormat();
 
   const { formatters } = await fetchFormatters;
   const { definition } = resolveFormatter(
     formatters,
     resolvedFormatterName,
-    resource.specifyModel
+    resource.specifyTable
   );
 
   // Doesn't support switch fields that are in child objects
   const fields = await determineFields(definition, resource);
 
   const automaticFormatter = tryBest
-    ? naiveFormatter(resource.specifyModel.label, resource.id)
+    ? naiveFormatter(resource.specifyTable.label, resource.id)
     : undefined;
 
   /*
@@ -175,7 +174,7 @@ async function formatField(
         );
   } else {
     formatted = tryBest
-      ? naiveFormatter(parentResource.specifyModel.name, parentResource.id)
+      ? naiveFormatter(parentResource.specifyTable.name, parentResource.id)
       : userText.noPermission();
   }
 
@@ -187,25 +186,25 @@ async function formatField(
 const resolveFormatter = (
   formatters: RA<Formatter>,
   formatterName: string | undefined,
-  model: SpecifyModel
+  table: SpecifyTable
 ): Formatter =>
   formatters.find(({ name }) => name === formatterName) ??
-  findDefaultFormatter(formatters, model) ??
-  autoGenerateFormatter(model);
+  findDefaultFormatter(formatters, table) ??
+  autoGenerateFormatter(table);
 
 const findDefaultFormatter = (
   formatters: RA<Formatter>,
-  model: SpecifyModel
+  table: SpecifyTable
 ): Formatter | undefined =>
   formatters
-    .filter(({ table }) => table === model)
+    .filter((formatter) => formatter.table === table)
     .sort(sortFunction(({ isDefault }) => isDefault, true))?.[KEY];
 
 const autoGenerateFields = 2;
-const autoGenerateFormatter = (model: SpecifyModel): Formatter => ({
-  name: model.name,
-  title: model.name,
-  table: model,
+const autoGenerateFormatter = (table: SpecifyTable): Formatter => ({
+  name: table.name,
+  title: table.name,
+  table: table,
   isDefault: true,
   definition: {
     isSingle: false,
@@ -214,7 +213,7 @@ const autoGenerateFormatter = (model: SpecifyModel): Formatter => ({
     fields: [
       {
         value: undefined,
-        fields: getMainTableFields(model.name)
+        fields: getMainTableFields(table.name)
           .slice(0, autoGenerateFields)
           .map((field) => ({
             field: [field],
@@ -233,7 +232,7 @@ const autoGenerateFormatter = (model: SpecifyModel): Formatter => ({
  * If you need only at most x fields, do .slice(0,x) on the result.
  */
 export const getMainTableFields = (tableName: keyof Tables): RA<LiteralField> =>
-  schema.models[tableName].literalFields
+  tables[tableName].literalFields
     .filter(
       ({ type, isHidden, isReadOnly }) =>
         type === 'java.lang.String' && !isHidden && !isReadOnly

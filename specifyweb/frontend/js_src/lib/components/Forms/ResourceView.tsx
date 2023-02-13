@@ -136,7 +136,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
   const mode = augmentMode(
     initialMode,
     resource?.isNew() === true,
-    resource?.specifyModel.name
+    resource?.specifyTable.name
   );
 
   const [isDeleted, setDeleted, setNotDeleted] = useBooleanState();
@@ -201,7 +201,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
         onAdd={handleAdd}
         onSaved={(): void => {
           const printOnSave = getUserPref('form', 'preferences', 'printOnSave');
-          if (printOnSave[resource.specifyModel.name] === true)
+          if (printOnSave[resource.specifyTable.name] === true)
             setState({
               type: 'Report',
               onDone: () => handleSaved(),
@@ -215,7 +215,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
     state.type === 'Report' && typeof resource === 'object' ? (
       <ReportsView
         autoSelectSingle
-        model={resource.specifyModel}
+        table={resource.specifyTable}
         resourceId={resource.id}
         onClose={(): void => {
           state.onDone();
@@ -228,7 +228,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
     !isSubForm &&
     typeof resource === 'object' &&
     !resource.isNew() &&
-    hasTablePermission(resource.specifyModel.name, 'delete') ? (
+    hasTablePermission(resource.specifyTable.name, 'delete') ? (
       <ErrorBoundary dismissible>
         <DeleteButton
           deletionMessage={deletionMessage}

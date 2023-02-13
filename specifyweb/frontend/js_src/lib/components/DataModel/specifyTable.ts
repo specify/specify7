@@ -1,5 +1,5 @@
 /**
- * Class for a specify model (a database table)
+ * Class for a specify table (a database table)
  */
 
 import type { LocalizedString } from 'typesafe-i18n';
@@ -19,17 +19,17 @@ import {
 import type {
   AnySchema,
   CommonFields,
-  SerializedModel,
+  SerializedRecord,
   SerializedResource,
 } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
 import { parseJavaClassName } from './resource';
 import { ResourceBase } from './resourceApi';
-import type { SchemaLocalization } from './schema';
-import { getSchemaLocalization, schema } from './schema';
-import { unescape } from './schemaBase';
+import type { SchemaLocalization } from './tables';
+import { getSchemaLocalization } from './tables';
+import { schema, unescape } from './schema';
 import { schemaAliases } from './schemaExtras';
-import { getTableOverwrite, modelViews } from './schemaOverrides';
+import { getTableOverwrite, tableViews } from './schemaOverrides';
 import type { Relationship } from './specifyField';
 import {
   type FieldDefinition,
@@ -48,7 +48,7 @@ export type TableDefinition = {
   readonly view?: string | null;
   readonly searchDialog?: string | null;
   readonly tableId: number;
-  // Indicates the model is a system table.
+  // Indicates the table is a system table.
   readonly system: boolean;
   readonly fieldAliases: RA<FieldAlias>;
   readonly fields: RA<FieldDefinition>;
@@ -70,7 +70,7 @@ type CollectionConstructor<SCHEMA extends AnySchema> = new (
     >;
     readonly domainfilter?: boolean;
   },
-  models?: RA<SpecifyResource<AnySchema>>
+  tables?: RA<SpecifyResource<AnySchema>>
 ) => UnFetchedCollection<SCHEMA>;
 
 export type UnFetchedCollection<SCHEMA extends AnySchema> = {
@@ -85,7 +85,7 @@ export type Collection<SCHEMA extends AnySchema> = {
   readonly _totalCount?: number;
   readonly models: RA<SpecifyResource<SCHEMA>>;
   readonly model: {
-    readonly specifyModel: SpecifyModel<SCHEMA>;
+    readonly specifyTable: SpecifyTable<SCHEMA>;
   };
   readonly constructor: CollectionConstructor<SCHEMA>;
   /*
@@ -109,7 +109,7 @@ export type Collection<SCHEMA extends AnySchema> = {
 };
 
 // FEATURE: tighten up schema field types (use literals / enums)
-export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
+export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
   /** Java classname of the Specify 6 ORM object */
   public readonly longName: string;
 
@@ -143,7 +143,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
   public readonly fieldAliases: IR<string>;
 
   /**
-   * A Backbone model resource for accessing the API for items of this type.
+   * A Backbone resource for accessing the API for items of this type.
    *
    * @remarks
    * RESOURCE generic is needed as a workaround for
@@ -152,7 +152,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
   public readonly Resource: new <RESOURCE extends AnySchema = SCHEMA>(
     props?: Partial<
       | SerializedResource<RESOURCE>
-      | SerializedModel<RESOURCE>
+      | SerializedRecord<RESOURCE>
       /*
        * Even though id is already a part of SerializedResource, for some reason
        * I need to specify it again here
@@ -203,7 +203,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
       this.name === 'Attachment'
         ? // Render the attachment plugin rather than the form
           'ObjectAttachment'
-        : tableDefinition.view ?? modelViews[this.name] ?? this.name;
+        : tableDefinition.view ?? tableViews[this.name] ?? this.name;
     this.searchDialog = tableDefinition.searchDialog ?? undefined;
     this.tableId = tableDefinition.tableId;
     this.isSystem = tableDefinition.system;
@@ -219,22 +219,22 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
 
     this.Resource = ResourceBase.extend(
       { __name__: `${this.name}Resource` },
-      { specifyModel: this }
+      { specifyTable: this }
     );
 
     this.LazyCollection = LazyCollection.extend({
       __name__: `${this.name}LazyCollection`,
-      model: this.Resource,
+      table: this.Resource,
     });
 
     this.DependentCollection = DependentCollection.extend({
       __name__: `${this.name}DependentCollection`,
-      model: this.Resource,
+      table: this.Resource,
     });
 
     this.ToOneCollection = ToOneCollection.extend({
       __name__: `${this.name}ToOneCollection`,
-      model: this.Resource,
+      table: this.Resource,
     });
 
     const useLabels = getCache('forms', 'useFieldLabels') ?? true;
@@ -296,7 +296,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
   }
 
   /**
-   * Return a field object representing the named field of this model.
+   * Return a field object representing the named field of this table.
    * name can be either a dotted name string or an array and will traverse
    * relationships.
    *
@@ -347,7 +347,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
       }
     }
 
-    // Handle calls like localityModel.getField('Locality.localityName')
+    // Handle calls like localityTable.getField('Locality.localityName')
     if (
       splitName.length > 1 &&
       splitName[0].toLowerCase() === this.name.toLowerCase()
@@ -356,7 +356,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
     else if (fields.length === 0) return undefined;
     else if (splitName.length === 1) return fields;
     else if (splitName.length > 1 && fields[0].isRelationship) {
-      const subFields = defined(fields[0].relatedModel).getFields(
+      const subFields = defined(fields[0].relatedTable).getFields(
         splitName.slice(1).join('.')
       );
       if (subFields === undefined) return undefined;
@@ -376,7 +376,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
     if (field === undefined) return undefined;
     else if (field.isRelationship)
       error(`Field ${literalName} is a relationship`, {
-        model: this,
+        table: this,
         literalName,
       });
     else return field;
@@ -412,7 +412,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
   }
 
   /**
-   * Returns the relationship field of this model that places it in
+   * Returns the relationship field of this table that places it in
    * the collection -> discipline -> division -> institution scoping
    * hierarchy.
    */
@@ -434,7 +434,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
     const up = this.getScopingRelationship();
     return up === undefined
       ? undefined
-      : [...defined(up.relatedModel.getScopingPath()), up.name.toLowerCase()];
+      : [...defined(up.relatedTable.getScopingPath()), up.name.toLowerCase()];
   }
 
   /**

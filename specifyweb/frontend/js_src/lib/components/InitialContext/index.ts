@@ -83,9 +83,9 @@ export const load = async <T>(path: string, mimeType: MimeType): Promise<T> =>
 
 export const initialContext = Promise.all([
   // Fetch general context information (NOT CACHED)
-  import('../DataModel/schemaBase'),
-  // Fetch schema (cached)
   import('../DataModel/schema'),
+  // Fetch data model (cached)
+  import('../DataModel/tables'),
   // Fetch remote preferences (cached)
   import('./remotePrefs'),
   // Fetch icon definitions (cached)

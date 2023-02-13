@@ -10,7 +10,7 @@ import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { ReadOnlyContext } from '../Core/Contexts';
-import { strictGetModel } from '../DataModel/schema';
+import { strictGetTable } from '../DataModel/tables';
 import { NotFoundView } from '../Router/NotFoundView';
 import { resolveRelative } from '../Router/Router';
 import { ForwardOutlet } from '../Router/RouterUtils';
@@ -28,7 +28,7 @@ export function FormatterList(): JSX.Element {
   const isReadOnly = React.useContext(ReadOnlyContext);
   const navigate = useNavigate();
   if (tableName === undefined) return <NotFoundView container={false} />;
-  const table = strictGetModel(tableName);
+  const table = strictGetTable(tableName);
   return (
     <div className="flex flex-col gap-2 overflow-auto">
       <h4 className="text-xl">{table.label}</h4>

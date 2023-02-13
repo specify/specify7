@@ -6,12 +6,12 @@ import type { IR } from '../../utils/types';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
 import type { Attachment } from '../DataModel/types';
 import { load } from '../InitialContext';
 import { getIcon, unknownIcon } from '../InitialContext/icons';
 import { getPref } from '../InitialContext/remotePrefs';
 import { formatUrl } from '../Router/queryString';
+import { tables } from '../DataModel/tables';
 
 type AttachmentSettings = {
   readonly collection: string;
@@ -204,7 +204,7 @@ export async function uploadFile(
         : undefined
     )
   );
-  return new schema.models.Attachment.Resource({
+  return new tables.Attachment.Resource({
     attachmentlocation: data.attachmentlocation,
     mimetype: fixMimeType(file.type),
     origfilename: file.name,
@@ -220,7 +220,7 @@ export async function uploadFile(
  * REFACTOR: remove this once that issue is fixed
  */
 function fixMimeType(originalMimeType: string): string {
-  const maxLength = getField(schema.models.Attachment, 'mimeType').length;
+  const maxLength = getField(tables.Attachment, 'mimeType').length;
   if (maxLength === undefined || originalMimeType.length < maxLength)
     return originalMimeType;
   else {

@@ -1,6 +1,6 @@
 import { filterArray, RA } from '../../utils/types';
 import type { AnySchema } from '../DataModel/helperTypes';
-import type { Collection, SpecifyModel } from '../DataModel/specifyModel';
+import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
 import { fetchFormatters, format } from './formatters';
 import type { Aggregator } from './spec';
 import { SpecifyResource } from '../DataModel/legacyTypes';
@@ -17,8 +17,8 @@ export async function aggregate(
     : collection.models;
   if (allResources.length === 0) return '';
   const targetTable = Array.isArray(collection)
-    ? collection[0].specifyModel
-    : collection.model.specifyModel;
+    ? collection[0].specifyTable
+    : collection.model.specifyTable;
 
   const { aggregators } = await fetchFormatters;
 
@@ -86,7 +86,7 @@ export async function aggregate(
   });
 }
 
-const autoGenerateAggregator = (table: SpecifyModel): Aggregator => ({
+const autoGenerateAggregator = (table: SpecifyTable): Aggregator => ({
   name: table.name,
   title: table.name,
   table,

@@ -301,7 +301,7 @@ export function WrongPluginTable({
         onClose={handleHide}
       >
         {formsText.wrongTableForPlugin({
-          currentTable: resource.specifyModel.name,
+          currentTable: resource.specifyTable.name,
           supportedTables: formatDisjunction(supportedTables),
         })}
       </Dialog>

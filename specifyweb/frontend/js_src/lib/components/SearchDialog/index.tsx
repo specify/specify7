@@ -18,7 +18,7 @@ import { Submit } from '../Atoms/Submit';
 import type { AnySchema, CommonFields } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { SpQueryField } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import { raise } from '../Errors/Crash';
@@ -35,20 +35,16 @@ import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
 import { formatUrl } from '../Router/queryString';
 import { xmlToSpec } from '../Syncer/xmlUtils';
-import { dialogsSpec } from './spec';
 import { queryCbxExtendedSearch } from './helpers';
+import { dialogsSpec } from './spec';
 
-export const searchDialogDefinitions = f
-  .all({
-    xml: load<Element>(
-      formatUrl('/context/app.resource', { name: 'DialogDefs' }),
-      'text/xml'
-    ),
-    schema: import('../DataModel/schema').then(
-      async ({ fetchContext }) => fetchContext
-    ),
-  })
-  .then(({ xml }) => xmlToSpec(xml, dialogsSpec()).dialogs);
+export const searchDialogDefinitions = Promise.all([
+  load<Element>(
+    formatUrl('/context/app.resource', { name: 'DialogDefs' }),
+    'text/xml'
+  ),
+  import('../DataModel/tables').then(async ({ fetchContext }) => fetchContext),
+]).then(([xml]) => xmlToSpec(xml, dialogsSpec()).dialogs);
 
 const resourceLimit = 100;
 
@@ -86,7 +82,7 @@ export function SearchDialog<SCHEMA extends AnySchema>({
               ({ type, name }) =>
                 type === 'search' &&
                 name.toLowerCase() ===
-                  templateResource.specifyModel.searchDialog?.toLowerCase()
+                  templateResource.specifyTable.searchDialog?.toLowerCase()
             )?.view ?? false
         ),
       [templateResource]
@@ -95,10 +91,10 @@ export function SearchDialog<SCHEMA extends AnySchema>({
   );
 
   const viewDefinition = useViewDefinition({
-    model:
-      typeof viewName === 'string' ? templateResource.specifyModel : undefined,
+    table:
+      typeof viewName === 'string' ? templateResource.specifyTable : undefined,
     viewName: typeof viewName === 'string' ? viewName : undefined,
-    fallbackViewName: templateResource.specifyModel.view,
+    fallbackViewName: templateResource.specifyTable.view,
     formType: 'form',
     mode: 'search',
   });
@@ -175,7 +171,7 @@ export function SearchDialog<SCHEMA extends AnySchema>({
                 <li key={id}>
                   <Link.Default
                     href={getResourceViewUrl(
-                      templateResource.specifyModel.name,
+                      templateResource.specifyTable.name,
                       id
                     )}
                     onClick={(event): void => {
@@ -205,7 +201,7 @@ export function SearchDialog<SCHEMA extends AnySchema>({
     <QueryBuilderSearch
       extraFilters={extraFilters}
       forceCollection={forceCollection}
-      model={templateResource.specifyModel}
+      table={templateResource.specifyTable}
       multiple={multiple}
       onClose={handleClose}
       onSelected={(records): void => {
@@ -251,25 +247,25 @@ function testFilter<SCHEMA extends AnySchema>(
 function QueryBuilderSearch<SCHEMA extends AnySchema>({
   forceCollection,
   extraFilters,
-  model,
+  table,
   onSelected: handleSelected,
   onClose: handleClose,
   multiple,
 }: {
   readonly forceCollection: number | undefined;
   readonly extraFilters: RA<QueryComboBoxFilter<SCHEMA>>;
-  readonly model: SpecifyModel<SCHEMA>;
+  readonly table: SpecifyTable<SCHEMA>;
   readonly onClose: () => void;
   readonly onSelected: (resources: RA<SpecifyResource<SCHEMA>>) => void;
   readonly multiple: boolean;
 }): JSX.Element {
   const query = React.useMemo(
     () =>
-      createQuery(commonText.search(), model).set(
+      createQuery(commonText.search(), table).set(
         'fields',
-        toQueryFields(model, extraFilters)
+        toQueryFields(table, extraFilters)
       ),
-    [model, extraFilters]
+    [table, extraFilters]
   );
   const [selected, setSelected] = React.useState<RA<number>>([]);
   return (
@@ -282,7 +278,7 @@ function QueryBuilderSearch<SCHEMA extends AnySchema>({
               selected.length === 0 || (selected.length > 1 && !multiple)
             }
             onClick={(): void =>
-              handleSelected(selected.map((id) => new model.Resource({ id })))
+              handleSelected(selected.map((id) => new table.Resource({ id })))
             }
           >
             {commonText.select()}
@@ -308,11 +304,11 @@ function QueryBuilderSearch<SCHEMA extends AnySchema>({
 }
 
 const toQueryFields = <SCHEMA extends AnySchema>(
-  model: SpecifyModel<SCHEMA>,
+  table: SpecifyTable<SCHEMA>,
   filters: RA<QueryComboBoxFilter<SCHEMA>>
 ): RA<SpecifyResource<SpQueryField>> =>
   filters.map(({ field, operation, isNot, value }) =>
-    QueryFieldSpec.fromPath(model.name, [field])
+    QueryFieldSpec.fromPath(table.name, [field])
       .toSpQueryField()
       .set('operStart', queryFieldFilters[operation].id)
       .set('isNot', isNot)

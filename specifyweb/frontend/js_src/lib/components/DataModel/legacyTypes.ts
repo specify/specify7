@@ -6,11 +6,11 @@ import type { IR, RA } from '../../utils/types';
 import type {
   AnySchema,
   CommonFields,
-  SerializedModel,
+  SerializedRecord,
   SerializedResource,
 } from './helperTypes';
 import type { SaveBlockers } from './saveBlockers';
-import type { Collection, SpecifyModel } from './specifyModel';
+import type { Collection, SpecifyTable } from './specifyTable';
 
 /*
  * FEATURE: need to improve the typing to handle the following:
@@ -25,7 +25,7 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   readonly cid: string;
   readonly noValidation?: boolean;
   readonly populated: boolean;
-  readonly specifyModel: SpecifyModel<SCHEMA>;
+  readonly specifyTable: SpecifyTable<SCHEMA>;
   readonly saveBlockers?: Readonly<SaveBlockers<SCHEMA>>;
   readonly parent?: SpecifyResource<SCHEMA>;
   readonly noBusinessRules: boolean;
@@ -173,7 +173,7 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   isNew(): boolean;
   clone(cloneAll: boolean): Promise<SpecifyResource<SCHEMA>>;
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  toJSON(): SerializedModel<AnySchema>;
+  toJSON(): SerializedRecord<AnySchema>;
   getRelatedObjectCount(
     fieldName:
       | (string & keyof SCHEMA['toManyDependent'])

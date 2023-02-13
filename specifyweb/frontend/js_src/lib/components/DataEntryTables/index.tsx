@@ -8,8 +8,8 @@ import { DataEntry } from '../Atoms/DataEntry';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { getResourceViewUrl } from '../DataModel/resource';
-import { strictGetModel } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import { strictGetTable } from '../DataModel/tables';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasTablePermission } from '../Permissions/helpers';
@@ -29,7 +29,7 @@ export function FormsDialog({
   onSelected: handleSelected,
   onClose: handleClose,
 }: {
-  readonly onSelected?: (model: SpecifyModel) => void;
+  readonly onSelected?: (table: SpecifyTable) => void;
   readonly onClose: () => void;
 }): JSX.Element | null {
   const forms = useDataEntryForms();
@@ -58,7 +58,7 @@ export function FormsDialog({
                     typeof handleSelected === 'function'
                       ? (event): void => {
                           event.preventDefault();
-                          handleSelected(strictGetModel(table.name));
+                          handleSelected(strictGetTable(table.name));
                         }
                       : undefined
                   }

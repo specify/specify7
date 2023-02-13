@@ -14,7 +14,6 @@ import { toResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceApiUrl } from '../DataModel/resource';
-import { schema } from '../DataModel/schema';
 import type {
   SpAppResource,
   SpAppResourceDir,
@@ -29,6 +28,7 @@ import {
   AppResourceTextEditor,
   visualAppResourceEditors,
 } from './TabDefinitions';
+import { schema } from '../DataModel/schema';
 
 export function AppResourcesTabs({
   label,

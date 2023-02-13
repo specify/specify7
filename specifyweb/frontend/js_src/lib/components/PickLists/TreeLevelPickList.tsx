@@ -51,7 +51,7 @@ export const fetchLowestChildRank = async (
 ): Promise<number> =>
   resource.isNew()
     ? Promise.resolve(-1)
-    : fetchCollection(resource.specifyModel.name, {
+    : fetchCollection(resource.specifyTable.name, {
         limit: 1,
         parent: resource.id,
         orderBy: 'rankId',
@@ -65,16 +65,16 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
     undefined
   );
   React.useEffect(() => {
-    if (props.model === undefined) return undefined;
-    const resource = toTreeTable(props.model);
+    if (props.table === undefined) return undefined;
+    const resource = toTreeTable(props.table);
     if (
       resource === undefined ||
-      !hasTreeAccess(resource.specifyModel.name, 'read')
+      !hasTreeAccess(resource.specifyTable.name, 'read')
     )
       return undefined;
     const lowestChildRank = fetchLowestChildRank(resource);
     const destructor = resourceOn(
-      props.model,
+      props.table,
       'change:parent',
       (): void =>
         void resource
@@ -91,7 +91,7 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
                   fetchPossibleRanks(
                     rankId,
                     treeDefinitionItem.get('rankId'),
-                    resource.specifyModel.name
+                    resource.specifyTable.name
                   )
                 )
               : undefined
@@ -104,7 +104,7 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
       destructorCalled = true;
       destructor();
     };
-  }, [props.model]);
+  }, [props.table]);
 
   return (
     <PickListComboBox
@@ -112,12 +112,12 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
       defaultValue={props.defaultValue ?? items?.slice(-1)[0]?.value}
       isDisabled={
         props.isDisabled ||
-        props.model === undefined ||
-        !isTreeResource(props.model) ||
-        props.model.get('parent') === null
+        props.table === undefined ||
+        !isTreeResource(props.table) ||
+        props.table.get('parent') === null
       }
       isRequired={
-        props.model?.specifyModel.getRelationship('definitionItem')
+        props.table?.specifyTable.getRelationship('definitionItem')
           ?.isRequired ?? true
       }
       items={items}

@@ -10,12 +10,12 @@ import { filterArray } from '../../utils/types';
 import { split } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Label, Select } from '../Atoms/Form';
-import { schema } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { Tables } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import { usePref } from '../UserPreferences/usePref';
-import { defaultQueryTablesConfig, useQueryModels } from './QueryTables';
+import { defaultQueryTablesConfig, useQueryTables } from './QueryTables';
+import { tables } from '../DataModel/tables';
 
 export function QueryTablesEdit({
   onClose: handleClose,
@@ -27,14 +27,14 @@ export function QueryTablesEdit({
     'general',
     'noRestrictionsMode'
   );
-  const [models, setModels] = useQueryModels();
+  const [tables, setTables] = useQueryTables();
   return (
     <TablesListEdit
       defaultTables={defaultQueryTablesConfig}
       header={queryText.configureQueryTables()}
       isNoRestrictionMode={isNoRestrictionMode}
-      models={models}
-      onChange={setModels}
+      tables={tables}
+      onChange={setTables}
       onClose={handleClose}
     />
   );
@@ -44,25 +44,25 @@ export function TablesListEdit({
   isNoRestrictionMode,
   defaultTables,
   header,
-  models: selectedModels,
+  tables: selectedTables,
   onChange: handleChange,
   onClose: handleClose,
 }: {
   readonly isNoRestrictionMode: boolean;
   readonly defaultTables: RA<keyof Tables>;
   readonly header: LocalizedString;
-  readonly models: RA<SpecifyModel>;
-  readonly onChange: (models: RA<SpecifyModel>) => void;
+  readonly tables: RA<SpecifyTable>;
+  readonly onChange: (table: RA<SpecifyTable>) => void;
   readonly onClose: () => void;
 }): JSX.Element {
-  const allTables = Object.values(schema.models)
+  const allTables = Object.values(tables)
     .filter(
       ({ isSystem, isHidden }) =>
         isNoRestrictionMode || (!isSystem && !isHidden)
     )
     .map(({ name, label }) => ({ name, label }));
   const handleChanged = (items: RA<string>): void =>
-    handleChange(items.map((name) => schema.models[name as keyof Tables]));
+    handleChange(items.map((name) => tables[name as keyof Tables]));
   return (
     <Dialog
       buttons={
@@ -83,7 +83,7 @@ export function TablesListEdit({
         defaultValues={defaultTables}
         isReadOnly={false}
         selectedLabel={schemaText.selectedTables()}
-        selectedValues={selectedModels.map(({ name }) => name)}
+        selectedValues={selectedTables.map(({ name }) => name)}
         onChange={handleChanged}
       />
     </Dialog>

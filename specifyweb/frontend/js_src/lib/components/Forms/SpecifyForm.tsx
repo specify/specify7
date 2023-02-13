@@ -37,7 +37,7 @@ export function RenderForm<SCHEMA extends AnySchema>({
   readonly display: 'block' | 'inline';
 }): JSX.Element {
   const id = useId(
-    `form-${resource.specifyModel.name ?? viewDefinition?.model?.name ?? ''}`
+    `form-${resource.specifyTable.name ?? viewDefinition?.table?.name ?? ''}`
   );
   const oldResourceRef = React.useRef<SpecifyResource<SCHEMA> | undefined>(
     undefined

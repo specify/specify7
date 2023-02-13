@@ -19,7 +19,6 @@ import { LoadingContext } from '../Core/Contexts';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
 import type { SpQuery, SpReport } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import { ResourceView } from '../Forms/ResourceView';
@@ -28,6 +27,7 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { downloadFile } from '../Molecules/FilePicker';
 import { hasPermission } from '../Permissions/helpers';
 import { deserializeResource } from '../DataModel/serializers';
+import { tables } from '../DataModel/tables';
 
 export function QueryEditButton({
   query,
@@ -202,7 +202,7 @@ function QueryExport({
               { expectedResponseCodes: [Http.CREATED] }
             )
               .then(async ({ data: reportJson }) => {
-                const report = new schema.models.SpReport.Resource(reportJson);
+                const report = new tables.SpReport.Resource(reportJson);
                 return report.rgetPromise('appResource');
               })
               .then((appResource) =>
@@ -227,6 +227,6 @@ function QueryExport({
 
 const getMaxLength = (): number | undefined =>
   f.min(
-    getField(schema.models.SpAppResource, 'name').length,
-    getField(schema.models.SpReport, 'name').length
+    getField(tables.SpAppResource, 'name').length,
+    getField(tables.SpReport, 'name').length
   );

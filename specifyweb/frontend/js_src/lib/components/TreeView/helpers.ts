@@ -7,10 +7,10 @@ import { ajax } from '../../utils/ajax';
 import type { RA, RR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import type { AnyTree } from '../DataModel/helperTypes';
-import { schema } from '../DataModel/schema';
 import { softFail } from '../Errors/Crash';
 import { strictGetTreeDefinitionItems } from '../InitialContext/treeRanks';
 import { getTransitionDuration } from '../UserPreferences/Hooks';
+import { tables } from '../DataModel/tables';
 
 export const fetchRows = async (fetchUrl: string) =>
   ajax<
@@ -197,7 +197,7 @@ export const formatTreeStats = (
   title: filterArray([
     commonText.colonLine({
       label: treeText.directCollectionObjectCount({
-        collectionObjectTable: schema.models.CollectionObject.label,
+        collectionObjectTable: tables.CollectionObject.label,
       }),
       value: nodeStats.directCount.toString(),
     }),
@@ -205,7 +205,7 @@ export const formatTreeStats = (
       ? undefined
       : commonText.colonLine({
           label: treeText.indirectCollectionObjectCount({
-            collectionObjectTable: schema.models.CollectionObject.label,
+            collectionObjectTable: tables.CollectionObject.label,
           }),
           value: nodeStats.childCount.toString(),
         }),

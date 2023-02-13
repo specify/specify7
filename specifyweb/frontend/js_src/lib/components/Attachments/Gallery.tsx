@@ -68,8 +68,8 @@ export function AttachmentGallery({
           <AttachmentCell
             attachment={attachment}
             key={index}
-            onViewRecord={(model, id): void =>
-              setViewRecord(new model.Resource({ id }))
+            onViewRecord={(table, id): void =>
+              setViewRecord(new table.Resource({ id }))
             }
           />
         ))}

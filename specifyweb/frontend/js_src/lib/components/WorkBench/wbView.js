@@ -20,7 +20,7 @@ import Handsontable from 'handsontable';
 
 import {Button} from '../Atoms/Button';
 import {Link} from '../Atoms/Link';
-import {getModel, schema, strictGetModel} from '../DataModel/schema';
+import {getTable, strictGetTable} from '../DataModel/tables';
 import {DataSetNameView} from './DataSetMeta';
 import {WBUtils} from './wbUtils';
 import {
@@ -71,6 +71,7 @@ import {resolveValidationMessage} from './resultsParser';
 import {backEndText} from '../../localization/backEnd';
 import {wbPlanText} from '../../localization/wbPlan';
 import {serializeResource} from '../DataModel/serializers';
+import {schema} from '../DataModel/schema';
 
 const metaKeys = [
   'isNew',
@@ -118,7 +119,7 @@ export const WBView = Backbone.View.extend({
     this.mappings /* :
       | undefined
       | {
-        baseTable: SpecifyModel;
+        baseTable: SpecifyTable;
         mustMatchTables: Set<keyof Tables>;
         lines: RA<SplitMappingsPath>;
         tableNames: RA<string>; // tableName of each column
@@ -372,7 +373,7 @@ export const WBView = Backbone.View.extend({
               this.mappings?.tableNames[mappingCol] ??
               tableIcon?.split('/').slice(-1)?.[0]?.split('.')?.[0];
             const tableLabel = isMapped
-              ? getModel(tableName)?.label ?? tableName ?? ''
+              ? getTable(tableName)?.label ?? tableName ?? ''
               : '';
             return `<div class="flex gap-1 items-center pl-4">
               ${
@@ -487,7 +488,7 @@ export const WBView = Backbone.View.extend({
                         .map(([tableName, recordId, label]) => {
                           const tableLabel =
                             label === ''
-                              ? strictGetModel(tableName).label
+                              ? strictGetTable(tableName).label
                               : label;
                           // REFACTOR: use new table icons
                           const tableIcon = getIcon(tableName) ?? unknownIcon;
@@ -696,7 +697,7 @@ export const WBView = Backbone.View.extend({
           headerName: this.mappings.lines[index].headerName,
         }))
         .map(async ({ tableName, fieldName, headerName }) => {
-          const pickList = getModel(tableName)
+          const pickList = getTable(tableName)
             ?.getField(fieldName)
             ?.getPickList();
           const definition =
@@ -1556,12 +1557,12 @@ export const WBView = Backbone.View.extend({
       this.mappings.baseTable.name,
       matches.mappingPath
     );
-    const model = getModel(tableName);
-    const resources = new model.LazyCollection({
+    const table = getTable(tableName);
+    const resources = new table.LazyCollection({
       filters: { id__in: matches.ids.join(',') },
     });
 
-    (hasTablePermission(model.name, 'read')
+    (hasTablePermission(table.name, 'read')
       ? resources.fetch({ limit: 0 })
       : Promise.resolve()
     ).then(() => {

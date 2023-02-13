@@ -13,7 +13,7 @@ import { fetchCollection } from '../DataModel/collection';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { getModelById, schema } from '../DataModel/schema';
+import { getTableById, tables } from '../DataModel/tables';
 import type { RecordSet } from '../DataModel/types';
 import { FormsDialog } from '../DataEntryTables';
 import { userInformation } from '../InitialContext/userInformation';
@@ -111,7 +111,7 @@ export function RecordSetsDialog({
               <tr>
                 <th scope="col">
                   <Button.LikeLink onClick={(): void => handleSort('name')}>
-                    {schema.models.RecordSet.label}
+                    {tables.RecordSet.label}
                     <SortIndicator fieldName="name" sortConfig={sortConfig} />
                   </Button.LikeLink>
                 </th>
@@ -119,10 +119,7 @@ export function RecordSetsDialog({
                   <Button.LikeLink
                     onClick={(): void => handleSort('timestampCreated')}
                   >
-                    {
-                      getField(schema.models.RecordSet, 'timestampCreated')
-                        .label
-                    }
+                    {getField(tables.RecordSet, 'timestampCreated').label}
                     <SortIndicator
                       fieldName="timestampCreated"
                       sortConfig={sortConfig}
@@ -192,11 +189,11 @@ export function RecordSetsDialog({
     ) : state.type === 'CreateState' ? (
       <FormsDialog
         onClose={handleClose}
-        onSelected={(model): void =>
+        onSelected={(table): void =>
           setState({
             type: 'EditState',
-            recordSet: new schema.models.RecordSet.Resource()
-              .set('dbTableId', model.tableId)
+            recordSet: new tables.RecordSet.Resource()
+              .set('dbTableId', table.tableId)
               .set('type', 0),
           })
         }
@@ -249,7 +246,7 @@ function Row({
               : undefined
           }
         >
-          <TableIcon label name={getModelById(recordSet.dbTableId).name} />
+          <TableIcon label name={getTableById(recordSet.dbTableId).name} />
           {recordSet.name}
         </Link.Default>
       </td>

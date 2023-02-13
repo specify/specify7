@@ -14,7 +14,7 @@ import { fetchLocalityDataFromResource } from '../Leaflet/localityRecordDataExtr
 import { LeafletMap } from '../Leaflet/Map';
 import { Dialog } from '../Molecules/Dialog';
 import { useAsyncState } from '../../hooks/useAsyncState';
-import { schema } from '../DataModel/schema';
+import { tables } from '../DataModel/tables';
 
 function LeafletDialog({
   locality,
@@ -42,7 +42,7 @@ function LeafletDialog({
       onClose={handleClose}
     >
       {localityText.notEnoughInformationToMap({
-        localityTable: schema.models.Locality.label,
+        localityTable: tables.Locality.label,
       })}
     </Dialog>
   ) : (

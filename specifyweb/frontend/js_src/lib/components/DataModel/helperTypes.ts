@@ -7,11 +7,11 @@ import type { Tables } from './types';
  * @remarks
  * This type is not meant for objects to be created directly of it.
  * Instead, use it in place of "any" as a generic argument to
- * SpecifyResource, SpecifyModel, Collection, SerializedResource or
- * SerializedModel when you don't care about a particular table.
+ * SpecifyResource, SpecifyTable, Collection, SerializedResource or
+ * SerializedRecord when you don't care about a particular table.
  *
  * When need to work with a particular schema, import the necessary
- * schema form ./datamodel.ts and use it in place of AnySchema
+ * schema form ./dataModel.ts and use it in place of AnySchema
  *
  * Note: typing support is not ideal when using AnySchema, as false type errors
  * may occur, thus prefer using specific table schema (or union of schemas)
@@ -77,12 +77,12 @@ export type CommonFields = {
  * A representation of an object of a particular schema as received from the
  * back-end or returned by `resourceToJson(resource)`
  */
-export type SerializedModel<SCHEMA extends AnySchema> = KeysToLowerCase<
+export type SerializedRecord<SCHEMA extends AnySchema> = KeysToLowerCase<
   Omit<SerializedResource<SCHEMA>, '_tableName'>
 >;
 
 /**
- * Like SerializedModel, but keys are in camelCase instead of lowercase
+ * Like SerializedRecord, but keys are in camelCase instead of lowercase
  *
  * This allows IDE's grammar checker to detect typos and prevent bugs
  */

@@ -17,10 +17,10 @@ import { Button } from '../Atoms/Button';
 import { Form } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { getModelById } from '../DataModel/schema';
+import { getTableById } from '../DataModel/tables';
 import type { RecordSet, SpQuery } from '../DataModel/types';
 import { useMenuItem } from '../Header/MenuContext';
-import { isTreeModel, treeRanksPromise } from '../InitialContext/treeRanks';
+import { isTreeTable, treeRanksPromise } from '../InitialContext/treeRanks';
 import { useTitle } from '../Molecules/AppTitle';
 import { hasPermission } from '../Permissions/helpers';
 import { usePref } from '../UserPreferences/usePref';
@@ -88,16 +88,16 @@ export function QueryBuilder({
   const [query, setQuery] = useResource(queryResource);
   useErrorContext('query', query);
 
-  const model = getModelById(query.contextTableId);
+  const table = getTableById(query.contextTableId);
   const buildInitialState = React.useCallback(
     () =>
       getInitialState({
         query,
         queryResource,
-        model,
+        table,
         autoRun,
       }),
-    [queryResource, model, autoRun]
+    [queryResource, table, autoRun]
   );
   const [state, dispatch] = React.useReducer(reducer, pendingState);
   React.useEffect(() => {
@@ -361,7 +361,7 @@ export function QueryBuilder({
                     const newMappingPath = filterArray([
                       ...state.mappingView.slice(0, -1),
                       typeof rest.newTableName === 'string' &&
-                      isTreeModel(rest.newTableName) &&
+                      isTreeTable(rest.newTableName) &&
                       !valueIsTreeRank(state.mappingView.at(-2))
                         ? formatTreeRank(anyTreeRank)
                         : undefined,
@@ -467,7 +467,7 @@ export function QueryBuilder({
           <QueryToolbar
             isDistinct={query.selectDistinct ?? false}
             isEmpty={isEmpty}
-            modelName={model.name}
+            tableName={table.name}
             showHiddenFields={showHiddenFields}
             onRunCountOnly={(): void => runQuery('count')}
             onSubmitClick={(): void =>
@@ -509,7 +509,7 @@ export function QueryBuilder({
             }
             fields={state.fields}
             forceCollection={forceCollection}
-            model={model}
+            table={table}
             queryResource={queryResource}
             queryRunCount={state.queryRunCount}
             recordSetId={recordSet?.id}

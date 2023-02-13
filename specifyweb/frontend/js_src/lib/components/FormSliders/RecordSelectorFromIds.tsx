@@ -11,7 +11,6 @@ import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
 import type { FormMode } from '../FormParse';
 import { ResourceView } from '../Forms/ResourceView';
 import { saveFormUnloadProtect } from '../Forms/Save';
@@ -20,6 +19,7 @@ import { hasTablePermission } from '../Permissions/helpers';
 import { SetUnloadProtectsContext } from '../Router/Router';
 import type { RecordSelectorProps } from './RecordSelector';
 import { useRecordSelector } from './RecordSelector';
+import { tables } from '../DataModel/tables';
 
 /**
  * A Wrapper for RecordSelector that allows to specify list of records by their
@@ -30,9 +30,9 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   newResource,
   onSlide: handleSlide,
   defaultIndex,
-  model,
+  table,
   viewName,
-  title = model.label,
+  title = table.label,
   headerButtons,
   dialog,
   isDependent,
@@ -73,7 +73,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   const [records, setRecords] = React.useState<
     RA<SpecifyResource<SCHEMA> | undefined>
   >(() =>
-    ids.map((id) => (id === undefined ? undefined : new model.Resource({ id })))
+    ids.map((id) => (id === undefined ? undefined : new table.Resource({ id })))
   );
 
   const previousIds = React.useRef(ids);
@@ -82,14 +82,14 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
       ids.map((id, index) => {
         if (id === undefined) return undefined;
         else if (records[index]?.id === id) return records[index];
-        else return new model.Resource({ id });
+        else return new table.Resource({ id });
       })
     );
 
     return (): void => {
       previousIds.current = ids;
     };
-  }, [ids, model]);
+  }, [ids, table]);
 
   const [index, setIndex] = useTriggerState(defaultIndex ?? ids.length - 1);
   React.useEffect(
@@ -120,7 +120,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   } = useRecordSelector({
     ...rest,
     index,
-    model,
+    table,
     records:
       typeof newResource === 'object' ? [...records, newResource] : records,
     totalCount: rest.totalCount + (typeof newResource === 'object' ? 1 : 0),
@@ -170,12 +170,12 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
 
   const addLabel = isInRecordSet
     ? formsText.addToRecordSet({
-        recordSetTable: schema.models.RecordSet.label,
+        recordSetTable: tables.RecordSet.label,
       })
     : commonText.add();
   const removeLabel = isInRecordSet
     ? formsText.removeFromRecordSet({
-        recordSetTable: schema.models.RecordSet.label,
+        recordSetTable: tables.RecordSet.label,
       })
     : commonText.delete();
   return (
@@ -188,7 +188,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
             <DataEntry.Visit
               resource={!isDependent && dialog !== false ? resource : undefined}
             />
-            {hasTablePermission(model.name, isDependent ? 'create' : 'read') &&
+            {hasTablePermission(table.name, isDependent ? 'create' : 'read') &&
             typeof handleAdding === 'function' ? (
               <DataEntry.Add
                 aria-label={addLabel}
@@ -226,7 +226,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
         onAdd={handleClone}
         onClose={handleClose}
         onDeleted={
-          resource?.isNew() === true || hasTablePermission(model.name, 'delete')
+          resource?.isNew() === true || hasTablePermission(table.name, 'delete')
             ? handleRemove?.bind(undefined, 'deleteButton')
             : undefined
         }

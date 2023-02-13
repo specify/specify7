@@ -42,13 +42,13 @@ export function useResourceView<SCHEMA extends AnySchema>({
   isLoading,
   resource,
   mode,
-  viewName = resource?.specifyModel.view,
+  viewName = resource?.specifyTable.view,
   isSubForm,
 }: ResourceViewProps<SCHEMA>): ResourceViewState {
   // Update title when resource changes
   const [formatted, setFormatted] = React.useState<LocalizedString>('');
   React.useEffect(() => {
-    setFormatted(resource?.specifyModel.label ?? commonText.loading());
+    setFormatted(resource?.specifyTable.label ?? commonText.loading());
     return typeof resource === 'object'
       ? resourceOn(
           resource,
@@ -74,9 +74,9 @@ export function useResourceView<SCHEMA extends AnySchema>({
   });
 
   const viewDefinition = useViewDefinition({
-    model: resource?.specifyModel,
+    table: resource?.specifyTable,
     viewName,
-    fallbackViewName: resource?.specifyModel.view,
+    fallbackViewName: resource?.specifyTable.view,
     formType: 'form',
     mode,
   });
@@ -101,8 +101,8 @@ export function useResourceView<SCHEMA extends AnySchema>({
     resource === undefined
       ? ''
       : resource.isNew()
-      ? formsText.newResourceTitle({ tableName: resource.specifyModel.label })
-      : resource.specifyModel.label;
+      ? formsText.newResourceTitle({ tableName: resource.specifyTable.label })
+      : resource.specifyTable.label;
   const title =
     formatted.length > 0
       ? commonText.colonLine({
@@ -119,7 +119,7 @@ export function useResourceView<SCHEMA extends AnySchema>({
       ) : (
         <>
           {typeof resource === 'object' && (
-            <TableIcon label name={resource.specifyModel.name} />
+            <TableIcon label name={resource.specifyTable.name} />
           )}
           {formHeaderFormat === 'full' ? title : formatted}
         </>

@@ -1,7 +1,7 @@
 import { ajax } from '../../utils/ajax';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import type { AnySchema, SerializedModel } from '../DataModel/helperTypes';
+import type { AnySchema, SerializedRecord } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { formatUrl } from '../Router/queryString';
 
@@ -14,14 +14,14 @@ export const queryCbxExtendedSearch = async <SCHEMA extends AnySchema>(
   templateResource: SpecifyResource<SCHEMA>,
   forceCollection: number | undefined
 ): Promise<RA<SpecifyResource<SCHEMA>>> =>
-  ajax<RA<SerializedModel<SCHEMA>>>(
+  ajax<RA<SerializedRecord<SCHEMA>>>(
     formatUrl(
-      `/express_search/querycbx/${templateResource.specifyModel.name.toLowerCase()}/`,
+      `/express_search/querycbx/${templateResource.specifyTable.name.toLowerCase()}/`,
       {
         ...Object.fromEntries(
           filterArray(
             Object.entries(templateResource.toJSON()).map(([key, value]) => {
-              const field = templateResource.specifyModel.getField(key);
+              const field = templateResource.specifyTable.getField(key);
               return field && !field.isRelationship && Boolean(value)
                 ? [key, value]
                 : undefined;
@@ -37,5 +37,5 @@ export const queryCbxExtendedSearch = async <SCHEMA extends AnySchema>(
       headers: { Accept: 'application/json' },
     }
   ).then(({ data: results }) =>
-    results.map((result) => new templateResource.specifyModel.Resource(result))
+    results.map((result) => new templateResource.specifyTable.Resource(result))
   );

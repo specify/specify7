@@ -28,9 +28,8 @@ import { fetchCollection } from '../DataModel/collection';
 import { toTable } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
-import { schema } from '../DataModel/schema';
 import type { LiteralField } from '../DataModel/specifyField';
-import type { Collection, SpecifyModel } from '../DataModel/specifyModel';
+import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
 import type {
   CollectionObject,
   Disposal,
@@ -52,6 +51,7 @@ import {
   getPrepsAvailableForLoanRs,
 } from './helpers';
 import { PrepDialog } from './PrepDialog';
+import { tables } from '../DataModel/tables';
 
 export function InteractionDialog({
   table,
@@ -59,10 +59,10 @@ export function InteractionDialog({
   action,
   itemCollection,
 }: {
-  readonly table: SpecifyModel<CollectionObject | Disposal | Gift | Loan>;
+  readonly table: SpecifyTable<CollectionObject | Disposal | Gift | Loan>;
   readonly onClose: () => void;
   readonly action: {
-    readonly model: SpecifyModel<Disposal | Gift | Loan>;
+    readonly table: SpecifyTable<Disposal | Gift | Loan>;
     readonly name?: string;
   };
   readonly itemCollection?: Collection<
@@ -76,6 +76,7 @@ export function InteractionDialog({
       ? 'disposalNumber'
       : 'catalogNumber'
   );
+  const { parser, split, attributes } = useParser(searchField);
 
   const [state, setState] = React.useState<
     | State<
@@ -102,7 +103,6 @@ export function InteractionDialog({
     []
   );
 
-  const { parser, split, attributes } = useParser(searchField);
   const { validationRef, inputRef, setValidation } =
     useValidation<HTMLTextAreaElement>();
   const [catalogNumbers, setCatalogNumbers] = React.useState<string>('');
@@ -171,7 +171,7 @@ export function InteractionDialog({
     }
     if (prepsData.length === 0) {
       if (recordSet === undefined && typeof itemCollection === 'object') {
-        const item = new itemCollection.model.specifyModel.Resource();
+        const item = new itemCollection.model.specifyTable.Resource();
         f.maybe(toTable(item, 'LoanPreparation'), (loanPreparation) => {
           loanPreparation.set('quantityReturned', 0);
           loanPreparation.set('quantityResolved', 0);
@@ -215,13 +215,13 @@ export function InteractionDialog({
     <Dialog
       buttons={commonText.close()}
       header={interactionsText.returnedPreparations({
-        tablePreparation: schema.models.Preparation.label,
+        tablePreparation: tables.Preparation.label,
       })}
       onClose={handleClose}
     >
       {interactionsText.returnedAndSaved({
         count: state.result,
-        tablePreparation: schema.models.Preparation.label,
+        tablePreparation: tables.Preparation.label,
       })}
     </Dialog>
   ) : state.type === 'PreparationSelectState' &&
@@ -254,7 +254,7 @@ export function InteractionDialog({
                 >
                   {interactionsText.addUnassociated()}
                 </Button.Blue>
-              ) : table.name === 'Loan' || action.model.name === 'Loan' ? (
+              ) : table.name === 'Loan' || action.table.name === 'Loan' ? (
                 <Link.Blue href={getResourceViewUrl('Loan')}>
                   {interactionsText.withoutPreparations()}
                 </Link.Blue>
@@ -265,8 +265,8 @@ export function InteractionDialog({
             typeof itemCollection === 'object'
               ? interactionsText.addItems()
               : table.name === 'Loan'
-              ? interactionsText.recordReturn({ modelName: table.label })
-              : interactionsText.createRecord({ modelName: action.model.name })
+              ? interactionsText.recordReturn({ tableName: table.label })
+              : interactionsText.createRecord({ tableName: action.table.name })
           }
           onClose={handleClose}
         >

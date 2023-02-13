@@ -249,7 +249,7 @@ describe('formatterToParser', () => {
 
   test('without autonumbering', () => {
     const field = {
-      model: {
+      table: {
         name: 'CollectionObject',
       },
       name: 'altCatalogNumber',

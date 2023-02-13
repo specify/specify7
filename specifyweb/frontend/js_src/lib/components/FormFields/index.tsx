@@ -40,14 +40,14 @@ const fieldRenderers: {
     field,
     fieldDefinition: { defaultValue, printOnSave, label },
   }) {
-    const table = resource?.specifyModel ?? field?.model;
+    const table = resource?.specifyTable ?? field?.table;
     return printOnSave ? (
       table === undefined ? null : (
         <PrintOnSave
           defaultValue={defaultValue}
           field={field}
           id={id}
-          model={table}
+          table={table}
           name={name}
           text={label}
         />
@@ -131,7 +131,7 @@ const fieldRenderers: {
         isDisabled={false}
         isRequired={isRequired}
         mode={mode}
-        model={resource}
+        table={resource}
         pickListName={pickList}
         resource={resource}
       />

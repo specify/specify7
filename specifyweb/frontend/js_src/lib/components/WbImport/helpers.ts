@@ -15,10 +15,10 @@ import { fullDateFormat } from '../../utils/parser/dateFormat';
 import type { GetSet, IR, RA } from '../../utils/types';
 import { uniquifyDataSetName } from '../../utils/uniquifyName';
 import { getField } from '../DataModel/helpers';
-import { schema } from '../DataModel/schema';
 import { fileToText } from '../Molecules/FilePicker';
 import { uniquifyHeaders } from '../WbPlanView/headerHelper';
 import type { Dataset } from '../WbPlanView/Wrapped';
+import { tables } from '../DataModel/tables';
 
 /** Remove the extension from the file name */
 export const extractFileName = (fileName: string): string =>
@@ -56,7 +56,7 @@ export const getMaxDataSetLength = (): number | undefined =>
      * to check the length limit in both places. See more:
      * https://github.com/specify/specify7/issues/1203
      */
-    getField(schema.models.RecordSet, 'name').length,
+    getField(tables.RecordSet, 'name').length,
     dataSetMaxLength
   );
 

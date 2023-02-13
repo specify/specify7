@@ -17,7 +17,7 @@ import type { IR, RA, RR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { camelToKebab, upperToKebab } from '../../utils/utils';
 import { iconClassName, icons } from '../Atoms/Icons';
-import { getModel } from '../DataModel/schema';
+import { getTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import {
   TableIcon,
@@ -283,7 +283,7 @@ function Option({
       'bg-[color:var(--custom-select-accent)]'
     );
 
-  const tableLabel = getModel(tableName ?? '')?.label;
+  const tableLabel = getTable(tableName ?? '')?.label;
 
   const fullTitle = filterArray([
     title ?? (typeof optionLabel === 'string' ? optionLabel : tableLabel),

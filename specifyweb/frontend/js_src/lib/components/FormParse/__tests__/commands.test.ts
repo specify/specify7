@@ -1,7 +1,7 @@
 import { requireContext } from '../../../tests/helpers';
 import { strictParseXml } from '../../AppResources/codeMirrorLinters';
-import { schema } from '../../DataModel/schema';
 import { parseUiCommand } from '../commands';
+import { tables } from '../../DataModel/tables';
 
 requireContext();
 
@@ -9,7 +9,7 @@ describe('parseUiCommand', () => {
   test('Simplest case', () => {
     jest.spyOn(console, 'error').mockImplementation();
     expect(
-      parseUiCommand(strictParseXml('<cell />'), schema.models.CollectionObject)
+      parseUiCommand(strictParseXml('<cell />'), tables.CollectionObject)
     ).toEqual({
       commandDefinition: {
         type: 'Unsupported',
@@ -24,7 +24,7 @@ describe('parseUiCommand', () => {
     expect(
       parseUiCommand(
         strictParseXml('<cell name="test" label="test2" />'),
-        schema.models.CollectionObject
+        tables.CollectionObject
       )
     ).toEqual({
       commandDefinition: {
@@ -39,7 +39,7 @@ describe('parseUiCommand', () => {
     expect(
       parseUiCommand(
         strictParseXml('<cell name="generateLabelBtn" label="FINDNEXT" />'),
-        schema.models.CollectionObject
+        tables.CollectionObject
       )
     ).toEqual({
       commandDefinition: {
@@ -52,7 +52,7 @@ describe('parseUiCommand', () => {
     expect(
       parseUiCommand(
         strictParseXml('<cell name="someName" label="ShowLoansBtn" />'),
-        schema.models.Preparation
+        tables.Preparation
       )
     ).toEqual({
       commandDefinition: {
@@ -65,7 +65,7 @@ describe('parseUiCommand', () => {
     expect(
       parseUiCommand(
         strictParseXml('<cell name="ReturnLoan" label="generateLabelBtn" />'),
-        schema.models.Loan
+        tables.Loan
       )
     ).toEqual({
       commandDefinition: {

@@ -8,7 +8,7 @@ import { Input } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import { syncFieldFormat } from '../Formatters/fieldFormat';
 import { usePref } from '../UserPreferences/usePref';
 import { getAuditRecordFormatter } from './AuditLogFormatter';
@@ -17,14 +17,14 @@ import type { QueryResultRow } from './Results';
 import { queryIdField } from './Results';
 
 export function QueryResultsTable({
-  model,
+  table,
   fieldSpecs,
   hasIdField,
   results,
   selectedRows,
   onSelected: handleSelected,
 }: {
-  readonly model: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly fieldSpecs: RA<QueryFieldSpec>;
   readonly hasIdField: boolean;
   readonly results: RA<QueryResultRow>;
@@ -51,7 +51,7 @@ export function QueryResultsTable({
             selectedRows.has(results[index][queryIdField] as number)
           }
           key={index}
-          model={model}
+          table={table}
           recordFormatter={recordFormatter}
           result={result}
           onSelected={
@@ -67,7 +67,7 @@ export function QueryResultsTable({
 }
 
 function Row({
-  model,
+  table,
   fieldSpecs,
   hasIdField,
   result,
@@ -76,7 +76,7 @@ function Row({
   isLast,
   onSelected: handleSelected,
 }: {
-  readonly model: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly fieldSpecs: RA<QueryFieldSpec>;
   readonly hasIdField: boolean;
   readonly result: QueryResultRow;
@@ -93,10 +93,10 @@ function Row({
   >(
     React.useCallback((): SpecifyResource<AnySchema> | false => {
       if (!hasIdField) return false;
-      return new model.Resource({
+      return new table.Resource({
         id: result[queryIdField],
       });
-    }, [hasIdField, model, result])
+    }, [hasIdField, table, result])
   );
   const [formattedValues] = useAsyncState(
     React.useCallback(

@@ -9,7 +9,7 @@ import type {
 } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
 import type { LiteralField, Relationship } from './specifyField';
-import type { SpecifyModel } from './specifyModel';
+import type { SpecifyTable } from './specifyTable';
 import type { Tables } from './types';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 
@@ -18,13 +18,13 @@ export const isResourceOfType = <TABLE_NAME extends keyof Tables>(
   tableName: TABLE_NAME
   // @ts-expect-error
 ): resource is SpecifyResource<Tables[TABLE_NAME]> =>
-  resource.specifyModel.name === tableName;
+  resource.specifyTable.name === tableName;
 
 export const toTable = <TABLE_NAME extends keyof Tables>(
   resource: SpecifyResource<AnySchema>,
   tableName: TABLE_NAME
 ): SpecifyResource<Tables[TABLE_NAME]> | undefined =>
-  resource.specifyModel.name === tableName ? resource : undefined;
+  resource.specifyTable.name === tableName ? resource : undefined;
 
 export const toResource = <TABLE_NAME extends keyof Tables>(
   resource: SerializedResource<AnySchema>,
@@ -35,17 +35,17 @@ export const toResource = <TABLE_NAME extends keyof Tables>(
     : undefined;
 
 /**
- * The model.field has a very broad type to reduce type conflicts in components
+ * The table.field has a very broad type to reduce type conflicts in components
  * that deal with generic schemas (accept AnySchema or a SCHEMA extends AnySchema)
  */
 export const getField = <
   SCHEMA extends Tables[keyof Tables],
   FIELD extends TableFields<SCHEMA>
 >(
-  model: SpecifyModel<SCHEMA>,
+  table: SpecifyTable<SCHEMA>,
   name: FIELD
 ): FIELD extends keyof SCHEMA['fields'] ? LiteralField : Relationship =>
-  model.field[name] as FIELD extends keyof SCHEMA['fields']
+  table.field[name] as FIELD extends keyof SCHEMA['fields']
     ? LiteralField
     : Relationship;
 
@@ -58,7 +58,7 @@ export const toTables = <TABLE_NAME extends keyof Tables>(
   resource: SpecifyResource<AnySchema>,
   tableNames: RA<TABLE_NAME>
 ): SpecifyResource<Tables[TABLE_NAME]> | undefined =>
-  f.includes(tableNames, resource.specifyModel.name) ? resource : undefined;
+  f.includes(tableNames, resource.specifyTable.name) ? resource : undefined;
 
 /**
  * Example usage:

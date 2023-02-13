@@ -4,9 +4,9 @@ import { reportsText } from '../../../localization/report';
 import { requireContext } from '../../../tests/helpers';
 import { strictParseXml } from '../../AppResources/codeMirrorLinters';
 import { getField } from '../../DataModel/helpers';
-import { schema } from '../../DataModel/schema';
 import { parseFormField } from '../fields';
 import { generateInit } from './helpers';
+import { tables } from '../../DataModel/tables';
 
 requireContext();
 
@@ -17,8 +17,8 @@ const parse = (
   parseFormField({
     cell: strictParseXml(xml),
     getProperty: generateInit({}),
-    model: schema.models.CollectionObject,
-    fields: [schema.models.CollectionObject.strictGetField('catalogNumber')],
+    table: tables.CollectionObject,
+    fields: [tables.CollectionObject.strictGetField('catalogNumber')],
     ...parameters,
   });
 
@@ -192,7 +192,7 @@ describe('parseFormField', () => {
     expect(
       parse('<cell uiType="querycbx"/>', {
         getProperty: generateInit({ cloneBtn: 'TRUE', name: 'NAME' }),
-        fields: [schema.models.CollectionObject.strictGetField('accession')],
+        fields: [tables.CollectionObject.strictGetField('accession')],
       })
     ).toEqual({
       isReadOnly: false,
@@ -204,7 +204,7 @@ describe('parseFormField', () => {
   test('Readonly Query Combo Box', () =>
     expect(
       parse('<cell uiType="querycbx" readOnly="true" />', {
-        fields: [schema.models.CollectionObject.strictGetField('accession')],
+        fields: [tables.CollectionObject.strictGetField('accession')],
       })
     ).toEqual({
       isReadOnly: true,
@@ -242,7 +242,7 @@ describe('parseFormField', () => {
   test('Text component is converted into partial date for data fields', () =>
     expect(
       parse('<cell uiType="text" />', {
-        fields: [getField(schema.models.CollectionObject, 'timestampCreated')],
+        fields: [getField(tables.CollectionObject, 'timestampCreated')],
       })
     ).toEqual({
       isReadOnly: false,
@@ -272,7 +272,7 @@ test('parseFormField handles fields without uiType', () => {
     parseFormField({
       cell,
       getProperty: generateInit({}),
-      model: schema.models.CollectionObject,
+      table: tables.CollectionObject,
       fields: undefined,
     })
   ).toEqual({

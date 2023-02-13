@@ -1,6 +1,5 @@
 /**
- * Helper methods for working with Specify data model as parsed by WbPlanView
- * model fetcher
+ * Helper methods for working with Specify data model
  *
  * @module
  */
@@ -8,12 +7,12 @@
 import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { group } from '../../utils/utils';
-import { strictGetModel } from '../DataModel/schema';
+import { strictGetTable } from '../DataModel/tables';
 import type { Relationship } from '../DataModel/specifyField';
 import type { Tables } from '../DataModel/types';
 import {
   getTreeDefinitionItems,
-  isTreeModel,
+  isTreeTable,
 } from '../InitialContext/treeRanks';
 import type { MappingPath } from './Mapper';
 import {
@@ -52,7 +51,7 @@ export function findRequiredMissingFields(
   // Used internally in a recursion. Current mapping path
   path: MappingPath = []
 ): RA<MappingPath> {
-  const model = strictGetModel(tableName);
+  const table = strictGetTable(tableName);
 
   if (mappings === undefined) return [];
 
@@ -73,7 +72,7 @@ export function findRequiredMissingFields(
       )
     );
   // Handle trees
-  else if (isTreeModel(tableName) && !valueIsTreeRank(path.at(-1)))
+  else if (isTreeTable(tableName) && !valueIsTreeRank(path.at(-1)))
     return (
       getTreeDefinitionItems(tableName as 'Geography', false)?.flatMap(
         ({ name: rankName }) => {
@@ -95,7 +94,7 @@ export function findRequiredMissingFields(
 
   return [
     // WB does not allow mapping to relationships in tree tables
-    ...(isTreeModel(tableName) ? [] : model.relationships).flatMap(
+    ...(isTreeTable(tableName) ? [] : table.relationships).flatMap(
       (relationship) => {
         const localPath = [...path, relationship.name];
 
@@ -111,7 +110,7 @@ export function findRequiredMissingFields(
 
         if (relationship.name in indexedMappings)
           return findRequiredMissingFields(
-            relationship.relatedModel.name,
+            relationship.relatedTable.name,
             indexedMappings[relationship.name],
             mustMatchPreferences,
             relationship,
@@ -119,7 +118,7 @@ export function findRequiredMissingFields(
           );
         else if (
           relationship.overrides.isRequired &&
-          !relationship.relatedModel.overrides.isSystem &&
+          !relationship.relatedTable.overrides.isSystem &&
           !mustMatchPreferences[tableName]
         )
           return [localPath];
@@ -127,7 +126,7 @@ export function findRequiredMissingFields(
       }
     ),
     ...filterArray(
-      model.literalFields.map((field) =>
+      table.literalFields.map((field) =>
         !(field.name in indexedMappings) &&
         field.overrides.isRequired &&
         !mustMatchPreferences[tableName]
@@ -142,7 +141,7 @@ export const isCircularRelationship = (
   parentRelationship: Relationship,
   relationship: Relationship
 ): boolean =>
-  (parentRelationship.relatedModel === relationship.model &&
+  (parentRelationship.relatedTable === relationship.table &&
     parentRelationship.otherSideName === relationship.name) ||
-  (relationship.relatedModel === parentRelationship.model &&
+  (relationship.relatedTable === parentRelationship.table &&
     relationship.otherSideName === parentRelationship.name);

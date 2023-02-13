@@ -1,9 +1,7 @@
 import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
-import { getField } from '../DataModel/helpers';
-import { schema } from '../DataModel/schema';
-import type { Collection, SpecifyModel } from '../DataModel/specifyModel';
+import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
 import type {
   Disposal,
   DisposalPreparation,
@@ -27,7 +25,7 @@ export function FormTableInteraction(
       {isOpen && typeof props.collection.related === 'object' ? (
         <InteractionDialog
           action={{
-            model: props.collection.related.specifyModel as SpecifyModel<
+            table: props.collection.related.specifyTable as SpecifyTable<
               Disposal | Gift | Loan
             >,
           }}
@@ -36,11 +34,6 @@ export function FormTableInteraction(
               DisposalPreparation | GiftPreparation | LoanPreparation
             >
           }
-          searchField={getField(
-            schema.models.CollectionObject,
-            'catalogNumber'
-          )}
-          table={schema.models.CollectionObject}
           onClose={handleClose}
         />
       ) : undefined}

@@ -13,7 +13,6 @@ import { LoadingContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceApiUrl, resourceOn } from '../DataModel/resource';
-import { schema } from '../DataModel/schema';
 import type { PickList } from '../DataModel/types';
 import type {
   DefaultComboBoxProps,
@@ -23,6 +22,7 @@ import { AutoComplete } from '../Molecules/AutoComplete';
 import { Dialog } from '../Molecules/Dialog';
 import { hasToolPermission } from '../Permissions/helpers';
 import { PickListTypes } from './definitions';
+import { tables } from '../DataModel/tables';
 
 export function PickListComboBox(
   props: DefaultComboBoxProps & {
@@ -40,22 +40,22 @@ export function PickListComboBox(
       : (value as number | string | undefined)?.toString() ?? null;
   }, [props.resource, props.field?.name]);
 
-  const relatedModel = props.field.isRelationship
-    ? props.field.relatedModel.name
+  const relatedTable = props.field.isRelationship
+    ? props.field.relatedTable.name
     : undefined;
   const items = React.useMemo(
     () =>
-      typeof relatedModel === 'string'
+      typeof relatedTable === 'string'
         ? props.items?.map((item) =>
             typeof f.parseInt(item.value) === 'number'
               ? {
                   ...item,
-                  value: getResourceApiUrl(relatedModel, item.value),
+                  value: getResourceApiUrl(relatedTable, item.value),
                 }
               : item
           )
         : props.items,
-    [props.items, relatedModel]
+    [props.items, relatedTable]
   );
 
   const [value, setValue] = React.useState<string | null>(getValue);
@@ -117,10 +117,10 @@ export function PickListComboBox(
   }, [items, props.resource]);
 
   const errors = useSaveBlockers({
-    resource: props.model,
+    resource: props.table,
     fieldName: props.field.name,
   });
-  const isRemote = props.resource !== props.model;
+  const isRemote = props.resource !== props.table;
   const { validationRef } = useValidation(isRemote ? '' : errors);
 
   const [pendingNewValue, setPendingNewValue] = React.useState<
@@ -271,7 +271,7 @@ function AddingToPicklist({
       onClose={handleClose}
     >
       {formsText.invalidNumericPicklistValue({
-        pickListTable: schema.models.PickList.label,
+        pickListTable: tables.PickList.label,
       })}
     </Dialog>
   ) : (
@@ -284,7 +284,7 @@ function AddingToPicklist({
                 pickList
                   .rgetCollection('pickListItems')
                   .then(async (items) => {
-                    const item = new schema.models.PickListItem.Resource();
+                    const item = new tables.PickListItem.Resource();
                     item.set('title', value);
                     item.set('value', value);
                     items.add(item);
@@ -301,12 +301,12 @@ function AddingToPicklist({
         </>
       }
       header={formsText.addToPickListConfirmation({
-        pickListTable: schema.models.PickList.label,
+        pickListTable: tables.PickList.label,
       })}
       onClose={handleClose}
     >
       {formsText.addToPickListConfirmationDescription({
-        pickListTable: schema.models.PickList.label,
+        pickListTable: tables.PickList.label,
         value,
         pickListName: pickList.get('name'),
       })}

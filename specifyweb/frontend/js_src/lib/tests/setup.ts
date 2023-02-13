@@ -14,7 +14,7 @@ import failOnConsole from 'jest-fail-on-console';
 failOnConsole();
 
 /*
- * TEST: add a custom serializer for the SpecifyModel and
+ * TEST: add a custom serializer for the SpecifyTable and
  *    LiteralField/Relationship objects
  */
 

@@ -3,7 +3,6 @@ import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { toTable } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
 import type { CollectionObject, Taxon } from '../DataModel/types';
 import { treeRanksPromise } from '../InitialContext/treeRanks';
 import { userInformation } from '../InitialContext/userInformation';
@@ -14,6 +13,7 @@ import {
   formatLocalityDataObject,
   parseLocalityPinFields,
 } from '../Leaflet/localityRecordDataExtractor';
+import { tables } from '../DataModel/tables';
 
 export type OccurrenceData = {
   readonly collectionObjectId: number;
@@ -149,7 +149,7 @@ export const fetchLocalOccurrences = async (
           ])
         ),
         fetchMoreData: async (): Promise<LocalityData | false> => {
-          const locality = new schema.models.Locality.Resource({
+          const locality = new tables.Locality.Resource({
             id: localityId,
           });
           return fetchLocalityDataFromResource(
@@ -157,10 +157,10 @@ export const fetchLocalOccurrences = async (
             false,
             (mappingPathParts, resource) =>
               (typeof resource !== 'object' ||
-                !('specifyModel' in resource) ||
-                ((resource.specifyModel.name !== 'CollectionObject' ||
+                !('specifyTable' in resource) ||
+                ((resource.specifyTable.name !== 'CollectionObject' ||
                   resource.id === collectionObjectId) &&
-                  (resource.specifyModel.name !== 'CollectingEvent' ||
+                  (resource.specifyTable.name !== 'CollectingEvent' ||
                     resource.id === collectingEventId))) &&
               defaultRecordFilterFunction(mappingPathParts, resource)
           );

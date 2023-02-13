@@ -3,21 +3,21 @@ import { removeKey } from '../../utils/utils';
 import { addMissingFields } from './addMissingFields';
 import type {
   AnySchema,
-  SerializedModel,
+  SerializedRecord,
   SerializedResource,
 } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
 import { parseResourceUrl, resourceToJson } from './resource';
-import { schema, strictGetModel } from './schema';
+import { strictGetTable, tables } from './tables';
 import type { Tables } from './types';
 
 /** Like resource.toJSON(), but keys are converted to camel case */
 export const serializeResource = <SCHEMA extends AnySchema>(
-  resource: SerializedModel<SCHEMA> | SpecifyResource<SCHEMA>
+  resource: SerializedRecord<SCHEMA> | SpecifyResource<SCHEMA>
 ): SerializedResource<SCHEMA> =>
-  serializeModel<SCHEMA>(
+  serializeRecord<SCHEMA>(
     'toJSON' in resource ? resourceToJson(resource) : resource,
-    (resource as SpecifyResource<SCHEMA>)?.specifyModel?.name
+    (resource as SpecifyResource<SCHEMA>)?.specifyTable?.name
   );
 
 const specialFields = new Set([
@@ -28,11 +28,11 @@ const specialFields = new Set([
 ]);
 
 /** Recursive helper for serializeResource */
-function serializeModel<SCHEMA extends AnySchema>(
-  resource: SerializedModel<SCHEMA>,
+function serializeRecord<SCHEMA extends AnySchema>(
+  resource: SerializedRecord<SCHEMA>,
   tableName?: keyof Tables
 ): SerializedResource<SCHEMA> {
-  const model = strictGetModel(
+  const table = strictGetTable(
     defined(
       (tableName as SCHEMA['tableName']) ??
         ('_tableName' in resource
@@ -50,10 +50,10 @@ function serializeModel<SCHEMA extends AnySchema>(
       }`
     )
   );
-  const fields = [...model.fields.map(({ name }) => name), model.idField.name];
+  const fields = [...table.fields.map(({ name }) => name), table.idField.name];
 
   return addMissingFields(
-    model.name,
+    table.name,
     Object.fromEntries(
       Object.entries(resource).map(([rawFieldName, value]) => {
         const lowerCaseFieldName = rawFieldName.toLowerCase();
@@ -67,7 +67,7 @@ function serializeModel<SCHEMA extends AnySchema>(
             !specialFields.has(rawFieldName)
           )
             console.warn(
-              `Trying to serialize unknown field ${rawFieldName} for table ${model.name}`,
+              `Trying to serialize unknown field ${rawFieldName} for table ${table.name}`,
               resource
             );
         }
@@ -76,22 +76,22 @@ function serializeModel<SCHEMA extends AnySchema>(
           value !== null &&
           !specialFields.has(camelFieldName)
         ) {
-          const field = model.getField(rawFieldName);
+          const field = table.getField(rawFieldName);
           const tableName =
             field === undefined || !field.isRelationship
               ? undefined
-              : field.relatedModel.name;
+              : field.relatedTable.name;
           return [
             camelFieldName,
             Array.isArray(value)
               ? value.map((value) =>
-                  serializeModel(
-                    value as unknown as SerializedModel<SCHEMA>,
+                  serializeRecord(
+                    value as unknown as SerializedRecord<SCHEMA>,
                     tableName
                   )
                 )
-              : serializeModel(
-                  value as unknown as SerializedModel<AnySchema>,
+              : serializeRecord(
+                  value as unknown as SerializedRecord<AnySchema>,
                   tableName
                 ),
           ];
@@ -102,9 +102,9 @@ function serializeModel<SCHEMA extends AnySchema>(
 }
 
 export const deserializeResource = <SCHEMA extends AnySchema>(
-  serializedResource: SerializedModel<SCHEMA> | SerializedResource<SCHEMA>
+  serializedResource: SerializedRecord<SCHEMA> | SerializedResource<SCHEMA>
 ): SpecifyResource<SCHEMA> =>
-  new schema.models[
+  new tables[
     /**
      * This assertion, while not required by TypeScript, is needed to fix
      * a typechecking performance issue (it was taking 5s to typecheck this

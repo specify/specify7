@@ -121,7 +121,7 @@ export const f = {
    * @remarks
    * Useful not just for performance reasons, but also for delaying evaluation
    * of an object until the first time it is needed (i.e., if object is in
-   * the global scope, and depends on the datamodel, delaying evaluation
+   * the global scope, and depends on the dataModel, delaying evaluation
    * allows for creation of the object only after schema is loaded)
    *
    * Additionally, this function has commonly used to avoid circular by delaying

@@ -22,7 +22,6 @@ import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
 import type { FilterTablesByEndsWith } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
 import type { TaxonTreeDef } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { ResourceView } from '../Forms/ResourceView';
@@ -35,6 +34,7 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { hasPermission, hasTreeAccess } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
 import { OverlayContext } from '../Router/Router';
+import { tables } from '../DataModel/tables';
 
 export function TreeSelectOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -117,8 +117,7 @@ export function TreeSelectDialog({
                         }}
                       >
                         <TableIcon label={false} name={treeName} />
-                        {treeDefinition?.get('name') ??
-                          schema.models[treeName].label}
+                        {treeDefinition?.get('name') ?? tables[treeName].label}
                       </Link.Default>
                       {typeof treeDefinition === 'object' && (
                         <EditTreeDefinition treeDefinition={treeDefinition} />

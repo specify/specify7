@@ -1604,31 +1604,23 @@ export const preferenceDefinitions = {
 ensure<GenericPreferencesCategories>()(preferenceDefinitions);
 
 // Use tree table labels as titles for the tree editor sections
-import('../DataModel/schema')
-  .then(async ({ fetchContext, schema }) =>
+import('../DataModel/tables')
+  .then(async ({ fetchContext, tables }) =>
     fetchContext.then(() => {
       const trees = preferenceDefinitions.treeEditor.subCategories;
-      overwriteReadOnly(
-        trees.geography,
-        'title',
-        schema.models.Geography.label
-      );
-      overwriteReadOnly(trees.taxon, 'title', schema.models.Taxon.label);
-      overwriteReadOnly(trees.storage, 'title', schema.models.Storage.label);
+      overwriteReadOnly(trees.geography, 'title', tables.Geography.label);
+      overwriteReadOnly(trees.taxon, 'title', tables.Taxon.label);
+      overwriteReadOnly(trees.storage, 'title', tables.Storage.label);
       overwriteReadOnly(
         trees.geologicTimePeriod,
         'title',
-        schema.models.GeologicTimePeriod.label
+        tables.GeologicTimePeriod.label
       );
-      overwriteReadOnly(
-        trees.lithoStrat,
-        'title',
-        schema.models.LithoStrat.label
-      );
+      overwriteReadOnly(trees.lithoStrat, 'title', tables.LithoStrat.label);
       overwriteReadOnly(
         preferenceDefinitions.form.subCategories.recordSet,
         'title',
-        schema.models.RecordSet.label
+        tables.RecordSet.label
       );
 
       const treeSearchBehavior =
@@ -1651,15 +1643,11 @@ import('../DataModel/schema')
           ),
           'Unable to find tree full name value'
         );
-        overwriteReadOnly(
-          name,
-          'title',
-          getField(schema.models.Taxon, 'name').label
-        );
+        overwriteReadOnly(name, 'title', getField(tables.Taxon, 'name').label);
         overwriteReadOnly(
           fullName,
           'title',
-          getField(schema.models.Taxon, 'fullName').label
+          getField(tables.Taxon, 'fullName').label
         );
       } else softError('Unable to replace the tree preferences item title');
     })

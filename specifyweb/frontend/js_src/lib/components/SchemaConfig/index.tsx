@@ -11,7 +11,7 @@ import { Container } from '../Atoms';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { createResource, saveResource } from '../DataModel/resource';
-import { strictGetModel } from '../DataModel/schema';
+import { strictGetTable } from '../DataModel/tables';
 import type { SpLocaleItemStr } from '../DataModel/types';
 import { hasToolPermission } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
@@ -33,7 +33,7 @@ export type ItemType = 'formatted' | 'none' | 'pickList' | 'webLink';
 
 export function SchemaConfigMain(): JSX.Element {
   const { language: rawLanguage = '', tableName = '' } = useParams();
-  const model = strictGetModel(tableName);
+  const table = strictGetTable(tableName);
 
   const schemaData = useOutletContext<SchemaData>();
   const isReadOnly =
@@ -43,7 +43,7 @@ export function SchemaConfigMain(): JSX.Element {
 
   const [container, setContainer, isChanged] = useSchemaContainer(
     schemaData.tables,
-    model.name
+    table.name
   );
   const [language, country = null] = rawLanguage.split('-');
   const [name, setName, nameChanged] = useContainerString(
@@ -125,12 +125,12 @@ export function SchemaConfigMain(): JSX.Element {
           <SchemaConfigFields
             index={index}
             items={items}
-            model={model}
+            table={table}
             onChange={setIndex}
           />
           {typeof item === 'object' ? (
             <SchemaConfigField
-              field={model.getField(item.name)!}
+              field={table.getField(item.name)!}
               item={item}
               schemaData={schemaData}
               onChange={(field, value): void =>

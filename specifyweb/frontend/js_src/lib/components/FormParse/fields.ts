@@ -13,7 +13,7 @@ import { f } from '../../utils/functools';
 import { parserFromType } from '../../utils/parser/definitions';
 import type { IR, RA } from '../../utils/types';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import { addContext } from '../Errors/logContext';
 import { specialPickListMapping } from '../FormFields/ComboBox';
 import { legacyLocalize } from '../InitialContext/legacyUiLocalization';
@@ -91,11 +91,11 @@ const processFieldType: {
   readonly [KEY in keyof FieldTypes]: (payload: {
     readonly cell: SimpleXmlNode;
     readonly getProperty: (name: string) => string | undefined;
-    readonly model: SpecifyModel;
+    readonly table: SpecifyTable;
     readonly fields: RA<LiteralField | Relationship> | undefined;
   }) => FieldTypes[keyof FieldTypes];
 } = {
-  Checkbox({ cell, model, fields }) {
+  Checkbox({ cell, table, fields }) {
     const printOnSave =
       (getBooleanAttribute(cell, 'ignore') ?? false) &&
       ['printonsave', 'generateinvoice', 'generatelabelchk'].includes(
@@ -105,7 +105,7 @@ const processFieldType: {
       if (!hasPermission('/report', 'execute')) return { type: 'Blank' };
     } else if (fields === undefined) {
       console.error(
-        `Trying to render a checkbox on a ${model.name} form without a field name`
+        `Trying to render a checkbox on a ${table.name} form without a field name`
       );
       return { type: 'Blank' };
     } else if (fields.at(-1)?.isRelationship === true) {
@@ -121,11 +121,11 @@ const processFieldType: {
       printOnSave,
     };
   },
-  TextArea({ cell, model, fields }) {
+  TextArea({ cell, table, fields }) {
     const rows = f.parseInt(getParsedAttribute(cell, 'rows'));
     if (fields === undefined)
       console.error(
-        `Trying to render a text area on the ${model.name} form with unknown field name`
+        `Trying to render a text area on the ${table.name} form with unknown field name`
       );
     return {
       type: 'TextArea',
@@ -140,7 +140,7 @@ const processFieldType: {
     };
   },
   ComboBox: (props) => {
-    const { cell, fields, model } = props;
+    const { cell, fields, table } = props;
     if (fields === undefined) {
       console.error(
         'Trying to render a ComboBox on a form without a field name'
@@ -153,7 +153,7 @@ const processFieldType: {
       const pickListName =
         getParsedAttribute(cell, 'pickList') ??
         field?.getPickList() ??
-        specialPickListMapping[model.name as '']?.[field?.name ?? ''] ??
+        specialPickListMapping[table.name as '']?.[field?.name ?? ''] ??
         specialPickListMapping[''][field?.name ?? ''];
 
       if (typeof pickListName === 'string')
@@ -216,13 +216,13 @@ const processFieldType: {
       return { type: 'Blank' };
     }
   },
-  Plugin: ({ cell, getProperty, model, fields }) => ({
+  Plugin: ({ cell, getProperty, table, fields }) => ({
     type: 'Plugin',
     pluginDefinition: parseUiPlugin({
       cell,
       getProperty,
       defaultValue: withStringDefault(cell).defaultValue,
-      model,
+      table,
       fields,
     }),
   }),
@@ -252,12 +252,12 @@ export type FormFieldDefinition = FieldTypes[keyof FieldTypes] & {
 export function parseFormField({
   cell,
   getProperty,
-  model,
+  table,
   fields,
 }: {
   readonly cell: SimpleXmlNode;
   readonly getProperty: (name: string) => string | undefined;
-  readonly model: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly fields: RA<LiteralField | Relationship> | undefined;
 }): FormFieldDefinition {
   let uiType: string | undefined = getParsedAttribute(cell, 'uiType');
@@ -273,7 +273,7 @@ export function parseFormField({
     parser = processFieldType.Text;
   }
 
-  const parseResult = parser({ cell, getProperty, model, fields });
+  const parseResult = parser({ cell, getProperty, table, fields });
 
   const isReadOnly =
     (getBooleanAttribute(cell, 'readOnly') ??

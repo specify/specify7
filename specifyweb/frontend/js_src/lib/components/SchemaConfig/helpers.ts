@@ -30,7 +30,7 @@ export function findString(
   /*
    * Start searching for matching string from the end. This would align
    * schema config behavior with the way back-end handles cases when there
-   * are duplicate SpLocalteItemStr records for the same field and same language
+   * are duplicate SpLocaleItemStr records for the same field and same language
    */
   const targetString = Array.from(strings ?? [])
     .reverse()
@@ -129,11 +129,11 @@ export const localizedRelationshipTypes: IR<string> = {
  */
 export function javaTypeToHuman(
   type: string | null,
-  relatedModelName: string | undefined = ''
+  relatedTableName: string | undefined = ''
 ): string {
   if (type === null) return '';
   else if (type in localizedRelationshipTypes)
-    return `${localizedRelationshipTypes[type]} (${relatedModelName})`;
+    return `${localizedRelationshipTypes[type]} (${relatedTableName})`;
   else if (type.startsWith('java')) return type.split('.').at(-1)!;
   else return type;
 }

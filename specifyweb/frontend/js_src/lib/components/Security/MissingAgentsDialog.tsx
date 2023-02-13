@@ -16,12 +16,12 @@ import { Form, Label } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import { fetchResource, idFromUrl } from '../DataModel/resource';
-import { schema } from '../DataModel/schema';
 import { QueryComboBox } from '../QueryComboBox';
 import type { FormMode } from '../FormParse';
 import { Dialog } from '../Molecules/Dialog';
 import { hasPermission } from '../Permissions/helpers';
 import type { UserAgents } from './UserHooks';
+import { tables } from '../DataModel/tables';
 
 export type SetAgentsResponse = Partial<{
   readonly AgentInUseException: RA<number>;
@@ -139,7 +139,7 @@ export function MissingAgentsDialog({
             <Label.Block key={division.id}>
               {division.name}
               <QueryComboBox
-                field={schema.models.Address.strictGetRelationship('agent')}
+                field={tables.Address.strictGetRelationship('agent')}
                 forceCollection={collections[0]}
                 formType="form"
                 id={undefined}

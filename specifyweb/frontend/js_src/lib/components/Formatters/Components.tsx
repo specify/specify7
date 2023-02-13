@@ -11,7 +11,7 @@ import { Ul } from '../Atoms';
 import { Input } from '../Atoms/Form';
 import { ReadOnlyContext } from '../Core/Contexts';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import { fetchContext as fetchFieldFormatters } from '../FieldFormatters';
 import { join } from '../Molecules';
 import { mutateLineData } from '../QueryBuilder/helpers';
@@ -34,7 +34,7 @@ export function FormattersPickList({
   type,
   onChange: handleChange,
 }: {
-  readonly table: SpecifyModel | undefined;
+  readonly table: SpecifyTable | undefined;
   readonly value: string | undefined;
   readonly type: 'aggregators' | 'formatters';
   readonly onChange: (value: string) => void;
@@ -110,7 +110,7 @@ export function ResourceMapping({
   allowedMappings,
   openIndex: [openIndex, setOpenIndex],
 }: {
-  readonly table: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly mapping: GetSet<RA<LiteralField | Relationship> | undefined>;
   readonly isReadOnly: boolean;
   readonly allowedMappings: RA<FieldType>;

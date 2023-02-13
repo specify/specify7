@@ -14,7 +14,6 @@ import { Input, Label } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import { getField } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
 import type { SpecifyUser } from '../DataModel/types';
 import { Combobox } from '../FormFields/ComboBox';
 import type { FormMode } from '../FormParse';
@@ -28,6 +27,7 @@ import type { Policy } from './Policy';
 import type { Role } from './Role';
 import { UserCollections } from './UserCollections';
 import { anyResource } from './utils';
+import { tables } from '../DataModel/tables';
 
 export function SetSuperAdmin({
   institutionPolicies,
@@ -231,7 +231,7 @@ export function LegacyPermissions({
       [admins, userResource.id]
     )
   );
-  const userType = getField(schema.models.SpecifyUser, 'userType');
+  const userType = getField(tables.SpecifyUser, 'userType');
   return (
     <section className="flex flex-col gap-2">
       <h4 className="text-xl">{userText.legacyPermissions()}</h4>
@@ -260,7 +260,7 @@ export function LegacyPermissions({
           isDisabled={false}
           isRequired
           mode={mode}
-          model={userResource}
+          table={userResource}
           pickListName={defined(
             userType.getPickList(),
             'UserType pick list not found'

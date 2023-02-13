@@ -310,10 +310,10 @@ export function formatterToParser(
     'preferences',
     'autoNumbering'
   );
-  const modelName = field.model?.name;
+  const tableName = field.table?.name;
   const autoNumberingFields =
-    typeof modelName === 'string'
-      ? (autoNumberingConfig[modelName] as RA<string>)
+    typeof tableName === 'string'
+      ? (autoNumberingConfig[tableName] as RA<string>)
       : undefined;
   const canAutoNumber =
     formatter.canAutonumber() &&

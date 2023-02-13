@@ -12,8 +12,8 @@ import {
   sortFunction,
   toLowerCase,
 } from '../../utils/utils';
-import { schema, strictGetModel } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import { strictGetTable, tables } from '../DataModel/tables';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { Tables } from '../DataModel/types';
 import {
   frontEndPermissions,
@@ -109,7 +109,7 @@ export function resourceNameToLabel(resource: string): LocalizedString {
     resource.startsWith(tablePermissionsPrefix) &&
     !resource.includes(anyResource)
   )
-    return resourceNameToModel(resource).label;
+    return resourceNameToTable(resource).label;
   else {
     const parts = resourceNameToParts(resource);
     return (
@@ -158,8 +158,8 @@ export const permissionSeparator = '/';
 export const resourceNameToParts = (resourceName: string): RA<string> =>
   resourceName.split(permissionSeparator).filter(Boolean);
 
-export const resourceNameToModel = (resourceName: string): SpecifyModel =>
-  strictGetModel(resourceNameToParts(resourceName)[1]);
+export const resourceNameToTable = (resourceName: string): SpecifyTable =>
+  strictGetTable(resourceNameToParts(resourceName)[1]);
 
 export const partsToResourceName = (parts: RA<string>): string =>
   parts.length === 1 && parts[0] === anyResource
@@ -204,7 +204,7 @@ export function getAllActions(rawPath: string): RA<string> {
       [
         ...Object.entries(operationPolicies),
         ...Object.entries(frontEndPermissions),
-        ...Object.keys(schema.models).map(
+        ...Object.keys(tables).map(
           (tableName) =>
             [tableNameToResourceName(tableName), tableActions] as const
         ),

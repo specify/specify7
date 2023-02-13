@@ -23,7 +23,6 @@ import { Backbone } from '../DataModel/backbone';
 import { fetchCollection } from '../DataModel/collection';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { schema } from '../DataModel/schema';
 import type { SpecifyUser } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { useTitle } from '../Molecules/AppTitle';
@@ -36,6 +35,7 @@ import { hasPermission } from '../Permissions/helpers';
 import { unsafeNavigate } from '../Router/Router';
 import { getMaxDataSetLength } from '../WbImport/helpers';
 import type { Dataset } from '../WbPlanView/Wrapped';
+import { tables } from '../DataModel/tables';
 
 // FEATURE: allow exporting/importing the mapping
 export function DataSetMeta({
@@ -166,15 +166,12 @@ export function DataSetMeta({
           />
         </Label.Block>
         <Label.Block>
-          <b>{getField(schema.models.Workbench, 'remarks').label}:</b>
+          <b>{getField(tables.Workbench, 'remarks').label}:</b>
           <AutoGrowTextArea value={remarks} onValueChange={setRemarks} />
         </Label.Block>
         <div className="flex flex-col">
           <b>
-            {
-              getField(schema.models.WorkbenchTemplateMappingItem, 'metaData')
-                .label
-            }
+            {getField(tables.WorkbenchTemplateMappingItem, 'metaData').label}
           </b>
           <span>
             {commonText.colonLine({
@@ -198,8 +195,7 @@ export function DataSetMeta({
                 ),
               }}
               string={commonText.jsxColonLine({
-                label: getField(schema.models.Workbench, 'timestampCreated')
-                  .label,
+                label: getField(tables.Workbench, 'timestampCreated').label,
               })}
             />
           </span>
@@ -213,8 +209,7 @@ export function DataSetMeta({
                 ),
               }}
               string={commonText.jsxColonLine({
-                label: getField(schema.models.Workbench, 'timestampModified')
-                  .label,
+                label: getField(tables.Workbench, 'timestampModified').label,
               })}
             />
           </span>
@@ -252,8 +247,7 @@ export function DataSetMeta({
                 ),
               }}
               string={commonText.jsxColonLine({
-                label: getField(schema.models.Workbench, 'createdByAgent')
-                  .label,
+                label: getField(tables.Workbench, 'createdByAgent').label,
               })}
             />
           </span>
@@ -273,8 +267,7 @@ export function DataSetMeta({
                 ),
               }}
               string={commonText.jsxColonLine({
-                label: getField(schema.models.Workbench, 'modifiedByAgent')
-                  .label,
+                label: getField(tables.Workbench, 'modifiedByAgent').label,
               })}
             />
           </span>
@@ -322,7 +315,7 @@ function DataSetName({
         )}
       </h2>
       <Button.Small onClick={handleOpen}>
-        {getField(schema.models.WorkbenchTemplateMappingItem, 'metaData').label}
+        {getField(tables.WorkbenchTemplateMappingItem, 'metaData').label}
       </Button.Small>
       {showMeta && (
         <DataSetMeta

@@ -15,7 +15,6 @@ import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
 import type { TagProps } from '../Atoms/wrapper';
 import type { MenuItem } from '../Core/Main';
-import { schema } from '../DataModel/schema';
 import { userInformation } from '../InitialContext/userInformation';
 import { ActiveLink } from '../Router/ActiveLink';
 import { usePref } from '../UserPreferences/usePref';
@@ -24,6 +23,7 @@ import { useUserTools } from './menuItemProcessing';
 import { Notifications } from './Notifications';
 import { UserTools } from './UserTools';
 import { MenuContext } from './MenuContext';
+import { schema } from '../DataModel/schema';
 
 const collapseThreshold = 900;
 

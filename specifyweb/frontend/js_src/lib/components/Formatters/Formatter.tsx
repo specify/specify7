@@ -7,7 +7,7 @@ import { replaceItem } from '../../utils/utils';
 import { ErrorMessage } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { FieldType } from '../WbPlanView/mappingHelpers';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { FormattersPickList, ResourceMapping } from './Components';
@@ -143,7 +143,7 @@ function Fields({
   table,
   fields: [fields, setFields],
 }: {
-  readonly table: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly fields: GetSet<Formatter['definition']['fields'][number]['fields']>;
 }): JSX.Element {
   return (
@@ -182,7 +182,7 @@ function Field({
   table,
   field: [field, handleChange],
 }: {
-  readonly table: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly field: GetSet<
     Formatter['definition']['fields'][number]['fields'][number]
   >;
@@ -233,7 +233,7 @@ function FieldFormatter({
   table,
   field: [field, handleChange],
 }: {
-  readonly table: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly field: GetSet<
     Formatter['definition']['fields'][number]['fields'][number]
   >;

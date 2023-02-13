@@ -8,16 +8,16 @@ import { sortFunction, split } from '../../utils/utils';
 import { H3 } from '../Atoms';
 import { Select } from '../Atoms/Form';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { SpLocaleContainerItem } from '../DataModel/types';
 
 export function SchemaConfigFields({
-  model,
+  table,
   items,
   index,
   onChange: handleChange,
 }: {
-  readonly model: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly items: RA<SerializedResource<SpLocaleContainerItem>> | undefined;
   readonly index: number;
   readonly onChange: (index: number) => void;
@@ -29,7 +29,7 @@ export function SchemaConfigFields({
   const currentId = items?.[index].id ?? 0;
   const [fields, relationships] = split(
     sortedItems,
-    (item) => model.getField(item.name)!.isRelationship
+    (item) => table.getField(item.name)!.isRelationship
   );
   return (
     <SchemaConfigColumn header={schemaText.fields()} id={id('fields-label')}>

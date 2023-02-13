@@ -14,8 +14,8 @@ import { Submit } from '../Atoms/Submit';
 import { getField, toTable } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceApiUrl, getResourceViewUrl } from '../DataModel/resource';
-import { schema, strictGetModel } from '../DataModel/schema';
-import type { Collection, SpecifyModel } from '../DataModel/specifyModel';
+import { strictGetTable, tables } from '../DataModel/tables';
+import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
 import type {
   Disposal,
   DisposalPreparation,
@@ -40,7 +40,7 @@ export function PrepDialog({
   readonly isReadOnly: boolean;
   readonly preparations: Preparations;
   readonly action: {
-    readonly model: SpecifyModel<Disposal | Gift | Loan>;
+    readonly table: SpecifyTable<Disposal | Gift | Loan>;
     readonly name?: string;
   };
   readonly itemCollection?: Collection<
@@ -118,7 +118,7 @@ export function PrepDialog({
                 typeof itemCollection === 'object'
                   ? interactionsText.addItems()
                   : interactionsText.createRecord({
-                      modelName: action.model.label,
+                      tableName: action.table.label,
                     })
               }
             >
@@ -133,15 +133,15 @@ export function PrepDialog({
       <Form
         id={id('form')}
         onSubmit={(): void => {
-          const itemModel = strictGetModel(
-            `${action.model.name}Preparation`
-          ) as SpecifyModel<
+          const itemTable = strictGetTable(
+            `${action.table.name}Preparation`
+          ) as SpecifyTable<
             DisposalPreparation | GiftPreparation | LoanPreparation
           >;
           const items = filterArray(
             preparations.map((preparation, index) => {
               if (selected[index] === 0) return undefined;
-              const result = new itemModel.Resource();
+              const result = new itemTable.Resource();
               result.set(
                 'preparation',
                 getResourceApiUrl('Preparation', preparation.preparationId)
@@ -158,7 +158,7 @@ export function PrepDialog({
             itemCollection.add(items);
             handleClose();
           } else {
-            const interaction = new action.model.Resource();
+            const interaction = new action.table.Resource();
             const loan = toTable(interaction, 'Loan');
             loan?.set(
               'loanPreparations',
@@ -173,7 +173,7 @@ export function PrepDialog({
               'disposalPreparations',
               items as RA<SpecifyResource<DisposalPreparation>>
             );
-            navigate(getResourceViewUrl(action.model.name, undefined), {
+            navigate(getResourceViewUrl(action.table.name, undefined), {
               state: {
                 type: 'RecordSet',
                 resource: serializeResource(interaction),
@@ -189,16 +189,13 @@ export function PrepDialog({
                 <span className="sr-only">{interactionsText.selectAll()}</span>
               </th>
               <th scope="col">
-                {
-                  getField(schema.models.CollectionObject, 'catalogNumber')
-                    .label
-                }
+                {getField(tables.CollectionObject, 'catalogNumber').label}
               </th>
               <th scope="col">
-                {getField(schema.models.Determination, 'taxon').label}
+                {getField(tables.Determination, 'taxon').label}
               </th>
               <th scope="col">
-                {getField(schema.models.Preparation, 'prepType').label}
+                {getField(tables.Preparation, 'prepType').label}
               </th>
               <th scope="col">{commonText.selected()}</th>
               <th scope="col">{interactionsText.available()}</th>

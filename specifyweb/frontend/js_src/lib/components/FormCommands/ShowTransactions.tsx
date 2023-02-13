@@ -11,11 +11,11 @@ import { Link } from '../Atoms/Link';
 import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
 import { deserializeResource } from '../DataModel/serializers';
 import type { Preparation } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
+import { tables } from '../DataModel/tables';
 
 function List({
   resources,
@@ -107,7 +107,7 @@ export function ShowLoansCommand({
     >
       <H3>
         {interactionsText.openLoans({
-          loanTable: schema.models.Loan.label,
+          loanTable: tables.Loan.label,
         })}
       </H3>
       <List
@@ -117,7 +117,7 @@ export function ShowLoansCommand({
       />
       <H3>
         {interactionsText.resolvedLoans({
-          loanTable: schema.models.Loan.label,
+          loanTable: tables.Loan.label,
         })}
       </H3>
       <List
@@ -127,7 +127,7 @@ export function ShowLoansCommand({
       />
       <H3>
         {interactionsText.gifts({
-          giftTable: schema.models.Gift.label,
+          giftTable: tables.Gift.label,
         })}
       </H3>
       <List
@@ -139,8 +139,8 @@ export function ShowLoansCommand({
         <>
           <H3>
             {interactionsText.exchanges({
-              exhangeInTable: schema.models.ExchangeIn.label,
-              exhangeOutTable: schema.models.ExchangeOut.label,
+              exhangeInTable: tables.ExchangeIn.label,
+              exhangeOutTable: tables.ExchangeOut.label,
             })}
           </H3>
           <List

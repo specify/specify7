@@ -4,7 +4,7 @@ import type { PartialBy } from '../../utils/types';
 import { DependentCollection } from '../DataModel/collectionApi';
 import type { AnySchema } from '../DataModel/helperTypes';
 import { resourceOn } from '../DataModel/resource';
-import type { Collection } from '../DataModel/specifyModel';
+import type { Collection } from '../DataModel/specifyTable';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { FormTable } from './FormTable';
 

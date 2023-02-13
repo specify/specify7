@@ -14,7 +14,6 @@ import { Container, H2, H3 } from '../Atoms';
 import { className } from '../Atoms/className';
 import { fetchCollection } from '../DataModel/collection';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { schema } from '../DataModel/schema';
 import type { Institution, SpecifyUser } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { useAvailableCollections } from '../Forms/OtherCollectionView';
@@ -26,6 +25,7 @@ import { processPolicies } from '../Security/policyConverter';
 import type { Role } from '../Security/Role';
 import type { BackEndRole } from '../Security/utils';
 import { serializeResource } from '../DataModel/serializers';
+import { tables } from '../DataModel/tables';
 
 export type SecurityOutlet = {
   readonly institution: SerializedResource<Institution> | undefined;
@@ -118,7 +118,7 @@ function Aside({
     <aside className={className.containerBase}>
       {typeof institution === 'object' && (
         <section>
-          <H3>{schema.models.Institution.label}</H3>
+          <H3>{tables.Institution.label}</H3>
           <ActiveLink href="/specify/security/institution">
             {institution.name as LocalizedString}
           </ActiveLink>
@@ -127,7 +127,7 @@ function Aside({
       <section>
         <H3>
           {availableCollections.length === 0
-            ? schema.models.Collection.label
+            ? tables.Collection.label
             : userText.collections()}
         </H3>
         <ul>

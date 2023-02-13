@@ -11,8 +11,8 @@ import type { State } from 'typesafe-reducer';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import { getModel } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import { getTable } from '../DataModel/tables';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { Tables } from '../DataModel/types';
 import {
   addContext,
@@ -122,13 +122,13 @@ export const cellAlign = ['left', 'center', 'right'] as const;
 const processCellType: {
   readonly [KEY in keyof CellTypes]: (props: {
     readonly cell: SimpleXmlNode;
-    readonly model: SpecifyModel;
+    readonly table: SpecifyTable;
     readonly getProperty: (name: string) => string | undefined;
   }) => CellTypes[KEY | 'Blank'];
 } = {
-  Field({ cell, model, getProperty }) {
+  Field({ cell, table, getProperty }) {
     const rawFieldName = getParsedAttribute(cell, 'name');
-    const fields = model?.getFields(rawFieldName ?? '');
+    const fields = table?.getFields(rawFieldName ?? '');
     const fieldNames = fields?.map(({ name }) => name);
     const fieldsString = fieldNames?.join('.');
 
@@ -137,7 +137,7 @@ const processCellType: {
     const fieldDefinition = parseFormField({
       cell,
       getProperty,
-      model,
+      table,
       fields,
     });
 
@@ -148,7 +148,7 @@ const processCellType: {
     const resolvedFields =
       (fieldDefinition.type === 'Plugin' &&
       fieldDefinition.pluginDefinition.type === 'PartialDateUI'
-        ? model.getFields(fieldDefinition.pluginDefinition.dateFields.join('.'))
+        ? table.getFields(fieldDefinition.pluginDefinition.dateFields.join('.'))
         : undefined) ?? fields;
 
     if (
@@ -188,18 +188,18 @@ const processCellType: {
     icon: getParsedAttribute(cell, 'icon'),
     forClass: f.maybe(
       getParsedAttribute(cell, 'forClass'),
-      (forClass) => getModel(forClass)?.name
+      (forClass) => getTable(forClass)?.name
     ),
   }),
-  SubView({ cell, model, getProperty }) {
+  SubView({ cell, table, getProperty }) {
     const rawFieldName = getParsedAttribute(cell, 'name');
-    const fields = model.getFields(rawFieldName ?? '');
+    const fields = table.getFields(rawFieldName ?? '');
     if (fields === undefined) {
       console.error(
         `Unknown field ${rawFieldName ?? '(null)'} when parsing form SubView`,
         {
           cell,
-          model,
+          table,
         }
       );
       return { type: 'Blank' };
@@ -219,7 +219,7 @@ const processCellType: {
 
     const rawSortField = getProperty('sortField');
     const parsedSort = f.maybe(rawSortField, toLargeSortConfig);
-    const sortFields = relationship!.relatedModel.getFields(
+    const sortFields = relationship!.relatedTable.getFields(
       parsedSort?.fieldNames.join('.') ?? ''
     );
     const formType = getParsedAttribute(cell, 'defaultType') ?? '';
@@ -239,10 +239,10 @@ const processCellType: {
             },
     };
   },
-  Panel: ({ cell, model }) => {
+  Panel: ({ cell, table }) => {
     const oldContext = getLogContext();
     pushContext({ type: 'Child', tagName: 'Panel' });
-    const definition = parseFormDefinition(cell, model);
+    const definition = parseFormDefinition(cell, table);
     setLogContext(oldContext);
 
     return {
@@ -254,9 +254,9 @@ const processCellType: {
           : 'block',
     };
   },
-  Command: ({ cell, model }) => ({
+  Command: ({ cell, table }) => ({
     type: 'Command',
-    commandDefinition: parseUiCommand(cell, model),
+    commandDefinition: parseUiCommand(cell, table),
   }),
   /**
    * This function never actually gets called
@@ -299,7 +299,7 @@ const cellTypeTranslation: IR<keyof CellTypes> = {
  * Does not depend on FormMode, FormType
  */
 export function parseFormCell(
-  model: SpecifyModel,
+  table: SpecifyTable,
   cellNode: SimpleXmlNode
 ): FormCellDefinition {
   const cellClass = getParsedAttribute(cellNode, 'type') ?? '';
@@ -345,7 +345,7 @@ export function parseFormCell(
     visible:
       getBooleanAttribute(cellNode, 'invisible') !== true ||
       parsedCell === processCellType.Unsupported,
-    ...parsedCell({ cell: cellNode, model, getProperty }),
+    ...parsedCell({ cell: cellNode, table, getProperty }),
     // This may get filled out in postProcessRows or parseFormTableDefinition
     ariaLabel: undefined,
   };

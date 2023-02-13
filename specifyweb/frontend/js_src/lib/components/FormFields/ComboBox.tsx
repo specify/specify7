@@ -24,7 +24,7 @@ import { TreeLevelComboBox } from '../PickLists/TreeLevelPickList';
 
 export type DefaultComboBoxProps = {
   readonly id: string | undefined;
-  readonly model: SpecifyResource<AnySchema> | undefined;
+  readonly table: SpecifyResource<AnySchema> | undefined;
   readonly resource: SpecifyResource<AnySchema> | undefined;
   readonly field: LiteralField | Relationship;
   readonly pickListName: string;

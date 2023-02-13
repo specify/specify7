@@ -11,7 +11,11 @@ import { defined } from '../../utils/types';
 import { clamp, split } from '../../utils/utils';
 import { DataEntry } from '../Atoms/DataEntry';
 import { LoadingContext } from '../Core/Contexts';
-import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
+import {
+  DEFAULT_FETCH_LIMIT,
+  fetchCollection,
+  fetchRows,
+} from '../DataModel/collection';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import {
@@ -19,7 +23,6 @@ import {
   deleteResource,
   getResourceViewUrl,
 } from '../DataModel/resource';
-import { schema } from '../DataModel/schema';
 import type { RecordSet as RecordSetSchema } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import type { FormMode } from '../FormParse';
@@ -30,7 +33,7 @@ import { EditRecordSet } from '../Toolbar/RecordSetEdit';
 import type { RecordSelectorProps } from './RecordSelector';
 import { RecordSelectorFromIds } from './RecordSelectorFromIds';
 import { serializeResource } from '../DataModel/serializers';
-import { fetchRows } from '../Interactions/helpers';
+import { tables } from '../DataModel/tables';
 
 export function RecordSetWrapper<SCHEMA extends AnySchema>({
   recordSet,
@@ -67,7 +70,7 @@ export function RecordSetWrapper<SCHEMA extends AnySchema>({
         if (recordSetItemId === undefined) {
           // Record is not part of a record set
           navigate(
-            getResourceViewUrl(resource.specifyModel.name, resource.id),
+            getResourceViewUrl(resource.specifyTable.name, resource.id),
             { replace: true }
           );
           return;
@@ -159,7 +162,7 @@ function RecordSet<SCHEMA extends AnySchema>({
   | 'defaultIndex'
   | 'field'
   | 'index'
-  | 'model'
+  | 'table'
   | 'onDelete'
   | 'onSaved'
   | 'records'
@@ -201,7 +204,7 @@ function RecordSet<SCHEMA extends AnySchema>({
       ? handleFetch(index)
       : navigate(
           getResourceViewUrl(
-            currentRecord.specifyModel.name,
+            currentRecord.specifyTable.name,
             recordId,
             recordSet.id
           ),
@@ -294,10 +297,10 @@ function RecordSet<SCHEMA extends AnySchema>({
         isInRecordSet
         isLoading={isLoading}
         mode={mode}
-        model={currentRecord.specifyModel}
+        table={currentRecord.specifyTable}
         newResource={currentRecord.isNew() ? currentRecord : undefined}
         title={commonText.colonLine({
-          label: schema.models.RecordSet.label,
+          label: tables.RecordSet.label,
           value: recordSet.get('name'),
         })}
         totalCount={totalCount}
@@ -385,12 +388,12 @@ function RecordSet<SCHEMA extends AnySchema>({
         <Dialog
           buttons={commonText.close()}
           header={formsText.duplicateRecordSetItem({
-            recordSetItemTable: schema.models.RecordSetItem.label,
+            recordSetItemTable: tables.RecordSetItem.label,
           })}
           onClose={handleDismissDuplicate}
         >
           {formsText.duplicateRecordSetItemDescription({
-            recordSetTable: schema.models.RecordSet.label,
+            recordSetTable: tables.RecordSet.label,
           })}
         </Dialog>
       )}

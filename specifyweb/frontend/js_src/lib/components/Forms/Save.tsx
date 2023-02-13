@@ -109,11 +109,11 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   const [_, setFormContext] = React.useContext(FormContext);
 
   const { showClone, showCarry, showAdd } = useEnabledButtons(
-    resource.specifyModel.name
+    resource.specifyTable.name
   );
 
-  const canCreate = hasTablePermission(resource.specifyModel.name, 'create');
-  const canUpdate = hasTablePermission(resource.specifyModel.name, 'update');
+  const canCreate = hasTablePermission(resource.specifyTable.name, 'create');
+  const canUpdate = hasTablePermission(resource.specifyTable.name, 'update');
   const canSave = resource.isNew() ? canCreate : canUpdate;
 
   const isSaveDisabled =
@@ -241,7 +241,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
             copyButton(
               commonText.add(),
               formsText.addButtonDescription(),
-              async () => new resource.specifyModel.Resource()
+              async () => new resource.specifyTable.Resource()
             )}
         </>
       ) : undefined}
@@ -281,14 +281,14 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
               resource.saveBlockers?.blockingResources ?? [],
               (resource) => (
                 <li key={resource.cid}>
-                  <H3>{resource.specifyModel.label}</H3>
+                  <H3>{resource.specifyTable.label}</H3>
                   <dl>
                     {Object.entries(resource.saveBlockers?.blockers ?? []).map(
                       ([key, blocker]) => (
                         <React.Fragment key={key}>
                           <dt>
                             {typeof blocker.fieldName === 'string'
-                              ? resource.specifyModel.strictGetField(
+                              ? resource.specifyTable.strictGetField(
                                   blocker.fieldName
                                 ).label
                               : camelToHuman(key)}

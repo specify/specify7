@@ -14,7 +14,7 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
 import type { Relationship } from '../DataModel/specifyField';
-import type { Collection } from '../DataModel/specifyModel';
+import type { Collection } from '../DataModel/specifyTable';
 import { raise } from '../Errors/Crash';
 import { FormTableCollection } from '../FormCells/FormTableCollection';
 import type { FormMode, FormType } from '../FormParse';
@@ -43,7 +43,7 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
   RecordSelectorProps<SCHEMA>,
   | 'index'
   | 'isDependent'
-  | 'model'
+  | 'table'
   | 'onAdd'
   | 'onDelete'
   | 'records'
@@ -104,7 +104,7 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
   const state = useRecordSelector({
     ...rest,
     index,
-    model: collection.model.specifyModel,
+    table: collection.model.specifyTable,
     records,
     relatedResource: isDependent ? collection.related : undefined,
     totalCount: collection._totalCount ?? records.length,
@@ -152,7 +152,7 @@ export function IntegratedRecordSelector({
   ...rest
 }: Omit<
   Parameters<typeof RecordSelectorFromCollection>[0],
-  'children' | 'model' | 'onSlide'
+  'children' | 'table' | 'onSlide'
 > & {
   readonly dialog: 'modal' | 'nonModal' | false;
   readonly mode: FormMode;
@@ -165,7 +165,7 @@ export function IntegratedRecordSelector({
   const isDependent = collection instanceof DependentCollection;
   const isToOne =
     !relationshipIsToMany(relationship) || relationship.type === 'zero-to-one';
-  const mode = augmentMode(initialMode, false, relationship.relatedModel.name);
+  const mode = augmentMode(initialMode, false, relationship.relatedTable.name);
 
   const [rawIndex, setIndex] = useSearchParameter(urlParameter);
   const index = f.parseInt(rawIndex) ?? 0;
@@ -215,7 +215,7 @@ export function IntegratedRecordSelector({
                   }
                 />
                 {hasTablePermission(
-                  relationship.relatedModel.name,
+                  relationship.relatedTable.name,
                   isDependent ? 'create' : 'read'
                 ) && typeof handleAdd === 'function' ? (
                   <DataEntry.Add
@@ -227,7 +227,7 @@ export function IntegratedRecordSelector({
                   />
                 ) : undefined}
                 {hasTablePermission(
-                  relationship.relatedModel.name,
+                  relationship.relatedTable.name,
                   isDependent ? 'delete' : 'read'
                 ) && typeof handleRemove === 'function' ? (
                   <DataEntry.Remove

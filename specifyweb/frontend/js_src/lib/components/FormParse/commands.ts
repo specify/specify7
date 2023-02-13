@@ -11,7 +11,7 @@ import type { State } from 'typesafe-reducer';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import { formatDisjunction } from '../Atoms/Internationalization';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import { addContext } from '../Errors/logContext';
@@ -40,22 +40,22 @@ export type UiCommands = {
 const processUiCommand: {
   readonly [KEY in keyof UiCommands]: (payload: {
     readonly name: string | undefined;
-    readonly model: SpecifyModel;
+    readonly table: SpecifyTable;
   }) => UiCommands[KEY | 'Blank' | 'WrongTable'];
 } = {
   GenerateLabel: () =>
     hasPermission('/report', 'execute')
       ? { type: 'GenerateLabel' }
       : { type: 'Blank' },
-  ShowLoans: ({ model }) =>
-    model.name === 'Preparation'
+  ShowLoans: ({ table }) =>
+    table.name === 'Preparation'
       ? { type: 'ShowLoans' }
       : { type: 'WrongTable', supportedTables: ['Preparation'] },
-  ReturnLoan: ({ model }) =>
+  ReturnLoan: ({ table }) =>
     !hasTablePermission('LoanPreparation', 'update') ||
     !hasTablePermission('LoanReturnPreparation', 'update')
       ? { type: 'Blank' }
-      : model.name === 'Loan'
+      : table.name === 'Loan'
       ? { type: 'ReturnLoan' }
       : { type: 'WrongTable', supportedTables: ['Loan'] },
   Unsupported: ({ name }) => {
@@ -79,7 +79,7 @@ export type CommandDefinition = {
 
 export function parseUiCommand(
   cell: SimpleXmlNode,
-  model: SpecifyModel
+  table: SpecifyTable
 ): CommandDefinition {
   const name = getParsedAttribute(cell, 'name');
   const label = getParsedAttribute(cell, 'label');
@@ -89,11 +89,11 @@ export function parseUiCommand(
     processUiCommand.Unsupported;
 
   addContext({ command: label ?? name });
-  const definition = uiCommand({ name, model });
+  const definition = uiCommand({ name, table });
   if (definition.type === 'WrongTable')
     console.error(
       `Can't display ${label ?? name ?? 'plugin'} on ${
-        model.name
+        table.name
       } form. Instead, try ` +
         `displaying it on the ${formatDisjunction(
           definition.supportedTables

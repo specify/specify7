@@ -15,8 +15,7 @@ import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
 import type { AnySchema, AnyTree } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import { DeleteButton } from '../Forms/DeleteButton';
 import { ResourceView } from '../Forms/ResourceView';
 import { getPref } from '../InitialContext/remotePrefs';
@@ -24,6 +23,7 @@ import { Dialog } from '../Molecules/Dialog';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import type { Row } from './helpers';
 import { checkMoveViolatesEnforced } from './helpers';
+import { tables } from '../DataModel/tables';
 
 type Action = 'add' | 'desynonymize' | 'edit' | 'merge' | 'move' | 'synonymize';
 
@@ -212,11 +212,11 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
   >(
     React.useCallback(() => {
       if (!isOpen) return undefined;
-      const model = schema.models[tableName] as SpecifyModel<AnyTree>;
-      const parentNode = new model.Resource({ id: nodeId });
+      const table = tables[tableName] as SpecifyTable<AnyTree>;
+      const parentNode = new table.Resource({ id: nodeId });
       let node = parentNode;
       if (addNew) {
-        node = new model.Resource();
+        node = new table.Resource();
         node.set('parent', parentNode.url());
       }
       return node;
@@ -269,8 +269,8 @@ function ActiveAction<SCHEMA extends AnyTree>({
   if (!['move', 'merge', 'synonymize', 'desynonymize'].includes(type))
     throw new Error('Invalid action type');
 
-  const model = schema.models[tableName] as SpecifyModel<AnyTree>;
-  const treeName = model.label;
+  const table = tables[tableName] as SpecifyTable<AnyTree>;
+  const treeName = table.label;
 
   const [showPrompt, setShowPrompt] = React.useState(type === 'desynonymize');
   const loading = React.useContext(LoadingContext);
@@ -434,7 +434,7 @@ function NodeDeleteButton({
   const resource = React.useMemo(
     () =>
       typeof nodeId === 'number'
-        ? new schema.models[tableName].Resource({ id: nodeId })
+        ? new tables[tableName].Resource({ id: nodeId })
         : undefined,
     [tableName, nodeId]
   );

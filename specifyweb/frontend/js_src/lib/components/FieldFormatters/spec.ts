@@ -1,9 +1,9 @@
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { f } from '../../utils/functools';
-import { getModel } from '../DataModel/schema';
+import { getTable } from '../DataModel/tables';
 import type { LiteralField } from '../DataModel/specifyField';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { SpecToJson } from '../Syncer';
 import { pipe, syncer } from '../Syncer';
 import { syncers } from '../Syncer/syncers';
@@ -20,7 +20,7 @@ export const fieldFormattersSpec = f.store(() =>
           syncer(
             ({ javaClass, ...formatter }) => ({
               ...formatter,
-              table: getModel(javaClass ?? ''),
+              table: getTable(javaClass ?? ''),
               raw: {
                 javaClass,
               },
@@ -30,7 +30,7 @@ export const fieldFormattersSpec = f.store(() =>
               // "javaClass" is not always a database table
               javaClass:
                 table?.longName ??
-                (getModel(javaClass ?? '') === undefined
+                (getTable(javaClass ?? '') === undefined
                   ? javaClass
                   : undefined),
             })
@@ -124,7 +124,7 @@ const fieldSpec = f.store(() =>
 );
 
 function parseField(
-  table: SpecifyModel | undefined,
+  table: SpecifyTable | undefined,
   name: string | undefined
 ): LiteralField | undefined {
   if (name?.includes('.') === true) {

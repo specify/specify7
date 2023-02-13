@@ -10,12 +10,12 @@ import { sortFunction } from '../../utils/utils';
 import { Container, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { schema } from '../DataModel/schema';
 import type { Collection } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { toLargeSortConfig } from '../Molecules/Sorting';
 import { switchCollection } from '../RouterCommands/SwitchCollection';
 import { usePref } from '../UserPreferences/usePref';
+import { tables } from '../DataModel/tables';
 
 /**
  * Even though available collections do not change during lifecycle of a page,
@@ -26,7 +26,7 @@ export function useAvailableCollections(): RA<SerializedResource<Collection>> {
   const collections = React.useMemo(() => {
     const { direction, fieldNames } = toLargeSortConfig(sortOrder);
     return Array.from(userInformation.availableCollections).sort(
-      // FEATURE: support sorting by related model
+      // FEATURE: support sorting by related table
       sortFunction(
         (collection) =>
           collection[fieldNames.join('.') as keyof Collection['fields']],
@@ -56,7 +56,7 @@ export function OtherCollection({
       <Container.Center>
         {collections.length === 0 ? (
           userText.noAccessToResource({
-            collectionTable: schema.models.Collection.label,
+            collectionTable: tables.Collection.label,
           })
         ) : (
           <>
@@ -82,7 +82,7 @@ export function OtherCollection({
               <>
                 <p>
                   {userText.loginToProceed({
-                    collectionTable: schema.models.Collection.label,
+                    collectionTable: tables.Collection.label,
                   })}
                 </p>
                 <div>

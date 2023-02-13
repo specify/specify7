@@ -3,7 +3,7 @@ import { theories } from '../../../tests/utils';
 import { f } from '../../../utils/functools';
 import type { AnySchema } from '../../DataModel/helperTypes';
 import type { SpecifyResource } from '../../DataModel/legacyTypes';
-import type { SpecifyModel } from '../../DataModel/specifyModel';
+import type { SpecifyTable } from '../../DataModel/specifyTable';
 import { columnDefinitionsToCss, DataEntry } from '../DataEntry';
 
 theories(columnDefinitionsToCss, [
@@ -17,7 +17,7 @@ snapshot(DataEntry.Grid, {
     columns: [1, 2, 3, undefined],
     formType: 'form',
     mode: 'edit',
-    model: undefined as unknown as SpecifyModel,
+    table: undefined as unknown as SpecifyTable,
   },
   flexibleColumnWidth: true,
   display: 'block',

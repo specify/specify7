@@ -5,9 +5,9 @@ import { parseBoolean } from '../../utils/parser/parse';
 import type { RA } from '../../utils/types';
 import { formatDisjunction } from '../Atoms/Internationalization';
 import { parseJavaClassName } from '../DataModel/resource';
-import { getModel, getModelById, schema } from '../DataModel/schema';
+import { getTable, getTableById, tables } from '../DataModel/tables';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { Tables } from '../DataModel/types';
 import {
   getLogContext,
@@ -75,35 +75,35 @@ export const syncers = {
         (typeof defaultValue === 'function' ? defaultValue() : defaultValue),
       (value) => value
     ),
-  javaClassName: syncer<string, SpecifyModel | undefined>(
+  javaClassName: syncer<string, SpecifyTable | undefined>(
     (className) => {
       const tableName = parseJavaClassName(className);
-      const model = getModel(tableName ?? className);
-      if (model === undefined)
-        console.error(`Unknown model: ${className ?? '(null)'}`);
-      return model;
+      const table = getTable(tableName ?? className);
+      if (table === undefined)
+        console.error(`Unknown table: ${className ?? '(null)'}`);
+      return table;
     },
-    (model) => model?.longName ?? ''
+    (table) => table?.longName ?? ''
   ),
-  tableName: syncer<string, SpecifyModel | undefined>(
+  tableName: syncer<string, SpecifyTable | undefined>(
     (tableName) => {
-      const model = getModel(tableName);
-      if (model === undefined)
-        console.error(`Unknown model: ${tableName ?? '(null)'}`);
-      return model;
+      const table = getTable(tableName);
+      if (table === undefined)
+        console.error(`Unknown table: ${tableName ?? '(null)'}`);
+      return table;
     },
     (model) => model?.name ?? ''
   ),
-  tableId: syncer<number, SpecifyModel | undefined>(
+  tableId: syncer<number, SpecifyTable | undefined>(
     (tableId) => {
       try {
-        return getModelById(tableId);
+        return getTableById(tableId);
       } catch (error) {
         console.error(error);
         return undefined;
       }
     },
-    (model) => model?.tableId ?? 0
+    (table) => table?.tableId ?? 0
   ),
   toBoolean: syncer<string, boolean>(parseBoolean, (value) => value.toString()),
   toDecimal: syncer<string, number | undefined>(
@@ -218,7 +218,7 @@ export const syncers = {
           tableName === undefined
         )
           return undefined;
-        const field = schema.models[tableName].getFields(fieldName);
+        const field = tables[tableName].getFields(fieldName);
         if (field === undefined) console.error(`Unknown field: ${fieldName}`);
         return field;
       },

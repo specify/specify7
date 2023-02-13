@@ -23,7 +23,7 @@ import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
-import { strictGetModel } from '../DataModel/schema';
+import { strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
@@ -401,7 +401,7 @@ export function Mapper(props: {
           <TableIcon label name={props.baseTableName} />
           <span title={wbText.dataSetName()}>{props.dataset.name}</span>
           <span title={wbPlanText.baseTable()}>
-            {` (${strictGetModel(props.baseTableName).label})`}
+            {` (${strictGetTable(props.baseTableName).label})`}
           </span>
           {props.dataset.uploadresult?.success === true && (
             <span

@@ -1,9 +1,9 @@
 import type { IR, RA, RR } from '../../utils/types';
 import { group, removeKey, split, toLowerCase } from '../../utils/utils';
-import { strictGetModel } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import { strictGetTable } from '../DataModel/tables';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { Tables } from '../DataModel/types';
-import { isTreeModel } from '../InitialContext/treeRanks';
+import { isTreeTable } from '../InitialContext/treeRanks';
 import { defaultColumnOptions } from './linesGetter';
 import type { SplitMappingPath } from './mappingHelpers';
 import { getNameFromTreeRankName, valueIsToManyIndex } from './mappingHelpers';
@@ -50,7 +50,7 @@ const toTreeRecordVariety = (lines: RA<SplitMappingPath>): TreeRecord => ({
 });
 
 function toUploadTable(
-  model: SpecifyModel,
+  table: SpecifyTable,
   lines: RA<SplitMappingPath>,
   mustMatchPreferences: RA<keyof Tables>
 ): UploadTable {
@@ -79,7 +79,7 @@ function toUploadTable(
           [
             fieldName.toLowerCase(),
             toUploadable(
-              model.strictGetRelationship(fieldName).relatedModel,
+              table.strictGetRelationship(fieldName).relatedTable,
               lines,
               mustMatchPreferences
             ),
@@ -94,7 +94,7 @@ function toUploadTable(
             indexMappings(lines).map(([_index, lines]) =>
               removeKey(
                 toUploadTable(
-                  model.strictGetRelationship(fieldName).relatedModel,
+                  table.strictGetRelationship(fieldName).relatedTable,
                   lines,
                   mustMatchPreferences
                 ),
@@ -108,15 +108,15 @@ function toUploadTable(
 }
 
 const toUploadable = (
-  model: SpecifyModel,
+  table: SpecifyTable,
   lines: RA<SplitMappingPath>,
   mustMatchPreferences: RA<keyof Tables>,
   isRoot = false
 ): Uploadable =>
-  isTreeModel(model.name)
+  isTreeTable(table.name)
     ? Object.fromEntries([
         [
-          mustMatchPreferences.includes(model.name)
+          mustMatchPreferences.includes(table.name)
             ? 'mustMatchTreeRecord'
             : 'treeRecord',
           toTreeRecordVariety(lines),
@@ -124,10 +124,10 @@ const toUploadable = (
       ])
     : Object.fromEntries([
         [
-          !isRoot && mustMatchPreferences.includes(model.name)
+          !isRoot && mustMatchPreferences.includes(table.name)
             ? 'mustMatchTable'
             : 'uploadTable',
-          toUploadTable(model, lines, mustMatchPreferences),
+          toUploadTable(table, lines, mustMatchPreferences),
         ] as const,
       ]);
 
@@ -141,7 +141,7 @@ export const uploadPlanBuilder = (
 ): UploadPlan => ({
   baseTableName: toLowerCase(baseTableName),
   uploadable: toUploadable(
-    strictGetModel(baseTableName),
+    strictGetTable(baseTableName),
     lines,
     Object.entries(mustMatchPreferences)
       .filter(([_, mustMatch]) => mustMatch)

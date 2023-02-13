@@ -9,14 +9,14 @@ import { Button } from '../Atoms/Button';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Relationship } from '../DataModel/specifyField';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { format } from '../Formatters/formatters';
 import { ResourceView } from './ResourceView';
 
 export type DeleteBlocker = {
-  readonly model: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly field: string;
   readonly id: number;
 };
@@ -44,11 +44,11 @@ export function DeleteBlocked({
     React.useCallback(
       async () =>
         Promise.all(
-          blockers.map(async ({ model, field, id }) => {
-            const resource = new model.Resource({ id });
+          blockers.map(async ({ table, field, id }) => {
+            const resource = new table.Resource({ id });
             return f.all({
               field:
-                parentResource.specifyModel.getRelationship(field) ?? field,
+                parentResource.specifyTable.getRelationship(field) ?? field,
               resource,
               formatted: await format(resource, undefined, true),
             });
@@ -107,7 +107,7 @@ export function DeleteBlocked({
                       })
                     }
                   >
-                    <TableIcon label name={resource.specifyModel.name} />
+                    <TableIcon label name={resource.specifyTable.name} />
                     {formatted}
                   </Button.LikeLink>
                 </td>

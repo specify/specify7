@@ -26,7 +26,6 @@ import { addMissingFields } from '../DataModel/addMissingFields';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { idFromUrl } from '../DataModel/resource';
-import { schema } from '../DataModel/schema';
 import type { SpecifyUser } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { useResourceView } from '../Forms/BaseResourceView';
@@ -76,6 +75,7 @@ import {
   deserializeResource,
   serializeResource,
 } from '../DataModel/serializers';
+import { tables } from '../DataModel/tables';
 
 export function SecurityUser(): JSX.Element {
   const location = useStableLocation(useLocation());
@@ -257,7 +257,7 @@ function UserView({
           ) : undefined}
           {canSeeInstitutionalPolicies && (
             <section>
-              <h4 className="text-xl">{schema.models.Institution.label}</h4>
+              <h4 className="text-xl">{tables.Institution.label}</h4>
               <div className="flex flex-col gap-2">
                 <ErrorBoundary dismissible>
                   <SetSuperAdmin

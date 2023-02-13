@@ -166,7 +166,7 @@ export type SortConfigs = {
     | 'label'
     | 'name'
     | 'otherSideName'
-    | 'relatedModel'
+    | 'relatedTable'
     | 'type';
   readonly dataModelTables:
     | 'fieldCount'

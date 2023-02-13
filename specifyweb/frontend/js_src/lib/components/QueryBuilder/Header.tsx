@@ -8,7 +8,6 @@ import { Button } from '../Atoms/Button';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
 import type { RecordSet, SpQuery, SpQueryField } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { TableIcon } from '../Molecules/TableIcon';
@@ -22,6 +21,7 @@ import { QueryEditButton } from './Edit';
 import { smoothScroll } from './helpers';
 import { QueryLoanReturn } from './LoanReturn';
 import type { MainState } from './reducer';
+import { tables } from '../DataModel/tables';
 
 export function QueryHeader({
   recordSet,
@@ -61,7 +61,7 @@ export function QueryHeader({
         {typeof recordSet === 'object'
           ? queryText.queryRecordSetTitle({
               queryName: query.name,
-              recordSetTable: schema.models.RecordSet.label,
+              recordSetTable: tables.RecordSet.label,
               recordSetName: recordSet.get('name'),
             })
           : commonText.colonLine({
@@ -118,7 +118,7 @@ export function QueryHeader({
           onTriedToSave={(): boolean => {
             handleTriedToSave();
             const fieldLengthLimit =
-              getField(schema.models.SpQueryField, 'startValue').length ??
+              getField(tables.SpQueryField, 'startValue').length ??
               Number.POSITIVE_INFINITY;
             return state.fields.every((field) =>
               field.filters.every(

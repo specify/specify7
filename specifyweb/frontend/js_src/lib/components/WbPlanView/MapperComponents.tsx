@@ -11,7 +11,7 @@ import type { IR, RA, RR } from '../../utils/types';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
-import { strictGetModel } from '../DataModel/schema';
+import { strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
@@ -450,7 +450,7 @@ export function MustMatch({
                             htmlFor={id(`table-${tableName}`)}
                           >
                             <TableIcon label={false} name={tableName} />
-                            {strictGetModel(tableName).label}
+                            {strictGetTable(tableName).label}
                           </label>
                         </td>
                         <td className="justify-center">

@@ -21,7 +21,6 @@ import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
 import { getField } from '../DataModel/helpers';
-import { schema } from '../DataModel/schema';
 import { DateElement } from '../Molecules/DateElement';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import type { SortConfig } from '../Molecules/Sorting';
@@ -31,6 +30,7 @@ import { OverlayContext } from '../Router/Router';
 import type { Dataset, DatasetBrief } from '../WbPlanView/Wrapped';
 import { DataSetMeta } from '../WorkBench/DataSetMeta';
 import { TableIcon } from '../Molecules/TableIcon';
+import { tables } from '../DataModel/tables';
 
 const createEmptyDataSet = async (): Promise<Dataset> =>
   ajax<Dataset>(
@@ -100,19 +100,19 @@ function TableHeader({
           scope="col"
         >
           <Button.LikeLink onClick={(): void => handleSort('name')}>
-            {getField(schema.models.Workbench, 'name').label}
+            {getField(tables.Workbench, 'name').label}
             <SortIndicator fieldName="name" sortConfig={sortConfig} />
           </Button.LikeLink>
         </th>
         <th scope="col">
           <Button.LikeLink onClick={(): void => handleSort('dateCreated')}>
-            {getField(schema.models.Workbench, 'timestampCreated').label}
+            {getField(tables.Workbench, 'timestampCreated').label}
             <SortIndicator fieldName="dateCreated" sortConfig={sortConfig} />
           </Button.LikeLink>
         </th>
         <th scope="col">
           <Button.LikeLink onClick={(): void => handleSort('dateUploaded')}>
-            {getField(schema.models.Workbench, 'timestampModified').label}
+            {getField(tables.Workbench, 'timestampModified').label}
             <SortIndicator fieldName="dateUploaded" sortConfig={sortConfig} />
           </Button.LikeLink>
         </th>

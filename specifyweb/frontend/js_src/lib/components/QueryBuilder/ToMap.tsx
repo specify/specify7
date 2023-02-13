@@ -10,8 +10,7 @@ import { filterArray } from '../../utils/types';
 import { Progress } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { getResourceViewUrl } from '../DataModel/resource';
-import { schema } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import { formatLocalityData, getMarkersFromLocalityData } from '../Leaflet';
@@ -34,25 +33,26 @@ import {
 import type { QueryFieldSpec } from './fieldSpec';
 import type { QueryResultRow } from './Results';
 import { queryIdField } from './Results';
+import { tables } from '../DataModel/tables';
 
 export function QueryToMap({
   results,
   totalCount,
   selectedRows,
-  model,
+  table,
   fieldSpecs,
   onFetchMore: handleFetchMore,
 }: {
   readonly results: RA<QueryResultRow>;
   readonly totalCount: number | undefined;
   readonly selectedRows: ReadonlySet<number>;
-  readonly model: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly fieldSpecs: RA<QueryFieldSpec>;
   readonly onFetchMore: (() => Promise<RA<QueryResultRow> | void>) | undefined;
 }): JSX.Element | null {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   const ids = useSelectedResults(results, selectedRows);
-  const localityMappings = useLocalityMappings(model.name, fieldSpecs);
+  const localityMappings = useLocalityMappings(table.name, fieldSpecs);
   return localityMappings.length === 0 ? null : (
     <>
       <Button.Small disabled={results.length === 0} onClick={handleOpen}>
@@ -62,7 +62,7 @@ export function QueryToMap({
         <Dialog
           localityMappings={localityMappings}
           results={results}
-          tableName={model.name}
+          tableName={table.name}
           totalCount={totalCount}
           onClose={handleClose}
           onFetchMore={selectedRows.size > 0 ? undefined : handleFetchMore}
@@ -294,7 +294,7 @@ function createClickCallback(
   const fullLocalityData: WritableArray<LocalityData | false | undefined> = [];
 
   return async (index, { target: marker }): Promise<void> => {
-    const resource = new schema.models.Locality.Resource({
+    const resource = new tables.Locality.Resource({
       id: points[index].localityId,
     });
     fullLocalityData[index] ??= await fetchLocalityDataFromResource(resource);

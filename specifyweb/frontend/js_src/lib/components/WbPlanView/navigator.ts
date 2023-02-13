@@ -10,12 +10,12 @@ import { queryText } from '../../localization/query';
 import type { IR, RA, WritableArray } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import { dateParts } from '../Atoms/Internationalization';
-import { getFrontEndOnlyFields, strictGetModel } from '../DataModel/schema';
+import { getFrontEndOnlyFields, strictGetTable } from '../DataModel/tables';
 import type { Relationship } from '../DataModel/specifyField';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { Tables } from '../DataModel/types';
 import {
-  isTreeModel,
+  isTreeTable,
   strictGetTreeDefinitionItems,
 } from '../InitialContext/treeRanks';
 import {
@@ -50,7 +50,7 @@ import { getMaxToManyIndex, isCircularRelationship } from './modelHelpers';
 import { emptyMapping } from './helpers';
 
 type NavigationCallbackPayload = {
-  readonly model: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly parentRelationship?: Relationship;
 };
 
@@ -60,7 +60,7 @@ type NavigatorCallbackFunction<RETURN_TYPE> = (
 
 type NavigationCallbacks = {
   // Should return undefined if next element does not exist
-  readonly getNextDirection: (model: SpecifyModel) =>
+  readonly getNextDirection: (table: SpecifyTable) =>
     | {
         // The name of the next path element
         readonly fieldName: string;
@@ -98,21 +98,21 @@ function navigator({
   readonly callbacks: NavigationCallbacks;
   // Used internally to make navigator call itself multiple times
   readonly recursivePayload?: {
-    readonly model: SpecifyModel;
+    readonly table: SpecifyTable;
     readonly parentPartName: string;
     readonly parentRelationship?: Relationship;
   };
   readonly baseTableName: string | undefined;
 }): void {
   const {
-    model = strictGetModel(
+    table = strictGetTable(
       defined(baseTableName, 'navigator() called withouth baseTableName')
     ),
     parentRelationship = undefined,
     parentPartName = '',
   } = recursivePayload ?? {};
 
-  const next = callbacks.getNextDirection(model);
+  const next = callbacks.getNextDirection(table);
   if (next === undefined) return;
 
   const childrenAreToManyElements =
@@ -121,10 +121,10 @@ function navigator({
     !valueIsTreeRank(parentPartName);
 
   const childrenAreRanks =
-    isTreeModel(model.name) && !valueIsTreeRank(parentPartName);
+    isTreeTable(table.name) && !valueIsTreeRank(parentPartName);
 
   const callbackPayload = {
-    model,
+    table,
     parentRelationship,
   };
 
@@ -137,19 +137,19 @@ function navigator({
     valueIsToManyIndex(next.partName) || valueIsTreeRank(next.partName);
   const nextField = isSpecial
     ? parentRelationship
-    : model.getField(next.fieldName);
+    : table.getField(next.fieldName);
 
   const nextTable = isSpecial
-    ? model
+    ? table
     : typeof nextField === 'object' && nextField.isRelationship
-    ? nextField.relatedModel
+    ? nextField.relatedTable
     : undefined;
 
   if (typeof nextTable === 'object' && nextField?.isRelationship !== false)
     navigator({
       callbacks,
       recursivePayload: {
-        model: nextTable,
+        table: nextTable,
         parentRelationship: nextField,
         parentPartName: next.partName,
       },
@@ -170,8 +170,8 @@ export function getTableFromMappingPath(
     fieldName,
   ]).join('.');
   if (fieldPath.length === 0) return baseTableName;
-  const field = strictGetModel(baseTableName).strictGetField(fieldPath);
-  return (field.isRelationship ? field.relatedModel : field.model).name;
+  const field = strictGetTable(baseTableName).strictGetField(fieldPath);
+  return (field.isRelationship ? field.relatedTable : field.table).name;
 }
 
 export type MappingLineData = Pick<
@@ -245,14 +245,14 @@ export function getMappingLineData({
 
   const commitInstanceData = (
     customSelectSubtype: CustomSelectSubtype,
-    model: SpecifyModel,
+    table: SpecifyTable,
     fieldsData: RA<readonly [string, HtmlGeneratorFieldData] | undefined>
   ): void =>
     void internalState.mappingLineData.push({
       customSelectSubtype,
-      selectLabel: model.label,
+      selectLabel: table.label,
       fieldsData: Object.fromEntries(filterArray(fieldsData)),
-      tableName: model.name,
+      tableName: table.name,
     });
 
   const lastPartIndex =
@@ -294,7 +294,7 @@ export function getMappingLineData({
       };
     },
 
-    handleToManyChildren({ model, parentRelationship }) {
+    handleToManyChildren({ table, parentRelationship }) {
       const maxMappedElementNumber = getMaxToManyIndex([
         ...internalState.mappedFields,
         internalState.defaultValue,
@@ -309,7 +309,7 @@ export function getMappingLineData({
 
       commitInstanceData(
         'toMany',
-        model,
+        table,
         generateFieldData === 'none'
           ? []
           : [
@@ -326,7 +326,7 @@ export function getMappingLineData({
                       optionLabel,
                       isRelationship: true,
                       isDefault,
-                      tableName: model.name,
+                      tableName: table.name,
                     },
                   ]
                 : undefined;
@@ -334,14 +334,14 @@ export function getMappingLineData({
       );
     },
 
-    handleTreeRanks({ model }) {
+    handleTreeRanks({ table }) {
       const defaultValue = getNameFromTreeRankName(internalState.defaultValue);
 
       commitInstanceData(
         'tree',
-        model,
+        table,
         generateFieldData === 'none' ||
-          !hasTreeAccess(model.name as 'Geography', 'read')
+          !hasTreeAccess(table.name as 'Geography', 'read')
           ? []
           : [
               scope === 'queryBuilder' &&
@@ -356,12 +356,12 @@ export function getMappingLineData({
                         internalState.defaultValue ===
                         formatTreeRank(anyTreeRank),
                       isEnabled: true,
-                      tableName: model.name,
+                      tableName: table.name,
                     },
                   ]
                 : undefined,
               ...strictGetTreeDefinitionItems(
-                model.name as 'Geography',
+                table.name as 'Geography',
                 false
               ).map(({ name, title }) =>
                 name === defaultValue || generateFieldData === 'all'
@@ -371,7 +371,7 @@ export function getMappingLineData({
                         optionLabel: title ?? name,
                         isRelationship: true,
                         isDefault: name === defaultValue,
-                        tableName: model.name,
+                        tableName: table.name,
                       },
                     ] as const)
                   : undefined
@@ -381,14 +381,14 @@ export function getMappingLineData({
     },
 
     // REFACTOR: make this more readable
-    handleSimpleFields({ model, parentRelationship }) {
+    handleSimpleFields({ table, parentRelationship }) {
       if (generateFieldData === 'none')
-        return commitInstanceData('simple', model, []);
+        return commitInstanceData('simple', table, []);
 
       const formatted =
         scope === 'queryBuilder' &&
         ((generateFieldData === 'all' &&
-          (!isTreeModel(model.name) ||
+          (!isTreeTable(table.name) ||
             mappingPath[internalState.position - 1] ===
               formatTreeRank(anyTreeRank) ||
             queryBuilderTreeFields.has(formattedEntry))) ||
@@ -399,7 +399,7 @@ export function getMappingLineData({
                 optionLabel: relationshipIsToMany(parentRelationship)
                   ? queryText.aggregatedInline()
                   : queryText.formattedInline(),
-                tableName: model.name,
+                tableName: table.name,
                 isRelationship: false,
                 isDefault: internalState.defaultValue === formattedEntry,
                 isEnabled: !internalState.mappedFields.includes(formattedEntry),
@@ -412,23 +412,23 @@ export function getMappingLineData({
        * are visible
        */
       const showId =
-        internalState.defaultValue === model.idField.name ||
+        internalState.defaultValue === table.idField.name ||
         (generateFieldData === 'all' &&
           isFieldVisible(
             showHiddenFields,
-            model.idField.isHidden,
-            model.idField.name
+            table.idField.isHidden,
+            table.idField.name
           ));
       const idField = showId
         ? ([
-            model.idField.name,
+            table.idField.name,
             {
               optionLabel: commonText.id(),
-              tableName: model.name,
+              tableName: table.name,
               isRelationship: false,
-              isDefault: internalState.defaultValue === model.idField.name,
+              isDefault: internalState.defaultValue === table.idField.name,
               isEnabled: !internalState.mappedFields.includes(
-                model.idField.name
+                table.idField.name
               ),
               isHidden: true,
             },
@@ -438,7 +438,7 @@ export function getMappingLineData({
       const fieldsData = [
         formatted,
         idField,
-        ...model.fields
+        ...table.fields
           .filter((field) => {
             let isIncluded =
               (generateFieldData === 'all' ||
@@ -456,11 +456,11 @@ export function getMappingLineData({
                 !field.overrides.isReadOnly) &&
               // Hide most fields for non "any" tree ranks in query builder
               (scope !== 'queryBuilder' ||
-                !isTreeModel(model.name) ||
+                !isTreeTable(table.name) ||
                 mappingPath[internalState.position - 1] ===
                   formatTreeRank(anyTreeRank) ||
                 queryBuilderTreeFields.has(field.name)) &&
-              getFrontEndOnlyFields()[model.name]?.includes(field.name) !==
+              getFrontEndOnlyFields()[table.name]?.includes(field.name) !==
                 true;
             if (field.isRelationship) {
               // eslint-disable-next-line unicorn/prefer-ternary
@@ -477,10 +477,10 @@ export function getMappingLineData({
                         relationshipIsToMany(parentRelationship)
                       ))) &&
                   (!canDoWbUpload ||
-                    (isTreeModel(model.name)
-                      ? hasTreeAccess(model.name, 'create')
+                    (isTreeTable(table.name)
+                      ? hasTreeAccess(table.name, 'create')
                       : hasTablePermission(
-                          field.relatedModel.name,
+                          field.relatedTable.name,
                           'create'
                         )) ||
                     getUserPref(
@@ -492,19 +492,19 @@ export function getMappingLineData({
                    * Hide relationship from tree tables in WbPlanView as they
                    * are not supported by the WorkBench
                    */
-                  !isTreeModel(model.name) &&
+                  !isTreeTable(table.name) &&
                   /*
                    * Hide -to-many relationships to a tree table as they are
                    * not supported by the WorkBench
                    */
                   (!relationshipIsToMany(field) ||
-                    !isTreeModel(field.relatedModel.name));
+                    !isTreeTable(field.relatedTable.name));
               } else {
                 isIncluded &&=
                   !canExecuteQuery ||
-                  (isTreeModel(model.name)
-                    ? hasTreeAccess(model.name, 'read')
-                    : hasTablePermission(field.relatedModel.name, 'read')) ||
+                  (isTreeTable(table.name)
+                    ? hasTreeAccess(table.name, 'read')
+                    : hasTablePermission(field.relatedTable.name, 'read')) ||
                   getUserPref('queryBuilder', 'general', 'showNoReadTables');
               }
               isIncluded &&=
@@ -526,10 +526,10 @@ export function getMappingLineData({
               isRequired:
                 scope !== 'queryBuilder' &&
                 field.overrides.isRequired &&
-                !mustMatchPreferences[model.name] &&
+                !mustMatchPreferences[table.name] &&
                 // Relationships to system tables are not required by the uploader
                 (!field.isRelationship ||
-                  !field.relatedModel.overrides.isSystem),
+                  !field.relatedTable.overrides.isSystem),
               isHidden:
                 scope === 'queryBuilder'
                   ? field.isHidden
@@ -537,7 +537,7 @@ export function getMappingLineData({
               isDefault: field.name === internalState.defaultValue,
               isRelationship: field.isRelationship,
               tableName: field.isRelationship
-                ? field.relatedModel.name
+                ? field.relatedTable.name
                 : undefined,
             };
             return scope === 'queryBuilder' && field.isTemporal()
@@ -573,7 +573,7 @@ export function getMappingLineData({
               : ([[field.name, fieldData]] as const);
           }),
       ] as const;
-      return commitInstanceData('simple', model, fieldsData);
+      return commitInstanceData('simple', table, fieldsData);
     },
   };
 

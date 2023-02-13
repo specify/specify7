@@ -19,8 +19,8 @@ import { Button } from '../Atoms/Button';
 import { formatNumber } from '../Atoms/Internationalization';
 import { Link } from '../Atoms/Link';
 import { getField } from '../DataModel/helpers';
-import { getModel, schema } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import { getTable, tables } from '../DataModel/tables';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import { syncFieldFormat } from '../Formatters/fieldFormat';
@@ -163,22 +163,22 @@ function DataModelTable({
   readonly tableName: keyof Tables;
   readonly forwardRef?: (element: HTMLElement | null) => void;
 }): JSX.Element {
-  const model = getModel(tableName);
-  return model === undefined ? (
+  const table = getTable(tableName);
+  return table === undefined ? (
     <NotFoundView />
   ) : (
     <section className="flex flex-col gap-4" ref={forwardRef}>
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2">
-          <TableIcon label={false} name={model.name} />
-          <H2 className="text-2xl" id={model.name.toLowerCase()}>
-            {model.name}
+          <TableIcon label={false} name={table.name} />
+          <H2 className="text-2xl" id={table.name.toLowerCase()}>
+            {table.name}
           </H2>
         </div>
         <Link.Default href={`#${topId}`}>{schemaText.goToTop()}</Link.Default>
       </div>
-      <DataModelFields model={model} />
-      <DataModelRelationships model={model} />
+      <DataModelFields table={table} />
+      <DataModelRelationships table={table} />
     </section>
   );
 }
@@ -186,14 +186,13 @@ function DataModelTable({
 const fieldColumns = f.store(
   () =>
     ({
-      name: getField(schema.models.SpLocaleContainerItem, 'name').label,
+      name: getField(tables.SpLocaleContainerItem, 'name').label,
       label: schemaText.fieldLabel(),
       description: schemaText.description(),
-      isHidden: getField(schema.models.SpLocaleContainerItem, 'isHidden').label,
+      isHidden: getField(tables.SpLocaleContainerItem, 'isHidden').label,
       isReadOnly: schemaText.readOnly(),
-      isRequired: getField(schema.models.SpLocaleContainerItem, 'isRequired')
-        .label,
-      type: getField(schema.models.SpLocaleContainerItem, 'type').label,
+      isRequired: getField(tables.SpLocaleContainerItem, 'isRequired').label,
+      type: getField(tables.SpLocaleContainerItem, 'type').label,
       length: schemaText.fieldLength(),
       databaseColumn: schemaText.databaseColumn(),
     } as const)
@@ -205,9 +204,9 @@ type Value =
   | readonly [number | string | undefined, JSX.Element]
   | undefined;
 type Row<SHAPE extends IR<Value>> = SHAPE;
-const getFields = (model: SpecifyModel) =>
+const getFields = (table: SpecifyTable) =>
   ensure<RA<Row<RR<keyof ReturnType<typeof fieldColumns>, Value>>>>()(
-    model.literalFields.map(
+    table.literalFields.map(
       (field) =>
         ({
           name: field.name,
@@ -229,19 +228,19 @@ const getFields = (model: SpecifyModel) =>
   );
 
 function DataModelFields({
-  model,
+  table,
 }: {
-  readonly model: SpecifyModel;
+  readonly table: SpecifyTable;
 }): JSX.Element {
-  const data = React.useMemo(() => getFields(model), [model]);
-  const scope = model.getScopingRelationship()?.relatedModel.name;
+  const data = React.useMemo(() => getFields(table), [table]);
+  const scope = table.getScopingRelationship()?.relatedTable.name;
 
   return (
     <>
       <p>
         {commonText.colonLine({
           label: schemaText.idField(),
-          value: model.idField.name,
+          value: table.idField.name,
         })}
       </p>
       {typeof scope === 'string' && (
@@ -266,24 +265,23 @@ function DataModelFields({
 const relationshipColumns = f.store(
   () =>
     ({
-      name: getField(schema.models.SpLocaleContainerItem, 'name').label,
+      name: getField(tables.SpLocaleContainerItem, 'name').label,
       label: schemaText.fieldLabel(),
       description: schemaText.description(),
-      isHidden: getField(schema.models.SpLocaleContainerItem, 'isHidden').label,
+      isHidden: getField(tables.SpLocaleContainerItem, 'isHidden').label,
       isReadOnly: schemaText.readOnly(),
-      isRequired: getField(schema.models.SpLocaleContainerItem, 'isRequired')
-        .label,
-      type: getField(schema.models.SpLocaleContainerItem, 'type').label,
+      isRequired: getField(tables.SpLocaleContainerItem, 'isRequired').label,
+      type: getField(tables.SpLocaleContainerItem, 'type').label,
       databaseColumn: schemaText.databaseColumn(),
-      relatedModel: schemaText.relatedModel(),
+      relatedTable: schemaText.relatedTable(),
       otherSideName: schemaText.otherSideName(),
       isDependent: schemaText.dependent(),
     } as const)
 );
 
-const getRelationships = (model: SpecifyModel) =>
+const getRelationships = (table: SpecifyTable) =>
   ensure<RA<Row<RR<keyof ReturnType<typeof relationshipColumns>, Value>>>>()(
-    model.relationships.map(
+    table.relationships.map(
       (field) =>
         ({
           name: field.name,
@@ -294,11 +292,11 @@ const getRelationships = (model: SpecifyModel) =>
           isRequired: booleanFormatter(field.isRequired),
           type: localizedRelationshipTypes[field.type] ?? field.type,
           databaseColumn: field.databaseColumn,
-          relatedModel: [
-            field.relatedModel.name.toLowerCase(),
+          relatedTable: [
+            field.relatedTable.name.toLowerCase(),
             <>
-              <TableIcon label={false} name={field.relatedModel.name} />
-              {field.relatedModel.name}
+              <TableIcon label={false} name={field.relatedTable.name} />
+              {field.relatedTable.name}
             </>,
           ],
           otherSideName: field.otherSideName,
@@ -308,11 +306,11 @@ const getRelationships = (model: SpecifyModel) =>
   );
 
 function DataModelRelationships({
-  model,
+  table,
 }: {
-  readonly model: SpecifyModel;
+  readonly table: SpecifyTable;
 }): JSX.Element {
-  const data = React.useMemo(() => getRelationships(model), [model]);
+  const data = React.useMemo(() => getRelationships(table), [table]);
 
   const [dependentFilter, setDependentFilter] = React.useState<
     undefined | boolean
@@ -323,7 +321,7 @@ function DataModelRelationships({
       typeof dependentFilter === 'boolean'
         ? data.filter(
             (relationship) =>
-              model.strictGetRelationship(relationship.name).isDependent() ===
+              table.strictGetRelationship(relationship.name).isDependent() ===
               dependentFilter
           )
         : data,
@@ -333,7 +331,7 @@ function DataModelRelationships({
   return (
     <>
       <div className="flex items-center gap-4">
-        <H3 id={model.name.toLowerCase()}>{schemaText.relationships()}</H3>
+        <H3 id={table.name.toLowerCase()}>{schemaText.relationships()}</H3>
         <div className="flex items-center gap-2">
           <Button.Small
             aria-pressed={
@@ -371,7 +369,7 @@ function DataModelRelationships({
       </div>
       <Table
         data={filteredDependentData}
-        getLink={({ relatedModel }): string => `#${relatedModel[0]}`}
+        getLink={({ relatedTable }): string => `#${relatedTable[0]}`}
         headers={relationshipColumns()}
         sortName="dataModelRelationships"
       />
@@ -382,10 +380,10 @@ function DataModelRelationships({
 const tableColumns = f.store(
   () =>
     ({
-      name: getField(schema.models.SpLocaleContainer, 'name').label,
+      name: getField(tables.SpLocaleContainer, 'name').label,
       label: schemaText.fieldLabel(),
-      isSystem: getField(schema.models.SpLocaleContainer, 'isSystem').label,
-      isHidden: getField(schema.models.SpLocaleContainer, 'isHidden').label,
+      isSystem: getField(tables.SpLocaleContainer, 'isSystem').label,
+      isHidden: getField(tables.SpLocaleContainer, 'isHidden').label,
       tableId: schemaText.tableId(),
       fieldCount: schemaText.fieldCount(),
       relationshipCount: schemaText.relationshipCount(),
@@ -393,35 +391,35 @@ const tableColumns = f.store(
 );
 const getTables = () =>
   ensure<RA<Row<RR<keyof ReturnType<typeof tableColumns>, Value>>>>()(
-    Object.values(schema.models).map(
-      (model) =>
+    Object.values(tables).map(
+      (table) =>
         ({
           name: [
-            model.name.toLowerCase(),
+            table.name.toLowerCase(),
             <>
-              <TableIcon label={false} name={model.name} />
-              {model.name}
+              <TableIcon label={false} name={table.name} />
+              {table.name}
             </>,
           ],
-          label: model.label,
-          isSystem: booleanFormatter(model.isSystem),
-          isHidden: booleanFormatter(model.isHidden),
+          label: table.label,
+          isSystem: booleanFormatter(table.isSystem),
+          isHidden: booleanFormatter(table.isHidden),
           tableId: [
-            model.tableId,
+            table.tableId,
             <span className="flex w-full justify-end tabular-nums">
-              {model.tableId}
+              {table.tableId}
             </span>,
           ],
           fieldCount: [
-            model.fields.length,
+            table.fields.length,
             <span className="flex w-full justify-end tabular-nums">
-              {formatNumber(model.fields.length)}
+              {formatNumber(table.fields.length)}
             </span>,
           ],
           relationshipCount: [
-            model.relationships.length,
+            table.relationships.length,
             <span className="flex w-full justify-end tabular-nums">
-              {formatNumber(model.relationships.length)}
+              {formatNumber(table.relationships.length)}
             </span>,
           ],
         } as const)
@@ -535,33 +533,33 @@ const dataModelToTsv = (): string =>
     [
       schemaText.table(),
       schemaText.fieldLabel(),
-      getField(schema.models.SpLocaleContainer, 'isSystem').label,
-      getField(schema.models.SpLocaleContainer, 'isHidden').label,
+      getField(tables.SpLocaleContainer, 'isSystem').label,
+      getField(tables.SpLocaleContainer, 'isHidden').label,
       schemaText.tableId(),
-      getField(schema.models.SpLocaleContainerItem, 'name').label,
+      getField(tables.SpLocaleContainerItem, 'name').label,
       schemaText.fieldLabel(),
       schemaText.description(),
-      getField(schema.models.SpLocaleContainerItem, 'isHidden').label,
+      getField(tables.SpLocaleContainerItem, 'isHidden').label,
       schemaText.readOnly(),
-      getField(schema.models.SpLocaleContainerItem, 'isRequired').label,
+      getField(tables.SpLocaleContainerItem, 'isRequired').label,
       formsText.relationship(),
-      getField(schema.models.SpLocaleContainerItem, 'type').label,
+      getField(tables.SpLocaleContainerItem, 'type').label,
       schemaText.fieldLength(),
       schemaText.databaseColumn(),
-      schemaText.relatedModel(),
+      schemaText.relatedTable(),
       schemaText.otherSideName(),
       schemaText.dependent(),
     ],
-    ...Object.values(schema.models).flatMap((model) => {
+    ...Object.values(tables).flatMap((table) => {
       const commonColumns = [
-        model.name,
-        model.label.replace('\n', ' '),
-        booleanFormatter(model.isSystem),
-        booleanFormatter(model.isHidden),
-        model.tableId,
+        table.name,
+        table.label.replace('\n', ' '),
+        booleanFormatter(table.isSystem),
+        booleanFormatter(table.isHidden),
+        table.tableId,
       ];
       return [
-        ...model.literalFields.map((field) => [
+        ...table.literalFields.map((field) => [
           ...commonColumns,
           field.name,
           field.label.replace('\n', ' '),
@@ -577,7 +575,7 @@ const dataModelToTsv = (): string =>
           '',
           '',
         ]),
-        ...model.relationships.map((relationship) => [
+        ...table.relationships.map((relationship) => [
           ...commonColumns,
           relationship.name,
           relationship.label.replace('\n', ' '),
@@ -589,7 +587,7 @@ const dataModelToTsv = (): string =>
           localizedRelationshipTypes[relationship.type] ?? relationship.type,
           '',
           relationship.databaseColumn,
-          relationship.relatedModel.name,
+          relationship.relatedTable.name,
           relationship.otherSideName,
           booleanFormatter(relationship.isDependent()),
         ]),

@@ -15,8 +15,8 @@ import { Container, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { createResource } from '../DataModel/resource';
-import { schema, strictGetModel } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import { strictGetTable, tables } from '../DataModel/tables';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { RecordSet, SpQuery, Tables } from '../DataModel/types';
 import { raise, softFail } from '../Errors/Crash';
 import { recordSetView } from '../FormParse/webOnlyViews';
@@ -43,7 +43,7 @@ import {
 export type QueryResultRow = RA<number | string | null>;
 
 export function QueryResults({
-  model,
+  table,
   label = commonText.results(),
   hasIdField,
   queryResource,
@@ -59,7 +59,7 @@ export function QueryResults({
   extraButtons,
   tableClassName = '',
 }: {
-  readonly model: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly label?: LocalizedString;
   readonly hasIdField: boolean;
   readonly queryResource: SpecifyResource<SpQuery> | undefined;
@@ -271,7 +271,7 @@ export function QueryResults({
             ) : undefined}
             <QueryToMap
               fieldSpecs={fieldSpecs}
-              model={model}
+              table={table}
               results={loadedResults}
               selectedRows={selectedRows}
               totalCount={totalCount}
@@ -280,7 +280,7 @@ export function QueryResults({
               }
             />
             <QueryToForms
-              model={model}
+              table={table}
               results={results}
               selectedRows={selectedRows}
               totalCount={totalCount}
@@ -367,7 +367,7 @@ export function QueryResults({
             <QueryResultsTable
               fieldSpecs={fieldSpecs}
               hasIdField={hasIdField}
-              model={model}
+              table={table}
               results={loadedResults}
               selectedRows={selectedRows}
               onSelected={(rowIndex, isSelected, isShiftClick): void => {
@@ -492,7 +492,7 @@ function CreateRecordSet({
       <Button.Small
         aria-haspopup="dialog"
         onClick={(): void => {
-          const recordSet = new schema.models.RecordSet.Resource();
+          const recordSet = new tables.RecordSet.Resource();
           if (queryResource !== undefined && !queryResource.isNew())
             recordSet.set('name', queryResource.get('name'));
           setState({
@@ -502,7 +502,7 @@ function CreateRecordSet({
         }}
       >
         {queryText.createRecordSet({
-          recordSetTable: schema.models.RecordSet.label,
+          recordSetTable: tables.RecordSet.label,
         })}
       </Button.Small>
       {state.type === 'Editing' && (
@@ -523,7 +523,7 @@ function CreateRecordSet({
               ...serializeResource(state.recordSet),
               version: 1,
               type: 0,
-              dbTableId: strictGetModel(baseTableName).tableId,
+              dbTableId: strictGetTable(baseTableName).tableId,
               /*
                * Back-end has an exception for RecordSet table allowing passing
                * inline data for record set items.

@@ -4,13 +4,13 @@ import { requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
 import type { PartialBy } from '../../../utils/types';
 import { strictParseXml } from '../../AppResources/codeMirrorLinters';
-import { schema } from '../../DataModel/schema';
 import type { CellTypes, FormCellDefinition } from '../cells';
 import {
   parseFormCell,
   parseSpecifyProperties,
   processColumnDefinition,
 } from '../cells';
+import { tables } from '../../DataModel/tables';
 
 requireContext();
 
@@ -114,7 +114,7 @@ describe('parseFormCell', () => {
   test('base case', () => {
     jest.spyOn(console, 'warn').mockImplementation();
     expect(
-      parseFormCell(schema.models.CollectionObject, strictParseXml('<cell />'))
+      parseFormCell(tables.CollectionObject, strictParseXml('<cell />'))
     ).toEqual(
       cell({
         type: 'Unsupported',
@@ -127,7 +127,7 @@ describe('parseFormCell', () => {
     jest.spyOn(console, 'warn').mockImplementation();
     expect(
       parseFormCell(
-        schema.models.CollectionObject,
+        tables.CollectionObject,
         strictParseXml(
           '<cell invisible="true" type=" test2 " initialize="align=Center" colSpan=" 5 " id="test" />'
         )
@@ -148,7 +148,7 @@ describe('parseFormCell', () => {
   test('invisible field', () =>
     expect(
       parseFormCell(
-        schema.models.CollectionObject,
+        tables.CollectionObject,
         strictParseXml(
           '<cell type=" field " uiType="text" invisible="true" name="CatalogNumber" isRequired="TRuE " initialize="align=RIGHT" colSpan=" 5 " id="test" />'
         )
@@ -170,7 +170,7 @@ describe('parseFormCell', () => {
           step: undefined,
           type: 'Text',
           maxLength: undefined,
-          minLength: undefined
+          minLength: undefined,
         },
       })
     ));
@@ -178,7 +178,7 @@ describe('parseFormCell', () => {
   test('field required by schema', () =>
     expect(
       parseFormCell(
-        schema.models.CollectionObject,
+        tables.CollectionObject,
         strictParseXml(
           '<cell type="field" uiType="text" name="  CollectionObject.CollectionMemberId  " />'
         )
@@ -196,7 +196,7 @@ describe('parseFormCell', () => {
           step: undefined,
           type: 'Text',
           maxLength: undefined,
-          minLength: undefined
+          minLength: undefined,
         },
       })
     ));
@@ -205,7 +205,7 @@ describe('parseFormCell', () => {
     jest.spyOn(console, 'error').mockImplementation();
     expect(
       parseFormCell(
-        schema.models.CollectionObject,
+        tables.CollectionObject,
         strictParseXml('<cell type="field" uiType="text" name="this" />')
       )
     ).toEqual(
@@ -219,7 +219,7 @@ describe('parseFormCell', () => {
     jest.spyOn(console, 'error').mockImplementation();
     expect(
       parseFormCell(
-        schema.models.CollectionObject,
+        tables.CollectionObject,
         strictParseXml(
           '<cell type="field" uiType="text" name="this" default="A" />'
         )
@@ -237,7 +237,7 @@ describe('parseFormCell', () => {
           step: undefined,
           type: 'Text',
           maxLength: undefined,
-          minLength: undefined
+          minLength: undefined,
         },
       })
     );
@@ -246,7 +246,7 @@ describe('parseFormCell', () => {
   test('relationship field names are parsed correctly', () =>
     expect(
       parseFormCell(
-        schema.models.Collector,
+        tables.Collector,
         strictParseXml(
           '<cell type="field" uiType="text" name="agent.lastName" />'
         )
@@ -265,7 +265,7 @@ describe('parseFormCell', () => {
           step: undefined,
           type: 'Text',
           minLength: undefined,
-          maxLength: undefined
+          maxLength: undefined,
         },
       })
     ));
@@ -273,7 +273,7 @@ describe('parseFormCell', () => {
   test('fieldName overwritten by the PartialDateUI plugin', () =>
     expect(
       parseFormCell(
-        schema.models.CollectionObject,
+        tables.CollectionObject,
         strictParseXml(
           '<cell type="field" uiType="plugin" initialize="name=PartialDateUI;df=catalogedDate" />'
         )
@@ -301,7 +301,7 @@ describe('parseFormCell', () => {
   test('simple label with custom text', () =>
     expect(
       parseFormCell(
-        schema.models.CollectionObject,
+        tables.CollectionObject,
         strictParseXml('<cell type="Label" label="some text" />')
       )
     ).toEqual(
@@ -319,7 +319,7 @@ describe('parseFormCell', () => {
   test('label with Specify 6 localization string', () =>
     expect(
       parseFormCell(
-        schema.models.CollectionObject,
+        tables.CollectionObject,
         strictParseXml('<cell type="Label" label="FINDNEXT" labelfor=" 42" />')
       )
     ).toEqual(
@@ -336,7 +336,7 @@ describe('parseFormCell', () => {
   test('Separator', () =>
     expect(
       parseFormCell(
-        schema.models.CollectionObject,
+        tables.CollectionObject,
         strictParseXml(
           '<cell type="separator"   label="FINDNEXT" name="unused" additional="unused" icon=" 42" forClass=" CollectionObject" />'
         )
@@ -353,7 +353,7 @@ describe('parseFormCell', () => {
   test('basic SubView', () =>
     expect(
       parseFormCell(
-        schema.models.CollectionObject,
+        tables.CollectionObject,
         strictParseXml('<cell type="subView" name="determinationS "  />')
       )
     ).toEqual(
@@ -371,7 +371,7 @@ describe('parseFormCell', () => {
   test('SubView button with custom icon and sorting', () =>
     expect(
       parseFormCell(
-        schema.models.CollectionObject,
+        tables.CollectionObject,
         strictParseXml(
           '<cell type="subView" name="determinations" defaultType="table" viewName="testView " initialize="sortField=-iscurrent ;btn=true  ; icon=test" />'
         )
@@ -391,7 +391,7 @@ describe('parseFormCell', () => {
   test('Panel', () =>
     expect(
       parseFormCell(
-        schema.models.CollectionObject,
+        tables.CollectionObject,
         strictParseXml(
           `<cell type="panel" colDef="1px,2px,2px">
             <rows>
@@ -430,7 +430,7 @@ describe('parseFormCell', () => {
   test('inline Panel', () =>
     expect(
       parseFormCell(
-        schema.models.CollectionObject,
+        tables.CollectionObject,
         strictParseXml(
           '<cell type="panel" colDef="p:g,2px,2px" panelType="buttonBar" />'
         )
@@ -447,7 +447,7 @@ describe('parseFormCell', () => {
   test('Command', () =>
     expect(
       parseFormCell(
-        schema.models.Loan,
+        tables.Loan,
         strictParseXml(
           '<cell type="command" name="ReturnLoan" label="generateLabelBtn" />'
         )
@@ -467,7 +467,7 @@ describe('parseFormCell', () => {
   test('Blank', () =>
     expect(
       parseFormCell(
-        schema.models.CollectionObject,
+        tables.CollectionObject,
         strictParseXml('<cell type="blank" name="ignored" />')
       )
     ).toEqual(cell({ type: 'Blank' })));

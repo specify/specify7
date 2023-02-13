@@ -155,7 +155,7 @@ function TableResults({
 }
 
 function TableResult({
-  model,
+  table,
   caption,
   tableResults,
   ajaxUrl,
@@ -164,7 +164,7 @@ function TableResult({
     async (offset: number): Promise<RA<RA<number | string>>> =>
       ajax<IR<QueryTableResult> | QueryTableResult>(
         formatUrl(ajaxUrl, {
-          name: model.name,
+          name: table.name,
           // The URL may already have a "name" parameter
           ...parseUrl(ajaxUrl),
           offset: offset.toString(),
@@ -175,12 +175,12 @@ function TableResult({
         }
       ).then(
         ({ data }) =>
-          (model.name in data
-            ? (data as IR<QueryTableResult>)[model.name]
+          (table.name in data
+            ? (data as IR<QueryTableResult>)[table.name]
             : (data as QueryTableResult)
           ).results
       ),
-    [ajaxUrl, model.name]
+    [ajaxUrl, table.name]
   );
 
   return (
@@ -208,8 +208,8 @@ function TableResult({
           )}
           hasIdField
           initialData={tableResults.results}
-          label={model.label}
-          model={model}
+          label={table.label}
+          table={table}
           queryResource={undefined}
           tableClassName="max-h-[70vh]"
           totalCount={tableResults.totalCount}

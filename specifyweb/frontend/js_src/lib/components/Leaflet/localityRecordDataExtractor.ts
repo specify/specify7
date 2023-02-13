@@ -9,7 +9,7 @@ import type { R, RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import type { AnySchema, AnyTree } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import type { Collection } from '../DataModel/specifyModel';
+import type { Collection } from '../DataModel/specifyTable';
 import type { Locality } from '../DataModel/types';
 import { format } from '../Formatters/formatters';
 import {
@@ -71,8 +71,8 @@ export const defaultRecordFilterFunction: FilterFunction = (
   _mappingPathParts,
   resource
 ) =>
-  !('specifyModel' in resource) ||
-  resource.specifyModel.name !== 'Determination' ||
+  !('specifyTable' in resource) ||
+  resource.specifyTable.name !== 'Determination' ||
   resource.get('isCurrent');
 
 async function recursiveResourceResolve(
@@ -106,11 +106,11 @@ async function recursiveResourceResolve(
     (!('related' in resource) || resource.related?.isNew() !== true)
   ) {
     const tableName =
-      ('specifyModel' in resource ? resource?.specifyModel?.name : undefined) ??
+      ('specifyTable' in resource ? resource?.specifyTable?.name : undefined) ??
       ('related' in resource
-        ? resource?.related?.specifyModel?.name
+        ? resource?.related?.specifyTable?.name
         : undefined) ??
-      ('field' in resource ? resource?.field?.model.name : undefined);
+      ('field' in resource ? resource?.field?.table.name : undefined);
     if (
       hasTablePermission(
         defined(
@@ -157,8 +157,8 @@ async function recursiveResourceResolve(
     return Promise.all(
       Object.values(resource.models)
         .slice(0, MAX_TO_MANY_INDEX)
-        .map(async (model, index) =>
-          recursiveResourceResolve(model, nextPart, filterFunction, [
+        .map(async (resource, index) =>
+          recursiveResourceResolve(resource, nextPart, filterFunction, [
             ...pastParts,
             formatToManyIndex(index + 1),
           ])

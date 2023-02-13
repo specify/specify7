@@ -6,17 +6,17 @@ import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { parseJavaClassName } from '../DataModel/resource';
-import { fetchContext as fetchSchema, getModel } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import { fetchContext as fetchSchema, getTable } from '../DataModel/tables';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import { fetchView } from '../FormParse';
 import { cachableUrl } from '../InitialContext';
 import { formatUrl } from '../Router/queryString';
 import { xmlToSpec } from '../Syncer/xmlUtils';
-import { useFormModels } from './Edit';
+import { useFormTables } from './Edit';
 import { dataEntryItems } from './spec';
 
 export function useDataEntryForms(): RA<FormEntry> | undefined {
-  const [tables] = useFormModels();
+  const [tables] = useFormTables();
   const isLegacy = tables === 'legacy';
   const [rawForms] = useAsyncState(
     React.useCallback(
@@ -35,7 +35,7 @@ export function useDataEntryForms(): RA<FormEntry> | undefined {
 type FormEntry = {
   readonly icon?: string;
   readonly title?: string;
-  readonly table: SpecifyModel;
+  readonly table: SpecifyTable;
 };
 
 const url = cachableUrl(
@@ -71,12 +71,12 @@ const fetchLegacyForms = f.store(
 
 async function resolveTable(
   viewName: string
-): Promise<SpecifyModel | undefined> {
-  const model = getModel(viewName);
-  if (typeof model === 'object') return model;
+): Promise<SpecifyTable | undefined> {
+  const table = getTable(viewName);
+  if (typeof table === 'object') return table;
   const form = await fetchView(viewName);
   return typeof form === 'object'
-    ? getModel(parseJavaClassName(form.class))
+    ? getTable(parseJavaClassName(form.class))
     : undefined;
 }
 

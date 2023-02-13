@@ -24,7 +24,6 @@ import { fetchCollection } from '../DataModel/collection';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
-import { schema } from '../DataModel/schema';
 import type { Collection, SpecifyUser } from '../DataModel/types';
 import { QueryComboBox } from '../QueryComboBox';
 import type { FormMode } from '../FormParse';
@@ -33,6 +32,7 @@ import { collectionAccessResource } from '../Permissions/definitions';
 import { hasPermission } from '../Permissions/helpers';
 import type { Policy } from './Policy';
 import type { UserAgents } from './UserHooks';
+import { tables } from '../DataModel/tables';
 
 function UserCollectionsUi({
   userId,
@@ -153,7 +153,7 @@ export function SetCollection({
 }): JSX.Element {
   return (
     <Label.Block className={className.limitedWidth}>
-      <span className="text-xl">{schema.models.Collection.label}</span>
+      <span className="text-xl">{tables.Collection.label}</span>
       <Select
         value={collectionId}
         onValueChange={(value): void => handleChange(Number.parseInt(value))}
@@ -267,10 +267,10 @@ export function CollectionAccess({
         </Label.Inline>
       ) : undefined}
       <Label.Block className={className.limitedWidth}>
-        {schema.models.Agent.label}
+        {tables.Agent.label}
         {typeof collectionAddress === 'object' ? (
           <QueryComboBox
-            field={schema.models.Address.strictGetRelationship('agent')}
+            field={tables.Address.strictGetRelationship('agent')}
             forceCollection={collectionId}
             formType="form"
             id={undefined}

@@ -1,7 +1,6 @@
 import { errorContext } from '../../hooks/useErrorContext';
 import { f } from '../../utils/functools';
 import type { IR } from '../../utils/types';
-import { removeKey } from '../../utils/utils';
 import { consoleLog, serializeConsoleLog, toSafeObject } from './interceptLogs';
 
 let resolvedStackTrace: IR<unknown> = { stackTrace: 'loading' };
@@ -16,9 +15,7 @@ f.all({
     ({ getOperationPermissions }) => getOperationPermissions()
   ),
   errorContext: Array.from(errorContext),
-  schema: import('../DataModel/schema').then(({ schema }) =>
-    removeKey(schema, 'models')
-  ),
+  schema: import('../DataModel/schema').then(({ schema }) => schema),
   remotePrefs: import('../InitialContext/remotePrefs').then(
     ({ remotePrefs }) => remotePrefs
   ),

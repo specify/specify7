@@ -14,7 +14,6 @@ import { DataEntry } from '../Atoms/DataEntry';
 import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { schema } from '../DataModel/schema';
 import type { Collection } from '../DataModel/types';
 import { ResourceView } from '../Forms/ResourceView';
 import { userInformation } from '../InitialContext/userInformation';
@@ -24,6 +23,7 @@ import { createCollectionRole } from './CreateRole';
 import { ImportExport } from './ImportExport';
 import type { Role } from './Role';
 import { deserializeResource } from '../DataModel/serializers';
+import { tables } from '../DataModel/tables';
 
 /**
  * Display a button to open current user
@@ -121,7 +121,7 @@ export function CollectionRoles({
     <section className="flex flex-col gap-1">
       <h4 className="text-xl">
         {userText.collectionUserRoles({
-          collectionTable: schema.models.Collection.label,
+          collectionTable: tables.Collection.label,
         })}
       </h4>
       {typeof roles === 'object' ? (

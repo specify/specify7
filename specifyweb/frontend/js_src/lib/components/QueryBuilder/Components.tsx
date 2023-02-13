@@ -10,7 +10,7 @@ import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { getModelById, schema, strictGetModel } from '../DataModel/schema';
+import { getTableById, strictGetTable, tables } from '../DataModel/tables';
 import type {
   RecordSet,
   SpQuery,
@@ -199,12 +199,12 @@ export function MakeRecordSetButton({
           if (typeof getQueryFieldRecords === 'function')
             queryResource.set('fields', getQueryFieldRecords());
 
-          const recordSet = new schema.models.RecordSet.Resource();
+          const recordSet = new tables.RecordSet.Resource();
 
           if (!queryResource.isNew())
             recordSet.set('name', queryResource.get('name'));
 
-          recordSet.set('dbTableId', strictGetModel(baseTableName).tableId);
+          recordSet.set('dbTableId', strictGetTable(baseTableName).tableId);
           // @ts-expect-error Adding a non-datamodel field
           recordSet.set('fromQuery', queryResource.toJSON());
           // @ts-expect-error Overwriting the resource back-end URL
@@ -213,7 +213,7 @@ export function MakeRecordSetButton({
         }}
       >
         {queryText.createRecordSet({
-          recordSetTable: schema.models.RecordSet.label,
+          recordSetTable: tables.RecordSet.label,
         })}
       </QueryButton>
       {state === 'editing' || state === 'saving' ? (
@@ -250,12 +250,12 @@ export const recordSetFromQueryLoading = f.store(() => (
   <Dialog
     buttons={undefined}
     header={queryText.recordSetToQuery({
-      recordSetTable: schema.models.RecordSet.label,
+      recordSetTable: tables.RecordSet.label,
     })}
     onClose={undefined}
   >
     {queryText.recordSetToQueryDescription({
-      recordSetTable: schema.models.RecordSet.label,
+      recordSetTable: tables.RecordSet.label,
     })}
     {loadingBar}
   </Dialog>
@@ -272,12 +272,12 @@ export function RecordSetCreated({
     <Dialog
       buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
       header={queryText.recordSetCreated({
-        recordSetTable: schema.models.RecordSet.label,
+        recordSetTable: tables.RecordSet.label,
       })}
       onClose={handleClose}
     >
       <Link.Default href={`/specify/record-set/${recordSet.id}/`}>
-        <TableIcon label name={getModelById(recordSet.get('dbTableId')).name} />
+        <TableIcon label name={getTableById(recordSet.get('dbTableId')).name} />
         {recordSet.get('name')}
       </Link.Default>
     </Dialog>

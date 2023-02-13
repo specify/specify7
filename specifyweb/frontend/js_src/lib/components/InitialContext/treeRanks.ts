@@ -18,20 +18,19 @@ import type {
   SerializedResource,
 } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema, strictGetModel } from '../DataModel/schema';
-import { fetchContext as fetchDomain } from '../DataModel/schemaBase';
+import { fetchContext as fetchDomain, schema } from '../DataModel/schema';
 import { serializeResource } from '../DataModel/serializers';
+import { strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 
-export const getDomainResource = <
+export function getDomainResource<
   LEVEL extends keyof typeof schema.domainLevelIds
->(
-  level: LEVEL
-): SpecifyResource<Tables[Capitalize<LEVEL>]> | undefined =>
-  f.maybe(schema.domainLevelIds[level], (id) => {
-    const model = strictGetModel(level);
-    return new model.Resource({ id });
-  });
+>(level: LEVEL): SpecifyResource<Tables[Capitalize<LEVEL>]> | undefined {
+  const id = schema.domainLevelIds[level];
+  if (id === undefined) return undefined;
+  const table = strictGetTable(level);
+  return new table.Resource({ id });
+}
 
 let treeDefinitions: {
   readonly [TREE_NAME in AnyTree['tableName']]: {
@@ -58,20 +57,20 @@ const paleoDiscs = new Set(['paleobotany', 'invertpaleo', 'vertpaleo']);
 let disciplineTrees: RA<AnyTree['tableName']> = allTrees;
 export const getDisciplineTrees = (): typeof disciplineTrees => disciplineTrees;
 
-export const isTreeModel = (
+export const isTreeTable = (
   tableName: keyof Tables
 ): tableName is AnyTree['tableName'] => f.includes(allTrees, tableName);
 
 export const isTreeResource = (
   resource: SpecifyResource<AnySchema>
 ): resource is SpecifyResource<AnyTree> =>
-  f.includes(allTrees, resource.specifyModel.name);
+  f.includes(allTrees, resource.specifyTable.name);
 
 export const treeRanksPromise = Promise.all([
   // Dynamic imports are used to prevent circular dependencies
   import('../Permissions/helpers'),
   import('../Permissions').then(async ({ fetchContext }) => fetchContext),
-  import('../DataModel/schema').then(async ({ fetchContext }) => fetchContext),
+  import('../DataModel/tables').then(async ({ fetchContext }) => fetchContext),
   fetchDomain,
 ])
   .then(([{ hasTreeAccess, hasTablePermission }]) =>

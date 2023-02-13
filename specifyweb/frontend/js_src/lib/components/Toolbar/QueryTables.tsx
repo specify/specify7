@@ -10,8 +10,8 @@ import { DataEntry } from '../Atoms/DataEntry';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { getModelById, strictGetModel } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import { getTableById, strictGetTable } from '../DataModel/tables';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { SpQuery, Tables } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
@@ -72,18 +72,18 @@ export const defaultQueryTablesConfig: RA<keyof Tables> = [
   'TreatmentEvent',
 ];
 
-export function useQueryModels(): GetSet<RA<SpecifyModel>> {
+export function useQueryTables(): GetSet<RA<SpecifyTable>> {
   const [tables, setTables] = usePref('queryBuilder', 'general', 'shownTables');
   const visibleTables =
     tables.length === 0
-      ? defaultQueryTablesConfig.map(strictGetModel)
-      : tables.map(getModelById);
+      ? defaultQueryTablesConfig.map(strictGetTable)
+      : tables.map(getTableById);
   const accessibleTables = visibleTables.filter(({ name }) =>
     hasTablePermission(name, 'read')
   );
   const handleChange = React.useCallback(
-    (models: RA<SpecifyModel>) =>
-      setTables(models.map((model) => model.tableId)),
+    (tables: RA<SpecifyTable>) =>
+      setTables(tables.map(({ tableId }) => tableId)),
     [setTables]
   );
   return [accessibleTables, handleChange];
@@ -98,7 +98,7 @@ export function QueryTables({
   readonly queries: RA<SerializedResource<SpQuery>> | undefined;
   readonly onClose: () => void;
 }): JSX.Element {
-  const [tables] = useQueryModels();
+  const [tables] = useQueryTables();
 
   const [isEditing, handleEditing] = useBooleanState();
   const [isImporting, handleImporting] = useBooleanState();

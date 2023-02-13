@@ -1,7 +1,7 @@
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { f } from '../../utils/functools';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { SpecToJson } from '../Syncer';
 import { pipe, syncer } from '../Syncer';
 import { syncers } from '../Syncer/syncers';
@@ -111,7 +111,7 @@ const switchSpec = ({ table }: SpecToJson<ReturnType<typeof formatterSpec>>) =>
     ),
   });
 
-const fieldsSpec = (table: SpecifyModel | undefined) =>
+const fieldsSpec = (table: SpecifyTable | undefined) =>
   createXmlSpec({
     value: syncers.xmlAttribute('value', 'skip'),
     fields: pipe(
@@ -156,7 +156,7 @@ const fieldsSpec = (table: SpecifyModel | undefined) =>
     ),
   });
 
-const fieldSpec = (table: SpecifyModel | undefined) =>
+const fieldSpec = (table: SpecifyTable | undefined) =>
   createXmlSpec({
     separator: pipe(
       syncers.xmlAttribute('sep', 'skip', false),

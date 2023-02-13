@@ -24,7 +24,7 @@ import {
 } from '../DataModel/resource';
 import { serializeResource } from '../DataModel/serializers';
 import type { Relationship } from '../DataModel/specifyField';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import {
   format,
   getMainTableFields,
@@ -35,7 +35,7 @@ import { ResourceView, RESTRICT_ADDING } from '../Forms/ResourceView';
 import type { QueryComboBoxFilter } from '../SearchDialog';
 import { SearchDialog } from '../SearchDialog';
 import { SubViewContext } from '../Forms/SubView';
-import { isTreeModel } from '../InitialContext/treeRanks';
+import { isTreeTable } from '../InitialContext/treeRanks';
 import { userInformation } from '../InitialContext/userInformation';
 import type { AutoCompleteItem } from '../Molecules/AutoComplete';
 import { AutoComplete } from '../Molecules/AutoComplete';
@@ -65,7 +65,7 @@ export function QueryComboBox({
   hasCloneButton = false,
   typeSearch: initialTypeSearch,
   forceCollection,
-  relatedModel: initialRelatedModel,
+  relatedTable: initialRelatedTable,
 }: {
   readonly id: string | undefined;
   readonly resource: SpecifyResource<AnySchema> | undefined;
@@ -76,7 +76,7 @@ export function QueryComboBox({
   readonly hasCloneButton?: boolean;
   readonly typeSearch: TypeSearch | string | undefined;
   readonly forceCollection: number | undefined;
-  readonly relatedModel?: SpecifyModel | undefined;
+  readonly relatedTable?: SpecifyTable | undefined;
 }): JSX.Element {
   React.useEffect(() => {
     if (resource === undefined || !resource.isNew()) return;
@@ -107,7 +107,7 @@ export function QueryComboBox({
   const typeSearch = useTypeSearch(
     initialTypeSearch,
     field,
-    initialRelatedModel
+    initialRelatedTable
   );
 
   const isLoaded =
@@ -154,7 +154,7 @@ export function QueryComboBox({
     React.useCallback(
       async () =>
         typeof resource === 'object' &&
-        (hasTablePermission(field.relatedModel.name, 'read') ||
+        (hasTablePermission(field.relatedTable.name, 'read') ||
           /*
            * If related resource is already provided, can display it
            * Even if don't have read permission (i.e, Agent for current
@@ -181,7 +181,7 @@ export function QueryComboBox({
                     ).then((formatted) => ({
                       label:
                         formatted ??
-                        naiveFormatter(field.relatedModel.label, resource.id),
+                        naiveFormatter(field.relatedTable.label, resource.id),
                       resource,
                     }))
               )
@@ -242,12 +242,12 @@ export function QueryComboBox({
         ? typeSearch?.searchFields.find(
             ([searchField]) =>
               !searchField.isRelationship &&
-              searchField.model === relationship.relatedModel &&
+              searchField.table === relationship.relatedTable &&
               !searchField.isReadOnly
           )?.[0].name
         : undefined) ??
-      getMainTableFields(relationship.relatedModel.name)[0]?.name;
-    return new relationship.relatedModel.Resource(
+      getMainTableFields(relationship.relatedTable.name)[0]?.name;
+    return new relationship.relatedTable.Resource(
       /*
        * If some value is currently in the input field, try to figure out which
        * field it is intended for and populate that field in the new resource.
@@ -268,7 +268,7 @@ export function QueryComboBox({
                 makeComboBoxQuery({
                   fieldName: fields.map(({ name }) => name).join('.'),
                   value,
-                  isTreeTable: isTreeModel(field.relatedModel.name),
+                  isTreeTable: isTreeTable(field.relatedTable.name),
                   typeSearch,
                   specialConditions: getQueryComboBoxConditions({
                     resource,
@@ -320,7 +320,7 @@ export function QueryComboBox({
             responses
               .flatMap(({ data: { results } }) => results)
               .map(([id, label]) => ({
-                data: getResourceApiUrl(field.relatedModel.name, id),
+                data: getResourceApiUrl(field.relatedTable.name, id),
                 label,
               }))
           )
@@ -339,8 +339,8 @@ export function QueryComboBox({
   );
 
   const canAdd =
-    !RESTRICT_ADDING.has(field.relatedModel.name) &&
-    hasTablePermission(field.relatedModel.name, 'create');
+    !RESTRICT_ADDING.has(field.relatedTable.name) &&
+    hasTablePermission(field.relatedTable.name, 'create');
 
   return (
     <div className="flex w-full items-center">
@@ -397,7 +397,7 @@ export function QueryComboBox({
       <span className="contents print:hidden">
         {formType === 'formTable' ? undefined : mode === 'view' ? (
           formatted?.resource === undefined ||
-          hasTablePermission(formatted.resource.specifyModel.name, 'read') ? (
+          hasTablePermission(formatted.resource.specifyTable.name, 'read') ? (
             <DataEntry.View
               aria-pressed={state.type === 'ViewResourceState'}
               className="ml-1"

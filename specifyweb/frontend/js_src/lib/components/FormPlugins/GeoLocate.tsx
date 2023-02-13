@@ -10,12 +10,12 @@ import { filterArray } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
 import type { Geography, Locality } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import type { GeoLocatePayload } from '../Molecules/GeoLocate';
 import { GenericGeoLocate } from '../Molecules/GeoLocate';
 import { hasTablePermission } from '../Permissions/helpers';
+import { tables } from '../DataModel/tables';
 
 export function GeoLocatePlugin({
   resource,
@@ -86,7 +86,7 @@ function GeoLocate({
             .then((details) => {
               let detailsResource = details;
               if (detailsResource === null) {
-                detailsResource = new schema.models.GeoCoordDetail.Resource();
+                detailsResource = new tables.GeoCoordDetail.Resource();
                 detailsResource.placeInSameHierarchy(resource);
                 resource.set('geoCoordDetails', detailsResource);
               }
@@ -111,7 +111,7 @@ function GeoLocate({
     <Dialog
       buttons={commonText.close()}
       header={localityText.geographyRequired({
-        geographyTable: schema.models.Geography.label,
+        geographyTable: tables.Geography.label,
       })}
       onClose={handleClose}
     >

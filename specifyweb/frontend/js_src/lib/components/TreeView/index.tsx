@@ -20,14 +20,14 @@ import type {
   SerializedResource,
 } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { getModel, schema } from '../DataModel/schema';
+import { getTable, tables } from '../DataModel/tables';
 import { deserializeResource } from '../DataModel/serializers';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { ResourceView } from '../Forms/ResourceView';
 import { useMenuItem } from '../Header/MenuContext';
 import { getPref } from '../InitialContext/remotePrefs';
-import { isTreeModel, treeRanksPromise } from '../InitialContext/treeRanks';
+import { isTreeTable, treeRanksPromise } from '../InitialContext/treeRanks';
 import { useTitle } from '../Molecules/AppTitle';
 import { supportsBackdropBlur } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
@@ -71,7 +71,7 @@ function TreeView<SCHEMA extends AnyTree>({
     SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>
   >;
 }): JSX.Element | null {
-  const table = schema.models[tableName] as SpecifyModel<AnyTree>;
+  const table = tables[tableName] as SpecifyTable<AnyTree>;
 
   const rankIds = treeDefinitionItems.map(({ rankId }) => rankId);
 
@@ -371,18 +371,18 @@ function EditTreeRank({
 export function TreeViewWrapper(): JSX.Element | null {
   useMenuItem('trees');
   const { tableName = '' } = useParams();
-  const treeName = getModel(tableName)?.name;
+  const treeName = getTable(tableName)?.name;
   const [treeDefinitions] = usePromise(treeRanksPromise, true);
   useErrorContext('treeDefinitions', treeDefinitions);
 
   const treeDefinition =
     typeof treeDefinitions === 'object' &&
     typeof treeName === 'string' &&
-    isTreeModel(treeName)
+    isTreeTable(treeName)
       ? caseInsensitiveHash(treeDefinitions, treeName)
       : undefined;
 
-  if (treeName === undefined || !isTreeModel(treeName)) return <NotFoundView />;
+  if (treeName === undefined || !isTreeTable(treeName)) return <NotFoundView />;
   return (
     <ProtectedTree action="read" treeName={treeName}>
       {typeof treeDefinition === 'object' ? (

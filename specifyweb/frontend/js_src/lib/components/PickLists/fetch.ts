@@ -6,10 +6,10 @@ import { f } from '../../utils/functools';
 import type { R, RA } from '../../utils/types';
 import { defined } from '../../utils/types';
 import { sortFunction, toLowerCase } from '../../utils/utils';
-import { fetchCollection } from '../DataModel/collection';
+import { fetchCollection, fetchRows } from '../DataModel/collection';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema, strictGetModel } from '../DataModel/schema';
+import { strictGetTable } from '../DataModel/tables';
 import type { PickList, PickListItem, Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import type { PickListItemSimple } from '../FormFields/ComboBox';
@@ -25,7 +25,7 @@ import {
   deserializeResource,
   serializeResource,
 } from '../DataModel/serializers';
-import { fetchRows } from '../Interactions/helpers';
+import { schema } from '../DataModel/schema';
 
 const pickListFetchPromises: R<Promise<SpecifyResource<PickList> | undefined>> =
   {};
@@ -112,7 +112,7 @@ async function fetchFromTable(
   pickList: SpecifyResource<PickList>,
   limit: number
 ): Promise<RA<PickListItemSimple>> {
-  const tableName = strictGetModel(pickList.get('tableName')).name;
+  const tableName = strictGetTable(pickList.get('tableName')).name;
   if (!hasTablePermission(tableName, 'read')) return [];
   const { records } = await fetchCollection(tableName, {
     domainFilter: !f.includes(

@@ -14,7 +14,7 @@ import { Input } from '../Atoms/Form';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
-import type { Collection } from '../DataModel/specifyModel';
+import type { Collection } from '../DataModel/specifyTable';
 import { aggregate } from '../Formatters/aggregate';
 import { format } from '../Formatters/formatters';
 import type { FormMode } from '../FormParse';
@@ -53,7 +53,7 @@ export function UiField({
             ? resource.rgetCollection(field.name).then(aggregate)
             : false
           : undefined,
-      [resource?.specifyModel.name, resource, field]
+      [resource?.specifyTable.name, resource, field]
     ),
     false
   );
@@ -111,7 +111,7 @@ function Field({
     React.useCallback(
       () =>
         field?.isRelationship === true
-          ? hasTablePermission(field.relatedModel.name, 'read')
+          ? hasTablePermission(field.relatedTable.name, 'read')
             ? (
                 resource?.rgetPromise(field.name) as Promise<
                   SpecifyResource<AnySchema> | undefined

@@ -12,7 +12,7 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
 import type { Relationship } from '../DataModel/specifyField';
-import type { Collection } from '../DataModel/specifyModel';
+import type { Collection } from '../DataModel/specifyTable';
 import { raise, softFail } from '../Errors/Crash';
 import type { FormMode, FormType } from '../FormParse';
 import type { SubViewSortField } from '../FormParse/cells';
@@ -42,8 +42,8 @@ export function SubView({
   parentFormType,
   formType: initialFormType,
   isButton,
-  viewName = relationship.relatedModel.view,
-  icon = relationship.relatedModel.name,
+  viewName = relationship.relatedTable.view,
+  icon = relationship.relatedTable.name,
   sortField: initialSortField,
 }: {
   readonly relationship: Relationship;
@@ -71,14 +71,14 @@ export function SubView({
           .then((collection) => {
             // TEST: check if this can ever happen
             if (collection === null)
-              return new relationship.relatedModel.DependentCollection({
+              return new relationship.relatedTable.DependentCollection({
                 related: parentResource,
                 field: relationship.getReverse(),
               }) as Collection<AnySchema>;
             if (sortField === undefined) return collection;
             // BUG: this does not look into related tables
             const field = sortField.fieldNames[0];
-            // Overwriting the models on the collection
+            // Overwriting the tables on the collection
             overwriteReadOnly(
               collection,
               'models',
@@ -105,7 +105,7 @@ export function SubView({
           softFail(
             new Error(
               `Can't render a SubView for ` +
-                `${relationship.model.name}.${relationship.name} because ` +
+                `${relationship.table.name}.${relationship.name} because ` +
                 `reverse relationship does not exist`
             )
           );
@@ -113,11 +113,11 @@ export function SubView({
         }
         const collection = (
           relationship.isDependent()
-            ? new relationship.relatedModel.DependentCollection({
+            ? new relationship.relatedTable.DependentCollection({
                 related: parentResource,
                 field: relationship.getReverse(),
               })
-            : new relationship.relatedModel.LazyCollection({
+            : new relationship.relatedTable.LazyCollection({
                 filters: {
                   [reverse.name]: parentResource.id,
                 },
@@ -192,7 +192,7 @@ export function SubView({
   const [isAttachmentConfigured] = usePromise(attachmentSettingsPromise, true);
 
   const isAttachmentTable = attachmentRelatedTables().includes(
-    relationship.relatedModel.name
+    relationship.relatedTable.name
   );
 
   const isAttachmentMisconfigured =

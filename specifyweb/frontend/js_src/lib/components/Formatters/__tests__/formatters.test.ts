@@ -9,7 +9,7 @@ import { TableFields } from '../../DataModel/helperTypes';
 import { RA } from '../../../utils/types';
 import { overrideAjax } from '../../../tests/ajax';
 import { getResourceApiUrl } from '../../DataModel/resource';
-import { schema } from '../../DataModel/schema';
+import { tables } from '../../DataModel/tables';
 
 const { formatField } = exportsForTests;
 
@@ -18,7 +18,7 @@ requireContext();
 test('formatters are fetched and parsed correctly', async () =>
   expect(fetchFormatters).resolves.toMatchSnapshot());
 
-const tables: {
+const mainTableFields: {
   readonly [TABLE_NAME in keyof Tables]?: RA<TableFields<Tables[TABLE_NAME]>>;
 } = {
   CollectionObject: [
@@ -62,7 +62,7 @@ const tables: {
 };
 
 describe('getMainTableFields', () => {
-  Object.entries(tables).forEach(([tableName, fields]) =>
+  Object.entries(mainTableFields).forEach(([tableName, fields]) =>
     test(`returns correct fields for ${tableName}`, () =>
       expect(getMainTableFields(tableName).map(({ name }) => name)).toEqual(
         fields
@@ -86,12 +86,12 @@ describe('formatField', () => {
   overrideAjax(`/api/specify/agent/${agentId}/`, agent);
 
   test('handles distant picklist fields with a separator', async () => {
-    const parentResource = new schema.models.Collector.Resource({
+    const parentResource = new tables.Collector.Resource({
       id: collectorId,
     });
     const fields = [
-      schema.models.Collector.strictGetField('agent'),
-      schema.models.Agent.strictGetField('agentType'),
+      tables.Collector.strictGetField('agent'),
+      tables.Agent.strictGetField('agentType'),
     ];
     await expect(
       formatField(

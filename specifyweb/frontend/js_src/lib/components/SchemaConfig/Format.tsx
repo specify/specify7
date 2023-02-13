@@ -13,7 +13,6 @@ import { Link } from '../Atoms/Link';
 import { ReadOnlyContext } from '../Core/Contexts';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { schema } from '../DataModel/schema';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpLocaleContainerItem } from '../DataModel/types';
 import { hasToolPermission } from '../Permissions/helpers';
@@ -22,6 +21,7 @@ import { PickList } from './Components';
 import { getItemType, isFormatterAvailable } from './helpers';
 import type { ItemType } from './index';
 import type { SchemaData } from './schemaData';
+import { tables } from '../DataModel/tables';
 
 export function SchemaConfigFormat({
   schemaData,
@@ -72,10 +72,8 @@ export function SchemaConfigFormat({
                   `${name} ${value}${
                     isSystem
                       ? ` (${
-                          getField(
-                            schema.models.SpLocaleContainerItem,
-                            'isSystem'
-                          ).label
+                          getField(tables.SpLocaleContainerItem, 'isSystem')
+                            .label
                         })`
                       : ''
                   }`,
@@ -119,12 +117,12 @@ export function SchemaConfigFormat({
             )}
           </>
         }
-        label={schema.models.PickList.label}
+        label={tables.PickList.label}
         name="webLink"
         value={item.pickListName}
         values={{
           [schemaText.userDefined()]: userPickLists,
-          [getField(schema.models.SpLocaleContainerItem, 'isSystem').label]:
+          [getField(tables.SpLocaleContainerItem, 'isSystem').label]:
             systemPickLists,
         }}
       />

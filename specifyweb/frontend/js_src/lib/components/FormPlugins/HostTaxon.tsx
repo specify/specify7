@@ -7,7 +7,6 @@ import { defined } from '../../utils/types';
 import { Input } from '../Atoms/Form';
 import { fetchCollection } from '../DataModel/collection';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
 import { deserializeResource } from '../DataModel/serializers';
 import type { CollectingEventAttribute } from '../DataModel/types';
 import type { FormMode, FormType } from '../FormParse';
@@ -15,12 +14,13 @@ import { hasTreeAccess } from '../Permissions/helpers';
 import { QueryComboBox } from '../QueryComboBox';
 import type { TypeSearch } from '../QueryComboBox/spec';
 import { postProcessTypeSearch } from '../QueryComboBox/spec';
+import { tables } from '../DataModel/tables';
 
 const hostTaxonTypeSearch = f.store<TypeSearch>(() =>
   defined(
     postProcessTypeSearch({
       name: 'HostTaxon' as LocalizedString,
-      table: schema.models.Taxon,
+      table: tables.Taxon,
       searchFields: ['fullName'],
       displayFields: ['fullName'],
       format: '%s' as LocalizedString,
@@ -67,15 +67,13 @@ export function HostTaxon({
     <Input.Text isReadOnly />
   ) : hasTreeAccess('Taxon', 'read') ? (
     <QueryComboBox
-      field={schema.models.CollectingEventAttribute.strictGetRelationship(
-        'hostTaxon'
-      )}
+      field={tables.CollectingEventAttribute.strictGetRelationship('hostTaxon')}
       forceCollection={rightSideCollection}
       formType={formType}
       id={id}
       isRequired={isRequired}
       mode={mode}
-      relatedModel={schema.models.Taxon}
+      relatedTable={tables.Taxon}
       resource={resource}
       typeSearch={hostTaxonTypeSearch()}
     />

@@ -8,8 +8,7 @@ import { f } from '../../utils/functools';
 import { DataEntry } from '../Atoms/DataEntry';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
-import type { Collection } from '../DataModel/specifyModel';
+import type { Collection } from '../DataModel/specifyTable';
 import { UiCommand } from '../FormCommands';
 import { FormField } from '../FormFields';
 import type { FormMode, FormType } from '../FormParse';
@@ -20,6 +19,7 @@ import { SubView } from '../Forms/SubView';
 import { TableIcon } from '../Molecules/TableIcon';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { FormTableInteraction } from './FormTableInteraction';
+import { tables } from '../DataModel/tables';
 
 const cellRenderers: {
   readonly [KEY in keyof CellTypes]: (props: {
@@ -41,8 +41,8 @@ const cellRenderers: {
     formType,
   }) {
     const fields = React.useMemo(
-      () => resource.specifyModel.getFields(fieldNames?.join('.') ?? ''),
-      [resource.specifyModel, fieldNames]
+      () => resource.specifyTable.getFields(fieldNames?.join('.') ?? ''),
+      [resource.specifyTable, fieldNames]
     );
     return (
       <FormField
@@ -78,14 +78,14 @@ const cellRenderers: {
         className="border-b border-gray-500"
         title={
           typeof forClass === 'string'
-            ? schema.models[forClass].localization.desc ?? undefined
+            ? tables[forClass].localization.desc ?? undefined
             : undefined
         }
       >
         {typeof forClass === 'string' ? (
           <>
             <TableIcon label={false} name={forClass} />
-            {schema.models[forClass].label}
+            {tables[forClass].label}
           </>
         ) : (
           <>
@@ -107,7 +107,7 @@ const cellRenderers: {
     cellData: { fieldNames, formType, isButton, icon, viewName, sortField },
   }) {
     const fields = React.useMemo(
-      () => rawResource.specifyModel.getFields(fieldNames?.join('.') ?? ''),
+      () => rawResource.specifyTable.getFields(fieldNames?.join('.') ?? ''),
       [rawResource, fieldNames]
     );
     const data = useDistantRelated(rawResource, fields);
@@ -123,7 +123,7 @@ const cellRenderers: {
       React.useCallback(
         async () =>
           typeof relationship === 'object'
-            ? fetchView(viewName ?? relationship.relatedModel.view)
+            ? fetchView(viewName ?? relationship.relatedTable.view)
                 .then((viewDefinition) =>
                   typeof viewDefinition === 'object'
                     ? resolveViewDefinition(viewDefinition, formType, rawMode)
@@ -145,10 +145,11 @@ const cellRenderers: {
           relationshipIsToMany(relationship) &&
           typeof data?.resource === 'object' &&
           [
+            // FIXME: extend this list?
             'LoanPreparation',
             'GiftPreparation',
             'DisposalPreparation',
-          ].includes(relationship.relatedModel.name)
+          ].includes(relationship.relatedTable.name)
             ? data?.resource.rgetCollection(relationship.name)
             : false,
         [relationship, data?.resource]
@@ -199,7 +200,7 @@ const cellRenderers: {
           ...cellData,
           mode,
           formType,
-          model: resource.specifyModel,
+          table: resource.specifyTable,
         }}
       />
     );

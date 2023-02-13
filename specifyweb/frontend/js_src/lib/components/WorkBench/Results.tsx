@@ -14,7 +14,7 @@ import { sortFunction } from '../../utils/utils';
 import { H2, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { formatNumber } from '../Atoms/Internationalization';
-import { strictGetModel } from '../DataModel/schema';
+import { strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { TableIcon } from '../Molecules/TableIcon';
 import { CreateRecordSetButton } from './RecordSet';
@@ -86,7 +86,7 @@ function TableResults({
       <TableIcon label={false} name={tableName} />
       <span>
         {commonText.colonLine({
-          label: strictGetModel(tableName).label,
+          label: strictGetTable(tableName).label,
           value: formatNumber(recordCount),
         })}
       </span>

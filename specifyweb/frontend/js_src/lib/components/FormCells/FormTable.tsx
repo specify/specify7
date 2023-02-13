@@ -15,7 +15,7 @@ import { icons } from '../Atoms/Icons';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Relationship } from '../DataModel/specifyField';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import { FormMeta } from '../FormMeta';
 import type { FormMode } from '../FormParse';
 import type { FormCellDefinition, SubViewSortField } from '../FormParse/cells';
@@ -32,7 +32,7 @@ import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { FormCell } from './index';
 
 const cellToLabel = (
-  model: SpecifyModel,
+  table: SpecifyTable,
   cell: FormCellDefinition
 ): {
   readonly text: LocalizedString | undefined;
@@ -41,7 +41,7 @@ const cellToLabel = (
   text: cell.ariaLabel,
   title:
     cell.type === 'Field' || cell.type === 'SubView'
-      ? model.getField(cell.fieldNames?.join('.') ?? '')?.getLocalizedDesc()
+      ? table.getField(cell.fieldNames?.join('.') ?? '')?.getLocalizedDesc()
       : undefined,
 });
 
@@ -65,7 +65,7 @@ export function FormTable<SCHEMA extends AnySchema>({
   onAdd: handleAdd,
   onDelete: handleDelete,
   mode,
-  viewName = relationship.relatedModel.view,
+  viewName = relationship.relatedTable.view,
   dialog,
   onClose: handleClose,
   sortField = defaultSort,
@@ -138,15 +138,15 @@ export function FormTable<SCHEMA extends AnySchema>({
     count: totalCount ?? resources.length,
   });
   const viewDefinition = useViewDefinition({
-    model: relationship.relatedModel,
+    table: relationship.relatedTable,
     viewName,
-    fallbackViewName: relationship.relatedModel.view,
+    fallbackViewName: relationship.relatedTable.view,
     formType: 'formTable',
     mode,
   });
   const fullViewDefinition = useViewDefinition({
-    model: relationship.relatedModel,
-    viewName: relationship.relatedModel.view,
+    table: relationship.relatedTable,
+    viewName: relationship.relatedTable.view,
     fallbackViewName: viewName,
     formType: 'form',
     mode,
@@ -210,7 +210,7 @@ export function FormTable<SCHEMA extends AnySchema>({
             </div>
             {viewDefinition.rows[0].map((cell, index) => {
               const { text, title } = cellToLabel(
-                relationship.relatedModel,
+                relationship.relatedTable,
                 cell
               );
               const isSortable =
@@ -344,7 +344,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                     {displayDeleteButton &&
                     (!resource.isNew() ||
                       hasTablePermission(
-                        relationship.relatedModel.name,
+                        relationship.relatedTable.name,
                         'delete'
                       )) ? (
                       <Button.Small
@@ -353,7 +353,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                         disabled={
                           !resource.isNew() &&
                           !hasTablePermission(
-                            resource.specifyModel.name,
+                            resource.specifyTable.name,
                             'delete'
                           )
                         }
@@ -390,7 +390,7 @@ export function FormTable<SCHEMA extends AnySchema>({
     mode !== 'view' &&
     !disableAdding &&
     hasTablePermission(
-      relationship.relatedModel.name,
+      relationship.relatedTable.name,
       isDependent ? 'create' : 'read'
     ) ? (
       <DataEntry.Add
@@ -399,13 +399,13 @@ export function FormTable<SCHEMA extends AnySchema>({
             ? undefined
             : isDependent
             ? (): void => {
-                const resource = new relationship.relatedModel.Resource();
+                const resource = new relationship.relatedTable.Resource();
                 handleAddResources([resource]);
               }
             : (): void =>
                 setState({
                   type: 'SearchState',
-                  resource: new relationship.relatedModel.Resource(),
+                  resource: new relationship.relatedTable.Resource(),
                 })
         }
       />

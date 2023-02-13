@@ -9,9 +9,9 @@ import { Lat, Long, trimLatLong } from '../../utils/latLong';
 import { Input, Select } from '../Atoms/Form';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
-import { schema } from '../DataModel/schema';
 import type { Locality } from '../DataModel/types';
 import type { FormMode } from '../FormParse';
+import { tables } from '../DataModel/tables';
 
 export const coordinateType = ['Point', 'Line', 'Rectangle'] as const;
 export type CoordinateType = typeof coordinateType[number];
@@ -36,7 +36,7 @@ function Coordinate({
   const { value, updateValue, validationRef, setValidation, parser } =
     useResourceValue(
       resource,
-      schema.models.Locality.strictGetField(coordinateTextField),
+      tables.Locality.strictGetField(coordinateTextField),
       undefined
     );
   const isChanging = React.useRef<boolean>(false);

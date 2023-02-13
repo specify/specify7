@@ -7,7 +7,6 @@ import { formsText } from '../../localization/forms';
 import { Button } from '../Atoms/Button';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
 import type { SpQuery } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { createQuery } from '../QueryBuilder';
@@ -16,6 +15,7 @@ import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { flippedSortTypes } from '../QueryBuilder/helpers';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
 import { formattedEntry } from '../WbPlanView/mappingHelpers';
+import { tables } from '../DataModel/tables';
 
 export function EditHistory({
   resource,
@@ -79,13 +79,13 @@ function useEditHistoryQuery(
       typeof formatted === 'string'
         ? createQuery(
             formsText.historyOfEditsQueryName({ formattedRecord: formatted }),
-            schema.models.SpAuditLog
+            tables.SpAuditLog
           ).set('fields', [
             QueryFieldSpec.fromPath('SpAuditLog', ['tableNum'])
               .toSpQueryField()
               .set('isDisplay', false)
               .set('operStart', queryFieldFilters.equal.id)
-              .set('startValue', resource.specifyModel.tableId.toString()),
+              .set('startValue', resource.specifyTable.tableId.toString()),
             QueryFieldSpec.fromPath('SpAuditLog', ['recordId'])
               .toSpQueryField()
               .set('isDisplay', false)

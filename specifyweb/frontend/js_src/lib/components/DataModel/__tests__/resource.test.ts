@@ -25,9 +25,9 @@ import {
   strictIdFromUrl,
   strictParseResourceUrl,
 } from '../resource';
-import { schema } from '../schema';
 import type { CollectionObject } from '../types';
 import { serializeResource } from '../serializers';
+import { tables } from '../tables';
 
 const { getCarryOverPreference, getFieldsToClone } = exportsForTests;
 
@@ -206,7 +206,7 @@ describe('resourceFromUrl', () => {
     const resource = resourceFromUrl('/api/specify/collectionobject/123/', {
       noBusinessRules: true,
     })!;
-    expect(resource.specifyModel).toBe(schema.models.CollectionObject);
+    expect(resource.specifyTable).toBe(tables.CollectionObject);
     expect(resource.id).toBe(123);
     expect(resource.noBusinessRules).toBe(true);
   });
@@ -226,26 +226,26 @@ theories(parseJavaClassName, [
 ]);
 describe('getCarryOverPreference', () => {
   test('default carry over fields', () =>
-    expect(getCarryOverPreference(schema.models.SpQuery, true)).toEqual(
-      getFieldsToClone(schema.models.SpQuery)
+    expect(getCarryOverPreference(tables.SpQuery, true)).toEqual(
+      getFieldsToClone(tables.SpQuery)
     ));
   test('customize carry over fields', () => {
     setPref('form', 'preferences', 'carryForward', {
       Locality: ['localityName', 'text1'],
     });
-    expect(getCarryOverPreference(schema.models.Locality, false)).toEqual([
+    expect(getCarryOverPreference(tables.Locality, false)).toEqual([
       'localityName',
       'text1',
     ]);
-    expect(getCarryOverPreference(schema.models.SpQuery, true)).toEqual(
-      getFieldsToClone(schema.models.SpQuery)
+    expect(getCarryOverPreference(tables.SpQuery, true)).toEqual(
+      getFieldsToClone(tables.SpQuery)
     );
   });
 });
 
 describe('getUniqueFields', () => {
   test('CollectionObject', () =>
-    expect(getUniqueFields(schema.models.CollectionObject)).toEqual([
+    expect(getUniqueFields(tables.CollectionObject)).toEqual([
       'catalogNumber',
       'guid',
       'collectionObjectAttachments',
@@ -254,7 +254,7 @@ describe('getUniqueFields', () => {
       'timestampModified',
     ]));
   test('Locality', () =>
-    expect(getUniqueFields(schema.models.Locality)).toEqual([
+    expect(getUniqueFields(tables.Locality)).toEqual([
       'localityAttachments',
       'guid',
       'timestampCreated',
@@ -262,14 +262,14 @@ describe('getUniqueFields', () => {
       'timestampModified',
     ]));
   test('AccessionAttachment', () =>
-    expect(getUniqueFields(schema.models.AccessionAttachment)).toEqual([
+    expect(getUniqueFields(tables.AccessionAttachment)).toEqual([
       'attachment',
       'timestampCreated',
       'version',
       'timestampModified',
     ]));
   test('AccessionAgent', () =>
-    expect(getUniqueFields(schema.models.AccessionAgent)).toEqual([
+    expect(getUniqueFields(tables.AccessionAgent)).toEqual([
       'timestampCreated',
       'version',
       'timestampModified',
@@ -278,11 +278,11 @@ describe('getUniqueFields', () => {
 
 test('getFieldsToNotClone', () => {
   setPref('form', 'preferences', 'carryForward', {
-    CollectionObject: getFieldsToClone(schema.models.CollectionObject).filter(
+    CollectionObject: getFieldsToClone(tables.CollectionObject).filter(
       (name) => name !== 'text1'
     ) as RA<TableFields<CollectionObject>>,
   });
-  expect(getFieldsToNotClone(schema.models.CollectionObject, true)).toEqual([
+  expect(getFieldsToNotClone(tables.CollectionObject, true)).toEqual([
     'actualTotalCountAmt',
     'catalogNumber',
     'timestampModified',
@@ -294,7 +294,7 @@ test('getFieldsToNotClone', () => {
     'currentDetermination',
     'projects',
   ]);
-  expect(getFieldsToNotClone(schema.models.CollectionObject, false)).toEqual([
+  expect(getFieldsToNotClone(tables.CollectionObject, false)).toEqual([
     'actualTotalCountAmt',
     'catalogNumber',
     'timestampModified',

@@ -15,7 +15,7 @@ import { icons } from '../Atoms/Icons';
 import { LoadingContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { strictGetModel } from '../DataModel/schema';
+import { strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { loadingBar } from '../Molecules';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
@@ -34,7 +34,7 @@ const fetchBlockers = async (
       readonly id: number;
     }>
   >(
-    `/api/delete_blockers/${resource.specifyModel.name.toLowerCase()}/${
+    `/api/delete_blockers/${resource.specifyTable.name.toLowerCase()}/${
       resource.id
     }/`,
     {
@@ -44,7 +44,7 @@ const fetchBlockers = async (
   ).then(({ data }) =>
     data.map(({ table, ...rest }) => ({
       ...rest,
-      model: strictGetModel(table),
+      table: strictGetTable(table),
     }))
   );
 
@@ -88,7 +88,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
 
   const isBlocked = Array.isArray(blockers) && blockers.length > 0;
 
-  const iconName = resource.specifyModel.name;
+  const iconName = resource.specifyTable.name;
 
   return (
     <>
@@ -136,7 +136,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
               container: dialogClassNames.narrowContainer,
             }}
             header={formsText.deleteConfirmation({
-              tableName: resource.specifyModel.label,
+              tableName: resource.specifyTable.label,
             })}
             onClose={handleClose}
           >

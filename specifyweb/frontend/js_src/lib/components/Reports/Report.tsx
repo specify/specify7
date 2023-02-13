@@ -26,7 +26,7 @@ import { AttachmentsPlugin } from '../Attachments/Plugin';
 import { LoadingContext } from '../Core/Contexts';
 import { fetchCollection } from '../DataModel/collection';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { SpAppResource, SpQuery } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import { unknownIcon } from '../InitialContext/icons';
@@ -42,7 +42,7 @@ export function Report({
 }: {
   readonly resource: ReportEntry;
   readonly resourceId: number | undefined;
-  readonly model: SpecifyModel | undefined;
+  readonly table: SpecifyTable | undefined;
   readonly onClose: () => void;
 }): JSX.Element {
   return resource.query === undefined ? (
@@ -71,12 +71,12 @@ export function Report({
 function ReportDialog({
   resource: { appResource, report, query },
   resourceId,
-  model,
+  table,
   onClose: handleClose,
 }: {
   readonly resource: ReportEntry;
   readonly resourceId: number | undefined;
-  readonly model: SpecifyModel | undefined;
+  readonly table: SpecifyTable | undefined;
   readonly onClose: () => void;
 }): JSX.Element | null {
   const [definition] = useAsyncState(
@@ -118,7 +118,7 @@ function ReportDialog({
       <ParametersDialog
         appResource={appResource}
         definition={definition}
-        model={model}
+        table={table}
         query={query}
         resourceId={resourceId}
         onClose={handleClose}
@@ -249,14 +249,14 @@ function ParametersDialog({
   query,
   appResource,
   resourceId,
-  model,
+  table,
   onClose: handleClose,
 }: {
   readonly definition: Element;
   readonly query: SerializedResource<SpQuery> | false | undefined;
   readonly appResource: SerializedResource<SpAppResource>;
   readonly resourceId: number | undefined;
-  readonly model: SpecifyModel | undefined;
+  readonly table: SpecifyTable | undefined;
   readonly onClose: () => void;
 }): JSX.Element | null {
   const [parameters, setParameters] = useLiveState(
@@ -285,10 +285,10 @@ function ParametersDialog({
   const id = useId('report-parameters');
   return isSubmitted ? (
     typeof query === 'object' ? (
-      typeof resourceId === 'number' && typeof model === 'object' ? (
+      typeof resourceId === 'number' && typeof table === 'object' ? (
         <ReportForRecord
           definition={definition}
-          model={model}
+          table={table}
           parameters={parameters}
           query={query}
           resourceId={resourceId}

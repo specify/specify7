@@ -8,10 +8,10 @@ import { toTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
-import { schema } from '../DataModel/schema';
 import { userInformation } from '../InitialContext/userInformation';
 import { CopyButton } from '../Molecules/Copy';
 import { formatUrl } from '../Router/queryString';
+import { schema } from '../DataModel/schema';
 
 export function ShareRecord({
   resource,
@@ -39,7 +39,7 @@ export function ShareRecord({
             : {}
         )
       : getResourceViewUrl(
-          resource.specifyModel.name,
+          resource.specifyTable.name,
           resource.id,
           recordSetId
         );

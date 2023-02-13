@@ -9,7 +9,7 @@ import { Input, Label } from '../Atoms/Form';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Taxon } from '../DataModel/types';
-import { isTreeModel } from '../InitialContext/treeRanks';
+import { isTreeTable } from '../InitialContext/treeRanks';
 import { Dialog } from '../Molecules/Dialog';
 import { FormattedResource } from '../Molecules/FormattedResource';
 import { hasTablePermission } from '../Permissions/helpers';
@@ -81,8 +81,8 @@ function Row({
   const [fullName] = useAsyncState<string | false>(
     React.useCallback(
       () =>
-        isTreeModel(resource.specifyModel.name) &&
-        hasTablePermission(resource.specifyModel.name, 'read')
+        isTreeTable(resource.specifyTable.name) &&
+        hasTablePermission(resource.specifyTable.name, 'read')
           ? (resource as SpecifyResource<Taxon>)
               .rgetPromise('parent')
               .then((parent) =>

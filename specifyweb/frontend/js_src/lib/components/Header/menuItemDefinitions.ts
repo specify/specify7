@@ -19,7 +19,6 @@ import {
   attachmentSettingsPromise,
 } from '../Attachments/attachments';
 import type { MenuItem } from '../Core/Main';
-import { schema } from '../DataModel/schema';
 import { getDisciplineTrees } from '../InitialContext/treeRanks';
 import {
   fetchContext as fetchPermissions,
@@ -33,6 +32,7 @@ import {
 } from '../Permissions/helpers';
 import { reportsAvailable } from '../Reports';
 import { filterMenuItems } from './menuItemProcessing';
+import { schema } from '../DataModel/schema';
 
 const rawMenuItems = ensure<IR<Omit<MenuItem, 'name'>>>()({
   dataEntry: {

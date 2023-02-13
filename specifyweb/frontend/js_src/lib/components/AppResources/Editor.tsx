@@ -209,7 +209,7 @@ export function AppResourceEditor({
                           resource.name.length > 0
                             ? getUniqueName(resource.name, [resource.name])
                             : formsText.newResourceTitle({
-                                tableName: appResource.specifyModel.label,
+                                tableName: appResource.specifyTable.label,
                               }),
                       },
                       isClone ? resourceData.id : undefined

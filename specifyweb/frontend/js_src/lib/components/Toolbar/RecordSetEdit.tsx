@@ -6,7 +6,7 @@ import { formsText } from '../../localization/forms';
 import { queryText } from '../../localization/query';
 import { Button } from '../Atoms/Button';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { getModelById, schema } from '../DataModel/schema';
+import {getTableById, tables} from '../DataModel/tables';
 import type { RecordSet } from '../DataModel/types';
 import { ResourceView } from '../Forms/ResourceView';
 import { userInformation } from '../InitialContext/userInformation';
@@ -39,7 +39,7 @@ export function EditRecordSet({
     <ResourceView
       // BUG: the message is stale if record set is renamed
       deletionMessage={formsText.recordSetDeletionWarning({
-        recordSetTable: schema.models.RecordSet.label,
+        recordSetTable: tables.RecordSet.label,
         recordSetName: recordSet.get('name') ?? '',
       })}
       dialog="modal"
@@ -101,7 +101,7 @@ function QueryRecordSet({
       }
       isReadOnly={isReadOnly}
       newQueryUrl={formatUrl(
-        `/specify/query/new/${getModelById(
+        `/specify/query/new/${getTableById(
           recordSet.get('dbTableId')
         ).name.toLowerCase()}/`,
         { recordSetId: recordSet.id.toString() }

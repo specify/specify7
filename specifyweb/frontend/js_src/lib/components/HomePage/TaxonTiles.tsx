@@ -4,7 +4,6 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { welcomeText } from '../../localization/welcome';
 import { ajax } from '../../utils/ajax';
 import type { RA } from '../../utils/types';
-import { schema } from '../DataModel/schema';
 import {
   getTreeDefinitionItems,
   treeRanksPromise,
@@ -15,6 +14,7 @@ import {
   mergeNodes,
   pairNodes,
 } from './taxonTileHelpers';
+import { tables } from '../DataModel/tables';
 
 export function TaxonTiles(): JSX.Element {
   const [container, setContainer] = React.useState<SVGElement | null>(null);
@@ -50,7 +50,7 @@ export function TaxonTiles(): JSX.Element {
         title={
           typeof treeData === 'object'
             ? welcomeText.taxonTilesDescription({
-                collectionObjectTable: schema.models.CollectionObject.label,
+                collectionObjectTable: tables.CollectionObject.label,
                 count: treeData.threshold,
               })
             : undefined

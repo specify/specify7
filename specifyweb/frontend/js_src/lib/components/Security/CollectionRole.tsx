@@ -14,7 +14,6 @@ import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
 import type { SpecifyUser } from '../DataModel/types';
 import { SearchDialog } from '../SearchDialog';
 import { userInformation } from '../InitialContext/userInformation';
@@ -26,6 +25,7 @@ import { createCollectionRole } from './CreateRole';
 import { decompressPolicies } from './policyConverter';
 import type { NewRole, Role } from './Role';
 import { RoleView } from './Role';
+import { tables } from '../DataModel/tables';
 
 export const updateCollectionRole = async (
   [roles, setRoles]: GetOrSet<IR<Role> | undefined>,
@@ -218,7 +218,7 @@ function RoleUsers({
             <div>
               <Button.Green
                 onClick={(): void =>
-                  setAddingUser(new schema.models.SpecifyUser.Resource())
+                  setAddingUser(new tables.SpecifyUser.Resource())
                 }
               >
                 {commonText.add()}

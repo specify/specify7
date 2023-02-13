@@ -14,8 +14,8 @@ import {
   formatDisjunction,
 } from '../Atoms/Internationalization';
 import { getField } from '../DataModel/helpers';
-import { schema } from '../DataModel/schema';
 import type { Tables } from '../DataModel/types';
+import { tables } from '../DataModel/tables';
 
 /*
  * If an UploadResult involves a tree record, this metadata indicates
@@ -184,13 +184,13 @@ export function resolveValidationMessage(
     });
   else if (key === 'failedParsingAgentType')
     return backEndText.failedParsingAgentType({
-      agentTypeField: getField(schema.models.Agent, 'agentType').label,
+      agentTypeField: getField(tables.Agent, 'agentType').label,
       badType: payload.badType as string,
       validTypes: formatDisjunction((payload.validTypes as RA<string>) ?? []),
     });
   else if (key === 'pickListValueTooLong')
     return backEndText.pickListValueTooLong({
-      pickListTable: schema.models.PickList.label,
+      pickListTable: tables.PickList.label,
       pickList: payload.pickList as string,
       maxLength: payload.maxLength as number,
     });

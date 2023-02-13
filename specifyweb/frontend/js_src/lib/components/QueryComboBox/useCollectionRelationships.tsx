@@ -7,8 +7,8 @@ import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { idFromUrl } from '../DataModel/resource';
-import { schema } from '../DataModel/schema';
 import { hasTablePermission } from '../Permissions/helpers';
+import { schema } from '../DataModel/schema';
 
 export type CollectionRelationships = {
   readonly left: RA<{
@@ -30,7 +30,7 @@ export function useCollectionRelationships(
     React.useCallback(() => {
       if (
         hasTablePermission('CollectionRelType', 'read') ||
-        resource?.specifyModel.name !== 'CollectionRelationship'
+        resource?.specifyTable.name !== 'CollectionRelationship'
       )
         return false;
       return f.all({

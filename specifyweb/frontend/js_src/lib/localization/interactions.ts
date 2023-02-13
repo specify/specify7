@@ -24,18 +24,18 @@ export const interactionsText = createDictionary({
     'uk-ua': 'Додати предмети',
   },
   recordReturn: {
-    'en-us': '{modelName:string} Return',
-    'ru-ru': 'Возврат {modelName:string}',
-    'es-es': '{modelName:string} Devuelve',
-    'fr-fr': '{modelName:string} Retour',
-    'uk-ua': '{modelName:string} Повернення',
+    'en-us': '{tableName:string} Return',
+    'ru-ru': 'Возврат {tableName:string}',
+    'es-es': '{tableName:string} Devuelve',
+    'fr-fr': '{tableName:string} Retour',
+    'uk-ua': '{tableName:string} Повернення',
   },
   createRecord: {
-    'en-us': 'Create {modelName:string}',
-    'ru-ru': 'Создать {modelName:string}',
-    'es-es': 'Crear {modelName:string}',
-    'fr-fr': 'Créer {modelName:string}',
-    'uk-ua': 'Створити {modelName:string}',
+    'en-us': 'Create {tableName:string}',
+    'ru-ru': 'Создать {tableName:string}',
+    'es-es': 'Crear {tableName:string}',
+    'fr-fr': 'Créer {tableName:string}',
+    'uk-ua': 'Створити {tableName:string}',
   },
   missing: {
     'en-us': 'Missing:',
@@ -300,52 +300,5 @@ export const interactionsText = createDictionary({
     'es-es': 'Imprimir factura',
     'fr-fr': "La facture d'impression",
     'uk-ua': 'Роздрукувати рахунок-фактуру',
-  },
-  loanWithoutPreparation: {
-    comment: 'Example: Loan records w/o Preparation records',
-    'en-us': '{tableLoan:string} w/o {tablePreparation:string} records',
-    'es-es': '{tableLoan:string} sin registros {tablePreparation:string}',
-    'fr-fr':
-      '{tableLoan:string} sans enregistrements {tablePreparation:string}',
-    'ru-ru': '{tableLoan:string} без записей {tablePreparation:string}',
-    'uk-ua': '{tableLoan:string} без записів {tablePreparation:string}.',
-  },
-  loanWithoutPreparationDescription: {
-    comment: 'Example: Create a Loan records with no Preparation records',
-    'en-us':
-      'Create a {tableLoan:string} with no {tablePreparation:string} records',
-    'es-es':
-      'Cree un {tableLoan:string} sin registros {tablePreparation:string}',
-    'fr-fr': `
-      Créer un {tableLoan:string} sans enregistrements {tablePreparation:string}
-    `,
-    'ru-ru':
-      'Создайте {tableLoan:string} без записей {tablePreparation:string}',
-    'uk-ua':
-      'Створіть {tableLoan:string} без записів {tablePreparation:string}.',
-  },
-  createLoan: {
-    comment: 'Example: Create a Loan',
-    'en-us': 'Create a {tableLoan:string}',
-    'es-es': 'Crear un {tableLoan:string}',
-    'fr-fr': 'Créer un {tableLoan:string}',
-    'ru-ru': 'Создайте {tableLoan:string}',
-    'uk-ua': 'Створити {tableLoan:string}',
-  },
-  createdGift: {
-    comment: 'Example: Create a Gift',
-    'en-us': 'Create a {tableGift:string}',
-    'es-es': 'Crear una {tableGift:string}',
-    'fr-fr': 'Créer un {tableGift:string}',
-    'ru-ru': 'Создайте {tableGift:string}',
-    'uk-ua': 'Створити {tableGift:string}',
-  },
-  createInformationRequest: {
-    comment: 'Example: Create a Infrormation Request',
-    'en-us': 'Create {tableInformationRequest:string}',
-    'es-es': 'Crear {tableInformationRequest:string}',
-    'fr-fr': 'Créer {tableInformationRequest:string}',
-    'ru-ru': 'Создать {tableInformationRequest:string}',
-    'uk-ua': 'Створити {tableInformationRequest:string}',
   },
 } as const);

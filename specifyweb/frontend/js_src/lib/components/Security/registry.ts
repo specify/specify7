@@ -9,7 +9,6 @@ import { f } from '../../utils/functools';
 import type { IR, R, RA } from '../../utils/types';
 import { ensure } from '../../utils/types';
 import { lowerToHuman } from '../../utils/utils';
-import { schema } from '../DataModel/schema';
 import type { Tables } from '../DataModel/types';
 import {
   frontEndPermissions,
@@ -27,6 +26,7 @@ import {
   tablePermissionsPrefix,
   toolPermissionPrefix,
 } from './utils';
+import { tables } from '../DataModel/tables';
 
 /**
  * Convert a part like ['table','locality'] to an array of information for
@@ -65,7 +65,7 @@ const buildRegistry = f.store((): IR<Registry> => {
     readonly actions: RA<string>;
     readonly groupName: LocalizedString;
   }> = [
-    ...Object.values(schema.models)
+    ...Object.values(tables)
       .filter(({ name }) => !f.has(toolTables(), name))
       .map(({ name, label, isHidden, isSystem }) => ({
         resource: tableNameToResourceName(name),
@@ -216,11 +216,11 @@ export const toolDefinitions = f.store(() =>
       ],
     },
     pickLists: {
-      label: schema.models.PickList.label,
+      label: tables.PickList.label,
       tables: ['PickList', 'PickListItem'],
     },
     auditLog: {
-      label: schema.models.SpAuditLog.label,
+      label: tables.SpAuditLog.label,
       tables: ['SpAuditLog', 'SpAuditLogField'],
     },
   } as const)

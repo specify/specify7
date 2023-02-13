@@ -12,7 +12,7 @@ import { Form } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { Submit } from '../Atoms/Submit';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { getModelById } from '../DataModel/schema';
+import { getTableById } from '../DataModel/tables';
 import type { SpQuery } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import { QueryFields } from '../QueryBuilder/Fields';
@@ -35,7 +35,7 @@ export function QueryParametersDialog({
   readonly autoRun: boolean;
   readonly onClose: () => void;
 }): JSX.Element {
-  const model = getModelById(query.contextTableId);
+  const table = getTableById(query.contextTableId);
 
   const [fields, setFields] = useLiveState<RA<QueryField>>(
     React.useCallback(() => parseQueryFields(query.fields), [query])
@@ -94,13 +94,13 @@ export function QueryParametersDialog({
             query: replaceKey(
               query,
               'fields',
-              unParseQueryFields(model.name, fields)
+              unParseQueryFields(table.name, fields)
             ),
           })
         }
       >
         <QueryFields
-          baseTableName={model.name}
+          baseTableName={table.name}
           enforceLengthLimit={false}
           fields={fields}
           getMappedFields={() => []}

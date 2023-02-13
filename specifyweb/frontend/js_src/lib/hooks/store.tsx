@@ -6,7 +6,7 @@
 import React from 'react';
 
 import type { SpecifyResource } from '../components/DataModel/legacyTypes';
-import { strictGetModel } from '../components/DataModel/schema';
+import { strictGetTable } from '../components/DataModel/tables';
 import type { Tables } from '../components/DataModel/types';
 import { crash } from '../components/Errors/Crash';
 import { f } from '../utils/functools';
@@ -115,7 +115,7 @@ export function useRecord<TABLE_NAME extends keyof Tables>(
   return useStore(
     React.useCallback(
       async (id: number) => {
-        const resource = new (strictGetModel(tableName).Resource)({ id });
+        const resource = new (strictGetTable(tableName).Resource)({ id });
         return resource.fetch();
       },
       [tableName]

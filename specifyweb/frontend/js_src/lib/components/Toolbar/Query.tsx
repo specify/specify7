@@ -16,7 +16,7 @@ import type { CollectionFetchFilters } from '../DataModel/collection';
 import { fetchCollection } from '../DataModel/collection';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { getModelById, schema } from '../DataModel/schema';
+import {getTableById, tables} from '../DataModel/tables';
 import type { SpQuery } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { DateElement } from '../Molecules/DateElement';
@@ -137,7 +137,7 @@ function QueryList({
             scope="col"
           >
             <Button.LikeLink onClick={(): void => handleSort('name')}>
-              {getField(schema.models.SpQuery, 'name').label}
+              {getField(tables.SpQuery, 'name').label}
               <SortIndicator fieldName="name" sortConfig={sortConfig} />
             </Button.LikeLink>
           </th>
@@ -145,7 +145,7 @@ function QueryList({
             <Button.LikeLink
               onClick={(): void => handleSort('timestampCreated')}
             >
-              {getField(schema.models.SpQuery, 'timestampCreated').label}
+              {getField(tables.SpQuery, 'timestampCreated').label}
               <SortIndicator
                 fieldName="timestampCreated"
                 sortConfig={sortConfig}
@@ -156,7 +156,7 @@ function QueryList({
             <Button.LikeLink
               onClick={(): void => handleSort('timestampModified')}
             >
-              {getField(schema.models.SpQuery, 'timestampModified').label}
+              {getField(tables.SpQuery, 'timestampModified').label}
               <SortIndicator
                 fieldName="timestampModified"
                 sortConfig={sortConfig}
@@ -178,7 +178,7 @@ function QueryList({
               >
                 <TableIcon
                   label
-                  name={getModelById(query.contextTableId).name}
+                  name={getTableById(query.contextTableId).name}
                 />
                 {query.name}
               </Link.Default>

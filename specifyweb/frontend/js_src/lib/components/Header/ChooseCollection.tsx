@@ -6,7 +6,6 @@ import { headerText } from '../../localization/header';
 import { sortFunction, toLowerCase } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Select } from '../Atoms/Form';
-import { schema } from '../DataModel/schema';
 import { serializeResource } from '../DataModel/serializers';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
@@ -14,6 +13,8 @@ import { toLargeSortConfig } from '../Molecules/Sorting';
 import { OverlayContext } from '../Router/Router';
 import { switchCollection } from '../RouterCommands/SwitchCollection';
 import { usePref } from '../UserPreferences/usePref';
+import { schema } from '../DataModel/schema';
+import { tables } from '../DataModel/tables';
 
 export function ChooseCollection(): JSX.Element {
   const [sortOrder] = usePref('chooseCollection', 'general', 'sortOrder');
@@ -40,11 +41,11 @@ export function ChooseCollection(): JSX.Element {
     >
       <Select
         aria-label={headerText.currentCollection({
-          collectionTable: schema.models.Collection.label,
+          collectionTable: tables.Collection.label,
         })}
         className="col-span-2 flex-1"
         title={headerText.currentCollection({
-          collectionTable: schema.models.Collection.label,
+          collectionTable: tables.Collection.label,
         })}
         value={schema.domainLevelIds.collection}
         onValueChange={(value): void =>

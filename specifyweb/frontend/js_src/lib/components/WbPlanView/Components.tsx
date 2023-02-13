@@ -3,7 +3,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { Button } from '../Atoms/Button';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { Tables } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
@@ -26,7 +26,7 @@ export function ListOfBaseTables({
     'showNoAccessTables'
   );
   const filter = React.useCallback(
-    (showHiddenTables: boolean, { name, overrides }: SpecifyModel) =>
+    (showHiddenTables: boolean, { name, overrides }: SpecifyTable) =>
       (isNoRestrictionMode || (!overrides.isSystem && !overrides.isHidden)) &&
       (overrides.isCommon || showHiddenTables) &&
       (showNoAccessTables || hasTablePermission(name, 'create')),

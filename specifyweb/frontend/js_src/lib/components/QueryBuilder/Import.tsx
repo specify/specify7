@@ -12,10 +12,10 @@ import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { schema } from '../DataModel/schema';
 import type { SpQuery } from '../DataModel/types';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { FilePicker, fileToText } from '../Molecules/FilePicker';
+import { tables } from '../DataModel/tables';
 
 export function QueryImport({
   onClose: handleClose,
@@ -42,7 +42,7 @@ export function QueryImport({
                 .then<SerializedResource<SpQuery>>(f.unary(JSON.parse))
                 .then(
                   (query) =>
-                    new schema.models.SpQuery.Resource(
+                    new tables.SpQuery.Resource(
                       removeKey(
                         replaceKey(
                           query,
@@ -65,7 +65,7 @@ export function QueryImport({
                     getUniqueName(
                       queryResource.get('name'),
                       queries.map(({ name }) => name),
-                      getField(schema.models.SpQuery, 'name').length
+                      getField(tables.SpQuery, 'name').length
                     )
                   )
                 )

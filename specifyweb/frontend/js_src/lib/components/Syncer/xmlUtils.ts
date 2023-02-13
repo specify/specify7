@@ -27,7 +27,7 @@ export const getBooleanAttribute = (
   name: string
 ): boolean | undefined => f.maybe(getParsedAttribute(cell, name), parseBoolean);
 
-/** Convert <a></a> to <a /> */
+/** Convert `<a></a>` to `<a />` */
 const reEmptyTag = /<(?<name>[^\s/>]+)(?<attributes>[^<>]*)><\/\k<name>>/gu;
 
 export const xmlToString = (xml: Node): string =>

@@ -14,7 +14,7 @@ import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Select } from '../Atoms/Form';
 import { iconClassName, icons } from '../Atoms/Icons';
-import { getModel, schema } from '../DataModel/schema';
+import { getTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { join } from '../Molecules';
 import { customSelectElementBackground } from '../WbPlanView/CustomSelectElement';
@@ -45,6 +45,7 @@ import {
 import type { DatePart } from './fieldSpec';
 import type { QueryField } from './helpers';
 import { mutateLineData, sortTypes } from './helpers';
+import { schema } from '../DataModel/schema';
 
 // REFACTOR: split this component into smaller components
 export function QueryLine({
@@ -118,7 +119,7 @@ export function QueryLine({
         !fieldName.startsWith(schema.fieldPartSeparator)
           ? getTableFromMappingPath(baseTableName, field.mappingPath)
           : undefined;
-      const dataModelField = getModel(tableName ?? '')?.getField(fieldName);
+      const dataModelField = getTable(tableName ?? '')?.getField(fieldName);
 
       let fieldType: QueryFieldType | undefined = undefined;
       let parser = undefined;

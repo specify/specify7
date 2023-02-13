@@ -205,7 +205,7 @@ export const schemaText = createDictionary({
     'fr-fr': 'Colonne de base de données',
     'uk-ua': 'Стовпець бази даних',
   },
-  relatedModel: {
+  relatedTable: {
     'en-us': 'Related Model',
     'ru-ru': 'Родственная Таблица',
     'es-es': 'Modelo relacionado',

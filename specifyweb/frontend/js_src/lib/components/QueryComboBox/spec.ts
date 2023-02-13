@@ -61,7 +61,7 @@ export function postProcessTypeSearch({
     .map((fields) => fields.at(-1)!)
     .map((field) =>
       filterArray([
-        field.model === table ? undefined : field.model.label,
+        field.table === table ? undefined : field.table.label,
         field.label,
       ]).join(' / ')
     );

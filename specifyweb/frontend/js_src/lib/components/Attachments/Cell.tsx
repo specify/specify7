@@ -11,8 +11,8 @@ import { fetchRelated } from '../DataModel/collection';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { idFromUrl } from '../DataModel/resource';
-import { getModelById, schema } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import { getTableById, tables } from '../DataModel/tables';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { Attachment } from '../DataModel/types';
 import { ResourceView } from '../Forms/ResourceView';
 import { originalAttachmentsView } from '../Forms/useViewDefinition';
@@ -29,12 +29,12 @@ export function AttachmentCell({
 }: {
   readonly attachment: SerializedResource<Attachment>;
   readonly onViewRecord:
-    | ((model: SpecifyModel, recordId: number) => void)
+    | ((table: SpecifyTable, recordId: number) => void)
     | undefined;
 }): JSX.Element {
-  const model =
+  const table =
     typeof attachment.tableID === 'number'
-      ? getAttachmentModel(attachment.tableID)
+      ? getAttachmentTable(attachment.tableID)
       : undefined;
 
   const [thumbnail] = useAsyncState(
@@ -56,46 +56,44 @@ export function AttachmentCell({
   return (
     <div className="relative">
       {typeof handleViewRecord === 'function' &&
-        (model === undefined || hasTablePermission(model.name, 'read')) && (
+        (table === undefined || hasTablePermission(table.name, 'read')) && (
           <Button.LikeLink
             className="absolute top-0 left-0"
-            title={model?.label}
+            title={table?.label}
             onClick={(): void =>
-              model === undefined
+              table === undefined
                 ? handleMetaToggle()
                 : loading(
                     fetchRelated(
                       attachment,
-                      `${model.name as 'agent'}Attachments`
+                      `${table.name as 'agent'}Attachments`
                     )
                       .then(({ records }) =>
                         typeof records[0] === 'object'
                           ? idFromUrl(
                               caseInsensitiveHash(
                                 records[0],
-                                model.name as 'agent'
+                                table.name as 'agent'
                               ) ?? ''
                             )
                           : undefined
                       )
                       .then((id) =>
                         typeof id === 'number'
-                          ? handleViewRecord(model, id)
+                          ? handleViewRecord(table, id)
                           : handleMetaToggle()
                       )
                   )
             }
           >
-            <TableIcon label name={model?.name ?? 'Attachment'} />
+            <TableIcon label name={table?.name ?? 'Attachment'} />
           </Button.LikeLink>
         )}
       <Button.Icon
         aria-pressed={isMetaOpen}
         className="absolute top-0 right-0"
         icon="informationCircle"
-        title={
-          getField(schema.models.WorkbenchTemplateMappingItem, 'metaData').label
-        }
+        title={getField(tables.WorkbenchTemplateMappingItem, 'metaData').label}
         onClick={handleMetaToggle}
       />
       {isMetaOpen && (
@@ -124,10 +122,10 @@ export function AttachmentCell({
   );
 }
 
-function getAttachmentModel(
+function getAttachmentTable(
   tableId: number | undefined
-): SpecifyModel | undefined {
+): SpecifyTable | undefined {
   if (tableId === undefined) return undefined;
-  const model = getModelById(tableId);
-  return tablesWithAttachments().includes(model) ? model : undefined;
+  const table = getTableById(tableId);
+  return tablesWithAttachments().includes(table) ? table : undefined;
 }

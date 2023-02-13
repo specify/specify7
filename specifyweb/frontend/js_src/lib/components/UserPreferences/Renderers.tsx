@@ -24,8 +24,7 @@ import type { RA } from '../../utils/types';
 import { Input, Select, Textarea } from '../Atoms/Form';
 import { iconClassName } from '../Atoms/Icons';
 import type { AnySchema } from '../DataModel/helperTypes';
-import { schema } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { Collection } from '../DataModel/types';
 import { rawMenuItemsPromise } from '../Header/menuItemDefinitions';
 import { useMenuItems, useUserTools } from '../Header/menuItemProcessing';
@@ -34,6 +33,7 @@ import { ListEdit } from '../Toolbar/QueryTablesEdit';
 import type { PreferenceItem, PreferenceRendererProps } from './Definitions';
 import { getPrefDefinition } from './helpers';
 import { usePref } from './usePref';
+import { tables } from '../DataModel/tables';
 
 export function ColorPickerPreferenceItem({
   value,
@@ -127,7 +127,7 @@ export function CollectionSortOrderPreferenceItem({
   return (
     <OrderPicker
       isReadOnly={isReadOnly}
-      model={schema.models.Collection}
+      table={tables.Collection}
       order={value}
       onChange={handleChange}
     />
@@ -135,12 +135,12 @@ export function CollectionSortOrderPreferenceItem({
 }
 
 export function OrderPicker<SCHEMA extends AnySchema>({
-  model,
+  table,
   order,
   onChange: handleChange,
   isReadOnly = false,
 }: {
-  readonly model: SpecifyModel<SCHEMA>;
+  readonly table: SpecifyTable<SCHEMA>;
   readonly order:
     | `-${string & keyof SCHEMA['fields']}`
     | (string & keyof SCHEMA['fields'])
@@ -162,7 +162,7 @@ export function OrderPicker<SCHEMA extends AnySchema>({
     >
       <option value="">{commonText.none()}</option>
       <optgroup label={commonText.ascending()}>
-        {model.literalFields
+        {table.literalFields
           .filter(
             /*
              * "order === name" is necessary in case Accession.timestampCreated
@@ -177,7 +177,7 @@ export function OrderPicker<SCHEMA extends AnySchema>({
           ))}
       </optgroup>
       <optgroup label={commonText.descending()}>
-        {model.literalFields
+        {table.literalFields
           .filter(({ isHidden, name }) => !isHidden || order?.slice(1) === name)
           .map(({ name, label }) => (
             <option key={name} value={`-${name}`}>

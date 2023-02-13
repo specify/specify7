@@ -1,9 +1,9 @@
 import { requireContext } from '../../../tests/helpers';
 import { strictParseXml } from '../../AppResources/codeMirrorLinters';
-import { schema } from '../../DataModel/schema';
 import { formattersSpec } from '../../Formatters/spec';
 import { syncers } from '../syncers';
 import { toSimpleXmlNode, updateXml, xmlToJson } from '../xmlToJson';
+import { tables } from '../../DataModel/tables';
 
 requireContext();
 
@@ -36,7 +36,7 @@ test('Editing Data Object Formatter', () => {
     aggregators: [
       {
         ...parsed.aggregators[0],
-        table: schema.models.Agent,
+        table: tables.Agent,
       },
       ...parsed.aggregators,
     ],

@@ -5,7 +5,6 @@ import { schemaText } from '../../localization/schema';
 import { Input, Label } from '../Atoms/Form';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { schema } from '../DataModel/schema';
 import type { SpLocaleContainer, Tables } from '../DataModel/types';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { PickList } from './Components';
@@ -13,9 +12,10 @@ import { SchemaConfigColumn } from './Fields';
 import { filterFormatters } from './helpers';
 import type { NewSpLocaleItemString, SpLocaleItemString } from './index';
 import type { SchemaData } from './schemaData';
+import { tables } from '../DataModel/tables';
 
 export const maxSchemaValueLength = getField(
-  schema.models.SpLocaleItemStr,
+  tables.SpLocaleItemStr,
   'text'
 ).length;
 

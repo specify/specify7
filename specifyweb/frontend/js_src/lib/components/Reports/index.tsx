@@ -14,12 +14,11 @@ import { Link } from '../Atoms/Link';
 import { attachmentSettingsPromise } from '../Attachments/attachments';
 import { getField } from '../DataModel/helpers';
 import type {
-  SerializedModel,
+  SerializedRecord,
   SerializedResource,
 } from '../DataModel/helperTypes';
-import { schema } from '../DataModel/schema';
 import { serializeResource } from '../DataModel/serializers';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { SpAppResource, SpQuery, SpReport } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { cachableUrl, contextUnlockedPromise } from '../InitialContext';
@@ -31,6 +30,7 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { formatUrl } from '../Router/queryString';
 import { OverlayContext } from '../Router/Router';
 import { Report } from './Report';
+import { tables } from '../DataModel/tables';
 
 export const reportsAvailable = contextUnlockedPromise.then((entrypoint) =>
   entrypoint === 'main'
@@ -51,7 +51,7 @@ export function ReportsOverlay(): JSX.Element {
   return (
     <ReportsView
       autoSelectSingle={false}
-      model={undefined}
+      table={undefined}
       resourceId={undefined}
       onClose={handleClose}
     />
@@ -68,13 +68,13 @@ export type ReportEntry = {
 };
 
 export function ReportsView({
-  // If resource ID is provided, model must be too
-  model,
+  // If resource ID is provided, table must be too
+  table,
   resourceId,
   autoSelectSingle,
   onClose: handleClose,
 }: {
-  readonly model: SpecifyModel | undefined;
+  readonly table: SpecifyTable | undefined;
   readonly resourceId: number | undefined;
   readonly autoSelectSingle: boolean;
   readonly onClose: () => void;
@@ -84,14 +84,14 @@ export function ReportsView({
       async () =>
         ajax<{
           readonly objects: RA<{
-            readonly app_resource: SerializedModel<SpAppResource>;
-            readonly report: SerializedModel<SpReport> | null;
-            readonly query: SerializedModel<SpQuery> | null;
+            readonly app_resource: SerializedRecord<SpAppResource>;
+            readonly report: SerializedRecord<SpReport> | null;
+            readonly query: SerializedRecord<SpQuery> | null;
           }>;
         }>(
           formatUrl(
-            typeof model === 'object'
-              ? `/report_runner/get_reports_by_tbl/${model.tableId}/`
+            typeof table === 'object'
+              ? `/report_runner/get_reports_by_tbl/${table.tableId}/`
               : '/report_runner/get_reports/',
             {
               domainFilter: 'false',
@@ -111,7 +111,7 @@ export function ReportsView({
               appResource.mimeType?.includes('report') === true
           )
         ),
-      [model]
+      [table]
     ),
     true
   );
@@ -140,7 +140,7 @@ export function ReportsView({
     typeof selectedReport === 'object' ? (
       <ErrorBoundary dismissible>
         <Report
-          model={model}
+          table={table}
           resource={selectedReport}
           resourceId={resourceId}
           onClose={handleClose}
@@ -214,7 +214,7 @@ function ReportRow({
         <tr>
           <th>
             <Button.LikeLink onClick={(): void => handleSort('name')}>
-              {getField(schema.models.SpReport, 'name').label}
+              {getField(tables.SpReport, 'name').label}
               <SortIndicator fieldName="name" sortConfig={sortConfig} />
             </Button.LikeLink>
           </th>
@@ -222,14 +222,14 @@ function ReportRow({
             <Button.LikeLink
               onClick={(): void => handleSort('timestampCreated')}
             >
-              {getField(schema.models.SpReport, 'timestampCreated').label}
+              {getField(tables.SpReport, 'timestampCreated').label}
               <SortIndicator
                 fieldName="timestampCreated"
                 sortConfig={sortConfig}
               />
             </Button.LikeLink>
           </th>
-          <th>{getField(schema.models.SpReport, 'createdByAgent').label}</th>
+          <th>{getField(tables.SpReport, 'createdByAgent').label}</th>
           <td />
         </tr>
       </thead>

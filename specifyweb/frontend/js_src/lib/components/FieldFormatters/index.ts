@@ -18,7 +18,7 @@ export const fetchContext = Promise.all([
     formatUrl('/context/app.resource', { name: 'UIFormatters' }),
     'text/xml'
   ),
-  import('../DataModel/schema').then(async ({ fetchContext }) => fetchContext),
+  import('../DataModel/tables').then(async ({ fetchContext }) => fetchContext),
 ]).then(([formatters]) => {
   uiFormatters = Object.fromEntries(
     filterArray(

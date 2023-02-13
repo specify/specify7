@@ -5,13 +5,13 @@ import { formatUrl } from '../Router/queryString';
 import type {
   AnySchema,
   CommonFields,
-  SerializedModel,
+  SerializedRecord,
   SerializedResource,
 } from './helperTypes';
 import { parseResourceUrl } from './resource';
-import { schema } from './schema';
 import { serializeResource } from './serializers';
 import type { Tables } from './types';
+import { tables } from './tables';
 
 export type CollectionFetchFilters<SCHEMA extends AnySchema> = Partial<
   Exclude<SCHEMA['fields'], 'null'> &
@@ -66,7 +66,7 @@ export const fetchCollection = async <
       // eslint-disable-next-line @typescript-eslint/naming-convention
       readonly total_count: number;
     };
-    readonly objects: RA<SerializedModel<SCHEMA>>;
+    readonly objects: RA<SerializedRecord<SCHEMA>>;
   }>(
     formatUrl(
       `/api/specify/${tableName.toLowerCase()}/`,
@@ -121,12 +121,12 @@ export async function fetchRelated<
     (resource.resource_uri as string) ?? ''
   ) ?? [resource._tableName, resource.id];
   const relationship =
-    schema.models[tableName].strictGetRelationship(relationshipName);
+    tables[tableName].strictGetRelationship(relationshipName);
   const reverseName = defined(
     relationship.getReverse(),
     `Trying to fetch related resource, but no reverse relationship exists for ${relationship.name} in ${tableName}`
   ).name;
-  const response = fetchCollection(relationship.relatedModel.name, {
+  const response = fetchCollection(relationship.relatedTable.name, {
     limit,
     [reverseName]: id,
   });

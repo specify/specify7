@@ -4,10 +4,11 @@ import { formatUrl } from '../../Router/queryString';
 import {
   fetchCollectionsForResource,
   getCollectionForResource,
-} from '../domain';
+} from '../scoping';
 import { getResourceApiUrl } from '../resource';
-import { schema } from '../schema';
 import { monthsPickListName } from '../../PickLists/definitions';
+import { tables } from '../tables';
+import { schema } from '../schema';
 
 requireContext();
 
@@ -21,13 +22,13 @@ overrideAjax(
 
 describe('getCollectionForResource', () => {
   test('Collection Object', () => {
-    const collectionObject = new schema.models.CollectionObject.Resource({
+    const collectionObject = new tables.CollectionObject.Resource({
       collectionMemberId: 2,
     });
     expect(getCollectionForResource(collectionObject)).toBe(2);
   });
   test('blank Collection Object', () => {
-    const collectionObject = new schema.models.CollectionObject.Resource();
+    const collectionObject = new tables.CollectionObject.Resource();
     /*
      * Prevent Collection object from being associated with current collection
      * automatically
@@ -36,7 +37,7 @@ describe('getCollectionForResource', () => {
     expect(getCollectionForResource(collectionObject)).toBeUndefined();
   });
   test('Locality from current discipline', () => {
-    const locality = new schema.models.Locality.Resource({
+    const locality = new tables.Locality.Resource({
       discipline: getResourceApiUrl(
         'Discipline',
         schema.domainLevelIds.discipline
@@ -47,7 +48,7 @@ describe('getCollectionForResource', () => {
     );
   });
   test('Locality from another discipline', () => {
-    const locality = new schema.models.Locality.Resource({
+    const locality = new tables.Locality.Resource({
       discipline: getResourceApiUrl(
         'Discipline',
         schema.domainLevelIds.discipline + 1
@@ -56,7 +57,7 @@ describe('getCollectionForResource', () => {
     expect(getCollectionForResource(locality)).toBeUndefined();
   });
   test('PickListItem', () => {
-    const pickListItem = new schema.models.PickListItem.Resource();
+    const pickListItem = new tables.PickListItem.Resource();
     expect(getCollectionForResource(pickListItem)).toBeUndefined();
   });
 });
@@ -90,7 +91,7 @@ describe('fetchCollectionsForResource', () => {
   );
   test('ExchangeIn', async () => {
     expect(schema.domainLevelIds.division).not.toBe(divisionId);
-    const exchangeIn = new schema.models.ExchangeIn.Resource({
+    const exchangeIn = new tables.ExchangeIn.Resource({
       division: getResourceApiUrl('Division', divisionId),
     });
     await expect(fetchCollectionsForResource(exchangeIn)).resolves.toEqual([

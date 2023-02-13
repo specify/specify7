@@ -3,6 +3,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 import _ from 'underscore';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
+import { ajax } from '../../utils/ajax';
 import { isExternalUrl } from '../../utils/ajax/helpers';
 import type { IR, RA } from '../../utils/types';
 import {
@@ -12,13 +13,12 @@ import {
 } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
-import type { AnySchema } from '../DataModel/helperTypes';
-import { AnyTree } from '../DataModel/helperTypes';
+import type { AnySchema, AnyTree } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
 import { serializeResource } from '../DataModel/serializers';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { Tables } from '../DataModel/types';
 import { UiField } from '../FormFields/Field';
 import type { FormMode, FormType } from '../FormParse';
@@ -28,26 +28,20 @@ import { formatUrl } from '../Router/queryString';
 import { xmlToSpec } from '../Syncer/xmlUtils';
 import type { WebLink } from './spec';
 import { webLinksSpec } from './spec';
-import { f } from '../../utils/functools';
-import { ajax } from '../../utils/ajax';
 
-export const webLinks = f
-  .all({
-    xml: load<Element>(
-      formatUrl('/context/app.resource', { name: 'WebLinks' }),
-      'text/xml'
-    ),
-    schema: import('../DataModel/schema').then(
-      async ({ fetchContext }) => fetchContext
-    ),
-  })
-  .then(({ xml }) =>
-    Object.fromEntries(
-      xmlToSpec(xml, webLinksSpec()).webLinks.map(
-        (webLink) => [webLink.name, webLink] as const
-      )
+export const webLinks = Promise.all([
+  load<Element>(
+    formatUrl('/context/app.resource', { name: 'WebLinks' }),
+    'text/xml'
+  ),
+  import('../DataModel/tables').then(async ({ fetchContext }) => fetchContext),
+]).then(([xml]) =>
+  Object.fromEntries(
+    xmlToSpec(xml, webLinksSpec()).webLinks.map(
+      (webLink) => [webLink.name, webLink] as const
     )
-  );
+  )
+);
 
 const specialResourcesFields: {
   readonly [TABLE_NAME in keyof Tables]?: (
@@ -71,7 +65,7 @@ const fetchTreePath = async (treeResource: SpecifyResource<AnyTree>) =>
           readonly name: string;
         };
       }>(
-        `/api/specify_tree/${treeResource.specifyModel.name.toLowerCase()}/${
+        `/api/specify_tree/${treeResource.specifyTable.name.toLowerCase()}/${
           treeResource.id
         }/path/`,
         {
@@ -102,7 +96,7 @@ export function WebLinkField({
   readonly mode: FormMode;
 }): JSX.Element {
   const definition = useDefinition(
-    resource?.specifyModel,
+    resource?.specifyTable,
     field?.name,
     webLink
   );
@@ -133,7 +127,7 @@ export function WebLinkField({
         ...resource.toJSON(),
         // Camel case variants
         ...removeKey(serializeResource(resource), '_tableName'),
-        ...(await specialResourcesFields?.[resource.specifyModel.name]),
+        ...(await specialResourcesFields?.[resource.specifyTable.name]),
       };
       return _.template(template)({
         ...parameters,
@@ -206,13 +200,13 @@ type ParsedWebLink = {
 };
 
 function useDefinition(
-  model: SpecifyModel | undefined,
+  table: SpecifyTable | undefined,
   fieldName: string | undefined,
   webLink: string | undefined
 ): ParsedWebLink | false | undefined {
   const [definition] = useAsyncState<ParsedWebLink | false>(
     React.useCallback(async () => {
-      const fieldInfo = model?.getField(fieldName ?? '');
+      const fieldInfo = table?.getField(fieldName ?? '');
       const webLinkName = fieldInfo?.getWebLinkName() ?? webLink;
       const definition = await webLinks.then(
         (definitions) =>
@@ -222,14 +216,14 @@ function useDefinition(
       if (typeof definition === 'object')
         return parseWebLink(definition) ?? false;
 
-      if (model === undefined) return false;
+      if (table === undefined) return false;
       console.error("Couldn't determine WebLink", {
-        tableName: model.name,
+        tableName: table.name,
         fieldName,
         webLinkName,
       });
       return false;
-    }, [model, fieldName, webLink]),
+    }, [table, fieldName, webLink]),
     false
   );
   return definition;

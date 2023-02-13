@@ -42,7 +42,7 @@ export function GenerateLabel({
       {runReport ? (
         <ReportsView
           autoSelectSingle
-          model={resource.specifyModel}
+          table={resource.specifyTable}
           resourceId={resource.get('id')}
           onClose={handleHideReport}
         />
@@ -144,7 +144,7 @@ const commandRenderers: {
           onClose={handleHide}
         >
           {formsText.wrongTableForCommand({
-            currentTable: resource.specifyModel.name,
+            currentTable: resource.specifyTable.name,
             correctTable: formatDisjunction(supportedTables),
           })}
         </Dialog>

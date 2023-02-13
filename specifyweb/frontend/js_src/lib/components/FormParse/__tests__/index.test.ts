@@ -8,7 +8,6 @@ import type { RA } from '../../../utils/types';
 import { ensure } from '../../../utils/types';
 import { removeKey } from '../../../utils/utils';
 import { strictParseXml } from '../../AppResources/codeMirrorLinters';
-import { schema } from '../../DataModel/schema';
 import { getPref } from '../../InitialContext/remotePrefs';
 import { formatUrl } from '../../Router/queryString';
 import type { FormCellDefinition } from '../cells';
@@ -21,6 +20,7 @@ import {
   resolveViewDefinition,
 } from '../index';
 import { spAppResourceView } from '../webOnlyViews';
+import { tables } from '../../DataModel/tables';
 
 const {
   views,
@@ -211,8 +211,8 @@ test('parseViewDefinition', () => {
     'view'
   )!;
   expect(result).toBeDefined();
-  expect(result.model?.name).toBe(schema.models.CollectionObject.name);
-  expect(removeKey(result, 'model')).toEqual({
+  expect(result.table?.name).toBe(tables.CollectionObject.name);
+  expect(removeKey(result, 'table')).toEqual({
     ...parsedTinyView,
     errors: [],
     mode: 'view',
@@ -225,7 +225,7 @@ test('resolveViewDefinition', () => {
   const result = resolveViewDefinition(viewDefinition, 'form', 'view')!;
   expect(result).toBeDefined();
   expect(result.viewDefinition.outerHTML).toBe(formView.outerHTML);
-  expect(result.model.name).toBe(schema.models.CollectionObject.name);
+  expect(result.table.name).toBe(tables.CollectionObject.name);
   expect(result.formType).toBe('form');
   expect(result.mode).toBe('view');
 });
@@ -256,9 +256,7 @@ theories(resolveAltView, [
 ]);
 
 test('parseFormTableDefinition', () =>
-  expect(
-    parseFormTableDefinition(formView, schema.models.CollectionObject)
-  ).toEqual({
+  expect(parseFormTableDefinition(formView, tables.CollectionObject)).toEqual({
     columns: [1, undefined, undefined],
     rows: [
       [
@@ -322,9 +320,9 @@ theories(parseFormTableColumns, {
 
 test('parseFormDefinition', () => {
   jest.spyOn(console, 'warn').mockImplementation();
-  expect(
-    parseFormDefinition(tinyFormView, schema.models.CollectionObject)
-  ).toEqual(parsedTinyView);
+  expect(parseFormDefinition(tinyFormView, tables.CollectionObject)).toEqual(
+    parsedTinyView
+  );
 });
 
 describe('getColumnDefinitions', () => {

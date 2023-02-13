@@ -29,20 +29,20 @@ import type { GetOrSet, IR, RA } from '../utils/types';
  *   React.useEffect(()=>{}, [resource.name, resource.fullname]);
  */
 export function useResource<SCHEMA extends AnySchema>(
-  model: SpecifyResource<SCHEMA>
+  table: SpecifyResource<SCHEMA>
 ): GetOrSet<SerializedResource<SCHEMA>> {
   const [resource, setResource] = React.useState<SerializedResource<SCHEMA>>(
-    () => serializeResource(model)
+    () => serializeResource(table)
   );
 
   const isChanging = React.useRef<boolean>(false);
   React.useEffect(() =>
     resourceOn(
-      model,
+      table,
       'change',
       () => {
         if (isChanging.current) return;
-        const newResource = serializeResource(model);
+        const newResource = serializeResource(table);
         previousResourceRef.current = newResource;
         setResource(newResource);
       },
@@ -52,11 +52,11 @@ export function useResource<SCHEMA extends AnySchema>(
 
   const previousResourceRef =
     React.useRef<SerializedResource<SCHEMA>>(resource);
-  const previousModel = React.useRef(model);
+  const previousTable = React.useRef(table);
   React.useEffect(() => {
-    if (previousModel.current !== model) {
-      previousModel.current = model;
-      const newResource = serializeResource(model);
+    if (previousTable.current !== table) {
+      previousTable.current = table;
+      const newResource = serializeResource(table);
       previousResourceRef.current = newResource;
       setResource(newResource);
       return;
@@ -69,17 +69,17 @@ export function useResource<SCHEMA extends AnySchema>(
 
     isChanging.current = true;
     changes.forEach(([key, newValue]) =>
-      model.set(key as 'resource_uri', newValue as never)
+      table.set(key as 'resource_uri', newValue as never)
     );
     isChanging.current = false;
 
     previousResourceRef.current = resource;
-  }, [resource, model]);
+  }, [resource, table]);
 
   return [resource, setResource];
 }
 
-/** Hook for getting save blockers for a model's field */
+/** Hook for getting save blockers for a tables's field */
 export function useSaveBlockers({
   resource,
   fieldName,

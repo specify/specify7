@@ -4,7 +4,7 @@ import { filterArray } from '../../utils/types';
 import { formatUrl } from '../Router/queryString';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import type { AnySchema, SerializedResource } from './helperTypes';
-import { strictGetModel } from './schema';
+import { strictGetTable } from './tables';
 import type { LiteralField, Relationship } from './specifyField';
 import type { Tables } from './types';
 
@@ -35,7 +35,7 @@ export function addMissingFields<TABLE_NAME extends keyof Tables>(
     optionalRelationships = 'define',
   }: Partial<ResourceSpec> = {}
 ): SerializedResource<Tables[TABLE_NAME]> {
-  const model = strictGetModel(tableName);
+  const table = strictGetTable(tableName);
   const spec = {
     requiredFields,
     optionalFields,
@@ -49,7 +49,7 @@ export function addMissingFields<TABLE_NAME extends keyof Tables>(
     ...record,
     ...(Object.fromEntries(
       filterArray(
-        model.fields.map((field) =>
+        table.fields.map((field) =>
           shouldIncludeField(field, spec, record.id === undefined)
             ? [
                 field.name,
@@ -115,7 +115,7 @@ function handleRelationship<TABLE_NAME extends keyof Tables>(
         | undefined;
       return (
         records?.map((record) =>
-          addMissingFields(field.relatedModel.name, record, spec)
+          addMissingFields(field.relatedTable.name, record, spec)
         ) ?? (spec.toManyRelationships === 'set' ? [] : null)
       );
     } else {
@@ -123,7 +123,7 @@ function handleRelationship<TABLE_NAME extends keyof Tables>(
       return (
         record[field.name as keyof Tables[TABLE_NAME]['toManyIndependent']] ??
         (typeof otherSideName === 'string' && typeof record.id === 'number'
-          ? formatUrl(`/api/specify/${field.relatedModel.name}`, {
+          ? formatUrl(`/api/specify/${field.relatedTable.name}`, {
               [otherSideName]: record.id.toString(),
             })
           : undefined)
@@ -137,7 +137,7 @@ function handleRelationship<TABLE_NAME extends keyof Tables>(
       record[field.name as keyof typeof record] ??
       (field.isDependent() && shouldSet
         ? addMissingFields(
-            field.relatedModel.name,
+            field.relatedTable.name,
             (record[field.name as keyof typeof record] as Partial<
               SerializedResource<AnySchema>
             >) ?? {},

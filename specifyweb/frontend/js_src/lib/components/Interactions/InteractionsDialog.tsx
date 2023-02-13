@@ -14,8 +14,8 @@ import { Ul } from '../Atoms';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { getResourceViewUrl } from '../DataModel/resource';
-import { getModel, schema } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import { getTable, tables } from '../DataModel/tables';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
@@ -75,27 +75,9 @@ export const interactionTables: ReadonlySet<keyof Tables> = new Set<
  */
 const stringLocalization = f.store(() => ({
   RET_LOAN: interactionsText.returnLoan({
-    tableLoan: schema.models.Loan.label,
+    tableLoan: tables.Loan.label,
   }),
   PRINT_INVOICE: interactionsText.printInvoice(),
-  LOAN_NO_PRP: interactionsText.loanWithoutPreparation({
-    tableLoan: schema.models.Loan.label,
-    tablePreparation: schema.models.Preparation.label,
-  }),
-  'InteractionsTask.LN_NO_PREP':
-    interactionsText.loanWithoutPreparationDescription({
-      tableLoan: schema.models.Loan.label,
-      tablePreparation: schema.models.Preparation.label,
-    }),
-  'InteractionsTask.NEW_LN': interactionsText.createLoan({
-    tableLoan: schema.models.Loan.label,
-  }),
-  'InteractionsTask.NEW_GFT': interactionsText.createdGift({
-    tableGift: schema.models.Gift.label,
-  }),
-  'InteractionsTask.CRE_IR': interactionsText.createInformationRequest({
-    tableInformationRequest: schema.models.InfoRequest.label,
-  }),
   'InteractionsTask.PRT_INV': interactionsText.printInvoice(),
 }));
 
@@ -132,19 +114,18 @@ function Interactions({
   const handleAction = React.useCallback(
     (
       action: InteractionEntry['action'] & string,
-      actionTable: SpecifyModel
+      actionTable: SpecifyTable
     ): void => {
       if (action === 'PRINT_INVOICE') setState({ type: 'ReportsState' });
       else {
+        // FIXME: extend this list
         const isRecordSetAction =
           action === 'NEW_GIFT' || action === 'NEW_LOAN';
         setState({
           type: 'InteractionState',
-          table: isRecordSetAction
-            ? schema.models.CollectionObject
-            : schema.models.Loan,
+          table: isRecordSetAction ? tables.CollectionObject : tables.Loan,
           action: {
-            model: actionTable,
+            table: actionTable,
             name: action,
           },
         });
@@ -184,11 +165,11 @@ function Interactions({
               <li
                 key={index}
                 title={
-                  typeof tooltip === 'string'
-                    ? stringLocalization()[
-                        tooltip as keyof ReturnType<typeof stringLocalization>
-                      ] ?? tooltip
-                    : undefined
+                  stringLocalization()[
+                    (tooltip ?? '') as keyof ReturnType<
+                      typeof stringLocalization
+                    >
+                  ] ?? table?.label
                 }
               >
                 <Link.Default
@@ -214,7 +195,7 @@ function Interactions({
                         label as keyof ReturnType<typeof stringLocalization>
                       ] ?? label
                     : typeof table === 'string'
-                    ? getModel(table)?.label
+                    ? getTable(table)?.label
                     : (action as LocalizedString)}
                 </Link.Default>
               </li>
@@ -227,7 +208,7 @@ function Interactions({
   ) : state.type === 'ReportsState' ? (
     <ReportsView
       autoSelectSingle
-      model={schema.models.Loan}
+      table={tables.Loan}
       resourceId={undefined}
       onClose={handleClose}
     />

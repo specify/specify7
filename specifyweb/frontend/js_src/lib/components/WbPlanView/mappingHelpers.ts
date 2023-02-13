@@ -5,7 +5,7 @@
  */
 
 import type { R, RA, WritableArray } from '../../utils/types';
-import { schemaBase as schema } from '../DataModel/schemaBase';
+import { schema } from '../DataModel/schema';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { CollectionObject } from '../DataModel/types';
 import type { MappingPath } from './Mapper';

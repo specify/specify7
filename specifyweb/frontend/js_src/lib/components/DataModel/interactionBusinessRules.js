@@ -1,8 +1,8 @@
 import _ from 'underscore';
 
 import {idFromUrl} from './resource';
-import {schema} from './schema';
 import {getPrepAvailability} from '../Interactions/helpers';
+import {tables} from './tables';
 
 export const interactionBusinessRules = {
         previousReturned: [],
@@ -25,10 +25,10 @@ export const interactionBusinessRules = {
             if (interactionprep && interactionprep.get('preparation')) {
                 // Return interactionprep.get('preparation').get('CountAmt');
                 const prepuri = interactionprep.get('preparation');
-                const pmod = schema.models.Preparation;
+                const pmod = tables.Preparation;
                 const prepId = idFromUrl(prepuri);
                 const iprepId = interactionprep.isNew() ? undefined : interactionprep.get('id');
-                const iprepName =  interactionprep.isNew() ? undefined : interactionprep.specifyModel.name;
+                const iprepName =  interactionprep.isNew() ? undefined : interactionprep.specifyTable.name;
                 getPrepAvailability(prepId, iprepId, iprepName).then((available) => {
                     if (available !== undefined && Number(available[0])  < interactionprep.get('quantity')) {
                         interactionprep.set('quantity', Number(available[0]));
@@ -38,7 +38,7 @@ export const interactionBusinessRules = {
         },
 
         updateLoanPrep(loanreturnprep, collection) {
-            if (collection && collection.related.specifyModel.name == 'LoanPreparation') {
+            if (collection && collection.related.specifyTable.name == 'LoanPreparation') {
                 const sums = _.reduce(collection.models, (memo, lrp) => {
                     memo.returned += lrp.get('quantityreturned');
                     memo.resolved += lrp.get('quantityresolved');

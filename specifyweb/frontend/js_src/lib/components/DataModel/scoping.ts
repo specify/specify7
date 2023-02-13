@@ -10,14 +10,15 @@ import { toTable } from './helpers';
 import type { AnySchema } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
 import { getResourceApiUrl, idFromUrl } from './resource';
-import { schema } from './schema';
+import { tables } from './tables';
 import type { CollectionObject } from './types';
+import { schema } from './schema';
 
 /**
  * Some tasks to do after a new resource is created
  */
 export function initializeResource(resource: SpecifyResource<AnySchema>): void {
-  const domainField = resource.specifyModel.getScopingRelationship();
+  const domainField = resource.specifyTable.getScopingRelationship();
   if (domainField === undefined) return;
 
   const domainFieldName =
@@ -54,7 +55,7 @@ export function initializeResource(resource: SpecifyResource<AnySchema>): void {
     getCollectionPref('CO_CREATE_COA', colId) &&
     hasTablePermission('CollectionObjectAttribute', 'create')
   ) {
-    const attribute = new schema.models.CollectionObjectAttribute.Resource();
+    const attribute = new tables.CollectionObjectAttribute.Resource();
     attribute.placeInSameHierarchy(collectionObject);
     collectionObject.set('collectionObjectAttribute', attribute);
   }
@@ -66,7 +67,7 @@ export function initializeResource(resource: SpecifyResource<AnySchema>): void {
     collectionObject
       .rgetCollection('preparations')
       .then((preparations) =>
-        preparations.add(new schema.models.Preparation.Resource())
+        preparations.add(new tables.Preparation.Resource())
       )
       .catch(raise);
 
@@ -77,7 +78,7 @@ export function initializeResource(resource: SpecifyResource<AnySchema>): void {
     collectionObject
       .rgetCollection('determinations')
       .then((determinations) =>
-        determinations.add(new schema.models.Determination.Resource())
+        determinations.add(new tables.Determination.Resource())
       )
       .catch(raise);
 }
@@ -95,7 +96,7 @@ export function getCollectionForResource(
   const collectionUrl = resource.get('collectionMemberId') as number | null;
   if (typeof collectionUrl === 'number') return collectionUrl;
 
-  const domainField = resource.specifyModel.getScopingRelationship();
+  const domainField = resource.specifyTable.getScopingRelationship();
   if (domainField === undefined) return undefined;
 
   const domainResourceId = idFromUrl(resource.get(domainField.name) ?? '');
@@ -112,18 +113,18 @@ export function getCollectionForResource(
 export async function fetchCollectionsForResource(
   resource: SpecifyResource<AnySchema>
 ): Promise<RA<number> | undefined> {
-  const domainField = resource.specifyModel.getScopingRelationship();
+  const domainField = resource.specifyTable.getScopingRelationship();
   if (domainField === undefined) return undefined;
   const domainResource = await (
     resource as SpecifyResource<CollectionObject>
   )?.rgetPromise(domainField.name as 'collection');
   if (domainResource === undefined || domainResource === null) return undefined;
-  if (domainResource.specifyModel.name === 'Collection')
+  if (domainResource.specifyTable.name === 'Collection')
     return [domainResource.id];
   const fieldsBetween = takeBetween(
     schema.orgHierarchy,
     'Collection',
-    domainResource.specifyModel.name
+    domainResource.specifyTable.name
   )
     .map((level) => level.toLowerCase())
     .join('__');

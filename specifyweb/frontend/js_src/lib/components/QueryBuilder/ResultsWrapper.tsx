@@ -4,7 +4,7 @@ import { ajax } from '../../utils/ajax';
 import type { RA } from '../../utils/types';
 import { keysToLowerCase, replaceItem } from '../../utils/utils';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { SpQuery, Tables } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
@@ -23,7 +23,7 @@ const fetchSize = 40;
 
 export function QueryResultsWrapper({
   baseTableName,
-  model,
+  table,
   queryRunCount,
   queryResource,
   fields,
@@ -35,7 +35,7 @@ export function QueryResultsWrapper({
   onSortChange: handleSortChange,
 }: {
   readonly baseTableName: keyof Tables;
-  readonly model: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly queryRunCount: number;
   readonly queryResource: SpecifyResource<SpQuery>;
   readonly fields: RA<QueryField>;
@@ -130,7 +130,7 @@ export function QueryResultsWrapper({
     initialData
       .then((initialData) =>
         setProps({
-          model,
+          table,
           hasIdField: queryResource.get('selectDistinct') !== true,
           queryResource,
           fetchSize,
@@ -171,7 +171,7 @@ export function QueryResultsWrapper({
     queryResource,
     queryRunCount,
     recordSetId,
-    model,
+    table,
   ]);
 
   return props === undefined ? (

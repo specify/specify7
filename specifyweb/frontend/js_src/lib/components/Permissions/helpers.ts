@@ -2,7 +2,6 @@ import { getCache } from '../../utils/cache';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import type { AnyTree } from '../DataModel/helperTypes';
-import { schema } from '../DataModel/schema';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { Tables } from '../DataModel/types';
 import { toolDefinitions } from '../Security/registry';
@@ -13,6 +12,7 @@ import {
   getOperationPermissions,
   getTablePermissions,
 } from './index';
+import { schema } from '../DataModel/schema';
 
 /*
  * FEATURE: use localized action and resource names in all these log messages
@@ -87,6 +87,6 @@ export const hasPathPermission = (
 ): boolean =>
   mappingPath
     .map((field) =>
-      field.isRelationship ? field.relatedModel.name : field.model.name
+      field.isRelationship ? field.relatedTable.name : field.table.name
     )
     .every((tableName) => hasTablePermission(tableName, action, collectionId));

@@ -32,7 +32,7 @@ export function useTreeData(
       const treeResource = toTreeTable(resource);
       if (
         treeResource === undefined ||
-        !hasTreeAccess(treeResource.specifyModel.name, 'read')
+        !hasTreeAccess(treeResource.specifyTable.name, 'read')
       )
         return false;
       if (field.name === 'parent') {
@@ -40,7 +40,7 @@ export function useTreeData(
           lowestChildRank: treeResource.isNew()
             ? Promise.resolve(undefined)
             : fetchCollection(
-                treeResource.specifyModel.name,
+                treeResource.specifyTable.name,
                 {
                   limit: 1,
                   orderBy: 'rankId',
@@ -52,7 +52,7 @@ export function useTreeData(
               ).then(({ records }) => records[0]?.rankId),
           treeRanks: treeRanksPromise.then(() =>
             strictGetTreeDefinitionItems(
-              treeResource.specifyModel.name,
+              treeResource.specifyTable.name,
               false
             ).map((rank) => ({
               rankId: rank.rankId,

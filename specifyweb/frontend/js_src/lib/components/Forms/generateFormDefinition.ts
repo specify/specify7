@@ -5,7 +5,7 @@ import { filterArray } from '../../utils/types';
 import { sortFunction, split } from '../../utils/utils';
 import type { AnySchema, TableFields } from '../DataModel/helperTypes';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import type {
   FormMode,
   FormType,
@@ -20,20 +20,20 @@ import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
  * If form definition is missing, this function will generate one on the fly
  */
 export function autoGenerateViewDefinition<SCHEMA extends AnySchema>(
-  model: SpecifyModel<SCHEMA>,
+  table: SpecifyTable<SCHEMA>,
   formType: FormType,
   mode: FormMode,
-  fieldsToShow: RA<TableFields<SCHEMA>> = getFieldsForAutoView(model, [])
+  fieldsToShow: RA<TableFields<SCHEMA>> = getFieldsForAutoView(table, [])
 ): ViewDescription {
   return {
     ...(formType === 'form' ? generateForm : generateFormTable)(
-      model,
+      table,
       mode,
       fieldsToShow
     ),
     formType,
     mode,
-    model,
+    table: table,
   };
 }
 
@@ -43,16 +43,16 @@ export function autoGenerateViewDefinition<SCHEMA extends AnySchema>(
  * that won't be as type safe
  */
 export function getFieldsForAutoView<SCHEMA extends AnySchema>(
-  model: SpecifyModel<SCHEMA>,
+  table: SpecifyTable<SCHEMA>,
   fieldsToSkip: RA<TableFields<SCHEMA>>
 ): RA<TableFields<SCHEMA>> {
-  const baseFields = model.literalFields
+  const baseFields = table.literalFields
     .filter((field) => !fieldsToSkip.includes(field.name))
     .sort(sortFunction(({ isRequired }) => isRequired, true));
   const filteredFields = baseFields.filter(
     (field) => !field.isHidden && !field.isReadOnly
   );
-  const relationships = model.relationships
+  const relationships = table.relationships
     .filter(
       (field) =>
         !field.isHidden &&
@@ -70,7 +70,7 @@ export function getFieldsForAutoView<SCHEMA extends AnySchema>(
 }
 
 function generateFormTable(
-  model: SpecifyModel,
+  model: SpecifyTable,
   _mode: FormMode,
   fieldsToShow: RA<string>
 ): ParsedFormDefinition {
@@ -101,12 +101,12 @@ const cellAttributes = {
 } as const;
 
 function generateForm(
-  model: SpecifyModel,
+  table: SpecifyTable,
   mode: FormMode,
   fieldsToShow: RA<string>
 ): ParsedFormDefinition {
   const allFields = fieldsToShow.map((fieldName) =>
-    model.strictGetField(fieldName)
+    table.strictGetField(fieldName)
   );
   const [fields, relationships] = split<LiteralField, Relationship>(
     allFields,
@@ -169,8 +169,8 @@ function generateForm(
             },
           ],
       ...relationships
-        .filter(({ relatedModel }) =>
-          hasTablePermission(relatedModel.name, 'read')
+        .filter(({ relatedTable }) =>
+          hasTablePermission(relatedTable.name, 'read')
         )
         .flatMap(
           (field) =>
@@ -262,7 +262,7 @@ function getFieldDefinition(
             max: parser.max,
             step: parser.step,
             minLength: parser.minLength,
-            maxLength: parser.maxLength
+            maxLength: parser.maxLength,
           }),
     },
   };

@@ -3,7 +3,6 @@ import { toTable, toTreeTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { idFromUrl } from '../DataModel/resource';
-import { schema } from '../DataModel/schema';
 import type { Relationship } from '../DataModel/specifyField';
 import type { SpQuery, SpQueryField } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
@@ -14,6 +13,7 @@ import { getUserPref } from '../UserPreferences/helpers';
 import type { CollectionRelationships } from './useCollectionRelationships';
 import type { QueryComboBoxTreeData } from './useTreeData';
 import { TypeSearch } from './spec';
+import { tables } from '../DataModel/tables';
 
 export function makeComboBoxQuery({
   fieldName,
@@ -28,10 +28,7 @@ export function makeComboBoxQuery({
   readonly typeSearch: TypeSearch;
   readonly specialConditions: RA<SpecifyResource<SpQueryField>>;
 }): SpecifyResource<SpQuery> {
-  const query = new schema.models.SpQuery.Resource(
-    {},
-    { noBusinessRules: true }
-  );
+  const query = new tables.SpQuery.Resource({}, { noBusinessRules: true });
   query.set('name', 'Ephemeral QueryCBX query');
   query.set('contextName', table.name);
   query.set('contextTableId', table.tableId);
@@ -85,7 +82,7 @@ export function getQueryComboBoxConditions({
   const fields: WritableArray<SpecifyResource<SpQueryField>> = [];
   const treeResource = toTreeTable(resource);
   if (typeof treeResource === 'object') {
-    const tableId = resource.specifyModel.tableId;
+    const tableId = resource.specifyTable.tableId;
     // Add not-a-descendant condition
     if (!treeResource.isNew())
       fields.push(

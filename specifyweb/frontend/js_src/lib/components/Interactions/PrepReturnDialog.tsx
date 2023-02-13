@@ -13,7 +13,6 @@ import { Form } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { getField } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
 import type { Loan, LoanPreparation } from '../DataModel/types';
 import type { ViewDescription } from '../FormParse';
 import { autoGenerateViewDefinition } from '../Forms/generateFormDefinition';
@@ -21,15 +20,14 @@ import { RenderForm } from '../Forms/SpecifyForm';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
 import { PrepReturnRow } from './PrepReturnRow';
+import { tables } from '../DataModel/tables';
 
 export const loanReturnPrepForm = f.store(
   (): ViewDescription =>
-    autoGenerateViewDefinition(
-      schema.models.LoanReturnPreparation,
-      'form',
-      'edit',
-      ['receivedBy', 'returnedDate']
-    )
+    autoGenerateViewDefinition(tables.LoanReturnPreparation, 'form', 'edit', [
+      'receivedBy',
+      'returnedDate',
+    ])
 );
 
 export type PrepReturnRowState = {
@@ -67,7 +65,7 @@ export function LoanReturn({
     preparations.length === 0 ? (
       <Dialog
         buttons={commonText.close()}
-        header={schema.models.LoanPreparation.label}
+        header={tables.LoanPreparation.label}
         onClose={handleClose}
       >
         {interactionsText.noUnresolvedPreparations()}
@@ -86,7 +84,7 @@ function PreparationReturn({
   readonly onClose: () => void;
 }): JSX.Element {
   const loanReturnPreparation = React.useRef(
-    new schema.models.LoanReturnPreparation.Resource({
+    new tables.LoanReturnPreparation.Resource({
       returneddate: getDateInputValue(new Date()),
       receivedby: userInformation.agent.resource_uri,
     })
@@ -152,7 +150,7 @@ function PreparationReturn({
           </Submit.Green>
         </>
       }
-      header={schema.models.LoanPreparation.label}
+      header={tables.LoanPreparation.label}
       onClose={handleClose}
     >
       <Form
@@ -179,8 +177,7 @@ function PreparationReturn({
                   (preparation.get('quantity') ?? 0)
               );
 
-              const loanReturn =
-                new schema.models.LoanReturnPreparation.Resource();
+              const loanReturn = new tables.LoanReturnPreparation.Resource();
               loanReturn.set('loanPreparation', preparation.url());
               loanReturn.set('remarks', remarks);
               loanReturn.set('quantityResolved', returns);
@@ -213,16 +210,13 @@ function PreparationReturn({
             <tr>
               <td />
               <th className="text-center" scope="col">
-                {
-                  getField(schema.models.CollectionObject, 'catalogNumber')
-                    .label
-                }
+                {getField(tables.CollectionObject, 'catalogNumber').label}
               </th>
               <th className="text-center" scope="col">
-                {getField(schema.models.Determination, 'taxon').label}
+                {getField(tables.Determination, 'taxon').label}
               </th>
               <th className="text-center" scope="col">
-                {getField(schema.models.Preparation, 'prepType').label}
+                {getField(tables.Preparation, 'prepType').label}
               </th>
               <th className="text-center" scope="col">
                 {interactionsText.unresolved()}

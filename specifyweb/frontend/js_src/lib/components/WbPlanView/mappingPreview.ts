@@ -10,7 +10,7 @@
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { camelToHuman } from '../../utils/utils';
-import { strictGetModel } from '../DataModel/schema';
+import { strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import type { MappingPath } from './Mapper';
 import {
@@ -86,7 +86,7 @@ export function generateMappingPathPreview(
   baseTableName: keyof Tables,
   mappingPath: MappingPath
 ): string {
-  if (mappingPath.length === 0) return strictGetModel(baseTableName).label;
+  if (mappingPath.length === 0) return strictGetTable(baseTableName).label;
 
   const mappingLineData = getMappingLineData({
     baseTableName,
@@ -102,7 +102,7 @@ export function generateMappingPathPreview(
       if (entry === undefined) return undefined;
       const [fieldName, { optionLabel }] = entry;
       return fieldName === formatTreeRank(anyTreeRank)
-        ? strictGetModel(mappingElementData.tableName!).label
+        ? strictGetTable(mappingElementData.tableName!).label
         : (optionLabel as string);
     }),
   ];

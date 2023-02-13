@@ -13,8 +13,8 @@ import { defined, filterArray } from '../../utils/types';
 import { parseXml } from '../AppResources/codeMirrorLinters';
 import { formatDisjunction } from '../Atoms/Internationalization';
 import { parseJavaClassName } from '../DataModel/resource';
-import { getModel, strictGetModel } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import { getTable, strictGetTable } from '../DataModel/tables';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import { error } from '../Errors/assert';
 import type { LogMessage } from '../Errors/interceptLogs';
 import { consoleLog } from '../Errors/interceptLogs';
@@ -38,7 +38,7 @@ import { webOnlyViews } from './webOnlyViews';
 export type ViewDescription = ParsedFormDefinition & {
   readonly formType: FormType;
   readonly mode: FormMode;
-  readonly model: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly errors?: RA<LogMessage>;
   readonly viewSetId?: number;
 };
@@ -82,7 +82,7 @@ export const fetchView = async (
           formatUrl('/context/view.json', {
             name,
             // Don't spam the console with errors needlessly
-            ...(name in webOnlyViews() || getModel(name)?.isSystem === true
+            ...(name in webOnlyViews() || getTable(name)?.isSystem === true
               ? { quiet: '' }
               : {}),
           })
@@ -117,20 +117,20 @@ export function parseViewDefinition(
   const resolved = resolveViewDefinition(view, defaultType, originalMode);
   if (resolved === undefined) return undefined;
   addContext({ resolved });
-  const { mode, formType, viewDefinition, model } = resolved;
+  const { mode, formType, viewDefinition, table } = resolved;
 
   const parser =
     formType === 'formTable' ? parseFormTableDefinition : parseFormDefinition;
 
   const logIndexBefore = consoleLog.length;
-  const parsed = parser(viewDefinition, model);
+  const parsed = parser(viewDefinition, table);
   const errors = consoleLog.slice(logIndexBefore);
   setLogContext(logContext);
 
   return {
     mode,
     formType,
-    model,
+    table,
     viewSetId: view.viewsetId ?? undefined,
     errors,
     ...parsed,
@@ -146,7 +146,7 @@ export function resolveViewDefinition(
       readonly viewDefinition: SimpleXmlNode;
       readonly formType: FormType;
       readonly mode: FormMode;
-      readonly model: SpecifyModel;
+      readonly table: SpecifyTable;
     }
   | undefined {
   const viewDefinitions = parseViewDefinitions(view.viewdefs);
@@ -172,7 +172,7 @@ export function resolveViewDefinition(
   const actualDefinition = actualViewDefinition;
 
   const newFormType = getParsedAttribute(viewDefinition, 'type');
-  const modelName = parseJavaClassName(
+  const tableName = parseJavaClassName(
     defined(
       getParsedAttribute(actualDefinition, 'class'),
       'Form definition does not contain a class attribute'
@@ -195,8 +195,8 @@ export function resolveViewDefinition(
     viewDefinition: actualDefinition,
     formType: resolvedFormType ?? 'form',
     mode: mode === 'search' ? mode : altView.mode,
-    model: strictGetModel(
-      modelName === 'ObjectAttachmentIFace' ? 'Attachment' : modelName
+    table: strictGetTable(
+      tableName === 'ObjectAttachmentIFace' ? 'Attachment' : tableName
     ),
   };
 }
@@ -266,9 +266,9 @@ export type ParsedFormDefinition = {
 
 function parseFormTableDefinition(
   viewDefinition: SimpleXmlNode,
-  model: SpecifyModel
+  table: SpecifyTable
 ): ParsedFormDefinition {
-  const { rows } = parseFormDefinition(viewDefinition, model);
+  const { rows } = parseFormDefinition(viewDefinition, table);
   const labelsForCells = Object.fromEntries(
     filterArray(
       rows
@@ -298,7 +298,7 @@ function parseFormTableDefinition(
           : undefined) ??
         labelsForCells[cell.id ?? '']?.text ??
         (cell.type === 'Field' || cell.type === 'SubView'
-          ? model?.getField(cell.fieldNames?.join('.') ?? '')?.label ??
+          ? table?.getField(cell.fieldNames?.join('.') ?? '')?.label ??
             (cell.fieldNames?.join('.') as LocalizedString)
           : undefined),
       // Remove labels from checkboxes (as labels would be in the table header)
@@ -332,7 +332,7 @@ function parseFormTableColumns(
 
 export function parseFormDefinition(
   viewDefinition: SimpleXmlNode,
-  model: SpecifyModel
+  table: SpecifyTable
 ): ParsedFormDefinition {
   const context = getLogContext();
   const rowsContainer = viewDefinition?.children?.rows.at(0);
@@ -355,7 +355,7 @@ export function parseFormDefinition(
           extras: { row: index + 1 },
         });
 
-        const data = parseFormCell(model, cell);
+        const data = parseFormCell(table, cell);
 
         setLogContext(context);
         return data;
@@ -363,7 +363,7 @@ export function parseFormDefinition(
       setLogContext(context);
       return data ?? [];
     }),
-    model
+    table
   );
   setLogContext(context);
   return data;
