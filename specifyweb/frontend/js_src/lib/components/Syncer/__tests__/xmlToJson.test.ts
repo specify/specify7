@@ -20,36 +20,25 @@ test('XML to JSON and back', () => {
 
   const newSimple: SimpleXmlNode = {
     ...simple,
-    content:
-      simple.content.type === 'Children'
-        ? {
-            ...simple.content,
-            children: {
-              ...simple.content.children,
-              child2: [
-                ...simple.content.children.child2,
-                {
-                  ...simple.content.children.child2[0],
-                  content: {
-                    type: 'Text',
-                    string: 'added',
-                  },
-                },
-              ],
-              child3: [
-                {
-                  type: 'SimpleXmlNode',
-                  tagName: 'child3',
-                  attributes: { Test: 'a="' },
-                  content: {
-                    type: 'Text',
-                    string: ' also added ',
-                  },
-                },
-              ],
-            },
-          }
-        : simple.content,
+    children: {
+      ...simple.children,
+      child2: [
+        ...simple.children.child2,
+        {
+          ...simple.children.child2[0],
+          text: 'added',
+        },
+      ],
+      child3: [
+        {
+          type: 'SimpleXmlNode',
+          tagName: 'child3',
+          attributes: { Test: 'a="' },
+          text: ' also added ',
+          children: {},
+        },
+      ],
+    },
   };
 
   const newParsed = fromSimpleXmlNode(parsed, newSimple);

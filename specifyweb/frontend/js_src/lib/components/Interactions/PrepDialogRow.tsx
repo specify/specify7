@@ -3,8 +3,6 @@ import type { LocalizedString } from 'typesafe-i18n';
 import type { State } from 'typesafe-reducer';
 
 import { interactionsText } from '../../localization/interactions';
-import type { Preparations } from '../../utils/ajax/specifyApi';
-import { getInteractionsForPrepId } from '../../utils/ajax/specifyApi';
 import type { RA, RR } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Input } from '../Atoms/Form';
@@ -16,6 +14,7 @@ import { schema } from '../DataModel/schema';
 import type { ExchangeOut, Gift, Loan } from '../DataModel/types';
 import { syncFieldFormat } from '../Formatters/fieldFormat';
 import { ResourceView } from '../Forms/ResourceView';
+import { getInteractionsForPrepId, Preparations } from './helpers';
 
 export function PrepDialogRow({
   preparation,

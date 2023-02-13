@@ -5,11 +5,6 @@ import { useValidation } from '../../hooks/useValidation';
 import { commonText } from '../../localization/common';
 import { interactionsText } from '../../localization/interactions';
 import { ajax } from '../../utils/ajax';
-import type { PreparationRow, Preparations } from '../../utils/ajax/specifyApi';
-import {
-  getPrepsAvailableForLoanCoIds,
-  getPrepsAvailableForLoanRs,
-} from '../../utils/ajax/specifyApi';
 import { f } from '../../utils/functools';
 import type { Parser } from '../../utils/parser/definitions';
 import {
@@ -29,6 +24,7 @@ import { H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
+import { fetchCollection } from '../DataModel/collection';
 import { toTable } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
@@ -45,26 +41,25 @@ import type {
   LoanPreparation,
   RecordSet,
 } from '../DataModel/types';
+import { userInformation } from '../InitialContext/userInformation';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { Dialog } from '../Molecules/Dialog';
 import { RecordSetsDialog } from '../Toolbar/RecordSets';
 import { usePref } from '../UserPreferences/usePref';
+import type { PreparationRow, Preparations } from './helpers';
+import {
+  getPrepsAvailableForLoanCoIds,
+  getPrepsAvailableForLoanRs,
+} from './helpers';
 import { PrepDialog } from './PrepDialog';
 
 export function InteractionDialog({
-  recordSetsPromise,
-  model,
-  searchField,
+  table,
   onClose: handleClose,
   action,
   itemCollection,
 }: {
-  readonly recordSetsPromise: Promise<{
-    readonly totalCount: number;
-    readonly records: RA<SerializedResource<RecordSet>>;
-  }>;
-  readonly model: SpecifyModel<CollectionObject | Disposal | Gift | Loan>;
-  readonly searchField: LiteralField | undefined;
+  readonly table: SpecifyModel<CollectionObject | Disposal | Gift | Loan>;
   readonly onClose: () => void;
   readonly action: {
     readonly model: SpecifyModel<Disposal | Gift | Loan>;
@@ -74,6 +69,14 @@ export function InteractionDialog({
     DisposalPreparation | GiftPreparation | LoanPreparation
   >;
 }): JSX.Element {
+  const searchField = table.strictGetLiteralField(
+    table.name === 'Loan'
+      ? 'loanNumber'
+      : table.name === 'Disposal'
+      ? 'disposalNumber'
+      : 'catalogNumber'
+  );
+
   const [state, setState] = React.useState<
     | State<
         'PreparationSelectState',
@@ -86,6 +89,19 @@ export function InteractionDialog({
     | State<'MainState'>
   >({ type: 'MainState' });
 
+  const recordSetsPromise = React.useMemo(
+    async () =>
+      fetchCollection('RecordSet', {
+        specifyUser: userInformation.id,
+        type: 0,
+        dbTableId: table.tableId,
+        domainFilter: true,
+        orderBy: '-timestampCreated',
+        limit: 5000,
+      }),
+    []
+  );
+
   const { parser, split, attributes } = useParser(searchField);
   const { validationRef, inputRef, setValidation } =
     useValidation<HTMLTextAreaElement>();
@@ -97,7 +113,7 @@ export function InteractionDialog({
     recordSet: SerializedResource<RecordSet> | undefined
   ): void {
     const items = catalogNumbers.split('\n');
-    if (model.name === 'Loan')
+    if (table.name === 'Loan')
       loading(
         ajax<readonly [preprsReturned: number, loansClosed: number]>(
           '/interactions/loan_return_all/',
@@ -135,7 +151,7 @@ export function InteractionDialog({
     entries: RA<string> | undefined,
     recordSet: SerializedResource<RecordSet> | undefined,
     prepsData: RA<PreparationRow>
-  ) {
+  ): void {
     // This is a really ugly piece of code:
     let missing: WritableArray<string> = [];
     if (Array.isArray(entries)) {
@@ -238,7 +254,7 @@ export function InteractionDialog({
                 >
                   {interactionsText.addUnassociated()}
                 </Button.Blue>
-              ) : model.name === 'Loan' || action.model.name === 'Loan' ? (
+              ) : table.name === 'Loan' || action.model.name === 'Loan' ? (
                 <Link.Blue href={getResourceViewUrl('Loan')}>
                   {interactionsText.withoutPreparations()}
                 </Link.Blue>
@@ -248,8 +264,8 @@ export function InteractionDialog({
           header={
             typeof itemCollection === 'object'
               ? interactionsText.addItems()
-              : model.name === 'Loan'
-              ? interactionsText.recordReturn({ modelName: model.label })
+              : table.name === 'Loan'
+              ? interactionsText.recordReturn({ modelName: table.label })
               : interactionsText.createRecord({ modelName: action.model.name })
           }
           onClose={handleClose}
@@ -263,7 +279,7 @@ export function InteractionDialog({
           <details>
             <summary>
               {interactionsText.byEnteringNumbers({
-                fieldName: searchField?.label ?? '',
+                fieldName: searchField.label,
               })}
             </summary>
             <div className="flex flex-col gap-2">
@@ -347,7 +363,7 @@ export function InteractionDialog({
   );
 }
 
-function useParser(searchField: LiteralField | undefined): {
+function useParser(searchField: LiteralField): {
   readonly parser: Parser;
   readonly split: (values: string) => RA<string>;
   readonly attributes: IR<string>;
@@ -374,9 +390,9 @@ function useParser(searchField: LiteralField | undefined): {
   );
 
   return React.useMemo(() => {
-    const parser = pluralizeParser(resolveParser(searchField ?? {}));
+    const parser = pluralizeParser(resolveParser(searchField));
     // Determine which delimiters are allowed
-    const formatter = searchField?.getUiFormatter();
+    const formatter = searchField.getUiFormatter();
     const formatted =
       formatter?.fields.map((field) => field.value).join('') ?? '';
     const formatterHasNewLine = formatted.includes('\n');

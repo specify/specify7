@@ -5,7 +5,6 @@ import { useId } from '../../hooks/useId';
 import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
 import { interactionsText } from '../../localization/interactions';
-import type { Preparations } from '../../utils/ajax/specifyApi';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { group, replaceItem } from '../../utils/utils';
@@ -28,6 +27,7 @@ import type {
 import { Dialog } from '../Molecules/Dialog';
 import { PrepDialogRow } from './PrepDialogRow';
 import { serializeResource } from '../DataModel/serializers';
+import { Preparations } from './helpers';
 
 export function PrepDialog({
   onClose: handleClose,

@@ -332,14 +332,6 @@ export const interactionsText = createDictionary({
     'ru-ru': 'Создайте {tableLoan:string}',
     'uk-ua': 'Створити {tableLoan:string}',
   },
-  editLoan: {
-    comment: 'Example: Edit a Loan',
-    'en-us': 'Edit {tableLoan:string}',
-    'es-es': 'Editar {tableLoan:string}',
-    'fr-fr': 'Modifier {tableLoan:string}',
-    'ru-ru': 'Изменить {tableLoan:string}',
-    'uk-ua': 'Редагувати {tableLoan:string}',
-  },
   createdGift: {
     comment: 'Example: Create a Gift',
     'en-us': 'Create a {tableGift:string}',
@@ -347,14 +339,6 @@ export const interactionsText = createDictionary({
     'fr-fr': 'Créer un {tableGift:string}',
     'ru-ru': 'Создайте {tableGift:string}',
     'uk-ua': 'Створити {tableGift:string}',
-  },
-  editGift: {
-    comment: 'Example: Edit a Gift',
-    'en-us': 'Edit {tableGift:string}',
-    'es-es': 'Edite {tableGift:string}',
-    'fr-fr': 'Modifier {tableGift:string}',
-    'ru-ru': 'Изменить {tableGift:string}',
-    'uk-ua': 'Редагувати {tableGift:string}',
   },
   createInformationRequest: {
     comment: 'Example: Create a Infrormation Request',

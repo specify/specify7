@@ -12,7 +12,7 @@ export const mergeSimpleXmlNodes = (
   type: 'SimpleXmlNode',
   tagName: specs[0].tagName,
   attributes: mergeAttributes(specs.map((spec) => spec.attributes ?? {})),
-  content: mergeContent(specs.map((spec) => spec.content)),
+  ...mergeContent(specs),
 });
 
 const mergeAttributes = (
@@ -25,21 +25,15 @@ const mergeAttributes = (
   );
 
 function mergeContent(
-  content: RA<SimpleXmlNode['content']>
-): SimpleXmlNode['content'] {
-  const textContent = filterArray(
-    content.map((content) =>
-      content.type === 'Text' ? content.string : undefined
-    )
-  );
-  const nodeContent = filterArray(
-    content.map((content) =>
-      content.type === 'Children' ? content.children : undefined
-    )
-  ).filter((children) => Object.keys(children).length > 0);
+  content: RA<SimpleXmlNode>
+): Pick<SimpleXmlNode, 'children' | 'text'> {
+  const textContent = filterArray(content.map(({ text }) => text));
+  const nodeContent = content
+    .map(({ children }) => children)
+    .filter((children) => Object.keys(children).length > 0);
   if (textContent.length === 0)
     return {
-      type: 'Children',
+      text: undefined,
       children: Object.fromEntries(
         group(nodeContent.flatMap((content) => Object.entries(content))).map(
           ([key, values]) => [key, values.flat()]
@@ -51,6 +45,6 @@ function mergeContent(
       throw new Error(
         "Can't merge nodes that contain both text and node children"
       );
-    return { type: 'Text', string: textContent.join(' ').trim() };
+    return { text: textContent.join(' ').trim(), children: {} };
   }
 }

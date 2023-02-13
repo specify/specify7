@@ -30,16 +30,16 @@ const fromSimpleNode = (
       )
     )
   ),
-  children: mergeChildren(old?.children ?? [], updated.content),
+  children: mergeChildren(old?.children ?? [], updated),
 });
 
 const mergeChildren = (
   oldChildren: XmlNode['children'],
-  newChildren: SimpleXmlNode['content']
+  newNode: SimpleXmlNode
 ): XmlNode['children'] =>
-  newChildren.type === 'Text'
-    ? mergeText(oldChildren, newChildren.string)
-    : mergeNodes(oldChildren, newChildren.children);
+  typeof newNode.children === 'object'
+    ? mergeNodes(oldChildren, newNode.children)
+    : mergeText(oldChildren, newNode.text ?? '');
 
 function mergeText(
   oldChildren: XmlNode['children'],
@@ -81,7 +81,7 @@ const removeDuplicateText = (
 
 function mergeNodes(
   oldChildren: XmlNode['children'],
-  newChildren: SimpleChildren['children']
+  newChildren: SimpleChildren
 ): XmlNode['children'] {
   const writableChildren = Object.fromEntries(
     Object.entries(newChildren).map(

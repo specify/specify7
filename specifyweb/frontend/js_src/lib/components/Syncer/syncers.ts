@@ -49,17 +49,19 @@ export const syncers = {
             [attribute.toLowerCase()]:
               mode === 'skip' && value === '' ? undefined : value,
           },
-          content: { type: 'Children', children: {} },
+          text: undefined,
+          children: {},
         };
       }
     ),
   xmlContent: syncer<SimpleXmlNode, string | undefined>(
-    (cell) => (cell.content.type === 'Text' ? cell.content.string : undefined),
-    (value) => ({
+    ({ text }) => text,
+    (text) => ({
       type: 'SimpleXmlNode',
       tagName: '',
       attributes: {},
-      content: { type: 'Text', string: value?.trim() ?? '' },
+      text: text?.trim(),
+      children: {},
     })
   ),
   default: <T>(
@@ -110,22 +112,15 @@ export const syncers = {
   ),
   xmlChild: (tagName: string, mode: 'optional' | 'required' = 'required') =>
     syncer<SimpleXmlNode, SimpleXmlNode | undefined>(
-      ({ content }) => {
+      ({ children }) => {
         pushContext({ type: 'Child', tagName });
 
-        if (content.type !== 'Children') {
-          if (mode === 'required')
-            console.error(`Unable to find a <${tagName} /> child`);
-          return undefined;
-        }
-        const children =
-          content.children[tagName] ??
-          content.children[tagName.toLowerCase()] ??
-          [];
-        const child = children[0];
+        const currentChildren =
+          children[tagName] ?? children[tagName.toLowerCase()] ?? [];
+        const child = currentChildren[0];
         if (child === undefined && mode === 'required')
           console.error(`Unable to find a <${tagName} /> child`);
-        if (children.length > 1)
+        if (currentChildren.length > 1)
           console.warn(`Expected to find at most one <${tagName} /> child`);
         return child;
       },
@@ -133,33 +128,25 @@ export const syncers = {
         type: 'SimpleXmlNode',
         tagName: '',
         attributes: {},
-        content: {
-          type: 'Children',
-          children: { [tagName]: child === undefined ? [] : [child] },
-        },
+        text: undefined,
+        children: { [tagName]: child === undefined ? [] : [child] },
       })
     ),
   xmlChildren: (tagName: string) =>
     syncer<SimpleXmlNode, RA<SimpleXmlNode>>(
-      ({ content }) => {
+      ({ children }) => {
         pushContext({
           type: 'Children',
           tagName,
         });
-        return content.type === 'Text'
-          ? []
-          : content.children[tagName] ??
-              content.children[tagName.toLowerCase()] ??
-              [];
+        return children[tagName] ?? children[tagName.toLowerCase()] ?? [];
       },
       (newChildren) => ({
         type: 'SimpleXmlNode',
         tagName: '',
         attributes: {},
-        content: {
-          type: 'Children',
-          children: { [tagName]: newChildren },
-        },
+        text: undefined,
+        children: { [tagName]: newChildren },
       })
     ),
   object: <SPEC extends BaseSpec<SimpleXmlNode>>(spec: SPEC) =>

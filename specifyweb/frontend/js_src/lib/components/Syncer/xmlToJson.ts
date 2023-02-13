@@ -100,16 +100,13 @@ export type SimpleXmlNode = State<
   {
     readonly tagName: string;
     readonly attributes: IR<string | undefined>;
-    readonly content: SimpleChildren | Text;
+    readonly text: string | undefined;
+    readonly children: IR<RA<SimpleXmlNode>>;
   }
 >;
 
-export type SimpleChildren = State<
-  'Children',
-  { readonly children: IR<RA<SimpleXmlNode>> }
->;
+export type SimpleChildren = IR<RA<SimpleXmlNode>>;
 
-// FIXME: use this everywhere instead of raw XML
 /**
  * Convert jsonified XML into a simpler format that is easier to work with
  * (but with some constraints - see definition of SimpleXmlNode)
@@ -130,22 +127,18 @@ export function toSimpleXmlNode(node: XmlNode): SimpleXmlNode {
         type: 'SimpleXmlNode',
         tagName: node.tagName,
         attributes: node.attributes,
-        content: {
-          type: 'Text',
-          string,
-        },
+        text: string,
+        children: {},
       };
   }
   return {
     type: 'SimpleXmlNode',
     tagName: node.tagName,
     attributes: node.attributes,
-    content: {
-      type: 'Children',
-      children: Object.fromEntries(
-        group(children.map((node) => [node.tagName, toSimpleXmlNode(node)]))
-      ),
-    },
+    text: undefined,
+    children: Object.fromEntries(
+      group(children.map((node) => [node.tagName, toSimpleXmlNode(node)]))
+    ),
   };
 }
 
@@ -153,7 +146,8 @@ export const createSimpleXmlNode = (tagName: string): SimpleXmlNode => ({
   type: 'SimpleXmlNode',
   tagName,
   attributes: {},
-  content: { type: 'Children', children: {} },
+  text: undefined,
+  children: {},
 });
 
 /**
