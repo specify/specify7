@@ -327,8 +327,8 @@ msgstr "Outils"
 #: components/QueryBuilder/FieldFilter.tsx:564
 #: components/QueryBuilder/Results.tsx:231
 #: components/QueryBuilder/Results.tsx:232
-#: components/SchemaConfig/index.tsx:163
-#: components/SchemaConfig/index.tsx:164
+#: components/SchemaConfig/index.tsx:166
+#: components/SchemaConfig/index.tsx:167
 #: components/Security/Collection.tsx:229
 #: components/Security/CollectionComponents.tsx:142
 #: components/Security/CollectionRole.tsx:246
@@ -794,8 +794,8 @@ msgstr "{resource:string} <wrap>({count:number|formatted})</wrap>"
 #: components/Security/Collection.tsx:133
 #: components/Security/Institution.tsx:74
 #: components/Security/Role.tsx:113
-#: components/Toolbar/DataModel.tsx:243
-#: components/Toolbar/DataModel.tsx:250
+#: components/Toolbar/DataModel.tsx:244
+#: components/Toolbar/DataModel.tsx:251
 #: components/TreeView/helpers.ts:198
 #: components/TreeView/helpers.ts:206
 #: components/WorkBench/DataSetMeta.tsx:180

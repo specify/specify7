@@ -14,7 +14,7 @@ msgstr ""
 #: components/SchemaConfig/Table.tsx:48
 #: components/Security/PreviewTables.tsx:68
 #: components/Security/registry.ts:72
-#: components/Toolbar/DataModel.tsx:537
+#: components/Toolbar/DataModel.tsx:538
 #. Used in: Components > Schema Config > Table ⬤ Components > Security > Preview Tables ⬤ Components > Security > Registry ⬤ Components > Toolbar > Data Model
 msgid "table"
 msgstr "Tableau"
@@ -42,7 +42,7 @@ msgstr "Nom du tableau"
 msgid "schemaConfig"
 msgstr "Configuration du schéma"
 
-#: components/SchemaConfig/index.tsx:72
+#: components/SchemaConfig/index.tsx:75
 #. Used in: Components > Schema Config > Index
 msgid "unsavedSchemaUnloadProtect"
 msgstr "Les modifications du schéma n'ont pas été enregistrées"
@@ -62,7 +62,7 @@ msgstr "Champ"
 #: components/Forms/generateFormDefinition.ts:127
 #: components/SchemaConfig/Fields.tsx:35
 #: components/SchemaConfig/Fields.tsx:46
-#: components/Toolbar/DataModel.tsx:256
+#: components/Toolbar/DataModel.tsx:257
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Toolbar > Data Model
 msgid "fields"
 msgstr "Champs"
@@ -70,7 +70,7 @@ msgstr "Champs"
 #: components/FormMeta/CarryForward.tsx:274
 #: components/Forms/generateFormDefinition.ts:165
 #: components/SchemaConfig/Fields.tsx:54
-#: components/Toolbar/DataModel.tsx:337
+#: components/Toolbar/DataModel.tsx:338
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Toolbar > Data Model
 msgid "relationships"
 msgstr "Relations"
@@ -84,9 +84,9 @@ msgstr "Légende"
 #: components/SchemaConfig/Field.tsx:59
 #: components/SchemaConfig/Table.tsx:63
 #: components/Security/Role.tsx:138
-#: components/Toolbar/DataModel.tsx:192
-#: components/Toolbar/DataModel.tsx:272
-#: components/Toolbar/DataModel.tsx:544
+#: components/Toolbar/DataModel.tsx:193
+#: components/Toolbar/DataModel.tsx:273
+#: components/Toolbar/DataModel.tsx:545
 #. Used in: Components > Schema Config > Field ⬤ Components > Schema Config > Table ⬤ Components > Security > Role ⬤ Components > Toolbar > Data Model
 msgid "description"
 msgstr "Description"
@@ -132,16 +132,16 @@ msgid "manyToMany"
 msgstr "Plusieurs à plusieurs"
 
 #: components/SchemaConfig/Field.tsx:69
-#: components/Toolbar/DataModel.tsx:198
-#: components/Toolbar/DataModel.tsx:550
+#: components/Toolbar/DataModel.tsx:199
+#: components/Toolbar/DataModel.tsx:551
 #. Used in: Components > Schema Config > Field ⬤ Components > Toolbar > Data Model
 msgid "fieldLength"
 msgstr "Longueur"
 
 #: components/FormMeta/index.tsx:64
-#: components/Toolbar/DataModel.tsx:194
-#: components/Toolbar/DataModel.tsx:274
-#: components/Toolbar/DataModel.tsx:546
+#: components/Toolbar/DataModel.tsx:195
+#: components/Toolbar/DataModel.tsx:275
+#: components/Toolbar/DataModel.tsx:547
 #. Used in: Components > Form Meta > Index ⬤ Components > Toolbar > Data Model
 msgid "readOnly"
 msgstr "Lecture seule"
@@ -173,69 +173,69 @@ msgstr "Défini par l'utilisateur"
 msgid "addLanguage"
 msgstr "Ajouter une langue"
 
-#: components/Toolbar/DataModel.tsx:191
-#: components/Toolbar/DataModel.tsx:271
-#: components/Toolbar/DataModel.tsx:387
-#: components/Toolbar/DataModel.tsx:538
-#: components/Toolbar/DataModel.tsx:543
+#: components/Toolbar/DataModel.tsx:192
+#: components/Toolbar/DataModel.tsx:272
+#: components/Toolbar/DataModel.tsx:388
+#: components/Toolbar/DataModel.tsx:539
+#: components/Toolbar/DataModel.tsx:544
 #. Used in: Components > Toolbar > Data Model
 msgid "fieldLabel"
 msgstr "Étiquette"
 
-#: components/Toolbar/DataModel.tsx:199
-#: components/Toolbar/DataModel.tsx:278
-#: components/Toolbar/DataModel.tsx:551
+#: components/Toolbar/DataModel.tsx:200
+#: components/Toolbar/DataModel.tsx:279
+#: components/Toolbar/DataModel.tsx:552
 #. Used in: Components > Toolbar > Data Model
 msgid "databaseColumn"
 msgstr "Colonne de base de données"
 
-#: components/Toolbar/DataModel.tsx:279
-#: components/Toolbar/DataModel.tsx:552
+#: components/Toolbar/DataModel.tsx:280
+#: components/Toolbar/DataModel.tsx:553
 #. Used in: Components > Toolbar > Data Model
 msgid "relatedModel"
 msgstr "Modèle associé"
 
-#: components/Toolbar/DataModel.tsx:280
-#: components/Toolbar/DataModel.tsx:553
+#: components/Toolbar/DataModel.tsx:281
+#: components/Toolbar/DataModel.tsx:554
 #. Used in: Components > Toolbar > Data Model
 msgid "otherSideName"
 msgstr "Nom de l'autre côté"
 
-#: components/Toolbar/DataModel.tsx:281
-#: components/Toolbar/DataModel.tsx:353
-#: components/Toolbar/DataModel.tsx:554
+#: components/Toolbar/DataModel.tsx:282
+#: components/Toolbar/DataModel.tsx:354
+#: components/Toolbar/DataModel.tsx:555
 #. Used in: Components > Toolbar > Data Model
 msgid "dependent"
 msgstr "Dépendant"
 
-#: components/Toolbar/DataModel.tsx:369
+#: components/Toolbar/DataModel.tsx:370
 #. Used in: Components > Toolbar > Data Model
 #, fuzzy
 msgid "independent"
 msgstr "Indépendant"
 
-#: components/Toolbar/DataModel.tsx:448
+#: components/Toolbar/DataModel.tsx:449
 #. Used in: Components > Toolbar > Data Model
 msgid "downloadAsJson"
 msgstr "Télécharger au format JSON"
 
-#: components/Toolbar/DataModel.tsx:459
+#: components/Toolbar/DataModel.tsx:460
 #. Used in: Components > Toolbar > Data Model
 msgid "downloadAsTsv"
 msgstr "Télécharger au format TSV"
 
-#: components/Toolbar/DataModel.tsx:390
-#: components/Toolbar/DataModel.tsx:541
+#: components/Toolbar/DataModel.tsx:391
+#: components/Toolbar/DataModel.tsx:542
 #. Used in: Components > Toolbar > Data Model
 msgid "tableId"
 msgstr "ID du tableau"
 
-#: components/Toolbar/DataModel.tsx:391
+#: components/Toolbar/DataModel.tsx:392
 #. Used in: Components > Toolbar > Data Model
 msgid "fieldCount"
 msgstr "Nombre de champs"
 
-#: components/Toolbar/DataModel.tsx:392
+#: components/Toolbar/DataModel.tsx:393
 #. Used in: Components > Toolbar > Data Model
 msgid "relationshipCount"
 msgstr "Nombre de relations"
@@ -257,19 +257,24 @@ msgstr "Tableaux sélectionnés"
 msgid "possibleTables"
 msgstr "Tableaux possibles"
 
-#: components/Toolbar/DataModel.tsx:179
+#: components/Toolbar/DataModel.tsx:180
 #. Used in: Components > Toolbar > Data Model
 msgid "goToTop"
 msgstr "Aller en haut"
 
-#: components/Toolbar/DataModel.tsx:244
+#: components/Toolbar/DataModel.tsx:245
 #. Used in: Components > Toolbar > Data Model
 #, fuzzy
 msgid "idField"
 msgstr "Champ d'identification"
 
-#: components/Toolbar/DataModel.tsx:251
+#: components/Toolbar/DataModel.tsx:252
 #. Used in: Components > Toolbar > Data Model
 #, fuzzy
 msgid "scope"
 msgstr "Portée"
+
+#: components/SchemaConfig/index.tsx:39
+#. Used in: Components > Schema Config > Index
+msgid "schemaViewTitle"
+msgstr ""

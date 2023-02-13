@@ -70,7 +70,7 @@ msgid "record"
 msgstr "Запис"
 
 #: components/Forms/DeleteBlocked.tsx:93
-#: components/Toolbar/DataModel.tsx:548
+#: components/Toolbar/DataModel.tsx:549
 #: components/WbPlanView/CustomSelectElement.tsx:283
 #. Used in: Components > Forms > Delete Blocked ⬤ Components > Toolbar > Data Model ⬤ Components > Wb Plan View > Custom Select Element
 msgid "relationship"
