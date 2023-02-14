@@ -105,6 +105,7 @@ export function ViewResourceById({
   id,
 }: {
   readonly tableName: string;
+  // Undefined if you wish to see a new resource
   readonly id: string | undefined;
 }): JSX.Element {
   const table = getTable(tableName);

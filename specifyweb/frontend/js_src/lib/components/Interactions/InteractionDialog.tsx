@@ -25,7 +25,6 @@ import { H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
-import { fetchCollection } from '../DataModel/collection';
 import { toTable } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
@@ -34,11 +33,11 @@ import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
 import type {
   DisposalPreparation,
+  Gift,
   GiftPreparation,
   LoanPreparation,
   RecordSet,
 } from '../DataModel/types';
-import { userInformation } from '../InitialContext/userInformation';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { Dialog } from '../Molecules/Dialog';
 import { RecordSetsDialog } from '../Toolbar/RecordSets';
@@ -81,19 +80,6 @@ export function InteractionDialog({
     | State<'MainState'>
   >({ type: 'MainState' });
 
-  const recordSetsPromise = React.useMemo(
-    async () =>
-      fetchCollection('RecordSet', {
-        specifyUser: userInformation.id,
-        type: 0,
-        dbTableId: itemTable.tableId,
-        domainFilter: true,
-        orderBy: '-timestampCreated',
-        limit: 5000,
-      }),
-    []
-  );
-
   const { validationRef, inputRef, setValidation } =
     useValidation<HTMLTextAreaElement>();
   const [catalogNumbers, setCatalogNumbers] = React.useState<string>('');
@@ -104,7 +90,7 @@ export function InteractionDialog({
     recordSet: SerializedResource<RecordSet> | undefined
   ): void {
     const items = catalogNumbers.split('\n');
-    if (itemTable.name === 'Loan')
+    if (isLoanReturn)
       loading(
         ajax<readonly [preprsReturned: number, loansClosed: number]>(
           '/interactions/loan_return_all/',
@@ -221,14 +207,15 @@ export function InteractionDialog({
       itemCollection={itemCollection}
       preparations={state.entries}
       onClose={handleClose}
-      table={actionTable}
+      // REFACTOR: make this more type safe
+      table={actionTable as SpecifyTable<Gift>}
       // BUG: make this readOnly if don't have necessary permissions
       isReadOnly={false}
     />
   ) : (
     <RecordSetsDialog
       isReadOnly
-      recordSetsPromise={recordSetsPromise}
+      table={itemTable}
       onClose={handleClose}
       onSelect={handleProceed}
     >
@@ -245,11 +232,11 @@ export function InteractionDialog({
                 >
                   {interactionsText.addUnassociated()}
                 </Button.Blue>
-              ) : itemTable.name === 'Loan' || actionTable.name === 'Loan' ? (
-                <Link.Blue href={getResourceViewUrl('Loan')}>
+              ) : (
+                <Link.Blue href={getResourceViewUrl(actionTable.name)}>
                   {interactionsText.withoutPreparations()}
                 </Link.Blue>
-              ) : undefined}
+              )}
             </>
           }
           header={
@@ -413,7 +400,7 @@ function useParser(searchField: LiteralField): {
       parser,
       split: (values): RA<string> =>
         values
-          .replaceAll(new RegExp(delimiters.join('|'), 'g'), '\t')
+          .replaceAll(new RegExp(delimiters.join('|'), 'gu'), '\t')
           .split('\t')
           .map(f.trim)
           .filter(Boolean),

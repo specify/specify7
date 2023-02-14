@@ -7,8 +7,8 @@ import type { IR } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { fetchCollection } from '../DataModel/collection';
 import type { SerializedResource } from '../DataModel/helperTypes';
+import { getTableById } from '../DataModel/tables';
 import type { RecordSet, SpAppResource, SpQuery } from '../DataModel/types';
-import { error } from '../Errors/assert';
 import { softFail } from '../Errors/Crash';
 import { parseSpecifyProperties } from '../FormParse/cells';
 import { userInformation } from '../InitialContext/userInformation';
@@ -28,18 +28,13 @@ export function ReportRecordSets({
   readonly parameters: IR<string>;
   readonly onClose: () => void;
 }): JSX.Element {
-  const tableId = React.useMemo(
+  const table = React.useMemo(
     () =>
-      query.contextTableId ??
-      f.parseInt(parseSpecifyProperties(appResource.metaData ?? '').tableid),
+      getTableById(
+        query.contextTableId ??
+          f.parseInt(parseSpecifyProperties(appResource.metaData ?? '').tableid)
+      ),
     [query, appResource]
-  );
-  React.useEffect(
-    () =>
-      query !== undefined && (tableId === undefined || tableId < 0)
-        ? error("Couldn't determine base table for report")
-        : undefined,
-    [tableId, query]
   );
   const recordSetsPromise = React.useMemo(
     async () =>
@@ -47,10 +42,10 @@ export function ReportRecordSets({
         specifyUser: userInformation.id,
         type: 0,
         domainFilter: true,
-        dbTableId: tableId,
-        limit: 200,
+        dbTableId: table.tableId,
+        limit: 500,
       }),
-    [tableId]
+    [table]
   );
   React.useEffect(
     () =>
@@ -75,7 +70,7 @@ export function ReportRecordSets({
   return state.type === 'Main' ? (
     <RecordSetsDialog
       isReadOnly
-      recordSetsPromise={recordSetsPromise}
+      table={table}
       onClose={handleClose}
       onConfigure={(recordSet): void =>
         setState({

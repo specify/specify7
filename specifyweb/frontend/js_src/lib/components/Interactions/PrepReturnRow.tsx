@@ -11,7 +11,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { LoanPreparation } from '../DataModel/types';
 import { fieldFormat } from '../Formatters/fieldFormat';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
-import type { PrepReturnRowState } from './PrepReturnDialog';
+import type { PrepReturnRowState } from './LoanReturn';
 import { tables } from '../DataModel/tables';
 
 export function PrepReturnRow({

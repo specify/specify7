@@ -248,10 +248,14 @@ function eventHandlerForToOne(related, field) {
                    *    decimal numeric fields as string. Front-end converts
                    *    those to numbers)
                    *  - value was trimmed
+                   *
+                   * Using "==" instead of "===" because of
+                   * https://github.com/specify/specify7/issues/2976
                    * REFACTOR: this logic should be moved to this.parse()
                    * TEST: add test for "5A" case
+                   * TEST: add test for "38.06020000" and 38.0602 case
                    */
-                  oldValue?.toString() === newValue?.toString().trim()
+                  oldValue?.toString() == newValue?.toString().trim()
                 )
                     options ??= {silent: true};
             }

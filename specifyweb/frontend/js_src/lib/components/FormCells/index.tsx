@@ -9,6 +9,7 @@ import { DataEntry } from '../Atoms/DataEntry';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Collection } from '../DataModel/specifyTable';
+import { tables } from '../DataModel/tables';
 import { UiCommand } from '../FormCommands';
 import { FormField } from '../FormFields';
 import type { FormMode, FormType } from '../FormParse';
@@ -19,7 +20,6 @@ import { SubView } from '../Forms/SubView';
 import { TableIcon } from '../Molecules/TableIcon';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { FormTableInteraction } from './FormTableInteraction';
-import { tables } from '../DataModel/tables';
 
 const cellRenderers: {
   readonly [KEY in keyof CellTypes]: (props: {
@@ -145,7 +145,6 @@ const cellRenderers: {
           relationshipIsToMany(relationship) &&
           typeof data?.resource === 'object' &&
           [
-            // FIXME: extend this list?
             'LoanPreparation',
             'GiftPreparation',
             'DisposalPreparation',

@@ -14,8 +14,9 @@ import { Submit } from '../Atoms/Submit';
 import { getField, toTable } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceApiUrl, getResourceViewUrl } from '../DataModel/resource';
-import { strictGetTable, tables } from '../DataModel/tables';
+import { serializeResource } from '../DataModel/serializers';
 import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
+import { strictGetTable, tables } from '../DataModel/tables';
 import type {
   Disposal,
   DisposalPreparation,
@@ -25,9 +26,8 @@ import type {
   LoanPreparation,
 } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
+import type { Preparations } from './helpers';
 import { PrepDialogRow } from './PrepDialogRow';
-import { serializeResource } from '../DataModel/serializers';
-import { Preparations } from './helpers';
 
 export function PrepDialog({
   onClose: handleClose,

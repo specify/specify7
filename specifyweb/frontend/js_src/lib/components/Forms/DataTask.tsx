@@ -15,16 +15,19 @@ import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { LoadingContext } from '../Core/Contexts';
 import { fetchCollection } from '../DataModel/collection';
+import { getField } from '../DataModel/helpers';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { getResourceViewUrl } from '../DataModel/resource';
+import { schema } from '../DataModel/schema';
 import {
   fetchCollectionsForResource,
   getCollectionForResource,
 } from '../DataModel/scoping';
-import type { AnySchema } from '../DataModel/helperTypes';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { getResourceViewUrl } from '../DataModel/resource';
-import { getTable, getTableById, tables } from '../DataModel/tables';
 import type { SpecifyTable } from '../DataModel/specifyTable';
+import { getTable, getTableById, tables } from '../DataModel/tables';
 import type { CollectionObject, RecordSet } from '../DataModel/types';
+import { fieldFormat } from '../Formatters/fieldFormat';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
 import { ProtectedTable, ProtectedTool } from '../Permissions/PermissionDenied';
@@ -34,9 +37,6 @@ import { switchCollection } from '../RouterCommands/SwitchCollection';
 import { usePref } from '../UserPreferences/usePref';
 import { OtherCollection } from './OtherCollectionView';
 import { ViewResourceById } from './ShowResource';
-import { fieldFormat } from '../Formatters/fieldFormat';
-import { getField } from '../DataModel/helpers';
-import { schema } from '../DataModel/schema';
 
 export function ViewRecordSet(): JSX.Element {
   const { id, index } = useParams();

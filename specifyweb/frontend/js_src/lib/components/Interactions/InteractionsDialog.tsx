@@ -4,12 +4,13 @@ import { useParams } from 'react-router-dom';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { interactionsText } from '../../localization/interactions';
-import type { RA } from '../../utils/types';
+import type { RA, RR } from '../../utils/types';
 import { Ul } from '../Atoms';
 import { DataEntry } from '../Atoms/DataEntry';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { EditFormTables } from '../DataEntryTables/Edit';
+import { useDataEntryTables } from '../DataEntryTables/fetchTables';
 import { getResourceViewUrl } from '../DataModel/resource';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { getTable, tables } from '../DataModel/tables';
@@ -20,9 +21,8 @@ import { hasTablePermission } from '../Permissions/helpers';
 import { ProtectedTable } from '../Permissions/PermissionDenied';
 import { Redirect } from '../Router/Redirect';
 import { OverlayContext } from '../Router/Router';
-import { InteractionDialog } from './InteractionDialog';
 import { fetchLegacyInteractions } from './fetch';
-import { useDataEntryTables } from '../DataEntryTables/fetchTables';
+import { InteractionDialog } from './InteractionDialog';
 
 export const interactionTables: ReadonlySet<keyof Tables> = new Set<
   keyof Tables
@@ -63,16 +63,21 @@ export const interactionTables: ReadonlySet<keyof Tables> = new Set<
   'PermitAttachment',
 ]);
 
-// FIXME: allow customizing the interaction tables list
-const tablesWithDialogs = new Set<keyof Tables>([
-  'Accession',
-  'Appraisal',
-  'Loan',
-  'Gift',
-  'Disposal',
-  'ExchangeOut',
-  'InfoRequest',
-]);
+export const interactionWorkflowTables: Partial<
+  RR<keyof Tables, 'CollectionObject' | 'Preparation'>
+> = {
+  /*
+   * Accession: 'CollectionObject',
+   * Appraisal: 'CollectionObject',
+   */
+  Loan: 'CollectionObject',
+  Gift: 'CollectionObject',
+  Disposal: 'CollectionObject',
+  /*
+   * ExchangeOut: 'Preparation',
+   * InfoRequest: 'CollectionObject',
+   */
+};
 
 export function InteractionsOverlay(): JSX.Element | null {
   const tables = useDataEntryTables('interactions');
@@ -113,7 +118,7 @@ function Interactions({
                 href={
                   table.name === 'LoanReturnPreparation'
                     ? `/specify/overlay/interactions/return-loan/`
-                    : tablesWithDialogs.has(table.name)
+                    : table.name in interactionWorkflowTables
                     ? `/specify/overlay/interactions/create/${table.name}/`
                     : getResourceViewUrl(table.name)
                 }
@@ -135,7 +140,11 @@ function Interactions({
 export function InteractionAction(): JSX.Element | null {
   const handleClose = React.useContext(OverlayContext);
   const { tableName = '' } = useParams();
-  const table = React.useMemo(() => getTable(tableName), [tableName]);
+  const rawTable = React.useMemo(() => getTable(tableName), [tableName]);
+  const table =
+    typeof rawTable === 'object' && rawTable.name in interactionWorkflowTables
+      ? rawTable
+      : undefined;
   return table === undefined ? (
     <Redirect to="/specify/overlay/interactions/" />
   ) : (

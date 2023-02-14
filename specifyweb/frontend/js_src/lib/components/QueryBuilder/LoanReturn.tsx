@@ -35,7 +35,7 @@ import type {
 } from '../DataModel/types';
 import { RenderForm } from '../Forms/SpecifyForm';
 import { userInformation } from '../InitialContext/userInformation';
-import { loanReturnPrepForm } from '../Interactions/PrepReturnDialog';
+import { loanReturnPrepForm } from '../Interactions/LoanReturn';
 import { Dialog } from '../Molecules/Dialog';
 import { mappingPathIsComplete } from '../WbPlanView/helpers';
 import { QueryButton } from './Components';

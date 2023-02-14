@@ -224,17 +224,17 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
 
     this.LazyCollection = LazyCollection.extend({
       __name__: `${this.name}LazyCollection`,
-      table: this.Resource,
+      model: this.Resource,
     });
 
     this.DependentCollection = DependentCollection.extend({
       __name__: `${this.name}DependentCollection`,
-      table: this.Resource,
+      model: this.Resource,
     });
 
     this.ToOneCollection = ToOneCollection.extend({
       __name__: `${this.name}ToOneCollection`,
-      table: this.Resource,
+      model: this.Resource,
     });
 
     const useLabels = getCache('forms', 'useFieldLabels') ?? true;

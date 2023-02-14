@@ -13,6 +13,7 @@ import { Form } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { getField } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { tables } from '../DataModel/tables';
 import type { Loan, LoanPreparation } from '../DataModel/types';
 import type { ViewDescription } from '../FormParse';
 import { autoGenerateViewDefinition } from '../Forms/generateFormDefinition';
@@ -20,7 +21,6 @@ import { RenderForm } from '../Forms/SpecifyForm';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
 import { PrepReturnRow } from './PrepReturnRow';
-import { tables } from '../DataModel/tables';
 
 export const loanReturnPrepForm = f.store(
   (): ViewDescription =>

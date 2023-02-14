@@ -1,7 +1,7 @@
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 
-import { useAsyncState, usePromise } from '../../hooks/useAsyncState';
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
@@ -9,13 +9,15 @@ import { DataEntry } from '../Atoms/DataEntry';
 import { icons } from '../Atoms/Icons';
 import { formatNumber } from '../Atoms/Internationalization';
 import { Link } from '../Atoms/Link';
+import { FormsDialog } from '../DataEntryTables';
 import { fetchCollection } from '../DataModel/collection';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { deserializeResource } from '../DataModel/serializers';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import { getTableById, tables } from '../DataModel/tables';
 import type { RecordSet } from '../DataModel/types';
-import { FormsDialog } from '../DataEntryTables';
 import { userInformation } from '../InitialContext/userInformation';
 import { DateElement } from '../Molecules/DateElement';
 import { Dialog } from '../Molecules/Dialog';
@@ -24,45 +26,23 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { hasToolPermission } from '../Permissions/helpers';
 import { OverlayContext } from '../Router/Router';
 import { EditRecordSet } from './RecordSetEdit';
-import { deserializeResource } from '../DataModel/serializers';
 
 export function RecordSetsOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
-
-  const recordSetsPromise = React.useMemo(
-    async () =>
-      fetchCollection('RecordSet', {
-        specifyUser: userInformation.id,
-        type: 0,
-        limit: 5000,
-        domainFilter: true,
-        orderBy: '-timestampCreated',
-      }),
-    []
-  );
-  return (
-    <RecordSetsDialog
-      isReadOnly={false}
-      recordSetsPromise={recordSetsPromise}
-      onClose={handleClose}
-    />
-  );
+  return <RecordSetsDialog isReadOnly={false} onClose={handleClose} />;
 }
 
 export function RecordSetsDialog({
-  recordSetsPromise,
   onClose: handleClose,
   isReadOnly,
+  table,
   onConfigure: handleConfigure,
   onSelect: handleSelect,
   children = ({ children, dialog }): JSX.Element => dialog(children),
 }: {
-  readonly recordSetsPromise: Promise<{
-    readonly totalCount: number;
-    readonly records: RA<SerializedResource<RecordSet>>;
-  }>;
   readonly onClose: () => void;
   readonly isReadOnly: boolean;
+  readonly table?: SpecifyTable;
   readonly onConfigure?: (recordSet: SerializedResource<RecordSet>) => void;
   readonly onSelect?: (recordSet: SerializedResource<RecordSet>) => void;
   readonly children?: (props: {
@@ -86,7 +66,21 @@ export function RecordSetsDialog({
     'name'
   );
 
-  const [unsortedData] = usePromise(recordSetsPromise, true);
+  const [unsortedData] = useAsyncState(
+    React.useCallback(
+      async () =>
+        fetchCollection('RecordSet', {
+          specifyUser: userInformation.id,
+          type: 0,
+          limit: 5000,
+          domainFilter: true,
+          orderBy: '-timestampCreated',
+          dbTableId: table?.tableId,
+        }),
+      [table]
+    ),
+    true
+  );
   const data = React.useMemo(
     () =>
       typeof unsortedData === 'object'

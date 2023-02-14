@@ -27,6 +27,7 @@ const Base =  Backbone.Collection.extend({
     export const DependentCollection = Base.extend({
         __name__: "DependentCollectionBase",
         constructor(options, models=[]) {
+            this.table = this.model;
             assert(_.isArray(models));
             Base.call(this, models, options);
         },
@@ -63,8 +64,8 @@ const Base =  Backbone.Collection.extend({
     export const LazyCollection = Base.extend({
         __name__: "LazyCollectionBase",
         _neverFetched: true,
-        constructor(options) {
-            options ||= {};
+        constructor(options={}) {
+            this.table = this.model;
             Base.call(this, null, options);
             this.filters = options.filters || {};
             this.domainfilter = Boolean(options.domainfilter) && (
