@@ -2,7 +2,7 @@ msgid ""
 msgstr "Content-Type: text/plain\n"
 
 #: components/HomePage/index.tsx:49
-#: components/Router/Routes.tsx:416
+#: components/Router/Routes.tsx:414
 #. Used in: Components > Home Page > Index ⬤ Components > Router > Routes
 #, fuzzy
 msgid "pageTitle"
@@ -109,11 +109,11 @@ msgid "databaseVersion"
 msgstr "Версія бази даних:"
 
 #: components/HomePage/AboutSpecify.tsx:108
-#: components/Toolbar/DataModel.tsx:441
-#. Used in: Components > Home Page > About Specify ⬤ Components > Toolbar > Data Model
+#: components/SchemaViewer/index.tsx:34
+#. Used in: Components > Home Page > About Specify ⬤ Components > Schema Viewer > Index
 #, fuzzy
 msgid "schemaVersion"
-msgstr "Версія схеми БД:"
+msgstr "Версія схеми БД"
 
 #: components/HomePage/AboutSpecify.tsx:113
 #. Used in: Components > Home Page > About Specify

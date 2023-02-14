@@ -12,7 +12,7 @@ msgstr ""
 "X-Generator: Weblate 4.16-dev\n"
 
 #: components/HomePage/index.tsx:49
-#: components/Router/Routes.tsx:416
+#: components/Router/Routes.tsx:414
 #. Used in: Components > Home Page > Index ⬤ Components > Router > Routes
 msgid "pageTitle"
 msgstr "Bienvenue"
@@ -110,10 +110,10 @@ msgid "databaseVersion"
 msgstr "Version de la base de données :"
 
 #: components/HomePage/AboutSpecify.tsx:108
-#: components/Toolbar/DataModel.tsx:441
-#. Used in: Components > Home Page > About Specify ⬤ Components > Toolbar > Data Model
+#: components/SchemaViewer/index.tsx:34
+#. Used in: Components > Home Page > About Specify ⬤ Components > Schema Viewer > Index
 msgid "schemaVersion"
-msgstr "Version du schéma de la base de données :"
+msgstr "Version du schéma de la base de données"
 
 #: components/HomePage/AboutSpecify.tsx:113
 #. Used in: Components > Home Page > About Specify

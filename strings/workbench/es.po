@@ -538,7 +538,7 @@ msgstr "Reemplazar todas las coincidencias"
 msgid "replaceNext"
 msgstr "Reemplazar siguiente ocurrencia"
 
-#: components/Router/Routes.tsx:175
+#: components/Router/Routes.tsx:173
 #. Used in: Components > Router > Routes
 msgid "importDataSet"
 msgstr "Importar conjunto de datos"

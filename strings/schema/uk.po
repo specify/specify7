@@ -13,16 +13,16 @@ msgstr ""
 "X-Generator: Weblate 4.16-dev\n"
 
 #: components/SchemaConfig/Table.tsx:48
+#: components/SchemaViewer/schemaToTsv.tsx:14
 #: components/Security/PreviewTables.tsx:68
 #: components/Security/registry.ts:72
-#: components/Toolbar/DataModel.tsx:538
-#. Used in: Components > Schema Config > Table ⬤ Components > Security > Preview Tables ⬤ Components > Security > Registry ⬤ Components > Toolbar > Data Model
+#. Used in: Components > Schema Config > Table ⬤ Components > Schema Viewer > Schema To Tsv ⬤ Components > Security > Preview Tables ⬤ Components > Security > Registry
 #, fuzzy
 msgid "table"
 msgstr "Таблиця"
 
 #: components/Attachments/index.tsx:201
-#: components/Router/Routes.tsx:357
+#: components/Router/Routes.tsx:355
 #: components/SchemaConfig/Tables.tsx:55
 #. Used in: Components > Attachments > Index ⬤ Components > Router > Routes ⬤ Components > Schema Config > Tables
 #, fuzzy
@@ -37,7 +37,7 @@ msgid "tableName"
 msgstr "Назва таблиці"
 
 #: components/Header/userToolDefinitions.ts:53
-#: components/Router/Routes.tsx:331
+#: components/Router/Routes.tsx:329
 #: components/SchemaConfig/Components.tsx:27
 #: components/SchemaConfig/Languages.tsx:34
 #: components/Security/registry.ts:198
@@ -70,8 +70,8 @@ msgstr "Поле"
 #: components/Forms/generateFormDefinition.ts:127
 #: components/SchemaConfig/Fields.tsx:35
 #: components/SchemaConfig/Fields.tsx:46
-#: components/Toolbar/DataModel.tsx:257
-#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Toolbar > Data Model
+#: components/SchemaViewer/Fields.tsx:42
+#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Schema Viewer > Fields
 #, fuzzy
 msgid "fields"
 msgstr "поля"
@@ -79,8 +79,8 @@ msgstr "поля"
 #: components/FormMeta/CarryForward.tsx:274
 #: components/Forms/generateFormDefinition.ts:165
 #: components/SchemaConfig/Fields.tsx:54
-#: components/Toolbar/DataModel.tsx:338
-#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Toolbar > Data Model
+#: components/SchemaViewer/Relationships.tsx:44
+#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Schema Viewer > Relationships
 #, fuzzy
 msgid "relationships"
 msgstr "стосунки"
@@ -94,11 +94,11 @@ msgstr "Підпис"
 
 #: components/SchemaConfig/Field.tsx:59
 #: components/SchemaConfig/Table.tsx:63
+#: components/SchemaViewer/Fields.tsx:58
+#: components/SchemaViewer/Relationships.tsx:95
+#: components/SchemaViewer/schemaToTsv.tsx:21
 #: components/Security/Role.tsx:138
-#: components/Toolbar/DataModel.tsx:193
-#: components/Toolbar/DataModel.tsx:273
-#: components/Toolbar/DataModel.tsx:545
-#. Used in: Components > Schema Config > Field ⬤ Components > Schema Config > Table ⬤ Components > Security > Role ⬤ Components > Toolbar > Data Model
+#. Used in: Components > Schema Config > Field ⬤ Components > Schema Config > Table ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv ⬤ Components > Security > Role
 #, fuzzy
 msgid "description"
 msgstr "опис"
@@ -152,18 +152,18 @@ msgid "manyToMany"
 msgstr "багато-до-багатьох"
 
 #: components/SchemaConfig/Field.tsx:69
-#: components/Toolbar/DataModel.tsx:199
-#: components/Toolbar/DataModel.tsx:551
-#. Used in: Components > Schema Config > Field ⬤ Components > Toolbar > Data Model
+#: components/SchemaViewer/Fields.tsx:64
+#: components/SchemaViewer/schemaToTsv.tsx:27
+#. Used in: Components > Schema Config > Field ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Schema To Tsv
 #, fuzzy
 msgid "fieldLength"
 msgstr "Довжина"
 
 #: components/FormMeta/index.tsx:64
-#: components/Toolbar/DataModel.tsx:195
-#: components/Toolbar/DataModel.tsx:275
-#: components/Toolbar/DataModel.tsx:547
-#. Used in: Components > Form Meta > Index ⬤ Components > Toolbar > Data Model
+#: components/SchemaViewer/Fields.tsx:60
+#: components/SchemaViewer/Relationships.tsx:97
+#: components/SchemaViewer/schemaToTsv.tsx:23
+#. Used in: Components > Form Meta > Index ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
 #, fuzzy
 msgid "readOnly"
 msgstr "Лише для читання"
@@ -192,7 +192,7 @@ msgstr "Веб посилання"
 msgid "userDefined"
 msgstr "Визначений користувачем"
 
-#: components/Router/Routes.tsx:346
+#: components/Router/Routes.tsx:344
 #: components/SchemaConfig/Languages.tsx:27
 #: components/SchemaConfig/Languages.tsx:75
 #. Used in: Components > Router > Routes ⬤ Components > Schema Config > Languages
@@ -200,79 +200,79 @@ msgstr "Визначений користувачем"
 msgid "addLanguage"
 msgstr "Додати мову"
 
-#: components/Toolbar/DataModel.tsx:192
-#: components/Toolbar/DataModel.tsx:272
-#: components/Toolbar/DataModel.tsx:388
-#: components/Toolbar/DataModel.tsx:539
-#: components/Toolbar/DataModel.tsx:544
-#. Used in: Components > Toolbar > Data Model
+#: components/SchemaViewer/Fields.tsx:57
+#: components/SchemaViewer/Relationships.tsx:94
+#: components/SchemaViewer/Table.tsx:54
+#: components/SchemaViewer/schemaToTsv.tsx:15
+#: components/SchemaViewer/schemaToTsv.tsx:20
+#. Used in: Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Table ⬤ Components > Schema Viewer > Schema To Tsv
 #, fuzzy
 msgid "fieldLabel"
 msgstr "Мітка"
 
-#: components/Toolbar/DataModel.tsx:200
-#: components/Toolbar/DataModel.tsx:279
-#: components/Toolbar/DataModel.tsx:552
-#. Used in: Components > Toolbar > Data Model
+#: components/SchemaViewer/Fields.tsx:65
+#: components/SchemaViewer/Relationships.tsx:101
+#: components/SchemaViewer/schemaToTsv.tsx:28
+#. Used in: Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
 #, fuzzy
 msgid "databaseColumn"
 msgstr "Стовпець бази даних"
 
-#: components/Toolbar/DataModel.tsx:280
-#: components/Toolbar/DataModel.tsx:553
-#. Used in: Components > Toolbar > Data Model
+#: components/SchemaViewer/Relationships.tsx:102
+#: components/SchemaViewer/schemaToTsv.tsx:29
+#. Used in: Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
 #, fuzzy
 msgid "relatedModel"
 msgstr "Пов'язана модель"
 
-#: components/Toolbar/DataModel.tsx:281
-#: components/Toolbar/DataModel.tsx:554
-#. Used in: Components > Toolbar > Data Model
+#: components/SchemaViewer/Relationships.tsx:103
+#: components/SchemaViewer/schemaToTsv.tsx:30
+#. Used in: Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
 #, fuzzy
 msgid "otherSideName"
 msgstr "Інша сторона імені"
 
-#: components/Toolbar/DataModel.tsx:282
-#: components/Toolbar/DataModel.tsx:354
-#: components/Toolbar/DataModel.tsx:555
-#. Used in: Components > Toolbar > Data Model
+#: components/SchemaViewer/Relationships.tsx:60
+#: components/SchemaViewer/Relationships.tsx:104
+#: components/SchemaViewer/schemaToTsv.tsx:31
+#. Used in: Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
 #, fuzzy
 msgid "dependent"
 msgstr "Утриманець"
 
-#: components/Toolbar/DataModel.tsx:370
-#. Used in: Components > Toolbar > Data Model
+#: components/SchemaViewer/Relationships.tsx:76
+#. Used in: Components > Schema Viewer > Relationships
 #, fuzzy
 msgid "independent"
 msgstr "Незалежний"
 
-#: components/Toolbar/DataModel.tsx:449
-#. Used in: Components > Toolbar > Data Model
+#: components/SchemaViewer/index.tsx:44
+#. Used in: Components > Schema Viewer > Index
 #, fuzzy
 msgid "downloadAsJson"
 msgstr "Завантажити як JSON"
 
-#: components/Toolbar/DataModel.tsx:460
-#. Used in: Components > Toolbar > Data Model
+#: components/SchemaViewer/index.tsx:57
+#. Used in: Components > Schema Viewer > Index
 #, fuzzy
 msgid "downloadAsTsv"
 msgstr "Завантажити як TSV"
 
-#: components/Toolbar/DataModel.tsx:391
-#: components/Toolbar/DataModel.tsx:542
-#. Used in: Components > Toolbar > Data Model
+#: components/SchemaViewer/Table.tsx:57
+#: components/SchemaViewer/schemaToTsv.tsx:18
+#. Used in: Components > Schema Viewer > Table ⬤ Components > Schema Viewer > Schema To Tsv
 #, fuzzy
 msgid "tableId"
 msgstr "Ідентифікатор таблиці"
 
-#: components/Toolbar/DataModel.tsx:392
-#. Used in: Components > Toolbar > Data Model
+#: components/SchemaViewer/Table.tsx:58
+#. Used in: Components > Schema Viewer > Table
 #, fuzzy
 msgid "fieldCount"
 msgstr "Підрахунок полів"
 
-#: components/Toolbar/DataModel.tsx:393
-#. Used in: Components > Toolbar > Data Model
+#: components/SchemaViewer/Table.tsx:59
+#. Used in: Components > Schema Viewer > Table
 #, fuzzy
 msgid "relationshipCount"
 msgstr "Кількість стосунків"
@@ -297,20 +297,20 @@ msgstr "Вибрані таблиці"
 msgid "possibleTables"
 msgstr "Можливі таблиці"
 
-#: components/Toolbar/DataModel.tsx:180
-#. Used in: Components > Toolbar > Data Model
+#: components/SchemaViewer/Table.tsx:41
+#. Used in: Components > Schema Viewer > Table
 #, fuzzy
 msgid "goToTop"
 msgstr "Перейти вгору"
 
-#: components/Toolbar/DataModel.tsx:245
-#. Used in: Components > Toolbar > Data Model
+#: components/SchemaViewer/Fields.tsx:30
+#. Used in: Components > Schema Viewer > Fields
 #, fuzzy
 msgid "idField"
 msgstr "Поле ID"
 
-#: components/Toolbar/DataModel.tsx:252
-#. Used in: Components > Toolbar > Data Model
+#: components/SchemaViewer/Fields.tsx:37
+#. Used in: Components > Schema Viewer > Fields
 #, fuzzy
 msgid "scope"
 msgstr "Область застосування"
@@ -320,3 +320,8 @@ msgstr "Область застосування"
 #, fuzzy
 msgid "schemaViewTitle"
 msgstr "Конфігурація схеми: {tableName:string}"
+
+#: components/SchemaViewer/index.tsx:50
+#. Used in: Components > Schema Viewer > Index
+msgid "schemaExportFileName"
+msgstr "Specify 7 Модель даних"

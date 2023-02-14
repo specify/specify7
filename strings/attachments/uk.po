@@ -14,7 +14,7 @@ msgstr ""
 
 #: components/Attachments/index.tsx:167
 #: components/Header/menuItemDefinitions.ts:96
-#: components/Router/Routes.tsx:161
+#: components/Router/Routes.tsx:159
 #. Used in: Components > Attachments > Index ⬤ Components > Header > Menu Item Definitions ⬤ Components > Router > Routes
 msgid "attachments"
 msgstr "Прикріплення"

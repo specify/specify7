@@ -227,7 +227,7 @@ msgstr "Foro de la Comunidad"
 
 #: components/Errors/ErrorDialog.tsx:131
 #: components/Header/userToolDefinitions.ts:127
-#: components/Router/Routes.tsx:393
+#: components/Router/Routes.tsx:391
 #: components/RouterCommands/CacheBuster.tsx:41
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Router Commands > Cache Buster
 msgid "clearCache"

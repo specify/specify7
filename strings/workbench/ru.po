@@ -514,7 +514,7 @@ msgstr "Заменить все совпадения"
 msgid "replaceNext"
 msgstr "Заменить следующее происшествие"
 
-#: components/Router/Routes.tsx:175
+#: components/Router/Routes.tsx:173
 #. Used in: Components > Router > Routes
 msgid "importDataSet"
 msgstr "Импортировать набор данных"

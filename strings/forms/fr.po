@@ -81,9 +81,9 @@ msgid "record"
 msgstr "Enregistrer"
 
 #: components/Forms/DeleteBlocked.tsx:93
-#: components/Toolbar/DataModel.tsx:549
+#: components/SchemaViewer/schemaToTsv.tsx:25
 #: components/WbPlanView/CustomSelectElement.tsx:283
-#. Used in: Components > Forms > Delete Blocked ⬤ Components > Toolbar > Data Model ⬤ Components > Wb Plan View > Custom Select Element
+#. Used in: Components > Forms > Delete Blocked ⬤ Components > Schema Viewer > Schema To Tsv ⬤ Components > Wb Plan View > Custom Select Element
 #, fuzzy
 msgid "relationship"
 msgstr "Relation amoureuse"
@@ -386,7 +386,7 @@ msgstr "Visite"
 msgid "illegalBool"
 msgstr "Valeur illégale pour un champ Oui/Non"
 
-#: utils/parser/parse.ts:30
+#: utils/parser/parse.ts:33
 #: utils/parser/__tests__/parse.test.ts:60
 #: utils/parser/__tests__/parse.test.ts:78
 #: utils/parser/__tests__/parse.test.ts:188

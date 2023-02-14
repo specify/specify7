@@ -70,9 +70,9 @@ msgid "record"
 msgstr "Запис"
 
 #: components/Forms/DeleteBlocked.tsx:93
-#: components/Toolbar/DataModel.tsx:549
+#: components/SchemaViewer/schemaToTsv.tsx:25
 #: components/WbPlanView/CustomSelectElement.tsx:283
-#. Used in: Components > Forms > Delete Blocked ⬤ Components > Toolbar > Data Model ⬤ Components > Wb Plan View > Custom Select Element
+#. Used in: Components > Forms > Delete Blocked ⬤ Components > Schema Viewer > Schema To Tsv ⬤ Components > Wb Plan View > Custom Select Element
 msgid "relationship"
 msgstr "Зв'язок"
 
@@ -329,7 +329,7 @@ msgstr "Відкрити"
 msgid "illegalBool"
 msgstr "Неприпустиме значення для поля «Yes/No»"
 
-#: utils/parser/parse.ts:30
+#: utils/parser/parse.ts:33
 #: utils/parser/__tests__/parse.test.ts:60
 #: utils/parser/__tests__/parse.test.ts:78
 #: utils/parser/__tests__/parse.test.ts:188
