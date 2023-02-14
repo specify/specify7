@@ -11,16 +11,16 @@ import { schema } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { TableIcon } from '../Molecules/TableIcon';
 import { localizedRelationshipTypes } from '../SchemaConfig/helpers';
-import type { Row, Value } from './helpers';
-import { booleanFormatter } from './helpers';
-import { TableList } from './TableList';
+import type { SchemaViewerRow, SchemaViewerValue } from './helpers';
+import { SchemaViewerTableList } from './TableList';
+import { booleanFormatter } from '../../utils/parser/parse';
 
-export function DataModelRelationships({
-  model,
+export function SchemaViewerRelationships({
+  table,
 }: {
-  readonly model: SpecifyModel;
+  readonly table: SpecifyModel;
 }): JSX.Element {
-  const data = React.useMemo(() => getRelationships(model), [model]);
+  const data = React.useMemo(() => getRelationships(table), [table]);
 
   const [dependentFilter, setDependentFilter] = React.useState<
     boolean | undefined
@@ -31,7 +31,7 @@ export function DataModelRelationships({
       typeof dependentFilter === 'boolean'
         ? data.filter(
             (relationship: { readonly name: string }) =>
-              model.strictGetRelationship(relationship.name).isDependent() ===
+              table.strictGetRelationship(relationship.name).isDependent() ===
               dependentFilter
           )
         : data,
@@ -41,7 +41,7 @@ export function DataModelRelationships({
   return (
     <>
       <div className="flex items-center gap-4">
-        <H3 id={model.name.toLowerCase()}>{schemaText.relationships()}</H3>
+        <H3 id={table.name.toLowerCase()}>{schemaText.relationships()}</H3>
         <div className="flex items-center gap-2">
           <Button.Small
             aria-pressed={
@@ -77,11 +77,11 @@ export function DataModelRelationships({
           </Button.Small>
         </div>
       </div>
-      <TableList
+      <SchemaViewerTableList
         data={filteredDependentData}
         getLink={({ relatedModel }): string => `#${relatedModel?.[0]}`}
         headers={relationshipColumns()}
-        sortName="dataModelRelationships"
+        sortName="schemaViewerRelationships"
       />
     </>
   );
@@ -106,7 +106,13 @@ const relationshipColumns = f.store(
 );
 
 const getRelationships = (model: SpecifyModel) =>
-  ensure<RA<Row<RR<keyof ReturnType<typeof relationshipColumns>, Value>>>>()(
+  ensure<
+    RA<
+      SchemaViewerRow<
+        RR<keyof ReturnType<typeof relationshipColumns>, SchemaViewerValue>
+      >
+    >
+  >()(
     model.relationships.map(
       (field) =>
         ({

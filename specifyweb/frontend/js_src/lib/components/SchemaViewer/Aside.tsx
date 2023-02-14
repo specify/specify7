@@ -4,14 +4,14 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Link } from '../Atoms/Link';
 import { locationToState } from '../Router/RouterState';
 import { useFrozenCategory } from '../UserPreferences/Aside';
-import { getTables } from './helpers';
+import {getSchemaViewerTables} from './Table';
 
-export function DataModelAside({
+export function SchemaViewerAside({
   activeCategory,
 }: {
   readonly activeCategory: number | undefined;
 }): JSX.Element {
-  const tables = React.useMemo(getTables, []);
+  const tables = React.useMemo(getSchemaViewerTables, []);
   const [freezeCategory, setFreezeCategory] = useFrozenCategory();
   const currentIndex = freezeCategory ?? activeCategory;
   const navigate = useNavigate();
@@ -26,7 +26,7 @@ export function DataModelAside({
         : navigate(`/specify/data-model/#${tables[activeCategory].name[0]}`, {
             replace: true,
           }),
-    [isInOverlay, tables, activeCategory]
+    [isInOverlay, tables, activeCategory, navigate]
   );
 
   return (

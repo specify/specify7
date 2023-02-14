@@ -1,14 +1,14 @@
 import { formsText } from '../../localization/forms';
 import { schemaText } from '../../localization/schema';
+import { booleanFormatter } from '../../utils/parser/parse';
 import { getField } from '../DataModel/helpers';
 import { schema } from '../DataModel/schema';
 import {
   javaTypeToHuman,
   localizedRelationshipTypes,
 } from '../SchemaConfig/helpers';
-import { booleanFormatter } from './helpers';
 
-export const dataModelToTsv = (): string =>
+export const schemaToTsv = (): string =>
   [
     [
       schemaText.table(),

@@ -246,11 +246,18 @@ export const welcomeText = createDictionary({
     'uk-ua': 'Версія бази даних:',
   },
   schemaVersion: {
-    'en-us': 'DB Schema Version:',
-    'ru-ru': 'Версия схемы базы данных:',
-    'es-es': 'Versión del esquema de base de datos:',
-    'fr-fr': 'Version du schéma de la base de données :',
-    'uk-ua': 'Версія схеми БД:',
+    'en-us': 'DB Schema Version',
+    'ru-ru': 'Версия схемы базы данных',
+    'es-es': 'Versión del esquema de base de datos',
+    'fr-fr': 'Version du schéma de la base de données',
+    'uk-ua': 'Версія схеми БД',
+  },
+  schemaExportFileName: {
+    'en-us': 'Specify 7 Data Model',
+    'ru-ru': 'Specify 7 Модель данных',
+    'es-es': 'Specify 7 Modelo de datos',
+    'fr-fr': 'Specify 7 Modèle de données',
+    'uk-ua': 'Specify 7 Модель даних',
   },
   databaseName: {
     'en-us': 'Database Name:',

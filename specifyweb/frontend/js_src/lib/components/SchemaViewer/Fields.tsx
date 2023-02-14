@@ -3,6 +3,7 @@ import React from 'react';
 import { commonText } from '../../localization/common';
 import { schemaText } from '../../localization/schema';
 import { f } from '../../utils/functools';
+import { booleanFormatter } from '../../utils/parser/parse';
 import type { RA, RR } from '../../utils/types';
 import { ensure } from '../../utils/types';
 import { H3 } from '../Atoms';
@@ -11,24 +12,23 @@ import { getField } from '../DataModel/helpers';
 import { schema } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { javaTypeToHuman } from '../SchemaConfig/helpers';
-import type { Row, Value } from './helpers';
-import { booleanFormatter } from './helpers';
-import { TableList } from './TableList';
+import type { SchemaViewerRow, SchemaViewerValue } from './helpers';
+import { SchemaViewerTableList } from './TableList';
 
-export function DataModelFields({
-  model,
+export function SchemaViewerFields({
+  table,
 }: {
-  readonly model: SpecifyModel;
+  readonly table: SpecifyModel;
 }): JSX.Element {
-  const data = React.useMemo(() => getFields(model), [model]);
-  const scope = model.getScopingRelationship()?.relatedModel.name;
+  const data = React.useMemo(() => getFields(table), [table]);
+  const scope = table.getScopingRelationship()?.relatedModel.name;
 
   return (
     <>
       <p>
         {commonText.colonLine({
           label: schemaText.idField(),
-          value: model.idField.name,
+          value: table.idField.name,
         })}
       </p>
       {typeof scope === 'string' && (
@@ -40,11 +40,11 @@ export function DataModelFields({
         </p>
       )}
       <H3>{schemaText.fields()}</H3>
-      <TableList
+      <SchemaViewerTableList
         data={data}
         getLink={undefined}
         headers={fieldColumns()}
-        sortName="dataModelFields"
+        sortName="schemaViewerFields"
       />
     </>
   );
@@ -66,9 +66,15 @@ const fieldColumns = f.store(
     } as const)
 );
 
-const getFields = (model: SpecifyModel) =>
-  ensure<RA<Row<RR<keyof ReturnType<typeof fieldColumns>, Value>>>>()(
-    model.literalFields.map(
+const getFields = (table: SpecifyModel) =>
+  ensure<
+    RA<
+      SchemaViewerRow<
+        RR<keyof ReturnType<typeof fieldColumns>, SchemaViewerValue>
+      >
+    >
+  >()(
+    table.literalFields.map(
       (field) =>
         ({
           name: field.name,
@@ -80,7 +86,7 @@ const getFields = (model: SpecifyModel) =>
           type: javaTypeToHuman(field.type, undefined),
           length: [
             field.length,
-            <span className="flex w-full justify-end tabular-nums">
+            <span className="flex w-full justify-end tabular-nums" key="">
               {f.maybe(field.length, formatNumber)}
             </span>,
           ],

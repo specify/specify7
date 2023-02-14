@@ -6,15 +6,15 @@ import type { RA, RR } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
-import type { Row, Value } from './helpers';
+import type { SchemaViewerRow, SchemaViewerValue } from './helpers';
 
-export function TableList<
+export function SchemaViewerTableList<
   SORT_CONFIG extends
-    | 'dataModelFields'
-    | 'dataModelRelationships'
-    | 'dataModelTables',
+    | 'schemaViewerFields'
+    | 'schemaViewerRelationships'
+    | 'schemaViewerTables',
   FIELD_NAME extends SortConfigs[SORT_CONFIG],
-  DATA extends Row<RR<FIELD_NAME, Value>>
+  DATA extends SchemaViewerRow<RR<FIELD_NAME, SchemaViewerValue>>
 >({
   sortName,
   headers,
@@ -37,7 +37,7 @@ export function TableList<
     () =>
       applySortConfig(unsortedData, (row) => {
         /* eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion */
-        const data = row[sortConfig.sortField] as Value;
+        const data = row[sortConfig.sortField] as SchemaViewerValue;
         return Array.isArray(data) ? data[0] : data;
       }),
     [sortConfig, unsortedData, applySortConfig]
