@@ -26,11 +26,11 @@ import { DateElement } from '../Molecules/DateElement';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import type { SortConfig } from '../Molecules/Sorting';
 import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
+import { TableIcon } from '../Molecules/TableIcon';
 import { hasPermission } from '../Permissions/helpers';
 import { OverlayContext } from '../Router/Router';
 import type { Dataset, DatasetBrief } from '../WbPlanView/Wrapped';
 import { DataSetMeta } from '../WorkBench/DataSetMeta';
-import { TableIcon } from '../Molecules/TableIcon';
 
 const createEmptyDataSet = async (): Promise<Dataset> =>
   ajax<Dataset>(
@@ -234,7 +234,7 @@ export function DataSetsDialog({
                           : undefined
                       }
                     >
-                      <TableIcon name="Workbench" label={false} />
+                      <TableIcon label={false} name="Workbench" />
                       {dataset.name}
                     </Link.Default>
                   </td>

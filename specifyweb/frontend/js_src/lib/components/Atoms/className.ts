@@ -74,7 +74,8 @@ export const className = {
   containerBase,
   containerCenter: `${containerBase} max-w-[min(100%,var(--form-max-width))]
     mx-auto w-full ${formStyles}`,
-  formHeader: 'border-b-2 border-brand-300 flex items-center pb-2 gap-2 md:gap-4 md:justify-between flex-col md:flex-row',
+  formHeader:
+    'border-b-2 border-brand-300 flex items-center pb-2 gap-2 md:gap-4 md:justify-between flex-col md:flex-row',
   formTitle: 'text-lg font-bold flex items-center gap-2',
   formStyles,
   limitedWidth: `max-w-[min(100%,var(--max-field-width))]`,
@@ -82,7 +83,8 @@ export const className = {
   headerGray: 'text-gray-500 dark:text-neutral-400',
   // These values must be synchronised with main.css
   dataEntryGrid: 'data-entry-grid',
-  formFooter: 'border-brand-300 border-t-2 flex print:hidden pt-2 gap-2 flex-wrap justify-center flex-col md:flex-row',
+  formFooter:
+    'border-brand-300 border-t-2 flex print:hidden pt-2 gap-2 flex-wrap justify-center flex-col md:flex-row',
   dataEntryAdd: '!text-green-700 print:hidden',
   dataEntryView: '!text-orange-400 print:hidden',
   dataEntryEdit: '!text-orange-400 print:hidden',
