@@ -98,7 +98,7 @@ export function SecurityPanel(): JSX.Element | null {
   return (
     <Container.FullGray>
       <H2 className="text-2xl">{userText.securityPanel()}</H2>
-      <div className="flex h-0 flex-1 gap-4">
+      <div className="flex h-0 flex-1 flex-col gap-4 md:flex-row">
         <Aside institution={institution} />
         <ErrorBoundary dismissible>
           <SafeOutlet<SecurityOutlet> {...context} />

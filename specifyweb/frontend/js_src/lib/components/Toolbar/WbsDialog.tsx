@@ -221,7 +221,7 @@ export function DataSetsDialog({
             <tbody>
               {datasets.map((dataset, index) => (
                 <tr key={index}>
-                  <td className="overflow-x-auto">
+                  <td className="min-w-[theme(spacing.40)] overflow-x-auto">
                     <Link.Default
                       className="font-bold"
                       href={`/specify/workbench/${dataset.id}/`}
