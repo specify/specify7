@@ -145,7 +145,7 @@ export type SortConfigs = {
   readonly listOfDataSets: 'dateCreated' | 'dateUploaded' | 'name';
   readonly listOfReports: 'name' | 'timestampCreated';
   readonly listOfLabels: 'name' | 'timestampCreated';
-  readonly dataModelFields:
+  readonly schemaViewerFields:
     | 'databaseColumn'
     | 'description'
     | 'isHidden'
@@ -155,7 +155,7 @@ export type SortConfigs = {
     | 'length'
     | 'name'
     | 'type';
-  readonly dataModelRelationships:
+  readonly schemaViewerRelationships:
     | 'databaseColumn'
     | 'description'
     | 'isDependent'
@@ -167,7 +167,7 @@ export type SortConfigs = {
     | 'otherSideName'
     | 'relatedModel'
     | 'type';
-  readonly dataModelTables:
+  readonly schemaViewerTables:
     | 'fieldCount'
     | 'isHidden'
     | 'isSystem'

@@ -317,4 +317,11 @@ export const schemaText = createDictionary({
     'ru-ru': 'Конфигурация схемы: {tableName:string}',
     'uk-ua': 'Конфігурація схеми: {tableName:string}',
   },
+  schemaExportFileName: {
+    'en-us': 'Specify 7 Data Model',
+    'ru-ru': 'Specify 7 Модель данных',
+    'es-es': 'Specify 7 Modelo de datos',
+    'fr-fr': 'Specify 7 Modèle de données',
+    'uk-ua': 'Specify 7 Модель даних',
+  },
 } as const);
