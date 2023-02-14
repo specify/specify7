@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Link } from '../Atoms/Link';
 import { locationToState } from '../Router/RouterState';
 import { useFrozenCategory } from '../UserPreferences/Aside';
-import {getSchemaViewerTables} from './Table';
+import { getSchemaViewerTables } from './Table';
 
 export function SchemaViewerAside({
   activeCategory,
