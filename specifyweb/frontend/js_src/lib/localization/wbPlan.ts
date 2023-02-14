@@ -13,7 +13,7 @@ export const wbPlanText = createDictionary({
     'en-us': 'Data Mapper',
     'ru-ru': 'Сопоставления',
     'es-es': 'Mapeador de datos',
-    'fr-fr': 'Mappeur de données',
+    'fr-fr': 'Réticulation de données',
     'uk-ua': 'Картограф даних',
   },
   noUploadPlan: {

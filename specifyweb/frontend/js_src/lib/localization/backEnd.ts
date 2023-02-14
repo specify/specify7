@@ -15,8 +15,7 @@ export const backEndText = createDictionary({
     'ru-ru': 'значение "{value:string}" не разрешается to True or False',
     'es-es':
       'el valor "{value:string}" no se puede resolver en Verdadero o Falso',
-    'fr-fr':
-      'la valeur "{value:string}" ne peut pas être résolue en Vrai ou Faux',
+    'fr-fr': 'Valeur "{value:string}"  non résolvable en Vrai ou Faux',
     'uk-ua': 'значення "{value:string}" не являється "True" або "False"',
   },
   failedParsingDecimal: {
