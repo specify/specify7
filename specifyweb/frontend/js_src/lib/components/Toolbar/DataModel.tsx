@@ -316,7 +316,7 @@ function DataModelRelationships({
   const data = React.useMemo(() => getRelationships(model), [model]);
 
   const [dependentFilter, setDependentFilter] = React.useState<
-    undefined | boolean
+    boolean | undefined
   >(undefined);
 
   const filteredDependentData = React.useMemo(
@@ -344,9 +344,9 @@ function DataModelRelationships({
               setDependentFilter(
                 dependentFilter === undefined
                   ? true
-                  : dependentFilter === false
-                  ? true
-                  : undefined
+                  : dependentFilter
+                  ? undefined
+                  : true
               )
             }
           >
@@ -360,7 +360,7 @@ function DataModelRelationships({
               setDependentFilter(
                 dependentFilter === undefined
                   ? false
-                  : dependentFilter === true
+                  : dependentFilter
                   ? false
                   : undefined
               )

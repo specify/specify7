@@ -165,7 +165,9 @@
     @apply !bg-transparent text-brand-300 dark:text-brand-400;
   }
 
-  a.button {@apply text-center}
+  a.button {
+    @apply text-center;
+  }
 
   .link {
     @apply inline-flex cursor-pointer items-center gap-2
