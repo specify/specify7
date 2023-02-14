@@ -39,7 +39,7 @@ msgstr "Validación"
 
 #: components/WorkBench/Status.tsx:74
 #: components/WorkBench/Template.tsx:160
-#: components/WorkBench/wbView.js:1860
+#: components/WorkBench/wbView.js:1879
 #. Used in: Components > Work Bench > Status ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 msgid "upload"
 msgstr "Subir"
@@ -75,18 +75,18 @@ msgid "fillUp"
 msgstr "Llena"
 
 #: components/WorkBench/Template.tsx:170
-#: components/WorkBench/wbView.js:1949
+#: components/WorkBench/wbView.js:1968
 #. Used in: Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 msgid "revert"
 msgstr "Revertir"
 
-#: components/WorkBench/wbView.js:2082
+#: components/WorkBench/wbView.js:2106
 #. Used in: Components > Work Bench > Wb View
 msgid "dataCheck"
 msgstr "Comprobación de datos"
 
-#: components/WorkBench/wbView.js:2076
-#: components/WorkBench/wbView.js:2079
+#: components/WorkBench/wbView.js:2100
+#: components/WorkBench/wbView.js:2103
 #. Used in: Components > Work Bench > Wb View
 msgid "dataCheckOn"
 msgstr "Comprobación de datos: activado"
@@ -155,12 +155,12 @@ msgstr "Celdas de error"
 msgid "dataEditor"
 msgstr "Editor de datos"
 
-#: components/WorkBench/wbView.js:1571
+#: components/WorkBench/wbView.js:1576
 #. Used in: Components > Work Bench > Wb View
 msgid "noDisambiguationResults"
 msgstr "No se puede desambiguar"
 
-#: components/WorkBench/wbView.js:1574
+#: components/WorkBench/wbView.js:1579
 #. Used in: Components > Work Bench > Wb View
 msgid "noDisambiguationResultsDescription"
 msgstr ""
@@ -176,7 +176,7 @@ msgstr ""
 msgid "disambiguateMatches"
 msgstr "Eliminar la ambigüedad de coincidencias de registros múltiples"
 
-#: components/WorkBench/wbView.js:1595
+#: components/WorkBench/wbView.js:1601
 #. Used in: Components > Work Bench > Wb View
 msgid "applyAllUnavailable"
 msgstr ""
@@ -197,12 +197,12 @@ msgstr ""
 "cancelará si alguno de los datos cargados ha sido referenciado "
 "(reutilizado) por otros registros de datos desde que se cargaron."
 
-#: components/WorkBench/wbView.js:1849
+#: components/WorkBench/wbView.js:1883
 #. Used in: Components > Work Bench > Wb View
 msgid "startUpload"
 msgstr "¿Comenzar carga de conjunto de datos?"
 
-#: components/WorkBench/wbView.js:1865
+#: components/WorkBench/wbView.js:1886
 #. Used in: Components > Work Bench > Wb View
 msgid "startUploadDescription"
 msgstr ""
@@ -235,19 +235,19 @@ msgstr "Conjunto de datos eliminado con éxito"
 msgid "dataSetDeletedDescription"
 msgstr "Conjunto de datos eliminado con éxito."
 
-#: components/WorkBench/wbView.js:1943
+#: components/WorkBench/wbView.js:1972
 #. Used in: Components > Work Bench > Wb View
 msgid "revertChanges"
 msgstr "¿Revertir cambios no guardados?"
 
-#: components/WorkBench/wbView.js:1954
+#: components/WorkBench/wbView.js:1975
 #. Used in: Components > Work Bench > Wb View
 msgid "revertChangesDescription"
 msgstr ""
 "Esta acción descartará todos los cambios realizados en el conjunto de datos "
 "desde la última vez que se guardó."
 
-#: components/WorkBench/wbView.js:1970
+#: components/WorkBench/wbView.js:1992
 #. Used in: Components > Work Bench > Wb View
 msgid "saving"
 msgstr "Ahorro..."
@@ -257,34 +257,34 @@ msgstr "Ahorro..."
 msgid "wbUnloadProtect"
 msgstr "Los cambios a este conjunto de datos no se han guardado."
 
-#: components/WorkBench/wbView.js:2186
+#: components/WorkBench/wbView.js:2210
 #. Used in: Components > Work Bench > Wb View
 msgid "noMatchErrorMessage"
 msgstr ""
 "No hay ningún registro coincidente para la tabla de coincidencias "
 "obligatorias."
 
-#: components/WorkBench/wbView.js:2212
+#: components/WorkBench/wbView.js:2236
 #. Used in: Components > Work Bench > Wb View
 msgid "matchedMultipleErrorMessage"
 msgstr ""
 "Este valor coincide con dos o más registros de base de datos existentes y "
 "la coincidencia debe eliminarse antes de cargar."
 
-#: components/WorkBench/wbView.js:2413
+#: components/WorkBench/wbView.js:2439
 #. Used in: Components > Work Bench > Wb View
 msgid "validationNoErrors"
 msgstr "Validar completado sin errores"
 
-#: components/WorkBench/wbView.js:2416
+#: components/WorkBench/wbView.js:2442
 #. Used in: Components > Work Bench > Wb View
 msgid "validationNoErrorsDescription"
 msgstr ""
 "La validación no encontró errores, está listo para ser cargado en la base "
 "de datos."
 
-#: components/WorkBench/wbView.js:2419
-#: components/WorkBench/wbView.js:2430
+#: components/WorkBench/wbView.js:2445
+#: components/WorkBench/wbView.js:2456
 #. Used in: Components > Work Bench > Wb View
 msgid "validationReEditWarning"
 msgstr ""
@@ -292,39 +292,39 @@ msgstr ""
 "volver a ejecutar Validar antes de cargar para verificar que no se hayan "
 "introducido errores."
 
-#: components/WorkBench/wbView.js:2424
+#: components/WorkBench/wbView.js:2450
 #. Used in: Components > Work Bench > Wb View
 msgid "validationErrors"
 msgstr "Validar completado con errores"
 
-#: components/WorkBench/wbView.js:2427
+#: components/WorkBench/wbView.js:2453
 #. Used in: Components > Work Bench > Wb View
 msgid "validationErrorsDescription"
 msgstr "La validación encontró errores en el conjunto de datos."
 
-#: components/WorkBench/wbView.js:2437
+#: components/WorkBench/wbView.js:2463
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadSuccessful"
 msgstr "Carga completada sin errores"
 
-#: components/WorkBench/wbView.js:2438
+#: components/WorkBench/wbView.js:2464
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadSuccessfulDescription"
 msgstr ""
 "Haga clic en el botón \"Resultados\" para ver la cantidad de nuevos "
 "registros agregados a cada tabla de la base de datos."
 
-#: components/WorkBench/wbView.js:2441
+#: components/WorkBench/wbView.js:2467
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadErrors"
 msgstr "Carga fallida debido a celdas de error"
 
-#: components/WorkBench/wbView.js:2444
+#: components/WorkBench/wbView.js:2470
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadErrorsDescription"
 msgstr "La carga falló debido a uno o más errores de valor de celda."
 
-#: components/WorkBench/wbView.js:2447
+#: components/WorkBench/wbView.js:2473
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadErrorsSecondDescription"
 msgstr ""
@@ -332,44 +332,44 @@ msgstr ""
 "cada celda de error, luego haga las correcciones apropiadas. Guarde y "
 "vuelva a intentar la carga."
 
-#: components/WorkBench/wbView.js:2452
+#: components/WorkBench/wbView.js:2478
 #. Used in: Components > Work Bench > Wb View
 msgid "dataSetRollback"
 msgstr "El conjunto de datos se revirtió con éxito"
 
-#: components/WorkBench/wbView.js:2453
+#: components/WorkBench/wbView.js:2479
 #. Used in: Components > Work Bench > Wb View
 msgid "dataSetRollbackDescription"
 msgstr ""
 "Este conjunto de datos revertidos se guarda y se puede editar o volver a "
 "cargar."
 
-#: components/WorkBench/wbView.js:2490
+#: components/WorkBench/wbView.js:2517
 #. Used in: Components > Work Bench > Wb View
 msgid "validationCanceled"
 msgstr "Validación cancelada"
 
-#: components/WorkBench/wbView.js:2499
+#: components/WorkBench/wbView.js:2525
 #. Used in: Components > Work Bench > Wb View
 msgid "validationCanceledDescription"
 msgstr "Se canceló la validación del conjunto de datos."
 
-#: components/WorkBench/wbView.js:2492
+#: components/WorkBench/wbView.js:2519
 #. Used in: Components > Work Bench > Wb View
 msgid "rollbackCanceled"
 msgstr "Reversión cancelada"
 
-#: components/WorkBench/wbView.js:2501
+#: components/WorkBench/wbView.js:2527
 #. Used in: Components > Work Bench > Wb View
 msgid "rollbackCanceledDescription"
 msgstr "Reversión del conjunto de datos cancelada."
 
-#: components/WorkBench/wbView.js:2493
+#: components/WorkBench/wbView.js:2520
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadCanceled"
 msgstr "Carga cancelada"
 
-#: components/WorkBench/wbView.js:2502
+#: components/WorkBench/wbView.js:2528
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadCanceledDescription"
 msgstr "Carga de conjunto de datos cancelada."
@@ -390,7 +390,7 @@ msgid "emptyStringInline"
 msgstr "(cuerda vacía)"
 
 #: components/WorkBench/Template.tsx:137
-#: components/WorkBench/wbView.js:2312
+#: components/WorkBench/wbView.js:2338
 #. Used in: Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 msgid "wbUploadedUnavailable"
 msgstr "El conjunto de datos debe validarse o cargarse"
@@ -402,24 +402,24 @@ msgstr ""
 "Se debe definir un plan de carga antes de que se pueda validar este "
 "conjunto de datos"
 
-#: components/WorkBench/wbView.js:2307
+#: components/WorkBench/wbView.js:2333
 #. Used in: Components > Work Bench > Wb View
 msgid "unavailableWhileEditing"
 msgstr "Esta acción requiere que se guarden todos los cambios"
 
-#: components/WorkBench/wbView.js:2394
+#: components/WorkBench/wbView.js:2420
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadUnavailableWhileHasErrors"
 msgstr ""
 "La carga no está disponible porque algunas celdas tienen errores de "
 "validación"
 
-#: components/WorkBench/wbView.js:1690
+#: components/WorkBench/wbView.js:1709
 #. Used in: Components > Work Bench > Wb View
 msgid "unavailableWhileViewingResults"
 msgstr "Esta acción no está disponible mientras se ven los resultados de la carga"
 
-#: components/WorkBench/wbView.js:1658
+#: components/WorkBench/wbView.js:1677
 #. Used in: Components > Work Bench > Wb View
 msgid "unavailableWhileValidating"
 msgstr ""

@@ -27,9 +27,9 @@ msgid "failedParsingFloat"
 msgstr "value \"{value:string}\" is not a valid floating point value"
 
 #: components/WorkBench/resultsParser.ts:182
-#: components/WorkBench/wbView.js:855
-#: components/WorkBench/wbView.js:862
-#: components/WorkBench/wbView.js:1358
+#: components/WorkBench/wbView.js:856
+#: components/WorkBench/wbView.js:863
+#: components/WorkBench/wbView.js:1362
 #. Used in: Components > Work Bench > Results Parser ⬤ Components > Work Bench > Wb View
 msgid "failedParsingPickList"
 msgstr ""

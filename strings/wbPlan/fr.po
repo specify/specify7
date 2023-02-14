@@ -10,15 +10,15 @@ msgid "dataMapper"
 msgstr "Mappeur de données"
 
 #: components/WbPlanView/State.tsx:37
-#: components/WorkBench/wbView.js:261
-#: components/WorkBench/wbView.js:1872
+#: components/WorkBench/wbView.js:273
+#: components/WorkBench/wbView.js:1901
 #. Used in: Components > Wb Plan View > State ⬤ Components > Work Bench > Wb View
 #, fuzzy
 msgid "noUploadPlan"
 msgstr "Aucun plan de téléchargement n'est défini"
 
 #: components/WorkBench/wbView.js:276
-#: components/WorkBench/wbView.js:1883
+#: components/WorkBench/wbView.js:1904
 #. Used in: Components > Work Bench > Wb View
 #, fuzzy
 msgid "noUploadPlanDescription"

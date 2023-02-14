@@ -74,8 +74,8 @@ msgstr "Ні"
 #: components/WorkBench/DataSetMeta.tsx:96
 #: components/WorkBench/DataSetMeta.tsx:379
 #: components/WorkBench/Disambiguation.tsx:36
-#: components/WorkBench/wbView.js:1853
-#: components/WorkBench/wbView.js:1947
+#: components/WorkBench/wbView.js:1872
+#: components/WorkBench/wbView.js:1966
 #. Used in: Components > App Resources > Create ⬤ Components > App Resources > Editor Components ⬤ Components > Form Sliders > Record Selector From Ids ⬤ Components > Forms > Delete Button ⬤ Components > Forms > Resource View ⬤ Components > Forms > Search Dialog ⬤ Components > Header > Choose Collection ⬤ Components > Header > Forms ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Return Dialog ⬤ Components > Pick Lists > Index ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Edit ⬤ Components > Query Builder > From Map ⬤ Components > Query Builder > Import ⬤ Components > Query Builder > Loan Return ⬤ Components > Reports > Parameters ⬤ Components > Reports > Report ⬤ Components > Reports > Index ⬤ Components > Router > Router ⬤ Components > Security > Import Export ⬤ Components > Security > Missing Agents Dialog ⬤ Components > Security > Role ⬤ Components > Security > Role Template ⬤ Components > Security > User ⬤ Components > Toolbar > Force Update ⬤ Components > Toolbar > Form Tables Edit ⬤ Components > Toolbar > Language ⬤ Components > Toolbar > Master Key ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets ⬤ Components > Toolbar > Tree Repair ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Tree View > Actions ⬤ Components > Wb Plan View > Mapper ⬤ Components > Wb Plan View > Mapper Components ⬤ Components > Wb Plan View > State ⬤ Components > Work Bench > Components ⬤ Components > Work Bench > Coordinate Converter ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Disambiguation ⬤ Components > Work Bench > Wb View
 msgid "cancel"
 msgstr "Скасувати"
@@ -101,8 +101,8 @@ msgstr "Пропустити"
 #: components/Security/Institution.tsx:105
 #: components/Security/Institution.tsx:185
 #: components/Security/PreviewTables.tsx:65
-#: components/WorkBench/wbView.js:271
-#: components/WorkBench/wbView.js:1878
+#: components/WorkBench/wbView.js:269
+#: components/WorkBench/wbView.js:1897
 #. Used in: Components > Pick Lists > Definitions ⬤ Components > Query Builder > Edit ⬤ Components > Security > Collection ⬤ Components > Security > Collection Components ⬤ Components > Security > Institution ⬤ Components > Security > Preview Tables ⬤ Components > Work Bench > Wb View
 msgid "create"
 msgstr "Створити"
@@ -188,12 +188,12 @@ msgstr "Створити"
 #: components/WorkBench/Results.tsx:70
 #: components/WorkBench/Status.tsx:87
 #: components/WorkBench/Template.tsx:320
-#: components/WorkBench/wbView.js:266
-#: components/WorkBench/wbView.js:1572
-#: components/WorkBench/wbView.js:1656
-#: components/WorkBench/wbView.js:1876
-#: components/WorkBench/wbView.js:2472
+#: components/WorkBench/wbView.js:264
+#: components/WorkBench/wbView.js:1575
+#: components/WorkBench/wbView.js:1673
+#: components/WorkBench/wbView.js:1895
 #: components/WorkBench/wbView.js:2496
+#: components/WorkBench/wbView.js:2514
 #. Used in: Components > App Resources > Editor Components ⬤ Components > App Resources > Filters ⬤ Components > App Resources > Tabs ⬤ Components > Attachments > Index ⬤ Components > Core > Version Mismatch ⬤ Components > Form Cells > Form Table ⬤ Components > Form Commands > Show Transactions ⬤ Components > Form Commands > Index ⬤ Components > Form Fields > Query Combo Box ⬤ Components > Form Meta > Auto Numbering ⬤ Components > Form Meta > Carry Forward ⬤ Components > Form Meta > Definition ⬤ Components > Form Meta > Edit History ⬤ Components > Form Meta > Pick List Usages ⬤ Components > Form Meta > Index ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Form Plugins > Geo Locate ⬤ Components > Form Plugins > Leaflet ⬤ Components > Form Plugins > Paleo Location ⬤ Components > Form Plugins > Index ⬤ Components > Form Sliders > Record Set ⬤ Components > Forms > Data Task ⬤ Components > Forms > Delete Blocked ⬤ Components > Forms > Resource View ⬤ Components > Forms > Save ⬤ Components > Forms > Search Dialog ⬤ Components > Header > Notifications ⬤ Components > Header > User Tools ⬤ Components > Home Page > About Specify ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Return Dialog ⬤ Components > Leaflet > Map ⬤ Components > Pick Lists > Index ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Edit ⬤ Components > Query Builder > Export ⬤ Components > Query Builder > Loan Return ⬤ Components > Query Builder > Save ⬤ Components > Reports > Report ⬤ Components > Schema Config > Languages ⬤ Components > Security > Role ⬤ Components > Security > Set Password ⬤ Components > Security > User ⬤ Components > Security > User Collections ⬤ Components > Security > User Invite Link ⬤ Components > Specify Network > Index ⬤ Components > Toolbar > Dwca ⬤ Components > Toolbar > Force Update ⬤ Components > Toolbar > Language ⬤ Components > Toolbar > Master Key ⬤ Components > Toolbar > Query Tables ⬤ Components > Toolbar > Query Tables Edit ⬤ Components > Toolbar > Tree Repair ⬤ Components > Tree View > Actions ⬤ Components > User Preferences > Index ⬤ Components > Wb Plan View > Mapper Components ⬤ Components > Wb Plan View > State ⬤ Components > Work Bench > Advanced Search ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Dev Show Plan ⬤ Components > Work Bench > Geo Locate ⬤ Components > Work Bench > Results ⬤ Components > Work Bench > Status ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 msgid "close"
 msgstr "Закрити"
@@ -676,7 +676,7 @@ msgstr "Фільтр"
 
 #: components/QueryBuilder/Results.tsx:44
 #: components/WorkBench/Template.tsx:140
-#: components/WorkBench/wbView.js:1654
+#: components/WorkBench/wbView.js:1674
 #. Used in: Components > Query Builder > Results ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 msgid "results"
 msgstr "Результати"
@@ -768,7 +768,7 @@ msgstr "Немає доступних"
 #: components/Toolbar/Query.tsx:95
 #: components/Toolbar/RecordSets.tsx:180
 #: components/Toolbar/WbsDialog.tsx:201
-#: components/WorkBench/wbView.js:2075
+#: components/WorkBench/wbView.js:2099
 #. 🟥Example usage: Record Sets (1,234). Used in: Components > App Resources > Filters ⬤ Components > Attachments > Index ⬤ Components > Form Cells > Form Table ⬤ Components > Header > Express Search Task ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Work Bench > Wb View
 msgid "countLine"
 msgstr "{resource:string} ({count:number|formatted})"

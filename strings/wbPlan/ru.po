@@ -9,14 +9,14 @@ msgid "dataMapper"
 msgstr "Сопоставления"
 
 #: components/WbPlanView/State.tsx:37
-#: components/WorkBench/wbView.js:261
-#: components/WorkBench/wbView.js:1872
+#: components/WorkBench/wbView.js:273
+#: components/WorkBench/wbView.js:1901
 #. Used in: Components > Wb Plan View > State ⬤ Components > Work Bench > Wb View
 msgid "noUploadPlan"
 msgstr "План загрузки не определен"
 
 #: components/WorkBench/wbView.js:276
-#: components/WorkBench/wbView.js:1883
+#: components/WorkBench/wbView.js:1904
 #. Used in: Components > Work Bench > Wb View
 msgid "noUploadPlanDescription"
 msgstr "Для этого набора данных не определен план загрузки. Создать эго сейчас?"
