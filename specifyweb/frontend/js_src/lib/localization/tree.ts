@@ -20,7 +20,7 @@ export const treeText = createDictionary({
     'en-us': 'Bad tree structure.',
     'ru-ru': 'У дерева плохая структура.',
     'es-es': 'Mala estructura de árbol.',
-    'fr-fr': 'Mauvaise arborescence.',
+    'fr-fr': 'Structure hiérarchique incorrecte.',
     'uk-ua': 'Погана структура дерева.',
   },
   move: {
