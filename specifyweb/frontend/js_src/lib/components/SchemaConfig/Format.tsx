@@ -14,6 +14,7 @@ import { ReadOnlyContext } from '../Core/Contexts';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
+import { tables } from '../DataModel/tables';
 import type { SpLocaleContainerItem } from '../DataModel/types';
 import { hasToolPermission } from '../Permissions/helpers';
 import type { WithFetchedStrings } from '../Toolbar/SchemaConfig';
@@ -21,7 +22,6 @@ import { PickList } from './Components';
 import { getItemType, isFormatterAvailable } from './helpers';
 import type { ItemType } from './index';
 import type { SchemaData } from './schemaData';
-import { tables } from '../DataModel/tables';
 
 export function SchemaConfigFormat({
   schemaData,
@@ -91,8 +91,12 @@ export function SchemaConfigFormat({
           '': schemaData.webLinks,
         }}
       />
-      {/* REFACTOR: replace with a Query Combo Box? */}
       <FormatterLine
+        /*
+         * This is used for a purpose similar to that of combo box, but can't
+         * use a query combo box as it works based on IDs, but for pick lists
+         * schema config uses names, not IDs ((
+         */
         {...lineProps}
         extraComponents={
           <>

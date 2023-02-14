@@ -6,21 +6,21 @@ import { filterArray } from '../../utils/types';
 import { index } from '../../utils/utils';
 import { fetchCollection } from '../DataModel/collection';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import type { SpLocaleContainer, Tables } from '../DataModel/types';
-import { fetchFormatters } from '../Formatters/formatters';
-import { webLinks } from '../WebLinks';
-import { fetchContext as fetchUiFormatters } from '../FieldFormatters';
-import { fetchPickLists } from '../PickLists/definitions';
-import { formatAggregators } from './helpers';
 import { serializeResource } from '../DataModel/serializers';
+import type { SpLocaleContainer, Tables } from '../DataModel/types';
+import { fetchContext as fetchUiFormatters } from '../FieldFormatters';
+import { fetchFormatters } from '../Formatters/formatters';
+import { fetchPickLists } from '../PickLists/definitions';
 import { fetchSchemaLanguages } from '../Toolbar/Language';
+import { webLinks } from '../WebLinks';
+import { formatAggregators } from './helpers';
 
 export type SchemaData = {
   readonly languages: IR<LocalizedString>;
   readonly tables: IR<SerializedResource<SpLocaleContainer>>;
-  readonly formatters: IR<DataObjectFormatter>;
-  readonly aggregators: IR<DataObjectFormatter>;
-  readonly uiFormatters: RA<UiFormatter>;
+  readonly formatters: IR<SimpleFormatter>;
+  readonly aggregators: IR<SimpleFormatter>;
+  readonly uiFormatters: RA<SimpleFieldFormatter>;
   readonly webLinks: RA<readonly [string, string]>;
   readonly pickLists: IR<{
     readonly name: string;
@@ -28,12 +28,12 @@ export type SchemaData = {
   }>;
 };
 
-export type DataObjectFormatter = {
+export type SimpleFormatter = {
   readonly title: LocalizedString;
   readonly tableName: keyof Tables | undefined;
 };
 
-type UiFormatter = {
+type SimpleFieldFormatter = {
   readonly name: string;
   readonly isSystem: boolean;
   readonly value: string;

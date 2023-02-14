@@ -14,7 +14,7 @@ import type {
   NewSpLocaleItemString,
   SpLocaleItemString,
 } from './index';
-import type { DataObjectFormatter } from './schemaData';
+import type { SimpleFormatter } from './schemaData';
 
 let newStringId = 1;
 const defaultLanguage = 'en';
@@ -59,7 +59,7 @@ export function findString(
 /** Throws away unneeded fields */
 export const formatAggregators = (
   aggregators: RA<Aggregator | Formatter>
-): IR<DataObjectFormatter> =>
+): IR<SimpleFormatter> =>
   Object.fromEntries(
     aggregators.map(
       ({ name = '', title = '', table }) =>
@@ -77,7 +77,7 @@ export const formatAggregators = (
  * Filter down defined formatters
  */
 export const filterFormatters = (
-  formatters: IR<DataObjectFormatter>,
+  formatters: IR<SimpleFormatter>,
   targetTable: keyof Tables
 ): IR<string> =>
   Object.fromEntries(

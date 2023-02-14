@@ -9,6 +9,7 @@ import type { GetSet } from '../../utils/types';
 import { removeItem, replaceItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
+import { ReadOnlyContext } from '../Core/Contexts';
 import { Dialog } from '../Molecules/Dialog';
 import { NotFoundView } from '../Router/NotFoundView';
 import { resolveRelative } from '../Router/Router';
@@ -16,7 +17,6 @@ import { AggregatorElement } from './Aggregator';
 import { FormatterElement } from './Formatter';
 import type { Aggregator, Formatter } from './spec';
 import type { FormatterTypesOutlet } from './Types';
-import { ReadOnlyContext } from '../Core/Contexts';
 
 // FIXME: allow opening this in the schema editor
 export function FormatterWrapper(): JSX.Element {
