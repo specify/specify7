@@ -124,6 +124,9 @@ jobs:
       - name: Run Mypy type checker
         run: VIRTUAL_ENV=./ve make typecheck
 
+      - name: Run test suite
+        run: ./ve/bin/python manage.py test --keepdb
+
   test-front-end:
     name: Run front-end tests
     needs: changes

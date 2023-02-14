@@ -442,7 +442,7 @@ def agent_record_replacement(request: http.HttpRequest, old_agent_id, new_agent_
 
     # Create database connection cursor
     cursor = connection.cursor()
-    db_name = connection.get_connection_params()['db']
+    db_name = connection.settings_dict['NAME']
 
     with transaction.atomic():
         # Check to make sure both the old and new agent IDs exist in the table

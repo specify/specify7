@@ -1348,7 +1348,7 @@ export const preferencesText = createDictionary({
   },
   right: {
     'en-us': 'Right',
-    'es-es': 'Bien',
+    'es-es': 'Derecha',
     'fr-fr': 'Droite',
     'ru-ru': 'Верно',
     'uk-ua': 'правильно',

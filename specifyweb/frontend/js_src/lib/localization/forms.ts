@@ -14,7 +14,7 @@ export const formsText = createDictionary({
     'en-us': 'Forms',
     'ru-ru': 'Формы',
     'es-es': 'Formularios',
-    'fr-fr': 'Formes',
+    'fr-fr': 'Formulaires',
     'uk-ua': 'Форми',
   },
   clone: {
