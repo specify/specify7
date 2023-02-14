@@ -29,7 +29,7 @@ export const headerText = createDictionary({
     'en-us': 'Current {collectionTable:string}',
     'ru-ru': 'Текущая {collectionTable:string}',
     'es-es': 'Actual {collectionTable:string}',
-    'fr-fr': 'Courant {collectionTable:string}',
+    'fr-fr': 'Actuelle {collectionTable:string}',
     'uk-ua': 'Поточна {collectionTable:string}',
   },
   dataEntry: {

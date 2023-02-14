@@ -13,7 +13,7 @@ export const wbText = createDictionary({
     'en-us': 'WorkBench',
     'ru-ru': 'WorkBench',
     'es-es': 'banco de trabajo',
-    'fr-fr': 'Table de travail',
+    'fr-fr': 'Atelier',
     'uk-ua': 'WorkBench',
   },
   rollback: {
