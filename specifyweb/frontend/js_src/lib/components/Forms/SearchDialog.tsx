@@ -29,7 +29,7 @@ import { createQuery } from '../QueryBuilder';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
 import { formatUrl } from '../Router/queryString';
 import { format } from './dataObjFormatters';
-import { RenderForm } from './SpecifyForm';
+import { SpecifyForm } from './SpecifyForm';
 import { useViewDefinition } from './useViewDefinition';
 
 const dialogDefinitions = load<Element>(
@@ -139,7 +139,7 @@ export function SearchDialog<SCHEMA extends AnySchema>({
             .finally(handleLoaded);
         }}
       >
-        <RenderForm
+        <SpecifyForm
           display="inline"
           resource={templateResource}
           viewDefinition={viewDefinition}

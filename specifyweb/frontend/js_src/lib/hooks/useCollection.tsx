@@ -56,7 +56,7 @@ export function useCollection<SCHEMA extends AnySchema>(
         ? typeof fetchRef.current === 'object'
           ? callback().then(f.undefined)
           : callback().then((result) =>
-              // If fetches function changed while fetching, discard the results
+              // If the fetch function changed while fetching, discard the results
               currentCallback.current === callback
                 ? setCollection((collection) => ({
                     records: [

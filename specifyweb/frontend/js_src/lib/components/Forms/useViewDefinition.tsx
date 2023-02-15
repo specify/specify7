@@ -7,7 +7,7 @@ import type { SpecifyModel } from '../DataModel/specifyModel';
 import { softFail } from '../Errors/Crash';
 import type { FormMode, FormType, ViewDescription } from '../FormParse';
 import { fetchView, parseViewDefinition } from '../FormParse';
-import { webOnlyViews } from '../FormParse/webOnlyViews';
+import {attachmentView, webOnlyViews} from '../FormParse/webOnlyViews';
 import { usePref } from '../UserPreferences/usePref';
 import { autoGenerateViewDefinition } from './generateFormDefinition';
 
@@ -43,9 +43,9 @@ export function useViewDefinition({
   const [viewDefinition] = useAsyncState<ViewDescription>(
     React.useCallback(async () => {
       if (model === undefined) return undefined;
-      else if (viewName === 'ObjectAttachment')
+      else if (viewName === attachmentView)
         return {
-          ...webOnlyViews().ObjectAttachment,
+          ...webOnlyViews()[attachmentView],
           model,
           formType,
           mode,

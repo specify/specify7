@@ -345,17 +345,15 @@ export function ResourceView<SCHEMA extends AnySchema>({
         else handleClose();
       }}
     >
-      <div className="flex items-center">
-        {form(children, 'overflow-y-hidden')}
-        {showUnloadProtect && (
-          <UnloadProtectDialog
-            onCancel={(): void => setShowUnloadProtect(false)}
-            onConfirm={handleClose}
-          >
-            {formsText.unsavedFormUnloadProtect()}
-          </UnloadProtectDialog>
-        )}
-      </div>
+      {form(children, 'overflow-y-hidden')}
+      {showUnloadProtect && (
+        <UnloadProtectDialog
+          onCancel={(): void => setShowUnloadProtect(false)}
+          onConfirm={handleClose}
+        >
+          {formsText.unsavedFormUnloadProtect()}
+        </UnloadProtectDialog>
+      )}
     </Dialog>
   );
 }

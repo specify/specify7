@@ -25,7 +25,7 @@ FormLoadingContext.displayName = 'FormLoadingContext';
  * Renders a form from ViewDescription and populates it with data from the
  * resource
  */
-export function RenderForm<SCHEMA extends AnySchema>({
+export function SpecifyForm<SCHEMA extends AnySchema>({
   isLoading = false,
   resource,
   viewDefinition,
@@ -83,7 +83,7 @@ export function RenderForm<SCHEMA extends AnySchema>({
   return (
     <FormLoadingContext.Provider value={isAlreadyLoading || showLoading}>
       <div
-        className={`overflow-auto ${showLoading ? 'relative' : ''}`}
+        className={`h-full overflow-auto ${showLoading ? 'relative' : ''}`}
         lang={language}
       >
         {showLoading && (
@@ -106,9 +106,7 @@ export function RenderForm<SCHEMA extends AnySchema>({
         {formIsLoaded && (
           <DataEntry.Grid
             aria-hidden={showLoading}
-            className={
-              showLoading ? 'pointer-events-none opacity-50' : undefined
-            }
+            className={`${showLoading ? 'pointer-events-none opacity-50' : ''}`}
             display={viewDefinition?.columns.length === 1 ? 'block' : display}
             flexibleColumnWidth={flexibleColumnWidth}
             viewDefinition={viewDefinition}

@@ -23,12 +23,12 @@ import { loadingBar } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
 import { FilePicker } from '../Molecules/FilePicker';
 import { hasTablePermission } from '../Permissions/helpers';
-import { AttachmentAndMetaData } from './AttachmentAndMetaData';
 import {
   attachmentsAvailable,
   attachmentSettingsPromise,
   uploadFile,
 } from './attachments';
+import { AttachmentViewer } from './Viewer';
 
 export function AttachmentsPlugin({
   id,
@@ -98,15 +98,6 @@ export function AttachmentsPlugin({
     [setState, state, resource, handleUploadComplete]
   );
 
-  // Use React.useEffect to save the modification before closing the window
-  React.useEffect(
-    () => (): void => {
-      if (state?.type === 'DisplayAttachment' && state.attachment?.needsSaved)
-        state.attachment.save();
-    },
-    [state]
-  );
-
   const filePickerContainer = React.useRef<HTMLDivElement | null>(null);
 
   return state === undefined ? (
@@ -114,7 +105,7 @@ export function AttachmentsPlugin({
   ) : state.type === 'Unavailable' ? (
     <div>{attachmentsText.attachmentServerUnavailable()}</div>
   ) : (
-    <div ref={filePickerContainer} tabIndex={-1}>
+    <div className="h-full" ref={filePickerContainer} tabIndex={-1}>
       {state.type === 'AddAttachment' ? (
         mode === 'view' || !hasTablePermission('Attachment', 'create') ? (
           <p>{formsText.noData()}</p>
@@ -148,10 +139,7 @@ export function AttachmentsPlugin({
           </div>
         </Dialog>
       ) : state.type === 'DisplayAttachment' ? (
-        // Padding bottom prevents the shadow from being cut off
-        <div className="flex h-full items-center justify-center pb-5">
-          <AttachmentAndMetaData attachment={state.attachment} />
-        </div>
+        <AttachmentViewer attachment={state.attachment} />
       ) : (
         error('Unhandled case', { state })
       )}

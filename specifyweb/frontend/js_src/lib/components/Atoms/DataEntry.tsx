@@ -64,7 +64,7 @@ export const DataEntry = {
   >(
     'DataEntry.Grid',
     'div',
-    `overflow-x-auto items-center p-1 -ml-1 gap-2`,
+    `overflow-x-auto items-center p-1 -ml-1 gap-2 h-full auto-rows-max`,
     ({
       viewDefinition,
       display,
@@ -102,7 +102,7 @@ export const DataEntry = {
   >(
     'DataEntry.Cell',
     'div',
-    'flex flex-col',
+    'flex flex-col h-full',
     ({ colSpan, align, visible, ...props }) => ({
       ...props,
       style: {

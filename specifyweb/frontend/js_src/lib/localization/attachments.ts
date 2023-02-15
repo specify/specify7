@@ -16,9 +16,6 @@ export const attachmentsText = createDictionary({
     'fr-fr': 'Pièces jointes',
     'uk-ua': 'Прикріплення',
   },
-  attachmentPreview: {
-    'en-us': 'Attachment Preview',
-  },
   scale: {
     'en-us': 'Scale',
     'ru-ru': 'Масштаб',
@@ -60,5 +57,11 @@ export const attachmentsText = createDictionary({
     'es-es': 'No hay archivos adjuntos',
     'fr-fr': "Il n'y a pas de pièces jointes",
     'uk-ua': 'Прикріплень нема',
+  },
+  unableToFindRelatedRecord: {
+    'en-us': 'Unable to find related record',
+  },
+  unableToFindRelatedRecordDescription: {
+    'en-us': 'Unable to find a record that this attachment is related to.',
   },
 } as const);

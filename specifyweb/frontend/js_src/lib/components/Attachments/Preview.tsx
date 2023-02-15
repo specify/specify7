@@ -1,17 +1,18 @@
 import React from 'react';
 
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { useIsModified } from '../../hooks/useIsModified';
-import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import { Button } from '../Atoms/Button';
 import { Form } from '../Atoms/Form';
 import { deserializeResource, serializeResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
+import { schema } from '../DataModel/schema';
 import type { Attachment } from '../DataModel/types';
 import { SaveButton } from '../Forms/Save';
 import { Dialog } from '../Molecules/Dialog';
-import { AttachmentAndMetaData } from './AttachmentAndMetaData';
 import type { AttachmentThumbnail } from './attachments';
+import { AttachmentViewer } from './Viewer';
 
 export function AttachmentPreview({
   thumbnail,
@@ -22,19 +23,9 @@ export function AttachmentPreview({
   readonly attachment: SerializedResource<Attachment>;
   readonly onChange: (attachment: SerializedResource<Attachment>) => void;
 }): JSX.Element {
-  // Open and close attachmentDialog
-  const [seen, setSeen] = React.useState(false);
-  const togglePop = (): void => {
-    setSeen(!seen);
-  };
-
+  const [isOpen, handleOpen, handleClose] = useBooleanState(false);
   const children = (
-    <button
-      onClick={(event): void => {
-        event.preventDefault();
-        togglePop();
-      }}
-    >
+    <button type="button" onClick={handleOpen}>
       <img
         alt={attachment.title || thumbnail.alt}
         className={`
@@ -58,11 +49,11 @@ export function AttachmentPreview({
   return (
     <>
       <div className={className}>{children}</div>
-      {seen ? (
+      {isOpen ? (
         <AttachmentDialog
           attachment={attachment}
-          togglePop={togglePop}
           onChange={handleChange}
+          onClose={handleClose}
         />
       ) : null}
     </>
@@ -71,14 +62,13 @@ export function AttachmentPreview({
 
 function AttachmentDialog({
   attachment,
-  togglePop,
+  onClose: handleClose,
   onChange: handleChange,
 }: {
   readonly attachment: SerializedResource<Attachment>;
-  readonly togglePop: () => void;
+  readonly onClose: () => void;
   readonly onChange: (attachment: SerializedResource<Attachment>) => void;
 }): JSX.Element {
-  // Attachment is a JSON object. Need to deserilize it
   const resource = React.useMemo(
     () => deserializeResource(attachment),
     [attachment]
@@ -93,28 +83,34 @@ function AttachmentDialog({
       buttons={
         <>
           {isModified ? (
-            <Button.Red onClick={togglePop}>{commonText.cancel()}</Button.Red>
+            <Button.Red onClick={handleClose}>{commonText.cancel()}</Button.Red>
           ) : (
-            <Button.Blue onClick={togglePop}>{commonText.close()}</Button.Blue>
+            <Button.Blue onClick={handleClose}>
+              {commonText.close()}
+            </Button.Blue>
           )}
           {form !== null && (
             <SaveButton
               form={form}
               resource={resource}
               onAdd={undefined}
-              onSaved={() => {
+              onSaved={(): void => {
                 handleChange(serializeResource(resource));
-                togglePop();
+                handleClose();
               }}
             />
           )}
         </>
       }
-      header={attachmentsText.attachmentPreview()}
-      onClose={togglePop}
+      header={
+        attachment.title ??
+        attachment.origFilename ??
+        schema.models.Attachment.label
+      }
+      onClose={handleClose}
     >
       <Form forwardRef={setForm}>
-        <AttachmentAndMetaData attachment={resource} />
+        <AttachmentViewer attachment={resource} />
       </Form>
     </Dialog>
   );

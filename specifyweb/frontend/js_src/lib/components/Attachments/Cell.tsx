@@ -2,6 +2,7 @@ import React from 'react';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import { caseInsensitiveHash } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
@@ -12,6 +13,7 @@ import { idFromUrl } from '../DataModel/resource';
 import { getModelById } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Attachment } from '../DataModel/types';
+import { Dialog } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasTablePermission } from '../Permissions/helpers';
 import { fetchThumbnail } from './attachments';
@@ -39,43 +41,17 @@ export function AttachmentCell({
     false
   );
 
-  const [_, handleMetaToggle] = useBooleanState();
-
-  const loading = React.useContext(LoadingContext);
-
   return (
     <div className="relative">
       {typeof handleViewRecord === 'function' &&
-        (model === undefined || hasTablePermission(model.name, 'read')) && (
-          <Button.LikeLink
-            className="absolute top-0 left-0"
-            title={model?.label}
-            onClick={(): void =>
-              loading(
-                // Fetch related CollectionObjectAttachment tables
-                fetchRelated(attachment, `${model!.name as 'agent'}Attachments`)
-                  .then(({ records }) =>
-                    // Get key id of CollectionObject with URL value
-                    typeof records[0] === 'object'
-                      ? idFromUrl(
-                          caseInsensitiveHash(
-                            records[0],
-                            model!.name as 'agent'
-                          ) ?? ''
-                        )
-                      : undefined
-                  )
-                  .then((id) =>
-                    typeof id === 'number'
-                      ? handleViewRecord(model!, id)
-                      : handleMetaToggle()
-                  )
-              )
-            }
-          >
-            <TableIcon label name={model?.name ?? 'Attachment'} />
-          </Button.LikeLink>
-        )}
+      model !== undefined &&
+      hasTablePermission(model.name, 'read') ? (
+        <RecordLink
+          attachment={attachment}
+          model={model}
+          onViewRecord={handleViewRecord}
+        />
+      ) : undefined}
       {typeof thumbnail === 'object' ? (
         <AttachmentPreview
           attachment={attachment}
@@ -97,4 +73,66 @@ function getAttachmentModel(
   if (tableId === undefined) return undefined;
   const model = getModelById(tableId);
   return tablesWithAttachments().includes(model) ? model : undefined;
+}
+
+/**
+ * A button to open a record associated with the attachment
+ */
+function RecordLink({
+  model,
+  attachment,
+  onViewRecord: handleViewRecord,
+}: {
+  readonly model: SpecifyModel;
+  readonly attachment: SerializedResource<Attachment>;
+  readonly onViewRecord: (model: SpecifyModel, recordId: number) => void;
+}): JSX.Element {
+  const loading = React.useContext(LoadingContext);
+  const [isFailed, handleFailed, handleNotFailed] = useBooleanState();
+  return (
+    <>
+      <Button.LikeLink
+        className="absolute top-0 left-0"
+        title={model?.label}
+        onClick={(): void =>
+          loading(
+            fetchRelatedId(model, attachment).then((id) =>
+              typeof id === 'number'
+                ? handleViewRecord(model, id)
+                : handleFailed()
+            )
+          )
+        }
+      >
+        <TableIcon label name={model?.name ?? 'Attachment'} />
+      </Button.LikeLink>
+      {isFailed ? (
+        <Dialog
+          buttons={commonText.close()}
+          header={attachmentsText.unableToFindRelatedRecord()}
+          onClose={handleNotFailed}
+        >
+          {attachmentsText.unableToFindRelatedRecordDescription()}
+        </Dialog>
+      ) : undefined}
+    </>
+  );
+}
+
+/**
+ * For an attachment related to CollectionObjectAttachment, fetch the ID of
+ * the CollectionObject
+ */
+async function fetchRelatedId(
+  model: SpecifyModel,
+  attachment: SerializedResource<Attachment>
+): Promise<number | undefined> {
+  const { records } = await fetchRelated(
+    attachment,
+    `${model.name as 'agent'}Attachments`
+  );
+  if (records[0] === undefined) return undefined;
+  // This would be a URL to CollectionObject
+  const resourceUrl = caseInsensitiveHash(records[0], model.name as 'agent');
+  return idFromUrl(resourceUrl ?? '');
 }

@@ -17,7 +17,7 @@ import type { ParsedFormDefinition } from './index';
  */
 export const webOnlyViews = f.store(() =>
   ensure<IR<ParsedFormDefinition>>()({
-    ObjectAttachment: {
+    [attachmentView]: {
       columns: [undefined],
       rows: [
         [
@@ -83,6 +83,9 @@ export const webOnlyViews = f.store(() =>
     ),
   } as const)
 );
+
+
+export const attachmentView = 'ObjectAttachment';
 
 export const spAppResourceView = '_SpAppResourceView_name';
 export const spViewSetNameView = '_SpViewSetObj_name';
