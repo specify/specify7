@@ -49,7 +49,7 @@ export const statsText = createDictionary({
     'ru-ru': 'Заемы',
   },
   itemsOnLoans: {
-    'en-us': 'Items on Loans',
+    'en-us': 'Items on Loan',
     'ru-ru': 'Предметы в Займы',
   },
   openLoans: {
@@ -125,7 +125,7 @@ export const statsText = createDictionary({
     'ru-ru': 'Выберите статистику',
   },
   selectFromQueries: {
-    'en-us': `Select From Queries`,
+    'en-us': 'Select From Queries',
     'ru-ru': 'Выбрать из запросов',
   },
   selectFromDefault: {
