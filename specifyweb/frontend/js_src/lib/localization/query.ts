@@ -639,6 +639,6 @@ export const queryText = createDictionary({
     `,
   },
   hiddenFieldsMess: {
-    'en-us':'The following fields are hidden in the query you imported: '
+    'en-us': 'The following fields are hidden in the query you imported: ',
   },
 } as const);

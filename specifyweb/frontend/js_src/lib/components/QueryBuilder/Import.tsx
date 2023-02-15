@@ -5,7 +5,8 @@ import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { wbPlanText } from '../../localization/wbPlan';
 import { f } from '../../utils/functools';
-import { filterArray, RA } from '../../utils/types';
+import type { RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { getUniqueName } from '../../utils/uniquifyName';
 import { removeKey, replaceKey } from '../../utils/utils';
 import { Ul } from '../Atoms';
@@ -18,7 +19,7 @@ import type {
   SerializedModel,
   SerializedResource,
 } from '../DataModel/helperTypes';
-import { SpecifyResource } from '../DataModel/legacyTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { SpQuery } from '../DataModel/types';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
@@ -76,8 +77,7 @@ export function QueryImport({
                           const isHidden = fieldSpec.joinPath.some(
                             ({ isHidden }) => isHidden
                           );
-                          if (isHidden) return fieldSpec;
-                          else return undefined;
+                          return isHidden ? fieldSpec : undefined;
                         })
                       )
                     );
@@ -132,7 +132,7 @@ export function QueryImport({
               {queryText.hiddenFieldsMess()}
               <Ul className="flex flex-col">
                 {hiddenFields.map((field, index) => (
-                  <li key={index} className="font-bold">
+                  <li className="font-bold" key={index}>
                     {generateMappingPathPreview(
                       field.baseTable.name,
                       field.toMappingPath()
