@@ -139,7 +139,12 @@ export function AttachmentsPlugin({
           </div>
         </Dialog>
       ) : state.type === 'DisplayAttachment' ? (
-        <AttachmentViewer attachment={state.attachment} />
+        <AttachmentViewer
+          attachment={state.attachment}
+          relatedResource={
+            resource?.specifyModel.name === 'Attachment' ? undefined : resource
+          }
+        />
       ) : (
         error('Unhandled case', { state })
       )}

@@ -235,11 +235,18 @@ export function FormField({
     fieldDefinition.type
   ] as typeof fieldRenderers.Checkbox;
   const data = useDistantRelated(resource, fields);
+  const isIndependent =
+    fields?.some((field) => field.isRelationship && !field.isDependent()) ??
+    true;
   return (
     <ErrorBoundary dismissible>
       {data === undefined ? undefined : (
         <Render
-          mode={isReadOnly || data.resource !== resource ? 'view' : mode}
+          mode={
+            isReadOnly || data.resource === undefined || isIndependent
+              ? 'view'
+              : mode
+          }
           {...rest}
           field={data.field}
           fieldDefinition={fieldDefinition as FieldTypes['Checkbox']}
