@@ -35,7 +35,7 @@ export const wbPlanText = createDictionary({
     `,
     'fr-fr': `
       Aucun plan de téléchargement n'a été défini pour cet ensemble de données.
-      En créer un maintenant ?
+      Créez-en un maintenant?
     `,
     'uk-ua':
       'Для цього набору даних не визначено план завантаження. Створити зараз?',
