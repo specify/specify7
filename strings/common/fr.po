@@ -123,7 +123,7 @@ msgstr "Créer"
 #: components/FormMeta/EditHistory.tsx:53
 #: components/FormMeta/PickListUsages.tsx:44
 #: components/FormMeta/index.tsx:90
-#: components/FormPlugins/CollectionRelOneToMany.tsx:182
+#: components/FormPlugins/CollectionRelOneToMany.tsx:187
 #: components/FormPlugins/GeoLocate.tsx:112
 #: components/FormPlugins/GeoLocate.tsx:124
 #: components/FormPlugins/Leaflet.tsx:40
@@ -306,7 +306,7 @@ msgstr "Outils"
 #: components/FormFields/ComboBox.tsx:135
 #: components/FormFields/Field.tsx:166
 #: components/FormFields/QueryComboBox.tsx:373
-#: components/FormPlugins/CollectionRelOneToMany.tsx:152
+#: components/FormPlugins/CollectionRelOneToMany.tsx:157
 #: components/Forms/BaseResourceView.tsx:51
 #: components/Forms/DeleteButton.tsx:110
 #: components/Forms/SearchDialog.tsx:154
@@ -359,7 +359,7 @@ msgstr "Importé"
 #: components/Atoms/DataEntry.tsx:151
 #: components/FormCells/FormTable.tsx:351
 #: components/FormCells/FormTable.tsx:360
-#: components/FormPlugins/CollectionRelOneToMany.tsx:130
+#: components/FormPlugins/CollectionRelOneToMany.tsx:135
 #: components/QueryBuilder/Components.tsx:150
 #: components/QueryBuilder/Field.tsx:243
 #: components/QueryBuilder/Field.tsx:245
