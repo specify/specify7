@@ -8,7 +8,7 @@ import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { getUniqueName } from '../../utils/uniquifyName';
 import { removeItem, removeKey, replaceItem } from '../../utils/utils';
-import { H2, H3 } from '../Atoms';
+import { H2, H3, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Form } from '../Atoms/Form';
@@ -467,54 +467,67 @@ export function StatsPage(): JSX.Element | null {
                   md:sticky
               `}
           >
-            {Object.entries(layout).map(
-              ([parentLayoutName, parentLayout], index) =>
-                parentLayout === undefined ? undefined : (
-                  <div className="flex flex-col gap-2">
-                    <H3 className="text-lg font-bold">{parentLayoutName}</H3>
-                    {parentLayout.map(({ label }, pageIndex) => (
-                      <StatsAsideButton
-                        isCurrent={
-                          activePage.pageIndex === pageIndex &&
-                          activePage.isCollection === (index === 0)
-                        }
-                        key={pageIndex}
-                        label={label}
-                        onClick={(): void =>
-                          setActivePage({
-                            isCollection: index === 0,
-                            pageIndex,
-                          })
-                        }
-                        onRename={
-                          isEditing && canEditIndex(index === 0)
-                            ? (): void =>
+            {
+              <Ul className="flex flex-col gap-2">
+                {Object.entries(layout).map(
+                  ([parentLayoutName, parentLayout], index) =>
+                    parentLayout === undefined ? undefined : (
+                      <li className="flex flex-col gap-2" key={index}>
+                        <H3 className="text-lg font-bold">
+                          {parentLayoutName}
+                        </H3>
+                        <Ul className="flex flex-col gap-2">
+                          {parentLayout.map(({ label }, pageIndex) => (
+                            <li>
+                              {
+                                <StatsAsideButton
+                                  isCurrent={
+                                    activePage.pageIndex === pageIndex &&
+                                    activePage.isCollection === (index === 0)
+                                  }
+                                  key={pageIndex}
+                                  label={label}
+                                  onClick={(): void =>
+                                    setActivePage({
+                                      isCollection: index === 0,
+                                      pageIndex,
+                                    })
+                                  }
+                                  onRename={
+                                    isEditing && canEditIndex(index === 0)
+                                      ? (): void =>
+                                          setState({
+                                            type: 'PageRenameState',
+                                            isCollection: index === 0,
+                                            pageIndex,
+                                          })
+                                      : undefined
+                                  }
+                                />
+                              }
+                            </li>
+                          ))}
+
+                          {isEditing && canEditIndex(index === 0) && (
+                            <StatsAsideButton
+                              isCurrent={false}
+                              label={commonText.add()}
+                              onClick={(): void =>
                                 setState({
                                   type: 'PageRenameState',
+                                  pageIndex: undefined,
                                   isCollection: index === 0,
-                                  pageIndex,
                                 })
-                            : undefined
-                        }
-                      />
-                    ))}
-                    {isEditing && canEditIndex(index === 0) && (
-                      <StatsAsideButton
-                        isCurrent={false}
-                        label={commonText.add()}
-                        onClick={(): void =>
-                          setState({
-                            type: 'PageRenameState',
-                            pageIndex: undefined,
-                            isCollection: index === 0,
-                          })
-                        }
-                        onRename={undefined}
-                      />
-                    )}
-                  </div>
-                )
-            )}
+                              }
+                              onRename={undefined}
+                            />
+                          )}
+                        </Ul>
+                      </li>
+                    )
+                )}
+              </Ul>
+            }
           </aside>
           {state.type === 'PageRenameState' && (
             <StatsPageEditing
