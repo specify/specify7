@@ -249,7 +249,8 @@ export function StatsPage(): JSX.Element | null {
         })),
         categoryToFetch: category.categoryToFetch,
       })),
-      lastUpdated: lastUpdatedDate.toJSON(),
+      lastUpdated:
+        index === pageIndex ? lastUpdatedDate.toJSON() : pageLayout.lastUpdated,
     }));
   };
 
@@ -478,14 +479,13 @@ export function StatsPage(): JSX.Element | null {
                         </H3>
                         <Ul className="flex flex-col gap-2">
                           {parentLayout.map(({ label }, pageIndex) => (
-                            <li>
+                            <li key={pageIndex}>
                               {
                                 <StatsAsideButton
                                   isCurrent={
                                     activePage.pageIndex === pageIndex &&
                                     activePage.isCollection === (index === 0)
                                   }
-                                  key={pageIndex}
                                   label={label}
                                   onClick={(): void =>
                                     setActivePage({

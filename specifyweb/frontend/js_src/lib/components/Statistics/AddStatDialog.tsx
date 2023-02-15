@@ -78,6 +78,7 @@ export function AddStatDialog({
                     pageLabel={defaultLayoutPage.label}
                     pageIndex={index}
                     pageLayout={defaultLayoutPage}
+                    key={index}
                     onClick={(item: CustomStat | DefaultStat): void => {
                       handleAdd(item, -1);
                       handleClose();
