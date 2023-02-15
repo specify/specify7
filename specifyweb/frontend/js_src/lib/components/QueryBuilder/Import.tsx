@@ -11,11 +11,15 @@ import { icons } from '../Atoms/Icons';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import { getField } from '../DataModel/helpers';
-import type { SerializedResource } from '../DataModel/helperTypes';
+import type {
+  SerializedModel,
+  SerializedResource,
+} from '../DataModel/helperTypes';
 import { schema } from '../DataModel/schema';
 import type { SpQuery } from '../DataModel/types';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { FilePicker, fileToText } from '../Molecules/FilePicker';
+import { QueryFieldSpec } from './fieldSpec';
 
 export function QueryImport({
   onClose: handleClose,
@@ -38,8 +42,23 @@ export function QueryImport({
           acceptedFormats={['.json']}
           onSelected={(file): void =>
             loading(
+              // FIXME: revert
               fileToText(file)
-                .then<SerializedResource<SpQuery>>(f.unary(JSON.parse))
+                .then<SerializedModel<SpQuery>>(f.unary(JSON.parse))
+                .then((query) => {
+                  query.fields.map((field) => {
+                    const fieldSpec = QueryFieldSpec.fromStringId(
+                      field.stringid,
+                      field.isrelfld ?? false
+                    );
+                    const isHidden = fieldSpec.joinPath.some(
+                      ({ isHidden }) => isHidden
+                    );
+                    if (isHidden) return fieldSpec;
+                    else return undefined;
+                  });
+                  return query;
+                })
                 .then(
                   (query) =>
                     new schema.models.SpQuery.Resource(

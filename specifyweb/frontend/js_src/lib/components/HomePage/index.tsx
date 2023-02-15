@@ -5,6 +5,7 @@ import { f } from '../../utils/functools';
 import { Async } from '../Router/RouterUtils';
 import { defaultWelcomePageImage } from '../UserPreferences/Renderers';
 import { usePref } from '../UserPreferences/usePref';
+import { TooltipTesting } from './TooltipTesting';
 
 const taxonTiles = f.store(() => (
   <Async
@@ -41,6 +42,9 @@ export function WelcomeView(): JSX.Element {
 function WelcomeScreenContent(): JSX.Element {
   const [mode] = usePref('welcomePage', 'general', 'mode');
   const [source] = usePref('welcomePage', 'general', 'source');
+
+  // FIXME: remove
+  return <TooltipTesting />;
 
   return mode === 'embeddedWebpage' ? (
     <iframe

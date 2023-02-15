@@ -433,7 +433,10 @@ export const preferenceDefinitions = {
             renderer: WelcomePageModePreferenceItem,
             container: 'div',
           }),
-          // FEATURE: allow selecting attachments
+          /*
+           * FEATURE: allow selecting attachments
+           *   See https://github.com/specify/specify7/issues/2999
+           */
           source: defineItem<string>({
             title: <></>,
             requiresReload: false,
