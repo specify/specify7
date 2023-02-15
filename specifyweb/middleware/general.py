@@ -1,6 +1,6 @@
 import traceback
 import json
-from typing import Any, Optional, Dict, List
+from typing import Any, Optional, Union, Dict, FrozenSet, List
 from django import http
 from django.core import serializers
 from django.db import models
@@ -22,7 +22,7 @@ class SpecifyExceptionWrapper():
             'traceback' : traceback.format_exc()
             }
 
-        if isinstance(self.data, models.QuerySet):
+        if isinstance(self.data, set):
             result['data'] = serialize_django_obj(self.data)
 
         from ..specify import api
@@ -61,36 +61,43 @@ class GeneralMiddleware:
                 return http.HttpResponse(exception.to_json(), status=exception.status_code)
 
 
-def serialize_django_obj(django_obj: models.QuerySet or models.Model) -> List[Dict[str, Any]] or Dict[str, Any]:
+def serialize_django_obj(django_obj: FrozenSet[Union[models.QuerySet, models.Model]]) -> List[Dict[str, Any]] or Dict[str, Any]:
     """Attempt to serialize two common objects in Django, a Queryset or a Model. 
     If the object is a Queryset, return a list of dictonaries containing the important (non-null) fields
     Similarly, if the object is a single Model, return a dictonary containing every field
     Otherwise, return a string version of <django_obj>
     """
+    parsed_data = []
+    if isinstance(django_obj, set):
+        for object in django_obj:
+            if isinstance(object, models.QuerySet):
+                # We use a django serializer to convert the queryset to a string and then convert 
+                # the string to a json object.
+                # The loaded json object is a list of dictonaries which all have the keys 'model', 'pk', and 'fields'
+                # See the Django documentation for more information
+                #   https://docs.djangoproject.com/en/2.2/topics/serialization/#json-1
 
-    if isinstance(django_obj, models.QuerySet):
-        # We use a django serializer to convert the queryset to a string and then convert 
-        # the string to a json object.
-        # The loaded json object is a list of dictonaries which all have the keys 'model', 'pk', and 'fields'
-        # See the Django documentation for more information
-        #   https://docs.djangoproject.com/en/2.2/topics/serialization/#json-1
+                raw_queryset = json.loads(serializers.serialize('json', object))
+                parsed_data.append(
+                    {
+                        "Model" : resource['model'].split(".")[1].capitalize(),
+                        "Id" : resource['pk'],
+                        "Non-Null Fields" : [f"{field} : {value}" for field, value in resource['fields'].items() if value is not None]
+                    }
+                    for resource in raw_queryset
+                )
 
-        raw_queryset = json.loads(serializers.serialize('json', django_obj))
-        parsed_data = [
-            {
-                "Model" : resource['model'].split(".")[1].capitalize(),
-                "Id" : resource['pk'],
-                "Non-Null Fields" : [f"{field} : {value}" for field, value in resource['fields'].items() if value is not None]
-            }
-            for resource in raw_queryset
-        ]
-    
-    # We can not directly check if the object is a model with isinstance(). However, every model object
-    # contains a '_state' attribute which is of type ModelState.
-    
-    # Both cases for Querysets and Models do not include to-many relationship data for fields
-    elif hasattr(django_obj, "_state") and isinstance(django_obj.__dict__['_state'], models.base.ModelState):
-        parsed_data = model_to_dict(django_obj)
+            # Every single object has the attribute 'specify_model', which is added to the Django model in load_datamodel.py
+            elif  hasattr(object, "specify_model"):
+                obj_as_dict =  model_to_dict(object)
+                parsed_data.append({
+                    "Model": object.specify_model.name,
+                    "Id": obj_as_dict['id'],
+                    "Non-Null Fields": [f"{field}: {value}" for field, value in obj_as_dict.items() if value is not None and field != "id"]
+                })
+            else:
+                return str(django_obj)
+
     else: 
         # If the passed-in object is unknown, return the object as a string
         return str(django_obj)
