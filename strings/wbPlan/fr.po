@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-02-14 18:28+0000\n"
+"PO-Revision-Date: 2023-02-15 17:36+0000\n"
 "Last-Translator: Heather <heather.cole@canada.ca>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/wbPlan/"
 "fr/>\n"
@@ -29,11 +29,10 @@ msgstr "Aucun plan de téléchargement n'est défini"
 #. Used in: Components > Work Bench > Wb View
 #: components/WorkBench/wbView.js:276
 #: components/WorkBench/wbView.js:1904
-#, fuzzy
 msgid "noUploadPlanDescription"
 msgstr ""
 "Aucun plan de téléchargement n'a été défini pour cet ensemble de données. "
-"En créer un maintenant ?"
+"Créez-en un maintenant?"
 
 #. Used in: Components > Work Bench > Wb View
 #: components/WorkBench/wbView.js:387
