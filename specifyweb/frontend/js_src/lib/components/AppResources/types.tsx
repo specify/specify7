@@ -8,6 +8,8 @@ import { ensure } from '../../utils/types';
 import { icons } from '../Atoms/Icons';
 import type { Tables } from '../DataModel/types';
 import type { AppResourceMode } from './helpers';
+import { SerializedResource } from '../DataModel/helperTypes';
+import { SpAppResourceDir } from '../DataModel/types';
 
 export type AppResourceScope =
   | 'global'
@@ -33,6 +35,10 @@ export const appResourceTypes: RR<AppResourceMode, AppResourceType> = {
     icon: icons.pencilAt,
     label: resourcesText.formDefinitions(),
   },
+};
+
+export type ScopedAppResourceDir = SerializedResource<SpAppResourceDir> & {
+  readonly scope: AppResourceScope;
 };
 
 export type AppResourceSubType = {

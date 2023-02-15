@@ -128,6 +128,7 @@ export const visualAppResourceEditors: RR<
   report: undefined,
   user: UserPreferencesEditor,
   defaultUserPreferences: UserPreferencesEditor,
+  collection: undefined,
   leafletLayers: undefined,
   rssExportFeed: undefined,
   expressSearchConfig: undefined,

@@ -21,7 +21,6 @@ import { createResource } from '../DataModel/resource';
 import type {
   SpAppResource,
   SpAppResourceData,
-  SpAppResourceDir,
   SpViewSetObj as SpViewSetObject,
 } from '../DataModel/types';
 import { useResourceView } from '../Forms/BaseResourceView';
@@ -39,6 +38,8 @@ import {
 import { getResourceType } from './filtersHelpers';
 import { useAppResourceData } from './hooks';
 import { AppResourcesTabs } from './Tabs';
+import { ScopedAppResourceDir } from './types';
+import { getScope } from './tree';
 
 export function AppResourceEditor({
   resource,
@@ -49,7 +50,7 @@ export function AppResourceEditor({
   onDeleted: handleDeleted,
 }: {
   readonly resource: SerializedResource<SpAppResource | SpViewSetObject>;
-  readonly directory: SerializedResource<SpAppResourceDir>;
+  readonly directory: ScopedAppResourceDir;
   readonly initialData: string | undefined;
   readonly onDeleted: () => void;
   readonly onClone: (
@@ -58,7 +59,7 @@ export function AppResourceEditor({
   ) => void;
   readonly onSaved: (
     resource: SerializedResource<SpAppResource | SpViewSetObject>,
-    directory: SerializedResource<SpAppResourceDir>
+    directory: ScopedAppResourceDir
   ) => void;
 }): JSX.Element | null {
   const appResource = React.useMemo(
@@ -223,7 +224,10 @@ export function AppResourceEditor({
                     ) as SerializedResource<SpAppResourceData>
                   );
 
-                  handleSaved(resource, resourceDirectory);
+                  handleSaved(resource, {
+                    ...resourceDirectory,
+                    scope: getScope(resourceDirectory),
+                  });
                 })
               );
 

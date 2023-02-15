@@ -16,7 +16,7 @@ import type {
 } from '../DataModel/types';
 import { userTypes } from '../PickLists/definitions';
 import type { AppResources, AppResourcesTree } from './hooks';
-import { AppResourceScope } from './types';
+import { AppResourceScope, ScopedAppResourceDir } from './types';
 
 export const getScope = (
   directory: SerializedResource<SpAppResourceDir>
@@ -58,9 +58,7 @@ const sortTree = (tree: AppResourcesTree): AppResourcesTree =>
     }));
 
 function getGlobalAllResources(resources: AppResources): {
-  readonly directory: SerializedResource<SpAppResourceDir> & {
-    readonly scope: AppResourceScope;
-  };
+  readonly directory: ScopedAppResourceDir;
   readonly appResources: RA<SerializedResource<SpAppResource>>;
   readonly viewSets: RA<SerializedResource<SpViewSetObj>>;
 } {

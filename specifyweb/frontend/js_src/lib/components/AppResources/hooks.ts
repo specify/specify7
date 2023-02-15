@@ -12,18 +12,15 @@ import type {
   Discipline,
   SpAppResource,
   SpAppResourceData,
-  SpAppResourceDir,
   SpecifyUser,
   SpViewSetObj as SpViewSetObject,
 } from '../DataModel/types';
 import { getAppResourceCount, getAppResourceMode } from './helpers';
 import { getAppResourceTree, getScope } from './tree';
-import { AppResourceScope } from './types';
+import { ScopedAppResourceDir } from './types';
 
 export type AppResources = {
-  readonly directories: RA<
-    SerializedResource<SpAppResourceDir> & { readonly scope: AppResourceScope }
-  >;
+  readonly directories: RA<ScopedAppResourceDir>;
   readonly disciplines: RA<SerializedResource<Discipline>>;
   readonly collections: RA<SerializedResource<Collection>>;
   readonly users: RA<SerializedResource<SpecifyUser>>;
@@ -70,11 +67,7 @@ export type AppResourcesTree = RA<{
    * Used to identify a tree node when storing conformation it in localStorage.
    */
   readonly key: string;
-  readonly directory:
-    | (SerializedResource<SpAppResourceDir> & {
-        readonly scope: AppResourceScope;
-      })
-    | undefined;
+  readonly directory: ScopedAppResourceDir | undefined;
   readonly appResources: RA<SerializedResource<SpAppResource>>;
   readonly viewSets: RA<SerializedResource<SpViewSetObject>>;
   readonly subCategories: AppResourcesTree;

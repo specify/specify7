@@ -25,12 +25,8 @@ import { NotFoundView } from '../Router/NotFoundView';
 import type { AppResourcesTree } from './hooks';
 import { useResourcesTree } from './hooks';
 import type { AppResourcesOutlet } from './index';
-import type { AppResourceType } from './types';
-import {
-  AppResourceScope,
-  appResourceSubTypes,
-  appResourceTypes,
-} from './types';
+import type { AppResourceType, ScopedAppResourceDir } from './types';
+import { appResourceSubTypes, appResourceTypes } from './types';
 
 /**
  * Check if one type is a subtype of another
@@ -138,11 +134,7 @@ export function CreateAppResource(): JSX.Element {
 export const findAppResourceDirectory = (
   tree: AppResourcesTree,
   searchKey: string
-):
-  | (SerializedResource<SpAppResourceDir> & {
-      readonly scope: AppResourceScope;
-    })
-  | undefined =>
+): ScopedAppResourceDir | undefined =>
   mappedFind(tree, ({ key, directory, subCategories }) =>
     key === searchKey
       ? directory
