@@ -507,7 +507,7 @@ export const commonText = createDictionary({
     'es-es': 'Colapso',
     'fr-fr': 'Effondrement',
     'ru-ru': 'Крах',
-    'uk-ua': 'Згорнути',
+    'uk-ua': 'Колапс',
   },
   collapseAll: {
     'en-us': 'Collapse All',
