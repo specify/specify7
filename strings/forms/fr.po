@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-02-14 21:37+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2023-02-15 17:36+0000\n"
+"Last-Translator: Heather <heather.cole@canada.ca>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/forms/"
 "fr/>\n"
 "Language: fr\n"
@@ -363,9 +363,8 @@ msgstr "Ressource supprimée"
 
 #. Used in: Components > Data Model > Business Rules
 #: components/DataModel/businessRules.js:196
-#, fuzzy
 msgid "valueMustBeUniqueToField"
-msgstr "La valeur doit être unique pour {fieldName:string}"
+msgstr "Valeur doit être unique pour {fieldName:string}"
 
 #. Used in: Components > Forms > Delete Blocked ⬤ Components > Forms > Delete Button
 #: components/Forms/DeleteBlocked.tsx:84
