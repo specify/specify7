@@ -1,7 +1,7 @@
 import type { RA } from '../../utils/types';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpQuery } from '../DataModel/types';
-import type { CustomStat, DefaultStat, StatLayout, StatsSpec } from './types';
+import type { CustomStat, DefaultStat, StatLayout } from './types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { Button } from '../Atoms/Button';
 import { commonText } from '../../localization/common';
@@ -14,7 +14,6 @@ import { queryToSpec } from './ResultsDialog';
 
 export function AddStatDialog({
   defaultStatsAddLeft,
-  statsSpec,
   queries,
   onClose: handleClose,
   onAdd: handleAdd,
@@ -22,7 +21,6 @@ export function AddStatDialog({
 }: {
   readonly queries: RA<SerializedResource<SpQuery>> | undefined;
   readonly defaultStatsAddLeft: StatLayout | undefined;
-  readonly statsSpec: StatsSpec;
   readonly onClose: () => void;
   readonly onAdd: (item: CustomStat | DefaultStat, itemIndex: number) => void;
   readonly onLoad:
@@ -80,7 +78,6 @@ export function AddStatDialog({
                     pageLabel={defaultLayoutPage.label}
                     pageIndex={index}
                     pageLayout={defaultLayoutPage}
-                    statsSpec={statsSpec}
                     onClick={(item: CustomStat | DefaultStat): void => {
                       handleAdd(item, -1);
                       handleClose();

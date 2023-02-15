@@ -14,7 +14,6 @@ import type {
   CustomStat,
   DefaultStat,
   QuerySpec,
-  StatsSpec,
 } from './types';
 import { hasTablePermission } from '../Permissions/helpers';
 import { userText } from '../../localization/user';
@@ -27,7 +26,6 @@ const overRideValue = (
 ) => (hasTablePermission(tableName, 'read') ? value : userText.noPermission());
 
 export function StatItem({
-  statsSpec,
   item,
   categoryIndex,
   itemIndex,
@@ -37,7 +35,6 @@ export function StatItem({
   onLoad: onLoad,
   onRename: handleRename,
 }: {
-  readonly statsSpec: StatsSpec;
   readonly item: CustomStat | DefaultStat;
   readonly categoryIndex: number;
   readonly itemIndex: number;
@@ -59,7 +56,7 @@ export function StatItem({
     (value: number | string) => onLoad?.(categoryIndex, itemIndex, value),
     [onLoad, categoryIndex, itemIndex]
   );
-  const resolvedSpec = useResolvedStatSpec(item, statsSpec);
+  const resolvedSpec = useResolvedStatSpec(item);
 
   return resolvedSpec?.type === 'QueryBuilderStat' &&
     resolvedSpec.querySpec !== undefined ? (

@@ -25,7 +25,6 @@ import { useQueries } from '../Toolbar/Query';
 import { AddStatDialog } from './AddStatDialog';
 import { StatsAsideButton } from './Buttons';
 import { Categories } from './Categories';
-import { dynamicCategories } from './definitions';
 import {
   setAbsentCategoriesToFetch,
   statsToTsv,
@@ -33,10 +32,10 @@ import {
   useDefaultLayout,
   useDefaultStatsToAdd,
   useDynamicCategorySetter,
-  useStatsSpec,
 } from './hooks';
 import { StatsPageEditing } from './StatsPageEditing';
 import type { CustomStat, DefaultStat, StatLayout } from './types';
+import { dynamicStatsSpec } from './StatsSpec';
 
 export function StatsPage(): JSX.Element | null {
   useMenuItem('statistics');
@@ -113,7 +112,10 @@ export function StatsPage(): JSX.Element | null {
     ? collectionLayout
     : personalLayout;
 
-  const allCategories = React.useMemo(() => dynamicCategories, []);
+  const allCategories = React.useMemo(
+    () => dynamicStatsSpec.map(({ categoryName }) => categoryName),
+    []
+  );
   const [categoriesToFetch, setCategoriesToFetch] = React.useState<RA<string>>(
     []
   );
@@ -125,8 +127,7 @@ export function StatsPage(): JSX.Element | null {
   );
   const backEndResponse = useBackendApi(categoriesToFetch);
   const defaultBackEndResponse = useBackendApi(allCategories);
-  const statsSpec = useStatsSpec();
-  const defaultLayoutSpec = useDefaultLayout(statsSpec);
+  const defaultLayoutSpec = useDefaultLayout();
 
   /*
    * Initial Load For Collection and Personal Pages
@@ -137,11 +138,11 @@ export function StatsPage(): JSX.Element | null {
    */
   React.useEffect(() => {
     if (collectionLayout === undefined) {
-      setCollectionLayout(defaultLayoutSpec);
+      setCollectionLayout([defaultLayoutSpec[0]]);
       setCategoriesToFetch(allCategories);
     }
     if (personalLayout === undefined) {
-      setPersonalLayout(defaultLayoutSpec);
+      setPersonalLayout([defaultLayoutSpec[1]]);
       setCategoriesToFetch(allCategories);
     }
   }, [
@@ -211,12 +212,8 @@ export function StatsPage(): JSX.Element | null {
   );
 
   // Used to set unknown categories once for layout initially, and every time for default layout
-  useDynamicCategorySetter(backEndResponse, handleChange, statsSpec);
-  useDynamicCategorySetter(
-    defaultBackEndResponse,
-    handleDefaultChange,
-    statsSpec
-  );
+  useDynamicCategorySetter(backEndResponse, handleChange);
+  useDynamicCategorySetter(defaultBackEndResponse, handleDefaultChange);
 
   const filters = React.useMemo(
     () => ({
@@ -250,6 +247,7 @@ export function StatsPage(): JSX.Element | null {
           ...item,
           itemValue: pageIndex === index ? undefined : item.itemValue,
         })),
+        categoryToFetch: category.categoryToFetch,
       })),
       lastUpdated: lastUpdatedDate.toJSON(),
     }));
@@ -406,9 +404,9 @@ export function StatsPage(): JSX.Element | null {
             <Button.Red
               onClick={(): void => {
                 cleanMaybeFulfilled();
-                setCollectionLayout(defaultLayoutSpec);
-                setPersonalLayout(defaultLayoutSpec);
-                setCategoriesToFetch(dynamicCategories);
+                setCollectionLayout(undefined);
+                setPersonalLayout(undefined);
+                setCategoriesToFetch([]);
               }}
             >
               {commonText.reset()}
@@ -605,7 +603,6 @@ export function StatsPage(): JSX.Element | null {
           <div className="grid w-full grid-cols-[repeat(auto-fill,minmax(20rem,1fr))] gap-4 overflow-y-auto px-4 pb-6">
             <Categories
               pageLayout={pageLayout}
-              statsSpec={statsSpec}
               onAdd={
                 isEditing && canEditIndex(activePage.isCollection)
                   ? (categoryindex): void =>
@@ -706,7 +703,6 @@ export function StatsPage(): JSX.Element | null {
         <AddStatDialog
           defaultStatsAddLeft={defaultStatsAddLeft}
           queries={queries}
-          statsSpec={statsSpec}
           onAdd={(item, itemIndex): void =>
             handleAdd(item, state.categoryIndex, itemIndex)
           }

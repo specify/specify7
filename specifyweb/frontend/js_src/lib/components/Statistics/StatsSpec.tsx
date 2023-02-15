@@ -1,6 +1,6 @@
 import { getDateInputValue } from '../../utils/dayJs';
 import type { IR } from '../../utils/types';
-import { ensure } from '../../utils/types';
+import { ensure, RA } from '../../utils/types';
 import { formatNumber } from '../Atoms/Internationalization';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { statsText } from '../../localization/stats';
@@ -8,13 +8,15 @@ import { formattedEntry } from '../WbPlanView/mappingHelpers';
 import type { StatCategoryReturn } from './types';
 import { userInformation } from '../InitialContext/userInformation';
 import { f } from '../../utils/functools';
+import { Tables } from '../DataModel/types';
+import { BackEndStat } from './types';
 
 type StatsSpec = IR<{
   readonly label: string;
   readonly categories: StatCategoryReturn;
 }>;
 
-export const statsSpec: IR<StatsSpec> = {
+export const statsSpecDef: IR<StatsSpec> = {
   [statsText.collection() as string]: {
     holdings: {
       label: statsText.holdings(),
@@ -415,26 +417,6 @@ export const statsSpec: IR<StatsSpec> = {
     holdings: {
       label: statsText.collection(),
       categories: {
-        ordersCount: {
-          label: statsText.orders(),
-          spec: {
-            type: 'QueryBuilderStat',
-            querySpec: {
-              tableName: 'Taxon',
-              fields: [
-                {
-                  path: formattedEntry,
-                },
-                {
-                  path: 'rankId',
-                  operStart: queryFieldFilters.equal.id,
-                  startValue: '100',
-                  isDisplay: false,
-                },
-              ],
-            },
-          },
-        },
         collectionObjectsCataloged: {
           label: statsText.collectionObjectsCataloged(),
           spec: {
@@ -488,4 +470,54 @@ export const statsSpec: IR<StatsSpec> = {
   },
 };
 
-ensure<IR<StatsSpec>>()(statsSpec);
+ensure<IR<StatsSpec>>()(statsSpecDef);
+
+function generateStatsSpec(): IR<
+  IR<{
+    readonly label: string;
+    readonly items: StatCategoryReturn;
+  }>
+> {
+  return Object.fromEntries(
+    Object.entries(statsSpecDef).map(([pageName, pageStatSpec]) => [
+      pageName,
+      Object.fromEntries(
+        Object.entries(pageStatSpec).map(
+          ([categoryName, { label, categories }]) => [
+            categoryName,
+            {
+              label,
+              items: categories,
+            },
+          ]
+        )
+      ),
+    ])
+  );
+}
+
+function generateDynamicSpec(
+  statsSpec: IR<
+    IR<{
+      readonly label: string;
+      readonly items: StatCategoryReturn;
+    }>
+  >
+): RA<{ categoryName: string; tableName: keyof Tables }> {
+  return Object.values(statsSpec).flatMap((categorySpec) =>
+    Object.entries(categorySpec).flatMap(([categoryName, { items }]) =>
+      Object.values(items)
+        .filter(
+          ({ spec }) =>
+            spec.type === 'BackEndStat' && spec.pathToValue === undefined
+        )
+        .map(({ spec }) => ({
+          categoryName: categoryName,
+          tableName: (spec as BackEndStat).tableName,
+        }))
+    )
+  );
+}
+
+export const statsSpec = generateStatsSpec();
+export const dynamicStatsSpec = generateDynamicSpec(statsSpec);

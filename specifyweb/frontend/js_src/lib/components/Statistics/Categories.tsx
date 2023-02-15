@@ -1,10 +1,4 @@
-import type {
-  CustomStat,
-  DefaultStat,
-  QuerySpec,
-  StatLayout,
-  StatsSpec,
-} from './types';
+import type { CustomStat, DefaultStat, QuerySpec, StatLayout } from './types';
 import { H3, Ul } from '../Atoms';
 import { Input } from '../Atoms/Form';
 import { StatItem } from './StatItems';
@@ -15,10 +9,30 @@ import React from 'react';
 import { RA } from '../../utils/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { statsText } from '../../localization/stats';
+import { hasTablePermission } from '../Permissions/helpers';
+import { userText } from '../../localization/user';
+import { dynamicStatsSpec } from './StatsSpec';
+
+function ItemOverride({
+  categoryToFetch,
+}: {
+  readonly categoryToFetch: string | undefined;
+}): JSX.Element {
+  const categoryFetchResolve = dynamicStatsSpec.find(
+    ({ categoryName }) => categoryName === categoryToFetch
+  );
+  return (
+    <>
+      {categoryFetchResolve !== undefined &&
+      !hasTablePermission(categoryFetchResolve.tableName, 'read')
+        ? userText.noPermission()
+        : commonText.loading()}
+    </>
+  );
+}
 
 export function Categories({
   pageLayout,
-  statsSpec,
   onAdd: handleAdd,
   onClick: handleClick,
   onRemove: handleRemove,
@@ -28,7 +42,6 @@ export function Categories({
   onLoad: onLoad,
 }: {
   readonly pageLayout: StatLayout[number] | undefined;
-  readonly statsSpec: StatsSpec;
   readonly onAdd: ((categoryIndex: number | undefined) => void) | undefined;
   readonly onClick: (
     item: CustomStat | DefaultStat,
@@ -75,7 +88,7 @@ export function Categories({
   return pageLayout === undefined ? null : (
     <>
       {pageLayout.categories.map(
-        ({ label, items }, categoryIndex) =>
+        ({ label, items, categoryToFetch }, categoryIndex) =>
           shouldShowCategory(items) && (
             <li
               className={
@@ -114,7 +127,6 @@ export function Categories({
                       item={item}
                       itemIndex={itemIndex}
                       key={itemIndex}
-                      statsSpec={statsSpec}
                       onClick={
                         item.type === 'DefaultStat' &&
                         typeof handleClick === 'function' &&
@@ -173,7 +185,7 @@ export function Categories({
                       }
                     />
                   ) : undefined
-                ) ?? commonText.loading()}
+                ) ?? <ItemOverride categoryToFetch={categoryToFetch} />}
               </Ul>
               {typeof handleCategoryRename === 'function' ? (
                 <span className="-mt-2 flex-1" />

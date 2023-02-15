@@ -1,4 +1,4 @@
-import { CustomStat, DefaultStat, StatLayout, StatsSpec } from './types';
+import { CustomStat, DefaultStat, StatLayout } from './types';
 import { Ul } from '../Atoms';
 import { Categories } from './Categories';
 import React from 'react';
@@ -7,14 +7,12 @@ export function AddStatPage({
   pageLabel,
   pageIndex,
   pageLayout,
-  statsSpec,
   onClick: handleClick,
   onLoad: onLoad,
 }: {
   readonly pageLabel: string;
   readonly pageIndex: number;
   readonly pageLayout: StatLayout[number] | undefined;
-  readonly statsSpec: StatsSpec;
   readonly onClick:
     | ((
         item: CustomStat | DefaultStat,
@@ -43,7 +41,6 @@ export function AddStatPage({
       <Ul className="flex flex-col gap-2">
         <Categories
           pageLayout={pageLayout}
-          statsSpec={statsSpec}
           onClick={handleClick}
           onRemove={undefined}
           onCategoryRename={undefined}

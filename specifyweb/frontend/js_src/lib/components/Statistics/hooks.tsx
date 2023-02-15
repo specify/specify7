@@ -13,8 +13,6 @@ import { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { SpQuery } from '../DataModel/types';
 import { makeQueryField } from '../QueryBuilder/fromTree';
-import { dynamicCategories } from './definitions';
-import { statsSpec } from './StatsSpec';
 import type {
   BackEndStat,
   BackendStatsResult,
@@ -25,10 +23,10 @@ import type {
   StatCategoryReturn,
   StatItemSpec,
   StatLayout,
-  StatsSpec,
 } from './types';
 import { Http } from '../../utils/ajax/definitions';
 import { userText } from '../../localization/user';
+import { dynamicStatsSpec, statsSpec } from './StatsSpec';
 
 /**
  * Fetch backend statistics from the API
@@ -72,34 +70,6 @@ function backEndStatPromiseGenerator(
           `/statistics/collection/${key}/`
         ),
     ])
-  );
-}
-
-export function useStatsSpec(): IR<
-  IR<{
-    readonly label: string;
-    readonly items: StatCategoryReturn;
-  }>
-> {
-  return React.useMemo(
-    () =>
-      Object.fromEntries(
-        Object.entries(statsSpec).map(([pageName, pageStatSpec]) => [
-          pageName,
-          Object.fromEntries(
-            Object.entries(pageStatSpec).map(
-              ([categoryName, { label, categories }]) => [
-                categoryName,
-                {
-                  label,
-                  items: categories,
-                },
-              ]
-            )
-          ),
-        ])
-      ),
-    []
   );
 }
 
@@ -164,14 +134,17 @@ export const statSpecToItems = (
         pathToValue: spec.type === 'BackEndStat' ? spec.pathToValue : undefined,
       }));
 
-export function useDefaultLayout(statsSpec: StatsSpec): StatLayout {
+export function useDefaultLayout(): StatLayout {
   return React.useMemo(
     () =>
       Object.entries(statsSpec).map(([pageName, pageStatsSpec]) => ({
         label: pageName,
         categories: Object.entries(pageStatsSpec).map(
           ([categoryName, { label, items }]) => {
-            const isUnknownCategory = dynamicCategories.includes(categoryName);
+            const isUnknownCategory =
+              dynamicStatsSpec.find(
+                (spec) => spec.categoryName === categoryName
+              ) !== undefined;
             return {
               label,
               items: isUnknownCategory
@@ -183,7 +156,7 @@ export function useDefaultLayout(statsSpec: StatsSpec): StatLayout {
         ),
         lastUpdated: undefined,
       })),
-    [statsSpec]
+    []
   );
 }
 
@@ -235,8 +208,7 @@ export const querySpecToResource = (
   );
 
 export function useResolvedStatSpec(
-  item: CustomStat | DefaultStat,
-  statsSpec: StatsSpec
+  item: CustomStat | DefaultStat
 ): StatItemSpec | undefined {
   return React.useMemo(() => {
     if (item.type === 'CustomStat') {
@@ -357,8 +329,7 @@ export function useDynamicCategorySetter(
     newCategories: (
       oldCategory: StatLayout[number]['categories']
     ) => StatLayout[number]['categories']
-  ) => void,
-  statsSpec: StatsSpec
+  ) => void
 ) {
   React.useLayoutEffect(() => {
     Object.entries(statsSpec).forEach(([pageName, pageSpec]) =>
@@ -399,5 +370,5 @@ export function useDynamicCategorySetter(
         )
       )
     );
-  }, [backEndResponse, handleChange, statsSpec]);
+  }, [backEndResponse, handleChange]);
 }
