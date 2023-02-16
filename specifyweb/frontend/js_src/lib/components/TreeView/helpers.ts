@@ -1,15 +1,16 @@
 import type React from 'react';
 import _ from 'underscore';
 
-import { ajax } from '../../utils/ajax';
-import { getTransitionDuration } from '../UserPreferences/Hooks';
+import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
-import { strictGetTreeDefinitionItems } from '../InitialContext/treeRanks';
+import { ajax } from '../../utils/ajax';
 import type { RA, RR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import { AnyTree } from '../DataModel/helperTypes';
-import { commonText } from '../../localization/common';
+import type { AnyTree } from '../DataModel/helperTypes';
 import { schema } from '../DataModel/schema';
+import { softFail } from '../Errors/Crash';
+import { strictGetTreeDefinitionItems } from '../InitialContext/treeRanks';
+import { getTransitionDuration } from '../UserPreferences/Hooks';
 
 export const fetchRows = async (fetchUrl: string) =>
   ajax<
@@ -112,13 +113,13 @@ export function deserializeConformation(
 ): Conformations | undefined {
   if (conformation === '') return undefined;
   const serialized = conformation
-    .replace(/([^~])~/g, '$1,~')
+    .replaceAll(/([^~])~/g, '$1,~')
     .replaceAll('~', '[')
     .replaceAll('-', ']');
   try {
     return JSON.parse(serialized) as Conformations;
   } catch {
-    console.error('bad tree conformation:', serialized);
+    softFail(new Error('bad tree conformation:'), serialized);
     return undefined;
   }
 }

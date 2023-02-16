@@ -16,7 +16,7 @@ import type { GetOrSet } from '../utils/types';
  * This hooks memoizes the array that contains the state and the callback. The
  * array only changes when the state changes.
  */
-export function useStableState<T>(defaultValue: T): GetOrSet<T> {
+export function useStateForContext<T>(defaultValue: T): GetOrSet<T> {
   const [state, setState] = React.useState(defaultValue);
   return React.useMemo(() => [state, setState], [state]);
 }

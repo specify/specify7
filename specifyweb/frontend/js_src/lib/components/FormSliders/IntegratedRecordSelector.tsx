@@ -15,9 +15,11 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
 import type { Relationship } from '../DataModel/specifyField';
 import type { Collection } from '../DataModel/specifyModel';
-import { crash } from '../Errors/Crash';
+import { raise } from '../Errors/Crash';
 import { FormTableCollection } from '../FormCells/FormTableCollection';
 import type { FormMode, FormType } from '../FormParse';
+import type { SubViewSortField } from '../FormParse/cells';
+import { augmentMode, ResourceView } from '../Forms/ResourceView';
 import { hasTablePermission } from '../Permissions/helpers';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import type {
@@ -25,7 +27,6 @@ import type {
   RecordSelectorState,
 } from './RecordSelector';
 import { useRecordSelector } from './RecordSelector';
-import { augmentMode, ResourceView } from '../Forms/ResourceView';
 
 // REFACTOR: encapsulate common logic from FormTableCollection and this component
 /** A wrapper for RecordSelector to integrate with Backbone.Collection */
@@ -97,7 +98,7 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
       collection
         .fetch()
         .then(() => setRecords(getRecords))
-        .catch(crash);
+        .catch(raise);
   }, [collection, isLazy, getRecords, index, records.length]);
 
   const state = useRecordSelector({
@@ -159,7 +160,7 @@ export function IntegratedRecordSelector({
   readonly viewName?: string;
   readonly urlParameter?: string;
   readonly onClose: () => void;
-  readonly sortField: string | undefined;
+  readonly sortField: SubViewSortField | undefined;
 }): JSX.Element {
   const isDependent = collection instanceof DependentCollection;
   const isToOne =
@@ -251,15 +252,15 @@ export function IntegratedRecordSelector({
             mode={mode}
             resource={resource}
             title={relationship.label}
+            onAdd={undefined}
+            onDeleted={collection.models.length <= 1 ? handleClose : undefined}
+            onSaved={handleClose}
             viewName={viewName}
             /*
              * Don't save the resource on save button click if it is a dependent
              * resource
              */
             onClose={handleClose}
-            onDeleted={collection.models.length <= 1 ? handleClose : undefined}
-            onAdd={undefined}
-            onSaved={handleClose}
           />
           {dialogs}
         </>

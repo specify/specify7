@@ -7,8 +7,9 @@
 
 import React from 'react';
 import type { State } from 'typesafe-reducer';
-import { produceStackTrace } from './stackTrace';
+
 import { ErrorDialog } from './ErrorDialog';
+import { produceStackTrace } from './stackTrace';
 
 type ErrorBoundaryState =
   | State<
@@ -33,7 +34,7 @@ export class ErrorBoundary extends React.Component<
      * crash the whole application
      */
     readonly silentErrors?: boolean;
-    readonly dismissable?: boolean;
+    readonly dismissible?: boolean;
   },
   ErrorBoundaryState
 > {
@@ -45,6 +46,12 @@ export class ErrorBoundary extends React.Component<
     error: Error,
     errorInfo: { readonly componentStack: string }
   ): void {
+    // Reload the page if webpack bundle is stale
+    if (
+      process.env.NODE_ENV === 'development' &&
+      error.name === 'ChunkLoadError'
+    )
+      globalThis.location.reload();
     console.error(error.toString());
     this.setState({
       type: 'Error',
@@ -73,7 +80,7 @@ export class ErrorBoundary extends React.Component<
               'details'
             )?.value,
           })}
-          dismissable={this.props.dismissable}
+          dismissible={this.props.dismissible}
           onClose={(): void => this.setState({ type: 'Silenced' })}
         >
           {this.state.error?.toString()}

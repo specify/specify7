@@ -1,10 +1,11 @@
+import type { LocalizedString } from 'typesafe-i18n';
+
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { CellTypes, FormCellDefinition } from './cells';
 import type { ParsedFormDefinition } from './index';
-import { LocalizedString } from 'typesafe-i18n';
 
 type LabelCell = CellTypes['Label'] & FormCellDefinition;
 
@@ -78,7 +79,7 @@ function createLabelsPostProcessor(
 }
 
 type IndexedField = {
-  readonly fieldName: string | undefined;
+  readonly fieldNames: RA<string> | undefined;
   readonly labelOverride: LocalizedString | undefined;
   // An alternative label to use, only if label is missing
   readonly altLabel: LocalizedString | undefined;
@@ -105,7 +106,7 @@ const indexFields = (
               ? [
                   cell.id,
                   {
-                    fieldName: cell.fieldName,
+                    fieldNames: cell.fieldNames,
                     // Checkbox definition can contain a label
                     labelOverride:
                       cell.fieldDefinition.type === 'Checkbox'
@@ -116,7 +117,7 @@ const indexFields = (
                      * Division ComboBox for some reason
                      */
                     altLabel:
-                      cell.fieldName === 'divisionCBX'
+                      cell.fieldNames?.[0] === 'division'
                         ? model?.getField('division')?.label
                         : undefined,
                   },
@@ -222,7 +223,8 @@ const postProcessLabel = (
           cell.text ??
           fieldsById[cell.labelForCellId]?.altLabel,
         // Get label fieldName from its field
-        fieldName: fieldsById[cell.labelForCellId]?.fieldName ?? cell.fieldName,
+        fieldNames:
+          fieldsById[cell.labelForCellId]?.fieldNames ?? cell.fieldNames,
       }
     : {}),
   // Don't right align labels if there is only one column
@@ -230,22 +232,22 @@ const postProcessLabel = (
 });
 
 function addLabelTitle(cell: LabelCell, model: SpecifyModel): LabelCell {
-  const field = model.getField(cell.fieldName ?? '');
+  const field = model.getField(cell.fieldNames?.join('.') ?? '');
   return {
     ...cell,
     text:
       cell.text ??
       field?.label ??
       /*
-       * Default Accession view doesn't have a label for
-       * Division ComboBox for some reason
+       * Default Accession view doesn't have a label for Division ComboBox for
+       * some reason
        */
       (cell.id === 'divLabel'
         ? model.getField('division')?.label
         : undefined) ??
-      (cell.fieldName?.toLowerCase() === 'this'
+      (cell.fieldNames?.join('.').toLowerCase() === 'this'
         ? undefined
-        : (cell.fieldName as LocalizedString)) ??
+        : (cell.fieldNames?.join('.') as LocalizedString)) ??
       '',
     title: cell?.title ?? field?.getLocalizedDesc(),
   };
@@ -328,7 +330,7 @@ const addMissingLabel = (
            */
           label:
             cell.fieldDefinition.label ??
-            model?.getField(cell.fieldName ?? '')?.label ??
+            model?.getField(cell.fieldNames?.join('.') ?? '')?.label ??
             cell.ariaLabel,
         },
       }
@@ -340,7 +342,7 @@ const addMissingLabel = (
       ? undefined
       : cell.ariaLabel ??
         (cell.type === 'Field' || cell.type === 'SubView'
-          ? model?.getField(cell.fieldName ?? '')?.label
+          ? model?.getField(cell.fieldNames?.join('.') ?? '')?.label
           : undefined),
 });
 

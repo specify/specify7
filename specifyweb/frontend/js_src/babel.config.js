@@ -4,20 +4,17 @@
  * Webpack uses Babel too, but that config is provided inside of webpack.config.js
  */
 
-"use strict";
+'use strict';
 
 module.exports = {
   env: {
     test: {
       presets: [
-        [
-          '@babel/preset-env',
-          {targets: {node: 'current'}},
-        ],
+        ['@babel/preset-env', { targets: { node: 'current' } }],
         ['@babel/preset-react'],
         ['@babel/preset-typescript'],
       ],
-      "plugins": ["@babel/plugin-transform-modules-commonjs"],
-    }
-  }
-}
+      plugins: ['@babel/plugin-transform-modules-commonjs'],
+    },
+  },
+};

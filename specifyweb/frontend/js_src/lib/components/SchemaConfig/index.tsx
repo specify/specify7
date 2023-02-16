@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 
 import { useUnloadProtect } from '../../hooks/navigation';
 import { commonText } from '../../localization/common';
+import { schemaText } from '../../localization/schema';
 import { ping } from '../../utils/ajax/ping';
 import type { PartialBy } from '../../utils/types';
 import { Container } from '../Atoms';
@@ -12,6 +13,7 @@ import type { SerializedResource } from '../DataModel/helperTypes';
 import { createResource, saveResource } from '../DataModel/resource';
 import { strictGetModel } from '../DataModel/schema';
 import type { SpLocaleItemStr } from '../DataModel/types';
+import { useTitle } from '../Molecules/AppTitle';
 import { hasToolPermission } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
 import { SchemaConfigHeader } from './Components';
@@ -24,7 +26,6 @@ import {
 } from './Hooks';
 import type { SchemaData } from './SetupHooks';
 import { SchemaConfigTable } from './Table';
-import { schemaText } from '../../localization/schema';
 
 export type SpLocaleItemString = SerializedResource<SpLocaleItemStr>;
 export type NewSpLocaleItemString = PartialBy<SpLocaleItemString, 'id'>;
@@ -34,6 +35,8 @@ export type ItemType = 'formatted' | 'none' | 'pickList' | 'webLink';
 export function SchemaConfigMain(): JSX.Element {
   const { language: rawLanguage = '', tableName = '' } = useParams();
   const model = strictGetModel(tableName);
+
+  useTitle(schemaText.schemaViewTitle({ tableName }));
 
   const schemaData = useOutletContext<SchemaData>();
   const isReadOnly =

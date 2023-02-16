@@ -3,6 +3,14 @@ import { Backbone } from './backbone';
 
 import { assert } from '../Errors/assert';
 import { globalEvents } from '../../utils/ajax/specifyApi';
+
+import { hijackBackboneAjax } from '../../utils/ajax/backboneAjax';
+import { Http } from '../../utils/ajax/definitions';
+import { globalEvents } from '../../utils/ajax/specifyApi';
+import { removeKey } from '../../utils/utils';
+import { assert } from '../Errors/assert';
+import { softFail } from '../Errors/Crash';
+import { Backbone } from './backbone';
 import {
   getFieldsToNotClone,
   getResourceApiUrl,
@@ -698,14 +706,14 @@ export const ResourceBase = Backbone.Model.extend({
 });
 
 export function promiseToXhr(promise) {
-  promise.done = function (fn) {
-    return promiseToXhr(promise.then(fn));
+  promise.done = function (function_) {
+    return promiseToXhr(promise.then(function_));
   };
-  promise.fail = function (fn) {
-    return promiseToXhr(promise.then(null, fn));
+  promise.fail = function (function_) {
+    return promiseToXhr(promise.then(null, function_));
   };
-  promise.complete = function (fn) {
-    return promiseToXhr(promise.then(fn, fn));
+  promise.complete = function (function_) {
+    return promiseToXhr(promise.then(function_, function_));
   };
   return promise;
 }

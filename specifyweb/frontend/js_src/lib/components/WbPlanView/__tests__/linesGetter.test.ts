@@ -1,12 +1,12 @@
-import type { MappingLine } from '../Mapper';
-import type { Tables } from '../../DataModel/types';
-import type { IR, RA } from '../../../utils/types';
-import type { UploadPlan } from '../uploadPlanParser';
-import { getLinesFromHeaders, getLinesFromUploadPlan } from '../linesGetter';
 import uploadPlan1 from '../../../tests/fixtures/uploadplan.1.json';
 import wbPlanViewLines1 from '../../../tests/fixtures/wbplanviewlines.1.json';
 import { requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
+import type { IR, RA } from '../../../utils/types';
+import type { Tables } from '../../DataModel/types';
+import { getLinesFromHeaders, getLinesFromUploadPlan } from '../linesGetter';
+import type { MappingLine } from '../Mapper';
+import type { UploadPlan } from '../uploadPlanParser';
 
 requireContext();
 

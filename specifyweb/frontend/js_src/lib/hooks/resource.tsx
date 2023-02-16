@@ -1,24 +1,25 @@
 import React from 'react';
 
-import { serializeResource } from '../components/DataModel/helpers';
-import { removeKey } from '../utils/utils';
+import {
+  fetchDistantRelated,
+  serializeResource,
+} from '../components/DataModel/helpers';
+import type {
+  AnySchema,
+  SerializedResource,
+} from '../components/DataModel/helperTypes';
 import type { SpecifyResource } from '../components/DataModel/legacyTypes';
 import { resourceOn } from '../components/DataModel/resource';
-import { schema } from '../components/DataModel/schema';
 import type {
   LiteralField,
   Relationship,
 } from '../components/DataModel/specifyField';
-import type { GetOrSet, IR } from '../utils/types';
 import {
   getValidationAttributes,
   resolveParser,
 } from '../utils/parser/definitions';
-import {
-  AnySchema,
-  SerializedModel,
-  SerializedResource,
-} from '../components/DataModel/helperTypes';
+import type { GetOrSet, IR, RA } from '../utils/types';
+import { raise } from '../components/Errors/Crash';
 
 /**
  * A wrapper for Backbone.Resource that integrates with React.useState for
@@ -80,43 +81,65 @@ export function useResource<SCHEMA extends AnySchema>(
   return [resource, setResource];
 }
 
-export const deserializeResource = <SCHEMA extends AnySchema>(
-  serializedResource: SerializedModel<SCHEMA> | SerializedResource<SCHEMA>
-): SpecifyResource<SCHEMA> =>
-  new schema.models[
-    /**
-     * This assertion, while not required by TypeScript, is needed to fix
-     * a typechecking performance issue (it was taking 5s to typecheck this
-     * line according to TypeScript trace analyzer)
-     */
-    serializedResource._tableName
-  ].Resource(removeKey(serializedResource, '_tableName'));
-
 /** Hook for getting save blockers for a model's field */
 export function useSaveBlockers({
   resource,
   fieldName,
 }: {
-  readonly resource: SpecifyResource<AnySchema>;
+  readonly resource: SpecifyResource<AnySchema> | undefined;
   readonly fieldName: string;
 }): string {
   const [errors, setErrors] = React.useState<string>(
-    () => resource.saveBlockers?.getFieldErrors(fieldName).join('\n') ?? ''
+    () => resource?.saveBlockers?.getFieldErrors(fieldName).join('\n') ?? ''
   );
   React.useEffect(
     () =>
-      resourceOn(
-        resource,
-        'blockersChanged',
-        (): void =>
-          setErrors(
-            resource.saveBlockers?.getFieldErrors(fieldName).join('\n') ?? ''
+      resource === undefined
+        ? undefined
+        : resourceOn(
+            resource,
+            'blockersChanged',
+            (): void =>
+              setErrors(
+                resource.saveBlockers?.getFieldErrors(fieldName).join('\n') ??
+                  ''
+              ),
+            false
           ),
-        false
-      ),
     [resource, fieldName]
   );
   return errors;
+}
+
+export function useDistantRelated(
+  resource: SpecifyResource<AnySchema>,
+  fields: RA<LiteralField | Relationship> | undefined
+): Awaited<ReturnType<typeof fetchDistantRelated>> {
+  const [data, setData] =
+    React.useState<Awaited<ReturnType<typeof fetchDistantRelated>>>(undefined);
+  React.useEffect(() => {
+    let destructorCalled = false;
+    const handleChange = (): void =>
+      void fetchDistantRelated(resource, fields)
+        .then((data) => (destructorCalled ? undefined : setData(data)))
+        .catch(raise);
+
+    if (fields === undefined || fields.length === 0) {
+      handleChange();
+      return undefined;
+    }
+    const destructor = resourceOn(
+      resource,
+      `change:${fields[0].name}`,
+      handleChange,
+      true
+    );
+    return (): void => {
+      destructor();
+      destructorCalled = true;
+    };
+  }, [resource, fields]);
+  return data;
 }
 
 /**
@@ -135,36 +158,4 @@ export function useValidationAttributes(
     setAttributes(getValidationAttributes(parser));
   }, [field]);
   return attributes;
-}
-
-export async function getResourceAndField(
-  model: SpecifyResource<AnySchema>,
-  fieldName: string | undefined
-): Promise<
-  | {
-      readonly resource: SpecifyResource<AnySchema>;
-      readonly field: LiteralField | Relationship;
-    }
-  | undefined
-> {
-  const path = fieldName?.split('.') ?? [];
-  const resource =
-    path.length === 0
-      ? undefined
-      : path.length === 1
-      ? await model.fetch()
-      : await model.rgetPromise(path.slice(0, -1).join('.'));
-
-  const field = model.specifyModel.getField(fieldName ?? '');
-  if (field === undefined)
-    console.error(`Unknown field ${fieldName ?? ''}`, { resource });
-  else if (resource === undefined || resource === null)
-    /*
-     * Actually this probably shouldn't be an error. it can
-     * happen, for instance, in the collectors list if
-     * the collector has not been defined yet.
-     */
-    console.error("resource doesn't exist");
-  else return { resource, field };
-  return undefined;
 }

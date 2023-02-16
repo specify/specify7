@@ -1,15 +1,15 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
+import { schemaText } from '../../localization/schema';
 import type { IR, RA } from '../../utils/types';
-import type { SchemaData } from './SetupHooks';
-import { useNavigate } from 'react-router-dom';
 import { H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Select } from '../Atoms/Form';
-import { schemaText } from '../../localization/schema';
-import { LocalizedString } from 'typesafe-i18n';
+import type { SchemaData } from './SetupHooks';
 
 export function SchemaConfigHeader({
   languages,

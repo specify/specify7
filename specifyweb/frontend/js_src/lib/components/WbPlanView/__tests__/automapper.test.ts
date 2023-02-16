@@ -1,11 +1,11 @@
-import type { AutoMapperResults } from '../autoMapper';
-import {
-  AutoMapper as AutoMapperConstructor,
-  type AutoMapperConstructorParameters,
-} from '../autoMapper';
-import type { RA } from '../../../utils/types';
 import { requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
+import type { RA } from '../../../utils/types';
+import type { AutoMapperResults } from '../autoMapper';
+import {
+  type AutoMapperConstructorParameters,
+  AutoMapper as AutoMapperConstructor,
+} from '../autoMapper';
 
 requireContext();
 

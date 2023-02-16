@@ -1,11 +1,11 @@
-import { ajax } from '../../utils/ajax';
-import type { Taxon, TaxonTreeDefItem } from './types';
-import { f } from '../../utils/functools';
-import type { SpecifyResource } from './legacyTypes';
 import { treeText } from '../../localization/tree';
+import { ajax } from '../../utils/ajax';
+import { f } from '../../utils/functools';
 import { formatUrl } from '../Router/queryString';
-import { AnyTree } from './helperTypes';
 import { BusinessRuleResult } from './businessRules';
+import type { AnyTree } from './helperTypes';
+import type { SpecifyResource } from './legacyTypes';
+import type { Taxon, TaxonTreeDefItem } from './types';
 
 export const initializeTreeRecord = (
   resource: SpecifyResource<AnyTree>
@@ -50,7 +50,7 @@ const predictFullName = async (
         parent.id === resource.id ||
         parent.get('rankId') >= definitionItem.get('rankId')
       )
-        throw new Error('bad-tree-structure');
+        throw new Error('badTreeStructureError');
       if ((resource.get('name')?.length ?? 0) === 0) return undefined;
 
       const treeName = resource.specifyModel.name.toLowerCase();
@@ -77,7 +77,7 @@ const predictFullName = async (
         } as const)
     )
     .catch((error) => {
-      if (error.message === 'bad-tree-structure' && reportBadStructure)
+      if (error.message === 'badTreeStructureError' && reportBadStructure)
         return {
           key: 'tree-structure',
           valid: false,

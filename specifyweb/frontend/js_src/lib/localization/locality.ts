@@ -38,7 +38,7 @@ export const localityText = createDictionary({
       {total:number|formatted}
     `,
     'fr-fr': `
-      GeoMap - Tracé {plotted:number|formatted} de {total:number|formatted}
+      GéoCarte - Tracé {plotted:number|formatted} de {total:number|formatted}
       enregistrements
     `,
     'uk-ua': `

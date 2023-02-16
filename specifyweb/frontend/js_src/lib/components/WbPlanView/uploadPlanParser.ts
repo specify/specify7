@@ -1,9 +1,10 @@
-import type { MappingPath } from './Mapper';
-import type { Tables } from '../DataModel/types';
+import type { IR, RA, RR } from '../../utils/types';
 import { strictGetModel } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
-import type { IR, RA, RR } from '../../utils/types';
+import type { Tables } from '../DataModel/types';
+import { softFail } from '../Errors/Crash';
 import { defaultColumnOptions } from './linesGetter';
+import type { MappingPath } from './Mapper';
 import type { SplitMappingPath } from './mappingHelpers';
 import { formatToManyIndex, formatTreeRank } from './mappingHelpers';
 
@@ -88,7 +89,7 @@ function parseTreeTypes(
 function resolveField(model: SpecifyModel, fieldName: string): RA<string> {
   const field = model.strictGetField(fieldName);
   if (field.isRelationship) {
-    console.error('Upload plan has a column mapped to a relationship', {
+    softFail(new Error('Upload plan has a column mapped to a relationship'), {
       model,
       fieldName,
     });

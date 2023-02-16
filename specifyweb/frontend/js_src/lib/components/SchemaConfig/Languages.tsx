@@ -2,17 +2,17 @@ import React from 'react';
 import { useOutletContext } from 'react-router';
 import { useNavigate } from 'react-router-dom';
 
+import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
-import { hasToolPermission } from '../Permissions/helpers';
-import { Dialog } from '../Molecules/Dialog';
-import type { SchemaData } from './SetupHooks';
-import { Link } from '../Atoms/Link';
+import { schemaText } from '../../localization/schema';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Form, Input, Label } from '../Atoms/Form';
+import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
-import { useId } from '../../hooks/useId';
-import { schemaText } from '../../localization/schema';
+import { Dialog } from '../Molecules/Dialog';
+import { hasToolPermission } from '../Permissions/helpers';
+import type { SchemaData } from './SetupHooks';
 export const languageSeparator = '-';
 
 export function ChooseSchemaLanguage(): JSX.Element {
@@ -43,7 +43,9 @@ export function ChooseSchemaLanguage(): JSX.Element {
               href={`/specify/schema-config/${code}/`}
               role="link"
             >
-                {label.includes('(') ? label : `${label} (${code.split(languageSeparator).at(-1)})`}
+              {label.includes('(')
+                ? label
+                : `${label} (${code.split(languageSeparator).at(-1)})`}
             </Link.Default>
           </li>
         ))}

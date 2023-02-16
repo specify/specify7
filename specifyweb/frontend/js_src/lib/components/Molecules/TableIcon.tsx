@@ -1,13 +1,13 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
+import { wbPlanText } from '../../localization/wbPlan';
 import { camelToHuman, spanNumber } from '../../utils/utils';
 import { icons } from '../Atoms/Icons';
 import { getModel } from '../DataModel/schema';
+import type { Tables } from '../DataModel/types';
 import { getIcon } from '../InitialContext/icons';
-import { LocalizedString } from 'typesafe-i18n';
-import { wbPlanText } from '../../localization/wbPlan';
 import { SvgIcon } from './SvgIcon';
-import { Tables } from '../DataModel/types';
 
 const MAX_HUE = 360;
 
@@ -46,7 +46,7 @@ export function TableIcon({
    * improves consistency, thus, this should be overwritten only if it is
    * strictly necessary.
    */
-  className = 'w-table-icon h-table-icon flex-shrink-0',
+  className = 'w-table-icon h-table-icon flex-shrink-0 not-italic font-normal',
 }: {
   readonly name: string;
   /**
@@ -54,7 +54,7 @@ export function TableIcon({
    * In all other cases, set this to true, or explicitly set the label as a
    * string
    */
-  readonly label: boolean | LocalizedString;
+  readonly label: LocalizedString | boolean;
   readonly className?: string;
 }): JSX.Element {
   const table = getModel(name);
@@ -84,9 +84,9 @@ export function TableIcon({
   return (
     <SvgIcon
       // Render SvgIcon even for unknown tables, as it can autogenerate an icon
-      name={tableName ?? (name as keyof Tables)}
-      label={resolvedTableLabel}
       className={className}
+      label={resolvedTableLabel}
+      name={tableName ?? (name as keyof Tables)}
     />
   );
 }

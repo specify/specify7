@@ -7,10 +7,10 @@
  * @module
  */
 
-import type { Tables } from './types';
-import { VALUE } from '../../utils/utils';
 import type { IR, RR } from '../../utils/types';
-import { TableFields } from './helperTypes';
+import { VALUE } from '../../utils/utils';
+import type { TableFields } from './helperTypes';
+import type { Tables } from './types';
 
 export type TableConfigOverwrite =
   /*

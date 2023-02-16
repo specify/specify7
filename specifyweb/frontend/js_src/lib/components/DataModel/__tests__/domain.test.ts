@@ -1,14 +1,23 @@
+import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
+import { formatUrl } from '../../Router/queryString';
 import {
   fetchCollectionsForResource,
   getCollectionForResource,
 } from '../domain';
 import { getResourceApiUrl } from '../resource';
 import { schema } from '../schema';
-import { overrideAjax } from '../../../tests/ajax';
-import { formatUrl } from '../../Router/queryString';
+import { monthsPickListName } from '../../PickLists/definitions';
 
 requireContext();
+
+overrideAjax(
+  `/api/specify/picklist/?domainfilter=false&name=${monthsPickListName}&collection=4&offset=0`,
+  {
+    meta: { total_count: 0 },
+    objects: [],
+  }
+);
 
 describe('getCollectionForResource', () => {
   test('Collection Object', () => {
@@ -23,8 +32,7 @@ describe('getCollectionForResource', () => {
      * Prevent Collection object from being associated with current collection
      * automatically
      */
-    // @ts-expect-error Unsetting a required field
-    collectionObject.set('collection', null);
+    collectionObject.set('collection', null as never);
     expect(getCollectionForResource(collectionObject)).toBeUndefined();
   });
   test('Locality from current discipline', () => {

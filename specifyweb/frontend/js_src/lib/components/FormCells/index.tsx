@@ -1,25 +1,25 @@
 import React from 'react';
 
-import { f } from '../../utils/functools';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { useDistantRelated } from '../../hooks/resource';
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
+import { f } from '../../utils/functools';
+import { DataEntry } from '../Atoms/DataEntry';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { schema } from '../DataModel/schema';
+import type { Collection } from '../DataModel/specifyModel';
+import { UiCommand } from '../FormCommands';
+import { FormField } from '../FormFields';
 import type { FormMode, FormType } from '../FormParse';
 import { fetchView, resolveViewDefinition } from '../FormParse';
 import type { cellAlign, CellTypes } from '../FormParse/cells';
-import { hasPathPermission } from '../Permissions/helpers';
-import { schema } from '../DataModel/schema';
-import type { Collection } from '../DataModel/specifyModel';
-import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
-import { DataEntry } from '../Atoms/DataEntry';
-import { FormTableInteraction } from './FormTableInteraction';
 import { RenderForm } from '../Forms/SpecifyForm';
-import { UiCommand } from '../FormCommands';
-import { FormField } from '../FormFields';
 import { SubView } from '../Forms/SubView';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { AnySchema } from '../DataModel/helperTypes';
 import { TableIcon } from '../Molecules/TableIcon';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
+import { FormTableInteraction } from './FormTableInteraction';
 
 const cellRenderers: {
   readonly [KEY in keyof CellTypes]: (props: {
@@ -34,16 +34,20 @@ const cellRenderers: {
 } = {
   Field({
     mode,
-    cellData: { fieldDefinition, fieldName, isRequired },
+    cellData: { fieldDefinition, fieldNames, isRequired },
     id,
     formatId,
     resource,
     formType,
   }) {
+    const fields = React.useMemo(
+      () => resource.specifyModel.getFields(fieldNames?.join('.') ?? ''),
+      [resource.specifyModel, fieldNames]
+    );
     return (
       <FormField
         fieldDefinition={fieldDefinition}
-        fieldName={fieldName}
+        fields={fields}
         formType={formType}
         id={typeof id === 'string' ? formatId(id.toString()) : undefined}
         isRequired={isRequired}
@@ -97,12 +101,19 @@ const cellRenderers: {
     );
   },
   SubView({
-    resource,
-    mode,
+    resource: rawResource,
+    mode: rawMode,
     formType: parentFormType,
-    cellData: { fieldName = '', formType, isButton, icon, viewName, sortField },
+    cellData: { fieldNames, formType, isButton, icon, viewName, sortField },
   }) {
-    const relationship = resource.specifyModel.getRelationship(fieldName);
+    const fields = React.useMemo(
+      () => rawResource.specifyModel.getFields(fieldNames?.join('.') ?? ''),
+      [rawResource, fieldNames]
+    );
+    const data = useDistantRelated(rawResource, fields);
+
+    const relationship =
+      data?.field?.isRelationship === true ? data.field : undefined;
 
     /*
      * SubView is turned into formTable if formTable is the default FormType for
@@ -115,16 +126,12 @@ const cellRenderers: {
             ? fetchView(viewName ?? relationship.relatedModel.view)
                 .then((viewDefinition) =>
                   typeof viewDefinition === 'object'
-                    ? resolveViewDefinition(viewDefinition, formType, mode)
+                    ? resolveViewDefinition(viewDefinition, formType, rawMode)
                     : undefined
                 )
                 .then((definition) => definition?.formType ?? 'form')
-            : f.error(
-                `Can't render subView for an unknown field: ${
-                  fieldName ?? 'undefined'
-                }`
-              ),
-        [viewName, formType, mode, relationship, fieldName]
+            : undefined,
+        [viewName, formType, rawMode, relationship]
       ),
       false
     );
@@ -136,63 +143,52 @@ const cellRenderers: {
         () =>
           typeof relationship === 'object' &&
           relationshipIsToMany(relationship) &&
+          typeof data?.resource === 'object' &&
           [
             'LoanPreparation',
             'GiftPreparation',
             'DisposalPreparation',
           ].includes(relationship.relatedModel.name)
-            ? resource.rgetCollection(relationship.name)
+            ? data?.resource.rgetCollection(relationship.name)
             : false,
-        [relationship, resource]
+        [relationship, data?.resource]
       ),
       false
     );
 
-    if (relationship === undefined) return null;
-    else if (relationship.type === 'many-to-many') {
-      // ResourceApi does not support .rget() on a many-to-many
-      console.error('Many-to-many relationships are not supported');
+    const mode = rawResource === data?.resource ? rawMode : 'view';
+    if (
+      relationship === undefined ||
+      data?.resource === undefined ||
+      interactionCollection === undefined ||
+      actualFormType === undefined
+    )
       return null;
-    } else if (
-      hasPathPermission(
-        resource.specifyModel.name,
-        relationship.relatedModel.name.split('.'),
-        'read'
-      )
-    ) {
-      if (interactionCollection === undefined || actualFormType === undefined)
-        return null;
-      else if (interactionCollection === false || actualFormType === 'form')
-        return (
-          <SubView
-            formType={actualFormType}
-            icon={icon}
-            isButton={isButton}
-            mode={mode}
-            parentFormType={parentFormType}
-            parentResource={resource}
-            relationship={relationship}
-            sortField={sortField}
-            viewName={viewName}
-          />
-        );
-      else
-        return (
-          <FormTableInteraction
-            collection={interactionCollection}
-            dialog={false}
-            mode={mode}
-            sortField={sortField}
-            onClose={f.never}
-            onDelete={undefined}
-          />
-        );
-    } else {
-      console.log(
-        `SubView hidden due to lack of read permissions to ${resource.specifyModel.name}.${relationship.relatedModel.name}`
+    else if (interactionCollection === false || actualFormType === 'form')
+      return (
+        <SubView
+          formType={actualFormType}
+          icon={icon}
+          isButton={isButton}
+          mode={mode}
+          parentFormType={parentFormType}
+          parentResource={data.resource}
+          relationship={relationship}
+          sortField={sortField}
+          viewName={viewName}
+        />
       );
-      return null;
-    }
+    else
+      return (
+        <FormTableInteraction
+          collection={interactionCollection}
+          dialog={false}
+          mode={mode}
+          sortField={sortField}
+          onClose={f.never}
+          onDelete={undefined}
+        />
+      );
   },
   Panel({ mode, formType, resource, cellData: { display, ...cellData } }) {
     const form = (

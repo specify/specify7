@@ -1,23 +1,21 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
-import { error } from '../Errors/assert';
-import { f } from '../../utils/functools';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
-import type { UiCommands } from '../FormParse/commands';
-import { hasPermission, hasTablePermission } from '../Permissions/helpers';
+import { interactionsText } from '../../localization/interactions';
 import { Button } from '../Atoms/Button';
+import { formatDisjunction } from '../Atoms/Internationalization';
+import { toTable } from '../DataModel/helpers';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import { Dialog } from '../Molecules/Dialog';
+import type { UiCommands } from '../FormParse/commands';
 import { LoanReturn } from '../Interactions/PrepReturnDialog';
+import { Dialog } from '../Molecules/Dialog';
 import { ReportsView } from '../Reports';
 import { ShowLoansCommand } from './ShowTransactions';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { AnySchema } from '../DataModel/helperTypes';
-import { toTable } from '../DataModel/helpers';
-import { LocalizedString } from 'typesafe-i18n';
-import { interactionsText } from '../../localization/interactions';
 
 export function GenerateLabel({
   resource,
@@ -31,7 +29,7 @@ export function GenerateLabel({
   const [runReport, handleRunReport, handleHideReport] = useBooleanState();
 
   const isDisabled = resource.isNew() || !Boolean(resource.get('id'));
-  return hasPermission('/report', 'execute') ? (
+  return (
     <>
       <Button.Small
         disabled={isDisabled}
@@ -50,7 +48,7 @@ export function GenerateLabel({
         />
       ) : undefined}
     </>
-  ) : null;
+  );
 }
 
 const commandRenderers: {
@@ -64,53 +62,47 @@ const commandRenderers: {
   GenerateLabel,
   ShowLoans({ label, resource, id }) {
     const [showLoans, handleShow, handleHide] = useBooleanState();
-    return (
-      f.maybe(toTable(resource, 'Preparation'), (preparation) => (
-        <>
-          <Button.Small
-            id={id}
-            onClick={handleShow}
-            disabled={resource.isNew() || !Boolean(resource.get('id'))}
-          >
-            {label}
-          </Button.Small>
-          {showLoans && (
-            <ErrorBoundary dismissable>
-              <ShowLoansCommand
-                preparation={preparation}
-                onClose={handleHide}
-              />
-            </ErrorBoundary>
-          )}
-        </>
-      )) ?? error('ShowLoans command can only be used on the preparation form')
+    const preparation = toTable(resource, 'Preparation');
+    return preparation === undefined ? null : (
+      <>
+        <Button.Small
+          disabled={resource.isNew() || !Boolean(resource.get('id'))}
+          id={id}
+          onClick={handleShow}
+        >
+          {label}
+        </Button.Small>
+        {showLoans && (
+          <ErrorBoundary dismissible>
+            <ShowLoansCommand preparation={preparation} onClose={handleHide} />
+          </ErrorBoundary>
+        )}
+      </>
     );
   },
   ReturnLoan({ id, label = '', resource }) {
     const [showDialog, handleShow, handleHide] = useBooleanState();
-    return hasTablePermission('LoanPreparation', 'update') &&
-      hasTablePermission('LoanReturnPreparation', 'update')
-      ? f.maybe(toTable(resource, 'Loan'), (loan) => (
-          <>
-            <Button.Small id={id} onClick={handleShow}>
-              {label}
-            </Button.Small>
-            {showDialog ? (
-              loan.isNew() || !Boolean(loan.get('id')) ? (
-                <Dialog
-                  buttons={commonText.close()}
-                  header={label}
-                  onClose={handleHide}
-                >
-                  {interactionsText.preparationsCanNotBeReturned()}
-                </Dialog>
-              ) : (
-                <LoanReturn resource={loan} onClose={handleHide} />
-              )
-            ) : undefined}
-          </>
-        )) ?? error('LoanReturnCommand can only be used with Loan resources')
-      : null;
+    const loan = toTable(resource, 'Loan');
+    return loan === undefined ? null : (
+      <>
+        <Button.Small id={id} onClick={handleShow}>
+          {label}
+        </Button.Small>
+        {showDialog ? (
+          loan.isNew() || !Boolean(loan.get('id')) ? (
+            <Dialog
+              buttons={commonText.close()}
+              header={label}
+              onClose={handleHide}
+            >
+              {interactionsText.preparationsCanNotBeReturned()}
+            </Dialog>
+          ) : (
+            <LoanReturn resource={loan} onClose={handleHide} />
+          )
+        ) : undefined}
+      </>
+    );
   },
   Unsupported({ commandDefinition: { name = commonText.nullInline() }, id }) {
     const [isClicked, handleShow, handleHide] = useBooleanState();
@@ -132,6 +124,28 @@ const commandRenderers: {
           {commonText.colonLine({
             label: formsText.commandName(),
             value: name,
+          })}
+        </Dialog>
+      </>
+    );
+  },
+  Blank: () => null,
+  WrongTable({ resource, commandDefinition: { supportedTables } }) {
+    const [isVisible, handleShow, handleHide] = useBooleanState();
+    return (
+      <>
+        <Button.Small onClick={handleShow}>
+          {formsText.unavailableCommandButton()}
+        </Button.Small>
+        <Dialog
+          buttons={commonText.close()}
+          header={formsText.commandUnavailable()}
+          isOpen={isVisible}
+          onClose={handleHide}
+        >
+          {formsText.wrongTableForCommand({
+            currentTable: resource.specifyModel.name,
+            correctTable: formatDisjunction(supportedTables),
           })}
         </Dialog>
       </>

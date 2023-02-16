@@ -3,26 +3,26 @@
  */
 
 import { ajax } from '../../utils/ajax';
+import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
 import { cacheEvents, getCache, setCache } from '../../utils/cache';
-import { MILLISECONDS } from '../Atoms/Internationalization';
-import type { Preferences } from './Definitions';
-import { preferenceDefinitions } from './Definitions';
-import { prefEvents } from './Hooks';
 import { f } from '../../utils/functools';
+import { mergeParsers, parserFromType } from '../../utils/parser/definitions';
+import { parseValue } from '../../utils/parser/parse';
+import type { RA } from '../../utils/types';
+import { filterArray, setDevelopmentGlobal } from '../../utils/types';
 import { keysToLowerCase, replaceKey } from '../../utils/utils';
+import { MILLISECONDS } from '../Atoms/Internationalization';
+import { softFail } from '../Errors/Crash';
 import {
   cachableUrl,
   contextUnlockedPromise,
   foreverFetch,
 } from '../InitialContext';
 import { formatUrl } from '../Router/queryString';
-import type { RA } from '../../utils/types';
-import { filterArray, setDevelopmentGlobal } from '../../utils/types';
-import { mergeParsers, parserFromType } from '../../utils/parser/definitions';
-import { fail } from '../Errors/Crash';
-import { parseValue } from '../../utils/parser/parse';
-import { Http } from '../../utils/ajax/definitions';
+import type { Preferences } from './Definitions';
+import { preferenceDefinitions } from './Definitions';
+import { prefEvents } from './Hooks';
 
 export function getPrefDefinition<
   CATEGORY extends keyof Preferences,
@@ -193,7 +193,7 @@ function requestPreferencesSync(): void {
     if (typeof syncTimeoutInstance === 'number')
       globalThis.clearTimeout(syncTimeoutInstance);
     syncTimeoutInstance = globalThis.setTimeout(
-      (): void => void syncPreferences().catch(fail),
+      (): void => void syncPreferences().catch(softFail),
       syncTimeout
     );
   }
@@ -218,7 +218,7 @@ async function syncPreferences(): Promise<void> {
     }
   ).then(() => {
     // If there were additional changes while syncing
-    if (isSyncPending) syncPreferences().catch(fail);
+    if (isSyncPending) syncPreferences().catch(softFail);
     else {
       isSyncing = false;
       prefEvents.trigger('synchronized');
@@ -310,7 +310,7 @@ export const preferencesPromise = contextUnlockedPromise.then(
                 status === Http.OK ? JSON.parse(data) : {}
               )
               .catch((error) => {
-                console.error(error);
+                softFail(error);
                 return {};
               }),
           })

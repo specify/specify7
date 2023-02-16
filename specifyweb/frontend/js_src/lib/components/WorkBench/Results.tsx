@@ -13,11 +13,11 @@ import type { RR } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { H2, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
+import { formatNumber } from '../Atoms/Internationalization';
 import { strictGetModel } from '../DataModel/schema';
 import type { Tables } from '../DataModel/types';
 import { TableIcon } from '../Molecules/TableIcon';
 import { CreateRecordSetButton } from './RecordSet';
-import { formatNumber } from '../Atoms/Internationalization';
 
 export function WbUploaded({
   recordCounts,

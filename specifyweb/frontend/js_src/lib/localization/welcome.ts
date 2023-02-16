@@ -246,11 +246,11 @@ export const welcomeText = createDictionary({
     'uk-ua': 'Версія бази даних:',
   },
   schemaVersion: {
-    'en-us': 'DB Schema Version:',
-    'ru-ru': 'Версия схемы базы данных:',
-    'es-es': 'Versión del esquema de base de datos:',
-    'fr-fr': 'Version du schéma de la base de données :',
-    'uk-ua': 'Версія схеми БД:',
+    'en-us': 'DB Schema Version',
+    'ru-ru': 'Версия схемы базы данных',
+    'es-es': 'Versión del esquema de base de datos',
+    'fr-fr': 'Version du schéma de la base de données',
+    'uk-ua': 'Версія схеми БД',
   },
   databaseName: {
     'en-us': 'Database Name:',

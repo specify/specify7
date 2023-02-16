@@ -1,4 +1,5 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useUnloadProtect } from '../../hooks/navigation';
 import { useBooleanState } from '../../hooks/useBooleanState';
@@ -12,7 +13,7 @@ import { H3, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Submit } from '../Atoms/Submit';
-import { FormContext, LoadingContext } from '../Core/Contexts';
+import { LoadingContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
@@ -22,8 +23,8 @@ import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { smoothScroll } from '../QueryBuilder/helpers';
 import { usePref } from '../UserPreferences/usePref';
+import { FormContext } from './BaseResourceView';
 import { FORBID_ADDING, NO_CLONE } from './ResourceView';
-import { LocalizedString } from 'typesafe-i18n';
 
 export const saveFormUnloadProtect = formsText.unsavedFormUnloadProtect();
 
@@ -167,7 +168,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
           return resource
             .save({ onSaveConflict: hasSaveConflict })
             .catch((error_) =>
-              // FEATURE: if form save fails, should make the error message dismissable (if safe)
+              // FEATURE: if form save fails, should make the error message dismissible (if safe)
               Object.getOwnPropertyDescriptor(error_ ?? {}, 'handledBy')
                 ?.value === hasSaveConflict
                 ? undefined

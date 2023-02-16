@@ -13,7 +13,7 @@ export const wbPlanText = createDictionary({
     'en-us': 'Data Mapper',
     'ru-ru': 'Сопоставления',
     'es-es': 'Mapeador de datos',
-    'fr-fr': 'Mappeur de données',
+    'fr-fr': 'Réticulation de données',
     'uk-ua': 'Картограф даних',
   },
   noUploadPlan: {
@@ -35,7 +35,7 @@ export const wbPlanText = createDictionary({
     `,
     'fr-fr': `
       Aucun plan de téléchargement n'a été défini pour cet ensemble de données.
-      En créer un maintenant ?
+      Créez-en un maintenant?
     `,
     'uk-ua':
       'Для цього набору даних не визначено план завантаження. Створити зараз?',
@@ -567,7 +567,7 @@ export const wbPlanText = createDictionary({
     'es-es': 'Requerir datos para que coincidan con los registros existentes',
     'fr-fr':
       'Exiger que les données correspondent aux enregistrements existants',
-    'uk-ua': 'Вимагати відповідності даних існуючим записам',
+    'uk-ua': 'Вимагати, щоб дані відповідали існуючим записам',
   },
   matchingLogicUnavailable: {
     'en-us': 'Matching logic is unavailable for current mappings',

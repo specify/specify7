@@ -58,20 +58,11 @@ export function Slider({
           <Input.Number
             className={`
               no-arrows absolute top-0 left-0 h-full bg-white
-              text-center font-bold ring-0 dark:bg-neutral-600
+              text-center font-bold ring-1 dark:bg-neutral-600
             `}
-            forwardRef={inputRef}
-            /*
-             * Count is 0 when input is invisible, which causes the field to be
-             * invalid (as min is 1) which inhibits form submission
-             */
-            max={max}
             disabled={
               handleChange === undefined || (max === 1 && resolvedValue === 1)
             }
-            min={1}
-            // Convert 0-based indexing to 1-based
-            step={1}
             value={resolvedValue}
             onBlur={(): void => setPendingValue(value)}
             onValueChange={(value): void => {
@@ -79,6 +70,15 @@ export function Slider({
               setPendingValue(newValue);
               if (!Number.isNaN(value)) handleChange?.(newValue);
             }}
+            forwardRef={inputRef}
+            /*
+             * Count is 0 when input is invisible, which causes the field to be
+             * invalid (as min is 1) which inhibits form submission
+             */
+            max={max}
+            min={1}
+            // Convert 0-based indexing to 1-based
+            step={1}
           />
         </label>
         <span>/</span>

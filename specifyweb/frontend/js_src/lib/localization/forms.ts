@@ -35,7 +35,7 @@ export const formsText = createDictionary({
     'en-us': 'Value must be unique to {fieldName:string}',
     'ru-ru': 'Значение {fieldName:string} должно быть уникальным',
     'es-es': 'El valor debe ser único para {fieldName:string}',
-    'fr-fr': 'La valeur doit être unique pour {fieldName:string}',
+    'fr-fr': 'Valeur doit être unique pour {fieldName:string}',
     'uk-ua': 'Значення має бути унікальним для {fieldName:string}',
   },
   valueMustBeUniqueToDatabase: {
@@ -156,37 +156,6 @@ export const formsText = createDictionary({
       початкового або кінцевого часу.
     `,
   },
-  unsupportedForm: {
-    'en-us': 'Incorrect Form',
-    'ru-ru': 'Неправильная форма',
-    'es-es': 'Forma incorrecta',
-    'fr-fr': 'Forme incorrecte',
-    'uk-ua': 'Неправильна форма',
-  },
-  unsupportedFormDescription: {
-    comment:
-      'Example: ... Locality, Collecting Event or Collection Object forms.',
-    'en-us': `
-      This plugin cannot be used on this form. Try moving it to the
-      {tables:string} forms.
-    `,
-    'ru-ru': `
-      Этот плагин нельзя использовать в этой форме. Попробуй переместить его на
-      форму {tables:string}.
-    `,
-    'es-es': `
-      Este complemento no se puede utilizar en este formulario. Intente moverlo
-      a las formas {tables:string}.
-    `,
-    'fr-fr': `
-      Ce plugin ne peut pas être utilisé sur ce formulaire. Essayez de le
-      déplacer vers les formulaires {tables:string}.
-    `,
-    'uk-ua': `
-      Цей плагін не можна використовувати в цій формі. Спробуйте перемістити
-      його на форму {tables:string}.
-    `,
-  },
   invalidDate: {
     'en-us': 'Invalid Date',
     'ru-ru': 'Недействительная дата',
@@ -284,13 +253,13 @@ export const formsText = createDictionary({
       ¿Agregar el valor "{value:string}" a la {pickListTable:string} denominada
       "{pickListName:string}"?
     `,
-    'fr-fr': `
-      Ajouter la valeur "{value:string}" au {pickListTable:string} nommé
-      "{pickListName:string}" ?
-    `,
     'uk-ua': `
       Додати значення "{value:string}" до {pickListTable:string} під назвою
       "{pickListName:string}"?
+    `,
+    'fr-fr': `
+      Ajouter la valeur "{value:string}" au {pickListTable:string} nommé
+      "{pickListName:string}" ?
     `,
   },
   invalidType: {
@@ -539,26 +508,51 @@ export const formsText = createDictionary({
     `,
   },
   wrongTableForPlugin: {
+    comment:
+      'Example: ... Locality, Collecting Event or Collection Object forms.',
     'en-us': `
-      The plugin cannot be used on the {currentTable:string} form. It can only
+      This plugin cannot be used on the {currentTable:string} form. Try moving
+      it to the {supportedTables:string} forms.
+    `,
+    'ru-ru': `
+      Этот плагин нельзя использовать на форме {currentTable:string}. Попробуйте
+      переместить его на формы {supportedTables:string}.
+    `,
+    'es-es': `
+      Este complemento no se puede usar en el formulario {currentTable:string}.
+      Intente moverlo a los formularios {supportedTables:string}.
+    `,
+    'fr-fr': `
+      Ce plugin ne peut pas être utilisé sur le formulaire
+      {currentTable:string}. Essayez de le déplacer vers les formulaires
+      {supportedTables:string}.
+    `,
+    'uk-ua': `
+      Цей плагін не може бути використаний на формі {currentTable:string}.
+      Спробуйте перемістити його на форми {supportedTables:string}.
+    `,
+  },
+  wrongTableForCommand: {
+    'en-us': `
+      The command cannot be used on the {currentTable:string} form. It can only
       be used on the {correctTable:string} form.
     `,
     'ru-ru': `
-      Этот плагин нельзя использовать в форме {currentTable:string}. Его можно
-      использовать только в форме {correctTable:string}.
+      Команда не может быть использована на форме {currentTable:string}. Она
+      может быть использована только на форме {correctTable:string}.
     `,
     'es-es': `
-      El complemento no se puede usar en el formulario {currentTable:string}.
-      Solo se puede utilizar en el formulario {correctTable:string}.
+      El comando no puede utilizarse en el formulario {currentTable:string}.
+      Sólo puede utilizarse en el formulario {correctTable:string}.
     `,
     'fr-fr': `
-      Le plugin ne peut pas être utilisé sur le formulaire
+      La commande ne peut pas être utilisée sur le formulaire
       {currentTable:string}. Il ne peut être utilisé que sur le formulaire
       {correctTable:string}.
     `,
     'uk-ua': `
-      Плагін не можна використовувати на формі {currentTable:string}. Його можна
-      використовувати лише на формі {correctTable:string}.
+      Команду не можна використовувати у формі {currentTable:string}. Його можна
+      використовувати лише у формі {correctTable:string}.
     `,
   },
   pluginName: {
@@ -1003,7 +997,7 @@ export const formsText = createDictionary({
     `,
     'en-us': '{tableName:string} #{id:number}',
     'ru-ru': '{tableName:string} #{id:number}',
-    'es-es': '{tableName:string} #{id:number}',
+    'es-es': '{tableName:string} №{id:number}',
     'fr-fr': '{tableName:string} #{id:number}',
     'uk-ua': '{tableName:string} №{id:number}',
   },
