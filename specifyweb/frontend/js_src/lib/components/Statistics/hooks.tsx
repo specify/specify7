@@ -358,19 +358,19 @@ function applyBackendResponse(
     backEndResponse[responseKey] === undefined
   )
     return items;
-  const isMyResponse = Object.keys(backEndResponse).includes(responseKey);
-  return items.find(
-    (item) =>
-      item.type === 'DefaultStat' &&
-      item.itemName === 'phantomItem' &&
-      item.pathToValue === undefined
-  ) !== undefined && isMyResponse
+  const isMyResponse =
+    Object.keys(backEndResponse).includes(responseKey) &&
+    pageName === (phantomItem as DefaultStat).pageName &&
+    categoryName === (phantomItem as DefaultStat).categoryName;
+  return phantomItem !== undefined &&
+    isMyResponse &&
+    phantomItem.type === 'DefaultStat'
     ? Object.entries(backEndResponse[responseKey]).map(
         ([itemName, rawValue]) => ({
           type: 'DefaultStat',
-          pageName,
+          pageName: phantomItem.pageName,
           itemName: 'phantomItem',
-          categoryName,
+          categoryName: phantomItem.categoryName,
           label: itemName,
           itemValue: formatter(rawValue),
           itemType: 'BackEndStat',
