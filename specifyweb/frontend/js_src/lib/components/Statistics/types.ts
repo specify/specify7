@@ -48,12 +48,15 @@ export type StatCategoryReturn = IR<{
   readonly spec: StatItemSpec;
 }>;
 
-export type StatsSpec = IR<
-  IR<{
+export type StatsSpec = IR<{
+  readonly sourceLabel: string;
+  readonly urlPrefix: string;
+  readonly categories: IR<{
     readonly label: string;
     readonly items: StatCategoryReturn;
-  }>
->;
+  }>;
+}>;
+
 export type QueryBuilderStat = State<
   'QueryBuilderStat',
   {
@@ -66,7 +69,6 @@ export type BackEndStat = State<
   'BackEndStat',
   {
     readonly pathToValue: string | undefined;
-    readonly fetchUrl: string;
     readonly formatter: (rawResult: any) => string | undefined;
     readonly tableName: keyof Tables;
   }

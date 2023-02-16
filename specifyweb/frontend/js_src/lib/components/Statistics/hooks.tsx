@@ -21,7 +21,6 @@ import type {
   QueryBuilderStat,
   QuerySpec,
   StatCategoryReturn,
-  StatItemSpec,
   StatLayout,
 } from './types';
 import { Http } from '../../utils/ajax/definitions';
@@ -32,31 +31,31 @@ import { statsSpec } from './StatsSpec';
  * Fetch backend statistics from the API
  */
 export function useBackendApi(
-  categoryToFetch: RA<string>
+  urlsToFetch: RA<string>
 ): BackendStatsResult | undefined {
   const backEndStatPromises = React.useMemo(
     () =>
-      categoryToFetch.length === 0
+      urlsToFetch.length === 0
         ? undefined
-        : backEndStatPromiseGenerator(categoryToFetch),
-    [categoryToFetch]
+        : backEndStatPromiseGenerator(urlsToFetch),
+    [urlsToFetch]
   );
   const [backendStat] = useMultipleAsyncState(backEndStatPromises, false);
   return backendStat;
 }
 
 function backEndStatPromiseGenerator(
-  categoriesToFetch: RA<string>
+  urlsToFetch: RA<string>
 ): IR<() => Promise<BackendStatsResult | undefined>> {
   return Object.fromEntries(
-    categoriesToFetch.map((key) => [
+    urlsToFetch.map((key) => [
       key,
       async () =>
         throttledPromise<BackendStatsResult | undefined>(
           'backendStats',
           async () =>
             ajax<BackendStatsResult>(
-              `/statistics/collection/${key}/`,
+              `/statistics${key}`,
               {
                 method: 'GET',
                 headers: {
@@ -67,7 +66,7 @@ function backEndStatPromiseGenerator(
             ).then(({ data, status }) =>
               status === Http.FORBIDDEN ? undefined : data
             ),
-          `/statistics/collection/${key}/`
+          key
         ),
     ])
   );
@@ -135,18 +134,20 @@ export const statSpecToItems = (
 export function useDefaultLayout(): StatLayout {
   return React.useMemo(
     () =>
-      Object.entries(statsSpec).map(([pageName, pageStatsSpec]) => ({
-        label: pageName,
-        categories: Object.entries(pageStatsSpec).map(
-          ([categoryName, { label, items }]) => {
-            return {
-              label,
-              items: statSpecToItems(categoryName, pageName, items),
-            };
-          }
-        ),
-        lastUpdated: undefined,
-      })),
+      Object.entries(statsSpec).map(
+        ([sourceKey, { sourceLabel, categories }]) => ({
+          label: sourceLabel,
+          categories: Object.entries(categories).map(
+            ([categoryName, { label, items }]) => {
+              return {
+                label,
+                items: statSpecToItems(categoryName, sourceKey, items),
+              };
+            }
+          ),
+          lastUpdated: undefined,
+        })
+      ),
     []
   );
 }
@@ -200,7 +201,10 @@ export const querySpecToResource = (
 
 export function useResolvedStatSpec(
   item: CustomStat | DefaultStat
-): StatItemSpec | undefined {
+):
+  | QueryBuilderStat
+  | (BackEndStat & { readonly fetchUrl: string })
+  | undefined {
   return React.useMemo(() => {
     if (item.type === 'CustomStat') {
       return {
@@ -209,7 +213,9 @@ export function useResolvedStatSpec(
       };
     } else {
       const statSpecItem =
-        statsSpec[item.pageName]?.[item.categoryName]?.items?.[item.itemName];
+        statsSpec[item.pageName].categories[item.categoryName].items[
+          item.itemName
+        ];
       return statSpecItem === undefined
         ? undefined
         : item.itemType === 'BackEndStat'
@@ -218,7 +224,11 @@ export function useResolvedStatSpec(
             pathToValue:
               item.pathToValue ??
               (statSpecItem.spec as BackEndStat).pathToValue,
-            fetchUrl: (statSpecItem.spec as BackEndStat).fetchUrl,
+            fetchUrl: generateStatUrl(
+              statsSpec[item.pageName].urlPrefix,
+              item.categoryName,
+              item.itemName
+            ),
             formatter: (statSpecItem.spec as BackEndStat).formatter,
             tableName: (statSpecItem.spec as BackEndStat).tableName,
           }
@@ -246,7 +256,13 @@ export function setAbsentCategoriesToFetch(
           item.itemValue === undefined &&
           item.itemName === 'phantomItem'
         )
-          categoriesToFetch.push(item.categoryName);
+          categoriesToFetch.push(
+            generateStatUrl(
+              statsSpec[item.pageName].urlPrefix,
+              item.categoryName,
+              item.itemName
+            )
+          );
       });
     })
   );
@@ -316,13 +332,25 @@ function applyBackendResponse(
   items: RA<DefaultStat | CustomStat>,
   pageName: string,
   categoryName: string,
+  urlPrefix: string,
   formatter: (rawResult: any) => string | undefined
 ): RA<DefaultStat | CustomStat> {
-  const responseKey = items
-    .map((item) =>
-      item.type === 'DefaultStat' ? item.categoryName : undefined
-    )
-    .filter((key) => key !== undefined)[0];
+  const phantomItem = items.find(
+    (item) =>
+      item.type === 'DefaultStat' &&
+      item.itemName === 'phantomItem' &&
+      item.pathToValue === undefined
+  );
+
+  const responseKey =
+    phantomItem !== undefined && phantomItem.type === 'DefaultStat'
+      ? generateStatUrl(
+          urlPrefix,
+          phantomItem.categoryName,
+          phantomItem.itemName
+        )
+      : undefined;
+  if (responseKey === undefined) return items;
   const isMyResponse = Object.keys(backEndResponse).includes(responseKey);
   return items.find(
     (item) =>
@@ -354,29 +382,46 @@ export function useDynamicCategorySetter(
   ) => void
 ) {
   React.useLayoutEffect(() => {
-    Object.entries(statsSpec).forEach(([pageName, pageSpec]) =>
-      Object.entries(pageSpec).forEach(([categoryName, categorySpec]) =>
-        Object.entries(categorySpec.items).forEach(([itemName, { spec }]) => {
-          if (
-            itemName === 'phantomItem' &&
-            spec.type === 'BackEndStat' &&
-            backEndResponse !== undefined
-          ) {
-            handleChange((oldCategory) =>
-              oldCategory.map((unknownCategory) => ({
-                ...unknownCategory,
-                items: applyBackendResponse(
-                  backEndResponse,
-                  unknownCategory.items,
-                  pageName,
-                  categoryName,
-                  spec.formatter
-                ),
-              }))
-            );
-          }
-        })
-      )
+    Object.entries(statsSpec).forEach(
+      ([sourceName, { categories, urlPrefix }]) =>
+        Object.entries(categories).forEach(([categoryName, categorySpec]) =>
+          Object.entries(categorySpec.items).forEach(([itemName, { spec }]) => {
+            if (
+              itemName === 'phantomItem' &&
+              spec.type === 'BackEndStat' &&
+              backEndResponse !== undefined
+            ) {
+              handleChange((oldCategory) =>
+                oldCategory.map((unknownCategory) => ({
+                  ...unknownCategory,
+                  items: applyBackendResponse(
+                    backEndResponse,
+                    unknownCategory.items,
+                    sourceName,
+                    categoryName,
+                    urlPrefix,
+                    spec.formatter
+                  ),
+                }))
+              );
+            }
+          })
+        )
     );
   }, [backEndResponse, handleChange]);
+}
+
+export function generateStatUrl(
+  urlPrefix: string,
+  categoryKey: string,
+  itemKey: string
+) {
+  const urlSpec = [urlPrefix, categoryKey, itemKey];
+  return `${urlSpec.reduce(
+    (previousValue, currentValue) =>
+      `${previousValue}${
+        currentValue === 'phantomItem' ? '' : `/${currentValue}`
+      }`,
+    ''
+  )}/`;
 }

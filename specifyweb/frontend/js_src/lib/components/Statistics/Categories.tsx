@@ -11,23 +11,43 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { statsText } from '../../localization/stats';
 import { hasTablePermission } from '../Permissions/helpers';
 import { userText } from '../../localization/user';
-import { dynamicStatsSpec } from './StatsSpec';
+import { dynamicStatsSpec, statsSpec } from './StatsSpec';
+import { generateStatUrl } from './hooks';
 
 function ItemOverride({
-  categoryToFetch,
+  item,
 }: {
-  readonly categoryToFetch: string | undefined;
+  readonly item: DefaultStat | CustomStat;
 }): JSX.Element {
-  const categoryFetchResolve = dynamicStatsSpec.find(
-    ({ categoryName }) => categoryName === categoryToFetch
+  const urlToFetch =
+    item.type === 'DefaultStat'
+      ? generateStatUrl(
+          statsSpec[item.pageName].urlPrefix,
+          item.categoryName,
+          item.itemName
+        )
+      : undefined;
+  const dynamicSpecResolve = dynamicStatsSpec.find(
+    ({ responseKey }) => responseKey === urlToFetch
   );
   return (
     <>
-      {categoryFetchResolve !== undefined &&
-      !hasTablePermission(categoryFetchResolve.tableName, 'read')
+      {dynamicSpecResolve !== undefined &&
+      !hasTablePermission(dynamicSpecResolve.tableName, 'read')
         ? userText.noPermission()
         : commonText.loading()}
     </>
+  );
+}
+
+function areItemsValid(items: RA<DefaultStat | CustomStat>) {
+  return !(
+    items.find(
+      (item) =>
+        item.type === 'DefaultStat' &&
+        item.itemName === 'phantomItem' &&
+        item.pathToValue === undefined
+    ) !== undefined
   );
 }
 
@@ -88,7 +108,7 @@ export function Categories({
   return pageLayout === undefined ? null : (
     <>
       {pageLayout.categories.map(
-        ({ label, items, categoryToFetch }, categoryIndex) =>
+        ({ label, items }, categoryIndex) =>
           shouldShowCategory(items) && (
             <li
               className={
@@ -120,72 +140,85 @@ export function Categories({
                     : 'grid grid-cols-[auto_1fr_max-content] gap-2 overflow-auto'
                 }
               >
-                {items?.map((item, itemIndex) =>
-                  item.type === 'CustomStat' || item.isVisible === undefined ? (
-                    <StatItem
-                      categoryIndex={categoryIndex}
-                      item={item}
-                      itemIndex={itemIndex}
-                      key={itemIndex}
-                      onClick={
-                        item.type === 'DefaultStat' &&
-                        typeof handleClick === 'function' &&
-                        checkEmptyItems
-                          ? (): void =>
-                              handleClick({
-                                type: 'DefaultStat',
-                                pageName: item.pageName,
-                                categoryName: item.categoryName,
-                                itemName: item.itemName,
-                                label: item.label,
-                                itemValue: item.itemValue,
-                                itemType: item.itemType,
-                                pathToValue:
-                                  item.itemType === 'BackEndStat' &&
-                                  item.itemName === 'phantomItem'
-                                    ? item.label
-                                    : undefined,
-                              })
-                          : undefined
-                      }
-                      onEdit={
-                        checkEmptyItems || handleEdit === undefined
-                          ? undefined
-                          : item.type === 'DefaultStat'
-                          ? handleClick === undefined
+                {areItemsValid(items) ? (
+                  items.map((item, itemIndex) =>
+                    item.type === 'CustomStat' ||
+                    item.isVisible === undefined ? (
+                      <StatItem
+                        categoryIndex={categoryIndex}
+                        item={item}
+                        itemIndex={itemIndex}
+                        key={itemIndex}
+                        onClick={
+                          item.type === 'DefaultStat' &&
+                          typeof handleClick === 'function' &&
+                          checkEmptyItems
+                            ? (): void =>
+                                handleClick({
+                                  type: 'DefaultStat',
+                                  pageName: item.pageName,
+                                  categoryName: item.categoryName,
+                                  itemName: item.itemName,
+                                  label: item.label,
+                                  itemValue: item.itemValue,
+                                  itemType: item.itemType,
+                                  pathToValue:
+                                    item.itemType === 'BackEndStat' &&
+                                    item.itemName === 'phantomItem'
+                                      ? item.label
+                                      : undefined,
+                                })
+                            : undefined
+                        }
+                        onEdit={
+                          checkEmptyItems || handleEdit === undefined
                             ? undefined
-                            : (querySpec, itemName): void =>
-                                handleClick(
-                                  {
-                                    type: 'CustomStat',
-                                    label: itemName,
-                                    querySpec: {
-                                      tableName: querySpec.tableName,
-                                      fields: querySpec.fields,
+                            : item.type === 'DefaultStat'
+                            ? handleClick === undefined
+                              ? undefined
+                              : (querySpec, itemName): void =>
+                                  handleClick(
+                                    {
+                                      type: 'CustomStat',
+                                      label: itemName,
+                                      querySpec: {
+                                        tableName: querySpec.tableName,
+                                        fields: querySpec.fields,
+                                      },
                                     },
-                                  },
+                                    categoryIndex,
+                                    itemIndex
+                                  )
+                            : (querySpec): void =>
+                                handleEdit?.(
                                   categoryIndex,
-                                  itemIndex
+                                  itemIndex,
+                                  querySpec
                                 )
-                          : (querySpec): void =>
-                              handleEdit?.(categoryIndex, itemIndex, querySpec)
-                      }
-                      onLoad={onLoad}
-                      onRemove={
-                        typeof handleRemove === 'function'
-                          ? (): void => handleRemove(categoryIndex, itemIndex)
-                          : undefined
-                      }
-                      onRename={
-                        typeof handleRename === 'function'
-                          ? (newLabel): void => {
-                              handleRename(categoryIndex, itemIndex, newLabel);
-                            }
-                          : undefined
-                      }
-                    />
-                  ) : undefined
-                ) ?? <ItemOverride categoryToFetch={categoryToFetch} />}
+                        }
+                        onLoad={onLoad}
+                        onRemove={
+                          typeof handleRemove === 'function'
+                            ? (): void => handleRemove(categoryIndex, itemIndex)
+                            : undefined
+                        }
+                        onRename={
+                          typeof handleRename === 'function'
+                            ? (newLabel): void => {
+                                handleRename(
+                                  categoryIndex,
+                                  itemIndex,
+                                  newLabel
+                                );
+                              }
+                            : undefined
+                        }
+                      />
+                    ) : undefined
+                  )
+                ) : (
+                  <ItemOverride item={items[0]} />
+                )}
               </Ul>
               {typeof handleCategoryRename === 'function' ? (
                 <span className="-mt-2 flex-1" />

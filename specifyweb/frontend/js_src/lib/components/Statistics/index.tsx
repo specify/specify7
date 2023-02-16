@@ -113,7 +113,7 @@ export function StatsPage(): JSX.Element | null {
     : personalLayout;
 
   const allCategories = React.useMemo(
-    () => dynamicStatsSpec.map(({ categoryName }) => categoryName),
+    () => dynamicStatsSpec.map(({ responseKey }) => responseKey),
     []
   );
   const [categoriesToFetch, setCategoriesToFetch] = React.useState<RA<string>>(
@@ -139,11 +139,11 @@ export function StatsPage(): JSX.Element | null {
   React.useEffect(() => {
     if (collectionLayout === undefined) {
       setCollectionLayout([defaultLayoutSpec[0]]);
-      setCategoriesToFetch(allCategories);
+      setCategoriesToFetch([]);
     }
     if (personalLayout === undefined) {
       setPersonalLayout([defaultLayoutSpec[1]]);
-      setCategoriesToFetch(allCategories);
+      setCategoriesToFetch([]);
     }
   }, [
     collectionLayout,
@@ -406,7 +406,7 @@ export function StatsPage(): JSX.Element | null {
                 cleanMaybeFulfilled();
                 setCollectionLayout(undefined);
                 setPersonalLayout(undefined);
-                setCategoriesToFetch([]);
+                setCategoriesToFetch(allCategories);
               }}
             >
               {commonText.reset()}
