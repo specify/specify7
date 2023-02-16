@@ -1,12 +1,13 @@
 import _ from 'underscore';
-import { Backbone } from './backbone';
+
 import { assert } from '../Errors/assert';
+import { Backbone } from './backbone';
 import { hasHierarchyField } from './schema';
 
-var Base = Backbone.Collection.extend({
+const Base = Backbone.Collection.extend({
   __name__: 'CollectionBase',
-  getTotalCount() {
-    return Promise.resolve(this.length);
+  async getTotalCount() {
+    return this.length;
   },
 });
 
@@ -42,8 +43,10 @@ export const DependentCollection = Base.extend({
     this.on(
       'add remove',
       function () {
-        // Warning: changing a collection record does not trigger a
-        // change event in the parent (though it probably should)
+        /*
+         * Warning: changing a collection record does not trigger a
+         * change event in the parent (though it probably should)
+         */
         this.trigger('saverequired');
       },
       this
@@ -51,16 +54,18 @@ export const DependentCollection = Base.extend({
 
     setupToOne(this, options);
 
-    // If the id of the related resource changes, we go through and update
-    // all the objects that point to it with the new pointer.
-    // This is to support having collections of objects attached to
-    // newly created resources that don't have ids yet. When the
-    // resource is saved, the related objects can have their foreign keys
-    // set correctly.
+    /*
+     * If the id of the related resource changes, we go through and update
+     * all the objects that point to it with the new pointer.
+     * This is to support having collections of objects attached to
+     * newly created resources that don't have ids yet. When the
+     * resource is saved, the related objects can have their foreign keys
+     * set correctly.
+     */
     this.related.on(
       'change:id',
       function () {
-        var relatedUrl = this.related.url();
+        const relatedUrl = this.related.url();
         _.chain(this.models)
           .compact()
           .invoke('set', this.field.name, relatedUrl);
@@ -80,22 +85,22 @@ export const LazyCollection = Base.extend({
   __name__: 'LazyCollectionBase',
   _neverFetched: true,
   constructor(options) {
-    options || (options = {});
+    options ||= {};
     Base.call(this, null, options);
     this.filters = options.filters || {};
     this.domainfilter =
-      !!options.domainfilter &&
+      Boolean(options.domainfilter) &&
       (typeof this.model?.specifyModel !== 'object' ||
         hasHierarchyField(this.model.specifyModel));
   },
   url() {
-    return '/api/specify/' + this.model.specifyModel.name.toLowerCase() + '/';
+    return `/api/specify/${this.model.specifyModel.name.toLowerCase()}/`;
   },
   isComplete() {
     return this.length === this._totalCount;
   },
   parse(resp) {
-    var objects;
+    let objects;
     if (resp.meta) {
       this._totalCount = resp.meta.total_count;
       objects = resp.objects;
@@ -110,17 +115,13 @@ export const LazyCollection = Base.extend({
   async fetch(options) {
     this._neverFetched = false;
 
-    const Base = Backbone.Collection.extend({
-      __name__: 'CollectionBase',
-      async getTotalCount() {
-        return this.length;
-      },
-    });
+    if (this._fetch) return this._fetch;
+    else if (this.isComplete() || this.related?.isNew()) return this;
 
     if (this.isComplete())
       console.error('fetching for already filled collection');
 
-    options || (options = {});
+    options ||= {};
 
     options.update = true;
     options.remove = false;
@@ -132,140 +133,35 @@ export const LazyCollection = Base.extend({
       _.extend({ domainfilter: this.domainfilter }, this.filters);
     options.data.offset = this.length;
 
-    export const DependentCollection = Base.extend({
-      __name__: 'DependentCollectionBase',
-      constructor(options, models = []) {
-        assert(_.isArray(models));
-        Base.call(this, models, options);
-      },
-      initialize(_models, options) {
-        this.on(
-          'add remove',
-          function () {
-            /*
-             * Warning: changing a collection record does not trigger a
-             * change event in the parent (though it probably should)
-             */
-            this.trigger('saverequired');
-          },
-          this
-        );
-
-        setupToOne(this, options);
-
-        /*
-         * If the id of the related resource changes, we go through and update
-         * all the objects that point to it with the new pointer.
-         * This is to support having collections of objects attached to
-         * newly created resources that don't have ids yet. When the
-         * resource is saved, the related objects can have their foreign keys
-         * set correctly.
-         */
-        this.related.on(
-          'change:id',
-          function () {
-            const relatedUrl = this.related.url();
-            _.chain(this.models)
-              .compact()
-              .invoke('set', this.field.name, relatedUrl);
-          },
-          this
-        );
-      },
-      isComplete() {
-        return true;
-      },
-      fetch: fakeFetch,
-      sync: notSupported,
-      create: notSupported,
+    _(options).has('limit') && (options.data.limit = options.limit);
+    this._fetch = Backbone.Collection.prototype.fetch.call(this, options);
+    return this._fetch.then(() => {
+      this._fetch = null;
+      return this;
     });
+  },
+  async fetchIfNotPopulated() {
+    return this._neverFetched && this.related?.isNew() !== true
+      ? this.fetch()
+      : this;
+  },
+  getTotalCount() {
+    if (_.isNumber(this._totalCount)) return Promise.resolve(this._totalCount);
+    return this.fetchIfNotPopulated().then((_this) => _this._totalCount);
+  },
+});
 
-    export const LazyCollection = Base.extend({
-      __name__: 'LazyCollectionBase',
-      _neverFetched: true,
-      constructor(options) {
-        options ||= {};
-        Base.call(this, null, options);
-        this.filters = options.filters || {};
-        this.domainfilter =
-          Boolean(options.domainfilter) &&
-          (typeof this.model?.specifyModel !== 'object' ||
-            hasHierarchyField(this.model.specifyModel));
-      },
-      url() {
-        return `/api/specify/${this.model.specifyModel.name.toLowerCase()}/`;
-      },
-      isComplete() {
-        return this.length === this._totalCount;
-      },
-      parse(resp) {
-        let objects;
-        if (resp.meta) {
-          this._totalCount = resp.meta.total_count;
-          objects = resp.objects;
-        } else {
-          console.warn("expected 'meta' in response");
-          this._totalCount = resp.length;
-          objects = resp;
-        }
-
-        return objects;
-      },
-      async fetch(options) {
-        this._neverFetched = false;
-
-        if (this._fetch) return this._fetch;
-        else if (this.isComplete() || this.related?.isNew()) return this;
-
-        if (this.isComplete())
-          console.error('fetching for already filled collection');
-
-        options ||= {};
-
-        options.update = true;
-        options.remove = false;
-        options.silent = true;
-        assert(options.at == null);
-
-        options.data =
-          options.data ||
-          _.extend({ domainfilter: this.domainfilter }, this.filters);
-        options.data.offset = this.length;
-
-        _(options).has('limit') && (options.data.limit = options.limit);
-        this._fetch = Backbone.Collection.prototype.fetch.call(this, options);
-        return this._fetch.then(() => {
-          this._fetch = null;
-          return this;
-        });
-      },
-      async fetchIfNotPopulated() {
-        return this._neverFetched && this.related?.isNew() !== true
-          ? this.fetch()
-          : this;
-      },
-      getTotalCount() {
-        if (_.isNumber(this._totalCount))
-          return Promise.resolve(this._totalCount);
-        return this.fetchIfNotPopulated().then((_this) => _this._totalCount);
-      },
-    });
-
-    export const ToOneCollection = LazyCollection.extend({
-      __name__: 'LazyToOneCollectionBase',
-      initialize(_models, options) {
-        setupToOne(this, options);
-      },
-      async fetch() {
-        if (this.related.isNew()) {
-          console.error(
-            "can't fetch collection related to unpersisted resource"
-          );
-          return this;
-        }
-        this.filters[this.field.name.toLowerCase()] = this.related.id;
-        return Reflect.apply(LazyCollection.prototype.fetch, this, arguments);
-      },
-    });
+export const ToOneCollection = LazyCollection.extend({
+  __name__: 'LazyToOneCollectionBase',
+  initialize(_models, options) {
+    setupToOne(this, options);
+  },
+  async fetch() {
+    if (this.related.isNew()) {
+      console.error("can't fetch collection related to unpersisted resource");
+      return this;
+    }
+    this.filters[this.field.name.toLowerCase()] = this.related.id;
+    return Reflect.apply(LazyCollection.prototype.fetch, this, arguments);
   },
 });

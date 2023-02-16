@@ -1,26 +1,18 @@
 import _ from 'underscore';
 import { Backbone } from './backbone';
 
-import { assert } from '../Errors/assert';
-import { globalEvents } from '../../utils/ajax/specifyApi';
-
 import { hijackBackboneAjax } from '../../utils/ajax/backboneAjax';
 import { Http } from '../../utils/ajax/definitions';
 import { globalEvents } from '../../utils/ajax/specifyApi';
 import { removeKey } from '../../utils/utils';
 import { assert } from '../Errors/assert';
 import { softFail } from '../Errors/Crash';
-import { Backbone } from './backbone';
 import {
   getFieldsToNotClone,
   getResourceApiUrl,
   getResourceViewUrl,
   resourceFromUrl,
 } from './resource';
-import { getResourceAndField } from '../../hooks/resource';
-import { hijackBackboneAjax } from '../../utils/ajax/backboneAjax';
-import { Http } from '../../utils/ajax/definitions';
-import { removeKey } from '../../utils/utils';
 
 function eventHandlerForToOne(related, field) {
   return function (event) {
