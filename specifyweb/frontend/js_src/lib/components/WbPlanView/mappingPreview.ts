@@ -90,7 +90,7 @@ export function generateMappingPathPreview(
 ): string {
   if (mappingPath.length === 0) return strictGetModel(baseTableName).label;
 
-  //get labels for the fields
+  // Get labels for the fields
   const mappingLineData = getMappingLineData({
     baseTableName,
     mappingPath,
@@ -98,7 +98,7 @@ export function generateMappingPathPreview(
     scope: 'queryBuilder',
   });
 
-  //extract labels from mappingLineData
+  // Extract labels from mappingLineData
   const fieldLabels = [
     mappingLineData[0].selectLabel ?? '',
     ...mappingLineData.map((mappingElementData) => {
@@ -111,12 +111,12 @@ export function generateMappingPathPreview(
     }),
   ];
 
-  //extract last number of path if any (i.e: Collection Object -> Collector -> #1 -> Address -> #2 -> Name)
+  // Extract last number of path if any (i.e: Collection Object -> Collector -> #1 -> Address -> #2 -> Name)
   const toManyLocation = Array.from(mappingPath)
     .reverse()
     .findIndex(valueIsToManyIndex);
 
-  //convert toManyLocation to a number
+  // Convert toManyLocation to a number
   const toManyIndex = mappingPath[mappingPath.length - 1 - toManyLocation];
   const toManyIndexNumber = toManyIndex
     ? getNumberFromToManyIndex(toManyIndex)
@@ -126,7 +126,7 @@ export function generateMappingPathPreview(
   const [databaseFieldName, databaseTableOrRankName, databaseParentTableName] =
     mappingPathSubset([baseTableName, ...mappingPath]);
 
-  //attributes parts of filedLables to each variable or creates one if empty
+  // Attributes parts of filedLables to each variable or creates one if empty
   const [
     fieldName = camelToHuman(databaseFieldName),
     tableOrRankName = camelToHuman(
@@ -135,7 +135,7 @@ export function generateMappingPathPreview(
     parentTableName = camelToHuman(databaseParentTableName),
   ] = mappingPathSubset(fieldLabels);
 
-  //Show filedname or not
+  // Show filedname or not
   const fieldNameFormatted =
     fieldsToHide.has(databaseFieldName) ||
     (databaseTableOrRankName !== 'CollectionObject' &&
@@ -143,8 +143,10 @@ export function generateMappingPathPreview(
       ? undefined
       : fieldName;
 
-  //extract the first part of fieldName (i.e: timestampCreated-fulldate)
-  const baseFieldName = (valueIsPartialField(databaseFieldName))? parsePartialField(databaseFieldName)[0]: databaseFieldName
+  // Extract the first part of fieldName (i.e: timestampCreated-fulldate)
+  const baseFieldName = valueIsPartialField(databaseFieldName)
+    ? parsePartialField(databaseFieldName)[0]
+    : databaseFieldName;
   // Treat fields whose label is single word as generic
   const fieldIsGeneric =
     genericFields.has(baseFieldName) ||
