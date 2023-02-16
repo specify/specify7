@@ -68,9 +68,8 @@ function eventHandlerForToOne(related, field) {
             }
             }
             }
-    }
-  };
-}
+    };
+  
 
     export const ResourceBase = Backbone.Model.extend({
         __name__: "ResourceBase",
