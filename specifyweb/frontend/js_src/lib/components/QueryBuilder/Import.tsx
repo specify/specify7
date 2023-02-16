@@ -24,6 +24,7 @@ import { schema } from '../DataModel/schema';
 import type { SpQuery } from '../DataModel/types';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { FilePicker, fileToText } from '../Molecules/FilePicker';
+import { TableIcon } from '../Molecules/TableIcon';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import { QueryFieldSpec } from './fieldSpec';
 
@@ -130,13 +131,16 @@ export function QueryImport({
           >
             <>
               {queryText.hiddenFieldsMess()}
-              <Ul className="flex flex-col">
+              <Ul className="flex flex-col items-center">
                 {hiddenFields.map((field, index) => (
                   <li className="font-bold" key={index}>
-                    {generateMappingPathPreview(
-                      field.baseTable.name,
-                      field.toMappingPath()
-                    )}
+                    <div className="flex gap-2">
+                      <TableIcon label name={field.baseTable.name} />
+                      {generateMappingPathPreview(
+                        field.baseTable.name,
+                        field.toMappingPath()
+                      )}
+                    </div>
                   </li>
                 ))}
               </Ul>
