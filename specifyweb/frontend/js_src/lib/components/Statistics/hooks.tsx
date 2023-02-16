@@ -26,7 +26,7 @@ import type {
 } from './types';
 import { Http } from '../../utils/ajax/definitions';
 import { userText } from '../../localization/user';
-import { dynamicStatsSpec, statsSpec } from './StatsSpec';
+import { statsSpec } from './StatsSpec';
 
 /**
  * Fetch backend statistics from the API
@@ -119,20 +119,18 @@ export function useDefaultStatsToAdd(
 export const statSpecToItems = (
   categoryName: string,
   pageName: string,
-  items: StatCategoryReturn | undefined
-): RA<DefaultStat> | undefined =>
-  items === undefined
-    ? undefined
-    : Object.entries(items).map(([itemName, { label, spec }]) => ({
-        type: 'DefaultStat',
-        pageName,
-        itemName,
-        categoryName,
-        label: label,
-        itemValue: undefined,
-        itemType: spec.type === 'BackEndStat' ? 'BackEndStat' : 'QueryStat',
-        pathToValue: spec.type === 'BackEndStat' ? spec.pathToValue : undefined,
-      }));
+  items: StatCategoryReturn
+): RA<DefaultStat> =>
+  Object.entries(items).map(([itemName, { label, spec }]) => ({
+    type: 'DefaultStat',
+    pageName,
+    itemName,
+    categoryName,
+    label: label,
+    itemValue: undefined,
+    itemType: spec.type === 'BackEndStat' ? 'BackEndStat' : 'QueryStat',
+    pathToValue: spec.type === 'BackEndStat' ? spec.pathToValue : undefined,
+  }));
 
 export function useDefaultLayout(): StatLayout {
   return React.useMemo(
@@ -141,16 +139,9 @@ export function useDefaultLayout(): StatLayout {
         label: pageName,
         categories: Object.entries(pageStatsSpec).map(
           ([categoryName, { label, items }]) => {
-            const isUnknownCategory =
-              dynamicStatsSpec.find(
-                (spec) => spec.categoryName === categoryName
-              ) !== undefined;
             return {
               label,
-              items: isUnknownCategory
-                ? undefined
-                : statSpecToItems(categoryName, pageName, items),
-              categoryToFetch: isUnknownCategory ? categoryName : undefined,
+              items: statSpecToItems(categoryName, pageName, items),
             };
           }
         ),
@@ -247,11 +238,8 @@ export function setAbsentCategoriesToFetch(
   if (layout === undefined) return;
   const categoriesToFetch: WritableArray<string> = [];
   layout.forEach((pageLayout) =>
-    pageLayout.categories.forEach(({ items, categoryToFetch }) => {
-      if (items === undefined && categoryToFetch !== undefined) {
-        categoriesToFetch.push(categoryToFetch);
-      }
-      (items ?? []).forEach((item) => {
+    pageLayout.categories.forEach(({ items }) => {
+      items.forEach((item) => {
         if (
           item.type === 'DefaultStat' &&
           item.itemType === 'BackEndStat' &&
@@ -323,6 +311,40 @@ export function useStatValueLoad<
   }, [promiseGenerator, value, onLoad]);
 }
 
+function applyBackendResponse(
+  backEndResponse: BackendStatsResult,
+  items: RA<DefaultStat | CustomStat>,
+  pageName: string,
+  categoryName: string,
+  formatter: (rawResult: any) => string | undefined
+): RA<DefaultStat | CustomStat> {
+  const responseKey = items
+    .map((item) =>
+      item.type === 'DefaultStat' ? item.categoryName : undefined
+    )
+    .filter((key) => key !== undefined)[0];
+  const isMyResponse = Object.keys(backEndResponse).includes(responseKey);
+  return items.find(
+    (item) =>
+      item.type === 'DefaultStat' &&
+      item.itemName === 'phantomItem' &&
+      item.pathToValue === undefined
+  ) !== undefined && isMyResponse
+    ? Object.entries(backEndResponse[responseKey]).map(
+        ([itemName, rawValue]) => ({
+          type: 'DefaultStat',
+          pageName,
+          itemName: 'phantomItem',
+          categoryName,
+          label: itemName,
+          itemValue: formatter(rawValue),
+          itemType: 'BackEndStat',
+          pathToValue: itemName,
+        })
+      )
+    : items;
+}
+
 export function useDynamicCategorySetter(
   backEndResponse: BackendStatsResult | undefined,
   handleChange: (
@@ -334,40 +356,26 @@ export function useDynamicCategorySetter(
   React.useLayoutEffect(() => {
     Object.entries(statsSpec).forEach(([pageName, pageSpec]) =>
       Object.entries(pageSpec).forEach(([categoryName, categorySpec]) =>
-        Object.entries(categorySpec.items ?? {}).forEach(
-          ([itemName, { spec }]) => {
-            if (
-              itemName === 'phantomItem' &&
-              spec.type === 'BackEndStat' &&
-              Object.keys(backEndResponse ?? {}).includes(categoryName)
-            ) {
-              handleChange((oldCategory) =>
-                oldCategory.map((unknownCategory) => ({
-                  ...unknownCategory,
-                  items:
-                    unknownCategory.items ??
-                    (unknownCategory.categoryToFetch === undefined ||
-                    backEndResponse?.[unknownCategory.categoryToFetch] ===
-                      undefined ||
-                    unknownCategory.categoryToFetch !== categoryName
-                      ? undefined
-                      : Object.entries(backEndResponse[categoryName]).map(
-                          ([itemName, rawValue]) => ({
-                            type: 'DefaultStat',
-                            pageName,
-                            itemName: 'phantomItem',
-                            categoryName,
-                            label: itemName,
-                            itemValue: spec.formatter(rawValue),
-                            itemType: 'BackEndStat',
-                            pathToValue: itemName,
-                          })
-                        )),
-                }))
-              );
-            }
+        Object.entries(categorySpec.items).forEach(([itemName, { spec }]) => {
+          if (
+            itemName === 'phantomItem' &&
+            spec.type === 'BackEndStat' &&
+            backEndResponse !== undefined
+          ) {
+            handleChange((oldCategory) =>
+              oldCategory.map((unknownCategory) => ({
+                ...unknownCategory,
+                items: applyBackendResponse(
+                  backEndResponse,
+                  unknownCategory.items,
+                  pageName,
+                  categoryName,
+                  spec.formatter
+                ),
+              }))
+            );
           }
-        )
+        })
       )
     );
   }, [backEndResponse, handleChange]);

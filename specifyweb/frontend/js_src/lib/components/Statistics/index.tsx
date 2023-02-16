@@ -247,7 +247,6 @@ export function StatsPage(): JSX.Element | null {
           ...item,
           itemValue: pageIndex === index ? undefined : item.itemValue,
         })),
-        categoryToFetch: category.categoryToFetch,
       })),
       lastUpdated:
         index === pageIndex ? lastUpdatedDate.toJSON() : pageLayout.lastUpdated,
@@ -728,17 +727,14 @@ export function StatsPage(): JSX.Element | null {
                 ? undefined
                 : layout.map(({ label, categories, lastUpdated }) => ({
                     label,
-                    categories: categories.map(
-                      ({ label, items, categoryToFetch }) => ({
-                        label,
-                        items: items?.map((item) =>
-                          item.type === 'DefaultStat'
-                            ? (removeKey(item, 'isVisible') as DefaultStat)
-                            : item
-                        ),
-                        categoryToFetch,
-                      })
-                    ),
+                    categories: categories.map(({ label, items }) => ({
+                      label,
+                      items: items?.map((item) =>
+                        item.type === 'DefaultStat'
+                          ? (removeKey(item, 'isVisible') as DefaultStat)
+                          : item
+                      ),
+                    })),
                     lastUpdated,
                   }))
             );

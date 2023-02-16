@@ -1,26 +1,19 @@
 import { getDateInputValue } from '../../utils/dayJs';
-import type { IR } from '../../utils/types';
 import { ensure, RA } from '../../utils/types';
 import { formatNumber } from '../Atoms/Internationalization';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { statsText } from '../../localization/stats';
 import { formattedEntry } from '../WbPlanView/mappingHelpers';
-import type { StatCategoryReturn } from './types';
 import { userInformation } from '../InitialContext/userInformation';
 import { f } from '../../utils/functools';
 import { Tables } from '../DataModel/types';
-import { BackEndStat } from './types';
+import { BackEndStat, StatsSpec } from './types';
 
-type StatsSpec = IR<{
-  readonly label: string;
-  readonly categories: StatCategoryReturn;
-}>;
-
-export const statsSpecDef: IR<StatsSpec> = {
+export const statsSpec: StatsSpec = {
   [statsText.collection() as string]: {
     holdings: {
       label: statsText.holdings(),
-      categories: {
+      items: {
         specimens: {
           label: statsText.collectionObjects(),
           spec: {
@@ -75,7 +68,7 @@ export const statsSpecDef: IR<StatsSpec> = {
     },
     preparations: {
       label: statsText.preparations(),
-      categories: {
+      items: {
         phantomItem: {
           label: statsText.preparations(),
           spec: {
@@ -100,7 +93,7 @@ export const statsSpecDef: IR<StatsSpec> = {
     },
     loans: {
       label: statsText.loans(),
-      categories: {
+      items: {
         itemsOnLoans: {
           label: statsText.itemsOnLoans(),
           spec: {
@@ -167,7 +160,7 @@ export const statsSpecDef: IR<StatsSpec> = {
     },
     taxonomicTree: {
       label: statsText.taxonomicTree(),
-      categories: {
+      items: {
         classesCount: {
           label: statsText.classes(),
           spec: {
@@ -274,7 +267,7 @@ export const statsSpecDef: IR<StatsSpec> = {
     locality_geography: {
       // FEATURE: refactor all strings to use localized table names
       label: statsText.localityGeography(),
-      categories: {
+      items: {
         localityCount: {
           label: statsText.localities(),
           spec: {
@@ -336,7 +329,7 @@ export const statsSpecDef: IR<StatsSpec> = {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     type_specimens: {
       label: statsText.typeSpecimens(),
-      categories: {
+      items: {
         phantomItem: {
           label: statsText.typeSpecimens(),
           spec: {
@@ -352,7 +345,7 @@ export const statsSpecDef: IR<StatsSpec> = {
     },
     catalogStats: {
       label: statsText.computerization(),
-      categories: {
+      items: {
         catalogedLastSevenDays: {
           label: statsText.computerizedLastSevenDays(),
           spec: {
@@ -416,7 +409,7 @@ export const statsSpecDef: IR<StatsSpec> = {
   [statsText.personal() as string]: {
     holdings: {
       label: statsText.collection(),
-      categories: {
+      items: {
         collectionObjectsCataloged: {
           label: statsText.collectionObjectsCataloged(),
           spec: {
@@ -470,39 +463,10 @@ export const statsSpecDef: IR<StatsSpec> = {
   },
 };
 
-ensure<IR<StatsSpec>>()(statsSpecDef);
-
-function generateStatsSpec(): IR<
-  IR<{
-    readonly label: string;
-    readonly items: StatCategoryReturn;
-  }>
-> {
-  return Object.fromEntries(
-    Object.entries(statsSpecDef).map(([pageName, pageStatSpec]) => [
-      pageName,
-      Object.fromEntries(
-        Object.entries(pageStatSpec).map(
-          ([categoryName, { label, categories }]) => [
-            categoryName,
-            {
-              label,
-              items: categories,
-            },
-          ]
-        )
-      ),
-    ])
-  );
-}
+ensure<StatsSpec>()(statsSpec);
 
 function generateDynamicSpec(
-  statsSpec: IR<
-    IR<{
-      readonly label: string;
-      readonly items: StatCategoryReturn;
-    }>
-  >
+  statsSpec: StatsSpec
 ): RA<{ categoryName: string; tableName: keyof Tables }> {
   return Object.values(statsSpec).flatMap((categorySpec) =>
     Object.entries(categorySpec).flatMap(([categoryName, { items }]) =>
@@ -519,5 +483,4 @@ function generateDynamicSpec(
   );
 }
 
-export const statsSpec = generateStatsSpec();
 export const dynamicStatsSpec = generateDynamicSpec(statsSpec);
