@@ -17,39 +17,39 @@ import $ from 'jquery';
 import React from 'react';
 import _ from 'underscore';
 
-import { backEndText } from '../../localization/backEnd';
-import { commonText } from '../../localization/common';
-import { whitespaceSensitive } from '../../localization/utils';
-import { LANGUAGE } from '../../localization/utils/config';
-import { wbPlanText } from '../../localization/wbPlan';
-import { wbText } from '../../localization/workbench';
-import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/definitions';
-import { ping } from '../../utils/ajax/ping';
-import { getCache, setCache } from '../../utils/cache';
-import { f } from '../../utils/functools';
-import { filterArray } from '../../utils/types';
-import { capitalize, clamp, mappedFind } from '../../utils/utils';
-import { Button } from '../Atoms/Button';
-import { iconClassName, legacyNonJsxIcons } from '../Atoms/Icons';
-import { Link } from '../Atoms/Link';
-import { legacyLoadingContext } from '../Core/Contexts';
-import { Backbone } from '../DataModel/backbone';
-import { serializeResource } from '../DataModel/helpers';
-import { getModel, schema, strictGetModel } from '../DataModel/schema';
-import { crash, raise } from '../Errors/Crash';
-import { getIcon, unknownIcon } from '../InitialContext/icons';
-import { strictGetTreeDefinitionItems } from '../InitialContext/treeRanks';
-import { loadingBar } from '../Molecules';
-import { Dialog } from '../Molecules/Dialog';
+import {backEndText} from '../../localization/backEnd';
+import {commonText} from '../../localization/common';
+import {whitespaceSensitive} from '../../localization/utils';
+import {LANGUAGE} from '../../localization/utils/config';
+import {wbPlanText} from '../../localization/wbPlan';
+import {wbText} from '../../localization/workbench';
+import {ajax} from '../../utils/ajax';
+import {Http} from '../../utils/ajax/definitions';
+import {ping} from '../../utils/ajax/ping';
+import {getCache, setCache} from '../../utils/cache';
+import {f} from '../../utils/functools';
+import {filterArray} from '../../utils/types';
+import {capitalize, clamp, mappedFind} from '../../utils/utils';
+import {Button} from '../Atoms/Button';
+import {iconClassName, legacyNonJsxIcons} from '../Atoms/Icons';
+import {Link} from '../Atoms/Link';
+import {legacyLoadingContext} from '../Core/Contexts';
+import {Backbone} from '../DataModel/backbone';
+import {serializeResource} from '../DataModel/helpers';
+import {getModel, schema, strictGetModel} from '../DataModel/schema';
+import {crash, raise} from '../Errors/Crash';
+import {getIcon, unknownIcon} from '../InitialContext/icons';
+import {strictGetTreeDefinitionItems} from '../InitialContext/treeRanks';
+import {loadingBar} from '../Molecules';
+import {Dialog} from '../Molecules/Dialog';
 import {
   hasPermission,
   hasTablePermission,
   hasTreeAccess,
 } from '../Permissions/helpers';
-import { fetchPickList } from '../PickLists/fetch';
-import { getUserPref } from '../UserPreferences/helpers';
-import { pathStartsWith } from '../WbPlanView/helpers';
+import {fetchPickList} from '../PickLists/fetch';
+import {getUserPref} from '../UserPreferences/helpers';
+import {pathStartsWith} from '../WbPlanView/helpers';
 import {
   formatToManyIndex,
   formatTreeRank,
@@ -57,20 +57,21 @@ import {
   mappingPathToString,
   valueIsTreeRank,
 } from '../WbPlanView/mappingHelpers';
-import { getTableFromMappingPath } from '../WbPlanView/navigator';
-import { parseUploadPlan } from '../WbPlanView/uploadPlanParser';
-import { RollbackConfirmation } from './Components';
-import { DataSetNameView } from './DataSetMeta';
-import { DevShowPlan } from './DevShowPlan';
-import { DisambiguationDialog } from './Disambiguation';
-import { downloadDataSet } from './helpers';
-import { getSelectedLast, getSelectedRegions } from './hotHelpers';
-import { CreateRecordSetButton } from './RecordSet';
-import { WbUploaded } from './Results';
-import { resolveValidationMessage } from './resultsParser';
-import { WbStatus } from './Status';
-import { wbViewTemplate } from './Template';
-import { WBUtils } from './wbUtils';
+import {getTableFromMappingPath} from '../WbPlanView/navigator';
+import {parseUploadPlan} from '../WbPlanView/uploadPlanParser';
+import {RollbackConfirmation} from './Components';
+import {DataSetNameView} from './DataSetMeta';
+import {DevShowPlan} from './DevShowPlan';
+import {DisambiguationDialog} from './Disambiguation';
+import {downloadDataSet} from './helpers';
+import {getSelectedLast, getSelectedRegions} from './hotHelpers';
+import {CreateRecordSetButton} from './RecordSet';
+import {WbUploaded} from './Results';
+import {resolveValidationMessage} from './resultsParser';
+import {WbStatus} from './Status';
+import {wbViewTemplate} from './Template';
+import {WBUtils} from './wbUtils';
+import {oneRem} from '../Atoms';
 
 const metaKeys = [
   'isNew',
@@ -1269,9 +1270,6 @@ export const WBView = Backbone.View.extend({
       return;
 
     const cellContainerBoundingBox = cell.getBoundingClientRect();
-    const oneRem = Number.parseFloat(
-      getComputedStyle(document.documentElement).fontSize
-    );
 
     // Make sure box is overflowing horizontally
     if (globalThis.innerWidth > cellContainerBoundingBox.right + oneRem * 2)
