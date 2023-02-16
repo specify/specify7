@@ -328,7 +328,7 @@ export function useStatValueLoad<
 }
 
 function applyBackendResponse(
-  backEndResponse: BackendStatsResult,
+  backEndResponse: BackendStatsResult | undefined,
   items: RA<DefaultStat | CustomStat>,
   pageName: string,
   categoryName: string,
@@ -350,7 +350,12 @@ function applyBackendResponse(
           phantomItem.itemName
         )
       : undefined;
-  if (responseKey === undefined) return items;
+  if (
+    responseKey === undefined ||
+    backEndResponse === undefined ||
+    backEndResponse[responseKey] === undefined
+  )
+    return items;
   const isMyResponse = Object.keys(backEndResponse).includes(responseKey);
   return items.find(
     (item) =>
