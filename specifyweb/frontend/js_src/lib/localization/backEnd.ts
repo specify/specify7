@@ -22,7 +22,7 @@ export const backEndText = createDictionary({
     'en-us': 'value "{value:string}" is not a valid decimal value',
     'ru-ru': 'значение "{value:string}" не является допустимым чеслом',
     'es-es': 'el valor "{value:string}" no es un valor decimal válido',
-    'fr-fr': 'la valeur "{value:string}" n\'est pas une valeur décimale valide',
+    'fr-fr': 'valeur "{value:string}" n\'est pas une valeur décimale valide',
     'uk-ua': 'значення "{value:string}" не є дійсним цілим числом',
   },
   failedParsingFloat: {
@@ -33,8 +33,7 @@ export const backEndText = createDictionary({
     'es-es':
       'el valor "{value:string}" no es un valor de punto flotante válido',
     'fr-fr': `
-      la valeur "{value:string}" n\'est pas une valeur à virgule flottante
-      valide
+      valeur "{value:string}" n\'est pas une valeur à virgule flottante valide
     `,
     'uk-ua': 'значення "{value:string}" не є раціональним числом',
   },

@@ -35,7 +35,7 @@ export const formsText = createDictionary({
     'en-us': 'Value must be unique to {fieldName:string}',
     'ru-ru': 'Значение {fieldName:string} должно быть уникальным',
     'es-es': 'El valor debe ser único para {fieldName:string}',
-    'fr-fr': 'La valeur doit être unique pour {fieldName:string}',
+    'fr-fr': 'Valeur doit être unique pour {fieldName:string}',
     'uk-ua': 'Значення має бути унікальним для {fieldName:string}',
   },
   valueMustBeUniqueToDatabase: {
