@@ -38,7 +38,7 @@ export const localityText = createDictionary({
       {total:number|formatted}
     `,
     'fr-fr': `
-      GéoCarte - Tracé {plotted:number|formatted} de {total:number|formatted}
+      GeoMap - Tracé {plotted:number|formatted} de {total:number|formatted}
       enregistrements
     `,
     'uk-ua': `
@@ -89,8 +89,7 @@ export const localityText = createDictionary({
     `,
     'es-es': '{localityTable:string} debe tener coordenadas para ser mapeado.',
     'fr-fr': `
-      La {localityTable:string} doit avoir des coordonnées pour être
-      cartographiée.
+      {localityTable:string} doit avoir des coordonnées pour être cartographié.
     `,
     'uk-ua': '{localityTable:string} має мати координати для відображення.',
   },
@@ -146,7 +145,7 @@ export const localityText = createDictionary({
     'en-us': 'NW Corner',
     'ru-ru': 'СЗ Угол',
     'es-es': 'Esquina noroeste',
-    'fr-fr': 'Coin NO',
+    'fr-fr': 'Coin nord-ouest',
     'uk-ua': 'NW Кут',
   },
   southEastCorner: {
@@ -168,14 +167,14 @@ export const localityText = createDictionary({
     'en-us': 'Point',
     'ru-ru': 'Точка',
     'es-es': 'Punto',
-    'fr-fr': 'Point',
+    'fr-fr': 'Indiquer',
     'uk-ua': 'точка',
   },
   line: {
     'en-us': 'Line',
     'ru-ru': 'Линия',
     'es-es': 'Línea',
-    'fr-fr': 'Ligne',
+    'fr-fr': 'Doubler',
     'uk-ua': 'лінія',
   },
   rectangle: {
@@ -189,7 +188,7 @@ export const localityText = createDictionary({
     'en-us': 'Parsed',
     'ru-ru': 'Проверено',
     'es-es': 'analizado',
-    'fr-fr': 'Analysé',
+    'fr-fr': 'analysé',
     'uk-ua': 'Проаналізовано',
   },
   latitude: {
@@ -210,7 +209,7 @@ export const localityText = createDictionary({
     'en-us': 'Toggle Full Screen',
     'ru-ru': 'Включить полноэкранный режим',
     'es-es': 'Alternar pantalla completa',
-    'fr-fr': 'Passer en plein écran',
+    'fr-fr': 'Basculer en plein écran',
     'uk-ua': 'Перемкнути повний екран',
   },
   degrees: {
