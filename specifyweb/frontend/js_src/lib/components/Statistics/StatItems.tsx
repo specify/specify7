@@ -20,11 +20,6 @@ import { userText } from '../../localization/user';
 import { Http } from '../../utils/ajax/definitions';
 import { Tables } from '../DataModel/types';
 
-const overRideValue = (
-  tableName: keyof Tables,
-  value: string | number | undefined
-) => (hasTablePermission(tableName, 'read') ? value : userText.noPermission());
-
 export function StatItem({
   item,
   categoryIndex,
@@ -121,7 +116,10 @@ function BackEndItem({
   readonly onRename: ((newLabel: string) => void) | undefined;
   readonly onLoad: ((value: number | string) => void) | undefined;
 }): JSX.Element {
-  const overRiddenValue = overRideValue(tableName, value);
+  const [hasStatPermission, setStatPermission] = React.useState<boolean>(
+    hasTablePermission(tableName, 'read')
+  );
+  const handleLoadResolve = hasStatPermission ? handleLoad : undefined;
   const promiseGenerator = React.useCallback(
     () =>
       throttledPromise<BackendStatsResult | undefined>(
@@ -136,27 +134,31 @@ function BackEndItem({
               },
             },
             { expectedResponseCodes: [Http.OK, Http.FORBIDDEN] }
-          ).then(({ data, status }) =>
-            status === Http.FORBIDDEN ? undefined : data
-          ),
+          ).then(({ data, status }) => {
+            if (status === Http.FORBIDDEN) {
+              setStatPermission(false);
+              return undefined;
+            }
+            return data;
+          }),
         fetchUrl
       ).then((data) => {
-        const fetchValue =
-          data === undefined
-            ? userText.noPermission()
-            : formatter?.(data[pathToValue]);
+        if (data === undefined) {
+          return undefined;
+        }
+        const fetchValue = formatter?.(data[pathToValue]);
         if (fetchValue === undefined) handleRemove?.();
         return fetchValue;
       }),
     [pathToValue, fetchUrl, handleRemove]
   );
-  useStatValueLoad(overRiddenValue, promiseGenerator, handleLoad);
+  useStatValueLoad(value, promiseGenerator, handleLoadResolve);
   return (
     <StatsResult
       isDefault={isDefault}
       query={undefined}
       label={label}
-      value={overRiddenValue}
+      value={hasStatPermission ? value : userText.noPermission()}
       onClick={handleClick}
       onRename={handleRename}
       onRemove={handleRemove}
@@ -186,8 +188,10 @@ function QueryItem({
   readonly onRename: ((newLabel: string) => void) | undefined;
   readonly onLoad: ((value: number | string) => void) | undefined;
 }): JSX.Element | null {
-  const overRiddenValue = overRideValue(querySpec.tableName, value);
-
+  const [hasStatPermission, setStatPermission] = React.useState<boolean>(
+    hasTablePermission(querySpec.tableName, 'read')
+  );
+  const handleLoadResolve = hasStatPermission ? handleLoad : undefined;
   const query = React.useMemo(
     () => querySpecToResource(label, querySpec),
     [label, querySpec]
@@ -197,22 +201,20 @@ function QueryItem({
     async () =>
       throttledPromise<number | string | undefined>(
         'queryStats',
-        queryCountPromiseGenerator(query),
+        queryCountPromiseGenerator(query, setStatPermission),
         JSON.stringify(querySpec)
       ),
     [query]
   );
 
-  useStatValueLoad(overRiddenValue, promiseGenerator, handleLoad);
+  useStatValueLoad(value, promiseGenerator, handleLoadResolve);
 
   return (
     <StatsResult
       isDefault={isDefault}
-      query={
-        hasTablePermission(querySpec.tableName, 'read') ? query : undefined
-      }
+      query={hasStatPermission ? query : undefined}
       label={label}
-      value={overRiddenValue}
+      value={hasStatPermission ? value : userText.noPermission()}
       onClick={handleClick}
       onRename={handleRename}
       onRemove={handleRemove}

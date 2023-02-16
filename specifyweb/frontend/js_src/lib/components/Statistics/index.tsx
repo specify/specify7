@@ -139,11 +139,9 @@ export function StatsPage(): JSX.Element | null {
   React.useEffect(() => {
     if (collectionLayout === undefined) {
       setCollectionLayout([defaultLayoutSpec[0]]);
-      setCategoriesToFetch([]);
     }
     if (personalLayout === undefined) {
       setPersonalLayout([defaultLayoutSpec[1]]);
-      setCategoriesToFetch([]);
     }
   }, [
     collectionLayout,
@@ -406,7 +404,7 @@ export function StatsPage(): JSX.Element | null {
                 cleanMaybeFulfilled();
                 setCollectionLayout(undefined);
                 setPersonalLayout(undefined);
-                setCategoriesToFetch(allCategories);
+                setCategoriesToFetch([]);
               }}
             >
               {commonText.reset()}

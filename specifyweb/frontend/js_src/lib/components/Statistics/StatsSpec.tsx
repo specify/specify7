@@ -327,6 +327,16 @@ export const statsSpec: StatsSpec = {
               },
             },
           },
+          countries: {
+            label: statsText.countries(),
+            spec: {
+              type: 'BackEndStat',
+              pathToValue: 'countries',
+              tableName: 'Geography',
+              formatter: (rawNumber: number | undefined) =>
+                f.maybe(rawNumber, formatNumber),
+            },
+          },
         },
       },
       // eslint-disable-next-line @typescript-eslint/naming-convention

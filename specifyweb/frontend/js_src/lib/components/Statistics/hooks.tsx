@@ -24,7 +24,6 @@ import type {
   StatLayout,
 } from './types';
 import { Http } from '../../utils/ajax/definitions';
-import { userText } from '../../localization/user';
 import { statsSpec } from './StatsSpec';
 
 /**
@@ -153,7 +152,8 @@ export function useDefaultLayout(): StatLayout {
 }
 
 export function queryCountPromiseGenerator(
-  query: SpecifyResource<SpQuery>
+  query: SpecifyResource<SpQuery>,
+  setStatPermission: (newValue: boolean) => void
 ): () => Promise<string | undefined> {
   return async () =>
     ajax<{
@@ -172,9 +172,13 @@ export function queryCountPromiseGenerator(
         }),
       },
       { expectedResponseCodes: [Http.FORBIDDEN, Http.OK] }
-    ).then(({ data, status }) =>
-      status === Http.FORBIDDEN ? undefined : formatNumber(data.count)
-    );
+    ).then(({ data, status }) => {
+      if (status === Http.FORBIDDEN) {
+        setStatPermission(false);
+        return undefined;
+      }
+      return formatNumber(data.count);
+    });
 }
 
 export const querySpecToResource = (
@@ -213,7 +217,7 @@ export function useResolvedStatSpec(
       };
     } else {
       const statSpecItem =
-        statsSpec[item.pageName].categories[item.categoryName].items[
+        statsSpec[item.pageName]?.categories?.[item.categoryName]?.items?.[
           item.itemName
         ];
       return statSpecItem === undefined
@@ -318,8 +322,8 @@ export function useStatValueLoad<
     if (!shouldFetch) return undefined;
     let destructorCalled = false;
     promiseGenerator().then((value) => {
-      if (destructorCalled) return;
-      onLoad?.(value ?? userText.noPermission());
+      if (destructorCalled || value === undefined) return;
+      onLoad?.(value);
     });
     return (): void => {
       destructorCalled = true;

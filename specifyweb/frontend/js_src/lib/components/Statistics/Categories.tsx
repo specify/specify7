@@ -166,7 +166,7 @@ export function Categories({
                                     item.itemType === 'BackEndStat' &&
                                     item.itemName === 'phantomItem'
                                       ? item.label
-                                      : undefined,
+                                      : item.pathToValue,
                                 })
                             : undefined
                         }
