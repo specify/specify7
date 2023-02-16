@@ -1382,4 +1382,11 @@ export const preferencesText = createDictionary({
       зміни
     `,
   },
+  useCustomTooltips: {
+    'en-us': 'Use modern tooltips',
+    'ru-ru': 'Использовать современные подсказки',
+    'es-es': 'Usar modernos tooltips',
+    'fr-fr': 'Utiliser des infobulles modernes',
+    'uk-ua': 'Використовувати сучасні підказки',
+  },
 } as const);

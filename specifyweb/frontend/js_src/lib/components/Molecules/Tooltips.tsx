@@ -14,6 +14,7 @@ import { useId } from '../../hooks/useId';
 import { whitespaceSensitive } from '../../localization/utils';
 import { listen } from '../../utils/events';
 import { oneRem } from '../Atoms';
+import { usePref } from '../UserPreferences/usePref';
 
 /**
  * Add this attribute to element to remove delay before title becomes visible
@@ -131,8 +132,8 @@ function roundByDevice(value: number): number {
   return Math.round(value * dpr) / dpr;
 }
 
-let delayFocusIn = 200;
-let delayMouseIn = 400;
+let delayFocusIn = 400;
+let delayMouseIn = 800;
 let delayOut = 1000;
 // Disable delays on touch screen devices
 window?.addEventListener(
@@ -157,6 +158,8 @@ function useInteraction(
   context: FloatingContext,
   floatingId: string | undefined
 ): void {
+  const [isEnabled] = usePref('general', 'ui', 'useCustomTooltips');
+
   const timeOut = React.useRef<ReturnType<typeof setTimeout> | undefined>(
     undefined
   );
@@ -235,6 +238,8 @@ function useInteraction(
   );
 
   React.useEffect(() => {
+    if (!isEnabled) return undefined;
+
     // Handle focus/mouseenter
     function handleIn(event: FocusEvent | MouseEvent): void {
       if (event.target === containerRef.current) {
@@ -272,14 +277,14 @@ function useInteraction(
       currentTitle.current = title;
 
       const handleSet = (): void => {
-        // FIXME: don't need to call whitespaceSensitive everywhere anymore?
+        // FIXME: don't need to call whitespaceSensitive everywhere anymore
         setContent(element, whitespaceSensitive(title));
         if (typeof floatingIdRef.current === 'string')
           element.setAttribute('aria-describedby', floatingIdRef.current);
       };
 
       // If tooltip is already displayed, switch to displaying new tooltip right away
-      if (isDisplayed) handleSet();
+      if (isDisplayed && type === 'mouseenter') handleSet();
       else {
         // Otherwise, add a delay before displaying the tooltip. This prevents spamming the UI with tooltips if the user is quickly moving the mouse over the page
         const delay = element.hasAttribute(noTitleDelay)
@@ -303,5 +308,5 @@ function useInteraction(
       mouseEnter();
       focus();
     };
-  }, [setContent, clear, revertDomChanges, handleOut]);
+  }, [setContent, clear, revertDomChanges, handleOut, isEnabled]);
 }

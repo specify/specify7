@@ -258,6 +258,13 @@ export const preferenceDefinitions = {
             renderer: FontFamilyPreferenceItem,
             container: 'label',
           }),
+          useCustomTooltips: defineItem<boolean>({
+            title: preferencesText.useCustomTooltips(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
         },
       },
       appearance: {

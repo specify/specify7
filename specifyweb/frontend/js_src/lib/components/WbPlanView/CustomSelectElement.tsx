@@ -296,7 +296,6 @@ function Option({
       className={classes.join(' ')}
       role="option"
       tabIndex={-1}
-      title={fullTitle === optionLabel ? tableLabel : fullTitle}
       onClick={
         typeof handleClick === 'function'
           ? (event): void => handleClick({ isDoubleClick: event.detail > 1 })
