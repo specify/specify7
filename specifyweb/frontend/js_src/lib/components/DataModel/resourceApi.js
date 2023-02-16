@@ -69,7 +69,8 @@ function eventHandlerForToOne(related, field) {
             }
             }
     }
-
+  };
+}
 
     export const ResourceBase = Backbone.Model.extend({
         __name__: "ResourceBase",
@@ -125,7 +126,9 @@ function eventHandlerForToOne(related, field) {
         async clone(cloneAll = false) {
             const self = this;
 
-            const exemptFields = getFieldsToNotClone(this.specifyModel, cloneAll).map(fieldName=>fieldName.toLowerCase());
+    const exemptFields = getFieldsToNotClone(this.specifyModel, cloneAll).map(
+      (fieldName) => fieldName.toLowerCase()
+    );
 
             const newResource = new this.constructor(
               removeKey(
@@ -135,7 +138,7 @@ function eventHandlerForToOne(related, field) {
               )
             );
 
-            newResource.needsSaved = self.needsSaved;
+    newResource.needsSaved = self.needsSaved;
 
             await Promise.all(Object.entries(self.dependentResources).map(async ([fieldName,related])=>{
                 if(exemptFields.includes(fieldName)) return;
@@ -197,12 +200,12 @@ function eventHandlerForToOne(related, field) {
                 return;
             }
 
-            if (oldRelated && oldRelated.cid === related.cid) return;
+    if (oldRelated && oldRelated.cid === related.cid) return;
 
-            oldRelated && oldRelated.off("all", null, this);
+    oldRelated && oldRelated.off('all', null, this);
 
-            related.on('all', eventHandlerForToOne(related, field), this);
-            related.parent = this;  // REFACTOR: this doesn't belong here
+    related.on('all', eventHandlerForToOne(related, field), this);
+    related.parent = this; // REFACTOR: this doesn't belong here
 
             switch (field.type) {
             case 'one-to-one':
@@ -335,12 +338,18 @@ function eventHandlerForToOne(related, field) {
                 // Should we handle passing in an schema.Model.Collection instance here??
                 const collectionOptions = { related: this, field: field.getReverse() };
 
-                if (field.isDependent()) {
-                    const collection = new relatedModel.DependentCollection(collectionOptions, value);
-                    this.storeDependent(field, collection);
-                } else {
-                    console.warn("got unexpected inline data for independent collection field",{collection:this,field,value});
-                }
+        if (field.isDependent()) {
+          const collection = new relatedModel.DependentCollection(
+            collectionOptions,
+            value
+          );
+          this.storeDependent(field, collection);
+        } else {
+          console.warn(
+            'got unexpected inline data for independent collection field',
+            { collection: this, field, value }
+          );
+        }
 
                 // Because the foreign key is on the other side
                 this.trigger(`change:${  fieldName}`, this);
@@ -354,8 +363,10 @@ function eventHandlerForToOne(related, field) {
                     return value;
                 }
 
-                const toOne = (value instanceof ResourceBase) ? value :
-                    new relatedModel.Resource(value, {parse: true});
+        const toOne =
+          value instanceof ResourceBase
+            ? value
+            : new relatedModel.Resource(value, { parse: true });
 
                 field.isDependent() && this.storeDependent(field, toOne);
                 this.trigger(`change:${  fieldName}`, this);
@@ -372,7 +383,7 @@ function eventHandlerForToOne(related, field) {
                      new relatedModel.Resource(_.first(value), {parse: true}))
                 : (value || null);  // In case it was undefined
 
-                assert(oneTo == null || oneTo instanceof ResourceBase);
+        assert(oneTo == null || oneTo instanceof ResourceBase);
 
                 field.isDependent() && this.storeDependent(field, oneTo);
                 // Because the FK is on the other side
@@ -389,9 +400,14 @@ function eventHandlerForToOne(related, field) {
             const field = this.specifyModel.getField(fieldName);
             const oldRelated = this.dependentResources[fieldName];
 
-            if (field.isDependent()) {
-                console.warn("expected inline data for dependent field", fieldName, "in", this);
-            }
+    if (field.isDependent()) {
+      console.warn(
+        'expected inline data for dependent field',
+        fieldName,
+        'in',
+        this
+      );
+    }
 
             if (oldRelated && field.type ===  'many-to-one') {
                 /*
@@ -505,9 +521,9 @@ function eventHandlerForToOne(related, field) {
                 if (!toMany) {
                     const collectionOptions = { field: field.getReverse(), related: this };
 
-                    if (!field.isDependent()) {
-                        return new related.ToOneCollection(collectionOptions);
-                    }
+          if (!field.isDependent()) {
+            return new related.ToOneCollection(collectionOptions);
+          }
 
                     if (this.isNew()) {
                         toMany = new related.DependentCollection(collectionOptions, []);

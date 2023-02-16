@@ -134,7 +134,7 @@ export const businessRuleDefs = f.store(
         fieldChecks: {
           taxon: (
             determination: SpecifyResource<Determination>
-          ): Promise<BusinessRuleResult> | void | undefined => {
+          ): Promise<BusinessRuleResult> => {
             return determination
               .rget('taxon', true)
               .then((taxon: SpecifyResource<Taxon> | null) =>
@@ -145,9 +145,7 @@ export const businessRuleDefs = f.store(
                         determination.set('preferredTaxon', null);
                       },
                     }
-                  : (function recur(
-                      taxon: SpecifyResource<Taxon>
-                    ): BusinessRuleResult {
+                  : (function recur(taxon): BusinessRuleResult {
                       return taxon.get('acceptedTaxon') == null
                         ? {
                             valid: true,
@@ -155,7 +153,7 @@ export const businessRuleDefs = f.store(
                               determination.set('preferredTaxon', taxon);
                             },
                           }
-                        : taxon.rget('acceptedtaxon', true).then(recur);
+                        : taxon.rget('acceptedTaxon', true).then(recur);
                     })(taxon)
               );
           },

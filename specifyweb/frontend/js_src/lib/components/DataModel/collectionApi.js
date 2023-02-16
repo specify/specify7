@@ -10,19 +10,27 @@ const Base =  Backbone.Collection.extend({
         async getTotalCount() { return this.length; }
     });
 
-    function notSupported() { throw new Error("method is not supported"); }
+function notSupported() {
+  throw new Error('method is not supported');
+}
 
-    async function fakeFetch() {
-        return this;
-    }
+async function fakeFetch() {
+  return this;
+}
 
-    function setupToOne(collection, options) {
-        collection.field = options.field;
-        collection.related = options.related;
+function setupToOne(collection, options) {
+  collection.field = options.field;
+  collection.related = options.related;
 
-        assert(collection.field.model === collection.model.specifyModel, "field doesn't belong to model");
-        assert(collection.field.relatedModel === collection.related.specifyModel, "field is not to related resource");
-    }
+  assert(
+    collection.field.model === collection.model.specifyModel,
+    "field doesn't belong to model"
+  );
+  assert(
+    collection.field.relatedModel === collection.related.specifyModel,
+    'field is not to related resource'
+  );
+}
 
     export const DependentCollection = Base.extend({
         __name__: "DependentCollectionBase",
@@ -39,7 +47,7 @@ const Base =  Backbone.Collection.extend({
                 this.trigger('saverequired');
             }, this);
 
-            setupToOne(this, options);
+    setupToOne(this, options);
 
             /*
              * If the id of the related resource changes, we go through and update
@@ -89,28 +97,30 @@ const Base =  Backbone.Collection.extend({
                 objects = resp;
             }
 
-            return objects;
-        },
-        async fetch(options) {
-            this._neverFetched = false;
+    return objects;
+  },
+  async fetch(options) {
+    this._neverFetched = false;
 
             if(this._fetch)
                 return this._fetch;
             else if(this.isComplete() || this.related?.isNew())
                 return this;
 
-            if (this.isComplete())
-                console.error("fetching for already filled collection");
+    if (this.isComplete())
+      console.error('fetching for already filled collection');
 
             options ||=  {};
 
-            options.update = true;
-            options.remove = false;
-            options.silent = true;
-            assert(options.at == null);
+    options.update = true;
+    options.remove = false;
+    options.silent = true;
+    assert(options.at == null);
 
-            options.data = options.data || _.extend({domainfilter: this.domainfilter}, this.filters);
-            options.data.offset = this.length;
+    options.data =
+      options.data ||
+      _.extend({ domainfilter: this.domainfilter }, this.filters);
+    options.data.offset = this.length;
 
             _(options).has('limit') && ( options.data.limit = options.limit );
             this._fetch = Backbone.Collection.prototype.fetch.call(this, options);

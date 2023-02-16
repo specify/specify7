@@ -70,7 +70,7 @@ export const getTotalResolved = (
 const updatePrepBlockers = (
   interactionPrep: SpecifyResource<AnyInteractionPreparation>
 ): Promise<void> => {
-  const prepUri = interactionPrep.get('preparation');
+  const prepUri = interactionPrep.get('preparation') ?? '';
   const prepId = idFromUrl(prepUri);
   return fetchResource('Preparation', prepId)
     .then((preparation) => {
