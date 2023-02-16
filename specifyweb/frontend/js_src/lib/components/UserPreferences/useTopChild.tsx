@@ -68,7 +68,7 @@ export function useTopChild(): {
     forwardRefs: React.useCallback((index, element) => {
       references.current[index] = element ?? undefined;
       if (element !== null && activeCategoryRef.current === index)
-        scrollIntoView(element);
+        scrollIntoView(element, 'start');
     }, []),
     scrollContainerRef: setContainer,
   };
