@@ -207,7 +207,7 @@ msgid "createKml"
 msgstr "Crear archivo KML"
 
 #: components/QueryBuilder/Components.tsx:215
-#: components/QueryBuilder/Results.tsx:501
+#: components/QueryBuilder/Results.tsx:502
 #: components/WorkBench/RecordSet.tsx:36
 #. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Results ⬤ Components > Work Bench > Record Set
 #, fuzzy
@@ -502,3 +502,8 @@ msgid "tooLongErrorMessage"
 msgstr ""
 "El valor del campo es demasiado largo. La longitud máxima permitida es "
 "{maxLength:number|formatted}"
+
+#: components/QueryBuilder/Import.tsx:133
+#. Used in: Components > Query Builder > Import
+msgid "hiddenFieldsMess"
+msgstr ""

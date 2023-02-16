@@ -168,7 +168,7 @@ msgid "createKml"
 msgstr "Create KML"
 
 #: components/QueryBuilder/Components.tsx:215
-#: components/QueryBuilder/Results.tsx:501
+#: components/QueryBuilder/Results.tsx:502
 #: components/WorkBench/RecordSet.tsx:36
 #. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Results ⬤ Components > Work Bench > Record Set
 msgid "createRecordSet"
@@ -415,3 +415,8 @@ msgstr "Tree Desynonymize"
 #. Used in: Components > Query Builder > Field Filter
 msgid "tooLongErrorMessage"
 msgstr "Field value is too long. Max allowed length is {maxLength:number|formatted}"
+
+#: components/QueryBuilder/Import.tsx:133
+#. Used in: Components > Query Builder > Import
+msgid "hiddenFieldsMess"
+msgstr "The following fields are hidden in the query you imported:"
