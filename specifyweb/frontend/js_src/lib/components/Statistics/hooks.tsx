@@ -55,7 +55,7 @@ function backEndStatPromiseGenerator(
           'backendStats',
           async () =>
             ajax<BackendStatsResult>(
-              `/statistics${key}`,
+              key,
               {
                 method: 'GET',
                 headers: {
@@ -422,7 +422,7 @@ export function generateStatUrl(
   itemKey: string
 ) {
   const urlSpec = [urlPrefix, categoryKey, itemKey];
-  return `${urlSpec.reduce(
+  return `/statistics${urlSpec.reduce(
     (previousValue, currentValue) =>
       `${previousValue}${
         currentValue === 'phantomItem' ? '' : `/${currentValue}`
