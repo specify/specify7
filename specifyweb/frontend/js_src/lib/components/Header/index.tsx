@@ -18,6 +18,7 @@ import type { MenuItem } from '../Core/Main';
 import { MenuContext } from '../Core/Main';
 import { schema } from '../DataModel/schema';
 import { userInformation } from '../InitialContext/userInformation';
+import { noTitleDelay } from '../Molecules/Tooltips';
 import { ActiveLink } from '../Router/ActiveLink';
 import { usePref } from '../UserPreferences/usePref';
 import type { MenuItemName } from './menuItemDefinitions';
@@ -227,6 +228,7 @@ export function MenuButton({
   `;
   const props = {
     ...extraProps,
+    [noTitleDelay]: '',
     'aria-current': isActive ? 'page' : undefined,
     title: isCollapsed ? title : undefined,
   } as const;
