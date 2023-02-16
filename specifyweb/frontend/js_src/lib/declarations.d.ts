@@ -7,7 +7,6 @@ import type * as H from 'history';
 import type { localized } from 'typesafe-i18n/types/runtime/src/core';
 
 import type { SafeLocationState } from './components/Router/RouterState';
-import type { SafeLocationState } from './components/Router/RouterState';
 import type { IR, RA, RR } from './utils/types';
 
 /**

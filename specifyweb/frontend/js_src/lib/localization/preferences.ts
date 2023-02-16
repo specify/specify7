@@ -1382,4 +1382,7 @@ export const preferencesText = createDictionary({
       зміни
     `,
   },
+  collectionPreferences: {
+    'en-us': 'Collection Preferences',
+  },
 } as const);
