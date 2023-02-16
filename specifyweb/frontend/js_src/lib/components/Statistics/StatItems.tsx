@@ -1,7 +1,11 @@
 import React from 'react';
 
+import { userText } from '../../localization/user';
 import { ajax } from '../../utils/ajax';
+import { Http } from '../../utils/ajax/definitions';
 import { throttledPromise } from '../../utils/ajax/throttledPromise';
+import type { Tables } from '../DataModel/types';
+import { hasTablePermission } from '../Permissions/helpers';
 import {
   queryCountPromiseGenerator,
   querySpecToResource,
@@ -15,10 +19,6 @@ import type {
   DefaultStat,
   QuerySpec,
 } from './types';
-import { hasTablePermission } from '../Permissions/helpers';
-import { userText } from '../../localization/user';
-import { Http } from '../../utils/ajax/definitions';
-import { Tables } from '../DataModel/types';
 
 export function StatItem({
   item,
@@ -27,7 +27,7 @@ export function StatItem({
   onRemove: handleRemove,
   onClick: handleClick,
   onEdit: handleEdit,
-  onLoad: onLoad,
+  onLoad,
   onRename: handleRename,
 }: {
   readonly item: CustomStat | DefaultStat;
@@ -62,11 +62,11 @@ export function StatItem({
       value={item.itemValue}
       onClick={handleClick}
       onEdit={
-        handleEdit !== undefined
-          ? (querySpec) => {
+        handleEdit === undefined
+          ? undefined
+          : (querySpec) => {
               handleEdit(querySpec, item.label);
             }
-          : undefined
       }
       onLoad={handleLoad}
       onRemove={handleRemove}
@@ -76,17 +76,17 @@ export function StatItem({
     resolvedSpec?.type === 'BackEndStat' &&
     resolvedSpec?.pathToValue !== undefined ? (
     <BackEndItem
-      tableName={resolvedSpec.tableName}
       fetchUrl={resolvedSpec.fetchUrl}
       formatter={resolvedSpec.formatter}
       isDefault
       label={item.label}
       pathToValue={resolvedSpec.pathToValue}
+      tableName={resolvedSpec.tableName}
       value={item.itemValue}
       onClick={handleClick}
-      onRename={handleRename}
       onLoad={handleLoad}
       onRemove={handleRemove}
+      onRename={handleRename}
     />
   ) : null;
 }
@@ -121,7 +121,7 @@ function BackEndItem({
   );
   const handleLoadResolve = hasStatPermission ? handleLoad : undefined;
   const promiseGenerator = React.useCallback(
-    () =>
+    async () =>
       throttledPromise<BackendStatsResult | undefined>(
         'backendStats',
         async () =>
@@ -156,13 +156,13 @@ function BackEndItem({
   return (
     <StatsResult
       isDefault={isDefault}
-      query={undefined}
       label={label}
+      query={undefined}
       value={hasStatPermission ? value : userText.noPermission()}
       onClick={handleClick}
-      onRename={handleRename}
-      onRemove={handleRemove}
       onEdit={undefined}
+      onRemove={handleRemove}
+      onRename={handleRename}
     />
   );
 }
@@ -212,13 +212,13 @@ function QueryItem({
   return (
     <StatsResult
       isDefault={isDefault}
-      query={hasStatPermission ? query : undefined}
       label={label}
+      query={hasStatPermission ? query : undefined}
       value={hasStatPermission ? value : userText.noPermission()}
       onClick={handleClick}
-      onRename={handleRename}
-      onRemove={handleRemove}
       onEdit={handleEdit}
+      onRemove={handleRemove}
+      onRename={handleRename}
     />
   );
 }

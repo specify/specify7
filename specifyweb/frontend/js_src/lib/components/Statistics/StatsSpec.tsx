@@ -1,14 +1,15 @@
-import { getDateInputValue } from '../../utils/dayJs';
-import { ensure, RA } from '../../utils/types';
-import { formatNumber } from '../Atoms/Internationalization';
-import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { statsText } from '../../localization/stats';
-import { formattedEntry } from '../WbPlanView/mappingHelpers';
-import { userInformation } from '../InitialContext/userInformation';
+import { getDateInputValue } from '../../utils/dayJs';
 import { f } from '../../utils/functools';
-import { Tables } from '../DataModel/types';
-import { BackEndStat, StatsSpec } from './types';
+import type { RA } from '../../utils/types';
+import { ensure } from '../../utils/types';
+import { formatNumber } from '../Atoms/Internationalization';
+import type { Tables } from '../DataModel/types';
+import { userInformation } from '../InitialContext/userInformation';
+import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
+import { formattedEntry } from '../WbPlanView/mappingHelpers';
 import { generateStatUrl } from './hooks';
+import type { BackEndStat, StatsSpec } from './types';
 
 export const statsSpec: StatsSpec = {
   collection: {
@@ -484,7 +485,7 @@ ensure<StatsSpec>()(statsSpec);
 
 function generateDynamicSpec(
   statsSpec: StatsSpec
-): RA<{ responseKey: string; tableName: keyof Tables }> {
+): RA<{ readonly responseKey: string; readonly tableName: keyof Tables }> {
   return Object.entries(statsSpec).flatMap(([_, { categories, urlPrefix }]) =>
     Object.entries(categories).flatMap(([categoryKey, { items }]) =>
       Object.entries(items)

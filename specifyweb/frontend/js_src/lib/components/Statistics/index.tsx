@@ -34,8 +34,8 @@ import {
   useDynamicCategorySetter,
 } from './hooks';
 import { StatsPageEditing } from './StatsPageEditing';
-import type { CustomStat, DefaultStat, StatLayout } from './types';
 import { dynamicStatsSpec } from './StatsSpec';
+import type { CustomStat, DefaultStat, StatLayout } from './types';
 
 export function StatsPage(): JSX.Element | null {
   useMenuItem('statistics');
@@ -465,66 +465,60 @@ export function StatsPage(): JSX.Element | null {
                   md:sticky
               `}
           >
-            {
-              <Ul className="flex flex-col gap-2">
-                {Object.entries(layout).map(
-                  ([parentLayoutName, parentLayout], index) =>
-                    parentLayout === undefined ? undefined : (
-                      <li className="flex flex-col gap-2" key={index}>
-                        <H3 className="text-lg font-bold">
-                          {parentLayoutName}
-                        </H3>
-                        <Ul className="flex flex-col gap-2">
-                          {parentLayout.map(({ label }, pageIndex) => (
-                            <li key={pageIndex}>
-                              {
-                                <StatsAsideButton
-                                  isCurrent={
-                                    activePage.pageIndex === pageIndex &&
-                                    activePage.isCollection === (index === 0)
-                                  }
-                                  label={label}
-                                  onClick={(): void =>
-                                    setActivePage({
-                                      isCollection: index === 0,
-                                      pageIndex,
-                                    })
-                                  }
-                                  onRename={
-                                    isEditing && canEditIndex(index === 0)
-                                      ? (): void =>
-                                          setState({
-                                            type: 'PageRenameState',
-                                            isCollection: index === 0,
-                                            pageIndex,
-                                          })
-                                      : undefined
-                                  }
-                                />
-                              }
-                            </li>
-                          ))}
-
-                          {isEditing && canEditIndex(index === 0) && (
+            <Ul className="flex flex-col gap-2">
+              {Object.entries(layout).map(
+                ([parentLayoutName, parentLayout], index) =>
+                  parentLayout === undefined ? undefined : (
+                    <li className="flex flex-col gap-2" key={index}>
+                      <H3 className="text-lg font-bold">{parentLayoutName}</H3>
+                      <Ul className="flex flex-col gap-2">
+                        {parentLayout.map(({ label }, pageIndex) => (
+                          <li key={pageIndex}>
                             <StatsAsideButton
-                              isCurrent={false}
-                              label={commonText.add()}
+                              isCurrent={
+                                activePage.pageIndex === pageIndex &&
+                                activePage.isCollection === (index === 0)
+                              }
+                              label={label}
                               onClick={(): void =>
-                                setState({
-                                  type: 'PageRenameState',
-                                  pageIndex: undefined,
+                                setActivePage({
                                   isCollection: index === 0,
+                                  pageIndex,
                                 })
                               }
-                              onRename={undefined}
+                              onRename={
+                                isEditing && canEditIndex(index === 0)
+                                  ? (): void =>
+                                      setState({
+                                        type: 'PageRenameState',
+                                        isCollection: index === 0,
+                                        pageIndex,
+                                      })
+                                  : undefined
+                              }
                             />
-                          )}
-                        </Ul>
-                      </li>
-                    )
-                )}
-              </Ul>
-            }
+                          </li>
+                        ))}
+
+                        {isEditing && canEditIndex(index === 0) && (
+                          <StatsAsideButton
+                            isCurrent={false}
+                            label={commonText.add()}
+                            onClick={(): void =>
+                              setState({
+                                type: 'PageRenameState',
+                                pageIndex: undefined,
+                                isCollection: index === 0,
+                              })
+                            }
+                            onRename={undefined}
+                          />
+                        )}
+                      </Ul>
+                    </li>
+                  )
+              )}
+            </Ul>
           </aside>
           {state.type === 'PageRenameState' && (
             <StatsPageEditing

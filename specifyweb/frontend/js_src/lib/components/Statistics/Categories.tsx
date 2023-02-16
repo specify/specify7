@@ -1,23 +1,24 @@
-import type { CustomStat, DefaultStat, QuerySpec, StatLayout } from './types';
+import React from 'react';
+
+import { commonText } from '../../localization/common';
+import { statsText } from '../../localization/stats';
+import { userText } from '../../localization/user';
+import type { RA } from '../../utils/types';
 import { H3, Ul } from '../Atoms';
-import { Input } from '../Atoms/Form';
-import { StatItem } from './StatItems';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
-import { commonText } from '../../localization/common';
-import React from 'react';
-import { RA } from '../../utils/types';
+import { Input } from '../Atoms/Form';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { statsText } from '../../localization/stats';
 import { hasTablePermission } from '../Permissions/helpers';
-import { userText } from '../../localization/user';
-import { dynamicStatsSpec, statsSpec } from './StatsSpec';
 import { generateStatUrl } from './hooks';
+import { StatItem } from './StatItems';
+import { dynamicStatsSpec, statsSpec } from './StatsSpec';
+import type { CustomStat, DefaultStat, QuerySpec, StatLayout } from './types';
 
 function ItemOverride({
   item,
 }: {
-  readonly item: DefaultStat | CustomStat;
+  readonly item: CustomStat | DefaultStat;
 }): JSX.Element {
   const urlToFetch =
     item.type === 'DefaultStat'
@@ -40,7 +41,7 @@ function ItemOverride({
   );
 }
 
-function areItemsValid(items: RA<DefaultStat | CustomStat>) {
+function areItemsValid(items: RA<CustomStat | DefaultStat>) {
   return !(
     items.find(
       (item) =>
@@ -59,7 +60,7 @@ export function Categories({
   onCategoryRename: handleCategoryRename,
   onRename: handleRename,
   onEdit: handleEdit,
-  onLoad: onLoad,
+  onLoad,
 }: {
   readonly pageLayout: StatLayout[number] | undefined;
   readonly onAdd: ((categoryIndex: number | undefined) => void) | undefined;
@@ -119,10 +120,10 @@ export function Categories({
               key={categoryIndex}
             >
               {handleCategoryRename === undefined ? (
-                !checkEmptyItems ? (
-                  <H3 className="font-bold">{label}</H3>
-                ) : (
+                checkEmptyItems ? (
                   <h5 className="font-semibold">{label}</h5>
+                ) : (
+                  <H3 className="font-bold">{label}</H3>
                 )
               ) : (
                 <Input.Text
