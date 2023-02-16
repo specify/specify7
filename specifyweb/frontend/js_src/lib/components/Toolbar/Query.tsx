@@ -15,7 +15,10 @@ import { Link } from '../Atoms/Link';
 import type { CollectionFetchFilters } from '../DataModel/collection';
 import { fetchCollection } from '../DataModel/collection';
 import { getField } from '../DataModel/helpers';
-import type { SerializedResource } from '../DataModel/helperTypes';
+import type {
+  SerializedModel,
+  SerializedResource,
+} from '../DataModel/helperTypes';
 import { getModelById, schema } from '../DataModel/schema';
 import type { SpQuery } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
@@ -23,8 +26,13 @@ import { DateElement } from '../Molecules/DateElement';
 import { Dialog } from '../Molecules/Dialog';
 import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import { TableIcon } from '../Molecules/TableIcon';
-import { hasPermission, hasToolPermission } from '../Permissions/helpers';
+import {
+  hasPermission,
+  hasTablePermission,
+  hasToolPermission,
+} from '../Permissions/helpers';
 import { QueryEditButton } from '../QueryBuilder/Edit';
+import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { OverlayContext } from '../Router/Router';
 import { SafeOutlet } from '../Router/RouterUtils';
 import { QueryTables } from './QueryTables';
@@ -128,6 +136,29 @@ function QueryList({
     (query) => query[sortConfig.sortField]
   );
 
+  const [tableWithoutPerm, setTablesWithoutPerm] = React.useState<string[]>([]);
+
+  function showTableName(query: SerializedResource<SpQuery>): string[] {
+    const info = query.fields.map((field) => {
+      const fieldSpec = QueryFieldSpec.fromStringId(
+        field.stringId,
+        field.isRelFld ?? false
+      );
+      console.log('fieldSpec', fieldSpec);
+      const relatedTable = fieldSpec.table.name;
+      return relatedTable;
+    });
+    console.log('info related', info);
+    const hasPermission: any = info.map((name) =>
+      hasTablePermission(name, 'read')
+    );
+    console.log('hasPermission', hasPermission);
+    const tablesWithoutPerm = info.filter((name, i) => !hasPermission[i]);
+    console.log('tablesWithoutPerm', tablesWithoutPerm);
+    setTablesWithoutPerm(tablesWithoutPerm);
+    return info;
+  }
+
   return (
     <table className="grid-table grid-cols-[repeat(3,auto)_min-content] gap-2">
       <thead>
@@ -170,18 +201,21 @@ function QueryList({
         {queries.map((query) => (
           <tr key={query.id} title={query.remarks ?? undefined}>
             <td>
-              <Link.Default
-                className="overflow-x-auto"
-                href={
-                  getQuerySelectUrl?.(query) ?? `/specify/query/${query.id}/`
-                }
-              >
-                <TableIcon
-                  label
-                  name={getModelById(query.contextTableId).name}
-                />
-                {query.name}
-              </Link.Default>
+              <>
+                {showTableName(query)}
+                <Link.Default
+                  className="overflow-x-auto"
+                  href={
+                    getQuerySelectUrl?.(query) ?? `/specify/query/${query.id}/`
+                  }
+                >
+                  <TableIcon
+                    label
+                    name={getModelById(query.contextTableId).name}
+                  />
+                  {query.name}
+                </Link.Default>
+              </>
             </td>
             <td>
               <DateElement date={query.timestampCreated} />
