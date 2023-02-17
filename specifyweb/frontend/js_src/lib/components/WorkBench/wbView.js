@@ -281,7 +281,7 @@ export const WBView = Backbone.View.extend({
                 .prop('disabled', true)
                 .prop(
                   'title',
-                  whitespaceSensitive(wbText.wbValidateUnavailable())
+                  wbText.wbValidateUnavailable()
                 );
             } else {
               this.$('.wb-validate, .wb-data-check').prop('disabled', false);
@@ -2415,7 +2415,7 @@ export const WBView = Backbone.View.extend({
     });
 
     const uploadButton = this.$el.find('.wb-upload');
-    const title = whitespaceSensitive(wbText.uploadUnavailableWhileHasErrors());
+    const title = wbText.uploadUnavailableWhileHasErrors();
     if (
       !uploadButton.attr('disabled') ||
       uploadButton.attr('title') === title

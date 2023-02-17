@@ -285,7 +285,6 @@ function useInteraction(
       currentTitle.current = title;
 
       const handleSet = (): void => {
-        // FIXME: don't need to call whitespaceSensitive everywhere anymore
         setContent(element, whitespaceSensitive(title));
         if (typeof floatingIdRef.current === 'string')
           element.setAttribute('aria-describedby', floatingIdRef.current);
