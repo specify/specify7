@@ -120,6 +120,7 @@ function AttachmentDialog({
           )}
         </>
       }
+      dimensionsKey="AttachmentViewer"
       header={
         attachment.title ??
         attachment.origFilename ??

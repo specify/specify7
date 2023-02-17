@@ -93,6 +93,7 @@ const commandRenderers: {
             <Dialog
               buttons={commonText.close()}
               header={label}
+              dimensionsKey="ReturnLoan"
               onClose={handleHide}
             >
               {interactionsText.preparationsCanNotBeReturned()}
@@ -115,6 +116,7 @@ const commandRenderers: {
           buttons={commonText.close()}
           header={formsText.commandUnavailable()}
           isOpen={isClicked}
+          dimensionsKey="Unsupported"
           onClose={handleHide}
         >
           {formsText.commandUnavailableDescription()}
@@ -141,6 +143,7 @@ const commandRenderers: {
           buttons={commonText.close()}
           header={formsText.commandUnavailable()}
           isOpen={isVisible}
+          dimensionsKey="WrongTable"
           onClose={handleHide}
         >
           {formsText.wrongTableForCommand({

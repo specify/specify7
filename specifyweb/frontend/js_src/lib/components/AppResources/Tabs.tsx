@@ -94,6 +94,7 @@ export function AppResourcesTabs({
         container: dialogClassNames.fullScreen,
       }}
       header={label}
+      dimensionsKey={false}
       headerButtons={headerButtons}
       icon={appResourceIcon(getResourceType(resource))}
       onClose={undefined}

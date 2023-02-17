@@ -104,7 +104,7 @@ export function Dialog({
   modal = true,
   onClose: handleClose,
   onResize: handleResize,
-  dimensionsKey,
+  dimensionsKey: rawDimensionsKey = header,
   // eslint-disable-next-line react/no-object-type-as-default-prop
   className: {
     // Dialog has optimal width
@@ -134,7 +134,7 @@ export function Dialog({
   readonly buttons: JSX.Element | LocalizedString | undefined;
   readonly children: React.ReactNode;
   // If set, will remember the dialog size under this name
-  readonly dimensionsKey?: string;
+  readonly dimensionsKey?: string | false;
   readonly modal?: boolean;
   /*
    * Have to explicitly pass undefined if dialog should not be closable
@@ -229,6 +229,14 @@ export function Dialog({
     [forceToTop, modal, isOpen, zIndex, container]
   );
 
+  /*
+   * Try to shorten the key if possible (i.e, turn Collection Object: 00123
+   * into Collection Object). This is crude, but it doesn't have to be perfect
+   */
+  const dimensionsKey =
+    typeof rawDimensionsKey === 'string'
+      ? rawDimensionsKey.split(':')[0].split('(')[0]
+      : undefined;
   const initialSize = useDialogSize(
     container,
     isOpen,

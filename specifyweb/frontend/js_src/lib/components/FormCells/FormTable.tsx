@@ -434,6 +434,7 @@ export function FormTable<SCHEMA extends AnySchema>({
       buttons={commonText.close()}
       header={header}
       headerButtons={addButton}
+      dimensionsKey={relationship.name}
       modal={dialog === 'modal'}
       onClose={handleClose}
     >
