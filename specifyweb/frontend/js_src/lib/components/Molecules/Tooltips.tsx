@@ -16,7 +16,6 @@ import { whitespaceSensitive } from '../../localization/utils';
 import { listen } from '../../utils/events';
 import { oneRem } from '../Atoms';
 import { usePref } from '../UserPreferences/usePref';
-import { useLocation } from 'react-router-dom';
 
 /**
  * Add this attribute to element to remove delay before title becomes visible
@@ -86,13 +85,6 @@ export function TooltipManager(): JSX.Element {
       } as const
     )[placement.split('-')[0]] ?? 'bottom';
   const { x: arrowX, y: arrowY } = middlewareData.arrow ?? {};
-
-  /*
-   * Hide tooltip on URL change.
-   * Fixes https://github.com/specify/specify7/pull/3002#issuecomment-1433047175
-   */
-  const { pathname } = useLocation();
-  React.useEffect(() => setIsOpen(false), [pathname]);
 
   return (
     <FloatingPortal id="portal-root">
@@ -174,7 +166,10 @@ function useInteraction(
   const timeOut = React.useRef<ReturnType<typeof setTimeout> | undefined>(
     undefined
   );
-  const currentElement = React.useRef<HTMLElement | undefined>(undefined);
+  const [currentElement, setCurrentElement] = React.useState<
+    HTMLElement | undefined
+  >(undefined);
+  const currentElementRef = React.useRef<HTMLElement | undefined>(undefined);
   const currentTitle = React.useRef<string | undefined>(undefined);
   const handleCloseRef = React.useRef<(() => void) | undefined>(undefined);
 
@@ -197,27 +192,28 @@ function useInteraction(
   // Revert old title attribute for the previous button
   const revertDomChanges = React.useCallback(() => {
     if (typeof currentTitle.current === 'string')
-      currentElement.current?.setAttribute('title', currentTitle.current);
-    currentElement.current?.removeAttribute('aria-describedby');
+      currentElementRef.current?.setAttribute('title', currentTitle.current);
+    currentElementRef.current?.removeAttribute('aria-describedby');
   }, []);
+
+  const handleClose = React.useCallback((): void => {
+    setContent(undefined, undefined);
+    revertDomChanges();
+    currentElementRef.current = undefined;
+    setCurrentElement(undefined);
+    currentTitle.current = undefined;
+    handleCloseRef.current?.();
+  }, [setContent, revertDomChanges]);
 
   // Handle blur/mouseleave
   const handleOut = React.useCallback(
     (event: FocusEvent | MouseEvent): void => {
       if (
         event.target !== containerRef.current &&
-        event.target !== currentElement.current
+        event.target !== currentElementRef.current
       )
         return;
       clear();
-
-      function handleClose(): void {
-        setContent(undefined, undefined);
-        revertDomChanges();
-        currentElement.current = undefined;
-        currentTitle.current = undefined;
-        handleCloseRef.current?.();
-      }
 
       if (event.type === 'focus') handleClose();
       else {
@@ -235,7 +231,7 @@ function useInteraction(
       }
       timeOut.current = setTimeout(() => {}, delayOut);
     },
-    [clear, setContent, revertDomChanges]
+    [clear, handleClose]
   );
 
   React.useEffect(
@@ -283,8 +279,9 @@ function useInteraction(
       revertDomChanges();
       // Remove the title attribute to silence default browser titles
       element.removeAttribute('title');
-      const isDisplayed = currentElement.current !== undefined;
-      currentElement.current = element;
+      const isDisplayed = currentElementRef.current !== undefined;
+      currentElementRef.current = element;
+      setCurrentElement(element);
       currentTitle.current = title;
 
       const handleSet = (): void => {
@@ -320,4 +317,34 @@ function useInteraction(
       focus();
     };
   }, [setContent, clear, revertDomChanges, handleOut, isEnabled]);
+
+  /*
+   * Close the tooltip if the element that triggered it was removed
+   * See https://github.com/specify/specify7/pull/3002#issuecomment-1433047175
+   */
+  React.useEffect(() => {
+    const referenceParent = currentElement?.parentNode ?? undefined;
+    if (referenceParent === undefined) return undefined;
+    const observer = new MutationObserver(() => {
+      if (
+        typeof currentElement === 'object' &&
+        !document.body.contains(currentElement)
+      )
+        handleClose();
+    });
+    observer.observe(referenceParent, { childList: true });
+    return (): void => observer.disconnect();
+  }, [handleClose, currentElement]);
+
+  /*
+   * Close the tooltip on click
+   * See https://github.com/specify/specify7/pull/3002#issuecomment-1433047175
+   */
+  React.useEffect(
+    () =>
+      typeof currentElement === 'object'
+        ? listen(currentElement, 'click', handleClose)
+        : undefined,
+    [handleClose, currentElement]
+  );
 }
