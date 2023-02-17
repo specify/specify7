@@ -3,84 +3,84 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2023-02-17 21:38+0000\n"
 "Last-Translator: Heather <heather.cole@canada.ca>\n"
-"Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
-"notifications/fr/>\n"
+"Language-Team: French "
+"<https://hosted.weblate.org/projects/specify-7/notifications/fr/>\n"
 "Language: fr\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 4.16-dev\n"
 
-#. Used in: Components > Header > Notifications
 #: components/Header/Notifications.tsx:159
+#. Used in: Components > Header > Notifications
 msgid "notifications"
 msgstr "Notifications"
 
-#. 🟥Used for button label in the top menu. Used in: Components > Header > Notifications
 #: components/Header/Notifications.tsx:131
+#. 🟥Used for button label in the top menu. Used in: Components > Header > Notifications
 msgid "notificationsCount"
 msgstr "Notifications : {count:number|formatted}"
 
-#. 🟥Used for button label in the top menu when notification count is loading. Used in: Components > Header > Notifications
 #: components/Header/Notifications.tsx:134
+#. 🟥Used for button label in the top menu when notification count is loading. Used in: Components > Header > Notifications
 msgid "notificationsLoading"
 msgstr "Notifications : …"
 
-#. Used in: Components > Header > Notifications
 #: components/Header/Notifications.tsx:190
+#. Used in: Components > Header > Notifications
 msgid "mostRecentNotificationsTop"
 msgstr "(De la plus récente à la plus ancienne.)"
 
-#. 🟥Used as a label for a button that downloads the error message. Used in: Components > Header > Notification Renderers
 #: components/Header/NotificationRenderers.tsx:44
 #: components/Header/NotificationRenderers.tsx:72
+#. 🟥Used as a label for a button that downloads the error message. Used in: Components > Header > Notification Renderers
 msgid "exception"
 msgstr "Erreur"
 
-#. Used in: Components > App Resources > Editor Components ⬤ Components > Header > Notification Renderers
 #: components/AppResources/EditorComponents.tsx:125
 #: components/Header/NotificationRenderers.tsx:58
 #: components/Header/NotificationRenderers.tsx:86
 #: components/Header/NotificationRenderers.tsx:100
+#. Used in: Components > App Resources > Editor Components ⬤ Components > Header > Notification Renderers
 msgid "download"
 msgstr "Télécharger"
 
-#. Used in: Components > Header > Notification Renderers
 #: components/Header/NotificationRenderers.tsx:24
+#. Used in: Components > Header > Notification Renderers
 msgid "feedItemUpdated"
 msgstr "Le flux d'export RSS a été mis à jour."
 
-#. Used in: Components > Header > Notification Renderers
 #: components/Header/NotificationRenderers.tsx:38
+#. Used in: Components > Header > Notification Renderers
 msgid "updateFeedFailed"
 msgstr "la mise à jour du flux d'export a échoué"
 
-#. Used in: Components > Header > Notification Renderers
 #: components/Header/NotificationRenderers.tsx:52
+#. Used in: Components > Header > Notification Renderers
 #, fuzzy
 msgid "dwcaExportCompleted"
 msgstr "Exportation DwCA terminée."
 
-#. Used in: Components > Header > Notification Renderers
 #: components/Header/NotificationRenderers.tsx:66
+#. Used in: Components > Header > Notification Renderers
 #, fuzzy
 msgid "dwcaExportFailed"
 msgstr "Échec de l'exportation DwCA."
 
-#. Used in: Components > Header > Notification Renderers
 #: components/Header/NotificationRenderers.tsx:80
+#. Used in: Components > Header > Notification Renderers
 #, fuzzy
 msgid "queryExportToCsvCompleted"
 msgstr "Exportation de la requête vers CSV terminée."
 
-#. Used in: Components > Header > Notification Renderers
 #: components/Header/NotificationRenderers.tsx:94
+#. Used in: Components > Header > Notification Renderers
 #, fuzzy
 msgid "queryExportToKmlCompleted"
 msgstr "Exportation de la requête vers KML terminée."
 
-#. Used in: Components > Header > Notification Renderers
 #: components/Header/NotificationRenderers.tsx:118
+#. Used in: Components > Header > Notification Renderers
 msgid "dataSetOwnershipTransferred"
 msgstr ""
 "<userName /> vous a transféré la propriété du jeu de données <dataSetName "

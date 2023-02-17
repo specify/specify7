@@ -3,137 +3,52 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2023-02-17 18:13+0000\n"
 "Last-Translator: Anonymous <noreply@weblate.org>\n"
-"Language-Team: French <https://hosted.weblate.org/projects/specify-7/welcome/"
-"fr/>\n"
+"Language-Team: French "
+"<https://hosted.weblate.org/projects/specify-7/welcome/fr/>\n"
 "Language: fr\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 4.16-dev\n"
 
-#. Used in: Components > Header > User Tool Definitions ⬤ Components > Home Page > About Specify ⬤ Components > Router > Overlay Routes
-#: components/Header/userToolDefinitions.ts:105
-#: components/HomePage/AboutSpecify.tsx:68
-#: components/Router/OverlayRoutes.tsx:180
-#, fuzzy
-msgid "aboutSpecify"
-msgstr "À propos de Spécifier 7"
-
-#. Used in: Components > Home Page > About Specify
-#: components/HomePage/AboutSpecify.tsx:99
-#, fuzzy
-msgid "specifyVersion"
-msgstr "Spécifiez 7 versions :"
-
-#. Used in: Components > Home Page > About Specify
-#: components/HomePage/AboutSpecify.tsx:101
-#, fuzzy
-msgid "buildDate"
-msgstr "Date de construction:"
-
-#. Used in: Components > Home Page > About Specify ⬤ Components > Schema Viewer > Index
-#: components/HomePage/AboutSpecify.tsx:108
-#: components/SchemaViewer/index.tsx:34
-#, fuzzy
-msgid "schemaVersion"
-msgstr "Version du schéma de base de données"
-
-#. Used in: Components > Home Page > About Specify
-#: components/HomePage/AboutSpecify.tsx:113
-#, fuzzy
-msgid "databaseName"
-msgstr "Nom de la base de données:"
-
-#. 🟥I believe ISA stands for Institution Service Agreement. Used in: Components > Home Page > About Specify
-#: components/HomePage/AboutSpecify.tsx:135
-#, fuzzy
-msgid "isaNumber"
-msgstr "Numéro ISA :"
-
-#. Used in: Components > Home Page > Taxon Tiles ⬤ Components > User Preferences > Renderers
-#: components/HomePage/TaxonTiles.tsx:59
-#: components/UserPreferences/Renderers.tsx:198
-#, fuzzy
-msgid "taxonTiles"
-msgstr "Tuiles Taxon"
-
-#. Used in: Components > Home Page > About Specify
-#: components/HomePage/AboutSpecify.tsx:91
-#, fuzzy
-msgid "disclosure"
-msgstr ""
-"Le logiciel Spécifier est un produit du Consortium Spécifier les collections "
-"qui est régi et financé par ses institutions membres. Les membres fondateurs "
-"du consortium comprennent : l'Organisation de recherche scientifique et "
-"industrielle du Commonwealth (CSIRO), le Consortium des musées du Danemark, "
-"l'Université de Floride, l'Université du Kansas et l'Université du Michigan. "
-"Le Consortium opère sous le statut fiscal américain 501(c)3 à but non "
-"lucratif du Centre de recherche de l'Université du Kansas. Spécifier a été "
-"soutenu de 1996 à 2018 par des subventions de la U.S. National Science "
-"Foundation."
-
-#. Used in: Components > Home Page > About Specify
-#: components/HomePage/AboutSpecify.tsx:92
-#, fuzzy
-msgid "licence"
-msgstr ""
-"Spécifiez 7, Copyright 2023, Centre de recherche de l'Université du Kansas. "
-"Spécifier est livré avec ABSOLUMENT AUCUNE GARANTIE. Il s'agit d'un logiciel "
-"open source gratuit sous licence GNU General Public License v2."
-
-#. Used in: Components > Home Page > About Specify
-#: components/HomePage/AboutSpecify.tsx:103
-#, fuzzy
-msgid "specifySixVersion"
-msgstr "Spécifiez 6 versions :"
-
-#. Used in: Components > Home Page > About Specify
-#: components/HomePage/AboutSpecify.tsx:106
-#, fuzzy
-msgid "databaseVersion"
-msgstr "Version de la base de données :"
-
-#. Used in: Components > Home Page > About Specify
-#: components/HomePage/AboutSpecify.tsx:138
-#, fuzzy
-msgid "browser"
-msgstr "Navigateur:"
-
-#. Used in: Components > Home Page > About Specify
-#: components/HomePage/AboutSpecify.tsx:117
-#, fuzzy
-msgid "databaseCreationDate"
-msgstr "Date de création de la BD :"
-
-#. Used in: Components > Home Page > About Specify
-#: components/HomePage/AboutSpecify.tsx:100
-#, fuzzy
-msgid "gitSha"
-msgstr "Git SHA :"
-
-#. Used in: Components > Home Page > Index ⬤ Components > Router > Routes
 #: components/HomePage/index.tsx:49
 #: components/Router/Routes.tsx:414
+#. Used in: Components > Home Page > Index ⬤ Components > Router > Routes
 #, fuzzy
 msgid "pageTitle"
 msgstr "Accueillir"
 
-#. Used in: Components > Home Page > About Specify
+#: components/Header/userToolDefinitions.ts:105
+#: components/HomePage/AboutSpecify.tsx:68
+#: components/Router/OverlayRoutes.tsx:180
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Home Page > About Specify ⬤ Components > Router > Overlay Routes
+#, fuzzy
+msgid "aboutSpecify"
+msgstr "À propos de Spécifier 7"
+
 #: components/HomePage/AboutSpecify.tsx:56
+#. Used in: Components > Home Page > About Specify
 #, fuzzy
 msgid "downloadInformation"
 msgstr "Télécharger l'information"
 
-#. Used in: Components > Home Page > Taxon Tiles
+#: components/HomePage/TaxonTiles.tsx:59
+#: components/UserPreferences/Renderers.tsx:198
+#. Used in: Components > Home Page > Taxon Tiles ⬤ Components > User Preferences > Renderers
+#, fuzzy
+msgid "taxonTiles"
+msgstr "Tuiles Taxon"
+
 #: components/HomePage/TaxonTiles.tsx:52
+#. Used in: Components > Home Page > Taxon Tiles
 #, fuzzy
 msgid "taxonTilesDescription"
 msgstr ""
 "Affichage des taxons avec {count:number|formatted} ou plusieurs "
 "enregistrements {collectionObjectTable:string}"
 
-#. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:79
+#. Used in: Components > Home Page > About Specify
 #, fuzzy
 msgid "fullAddress"
 msgstr ""
@@ -143,8 +58,93 @@ msgstr ""
 "1345, boul. Jayhawk <br />\n"
 "Lawrence, KS 66045 États-Unis"
 
+#: components/HomePage/AboutSpecify.tsx:91
 #. Used in: Components > Home Page > About Specify
+#, fuzzy
+msgid "disclosure"
+msgstr ""
+"Le logiciel Spécifier est un produit du Consortium Spécifier les "
+"collections qui est régi et financé par ses institutions membres. Les "
+"membres fondateurs du consortium comprennent : l'Organisation de recherche "
+"scientifique et industrielle du Commonwealth (CSIRO), le Consortium des "
+"musées du Danemark, l'Université de Floride, l'Université du Kansas et "
+"l'Université du Michigan. Le Consortium opère sous le statut fiscal "
+"américain 501(c)3 à but non lucratif du Centre de recherche de l'Université "
+"du Kansas. Spécifier a été soutenu de 1996 à 2018 par des subventions de la "
+"U.S. National Science Foundation."
+
+#: components/HomePage/AboutSpecify.tsx:92
+#. Used in: Components > Home Page > About Specify
+#, fuzzy
+msgid "licence"
+msgstr ""
+"Spécifiez 7, Copyright 2023, Centre de recherche de l'Université du Kansas. "
+"Spécifier est livré avec ABSOLUMENT AUCUNE GARANTIE. Il s'agit d'un "
+"logiciel open source gratuit sous licence GNU General Public License v2."
+
 #: components/HomePage/AboutSpecify.tsx:95
+#. Used in: Components > Home Page > About Specify
 #, fuzzy
 msgid "systemInformation"
 msgstr "Informations système"
+
+#: components/HomePage/AboutSpecify.tsx:99
+#. Used in: Components > Home Page > About Specify
+#, fuzzy
+msgid "specifyVersion"
+msgstr "Spécifiez 7 versions :"
+
+#: components/HomePage/AboutSpecify.tsx:100
+#. Used in: Components > Home Page > About Specify
+#, fuzzy
+msgid "gitSha"
+msgstr "Git SHA :"
+
+#: components/HomePage/AboutSpecify.tsx:101
+#. Used in: Components > Home Page > About Specify
+#, fuzzy
+msgid "buildDate"
+msgstr "Date de construction:"
+
+#: components/HomePage/AboutSpecify.tsx:103
+#. Used in: Components > Home Page > About Specify
+#, fuzzy
+msgid "specifySixVersion"
+msgstr "Spécifiez 6 versions :"
+
+#: components/HomePage/AboutSpecify.tsx:106
+#. Used in: Components > Home Page > About Specify
+#, fuzzy
+msgid "databaseVersion"
+msgstr "Version de la base de données :"
+
+#: components/HomePage/AboutSpecify.tsx:108
+#: components/SchemaViewer/index.tsx:34
+#. Used in: Components > Home Page > About Specify ⬤ Components > Schema Viewer > Index
+#, fuzzy
+msgid "schemaVersion"
+msgstr "Version du schéma de base de données"
+
+#: components/HomePage/AboutSpecify.tsx:113
+#. Used in: Components > Home Page > About Specify
+#, fuzzy
+msgid "databaseName"
+msgstr "Nom de la base de données:"
+
+#: components/HomePage/AboutSpecify.tsx:135
+#. 🟥I believe ISA stands for Institution Service Agreement. Used in: Components > Home Page > About Specify
+#, fuzzy
+msgid "isaNumber"
+msgstr "Numéro ISA :"
+
+#: components/HomePage/AboutSpecify.tsx:138
+#. Used in: Components > Home Page > About Specify
+#, fuzzy
+msgid "browser"
+msgstr "Navigateur:"
+
+#: components/HomePage/AboutSpecify.tsx:117
+#. Used in: Components > Home Page > About Specify
+#, fuzzy
+msgid "databaseCreationDate"
+msgstr "Date de création de la BD :"

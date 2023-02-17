@@ -16,8 +16,8 @@ msgstr ""
 #: components/QueryBuilder/Toolbar.tsx:61
 #: components/Reports/RecordSets.tsx:99
 #: components/Toolbar/RecordSetEdit.tsx:51
-#: components/TreeView/Actions.tsx:83
 #: components/TreeView/Actions.tsx:86
+#: components/TreeView/Actions.tsx:89
 #. Used in: Components > Query Builder > Header ⬤ Components > Query Builder > Toolbar ⬤ Components > Reports > Record Sets ⬤ Components > Toolbar > Record Set Edit ⬤ Components > Tree View > Actions
 #, fuzzy
 msgid "query"

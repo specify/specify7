@@ -63,8 +63,8 @@ msgstr "Нет"
 #: components/Toolbar/RecordSets.tsx:169
 #: components/Toolbar/TreeRepair.tsx:75
 #: components/Toolbar/WbsDialog.tsx:174
-#: components/TreeView/Actions.tsx:348
-#: components/TreeView/Actions.tsx:364
+#: components/TreeView/Actions.tsx:354
+#: components/TreeView/Actions.tsx:370
 #: components/WbPlanView/Mapper.tsx:386
 #: components/WbPlanView/MapperComponents.tsx:316
 #: components/WbPlanView/MapperComponents.tsx:342
@@ -175,7 +175,7 @@ msgstr "Создать"
 #: components/Toolbar/QueryTables.tsx:119
 #: components/Toolbar/QueryTablesEdit.tsx:74
 #: components/Toolbar/TreeRepair.tsx:75
-#: components/TreeView/Actions.tsx:352
+#: components/TreeView/Actions.tsx:358
 #: components/UserPreferences/index.tsx:85
 #: components/WbPlanView/MapperComponents.tsx:195
 #: components/WbPlanView/MapperComponents.tsx:412
@@ -268,7 +268,7 @@ msgstr "Открыть"
 #: components/PickLists/definitions.ts:41
 #: components/Security/PreviewTables.tsx:67
 #: components/Security/Role.tsx:223
-#: components/TreeView/Actions.tsx:443
+#: components/TreeView/Actions.tsx:449
 #: components/WorkBench/DataSetMeta.tsx:92
 #: components/WorkBench/DataSetMeta.tsx:118
 #. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Forms > Delete Button ⬤ Components > Header > Notifications ⬤ Components > Pick Lists > Definitions ⬤ Components > Security > Preview Tables ⬤ Components > Security > Role ⬤ Components > Tree View > Actions ⬤ Components > Work Bench > Data Set Meta
@@ -422,7 +422,7 @@ msgstr "Новый"
 #: components/Toolbar/RecordSets.tsx:268
 #: components/Toolbar/WbsDialog.tsx:256
 #: components/Toolbar/WbsDialog.tsx:260
-#: components/TreeView/Actions.tsx:97
+#: components/TreeView/Actions.tsx:100
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Reports > Index ⬤ Components > Schema Config > Format ⬤ Components > Security > User Components ⬤ Components > Toolbar > Record Sets ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Tree View > Actions
 msgid "edit"
 msgstr "Редактировать"
@@ -479,7 +479,7 @@ msgstr "Полная дата"
 #: components/Atoms/__tests__/index.test.tsx:13
 #: components/Atoms/__tests__/index.test.tsx:14
 #: components/Atoms/__tests__/index.test.tsx:15
-#: components/TreeView/Actions.tsx:98
+#: components/TreeView/Actions.tsx:101
 #. 🟥Verb. Used in: Components > Atoms > Data Entry ⬤ Atoms > __tests__ > Button ⬤ Atoms > __tests__ > Index ⬤ Components > Tree View > Actions
 msgid "view"
 msgstr "Смотреть"
@@ -725,7 +725,7 @@ msgid "collapse"
 msgstr "Крах"
 
 #: components/AppResources/Aside.tsx:175
-#: components/TreeView/index.tsx:193
+#: components/TreeView/index.tsx:194
 #. Used in: Components > App Resources > Aside ⬤ Components > Tree View > Index
 msgid "collapseAll"
 msgstr "Свернуть все"
