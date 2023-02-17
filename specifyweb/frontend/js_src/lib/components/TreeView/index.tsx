@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { LocalizedString } from 'typesafe-i18n';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useSearchParameter } from '../../hooks/navigation';
 import { useAsyncState, usePromise } from '../../hooks/useAsyncState';
@@ -200,6 +200,7 @@ function TreeView<SCHEMA extends AnyTree>({
             focusedRow={focusedRow}
             focusRef={toolbarButtonRef}
             ranks={rankIds}
+            setFocusPath={setFocusPath}
             tableName={tableName}
             onChange={setActionRow}
             onRefresh={(): void => {
@@ -207,7 +208,6 @@ function TreeView<SCHEMA extends AnyTree>({
               setRows(undefined);
               globalThis.setTimeout(() => setRows(rows), 0);
             }}
-            setFocusPath={setFocusPath}
           />
         </ErrorBoundary>
       </header>
