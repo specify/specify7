@@ -6,6 +6,7 @@ import {
   FloatingPortal,
   offset,
   safePolygon,
+  shift,
   useFloating,
 } from '@floating-ui/react';
 import React from 'react';
@@ -32,8 +33,10 @@ export function TooltipManager(): JSX.Element {
   const { x, y, strategy, refs, context, middlewareData, placement } =
     useFloating({
       middleware: [
+        // Caution: the order matters
         offset(padding),
         autoPlacement(),
+        shift(),
         arrow({ element: arrowRef }),
       ],
       // Reposition tooltip on scroll
