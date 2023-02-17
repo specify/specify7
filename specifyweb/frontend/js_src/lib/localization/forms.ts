@@ -562,14 +562,6 @@ export const formsText = createDictionary({
     'fr-fr': 'Nom du plug-in',
     'uk-ua': 'Назва плагіна',
   },
-  visit: {
-    comment: 'Meaning "Open"',
-    'en-us': 'Visit',
-    'ru-ru': 'Открыть',
-    'es-es': 'Visitar',
-    'fr-fr': 'Visite',
-    'uk-ua': 'Відкрити',
-  },
   illegalBool: {
     comment: `
       Yes/No probably shouldn't be translated as Specify 7 does not support
