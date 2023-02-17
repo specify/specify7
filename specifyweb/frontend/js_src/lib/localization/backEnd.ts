@@ -149,7 +149,7 @@ export const backEndText = createDictionary({
     'es-es':
       'valor de fecha incorrecta: {value:string}. esperado: {format:string}',
     'fr-fr':
-      'valeur de date incorrecte : {value:string}. attendu : {format:string}',
+      'valeur de date invalide: {value:string}. {format:string} est attendu',
     'uk-ua': `
       неправильне значення дати: {value:string}. очікуваний
       формат: {format:string}

@@ -78,7 +78,7 @@ export const formsText = createDictionary({
     'en-us': 'Delete blocked',
     'ru-ru': 'Удаление заблокировано',
     'es-es': 'Eliminar bloqueado',
-    'fr-fr': 'Supprimer bloqué',
+    'fr-fr': 'Suppression bloqué',
     'uk-ua': 'Видалення заблоковане',
   },
   deleteBlockedDescription: {

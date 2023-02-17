@@ -78,7 +78,7 @@ export const interactionsText = createDictionary({
     'en-us': 'By entering {fieldName:string}s',
     'ru-ru': 'Ввести {fieldName:string}',
     'es-es': 'Introduciendo {fieldName:string}s',
-    'fr-fr': 'En saisissant {fieldName:string}s',
+    'fr-fr': 'En entrant {fieldName:string}s',
     'uk-ua': 'Ввівши {fieldName:string}s',
   },
   withoutPreparations: {
