@@ -418,5 +418,5 @@ msgstr "Field value is too long. Max allowed length is {maxLength:number|formatt
 
 #: components/QueryBuilder/Import.tsx:133
 #. Used in: Components > Query Builder > Import
-msgid "hiddenFieldsMess"
+msgid "importHiddenFields"
 msgstr "The following fields are hidden in the query you imported:"
