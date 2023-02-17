@@ -387,6 +387,20 @@ export const preferenceDefinitions = {
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
+          rememberPosition: defineItem<boolean>({
+            title: preferencesText.rememberDialogPositions(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
+          rememberSize: defineItem<boolean>({
+            title: preferencesText.rememberDialogSizes(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
         },
       },
       behavior: {

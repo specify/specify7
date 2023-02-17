@@ -1382,4 +1382,18 @@ export const preferencesText = createDictionary({
       зміни
     `,
   },
+  rememberDialogSizes: {
+    'en-us': 'Remember dialog window sizes',
+    'ru-ru': 'Запоминать размеры диалоговых окон',
+    'es-es': 'Recuerde los tamaños de las ventanas de diálogo',
+    'fr-fr': 'Se souvenir des tailles des fenêtres de dialogue',
+    'uk-ua': 'Запам’ятовувати розміри діалогових вікон',
+  },
+  rememberDialogPositions: {
+    'en-us': 'Remember dialog window positions',
+    'ru-ru': 'Запоминать позиции диалоговых окон',
+    'es-es': 'Recuerde las posiciones de las ventanas de diálogo',
+    'fr-fr': 'Se souvenir des positions des fenêtres de dialogue',
+    'uk-ua': 'Запам’ятовувати позиції діалогових вікон',
+  },
 } as const);

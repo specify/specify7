@@ -47,6 +47,7 @@ export function AttachmentViewer({
     <div className="flex h-full gap-8">
       {/* FIXME: test sizing in formTable */}
       {/* FIXME: make the sizing more dynamic */}
+      {/* FIXME: add a button to toggle meta visibility */}
       {/* FIXME: fix labels being not v-centered */}
       {/* FIXME: add left right arrows */}
       {/* FIXME: consider replacing all h-full with flex-1 flex */}

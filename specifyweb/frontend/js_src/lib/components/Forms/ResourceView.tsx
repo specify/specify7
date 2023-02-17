@@ -325,6 +325,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
         }`,
         content: `${className.formStyles} ${dialogClassNames.flexContent}`,
       }}
+      dimensionsKey={viewName ?? resource?.specifyModel.view}
       header={titleOverride ?? title}
       headerButtons={
         <>

@@ -82,13 +82,14 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
     'flexibleColumnWidth'
   );
   const [language] = usePref('form', 'schema', 'language');
-  return (
+  return viewDefinition?.name === attachmentView ? (
+    <AttachmentsPlugin mode={viewDefinition.mode} resource={resource} />
+  ) : (
     <FormLoadingContext.Provider value={isAlreadyLoading || showLoading}>
       <div
         className={`
           overflow-auto
           ${showLoading ? 'relative' : ''}
-          ${viewDefinition?.name === attachmentView ? 'h-full' : ''}
         `}
         lang={language}
       >
@@ -109,49 +110,43 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
             {loadingGif}
           </div>
         )}
-        {formIsLoaded ? (
-          viewDefinition.name === attachmentView ? (
-            <AttachmentsPlugin mode={viewDefinition.mode} resource={resource} />
-          ) : (
-            <DataEntry.Grid
-              aria-hidden={showLoading}
-              className={`${
-                showLoading ? 'pointer-events-none opacity-50' : ''
-              }`}
-              display={viewDefinition?.columns.length === 1 ? 'block' : display}
-              flexibleColumnWidth={flexibleColumnWidth}
-              viewDefinition={viewDefinition}
-            >
-              {viewDefinition.rows.map((cells, index) => (
-                <React.Fragment key={index}>
-                  {cells.map(
-                    (
-                      { colSpan, align, visible, id: cellId, ...cellData },
-                      index
-                    ) => (
-                      <DataEntry.Cell
+        {formIsLoaded && (
+          <DataEntry.Grid
+            aria-hidden={showLoading}
+            className={`${showLoading ? 'pointer-events-none opacity-50' : ''}`}
+            display={viewDefinition?.columns.length === 1 ? 'block' : display}
+            flexibleColumnWidth={flexibleColumnWidth}
+            viewDefinition={viewDefinition}
+          >
+            {viewDefinition.rows.map((cells, index) => (
+              <React.Fragment key={index}>
+                {cells.map(
+                  (
+                    { colSpan, align, visible, id: cellId, ...cellData },
+                    index
+                  ) => (
+                    <DataEntry.Cell
+                      align={align}
+                      colSpan={colSpan}
+                      key={index}
+                      visible={visible}
+                    >
+                      <FormCell
                         align={align}
-                        colSpan={colSpan}
-                        key={index}
-                        visible={visible}
-                      >
-                        <FormCell
-                          align={align}
-                          cellData={cellData}
-                          formatId={id}
-                          formType={viewDefinition.formType}
-                          id={cellId}
-                          mode={viewDefinition.mode}
-                          resource={resolvedResource}
-                        />
-                      </DataEntry.Cell>
-                    )
-                  )}
-                </React.Fragment>
-              ))}
-            </DataEntry.Grid>
-          )
-        ) : undefined}
+                        cellData={cellData}
+                        formatId={id}
+                        formType={viewDefinition.formType}
+                        id={cellId}
+                        mode={viewDefinition.mode}
+                        resource={resolvedResource}
+                      />
+                    </DataEntry.Cell>
+                  )
+                )}
+              </React.Fragment>
+            ))}
+          </DataEntry.Grid>
+        )}
       </div>
     </FormLoadingContext.Provider>
   );
