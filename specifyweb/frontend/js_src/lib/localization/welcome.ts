@@ -13,21 +13,21 @@ export const welcomeText = createDictionary({
     'en-us': 'Welcome',
     'ru-ru': 'Добро пожаловать',
     'es-es': 'Bienvenidos',
-    'fr-fr': 'Bienvenue',
+    'fr-fr': 'Accueillir',
     'uk-ua': 'Ласкаво просимо',
   },
   aboutSpecify: {
     'en-us': 'About Specify 7',
     'ru-ru': 'О Specify 7',
     'es-es': 'Acerca de Especificar 7',
-    'fr-fr': 'À propos de Specify 7',
+    'fr-fr': 'À propos de Spécifier 7',
     'uk-ua': 'Про Specify 7',
   },
   downloadInformation: {
     'en-us': 'Download Information',
     'ru-ru': 'Скачать информацию',
     'es-es': 'Descargar información',
-    'fr-fr': 'Télécharger les informations',
+    'fr-fr': "Télécharger l'information",
     'uk-ua': 'Завантажити інформацію',
   },
   taxonTiles: {
@@ -51,7 +51,8 @@ export const welcomeText = createDictionary({
       {collectionObjectTable:string} registros
     `,
     'fr-fr': `
-      Montrant les taxons avec {count:number|formatted} ou plus enregistrements
+      Affichage des taxons avec {count:number|formatted} ou plusieurs
+      enregistrements {collectionObjectTable:string}
     `,
     'uk-ua': `
       Показано таксони з {count:number|formatted} або більше
@@ -93,15 +94,15 @@ export const welcomeText = createDictionary({
       Lawrence, KS 66045 Estados Unidos
     `,
     'fr-fr': `
-      Specify Collections Consortium <br />
+      Spécifiez le consortium de collections <br />
 
-      Biodiversity Institute <br />
+      Institut de la biodiversité <br />
 
-      University of Kansas <br />
+      Université du Kansas <br />
 
-      1345 Jayhawk Blvd. <br />
+      1345, boul. Jayhawk <br />
 
-      Lawrence, KS 66045 USA
+      Lawrence, KS 66045 États-Unis
     `,
     'uk-ua': `
       Укажіть консорціум колекцій <br />
@@ -150,14 +151,15 @@ export const welcomeText = createDictionary({
       Ciencias de EE. UU.
     `,
     'fr-fr': `
-      Le logiciel Specify est un produit du Specify Collections qui est régi et
-      financé par ses institutions membres. Les membres fondateurs du consortium
-      comprennent : Commonwealth Scientific and Industrial Research
-      Organisation (CSIRO), Denmark Consortium of Museums, University of
-      Florida, University of Kansas, and University of Michigan. Le consortium
-      fonctionne sous le statut fiscal américain 501(c)3 à but non lucratif du
-      University of Kansas Center for Research. Specify a été soutenu de 1996 à
-      2018 par des subventions de la U.S. National Science Foundation.
+      Le logiciel Spécifier est un produit du Consortium Spécifier les
+      collections qui est régi et financé par ses institutions membres. Les
+      membres fondateurs du consortium comprennent : l'Organisation de recherche
+      scientifique et industrielle du Commonwealth (CSIRO), le Consortium des
+      musées du Danemark, l'Université de Floride, l'Université du Kansas et
+      l'Université du Michigan. Le Consortium opère sous le statut fiscal
+      américain 501(c)3 à but non lucratif du Centre de recherche de
+      l'Université du Kansas. Spécifier a été soutenu de 1996 à 2018 par des
+      subventions de la U.S. National Science Foundation.
     `,
     'uk-ua': `
       Програмне забезпечення Specify є продуктом консорціуму Specify Collections
@@ -189,9 +191,9 @@ export const welcomeText = createDictionary({
       License v2.
     `,
     'fr-fr': `
-      Specify 7, Copyright 2023, University of Kansas Center for Research.
-      Specify est livré avec ABSOLUMENT AUCUNE GARANTIE. Il s'agit d'un logiciel
-      gratuit, à code source ouvert, sous licence GNU General Public License
+      Spécifiez 7, Copyright 2023, Centre de recherche de l'Université du
+      Kansas. Spécifier est livré avec ABSOLUMENT AUCUNE GARANTIE. Il s'agit
+      d'un logiciel open source gratuit sous licence GNU General Public License
       v2.
     `,
     'uk-ua': `
@@ -212,7 +214,7 @@ export const welcomeText = createDictionary({
     'en-us': 'Specify 7 Version:',
     'ru-ru': 'Specify 7 Версия:',
     'es-es': 'Especifique la versión 7:',
-    'fr-fr': 'Version de Specify 7 :',
+    'fr-fr': 'Spécifiez 7 versions :',
     'uk-ua': 'Вкажіть 7 версію:',
   },
   gitSha: {
@@ -226,14 +228,14 @@ export const welcomeText = createDictionary({
     'en-us': 'Build Date:',
     'ru-ru': 'Дата сборки:',
     'es-es': 'La fecha de construcción:',
-    'fr-fr': 'Date de build :',
+    'fr-fr': 'Date de construction:',
     'uk-ua': 'Дата збірки:',
   },
   specifySixVersion: {
     'en-us': 'Specify 6 Version:',
     'ru-ru': 'Specify 6 Версия:',
     'es-es': 'Especifique 6 Versión:',
-    'fr-fr': 'Version de Specify 6 :',
+    'fr-fr': 'Spécifiez 6 versions :',
     'uk-ua': 'Вкажіть 6 версію:',
   },
   databaseVersion: {
@@ -247,14 +249,14 @@ export const welcomeText = createDictionary({
     'en-us': 'DB Schema Version',
     'ru-ru': 'Версия схемы базы данных',
     'es-es': 'Versión del esquema de base de datos',
-    'fr-fr': 'Version du schéma de la base de données',
+    'fr-fr': 'Version du schéma de base de données',
     'uk-ua': 'Версія схеми БД',
   },
   databaseName: {
     'en-us': 'Database Name:',
     'ru-ru': 'Имя базы данных:',
     'es-es': 'Nombre de la base de datos:',
-    'fr-fr': 'Nom de la base de données :',
+    'fr-fr': 'Nom de la base de données:',
     'uk-ua': "Ім'я бази даних:",
   },
   isaNumber: {
@@ -269,14 +271,14 @@ export const welcomeText = createDictionary({
     'en-us': 'Browser:',
     'ru-ru': 'Браузер:',
     'es-es': 'Navegador:',
-    'fr-fr': 'Navigateur :',
+    'fr-fr': 'Navigateur:',
     'uk-ua': 'Браузер:',
   },
   databaseCreationDate: {
     'en-us': 'DB Creation Date:',
     'ru-ru': 'Дата создания базы данных:',
     'es-es': 'Fecha de creación de la base de datos:',
-    'fr-fr': 'Date de création de la base de données :',
+    'fr-fr': 'Date de création de la BD :',
     'uk-ua': 'Дата створення БД:',
   },
 } as const);

@@ -29,14 +29,14 @@ export const headerText = createDictionary({
     'en-us': 'Current {collectionTable:string}',
     'ru-ru': 'Текущая {collectionTable:string}',
     'es-es': 'Actual {collectionTable:string}',
-    'fr-fr': 'Actuelle {collectionTable:string}',
+    'fr-fr': 'Courant {collectionTable:string}',
     'uk-ua': 'Поточна {collectionTable:string}',
   },
   dataEntry: {
     'en-us': 'Data Entry',
     'ru-ru': 'Ввод данных',
     'es-es': 'Entrada de datos',
-    'fr-fr': 'Saisie des données',
+    'fr-fr': 'La saisie des données',
     'uk-ua': 'Введення даних',
   },
   makeDwca: {
@@ -57,7 +57,7 @@ export const headerText = createDictionary({
     'en-us': 'Update export feed?',
     'ru-ru': 'Обновить фид экспорта?',
     'es-es': '¿Actualizar el canal de exportación?',
-    'fr-fr': "Mettre à jour le flux d'exportation?",
+    'fr-fr': "Mettre à jour le flux d'exportation ?",
     'uk-ua': 'Оновити канал експорту?',
   },
   updateExportFeedConfirmationDescription: {
@@ -219,7 +219,7 @@ export const headerText = createDictionary({
     'en-us': 'User Tools ({userName:string})',
     'ru-ru': 'Инструменты ({userName:string})',
     'es-es': 'Herramientas ({userName:string})',
-    'fr-fr': 'Outils ({userName:string})',
+    'fr-fr': 'Outils utilisateur ({userName:string})',
     'uk-ua': 'Інструменти ({userName:string})',
   },
   helpLocalizeSpecify: {
