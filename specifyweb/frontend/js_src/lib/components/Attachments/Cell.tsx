@@ -1,11 +1,10 @@
 import React from 'react';
 
-import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import { f } from '../../utils/functools';
-import type { GetOrSet } from '../../utils/types';
+import type { GetSet } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
 import { fetchRelated } from '../DataModel/collection';
@@ -20,28 +19,24 @@ import { softFail } from '../Errors/Crash';
 import { Dialog } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasTablePermission } from '../Permissions/helpers';
-import { AttachmentThumbnail, fetchThumbnail } from './attachments';
 import { tablesWithAttachments } from './index';
 import { AttachmentPreview } from './Preview';
 
 export function AttachmentCell({
   attachment,
+  onOpen: handleOpen,
+  related: [related, setRelated],
   onViewRecord: handleViewRecord,
-  onChange: handleChange,
 }: {
   readonly attachment: SerializedResource<Attachment>;
+  readonly onOpen: () => void;
+  readonly related: GetSet<SpecifyResource<AnySchema> | undefined>;
   readonly onViewRecord:
     | ((model: SpecifyModel, recordId: number) => void)
     | undefined;
-  readonly onChange: (attachment: SerializedResource<Attachment>) => void;
 }): JSX.Element {
   const model = f.maybe(attachment.tableID ?? undefined, getAttachmentTable);
 
-  const [related, setRelated] = React.useState<
-    SpecifyResource<AnySchema> | undefined
-  >(undefined);
-
-  const thumbnail = useAttachmentThumbnail(attachment);
   return (
     <div className="relative">
       {typeof handleViewRecord === 'function' &&
@@ -54,36 +49,18 @@ export function AttachmentCell({
           onViewRecord={handleViewRecord}
         />
       ) : undefined}
-      {typeof thumbnail === 'object' ? (
-        <AttachmentPreview
-          attachment={attachment}
-          thumbnail={thumbnail}
-          onChange={handleChange}
-          related={related}
-          onOpen={(): void =>
-            related === undefined && typeof model === 'object'
-              ? void fetchAttachmentParent(model, attachment)
-                  .then(setRelated)
-                  .catch(softFail)
-              : undefined
-          }
-        />
-      ) : (
-        <div className="flex h-10 w-10 items-center justify-center">
-          {commonText.loading()}
-        </div>
-      )}
+      <AttachmentPreview
+        attachment={attachment}
+        onOpen={(): void => {
+          if (related === undefined && typeof model === 'object')
+            fetchAttachmentParent(model, attachment)
+              .then(setRelated)
+              .catch(softFail);
+          handleOpen();
+        }}
+      />
     </div>
   );
-}
-
-function useAttachmentThumbnail(
-  attachment: SerializedResource<Attachment>
-): AttachmentThumbnail | undefined {
-  return useAsyncState(
-    React.useCallback(async () => fetchThumbnail(attachment), [attachment]),
-    false
-  )[0];
 }
 
 export function getAttachmentTable(tableId: number): SpecifyModel | undefined {
@@ -103,7 +80,7 @@ function RecordLink({
   readonly model: SpecifyModel;
   readonly attachment: SerializedResource<Attachment>;
   readonly onViewRecord: (model: SpecifyModel, recordId: number) => void;
-  readonly related: GetOrSet<SpecifyResource<AnySchema> | undefined>;
+  readonly related: GetSet<SpecifyResource<AnySchema> | undefined>;
 }): JSX.Element {
   const loading = React.useContext(LoadingContext);
   const [isFailed, handleFailed, handleNotFailed] = useBooleanState();

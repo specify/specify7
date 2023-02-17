@@ -247,6 +247,7 @@ function Attachments(): JSX.Element {
             : setCollection({ records, totalCount: collection.totalCount })
         }
         onFetchMore={fetchMore}
+        key={`${order}_${JSON.stringify(filter)}`}
       />
     </Container.FullGray>
   );

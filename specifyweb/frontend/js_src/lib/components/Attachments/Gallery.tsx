@@ -12,6 +12,7 @@ import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { ResourceView } from '../Forms/ResourceView';
 import { loadingGif } from '../Molecules';
 import { AttachmentCell } from './Cell';
+import { AttachmentDialog } from './Dialog';
 
 const preFetchDistance = 200;
 
@@ -54,6 +55,13 @@ export function AttachmentGallery({
   const [viewRecord, setViewRecord] = React.useState<
     SpecifyResource<AnySchema> | undefined
   >(undefined);
+  const [openIndex, setOpenIndex] = React.useState<number | undefined>(
+    undefined
+  );
+  const [related, setRelated] = React.useState<
+    RA<SpecifyResource<AnySchema> | undefined>
+  >([]);
+
   return (
     <>
       <Container.Base
@@ -71,9 +79,11 @@ export function AttachmentGallery({
           <AttachmentCell
             attachment={attachment}
             key={index}
-            onChange={(newAttachment): void =>
-              handleChange(replaceItem(attachments, index, newAttachment))
-            }
+            related={[
+              related[index],
+              (item): void => setRelated(replaceItem(related, index, item)),
+            ]}
+            onOpen={(): void => setOpenIndex(index)}
             onViewRecord={(model, id): void =>
               setViewRecord(new model.Resource({ id }))
             }
@@ -97,6 +107,30 @@ export function AttachmentGallery({
             onSaved={undefined}
           />
         </ErrorBoundary>
+      )}
+      {typeof openIndex === 'number' && (
+        <AttachmentDialog
+          attachment={attachments[openIndex]}
+          related={related[openIndex]}
+          onChange={(newAttachment): void =>
+            handleChange(replaceItem(attachments, openIndex, newAttachment))
+          }
+          onNext={
+            isComplete && openIndex === attachments.length
+              ? undefined
+              : (): void => {
+                  setOpenIndex(openIndex + 1);
+                  if (attachments[openIndex + 1] === undefined)
+                    handleFetchMore().catch(raise);
+                }
+          }
+          onClose={(): void => setOpenIndex(undefined)}
+          onPrevious={
+            openIndex === 0
+              ? undefined
+              : (): void => setOpenIndex(openIndex - 1)
+          }
+        />
       )}
     </>
   );

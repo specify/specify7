@@ -40,13 +40,9 @@ export function AttachmentsPlugin(
 
 function ProtectedAttachmentsPlugin({
   resource,
-  onUploadComplete: handleUploadComplete,
   mode = 'edit',
 }: {
-  readonly id?: string;
-  readonly name?: string;
   readonly resource: SpecifyResource<AnySchema> | undefined;
-  readonly onUploadComplete?: (attachment: SpecifyResource<Attachment>) => void;
   readonly mode: FormMode;
 }): JSX.Element | null {
   const [attachment, setAttachment] = useAsyncState<
@@ -82,7 +78,6 @@ function ProtectedAttachmentsPlugin({
             filePickerContainer.current?.focus();
             if (typeof resource === 'object')
               attachment?.set('tableID', resource.specifyModel.tableId);
-            handleUploadComplete?.(attachment);
             resource?.set('attachment', attachment as never);
             setAttachment(attachment);
           }}

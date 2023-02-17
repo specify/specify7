@@ -11,24 +11,23 @@ import type { Attachment } from '../DataModel/types';
 import { ResourceView } from '../Forms/ResourceView';
 import { originalAttachmentsView } from '../Forms/useViewDefinition';
 import { loadingGif } from '../Molecules';
-import { AttachmentThumbnail, fetchOriginalUrl } from './attachments';
-import { getAttachmentTable } from './Cell';
 import { usePref } from '../UserPreferences/usePref';
+import { fetchOriginalUrl, fetchThumbnail } from './attachments';
+import { getAttachmentTable } from './Cell';
 
 export function AttachmentViewer({
   attachment,
   relatedResource,
-  thumbnail,
 }: {
   readonly attachment: SpecifyResource<Attachment>;
   readonly relatedResource: SpecifyResource<AnySchema> | undefined;
-  readonly thumbnail: AttachmentThumbnail | undefined;
 }): JSX.Element {
+  const serialized = React.useMemo(
+    () => serializeResource(attachment),
+    [attachment]
+  );
   const [originalUrl] = useAsyncState(
-    React.useCallback(
-      async () => fetchOriginalUrl(serializeResource(attachment)),
-      [attachment]
-    ),
+    React.useCallback(async () => fetchOriginalUrl(serialized), [serialized]),
     false
   );
 
@@ -47,36 +46,60 @@ export function AttachmentViewer({
   const mimeType = attachment.get('mimeType') ?? undefined;
   const type = mimeType?.split('/')[0];
 
+  const [thumbnail] = useAsyncState(
+    React.useCallback(async () => fetchThumbnail(attachment), [attachment]),
+    false
+  );
+
   const [autoPlay] = usePref('attachments', 'behavior', 'autoPlay');
   return (
     <div className="flex h-full gap-8">
+      {/* FIXME: open in new tab and download links */}
       {/* FIXME: test sizing in formTable */}
-      {/* FIXME: make the sizing more dynamic */}
       {/* FIXME: add a button to toggle meta visibility */}
-      {/* FIXME: fix labels being not v-centered */}
-      {/* FIXME: add left right arrows */}
       {/* FIXME: consider replacing all h-full with flex-1 flex */}
       {/* FIXME: consider rewerting adding special case in <SpecifyForm /> */}
       {/* FIXME: make sure unknown file formats are not being auto downloaded */}
-      <div className="flex min-h-[30vw] w-full min-w-[40vw] flex-1 items-center">
+      <div className="flex min-h-[30vw] w-full min-w-[30vh] flex-1 items-center">
         {originalUrl === undefined ? (
           loadingGif
         ) : type === 'image' ? (
-          // FIXME: add a case for video/audio and others?
-          <img src={originalUrl} alt={title} />
+          <img alt={title} src={originalUrl} />
         ) : type === 'video' ? (
-          <video controls className="h-full w-full" autoPlay={autoPlay}>
-            <source src={originalUrl} type={mimeType} />
-          </video>
+          /*
+           * Subtitles for attachments not yet supported
+           */
+          // eslint-disable-next-line jsx-a11y/media-has-caption
+          <video
+            autoPlay={autoPlay}
+            className="h-full w-full"
+            controls
+            src={originalUrl}
+          />
         ) : type === 'audio' ? (
-          <audio className="w-full" controls autoPlay={autoPlay} />
+          /*
+           * Subtitles for attachments not yet supported
+           */
+          // eslint-disable-next-line jsx-a11y/media-has-caption
+          <audio
+            autoPlay={autoPlay}
+            className="w-full"
+            controls
+            src={originalUrl}
+          />
         ) : (
           <object
             aria-label={title}
             className="h-full w-full border-0"
             data={originalUrl}
             type={mimeType}
-          />
+          >
+            <img
+              alt={title}
+              className="h-full w-full object-scale-down"
+              src={thumbnail?.src}
+            />
+          </object>
         )}
       </div>
       <div>
