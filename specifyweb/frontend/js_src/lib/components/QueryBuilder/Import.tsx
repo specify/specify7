@@ -130,7 +130,7 @@ export function QueryImport({
             onClose={(): void => setHiddenFields([])}
           >
             <>
-              {queryText.hiddenFieldsMess()}
+              {queryText.importHiddenFields()}
               <Ul className="flex flex-col items-center">
                 {hiddenFields.map((field, index) => (
                   <li className="font-bold" key={index}>

@@ -638,7 +638,7 @@ export const queryText = createDictionary({
       {maxLength:number|formatted}
     `,
   },
-  hiddenFieldsMess: {
+  importHiddenFields: {
     'en-us': 'The following fields are hidden in the query you imported:',
     'es-es': 'Los siguientes campos están ocultos en la consulta que importó:',
     'fr-fr': `
