@@ -24,7 +24,7 @@ export function AttachmentPreview({
 }: {
   readonly thumbnail: AttachmentThumbnail;
   readonly attachment: SerializedResource<Attachment>;
-  readonly related: SpecifyResource<AnySchema>;
+  readonly related: SpecifyResource<AnySchema> | undefined;
   readonly onChange: (attachment: SerializedResource<Attachment>) => void;
   readonly onOpen: () => void;
 }): JSX.Element {
@@ -53,9 +53,9 @@ export function AttachmentPreview({
                 : thumbnail.alt
             }
             className={`
-          max-h-full max-w-full border-8 border-white object-contain
-          dark:border-black
-        `}
+              max-h-full max-w-full border-8 border-white object-contain
+              dark:border-black
+            `}
             src={thumbnail.src}
             style={{
               width: `${thumbnail.width}px`,
@@ -83,7 +83,7 @@ function AttachmentDialog({
   onChange: handleChange,
 }: {
   readonly attachment: SerializedResource<Attachment>;
-  readonly related: SpecifyResource<AnySchema>;
+  readonly related: SpecifyResource<AnySchema> | undefined;
   readonly onClose: () => void;
   readonly onChange: (attachment: SerializedResource<Attachment>) => void;
 }): JSX.Element {

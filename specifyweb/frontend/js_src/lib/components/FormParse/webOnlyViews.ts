@@ -17,30 +17,6 @@ import type { ParsedFormDefinition } from './index';
  */
 export const webOnlyViews = f.store(() =>
   ensure<IR<ParsedFormDefinition>>()({
-    [attachmentView]: {
-      columns: [undefined],
-      rows: [
-        [
-          {
-            id: undefined,
-            type: 'Field',
-            fieldNames: undefined,
-            fieldDefinition: {
-              isReadOnly: false,
-              type: 'Plugin',
-              pluginDefinition: {
-                type: 'AttachmentPlugin',
-              },
-            },
-            isRequired: false,
-            colSpan: 1,
-            align: 'left',
-            visible: true,
-            ariaLabel: undefined,
-          },
-        ],
-      ],
-    },
     SpecifyUser: autoGenerateViewDefinition(
       schema.models.SpecifyUser,
       'form',
@@ -83,7 +59,6 @@ export const webOnlyViews = f.store(() =>
     ),
   } as const)
 );
-
 
 export const attachmentView = 'ObjectAttachment';
 

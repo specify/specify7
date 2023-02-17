@@ -41,18 +41,26 @@ export function AttachmentViewer({
   const showCustomForm =
     typeof viewName === 'string' && typeof relatedResource === 'object';
 
+  const type = attachment.get('mimeType')?.split('/')[0];
+
   return (
     <div className="flex h-full gap-8">
+      {/* FIXME: test sizing in formTable */}
       {/* FIXME: make the sizing more dynamic */}
       {/* FIXME: fix labels being not v-centered */}
       {/* FIXME: add left right arrows */}
-      <div className="relative h-full min-h-[30vw] w-full min-w-[40vw]">
+      {/* FIXME: consider replacing all h-full with flex-1 flex */}
+      {/* FIXME: consider rewerting adding special case in <SpecifyForm /> */}
+      <div className="flex min-h-[30vw] w-full min-w-[40vw] flex-1 items-center">
         {originalUrl === undefined ? (
           loadingGif
+        ) : type === 'image' ? (
+          // FIXME: add a case for video/audio and others?
+          <img src={originalUrl} alt={title} />
         ) : (
           <object
             aria-label={title}
-            className="absolute h-full w-full border-0"
+            className="h-full w-full border-0"
             data={originalUrl}
           />
         )}

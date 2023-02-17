@@ -10,10 +10,12 @@ import { useId } from '../../hooks/useId';
 import { hijackBackboneAjax } from '../../utils/ajax/backboneAjax';
 import { Http } from '../../utils/ajax/definitions';
 import { DataEntry } from '../Atoms/DataEntry';
+import { AttachmentsPlugin } from '../Attachments/Plugin';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { FormCell } from '../FormCells';
 import type { ViewDescription } from '../FormParse';
+import { attachmentView } from '../FormParse/webOnlyViews';
 import { loadingGif } from '../Molecules';
 import { unsafeTriggerNotFound } from '../Router/Router';
 import { usePref } from '../UserPreferences/usePref';
@@ -83,7 +85,11 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
   return (
     <FormLoadingContext.Provider value={isAlreadyLoading || showLoading}>
       <div
-        className={`h-full overflow-auto ${showLoading ? 'relative' : ''}`}
+        className={`
+          overflow-auto
+          ${showLoading ? 'relative' : ''}
+          ${viewDefinition?.name === attachmentView ? 'h-full' : ''}
+        `}
         lang={language}
       >
         {showLoading && (
@@ -103,43 +109,49 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
             {loadingGif}
           </div>
         )}
-        {formIsLoaded && (
-          <DataEntry.Grid
-            aria-hidden={showLoading}
-            className={`${showLoading ? 'pointer-events-none opacity-50' : ''}`}
-            display={viewDefinition?.columns.length === 1 ? 'block' : display}
-            flexibleColumnWidth={flexibleColumnWidth}
-            viewDefinition={viewDefinition}
-          >
-            {viewDefinition.rows.map((cells, index) => (
-              <React.Fragment key={index}>
-                {cells.map(
-                  (
-                    { colSpan, align, visible, id: cellId, ...cellData },
-                    index
-                  ) => (
-                    <DataEntry.Cell
-                      align={align}
-                      colSpan={colSpan}
-                      key={index}
-                      visible={visible}
-                    >
-                      <FormCell
+        {formIsLoaded ? (
+          viewDefinition.name === attachmentView ? (
+            <AttachmentsPlugin mode={viewDefinition.mode} resource={resource} />
+          ) : (
+            <DataEntry.Grid
+              aria-hidden={showLoading}
+              className={`${
+                showLoading ? 'pointer-events-none opacity-50' : ''
+              }`}
+              display={viewDefinition?.columns.length === 1 ? 'block' : display}
+              flexibleColumnWidth={flexibleColumnWidth}
+              viewDefinition={viewDefinition}
+            >
+              {viewDefinition.rows.map((cells, index) => (
+                <React.Fragment key={index}>
+                  {cells.map(
+                    (
+                      { colSpan, align, visible, id: cellId, ...cellData },
+                      index
+                    ) => (
+                      <DataEntry.Cell
                         align={align}
-                        cellData={cellData}
-                        formatId={id}
-                        formType={viewDefinition.formType}
-                        id={cellId}
-                        mode={viewDefinition.mode}
-                        resource={resolvedResource}
-                      />
-                    </DataEntry.Cell>
-                  )
-                )}
-              </React.Fragment>
-            ))}
-          </DataEntry.Grid>
-        )}
+                        colSpan={colSpan}
+                        key={index}
+                        visible={visible}
+                      >
+                        <FormCell
+                          align={align}
+                          cellData={cellData}
+                          formatId={id}
+                          formType={viewDefinition.formType}
+                          id={cellId}
+                          mode={viewDefinition.mode}
+                          resource={resolvedResource}
+                        />
+                      </DataEntry.Cell>
+                    )
+                  )}
+                </React.Fragment>
+              ))}
+            </DataEntry.Grid>
+          )
+        ) : undefined}
       </div>
     </FormLoadingContext.Provider>
   );

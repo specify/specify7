@@ -195,6 +195,7 @@ const cellRenderers: {
       () => ({
         ...cellData,
         mode,
+        name: 'panel',
         formType,
         model: resource.specifyModel,
       }),

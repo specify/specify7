@@ -7,7 +7,7 @@ import type { SpecifyModel } from '../DataModel/specifyModel';
 import { softFail } from '../Errors/Crash';
 import type { FormMode, FormType, ViewDescription } from '../FormParse';
 import { fetchView, parseViewDefinition } from '../FormParse';
-import {attachmentView, webOnlyViews} from '../FormParse/webOnlyViews';
+import { attachmentView, webOnlyViews } from '../FormParse/webOnlyViews';
 import { usePref } from '../UserPreferences/usePref';
 import { autoGenerateViewDefinition } from './generateFormDefinition';
 
@@ -47,6 +47,7 @@ export function useViewDefinition({
         return {
           ...webOnlyViews()[attachmentView],
           model,
+          name: attachmentView,
           formType,
           mode,
         };
@@ -101,6 +102,7 @@ const fetchViewDefinition = async (
           ({ columns, rows }) => ({
             columns,
             rows,
+            name: '',
             formType,
             mode,
             model,

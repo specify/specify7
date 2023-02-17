@@ -236,8 +236,9 @@ export function FormField({
   ] as typeof fieldRenderers.Checkbox;
   const data = useDistantRelated(resource, fields);
   const isIndependent =
-    fields?.some((field) => field.isRelationship && !field.isDependent()) ??
-    true;
+    fields
+      ?.slice(0, -1)
+      .some((field) => field.isRelationship && !field.isDependent()) ?? true;
   return (
     <ErrorBoundary dismissible>
       {data === undefined ? undefined : (
