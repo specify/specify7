@@ -60,7 +60,7 @@ export const notificationsText = createDictionary({
     'en-us': 'RSS Export feed has been updated.',
     'ru-ru': 'Элемент фида экспорта обновлен.',
     'es-es': 'Se ha actualizado el feed RSS Export.',
-    'fr-fr': "Le flux d'exportation RSS a été mis à jour.",
+    'fr-fr': "Le flux d'export RSS a été mis à jour.",
     'uk-ua': 'Стрічку експорту RSS оновлено.',
   },
   updateFeedFailed: {

@@ -42,7 +42,7 @@ export const formsText = createDictionary({
     'en-us': 'Value must be unique to database',
     'ru-ru': 'Значение должно быть уникальным в базе данных',
     'es-es': 'El valor debe ser único para la base de datos',
-    'fr-fr': 'La valeur doit être unique à la base de données',
+    'fr-fr': 'Valeur doit être unique à la base de données',
     'uk-ua': 'Значення має бути унікальним в базі даних',
   },
   valuesOfMustBeUniqueToField: {
@@ -63,16 +63,15 @@ export const formsText = createDictionary({
     'ru-ru': 'Значения {values:string} должны быть уникальным в базе данных',
     'es-es':
       'Los valores de {values:string} deben ser únicos para la base de datos',
-    'fr-fr': `
-      Les valeurs de {values:string} doivent être uniques à la base de données
-    `,
+    'fr-fr':
+      'Valeurs de {values:string} doivent être uniques à la base de données',
     'uk-ua': 'Значення {values:string} мають бути унікальними в базі даних',
   },
   checkingIfResourceCanBeDeleted: {
     'en-us': 'Checking if resource can be deleted…',
     'ru-ru': 'Проверка возможности удаления ресурса…',
     'es-es': 'Comprobando si el recurso se puede eliminar…',
-    'fr-fr': 'Vérification si la ressource peut être supprimée…',
+    'fr-fr': 'Vérifiant si la ressource peut être supprimée…',
     'uk-ua': 'Перевірка можливості видалення ресурсу…',
   },
   deleteBlocked: {

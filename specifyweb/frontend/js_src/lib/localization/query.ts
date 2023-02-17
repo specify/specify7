@@ -638,4 +638,19 @@ export const queryText = createDictionary({
       {maxLength:number|formatted}
     `,
   },
+  importHiddenFields: {
+    'en-us': 'The following fields are hidden in the query you imported:',
+    'es-es': 'Los siguientes campos están ocultos en la consulta que importó:',
+    'fr-fr': `
+      Les champs suivants sont masqués dans la requête que vous avez importée :
+    `,
+    'ru-ru': 'В импортированном запросе скрыты следующие поля:',
+    'uk-ua': 'В імпортованому вами запиті приховано такі поля:',
+  },
+  importNoReadPermission: {
+    'en-us': 'The query you imported contains tables you do not have read access to:'
+  },
+  noReadPermission: {
+    'en-us': "No read permission"
+  }
 } as const);
