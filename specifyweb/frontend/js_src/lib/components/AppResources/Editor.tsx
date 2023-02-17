@@ -92,7 +92,6 @@ export function AppResourceEditor({
   });
   const headerButtons = (
     <div className="flex flex-wrap gap-3">
-      {/* <AppResourceEditButton title={title}>{form()}</AppResourceEditButton> */}
       <AppTitle title={formatted} />
       <Button.Blue
         aria-label={localityText.toggleFullScreen()}
@@ -146,7 +145,7 @@ export function AppResourceEditor({
         {headerButtons}
       </DataEntry.Header>
       <Form
-        className="max-h-[50vh] max-h-[90%] min-h-[30vh] flex-1 overflow-auto"
+        className="max-h-[90%] min-h-[30vh] flex-1 overflow-auto"
         forwardRef={setForm}
       >
         <AppResourcesTabs
