@@ -153,7 +153,6 @@ export function PreferencesContent({
                     key={subcategory}
                   >
                     <div className="flex items-center gap-2">
-                      <span className="hidden md:flex-1" />
                       <h4
                         className={`${className.headerGray} text-xl md:text-center`}
                       >
