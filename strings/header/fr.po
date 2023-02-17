@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-02-17 18:13+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2023-02-17 21:38+0000\n"
+"Last-Translator: Heather <heather.cole@canada.ca>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/header/"
 "fr/>\n"
 "Language: fr\n"
@@ -254,9 +254,8 @@ msgstr "Mettre à jour le flux d'exportation ?"
 
 #. Used in: Components > Toolbar > Force Update
 #: components/Toolbar/ForceUpdate.tsx:52
-#, fuzzy
 msgid "updateExportFeedConfirmationDescription"
-msgstr "Mettre à jour tous les éléments du flux d'exportation RSS maintenant ?"
+msgstr "Mettre à jour tous les éléments du flux d'export RSS maintenant?"
 
 #. Used in: Components > Toolbar > Language
 #: components/Toolbar/Language.tsx:86
