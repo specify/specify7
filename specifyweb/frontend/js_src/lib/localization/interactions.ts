@@ -27,7 +27,7 @@ export const interactionsText = createDictionary({
     'en-us': '{modelName:string} Return',
     'ru-ru': 'Возврат {modelName:string}',
     'es-es': '{modelName:string} Devuelve',
-    'fr-fr': '{modelName:string} Retour',
+    'fr-fr': '{modelName:string} Retourner',
     'uk-ua': '{modelName:string} Повернення',
   },
   createRecord: {
@@ -55,7 +55,7 @@ export const interactionsText = createDictionary({
     'en-us': 'There are problems with the entry:',
     'ru-ru': 'Обнаружены ошибки:',
     'es-es': 'Hay problemas con la entrada:',
-    'fr-fr': "Il y a des problèmes avec l'entrée :",
+    'fr-fr': "Il y a des problèmes avec l'entrée:",
     'uk-ua': 'Є проблеми з входом:',
   },
   byChoosingRecordSet: {
@@ -66,7 +66,7 @@ export const interactionsText = createDictionary({
       'Eligiendo un juego de registros ({{count:none | one | ??}} available)',
     'fr-fr': `
       En choisissant un jeu d'enregistrements ({{count:none | one | ??}}
-      disponible)
+      disponible(s))
     `,
     'uk-ua': 'Вибравши набір записів (доступно {{count:none | one | ??}})',
   },

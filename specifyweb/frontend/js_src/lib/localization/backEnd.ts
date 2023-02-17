@@ -54,7 +54,7 @@ export const backEndText = createDictionary({
       Haga clic en la flecha para elegir entre las opciones disponibles.
     `,
     'fr-fr': `
-      {value:string} n'est pas une valeur légale dans ce champ de liste de
+      {value:string} n'est pas une valeur acceptée dans ce champ de liste de
       sélection.
 
       Cliquez sur la flèche pour choisir parmi les options disponibles.
@@ -83,8 +83,8 @@ export const backEndText = createDictionary({
       {validTypes:string}
     `,
     'fr-fr': `
-      mauvais {agentTypeField:string} : "{badType:string}". Attendu l\'un des
-      {validTypes:string}
+      {agentTypeField:string} non valide: "{badType:string}". L\'un des
+      {validTypes:string} est attendu
     `,
     'uk-ua': `
       поганий {agentTypeField:string}: "{badType:string}". Очікується один із
@@ -105,7 +105,7 @@ export const backEndText = createDictionary({
       {maxLength:number|formatted} para el campo
     `,
     'fr-fr': `
-      valeur de {pickListTable:string} {pickList:string} plus longue que le
+      valeur de {pickListTable:string} {pickList:string} est plus longue que le
       maximum de {maxLength:number|formatted} pour le champ
     `,
     'uk-ua': `
@@ -137,7 +137,8 @@ export const backEndText = createDictionary({
       dígitos: {value:string}
     `,
     'fr-fr': `
-      la valeur de date doit contenir l'année à quatre chiffres : {value:string}
+      la valeur de la date doit contenir quatre chiffres pour l'année
+      {value:string}
     `,
     'uk-ua': 'дата має містити чотири цифри року: {value:string}',
   },
