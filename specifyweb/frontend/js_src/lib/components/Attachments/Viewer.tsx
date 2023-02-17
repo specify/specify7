@@ -2,7 +2,11 @@ import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
+import { commonText } from '../../localization/common';
+import { notificationsText } from '../../localization/notifications';
 import { f } from '../../utils/functools';
+import { Button } from '../Atoms/Button';
+import { Link } from '../Atoms/Link';
 import { serializeResource } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -18,9 +22,11 @@ import { getAttachmentTable } from './Cell';
 export function AttachmentViewer({
   attachment,
   relatedResource,
+  showMeta = true,
 }: {
   readonly attachment: SpecifyResource<Attachment>;
   readonly relatedResource: SpecifyResource<AnySchema> | undefined;
+  readonly showMeta?: boolean;
 }): JSX.Element {
   const serialized = React.useMemo(
     () => serializeResource(attachment),
@@ -47,19 +53,15 @@ export function AttachmentViewer({
   const type = mimeType?.split('/')[0];
 
   const [thumbnail] = useAsyncState(
-    React.useCallback(async () => fetchThumbnail(attachment), [attachment]),
+    React.useCallback(async () => fetchThumbnail(serialized), [serialized]),
     false
   );
 
   const [autoPlay] = usePref('attachments', 'behavior', 'autoPlay');
+  const Component = typeof originalUrl === 'string' ? Link.Blue : Button.Blue;
   return (
     <div className="flex h-full gap-8">
-      {/* FIXME: open in new tab and download links */}
       {/* FIXME: test sizing in formTable */}
-      {/* FIXME: add a button to toggle meta visibility */}
-      {/* FIXME: consider replacing all h-full with flex-1 flex */}
-      {/* FIXME: consider rewerting adding special case in <SpecifyForm /> */}
-      {/* FIXME: make sure unknown file formats are not being auto downloaded */}
       <div className="flex min-h-[30vw] w-full min-w-[30vh] flex-1 items-center">
         {originalUrl === undefined ? (
           loadingGif
@@ -102,29 +104,56 @@ export function AttachmentViewer({
           </object>
         )}
       </div>
-      <div>
-        {
-          <ResourceView
-            dialog={false}
-            isDependent={false}
-            isSubForm
-            mode="edit"
-            resource={showCustomForm ? relatedResource : attachment}
-            /*
-             * Have to override the title because formatted resource string
-             * often includes a URL and other stuff (because it is used in
-             * exports)
-             */
-            title={title}
-            viewName={showCustomForm ? viewName : originalAttachmentsView}
-            onAdd={undefined}
-            // eslint-disable-next-line react/jsx-handler-names
-            onClose={f.never}
-            onDeleted={undefined}
-            onSaved={undefined}
-          />
-        }
-      </div>
+      {
+        /*
+         * Note, when new attachment is being created, the showMeta menu must
+         * be displayed as otherwise, default values defined in form definition
+         * won't be applied
+         */
+        showMeta || attachment.isNew() ? (
+          <div className="flex flex-col">
+            {
+              <ResourceView
+                dialog={false}
+                isDependent={false}
+                isSubForm
+                mode="edit"
+                resource={showCustomForm ? relatedResource : attachment}
+                /*
+                 * Have to override the title because formatted resource string
+                 * often includes a URL and other stuff (because it is used in
+                 * exports)
+                 */
+                title={title}
+                viewName={showCustomForm ? viewName : originalAttachmentsView}
+                onAdd={undefined}
+                // eslint-disable-next-line react/jsx-handler-names
+                onClose={f.never}
+                onDeleted={undefined}
+                onSaved={undefined}
+              />
+            }
+            <span className="flex-1" />
+            <div className="flex flex-wrap gap-2">
+              <Component
+                className="flex-1 whitespace-nowrap"
+                download
+                href={originalUrl!}
+                onClick={undefined}
+              >
+                {notificationsText.download()}
+              </Component>
+              <Component
+                className="flex-1 whitespace-nowrap"
+                href={originalUrl!}
+                onClick={undefined}
+              >
+                {commonText.openInNewTab()}
+              </Component>
+            </div>
+          </div>
+        ) : undefined
+      }
     </div>
   );
 }

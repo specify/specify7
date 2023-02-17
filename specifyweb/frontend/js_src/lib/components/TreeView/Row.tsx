@@ -62,7 +62,6 @@ export function TreeRow({
     undefined
   );
 
-  // FIXME: refactor to get rid of this
   React.useEffect(() => {
     if (Array.isArray(focusPath) && focusPath.length === 0) setFocusedRow(row);
   }, [setFocusedRow, focusPath, row]);

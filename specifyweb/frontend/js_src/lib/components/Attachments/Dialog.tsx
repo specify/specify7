@@ -1,6 +1,8 @@
 import React from 'react';
 
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { useIsModified } from '../../hooks/useIsModified';
+import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import { Button } from '../Atoms/Button';
 import { Form } from '../Atoms/Form';
@@ -37,6 +39,7 @@ export function AttachmentDialog({
 
   const isModified = useIsModified(resource);
 
+  const [showMeta, _, __, toggleShowMeta] = useBooleanState(true);
   return (
     <Dialog
       buttons={
@@ -67,9 +70,17 @@ export function AttachmentDialog({
         attachment.origFilename ??
         schema.models.Attachment.label
       }
+      headerButtons={
+        <>
+          <span className="-ml-4 flex-1" />
+          <Button.Blue aria-pressed={showMeta} onClick={toggleShowMeta}>
+            {attachmentsText.showMetaData()}
+          </Button.Blue>
+        </>
+      }
       onClose={handleClose}
     >
-      <div className="flex gap-4">
+      <div className="flex h-full gap-4">
         {/* FEATURE: keyboard navigation support */}
         <Button.Icon
           className="p-4"
@@ -78,7 +89,11 @@ export function AttachmentDialog({
           onClick={handlePrevious}
         />
         <Form className="flex-1" forwardRef={setForm}>
-          <AttachmentViewer attachment={resource} relatedResource={related} />
+          <AttachmentViewer
+            attachment={resource}
+            relatedResource={related}
+            showMeta={showMeta}
+          />
         </Form>
         <Button.Icon
           className="p-4"
