@@ -1,5 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import { LocalizedString } from 'typesafe-i18n';
 
 import { useSearchParameter } from '../../hooks/navigation';
 import { useAsyncState, usePromise } from '../../hooks/useAsyncState';
@@ -206,6 +207,7 @@ function TreeView<SCHEMA extends AnyTree>({
               setRows(undefined);
               globalThis.setTimeout(() => setRows(rows), 0);
             }}
+            setFocusPath={setFocusPath}
           />
         </ErrorBoundary>
       </header>
@@ -269,9 +271,11 @@ function TreeView<SCHEMA extends AnyTree>({
                       )
                     }
                   >
-                    {collapsedRanks?.includes(rank.rankId) ?? false
-                      ? rankName[0]
-                      : rankName}
+                    {
+                      (collapsedRanks?.includes(rank.rankId) ?? false
+                        ? rankName[0]
+                        : rankName) as LocalizedString
+                    }
                   </Button.LikeLink>
                   {isEditingRanks &&
                   collapsedRanks?.includes(rank.rankId) !== true ? (
