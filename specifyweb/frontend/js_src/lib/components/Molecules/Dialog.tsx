@@ -4,7 +4,8 @@
  * @module
  */
 import React from 'react';
-import Draggable, { DraggableData } from 'react-draggable';
+import type { DraggableData } from 'react-draggable';
+import Draggable from 'react-draggable';
 import type { Props } from 'react-modal';
 import Modal from 'react-modal';
 import type { LocalizedString } from 'typesafe-i18n';
@@ -237,6 +238,9 @@ export function Dialog({
     typeof rawDimensionsKey === 'string'
       ? rawDimensionsKey.split(':')[0].split('(')[0]
       : undefined;
+  if (process.env.NODE_ENV !== 'production')
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    useTitleChangeNotice(dimensionsKey);
   const initialSize = useDialogSize(
     container,
     isOpen,
@@ -282,18 +286,18 @@ export function Dialog({
     (props: React.ComponentPropsWithRef<'div'>, children: React.ReactNode) => (
       <Draggable
         // Don't allow moving the dialog past the window bounds
-        bounds="parent"
-        // Allow moving the dialog when hovering over the header line
-        cancel={`#${id('full-screen')}`}
-        // Don't allow moving when in full-screen
-        defaultClassName=""
-        defaultPosition={initialPosition}
-        // Don't need any extra classNames
-        defaultClassNameDragged=""
-        defaultClassNameDragging=""
         handle={`#${id('handle')}`}
         nodeRef={containerRef}
         onStop={handleDragged}
+        bounds="parent"
+        // Allow moving the dialog when hovering over the header line
+        cancel={`#${id('full-screen')}`}
+        defaultClassName=""
+        // Don't allow moving when in full-screen
+        defaultClassNameDragging=""
+        defaultPosition={initialPosition}
+        // Don't need any extra classNames
+        defaultClassNameDragged=""
       >
         <div {...props}>{children}</div>
       </Draggable>
@@ -545,4 +549,16 @@ function useDialogSize(
   }, [isOpen, container, handleResize, sizeKey]);
 
   return initialSize;
+}
+
+function useTitleChangeNotice(dimensionKey: string | undefined): void {
+  const changeCount = React.useRef(0);
+  React.useEffect(() => {
+    if (dimensionKey === undefined) return;
+    changeCount.current += 1;
+    if (changeCount.current > 3)
+      console.warn(
+        'Dialog title changes too much. Please add a dimensionsKey="..." prop to the dialog'
+      );
+  }, [dimensionKey]);
 }
