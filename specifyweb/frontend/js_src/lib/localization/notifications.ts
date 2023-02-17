@@ -67,7 +67,7 @@ export const notificationsText = createDictionary({
     'en-us': 'Export feed update failed.',
     'ru-ru': 'Не удалось обновить экспортный канал.',
     'es-es': 'Error al exportar actualizaciones de canales.',
-    'fr-fr': "Échec de la mise à jour du flux d'exportation.",
+    'fr-fr': "la mise à jour du flux d'export a échoué",
     'uk-ua': 'Не вдалося експортувати оновлення каналу.',
   },
   dwcaExportCompleted: {

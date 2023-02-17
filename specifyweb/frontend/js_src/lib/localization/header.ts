@@ -65,8 +65,7 @@ export const headerText = createDictionary({
     'ru-ru': 'Обновить все элементы RSS-канала экспорта сейчас?',
     'es-es':
       '¿Actualizar todos los elementos de la fuente de exportación RSS ahora?',
-    'fr-fr':
-      "Mettre à jour tous les éléments du flux d'exportation RSS maintenant ?",
+    'fr-fr': "Mettre à jour tous les éléments du flux d'export RSS maintenant?",
     'uk-ua': 'Оновити всі елементи RSS-експорту?',
   },
   feedExportStarted: {
