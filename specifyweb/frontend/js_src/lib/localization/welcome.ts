@@ -51,8 +51,7 @@ export const welcomeText = createDictionary({
       {collectionObjectTable:string} registros
     `,
     'fr-fr': `
-      Affichage des taxons avec {count:number|formatted} ou plusieurs
-      enregistrements {collectionObjectTable:string}
+      Montrant les taxons avec {count:number|formatted} ou plus enregistrements
     `,
     'uk-ua': `
       Показано таксони з {count:number|formatted} або більше
@@ -94,15 +93,15 @@ export const welcomeText = createDictionary({
       Lawrence, KS 66045 Estados Unidos
     `,
     'fr-fr': `
-      Spécifiez le consortium de collections <br />
+      Specify Collections Consortium <br />
 
-      Institut de la biodiversité <br />
+      Biodiversity Institute <br />
 
-      Université du Kansas <br />
+      University of Kansas <br />
 
-      1345, boul. Jayhawk <br />
+      1345 Jayhawk Blvd. <br />
 
-      Lawrence, KS 66045 États-Unis
+      Lawrence, KS 66045 USA
     `,
     'uk-ua': `
       Укажіть консорціум колекцій <br />
@@ -151,15 +150,14 @@ export const welcomeText = createDictionary({
       Ciencias de EE. UU.
     `,
     'fr-fr': `
-      Le logiciel Spécifier est un produit du Consortium Spécifier les
-      collections qui est régi et financé par ses institutions membres. Les
-      membres fondateurs du consortium comprennent : l'Organisation de recherche
-      scientifique et industrielle du Commonwealth (CSIRO), le Consortium des
-      musées du Danemark, l'Université de Floride, l'Université du Kansas et
-      l'Université du Michigan. Le Consortium opère sous le statut fiscal
-      américain 501(c)3 à but non lucratif du Centre de recherche de
-      l'Université du Kansas. Spécifier a été soutenu de 1996 à 2018 par des
-      subventions de la U.S. National Science Foundation.
+      Le logiciel Specify est un produit du Specify Collections qui est régi et
+      financé par ses institutions membres. Les membres fondateurs du consortium
+      comprennent : Commonwealth Scientific and Industrial Research
+      Organisation (CSIRO), Denmark Consortium of Museums, University of
+      Florida, University of Kansas, and University of Michigan. Le consortium
+      fonctionne sous le statut fiscal américain 501(c)3 à but non lucratif du
+      University of Kansas Center for Research. Specify a été soutenu de 1996 à
+      2018 par des subventions de la U.S. National Science Foundation.
     `,
     'uk-ua': `
       Програмне забезпечення Specify є продуктом консорціуму Specify Collections
@@ -191,9 +189,9 @@ export const welcomeText = createDictionary({
       License v2.
     `,
     'fr-fr': `
-      Spécifiez 7, Copyright 2023, Centre de recherche de l'Université du
-      Kansas. Spécifier est livré avec ABSOLUMENT AUCUNE GARANTIE. Il s'agit
-      d'un logiciel open source gratuit sous licence GNU General Public License
+      Specify 7, Copyright 2023, University of Kansas Center for Research.
+      Specify est livré avec ABSOLUMENT AUCUNE GARANTIE. Il s'agit d'un logiciel
+      gratuit, à code source ouvert, sous licence GNU General Public License
       v2.
     `,
     'uk-ua': `

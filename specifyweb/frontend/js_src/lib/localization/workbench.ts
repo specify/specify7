@@ -55,7 +55,7 @@ export const wbText = createDictionary({
     'en-us': 'Uploading',
     'ru-ru': 'Загрузка',
     'es-es': 'Cargando',
-    'fr-fr': 'Téléchargement',
+    'fr-fr': 'Téléversant',
     'uk-ua': 'Завантаження',
   },
   validating: {
