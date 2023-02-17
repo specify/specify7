@@ -9,7 +9,6 @@ import { crash } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { loadingBar } from '../Molecules';
 import { Dialog, dialogClassNames, LoadingScreen } from '../Molecules/Dialog';
-import { TooltipManager } from '../Molecules/Tooltips';
 import {
   SetUnloadProtectsContext,
   UnloadProtectsContext,
@@ -128,7 +127,6 @@ export function Contexts({
                 <React.Suspense fallback={<LoadingScreen />}>
                   {children}
                 </React.Suspense>
-                <TooltipManager />
               </LoadingContext.Provider>
             </ErrorContext.Provider>
           </ErrorBoundary>

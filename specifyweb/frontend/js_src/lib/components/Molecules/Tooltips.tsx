@@ -16,6 +16,7 @@ import { whitespaceSensitive } from '../../localization/utils';
 import { listen } from '../../utils/events';
 import { oneRem } from '../Atoms';
 import { usePref } from '../UserPreferences/usePref';
+import { useLocation } from 'react-router-dom';
 
 /**
  * Add this attribute to element to remove delay before title becomes visible
@@ -85,6 +86,13 @@ export function TooltipManager(): JSX.Element {
       } as const
     )[placement.split('-')[0]] ?? 'bottom';
   const { x: arrowX, y: arrowY } = middlewareData.arrow ?? {};
+
+  /*
+   * Hide tooltip on URL change.
+   * Fixes https://github.com/specify/specify7/pull/3002#issuecomment-1433047175
+   */
+  const { pathname } = useLocation();
+  React.useEffect(() => setIsOpen(false), [pathname]);
 
   return (
     <FloatingPortal id="portal-root">

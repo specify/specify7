@@ -19,6 +19,7 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { Router } from '../Router/Router';
 import { OnlineStatus } from './OnlineStatus';
 import { VersionMismatch } from './VersionMismatch';
+import { TooltipManager } from '../Molecules/Tooltips';
 
 export type MenuItem = {
   readonly title: LocalizedString;
@@ -78,6 +79,11 @@ export function Main({
 
         <VersionMismatch />
         <OnlineStatus />
+        {/*
+         * Can't put this into Contexts.tsx as it uses useLocation() so needs
+         * to be inside the router
+         */}
+        <TooltipManager />
       </SetMenuContext.Provider>
     </MenuContext.Provider>
   );
