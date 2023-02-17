@@ -100,7 +100,7 @@ export function TooltipManager(): JSX.Element {
         <span
           className={`
             top-0 left-0 z-[10000] block w-max whitespace-pre-line rounded bg-gray-100
-            text-gray-900 dark:bg-black dark:text-gray-200
+            text-gray-900 duration-0 dark:bg-black dark:text-gray-200
           `}
           id={id}
           ref={tooltipRef}
