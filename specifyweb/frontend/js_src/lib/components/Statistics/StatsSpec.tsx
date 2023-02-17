@@ -460,7 +460,7 @@ export const statsSpec: StatsSpec = {
             },
           },
           collectionObjectInventorized: {
-            label: statsText.collectionObjects(),
+            label: statsText.collectionObjectsInventorized(),
             spec: {
               type: 'QueryBuilderStat',
               querySpec: {

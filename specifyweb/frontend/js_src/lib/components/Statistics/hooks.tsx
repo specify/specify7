@@ -3,18 +3,16 @@ import React from 'react';
 import { useMultipleAsyncState } from '../../hooks/useAsyncState';
 import { statsText } from '../../localization/stats';
 import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/definitions';
 import { throttledPromise } from '../../utils/ajax/throttledPromise';
 import type { IR, RA, WritableArray } from '../../utils/types';
 import { keysToLowerCase } from '../../utils/utils';
 import { formatNumber } from '../Atoms/Internationalization';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import { deserializeResource, serializeResource } from '../DataModel/helpers';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { SpQuery } from '../DataModel/types';
 import { makeQueryField } from '../QueryBuilder/fromTree';
-import { statsSpec } from './StatsSpec';
 import type {
   BackEndStat,
   BackendStatsResult,
@@ -25,6 +23,8 @@ import type {
   StatCategoryReturn,
   StatLayout,
 } from './types';
+import { Http } from '../../utils/ajax/definitions';
+import { statsSpec } from './StatsSpec';
 
 /**
  * Fetch backend statistics from the API
@@ -102,7 +102,7 @@ export function useDefaultStatsToAdd(
                 itemName === defaultItem.itemName &&
                 pathToValue === defaultItem.pathToValue
             );
-          statNotFound ||= defaultStatNotFound;
+          if (!statNotFound) statNotFound = defaultStatNotFound;
           return {
             ...defaultItem,
             isVisible: defaultStatNotFound ? undefined : false,
@@ -124,7 +124,7 @@ export const statSpecToItems = (
     pageName,
     itemName,
     categoryName,
-    label,
+    label: label,
     itemValue: undefined,
     itemType: spec.type === 'BackEndStat' ? 'BackEndStat' : 'QueryStat',
     pathToValue: spec.type === 'BackEndStat' ? spec.pathToValue : undefined,
@@ -137,10 +137,12 @@ export function useDefaultLayout(): StatLayout {
         ([sourceKey, { sourceLabel, categories }]) => ({
           label: sourceLabel,
           categories: Object.entries(categories).map(
-            ([categoryName, { label, items }]) => ({
-              label,
-              items: statSpecToItems(categoryName, sourceKey, items),
-            })
+            ([categoryName, { label, items }]) => {
+              return {
+                label,
+                items: statSpecToItems(categoryName, sourceKey, items),
+              };
+            }
           ),
           lastUpdated: undefined,
         })
@@ -309,9 +311,9 @@ export function statsToTsv(
 }
 
 export function useStatValueLoad<
-  PROMISE_TYPE extends number | string | undefined
+  PROMISE_TYPE extends string | number | undefined
 >(
-  value: number | string | undefined,
+  value: string | number | undefined,
   promiseGenerator: () => Promise<PROMISE_TYPE>,
   onLoad: ((value: number | string) => void) | undefined
 ) {
@@ -331,12 +333,12 @@ export function useStatValueLoad<
 
 function applyBackendResponse(
   backEndResponse: BackendStatsResult | undefined,
-  items: RA<CustomStat | DefaultStat>,
+  items: RA<DefaultStat | CustomStat>,
   pageName: string,
   categoryName: string,
   urlPrefix: string,
   formatter: (rawResult: any) => string | undefined
-): RA<CustomStat | DefaultStat> {
+): RA<DefaultStat | CustomStat> {
   const phantomItem = items.find(
     (item) =>
       item.type === 'DefaultStat' &&

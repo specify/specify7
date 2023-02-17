@@ -156,6 +156,9 @@ export const statsText = createDictionary({
     'en-us': 'Collection Objects Determined',
     'ru-ru': 'Объекты коллекции определены',
   },
+  collectionObjectsInventorized: {
+    'en-us': 'Collection Objects Inventorized',
+  },
   lastUpdated: {
     'en-us': 'Last Updated',
     'ru-ru': 'Последнее обновление',
@@ -202,6 +205,9 @@ export const statsText = createDictionary({
   },
   categoryContainsCustom: {
     'en-us': 'Category Contains Custom Statistics',
+  },
+  editPage: {
+    'en-us': 'Edit Page',
   },
 });
 /* eslint-enable @typescript-eslint/naming-convention */
