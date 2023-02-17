@@ -555,31 +555,25 @@ export function StatsPage(): JSX.Element | null {
               onClose={(): void => setState({ type: 'EditingState' })}
               onRemove={
                 state.pageIndex === undefined ||
-                (state.isCollection && collectionLayout.length === 1)
+                sourceLayout === undefined ||
+                sourceLayout.length === 1
                   ? undefined
                   : () => {
                       if (state.pageIndex === undefined) return undefined;
-                      if (sourceLayout !== undefined) {
-                        setLayout((oldLayout) =>
-                          oldLayout === undefined
-                            ? undefined
-                            : removeItem(oldLayout, state.pageIndex!)
-                        );
-                        setState({
-                          type: 'EditingState',
-                        });
-                        setActivePage({
-                          ...(!state.isCollection && sourceLayout.length === 1
-                            ? {
-                                pageIndex: 0,
-                                isCollection: true,
-                              }
-                            : {
-                                pageIndex: sourceLayout.length - 2,
-                                isCollection: state.isCollection,
-                              }),
-                        });
-                      }
+
+                      setLayout((oldLayout) =>
+                        oldLayout === undefined
+                          ? undefined
+                          : removeItem(oldLayout, state.pageIndex!)
+                      );
+                      setState({
+                        type: 'EditingState',
+                      });
+                      setActivePage({
+                        pageIndex: sourceLayout.length - 2,
+                        isCollection: state.isCollection,
+                      });
+
                       return undefined;
                     }
               }
