@@ -31,6 +31,7 @@ export function autoGenerateViewDefinition<SCHEMA extends AnySchema>(
       mode,
       fieldsToShow
     ),
+    name: '',
     formType,
     mode,
     model,
@@ -262,7 +263,7 @@ function getFieldDefinition(
             max: parser.max,
             step: parser.step,
             minLength: parser.minLength,
-            maxLength: parser.maxLength
+            maxLength: parser.maxLength,
           }),
     },
   };

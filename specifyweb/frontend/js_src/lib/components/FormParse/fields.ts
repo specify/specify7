@@ -74,7 +74,6 @@ export type FieldTypes = {
       readonly pluginDefinition: PluginDefinition;
     }
   >;
-  readonly FilePicker: State<'FilePicker'>;
   readonly Blank: State<'Blank'>;
 };
 
@@ -197,7 +196,7 @@ const processFieldType: {
       max: f.parseInt(getProperty('max')),
       step: f.parseFloat(getProperty('step')),
       minLength: f.parseInt(getProperty('minLength')),
-      maxLength: f.parseInt(getProperty('maxLength'))
+      maxLength: f.parseInt(getProperty('maxLength')),
     };
   },
   QueryComboBox({ getProperty, fields }) {
@@ -225,7 +224,6 @@ const processFieldType: {
       fields,
     }),
   }),
-  FilePicker: () => ({ type: 'FilePicker' }),
   Blank: () => ({ type: 'Blank' }),
 };
 
@@ -241,7 +239,7 @@ const fieldTypesTranslations: IR<keyof FieldTypes> = {
   formattedtext: 'Text',
   label: 'Text',
   plugin: 'Plugin',
-  browse: 'FilePicker',
+  browse: 'Text',
 };
 
 export type FormFieldDefinition = FieldTypes[keyof FieldTypes] & {

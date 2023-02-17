@@ -61,7 +61,6 @@ export function AttachmentViewer({
   const Component = typeof originalUrl === 'string' ? Link.Blue : Button.Blue;
   return (
     <div className="flex h-full gap-8">
-      {/* FIXME: test sizing in formTable */}
       <div className="flex min-h-[30vw] w-full min-w-[30vh] flex-1 items-center">
         {originalUrl === undefined ? (
           loadingGif
@@ -138,6 +137,7 @@ export function AttachmentViewer({
               <Component
                 className="flex-1 whitespace-nowrap"
                 download
+                target="_blank"
                 href={originalUrl!}
                 onClick={undefined}
               >
@@ -145,6 +145,7 @@ export function AttachmentViewer({
               </Component>
               <Component
                 className="flex-1 whitespace-nowrap"
+                target="_blank"
                 href={originalUrl!}
                 onClick={undefined}
               >
