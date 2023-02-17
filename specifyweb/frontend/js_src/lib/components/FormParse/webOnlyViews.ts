@@ -17,6 +17,10 @@ import type { ParsedFormDefinition } from './index';
  */
 export const webOnlyViews = f.store(() =>
   ensure<IR<ParsedFormDefinition>>()({
+    /*
+     * This is a special view that would be replaced by the <AttachmentPlugin />
+     */
+    [attachmentView]: { columns: [], rows: [] },
     SpecifyUser: autoGenerateViewDefinition(
       schema.models.SpecifyUser,
       'form',

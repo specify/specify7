@@ -143,7 +143,7 @@ export const fetchOriginalUrl = async (
 
 export async function uploadFile(
   file: File,
-  handleProgress: (percentage: number | undefined) => void
+  handleProgress: (percentage: number | true) => void
 ): Promise<SpecifyResource<Attachment> | undefined> {
   if (settings === undefined) return undefined;
   const { data } = await ajax<
@@ -178,9 +178,7 @@ export async function uploadFile(
    */
   const xhr = new XMLHttpRequest();
   xhr.upload?.addEventListener('progress', (event) =>
-    handleProgress(
-      event.lengthComputable ? event.loaded / event.total : undefined
-    )
+    handleProgress(event.lengthComputable ? event.loaded / event.total : true)
   );
   xhr.open('POST', settings.write);
   xhr.send(formData);

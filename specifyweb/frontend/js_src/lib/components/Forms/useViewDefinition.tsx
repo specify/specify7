@@ -95,7 +95,12 @@ const fetchViewDefinition = async (
           softFail(
             new Error('View definition model does not match resource model')
           );
-        return viewDefinition;
+        return viewName === originalAttachmentsView
+          ? {
+              ...viewDefinition,
+              name: originalAttachmentsView,
+            }
+          : viewDefinition;
       } else
         return f.maybe(
           webOnlyViews()[viewName as keyof typeof webOnlyViews],

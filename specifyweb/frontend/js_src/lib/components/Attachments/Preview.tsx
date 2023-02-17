@@ -45,29 +45,14 @@ export function AttachmentPreview({
             handleOpened();
           }}
         >
-          <img
-            alt={
-              typeof attachment.title === 'string' &&
-              attachment.title.length > 0
-                ? attachment.title
-                : thumbnail.alt
-            }
-            className={`
-              max-h-full max-w-full border-8 border-white object-contain
-              dark:border-black
-            `}
-            src={thumbnail.src}
-            style={{
-              width: `${thumbnail.width}px`,
-              height: `${thumbnail.height}px`,
-            }}
-          />
+          <AttachmentThumbnail attachment={attachment} thumbnail={thumbnail} />
         </button>
       </div>
       {isOpen ? (
         <AttachmentDialog
           attachment={attachment}
           related={related}
+          thumbnail={thumbnail}
           onChange={handleChange}
           onClose={handleClose}
         />
@@ -76,13 +61,42 @@ export function AttachmentPreview({
   );
 }
 
+function AttachmentThumbnail({
+  attachment,
+  thumbnail,
+}: {
+  readonly attachment: SerializedResource<Attachment>;
+  readonly thumbnail: AttachmentThumbnail;
+}): JSX.Element {
+  return (
+    <img
+      alt={
+        typeof attachment.title === 'string' && attachment.title.length > 0
+          ? attachment.title
+          : thumbnail.alt
+      }
+      className={`
+              max-h-full max-w-full border-8 border-white object-contain
+              dark:border-black
+            `}
+      src={thumbnail.src}
+      style={{
+        width: `${thumbnail.width}px`,
+        height: `${thumbnail.height}px`,
+      }}
+    />
+  );
+}
+
 function AttachmentDialog({
   attachment,
+  thumbnail,
   related,
   onClose: handleClose,
   onChange: handleChange,
 }: {
   readonly attachment: SerializedResource<Attachment>;
+  readonly thumbnail: AttachmentThumbnail;
   readonly related: SpecifyResource<AnySchema> | undefined;
   readonly onClose: () => void;
   readonly onChange: (attachment: SerializedResource<Attachment>) => void;
@@ -129,7 +143,11 @@ function AttachmentDialog({
       onClose={handleClose}
     >
       <Form forwardRef={setForm}>
-        <AttachmentViewer attachment={resource} relatedResource={related} />
+        <AttachmentViewer
+          attachment={resource}
+          relatedResource={related}
+          thumbnail={thumbnail}
+        />
       </Form>
     </Dialog>
   );

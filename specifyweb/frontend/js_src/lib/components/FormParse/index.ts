@@ -267,6 +267,9 @@ function parseFormTableDefinition(
   const row = rows
     .flat()
     // FormTable consists of Fields and SubViews only
+    /*
+     * FEATURE: extract fields from panels too
+     */
     .filter(({ type }) => type === 'Field' || type === 'SubView')
     .map<FormCellDefinition>((cell) => ({
       ...cell,

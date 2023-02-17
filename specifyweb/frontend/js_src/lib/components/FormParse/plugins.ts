@@ -63,7 +63,6 @@ export type UiPlugins = {
       readonly icon: string;
     }
   >;
-  readonly AttachmentPlugin: State<'AttachmentPlugin'>;
   readonly HostTaxonPlugin: State<
     'HostTaxonPlugin',
     {
@@ -201,10 +200,6 @@ const processUiPlugin: {
     icon: getProperty('icon') ?? 'WebLink',
     ignoreFieldName: false,
   }),
-  AttachmentPlugin: () =>
-    hasTablePermission('Attachment', 'read')
-      ? { type: 'AttachmentPlugin', ignoreFieldName: true }
-      : { type: 'Blank' },
   HostTaxonPlugin: ({ getProperty, model }) =>
     hasTablePermission('CollectionRelType', 'read')
       ? model.name === 'CollectingEventAttribute'

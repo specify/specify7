@@ -1109,6 +1109,23 @@ export const preferenceDefinitions = {
       },
     },
   },
+  attachments: {
+    title: attachmentsText.attachments(),
+    subCategories: {
+      behavior: {
+        title: preferencesText.behavior(),
+        items: {
+          autoPlay: defineItem<boolean>({
+            title: preferencesText.autoPlayMedia(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+        },
+      },
+    },
+  },
   treeEditor: {
     title: preferencesText.treeEditor(),
     subCategories: {

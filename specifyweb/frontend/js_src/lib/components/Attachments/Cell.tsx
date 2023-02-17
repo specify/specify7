@@ -20,7 +20,7 @@ import { softFail } from '../Errors/Crash';
 import { Dialog } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasTablePermission } from '../Permissions/helpers';
-import { fetchThumbnail } from './attachments';
+import { AttachmentThumbnail, fetchThumbnail } from './attachments';
 import { tablesWithAttachments } from './index';
 import { AttachmentPreview } from './Preview';
 
@@ -37,15 +37,11 @@ export function AttachmentCell({
 }): JSX.Element {
   const model = f.maybe(attachment.tableID ?? undefined, getAttachmentTable);
 
-  const [thumbnail] = useAsyncState(
-    React.useCallback(async () => fetchThumbnail(attachment), [attachment]),
-    false
-  );
-
   const [related, setRelated] = React.useState<
     SpecifyResource<AnySchema> | undefined
   >(undefined);
 
+  const thumbnail = useAttachmentThumbnail(attachment);
   return (
     <div className="relative">
       {typeof handleViewRecord === 'function' &&
@@ -79,6 +75,15 @@ export function AttachmentCell({
       )}
     </div>
   );
+}
+
+function useAttachmentThumbnail(
+  attachment: SerializedResource<Attachment>
+): AttachmentThumbnail | undefined {
+  return useAsyncState(
+    React.useCallback(async () => fetchThumbnail(attachment), [attachment]),
+    false
+  )[0];
 }
 
 export function getAttachmentTable(tableId: number): SpecifyModel | undefined {
@@ -116,7 +121,11 @@ function RecordLink({
                   return related;
                 })
             )
-              .then((related) => f.maybe(related, getBaseResourceId))
+              .then((related) =>
+                typeof related === 'object'
+                  ? getBaseResourceId(model, related)
+                  : undefined
+              )
               .then((id) =>
                 typeof id === 'number'
                   ? handleViewRecord(model, id)

@@ -1396,4 +1396,11 @@ export const preferencesText = createDictionary({
     'fr-fr': 'Se souvenir des positions des fenêtres de dialogue',
     'uk-ua': 'Запам’ятовувати позиції діалогових вікон',
   },
+  autoPlayMedia: {
+    'en-us': 'Automatically play media',
+    'ru-ru': 'Автоматически воспроизводить медиа',
+    'es-es': 'Reproducir automáticamente medios',
+    'fr-fr': 'Lecture automatique des médias',
+    'uk-ua': 'Автоматично відтворювати медіа',
+  },
 } as const);
