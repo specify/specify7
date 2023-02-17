@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-02-16 21:38+0000\n"
+"PO-Revision-Date: 2023-02-17 06:38+0000\n"
 "Last-Translator: Heather <heather.cole@canada.ca>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/header/"
 "fr/>\n"
@@ -32,29 +32,25 @@ msgstr "Actuelle {collectionTable:string}"
 #: components/Header/Forms.tsx:63
 #: components/Header/menuItemDefinitions.ts:40
 #: components/Router/OverlayRoutes.tsx:60
-#, fuzzy
 msgid "dataEntry"
-msgstr "La saisie des données"
+msgstr "Saisie des données"
 
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 #: components/Header/userToolDefinitions.ts:91
 #: components/Router/OverlayRoutes.tsx:164
-#, fuzzy
 msgid "makeDwca"
 msgstr "Créer une archive DwC"
 
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 #: components/Header/userToolDefinitions.ts:97
 #: components/Router/OverlayRoutes.tsx:172
-#, fuzzy
 msgid "updateExportFeed"
 msgstr "Mettre à jour le flux RSS"
 
 #. Used in: Components > Toolbar > Force Update
 #: components/Toolbar/ForceUpdate.tsx:49
-#, fuzzy
 msgid "updateExportFeedConfirmation"
-msgstr "Mettre à jour le flux d'exportation ?"
+msgstr "Mettre à jour le flux d'exportation?"
 
 #. Used in: Components > Toolbar > Force Update
 #: components/Toolbar/ForceUpdate.tsx:52
