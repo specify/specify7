@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-02-17 00:50+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2023-02-17 07:36+0000\n"
+"Last-Translator: Heather <heather.cole@canada.ca>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/forms/"
 "fr/>\n"
 "Language: fr\n"
@@ -109,9 +109,8 @@ msgstr "Créer un nouvel enregistrement vierge"
 
 #. Used in: Components > Data Model > Business Rules
 #: components/DataModel/businessRules.js:197
-#, fuzzy
 msgid "valueMustBeUniqueToDatabase"
-msgstr "La valeur doit être unique à la base de données"
+msgstr "Valeur doit être unique à la base de données"
 
 #. Used in: Components > Pick Lists > Index
 #: components/PickLists/index.tsx:273
@@ -161,7 +160,6 @@ msgstr ""
 
 #. Used in: Components > Forms > Save
 #: components/Forms/Save.tsx:230
-#, fuzzy
 msgid "cloneDescription"
 msgstr "Créer une copie complète de l'enregistrement actuel"
 
@@ -198,9 +196,8 @@ msgstr "Inverser"
 
 #. Used in: Components > Data Model > Business Rules
 #: components/DataModel/businessRules.js:196
-#, fuzzy
 msgid "valueMustBeUniqueToField"
-msgstr "La valeur doit être unique pour {fieldName:string}"
+msgstr "Valeur doit être unique pour {fieldName:string}"
 
 #. Used in: Components > Forms > Delete Blocked ⬤ Components > Forms > Delete Button
 #: components/Forms/DeleteBlocked.tsx:84
@@ -683,14 +680,12 @@ msgstr "Dupliquer {recordSetItemTable:string}"
 
 #. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:564
-#, fuzzy
 msgid "forms"
 msgstr "Formes"
 
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Save
 #: components/Atoms/DataEntry.tsx:141
 #: components/Forms/Save.tsx:229
-#, fuzzy
 msgid "clone"
 msgstr "Cloner"
 
@@ -746,14 +741,11 @@ msgstr "Reporter"
 
 #. Used in: Components > Data Model > Business Rules
 #: components/DataModel/businessRules.js:191
-#, fuzzy
 msgid "valuesOfMustBeUniqueToDatabase"
-msgstr ""
-"Les valeurs de {values:string} doivent être uniques à la base de données"
+msgstr "Valeurs de {values:string} doivent être uniques à la base de données"
 
 #. Used in: Components > Data Model > Business Rules
 #: components/DataModel/businessRules.js:187
-#, fuzzy
 msgid "valuesOfMustBeUniqueToField"
 msgstr ""
 "Les valeurs de {values:string} doivent être uniques à {fieldName:string}"
@@ -766,6 +758,5 @@ msgstr "Nom du plug-in"
 
 #. Used in: Components > Forms > Delete Button
 #: components/Forms/DeleteButton.tsx:113
-#, fuzzy
 msgid "checkingIfResourceCanBeDeleted"
-msgstr "Vérification si la ressource peut être supprimée…"
+msgstr "Vérifiant si la ressource peut être supprimée…"
