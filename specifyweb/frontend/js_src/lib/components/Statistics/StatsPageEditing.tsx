@@ -6,6 +6,7 @@ import { commonText } from '../../localization/common';
 import { Button } from '../Atoms/Button';
 import { Form, Input, Label } from '../Atoms/Form';
 import { statsText } from '../../localization/stats';
+import { icons } from '../Atoms/Icons';
 
 export function StatsPageEditing({
   label = '',
@@ -40,8 +41,9 @@ export function StatsPageEditing({
           </Submit.Green>
         </>
       }
-      header={statsText.pageName()}
+      header={statsText.editPage()}
       onClose={handleClose}
+      icon={icons.pencil}
     >
       <Form
         id={id('form')}
