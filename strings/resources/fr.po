@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-02-17 02:50+0000\n"
-"Last-Translator: Heather <heather.cole@canada.ca>\n"
+"PO-Revision-Date: 2023-02-17 06:38+0000\n"
+"Last-Translator: Nathan <bonnemainsnathan@gmail.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "resources/fr/>\n"
 "Language: fr\n"
@@ -19,7 +19,7 @@ msgstr ""
 #: components/Security/registry.ts:210
 #: components/UserPreferences/Definitions.tsx:1515
 msgid "appResources"
-msgstr "Ressources d'application"
+msgstr "Ressources de l'application"
 
 #. Used in: Components > Form Meta > Definition ⬤ Components > User Preferences > Definitions
 #: components/FormMeta/Definition.tsx:29
