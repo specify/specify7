@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-02-17 00:50+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2023-02-17 07:36+0000\n"
+"Last-Translator: Heather <heather.cole@canada.ca>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/wbPlan/"
 "fr/>\n"
 "Language: fr\n"
@@ -70,7 +70,6 @@ msgstr ""
 #: components/UserPreferences/Definitions.tsx:1477
 #: components/WorkBench/DevShowPlan.tsx:64
 #: components/WorkBench/Template.tsx:122
-#, fuzzy
 msgid "dataMapper"
 msgstr "Mappeur de données"
 
@@ -78,14 +77,12 @@ msgstr "Mappeur de données"
 #: components/WbPlanView/State.tsx:37
 #: components/WorkBench/wbView.js:273
 #: components/WorkBench/wbView.js:1901
-#, fuzzy
 msgid "noUploadPlan"
 msgstr "Aucun plan de téléchargement n'est défini"
 
 #. Used in: Components > Work Bench > Wb View
 #: components/WorkBench/wbView.js:276
 #: components/WorkBench/wbView.js:1904
-#, fuzzy
 msgid "noUploadPlanDescription"
 msgstr ""
 "Aucun plan de téléchargement n'a été défini pour cet ensemble de données. En "
@@ -153,15 +150,13 @@ msgstr "AutoMappeur"
 
 #. 🟥Show in pick list in Data Mapper when column is not mapped. Used in: Components > Wb Plan View > Custom Select Element
 #: components/WbPlanView/CustomSelectElement.tsx:607
-#, fuzzy
 msgid "notMapped"
 msgstr "NON CARTOGRAPHIÉ"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:227
-#, fuzzy
 msgid "matchBehavior"
-msgstr "Comportement de correspondance :"
+msgstr "Comportement du concordance:"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:240
@@ -422,7 +417,6 @@ msgstr "Mappage de colonne"
 #. Used in: Components > Work Bench > Wb View
 #: components/WorkBench/wbView.js:387
 #: components/WorkBench/wbView.js:388
-#, fuzzy
 msgid "unmappedColumn"
 msgstr "Colonne non mappée"
 
