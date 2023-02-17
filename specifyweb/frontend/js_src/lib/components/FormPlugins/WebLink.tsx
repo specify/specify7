@@ -156,10 +156,10 @@ export function WebLink({
         <Component
           className="ring-1 ring-gray-400 disabled:ring-gray-500 dark:ring-0 disabled:dark:ring-neutral-500"
           href={url!}
-          onClick={undefined}
           rel={isExternal ? 'noopener' : undefined}
           target={isExternal ? '_blank' : undefined}
           title={definition.title}
+          onClick={undefined}
         >
           {image}
         </Component>

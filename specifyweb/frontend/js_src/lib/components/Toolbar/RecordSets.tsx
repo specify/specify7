@@ -177,11 +177,11 @@ export function RecordSetsDialog({
                 {buttons}
               </>
             }
+            dimensionsKey="RecordSets"
             header={commonText.countLine({
               resource: commonText.recordSets(),
               count: data.totalCount,
             })}
-            dimensionsKey="RecordSets"
             icon={<span className="text-blue-500">{icons.collection}</span>}
             onClose={handleClose}
           >

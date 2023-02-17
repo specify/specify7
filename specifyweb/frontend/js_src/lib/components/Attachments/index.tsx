@@ -240,6 +240,7 @@ function Attachments(): JSX.Element {
           typeof collection === 'object' &&
           collection.totalCount === collection.records.length
         }
+        key={`${order}_${JSON.stringify(filter)}`}
         scale={scale}
         onChange={(records): void =>
           collection === undefined
@@ -247,7 +248,6 @@ function Attachments(): JSX.Element {
             : setCollection({ records, totalCount: collection.totalCount })
         }
         onFetchMore={fetchMore}
-        key={`${order}_${JSON.stringify(filter)}`}
       />
     </Container.FullGray>
   );

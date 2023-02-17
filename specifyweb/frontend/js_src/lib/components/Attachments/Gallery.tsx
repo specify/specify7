@@ -115,6 +115,7 @@ export function AttachmentGallery({
           onChange={(newAttachment): void =>
             handleChange(replaceItem(attachments, openIndex, newAttachment))
           }
+          onClose={(): void => setOpenIndex(undefined)}
           onNext={
             isComplete && openIndex === attachments.length
               ? undefined
@@ -124,7 +125,6 @@ export function AttachmentGallery({
                     handleFetchMore().catch(raise);
                 }
           }
-          onClose={(): void => setOpenIndex(undefined)}
           onPrevious={
             openIndex === 0
               ? undefined

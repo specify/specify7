@@ -137,16 +137,16 @@ export function AttachmentViewer({
               <Component
                 className="flex-1 whitespace-nowrap"
                 download
-                target="_blank"
                 href={originalUrl!}
+                target="_blank"
                 onClick={undefined}
               >
                 {notificationsText.download()}
               </Component>
               <Component
                 className="flex-1 whitespace-nowrap"
-                target="_blank"
                 href={originalUrl!}
+                target="_blank"
                 onClick={undefined}
               >
                 {commonText.openInNewTab()}

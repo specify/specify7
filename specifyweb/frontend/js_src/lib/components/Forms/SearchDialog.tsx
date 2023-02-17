@@ -100,7 +100,6 @@ export function SearchDialog<SCHEMA extends AnySchema>({
   const id = useId('search-dialog');
   return typeof viewName === 'string' ? (
     <Dialog
-      dimensionsKey={`SearchDialog-${templateResource.specifyModel.name}`}
       buttons={
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
@@ -112,6 +111,7 @@ export function SearchDialog<SCHEMA extends AnySchema>({
           <Submit.Green form={id('form')}>{commonText.search()}</Submit.Green>
         </>
       }
+      dimensionsKey={`SearchDialog-${templateResource.specifyModel.name}`}
       header={commonText.search()}
       modal={false}
       onClose={handleClose}
@@ -266,10 +266,10 @@ function QueryBuilderSearch<SCHEMA extends AnySchema>({
           </Button.Blue>
         </>
       }
-      dimensionsKey="QueryBuilder"
       className={{
         container: dialogClassNames.wideContainer,
       }}
+      dimensionsKey="QueryBuilder"
       header={queryText.queryBuilder()}
       onClose={handleClose}
     >

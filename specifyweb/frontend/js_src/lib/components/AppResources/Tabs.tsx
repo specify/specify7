@@ -93,8 +93,8 @@ export function AppResourcesTabs({
       className={{
         container: dialogClassNames.fullScreen,
       }}
-      header={label}
       dimensionsKey={false}
+      header={label}
       headerButtons={headerButtons}
       icon={appResourceIcon(getResourceType(resource))}
       onClose={undefined}
