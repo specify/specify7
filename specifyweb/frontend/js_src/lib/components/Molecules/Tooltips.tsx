@@ -208,16 +208,17 @@ function roundByDevice(value: number): number {
   return Math.round(value * dpr) / dpr;
 }
 
+/** Delay before showing tooltip if using keyboard */
 let delayFocusIn = 400;
-let delayMouseIn = 800;
-let delayOut = 1000;
+/** Delay before showing tooltip if using mouse */
+let delayMouseIn = 1000;
 // Disable delays on touch screen devices
 window?.addEventListener(
   'touchstart',
   () => {
     delayFocusIn = 0;
+    /** Delay before showing tooltip if using touch */
     delayMouseIn = 0;
-    delayOut = 0;
   },
   { once: true }
 );
@@ -303,7 +304,6 @@ function useInteraction(
         handleCloseRef.current = (): void =>
           globalThis.removeEventListener('mousemove', handler);
       }
-      timeOut.current = setTimeout(() => {}, delayOut);
     },
     [clear, handleClose]
   );
