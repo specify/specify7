@@ -72,6 +72,7 @@ import React from 'react';
 import { useId } from '../../hooks/useId';
 import { whitespaceSensitive } from '../../localization/utils';
 import { listen } from '../../utils/events';
+import { f } from '../../utils/functools';
 import { oneRem } from '../Atoms';
 import { usePref } from '../UserPreferences/usePref';
 
@@ -360,8 +361,10 @@ function useInteraction(
         setContent(
           element,
           whitespaceSensitive(title),
-          (element.getAttribute(titlePosition) as Placement | null) ??
-            defaultPlacement
+          f.maybe(
+            element.getAttribute(titlePosition) ?? undefined,
+            normalizePlacement
+          ) ?? defaultPlacement
         );
         if (typeof floatingIdRef.current === 'string')
           element.setAttribute('aria-describedby', floatingIdRef.current);
@@ -423,4 +426,17 @@ function useInteraction(
         : undefined,
     [handleClose, currentElement]
   );
+}
+
+/**
+ * Normalize placement
+ */
+function normalizePlacement(raw: string): Placement {
+  const normalized = raw.toLowerCase().trim();
+  const result = normalized === 'up' ? 'top' : (normalized as Placement);
+  if (process.env.NODE_ENV !== 'production' && raw !== result)
+    console.error(
+      `Unexpected tooltip position: ${raw}. Allowed values: top, right, bottom, left.`
+    );
+  return result;
 }
