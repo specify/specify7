@@ -163,8 +163,9 @@ export function TooltipManager(): JSX.Element {
       {isOpen && typeof text === 'string' ? (
         <span
           className={`
-            top-0 left-0 z-[10000] block w-max whitespace-pre-line rounded bg-gray-100
-            text-gray-900 duration-0 dark:bg-black dark:text-gray-200
+            top-0 left-0 z-[10000] block w-max whitespace-pre-line rounded
+            bg-gray-100 text-gray-900 shadow-md duration-0 dark:bg-black
+            dark:text-gray-200
           `}
           id={id}
           ref={tooltipRef}
@@ -428,15 +429,22 @@ function useInteraction(
   );
 }
 
+const allowedPlacements: ReadonlySet<Placement> = new Set([
+  'top',
+  'right',
+  'bottom',
+  'left',
+]);
+
 /**
  * Normalize placement
  */
 function normalizePlacement(raw: string): Placement {
-  const normalized = raw.toLowerCase().trim();
-  const result = normalized === 'up' ? 'top' : (normalized as Placement);
-  if (process.env.NODE_ENV !== 'production' && raw !== result)
+  if (process.env.NODE_ENV !== 'production' && !f.has(allowedPlacements, raw))
     console.error(
       `Unexpected tooltip position: ${raw}. Allowed values: top, right, bottom, left.`
     );
-  return result;
+
+  const normalized = raw.toLowerCase().trim();
+  return normalized === 'up' ? 'top' : (normalized as Placement);
 }
