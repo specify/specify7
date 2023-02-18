@@ -37,7 +37,7 @@ export function FormatterElement({
         <Label.Block>
           {resourcesText.conditionField()}
           <ResourceMapping
-            allowedMappings={allowedConditionMappings}
+            allowedTransient={allowedConditionMappings}
             isReadOnly={isReadOnly}
             mapping={[
               formatter.definition.conditionField,
@@ -208,7 +208,7 @@ function Field({
       </td>
       <td>
         <ResourceMapping
-          allowedMappings={allowedFieldMappings}
+          allowedTransient={allowedFieldMappings}
           isReadOnly={isReadOnly}
           mapping={[
             field.field,

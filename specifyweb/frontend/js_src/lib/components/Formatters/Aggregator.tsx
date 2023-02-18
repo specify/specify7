@@ -8,7 +8,6 @@ import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { SearchDialog } from '../SearchDialog';
 import { hasTablePermission } from '../Permissions/helpers';
-import type { FieldType } from '../WbPlanView/mappingHelpers';
 import { aggregate } from './aggregate';
 import { FormattersPickList, ResourceMapping } from './Components';
 import type { Aggregator } from './spec';
@@ -60,7 +59,6 @@ export function AggregatorElement({
         <Label.Block>
           {resourcesText.sortField()}
           <ResourceMapping
-            allowedMappings={allowedMappings}
             isReadOnly={isReadOnly}
             mapping={[
               aggregator.sortField,
@@ -111,8 +109,6 @@ export function AggregatorElement({
     </>
   );
 }
-
-const allowedMappings: RA<FieldType> = ['toOneIndependent', 'toOneDependent'];
 
 /*
  * FIXME: enforce no mappings to dependent fields (in sortField and

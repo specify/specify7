@@ -131,7 +131,7 @@ export function MappingLineComponent({
   onKeyDown: handleKeyDown,
   onClearMapping: handleClearMapping,
 }: MappingLineBaseProps): JSX.Element {
-  const lineRef = React.useRef<HTMLDivElement>(null);
+  const lineRef = React.useRef<HTMLUListElement>(null);
 
   React.useLayoutEffect(() => {
     if (isFocused && lineRef.current?.contains(document.activeElement) !== true)
@@ -168,7 +168,7 @@ export function MappingLineComponent({
         {headerName}
       </div>
       {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
-      <div
+      <ul
         aria-label={wbPlanText.columnMapping()}
         className={`
           flex flex-wrap items-center gap-2 border-t border-t-gray-500
@@ -176,14 +176,13 @@ export function MappingLineComponent({
           ${isFocused ? 'bg-gray-300 dark:bg-neutral-700' : ''}
         `}
         ref={lineRef}
-        role="list"
         tabIndex={0}
         title={wbPlanText.columnMapping()}
         onClick={handleFocus}
         onKeyDown={({ key }): void => handleKeyDown(key)}
       >
         <MappingPathComponent mappingLineData={lineData} />
-      </div>
+      </ul>
     </li>
   );
 }
@@ -196,13 +195,13 @@ export function MappingPathComponent({
   return (
     <>
       {mappingLineData.map((mappingDetails, index) => (
-        <React.Fragment key={index}>
-          <MappingElement {...mappingDetails} role="listitem" />
+        <li key={index} className="content">
+          <MappingElement {...mappingDetails} />
           {index + 1 !== mappingLineData.length &&
           mappingLineData[index + 1]?.customSelectType !== 'OPTIONS_LIST'
             ? mappingElementDivider
             : undefined}
-        </React.Fragment>
+        </li>
       ))}
     </>
   );

@@ -289,6 +289,24 @@ export const wbPlanText = createDictionary({
       відображення або збережіть цей план завантаження як незавершений.
     `,
   },
+  mappingIsRequired: {
+    comment: 'I.e, this field must be mapped before you can continue',
+    'en-us': 'Mapping is required',
+    'ru-ru': 'Необходимо сопоставление',
+    'es-es': 'Se requiere asignación',
+    'fr-fr': 'Liaison obligatoire',
+    'uk-ua': 'Необхідне співставлення',
+  },
+  transientToManyNotAllowed: {
+    'en-us': 'Mapping that include one-to-many relationships are not allowed',
+    'ru-ru':
+      'Сопоставления, включающие отношения один-ко-многим, не допускаются',
+    'es-es': 'No se permiten asignaciones que incluyan relaciones uno-a-muchos',
+    'fr-fr':
+      'Les liaisons qui incluent des relations un-à-plusieurs ne sont pas autorisées',
+    'uk-ua':
+      'Зіставлення, що включають відношення один-до-багатьох, не дозволяються',
+  },
   continueEditing: {
     'en-us': 'Continue Editing',
     'ru-ru': 'Продолжить редактирование',

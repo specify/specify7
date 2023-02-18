@@ -4,6 +4,7 @@ import { useOutletContext } from 'react-router';
 import { usePromise } from '../../hooks/useAsyncState';
 import { useId } from '../../hooks/useId';
 import { resourcesText } from '../../localization/resources';
+import { wbPlanText } from '../../localization/wbPlan';
 import { f } from '../../utils/functools';
 import type { GetSet, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
@@ -22,8 +23,10 @@ import {
   mappingElementDivider,
 } from '../WbPlanView/LineComponents';
 import { handleMappingLineKey } from '../WbPlanView/Mapper';
-import type { FieldType } from '../WbPlanView/mappingHelpers';
-import { formattedEntry } from '../WbPlanView/mappingHelpers';
+import {
+  formattedEntry,
+  relationshipIsToMany,
+} from '../WbPlanView/mappingHelpers';
 import { getMappingLineData } from '../WbPlanView/navigator';
 import type { Aggregator, Formatter } from './spec';
 import type { FormatterTypesOutlet } from './Types';
@@ -107,14 +110,14 @@ export function ResourceMapping({
   table,
   mapping: [mapping, setMapping],
   isReadOnly,
-  allowedMappings,
   openIndex: [openIndex, setOpenIndex],
+  isRequired,
 }: {
   readonly table: SpecifyTable;
   readonly mapping: GetSet<RA<LiteralField | Relationship> | undefined>;
   readonly isReadOnly: boolean;
-  readonly allowedMappings: RA<FieldType>;
   readonly openIndex: GetSet<number | undefined>;
+  readonly isRequired?: boolean;
 }): JSX.Element {
   // Note, this assumes the "mapping" prop can only be changed by this component
   const [mappingPath, setMappingPath] = React.useState(() => {
@@ -129,10 +132,23 @@ export function ResourceMapping({
     ]);
   });
 
+  const validation = React.useMemo(
+    () =>
+      mapping === undefined || mapping.length === 0
+        ? [wbPlanText.mappingIsRequired()]
+        : mapping.map((field, index, { length }) =>
+            field.isRelationship &&
+            relationshipIsToMany(field) &&
+            index < length - 1
+              ? wbPlanText.transientToManyNotAllowed()
+              : undefined
+          ),
+    [mapping, isRequired]
+  );
+
   const lineData = getMappingLineData({
     baseTableName: table.name,
     mappingPath,
-    allowedRelationships: allowedMappings,
     showHiddenFields: true,
     generateFieldData: 'all',
     scope: 'queryBuilder',
@@ -172,8 +188,13 @@ export function ResourceMapping({
       }
     >
       {join(
-        mappingLineProps.map((mappingDetails) => (
-          <MappingElement {...mappingDetails} role="listitem" />
+        mappingLineProps.map((mappingDetails, index) => (
+          <li key={index} className="contents">
+            <MappingElement
+              {...mappingDetails}
+              validation={validation[index]}
+            />
+          </li>
         )),
         mappingElementDivider
       )}

@@ -281,7 +281,7 @@ export function QueryLine({
         >
           {join(
             mappingLineProps.map((mappingDetails, index) => (
-              <li key={index}>
+              <li key={index} className="contents">
                 <MappingElement {...mappingDetails} />
               </li>
             )),

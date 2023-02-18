@@ -27,6 +27,8 @@ import {
 } from '../Molecules/TableIcon';
 import { scrollIntoView } from '../TreeView/helpers';
 import { emptyMapping } from './helpers';
+import { useId } from '../../hooks/useId';
+import { useValidation } from '../../hooks/useValidation';
 
 type Properties =
   /*
@@ -209,6 +211,8 @@ type CustomSelectElementPropsBase = {
   readonly role?: string;
   readonly previewOption?: CustomSelectElementDefaultOptionProps;
 
+  readonly validation?: string;
+
   readonly onOpen?: () => void;
 
   readonly onChange?: (event: ChangeEvent) => void;
@@ -294,13 +298,14 @@ function Option({
   return (
     // Keyboard events are handled by the parent
     // eslint-disable-next-line jsx-a11y/click-events-have-key-events
-    <span
+    <li
       aria-atomic="true"
       aria-current={isDefault ? 'location' : undefined}
       aria-disabled={!isEnabled || isDefault}
       aria-label={fullTitle}
       aria-selected={isDefault}
       className={classes.join(' ')}
+      // eslint-disable-next-line jsx-a11y/no-noninteractive-element-to-interactive-role
       role="option"
       tabIndex={-1}
       title={fullTitle === optionLabel ? tableLabel : fullTitle}
@@ -341,7 +346,7 @@ function Option({
         ) : (
           <span className={`print:hidden ${iconClassName}`} />
         ))}
-    </span>
+    </li>
   );
 }
 
@@ -457,7 +462,7 @@ export function CustomSelectElement({
   onClose: handleClose,
   previewOption,
   autoMapperSuggestions,
-  role,
+  validation,
 }: CustomSelectElementPropsClosed | CustomSelectElementPropsOpen): JSX.Element {
   const has = React.useCallback(
     (property: Properties): boolean =>
@@ -525,6 +530,9 @@ export function CustomSelectElement({
   if (showUnmapOption && typeof defaultDefaultOption === 'string')
     inlineOptions = [defaultDefaultOption, ...inlineOptions];
 
+  const id = useId('listbox');
+  const { validationRef } = useValidation(validation);
+
   let header: JSX.Element | undefined;
   let preview: JSX.Element | undefined;
   let unmapOption: JSX.Element | undefined;
@@ -549,15 +557,20 @@ export function CustomSelectElement({
       </header>
     );
   else if (has('preview')) {
+    const handleClick = has('interactive')
+      ? isOpen
+        ? handleClose
+        : handleOpen
+      : undefined;
     preview = (
       // Not tabbable because keyboard events are handled separately
       // eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/interactive-supports-focus
-      <header
+      <button
         aria-expanded={isOpen}
         aria-haspopup="listbox"
         className={`
-          flex min-h-[theme(spacing.8)] cursor-pointer
-          items-center gap-1 rounded border border-gray-500 px-1 dark:border-none
+          flex min-h-[theme(spacing.8)] cursor-pointer items-center
+          gap-1 rounded border border-gray-500 px-1 text-left dark:border-none
           ${
             defaultOption?.isRequired === true
               ? 'custom-select-input-required bg-[color:var(--custom-select-b2)]'
@@ -571,10 +584,11 @@ export function CustomSelectElement({
           }
           ${isOpen ? 'rounded-b-none [z-index:3]' : ''}
         `}
-        role="button"
-        onClick={
-          has('interactive') ? (isOpen ? handleClose : handleOpen) : undefined
-        }
+        ref={validationRef}
+        type="button"
+        aria-controls={id('options')}
+        disabled={handleClick === undefined}
+        onClick={handleClick}
       >
         {has('icon') && (
           <Icon
@@ -602,7 +616,7 @@ export function CustomSelectElement({
         {has('arrow') && (
           <span className="print:hidden">{icons.chevronDown}</span>
         )}
-      </header>
+      </button>
     );
 
     unmapOption = showUnmapOption ? (
@@ -684,6 +698,8 @@ export function CustomSelectElement({
       `}
       ref={listOfOptionsRef}
       role="listbox"
+      id={id('options')}
+      aria-orientation="vertical"
       tabIndex={-1}
     >
       {unmapOption}
@@ -731,7 +747,6 @@ export function CustomSelectElement({
         ${customSelectClassNames[customSelectType] ?? ''}
       `}
       ref={customSelectElementRef}
-      role={role}
       tabIndex={has('tabIndex') ? 0 : has('interactive') ? -1 : undefined}
       title={selectLabel}
       onBlur={
