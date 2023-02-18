@@ -1,12 +1,13 @@
-import { useId } from '../../hooks/useId';
 import React from 'react';
-import { Dialog } from '../Molecules/Dialog';
-import { Submit } from '../Atoms/Submit';
+
+import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
+import { statsText } from '../../localization/stats';
 import { Button } from '../Atoms/Button';
 import { Form, Input, Label } from '../Atoms/Form';
-import { statsText } from '../../localization/stats';
 import { icons } from '../Atoms/Icons';
+import { Submit } from '../Atoms/Submit';
+import { Dialog } from '../Molecules/Dialog';
 
 export function StatsPageEditing({
   label = '',
@@ -42,8 +43,8 @@ export function StatsPageEditing({
         </>
       }
       header={statsText.editPage()}
-      onClose={handleClose}
       icon={icons.pencil}
+      onClose={handleClose}
     >
       <Form
         id={id('form')}
