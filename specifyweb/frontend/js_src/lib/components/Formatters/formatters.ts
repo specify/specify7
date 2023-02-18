@@ -12,10 +12,10 @@ import { KEY, multiSortFunction, sortFunction } from '../../utils/utils';
 import { fetchDistantRelated } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { fetchContext as fetchSchema, tables } from '../DataModel/tables';
 import { fetchContext as fetchDomain } from '../DataModel/schema';
-import type { LiteralField } from '../DataModel/specifyField';
+import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
+import { fetchContext as fetchSchema, tables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import {
   cachableUrl,
@@ -119,22 +119,21 @@ export async function format<SCHEMA extends AnySchema>(
     ? automaticFormatter ?? undefined
     : Promise.all(
         fields.map(async (field) => formatField(field, resource, tryBest))
-      ).then((values) => values.join('') as LocalizedString);
+      ).then((values) => (values ?? '').join('') as LocalizedString);
 }
 
+/**
+ * Decide which of the field definitions to apply
+ */
 async function determineFields<SCHEMA extends AnySchema>(
   { conditionField, fields }: Formatter['definition'],
   resource: SpecifyResource<SCHEMA>
 ): Promise<Formatter['definition']['fields'][number]['fields']> {
   if (conditionField === undefined) return fields[0].fields;
-  const result = await fetchDistantRelated(resource, conditionField);
+  const result = await fetchPathAsString(resource, conditionField);
   if (result === undefined) return fields[0].fields;
-  const rawValue = resource.get(
-    conditionField.map(({ name }) => name).join('.')
-  ) as number | string;
-  const currentValue = rawValue.toString() ?? '';
   return (
-    fields.find(({ value }) => (value ?? '') === currentValue)?.fields ??
+    fields.find(({ value }) => (value ?? '') === result)?.fields ??
     fields[0].fields
   );
 }
@@ -149,14 +148,14 @@ async function formatField(
   }: Formatter['definition']['fields'][number]['fields'][number],
   parentResource: SpecifyResource<AnySchema>,
   tryBest: boolean
-): Promise<string> {
-  let formatted: string | undefined = '';
+): Promise<string | undefined> {
+  let formatted: string | undefined = undefined;
   const hasPermission = hasPathPermission(fields ?? [], 'read');
   if (hasPermission) {
     const data = await fetchDistantRelated(parentResource, fields);
-    if (data === undefined) return '';
+    if (data === undefined) return undefined;
     const { resource, field } = data;
-    if (field === undefined || resource === undefined) return '';
+    if (field === undefined || resource === undefined) return undefined;
 
     formatted = field.isRelationship
       ? await (relationshipIsToMany(field)
@@ -183,6 +182,24 @@ async function formatField(
     : `${separator}${formatted}`;
 }
 
+export async function fetchPathAsString(
+  baseResource: SpecifyResource<AnySchema>,
+  field: RA<LiteralField | Relationship> | undefined
+): Promise<string | undefined> {
+  const value = await formatField(
+    {
+      field,
+      formatter: undefined,
+      separator: '',
+      aggregator: undefined,
+      fieldFormatter: undefined,
+    },
+    baseResource,
+    false
+  );
+  return value?.toString();
+}
+
 const resolveFormatter = (
   formatters: RA<Formatter>,
   formatterName: string | undefined,
@@ -204,7 +221,7 @@ const autoGenerateFields = 2;
 const autoGenerateFormatter = (table: SpecifyTable): Formatter => ({
   name: table.name,
   title: table.name,
-  table: table,
+  table,
   isDefault: true,
   definition: {
     isSingle: false,

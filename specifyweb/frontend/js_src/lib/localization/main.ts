@@ -265,4 +265,18 @@ export const mainText = createDictionary({
       "Instructions pour résoudre l'incompatibilité de schéma de Specify",
     'uk-ua': 'Інструкції щодо вирішення невідповідності версій',
   },
+  online: {
+    'en-us': 'online',
+    'es-es': 'conectado',
+    'fr-fr': 'en ligne',
+    'ru-ru': 'онлайн',
+    'uk-ua': 'онлайн',
+  },
+  offline: {
+    'en-us': 'offline',
+    'es-es': 'desconectado',
+    'fr-fr': 'hors ligne',
+    'ru-ru': 'не в сети',
+    'uk-ua': 'офлайн',
+  },
 } as const);

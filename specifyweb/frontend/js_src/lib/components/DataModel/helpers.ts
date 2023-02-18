@@ -1,6 +1,7 @@
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { isTreeResource } from '../InitialContext/treeRanks';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import type {
   AnySchema,
   AnyTree,
@@ -11,7 +12,6 @@ import type { SpecifyResource } from './legacyTypes';
 import type { LiteralField, Relationship } from './specifyField';
 import type { SpecifyTable } from './specifyTable';
 import type { Tables } from './types';
-import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 
 export const isResourceOfType = <TABLE_NAME extends keyof Tables>(
   resource: SpecifyResource<AnySchema>,

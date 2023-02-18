@@ -580,18 +580,4 @@ export const commonText = createDictionary({
     'fr-fr': '{label:string} : <wrap />',
     'uk-ua': '{label:string}: <wrap />',
   },
-  online: {
-    'en-us': 'online',
-    'es-es': 'conectado',
-    'fr-fr': 'en ligne',
-    'ru-ru': 'онлайн',
-    'uk-ua': 'онлайн',
-  },
-  offline: {
-    'en-us': 'offline',
-    'es-es': 'desconectado',
-    'fr-fr': 'hors ligne',
-    'ru-ru': 'не в сети',
-    'uk-ua': 'офлайн',
-  },
 } as const);

@@ -1,9 +1,7 @@
 import React from 'react';
 
-import { useAsyncState } from '../../hooks/useAsyncState';
 import { useResourceValue } from '../../hooks/useResourceValue';
 import { commonText } from '../../localization/common';
-import { userText } from '../../localization/user';
 import type { Parser } from '../../utils/parser/definitions';
 import {
   getValidationAttributes,
@@ -13,22 +11,16 @@ import type { IR } from '../../utils/types';
 import { Input } from '../Atoms/Form';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { resourceOn } from '../DataModel/resource';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
-import type { Collection } from '../DataModel/specifyTable';
-import { aggregate } from '../Formatters/aggregate';
-import { format } from '../Formatters/formatters';
+import { raise } from '../Errors/Crash';
+import { fetchPathAsString } from '../Formatters/formatters';
 import type { FormMode } from '../FormParse';
-import { hasTablePermission } from '../Permissions/helpers';
 import { usePref } from '../UserPreferences/usePref';
-import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 
 export function UiField({
-  id,
-  name,
-  resource,
-  mode,
   field,
-  parser,
+  ...props
 }: {
   readonly id: string | undefined;
   readonly name: string | undefined;
@@ -37,38 +29,67 @@ export function UiField({
   readonly field: LiteralField | Relationship | undefined;
   readonly parser?: Parser;
 }): JSX.Element {
-  /*
-   * If tried to render a -to-many field, display a readOnly aggregated
-   * collection
-   */
-  const [aggregated] = useAsyncState(
-    React.useCallback(
-      async () =>
-        resource === undefined
-          ? false
-          : typeof field === 'object'
-          ? 'models' in resource
-            ? aggregate(resource as unknown as Collection<AnySchema>)
-            : field.isRelationship && relationshipIsToMany(field)
-            ? resource.rgetCollection(field.name).then(aggregate)
-            : false
-          : undefined,
-      [resource?.specifyTable.name, resource, field]
-    ),
-    false
-  );
-
-  return aggregated === false ? (
-    <Field
-      field={field}
-      id={id}
-      mode={mode}
-      name={name}
-      parser={parser}
-      resource={resource}
-    />
+  return field?.isRelationship === true ? (
+    <RelationshipField field={field} {...props} />
   ) : (
-    <Input.Text disabled id={id} value={aggregated?.toString() ?? ''} />
+    <Field field={field} {...props} />
+  );
+}
+
+/*
+ * If tried to render a -to-many relationship, display a readOnly aggregated
+ * collection
+ * Display -to-one as a formatted field
+ */
+function RelationshipField({
+  resource,
+  field,
+  id,
+  name,
+}: {
+  readonly id: string | undefined;
+  readonly name: string | undefined;
+  readonly resource: SpecifyResource<AnySchema> | undefined;
+  readonly field: Relationship;
+}): JSX.Element {
+  const [formatted, setFormatted] = React.useState<string | false | undefined>(
+    undefined
+  );
+  React.useEffect(() => {
+    if (resource === undefined) return undefined;
+    let destructorCalled = false;
+    const handleChange = (): void =>
+      void fetchPathAsString(resource, [field])
+        .then((value) =>
+          destructorCalled ? undefined : setFormatted(value ?? false)
+        )
+        .catch(raise);
+
+    const destructor = resourceOn(
+      resource,
+      `change:${field.name}`,
+      handleChange,
+      true
+    );
+    return (): void => {
+      destructor();
+      destructorCalled = true;
+    };
+  }, [resource, field]);
+
+  return (
+    <Input.Text
+      id={id}
+      isReadOnly
+      name={name}
+      value={
+        formatted === undefined
+          ? commonText.loading()
+          : formatted === false
+          ? ''
+          : formatted.toString()
+      }
+    />
   );
 }
 
@@ -83,7 +104,7 @@ function Field({
   readonly resource: SpecifyResource<AnySchema> | undefined;
   readonly id: string | undefined;
   readonly name: string | undefined;
-  readonly field: LiteralField | Relationship | undefined;
+  readonly field: LiteralField | undefined;
   readonly mode: FormMode;
   readonly parser?: Parser;
 }): JSX.Element {
@@ -103,33 +124,7 @@ function Field({
   );
 
   const isReadOnly =
-    mode === 'view' ||
-    field?.isRelationship === true ||
-    (field?.isReadOnly === true && mode !== 'search');
-
-  const [formattedRelationship] = useAsyncState(
-    React.useCallback(
-      () =>
-        field?.isRelationship === true
-          ? hasTablePermission(field.relatedTable.name, 'read')
-            ? (
-                resource?.rgetPromise(field.name) as Promise<
-                  SpecifyResource<AnySchema> | undefined
-                >
-              )
-                .then(format)
-                .then((value) => value ?? '')
-            : userText.noPermission()
-          : undefined,
-      /*
-       * While "value" is not used in the hook, it is needed to update a
-       * formatter if related resource changes
-       */
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      [resource, field, value]
-    ),
-    false
-  );
+    mode === 'view' || (field?.isReadOnly === true && mode !== 'search');
 
   const [rightAlignNumberFields] = usePref(
     'form',
@@ -162,11 +157,7 @@ function Field({
        * Disable "text-align: right" in non webkit browsers
        * as they don't support spinner's arrow customization
        */
-      value={
-        field?.isRelationship === true
-          ? formattedRelationship ?? commonText.loading()
-          : value?.toString() ?? ''
-      }
+      value={value?.toString() ?? ''}
       onBlur={
         isReadOnly ? undefined : ({ target }): void => updateValue(target.value)
       }
