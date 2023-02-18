@@ -1,4 +1,62 @@
-import type { FloatingContext } from '@floating-ui/react';
+/**
+ * # An integration with the Floating UI library to provide tooltips.
+ *
+ * ## Documentation of our solution
+ *
+ * - Use "title" attribute on elements to provide a tooltip.
+ * - Can use a "data-title-delay" to customize the delay before the tooltip is
+ *   shown (in milliseconds). I.e, set to 0 to disable delay.
+ *   - To reduce bugs and simplify refactoring, use the titleDelay
+ *     variable rather than hard coding the attribute name.
+ * - Can use a "data-title-position" to customize the preferred position of the
+ *   tooltip (if there is not enough space, it will pick a second best position
+ *   automatically). Allowed values: "top", "bottom", "left", "right".
+ *   - To reduce bugs and simplify refactoring, use the titlePosition
+ *     variable rather than hard coding the attribute name.
+ *
+ * ## Reasoning behind the current solution
+ *
+ * Default browser tooltips were unsatisfactory because:
+ *  - They are displayed after a long delay
+ *  - They are displayed with very small font
+ *
+ * While Floating UI's documentation shows examples of creating React components
+ * that can be used in place of "title" attributes were tooltips are necessary,
+ * that solution was not acceptable for the following reasons:
+ *
+ *  - It requires a lot of boilerplate code. Way more than just having a "title"
+ *    attribute.
+ *  - It would require migrating all the usages in the code
+ *  - It would be easy to forget to use the tooltip and use "title". What is
+ *    even more likely, new people joining the project won't know about the
+ *    existence of a custom tooltip element, and so would be using "title"
+ *  - Floating UI's tooltips don't work for disabled elements because events
+ *    are not triggered for disabled elements. Their workaround it to use
+ *    aria-disabled attribute which is not a good solution:
+ *
+ *     - Using aria-disabled event listeners are fired. Specify 7 relies in
+ *       many places on the fact that event listeners are not fired for
+ *       disabled elements
+ *     - "aria-disabled" would still leave the element focusable, unlike
+ *       disabled
+ *     - Would still have to rewrite all the places in the code that use
+ *       disabled to use aria-disabled
+ *     - Same problem that it's easy to forget to use aria-disabled or for new
+ *       developers to not know that they have to use aria-disabled
+ *
+ * Instead, I retrofitted the Floating UI library to work with "title"
+ * attribute. This required reimplementing their useHover() and useFocus()
+ * hooks. Their source code was used as an inspiration for useInteraction()
+ * hook which aimed to be a replacement (although small differences are likely
+ * present). useInteraction() looks at the "title" attribute, but also
+ * "data-title-delay" and "data-title-placement".
+ *
+ * For disabled elements, since events are not fired, browser's default
+ * tooltip is displayed.
+ *
+ */
+
+import type { FloatingContext, Placement } from '@floating-ui/react';
 import {
   arrow,
   autoPlacement,
