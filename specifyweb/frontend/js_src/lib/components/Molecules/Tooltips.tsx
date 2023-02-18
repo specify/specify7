@@ -59,8 +59,8 @@
 import type { FloatingContext, Placement } from '@floating-ui/react';
 import {
   arrow,
-  autoPlacement,
   autoUpdate,
+  flip,
   FloatingPortal,
   offset,
   safePolygon,
@@ -78,7 +78,9 @@ import { usePref } from '../UserPreferences/usePref';
 /**
  * Add this attribute to element to remove delay before title becomes visible
  */
-export const noTitleDelay = 'data-no-title-delay';
+export const titleDelay = 'data-title-delay';
+export const titlePosition = 'data-title-position';
+const defaultPlacement = 'bottom';
 
 /**
  * Encapsulate the logic for tooltip
@@ -88,12 +90,18 @@ export function TooltipManager(): JSX.Element {
   const arrowRef = React.useRef<HTMLDivElement | null>(null);
   const paddingRem = 0.5;
   const padding = paddingRem * oneRem;
+  const [rawPlacement, setRawPlacement] =
+    React.useState<Placement>(defaultPlacement);
   const { x, y, strategy, refs, context, middlewareData, placement } =
     useFloating({
+      placement: rawPlacement,
       middleware: [
         // Caution: the order matters
         offset(padding),
-        autoPlacement(),
+        flip({
+          fallbackAxisSideDirection: 'end',
+          crossAxis: false,
+        }),
         shift(),
         arrow({ element: arrowRef }),
       ],
@@ -113,10 +121,15 @@ export function TooltipManager(): JSX.Element {
   const setReference = refs.setReference;
   const [text, setText] = React.useState<string | undefined>(undefined);
   const setContent = React.useCallback(
-    (forElement: HTMLElement | undefined, text: string | undefined) => {
+    (
+      forElement: HTMLElement | undefined,
+      text: string | undefined,
+      placement: Placement
+    ) => {
       setReference(forElement ?? null);
       setText(text);
       setIsOpen(typeof text === 'string');
+      setRawPlacement(placement);
     },
     [setReference]
   );
@@ -214,7 +227,8 @@ function useInteraction(
   container: HTMLElement | undefined,
   setContent: (
     forElement: HTMLElement | undefined,
-    text: string | undefined
+    text: string | undefined,
+    placement: Placement
   ) => void,
   context: FloatingContext,
   floatingId: string | undefined
@@ -255,7 +269,7 @@ function useInteraction(
   }, []);
 
   const handleClose = React.useCallback((): void => {
-    setContent(undefined, undefined);
+    setContent(undefined, undefined, defaultPlacement);
     revertDomChanges();
     currentElementRef.current = undefined;
     setCurrentElement(undefined);
@@ -343,20 +357,25 @@ function useInteraction(
       currentTitle.current = title;
 
       const handleSet = (): void => {
-        setContent(element, whitespaceSensitive(title));
+        setContent(
+          element,
+          whitespaceSensitive(title),
+          (element.getAttribute(titlePosition) as Placement | null) ??
+            defaultPlacement
+        );
         if (typeof floatingIdRef.current === 'string')
           element.setAttribute('aria-describedby', floatingIdRef.current);
       };
 
-      // If tooltip is already displayed, switch to displaying new tooltip right away
-      if (isDisplayed && type === 'mouseenter') handleSet();
+      if (
+        // If tooltip is already displayed, switch to displaying new tooltip right away
+        (isDisplayed && type === 'mouseenter') ||
+        element.hasAttribute(titleDelay)
+      )
+        handleSet();
       else {
         // Otherwise, add a delay before displaying the tooltip. This prevents spamming the UI with tooltips if the user is quickly moving the mouse over the page
-        const delay = element.hasAttribute(noTitleDelay)
-          ? 0
-          : type === 'focus'
-          ? delayFocusIn
-          : delayMouseIn;
+        const delay = type === 'focus' ? delayFocusIn : delayMouseIn;
         timeOut.current = setTimeout(handleSet, delay);
       }
     }
