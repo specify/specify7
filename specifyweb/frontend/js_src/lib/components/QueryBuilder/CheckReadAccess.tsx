@@ -1,10 +1,11 @@
 import React from 'react';
+
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
-import { RA } from '../../utils/types';
+import type { RA } from '../../utils/types';
 import { Ul } from '../Atoms';
-import { SerializedResource } from '../DataModel/helperTypes';
-import { SpQuery, Tables } from '../DataModel/types';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import type { SpQuery, Tables } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasTablePermission } from '../Permissions/helpers';
