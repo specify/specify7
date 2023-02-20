@@ -170,20 +170,18 @@ function QueryList({
         {queries.map((query) => (
           <tr key={query.id} title={query.remarks ?? undefined}>
             <td>
-              <>
-                <Link.Default
-                  className="overflow-x-auto"
-                  href={
-                    getQuerySelectUrl?.(query) ?? `/specify/query/${query.id}/`
-                  }
-                >
-                  <TableIcon
-                    label
-                    name={getModelById(query.contextTableId).name}
-                  />
-                  {query.name}
-                </Link.Default>
-              </>
+              <Link.Default
+                className="overflow-x-auto"
+                href={
+                  getQuerySelectUrl?.(query) ?? `/specify/query/${query.id}/`
+                }
+              >
+                <TableIcon
+                  label
+                  name={getModelById(query.contextTableId).name}
+                />
+                {query.name}
+              </Link.Default>
             </td>
             <td>
               <DateElement date={query.timestampCreated} />
