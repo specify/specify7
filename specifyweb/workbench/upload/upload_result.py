@@ -180,8 +180,8 @@ RecordResult = Union[Uploaded, NoMatch, Matched, MatchedMultiple, NullRecord, Fa
 
 class UploadResult(NamedTuple):
     record_result: RecordResult
-    toOne: Dict[str, 'UploadResult']
-    toMany: Dict[str, List['UploadResult']]
+    toOne: Dict[str, Any]
+    toMany: Dict[str, List[Any]]
 
     def get_id(self) -> Union[int, None, Failure]:
         return self.record_result.get_id()

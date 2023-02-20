@@ -87,10 +87,6 @@ class UploadResultsTests(unittest.TestCase):
         print(d)
         j = json.dumps(d)
         e = json.loads(j)
-        try:
-            validate([e], schema)
-        except Exception as ex:
-            print('validation error')
-            print(str(ex))
+        validate([e], schema) 
         self.assertEqual(uploadResult, json_to_UploadResult(e))
 
