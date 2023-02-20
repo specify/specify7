@@ -722,19 +722,19 @@ def api_endpoints_all(request):
 @require_http_methods(['GET', 'POST', 'HEAD'])
 @cache_control(max_age=86400, public=True)
 @openapi(schema={
-    "get": {
-        "parameters": {
-            "languages": {
-                "name": "languages",
-                "in": "query",
-                "description": "Comma separate list of languages",
-                "example": "en-us,uk-ua,ru-ru",
-                "required": False,
-                "schema": {
-                    "type": "string",
-                },
+    "parameters": [
+        {
+            "name": "languages",
+            "in": "query",
+            "description": "Comma separate list of languages",
+            "example": "en-us,uk-ua,ru-ru",
+            "required": False,
+            "schema": {
+                "type": "string",
             },
         },
+    ],
+    "get": {
         "responses": {
             "200": {
                 "description": "List of available languages",
@@ -822,6 +822,14 @@ def languages(request):
             languages = [code for code,name in settings.LANGUAGES]
         else:
             languages = languages.split(',')
+
+        temp = JsonResponse({
+            code:{
+                **get_language_info(code),
+                'is_current': code==request.LANGUAGE_CODE
+            } for code in languages
+        })
+        print(temp)
 
         return JsonResponse({
             code:{

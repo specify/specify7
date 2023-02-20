@@ -122,14 +122,14 @@ def json_to_NullRecord(json: Dict) -> NullRecord:
 
 class FailedBusinessRule(NamedTuple):
     message: str
-    payload: Dict[str, Any]
+    payload: Dict[str, Union[str, int]]
     info: ReportInfo
 
     def get_id(self) -> Failure:
         return "Failure"
 
     def to_json(self):
-        return { self.__class__.__name__: dict(message=self.message, info=self.info.to_json()) }
+        return { self.__class__.__name__: dict(message=self.message, payload=self.payload, info=self.info.to_json()) }
 
 def json_to_FailedBusinessRule(json: Dict) -> FailedBusinessRule:
     r = json['FailedBusinessRule']
@@ -180,8 +180,8 @@ RecordResult = Union[Uploaded, NoMatch, Matched, MatchedMultiple, NullRecord, Fa
 
 class UploadResult(NamedTuple):
     record_result: RecordResult
-    toOne: Dict[str, Any]
-    toMany: Dict[str, List[Any]]
+    toOne: Dict[str, 'UploadResult']
+    toMany: Dict[str, List['UploadResult']]
 
     def get_id(self) -> Union[int, None, Failure]:
         return self.record_result.get_id()
