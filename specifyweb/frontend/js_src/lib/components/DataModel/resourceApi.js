@@ -11,7 +11,8 @@ import {
     getFieldsToNotClone,
     getResourceApiUrl,
     getResourceViewUrl,
-    resourceFromUrl
+    resourceFromUrl, 
+    resourceEvents
 } from './resource';
 
 function eventHandlerForToOne(related, field) {
@@ -580,6 +581,11 @@ function eventHandlerForToOne(related, field) {
             });
 
             return resource._save.then(()=>resource);
+        },
+        async destroy(...args) {
+            const promise = await Backbone.Model.prototype.destroy.apply(this, ...args);
+            resourceEvents.trigger('deleted', this);
+            return promise;
         },
         toJSON() {
             const self = this;
