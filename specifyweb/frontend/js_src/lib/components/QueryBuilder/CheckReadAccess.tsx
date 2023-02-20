@@ -15,32 +15,26 @@ export function CheckReadAccess({
 }: {
   readonly query: SerializedResource<SpQuery>;
 }): JSX.Element | null {
-  const [noAccessTables, setNoAccessTables] = React.useState<RA<keyof Tables>>(
-    []
-  );
+  const [noAccessTables, setNoAccessTables] =
+    React.useState<RA<keyof Tables>>(getNoAccessTables);
 
-  function accessTables(query: SerializedResource<SpQuery>): RA<keyof Tables> {
-    const info = query.fields.flatMap((field) => {
+  function getNoAccessTables(): RA<keyof Tables> {
+    const tableNames = query.fields.flatMap((field) => {
       const fieldSpec = QueryFieldSpec.fromStringId(
         field.stringId,
         field.isRelFld ?? false
       );
-      const relatedTable = fieldSpec.joinPath.map(({ model }) => model.name);
-      return relatedTable;
+      return fieldSpec.joinPath.map((field) =>
+        field.isRelationship ? field.relatedModel.name : field.model.name
+      );
     });
 
-    const withoutDuplicates = new Set(info);
+    const withoutDuplicates = new Set(tableNames);
 
-    const noAccessTables = Array.from(withoutDuplicates).filter(
+    return Array.from(withoutDuplicates).filter(
       (name) => !hasTablePermission(name, 'read')
     );
-
-    setNoAccessTables(noAccessTables);
-    return info;
   }
-  React.useEffect(() => {
-    accessTables(query);
-  }, []);
 
   return noAccessTables.length > 0 ? (
     <Dialog
@@ -48,19 +42,17 @@ export function CheckReadAccess({
       header={queryText.noReadPermission()}
       onClose={(): void => setNoAccessTables([])}
     >
-      <>
-        {queryText.importNoReadPermission()}
-        <Ul className="flex flex-col">
-          {noAccessTables.map((table, index) => (
-            <li className="font-bold" key={index}>
-              <div className="flex gap-2">
-                <TableIcon label name={table} />
-                {table}
-              </div>
-            </li>
-          ))}
-        </Ul>
-      </>
+      {queryText.importNoReadPermission()}
+      <Ul className="flex flex-col">
+        {noAccessTables.map((table, index) => (
+          <li className="font-bold" key={index}>
+            <div className="flex gap-2">
+              <TableIcon label name={table} />
+              {table}
+            </div>
+          </li>
+        ))}
+      </Ul>
     </Dialog>
   ) : null;
 }
