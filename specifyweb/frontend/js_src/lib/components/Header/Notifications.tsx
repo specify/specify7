@@ -138,8 +138,6 @@ export function Notifications({
         icon={icons.bell}
         isActive={isOpen}
         isCollapsed={isCollapsed}
-        title={title}
-        onClick={handleOpen}
         props={{
           'aria-live': 'polite',
           className:
@@ -148,6 +146,8 @@ export function Notifications({
               : undefined,
           disabled: notificationCount === 0,
         }}
+        title={title}
+        onClick={handleOpen}
       />
       {Array.isArray(notifications) ? (
         <Dialog
