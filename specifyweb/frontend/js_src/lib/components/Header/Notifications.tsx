@@ -143,7 +143,7 @@ export function Notifications({
         props={{
           'aria-live': 'polite',
           className:
-            unreadCount > 0
+            unreadCount > 0 && !isOpen
               ? '[&:not(:hover)]:!text-brand-300 [&:not(:hover)]:dark:!text-brand-400'
               : undefined,
           disabled: notificationCount === 0,
