@@ -87,7 +87,7 @@ export class QueryFieldSpec {
    *   https://github.com/specify/specify7/issues/3005
    *
    */
-  public overrideIsRelationship: boolean = false;
+  public readonly overrideIsRelationship: boolean = false;
 
   /*
    * Phantom fields are added to the query automatically (not by the user), as
