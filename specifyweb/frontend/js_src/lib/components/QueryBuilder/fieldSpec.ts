@@ -37,6 +37,14 @@ const reDatePart = /(.*)(NumericDay|NumericMonth|NumericYear)$/;
 
 export type DatePart = 'day' | 'fullDate' | 'month' | 'year';
 
+const lowercaseTrees = [
+  'geography',
+  'taxon',
+  'storage',
+  'geologictimeperiod',
+  'lithostrat',
+] as const;
+
 function extractDatePart(fieldName: string): {
   readonly fieldName: string;
   readonly datePart: DatePart | undefined;
@@ -73,6 +81,15 @@ export class QueryFieldSpec {
   public parser: Parser = {};
 
   /*
+   * Flag to indicate that the `isRelFld` property should be false.
+   * This is currently used to dissociate the base table from
+   * formatted treeRanks as a fix for
+   *   https://github.com/specify/specify7/issues/3005
+   *
+   */
+  public overrideIsRelationship: boolean = false;
+
+  /*
    * Phantom fields are added to the query automatically (not by the user), as
    * they are needed to power some related features (e.g. plotting localities).
    * They are returned in the back-end response, but they are not
@@ -90,11 +107,15 @@ export class QueryFieldSpec {
     SpQueryField['fields'],
     'fieldName' | 'isRelFld' | 'stringId' | 'tableList'
   > {
+    this.overrideIsRelationship =
+      this.treeRank !== '-any' &&
+      f.includes(lowercaseTrees, this.getField()?.name.toLowerCase());
+
     const fieldName = filterArray([
       this.treeRank === anyTreeRank ? undefined : this.treeRank,
       typeof this.treeRank === 'string' &&
       this.treeRank !== anyTreeRank &&
-      this.getField()?.name === 'fullName'
+      (this.getField()?.name === 'fullName' || this.overrideIsRelationship)
         ? undefined
         : `${
             f.maybe(this.getField(), (field) =>
@@ -124,7 +145,9 @@ export class QueryFieldSpec {
       tableList,
       stringId: [tableList, this.table.name.toLowerCase(), fieldName].join('.'),
       fieldName,
-      isRelFld: this.getField()?.isRelationship === true,
+      isRelFld: this.overrideIsRelationship
+        ? false
+        : this.getField()?.isRelationship === true,
     };
   }
 
