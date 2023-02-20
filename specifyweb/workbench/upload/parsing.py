@@ -26,7 +26,7 @@ class PicklistAddition(NamedTuple):
 
 class ParseFailure(NamedTuple):
     message: str
-    payload: Dict[str, Union[str, int]]
+    payload: Dict[str, Union[str, int, List[str], List[int]]]
     column: str
 
     def to_json(self) -> List:
