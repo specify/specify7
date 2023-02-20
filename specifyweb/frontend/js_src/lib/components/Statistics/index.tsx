@@ -26,7 +26,7 @@ import { AddStatDialog } from './AddStatDialog';
 import { StatsAsideButton } from './Buttons';
 import { Categories } from './Categories';
 import {
-  setAbsentCategoriesToFetch,
+  getDynamicCategoriesToFetch,
   statsToTsv,
   useBackendApi,
   useDefaultLayout,
@@ -91,26 +91,29 @@ export function StatsPage(): JSX.Element | null {
     isAddingItem ||
     state.type === 'PageRenameState';
   const isEditingCollection = React.useRef(false);
+
+  const hasEditPermission = hasPermission(
+    '/preferences/statistics',
+    'edit_protected'
+  );
+
   const canEditIndex = (isCollection: boolean): boolean =>
     isCollection
-      ? hasPermission('/preferences/statistics', 'edit_protected') &&
-        isEditingCollection.current
+      ? hasEditPermission && isEditingCollection.current
       : !isEditingCollection.current;
 
   const [activePage, setActivePage] = React.useState<{
-    readonly isCollection: boolean;
+    readonly isShared: boolean;
     readonly pageIndex: number;
   }>({
-    isCollection: true,
+    isShared: true,
     pageIndex: 0,
   });
 
-  const setLayout = activePage.isCollection
+  const setLayout = activePage.isShared
     ? setCollectionLayout
     : setPersonalLayout;
-  const sourceLayout = activePage.isCollection
-    ? collectionLayout
-    : personalLayout;
+  const sourceLayout = activePage.isShared ? collectionLayout : personalLayout;
 
   const allCategories = React.useMemo(
     () => dynamicStatsSpec.map(({ responseKey }) => responseKey),
@@ -120,11 +123,16 @@ export function StatsPage(): JSX.Element | null {
     []
   );
 
-  setAbsentCategoriesToFetch(
-    sourceLayout,
-    categoriesToFetch,
-    setCategoriesToFetch
-  );
+  React.useEffect(() => {
+    const absentDynamicCategories = getDynamicCategoriesToFetch(sourceLayout);
+    const notCurrentlyFetching = absentDynamicCategories.filter(
+      (category) => !categoriesToFetch.includes(category)
+    );
+    if (notCurrentlyFetching.length > 0) {
+      setCategoriesToFetch([...categoriesToFetch, ...notCurrentlyFetching]);
+    }
+  }, [sourceLayout, categoriesToFetch, setCategoriesToFetch]);
+
   const backEndResponse = useBackendApi(categoriesToFetch);
   const defaultBackEndResponse = useBackendApi(allCategories);
   const defaultLayoutSpec = useDefaultLayout();
@@ -158,14 +166,13 @@ export function StatsPage(): JSX.Element | null {
     setDefaultLayout(defaultLayoutSpec);
   }, [setDefaultLayout, defaultLayoutSpec]);
 
-  const pageLastUpdated = activePage.isCollection
+  const pageLastUpdated = activePage.isShared
     ? collectionLayout?.[activePage.pageIndex].lastUpdated
     : personalLayout?.[activePage.pageIndex].lastUpdated;
-  const canEdit =
-    !activePage.isCollection ||
-    hasPermission('/preferences/statistics', 'edit_protected');
 
-  const pageLayout = activePage.isCollection
+  const canEdit = !activePage.isShared || hasEditPermission;
+
+  const pageLayout = activePage.isShared
     ? collectionLayout?.[activePage.pageIndex].categories === undefined
       ? undefined
       : collectionLayout[activePage.pageIndex]
@@ -226,9 +233,9 @@ export function StatsPage(): JSX.Element | null {
   const previousLayout = React.useRef(personalLayout as unknown as StatLayout);
 
   const defaultStatsAddLeft = useDefaultStatsToAdd(
-    layout[
-      activePage.isCollection ? statsText.shared() : statsText.personal()
-    ]?.[activePage.pageIndex],
+    layout[activePage.isShared ? statsText.shared() : statsText.personal()]?.[
+      activePage.pageIndex
+    ],
     defaultLayout
   );
 
@@ -376,11 +383,11 @@ export function StatsPage(): JSX.Element | null {
           <Button.Green
             onClick={(): void => {
               const date = new Date();
-              const sourceIndex = activePage.isCollection ? 0 : 1;
+              const sourceIndex = activePage.isShared ? 0 : 1;
               const pageIndex = activePage.pageIndex;
               const statsTsv = statsToTsv(
                 layout,
-                activePage.isCollection ? 0 : 1,
+                activePage.isShared ? 0 : 1,
                 activePage.pageIndex
               );
               const sourceName = Object.keys(layout)[sourceIndex];
@@ -405,6 +412,7 @@ export function StatsPage(): JSX.Element | null {
                 setCollectionLayout(undefined);
                 setPersonalLayout(undefined);
                 setCategoriesToFetch([]);
+                setActivePage({ isShared: true, pageIndex: 0 });
               }}
             >
               {commonText.reset()}
@@ -415,20 +423,20 @@ export function StatsPage(): JSX.Element | null {
                 setCollectionLayout(previousCollectionLayout.current);
                 setPersonalLayout(previousLayout.current);
                 setState({ type: 'DefaultState' });
-                setActivePage(({ isCollection, pageIndex }) => {
+                setActivePage(({ isShared, pageIndex }) => {
                   /*
                    * Also handles cases where a new page is added and user clicks on cancel.
                    * Shifts to the last page in the current group
                    */
-                  const previousLayoutRef = isCollection
+                  const previousLayoutRef = isShared
                     ? previousCollectionLayout
                     : previousLayout;
-                  const newIndex =
-                    pageIndex >= previousLayoutRef.current.length
-                      ? previousLayoutRef.current.length - 1
-                      : pageIndex;
+                  const newIndex = Math.min(
+                    pageIndex,
+                    previousLayoutRef.current.length - 1
+                  );
                   return {
-                    isCollection,
+                    isShared: isShared,
                     pageIndex: newIndex,
                   };
                 });
@@ -449,7 +457,7 @@ export function StatsPage(): JSX.Element | null {
                   previousCollectionLayout.current = collectionLayout;
                 if (personalLayout !== undefined)
                   previousLayout.current = personalLayout;
-                isEditingCollection.current = activePage.isCollection;
+                isEditingCollection.current = activePage.isShared;
               }}
             >
               {commonText.edit()}
@@ -477,12 +485,12 @@ export function StatsPage(): JSX.Element | null {
                             <StatsAsideButton
                               isCurrent={
                                 activePage.pageIndex === pageIndex &&
-                                activePage.isCollection === (index === 0)
+                                activePage.isShared === (index === 0)
                               }
                               label={label}
                               onClick={(): void =>
                                 setActivePage({
-                                  isCollection: index === 0,
+                                  isShared: index === 0,
                                   pageIndex,
                                 })
                               }
@@ -547,7 +555,7 @@ export function StatsPage(): JSX.Element | null {
                         });
                         setActivePage({
                           pageIndex: sourceLayout.length,
-                          isCollection: state.isCollection,
+                          isShared: state.isCollection,
                         });
                       }
                     }
@@ -571,7 +579,7 @@ export function StatsPage(): JSX.Element | null {
                       });
                       setActivePage({
                         pageIndex: sourceLayout.length - 2,
-                        isCollection: state.isCollection,
+                        isShared: state.isCollection,
                       });
 
                       return undefined;
@@ -602,7 +610,7 @@ export function StatsPage(): JSX.Element | null {
             <Categories
               pageLayout={pageLayout}
               onAdd={
-                isEditing && canEditIndex(activePage.isCollection)
+                isEditing && canEditIndex(activePage.isShared)
                   ? (categoryindex): void =>
                       typeof categoryindex === 'number'
                         ? setState({
@@ -620,7 +628,7 @@ export function StatsPage(): JSX.Element | null {
                   : undefined
               }
               onCategoryRename={
-                isEditing && canEditIndex(activePage.isCollection)
+                isEditing && canEditIndex(activePage.isShared)
                   ? (newName, categoryIndex): void =>
                       handleChange((oldCategory) =>
                         replaceItem(oldCategory, categoryIndex, {
@@ -673,7 +681,7 @@ export function StatsPage(): JSX.Element | null {
                 )
               }
               onRename={
-                isEditing && canEditIndex(activePage.isCollection)
+                isEditing && canEditIndex(activePage.isShared)
                   ? (categoryIndex, itemIndex, newLabel): void =>
                       handleChange((oldCategory) =>
                         replaceItem(oldCategory, categoryIndex, {

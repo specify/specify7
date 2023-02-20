@@ -5,7 +5,7 @@ import { statsText } from '../../localization/stats';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { throttledPromise } from '../../utils/ajax/throttledPromise';
-import type { IR, RA, WritableArray } from '../../utils/types';
+import type { IR, RA } from '../../utils/types';
 import { keysToLowerCase } from '../../utils/utils';
 import { formatNumber } from '../Atoms/Internationalization';
 import { addMissingFields } from '../DataModel/addMissingFields';
@@ -242,41 +242,32 @@ export function useResolvedStatSpec(
   }, [item]);
 }
 
-export function setAbsentCategoriesToFetch(
-  layout: StatLayout | undefined,
-  currentCategoriesToFetch: RA<string>,
-  setCategoriesToFetch: (currentCategories: RA<string>) => void
-) {
-  if (layout === undefined) return;
-  const categoriesToFetch: WritableArray<string> = [];
-  layout.forEach((pageLayout) =>
-    pageLayout.categories.forEach(({ items }) => {
-      items.forEach((item) => {
-        if (
-          item.type === 'DefaultStat' &&
-          item.itemType === 'BackEndStat' &&
-          item.itemValue === undefined &&
-          item.itemName === 'phantomItem'
-        )
-          categoriesToFetch.push(
-            generateStatUrl(
-              statsSpec[item.pageName].urlPrefix,
-              item.categoryName,
-              item.itemName
+export function getDynamicCategoriesToFetch(
+  layout: StatLayout | undefined
+): RA<string> {
+  return Array.from(
+    new Set(
+      (layout ?? []).flatMap(({ categories }) =>
+        categories.flatMap(({ items }) =>
+          items
+            .filter(
+              (item) =>
+                item.type === 'DefaultStat' &&
+                item.itemType === 'BackEndStat' &&
+                item.itemValue === undefined &&
+                item.itemName === 'phantomItem'
             )
-          );
-      });
-    })
+            .map((item) =>
+              generateStatUrl(
+                statsSpec[(item as DefaultStat).pageName].urlPrefix,
+                (item as DefaultStat).categoryName,
+                (item as DefaultStat).itemName
+              )
+            )
+        )
+      )
+    )
   );
-  const notCurrentlyFetching = Array.from(new Set(categoriesToFetch)).filter(
-    (categoryToFetch) => !currentCategoriesToFetch.includes(categoryToFetch)
-  );
-  if (notCurrentlyFetching.length > 0) {
-    setCategoriesToFetch([
-      ...currentCategoriesToFetch,
-      ...notCurrentlyFetching,
-    ]);
-  }
 }
 
 export function statsToTsv(

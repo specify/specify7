@@ -63,32 +63,30 @@ export function AddStatDialog({
         )}
       </div>
       <div>
+        <H3 className="text-lg">{statsText.selectFromDefault()}</H3>
         {typeof defaultStatsAddLeft === 'object' && (
-          <div>
-            <H3 className="text-xl">{statsText.selectFromDefault()}</H3>
-            <Ul>
-              {defaultStatsAddLeft.map((defaultLayoutPage, index) =>
-                defaultLayoutPage.categories.every(({ items = [] }) =>
-                  items.every(
-                    (item) =>
-                      item.type === 'DefaultStat' && item.isVisible === false
-                  )
-                ) ? undefined : (
-                  <AddStatPage
-                    pageLabel={defaultLayoutPage.label}
-                    pageIndex={index}
-                    pageLayout={defaultLayoutPage}
-                    key={index}
-                    onClick={(item: CustomStat | DefaultStat): void => {
-                      handleAdd(item, -1);
-                      handleClose();
-                    }}
-                    onLoad={onLoad}
-                  />
+          <Ul>
+            {defaultStatsAddLeft.map((defaultLayoutPage, index) =>
+              defaultLayoutPage.categories.every(({ items = [] }) =>
+                items.every(
+                  (item) =>
+                    item.type === 'DefaultStat' && item.isVisible === false
                 )
-              )}
-            </Ul>
-          </div>
+              ) ? undefined : (
+                <AddStatPage
+                  pageLabel={defaultLayoutPage.label}
+                  pageIndex={index}
+                  pageLayout={defaultLayoutPage}
+                  key={index}
+                  onClick={(item: CustomStat | DefaultStat): void => {
+                    handleAdd(item, -1);
+                    handleClose();
+                  }}
+                  onLoad={onLoad}
+                />
+              )
+            )}
+          </Ul>
         )}
       </div>
     </Dialog>
