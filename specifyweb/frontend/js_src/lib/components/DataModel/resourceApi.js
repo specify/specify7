@@ -11,9 +11,8 @@ import {
     getFieldsToNotClone,
     getResourceApiUrl,
     getResourceViewUrl,
-    resourceFromUrl, 
-    resourceEvents
-} from './resource';
+    resourceEvents,
+    resourceFromUrl} from './resource';
 
 function eventHandlerForToOne(related, field) {
         return function(event) {

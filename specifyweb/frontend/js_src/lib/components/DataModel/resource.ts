@@ -32,7 +32,9 @@ import type { Tables } from './types';
  * fetching the new one.
  */
 
-export const resourceEvents = eventListener<{ readonly deleted: SpecifyResource<AnySchema> }>();
+export const resourceEvents = eventListener<{
+  readonly deleted: SpecifyResource<AnySchema>;
+}>();
 
 /**
  * Fetch a single resource from the back-end
@@ -58,7 +60,7 @@ export const fetchResource = async <
     status === Http.NOT_FOUND ? undefined! : serializeResource(record)
   );
 
-  //BUG: trigger resourceEvents.deleted here
+// BUG: trigger resourceEvents.deleted here
 export const deleteResource = async (
   tableName: keyof Tables,
   id: number
