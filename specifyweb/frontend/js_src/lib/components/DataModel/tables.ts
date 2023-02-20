@@ -12,7 +12,7 @@ import {
   overwriteReadOnly,
   setDevelopmentGlobal,
 } from '../../utils/types';
-import { sortFunction } from '../../utils/utils';
+import { sortFunction, split } from '../../utils/utils';
 import { error } from '../Errors/assert';
 import { load } from '../InitialContext';
 import { isTreeTable } from '../InitialContext/treeRanks';
@@ -98,9 +98,17 @@ export const fetchContext = f
         return [tableDefinition, table] as const;
       })
       .forEach(([tableDefinition, table]) => {
-        const [frontEndFields, frontEndRelationships, callback] = (
+        const [frontEndFields, callback] = (
           schemaExtras[table.name] as typeof schemaExtras['Agent'] | undefined
-        )?.(table as SpecifyTable<Agent>) ?? [[], []];
+        )?.(table as SpecifyTable<Agent>) ?? [[]];
+        const [literalFields, relationships] = split(
+          frontEndFields.map((field) => {
+            field.isReadOnly = true;
+            field.overrides.isReadOnly = true;
+            return field;
+          }),
+          (field) => field.isRelationship
+        );
 
         overwriteReadOnly(
           table,
@@ -110,7 +118,7 @@ export const fetchContext = f
             tableDefinition.fields.map(
               (fieldDefinition) => new LiteralField(table, fieldDefinition)
             ),
-            frontEndFields
+            literalFields
           )
         );
         overwriteReadOnly(
@@ -121,7 +129,7 @@ export const fetchContext = f
               (relationshipDefinition) =>
                 new Relationship(table, relationshipDefinition)
             ),
-            frontEndRelationships
+            relationships
           )
         );
         overwriteReadOnly(table, 'fields', [
@@ -135,8 +143,8 @@ export const fetchContext = f
         );
 
         frontEndOnlyFields[table.name] = [
-          ...frontEndFields,
-          ...frontEndRelationships,
+          ...literalFields,
+          ...relationships,
         ].map(({ name }) => name);
 
         callback?.();

@@ -296,8 +296,11 @@ function eventHandlerForToOne(related, field) {
 
             const field = this.specifyTable.getField(fieldName);
             if (!field) {
-                console.warn("setting unknown field", fieldName, "on",
-                             this.specifyTable.name, "value is", value);
+                console.warn(
+                  `Setting unknown field ${fieldName} on ${this.specifyTable.name}.\n`,
+                  `If this is a virtual field, define it in schemaExtras.ts`,
+                  {value,resource:this}
+                );
                 return [fieldName, value];
             }
 
