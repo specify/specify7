@@ -319,6 +319,9 @@ def create_roles() -> None:
     role.policies.create(resource="/table/specifyuser", action="update")
     role.policies.create(resource="/table/specifyuser", action="delete")
 
+    role = LibraryRole.objects.create(name="Edit Statistics", description="Grants full access to edit statistics page layout within a collection")
+    role.policies.create(resource="/preferences/statistics", action="edit")
+
     collection_admin = LibraryRole.objects.create(
         name="Collection Admin",
         description="Grants full access to all abilities within a collection.")
@@ -365,6 +368,7 @@ def create_roles() -> None:
     full_access.policies.create(resource="/tree/%", action="%")
     full_access.policies.create(resource="/report", action="%")
     full_access.policies.create(resource="/querybuilder/%", action="%")
+    full_access.policies.create(resource="/preferences/statistics", action="edit_protected")
 
     # copy the appropriate roles into the individual collections.
     users = Specifyuser.objects.all()
