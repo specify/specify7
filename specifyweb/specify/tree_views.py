@@ -57,7 +57,7 @@ def tree_mutation(mutation):
                             "type": "array",
                             "items": {
                                 "type": "array",
-                                "items": [
+                                "prefixItems": [
                                     {
                                         "type" : "integer",
                                         "description" : "The id of the child node"
