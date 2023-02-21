@@ -85,7 +85,10 @@ export function QueryFields({
   );
 
   return (
-    <Ul className="flex-1 overflow-y-auto" forwardRef={fieldsContainerRef}>
+    <Ul
+      className="min-h-[theme(spacing.80)] flex-1 overflow-y-auto"
+      forwardRef={fieldsContainerRef}
+    >
       {fields.map((field, line, { length }) => (
         <ErrorBoundary dismissible key={field.id}>
           <QueryLine

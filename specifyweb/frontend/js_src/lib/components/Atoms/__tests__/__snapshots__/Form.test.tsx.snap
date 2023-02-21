@@ -4,7 +4,7 @@ exports[`<Form> removes notSubmitted class name on submit 1`] = `
 <DocumentFragment>
   <form
     aria-label="form"
-    class="flex flex-col gap-4"
+    class="flex flex-col gap-4 min-h-[30vh]"
   >
     <input
       type="submit"

@@ -47,7 +47,7 @@ const commonContainer = 'rounded resize max-w-[90%] shadow-lg shadow-gray-500';
 export const dialogClassNames = {
   fullScreen: '!transform-none !w-full !h-full',
   freeContainer: `${commonContainer} max-h-[90%]`,
-  narrowContainer: `${commonContainer} max-h-[50%] min-w-[min(20rem,90%)]
+  narrowContainer: `${commonContainer} max-h-[90%] sm:max-h-[50%] min-w-[min(20rem,90%)]
     lg:max-w-[50%]`,
   normalContainer: `${commonContainer} max-h-[90%] min-w-[min(30rem,90%)]`,
   wideContainer: `${commonContainer} max-h-[90%] min-w-[min(40rem,90%)]`,
