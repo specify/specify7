@@ -327,16 +327,6 @@ function useInteraction(
       const title = target.getAttribute('title');
       if (typeof title !== 'string' || title.length === 0) return;
       display(event.type as 'focus' | 'mouseenter', target, title);
-
-      // Set exit event listener
-      target.addEventListener(
-        event.type === 'focus' ? ('blur' as const) : ('mouseleave' as const),
-        handleOut,
-        {
-          passive: true,
-          once: true,
-        }
-      );
     }
 
     function display(
@@ -344,10 +334,13 @@ function useInteraction(
       element: HTMLElement,
       title: string
     ): void {
+      const isDisplayed =
+        currentElementRef.current !== undefined &&
+        timeOut.current === undefined;
+
       clear();
       // Remove the title attribute to silence default browser titles
       element.removeAttribute('title');
-      const isDisplayed = currentElementRef.current !== undefined;
       currentElementRef.current = element;
       setCurrentElement(element);
       currentTitle.current = title;
@@ -363,6 +356,16 @@ function useInteraction(
         );
         if (typeof floatingIdRef.current === 'string')
           element.setAttribute('aria-describedby', floatingIdRef.current);
+
+        // Set exit event listener
+        element.addEventListener(
+          type === 'focus' ? ('blur' as const) : ('mouseleave' as const),
+          handleOut,
+          {
+            passive: true,
+            once: true,
+          }
+        );
       };
 
       const customDelay = f.maybe(
