@@ -650,8 +650,28 @@ export const queryText = createDictionary({
   importNoReadPermission: {
     'en-us':
       'The query you imported contains tables you do not have read access to:',
+    'es-es': `
+      La consulta que importó contiene tablas a las que no tiene acceso de
+      lectura:
+    `,
+    'fr-fr': `
+      La requête que vous avez importée contient des tables auxquelles vous
+      n'avez pas accès en lecture :
+    `,
+    'ru-ru': `
+      Импортированный запрос содержит таблицы, к которым у вас нет доступа для
+      чтения:
+    `,
+    'uk-ua': `
+      Запит, який ви імпортували, містить таблиці, до яких ви не маєте доступу
+      на читання:
+    `,
   },
   noReadPermission: {
     'en-us': 'No read permission',
+    'es-es': 'Sin permiso de lectura',
+    'fr-fr': "Pas d'autorisation de lecture",
+    'ru-ru': 'Нет разрешения на чтение',
+    'uk-ua': 'Немає дозволу на читання',
   },
 } as const);
