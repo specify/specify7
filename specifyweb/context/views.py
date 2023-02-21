@@ -823,14 +823,6 @@ def languages(request):
         else:
             languages = languages.split(',')
 
-        temp = JsonResponse({
-            code:{
-                **get_language_info(code),
-                'is_current': code==request.LANGUAGE_CODE
-            } for code in languages
-        })
-        print(temp)
-
         return JsonResponse({
             code:{
                 **get_language_info(code),
