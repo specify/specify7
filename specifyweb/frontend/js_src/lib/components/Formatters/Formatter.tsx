@@ -34,8 +34,8 @@ export function FormatterElement({
   return (
     <>
       {typeof formatter.table === 'object' && (
-        <Label.Block>
-          {resourcesText.conditionField()}
+        <fieldset>
+          <legend>{resourcesText.conditionField()}</legend>
           <ResourceMapping
             allowedTransient={allowedConditionMappings}
             isReadOnly={isReadOnly}
@@ -53,7 +53,7 @@ export function FormatterElement({
             openIndex={[openIndex, setOpenIndex]}
             table={formatter.table}
           />
-        </Label.Block>
+        </fieldset>
       )}
       {formatter.definition.external === undefined ? (
         <Definitions item={[formatter, setFormatter]} />

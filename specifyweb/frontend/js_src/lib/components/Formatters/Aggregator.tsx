@@ -56,8 +56,8 @@ export function AggregatorElement({
         />
       </Label.Block>
       {typeof aggregator.table === 'object' && (
-        <Label.Block>
-          {resourcesText.sortField()}
+        <fieldset>
+          <legend>{resourcesText.sortField()}</legend>
           <ResourceMapping
             isReadOnly={isReadOnly}
             mapping={[
@@ -71,7 +71,7 @@ export function AggregatorElement({
             openIndex={[openIndex, setOpenIndex]}
             table={aggregator.table}
           />
-        </Label.Block>
+        </fieldset>
       )}
       <Label.Block>
         {resourcesText.formatter()}

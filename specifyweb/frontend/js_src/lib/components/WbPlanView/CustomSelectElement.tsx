@@ -10,6 +10,8 @@
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
+import { useId } from '../../hooks/useId';
+import { useValidation } from '../../hooks/useValidation';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { wbPlanText } from '../../localization/wbPlan';
@@ -27,8 +29,6 @@ import {
 } from '../Molecules/TableIcon';
 import { scrollIntoView } from '../TreeView/helpers';
 import { emptyMapping } from './helpers';
-import { useId } from '../../hooks/useId';
-import { useValidation } from '../../hooks/useValidation';
 
 type Properties =
   /*
@@ -66,10 +66,10 @@ type Properties =
   | 'arrow';
 export type CustomSelectType =
   | 'CLOSED_LIST'
-  | 'SIMPLE_LIST'
   | 'OPENED_LIST'
   | 'OPTIONS_LIST'
   | 'PREVIEW_LIST'
+  | 'SIMPLE_LIST'
   | 'SUGGESTION_LIST';
 /* eslint-disable @typescript-eslint/naming-convention */
 export const customSelectTypes: RR<CustomSelectType, RA<Properties>> = {
@@ -564,8 +564,8 @@ export function CustomSelectElement({
       : undefined;
     preview = (
       // Not tabbable because keyboard events are handled separately
-      // eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/interactive-supports-focus
       <button
+        aria-controls={id('options')}
         aria-expanded={isOpen}
         aria-haspopup="listbox"
         className={`
@@ -584,10 +584,9 @@ export function CustomSelectElement({
           }
           ${isOpen ? 'rounded-b-none [z-index:3]' : ''}
         `}
+        disabled={handleClick === undefined}
         ref={validationRef}
         type="button"
-        aria-controls={id('options')}
-        disabled={handleClick === undefined}
         onClick={handleClick}
       >
         {has('icon') && (
@@ -601,7 +600,8 @@ export function CustomSelectElement({
         )}
         <span
           className={`
-            flex-1 ${
+            flex-1
+            ${
               defaultOption.optionLabel === emptyMapping &&
               customSelectType !== 'SIMPLE_LIST'
                 ? 'font-extrabold text-red-600'
@@ -687,6 +687,7 @@ export function CustomSelectElement({
   const customSelectOptions = (Boolean(unmapOption) || groups) && (
     <span
       aria-label={selectLabel}
+      aria-orientation="vertical"
       aria-readonly={!has('interactive') || typeof handleChange !== 'function'}
       className={`
         h-fit flex-1 cursor-pointer overflow-x-hidden
@@ -696,10 +697,9 @@ export function CustomSelectElement({
         ${has('shadow') ? 'max-h-[theme(spacing.64)] shadow-md' : ''}
         ${customSelectType === 'SUGGESTION_LIST' ? '' : 'min-w-max'}
       `}
+      id={id('options')}
       ref={listOfOptionsRef}
       role="listbox"
-      id={id('options')}
-      aria-orientation="vertical"
       tabIndex={-1}
     >
       {unmapOption}
@@ -817,8 +817,7 @@ export function CustomSelectElement({
                     newTableName: inlineOptions[newIndex]?.tableName,
                     isDoubleClick: false,
                   });
-                  if (close || newValue !== defaultOption.optionName)
-                    handleClose?.();
+                  if (close) handleClose?.();
                 }
               }
             }

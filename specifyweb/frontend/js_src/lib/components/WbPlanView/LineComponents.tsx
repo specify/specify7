@@ -195,7 +195,7 @@ export function MappingPathComponent({
   return (
     <>
       {mappingLineData.map((mappingDetails, index) => (
-        <li key={index} className="content">
+        <li key={index} className="contents">
           <MappingElement {...mappingDetails} />
           {index + 1 !== mappingLineData.length &&
           mappingLineData[index + 1]?.customSelectType !== 'OPTIONS_LIST'

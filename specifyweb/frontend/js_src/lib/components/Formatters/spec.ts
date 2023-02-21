@@ -59,7 +59,7 @@ export type Formatter = SpecToJson<
   ReturnType<typeof formattersSpec>
 >['formatters'][number];
 export type Aggregator = SpecToJson<
-  ReturnType<typeof formattersSpec>
+  ReturnType<typeof aggregatorSpec>
 >['aggregators'][number];
 
 const formatterSpec = f.store(() =>
