@@ -722,19 +722,19 @@ def api_endpoints_all(request):
 @require_http_methods(['GET', 'POST', 'HEAD'])
 @cache_control(max_age=86400, public=True)
 @openapi(schema={
-    "parameters": [
-        {
-            "name": "languages",
-            "in": "query",
-            "description": "Comma separate list of languages",
-            "example": "en-us,uk-ua,ru-ru",
-            "required": False,
-            "schema": {
-                "type": "string",
-            },
-        },
-    ],
     "get": {
+        "parameters": [
+            {
+                "name": "languages",
+                "in": "query",
+                "description": "Comma separate list of languages",
+                "example": "en-us,uk-ua,ru-ru",
+                "required": False,
+                "schema": {
+                    "type": "string",
+                },
+            },
+        ],
         "responses": {
             "200": {
                 "description": "List of available languages",
