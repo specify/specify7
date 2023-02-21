@@ -56,50 +56,50 @@ def tree_mutation(mutation):
                         "schema": {
                             "type": "array",
                             "items": {
-                                "type": "object",
-                                "properties": {
-                                    "id": {
-                                        "type" : "number",
+                                "type": "array",
+                                "prefixItems": [
+                                    {
+                                        "type" : "integer",
                                         "description" : "The id of the child node"
                                     },
-                                    "name": {
+                                    {
                                         "type" : "string",
                                         "description" : "The name of the child node"
                                     },
-                                    "fullName": {
+                                    {
                                         "type" : "string",
                                         "description" : "The fullName of the child node"
                                     },
-                                    "nodeNumber": {
-                                        "type" : "number",
+                                    {
+                                        "type" : "integer",
                                         "description" : "The nodenumber of the child node"
                                     },
-                                    "higherChildNodeNumnber": {
-                                        "type" : "number",
+                                    {
+                                        "type" : "integer",
                                         "description" : "The highestChildNodeNumber of the child node"
                                     },
-                                    "rankId": {
-                                        "type" : "number",
+                                    {
+                                        "type" : "integer",
                                         "description" : "The rankId of the child node"
                                     },
-                                    "acceptedId": {
-                                        "type" : "number",
+                                    {
+                                        "type" : ["integer", "null"],
                                         "description" : "The acceptedId of the child node. Returns null if the node has no acceptedId"
                                     },
-                                    "acceptedFullName": {
-                                        "type" : "string",
+                                    {
+                                        "type" : ["string", "null"],
                                         "description" : "The fullName of the child node's accepted node. Returns null if the node has no acceptedId"
                                     },
-                                    "author": {
-                                        "type" : "string",
+                                    {
+                                        "type" : ["string", "null"],
                                         "description" : "The author of the child node. \
                                         Returns null if <tree> is not taxon or the rankId of the node is less than <includeAuthor> paramter"
                                     },
-                                    "childCount": {
-                                        "type" : "number",
+                                    {
+                                        "type" : "integer",
                                         "description" : "The number of children the child node has"
                                     }
-                                },
+                                ],
                             }
                         }
                     }
