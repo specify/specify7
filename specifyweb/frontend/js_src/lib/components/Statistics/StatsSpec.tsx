@@ -9,7 +9,8 @@ import { userInformation } from '../InitialContext/userInformation';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { formattedEntry } from '../WbPlanView/mappingHelpers';
 import { generateStatUrl } from './hooks';
-import type { BackEndStat, StatsSpec } from './types';
+import type { BackEndStat, StatLayout, StatsSpec } from './types';
+import { DefaultStat, StatCategoryReturn } from './types';
 
 export const statsSpec: StatsSpec = {
   collection: {
@@ -483,9 +484,29 @@ export const statsSpec: StatsSpec = {
 
 ensure<StatsSpec>()(statsSpec);
 
+const statSpecToItems = (
+  categoryName: string,
+  pageName: string,
+  items: StatCategoryReturn
+): RA<DefaultStat> =>
+  Object.entries(items).map(([itemName, { label, spec }]) => ({
+    type: 'DefaultStat',
+    pageName,
+    itemName,
+    categoryName,
+    label: label,
+    itemValue: undefined,
+    itemType: spec.type === 'BackEndStat' ? 'BackEndStat' : 'QueryStat',
+    pathToValue: spec.type === 'BackEndStat' ? spec.pathToValue : undefined,
+  }));
+
 function generateDynamicSpec(
   statsSpec: StatsSpec
-): RA<{ readonly responseKey: string; readonly tableName: keyof Tables }> {
+): RA<{
+  readonly responseKey: string;
+  readonly tableName: keyof Tables;
+  readonly formatter: (rawResult: any) => string | undefined;
+}> {
   return Object.entries(statsSpec).flatMap(([_, { categories, urlPrefix }]) =>
     Object.entries(categories).flatMap(([categoryKey, { items }]) =>
       Object.entries(items)
@@ -496,9 +517,28 @@ function generateDynamicSpec(
         .map(([itemKey, { spec }]) => ({
           responseKey: generateStatUrl(urlPrefix, categoryKey, itemKey),
           tableName: (spec as BackEndStat).tableName,
+          formatter: (spec as BackEndStat).formatter,
         }))
     )
   );
 }
 
+export function generateDefaultLayout(statsSpecBasis: StatsSpec): StatLayout {
+  return Object.entries(statsSpecBasis).map(
+    ([sourceKey, { sourceLabel, categories }]) => ({
+      label: sourceLabel,
+      categories: Object.entries(categories).map(
+        ([categoryName, { label, items }]) => {
+          return {
+            label,
+            items: statSpecToItems(categoryName, sourceKey, items),
+          };
+        }
+      ),
+      lastUpdated: undefined,
+    })
+  );
+}
+
 export const dynamicStatsSpec = generateDynamicSpec(statsSpec);
+export const defaultLayoutGenerated = generateDefaultLayout(statsSpec);

@@ -29,12 +29,11 @@ import {
   getDynamicCategoriesToFetch,
   statsToTsv,
   useBackendApi,
-  useDefaultLayout,
   useDefaultStatsToAdd,
   useDynamicCategorySetter,
 } from './hooks';
 import { StatsPageEditing } from './StatsPageEditing';
-import { dynamicStatsSpec } from './StatsSpec';
+import { dynamicStatsSpec, defaultLayoutGenerated } from './StatsSpec';
 import type { CustomStat, DefaultStat, StatLayout } from './types';
 
 export function StatsPage(): JSX.Element | null {
@@ -135,7 +134,6 @@ export function StatsPage(): JSX.Element | null {
 
   const backEndResponse = useBackendApi(categoriesToFetch);
   const defaultBackEndResponse = useBackendApi(allCategories);
-  const defaultLayoutSpec = useDefaultLayout();
 
   /*
    * Initial Load For Collection and Personal Pages
@@ -146,14 +144,13 @@ export function StatsPage(): JSX.Element | null {
    */
   React.useEffect(() => {
     if (collectionLayout === undefined) {
-      setCollectionLayout([defaultLayoutSpec[0]]);
+      setCollectionLayout([defaultLayoutGenerated[0]]);
     }
     if (personalLayout === undefined) {
-      setPersonalLayout([defaultLayoutSpec[1]]);
+      setPersonalLayout([defaultLayoutGenerated[1]]);
     }
   }, [
     collectionLayout,
-    defaultLayoutSpec,
     personalLayout,
     setCollectionLayout,
     setPersonalLayout,
@@ -163,8 +160,8 @@ export function StatsPage(): JSX.Element | null {
 
   /* Set Default Layout every time page is started from scratch*/
   React.useEffect(() => {
-    setDefaultLayout(defaultLayoutSpec);
-  }, [setDefaultLayout, defaultLayoutSpec]);
+    setDefaultLayout(defaultLayoutGenerated);
+  }, [setDefaultLayout]);
 
   const pageLastUpdated = activePage.isShared
     ? collectionLayout?.[activePage.pageIndex].lastUpdated

@@ -3,18 +3,16 @@ import React from 'react';
 import { useMultipleAsyncState } from '../../hooks/useAsyncState';
 import { statsText } from '../../localization/stats';
 import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/definitions';
 import { throttledPromise } from '../../utils/ajax/throttledPromise';
 import type { IR, RA } from '../../utils/types';
 import { keysToLowerCase } from '../../utils/utils';
 import { formatNumber } from '../Atoms/Internationalization';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import { deserializeResource, serializeResource } from '../DataModel/helpers';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { SpQuery } from '../DataModel/types';
 import { makeQueryField } from '../QueryBuilder/fromTree';
-import { statsSpec } from './StatsSpec';
 import type {
   BackEndStat,
   BackendStatsResult,
@@ -22,9 +20,11 @@ import type {
   DefaultStat,
   QueryBuilderStat,
   QuerySpec,
-  StatCategoryReturn,
   StatLayout,
+  StatsSpec,
 } from './types';
+import { Http } from '../../utils/ajax/definitions';
+import { dynamicStatsSpec, statsSpec } from './StatsSpec';
 
 /**
  * Fetch backend statistics from the API
@@ -40,6 +40,7 @@ export function useBackendApi(
     [urlsToFetch]
   );
   const [backendStat] = useMultipleAsyncState(backEndStatPromises, false);
+
   return backendStat;
 }
 
@@ -92,7 +93,7 @@ export function useDefaultStatsToAdd(
       lastUpdated: undefined,
       categories: defaultLayoutPage.categories.map(({ label, items }) => ({
         label,
-        items: items?.map((defaultItem) => {
+        items: items.map((defaultItem) => {
           const defaultStatNotFound =
             defaultItem.type === 'DefaultStat' &&
             !listToUse.some(
@@ -102,7 +103,7 @@ export function useDefaultStatsToAdd(
                 itemName === defaultItem.itemName &&
                 pathToValue === defaultItem.pathToValue
             );
-          statNotFound ||= defaultStatNotFound;
+          if (!statNotFound) statNotFound = defaultStatNotFound;
           return {
             ...defaultItem,
             isVisible: defaultStatNotFound ? undefined : false,
@@ -112,41 +113,6 @@ export function useDefaultStatsToAdd(
     }));
     return statNotFound ? defaultLayoutFlagged : undefined;
   }, [layout, defaultLayout]);
-}
-
-export const statSpecToItems = (
-  categoryName: string,
-  pageName: string,
-  items: StatCategoryReturn
-): RA<DefaultStat> =>
-  Object.entries(items).map(([itemName, { label, spec }]) => ({
-    type: 'DefaultStat',
-    pageName,
-    itemName,
-    categoryName,
-    label,
-    itemValue: undefined,
-    itemType: spec.type === 'BackEndStat' ? 'BackEndStat' : 'QueryStat',
-    pathToValue: spec.type === 'BackEndStat' ? spec.pathToValue : undefined,
-  }));
-
-export function useDefaultLayout(): StatLayout {
-  return React.useMemo(
-    () =>
-      Object.entries(statsSpec).map(
-        ([sourceKey, { sourceLabel, categories }]) => ({
-          label: sourceLabel,
-          categories: Object.entries(categories).map(
-            ([categoryName, { label, items }]) => ({
-              label,
-              items: statSpecToItems(categoryName, sourceKey, items),
-            })
-          ),
-          lastUpdated: undefined,
-        })
-      ),
-    []
-  );
 }
 
 export function queryCountPromiseGenerator(
@@ -300,9 +266,9 @@ export function statsToTsv(
 }
 
 export function useStatValueLoad<
-  PROMISE_TYPE extends number | string | undefined
+  PROMISE_TYPE extends string | number | undefined
 >(
-  value: number | string | undefined,
+  value: string | number | undefined,
   promiseGenerator: () => Promise<PROMISE_TYPE>,
   onLoad: ((value: number | string) => void) | undefined
 ) {
@@ -320,14 +286,13 @@ export function useStatValueLoad<
   }, [promiseGenerator, value, onLoad]);
 }
 
-function applyBackendResponse(
-  backEndResponse: BackendStatsResult | undefined,
-  items: RA<CustomStat | DefaultStat>,
-  pageName: string,
-  categoryName: string,
-  urlPrefix: string,
-  formatter: (rawResult: any) => string | undefined
-): RA<CustomStat | DefaultStat> {
+export function applyStatBackendResponse(
+  backEndResponse: BackendStatsResult,
+  items: RA<DefaultStat | CustomStat>,
+  responseKey: string,
+  formatter: (rawResult: any) => string | undefined,
+  statsSpec: StatsSpec
+): RA<DefaultStat | CustomStat> {
   const phantomItem = items.find(
     (item) =>
       item.type === 'DefaultStat' &&
@@ -335,24 +300,20 @@ function applyBackendResponse(
       item.pathToValue === undefined
   );
 
-  const responseKey =
-    phantomItem !== undefined && phantomItem.type === 'DefaultStat'
-      ? generateStatUrl(
-          urlPrefix,
-          phantomItem.categoryName,
-          phantomItem.itemName
-        )
-      : undefined;
-  if (
-    responseKey === undefined ||
-    backEndResponse === undefined ||
-    backEndResponse[responseKey] === undefined
-  )
-    return items;
-  const isMyResponse =
-    Object.keys(backEndResponse).includes(responseKey) &&
-    pageName === (phantomItem as DefaultStat).pageName &&
-    categoryName === (phantomItem as DefaultStat).categoryName;
+  const phantomItemUrlPrefix =
+    phantomItem === undefined || phantomItem.type !== 'DefaultStat'
+      ? undefined
+      : statsSpec[phantomItem.pageName].urlPrefix;
+
+  const phantomItemResponseKey =
+    phantomItemUrlPrefix === undefined
+      ? undefined
+      : generateStatUrl(
+          phantomItemUrlPrefix,
+          (phantomItem as DefaultStat).categoryName,
+          (phantomItem as DefaultStat).itemName
+        );
+  const isMyResponse = phantomItemResponseKey === responseKey;
   return phantomItem !== undefined &&
     isMyResponse &&
     phantomItem.type === 'DefaultStat'
@@ -371,41 +332,70 @@ function applyBackendResponse(
     : items;
 }
 
+export function useDefaultDynamicCategorySetter(
+  defaultBackEndResponse: BackendStatsResult | undefined,
+  setDefaultLayout: (
+    prevGenerator: (oldLayout: StatLayout | undefined) => StatLayout | undefined
+  ) => void
+) {
+  React.useLayoutEffect(() => {
+    dynamicStatsSpec.forEach(({ responseKey, formatter }) => {
+      if (
+        defaultBackEndResponse !== undefined &&
+        defaultBackEndResponse[responseKey] !== undefined
+      ) {
+        setDefaultLayout((oldLayout) =>
+          oldLayout === undefined
+            ? undefined
+            : oldLayout.map((oldPage) => ({
+                ...oldPage,
+                categories: oldPage.categories.map((oldCategory) => ({
+                  ...oldCategory,
+                  items: applyStatBackendResponse(
+                    defaultBackEndResponse,
+                    oldCategory.items,
+                    responseKey,
+                    formatter,
+                    statsSpec
+                  ),
+                })),
+              }))
+        );
+      }
+    });
+  }, [setDefaultLayout, defaultBackEndResponse]);
+}
+
 export function useDynamicCategorySetter(
   backEndResponse: BackendStatsResult | undefined,
   handleChange: (
     newCategories: (
       oldCategory: StatLayout[number]['categories']
     ) => StatLayout[number]['categories']
-  ) => void
+  ) => void,
+  categoriesToFetch: RA<string>
 ) {
   React.useLayoutEffect(() => {
-    Object.entries(statsSpec).forEach(
-      ([sourceName, { categories, urlPrefix }]) =>
-        Object.entries(categories).forEach(([categoryName, categorySpec]) =>
-          Object.entries(categorySpec.items).forEach(([itemName, { spec }]) => {
-            if (
-              itemName === 'phantomItem' &&
-              spec.type === 'BackEndStat' &&
-              backEndResponse !== undefined
-            ) {
-              handleChange((oldCategory) =>
-                oldCategory.map((unknownCategory) => ({
-                  ...unknownCategory,
-                  items: applyBackendResponse(
-                    backEndResponse,
-                    unknownCategory.items,
-                    sourceName,
-                    categoryName,
-                    urlPrefix,
-                    spec.formatter
-                  ),
-                }))
-              );
-            }
-          })
-        )
-    );
+    dynamicStatsSpec.forEach(({ responseKey, formatter }) => {
+      if (
+        backEndResponse !== undefined &&
+        backEndResponse[responseKey] !== undefined &&
+        categoriesToFetch.includes(responseKey)
+      ) {
+        handleChange((oldCategory) =>
+          oldCategory.map((unknownCategory) => ({
+            ...unknownCategory,
+            items: applyStatBackendResponse(
+              backEndResponse,
+              unknownCategory.items,
+              responseKey,
+              formatter,
+              statsSpec
+            ),
+          }))
+        );
+      }
+    });
   }, [backEndResponse, handleChange]);
 }
 
@@ -422,4 +412,8 @@ export function generateStatUrl(
       }`,
     ''
   )}/`;
+}
+
+export function getOffsetOne(base: number, target: number) {
+  return Math.sign(target - base - 1) + base;
 }
