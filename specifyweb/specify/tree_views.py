@@ -83,15 +83,15 @@ def tree_mutation(mutation):
                                         "description" : "The rankId of the child node"
                                     },
                                     {
-                                        "type" : ["integer", "null"],
+                                        "type" : "number",
                                         "description" : "The acceptedId of the child node. Returns null if the node has no acceptedId"
                                     },
                                     {
-                                        "type" : ["string", "null"],
+                                        "type" : "string",
                                         "description" : "The fullName of the child node's accepted node. Returns null if the node has no acceptedId"
                                     },
                                     {
-                                        "type" : ["string", "null"],
+                                        "type" : "string",
                                         "description" : "The author of the child node. \
                                         Returns null if <tree> is not taxon or the rankId of the node is less than <includeAuthor> paramter"
                                     },
