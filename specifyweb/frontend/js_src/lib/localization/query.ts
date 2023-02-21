@@ -647,4 +647,10 @@ export const queryText = createDictionary({
     'ru-ru': 'В импортированном запросе скрыты следующие поля:',
     'uk-ua': 'В імпортованому вами запиті приховано такі поля:',
   },
+  importNoReadPermission: {
+    'en-us': 'The query you imported contains tables you do not have read access to:'
+  },
+  noReadPermission: {
+    'en-us': "No read permission"
+  }
 } as const);
