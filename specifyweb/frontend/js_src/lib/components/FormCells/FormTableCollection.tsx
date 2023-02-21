@@ -18,7 +18,7 @@ export function FormTableCollection({
     Parameters<typeof FormTable>[0],
     'isDependent' | 'onFetchMore' | 'relationship' | 'resources'
   >,
-  'onAdd' | 'onDelete'
+  'onDelete'
 > & {
   readonly collection: Collection<AnySchema>;
 }): JSX.Element | null {
@@ -60,15 +60,7 @@ export function FormTableCollection({
       relationship={relationship}
       resources={records}
       totalCount={collection._totalCount}
-      onAdd={
-        disableAdding
-          ? undefined
-          : handleAdd ??
-            ((resources): void => {
-              collection.add(resources);
-              setRecords(Array.from(collection.models));
-            })
-      }
+      onAdd={disableAdding ? undefined : handleAdd}
       onDelete={(resource): void => {
         collection.remove(resource);
         setRecords(Array.from(collection.models));

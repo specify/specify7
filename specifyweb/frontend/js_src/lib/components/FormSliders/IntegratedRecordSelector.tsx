@@ -149,6 +149,7 @@ export function IntegratedRecordSelector({
   formType,
   sortField,
   relationship,
+  onAdd: handleAdd,
   ...rest
 }: Omit<
   Parameters<typeof RecordSelectorFromCollection>[0],
@@ -176,7 +177,10 @@ export function IntegratedRecordSelector({
       mode={mode}
       sortField={sortField}
       viewName={viewName}
-      onAdd={undefined}
+      onAdd={(resources): void => {
+        collection.add(resources);
+        if (typeof handleAdd === 'function') handleAdd(resources);
+      }}
       onClose={handleClose}
       onDelete={undefined}
     />
@@ -190,6 +194,7 @@ export function IntegratedRecordSelector({
           ? setIndex(index.toString())
           : undefined
       }
+      onAdd={handleAdd}
       {...rest}
     >
       {({
