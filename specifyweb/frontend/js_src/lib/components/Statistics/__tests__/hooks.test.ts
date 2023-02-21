@@ -34,39 +34,38 @@ const backEndResponse = {
   },
 };
 
-export const statsPageTest = () => {
-  theories(applyStatBackendResponse, [
-    {
-      in: [
-        backEndResponse,
-        defaultLayoutTest[0].categories[3].items,
-        'collection',
-        'type_specimens',
-        'collection',
-        (rawNumber: number | undefined) => f.maybe(rawNumber, formatNumber),
-      ],
-      out: [
-        {
-          type: 'DefaultStat',
-          itemType: 'BackEndStat',
-          pageName: 'collection',
-          categoryName: 'type_specimens',
-          itemName: 'phantomItem',
-          label: 'Holotype',
-          itemValue: 19,
-          pathToValue: 'Holotype',
-        },
-        {
-          type: 'DefaultStat',
-          itemType: 'BackEndStat',
-          pageName: 'collection',
-          categoryName: 'type_specimens',
-          itemName: 'phantomItem',
-          label: 'Neotype',
-          itemValue: 1,
-          pathToValue: 'Neotype',
-        },
-      ],
-    },
-  ]);
-};
+// Applying Backend stat response tests
+theories(applyStatBackendResponse, [
+  {
+    in: [
+      backEndResponse,
+      defaultLayoutTest[0].categories[3].items,
+      'collection',
+      'type_specimens',
+      'collection',
+      (rawNumber: number | undefined) => f.maybe(rawNumber, formatNumber),
+    ],
+    out: [
+      {
+        type: 'DefaultStat',
+        itemType: 'BackEndStat',
+        pageName: 'collection',
+        categoryName: 'type_specimens',
+        itemName: 'phantomItem',
+        label: 'Holotype',
+        itemValue: '19',
+        pathToValue: 'Holotype',
+      },
+      {
+        type: 'DefaultStat',
+        itemType: 'BackEndStat',
+        pageName: 'collection',
+        categoryName: 'type_specimens',
+        itemName: 'phantomItem',
+        label: 'Neotype',
+        itemValue: '1',
+        pathToValue: 'Neotype',
+      },
+    ],
+  },
+]);
