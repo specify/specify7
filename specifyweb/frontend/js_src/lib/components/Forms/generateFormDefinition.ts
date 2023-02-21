@@ -228,6 +228,7 @@ function getFieldDefinition(
   field: LiteralField
 ): CellTypes['Field'] & FormCellDefinition {
   const parser = resolveParser(field);
+  // FEATURE: render date fields using Partial Date UI
   return {
     ...cellAttributes,
     type: 'Field',
@@ -262,7 +263,7 @@ function getFieldDefinition(
             max: parser.max,
             step: parser.step,
             minLength: parser.minLength,
-            maxLength: parser.maxLength
+            maxLength: parser.maxLength,
           }),
     },
   };

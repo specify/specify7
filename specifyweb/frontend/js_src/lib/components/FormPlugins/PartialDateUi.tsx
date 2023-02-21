@@ -332,6 +332,19 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
     setMoment(value.length > 0 ? parseDate(precision, value) : undefined);
   }
 
+  const validationAttributes = React.useMemo(
+    () =>
+      precision === 'month-year'
+        ? {}
+        : getValidationAttributes(
+            resolveParser(
+              {},
+              { type: precision === 'full' ? 'java.util.Date' : precision }
+            )
+          ),
+    []
+  );
+
   return (
     <div className="flex gap-1">
       {!isReadOnly && canChangePrecision ? (
@@ -384,7 +397,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
         onValueChange={setInputValue}
         {...(precision === 'year'
           ? {
-              ...getValidationAttributes(resolveParser({}, { type: 'year' })),
+              ...validationAttributes,
               placeholder: formsText.yearPlaceholder(),
             }
           : {
@@ -404,12 +417,8 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
                     type: dateType,
                     placeholder: fullDateFormat(),
                     title: moment?.format(fullDateFormat()),
-                    ...(dateSupported
-                      ? {}
-                      : {
-                          minLength: fullDateFormat().length,
-                          maxLength: fullDateFormat().length,
-                        }),
+                    min: validationAttributes.min,
+                    max: validationAttributes.max,
                   }),
             })}
       />
