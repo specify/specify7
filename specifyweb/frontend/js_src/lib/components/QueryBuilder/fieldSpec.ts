@@ -97,11 +97,11 @@ export class QueryFieldSpec {
      *   https://github.com/specify/specify7/issues/3005
      *
      */
-    var overrideIsRelationship: boolean =
+    const overrideIsRelationship: boolean =
       this.treeRank !== anyTreeRank && this.getField()?.isRelationship
         ? isTreeModel(
             this.getField()?.model.getRelationship(this.getField()!.name)
-              ?.relatedModel.name as keyof Tables
+              ?.relatedModel.name!
           )
         : false;
 
