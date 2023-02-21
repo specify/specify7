@@ -97,7 +97,7 @@ msgstr ""
 "Il y a des champs incomplets dans la définition de la requête. Voulez-vous "
 "les supprimer ?"
 
-#: components/QueryBuilder/Wrapped.tsx:127
+#: components/QueryBuilder/Wrapped.tsx:128
 #. Used in: Components > Query Builder > Wrapped
 #, fuzzy
 msgid "queryUnloadProtect"
@@ -166,7 +166,7 @@ msgstr ""
 msgid "treeQueryName"
 msgstr "{tableName:string} en utilisant \"{nodeFullName:string}"
 
-#: components/QueryBuilder/Wrapped.tsx:386
+#: components/QueryBuilder/Wrapped.tsx:388
 #. Used in: Components > Query Builder > Wrapped
 msgid "newButtonDescription"
 msgstr "Ajouter un nouveau champ"
@@ -458,3 +458,13 @@ msgstr ""
 #. Used in: Components > Query Builder > Import
 msgid "importHiddenFields"
 msgstr "Les champs suivants sont masqués dans la requête que vous avez importée :"
+
+#: components/QueryBuilder/CheckReadAccess.tsx:46
+#. Used in: Components > Query Builder > Check Read Access
+msgid "importNoReadPermission"
+msgstr ""
+
+#: components/QueryBuilder/CheckReadAccess.tsx:43
+#. Used in: Components > Query Builder > Check Read Access
+msgid "noReadPermission"
+msgstr ""

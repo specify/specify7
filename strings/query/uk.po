@@ -104,7 +104,7 @@ msgstr "Визначення запиту містить незаповнені 
 msgid "queryDeleteIncompleteDescription"
 msgstr "У визначенні запиту є незаповнені поля. Ви хочете видалити їх?"
 
-#: components/QueryBuilder/Wrapped.tsx:127
+#: components/QueryBuilder/Wrapped.tsx:128
 #. Used in: Components > Query Builder > Wrapped
 #, fuzzy
 msgid "queryUnloadProtect"
@@ -175,7 +175,7 @@ msgstr ""
 msgid "treeQueryName"
 msgstr "{tableName:string} за допомогою \"{nodeFullName:string}"
 
-#: components/QueryBuilder/Wrapped.tsx:386
+#: components/QueryBuilder/Wrapped.tsx:388
 #. Used in: Components > Query Builder > Wrapped
 #, fuzzy
 msgid "newButtonDescription"
@@ -506,3 +506,13 @@ msgstr ""
 #. Used in: Components > Query Builder > Import
 msgid "importHiddenFields"
 msgstr "В імпортованому вами запиті приховано такі поля:"
+
+#: components/QueryBuilder/CheckReadAccess.tsx:46
+#. Used in: Components > Query Builder > Check Read Access
+msgid "importNoReadPermission"
+msgstr ""
+
+#: components/QueryBuilder/CheckReadAccess.tsx:43
+#. Used in: Components > Query Builder > Check Read Access
+msgid "noReadPermission"
+msgstr ""

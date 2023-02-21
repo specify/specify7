@@ -105,7 +105,7 @@ msgstr "La definición de consulta contiene campos incompletos"
 msgid "queryDeleteIncompleteDescription"
 msgstr "Hay campos sin completar en la definición de consulta. ¿Quieres eliminarlos?"
 
-#: components/QueryBuilder/Wrapped.tsx:127
+#: components/QueryBuilder/Wrapped.tsx:128
 #. Used in: Components > Query Builder > Wrapped
 #, fuzzy
 msgid "queryUnloadProtect"
@@ -176,7 +176,7 @@ msgstr ""
 msgid "treeQueryName"
 msgstr "{tableName:string} usando \"{nodeFullName:string}"
 
-#: components/QueryBuilder/Wrapped.tsx:386
+#: components/QueryBuilder/Wrapped.tsx:388
 #. Used in: Components > Query Builder > Wrapped
 #, fuzzy
 msgid "newButtonDescription"
@@ -507,3 +507,13 @@ msgstr ""
 #. Used in: Components > Query Builder > Import
 msgid "importHiddenFields"
 msgstr "Los siguientes campos están ocultos en la consulta que importó:"
+
+#: components/QueryBuilder/CheckReadAccess.tsx:46
+#. Used in: Components > Query Builder > Check Read Access
+msgid "importNoReadPermission"
+msgstr ""
+
+#: components/QueryBuilder/CheckReadAccess.tsx:43
+#. Used in: Components > Query Builder > Check Read Access
+msgid "noReadPermission"
+msgstr ""

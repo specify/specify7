@@ -93,7 +93,7 @@ msgstr "Определение запроса содержит неполные 
 msgid "queryDeleteIncompleteDescription"
 msgstr "В запросе есть незавершенные поля. Хотите удалить их?"
 
-#: components/QueryBuilder/Wrapped.tsx:127
+#: components/QueryBuilder/Wrapped.tsx:128
 #. Used in: Components > Query Builder > Wrapped
 msgid "queryUnloadProtect"
 msgstr "Новый или измененный запрос не был сохранен"
@@ -153,7 +153,7 @@ msgstr ""
 msgid "treeQueryName"
 msgstr "{tableName:string} с использованием \"{nodeFullName:string}\""
 
-#: components/QueryBuilder/Wrapped.tsx:386
+#: components/QueryBuilder/Wrapped.tsx:388
 #. Used in: Components > Query Builder > Wrapped
 msgid "newButtonDescription"
 msgstr "Добавить новое поле"
@@ -433,3 +433,13 @@ msgstr ""
 #. Used in: Components > Query Builder > Import
 msgid "importHiddenFields"
 msgstr "В импортированном запросе скрыты следующие поля:"
+
+#: components/QueryBuilder/CheckReadAccess.tsx:46
+#. Used in: Components > Query Builder > Check Read Access
+msgid "importNoReadPermission"
+msgstr ""
+
+#: components/QueryBuilder/CheckReadAccess.tsx:43
+#. Used in: Components > Query Builder > Check Read Access
+msgid "noReadPermission"
+msgstr ""
