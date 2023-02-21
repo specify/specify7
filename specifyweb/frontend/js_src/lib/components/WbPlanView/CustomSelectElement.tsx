@@ -682,7 +682,7 @@ export function CustomSelectElement({
       aria-readonly={!has('interactive') || typeof handleChange !== 'function'}
       className={`
         h-fit flex-1 cursor-pointer overflow-x-hidden
-        rounded border border-brand-300 bg-[color:var(--custom-select-b1)]
+        rounded-b border border-brand-300 bg-[color:var(--custom-select-b1)]
         ${has('preview') ? '[z-index:2]' : ''}
         ${has('scroll') ? 'overflow-y-scroll' : 'overflow-y-auto'}
         ${has('shadow') ? 'max-h-[theme(spacing.64)] shadow-md' : ''}

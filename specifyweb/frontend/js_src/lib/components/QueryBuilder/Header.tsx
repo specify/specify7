@@ -55,7 +55,7 @@ export function QueryHeader({
   readonly toggleMapping: () => void;
 }): JSX.Element {
   return (
-    <header className="flex flex-col items-center justify-between gap-2 whitespace-nowrap sm:flex-row">
+    <header className="flex flex-col items-center justify-between gap-2 overflow-x-auto whitespace-nowrap sm:flex-row">
       <div className="flex items-center justify-center gap-2">
         <TableIcon label name={state.baseTableName} />
         <H2 className="overflow-x-auto">

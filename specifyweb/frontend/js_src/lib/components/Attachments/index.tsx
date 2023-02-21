@@ -160,7 +160,7 @@ function Attachments(): JSX.Element {
   );
 
   return (
-    <Container.FullGray>
+    <Container.FullGray className="overflow-auto">
       <header
         className={`flex flex-wrap items-center gap-2 ${className.hasAltBackground}`}
       >

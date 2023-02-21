@@ -52,7 +52,7 @@ function AppResourcesView({
           <AppResourcesFilters initialResources={resources} />
         </div>
       </div>
-      <div className="flex h-0 flex-1 flex-col gap-4 md:flex-row">
+      <div className="flex flex-1 flex-col gap-4 sm:h-0 md:flex-row">
         <AppResourcesAside
           isEmbedded={false}
           isReadOnly={false}
