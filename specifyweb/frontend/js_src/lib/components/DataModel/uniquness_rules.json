@@ -73,9 +73,17 @@
           "discipline"
        ]
     },
+    "CollectingEvent": {
+      "uniqueidentifier" : [
+         "discipline"
+      ]
+    },
     "CollectionObject":{
        "catalognumber":[
           "collection"
+       ],
+       "uniqueidentifier" : [
+         "collection"
        ],
        "guid":[
           "institution"
@@ -96,10 +104,38 @@
           "division"
        ]
     },
+    "DisposalAgent" : {
+      "role":[
+         {
+            "field":"disposal",
+            "otherfields":[
+               "agent"
+            ]
+         }
+      ],
+      "agent":[
+         {
+            "field":"disposal",
+            "otherfields":[
+               "role"
+            ]
+         }
+      ]
+    },
     "Division":{
        "name":[
           "institution"
        ]
+    },
+    "Extractor" : {
+      "agent" : [
+         "dnasequence"
+      ]
+    },
+    "FundingAgent" : {
+      "agent" : [
+         "collectingtrip"
+      ]
     },
     "Gift":{
        "giftnumber":[
@@ -157,6 +193,21 @@
           }
        ]
     },
+    "Locality" : {
+      "uniqueidentifier" : [
+         "discipline"
+      ]
+    },
+    "LocalityCitation" : {
+      "referencework" : [
+         "locality"
+      ]
+    },
+    "PcrPerson" : {
+      "agent" : [
+         "dnasequence"
+      ]
+    },
     "Permit":{
        "permitnumber":[
           null
@@ -186,5 +237,10 @@
        "spappresource":[
           null
        ]
+    },
+    "SpecifyUser" : {
+      "name" : [
+         null
+      ]
     }
  }
