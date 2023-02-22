@@ -11,7 +11,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 4.16-dev\n"
 
-#: components/UserPreferences/Definitions.tsx:1487
+#: components/UserPreferences/Definitions.tsx:1515
 #: components/WorkBench/DevShowPlan.tsx:64
 #: components/WorkBench/Template.tsx:122
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Work Bench > Dev Show Plan ⬤ Components > Work Bench > Template

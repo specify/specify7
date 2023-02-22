@@ -13,7 +13,7 @@ msgstr ""
 
 #: components/Header/menuItemDefinitions.ts:91
 #: components/Router/OverlayRoutes.tsx:133
-#: components/UserPreferences/Definitions.tsx:1363
+#: components/UserPreferences/Definitions.tsx:1391
 #: components/WorkBench/wbView.js:231
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > User Preferences > Definitions ⬤ Components > Work Bench > Wb View
 #, fuzzy
@@ -682,35 +682,40 @@ msgstr "Encodage de caractère:"
 msgid "delimiter"
 msgstr "Délimiteur :"
 
-#: components/UserPreferences/Definitions.tsx:1464
+#: components/UserPreferences/Definitions.tsx:1337
+#: components/UserPreferences/Definitions.tsx:1492
 #: components/WbImport/index.tsx:152
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "comma"
 msgstr "Virgule"
 
-#: components/UserPreferences/Definitions.tsx:1472
+#: components/UserPreferences/Definitions.tsx:1345
+#: components/UserPreferences/Definitions.tsx:1500
 #: components/WbImport/index.tsx:154
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "semicolon"
 msgstr "Point-virgule"
 
-#: components/UserPreferences/Definitions.tsx:1468
+#: components/UserPreferences/Definitions.tsx:1341
+#: components/UserPreferences/Definitions.tsx:1496
 #: components/WbImport/index.tsx:153
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "tab"
 msgstr "Languette"
 
-#: components/UserPreferences/Definitions.tsx:1476
+#: components/UserPreferences/Definitions.tsx:1349
+#: components/UserPreferences/Definitions.tsx:1504
 #: components/WbImport/index.tsx:155
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "space"
 msgstr "Espace"
 
-#: components/UserPreferences/Definitions.tsx:1480
+#: components/UserPreferences/Definitions.tsx:1353
+#: components/UserPreferences/Definitions.tsx:1508
 #: components/WbImport/index.tsx:156
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 #, fuzzy

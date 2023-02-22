@@ -6,7 +6,7 @@ msgstr "Content-Type: text/plain\n"
 #: components/Header/userToolDefinitions.ts:60
 #: components/Router/Routes.tsx:196
 #: components/Security/registry.ts:210
-#: components/UserPreferences/Definitions.tsx:1525
+#: components/UserPreferences/Definitions.tsx:1553
 #. Used in: Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Security > Registry ⬤ Components > User Preferences > Definitions
 msgid "appResources"
 msgstr "Ресурсы приложения"
