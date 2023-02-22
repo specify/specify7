@@ -59,7 +59,7 @@ export type Formatter = SpecToJson<
   ReturnType<typeof formattersSpec>
 >['formatters'][number];
 export type Aggregator = SpecToJson<
-  ReturnType<typeof aggregatorSpec>
+  ReturnType<typeof formattersSpec>
 >['aggregators'][number];
 
 const formatterSpec = f.store(() =>
@@ -73,7 +73,6 @@ const formatterSpec = f.store(() =>
       syncers.xmlAttribute('class', 'required'),
       syncers.maybe(syncers.javaClassName)
     ),
-    // FIXME: enforce single default in the UI
     isDefault: pipe(
       syncers.xmlAttribute('default', 'empty'),
       syncers.default<LocalizedString>(''),
@@ -94,15 +93,7 @@ const switchSpec = ({ table }: SpecToJson<ReturnType<typeof formatterSpec>>) =>
     ),
     conditionField: pipe(
       syncers.xmlAttribute('field', 'skip'),
-      syncers.field(table?.name),
-      syncer((fields) => {
-        const field = fields?.at(-1);
-        // FIXME: add validation for no -to-manys in the middle (and in forms too)
-        if (field?.isRelationship === true && field.isDependent()) {
-          console.error('Dependent relationship may not be used as condition');
-          return undefined;
-        } else return fields;
-      }, f.id)
+      syncers.field(table?.name)
     ),
     external: syncers.xmlChild('external', 'optional'),
     fields: pipe(

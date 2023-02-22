@@ -2,22 +2,16 @@ import React from 'react';
 
 import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
-import type { GetSet, RA } from '../../utils/types';
+import type { GetSet } from '../../utils/types';
 import { replaceItem } from '../../utils/utils';
 import { ErrorMessage } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
+import { ReadOnlyContext } from '../Core/Contexts';
 import type { SpecifyTable } from '../DataModel/specifyTable';
-import type { FieldType } from '../WbPlanView/mappingHelpers';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { FormattersPickList, ResourceMapping } from './Components';
 import type { Formatter } from './spec';
-import { ReadOnlyContext } from '../Core/Contexts';
-
-const allowedConditionMappings: RA<FieldType> = [
-  'toOneIndependent',
-  'toOneDependent',
-];
 
 export function FormatterElement({
   item: [formatter, setFormatter],
@@ -37,7 +31,6 @@ export function FormatterElement({
         <fieldset>
           <legend>{resourcesText.conditionField()}</legend>
           <ResourceMapping
-            allowedTransient={allowedConditionMappings}
             isReadOnly={isReadOnly}
             mapping={[
               formatter.definition.conditionField,
@@ -78,14 +71,14 @@ function Definitions({
         fields,
       },
     });
-  const hasCondition = formatter.definition.conditionField === undefined;
+  const hasCondition = formatter.definition.conditionField !== undefined;
   const trimmedFields = hasCondition
     ? formatter.definition.fields.slice(0, 1)
     : formatter.definition.fields;
 
   const table = formatter.table;
   return table === undefined ? null : (
-    <div className="flex flex-col gap-4 divide-y divide-gray-500">
+    <div className="flex flex-col gap-4 divide-y divide-gray-500 [&>*]:pt-4">
       {trimmedFields.map(({ value, fields }, index) => {
         const handleChanged = (
           field: Formatter['definition']['fields'][number]
@@ -147,12 +140,12 @@ function Fields({
   readonly fields: GetSet<Formatter['definition']['fields'][number]['fields']>;
 }): JSX.Element {
   return (
-    <table className="grid-table grid-cols-[1fr_auto_auto]">
+    <table className="grid-table grid-cols-[min-content_auto_auto] gap-2">
       <thead>
         <tr>
-          {resourcesText.separator()}
-          {schemaText.field()}
-          {resourcesText.formatter()}
+          <th>{resourcesText.separator()}</th>
+          <th>{schemaText.field()}</th>
+          <th>{resourcesText.formatter()}</th>
         </tr>
       </thead>
       <tbody>
@@ -170,13 +163,6 @@ function Fields({
     </table>
   );
 }
-
-const allowedFieldMappings: RA<FieldType> = [
-  'toOneIndependent',
-  'toOneDependent',
-  'toManyIndependent',
-  'toManyDependent',
-];
 
 function Field({
   table,
@@ -196,6 +182,7 @@ function Field({
       <td>
         <Input.Text
           aria-label={resourcesText.separator()}
+          isReadOnly={isReadOnly}
           value={field.separator}
           onValueChange={(separator): void =>
             handleChange({
@@ -203,12 +190,11 @@ function Field({
               separator,
             })
           }
-          isReadOnly={isReadOnly}
         />
       </td>
       <td>
+        {/* BUG: don't allow direct mapping to "Formatted" */}
         <ResourceMapping
-          allowedTransient={allowedFieldMappings}
           isReadOnly={isReadOnly}
           mapping={[
             field.field,
@@ -223,32 +209,30 @@ function Field({
         />
       </td>
       <td>
-        <FieldFormatter table={table} field={[field, handleChange]} />
+        <FieldFormatter field={[field, handleChange]} />
       </td>
     </tr>
   );
 }
 
 function FieldFormatter({
-  table,
   field: [field, handleChange],
 }: {
-  readonly table: SpecifyTable;
   readonly field: GetSet<
     Formatter['definition']['fields'][number]['fields'][number]
   >;
 }): JSX.Element | null {
   const lastField = field.field?.at(-1);
   if (lastField === undefined) return null;
-  // FIXME: finish these cases
-  // FIXME: output a label for each of these
-  else if (!lastField.isRelationship) return null;
+  /*
+   * FIXME: display a field formatter
+   */ else if (!lastField.isRelationship) return null;
   else if (relationshipIsToMany(lastField))
     return (
       <Label.Inline>
         {resourcesText.aggregator()}
         <FormattersPickList
-          table={table}
+          table={lastField.relatedTable}
           type="aggregators"
           value={field.aggregator}
           onChange={(aggregator): void =>
@@ -265,7 +249,7 @@ function FieldFormatter({
       <Label.Inline>
         {resourcesText.formatter()}
         <FormattersPickList
-          table={table}
+          table={lastField.relatedTable}
           type="formatters"
           value={field.formatter}
           onChange={(formatter): void =>

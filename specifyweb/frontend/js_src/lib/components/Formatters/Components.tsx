@@ -13,6 +13,7 @@ import { Input } from '../Atoms/Form';
 import { ReadOnlyContext } from '../Core/Contexts';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
+import { tables } from '../DataModel/tables';
 import { fetchContext as fetchFieldFormatters } from '../FieldFormatters';
 import { join } from '../Molecules';
 import { excludeMappingParts } from '../QueryBuilder/helpers';
@@ -26,6 +27,7 @@ import { handleMappingLineKey } from '../WbPlanView/Mapper';
 import {
   anyTreeRank,
   formattedEntry,
+  formatToManyIndex,
   formatTreeRank,
   relationshipIsToMany,
   valueIsToManyIndex,
@@ -34,7 +36,6 @@ import {
 import { getMappingLineData } from '../WbPlanView/navigator';
 import type { Aggregator, Formatter } from './spec';
 import type { FormatterTypesOutlet } from './Types';
-import { tables } from '../DataModel/tables';
 
 export function FormattersPickList({
   table,
@@ -64,7 +65,7 @@ export function FormattersPickList({
         min={0}
         placeholder={resourcesText.defaultInline()}
         step={1}
-        value={value}
+        value={value ?? ''}
         onValueChange={handleChange}
       />
       <datalist id={id('list')}>
@@ -127,13 +128,16 @@ export function ResourceMapping({
   // Note, this assumes the "mapping" prop can only be changed by this component
   const [mappingPath, setMappingPath] = React.useState(() => {
     const rawPath = mapping?.map(({ name }) => name) ?? [];
+    const relationship = mapping?.at(-1);
     return filterArray([
       ...rawPath,
-      rawPath.length === 0
-        ? emptyMapping
-        : mapping?.at(-1)?.isRelationship === false
-        ? undefined
-        : formattedEntry,
+      ...(rawPath.length === 0
+        ? [emptyMapping]
+        : relationship?.isRelationship === false
+        ? []
+        : relationshipIsToMany(relationship)
+        ? [formatToManyIndex(1), formattedEntry]
+        : [formattedEntry]),
     ]);
   });
 
@@ -205,7 +209,6 @@ export function ResourceMapping({
     openSelectElement: openIndex,
   });
 
-  // FIXME: exclude trees
   return (
     <Ul
       className="flex flex-wrap gap-2"
@@ -223,7 +226,7 @@ export function ResourceMapping({
     >
       {join(
         mappingLineProps.map((mappingDetails, index) => (
-          <li key={index} className="contents">
+          <li className="contents" key={index}>
             <MappingElement
               {...mappingDetails}
               validation={validation[index]}
