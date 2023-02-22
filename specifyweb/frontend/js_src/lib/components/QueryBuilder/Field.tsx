@@ -45,7 +45,7 @@ import {
 } from './FieldFilter';
 import type { DatePart } from './fieldSpec';
 import type { QueryField } from './helpers';
-import { mutateLineData, sortTypes } from './helpers';
+import { excludeMappingParts, sortTypes } from './helpers';
 
 // REFACTOR: split this component into smaller components
 export function QueryLine({
@@ -204,7 +204,7 @@ export function QueryLine({
   });
 
   const mappingLineProps = getMappingLineProps({
-    mappingLineData: mutateLineData(lineData),
+    mappingLineData: excludeMappingParts(lineData),
     customSelectType: 'CLOSED_LIST',
     onChange: handleMappingChange,
     onOpen: handleOpen,

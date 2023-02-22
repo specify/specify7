@@ -15,7 +15,7 @@ import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { fetchContext as fetchFieldFormatters } from '../FieldFormatters';
 import { join } from '../Molecules';
-import { mutateLineData } from '../QueryBuilder/helpers';
+import { excludeMappingParts } from '../QueryBuilder/helpers';
 import { emptyMapping, mutateMappingPath } from '../WbPlanView/helpers';
 import {
   getMappingLineProps,
@@ -24,12 +24,17 @@ import {
 } from '../WbPlanView/LineComponents';
 import { handleMappingLineKey } from '../WbPlanView/Mapper';
 import {
+  anyTreeRank,
   formattedEntry,
+  formatTreeRank,
   relationshipIsToMany,
+  valueIsToManyIndex,
+  valueIsTreeRank,
 } from '../WbPlanView/mappingHelpers';
 import { getMappingLineData } from '../WbPlanView/navigator';
 import type { Aggregator, Formatter } from './spec';
 import type { FormatterTypesOutlet } from './Types';
+import { tables } from '../DataModel/tables';
 
 export function FormattersPickList({
   table,
@@ -111,7 +116,7 @@ export function ResourceMapping({
   mapping: [mapping, setMapping],
   isReadOnly,
   openIndex: [openIndex, setOpenIndex],
-  isRequired,
+  isRequired = false,
 }: {
   readonly table: SpecifyTable;
   readonly mapping: GetSet<RA<LiteralField | Relationship> | undefined>;
@@ -132,38 +137,66 @@ export function ResourceMapping({
     ]);
   });
 
-  const validation = React.useMemo(
+  const lineData = React.useMemo(
     () =>
-      mapping === undefined || mapping.length === 0
-        ? [wbPlanText.mappingIsRequired()]
-        : mapping.map((field, index, { length }) =>
-            field.isRelationship &&
-            relationshipIsToMany(field) &&
-            index < length - 1
-              ? wbPlanText.transientToManyNotAllowed()
-              : undefined
-          ),
-    [mapping, isRequired]
+      excludeMappingParts(
+        getMappingLineData({
+          baseTableName: table.name,
+          mappingPath,
+          showHiddenFields: true,
+          generateFieldData: 'all',
+          scope: 'queryBuilder',
+        })
+      ),
+    [table.name, mappingPath]
   );
 
-  const lineData = getMappingLineData({
-    baseTableName: table.name,
-    mappingPath,
-    showHiddenFields: true,
-    generateFieldData: 'all',
-    scope: 'queryBuilder',
-  });
+  const validation = React.useMemo(
+    () =>
+      isRequired &&
+      (mappingPath.length === 0 || mappingPath[0] === emptyMapping)
+        ? [wbPlanText.mappingIsRequired()]
+        : lineData.map(
+            ({ tableName, defaultValue, customSelectSubtype }, index) => {
+              if (
+                customSelectSubtype === 'tree' &&
+                defaultValue !== formatTreeRank(anyTreeRank) &&
+                defaultValue !== '0'
+              )
+                return wbPlanText.mappingToTreeNotSupported();
+              const field =
+                typeof tableName === 'string'
+                  ? tables[tableName].getField(defaultValue)
+                  : undefined;
+              return field?.isRelationship === true &&
+                relationshipIsToMany(field) &&
+                lineData[index + 1]?.defaultValue !== '0' &&
+                lineData[index + 1]?.defaultValue !== formattedEntry
+                ? wbPlanText.transientToManyNotAllowed()
+                : undefined;
+            }
+          ),
+    [lineData, mappingPath, isRequired]
+  );
 
   const mappingLineProps = getMappingLineProps({
-    mappingLineData: mutateLineData(lineData),
+    mappingLineData: lineData,
     customSelectType: 'SIMPLE_LIST',
     onChange: isReadOnly
       ? undefined
       : (payload): void => {
-          const path = mutateMappingPath({ ...payload, mappingPath });
+          const path = mutateMappingPath({
+            ...payload,
+            mappingPath,
+            ignoreToMany: true,
+          });
           setMappingPath(path);
           const purePath = path.filter(
-            (part) => part !== emptyMapping && part !== formattedEntry
+            (part) =>
+              part !== emptyMapping &&
+              part !== formattedEntry &&
+              !valueIsToManyIndex(part) &&
+              !valueIsTreeRank(part)
           );
           setMapping(table.getFields(purePath.join('.')));
         },
@@ -172,9 +205,10 @@ export function ResourceMapping({
     openSelectElement: openIndex,
   });
 
+  // FIXME: exclude trees
   return (
     <Ul
-      className="flex gap-2"
+      className="flex flex-wrap gap-2"
       onKeyDown={({ key }): void =>
         handleMappingLineKey({
           key,

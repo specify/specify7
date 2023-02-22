@@ -43,7 +43,11 @@ import { QueryExportButtons } from './Export';
 import { QueryFields } from './Fields';
 import { QueryFromMap } from './FromMap';
 import { QueryHeader } from './Header';
-import { mutateLineData, smoothScroll, unParseQueryFields } from './helpers';
+import {
+  excludeMappingParts,
+  smoothScroll,
+  unParseQueryFields,
+} from './helpers';
 import { getInitialState, reducer } from './reducer';
 import { QueryResultsWrapper } from './ResultsWrapper';
 import { QueryToolbar } from './Toolbar';
@@ -340,7 +344,7 @@ export function QueryBuilder({
           {state.showMappingView && (
             <MappingView
               mappingElementProps={getMappingLineProps({
-                mappingLineData: mutateLineData(
+                mappingLineData: excludeMappingParts(
                   getMappingLineData({
                     baseTableName: state.baseTableName,
                     mappingPath: state.mappingView,

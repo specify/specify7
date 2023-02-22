@@ -110,11 +110,6 @@ export function AggregatorElement({
   );
 }
 
-/*
- * FIXME: enforce no mappings to dependent fields (in sortField and
- *   formatter.conditionField
- *   mappings: ['fields', 'toOneIndependent', 'toManyIndependent'],
- */
 const defaultPreviewSize = 4;
 
 function AggregatorPreview({

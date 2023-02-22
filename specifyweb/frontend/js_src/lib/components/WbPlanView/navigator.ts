@@ -177,7 +177,9 @@ export function getTableFromMappingPath(
 export type MappingLineData = Pick<
   MappingElementProps,
   'customSelectSubtype' | 'fieldsData' | 'selectLabel' | 'tableName'
->;
+> & {
+  readonly defaultValue: string;
+};
 
 const queryBuilderTreeFields = new Set(['fullName', 'author']);
 
@@ -250,6 +252,7 @@ export function getMappingLineData({
   ): void =>
     void internalState.mappingLineData.push({
       customSelectSubtype,
+      defaultValue: internalState.defaultValue,
       selectLabel: table.label,
       fieldsData: Object.fromEntries(filterArray(fieldsData)),
       tableName: table.name,

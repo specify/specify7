@@ -308,7 +308,7 @@ export function hasLocalityColumns(fields: RA<QueryField>): boolean {
   return fieldNames.has('latitude1') && fieldNames.has('longitude1');
 }
 
-export const mutateLineData = (
+export const excludeMappingParts = (
   lineData: RA<MappingLineData>
 ): RA<MappingLineData> =>
   lineData.filter(

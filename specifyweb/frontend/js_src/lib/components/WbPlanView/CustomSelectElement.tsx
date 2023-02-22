@@ -11,7 +11,6 @@ import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { useId } from '../../hooks/useId';
-import { useValidation } from '../../hooks/useValidation';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { wbPlanText } from '../../localization/wbPlan';
@@ -29,6 +28,7 @@ import {
 } from '../Molecules/TableIcon';
 import { scrollIntoView } from '../TreeView/helpers';
 import { emptyMapping } from './helpers';
+import { useValidation } from '../../hooks/useValidation';
 
 type Properties =
   /*
@@ -450,6 +450,10 @@ const defaultDefaultOption = {
 
 export const customSelectElementBackground = 'bg-white dark:bg-neutral-600';
 
+/**
+ * An alternative to <select>. Used since we need to embed table icons in
+ * items. Needed until <selectmenu> is supported by all browsers.
+ */
 export function CustomSelectElement({
   customSelectType,
   customSelectSubtype = 'simple',
@@ -566,6 +570,7 @@ export function CustomSelectElement({
       // Not tabbable because keyboard events are handled separately
       <button
         aria-controls={id('options')}
+        aria-describedby={id('validation')}
         aria-expanded={isOpen}
         aria-haspopup="listbox"
         className={`
@@ -585,7 +590,6 @@ export function CustomSelectElement({
           ${isOpen ? 'rounded-b-none [z-index:3]' : ''}
         `}
         disabled={handleClick === undefined}
-        ref={validationRef}
         type="button"
         onClick={handleClick}
       >
@@ -829,6 +833,37 @@ export function CustomSelectElement({
       {preview}
       {optionsShadow}
       {customSelectOptions}
+      {
+        /*
+         * A very hacky way to display validation messages for custom list-boxes
+         * Not sure if there is a simpler way that is at least this good until
+         * <selectmenu> is wildly supported.
+         */
+        (validation ?? '').length > 0 && (
+          <div
+            // Place the browser's tooltip at bottom center
+            className="sr-only bottom-0 top-[unset] flex w-full justify-center"
+          >
+            <input
+              type="text"
+              // Don't show the input
+              className="sr-only"
+              // Announce validation message to screen readers
+              aria-live="polite"
+              // Act as an error message, not an input
+              role="alert"
+              // Associate validation message with the listbox
+              id={id('validation')}
+              defaultValue={validation}
+              /*
+               * Set a validation message for input (using useValidation).
+               * It will be displayed by browsers on form submission
+               */
+              ref={validationRef}
+            />
+          </div>
+        )
+      }
     </article>
   );
 }
