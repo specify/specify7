@@ -2109,8 +2109,8 @@ export const WBView = Backbone.View.extend({
     );
     this.updateCellInfoStats();
   },
-  getHeadersFromMappingPath(mappingPathFilter, persevering = true) {
-    if (!persevering)
+  getHeadersFromMappingPath(mappingPathFilter, tryBest = true) {
+    if (!tryBest)
       // Find all columns with the shared parent mapping path
       return this.mappings.lines
         .filter(({ mappingPath }) =>
@@ -2134,9 +2134,10 @@ export const WBView = Backbone.View.extend({
   resolveValidationColumns(initialColumns, inferColumnsCallback = undefined) {
     // See https://github.com/specify/specify7/issues/810
     let columns = initialColumns.filter(Boolean);
-    if (typeof inferColumnsCallback === 'function' && columns.length === 0)
-      columns = inferColumnsCallback();
-    if (columns.length === 0) columns = this.dataset.columns;
+    if (typeof inferColumnsCallback === 'function') {
+      if (columns.length === 0) columns = inferColumnsCallback();
+      if (columns.length === 0) columns = this.dataset.columns;
+    }
     // Convert to physicalCol and filter out unknown columns
     return columns
       .map((column) => this.dataset.columns.indexOf(column))
@@ -2233,23 +2234,23 @@ export const WBView = Backbone.View.extend({
         resolveColumns
       );
     } else if (uploadStatus === 'Uploaded') {
-      setMetaCallback('isNew', true, statusData.info.columns, resolveColumns);
+      setMetaCallback('isNew', true, statusData.info.columns, undefined);
       const tableName = statusData.info.tableName.toLowerCase();
       this.uploadResults.recordCounts[tableName] ??= 0;
       this.uploadResults.recordCounts[tableName] += 1;
       this.uploadResults.newRecords[physicalRow] ??= {};
-      this.resolveValidationColumns(statusData.info.columns, () =>
-        resolveColumns(false)
-      ).map((physicalCol) => {
-        this.uploadResults.newRecords[physicalRow][physicalCol] ??= [];
-        this.uploadResults.newRecords[physicalRow][physicalCol].push([
-          tableName,
-          statusData.id,
-          statusData.info?.treeInfo
-            ? `${statusData.info.treeInfo.name} (${statusData.info.treeInfo.rank})`
-            : '',
-        ]);
-      });
+      this.resolveValidationColumns(statusData.info.columns, undefined).map(
+        (physicalCol) => {
+          this.uploadResults.newRecords[physicalRow][physicalCol] ??= [];
+          this.uploadResults.newRecords[physicalRow][physicalCol].push([
+            tableName,
+            statusData.id,
+            statusData.info?.treeInfo
+              ? `${statusData.info.treeInfo.name} (${statusData.info.treeInfo.rank})`
+              : '',
+          ]);
+        }
+      );
     } else
       raise(
         new Error(
