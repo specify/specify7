@@ -4,6 +4,7 @@ import { attachmentsText } from '../../localization/attachments';
 import type { RA } from '../../utils/types';
 import { replaceItem } from '../../utils/utils';
 import { Container } from '../Atoms';
+import { LoadingContext } from '../Core/Contexts';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Attachment } from '../DataModel/types';
@@ -62,6 +63,7 @@ export function AttachmentGallery({
     RA<SpecifyResource<AnySchema> | undefined>
   >([]);
 
+  const loading = React.useContext(LoadingContext);
   return (
     <>
       <Container.Base
@@ -108,7 +110,8 @@ export function AttachmentGallery({
           />
         </ErrorBoundary>
       )}
-      {typeof openIndex === 'number' && (
+      {typeof openIndex === 'number' &&
+      typeof attachments[openIndex] === 'object' ? (
         <AttachmentDialog
           attachment={attachments[openIndex]}
           related={related[openIndex]}
@@ -122,7 +125,7 @@ export function AttachmentGallery({
               : (): void => {
                   setOpenIndex(openIndex + 1);
                   if (attachments[openIndex + 1] === undefined)
-                    handleFetchMore().catch(raise);
+                    loading(handleFetchMore());
                 }
           }
           onPrevious={
@@ -131,7 +134,7 @@ export function AttachmentGallery({
               : (): void => setOpenIndex(openIndex - 1)
           }
         />
-      )}
+      ) : null}
     </>
   );
 }
