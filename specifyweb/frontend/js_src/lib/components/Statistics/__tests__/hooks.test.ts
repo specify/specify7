@@ -1,7 +1,7 @@
 import { theories } from '../../../tests/utils';
 
 import { applyStatBackendResponse } from '../hooks';
-import { defaultLayoutTest } from './layout.tests';
+import { defaultLayoutTest, statsSpecTest } from './layout.tests';
 import { f } from '../../../utils/functools';
 import { formatNumber } from '../../Atoms/Internationalization';
 
@@ -40,10 +40,9 @@ theories(applyStatBackendResponse, [
     in: [
       backEndResponse,
       defaultLayoutTest[0].categories[3].items,
-      'collection',
-      'type_specimens',
-      'collection',
+      '/statistics/collection/type_specimens/',
       (rawNumber: number | undefined) => f.maybe(rawNumber, formatNumber),
+      statsSpecTest,
     ],
     out: [
       {
