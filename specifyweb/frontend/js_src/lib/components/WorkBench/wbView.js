@@ -30,6 +30,7 @@ import { getCache, setCache } from '../../utils/cache';
 import { f } from '../../utils/functools';
 import { filterArray } from '../../utils/types';
 import { capitalize, clamp, mappedFind } from '../../utils/utils';
+import { oneRem } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { iconClassName, legacyNonJsxIcons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
@@ -278,10 +279,7 @@ export const WBView = Backbone.View.extend({
               );
               this.$('.wb-validate, .wb-data-check')
                 .prop('disabled', true)
-                .prop(
-                  'title',
-                  whitespaceSensitive(wbText.wbValidateUnavailable())
-                );
+                .prop('title', wbText.wbValidateUnavailable());
             } else {
               this.$('.wb-validate, .wb-data-check').prop('disabled', false);
               this.$('.wb-show-upload-view')
@@ -1269,9 +1267,6 @@ export const WBView = Backbone.View.extend({
       return;
 
     const cellContainerBoundingBox = cell.getBoundingClientRect();
-    const oneRem = Number.parseFloat(
-      getComputedStyle(document.documentElement).fontSize
-    );
 
     // Make sure box is overflowing horizontally
     if (globalThis.innerWidth > cellContainerBoundingBox.right + oneRem * 2)
@@ -2417,7 +2412,7 @@ export const WBView = Backbone.View.extend({
     });
 
     const uploadButton = this.$el.find('.wb-upload');
-    const title = whitespaceSensitive(wbText.uploadUnavailableWhileHasErrors());
+    const title = wbText.uploadUnavailableWhileHasErrors();
     if (
       !uploadButton.attr('disabled') ||
       uploadButton.attr('title') === title

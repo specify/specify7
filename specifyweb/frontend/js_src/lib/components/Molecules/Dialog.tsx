@@ -72,6 +72,13 @@ export const supportsBackdropBlur = globalThis.CSS.supports(
 
 /**
  * Modal or non-modal dialog. Highly customizable. Used all over the place
+ *
+ * @remarks
+ * We are using a library "react-modal" to render dialogs. It worked great so
+ * far. However, since then we started using HeadlessUI and FloatingUI, both
+ * of which already provide dialogs. Might be worth at some point to migrate
+ * to reduce number of dependencies
+ *
  * @remarks
  * Note, if the same components renders a <Dialog>, and on the next render
  * instead renders a different <Dialog> with the same parent, React would
@@ -79,7 +86,7 @@ export const supportsBackdropBlur = globalThis.CSS.supports(
  * new dialog, with a different content would already be scrolled down.
  * Possible solution would be to set container.scrollTop=0 on header change,
  * though, that may introduce issues in other places, as same dialogs change
- * header durring lifecycle (ResourceView)
+ * header during lifecycle (ResourceView)
  */
 export function Dialog({
   /*

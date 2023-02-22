@@ -258,6 +258,13 @@ export const preferenceDefinitions = {
             renderer: FontFamilyPreferenceItem,
             container: 'label',
           }),
+          useCustomTooltips: defineItem<boolean>({
+            title: preferencesText.useCustomTooltips(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
         },
       },
       appearance: {
@@ -433,7 +440,10 @@ export const preferenceDefinitions = {
             renderer: WelcomePageModePreferenceItem,
             container: 'div',
           }),
-          // FEATURE: allow selecting attachments
+          /*
+           * FEATURE: allow selecting attachments
+           *   See https://github.com/specify/specify7/issues/2999
+           */
           source: defineItem<string>({
             title: <></>,
             requiresReload: false,
