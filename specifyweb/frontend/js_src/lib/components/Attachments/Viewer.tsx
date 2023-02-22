@@ -12,8 +12,11 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getModel } from '../DataModel/schema';
 import type { Attachment } from '../DataModel/types';
-import { ResourceView } from '../Forms/ResourceView';
-import { originalAttachmentsView } from '../Forms/useViewDefinition';
+import { augmentMode, ResourceView } from '../Forms/ResourceView';
+import {
+  originalAttachmentsView,
+  useViewDefinition,
+} from '../Forms/useViewDefinition';
 import { loadingGif } from '../Molecules';
 import { usePref } from '../UserPreferences/usePref';
 import { fetchOriginalUrl, fetchThumbnail } from './attachments';
@@ -38,16 +41,39 @@ export function AttachmentViewer({
   );
 
   const title = attachment.get('title') as LocalizedString | undefined;
-  const viewName = React.useMemo(() => {
+  const attachmentTable = React.useMemo(() => {
     const tableId = attachment.get('tableID');
     if (typeof tableId !== 'number') return undefined;
     const table = getAttachmentTable(tableId);
     return typeof table === 'object'
-      ? getModel(`${table.name}Attachment`)?.name
+      ? getModel(`${table.name}Attachment`)
       : undefined;
   }, [attachment]);
+
+  const viewDefinition = useViewDefinition({
+    model: attachmentTable,
+    viewName: attachmentTable?.name,
+    formType: 'form',
+    mode: augmentMode(
+      'edit',
+      relatedResource?.isNew() ?? attachment.isNew(),
+      attachmentTable?.name
+    ),
+  });
+
+  // If view doesn't exists, viewDefinition.name would be empty string
+  const customViewName =
+    viewDefinition?.name === attachmentTable?.name
+      ? attachmentTable?.name
+      : undefined;
+
+  /**
+   * If view definition for a CollectionObjectAttachment table exists, use it
+   * Otherwise, fallback to using ObjectAttachment view for the Attachment
+   * resource.
+   */
   const showCustomForm =
-    typeof viewName === 'string' && typeof relatedResource === 'object';
+    typeof customViewName === 'string' && typeof relatedResource === 'object';
 
   const mimeType = attachment.get('mimeType') ?? undefined;
   const type = mimeType?.split('/')[0];
@@ -111,27 +137,25 @@ export function AttachmentViewer({
          */
         showMeta || attachment.isNew() ? (
           <div className="flex flex-col">
-            {
-              <ResourceView
-                dialog={false}
-                isDependent={false}
-                isSubForm
-                mode="edit"
-                resource={showCustomForm ? relatedResource : attachment}
-                /*
-                 * Have to override the title because formatted resource string
-                 * often includes a URL and other stuff (because it is used in
-                 * exports)
-                 */
-                title={title}
-                viewName={showCustomForm ? viewName : originalAttachmentsView}
-                onAdd={undefined}
-                // eslint-disable-next-line react/jsx-handler-names
-                onClose={f.never}
-                onDeleted={undefined}
-                onSaved={undefined}
-              />
-            }
+            <ResourceView
+              dialog={false}
+              isDependent={false}
+              isSubForm
+              mode="edit"
+              resource={showCustomForm ? relatedResource : attachment}
+              /*
+               * Have to override the title because formatted resource string
+               * often includes a URL and other stuff (because it is used in
+               * exports)
+               */
+              title={title}
+              viewName={customViewName ?? originalAttachmentsView}
+              onAdd={undefined}
+              // eslint-disable-next-line react/jsx-handler-names
+              onClose={f.never}
+              onDeleted={undefined}
+              onSaved={undefined}
+            />
             <span className="flex-1" />
             <div className="flex flex-wrap gap-2">
               <Component

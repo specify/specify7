@@ -53,13 +53,14 @@ export function useViewDefinition({
         };
       else if (useGeneratedForm)
         return autoGenerateViewDefinition(model, formType, mode);
-      const resolvedViewName = viewName ?? model.view;
+      const resolvedViewName = viewName || model.view;
       return fetchViewDefinition(resolvedViewName, model, formType, mode)
         .then(
           (definition) =>
             definition ??
             (typeof fallbackViewName === 'string' &&
-            fallbackViewName !== resolvedViewName
+            fallbackViewName !== resolvedViewName &&
+            fallbackViewName !== attachmentView
               ? fetchViewDefinition(fallbackViewName, model, formType, mode)
               : undefined)
         )
