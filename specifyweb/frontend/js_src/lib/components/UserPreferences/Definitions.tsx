@@ -1326,6 +1326,34 @@ export const preferenceDefinitions = {
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
+          exportFileDelimiter: defineItem<' ' | ',' | ';' | '\t' | '|'>({
+            title: preferencesText.exportFileDelimiter(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '\t',
+            values: [
+              {
+                value: ',',
+                title: wbText.comma(),
+              },
+              {
+                value: '\t',
+                title: wbText.tab(),
+              },
+              {
+                value: ';',
+                title: wbText.semicolon(),
+              },
+              {
+                value: ' ',
+                title: wbText.space(),
+              },
+              {
+                value: '|',
+                title: wbText.pipe(),
+              },
+            ],
+          }),
         },
       },
       appearance: {
