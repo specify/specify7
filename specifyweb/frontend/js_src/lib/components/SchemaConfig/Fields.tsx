@@ -10,6 +10,7 @@ import { Select } from '../Atoms/Form';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { SpLocaleContainerItem } from '../DataModel/types';
+import { commonText } from '../../localization/common';
 
 export function SchemaConfigFields({
   model,
@@ -44,6 +45,9 @@ export function SchemaConfigFields({
         }
       >
         <optgroup label={schemaText.fields()}>
+          {items === undefined && (
+            <option value="">{commonText.loading()}</option>
+          )}
           {fields.map((item) => (
             <option key={item.id} value={item.id}>
               {item.name}
