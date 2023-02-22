@@ -172,9 +172,7 @@ function DataModelTable({
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2" id={tableName}>
           <TableIcon label={false} name={model.name} />
-          <H2 className="text-2xl" id={model.name.toLowerCase()}>
-            {model.name}
-          </H2>
+          <H2 className="text-2xl">{model.name}</H2>
         </div>
         <Link.Default href={`#${topId}`}>{schemaText.goToTop()}</Link.Default>
       </div>
