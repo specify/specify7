@@ -41,7 +41,7 @@ msgstr "Нет"
 #: components/QueryBuilder/Components.tsx:151
 #: components/QueryBuilder/Edit.tsx:177
 #: components/QueryBuilder/FromMap.tsx:71
-#: components/QueryBuilder/Import.tsx:57
+#: components/QueryBuilder/Import.tsx:59
 #: components/QueryBuilder/LoanReturn.tsx:160
 #: components/Reports/Parameters.tsx:81
 #: components/Reports/Report.tsx:199
@@ -155,7 +155,7 @@ msgstr "Создать"
 #: components/QueryBuilder/Edit.tsx:147
 #: components/QueryBuilder/Export.tsx:69
 #: components/QueryBuilder/Export.tsx:77
-#: components/QueryBuilder/Import.tsx:128
+#: components/QueryBuilder/Import.tsx:137
 #: components/QueryBuilder/LoanReturn.tsx:157
 #: components/QueryBuilder/LoanReturn.tsx:226
 #: components/QueryBuilder/Save.tsx:65
@@ -647,8 +647,8 @@ msgstr "Порядковый номер"
 msgid "export"
 msgstr "Экспорт"
 
-#: components/QueryBuilder/Import.tsx:58
-#: components/QueryBuilder/Import.tsx:123
+#: components/QueryBuilder/Import.tsx:60
+#: components/QueryBuilder/Import.tsx:132
 #: components/Security/ImportExport.tsx:73
 #: components/Security/ImportExport.tsx:83
 #: components/Security/ImportExport.tsx:87

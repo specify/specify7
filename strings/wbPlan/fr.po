@@ -85,7 +85,7 @@ msgstr "Champs obligatoires"
 msgid "optionalFields"
 msgstr "Champs facultatifs"
 
-#: components/QueryBuilder/Import.tsx:129
+#: components/QueryBuilder/Import.tsx:138
 #: components/WbPlanView/LineComponents.tsx:214
 #. Used in: Components > Query Builder > Import ⬤ Components > Wb Plan View > Line Components
 #, fuzzy

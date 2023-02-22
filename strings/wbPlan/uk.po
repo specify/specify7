@@ -91,7 +91,7 @@ msgstr "обов'язкові поля"
 msgid "optionalFields"
 msgstr "Необов'язкові поля"
 
-#: components/QueryBuilder/Import.tsx:129
+#: components/QueryBuilder/Import.tsx:138
 #: components/WbPlanView/LineComponents.tsx:214
 #. Used in: Components > Query Builder > Import ⬤ Components > Wb Plan View > Line Components
 #, fuzzy

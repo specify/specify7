@@ -454,7 +454,7 @@ msgstr ""
 "La valeur du champ est trop longue. La longueur maximale autorisée est de "
 "{maxLength:number|formatted}"
 
-#: components/QueryBuilder/Import.tsx:133
+#: components/QueryBuilder/Import.tsx:142
 #. Used in: Components > Query Builder > Import
 msgid "importHiddenFields"
 msgstr "Les champs suivants sont masqués dans la requête que vous avez importée :"
