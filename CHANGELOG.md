@@ -13,7 +13,72 @@ Coming in the next few months:
 - [User Interface for editing Data Object Formatters and other XML resources](https://github.com/specify/specify7/pull/2796)
 - [And a lot more features](https://github.com/specify/specify7/pulls)
 
-## [7.8.6](https://github.com/specify/specify7/compare/v7.8.5...HEAD) (Unreleased)
+## [7.8.7](https://github.com/specify/specify7/compare/v7.8.6...HEAD) (Unreleased)
+
+## [7.8.6](https://github.com/specify/specify7/compare/v7.8.5...v7.8.6) (February 22 2023)
+
+### Changed
+
+- Top menu has been redesigned. It looks better, takes less space and offers
+  more customization options - you can change menu position, or order of menu
+  items. [More details](https://discourse.specifysoftware.org/t/seeking-feedback-new-vertical-navigation-menu/970) ([#2820](https://github.com/specify/specify7/issues/2820))
+- Instead of using default browser tooltips, Specify now displays modern
+  tooltips - they are easier to read thanks to larger font-size and are easier
+  to trigger. Plus, they even work on touch screen devices and you can
+  copy/paste text from
+  them. ([#3002](https://github.com/specify/specify7/pull/3002))
+- Updated back-end
+  dependencies ([#1915](https://github.com/specify/specify7/pull/1915))
+- Make form parsing much more forgiving to
+  mistakes ([#2666](https://github.com/specify/specify7/issues/2666), [#2716](https://github.com/specify/specify7/pull/2716))
+- The deletion dialog now shows a name of the resource you are about to delete
+  for extra
+  confirmation ([#2854](https://github.com/specify/specify7/issues/2854)) -
+  _Requested by The University of Michigan_
+- Improved French localization - thanks to @heathercole
+- Improved Ukrainian localization - thanks to @Kefir2105
+- Jump to tree node's parent after
+  deletion ([#2781](https://github.com/specify/specify7/issues/2781)) - _Requested by AAFC_
+- Don't allow adding duplicate Collection
+  Relationships ([#2987](https://github.com/specify/specify7/issues/2987)) -
+  _Requested by CSIRO_
+
+### Added
+
+- Add indicator in page title if there are unsaved
+  changes ([#1685](https://github.com/specify/specify7/issues/1685))
+- Reports dialog now shows an icon for base table report belongs
+  to ([#1109](https://github.com/specify/specify7/issues/1109)) - _Requested by University of Michigan_
+- Add support for restricting min length and max length of a text field on a
+  form ([#2022](https://github.com/specify/specify7/issues/2022))
+- Show the ID field name and table scope in schema
+  viewer ([#2080](https://github.com/specify/specify7/issues/2080))
+- Add easy way to show only dependent/independent relationships in schema
+  viewer ([#2855](https://github.com/specify/specify7/issues/2855))
+- Add an indicator if user lost internet connectivity to prevent data
+  loss ([#2711](https://github.com/specify/specify7/issues/2711))
+- Warn when importing a query that has hidden
+  fields ([#1318](https://github.com/specify/specify7/issues/1318))
+- Warn when opening a query that has fields without read
+  access ([#1661](https://github.com/specify/specify7/issues/1661))
+
+### Fixed
+
+- Fixed inability to print pages that have scroll
+  bars ([#2820](https://github.com/specify/specify7/issues/2820))
+- Fix formatted dates in XLSX data sets not always being imported
+  correctly ([#2027](https://github.com/specify/specify7/issues/2027)) - _Reported by CSIRO and others_
+- Maintain cell height for large text fields in grid
+  view ([#2765](https://github.com/specify/specify7/pull/2765)) - Fixed by
+  @cdamyx
+- Fixed contrast issues with buttons in Query
+  Builder ([#2611](https://github.com/specify/specify7/issues/2611)) - Fixed by
+  @cdamyx
+
+### Security
+
+- Make opening links in new tab
+  safer ([#2600](https://github.com/specify/specify7/issues/2600))
 
 ## [7.8.5](https://github.com/specify/specify7/compare/v7.8.4...v7.8.5) (January 31 2022)
 
@@ -41,13 +106,15 @@ Coming in the next few months:
 
 - Data Model viewer has been redesigned to work better with printing the page
   and to support `Ctrl+F` across fields in different
-  tables, along with other usability improvements ([#2855](https://github.com/specify/specify7/issues/2855))
+  tables, along with other usability
+  improvements ([#2855](https://github.com/specify/specify7/issues/2855))
 - Low resolution PNG table icons have been replaced with modern SVG icons. For
   most tables the new icons look similar. Attachments icons have been modified
   to make text more
   readable. ([#2368](https://github.com/specify/specify7/issues/2368))
 - Large text fields in grid view now maintain consistent
-  height ([#2765](https://github.com/specify/specify7/issues/2765)) - Fixed by @cdamyx
+  height ([#2765](https://github.com/specify/specify7/issues/2765)) - Fixed by
+  @cdamyx
 
 ### Fixed
 
