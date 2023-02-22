@@ -16,7 +16,7 @@ msgstr ""
 #: components/Header/userToolDefinitions.ts:60
 #: components/Router/Routes.tsx:196
 #: components/Security/registry.ts:210
-#: components/UserPreferences/Definitions.tsx:1515
+#: components/UserPreferences/Definitions.tsx:1525
 #. Used in: Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Security > Registry ⬤ Components > User Preferences > Definitions
 #, fuzzy
 msgid "appResources"
@@ -24,7 +24,7 @@ msgstr "Recursos de la aplicación"
 
 #: components/FormMeta/Definition.tsx:29
 #: components/FormMeta/Definition.tsx:55
-#: components/UserPreferences/Definitions.tsx:648
+#: components/UserPreferences/Definitions.tsx:658
 #. Used in: Components > Form Meta > Definition ⬤ Components > User Preferences > Definitions
 #, fuzzy
 msgid "formDefinition"

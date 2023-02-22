@@ -205,7 +205,7 @@ msgstr "API para las operaciones"
 #: components/AppResources/Create.tsx:109
 #: components/AppResources/Filters.tsx:156
 #: components/Header/userToolDefinitions.ts:103
-#: components/UserPreferences/Definitions.tsx:427
+#: components/UserPreferences/Definitions.tsx:434
 #. Used in: Components > App Resources > Create ⬤ Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > User Preferences > Definitions
 msgid "documentation"
 msgstr "Documentación"

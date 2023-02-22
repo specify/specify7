@@ -27,9 +27,9 @@ msgid "failedParsingFloat"
 msgstr "value \"{value:string}\" is not a valid floating point value"
 
 #: components/WorkBench/resultsParser.ts:182
-#: components/WorkBench/wbView.js:856
-#: components/WorkBench/wbView.js:863
-#: components/WorkBench/wbView.js:1362
+#: components/WorkBench/wbView.js:854
+#: components/WorkBench/wbView.js:861
+#: components/WorkBench/wbView.js:1357
 #. Used in: Components > Work Bench > Results Parser ⬤ Components > Work Bench > Wb View
 msgid "failedParsingPickList"
 msgstr ""
@@ -105,137 +105,137 @@ msgstr "Missing or unmapped required tree parent rank value for \"{names:string}
 msgid "showTraceback"
 msgstr "Show Traceback"
 
-#: components/Errors/JsonError.tsx:193
+#: components/Errors/JsonError.tsx:189
 #. Used in: Components > Errors > Json Error
 msgid "fieldNotUnique"
 msgstr "{tableName:string} must have unique {fieldName:string}"
 
-#: components/Errors/JsonError.tsx:198
+#: components/Errors/JsonError.tsx:194
 #. Used in: Components > Errors > Json Error
 msgid "childFieldNotUnique"
 msgstr ""
 "{tableName:string} must have unique {fieldName:string} in "
 "{parentField:string}"
 
-#: components/Errors/JsonError.tsx:158
+#: components/Errors/JsonError.tsx:154
 #. Used in: Components > Errors > Json Error
 msgid "deletingTreeRoot"
 msgstr "Can not delete root level tree definition item"
 
-#: components/Errors/JsonError.tsx:160
+#: components/Errors/JsonError.tsx:156
 #. Used in: Components > Errors > Json Error
 msgid "nodeParentInvalidRank"
 msgstr "Tree node's parent has rank greater than itself"
 
-#: components/Errors/JsonError.tsx:162
+#: components/Errors/JsonError.tsx:158
 #. Used in: Components > Errors > Json Error
 msgid "nodeChildrenInvalidRank"
 msgstr "Tree node's rank is greater than some of its children"
 
-#: components/Errors/JsonError.tsx:164
+#: components/Errors/JsonError.tsx:160
 #. Used in: Components > Errors > Json Error
 msgid "nodeOperationToSynonymizedParent"
 msgstr ""
 "{operation:string} node \"{nodeName:string}\" to synonymized parent "
 "\"{parentName:string}\""
 
-#: components/Errors/JsonError.tsx:170
+#: components/Errors/JsonError.tsx:166
 #. Used in: Components > Errors > Json Error
 msgid "nodeSynonymizeToSynonymized"
 msgstr "Synonymizing \"{nodeName:string}\" to synonymized node \"{intoName:string}\""
 
-#: components/Errors/JsonError.tsx:175
+#: components/Errors/JsonError.tsx:171
 #. Used in: Components > Errors > Json Error
 msgid "nodeSynonimizeWithChildren"
 msgstr "Synonymizing node \"{nodeName:string}\" which has children"
 
-#: components/Errors/JsonError.tsx:154
+#: components/Errors/JsonError.tsx:150
 #. Used in: Components > Errors > Json Error
 msgid "badTreeStructureInvalidRanks"
 msgstr ""
 "Bad Tree Structure: Found {badRanks:number|formatted} cases where node rank "
 "is not greater than its parent"
 
-#: components/Errors/JsonError.tsx:179
+#: components/Errors/JsonError.tsx:175
 #. Used in: Components > Errors > Json Error
 msgid "invalidNodeType"
 msgstr ""
 "Unexpected type of node \"{node:string}\" during {operation:string}. "
 "Expected \"{nodeModel:string}\""
 
-#: components/Errors/JsonError.tsx:185
+#: components/Errors/JsonError.tsx:181
 #. Used in: Components > Errors > Json Error
 msgid "mergeAcrossTrees"
 msgstr "Merging across trees"
 
-#: components/Errors/JsonError.tsx:187
+#: components/Errors/JsonError.tsx:183
 #. Used in: Components > Errors > Json Error
 msgid "synonymizeAcrossTrees"
 msgstr "Synonymizing across trees"
 
-#: components/Errors/JsonError.tsx:189
+#: components/Errors/JsonError.tsx:185
 #. Used in: Components > Errors > Json Error
 msgid "limitReachedDeterminingAccepted"
 msgstr ""
 "Could not find accepted taxon for synonymized taxon with ID of "
 "{taxonId:number}"
 
-#: components/Errors/JsonError.tsx:204
+#: components/Errors/JsonError.tsx:200
 #. Used in: Components > Errors > Json Error
 msgid "resourceInPermissionRegistry"
 msgstr "Resource {resource:string} already in Permissions registry"
 
-#: components/Errors/JsonError.tsx:208
+#: components/Errors/JsonError.tsx:204
 #. 🟥Agent "Abc" is not a Specify User. Used in: Components > Errors > Json Error
 msgid "actorIsNotSpecifyUser"
 msgstr "{agentTable:string} {actor:string} is not a {specifyUserTable:string}"
 
-#: components/Errors/JsonError.tsx:214
+#: components/Errors/JsonError.tsx:210
 #. Used in: Components > Errors > Json Error
 msgid "unexpectedCollectionType"
 msgstr ""
 "Unexpected type of collection \"{unexpectedTypeName:string}\". Expected "
 "\"{collectionName:string}\""
 
-#: components/Errors/JsonError.tsx:219
+#: components/Errors/JsonError.tsx:215
 #. Used in: Components > Errors > Json Error
 msgid "invalidReportMimetype"
 msgstr ""
 "Can not create report: {mimeTypeField:string} is not one of \"jrxml/label\" "
 "or \"jrxml/report\""
 
-#: components/Errors/JsonError.tsx:223
+#: components/Errors/JsonError.tsx:219
 #. Used in: Components > Errors > Json Error
 msgid "fieldNotRelationship"
 msgstr "Field {field:string} is not a Relationship"
 
-#: components/Errors/JsonError.tsx:225
+#: components/Errors/JsonError.tsx:221
 #. Used in: Components > Errors > Json Error
 msgid "unexpectedTableId"
 msgstr ""
 "Unexpected table id \"{tableId:string}\" in request. Expected "
 "\"{expectedTableId:string}\""
 
-#: components/Errors/JsonError.tsx:230
+#: components/Errors/JsonError.tsx:226
 #. Used in: Components > Errors > Json Error
 msgid "noCollectionInQuery"
 msgstr "No Collection found in Query for table {table:string}"
 
-#: components/Errors/JsonError.tsx:232
+#: components/Errors/JsonError.tsx:228
 #. Used in: Components > Errors > Json Error
 msgid "invalidDatePart"
 msgstr ""
 "Invalid date part \"{datePart:string}\". Expected one of "
 "{validDateParts:string}"
 
-#: components/Errors/JsonError.tsx:237
+#: components/Errors/JsonError.tsx:233
 #. Used in: Components > Errors > Json Error
 msgid "invalidUploadStatus"
 msgstr ""
 "Invalid status \"{uploadStatus:string}\" for {operation:string}. Expected "
 "{expectedUploadStatus:string}"
 
-#: components/Errors/JsonError.tsx:243
+#: components/Errors/JsonError.tsx:239
 #. Used in: Components > Errors > Json Error
 msgid "datasetAlreadyUploaded"
 msgstr "Dataset already uploaded"

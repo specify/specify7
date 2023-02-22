@@ -27,8 +27,8 @@ msgstr "Таблица"
 msgid "tables"
 msgstr "Таблицы"
 
-#: components/UserPreferences/Definitions.tsx:630
-#: components/WbPlanView/MapperComponents.tsx:436
+#: components/UserPreferences/Definitions.tsx:640
+#: components/WbPlanView/MapperComponents.tsx:435
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Plan View > Mapper Components
 msgid "tableName"
 msgstr "Имя таблицы"
@@ -38,7 +38,7 @@ msgstr "Имя таблицы"
 #: components/SchemaConfig/Components.tsx:27
 #: components/SchemaConfig/Languages.tsx:34
 #: components/Security/registry.ts:198
-#: components/UserPreferences/Definitions.tsx:580
+#: components/UserPreferences/Definitions.tsx:590
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Languages ⬤ Components > Security > Registry ⬤ Components > User Preferences > Definitions
 msgid "schemaConfig"
 msgstr "Конфигурация схемы"
@@ -49,7 +49,7 @@ msgid "unsavedSchemaUnloadProtect"
 msgstr "Изменения схемы не сохранены"
 
 #: components/SchemaConfig/Components.tsx:33
-#: components/WbPlanView/MapperComponents.tsx:318
+#: components/WbPlanView/MapperComponents.tsx:317
 #. Used in: Components > Schema Config > Components ⬤ Components > Wb Plan View > Mapper Components
 msgid "changeBaseTable"
 msgstr "Изменить базовую таблицу"

@@ -28,9 +28,9 @@ msgid "failedParsingFloat"
 msgstr "значення \"{value:string}\" не є раціональним числом"
 
 #: components/WorkBench/resultsParser.ts:182
-#: components/WorkBench/wbView.js:856
-#: components/WorkBench/wbView.js:863
-#: components/WorkBench/wbView.js:1362
+#: components/WorkBench/wbView.js:854
+#: components/WorkBench/wbView.js:861
+#: components/WorkBench/wbView.js:1357
 #. Used in: Components > Work Bench > Results Parser ⬤ Components > Work Bench > Wb View
 msgid "failedParsingPickList"
 msgstr ""
@@ -110,135 +110,135 @@ msgstr ""
 msgid "showTraceback"
 msgstr "Показати помилку"
 
-#: components/Errors/JsonError.tsx:193
+#: components/Errors/JsonError.tsx:189
 #. Used in: Components > Errors > Json Error
 msgid "fieldNotUnique"
 msgstr "{tableName:string} має мати унікальний {fieldName:string}"
 
-#: components/Errors/JsonError.tsx:198
+#: components/Errors/JsonError.tsx:194
 #. Used in: Components > Errors > Json Error
 msgid "childFieldNotUnique"
 msgstr ""
 "{tableName:string} повинен мати унікальний \"{fieldName:string}\" у "
 "\"{parentField:string}\""
 
-#: components/Errors/JsonError.tsx:158
+#: components/Errors/JsonError.tsx:154
 #. Used in: Components > Errors > Json Error
 msgid "deletingTreeRoot"
 msgstr "Неможливо видалити корінь дерева"
 
-#: components/Errors/JsonError.tsx:160
+#: components/Errors/JsonError.tsx:156
 #. Used in: Components > Errors > Json Error
 msgid "nodeParentInvalidRank"
 msgstr "Батько вузла дерева має ранг, вищий за нього самого"
 
-#: components/Errors/JsonError.tsx:162
+#: components/Errors/JsonError.tsx:158
 #. Used in: Components > Errors > Json Error
 msgid "nodeChildrenInvalidRank"
 msgstr "Ранг вузла дерева більший, ніж у деяких його дочірніх вузлів"
 
-#: components/Errors/JsonError.tsx:164
+#: components/Errors/JsonError.tsx:160
 #. Used in: Components > Errors > Json Error
 msgid "nodeOperationToSynonymizedParent"
 msgstr ""
 "{operation:string} вузол \"{nodeName:string}\" до синонімічного "
 "батьківського елемента \"{parentName:string}\""
 
-#: components/Errors/JsonError.tsx:170
+#: components/Errors/JsonError.tsx:166
 #. Used in: Components > Errors > Json Error
 msgid "nodeSynonymizeToSynonymized"
 msgstr "Синонімізація \"{nodeName:string}\" до синоніма \"{intoName:string}\""
 
-#: components/Errors/JsonError.tsx:175
+#: components/Errors/JsonError.tsx:171
 #. Used in: Components > Errors > Json Error
 msgid "nodeSynonimizeWithChildren"
 msgstr "Синонімується вузол \"{nodeName:string}\", який має дітей"
 
-#: components/Errors/JsonError.tsx:154
+#: components/Errors/JsonError.tsx:150
 #. Used in: Components > Errors > Json Error
 msgid "badTreeStructureInvalidRanks"
 msgstr ""
 "Погана структура дерева: знайдено {badRanks:number|formatted} випадків, "
 "коли ранг вузла не перевищує його батьківського рівня"
 
-#: components/Errors/JsonError.tsx:179
+#: components/Errors/JsonError.tsx:175
 #. Used in: Components > Errors > Json Error
 msgid "invalidNodeType"
 msgstr ""
 "Неочікуваний тип вузла \"{node:string}\" під час {operation:string}. "
 "Очікується \"{nodeModel:string}\""
 
-#: components/Errors/JsonError.tsx:185
+#: components/Errors/JsonError.tsx:181
 #. Used in: Components > Errors > Json Error
 msgid "mergeAcrossTrees"
 msgstr "Комбінування дерев"
 
-#: components/Errors/JsonError.tsx:187
+#: components/Errors/JsonError.tsx:183
 #. Used in: Components > Errors > Json Error
 msgid "synonymizeAcrossTrees"
 msgstr "Синонімізація дерев"
 
-#: components/Errors/JsonError.tsx:189
+#: components/Errors/JsonError.tsx:185
 #. Used in: Components > Errors > Json Error
 msgid "limitReachedDeterminingAccepted"
 msgstr "Не вдалося знайти прийнятий таксон для синоніма (ІД: {taxonId:number})"
 
-#: components/Errors/JsonError.tsx:204
+#: components/Errors/JsonError.tsx:200
 #. Used in: Components > Errors > Json Error
 msgid "resourceInPermissionRegistry"
 msgstr "Ресурс {resource:string} уже є в реєстрі дозволів"
 
-#: components/Errors/JsonError.tsx:208
+#: components/Errors/JsonError.tsx:204
 #. 🟥Agent "Abc" is not a Specify User. Used in: Components > Errors > Json Error
 msgid "actorIsNotSpecifyUser"
 msgstr "{agentTable:string} {actor:string} не є {specifyUserTable:string}"
 
-#: components/Errors/JsonError.tsx:214
+#: components/Errors/JsonError.tsx:210
 #. Used in: Components > Errors > Json Error
 msgid "unexpectedCollectionType"
 msgstr ""
 "Неочікуваний тип колекції \"{unexpectedTypeName:string}\". Очікується "
 "\"{collectionName:string}\""
 
-#: components/Errors/JsonError.tsx:219
+#: components/Errors/JsonError.tsx:215
 #. Used in: Components > Errors > Json Error
 msgid "invalidReportMimetype"
 msgstr ""
 "Не вдається створити звіт: {mimeTypeField:string} має бути \"jrxml/label\" "
 "або \"jrxml/report\""
 
-#: components/Errors/JsonError.tsx:223
+#: components/Errors/JsonError.tsx:219
 #. Used in: Components > Errors > Json Error
 msgid "fieldNotRelationship"
 msgstr "Поле {field:string} не є зв’язком"
 
-#: components/Errors/JsonError.tsx:225
+#: components/Errors/JsonError.tsx:221
 #. Used in: Components > Errors > Json Error
 msgid "unexpectedTableId"
 msgstr ""
 "Неочікуваний ІД таблиці \"{tableId:string}\" у запиті. Очікується "
 "\"{expectedTableId:string}\""
 
-#: components/Errors/JsonError.tsx:230
+#: components/Errors/JsonError.tsx:226
 #. Used in: Components > Errors > Json Error
 msgid "noCollectionInQuery"
 msgstr "У запиті для таблиці {table:string} колекція не знайдена"
 
-#: components/Errors/JsonError.tsx:232
+#: components/Errors/JsonError.tsx:228
 #. Used in: Components > Errors > Json Error
 msgid "invalidDatePart"
 msgstr ""
 "Недійсна частина дати \"{datePart:string}\". Очікується один із "
 "{validDateParts:string}"
 
-#: components/Errors/JsonError.tsx:237
+#: components/Errors/JsonError.tsx:233
 #. Used in: Components > Errors > Json Error
 msgid "invalidUploadStatus"
 msgstr ""
 "Недійсний статус \"{uploadStatus:string}\" для {operation:string}. "
 "Очікується {expectedUploadStatus:string}"
 
-#: components/Errors/JsonError.tsx:243
+#: components/Errors/JsonError.tsx:239
 #. Used in: Components > Errors > Json Error
 msgid "datasetAlreadyUploaded"
 msgstr "Таблиця уже завантажена"

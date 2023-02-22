@@ -16,7 +16,7 @@ msgstr ""
 msgid "specifySeven"
 msgstr "Specify 7"
 
-#: components/UserPreferences/Definitions.tsx:1434
+#: components/UserPreferences/Definitions.tsx:1444
 #: components/WorkBench/DataSetMeta.tsx:232
 #: utils/parser/definitions.ts:100
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Work Bench > Data Set Meta ⬤ Utils > Parser > Definitions
@@ -64,17 +64,17 @@ msgstr "No"
 #: components/Toolbar/WbsDialog.tsx:174
 #: components/TreeView/Actions.tsx:354
 #: components/TreeView/Actions.tsx:370
-#: components/WbPlanView/Mapper.tsx:386
-#: components/WbPlanView/MapperComponents.tsx:316
-#: components/WbPlanView/MapperComponents.tsx:342
+#: components/WbPlanView/Mapper.tsx:385
+#: components/WbPlanView/MapperComponents.tsx:315
+#: components/WbPlanView/MapperComponents.tsx:341
 #: components/WbPlanView/State.tsx:100
 #: components/WorkBench/Components.tsx:28
 #: components/WorkBench/CoordinateConverter.tsx:167
 #: components/WorkBench/DataSetMeta.tsx:96
 #: components/WorkBench/DataSetMeta.tsx:379
 #: components/WorkBench/Disambiguation.tsx:36
-#: components/WorkBench/wbView.js:1872
-#: components/WorkBench/wbView.js:1966
+#: components/WorkBench/wbView.js:1867
+#: components/WorkBench/wbView.js:1961
 #. Used in: Components > App Resources > Create ⬤ Components > App Resources > Editor Components ⬤ Components > Form Sliders > Record Selector From Ids ⬤ Components > Forms > Delete Button ⬤ Components > Forms > Resource View ⬤ Components > Forms > Search Dialog ⬤ Components > Header > Choose Collection ⬤ Components > Header > Forms ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Return Dialog ⬤ Components > Pick Lists > Index ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Edit ⬤ Components > Query Builder > From Map ⬤ Components > Query Builder > Import ⬤ Components > Query Builder > Loan Return ⬤ Components > Reports > Parameters ⬤ Components > Reports > Report ⬤ Components > Reports > Index ⬤ Components > Router > Router ⬤ Components > Security > Import Export ⬤ Components > Security > Missing Agents Dialog ⬤ Components > Security > Role ⬤ Components > Security > Role Template ⬤ Components > Security > User ⬤ Components > Toolbar > Force Update ⬤ Components > Toolbar > Form Tables Edit ⬤ Components > Toolbar > Language ⬤ Components > Toolbar > Master Key ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets ⬤ Components > Toolbar > Tree Repair ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Tree View > Actions ⬤ Components > Wb Plan View > Mapper ⬤ Components > Wb Plan View > Mapper Components ⬤ Components > Wb Plan View > State ⬤ Components > Work Bench > Components ⬤ Components > Work Bench > Coordinate Converter ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Disambiguation ⬤ Components > Work Bench > Wb View
 msgid "cancel"
 msgstr "Cancelar"
@@ -100,8 +100,8 @@ msgstr "Omitir"
 #: components/Security/Institution.tsx:105
 #: components/Security/Institution.tsx:185
 #: components/Security/PreviewTables.tsx:65
-#: components/WorkBench/wbView.js:269
-#: components/WorkBench/wbView.js:1897
+#: components/WorkBench/wbView.js:270
+#: components/WorkBench/wbView.js:1892
 #. Used in: Components > Pick Lists > Definitions ⬤ Components > Query Builder > Edit ⬤ Components > Security > Collection ⬤ Components > Security > Collection Components ⬤ Components > Security > Institution ⬤ Components > Security > Preview Tables ⬤ Components > Work Bench > Wb View
 msgid "create"
 msgstr "Crear"
@@ -177,8 +177,8 @@ msgstr "Crear"
 #: components/Toolbar/TreeRepair.tsx:75
 #: components/TreeView/Actions.tsx:358
 #: components/UserPreferences/index.tsx:85
-#: components/WbPlanView/MapperComponents.tsx:195
-#: components/WbPlanView/MapperComponents.tsx:412
+#: components/WbPlanView/MapperComponents.tsx:194
+#: components/WbPlanView/MapperComponents.tsx:411
 #: components/WbPlanView/State.tsx:36
 #: components/WorkBench/AdvancedSearch.tsx:107
 #: components/WorkBench/DataSetMeta.tsx:66
@@ -189,12 +189,12 @@ msgstr "Crear"
 #: components/WorkBench/Results.tsx:70
 #: components/WorkBench/Status.tsx:87
 #: components/WorkBench/Template.tsx:320
-#: components/WorkBench/wbView.js:264
-#: components/WorkBench/wbView.js:1575
-#: components/WorkBench/wbView.js:1673
-#: components/WorkBench/wbView.js:1895
-#: components/WorkBench/wbView.js:2496
-#: components/WorkBench/wbView.js:2514
+#: components/WorkBench/wbView.js:265
+#: components/WorkBench/wbView.js:1570
+#: components/WorkBench/wbView.js:1668
+#: components/WorkBench/wbView.js:1890
+#: components/WorkBench/wbView.js:2491
+#: components/WorkBench/wbView.js:2509
 #. Used in: Components > App Resources > Editor Components ⬤ Components > App Resources > Filters ⬤ Components > App Resources > Tabs ⬤ Components > Attachments > Index ⬤ Components > Core > Version Mismatch ⬤ Components > Form Cells > Form Table ⬤ Components > Form Commands > Show Transactions ⬤ Components > Form Commands > Index ⬤ Components > Form Fields > Query Combo Box ⬤ Components > Form Meta > Auto Numbering ⬤ Components > Form Meta > Carry Forward ⬤ Components > Form Meta > Definition ⬤ Components > Form Meta > Edit History ⬤ Components > Form Meta > Pick List Usages ⬤ Components > Form Meta > Index ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Form Plugins > Geo Locate ⬤ Components > Form Plugins > Leaflet ⬤ Components > Form Plugins > Paleo Location ⬤ Components > Form Plugins > Index ⬤ Components > Form Sliders > Record Set ⬤ Components > Forms > Data Task ⬤ Components > Forms > Delete Blocked ⬤ Components > Forms > Resource View ⬤ Components > Forms > Save ⬤ Components > Forms > Search Dialog ⬤ Components > Header > Notifications ⬤ Components > Header > User Tools ⬤ Components > Home Page > About Specify ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Return Dialog ⬤ Components > Leaflet > Map ⬤ Components > Pick Lists > Index ⬤ Components > Query Builder > Check Read Access ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Edit ⬤ Components > Query Builder > Export ⬤ Components > Query Builder > Import ⬤ Components > Query Builder > Loan Return ⬤ Components > Query Builder > Save ⬤ Components > Reports > Report ⬤ Components > Schema Config > Languages ⬤ Components > Security > Role ⬤ Components > Security > Set Password ⬤ Components > Security > User ⬤ Components > Security > User Collections ⬤ Components > Security > User Invite Link ⬤ Components > Specify Network > Index ⬤ Components > Toolbar > Dwca ⬤ Components > Toolbar > Force Update ⬤ Components > Toolbar > Language ⬤ Components > Toolbar > Master Key ⬤ Components > Toolbar > Query Tables ⬤ Components > Toolbar > Query Tables Edit ⬤ Components > Toolbar > Tree Repair ⬤ Components > Tree View > Actions ⬤ Components > User Preferences > Index ⬤ Components > Wb Plan View > Mapper Components ⬤ Components > Wb Plan View > State ⬤ Components > Work Bench > Advanced Search ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Dev Show Plan ⬤ Components > Work Bench > Geo Locate ⬤ Components > Work Bench > Results ⬤ Components > Work Bench > Status ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 msgid "close"
 msgstr "Cerrar"
@@ -203,7 +203,7 @@ msgstr "Cerrar"
 #: components/Interactions/PrepReturnDialog.tsx:151
 #: components/Security/SetPassword.tsx:37
 #: components/Toolbar/FormTablesEdit.tsx:53
-#: components/WbPlanView/MapperComponents.tsx:413
+#: components/WbPlanView/MapperComponents.tsx:412
 #: components/WorkBench/CoordinateConverter.tsx:168
 #: components/WorkBench/Disambiguation.tsx:44
 #. Used in: Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Return Dialog ⬤ Components > Security > Set Password ⬤ Components > Toolbar > Form Tables Edit ⬤ Components > Wb Plan View > Mapper Components ⬤ Components > Work Bench > Coordinate Converter ⬤ Components > Work Bench > Disambiguation
@@ -231,7 +231,7 @@ msgstr "Limpiar todo"
 #: components/Security/Role.tsx:213
 #: components/Security/UserCollections.tsx:73
 #: components/UserPreferences/index.tsx:83
-#: components/WbPlanView/Mapper.tsx:393
+#: components/WbPlanView/Mapper.tsx:392
 #: components/WorkBench/DataSetMeta.tsx:123
 #: components/WorkBench/DevShowPlan.tsx:60
 #: components/WorkBench/Template.tsx:177
@@ -244,7 +244,7 @@ msgstr "Guardar"
 #: components/Forms/Save.tsx:241
 #: components/Molecules/AutoComplete.tsx:512
 #: components/PickLists/index.tsx:298
-#: components/QueryBuilder/Wrapped.tsx:385
+#: components/QueryBuilder/Wrapped.tsx:388
 #: components/SchemaConfig/Format.tsx:124
 #: components/SchemaConfig/Format.tsx:128
 #: components/SchemaConfig/Languages.tsx:72
@@ -297,10 +297,10 @@ msgstr "Herramienta"
 msgid "tools"
 msgstr "Herramientas"
 
-#: components/Attachments/Cell.tsx:119
+#: components/Attachments/Cell.tsx:118
 #: components/Attachments/Plugin.tsx:105
 #: components/Core/ContextLoader.tsx:51
-#: components/Core/Contexts.tsx:121
+#: components/Core/Contexts.tsx:122
 #: components/Core/__tests__/Contexts.test.tsx:62
 #: components/Core/__tests__/Contexts.test.tsx:73
 #: components/FormCells/FormTable.tsx:186
@@ -363,10 +363,10 @@ msgstr "Cargado"
 #: components/FormCells/FormTable.tsx:360
 #: components/FormPlugins/CollectionRelOneToMany.tsx:135
 #: components/QueryBuilder/Components.tsx:150
+#: components/QueryBuilder/Field.tsx:241
 #: components/QueryBuilder/Field.tsx:243
-#: components/QueryBuilder/Field.tsx:245
-#: components/QueryBuilder/Field.tsx:353
-#: components/QueryBuilder/Field.tsx:356
+#: components/QueryBuilder/Field.tsx:351
+#: components/QueryBuilder/Field.tsx:354
 #: components/Security/Policy.tsx:93
 #: components/Security/Policy.tsx:95
 #: components/Security/Role.tsx:182
@@ -383,7 +383,7 @@ msgstr "Eliminar"
 #: components/Header/ExpressSearchTask.tsx:69
 #: components/Header/ExpressSearchTask.tsx:74
 #: components/Header/ExpressSearchTask.tsx:106
-#: components/Header/index.tsx:161
+#: components/Header/index.tsx:162
 #: components/WorkBench/Template.tsx:248
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Search Dialog ⬤ Components > Header > Express Search Task ⬤ Components > Header > Index ⬤ Components > Work Bench > Template
 msgid "search"
@@ -440,12 +440,12 @@ msgstr "Ignorar"
 msgid "proceed"
 msgstr "Proceder"
 
-#: components/FormPlugins/LatLongUi.tsx:275
+#: components/FormPlugins/LatLongUi.tsx:274
 #. Used in: Components > Form Plugins > Lat Long Ui
 msgid "start"
 msgstr "Comenzar"
 
-#: components/FormPlugins/LatLongUi.tsx:287
+#: components/FormPlugins/LatLongUi.tsx:286
 #. Used in: Components > Form Plugins > Lat Long Ui
 msgid "end"
 msgstr "Fin"
@@ -462,7 +462,7 @@ msgstr "Actualizar"
 msgid "listTruncated"
 msgstr "(lista truncada)"
 
-#: components/FormPlugins/PartialDateUi.tsx:371
+#: components/FormPlugins/PartialDateUi.tsx:370
 #: components/WbPlanView/navigator.ts:541
 #. Used in: Components > Form Plugins > Partial Date Ui ⬤ Components > Wb Plan View > Navigator
 msgid "fullDate"
@@ -491,14 +491,14 @@ msgstr "Vista"
 #: components/Leaflet/index.ts:162
 #: components/SpecifyNetwork/index.tsx:235
 #: components/SpecifyNetwork/index.tsx:239
-#: components/WorkBench/wbView.js:503
-#: components/WorkBench/wbView.js:504
+#: components/WorkBench/wbView.js:501
+#: components/WorkBench/wbView.js:502
 #. 🟥Used in a hover-over message for links that open in new tab. Used in: Components > Atoms > Link ⬤ Components > Leaflet > Index ⬤ Components > Specify Network > Index ⬤ Components > Work Bench > Wb View
 msgid "opensInNewTab"
 msgstr "(abre en una nueva pestaña)"
 
 #: components/Errors/ErrorDialog.tsx:143
-#: components/Header/index.tsx:133
+#: components/Header/index.tsx:134
 #: components/Permissions/PermissionDenied.tsx:214
 #: components/RouterCommands/CacheBuster.tsx:36
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Header > Index ⬤ Components > Permissions > Permission Denied ⬤ Components > Router Commands > Cache Buster
@@ -513,10 +513,10 @@ msgstr "Acciones"
 
 #: components/ChooseCollection/index.tsx:124
 #: components/Header/ChooseCollection.tsx:38
-#: components/Header/index.tsx:84
+#: components/Header/index.tsx:85
 #: components/Router/EntrypointRouter.tsx:32
 #: components/Router/OverlayRoutes.tsx:52
-#: components/UserPreferences/Definitions.tsx:1071
+#: components/UserPreferences/Definitions.tsx:1081
 #. Used in: Components > Choose Collection > Index ⬤ Components > Header > Choose Collection ⬤ Components > Header > Index ⬤ Components > Router > Entrypoint Router ⬤ Components > Router > Overlay Routes ⬤ Components > User Preferences > Definitions
 msgid "chooseCollection"
 msgstr "Elegir colección"
@@ -580,7 +580,7 @@ msgstr "Desconocido"
 #: components/SchemaConfig/Languages.tsx:90
 #: components/Toolbar/Language.tsx:140
 #: components/UserPreferences/Definitions.tsx:135
-#: components/UserPreferences/Definitions.tsx:583
+#: components/UserPreferences/Definitions.tsx:593
 #. Used in: Components > Schema Config > Languages ⬤ Components > Toolbar > Language ⬤ Components > User Preferences > Definitions
 msgid "language"
 msgstr "Idioma"
@@ -669,15 +669,15 @@ msgid "id"
 msgstr "IDENTIFICACIÓN"
 
 #: components/Attachments/index.tsx:169
-#: components/QueryBuilder/Field.tsx:390
-#: components/QueryBuilder/Field.tsx:399
+#: components/QueryBuilder/Field.tsx:388
+#: components/QueryBuilder/Field.tsx:394
 #. Used in: Components > Attachments > Index ⬤ Components > Query Builder > Field
 msgid "filter"
 msgstr "Filtro"
 
 #: components/QueryBuilder/Results.tsx:44
 #: components/WorkBench/Template.tsx:140
-#: components/WorkBench/wbView.js:1674
+#: components/WorkBench/wbView.js:1669
 #. Used in: Components > Query Builder > Results ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 msgid "results"
 msgstr "Resultados"
@@ -698,7 +698,7 @@ msgid "copyToClipboard"
 msgstr "Copiar al portapapeles"
 
 #: components/Interactions/PrepDialog.tsx:202
-#: components/WbPlanView/CustomSelectElement.tsx:284
+#: components/WbPlanView/CustomSelectElement.tsx:285
 #. Used in: Components > Interactions > Prep Dialog ⬤ Components > Wb Plan View > Custom Select Element
 msgid "selected"
 msgstr "Selección"
@@ -706,7 +706,7 @@ msgstr "Selección"
 #: components/FormCells/FormTable.tsx:209
 #: components/FormCells/FormTable.tsx:296
 #: components/FormCells/FormTable.tsx:298
-#: components/Header/index.tsx:172
+#: components/Header/index.tsx:173
 #. Used in: Components > Form Cells > Form Table ⬤ Components > Header > Index
 msgid "expand"
 msgstr "Ampliar"
@@ -718,7 +718,7 @@ msgstr "Ampliar todo"
 
 #: components/FormCells/FormTable.tsx:265
 #: components/FormCells/FormTable.tsx:267
-#: components/Header/index.tsx:172
+#: components/Header/index.tsx:173
 #. Used in: Components > Form Cells > Form Table ⬤ Components > Header > Index
 msgid "collapse"
 msgstr "Colapso"
@@ -768,7 +768,7 @@ msgstr "No disponible"
 #: components/Toolbar/Query.tsx:95
 #: components/Toolbar/RecordSets.tsx:180
 #: components/Toolbar/WbsDialog.tsx:201
-#: components/WorkBench/wbView.js:2099
+#: components/WorkBench/wbView.js:2094
 #. 🟥Example usage: Record Sets (1,234). Used in: Components > App Resources > Filters ⬤ Components > Attachments > Index ⬤ Components > Form Cells > Form Table ⬤ Components > Header > Express Search Task ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Work Bench > Wb View
 msgid "countLine"
 msgstr "{resource:string} ({count:number|formatted})"

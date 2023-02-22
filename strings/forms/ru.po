@@ -12,7 +12,7 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 4.16-dev\n"
 
-#: components/UserPreferences/Definitions.tsx:564
+#: components/UserPreferences/Definitions.tsx:574
 #. Used in: Components > User Preferences > Definitions
 msgid "forms"
 msgstr "Формы"
@@ -71,7 +71,7 @@ msgstr "Запись"
 
 #: components/Forms/DeleteBlocked.tsx:93
 #: components/SchemaViewer/schemaToTsv.tsx:25
-#: components/WbPlanView/CustomSelectElement.tsx:283
+#: components/WbPlanView/CustomSelectElement.tsx:284
 #. Used in: Components > Forms > Delete Blocked ⬤ Components > Schema Viewer > Schema To Tsv ⬤ Components > Wb Plan View > Custom Select Element
 msgid "relationship"
 msgstr "Связь"
@@ -114,27 +114,26 @@ msgid "deleteConfirmationDescription"
 msgstr "Это действие не может быть отменено."
 
 #: components/FormPlugins/PartialDateUi.tsx:339
-#: components/FormPlugins/PartialDateUi.tsx:342
 #. Used in: Components > Form Plugins > Partial Date Ui
 msgid "datePrecision"
 msgstr "Точность даты"
 
-#: components/FormPlugins/PartialDateUi.tsx:372
+#: components/FormPlugins/PartialDateUi.tsx:371
 #. 🟥A placeholder for partial date field when "month /year" type is selected. Visible only in browsers that don't support the "month" input type. Used in: Components > Form Plugins > Partial Date Ui
 msgid "monthYear"
 msgstr "Месяц / Год"
 
-#: components/FormPlugins/PartialDateUi.tsx:388
+#: components/FormPlugins/PartialDateUi.tsx:387
 #. 🟥A placeholder for partial date field when "year" type is selected. Used in: Components > Form Plugins > Partial Date Ui
 msgid "yearPlaceholder"
 msgstr "ГГГГ"
 
-#: components/FormPlugins/PartialDateUi.tsx:420
+#: components/FormPlugins/PartialDateUi.tsx:419
 #. Used in: Components > Form Plugins > Partial Date Ui
 msgid "today"
 msgstr "Сегодня"
 
-#: components/FormPlugins/PartialDateUi.tsx:422
+#: components/FormPlugins/PartialDateUi.tsx:421
 #. Used in: Components > Form Plugins > Partial Date Ui
 msgid "todayButtonDescription"
 msgstr "Установить на текущую дату"
@@ -183,14 +182,14 @@ msgstr "Сначала нужко сохранить запись"
 
 #: components/FormSliders/Slider.tsx:31
 #: components/FormSliders/Slider.tsx:33
-#: components/UserPreferences/Definitions.tsx:953
+#: components/UserPreferences/Definitions.tsx:963
 #. Used in: Components > Form Sliders > Slider ⬤ Components > User Preferences > Definitions
 msgid "firstRecord"
 msgstr "Первый объект"
 
 #: components/FormSliders/Slider.tsx:97
 #: components/FormSliders/Slider.tsx:99
-#: components/UserPreferences/Definitions.tsx:957
+#: components/UserPreferences/Definitions.tsx:967
 #. Used in: Components > Form Sliders > Slider ⬤ Components > User Preferences > Definitions
 msgid "lastRecord"
 msgstr "Последний объект"
@@ -580,7 +579,7 @@ msgid "subForm"
 msgstr "Форма"
 
 #: components/FormMeta/SubViewMeta.tsx:37
-#: components/UserPreferences/Definitions.tsx:964
+#: components/UserPreferences/Definitions.tsx:974
 #. Used in: Components > Form Meta > Sub View Meta ⬤ Components > User Preferences > Definitions
 msgid "formTable"
 msgstr "Таблица"

@@ -28,8 +28,8 @@ msgstr "Mesa"
 msgid "tables"
 msgstr "Mesas"
 
-#: components/UserPreferences/Definitions.tsx:630
-#: components/WbPlanView/MapperComponents.tsx:436
+#: components/UserPreferences/Definitions.tsx:640
+#: components/WbPlanView/MapperComponents.tsx:435
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "tableName"
@@ -40,7 +40,7 @@ msgstr "Nombre de la tabla"
 #: components/SchemaConfig/Components.tsx:27
 #: components/SchemaConfig/Languages.tsx:34
 #: components/Security/registry.ts:198
-#: components/UserPreferences/Definitions.tsx:580
+#: components/UserPreferences/Definitions.tsx:590
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Languages ⬤ Components > Security > Registry ⬤ Components > User Preferences > Definitions
 #, fuzzy
 msgid "schemaConfig"
@@ -53,7 +53,7 @@ msgid "unsavedSchemaUnloadProtect"
 msgstr "Los cambios de esquema no se han guardado"
 
 #: components/SchemaConfig/Components.tsx:33
-#: components/WbPlanView/MapperComponents.tsx:318
+#: components/WbPlanView/MapperComponents.tsx:317
 #. Used in: Components > Schema Config > Components ⬤ Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "changeBaseTable"

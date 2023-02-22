@@ -26,8 +26,8 @@ msgstr "Tableau"
 msgid "tables"
 msgstr "Tableaux"
 
-#: components/UserPreferences/Definitions.tsx:630
-#: components/WbPlanView/MapperComponents.tsx:436
+#: components/UserPreferences/Definitions.tsx:640
+#: components/WbPlanView/MapperComponents.tsx:435
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Plan View > Mapper Components
 msgid "tableName"
 msgstr "Nom du tableau"
@@ -37,7 +37,7 @@ msgstr "Nom du tableau"
 #: components/SchemaConfig/Components.tsx:27
 #: components/SchemaConfig/Languages.tsx:34
 #: components/Security/registry.ts:198
-#: components/UserPreferences/Definitions.tsx:580
+#: components/UserPreferences/Definitions.tsx:590
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Languages ⬤ Components > Security > Registry ⬤ Components > User Preferences > Definitions
 msgid "schemaConfig"
 msgstr "Configuration du schéma"
@@ -48,7 +48,7 @@ msgid "unsavedSchemaUnloadProtect"
 msgstr "Les modifications du schéma n'ont pas été enregistrées"
 
 #: components/SchemaConfig/Components.tsx:33
-#: components/WbPlanView/MapperComponents.tsx:318
+#: components/WbPlanView/MapperComponents.tsx:317
 #. Used in: Components > Schema Config > Components ⬤ Components > Wb Plan View > Mapper Components
 msgid "changeBaseTable"
 msgstr "Modifier la base de tableau"

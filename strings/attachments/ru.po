@@ -27,7 +27,7 @@ msgstr "Настройте свой сервер вложений"
 
 #: components/Attachments/index.tsx:216
 #: components/FormMeta/SubViewMeta.tsx:42
-#: components/UserPreferences/Definitions.tsx:1086
+#: components/UserPreferences/Definitions.tsx:1096
 #. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > User Preferences > Definitions
 msgid "orderBy"
 msgstr "Сортировать по"
