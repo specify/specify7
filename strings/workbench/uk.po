@@ -295,13 +295,13 @@ msgstr "Збереження..."
 msgid "wbUnloadProtect"
 msgstr "Зміни в цьому наборі даних не збережено."
 
-#: components/WorkBench/wbView.js:2205
+#: components/WorkBench/wbView.js:2206
 #. Used in: Components > Work Bench > Wb View
 #, fuzzy
 msgid "noMatchErrorMessage"
 msgstr "Немає відповідного запису для таблиці обов’язкової відповідності."
 
-#: components/WorkBench/wbView.js:2231
+#: components/WorkBench/wbView.js:2232
 #. Used in: Components > Work Bench > Wb View
 #, fuzzy
 msgid "matchedMultipleErrorMessage"
@@ -309,20 +309,20 @@ msgstr ""
 "Це значення збігається з двома чи більше існуючими записами бази даних, і "
 "збіг необхідно усунути перед завантаженням."
 
-#: components/WorkBench/wbView.js:2434
+#: components/WorkBench/wbView.js:2435
 #. Used in: Components > Work Bench > Wb View
 #, fuzzy
 msgid "validationNoErrors"
 msgstr "Перевірка завершена без помилок"
 
-#: components/WorkBench/wbView.js:2437
+#: components/WorkBench/wbView.js:2438
 #. Used in: Components > Work Bench > Wb View
 #, fuzzy
 msgid "validationNoErrorsDescription"
 msgstr "Перевірка не виявила помилок, вона готова до завантаження в базу даних."
 
-#: components/WorkBench/wbView.js:2440
-#: components/WorkBench/wbView.js:2451
+#: components/WorkBench/wbView.js:2441
+#: components/WorkBench/wbView.js:2452
 #. Used in: Components > Work Bench > Wb View
 #, fuzzy
 msgid "validationReEditWarning"
@@ -331,25 +331,25 @@ msgstr ""
 "завантаженням слід повторно запустити перевірку, щоб переконатися, що не "
 "було допущено помилок."
 
-#: components/WorkBench/wbView.js:2445
+#: components/WorkBench/wbView.js:2446
 #. Used in: Components > Work Bench > Wb View
 #, fuzzy
 msgid "validationErrors"
 msgstr "Перевірка виконана з помилками"
 
-#: components/WorkBench/wbView.js:2448
+#: components/WorkBench/wbView.js:2449
 #. Used in: Components > Work Bench > Wb View
 #, fuzzy
 msgid "validationErrorsDescription"
 msgstr "Перевірка виявила помилки в наборі даних."
 
-#: components/WorkBench/wbView.js:2458
+#: components/WorkBench/wbView.js:2459
 #. Used in: Components > Work Bench > Wb View
 #, fuzzy
 msgid "uploadSuccessful"
 msgstr "Завантаження завершено без помилок"
 
-#: components/WorkBench/wbView.js:2459
+#: components/WorkBench/wbView.js:2460
 #. Used in: Components > Work Bench > Wb View
 #, fuzzy
 msgid "uploadSuccessfulDescription"
@@ -357,19 +357,19 @@ msgstr ""
 "Натисніть кнопку «Результати», щоб побачити кількість нових записів, "
 "доданих до кожної таблиці бази даних."
 
-#: components/WorkBench/wbView.js:2462
+#: components/WorkBench/wbView.js:2463
 #. Used in: Components > Work Bench > Wb View
 #, fuzzy
 msgid "uploadErrors"
 msgstr "Помилка завантаження через клітинки помилок"
 
-#: components/WorkBench/wbView.js:2465
+#: components/WorkBench/wbView.js:2466
 #. Used in: Components > Work Bench > Wb View
 #, fuzzy
 msgid "uploadErrorsDescription"
 msgstr "Помилка завантаження через одну або кілька помилок значення клітинки."
 
-#: components/WorkBench/wbView.js:2468
+#: components/WorkBench/wbView.js:2469
 #. Used in: Components > Work Bench > Wb View
 #, fuzzy
 msgid "uploadErrorsSecondDescription"
@@ -378,13 +378,13 @@ msgstr ""
 "потім внесіть відповідні виправлення. Збережіть і повторіть спробу "
 "завантаження."
 
-#: components/WorkBench/wbView.js:2473
+#: components/WorkBench/wbView.js:2474
 #. Used in: Components > Work Bench > Wb View
 #, fuzzy
 msgid "dataSetRollback"
 msgstr "Набір даних успішно повернуто"
 
-#: components/WorkBench/wbView.js:2474
+#: components/WorkBench/wbView.js:2475
 #. Used in: Components > Work Bench > Wb View
 #, fuzzy
 msgid "dataSetRollbackDescription"
@@ -392,37 +392,37 @@ msgstr ""
 "Цей відкочений набір даних зберігається та може бути відредагований або "
 "повторно завантажений."
 
-#: components/WorkBench/wbView.js:2512
+#: components/WorkBench/wbView.js:2513
 #. Used in: Components > Work Bench > Wb View
 #, fuzzy
 msgid "validationCanceled"
 msgstr "Перевірку скасовано"
 
-#: components/WorkBench/wbView.js:2520
+#: components/WorkBench/wbView.js:2521
 #. Used in: Components > Work Bench > Wb View
 #, fuzzy
 msgid "validationCanceledDescription"
 msgstr "Перевірку набору даних скасовано."
 
-#: components/WorkBench/wbView.js:2514
+#: components/WorkBench/wbView.js:2515
 #. Used in: Components > Work Bench > Wb View
 #, fuzzy
 msgid "rollbackCanceled"
 msgstr "Відкат скасовано"
 
-#: components/WorkBench/wbView.js:2522
+#: components/WorkBench/wbView.js:2523
 #. Used in: Components > Work Bench > Wb View
 #, fuzzy
 msgid "rollbackCanceledDescription"
 msgstr "Відкат набору даних скасовано."
 
-#: components/WorkBench/wbView.js:2515
+#: components/WorkBench/wbView.js:2516
 #. Used in: Components > Work Bench > Wb View
 #, fuzzy
 msgid "uploadCanceled"
 msgstr "Завантаження скасовано"
 
-#: components/WorkBench/wbView.js:2523
+#: components/WorkBench/wbView.js:2524
 #. Used in: Components > Work Bench > Wb View
 #, fuzzy
 msgid "uploadCanceledDescription"
@@ -447,7 +447,7 @@ msgid "emptyStringInline"
 msgstr "(порожній рядок)"
 
 #: components/WorkBench/Template.tsx:137
-#: components/WorkBench/wbView.js:2333
+#: components/WorkBench/wbView.js:2334
 #. Used in: Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 #, fuzzy
 msgid "wbUploadedUnavailable"
@@ -459,13 +459,13 @@ msgstr "Набір даних має бути перевірений або за
 msgid "wbValidateUnavailable"
 msgstr "Перед перевіркою цього набору даних необхідно визначити план завантаження"
 
-#: components/WorkBench/wbView.js:2328
+#: components/WorkBench/wbView.js:2329
 #. Used in: Components > Work Bench > Wb View
 #, fuzzy
 msgid "unavailableWhileEditing"
 msgstr "Ця дія вимагає збереження всіх змін"
 
-#: components/WorkBench/wbView.js:2415
+#: components/WorkBench/wbView.js:2416
 #. Used in: Components > Work Bench > Wb View
 #, fuzzy
 msgid "uploadUnavailableWhileHasErrors"
