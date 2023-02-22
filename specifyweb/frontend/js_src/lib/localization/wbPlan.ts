@@ -73,7 +73,7 @@ export const wbPlanText = createDictionary({
     'en-us': 'Match Behavior:',
     'ru-ru': 'Поведение при совпадении:',
     'es-es': 'Comportamiento de coincidencia:',
-    'fr-fr': 'Comportement de correspondance :',
+    'fr-fr': 'Comportement du concordance:',
     'uk-ua': 'Поведінка відповідності:',
   },
   columnMapping: {

@@ -305,7 +305,10 @@ export function parseFormCell(
   const cellClass = getParsedAttribute(cellNode, 'type') ?? '';
   const cellType = cellTypeTranslation[cellClass.toLowerCase()];
 
-  // FEATURE: warn on IDs that include spaces and other unsupported characters
+  /*
+   * FEATURE: warn on IDs that include spaces and other unsupported characters.
+   *   See https://github.com/specify/specify7/issues/2871
+   */
   const id = getParsedAttribute(cellNode, 'id');
   setLogContext({ id, type: cellType });
 

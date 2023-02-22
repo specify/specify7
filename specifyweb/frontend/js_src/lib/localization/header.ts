@@ -29,7 +29,7 @@ export const headerText = createDictionary({
     'en-us': 'Current {collectionTable:string}',
     'ru-ru': 'Текущая {collectionTable:string}',
     'es-es': 'Actual {collectionTable:string}',
-    'fr-fr': 'Actuelle {collectionTable:string}',
+    'fr-fr': 'Courant {collectionTable:string}',
     'uk-ua': 'Поточна {collectionTable:string}',
   },
   dataEntry: {
@@ -65,8 +65,7 @@ export const headerText = createDictionary({
     'ru-ru': 'Обновить все элементы RSS-канала экспорта сейчас?',
     'es-es':
       '¿Actualizar todos los elementos de la fuente de exportación RSS ahora?',
-    'fr-fr':
-      "Mettre à jour tous les éléments du flux d'exportation RSS maintenant ?",
+    'fr-fr': "Mettre à jour tous les éléments du flux d'export RSS maintenant?",
     'uk-ua': 'Оновити всі елементи RSS-експорту?',
   },
   feedExportStarted: {
@@ -219,7 +218,7 @@ export const headerText = createDictionary({
     'en-us': 'User Tools ({userName:string})',
     'ru-ru': 'Инструменты ({userName:string})',
     'es-es': 'Herramientas ({userName:string})',
-    'fr-fr': 'Outils ({userName:string})',
+    'fr-fr': 'Outils utilisateur ({userName:string})',
     'uk-ua': 'Інструменти ({userName:string})',
   },
   helpLocalizeSpecify: {
