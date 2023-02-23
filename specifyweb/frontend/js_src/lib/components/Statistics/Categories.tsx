@@ -257,7 +257,7 @@ export function Categories({
           className="!p-4 font-bold shadow-md shadow-gray-300"
           onClick={(): void => handleAdd(undefined)}
         >
-          {commonText.add()}
+          {statsText.addACategory()}
         </Button.Gray>
       )}
       {removeCategoryIndex !== undefined && (

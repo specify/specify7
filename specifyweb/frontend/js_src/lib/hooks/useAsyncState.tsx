@@ -75,9 +75,7 @@ export function useMultipleAsyncState<RESPONSE extends Record<any, unknown>>(
 ): GetOrSet<Partial<RESPONSE>> {
   const [state, setState] = React.useState<Partial<RESPONSE>>({});
   const loading = React.useContext(LoadingContext);
-
   React.useLayoutEffect(() => {
-    setState({});
     const wrapped = loadingScreen
       ? loading
       : (promise: Promise<unknown>): void => void promise.catch(crash);

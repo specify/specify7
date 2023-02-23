@@ -90,17 +90,14 @@ export function StatsPage(): JSX.Element | null {
     state.type === 'EditingState' ||
     isAddingItem ||
     state.type === 'PageRenameState';
-  const isEditingCollection = React.useRef(false);
 
-  const hasEditPermission = hasPermission(
-    '/preferences/statistics',
-    'edit_protected'
+  const hasEditPermission = React.useMemo(
+    () => hasPermission('/preferences/statistics', 'edit_protected'),
+    []
   );
 
   const canEditIndex = (isCollection: boolean): boolean =>
-    isCollection
-      ? hasEditPermission && isEditingCollection.current
-      : !isEditingCollection.current;
+    isCollection ? hasEditPermission : true;
 
   const [activePage, setActivePage] = React.useState<{
     readonly isShared: boolean;
@@ -385,7 +382,7 @@ export function StatsPage(): JSX.Element | null {
             {statsText.downloadAsTSV()}
           </Button.Green>
         )}
-        {isEditing ? (
+        {isEditing && process.env.NODE_ENV === 'development' ? (
           <>
             <Button.Red
               onClick={(): void => {
@@ -396,7 +393,7 @@ export function StatsPage(): JSX.Element | null {
                 setActivePage({ isShared: true, pageIndex: 0 });
               }}
             >
-              {commonText.reset()}
+              {`${commonText.reset()} [DEV]`}
             </Button.Red>
 
             <Button.Red
@@ -438,7 +435,6 @@ export function StatsPage(): JSX.Element | null {
                   previousCollectionLayout.current = collectionLayout;
                 if (personalLayout !== undefined)
                   previousLayout.current = personalLayout;
-                isEditingCollection.current = activePage.isShared;
               }}
             >
               {commonText.edit()}

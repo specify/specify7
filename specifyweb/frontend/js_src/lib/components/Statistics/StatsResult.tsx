@@ -47,7 +47,9 @@ export function StatsResult({
             onClick={handleRemove}
           />
           <Input.Text required value={label} onValueChange={handleRename} />
-          <span className="self-center">{value ?? commonText.loading()}</span>
+          <span className="self-center text-right">
+            {value ?? commonText.loading()}
+          </span>
         </>
       ) : (
         <li className="flex gap-2">

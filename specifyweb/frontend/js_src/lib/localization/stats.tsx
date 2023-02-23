@@ -209,5 +209,8 @@ export const statsText = createDictionary({
   editPage: {
     'en-us': 'Edit Page',
   },
+  addACategory: {
+    'en-us': 'Add A Category',
+  },
 });
 /* eslint-enable @typescript-eslint/naming-convention */

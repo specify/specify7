@@ -10,7 +10,7 @@ export function StatsAsideButton({
 }: {
   readonly label: string;
   readonly isCurrent: boolean;
-  readonly onClick: () => void;
+  readonly onClick: (() => void) | undefined;
   readonly onRename: (() => void) | undefined;
 }): JSX.Element {
   return (
