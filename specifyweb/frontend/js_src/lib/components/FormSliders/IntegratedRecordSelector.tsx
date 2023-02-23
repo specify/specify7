@@ -194,13 +194,13 @@ export function IntegratedRecordSelector({
       collection={collection}
       defaultIndex={isToOne ? 0 : index}
       relationship={relationship}
+      onAdd={handleAdd}
+      onDelete={handleDelete}
       onSlide={(index): void =>
         typeof urlParameter === 'string'
           ? setIndex(index.toString())
           : undefined
       }
-      onAdd={handleAdd}
-      onDelete={handleDelete}
       {...rest}
     >
       {({

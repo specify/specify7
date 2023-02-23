@@ -2,11 +2,11 @@ import React from 'react';
 
 import { DependentCollection } from '../DataModel/collectionApi';
 import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
 import type { Collection } from '../DataModel/specifyModel';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { FormTable } from './FormTable';
-import { SpecifyResource } from '../DataModel/legacyTypes';
 
 export function FormTableCollection({
   collection,
@@ -15,7 +15,7 @@ export function FormTableCollection({
   ...props
 }: Omit<
   Parameters<typeof FormTable>[0],
-  'isDependent' | 'onFetchMore' | 'relationship' | 'resources' | 'onDelete'
+  'isDependent' | 'onDelete' | 'onFetchMore' | 'relationship' | 'resources'
 > & {
   readonly collection: Collection<AnySchema>;
   readonly onDelete:
