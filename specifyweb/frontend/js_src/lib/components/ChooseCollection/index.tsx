@@ -120,7 +120,7 @@ function Wrapped({
   const loading = React.useContext(LoadingContext);
   return (
     <SplashScreen>
-      <Form forwardRef={formRef} method="post">
+      <Form forwardRef={formRef} method="post" className="min-h-[unset]">
         <h2>{commonText.chooseCollection()}:</h2>
         {errors.length > 0 && <ErrorMessage>{errors}</ErrorMessage>}
         {hasAccess ? (
