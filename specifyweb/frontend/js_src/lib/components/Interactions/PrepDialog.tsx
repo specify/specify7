@@ -210,9 +210,9 @@ export function PrepDialog({
           </thead>
           <tbody>
             <tr>
-              <td></td>
-              <td></td>
-              <td></td>
+              <td />
+              <td />
+              <td />
               <td>{commonText.bulkValue()}</td>
               <td>
                 <Input.Number
@@ -226,18 +226,18 @@ export function PrepDialog({
                   }
                 />
               </td>
-              <td></td>
-              <td></td>
+              <td />
+              <td />
             </tr>
             {preparations.map((preparation, index) => (
               <PrepDialogRow
+                bulkValue={bulkValue}
                 key={index}
                 preparation={preparation}
                 selected={selected[index]}
                 onChange={(newSelected): void =>
                   setSelected(replaceItem(selected, index, newSelected))
                 }
-                bulkValue={bulkValue}
               />
             ))}
           </tbody>

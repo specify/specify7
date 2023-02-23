@@ -86,9 +86,9 @@ export function PrepDialogRow({
             value={
               selected === preparation.available
                 ? preparation.available
-                : preparation.available >= bulkValue && hasChange === false
+                : preparation.available >= bulkValue && !hasChange
                 ? bulkValue
-                : preparation.available <= bulkValue && hasChange === false
+                : preparation.available <= bulkValue && !hasChange
                 ? preparation.available
                 : selected
             }
