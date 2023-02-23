@@ -156,7 +156,7 @@ version, if problems arise).
 
 ### Installing system dependencies
 
-Specify 7 requires Python 3.6. Ubuntu 20.04 LTS is recommended. For
+Specify 7 requires Python 3.8. Ubuntu 20.04 LTS is recommended. For
 other distributions these instructions will have to be adapted.
 
 Ubuntu 20.04 LTS:
@@ -171,8 +171,8 @@ sudo apt-get -y install --no-install-recommends \
   nodejs \
   npm \
   python3-venv \
-  python3.6 \
-  python3.6-dev \
+  python3.8 \
+  python3.8-dev \
   redis \
   unzip
 ```
