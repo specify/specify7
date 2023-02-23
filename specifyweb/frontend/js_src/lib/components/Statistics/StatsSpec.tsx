@@ -10,7 +10,7 @@ import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { formattedEntry } from '../WbPlanView/mappingHelpers';
 import { generateStatUrl } from './hooks';
 import type { BackEndStat, StatLayout, StatsSpec } from './types';
-import { DefaultStat, StatCategoryReturn } from './types';
+import type { DefaultStat, StatCategoryReturn } from './types';
 
 export const statsSpec: StatsSpec = {
   collection: {
@@ -494,7 +494,7 @@ const statSpecToItems = (
     pageName,
     itemName,
     categoryName,
-    label: label,
+    label,
     itemValue: undefined,
     itemType: spec.type === 'BackEndStat' ? 'BackEndStat' : 'QueryStat',
     pathToValue: spec.type === 'BackEndStat' ? spec.pathToValue : undefined,
@@ -526,12 +526,10 @@ export function generateDefaultLayout(statsSpecBasis: StatsSpec): StatLayout {
     ([sourceKey, { sourceLabel, categories }]) => ({
       label: sourceLabel,
       categories: Object.entries(categories).map(
-        ([categoryName, { label, items }]) => {
-          return {
-            label,
-            items: statSpecToItems(categoryName, sourceKey, items),
-          };
-        }
+        ([categoryName, { label, items }]) => ({
+          label,
+          items: statSpecToItems(categoryName, sourceKey, items),
+        })
       ),
       lastUpdated: undefined,
     })

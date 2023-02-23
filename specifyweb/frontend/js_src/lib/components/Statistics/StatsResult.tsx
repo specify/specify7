@@ -1,12 +1,13 @@
 import React from 'react';
-import type { SpQuery } from '../DataModel/types';
+
 import { useBooleanState } from '../../hooks/useBooleanState';
-import { FrontEndStatsResultDialog } from './ResultsDialog';
-import { Button } from '../Atoms/Button';
-import { SpecifyResource } from '../DataModel/legacyTypes';
 import { commonText } from '../../localization/common';
+import { Button } from '../Atoms/Button';
 import { Input } from '../Atoms/Form';
-import { QuerySpec } from './types';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { SpQuery } from '../DataModel/types';
+import { FrontEndStatsResultDialog } from './ResultsDialog';
+import type { QuerySpec } from './types';
 
 export function StatsResult({
   value,
@@ -18,7 +19,7 @@ export function StatsResult({
   onRename: handleRename,
   isDefault,
 }: {
-  readonly value: string | number | undefined;
+  readonly value: number | string | undefined;
   readonly query: SpecifyResource<SpQuery> | undefined;
   readonly label: string | undefined;
   readonly isDefault: boolean;
@@ -66,9 +67,9 @@ export function StatsResult({
 
       {isOpen && query !== undefined && label !== undefined ? (
         <FrontEndStatsResultDialog
+          label={label}
           query={query}
           onClose={handleClose}
-          label={label}
           onEdit={handleEdit}
         />
       ) : undefined}

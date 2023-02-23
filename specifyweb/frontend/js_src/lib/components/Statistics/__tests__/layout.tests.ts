@@ -1,12 +1,12 @@
-import { StatsSpec } from '../types';
 import { statsText } from '../../../localization/stats';
-import { formattedEntry } from '../../WbPlanView/mappingHelpers';
-import { queryFieldFilters } from '../../QueryBuilder/FieldFilter';
-import { formatNumber } from '../../Atoms/Internationalization';
 import { f } from '../../../utils/functools';
-import { userInformation } from '../../InitialContext/userInformation';
 import { ensure } from '../../../utils/types';
+import { formatNumber } from '../../Atoms/Internationalization';
+import { userInformation } from '../../InitialContext/userInformation';
+import { queryFieldFilters } from '../../QueryBuilder/FieldFilter';
+import { formattedEntry } from '../../WbPlanView/mappingHelpers';
 import { generateDefaultLayout } from '../StatsSpec';
+import type { StatsSpec } from '../types';
 
 export const statsSpecTest: StatsSpec = {
   collection: {

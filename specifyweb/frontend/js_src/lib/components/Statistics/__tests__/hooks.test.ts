@@ -1,9 +1,8 @@
 import { theories } from '../../../tests/utils';
-
-import { applyStatBackendResponse } from '../hooks';
-import { defaultLayoutTest, statsSpecTest } from './layout.tests';
 import { f } from '../../../utils/functools';
 import { formatNumber } from '../../Atoms/Internationalization';
+import { applyStatBackendResponse } from '../hooks';
+import { defaultLayoutTest, statsSpecTest } from './layout.tests';
 
 const backEndResponse = {
   '/statistics/collection/preparations/': {

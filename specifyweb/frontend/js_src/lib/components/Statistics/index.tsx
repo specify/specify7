@@ -35,7 +35,7 @@ import {
   useDynamicCategorySetter,
 } from './hooks';
 import { StatsPageEditing } from './StatsPageEditing';
-import { dynamicStatsSpec, defaultLayoutGenerated } from './StatsSpec';
+import { defaultLayoutGenerated, dynamicStatsSpec } from './StatsSpec';
 import type { CustomStat, DefaultStat, StatLayout } from './types';
 
 export function StatsPage(): JSX.Element | null {
@@ -419,7 +419,7 @@ export function StatsPage(): JSX.Element | null {
                     previousLayoutRef.current.length - 1
                   );
                   return {
-                    isShared: isShared,
+                    isShared,
                     pageIndex: newIndex,
                   };
                 });

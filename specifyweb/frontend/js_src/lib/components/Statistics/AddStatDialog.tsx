@@ -1,23 +1,24 @@
-import type { RA } from '../../utils/types';
-import type { SerializedResource } from '../DataModel/helperTypes';
-import type { SpQuery } from '../DataModel/types';
-import type { CustomStat, DefaultStat, StatLayout } from './types';
-import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { Button } from '../Atoms/Button';
+import React from 'react';
+
 import { commonText } from '../../localization/common';
 import { statsText } from '../../localization/stats';
+import type { RA } from '../../utils/types';
 import { H3, Ul } from '../Atoms';
+import { Button } from '../Atoms/Button';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import type { SpQuery } from '../DataModel/types';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { QueryList } from '../Toolbar/Query';
-import React from 'react';
 import { AddStatPage } from './AddStatPage';
 import { queryToSpec } from './ResultsDialog';
+import type { CustomStat, DefaultStat, StatLayout } from './types';
 
 export function AddStatDialog({
   defaultStatsAddLeft,
   queries,
   onClose: handleClose,
   onAdd: handleAdd,
-  onLoad: onLoad,
+  onLoad,
 }: {
   readonly queries: RA<SerializedResource<SpQuery>> | undefined;
   readonly defaultStatsAddLeft: StatLayout | undefined;
@@ -74,10 +75,10 @@ export function AddStatDialog({
                 )
               ) ? undefined : (
                 <AddStatPage
-                  pageLabel={defaultLayoutPage.label}
-                  pageIndex={index}
-                  pageLayout={defaultLayoutPage}
                   key={index}
+                  pageIndex={index}
+                  pageLabel={defaultLayoutPage.label}
+                  pageLayout={defaultLayoutPage}
                   onClick={(item: CustomStat | DefaultStat): void => {
                     handleAdd(item, -1);
                     handleClose();
