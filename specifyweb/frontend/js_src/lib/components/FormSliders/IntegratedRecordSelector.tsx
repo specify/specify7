@@ -150,6 +150,7 @@ export function IntegratedRecordSelector({
   sortField,
   relationship,
   onAdd: handleAdd,
+  onDelete: handleDelete,
   ...rest
 }: Omit<
   Parameters<typeof RecordSelectorFromCollection>[0],
@@ -182,7 +183,11 @@ export function IntegratedRecordSelector({
         if (typeof handleAdd === 'function') handleAdd(resources);
       }}
       onClose={handleClose}
-      onDelete={undefined}
+      onDelete={
+        handleDelete === undefined
+          ? undefined
+          : (_resource, index): void => handleDelete(index, 'minusButton')
+      }
     />
   ) : (
     <RecordSelectorFromCollection
@@ -195,6 +200,7 @@ export function IntegratedRecordSelector({
           : undefined
       }
       onAdd={handleAdd}
+      onDelete={handleDelete}
       {...rest}
     >
       {({

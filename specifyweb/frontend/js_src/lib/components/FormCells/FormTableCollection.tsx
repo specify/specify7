@@ -1,26 +1,26 @@
 import React from 'react';
 
-import type { PartialBy } from '../../utils/types';
 import { DependentCollection } from '../DataModel/collectionApi';
 import type { AnySchema } from '../DataModel/helperTypes';
 import { resourceOn } from '../DataModel/resource';
 import type { Collection } from '../DataModel/specifyModel';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { FormTable } from './FormTable';
+import { SpecifyResource } from '../DataModel/legacyTypes';
 
 export function FormTableCollection({
   collection,
   onAdd: handleAdd,
   onDelete: handleDelete,
   ...props
-}: PartialBy<
-  Omit<
-    Parameters<typeof FormTable>[0],
-    'isDependent' | 'onFetchMore' | 'relationship' | 'resources'
-  >,
-  'onDelete'
+}: Omit<
+  Parameters<typeof FormTable>[0],
+  'isDependent' | 'onFetchMore' | 'relationship' | 'resources' | 'onDelete'
 > & {
   readonly collection: Collection<AnySchema>;
+  readonly onDelete:
+    | ((resource: SpecifyResource<AnySchema>, index: number) => void)
+    | undefined;
 }): JSX.Element | null {
   const [records, setRecords] = React.useState(Array.from(collection.models));
   React.useEffect(
@@ -64,7 +64,7 @@ export function FormTableCollection({
       onDelete={(resource): void => {
         collection.remove(resource);
         setRecords(Array.from(collection.models));
-        handleDelete?.(resource);
+        handleDelete?.(resource, records.indexOf(resource));
       }}
       onFetchMore={collection.isComplete() ? undefined : handleFetchMore}
       {...props}
