@@ -19,7 +19,7 @@ export const Label = {
 export const Form = wrap(
   'Form',
   'form',
-  `${className.notSubmittedForm} flex flex-col gap-4 min-h-[30vh]`,
+  `${className.notSubmittedForm} flex flex-col gap-4 min-h-[30vh] sm:min-h-[unset]`,
   (props) => ({
     ...props,
     /*
