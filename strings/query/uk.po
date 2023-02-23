@@ -25,7 +25,7 @@ msgstr "Запит"
 
 #: components/Header/menuItemDefinitions.ts:70
 #: components/Router/OverlayRoutes.tsx:96
-#: components/Toolbar/Query.tsx:96
+#: components/Toolbar/Query.tsx:106
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Query
 #, fuzzy
 msgid "queries"

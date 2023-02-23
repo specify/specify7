@@ -58,7 +58,7 @@ msgstr "Non"
 #: components/Toolbar/FormTablesEdit.tsx:52
 #: components/Toolbar/Language.tsx:107
 #: components/Toolbar/MasterKey.tsx:39
-#: components/Toolbar/Query.tsx:88
+#: components/Toolbar/Query.tsx:98
 #: components/Toolbar/RecordSets.tsx:169
 #: components/Toolbar/TreeRepair.tsx:75
 #: components/Toolbar/WbsDialog.tsx:174
@@ -406,7 +406,7 @@ msgid "notApplicable"
 msgstr "N/A"
 
 #: components/Security/RoleTemplate.tsx:89
-#: components/Toolbar/Query.tsx:91
+#: components/Toolbar/Query.tsx:101
 #: components/Toolbar/RecordSets.tsx:174
 #. Used in: Components > Security > Role Template ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets
 msgid "new"
@@ -768,7 +768,7 @@ msgstr "Aucun disponible"
 #: components/Attachments/index.tsx:194
 #: components/FormCells/FormTable.tsx:141
 #: components/Header/ExpressSearchTask.tsx:194
-#: components/Toolbar/Query.tsx:95
+#: components/Toolbar/Query.tsx:105
 #: components/Toolbar/RecordSets.tsx:180
 #: components/Toolbar/WbsDialog.tsx:201
 #: components/WorkBench/wbView.js:2094
