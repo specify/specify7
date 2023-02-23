@@ -387,19 +387,21 @@ export function StatsPage(): JSX.Element | null {
             {statsText.downloadAsTSV()}
           </Button.Green>
         )}
-        {isEditing && process.env.NODE_ENV === 'development' ? (
+        {isEditing ? (
           <>
-            <Button.Red
-              onClick={(): void => {
-                cleanMaybeFulfilled();
-                setCollectionLayout(undefined);
-                setPersonalLayout(undefined);
-                setCategoriesToFetch([]);
-                setActivePage({ isShared: true, pageIndex: 0 });
-              }}
-            >
-              {`${commonText.reset()} [DEV]`}
-            </Button.Red>
+            {process.env.NODE_ENV === 'development' && (
+              <Button.Red
+                onClick={(): void => {
+                  cleanMaybeFulfilled();
+                  setCollectionLayout(undefined);
+                  setPersonalLayout(undefined);
+                  setCategoriesToFetch([]);
+                  setActivePage({ isShared: true, pageIndex: 0 });
+                }}
+              >
+                {`${commonText.reset()} [DEV]`}
+              </Button.Red>
+            )}
 
             <Button.Red
               onClick={(): void => {
