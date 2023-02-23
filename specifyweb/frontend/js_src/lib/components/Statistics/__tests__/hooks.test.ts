@@ -8,20 +8,12 @@ import { formatNumber } from '../../Atoms/Internationalization';
 const backEndResponse = {
   '/statistics/collection/preparations/': {
     'C&S': {
-      lots: 1826,
-      total: 8430,
+      lots: 826,
+      total: 430,
     },
     EtOH: {
-      lots: 41176,
-      total: 525985,
-    },
-    Skel: {
-      lots: 905,
-      total: 1489,
-    },
-    Tissue: {
-      lots: 10,
-      total: 10,
+      lots: 176,
+      total: 985,
     },
     'X-Ray': {
       lots: 460,
@@ -66,5 +58,76 @@ theories(applyStatBackendResponse, [
         pathToValue: 'Neotype',
       },
     ],
+  },
+  {
+    in: [
+      backEndResponse,
+      defaultLayoutTest[0].categories[1].items,
+      '/statistics/collection/preparations/',
+      (
+        prep:
+          | {
+              readonly lots: number;
+              readonly total: number;
+            }
+          | undefined
+      ) =>
+        prep === undefined
+          ? undefined
+          : `${formatNumber(prep.lots)} / ${formatNumber(prep.total)}`,
+      statsSpecTest,
+    ],
+    out: [
+      {
+        type: 'DefaultStat',
+        itemType: 'BackEndStat',
+        pageName: 'collection',
+        categoryName: 'preparations',
+        itemName: 'phantomItem',
+        label: 'C&S',
+        itemValue: '826 / 430',
+        pathToValue: 'C&S',
+      },
+      {
+        type: 'DefaultStat',
+        itemType: 'BackEndStat',
+        pageName: 'collection',
+        categoryName: 'preparations',
+        itemName: 'phantomItem',
+        label: 'EtOH',
+        itemValue: '176 / 985',
+        pathToValue: 'EtOH',
+      },
+      {
+        type: 'DefaultStat',
+        itemType: 'BackEndStat',
+        pageName: 'collection',
+        categoryName: 'preparations',
+        itemName: 'phantomItem',
+        label: 'X-Ray',
+        itemValue: '460 / 460',
+        pathToValue: 'X-Ray',
+      },
+    ],
+  },
+  {
+    in: [
+      backEndResponse,
+      defaultLayoutTest[0].categories[0].items,
+      '/statistics/collection/type_specimens/',
+      (rawNumber: number | undefined) => f.maybe(rawNumber, formatNumber),
+      statsSpecTest,
+    ],
+    out: defaultLayoutTest[0].categories[0].items,
+  },
+  {
+    in: [
+      backEndResponse,
+      defaultLayoutTest[0].categories[1].items,
+      '/statistics/collection/type_specimens/',
+      (rawNumber: number | undefined) => f.maybe(rawNumber, formatNumber),
+      statsSpecTest,
+    ],
+    out: defaultLayoutTest[0].categories[1].items,
   },
 ]);
