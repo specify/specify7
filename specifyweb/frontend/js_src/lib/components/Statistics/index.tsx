@@ -27,6 +27,7 @@ import { StatsAsideButton } from './Buttons';
 import { Categories } from './Categories';
 import {
   getDynamicCategoriesToFetch,
+  getOffsetOne,
   statsToTsv,
   useBackendApi,
   useDefaultDynamicCategorySetter,
@@ -78,7 +79,7 @@ export function StatsPage(): JSX.Element | null {
         'PageRenameState',
         {
           readonly pageIndex: number | undefined;
-          readonly isCollection: boolean;
+          readonly isShared: boolean;
         }
       >
     | State<'DefaultState'>
@@ -107,10 +108,13 @@ export function StatsPage(): JSX.Element | null {
     pageIndex: 0,
   });
 
-  const setLayout = activePage.isShared
-    ? setCollectionLayout
-    : setPersonalLayout;
-  const sourceLayout = activePage.isShared ? collectionLayout : personalLayout;
+  const getSourceLayoutSetter = (isShared: boolean) =>
+    isShared ? setCollectionLayout : setPersonalLayout;
+
+  const getSourceLayout = (isShared: boolean) =>
+    isShared ? collectionLayout : personalLayout;
+
+  const sourceLayout = getSourceLayout(activePage.isShared);
 
   const allCategories = React.useMemo(
     () => dynamicStatsSpec.map(({ responseKey }) => responseKey),
@@ -181,17 +185,18 @@ export function StatsPage(): JSX.Element | null {
         oldCategory: StatLayout[number]['categories']
       ) => StatLayout[number]['categories']
     ): void =>
-      setLayout((oldLayout: StatLayout | undefined) =>
-        oldLayout === undefined
-          ? undefined
-          : replaceItem(oldLayout, activePage.pageIndex, {
-              ...oldLayout[activePage.pageIndex],
-              categories: newCategories(
-                oldLayout[activePage.pageIndex].categories
-              ),
-            })
+      getSourceLayoutSetter(activePage.isShared)(
+        (oldLayout: StatLayout | undefined) =>
+          oldLayout === undefined
+            ? undefined
+            : replaceItem(oldLayout, activePage.pageIndex, {
+                ...oldLayout[activePage.pageIndex],
+                categories: newCategories(
+                  oldLayout[activePage.pageIndex].categories
+                ),
+              })
       ),
-    [activePage.pageIndex, setLayout]
+    [activePage.pageIndex, activePage.isShared]
   );
 
   // Used to set unknown categories once for layout initially, and every time for default layout
@@ -347,7 +352,7 @@ export function StatsPage(): JSX.Element | null {
         <Button.Blue
           onClick={(): void => {
             cleanMaybeFulfilled();
-            setLayout((layout) =>
+            getSourceLayoutSetter(activePage.isShared)((layout) =>
               layout === undefined
                 ? undefined
                 : getValueUndefined(layout, activePage.pageIndex)
@@ -476,7 +481,7 @@ export function StatsPage(): JSX.Element | null {
                                   ? (): void =>
                                       setState({
                                         type: 'PageRenameState',
-                                        isCollection: index === 0,
+                                        isShared: index === 0,
                                         pageIndex,
                                       })
                                   : undefined
@@ -493,7 +498,7 @@ export function StatsPage(): JSX.Element | null {
                               setState({
                                 type: 'PageRenameState',
                                 pageIndex: undefined,
-                                isCollection: index === 0,
+                                isShared: index === 0,
                               })
                             }
                             onRename={undefined}
@@ -509,7 +514,7 @@ export function StatsPage(): JSX.Element | null {
             <StatsPageEditing
               label={
                 typeof state.pageIndex === 'number'
-                  ? state.isCollection
+                  ? state.isShared
                     ? collectionLayout[state.pageIndex].label
                     : personalLayout?.[state.pageIndex].label
                   : undefined
@@ -518,21 +523,28 @@ export function StatsPage(): JSX.Element | null {
                 typeof state.pageIndex === 'number'
                   ? undefined
                   : (label): void => {
-                      if (sourceLayout !== undefined) {
-                        setLayout([
-                          ...sourceLayout,
-                          {
-                            label,
-                            categories: [],
-                            lastUpdated: undefined,
-                          },
-                        ]);
-                        setState({
-                          type: 'EditingState',
-                        });
+                      const targetSourceLayout = getSourceLayout(
+                        state.isShared
+                      );
+                      getSourceLayoutSetter(state.isShared)((layout) =>
+                        layout === undefined
+                          ? undefined
+                          : [
+                              ...layout,
+                              {
+                                label,
+                                categories: [],
+                                lastUpdated: undefined,
+                              },
+                            ]
+                      );
+                      setState({
+                        type: 'EditingState',
+                      });
+                      if (targetSourceLayout !== undefined) {
                         setActivePage({
-                          pageIndex: sourceLayout.length,
-                          isShared: state.isCollection,
+                          pageIndex: targetSourceLayout.length,
+                          isShared: state.isShared,
                         });
                       }
                     }
@@ -540,45 +552,57 @@ export function StatsPage(): JSX.Element | null {
               onClose={(): void => setState({ type: 'EditingState' })}
               onRemove={
                 state.pageIndex === undefined ||
-                sourceLayout === undefined ||
-                sourceLayout.length === 1
+                (getSourceLayout(state.isShared) ?? []).length <= 1
                   ? undefined
                   : () => {
-                      if (state.pageIndex === undefined) return undefined;
-
-                      setLayout((oldLayout) =>
-                        oldLayout === undefined
-                          ? undefined
-                          : removeItem(oldLayout, state.pageIndex!)
+                      const targetSourceLayout = getSourceLayout(
+                        state.isShared
                       );
-                      setState({
-                        type: 'EditingState',
-                      });
-                      setActivePage({
-                        pageIndex: sourceLayout.length - 2,
-                        isShared: state.isCollection,
-                      });
-
-                      return undefined;
+                      if (
+                        targetSourceLayout !== undefined &&
+                        state.pageIndex !== undefined
+                      ) {
+                        getSourceLayoutSetter(state.isShared)((oldLayout) =>
+                          oldLayout === undefined
+                            ? undefined
+                            : removeItem(oldLayout, state.pageIndex!)
+                        );
+                        setState({
+                          type: 'EditingState',
+                        });
+                        setActivePage({
+                          pageIndex:
+                            activePage.isShared === state.isShared
+                              ? getOffsetOne(
+                                  activePage.pageIndex,
+                                  state.pageIndex
+                                )
+                              : activePage.pageIndex,
+                          isShared: activePage.isShared,
+                        });
+                      }
                     }
               }
               onRename={
                 state.pageIndex === undefined
                   ? undefined
                   : (value) => {
-                      if (state.pageIndex === undefined) return undefined;
-                      if (sourceLayout !== undefined) {
-                        setLayout(
-                          replaceItem(sourceLayout, state.pageIndex, {
-                            ...sourceLayout[state.pageIndex],
-                            label: value,
-                          })
+                      const targetSourceLayout = getSourceLayout(
+                        state.isShared
+                      );
+                      if (targetSourceLayout !== undefined) {
+                        getSourceLayoutSetter(state.isShared)((layout) =>
+                          layout === undefined || state.pageIndex === undefined
+                            ? undefined
+                            : replaceItem(layout, state.pageIndex, {
+                                ...layout[state.pageIndex],
+                                label: value,
+                              })
                         );
-                        setState({
-                          type: 'EditingState',
-                        });
                       }
-                      return undefined;
+                      setState({
+                        type: 'EditingState',
+                      });
                     }
               }
             />

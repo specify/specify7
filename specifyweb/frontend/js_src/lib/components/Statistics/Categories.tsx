@@ -244,7 +244,7 @@ export function Categories({
                       else handleRemove?.(categoryIndex, undefined);
                     }}
                   >
-                    {statsText.deleteAll()}
+                    {statsText.deleteCategory()}
                   </Button.Small>
                 </div>
               ) : null}

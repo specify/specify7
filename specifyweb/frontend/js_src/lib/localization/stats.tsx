@@ -197,8 +197,8 @@ export const statsText = createDictionary({
   showStatistics: {
     'en-us': 'Show Statistics',
   },
-  deleteAll: {
-    'en-us': 'Delete All',
+  deleteCategory: {
+    'en-us': 'Delete Category',
   },
   name: {
     'en-us': 'Name',
