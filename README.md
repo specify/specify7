@@ -232,7 +232,7 @@ system. Also, it avoids having to use a superuser account to install
 the Python dependencies.
 
 ```shell
-python3.6 -m venv specify7/ve
+python3.8 -m venv specify7/ve
 specify7/ve/bin/pip install -r specify7/requirements.txt
 ```
 
@@ -416,7 +416,7 @@ sudo systemctl restart httpd.service
 ## Updating Specify 7
 
 Specify 7.4.0 and prior versions were based on Python 2.7. If updating
-from one of these versions, it will be necessary to install Python 3.6
+from one of these versions, it will be necessary to install Python 3.8
 by running the `apt-get` commands in the
 [Install system dependencies](#install-system-dependencies) and the
 [Production requirements](#production-requirements) steps. Then
