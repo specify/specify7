@@ -52,6 +52,7 @@ export function getFieldsForAutoView<SCHEMA extends AnySchema>(
   const filteredFields = baseFields.filter(
     (field) => !field.isHidden && !field.isReadOnly
   );
+  // BUG: if displayed as a dependent sub view, should hide relationship to parent
   const relationships = model.relationships
     .filter(
       (field) =>
