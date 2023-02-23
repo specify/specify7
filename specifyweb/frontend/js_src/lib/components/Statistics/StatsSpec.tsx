@@ -500,9 +500,7 @@ const statSpecToItems = (
     pathToValue: spec.type === 'BackEndStat' ? spec.pathToValue : undefined,
   }));
 
-function generateDynamicSpec(
-  statsSpec: StatsSpec
-): RA<{
+function generateDynamicSpec(statsSpec: StatsSpec): RA<{
   readonly responseKey: string;
   readonly tableName: keyof Tables;
   readonly formatter: (rawResult: any) => string | undefined;

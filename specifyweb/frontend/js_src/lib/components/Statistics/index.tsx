@@ -29,6 +29,7 @@ import {
   getDynamicCategoriesToFetch,
   statsToTsv,
   useBackendApi,
+  useDefaultDynamicCategorySetter,
   useDefaultStatsToAdd,
   useDynamicCategorySetter,
 } from './hooks';
@@ -196,26 +197,9 @@ export function StatsPage(): JSX.Element | null {
     [activePage.pageIndex, setLayout]
   );
 
-  const handleDefaultChange = React.useCallback(
-    (
-      newCategories: (
-        oldCategory: StatLayout[number]['categories']
-      ) => StatLayout[number]['categories']
-    ): void =>
-      setDefaultLayout((oldLayout: StatLayout | undefined) =>
-        oldLayout === undefined
-          ? undefined
-          : replaceItem(oldLayout, 0, {
-              ...oldLayout[0],
-              categories: newCategories(oldLayout[0].categories),
-            })
-      ),
-    [setDefaultLayout]
-  );
-
   // Used to set unknown categories once for layout initially, and every time for default layout
-  useDynamicCategorySetter(backEndResponse, handleChange);
-  useDynamicCategorySetter(defaultBackEndResponse, handleDefaultChange);
+  useDynamicCategorySetter(backEndResponse, handleChange, categoriesToFetch);
+  useDefaultDynamicCategorySetter(defaultBackEndResponse, setDefaultLayout);
 
   const filters = React.useMemo(
     () => ({
