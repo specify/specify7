@@ -594,4 +594,7 @@ export const commonText = createDictionary({
     'ru-ru': 'не в сети',
     'uk-ua': 'офлайн',
   },
+  bulkValue: {
+    'en-us': 'Bulk value'
+  }
 } as const);

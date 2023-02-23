@@ -10,7 +10,7 @@ import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { group, replaceItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
-import { Form } from '../Atoms/Form';
+import { Form, Input } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { getField, serializeResource, toTable } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -86,6 +86,10 @@ export function PrepDialog({
 
   const id = useId('prep-dialog');
   const navigate = useNavigate();
+
+  const [bulkValue, setBulkValue] = React.useState(1);
+
+  const maxPrep = Math.max(...preparations.map(({ available }) => available));
 
   return (
     <Dialog
@@ -205,6 +209,26 @@ export function PrepDialog({
             </tr>
           </thead>
           <tbody>
+            <tr>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td>{commonText.bulkValue()}</td>
+              <td>
+                <Input.Number
+                  aria-label={interactionsText.selectedAmount()}
+                  max={maxPrep}
+                  min={1}
+                  title={interactionsText.selectedAmount()}
+                  value={bulkValue}
+                  onValueChange={(newSelected): void =>
+                    setBulkValue(newSelected)
+                  }
+                />
+              </td>
+              <td></td>
+              <td></td>
+            </tr>
             {preparations.map((preparation, index) => (
               <PrepDialogRow
                 key={index}
@@ -213,6 +237,7 @@ export function PrepDialog({
                 onChange={(newSelected): void =>
                   setSelected(replaceItem(selected, index, newSelected))
                 }
+                bulkValue={bulkValue}
               />
             ))}
           </tbody>
