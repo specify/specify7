@@ -25,6 +25,7 @@ import {
   tableIconSelected,
   tableIconUndefined,
 } from '../Molecules/TableIcon';
+import { titlePosition } from '../Molecules/Tooltips';
 import { scrollIntoView } from '../TreeView/helpers';
 
 type Properties =
@@ -296,7 +297,6 @@ function Option({
       className={classes.join(' ')}
       role="option"
       tabIndex={-1}
-      title={fullTitle === optionLabel ? tableLabel : fullTitle}
       onClick={
         typeof handleClick === 'function'
           ? (event): void => handleClick({ isDoubleClick: event.detail > 1 })
@@ -328,6 +328,7 @@ function Option({
                 ? wbPlanText.relationshipWithTable({ tableName: tableLabel })
                 : undefined
             }
+            {...{ [titlePosition]: 'right' }}
           >
             {icons.chevronRight}
           </span>
@@ -739,6 +740,7 @@ export function CustomSelectElement({
       role={role}
       tabIndex={has('tabIndex') ? 0 : has('interactive') ? -1 : undefined}
       title={selectLabel}
+      {...{ [titlePosition]: 'top' }}
       onBlur={
         has('interactive')
           ? (event): void => {
