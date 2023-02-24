@@ -84,7 +84,8 @@ under GNU General Public License 2 (GPL2).
     - [Table of Contents](#table-of-contents)
     - [Changelog](#changelog)
     - [Installation](#installation)
-        - [Docker installation](#docker-installation-recommended) (**Recommended**)
+        - [Docker installation](#docker-installation-recommended)
+          (**Recommended**)
         - [Local installation](#local-installation)
             - [Installing system dependencies](#installing-system-dependencies)
             - [Installing Specify 6](#installing-specify-6)
@@ -108,33 +109,45 @@ Changelog is available in [CHANGELOG.md](./CHANGELOG.md)
 
 # Installation
 
-We encourage all users to read our documentation on the Community Forum regarding installing and deploying Specify – [**
+We encourage all users to read our documentation on the Community Forum
+regarding installing and deploying Specify – [**
 Specify 7 Installation Instructions**](https://discourse.specifysoftware.org/t/specify-7-installation-instructions/755).
 
-If you are an existing Specify 6 user who is looking to evaluate Specify 7, you can
-contact [support@specifysoftware.org](mailto:support@specifysoftware.org) along with a copy of your database and we can
+If you are an existing Specify 6 user who is looking to evaluate Specify 7, you
+can
+contact [support@specifysoftware.org](mailto:support@specifysoftware.org) along
+with a copy of your database and we can
 configure a temporary deployment for evaluation purposes.
 
 ## Docker Installation (Recommended)
 
 ### Specify Collections Consortium (SCC) Members:
 
-We encourage members to use our  [Dockerized compositions](https://github.com/specify/docker-compositions)  of Specify
-7. You can choose your desired version, make the necessary adjustments and then run a single command to get everything
-working. It is very simple and can be easily updated when new versions are released. Documentation for deploying Specify
+We encourage members to use
+our  [Dockerized compositions](https://github.com/specify/docker-compositions)
+of Specify 7. You can choose your desired version, make the necessary
+adjustments and then
+run a single command to get everything
+working. It is very simple and can be easily updated when new versions are
+released. Documentation for deploying Specify
 using Docker is available within the repository.
 
 [**📨 Click here to request
-access**](mailto:support@specifysoftware.org?subject=Requesting%20Docker%20Repository%20Access&body=My%20GitHub%20username%20is%3A%20%0D%0AMy%20Specify%20Member%20Institution%20is%3A%20%0D%0AAdditional%20Questions%20or%20Notes%3A%20)
-or email  [support@specifysoftware.org](mailto:support@specifysoftware.org)  with your GitHub username, member
+access
+**](mailto:support@specifysoftware.org?subject=Requesting%20Docker%20Repository%20Access&body=My%20GitHub%20username%20is%3A%20%0D%0AMy%20Specify%20Member%20Institution%20is%3A%20%0D%0AAdditional%20Questions%20or%20Notes%3A%20)
+or email  [support@specifysoftware.org](mailto:support@specifysoftware.org)
+with your GitHub username, member
 institution or collection, and any additional questions you have for us.
 
 ### Non-Members:
 
-If your institution is not a member of the Specify Collections Consortium, you can follow
+If your institution is not a member of the Specify Collections Consortium, you
+can follow
 the [local installation instructions](#local-installation) below or
-contact [membership@specifysoftware.org](mailto:membership@specifysoftware.org) to learn more about joining the SCC to
-recieving configuration assistance, support, and hosting services if you are interested.
+contact [membership@specifysoftware.org](mailto:membership@specifysoftware.org)
+to learn more about joining the SCC to
+receiving configuration assistance, support, and hosting services if you are
+interested.
 
 ## Local Installation
 
@@ -223,6 +236,27 @@ git clone https://github.com/specify/specify7.git
 You will now have a specify7 directory containing the source
 tree.
 
+Note, by default, `git clone` checks out the `production` branch of Specify 7.
+That branch contains the latest tested features and bug fixes. If you prefer a
+more stable release, you can switch to one of our tagged released.
+
+```shell
+cd specify7
+git checkout tags/v7.8.6
+```
+
+Tagged releases are coming out every other week and undergo more testing.
+
+See [the list of tags](https://github.com/specify/specify7/tags) to check what's
+the latest stable release.
+
+### Adjusting settings files
+
+In the directory `specify7/specifyweb/settings` you will find the
+`specify_settings.py` file. Make a copy of this file as
+`local_specify_settings.py` and edit it. The file contains comments
+explaining the various settings.
+
 ### Setting up Python Virtual Environment
 
 Using a Python
@@ -232,8 +266,7 @@ system. Also, it avoids having to use a superuser account to install
 the Python dependencies.
 
 ```shell
-python3.8 -m venv specify7/ve
-specify7/ve/bin/pip install -r specify7/requirements.txt
+python3.8 -m venv specify/ve
 ```
 
 ### Building
@@ -247,26 +280,26 @@ make
 
 Other make targets:
 
-#### make build
+#### `make build`
 
 Runs all necessary build steps.
 
-#### make frontend
+#### `make frontend`
 
 Installs or updates Javascript dependencies and builds the Javascript
 modules only.
 
-#### make clean
+#### `make clean`
 
 Removes all generated files.
 
 The following targets require the virualenv to be activated:
 
-#### make pip_requirements
+#### `make pip_requirements`
 
 Install or updates Python dependencies.
 
-#### make django_migrations
+#### `make django_migrations`
 
 Applies Specify schema changes to the database named in the
 settings. This step may fail if the master user configured in the
@@ -275,21 +308,14 @@ settings does not have DDL privileges. Changing the `MASTER_NAME` and
 changes to be applied. Afterward, the master user settings can be
 restored.
 
-#### make runserver
+#### `make runserver`
 
 A shortcut for running the Django development server.
 
-#### make webpack_watch
+#### `make webpack_watch`
 
 Run webpack in watch mode so that changes to the frontend source code
 will be automatically compiled. Useful during the development process.
-
-### Adjusting settings files
-
-In the directory `specify7/specifyweb/settings` you will find the
-`specify_settings.py` file. Make a copy of this file as
-`local_specify_settings.py` and edit it. The file contains comments
-explaining the various settings.
 
 ### Turning on debugging
 
@@ -413,6 +439,12 @@ CentOS / Red Hat:
 sudo systemctl restart httpd.service
 ```
 
+### Nginx configuration
+
+Specify 7 is web-server agnostic.
+Example [nginx.conf](https://github.com/specify/specify7/blob/production/nginx.conf)
+(note, you would have to adjust the host names and enable HTTPs).
+
 ## Updating Specify 7
 
 Specify 7.4.0 and prior versions were based on Python 2.7. If updating
@@ -474,6 +506,7 @@ new version of Specify 6.
 
 Specify 7 interface is localized to a few languages out of the box. We welcome
 contributions of new translations. We are using
-[Weblate](https://hosted.weblate.org/projects/specify-7/) continuous localization
+[Weblate](https://hosted.weblate.org/projects/specify-7/) continuous
+localization
 platform.
 [Instructions on how you can contribute](https://discourse.specifysoftware.org/t/get-started-with-specify-7-localization/956)
