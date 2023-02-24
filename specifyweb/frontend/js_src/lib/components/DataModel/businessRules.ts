@@ -144,7 +144,8 @@ export class BusinessRuleMgr<SCHEMA extends AnySchema> {
     });
 
     Promise.all(results).then((results) => {
-      f.pluck(results, 'localDuplicates')
+      results
+        .map((result) => result['localDuplicates'])
         .flat()
         .forEach((duplicate: SpecifyResource<SCHEMA>) => {
           const event = duplicate.cid + ':' + fieldName;
@@ -166,7 +167,9 @@ export class BusinessRuleMgr<SCHEMA extends AnySchema> {
         : {
             key: 'br-uniqueness-' + fieldName,
             valid: false,
-            reason: formatConjunction(f.pluck(invalids, 'reason')),
+            reason: formatConjunction(
+              invalids.map((invalid) => invalid['reason'])
+            ),
           };
     });
   }
