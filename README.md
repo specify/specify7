@@ -174,6 +174,8 @@ other distributions these instructions will have to be adapted.
 Ubuntu 20.04 LTS:
 
 ```shell
+sudo apt install -y curl
+curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
 sudo apt-get -y install --no-install-recommends \
   build-essential \
   git \
@@ -181,7 +183,6 @@ sudo apt-get -y install --no-install-recommends \
   libmariadbclient-dev \
   libsasl2-dev \
   nodejs \
-  npm \
   python3-venv \
   python3.8 \
   python3.8-dev \
@@ -208,23 +209,11 @@ yum install -y \
   unzip
 ```
 
-**You must have Node.js 18 or higher installed, which is not available by default on apt.**
-
-Ubuntu 20.04 LTS:
-
-```bash
-curl -sL https://deb.nodesource.com/setup_18.x -o /tmp/nodesource_setup.sh
-sudo bash /tmp/nodesource_setup.sh
-sudo apt install nodejs
-```
-
-You can confirm your version with the following command after installation:
+Afterward, please make sure you have Node.js 18 installed:
 
 ```
 node -v
 ```
-
-The console should return the latest version of NodeJS (in my case, `v18.14.2`)
 
 ### Installing Specify 6
 
@@ -294,8 +283,12 @@ To build Specify 7 use the default make target.
 
 ```shell
 cd specify7
+source ve/bin/activate
 make
 ```
+
+> Note, if `source` command is not available on our system, try running
+> `. ve/bin/activate` instead
 
 Other make targets:
 
