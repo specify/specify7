@@ -115,12 +115,6 @@ export const f = {
    */
   call: <RETURN>(callback: () => RETURN): RETURN => callback(),
   /**
-   * Given an array of objects, return an array containing the values
-   * of a given key from each object in the array
-   */
-  pluck: <T extends RA<IR<any>>>(array: T, key: string): RA<any> =>
-    array.map((obj) => obj[key]),
-  /**
    * Wrap a pure function that does not need any arguments in this
    * call to remember and return its return value.
    *
