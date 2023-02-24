@@ -12,17 +12,45 @@
 
 import '../../../css/workbench.css';
 
+import Handsontable from 'handsontable';
 import $ from 'jquery';
 import React from 'react';
 import _ from 'underscore';
-import {Backbone} from '../DataModel/backbone';
-import Handsontable from 'handsontable';
 
-import {Button} from '../Atoms/Button';
-import {Link} from '../Atoms/Link';
-import {getModel, schema, strictGetModel} from '../DataModel/schema';
-import {DataSetNameView} from './DataSetMeta';
-import {WBUtils} from './wbUtils';
+import { backEndText } from '../../localization/backEnd';
+import { commonText } from '../../localization/common';
+import { whitespaceSensitive } from '../../localization/utils';
+import { LANGUAGE } from '../../localization/utils/config';
+import { wbPlanText } from '../../localization/wbPlan';
+import { wbText } from '../../localization/workbench';
+import { ajax } from '../../utils/ajax';
+import { Http } from '../../utils/ajax/definitions';
+import { ping } from '../../utils/ajax/ping';
+import { getCache, setCache } from '../../utils/cache';
+import { f } from '../../utils/functools';
+import { filterArray } from '../../utils/types';
+import { capitalize, clamp, mappedFind } from '../../utils/utils';
+import { oneRem } from '../Atoms';
+import { Button } from '../Atoms/Button';
+import { iconClassName, legacyNonJsxIcons } from '../Atoms/Icons';
+import { Link } from '../Atoms/Link';
+import { legacyLoadingContext } from '../Core/Contexts';
+import { Backbone } from '../DataModel/backbone';
+import { serializeResource } from '../DataModel/helpers';
+import { getModel, schema, strictGetModel } from '../DataModel/schema';
+import { crash, raise } from '../Errors/Crash';
+import { getIcon, unknownIcon } from '../InitialContext/icons';
+import { strictGetTreeDefinitionItems } from '../InitialContext/treeRanks';
+import { loadingBar } from '../Molecules';
+import { Dialog } from '../Molecules/Dialog';
+import {
+  hasPermission,
+  hasTablePermission,
+  hasTreeAccess,
+} from '../Permissions/helpers';
+import { fetchPickList } from '../PickLists/fetch';
+import { getUserPref } from '../UserPreferences/helpers';
+import { pathStartsWith } from '../WbPlanView/helpers';
 import {
   formatToManyIndex,
   formatTreeRank,
@@ -30,47 +58,20 @@ import {
   mappingPathToString,
   valueIsTreeRank,
 } from '../WbPlanView/mappingHelpers';
-import {parseUploadPlan} from '../WbPlanView/uploadPlanParser';
-import {capitalize, clamp, mappedFind} from '../../utils/utils';
-import {getTableFromMappingPath} from '../WbPlanView/navigator';
-import {getIcon, unknownIcon} from '../InitialContext/icons';
-import {wbText} from '../../localization/workbench';
-import {commonText} from '../../localization/common';
-import {Dialog} from '../Molecules/Dialog';
-import {iconClassName, legacyNonJsxIcons} from '../Atoms/Icons';
-import {whitespaceSensitive} from '../../localization/utils';
-import {filterArray} from '../../utils/types';
-import {strictGetTreeDefinitionItems} from '../InitialContext/treeRanks';
-import {serializeResource} from '../DataModel/helpers';
-import {fetchPickList} from '../PickLists/fetch';
-import {ajax} from '../../utils/ajax';
-import {ping} from '../../utils/ajax/ping';
-import {
-  hasPermission,
-  hasTablePermission,
-  hasTreeAccess,
-} from '../Permissions/helpers';
-import {wbViewTemplate} from './Template';
-import {legacyLoadingContext} from '../Core/Contexts';
-import {getCache, setCache} from '../../utils/cache';
-import {f} from '../../utils/functools';
-import {pathStartsWith} from '../WbPlanView/helpers';
-import {getUserPref} from '../UserPreferences/helpers';
-import {WbStatus} from './Status';
-import {crash, raise} from '../Errors/Crash';
-import {loadingBar} from '../Molecules';
-import {Http} from '../../utils/ajax/definitions';
-import {downloadDataSet} from './helpers';
-import {CreateRecordSetButton} from './RecordSet';
-import {WbUploaded} from './Results';
-import {getSelectedLast, getSelectedRegions} from './hotHelpers';
-import {DevShowPlan} from './DevShowPlan';
-import {RollbackConfirmation} from './Components';
-import {DisambiguationDialog} from './Disambiguation';
-import {LANGUAGE} from '../../localization/utils/config';
-import {resolveValidationMessage} from './resultsParser';
-import {backEndText} from '../../localization/backEnd';
-import {wbPlanText} from '../../localization/wbPlan';
+import { getTableFromMappingPath } from '../WbPlanView/navigator';
+import { parseUploadPlan } from '../WbPlanView/uploadPlanParser';
+import { RollbackConfirmation } from './Components';
+import { DataSetNameView } from './DataSetMeta';
+import { DevShowPlan } from './DevShowPlan';
+import { DisambiguationDialog } from './Disambiguation';
+import { downloadDataSet } from './helpers';
+import { getSelectedLast, getSelectedRegions } from './hotHelpers';
+import { CreateRecordSetButton } from './RecordSet';
+import { WbUploaded } from './Results';
+import { resolveValidationMessage } from './resultsParser';
+import { WbStatus } from './Status';
+import { wbViewTemplate } from './Template';
+import { WBUtils } from './wbUtils';
 
 const metaKeys = [
   'isNew',
@@ -258,8 +259,6 @@ export const WBView = Backbone.View.extend({
             ) {
               const dialog = this.options.display(
                 <Dialog
-                  header={wbPlanText.noUploadPlan()}
-                  onClose={() => dialog()}
                   buttons={
                     <>
                       <Button.DialogClose>
@@ -272,16 +271,15 @@ export const WBView = Backbone.View.extend({
                       </Link.Blue>
                     </>
                   }
+                  header={wbPlanText.noUploadPlan()}
+                  onClose={() => dialog()}
                 >
                   {wbPlanText.noUploadPlanDescription()}
                 </Dialog>
               );
               this.$('.wb-validate, .wb-data-check')
                 .prop('disabled', true)
-                .prop(
-                  'title',
-                  whitespaceSensitive(wbText.wbValidateUnavailable())
-                );
+                .prop('title', wbText.wbValidateUnavailable());
             } else {
               this.$('.wb-validate, .wb-data-check').prop('disabled', false);
               this.$('.wb-show-upload-view')
@@ -458,7 +456,7 @@ export const WBView = Backbone.View.extend({
                     isCommand: false,
                     renderer: (_hot, wrapper) => {
                       const { endRow: visualRow, endCol: visualCol } =
-                        getSelectedRegions(this.hot).slice(-1)[0];
+                        getSelectedRegions(this.hot).at(-1);
                       const physicalRow = this.hot.toPhysicalRow(visualRow);
                       const physicalCol = this.hot.toPhysicalColumn(visualCol);
 
@@ -692,7 +690,7 @@ export const WBView = Backbone.View.extend({
       this.mappings.tableNames
         .map((tableName, index) => ({
           tableName,
-          fieldName: this.mappings.lines[index].mappingPath.slice(-1)[0],
+          fieldName: this.mappings.lines[index].mappingPath.at(-1),
           headerName: this.mappings.lines[index].headerName,
         }))
         .map(async ({ tableName, fieldName, headerName }) => {
@@ -749,14 +747,14 @@ export const WBView = Backbone.View.extend({
         }))
         .filter(
           ({ mappingPath, index }) =>
-            valueIsTreeRank(mappingPath.slice(-2)[0]) &&
-            mappingPath.slice(-1)[0] === 'name' &&
+            valueIsTreeRank(mappingPath.at(-2)) &&
+            mappingPath.at(-1) === 'name' &&
             hasTreeAccess(this.mappings.tableNames[index], 'read')
         )
         .map(({ mappingPath, headerName, index }) => ({
           mappingGroup: mappingPathToString(mappingPath.slice(0, -2)),
           tableName: this.mappings.tableNames[index],
-          rankName: getNameFromTreeRankName(mappingPath.slice(-2)[0]),
+          rankName: getNameFromTreeRankName(mappingPath.at(-2)),
           physicalCol: this.dataset.columns.indexOf(headerName),
         }))
         .map(({ mappingGroup, tableName, rankName, physicalCol }) => ({
@@ -794,7 +792,8 @@ export const WBView = Backbone.View.extend({
    * .issues are handled automatically by the comments plugin.
    * This is why, afterRenderer only has to handle the isModified and isNew
    * cases
-   * */
+   *
+   */
   afterRenderer(td, visualRow, visualCol, property, _value) {
     if (this.hot === undefined) {
       td.classList.add('text-gray-500');
@@ -931,7 +930,8 @@ export const WBView = Backbone.View.extend({
    *
    * This logic wasn't be put into beforePaste because it receives
    * arguments that are inconvenient to work with
-   * */
+   *
+   */
   beforeChange(unfilteredChanges, source) {
     if (source !== 'CopyPaste.paste') return true;
 
@@ -979,7 +979,8 @@ export const WBView = Backbone.View.extend({
           /*
            * Ignore cases where value didn't change
            * (happens when double click a cell and then click on another cell)
-           * */
+           *
+           */
           oldValue !== newValue &&
           // Or where value changed from null to empty
           (oldValue !== null || newValue !== '') &&
@@ -1248,14 +1249,15 @@ export const WBView = Backbone.View.extend({
   },
   // Do not scroll the viewport to the last column after inserting a row
   afterPaste(data, coords) {
-    const lastCoords = coords.slice(-1)[0];
+    const lastCoords = coords.at(-1);
     if (data.some((row) => row.length === this.dataset.columns.length))
       this.hot.scrollViewportTo(lastCoords.endRow, lastCoords.startCol);
   },
   /*
    * Reposition the comment box if it is overflowing
    * See https://github.com/specify/specify7/issues/932
-   * */
+   *
+   */
   afterOnCellMouseOver(_event, coordinates, cell) {
     const physicalRow = this.hot.toPhysicalRow(coordinates.row);
     const physicalCol = this.hot.toPhysicalColumn(coordinates.col);
@@ -1265,9 +1267,6 @@ export const WBView = Backbone.View.extend({
       return;
 
     const cellContainerBoundingBox = cell.getBoundingClientRect();
-    const oneRem = Number.parseFloat(
-      getComputedStyle(document.documentElement).fontSize
-    );
 
     // Make sure box is overflowing horizontally
     if (globalThis.innerWidth > cellContainerBoundingBox.right + oneRem * 2)
@@ -1568,10 +1567,12 @@ export const WBView = Backbone.View.extend({
       if (resources.length === 0) {
         const dialog = this.options.display(
           <Dialog
-            header={wbText.noDisambiguationResults()}
             buttons={commonText.close()}
+            header={wbText.noDisambiguationResults()}
             onClose={() => dialog()}
-          >{wbText.noDisambiguationResultsDescription()}</Dialog>
+          >
+            {wbText.noDisambiguationResultsDescription()}
+          </Dialog>
         );
         return;
       }
@@ -1582,60 +1583,73 @@ export const WBView = Backbone.View.extend({
        * This is because we don't know all matches until validation is done
        */
       /*
-      let applyAllAvailable = true;
-      const applyAllButton = content.find('#applyAllButton');
+       *Let applyAllAvailable = true;
+       *const applyAllButton = content.find('#applyAllButton');
+       *
+       *const updateIt = () => {
+       *  const newState = this.liveValidationStack.length === 0;
+       *  if (newState !== applyAllAvailable) {
+       *    applyAllAvailable = newState;
+       *    applyAllButton.disabled = !newState;
+       *    applyAllButton[newState ? 'removeAttribute' : 'setAttribute'](
+       *      'title',
+       *      wbText.applyAllUnavailable()
+       *    );
+       *  }
+       *};
+       *
+       *const interval = globalThis.setInterval(updateIt, 100);
+       * // onClose: globalThis.clearInterval(interval);
+       */
 
-      const updateIt = () => {
-        const newState = this.liveValidationStack.length === 0;
-        if (newState !== applyAllAvailable) {
-          applyAllAvailable = newState;
-          applyAllButton.disabled = !newState;
-          applyAllButton[newState ? 'removeAttribute' : 'setAttribute'](
-            'title',
-            wbText.applyAllUnavailable()
-          );
-        }
-      };
-
-      const interval = globalThis.setInterval(updateIt, 100);
-      // onClose: globalThis.clearInterval(interval);
-      */
-
-      const dialog = this.options.display(<DisambiguationDialog
-        matches={resources.models}
-        onClose={() => dialog()}
-        onSelected={(selected)=>{
-          this.setDisambiguation(
-            physicalRow,
-            matches.mappingPath,
-            selected.id
-          );
-          this.startValidateRow(physicalRow);
-        }}
-        onSelectedAll={(selected)=>{
-          // Loop backwards so the live validation will go from top to bottom
-          for (let visualRow = this.data.length - 1; visualRow >= 0; visualRow--) {
-            const physicalRow = this.hot.toPhysicalRow(visualRow);
-            if (
-              !this.uploadResults.ambiguousMatches[physicalRow]?.find(
-                ({ key, mappingPath }) =>
-                  key === matches.key &&
-                  typeof this.getDisambiguation(physicalRow)[
-                    mappingPathToString(mappingPath)
-                  ] !== 'number'
-              )
-            )
-              continue;
+      const dialog = this.options.display(
+        <DisambiguationDialog
+          matches={resources.models}
+          onClose={() => dialog()}
+          onSelected={(selected) => {
             this.setDisambiguation(
               physicalRow,
               matches.mappingPath,
               selected.id
             );
             this.startValidateRow(physicalRow);
-          }
-        }}
-      />);
-
+          }}
+          onSelectedAll={(selected) => {
+            /*
+             * BUG: this is critical path. optimize. it's too slow right now.
+             *   Profiler says that most problem is in this.setDisambiguation
+             *   due to setDataAtCell calls. It calls that function for each row
+             *   right now. Refactoring to call it once for all would be better
+             */
+            // Loop backwards so the live validation will go from top to bottom
+            this.hot.batch(() => {
+              for (
+                let visualRow = this.data.length - 1;
+                visualRow >= 0;
+                visualRow--
+              ) {
+                const physicalRow = this.hot.toPhysicalRow(visualRow);
+                if (
+                  !this.uploadResults.ambiguousMatches[physicalRow]?.find(
+                    ({ key, mappingPath }) =>
+                      key === matches.key &&
+                      typeof this.getDisambiguation(physicalRow)[
+                        mappingPathToString(mappingPath)
+                      ] !== 'number'
+                  )
+                )
+                  continue;
+                this.setDisambiguation(
+                  physicalRow,
+                  matches.mappingPath,
+                  selected.id
+                );
+                this.startValidateRow(physicalRow);
+              }
+            });
+          }}
+        />
+      );
     });
   },
 
@@ -1651,9 +1665,9 @@ export const WBView = Backbone.View.extend({
     if (this.liveValidationStack.length > 0) {
       const dialog = this.options.display(
         <Dialog
+          buttons={commonText.close()}
           header={commonText.results()}
           onClose={() => dialog()}
-          buttons={commonText.close()}
         >
           {wbText.unavailableWhileValidating()}
         </Dialog>
@@ -1791,10 +1805,10 @@ export const WBView = Backbone.View.extend({
     const container = document.createElement('div');
     this.uploadedView = this.options.display(
       <WbUploaded
-        recordCounts={this.uploadResults.recordCounts}
-        isUploaded={this.isUploaded}
         dataSetId={this.dataset.id}
         dataSetName={this.dataset.name}
+        isUploaded={this.isUploaded}
+        recordCounts={this.uploadResults.recordCounts}
         onClose={() => this.uploadedView()}
       />,
       container,
@@ -1813,11 +1827,11 @@ export const WBView = Backbone.View.extend({
       <DevShowPlan
         dataSetId={this.dataset.id}
         uploadPlan={this.dataset.uploadplan}
-        onClose={() => dialog()}
         onChanged={(plan) => {
           this.dataset.uploadplan = plan;
           this.trigger('refresh');
         }}
+        onClose={() => dialog()}
         onDeleted={this.options.onDeleted}
       />
     );
@@ -1826,8 +1840,10 @@ export const WBView = Backbone.View.extend({
     this.datasetmeta.changeOwner();
   },
 
-  // Actions
-  // aka Rollback
+  /*
+   * Actions
+   * aka Rollback
+   */
   unupload() {
     const dialog = this.options.display(
       <RollbackConfirmation
@@ -1846,8 +1862,6 @@ export const WBView = Backbone.View.extend({
       if (mode === 'upload') {
         const dialog = this.options.display(
           <Dialog
-            header={wbText.startUpload()}
-            onClose={() => dialog()}
             buttons={
               <>
                 <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
@@ -1861,6 +1875,8 @@ export const WBView = Backbone.View.extend({
                 </Button.Blue>
               </>
             }
+            header={wbText.startUpload()}
+            onClose={() => dialog()}
           >
             {wbText.startUploadDescription()}
           </Dialog>
@@ -1869,8 +1885,6 @@ export const WBView = Backbone.View.extend({
     } else {
       const dialog = this.options.display(
         <Dialog
-          header={wbPlanText.noUploadPlan()}
-          onClose={() => dialog()}
           buttons={
             <>
               <Button.DialogClose>{commonText.close()}</Button.DialogClose>
@@ -1879,6 +1893,8 @@ export const WBView = Backbone.View.extend({
               </Link.Blue>
             </>
           }
+          header={wbPlanText.noUploadPlan()}
+          onClose={() => dialog()}
         >
           {wbPlanText.noUploadPlanDescription()}
         </Dialog>
@@ -1940,8 +1956,6 @@ export const WBView = Backbone.View.extend({
   revertChanges() {
     const dialog = this.options.display(
       <Dialog
-        header={wbText.revertChanges()}
-        onClose={() => dialog()}
         buttons={
           <>
             <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
@@ -1950,6 +1964,8 @@ export const WBView = Backbone.View.extend({
             </Button.Red>
           </>
         }
+        header={wbText.revertChanges()}
+        onClose={() => dialog()}
       >
         {wbText.revertChangesDescription()}
       </Dialog>
@@ -1958,7 +1974,7 @@ export const WBView = Backbone.View.extend({
   saveClicked() {
     this.save();
   },
-  save() {
+  async save() {
     // Clear validation
     this.dataset.rowresults = null;
     this.stopLiveValidation();
@@ -1967,9 +1983,9 @@ export const WBView = Backbone.View.extend({
     // Show saving progress bar
     const dialog = this.options.display(
       <Dialog
+        buttons={undefined}
         header={wbText.saving()}
         onClose={() => dialog()}
-        buttons={undefined}
       >
         {loadingBar}
       </Dialog>
@@ -2008,7 +2024,7 @@ export const WBView = Backbone.View.extend({
     this.cellMeta = [];
 
     switch (this.validationMode) {
-      case 'live':
+      case 'live': {
         this.liveValidationStack = Array.from(
           { length: this.hot.countRows() },
           (_, visualRow) => this.hot.toPhysicalRow(visualRow)
@@ -2018,18 +2034,21 @@ export const WBView = Backbone.View.extend({
         this.wbutils.toggleCellTypes('invalidCells', 'remove');
         event.target.setAttribute('aria-pressed', true);
         break;
-      case 'static':
+      }
+      case 'static': {
         this.getValidationResults();
         this.wbutils.toggleCellTypes('invalidCells', 'remove');
         this.liveValidationStack = [];
         this.liveValidationActive = false;
         event.target.setAttribute('aria-pressed', false);
         break;
-      case 'off':
+      }
+      case 'off': {
         this.liveValidationStack = [];
         this.liveValidationActive = false;
         event.target.setAttribute('aria-pressed', false);
         break;
+      }
     }
 
     this.hot.render();
@@ -2090,8 +2109,8 @@ export const WBView = Backbone.View.extend({
     );
     this.updateCellInfoStats();
   },
-  getHeadersFromMappingPath(mappingPathFilter, persevering = true) {
-    if (!persevering)
+  getHeadersFromMappingPath(mappingPathFilter, tryBest = true) {
+    if (!tryBest)
       // Find all columns with the shared parent mapping path
       return this.mappings.lines
         .filter(({ mappingPath }) =>
@@ -2114,10 +2133,11 @@ export const WBView = Backbone.View.extend({
   },
   resolveValidationColumns(initialColumns, inferColumnsCallback = undefined) {
     // See https://github.com/specify/specify7/issues/810
-    let columns = initialColumns.filter((column) => column);
-    if (typeof inferColumnsCallback === 'function' && columns.length === 0)
-      columns = inferColumnsCallback();
-    if (columns.length === 0) columns = this.dataset.columns;
+    let columns = initialColumns.filter(Boolean);
+    if (typeof inferColumnsCallback === 'function') {
+      if (columns.length === 0) columns = inferColumnsCallback();
+      if (columns.length === 0) columns = this.dataset.columns;
+    }
     // Convert to physicalCol and filter out unknown columns
     return columns
       .map((column) => this.dataset.columns.indexOf(column))
@@ -2214,28 +2234,30 @@ export const WBView = Backbone.View.extend({
         resolveColumns
       );
     } else if (uploadStatus === 'Uploaded') {
-      setMetaCallback('isNew', true, statusData.info.columns, resolveColumns);
+      setMetaCallback('isNew', true, statusData.info.columns, undefined);
       const tableName = statusData.info.tableName.toLowerCase();
       this.uploadResults.recordCounts[tableName] ??= 0;
       this.uploadResults.recordCounts[tableName] += 1;
       this.uploadResults.newRecords[physicalRow] ??= {};
-      this.resolveValidationColumns(statusData.info.columns, () =>
-        resolveColumns(false)
-      ).map((physicalCol) => {
-        this.uploadResults.newRecords[physicalRow][physicalCol] ??= [];
-        this.uploadResults.newRecords[physicalRow][physicalCol].push([
-          tableName,
-          statusData.id,
-          statusData.info?.treeInfo
-            ? `${statusData.info.treeInfo.name} (${statusData.info.treeInfo.rank})`
-            : '',
-        ]);
-      });
+      this.resolveValidationColumns(statusData.info.columns, undefined).map(
+        (physicalCol) => {
+          this.uploadResults.newRecords[physicalRow][physicalCol] ??= [];
+          this.uploadResults.newRecords[physicalRow][physicalCol].push([
+            tableName,
+            statusData.id,
+            statusData.info?.treeInfo
+              ? `${statusData.info.treeInfo.name} (${statusData.info.treeInfo.rank})`
+              : '',
+          ]);
+        }
+      );
     } else
-      raise(new Error(
-        `Trying to parse unknown uploadStatus type "${uploadStatus}" at
+      raise(
+        new Error(
+          `Trying to parse unknown uploadStatus type "${uploadStatus}" at
         row ${this.hot.toVisualRow(physicalRow)}`
-      ));
+        )
+      );
 
     Object.entries(uploadResult.toOne).forEach(([fieldName, uploadResult]) =>
       this.parseRowValidationResults(
@@ -2391,7 +2413,7 @@ export const WBView = Backbone.View.extend({
     });
 
     const uploadButton = this.$el.find('.wb-upload');
-    const title = whitespaceSensitive(wbText.uploadUnavailableWhileHasErrors());
+    const title = wbText.uploadUnavailableWhileHasErrors();
     if (
       !uploadButton.attr('disabled') ||
       uploadButton.attr('title') === title
@@ -2456,8 +2478,6 @@ export const WBView = Backbone.View.extend({
 
     const dialog = this.options.display(
       <Dialog
-        header={messages[this.refreshInitiatedBy].header}
-        onClose={() => dialog()}
         buttons={
           <>
             {cellCounts.invalidCells === 0 &&
@@ -2465,13 +2485,15 @@ export const WBView = Backbone.View.extend({
               <CreateRecordSetButton
                 dataSetId={this.dataset.id}
                 dataSetName={this.dataset.name}
-                onClose={() => dialog()}
                 small={false}
+                onClose={() => dialog()}
               />
             ) : undefined}
             <Button.DialogClose>{commonText.close()}</Button.DialogClose>
           </>
         }
+        header={messages[this.refreshInitiatedBy].header}
+        onClose={() => dialog()}
       >
         {messages[this.refreshInitiatedBy].message}
       </Dialog>
@@ -2485,15 +2507,15 @@ export const WBView = Backbone.View.extend({
 
     const dialog = this.options.display(
       <Dialog
+        buttons={commonText.close()}
         header={
           this.refreshInitiatedBy === 'validate'
-          ? wbText.validationCanceled()
-          : this.refreshInitiatedBy === 'unupload'
-          ? wbText.rollbackCanceled()
-          : wbText.uploadCanceled()
+            ? wbText.validationCanceled()
+            : this.refreshInitiatedBy === 'unupload'
+            ? wbText.rollbackCanceled()
+            : wbText.uploadCanceled()
         }
         onClose={() => dialog()}
-        buttons={commonText.close()}
       >
         {this.refreshInitiatedBy === 'validate'
           ? wbText.validationCanceledDescription()

@@ -38,7 +38,7 @@ export const localityText = createDictionary({
       {total:number|formatted}
     `,
     'fr-fr': `
-      GeoMap - Tracé {plotted:number|formatted} de {total:number|formatted}
+      GéoCarte - Tracé {plotted:number|formatted} de {total:number|formatted}
       enregistrements
     `,
     'uk-ua': `
@@ -50,14 +50,14 @@ export const localityText = createDictionary({
     'en-us': 'GeoMap - Plotted {plotted:number|formatted} records',
     'ru-ru': 'Карта - Отображено {plotted:number|formatted} записей',
     'es-es': 'GeoMap - Registros trazados {plotted:number|formatted}',
-    'fr-fr': 'GeoMap - Enregistrements tracés {plotted:number|formatted}',
+    'fr-fr': 'GéoCarte - {plotted:number|formatted} enregistrements tracés',
     'uk-ua': 'GeoMap - Нанесені записи {plotted:number|formatted}.',
   },
   polygonBoundaries: {
     'en-us': 'Polygon Boundaries',
     'ru-ru': 'Границы многоугольника',
     'es-es': 'Límites de polígono',
-    'fr-fr': 'Limites de polygone',
+    'fr-fr': 'Limites du polygone',
     'uk-ua': 'Межі багатокутників',
   },
   errorRadius: {
@@ -89,8 +89,7 @@ export const localityText = createDictionary({
     `,
     'es-es': '{localityTable:string} debe tener coordenadas para ser mapeado.',
     'fr-fr': `
-      La {localityTable:string} doit avoir des coordonnées pour être
-      cartographiée.
+      {localityTable:string} doit avoir des coordonnées pour être cartographié.
     `,
     'uk-ua': '{localityTable:string} має мати координати для відображення.',
   },
@@ -112,14 +111,14 @@ export const localityText = createDictionary({
     'en-us': 'GEOLocate',
     'ru-ru': 'GEOLocate',
     'es-es': 'GEOlocalizar',
-    'fr-fr': 'GEOlocaliser',
+    'fr-fr': 'GEOLocate',
     'uk-ua': 'GEOLocate',
   },
   geographyRequired: {
     'en-us': '{geographyTable:string} must be mapped',
     'ru-ru': '{geographyTable:string} должна быть связана',
     'es-es': '{geographyTable:string} debe estar mapeado',
-    'fr-fr': '{geographyTable:string} doit être mappé',
+    'fr-fr': '{geographyTable:string} doit être cartographié',
     'uk-ua': '{geographyTable:string} має бути зіставлено',
   },
   geographyRequiredDescription: {
@@ -129,9 +128,8 @@ export const localityText = createDictionary({
     'es-es': `
       El complemento GeoLocate requiere que se complete el campo de geografía.
     `,
-    'fr-fr': `
-      Le plug-in GeoLocate nécessite que le champ géographique soit renseigné.
-    `,
+    'fr-fr':
+      'Le plug-in GeoLocate nécessite que le champ géographique soit rempli.',
     'uk-ua': 'Плагін GeoLocate вимагає заповнення поля географії.',
   },
   coordinates: {
@@ -189,7 +187,7 @@ export const localityText = createDictionary({
     'en-us': 'Parsed',
     'ru-ru': 'Проверено',
     'es-es': 'analizado',
-    'fr-fr': 'Analysé',
+    'fr-fr': 'analysé',
     'uk-ua': 'Проаналізовано',
   },
   latitude: {
@@ -210,49 +208,49 @@ export const localityText = createDictionary({
     'en-us': 'Toggle Full Screen',
     'ru-ru': 'Включить полноэкранный режим',
     'es-es': 'Alternar pantalla completa',
-    'fr-fr': 'Passer en plein écran',
+    'fr-fr': 'Basculer en plein écran',
     'uk-ua': 'Перемкнути повний екран',
   },
   degrees: {
     'en-us': 'DD.DDDD (32.7619)',
     'ru-ru': 'DD.DDDD (32.7619)',
     'es-es': 'DD.DDDD (32.7619)',
-    'fr-fr': 'JJ.DDDD (32.7619)',
+    'fr-fr': 'DD.dddd (32.7619)',
     'uk-ua': 'DD.DDDD (32,7619)',
   },
   degreesMinutes: {
     'en-us': 'DD MMMM (32. 45.714)',
     'ru-ru': 'DD MMMM (32. 45.714)',
     'es-es': 'DDMMMM (32. 45.714)',
-    'fr-fr': 'JJ MMMM (32. 45.714)',
+    'fr-fr': 'DD MMMM (32. 45.714)',
     'uk-ua': 'ДД ММММ (32. 45.714)',
   },
   degreesMinutesSeconds: {
     'en-us': 'DD MM SS.SS (32 45 42.84)',
     'ru-ru': 'DD MM SS.SS (32 45 42.84)',
     'es-es': 'DD MM SS.SS (32 45 42,84)',
-    'fr-fr': 'JJ MM SS.SS (32 45 42.84)',
+    'fr-fr': 'DD MM SS.ss (32 45 42.84)',
     'uk-ua': 'ДД ММ СС.СС (32 45 42,84)',
   },
   degreesWithDirection: {
     'en-us': 'DD.DDDD N/S/E/W (32.7619 N)',
     'ru-ru': 'DD.DDDD N/S/E/W (32.7619 N)',
     'es-es': 'DD.DDDD N/S/E/O (32.7619 N)',
-    'fr-fr': 'JJ.DDDD N/S/E/O (32,7619 N)',
+    'fr-fr': 'DD.dddd N/S/E/O (32,7619 N)',
     'uk-ua': 'DD.DDDD Пн/Пд/З/З (32,7619 Пн)',
   },
   degreesMinutesWithDirection: {
     'en-us': 'DD MM.MM N/S/E/W (32 45.714 N)',
     'ru-ru': 'DD MM.MM N/S/E/W (32 45.714 N)',
     'es-es': 'DD MM.MM N/S/E/O (32 45.714 N)',
-    'fr-fr': 'JJ MM.MM N/S/E/W (32 45.714 N)',
+    'fr-fr': 'DD MM.mm N/S/E/O (32 45.714 N)',
     'uk-ua': 'ДД ММ.ХМ Пн/Пд/В/З (32 45,714 Пн)',
   },
   degreesMinutesSecondsWithDirection: {
     'en-us': 'DD MM SS.SS N/S/E/W (32 45 42.84 N)',
     'ru-ru': 'DD MM SS.SS N/S/E/W (32 45 42.84 N)',
     'es-es': 'DD MM SS.SS N/S/E/W (32 45 42,84 N)',
-    'fr-fr': 'JJ MM SS.SS N/S/E/W (32 45 42.84 N)',
+    'fr-fr': 'DD MM SS.ss N/S/E/O (32 45 42.84 N)',
     'uk-ua': 'DD MM SS.SS N/S/E/W (32 45 42.84 N)',
   },
 } as const);
