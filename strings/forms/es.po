@@ -162,7 +162,7 @@ msgid "invalidNumericPicklistValue"
 msgstr "Solo se admiten valores numéricos en esta {pickListTable:string}"
 
 #: components/Attachments/Plugin.tsx:112
-#: components/FormCells/FormTable.tsx:193
+#: components/FormCells/FormTable.tsx:194
 #: components/Forms/BaseResourceView.tsx:95
 #. Used in: Components > Attachments > Plugin ⬤ Components > Form Cells > Form Table ⬤ Components > Forms > Base Resource View
 msgid "noData"
