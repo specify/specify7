@@ -1,3 +1,4 @@
+
 # [Specify 7](https://www.specifysoftware.org/products/specify-7/)
 
 The [Specify Collections Consortium](https://www.specifysoftware.org) is pleased
@@ -209,7 +210,23 @@ yum install -y \
   unzip
 ```
 
-Please make sure you have Node.js 18 or higher installed.
+**You must have Node.js 18 or higher installed, which is not available by default on apt.**
+
+Ubuntu 20.04 LTS:
+
+```bash
+curl -sL https://deb.nodesource.com/setup_18.x -o /tmp/nodesource_setup.sh
+sudo bash /tmp/nodesource_setup.sh
+sudo apt install nodejs
+```
+
+You can confirm your version with the following command after installation:
+
+```
+node -v
+```
+
+The console should return the latest version of NodeJS (in my case, `v18.14.2`)
 
 ### Installing Specify 6
 
@@ -266,12 +283,16 @@ system. Also, it avoids having to use a superuser account to install
 the Python dependencies.
 
 ```shell
-python3.8 -m venv specify/ve
+python3.8 -m venv specify7/ve
 ```
 
 ### Building
 
 To build Specify 7 use the default make target.
+
+> You will need to install `wheel` if you don't have it installed on your system before building:
+> 
+> ``` pip install wheel pip install --upgrade -r requirements.txt ```
 
 ```shell
 cd specify7
