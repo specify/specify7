@@ -145,23 +145,18 @@ export class BusinessRuleMgr<SCHEMA extends AnySchema> {
 
     Promise.all(results).then((results) => {
       results
-        .map((result) => result['localDuplicates'])
+        .map((result) => result['localDuplicates' as keyof BusinessRuleResult])
         .flat()
         .forEach((duplicate: SpecifyResource<SCHEMA>) => {
           const event = duplicate.cid + ':' + fieldName;
-          if (this.watchers[event]) {
-            return;
+          if (!this.watchers[event]) {
+            this.watchers[event] = () =>
+              duplicate.on('change remove', () => this.checkField(fieldName));
           }
-          this.watchers[event] = () =>
-            duplicate.on('change remove', () => {
-              this.checkField(fieldName);
-            });
         });
     });
     return Promise.all(results).then((results) => {
-      const invalids = results.filter((result) => {
-        return !result.valid;
-      });
+      const invalids = results.filter((result) => !result.valid);
       return invalids.length < 1
         ? { key: 'br-uniqueness-' + fieldName, valid: true }
         : {
@@ -207,17 +202,15 @@ export class BusinessRuleMgr<SCHEMA extends AnySchema> {
     }
     fieldNames = Array.isArray(fieldNames) ? fieldNames : [fieldNames];
 
-    const fieldValues = fieldNames.map((value) => {
-      return this.resource.get(value);
-    });
+    const fieldValues = fieldNames.map((value) => this.resource.get(value));
 
-    const fieldInfo = fieldNames.map((field) => {
-      return this.resource.specifyModel.getField(field);
-    });
+    const fieldInfo = fieldNames.map((field) =>
+      this.resource.specifyModel.getField(field)
+    );
 
-    const fieldIsToOne = fieldInfo.map((field) => {
-      return field?.type === 'many-to-one';
-    });
+    const fieldIsToOne = fieldInfo.map(
+      (field) => field?.type === 'many-to-one'
+    );
 
     const fieldIds = fieldValues.map((value, index) => {
       if (fieldIsToOne[index] != null) {
@@ -235,11 +228,8 @@ export class BusinessRuleMgr<SCHEMA extends AnySchema> {
         : undefined;
 
     const allNullOrUndefinedToOnes = fieldIds.reduce(
-      (previous, current, index) => {
-        return previous && fieldIsToOne[index]
-          ? fieldIds[index] === null
-          : false;
-      },
+      (previous, current, index) =>
+        previous && fieldIsToOne[index] ? fieldIds[index] === null : false,
       true
     );
 
@@ -274,17 +264,17 @@ export class BusinessRuleMgr<SCHEMA extends AnySchema> {
         } else return fieldValue === otherValue;
       };
 
-      return fieldValues.reduce((previous, current, index) => {
-        return (
+      return fieldValues.reduce(
+        (previous, current, index) =>
           previous &&
           hasSameValue(
             current,
             fieldNames![index],
             fieldIsToOne[index],
             fieldIds[index]
-          )
-        );
-      }, true);
+          ),
+        true
+      );
     };
 
     if (toOneField != null) {
@@ -295,14 +285,14 @@ export class BusinessRuleMgr<SCHEMA extends AnySchema> {
           this.resource.collection.related?.specifyModel;
 
       var localCollection = hasLocalCollection
-        ? this.resource.collection.models.filter((resource) => {
-            return resource !== undefined;
-          })
+        ? this.resource.collection.models.filter(
+            (resource) => resource !== undefined
+          )
         : [];
 
-      var duplicates = localCollection.filter((resource) => {
-        return hasSameValues(resource);
-      });
+      var duplicates = localCollection.filter((resource) =>
+        hasSameValues(resource)
+      );
 
       if (duplicates.length > 0) {
         invalidResponse.localDuplicates = duplicates;
@@ -327,17 +317,14 @@ export class BusinessRuleMgr<SCHEMA extends AnySchema> {
             var inDatabase = others.chain().compact();
             inDatabase = hasLocalCollection
               ? inDatabase
-                  .filter((other: SpecifyResource<SCHEMA>) => {
-                    return !this.resource.collection.get(other.id);
-                  })
+                  .filter(
+                    (other: SpecifyResource<SCHEMA>) =>
+                      !this.resource.collection.get(other.id)
+                  )
                   .value()
               : inDatabase.value();
 
-            if (
-              inDatabase.some((other) => {
-                return hasSameValues(other);
-              })
-            ) {
+            if (inDatabase.some((other) => hasSameValues(other))) {
               return invalidResponse;
             } else {
               return { valid: true };
@@ -355,9 +342,9 @@ export class BusinessRuleMgr<SCHEMA extends AnySchema> {
       });
       return others.fetch().then(() => {
         if (
-          others.models.some((other: SpecifyResource<SCHEMA>) => {
-            return hasSameValues(other);
-          })
+          others.models.some((other: SpecifyResource<SCHEMA>) =>
+            hasSameValues(other)
+          )
         ) {
           return invalidResponse;
         } else {
