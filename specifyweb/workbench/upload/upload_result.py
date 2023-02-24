@@ -122,7 +122,7 @@ def json_to_NullRecord(json: Dict) -> NullRecord:
 
 class FailedBusinessRule(NamedTuple):
     message: str
-    payload: Dict[str, Union[str, int]]
+    payload: Dict[str, Union[str, int, List[str], List[int]]]
     info: ReportInfo
 
     def get_id(self) -> Failure:

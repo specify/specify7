@@ -173,7 +173,7 @@ class TreeMatchingTests(UploadTestsBase):
             results[0].record_result,
             FailedBusinessRule(
                 message='missingRequiredTreeParent',
-                payload={'names':"['County']"},
+                payload={'names':['County']},
                 info=ReportInfo(tableName='Geography', columns=['City'], treeInfo=None)
             )
         )
@@ -181,7 +181,7 @@ class TreeMatchingTests(UploadTestsBase):
             results[1].record_result,
             FailedBusinessRule(
                 message='missingRequiredTreeParent',
-                payload={'names':"['County']"},
+                payload={'names':['County']},
                 info=ReportInfo(tableName='Geography', columns=['City'], treeInfo=None)
             )
         )
