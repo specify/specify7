@@ -78,7 +78,7 @@ export function UserToolsOverlay(): JSX.Element | null {
           ? headerText.userToolsForUser({ userName: userInformation.name })
           : headerText.userTools()
       }
-      icon={<span className="text-blue-500">{icons.cog}</span>}
+      icon={<span className="text-orange-400">{icons.cog}</span>}
       onClose={handleClose}
     >
       {isReadOnly && (

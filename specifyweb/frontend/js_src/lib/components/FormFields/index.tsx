@@ -233,7 +233,9 @@ export function FormField({
   const Render = fieldRenderers[
     fieldDefinition.type
   ] as typeof fieldRenderers.Checkbox;
+
   const data = useDistantRelated(resource, fields);
+
   return (
     <ErrorBoundary dismissible>
       {data === undefined ? undefined : (

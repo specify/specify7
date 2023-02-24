@@ -165,6 +165,8 @@
     @apply !bg-transparent text-brand-300 dark:text-brand-400;
   }
 
+  a.button {@apply text-center}
+
   .link {
     @apply inline-flex cursor-pointer items-center gap-2
       text-black active:underline enabled:hover:text-brand-300 disabled:!ring-0 dark:text-gray-200;
