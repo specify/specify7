@@ -111,14 +111,13 @@ Changelog is available in [CHANGELOG.md](./CHANGELOG.md)
 # Installation
 
 We encourage all users to read our documentation on the Community Forum
-regarding installing and deploying Specify – [**
-Specify 7 Installation Instructions**](https://discourse.specifysoftware.org/t/specify-7-installation-instructions/755).
+regarding installing and deploying Specify –
+[**Specify 7 Installation Instructions**](https://discourse.specifysoftware.org/t/specify-7-installation-instructions/755).
 
 If you are an existing Specify 6 user who is looking to evaluate Specify 7, you
-can
-contact [support@specifysoftware.org](mailto:support@specifysoftware.org) along
-with a copy of your database and we can
-configure a temporary deployment for evaluation purposes.
+can contact [support@specifysoftware.org](mailto:support@specifysoftware.org)
+along with a copy of your database and we can configure a temporary deployment
+for evaluation purposes.
 
 ## Docker Installation (Recommended)
 
@@ -127,8 +126,7 @@ configure a temporary deployment for evaluation purposes.
 We encourage members to use
 our  [Dockerized compositions](https://github.com/specify/docker-compositions)
 of Specify 7. You can choose your desired version, make the necessary
-adjustments and then
-run a single command to get everything
+adjustments and then run a single command to get everything
 working. It is very simple and can be easily updated when new versions are
 released. Documentation for deploying Specify
 using Docker is available within the repository.
@@ -284,6 +282,7 @@ the Python dependencies.
 
 ```shell
 python3.8 -m venv specify7/ve
+specify7/ve/bin/pip install --upgrade -r specify7/requirements.txt
 ```
 
 ### Building
@@ -291,8 +290,7 @@ python3.8 -m venv specify7/ve
 To build Specify 7 use the default make target.
 
 > You will need to install `wheel` if you don't have it installed on your system before building:
-> 
-> ``` pip install wheel pip install --upgrade -r requirements.txt ```
+> `pip install wheel`
 
 ```shell
 cd specify7
