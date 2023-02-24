@@ -21,12 +21,10 @@ export function PrepDialogRow({
   preparation,
   selected,
   onChange: handleChange,
-  bulkValue,
 }: {
   readonly preparation: Preparations[number];
   readonly selected: number;
   readonly onChange: (newSelected: number) => void;
-  readonly bulkValue: number;
 }): JSX.Element {
   const unavailableCount = preparation.countAmount - preparation.available;
 
@@ -55,8 +53,6 @@ export function PrepDialogRow({
     | State<'Main'>
   >({ type: 'Main' });
 
-  const [hasChange, setHasChange] = React.useState(false);
-
   return (
     <>
       <tr>
@@ -83,19 +79,8 @@ export function PrepDialogRow({
             max={preparation.available}
             min={0}
             title={interactionsText.selectedAmount()}
-            value={
-              selected === preparation.available
-                ? preparation.available
-                : preparation.available >= bulkValue && !hasChange
-                ? bulkValue
-                : preparation.available <= bulkValue && !hasChange
-                ? preparation.available
-                : selected
-            }
-            onValueChange={(event) => {
-              handleChange(event);
-              setHasChange(true);
-            }}
+            value={selected}
+            onValueChange={handleChange}
           />
         </td>
         <td className="justify-end tabular-nums">{preparation.available}</td>

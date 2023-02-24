@@ -213,7 +213,7 @@ export function PrepDialog({
               <td />
               <td />
               <td />
-              <td>{commonText.bulkValue()}</td>
+              <td>{commonText.bulkSelect()}</td>
               <td>
                 <Input.Number
                   aria-label={interactionsText.selectedAmount()}
@@ -221,9 +221,14 @@ export function PrepDialog({
                   min={1}
                   title={interactionsText.selectedAmount()}
                   value={bulkValue}
-                  onValueChange={(newSelected): void =>
-                    setBulkValue(newSelected)
-                  }
+                  onValueChange={(newCount) => {
+                    setBulkValue(newCount);
+                    setSelected(
+                      preparations.map(({ available }) =>
+                        Math.min(available, newCount)
+                      )
+                    );
+                  }}
                 />
               </td>
               <td />
@@ -231,7 +236,6 @@ export function PrepDialog({
             </tr>
             {preparations.map((preparation, index) => (
               <PrepDialogRow
-                bulkValue={bulkValue}
                 key={index}
                 preparation={preparation}
                 selected={selected[index]}
