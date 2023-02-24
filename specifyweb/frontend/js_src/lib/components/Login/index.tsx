@@ -121,7 +121,7 @@ function LegacyLogin({
           })}
         </p>
       )}
-      <Form method="post" className="min-h-[unset]">
+      <Form method="post">
         <input
           name="csrfmiddlewaretoken"
           type="hidden"

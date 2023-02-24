@@ -54,7 +54,7 @@ export function AttachmentGallery({
   return (
     <>
       <Container.Base
-        className="grid min-h-[theme(spacing.40)] flex-1 grid-cols-[repeat(auto-fit,minmax(var(--scale),1fr))]
+        className="grid flex-1 grid-cols-[repeat(auto-fit,minmax(var(--scale),1fr))]
           items-center gap-4"
         forwardRef={containerRef}
         style={

@@ -50,7 +50,7 @@ export const dialogClassNames = {
   narrowContainer: `${commonContainer} max-h-[90%] sm:max-h-[50%] min-w-[min(20rem,90%)]
     lg:max-w-[50%]`,
   normalContainer: `${commonContainer} max-h-[90%] min-w-[min(30rem,90%)]`,
-  wideContainer: `${commonContainer} max-h-[90%] min-w-[min(40rem,90%)]`,
+  wideContainer: `${commonContainer} max-h-screen min-w-[min(40rem,90%)]`,
   extraWideContainer: `${commonContainer} max-h-[90%] min-w-[min(20rem,90%)]
     w-[min(60rem,90%)] h-[60rem]`,
   flexContent: 'flex flex-col gap-2',

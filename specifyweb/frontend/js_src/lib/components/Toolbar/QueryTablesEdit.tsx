@@ -178,7 +178,7 @@ export function ListEdit({
   }
 
   return (
-    <div className="flex grid grid-rows-1 md:grid-cols-[auto_1fr_auto_1fr] md:flex-row">
+    <div className="grid grid-rows-1 md:grid-cols-[auto_1fr_auto_1fr] md:flex-row">
       <div className="flex md:contents">
         <div className="flex flex-col justify-center">
           <Button.Icon
