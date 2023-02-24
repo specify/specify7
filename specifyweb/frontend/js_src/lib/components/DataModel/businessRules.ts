@@ -5,7 +5,6 @@ import { BusinessRuleDefs, businessRuleDefs } from './businessRuleDefs';
 import { flippedPromise } from '../../utils/promise';
 import { isTreeResource } from '../InitialContext/treeRanks';
 import { initializeTreeRecord, treeBusinessRules } from './treeBusinessRules';
-import _ from 'underscore';
 import { Collection } from './specifyModel';
 import { SaveBlockers } from './saveBlockers';
 import { formatConjunction } from '../Atoms/Internationalization';
@@ -13,6 +12,7 @@ import { formsText } from '../../localization/forms';
 import { LiteralField, Relationship } from './specifyField';
 import { idFromUrl } from './resource';
 import { globalEvents } from '../../utils/ajax/specifyApi';
+import { f } from '../../utils/functools';
 
 var enabled: boolean = true;
 
@@ -147,11 +147,9 @@ export class BusinessRuleMgr<SCHEMA extends AnySchema> {
     });
 
     Promise.all(results).then((results) => {
-      _.chain(results)
-        .pluck('localDuplicates')
-        .compact()
-        .flatten()
-        .each((duplicate: SpecifyResource<SCHEMA>) => {
+      f.pluck(results, 'localDuplicates')
+        .flat()
+        .forEach((duplicate) => {
           const event = duplicate.cid + ':' + fieldName;
           if (_this.watchers[event]) {
             return;
@@ -171,7 +169,7 @@ export class BusinessRuleMgr<SCHEMA extends AnySchema> {
         : {
             key: 'br-uniqueness-' + fieldName,
             valid: false,
-            reason: formatConjunction(_(invalids).pluck('reason')),
+            reason: formatConjunction(f.pluck(invalids, 'reason')),
           };
     });
   }
@@ -236,11 +234,10 @@ export class BusinessRuleMgr<SCHEMA extends AnySchema> {
         ? (this.resource.specifyModel.getField(toOneField) as Relationship)
         : undefined;
 
-    const allNullOrUndefinedToOnes = _.reduce(
-      fieldIds,
-      (result, value, index) => {
-        return result && fieldIsToOne[index]
-          ? _.isNull(fieldIds[index])
+    const allNullOrUndefinedToOnes = fieldIds.reduce(
+      (previous, current, index) => {
+        return previous && fieldIsToOne[index]
+          ? fieldIds[index] === null
           : false;
       },
       true
@@ -277,21 +274,17 @@ export class BusinessRuleMgr<SCHEMA extends AnySchema> {
         } else return fieldValue === otherValue;
       };
 
-      return _.reduce(
-        fieldValues,
-        (result, fieldValue, index) => {
-          return (
-            result &&
-            hasSameValue(
-              fieldValue,
-              fieldNames![index],
-              fieldIsToOne[index],
-              fieldIds[index]
-            )
-          );
-        },
-        true
-      );
+      return fieldValues.reduce((previous, current, index) => {
+        return (
+          previous &&
+          hasSameValue(
+            current,
+            fieldNames![index],
+            fieldIsToOne[index],
+            fieldIds[index]
+          )
+        );
+      }, true);
     };
 
     if (toOneField != null) {

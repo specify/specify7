@@ -1,4 +1,3 @@
-import _ from 'underscore';
 import { formsText } from '../../localization/forms';
 import { getPrepAvailability } from '../../utils/ajax/specifyApi';
 import { f } from '../../utils/functools';
@@ -30,17 +29,16 @@ export const getTotalLoaned = (
 
 export const updateLoanPrep = (
   loanReturnPrep: SpecifyResource<LoanReturnPreparation>,
-  collection: Collection<LoanReturnPreparation>
+  collection: Collection<LoanPreparation>
 ) => {
   if (
     collection != undefined &&
     collection.related?.specifyModel.name == 'LoanPreparation'
   ) {
-    const sums = _.reduce(
-      collection.models,
-      (memo: { returned: number; resolved: number }, lrp) => {
-        memo.returned += lrp.get('quantityReturned');
-        memo.resolved += lrp.get('quantityResolved');
+    const sums = collection.models.reduce(
+      (memo: { returned: number; resolved: number }, loanReturnPrep) => {
+        memo.returned += loanReturnPrep.get('quantityReturned');
+        memo.resolved += loanReturnPrep.get('quantityResolved');
         return memo;
       },
       { returned: 0, resolved: 0 }
@@ -55,15 +53,11 @@ export const getTotalResolved = (
   loanReturnPrep: SpecifyResource<LoanReturnPreparation>
 ) => {
   return loanReturnPrep.collection
-    ? _.reduce(
-        loanReturnPrep.collection.models,
-        (sum, loanPrep) => {
-          return loanPrep.cid != loanReturnPrep.cid
-            ? sum + loanPrep.get('quantityResolved')
-            : sum;
-        },
-        0
-      )
+    ? loanReturnPrep.collection.models.reduce((sum, loanPrep) => {
+        return loanPrep.cid != loanReturnPrep.cid
+          ? sum + loanPrep.get('quantityResolved')
+          : sum;
+      }, 0)
     : loanReturnPrep.get('quantityResolved');
 };
 
