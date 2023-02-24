@@ -73,7 +73,7 @@ export function FormTable<SCHEMA extends AnySchema>({
   readonly onAdd:
     | ((resources: RA<SpecifyResource<SCHEMA>>) => void)
     | undefined;
-  readonly onDelete: (resource: SpecifyResource<SCHEMA>) => void;
+  readonly onDelete: ((resource: SpecifyResource<SCHEMA>) => void) | undefined;
   readonly mode: FormMode;
   readonly viewName?: string;
   readonly dialog: 'modal' | 'nonModal' | false;
@@ -173,7 +173,8 @@ export function FormTable<SCHEMA extends AnySchema>({
     'definition',
     'flexibleSubGridColumnWidth'
   );
-  const displayDeleteButton = mode !== 'view';
+  const displayDeleteButton =
+    mode !== 'view' && typeof handleDelete === 'function';
   const displayViewButton = !isDependent;
   const headerIsVisible =
     resources.length !== 1 || !isExpanded[resources[0].cid];
