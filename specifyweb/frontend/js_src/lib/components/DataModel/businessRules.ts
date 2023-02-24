@@ -93,13 +93,11 @@ export class BusinessRuleMgr<SCHEMA extends AnySchema> {
         treeBusinessRules(this.resource as SpecifyResource<AnyTree>, fieldName)
       );
 
-    const _this = this;
-
     Promise.all(checks)
       .then((results) => {
         return (
-          thisCheck === _this.fieldChangePromises[fieldName] &&
-          _this.processCheckFieldResults(fieldName, results)
+          thisCheck === this.fieldChangePromises[fieldName] &&
+          this.processCheckFieldResults(fieldName, results)
         );
       })
       .then(() => {
@@ -130,33 +128,32 @@ export class BusinessRuleMgr<SCHEMA extends AnySchema> {
   }
 
   private async checkUnique(fieldName: string): Promise<BusinessRuleResult> {
-    const _this = this;
     var toOneFields: RA<any> =
       (this.rules?.uniqueIn && this.rules.uniqueIn[fieldName]) ?? [];
 
     const results = toOneFields.map((uniqueRule) => {
       var field = uniqueRule;
-      var fieldNames: string[] | null = [];
+      var fieldNames: string[] | null = [fieldName];
       if (uniqueRule === null) {
         fieldNames = null;
       } else if (typeof uniqueRule != 'string') {
         fieldNames = fieldNames.concat(uniqueRule.otherfields);
         field = uniqueRule.field;
-      } else fieldNames = [fieldName];
-      return _this.uniqueIn(field, fieldNames);
+      }
+      return this.uniqueIn(field, fieldNames);
     });
 
     Promise.all(results).then((results) => {
       f.pluck(results, 'localDuplicates')
         .flat()
-        .forEach((duplicate) => {
+        .forEach((duplicate: SpecifyResource<SCHEMA>) => {
           const event = duplicate.cid + ':' + fieldName;
-          if (_this.watchers[event]) {
+          if (this.watchers[event]) {
             return;
           }
-          _this.watchers[event] = () =>
+          this.watchers[event] = () =>
             duplicate.on('change remove', () => {
-              _this.checkField(fieldName);
+              this.checkField(fieldName);
             });
         });
     });
