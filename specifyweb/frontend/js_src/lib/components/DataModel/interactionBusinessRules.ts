@@ -27,10 +27,7 @@ export const getTotalLoaned = (
     : undefined;
 };
 
-export const updateLoanPrep = (
-  loanReturnPrep: SpecifyResource<LoanReturnPreparation>,
-  collection: Collection<LoanPreparation>
-) => {
+export const updateLoanPrep = (collection: Collection<LoanPreparation>) => {
   if (
     collection != undefined &&
     collection.related?.specifyModel.name == 'LoanPreparation'
@@ -53,11 +50,13 @@ export const getTotalResolved = (
   loanReturnPrep: SpecifyResource<LoanReturnPreparation>
 ) => {
   return loanReturnPrep.collection
-    ? loanReturnPrep.collection.models.reduce((sum, loanPrep) => {
-        return loanPrep.cid != loanReturnPrep.cid
-          ? sum + loanPrep.get('quantityResolved')
-          : sum;
-      }, 0)
+    ? loanReturnPrep.collection.models.reduce(
+        (sum, loanPrep) =>
+          loanPrep.cid != loanReturnPrep.cid
+            ? sum + loanPrep.get('quantityResolved')
+            : sum,
+        0
+      )
     : loanReturnPrep.get('quantityResolved');
 };
 
@@ -67,9 +66,9 @@ const updatePrepBlockers = (
   const prepUri = interactionPrep.get('preparation') ?? '';
   const prepId = idFromUrl(prepUri);
   return fetchResource('Preparation', prepId)
-    .then((preparation) => {
-      return preparation.countAmt >= interactionPrep.get('quantity');
-    })
+    .then(
+      (preparation) => preparation.countAmt >= interactionPrep.get('quantity')
+    )
     .then((isValid) => {
       if (!isValid) {
         if (interactionPrep.saveBlockers?.blockers)
