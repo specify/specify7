@@ -127,7 +127,7 @@ export function AppResourceEditor({
   );
 
   return typeof resourceData === 'object' ? (
-    <Container.Base className="min-h-[30vh] flex-1 overflow-auto">
+    <Container.Base className="flex-1 overflow-auto">
       <DataEntry.Header>
         <div className="flex items-center justify-center gap-2">
           <div className="hidden md:block">
@@ -144,10 +144,7 @@ export function AppResourceEditor({
         </div>
         {headerButtons}
       </DataEntry.Header>
-      <Form
-        className="max-h-[90%] min-h-[30vh] flex-1 overflow-auto"
-        forwardRef={setForm}
-      >
+      <Form className="max-h-screen flex-1 overflow-auto" forwardRef={setForm}>
         <AppResourcesTabs
           appResource={appResource}
           data={resourceData.data}

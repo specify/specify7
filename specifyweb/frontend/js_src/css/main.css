@@ -201,18 +201,6 @@
     @apply rounded bg-brand-200 dark:bg-brand-400;
   }
 
-  /* Display tooltips as an overlay on touch-screen devices */
-  @media (pointer: coarse), (hover: none) {
-    [title] {
-      @apply relative inline-flex justify-center;
-    }
-
-    [title]:focus::after {
-      @apply absolute top-[90%] w-fit border border-black bg-white p-1
-        text-black content-[attr(title)];
-    }
-  }
-
   /*
    * Grid-based table implementation for increased flexibility
    * Does not sacrifice accessibility thanks to the [role] attributes
