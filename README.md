@@ -271,6 +271,7 @@ the Python dependencies.
 
 ```shell
 python3.8 -m venv specify7/ve
+specify7/ve/bin/pip install wheel
 specify7/ve/bin/pip install --upgrade -r specify7/requirements.txt
 ```
 
@@ -278,16 +279,13 @@ specify7/ve/bin/pip install --upgrade -r specify7/requirements.txt
 
 To build Specify 7 use the default make target.
 
-> You will need to install `wheel` if you don't have it installed on your system before building:
-> `pip install wheel`
-
 ```shell
 cd specify7
 source ve/bin/activate
 make
 ```
 
-> Note, if `source` command is not available on our system, try running
+> Note, if `source` command is not available on your system, try running
 > `. ve/bin/activate` instead
 
 Other make targets:
