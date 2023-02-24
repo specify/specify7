@@ -132,7 +132,7 @@ def do_export(spquery, collection, user, filename, exporttype, host):
             query_to_csv(session, collection, user, tableid, field_specs, path,
                          recordsetid=recordsetid, 
                          captions=spquery['captions'], strip_id=True,
-                         distinct=spquery['selectdistinct'])
+                         distinct=spquery['selectdistinct'], delimiter=spquery['delimiter'],)
         elif exporttype == 'kml':
             query_to_kml(session, collection, user, tableid, field_specs, path, spquery['captions'], host,
                          recordsetid=recordsetid, add_header=True, strip_id=False)
@@ -160,7 +160,7 @@ def stored_query_to_csv(query_id, collection, user, path):
 
 def query_to_csv(session, collection, user, tableid, field_specs, path,
                  recordsetid=None, captions=False, strip_id=False, row_filter=None,
-                 distinct=False):
+                 distinct=False, delimiter='\t'):
     """Build a sqlalchemy query using the QueryField objects given by
     field_specs and send the results to a CSV file at the given
     file path.
@@ -173,7 +173,7 @@ def query_to_csv(session, collection, user, tableid, field_specs, path,
     logger.debug('query_to_csv starting')
 
     with open(path, 'w', newline='', encoding='utf-8') as f:
-        csv_writer = csv.writer(f)
+        csv_writer = csv.writer(f, delimiter=delimiter)
         if captions:
             header = captions
             if not strip_id and not distinct:
