@@ -433,7 +433,9 @@ describe('parseFormCell', () => {
     expect(
       parseFormCell(
         tables.CollectionObject,
-        xml('<cell type="panel" colDef="p:g,2px,2px" panelType="buttonBar" />')
+        xml(
+          '<cell type="panel" colDef="p:g,2px,2px" panelType="buttonBar"><rows /></cell>'
+        )
       )
     ).toEqual(
       cell({

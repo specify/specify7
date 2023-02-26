@@ -1,3 +1,4 @@
+import { requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
 import type { SimpleXmlNode } from '../xmlToJson';
 import {
@@ -5,6 +6,8 @@ import {
   getBooleanAttribute,
   getParsedAttribute,
 } from '../xmlUtils';
+
+requireContext();
 
 const attributeName = 'data-someAttribute';
 const getElement = (value: string): SimpleXmlNode => ({

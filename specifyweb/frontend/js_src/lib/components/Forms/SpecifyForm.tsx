@@ -10,6 +10,7 @@ import { useId } from '../../hooks/useId';
 import { hijackBackboneAjax } from '../../utils/ajax/backboneAjax';
 import { Http } from '../../utils/ajax/definitions';
 import { DataEntry } from '../Atoms/DataEntry';
+import { ReadOnlyContext, SearchDialogContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { FormCell } from '../FormCells';
@@ -80,6 +81,11 @@ export function RenderForm<SCHEMA extends AnySchema>({
     'flexibleColumnWidth'
   );
   const [language] = usePref('form', 'schema', 'language');
+
+  const isReadOnly =
+    React.useContext(ReadOnlyContext) || viewDefinition?.mode === 'view';
+  const isInSearchDialog =
+    React.useContext(SearchDialogContext) || viewDefinition?.mode === 'search';
   return (
     <FormLoadingContext.Provider value={isAlreadyLoading || showLoading}>
       <div
@@ -113,33 +119,36 @@ export function RenderForm<SCHEMA extends AnySchema>({
             flexibleColumnWidth={flexibleColumnWidth}
             viewDefinition={viewDefinition}
           >
-            {viewDefinition.rows.map((cells, index) => (
-              <React.Fragment key={index}>
-                {cells.map(
-                  (
-                    { colSpan, align, visible, id: cellId, ...cellData },
-                    index
-                  ) => (
-                    <DataEntry.Cell
-                      align={align}
-                      colSpan={colSpan}
-                      key={index}
-                      visible={visible}
-                    >
-                      <FormCell
-                        align={align}
-                        cellData={cellData}
-                        formatId={id}
-                        formType={viewDefinition.formType}
-                        id={cellId}
-                        mode={viewDefinition.mode}
-                        resource={resolvedResource}
-                      />
-                    </DataEntry.Cell>
-                  )
-                )}
-              </React.Fragment>
-            ))}
+            <ReadOnlyContext.Provider value={isReadOnly}>
+              <SearchDialogContext.Provider value={isInSearchDialog}>
+                {viewDefinition.rows.map((cells, index) => (
+                  <React.Fragment key={index}>
+                    {cells.map(
+                      (
+                        { colSpan, align, visible, id: cellId, ...cellData },
+                        index
+                      ) => (
+                        <DataEntry.Cell
+                          align={align}
+                          colSpan={colSpan}
+                          key={index}
+                          visible={visible}
+                        >
+                          <FormCell
+                            align={align}
+                            cellData={cellData}
+                            formatId={id}
+                            formType={viewDefinition.formType}
+                            id={cellId}
+                            resource={resolvedResource}
+                          />
+                        </DataEntry.Cell>
+                      )
+                    )}
+                  </React.Fragment>
+                ))}
+              </SearchDialogContext.Provider>
+            </ReadOnlyContext.Provider>
           </DataEntry.Grid>
         )}
       </div>

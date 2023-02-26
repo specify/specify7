@@ -102,7 +102,7 @@ theories(mergeSimpleXmlNodes, [
     ],
     out: {
       attributes: {},
-      text: 'Text',
+      text: 'a b',
       children: {},
       tagName: 'test',
       type: 'SimpleXmlNode',

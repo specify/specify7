@@ -31,6 +31,7 @@ describe('serializeResource', () => {
       collContentContact: null,
       collTechContact: null,
       createdByAgent: null,
+      division: getResourceApiUrl('Division', 2),
       date1: null,
       date1Precision: null,
       date2: null,

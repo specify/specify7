@@ -30,6 +30,7 @@ describe('unsafeFetchPickList', () => {
 
   const pickList = {
     resource_uri: getResourceApiUrl('PickList', 1),
+    collection: getResourceApiUrl('Collection', 4),
   };
   overrideAjax(
     '/api/specify/picklist/?name=currentCollection&limit=1&domainfilter=true',
@@ -57,6 +58,7 @@ describe('unsafeFetchPickList', () => {
   );
   const otherPickList = {
     resource_uri: getResourceApiUrl('PickList', 2),
+    collection: getResourceApiUrl('Collection', 4),
   };
   overrideAjax(
     '/api/specify/picklist/?name=otherCollection&limit=1&domainfilter=false',

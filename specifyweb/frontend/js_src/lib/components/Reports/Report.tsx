@@ -229,7 +229,6 @@ function FixImagesDialog({
       onClose={(): void => setIndex(undefined)}
     >
       <AttachmentsPlugin
-        mode="edit"
         resource={undefined}
         onUploadComplete={(attachment): void =>
           loading(
