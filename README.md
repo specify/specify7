@@ -338,6 +338,9 @@ Debugging can be enabled by creating the file
 
 ### The development server
 
+> NOTE: development server should only be run in debug mode. See previous
+> section for instructions on how to turn on debugging.
+
 Specify7 can be run using the Django development server.
 
 ```shell
