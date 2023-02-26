@@ -3,6 +3,8 @@ import { useOutletContext } from 'react-router';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
+import { Container } from '../Atoms';
+import { DataEntry } from '../Atoms/DataEntry';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { fetchResource } from '../DataModel/resource';
 import type {
@@ -91,7 +93,18 @@ export function Wrapper({
         });
         navigate(`${baseHref}/${appResource.id}/`);
       }}
-    />
+    >
+      {({ headerJsx, headerButtons, form, footer }): JSX.Element => (
+        <Container.Base className="flex-1 overflow-hidden">
+          <DataEntry.Header>
+            {headerJsx}
+            {headerButtons}
+          </DataEntry.Header>
+          {form}
+          <DataEntry.Footer>{footer}</DataEntry.Footer>
+        </Container.Base>
+      )}
+    </AppResourceEditor>
   );
 }
 

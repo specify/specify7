@@ -1,13 +1,17 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { commonText } from '../../localization/common';
 import { schemaText } from '../../localization/schema';
+import { appResourceIds } from '../../utils/ajax';
+import { className } from '../Atoms/className';
 import { Input, Label } from '../Atoms/Form';
+import { Link } from '../Atoms/Link';
 import { ReadOnlyContext } from '../Core/Contexts';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { tables } from '../DataModel/tables';
-import type { SpLocaleContainer, Tables } from '../DataModel/types';
+import { getTable, tables } from '../DataModel/tables';
+import type { SpLocaleContainer } from '../DataModel/types';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { PickList } from './Components';
 import { SchemaConfigColumn } from './Fields';
@@ -69,36 +73,20 @@ export function SchemaConfigTable({
           onValueChange={(text): void => handleChangeDesc({ ...desc!, text })}
         />
       </Label.Block>
-      <Label.Block>
-        {schemaText.tableFormat()}
-        <PickList
-          disabled={isReadOnly}
-          groups={{
-            '': filterFormatters(
-              schemaData.formatters,
-              container.name as keyof Tables
-            ),
-          }}
-          value={container.format}
-          onChange={(format): void => handleChange({ ...container, format })}
-        />
-      </Label.Block>
-      <Label.Block>
-        {schemaText.tableAggregation()}
-        <PickList
-          disabled={isReadOnly}
-          groups={{
-            '': filterFormatters(
-              schemaData.aggregators,
-              container.name as keyof Tables
-            ),
-          }}
-          value={container.aggregator}
-          onChange={(aggregator): void =>
-            handleChange({ ...container, aggregator })
-          }
-        />
-      </Label.Block>
+      <FormatterPicker
+        container={container}
+        schemaData={schemaData}
+        type="format"
+        onChange={(format): void => handleChange({ ...container, format })}
+      />
+      <FormatterPicker
+        container={container}
+        schemaData={schemaData}
+        type="aggregator"
+        onChange={(aggregator): void =>
+          handleChange({ ...container, aggregator })
+        }
+      />
       <Label.Inline>
         <Input.Checkbox
           checked={container.isHidden}
@@ -110,5 +98,86 @@ export function SchemaConfigTable({
         {schemaText.hideTable()}
       </Label.Inline>
     </SchemaConfigColumn>
+  );
+}
+
+function FormatterPicker({
+  schemaData,
+  container,
+  type,
+  onChange: handleChange,
+}: {
+  readonly schemaData: SchemaData;
+  readonly type: 'aggregator' | 'format';
+  readonly container: SerializedResource<SpLocaleContainer>;
+  readonly onChange: (aggregator: string | null) => void;
+}): JSX.Element {
+  const isReadOnly = React.useContext(ReadOnlyContext);
+  const kind = type === 'format' ? 'formatters' : 'aggregators';
+  const table = getTable(container.name);
+  const formatters =
+    table === undefined ? {} : filterFormatters(schemaData[kind], table.name);
+  const formatterName = container[type];
+  const formatter =
+    typeof formatterName === 'string' ? formatters[formatterName] : undefined;
+  const navigate = useNavigate();
+
+  /*
+   * This is undefined if browser cached app resource response since before
+   * back-end begun sending app resource ids.
+   */
+  const resourceId = appResourceIds.DataObjFormatters;
+  const urlPart = type === 'format' ? 'formatter' : 'aggregator';
+
+  return (
+    <Label.Block>
+      {type === 'format'
+        ? schemaText.tableFormat()
+        : schemaText.tableAggregation()}
+      <div className="flex">
+        <PickList
+          disabled={isReadOnly}
+          groups={{
+            '': formatters,
+          }}
+          value={formatterName}
+          onChange={handleChange}
+        />
+        {typeof resourceId === 'number' && typeof table === 'object' ? (
+          <>
+            {typeof formatter === 'string' && (
+              <Link.Icon
+                className={className.dataEntryEdit}
+                href={`/specify/resources/app-resource/${resourceId}/${urlPart}/${
+                  table.name
+                }/name/${formatterName!}/`}
+                icon="pencil"
+                title={commonText.edit()}
+                onClick={(event): void => {
+                  event.preventDefault();
+                  navigate(
+                    `/specify/overlay/resources/app-resource/${resourceId}/${urlPart}/${
+                      table.name
+                    }/name/${formatterName!}/`
+                  );
+                }}
+              />
+            )}
+            <Link.Icon
+              className={className.dataEntryAdd}
+              href={`/specify/resources/app-resource/${resourceId}/${urlPart}/${table.name}/`}
+              icon="plus"
+              title={commonText.add()}
+              onClick={(event): void => {
+                event.preventDefault();
+                navigate(
+                  `/specify/overlay/resources/app-resource/${resourceId}/${urlPart}/${table.name}/`
+                );
+              }}
+            />
+          </>
+        ) : undefined}
+      </div>
+    </Label.Block>
   );
 }

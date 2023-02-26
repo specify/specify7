@@ -20,7 +20,6 @@ import { FormatterElement } from './Formatter';
 import type { Aggregator, Formatter } from './spec';
 import type { FormatterTypesOutlet } from './Types';
 
-// FIXME: allow opening this in the schema editor
 export function FormatterWrapper(): JSX.Element {
   const { type, name } = useParams();
   const {

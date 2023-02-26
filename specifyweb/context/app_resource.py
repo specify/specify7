@@ -120,15 +120,15 @@ def get_app_resource_from_db(collection, user, level, resource_name):
     filters = {
         'spappresource__name': resource_name,
         'spappresource__spappresourcedir__in': dirs
-        }
+    }
 
     try:
         resource = Spappresourcedata.objects.get(**filters)
-        return (resource.data, resource.spappresource.mimetype, resource.id)
+        return (resource.data, resource.spappresource.mimetype, resource.spappresource.id)
     except Spappresourcedata.MultipleObjectsReturned:
         logger.warning('found multiple appresources for %s', filters)
         resource = Spappresourcedata.objects.filter(**filters)[0]
-        return (resource.data, resource.spappresource.mimetype, resource.id)
+        return (resource.data, resource.spappresource.mimetype, resource.spappresource.id)
     except Spappresourcedata.DoesNotExist:
         # The resource does not exist in the database at the given level.
         return None

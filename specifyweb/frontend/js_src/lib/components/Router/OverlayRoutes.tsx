@@ -190,6 +190,14 @@ export const overlayRoutes: RA<EnhancedRoute> = [
             ({ AboutOverlay }) => AboutOverlay
           ),
       },
+      {
+        path: 'resources/app-resource/:id/*',
+        element: () =>
+          import('../AppResources/DialogEditor').then(
+            ({ DialogEditor }) => DialogEditor
+          ),
+        isSingleResource: true,
+      },
     ],
   },
 ];
