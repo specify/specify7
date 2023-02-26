@@ -1,22 +1,14 @@
 import React from 'react';
 
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { commonText } from '../../localization/common';
 import { resourcesText } from '../../localization/resources';
-import type { GetSet, RA } from '../../utils/types';
-import { Button } from '../Atoms/Button';
+import type { GetSet } from '../../utils/types';
 import { Input, Label } from '../Atoms/Form';
-import { SearchDialog } from '../SearchDialog';
+import { ReadOnlyContext } from '../Core/Contexts';
 import { hasTablePermission } from '../Permissions/helpers';
 import { aggregate } from './aggregate';
 import { FormattersPickList, ResourceMapping } from './Components';
+import { GenericFormatterPreview } from './Preview';
 import type { Aggregator } from './spec';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { fetchCollection } from '../DataModel/collection';
-import { SpecifyResource } from '../DataModel/legacyTypes';
-import { AnySchema } from '../DataModel/helperTypes';
-import { deserializeResource } from '../DataModel/serializers';
-import { ReadOnlyContext } from '../Core/Contexts';
 
 export function AggregatorElement({
   item: [aggregator, setAggregator],
@@ -110,70 +102,19 @@ export function AggregatorElement({
   );
 }
 
-const defaultPreviewSize = 4;
-
 function AggregatorPreview({
   aggregator,
 }: {
   readonly aggregator: Aggregator;
 }): JSX.Element {
-  const [resources, setResources] = useAsyncState<
-    RA<SpecifyResource<AnySchema>>
-  >(
-    // Use last 10 records as a preview by default
-    React.useCallback(
-      async () =>
-        aggregator.table === undefined
-          ? undefined
-          : fetchCollection(aggregator.table.name, {
-              limit: defaultPreviewSize,
-              orderBy: '-id',
-            }).then(({ records }) => records.map(deserializeResource)),
-      []
-    ),
-    false
-  );
-  const [aggregated] = useAsyncState(
-    React.useCallback(
-      async () =>
-        resources === undefined ? false : aggregate(resources, aggregator),
-      [resources, aggregator]
-    ),
-    false
-  );
-
-  const [isOpen, handleOpen, handleClose] = useBooleanState();
-  const templateResource = React.useMemo(
-    () => new aggregator.table!.Resource(),
-    [aggregator.table]
-  );
-
   return (
-    <div
-      // Setting width prevents dialog resizing when output is loaded
-      className="flex w-[min(40rem,50vw)] flex-col gap-2"
-    >
-      {resourcesText.preview()}
-      <div>
-        <Button.Green onClick={handleOpen}>{commonText.search()}</Button.Green>
-      </div>
-      {typeof aggregated === 'string' ? (
-        <div className="rounded bg-[color:var(--form-background)] p-2">
-          <output>{aggregated}</output>
-        </div>
-      ) : aggregated === undefined ? (
-        <p>{commonText.loading()}</p>
-      ) : undefined}
-      {isOpen && (
-        <SearchDialog
-          extraFilters={undefined}
-          forceCollection={undefined}
-          multiple
-          templateResource={templateResource}
-          onClose={handleClose}
-          onSelected={setResources}
-        />
+    <GenericFormatterPreview
+      doFormatting={React.useCallback(
+        async (resources) =>
+          aggregate(resources, aggregator).then((aggregated) => [aggregated]),
+        [aggregator]
       )}
-    </div>
+      table={aggregator.table}
+    />
   );
 }

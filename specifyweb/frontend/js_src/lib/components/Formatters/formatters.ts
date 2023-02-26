@@ -65,17 +65,17 @@ export const naiveFormatter = (
 
 export async function format<SCHEMA extends AnySchema>(
   resource: SpecifyResource<SCHEMA> | undefined,
-  formatterName: string | undefined,
+  defaultFormatter: Formatter | string | undefined,
   tryBest: true
 ): Promise<LocalizedString>;
 export async function format<SCHEMA extends AnySchema>(
   resource: SpecifyResource<SCHEMA> | undefined,
-  formatterName?: string,
+  defaultFormatter?: Formatter | string,
   tryBest?: false
 ): Promise<LocalizedString | undefined>;
 export async function format<SCHEMA extends AnySchema>(
   resource: SpecifyResource<SCHEMA> | undefined,
-  formatterName?: string,
+  defaultFormatter?: Formatter | string,
   /*
    * Format a resource even if no formatter is present, or some permissions
    * are missing
@@ -85,13 +85,13 @@ export async function format<SCHEMA extends AnySchema>(
   if (typeof resource !== 'object' || resource === null) return undefined;
   if (hasTablePermission(resource.specifyTable.name, 'read'))
     await resource.fetch();
-  const resolvedFormatterName =
-    formatterName ?? resource.specifyTable.getFormat();
+  const resolvedDefaultFormatter =
+    defaultFormatter ?? resource.specifyTable.getFormat();
 
   const { formatters } = await fetchFormatters;
   const { definition } = resolveFormatter(
     formatters,
-    resolvedFormatterName,
+    resolvedDefaultFormatter,
     resource.specifyTable
   );
 
@@ -202,10 +202,11 @@ export async function fetchPathAsString(
 
 const resolveFormatter = (
   formatters: RA<Formatter>,
-  formatterName: string | undefined,
+  defaultFormatter: Formatter | string | undefined,
   table: SpecifyTable
 ): Formatter =>
-  formatters.find(({ name }) => name === formatterName) ??
+  (typeof defaultFormatter === 'object' ? defaultFormatter : undefined) ??
+  formatters.find(({ name }) => name === defaultFormatter) ??
   findDefaultFormatter(formatters, table) ??
   autoGenerateFormatter(table);
 

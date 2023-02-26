@@ -12,12 +12,15 @@ import { Input, Label } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { ReadOnlyContext } from '../Core/Contexts';
 import type { SpecifyTable } from '../DataModel/specifyTable';
+import { hasTablePermission } from '../Permissions/helpers';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import {
   FieldFormattersPickList,
   FormattersPickList,
   ResourceMapping,
 } from './Components';
+import { format } from './formatters';
+import { GenericFormatterPreview } from './Preview';
 import type { Formatter } from './spec';
 
 export function FormatterElement({
@@ -26,9 +29,6 @@ export function FormatterElement({
   readonly item: GetSet<Formatter>;
 }): JSX.Element {
   const isReadOnly = React.useContext(ReadOnlyContext);
-  /*
-   * FIXME: include a preview of a the results
-   */
   const [openIndex, setOpenIndex] = React.useState<number | undefined>(
     undefined
   );
@@ -60,6 +60,10 @@ export function FormatterElement({
       ) : (
         <ErrorMessage>{resourcesText.editorNotAvailable()}</ErrorMessage>
       )}
+      {typeof formatter.table === 'object' &&
+      hasTablePermission(formatter.table.name, 'read') ? (
+        <FormatterPreview formatter={formatter} />
+      ) : undefined}
     </>
   );
 }
@@ -328,4 +332,27 @@ function FieldFormatter({
         />
       </Label.Inline>
     );
+}
+
+function FormatterPreview({
+  formatter,
+}: {
+  readonly formatter: Formatter;
+}): JSX.Element {
+  return (
+    <GenericFormatterPreview
+      doFormatting={React.useCallback(
+        async (resources) =>
+          Promise.all(
+            resources.map(async (resource) =>
+              format(resource, formatter, false).then(
+                (formatted) => formatted ?? ''
+              )
+            )
+          ),
+        [formatter]
+      )}
+      table={formatter.table}
+    />
+  );
 }

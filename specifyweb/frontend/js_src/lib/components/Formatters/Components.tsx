@@ -167,6 +167,7 @@ export function ResourceMapping({
 
   const lineData = React.useMemo(
     () =>
+      // FIXME: don't allow partial date mappings
       excludeMappingParts(
         getMappingLineData({
           baseTableName: table.name,
