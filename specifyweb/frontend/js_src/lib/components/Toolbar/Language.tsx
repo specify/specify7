@@ -27,6 +27,7 @@ import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Select } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
+import { ReadOnlyContext } from '../Core/Contexts';
 import { raise } from '../Errors/Crash';
 import { cachableUrl } from '../InitialContext';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
@@ -57,7 +58,6 @@ export function LanguageSelection<LANGUAGES extends string>({
   value,
   languages,
   onChange: handleChange,
-  isReadOnly = false,
   showDevLanguages: showDevelopmentLanguages = process.env.NODE_ENV ===
     'development',
   // Whether the language picker is for the UI language (rather than schema)
@@ -66,7 +66,6 @@ export function LanguageSelection<LANGUAGES extends string>({
   readonly value: LANGUAGES;
   readonly languages: IR<string> | undefined;
   readonly onChange: (language: LANGUAGES) => void;
-  readonly isReadOnly?: boolean;
   readonly showDevLanguages?: boolean;
   readonly isForInterface: boolean;
 }): JSX.Element {
@@ -75,6 +74,7 @@ export function LanguageSelection<LANGUAGES extends string>({
     LANGUAGES | undefined
   >(undefined);
 
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return (
     <>
       {showSupportDialog && (
@@ -184,7 +184,6 @@ const url = cachableUrl(
 );
 
 export function LanguagePreferencesItem({
-  isReadOnly,
   definition,
   category,
   subcategory,
@@ -222,47 +221,54 @@ export function LanguagePreferencesItem({
    * selector, since language preference is stored in session storage.
    */
   const isRedirecting = React.useContext(PreferencesContext) !== undefined;
+  const isReadOnly =
+    React.useContext(ReadOnlyContext) ||
+    isRedirecting ||
+    languages === undefined;
   return (
-    <LanguageSelection<Language>
-      isForInterface
-      isReadOnly={isReadOnly || isRedirecting || languages === undefined}
-      languages={languages ?? { loading: commonText.loading() }}
-      value={language}
-      onChange={(language): void => {
-        /*
-         * This component does not actually save the current language into
-         * preferences but immediately sends it to the back-end.
-         * This is why it has an independent state and manually triggers
-         * save button
-         */
-        handleLanguageChange(language).catch(raise);
-        setLanguage(language);
-        prefEvents.trigger('update', {
-          category,
-          subcategory,
-          item,
-          definition: definition as PreferenceItem<unknown>,
-        });
-      }}
-    />
+    <ReadOnlyContext.Provider value={isReadOnly}>
+      <LanguageSelection<Language>
+        isForInterface
+        languages={languages ?? { loading: commonText.loading() }}
+        value={language}
+        onChange={(language): void => {
+          /*
+           * This component does not actually save the current language into
+           * preferences but immediately sends it to the back-end.
+           * This is why it has an independent state and manually triggers
+           * save button
+           */
+          handleLanguageChange(language).catch(raise);
+          setLanguage(language);
+          prefEvents.trigger('update', {
+            category,
+            subcategory,
+            item,
+            definition: definition as PreferenceItem<unknown>,
+          });
+        }}
+      />
+    </ReadOnlyContext.Provider>
   );
 }
 
 export function SchemaLanguagePreferenceItem({
   value,
   onChange: handleChange,
-  isReadOnly,
 }: PreferenceRendererProps<string>): JSX.Element {
   const languages = useSchemaLanguages(false);
+  const isReadOnly =
+    React.useContext(ReadOnlyContext) || languages === undefined;
   return (
-    <LanguageSelection<string>
-      isForInterface={false}
-      isReadOnly={isReadOnly || languages === undefined}
-      languages={languages ?? { loading: commonText.loading() }}
-      showDevLanguages={false}
-      value={value}
-      onChange={handleChange}
-    />
+    <ReadOnlyContext.Provider value={isReadOnly}>
+      <LanguageSelection<string>
+        isForInterface={false}
+        languages={languages ?? { loading: commonText.loading() }}
+        showDevLanguages={false}
+        value={value}
+        onChange={handleChange}
+      />
+    </ReadOnlyContext.Provider>
   );
 }
 

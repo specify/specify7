@@ -6,24 +6,25 @@ import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { f } from '../../utils/functools';
 import { DataEntry } from '../Atoms/DataEntry';
+import { ReadOnlyContext, SearchDialogContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Collection } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
 import { UiCommand } from '../FormCommands';
 import { FormField } from '../FormFields';
-import type { FormMode, FormType } from '../FormParse';
+import type { FormType } from '../FormParse';
 import { fetchView, resolveViewDefinition } from '../FormParse';
 import type { cellAlign, CellTypes } from '../FormParse/cells';
 import { RenderForm } from '../Forms/SpecifyForm';
 import { SubView } from '../Forms/SubView';
+import { propsToFormMode } from '../Forms/useViewDefinition';
 import { TableIcon } from '../Molecules/TableIcon';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { FormTableInteraction } from './FormTableInteraction';
 
 const cellRenderers: {
   readonly [KEY in keyof CellTypes]: (props: {
-    readonly mode: FormMode;
     readonly cellData: CellTypes[KEY];
     readonly id: string | undefined;
     readonly formatId: (id: string) => string;
@@ -33,7 +34,6 @@ const cellRenderers: {
   }) => JSX.Element | null;
 } = {
   Field({
-    mode,
     cellData: { fieldDefinition, fieldNames, isRequired },
     id,
     formatId,
@@ -51,7 +51,6 @@ const cellRenderers: {
         formType={formType}
         id={typeof id === 'string' ? formatId(id.toString()) : undefined}
         isRequired={isRequired}
-        mode={mode}
         resource={resource}
       />
     );
@@ -102,7 +101,6 @@ const cellRenderers: {
   },
   SubView({
     resource: rawResource,
-    mode: rawMode,
     formType: parentFormType,
     cellData: { fieldNames, formType, isButton, icon, viewName, sortField },
   }) {
@@ -115,6 +113,10 @@ const cellRenderers: {
     const relationship =
       data?.field?.isRelationship === true ? data.field : undefined;
 
+    const isReadOnly =
+      React.useContext(ReadOnlyContext) || rawResource !== data?.resource;
+    const isInSearchDialog = React.useContext(SearchDialogContext);
+
     /*
      * SubView is turned into formTable if formTable is the default FormType for
      * the related table
@@ -126,12 +128,16 @@ const cellRenderers: {
             ? fetchView(viewName ?? relationship.relatedTable.view)
                 .then((viewDefinition) =>
                   typeof viewDefinition === 'object'
-                    ? resolveViewDefinition(viewDefinition, formType, rawMode)
+                    ? resolveViewDefinition(
+                        viewDefinition,
+                        formType,
+                        propsToFormMode(isReadOnly, isInSearchDialog)
+                      )
                     : undefined
                 )
                 .then((definition) => definition?.formType ?? 'form')
             : undefined,
-        [viewName, formType, rawMode, relationship]
+        [viewName, formType, isReadOnly, isInSearchDialog, relationship]
       ),
       false
     );
@@ -155,8 +161,6 @@ const cellRenderers: {
       ),
       false
     );
-
-    const mode = rawResource === data?.resource ? rawMode : 'view';
     if (
       relationship === undefined ||
       data?.resource === undefined ||
@@ -164,43 +168,50 @@ const cellRenderers: {
       actualFormType === undefined
     )
       return null;
-    else if (interactionCollection === false || actualFormType === 'form')
-      return (
-        <SubView
-          formType={actualFormType}
-          icon={icon}
-          isButton={isButton}
-          mode={mode}
-          parentFormType={parentFormType}
-          parentResource={data.resource}
-          relationship={relationship}
-          sortField={sortField}
-          viewName={viewName}
-        />
-      );
-    else
-      return (
-        <FormTableInteraction
-          collection={interactionCollection}
-          dialog={false}
-          mode={mode}
-          sortField={sortField}
-          onClose={f.never}
-          onDelete={undefined}
-        />
-      );
+    return (
+      <ReadOnlyContext.Provider value={isReadOnly}>
+        {interactionCollection === false || actualFormType === 'form' ? (
+          <SubView
+            formType={actualFormType}
+            icon={icon}
+            isButton={isButton}
+            parentFormType={parentFormType}
+            parentResource={data.resource}
+            relationship={relationship}
+            sortField={sortField}
+            viewName={viewName}
+          />
+        ) : (
+          <FormTableInteraction
+            collection={interactionCollection}
+            dialog={false}
+            sortField={sortField}
+            onClose={f.never}
+            onDelete={undefined}
+          />
+        )}
+      </ReadOnlyContext.Provider>
+    );
   },
-  Panel({ mode, formType, resource, cellData: { display, ...cellData } }) {
+  Panel({ formType, resource, cellData: { display, ...cellData } }) {
+    const isReadOnly = React.useContext(ReadOnlyContext);
+    const isInSearchDialog = React.useContext(SearchDialogContext);
+    const mode = propsToFormMode(isReadOnly, isInSearchDialog);
+    const viewDefinition = React.useMemo(
+      () => ({
+        ...cellData,
+        mode,
+        formType,
+        table: resource.specifyTable,
+      }),
+      [cellData, formType, resource.specifyTable, mode]
+    );
+
     const form = (
       <RenderForm
         display={display}
         resource={resource}
-        viewDefinition={{
-          ...cellData,
-          mode,
-          formType,
-          table: resource.specifyTable,
-        }}
+        viewDefinition={viewDefinition}
       />
     );
     return display === 'inline' ? <div className="mx-auto">{form}</div> : form;
@@ -238,7 +249,6 @@ const cellRenderers: {
 
 export function FormCell({
   resource,
-  mode,
   cellData,
   id,
   formatId,
@@ -246,7 +256,6 @@ export function FormCell({
   align,
 }: {
   readonly resource: SpecifyResource<AnySchema>;
-  readonly mode: FormMode;
   readonly cellData: CellTypes[keyof CellTypes];
   readonly id: string | undefined;
   readonly formatId: (id: string) => string;
@@ -261,7 +270,6 @@ export function FormCell({
       formatId={formatId}
       formType={formType}
       id={id}
-      mode={mode}
       resource={resource}
     />
   );

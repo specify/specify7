@@ -26,7 +26,6 @@ function Search<SCHEMA extends AnySchema>({
         {},
         {
           noBusinessRules: true,
-          noValidation: true,
         }
       ),
     [table]

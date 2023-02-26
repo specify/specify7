@@ -10,6 +10,7 @@ import { filterArray } from '../../utils/types';
 import { split } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Label, Select } from '../Atoms/Form';
+import { ReadOnlyContext } from '../Core/Contexts';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
@@ -81,7 +82,6 @@ export function TablesListEdit({
         allItems={allTables}
         availableLabel={schemaText.possibleTables()}
         defaultValues={defaultTables}
-        isReadOnly={false}
         selectedLabel={schemaText.selectedTables()}
         selectedValues={selectedTables.map(({ name }) => name)}
         onChange={handleChanged}
@@ -101,7 +101,6 @@ export function ListEdit({
   allItems,
   selectedLabel,
   availableLabel,
-  isReadOnly,
   onChange: handleRawChange,
 }: {
   readonly defaultValues: RA<string>;
@@ -109,7 +108,6 @@ export function ListEdit({
   readonly allItems: RA<Item>;
   readonly selectedLabel: LocalizedString;
   readonly availableLabel: LocalizedString;
-  readonly isReadOnly: boolean;
   readonly onChange: (items: RA<string>) => void;
 }): JSX.Element {
   const handleChange = (items: RA<string>): void =>
@@ -175,6 +173,7 @@ export function ListEdit({
     setPossibleSubset(selectedSubset);
   }
 
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return (
     <div className="grid grid-cols-[auto_1fr_auto_1fr] grid-rows-1">
       <div className="flex flex-col justify-center">

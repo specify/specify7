@@ -12,6 +12,10 @@ import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import type { SerializedResource } from '../DataModel/helperTypes';
+import {
+  deserializeResource,
+  serializeResource,
+} from '../DataModel/serializers';
 import type { SpAppResourceDir } from '../DataModel/types';
 import {
   spAppResourceView,
@@ -26,10 +30,6 @@ import { useResourcesTree } from './hooks';
 import type { AppResourcesOutlet } from './index';
 import type { AppResourceType } from './types';
 import { appResourceSubTypes, appResourceTypes } from './types';
-import {
-  deserializeResource,
-  serializeResource,
-} from '../DataModel/serializers';
 
 /**
  * Check if app resource is a sub type of XML
@@ -177,7 +177,6 @@ function EditAppResource({
       dialog="modal"
       isDependent={false}
       isSubForm={false}
-      mode="edit"
       resource={resource}
       viewName={
         // Special views that include only "name" field

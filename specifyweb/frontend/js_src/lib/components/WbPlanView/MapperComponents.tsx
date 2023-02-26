@@ -27,6 +27,7 @@ import type { MappingPath } from './Mapper';
 import { getMappingLineData } from './navigator';
 import type { ColumnOptions, MatchBehaviors } from './uploadPlanParser';
 import { navigatorSpecs } from './navigatorSpecs';
+import { ReadOnlyContext } from '../Core/Contexts';
 
 export function MappingsControlPanel({
   showHiddenFields,
@@ -374,7 +375,6 @@ export function ToggleMappingPath({
 }
 
 export function MustMatch({
-  isReadOnly,
   /**
    * Recalculating tables available for MustMatch is expensive, so we only
    * do it when opening the dialog
@@ -383,7 +383,6 @@ export function MustMatch({
   onChange: handleChange,
   onClose: handleClose,
 }: {
-  readonly isReadOnly: boolean;
   readonly getMustMatchPreferences: () => IR<boolean>;
   readonly onChange: (mustMatchPreferences: IR<boolean>) => void;
   readonly onClose: () => void;
@@ -398,6 +397,7 @@ export function MustMatch({
     handleClose();
   };
 
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return (
     <>
       <Button.Small

@@ -51,7 +51,6 @@ export function AggregatorElement({
         <fieldset>
           <legend>{resourcesText.sortField()}</legend>
           <ResourceMapping
-            isReadOnly={isReadOnly}
             mapping={[
               aggregator.sortField,
               (sortField): void =>

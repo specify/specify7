@@ -20,9 +20,9 @@ import type {
   SerializedResource,
 } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { getTable, tables } from '../DataModel/tables';
 import { deserializeResource } from '../DataModel/serializers';
 import type { SpecifyTable } from '../DataModel/specifyTable';
+import { getTable, tables } from '../DataModel/tables';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { ResourceView } from '../Forms/ResourceView';
 import { useMenuItem } from '../Header/MenuContext';
@@ -356,7 +356,6 @@ function EditTreeRank({
           dialog="modal"
           isDependent={false}
           isSubForm={false}
-          mode="edit"
           resource={resource}
           onAdd={undefined}
           onClose={handleClose}

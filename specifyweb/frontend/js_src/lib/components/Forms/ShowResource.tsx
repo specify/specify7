@@ -8,11 +8,11 @@ import { f } from '../../utils/functools';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
-import { getTable, tables } from '../DataModel/tables';
 import {
   deserializeResource,
   serializeResource,
 } from '../DataModel/serializers';
+import { getTable, tables } from '../DataModel/tables';
 import type { RecordSet } from '../DataModel/types';
 import { RecordSetWrapper } from '../FormSliders/RecordSet';
 import { useMenuItem } from '../Header/MenuContext';
@@ -67,7 +67,6 @@ export function ShowResource({
       dialog={false}
       isDependent={false}
       isSubForm={false}
-      mode="edit"
       resource={resource}
       viewName={resource.specifyTable.view}
       onAdd={(newResource): void =>

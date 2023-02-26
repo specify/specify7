@@ -19,6 +19,8 @@ import { LoadingContext } from '../Core/Contexts';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { deserializeResource } from '../DataModel/serializers';
+import { tables } from '../DataModel/tables';
 import type { SpQuery, SpReport } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import { ResourceView } from '../Forms/ResourceView';
@@ -26,8 +28,6 @@ import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { downloadFile } from '../Molecules/FilePicker';
 import { hasPermission } from '../Permissions/helpers';
-import { deserializeResource } from '../DataModel/serializers';
-import { tables } from '../DataModel/tables';
 
 export function QueryEditButton({
   query,
@@ -84,7 +84,6 @@ function EditQueryDialog({
       }
       isDependent={false}
       isSubForm={false}
-      mode="edit"
       resource={queryResource}
       onAdd={undefined}
       onClose={handleClose}

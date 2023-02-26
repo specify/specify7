@@ -8,6 +8,7 @@ import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
+import { ReadOnlyContext } from '../Core/Contexts';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getTableById, strictGetTable, tables } from '../DataModel/tables';
@@ -29,7 +30,6 @@ import type { QueryField } from './helpers';
 import { QuerySaveDialog } from './Save';
 
 export function SaveQueryButtons({
-  isReadOnly,
   fields,
   saveRequired,
   isValid,
@@ -39,7 +39,6 @@ export function SaveQueryButtons({
   onSaved: handleSaved,
   onTriedToSave: handleTriedToSave,
 }: {
-  readonly isReadOnly: boolean;
   readonly fields: RA<QueryField>;
   readonly saveRequired: boolean;
   readonly isValid: () => boolean;
@@ -67,6 +66,7 @@ export function SaveQueryButtons({
   }
 
   const navigate = useNavigate();
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return (
     <>
       {typeof showDialog === 'string' && (
@@ -223,7 +223,6 @@ export function MakeRecordSetButton({
               dialog="modal"
               isDependent={false}
               isSubForm={false}
-              mode="edit"
               resource={recordSet}
               viewName={recordSetView}
               onAdd={undefined}

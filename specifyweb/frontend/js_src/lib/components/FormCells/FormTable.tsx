@@ -12,21 +12,21 @@ import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { columnDefinitionsToCss, DataEntry } from '../Atoms/DataEntry';
 import { icons } from '../Atoms/Icons';
+import { ReadOnlyContext, SearchDialogContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { FormMeta } from '../FormMeta';
-import type { FormMode } from '../FormParse';
 import type { FormCellDefinition, SubViewSortField } from '../FormParse/cells';
-import { SearchDialog } from '../SearchDialog';
 import { RenderForm } from '../Forms/SpecifyForm';
-import { useViewDefinition } from '../Forms/useViewDefinition';
+import { propsToFormMode, useViewDefinition } from '../Forms/useViewDefinition';
 import { loadingGif } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
 import type { SortConfig } from '../Molecules/Sorting';
 import { SortIndicator } from '../Molecules/Sorting';
 import { hasTablePermission } from '../Permissions/helpers';
+import { SearchDialog } from '../SearchDialog';
 import { usePref } from '../UserPreferences/usePref';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { FormCell } from './index';
@@ -64,7 +64,6 @@ export function FormTable<SCHEMA extends AnySchema>({
   totalCount = unsortedResources.length,
   onAdd: handleAdd,
   onDelete: handleDelete,
-  mode,
   viewName = relationship.relatedTable.view,
   dialog,
   onClose: handleClose,
@@ -79,7 +78,6 @@ export function FormTable<SCHEMA extends AnySchema>({
     | ((resources: RA<SpecifyResource<SCHEMA>>) => void)
     | undefined;
   readonly onDelete: (resource: SpecifyResource<SCHEMA>) => void;
-  readonly mode: FormMode;
   readonly viewName?: string;
   readonly dialog: 'modal' | 'nonModal' | false;
   readonly onClose: () => void;
@@ -137,6 +135,9 @@ export function FormTable<SCHEMA extends AnySchema>({
     resource: relationship.label,
     count: totalCount ?? resources.length,
   });
+  const isReadOnly = React.useContext(ReadOnlyContext);
+  const isInSearchDialog = React.useContext(SearchDialogContext);
+  const mode = propsToFormMode(isReadOnly, isInSearchDialog);
   const viewDefinition = useViewDefinition({
     table: relationship.relatedTable,
     viewName,
@@ -306,32 +307,47 @@ export function FormTable<SCHEMA extends AnySchema>({
                           {icons.chevronRight}
                         </Button.Small>
                       </div>
-                      {viewDefinition.rows[0].map(
-                        (
-                          { colSpan, align, visible, id: cellId, ...cellData },
-                          index
-                        ) => (
-                          <DataEntry.Cell
-                            align={align}
-                            colSpan={colSpan}
-                            key={index}
-                            role="cell"
-                            visible={visible}
-                          >
-                            <FormCell
-                              align={align}
-                              cellData={cellData}
-                              formatId={(suffix: string): string =>
-                                id(`${index}-${suffix}`)
-                              }
-                              formType="formTable"
-                              id={cellId}
-                              mode={viewDefinition.mode}
-                              resource={resource}
-                            />
-                          </DataEntry.Cell>
-                        )
-                      )}
+                      <ReadOnlyContext.Provider
+                        value={isReadOnly || viewDefinition.mode === 'view'}
+                      >
+                        <SearchDialogContext.Provider
+                          value={
+                            isInSearchDialog || viewDefinition.mode === 'search'
+                          }
+                        >
+                          {viewDefinition.rows[0].map(
+                            (
+                              {
+                                colSpan,
+                                align,
+                                visible,
+                                id: cellId,
+                                ...cellData
+                              },
+                              index
+                            ) => (
+                              <DataEntry.Cell
+                                align={align}
+                                colSpan={colSpan}
+                                key={index}
+                                role="cell"
+                                visible={visible}
+                              >
+                                <FormCell
+                                  align={align}
+                                  cellData={cellData}
+                                  formatId={(suffix: string): string =>
+                                    id(`${index}-${suffix}`)
+                                  }
+                                  formType="formTable"
+                                  id={cellId}
+                                  resource={resource}
+                                />
+                              </DataEntry.Cell>
+                            )
+                          )}
+                        </SearchDialogContext.Provider>
+                      </ReadOnlyContext.Provider>
                     </>
                   )}
                   <div className="flex h-full flex-col gap-2" role="cell">

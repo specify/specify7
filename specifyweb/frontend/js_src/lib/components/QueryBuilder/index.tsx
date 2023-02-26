@@ -5,20 +5,21 @@ import { useSearchParameter } from '../../hooks/navigation';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
+import { ReadOnlyContext } from '../Core/Contexts';
 import type { AnyTree } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { fetchResource } from '../DataModel/resource';
-import { getTable, tables } from '../DataModel/tables';
+import { deserializeResource } from '../DataModel/serializers';
 import type { SpecifyTable } from '../DataModel/specifyTable';
+import { getTable, tables } from '../DataModel/tables';
 import type { RecordSet, SpQuery } from '../DataModel/types';
 import { isTreeTable } from '../InitialContext/treeRanks';
 import { userInformation } from '../InitialContext/userInformation';
-import { hasPermission, hasToolPermission } from '../Permissions/helpers';
+import { hasToolPermission } from '../Permissions/helpers';
 import { ProtectedTool, ProtectedTree } from '../Permissions/PermissionDenied';
 import { NotFoundView } from '../Router/NotFoundView';
 import { queryFromTree } from './fromTree';
 import { QueryBuilder } from './Wrapped';
-import { deserializeResource } from '../DataModel/serializers';
 
 function useQueryRecordSet(): SpecifyResource<RecordSet> | false | undefined {
   const [recordsetid = ''] = useSearchParameter('recordsetid');
@@ -47,17 +48,21 @@ function QueryBuilderWrapper({
   readonly autoRun?: boolean;
   readonly recordSet?: SpecifyResource<RecordSet> | false;
 }): JSX.Element {
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return (
-    <QueryBuilder
-      autoRun={autoRun}
-      forceCollection={undefined}
-      isReadOnly={
-        !hasPermission('/querybuilder/query', 'execute') &&
+    <ReadOnlyContext.Provider
+      value={
+        isReadOnly ||
         !hasToolPermission('queryBuilder', query.isNew() ? 'create' : 'update')
       }
-      query={query}
-      recordSet={typeof recordSet === 'object' ? recordSet : undefined}
-    />
+    >
+      <QueryBuilder
+        autoRun={autoRun}
+        forceCollection={undefined}
+        query={query}
+        recordSet={typeof recordSet === 'object' ? recordSet : undefined}
+      />
+    </ReadOnlyContext.Provider>
   );
 }
 
@@ -148,7 +153,7 @@ export function QueryBuilderFromTree(): JSX.Element | null {
     isTreeTable(table.name) &&
     typeof nodeId === 'number' ? (
     <ProtectedTree action="read" treeName={table.name}>
-      <QueryFromTree table={table as SpecifyTable<AnyTree>} nodeId={nodeId} />
+      <QueryFromTree nodeId={nodeId} table={table as SpecifyTable<AnyTree>} />
     </ProtectedTree>
   ) : (
     <NotFoundView />

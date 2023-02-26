@@ -161,7 +161,6 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
     >,
     options?: Partial<{
       readonly noBusinessRules: boolean;
-      readonly noValidation: boolean;
     }>
   ) => SpecifyResource<RESOURCE>;
 

@@ -16,7 +16,6 @@ import { getField } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpecifyUser } from '../DataModel/types';
 import { Combobox } from '../FormFields/ComboBox';
-import type { FormMode } from '../FormParse';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
@@ -219,10 +218,8 @@ export function UserIdentityProviders({
 
 export function LegacyPermissions({
   userResource,
-  mode,
 }: {
   readonly userResource: SpecifyResource<SpecifyUser>;
-  readonly mode: FormMode;
 }): JSX.Element {
   const admins = useAdmins();
   const [isAdmin, setIsAdmin] = useLiveState(
@@ -259,8 +256,6 @@ export function LegacyPermissions({
           id={undefined}
           isDisabled={false}
           isRequired
-          mode={mode}
-          table={userResource}
           pickListName={defined(
             userType.getPickList(),
             'UserType pick list not found'

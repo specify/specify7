@@ -9,6 +9,7 @@ import { DataEntry } from '../Atoms/DataEntry';
 import { icons } from '../Atoms/Icons';
 import { formatNumber } from '../Atoms/Internationalization';
 import { Link } from '../Atoms/Link';
+import { ReadOnlyContext } from '../Core/Contexts';
 import { FormsDialog } from '../DataEntryTables';
 import { fetchCollection } from '../DataModel/collection';
 import { getField } from '../DataModel/helpers';
@@ -29,19 +30,17 @@ import { EditRecordSet } from './RecordSetEdit';
 
 export function RecordSetsOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
-  return <RecordSetsDialog isReadOnly={false} onClose={handleClose} />;
+  return <RecordSetsDialog onClose={handleClose} />;
 }
 
 export function RecordSetsDialog({
   onClose: handleClose,
-  isReadOnly,
   table,
   onConfigure: handleConfigure,
   onSelect: handleSelect,
   children = ({ children, dialog }): JSX.Element => dialog(children),
 }: {
   readonly onClose: () => void;
-  readonly isReadOnly: boolean;
   readonly table?: SpecifyTable;
   readonly onConfigure?: (recordSet: SerializedResource<RecordSet>) => void;
   readonly onSelect?: (recordSet: SerializedResource<RecordSet>) => void;
@@ -95,6 +94,7 @@ export function RecordSetsDialog({
     [unsortedData, sortConfig]
   );
 
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return typeof data === 'object' ? (
     state.type === 'MainState' ? (
       children({
@@ -193,11 +193,7 @@ export function RecordSetsDialog({
         }
       />
     ) : state.type === 'EditState' ? (
-      <EditRecordSet
-        isReadOnly={isReadOnly}
-        recordSet={state.recordSet}
-        onClose={handleClose}
-      />
+      <EditRecordSet recordSet={state.recordSet} onClose={handleClose} />
     ) : null
   ) : null;
 }

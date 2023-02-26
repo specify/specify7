@@ -115,7 +115,6 @@ export function SchemaConfigMain(): JSX.Element {
           <SchemaConfigTable
             container={container}
             desc={desc}
-            isReadOnly={isReadOnly}
             name={name}
             schemaData={schemaData}
             onChange={setContainer}

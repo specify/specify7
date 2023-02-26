@@ -16,7 +16,7 @@ import type { AppResourceFilters } from '../AppResources/filtersHelpers';
 import type { AppResources } from '../AppResources/hooks';
 import { useAppResources } from '../AppResources/hooks';
 import { Button } from '../Atoms/Button';
-import { LoadingContext } from '../Core/Contexts';
+import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { toResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpAppResource } from '../DataModel/types';
@@ -97,15 +97,16 @@ function PickAppResource({
       header={header}
       onClose={handleClose}
     >
-      <AppResourcesAside
-        initialFilters={initialFilters}
-        isEmbedded
-        isReadOnly
-        resources={resources}
-        onOpen={(selected): void =>
-          f.maybe(toResource(selected, 'SpAppResource'), handleSelected)
-        }
-      />
+      <ReadOnlyContext.Provider value>
+        <AppResourcesAside
+          initialFilters={initialFilters}
+          isEmbedded
+          resources={resources}
+          onOpen={(selected): void =>
+            f.maybe(toResource(selected, 'SpAppResource'), handleSelected)
+          }
+        />
+      </ReadOnlyContext.Provider>
     </Dialog>
   );
 }

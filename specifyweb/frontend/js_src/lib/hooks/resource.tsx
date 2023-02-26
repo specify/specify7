@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { SearchDialogContext } from '../components/Core/Contexts';
 import { fetchDistantRelated } from '../components/DataModel/helpers';
 import type {
   AnySchema,
@@ -14,10 +15,12 @@ import type {
 } from '../components/DataModel/specifyField';
 import { raise } from '../components/Errors/Crash';
 import {
-  getValidationAttributes,
+  mergeParsers,
+  Parser,
   resolveParser,
 } from '../utils/parser/definitions';
-import type { GetOrSet, IR, RA } from '../utils/types';
+import type { GetOrSet, RA } from '../utils/types';
+import { useLiveState } from './useLiveState';
 
 /**
  * A wrapper for Backbone.Resource that integrates with React.useState for
@@ -140,20 +143,25 @@ export function useDistantRelated(
   return data;
 }
 
-/**
- * Derive validation attributes for an <Input> from a field schema
- *
- */
-export function useValidationAttributes(
-  field: LiteralField | Relationship
-): IR<string> {
-  const [attributes, setAttributes] = React.useState<IR<string>>(() => {
-    const parser = resolveParser(field);
-    return getValidationAttributes(parser);
-  });
-  React.useEffect(() => {
-    const parser = resolveParser(field);
-    setAttributes(getValidationAttributes(parser));
-  }, [field]);
-  return attributes;
+export function useParser(
+  field: LiteralField | Relationship | undefined,
+  defaultParser?: Parser
+): Parser {
+  const isInSearchDialog = React.useContext(SearchDialogContext);
+  return useLiveState<Parser>(
+    React.useCallback(() => {
+      /*
+       * Disable parser when in search dialog as space and quote characters are
+       * interpreted differently in them  thus validation for them should be
+       * disabled.
+       */
+      const parser =
+        isInSearchDialog || field === undefined
+          ? { type: 'text' as const }
+          : resolveParser(field);
+      return typeof defaultParser === 'object'
+        ? mergeParsers(parser, defaultParser)
+        : parser;
+    }, [field, isInSearchDialog, defaultParser])
+  )[0];
 }

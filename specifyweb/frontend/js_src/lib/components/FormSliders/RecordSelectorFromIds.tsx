@@ -11,7 +11,6 @@ import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import type { FormMode } from '../FormParse';
 import { ResourceView } from '../Forms/ResourceView';
 import { saveFormUnloadProtect } from '../Forms/Save';
 import { Dialog } from '../Molecules/Dialog';
@@ -20,6 +19,7 @@ import { SetUnloadProtectsContext } from '../Router/Router';
 import type { RecordSelectorProps } from './RecordSelector';
 import { useRecordSelector } from './RecordSelector';
 import { tables } from '../DataModel/tables';
+import { ReadOnlyContext } from '../Core/Contexts';
 
 /**
  * A Wrapper for RecordSelector that allows to specify list of records by their
@@ -36,7 +36,6 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   headerButtons,
   dialog,
   isDependent,
-  mode,
   canRemove = true,
   isLoading: isExternalLoading = false,
   isInRecordSet = false,
@@ -58,7 +57,6 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   readonly headerButtons?: JSX.Element;
   readonly dialog: 'modal' | 'nonModal' | false;
   readonly isDependent: boolean;
-  readonly mode: FormMode;
   readonly viewName?: string;
   readonly canRemove?: boolean;
   readonly isLoading?: boolean;
@@ -178,6 +176,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
         recordSetTable: tables.RecordSet.label,
       })
     : commonText.delete();
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return (
     <>
       <ResourceView
@@ -192,7 +191,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
             typeof handleAdding === 'function' ? (
               <DataEntry.Add
                 aria-label={addLabel}
-                disabled={mode === 'view'}
+                disabled={isReadOnly}
                 title={addLabel}
                 onClick={handleAdding}
               />
@@ -200,7 +199,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
             {typeof handleRemove === 'function' && canRemove ? (
               <DataEntry.Remove
                 aria-label={removeLabel}
-                disabled={resource === undefined || mode === 'view'}
+                disabled={resource === undefined || isReadOnly}
                 title={removeLabel}
                 onClick={(): void => handleRemove('minusButton')}
               />
@@ -219,7 +218,6 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
         isDependent={isDependent}
         isLoading={isLoading || isExternalLoading}
         isSubForm={false}
-        mode={mode}
         resource={resource}
         title={title}
         viewName={viewName}

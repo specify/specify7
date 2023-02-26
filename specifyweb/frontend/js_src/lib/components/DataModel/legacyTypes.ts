@@ -23,7 +23,6 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   // FEATURE: store original values to know when changes were reverted
   readonly needsSaved: boolean;
   readonly cid: string;
-  readonly noValidation?: boolean;
   readonly populated: boolean;
   readonly specifyTable: SpecifyTable<SCHEMA>;
   readonly saveBlockers?: Readonly<SaveBlockers<SCHEMA>>;

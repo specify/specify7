@@ -51,7 +51,6 @@ export function QueryToForms({
           ids={ids}
           isDependent={false}
           isInRecordSet={false}
-          mode="edit"
           table={table}
           newResource={undefined}
           title={commonText.colonLine({

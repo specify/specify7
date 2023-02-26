@@ -12,6 +12,7 @@ import { wbPlanText } from '../../localization/wbPlan';
 import type { IR, R, RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
+import { ReadOnlyContext } from '../Core/Contexts';
 import type { Tables } from '../DataModel/types';
 import type {
   CustomSelectElementOptionProps,
@@ -45,7 +46,6 @@ type MappingLineBaseProps = {
   readonly onFocus: () => void;
   readonly onKeyDown: (key: string) => void;
   readonly onClearMapping: () => void;
-  readonly isReadOnly: boolean;
 };
 
 export type MappingElementProps = {
@@ -125,7 +125,6 @@ export function getMappingLineProps({
 export function MappingLineComponent({
   lineData,
   headerName,
-  isReadOnly,
   isFocused,
   onFocus: handleFocus,
   onKeyDown: handleKeyDown,
@@ -141,6 +140,7 @@ export function MappingLineComponent({
   const id = useId('mapping-line');
 
   const isComplete = lineData.at(-1)?.customSelectType === 'OPTIONS_LIST';
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return (
     <li
       aria-current={isFocused ? 'location' : undefined}
@@ -195,7 +195,7 @@ export function MappingPathComponent({
   return (
     <>
       {mappingLineData.map((mappingDetails, index) => (
-        <li key={index} className="contents">
+        <li className="contents" key={index}>
           <MappingElement {...mappingDetails} />
           {index + 1 !== mappingLineData.length &&
           mappingLineData[index + 1]?.customSelectType !== 'OPTIONS_LIST'

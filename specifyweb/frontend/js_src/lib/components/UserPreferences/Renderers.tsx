@@ -23,8 +23,10 @@ import { parseValue } from '../../utils/parser/parse';
 import type { RA } from '../../utils/types';
 import { Input, Select, Textarea } from '../Atoms/Form';
 import { iconClassName } from '../Atoms/Icons';
+import { ReadOnlyContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyTable } from '../DataModel/specifyTable';
+import { tables } from '../DataModel/tables';
 import type { Collection } from '../DataModel/types';
 import { rawMenuItemsPromise } from '../Header/menuItemDefinitions';
 import { useMenuItems, useUserTools } from '../Header/menuItemProcessing';
@@ -33,13 +35,12 @@ import { ListEdit } from '../Toolbar/QueryTablesEdit';
 import type { PreferenceItem, PreferenceRendererProps } from './Definitions';
 import { getPrefDefinition } from './helpers';
 import { usePref } from './usePref';
-import { tables } from '../DataModel/tables';
 
 export function ColorPickerPreferenceItem({
   value,
   onChange: handleChange,
-  isReadOnly,
 }: PreferenceRendererProps<string>): JSX.Element {
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return (
     <div className={`relative ${iconClassName}`}>
       <span
@@ -75,7 +76,6 @@ export type MenuPreferences = {
 export function HeaderItemsPreferenceItem({
   value,
   onChange: handleChange,
-  isReadOnly,
 }: PreferenceRendererProps<MenuPreferences>): JSX.Element {
   const [rawMenuItems] = usePromise(rawMenuItemsPromise, false);
   const menuItems = useMenuItems();
@@ -104,7 +104,6 @@ export function HeaderItemsPreferenceItem({
       }))}
       availableLabel={headerText.userTools()}
       defaultValues={defaultItems}
-      isReadOnly={isReadOnly}
       selectedLabel={headerText.menuItems()}
       selectedValues={value.visible.length === 0 ? defaultItems : value.visible}
       onChange={(selectedItems): void =>
@@ -120,15 +119,13 @@ export function HeaderItemsPreferenceItem({
 export function CollectionSortOrderPreferenceItem({
   value,
   onChange: handleChange,
-  isReadOnly,
 }: PreferenceRendererProps<
   keyof Collection['fields'] | `-${keyof Collection['fields']}`
 >): JSX.Element {
   return (
     <OrderPicker
-      isReadOnly={isReadOnly}
-      table={tables.Collection}
       order={value}
+      table={tables.Collection}
       onChange={handleChange}
     />
   );
@@ -138,7 +135,6 @@ export function OrderPicker<SCHEMA extends AnySchema>({
   table,
   order,
   onChange: handleChange,
-  isReadOnly = false,
 }: {
   readonly table: SpecifyTable<SCHEMA>;
   readonly order:
@@ -150,8 +146,8 @@ export function OrderPicker<SCHEMA extends AnySchema>({
       | `-${string & keyof SCHEMA['fields']}`
       | (string & keyof SCHEMA['fields'])
   ) => void;
-  readonly isReadOnly?: boolean;
 }): JSX.Element {
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return (
     <Select
       disabled={isReadOnly}
@@ -194,7 +190,6 @@ export const defaultFont = 'default';
 export function FontFamilyPreferenceItem({
   value,
   onChange: handleChange,
-  isReadOnly,
 }: PreferenceRendererProps<string>): JSX.Element {
   const items = React.useMemo(
     () => [
@@ -213,6 +208,7 @@ export function FontFamilyPreferenceItem({
     ],
     []
   );
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return isReadOnly ? (
     <Input.Text isReadOnly value={value} />
   ) : (
@@ -269,7 +265,6 @@ const welcomePageModes: PreferenceItem<WelcomePageMode> = {
 export function WelcomePageModePreferenceItem({
   value,
   onChange: handleChange,
-  isReadOnly,
 }: PreferenceRendererProps<WelcomePageMode>): JSX.Element {
   const [source, setSource] = usePref('welcomePage', 'general', 'source');
   const sourceDefinition = getPrefDefinition(
@@ -283,7 +278,6 @@ export function WelcomePageModePreferenceItem({
       <DefaultPreferenceItemRender
         category="welcomePage"
         definition={welcomePageModes}
-        isReadOnly={isReadOnly}
         item="mode"
         subcategory="general"
         value={value}
@@ -293,7 +287,6 @@ export function WelcomePageModePreferenceItem({
         <DefaultPreferenceItemRender
           category="welcomePage"
           definition={sourceDefinition}
-          isReadOnly={isReadOnly}
           item="source"
           subcategory="general"
           value={source}
@@ -309,7 +302,6 @@ export function DefaultPreferenceItemRender({
   definition,
   value,
   onChange: handleChange,
-  isReadOnly,
 }: PreferenceRendererProps<any>): JSX.Element {
   const parser =
     'type' in definition
@@ -329,6 +321,8 @@ export function DefaultPreferenceItemRender({
     definition.setOnBlurOnly === true
       ? (): void => handleChange(internalValue)
       : undefined;
+
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return 'values' in definition ? (
     <>
       <Select

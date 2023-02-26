@@ -18,6 +18,11 @@ import { autoGenerateViewDefinition } from './generateFormDefinition';
  */
 export const originalAttachmentsView = 'originalObjectAttachment';
 
+export const propsToFormMode = (
+  isReadOnly: boolean,
+  isInSearchDialog: boolean
+): FormMode => (isInSearchDialog ? 'search' : isReadOnly ? 'view' : 'edit');
+
 /**
  * A hook to get information needed to display a form
  * Can be used independently of <SpecifyForm> if need to get form definition
@@ -46,7 +51,7 @@ export function useViewDefinition({
       else if (viewName === 'ObjectAttachment')
         return {
           ...webOnlyViews().ObjectAttachment,
-          table: table,
+          table,
           formType,
           mode,
         };

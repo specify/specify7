@@ -17,6 +17,9 @@ import { DataEntry } from '../Atoms/DataEntry';
 import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
 import type { SerializedResource } from '../DataModel/helperTypes';
+import { schema } from '../DataModel/schema';
+import { deserializeResource } from '../DataModel/serializers';
+import { tables } from '../DataModel/tables';
 import type { Institution } from '../DataModel/types';
 import { ResourceView } from '../Forms/ResourceView';
 import { userInformation } from '../InitialContext/userInformation';
@@ -29,9 +32,6 @@ import { createLibraryRole } from './CreateLibraryRole';
 import { ImportExport } from './ImportExport';
 import { updateLibraryRole } from './LibraryRole';
 import { policiesToTsv } from './registry';
-import { deserializeResource } from '../DataModel/serializers';
-import { schema } from '../DataModel/schema';
-import { tables } from '../DataModel/tables';
 
 export function SecurityInstitution(): JSX.Element | null {
   const { institution } = useOutletContext<SecurityOutlet>();
@@ -256,7 +256,6 @@ function ViewInstitutionButton({
           dialog="modal"
           isDependent={false}
           isSubForm={false}
-          mode="edit"
           resource={resource}
           onAdd={undefined}
           onClose={handleClose}

@@ -12,11 +12,12 @@ import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
+import { ReadOnlyContext } from '../Core/Contexts';
 import type { CollectionFetchFilters } from '../DataModel/collection';
 import { fetchCollection } from '../DataModel/collection';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import {getTableById, tables} from '../DataModel/tables';
+import { getTableById, tables } from '../DataModel/tables';
 import type { SpQuery } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { DateElement } from '../Molecules/DateElement';
@@ -35,7 +36,6 @@ export function QueriesOverlay(): JSX.Element {
   return (
     <SafeOutlet<QueryListContextType>
       getQuerySelectUrl={undefined}
-      isReadOnly={false}
       newQueryUrl="/specify/overlay/queries/new/"
       queries={queries}
       onClose={handleClose}
@@ -48,7 +48,6 @@ const QUERY_FETCH_LIMIT = 5000;
 export type QueryListContextType = {
   readonly queries: RA<SerializedResource<SpQuery>> | undefined;
   readonly newQueryUrl: string;
-  readonly isReadOnly: boolean;
   readonly onClose: () => void;
   readonly getQuerySelectUrl?: (query: SerializedResource<SpQuery>) => string;
 };
@@ -79,7 +78,6 @@ export function QueryListDialog({
   newQueryUrl,
   onClose: handleClose,
   getQuerySelectUrl,
-  isReadOnly,
 }: QueryListContextType): JSX.Element | null {
   return Array.isArray(queries) ? (
     <Dialog
@@ -99,22 +97,16 @@ export function QueryListDialog({
       icon={<span className="text-blue-500">{icons.documentSearch}</span>}
       onClose={handleClose}
     >
-      <QueryList
-        getQuerySelectUrl={getQuerySelectUrl}
-        isReadOnly={isReadOnly}
-        queries={queries}
-      />
+      <QueryList getQuerySelectUrl={getQuerySelectUrl} queries={queries} />
     </Dialog>
   ) : null;
 }
 
 function QueryList({
   queries: unsortedQueries,
-  isReadOnly,
   getQuerySelectUrl,
 }: {
   readonly queries: RA<SerializedResource<SpQuery>>;
-  readonly isReadOnly: boolean;
   readonly getQuerySelectUrl?: (query: SerializedResource<SpQuery>) => string;
 }): JSX.Element {
   const [sortConfig, handleSort, applySortConfig] = useSortConfig(
@@ -128,6 +120,7 @@ function QueryList({
     (query) => query[sortConfig.sortField]
   );
 
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return (
     <table className="grid-table grid-cols-[repeat(3,auto)_min-content] gap-2">
       <thead>
@@ -202,16 +195,7 @@ function QueryList({
 }
 
 export function NewQuery(): JSX.Element {
-  const {
-    queries,
-    isReadOnly,
-    onClose: handleClose,
-  } = useOutletContext<QueryListContextType>();
-  return (
-    <QueryTables
-      isReadOnly={isReadOnly}
-      queries={queries}
-      onClose={handleClose}
-    />
-  );
+  const { queries, onClose: handleClose } =
+    useOutletContext<QueryListContextType>();
+  return <QueryTables queries={queries} onClose={handleClose} />;
 }

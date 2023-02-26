@@ -8,6 +8,7 @@ import { Button } from '../Atoms/Button';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { tables } from '../DataModel/tables';
 import type { RecordSet, SpQuery, SpQueryField } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { TableIcon } from '../Molecules/TableIcon';
@@ -21,7 +22,6 @@ import { QueryEditButton } from './Edit';
 import { smoothScroll } from './helpers';
 import { QueryLoanReturn } from './LoanReturn';
 import type { MainState } from './reducer';
-import { tables } from '../DataModel/tables';
 
 export function QueryHeader({
   recordSet,
@@ -31,7 +31,6 @@ export function QueryHeader({
   form,
   state,
   getQueryFieldRecords,
-  isReadOnly,
   saveRequired,
   unsetUnloadProtect,
   onTriedToSave: handleTriedToSave,
@@ -47,7 +46,6 @@ export function QueryHeader({
   readonly getQueryFieldRecords:
     | (() => RA<SerializedResource<SpQueryField>>)
     | undefined;
-  readonly isReadOnly: boolean;
   readonly saveRequired: boolean;
   readonly unsetUnloadProtect: () => void;
   readonly onTriedToSave: () => void;
@@ -109,7 +107,6 @@ export function QueryHeader({
         <SaveQueryButtons
           fields={state.fields}
           getQueryFieldRecords={getQueryFieldRecords}
-          isReadOnly={isReadOnly}
           isValid={(): boolean => form?.reportValidity() ?? false}
           queryResource={queryResource}
           saveRequired={saveRequired}

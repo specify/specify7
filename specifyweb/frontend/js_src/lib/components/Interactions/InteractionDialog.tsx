@@ -24,7 +24,7 @@ import { sortFunction } from '../../utils/utils';
 import { H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
-import { LoadingContext } from '../Core/Contexts';
+import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { toTable } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
@@ -209,138 +209,137 @@ export function InteractionDialog({
       onClose={handleClose}
       // REFACTOR: make this more type safe
       table={actionTable as SpecifyTable<Gift>}
-      // BUG: make this readOnly if don't have necessary permissions
-      isReadOnly={false}
     />
   ) : (
-    <RecordSetsDialog
-      isReadOnly
-      table={itemTable}
-      onClose={handleClose}
-      onSelect={handleProceed}
-    >
-      {({ children, totalCount }): JSX.Element => (
-        <Dialog
-          buttons={
-            <>
-              <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-              {typeof itemCollection === 'object' ? (
-                <Button.Blue
-                  onClick={(): void =>
-                    availablePrepsReady(undefined, undefined, [])
-                  }
-                >
-                  {interactionsText.addUnassociated()}
-                </Button.Blue>
-              ) : (
-                <Link.Blue href={getResourceViewUrl(actionTable.name)}>
-                  {interactionsText.withoutPreparations()}
-                </Link.Blue>
-              )}
-            </>
-          }
-          header={
-            typeof itemCollection === 'object'
-              ? interactionsText.addItems()
-              : itemTable.name === 'Loan'
-              ? interactionsText.recordReturn({ tableName: itemTable.label })
-              : interactionsText.createRecord({ tableName: actionTable.name })
-          }
-          onClose={handleClose}
-        >
-          <div className="flex flex-col gap-8">
-            <details>
-              <summary>
-                {interactionsText.byChoosingRecordSet({ count: totalCount })}
-              </summary>
-              {children}
-            </details>
-            <details>
-              <summary>
-                {interactionsText.byEnteringNumbers({
-                  fieldName: searchField.label,
-                })}
-              </summary>
-              <div className="flex flex-col gap-2">
-                <AutoGrowTextArea
-                  forwardRef={validationRef}
-                  spellCheck={false}
-                  value={catalogNumbers}
-                  onBlur={(): void => {
-                    const parseResults = split(catalogNumbers).map((value) =>
-                      parseValue(parser, inputRef.current ?? undefined, value)
-                    );
-                    const errorMessages = parseResults
-                      .filter(
-                        (result): result is InvalidParseResult =>
-                          !result.isValid
-                      )
-                      .map(({ reason, value }) => `${reason} (${value})`);
-                    if (errorMessages.length > 0) {
-                      setValidation(errorMessages);
-                      return;
-                    }
-
-                    const parsed = f
-                      .unique(
-                        (parseResults as RA<ValidParseResult>)
-                          .filter(({ parsed }) => parsed !== null)
-                          .map(({ parsed }) =>
-                            (parsed as number | string).toString()
-                          )
-                          .sort(sortFunction(f.id))
-                      )
-                      .join('\n');
-                    setCatalogNumbers(parsed);
-                  }}
-                  onValueChange={setCatalogNumbers}
-                  {...attributes}
-                />
-                <div>
+    <ReadOnlyContext.Provider value>
+      <RecordSetsDialog
+        table={itemTable}
+        onClose={handleClose}
+        onSelect={handleProceed}
+      >
+        {({ children, totalCount }): JSX.Element => (
+          <Dialog
+            buttons={
+              <>
+                <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+                {typeof itemCollection === 'object' ? (
                   <Button.Blue
-                    disabled={
-                      catalogNumbers.length === 0 ||
-                      inputRef.current?.validity.valid !== true
+                    onClick={(): void =>
+                      availablePrepsReady(undefined, undefined, [])
                     }
-                    onClick={(): void => handleProceed(undefined)}
                   >
-                    {commonText.next()}
+                    {interactionsText.addUnassociated()}
                   </Button.Blue>
+                ) : (
+                  <Link.Blue href={getResourceViewUrl(actionTable.name)}>
+                    {interactionsText.withoutPreparations()}
+                  </Link.Blue>
+                )}
+              </>
+            }
+            header={
+              typeof itemCollection === 'object'
+                ? interactionsText.addItems()
+                : itemTable.name === 'Loan'
+                ? interactionsText.recordReturn({ tableName: itemTable.label })
+                : interactionsText.createRecord({ tableName: actionTable.name })
+            }
+            onClose={handleClose}
+          >
+            <div className="flex flex-col gap-8">
+              <details>
+                <summary>
+                  {interactionsText.byChoosingRecordSet({ count: totalCount })}
+                </summary>
+                {children}
+              </details>
+              <details>
+                <summary>
+                  {interactionsText.byEnteringNumbers({
+                    fieldName: searchField.label,
+                  })}
+                </summary>
+                <div className="flex flex-col gap-2">
+                  <AutoGrowTextArea
+                    forwardRef={validationRef}
+                    spellCheck={false}
+                    value={catalogNumbers}
+                    onBlur={(): void => {
+                      const parseResults = split(catalogNumbers).map((value) =>
+                        parseValue(parser, inputRef.current ?? undefined, value)
+                      );
+                      const errorMessages = parseResults
+                        .filter(
+                          (result): result is InvalidParseResult =>
+                            !result.isValid
+                        )
+                        .map(({ reason, value }) => `${reason} (${value})`);
+                      if (errorMessages.length > 0) {
+                        setValidation(errorMessages);
+                        return;
+                      }
+
+                      const parsed = f
+                        .unique(
+                          (parseResults as RA<ValidParseResult>)
+                            .filter(({ parsed }) => parsed !== null)
+                            .map(({ parsed }) =>
+                              (parsed as number | string).toString()
+                            )
+                            .sort(sortFunction(f.id))
+                        )
+                        .join('\n');
+                      setCatalogNumbers(parsed);
+                    }}
+                    onValueChange={setCatalogNumbers}
+                    {...attributes}
+                  />
+                  <div>
+                    <Button.Blue
+                      disabled={
+                        catalogNumbers.length === 0 ||
+                        inputRef.current?.validity.valid !== true
+                      }
+                      onClick={(): void => handleProceed(undefined)}
+                    >
+                      {commonText.next()}
+                    </Button.Blue>
+                  </div>
+                  {state.type === 'PreparationSelectState' &&
+                  Object.keys(state.problems).length > 0 ? (
+                    <>
+                      {interactionsText.problemsFound()}
+                      {Object.entries(state.problems).map(
+                        ([header, problems], index) => (
+                          <React.Fragment key={index}>
+                            <H3>{header}</H3>
+                            {problems.map((problem, index) => (
+                              <p key={index}>{problem}</p>
+                            ))}
+                          </React.Fragment>
+                        )
+                      )}
+                      <div>
+                        <Button.Blue
+                          onClick={(): void =>
+                            setState({
+                              ...state,
+                              problems: {},
+                            })
+                          }
+                        >
+                          {commonText.ignore()}
+                        </Button.Blue>
+                      </div>
+                    </>
+                  ) : undefined}
                 </div>
-                {state.type === 'PreparationSelectState' &&
-                Object.keys(state.problems).length > 0 ? (
-                  <>
-                    {interactionsText.problemsFound()}
-                    {Object.entries(state.problems).map(
-                      ([header, problems], index) => (
-                        <React.Fragment key={index}>
-                          <H3>{header}</H3>
-                          {problems.map((problem, index) => (
-                            <p key={index}>{problem}</p>
-                          ))}
-                        </React.Fragment>
-                      )
-                    )}
-                    <div>
-                      <Button.Blue
-                        onClick={(): void =>
-                          setState({
-                            ...state,
-                            problems: {},
-                          })
-                        }
-                      >
-                        {commonText.ignore()}
-                      </Button.Blue>
-                    </div>
-                  </>
-                ) : undefined}
-              </div>
-            </details>
-          </div>
-        </Dialog>
-      )}
-    </RecordSetsDialog>
+              </details>
+            </div>
+          </Dialog>
+        )}
+      </RecordSetsDialog>
+    </ReadOnlyContext.Provider>
   );
 }
 

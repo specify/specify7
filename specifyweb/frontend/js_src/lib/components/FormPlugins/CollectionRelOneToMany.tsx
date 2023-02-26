@@ -168,7 +168,6 @@ export function CollectionOneToManyPlugin({
                       {},
                       {
                         noBusinessRules: true,
-                        noValidation: true,
                       }
                     ),
                   }

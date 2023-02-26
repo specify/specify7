@@ -5,6 +5,7 @@ import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
 import type { IR } from '../../utils/types';
 import { Button } from '../Atoms/Button';
+import { ReadOnlyContext } from '../Core/Contexts';
 import { fetchCollection } from '../DataModel/collection';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { getTableById } from '../DataModel/tables';
@@ -68,34 +69,35 @@ export function ReportRecordSets({
     | State<'Raw'>
   >({ type: 'Main' });
   return state.type === 'Main' ? (
-    <RecordSetsDialog
-      isReadOnly
-      table={table}
-      onClose={handleClose}
-      onConfigure={(recordSet): void =>
-        setState({
-          type: 'RecordSet',
-          recordSet,
-          autoRun: false,
-        })
-      }
-      onSelect={(recordSet): void =>
-        setState({
-          type: 'RecordSet',
-          recordSet,
-          autoRun: true,
-        })
-      }
-    >
-      {({ children, dialog }): JSX.Element =>
-        dialog(
-          children,
-          <Button.Blue onClick={(): void => setState({ type: 'Raw' })}>
-            {queryText.query()}
-          </Button.Blue>
-        )
-      }
-    </RecordSetsDialog>
+    <ReadOnlyContext.Provider value>
+      <RecordSetsDialog
+        table={table}
+        onClose={handleClose}
+        onConfigure={(recordSet): void =>
+          setState({
+            type: 'RecordSet',
+            recordSet,
+            autoRun: false,
+          })
+        }
+        onSelect={(recordSet): void =>
+          setState({
+            type: 'RecordSet',
+            recordSet,
+            autoRun: true,
+          })
+        }
+      >
+        {({ children, dialog }): JSX.Element =>
+          dialog(
+            children,
+            <Button.Blue onClick={(): void => setState({ type: 'Raw' })}>
+              {queryText.query()}
+            </Button.Blue>
+          )
+        }
+      </RecordSetsDialog>
+    </ReadOnlyContext.Provider>
   ) : (
     <QueryParametersDialog
       autoRun={state.type === 'RecordSet' && state.autoRun}

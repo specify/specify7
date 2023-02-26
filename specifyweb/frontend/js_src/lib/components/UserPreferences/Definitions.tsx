@@ -51,7 +51,6 @@ export type PreferenceRendererProps<VALUE> = {
   readonly definition: PreferenceItem<VALUE>;
   readonly value: VALUE;
   readonly onChange: (value: VALUE) => void;
-  readonly isReadOnly: boolean;
 };
 
 /**

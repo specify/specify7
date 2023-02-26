@@ -6,6 +6,7 @@ import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
 import { DataEntry } from '../Atoms/DataEntry';
+import { ReadOnlyContext } from '../Core/Contexts';
 import {
   DependentCollection,
   LazyCollection,
@@ -17,7 +18,7 @@ import type { Relationship } from '../DataModel/specifyField';
 import type { Collection } from '../DataModel/specifyTable';
 import { raise } from '../Errors/Crash';
 import { FormTableCollection } from '../FormCells/FormTableCollection';
-import type { FormMode, FormType } from '../FormParse';
+import type { FormType } from '../FormParse';
 import type { SubViewSortField } from '../FormParse/cells';
 import { augmentMode, ResourceView } from '../Forms/ResourceView';
 import { hasTablePermission } from '../Permissions/helpers';
@@ -43,11 +44,11 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
   RecordSelectorProps<SCHEMA>,
   | 'index'
   | 'isDependent'
-  | 'table'
   | 'onAdd'
   | 'onDelete'
   | 'records'
   | 'relatedResource'
+  | 'table'
   | 'totalCount'
 > &
   Partial<Pick<RecordSelectorProps<SCHEMA>, 'onAdd' | 'onDelete'>> & {
@@ -141,7 +142,6 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
 
 export function IntegratedRecordSelector({
   urlParameter,
-  mode: initialMode,
   viewName,
   collection,
   dialog,
@@ -152,10 +152,9 @@ export function IntegratedRecordSelector({
   ...rest
 }: Omit<
   Parameters<typeof RecordSelectorFromCollection>[0],
-  'children' | 'table' | 'onSlide'
+  'children' | 'onSlide' | 'table'
 > & {
   readonly dialog: 'modal' | 'nonModal' | false;
-  readonly mode: FormMode;
   readonly formType: FormType;
   readonly viewName?: string;
   readonly urlParameter?: string;
@@ -165,106 +164,116 @@ export function IntegratedRecordSelector({
   const isDependent = collection instanceof DependentCollection;
   const isToOne =
     !relationshipIsToMany(relationship) || relationship.type === 'zero-to-one';
-  const mode = augmentMode(initialMode, false, relationship.relatedTable.name);
+  const isReadOnly = augmentMode(
+    React.useContext(ReadOnlyContext),
+    false,
+    relationship.relatedTable.name
+  );
 
   const [rawIndex, setIndex] = useSearchParameter(urlParameter);
   const index = f.parseInt(rawIndex) ?? 0;
-  return formType === 'formTable' ? (
-    <FormTableCollection
-      collection={collection}
-      dialog={dialog}
-      mode={mode}
-      sortField={sortField}
-      viewName={viewName}
-      onAdd={undefined}
-      onClose={handleClose}
-      onDelete={undefined}
-    />
-  ) : (
-    <RecordSelectorFromCollection
-      collection={collection}
-      defaultIndex={isToOne ? 0 : index}
-      relationship={relationship}
-      onSlide={(index): void =>
-        typeof urlParameter === 'string'
-          ? setIndex(index.toString())
-          : undefined
-      }
-      {...rest}
-    >
-      {({
-        dialogs,
-        slider,
-        resource,
-        onAdd: handleAdd,
-        onRemove: handleRemove,
-        isLoading,
-      }): JSX.Element => (
-        <>
-          <ResourceView
-            dialog={dialog}
-            headerButtons={(specifyNetworkBadge): JSX.Element => (
-              <>
-                <DataEntry.Visit
-                  /*
-                   * If dialog is not false, the visit button would be added
-                   * by ResourceView
-                   */
-                  resource={
-                    !isDependent && dialog === false ? resource : undefined
-                  }
-                />
-                {hasTablePermission(
-                  relationship.relatedTable.name,
-                  isDependent ? 'create' : 'read'
-                ) && typeof handleAdd === 'function' ? (
-                  <DataEntry.Add
-                    disabled={
-                      mode === 'view' ||
-                      (isToOne && collection.models.length > 0)
-                    }
-                    onClick={handleAdd}
-                  />
-                ) : undefined}
-                {hasTablePermission(
-                  relationship.relatedTable.name,
-                  isDependent ? 'delete' : 'read'
-                ) && typeof handleRemove === 'function' ? (
-                  <DataEntry.Remove
-                    disabled={
-                      mode === 'view' ||
-                      collection.models.length === 0 ||
-                      resource === undefined
-                    }
-                    onClick={(): void => handleRemove('minusButton')}
-                  />
-                ) : undefined}
-                <span
-                  className={`flex-1 ${dialog === false ? '-ml-2' : '-ml-4'}`}
-                />
-                {specifyNetworkBadge}
-                {!isToOne && slider}
-              </>
-            )}
-            isDependent={isDependent}
-            isLoading={isLoading}
-            isSubForm={dialog === false}
-            mode={mode}
-            resource={resource}
-            title={relationship.label}
-            onAdd={undefined}
-            onDeleted={collection.models.length <= 1 ? handleClose : undefined}
-            onSaved={handleClose}
-            viewName={viewName}
-            /*
-             * Don't save the resource on save button click if it is a dependent
-             * resource
-             */
-            onClose={handleClose}
-          />
-          {dialogs}
-        </>
+  return (
+    <ReadOnlyContext.Provider value={isReadOnly}>
+      {formType === 'formTable' ? (
+        <FormTableCollection
+          collection={collection}
+          dialog={dialog}
+          sortField={sortField}
+          viewName={viewName}
+          onAdd={undefined}
+          onClose={handleClose}
+          onDelete={undefined}
+        />
+      ) : (
+        <RecordSelectorFromCollection
+          collection={collection}
+          defaultIndex={isToOne ? 0 : index}
+          relationship={relationship}
+          onSlide={(index): void =>
+            typeof urlParameter === 'string'
+              ? setIndex(index.toString())
+              : undefined
+          }
+          {...rest}
+        >
+          {({
+            dialogs,
+            slider,
+            resource,
+            onAdd: handleAdd,
+            onRemove: handleRemove,
+            isLoading,
+          }): JSX.Element => (
+            <>
+              <ResourceView
+                dialog={dialog}
+                headerButtons={(specifyNetworkBadge): JSX.Element => (
+                  <>
+                    <DataEntry.Visit
+                      /*
+                       * If dialog is not false, the visit button would be added
+                       * by ResourceView
+                       */
+                      resource={
+                        !isDependent && dialog === false ? resource : undefined
+                      }
+                    />
+                    {hasTablePermission(
+                      relationship.relatedTable.name,
+                      isDependent ? 'create' : 'read'
+                    ) && typeof handleAdd === 'function' ? (
+                      <DataEntry.Add
+                        disabled={
+                          isReadOnly ||
+                          (isToOne && collection.models.length > 0)
+                        }
+                        onClick={handleAdd}
+                      />
+                    ) : undefined}
+                    {hasTablePermission(
+                      relationship.relatedTable.name,
+                      isDependent ? 'delete' : 'read'
+                    ) && typeof handleRemove === 'function' ? (
+                      <DataEntry.Remove
+                        disabled={
+                          isReadOnly ||
+                          collection.models.length === 0 ||
+                          resource === undefined
+                        }
+                        onClick={(): void => handleRemove('minusButton')}
+                      />
+                    ) : undefined}
+                    <span
+                      className={`flex-1 ${
+                        dialog === false ? '-ml-2' : '-ml-4'
+                      }`}
+                    />
+                    {specifyNetworkBadge}
+                    {!isToOne && slider}
+                  </>
+                )}
+                isDependent={isDependent}
+                isLoading={isLoading}
+                isSubForm={dialog === false}
+                resource={resource}
+                title={relationship.label}
+                onAdd={undefined}
+                onDeleted={
+                  collection.models.length <= 1 ? handleClose : undefined
+                }
+                onSaved={handleClose}
+                viewName={viewName}
+                /*
+                 * Don't save the resource on save button click if it is a dependent
+                 * resource
+                 */
+                onClose={handleClose}
+              />
+              {dialogs}
+            </>
+          )}
+        </RecordSelectorFromCollection>
       )}
-    </RecordSelectorFromCollection>
+    </ReadOnlyContext.Provider>
   );
 }

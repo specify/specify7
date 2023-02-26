@@ -37,6 +37,7 @@ import { formatUrl } from '../Router/queryString';
 import { xmlToSpec } from '../Syncer/xmlUtils';
 import { queryCbxExtendedSearch } from './helpers';
 import { dialogsSpec } from './spec';
+import { SearchDialogContext } from '../Core/Contexts';
 
 export const searchDialogDefinitions = Promise.all([
   load<Element>(
@@ -150,11 +151,13 @@ export function SearchDialog<SCHEMA extends AnySchema>({
             .catch(raise);
         }}
       >
-        <RenderForm
-          display="inline"
-          resource={templateResource}
-          viewDefinition={viewDefinition}
-        />
+        <SearchDialogContext.Provider value>
+          <RenderForm
+            display="inline"
+            resource={templateResource}
+            viewDefinition={viewDefinition}
+          />
+        </SearchDialogContext.Provider>
         <Ul
           className={`
             min-w-96 h-40 overflow-auto rounded
@@ -294,7 +297,6 @@ function QueryBuilderSearch<SCHEMA extends AnySchema>({
       <QueryBuilder
         forceCollection={forceCollection}
         isEmbedded
-        isReadOnly={false}
         query={query}
         recordSet={undefined}
         onSelected={setSelected}

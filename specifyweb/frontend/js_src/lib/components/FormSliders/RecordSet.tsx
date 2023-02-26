@@ -23,17 +23,16 @@ import {
   deleteResource,
   getResourceViewUrl,
 } from '../DataModel/resource';
+import { serializeResource } from '../DataModel/serializers';
+import { tables } from '../DataModel/tables';
 import type { RecordSet as RecordSetSchema } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
-import type { FormMode } from '../FormParse';
 import { Dialog } from '../Molecules/Dialog';
 import { hasToolPermission } from '../Permissions/helpers';
 import { locationToState, useStableLocation } from '../Router/RouterState';
 import { EditRecordSet } from '../Toolbar/RecordSetEdit';
 import type { RecordSelectorProps } from './RecordSelector';
 import { RecordSelectorFromIds } from './RecordSelectorFromIds';
-import { serializeResource } from '../DataModel/serializers';
-import { tables } from '../DataModel/tables';
 
 export function RecordSetWrapper<SCHEMA extends AnySchema>({
   recordSet,
@@ -104,7 +103,6 @@ export function RecordSetWrapper<SCHEMA extends AnySchema>({
     <RecordSet
       dialog={false}
       index={resource.isNew() ? totalCount : index}
-      mode="edit"
       record={resource}
       recordSet={recordSet}
       totalCount={totalCount}
@@ -154,7 +152,6 @@ function RecordSet<SCHEMA extends AnySchema>({
   record: currentRecord,
   totalCount: initialTotalCount,
   dialog,
-  mode,
   onClose: handleClose,
   ...rest
 }: Omit<
@@ -162,10 +159,10 @@ function RecordSet<SCHEMA extends AnySchema>({
   | 'defaultIndex'
   | 'field'
   | 'index'
-  | 'table'
   | 'onDelete'
   | 'onSaved'
   | 'records'
+  | 'table'
   | 'totalCount'
 > & {
   readonly recordSet: SpecifyResource<RecordSetSchema>;
@@ -173,7 +170,6 @@ function RecordSet<SCHEMA extends AnySchema>({
   readonly record: SpecifyResource<SCHEMA>;
   readonly totalCount: number;
   readonly dialog: 'modal' | 'nonModal' | false;
-  readonly mode: FormMode;
   readonly onClose: () => void;
 }): JSX.Element {
   const loading = React.useContext(LoadingContext);
@@ -296,9 +292,8 @@ function RecordSet<SCHEMA extends AnySchema>({
         isDependent={false}
         isInRecordSet
         isLoading={isLoading}
-        mode={mode}
-        table={currentRecord.specifyTable}
         newResource={currentRecord.isNew() ? currentRecord : undefined}
+        table={currentRecord.specifyTable}
         title={commonText.colonLine({
           label: tables.RecordSet.label,
           value: recordSet.get('name'),
@@ -413,7 +408,6 @@ function EditRecordSetButton({
       <DataEntry.Edit onClick={handleOpen} />
       {isOpen && (
         <EditRecordSet
-          isReadOnly={false}
           recordSet={recordSet}
           onClose={handleClose}
           onDeleted={(): void => navigate('/specify/')}

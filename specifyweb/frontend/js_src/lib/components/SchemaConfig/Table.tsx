@@ -3,8 +3,10 @@ import React from 'react';
 import { commonText } from '../../localization/common';
 import { schemaText } from '../../localization/schema';
 import { Input, Label } from '../Atoms/Form';
+import { ReadOnlyContext } from '../Core/Contexts';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
+import { tables } from '../DataModel/tables';
 import type { SpLocaleContainer, Tables } from '../DataModel/types';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { PickList } from './Components';
@@ -12,7 +14,6 @@ import { SchemaConfigColumn } from './Fields';
 import { filterFormatters } from './helpers';
 import type { NewSpLocaleItemString, SpLocaleItemString } from './index';
 import type { SchemaData } from './schemaData';
-import { tables } from '../DataModel/tables';
 
 export const maxSchemaValueLength = getField(
   tables.SpLocaleItemStr,
@@ -21,7 +22,6 @@ export const maxSchemaValueLength = getField(
 
 export function SchemaConfigTable({
   schemaData,
-  isReadOnly,
   container,
   name,
   desc,
@@ -30,7 +30,6 @@ export function SchemaConfigTable({
   onChangeDesc: handleChangeDesc,
 }: {
   readonly schemaData: SchemaData;
-  readonly isReadOnly: boolean;
   readonly container: SerializedResource<SpLocaleContainer>;
   readonly onChange: (container: SerializedResource<SpLocaleContainer>) => void;
   readonly name: NewSpLocaleItemString | SpLocaleItemString | undefined;
@@ -42,6 +41,7 @@ export function SchemaConfigTable({
     containerName: NewSpLocaleItemString | SpLocaleItemString
   ) => void;
 }): JSX.Element {
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return (
     <SchemaConfigColumn
       header={commonText.colonLine({

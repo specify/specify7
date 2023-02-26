@@ -53,11 +53,7 @@ function AppResourcesView({
         </div>
       </div>
       <div className="flex h-0 flex-1 gap-4">
-        <AppResourcesAside
-          isEmbedded={false}
-          isReadOnly={false}
-          resources={resources}
-        />
+        <AppResourcesAside isEmbedded={false} resources={resources} />
         <SafeOutlet<AppResourcesOutlet>
           getSet={getSet as GetOrSet<AppResources>}
         />

@@ -28,7 +28,6 @@ export function FormatterElement({
 }: {
   readonly item: GetSet<Formatter>;
 }): JSX.Element {
-  const isReadOnly = React.useContext(ReadOnlyContext);
   const [openIndex, setOpenIndex] = React.useState<number | undefined>(
     undefined
   );
@@ -38,7 +37,6 @@ export function FormatterElement({
         <fieldset>
           <legend>{resourcesText.conditionField()}</legend>
           <ResourceMapping
-            isReadOnly={isReadOnly}
             mapping={[
               formatter.definition.conditionField,
               (conditionField): void =>
@@ -244,9 +242,7 @@ function Field({
         />
       </td>
       <td>
-        {/* BUG: don't allow direct mapping to "Formatted" */}
         <ResourceMapping
-          isReadOnly={isReadOnly}
           mapping={[
             field.field,
             (fieldMapping): void =>

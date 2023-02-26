@@ -16,6 +16,7 @@ import { LoadingContext } from '../Core/Contexts';
 import type { AnySchema, AnyTree } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpecifyTable } from '../DataModel/specifyTable';
+import { tables } from '../DataModel/tables';
 import { DeleteButton } from '../Forms/DeleteButton';
 import { ResourceView } from '../Forms/ResourceView';
 import { getPref } from '../InitialContext/remotePrefs';
@@ -23,7 +24,6 @@ import { Dialog } from '../Molecules/Dialog';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import type { Row } from './helpers';
 import { checkMoveViolatesEnforced } from './helpers';
-import { tables } from '../DataModel/tables';
 
 type Action = 'add' | 'desynonymize' | 'edit' | 'merge' | 'move' | 'synonymize';
 
@@ -237,7 +237,6 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
           dialog="nonModal"
           isDependent={false}
           isSubForm={false}
-          mode="edit"
           resource={resource}
           onAdd={isRoot ? undefined : setResource}
           onClose={handleClose}

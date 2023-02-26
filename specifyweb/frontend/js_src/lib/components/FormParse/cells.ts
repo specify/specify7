@@ -11,8 +11,8 @@ import type { State } from 'typesafe-reducer';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import { getTable } from '../DataModel/tables';
 import type { SpecifyTable } from '../DataModel/specifyTable';
+import { getTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import {
   addContext,

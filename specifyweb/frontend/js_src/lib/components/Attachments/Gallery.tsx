@@ -83,7 +83,6 @@ export function AttachmentGallery({
             dialog="modal"
             isDependent={false}
             isSubForm={false}
-            mode="edit"
             resource={viewRecord}
             onAdd={undefined}
             onClose={(): void => setViewRecord(undefined)}

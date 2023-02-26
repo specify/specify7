@@ -8,13 +8,13 @@ import { Http } from '../../utils/ajax/definitions';
 import { formData } from '../../utils/ajax/helpers';
 import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
+import { tables } from '../DataModel/tables';
 import {
   ProtectedAction,
   ProtectedTool,
 } from '../Permissions/PermissionDenied';
 import { unsafeNavigate } from '../Router/Router';
 import { EditRecordSet } from '../Toolbar/RecordSetEdit';
-import { tables } from '../DataModel/tables';
 
 export function CreateRecordSetButton({
   dataSetId,
@@ -72,7 +72,6 @@ function CreateRecordSetDialog({
   const loading = React.useContext(LoadingContext);
   return (
     <EditRecordSet
-      isReadOnly={false}
       recordSet={recordSet}
       onClose={handleClose}
       onSaving={(unsetUnloadProtect): false => {

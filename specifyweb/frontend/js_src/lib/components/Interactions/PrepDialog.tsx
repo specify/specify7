@@ -11,6 +11,7 @@ import { group, replaceItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Form } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
+import { ReadOnlyContext } from '../Core/Contexts';
 import { getField, toTable } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceApiUrl, getResourceViewUrl } from '../DataModel/resource';
@@ -31,13 +32,11 @@ import { PrepDialogRow } from './PrepDialogRow';
 
 export function PrepDialog({
   onClose: handleClose,
-  isReadOnly,
   preparations: rawPreparations,
   table,
   itemCollection,
 }: {
   readonly onClose: () => void;
-  readonly isReadOnly: boolean;
   readonly preparations: Preparations;
   readonly table: SpecifyTable<Disposal | Gift | Loan>;
   readonly itemCollection?: Collection<
@@ -85,6 +84,8 @@ export function PrepDialog({
   const id = useId('prep-dialog');
   const navigate = useNavigate();
 
+  // BUG: make this readOnly if don't have necessary permissions
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return (
     <Dialog
       buttons={

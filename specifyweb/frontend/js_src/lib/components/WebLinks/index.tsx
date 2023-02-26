@@ -21,7 +21,7 @@ import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { Tables } from '../DataModel/types';
 import { UiField } from '../FormFields/Field';
-import type { FormMode, FormType } from '../FormParse';
+import type { FormType } from '../FormParse';
 import { load } from '../InitialContext';
 import { getIcon, unknownIcon } from '../InitialContext/icons';
 import { formatUrl } from '../Router/queryString';
@@ -84,7 +84,6 @@ export function WebLinkField({
   webLink,
   icon,
   formType,
-  mode,
 }: {
   readonly resource: SpecifyResource<AnySchema> | undefined;
   readonly id: string | undefined;
@@ -93,7 +92,6 @@ export function WebLinkField({
   readonly webLink: string | undefined;
   readonly icon: string;
   readonly formType: FormType;
-  readonly mode: FormMode;
 }): JSX.Element {
   const definition = useDefinition(
     resource?.specifyTable,
@@ -163,13 +161,7 @@ export function WebLinkField({
       }
     >
       {formType === 'form' && typeof field === 'object' ? (
-        <UiField
-          field={field}
-          id={id}
-          mode={mode}
-          name={name}
-          resource={resource}
-        />
+        <UiField field={field} id={id} name={name} resource={resource} />
       ) : undefined}
       {typeof definition === 'object' ? (
         typeof url === 'string' && url.length > 0 ? (

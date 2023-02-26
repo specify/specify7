@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
 import type { RA } from '../../utils/types';
 import { setDevelopmentGlobal } from '../../utils/types';
@@ -107,6 +108,8 @@ export function Contexts({
     []
   );
 
+  const isReadOnly = React.useContext(ReadOnlyContext);
+  const isReadOnlyMode = useCachedState('forms', 'readOnlyMode')[0] ?? false;
   return (
     <UnloadProtectsContext.Provider value={unloadProtects}>
       <UnloadProtectsRefContext.Provider value={unloadProtectsRef}>
@@ -125,7 +128,11 @@ export function Contexts({
                   {loadingBar}
                 </Dialog>
                 <React.Suspense fallback={<LoadingScreen />}>
-                  {children}
+                  <ReadOnlyContext.Provider
+                    value={isReadOnly || isReadOnlyMode}
+                  >
+                    {children}
+                  </ReadOnlyContext.Provider>
                 </React.Suspense>
               </LoadingContext.Provider>
             </ErrorContext.Provider>
@@ -158,7 +165,10 @@ export const ErrorContext = React.createContext<
 >(() => error('Not defined'));
 ErrorContext.displayName = 'ErrorContext';
 
-// REFACTOR: use this everywhere
 /** If true, renders everything below it as read only */
 export const ReadOnlyContext = React.createContext<boolean>(false);
 ReadOnlyContext.displayName = 'ReadOnlyContext';
+
+/** If true, form is rendered in a search dialog - required fields are not enforced */
+export const SearchDialogContext = React.createContext<boolean>(false);
+SearchDialogContext.displayName = 'SearchDialogContext';

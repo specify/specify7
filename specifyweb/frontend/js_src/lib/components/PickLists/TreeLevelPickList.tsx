@@ -65,8 +65,8 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
     undefined
   );
   React.useEffect(() => {
-    if (props.table === undefined) return undefined;
-    const resource = toTreeTable(props.table);
+    if (props.resource === undefined) return undefined;
+    const resource = toTreeTable(props.resource);
     if (
       resource === undefined ||
       !hasTreeAccess(resource.specifyTable.name, 'read')
@@ -74,7 +74,7 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
       return undefined;
     const lowestChildRank = fetchLowestChildRank(resource);
     const destructor = resourceOn(
-      props.table,
+      props.resource,
       'change:parent',
       (): void =>
         void resource
@@ -104,7 +104,7 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
       destructorCalled = true;
       destructor();
     };
-  }, [props.table]);
+  }, [props.resource]);
 
   return (
     <PickListComboBox
@@ -112,15 +112,15 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
       defaultValue={props.defaultValue ?? items?.slice(-1)[0]?.value}
       isDisabled={
         props.isDisabled ||
-        props.table === undefined ||
-        !isTreeResource(props.table) ||
-        props.table.get('parent') === null
+        props.resource === undefined ||
+        !isTreeResource(props.resource) ||
+        props.resource.get('parent') === null
       }
       isRequired={
-        props.table?.specifyTable.getRelationship('definitionItem')
+        props.resource?.specifyTable.getRelationship('definitionItem')
           ?.isRequired ?? true
       }
-      items={items}
+      items={items ?? []}
       // Select next enforced rank by default
       pickList={undefined}
       onAdd={undefined}

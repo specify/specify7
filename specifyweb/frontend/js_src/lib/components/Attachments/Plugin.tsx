@@ -12,13 +12,14 @@ import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { f } from '../../utils/functools';
 import { Progress } from '../Atoms';
+import { ReadOnlyContext } from '../Core/Contexts';
 import { toTable } from '../DataModel/helpers';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { serializeResource } from '../DataModel/serializers';
 import type { Attachment } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import { raise } from '../Errors/Crash';
-import type { FormMode } from '../FormParse';
 import { loadingBar } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
 import { FilePicker } from '../Molecules/FilePicker';
@@ -29,20 +30,17 @@ import {
   uploadFile,
 } from './attachments';
 import { AttachmentCell } from './Cell';
-import { serializeResource } from '../DataModel/serializers';
 
 export function AttachmentsPlugin({
   id,
   name,
   resource,
   onUploadComplete: handleUploadComplete,
-  mode = 'edit',
 }: {
   readonly id?: string;
   readonly name?: string;
   readonly resource: SpecifyResource<AnySchema> | undefined;
   readonly onUploadComplete?: (attachment: SpecifyResource<Attachment>) => void;
-  readonly mode: FormMode;
 }): JSX.Element {
   const [state, setState] = useAsyncState<
     | State<
@@ -102,6 +100,7 @@ export function AttachmentsPlugin({
 
   const filePickerContainer = React.useRef<HTMLDivElement | null>(null);
 
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return state === undefined ? (
     <>{commonText.loading()}</>
   ) : state.type === 'Unavailable' ? (
@@ -109,7 +108,7 @@ export function AttachmentsPlugin({
   ) : (
     <div ref={filePickerContainer} tabIndex={-1}>
       {state.type === 'AddAttachment' ? (
-        mode === 'view' || !hasTablePermission('Attachment', 'create') ? (
+        isReadOnly || !hasTablePermission('Attachment', 'create') ? (
           <p>{formsText.noData()}</p>
         ) : (
           <FilePicker

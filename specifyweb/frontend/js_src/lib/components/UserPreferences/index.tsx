@@ -216,13 +216,14 @@ export function PreferencesContent({
                               gap-2
                             `}
                           >
-                            <Item
-                              category={category}
-                              isReadOnly={!canEdit}
-                              item={item}
-                              name={name}
-                              subcategory={subcategory}
-                            />
+                            <ReadOnlyContext.Provider value={!canEdit}>
+                              <Item
+                                category={category}
+                                item={item}
+                                name={name}
+                                subcategory={subcategory}
+                              />
+                            </ReadOnlyContext.Provider>
                           </div>
                         </>
                       );
@@ -269,13 +270,11 @@ function Item({
   category,
   subcategory,
   name,
-  isReadOnly,
 }: {
   readonly item: PreferenceItem<any>;
   readonly category: string;
   readonly subcategory: string;
   readonly name: string;
-  readonly isReadOnly: boolean;
 }): JSX.Element {
   const Renderer =
     'renderer' in item ? item.renderer : DefaultPreferenceItemRender;
@@ -289,7 +288,6 @@ function Item({
     <Renderer
       category={category}
       definition={item}
-      isReadOnly={isReadOnly}
       item={name}
       subcategory={subcategory}
       value={value}

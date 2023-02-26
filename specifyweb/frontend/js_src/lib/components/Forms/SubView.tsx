@@ -7,19 +7,20 @@ import { commonText } from '../../localization/common';
 import { overwriteReadOnly } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
+import { attachmentRelatedTables } from '../Attachments';
 import { attachmentSettingsPromise } from '../Attachments/attachments';
+import { ReadOnlyContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
 import type { Relationship } from '../DataModel/specifyField';
 import type { Collection } from '../DataModel/specifyTable';
 import { raise, softFail } from '../Errors/Crash';
-import type { FormMode, FormType } from '../FormParse';
+import type { FormType } from '../FormParse';
 import type { SubViewSortField } from '../FormParse/cells';
 import { IntegratedRecordSelector } from '../FormSliders/IntegratedRecordSelector';
 import { TableIcon } from '../Molecules/TableIcon';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
-import { attachmentRelatedTables } from '../Attachments';
 
 export const SubViewContext = React.createContext<
   | {
@@ -38,7 +39,6 @@ SubViewContext.displayName = 'SubViewContext';
 export function SubView({
   relationship,
   parentResource,
-  mode: initialMode,
   parentFormType,
   formType: initialFormType,
   isButton,
@@ -48,7 +48,6 @@ export function SubView({
 }: {
   readonly relationship: Relationship;
   readonly parentResource: SpecifyResource<AnySchema>;
-  readonly mode: FormMode;
   readonly parentFormType: FormType;
   readonly formType: FormType;
   readonly isButton: boolean;
@@ -198,6 +197,7 @@ export function SubView({
   const isAttachmentMisconfigured =
     isAttachmentTable && !isAttachmentConfigured;
 
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return (
     <SubViewContext.Provider value={contextValue}>
       {isButton && (
@@ -225,36 +225,40 @@ export function SubView({
         </Button.BorderedGray>
       )}
       {typeof collection === 'object' && isOpen ? (
-        <IntegratedRecordSelector
-          collection={collection}
-          dialog={isButton ? 'nonModal' : false}
-          formType={formType}
-          mode={
-            !isAttachmentMisconfigured &&
-            relationship.isDependent() &&
-            initialMode !== 'view'
-              ? 'edit'
-              : 'view'
+        <ReadOnlyContext.Provider
+          value={
+            isReadOnly ||
+            !isAttachmentMisconfigured ||
+            !relationship.isDependent()
           }
-          relationship={relationship}
-          sortField={sortField}
-          viewName={viewName}
-          onAdd={
-            relationshipIsToMany(relationship) &&
-            relationship.type !== 'zero-to-one'
-              ? undefined
-              : ([resource]): void =>
-                  void parentResource.set(relationship.name, resource as never)
-          }
-          onClose={handleClose}
-          onDelete={
-            relationshipIsToMany(relationship) &&
-            relationship.type !== 'zero-to-one'
-              ? undefined
-              : (): void =>
-                  void parentResource.set(relationship.name, null as never)
-          }
-        />
+        >
+          <IntegratedRecordSelector
+            collection={collection}
+            dialog={isButton ? 'nonModal' : false}
+            formType={formType}
+            relationship={relationship}
+            sortField={sortField}
+            viewName={viewName}
+            onAdd={
+              relationshipIsToMany(relationship) &&
+              relationship.type !== 'zero-to-one'
+                ? undefined
+                : ([resource]): void =>
+                    void parentResource.set(
+                      relationship.name,
+                      resource as never
+                    )
+            }
+            onClose={handleClose}
+            onDelete={
+              relationshipIsToMany(relationship) &&
+              relationship.type !== 'zero-to-one'
+                ? undefined
+                : (): void =>
+                    void parentResource.set(relationship.name, null as never)
+            }
+          />
+        </ReadOnlyContext.Provider>
       ) : undefined}
     </SubViewContext.Provider>
   );

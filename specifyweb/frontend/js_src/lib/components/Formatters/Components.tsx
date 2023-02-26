@@ -136,13 +136,11 @@ export function FieldFormattersPickList({
 export function ResourceMapping({
   table,
   mapping: [mapping, setMapping],
-  isReadOnly,
   openIndex: [openIndex, setOpenIndex],
   isRequired = false,
 }: {
   readonly table: SpecifyTable;
   readonly mapping: GetSet<RA<LiteralField | Relationship> | undefined>;
-  readonly isReadOnly: boolean;
   readonly openIndex: GetSet<number | undefined>;
   readonly isRequired?: boolean;
 }): JSX.Element {
@@ -162,6 +160,7 @@ export function ResourceMapping({
     ]);
   });
 
+  const isReadOnly = React.useContext(ReadOnlyContext);
   const lineData = React.useMemo(
     () =>
       getMappingLineData({

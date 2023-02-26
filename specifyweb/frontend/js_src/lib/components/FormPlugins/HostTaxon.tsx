@@ -8,13 +8,13 @@ import { Input } from '../Atoms/Form';
 import { fetchCollection } from '../DataModel/collection';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { deserializeResource } from '../DataModel/serializers';
+import { tables } from '../DataModel/tables';
 import type { CollectingEventAttribute } from '../DataModel/types';
-import type { FormMode, FormType } from '../FormParse';
+import type { FormType } from '../FormParse';
 import { hasTreeAccess } from '../Permissions/helpers';
 import { QueryComboBox } from '../QueryComboBox';
 import type { TypeSearch } from '../QueryComboBox/spec';
 import { postProcessTypeSearch } from '../QueryComboBox/spec';
-import { tables } from '../DataModel/tables';
 
 const hostTaxonTypeSearch = f.store<TypeSearch>(() =>
   defined(
@@ -36,14 +36,12 @@ export function HostTaxon({
   relationship,
   id,
   isRequired,
-  mode,
   formType,
 }: {
   readonly resource: SpecifyResource<CollectingEventAttribute>;
   readonly relationship: string;
   readonly id: string | undefined;
   readonly isRequired: boolean;
-  readonly mode: FormMode;
   readonly formType: FormType;
 }): JSX.Element | null {
   const [rightSideCollection] = useAsyncState(
@@ -72,7 +70,6 @@ export function HostTaxon({
       formType={formType}
       id={id}
       isRequired={isRequired}
-      mode={mode}
       relatedTable={tables.Taxon}
       resource={resource}
       typeSearch={hostTaxonTypeSearch()}

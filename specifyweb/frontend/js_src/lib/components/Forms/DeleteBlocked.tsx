@@ -10,9 +10,9 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
+import { format } from '../Formatters/formatters';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
-import { format } from '../Formatters/formatters';
 import { ResourceView } from './ResourceView';
 
 export type DeleteBlocker = {
@@ -139,7 +139,6 @@ function BlockerPreview({
       dialog="modal"
       isDependent={false}
       isSubForm={false}
-      mode="edit"
       resource={resource}
       onAdd={undefined}
       onClose={handleClose}

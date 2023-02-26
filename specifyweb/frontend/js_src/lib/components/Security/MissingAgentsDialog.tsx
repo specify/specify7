@@ -14,14 +14,13 @@ import { ErrorMessage, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Form, Label } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
-import { LoadingContext } from '../Core/Contexts';
+import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { fetchResource, idFromUrl } from '../DataModel/resource';
-import { QueryComboBox } from '../QueryComboBox';
-import type { FormMode } from '../FormParse';
+import { tables } from '../DataModel/tables';
 import { Dialog } from '../Molecules/Dialog';
 import { hasPermission } from '../Permissions/helpers';
+import { QueryComboBox } from '../QueryComboBox';
 import type { UserAgents } from './UserHooks';
-import { tables } from '../DataModel/tables';
 
 export type SetAgentsResponse = Partial<{
   readonly AgentInUseException: RA<number>;
@@ -45,13 +44,11 @@ export function MissingAgentsDialog({
   userAgents,
   userId,
   onClose: handleClose,
-  mode: initialMode,
   response: initialResponse,
 }: {
   readonly userAgents: UserAgents | undefined;
   readonly userId: number;
   readonly onClose: () => void;
-  readonly mode: FormMode;
   readonly response: SetAgentsResponse;
 }): JSX.Element | null {
   const [response, setResponse] = React.useState(initialResponse);
@@ -80,10 +77,9 @@ export function MissingAgentsDialog({
     true
   );
 
-  const mode =
-    initialMode === 'view' || !hasPermission('/admin/user/agents', 'update')
-      ? 'view'
-      : 'edit';
+  const isReadOnly =
+    React.useContext(ReadOnlyContext) ||
+    !hasPermission('/admin/user/agents', 'update');
   const id = useId('user-agents-plugin');
   const loading = React.useContext(LoadingContext);
   return Array.isArray(data) ? (
@@ -91,7 +87,7 @@ export function MissingAgentsDialog({
       buttons={
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          {mode === 'edit' && (
+          {!isReadOnly && (
             <Submit.Blue disabled={userAgents === undefined} form={id('form')}>
               {commonText.save()}
             </Submit.Blue>
@@ -109,7 +105,7 @@ export function MissingAgentsDialog({
       <Form
         id={id('form')}
         onSubmit={(): void =>
-          mode === 'view'
+          isReadOnly
             ? undefined
             : loading(
                 ajax(
@@ -144,7 +140,6 @@ export function MissingAgentsDialog({
                 formType="form"
                 id={undefined}
                 isRequired={isRequired}
-                mode={mode}
                 /*
                  * Since Agents are scoped to Division, scoping the query to any
                  * collection in that division would scope results to

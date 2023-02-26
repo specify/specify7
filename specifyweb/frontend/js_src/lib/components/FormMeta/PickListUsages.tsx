@@ -5,6 +5,7 @@ import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { Button } from '../Atoms/Button';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { tables } from '../DataModel/tables';
 import type { PickList, SpQuery } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { createQuery } from '../QueryBuilder';
@@ -13,7 +14,6 @@ import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { flippedSortTypes } from '../QueryBuilder/helpers';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
 import { formattedEntry } from '../WbPlanView/mappingHelpers';
-import { tables } from '../DataModel/tables';
 
 export function PickListUsages({
   pickList,
@@ -52,7 +52,6 @@ function PickListUsagesDialog({
         autoRun
         forceCollection={undefined}
         isEmbedded
-        isReadOnly={false}
         query={query}
         recordSet={undefined}
       />

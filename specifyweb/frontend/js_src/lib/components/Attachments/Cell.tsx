@@ -11,8 +11,9 @@ import { fetchRelated } from '../DataModel/collection';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { idFromUrl } from '../DataModel/resource';
-import { getTableById, tables } from '../DataModel/tables';
+import { deserializeResource } from '../DataModel/serializers';
 import type { SpecifyTable } from '../DataModel/specifyTable';
+import { getTableById, tables } from '../DataModel/tables';
 import type { Attachment } from '../DataModel/types';
 import { ResourceView } from '../Forms/ResourceView';
 import { originalAttachmentsView } from '../Forms/useViewDefinition';
@@ -21,7 +22,6 @@ import { hasTablePermission } from '../Permissions/helpers';
 import { fetchThumbnail } from './attachments';
 import { tablesWithAttachments } from './index';
 import { AttachmentPreview } from './Preview';
-import { deserializeResource } from '../DataModel/serializers';
 
 export function AttachmentCell({
   attachment,
@@ -101,7 +101,6 @@ export function AttachmentCell({
           dialog="modal"
           isDependent={false}
           isSubForm={false}
-          mode="edit"
           resource={resource}
           title={title}
           viewName={originalAttachmentsView}

@@ -8,6 +8,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { usePref } from '../UserPreferences/usePref';
+import { ReadOnlyContext } from '../Core/Contexts';
 
 export function PrintOnSave({
   id,
@@ -66,7 +67,6 @@ export function SpecifyFormCheckbox({
   name,
   field,
   defaultValue,
-  isReadOnly,
   text,
 }: {
   readonly id: string | undefined;
@@ -74,7 +74,6 @@ export function SpecifyFormCheckbox({
   readonly resource: SpecifyResource<AnySchema> | undefined;
   readonly field: LiteralField | undefined;
   readonly defaultValue: boolean | undefined;
-  readonly isReadOnly: boolean;
   readonly text: string | undefined;
 }): JSX.Element {
   const {
@@ -92,6 +91,7 @@ export function SpecifyFormCheckbox({
     [value]
   );
 
+  const isReadOnly = React.useContext(ReadOnlyContext);
   const input = (
     <Input.Checkbox
       checked={isChecked}

@@ -7,6 +7,7 @@ import { formsText } from '../../localization/forms';
 import { Button } from '../Atoms/Button';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { tables } from '../DataModel/tables';
 import type { SpQuery } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { createQuery } from '../QueryBuilder';
@@ -15,7 +16,6 @@ import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { flippedSortTypes } from '../QueryBuilder/helpers';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
 import { formattedEntry } from '../WbPlanView/mappingHelpers';
-import { tables } from '../DataModel/tables';
 
 export function EditHistory({
   resource,
@@ -61,7 +61,6 @@ function RecordHistoryDialog({
         autoRun
         forceCollection={undefined}
         isEmbedded
-        isReadOnly={false}
         query={query}
         recordSet={undefined}
       />

@@ -17,6 +17,7 @@ import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
+import { ReadOnlyContext } from '../Core/Contexts';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpAppResource, SpViewSetObj } from '../DataModel/types';
 import { hasToolPermission } from '../Permissions/helpers';
@@ -33,13 +34,11 @@ import { appResourceSubTypes } from './types';
 
 export function AppResourcesAside({
   resources: initialResources,
-  isReadOnly,
   initialFilters,
   isEmbedded,
   onOpen: handleOpen,
 }: {
   readonly resources: AppResources;
-  readonly isReadOnly: boolean;
   readonly initialFilters?: AppResourceFiltersType;
   readonly isEmbedded: boolean;
   readonly onOpen?: (
@@ -69,7 +68,6 @@ export function AppResourcesAside({
         {resourcesTree.map((resources) => (
           <TreeItem
             conformations={conformations}
-            isReadOnly={isReadOnly}
             key={resources.key}
             resourcesTree={resources}
             onFold={setConformations}
@@ -185,13 +183,11 @@ function AppResourcesExpand({
 function TreeItem({
   resourcesTree,
   conformations,
-  isReadOnly,
   onFold: handleFold,
   onOpen: handleOpen,
 }: {
   readonly resourcesTree: AppResourcesTree[number];
   readonly conformations: RA<AppResourcesConformation>;
-  readonly isReadOnly: boolean;
   readonly onFold: (conformations: RA<AppResourcesConformation>) => void;
   readonly onOpen:
     | ((resource: SerializedResource<SpAppResource | SpViewSetObj>) => void)
@@ -247,7 +243,6 @@ function TreeItem({
       {isExpanded && (
         <>
           <TreeItemResources
-            isReadOnly={isReadOnly}
             resourcesTree={resourcesTree}
             onOpen={handleOpen}
           />
@@ -260,7 +255,6 @@ function TreeItem({
               {subCategories.map((resources) => (
                 <TreeItem
                   conformations={conformation.children}
-                  isReadOnly={isReadOnly}
                   key={resources.key}
                   resourcesTree={resources}
                   onFold={(newConformation): void =>
@@ -283,16 +277,15 @@ const subTypes = Object.keys(appResourceSubTypes);
 
 function TreeItemResources({
   resourcesTree,
-  isReadOnly,
   onOpen: handleOpen,
 }: {
   readonly resourcesTree: AppResourcesTree[number];
-  readonly isReadOnly: boolean;
   readonly onOpen:
     | ((resource: SerializedResource<SpAppResource | SpViewSetObj>) => void)
     | undefined;
 }): JSX.Element | null {
   const { appResources, viewSets, directory, key } = resourcesTree;
+  const isReadOnly = React.useContext(ReadOnlyContext);
   const canCreate = hasToolPermission('resources', 'create') && !isReadOnly;
   const resources = React.useMemo(
     () =>

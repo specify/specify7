@@ -13,7 +13,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { Tables } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import type { FormMode, FormType } from '../FormParse';
+import type { FormType } from '../FormParse';
 import type { FieldTypes } from '../FormParse/fields';
 import type { UiPlugins } from '../FormParse/plugins';
 import { Dialog } from '../Molecules/Dialog';
@@ -36,18 +36,16 @@ const pluginRenderers: {
     readonly pluginDefinition: UiPlugins[KEY];
     readonly field: LiteralField | Relationship | undefined;
     readonly formType: FormType;
-    readonly mode: FormMode;
     readonly isRequired: boolean;
   }) => JSX.Element | null;
 } = {
-  LatLonUI({ resource, mode, id, pluginDefinition: { step, latLongType } }) {
+  LatLonUI({ resource, id, pluginDefinition: { step, latLongType } }) {
     if (resource === undefined) return null;
     const locality = toTable(resource, 'Locality');
     return locality === undefined ? null : (
       <LatLongUi
         id={id}
         latLongType={latLongType}
-        mode={mode}
         resource={locality}
         step={step}
       />
@@ -56,7 +54,6 @@ const pluginRenderers: {
   PartialDateUI: ({
     id,
     resource,
-    mode,
     formType,
     field,
     pluginDefinition: {
@@ -74,7 +71,6 @@ const pluginRenderers: {
           defaultPrecision={defaultPrecision}
           defaultValue={defaultValue}
           id={id}
-          isReadOnly={mode === 'view'}
           precisionField={precisionField}
           resource={resource}
         />
@@ -128,7 +124,6 @@ const pluginRenderers: {
     field,
     pluginDefinition: { webLink, icon },
     formType,
-    mode,
   }) {
     return (
       <ErrorBoundary dismissible>
@@ -137,7 +132,6 @@ const pluginRenderers: {
           formType={formType}
           icon={icon}
           id={id}
-          mode={mode}
           name={name}
           resource={resource}
           webLink={webLink}
@@ -145,20 +139,13 @@ const pluginRenderers: {
       </ErrorBoundary>
     );
   },
-  AttachmentPlugin({ resource, mode, id, name }) {
+  AttachmentPlugin({ resource, id, name }) {
     /*
      * Even though this permission is checked at form parse, still have to check
      * it as webOnlyViews.ts uses this plugin for ObjectAttachment view
      */
     if (hasTablePermission('Attachment', 'read'))
-      return (
-        <AttachmentsPlugin
-          id={id}
-          mode={mode}
-          name={name}
-          resource={resource}
-        />
-      );
+      return <AttachmentsPlugin id={id} name={name} resource={resource} />;
     else {
       console.error(
         "Can't display AttachmentPlugin. User has no read access to Attachment table"
@@ -168,7 +155,6 @@ const pluginRenderers: {
   },
   HostTaxonPlugin({
     resource,
-    mode,
     id,
     formType,
     isRequired,
@@ -192,7 +178,6 @@ const pluginRenderers: {
             formType={formType}
             id={id}
             isRequired={isRequired}
-            mode={mode}
             relationship={relationship}
             resource={collectingEventAttribute}
           />
@@ -247,7 +232,6 @@ export function FormPlugin({
   id,
   name,
   resource,
-  mode,
   fieldDefinition,
   field,
   formType,
@@ -256,7 +240,6 @@ export function FormPlugin({
   readonly id: string | undefined;
   readonly name: string | undefined;
   readonly resource: SpecifyResource<AnySchema> | undefined;
-  readonly mode: FormMode;
   readonly fieldDefinition: FieldTypes['Plugin'];
   readonly field: LiteralField | Relationship | undefined;
   readonly formType: FormType;
@@ -271,7 +254,6 @@ export function FormPlugin({
       formType={formType}
       id={id}
       isRequired={isRequired}
-      mode={mode}
       name={name}
       pluginDefinition={
         fieldDefinition.pluginDefinition as UiPlugins['AttachmentPlugin']

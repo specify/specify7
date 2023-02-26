@@ -13,7 +13,7 @@ import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { keysToLowerCase } from '../../utils/utils';
 import { DataEntry } from '../Atoms/DataEntry';
-import { LoadingContext } from '../Core/Contexts';
+import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { toTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -30,7 +30,7 @@ import {
   getMainTableFields,
   naiveFormatter,
 } from '../Formatters/formatters';
-import type { FormMode, FormType } from '../FormParse';
+import type { FormType } from '../FormParse';
 import { ResourceView, RESTRICT_ADDING } from '../Forms/ResourceView';
 import type { QueryComboBoxFilter } from '../SearchDialog';
 import { SearchDialog } from '../SearchDialog';
@@ -59,7 +59,6 @@ export function QueryComboBox({
   id,
   resource,
   field,
-  mode,
   formType,
   isRequired,
   hasCloneButton = false,
@@ -70,7 +69,6 @@ export function QueryComboBox({
   readonly id: string | undefined;
   readonly resource: SpecifyResource<AnySchema> | undefined;
   readonly field: Relationship;
-  readonly mode: FormMode;
   readonly formType: FormType;
   readonly isRequired: boolean;
   readonly hasCloneButton?: boolean;
@@ -342,13 +340,14 @@ export function QueryComboBox({
     !RESTRICT_ADDING.has(field.relatedTable.name) &&
     hasTablePermission(field.relatedTable.name, 'create');
 
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return (
     <div className="flex w-full items-center">
       <AutoComplete<string>
         aria-label={undefined}
         disabled={
           !isLoaded ||
-          mode === 'view' ||
+          isReadOnly ||
           formType === 'formTable' ||
           typeSearch === undefined ||
           /**
@@ -395,7 +394,7 @@ export function QueryComboBox({
         }
       />
       <span className="contents print:hidden">
-        {formType === 'formTable' ? undefined : mode === 'view' ? (
+        {formType === 'formTable' ? undefined : isReadOnly ? (
           formatted?.resource === undefined ||
           hasTablePermission(formatted.resource.specifyTable.name, 'read') ? (
             <DataEntry.View
@@ -461,7 +460,6 @@ export function QueryComboBox({
                           {},
                           {
                             noBusinessRules: true,
-                            noValidation: true,
                           }
                         ),
                         extraConditions: filterArray(
@@ -532,7 +530,6 @@ export function QueryComboBox({
           dialog="nonModal"
           isDependent={field.isDependent()}
           isSubForm={false}
-          mode={mode}
           resource={formatted.resource}
           onAdd={undefined}
           onClose={(): void => setState({ type: 'MainState' })}
@@ -552,7 +549,6 @@ export function QueryComboBox({
           dialog="nonModal"
           isDependent={false}
           isSubForm={false}
-          mode={mode}
           resource={state.resource}
           onAdd={undefined}
           onClose={(): void => setState({ type: 'MainState' })}

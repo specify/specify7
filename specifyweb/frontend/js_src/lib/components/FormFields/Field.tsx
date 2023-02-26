@@ -3,19 +3,15 @@ import React from 'react';
 import { useResourceValue } from '../../hooks/useResourceValue';
 import { commonText } from '../../localization/common';
 import type { Parser } from '../../utils/parser/definitions';
-import {
-  getValidationAttributes,
-  mergeParsers,
-} from '../../utils/parser/definitions';
-import type { IR } from '../../utils/types';
+import { getValidationAttributes } from '../../utils/parser/definitions';
 import { Input } from '../Atoms/Form';
+import { ReadOnlyContext, SearchDialogContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import { raise } from '../Errors/Crash';
 import { fetchPathAsString } from '../Formatters/formatters';
-import type { FormMode } from '../FormParse';
 import { usePref } from '../UserPreferences/usePref';
 
 export function UiField({
@@ -25,7 +21,6 @@ export function UiField({
   readonly id: string | undefined;
   readonly name: string | undefined;
   readonly resource: SpecifyResource<AnySchema> | undefined;
-  readonly mode: FormMode;
   readonly field: LiteralField | Relationship | undefined;
   readonly parser?: Parser;
 }): JSX.Element {
@@ -98,14 +93,12 @@ function Field({
   id,
   name,
   field,
-  mode,
   parser: defaultParser,
 }: {
   readonly resource: SpecifyResource<AnySchema> | undefined;
   readonly id: string | undefined;
   readonly name: string | undefined;
   readonly field: LiteralField | undefined;
-  readonly mode: FormMode;
   readonly parser?: Parser;
 }): JSX.Element {
   const { value, updateValue, validationRef, parser } = useResourceValue(
@@ -114,17 +107,11 @@ function Field({
     defaultParser
   );
 
-  const [validationAttributes, setAttributes] = React.useState<IR<string>>({});
-  React.useEffect(
-    () =>
-      setAttributes(
-        getValidationAttributes(mergeParsers(parser, defaultParser ?? {}))
-      ),
-    [parser, defaultParser]
-  );
-
+  const isInSearchDialog = React.useContext(SearchDialogContext);
   const isReadOnly =
-    mode === 'view' || (field?.isReadOnly === true && mode !== 'search');
+    React.useContext(ReadOnlyContext) ||
+    (field?.isReadOnly === true && !isInSearchDialog);
+  const validationAttributes = getValidationAttributes(parser);
 
   const [rightAlignNumberFields] = usePref(
     'form',
@@ -136,9 +123,12 @@ function Field({
       forwardRef={validationRef}
       name={name}
       {...validationAttributes}
-      // This is undefined when resource.noValidation = true
+      /*
+       * Disable "text-align: right" in non webkit browsers
+       * as they don't support spinner's arrow customization
+       */
       className={
-        validationAttributes.type === 'number' &&
+        parser.type === 'number' &&
         rightAlignNumberFields &&
         globalThis.navigator.userAgent.toLowerCase().includes('webkit')
           ? `text-right ${isReadOnly ? '' : 'pr-6'}`
@@ -146,21 +136,15 @@ function Field({
       }
       id={id}
       isReadOnly={isReadOnly}
-      /*
-       * Update data model value before onBlur, as onBlur fires after onSubmit
-       * if form is submitted using the ENTER key
-       */
-      required={'required' in validationAttributes && mode !== 'search'}
       tabIndex={isReadOnly ? -1 : undefined}
-      type={validationAttributes.type ?? 'text'}
-      /*
-       * Disable "text-align: right" in non webkit browsers
-       * as they don't support spinner's arrow customization
-       */
       value={value?.toString() ?? ''}
       onBlur={
         isReadOnly ? undefined : ({ target }): void => updateValue(target.value)
       }
+      /*
+       * Update data model value before onBlur, as onBlur fires after onSubmit
+       * if form is submitted using the ENTER key
+       */
       onChange={(event): void => {
         const input = event.target as HTMLInputElement;
         /*

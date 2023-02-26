@@ -16,6 +16,7 @@ import type { RR } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Input, Select } from '../Atoms/Form';
 import { dateParts } from '../Atoms/Internationalization';
+import { ReadOnlyContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
@@ -121,7 +122,6 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
   precisionField,
   defaultPrecision,
   defaultValue,
-  isReadOnly,
   id,
   canChangePrecision = true,
 }: {
@@ -130,7 +130,6 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
   readonly precisionField: (string & keyof SCHEMA['fields']) | undefined;
   readonly defaultPrecision: PartialDatePrecision;
   readonly defaultValue: Date | undefined;
-  readonly isReadOnly: boolean;
   readonly id: string | undefined;
   readonly canChangePrecision?: boolean;
 }): JSX.Element {
@@ -251,6 +250,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
     syncMoment,
   ]);
 
+  const isReadOnly = React.useContext(ReadOnlyContext);
   React.useEffect(() => {
     if (resource === undefined) return;
     /*

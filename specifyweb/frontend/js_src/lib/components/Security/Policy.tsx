@@ -10,6 +10,7 @@ import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Input, Label, Select } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
+import { ReadOnlyContext } from '../Core/Contexts';
 import { tableActions } from '../Permissions/definitions';
 import { getRegistriesFromPath } from './registry';
 import {
@@ -40,14 +41,12 @@ export const hasTableActions = (actions: RA<string>): boolean =>
 // REFACTOR: reduce size of this component
 export function SecurityPolicy({
   policy: { resource, actions },
-  isReadOnly,
   isResourceMapped,
   onChange: handleChange,
   scope,
   orientation,
 }: {
   readonly policy: Policy;
-  readonly isReadOnly: boolean;
   readonly isResourceMapped: (resource: string) => boolean;
   readonly onChange: (policy: Policy | undefined) => void;
   readonly scope: PolicyScope;
@@ -86,6 +85,8 @@ export function SecurityPolicy({
     ? f.unique([...possibleActions, ...(actions ?? [])])
     : undefined;
   const isTablePolicy = f.maybe(extendedActions, hasTableActions);
+
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return (
     <li className="flex flex-wrap gap-2">
       {!isReadOnly && (

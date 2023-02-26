@@ -58,7 +58,7 @@ export function FormattersPickList(props: DefaultComboBoxProps): JSX.Element {
     <PickListComboBox
       {...props}
       isDisabled={props.isDisabled || items === undefined || items.length === 0}
-      items={items}
+      items={items ?? []}
       pickList={undefined}
       onAdd={undefined}
     />

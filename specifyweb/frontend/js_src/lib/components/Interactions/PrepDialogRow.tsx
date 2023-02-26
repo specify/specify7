@@ -10,11 +10,12 @@ import { formatNumber } from '../Atoms/Internationalization';
 import { LoadingContext } from '../Core/Contexts';
 import { getField } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { tables } from '../DataModel/tables';
 import type { ExchangeOut, Gift, Loan } from '../DataModel/types';
 import { syncFieldFormat } from '../Formatters/fieldFormat';
 import { ResourceView } from '../Forms/ResourceView';
-import { getInteractionsForPrepId, Preparations } from './helpers';
-import { tables } from '../DataModel/tables';
+import type { Preparations } from './helpers';
+import { getInteractionsForPrepId } from './helpers';
 
 export function PrepDialogRow({
   preparation,
@@ -170,7 +171,6 @@ export function PrepDialogRow({
           dialog="modal"
           isDependent={false}
           isSubForm={false}
-          mode="edit"
           resource={state.resource}
           onAdd={undefined}
           onClose={(): void => setState({ type: 'Main' })}

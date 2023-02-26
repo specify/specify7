@@ -83,7 +83,6 @@ function eventHandlerForToOne(related, field) {
         },
         initialize(attributes, options) {
             this.noBusinessRules = options && options.noBusinessRules;
-            this.noValidation = options && options.noValidation;
 
             /*
              * If initialized with some attributes that include a resource_uri,

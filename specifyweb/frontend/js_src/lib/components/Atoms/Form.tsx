@@ -65,9 +65,9 @@ export const Input = {
   Radio: wrap<
     'input',
     {
-      readonly readOnly?: never;
+      readonly readOnly?: 'Use isReadOnly instead';
       readonly isReadOnly?: boolean;
-      readonly type?: never;
+      readonly type?: 'If you need to specify type, use Input.Generic';
       // This is used to forbid accidentally passing children
       readonly children?: undefined;
     }
@@ -105,9 +105,9 @@ export const Input = {
     'input',
     {
       readonly onValueChange?: (isChecked: boolean) => void;
-      readonly readOnly?: never;
+      readonly readOnly?: 'Use isReadOnly instead';
       readonly isReadOnly?: boolean;
-      readonly type?: never;
+      readonly type?: 'If you need to specify type, use Input.Generic';
       readonly children?: undefined;
     }
   >(
@@ -131,7 +131,7 @@ export const Input = {
     {
       readonly onValueChange?: (value: string) => void;
       readonly type?: 'If you need to specify type, use Input.Generic';
-      readonly readOnly?: never;
+      readonly readOnly?: 'Use isReadOnly instead';
       readonly isReadOnly?: boolean;
       readonly children?: undefined;
     }
@@ -155,7 +155,7 @@ export const Input = {
     {
       readonly onValueChange?: (value: string) => void;
       readonly onDatePaste?: (value: string) => void;
-      readonly readOnly?: never;
+      readonly readOnly?: 'Use isReadOnly instead';
       readonly isReadOnly?: boolean;
       readonly children?: undefined;
     }
@@ -194,8 +194,8 @@ export const Input = {
                 'text/plain'
               );
             handleDatePaste(value);
-          } catch (error: unknown) {
-            softFail(error);
+          } catch (error) {
+            softFail(error as Error);
           }
 
           event.preventDefault();
@@ -211,8 +211,8 @@ export const Input = {
     'input',
     {
       readonly onValueChange?: (value: number) => void;
-      readonly type?: never;
-      readonly readOnly?: never;
+      readonly type?: 'If you need to specify type, use Input.Generic';
+      readonly readOnly?: 'Use isReadOnly instead';
       readonly isReadOnly?: boolean;
       readonly children?: undefined;
     }
@@ -239,7 +239,7 @@ export const Textarea = wrap<
   {
     readonly children?: undefined;
     readonly onValueChange?: (value: string) => void;
-    readonly readOnly?: never;
+    readonly readOnly?: 'Use isReadOnly instead';
     readonly isReadOnly?: boolean;
     readonly autoGrow?: boolean;
   }
