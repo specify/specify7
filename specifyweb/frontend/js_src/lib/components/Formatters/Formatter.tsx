@@ -10,7 +10,11 @@ import { Input, Label } from '../Atoms/Form';
 import { ReadOnlyContext } from '../Core/Contexts';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
-import { FormattersPickList, ResourceMapping } from './Components';
+import {
+  FieldFormattersPickList,
+  FormattersPickList,
+  ResourceMapping,
+} from './Components';
 import type { Formatter } from './spec';
 
 export function FormatterElement({
@@ -224,9 +228,19 @@ function FieldFormatter({
 }): JSX.Element | null {
   const lastField = field.field?.at(-1);
   if (lastField === undefined) return null;
-  /*
-   * FIXME: display a field formatter
-   */ else if (!lastField.isRelationship) return null;
+  else if (!lastField.isRelationship)
+    return (
+      <FieldFormattersPickList
+        table={lastField.table}
+        value={field.fieldFormatter}
+        onChange={(fieldFormatter): void =>
+          handleChange({
+            ...field,
+            fieldFormatter,
+          })
+        }
+      />
+    );
   else if (relationshipIsToMany(lastField))
     return (
       <Label.Inline>

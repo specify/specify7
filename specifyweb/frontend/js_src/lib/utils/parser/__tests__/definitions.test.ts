@@ -29,6 +29,7 @@ import {
   stringGuard,
   validators,
 } from '../definitions';
+import { tables } from '../../../components/DataModel/tables';
 
 requireContext();
 
@@ -67,7 +68,12 @@ const formatterFields = [
     pattern: '\\d{1,2}',
   }),
 ];
-const uiFormatter = new UiFormatter(false, 'test', formatterFields);
+const uiFormatter = new UiFormatter(
+  false,
+  'test',
+  formatterFields,
+  tables.CollectionObject
+);
 const title = formsText.requiredFormat({ format: uiFormatter.pattern()! });
 
 describe('resolveParser', () => {

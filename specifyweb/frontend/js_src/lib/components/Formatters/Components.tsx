@@ -8,6 +8,7 @@ import { wbPlanText } from '../../localization/wbPlan';
 import { f } from '../../utils/functools';
 import type { GetSet, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
+import { multiSortFunction, sortFunction } from '../../utils/utils';
 import { Ul } from '../Atoms';
 import { Input } from '../Atoms/Form';
 import { ReadOnlyContext } from '../Core/Contexts';
@@ -53,7 +54,10 @@ export function FormattersPickList({
   const { parsed } = useOutletContext<FormatterTypesOutlet>();
   const allFormatters: RA<Aggregator | Formatter> = parsed[type];
   const formatters = React.useMemo(
-    () => allFormatters.filter((formatter) => formatter.table === table),
+    () =>
+      allFormatters
+        .filter((formatter) => formatter.table === table)
+        .sort(sortFunction(({ title }) => title)),
     [allFormatters, table]
   );
 
@@ -80,15 +84,33 @@ export function FormattersPickList({
 }
 
 export function FieldFormattersPickList({
+  table,
   value,
   onChange: handleChange,
 }: {
+  readonly table: SpecifyTable;
   readonly value: string | undefined;
   readonly onChange: (value: string) => void;
 }): JSX.Element {
   const isReadOnly = React.useContext(ReadOnlyContext);
   const id = useId('formatters');
-  const [formatters] = usePromise(fetchFieldFormatters, false);
+  const [allFormatters = {}] = usePromise(fetchFieldFormatters, false);
+  const formatters = React.useMemo(
+    () =>
+      Object.entries(allFormatters)
+        .filter(
+          ([_name, formatter]) =>
+            formatter.table === undefined || formatter.table === table
+        )
+        .sort(
+          multiSortFunction(
+            ([_name, { table }]) => typeof table === 'object',
+            true,
+            ([_name, { title }]) => title
+          )
+        ),
+    [allFormatters, table]
+  );
 
   return (
     <>
@@ -102,7 +124,7 @@ export function FieldFormattersPickList({
         onValueChange={handleChange}
       />
       <datalist id={id('list')}>
-        {Object.entries(formatters ?? {}).map(([name, formatter]) => (
+        {formatters.map(([name, formatter]) => (
           <option key={name} value={name}>
             {formatter.title ?? name}
           </option>

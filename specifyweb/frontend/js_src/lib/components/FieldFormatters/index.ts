@@ -11,6 +11,8 @@ import { load } from '../InitialContext';
 import { formatUrl } from '../Router/queryString';
 import { xmlToSpec } from '../Syncer/xmlUtils';
 import { fieldFormattersSpec } from './spec';
+import { SpecifyTable } from '../DataModel/specifyTable';
+import { tables } from '../DataModel/tables';
 
 let uiFormatters: IR<UiFormatter>;
 export const fetchContext = Promise.all([
@@ -43,7 +45,8 @@ export const fetchContext = Promise.all([
             resolvedFormatter = new UiFormatter(
               formatter.isSystem,
               formatter.title ?? formatter.name,
-              fields
+              fields,
+              formatter.table
             );
           }
 
@@ -61,7 +64,8 @@ export class UiFormatter {
   public constructor(
     public readonly isSystem: boolean,
     public readonly title: string,
-    public readonly fields: RA<Field>
+    public readonly fields: RA<Field>,
+    public readonly table: SpecifyTable | undefined
   ) {}
 
   /**
@@ -229,13 +233,18 @@ class CatalogNumberNumericField extends NumericField {
 
 class CatalogNumberNumeric extends UiFormatter {
   public constructor() {
-    super(true, 'Catalog Number Numeric', [
-      new CatalogNumberNumericField({
-        size: 9,
-        autoIncrement: true,
-        byYear: false,
-      }),
-    ]);
+    super(
+      true,
+      'Catalog Number Numeric',
+      [
+        new CatalogNumberNumericField({
+          size: 9,
+          autoIncrement: true,
+          byYear: false,
+        }),
+      ],
+      tables.CollectionObject
+    );
   }
 }
 
