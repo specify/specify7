@@ -2,7 +2,6 @@ import React from 'react';
 
 import { cacheEvents, getCache, setCache } from '../utils/cache';
 import type { CacheDefinitions } from '../utils/cache/definitions';
-import { f } from '../utils/functools';
 import type { GetOrSet } from '../utils/types';
 
 /**
@@ -29,9 +28,14 @@ export function useCachedState<
   >(() => getCache(category, key));
 
   const setCachedState = React.useCallback<
-    GetOrSet<CacheDefinitions[CATEGORY][KEY] | undefined>[1]
+    (
+      newValue: Parameters<
+        GetOrSet<CacheDefinitions[CATEGORY][KEY] | undefined>[1]
+      >[0],
+      triggerChange?: boolean
+    ) => void
   >(
-    (newValue) => {
+    (newValue, triggerChange = true) => {
       if (newValue === undefined) return;
       const resolvedValue =
         typeof newValue === 'function'
@@ -42,18 +46,19 @@ export function useCachedState<
             )(getCache(category, key))
           : newValue;
       if (resolvedValue === undefined) return;
-      setState(setCache(category, key, resolvedValue));
+      setState(setCache(category, key, resolvedValue, triggerChange));
     },
     [category, key]
   );
 
   React.useEffect(
     () =>
-      cacheEvents.on('change', () =>
-        f.maybe(getCache(category, key), (newValue) =>
-          state === newValue ? undefined : setCachedState(newValue)
-        )
-      ),
+      cacheEvents.on('change', (changed) => {
+        if (changed.category !== category || changed.key !== key) return;
+        const newValue = getCache(category, key);
+        if (JSON.stringify(state) === JSON.stringify(newValue)) return;
+        setCachedState(newValue, false);
+      }),
     [state, category, key, setCachedState]
   );
 
