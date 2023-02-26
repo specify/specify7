@@ -26,6 +26,7 @@ import { MappingPathComponent } from './LineComponents';
 import type { MappingPath } from './Mapper';
 import { getMappingLineData } from './navigator';
 import type { ColumnOptions, MatchBehaviors } from './uploadPlanParser';
+import { navigatorSpecs } from './navigatorSpecs';
 
 export function MappingsControlPanel({
   showHiddenFields,
@@ -108,6 +109,7 @@ export function ValidationResults(props: {
                 getMappedFields: props.getMappedFields,
                 mustMatchPreferences: props.mustMatchPreferences,
                 generateFieldData: 'selectedOnly',
+                spec: navigatorSpecs.wbPlanView,
               }).map((data) => ({
                 ...data,
                 isOpen: true,

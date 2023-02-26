@@ -45,7 +45,8 @@ import {
 } from './FieldFilter';
 import type { DatePart } from './fieldSpec';
 import type { QueryField } from './helpers';
-import { excludeMappingParts, sortTypes } from './helpers';
+import { sortTypes } from './helpers';
+import { navigatorSpecs } from '../WbPlanView/navigatorSpecs';
 
 // REFACTOR: split this component into smaller components
 export function QueryLine({
@@ -199,12 +200,12 @@ export function QueryLine({
     mappingPath: field.mappingPath,
     showHiddenFields,
     generateFieldData: 'all',
-    scope: 'queryBuilder',
+    spec: navigatorSpecs.queryBuilder,
     getMappedFields,
   });
 
   const mappingLineProps = getMappingLineProps({
-    mappingLineData: excludeMappingParts(lineData),
+    mappingLineData: lineData,
     customSelectType: 'CLOSED_LIST',
     onChange: handleMappingChange,
     onOpen: handleOpen,

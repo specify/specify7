@@ -35,6 +35,7 @@ import { getMappingLineData } from './navigator';
 import { uploadPlanBuilder } from './uploadPlanBuilder';
 import type { Dataset } from './Wrapped';
 import { schema } from '../DataModel/schema';
+import { navigatorSpecs } from './navigatorSpecs';
 
 export async function savePlan({
   dataset,
@@ -149,6 +150,7 @@ export function getMustMatchTables({
       mappingPath,
       baseTableName,
       generateFieldData: 'none',
+      spec: navigatorSpecs.wbPlanView,
     }).filter(
       (mappingElementData, index, list) =>
         // Exclude base table
@@ -335,6 +337,7 @@ export async function fetchAutoMapperSuggestions({
     showHiddenFields: true,
     getMappedFields: getMappedFields.bind(undefined, lines),
     generateFieldData: 'all',
+    spec: navigatorSpecs.wbPlanView,
   }).slice(-1);
 
   // Don't show suggestions if picklist has only one field / no fields
@@ -376,6 +379,7 @@ export async function fetchAutoMapperSuggestions({
         mappingPath: autoMapperResult,
         getMappedFields: getMappedFields.bind(undefined, lines),
         generateFieldData: 'selectedOnly',
+        spec: navigatorSpecs.wbPlanView,
       })
         .slice(baseMappingPath.length - pathOffset)
         .map((data) => ({

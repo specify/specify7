@@ -56,6 +56,7 @@ import { findRequiredMissingFields } from './modelHelpers';
 import { getMappingLineData } from './navigator';
 import type { ColumnOptions } from './uploadPlanParser';
 import type { Dataset } from './Wrapped';
+import { navigatorSpecs } from './navigatorSpecs';
 
 /*
  * Scope is used to differentiate between mapper definitions that should
@@ -447,6 +448,7 @@ export function Mapper(props: {
               showHiddenFields: state.showHiddenFields,
               mustMatchPreferences: state.mustMatchPreferences,
               generateFieldData: 'all',
+              spec: navigatorSpecs.wbPlanView,
             }),
             customSelectType: 'OPENED_LIST',
             onChange({ isDoubleClick, ...rest }) {
@@ -534,6 +536,7 @@ export function Mapper(props: {
               showHiddenFields: state.showHiddenFields,
               mustMatchPreferences: state.mustMatchPreferences,
               generateFieldData: 'all',
+              spec: navigatorSpecs.wbPlanView,
             }),
           });
 

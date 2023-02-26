@@ -10,21 +10,17 @@ import { queryText } from '../../localization/query';
 import type { IR, RA, WritableArray } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import { dateParts } from '../Atoms/Internationalization';
-import { getFrontEndOnlyFields, strictGetTable } from '../DataModel/tables';
 import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
+import { getFrontEndOnlyFields, strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import {
   isTreeTable,
   strictGetTreeDefinitionItems,
 } from '../InitialContext/treeRanks';
-import {
-  hasPermission,
-  hasTablePermission,
-  hasTreeAccess,
-} from '../Permissions/helpers';
-import { getUserPref } from '../UserPreferences/helpers';
+import { hasTablePermission, hasTreeAccess } from '../Permissions/helpers';
 import type { CustomSelectSubtype } from './CustomSelectElement';
+import { emptyMapping } from './helpers';
 import type {
   HtmlGeneratorFieldData,
   MappingElementProps,
@@ -32,12 +28,10 @@ import type {
 import type { MappingPath } from './Mapper';
 import {
   anyTreeRank,
-  FieldType,
   formatPartialField,
   formattedEntry,
   formatToManyIndex,
   formatTreeRank,
-  getFieldType,
   getGenericMappingPath,
   getNameFromTreeRankName,
   parsePartialField,
@@ -47,16 +41,12 @@ import {
   valueIsTreeRank,
 } from './mappingHelpers';
 import { getMaxToManyIndex, isCircularRelationship } from './modelHelpers';
-import { emptyMapping } from './helpers';
+import type { NavigatorSpec } from './navigatorSpecs';
 
 type NavigationCallbackPayload = {
   readonly table: SpecifyTable;
   readonly parentRelationship?: Relationship;
 };
-
-type NavigatorCallbackFunction<RETURN_TYPE> = (
-  callbackPayload: Readonly<NavigationCallbackPayload>
-) => RETURN_TYPE;
 
 type NavigationCallbacks = {
   // Should return undefined if next element does not exist
@@ -73,11 +63,17 @@ type NavigationCallbacks = {
       }
     | undefined;
   // Handles toMany children
-  readonly handleToManyChildren: NavigatorCallbackFunction<void>;
+  readonly handleToManyChildren: (
+    callbackPayload: Readonly<NavigationCallbackPayload>
+  ) => void;
   // Handles tree ranks children
-  readonly handleTreeRanks: NavigatorCallbackFunction<void>;
+  readonly handleTreeRanks: (
+    callbackPayload: Readonly<NavigationCallbackPayload>
+  ) => void;
   // Handles field and relationships
-  readonly handleSimpleFields: NavigatorCallbackFunction<void>;
+  readonly handleSimpleFields: (
+    callbackPayload: Readonly<NavigationCallbackPayload>
+  ) => void;
 };
 
 /**
@@ -192,10 +188,9 @@ export function getMappingLineData({
   mappingPath,
   generateFieldData = 'all',
   getMappedFields,
-  allowedRelationships,
   showHiddenFields = false,
   mustMatchPreferences = {},
-  scope = 'wbPlanView',
+  spec,
 }: {
   readonly baseTableName: keyof Tables;
   // The mapping path
@@ -207,16 +202,14 @@ export function getMappingLineData({
    */
   readonly generateFieldData: 'all' | 'none' | 'selectedOnly';
   readonly getMappedFields?: (mappingPath: MappingPath) => RA<string>;
-  readonly allowedRelationships?: RA<FieldType>;
   readonly showHiddenFields?: boolean;
   readonly mustMatchPreferences?: IR<boolean>;
-  // WbPlanView has readOnly fields removed
-  readonly scope?: 'queryBuilder' | 'wbPlanView';
+  readonly spec: NavigatorSpec;
 }): RA<MappingLineData> {
-  const isNoRestrictionsMode =
-    scope === 'queryBuilder'
-      ? getUserPref('queryBuilder', 'general', 'noRestrictionsMode')
-      : getUserPref('workBench', 'wbPlanView', 'noRestrictionsMode');
+  const isNoRestrictionsMode = spec.isNoRestrictions();
+  const canDoAction = spec.hasActionPermission();
+  const ensurePermission = spec.ensurePermission();
+
   const internalState: {
     // eslint-disable-next-line functional/prefer-readonly-type
     position: number;
@@ -262,17 +255,6 @@ export function getMappingLineData({
     mappingPath.at(-1) === emptyMapping
       ? mappingPath.length - 1
       : mappingPath.length - 2;
-
-  /*
-   * If user doesn't have upload a data set, there is no need to remove
-   * tables without create access from the mapper
-   */
-  const canDoWbUpload = hasPermission('/workbench/dataset', 'upload');
-  /*
-   * Similar for the query builder: if can't run a query, no need to remove
-   * tables without read access
-   */
-  const canExecuteQuery = hasPermission('/querybuilder/query', 'execute');
 
   const callbacks: NavigationCallbacks = {
     getNextDirection() {
@@ -347,7 +329,7 @@ export function getMappingLineData({
           !hasTreeAccess(table.name as 'Geography', 'read')
           ? []
           : [
-              scope === 'queryBuilder' &&
+              spec.includeAnyTreeRank &&
               (generateFieldData === 'all' ||
                 internalState.defaultValue === formatTreeRank(anyTreeRank))
                 ? [
@@ -363,33 +345,38 @@ export function getMappingLineData({
                     },
                   ]
                 : undefined,
-              ...strictGetTreeDefinitionItems(
-                table.name as 'Geography',
-                false
-              ).map(({ name, title }) =>
-                name === defaultValue || generateFieldData === 'all'
-                  ? ([
-                      formatTreeRank(name),
-                      {
-                        optionLabel: title ?? name,
-                        isRelationship: true,
-                        isDefault: name === defaultValue,
-                        tableName: table.name,
-                      },
-                    ] as const)
-                  : undefined
-              ),
+              ...(spec.includeSpecificTreeRanks
+                ? strictGetTreeDefinitionItems(
+                    table.name as 'Geography',
+                    false
+                  ).map(({ name, title }) =>
+                    name === defaultValue || generateFieldData === 'all'
+                      ? ([
+                          formatTreeRank(name),
+                          {
+                            optionLabel: title ?? name,
+                            isRelationship: true,
+                            isDefault: name === defaultValue,
+                            tableName: table.name,
+                          },
+                        ] as const)
+                      : undefined
+                  )
+                : []),
             ]
       );
     },
 
-    // REFACTOR: make this more readable
     handleSimpleFields({ table, parentRelationship }) {
-      if (generateFieldData === 'none')
-        return commitInstanceData('simple', table, []);
+      if (generateFieldData === 'none') {
+        commitInstanceData('simple', table, []);
+        return;
+      }
 
       const formatted =
-        scope === 'queryBuilder' &&
+        spec.includeFormattedAggregated &&
+        (spec.includeRootFormattedAggregated ||
+          internalState.mappingLineData.length !== 0) &&
         ((generateFieldData === 'all' &&
           (!isTreeTable(table.name) ||
             mappingPath[internalState.position - 1] ===
@@ -409,6 +396,18 @@ export function getMappingLineData({
               },
             ] as const)
           : undefined;
+
+      if (!spec.allowTransientToMany) {
+        const isInToMany = internalState.mappingLineData.some(
+          ({ customSelectSubtype }) => customSelectSubtype === 'toMany'
+        );
+        if (isInToMany)
+          /*
+           * Uncomment to explicitly allow mapping to "(aggregated)":
+           * commitInstanceData('simple', table, [formatted]);
+           */
+          return;
+      }
 
       /*
        * Add ID field to the list if it is selected or hidden fields
@@ -443,77 +442,69 @@ export function getMappingLineData({
         idField,
         ...table.fields
           .filter((field) => {
-            let isIncluded =
-              (generateFieldData === 'all' ||
-                field.name === internalState.parsedDefaultValue[0]) &&
-              isFieldVisible(
-                showHiddenFields,
-                scope === 'queryBuilder'
-                  ? field.isHidden
-                  : field.overrides.isHidden,
-                field.name
-              ) &&
-              (isNoRestrictionsMode ||
-                // Display read only fields in query builder only
-                scope === 'queryBuilder' ||
-                !field.overrides.isReadOnly) &&
-              // Hide most fields for non "any" tree ranks in query builder
-              (scope !== 'queryBuilder' ||
-                !isTreeTable(table.name) ||
-                mappingPath[internalState.position - 1] ===
-                  formatTreeRank(anyTreeRank) ||
-                queryBuilderTreeFields.has(field.name)) &&
+            let isIncluded = true;
+
+            isIncluded &&=
+              generateFieldData === 'all' ||
+              field.name === internalState.parsedDefaultValue[0];
+
+            isIncluded &&= isFieldVisible(
+              showHiddenFields,
+              spec.useSchemaOverrides
+                ? field.overrides.isHidden
+                : field.isHidden,
+              field.name
+            );
+
+            isIncluded &&=
+              isNoRestrictionsMode ||
+              spec.includeReadOnly ||
+              !field.overrides.isReadOnly;
+
+            isIncluded &&=
+              spec.includeAllTreeFields ||
+              !isTreeTable(table.name) ||
+              mappingPath[internalState.position - 1] ===
+                formatTreeRank(anyTreeRank) ||
+              queryBuilderTreeFields.has(field.name);
+
+            isIncluded &&=
               getFrontEndOnlyFields()[table.name]?.includes(field.name) !==
-                true;
+              true;
+
             if (field.isRelationship) {
-              // eslint-disable-next-line unicorn/prefer-ternary
-              if (scope === 'wbPlanView') {
-                /*
-                 * Hide nested -to-many relationships as they are not
-                 * supported by the WorkBench
-                 */
-                isIncluded &&=
-                  (parentRelationship === undefined ||
-                    (!isCircularRelationship(parentRelationship, field) &&
-                      !(
-                        relationshipIsToMany(field) &&
-                        relationshipIsToMany(parentRelationship)
-                      ))) &&
-                  (!canDoWbUpload ||
-                    (isTreeTable(table.name)
-                      ? hasTreeAccess(table.name, 'create')
-                      : hasTablePermission(
-                          field.relatedTable.name,
-                          'create'
-                        )) ||
-                    getUserPref(
-                      'workBench',
-                      'wbPlanView',
-                      'showNoAccessTables'
-                    )) &&
-                  /*
-                   * Hide relationship from tree tables in WbPlanView as they
-                   * are not supported by the WorkBench
-                   */
-                  !isTreeTable(table.name) &&
-                  /*
-                   * Hide -to-many relationships to a tree table as they are
-                   * not supported by the WorkBench
-                   */
-                  (!relationshipIsToMany(field) ||
-                    !isTreeTable(field.relatedTable.name));
-              } else {
-                isIncluded &&=
-                  !canExecuteQuery ||
-                  (isTreeTable(table.name)
-                    ? hasTreeAccess(table.name, 'read')
-                    : hasTablePermission(field.relatedTable.name, 'read')) ||
-                  getUserPref('queryBuilder', 'general', 'showNoReadTables');
-              }
               isIncluded &&=
-                allowedRelationships === undefined ||
-                allowedRelationships.includes(getFieldType(field));
+                spec.allowNestedToMany ||
+                parentRelationship === undefined ||
+                (!isCircularRelationship(parentRelationship, field) &&
+                  !(
+                    relationshipIsToMany(field) &&
+                    relationshipIsToMany(parentRelationship)
+                  ));
+
+              isIncluded &&=
+                !canDoAction ||
+                ensurePermission === undefined ||
+                (isTreeTable(table.name)
+                  ? hasTreeAccess(table.name, ensurePermission)
+                  : hasTablePermission(
+                      field.relatedTable.name,
+                      ensurePermission
+                    ));
+
+              isIncluded &&=
+                spec.includeRelationshipsFromTree || !isTreeTable(table.name);
+
+              isIncluded &&=
+                spec.includeToManyToTree ||
+                /*
+                 * Hide -to-many relationships to a tree table as they are
+                 * not supported by the WorkBench
+                 */
+                !relationshipIsToMany(field) ||
+                !isTreeTable(field.relatedTable.name);
             }
+
             return isIncluded;
           })
           .flatMap((field) => {
@@ -525,25 +516,23 @@ export function getMappingLineData({
                 !internalState.mappedFields.includes(field.name) ||
                 // Or is a relationship
                 field.isRelationship,
-              // All fields are optional in the query builder
               isRequired:
-                scope !== 'queryBuilder' &&
+                spec.enforceRequiredFields &&
                 field.overrides.isRequired &&
                 !mustMatchPreferences[table.name] &&
                 // Relationships to system tables are not required by the uploader
                 (!field.isRelationship ||
                   !field.relatedTable.overrides.isSystem),
-              isHidden:
-                scope === 'queryBuilder'
-                  ? field.isHidden
-                  : field.overrides.isHidden,
+              isHidden: spec.useSchemaOverrides
+                ? field.overrides.isHidden
+                : field.isHidden,
               isDefault: field.name === internalState.defaultValue,
               isRelationship: field.isRelationship,
               tableName: field.isRelationship
                 ? field.relatedTable.name
                 : undefined,
             };
-            return scope === 'queryBuilder' && field.isTemporal()
+            return spec.includePartialDates && field.isTemporal()
               ? Object.entries({
                   fullDate: commonText.fullDate(),
                   ...dateParts,
@@ -576,7 +565,7 @@ export function getMappingLineData({
               : ([[field.name, fieldData]] as const);
           }),
       ] as const;
-      return commitInstanceData('simple', table, fieldsData);
+      commitInstanceData('simple', table, fieldsData);
     },
   };
 
@@ -585,5 +574,9 @@ export function getMappingLineData({
     baseTableName,
   });
 
-  return internalState.mappingLineData;
+  return spec.includeToManyReferenceNumbers
+    ? internalState.mappingLineData
+    : internalState.mappingLineData.filter(
+        ({ customSelectSubtype }) => customSelectSubtype !== 'toMany'
+      );
 }

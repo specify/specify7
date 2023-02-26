@@ -16,7 +16,6 @@ import {
   splitJoinedMappingPath,
   valueIsToManyIndex,
 } from '../WbPlanView/mappingHelpers';
-import type { MappingLineData } from '../WbPlanView/navigator';
 import type { QueryFieldFilter } from './FieldFilter';
 import { queryFieldFilters } from './FieldFilter';
 import { QueryFieldSpec } from './fieldSpec';
@@ -307,13 +306,6 @@ export function hasLocalityColumns(fields: RA<QueryField>): boolean {
   );
   return fieldNames.has('latitude1') && fieldNames.has('longitude1');
 }
-
-export const excludeMappingParts = (
-  lineData: RA<MappingLineData>
-): RA<MappingLineData> =>
-  lineData.filter(
-    ({ customSelectSubtype }) => customSelectSubtype !== 'toMany'
-  );
 
 export function smoothScroll(element: HTMLElement, top: number): void {
   if (typeof element.scrollTo === 'function')

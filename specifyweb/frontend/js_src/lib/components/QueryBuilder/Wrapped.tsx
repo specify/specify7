@@ -43,14 +43,11 @@ import { QueryExportButtons } from './Export';
 import { QueryFields } from './Fields';
 import { QueryFromMap } from './FromMap';
 import { QueryHeader } from './Header';
-import {
-  excludeMappingParts,
-  smoothScroll,
-  unParseQueryFields,
-} from './helpers';
+import { smoothScroll, unParseQueryFields } from './helpers';
 import { getInitialState, reducer } from './reducer';
 import { QueryResultsWrapper } from './ResultsWrapper';
 import { QueryToolbar } from './Toolbar';
+import { navigatorSpecs } from '../WbPlanView/navigatorSpecs';
 
 const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 
@@ -344,16 +341,14 @@ export function QueryBuilder({
           {state.showMappingView && (
             <MappingView
               mappingElementProps={getMappingLineProps({
-                mappingLineData: excludeMappingParts(
-                  getMappingLineData({
-                    baseTableName: state.baseTableName,
-                    mappingPath: state.mappingView,
-                    showHiddenFields,
-                    generateFieldData: 'all',
-                    scope: 'queryBuilder',
-                    getMappedFields: getMappedFieldsBind,
-                  })
-                ),
+                mappingLineData: getMappingLineData({
+                  baseTableName: state.baseTableName,
+                  mappingPath: state.mappingView,
+                  showHiddenFields,
+                  generateFieldData: 'all',
+                  spec: navigatorSpecs.queryBuilder,
+                  getMappedFields: getMappedFieldsBind,
+                }),
                 customSelectType: 'OPENED_LIST',
                 onChange({ isDoubleClick, ...rest }) {
                   if (isDoubleClick && mapButtonEnabled) handleAddField();

@@ -23,6 +23,7 @@ import {
   valueIsTreeRank,
 } from './mappingHelpers';
 import { getMappingLineData } from './navigator';
+import { navigatorSpecs } from './navigatorSpecs';
 
 /** Use table name instead of field name for the following fields: */
 const fieldsToHide = new Set<string>([
@@ -92,7 +93,7 @@ export function generateMappingPathPreview(
     baseTableName,
     mappingPath,
     generateFieldData: 'selectedOnly',
-    scope: 'queryBuilder',
+    spec: navigatorSpecs.permissive,
   });
 
   const fieldLabels = [

@@ -14,10 +14,8 @@ import { Input } from '../Atoms/Form';
 import { ReadOnlyContext } from '../Core/Contexts';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
-import { tables } from '../DataModel/tables';
 import { fetchContext as fetchFieldFormatters } from '../FieldFormatters';
 import { join } from '../Molecules';
-import { excludeMappingParts } from '../QueryBuilder/helpers';
 import { emptyMapping, mutateMappingPath } from '../WbPlanView/helpers';
 import {
   getMappingLineProps,
@@ -26,10 +24,8 @@ import {
 } from '../WbPlanView/LineComponents';
 import { handleMappingLineKey } from '../WbPlanView/Mapper';
 import {
-  anyTreeRank,
   formattedEntry,
   formatToManyIndex,
-  formatTreeRank,
   parsePartialField,
   relationshipIsToMany,
   valueIsPartialField,
@@ -37,6 +33,7 @@ import {
   valueIsTreeRank,
 } from '../WbPlanView/mappingHelpers';
 import { getMappingLineData } from '../WbPlanView/navigator';
+import { navigatorSpecs } from '../WbPlanView/navigatorSpecs';
 import type { Aggregator, Formatter } from './spec';
 import type { FormatterTypesOutlet } from './Types';
 
@@ -167,16 +164,13 @@ export function ResourceMapping({
 
   const lineData = React.useMemo(
     () =>
-      // FIXME: don't allow partial date mappings
-      excludeMappingParts(
-        getMappingLineData({
-          baseTableName: table.name,
-          mappingPath,
-          showHiddenFields: true,
-          generateFieldData: 'all',
-          scope: 'queryBuilder',
-        })
-      ),
+      getMappingLineData({
+        baseTableName: table.name,
+        mappingPath,
+        showHiddenFields: true,
+        generateFieldData: 'all',
+        spec: navigatorSpecs.formatterEditor,
+      }),
     [table.name, mappingPath]
   );
 
@@ -185,26 +179,7 @@ export function ResourceMapping({
       isRequired &&
       (mappingPath.length === 0 || mappingPath[0] === emptyMapping)
         ? [wbPlanText.mappingIsRequired()]
-        : lineData.map(
-            ({ tableName, defaultValue, customSelectSubtype }, index) => {
-              if (
-                customSelectSubtype === 'tree' &&
-                defaultValue !== formatTreeRank(anyTreeRank) &&
-                defaultValue !== '0'
-              )
-                return wbPlanText.mappingToTreeNotSupported();
-              const field =
-                typeof tableName === 'string'
-                  ? tables[tableName].getField(defaultValue)
-                  : undefined;
-              return field?.isRelationship === true &&
-                relationshipIsToMany(field) &&
-                lineData[index + 1]?.defaultValue !== '0' &&
-                lineData[index + 1]?.defaultValue !== formattedEntry
-                ? wbPlanText.transientToManyNotAllowed()
-                : undefined;
-            }
-          ),
+        : [],
     [lineData, mappingPath, isRequired]
   );
 

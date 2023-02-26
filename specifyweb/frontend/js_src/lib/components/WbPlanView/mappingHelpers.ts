@@ -6,7 +6,7 @@
 
 import type { R, RA, WritableArray } from '../../utils/types';
 import { schema } from '../DataModel/schema';
-import type { LiteralField, Relationship } from '../DataModel/specifyField';
+import type { Relationship } from '../DataModel/specifyField';
 import type { CollectionObject } from '../DataModel/types';
 import type { MappingPath } from './Mapper';
 import type { ColumnOptions } from './uploadPlanParser';
@@ -23,16 +23,6 @@ export const relationshipIsToMany = (
   relationship?.type === 'zero-to-one';
 
 export type FieldType = Exclude<keyof CollectionObject, 'tableName'>;
-export const getFieldType = (field: LiteralField | Relationship): FieldType =>
-  field.isRelationship
-    ? relationshipIsToMany(field)
-      ? field.isDependent()
-        ? 'toManyDependent'
-        : 'toManyIndependent'
-      : field.isDependent()
-      ? 'toOneDependent'
-      : 'toOneIndependent'
-    : 'fields';
 
 /** Returns whether a value is a -to-many index (e.x #1, #2, etc...) */
 export const valueIsToManyIndex = (value: string | undefined): boolean =>

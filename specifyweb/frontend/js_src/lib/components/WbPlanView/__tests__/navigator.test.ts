@@ -3,6 +3,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
 import { getMappingLineData } from '../navigator';
+import { navigatorSpecs } from '../navigatorSpecs';
 
 requireContext();
 
@@ -15,6 +16,8 @@ theories(getMappingLineData, [
         mappingPath: ['determinations', '#1', 'taxon', '$Family', 'name'],
         showHiddenFields: false,
         generateFieldData: 'all',
+        // FIXME: add a test for query builder spec
+        spec: navigatorSpecs.wbPlanView,
       },
     ],
     out: [

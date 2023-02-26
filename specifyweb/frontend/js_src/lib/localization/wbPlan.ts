@@ -297,19 +297,6 @@ export const wbPlanText = createDictionary({
     'fr-fr': 'Liaison obligatoire',
     'uk-ua': 'Необхідне співставлення',
   },
-  transientToManyNotAllowed: {
-    'en-us': 'Mapping that includes one-to-many relationships is not allowed',
-    'ru-ru':
-      'Сопоставления, включающие отношения один-ко-многим, не допускаются',
-    'es-es': 'No se permiten asignaciones que incluyan relaciones uno-a-muchos',
-    'fr-fr':
-      'Les liaisons qui incluent des relations un-à-plusieurs ne sont pas autorisées',
-    'uk-ua':
-      'Зіставлення, що включають відношення один-до-багатьох, не дозволяються',
-  },
-  mappingToTreeNotSupported: {
-    'en-us': 'Mapping to tree rank is not supported',
-  },
   continueEditing: {
     'en-us': 'Continue Editing',
     'ru-ru': 'Продолжить редактирование',
