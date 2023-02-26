@@ -1,12 +1,15 @@
 import React from 'react';
 
+import { commonText } from '../../localization/common';
 import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
 import type { GetSet } from '../../utils/types';
-import { replaceItem } from '../../utils/utils';
+import { removeItem, replaceItem } from '../../utils/utils';
 import { ErrorMessage } from '../Atoms';
 import { Button } from '../Atoms/Button';
+import { className } from '../Atoms/className';
 import { Input, Label } from '../Atoms/Form';
+import { icons } from '../Atoms/Icons';
 import { ReadOnlyContext } from '../Core/Contexts';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
@@ -77,8 +80,8 @@ function Definitions({
     });
   const hasCondition = formatter.definition.conditionField !== undefined;
   const trimmedFields = hasCondition
-    ? formatter.definition.fields.slice(0, 1)
-    : formatter.definition.fields;
+    ? formatter.definition.fields
+    : formatter.definition.fields.slice(0, 1);
 
   const table = formatter.table;
   return table === undefined ? null : (
@@ -111,6 +114,14 @@ function Definitions({
                 (fields): void => handleChanged({ value, fields }),
               ]}
               table={table}
+              onDelete={
+                trimmedFields.length < 2
+                  ? undefined
+                  : () =>
+                      handleChange(
+                        removeItem(formatter.definition.fields, index)
+                      )
+              }
             />
           </div>
         );
@@ -139,17 +150,20 @@ function Definitions({
 function Fields({
   table,
   fields: [fields, setFields],
+  onDelete: handleDelete,
 }: {
   readonly table: SpecifyTable;
   readonly fields: GetSet<Formatter['definition']['fields'][number]['fields']>;
+  readonly onDelete: (() => void) | undefined;
 }): JSX.Element {
   return (
-    <table className="grid-table grid-cols-[min-content_auto_auto] gap-2">
+    <table className="grid-table grid-cols-[min-content_auto_auto_min-content] gap-2">
       <thead>
         <tr>
           <th>{resourcesText.separator()}</th>
           <th>{schemaText.field()}</th>
           <th>{resourcesText.formatter()}</th>
+          <td />
         </tr>
       </thead>
       <tbody>
@@ -161,8 +175,35 @@ function Fields({
             ]}
             key={index}
             table={table}
+            onRemove={(): void => setFields(removeItem(fields, index))}
           />
         ))}
+        <tr>
+          <td className="col-span-3">
+            <Button.Green
+              onClick={(): void =>
+                setFields([
+                  ...fields,
+                  {
+                    separator: '',
+                    aggregator: undefined,
+                    formatter: undefined,
+                    fieldFormatter: undefined,
+                    field: undefined,
+                  },
+                ])
+              }
+            >
+              {resourcesText.addField()}
+            </Button.Green>
+            {typeof handleDelete === 'function' && (
+              <Button.Red onClick={handleDelete}>
+                {resourcesText.deleteDefinition()}
+              </Button.Red>
+            )}
+          </td>
+          <td />
+        </tr>
       </tbody>
     </table>
   );
@@ -171,11 +212,13 @@ function Fields({
 function Field({
   table,
   field: [field, handleChange],
+  onRemove: handleRemove,
 }: {
   readonly table: SpecifyTable;
   readonly field: GetSet<
     Formatter['definition']['fields'][number]['fields'][number]
   >;
+  readonly onRemove: () => void;
 }): JSX.Element {
   const isReadOnly = React.useContext(ReadOnlyContext);
   const [openIndex, setOpenIndex] = React.useState<number | undefined>(
@@ -214,6 +257,16 @@ function Field({
       </td>
       <td>
         <FieldFormatter field={[field, handleChange]} />
+      </td>
+      <td>
+        <Button.Small
+          aria-label={commonText.remove()}
+          title={commonText.remove()}
+          variant={className.redButton}
+          onClick={handleRemove}
+        >
+          {icons.trash}
+        </Button.Small>
       </td>
     </tr>
   );

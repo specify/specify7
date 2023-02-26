@@ -301,6 +301,12 @@ export const resourcesText = createDictionary({
   addDefinition: {
     'en-us': 'Add definition',
   },
+  deleteDefinition: {
+    'en-us': 'Delete definition',
+  },
+  addField: {
+    'en-us': 'Add field',
+  },
   conditionField: {
     'en-us': 'Condition Field',
   },

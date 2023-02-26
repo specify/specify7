@@ -107,43 +107,7 @@ const fieldsSpec = (table: SpecifyTable | undefined) =>
     value: syncers.xmlAttribute('value', 'skip'),
     fields: pipe(
       syncers.xmlChildren('field'),
-      syncers.map(
-        pipe(
-          syncers.object(fieldSpec(table)),
-          syncers.change(
-            'fieldFormatter',
-            ({ field, fieldFormatter }) => {
-              if (
-                field?.at(-1)?.isRelationship === true &&
-                typeof fieldFormatter === 'string'
-              ) {
-                console.warn(
-                  'Field formatter is ignored for relationship fields'
-                );
-                return undefined;
-              }
-              return fieldFormatter;
-            },
-            ({ fieldFormatter }) => fieldFormatter
-          ),
-          syncers.change(
-            'formatter',
-            ({ field, formatter }) => {
-              if (
-                field?.at(-1)?.isRelationship === false &&
-                typeof formatter === 'string'
-              ) {
-                console.warn(
-                  'Record formatter is ignored for non-relationship fields'
-                );
-                return undefined;
-              }
-              return formatter;
-            },
-            ({ formatter }) => formatter
-          )
-        )
-      )
+      syncers.map(syncers.object(fieldSpec(table)))
     ),
   });
 

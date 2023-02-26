@@ -30,7 +30,9 @@ import {
   formattedEntry,
   formatToManyIndex,
   formatTreeRank,
+  parsePartialField,
   relationshipIsToMany,
+  valueIsPartialField,
   valueIsToManyIndex,
   valueIsTreeRank,
 } from '../WbPlanView/mappingHelpers';
@@ -217,13 +219,17 @@ export function ResourceMapping({
             ignoreToMany: true,
           });
           setMappingPath(path);
-          const purePath = path.filter(
-            (part) =>
-              part !== emptyMapping &&
-              part !== formattedEntry &&
-              !valueIsToManyIndex(part) &&
-              !valueIsTreeRank(part)
-          );
+          const purePath = path
+            .map((part) =>
+              valueIsPartialField(part) ? parsePartialField(part)[0] : part
+            )
+            .filter(
+              (part) =>
+                part !== emptyMapping &&
+                part !== formattedEntry &&
+                !valueIsToManyIndex(part) &&
+                !valueIsTreeRank(part)
+            );
           setMapping(table.getFields(purePath.join('.')));
         },
     onOpen: setOpenIndex,

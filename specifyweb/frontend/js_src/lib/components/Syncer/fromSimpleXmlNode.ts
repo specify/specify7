@@ -37,7 +37,7 @@ const mergeChildren = (
   oldChildren: XmlNode['children'],
   newNode: SimpleXmlNode
 ): XmlNode['children'] =>
-  typeof newNode.children === 'object'
+  Object.keys(newNode.children).length > 0
     ? mergeNodes(oldChildren, newNode.children)
     : mergeText(oldChildren, newNode.text ?? '');
 
