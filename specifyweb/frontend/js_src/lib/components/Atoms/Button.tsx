@@ -126,6 +126,7 @@ export const Button = {
     ...props,
     'aria-label': props['aria-label'] ?? props.title,
     type: 'button',
+    disabled: props.disabled === true || props.onClick === undefined,
     children: icons[props.icon],
   })),
 } as const;
