@@ -199,6 +199,9 @@ export function StatsPage(): JSX.Element | null {
     [activePage.pageIndex, activePage.isShared]
   );
 
+  if (process.env.NODE_ENV === 'development') {
+    console.log('Layout Updates');
+  }
   // Used to set unknown categories once for layout initially, and every time for default layout
   useDynamicCategorySetter(backEndResponse, handleChange, categoriesToFetch);
   useDefaultDynamicCategorySetter(defaultBackEndResponse, setDefaultLayout);
@@ -349,7 +352,7 @@ export function StatsPage(): JSX.Element | null {
             <DateElement date={pageLastUpdated} />
           </span>
         )}
-        <Button.Blue
+        <Button.Gray
           onClick={(): void => {
             cleanMaybeFulfilled();
             getSourceLayoutSetter(activePage.isShared)((layout) =>
@@ -361,9 +364,9 @@ export function StatsPage(): JSX.Element | null {
           }}
         >
           {commonText.update()}
-        </Button.Blue>
+        </Button.Gray>
         {Object.values(layout).every((layouts) => layouts !== undefined) && (
-          <Button.Green
+          <Button.Gray
             onClick={(): void => {
               const date = new Date();
               const sourceIndex = activePage.isShared ? 0 : 1;
@@ -385,12 +388,12 @@ export function StatsPage(): JSX.Element | null {
             }}
           >
             {statsText.downloadAsTSV()}
-          </Button.Green>
+          </Button.Gray>
         )}
         {isEditing ? (
           <>
             {process.env.NODE_ENV === 'development' && (
-              <Button.Red
+              <Button.Gray
                 onClick={(): void => {
                   cleanMaybeFulfilled();
                   setCollectionLayout(undefined);
@@ -400,10 +403,10 @@ export function StatsPage(): JSX.Element | null {
                 }}
               >
                 {`${commonText.reset()} [DEV]`}
-              </Button.Red>
+              </Button.Gray>
             )}
 
-            <Button.Red
+            <Button.Gray
               onClick={(): void => {
                 setCollectionLayout(previousCollectionLayout.current);
                 setPersonalLayout(previousLayout.current);
@@ -428,12 +431,12 @@ export function StatsPage(): JSX.Element | null {
               }}
             >
               {commonText.cancel()}
-            </Button.Red>
-            <Submit.Blue>{commonText.save()}</Submit.Blue>
+            </Button.Gray>
+            <Submit.Gray>{commonText.save()}</Submit.Gray>
           </>
         ) : (
           canEdit && (
-            <Button.Blue
+            <Button.Gray
               onClick={(): void => {
                 setState({
                   type: 'EditingState',
@@ -445,7 +448,7 @@ export function StatsPage(): JSX.Element | null {
               }}
             >
               {commonText.edit()}
-            </Button.Blue>
+            </Button.Gray>
           )
         )}
       </div>
@@ -462,7 +465,7 @@ export function StatsPage(): JSX.Element | null {
                 ([parentLayoutName, parentLayout], index) =>
                   parentLayout === undefined ? undefined : (
                     <li className="flex flex-col gap-2" key={index}>
-                      <H3 className="text-lg font-bold">{parentLayoutName}</H3>
+                      <H3 className="text-xl font-bold">{parentLayoutName}</H3>
                       <Ul className="flex flex-col gap-2">
                         {parentLayout.map(({ label }, pageIndex) => (
                           <li key={pageIndex}>

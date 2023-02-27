@@ -4,7 +4,7 @@ import { commonText } from '../../localization/common';
 import { statsText } from '../../localization/stats';
 import { userText } from '../../localization/user';
 import type { RA } from '../../utils/types';
-import { H3, Ul } from '../Atoms';
+import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Input } from '../Atoms/Form';
@@ -115,7 +115,10 @@ export function Categories({
               className={
                 checkEmptyItems
                   ? ''
-                  : 'flex h-auto max-h-80 flex-col content-center gap-2 rounded border-[1px] bg-[color:var(--form-foreground)] p-4 shadow-lg shadow-gray-300 transition hover:shadow-md hover:shadow-gray-400'
+                  : `flex h-auto max-h-80 flex-col content-center rounded bg-[color:var(--form-foreground)] ` +
+                    `shadow-lg shadow-gray-300 transition hover:shadow-md hover:shadow-gray-400 ${
+                      typeof handleAdd === 'function' ? 'gap-2 p-4' : ''
+                    }`
               }
               key={categoryIndex}
             >
@@ -123,7 +126,9 @@ export function Categories({
                 checkEmptyItems ? (
                   <h5 className="font-semibold">{label}</h5>
                 ) : (
-                  <H3 className="font-bold">{label}</H3>
+                  <h3 className="rounded-t bg-brand-200 pl-3 pr-3 pt-1.5 pb-1.5 text-lg font-semibold text-white">
+                    {label}
+                  </h3>
                 )
               ) : (
                 <Input.Text
@@ -137,7 +142,7 @@ export function Categories({
               <Ul
                 className={
                   handleRename === undefined
-                    ? 'flex-1 overflow-auto'
+                    ? `flex-1 overflow-auto p-${checkEmptyItems ? 0 : 3}`
                     : 'grid grid-cols-[auto_1fr_max-content] gap-2 overflow-auto'
                 }
               >
@@ -227,14 +232,7 @@ export function Categories({
               {typeof handleAdd === 'function' ? (
                 <div className="flex gap-2">
                   <Button.Small
-                    variant={className.blueButton}
-                    onClick={(): void => handleAdd(categoryIndex)}
-                  >
-                    {commonText.add()}
-                  </Button.Small>
-                  <span className="-ml-2 flex-1" />
-                  <Button.Small
-                    variant={className.redButton}
+                    variant={className.grayButton}
                     onClick={(): void => {
                       const containsCustom =
                         pageLayout.categories[categoryIndex].items?.some(
@@ -245,6 +243,13 @@ export function Categories({
                     }}
                   >
                     {statsText.deleteCategory()}
+                  </Button.Small>
+                  <span className="-ml-2 flex-1" />
+                  <Button.Small
+                    variant={className.blueButton}
+                    onClick={(): void => handleAdd(categoryIndex)}
+                  >
+                    {commonText.add()}
                   </Button.Small>
                 </div>
               ) : null}
