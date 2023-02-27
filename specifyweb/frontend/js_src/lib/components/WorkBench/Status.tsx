@@ -17,6 +17,7 @@ import { softFail } from '../Errors/Crash';
 import { useTitle } from '../Molecules/AppTitle';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import type { Dataset, Status } from '../WbPlanView/Wrapped';
+import { RemainingLoadingTime } from './RemainingLoadingTime';
 
 // How often to query back-end
 const REFRESH_RATE = 2000;
@@ -134,44 +135,6 @@ export function WbStatus({
       </>
     );
 
-  const startTime = React.useRef(Date.now());
-  const [remainingTime, setRemainingTime] = React.useState<number | null>(null);
-
-  // Convert seconds to minutes and seconds and create returned string
-  function formatTime(time: number | null): string {
-    if (time !== null) {
-      const minutes = Math.floor(time / 60);
-      const seconds = time % 60;
-      return `${commonText.timeRemaining()} ${minutes}:${
-        seconds < 10 ? '0' : ''
-      }${seconds}`;
-    }
-    return '';
-  }
-
-  // Calculate the remaining time
-  React.useEffect(() => {
-    if (status.taskstatus === 'PROGRESS') {
-      if (current > 15) {
-        const interval = setInterval(() => {
-          const remainingSeconds = Math.round(
-            (((total - current) / current) * (Date.now() - startTime.current)) /
-              1000
-          );
-          setRemainingTime(remainingSeconds);
-          if (current >= total) {
-            clearInterval(interval);
-          }
-        }, 1000);
-
-        return () => clearInterval(interval);
-      } else {
-        setRemainingTime(null);
-      }
-    }
-    return undefined;
-  }, [status.taskstatus, total, current]);
-
   return (
     <Dialog
       buttons={
@@ -210,7 +173,7 @@ export function WbStatus({
         {status.taskstatus === 'PROGRESS' && (
           <Progress max={total} value={current} />
         )}
-        {formatTime(remainingTime)}
+        <RemainingLoadingTime total={total} current={current} />
       </Label.Block>
     </Dialog>
   );
