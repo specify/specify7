@@ -219,7 +219,12 @@ msgstr "Indépendant"
 msgid "downloadAsJson"
 msgstr "Télécharger au format JSON"
 
-#: components/SchemaViewer/index.tsx:57
+#: components/SchemaViewer/index.tsx:51
+#. Used in: Components > Schema Viewer > Index
+msgid "downloadAsXml"
+msgstr "Télécharger au format XML"
+
+#: components/SchemaViewer/index.tsx:64
 #. Used in: Components > Schema Viewer > Index
 msgid "downloadAsTsv"
 msgstr "Télécharger au format TSV"
@@ -280,7 +285,7 @@ msgstr "Portée"
 msgid "schemaViewTitle"
 msgstr "Configuration du schéma : {tableName:string}"
 
-#: components/SchemaViewer/index.tsx:50
+#: components/SchemaViewer/index.tsx:57
 #. Used in: Components > Schema Viewer > Index
 msgid "schemaExportFileName"
 msgstr "Specify 7 Modèle de données"

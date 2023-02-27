@@ -252,7 +252,12 @@ msgstr "Незалежний"
 msgid "downloadAsJson"
 msgstr "Завантажити як JSON"
 
-#: components/SchemaViewer/index.tsx:57
+#: components/SchemaViewer/index.tsx:51
+#. Used in: Components > Schema Viewer > Index
+msgid "downloadAsXml"
+msgstr "Завантажити як XML"
+
+#: components/SchemaViewer/index.tsx:64
 #. Used in: Components > Schema Viewer > Index
 #, fuzzy
 msgid "downloadAsTsv"
@@ -321,7 +326,7 @@ msgstr "Область застосування"
 msgid "schemaViewTitle"
 msgstr "Конфігурація схеми: {tableName:string}"
 
-#: components/SchemaViewer/index.tsx:50
+#: components/SchemaViewer/index.tsx:57
 #. Used in: Components > Schema Viewer > Index
 msgid "schemaExportFileName"
 msgstr "Specify 7 Модель даних"
