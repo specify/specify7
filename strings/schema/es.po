@@ -201,7 +201,7 @@ msgstr "Agregar idioma"
 
 #: components/SchemaViewer/Fields.tsx:57
 #: components/SchemaViewer/Relationships.tsx:94
-#: components/SchemaViewer/Table.tsx:54
+#: components/SchemaViewer/Table.tsx:57
 #: components/SchemaViewer/schemaToTsv.tsx:15
 #: components/SchemaViewer/schemaToTsv.tsx:20
 #. Used in: Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Table ⬤ Components > Schema Viewer > Schema To Tsv
@@ -257,20 +257,20 @@ msgstr "Descargar como JSON"
 msgid "downloadAsTsv"
 msgstr "Descargar como TSV"
 
-#: components/SchemaViewer/Table.tsx:57
+#: components/SchemaViewer/Table.tsx:60
 #: components/SchemaViewer/schemaToTsv.tsx:18
 #. Used in: Components > Schema Viewer > Table ⬤ Components > Schema Viewer > Schema To Tsv
 #, fuzzy
 msgid "tableId"
 msgstr "Identificación de la tabla"
 
-#: components/SchemaViewer/Table.tsx:58
+#: components/SchemaViewer/Table.tsx:61
 #. Used in: Components > Schema Viewer > Table
 #, fuzzy
 msgid "fieldCount"
 msgstr "Recuento de campos"
 
-#: components/SchemaViewer/Table.tsx:59
+#: components/SchemaViewer/Table.tsx:62
 #. Used in: Components > Schema Viewer > Table
 #, fuzzy
 msgid "relationshipCount"
@@ -296,7 +296,7 @@ msgstr "Mesas seleccionadas"
 msgid "possibleTables"
 msgstr "Tablas posibles"
 
-#: components/SchemaViewer/Table.tsx:41
+#: components/SchemaViewer/Table.tsx:44
 #. Used in: Components > Schema Viewer > Table
 #, fuzzy
 msgid "goToTop"
