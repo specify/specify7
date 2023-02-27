@@ -8,7 +8,6 @@ import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Input } from '../Atoms/Form';
-import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { generateStatUrl } from './hooks';
 import { StatItem } from './StatItems';
@@ -90,10 +89,6 @@ export function Categories({
     | undefined;
 }): JSX.Element | null {
   const checkEmptyItems = handleRemove === undefined;
-  const [removeCategoryIndex, setRemoveCategoryIndex] = React.useState<
-    number | undefined
-  >(undefined);
-  const handleCloseRemoveDialog = (): void => setRemoveCategoryIndex(undefined);
 
   /**
    * If checkEmptyItems is false, show category. Else, check if category contains custom stats
@@ -234,14 +229,9 @@ export function Categories({
                 <div className="flex gap-2">
                   <Button.Small
                     variant={className.grayButton}
-                    onClick={(): void => {
-                      const containsCustom =
-                        pageLayout.categories[categoryIndex].items?.some(
-                          (item) => item.type === 'CustomStat'
-                        ) ?? false;
-                      if (containsCustom) setRemoveCategoryIndex(categoryIndex);
-                      else handleRemove?.(categoryIndex, undefined);
-                    }}
+                    onClick={(): void =>
+                      handleRemove?.(categoryIndex, undefined)
+                    }
                   >
                     {statsText.deleteCategory()}
                   </Button.Small>
@@ -265,31 +255,6 @@ export function Categories({
         >
           {statsText.addACategory()}
         </Button.Gray>
-      )}
-      {removeCategoryIndex !== undefined && (
-        <Dialog
-          buttons={
-            <div className="flex flex-row gap-2">
-              <Button.Red
-                onClick={(): void => {
-                  handleRemove?.(removeCategoryIndex, undefined);
-                  handleCloseRemoveDialog();
-                }}
-              >
-                {commonText.delete()}
-              </Button.Red>
-              <span className="-ml-2 flex" />
-              <Button.Blue onClick={handleCloseRemoveDialog}>
-                {commonText.cancel()}
-              </Button.Blue>
-            </div>
-          }
-          className={{ container: dialogClassNames.narrowContainer }}
-          header={statsText.categoryContainsCustom()}
-          onClose={handleCloseRemoveDialog}
-        >
-          {statsText.customDeleteWarning()}
-        </Dialog>
       )}
     </>
   );

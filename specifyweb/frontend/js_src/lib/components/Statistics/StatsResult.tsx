@@ -17,12 +17,10 @@ export function StatsResult({
   onRemove: handleRemove,
   onEdit: handleEdit,
   onRename: handleRename,
-  isDefault,
 }: {
   readonly value: number | string | undefined;
   readonly query: SpecifyResource<SpQuery> | undefined;
   readonly label: string | undefined;
-  readonly isDefault: boolean;
   readonly onClick: (() => void) | undefined;
   readonly onRemove: (() => void) | undefined;
   readonly onEdit: ((querySpec: QuerySpec) => void) | undefined;
@@ -43,8 +41,8 @@ export function StatsResult({
       ) : typeof handleRename === 'function' ? (
         <>
           <Button.Icon
-            icon={isDefault ? 'x' : 'trash'}
-            title={isDefault ? commonText.remove() : commonText.delete()}
+            icon="trash"
+            title={commonText.remove()}
             onClick={handleRemove}
           />
           <Input.Text required value={label} onValueChange={handleRename} />

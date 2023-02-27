@@ -56,7 +56,6 @@ export function StatItem({
   return resolvedSpec?.type === 'QueryBuilderStat' &&
     resolvedSpec.querySpec !== undefined ? (
     <QueryItem
-      isDefault={item.type === 'DefaultStat'}
       label={item.label}
       querySpec={resolvedSpec.querySpec}
       value={item.itemValue}
@@ -78,7 +77,6 @@ export function StatItem({
     <BackEndItem
       fetchUrl={resolvedSpec.fetchUrl}
       formatter={resolvedSpec.formatter}
-      isDefault
       label={item.label}
       pathToValue={resolvedSpec.pathToValue}
       tableName={resolvedSpec.tableName}
@@ -98,7 +96,6 @@ function BackEndItem({
   pathToValue,
   formatter,
   label,
-  isDefault,
   onClick: handleClick,
   onRemove: handleRemove,
   onRename: handleRename,
@@ -109,7 +106,6 @@ function BackEndItem({
   readonly pathToValue: string;
   readonly tableName: keyof Tables;
   readonly label: string;
-  readonly isDefault: boolean;
   readonly formatter: (rawValue: any) => string | undefined;
   readonly onClick: (() => void) | undefined;
   readonly onRemove: (() => void) | undefined;
@@ -155,7 +151,6 @@ function BackEndItem({
   useStatValueLoad(value, promiseGenerator, handleLoadResolve);
   return (
     <StatsResult
-      isDefault={isDefault}
       label={label}
       query={undefined}
       value={hasStatPermission ? value : userText.noPermission()}
@@ -175,13 +170,11 @@ function QueryItem({
   onRemove: handleRemove,
   onEdit: handleEdit,
   onRename: handleRename,
-  isDefault,
   onLoad: handleLoad,
 }: {
   readonly value: number | string | undefined;
   readonly querySpec: QuerySpec;
   readonly label: string;
-  readonly isDefault: boolean;
   readonly onClick: (() => void) | undefined;
   readonly onRemove: (() => void) | undefined;
   readonly onEdit: ((querySpec: QuerySpec) => void) | undefined;
@@ -211,7 +204,6 @@ function QueryItem({
 
   return (
     <StatsResult
-      isDefault={isDefault}
       label={label}
       query={hasStatPermission ? query : undefined}
       value={hasStatPermission ? value : userText.noPermission()}
