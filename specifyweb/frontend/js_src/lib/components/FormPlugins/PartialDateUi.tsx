@@ -352,7 +352,6 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
           <span className="sr-only">{formsText.datePrecision()}</span>
           <Select
             className="!w-auto print:hidden"
-            title={formsText.datePrecision()}
             value={precision}
             onBlur={(): void => {
               if (moment === undefined) return;
