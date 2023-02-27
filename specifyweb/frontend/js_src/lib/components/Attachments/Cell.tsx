@@ -58,7 +58,6 @@ export function AttachmentCell({
         (model === undefined || hasTablePermission(model.name, 'read')) && (
           <Button.LikeLink
             className="absolute top-0 left-0"
-            title={model?.label}
             onClick={(): void =>
               model === undefined
                 ? handleMetaToggle()

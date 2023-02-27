@@ -194,7 +194,6 @@ const fieldRenderers: {
   },
   Plugin: FormPlugin,
   FilePicker({ id, mode, name, isRequired }) {
-    // FEATURE: consider replacing this with AttachmentsPlugin for some field names
     /*
      * Not sure how this is supposed to work, thus the field is rendered as
      * disabled

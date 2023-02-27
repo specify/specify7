@@ -260,7 +260,10 @@ export function QueryBuilder({
           onClose={(): void => setMapFieldIndex(undefined)}
         />
       )}
-      {/* FEATURE: For embedded queries, add a button to open query in new tab */}
+      {/*
+       * FEATURE: For embedded queries, add a button to open query in new tab
+       *   See https://github.com/specify/specify7/issues/3000
+       */}
       {!isEmbedded && (
         <QueryHeader
           form={form}

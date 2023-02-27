@@ -723,8 +723,8 @@ def api_endpoints_all(request):
 @cache_control(max_age=86400, public=True)
 @openapi(schema={
     "get": {
-        "parameters": {
-            "languages": {
+        "parameters": [
+            {
                 "name": "languages",
                 "in": "query",
                 "description": "Comma separate list of languages",
@@ -734,7 +734,7 @@ def api_endpoints_all(request):
                     "type": "string",
                 },
             },
-        },
+        ],
         "responses": {
             "200": {
                 "description": "List of available languages",

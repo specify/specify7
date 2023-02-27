@@ -26,7 +26,7 @@ class PicklistAddition(NamedTuple):
 
 class ParseFailure(NamedTuple):
     message: str
-    payload: Dict[str, Any]
+    payload: Dict[str, Union[str, int, List[str], List[int]]]
     column: str
 
     def to_json(self) -> List:
@@ -233,7 +233,7 @@ def parse_agenttype(value: str, column: str) -> Union[ParseResult, ParseFailure]
     try:
         agenttype = agenttypes.index(value)
     except ValueError:
-        return ParseFailure('failedParsingAgentType', {'bad_type': value, 'valid_types': agenttypes}, column)
+        return ParseFailure('failedParsingAgentType', {'badType': value, 'validTypes': agenttypes}, column)
     return filter_and_upload({'agenttype': agenttype}, column)
 
 def parse_date(table: Table, fieldname: str, dateformat: str, value: str, column: str) -> Union[ParseResult, ParseFailure]:
