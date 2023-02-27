@@ -27,7 +27,9 @@ export const getTotalLoaned = (
     : undefined;
 };
 
-export const updateLoanPrep = (collection: Collection<LoanPreparation>) => {
+export const updateLoanPrep = (
+  collection: Collection<LoanReturnPreparation>
+) => {
   if (
     collection != undefined &&
     collection.related?.specifyModel.name == 'LoanPreparation'
@@ -40,7 +42,8 @@ export const updateLoanPrep = (collection: Collection<LoanPreparation>) => {
       },
       { returned: 0, resolved: 0 }
     );
-    const loanPrep: SpecifyResource<LoanPreparation> = collection.related;
+    const loanPrep: SpecifyResource<LoanPreparation> =
+      collection.related as SpecifyResource<LoanPreparation>;
     loanPrep.set('quantityReturned', sums.returned);
     loanPrep.set('quantityResolved', sums.resolved);
   }
@@ -65,22 +68,25 @@ const updatePrepBlockers = (
 ): Promise<void> => {
   const prepUri = interactionPrep.get('preparation') ?? '';
   const prepId = idFromUrl(prepUri);
-  return fetchResource('Preparation', prepId)
-    .then(
-      (preparation) => preparation.countAmt >= interactionPrep.get('quantity')
-    )
-    .then((isValid) => {
-      if (!isValid) {
-        if (interactionPrep.saveBlockers?.blockers)
-          interactionPrep.saveBlockers?.add(
-            'parseError-quantity',
-            'quantity',
-            formsText.invalidValue()
-          );
-      } else {
-        interactionPrep.saveBlockers?.remove('parseError-quantity');
-      }
-    });
+  return prepId === undefined
+    ? Promise.resolve()
+    : fetchResource('Preparation', prepId)
+        .then(
+          (preparation) =>
+            preparation.countAmt >= interactionPrep.get('quantity')
+        )
+        .then((isValid) => {
+          if (!isValid) {
+            if (interactionPrep.saveBlockers?.blockers)
+              interactionPrep.saveBlockers?.add(
+                'parseError-quantity',
+                'quantity',
+                formsText.invalidValue()
+              );
+          } else {
+            interactionPrep.saveBlockers?.remove('parseError-quantity');
+          }
+        });
 };
 
 export const checkPrepAvailability = (

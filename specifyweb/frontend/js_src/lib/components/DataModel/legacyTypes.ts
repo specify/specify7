@@ -71,26 +71,6 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
     : VALUE extends RA<AnySchema>
     ? string
     : VALUE;
-
-  rget<
-    FIELD_NAME extends
-      | keyof SCHEMA['toOneDependent']
-      | keyof SCHEMA['toOneIndependent'],
-    VALUE = (IR<never> &
-      SCHEMA['toOneDependent'] &
-      SCHEMA['toOneIndependent'])[FIELD_NAME]
-  >(
-    fieldName: FIELD_NAME,
-    prePopulate?: boolean
-  ): readonly [VALUE] extends readonly [never]
-    ? never
-    : Promise<
-        VALUE extends AnySchema
-          ? SpecifyResource<Exclude<VALUE, null>>
-          : Exclude<VALUE, AnySchema>
-      > &
-        Promise<BusinessRuleResult>;
-
   // Case-insensitive fetch of a -to-one resource
   rgetPromise<
     FIELD_NAME extends

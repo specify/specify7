@@ -59,10 +59,14 @@ function assignUniquenessRules(
   mappedRules: MappedBusinessRuleDefs
 ): MappedBusinessRuleDefs {
   Object.keys(uniqueRules).forEach((table) => {
-    if (mappedRules[table] == undefined)
+    if (mappedRules[table as keyof Tables] == undefined)
       overwriteReadOnly(mappedRules, table, {});
 
-    overwriteReadOnly(mappedRules[table]!, 'uniqueIn', uniquenessRules[table]);
+    overwriteReadOnly(
+      mappedRules[table as keyof Tables]!,
+      'uniqueIn',
+      uniquenessRules[table as keyof Tables]
+    );
   });
   return mappedRules;
 }

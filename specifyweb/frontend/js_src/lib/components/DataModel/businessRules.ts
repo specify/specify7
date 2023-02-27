@@ -1,8 +1,8 @@
 import { overwriteReadOnly, RA } from '../../utils/types';
-import { AnySchema, AnyTree } from './helperTypes';
+import { AnySchema, AnyTree, TableFields } from './helperTypes';
 import { SpecifyResource } from './legacyTypes';
 import { BusinessRuleDefs, businessRuleDefs } from './businessRuleDefs';
-import { flippedPromise } from '../../utils/promise';
+import { flippedPromise, ResolvablePromise } from '../../utils/promise';
 import { isTreeResource } from '../InitialContext/treeRanks';
 import { initializeTreeRecord, treeBusinessRules } from './treeBusinessRules';
 import { Collection } from './specifyModel';
@@ -12,7 +12,6 @@ import { formsText } from '../../localization/forms';
 import { LiteralField, Relationship } from './specifyField';
 import { idFromUrl } from './resource';
 import { globalEvents } from '../../utils/ajax/specifyApi';
-import { f } from '../../utils/functools';
 
 var enabled: boolean = true;
 
@@ -32,7 +31,7 @@ export class BusinessRuleMgr<SCHEMA extends AnySchema> {
   public pendingPromises: Promise<BusinessRuleResult | null> =
     Promise.resolve(null);
   private fieldChangePromises: {
-    [key: string]: Promise<BusinessRuleResult> | Promise<string>;
+    [key: string]: ResolvablePromise<string>;
   } = {};
   private watchers: { [key: string]: () => void } = {};
 
@@ -41,7 +40,9 @@ export class BusinessRuleMgr<SCHEMA extends AnySchema> {
     this.rules = businessRuleDefs()[this.resource.specifyModel.name];
   }
 
-  private addPromise(promise: Promise<BusinessRuleResult | void>): void {
+  private addPromise(
+    promise: Promise<BusinessRuleResult | string | undefined>
+  ): void {
     this.pendingPromises = Promise.allSettled([
       this.pendingPromises,
       promise,
@@ -76,7 +77,7 @@ export class BusinessRuleMgr<SCHEMA extends AnySchema> {
 
   public checkField(fieldName: string) {
     fieldName = fieldName.toLocaleLowerCase();
-    const thisCheck: Promise<BusinessRuleResult> = flippedPromise();
+    const thisCheck: ResolvablePromise<string> = flippedPromise();
     this.addPromise(thisCheck);
 
     this.fieldChangePromises[fieldName] !== undefined &&
@@ -95,13 +96,12 @@ export class BusinessRuleMgr<SCHEMA extends AnySchema> {
 
     Promise.all(checks)
       .then((results) => {
-        return (
-          thisCheck === this.fieldChangePromises[fieldName] &&
-          this.processCheckFieldResults(fieldName, results)
-        );
+        return thisCheck === this.fieldChangePromises[fieldName]
+          ? this.processCheckFieldResults(fieldName, results)
+          : undefined;
       })
       .then(() => {
-        resolveFlippedPromise(thisCheck, 'finished');
+        thisCheck.resolve('finished');
       });
   }
 
@@ -128,10 +128,13 @@ export class BusinessRuleMgr<SCHEMA extends AnySchema> {
   }
 
   private async checkUnique(fieldName: string): Promise<BusinessRuleResult> {
-    var toOneFields: RA<any> =
-      (this.rules?.uniqueIn && this.rules.uniqueIn[fieldName]) ?? [];
+    var toOneFields =
+      this.rules?.uniqueIn !== undefined
+        ? this.rules?.uniqueIn[fieldName as Lowercase<TableFields<SCHEMA>>] ??
+          []
+        : [];
 
-    const results = toOneFields.map((uniqueRule) => {
+    const results: RA<BusinessRuleResult> = toOneFields.map((uniqueRule) => {
       var field = uniqueRule;
       var fieldNames: string[] | null = [fieldName];
       if (uniqueRule === null) {
@@ -140,13 +143,17 @@ export class BusinessRuleMgr<SCHEMA extends AnySchema> {
         fieldNames = fieldNames.concat(uniqueRule.otherfields);
         field = uniqueRule.field;
       }
-      return this.uniqueIn(field, fieldNames);
+      return this.uniqueIn(field as string, fieldNames);
     });
 
     Promise.all(results).then((results) => {
       results
-        .map((result) => result['localDuplicates' as keyof BusinessRuleResult])
+        .map(
+          (result: BusinessRuleResult) =>
+            result['localDuplicates' as keyof BusinessRuleResult]
+        )
         .flat()
+        .filter((result) => result !== undefined)
         .forEach((duplicate: SpecifyResource<SCHEMA>) => {
           const event = duplicate.cid + ':' + fieldName;
           if (!this.watchers[event]) {
@@ -163,7 +170,10 @@ export class BusinessRuleMgr<SCHEMA extends AnySchema> {
             key: 'br-uniqueness-' + fieldName,
             valid: false,
             reason: formatConjunction(
-              invalids.map((invalid) => invalid['reason'])
+              invalids.map(
+                (invalid) =>
+                  invalid['reason' as keyof BusinessRuleResult] as string
+              )
             ),
           };
     });
@@ -191,7 +201,7 @@ export class BusinessRuleMgr<SCHEMA extends AnySchema> {
   }
 
   private uniqueIn(
-    toOneField: string | undefined,
+    toOneField: string | undefined | null,
     fieldNames: RA<string> | string | null
   ): Promise<BusinessRuleResult> {
     if (fieldNames === null) {
@@ -214,16 +224,16 @@ export class BusinessRuleMgr<SCHEMA extends AnySchema> {
 
     const fieldIds = fieldValues.map((value, index) => {
       if (fieldIsToOne[index] != null) {
-        if (value == null || typeof value == 'undefined') {
+        if (value == null || value === undefined) {
           return null;
         } else {
-          return typeof value === 'string' ? idFromUrl(value) : value.id;
+          return idFromUrl(value);
         }
       } else return undefined;
     });
 
     const toOneFieldInfo =
-      toOneField !== undefined
+      toOneField !== null && toOneField !== undefined
         ? (this.resource.specifyModel.getField(toOneField) as Relationship)
         : undefined;
 
@@ -238,7 +248,8 @@ export class BusinessRuleMgr<SCHEMA extends AnySchema> {
     } = {
       valid: false,
       reason:
-        toOneFieldInfo !== undefined && fieldInfo !== undefined
+        toOneFieldInfo !== undefined &&
+        !fieldInfo.some((field) => field === undefined)
           ? this.getUniqueInvalidReason(toOneFieldInfo, fieldInfo)
           : '',
     };
@@ -248,47 +259,29 @@ export class BusinessRuleMgr<SCHEMA extends AnySchema> {
     const hasSameValues = (other: SpecifyResource<SCHEMA>): boolean => {
       const hasSameValue = (
         fieldValue: string | number | null,
-        fieldName: string,
-        fieldIsToOne: boolean,
-        fieldId: string
+        fieldName: string
       ): boolean => {
         if (other.id != null && other.id === this.resource.id) return false;
         if (other.cid === this.resource.cid) return false;
         const otherValue = other.get(fieldName);
-        if (
-          fieldIsToOne &&
-          typeof otherValue != 'undefined' &&
-          typeof otherValue !== 'string'
-        ) {
-          return Number.parseInt(otherValue?.id) === Number.parseInt(fieldId);
-        } else return fieldValue === otherValue;
+
+        return fieldValue === otherValue;
       };
 
       return fieldValues.reduce(
         (previous, current, index) =>
-          previous &&
-          hasSameValue(
-            current,
-            fieldNames![index],
-            fieldIsToOne[index],
-            fieldIds[index]
-          ),
+          previous && hasSameValue(current, fieldNames![index]),
         true
       );
     };
 
     if (toOneField != null) {
-      const hasLocalCollection =
-        this.resource.collection &&
-        this.resource.collection.related &&
-        toOneFieldInfo?.relatedModel ===
-          this.resource.collection.related?.specifyModel;
-
-      var localCollection = hasLocalCollection
-        ? this.resource.collection.models.filter(
-            (resource) => resource !== undefined
-          )
-        : [];
+      var localCollection =
+        this.resource.collection?.models !== undefined
+          ? this.resource.collection.models.filter(
+              (resource) => resource !== undefined
+            )
+          : [];
 
       var duplicates = localCollection.filter((resource) =>
         hasSameValues(resource)
@@ -300,7 +293,7 @@ export class BusinessRuleMgr<SCHEMA extends AnySchema> {
       }
 
       return this.resource
-        .rget(toOneField)
+        .rgetPromise(toOneField)
         .then((related: SpecifyResource<AnySchema>) => {
           if (!related) return Promise.resolve({ valid: true });
           var filters = {};
@@ -313,16 +306,10 @@ export class BusinessRuleMgr<SCHEMA extends AnySchema> {
             filters: filters,
           });
 
-          return others.fetch().then(() => {
-            var inDatabase = others.chain().compact();
-            inDatabase = hasLocalCollection
-              ? inDatabase
-                  .filter(
-                    (other: SpecifyResource<SCHEMA>) =>
-                      !this.resource.collection.get(other.id)
-                  )
-                  .value()
-              : inDatabase.value();
+          return others.fetch().then((fetchedCollection) => {
+            var inDatabase = fetchedCollection.models.filter(
+              (otherResource) => otherResource !== undefined
+            );
 
             if (inDatabase.some((other) => hasSameValues(other))) {
               return invalidResponse;
@@ -340,9 +327,9 @@ export class BusinessRuleMgr<SCHEMA extends AnySchema> {
       const others = new this.resource.specifyModel.LazyCollection({
         filters: filters,
       });
-      return others.fetch().then(() => {
+      return others.fetch().then((fetchedCollection) => {
         if (
-          others.models.some((other: SpecifyResource<SCHEMA>) =>
+          fetchedCollection.models.some((other: SpecifyResource<SCHEMA>) =>
             hasSameValues(other)
           )
         ) {
@@ -359,43 +346,19 @@ export class BusinessRuleMgr<SCHEMA extends AnySchema> {
     fieldName: string | undefined,
     args: RA<any>
   ): Promise<BusinessRuleResult | undefined> {
-    if (this.rules === undefined) {
+    if (this.rules === undefined || fieldName === undefined) {
       return Promise.resolve(undefined);
     }
-    var rule = this.rules[ruleName];
-    const isValid =
-      (rule && typeof rule == 'function') ||
-      (fieldName &&
-        rule &&
-        rule[fieldName] &&
-        typeof rule[fieldName] == 'function');
+    const rule = this.rules?.[ruleName]?.[fieldName];
 
-    if (!isValid) return Promise.resolve(undefined);
-
-    if (fieldName !== undefined) {
-      rule = rule[fieldName];
-      if (!rule) {
-        return Promise.resolve({
-          key: 'invalidRule',
-          valid: false,
-          reason: 'no rule: ' + ruleName + ' for: ' + fieldName,
-        });
-      }
-    }
-    if (rule == undefined) {
-      return Promise.resolve({
-        key: 'invalidRule',
-        valid: false,
-        reason: 'no rule: ' + ruleName + ' for: ' + fieldName,
-      });
+    if (typeof rule !== 'function') {
+      return Promise.resolve(undefined);
     }
     return Promise.resolve(rule.apply(this, args));
   }
 }
 
-export function attachBusinessRules(
-  resource: SpecifyResource<AnySchema>
-): void {
+function attachBusinessRules(resource: SpecifyResource<AnySchema>): void {
   const businessRuleManager = new BusinessRuleMgr(resource);
   overwriteReadOnly(resource, 'saveBlockers', new SaveBlockers(resource));
   overwriteReadOnly(resource, 'businessRuleMgr', businessRuleManager);
@@ -411,10 +374,3 @@ export type BusinessRuleResult = {
     }
   | { readonly valid: false; readonly reason: string }
 );
-
-const resolveFlippedPromise = (
-  promise: Promise<any>,
-  ...args: RA<any>
-): void => {
-  globalThis.setTimeout(() => promise.resolve(...args), 0);
-};
