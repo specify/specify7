@@ -340,7 +340,7 @@ export function useDefaultDynamicCategorySetter(
     ) => StatLayout | undefined
   ) => void
 ) {
-  React.useLayoutEffect(() => {
+  React.useEffect(() => {
     dynamicStatsSpec.forEach(({ responseKey, formatter }) => {
       if (
         defaultBackEndResponse !== undefined &&
@@ -377,7 +377,7 @@ export function useDynamicCategorySetter(
   ) => void,
   categoriesToFetch: RA<string>
 ) {
-  React.useLayoutEffect(() => {
+  React.useEffect(() => {
     dynamicStatsSpec.forEach(({ responseKey, formatter }) => {
       if (
         backEndResponse !== undefined &&
@@ -417,5 +417,5 @@ export function generateStatUrl(
 }
 
 export function getOffsetOne(base: number, target: number) {
-  return Math.sign(target - base - 1) + base;
+  return Math.min(Math.sign(target - base - 1), 0) + base;
 }
