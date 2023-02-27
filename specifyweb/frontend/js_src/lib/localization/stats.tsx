@@ -122,11 +122,9 @@ export const statsText = createDictionary({
   },
   selectFromQueries: {
     'en-us': 'Select From Queries',
-    'ru-ru': 'Выбрать из запросов',
   },
-  selectFromDefault: {
-    'en-us': `${'Select ' + 'From ' + ' Default'}`,
-    'ru-ru': 'Выбрать по умолчанию',
+  selectFromAvailableDefault: {
+    'en-us': 'Select From Available Default Statistics',
   },
   pageName: {
     'en-us': 'Page Name',

@@ -64,7 +64,7 @@ export function AddStatDialog({
         )}
       </div>
       <div>
-        <H3 className="text-lg">{statsText.selectFromDefault()}</H3>
+        <H3 className="text-lg">{statsText.selectFromAvailableDefault()}</H3>
         {typeof defaultStatsAddLeft === 'object' && (
           <Ul>
             {defaultStatsAddLeft.map((defaultLayoutPage, index) =>

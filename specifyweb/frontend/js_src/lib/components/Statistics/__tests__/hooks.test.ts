@@ -1,7 +1,11 @@
 import { theories } from '../../../tests/utils';
 import { f } from '../../../utils/functools';
 import { formatNumber } from '../../Atoms/Internationalization';
-import { applyStatBackendResponse } from '../hooks';
+import {
+  applyStatBackendResponse,
+  getDynamicCategoriesToFetch,
+  getOffsetOne,
+} from '../hooks';
 import { defaultLayoutTest, statsSpecTest } from './layout.tests';
 
 const backEndResponse = {
@@ -128,5 +132,39 @@ theories(applyStatBackendResponse, [
       statsSpecTest,
     ],
     out: defaultLayoutTest[0].categories[1].items,
+  },
+]);
+
+//Test for Get base offset
+theories(getOffsetOne, [
+  {
+    in: [8, 2],
+    out: 7,
+  },
+  {
+    in: [8, 7],
+    out: 7,
+  },
+  {
+    in: [8, 8],
+    out: 7,
+  },
+  {
+    in: [8, 10],
+    out: 8,
+  },
+  {
+    in: [1, 20],
+    out: 1,
+  },
+]);
+
+theories(getDynamicCategoriesToFetch, [
+  {
+    in: [defaultLayoutTest],
+    out: [
+      '/statistics/collection/preparations/',
+      '/statistics/collection/type_specimens/',
+    ],
   },
 ]);

@@ -220,7 +220,7 @@ export function getDynamicCategoriesToFetch(
               (item) =>
                 item.type === 'DefaultStat' &&
                 item.itemType === 'BackEndStat' &&
-                item.itemValue === undefined &&
+                item.pathToValue === undefined &&
                 item.itemName === 'phantomItem'
             )
             .map((item) =>
