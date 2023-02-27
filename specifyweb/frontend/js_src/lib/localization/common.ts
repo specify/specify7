@@ -595,6 +595,6 @@ export const commonText = createDictionary({
     'uk-ua': 'офлайн',
   },
   timeRemaining: {
-    'en-us': 'Time remaining'
+    'en-us': 'Time remaining',
   },
 } as const);
