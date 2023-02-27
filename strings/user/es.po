@@ -37,14 +37,14 @@ msgstr "Nombre de usuario"
 msgid "password"
 msgstr "Contraseña"
 
-#: components/FormFields/QueryComboBox.tsx:516
+#: components/FormFields/QueryComboBox.tsx:520
 #: components/FormPlugins/CollectionRelOneToMany.tsx:188
 #. Used in: Components > Form Fields > Query Combo Box ⬤ Components > Form Plugins > Collection Rel One To Many
 #, fuzzy
 msgid "collectionAccessDenied"
 msgstr "No tienes acceso a esta colección."
 
-#: components/FormFields/QueryComboBox.tsx:519
+#: components/FormFields/QueryComboBox.tsx:523
 #: components/FormPlugins/CollectionRelOneToMany.tsx:191
 #. Used in: Components > Form Fields > Query Combo Box ⬤ Components > Form Plugins > Collection Rel One To Many
 #, fuzzy

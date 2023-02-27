@@ -117,7 +117,7 @@ msgstr "Створити"
 #: components/FormCommands/index.tsx:94
 #: components/FormCommands/index.tsx:115
 #: components/FormCommands/index.tsx:141
-#: components/FormFields/QueryComboBox.tsx:515
+#: components/FormFields/QueryComboBox.tsx:519
 #: components/FormMeta/AutoNumbering.tsx:91
 #: components/FormMeta/CarryForward.tsx:252
 #: components/FormMeta/Definition.tsx:54
@@ -308,7 +308,7 @@ msgstr "Інструменти"
 #: components/FormCommands/ShowTransactions.tsx:55
 #: components/FormFields/ComboBox.tsx:135
 #: components/FormFields/Field.tsx:166
-#: components/FormFields/QueryComboBox.tsx:373
+#: components/FormFields/QueryComboBox.tsx:379
 #: components/FormPlugins/CollectionRelOneToMany.tsx:157
 #: components/Forms/BaseResourceView.tsx:51
 #: components/Forms/DeleteButton.tsx:110
