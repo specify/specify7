@@ -3,8 +3,6 @@ import React from 'react';
 import { commonText } from '../../localization/common';
 import { localityText } from '../../localization/locality';
 import { queryText } from '../../localization/query';
-import { whitespaceSensitive } from '../../localization/utils';
-import { f } from '../../utils/functools';
 import type { Parser } from '../../utils/parser/definitions';
 import { resolveParser } from '../../utils/parser/definitions';
 import type { RA } from '../../utils/types';
@@ -323,7 +321,7 @@ export function QueryLine({
                         variant={
                           field.filters.length > 1
                             ? className.blueButton
-                            : className.grayButton
+                            : className.lightGrayButton
                         }
                         onClick={(): void =>
                           handleFilterChange(field.filters.length, {
@@ -371,7 +369,7 @@ export function QueryLine({
                     variant={
                       field.filters[index].isNot
                         ? className.redButton
-                        : className.grayButton
+                        : className.lightGrayButton
                     }
                     onClick={(): void =>
                       handleFilterChange(index, {
@@ -392,11 +390,8 @@ export function QueryLine({
                     className={customSelectElementBackground}
                     disabled={handleChange === undefined}
                     title={
-                      f.maybe(
-                        queryFieldFilters[field.filters[index].type]
-                          .description,
-                        whitespaceSensitive
-                      ) ?? commonText.filter()
+                      queryFieldFilters[field.filters[index].type]
+                        .description ?? commonText.filter()
                     }
                     value={filter.type}
                     onChange={({ target }): void => {
@@ -480,7 +475,7 @@ export function QueryLine({
           }`}
           title={queryText.showButtonDescription()}
           variant={
-            field.isDisplay ? className.greenButton : className.grayButton
+            field.isDisplay ? className.greenButton : className.lightGrayButton
           }
           onClick={handleChange?.bind(undefined, {
             ...field,

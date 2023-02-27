@@ -170,7 +170,7 @@ export async function format<SCHEMA extends AnySchema>(
    * are missing
    */
   tryBest: boolean = false
-): Promise<LocalizedString | undefined> {
+  ): Promise<LocalizedString | undefined> {
   if (typeof resource !== 'object' || resource === null) return undefined;
   if (hasTablePermission(resource.specifyModel.name, 'read'))
     await resource.fetch();
@@ -205,6 +205,7 @@ export async function format<SCHEMA extends AnySchema>(
   const isEmptyResource = fields
     .map(({ fieldName }) => resource.get(fieldName.split('.')[0]))
     .every((value) => value === undefined || value === null || value === '');
+
   return isEmptyResource
     ? automaticFormatter ?? undefined
     : Promise.all(

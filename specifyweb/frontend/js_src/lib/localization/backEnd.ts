@@ -15,15 +15,14 @@ export const backEndText = createDictionary({
     'ru-ru': 'значение "{value:string}" не разрешается to True or False',
     'es-es':
       'el valor "{value:string}" no se puede resolver en Verdadero o Falso',
-    'fr-fr':
-      'la valeur "{value:string}" ne peut pas être résolue en Vrai ou Faux',
+    'fr-fr': 'Valeur "{value:string}"  non résolvable en Vrai ou Faux',
     'uk-ua': 'значення "{value:string}" не являється "True" або "False"',
   },
   failedParsingDecimal: {
     'en-us': 'value "{value:string}" is not a valid decimal value',
     'ru-ru': 'значение "{value:string}" не является допустимым чеслом',
     'es-es': 'el valor "{value:string}" no es un valor decimal válido',
-    'fr-fr': 'la valeur "{value:string}" n\'est pas une valeur décimale valide',
+    'fr-fr': 'valeur "{value:string}" n\'est pas une valeur décimale valide',
     'uk-ua': 'значення "{value:string}" не є дійсним цілим числом',
   },
   failedParsingFloat: {
@@ -34,8 +33,7 @@ export const backEndText = createDictionary({
     'es-es':
       'el valor "{value:string}" no es un valor de punto flotante válido',
     'fr-fr': `
-      la valeur "{value:string}" n\'est pas une valeur à virgule flottante
-      valide
+      valeur "{value:string}" n\'est pas une valeur à virgule flottante valide
     `,
     'uk-ua': 'значення "{value:string}" не є раціональним числом',
   },
@@ -56,7 +54,7 @@ export const backEndText = createDictionary({
       Haga clic en la flecha para elegir entre las opciones disponibles.
     `,
     'fr-fr': `
-      {value:string} n'est pas une valeur légale dans ce champ de liste de
+      {value:string} n'est pas une valeur acceptée dans ce champ de liste de
       sélection.
 
       Cliquez sur la flèche pour choisir parmi les options disponibles.
@@ -85,8 +83,8 @@ export const backEndText = createDictionary({
       {validTypes:string}
     `,
     'fr-fr': `
-      mauvais {agentTypeField:string} : "{badType:string}". Attendu l\'un des
-      {validTypes:string}
+      {agentTypeField:string} non valide: "{badType:string}". L\'un des
+      {validTypes:string} est attendu
     `,
     'uk-ua': `
       поганий {agentTypeField:string}: "{badType:string}". Очікується один із
@@ -107,7 +105,7 @@ export const backEndText = createDictionary({
       {maxLength:number|formatted} para el campo
     `,
     'fr-fr': `
-      valeur de {pickListTable:string} {pickList:string} plus longue que le
+      valeur de {pickListTable:string} {pickList:string} est plus longue que le
       maximum de {maxLength:number|formatted} pour le champ
     `,
     'uk-ua': `
@@ -139,7 +137,8 @@ export const backEndText = createDictionary({
       dígitos: {value:string}
     `,
     'fr-fr': `
-      la valeur de date doit contenir l'année à quatre chiffres : {value:string}
+      la valeur de la date doit contenir quatre chiffres pour l'année
+      {value:string}
     `,
     'uk-ua': 'дата має містити чотири цифри року: {value:string}',
   },
@@ -150,7 +149,7 @@ export const backEndText = createDictionary({
     'es-es':
       'valor de fecha incorrecta: {value:string}. esperado: {format:string}',
     'fr-fr':
-      'valeur de date incorrecte : {value:string}. attendu : {format:string}',
+      'valeur de date invalide: {value:string}. {format:string} est attendu',
     'uk-ua': `
       неправильне значення дати: {value:string}. очікуваний
       формат: {format:string}

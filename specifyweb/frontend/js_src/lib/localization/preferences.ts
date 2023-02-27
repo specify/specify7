@@ -1348,7 +1348,7 @@ export const preferencesText = createDictionary({
   },
   right: {
     'en-us': 'Right',
-    'es-es': 'Bien',
+    'es-es': 'Derecha',
     'fr-fr': 'Droite',
     'ru-ru': 'Верно',
     'uk-ua': 'правильно',
@@ -1381,5 +1381,12 @@ export const preferencesText = createDictionary({
       Показувати «*» у заголовку вкладки, якщо в поточній вкладці є незбережені
       зміни
     `,
+  },
+  useCustomTooltips: {
+    'en-us': 'Use modern tooltips',
+    'ru-ru': 'Использовать современные подсказки',
+    'es-es': 'Usar modernos tooltips',
+    'fr-fr': 'Utiliser des infobulles modernes',
+    'uk-ua': 'Використовувати сучасні підказки',
   },
 } as const);

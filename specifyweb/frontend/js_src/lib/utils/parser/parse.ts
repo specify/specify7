@@ -3,6 +3,9 @@ import { hasNativeErrors } from '../../components/Forms/validationHelpers';
 import { formsText } from '../../localization/forms';
 import { mappedFind } from '../utils';
 import type { Parser } from './definitions';
+import { resolveParser } from './definitions';
+import { f } from '../functools';
+import { syncFieldFormat } from '../fieldFormat';
 
 export type ValidParseResult = {
   readonly value: string;
@@ -64,3 +67,15 @@ export function parseValue(
         parsed: parser.parser?.(formattedValue) ?? formattedValue,
       };
 }
+
+const parser = f.store(() =>
+  resolveParser(
+    {},
+    {
+      type: 'java.lang.Boolean',
+    }
+  )
+);
+
+export const booleanFormatter = (value: boolean): string =>
+  syncFieldFormat(undefined, parser(), value);
