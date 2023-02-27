@@ -409,7 +409,7 @@ msgid "or"
 msgstr "або"
 
 #: utils/__tests__/fieldFormat.test.ts:88
-#: utils/parser/definitions.ts:99
+#: utils/parser/definitions.ts:101
 #. Used in: Utils > __tests__ > Field Format ⬤ Utils > Parser > Definitions
 #, fuzzy
 msgid "yes"

@@ -68,8 +68,8 @@ msgstr "Поле"
 
 #: components/FormMeta/CarryForward.tsx:266
 #: components/Forms/generateFormDefinition.ts:128
-#: components/SchemaConfig/Fields.tsx:35
-#: components/SchemaConfig/Fields.tsx:46
+#: components/SchemaConfig/Fields.tsx:36
+#: components/SchemaConfig/Fields.tsx:47
 #: components/SchemaViewer/Fields.tsx:42
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Schema Viewer > Fields
 #, fuzzy
@@ -78,7 +78,7 @@ msgstr "поля"
 
 #: components/FormMeta/CarryForward.tsx:274
 #: components/Forms/generateFormDefinition.ts:166
-#: components/SchemaConfig/Fields.tsx:54
+#: components/SchemaConfig/Fields.tsx:58
 #: components/SchemaViewer/Relationships.tsx:44
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Schema Viewer > Relationships
 #, fuzzy

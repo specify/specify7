@@ -100,7 +100,7 @@ msgid "generateLabel"
 msgstr "Générer une étiquette"
 
 #: components/FormMeta/index.tsx:146
-#: components/FormParse/fields.ts:119
+#: components/FormParse/fields.ts:120
 #: components/FormParse/__tests__/fields.test.ts:131
 #. Used in: Components > Form Meta > Index ⬤ Components > Form Parse > Fields ⬤ Form Parse > __tests__ > Fields
 msgid "generateLabelOnSave"

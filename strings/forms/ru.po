@@ -113,27 +113,27 @@ msgstr ""
 msgid "deleteConfirmationDescription"
 msgstr "Это действие не может быть отменено."
 
-#: components/FormPlugins/PartialDateUi.tsx:339
+#: components/FormPlugins/PartialDateUi.tsx:352
 #. Used in: Components > Form Plugins > Partial Date Ui
 msgid "datePrecision"
 msgstr "Точность даты"
 
-#: components/FormPlugins/PartialDateUi.tsx:371
+#: components/FormPlugins/PartialDateUi.tsx:384
 #. 🟥A placeholder for partial date field when "month /year" type is selected. Visible only in browsers that don't support the "month" input type. Used in: Components > Form Plugins > Partial Date Ui
 msgid "monthYear"
 msgstr "Месяц / Год"
 
-#: components/FormPlugins/PartialDateUi.tsx:387
+#: components/FormPlugins/PartialDateUi.tsx:400
 #. 🟥A placeholder for partial date field when "year" type is selected. Used in: Components > Form Plugins > Partial Date Ui
 msgid "yearPlaceholder"
 msgstr "ГГГГ"
 
-#: components/FormPlugins/PartialDateUi.tsx:419
+#: components/FormPlugins/PartialDateUi.tsx:428
 #. Used in: Components > Form Plugins > Partial Date Ui
 msgid "today"
 msgstr "Сегодня"
 
-#: components/FormPlugins/PartialDateUi.tsx:421
+#: components/FormPlugins/PartialDateUi.tsx:430
 #. Used in: Components > Form Plugins > Partial Date Ui
 msgid "todayButtonDescription"
 msgstr "Установить на текущую дату"
@@ -320,7 +320,7 @@ msgstr "Название плагина"
 msgid "visit"
 msgstr "Открыть"
 
-#: utils/parser/definitions.ts:92
+#: utils/parser/definitions.ts:94
 #: utils/parser/__tests__/definitions.test.ts:169
 #: utils/parser/__tests__/definitions.test.ts:171
 #. 🟥Yes/No probably shouldn't be translated as Specify 7 does not support changing which values are recognized as Yes/No in a given language. Used in: Utils > Parser > Definitions ⬤ Parser > __tests__ > Definitions
@@ -347,9 +347,9 @@ msgstr "Недопустимое значение"
 
 #: components/FormPlugins/PartialDateUi.tsx:306
 #: components/FormPlugins/PartialDateUi.tsx:308
-#: utils/parser/definitions.ts:180
-#: utils/parser/definitions.ts:182
-#: utils/parser/definitions.ts:303
+#: utils/parser/definitions.ts:184
+#: utils/parser/definitions.ts:186
+#: utils/parser/definitions.ts:325
 #: utils/parser/__tests__/definitions.test.ts:71
 #: utils/parser/__tests__/parse.test.ts:209
 #. 🟥Used in field validation messages on the form. Used in: Components > Form Plugins > Partial Date Ui ⬤ Utils > Parser > Definitions ⬤ Parser > __tests__ > Definitions ⬤ Parser > __tests__ > Parse
