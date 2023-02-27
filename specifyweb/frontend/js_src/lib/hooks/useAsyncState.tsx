@@ -76,6 +76,8 @@ export function useMultipleAsyncState<RESPONSE extends Record<any, unknown>>(
   const [state, setState] = React.useState<Partial<RESPONSE>>({});
   const loading = React.useContext(LoadingContext);
   React.useLayoutEffect(() => {
+    let destructorCalled = false;
+    setState((previousState) => (destructorCalled ? previousState : {}));
     const wrapped = loadingScreen
       ? loading
       : (promise: Promise<unknown>): void => void promise.catch(crash);
@@ -85,16 +87,19 @@ export function useMultipleAsyncState<RESPONSE extends Record<any, unknown>>(
       callbackEntries.map(async ([key, promiseGenerator]) =>
         promiseGenerator().then((data) => {
           if (destructorCalled) return undefined;
-          setState((oldState) => ({
-            ...oldState,
-            [key]: data,
-          }));
+          setState((oldState) =>
+            destructorCalled
+              ? oldState
+              : {
+                  ...oldState,
+                  [key]: data,
+                }
+          );
           return undefined;
         })
       )
     );
     wrapped(wrappedPromise);
-    let destructorCalled = false;
     return (): void => {
       destructorCalled = true;
     };
