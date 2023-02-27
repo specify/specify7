@@ -300,10 +300,10 @@ export function mergeParsers(base: Parser, extra: Parser): Parser {
 }
 
 function resolveDate(
-  left: string | number | undefined,
-  right: string | number | undefined,
+  left: number | string | undefined,
+  right: number | string | undefined,
   takeMin: boolean
-): string | number | undefined {
+): number | string | undefined {
   const values = filterArray([left, right]);
   if (typeof values[0] === 'string') {
     if (values.length === 1) return values[0];
