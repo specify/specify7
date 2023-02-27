@@ -115,6 +115,7 @@ const processUiPlugin: {
       ignoreFieldName: true,
     };
   },
+  // FEATURE: support specifying min/max value
   PartialDateUI({ getProperty, defaultValue, model, fields }) {
     const defaultPrecision = getProperty('defaultPrecision')?.toLowerCase();
     const dateFields = model.getFields(getProperty('df') ?? '') ?? fields;

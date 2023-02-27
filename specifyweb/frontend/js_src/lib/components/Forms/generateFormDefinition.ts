@@ -229,6 +229,7 @@ function getFieldDefinition(
   field: LiteralField
 ): CellTypes['Field'] & FormCellDefinition {
   const parser = resolveParser(field);
+  // FEATURE: render date fields using Partial Date UI
   return {
     ...cellAttributes,
     type: 'Field',
