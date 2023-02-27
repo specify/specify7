@@ -2,17 +2,17 @@ import React from 'react';
 
 import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
+import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { serializeResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpQuery, Tables } from '../DataModel/types';
+import type { SpQueryField } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
 import type { QuerySpec } from './types';
-import { RA } from '../../utils/types';
-import { SpQueryField } from '../DataModel/types';
 
 const addPath = (
   fields: RA<SerializedResource<SpQueryField>>
@@ -81,7 +81,7 @@ export function FrontEndStatsResultDialog({
                 setQuery({
                   tableName: query.tableName,
                   fields: addPath(fields),
-                  isDistinct: isDistinct,
+                  isDistinct,
                 })
             : undefined
         }

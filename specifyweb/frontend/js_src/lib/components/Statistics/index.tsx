@@ -497,8 +497,9 @@ export function StatsPage(): JSX.Element | null {
 
                         {isEditing && canEditIndex(index === 0) && (
                           <Button.Small
-                            variant={className.blueButton}
+                            className="max-w-fit"
                             name={commonText.add()}
+                            variant={className.blueButton}
                             onClick={(): void =>
                               setState({
                                 type: 'PageRenameState',
@@ -506,7 +507,6 @@ export function StatsPage(): JSX.Element | null {
                                 isShared: index === 0,
                               })
                             }
-                            className="max-w-fit"
                           >
                             {commonText.add()}
                           </Button.Small>
