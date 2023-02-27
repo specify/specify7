@@ -155,7 +155,7 @@ export const querySpecToResource = (
       contextName: querySpec.tableName,
       contextTableId: schema.models[querySpec.tableName].tableId,
       countOnly: false,
-      selectDistinct: false,
+      selectDistinct: querySpec.isDistinct ?? false,
       fields: querySpec.fields.map(({ path, ...field }, index) =>
         serializeResource(
           makeQueryField(querySpec.tableName, path, {

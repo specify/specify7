@@ -26,6 +26,7 @@ const addPath = (
 export const queryToSpec = (query: SerializedResource<SpQuery>): QuerySpec => ({
   tableName: query.contextName as keyof Tables,
   fields: addPath(query.fields),
+  isDistinct: query.selectDistinct,
 });
 
 export function FrontEndStatsResultDialog({
@@ -76,10 +77,11 @@ export function FrontEndStatsResultDialog({
         recordSet={undefined}
         onChange={
           typeof handleEdit === 'function'
-            ? ({ fields }): void =>
+            ? ({ fields, isDistinct }): void =>
                 setQuery({
                   tableName: query.tableName,
                   fields: addPath(fields),
+                  isDistinct: isDistinct,
                 })
             : undefined
         }

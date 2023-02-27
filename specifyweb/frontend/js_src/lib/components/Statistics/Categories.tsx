@@ -190,6 +190,7 @@ export function Categories({
                                       querySpec: {
                                         tableName: querySpec.tableName,
                                         fields: querySpec.fields,
+                                        isDistinct: querySpec.isDistinct,
                                       },
                                     },
                                     categoryIndex,

@@ -419,6 +419,53 @@ export const statsSpec: StatsSpec = {
           },
         },
       },
+      attachments: {
+        label: statsText.attachments(),
+        items: {
+          collectionObjectsWithAttachments: {
+            label: statsText.collectionObjectsWithAttachments(),
+            spec: {
+              type: 'QueryBuilderStat',
+              querySpec: {
+                tableName: 'CollectionObject',
+                fields: [
+                  {
+                    path: 'collectionObjectId',
+                  },
+                  {
+                    path: 'collectionObjectAttachments.attachment.attachmentId',
+                    operStart: queryFieldFilters.empty.id,
+                    isNot: true,
+                    isDisplay: false,
+                  },
+                ],
+                isDistinct: true,
+              },
+            },
+          },
+          collectionObjectsWithImages: {
+            label: statsText.collectionObjectsWithImages(),
+            spec: {
+              type: 'QueryBuilderStat',
+              querySpec: {
+                tableName: 'CollectionObject',
+                fields: [
+                  {
+                    path: 'collectionObjectId',
+                  },
+                  {
+                    path: 'collectionObjectAttachments.attachment.mimeType',
+                    operStart: queryFieldFilters.contains.id,
+                    startValue: 'image',
+                    isDisplay: false,
+                  },
+                ],
+                isDistinct: true,
+              },
+            },
+          },
+        },
+      },
     },
   },
   user: {

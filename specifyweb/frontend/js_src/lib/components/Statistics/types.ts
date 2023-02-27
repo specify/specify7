@@ -41,6 +41,7 @@ export type QuerySpec = {
   readonly fields: RA<
     Partial<SerializedResource<SpQueryField>> & { readonly path: string }
   >;
+  readonly isDistinct?: boolean | null;
 };
 
 export type StatCategoryReturn = IR<{

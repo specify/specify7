@@ -348,7 +348,7 @@ export function StatsPage(): JSX.Element | null {
         <span className="-ml-2 flex-1" />
         {pageLastUpdated !== undefined && (
           <span>
-            {`${statsText.lastUpdated()} `}
+            {`${statsText.lastRefreshed()} `}
             <DateElement date={pageLastUpdated} />
           </span>
         )}
@@ -363,7 +363,7 @@ export function StatsPage(): JSX.Element | null {
             setCategoriesToFetch([]);
           }}
         >
-          {commonText.update()}
+          {statsText.refresh()}
         </Button.Gray>
         {Object.values(layout).every((layouts) => layouts !== undefined) && (
           <Button.Gray
@@ -496,9 +496,9 @@ export function StatsPage(): JSX.Element | null {
                         ))}
 
                         {isEditing && canEditIndex(index === 0) && (
-                          <StatsAsideButton
-                            isCurrent={false}
-                            label={commonText.add()}
+                          <Button.Small
+                            variant={className.blueButton}
+                            name={commonText.add()}
                             onClick={(): void =>
                               setState({
                                 type: 'PageRenameState',
@@ -506,8 +506,10 @@ export function StatsPage(): JSX.Element | null {
                                 isShared: index === 0,
                               })
                             }
-                            onRename={undefined}
-                          />
+                            className="max-w-fit"
+                          >
+                            {commonText.add()}
+                          </Button.Small>
                         )}
                       </Ul>
                     </li>

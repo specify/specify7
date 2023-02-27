@@ -78,8 +78,10 @@ export function QueryBuilder({
   readonly onSelected?: (selected: RA<number>) => void;
   readonly onChange?: ({
     fields,
+    isDistinct,
   }: {
     readonly fields: RA<SerializedResource<SpQueryField>>;
+    readonly isDistinct: boolean | null;
   }) => void;
 }): JSX.Element | null {
   useMenuItem('queries');
@@ -115,8 +117,9 @@ export function QueryBuilder({
   React.useEffect(() => {
     handleChange?.({
       fields: unParseQueryFields(state.baseTableName, state.fields),
+      isDistinct: query.selectDistinct,
     });
-  }, [state]);
+  }, [state, query.selectDistinct]);
   useErrorContext('state', state);
 
   /**

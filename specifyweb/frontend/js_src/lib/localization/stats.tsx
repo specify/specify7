@@ -159,9 +159,8 @@ export const statsText = createDictionary({
   collectionObjectsInventorized: {
     'en-us': 'Collection Objects Inventorized',
   },
-  lastUpdated: {
-    'en-us': 'Last Updated',
-    'ru-ru': 'Последнее обновление',
+  lastRefreshed: {
+    'en-us': 'Last Refreshed',
   },
   source: {
     'en-us': 'Source',
@@ -209,8 +208,23 @@ export const statsText = createDictionary({
   editPage: {
     'en-us': 'Edit Page',
   },
+  addPage: {
+    'en-us': 'Add Page',
+  },
   addACategory: {
     'en-us': 'Add A Category',
+  },
+  refresh: {
+    'en-us': 'Refresh',
+  },
+  attachments: {
+    'en-us': 'Attachments',
+  },
+  collectionObjectsWithImages: {
+    'en-us': 'Collection Objects With Images',
+  },
+  collectionObjectsWithAttachments: {
+    'en-us': 'Collection Objects With Attachments',
   },
 });
 /* eslint-enable @typescript-eslint/naming-convention */

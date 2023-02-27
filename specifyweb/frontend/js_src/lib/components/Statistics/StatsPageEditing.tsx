@@ -10,7 +10,7 @@ import { Submit } from '../Atoms/Submit';
 import { Dialog } from '../Molecules/Dialog';
 
 export function StatsPageEditing({
-  label = '',
+  label,
   onRemove: handleRemove,
   onRename: handleRename,
   onClose: handleClose,
@@ -23,7 +23,7 @@ export function StatsPageEditing({
   readonly onAdd: ((label: string) => void) | undefined;
 }): JSX.Element {
   const id = useId('stats');
-  const [pageName, setPageName] = React.useState<string>(label);
+  const [pageName, setPageName] = React.useState<string>(label ?? '');
   return (
     <Dialog
       buttons={
@@ -42,7 +42,7 @@ export function StatsPageEditing({
           </Submit.Green>
         </>
       }
-      header={statsText.editPage()}
+      header={label === undefined ? statsText.addPage() : statsText.editPage()}
       icon={icons.pencil}
       onClose={handleClose}
     >
