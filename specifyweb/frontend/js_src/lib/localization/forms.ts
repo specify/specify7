@@ -408,7 +408,8 @@ export const formsText = createDictionary({
     'es-es':
       'El formulario no se puede guardar debido a los siguientes errores:',
     'fr-fr': `
-      Impossible d'enregistrer le formulaire en raison des erreurs suivantes :
+      Le formulaire ne peut pas être enregistré en raison des erreurs suivantes
+      :
     `,
     'uk-ua': 'Форму неможливо зберегти через такі помилки:',
   },
