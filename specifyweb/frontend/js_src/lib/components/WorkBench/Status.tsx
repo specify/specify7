@@ -173,7 +173,7 @@ export function WbStatus({
         {status.taskstatus === 'PROGRESS' && (
           <Progress max={total} value={current} />
         )}
-        <RemainingLoadingTime total={total} current={current} />
+        <RemainingLoadingTime current={current} total={total} />
       </Label.Block>
     </Dialog>
   );
