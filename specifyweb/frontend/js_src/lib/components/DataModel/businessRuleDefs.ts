@@ -1,5 +1,5 @@
 import { f } from '../../utils/functools';
-import { overwriteReadOnly } from '../../utils/types';
+import { overwriteReadOnly, RA } from '../../utils/types';
 import { AnySchema, TableFields } from './helperTypes';
 import {
   checkPrepAvailability,
@@ -29,13 +29,26 @@ export type BusinessRuleDefs<SCHEMA extends AnySchema> = {
     resource: SpecifyResource<SCHEMA>,
     collection: Collection<SCHEMA>
   ) => void;
-  readonly uniqueIn?: { [key: string]: string };
+  readonly uniqueIn?: UniquenessRule<SCHEMA>;
   readonly customInit?: (resource: SpecifyResource<SCHEMA>) => void;
   readonly fieldChecks?: {
     [FIELDNAME in TableFields<SCHEMA> as Lowercase<FIELDNAME>]?: (
       resource: SpecifyResource<SCHEMA>
     ) => Promise<BusinessRuleResult | undefined> | void;
   };
+};
+
+export const uniqueRules: UniquenessRules = uniquenessRules;
+
+type UniquenessRules = {
+  [TABLE in keyof Tables]?: UniquenessRule<Tables[TABLE]>;
+};
+
+export type UniquenessRule<SCHEMA extends AnySchema> = {
+  [FIELDNAME in TableFields<SCHEMA> as Lowercase<FIELDNAME>]?:
+    | string[]
+    | null[]
+    | RA<{ field: string; otherfields: string[] }>;
 };
 
 type MappedBusinessRuleDefs = {
@@ -45,7 +58,7 @@ type MappedBusinessRuleDefs = {
 function assignUniquenessRules(
   mappedRules: MappedBusinessRuleDefs
 ): MappedBusinessRuleDefs {
-  Object.keys(uniquenessRules).forEach((table) => {
+  Object.keys(uniqueRules).forEach((table) => {
     if (mappedRules[table] == undefined)
       overwriteReadOnly(mappedRules, table, {});
 
@@ -136,7 +149,7 @@ export const businessRuleDefs = f.store(
             determination: SpecifyResource<Determination>
           ): Promise<BusinessRuleResult> => {
             return determination
-              .rget('taxon', true)
+              .rgetPromise('taxon', true)
               .then((taxon: SpecifyResource<Taxon> | null) =>
                 taxon == null
                   ? {
@@ -149,11 +162,12 @@ export const businessRuleDefs = f.store(
                       return taxon.get('acceptedTaxon') == null
                         ? {
                             valid: true,
-                            action: () => {
-                              determination.set('preferredTaxon', taxon);
-                            },
+                            action: () =>
+                              determination.set('preferredTaxon', taxon),
                           }
-                        : taxon.rget('acceptedTaxon', true).then(recur);
+                        : taxon
+                            .rgetPromise('acceptedTaxon', true)
+                            .then((accepted) => recur(accepted));
                     })(taxon)
               );
           },
@@ -203,7 +217,7 @@ export const businessRuleDefs = f.store(
           loanReturnPrep: SpecifyResource<LoanReturnPreparation>,
           collection: Collection<LoanReturnPreparation>
         ): void => {
-          updateLoanPrep(loanReturnPrep, collection);
+          updateLoanPrep(collection);
         },
         customInit: (
           resource: SpecifyResource<LoanReturnPreparation>
@@ -240,7 +254,7 @@ export const businessRuleDefs = f.store(
               }
               interactionCache().previousReturned[Number(loanReturnPrep.cid)] =
                 loanReturnPrep.get('quantityReturned');
-              updateLoanPrep(loanReturnPrep, loanReturnPrep.collection);
+              updateLoanPrep(loanReturnPrep.collection);
             }
           },
           quantityresolved: (
@@ -270,7 +284,7 @@ export const businessRuleDefs = f.store(
               }
               interactionCache().previousResolved[Number(loanReturnPrep.cid)] =
                 loanReturnPrep.get('quantityResolved');
-              updateLoanPrep(loanReturnPrep, loanReturnPrep.collection);
+              updateLoanPrep(loanReturnPrep.collection);
             }
           },
         },
