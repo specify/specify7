@@ -134,27 +134,27 @@ export class BusinessRuleMgr<SCHEMA extends AnySchema> {
           []
         : [];
 
-    const results: RA<BusinessRuleResult> = toOneFields.map((uniqueRule) => {
-      var field = uniqueRule;
-      var fieldNames: string[] | null = [fieldName];
-      if (uniqueRule === null) {
-        fieldNames = null;
-      } else if (typeof uniqueRule != 'string') {
-        fieldNames = fieldNames.concat(uniqueRule.otherfields);
-        field = uniqueRule.field;
+    const results: RA<BusinessRuleResult<SCHEMA>> = toOneFields.map(
+      (uniqueRule) => {
+        var field = uniqueRule;
+        var fieldNames: string[] | null = [fieldName];
+        if (uniqueRule === null) {
+          fieldNames = null;
+        } else if (typeof uniqueRule != 'string') {
+          fieldNames = fieldNames.concat(uniqueRule.otherfields);
+          field = uniqueRule.field;
+        }
+        return this.uniqueIn(field as string, fieldNames);
       }
-      return this.uniqueIn(field as string, fieldNames);
-    });
+    );
 
     Promise.all(results).then((results) => {
       results
-        .map(
-          (result: BusinessRuleResult) =>
-            result['localDuplicates' as keyof BusinessRuleResult]
-        )
+        .map((result: BusinessRuleResult<SCHEMA>) => result['localDuplicates'])
         .flat()
         .filter((result) => result !== undefined)
-        .forEach((duplicate: SpecifyResource<SCHEMA>) => {
+        .forEach((duplicate: SpecifyResource<SCHEMA> | undefined) => {
+          if (duplicate === undefined) return;
           const event = duplicate.cid + ':' + fieldName;
           if (!this.watchers[event]) {
             this.watchers[event] = () =>
@@ -203,7 +203,7 @@ export class BusinessRuleMgr<SCHEMA extends AnySchema> {
   private uniqueIn(
     toOneField: string | undefined | null,
     fieldNames: RA<string> | string | null
-  ): Promise<BusinessRuleResult> {
+  ): Promise<BusinessRuleResult<SCHEMA>> {
     if (fieldNames === null) {
       return Promise.resolve({
         valid: false,
@@ -214,8 +214,8 @@ export class BusinessRuleMgr<SCHEMA extends AnySchema> {
 
     const fieldValues = fieldNames.map((value) => this.resource.get(value));
 
-    const fieldInfo = fieldNames.map((field) =>
-      this.resource.specifyModel.getField(field)
+    const fieldInfo = fieldNames.map(
+      (field) => this.resource.specifyModel.getField(field)!
     );
 
     const fieldIsToOne = fieldInfo.map(
@@ -243,9 +243,7 @@ export class BusinessRuleMgr<SCHEMA extends AnySchema> {
       true
     );
 
-    const invalidResponse: BusinessRuleResult & {
-      localDuplicates?: RA<SpecifyResource<SCHEMA>>;
-    } = {
+    const invalidResponse: BusinessRuleResult<SCHEMA> = {
       valid: false,
       reason:
         toOneFieldInfo !== undefined &&
@@ -288,7 +286,7 @@ export class BusinessRuleMgr<SCHEMA extends AnySchema> {
       );
 
       if (duplicates.length > 0) {
-        invalidResponse.localDuplicates = duplicates;
+        overwriteReadOnly(invalidResponse, 'localDuplicates', duplicates);
         return Promise.resolve(invalidResponse);
       }
 
@@ -365,8 +363,9 @@ function attachBusinessRules(resource: SpecifyResource<AnySchema>): void {
   businessRuleManager.setUpManager();
 }
 
-export type BusinessRuleResult = {
+export type BusinessRuleResult<SCHEMA extends AnySchema = AnySchema> = {
   readonly key?: string;
+  readonly localDuplicates?: RA<SpecifyResource<SCHEMA>>;
 } & (
   | {
       readonly valid: true;
