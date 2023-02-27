@@ -104,21 +104,17 @@ export const statsText = createDictionary({
     'en-us': 'Georeferenced Localities',
     'ru-ru': 'Места с географической привязкой',
   },
-  computerization: {
-    'en-us': 'Computerization',
-    'ru-ru': 'Компьютеризация',
+  digitization: {
+    'en-us': 'Digitization',
   },
-  computerizedLastSevenDays: {
-    'en-us': 'Computerized Last 7 Days',
-    'ru-ru': 'Компьютеризировано за последние 7 дней',
+  digitizedLastSevenDays: {
+    'en-us': 'Digitized Last 7 Days',
   },
-  computerizedLastMonth: {
-    'en-us': 'Computerized Last Month',
-    'ru-ru': 'Компьютеризировано за последний месяц',
+  digitizedLastMonth: {
+    'en-us': 'Digitized Last Month',
   },
-  computerizedLastYear: {
-    'en-us': 'Computerized Last Year',
-    'ru-ru': 'Компьютеризация в прошлом году',
+  digitizedLastYear: {
+    'en-us': 'Digitized Last Year',
   },
   chooseStatistics: {
     'en-us': 'Choose Statistics',

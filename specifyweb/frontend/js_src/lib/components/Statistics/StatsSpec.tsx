@@ -358,10 +358,10 @@ export const statsSpec: StatsSpec = {
         },
       },
       catalogStats: {
-        label: statsText.computerization(),
+        label: statsText.digitization(),
         items: {
           catalogedLastSevenDays: {
-            label: statsText.computerizedLastSevenDays(),
+            label: statsText.digitizedLastSevenDays(),
             spec: {
               type: 'QueryBuilderStat',
               querySpec: {
@@ -380,7 +380,7 @@ export const statsSpec: StatsSpec = {
             },
           },
           catalogedLastMonth: {
-            label: statsText.computerizedLastMonth(),
+            label: statsText.digitizedLastMonth(),
             spec: {
               type: 'QueryBuilderStat',
               querySpec: {
@@ -399,7 +399,7 @@ export const statsSpec: StatsSpec = {
             },
           },
           catalogedLastYear: {
-            label: statsText.computerizedLastYear(),
+            label: statsText.digitizedLastYear(),
             spec: {
               type: 'QueryBuilderStat',
               querySpec: {
