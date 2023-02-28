@@ -110,7 +110,7 @@ export const formsText = createDictionary({
     'en-us': 'Relationship',
     'ru-ru': 'Связь',
     'es-es': 'Relación',
-    'fr-fr': 'Relation amoureuse',
+    'fr-fr': 'Relation',
     'uk-ua': "Зв'язок",
   },
   paleoMap: {
@@ -614,14 +614,14 @@ export const formsText = createDictionary({
     'en-us': 'Organization',
     'ru-ru': 'Организация',
     'es-es': 'Organización',
-    'fr-fr': 'Organisme',
+    'fr-fr': 'Organisation',
     'uk-ua': 'Організація',
   },
   person: {
     'en-us': 'Person',
     'ru-ru': 'Особа',
     'es-es': 'Persona',
-    'fr-fr': 'La personne',
+    'fr-fr': 'Personne',
     'uk-ua': 'Особа',
   },
   other: {
@@ -708,14 +708,14 @@ export const formsText = createDictionary({
     'en-us': 'Forward',
     'ru-ru': 'Вперед',
     'es-es': 'Hacia adelante',
-    'fr-fr': "Vers l'avant",
+    'fr-fr': 'Avant',
     'uk-ua': 'Вперед',
   },
   reverse: {
     'en-us': 'Reverse',
     'ru-ru': 'Обратный',
     'es-es': 'Marcha atrás',
-    'fr-fr': 'Inverser',
+    'fr-fr': 'Inverse',
     'uk-ua': 'Зворотний',
   },
   deletedInline: {
@@ -904,7 +904,7 @@ export const formsText = createDictionary({
     'en-us': 'Find usages',
     'ru-ru': 'Найти использование',
     'es-es': 'Buscar usos',
-    'fr-fr': 'Trouver des usages',
+    'fr-fr': 'Trouver des utilisations',
     'uk-ua': 'Знайти використання',
   },
   usagesOfPickList: {
