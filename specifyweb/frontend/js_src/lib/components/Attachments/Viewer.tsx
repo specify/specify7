@@ -157,25 +157,29 @@ export function AttachmentViewer({
               onSaved={undefined}
             />
             <span className="flex-1" />
-            <div className="flex flex-wrap gap-2">
-              <Component
-                className="flex-1 whitespace-nowrap"
-                download
-                href={originalUrl!}
-                target="_blank"
-                onClick={undefined}
-              >
-                {notificationsText.download()}
-              </Component>
-              <Component
-                className="flex-1 whitespace-nowrap"
-                href={originalUrl!}
-                target="_blank"
-                onClick={undefined}
-              >
-                {commonText.openInNewTab()}
-              </Component>
-            </div>
+            {typeof originalUrl === 'string' && (
+              <div className="flex flex-wrap gap-2">
+                <Component
+                  className="flex-1 whitespace-nowrap"
+                  download={new URL(originalUrl).searchParams.get(
+                    'downloadname'
+                  )}
+                  href={`/attachment_gw/proxy/${new URL(originalUrl).search}`}
+                  target="_blank"
+                  onClick={undefined}
+                >
+                  {notificationsText.download()}
+                </Component>
+                <Component
+                  className="flex-1 whitespace-nowrap"
+                  href={originalUrl!}
+                  target="_blank"
+                  onClick={undefined}
+                >
+                  {commonText.openInNewTab()}
+                </Component>
+              </div>
+            )}
           </div>
         ) : undefined
       }
