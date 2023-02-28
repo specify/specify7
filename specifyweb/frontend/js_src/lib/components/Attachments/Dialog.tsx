@@ -4,12 +4,15 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { useIsModified } from '../../hooks/useIsModified';
 import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
+import type { GetSet } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Form } from '../Atoms/Form';
+import { icons } from '../Atoms/Icons';
 import { deserializeResource, serializeResource } from '../DataModel/helpers';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
+import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Attachment } from '../DataModel/types';
 import { SaveButton } from '../Forms/Save';
 import { Dialog } from '../Molecules/Dialog';
@@ -22,13 +25,15 @@ export function AttachmentDialog({
   onChange: handleChange,
   onPrevious: handlePrevious,
   onNext: handleNext,
+  onViewRecord: handleViewRecord,
 }: {
   readonly attachment: SerializedResource<Attachment>;
-  readonly related: SpecifyResource<AnySchema> | undefined;
+  readonly related: GetSet<SpecifyResource<AnySchema> | undefined>;
   readonly onClose: () => void;
   readonly onChange: (attachment: SerializedResource<Attachment>) => void;
   readonly onPrevious: (() => void) | undefined;
   readonly onNext: (() => void) | undefined;
+  readonly onViewRecord: (model: SpecifyModel, recordId: number) => void;
 }): JSX.Element {
   const resource = React.useMemo(
     () => deserializeResource(attachment),
@@ -74,10 +79,11 @@ export function AttachmentDialog({
         <>
           <span className="-ml-4 flex-1" />
           <Button.Blue aria-pressed={showMeta} onClick={toggleShowMeta}>
-            {attachmentsText.showMetaData()}
+            {attachmentsText.showForm()}
           </Button.Blue>
         </>
       }
+      icon={icons.photos}
       onClose={handleClose}
     >
       <div className="flex h-full gap-4">
@@ -91,8 +97,9 @@ export function AttachmentDialog({
         <Form className="flex-1" forwardRef={setForm}>
           <AttachmentViewer
             attachment={resource}
-            relatedResource={related}
+            related={related}
             showMeta={showMeta}
+            onViewRecord={handleViewRecord}
           />
         </Form>
         <Button.Icon

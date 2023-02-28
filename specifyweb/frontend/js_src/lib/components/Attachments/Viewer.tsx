@@ -20,16 +20,22 @@ import {
 import { loadingGif } from '../Molecules';
 import { usePref } from '../UserPreferences/usePref';
 import { fetchOriginalUrl, fetchThumbnail } from './attachments';
-import { getAttachmentTable } from './Cell';
+import { AttachmentRecordLink, getAttachmentTable } from './Cell';
+import { SpecifyModel } from '../DataModel/specifyModel';
+import { GetSet } from '../../utils/types';
 
 export function AttachmentViewer({
   attachment,
-  relatedResource,
+  related: [related, setRelated],
   showMeta = true,
+  onViewRecord: handleViewRecord,
 }: {
   readonly attachment: SpecifyResource<Attachment>;
-  readonly relatedResource: SpecifyResource<AnySchema> | undefined;
+  readonly related: GetSet<SpecifyResource<AnySchema> | undefined>;
   readonly showMeta?: boolean;
+  readonly onViewRecord:
+    | ((model: SpecifyModel, recordId: number) => void)
+    | undefined;
 }): JSX.Element {
   const serialized = React.useMemo(
     () => serializeResource(attachment),
@@ -56,7 +62,7 @@ export function AttachmentViewer({
     formType: 'form',
     mode: augmentMode(
       'edit',
-      relatedResource?.isNew() ?? attachment.isNew(),
+      related?.isNew() ?? attachment.isNew(),
       attachmentTable?.name
     ),
   });
@@ -73,7 +79,7 @@ export function AttachmentViewer({
    * resource.
    */
   const showCustomForm =
-    typeof customViewName === 'string' && typeof relatedResource === 'object';
+    typeof customViewName === 'string' && typeof related === 'object';
 
   const mimeType = attachment.get('mimeType') ?? undefined;
   const type = mimeType?.split('/')[0];
@@ -85,6 +91,7 @@ export function AttachmentViewer({
 
   const [autoPlay] = usePref('attachments', 'behavior', 'autoPlay');
   const Component = typeof originalUrl === 'string' ? Link.Blue : Button.Blue;
+  const table = f.maybe(serialized.tableID ?? undefined, getAttachmentTable);
   return (
     <div className="flex h-full gap-8">
       <div className="flex min-h-[30vw] w-full min-w-[30vh] flex-1 items-center">
@@ -142,7 +149,7 @@ export function AttachmentViewer({
               isDependent={false}
               isSubForm
               mode="edit"
-              resource={showCustomForm ? relatedResource : attachment}
+              resource={showCustomForm ? related : attachment}
               /*
                * Have to override the title because formatted resource string
                * often includes a URL and other stuff (because it is used in
@@ -178,6 +185,17 @@ export function AttachmentViewer({
                 >
                   {commonText.openInNewTab()}
                 </Component>
+                {typeof table === 'object' &&
+                typeof handleViewRecord === 'function' ? (
+                  <AttachmentRecordLink
+                    variant="button"
+                    className="flex-1"
+                    model={table}
+                    related={[related, setRelated]}
+                    attachment={serialized}
+                    onViewRecord={handleViewRecord}
+                  />
+                ) : undefined}
               </div>
             )}
           </div>

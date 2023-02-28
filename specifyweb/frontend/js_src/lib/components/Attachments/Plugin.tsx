@@ -24,6 +24,7 @@ import { FilePicker } from '../Molecules/FilePicker';
 import { ProtectedTable } from '../Permissions/PermissionDenied';
 import { attachmentSettingsPromise, uploadFile } from './attachments';
 import { AttachmentViewer } from './Viewer';
+import { useTriggerState } from '../../hooks/useTriggerState';
 
 export function AttachmentsPlugin(
   props: Parameters<typeof ProtectedAttachmentsPlugin>[0]
@@ -60,14 +61,16 @@ function ProtectedAttachmentsPlugin({
   useErrorContext('attachment', attachment);
 
   const filePickerContainer = React.useRef<HTMLDivElement | null>(null);
+  const related = useTriggerState(
+    resource?.specifyModel.name === 'Attachment' ? undefined : resource
+  );
   return attachment === undefined ? null : (
     <div className="h-full" ref={filePickerContainer} tabIndex={-1}>
       {typeof attachment === 'object' ? (
         <AttachmentViewer
           attachment={attachment}
-          relatedResource={
-            resource?.specifyModel.name === 'Attachment' ? undefined : resource
-          }
+          related={related}
+          onViewRecord={undefined}
         />
       ) : mode === 'view' ? (
         <p>{formsText.noData()}</p>

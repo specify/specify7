@@ -42,10 +42,12 @@ export function AttachmentCell({
       {typeof handleViewRecord === 'function' &&
       model !== undefined &&
       hasTablePermission(model.name, 'read') ? (
-        <RecordLink
+        <AttachmentRecordLink
           attachment={attachment}
           model={model}
           related={[related, setRelated]}
+          variant="icon"
+          className="absolute top-0 left-0"
           onViewRecord={handleViewRecord}
         />
       ) : undefined}
@@ -71,12 +73,16 @@ export function getAttachmentTable(tableId: number): SpecifyModel | undefined {
 /**
  * A button to open a record associated with the attachment
  */
-function RecordLink({
+export function AttachmentRecordLink({
+  variant,
+  className,
   model,
   attachment,
   onViewRecord: handleViewRecord,
   related: [related, setRelated],
 }: {
+  readonly variant: 'icon' | 'button';
+  readonly className: string;
   readonly model: SpecifyModel;
   readonly attachment: SerializedResource<Attachment>;
   readonly onViewRecord: (model: SpecifyModel, recordId: number) => void;
@@ -84,10 +90,11 @@ function RecordLink({
 }): JSX.Element {
   const loading = React.useContext(LoadingContext);
   const [isFailed, handleFailed, handleNotFailed] = useBooleanState();
+  const Component = variant === 'icon' ? Button.LikeLink : Button.Blue;
   return (
     <>
-      <Button.LikeLink
-        className="absolute top-0 left-0"
+      <Component
+        className={className}
         title={model?.label}
         onClick={(): void =>
           loading(
@@ -112,7 +119,8 @@ function RecordLink({
         }
       >
         <TableIcon label name={model?.name ?? 'Attachment'} />
-      </Button.LikeLink>
+        {variant === 'button' && model?.label}
+      </Component>
       {isFailed ? (
         <Dialog
           buttons={commonText.close()}

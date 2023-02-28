@@ -64,7 +64,7 @@ export const attachmentsText = createDictionary({
   unableToFindRelatedRecordDescription: {
     'en-us': 'Unable to find a record that this attachment is related to.',
   },
-  showMetaData: {
-    'en-us': 'Show Metadata',
+  showForm: {
+    'en-us': 'Show Form',
   },
 } as const);

@@ -114,9 +114,15 @@ export function AttachmentGallery({
       typeof attachments[openIndex] === 'object' ? (
         <AttachmentDialog
           attachment={attachments[openIndex]}
-          related={related[openIndex]}
+          related={[
+            related[openIndex],
+            (item): void => setRelated(replaceItem(related, openIndex, item)),
+          ]}
           onChange={(newAttachment): void =>
             handleChange(replaceItem(attachments, openIndex, newAttachment))
+          }
+          onViewRecord={(model, id): void =>
+            setViewRecord(new model.Resource({ id }))
           }
           onClose={(): void => setOpenIndex(undefined)}
           onNext={
