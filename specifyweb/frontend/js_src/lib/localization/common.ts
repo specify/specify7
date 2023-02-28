@@ -596,5 +596,9 @@ export const commonText = createDictionary({
   },
   timeRemaining: {
     'en-us': 'Time remaining',
+    'es-es': 'Tiempo restante',
+    'fr-fr': 'Temps restant',
+    'ru-ru': 'Времени осталось',
+    'uk-ua': 'Час, що залишився',
   },
 } as const);
