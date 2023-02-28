@@ -242,5 +242,16 @@
       "name" : [
          null
       ]
+    },
+    "TaxonTreeDef" : {
+      "name": ["discipline"]
+    },
+    "TaxonTreeDefItem" : {
+      "name" : [
+         "treeDef"
+      ],
+      "title" : [
+         "treeDef"
+      ]
     }
  }
