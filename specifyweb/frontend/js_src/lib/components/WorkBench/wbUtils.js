@@ -13,15 +13,18 @@ import {
   findLocalityColumnsInDataSet,
   getLocalitiesDataFromSpreadsheet,
 } from '../Leaflet/wbLocalityDataExtractor';
-import {Backbone} from '../DataModel/backbone';
-import {camelToKebab, clamp} from '../../utils/utils';
-import {getInitialSearchPreferences, WbAdvancedSearch,} from './AdvancedSearch';
-import {wbText} from '../../localization/workbench';
-import {LeafletMap} from '../Leaflet/Map';
-import {filterArray} from '../../utils/types';
-import {getSelectedLocalities, WbGeoLocate} from './GeoLocate';
-import {CoordinateConverter} from './CoordinateConverter';
-import {getSelectedLast, getVisualHeaders} from './hotHelpers';
+import { Backbone } from '../DataModel/backbone';
+import { camelToKebab, clamp } from '../../utils/utils';
+import {
+  getInitialSearchPreferences,
+  WbAdvancedSearch,
+} from './AdvancedSearch';
+import { wbText } from '../../localization/workbench';
+import { LeafletMap } from '../Leaflet/Map';
+import { filterArray } from '../../utils/types';
+import { getSelectedLocalities, WbGeoLocate } from './GeoLocate';
+import { CoordinateConverter } from './CoordinateConverter';
+import { getSelectedLast, getVisualHeaders } from './hotHelpers';
 
 // REFACTOR: rewrite to React
 export const WBUtils = Backbone.View.extend({
@@ -630,7 +633,7 @@ export const WBUtils = Backbone.View.extend({
         modal={false}
       />,
       undefined,
-      ()=>{
+      () => {
         this.geoMapDialog = undefined;
         event.target.setAttribute('aria-pressed', false);
       }
