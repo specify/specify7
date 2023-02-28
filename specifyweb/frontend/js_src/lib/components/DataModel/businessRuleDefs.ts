@@ -16,6 +16,7 @@ import {
   BorrowMaterial,
   CollectionObject,
   Determination,
+  DNASequence,
   GiftPreparation,
   LoanPreparation,
   LoanReturnPreparation,
@@ -199,6 +200,50 @@ export const businessRuleDefs = f.store(
               determination.set('isCurrent', true);
             }
             return Promise.resolve({ valid: true });
+          },
+        },
+      },
+      DNASequence: {
+        fieldChecks: {
+          genesequence: (dnaSequence: SpecifyResource<DNASequence>): void => {
+            const current = dnaSequence.get('geneSequence');
+            if (current === null) return;
+            var countObj = { a: 0, t: 0, g: 0, c: 0, ambiguous: 0 };
+            for (var i = 0; i < current.length; i++) {
+              const char = current.at(i)?.toLowerCase().trim();
+              if (char !== '') {
+                switch (char) {
+                  case 'a':
+                    countObj['a'] += 1;
+                    break;
+                  case 't':
+                    countObj['t'] += 1;
+                    break;
+                  case 'g':
+                    countObj['g'] += 1;
+                    break;
+                  case 'c':
+                    countObj['c'] += 1;
+                    break;
+                  default:
+                    countObj['ambiguous'] += 1;
+                }
+              }
+            }
+
+            dnaSequence.set('compA', countObj['a']);
+            dnaSequence.set('compT', countObj['t']);
+            dnaSequence.set('compG', countObj['g']);
+            dnaSequence.set('compC', countObj['c']);
+            dnaSequence.set('ambiguousResidues', countObj['ambiguous']);
+            dnaSequence.set(
+              'totalResidues',
+              countObj['a'] +
+                countObj['t'] +
+                countObj['g'] +
+                countObj['c'] +
+                countObj['ambiguous']
+            );
           },
         },
       },
