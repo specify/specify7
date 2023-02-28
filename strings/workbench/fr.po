@@ -513,7 +513,7 @@ msgstr ""
 msgid "unavailableWithoutLocality"
 msgstr "Cet outil nécessite que les colonnes de localité soient mappées"
 
-#: components/WorkBench/wbUtils.js:554
+#: components/WorkBench/wbUtils.js:558
 #. Used in: Components > Work Bench > Wb Utils
 #, fuzzy
 msgid "unavailableWhenUploaded"

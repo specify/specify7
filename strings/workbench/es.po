@@ -433,7 +433,7 @@ msgstr ""
 msgid "unavailableWithoutLocality"
 msgstr "Esta herramienta requiere que se mapeen las columnas de localidad"
 
-#: components/WorkBench/wbUtils.js:554
+#: components/WorkBench/wbUtils.js:558
 #. Used in: Components > Work Bench > Wb Utils
 msgid "unavailableWhenUploaded"
 msgstr "Esta herramienta no funciona con conjuntos de datos cargados"
