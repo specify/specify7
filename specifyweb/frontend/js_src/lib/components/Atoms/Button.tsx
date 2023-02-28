@@ -53,10 +53,7 @@ const button = (name: string, className: string) =>
     type: 'button',
     disabled: props.disabled === true || props.onClick === undefined,
   }));
-/*
- * FEATURE: if onClick===undefined, button should be disabled, but only if expicily
- *   provided
- */
+
 export const Button = {
   /*
    * When using Button.LikeLink component, consider adding [role="link"] if the

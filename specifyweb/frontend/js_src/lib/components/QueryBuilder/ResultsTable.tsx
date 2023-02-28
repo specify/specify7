@@ -220,7 +220,10 @@ function Cell({
       `}
       role="cell"
       title={
-        typeof value === 'string' && value !== formatted ? value : undefined
+        (typeof value === 'string' || typeof value === 'number') &&
+        value !== formatted
+          ? value.toString()
+          : undefined
       }
     >
       {value === null

@@ -13,7 +13,7 @@ export const wbPlanText = createDictionary({
     'en-us': 'Data Mapper',
     'ru-ru': 'Сопоставления',
     'es-es': 'Mapeador de datos',
-    'fr-fr': 'Réticulation de données',
+    'fr-fr': 'Mappeur de données',
     'uk-ua': 'Картограф даних',
   },
   noUploadPlan: {
@@ -35,7 +35,7 @@ export const wbPlanText = createDictionary({
     `,
     'fr-fr': `
       Aucun plan de téléchargement n'a été défini pour cet ensemble de données.
-      Créez-en un maintenant?
+      En créer un maintenant ?
     `,
     'uk-ua':
       'Для цього набору даних не визначено план завантаження. Створити зараз?',
@@ -73,7 +73,7 @@ export const wbPlanText = createDictionary({
     'en-us': 'Match Behavior:',
     'ru-ru': 'Поведение при совпадении:',
     'es-es': 'Comportamiento de coincidencia:',
-    'fr-fr': 'Comportement de correspondance :',
+    'fr-fr': 'Comportement du concordance:',
     'uk-ua': 'Поведінка відповідності:',
   },
   columnMapping: {
