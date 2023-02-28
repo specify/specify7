@@ -60,9 +60,10 @@ export type FieldTypes = {
     'Text',
     {
       readonly defaultValue: string | undefined;
-      // These are used by numeric fields only:
-      readonly min: number | undefined;
-      readonly max: number | undefined;
+      // These are used by numeric and date fields
+      readonly min: number | string | undefined;
+      readonly max: number | string | undefined;
+      // These are used by numeric field only
       readonly step: number | undefined;
       readonly minLength: number | undefined;
       readonly maxLength: number | undefined;

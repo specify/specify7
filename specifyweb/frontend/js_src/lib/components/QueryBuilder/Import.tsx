@@ -20,8 +20,10 @@ import type {
   SerializedResource,
 } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { getResourceApiUrl } from '../DataModel/resource';
 import { schema } from '../DataModel/schema';
 import type { SpQuery } from '../DataModel/types';
+import { userInformation } from '../InitialContext/userInformation';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { FilePicker, fileToText } from '../Molecules/FilePicker';
 import { TableIcon } from '../Molecules/TableIcon';
@@ -67,6 +69,13 @@ export function QueryImport({
               loading(
                 fileToText(file)
                   .then<SerializedModel<SpQuery>>(f.unary(JSON.parse))
+                  .then((query) => ({
+                    ...query,
+                    specifyUser: getResourceApiUrl(
+                      'SpecifyUser',
+                      userInformation.id
+                    ),
+                  }))
                   .then((query) => {
                     setHiddenFields(
                       filterArray(
@@ -130,7 +139,7 @@ export function QueryImport({
             onClose={(): void => setHiddenFields([])}
           >
             <>
-              {queryText.hiddenFieldsMess()}
+              {queryText.importHiddenFields()}
               <Ul className="flex flex-col items-center">
                 {hiddenFields.map((field, index) => (
                   <li className="font-bold" key={index}>

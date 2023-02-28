@@ -57,9 +57,9 @@ def tree_mutation(mutation):
                             "type": "array",
                             "items": {
                                 "type": "array",
-                                "items": [
+                                "prefixItems": [
                                     {
-                                        "type" : "number",
+                                        "type" : "integer",
                                         "description" : "The id of the child node"
                                     },
                                     {
@@ -71,15 +71,15 @@ def tree_mutation(mutation):
                                         "description" : "The fullName of the child node"
                                     },
                                     {
-                                        "type" : "number",
+                                        "type" : "integer",
                                         "description" : "The nodenumber of the child node"
                                     },
                                     {
-                                        "type" : "number",
+                                        "type" : "integer",
                                         "description" : "The highestChildNodeNumber of the child node"
                                     },
                                     {
-                                        "type" : "number",
+                                        "type" : "integer",
                                         "description" : "The rankId of the child node"
                                     },
                                     {
@@ -96,7 +96,7 @@ def tree_mutation(mutation):
                                         Returns null if <tree> is not taxon or the rankId of the node is less than <includeAuthor> paramter"
                                     },
                                     {
-                                        "type" : "number",
+                                        "type" : "integer",
                                         "description" : "The number of children the child node has"
                                     }
                                 ],

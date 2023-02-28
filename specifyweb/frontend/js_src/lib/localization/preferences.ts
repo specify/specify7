@@ -1403,4 +1403,11 @@ export const preferencesText = createDictionary({
     'fr-fr': 'Lecture automatique des médias',
     'uk-ua': 'Автоматично відтворювати медіа',
   },
+  useCustomTooltips: {
+    'en-us': 'Use modern tooltips',
+    'ru-ru': 'Использовать современные подсказки',
+    'es-es': 'Usar modernos tooltips',
+    'fr-fr': 'Utiliser des infobulles modernes',
+    'uk-ua': 'Використовувати сучасні підказки',
+  },
 } as const);

@@ -1,6 +1,6 @@
 from django.db.models import ProtectedError
 from specifyweb.specify.api_tests import ApiTests
-from ..exceptions import BusinessRuleException
+from ..exceptions import TreeBusinessRuleException
 from specifyweb.specify import models
 
 class TaxonTreeDefItemTests(ApiTests):
@@ -22,7 +22,7 @@ class TaxonTreeDefItemTests(ApiTests):
     def test_cannot_delete_root(self):
         self.roottaxon.delete()
 
-        with self.assertRaises(BusinessRuleException):
+        with self.assertRaises(TreeBusinessRuleException):
             self.roottaxontreedefitem.delete()
 
     def test_delete_blocked_by_taxon(self):

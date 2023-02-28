@@ -264,9 +264,21 @@ test('save', async () => {
  */
 
 describe('placeInSameHierarchy', () => {
+  overrideAjax('/api/specify/collection/4/', {
+    id: 4,
+    discipline: getResourceApiUrl('Discipline', 3),
+    resource_uri: getResourceApiUrl('Collection', 4),
+  });
+
+  overrideAjax('/api/specify/collectionobject/5/', {
+    id: 5,
+    collection: getResourceApiUrl('Collection', 4),
+    resource_uri: getResourceApiUrl('CollectionObject', 5),
+  });
+
   test('simple case', async () => {
     const collectionObject = new schema.models.CollectionObject.Resource({
-      id: collectionObjectId,
+      id: 5,
     });
     const locality = new schema.models.Locality.Resource();
     const hierarchyResource = await locality.placeInSameHierarchy(
@@ -277,15 +289,19 @@ describe('placeInSameHierarchy', () => {
   });
 
   test('undefined if Collection Object has no collection', async () => {
-    const collectionObject = new schema.models.CollectionObject.Resource({
-      id: collectionObjectId,
-      resource_uri: collectionObjectUrl,
-    });
+    const collectionObject = new schema.models.CollectionObject.Resource(
+      {
+        id: 6,
+        resource_uri: getResourceApiUrl('CollectionObject', 6),
+      },
+      { noBusinessRules: true }
+    );
     const locality = new schema.models.Locality.Resource();
+    locality.set('discipline', null as never);
     await expect(
       locality.placeInSameHierarchy(collectionObject)
     ).resolves.toBeUndefined();
-    expect(locality.get('discipline')).toBeUndefined();
+    expect(locality.get('discipline')).toBeNull();
   });
 
   test('invalid hierarchy', async () => {

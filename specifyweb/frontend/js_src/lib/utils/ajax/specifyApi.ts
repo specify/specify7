@@ -11,16 +11,10 @@ import type {
 import type { SpecifyResource } from '../../components/DataModel/legacyTypes';
 import type { Tables } from '../../components/DataModel/types';
 import { formatUrl } from '../../components/Router/queryString';
-import { eventListener } from '../events';
 import type { IR, RA, RR } from '../types';
 import { filterArray } from '../types';
 import { formData } from './helpers';
 import { ajax } from './index';
-
-export const globalEvents = eventListener<{
-  readonly initResource: SpecifyResource<AnySchema>;
-  readonly newResource: SpecifyResource<AnySchema>;
-}>();
 
 // FEATURE: consider replacing this with Query Builder
 export const queryCbxExtendedSearch = async <SCHEMA extends AnySchema>(
@@ -158,15 +152,15 @@ export const fetchRows = async <
     fields,
     distinct = false,
     ...filters
-  }: CollectionFetchFilters<SCHEMA> & {
+  }: Omit<CollectionFetchFilters<SCHEMA>, 'fields'> & {
     readonly fields: FIELDS;
     readonly distinct?: boolean;
   },
   /**
    * Advanced filters, not type-safe.
    *
-   * Can query relationships by separating fields with "__"
-   * Can query partial dates (e.g. catalogedDate__year=2030)
+   * Can filter on relationships by separating fields with "__"
+   * Can filter on partial dates (e.g. catalogedDate__year=2030)
    * More info: https://docs.djangoproject.com/en/4.0/topics/db/queries/
    */
   advancedFilters: IR<number | string> = {}

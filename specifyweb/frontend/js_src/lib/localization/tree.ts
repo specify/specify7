@@ -41,7 +41,7 @@ export const treeText = createDictionary({
     'en-us': 'Undo Synonymy',
     'ru-ru': 'Отменить синонимию',
     'es-es': 'Deshacer sinonimia',
-    'fr-fr': 'Annuler la synonyme',
+    'fr-fr': 'Annuler la synonymie',
     'uk-ua': 'Скасувати синонімію',
   },
   synonymize: {

@@ -30,6 +30,7 @@ import { getCache, setCache } from '../../utils/cache';
 import { f } from '../../utils/functools';
 import { filterArray } from '../../utils/types';
 import { capitalize, clamp, mappedFind } from '../../utils/utils';
+import { oneRem } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { iconClassName, legacyNonJsxIcons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
@@ -278,10 +279,7 @@ export const WBView = Backbone.View.extend({
               );
               this.$('.wb-validate, .wb-data-check')
                 .prop('disabled', true)
-                .prop(
-                  'title',
-                  whitespaceSensitive(wbText.wbValidateUnavailable())
-                );
+                .prop('title', wbText.wbValidateUnavailable());
             } else {
               this.$('.wb-validate, .wb-data-check').prop('disabled', false);
               this.$('.wb-show-upload-view')
@@ -1269,9 +1267,6 @@ export const WBView = Backbone.View.extend({
       return;
 
     const cellContainerBoundingBox = cell.getBoundingClientRect();
-    const oneRem = Number.parseFloat(
-      getComputedStyle(document.documentElement).fontSize
-    );
 
     // Make sure box is overflowing horizontally
     if (globalThis.innerWidth > cellContainerBoundingBox.right + oneRem * 2)
@@ -2114,8 +2109,8 @@ export const WBView = Backbone.View.extend({
     );
     this.updateCellInfoStats();
   },
-  getHeadersFromMappingPath(mappingPathFilter, persevering = true) {
-    if (!persevering)
+  getHeadersFromMappingPath(mappingPathFilter, tryBest = true) {
+    if (!tryBest)
       // Find all columns with the shared parent mapping path
       return this.mappings.lines
         .filter(({ mappingPath }) =>
@@ -2139,9 +2134,10 @@ export const WBView = Backbone.View.extend({
   resolveValidationColumns(initialColumns, inferColumnsCallback = undefined) {
     // See https://github.com/specify/specify7/issues/810
     let columns = initialColumns.filter(Boolean);
-    if (typeof inferColumnsCallback === 'function' && columns.length === 0)
-      columns = inferColumnsCallback();
-    if (columns.length === 0) columns = this.dataset.columns;
+    if (typeof inferColumnsCallback === 'function') {
+      if (columns.length === 0) columns = inferColumnsCallback();
+      if (columns.length === 0) columns = this.dataset.columns;
+    }
     // Convert to physicalCol and filter out unknown columns
     return columns
       .map((column) => this.dataset.columns.indexOf(column))
@@ -2238,23 +2234,23 @@ export const WBView = Backbone.View.extend({
         resolveColumns
       );
     } else if (uploadStatus === 'Uploaded') {
-      setMetaCallback('isNew', true, statusData.info.columns, resolveColumns);
+      setMetaCallback('isNew', true, statusData.info.columns, undefined);
       const tableName = statusData.info.tableName.toLowerCase();
       this.uploadResults.recordCounts[tableName] ??= 0;
       this.uploadResults.recordCounts[tableName] += 1;
       this.uploadResults.newRecords[physicalRow] ??= {};
-      this.resolveValidationColumns(statusData.info.columns, () =>
-        resolveColumns(false)
-      ).map((physicalCol) => {
-        this.uploadResults.newRecords[physicalRow][physicalCol] ??= [];
-        this.uploadResults.newRecords[physicalRow][physicalCol].push([
-          tableName,
-          statusData.id,
-          statusData.info?.treeInfo
-            ? `${statusData.info.treeInfo.name} (${statusData.info.treeInfo.rank})`
-            : '',
-        ]);
-      });
+      this.resolveValidationColumns(statusData.info.columns, undefined).map(
+        (physicalCol) => {
+          this.uploadResults.newRecords[physicalRow][physicalCol] ??= [];
+          this.uploadResults.newRecords[physicalRow][physicalCol].push([
+            tableName,
+            statusData.id,
+            statusData.info?.treeInfo
+              ? `${statusData.info.treeInfo.name} (${statusData.info.treeInfo.rank})`
+              : '',
+          ]);
+        }
+      );
     } else
       raise(
         new Error(
@@ -2417,7 +2413,7 @@ export const WBView = Backbone.View.extend({
     });
 
     const uploadButton = this.$el.find('.wb-upload');
-    const title = whitespaceSensitive(wbText.uploadUnavailableWhileHasErrors());
+    const title = wbText.uploadUnavailableWhileHasErrors();
     if (
       !uploadButton.attr('disabled') ||
       uploadButton.attr('title') === title
