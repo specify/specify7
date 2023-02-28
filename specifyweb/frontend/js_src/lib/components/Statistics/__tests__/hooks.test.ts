@@ -3,6 +3,7 @@ import { f } from '../../../utils/functools';
 import { formatNumber } from '../../Atoms/Internationalization';
 import {
   applyStatBackendResponse,
+  generateStatUrl,
   getDynamicCategoriesToFetch,
   getOffsetOne,
 } from '../hooks';
@@ -157,6 +158,10 @@ theories(getOffsetOne, [
     in: [1, 20],
     out: 1,
   },
+  {
+    in: [0, 0],
+    out: 0,
+  },
 ]);
 
 theories(getDynamicCategoriesToFetch, [
@@ -166,5 +171,16 @@ theories(getDynamicCategoriesToFetch, [
       '/statistics/collection/preparations/',
       '/statistics/collection/type_specimens/',
     ],
+  },
+]);
+
+theories(generateStatUrl, [
+  {
+    in: ['collection', 'holdings', 'loans'],
+    out: '/statistics/collection/holdings/loans/',
+  },
+  {
+    in: ['collection/user', 'preparations', 'phantomItem'],
+    out: '/statistics/collection/user/preparations/',
   },
 ]);

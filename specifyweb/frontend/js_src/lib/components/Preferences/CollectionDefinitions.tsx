@@ -2,7 +2,7 @@ import React from 'react';
 
 import { preferencesText } from '../../localization/preferences';
 import { statsText } from '../../localization/stats';
-import { ensure } from '../../utils/types';
+import { ensure, RA } from '../../utils/types';
 import { error } from '../Errors/assert';
 import type { StatLayout } from '../Statistics/types';
 import type { GenericPreferences } from './UserDefinitions';
@@ -15,7 +15,7 @@ export const collectionPreferenceDefinitions = {
       appearance: {
         title: preferencesText.appearance(),
         items: {
-          layout: definePref<StatLayout | undefined>({
+          layout: definePref<RA<StatLayout> | undefined>({
             title: 'Defines the layout of the stats page',
             requiresReload: false,
             visible: false,
@@ -23,7 +23,7 @@ export const collectionPreferenceDefinitions = {
             renderer: () => <>{error('This should not get called')}</>,
             container: 'label',
           }),
-          defaultLayout: definePref<StatLayout | undefined>({
+          defaultLayout: definePref<RA<StatLayout> | undefined>({
             title: 'Defines the default layout of the stats page',
             requiresReload: false,
             visible: false,

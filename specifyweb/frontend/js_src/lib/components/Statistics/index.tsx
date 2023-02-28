@@ -182,11 +182,11 @@ export function StatsPage(): JSX.Element | null {
   const handleChange = React.useCallback(
     (
       newCategories: (
-        oldCategory: StatLayout[number]['categories']
-      ) => StatLayout[number]['categories']
+        oldCategory: StatLayout['categories']
+      ) => StatLayout['categories']
     ): void =>
       getSourceLayoutSetter(activePage.isShared)(
-        (oldLayout: StatLayout | undefined) =>
+        (oldLayout: RA<StatLayout> | undefined) =>
           oldLayout === undefined
             ? undefined
             : replaceItem(oldLayout, activePage.pageIndex, {
@@ -214,9 +214,11 @@ export function StatsPage(): JSX.Element | null {
   );
   const queries = useQueries(filters, false);
   const previousCollectionLayout = React.useRef(
-    collectionLayout as unknown as StatLayout
+    collectionLayout as unknown as RA<StatLayout>
   );
-  const previousLayout = React.useRef(personalLayout as unknown as StatLayout);
+  const previousLayout = React.useRef(
+    personalLayout as unknown as RA<StatLayout>
+  );
 
   const defaultStatsAddLeft = useDefaultStatsToAdd(
     layout[activePage.isShared ? statsText.shared() : statsText.personal()]?.[
@@ -226,9 +228,9 @@ export function StatsPage(): JSX.Element | null {
   );
 
   const getValueUndefined = (
-    layout: StatLayout,
+    layout: RA<StatLayout>,
     pageIndex: number
-  ): StatLayout => {
+  ): RA<StatLayout> => {
     const lastUpdatedDate = new Date();
     return layout.map((pageLayout, index) => ({
       label: pageLayout.label,
@@ -254,12 +256,9 @@ export function StatsPage(): JSX.Element | null {
         ...oldCategory[categoryIndex ?? -1],
         items:
           itemIndex === undefined || itemIndex === -1
-            ? [
-                ...(oldCategory[categoryIndex ?? -1].items ?? []),
-                modifyName(item),
-              ]
+            ? [...oldCategory[categoryIndex ?? -1].items, modifyName(item)]
             : replaceItem(
-                oldCategory[categoryIndex ?? -1].items ?? [],
+                oldCategory[categoryIndex ?? -1].items,
                 itemIndex,
                 item
               ),
@@ -273,7 +272,7 @@ export function StatsPage(): JSX.Element | null {
       return item;
     }
     const itemsLabelMatched = pageLayout.categories
-      .flatMap(({ items }) => items ?? [])
+      .flatMap(({ items }) => items)
       .map((anyItem) => anyItem.label)
       .filter(Boolean);
     return {
@@ -299,11 +298,12 @@ export function StatsPage(): JSX.Element | null {
               {
                 ...oldValue[pageIndex].categories[categoryIndex],
                 items: replaceItem(
-                  oldValue[pageIndex].categories[categoryIndex].items ?? [],
+                  oldValue[pageIndex].categories[categoryIndex].items,
                   itemIndex,
                   {
-                    ...(oldValue[pageIndex].categories[categoryIndex].items ??
-                      [])[itemIndex],
+                    ...oldValue[pageIndex].categories[categoryIndex].items[
+                      itemIndex
+                    ],
                     itemValue: value,
                   }
                 ),
@@ -319,14 +319,10 @@ export function StatsPage(): JSX.Element | null {
       handleChange((oldCategory) =>
         replaceItem(oldCategory, categoryIndex, {
           ...oldCategory[categoryIndex],
-          items: replaceItem(
-            oldCategory[categoryIndex].items ?? [],
-            itemIndex,
-            {
-              ...(oldCategory[categoryIndex].items ?? [])[itemIndex],
-              itemValue: value,
-            }
-          ),
+          items: replaceItem(oldCategory[categoryIndex].items, itemIndex, {
+            ...oldCategory[categoryIndex].items[itemIndex],
+            itemValue: value,
+          }),
         })
       ),
     [handleChange]
@@ -655,15 +651,12 @@ export function StatsPage(): JSX.Element | null {
                         replaceItem(oldCategory, categoryIndex, {
                           ...oldCategory[categoryIndex],
                           items: replaceItem(
-                            oldCategory[categoryIndex].items ?? [],
+                            oldCategory[categoryIndex].items,
                             itemIndex,
                             {
-                              ...(oldCategory[categoryIndex].items ?? [])[
-                                itemIndex
-                              ],
-                              ...((oldCategory[categoryIndex].items ?? [])[
-                                itemIndex
-                              ].type === 'DefaultStat'
+                              ...oldCategory[categoryIndex].items[itemIndex],
+                              ...(oldCategory[categoryIndex].items[itemIndex]
+                                .type === 'DefaultStat'
                                 ? {}
                                 : {
                                     querySpec,
@@ -681,7 +674,7 @@ export function StatsPage(): JSX.Element | null {
                     ? replaceItem(oldCategory, categoryIndex, {
                         ...oldCategory[categoryIndex],
                         items: removeItem(
-                          oldCategory[categoryIndex].items ?? [],
+                          oldCategory[categoryIndex].items,
                           itemIndex
                         ),
                       })
@@ -695,12 +688,10 @@ export function StatsPage(): JSX.Element | null {
                         replaceItem(oldCategory, categoryIndex, {
                           ...oldCategory[categoryIndex],
                           items: replaceItem(
-                            oldCategory[categoryIndex].items ?? [],
+                            oldCategory[categoryIndex].items,
                             itemIndex,
                             {
-                              ...(oldCategory[categoryIndex].items ?? [])[
-                                itemIndex
-                              ],
+                              ...oldCategory[categoryIndex].items[itemIndex],
                               label: newLabel,
                             }
                           ),

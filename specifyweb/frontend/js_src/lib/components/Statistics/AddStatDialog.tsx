@@ -21,7 +21,7 @@ export function AddStatDialog({
   onLoad,
 }: {
   readonly queries: RA<SerializedResource<SpQuery>> | undefined;
-  readonly defaultStatsAddLeft: StatLayout | undefined;
+  readonly defaultStatsAddLeft: RA<StatLayout> | undefined;
   readonly onClose: () => void;
   readonly onAdd: (item: CustomStat | DefaultStat, itemIndex: number) => void;
   readonly onLoad:

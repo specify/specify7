@@ -61,7 +61,7 @@ export function Categories({
   onEdit: handleEdit,
   onLoad,
 }: {
-  readonly pageLayout: StatLayout[number] | undefined;
+  readonly pageLayout: StatLayout | undefined;
   readonly onAdd: ((categoryIndex: number | undefined) => void) | undefined;
   readonly onClick: (
     item: CustomStat | DefaultStat,
@@ -121,7 +121,7 @@ export function Categories({
                 checkEmptyItems ? (
                   <h5 className="font-semibold">{label}</h5>
                 ) : (
-                  <h3 className="rounded-t bg-brand-200 pl-3 pr-3 pt-1.5 pb-1.5 text-lg font-semibold text-white">
+                  <h3 className="rounded-t bg-brand-200 pl-3 pr-3 pt-[0.1rem] pb-[0.1rem] text-lg font-semibold text-white">
                     {label}
                   </h3>
                 )
@@ -137,7 +137,9 @@ export function Categories({
               <Ul
                 className={
                   handleRename === undefined
-                    ? `flex-1 overflow-auto p-${checkEmptyItems ? 0 : 3}`
+                    ? `flex-1 overflow-auto p-${checkEmptyItems ? 0 : 3} pt-${
+                        checkEmptyItems ? 0 : 2
+                      }`
                     : 'grid grid-cols-[auto_1fr_max-content] gap-2 overflow-auto'
                 }
               >

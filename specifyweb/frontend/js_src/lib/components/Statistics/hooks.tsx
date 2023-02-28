@@ -73,10 +73,10 @@ function backEndStatPromiseGenerator(
 }
 
 export function useDefaultStatsToAdd(
-  layout: StatLayout[number] | undefined,
-  defaultLayout: StatLayout | undefined
-): StatLayout | undefined {
-  return React.useMemo((): StatLayout | undefined => {
+  layout: StatLayout | undefined,
+  defaultLayout: RA<StatLayout> | undefined
+): RA<StatLayout> | undefined {
+  return React.useMemo((): RA<StatLayout> | undefined => {
     if (
       layout === undefined ||
       defaultLayout === undefined ||
@@ -209,7 +209,7 @@ export function useResolvedStatSpec(
 }
 
 export function getDynamicCategoriesToFetch(
-  layout: StatLayout | undefined
+  layout: RA<StatLayout> | undefined
 ): RA<string> {
   return Array.from(
     new Set(
@@ -237,7 +237,7 @@ export function getDynamicCategoriesToFetch(
 }
 
 export function statsToTsv(
-  layout: IR<StatLayout | undefined>,
+  layout: IR<RA<StatLayout> | undefined>,
   layoutPageIndex: number,
   sourceIndex: number
 ): string {
@@ -246,7 +246,7 @@ export function statsToTsv(
     statsText.itemName(),
     statsText.itemValue(),
   ];
-  const statItems = Object.entries(layout as IR<StatLayout>).flatMap(
+  const statItems = Object.entries(layout as IR<RA<StatLayout>>).flatMap(
     ([_, layouts], layoutSourceIndex) =>
       (layoutSourceIndex === sourceIndex ? layouts : []).flatMap(
         (page, pageIndex) =>
@@ -336,8 +336,8 @@ export function useDefaultDynamicCategorySetter(
   defaultBackEndResponse: BackendStatsResult | undefined,
   setDefaultLayout: (
     previousGenerator: (
-      oldLayout: StatLayout | undefined
-    ) => StatLayout | undefined
+      oldLayout: RA<StatLayout> | undefined
+    ) => RA<StatLayout> | undefined
   ) => void
 ) {
   React.useEffect(() => {
@@ -372,8 +372,8 @@ export function useDynamicCategorySetter(
   backEndResponse: BackendStatsResult | undefined,
   handleChange: (
     newCategories: (
-      oldCategory: StatLayout[number]['categories']
-    ) => StatLayout[number]['categories']
+      oldCategory: StatLayout['categories']
+    ) => StatLayout['categories']
   ) => void,
   categoriesToFetch: RA<string>
 ) {
@@ -417,5 +417,5 @@ export function generateStatUrl(
 }
 
 export function getOffsetOne(base: number, target: number) {
-  return Math.min(Math.sign(target - base - 1), 0) + base;
+  return Math.max(Math.min(Math.sign(target - base - 1), 0) + base, 0);
 }

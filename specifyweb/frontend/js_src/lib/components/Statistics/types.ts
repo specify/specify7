@@ -27,14 +27,14 @@ export type DefaultStat = State<
   }
 >;
 
-export type StatLayout = RA<{
+export type StatLayout = {
   readonly label: string;
   readonly categories: RA<{
     readonly label: string;
     readonly items: RA<CustomStat | DefaultStat>;
   }>;
   readonly lastUpdated: string | undefined;
-}>;
+};
 
 export type QuerySpec = {
   readonly tableName: keyof Tables;

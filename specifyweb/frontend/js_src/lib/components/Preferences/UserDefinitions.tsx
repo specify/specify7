@@ -1555,16 +1555,8 @@ export const userPreferenceDefinitions = {
       appearance: {
         title: preferencesText.appearance(),
         items: {
-          layout: definePref<StatLayout | undefined>({
+          layout: definePref<RA<StatLayout> | undefined>({
             title: 'Defines the layout of the stats page',
-            requiresReload: false,
-            visible: false,
-            defaultValue: undefined,
-            renderer: () => <>{error('This should not get called')}</>,
-            container: 'label',
-          }),
-          defaultLayout: definePref<StatLayout | undefined>({
-            title: 'Defines the layout of the default stats',
             requiresReload: false,
             visible: false,
             defaultValue: undefined,

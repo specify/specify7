@@ -12,7 +12,7 @@ export function AddStatPage({
 }: {
   readonly pageLabel: string;
   readonly pageIndex: number;
-  readonly pageLayout: StatLayout[number] | undefined;
+  readonly pageLayout: StatLayout | undefined;
   readonly onClick:
     | ((
         item: CustomStat | DefaultStat,

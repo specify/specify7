@@ -568,7 +568,9 @@ function generateDynamicSpec(statsSpec: StatsSpec): RA<{
   );
 }
 
-export function generateDefaultLayout(statsSpecBasis: StatsSpec): StatLayout {
+export function generateDefaultLayout(
+  statsSpecBasis: StatsSpec
+): RA<StatLayout> {
   return Object.entries(statsSpecBasis).map(
     ([sourceKey, { sourceLabel, categories }]) => ({
       label: sourceLabel,
