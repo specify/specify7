@@ -14,6 +14,7 @@ import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 import 'leaflet.markercluster/dist/leaflet.markercluster';
 // Create sub-layers to selectively toggle markers in clusters
 import 'leaflet.featuregroup.subgroup';
+import GestureHandling from 'leaflet-gesture-handling';
 
 import { localityText } from '../../localization/locality';
 import { legacyNonJsxIcons } from '../Atoms/Icons';
@@ -28,10 +29,12 @@ L.Icon.Default.mergeOptions({
   shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
 });
 
+L.Map.addInitHook('addHandler', 'gestureHandling', GestureHandling);
+
 /* Create a "full screen" button */
 // @ts-expect-error
 L.Control.FullScreen = L.Control.extend({
-  onAdd() {
+  onAdd(map: Readonly<L.Map>) {
     const button = L.DomUtil.create('button') as HTMLButtonElement;
     button.title = localityText.toggleFullScreen();
     button.ariaLabel = localityText.toggleFullScreen();
@@ -50,6 +53,8 @@ L.Control.FullScreen = L.Control.extend({
       L.DomEvent.stopPropagation(event);
       L.DomEvent.preventDefault(event);
       isFullScreen = !isFullScreen;
+      // @ts-expect-error GestureHandling plugin has no type definitions
+      map.gestureHandling[isFullScreen ? 'enable' : 'disable']();
       (
         this as unknown as {
           readonly options: { readonly callback: (isEnabled: boolean) => void };
