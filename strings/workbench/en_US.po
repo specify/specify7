@@ -10,7 +10,7 @@ msgid "workBench"
 msgstr "WorkBench"
 
 #: components/WorkBench/Components.tsx:40
-#: components/WorkBench/Status.tsx:75
+#: components/WorkBench/Status.tsx:76
 #: components/WorkBench/Template.tsx:149
 #. Used in: Components > Work Bench > Components ⬤ Components > Work Bench > Status ⬤ Components > Work Bench > Template
 msgid "rollback"
@@ -22,29 +22,29 @@ msgstr "Roll Back"
 msgid "validate"
 msgstr "Validate"
 
-#: components/WorkBench/Status.tsx:73
+#: components/WorkBench/Status.tsx:74
 #. Used in: Components > Work Bench > Status
 msgid "validation"
 msgstr "Validation"
 
-#: components/WorkBench/Status.tsx:74
+#: components/WorkBench/Status.tsx:75
 #: components/WorkBench/Template.tsx:160
 #: components/WorkBench/wbView.js:1874
 #. Used in: Components > Work Bench > Status ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 msgid "upload"
 msgstr "Upload"
 
-#: components/WorkBench/Status.tsx:81
+#: components/WorkBench/Status.tsx:82
 #. Used in: Components > Work Bench > Status
 msgid "rollingBack"
 msgstr "Rolling Back"
 
-#: components/WorkBench/Status.tsx:80
+#: components/WorkBench/Status.tsx:81
 #. Used in: Components > Work Bench > Status
 msgid "uploading"
 msgstr "Uploading"
 
-#: components/WorkBench/Status.tsx:79
+#: components/WorkBench/Status.tsx:80
 #. Used in: Components > Work Bench > Status
 msgid "validating"
 msgstr "Validating"
@@ -691,49 +691,49 @@ msgstr "Data Set"
 msgid "dataSetUploadedLabel"
 msgstr "(Uploaded, Read-Only)"
 
-#: components/WorkBench/Status.tsx:66
+#: components/WorkBench/Status.tsx:67
 #. Used in: Components > Work Bench > Status
 msgid "wbStatusUnupload"
 msgstr "Data Set Rollback Status"
 
-#: components/WorkBench/Status.tsx:65
+#: components/WorkBench/Status.tsx:66
 #. Used in: Components > Work Bench > Status
 msgid "wbStatusUpload"
 msgstr "Data Set Upload Status"
 
-#: components/WorkBench/Status.tsx:64
+#: components/WorkBench/Status.tsx:65
 #. Used in: Components > Work Bench > Status
 msgid "wbStatusValidation"
 msgstr "Data Set Validation Status"
 
-#: components/WorkBench/Status.tsx:101
+#: components/WorkBench/Status.tsx:102
 #. Used in: Components > Work Bench > Status
 msgid "aborting"
 msgstr "Aborting..."
 
-#: components/WorkBench/Status.tsx:91
+#: components/WorkBench/Status.tsx:92
 #. Used in: Components > Work Bench > Status
 msgid "wbStatusAbortFailed"
 msgstr "Failed aborting {operationName:string}. Please try again later"
 
-#: components/WorkBench/Status.tsx:118
+#: components/WorkBench/Status.tsx:119
 #. 🟥E.x, Validating... Used in: Components > Work Bench > Status
 msgid "wbStatusOperationNoProgress"
 msgstr "{operationName:string}..."
 
-#: components/WorkBench/Status.tsx:122
+#: components/WorkBench/Status.tsx:123
 #. 🟥E.x, Validating row 999/1,000. Used in: Components > Work Bench > Status
 msgid "wbStatusOperationProgress"
 msgstr ""
 "{operationName:string} row "
 "{current:number|formatted}/{total:number|formatted}"
 
-#: components/WorkBench/Status.tsx:105
+#: components/WorkBench/Status.tsx:106
 #. Used in: Components > Work Bench > Status
 msgid "wbStatusPendingDescription"
 msgstr "{operationName:string} of this Data Set should begin shortly."
 
-#: components/WorkBench/Status.tsx:108
+#: components/WorkBench/Status.tsx:109
 #. Used in: Components > Work Bench > Status
 msgid "wbStatusPendingSecondDescription"
 msgstr ""
@@ -741,17 +741,17 @@ msgstr ""
 "{operationName:string} process is busy with another Data Set. Please try "
 "again later."
 
-#: components/WorkBench/Status.tsx:160
+#: components/WorkBench/Status.tsx:161
 #. Used in: Components > Work Bench > Status
 msgid "stop"
 msgstr "Stop"
 
-#: components/WorkBench/Status.tsx:132
+#: components/WorkBench/Status.tsx:133
 #. Used in: Components > Work Bench > Status
 msgid "wbStatusError"
 msgstr "Error occurred during {operationName:string}"
 
-#: components/WorkBench/Status.tsx:117
+#: components/WorkBench/Status.tsx:118
 #. Used in: Components > Work Bench > Status
 msgid "updatingTrees"
 msgstr "Updating trees..."

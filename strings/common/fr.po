@@ -187,7 +187,7 @@ msgstr "Créer"
 #: components/WorkBench/DevShowPlan.tsx:37
 #: components/WorkBench/GeoLocate.tsx:87
 #: components/WorkBench/Results.tsx:70
-#: components/WorkBench/Status.tsx:87
+#: components/WorkBench/Status.tsx:88
 #: components/WorkBench/Template.tsx:320
 #: components/WorkBench/wbView.js:265
 #: components/WorkBench/wbView.js:1570
@@ -805,8 +805,9 @@ msgstr "{resource:string} <wrap>({count:number|formatted})</wrap>"
 #: components/WorkBench/DataSetMeta.tsx:180
 #: components/WorkBench/DataSetMeta.tsx:186
 #: components/WorkBench/DataSetMeta.tsx:316
+#: components/WorkBench/RemainingLoadingTime.tsx:43
 #: components/WorkBench/Results.tsx:88
-#. 🟥Example usage: "Created by: Full Name" OR "Record Set: Record Set Name". Used in: Components > Form Cells > Index ⬤ Components > Form Commands > Index ⬤ Components > Form Fields > Use Type Search ⬤ Components > Form Plugins > Index ⬤ Components > Form Sliders > Record Set ⬤ Components > Forms > Base Resource View ⬤ Components > Leaflet > Index ⬤ Components > Molecules > File Picker ⬤ Components > Query Builder > Header ⬤ Components > Query Builder > To Forms ⬤ Components > Schema Config > Field ⬤ Components > Schema Config > Table ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Index ⬤ Components > Security > Collection ⬤ Components > Security > Institution ⬤ Components > Security > Role ⬤ Components > Tree View > Helpers ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Results
+#. 🟥Example usage: "Created by: Full Name" OR "Record Set: Record Set Name". Used in: Components > Form Cells > Index ⬤ Components > Form Commands > Index ⬤ Components > Form Fields > Use Type Search ⬤ Components > Form Plugins > Index ⬤ Components > Form Sliders > Record Set ⬤ Components > Forms > Base Resource View ⬤ Components > Leaflet > Index ⬤ Components > Molecules > File Picker ⬤ Components > Query Builder > Header ⬤ Components > Query Builder > To Forms ⬤ Components > Schema Config > Field ⬤ Components > Schema Config > Table ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Index ⬤ Components > Security > Collection ⬤ Components > Security > Institution ⬤ Components > Security > Role ⬤ Components > Tree View > Helpers ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Remaining Loading Time ⬤ Components > Work Bench > Results
 msgid "colonLine"
 msgstr "{label:string}: {value:string}"
 
@@ -832,3 +833,8 @@ msgstr "en ligne"
 #, fuzzy
 msgid "offline"
 msgstr "hors ligne"
+
+#: components/WorkBench/RemainingLoadingTime.tsx:44
+#. Used in: Components > Work Bench > Remaining Loading Time
+msgid "timeRemaining"
+msgstr ""

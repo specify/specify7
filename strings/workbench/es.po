@@ -20,7 +20,7 @@ msgid "workBench"
 msgstr "banco de trabajo"
 
 #: components/WorkBench/Components.tsx:40
-#: components/WorkBench/Status.tsx:75
+#: components/WorkBench/Status.tsx:76
 #: components/WorkBench/Template.tsx:149
 #. Used in: Components > Work Bench > Components ⬤ Components > Work Bench > Status ⬤ Components > Work Bench > Template
 msgid "rollback"
@@ -32,29 +32,29 @@ msgstr "Retroceder"
 msgid "validate"
 msgstr "Validar"
 
-#: components/WorkBench/Status.tsx:73
+#: components/WorkBench/Status.tsx:74
 #. Used in: Components > Work Bench > Status
 msgid "validation"
 msgstr "Validación"
 
-#: components/WorkBench/Status.tsx:74
+#: components/WorkBench/Status.tsx:75
 #: components/WorkBench/Template.tsx:160
 #: components/WorkBench/wbView.js:1874
 #. Used in: Components > Work Bench > Status ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 msgid "upload"
 msgstr "Subir"
 
-#: components/WorkBench/Status.tsx:81
+#: components/WorkBench/Status.tsx:82
 #. Used in: Components > Work Bench > Status
 msgid "rollingBack"
 msgstr "Retrocediendo"
 
-#: components/WorkBench/Status.tsx:80
+#: components/WorkBench/Status.tsx:81
 #. Used in: Components > Work Bench > Status
 msgid "uploading"
 msgstr "Cargando"
 
-#: components/WorkBench/Status.tsx:79
+#: components/WorkBench/Status.tsx:80
 #. Used in: Components > Work Bench > Status
 msgid "validating"
 msgstr "Validando"
@@ -720,51 +720,51 @@ msgstr "Conjunto de datos"
 msgid "dataSetUploadedLabel"
 msgstr "(Subido, solo lectura)"
 
-#: components/WorkBench/Status.tsx:66
+#: components/WorkBench/Status.tsx:67
 #. Used in: Components > Work Bench > Status
 msgid "wbStatusUnupload"
 msgstr "Estado de reversión del conjunto de datos"
 
-#: components/WorkBench/Status.tsx:65
+#: components/WorkBench/Status.tsx:66
 #. Used in: Components > Work Bench > Status
 msgid "wbStatusUpload"
 msgstr "Estado de carga del conjunto de datos"
 
-#: components/WorkBench/Status.tsx:64
+#: components/WorkBench/Status.tsx:65
 #. Used in: Components > Work Bench > Status
 msgid "wbStatusValidation"
 msgstr "Estado de validación del conjunto de datos"
 
-#: components/WorkBench/Status.tsx:101
+#: components/WorkBench/Status.tsx:102
 #. Used in: Components > Work Bench > Status
 msgid "aborting"
 msgstr "Abortando..."
 
-#: components/WorkBench/Status.tsx:91
+#: components/WorkBench/Status.tsx:92
 #. Used in: Components > Work Bench > Status
 msgid "wbStatusAbortFailed"
 msgstr ""
 "Error al cancelar {operationName:string}. Por favor, inténtelo de nuevo más "
 "tarde"
 
-#: components/WorkBench/Status.tsx:118
+#: components/WorkBench/Status.tsx:119
 #. 🟥E.x, Validating... Used in: Components > Work Bench > Status
 msgid "wbStatusOperationNoProgress"
 msgstr "{operationName:string}..."
 
-#: components/WorkBench/Status.tsx:122
+#: components/WorkBench/Status.tsx:123
 #. 🟥E.x, Validating row 999/1,000. Used in: Components > Work Bench > Status
 msgid "wbStatusOperationProgress"
 msgstr ""
 "{operationName:string} fila "
 "{current:number|formatted}/{total:number|formatted}"
 
-#: components/WorkBench/Status.tsx:105
+#: components/WorkBench/Status.tsx:106
 #. Used in: Components > Work Bench > Status
 msgid "wbStatusPendingDescription"
 msgstr "{operationName:string} de este conjunto de datos debería comenzar en breve."
 
-#: components/WorkBench/Status.tsx:108
+#: components/WorkBench/Status.tsx:109
 #. Used in: Components > Work Bench > Status
 msgid "wbStatusPendingSecondDescription"
 msgstr ""
@@ -772,17 +772,17 @@ msgstr ""
 "{operationName:string} está ocupado con otro conjunto de datos. Por favor, "
 "inténtelo de nuevo más tarde."
 
-#: components/WorkBench/Status.tsx:160
+#: components/WorkBench/Status.tsx:161
 #. Used in: Components > Work Bench > Status
 msgid "stop"
 msgstr "Deténgase"
 
-#: components/WorkBench/Status.tsx:132
+#: components/WorkBench/Status.tsx:133
 #. Used in: Components > Work Bench > Status
 msgid "wbStatusError"
 msgstr "Ocurrió un error durante {operationName:string}"
 
-#: components/WorkBench/Status.tsx:117
+#: components/WorkBench/Status.tsx:118
 #. Used in: Components > Work Bench > Status
 msgid "updatingTrees"
 msgstr "Actualizando árboles..."
