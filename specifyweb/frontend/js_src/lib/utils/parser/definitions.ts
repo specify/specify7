@@ -168,7 +168,6 @@ export const parsers = f.store(
     'java.sql.Timestamp': {
       type: 'date',
       minLength: fullDateFormat().length,
-      maxLength: fullDateFormat().length,
       // FEATURE: allow customizing this in global prefs
       max: '9999-12-31',
       formatters: [
