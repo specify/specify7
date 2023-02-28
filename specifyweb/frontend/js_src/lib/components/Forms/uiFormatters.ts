@@ -89,6 +89,8 @@ export class UiFormatter {
   }
 
   public parse(value: string): RA<string> | undefined {
+    // Regex may be coming from the user, thus disable strict mode
+    // eslint-disable-next-line require-unicode-regexp
     const match = new RegExp(this.parseRegExp()).exec(value);
     return match?.slice(1);
   }

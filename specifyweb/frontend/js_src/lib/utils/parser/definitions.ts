@@ -341,7 +341,9 @@ export function formatterToParser(
     autoNumberingFields?.includes(field.name ?? '') !== false;
 
   return {
-    pattern: regExpString === null ? undefined : new RegExp(regExpString, 'u'),
+    // Regex may be coming from the user, thus disable strict mode
+    // eslint-disable-next-line require-unicode-regexp
+    pattern: regExpString === null ? undefined : new RegExp(regExpString),
     title,
     formatters: [stringGuard(formatter.parse.bind(formatter))],
     validators: [

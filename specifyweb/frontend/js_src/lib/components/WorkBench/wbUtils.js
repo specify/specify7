@@ -269,6 +269,8 @@ export const WBUtils = Backbone.View.extend({
           if (this.searchQuery.slice(-1) !== '$')
             this.searchQuery = `${this.searchQuery}$`;
         }
+        // Regex may be coming from the user, thus disable strict mode
+        // eslint-disable-next-line require-unicode-regexp
         this.searchQuery = new RegExp(
           this.searchQuery,
           this.searchPreferences.search.caseSensitive ? '' : 'i'
@@ -406,6 +408,8 @@ export const WBUtils = Backbone.View.extend({
       : (cellValue) =>
           this.searchPreferences.search.useRegex
             ? cellValue.replaceAll(
+                // Regex may be coming from the user, thus disable strict mode
+                // eslint-disable-next-line require-unicode-regexp
                 new RegExp(this.searchQuery, 'g'),
                 replacementValue
               )
