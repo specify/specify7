@@ -7,22 +7,22 @@ import React from 'react';
 import Draggable from 'react-draggable';
 import type { Props } from 'react-modal';
 import Modal from 'react-modal';
+import type { LocalizedString } from 'typesafe-i18n';
 
+import { useId } from '../../hooks/useId';
 import { listen } from '../../utils/events';
 import { KEY } from '../../utils/utils';
-import { LoadingContext } from '../Core/Contexts';
+import { Button, DialogContext } from '../Atoms/Button';
+import { className, dialogIconTriggers } from '../Atoms/className';
 import { dialogIcons } from '../Atoms/Icons';
+import { LoadingContext } from '../Core/Contexts';
 import {
   useHighContrast,
   useReducedTransparency,
   useTransitionDuration,
 } from '../UserPreferences/Hooks';
-import { className, dialogIconTriggers } from '../Atoms/className';
-import { Button, DialogContext } from '../Atoms/Button';
-import { useId } from '../../hooks/useId';
-import { useTitle } from './AppTitle';
 import { usePref } from '../UserPreferences/usePref';
-import { LocalizedString } from 'typesafe-i18n';
+import { useTitle } from './AppTitle';
 
 /**
  * Modal dialog with a loading bar
@@ -43,7 +43,7 @@ export function LoadingScreen(): null {
   return null;
 }
 
-const commonContainer = 'rounded resize max-w-[90%] shadow-2xl shadow-gray-500';
+const commonContainer = 'rounded resize max-w-[90%] shadow-lg shadow-gray-500';
 export const dialogClassNames = {
   fullScreen: '!transform-none !w-full !h-full',
   freeContainer: `${commonContainer} max-h-[90%]`,
@@ -72,6 +72,13 @@ export const supportsBackdropBlur = globalThis.CSS.supports(
 
 /**
  * Modal or non-modal dialog. Highly customizable. Used all over the place
+ *
+ * @remarks
+ * We are using a library "react-modal" to render dialogs. It worked great so
+ * far. However, since then we started using HeadlessUI and FloatingUI, both
+ * of which already provide dialogs. Might be worth at some point to migrate
+ * to reduce number of dependencies
+ *
  * @remarks
  * Note, if the same components renders a <Dialog>, and on the next render
  * instead renders a different <Dialog> with the same parent, React would
@@ -79,7 +86,7 @@ export const supportsBackdropBlur = globalThis.CSS.supports(
  * new dialog, with a different content would already be scrolled down.
  * Possible solution would be to set container.scrollTop=0 on header change,
  * though, that may introduce issues in other places, as same dialogs change
- * header durring lifecycle (ResourceView)
+ * header during lifecycle (ResourceView)
  */
 export function Dialog({
   /*

@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { useDistantRelated } from '../../hooks/resource';
 import { useResourceValue } from '../../hooks/useResourceValue';
 import type { Parser } from '../../utils/parser/definitions';
 import { getValidationAttributes } from '../../utils/parser/definitions';
@@ -18,7 +19,6 @@ import { PrintOnSave, SpecifyFormCheckbox } from './Checkbox';
 import { Combobox } from './ComboBox';
 import { UiField } from './Field';
 import { QueryComboBox } from './QueryComboBox';
-import { useDistantRelated } from '../../hooks/resource';
 
 const fieldRenderers: {
   readonly [KEY in keyof FieldTypes]: (props: {
@@ -184,9 +184,9 @@ const fieldRenderers: {
     return (
       <UiField
         field={field}
-        name={name}
         id={id}
         mode={mode}
+        name={name}
         parser={parser}
         resource={resource}
       />
@@ -194,7 +194,6 @@ const fieldRenderers: {
   },
   Plugin: FormPlugin,
   FilePicker({ id, mode, name, isRequired }) {
-    // FEATURE: consider replacing this with AttachmentsPlugin for some field names
     /*
      * Not sure how this is supposed to work, thus the field is rendered as
      * disabled
@@ -242,9 +241,9 @@ export function FormField({
           mode={isReadOnly || data.resource !== resource ? 'view' : mode}
           {...rest}
           field={data.field}
-          name={fields?.map(({ name }) => name).join('.')}
           fieldDefinition={fieldDefinition as FieldTypes['Checkbox']}
           isRequired={rest.isRequired && mode !== 'search'}
+          name={fields?.map(({ name }) => name).join('.')}
           resource={data.resource}
         />
       )}

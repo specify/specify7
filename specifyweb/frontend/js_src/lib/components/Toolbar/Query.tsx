@@ -5,29 +5,30 @@
 import React from 'react';
 import { useOutletContext } from 'react-router';
 
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { commonText } from '../../localization/common';
+import { queryText } from '../../localization/query';
+import type { RA } from '../../utils/types';
+import { Button } from '../Atoms/Button';
+import { icons } from '../Atoms/Icons';
+import { Link } from '../Atoms/Link';
 import type { CollectionFetchFilters } from '../DataModel/collection';
 import { fetchCollection } from '../DataModel/collection';
-import type { SpQuery } from '../DataModel/types';
-import { commonText } from '../../localization/common';
-import { hasPermission, hasToolPermission } from '../Permissions/helpers';
+import { getField } from '../DataModel/helpers';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import { resourceEvents } from '../DataModel/resource';
 import { getModelById, schema } from '../DataModel/schema';
-import type { RA } from '../../utils/types';
+import type { SpQuery } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
-import { icons } from '../Atoms/Icons';
+import { DateElement } from '../Molecules/DateElement';
 import { Dialog } from '../Molecules/Dialog';
+import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
+import { TableIcon } from '../Molecules/TableIcon';
+import { hasPermission, hasToolPermission } from '../Permissions/helpers';
 import { QueryEditButton } from '../QueryBuilder/Edit';
-import { QueryTables } from './QueryTables';
 import { OverlayContext } from '../Router/Router';
 import { SafeOutlet } from '../Router/RouterUtils';
-import { DateElement } from '../Molecules/DateElement';
-import { Button } from '../Atoms/Button';
-import { Link } from '../Atoms/Link';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { SerializedResource } from '../DataModel/helperTypes';
-import { TableIcon } from '../Molecules/TableIcon';
-import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
-import { queryText } from '../../localization/query';
-import { getField } from '../DataModel/helpers';
+import { QueryTables } from './QueryTables';
 
 export function QueriesOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -56,7 +57,7 @@ export type QueryListContextType = {
 export function useQueries(
   spQueryFilter?: Partial<CollectionFetchFilters<SpQuery>>
 ): RA<SerializedResource<SpQuery>> | undefined {
-  return useAsyncState<RA<SerializedResource<SpQuery>>>(
+  const [queries, setQueries] = useAsyncState<RA<SerializedResource<SpQuery>>>(
     React.useCallback(
       async () =>
         fetchCollection('SpQuery', {
@@ -66,7 +67,16 @@ export function useQueries(
       [spQueryFilter]
     ),
     true
-  )[0];
+  );
+  React.useEffect(
+    () =>
+      resourceEvents.on('deleted', (resource) => {
+        if (resource.specifyModel.name === 'SpQuery')
+          setQueries(queries?.filter((query) => query.id !== resource.id));
+      }),
+    [queries]
+  );
+  return queries;
 }
 
 export function QueryListOutlet(): JSX.Element {

@@ -5,16 +5,16 @@
 
 import React from 'react';
 
-import { ajax } from '../../utils/ajax';
-import { formData } from '../../utils/ajax/helpers';
-import type { SpecifyUser } from '../DataModel/types';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { hasPermission } from '../Permissions/helpers';
-import { userInformation } from '../InitialContext/userInformation';
-import { Button } from '../Atoms/Button';
-import { LoadingContext } from '../Core/Contexts';
 import { useResource } from '../../hooks/resource';
 import { userText } from '../../localization/user';
+import { ajax } from '../../utils/ajax';
+import { formData } from '../../utils/ajax/helpers';
+import { Button } from '../Atoms/Button';
+import { LoadingContext } from '../Core/Contexts';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { SpecifyUser } from '../DataModel/types';
+import { userInformation } from '../InitialContext/userInformation';
+import { hasPermission } from '../Permissions/helpers';
 
 export function AdminStatusPlugin({
   user: resource,

@@ -3,38 +3,38 @@
  */
 
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
+import { useSearchParameter } from '../../hooks/navigation';
+import { usePromise } from '../../hooks/useAsyncState';
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { commonText } from '../../localization/common';
+import { headerText } from '../../localization/header';
+import { treeText } from '../../localization/tree';
 import { ping } from '../../utils/ajax/ping';
-import type { TaxonTreeDef } from '../DataModel/types';
 import { f } from '../../utils/functools';
 import { toLowerCase } from '../../utils/utils';
+import { Ul } from '../Atoms';
+import { Button } from '../Atoms/Button';
+import { DataEntry } from '../Atoms/DataEntry';
+import { icons } from '../Atoms/Icons';
+import { Link } from '../Atoms/Link';
+import { LoadingContext } from '../Core/Contexts';
+import type { FilterTablesByEndsWith } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { commonText } from '../../localization/common';
-import { hasPermission, hasTreeAccess } from '../Permissions/helpers';
-import { formatUrl } from '../Router/queryString';
 import { schema } from '../DataModel/schema';
+import type { TaxonTreeDef } from '../DataModel/types';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
+import { ResourceView } from '../Forms/ResourceView';
 import {
   getDisciplineTrees,
   treeRanksPromise,
 } from '../InitialContext/treeRanks';
-import { LoadingContext } from '../Core/Contexts';
-import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import { icons } from '../Atoms/Icons';
 import { Dialog } from '../Molecules/Dialog';
-import { ResourceView } from '../Forms/ResourceView';
-import { OverlayContext } from '../Router/Router';
-import { useSearchParameter } from '../../hooks/navigation';
-import { Button } from '../Atoms/Button';
-import { Ul } from '../Atoms';
-import { Link } from '../Atoms/Link';
-import { DataEntry } from '../Atoms/DataEntry';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { FilterTablesByEndsWith } from '../DataModel/helperTypes';
 import { TableIcon } from '../Molecules/TableIcon';
-import { headerText } from '../../localization/header';
-import { LocalizedString } from 'typesafe-i18n';
-import { treeText } from '../../localization/tree';
+import { hasPermission, hasTreeAccess } from '../Permissions/helpers';
+import { formatUrl } from '../Router/queryString';
+import { OverlayContext } from '../Router/Router';
 
 export function TreeSelectOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -65,10 +65,7 @@ export function TreeSelectDialog({
   readonly permissionName: 'read' | 'repair';
 }): JSX.Element | null {
   const loading = React.useContext(LoadingContext);
-  const [treeRanks] = useAsyncState(
-    React.useCallback(async () => treeRanksPromise, []),
-    true
-  );
+  const [treeRanks] = usePromise(treeRanksPromise, true);
   const [isFinished, setIsFinished] = useBooleanState();
 
   return typeof treeRanks === 'object' ? (
@@ -101,7 +98,7 @@ export function TreeSelectDialog({
                   | SpecifyResource<TaxonTreeDef>
                   | undefined;
                 return (
-                  <li key={treeName} className="contents">
+                  <li className="contents" key={treeName}>
                     <div className="flex gap-2">
                       <Link.Default
                         className="flex-1"

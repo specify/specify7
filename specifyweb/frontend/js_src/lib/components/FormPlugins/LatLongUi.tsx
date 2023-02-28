@@ -1,4 +1,5 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useResourceValue } from '../../hooks/useResourceValue';
 import { commonText } from '../../localization/common';
@@ -8,10 +9,9 @@ import { Lat, Long, trimLatLong } from '../../utils/latLong';
 import { Input, Select } from '../Atoms/Form';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
+import { schema } from '../DataModel/schema';
 import type { Locality } from '../DataModel/types';
 import type { FormMode } from '../FormParse';
-import { schema } from '../DataModel/schema';
-import { LocalizedString } from 'typesafe-i18n';
 
 export const coordinateType = ['Point', 'Line', 'Rectangle'] as const;
 export type CoordinateType = typeof coordinateType[number];
@@ -246,7 +246,6 @@ export function LatLongUi({
                   disabled={mode === 'view'}
                   id={id}
                   name="type"
-                  title={localityText.coordinateType()}
                   value={coordinateType}
                   onValueChange={(value): void => {
                     setCoordinateType(value as CoordinateType);

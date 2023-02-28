@@ -1,23 +1,23 @@
 import React from 'react';
 
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useLiveState } from '../../hooks/useLiveState';
+import { f } from '../../utils/functools';
+import type { RA } from '../../utils/types';
+import { defined } from '../../utils/types';
+import { group, replaceItem } from '../../utils/utils';
 import { fetchCollection } from '../DataModel/collection';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import { getModel } from '../DataModel/schema';
 import type {
   SpLocaleContainer,
   SpLocaleContainerItem,
   Tables,
 } from '../DataModel/types';
-import { f } from '../../utils/functools';
-import { group, replaceItem } from '../../utils/utils';
-import { getModel } from '../DataModel/schema';
+import type { WithFetchedStrings } from '../Toolbar/SchemaConfig';
 import { findString } from './helpers';
-import type { RA } from '../../utils/types';
-import { defined } from '../../utils/types';
 import type { NewSpLocaleItemString, SpLocaleItemString } from './index';
 import type { SchemaData } from './SetupHooks';
-import type { WithFetchedStrings } from '../Toolbar/SchemaConfig';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { useLiveState } from '../../hooks/useLiveState';
-import { SerializedResource } from '../DataModel/helperTypes';
 
 export function useSchemaContainer(
   tables: SchemaData['tables'],

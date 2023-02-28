@@ -8,24 +8,25 @@
  */
 
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
-import type { Tables } from '../DataModel/types';
-import { camelToKebab, upperToKebab } from '../../utils/utils';
 import { commonText } from '../../localization/common';
-import { getModel } from '../DataModel/schema';
-import { scrollIntoView } from '../TreeView/helpers';
+import { formsText } from '../../localization/forms';
+import { wbPlanText } from '../../localization/wbPlan';
 import type { IR, RA, RR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
+import { camelToKebab, upperToKebab } from '../../utils/utils';
 import { iconClassName, icons } from '../Atoms/Icons';
+import { getModel } from '../DataModel/schema';
+import type { Tables } from '../DataModel/types';
 import {
   TableIcon,
   tableIconEmpty,
   tableIconSelected,
   tableIconUndefined,
 } from '../Molecules/TableIcon';
-import { formsText } from '../../localization/forms';
-import { LocalizedString } from 'typesafe-i18n';
-import { wbPlanText } from '../../localization/wbPlan';
+import { titlePosition } from '../Molecules/Tooltips';
+import { scrollIntoView } from '../TreeView/helpers';
 
 type Properties =
   /*
@@ -296,7 +297,6 @@ function Option({
       className={classes.join(' ')}
       role="option"
       tabIndex={-1}
-      title={fullTitle === optionLabel ? tableLabel : fullTitle}
       onClick={
         typeof handleClick === 'function'
           ? (event): void => handleClick({ isDoubleClick: event.detail > 1 })
@@ -328,6 +328,7 @@ function Option({
                 ? wbPlanText.relationshipWithTable({ tableName: tableLabel })
                 : undefined
             }
+            {...{ [titlePosition]: 'right' }}
           >
             {icons.chevronRight}
           </span>
@@ -739,6 +740,7 @@ export function CustomSelectElement({
       role={role}
       tabIndex={has('tabIndex') ? 0 : has('interactive') ? -1 : undefined}
       title={selectLabel}
+      {...{ [titlePosition]: 'top' }}
       onBlur={
         has('interactive')
           ? (event): void => {

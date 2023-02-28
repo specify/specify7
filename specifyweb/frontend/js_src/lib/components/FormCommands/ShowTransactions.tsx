@@ -1,21 +1,21 @@
 import React from 'react';
 
-import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
-import { f } from '../../utils/functools';
-import { sortFunction } from '../../utils/utils';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
-import { hasTablePermission } from '../Permissions/helpers';
+import { interactionsText } from '../../localization/interactions';
+import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
+import { sortFunction } from '../../utils/utils';
 import { H3, Ul } from '../Atoms';
 import { Link } from '../Atoms/Link';
-import { Dialog } from '../Molecules/Dialog';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { AnySchema } from '../DataModel/helperTypes';
-import { Preparation } from '../DataModel/types';
+import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
 import { deserializeResource } from '../DataModel/helpers';
-import { interactionsText } from '../../localization/interactions';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
+import type { Preparation } from '../DataModel/types';
+import { Dialog } from '../Molecules/Dialog';
+import { hasTablePermission } from '../Permissions/helpers';
 
 function List({
   resources,

@@ -1,9 +1,12 @@
-import type { Tables } from '../DataModel/types';
+import type { IR, RA, RR } from '../../utils/types';
 import { group, removeKey, split, toLowerCase } from '../../utils/utils';
 import { strictGetModel } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { Tables } from '../DataModel/types';
 import { isTreeModel } from '../InitialContext/treeRanks';
-import type { IR, RA, RR } from '../../utils/types';
+import { defaultColumnOptions } from './linesGetter';
+import type { SplitMappingPath } from './mappingHelpers';
+import { getNameFromTreeRankName, valueIsToManyIndex } from './mappingHelpers';
 import type {
   ColumnDefinition,
   ColumnOptions,
@@ -12,9 +15,6 @@ import type {
   UploadPlan,
   UploadTable,
 } from './uploadPlanParser';
-import { defaultColumnOptions } from './linesGetter';
-import type { SplitMappingPath } from './mappingHelpers';
-import { getNameFromTreeRankName, valueIsToManyIndex } from './mappingHelpers';
 
 export const toColumnOptions = (
   headerName: string,

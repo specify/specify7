@@ -2,11 +2,15 @@
  * Class for a specify model (a database table)
  */
 
+import type { LocalizedString } from 'typesafe-i18n';
+
 import { commonText } from '../../localization/common';
+import { getCache } from '../../utils/cache';
 import type { IR, R, RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import { camelToHuman } from '../../utils/utils';
 import { error } from '../Errors/assert';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import {
   DependentCollection,
   LazyCollection,
@@ -24,6 +28,7 @@ import { ResourceBase } from './resourceApi';
 import type { SchemaLocalization } from './schema';
 import { getSchemaLocalization, schema } from './schema';
 import { unescape } from './schemaBase';
+import { schemaAliases } from './schemaExtras';
 import { getTableOverwrite, modelViews } from './schemaOverrides';
 import type { Relationship } from './specifyField';
 import {
@@ -31,10 +36,6 @@ import {
   LiteralField,
   type RelationshipDefinition,
 } from './specifyField';
-import { getCache } from '../../utils/cache';
-import { schemaAliases } from './schemaExtras';
-import { LocalizedString } from 'typesafe-i18n';
-import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 
 type FieldAlias = {
   readonly vname: string;
@@ -420,7 +421,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
       .map((fieldName) => this.getField(fieldName))
       .find(
         (field): field is Relationship =>
-          field?.isRelationship === true && (!relationshipIsToMany(field))
+          field?.isRelationship === true && !relationshipIsToMany(field)
       );
   }
 

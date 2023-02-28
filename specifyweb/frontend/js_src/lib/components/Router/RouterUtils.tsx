@@ -1,16 +1,16 @@
 import React from 'react';
-import {
+import type {
   IndexRouteObject,
   NonIndexRouteObject,
-  Outlet,
   RouteObject,
 } from 'react-router';
+import { Outlet } from 'react-router';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import type { IR, RA, WritableArray } from '../../utils/types';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { useTitle } from '../Molecules/AppTitle';
 import { LoadingScreen } from '../Molecules/Dialog';
-import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import { LocalizedString } from 'typesafe-i18n';
 
 /**
  * A wrapper for native React Routes object. Makes everything readonly.
@@ -70,13 +70,13 @@ export const toReactRoutes = (
       children: Array.isArray(children)
         ? toReactRoutes(children, title)
         : undefined,
-      element: (
-        resolvedElement === undefined ? undefined : (
+      element:
+        resolvedElement === undefined ||
+        process.env.NODE_ENV === 'test' ? undefined : (
           <ErrorBoundary dismissible={dismissible}>
             {resolvedElement}
           </ErrorBoundary>
-        )
-      ),
+        ),
     };
   });
 

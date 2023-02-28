@@ -1,24 +1,28 @@
 import React from 'react';
 
-import { ajax } from '../../utils/ajax';
-import type { Tables } from '../DataModel/types';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
-import { strictGetModel } from '../DataModel/schema';
+import { treeText } from '../../localization/tree';
+import { StringToJsx } from '../../localization/utils';
+import { ajax } from '../../utils/ajax';
 import type { RA } from '../../utils/types';
 import { overwriteReadOnly } from '../../utils/types';
 import { Button } from '../Atoms/Button';
+import { icons } from '../Atoms/Icons';
 import { LoadingContext } from '../Core/Contexts';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { strictGetModel } from '../DataModel/schema';
+import type { Tables } from '../DataModel/types';
+import { loadingBar } from '../Molecules';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { FormattedResource } from '../Molecules/FormattedResource';
+import { TableIcon } from '../Molecules/TableIcon';
 import type { DeleteBlocker } from './DeleteBlocked';
 import { DeleteBlocked } from './DeleteBlocked';
-import { icons } from '../Atoms/Icons';
-import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { useLiveState } from '../../hooks/useLiveState';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { AnySchema } from '../DataModel/helperTypes';
-import { loadingBar } from '../Molecules';
 
 const fetchBlockers = async (
   resource: SpecifyResource<AnySchema>
@@ -83,6 +87,9 @@ export function DeleteButton<SCHEMA extends AnySchema>({
   const loading = React.useContext(LoadingContext);
 
   const isBlocked = Array.isArray(blockers) && blockers.length > 0;
+
+  const iconName = resource.specifyModel.name;
+
   return (
     <>
       <ButtonComponent
@@ -134,6 +141,21 @@ export function DeleteButton<SCHEMA extends AnySchema>({
             onClose={handleClose}
           >
             {deletionMessage}
+            <div>
+              <StringToJsx
+                components={{
+                  wrap: (
+                    <i className="flex items-center gap-2">
+                      <TableIcon label={false} name={iconName} />
+                      <FormattedResource asLink={false} resource={resource} />
+                    </i>
+                  ),
+                }}
+                string={commonText.jsxColonLine({
+                  label: treeText.resourceToDelete(),
+                })}
+              />
+            </div>
           </Dialog>
         ) : (
           <DeleteBlocked

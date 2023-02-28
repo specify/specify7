@@ -5,6 +5,7 @@
 import React from 'react';
 
 import { commonText } from '../../localization/common';
+import { userText } from '../../localization/user';
 import { csrfToken, parseDjangoDump } from '../../utils/ajax/csrfToken';
 import { ping } from '../../utils/ajax/ping';
 import { f } from '../../utils/functools';
@@ -18,11 +19,10 @@ import { LoadingContext } from '../Core/Contexts';
 import { SplashScreen } from '../Core/SplashScreen';
 import type { SerializedModel } from '../DataModel/helperTypes';
 import type { Collection } from '../DataModel/types';
+import { toLargeSortConfig } from '../Molecules/Sorting';
 import { formatUrl } from '../Router/queryString';
 import { scrollIntoView } from '../TreeView/helpers';
 import { usePref } from '../UserPreferences/usePref';
-import { toLargeSortConfig } from '../Molecules/Sorting';
-import { userText } from '../../localization/user';
 
 export function ChooseCollection(): JSX.Element {
   return React.useMemo(

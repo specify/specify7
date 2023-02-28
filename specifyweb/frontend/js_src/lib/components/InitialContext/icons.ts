@@ -4,9 +4,9 @@
  * Icons are stored in https://github.com/specify/specify6/tree/master/src/edu/ku/brc/specify/images
  */
 
-import { load } from './index';
 import type { RA } from '../../utils/types';
 import { softFail } from '../Errors/Crash';
+import { load } from './index';
 
 const iconGroups = {} as Record<IconGroup, Document>;
 
@@ -46,6 +46,10 @@ export function getIcon(name: string): string | undefined {
     if (typeof iconFile === 'string')
       return `${iconDirectories[group]}${iconFile}`;
   }
+  try {
+    new URL(name);
+    return name;
+  } catch {}
   console.warn(`Unable to find the icon ${name}`);
   return undefined;
 }

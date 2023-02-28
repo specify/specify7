@@ -8,9 +8,9 @@ import {
   treemapBinary,
 } from 'd3';
 
-import { index, sortFunction } from '../../utils/utils';
 import type { RA, RR, WritableArray } from '../../utils/types';
 import { filterArray } from '../../utils/types';
+import { index, sortFunction } from '../../utils/utils';
 import { softFail } from '../Errors/Crash';
 
 type Node = {

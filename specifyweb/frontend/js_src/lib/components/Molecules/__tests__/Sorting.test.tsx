@@ -1,5 +1,5 @@
-import { toLargeSortConfig, toSmallSortConfig } from '../Sorting';
 import { theories } from '../../../tests/utils';
+import { toLargeSortConfig, toSmallSortConfig } from '../Sorting';
 
 theories(toSmallSortConfig, [
   { in: [{ direction: 'asc', fieldNames: ['a', 'b'] }], out: 'a.b' },

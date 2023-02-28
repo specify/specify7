@@ -1,7 +1,9 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
+import { userText } from '../../localization/user';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { removeItem, replaceItem, replaceKey } from '../../utils/utils';
@@ -13,8 +15,6 @@ import { smoothScroll } from '../QueryBuilder/helpers';
 import type { Policy, PolicyScope } from './Policy';
 import { hasTableActions, SecurityPolicy } from './Policy';
 import { getAllActions } from './utils';
-import { userText } from '../../localization/user';
-import { LocalizedString } from 'typesafe-i18n';
 
 export function SecurityPoliciesWrapper({
   policies,

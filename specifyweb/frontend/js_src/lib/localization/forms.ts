@@ -35,14 +35,14 @@ export const formsText = createDictionary({
     'en-us': 'Value must be unique to {fieldName:string}',
     'ru-ru': 'Значение {fieldName:string} должно быть уникальным',
     'es-es': 'El valor debe ser único para {fieldName:string}',
-    'fr-fr': 'La valeur doit être unique pour {fieldName:string}',
+    'fr-fr': 'Valeur doit être unique pour {fieldName:string}',
     'uk-ua': 'Значення має бути унікальним для {fieldName:string}',
   },
   valueMustBeUniqueToDatabase: {
     'en-us': 'Value must be unique to database',
     'ru-ru': 'Значение должно быть уникальным в базе данных',
     'es-es': 'El valor debe ser único para la base de datos',
-    'fr-fr': 'La valeur doit être unique à la base de données',
+    'fr-fr': 'Valeur doit être unique à la base de données',
     'uk-ua': 'Значення має бути унікальним в базі даних',
   },
   valuesOfMustBeUniqueToField: {
@@ -63,23 +63,22 @@ export const formsText = createDictionary({
     'ru-ru': 'Значения {values:string} должны быть уникальным в базе данных',
     'es-es':
       'Los valores de {values:string} deben ser únicos para la base de datos',
-    'fr-fr': `
-      Les valeurs de {values:string} doivent être uniques à la base de données
-    `,
+    'fr-fr':
+      'Valeurs de {values:string} doivent être uniques à la base de données',
     'uk-ua': 'Значення {values:string} мають бути унікальними в базі даних',
   },
   checkingIfResourceCanBeDeleted: {
     'en-us': 'Checking if resource can be deleted…',
     'ru-ru': 'Проверка возможности удаления ресурса…',
     'es-es': 'Comprobando si el recurso se puede eliminar…',
-    'fr-fr': 'Vérification si la ressource peut être supprimée…',
+    'fr-fr': 'Vérifiant si la ressource peut être supprimée…',
     'uk-ua': 'Перевірка можливості видалення ресурсу…',
   },
   deleteBlocked: {
     'en-us': 'Delete blocked',
     'ru-ru': 'Удаление заблокировано',
     'es-es': 'Eliminar bloqueado',
-    'fr-fr': 'Supprimer bloqué',
+    'fr-fr': 'Suppression bloqué',
     'uk-ua': 'Видалення заблоковане',
   },
   deleteBlockedDescription: {
@@ -257,7 +256,10 @@ export const formsText = createDictionary({
       Додати значення "{value:string}" до {pickListTable:string} під назвою
       "{pickListName:string}"?
     `,
-    'fr-fr': '',
+    'fr-fr': `
+      Ajouter la valeur "{value:string}" au {pickListTable:string} nommé
+      "{pickListName:string}" ?
+    `,
   },
   invalidType: {
     'en-us': 'Invalid Type',
@@ -406,7 +408,8 @@ export const formsText = createDictionary({
     'es-es':
       'El formulario no se puede guardar debido a los siguientes errores:',
     'fr-fr': `
-      Impossible d'enregistrer le formulaire en raison des erreurs suivantes :
+      Le formulaire ne peut pas être enregistré en raison des erreurs suivantes
+      :
     `,
     'uk-ua': 'Форму неможливо зберегти через такі помилки:',
   },
@@ -521,7 +524,7 @@ export const formsText = createDictionary({
     `,
     'fr-fr': `
       Ce plugin ne peut pas être utilisé sur le formulaire
-      {currentTable:string}. Essayez de le déplacer sur les formulaires
+      {currentTable:string}. Essayez de le déplacer vers les formulaires
       {supportedTables:string}.
     `,
     'uk-ua': `
@@ -538,9 +541,19 @@ export const formsText = createDictionary({
       Команда не может быть использована на форме {currentTable:string}. Она
       может быть использована только на форме {correctTable:string}.
     `,
-    'es-es': '',
-    'fr-fr': '',
-    'uk-ua': '',
+    'es-es': `
+      El comando no puede utilizarse en el formulario {currentTable:string}.
+      Sólo puede utilizarse en el formulario {correctTable:string}.
+    `,
+    'fr-fr': `
+      La commande ne peut pas être utilisée sur le formulaire
+      {currentTable:string}. Il ne peut être utilisé que sur le formulaire
+      {correctTable:string}.
+    `,
+    'uk-ua': `
+      Команду не можна використовувати у формі {currentTable:string}. Його можна
+      використовувати лише у формі {correctTable:string}.
+    `,
   },
   pluginName: {
     'en-us': 'Plugin name',
@@ -984,7 +997,7 @@ export const formsText = createDictionary({
     `,
     'en-us': '{tableName:string} #{id:number}',
     'ru-ru': '{tableName:string} #{id:number}',
-    'es-es': '{tableName:string} #{id:number}',
+    'es-es': '{tableName:string} №{id:number}',
     'fr-fr': '{tableName:string} #{id:number}',
     'uk-ua': '{tableName:string} №{id:number}',
   },

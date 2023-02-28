@@ -47,8 +47,10 @@ export const Progress = wrap<'progress', { readonly value: number }>(
   }
 );
 
-// Need to set explicit [role] for list without bullets to be announced as a list
-// REFACTOR: consider adding "flex flex-col gap-1" and .contents to <li>
+/*
+ * Need to set explicit [role] for list without bullets to be announced as a list
+ * REFACTOR: consider adding "flex flex-col gap-1" and .contents to <li>
+ */
 export const Ul = wrap('Ul', 'ul', '', { role: 'list' });
 
 export const H2 = wrap('H2', 'h2', className.headerPrimary);
@@ -80,4 +82,8 @@ export const Key = wrap(
   'Key',
   'kbd',
   'bg-gray-200 border-1 dark:border-none dark:bg-neutral-700 rounded-sm mx-1 p-0.5'
+);
+
+export const oneRem = Number.parseFloat(
+  getComputedStyle(document.documentElement).fontSize
 );

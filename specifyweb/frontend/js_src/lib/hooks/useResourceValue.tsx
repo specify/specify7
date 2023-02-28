@@ -1,24 +1,24 @@
 import React from 'react';
 
-import { getDateInputValue } from '../utils/dayJs';
-import { listen } from '../utils/events';
-import { f } from '../utils/functools';
+import { className } from '../components/Atoms/className';
+import type { AnySchema } from '../components/DataModel/helperTypes';
 import type { SpecifyResource } from '../components/DataModel/legacyTypes';
-import { parseRelativeDate } from '../utils/relativeDate';
 import { resourceOn } from '../components/DataModel/resource';
 import type { Input } from '../components/DataModel/saveBlockers';
-import type { RA } from '../utils/types';
-import type { Parser } from '../utils/parser/definitions';
-import { mergeParsers, resolveParser } from '../utils/parser/definitions';
-import { className } from '../components/Atoms/className';
-import { useValidation } from './useValidation';
-import { useBooleanState } from './useBooleanState';
-import { AnySchema } from '../components/DataModel/helperTypes';
-import { parseValue } from '../utils/parser/parse';
-import {
+import type {
   LiteralField,
   Relationship,
 } from '../components/DataModel/specifyField';
+import { getDateInputValue } from '../utils/dayJs';
+import { listen } from '../utils/events';
+import { f } from '../utils/functools';
+import type { Parser } from '../utils/parser/definitions';
+import { mergeParsers, resolveParser } from '../utils/parser/definitions';
+import { parseValue } from '../utils/parser/parse';
+import { parseRelativeDate } from '../utils/relativeDate';
+import type { RA } from '../utils/types';
+import { useBooleanState } from './useBooleanState';
+import { useValidation } from './useValidation';
 import { FormContext } from '../components/Forms/BaseResourceView';
 
 /**

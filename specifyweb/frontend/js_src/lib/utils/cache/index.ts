@@ -16,9 +16,9 @@
  * @module
  */
 
-import type { CacheDefinitions } from './definitions';
 import { eventListener } from '../events';
 import type { R } from '../types';
+import type { CacheDefinitions } from './definitions';
 
 /** The data structure that would store all the cache */
 const cache: R<unknown> = {};
@@ -51,7 +51,7 @@ let eventListenerIsInitialized = false;
 
 /** Listen for changes to localStorage from other tabs */
 function initialize(): void {
-  globalThis.window?.addEventListener(
+  globalThis.addEventListener(
     'storage',
     ({ storageArea, key: formattedKey, newValue }) => {
       // "key" is null only when running `localStorage.clear()`

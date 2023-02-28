@@ -240,6 +240,13 @@ export const schemaText = createDictionary({
     'fr-fr': 'Télécharger au format JSON',
     'uk-ua': 'Завантажити як JSON',
   },
+  downloadAsXml: {
+    'en-us': 'Download as XML',
+    'ru-ru': 'Скачать как XML',
+    'es-es': 'Descargar como XML',
+    'fr-fr': 'Télécharger au format XML',
+    'uk-ua': 'Завантажити як XML',
+  },
   downloadAsTsv: {
     'en-us': 'Download as TSV',
     'ru-ru': 'Скачать как TSV',
@@ -309,5 +316,19 @@ export const schemaText = createDictionary({
     'fr-fr': 'Portée',
     'ru-ru': 'Сфера',
     'uk-ua': 'Область застосування',
+  },
+  schemaViewTitle: {
+    'en-us': 'Schema Config: {tableName:string}',
+    'es-es': 'Configuración de esquema: {tableName:string}',
+    'fr-fr': 'Configuration du schéma : {tableName:string}',
+    'ru-ru': 'Конфигурация схемы: {tableName:string}',
+    'uk-ua': 'Конфігурація схеми: {tableName:string}',
+  },
+  schemaExportFileName: {
+    'en-us': 'Specify 7 Data Model',
+    'ru-ru': 'Specify 7 Модель данных',
+    'es-es': 'Specify 7 Modelo de datos',
+    'fr-fr': 'Specify 7 Modèle de données',
+    'uk-ua': 'Specify 7 Модель даних',
   },
 } as const);

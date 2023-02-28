@@ -1,8 +1,8 @@
-import { GetOrSet } from '../utils/types';
 import React from 'react';
+
 import { LoadingContext } from '../components/Core/Contexts';
-import { f } from '../utils/functools';
-import { fail } from '../components/Errors/Crash';
+import { raise } from '../components/Errors/Crash';
+import type { GetOrSet } from '../utils/types';
 
 /**
  * Like React.useState, but initial value is retrieved asynchronously
@@ -44,12 +44,16 @@ export function useAsyncState<T>(
   React.useLayoutEffect(() => {
     // If callback changes, state is reset while new state is fetching
     setState(undefined);
-    const wrapped = loadingScreen ? loading : f.id;
-    wrapped(
-      Promise.resolve(callback())
-        .then((newState) => (destructorCalled ? undefined : setState(newState)))
-        .catch(fail)
+
+    const promise = Promise.resolve(callback()).then((newState) =>
+      destructorCalled ? undefined : setState(newState)
     );
+
+    if (loadingScreen) {
+      loading(promise);
+    } else {
+      promise.catch(raise);
+    }
 
     let destructorCalled = false;
     return (): void => {
@@ -58,4 +62,14 @@ export function useAsyncState<T>(
   }, [callback, loading, loadingScreen]);
 
   return [state, setState];
+}
+
+export function usePromise<T>(
+  promise: Promise<T>,
+  loadingScreen: boolean
+): GetOrSet<T | undefined> {
+  return useAsyncState(
+    React.useCallback(async () => promise, [promise]),
+    loadingScreen
+  );
 }

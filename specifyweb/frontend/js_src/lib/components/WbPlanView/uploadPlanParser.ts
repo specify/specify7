@@ -1,12 +1,12 @@
-import type { MappingPath } from './Mapper';
-import type { Tables } from '../DataModel/types';
+import type { IR, RA, RR } from '../../utils/types';
 import { strictGetModel } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
-import type { IR, RA, RR } from '../../utils/types';
+import type { Tables } from '../DataModel/types';
+import { softFail } from '../Errors/Crash';
 import { defaultColumnOptions } from './linesGetter';
+import type { MappingPath } from './Mapper';
 import type { SplitMappingPath } from './mappingHelpers';
 import { formatToManyIndex, formatTreeRank } from './mappingHelpers';
-import { softFail } from '../Errors/Crash';
 
 export type MatchBehaviors = 'ignoreAlways' | 'ignoreNever' | 'ignoreWhenBlank';
 

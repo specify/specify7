@@ -4,15 +4,15 @@
 
 import React from 'react';
 
+import { useValidation } from '../../hooks/useValidation';
+import { userText } from '../../localization/user';
 import { csrfToken, parseDjangoDump } from '../../utils/ajax/csrfToken';
 import type { RA } from '../../utils/types';
-import { MIN_PASSWORD_LENGTH } from '../Security/SetPassword';
-import { Form, Input, Label } from '../Atoms/Form';
 import { ErrorMessage } from '../Atoms';
+import { Form, Input, Label } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
-import { useValidation } from '../../hooks/useValidation';
 import { SplashScreen } from '../Core/SplashScreen';
-import { userText } from '../../localization/user';
+import { MIN_PASSWORD_LENGTH } from '../Security/SetPassword';
 
 export function PasswordChange(): JSX.Element {
   return React.useMemo(

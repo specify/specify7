@@ -1,19 +1,19 @@
 import { ajax } from '../../utils/ajax';
-import type { CollectionObject, Taxon } from '../DataModel/types';
 import { f } from '../../utils/functools';
-import type { LocalityData } from '../Leaflet/helpers';
+import type { RA } from '../../utils/types';
+import { toTable } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { schema } from '../DataModel/schema';
+import type { CollectionObject, Taxon } from '../DataModel/types';
+import { treeRanksPromise } from '../InitialContext/treeRanks';
+import { userInformation } from '../InitialContext/userInformation';
+import type { LocalityData } from '../Leaflet/helpers';
 import {
   defaultRecordFilterFunction,
   fetchLocalityDataFromResource,
   formatLocalityDataObject,
   parseLocalityPinFields,
 } from '../Leaflet/localityRecordDataExtractor';
-import { schema } from '../DataModel/schema';
-import { treeRanksPromise } from '../InitialContext/treeRanks';
-import type { RA } from '../../utils/types';
-import { userInformation } from '../InitialContext/userInformation';
-import { toTable } from '../DataModel/helpers';
 
 export type OccurrenceData = {
   readonly collectionObjectId: number;
