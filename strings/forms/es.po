@@ -124,17 +124,17 @@ msgstr "Precisión de fecha"
 msgid "monthYear"
 msgstr "Lunes / Año"
 
-#: components/FormPlugins/PartialDateUi.tsx:400
+#: components/FormPlugins/PartialDateUi.tsx:399
 #. 🟥A placeholder for partial date field when "year" type is selected. Used in: Components > Form Plugins > Partial Date Ui
 msgid "yearPlaceholder"
 msgstr "AAAA"
 
-#: components/FormPlugins/PartialDateUi.tsx:428
+#: components/FormPlugins/PartialDateUi.tsx:427
 #. Used in: Components > Form Plugins > Partial Date Ui
 msgid "today"
 msgstr "Hoy"
 
-#: components/FormPlugins/PartialDateUi.tsx:430
+#: components/FormPlugins/PartialDateUi.tsx:429
 #. Used in: Components > Form Plugins > Partial Date Ui
 msgid "todayButtonDescription"
 msgstr "Establecer en la fecha actual"
@@ -348,9 +348,9 @@ msgstr "valor no válido"
 
 #: components/FormPlugins/PartialDateUi.tsx:306
 #: components/FormPlugins/PartialDateUi.tsx:308
-#: utils/parser/definitions.ts:184
-#: utils/parser/definitions.ts:186
-#: utils/parser/definitions.ts:325
+#: utils/parser/definitions.ts:183
+#: utils/parser/definitions.ts:185
+#: utils/parser/definitions.ts:324
 #: utils/parser/__tests__/definitions.test.ts:71
 #: utils/parser/__tests__/parse.test.ts:209
 #. 🟥Used in field validation messages on the form. Used in: Components > Form Plugins > Partial Date Ui ⬤ Utils > Parser > Definitions ⬤ Parser > __tests__ > Definitions ⬤ Parser > __tests__ > Parse

@@ -491,7 +491,7 @@ msgstr "Ця дія недоступна, поки триває перевірк
 msgid "unavailableWithoutLocality"
 msgstr "Цей інструмент вимагає відображення стовпців місцевості"
 
-#: components/WorkBench/wbUtils.js:558
+#: components/WorkBench/wbUtils.js:561
 #. Used in: Components > Work Bench > Wb Utils
 #, fuzzy
 msgid "unavailableWhenUploaded"
