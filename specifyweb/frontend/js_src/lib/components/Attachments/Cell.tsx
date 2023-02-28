@@ -44,10 +44,10 @@ export function AttachmentCell({
       hasTablePermission(model.name, 'read') ? (
         <AttachmentRecordLink
           attachment={attachment}
+          className="absolute top-0 left-0"
           model={model}
           related={[related, setRelated]}
           variant="icon"
-          className="absolute top-0 left-0"
           onViewRecord={handleViewRecord}
         />
       ) : undefined}
@@ -81,7 +81,7 @@ export function AttachmentRecordLink({
   onViewRecord: handleViewRecord,
   related: [related, setRelated],
 }: {
-  readonly variant: 'icon' | 'button';
+  readonly variant: 'button' | 'icon';
   readonly className: string;
   readonly model: SpecifyModel;
   readonly attachment: SerializedResource<Attachment>;

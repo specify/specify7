@@ -5,12 +5,14 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import { notificationsText } from '../../localization/notifications';
 import { f } from '../../utils/functools';
+import type { GetSet } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { serializeResource } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getModel } from '../DataModel/schema';
+import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Attachment } from '../DataModel/types';
 import { augmentMode, ResourceView } from '../Forms/ResourceView';
 import {
@@ -21,8 +23,6 @@ import { loadingGif } from '../Molecules';
 import { usePref } from '../UserPreferences/usePref';
 import { fetchOriginalUrl, fetchThumbnail } from './attachments';
 import { AttachmentRecordLink, getAttachmentTable } from './Cell';
-import { SpecifyModel } from '../DataModel/specifyModel';
-import { GetSet } from '../../utils/types';
 
 export function AttachmentViewer({
   attachment,
@@ -179,7 +179,7 @@ export function AttachmentViewer({
                 </Component>
                 <Component
                   className="flex-1 whitespace-nowrap"
-                  href={originalUrl!}
+                  href={originalUrl}
                   target="_blank"
                   onClick={undefined}
                 >
@@ -188,11 +188,11 @@ export function AttachmentViewer({
                 {typeof table === 'object' &&
                 typeof handleViewRecord === 'function' ? (
                   <AttachmentRecordLink
-                    variant="button"
+                    attachment={serialized}
                     className="flex-1"
                     model={table}
                     related={[related, setRelated]}
-                    attachment={serialized}
+                    variant="button"
                     onViewRecord={handleViewRecord}
                   />
                 ) : undefined}

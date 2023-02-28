@@ -121,9 +121,6 @@ export function AttachmentGallery({
           onChange={(newAttachment): void =>
             handleChange(replaceItem(attachments, openIndex, newAttachment))
           }
-          onViewRecord={(model, id): void =>
-            setViewRecord(new model.Resource({ id }))
-          }
           onClose={(): void => setOpenIndex(undefined)}
           onNext={
             isComplete && openIndex === attachments.length
@@ -138,6 +135,9 @@ export function AttachmentGallery({
             openIndex === 0
               ? undefined
               : (): void => setOpenIndex(openIndex - 1)
+          }
+          onViewRecord={(model, id): void =>
+            setViewRecord(new model.Resource({ id }))
           }
         />
       ) : null}

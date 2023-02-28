@@ -7,6 +7,7 @@ import React from 'react';
 import { useAsyncState, usePromise } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useErrorContext } from '../../hooks/useErrorContext';
+import { useTriggerState } from '../../hooks/useTriggerState';
 import { attachmentsText } from '../../localization/attachments';
 import { formsText } from '../../localization/forms';
 import { f } from '../../utils/functools';
@@ -24,7 +25,6 @@ import { FilePicker } from '../Molecules/FilePicker';
 import { ProtectedTable } from '../Permissions/PermissionDenied';
 import { attachmentSettingsPromise, uploadFile } from './attachments';
 import { AttachmentViewer } from './Viewer';
-import { useTriggerState } from '../../hooks/useTriggerState';
 
 export function AttachmentsPlugin(
   props: Parameters<typeof ProtectedAttachmentsPlugin>[0]
