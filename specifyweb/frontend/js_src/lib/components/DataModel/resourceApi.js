@@ -6,6 +6,8 @@ import {removeKey} from '../../utils/utils';
 import {assert} from '../Errors/assert';
 import {softFail} from '../Errors/Crash';
 import {Backbone} from './backbone';
+import {attachBusinessRules} from './businessRules';
+import {initializeResource} from './domain';
 import {
     getFieldsToNotClone,
     getResourceApiUrl,
@@ -13,8 +15,6 @@ import {
     resourceEvents,
     resourceFromUrl
 } from './resource';
-import {initializeResource} from './domain';
-import {attachBusinessRules} from './businessRules';
 
 function eventHandlerForToOne(related, field) {
         return function(event) {
