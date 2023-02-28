@@ -2,7 +2,8 @@ import React from 'react';
 
 import { preferencesText } from '../../localization/preferences';
 import { statsText } from '../../localization/stats';
-import { ensure, RA } from '../../utils/types';
+import type { RA } from '../../utils/types';
+import { ensure } from '../../utils/types';
 import { error } from '../Errors/assert';
 import type { StatLayout } from '../Statistics/types';
 import type { GenericPreferences } from './UserDefinitions';

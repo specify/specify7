@@ -136,7 +136,7 @@ theories(applyStatBackendResponse, [
   },
 ]);
 
-//Test for Get base offset
+// Test for Get base offset
 theories(getOffsetOne, [
   {
     in: [8, 2],

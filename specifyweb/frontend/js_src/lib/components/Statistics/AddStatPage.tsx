@@ -1,14 +1,15 @@
-import { CustomStat, DefaultStat, StatLayout } from './types';
+import React from 'react';
+
 import { Ul } from '../Atoms';
 import { Categories } from './Categories';
-import React from 'react';
+import type { CustomStat, DefaultStat, StatLayout } from './types';
 
 export function AddStatPage({
   pageLabel,
   pageIndex,
   pageLayout,
   onClick: handleClick,
-  onLoad: onLoad,
+  onLoad,
 }: {
   readonly pageLabel: string;
   readonly pageIndex: number;
@@ -41,13 +42,13 @@ export function AddStatPage({
       <Ul className="flex flex-col gap-2">
         <Categories
           pageLayout={pageLayout}
-          onClick={handleClick}
-          onRemove={undefined}
-          onCategoryRename={undefined}
-          onRename={undefined}
           onAdd={undefined}
+          onCategoryRename={undefined}
+          onClick={handleClick}
           onEdit={undefined}
           onLoad={onLoadPage}
+          onRemove={undefined}
+          onRename={undefined}
         />
       </Ul>
     </li>
