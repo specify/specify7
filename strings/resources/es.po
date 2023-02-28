@@ -65,7 +65,7 @@ msgstr "Recursos de disciplina"
 msgid "type"
 msgstr "Tipo"
 
-#: components/AppResources/tree.ts:204
+#: components/AppResources/tree.ts:207
 #. Used in: Components > App Resources > Tree
 #, fuzzy
 msgid "userTypes"
@@ -208,13 +208,13 @@ msgstr "editor visual"
 msgid "selectResourceType"
 msgstr "Seleccionar tipo de recurso"
 
-#: components/AppResources/tree.ts:102
+#: components/AppResources/tree.ts:104
 #. Used in: Components > App Resources > Tree
 #, fuzzy
 msgid "globalPreferences"
 msgstr "Preferencias globales"
 
-#: components/AppResources/tree.ts:104
+#: components/AppResources/tree.ts:106
 #. Used in: Components > App Resources > Tree
 #, fuzzy
 msgid "remotePreferences"

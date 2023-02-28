@@ -28,22 +28,22 @@ msgstr "Клон"
 msgid "cloneDescription"
 msgstr "Створіть повну копію поточного запису"
 
-#: components/DataModel/businessRules.js:196
+#: components/DataModel/businessRules.js:192
 #. Used in: Components > Data Model > Business Rules
 msgid "valueMustBeUniqueToField"
 msgstr "Значення має бути унікальним для {fieldName:string}"
 
-#: components/DataModel/businessRules.js:197
+#: components/DataModel/businessRules.js:193
 #. Used in: Components > Data Model > Business Rules
 msgid "valueMustBeUniqueToDatabase"
 msgstr "Значення має бути унікальним в базі даних"
 
-#: components/DataModel/businessRules.js:187
+#: components/DataModel/businessRules.js:183
 #. Used in: Components > Data Model > Business Rules
 msgid "valuesOfMustBeUniqueToField"
 msgstr "Значення {values:string} мають бути унікальними для {fieldName:string}"
 
-#: components/DataModel/businessRules.js:191
+#: components/DataModel/businessRules.js:187
 #. Used in: Components > Data Model > Business Rules
 msgid "valuesOfMustBeUniqueToDatabase"
 msgstr "Значення {values:string} мають бути унікальними в базі даних"
@@ -425,12 +425,12 @@ msgstr "Можливо, ви хочете зберегти цей запис, п
 msgid "creatingNewRecord"
 msgstr "Створення нового запису"
 
-#: components/PickLists/definitions.ts:138
+#: components/PickLists/definitions.ts:143
 #. Used in: Components > Pick Lists > Definitions
 msgid "forward"
 msgstr "Вперед"
 
-#: components/PickLists/definitions.ts:137
+#: components/PickLists/definitions.ts:142
 #. Used in: Components > Pick Lists > Definitions
 msgid "reverse"
 msgstr "Зворотний"

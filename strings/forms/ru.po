@@ -28,22 +28,22 @@ msgstr "Клонировать"
 msgid "cloneDescription"
 msgstr "Создать полную копию текущей записи"
 
-#: components/DataModel/businessRules.js:196
+#: components/DataModel/businessRules.js:192
 #. Used in: Components > Data Model > Business Rules
 msgid "valueMustBeUniqueToField"
 msgstr "Значение {fieldName:string} должно быть уникальным"
 
-#: components/DataModel/businessRules.js:197
+#: components/DataModel/businessRules.js:193
 #. Used in: Components > Data Model > Business Rules
 msgid "valueMustBeUniqueToDatabase"
 msgstr "Значение должно быть уникальным в базе данных"
 
-#: components/DataModel/businessRules.js:187
+#: components/DataModel/businessRules.js:183
 #. Used in: Components > Data Model > Business Rules
 msgid "valuesOfMustBeUniqueToField"
 msgstr "Значения {values:string} в {fieldName:string} должны быть уникальным"
 
-#: components/DataModel/businessRules.js:191
+#: components/DataModel/businessRules.js:187
 #. Used in: Components > Data Model > Business Rules
 msgid "valuesOfMustBeUniqueToDatabase"
 msgstr "Значения {values:string} должны быть уникальным в базе данных"
@@ -424,12 +424,12 @@ msgstr "Не забудьте сохранить эту запись, прежд
 msgid "creatingNewRecord"
 msgstr "Создание новой записи"
 
-#: components/PickLists/definitions.ts:138
+#: components/PickLists/definitions.ts:143
 #. Used in: Components > Pick Lists > Definitions
 msgid "forward"
 msgstr "Вперед"
 
-#: components/PickLists/definitions.ts:137
+#: components/PickLists/definitions.ts:142
 #. Used in: Components > Pick Lists > Definitions
 msgid "reverse"
 msgstr "Обратный"

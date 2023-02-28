@@ -284,7 +284,7 @@ msgstr "Enregistrez d'abord l'utilisateur"
 msgid "mustBeManager"
 msgstr "L'utilisateur doit d'abord être enregistré en tant que gestionnaire"
 
-#: components/AppResources/tree.ts:212
+#: components/AppResources/tree.ts:215
 #: components/Security/CollectionRole.tsx:198
 #. Used in: Components > App Resources > Tree ⬤ Components > Security > Collection Role
 #, fuzzy

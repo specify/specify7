@@ -48,7 +48,7 @@ msgstr "Ресурсы дисциплины"
 msgid "type"
 msgstr "Тип"
 
-#: components/AppResources/tree.ts:204
+#: components/AppResources/tree.ts:207
 #. Used in: Components > App Resources > Tree
 msgid "userTypes"
 msgstr "Типы пользователей"
@@ -168,12 +168,12 @@ msgstr "Визуальный редактор"
 msgid "selectResourceType"
 msgstr "Выберите тип ресурса"
 
-#: components/AppResources/tree.ts:102
+#: components/AppResources/tree.ts:104
 #. Used in: Components > App Resources > Tree
 msgid "globalPreferences"
 msgstr "Глобальные настройки"
 
-#: components/AppResources/tree.ts:104
+#: components/AppResources/tree.ts:106
 #. Used in: Components > App Resources > Tree
 msgid "remotePreferences"
 msgstr "Удаленные настройки"

@@ -300,7 +300,7 @@ msgstr "Guardar usuario primero"
 msgid "mustBeManager"
 msgstr "El usuario debe guardarse primero como Administrador"
 
-#: components/AppResources/tree.ts:212
+#: components/AppResources/tree.ts:215
 #: components/Security/CollectionRole.tsx:198
 #. Used in: Components > App Resources > Tree ⬤ Components > Security > Collection Role
 #, fuzzy

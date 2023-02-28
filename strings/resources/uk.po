@@ -55,7 +55,7 @@ msgstr "Дисциплінарні ресурси"
 msgid "type"
 msgstr "Тип"
 
-#: components/AppResources/tree.ts:204
+#: components/AppResources/tree.ts:207
 #. Used in: Components > App Resources > Tree
 #, fuzzy
 msgid "userTypes"
@@ -198,13 +198,13 @@ msgstr "Візуальний редактор"
 msgid "selectResourceType"
 msgstr "Виберіть тип ресурсу"
 
-#: components/AppResources/tree.ts:102
+#: components/AppResources/tree.ts:104
 #. Used in: Components > App Resources > Tree
 #, fuzzy
 msgid "globalPreferences"
 msgstr "Глобальні налаштування"
 
-#: components/AppResources/tree.ts:104
+#: components/AppResources/tree.ts:106
 #. Used in: Components > App Resources > Tree
 #, fuzzy
 msgid "remotePreferences"

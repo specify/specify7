@@ -247,7 +247,7 @@ msgstr "Save user first"
 msgid "mustBeManager"
 msgstr "User must be saved as Manager first"
 
-#: components/AppResources/tree.ts:212
+#: components/AppResources/tree.ts:215
 #: components/Security/CollectionRole.tsx:198
 #. Used in: Components > App Resources > Tree ⬤ Components > Security > Collection Role
 msgid "users"
