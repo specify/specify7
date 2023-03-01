@@ -384,7 +384,7 @@ msgstr "Supprimer"
 #: components/Header/ExpressSearchTask.tsx:69
 #: components/Header/ExpressSearchTask.tsx:74
 #: components/Header/ExpressSearchTask.tsx:106
-#: components/Header/index.tsx:162
+#: components/Header/index.tsx:153
 #: components/WorkBench/Template.tsx:248
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Search Dialog ⬤ Components > Header > Express Search Task ⬤ Components > Header > Index ⬤ Components > Work Bench > Template
 msgid "search"
@@ -639,7 +639,7 @@ msgstr "Inutilisé"
 msgid "ordinal"
 msgstr "Ordinal"
 
-#: components/Header/userToolDefinitions.ts:86
+#: components/Header/userToolDefinitions.ts:87
 #: components/QueryBuilder/Edit.tsx:81
 #: components/SchemaConfig/Tables.tsx:45
 #: components/Security/ImportExport.tsx:243

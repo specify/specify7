@@ -404,7 +404,7 @@ msgstr "This action is unavailable while Data Check is in progress"
 msgid "unavailableWithoutLocality"
 msgstr "This tool requires locality columns to be mapped"
 
-#: components/WorkBench/wbUtils.js:561
+#: components/WorkBench/wbUtils.js:567
 #. Used in: Components > Work Bench > Wb Utils
 msgid "unavailableWhenUploaded"
 msgstr "This tool does not work with uploaded Data Sets"

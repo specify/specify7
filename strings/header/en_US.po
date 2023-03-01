@@ -24,13 +24,13 @@ msgstr "Current {collectionTable:string}"
 msgid "dataEntry"
 msgstr "Data Entry"
 
-#: components/Header/userToolDefinitions.ts:88
+#: components/Header/userToolDefinitions.ts:89
 #: components/Router/OverlayRoutes.tsx:164
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 msgid "makeDwca"
 msgstr "Create DwC Archive"
 
-#: components/Header/userToolDefinitions.ts:94
+#: components/Header/userToolDefinitions.ts:95
 #: components/Router/OverlayRoutes.tsx:172
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 msgid "updateExportFeed"
@@ -86,7 +86,7 @@ msgstr "Create new label"
 msgid "createReport"
 msgstr "Create new report"
 
-#: components/Header/userToolDefinitions.ts:72
+#: components/Header/userToolDefinitions.ts:73
 #: components/Router/OverlayRoutes.tsx:148
 #: components/Toolbar/TreeRepair.tsx:162
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Tree Repair
@@ -176,12 +176,12 @@ msgstr ""
 "in helping us complete localization, please <link>follow the "
 "instructions.</link>"
 
-#: components/Header/userToolDefinitions.ts:129
+#: components/Header/userToolDefinitions.ts:130
 #. Used in: Components > Header > User Tool Definitions
 msgid "tableApi"
 msgstr "Tables API"
 
-#: components/Header/userToolDefinitions.ts:134
+#: components/Header/userToolDefinitions.ts:135
 #. Used in: Components > Header > User Tool Definitions
 msgid "operationsApi"
 msgstr "Operations API"
@@ -189,29 +189,29 @@ msgstr "Operations API"
 #: components/AppResources/Create.tsx:88
 #: components/AppResources/Create.tsx:109
 #: components/AppResources/Filters.tsx:156
-#: components/Header/userToolDefinitions.ts:100
+#: components/Header/userToolDefinitions.ts:101
 #: components/UserPreferences/Definitions.tsx:434
 #. Used in: Components > App Resources > Create ⬤ Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > User Preferences > Definitions
 msgid "documentation"
 msgstr "Documentation"
 
-#: components/Header/userToolDefinitions.ts:55
+#: components/Header/userToolDefinitions.ts:56
 #. Used in: Components > Header > User Tool Definitions
 msgid "administration"
 msgstr "Administrative Tools"
 
-#: components/Header/userToolDefinitions.ts:117
+#: components/Header/userToolDefinitions.ts:118
 #. Used in: Components > Header > User Tool Definitions
 msgid "developers"
 msgstr "Developer Resources"
 
-#: components/Header/userToolDefinitions.ts:107
+#: components/Header/userToolDefinitions.ts:108
 #. Used in: Components > Header > User Tool Definitions
 msgid "forum"
 msgstr "Community Forum"
 
 #: components/Errors/ErrorDialog.tsx:131
-#: components/Header/userToolDefinitions.ts:124
+#: components/Header/userToolDefinitions.ts:125
 #: components/Router/Routes.tsx:391
 #: components/RouterCommands/CacheBuster.tsx:41
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Router Commands > Cache Buster
@@ -223,7 +223,7 @@ msgstr "Clear Browser Cache"
 msgid "cacheCleared"
 msgstr "Cache has been cleared. Please reload the page."
 
-#: components/Header/userToolDefinitions.ts:112
+#: components/Header/userToolDefinitions.ts:113
 #. Used in: Components > Header > User Tool Definitions
 msgid "technicalDocumentation"
 msgstr "Technical Docs"

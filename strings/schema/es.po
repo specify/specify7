@@ -35,7 +35,7 @@ msgstr "Mesas"
 msgid "tableName"
 msgstr "Nombre de la tabla"
 
-#: components/Header/userToolDefinitions.ts:50
+#: components/Header/userToolDefinitions.ts:51
 #: components/Router/Routes.tsx:329
 #: components/SchemaConfig/Components.tsx:27
 #: components/SchemaConfig/Languages.tsx:34
@@ -281,7 +281,7 @@ msgstr "Recuento de campos"
 msgid "relationshipCount"
 msgstr "Recuento de relaciones"
 
-#: components/Header/userToolDefinitions.ts:119
+#: components/Header/userToolDefinitions.ts:120
 #: components/Router/Routes.tsx:33
 #: components/Router/Routes.tsx:37
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes

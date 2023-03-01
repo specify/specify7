@@ -409,7 +409,7 @@ msgstr "Это действие недоступно, пока выполняе�
 msgid "unavailableWithoutLocality"
 msgstr "Этот инструмент требует, чтобы столбцы координат были сопоставлены"
 
-#: components/WorkBench/wbUtils.js:561
+#: components/WorkBench/wbUtils.js:567
 #. Used in: Components > Work Bench > Wb Utils
 msgid "unavailableWhenUploaded"
 msgstr "Этот инструмент не работает с загруженными наборами данных"

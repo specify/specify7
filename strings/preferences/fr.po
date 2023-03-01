@@ -11,14 +11,14 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 4.16-dev\n"
 
-#: components/Header/userToolDefinitions.ts:45
+#: components/Header/userToolDefinitions.ts:46
 #: components/Router/Routes.tsx:321
 #: components/UserPreferences/index.tsx:60
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > User Preferences > Index
 msgid "preferences"
 msgstr "Préférences"
 
-#: components/Header/userToolDefinitions.ts:43
+#: components/Header/userToolDefinitions.ts:44
 #. Used in: Components > Header > User Tool Definitions
 msgid "customization"
 msgstr "Personnalisation"

@@ -14,7 +14,7 @@ msgstr ""
 
 #: components/ChooseCollection/index.tsx:168
 #: components/Header/UserTools.tsx:54
-#: components/Header/userToolDefinitions.ts:37
+#: components/Header/userToolDefinitions.ts:38
 #: components/Login/OicLogin.tsx:84
 #: components/Login/index.tsx:154
 #: components/Permissions/PermissionDenied.tsx:230
@@ -54,7 +54,7 @@ msgstr ""
 "Обліковий запис, який зараз увійшов, не має доступу до колекції "
 "{collectionName:string}."
 
-#: components/Header/userToolDefinitions.ts:31
+#: components/Header/userToolDefinitions.ts:32
 #: components/PasswordChange/index.tsx:99
 #: components/Router/EntrypointRouter.tsx:40
 #: components/Security/SetPassword.tsx:92
@@ -82,7 +82,7 @@ msgid "repeatPassword"
 msgstr "Повторіть новий пароль"
 
 #: components/Core/Main.tsx:91
-#: components/Header/userToolDefinitions.ts:25
+#: components/Header/userToolDefinitions.ts:26
 #. Used in: Components > Core > Main ⬤ Components > Header > User Tool Definitions
 #, fuzzy
 msgid "logOut"
@@ -138,7 +138,7 @@ msgstr ""
 "можете ввести їх нижче, щоб пов’язати цього користувача з обліковим записом "
 "{providerName:string} для майбутніх входів."
 
-#: components/Header/userToolDefinitions.ts:81
+#: components/Header/userToolDefinitions.ts:82
 #: components/Router/OverlayRoutes.tsx:156
 #: components/Toolbar/MasterKey.tsx:43
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Master Key
@@ -264,7 +264,7 @@ msgstr ""
 "Увійшовши в систему користувач не отримав доступ до жодної колекції в цій "
 "базі даних. Ви повинні увійти як інший користувач."
 
-#: components/Header/userToolDefinitions.ts:23
+#: components/Header/userToolDefinitions.ts:24
 #. Used in: Components > Header > User Tool Definitions
 #, fuzzy
 msgid "userAccount"
@@ -360,7 +360,7 @@ msgstr "Ця опція недоступна для адміністраторі
 msgid "configureCollectionAccess"
 msgstr "Виберіть доступ до колекції користувачів"
 
-#: components/Header/userToolDefinitions.ts:67
+#: components/Header/userToolDefinitions.ts:68
 #: components/Router/Routes.tsx:61
 #: components/Toolbar/Security.tsx:100
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Toolbar > Security
