@@ -210,9 +210,9 @@ export function ErrorIframe({
 
   return (
     <iframe
-      sandbox="allow-scripts"
       className="h-full w-full"
       ref={iframeRef}
+      sandbox="allow-scripts"
       title={mainText.errorOccurred()}
     />
   );
