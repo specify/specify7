@@ -61,7 +61,7 @@ export const schemaText = createDictionary({
   fields: {
     'en-us': 'Fields',
     'ru-ru': 'Поля',
-    'es-es': 'Los campos',
+    'es-es': 'Campos',
     'fr-fr': 'Champs',
     'uk-ua': 'поля',
   },
@@ -145,7 +145,7 @@ export const schemaText = createDictionary({
   fieldLength: {
     'en-us': 'Length',
     'ru-ru': 'Длина',
-    'es-es': 'Largo',
+    'es-es': 'Longitud',
     'fr-fr': 'Longueur',
     'uk-ua': 'Довжина',
   },
