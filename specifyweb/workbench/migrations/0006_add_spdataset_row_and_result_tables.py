@@ -57,6 +57,6 @@ class Migration(migrations.Migration):
             model_name='spdatasetrow',
             constraint=models.UniqueConstraint(fields=('spdataset', 'rownumber'), name='unique_rownumber_row'),
         ),
-        migrations.AddIndex('Spdatasetrow', Index(fields=['spdataset'], name='spdataset_idx')),
-        migrations.AddIndex('Spdatasetrowresult', Index(fields=['spdataset'], name='spdataset_idx')),
+        migrations.AddIndex('Spdatasetrow', Index(fields=['spdataset'], name='row_spdataset_idx')),
+        migrations.AddIndex('Spdatasetrowresult', Index(fields=['spdataset'], name='rowresult_spdataset_idx')),
     ]
