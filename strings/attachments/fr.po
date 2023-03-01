@@ -1,69 +1,74 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-01-24 11:48+0000\n"
-"Last-Translator: Nathan <bonnemainsnathan@gmail.com>\n"
-"Language-Team: French "
-"<https://hosted.weblate.org/projects/specify-7/attachments/fr/>\n"
+"PO-Revision-Date: 2023-03-01 18:54+0000\n"
+"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
+"attachments/fr/>\n"
 "Language: fr\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.16-dev\n"
+"X-Generator: Weblate 4.16\n"
 
+#. Used in: Components > Attachments > Index ⬤ Components > Header > Menu Item Definitions ⬤ Components > Router > Routes ⬤ Components > User Preferences > Definitions
 #: components/Attachments/index.tsx:167
 #: components/Header/menuItemDefinitions.ts:96
 #: components/Router/Routes.tsx:159
 #: components/UserPreferences/Definitions.tsx:1123
-#. Used in: Components > Attachments > Index ⬤ Components > Header > Menu Item Definitions ⬤ Components > Router > Routes ⬤ Components > User Preferences > Definitions
 msgid "attachments"
 msgstr "Pièces jointes"
 
-#: components/Attachments/index.tsx:227
 #. Used in: Components > Attachments > Index
+#: components/Attachments/index.tsx:227
 msgid "scale"
 msgstr "Échelle"
 
+#. Used in: Components > Attachments > Plugin ⬤ Components > Attachments > Index
 #: components/Attachments/Plugin.tsx:34
 #: components/Attachments/Plugin.tsx:105
 #: components/Attachments/index.tsx:67
-#. Used in: Components > Attachments > Plugin ⬤ Components > Attachments > Index
 msgid "attachmentServerUnavailable"
 msgstr "Serveur de pièces jointes indisponible"
 
-#: components/Attachments/index.tsx:70
 #. Used in: Components > Attachments > Index
+#: components/Attachments/index.tsx:70
 msgid "attachmentServerUnavailableDescription"
 msgstr "Configurez votre serveur de pièces jointes"
 
+#. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > User Preferences > Definitions
 #: components/Attachments/index.tsx:216
 #: components/FormMeta/SubViewMeta.tsx:42
 #: components/UserPreferences/Definitions.tsx:1110
-#. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > User Preferences > Definitions
 msgid "orderBy"
 msgstr "Trier par"
 
-#: components/Attachments/Plugin.tsx:109
 #. Used in: Components > Attachments > Plugin
+#: components/Attachments/Plugin.tsx:109
 msgid "uploadingInline"
 msgstr "Envoi en cours…"
 
-#: components/Attachments/Gallery.tsx:95
 #. Used in: Components > Attachments > Gallery
+#: components/Attachments/Gallery.tsx:95
 msgid "noAttachments"
 msgstr "Il n'y a pas de pièces jointes"
 
+#. Used in: Components > Attachments > Cell
 #: components/Attachments/Cell.tsx:127
-#. Used in: Components > Attachments > Cell
+#, fuzzy
 msgid "unableToFindRelatedRecord"
-msgstr ""
+msgstr "Impossible de trouver l'enregistrement associé"
 
-#: components/Attachments/Cell.tsx:130
 #. Used in: Components > Attachments > Cell
+#: components/Attachments/Cell.tsx:130
+#, fuzzy
 msgid "unableToFindRelatedRecordDescription"
 msgstr ""
+"Impossible de trouver un enregistrement auquel cette pièce jointe est "
+"associée."
 
-#: components/Attachments/Dialog.tsx:82
 #. Used in: Components > Attachments > Dialog
+#: components/Attachments/Dialog.tsx:82
+#, fuzzy
 msgid "showForm"
-msgstr ""
+msgstr "Afficher le formulaire"
