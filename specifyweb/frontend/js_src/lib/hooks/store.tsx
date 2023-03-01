@@ -14,6 +14,13 @@ import type { GetOrSet } from '../utils/types';
 import { isFunction } from '../utils/types';
 import { useAsyncState } from './useAsyncState';
 
+/*
+ * FEATURE: when creating an object singleton, support not just existing resources
+ * FEATURE: add agent and accessible collections to store
+ * FEATURE: don't reRun format() unless changed
+ * FEATURE: evaluate relevancy of resource collection
+ */
+
 type Buckets = {
   readonly [TABLE_NAME in keyof Tables as `/api/specify/${TABLE_NAME}/`]?: Record<
     number,

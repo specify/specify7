@@ -1,6 +1,6 @@
 from django.db.models import ProtectedError
 from specifyweb.specify.api_tests import ApiTests
-from ..exceptions import BusinessRuleException
+from ..exceptions import TreeBusinessRuleException
 
 class GeologictimeperiodtreedefitemTests(ApiTests):
     def test_cannot_delete_root(self):
@@ -8,7 +8,7 @@ class GeologictimeperiodtreedefitemTests(ApiTests):
             name="root",
             rankid=0)
 
-        with self.assertRaises(BusinessRuleException):
+        with self.assertRaises(TreeBusinessRuleException):
             root.delete()
 
     def test_delete_blocked_by_geologictimeperiod(self):
