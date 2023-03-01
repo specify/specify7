@@ -17,7 +17,6 @@ import {
   treeRanksPromise,
 } from '../InitialContext/treeRanks';
 import { hasTablePermission, hasTreeAccess } from '../Permissions/helpers';
-import { deflateLocalityData } from '../SpecifyNetwork/utils';
 import { pathStartsWith } from '../WbPlanView/helpers';
 import type { MappingPath } from '../WbPlanView/Mapper';
 import {
@@ -37,6 +36,7 @@ import {
   formatCoordinate,
   getLocalityData,
 } from './helpers';
+import { deflateLocalityData } from '../SpecifyNetwork/utils';
 
 const splitMappingPath = (
   mappingPath: MappingPath,

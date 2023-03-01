@@ -19,19 +19,11 @@ import type {
   SerializedResource,
 } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema, strictGetModel } from '../DataModel/schema';
-import { fetchContext as fetchDomain } from '../DataModel/schemaBase';
+import {
+  fetchContext as fetchDomain,
+  getDomainResource,
+} from '../DataModel/schemaBase';
 import type { Tables } from '../DataModel/types';
-
-export const getDomainResource = <
-  LEVEL extends keyof typeof schema.domainLevelIds
->(
-  level: LEVEL
-): SpecifyResource<Tables[Capitalize<LEVEL>]> | undefined =>
-  f.maybe(schema.domainLevelIds[level], (id) => {
-    const model = strictGetModel(level);
-    return new model.Resource({ id });
-  });
 
 let treeDefinitions: {
   readonly [TREE_NAME in AnyTree['tableName']]: {

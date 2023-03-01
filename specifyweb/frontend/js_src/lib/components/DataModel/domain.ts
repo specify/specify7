@@ -2,7 +2,6 @@ import type { RA } from '../../utils/types';
 import { takeBetween } from '../../utils/utils';
 import { raise } from '../Errors/Crash';
 import { getCollectionPref } from '../InitialContext/remotePrefs';
-import { getDomainResource } from '../InitialContext/treeRanks';
 import { hasTablePermission } from '../Permissions/helpers';
 import { fetchCollection } from './collection';
 import { toTable } from './helpers';
@@ -13,6 +12,7 @@ import { schema } from './schema';
 import type { Relationship } from './specifyField';
 import type { SpecifyModel } from './specifyModel';
 import type { CollectionObject } from './types';
+import { getDomainResource } from './schemaBase';
 
 /**
  * Some tasks to do after a new resource is created

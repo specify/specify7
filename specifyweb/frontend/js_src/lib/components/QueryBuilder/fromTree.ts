@@ -10,13 +10,13 @@ import type {
   TaxonTreeDefItem,
 } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
-import { getDomainResource } from '../InitialContext/treeRanks';
 import { hasTablePermission } from '../Permissions/helpers';
 import { formatTreeRank } from '../WbPlanView/mappingHelpers';
 import { queryFieldFilters } from './FieldFilter';
 import { QueryFieldSpec } from './fieldSpec';
 import { flippedSortTypes } from './helpers';
 import { createQuery } from './index';
+import { getDomainResource } from '../DataModel/schemaBase';
 
 function makeField(
   path: string,

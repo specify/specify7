@@ -9,6 +9,7 @@ import { welcomeText } from '../../localization/welcome';
 import { wbText } from '../../localization/workbench';
 import type { RA } from '../../utils/types';
 import type { EnhancedRoute } from './RouterUtils';
+import { specifyNetworkText } from '../../localization/specifyNetwork';
 
 /* eslint-disable @typescript-eslint/promise-function-async */
 /**
@@ -182,6 +183,19 @@ export const overlayRoutes: RA<EnhancedRoute> = [
           import('../HomePage/AboutSpecify').then(
             ({ AboutOverlay }) => AboutOverlay
           ),
+      },
+      {
+        path: 'specify-network',
+        children: [
+          {
+            path: 'compare',
+            title: specifyNetworkText.specifyNetwork(),
+            element: () =>
+              import('../SpecifyNetwork/Overlay').then(
+                ({ SpecifyNetworkOverlay }) => SpecifyNetworkOverlay
+              ),
+          },
+        ],
       },
     ],
   },

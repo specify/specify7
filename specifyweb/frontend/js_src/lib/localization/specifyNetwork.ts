@@ -14,33 +14,24 @@ export const specifyNetworkText = createDictionary({
     'fr-fr': 'Réseau Specify',
     'uk-ua': 'Вкажіть мережу',
   },
-  failedToOpenPopUp: {
-    'en-us': 'Failed to open Specify Network Page',
-    'ru-ru': 'Не удалось открыть страницу Specify Network',
-    'es-es': 'Error al abrir la página Specify Red',
-    'fr-fr': "Échec de l'ouverture de la page du Réseau Specify",
-    'uk-ua': 'Не вдалося відкрити сторінку вказати мережу',
+  specifyNetworkMap: {
+    'en-us': 'Specify Network Map',
+    'ru-ru': 'Specify Network Карта',
+    'es-es': 'Specify Network Mapa',
+    'fr-fr': 'Specify Network Carte',
+    'uk-ua': 'Specify Network Карта',
   },
-  failedToOpenPopUpDescription: {
-    'en-us': `
-      Please make sure your browser is not blocking pop-up windows and try
-      again.
-    `,
-    'ru-ru': `
-      Убедитесь, что ваш браузер не блокирует всплывающие окна, и повторите
-      попытку.
-    `,
-    'es-es': `
-      Asegúrate de que tu navegador no bloquea las ventanas emergentes e
-      inténtalo de nuevo.
-    `,
-    'fr-fr': `
-      Assurez-vous que votre navigateur ne bloque pas les fenêtres pop-up et
-      réessayez.
-    `,
-    'uk-ua': `
-      Переконайтеся, що ваш браузер не блокує спливаючі вікна, і повторіть
-      спробу.
-    `,
+  occurrenceOrGuidRequired: {
+    'en-us': 'Species Name or GUID must be provided to display this page',
   },
+  noDataError: { 'en-us': 'Unable to find any data for this request' },
+  noDataErrorDescription: {
+    'en-us': 'Please try searching for a different record',
+  },
+  extendingSpecimen: {
+    'en-us': 'Extending the Specimen...',
+  },
+  dataQuality: { 'en-us': 'Data Quality' },
+  reportedBy: { 'en-us': 'Reported by {provider:string}' },
+  collectionDate: { 'en-us': 'Collection Date' },
 } as const);
