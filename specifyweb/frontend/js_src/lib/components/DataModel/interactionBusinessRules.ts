@@ -36,8 +36,10 @@ export const updateLoanPrep = (
   ) {
     const sums = collection.models.reduce(
       (memo: { returned: number; resolved: number }, loanReturnPrep) => {
-        memo.returned += loanReturnPrep.get('quantityReturned');
-        memo.resolved += loanReturnPrep.get('quantityResolved');
+        const returned = loanReturnPrep.get('quantityReturned');
+        const resolved = loanReturnPrep.get('quantityResolved');
+        memo.returned += typeof returned === 'number' ? returned : 0;
+        memo.resolved += typeof resolved === 'number' ? resolved : 0;
         return memo;
       },
       { returned: 0, resolved: 0 }
@@ -53,13 +55,12 @@ export const getTotalResolved = (
   loanReturnPrep: SpecifyResource<LoanReturnPreparation>
 ) => {
   return loanReturnPrep.collection
-    ? loanReturnPrep.collection.models.reduce(
-        (sum, loanPrep) =>
-          loanPrep.cid != loanReturnPrep.cid
-            ? sum + loanPrep.get('quantityResolved')
-            : sum,
-        0
-      )
+    ? loanReturnPrep.collection.models.reduce((sum, loanPrep) => {
+        const resolved = loanPrep.get('quantityResolved');
+        return loanPrep.cid != loanReturnPrep.cid
+          ? sum + (typeof resolved === 'number' ? resolved : 0)
+          : sum;
+      }, 0)
     : loanReturnPrep.get('quantityResolved');
 };
 
@@ -71,10 +72,13 @@ const updatePrepBlockers = (
   return prepId === undefined
     ? Promise.resolve()
     : fetchResource('Preparation', prepId)
-        .then(
-          (preparation) =>
-            preparation.countAmt >= interactionPrep.get('quantity')
-        )
+        .then((preparation) => {
+          const prepQuanity = interactionPrep.get('quantity');
+          return typeof preparation.countAmt === 'number' &&
+            typeof prepQuanity === 'number'
+            ? preparation.countAmt >= prepQuanity
+            : false;
+        })
         .then((isValid) => {
           if (!isValid) {
             if (interactionPrep.saveBlockers?.blockers)
@@ -97,7 +101,7 @@ export const checkPrepAvailability = (
     interactionPrep.get('preparation') != undefined
   ) {
     const prepUri = interactionPrep.get('preparation');
-    const prepId = idFromUrl(prepUri);
+    const prepId = typeof prepUri === 'string' ? idFromUrl(prepUri) : undefined;
     updatePrepBlockers(interactionPrep);
     const interactionId = interactionPrep.isNew()
       ? undefined
@@ -105,16 +109,18 @@ export const checkPrepAvailability = (
     const interactionModelName = interactionPrep.isNew()
       ? undefined
       : interactionPrep.specifyModel.name;
-
-    getPrepAvailability(prepId!, interactionId, interactionModelName!).then(
-      (available) => {
-        if (
-          typeof available != 'undefined' &&
-          Number(available[0]) < interactionPrep.get('quantity')
-        ) {
-          interactionPrep.set('quantity', Number(available[0]));
+    if (prepId !== undefined)
+      getPrepAvailability(prepId, interactionId, interactionModelName!).then(
+        (available) => {
+          const quantity = interactionPrep.get('quantity');
+          if (
+            typeof available != 'undefined' &&
+            typeof quantity === 'number' &&
+            Number(available[0]) < quantity
+          ) {
+            interactionPrep.set('quantity', Number(available[0]));
+          }
         }
-      }
-    );
+      );
   }
 };
