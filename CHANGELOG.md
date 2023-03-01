@@ -48,7 +48,7 @@ Coming in the next few months:
 - The query export delimiter can now be configured ([#2849](https://github.com/specify/specify7/issues/2849)) – *Requested By Natural History Museums of Denmark*
 - Added a `CITATION.tff` file to allow users and researchers to cite Specify when publishing or referencing the software ([#3067](https://github.com/specify/specify7/pull/3067))
 - Time remaining for WorkBench validation and uploading is now shown ([#3058](https://github.com/specify/specify7/pull/3058)) - *Requested by CSIRO* 
-- The Specify data model can now be downloaded as XML ([#3051](https://github.com/specify/specify7/issues/2594)
+- The Specify data model can now be downloaded as XML ([#3051](https://github.com/specify/specify7/issues/2594))
 - The Specify data model can now be printed ([#2988](https://github.com/specify/specify7/issues/2988))
 - The list of queries refreshes after a query is deleted ([#3021](https://github.com/specify/specify7/issues/3021))
 
