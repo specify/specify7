@@ -72,7 +72,7 @@ class DataSetTests(ApiTests):
         )
         self.assertEqual(response.status_code, 204)
         dataset = models.Spdataset.objects.get(id=datasetid)
-        results = uploader.do_upload_dataset(self.collection, self.agent.id, dataset, no_commit=False, allow_partial=False)
+        uploader.do_upload_dataset(self.collection, self.agent.id, dataset, no_commit=False, allow_partial=False)
         self.assertTrue(dataset.uploadresult['success'])
 
         response = c.post(
