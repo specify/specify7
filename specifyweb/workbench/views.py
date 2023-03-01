@@ -1087,5 +1087,5 @@ def create_recordset(request, ds_id: int) -> http.HttpResponse:
     check_permission_targets(request.specify_collection.id, request.specify_user.id, [DataSetPT.create_recordset])
     check_table_permissions(request.specify_collection, request.specify_user, Recordset, "create")
 
-    rs = uploader.create_recordset(ds, name)
+    rs = uploader.create_record_set(ds, name)
     return http.JsonResponse(rs.id, status=201, safe=False)
