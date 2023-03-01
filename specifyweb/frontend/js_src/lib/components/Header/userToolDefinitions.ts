@@ -2,10 +2,7 @@ import { ensure, IR } from '../../utils/types';
 import { MenuItem } from '../Core/Main';
 import { userText } from '../../localization/user';
 import { icons } from '../Atoms/Icons';
-import {
-  fetchContext as fetchUserInfo,
-  userInformation,
-} from '../InitialContext/userInformation';
+import { userInformation } from '../InitialContext/userInformation';
 import { preferencesText } from '../../localization/preferences';
 import { schemaText } from '../../localization/schema';
 import { headerText } from '../../localization/header';
@@ -144,7 +141,12 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
 /**
  * Do not us directly. Use useUserTools() instead
  */
-export const rawUserToolsPromise = Promise.all([userPermission, fetchUserInfo])
+export const rawUserToolsPromise = Promise.all([
+  userPermission,
+  import('../InitialContext/userInformation').then(
+    ({ fetchContext }) => fetchContext
+  ),
+])
   .then(async () =>
     Promise.all(
       Object.entries(rawUserTools).map(
