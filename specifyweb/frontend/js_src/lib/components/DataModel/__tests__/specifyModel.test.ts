@@ -2,7 +2,7 @@ import { requireContext } from '../../../tests/helpers';
 import { ResourceBase } from '../resourceApi';
 import { schema } from '../schema';
 import { LiteralField } from '../specifyField';
-import {attachmentView} from '../../FormParse/webOnlyViews';
+import { attachmentView } from '../../FormParse/webOnlyViews';
 
 requireContext();
 

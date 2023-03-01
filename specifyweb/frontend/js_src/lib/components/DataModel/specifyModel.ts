@@ -36,7 +36,7 @@ import {
   LiteralField,
   type RelationshipDefinition,
 } from './specifyField';
-import {attachmentView} from '../FormParse/webOnlyViews';
+import { attachmentView } from '../FormParse/webOnlyViews';
 
 type FieldAlias = {
   readonly vname: string;
