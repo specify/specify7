@@ -60,23 +60,28 @@ export const attachmentsText = createDictionary({
   },
   unableToFindRelatedRecord: {
     'en-us': 'Unable to find related record',
-    'es-es': '',
-    'fr-fr': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'es-es': 'No se puede encontrar el registro relacionado',
+    'fr-fr': "Impossible de trouver l'enregistrement associé",
+    'ru-ru': 'Не удалось найти связанную запись',
+    'uk-ua': 'Неможливо знайти відповідний запис',
   },
   unableToFindRelatedRecordDescription: {
     'en-us': 'Unable to find a record that this attachment is related to.',
-    'es-es': '',
-    'fr-fr': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'es-es': `
+      No se puede encontrar un registro relacionado con este archivo adjunto.
+    `,
+    'fr-fr': `
+      Impossible de trouver un enregistrement auquel cette pièce jointe est
+      associée.
+    `,
+    'ru-ru': 'Не удалось найти запись, к которой относится это вложение.',
+    'uk-ua': 'Не вдалося знайти запис, до якого відноситься це вкладення.',
   },
   showForm: {
     'en-us': 'Show Form',
-    'es-es': '',
-    'fr-fr': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'es-es': 'Mostrar formulario',
+    'fr-fr': 'Afficher le formulaire',
+    'ru-ru': 'Показать форму',
+    'uk-ua': 'Показати форму',
   },
 } as const);
