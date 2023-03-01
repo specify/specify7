@@ -416,7 +416,7 @@ msgstr "Tree Desynonymize"
 msgid "tooLongErrorMessage"
 msgstr "Field value is too long. Max allowed length is {maxLength:number|formatted}"
 
-#: components/QueryBuilder/Import.tsx:142
+#: components/QueryBuilder/Import.tsx:148
 #. Used in: Components > Query Builder > Import
 msgid "importHiddenFields"
 msgstr "The following fields are hidden in the query you imported:"

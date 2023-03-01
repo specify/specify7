@@ -429,7 +429,7 @@ msgstr ""
 "Значение поля слишком длинное. Максимально допустимая длина "
 "{maxLength:number|formatted}"
 
-#: components/QueryBuilder/Import.tsx:142
+#: components/QueryBuilder/Import.tsx:148
 #. Used in: Components > Query Builder > Import
 msgid "importHiddenFields"
 msgstr "В импортированном запросе скрыты следующие поля:"

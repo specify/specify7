@@ -68,7 +68,7 @@ msgstr "Обязательные поля"
 msgid "optionalFields"
 msgstr "Необязательные поля"
 
-#: components/QueryBuilder/Import.tsx:138
+#: components/QueryBuilder/Import.tsx:144
 #: components/WbPlanView/LineComponents.tsx:214
 #. Used in: Components > Query Builder > Import ⬤ Components > Wb Plan View > Line Components
 msgid "hiddenFields"
