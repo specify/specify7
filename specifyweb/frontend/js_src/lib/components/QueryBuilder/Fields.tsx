@@ -23,8 +23,8 @@ export function QueryFields({
   onOpen: handleOpen,
   onClose: handleClose,
   onLineFocus: handleLineFocus,
-  onLineMove: handleLineMove,
   onOpenMap: handleOpenMap,
+  onChangeFields: handleChangeFields,
 }: {
   readonly baseTableName: keyof Tables;
   readonly fields: RA<QueryField>;
@@ -57,10 +57,8 @@ export function QueryFields({
   readonly onOpen: ((line: number, index: number) => void) | undefined;
   readonly onClose: (() => void) | undefined;
   readonly onLineFocus: ((line: number) => void) | undefined;
-  readonly onLineMove:
-    | ((line: number, direction: 'down' | 'up') => void)
-    | undefined;
   readonly onOpenMap: ((line: number) => void) | undefined;
+  readonly onChangeFields: ((fields: RA<QueryField>) => void) | undefined;
 }): JSX.Element {
   const fieldsContainerRef = React.useRef<HTMLUListElement | null>(null);
 
@@ -69,34 +67,41 @@ export function QueryFields({
   const [list, setList] = React.useState<RA<QueryField>>(fields);
 
   const handleDragStart = (
-    event: React.DragEvent<HTMLLIElement>,
+    event: React.DragEvent<HTMLDivElement>,
     index: number
   ) => {
-    setDraggedItem(list[index]);
+    setDraggedItem(fields[index]);
     event.dataTransfer.effectAllowed = 'move';
     event.dataTransfer.setData('text/plain', String(index));
     event.currentTarget.classList.add('dragging');
   };
 
   const handleDragOver = (
-    event: React.DragEvent<HTMLLIElement>,
+    event: React.DragEvent<HTMLDivElement>,
     index: number
   ) => {
     event.preventDefault();
-    const draggedOverItem = list[index];
 
-    // If the item is dragged over itself, ignore
+    if (handleChangeFields === undefined) return;
+
+    const draggedOverItem = fields[index];
+
     if (draggedItem === draggedOverItem) {
       return;
     }
 
-    // Filter out the currently dragged item
-    let newItems = list.filter((item) => item !== draggedItem);
+    const newItems = [...fields];
+    const draggedItemIndex = draggedItem ? newItems.indexOf(draggedItem) : -1;
 
-    // Add the dragged item after the dragged over item
-    newItems.splice(index, 0, draggedItem!);
+    if (draggedItemIndex < index && draggedItem !== null) {
+      newItems.splice(index + 1, 0, draggedItem);
+      newItems.splice(draggedItemIndex, 1);
+    } else if (draggedItemIndex > index && draggedItem !== null) {
+      newItems.splice(index, 0, draggedItem);
+      newItems.splice(draggedItemIndex + 1, 1);
+    }
 
-    setList(newItems);
+    handleChangeFields(newItems);
   };
 
   //************************************************** */
@@ -122,10 +127,23 @@ export function QueryFields({
   );
 
   return (
-    <>
-      <Ul className="flex-1 overflow-y-auto" forwardRef={fieldsContainerRef}>
-        {fields.map((field, line, { length }) => (
-          <ErrorBoundary dismissible key={field.id}>
+    <Ul className="flex-1 overflow-y-auto" forwardRef={fieldsContainerRef}>
+      {fields.map((field, line, { length }) => (
+        <ErrorBoundary dismissible key={field.id}>
+          <div
+            key={line}
+            draggable={true}
+            onDragStart={
+              handleChangeFields === undefined
+                ? undefined
+                : (event) => handleDragStart(event, line)
+            }
+            onDragOver={
+              handleChangeFields === undefined
+                ? undefined
+                : (event) => handleDragOver(event, line)
+            }
+          >
             <QueryLine
               baseTableName={baseTableName}
               enforceLengthLimit={enforceLengthLimit}
@@ -152,40 +170,13 @@ export function QueryFields({
                     )
               }
               onMappingChange={handleMappingChange?.bind(undefined, line)}
-              onMoveDown={
-                line + 1 === length || handleLineMove === undefined
-                  ? undefined
-                  : (): void => handleLineMove?.(line, 'down')
-              }
-              onMoveUp={
-                line === 0 || handleLineMove === undefined
-                  ? undefined
-                  : (): void => handleLineMove?.(line, 'up')
-              }
               onOpen={handleOpen?.bind(undefined, line)}
               onOpenMap={handleOpenMap?.bind(undefined, line)}
               onRemove={handleRemoveField?.bind(undefined, line)}
-              draggable={true}
-              onDragStart={(event) => handleDragStart(event, line)}
-              onDragOver={(event) => handleDragOver(event, line)}
             />
-          </ErrorBoundary>
-        ))}
-      </Ul>
-      {/* <ul>
-        {list.map((item, index) => (
-          <li
-            key={index}
-            draggable={true}
-            onDragStart={(event) => handleDragStart(event, index)}
-            onDragOver={(event) => handleDragOver(event, index)}
-          >
-            {item.toString()}
-            {item.id}
-            {index}
-          </li>
-        ))}
-      </ul> */}
-    </>
+          </div>
+        </ErrorBoundary>
+      ))}
+    </Ul>
   );
 }

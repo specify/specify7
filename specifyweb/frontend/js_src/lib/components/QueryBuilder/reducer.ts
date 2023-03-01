@@ -87,16 +87,8 @@ type Actions =
         readonly currentTableName: keyof Tables | undefined;
       }
     >
-  | Action<
-      'LineMoveAction',
-      { readonly line: number; readonly direction: 'down' | 'up' }
-    >
   | Action<'ChangeFieldsAction', { readonly fields: RA<QueryField> }>
   | Action<'FocusLineAction', { readonly line: number }>
-  | Action<
-      'LineMoveAction',
-      { readonly line: number; readonly direction: 'down' | 'up' }
-    >
   | Action<'ResetStateAction', { readonly state: MainState }>
   | Action<'RunQueryAction'>
   | Action<'SavedQueryAction'>
@@ -130,27 +122,6 @@ export const reducer = generateReducer<MainState, Actions>({
             index: undefined,
           },
         },
-  LineMoveAction: ({ state, action }) => ({
-    ...state,
-    openedElement: {
-      line: action.direction === 'up' ? action.line - 1 : action.line + 1,
-      index: undefined,
-    },
-    fields:
-      action.direction === 'up'
-        ? [
-            ...state.fields.slice(0, action.line - 1),
-            state.fields[action.line],
-            state.fields[action.line - 1],
-            ...state.fields.slice(action.line + 1),
-          ]
-        : [
-            ...state.fields.slice(0, action.line),
-            state.fields[action.line + 1],
-            state.fields[action.line],
-            ...state.fields.slice(action.line + 2),
-          ],
-  }),
   ToggleMappingViewAction: ({ action, state }) => ({
     ...state,
     showMappingView: setCache(

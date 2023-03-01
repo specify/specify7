@@ -1,4 +1,5 @@
 import React from 'react';
+import { LocalizedString } from 'typesafe-i18n';
 
 import { useUnloadProtect } from '../../hooks/navigation';
 import { useResource } from '../../hooks/resource';
@@ -462,6 +463,15 @@ export function QueryBuilder({
                     dispatch({
                       type: 'ChangeFieldsAction',
                       fields: state.fields.filter((_, index) => index !== line),
+                    })
+            }
+            onChangeFields={
+              isReadOnly
+                ? undefined
+                : (fields): void =>
+                    dispatch({
+                      type: 'ChangeFieldsAction',
+                      fields,
                     })
             }
           />

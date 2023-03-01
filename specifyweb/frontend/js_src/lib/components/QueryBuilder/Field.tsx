@@ -59,12 +59,7 @@ export function QueryLine({
   onOpen: handleOpen,
   onClose: handleClose,
   onLineFocus: handleLineFocus,
-  onMoveUp: handleMoveUp,
-  onMoveDown: handleMoveDown,
   onOpenMap: handleOpenMap,
-  draggable,
-  onDragStart,
-  onDragOver,
 }: {
   readonly baseTableName: keyof Tables;
   readonly field: QueryField;
@@ -91,12 +86,7 @@ export function QueryLine({
   readonly onOpen: ((index: number) => void) | undefined;
   readonly onClose: (() => void) | undefined;
   readonly onLineFocus: (target: 'current' | 'next' | 'previous') => void;
-  readonly onMoveUp: (() => void) | undefined;
-  readonly onMoveDown: (() => void) | undefined;
   readonly onOpenMap: (() => void) | undefined;
-  readonly draggable?: boolean;
-  readonly onDragStart?: (event: React.DragEvent<HTMLDivElement>) => void;
-  readonly onDragOver: (event: any) => void;
 }): JSX.Element {
   const lineRef = React.useRef<HTMLDivElement>(null);
 
@@ -519,20 +509,6 @@ export function QueryLine({
             : field.sortType === 'descending'
             ? icons.arrowCircleDown
             : icons.circle}
-        </Button.Small>
-        <Button.Small
-          aria-label={queryText.moveUp()}
-          title={queryText.moveUp()}
-          onClick={handleMoveUp}
-        >
-          {icons.chevronUp}
-        </Button.Small>
-        <Button.Small
-          aria-label={queryText.moveDown()}
-          title={queryText.moveDown()}
-          onClick={handleMoveDown}
-        >
-          {icons.chevronDown}
         </Button.Small>
       </div>
     </li>
