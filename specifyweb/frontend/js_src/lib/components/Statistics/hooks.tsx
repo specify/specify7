@@ -2,7 +2,8 @@ import React from 'react';
 
 import { useMultipleAsyncState } from '../../hooks/useAsyncState';
 import { statsText } from '../../localization/stats';
-import { ajax, AjaxResponseObject } from '../../utils/ajax';
+import type { AjaxResponseObject } from '../../utils/ajax';
+import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { throttledPromise } from '../../utils/ajax/throttledPromise';
 import type { IR, RA } from '../../utils/types';
@@ -119,7 +120,7 @@ export function useDefaultStatsToAdd(
 
 export function queryCountPromiseGenerator(
   query: SpecifyResource<SpQuery>
-): () => Promise<AjaxResponseObject<{ count: number }>> {
+): () => Promise<AjaxResponseObject<{ readonly count: number }>> {
   return async () =>
     ajax<{
       readonly count: number;

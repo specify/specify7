@@ -1,6 +1,7 @@
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 
+import { useErrorContext } from '../../hooks/useErrorContext';
 import { commonText } from '../../localization/common';
 import { statsText } from '../../localization/stats';
 import { cleanMaybeFulfilled } from '../../utils/ajax/throttledPromise';
@@ -22,6 +23,7 @@ import { hasPermission } from '../Permissions/helpers';
 import { collectionPreferences } from '../Preferences/collectionPreferences';
 import { userPreferences } from '../Preferences/userPreferences';
 import { useQueries } from '../Toolbar/Query';
+import { defaultLayoutTest } from './__tests__/layout.tests';
 import { AddStatDialog } from './AddStatDialog';
 import { StatsAsideButton } from './Buttons';
 import { Categories } from './Categories';
@@ -37,8 +39,6 @@ import {
 import { StatsPageEditing } from './StatsPageEditing';
 import { defaultLayoutGenerated, dynamicStatsSpec } from './StatsSpec';
 import type { CustomStat, DefaultStat, StatLayout } from './types';
-import { defaultLayoutTest } from './__tests__/layout.tests';
-import { useErrorContext } from '../../hooks/useErrorContext';
 
 export function StatsPage(): JSX.Element | null {
   useMenuItem('statistics');
@@ -117,7 +117,7 @@ export function StatsPage(): JSX.Element | null {
       default: defaultLayout,
       onShared: activePage.isShared,
       pageIndex: activePage.pageIndex,
-      state: state,
+      state,
     }),
     [
       collectionLayout,

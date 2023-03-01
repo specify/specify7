@@ -1,9 +1,12 @@
 import React from 'react';
 
+import { statsText } from '../../localization/stats';
 import { userText } from '../../localization/user';
-import { ajax, AjaxResponseObject } from '../../utils/ajax';
+import type { AjaxResponseObject } from '../../utils/ajax';
+import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { throttledPromise } from '../../utils/ajax/throttledPromise';
+import { formatNumber } from '../Atoms/Internationalization';
 import type { Tables } from '../DataModel/types';
 import { hasTablePermission } from '../Permissions/helpers';
 import {
@@ -19,8 +22,6 @@ import type {
   DefaultStat,
   QuerySpec,
 } from './types';
-import { statsText } from '../../localization/stats';
-import { formatNumber } from '../Atoms/Internationalization';
 
 export function StatItem({
   item,
@@ -184,7 +185,7 @@ function QueryItem({
   readonly onLoad: ((value: number | string) => void) | undefined;
 }): JSX.Element | null {
   const [statState, setStatState] = React.useState<
-    'noPermission' | 'error' | 'valid'
+    'error' | 'noPermission' | 'valid'
   >(hasTablePermission(querySpec.tableName, 'read') ? 'valid' : 'noPermission');
 
   React.useEffect(() => {
@@ -200,7 +201,7 @@ function QueryItem({
 
   const promiseGenerator = React.useCallback(
     async () =>
-      throttledPromise<AjaxResponseObject<{ count: number }>>(
+      throttledPromise<AjaxResponseObject<{ readonly count: number }>>(
         'queryStats',
         queryCountPromiseGenerator(query),
         JSON.stringify(querySpec)

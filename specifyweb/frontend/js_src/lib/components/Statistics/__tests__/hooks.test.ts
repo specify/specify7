@@ -1,5 +1,6 @@
 import { theories } from '../../../tests/utils';
 import { f } from '../../../utils/functools';
+import type { RA } from '../../../utils/types';
 import { formatNumber } from '../../Atoms/Internationalization';
 import {
   applyStatBackendResponse,
@@ -8,9 +9,8 @@ import {
   getDynamicCategoriesToFetch,
   getOffsetOne,
 } from '../hooks';
+import type { StatLayout } from '../types';
 import { defaultLayoutTest, statsSpecTest } from './layout.tests';
-import { RA } from '../../../utils/types';
-import { StatLayout } from '../types';
 
 const backEndResponse = {
   '/statistics/collection/preparations/': {
@@ -168,7 +168,11 @@ theories(getOffsetOne, [
 ]);
 
 function flagDefaultItem(
-  index: RA<{ pageIndex: number; categoryIndex: number; itemIndex: number }>
+  index: RA<{
+    readonly pageIndex: number;
+    readonly categoryIndex: number;
+    readonly itemIndex: number;
+  }>
 ): RA<StatLayout> {
   return defaultLayoutTest.map((page, myPageIndex) => ({
     ...page,
