@@ -1,13 +1,334 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-02-13 17:39+0000\n"
+"PO-Revision-Date: 2023-03-01 19:40+0000\n"
 "Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/schema/"
 "ru/>\n"
 "Language: ru\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.16-dev\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 4.16\n"
+
+#. Used in: Components > Schema Viewer > Table
+#: components/SchemaViewer/Table.tsx:44
+#, fuzzy
+msgid "goToTop"
+msgstr "Перейти к началу"
+
+#. Used in: Components > Schema Viewer > Relationships
+#: components/SchemaViewer/Relationships.tsx:76
+#, fuzzy
+msgid "independent"
+msgstr "Независимый"
+
+#. Used in: Components > Schema Config > Index
+#: components/SchemaConfig/index.tsx:39
+#, fuzzy
+msgid "schemaViewTitle"
+msgstr "Конфигурация схемы: {tableName:string}"
+
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes
+#: components/Header/userToolDefinitions.ts:120
+#: components/Router/Routes.tsx:33
+#: components/Router/Routes.tsx:37
+#, fuzzy
+msgid "databaseSchema"
+msgstr "Схема базы данных"
+
+#. Used in: Components > Schema Config > Table ⬤ Components > Schema Viewer > Schema To Tsv ⬤ Components > Security > Preview Tables ⬤ Components > Security > Registry
+#: components/SchemaConfig/Table.tsx:48
+#: components/SchemaViewer/schemaToTsv.tsx:14
+#: components/Security/PreviewTables.tsx:68
+#: components/Security/registry.ts:72
+#, fuzzy
+msgid "table"
+msgstr "Стол"
+
+#. Used in: Components > Schema Viewer > Table
+#: components/SchemaViewer/Table.tsx:62
+#, fuzzy
+msgid "relationshipCount"
+msgstr "Количество отношений"
+
+#. Used in: Components > Schema Config > Helpers
+#: components/SchemaConfig/helpers.ts:127
+#, fuzzy
+msgid "manyToMany"
+msgstr "многие ко многим"
+
+#. Used in: Components > Form Meta > Index ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
+#: components/FormMeta/index.tsx:64
+#: components/SchemaViewer/Fields.tsx:60
+#: components/SchemaViewer/Relationships.tsx:97
+#: components/SchemaViewer/schemaToTsv.tsx:23
+#, fuzzy
+msgid "readOnly"
+msgstr "Только для чтения"
+
+#. Used in: Components > Schema Viewer > Index
+#: components/SchemaViewer/index.tsx:51
+#, fuzzy
+msgid "downloadAsXml"
+msgstr "Скачать как XML"
+
+#. Used in: Components > Schema Config > Field ⬤ Components > Schema Config > Table ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv ⬤ Components > Security > Role
+#: components/SchemaConfig/Field.tsx:59
+#: components/SchemaConfig/Table.tsx:63
+#: components/SchemaViewer/Fields.tsx:58
+#: components/SchemaViewer/Relationships.tsx:95
+#: components/SchemaViewer/schemaToTsv.tsx:21
+#: components/Security/Role.tsx:138
+#, fuzzy
+msgid "description"
+msgstr "Описание"
+
+#. Used in: Components > Schema Config > Table
+#: components/SchemaConfig/Table.tsx:110
+#, fuzzy
+msgid "hideTable"
+msgstr "Скрыть таблицу"
+
+#. Used in: Components > Schema Config > Field
+#: components/SchemaConfig/Field.tsx:88
+#, fuzzy
+msgid "hideField"
+msgstr "Скрыть поле"
+
+#. Used in: Components > Schema Config > Table
+#: components/SchemaConfig/Table.tsx:73
+#, fuzzy
+msgid "tableFormat"
+msgstr "Формат таблицы"
+
+#. Used in: Components > Schema Config > Table
+#: components/SchemaConfig/Table.tsx:87
+#, fuzzy
+msgid "tableAggregation"
+msgstr "Агрегация таблиц"
+
+#. Used in: Components > Schema Config > Helpers
+#: components/SchemaConfig/helpers.ts:125
+#, fuzzy
+msgid "oneToMany"
+msgstr "Один ко многим"
+
+#. Used in: Components > Attachments > Index ⬤ Components > Router > Routes ⬤ Components > Schema Config > Tables
+#: components/Attachments/index.tsx:201
+#: components/Router/Routes.tsx:355
+#: components/SchemaConfig/Tables.tsx:55
+#, fuzzy
+msgid "tables"
+msgstr "Столы"
+
+#. Used in: Components > Schema Config > Index
+#: components/SchemaConfig/index.tsx:75
+#, fuzzy
+msgid "unsavedSchemaUnloadProtect"
+msgstr "Изменения схемы не сохранены"
+
+#. Used in: Components > Schema Config > Components ⬤ Components > Wb Plan View > Mapper Components
+#: components/SchemaConfig/Components.tsx:33
+#: components/WbPlanView/MapperComponents.tsx:317
+#, fuzzy
+msgid "changeBaseTable"
+msgstr "Изменить базовую таблицу"
+
+#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Schema Viewer > Fields
+#: components/FormMeta/CarryForward.tsx:266
+#: components/Forms/generateFormDefinition.ts:129
+#: components/SchemaConfig/Fields.tsx:36
+#: components/SchemaConfig/Fields.tsx:47
+#: components/SchemaViewer/Fields.tsx:42
+#, fuzzy
+msgid "fields"
+msgstr "Поля"
+
+#. Used in: Components > Schema Config > Format
+#: components/SchemaConfig/Format.tsx:97
+#, fuzzy
+msgid "webLink"
+msgstr "Интернет-ссылка"
+
+#. Used in: Components > Schema Config > Format
+#: components/SchemaConfig/Format.tsx:106
+#, fuzzy
+msgid "userDefined"
+msgstr "Определяемые пользователем"
+
+#. Used in: Components > Schema Viewer > Fields
+#: components/SchemaViewer/Fields.tsx:37
+#, fuzzy
+msgid "scope"
+msgstr "Объем"
+
+#. Used in: Components > Schema Config > Field ⬤ Components > Schema Config > Table
+#: components/SchemaConfig/Field.tsx:49
+#: components/SchemaConfig/Table.tsx:53
+#, fuzzy
+msgid "caption"
+msgstr "Подпись"
+
+#. Used in: Components > Schema Viewer > Table
+#: components/SchemaViewer/Table.tsx:61
+#, fuzzy
+msgid "fieldCount"
+msgstr "Количество полей"
+
+#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Schema Viewer > Relationships
+#: components/FormMeta/CarryForward.tsx:274
+#: components/Forms/generateFormDefinition.ts:167
+#: components/SchemaConfig/Fields.tsx:58
+#: components/SchemaViewer/Relationships.tsx:44
+#, fuzzy
+msgid "relationships"
+msgstr "Отношения"
+
+#. Used in: Components > Schema Config > Helpers
+#: components/SchemaConfig/helpers.ts:124
+#, fuzzy
+msgid "oneToOne"
+msgstr "Один к одному"
+
+#. Used in: Components > Schema Config > Helpers
+#: components/SchemaConfig/helpers.ts:126
+#, fuzzy
+msgid "manyToOne"
+msgstr "Многие к одному"
+
+#. Used in: Components > Schema Config > Field ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Schema To Tsv
+#: components/SchemaConfig/Field.tsx:69
+#: components/SchemaViewer/Fields.tsx:64
+#: components/SchemaViewer/schemaToTsv.tsx:27
+#, fuzzy
+msgid "fieldLength"
+msgstr "Длина"
+
+#. Used in: Components > Schema Config > Format
+#: components/SchemaConfig/Format.tsx:53
+#, fuzzy
+msgid "fieldFormat"
+msgstr "Формат поля"
+
+#. Used in: Components > Schema Config > Format
+#: components/SchemaConfig/Format.tsx:73
+#, fuzzy
+msgid "formatted"
+msgstr "Отформатировано"
+
+#. Used in: Components > Router > Routes ⬤ Components > Schema Config > Languages
+#: components/Router/Routes.tsx:344
+#: components/SchemaConfig/Languages.tsx:27
+#: components/SchemaConfig/Languages.tsx:75
+#, fuzzy
+msgid "addLanguage"
+msgstr "Добавить язык"
+
+#. Used in: Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Table ⬤ Components > Schema Viewer > Schema To Tsv
+#: components/SchemaViewer/Fields.tsx:57
+#: components/SchemaViewer/Relationships.tsx:94
+#: components/SchemaViewer/Table.tsx:57
+#: components/SchemaViewer/schemaToTsv.tsx:15
+#: components/SchemaViewer/schemaToTsv.tsx:20
+#, fuzzy
+msgid "fieldLabel"
+msgstr "Этикетка"
+
+#. Used in: Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
+#: components/SchemaViewer/Relationships.tsx:102
+#: components/SchemaViewer/schemaToTsv.tsx:29
+#, fuzzy
+msgid "relatedModel"
+msgstr "Родственная модель"
+
+#. Used in: Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
+#: components/SchemaViewer/Relationships.tsx:103
+#: components/SchemaViewer/schemaToTsv.tsx:30
+#, fuzzy
+msgid "otherSideName"
+msgstr "Имя другой стороны"
+
+#. Used in: Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
+#: components/SchemaViewer/Relationships.tsx:60
+#: components/SchemaViewer/Relationships.tsx:104
+#: components/SchemaViewer/schemaToTsv.tsx:31
+#, fuzzy
+msgid "dependent"
+msgstr "Зависимый"
+
+#. Used in: Components > Schema Viewer > Index
+#: components/SchemaViewer/index.tsx:44
+#, fuzzy
+msgid "downloadAsJson"
+msgstr "Скачать как JSON"
+
+#. Used in: Components > Schema Viewer > Index
+#: components/SchemaViewer/index.tsx:64
+#, fuzzy
+msgid "downloadAsTsv"
+msgstr "Скачать как TSV"
+
+#. Used in: Components > Schema Viewer > Table ⬤ Components > Schema Viewer > Schema To Tsv
+#: components/SchemaViewer/Table.tsx:60
+#: components/SchemaViewer/schemaToTsv.tsx:18
+#, fuzzy
+msgid "tableId"
+msgstr "Идентификатор таблицы"
+
+#. Used in: Components > Schema Viewer > Fields
+#: components/SchemaViewer/Fields.tsx:30
+#, fuzzy
+msgid "idField"
+msgstr "Поле идентификатора"
+
+#. Used in: Components > Schema Viewer > Index
+#: components/SchemaViewer/index.tsx:57
+#, fuzzy
+msgid "schemaExportFileName"
+msgstr "Укажите модель данных 7"
+
+#. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Plan View > Mapper Components
+#: components/UserPreferences/Definitions.tsx:654
+#: components/WbPlanView/MapperComponents.tsx:435
+#, fuzzy
+msgid "tableName"
+msgstr "Имя таблицы"
+
+#. Used in: Components > Schema Config > Field
+#: components/SchemaConfig/Field.tsx:44
+#, fuzzy
+msgid "field"
+msgstr "Поле"
+
+#. Used in: Components > Toolbar > Query Tables Edit
+#: components/Toolbar/QueryTablesEdit.tsx:85
+#, fuzzy
+msgid "selectedTables"
+msgstr "Выбранные таблицы"
+
+#. Used in: Components > Toolbar > Query Tables Edit
+#: components/Toolbar/QueryTablesEdit.tsx:82
+#, fuzzy
+msgid "possibleTables"
+msgstr "Возможные таблицы"
+
+#. Used in: Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
+#: components/SchemaViewer/Fields.tsx:65
+#: components/SchemaViewer/Relationships.tsx:101
+#: components/SchemaViewer/schemaToTsv.tsx:28
+#, fuzzy
+msgid "databaseColumn"
+msgstr "Столбец базы данных"
+
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Languages ⬤ Components > Security > Registry ⬤ Components > User Preferences > Definitions
+#: components/Header/userToolDefinitions.ts:51
+#: components/Router/Routes.tsx:329
+#: components/SchemaConfig/Components.tsx:27
+#: components/SchemaConfig/Languages.tsx:34
+#: components/Security/registry.ts:198
+#: components/UserPreferences/Definitions.tsx:604
+#, fuzzy
+msgid "schemaConfig"
+msgstr "Конфигурация схемы"
