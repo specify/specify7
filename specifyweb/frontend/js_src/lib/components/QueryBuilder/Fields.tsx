@@ -64,6 +64,43 @@ export function QueryFields({
 }): JSX.Element {
   const fieldsContainerRef = React.useRef<HTMLUListElement | null>(null);
 
+  //************************************************** */
+  const [draggedItem, setDraggedItem] = React.useState<QueryField | null>(null);
+  const [list, setList] = React.useState<RA<QueryField>>(fields);
+
+  const handleDragStart = (
+    event: React.DragEvent<HTMLLIElement>,
+    index: number
+  ) => {
+    setDraggedItem(list[index]);
+    event.dataTransfer.effectAllowed = 'move';
+    event.dataTransfer.setData('text/plain', String(index));
+    event.currentTarget.classList.add('dragging');
+  };
+
+  const handleDragOver = (
+    event: React.DragEvent<HTMLLIElement>,
+    index: number
+  ) => {
+    event.preventDefault();
+    const draggedOverItem = list[index];
+
+    // If the item is dragged over itself, ignore
+    if (draggedItem === draggedOverItem) {
+      return;
+    }
+
+    // Filter out the currently dragged item
+    let newItems = list.filter((item) => item !== draggedItem);
+
+    // Add the dragged item after the dragged over item
+    newItems.splice(index, 0, draggedItem!);
+
+    setList(newItems);
+  };
+
+  //************************************************** */
+
   // Scroll to bottom if added a child
   const oldFieldCount = React.useRef(fields.length);
   // REFACTOR: extract this into hook and use everywhere where applicable
@@ -85,51 +122,70 @@ export function QueryFields({
   );
 
   return (
-    <Ul className="flex-1 overflow-y-auto" forwardRef={fieldsContainerRef}>
-      {fields.map((field, line, { length }) => (
-        <ErrorBoundary dismissible key={field.id}>
-          <QueryLine
-            baseTableName={baseTableName}
-            enforceLengthLimit={enforceLengthLimit}
-            field={field}
-            fieldHash={`${line}_${length}`}
-            getMappedFields={getMappedFields}
-            isFocused={openedElement?.line === line}
-            openedElement={
-              openedElement?.line === line ? openedElement?.index : undefined
-            }
-            showHiddenFields={showHiddenFields}
-            onChange={handleChangeField?.bind(undefined, line)}
-            onClose={handleClose}
-            onLineFocus={(target): void =>
-              (target === 'previous' && line === 0) ||
-              (target === 'next' && line + 1 >= length)
-                ? undefined
-                : handleLineFocus?.(
-                    target === 'previous'
-                      ? line - 1
-                      : target === 'current'
-                      ? line
-                      : line + 1
-                  )
-            }
-            onMappingChange={handleMappingChange?.bind(undefined, line)}
-            onMoveDown={
-              line + 1 === length || handleLineMove === undefined
-                ? undefined
-                : (): void => handleLineMove?.(line, 'down')
-            }
-            onMoveUp={
-              line === 0 || handleLineMove === undefined
-                ? undefined
-                : (): void => handleLineMove?.(line, 'up')
-            }
-            onOpen={handleOpen?.bind(undefined, line)}
-            onOpenMap={handleOpenMap?.bind(undefined, line)}
-            onRemove={handleRemoveField?.bind(undefined, line)}
-          />
-        </ErrorBoundary>
-      ))}
-    </Ul>
+    <>
+      <Ul className="flex-1 overflow-y-auto" forwardRef={fieldsContainerRef}>
+        {fields.map((field, line, { length }) => (
+          <ErrorBoundary dismissible key={field.id}>
+            <QueryLine
+              baseTableName={baseTableName}
+              enforceLengthLimit={enforceLengthLimit}
+              field={field}
+              fieldHash={`${line}_${length}`}
+              getMappedFields={getMappedFields}
+              isFocused={openedElement?.line === line}
+              openedElement={
+                openedElement?.line === line ? openedElement?.index : undefined
+              }
+              showHiddenFields={showHiddenFields}
+              onChange={handleChangeField?.bind(undefined, line)}
+              onClose={handleClose}
+              onLineFocus={(target): void =>
+                (target === 'previous' && line === 0) ||
+                (target === 'next' && line + 1 >= length)
+                  ? undefined
+                  : handleLineFocus?.(
+                      target === 'previous'
+                        ? line - 1
+                        : target === 'current'
+                        ? line
+                        : line + 1
+                    )
+              }
+              onMappingChange={handleMappingChange?.bind(undefined, line)}
+              onMoveDown={
+                line + 1 === length || handleLineMove === undefined
+                  ? undefined
+                  : (): void => handleLineMove?.(line, 'down')
+              }
+              onMoveUp={
+                line === 0 || handleLineMove === undefined
+                  ? undefined
+                  : (): void => handleLineMove?.(line, 'up')
+              }
+              onOpen={handleOpen?.bind(undefined, line)}
+              onOpenMap={handleOpenMap?.bind(undefined, line)}
+              onRemove={handleRemoveField?.bind(undefined, line)}
+              draggable={true}
+              onDragStart={(event) => handleDragStart(event, line)}
+              onDragOver={(event) => handleDragOver(event, line)}
+            />
+          </ErrorBoundary>
+        ))}
+      </Ul>
+      {/* <ul>
+        {list.map((item, index) => (
+          <li
+            key={index}
+            draggable={true}
+            onDragStart={(event) => handleDragStart(event, index)}
+            onDragOver={(event) => handleDragOver(event, index)}
+          >
+            {item.toString()}
+            {item.id}
+            {index}
+          </li>
+        ))}
+      </ul> */}
+    </>
   );
 }
