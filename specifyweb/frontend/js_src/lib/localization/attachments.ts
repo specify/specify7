@@ -58,4 +58,13 @@ export const attachmentsText = createDictionary({
     'fr-fr': "Il n'y a pas de pièces jointes",
     'uk-ua': 'Прикріплень нема',
   },
+  unableToFindRelatedRecord: {
+    'en-us': 'Unable to find related record',
+  },
+  unableToFindRelatedRecordDescription: {
+    'en-us': 'Unable to find a record that this attachment is related to.',
+  },
+  showForm: {
+    'en-us': 'Show Form',
+  },
 } as const);

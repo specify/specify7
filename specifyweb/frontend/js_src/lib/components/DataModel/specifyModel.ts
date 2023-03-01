@@ -36,6 +36,7 @@ import {
   LiteralField,
   type RelationshipDefinition,
 } from './specifyField';
+import {attachmentView} from '../FormParse/webOnlyViews';
 
 type FieldAlias = {
   readonly vname: string;
@@ -202,7 +203,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
     this.view =
       this.name === 'Attachment'
         ? // Render the attachment plugin rather than the form
-          'ObjectAttachment'
+          attachmentView
         : tableDefinition.view ?? modelViews[this.name] ?? this.name;
     this.searchDialog = tableDefinition.searchDialog ?? undefined;
     this.tableId = tableDefinition.tableId;
