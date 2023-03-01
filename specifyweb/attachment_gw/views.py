@@ -251,7 +251,7 @@ def test_key():
             {'in': 'query', 'name': 'coll', 'required': True,
              'schema': {'type': 'string',
                         'description': 'Collection Name'}},
-            {'in': 'query', 'type': 'coll', 'required': True,
+            {'in': 'query', 'name': 'coll', 'required': True,
              'schema': {'type': 'string',
                         'description': 'Attachment Type. For now, it\'s always "O"'}},
             {'in': 'query', 'name': 'token', 'required': False,
