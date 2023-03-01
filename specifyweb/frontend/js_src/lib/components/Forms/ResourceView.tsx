@@ -211,6 +211,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
         onSaving={handleSaving}
       />
     ) : undefined;
+
   const report =
     state.type === 'Report' && typeof resource === 'object' ? (
       <ReportsView
@@ -223,6 +224,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
         }}
       />
     ) : undefined;
+
   const deleteButton =
     !isDependent &&
     !isSubForm &&
@@ -323,6 +325,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
         }`,
         content: `${className.formStyles} ${dialogClassNames.flexContent}`,
       }}
+      dimensionsKey={viewName ?? resource?.specifyModel.view}
       header={titleOverride ?? title}
       headerButtons={
         <>

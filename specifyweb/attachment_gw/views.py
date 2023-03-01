@@ -8,7 +8,8 @@ from xml.etree import ElementTree
 
 import requests
 from django.conf import settings
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseBadRequest, \
+    StreamingHttpResponse
 from django.utils.translation import gettext as _
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_http_methods
@@ -240,6 +241,52 @@ def test_key():
         raise AttachmentError("Bad attachment key.")
     else:
         raise AttachmentError("Attachment key test failed.")
+
+@openapi(schema={
+    "get": {
+        "parameters": [
+            {'in': 'query', 'name': 'filename', 'required': True,
+             'schema': {'type': 'string',
+                        'description': 'The name of the file to be uploaded.'}},
+            {'in': 'query', 'name': 'coll', 'required': True,
+             'schema': {'type': 'string',
+                        'description': 'Collection Name'}},
+            {'in': 'query', 'name': 'coll', 'required': True,
+             'schema': {'type': 'string',
+                        'description': 'Attachment Type. For now, it\'s always "O"'}},
+            {'in': 'query', 'name': 'token', 'required': False,
+             'schema': {'type': 'string',
+                        'description': 'Access Token'}},
+            {'in': 'query', 'name': 'filename', 'required': False,
+             'schema': {'type': 'string',
+                        'description': 'File Name'}},
+            {'in': 'query', 'name': 'downloadname', 'required': False,
+             'schema': {'type': 'string',
+                        'description': 'Download file name'}},
+        ],
+        "responses": {
+            "200": {
+                "description": "Proxy asset server requests. This is needed to allow downloading files",
+                "content": {"application/octet-stream": {"schema": {
+                    'type': 'string',
+                    'format': 'binary',
+                }}}},
+        }
+    }
+})
+@login_maybe_required
+@require_http_methods(['GET', 'HEAD'])
+def proxy(request):
+    """
+    Proxy asset server requests. This is needed to allow downloading files
+    (browsers don't allow <a download> for cross-origin urls)
+    """
+    if server_urls is None:
+        return HttpResponseBadRequest({'error':'Asset server is not configured'}, content_type='application/json')
+    response = requests.get(server_urls['read'] + '?' + request.META['QUERY_STRING'])
+    return StreamingHttpResponse(
+        (chunk for chunk in response.iter_content(512 * 1024)),
+        content_type=response.headers['Content-Type'])
 
 init()
 

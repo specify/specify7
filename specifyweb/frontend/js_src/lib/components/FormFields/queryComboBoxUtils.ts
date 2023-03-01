@@ -76,13 +76,13 @@ export function getQueryComboBoxConditions({
   collectionRelationships,
   treeData,
   subViewRelationship,
-  typeSearch: { relatedModel },
+  relatedTable,
 }: {
   readonly resource: SpecifyResource<AnySchema>;
   readonly fieldName: string;
   readonly treeData: QueryComboBoxTreeData | undefined;
   readonly collectionRelationships: CollectionRelationships | undefined;
-  readonly typeSearch: TypeSearch;
+  readonly relatedTable: SpecifyModel;
   readonly subViewRelationship: Relationship | undefined;
 }): RA<SpecifyResource<SpQueryField>> {
   const fields: WritableArray<SpecifyResource<SpQueryField>> = [];
@@ -152,7 +152,7 @@ export function getQueryComboBoxConditions({
     // Add condition for current collection
     fields.push(
       QueryFieldSpec.fromStringId(
-        `${relatedModel.tableId}..collectionRelTypeId`,
+        `${relatedTable.tableId}..collectionRelTypeId`,
         true
       )
         .toSpQueryField()

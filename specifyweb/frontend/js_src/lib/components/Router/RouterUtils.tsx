@@ -71,7 +71,8 @@ export const toReactRoutes = (
         ? toReactRoutes(children, title)
         : undefined,
       element:
-        resolvedElement === undefined ? undefined : (
+        resolvedElement === undefined ||
+        process.env.NODE_ENV === 'test' ? undefined : (
           <ErrorBoundary dismissible={dismissible}>
             {resolvedElement}
           </ErrorBoundary>

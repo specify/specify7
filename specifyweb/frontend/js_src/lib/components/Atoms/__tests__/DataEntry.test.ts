@@ -17,6 +17,7 @@ snapshot(DataEntry.Grid, {
     columns: [1, 2, 3, undefined],
     formType: 'form',
     mode: 'edit',
+    name: 'test',
     model: undefined as unknown as SpecifyModel,
   },
   flexibleColumnWidth: true,
