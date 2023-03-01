@@ -1,22 +1,23 @@
-import { ensure, IR } from '../../utils/types';
-import { MenuItem } from '../Core/Main';
-import { userText } from '../../localization/user';
-import { icons } from '../Atoms/Icons';
-import { userInformation } from '../InitialContext/userInformation';
-import { preferencesText } from '../../localization/preferences';
-import { schemaText } from '../../localization/schema';
+import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
+import { preferencesText } from '../../localization/preferences';
 import { resourcesText } from '../../localization/resources';
+import { schemaText } from '../../localization/schema';
+import { userText } from '../../localization/user';
+import { welcomeText } from '../../localization/welcome';
+import type { IR } from '../../utils/types';
+import { ensure } from '../../utils/types';
+import { toLowerCase } from '../../utils/utils';
+import { icons } from '../Atoms/Icons';
+import type { MenuItem } from '../Core/Main';
+import { getDisciplineTrees } from '../InitialContext/treeRanks';
+import { userInformation } from '../InitialContext/userInformation';
+import { fetchContext as userPermission } from '../Permissions';
 import {
   hasPermission,
   hasTablePermission,
   hasToolPermission,
 } from '../Permissions/helpers';
-import { getDisciplineTrees } from '../InitialContext/treeRanks';
-import { toLowerCase } from '../../utils/utils';
-import { commonText } from '../../localization/common';
-import { welcomeText } from '../../localization/welcome';
-import { fetchContext as userPermission } from '../Permissions';
 import { filterMenuItems } from './menuItemProcessing';
 
 const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
@@ -144,7 +145,7 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
 export const rawUserToolsPromise = Promise.all([
   userPermission,
   import('../InitialContext/userInformation').then(
-    ({ fetchContext }) => fetchContext
+    async ({ fetchContext }) => fetchContext
   ),
 ])
   .then(async () =>
