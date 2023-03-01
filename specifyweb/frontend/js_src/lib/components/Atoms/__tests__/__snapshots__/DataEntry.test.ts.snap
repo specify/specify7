@@ -270,12 +270,12 @@ exports[`DataEntry.visit no resource 1`] = `<DocumentFragment />`;
 exports[`DataEntry.visit no resource 2`] = `
 <DocumentFragment>
   <a
-    aria-label="Visit"
+    aria-label="Open in New Tab"
     class="link !text-blue-700 print:hidden "
     href="RESOURCE_VIEW_URL"
     rel="noopener"
     target="_blank"
-    title="Visit"
+    title="Open in New Tab"
   >
     <span
       title="(opens in a new tab)"
