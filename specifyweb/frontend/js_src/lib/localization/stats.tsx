@@ -220,5 +220,8 @@ export const statsText = createDictionary({
   collectionObjectsWithAttachments: {
     'en-us': 'Collection Objects With Attachments',
   },
+  error: {
+    'en-us': 'Error',
+  },
 });
 /* eslint-enable @typescript-eslint/naming-convention */

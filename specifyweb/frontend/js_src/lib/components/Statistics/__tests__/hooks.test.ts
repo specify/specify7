@@ -4,10 +4,13 @@ import { formatNumber } from '../../Atoms/Internationalization';
 import {
   applyStatBackendResponse,
   generateStatUrl,
+  getDefaultLayoutFlagged,
   getDynamicCategoriesToFetch,
   getOffsetOne,
 } from '../hooks';
 import { defaultLayoutTest, statsSpecTest } from './layout.tests';
+import { RA } from '../../../utils/types';
+import { StatLayout } from '../types';
 
 const backEndResponse = {
   '/statistics/collection/preparations/': {
@@ -161,6 +164,105 @@ theories(getOffsetOne, [
   {
     in: [0, 0],
     out: 0,
+  },
+]);
+
+function flagDefaultItem(
+  index: RA<{ pageIndex: number; categoryIndex: number; itemIndex: number }>
+): RA<StatLayout> {
+  return defaultLayoutTest.map((page, myPageIndex) => ({
+    ...page,
+    categories: page.categories.map((category, myCategoryIndex) => ({
+      ...category,
+      items: category.items.map((item, myItemIndex) => ({
+        ...item,
+        isVisible: index.some(
+          ({ pageIndex, categoryIndex, itemIndex }) =>
+            pageIndex === myPageIndex &&
+            categoryIndex === myCategoryIndex &&
+            itemIndex === myItemIndex
+        )
+          ? false
+          : undefined,
+      })),
+    })),
+  }));
+}
+
+theories(getDefaultLayoutFlagged, [
+  {
+    in: [
+      { label: '', lastUpdated: undefined, categories: [] },
+      defaultLayoutTest,
+    ],
+    out: flagDefaultItem([]),
+  },
+  {
+    in: [
+      {
+        label: '',
+        lastUpdated: undefined,
+        categories: [
+          { label: '', items: [defaultLayoutTest[0].categories[0].items[0]] },
+        ],
+      },
+      defaultLayoutTest,
+    ],
+    out: flagDefaultItem([{ pageIndex: 0, categoryIndex: 0, itemIndex: 0 }]),
+  },
+  {
+    in: [
+      {
+        label: '',
+        lastUpdated: undefined,
+        categories: [
+          {
+            label: '',
+            items: [defaultLayoutTest[0].categories[0].items[0]],
+          },
+          {
+            label: '',
+            items: [defaultLayoutTest[1].categories[0].items[0]],
+          },
+        ],
+      },
+      defaultLayoutTest,
+    ],
+    out: flagDefaultItem([
+      { pageIndex: 0, categoryIndex: 0, itemIndex: 0 },
+      { pageIndex: 1, categoryIndex: 0, itemIndex: 0 },
+    ]),
+  },
+  {
+    in: [
+      {
+        label: '',
+        lastUpdated: undefined,
+        categories: [
+          {
+            label: '',
+            items: [
+              defaultLayoutTest[0].categories[2].items[0],
+              defaultLayoutTest[0].categories[1].items[0],
+            ],
+          },
+          {
+            label: '',
+            items: [
+              defaultLayoutTest[0].categories[0].items[0],
+              defaultLayoutTest[1].categories[0].items[0],
+            ],
+          },
+        ],
+      },
+      defaultLayoutTest,
+    ],
+    out: flagDefaultItem([
+      { pageIndex: 0, categoryIndex: 0, itemIndex: 0 },
+      { pageIndex: 1, categoryIndex: 0, itemIndex: 0 },
+      { pageIndex: 0, categoryIndex: 2, itemIndex: 0 },
+      { pageIndex: 0, categoryIndex: 1, itemIndex: 0 },
+    ]),
   },
 ]);
 

@@ -527,7 +527,6 @@ export function QueryBuilder({
             }
             fields={state.fields}
             forceCollection={forceCollection}
-            isDistinct={query.selectDistinct ?? false}
             model={model}
             queryResource={queryResource}
             queryRunCount={state.queryRunCount}

@@ -53,6 +53,7 @@ export function AddStatDialog({
                   type: 'CustomStat',
                   label: query.name,
                   querySpec: queryToSpec(query),
+                  itemValue: undefined,
                 },
                 -1
               );

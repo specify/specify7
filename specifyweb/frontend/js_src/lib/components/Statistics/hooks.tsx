@@ -2,12 +2,11 @@ import React from 'react';
 
 import { useMultipleAsyncState } from '../../hooks/useAsyncState';
 import { statsText } from '../../localization/stats';
-import { ajax } from '../../utils/ajax';
+import { ajax, AjaxResponseObject } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { throttledPromise } from '../../utils/ajax/throttledPromise';
 import type { IR, RA } from '../../utils/types';
 import { keysToLowerCase } from '../../utils/utils';
-import { formatNumber } from '../Atoms/Internationalization';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import { deserializeResource, serializeResource } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -71,54 +70,56 @@ function backEndStatPromiseGenerator(
     ])
   );
 }
-
+export function getDefaultLayoutFlagged(
+  layout: StatLayout | undefined,
+  defaultLayout: RA<StatLayout> | undefined
+): RA<StatLayout> | undefined {
+  if (layout === undefined || defaultLayout === undefined) {
+    return undefined;
+  }
+  const listToUse = layout.categories.flatMap(({ items }) =>
+    items.filter((item): item is DefaultStat => item.type === 'DefaultStat')
+  );
+  let statNotFound = false;
+  const defaultLayoutFlagged = defaultLayout.map((defaultLayoutPage) => ({
+    label: defaultLayoutPage.label,
+    lastUpdated: undefined,
+    categories: defaultLayoutPage.categories.map(({ label, items }) => ({
+      label,
+      items: items.map((defaultItem) => {
+        const defaultStatNotFound =
+          defaultItem.type === 'DefaultStat' &&
+          !listToUse.some(
+            ({ pageName, categoryName, itemName, pathToValue }) =>
+              pageName === defaultItem.pageName &&
+              categoryName === defaultItem.categoryName &&
+              itemName === defaultItem.itemName &&
+              pathToValue === defaultItem.pathToValue
+          );
+        statNotFound ||= defaultStatNotFound;
+        return {
+          ...defaultItem,
+          isVisible: defaultStatNotFound ? undefined : false,
+        };
+      }),
+    })),
+  }));
+  return statNotFound ? defaultLayoutFlagged : undefined;
+}
 export function useDefaultStatsToAdd(
   layout: StatLayout | undefined,
   defaultLayout: RA<StatLayout> | undefined
 ): RA<StatLayout> | undefined {
-  return React.useMemo((): RA<StatLayout> | undefined => {
-    if (
-      layout === undefined ||
-      defaultLayout === undefined ||
-      layout.categories === undefined
-    ) {
-      return undefined;
-    }
-    const listToUse = layout.categories.flatMap(({ items = [] }) =>
-      items.filter((item): item is DefaultStat => item.type === 'DefaultStat')
-    );
-    let statNotFound = false;
-    const defaultLayoutFlagged = defaultLayout.map((defaultLayoutPage) => ({
-      label: defaultLayoutPage.label,
-      lastUpdated: undefined,
-      categories: defaultLayoutPage.categories.map(({ label, items }) => ({
-        label,
-        items: items.map((defaultItem) => {
-          const defaultStatNotFound =
-            defaultItem.type === 'DefaultStat' &&
-            !listToUse.some(
-              ({ pageName, categoryName, itemName, pathToValue }) =>
-                pageName === defaultItem.pageName &&
-                categoryName === defaultItem.categoryName &&
-                itemName === defaultItem.itemName &&
-                pathToValue === defaultItem.pathToValue
-            );
-          statNotFound ||= defaultStatNotFound;
-          return {
-            ...defaultItem,
-            isVisible: defaultStatNotFound ? undefined : false,
-          };
-        }),
-      })),
-    }));
-    return statNotFound ? defaultLayoutFlagged : undefined;
-  }, [layout, defaultLayout]);
+  return React.useMemo(
+    (): RA<StatLayout> | undefined =>
+      getDefaultLayoutFlagged(layout, defaultLayout),
+    [layout, defaultLayout]
+  );
 }
 
 export function queryCountPromiseGenerator(
-  query: SpecifyResource<SpQuery>,
-  setStatPermission: (newValue: boolean) => void
-): () => Promise<string | undefined> {
+  query: SpecifyResource<SpQuery>
+): () => Promise<AjaxResponseObject<{ count: number }>> {
   return async () =>
     ajax<{
       readonly count: number;
@@ -135,14 +136,8 @@ export function queryCountPromiseGenerator(
           countOnly: true,
         }),
       },
-      { expectedResponseCodes: [Http.FORBIDDEN, Http.OK] }
-    ).then(({ data, status }) => {
-      if (status === Http.FORBIDDEN) {
-        setStatPermission(false);
-        return undefined;
-      }
-      return formatNumber(data.count);
-    });
+      { expectedResponseCodes: Object.values(Http) }
+    );
 }
 
 export const querySpecToResource = (

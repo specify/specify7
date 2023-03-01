@@ -215,7 +215,6 @@ export const Input = {
       readonly readOnly?: never;
       readonly isReadOnly?: boolean;
       readonly children?: undefined;
-      readonly min?: number;
     }
   >(
     'Input.Number',

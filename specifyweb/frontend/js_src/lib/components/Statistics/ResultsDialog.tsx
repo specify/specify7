@@ -70,7 +70,6 @@ export function FrontEndStatsResultDialog({
       onClose={handleClose}
     >
       <QueryBuilder
-        autoRun
         forceCollection={undefined}
         isEmbedded
         query={originalQuery}

@@ -37,6 +37,8 @@ import {
 import { StatsPageEditing } from './StatsPageEditing';
 import { defaultLayoutGenerated, dynamicStatsSpec } from './StatsSpec';
 import type { CustomStat, DefaultStat, StatLayout } from './types';
+import { defaultLayoutTest } from './__tests__/layout.tests';
+import { useErrorContext } from '../../hooks/useErrorContext';
 
 export function StatsPage(): JSX.Element | null {
   useMenuItem('statistics');
@@ -107,6 +109,27 @@ export function StatsPage(): JSX.Element | null {
     isShared: true,
     pageIndex: 0,
   });
+
+  const errorContextState = React.useMemo(
+    () => ({
+      shared: collectionLayout,
+      personal: personalLayout,
+      default: defaultLayout,
+      onShared: activePage.isShared,
+      pageIndex: activePage.pageIndex,
+      state: state,
+    }),
+    [
+      collectionLayout,
+      personalLayout,
+      defaultLayout,
+      activePage.isShared,
+      activePage.pageIndex,
+      state,
+    ]
+  );
+
+  useErrorContext('statistics', errorContextState);
 
   const getSourceLayoutSetter = (isShared: boolean) =>
     isShared ? setCollectionLayout : setPersonalLayout;
@@ -201,6 +224,7 @@ export function StatsPage(): JSX.Element | null {
 
   if (process.env.NODE_ENV === 'development') {
     console.log('Layout Updates');
+    console.log(defaultLayoutTest);
   }
   // Used to set unknown categories once for layout initially, and every time for default layout
   useDynamicCategorySetter(backEndResponse, handleChange, categoriesToFetch);
@@ -328,6 +352,16 @@ export function StatsPage(): JSX.Element | null {
     [handleChange]
   );
 
+  const refreshPage = () => {
+    cleanMaybeFulfilled();
+    getSourceLayoutSetter(activePage.isShared)((layout) =>
+      layout === undefined
+        ? undefined
+        : getValueUndefined(layout, activePage.pageIndex)
+    );
+    setCategoriesToFetch([]);
+  };
+
   return collectionLayout === undefined ? null : (
     <Form
       className={className.containerFullGray}
@@ -348,17 +382,7 @@ export function StatsPage(): JSX.Element | null {
             <DateElement date={pageLastUpdated} />
           </span>
         )}
-        <Button.Gray
-          onClick={(): void => {
-            cleanMaybeFulfilled();
-            getSourceLayoutSetter(activePage.isShared)((layout) =>
-              layout === undefined
-                ? undefined
-                : getValueUndefined(layout, activePage.pageIndex)
-            );
-            setCategoriesToFetch([]);
-          }}
-        >
+        <Button.Gray onClick={(): void => refreshPage()}>
           {statsText.refresh()}
         </Button.Gray>
         {Object.values(layout).every((layouts) => layouts !== undefined) && (
@@ -708,9 +732,9 @@ export function StatsPage(): JSX.Element | null {
         <AddStatDialog
           defaultStatsAddLeft={defaultStatsAddLeft}
           queries={queries}
-          onAdd={(item, itemIndex): void =>
-            handleAdd(item, state.categoryIndex, itemIndex)
-          }
+          onAdd={(item, itemIndex): void => {
+            handleAdd(item, state.categoryIndex, itemIndex);
+          }}
           onClose={(): void => {
             setState({
               type: 'EditingState',

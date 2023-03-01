@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { userText } from '../../localization/user';
-import { ajax } from '../../utils/ajax';
+import { ajax, AjaxResponseObject } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { throttledPromise } from '../../utils/ajax/throttledPromise';
 import type { Tables } from '../DataModel/types';
@@ -19,6 +19,8 @@ import type {
   DefaultStat,
   QuerySpec,
 } from './types';
+import { statsText } from '../../localization/stats';
+import { formatNumber } from '../Atoms/Internationalization';
 
 export function StatItem({
   item,
@@ -181,10 +183,16 @@ function QueryItem({
   readonly onRename: ((newLabel: string) => void) | undefined;
   readonly onLoad: ((value: number | string) => void) | undefined;
 }): JSX.Element | null {
-  const [hasStatPermission, setStatPermission] = React.useState<boolean>(
-    hasTablePermission(querySpec.tableName, 'read')
-  );
-  const handleLoadResolve = hasStatPermission ? handleLoad : undefined;
+  const [statState, setStatState] = React.useState<
+    'noPermission' | 'error' | 'valid'
+  >(hasTablePermission(querySpec.tableName, 'read') ? 'valid' : 'noPermission');
+
+  React.useEffect(() => {
+    setStatState(
+      hasTablePermission(querySpec.tableName, 'read') ? 'valid' : 'noPermission'
+    );
+  }, [querySpec]);
+  const handleLoadResolve = statState === 'valid' ? handleLoad : undefined;
   const query = React.useMemo(
     () => querySpecToResource(label, querySpec),
     [label, querySpec]
@@ -192,12 +200,21 @@ function QueryItem({
 
   const promiseGenerator = React.useCallback(
     async () =>
-      throttledPromise<number | string | undefined>(
+      throttledPromise<AjaxResponseObject<{ count: number }>>(
         'queryStats',
-        queryCountPromiseGenerator(query, setStatPermission),
+        queryCountPromiseGenerator(query),
         JSON.stringify(querySpec)
-      ),
-    [query]
+      ).then(({ data, status }) => {
+        if (status === Http.OK) {
+          setStatState('valid');
+          return formatNumber(data.count);
+        }
+        if (status === Http.FORBIDDEN) setStatState('noPermission');
+        setStatState('error');
+        return undefined;
+      }),
+
+    [query, setStatState]
   );
 
   useStatValueLoad(value, promiseGenerator, handleLoadResolve);
@@ -205,8 +222,14 @@ function QueryItem({
   return (
     <StatsResult
       label={label}
-      query={hasStatPermission ? query : undefined}
-      value={hasStatPermission ? value : userText.noPermission()}
+      query={query}
+      value={
+        statState === 'noPermission'
+          ? userText.noPermission()
+          : statState === 'error'
+          ? statsText.error()
+          : value
+      }
       onClick={handleClick}
       onEdit={handleEdit}
       onRemove={handleRemove}
