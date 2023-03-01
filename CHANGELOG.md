@@ -17,14 +17,46 @@ Coming in the next few months:
 
 ## [7.8.7](https://github.com/specify/specify7/compare/v7.8.6...v7.8.7) (March 1 2023)
 
+### Added
+
+- Attachments now have a dynamic preview when viewed that includes the ability
+  to download, open in a new tab, or view the record the attachment is
+  associated with. This new implementation now uses the form associated with the
+  attachment
+  table to allow setting defaults in the form definition (useful for `isPublic`
+  or `License`
+  information) ([#2787](https://github.com/specify/specify7/issues/2787)) –
+  *Requested by Gothenburg and others*
+- Date fields can now be directly pasted into and relative date input is now
+  accepted ([#2845](https://github.com/specify/specify7/issues/2845))
+  - Relative dates can be entered by double clicking on a date field and then typing
+    `today - 5 days` or a similar input with plus or minus the count of days,
+    weeks, months, or years
+- External image URLs can now be used for buttons or separator icons on the
+  forms ([#3032](https://github.com/specify/specify7/issues/2095))
+- The query export delimiter can now be
+  configured ([#2849](https://github.com/specify/specify7/issues/2849)) –
+  *Requested By Natural History Museums of Denmark*
+- Time remaining for WorkBench validation and uploading is now
+  shown ([#3058](https://github.com/specify/specify7/pull/3058)) - *Requested by
+  CSIRO*
+- Added a `CITATION.tff` file to allow users and researchers to cite Specify
+  when publishing or referencing the
+  software ([#3067](https://github.com/specify/specify7/pull/3067))
+- The Specify data model can now be downloaded as
+  XML ([#2594](https://github.com/specify/specify7/issues/2594))
+- The Specify data model can now be
+  printed ([#2988](https://github.com/specify/specify7/issues/2988))
+
+
 ### Changed
 
-- Dialogs now remember their position when resized per
-  table ([#2691](https://github.com/specify/specify7/commit/1b5e1863c397387bf9ecb83cd660de0f48ee6ecb))
+- Dialogs now remember their position when resized
+  ([#2691](https://github.com/specify/specify7/commit/1b5e1863c397387bf9ecb83cd660de0f48ee6ecb))
 - Strict mode for regular expressions is no longer enforced for user-submitted
   regex ([#3042](https://github.com/specify/specify7/pull/3042)) - *Reported by
   CSIRO*
-- The max year accepted in any date field is
+- The max year accepted in any date field is now limited to
   9999 ([#3036](https://github.com/specify/specify7/pull/3036)) – *Reported by
   Agriculture and Agri-Food Canada*
 - Non-docker installation instructions have been
@@ -32,38 +64,6 @@ Coming in the next few months:
   by University of Florida*
 - A WorkBench row with all matched records will no longer be highlighted as a
   new record ([#2966](https://github.com/specify/specify7/issues/2966))
-
-### Added
-
-- Attachments now have a dynamic preview when viewed that includes the ability
-  to download, open in a new tab, or view the record the attachment is
-  associated with. This new implementation now uses the form associated with the
-  attachme
-  table to allow setting defaults in the form definition (useful for `isPublic`
-  or `License`
-  information) ([#2787](https://github.com/specify/specify7/issues/2787)) –
-  *Requested by Gothenburg and others*
-- Date fields can now be directly pasted into and relative date input is now
-  accepted ([#2845](https://github.com/specify/specify7/issues/2845))
-    - Relative dates can be entered by typing `today - 5 days` or a similar
-      input with plus or minux the count of days, weeks, months, or years
-- External image URLs can now be used for buttons or separator icons on the
-  forms ([#3032](https://github.com/specify/specify7/issues/2095))
-- The query export delimiter can now be
-  configured ([#2849](https://github.com/specify/specify7/issues/2849)) –
-  *Requested By Natural History Museums of Denmark*
-- Added a `CITATION.tff` file to allow users and researchers to cite Specify
-  when publishing or referencing the
-  software ([#3067](https://github.com/specify/specify7/pull/3067))
-- Time remaining for WorkBench validation and uploading is now
-  shown ([#3058](https://github.com/specify/specify7/pull/3058)) - *Requested by
-  CSIRO*
-- The Specify data model can now be downloaded as
-  XML ([#2594](https://github.com/specify/specify7/issues/2594))
-- The Specify data model can now be
-  printed ([#2988](https://github.com/specify/specify7/issues/2988))
-- The list of queries refreshes after a query is
-  deleted ([#3021](https://github.com/specify/specify7/issues/3021))
 
 ### Fixed
 
