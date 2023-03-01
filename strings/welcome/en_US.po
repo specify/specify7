@@ -7,7 +7,7 @@ msgstr "Content-Type: text/plain\n"
 msgid "pageTitle"
 msgstr "Welcome"
 
-#: components/Header/userToolDefinitions.ts:105
+#: components/Header/userToolDefinitions.ts:102
 #: components/HomePage/AboutSpecify.tsx:68
 #: components/Router/OverlayRoutes.tsx:180
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Home Page > About Specify ⬤ Components > Router > Overlay Routes

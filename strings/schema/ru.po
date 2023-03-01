@@ -33,7 +33,7 @@ msgstr "Таблицы"
 msgid "tableName"
 msgstr "Имя таблицы"
 
-#: components/Header/userToolDefinitions.ts:53
+#: components/Header/userToolDefinitions.ts:50
 #: components/Router/Routes.tsx:329
 #: components/SchemaConfig/Components.tsx:27
 #: components/SchemaConfig/Languages.tsx:34
@@ -246,7 +246,7 @@ msgstr "Количество полей"
 msgid "relationshipCount"
 msgstr "Количество отношений"
 
-#: components/Header/userToolDefinitions.ts:122
+#: components/Header/userToolDefinitions.ts:119
 #: components/Router/Routes.tsx:33
 #: components/Router/Routes.tsx:37
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes

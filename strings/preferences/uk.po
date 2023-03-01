@@ -12,14 +12,14 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 4.16-dev\n"
 
-#: components/Header/userToolDefinitions.ts:48
+#: components/Header/userToolDefinitions.ts:45
 #: components/Router/Routes.tsx:321
 #: components/UserPreferences/index.tsx:60
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > User Preferences > Index
 msgid "preferences"
 msgstr "Уподобання"
 
-#: components/Header/userToolDefinitions.ts:46
+#: components/Header/userToolDefinitions.ts:43
 #. Used in: Components > Header > User Tool Definitions
 msgid "customization"
 msgstr "Налаштування"

@@ -38,14 +38,14 @@ msgstr "Courant {collectionTable:string}"
 msgid "dataEntry"
 msgstr "La saisie des données"
 
-#: components/Header/userToolDefinitions.ts:91
+#: components/Header/userToolDefinitions.ts:88
 #: components/Router/OverlayRoutes.tsx:164
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 #, fuzzy
 msgid "makeDwca"
 msgstr "Créer une archive DwC"
 
-#: components/Header/userToolDefinitions.ts:97
+#: components/Header/userToolDefinitions.ts:94
 #: components/Router/OverlayRoutes.tsx:172
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 #, fuzzy
@@ -115,7 +115,7 @@ msgstr "Créer une nouvelle étiquette"
 msgid "createReport"
 msgstr "Créer un nouveau rapport"
 
-#: components/Header/userToolDefinitions.ts:75
+#: components/Header/userToolDefinitions.ts:72
 #: components/Router/OverlayRoutes.tsx:148
 #: components/Toolbar/TreeRepair.tsx:162
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Tree Repair
@@ -221,13 +221,13 @@ msgstr ""
 "incorrecte. Si vous souhaitez nous aider à terminer la localisation, "
 "veuillez <link>suivre les instructions.</link>"
 
-#: components/Header/userToolDefinitions.ts:132
+#: components/Header/userToolDefinitions.ts:129
 #. Used in: Components > Header > User Tool Definitions
 #, fuzzy
 msgid "tableApi"
 msgstr "API Tableaux"
 
-#: components/Header/userToolDefinitions.ts:137
+#: components/Header/userToolDefinitions.ts:134
 #. Used in: Components > Header > User Tool Definitions
 #, fuzzy
 msgid "operationsApi"
@@ -236,33 +236,33 @@ msgstr "API des opérations"
 #: components/AppResources/Create.tsx:88
 #: components/AppResources/Create.tsx:109
 #: components/AppResources/Filters.tsx:156
-#: components/Header/userToolDefinitions.ts:103
+#: components/Header/userToolDefinitions.ts:100
 #: components/UserPreferences/Definitions.tsx:434
 #. Used in: Components > App Resources > Create ⬤ Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > User Preferences > Definitions
 #, fuzzy
 msgid "documentation"
 msgstr "Documentation"
 
-#: components/Header/userToolDefinitions.ts:58
+#: components/Header/userToolDefinitions.ts:55
 #. Used in: Components > Header > User Tool Definitions
 #, fuzzy
 msgid "administration"
 msgstr "Outils administratifs"
 
-#: components/Header/userToolDefinitions.ts:120
+#: components/Header/userToolDefinitions.ts:117
 #. Used in: Components > Header > User Tool Definitions
 #, fuzzy
 msgid "developers"
 msgstr "Ressources pour les développeurs"
 
-#: components/Header/userToolDefinitions.ts:110
+#: components/Header/userToolDefinitions.ts:107
 #. Used in: Components > Header > User Tool Definitions
 #, fuzzy
 msgid "forum"
 msgstr "Forum de la communauté"
 
 #: components/Errors/ErrorDialog.tsx:131
-#: components/Header/userToolDefinitions.ts:127
+#: components/Header/userToolDefinitions.ts:124
 #: components/Router/Routes.tsx:391
 #: components/RouterCommands/CacheBuster.tsx:41
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Router Commands > Cache Buster
@@ -276,7 +276,7 @@ msgstr "Effacer le cache du navigateur"
 msgid "cacheCleared"
 msgstr "Le cache a été vidé. Veuillez recharger la page."
 
-#: components/Header/userToolDefinitions.ts:115
+#: components/Header/userToolDefinitions.ts:112
 #. Used in: Components > Header > User Tool Definitions
 #, fuzzy
 msgid "technicalDocumentation"

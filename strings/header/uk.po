@@ -36,13 +36,13 @@ msgstr "Поточна {collectionTable:string}"
 msgid "dataEntry"
 msgstr "Введення даних"
 
-#: components/Header/userToolDefinitions.ts:91
+#: components/Header/userToolDefinitions.ts:88
 #: components/Router/OverlayRoutes.tsx:164
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 msgid "makeDwca"
 msgstr "Створити архів DwC"
 
-#: components/Header/userToolDefinitions.ts:97
+#: components/Header/userToolDefinitions.ts:94
 #: components/Router/OverlayRoutes.tsx:172
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 msgid "updateExportFeed"
@@ -100,7 +100,7 @@ msgstr "Створити нову бірку"
 msgid "createReport"
 msgstr "Створити новий звіт"
 
-#: components/Header/userToolDefinitions.ts:75
+#: components/Header/userToolDefinitions.ts:72
 #: components/Router/OverlayRoutes.tsx:148
 #: components/Toolbar/TreeRepair.tsx:162
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Tree Repair
@@ -190,12 +190,12 @@ msgstr ""
 "щоб допомогти нам завершити локалізацію, будь ласка, <link>прочитайте "
 "інструкцій.</link>"
 
-#: components/Header/userToolDefinitions.ts:132
+#: components/Header/userToolDefinitions.ts:129
 #. Used in: Components > Header > User Tool Definitions
 msgid "tableApi"
 msgstr "API таблиць"
 
-#: components/Header/userToolDefinitions.ts:137
+#: components/Header/userToolDefinitions.ts:134
 #. Used in: Components > Header > User Tool Definitions
 msgid "operationsApi"
 msgstr "API операцій"
@@ -203,29 +203,29 @@ msgstr "API операцій"
 #: components/AppResources/Create.tsx:88
 #: components/AppResources/Create.tsx:109
 #: components/AppResources/Filters.tsx:156
-#: components/Header/userToolDefinitions.ts:103
+#: components/Header/userToolDefinitions.ts:100
 #: components/UserPreferences/Definitions.tsx:434
 #. Used in: Components > App Resources > Create ⬤ Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > User Preferences > Definitions
 msgid "documentation"
 msgstr "Документація"
 
-#: components/Header/userToolDefinitions.ts:58
+#: components/Header/userToolDefinitions.ts:55
 #. Used in: Components > Header > User Tool Definitions
 msgid "administration"
 msgstr "Адміністрування"
 
-#: components/Header/userToolDefinitions.ts:120
+#: components/Header/userToolDefinitions.ts:117
 #. Used in: Components > Header > User Tool Definitions
 msgid "developers"
 msgstr "Для розробників"
 
-#: components/Header/userToolDefinitions.ts:110
+#: components/Header/userToolDefinitions.ts:107
 #. Used in: Components > Header > User Tool Definitions
 msgid "forum"
 msgstr "Форум"
 
 #: components/Errors/ErrorDialog.tsx:131
-#: components/Header/userToolDefinitions.ts:127
+#: components/Header/userToolDefinitions.ts:124
 #: components/Router/Routes.tsx:391
 #: components/RouterCommands/CacheBuster.tsx:41
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Router Commands > Cache Buster
@@ -237,7 +237,7 @@ msgstr "Очистити кеш браузера"
 msgid "cacheCleared"
 msgstr "Кеш очищено. Перезавантажте сторінку."
 
-#: components/Header/userToolDefinitions.ts:115
+#: components/Header/userToolDefinitions.ts:112
 #. Used in: Components > Header > User Tool Definitions
 msgid "technicalDocumentation"
 msgstr "Технічні документи"

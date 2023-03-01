@@ -628,7 +628,7 @@ msgstr "Unused"
 msgid "ordinal"
 msgstr "Ordinal"
 
-#: components/Header/userToolDefinitions.ts:89
+#: components/Header/userToolDefinitions.ts:86
 #: components/QueryBuilder/Edit.tsx:81
 #: components/SchemaConfig/Tables.tsx:45
 #: components/Security/ImportExport.tsx:243
