@@ -14,7 +14,8 @@ msgstr ""
 #: components/Attachments/index.tsx:167
 #: components/Header/menuItemDefinitions.ts:96
 #: components/Router/Routes.tsx:159
-#. Used in: Components > Attachments > Index ⬤ Components > Header > Menu Item Definitions ⬤ Components > Router > Routes
+#: components/UserPreferences/Definitions.tsx:1123
+#. Used in: Components > Attachments > Index ⬤ Components > Header > Menu Item Definitions ⬤ Components > Router > Routes ⬤ Components > User Preferences > Definitions
 msgid "attachments"
 msgstr "Pièces jointes"
 
@@ -23,7 +24,8 @@ msgstr "Pièces jointes"
 msgid "scale"
 msgstr "Échelle"
 
-#: components/Attachments/Plugin.tsx:107
+#: components/Attachments/Plugin.tsx:34
+#: components/Attachments/Plugin.tsx:105
 #: components/Attachments/index.tsx:67
 #. Used in: Components > Attachments > Plugin ⬤ Components > Attachments > Index
 msgid "attachmentServerUnavailable"
@@ -36,17 +38,32 @@ msgstr "Configurez votre serveur de pièces jointes"
 
 #: components/Attachments/index.tsx:216
 #: components/FormMeta/SubViewMeta.tsx:42
-#: components/UserPreferences/Definitions.tsx:1096
+#: components/UserPreferences/Definitions.tsx:1110
 #. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > User Preferences > Definitions
 msgid "orderBy"
 msgstr "Trier par"
 
-#: components/Attachments/Plugin.tsx:131
+#: components/Attachments/Plugin.tsx:109
 #. Used in: Components > Attachments > Plugin
 msgid "uploadingInline"
 msgstr "Envoi en cours…"
 
-#: components/Attachments/Gallery.tsx:77
+#: components/Attachments/Gallery.tsx:95
 #. Used in: Components > Attachments > Gallery
 msgid "noAttachments"
 msgstr "Il n'y a pas de pièces jointes"
+
+#: components/Attachments/Cell.tsx:127
+#. Used in: Components > Attachments > Cell
+msgid "unableToFindRelatedRecord"
+msgstr ""
+
+#: components/Attachments/Cell.tsx:130
+#. Used in: Components > Attachments > Cell
+msgid "unableToFindRelatedRecordDescription"
+msgstr ""
+
+#: components/Attachments/Dialog.tsx:82
+#. Used in: Components > Attachments > Dialog
+msgid "showForm"
+msgstr ""

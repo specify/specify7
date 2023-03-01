@@ -32,11 +32,12 @@ msgstr "(У порядку від останнього до найстарішо
 msgid "exception"
 msgstr "Помилка"
 
-#: components/AppResources/EditorComponents.tsx:125
+#: components/AppResources/EditorComponents.tsx:126
+#: components/Attachments/Viewer.tsx:178
 #: components/Header/NotificationRenderers.tsx:58
 #: components/Header/NotificationRenderers.tsx:86
 #: components/Header/NotificationRenderers.tsx:100
-#. Used in: Components > App Resources > Editor Components ⬤ Components > Header > Notification Renderers
+#. Used in: Components > App Resources > Editor Components ⬤ Components > Attachments > Viewer ⬤ Components > Header > Notification Renderers
 #, fuzzy
 msgid "download"
 msgstr "Завантажити"

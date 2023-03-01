@@ -14,7 +14,7 @@ msgstr ""
 
 #: components/Header/menuItemDefinitions.ts:91
 #: components/Router/OverlayRoutes.tsx:133
-#: components/UserPreferences/Definitions.tsx:1391
+#: components/UserPreferences/Definitions.tsx:1422
 #: components/WorkBench/wbView.js:231
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > User Preferences > Definitions ⬤ Components > Work Bench > Wb View
 #, fuzzy
@@ -660,49 +660,49 @@ msgstr "Кодування символів:"
 msgid "delimiter"
 msgstr "роздільник:"
 
-#: components/UserPreferences/Definitions.tsx:1337
-#: components/UserPreferences/Definitions.tsx:1492
+#: components/UserPreferences/Definitions.tsx:1368
+#: components/UserPreferences/Definitions.tsx:1523
 #: components/WbImport/index.tsx:152
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "comma"
 msgstr "Кома"
 
-#: components/UserPreferences/Definitions.tsx:1345
-#: components/UserPreferences/Definitions.tsx:1500
+#: components/UserPreferences/Definitions.tsx:1376
+#: components/UserPreferences/Definitions.tsx:1531
 #: components/WbImport/index.tsx:154
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "semicolon"
 msgstr "Крапка з комою"
 
-#: components/UserPreferences/Definitions.tsx:1341
-#: components/UserPreferences/Definitions.tsx:1496
+#: components/UserPreferences/Definitions.tsx:1372
+#: components/UserPreferences/Definitions.tsx:1527
 #: components/WbImport/index.tsx:153
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "tab"
 msgstr "вкладка"
 
-#: components/UserPreferences/Definitions.tsx:1349
-#: components/UserPreferences/Definitions.tsx:1504
+#: components/UserPreferences/Definitions.tsx:1380
+#: components/UserPreferences/Definitions.tsx:1535
 #: components/WbImport/index.tsx:155
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "space"
 msgstr "космос"
 
-#: components/UserPreferences/Definitions.tsx:1353
-#: components/UserPreferences/Definitions.tsx:1508
+#: components/UserPreferences/Definitions.tsx:1384
+#: components/UserPreferences/Definitions.tsx:1539
 #: components/WbImport/index.tsx:156
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "pipe"
 msgstr "Труба"
 
-#: components/UserPreferences/Definitions.tsx:506
-#: components/UserPreferences/Definitions.tsx:527
-#: components/UserPreferences/Definitions.tsx:548
+#: components/UserPreferences/Definitions.tsx:520
+#: components/UserPreferences/Definitions.tsx:541
+#: components/UserPreferences/Definitions.tsx:562
 #: components/WbImport/index.tsx:193
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
@@ -740,19 +740,19 @@ msgstr "Колонка {columnIndex:number}"
 msgid "newDataSetName"
 msgstr "Новий набір даних {date}"
 
-#: components/Toolbar/WbsDialog.tsx:202
+#: components/Toolbar/WbsDialog.tsx:203
 #. Used in: Components > Toolbar > Wbs Dialog
 #, fuzzy
 msgid "dataSets"
 msgstr "Набори даних WorkBench"
 
-#: components/Toolbar/WbsDialog.tsx:213
+#: components/Toolbar/WbsDialog.tsx:214
 #. Used in: Components > Toolbar > Wbs Dialog
 #, fuzzy
 msgid "wbsDialogEmpty"
 msgstr "Наразі не існує наборів даних."
 
-#: components/Toolbar/WbsDialog.tsx:214
+#: components/Toolbar/WbsDialog.tsx:215
 #. Used in: Components > Toolbar > Wbs Dialog
 #, fuzzy
 msgid "createDataSetInstructions"

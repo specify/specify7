@@ -16,7 +16,7 @@ msgstr "Table"
 msgid "tables"
 msgstr "Tables"
 
-#: components/UserPreferences/Definitions.tsx:640
+#: components/UserPreferences/Definitions.tsx:654
 #: components/WbPlanView/MapperComponents.tsx:435
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Plan View > Mapper Components
 msgid "tableName"
@@ -27,7 +27,7 @@ msgstr "Table Name"
 #: components/SchemaConfig/Components.tsx:27
 #: components/SchemaConfig/Languages.tsx:34
 #: components/Security/registry.ts:198
-#: components/UserPreferences/Definitions.tsx:590
+#: components/UserPreferences/Definitions.tsx:604
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Languages ⬤ Components > Security > Registry ⬤ Components > User Preferences > Definitions
 msgid "schemaConfig"
 msgstr "Schema Config"
@@ -49,7 +49,7 @@ msgid "field"
 msgstr "Field"
 
 #: components/FormMeta/CarryForward.tsx:266
-#: components/Forms/generateFormDefinition.ts:128
+#: components/Forms/generateFormDefinition.ts:129
 #: components/SchemaConfig/Fields.tsx:36
 #: components/SchemaConfig/Fields.tsx:47
 #: components/SchemaViewer/Fields.tsx:42
@@ -58,7 +58,7 @@ msgid "fields"
 msgstr "Fields"
 
 #: components/FormMeta/CarryForward.tsx:274
-#: components/Forms/generateFormDefinition.ts:166
+#: components/Forms/generateFormDefinition.ts:167
 #: components/SchemaConfig/Fields.tsx:58
 #: components/SchemaViewer/Relationships.tsx:44
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Schema Viewer > Relationships

@@ -31,9 +31,9 @@ msgid "queries"
 msgstr "Consultas"
 
 #: components/Forms/SearchDialog.tsx:108
-#: components/Forms/SearchDialog.tsx:271
+#: components/Forms/SearchDialog.tsx:273
 #: components/Security/registry.ts:202
-#: components/UserPreferences/Definitions.tsx:1276
+#: components/UserPreferences/Definitions.tsx:1307
 #. Used in: Components > Forms > Search Dialog ⬤ Components > Security > Registry ⬤ Components > User Preferences > Definitions
 #, fuzzy
 msgid "queryBuilder"
@@ -376,7 +376,7 @@ msgid "inDescription"
 msgstr "Una lista de valores separados por comas"
 
 #: components/QueryBuilder/FieldFilter.tsx:470
-#: components/UserPreferences/Definitions.tsx:1158
+#: components/UserPreferences/Definitions.tsx:1189
 #. Used in: Components > Query Builder > Field Filter ⬤ Components > User Preferences > Definitions
 #, fuzzy
 msgid "contains"
@@ -395,7 +395,7 @@ msgid "and"
 msgstr "y"
 
 #: components/QueryBuilder/FieldFilter.tsx:479
-#: components/UserPreferences/Definitions.tsx:1154
+#: components/UserPreferences/Definitions.tsx:1185
 #. Used in: Components > Query Builder > Field Filter ⬤ Components > User Preferences > Definitions
 #, fuzzy
 msgid "startsWith"

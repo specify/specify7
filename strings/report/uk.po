@@ -20,11 +20,11 @@ msgid "report"
 msgstr "звіт"
 
 #: components/Header/menuItemDefinitions.ts:84
-#: components/Reports/Parameters.tsx:85
+#: components/Reports/Parameters.tsx:86
 #: components/Reports/index.tsx:151
 #: components/Reports/index.tsx:158
 #: components/Router/OverlayRoutes.tsx:127
-#: components/UserPreferences/Definitions.tsx:1374
+#: components/UserPreferences/Definitions.tsx:1405
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Reports > Parameters ⬤ Components > Reports > Index ⬤ Components > Router > Overlay Routes ⬤ Components > User Preferences > Definitions
 #, fuzzy
 msgid "reports"
@@ -61,7 +61,7 @@ msgstr "Виправити"
 msgid "chooseFile"
 msgstr "Виберіть файл"
 
-#: components/Reports/Report.tsx:317
+#: components/Reports/Report.tsx:315
 #. Used in: Components > Reports > Report
 #, fuzzy
 msgid "reportParameters"
@@ -104,7 +104,7 @@ msgid "generateLabel"
 msgstr "Створити мітку"
 
 #: components/FormMeta/index.tsx:146
-#: components/FormParse/fields.ts:120
+#: components/FormParse/fields.ts:119
 #: components/FormParse/__tests__/fields.test.ts:131
 #. Used in: Components > Form Meta > Index ⬤ Components > Form Parse > Fields ⬤ Form Parse > __tests__ > Fields
 #, fuzzy

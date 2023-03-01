@@ -13,7 +13,7 @@ msgstr ""
 
 #: components/Header/menuItemDefinitions.ts:91
 #: components/Router/OverlayRoutes.tsx:133
-#: components/UserPreferences/Definitions.tsx:1391
+#: components/UserPreferences/Definitions.tsx:1422
 #: components/WorkBench/wbView.js:231
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > User Preferences > Definitions ⬤ Components > Work Bench > Wb View
 #, fuzzy
@@ -682,49 +682,49 @@ msgstr "Encodage de caractère:"
 msgid "delimiter"
 msgstr "Délimiteur :"
 
-#: components/UserPreferences/Definitions.tsx:1337
-#: components/UserPreferences/Definitions.tsx:1492
+#: components/UserPreferences/Definitions.tsx:1368
+#: components/UserPreferences/Definitions.tsx:1523
 #: components/WbImport/index.tsx:152
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "comma"
 msgstr "Virgule"
 
-#: components/UserPreferences/Definitions.tsx:1345
-#: components/UserPreferences/Definitions.tsx:1500
+#: components/UserPreferences/Definitions.tsx:1376
+#: components/UserPreferences/Definitions.tsx:1531
 #: components/WbImport/index.tsx:154
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "semicolon"
 msgstr "Point-virgule"
 
-#: components/UserPreferences/Definitions.tsx:1341
-#: components/UserPreferences/Definitions.tsx:1496
+#: components/UserPreferences/Definitions.tsx:1372
+#: components/UserPreferences/Definitions.tsx:1527
 #: components/WbImport/index.tsx:153
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "tab"
 msgstr "Languette"
 
-#: components/UserPreferences/Definitions.tsx:1349
-#: components/UserPreferences/Definitions.tsx:1504
+#: components/UserPreferences/Definitions.tsx:1380
+#: components/UserPreferences/Definitions.tsx:1535
 #: components/WbImport/index.tsx:155
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "space"
 msgstr "Espace"
 
-#: components/UserPreferences/Definitions.tsx:1353
-#: components/UserPreferences/Definitions.tsx:1508
+#: components/UserPreferences/Definitions.tsx:1384
+#: components/UserPreferences/Definitions.tsx:1539
 #: components/WbImport/index.tsx:156
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
 msgid "pipe"
 msgstr "Tuyau"
 
-#: components/UserPreferences/Definitions.tsx:506
-#: components/UserPreferences/Definitions.tsx:527
-#: components/UserPreferences/Definitions.tsx:548
+#: components/UserPreferences/Definitions.tsx:520
+#: components/UserPreferences/Definitions.tsx:541
+#: components/UserPreferences/Definitions.tsx:562
 #: components/WbImport/index.tsx:193
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 #, fuzzy
@@ -762,19 +762,19 @@ msgstr "Colonne {columnIndex:number}"
 msgid "newDataSetName"
 msgstr "Nouvel ensemble de données {date}"
 
-#: components/Toolbar/WbsDialog.tsx:202
+#: components/Toolbar/WbsDialog.tsx:203
 #. Used in: Components > Toolbar > Wbs Dialog
 #, fuzzy
 msgid "dataSets"
 msgstr "Ensembles de données WorkBench"
 
-#: components/Toolbar/WbsDialog.tsx:213
+#: components/Toolbar/WbsDialog.tsx:214
 #. Used in: Components > Toolbar > Wbs Dialog
 #, fuzzy
 msgid "wbsDialogEmpty"
 msgstr "Actuellement, aucun ensemble de données n'existe."
 
-#: components/Toolbar/WbsDialog.tsx:214
+#: components/Toolbar/WbsDialog.tsx:215
 #. Used in: Components > Toolbar > Wbs Dialog
 #, fuzzy
 msgid "createDataSetInstructions"

@@ -1,7 +1,7 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/UserPreferences/Definitions.tsx:1515
+#: components/UserPreferences/Definitions.tsx:1546
 #: components/WorkBench/DevShowPlan.tsx:64
 #: components/WorkBench/Template.tsx:122
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Work Bench > Dev Show Plan ⬤ Components > Work Bench > Template
@@ -350,12 +350,12 @@ msgstr "Новый столбец {index:number}"
 msgid "noHeader"
 msgstr "(нет заголовка)"
 
-#: components/Toolbar/WbsDialog.tsx:200
+#: components/Toolbar/WbsDialog.tsx:201
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "copyPlan"
 msgstr "Копировать план из существующего набора данных"
 
-#: components/Toolbar/WbsDialog.tsx:212
+#: components/Toolbar/WbsDialog.tsx:213
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "noPlansToCopyFrom"
 msgstr "Нет доступных планов, продолжайте создавать план загрузки."

@@ -3,7 +3,7 @@ msgstr "Content-Type: text/plain\n"
 
 #: components/Header/menuItemDefinitions.ts:91
 #: components/Router/OverlayRoutes.tsx:133
-#: components/UserPreferences/Definitions.tsx:1391
+#: components/UserPreferences/Definitions.tsx:1422
 #: components/WorkBench/wbView.js:231
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > User Preferences > Definitions ⬤ Components > Work Bench > Wb View
 msgid "workBench"
@@ -550,44 +550,44 @@ msgstr "Кодировка символов:"
 msgid "delimiter"
 msgstr "Разделитель:"
 
-#: components/UserPreferences/Definitions.tsx:1337
-#: components/UserPreferences/Definitions.tsx:1492
+#: components/UserPreferences/Definitions.tsx:1368
+#: components/UserPreferences/Definitions.tsx:1523
 #: components/WbImport/index.tsx:152
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 msgid "comma"
 msgstr "Запятая"
 
-#: components/UserPreferences/Definitions.tsx:1345
-#: components/UserPreferences/Definitions.tsx:1500
+#: components/UserPreferences/Definitions.tsx:1376
+#: components/UserPreferences/Definitions.tsx:1531
 #: components/WbImport/index.tsx:154
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 msgid "semicolon"
 msgstr "Точка с запятой"
 
-#: components/UserPreferences/Definitions.tsx:1341
-#: components/UserPreferences/Definitions.tsx:1496
+#: components/UserPreferences/Definitions.tsx:1372
+#: components/UserPreferences/Definitions.tsx:1527
 #: components/WbImport/index.tsx:153
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 msgid "tab"
 msgstr "Табуляция"
 
-#: components/UserPreferences/Definitions.tsx:1349
-#: components/UserPreferences/Definitions.tsx:1504
+#: components/UserPreferences/Definitions.tsx:1380
+#: components/UserPreferences/Definitions.tsx:1535
 #: components/WbImport/index.tsx:155
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 msgid "space"
 msgstr "Пробел"
 
-#: components/UserPreferences/Definitions.tsx:1353
-#: components/UserPreferences/Definitions.tsx:1508
+#: components/UserPreferences/Definitions.tsx:1384
+#: components/UserPreferences/Definitions.tsx:1539
 #: components/WbImport/index.tsx:156
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 msgid "pipe"
 msgstr "Вертикальная черта"
 
-#: components/UserPreferences/Definitions.tsx:506
-#: components/UserPreferences/Definitions.tsx:527
-#: components/UserPreferences/Definitions.tsx:548
+#: components/UserPreferences/Definitions.tsx:520
+#: components/UserPreferences/Definitions.tsx:541
+#: components/UserPreferences/Definitions.tsx:562
 #: components/WbImport/index.tsx:193
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 msgid "determineAutomatically"
@@ -619,17 +619,17 @@ msgstr "Столбец {columnIndex:number}"
 msgid "newDataSetName"
 msgstr "Новый набор данных {date}"
 
-#: components/Toolbar/WbsDialog.tsx:202
+#: components/Toolbar/WbsDialog.tsx:203
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "dataSets"
 msgstr "Наборы данных"
 
-#: components/Toolbar/WbsDialog.tsx:213
+#: components/Toolbar/WbsDialog.tsx:214
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "wbsDialogEmpty"
 msgstr "В настоящее время наборов данных не существует."
 
-#: components/Toolbar/WbsDialog.tsx:214
+#: components/Toolbar/WbsDialog.tsx:215
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "createDataSetInstructions"
 msgstr "Используйте «Импортировать файл» или «Создать новый», чтобы создать новый."

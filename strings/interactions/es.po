@@ -14,7 +14,7 @@ msgstr ""
 #: components/Header/menuItemDefinitions.ts:58
 #: components/Interactions/InteractionsDialog.tsx:253
 #: components/Router/OverlayRoutes.tsx:76
-#: components/UserPreferences/Definitions.tsx:493
+#: components/UserPreferences/Definitions.tsx:507
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Router > Overlay Routes ⬤ Components > User Preferences > Definitions
 msgid "interactions"
 msgstr "Interacciones"
@@ -76,7 +76,7 @@ msgstr "Agregar elemento no asociado"
 msgid "preparations"
 msgstr "Preparativos"
 
-#: components/FormCommands/index.tsx:98
+#: components/FormCommands/index.tsx:99
 #. Used in: Components > Form Commands > Index
 msgid "preparationsCanNotBeReturned"
 msgstr "Los preparados no se pueden devolver en este contexto."

@@ -47,7 +47,7 @@ msgstr "Повернутися на домашню сторінку"
 
 #: components/Errors/ErrorDialog.tsx:58
 #: components/Errors/FormatError.tsx:186
-#: components/Errors/FormatError.tsx:215
+#: components/Errors/FormatError.tsx:216
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Errors > Format Error
 msgid "errorOccurred"
 msgstr "Вибачте, щось пішло не так"

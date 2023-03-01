@@ -12,7 +12,7 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 4.16-dev\n"
 
-#: components/UserPreferences/Definitions.tsx:574
+#: components/UserPreferences/Definitions.tsx:588
 #. Used in: Components > User Preferences > Definitions
 msgid "forms"
 msgstr "Форми"
@@ -160,7 +160,7 @@ msgstr "Недійсний тип"
 msgid "invalidNumericPicklistValue"
 msgstr "У цьому {pickListTable:string} підтримуються лише числові значення"
 
-#: components/Attachments/Plugin.tsx:112
+#: components/Attachments/Plugin.tsx:76
 #: components/FormCells/FormTable.tsx:194
 #: components/Forms/BaseResourceView.tsx:95
 #. Used in: Components > Attachments > Plugin ⬤ Components > Form Cells > Form Table ⬤ Components > Forms > Base Resource View
@@ -182,14 +182,14 @@ msgstr "Спочатку збережіть запис"
 
 #: components/FormSliders/Slider.tsx:31
 #: components/FormSliders/Slider.tsx:33
-#: components/UserPreferences/Definitions.tsx:963
+#: components/UserPreferences/Definitions.tsx:977
 #. Used in: Components > Form Sliders > Slider ⬤ Components > User Preferences > Definitions
 msgid "firstRecord"
 msgstr "Перший запис"
 
 #: components/FormSliders/Slider.tsx:97
 #: components/FormSliders/Slider.tsx:99
-#: components/UserPreferences/Definitions.tsx:967
+#: components/UserPreferences/Definitions.tsx:981
 #. Used in: Components > Form Sliders > Slider ⬤ Components > User Preferences > Definitions
 msgid "lastRecord"
 msgstr "Останній запис"
@@ -211,7 +211,7 @@ msgstr "Наступний запис"
 msgid "currentRecord"
 msgstr "Поточний об'єкт (з {total:number|formatted})"
 
-#: components/Forms/ResourceView.tsx:352
+#: components/Forms/ResourceView.tsx:355
 #: components/Forms/Save.tsx:29
 #. Used in: Components > Forms > Resource View ⬤ Components > Forms > Save
 msgid "unsavedFormUnloadProtect"
@@ -240,54 +240,54 @@ msgstr "Збереження заблоковано"
 msgid "saveBlockedDescription"
 msgstr "Форму неможливо зберегти через такі помилки:"
 
-#: components/FormCommands/index.tsx:112
-#: components/FormCommands/index.tsx:138
+#: components/FormCommands/index.tsx:113
+#: components/FormCommands/index.tsx:140
 #. Used in: Components > Form Commands > Index
 msgid "unavailableCommandButton"
 msgstr "Команда Н/Д"
 
-#: components/FormCommands/index.tsx:116
-#: components/FormCommands/index.tsx:142
+#: components/FormCommands/index.tsx:118
+#: components/FormCommands/index.tsx:145
 #. Used in: Components > Form Commands > Index
 msgid "commandUnavailable"
 msgstr "Команда недоступна"
 
-#: components/FormCommands/index.tsx:120
+#: components/FormCommands/index.tsx:122
 #. Used in: Components > Form Commands > Index
 msgid "commandUnavailableDescription"
 msgstr "Ця команда наразі недоступна для Specify 7."
 
-#: components/FormCommands/index.tsx:122
+#: components/FormCommands/index.tsx:124
 #. Used in: Components > Form Commands > Index
 msgid "commandUnavailableSecondDescription"
 msgstr ""
 "Ймовірно, вона існувала на цій формі в Specify 6. Можливо вона буде "
 "підтримуватися в Specify 7 в майбутньому."
 
-#: components/FormCommands/index.tsx:125
+#: components/FormCommands/index.tsx:127
 #. Used in: Components > Form Commands > Index
 msgid "commandName"
 msgstr "Назва команди"
 
-#: components/FormPlugins/index.tsx:223
-#: components/FormPlugins/index.tsx:295
+#: components/FormPlugins/index.tsx:200
+#: components/FormPlugins/index.tsx:272
 #. Used in: Components > Form Plugins > Index
 msgid "unavailablePluginButton"
 msgstr "Плагін Н/Д"
 
 #: components/FormPlugins/PaleoLocation.tsx:58
-#: components/FormPlugins/index.tsx:227
-#: components/FormPlugins/index.tsx:299
+#: components/FormPlugins/index.tsx:204
+#: components/FormPlugins/index.tsx:276
 #. Used in: Components > Form Plugins > Paleo Location ⬤ Components > Form Plugins > Index
 msgid "pluginNotAvailable"
 msgstr "Плагін недоступний"
 
-#: components/FormPlugins/index.tsx:231
+#: components/FormPlugins/index.tsx:208
 #. Used in: Components > Form Plugins > Index
 msgid "pluginNotAvailableDescription"
 msgstr "Цей плагін наразі недоступний для Specify 7"
 
-#: components/FormPlugins/index.tsx:233
+#: components/FormPlugins/index.tsx:210
 #. Used in: Components > Form Plugins > Index
 msgid "pluginNotAvailableSecondDescription"
 msgstr ""
@@ -295,14 +295,14 @@ msgstr ""
 "7 в майбутньому."
 
 #: components/FormPlugins/PaleoLocation.tsx:65
-#: components/FormPlugins/index.tsx:303
+#: components/FormPlugins/index.tsx:280
 #. 🟥Example: ... Locality, Collecting Event or Collection Object forms. Used in: Components > Form Plugins > Paleo Location ⬤ Components > Form Plugins > Index
 msgid "wrongTableForPlugin"
 msgstr ""
 "Цей плагін не може бути використаний на формі {currentTable:string}. "
 "Спробуйте перемістити його на форми {supportedTables:string}."
 
-#: components/FormCommands/index.tsx:146
+#: components/FormCommands/index.tsx:149
 #. Used in: Components > Form Commands > Index
 #, fuzzy
 msgid "wrongTableForCommand"
@@ -310,16 +310,10 @@ msgstr ""
 "Команду не можна використовувати у формі {currentTable:string}. Його можна "
 "використовувати лише у формі {correctTable:string}."
 
-#: components/FormPlugins/index.tsx:236
+#: components/FormPlugins/index.tsx:213
 #. Used in: Components > Form Plugins > Index
 msgid "pluginName"
 msgstr "Назва плагіна"
-
-#: components/Atoms/DataEntry.tsx:163
-#: components/Atoms/DataEntry.tsx:166
-#. 🟥Meaning "Open". Used in: Components > Atoms > Data Entry
-msgid "visit"
-msgstr "Відкрити"
 
 #: utils/parser/definitions.ts:94
 #: utils/parser/__tests__/definitions.test.ts:169
@@ -400,12 +394,12 @@ msgstr "Ціла таблиця"
 msgid "fieldFromTable"
 msgstr "Поле з таблиці"
 
-#: components/FormCells/index.tsx:231
+#: components/FormCells/index.tsx:236
 #. Used in: Components > Form Cells > Index
 msgid "unsupportedCellType"
 msgstr "Непідтримуваний тип клітинки"
 
-#: components/Forms/SearchDialog.tsx:179
+#: components/Forms/SearchDialog.tsx:180
 #. 🟥Represents truncated search dialog output (when lots of results returned). Used in: Components > Forms > Search Dialog
 msgid "additionalResultsOmitted"
 msgstr "Додаткові результати обрізані"
@@ -580,7 +574,7 @@ msgid "subForm"
 msgstr "Підформа"
 
 #: components/FormMeta/SubViewMeta.tsx:37
-#: components/UserPreferences/Definitions.tsx:974
+#: components/UserPreferences/Definitions.tsx:988
 #. Used in: Components > Form Meta > Sub View Meta ⬤ Components > User Preferences > Definitions
 msgid "formTable"
 msgstr "Сітка"

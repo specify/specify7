@@ -21,7 +21,7 @@ msgstr "Abrir mapa"
 #: components/Leaflet/Map.tsx:24
 #: components/QueryBuilder/ToMap.tsx:59
 #: components/QueryBuilder/ToMap.tsx:241
-#: components/UserPreferences/Definitions.tsx:1589
+#: components/UserPreferences/Definitions.tsx:1620
 #: components/WorkBench/Template.tsx:230
 #. Used in: Components > Leaflet > Map ⬤ Components > Query Builder > To Map ⬤ Components > User Preferences > Definitions ⬤ Components > Work Bench > Template
 #, fuzzy
@@ -85,8 +85,8 @@ msgid "occurrencePolygons"
 msgstr "polígonos"
 
 #: components/FormPlugins/GeoLocate.tsx:33
-#: components/Molecules/GeoLocate.tsx:81
-#: components/Molecules/GeoLocate.tsx:90
+#: components/Molecules/GeoLocate.tsx:70
+#: components/Molecules/GeoLocate.tsx:74
 #: components/WorkBench/Template.tsx:220
 #. Used in: Components > Form Plugins > Geo Locate ⬤ Components > Molecules > Geo Locate ⬤ Components > Work Bench > Template
 #, fuzzy

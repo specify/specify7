@@ -12,7 +12,7 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 4.16-dev\n"
 
-#: components/UserPreferences/Definitions.tsx:1515
+#: components/UserPreferences/Definitions.tsx:1546
 #: components/WorkBench/DevShowPlan.tsx:64
 #: components/WorkBench/Template.tsx:122
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Work Bench > Dev Show Plan ⬤ Components > Work Bench > Template
@@ -422,13 +422,13 @@ msgstr "Нова колонка {index:number}"
 msgid "noHeader"
 msgstr "(без заголовка)"
 
-#: components/Toolbar/WbsDialog.tsx:200
+#: components/Toolbar/WbsDialog.tsx:201
 #. Used in: Components > Toolbar > Wbs Dialog
 #, fuzzy
 msgid "copyPlan"
 msgstr "Скопіюйте план із наявного набору даних"
 
-#: components/Toolbar/WbsDialog.tsx:212
+#: components/Toolbar/WbsDialog.tsx:213
 #. Used in: Components > Toolbar > Wbs Dialog
 #, fuzzy
 msgid "noPlansToCopyFrom"
