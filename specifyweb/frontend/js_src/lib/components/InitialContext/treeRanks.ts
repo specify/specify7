@@ -19,11 +19,9 @@ import type {
   SerializedResource,
 } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import {
-  fetchContext as fetchDomain,
-  getDomainResource,
-} from '../DataModel/schemaBase';
+import { fetchContext as fetchDomain } from '../DataModel/schemaBase';
 import type { Tables } from '../DataModel/types';
+import { getDomainResource } from '../DataModel/domain';
 
 let treeDefinitions: {
   readonly [TREE_NAME in AnyTree['tableName']]: {

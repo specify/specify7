@@ -12,11 +12,8 @@
  * schema, but it's here for now.
  */
 
-import { f } from '../../utils/functools';
 import type { RA, RR, Writable } from '../../utils/types';
 import { load } from '../InitialContext';
-import type { SpecifyResource } from './legacyTypes';
-import { strictGetModel } from './schema';
 import type { SpecifyModel } from './specifyModel';
 import type { Tables } from './types';
 
@@ -106,13 +103,3 @@ export const unescape = (string: string): string =>
 
 if (process.env.NODE_ENV === 'development')
   import('../../tests/updateDataModel').catch(console.error);
-
-export const getDomainResource = <
-  LEVEL extends keyof typeof schema.domainLevelIds
->(
-  level: LEVEL
-): SpecifyResource<Tables[Capitalize<LEVEL>]> | undefined =>
-  f.maybe(schema.domainLevelIds[level], (id) => {
-    const model = strictGetModel(level);
-    return new model.Resource({ id });
-  });

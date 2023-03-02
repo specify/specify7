@@ -1,3 +1,4 @@
+import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { takeBetween } from '../../utils/utils';
 import { raise } from '../Errors/Crash';
@@ -8,11 +9,10 @@ import { toTable } from './helpers';
 import type { AnySchema } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
 import { getResourceApiUrl, idFromUrl } from './resource';
-import { schema } from './schema';
+import { schema, strictGetModel } from './schema';
 import type { Relationship } from './specifyField';
 import type { SpecifyModel } from './specifyModel';
-import type { CollectionObject } from './types';
-import { getDomainResource } from './schemaBase';
+import type { CollectionObject, Tables } from './types';
 
 /**
  * Some tasks to do after a new resource is created
@@ -60,6 +60,16 @@ export function initializeResource(resource: SpecifyResource<AnySchema>): void {
       )
       .catch(raise);
 }
+
+export const getDomainResource = <
+  LEVEL extends keyof typeof schema.domainLevelIds
+>(
+  level: LEVEL
+): SpecifyResource<Tables[Capitalize<LEVEL>]> | undefined =>
+  f.maybe(schema.domainLevelIds?.[level], (id) => {
+    const model = strictGetModel(level);
+    return new model.Resource({ id });
+  });
 
 export function getScopingResource(
   table: SpecifyModel

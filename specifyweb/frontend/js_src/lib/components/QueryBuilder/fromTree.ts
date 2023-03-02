@@ -16,7 +16,7 @@ import { queryFieldFilters } from './FieldFilter';
 import { QueryFieldSpec } from './fieldSpec';
 import { flippedSortTypes } from './helpers';
 import { createQuery } from './index';
-import { getDomainResource } from '../DataModel/schemaBase';
+import { getDomainResource } from '../DataModel/domain';
 
 function makeField(
   path: string,
