@@ -23,7 +23,7 @@ import {
   Tables,
   Taxon,
 } from './types';
-import * as uniquenessRules from './uniquness_rules.json';
+import uniquenessRules from './uniquness_rules.json';
 
 export type BusinessRuleDefs<SCHEMA extends AnySchema> = {
   readonly onRemoved?: (
@@ -33,7 +33,7 @@ export type BusinessRuleDefs<SCHEMA extends AnySchema> = {
   readonly uniqueIn?: UniquenessRule<SCHEMA>;
   readonly customInit?: (resource: SpecifyResource<SCHEMA>) => void;
   readonly fieldChecks?: {
-    [FIELDNAME in TableFields<SCHEMA> as Lowercase<FIELDNAME>]?: (
+    [FIELD_NAME in TableFields<SCHEMA> as Lowercase<FIELD_NAME>]?: (
       resource: SpecifyResource<SCHEMA>
     ) => Promise<BusinessRuleResult | undefined> | void;
   };
@@ -46,10 +46,10 @@ type UniquenessRules = {
 };
 
 export type UniquenessRule<SCHEMA extends AnySchema> = {
-  [FIELDNAME in TableFields<SCHEMA> as Lowercase<FIELDNAME>]?:
-    | string[]
+  [FIELD_NAME in TableFields<SCHEMA> as Lowercase<FIELD_NAME>]?:
+    | RA<string>
     | null[]
-    | RA<{ field: string; otherfields: string[] }>;
+    | RA<{ field: string; otherFields: string[] }>;
 };
 
 type MappedBusinessRuleDefs = {
@@ -60,7 +60,7 @@ function assignUniquenessRules(
   mappedRules: MappedBusinessRuleDefs
 ): MappedBusinessRuleDefs {
   Object.keys(uniqueRules).forEach((table) => {
-    if (mappedRules[table as keyof Tables] == undefined)
+    if (mappedRules[table as keyof Tables] === undefined)
       overwriteReadOnly(mappedRules, table, {});
 
     overwriteReadOnly(
@@ -84,7 +84,11 @@ export const businessRuleDefs = f.store(
             const resolved = borrowMaterial.get('quantityResolved');
             const quantity = borrowMaterial.get('quantity');
             var newVal: number | undefined = undefined;
-            if (quantity && returned && returned > quantity) {
+            if (
+              typeof quantity === 'number' &&
+              typeof returned === 'number' &&
+              returned > quantity
+            ) {
               newVal = quantity;
             }
             if (returned && resolved && returned > resolved) {
@@ -99,7 +103,7 @@ export const businessRuleDefs = f.store(
             const resolved = borrowMaterial.get('quantityResolved');
             const quantity = borrowMaterial.get('quantity');
             const returned = borrowMaterial.get('quantityReturned');
-            var newVal: number | undefined = undefined;
+            let newVal: number | undefined = undefined;
             if (resolved && quantity && resolved > quantity) {
               newVal = quantity;
             }
@@ -107,7 +111,8 @@ export const businessRuleDefs = f.store(
               newVal = returned;
             }
 
-            newVal && borrowMaterial.set('quantityResolved', newVal);
+            if (typeof newVal === 'number')
+              borrowMaterial.set('quantityResolved', newVal);
           },
         },
       },
@@ -116,7 +121,7 @@ export const businessRuleDefs = f.store(
         customInit: function (
           collectionObject: SpecifyResource<CollectionObject>
         ): void {
-          var ceField =
+          const ceField =
             collectionObject.specifyModel.getField('collectingEvent');
           if (
             ceField?.isDependent() &&
@@ -136,7 +141,7 @@ export const businessRuleDefs = f.store(
             const setCurrent = () => {
               determinaton.set('isCurrent', true);
               if (determinaton.collection != null) {
-                determinaton.collection.each(
+                determinaton.collection.models.map(
                   (other: SpecifyResource<Determination>) => {
                     if (other.cid !== determinaton.cid) {
                       other.set('isCurrent', false);
@@ -155,26 +160,30 @@ export const businessRuleDefs = f.store(
           ): Promise<BusinessRuleResult> => {
             return determination
               .rgetPromise('taxon', true)
-              .then((taxon: SpecifyResource<Taxon> | null) =>
-                taxon == null
+              .then((taxon: SpecifyResource<Taxon> | null) => {
+                const getLastAccepted = (
+                  taxon: SpecifyResource<Taxon>
+                ): Promise<SpecifyResource<Taxon>> => {
+                  return taxon
+                    .rgetPromise('acceptedTaxon', true)
+                    .then((accepted) =>
+                      accepted === null ? taxon : getLastAccepted(accepted)
+                    );
+                };
+                return taxon === null
                   ? {
                       valid: true,
-                      action: () => {
-                        determination.set('preferredTaxon', null);
-                      },
+                      action: () => determination.set('preferredTaxon', null),
                     }
-                  : (function recur(taxon): BusinessRuleResult {
-                      return taxon.get('acceptedTaxon') == null
-                        ? {
-                            valid: true,
-                            action: () =>
-                              determination.set('preferredTaxon', taxon),
-                          }
-                        : taxon
-                            .rgetPromise('acceptedTaxon', true)
-                            .then((accepted) => recur(accepted));
-                    })(taxon)
-              );
+                  : {
+                      valid: true,
+                      action: async () =>
+                        determination.set(
+                          'preferredTaxon',
+                          await getLastAccepted(taxon)
+                        ),
+                    };
+              });
           },
           iscurrent: (
             determination: SpecifyResource<Determination>
@@ -183,7 +192,7 @@ export const businessRuleDefs = f.store(
               determination.get('isCurrent') &&
               determination.collection != null
             ) {
-              determination.collection.each(
+              determination.collection.models.map(
                 (other: SpecifyResource<Determination>) => {
                   if (other.cid !== determination.cid) {
                     other.set('isCurrent', false);
@@ -193,7 +202,7 @@ export const businessRuleDefs = f.store(
             }
             if (
               determination.collection != null &&
-              !determination.collection.any(
+              !determination.collection.models.some(
                 (c: SpecifyResource<Determination>) => c.get('isCurrent')
               )
             ) {
@@ -208,8 +217,8 @@ export const businessRuleDefs = f.store(
           genesequence: (dnaSequence: SpecifyResource<DNASequence>): void => {
             const current = dnaSequence.get('geneSequence');
             if (current === null) return;
-            var countObj = { a: 0, t: 0, g: 0, c: 0, ambiguous: 0 };
-            for (var i = 0; i < current.length; i++) {
+            const countObj = { a: 0, t: 0, g: 0, c: 0, ambiguous: 0 };
+            for (let i = 0; i < current.length; i++) {
               const char = current.at(i)?.toLowerCase().trim();
               if (char !== '') {
                 switch (char) {
@@ -230,7 +239,6 @@ export const businessRuleDefs = f.store(
                 }
               }
             }
-
             dnaSequence.set('compA', countObj['a']);
             dnaSequence.set('compT', countObj['t']);
             dnaSequence.set('compG', countObj['g']);
@@ -265,9 +273,8 @@ export const businessRuleDefs = f.store(
         onRemoved: (
           loanReturnPrep: SpecifyResource<LoanReturnPreparation>,
           collection: Collection<LoanReturnPreparation>
-        ): void => {
-          updateLoanPrep(collection);
-        },
+        ): void => updateLoanPrep(collection),
+
         customInit: (
           resource: SpecifyResource<LoanReturnPreparation>
         ): void => {
@@ -280,18 +287,22 @@ export const businessRuleDefs = f.store(
           quantityreturned: (
             loanReturnPrep: SpecifyResource<LoanReturnPreparation>
           ): void => {
-            var returned = loanReturnPrep.get('quantityReturned');
-            var previousReturned = interactionCache().previousReturned[
+            const returned = loanReturnPrep.get('quantityReturned');
+            const previousReturned = interactionCache().previousReturned[
               Number(loanReturnPrep.cid)
             ]
               ? interactionCache().previousReturned[Number(loanReturnPrep.cid)]
               : 0;
             if (returned !== null && returned != previousReturned) {
-              var delta = returned - previousReturned;
-              var resolved = loanReturnPrep.get('quantityResolved');
-              var totalLoaned = getTotalLoaned(loanReturnPrep);
-              var totalResolved = getTotalResolved(loanReturnPrep);
-              var max = totalLoaned - totalResolved;
+              const delta = returned - previousReturned;
+              let resolved = loanReturnPrep.get('quantityResolved');
+              const totalLoaned = getTotalLoaned(loanReturnPrep);
+              const totalResolved = getTotalResolved(loanReturnPrep);
+              const max =
+                typeof totalLoaned === 'number' &&
+                typeof totalResolved === 'number'
+                  ? totalLoaned - totalResolved
+                  : 0;
               if (resolved !== null && delta + resolved > max) {
                 loanReturnPrep.set('quantityReturned', previousReturned);
               } else {
@@ -309,17 +320,21 @@ export const businessRuleDefs = f.store(
           quantityresolved: (
             loanReturnPrep: SpecifyResource<LoanReturnPreparation>
           ): void => {
-            var resolved = loanReturnPrep.get('quantityResolved');
-            var previousResolved = interactionCache().previousResolved[
+            const resolved = loanReturnPrep.get('quantityResolved');
+            const previousResolved = interactionCache().previousResolved[
               Number(loanReturnPrep.cid)
             ]
               ? interactionCache().previousResolved[Number(loanReturnPrep.cid)]
               : 0;
             if (resolved != previousResolved) {
-              var returned = loanReturnPrep.get('quantityReturned');
-              var totalLoaned = getTotalLoaned(loanReturnPrep);
-              var totalResolved = getTotalResolved(loanReturnPrep);
-              var max = totalLoaned - totalResolved;
+              const returned = loanReturnPrep.get('quantityReturned');
+              const totalLoaned = getTotalLoaned(loanReturnPrep);
+              const totalResolved = getTotalResolved(loanReturnPrep);
+              const max =
+                typeof totalLoaned === 'number' &&
+                typeof totalResolved === 'number'
+                  ? totalLoaned - totalResolved
+                  : 0;
               if (resolved !== null && returned !== null) {
                 if (resolved > max) {
                   loanReturnPrep.set('quantityResolved', previousResolved);

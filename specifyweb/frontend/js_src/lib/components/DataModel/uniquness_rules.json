@@ -8,13 +8,13 @@
        "role":[
           {
              "field":"accession",
-             "otherfields":[
+             "otherFields":[
                 "agent"
              ]
           },
           {
              "field":"repositoryagreement",
-             "otherfields":[
+             "otherFields":[
                 "agent"
              ]
           }
@@ -22,13 +22,13 @@
        "agent":[
           {
              "field":"accession",
-             "otherfields":[
+             "otherFields":[
                 "role"
              ]
           },
           {
              "field":"repositoryagreement",
-             "otherfields":[
+             "otherFields":[
                 "role"
              ]
           }
@@ -51,7 +51,7 @@
        "role":[
           {
              "field":"borrow",
-             "otherfields":[
+             "otherFields":[
                 "agent"
              ]
           }
@@ -59,7 +59,7 @@
        "agent":[
           {
              "field":"borrow",
-             "otherfields":[
+             "otherFields":[
                 "role"
              ]
           }
@@ -108,7 +108,7 @@
       "role":[
          {
             "field":"disposal",
-            "otherfields":[
+            "otherFields":[
                "agent"
             ]
          }
@@ -116,7 +116,7 @@
       "agent":[
          {
             "field":"disposal",
-            "otherfields":[
+            "otherFields":[
                "role"
             ]
          }
@@ -146,7 +146,7 @@
        "role": [
           {
              "field":"gift",
-             "otherfields":[
+             "otherFields":[
                 "agent"
              ]
           }
@@ -154,7 +154,7 @@
        "agent":[
           {
              "field":"gift",
-             "otherfields":[
+             "otherFields":[
                 "role"
              ]
           }
@@ -179,7 +179,7 @@
        "role":[
           {
              "field":"loan",
-             "otherfields":[
+             "otherFields":[
                 "agent"
              ]
           }
@@ -187,7 +187,7 @@
        "agent":[
           {
              "field":"loan",
-             "otherfields":[
+             "otherFields":[
                 "role"
              ]
           }

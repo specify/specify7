@@ -10,7 +10,7 @@ import type {
   SerializedResource,
   TableFields,
 } from './helperTypes';
-import { BusinessRuleMgr } from './businessRules';
+import { BusinessRuleManager } from './businessRules';
 import type { SaveBlockers } from './saveBlockers';
 import type { Collection, SpecifyModel } from './specifyModel';
 
@@ -33,11 +33,11 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   readonly noBusinessRules: boolean;
   readonly _fetch?: unknown;
   readonly _save?: unknown;
-  readonly changed?: { [FIELDNAME in TableFields<SCHEMA>]?: string | number };
+  readonly changed?: { [FIELD_NAME in TableFields<SCHEMA>]?: string | number };
   readonly collection: Collection<SCHEMA>;
-  readonly businessRuleMgr?:
-    | BusinessRuleMgr<SCHEMA>
-    | BusinessRuleMgr<AnySchema>;
+  readonly businessRuleManager?:
+    | BusinessRuleManager<SCHEMA>
+    | BusinessRuleManager<AnySchema>;
   /*
    * Shorthand method signature is used to prevent
    * https://github.com/microsoft/TypeScript/issues/48339
