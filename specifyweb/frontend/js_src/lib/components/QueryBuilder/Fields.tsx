@@ -68,6 +68,25 @@ export function QueryFields({
 
   const [draggedItem, setDraggedItem] = React.useState<QueryField | null>(null);
 
+  const [isDragging, setIsDragging] = React.useState(false);
+
+  React.useEffect(() => {
+    if (isDragging) {
+      const listNode = fieldsContainerRef.current;
+      if (listNode === null) return;
+      const { top, bottom } = listNode.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+
+      if (top < 0) {
+        // The dragged item is at the top of the screen
+        listNode.scrollTop -= Math.abs(top);
+      } else if (bottom > windowHeight) {
+        // The dragged item is at the bottom of the screen
+        listNode.scrollTop += bottom - windowHeight;
+      }
+    }
+  }, [isDragging]);
+
   const handleDragStart = (
     event: React.DragEvent<HTMLDivElement>,
     index: number
@@ -76,6 +95,7 @@ export function QueryFields({
     event.dataTransfer.effectAllowed = 'move';
     event.dataTransfer.setData('text/plain', String(index));
     event.currentTarget.classList.add('dragging');
+    setIsDragging(true);
   };
 
   const handleDragOver = (
@@ -104,6 +124,7 @@ export function QueryFields({
     }
 
     handleChangeFields(newItems);
+    setIsDragging(false);
   };
 
   // Scroll to bottom if added a child
