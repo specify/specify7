@@ -164,3 +164,12 @@ describe('f.min', () => {
     expect(f.min(undefined, 3, 1)).toBe(1));
   test('duplicate case', () => expect(f.min(3, 1, 2, 1)).toBe(1));
 });
+
+describe('f.max', () => {
+  test('empty case', () => expect(f.max()).toBeUndefined());
+  test('undefined case', () => expect(f.max(undefined)).toBeUndefined());
+  test('simple case', () => expect(f.max(2, 1)).toBe(2));
+  test('undefined and defined case', () =>
+    expect(f.max(undefined, 3, 1)).toBe(3));
+  test('duplicate case', () => expect(f.max(3, 1, 2, 3)).toBe(3));
+});
