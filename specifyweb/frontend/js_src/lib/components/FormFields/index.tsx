@@ -220,7 +220,7 @@ export function FormField({
   const isIndependent =
     fields
       ?.slice(0, -1)
-      .some((field) => field.isRelationship && !field.isDependent()) ?? true;
+      .some((field) => field.isRelationship && !field.isDependent()) ?? false;
   return (
     <ErrorBoundary dismissible>
       {data === undefined ? undefined : (
