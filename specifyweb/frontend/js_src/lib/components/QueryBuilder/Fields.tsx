@@ -1,8 +1,13 @@
+import { event } from 'jquery';
 import React from 'react';
 
 import { useReadyEffect } from '../../hooks/useReadyEffect';
+import { commonText } from '../../localization/common';
 import type { RA } from '../../utils/types';
 import { Ul } from '../Atoms';
+import { Button } from '../Atoms/Button';
+import { className } from '../Atoms/className';
+import { icons } from '../Atoms/Icons';
 import type { Tables } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { scrollIntoView } from '../TreeView/helpers';
@@ -62,9 +67,7 @@ export function QueryFields({
 }): JSX.Element {
   const fieldsContainerRef = React.useRef<HTMLUListElement | null>(null);
 
-  //************************************************** */
   const [draggedItem, setDraggedItem] = React.useState<QueryField | null>(null);
-  const [list, setList] = React.useState<RA<QueryField>>(fields);
 
   const handleDragStart = (
     event: React.DragEvent<HTMLDivElement>,
@@ -104,8 +107,6 @@ export function QueryFields({
     handleChangeFields(newItems);
   };
 
-  //************************************************** */
-
   // Scroll to bottom if added a child
   const oldFieldCount = React.useRef(fields.length);
   // REFACTOR: extract this into hook and use everywhere where applicable
@@ -131,6 +132,7 @@ export function QueryFields({
       {fields.map((field, line, { length }) => (
         <ErrorBoundary dismissible key={field.id}>
           <div
+            className="flex items-center gap-2"
             key={line}
             draggable={true}
             onDragStart={
@@ -144,7 +146,34 @@ export function QueryFields({
                 : (event) => handleDragOver(event, line)
             }
           >
+            <Button.Small
+              aria-label={commonText.remove()}
+              className="print:hidden"
+              title={commonText.remove()}
+              variant={className.grayButton}
+              onClick={(e) => e.preventDefault()}
+              draggable={false}
+              onDragStart={(event) => event.preventDefault()}
+            >
+              {icons.cubeTransparent}
+            </Button.Small>
+            {/* <div
+              className="drag-handle h-3 w-3 bg-blue-400"
+              draggable={false}
+              onDragStart={(event) => event.preventDefault()}
+              onDragStart={
+                handleChangeFields === undefined
+                  ? undefined
+                  : (event) => handleDragStart(event, line)
+              }
+              onDragOver={
+                handleChangeFields === undefined
+                  ? undefined
+                  : (event) => handleDragOver(event, line)
+              }
+            /> */}
             <QueryLine
+              draggable={false}
               baseTableName={baseTableName}
               enforceLengthLimit={enforceLengthLimit}
               field={field}

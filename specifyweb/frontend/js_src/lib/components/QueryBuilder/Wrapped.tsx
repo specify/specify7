@@ -428,16 +428,6 @@ export function QueryBuilder({
                           line,
                         })
             }
-            onLineMove={
-              isReadOnly
-                ? undefined
-                : (line, direction): void =>
-                    dispatch({
-                      type: 'LineMoveAction',
-                      line,
-                      direction,
-                    })
-            }
             onMappingChange={
               isReadOnly
                 ? undefined

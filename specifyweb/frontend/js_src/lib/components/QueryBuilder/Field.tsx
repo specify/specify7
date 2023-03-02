@@ -60,6 +60,7 @@ export function QueryLine({
   onClose: handleClose,
   onLineFocus: handleLineFocus,
   onOpenMap: handleOpenMap,
+  draggable,
 }: {
   readonly baseTableName: keyof Tables;
   readonly field: QueryField;
@@ -87,6 +88,7 @@ export function QueryLine({
   readonly onClose: (() => void) | undefined;
   readonly onLineFocus: (target: 'current' | 'next' | 'previous') => void;
   readonly onOpenMap: (() => void) | undefined;
+  readonly draggable: boolean;
 }): JSX.Element {
   const lineRef = React.useRef<HTMLDivElement>(null);
 
@@ -230,7 +232,7 @@ export function QueryLine({
   return (
     <li
       aria-current={isFocused ? 'location' : undefined}
-      className="flex gap-2 border-t border-t-gray-500 py-2"
+      className="flex flex-1 gap-2 border-t border-t-gray-500 py-2"
     >
       {typeof handleRemove === 'function' && (
         <Button.Small
