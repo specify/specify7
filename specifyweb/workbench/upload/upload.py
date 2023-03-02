@@ -153,12 +153,12 @@ def do_upload_dataset(
 
         success = True
         rowcount = 0
-        batch: List[Tuple[int, int, str]] = []
-        insert_batch = lambda: cursor.executemany("insert into spdatasetrowresult (spdataset_id, rownumber, result) values (%s, %s, %s)", batch)
+        batch: List[Tuple[int, str, int]] = []
+        insert_batch = lambda: cursor.executemany("insert into spdatasetrowresult (rownumber, result, spdataset_id) values (%s, %s, %s)", batch)
         def _progress(result: UploadResult) -> None:
             nonlocal success, rowcount, batch
             success = success and not result.contains_failure()
-            batch.append((ds.id, rowcount, json.dumps(result.to_json())))
+            batch.append((rowcount, json.dumps(result.to_json()), ds.id))
             if len(batch) >= 1000:
                 insert_batch()
                 batch = []
@@ -167,11 +167,13 @@ def do_upload_dataset(
                 progress(result)
 
         _do_upload(collection, ds.columns, rows(), upload_plan, uploading_agent_id, _progress, no_commit, allow_partial)
-        insert_batch()
+        # insert_batch()
+        bulk_batch = [Spdatasetrowresult(rownumber=x[0], result=x[1], spdataset_id=x[2]) for x in batch]
+        Spdatasetrowresult.objects.bulk_create(bulk_batch)
         result_conn.commit()
 
     if not no_commit:
-        rs = create_record_set(ds, base_table) if success else None
+        rs = create_recordset(ds, ds.name) if success else None
         ds.uploadresult = {
             'success': success,
             'timestamp': datetime.now(timezone.utc).isoformat(),
@@ -205,19 +207,30 @@ def clear_disambiguation(ds: Spdataset) -> None:
             row[ncols] = extra and json.dumps(extra)
             dsr.save(update_fields=['data'])
 
-def create_record_set(ds: Spdataset, table: Table):
+def create_recordset(ds: Spdataset, name: str):
+    table, upload_plan = get_ds_upload_plan(ds.collection, ds)
+
     rs = getattr(models, 'Recordset').objects.create(
         collectionmemberid=ds.collection.id,
         dbtableid=table.tableId,
-        name=ds.name,
+        name=name,
         specifyuser=ds.specifyuser,
         type=0,
     )
-    connection.cursor().execute("""
-    insert into recordsetitem (recordsetid, ordernumber, recordid)
-    select %s, rownumber, json_extract(result, "$.UploadResult.record_result.Uploaded.id") as recordid
-    from spdatasetrowresult where spdataset_id = %s having recordid is not null
-    """, [rs.id, ds.id])
+    results = Spdatasetrowresult.objects.filter(spdataset_id__isnull=False)
+    Rsi = getattr(models, 'Recordsetitem')
+    rsi_lst = []
+    for r in results:
+        upload_result = json_to_UploadResult(json.loads(r.result))
+        record_result = upload_result.record_result
+        record_result_id = record_result.get_id()
+        if hasattr(upload_result, 'record_result') and \
+           isinstance(upload_result.record_result, Uploaded):
+            rsi = Rsi(recordid=record_result_id,
+                    order=r.rownumber,
+                    recordset=rs)
+        rsi_lst.append(rsi)
+    Rsi.objects.bulk_create(rsi_lst)
     return rs
 
 def get_disambiguation_from_row(ncols: int, row: Sequence[str]) -> Disambiguation:
