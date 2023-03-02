@@ -267,7 +267,7 @@ export const commonText = createDictionary({
     'ru-ru': 'Открыть в новой вкладке',
     'es-es': 'Abrir en una nueva pestaña',
     'fr-fr': 'Ouvrir dans un nouvel onglet',
-    'uk-ua': '',
+    'uk-ua': 'Відкрити в новій вкладці',
   },
   goToHomepage: {
     'en-us': 'Go to Home Page',
