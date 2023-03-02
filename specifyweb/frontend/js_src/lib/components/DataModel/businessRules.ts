@@ -1,5 +1,5 @@
-import { overwriteReadOnly, RA } from '../../utils/types';
-import { AnySchema, AnyTree, TableFields } from './helperTypes';
+import { IR, overwriteReadOnly, RA } from '../../utils/types';
+import { AnySchema, AnyTree, CommonFields } from './helperTypes';
 import { SpecifyResource } from './legacyTypes';
 import { BusinessRuleDefs, businessRuleDefs } from './businessRuleDefs';
 import { flippedPromise, ResolvablePromise } from '../../utils/promise';
@@ -13,7 +13,7 @@ import { LiteralField, Relationship } from './specifyField';
 import { idFromUrl } from './resource';
 import { globalEvents } from '../../utils/ajax/specifyApi';
 
-var enabled: boolean = true;
+let enabled: boolean = true;
 
 globalEvents.on('initResource', (resource) => {
   enabled && !resource.noBusinessRules
@@ -25,7 +25,7 @@ export function enableBusinessRules(e: boolean) {
   return (enabled = e);
 }
 
-export class BusinessRuleMgr<SCHEMA extends AnySchema> {
+export class BusinessRuleManager<SCHEMA extends AnySchema> {
   private readonly resource: SpecifyResource<SCHEMA>;
   private readonly rules: BusinessRuleDefs<SCHEMA> | undefined;
   public pendingPromises: Promise<BusinessRuleResult | null> =
@@ -76,7 +76,6 @@ export class BusinessRuleMgr<SCHEMA extends AnySchema> {
   }
 
   public checkField(fieldName: string) {
-    fieldName = fieldName.toLocaleLowerCase();
     const thisCheck: ResolvablePromise<string> = flippedPromise();
     this.addPromise(thisCheck);
 
@@ -84,7 +83,7 @@ export class BusinessRuleMgr<SCHEMA extends AnySchema> {
       this.fieldChangePromises[fieldName].resolve('superseded');
     this.fieldChangePromises[fieldName] = thisCheck;
 
-    var checks = [
+    const checks = [
       this.invokeRule('fieldChecks', fieldName, [this.resource]),
       this.checkUnique(fieldName),
     ];
@@ -128,20 +127,19 @@ export class BusinessRuleMgr<SCHEMA extends AnySchema> {
   }
 
   private async checkUnique(fieldName: string): Promise<BusinessRuleResult> {
-    var toOneFields =
+    const toOneFields =
       this.rules?.uniqueIn !== undefined
-        ? this.rules?.uniqueIn[fieldName as Lowercase<TableFields<SCHEMA>>] ??
-          []
+        ? this.rules?.uniqueIn[fieldName] ?? []
         : [];
 
-    const results: RA<BusinessRuleResult<SCHEMA>> = toOneFields.map(
+    const results: RA<Promise<BusinessRuleResult<SCHEMA>>> = toOneFields.map(
       (uniqueRule) => {
-        var field = uniqueRule;
-        var fieldNames: string[] | null = [fieldName];
+        let field = uniqueRule;
+        let fieldNames: string[] | null = [fieldName];
         if (uniqueRule === null) {
           fieldNames = null;
         } else if (typeof uniqueRule != 'string') {
-          fieldNames = fieldNames.concat(uniqueRule.otherfields);
+          fieldNames = fieldNames.concat(uniqueRule.otherFields);
           field = uniqueRule.field;
         }
         return this.uniqueIn(field as string, fieldNames);
@@ -238,7 +236,7 @@ export class BusinessRuleMgr<SCHEMA extends AnySchema> {
         : undefined;
 
     const allNullOrUndefinedToOnes = fieldIds.reduce(
-      (previous, current, index) =>
+      (previous, _current, index) =>
         previous && fieldIsToOne[index] ? fieldIds[index] === null : false,
       true
     );
@@ -274,14 +272,14 @@ export class BusinessRuleMgr<SCHEMA extends AnySchema> {
     };
 
     if (toOneField != null) {
-      var localCollection =
+      const localCollection =
         this.resource.collection?.models !== undefined
           ? this.resource.collection.models.filter(
               (resource) => resource !== undefined
             )
           : [];
 
-      var duplicates = localCollection.filter((resource) =>
+      const duplicates = localCollection.filter((resource) =>
         hasSameValues(resource)
       );
 
@@ -290,40 +288,55 @@ export class BusinessRuleMgr<SCHEMA extends AnySchema> {
         return Promise.resolve(invalidResponse);
       }
 
-      return this.resource
-        .rgetPromise(toOneField)
-        .then((related: SpecifyResource<AnySchema>) => {
-          if (!related) return Promise.resolve({ valid: true });
-          var filters = {};
-          for (var f = 0; f < fieldNames!.length; f++) {
-            filters[fieldNames![f]] = fieldIds[f] || fieldValues[f];
-          }
-          const others = new this.resource.specifyModel.ToOneCollection({
-            related: related,
-            field: toOneFieldInfo,
-            filters: filters,
-          });
+      const relatedPromise: Promise<SpecifyResource<AnySchema>> =
+        this.resource.rgetPromise(toOneField);
 
-          return others.fetch().then((fetchedCollection) => {
-            var inDatabase = fetchedCollection.models.filter(
-              (otherResource) => otherResource !== undefined
-            );
-
-            if (inDatabase.some((other) => hasSameValues(other))) {
-              return invalidResponse;
-            } else {
-              return { valid: true };
-            }
-          });
+      return relatedPromise.then((related) => {
+        if (!related) return Promise.resolve({ valid: true });
+        const filters: Partial<IR<boolean | number | string | null>> = {};
+        for (let f = 0; f < fieldNames!.length; f++) {
+          filters[fieldNames![f]] = fieldIds[f] || fieldValues[f];
+        }
+        const others = new this.resource.specifyModel.ToOneCollection({
+          related: related,
+          field: toOneFieldInfo,
+          filters: filters as Partial<
+            {
+              readonly orderby: string;
+              readonly domainfilter: boolean;
+            } & SCHEMA['fields'] &
+              CommonFields &
+              IR<boolean | number | string | null>
+          >,
         });
-    } else {
-      var filters = {};
 
-      for (var f = 0; f < fieldNames.length; f++) {
+        return others.fetch().then((fetchedCollection) => {
+          const inDatabase = fetchedCollection.models.filter(
+            (otherResource) => otherResource !== undefined
+          );
+
+          if (inDatabase.some((other) => hasSameValues(other))) {
+            return invalidResponse;
+          } else {
+            return { valid: true };
+          }
+        });
+      });
+    } else {
+      const filters: Partial<IR<boolean | number | string | null>> = {};
+
+      for (let f = 0; f < fieldNames.length; f++) {
         filters[fieldNames[f]] = fieldIds[f] || fieldValues[f];
       }
       const others = new this.resource.specifyModel.LazyCollection({
-        filters: filters,
+        filters: filters as Partial<
+          {
+            readonly orderby: string;
+            readonly domainfilter: boolean;
+          } & SCHEMA['fields'] &
+            CommonFields &
+            IR<boolean | number | string | null>
+        >,
       });
       return others.fetch().then((fetchedCollection) => {
         if (
@@ -344,22 +357,25 @@ export class BusinessRuleMgr<SCHEMA extends AnySchema> {
     fieldName: string | undefined,
     args: RA<any>
   ): Promise<BusinessRuleResult | undefined> {
-    if (this.rules === undefined || fieldName === undefined) {
+    if (this.rules === undefined) {
       return Promise.resolve(undefined);
     }
-    const rule = this.rules?.[ruleName]?.[fieldName];
+    let rule = this.rules[ruleName];
 
-    if (typeof rule !== 'function') {
-      return Promise.resolve(undefined);
+    if (rule === undefined) return Promise.resolve(undefined);
+    if (fieldName !== undefined) {
+      rule = rule[fieldName as keyof typeof rule];
     }
+    if (rule === undefined) return Promise.resolve(undefined);
+
     return Promise.resolve(rule.apply(this, args));
   }
 }
 
 function attachBusinessRules(resource: SpecifyResource<AnySchema>): void {
-  const businessRuleManager = new BusinessRuleMgr(resource);
+  const businessRuleManager = new BusinessRuleManager(resource);
   overwriteReadOnly(resource, 'saveBlockers', new SaveBlockers(resource));
-  overwriteReadOnly(resource, 'businessRuleMgr', businessRuleManager);
+  overwriteReadOnly(resource, 'businessRuleManager', businessRuleManager);
   businessRuleManager.setUpManager();
 }
 
