@@ -1,8 +1,8 @@
 import { requireContext } from '../../../tests/helpers';
+import { attachmentView } from '../../FormParse/webOnlyViews';
 import { ResourceBase } from '../resourceApi';
 import { schema } from '../schema';
 import { LiteralField } from '../specifyField';
-import { attachmentView } from '../../FormParse/webOnlyViews';
 
 requireContext();
 

@@ -337,7 +337,7 @@ export function QueryBuilder({
           } else runQuery('regular');
         }}
       >
-        <div className="flex snap-start flex-col gap-4 overflow-hidden">
+        <div className="flex snap-start flex-col gap-4">
           {state.showMappingView && (
             <MappingView
               mappingElementProps={getMappingLineProps({

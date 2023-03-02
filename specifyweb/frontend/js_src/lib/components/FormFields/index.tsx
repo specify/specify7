@@ -214,7 +214,9 @@ export function FormField({
   const Render = fieldRenderers[
     fieldDefinition.type
   ] as typeof fieldRenderers.Checkbox;
+
   const data = useDistantRelated(resource, fields);
+
   const isIndependent =
     fields
       ?.slice(0, -1)
