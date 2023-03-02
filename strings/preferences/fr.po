@@ -515,7 +515,7 @@ msgstr ""
 "données ou une corruption de la base de données. Veuillez vous assurer que "
 "vous savez ce que vous faites"
 
-#: components/UserPreferences/index.tsx:195
+#: components/UserPreferences/index.tsx:197
 #. Used in: Components > User Preferences > Index
 msgid "adminsOnlyPreference"
 msgstr "Vous n'avez pas l'autorisation de modifier cette option"

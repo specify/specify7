@@ -133,8 +133,8 @@ msgstr "Latitude"
 msgid "longitude"
 msgstr "Longitude"
 
-#: components/AppResources/Editor.tsx:98
-#: components/AppResources/Editor.tsx:100
+#: components/AppResources/Editor.tsx:97
+#: components/AppResources/Editor.tsx:99
 #: components/Leaflet/extend.ts:36
 #: components/Leaflet/extend.ts:37
 #. Used in: Components > App Resources > Editor ⬤ Components > Leaflet > Extend

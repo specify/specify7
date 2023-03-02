@@ -28,10 +28,10 @@ msgstr "Ні"
 #: components/AppResources/Create.tsx:80
 #: components/AppResources/EditorComponents.tsx:85
 #: components/Attachments/Dialog.tsx:53
-#: components/FormSliders/RecordSelectorFromIds.tsx:240
+#: components/FormSliders/RecordSelectorFromIds.tsx:246
 #: components/Forms/DeleteButton.tsx:108
 #: components/Forms/DeleteButton.tsx:132
-#: components/Forms/ResourceView.tsx:311
+#: components/Forms/ResourceView.tsx:314
 #: components/Forms/SearchDialog.tsx:105
 #: components/Header/ChooseCollection.tsx:37
 #: components/Header/Forms.tsx:61
@@ -140,7 +140,7 @@ msgstr "Створити"
 #: components/Forms/DataTask.tsx:127
 #: components/Forms/DeleteBlocked.tsx:80
 #: components/Forms/ResourceView.tsx:185
-#: components/Forms/ResourceView.tsx:315
+#: components/Forms/ResourceView.tsx:318
 #: components/Forms/Save.tsx:263
 #: components/Forms/Save.tsx:273
 #: components/Forms/SearchDialog.tsx:256
@@ -254,7 +254,7 @@ msgstr "Зберегти"
 #: components/SchemaConfig/Languages.tsx:72
 #: components/Security/CollectionRole.tsx:224
 #: components/Security/Policies.tsx:179
-#: components/Toolbar/QueryTablesEdit.tsx:220
+#: components/Toolbar/QueryTablesEdit.tsx:221
 #: components/WbPlanView/navigator.ts:302
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Form Sliders > Record Selector From Ids ⬤ Components > Forms > Save ⬤ Components > Molecules > Auto Complete ⬤ Components > Pick Lists > Index ⬤ Components > Query Builder > Wrapped ⬤ Components > Schema Config > Format ⬤ Components > Schema Config > Languages ⬤ Components > Security > Collection Role ⬤ Components > Security > Policies ⬤ Components > Toolbar > Query Tables Edit ⬤ Components > Wb Plan View > Navigator
 msgid "add"
@@ -310,9 +310,10 @@ msgstr "Інструменти"
 #: components/FormCells/FormTable.tsx:192
 #: components/FormCommands/ShowTransactions.tsx:55
 #: components/FormFields/ComboBox.tsx:135
-#: components/FormFields/Field.tsx:166
+#: components/FormFields/Field.tsx:168
 #: components/FormFields/QueryComboBox.tsx:379
 #: components/FormPlugins/CollectionRelOneToMany.tsx:157
+#: components/FormPlugins/CollectionRelOneToOne.tsx:38
 #: components/Forms/BaseResourceView.tsx:51
 #: components/Forms/DeleteButton.tsx:110
 #: components/Forms/SearchDialog.tsx:155
@@ -354,7 +355,7 @@ msgstr "Інструменти"
 #: components/TreeView/Row.tsx:198
 #: components/UserPreferences/Renderers.tsx:288
 #: components/WorkBench/Disambiguation.tsx:112
-#. Used in: Components > Core > Context Loader ⬤ Components > Core > Contexts ⬤ Core > __tests__ > Contexts ⬤ Components > Form Cells > Form Table ⬤ Components > Form Commands > Show Transactions ⬤ Components > Form Fields > Combo Box ⬤ Components > Form Fields > Field ⬤ Components > Form Fields > Query Combo Box ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Delete Button ⬤ Components > Forms > Search Dialog ⬤ Components > Forms > Sub View ⬤ Components > Home Page > About Specify ⬤ Components > Interactions > Prep Return Row ⬤ Components > Leaflet > Index ⬤ Components > Molecules > Auto Complete ⬤ Components > Molecules > Formatted Resource ⬤ Components > Molecules > Index ⬤ Components > Permissions > Format Error ⬤ Components > Query Builder > Field Filter ⬤ Components > Query Builder > Results ⬤ Components > Schema Config > Fields ⬤ Components > Schema Config > Index ⬤ Components > Security > Collection ⬤ Components > Security > Collection Components ⬤ Components > Security > Collection Role ⬤ Components > Security > Institution ⬤ Components > Security > Policies ⬤ Components > Security > Preview ⬤ Components > Security > Role Template ⬤ Components > Security > User Collections ⬤ Components > Security > User Components ⬤ Components > Toolbar > Language ⬤ Components > Tree View > Row ⬤ Components > User Preferences > Renderers ⬤ Components > Work Bench > Disambiguation
+#. Used in: Components > Core > Context Loader ⬤ Components > Core > Contexts ⬤ Core > __tests__ > Contexts ⬤ Components > Form Cells > Form Table ⬤ Components > Form Commands > Show Transactions ⬤ Components > Form Fields > Combo Box ⬤ Components > Form Fields > Field ⬤ Components > Form Fields > Query Combo Box ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Form Plugins > Collection Rel One To One ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Delete Button ⬤ Components > Forms > Search Dialog ⬤ Components > Forms > Sub View ⬤ Components > Home Page > About Specify ⬤ Components > Interactions > Prep Return Row ⬤ Components > Leaflet > Index ⬤ Components > Molecules > Auto Complete ⬤ Components > Molecules > Formatted Resource ⬤ Components > Molecules > Index ⬤ Components > Permissions > Format Error ⬤ Components > Query Builder > Field Filter ⬤ Components > Query Builder > Results ⬤ Components > Schema Config > Fields ⬤ Components > Schema Config > Index ⬤ Components > Security > Collection ⬤ Components > Security > Collection Components ⬤ Components > Security > Collection Role ⬤ Components > Security > Institution ⬤ Components > Security > Policies ⬤ Components > Security > Preview ⬤ Components > Security > Role Template ⬤ Components > Security > User Collections ⬤ Components > Security > User Components ⬤ Components > Toolbar > Language ⬤ Components > Tree View > Row ⬤ Components > User Preferences > Renderers ⬤ Components > Work Bench > Disambiguation
 msgid "loading"
 msgstr "Завантаження…"
 
@@ -375,7 +376,7 @@ msgstr "Завантажено"
 #: components/Security/Policy.tsx:93
 #: components/Security/Policy.tsx:95
 #: components/Security/Role.tsx:182
-#: components/Toolbar/QueryTablesEdit.tsx:226
+#: components/Toolbar/QueryTablesEdit.tsx:227
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Form Cells > Form Table ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Field ⬤ Components > Security > Policy ⬤ Components > Security > Role ⬤ Components > Toolbar > Query Tables Edit
 msgid "remove"
 msgstr "Видалити"
@@ -439,7 +440,7 @@ msgstr "Редагувати"
 msgid "ignore"
 msgstr "Ігнорувати"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:249
+#: components/FormSliders/RecordSelectorFromIds.tsx:255
 #: components/Toolbar/Language.tsx:114
 #. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Toolbar > Language
 msgid "proceed"
@@ -743,7 +744,7 @@ msgid "collapseAll"
 msgstr "Згорнути всі"
 
 #: components/Toolbar/QueryTablesEdit.tsx:71
-#: components/UserPreferences/index.tsx:177
+#: components/UserPreferences/index.tsx:179
 #. Used in: Components > Toolbar > Query Tables Edit ⬤ Components > User Preferences > Index
 msgid "reset"
 msgstr "Скинути"
@@ -799,7 +800,7 @@ msgstr "{resource:string} <wrap>({count:number|formatted})</wrap>"
 #: components/Forms/BaseResourceView.tsx:108
 #: components/Leaflet/index.ts:144
 #: components/Molecules/FilePicker.tsx:112
-#: components/QueryBuilder/Header.tsx:67
+#: components/QueryBuilder/Header.tsx:68
 #: components/QueryBuilder/ToForms.tsx:57
 #: components/SchemaConfig/Field.tsx:43
 #: components/SchemaConfig/Table.tsx:47

@@ -1,7 +1,7 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/QueryBuilder/Header.tsx:68
+#: components/QueryBuilder/Header.tsx:69
 #: components/QueryBuilder/Toolbar.tsx:61
 #: components/Reports/RecordSets.tsx:99
 #: components/Toolbar/RecordSetEdit.tsx:51
@@ -130,7 +130,7 @@ msgstr ""
 msgid "invalidPicklistValue"
 msgstr "{value:string} (current, invalid value)"
 
-#: components/QueryBuilder/Header.tsx:62
+#: components/QueryBuilder/Header.tsx:63
 #. 🟥Used in query builder header when querying on record set. Used in: Components > Query Builder > Header
 msgid "queryRecordSetTitle"
 msgstr ""
@@ -186,14 +186,14 @@ msgstr "(any rank)"
 
 #: components/QueryBuilder/Field.tsx:518
 #: components/QueryBuilder/Field.tsx:519
-#: components/Toolbar/QueryTablesEdit.tsx:186
+#: components/Toolbar/QueryTablesEdit.tsx:187
 #. Used in: Components > Query Builder > Field ⬤ Components > Toolbar > Query Tables Edit
 msgid "moveUp"
 msgstr "Move Up"
 
 #: components/QueryBuilder/Field.tsx:525
 #: components/QueryBuilder/Field.tsx:526
-#: components/Toolbar/QueryTablesEdit.tsx:192
+#: components/Toolbar/QueryTablesEdit.tsx:193
 #. Used in: Components > Query Builder > Field ⬤ Components > Toolbar > Query Tables Edit
 msgid "moveDown"
 msgstr "Move Down"
@@ -365,7 +365,7 @@ msgstr "Query Results"
 msgid "browseInForms"
 msgstr "Browse in Forms"
 
-#: components/QueryBuilder/Header.tsx:80
+#: components/QueryBuilder/Header.tsx:81
 #. Used in: Components > Query Builder > Header
 msgid "editQuery"
 msgstr "Edit Query"

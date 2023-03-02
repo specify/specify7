@@ -211,7 +211,7 @@ msgstr "Наступний запис"
 msgid "currentRecord"
 msgstr "Поточний об'єкт (з {total:number|formatted})"
 
-#: components/Forms/ResourceView.tsx:355
+#: components/Forms/ResourceView.tsx:358
 #: components/Forms/Save.tsx:29
 #. Used in: Components > Forms > Resource View ⬤ Components > Forms > Save
 msgid "unsavedFormUnloadProtect"
@@ -404,17 +404,17 @@ msgstr "Непідтримуваний тип клітинки"
 msgid "additionalResultsOmitted"
 msgstr "Додаткові результати обрізані"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:253
+#: components/FormSliders/RecordSelectorFromIds.tsx:259
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "recordSelectorUnloadProtect"
 msgstr "Продовжити без збереження?"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:256
+#: components/FormSliders/RecordSelectorFromIds.tsx:262
 #. 🟥When in record set and current record is unsaved and try to navigate to another record. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "recordSelectorUnloadProtectDescription"
 msgstr "Можливо, ви хочете зберегти цей запис, перш ніж покинути його."
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:209
+#: components/FormSliders/RecordSelectorFromIds.tsx:214
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "creatingNewRecord"
 msgstr "Створення нового запису"
@@ -621,7 +621,7 @@ msgstr "Налаштувати доступні таблиці введення 
 msgid "formMeta"
 msgstr "Налаштування форми"
 
-#: components/AppResources/Editor.tsx:179
+#: components/AppResources/Editor.tsx:187
 #: components/Forms/BaseResourceView.tsx:104
 #: components/Forms/dataObjFormatters.ts:149
 #. Used in: Components > App Resources > Editor ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Data Obj Formatters

@@ -211,7 +211,7 @@ msgstr "Следующий объект"
 msgid "currentRecord"
 msgstr "Текущий объект (из {total:number|formatted})"
 
-#: components/Forms/ResourceView.tsx:355
+#: components/Forms/ResourceView.tsx:358
 #: components/Forms/Save.tsx:29
 #. Used in: Components > Forms > Resource View ⬤ Components > Forms > Save
 msgid "unsavedFormUnloadProtect"
@@ -403,17 +403,17 @@ msgstr "Неподдерживаемый тип ячейки"
 msgid "additionalResultsOmitted"
 msgstr "Дополнительные результаты опущены"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:253
+#: components/FormSliders/RecordSelectorFromIds.tsx:259
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "recordSelectorUnloadProtect"
 msgstr "Продолжить без сохранения?"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:256
+#: components/FormSliders/RecordSelectorFromIds.tsx:262
 #. 🟥When in record set and current record is unsaved and try to navigate to another record. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "recordSelectorUnloadProtectDescription"
 msgstr "Не забудьте сохранить эту запись, прежде чем закрыть ее."
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:209
+#: components/FormSliders/RecordSelectorFromIds.tsx:214
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "creatingNewRecord"
 msgstr "Создание новой записи"
@@ -620,7 +620,7 @@ msgstr "Настроить таблицы ввода данных"
 msgid "formMeta"
 msgstr "Мета-данные формы"
 
-#: components/AppResources/Editor.tsx:179
+#: components/AppResources/Editor.tsx:187
 #: components/Forms/BaseResourceView.tsx:104
 #: components/Forms/dataObjFormatters.ts:149
 #. Used in: Components > App Resources > Editor ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Data Obj Formatters

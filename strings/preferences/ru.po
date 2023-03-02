@@ -468,7 +468,7 @@ msgstr ""
 "ВНИМАНИЕ: включение этого параметра может привести к потере данных или "
 "повреждению базы данных. Пожалуйста, убедитесь, что вы знаете, что делаете"
 
-#: components/UserPreferences/index.tsx:195
+#: components/UserPreferences/index.tsx:197
 #. Used in: Components > User Preferences > Index
 msgid "adminsOnlyPreference"
 msgstr "У вас недостаточно прав для изменения этого параметра."

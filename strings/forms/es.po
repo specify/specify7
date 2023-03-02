@@ -212,7 +212,7 @@ msgstr "Siguiente registro"
 msgid "currentRecord"
 msgstr "Objeto actual (de {total:number|formatted})"
 
-#: components/Forms/ResourceView.tsx:355
+#: components/Forms/ResourceView.tsx:358
 #: components/Forms/Save.tsx:29
 #. Used in: Components > Forms > Resource View ⬤ Components > Forms > Save
 msgid "unsavedFormUnloadProtect"
@@ -404,17 +404,17 @@ msgstr "Tipo de celda no compatible"
 msgid "additionalResultsOmitted"
 msgstr "Resultados adicionales omitidos"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:253
+#: components/FormSliders/RecordSelectorFromIds.tsx:259
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "recordSelectorUnloadProtect"
 msgstr "¿Continuar sin guardar?"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:256
+#: components/FormSliders/RecordSelectorFromIds.tsx:262
 #. 🟥When in record set and current record is unsaved and try to navigate to another record. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "recordSelectorUnloadProtectDescription"
 msgstr "Es posible que desee guardar este registro antes de navegar."
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:209
+#: components/FormSliders/RecordSelectorFromIds.tsx:214
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "creatingNewRecord"
 msgstr "Creando nuevo registro"
@@ -621,7 +621,7 @@ msgstr "Configurar tablas de entrada de datos"
 msgid "formMeta"
 msgstr "Formulario Meta"
 
-#: components/AppResources/Editor.tsx:179
+#: components/AppResources/Editor.tsx:187
 #: components/Forms/BaseResourceView.tsx:104
 #: components/Forms/dataObjFormatters.ts:149
 #. Used in: Components > App Resources > Editor ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Data Obj Formatters

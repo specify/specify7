@@ -466,7 +466,7 @@ msgstr ""
 "WARNING: enabling this may lead to data loss or database corruption. Please "
 "make sure you know what you are doing"
 
-#: components/UserPreferences/index.tsx:195
+#: components/UserPreferences/index.tsx:197
 #. Used in: Components > User Preferences > Index
 msgid "adminsOnlyPreference"
 msgstr "You don't have permission to change this option"
