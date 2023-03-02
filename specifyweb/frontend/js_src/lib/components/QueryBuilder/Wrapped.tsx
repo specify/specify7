@@ -1,5 +1,4 @@
 import React from 'react';
-import { LocalizedString } from 'typesafe-i18n';
 
 import { useUnloadProtect } from '../../hooks/navigation';
 import { useResource } from '../../hooks/resource';
@@ -427,6 +426,16 @@ export function QueryBuilder({
                           type: 'FocusLineAction',
                           line,
                         })
+            }
+            onLineMove={
+              isReadOnly
+                ? undefined
+                : (line, direction): void =>
+                    dispatch({
+                      type: 'LineMoveAction',
+                      line,
+                      direction,
+                    })
             }
             onMappingChange={
               isReadOnly

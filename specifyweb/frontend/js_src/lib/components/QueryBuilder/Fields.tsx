@@ -1,13 +1,8 @@
-import { event } from 'jquery';
 import React from 'react';
 
 import { useReadyEffect } from '../../hooks/useReadyEffect';
-import { commonText } from '../../localization/common';
 import type { RA } from '../../utils/types';
 import { Ul } from '../Atoms';
-import { Button } from '../Atoms/Button';
-import { className } from '../Atoms/className';
-import { icons } from '../Atoms/Icons';
 import type { Tables } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { scrollIntoView } from '../TreeView/helpers';
@@ -28,6 +23,7 @@ export function QueryFields({
   onOpen: handleOpen,
   onClose: handleClose,
   onLineFocus: handleLineFocus,
+  onLineMove: handleLineMove,
   onOpenMap: handleOpenMap,
   onChangeFields: handleChangeFields,
 }: {
@@ -62,8 +58,11 @@ export function QueryFields({
   readonly onOpen: ((line: number, index: number) => void) | undefined;
   readonly onClose: (() => void) | undefined;
   readonly onLineFocus: ((line: number) => void) | undefined;
+  readonly onLineMove:
+    | ((line: number, direction: 'down' | 'up') => void)
+    | undefined;
   readonly onOpenMap: ((line: number) => void) | undefined;
-  readonly onChangeFields: ((fields: RA<QueryField>) => void) | undefined;
+  readonly onChangeFields?: ((fields: RA<QueryField>) => void) | undefined;
 }): JSX.Element {
   const fieldsContainerRef = React.useRef<HTMLUListElement | null>(null);
 
@@ -146,34 +145,7 @@ export function QueryFields({
                 : (event) => handleDragOver(event, line)
             }
           >
-            <Button.Small
-              aria-label={commonText.remove()}
-              className="print:hidden"
-              title={commonText.remove()}
-              variant={className.grayButton}
-              onClick={(e) => e.preventDefault()}
-              draggable={false}
-              onDragStart={(event) => event.preventDefault()}
-            >
-              {icons.cubeTransparent}
-            </Button.Small>
-            {/* <div
-              className="drag-handle h-3 w-3 bg-blue-400"
-              draggable={false}
-              onDragStart={(event) => event.preventDefault()}
-              onDragStart={
-                handleChangeFields === undefined
-                  ? undefined
-                  : (event) => handleDragStart(event, line)
-              }
-              onDragOver={
-                handleChangeFields === undefined
-                  ? undefined
-                  : (event) => handleDragOver(event, line)
-              }
-            /> */}
             <QueryLine
-              draggable={false}
               baseTableName={baseTableName}
               enforceLengthLimit={enforceLengthLimit}
               field={field}
@@ -199,6 +171,16 @@ export function QueryFields({
                     )
               }
               onMappingChange={handleMappingChange?.bind(undefined, line)}
+              onMoveDown={
+                line + 1 === length || handleLineMove === undefined
+                  ? undefined
+                  : (): void => handleLineMove?.(line, 'down')
+              }
+              onMoveUp={
+                line === 0 || handleLineMove === undefined
+                  ? undefined
+                  : (): void => handleLineMove?.(line, 'up')
+              }
               onOpen={handleOpen?.bind(undefined, line)}
               onOpenMap={handleOpenMap?.bind(undefined, line)}
               onRemove={handleRemoveField?.bind(undefined, line)}
