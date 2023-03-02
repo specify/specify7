@@ -104,7 +104,7 @@ export function QueryTables({
     <Ul className="flex flex-col gap-1">
       {tables.map(({ name, label }, index) => (
         <li className="contents" key={index}>
-          <QueryTableItem name={name} label={label} onClick={handleClick} />
+          <QueryTableItem label={label} name={name} onClick={handleClick} />
         </li>
       ))}
     </Ul>

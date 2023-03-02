@@ -7,6 +7,7 @@ import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { throttledPromise } from '../../utils/ajax/throttledPromise';
 import type { IR, RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { keysToLowerCase } from '../../utils/utils';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import { deserializeResource, serializeResource } from '../DataModel/helpers';
@@ -25,7 +26,6 @@ import type {
   StatLayout,
   StatsSpec,
 } from './types';
-import { filterArray } from '../../utils/types';
 
 /**
  * Fetch backend statistics from the API

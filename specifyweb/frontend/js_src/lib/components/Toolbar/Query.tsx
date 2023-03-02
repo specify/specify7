@@ -224,8 +224,8 @@ export function NewQuery(): JSX.Element {
     <QueryTablesWrapper
       isReadOnly={isReadOnly}
       queries={queries}
-      onClose={handleClose}
       onClick={undefined}
+      onClose={handleClose}
     />
   );
 }
