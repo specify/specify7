@@ -1,12 +1,12 @@
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
-import _ from 'underscore';
 
 import { usePromise } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { localityText } from '../../localization/locality';
 import type { RA } from '../../utils/types';
+import { throttle } from '../../utils/utils';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import type { LeafletInstance } from './addOns';
 import { addFullScreenButton } from './addOns';
@@ -58,9 +58,7 @@ export function LeafletMap({
       localityPoints,
       onMarkerClick: (...args) => handleClickRef.current?.(...args),
     });
-    setHandleResize(() =>
-      _.throttle(() => map.invalidateSize(), resizeThrottle)
-    );
+    setHandleResize(() => throttle(() => map.invalidateSize(), resizeThrottle));
     addFullScreenButton(map, handleToggleFullScreen);
     forwardRef?.(map);
     return (): void => void map.remove();

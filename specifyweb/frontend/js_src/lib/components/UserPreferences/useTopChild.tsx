@@ -1,8 +1,8 @@
 import React from 'react';
-import _ from 'underscore';
 
 import { listen } from '../../utils/events';
 import type { WritableArray } from '../../utils/types';
+import { throttle } from '../../utils/utils';
 
 /**
  * In a container with several children and a scroll bar, detect which
@@ -39,7 +39,7 @@ export function useTopChild(): {
       setActiveCategory(index === -1 ? undefined : index);
     }
 
-    const handleChange = _.throttle(rawHandleChange, scrollThrottle);
+    const handleChange = throttle(rawHandleChange, scrollThrottle);
 
     const observer = new ResizeObserver(handleChange);
     observer.observe(container);
