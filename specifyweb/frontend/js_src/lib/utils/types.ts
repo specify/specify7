@@ -14,7 +14,6 @@ export type RR<K extends number | string | symbol, V> = Readonly<Record<K, V>>;
 export type RA<V> = readonly V[];
 
 export type GetSet<T> = readonly [T, (value: T) => void];
-export type GetOrUpdate<T> = T | ((oldValue: T) => T);
 export type GetOrSet<T> = readonly [
   T,
   (value: T | ((oldValue: T) => T)) => void

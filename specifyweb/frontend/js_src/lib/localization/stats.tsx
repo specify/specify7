@@ -138,6 +138,9 @@ export const statsText = createDictionary({
     'en-us': 'Personal',
     'ru-ru': 'Личный',
   },
+  private: {
+    'en-us': 'Private',
+  },
   collectionObjectsModified: {
     'en-us': 'Collection Objects Modified',
     'ru-ru': 'Объекты коллекции изменены',
@@ -206,7 +209,7 @@ export const statsText = createDictionary({
     'en-us': 'Add Page',
   },
   addACategory: {
-    'en-us': 'Add A Category',
+    'en-us': 'Add a Category',
   },
   refresh: {
     'en-us': 'Refresh',
@@ -215,10 +218,10 @@ export const statsText = createDictionary({
     'en-us': 'Attachments',
   },
   collectionObjectsWithImages: {
-    'en-us': 'Collection Objects With Images',
+    'en-us': 'Collection Objects with images',
   },
   collectionObjectsWithAttachments: {
-    'en-us': 'Collection Objects With Attachments',
+    'en-us': 'Collection Objects with attachments',
   },
   error: {
     'en-us': 'Error',

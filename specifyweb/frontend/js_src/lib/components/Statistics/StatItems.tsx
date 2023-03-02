@@ -30,7 +30,7 @@ export function StatItem({
   onRemove: handleRemove,
   onClick: handleClick,
   onEdit: handleEdit,
-  onLoad,
+  onLoad: handleLoad,
   onRename: handleRename,
 }: {
   readonly item: CustomStat | DefaultStat;
@@ -50,9 +50,9 @@ export function StatItem({
     | undefined;
   readonly onRename: ((newLabel: string) => void) | undefined;
 }): JSX.Element | null {
-  const handleLoad = React.useCallback(
-    (value: number | string) => onLoad?.(categoryIndex, itemIndex, value),
-    [onLoad, categoryIndex, itemIndex]
+  const handleLoadItem = React.useCallback(
+    (value: number | string) => handleLoad?.(categoryIndex, itemIndex, value),
+    [handleLoad, categoryIndex, itemIndex]
   );
   const resolvedSpec = useResolvedStatSpec(item);
 
@@ -70,7 +70,7 @@ export function StatItem({
               handleEdit(querySpec, item.label);
             }
       }
-      onLoad={handleLoad}
+      onLoad={handleLoadItem}
       onRemove={handleRemove}
       onRename={handleRename}
     />
@@ -85,7 +85,7 @@ export function StatItem({
       tableName={resolvedSpec.tableName}
       value={item.itemValue}
       onClick={handleClick}
-      onLoad={handleLoad}
+      onLoad={handleLoadItem}
       onRemove={handleRemove}
       onRename={handleRename}
     />

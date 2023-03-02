@@ -27,7 +27,7 @@ import { hasPermission, hasToolPermission } from '../Permissions/helpers';
 import { QueryEditButton } from '../QueryBuilder/Edit';
 import { OverlayContext } from '../Router/Router';
 import { SafeOutlet } from '../Router/RouterUtils';
-import { QueryTables } from './QueryTables';
+import { QueryTablesWrapper } from './QueryTablesWrapper';
 
 export function QueriesOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -221,10 +221,11 @@ export function NewQuery(): JSX.Element {
     onClose: handleClose,
   } = useOutletContext<QueryListContextType>();
   return (
-    <QueryTables
+    <QueryTablesWrapper
       isReadOnly={isReadOnly}
       queries={queries}
       onClose={handleClose}
+      onClick={undefined}
     />
   );
 }

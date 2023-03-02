@@ -54,15 +54,12 @@ export function StatsPage(): JSX.Element | null {
     'layout'
   );
 
-  const [defaultLayout, setDefaultLayout] = collectionPreferences.use(
-    'statistics',
-    'appearance',
-    'defaultLayout'
-  );
-
+  const [defaultLayout, setDefaultLayout] = React.useState<
+    RA<StatLayout> | undefined
+  >(undefined);
   const layout = {
     [statsText.shared()]: collectionLayout,
-    [statsText.personal()]: personalLayout,
+    [statsText.private()]: personalLayout,
   };
 
   const [state, setState] = React.useState<
@@ -94,9 +91,9 @@ export function StatsPage(): JSX.Element | null {
     isAddingItem ||
     state.type === 'PageRenameState';
 
-  const hasEditPermission = React.useMemo(
-    () => hasPermission('/preferences/statistics', 'edit_protected'),
-    []
+  const hasEditPermission = hasPermission(
+    '/preferences/statistics',
+    'edit_protected'
   );
 
   const canEditIndex = (isCollection: boolean): boolean =>
@@ -134,6 +131,8 @@ export function StatsPage(): JSX.Element | null {
   const getSourceLayoutSetter = (isShared: boolean) =>
     isShared ? setCollectionLayout : setPersonalLayout;
 
+  const setCurrentLayout = getSourceLayoutSetter(activePage.isShared);
+
   const getSourceLayout = (isShared: boolean) =>
     isShared ? collectionLayout : personalLayout;
 
@@ -148,7 +147,10 @@ export function StatsPage(): JSX.Element | null {
   );
 
   React.useEffect(() => {
-    const absentDynamicCategories = getDynamicCategoriesToFetch(sourceLayout);
+    const absentDynamicCategories =
+      sourceLayout === undefined
+        ? []
+        : getDynamicCategoriesToFetch(sourceLayout);
     const notCurrentlyFetching = absentDynamicCategories.filter(
       (category) => !categoriesToFetch.includes(category)
     );
@@ -171,17 +173,13 @@ export function StatsPage(): JSX.Element | null {
     if (collectionLayout === undefined) {
       setCollectionLayout([defaultLayoutGenerated[0]]);
     }
+  }, [collectionLayout, setCollectionLayout]);
+
+  React.useEffect(() => {
     if (personalLayout === undefined) {
       setPersonalLayout([defaultLayoutGenerated[1]]);
     }
-  }, [
-    collectionLayout,
-    personalLayout,
-    setCollectionLayout,
-    setPersonalLayout,
-    allCategories,
-    setCategoriesToFetch,
-  ]);
+  }, [setPersonalLayout, personalLayout]);
 
   /* Set Default Layout every time page is started from scratch*/
   React.useEffect(() => {
@@ -208,16 +206,15 @@ export function StatsPage(): JSX.Element | null {
         oldCategory: StatLayout['categories']
       ) => StatLayout['categories']
     ): void =>
-      getSourceLayoutSetter(activePage.isShared)(
-        (oldLayout: RA<StatLayout> | undefined) =>
-          oldLayout === undefined
-            ? undefined
-            : replaceItem(oldLayout, activePage.pageIndex, {
-                ...oldLayout[activePage.pageIndex],
-                categories: newCategories(
-                  oldLayout[activePage.pageIndex].categories
-                ),
-              })
+      setCurrentLayout((oldLayout: RA<StatLayout> | undefined) =>
+        oldLayout === undefined
+          ? undefined
+          : replaceItem(oldLayout, activePage.pageIndex, {
+              ...oldLayout[activePage.pageIndex],
+              categories: newCategories(
+                oldLayout[activePage.pageIndex].categories
+              ),
+            })
       ),
     [activePage.pageIndex, activePage.isShared]
   );
@@ -245,31 +242,66 @@ export function StatsPage(): JSX.Element | null {
   );
 
   const defaultStatsAddLeft = useDefaultStatsToAdd(
-    layout[activePage.isShared ? statsText.shared() : statsText.personal()]?.[
+    layout[activePage.isShared ? statsText.shared() : statsText.private()]?.[
       activePage.pageIndex
     ],
     defaultLayout
   );
 
-  const getValueUndefined = (
-    layout: RA<StatLayout>,
-    pageIndex: number
-  ): RA<StatLayout> => {
-    const lastUpdatedDate = new Date();
-    return layout.map((pageLayout, index) => ({
-      label: pageLayout.label,
-      categories: pageLayout.categories.map((category) => ({
-        label: category.label,
-        items: category.items?.map((item) => ({
-          ...item,
-          itemValue: pageIndex === index ? undefined : item.itemValue,
-        })),
+  const getValueUndefined = (layout: StatLayout): StatLayout => ({
+    label: layout.label,
+    categories: layout.categories.map((category) => ({
+      label: category.label,
+      items: category.items?.map((item) => ({
+        ...item,
+        itemValue: undefined,
       })),
-      lastUpdated:
-        index === pageIndex ? lastUpdatedDate.toJSON() : pageLayout.lastUpdated,
-    }));
-  };
+    })),
+    lastUpdated: undefined,
+  });
 
+  const [refreshLayout, setRefreshLayout] = React.useState(true);
+  React.useLayoutEffect(() => {
+    if (refreshLayout) {
+      setCollectionLayout((layout) =>
+        layout === undefined
+          ? undefined
+          : layout.map((pageLayout) => getValueUndefined(pageLayout))
+      );
+      setPersonalLayout((layout) =>
+        layout === undefined
+          ? undefined
+          : layout.map((pageLayout) => getValueUndefined(pageLayout))
+      );
+    }
+    setRefreshLayout(false);
+    return () => {
+      cleanMaybeFulfilled();
+    };
+  }, [refreshLayout, setRefreshLayout]);
+  React.useLayoutEffect(() => {
+    setCurrentLayout((layout) =>
+      layout === undefined
+        ? undefined
+        : layout.map((pageLayout, pageIndex) => {
+            const date = new Date();
+            return {
+              ...pageLayout,
+              lastUpdated:
+                pageLayout.lastUpdated === undefined &&
+                pageIndex === activePage.pageIndex
+                  ? date.toJSON()
+                  : pageLayout.lastUpdated,
+            };
+          })
+    );
+  }, [
+    activePage.pageIndex,
+    activePage.isShared,
+    pageLastUpdated,
+    setCurrentLayout,
+    refreshLayout,
+  ]);
   const handleAdd = (
     item: CustomStat | DefaultStat,
     categoryIndex?: number,
@@ -354,10 +386,14 @@ export function StatsPage(): JSX.Element | null {
 
   const refreshPage = () => {
     cleanMaybeFulfilled();
-    getSourceLayoutSetter(activePage.isShared)((layout) =>
+    setCurrentLayout((layout) =>
       layout === undefined
         ? undefined
-        : getValueUndefined(layout, activePage.pageIndex)
+        : replaceItem(
+            layout,
+            activePage.pageIndex,
+            getValueUndefined(layout[activePage.pageIndex])
+          )
     );
     setCategoriesToFetch([]);
   };
@@ -420,6 +456,7 @@ export function StatsPage(): JSX.Element | null {
                   setPersonalLayout(undefined);
                   setCategoriesToFetch([]);
                   setActivePage({ isShared: true, pageIndex: 0 });
+                  setRefreshLayout(true);
                 }}
               >
                 {`${commonText.reset()} [DEV]`}

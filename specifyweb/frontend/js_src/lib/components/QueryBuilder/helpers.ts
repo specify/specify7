@@ -335,7 +335,6 @@ export function isSpecial(
       field.filters.some(({ startValue }) => startValue.includes('today')) &&
       fieldSpec.datePart === 'fullDate'
   );
-  console.log(fieldSpecsMapped);
   const containsSpecifyUserName = fieldSpecsMapped.some(([field]) => {
     const includesUserValue = field.filters.some(({ startValue }) =>
       startValue.includes(currentUserValue)

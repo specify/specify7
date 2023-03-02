@@ -137,8 +137,8 @@ export function Categories({
               <Ul
                 className={
                   handleRename === undefined
-                    ? `flex-1 overflow-auto p-${checkEmptyItems ? 0 : 3} pt-${
-                        checkEmptyItems ? 0 : 2
+                    ? `flex-1 overflow-auto ${
+                        checkEmptyItems ? 'p-0' : 'p-3 pt-3'
                       }`
                     : 'grid grid-cols-[auto_1fr_max-content] gap-2 overflow-auto'
                 }

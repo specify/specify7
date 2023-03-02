@@ -94,18 +94,39 @@ export function useQueryModels(): GetSet<RA<SpecifyModel>> {
 }
 
 export function QueryTables({
+  tables,
+  onClick: handleClick,
+}: {
+  readonly tables: RA<SpecifyModel>;
+  readonly onClick: ((tableName: keyof Tables) => void) | undefined;
+}) {
+  return (
+    <Ul className="flex flex-col gap-1">
+      {tables.map(({ name, label }, index) => (
+        <li className="contents" key={index}>
+          <QueryTableItem name={name} label={label} onClick={handleClick} />
+        </li>
+      ))}
+    </Ul>
+  );
+}
+
+export function QueryTablesWrapper({
   isReadOnly,
   queries,
   onClose: handleClose,
+  onClick: handleClick,
 }: {
   readonly isReadOnly: boolean;
   readonly queries: RA<SerializedResource<SpQuery>> | undefined;
   readonly onClose: () => void;
+  readonly onClick: ((tableName: keyof Tables) => void) | undefined;
 }): JSX.Element {
   const [tables] = useQueryModels();
 
   const [isEditing, handleEditing] = useBooleanState();
   const [isImporting, handleImporting] = useBooleanState();
+  const isEmbedded = handleClick !== undefined;
   return isImporting ? (
     <QueryImport queries={queries} onClose={handleClose} />
   ) : isEditing ? (
@@ -114,7 +135,8 @@ export function QueryTables({
     <Dialog
       buttons={
         <>
-          {!isReadOnly && hasToolPermission('queryBuilder', 'create') ? (
+          {!isReadOnly &&
+          (isEmbedded || hasToolPermission('queryBuilder', 'create')) ? (
             <Button.Green onClick={handleImporting}>
               {commonText.import()}
             </Button.Green>
@@ -132,15 +154,27 @@ export function QueryTables({
       onClose={handleClose}
     >
       <Ul className="flex flex-col gap-1">
-        {tables.map(({ name, label }, index) => (
-          <li className="contents" key={index}>
-            <Link.Default href={`/specify/query/new/${name.toLowerCase()}/`}>
-              <TableIcon label={false} name={name} />
-              {label}
-            </Link.Default>
-          </li>
-        ))}
+        <QueryTables tables={tables} onClick={handleClick} />
       </Ul>
     </Dialog>
+  );
+}
+
+function QueryTableItem({
+  name,
+  label,
+  onClick: handleClick,
+}: {
+  readonly name: keyof Tables;
+  readonly label: string;
+  readonly onClick: ((tableName: keyof Tables) => void) | undefined;
+}) {
+  return handleClick === undefined ? (
+    <Link.Default href={`/specify/query/new/${name.toLowerCase()}/`}>
+      <TableIcon label={false} name={name} />
+      {label}
+    </Link.Default>
+  ) : (
+    <Button.LikeLink onClick={() => handleClick(name)}>{label}</Button.LikeLink>
   );
 }

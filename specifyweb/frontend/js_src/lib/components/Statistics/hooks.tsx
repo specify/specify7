@@ -25,6 +25,7 @@ import type {
   StatLayout,
   StatsSpec,
 } from './types';
+import { filterArray } from '../../utils/types';
 
 /**
  * Fetch backend statistics from the API
@@ -182,50 +183,47 @@ export function useResolvedStatSpec(
         ];
       return statSpecItem === undefined
         ? undefined
-        : item.itemType === 'BackEndStat'
+        : statSpecItem.spec.type === 'BackEndStat'
         ? {
             type: 'BackEndStat',
-            pathToValue:
-              item.pathToValue ??
-              (statSpecItem.spec as BackEndStat).pathToValue,
+            pathToValue: item.pathToValue ?? statSpecItem.spec.pathToValue,
             fetchUrl: generateStatUrl(
               statsSpec[item.pageName].urlPrefix,
               item.categoryName,
               item.itemName
             ),
-            formatter: (statSpecItem.spec as BackEndStat).formatter,
-            tableName: (statSpecItem.spec as BackEndStat).tableName,
+            formatter: statSpecItem.spec.formatter,
+            tableName: statSpecItem.spec.tableName,
           }
         : {
             type: 'QueryBuilderStat',
-            querySpec: (statSpecItem.spec as QueryBuilderStat).querySpec,
+            querySpec: statSpecItem.spec.querySpec,
           };
     }
   }, [item]);
 }
 
 export function getDynamicCategoriesToFetch(
-  layout: RA<StatLayout> | undefined
+  layout: RA<StatLayout>
 ): RA<string> {
   return Array.from(
     new Set(
-      (layout ?? []).flatMap(({ categories }) =>
+      layout.flatMap(({ categories }) =>
         categories.flatMap(({ items }) =>
-          items
-            .filter(
-              (item) =>
-                item.type === 'DefaultStat' &&
-                item.itemType === 'BackEndStat' &&
-                item.pathToValue === undefined &&
-                item.itemName === 'phantomItem'
+          filterArray(
+            items.map((item) =>
+              item.type === 'DefaultStat' &&
+              item.itemType === 'BackEndStat' &&
+              item.pathToValue === undefined &&
+              item.itemName === 'phantomItem'
+                ? generateStatUrl(
+                    statsSpec[item.pageName].urlPrefix,
+                    item.categoryName,
+                    item.itemName
+                  )
+                : undefined
             )
-            .map((item) =>
-              generateStatUrl(
-                statsSpec[(item as DefaultStat).pageName].urlPrefix,
-                (item as DefaultStat).categoryName,
-                (item as DefaultStat).itemName
-              )
-            )
+          )
         )
       )
     )
@@ -266,20 +264,20 @@ export function useStatValueLoad<
 >(
   value: number | string | undefined,
   promiseGenerator: () => Promise<PROMISE_TYPE>,
-  onLoad: ((value: number | string) => void) | undefined
+  handleLoad: ((value: number | string) => void) | undefined
 ) {
-  const shouldFetch = value === undefined && typeof onLoad === 'function';
+  const shouldFetch = value === undefined && typeof handleLoad === 'function';
   React.useEffect(() => {
     if (!shouldFetch) return undefined;
     let destructorCalled = false;
     promiseGenerator().then((value) => {
       if (destructorCalled || value === undefined) return;
-      onLoad?.(value);
+      handleLoad?.(value);
     });
     return (): void => {
       destructorCalled = true;
     };
-  }, [promiseGenerator, value, onLoad]);
+  }, [promiseGenerator, value, handleLoad]);
 }
 
 export function applyStatBackendResponse(
@@ -402,14 +400,10 @@ export function generateStatUrl(
   categoryKey: string,
   itemKey: string
 ) {
-  const urlSpec = [urlPrefix, categoryKey, itemKey];
-  return `/statistics${urlSpec.reduce(
-    (previousValue, currentValue) =>
-      `${previousValue}${
-        currentValue === 'phantomItem' ? '' : `/${currentValue}`
-      }`,
-    ''
-  )}/`;
+  const urlSpecMapped = [urlPrefix, categoryKey, itemKey]
+    .map((urlSpec) => (urlSpec === 'phantomItem' ? undefined : urlSpec))
+    .filter((urlSpec) => urlSpec !== undefined);
+  return `/statistics/${urlSpecMapped.join('/')}/`;
 }
 
 export function getOffsetOne(base: number, target: number) {
