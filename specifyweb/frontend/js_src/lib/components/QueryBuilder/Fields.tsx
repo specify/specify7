@@ -92,7 +92,7 @@ export function QueryFields({
       return;
     }
 
-    const newItems = [...fields];
+    const newItems = Array.from(fields);
     const draggedItemIndex = draggedItem ? newItems.indexOf(draggedItem) : -1;
 
     if (draggedItemIndex < index && draggedItem !== null) {
@@ -132,17 +132,17 @@ export function QueryFields({
         <ErrorBoundary dismissible key={field.id}>
           <div
             className="flex items-center gap-2"
+            draggable
             key={line}
-            draggable={true}
-            onDragStart={
-              handleChangeFields === undefined
-                ? undefined
-                : (event) => handleDragStart(event, line)
-            }
             onDragOver={
               handleChangeFields === undefined
                 ? undefined
                 : (event) => handleDragOver(event, line)
+            }
+            onDragStart={
+              handleChangeFields === undefined
+                ? undefined
+                : (event) => handleDragStart(event, line)
             }
           >
             <QueryLine

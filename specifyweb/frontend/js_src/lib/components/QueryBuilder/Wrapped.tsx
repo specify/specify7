@@ -409,6 +409,15 @@ export function QueryBuilder({
                 : (line, field): void =>
                     dispatch({ type: 'ChangeFieldAction', line, field })
             }
+            onChangeFields={
+              isReadOnly
+                ? undefined
+                : (fields): void =>
+                    dispatch({
+                      type: 'ChangeFieldsAction',
+                      fields,
+                    })
+            }
             onClose={(): void =>
               dispatch({
                 type: 'ChangeOpenedElementAction',
@@ -462,15 +471,6 @@ export function QueryBuilder({
                     dispatch({
                       type: 'ChangeFieldsAction',
                       fields: state.fields.filter((_, index) => index !== line),
-                    })
-            }
-            onChangeFields={
-              isReadOnly
-                ? undefined
-                : (fields): void =>
-                    dispatch({
-                      type: 'ChangeFieldsAction',
-                      fields,
                     })
             }
           />
