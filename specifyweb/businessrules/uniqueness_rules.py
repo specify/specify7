@@ -2,6 +2,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from specifyweb.specify import models
 from .orm_signal_handler import orm_signal_handler
 from .exceptions import BusinessRuleException
+from specifyweb.middleware.general import serialize_django_obj
 
 def make_uniqueness_rule(model_name, parent_field, unique_field):
     model = getattr(models, model_name)
@@ -22,7 +23,7 @@ def make_uniqueness_rule(model_name, parent_field, unique_field):
                 {"table" : table_name,
                  "localizationKey" : "fieldNotUnique",
                  "fieldName" : unique_field,
-                 "fieldData" : (unique_field, value), 
+                 "fieldData" : (unique_field, serialize_django_obj(value)), 
                  "conflicting" : list(conflicts.values_list('id', flat=True)[:100])})
     else:
         @orm_signal_handler('pre_save', model_name)
@@ -46,7 +47,7 @@ def make_uniqueness_rule(model_name, parent_field, unique_field):
                     {"table" : table_name,
                     "localizationKey" : "childFieldNotUnique",
                      "fieldName" : unique_field,
-                     "fieldData" : (unique_field, value),
+                     "fieldData" : (unique_field, serialize_django_obj(value)),
                      "parentField" : parent_field,
                      "parentData" : f"{parent_field}: id={parent}",
                      "conflicting" : list(conflicts.values_list('id', flat=True)[:100])})

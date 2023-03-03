@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+
 import type { IR } from '../../utils/types';
 
 export type SchemaViewerValue =
