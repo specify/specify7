@@ -35,14 +35,14 @@ export const formsText = createDictionary({
     'en-us': 'Value must be unique to {fieldName:string}',
     'ru-ru': 'Значение {fieldName:string} должно быть уникальным',
     'es-es': 'El valor debe ser único para {fieldName:string}',
-    'fr-fr': 'Valeur doit être unique pour {fieldName:string}',
+    'fr-fr': 'La valeur doit être unique pour {fieldName:string}',
     'uk-ua': 'Значення має бути унікальним для {fieldName:string}',
   },
   valueMustBeUniqueToDatabase: {
     'en-us': 'Value must be unique to database',
     'ru-ru': 'Значение должно быть уникальным в базе данных',
     'es-es': 'El valor debe ser único para la base de datos',
-    'fr-fr': 'Valeur doit être unique à la base de données',
+    'fr-fr': 'La valeur doit être unique à la base de données',
     'uk-ua': 'Значення має бути унікальним в базі даних',
   },
   valuesOfMustBeUniqueToField: {
@@ -63,22 +63,23 @@ export const formsText = createDictionary({
     'ru-ru': 'Значения {values:string} должны быть уникальным в базе данных',
     'es-es':
       'Los valores de {values:string} deben ser únicos para la base de datos',
-    'fr-fr':
-      'Valeurs de {values:string} doivent être uniques à la base de données',
+    'fr-fr': `
+      Les valeurs de {values:string} doivent être uniques à la base de données
+    `,
     'uk-ua': 'Значення {values:string} мають бути унікальними в базі даних',
   },
   checkingIfResourceCanBeDeleted: {
     'en-us': 'Checking if resource can be deleted…',
     'ru-ru': 'Проверка возможности удаления ресурса…',
     'es-es': 'Comprobando si el recurso se puede eliminar…',
-    'fr-fr': 'Vérifiant si la ressource peut être supprimée…',
+    'fr-fr': 'Vérification si la ressource peut être supprimée…',
     'uk-ua': 'Перевірка можливості видалення ресурсу…',
   },
   deleteBlocked: {
     'en-us': 'Delete blocked',
     'ru-ru': 'Удаление заблокировано',
     'es-es': 'Eliminar bloqueado',
-    'fr-fr': 'Suppression bloqué',
+    'fr-fr': 'Supprimer bloqué',
     'uk-ua': 'Видалення заблоковане',
   },
   deleteBlockedDescription: {

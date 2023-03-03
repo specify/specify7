@@ -239,6 +239,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
         />
       </ErrorBoundary>
     ) : undefined;
+
   const headerContent = (
     <>
       {specifyNetworkBadge}
@@ -256,18 +257,20 @@ export function ResourceView<SCHEMA extends AnySchema>({
         typeof extraButtons === 'object' ? (
           <DataEntry.Footer>
             {deleteButton}
-            {extraButtons ?? <span className="-ml-2 flex-1" />}
+            {extraButtons ?? <span className="-ml-2 md:flex-1" />}
             {saveButtonElement}
           </DataEntry.Footer>
         ) : undefined}
       </>
     );
+
     const headerComponents = headerButtons?.(headerContent) ?? (
       <>
         <span className="-ml-2 flex-1" />
         {headerContent}
       </>
     );
+
     return isSubForm ? (
       <DataEntry.SubForm>
         <DataEntry.SubFormHeader>

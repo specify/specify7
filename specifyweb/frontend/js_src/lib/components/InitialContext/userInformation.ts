@@ -37,6 +37,9 @@ export const fetchContext = load<
     await import('../DataModel/schema').then(
       async ({ fetchContext }) => fetchContext
     );
+    await import('../DataModel/schemaBase').then(
+      async ({ fetchContext }) => fetchContext
+    );
     userInfo.availableCollections = availableCollections.map(serializeResource);
     setDevelopmentGlobal('_user', userInfo);
   }
