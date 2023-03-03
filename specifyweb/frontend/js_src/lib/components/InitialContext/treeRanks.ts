@@ -27,10 +27,12 @@ export function getDomainResource<
   LEVEL extends keyof typeof schema.domainLevelIds
 >(level: LEVEL): SpecifyResource<Tables[Capitalize<LEVEL>]> | undefined {
   const id = schema.domainLevelIds?.[level];
-  if (id === undefined)
+  if (id === undefined) {
     console.error(
       `Trying to access domain resource ${level} before domain is loaded`
     );
+    return;
+  }
   const model = strictGetModel(level);
   return new model.Resource({ id });
 }
