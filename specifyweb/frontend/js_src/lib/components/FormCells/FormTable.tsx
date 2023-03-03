@@ -405,7 +405,8 @@ export function FormTable<SCHEMA extends AnySchema>({
             ? undefined
             : isDependent
             ? (): void => {
-                const resource = new relationship.relatedModel.Resource();
+                const resource =
+                  new relationship.relatedModel.Resource() as SpecifyResource<SCHEMA>;
                 handleAddResources([resource]);
               }
             : (): void =>

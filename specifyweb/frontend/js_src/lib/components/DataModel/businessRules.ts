@@ -1,5 +1,5 @@
 import { IR, overwriteReadOnly, RA } from '../../utils/types';
-import { AnySchema, AnyTree, CommonFields } from './helperTypes';
+import { AnySchema, AnyTree, CommonFields, TableFields } from './helperTypes';
 import { SpecifyResource } from './legacyTypes';
 import { BusinessRuleDefs, businessRuleDefs } from './businessRuleDefs';
 import { flippedPromise, ResolvablePromise } from '../../utils/promise';
@@ -27,7 +27,7 @@ export function enableBusinessRules(e: boolean) {
 
 export class BusinessRuleManager<SCHEMA extends AnySchema> {
   private readonly resource: SpecifyResource<SCHEMA>;
-  private readonly rules: BusinessRuleDefs<SCHEMA> | undefined;
+  private readonly rules: BusinessRuleDefs<SCHEMA | AnySchema> | undefined;
   public pendingPromises: Promise<BusinessRuleResult | null> =
     Promise.resolve(null);
   private fieldChangePromises: {
@@ -129,7 +129,8 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
   private async checkUnique(fieldName: string): Promise<BusinessRuleResult> {
     const toOneFields =
       this.rules?.uniqueIn !== undefined
-        ? this.rules?.uniqueIn[fieldName] ?? []
+        ? this.rules?.uniqueIn[fieldName as Lowercase<TableFields<SCHEMA>>] ??
+          []
         : [];
 
     const results: RA<Promise<BusinessRuleResult<SCHEMA>>> = toOneFields.map(
