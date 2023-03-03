@@ -113,11 +113,8 @@ function Field({
           ? hasTablePermission(field.relatedModel.name, 'read')
             ? resource?.specifyModel.getField(field?.name) === undefined
               ? ''
-              : (
-                  resource?.rgetPromise(field.name) as Promise<
-                    SpecifyResource<AnySchema>
-                  >
-                )
+              : resource
+                  ?.rgetPromise(field.name)
                   .then(format)
                   .then((value) => value ?? '')
             : userText.noPermission()
