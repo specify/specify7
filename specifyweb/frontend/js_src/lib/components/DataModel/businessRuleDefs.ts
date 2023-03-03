@@ -271,7 +271,7 @@ export const businessRuleDefs = f.store(
       },
       LoanReturnPreparation: {
         onRemoved: (
-          loanReturnPrep: SpecifyResource<LoanReturnPreparation>,
+          _loanReturnPrep: SpecifyResource<LoanReturnPreparation>,
           collection: Collection<LoanReturnPreparation>
         ): void => updateLoanPrep(collection),
 

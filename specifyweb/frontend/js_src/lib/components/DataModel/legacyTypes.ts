@@ -35,9 +35,7 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   readonly _save?: unknown;
   readonly changed?: { [FIELD_NAME in TableFields<SCHEMA>]?: string | number };
   readonly collection: Collection<SCHEMA>;
-  readonly businessRuleManager?:
-    | BusinessRuleManager<SCHEMA>
-    | BusinessRuleManager<AnySchema>;
+  readonly businessRuleManager?: BusinessRuleManager<SCHEMA>;
   /*
    * Shorthand method signature is used to prevent
    * https://github.com/microsoft/TypeScript/issues/48339
