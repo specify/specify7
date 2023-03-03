@@ -27,7 +27,14 @@ Coming in the next few months:
 
 - [And a lot more features](https://github.com/specify/specify7/pulls)
 
-## [7.8.8](https://github.com/specify/specify7/compare/v7.8.7...HEAD) (Unreleased)
+## [7.8.9](https://github.com/specify/specify7/compare/v7.8.7...HEAD) (Unreleased)
+
+## [7.8.7.1](https://github.com/specify/specify7/compare/v7.8.7...v7.8.7.1) (March 3 2023)
+
+### Fixed
+
+- Resolved an issue with plugins being rendered as read-only ([#3076](https://github.com/specify/specify7/issues/3076))
+- "Year" in the date picker now requires the correct format ([#3075](https://github.com/specify/specify7/issues/3075))
 
 ## [7.8.7](https://github.com/specify/specify7/compare/v7.8.6...v7.8.7) (March 1 2023)
 
