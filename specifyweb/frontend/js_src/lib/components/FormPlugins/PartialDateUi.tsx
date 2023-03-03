@@ -342,7 +342,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
               { type: precision === 'full' ? 'java.util.Date' : precision }
             )
           ),
-    []
+    [precision]
   );
 
   return (
