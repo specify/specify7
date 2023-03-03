@@ -65,7 +65,11 @@ function ProtectedAttachmentsPlugin({
     resource?.specifyModel.name === 'Attachment' ? undefined : resource
   );
   return attachment === undefined ? null : (
-    <div className="h-full" ref={filePickerContainer} tabIndex={-1}>
+    <div
+      className="h-full overflow-x-auto"
+      ref={filePickerContainer}
+      tabIndex={-1}
+    >
       {typeof attachment === 'object' ? (
         <AttachmentViewer
           attachment={attachment}
