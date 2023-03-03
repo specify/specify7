@@ -25,7 +25,7 @@ msgid "scale"
 msgstr "Escala"
 
 #: components/Attachments/Plugin.tsx:34
-#: components/Attachments/Plugin.tsx:105
+#: components/Attachments/Plugin.tsx:109
 #: components/Attachments/index.tsx:67
 #. Used in: Components > Attachments > Plugin ⬤ Components > Attachments > Index
 msgid "attachmentServerUnavailable"
@@ -43,7 +43,7 @@ msgstr "Configura tu servidor de archivos adjuntos"
 msgid "orderBy"
 msgstr "ordenar por"
 
-#: components/Attachments/Plugin.tsx:109
+#: components/Attachments/Plugin.tsx:113
 #. Used in: Components > Attachments > Plugin
 msgid "uploadingInline"
 msgstr "Subiendo…"
