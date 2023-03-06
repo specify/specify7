@@ -11,15 +11,8 @@ import { formatConjunction } from '../Atoms/Internationalization';
 import { formsText } from '../../localization/forms';
 import { LiteralField, Relationship } from './specifyField';
 import { idFromUrl } from './resource';
-import { globalEvents } from '../../utils/ajax/specifyApi';
 
 let enabled: boolean = true;
-
-globalEvents.on('initResource', (resource) => {
-  enabled && !resource.noBusinessRules
-    ? attachBusinessRules(resource)
-    : undefined;
-});
 
 export function enableBusinessRules(e: boolean) {
   return (enabled = e);
@@ -373,7 +366,9 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
   }
 }
 
-function attachBusinessRules(resource: SpecifyResource<AnySchema>): void {
+export function attachBusinessRules(
+  resource: SpecifyResource<AnySchema>
+): void {
   const businessRuleManager = new BusinessRuleManager(resource);
   overwriteReadOnly(resource, 'saveBlockers', new SaveBlockers(resource));
   overwriteReadOnly(resource, 'businessRuleManager', businessRuleManager);
