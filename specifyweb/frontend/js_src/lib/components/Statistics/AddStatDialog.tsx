@@ -25,6 +25,7 @@ export function AddStatDialog({
   onClose: handleClose,
   onAdd: handleAdd,
   onLoad,
+  onInitialLoad: handleLoadInitial,
 }: {
   readonly queries: RA<SerializedResource<SpQuery>> | undefined;
   readonly defaultStatsAddLeft: RA<StatLayout> | undefined;
@@ -38,11 +39,15 @@ export function AddStatDialog({
         value: number | string
       ) => void)
     | undefined;
+  readonly onInitialLoad: () => void;
 }): JSX.Element | null {
   const [newQuery, setNewQuery] = React.useState<
     SpecifyResource<SpQuery> | undefined
   >(undefined);
   const [isCreating, setIsCreating, unsetIsCreating] = useBooleanState(false);
+  React.useLayoutEffect(() => {
+    handleLoadInitial();
+  }, []);
   return isCreating ? (
     <QueryTablesWrapper
       isReadOnly={false}

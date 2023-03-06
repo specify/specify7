@@ -146,6 +146,9 @@ export function StatsPage(): JSX.Element | null {
     []
   );
 
+  const [defaultCategoriesToFetch, setDefaultCategoriesToFetch] =
+    React.useState<RA<string>>([]);
+
   React.useEffect(() => {
     const absentDynamicCategories =
       sourceLayout === undefined
@@ -160,7 +163,7 @@ export function StatsPage(): JSX.Element | null {
   }, [sourceLayout, categoriesToFetch, setCategoriesToFetch]);
 
   const backEndResponse = useBackendApi(categoriesToFetch);
-  const defaultBackEndResponse = useBackendApi(allCategories);
+  const defaultBackEndResponse = useBackendApi(defaultCategoriesToFetch);
 
   /*
    * Initial Load For Collection and Personal Pages
@@ -769,6 +772,7 @@ export function StatsPage(): JSX.Element | null {
         <AddStatDialog
           defaultStatsAddLeft={defaultStatsAddLeft}
           queries={queries}
+          onInitialLoad={() => setDefaultCategoriesToFetch(allCategories)}
           onAdd={(item, itemIndex): void => {
             handleAdd(item, state.categoryIndex, itemIndex);
           }}
