@@ -403,7 +403,7 @@ export function StatsPage(): JSX.Element | null {
 
   return collectionLayout === undefined ? null : (
     <Form
-      className={className.containerFullGray}
+      className={`${className.containerFullGray} md:overflow-y-none overflow-y-auto`}
       onSubmit={(): void => {
         setState({ type: 'DefaultState' });
         Promise.all([
@@ -412,7 +412,7 @@ export function StatsPage(): JSX.Element | null {
         ]).catch(softFail);
       }}
     >
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         <H2 className="text-2xl">{statsText.statistics()}</H2>
         <span className="-ml-2 flex-1" />
         {pageLastUpdated !== undefined && (
@@ -512,7 +512,7 @@ export function StatsPage(): JSX.Element | null {
           )
         )}
       </div>
-      <div className="flex flex-col overflow-hidden">
+      <div className="flex flex-col md:overflow-hidden">
         <div className="flex flex-col gap-2 overflow-y-hidden md:flex-row">
           <aside
             className={`
