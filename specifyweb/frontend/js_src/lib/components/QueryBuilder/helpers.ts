@@ -4,8 +4,8 @@ import type { RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import { group, KEY, removeKey, sortFunction, VALUE } from '../../utils/utils';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { schema } from '../DataModel/schema';
-import type { SpQueryField, Tables } from '../DataModel/types';
+import { getModel, schema } from '../DataModel/schema';
+import type { SpQuery, SpQueryField, Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import { queryMappingLocalityColumns } from '../Leaflet/config';
 import { uniqueMappingPaths } from '../Leaflet/wbLocalityDataExtractor';
@@ -22,6 +22,8 @@ import type { QueryFieldFilter } from './FieldFilter';
 import { queryFieldFilters } from './FieldFilter';
 import { QueryFieldSpec } from './fieldSpec';
 import { currentUserValue } from './SpecifyUserAutoComplete';
+import { SpecifyResource } from '../DataModel/legacyTypes';
+import { serializeResource } from '../DataModel/helpers';
 
 export type SortTypes = 'ascending' | 'descending' | undefined;
 export const sortTypes: RA<SortTypes> = [undefined, 'ascending', 'descending'];
@@ -322,20 +324,15 @@ export function smoothScroll(element: HTMLElement, top: number): void {
   else element.scrollTop = element.scrollHeight;
 }
 
-export function isSpecial(
+const containsOr = (
+  fieldSpecMapped: RA<readonly [QueryField, QueryFieldSpec]>
+) => fieldSpecMapped.some(([field]) => field.filters.length > 1);
+
+const containsSpecifyUsername = (
   baseTableName: keyof Tables,
-  fields: RA<QueryField>
-): boolean {
-  const fieldSpecsMapped = queryFieldsToFieldSpecs(baseTableName, fields);
-  const containsOr = fieldSpecsMapped.some(
-    ([field]) => field.filters.length > 1
-  );
-  const containsRelativeDate = fieldSpecsMapped.some(
-    ([field, fieldSpec]) =>
-      field.filters.some(({ startValue }) => startValue.includes('today')) &&
-      fieldSpec.datePart === 'fullDate'
-  );
-  const containsSpecifyUserName = fieldSpecsMapped.some(([field]) => {
+  fieldSpecMapped: RA<readonly [QueryField, QueryFieldSpec]>
+) =>
+  fieldSpecMapped.some(([field]) => {
     const includesUserValue = field.filters.some(({ startValue }) =>
       startValue.includes(currentUserValue)
     );
@@ -348,5 +345,31 @@ export function isSpecial(
       terminatingField.model.name === 'SpecifyUser';
     return endsWithSpecifyUser && includesUserValue;
   });
-  return containsOr || containsRelativeDate || containsSpecifyUserName;
+
+const containsRelativeDate = (
+  fieldSpecMapped: RA<readonly [QueryField, QueryFieldSpec]>
+) =>
+  fieldSpecMapped.some(
+    ([field, fieldSpec]) =>
+      field.filters.some(({ startValue }) => startValue.includes('today')) &&
+      fieldSpec.datePart === 'fullDate'
+  );
+
+//if contains modern fields/functionality set isFavourite to false, to not appear directly in 6
+export function isModern(query: SpecifyResource<SpQuery>): boolean {
+  const serializedQuery = serializeResource(query);
+  const baseTableName = getModel(serializedQuery.contextName)?.name;
+  if (baseTableName === undefined) return false;
+  const fields = serializedQuery.fields;
+
+  const fieldSpecsMapped = queryFieldsToFieldSpecs(
+    baseTableName,
+    parseQueryFields(fields)
+  );
+
+  return (
+    containsOr(fieldSpecsMapped) ||
+    containsSpecifyUsername(baseTableName, fieldSpecsMapped) ||
+    containsRelativeDate(fieldSpecsMapped)
+  );
 }
