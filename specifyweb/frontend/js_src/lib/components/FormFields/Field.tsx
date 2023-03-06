@@ -111,13 +111,12 @@ function Field({
       () =>
         field?.isRelationship === true
           ? hasTablePermission(field.relatedModel.name, 'read')
-            ? (
-                resource?.rgetPromise(field.name) as Promise<
-                  SpecifyResource<AnySchema> | undefined
-                >
-              )
-                .then(format)
-                .then((value) => value ?? '')
+            ? resource?.specifyModel.getField(field?.name) === undefined
+              ? ''
+              : resource
+                  ?.rgetPromise(field.name)
+                  .then(format)
+                  .then((value) => value ?? '')
             : userText.noPermission()
           : undefined,
       /*
@@ -141,13 +140,15 @@ function Field({
       name={name}
       {...validationAttributes}
       // This is undefined when resource.noValidation = true
-      className={
-        validationAttributes.type === 'number' &&
-        rightAlignNumberFields &&
-        globalThis.navigator.userAgent.toLowerCase().includes('webkit')
-          ? `text-right ${isReadOnly ? '' : 'pr-6'}`
-          : ''
-      }
+      className={`
+        min-w-[theme(spacing.20)] 
+        ${
+          validationAttributes.type === 'number' &&
+          rightAlignNumberFields &&
+          globalThis.navigator.userAgent.toLowerCase().includes('webkit')
+            ? `text-right ${isReadOnly ? '' : 'pr-6'}`
+            : ''
+        }`}
       id={id}
       isReadOnly={isReadOnly}
       /*

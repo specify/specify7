@@ -29,7 +29,7 @@ import { createQuery } from '../QueryBuilder';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
 import { formatUrl } from '../Router/queryString';
 import { format } from './dataObjFormatters';
-import { RenderForm } from './SpecifyForm';
+import { SpecifyForm } from './SpecifyForm';
 import { useViewDefinition } from './useViewDefinition';
 
 const dialogDefinitions = load<Element>(
@@ -111,6 +111,7 @@ export function SearchDialog<SCHEMA extends AnySchema>({
           <Submit.Green form={id('form')}>{commonText.search()}</Submit.Green>
         </>
       }
+      dimensionsKey={`SearchDialog-${templateResource.specifyModel.name}`}
       header={commonText.search()}
       modal={false}
       onClose={handleClose}
@@ -139,7 +140,7 @@ export function SearchDialog<SCHEMA extends AnySchema>({
             .finally(handleLoaded);
         }}
       >
-        <RenderForm
+        <SpecifyForm
           display="inline"
           resource={templateResource}
           viewDefinition={viewDefinition}
@@ -268,6 +269,7 @@ function QueryBuilderSearch<SCHEMA extends AnySchema>({
       className={{
         container: dialogClassNames.wideContainer,
       }}
+      dimensionsKey="QueryBuilder"
       header={queryText.queryBuilder()}
       onClose={handleClose}
     >

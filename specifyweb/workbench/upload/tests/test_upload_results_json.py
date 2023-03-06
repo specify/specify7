@@ -1,5 +1,4 @@
-from hypothesis import given, infer, settings, HealthCheck
-from hypothesis.strategies import text
+from hypothesis import given, infer, settings, HealthCheck, strategies as st
 
 import json
 import unittest
@@ -60,3 +59,34 @@ class UploadResultsTests(unittest.TestCase):
         e = json.loads(j)
         validate([e], schema)
         self.assertEqual(uploadResult, json_to_UploadResult(e))
+
+    def testUploadResultExplicit(self):
+        failed_bussiness_rule: FailedBusinessRule = FailedBusinessRule(
+            message='failed business rule message',
+            payload={'failed business rule payload key 1': 'failed business rule payload value 1', 'failed business rule payload key 2': 'failed business rule payload value 2'},
+            info=ReportInfo(
+                tableName='report info table name',
+                columns=['report info column 1', 'report info column 2'],
+                treeInfo=None
+            ))
+        parse_failure: ParseFailure = ParseFailure(
+            message='parse failure message',
+            payload={'parse failure payload key 1': 'parse failure payload value 1', 'parse failure payload key 2': 'parse failure payload value 2'},
+            column='parse failure column')
+        parse_failures = ParseFailures(failures=[parse_failure])
+        record_result: RecordResult = parse_failures
+        toOne: Dict[str, RecordResult] = {'to one key 1': parse_failures, 'to one key 2': failed_bussiness_rule}
+        toMany: Dict[str, List[RecordResult]] = {'to many key 1': [parse_failures, failed_bussiness_rule]}
+
+        uploadResult = UploadResult(
+            record_result=record_result,
+            toOne={k: UploadResult(v, {}, {}) for k, v in toOne.items()},
+            toMany={k: [UploadResult(v, {}, {}) for v in vs] for k, vs in toMany.items()}
+        )
+        d = uploadResult.to_json()
+        print(d)
+        j = json.dumps(d)
+        e = json.loads(j)
+        validate([e], schema) 
+        self.assertEqual(uploadResult, json_to_UploadResult(e))
+

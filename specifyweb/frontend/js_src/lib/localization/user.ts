@@ -43,8 +43,8 @@ export const userText = createDictionary({
       {collectionName:string} collection.
     `,
     'ru-ru': `
-      Учетная запись, вошедшая в систему в данный момент, не имеет доступа к
-      коллекции {collectionName:string}.
+      Текущая учетная запись, вошедшая в систему, не имеет доступа к коллекции
+      {collectionName:string}.
     `,
     'es-es': `
       La cuenta actualmente iniciada no tiene acceso a la colección
@@ -68,21 +68,21 @@ export const userText = createDictionary({
   },
   oldPassword: {
     'en-us': 'Old password',
-    'ru-ru': 'Предыдущий пароль',
+    'ru-ru': 'Старый пароль',
     'es-es': 'Contraseña anterior',
     'fr-fr': 'Mot de passe actuel',
     'uk-ua': 'Старий пароль',
   },
   newPassword: {
     'en-us': 'New password',
-    'ru-ru': 'iНовый пароль',
+    'ru-ru': 'Новый пароль',
     'es-es': 'Nueva contraseña',
     'fr-fr': 'Nouveau mot de passe',
     'uk-ua': 'Новий пароль',
   },
   repeatPassword: {
     'en-us': 'Repeat new password',
-    'ru-ru': 'Повторите новый пароль',
+    'ru-ru': 'повторите новый пароль',
     'es-es': 'repita la nueva contraseña',
     'fr-fr': 'Répéter le nouveau mot de passe',
     'uk-ua': 'Повторіть новий пароль',
@@ -96,7 +96,7 @@ export const userText = createDictionary({
   },
   setUserAgents: {
     'en-us': 'Set User Agents',
-    'ru-ru': 'Настроить пользовательских агентов',
+    'ru-ru': 'Установить пользовательских агентов',
     'es-es': 'Establecer agentes de usuario',
     'fr-fr': 'Définir les agents utilisateurs',
     'uk-ua': 'Встановити агентів користувача',
@@ -111,7 +111,7 @@ export const userText = createDictionary({
   noAgentDescription: {
     'en-us': 'Please log in as admin and assign an agent to this user',
     'ru-ru': `
-      Пожалуйста, войдите как администратор и назначьте агента этому
+      Пожалуйста, войдите в систему как администратор и назначьте агента этому
       пользователю
     `,
     'es-es':
@@ -161,7 +161,7 @@ export const userText = createDictionary({
   },
   legacyLogin: {
     'en-us': 'Sign in with Specify Account',
-    'ru-ru': 'Войти с помощью Профиля Specify',
+    'ru-ru': 'Войти с помощью Указать учетную запись',
     'es-es': 'Iniciar sesión con Especificar cuenta',
     'fr-fr': 'Connectez-vous avec Spécifiez le compte',
     'uk-ua': 'Увійдіть за допомогою Вказати обліковий запис',
@@ -175,7 +175,7 @@ export const userText = createDictionary({
     `,
     'ru-ru': `
       В настоящее время нет пользователя Specify, связанного с вашей учетной
-      записью {providerName:string}. Если у вас есть Specify имя пользователя и
+      записью {providerName:string}. Если у вас есть Укажите имя пользователя и
       пароль, вы можете ввести их ниже, чтобы связать этого пользователя с вашей
       учетной записью {providerName:string} для будущих входов в систему.
     `,
@@ -215,14 +215,14 @@ export const userText = createDictionary({
   },
   generate: {
     'en-us': 'Generate',
-    'ru-ru': 'Генерировать',
+    'ru-ru': 'Создать',
     'es-es': 'Generar',
     'fr-fr': 'Générer',
     'uk-ua': 'Генерувати',
   },
   masterKeyGenerated: {
     'en-us': 'Master key generated',
-    'ru-ru': 'Мастер-ключ создан',
+    'ru-ru': 'Мастер-ключ сгенерирован',
     'es-es': 'Clave maestra generada',
     'fr-fr': 'Clé principale générée',
     'uk-ua': 'Створено головний ключ',
@@ -236,7 +236,7 @@ export const userText = createDictionary({
   },
   incorrectPassword: {
     'en-us': 'Password was incorrect.',
-    'ru-ru': 'Пароль неверный.',
+    'ru-ru': 'Неверный пароль.',
     'es-es': 'La contraseña era incorrecta.',
     'fr-fr': 'Le mot de passe était incorrect.',
     'uk-ua': 'Пароль був невірний.',
@@ -247,8 +247,8 @@ export const userText = createDictionary({
       resource through the currently logged in account
     `,
     'ru-ru': `
-      У вас нет доступа ни к одной {collectionTable:string}, содержащей этот
-      ресурс через текущую учетную запись
+      У вас нет доступа ни к одному {collectionTable:string}, содержащему этот
+      ресурс, через текущий вход в учетную запись.
     `,
     'es-es': `
       No tiene acceso a ningún {collectionTable:string} que contenga este
@@ -268,7 +268,7 @@ export const userText = createDictionary({
       The requested resource cannot be accessed while logged into the current
       collection.
     `,
-    'ru-ru': 'Запрошенный ресурс недоступен в текущей коллекция.',
+    'ru-ru': 'Запрошенный ресурс недоступен при входе в текущую коллекцию.',
     'es-es': `
       No se puede acceder al recurso solicitado mientras se está conectado a la
       colección actual.
@@ -302,7 +302,7 @@ export const userText = createDictionary({
   },
   sessionTimeOut: {
     'en-us': 'Insufficient Privileges',
-    'ru-ru': 'Insufficient Privileges',
+    'ru-ru': 'Недостаточно прав',
     'es-es': 'Privilegios insuficientes',
     'fr-fr': 'Privilèges insuffisants',
     'uk-ua': 'Недостатні привілеї',
@@ -313,8 +313,8 @@ export const userText = createDictionary({
       has been logged out.
     `,
     'ru-ru': `
-      У вас недостаточно прав для этого действия, или текещий сеанс был
-      отключен.
+      У вас недостаточно прав для этого действия, или ваш текущий сеанс был
+      завершен.
     `,
     'es-es': `
       Carece de suficientes privilegios para esa acción, o su sesión actual ha
@@ -335,14 +335,14 @@ export const userText = createDictionary({
       table
     `,
     'en-us': 'NO PERMISSION',
-    'ru-ru': 'ОТСУТСТВУЕТ РАЗРЕШЕНИЕ',
+    'ru-ru': 'НЕТ РАЗРЕШЕНИЯ',
     'es-es': 'SIN AUTORIZACIÓN',
     'fr-fr': 'AUCUNE AUTORISATION',
     'uk-ua': 'НЕМАЄ ДОЗВОЛУ',
   },
   permissionDeniedError: {
     'en-us': 'Permission denied error',
-    'ru-ru': 'В доступе отказано',
+    'ru-ru': 'Ошибка отказа в доступе',
     'es-es': 'Error de permiso denegado',
     'fr-fr': "Erreur d'autorisation refusée",
     'uk-ua': 'Помилка дозволу заборонено',
@@ -378,7 +378,7 @@ export const userText = createDictionary({
     'fr-fr':
       "Impossible d'ouvrir {recordSetTable:string} vide en mode lecture seule",
     'ru-ru': `
-      Не удается открыть пустой {recordSetTable:string} в режиме только для
+      Невозможно открыть пустой {recordSetTable:string} в режиме только для
       чтения
     `,
     'uk-ua': `
@@ -388,7 +388,7 @@ export const userText = createDictionary({
   },
   permissionDeniedForUrl: {
     'en-us': 'Permission denied when accessing <url />',
-    'ru-ru': 'Разрешение не было дано при доступе к <url />',
+    'ru-ru': 'Отказано в доступе при доступе к <url />',
     'es-es': 'Permiso denegado al acceder a <url />',
     'fr-fr': "Autorisation refusée lors de l'accès à <url />",
     'uk-ua': 'У дозволі відмовлено під час доступу до <url />',
@@ -399,8 +399,9 @@ export const userText = createDictionary({
       database. You must login as another user.
     `,
     'ru-ru': `
-      Пользователь, вошедший в систему, не получил доступа ни к каким коллекциям
-      в этой базе данных. Вы должны войти в систему как другой пользователь.
+      Вошедшему в систему пользователю не был предоставлен доступ ни к каким
+      коллекциям в этой базе данных. Вы должны войти в систему как другой
+      пользователь.
     `,
     'es-es': `
       El usuario que ha iniciado sesión no tiene acceso a ninguna colección de
@@ -418,14 +419,14 @@ export const userText = createDictionary({
   },
   userAccount: {
     'en-us': 'User Account',
-    'ru-ru': 'Учетная запись',
+    'ru-ru': 'Учетная запись пользователя',
     'es-es': 'Cuenta de usuario',
     'fr-fr': "Compte d'utilisateur",
     'uk-ua': 'Обліковий запис користувача',
   },
   removeAdmin: {
     'en-us': 'Remove Admin',
-    'ru-ru': 'Забрать администратора',
+    'ru-ru': 'Удалить администратора',
     'es-es': 'Eliminar administrador',
     'fr-fr': "Supprimer l'administrateur",
     'uk-ua': 'Видалити адміністратора',
@@ -446,14 +447,14 @@ export const userText = createDictionary({
   },
   saveUserFirst: {
     'en-us': 'Save user first',
-    'ru-ru': 'Сначала нужко сохранить пользователя',
+    'ru-ru': 'Сначала сохраните пользователя',
     'es-es': 'Guardar usuario primero',
     'fr-fr': "Enregistrez d'abord l'utilisateur",
     'uk-ua': 'Спочатку збережіть користувача',
   },
   mustBeManager: {
     'en-us': 'User must be saved as Manager first',
-    'ru-ru': 'Сначала пользователь должен быть сохранен как менеджер',
+    'ru-ru': 'Пользователь должен быть сначала сохранен как менеджер',
     'es-es': 'El usuario debe guardarse primero como Administrador',
     'fr-fr':
       "L'utilisateur doit d'abord être enregistré en tant que gestionnaire",
@@ -461,7 +462,7 @@ export const userText = createDictionary({
   },
   users: {
     'en-us': 'User Accounts',
-    'ru-ru': 'Пользователи',
+    'ru-ru': 'Учетные записи пользователей',
     'es-es': 'Cuentas de usuario',
     'fr-fr': 'Comptes utilisateur',
     'uk-ua': 'Облікові записи користувачів',
@@ -491,21 +492,21 @@ export const userText = createDictionary({
   },
   setPassword: {
     'en-us': 'Set Password',
-    'ru-ru': 'Поставить пароля',
+    'ru-ru': 'Установка пароля',
     'es-es': 'Configurar la clave',
     'fr-fr': 'Définir le mot de passe',
     'uk-ua': 'Встановити пароль',
   },
   passwordsDoNotMatchError: {
     'en-us': 'Passwords do not match.',
-    'ru-ru': 'Пароли не соответствуют.',
+    'ru-ru': 'Пароли не совпадают.',
     'es-es': 'Las contraseñas no coinciden.',
     'fr-fr': 'Les mots de passe ne correspondent pas.',
     'uk-ua': 'Паролі не збігаються.',
   },
   confirmPassword: {
     'en-us': 'Confirm',
-    'ru-ru': 'Подтвердить',
+    'ru-ru': 'Подтверждать',
     'es-es': 'Confirmar',
     'fr-fr': 'Confirmer',
     'uk-ua': 'Підтвердити',
@@ -519,28 +520,28 @@ export const userText = createDictionary({
   },
   notAvailableOnAdmins: {
     'en-us': 'This option is unavailable for admin users',
-    'ru-ru': 'Эта опция недоступна для администраторов.',
+    'ru-ru': 'Эта опция недоступна для пользователей с правами администратора.',
     'es-es': 'Esta opción no está disponible para usuarios administradores',
     'fr-fr': "Cette option n'est pas disponible pour les administrateurs",
     'uk-ua': 'Ця опція недоступна для адміністраторів',
   },
   configureCollectionAccess: {
     'en-us': 'Select user collection access',
-    'ru-ru': 'Выберите доступ к коллекциям',
+    'ru-ru': 'Выберите доступ к пользовательской коллекции',
     'es-es': 'Seleccione el acceso a la colección de usuarios',
     'fr-fr': "Sélectionnez l'accès à la collection d'utilisateurs",
     'uk-ua': 'Виберіть доступ до колекції користувачів',
   },
   securityPanel: {
     'en-us': 'Security and Accounts',
-    'ru-ru': 'Безопасность и аккаунты',
+    'ru-ru': 'Безопасность и учетные записи',
     'es-es': 'Seguridad y Cuentas',
     'fr-fr': 'Sécurité et comptes',
     'uk-ua': 'Безпека та облікові записи',
   },
   userRoleLibrary: {
     'en-us': 'Institution Library of Role Templates',
-    'ru-ru': 'Библиотека ролей пользователей',
+    'ru-ru': 'Библиотека шаблонов ролей учреждения',
     'es-es': 'Biblioteca institucional de plantillas de roles',
     'fr-fr': 'Bibliothèque institutionnelle de modèles de rôle',
     'uk-ua': 'Бібліотека шаблонів ролей установи',
@@ -561,21 +562,21 @@ export const userText = createDictionary({
   },
   assignedUserRoles: {
     'en-us': 'Assigned User Roles',
-    'ru-ru': 'Назначенные роли пользователя',
+    'ru-ru': 'Назначенные роли пользователей',
     'es-es': 'Roles de usuario asignados',
     'fr-fr': 'Rôles utilisateur attribués',
     'uk-ua': 'Призначені ролі користувача',
   },
   rolePolicies: {
     'en-us': 'Role Permission Policies',
-    'ru-ru': 'Политики',
+    'ru-ru': 'Политики разрешений ролей',
     'es-es': 'Políticas de permisos de funciones',
     'fr-fr': "Politiques d'autorisation de rôle",
     'uk-ua': 'Політики дозволів на роль',
   },
   userPolicies: {
     'en-us': 'User Permission Policies',
-    'ru-ru': 'Политики',
+    'ru-ru': 'Политики разрешений пользователей',
     'es-es': 'Políticas de permisos de usuario',
     'fr-fr': "Politiques d'autorisation des utilisateurs",
     'uk-ua': 'Політика дозволів користувача',
@@ -614,7 +615,7 @@ export const userText = createDictionary({
   },
   userPermissionPreview: {
     'en-us': "User's Permission Profile (read-only)",
-    'ru-ru': 'Профиль разрешений пользователя (только чтение)',
+    'ru-ru': 'Профиль разрешений пользователя (только для чтения)',
     'es-es': 'Perfil de permisos del usuario (solo lectura)',
     'fr-fr': "Profil d'autorisation de l'utilisateur (lecture seule)",
     'uk-ua': 'Профіль дозволів користувача (лише читання)',
@@ -690,7 +691,7 @@ export const userText = createDictionary({
   },
   collectionAccess: {
     'en-us': 'Enable Collection Access',
-    'ru-ru': 'Доступ к коллекции',
+    'ru-ru': 'Включить доступ к коллекции',
     'es-es': 'Habilitar acceso a la colección',
     'fr-fr': "Autoriser l'accès à la collection",
     'uk-ua': 'Увімкнути доступ до колекції',
@@ -725,28 +726,28 @@ export const userText = createDictionary({
   },
   createNewRoles: {
     'en-us': 'Create new roles:',
-    'ru-ru': 'Будут созданы новые роли:',
+    'ru-ru': 'Создайте новые роли:',
     'es-es': 'Crear nuevos roles:',
     'fr-fr': 'Créez de nouveaux rôles :',
     'uk-ua': 'Створити нові ролі:',
   },
   updateExistingRoles: {
     'en-us': 'Update existing roles:',
-    'ru-ru': 'Update existing roles:',
+    'ru-ru': 'Обновите существующие роли:',
     'es-es': 'Actualizar roles existentes:',
     'fr-fr': 'Mettez à jour les rôles existants :',
     'uk-ua': 'Оновіть наявні ролі:',
   },
   unchangedRoles: {
     'en-us': 'Unchanged roles:',
-    'ru-ru': 'Эти роли будут обновлены:',
+    'ru-ru': 'Неизменные роли:',
     'es-es': 'Roles sin cambios:',
     'fr-fr': 'Rôles inchangés :',
     'uk-ua': 'Незмінні ролі:',
   },
   institutionAdmin: {
     'en-us': 'Institution Admin',
-    'ru-ru': 'Супер администратор',
+    'ru-ru': 'Администратор учреждения',
     'es-es': 'Administrador de la institución',
     'fr-fr': "Administrateur de l'établissement",
     'uk-ua': 'Адмін закладу',
@@ -771,8 +772,8 @@ export const userText = createDictionary({
       the first time.
     `,
     'ru-ru': `
-      Отправьте эту ссылку {userName:string}, чтобы разрешить им войти в систему
-      в первый раз.
+      Отправьте следующую ссылку {userName:string}, чтобы они могли войти в
+      систему в первый раз.
     `,
     'es-es': `
       Envíe el siguiente enlace a {userName:string} para permitirles iniciar
@@ -811,7 +812,7 @@ export const userText = createDictionary({
   },
   legacyPermissions: {
     'en-us': 'Specify 6 Permissions',
-    'ru-ru': 'Specify 6 Разрешения',
+    'ru-ru': 'Укажите 6 разрешений',
     'es-es': 'Especificar 6 permisos',
     'fr-fr': 'Autorisations de Specify 6',
     'uk-ua': 'Вкажіть 6 дозволів',
@@ -822,8 +823,8 @@ export const userText = createDictionary({
       be able to sign in
     `,
     'ru-ru': `
-      Не забудьте установить пароль для этого пользователя. Пользователи без
-      пароля не смогут войти
+      Рассмотрите возможность установки пароля для этого пользователя.
+      Пользователи без пароля не смогут войти
     `,
     'es-es': `
       Considere establecer una contraseña para este usuario. Los usuarios sin
@@ -840,7 +841,7 @@ export const userText = createDictionary({
   },
   setCollections: {
     'en-us': 'Set Collections',
-    'ru-ru': 'Коллекции',
+    'ru-ru': 'Набор коллекций',
     'es-es': 'Establecer colecciones',
     'fr-fr': 'Ensemble de collections',
     'uk-ua': 'Набір колекцій',
@@ -861,14 +862,14 @@ export const userText = createDictionary({
   },
   externalIdentityProviders: {
     'en-us': 'External identity providers:',
-    'ru-ru': 'Внешние аутентификаторы:',
+    'ru-ru': 'Внешние поставщики удостоверений:',
     'es-es': 'Proveedores de identidad externos:',
     'fr-fr': "Fournisseurs d'identité externes :",
     'uk-ua': 'Зовнішні постачальники ідентифікаційної інформації:',
   },
   allTables: {
     'en-us': 'All tables',
-    'ru-ru': 'Все таблицы',
+    'ru-ru': 'Все столы',
     'es-es': 'Todas las mesas',
     'fr-fr': 'Tous les tableaux',
     'uk-ua': 'Всі столи',
@@ -883,7 +884,7 @@ export const userText = createDictionary({
   specifyAdmin: {
     comment: 'Shown next to user name for admin users',
     'en-us': '(Specify 7 Admin)',
-    'ru-ru': '(Specify 7 Администратор)',
+    'ru-ru': '(указать 7 админ)',
     'es-es': '(Especifique 7 Administrador)',
     'fr-fr': '(Précisez 7 administrateurs)',
     'uk-ua': '(Вкажіть 7 адміністраторів)',
@@ -891,7 +892,7 @@ export const userText = createDictionary({
   legacyAdmin: {
     comment: 'Shown next to user name for admin users',
     'en-us': '(Specify 6 Admin)',
-    'ru-ru': '(Specify 6 Администратор)',
+    'ru-ru': '(указать 6 админ)',
     'es-es': '(Especifique 6 administradores)',
     'fr-fr': '(Précisez 6 administrateurs)',
     'uk-ua': '(Вкажіть 6 адміністраторів)',
@@ -934,7 +935,7 @@ export const userText = createDictionary({
   },
   cantRemoveLastAdmin: {
     'en-us': "Can't remove Institution Admin status",
-    'ru-ru': 'Не могу удалить статус суперадминистратора',
+    'ru-ru': 'Не удается удалить статус администратора учреждения',
     'es-es':
       'No se puede eliminar el estado de administrador de la institución',
     'fr-fr':
@@ -943,7 +944,7 @@ export const userText = createDictionary({
   },
   cantRemoveLastAdminDescription: {
     'en-us': 'There must be at least one Institution Admin in institution',
-    'ru-ru': 'Должен быть хотя бы один суперадмин',
+    'ru-ru': 'В учреждении должен быть хотя бы один администратор учреждения.',
     'es-es': `
       Debe haber al menos un administrador de la institución en la institución
     `,
@@ -969,7 +970,7 @@ export const userText = createDictionary({
   },
   advancedTables: {
     'en-us': 'Advanced tables',
-    'ru-ru': 'Дополнительные таблицы',
+    'ru-ru': 'Расширенные таблицы',
     'es-es': 'Tablas avanzadas',
     'fr-fr': 'Tableaux avancés',
     'uk-ua': 'Розширені таблиці',
@@ -987,8 +988,8 @@ export const userText = createDictionary({
       here at the collection-level.)
     `,
     'ru-ru': `
-      (Некоторые политики применяются только на институциональном уровне,
-      поэтому они удалены из этих списков.)
+      (Некоторые политики, которые применяются только на уровне учреждения,
+      отсутствуют здесь на уровне коллекции.)
     `,
     'es-es': `
       (Algunas políticas que se aplican solo a nivel de institución no están
@@ -1005,7 +1006,7 @@ export const userText = createDictionary({
   },
   accountSetupOptions: {
     'en-us': 'Account Setup Options',
-    'ru-ru': 'Параметры учетной записи',
+    'ru-ru': 'Параметры настройки учетной записи',
     'es-es': 'Opciones de configuración de cuenta',
     'fr-fr': 'Options de configuration du compte',
     'uk-ua': 'Параметри налаштування облікового запису',

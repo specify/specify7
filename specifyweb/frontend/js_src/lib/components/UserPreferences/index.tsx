@@ -148,11 +148,13 @@ export function PreferencesContent({
               {description !== undefined && <p>{description}</p>}
               {subCategories.map(
                 ([subcategory, { title, description = undefined, items }]) => (
-                  <section className="flex flex-col gap-4" key={subcategory}>
-                    <div className="flex items-center">
-                      <span className="flex-1" />
+                  <section
+                    className="flex flex-col items-start gap-4 md:items-stretch"
+                    key={subcategory}
+                  >
+                    <div className="flex items-center gap-2">
                       <h4
-                        className={`${className.headerGray} text-center text-xl`}
+                        className={`${className.headerGray} text-xl md:text-center`}
                       >
                         {title}
                       </h4>
@@ -186,7 +188,7 @@ export function PreferencesContent({
                           hasPermission('/preferences/user', 'edit_protected'));
                       const props = {
                         className: `
-                            flex items-start gap-2
+                            flex items-start gap-2 md:flex-row flex-col
                             ${canEdit ? '' : '!cursor-not-allowed'}
                           `,
                         key: name,
@@ -196,17 +198,17 @@ export function PreferencesContent({
                       } as const;
                       const children = (
                         <>
-                          <div className="flex flex-1 flex-col gap-2">
+                          <div className="flex flex-col items-start gap-2 md:flex-1 md:items-stretch">
                             <p
                               className={`
                                 flex min-h-[theme(spacing.8)] flex-1 items-center
-                                justify-end text-right
+                                justify-end md:text-right
                               `}
                             >
                               <FormatString text={item.title} />
                             </p>
                             {item.description !== undefined && (
-                              <p className="flex flex-1 justify-end text-right text-gray-500">
+                              <p className="flex flex-1 justify-end text-gray-500 md:text-right">
                                 <FormatString text={item.description} />
                               </p>
                             )}

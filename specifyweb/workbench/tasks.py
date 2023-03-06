@@ -6,7 +6,7 @@ from celery.utils.log import get_task_logger # type: ignore
 from django.db import connection, transaction
 
 from specifyweb.specify import models
-from specifyweb.celery import LogErrorsTask, app
+from specifyweb.celery_tasks import LogErrorsTask, app
 
 from .models import Spdataset
 

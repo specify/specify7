@@ -43,6 +43,13 @@ export function SchemaViewer(): JSX.Element {
         >
           {schemaText.downloadAsJson()}
         </Link.Blue>
+        <Link.Blue
+          className="print:hidden"
+          download
+          href="/static/config/specify_datamodel.xml"
+        >
+          {schemaText.downloadAsXml()}
+        </Link.Blue>
         <Button.Blue
           className="print:hidden"
           onClick={(): void =>

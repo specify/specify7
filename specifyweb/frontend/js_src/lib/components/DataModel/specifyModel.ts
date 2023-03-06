@@ -10,6 +10,7 @@ import type { IR, R, RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import { camelToHuman } from '../../utils/utils';
 import { error } from '../Errors/assert';
+import { attachmentView } from '../FormParse/webOnlyViews';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import {
   DependentCollection,
@@ -33,8 +34,8 @@ import { getTableOverwrite, modelViews } from './schemaOverrides';
 import type { Relationship } from './specifyField';
 import {
   type FieldDefinition,
-  LiteralField,
   type RelationshipDefinition,
+  LiteralField,
 } from './specifyField';
 
 type FieldAlias = {
@@ -202,7 +203,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
     this.view =
       this.name === 'Attachment'
         ? // Render the attachment plugin rather than the form
-          'ObjectAttachment'
+          attachmentView
         : tableDefinition.view ?? modelViews[this.name] ?? this.name;
     this.searchDialog = tableDefinition.searchDialog ?? undefined;
     this.tableId = tableDefinition.tableId;
