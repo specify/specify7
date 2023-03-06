@@ -9,7 +9,7 @@ import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Input } from '../Atoms/Form';
 import { hasTablePermission } from '../Permissions/helpers';
-import { generateStatUrl } from './hooks';
+import { generateStatUrl, resolveStatsSpec } from './hooks';
 import { StatItem } from './StatItems';
 import { dynamicStatsSpec, statsSpec } from './StatsSpec';
 import type { CustomStat, DefaultStat, QuerySpec, StatLayout } from './types';
@@ -110,10 +110,9 @@ export function Categories({
               className={
                 checkEmptyItems
                   ? ''
-                  : `flex h-auto max-h-80 flex-col content-center rounded bg-[color:var(--form-foreground)] ` +
-                    `shadow-lg shadow-gray-300 transition hover:shadow-md hover:shadow-gray-400 ${
-                      typeof handleAdd === 'function' ? 'gap-2 p-4' : ''
-                    }`
+                  : `flex h-auto max-h-80 flex-col content-center rounded bg-[color:var(--form-foreground)] 
+                     shadow-lg shadow-gray-300 transition hover:shadow-md hover:shadow-gray-400 
+                     ${typeof handleAdd === 'function' ? 'gap-2 p-4' : ''}`
               }
               key={categoryIndex}
             >
@@ -214,6 +213,27 @@ export function Categories({
                                   itemIndex,
                                   newLabel
                                 );
+                              }
+                            : undefined
+                        }
+                        onClone={
+                          item.type === 'CustomStat' ||
+                          item.itemType === 'QueryStat'
+                            ? () => {
+                                const resolvedStatsItem =
+                                  resolveStatsSpec(item);
+                                if (
+                                  resolvedStatsItem?.type === 'QueryBuilderStat'
+                                ) {
+                                  handleClick(
+                                    {
+                                      type: 'CustomStat',
+                                      querySpec: resolvedStatsItem.querySpec,
+                                      label: item.label,
+                                    },
+                                    categoryIndex
+                                  );
+                                }
                               }
                             : undefined
                         }

@@ -10,8 +10,14 @@ import type { SpQuery } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { QueryList } from '../Toolbar/Query';
 import { AddStatPage } from './AddStatPage';
-import { queryToSpec } from './ResultsDialog';
+import { FrontEndStatsResultDialog, queryToSpec } from './ResultsDialog';
 import type { CustomStat, DefaultStat, StatLayout } from './types';
+import { SpecifyResource } from '../DataModel/legacyTypes';
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { QueryTablesWrapper } from '../Toolbar/QueryTablesWrapper';
+import { createQuery } from '../QueryBuilder';
+import { queryText } from '../../localization/query';
+import { getModel } from '../DataModel/schema';
 
 export function AddStatDialog({
   defaultStatsAddLeft,
@@ -33,7 +39,42 @@ export function AddStatDialog({
       ) => void)
     | undefined;
 }): JSX.Element | null {
-  return Array.isArray(queries) || defaultStatsAddLeft !== undefined ? (
+  const [newQuery, setNewQuery] = React.useState<
+    SpecifyResource<SpQuery> | undefined
+  >(undefined);
+  const [isCreating, setIsCreating, unsetIsCreating] = useBooleanState(false);
+  return isCreating ? (
+    <QueryTablesWrapper
+      isReadOnly={false}
+      queries={undefined}
+      onClose={unsetIsCreating}
+      onClick={(tableName) => {
+        const model = getModel(tableName);
+        if (model !== undefined)
+          setNewQuery(createQuery(queryText.newQueryName(), model));
+        unsetIsCreating();
+      }}
+    />
+  ) : newQuery !== undefined ? (
+    <FrontEndStatsResultDialog
+      query={newQuery}
+      onClose={() => setNewQuery(undefined)}
+      label={queryText.newQueryName()}
+      onEdit={(query) => {
+        handleAdd(
+          {
+            type: 'CustomStat',
+            label: queryText.newQueryName(),
+            querySpec: query,
+            itemValue: undefined,
+          },
+          -1
+        );
+        handleClose();
+      }}
+      onClone={undefined}
+    />
+  ) : (
     <Dialog
       buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
       className={{
@@ -43,6 +84,10 @@ export function AddStatDialog({
       header={statsText.chooseStatistics()}
       onClose={handleClose}
     >
+      <div>
+        <H3 className="text-lg">{commonText.create()}</H3>
+        <Button.Blue onClick={setIsCreating}>{commonText.new()}</Button.Blue>
+      </div>
       <div>
         <H3 className="text-lg">{statsText.selectFromQueries()}</H3>
         {Array.isArray(queries) && (
@@ -92,5 +137,5 @@ export function AddStatDialog({
         )}
       </div>
     </Dialog>
-  ) : null;
+  );
 }

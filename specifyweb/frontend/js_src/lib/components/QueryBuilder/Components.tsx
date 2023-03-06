@@ -32,7 +32,6 @@ export function SaveQueryButtons({
   isReadOnly,
   fields,
   saveRequired,
-  isSpecial,
   isValid,
   queryResource,
   unsetUnloadProtect,
@@ -43,7 +42,6 @@ export function SaveQueryButtons({
   readonly isReadOnly: boolean;
   readonly fields: RA<QueryField>;
   readonly saveRequired: boolean;
-  readonly isSpecial: boolean;
   readonly isValid: () => boolean;
   readonly queryResource: SpecifyResource<SpQuery>;
   readonly unsetUnloadProtect: () => void;
@@ -65,7 +63,6 @@ export function SaveQueryButtons({
       (newState === 'save' || newState === 'saveAs')
     ) {
       queryResource.set('fields', getQueryFieldRecords());
-      queryResource.set('isFavorite', !isSpecial);
     }
     setShowDialog(newState);
   }

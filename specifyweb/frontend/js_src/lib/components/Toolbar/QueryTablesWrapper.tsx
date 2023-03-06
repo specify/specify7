@@ -136,7 +136,8 @@ export function QueryTablesWrapper({
       buttons={
         <>
           {!isReadOnly &&
-          (isEmbedded || hasToolPermission('queryBuilder', 'create')) ? (
+          !isEmbedded &&
+          hasToolPermission('queryBuilder', 'create') ? (
             <Button.Green onClick={handleImporting}>
               {commonText.import()}
             </Button.Green>
@@ -149,7 +150,9 @@ export function QueryTablesWrapper({
         container: dialogClassNames.narrowContainer,
       }}
       header={queryText.newQueryName()}
-      headerButtons={<DataEntry.Edit onClick={handleEditing} />}
+      headerButtons={
+        !isEmbedded ? <DataEntry.Edit onClick={handleEditing} /> : undefined
+      }
       icon={<span className="text-blue-500">{icons.documentSearch}</span>}
       onClose={handleClose}
     >
@@ -175,6 +178,11 @@ function QueryTableItem({
       {label}
     </Link.Default>
   ) : (
-    <Button.LikeLink onClick={() => handleClick(name)}>{label}</Button.LikeLink>
+    <>
+      <Button.LikeLink onClick={() => handleClick(name)}>
+        <TableIcon label={false} name={name} />
+        {label}
+      </Button.LikeLink>
+    </>
   );
 }

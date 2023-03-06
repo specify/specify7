@@ -164,43 +164,50 @@ export const querySpecToResource = (
     })
   );
 
+export function resolveStatsSpec(
+  item: CustomStat | DefaultStat
+):
+  | QueryBuilderStat
+  | (BackEndStat & { readonly fetchUrl: string })
+  | undefined {
+  if (item.type === 'CustomStat') {
+    return {
+      type: 'QueryBuilderStat',
+      querySpec: item.querySpec,
+    };
+  } else {
+    const statSpecItem =
+      statsSpec[item.pageName]?.categories?.[item.categoryName]?.items?.[
+        item.itemName
+      ];
+    return statSpecItem === undefined
+      ? undefined
+      : statSpecItem.spec.type === 'BackEndStat'
+      ? {
+          type: 'BackEndStat',
+          pathToValue: item.pathToValue ?? statSpecItem.spec.pathToValue,
+          fetchUrl: generateStatUrl(
+            statsSpec[item.pageName].urlPrefix,
+            item.categoryName,
+            item.itemName
+          ),
+          formatter: statSpecItem.spec.formatter,
+          tableName: statSpecItem.spec.tableName,
+        }
+      : {
+          type: 'QueryBuilderStat',
+          querySpec: statSpecItem.spec.querySpec,
+        };
+  }
+}
+
 export function useResolvedStatSpec(
   item: CustomStat | DefaultStat
 ):
   | QueryBuilderStat
   | (BackEndStat & { readonly fetchUrl: string })
   | undefined {
-  return React.useMemo(() => {
-    if (item.type === 'CustomStat') {
-      return {
-        type: 'QueryBuilderStat',
-        querySpec: item.querySpec,
-      };
-    } else {
-      const statSpecItem =
-        statsSpec[item.pageName]?.categories?.[item.categoryName]?.items?.[
-          item.itemName
-        ];
-      return statSpecItem === undefined
-        ? undefined
-        : statSpecItem.spec.type === 'BackEndStat'
-        ? {
-            type: 'BackEndStat',
-            pathToValue: item.pathToValue ?? statSpecItem.spec.pathToValue,
-            fetchUrl: generateStatUrl(
-              statsSpec[item.pageName].urlPrefix,
-              item.categoryName,
-              item.itemName
-            ),
-            formatter: statSpecItem.spec.formatter,
-            tableName: statSpecItem.spec.tableName,
-          }
-        : {
-            type: 'QueryBuilderStat',
-            querySpec: statSpecItem.spec.querySpec,
-          };
-    }
-  }, [item]);
+  return React.useMemo(() => resolveStatsSpec(item), [item]);
 }
 
 export function getDynamicCategoriesToFetch(

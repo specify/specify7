@@ -13,6 +13,7 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
 import type { QuerySpec } from './types';
+import { formsText } from '../../localization/forms';
 
 const addPath = (
   fields: RA<SerializedResource<SpQueryField>>
@@ -34,11 +35,13 @@ export function FrontEndStatsResultDialog({
   onClose: handleClose,
   label,
   onEdit: handleEdit,
+  onClone: handleClone,
 }: {
   readonly query: SpecifyResource<SpQuery>;
   readonly onClose: () => void;
   readonly label: string;
   readonly onEdit: ((querySpec: QuerySpec) => void) | undefined;
+  readonly onClone: (() => void) | undefined;
 }): JSX.Element | null {
   const [query, setQuery] = useLiveState(
     React.useCallback(
@@ -51,6 +54,16 @@ export function FrontEndStatsResultDialog({
       buttons={
         <>
           <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+          {typeof handleClone === 'function' && (
+            <Button.Green
+              onClick={(): void => {
+                handleClone();
+                handleClose();
+              }}
+            >
+              {formsText.clone()}
+            </Button.Green>
+          )}
           {typeof handleEdit === 'function' && (
             <Button.Green
               onClick={(): void => {
@@ -61,6 +74,7 @@ export function FrontEndStatsResultDialog({
               {commonText.save()}
             </Button.Green>
           )}
+          {}
         </>
       }
       className={{

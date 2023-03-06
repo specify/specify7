@@ -17,6 +17,7 @@ export function StatsResult({
   onRemove: handleRemove,
   onEdit: handleEdit,
   onRename: handleRename,
+  onClone: handleClone,
 }: {
   readonly value: number | string | undefined;
   readonly query: SpecifyResource<SpQuery> | undefined;
@@ -25,6 +26,7 @@ export function StatsResult({
   readonly onRemove: (() => void) | undefined;
   readonly onEdit: ((querySpec: QuerySpec) => void) | undefined;
   readonly onRename: ((newLabel: string) => void) | undefined;
+  readonly onClone: (() => void) | undefined;
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   const isDisabled =
@@ -69,6 +71,7 @@ export function StatsResult({
           query={query}
           onClose={handleClose}
           onEdit={handleEdit}
+          onClone={handleClone}
         />
       ) : undefined}
     </>

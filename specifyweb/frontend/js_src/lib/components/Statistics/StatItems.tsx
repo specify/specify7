@@ -32,6 +32,7 @@ export function StatItem({
   onEdit: handleEdit,
   onLoad: handleLoad,
   onRename: handleRename,
+  onClone: handleClone,
 }: {
   readonly item: CustomStat | DefaultStat;
   readonly categoryIndex: number;
@@ -49,6 +50,7 @@ export function StatItem({
       ) => void)
     | undefined;
   readonly onRename: ((newLabel: string) => void) | undefined;
+  readonly onClone: (() => void) | undefined;
 }): JSX.Element | null {
   const handleLoadItem = React.useCallback(
     (value: number | string) => handleLoad?.(categoryIndex, itemIndex, value),
@@ -73,6 +75,7 @@ export function StatItem({
       onLoad={handleLoadItem}
       onRemove={handleRemove}
       onRename={handleRename}
+      onClone={handleClone}
     />
   ) : item?.type === 'DefaultStat' &&
     resolvedSpec?.type === 'BackEndStat' &&
@@ -161,6 +164,7 @@ function BackEndItem({
       onEdit={undefined}
       onRemove={handleRemove}
       onRename={handleRename}
+      onClone={undefined}
     />
   );
 }
@@ -174,6 +178,7 @@ function QueryItem({
   onEdit: handleEdit,
   onRename: handleRename,
   onLoad: handleLoad,
+  onClone: handleClone,
 }: {
   readonly value: number | string | undefined;
   readonly querySpec: QuerySpec;
@@ -183,6 +188,7 @@ function QueryItem({
   readonly onEdit: ((querySpec: QuerySpec) => void) | undefined;
   readonly onRename: ((newLabel: string) => void) | undefined;
   readonly onLoad: ((value: number | string) => void) | undefined;
+  readonly onClone: (() => void) | undefined;
 }): JSX.Element | null {
   const [statState, setStatState] = React.useState<
     'error' | 'noPermission' | 'valid'
@@ -235,6 +241,7 @@ function QueryItem({
       onEdit={handleEdit}
       onRemove={handleRemove}
       onRename={handleRename}
+      onClone={handleClone}
     />
   );
 }
