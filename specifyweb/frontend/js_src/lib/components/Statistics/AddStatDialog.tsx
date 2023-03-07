@@ -1,23 +1,23 @@
 import React from 'react';
 
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
+import { queryText } from '../../localization/query';
 import { statsText } from '../../localization/stats';
 import type { RA } from '../../utils/types';
 import { H3, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import type { SerializedResource } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { getModel } from '../DataModel/schema';
 import type { SpQuery } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { createQuery } from '../QueryBuilder';
 import { QueryList } from '../Toolbar/Query';
+import { QueryTablesWrapper } from '../Toolbar/QueryTablesWrapper';
 import { AddStatPage } from './AddStatPage';
 import { FrontEndStatsResultDialog, queryToSpec } from './ResultsDialog';
 import type { CustomStat, DefaultStat, StatLayout } from './types';
-import { SpecifyResource } from '../DataModel/legacyTypes';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { QueryTablesWrapper } from '../Toolbar/QueryTablesWrapper';
-import { createQuery } from '../QueryBuilder';
-import { queryText } from '../../localization/query';
-import { getModel } from '../DataModel/schema';
 
 export function AddStatDialog({
   defaultStatsAddLeft,
@@ -52,34 +52,15 @@ export function AddStatDialog({
     <QueryTablesWrapper
       isReadOnly={false}
       queries={undefined}
-      onClose={unsetIsCreating}
       onClick={(tableName) => {
         const model = getModel(tableName);
         if (model !== undefined)
           setNewQuery(createQuery(queryText.newQueryName(), model));
         unsetIsCreating();
       }}
+      onClose={unsetIsCreating}
     />
-  ) : newQuery !== undefined ? (
-    <FrontEndStatsResultDialog
-      query={newQuery}
-      onClose={() => setNewQuery(undefined)}
-      label={queryText.newQueryName()}
-      onEdit={(query) => {
-        handleAdd(
-          {
-            type: 'CustomStat',
-            label: queryText.newQueryName(),
-            querySpec: query,
-            itemValue: undefined,
-          },
-          -1
-        );
-        handleClose();
-      }}
-      onClone={undefined}
-    />
-  ) : (
+  ) : newQuery === undefined ? (
     <Dialog
       buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
       className={{
@@ -142,5 +123,24 @@ export function AddStatDialog({
         )}
       </div>
     </Dialog>
+  ) : (
+    <FrontEndStatsResultDialog
+      label={queryText.newQueryName()}
+      query={newQuery}
+      onClone={undefined}
+      onClose={() => setNewQuery(undefined)}
+      onEdit={(query) => {
+        handleAdd(
+          {
+            type: 'CustomStat',
+            label: queryText.newQueryName(),
+            querySpec: query,
+            itemValue: undefined,
+          },
+          -1
+        );
+        handleClose();
+      }}
+    />
   );
 }

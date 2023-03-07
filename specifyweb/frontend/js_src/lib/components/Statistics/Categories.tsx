@@ -172,6 +172,27 @@ export function Categories({
                                 })
                             : undefined
                         }
+                        onClone={
+                          item.type === 'CustomStat' ||
+                          item.itemType === 'QueryStat'
+                            ? () => {
+                                const resolvedStatsItem =
+                                  resolveStatsSpec(item);
+                                if (
+                                  resolvedStatsItem?.type === 'QueryBuilderStat'
+                                ) {
+                                  handleClick(
+                                    {
+                                      type: 'CustomStat',
+                                      querySpec: resolvedStatsItem.querySpec,
+                                      label: item.label,
+                                    },
+                                    categoryIndex
+                                  );
+                                }
+                              }
+                            : undefined
+                        }
                         onEdit={
                           checkEmptyItems || handleEdit === undefined
                             ? undefined
@@ -213,27 +234,6 @@ export function Categories({
                                   itemIndex,
                                   newLabel
                                 );
-                              }
-                            : undefined
-                        }
-                        onClone={
-                          item.type === 'CustomStat' ||
-                          item.itemType === 'QueryStat'
-                            ? () => {
-                                const resolvedStatsItem =
-                                  resolveStatsSpec(item);
-                                if (
-                                  resolvedStatsItem?.type === 'QueryBuilderStat'
-                                ) {
-                                  handleClick(
-                                    {
-                                      type: 'CustomStat',
-                                      querySpec: resolvedStatsItem.querySpec,
-                                      label: item.label,
-                                    },
-                                    categoryIndex
-                                  );
-                                }
                               }
                             : undefined
                         }

@@ -772,7 +772,6 @@ export function StatsPage(): JSX.Element | null {
         <AddStatDialog
           defaultStatsAddLeft={defaultStatsAddLeft}
           queries={queries}
-          onInitialLoad={() => setDefaultCategoriesToFetch(allCategories)}
           onAdd={(item, itemIndex): void => {
             handleAdd(item, state.categoryIndex, itemIndex);
           }}
@@ -797,6 +796,7 @@ export function StatsPage(): JSX.Element | null {
                   }))
             );
           }}
+          onInitialLoad={() => setDefaultCategoriesToFetch(allCategories)}
           onLoad={handleDefaultLoad}
         />
       )}

@@ -65,6 +65,7 @@ export function StatItem({
       querySpec={resolvedSpec.querySpec}
       value={item.itemValue}
       onClick={handleClick}
+      onClone={handleClone}
       onEdit={
         handleEdit === undefined
           ? undefined
@@ -75,7 +76,6 @@ export function StatItem({
       onLoad={handleLoadItem}
       onRemove={handleRemove}
       onRename={handleRename}
-      onClone={handleClone}
     />
   ) : item?.type === 'DefaultStat' &&
     resolvedSpec?.type === 'BackEndStat' &&
@@ -161,10 +161,10 @@ function BackEndItem({
       query={undefined}
       value={hasStatPermission ? value : userText.noPermission()}
       onClick={handleClick}
+      onClone={undefined}
       onEdit={undefined}
       onRemove={handleRemove}
       onRename={handleRename}
-      onClone={undefined}
     />
   );
 }
@@ -238,10 +238,10 @@ function QueryItem({
           : value
       }
       onClick={handleClick}
+      onClone={handleClone}
       onEdit={handleEdit}
       onRemove={handleRemove}
       onRename={handleRename}
-      onClone={handleClone}
     />
   );
 }

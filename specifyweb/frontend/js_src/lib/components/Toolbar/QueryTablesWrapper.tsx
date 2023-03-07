@@ -151,7 +151,7 @@ export function QueryTablesWrapper({
       }}
       header={queryText.newQueryName()}
       headerButtons={
-        !isEmbedded ? <DataEntry.Edit onClick={handleEditing} /> : undefined
+        isEmbedded ? undefined : <DataEntry.Edit onClick={handleEditing} />
       }
       icon={<span className="text-blue-500">{icons.documentSearch}</span>}
       onClose={handleClose}
@@ -178,11 +178,9 @@ function QueryTableItem({
       {label}
     </Link.Default>
   ) : (
-    <>
-      <Button.LikeLink onClick={() => handleClick(name)}>
-        <TableIcon label={false} name={name} />
-        {label}
-      </Button.LikeLink>
-    </>
+    <Button.LikeLink onClick={() => handleClick(name)}>
+      <TableIcon label={false} name={name} />
+      {label}
+    </Button.LikeLink>
   );
 }

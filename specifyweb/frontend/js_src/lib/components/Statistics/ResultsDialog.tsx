@@ -2,6 +2,7 @@ import React from 'react';
 
 import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
+import { formsText } from '../../localization/forms';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { serializeResource } from '../DataModel/helpers';
@@ -13,7 +14,6 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
 import type { QuerySpec } from './types';
-import { formsText } from '../../localization/forms';
 
 const addPath = (
   fields: RA<SerializedResource<SpQueryField>>

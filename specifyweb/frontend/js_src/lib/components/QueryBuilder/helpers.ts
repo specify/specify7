@@ -3,7 +3,9 @@ import { parseValue } from '../../utils/parser/parse';
 import type { RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import { group, KEY, removeKey, sortFunction, VALUE } from '../../utils/utils';
+import { serializeResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getModel, schema } from '../DataModel/schema';
 import type { SpQuery, SpQueryField, Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
@@ -22,8 +24,6 @@ import type { QueryFieldFilter } from './FieldFilter';
 import { queryFieldFilters } from './FieldFilter';
 import { QueryFieldSpec } from './fieldSpec';
 import { currentUserValue } from './SpecifyUserAutoComplete';
-import { SpecifyResource } from '../DataModel/legacyTypes';
-import { serializeResource } from '../DataModel/helpers';
 
 export type SortTypes = 'ascending' | 'descending' | undefined;
 export const sortTypes: RA<SortTypes> = [undefined, 'ascending', 'descending'];
@@ -355,7 +355,7 @@ const containsRelativeDate = (
       fieldSpec.datePart === 'fullDate'
   );
 
-//if contains modern fields/functionality set isFavourite to false, to not appear directly in 6
+// If contains modern fields/functionality set isFavourite to false, to not appear directly in 6
 export function isModern(query: SpecifyResource<SpQuery>): boolean {
   const serializedQuery = serializeResource(query);
   const baseTableName = getModel(serializedQuery.contextName)?.name;

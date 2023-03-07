@@ -69,9 +69,9 @@ export function StatsResult({
         <FrontEndStatsResultDialog
           label={label}
           query={query}
+          onClone={handleClone}
           onClose={handleClose}
           onEdit={handleEdit}
-          onClone={handleClone}
         />
       ) : undefined}
     </>
