@@ -15,14 +15,14 @@ import '../../../css/workbench.css';
 import $ from 'jquery';
 import React from 'react';
 import _ from 'underscore';
-import {Backbone} from '../DataModel/backbone';
+import { Backbone } from '../DataModel/backbone';
 import Handsontable from 'handsontable';
 
-import {Button} from '../Atoms/Button';
-import {Link} from '../Atoms/Link';
-import {getModel, schema, strictGetModel} from '../DataModel/schema';
-import {DataSetNameView} from './DataSetMeta';
-import {WBUtils} from './wbUtils';
+import { Button } from '../Atoms/Button';
+import { Link } from '../Atoms/Link';
+import { getModel, schema, strictGetModel } from '../DataModel/schema';
+import { DataSetNameView } from './DataSetMeta';
+import { WBUtils } from './wbUtils';
 import {
   formatToManyIndex,
   formatTreeRank,
@@ -30,47 +30,47 @@ import {
   mappingPathToString,
   valueIsTreeRank,
 } from '../WbPlanView/mappingHelpers';
-import {parseUploadPlan} from '../WbPlanView/uploadPlanParser';
-import {capitalize, clamp, mappedFind} from '../../utils/utils';
-import {getTableFromMappingPath} from '../WbPlanView/navigator';
-import {getIcon, unknownIcon} from '../InitialContext/icons';
-import {wbText} from '../../localization/workbench';
-import {commonText} from '../../localization/common';
-import {Dialog} from '../Molecules/Dialog';
-import {iconClassName, legacyNonJsxIcons} from '../Atoms/Icons';
-import {whitespaceSensitive} from '../../localization/utils';
-import {filterArray} from '../../utils/types';
-import {strictGetTreeDefinitionItems} from '../InitialContext/treeRanks';
-import {serializeResource} from '../DataModel/helpers';
-import {fetchPickList} from '../PickLists/fetch';
-import {ajax} from '../../utils/ajax';
-import {ping} from '../../utils/ajax/ping';
+import { parseUploadPlan } from '../WbPlanView/uploadPlanParser';
+import { capitalize, clamp, mappedFind } from '../../utils/utils';
+import { getTableFromMappingPath } from '../WbPlanView/navigator';
+import { getIcon, unknownIcon } from '../InitialContext/icons';
+import { wbText } from '../../localization/workbench';
+import { commonText } from '../../localization/common';
+import { Dialog } from '../Molecules/Dialog';
+import { iconClassName, legacyNonJsxIcons } from '../Atoms/Icons';
+import { whitespaceSensitive } from '../../localization/utils';
+import { filterArray } from '../../utils/types';
+import { strictGetTreeDefinitionItems } from '../InitialContext/treeRanks';
+import { serializeResource } from '../DataModel/helpers';
+import { fetchPickList } from '../PickLists/fetch';
+import { ajax } from '../../utils/ajax';
+import { ping } from '../../utils/ajax/ping';
 import {
   hasPermission,
   hasTablePermission,
   hasTreeAccess,
 } from '../Permissions/helpers';
-import {wbViewTemplate} from './Template';
-import {legacyLoadingContext} from '../Core/Contexts';
-import {getCache, setCache} from '../../utils/cache';
-import {f} from '../../utils/functools';
-import {pathStartsWith} from '../WbPlanView/helpers';
-import {WbStatus} from './Status';
-import {crash, raise} from '../Errors/Crash';
-import {loadingBar} from '../Molecules';
-import {Http} from '../../utils/ajax/definitions';
-import {downloadDataSet} from './helpers';
-import {CreateRecordSetButton} from './RecordSet';
-import {WbUploaded} from './Results';
-import {getSelectedLast, getSelectedRegions} from './hotHelpers';
-import {DevShowPlan} from './DevShowPlan';
-import {RollbackConfirmation} from './Components';
-import {DisambiguationDialog} from './Disambiguation';
-import {LANGUAGE} from '../../localization/utils/config';
-import {resolveValidationMessage} from './resultsParser';
-import {backEndText} from '../../localization/backEnd';
-import {wbPlanText} from '../../localization/wbPlan';
-import {userPreferences} from '../Preferences/userPreferences';
+import { wbViewTemplate } from './Template';
+import { legacyLoadingContext } from '../Core/Contexts';
+import { getCache, setCache } from '../../utils/cache';
+import { f } from '../../utils/functools';
+import { pathStartsWith } from '../WbPlanView/helpers';
+import { WbStatus } from './Status';
+import { crash, raise } from '../Errors/Crash';
+import { loadingBar } from '../Molecules';
+import { Http } from '../../utils/ajax/definitions';
+import { downloadDataSet } from './helpers';
+import { CreateRecordSetButton } from './RecordSet';
+import { WbUploaded } from './Results';
+import { getSelectedLast, getSelectedRegions } from './hotHelpers';
+import { DevShowPlan } from './DevShowPlan';
+import { RollbackConfirmation } from './Components';
+import { DisambiguationDialog } from './Disambiguation';
+import { LANGUAGE } from '../../localization/utils/config';
+import { resolveValidationMessage } from './resultsParser';
+import { backEndText } from '../../localization/backEnd';
+import { wbPlanText } from '../../localization/wbPlan';
+import { userPreferences } from '../Preferences/userPreferences';
 
 const metaKeys = [
   'isNew',
@@ -408,7 +408,11 @@ export const WBView = Backbone.View.extend({
            * Number of blanks rows at the bottom of the spreadsheet.
            * (allows to add new rows easily)
            */
-          minSpareRows: userPreferences.get('workBench', 'editor', 'minSpareRows'),
+          minSpareRows: userPreferences.get(
+            'workBench',
+            'editor',
+            'minSpareRows'
+          ),
           comments: {
             displayDelay: 100,
           },
@@ -428,19 +432,29 @@ export const WBView = Backbone.View.extend({
            */
           invalidCellClassName: '-',
           rowHeaders: true,
-          autoWrapCol: userPreferences.get('workBench', 'editor', 'autoWrapCol'),
-          autoWrapRow: userPreferences.get('workBench', 'editor', 'autoWrapRow'),
+          autoWrapCol: userPreferences.get(
+            'workBench',
+            'editor',
+            'autoWrapCol'
+          ),
+          autoWrapRow: userPreferences.get(
+            'workBench',
+            'editor',
+            'autoWrapRow'
+          ),
           enterBeginsEditing: userPreferences.get(
             'workBench',
             'editor',
             'enterBeginsEditing'
           ),
           enterMoves:
-            userPreferences.get('workBench', 'editor', 'enterMoveDirection') === 'col'
+            userPreferences.get('workBench', 'editor', 'enterMoveDirection') ===
+            'col'
               ? { col: 1, row: 0 }
               : { col: 0, row: 1 },
           tabMoves:
-            userPreferences.get('workBench', 'editor', 'tabMoveDirection') === 'col'
+            userPreferences.get('workBench', 'editor', 'tabMoveDirection') ===
+            'col'
               ? { col: 1, row: 0 }
               : { col: 0, row: 1 },
           manualColumnResize: true,
@@ -727,11 +741,17 @@ export const WBView = Backbone.View.extend({
               strict: pickLists[physicalCol].readOnly,
               allowInvalid: true,
               filter:
-                userPreferences.get('workBench', 'editor', 'filterPickLists') ===
-                'none',
+                userPreferences.get(
+                  'workBench',
+                  'editor',
+                  'filterPickLists'
+                ) === 'none',
               filteringCaseSensitive:
-                userPreferences.get('workBench', 'editor', 'filterPickLists') ===
-                'case-sensitive',
+                userPreferences.get(
+                  'workBench',
+                  'editor',
+                  'filterPickLists'
+                ) === 'case-sensitive',
               sortByRelevance: false,
               trimDropdown: false,
             }
@@ -1571,7 +1591,9 @@ export const WBView = Backbone.View.extend({
             header={wbText.noDisambiguationResults()}
             buttons={commonText.close()}
             onClose={() => dialog()}
-          >{wbText.noDisambiguationResultsDescription()}</Dialog>
+          >
+            {wbText.noDisambiguationResultsDescription()}
+          </Dialog>
         );
         return;
       }
@@ -1601,41 +1623,46 @@ export const WBView = Backbone.View.extend({
       // onClose: globalThis.clearInterval(interval);
       */
 
-      const dialog = this.options.display(<DisambiguationDialog
-        matches={resources.models}
-        onClose={() => dialog()}
-        onSelected={(selected)=>{
-          this.setDisambiguation(
-            physicalRow,
-            matches.mappingPath,
-            selected.id
-          );
-          this.startValidateRow(physicalRow);
-        }}
-        onSelectedAll={(selected)=>{
-          // Loop backwards so the live validation will go from top to bottom
-          for (let visualRow = this.data.length - 1; visualRow >= 0; visualRow--) {
-            const physicalRow = this.hot.toPhysicalRow(visualRow);
-            if (
-              !this.uploadResults.ambiguousMatches[physicalRow]?.find(
-                ({ key, mappingPath }) =>
-                  key === matches.key &&
-                  typeof this.getDisambiguation(physicalRow)[
-                    mappingPathToString(mappingPath)
-                  ] !== 'number'
-              )
-            )
-              continue;
+      const dialog = this.options.display(
+        <DisambiguationDialog
+          matches={resources.models}
+          onClose={() => dialog()}
+          onSelected={(selected) => {
             this.setDisambiguation(
               physicalRow,
               matches.mappingPath,
               selected.id
             );
             this.startValidateRow(physicalRow);
-          }
-        }}
-      />);
-
+          }}
+          onSelectedAll={(selected) => {
+            // Loop backwards so the live validation will go from top to bottom
+            for (
+              let visualRow = this.data.length - 1;
+              visualRow >= 0;
+              visualRow--
+            ) {
+              const physicalRow = this.hot.toPhysicalRow(visualRow);
+              if (
+                !this.uploadResults.ambiguousMatches[physicalRow]?.find(
+                  ({ key, mappingPath }) =>
+                    key === matches.key &&
+                    typeof this.getDisambiguation(physicalRow)[
+                      mappingPathToString(mappingPath)
+                    ] !== 'number'
+                )
+              )
+                continue;
+              this.setDisambiguation(
+                physicalRow,
+                matches.mappingPath,
+                selected.id
+              );
+              this.startValidateRow(physicalRow);
+            }
+          }}
+        />
+      );
     });
   },
 
@@ -2232,10 +2259,12 @@ export const WBView = Backbone.View.extend({
         ]);
       });
     } else
-      raise(new Error(
-        `Trying to parse unknown uploadStatus type "${uploadStatus}" at
+      raise(
+        new Error(
+          `Trying to parse unknown uploadStatus type "${uploadStatus}" at
         row ${this.hot.toVisualRow(physicalRow)}`
-      ));
+        )
+      );
 
     Object.entries(uploadResult.toOne).forEach(([fieldName, uploadResult]) =>
       this.parseRowValidationResults(
@@ -2487,10 +2516,10 @@ export const WBView = Backbone.View.extend({
       <Dialog
         header={
           this.refreshInitiatedBy === 'validate'
-          ? wbText.validationCanceled()
-          : this.refreshInitiatedBy === 'unupload'
-          ? wbText.rollbackCanceled()
-          : wbText.uploadCanceled()
+            ? wbText.validationCanceled()
+            : this.refreshInitiatedBy === 'unupload'
+            ? wbText.rollbackCanceled()
+            : wbText.uploadCanceled()
         }
         onClose={() => dialog()}
         buttons={commonText.close()}
