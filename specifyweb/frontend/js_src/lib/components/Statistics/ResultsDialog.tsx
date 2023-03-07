@@ -52,30 +52,30 @@ export function FrontEndStatsResultDialog({
   return (
     <Dialog
       buttons={
-        <>
-          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+        <div className="flex flex-1 gap-2">
           {typeof handleClone === 'function' && (
-            <Button.Green
+            <Button.Blue
               onClick={(): void => {
                 handleClone();
                 handleClose();
               }}
             >
               {formsText.clone()}
-            </Button.Green>
+            </Button.Blue>
           )}
+          <span className="-ml-2 flex-1" />
+          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
           {typeof handleEdit === 'function' && (
-            <Button.Green
+            <Button.Blue
               onClick={(): void => {
                 handleEdit(query);
                 handleClose();
               }}
             >
               {commonText.save()}
-            </Button.Green>
+            </Button.Blue>
           )}
-          {}
-        </>
+        </div>
       }
       className={{
         container: dialogClassNames.wideContainer,

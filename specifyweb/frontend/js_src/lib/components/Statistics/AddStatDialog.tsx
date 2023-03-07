@@ -69,7 +69,13 @@ export function AddStatDialog({
     />
   ) : newQuery === undefined ? (
     <Dialog
-      buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
+      buttons={
+        <div className="flex flex-1">
+          <Button.Blue onClick={setIsCreating}>{commonText.new()}</Button.Blue>
+          <span className="-ml-2 flex-1" />
+          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+        </div>
+      }
       className={{
         container: `${dialogClassNames.wideContainer}`,
         content: 'flex flex-col gap-8',
@@ -77,10 +83,6 @@ export function AddStatDialog({
       header={statsText.chooseStatistics()}
       onClose={handleClose}
     >
-      <div>
-        <H3 className="text-lg">{commonText.create()}</H3>
-        <Button.Blue onClick={setIsCreating}>{commonText.new()}</Button.Blue>
-      </div>
       <div>
         <H3 className="text-lg">{statsText.selectFromQueries()}</H3>
         {Array.isArray(queries) && (
