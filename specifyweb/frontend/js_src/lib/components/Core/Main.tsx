@@ -10,7 +10,6 @@ import { userText } from '../../localization/user';
 import { f } from '../../utils/functools';
 import type { GetOrSet, RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
-import { enableBusinessRules } from '../DataModel/businessRules';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { Header } from '../Header';
 import type { MenuItemName } from '../Header/menuItemDefinitions';
@@ -42,7 +41,6 @@ export function Main({
 
   const mainRef = React.useRef<HTMLElement | null>(null);
   React.useEffect(() => {
-    enableBusinessRules(true);
     console.groupEnd();
   }, []);
 
