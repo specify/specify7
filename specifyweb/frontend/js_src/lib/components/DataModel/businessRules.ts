@@ -12,12 +12,6 @@ import { formsText } from '../../localization/forms';
 import { LiteralField, Relationship } from './specifyField';
 import { idFromUrl } from './resource';
 
-let enabled: boolean = true;
-
-export function enableBusinessRules(e: boolean) {
-  return (enabled = e);
-}
-
 export class BusinessRuleManager<SCHEMA extends AnySchema> {
   private readonly resource: SpecifyResource<SCHEMA>;
   private readonly rules: BusinessRuleDefs<SCHEMA | AnySchema> | undefined;
@@ -30,7 +24,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
 
   public constructor(resource: SpecifyResource<SCHEMA>) {
     this.resource = resource;
-    this.rules = businessRuleDefs()[this.resource.specifyModel.name];
+    this.rules = businessRuleDefs[this.resource.specifyModel.name];
   }
 
   private addPromise(
