@@ -1,10 +1,9 @@
 import React from 'react';
 
-import { useCachedState } from '../../hooks/useCachedState';
 import { localityText } from '../../localization/locality';
 import type { IR } from '../../utils/types';
 import { formatUrl } from '../Router/queryString';
-import { Dialog } from './Dialog';
+import { Dialog, dialogClassNames } from './Dialog';
 
 export type GeoLocatePayload = {
   readonly latitude: string;
@@ -13,8 +12,6 @@ export type GeoLocatePayload = {
   readonly polygon: string;
 };
 
-const defaultWidth = 947;
-const defaultHeight = 779;
 const baseData = {
   v: '1',
   w: '900',
@@ -33,12 +30,6 @@ export function GenericGeoLocate({
   readonly onUpdate: ((payload: GeoLocatePayload) => void) | undefined;
   readonly buttons: JSX.Element;
 }): JSX.Element {
-  const [width = defaultWidth, setWidth] = useCachedState('geoLocate', 'width');
-  const [height = defaultHeight, setHeight] = useCachedState(
-    'geoLocate',
-    'height'
-  );
-
   React.useEffect(() => {
     if (handleUpdate === undefined) return;
 
@@ -64,28 +55,21 @@ export function GenericGeoLocate({
       formatUrl('https://www.geo-locate.org/web/webgeoreflight.aspx', {
         ...baseData,
         ...data,
-      }).replace(/%7c/giu, '|'),
+      }).replaceAll(/%7c/giu, '|'),
     [data]
   );
 
   return (
     <Dialog
       buttons={buttons}
-      forwardRef={{
-        container(container): void {
-          if (container === null) return;
-          container.style.width = `${width}px`;
-          container.style.height = `${height}px`;
-        },
+      className={{
+        // Default dialog size
+        container: `${dialogClassNames.normalContainer} h-[779px] w-[947px]`,
       }}
+      dimensionsKey="GeoLocate"
       header={localityText.geoLocate()}
       modal={false}
       onClose={handleClose}
-      // REFACTOR: consider adding a hook to remember dialog size and position
-      onResize={(container): void => {
-        setWidth(container.clientWidth);
-        setHeight(container.clientHeight);
-      }}
     >
       <iframe className="h-full" src={url} title={localityText.geoLocate()} />
     </Dialog>

@@ -31,6 +31,7 @@ export function autoGenerateViewDefinition<SCHEMA extends AnySchema>(
       mode,
       fieldsToShow
     ),
+    name: '',
     formType,
     mode,
     model,

@@ -19,6 +19,7 @@ import { useAsyncState } from './useAsyncState';
  * FEATURE: add agent and accessible collections to store
  * FEATURE: don't reRun format() unless changed
  * FEATURE: evaluate relevancy of resource collection
+ * REFACTOR: integrate with useCollection when rewriting the ORM
  */
 
 type Buckets = {

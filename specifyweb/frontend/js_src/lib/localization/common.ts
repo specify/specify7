@@ -261,6 +261,14 @@ export const commonText = createDictionary({
     'fr-fr': "(s'ouvre dans un nouvel onglet)",
     'uk-ua': '(відкривається в новій вкладці)',
   },
+  openInNewTab: {
+    comment: 'Used in a button that opens a link in a new tab',
+    'en-us': 'Open in New Tab',
+    'ru-ru': 'Открыть в новой вкладке',
+    'es-es': 'Abrir en una nueva pestaña',
+    'fr-fr': 'Ouvrir dans un nouvel onglet',
+    'uk-ua': 'Відкрити в новій вкладці',
+  },
   goToHomepage: {
     'en-us': 'Go to Home Page',
     'ru-ru': 'Вернуться на Домашнюю Страницу',

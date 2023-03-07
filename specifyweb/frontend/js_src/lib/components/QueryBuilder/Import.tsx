@@ -49,9 +49,8 @@ export function QueryImport({
   >(undefined);
 
   React.useEffect(() => {
-    if (hiddenFields.length <= 0 && queryResource !== undefined) {
+    if (hiddenFields.length <= 0 && queryResource !== undefined)
       navigate(`/specify/query/${queryResource.id}/`);
-    }
   }, [queryResource, hiddenFields]);
 
   return typeof queries === 'object' ? (
@@ -71,10 +70,17 @@ export function QueryImport({
                   .then<SerializedModel<SpQuery>>(f.unary(JSON.parse))
                   .then((query) => ({
                     ...query,
-                    specifyUser: getResourceApiUrl(
+                    specifyuser: getResourceApiUrl(
                       'SpecifyUser',
                       userInformation.id
                     ),
+                    modifiedbyagent: null,
+                    createdbyagent: null,
+                    fields: query.fields.map((field) => ({
+                      ...field,
+                      modifiedbyagent: null,
+                      createdbyagent: null,
+                    })),
                   }))
                   .then((query) => {
                     setHiddenFields(
