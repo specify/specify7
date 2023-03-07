@@ -692,8 +692,8 @@ export function StatsPage(): JSX.Element | null {
           )}
           <div className="grid w-full grid-cols-[repeat(auto-fill,minmax(20rem,1fr))] gap-4 overflow-y-auto px-4 pb-6">
             <Categories
-              pageLayout={pageLayout}
               formatterSpec={formatterSpec}
+              pageLayout={pageLayout}
               onAdd={
                 isEditing && canEditIndex(activePage.isShared)
                   ? (categoryindex): void =>
@@ -788,9 +788,8 @@ export function StatsPage(): JSX.Element | null {
       {state.type === 'AddingState' && (
         <AddStatDialog
           defaultStatsAddLeft={defaultStatsAddLeft}
-          queries={queries}
           formatterSpec={formatterSpec}
-          onInitialLoad={() => setDefaultCategoriesToFetch(allCategories)}
+          queries={queries}
           onAdd={(item, itemIndex): void => {
             handleAdd(item, state.categoryIndex, itemIndex);
           }}
@@ -815,6 +814,7 @@ export function StatsPage(): JSX.Element | null {
                   }))
             );
           }}
+          onInitialLoad={() => setDefaultCategoriesToFetch(allCategories)}
           onLoad={handleDefaultLoad}
         />
       )}

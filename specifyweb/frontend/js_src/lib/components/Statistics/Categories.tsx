@@ -156,10 +156,10 @@ export function Categories({
                     item.isVisible === undefined ? (
                       <StatItem
                         categoryIndex={categoryIndex}
+                        formatterSpec={formatterSpec}
                         item={item}
                         itemIndex={itemIndex}
                         key={itemIndex}
-                        formatterSpec={formatterSpec}
                         onClick={
                           item.type === 'DefaultStat' &&
                           typeof handleClick === 'function' &&
@@ -179,6 +179,29 @@ export function Categories({
                                       ? item.label
                                       : item.pathToValue,
                                 })
+                            : undefined
+                        }
+                        onClone={
+                          item.type === 'CustomStat' ||
+                          item.itemType === 'QueryStat'
+                            ? () => {
+                                const resolvedStatsItem = resolveStatsSpec(
+                                  item,
+                                  formatterSpec
+                                );
+                                if (
+                                  resolvedStatsItem?.type === 'QueryBuilderStat'
+                                ) {
+                                  handleClick(
+                                    {
+                                      type: 'CustomStat',
+                                      querySpec: resolvedStatsItem.querySpec,
+                                      label: item.label,
+                                    },
+                                    categoryIndex
+                                  );
+                                }
+                              }
                             : undefined
                         }
                         onEdit={
@@ -222,29 +245,6 @@ export function Categories({
                                   itemIndex,
                                   newLabel
                                 );
-                              }
-                            : undefined
-                        }
-                        onClone={
-                          item.type === 'CustomStat' ||
-                          item.itemType === 'QueryStat'
-                            ? () => {
-                                const resolvedStatsItem = resolveStatsSpec(
-                                  item,
-                                  formatterSpec
-                                );
-                                if (
-                                  resolvedStatsItem?.type === 'QueryBuilderStat'
-                                ) {
-                                  handleClick(
-                                    {
-                                      type: 'CustomStat',
-                                      querySpec: resolvedStatsItem.querySpec,
-                                      label: item.label,
-                                    },
-                                    categoryIndex
-                                  );
-                                }
                               }
                             : undefined
                         }

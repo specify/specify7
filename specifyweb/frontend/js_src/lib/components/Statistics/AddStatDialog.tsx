@@ -116,11 +116,11 @@ export function AddStatDialog({
                 )
               ) ? undefined : (
                 <AddStatPage
+                  formatterSpec={formatterSpec}
                   key={index}
                   pageIndex={index}
                   pageLabel={defaultLayoutPage.label}
                   pageLayout={defaultLayoutPage}
-                  formatterSpec={formatterSpec}
                   onClick={(item: CustomStat | DefaultStat): void => {
                     handleAdd(item, -1);
                     handleClose();

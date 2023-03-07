@@ -48,8 +48,8 @@ export function AddStatPage({
       <h4 className="text-lg font-semibold">{pageLabel}</h4>
       <Ul className="flex flex-col gap-2">
         <Categories
-          pageLayout={pageLayout}
           formatterSpec={formatterSpec}
+          pageLayout={pageLayout}
           onAdd={undefined}
           onCategoryRename={undefined}
           onClick={handleClick}

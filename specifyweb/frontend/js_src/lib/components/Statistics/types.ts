@@ -67,7 +67,7 @@ export type QueryBuilderStat = State<
 export type BackendStatsResult = IR<any>;
 
 export type StatFormatterSpec = {
-  showTotal: boolean;
+  readonly showTotal: boolean;
 };
 
 export type StatFormatterGenerator = (

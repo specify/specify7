@@ -168,7 +168,7 @@ export const querySpecToResource = (
 export function resolveStatsSpec(
   item: CustomStat | DefaultStat,
   formatterSpec: StatFormatterSpec
-): QueryBuilderStat | BackEndStatResolve | undefined {
+): BackEndStatResolve | QueryBuilderStat | undefined {
   if (item.type === 'CustomStat') {
     return {
       type: 'QueryBuilderStat',
@@ -203,7 +203,7 @@ export function resolveStatsSpec(
 export function useResolvedStatSpec(
   item: CustomStat | DefaultStat,
   formatterSpec: StatFormatterSpec
-): QueryBuilderStat | BackEndStatResolve | undefined {
+): BackEndStatResolve | QueryBuilderStat | undefined {
   return React.useMemo(() => resolveStatsSpec(item, formatterSpec), [item]);
 }
 
