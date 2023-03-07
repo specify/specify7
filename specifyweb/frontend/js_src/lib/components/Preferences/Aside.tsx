@@ -7,13 +7,14 @@ import type { GetSet } from '../../utils/types';
 import { Link } from '../Atoms/Link';
 import { locationToState } from '../Router/RouterState';
 import { usePrefDefinitions } from './index';
+import { userPreferenceDefinitions } from './UserDefinitions';
 
 export function PreferencesAside({
   activeCategory,
 }: {
   readonly activeCategory: number | undefined;
 }): JSX.Element {
-  const definitions = usePrefDefinitions();
+  const definitions = usePrefDefinitions(userPreferenceDefinitions);
   const navigate = useNavigate();
   const location = useLocation();
   const state = locationToState(location, 'BackgroundLocation');

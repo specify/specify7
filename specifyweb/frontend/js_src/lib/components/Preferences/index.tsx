@@ -28,6 +28,7 @@ import type { GenericPreferences, PreferenceItem } from './UserDefinitions';
 import { userPreferenceDefinitions } from './UserDefinitions';
 import { userPreferences } from './userPreferences';
 import { useTopChild } from './useTopChild';
+import { collectionPreferenceDefinitions } from './CollectionDefinitions';
 
 /**
  * Fetch app resource that stores current user preferences
@@ -81,7 +82,11 @@ function Preferences(): JSX.Element {
           ref={scrollContainerRef}
         >
           <PreferencesAside activeCategory={visibleChild} />
-          <PreferencesContent forwardRefs={forwardRefs} isReadOnly={false} />
+          <PreferencesContent
+            forwardRefs={forwardRefs}
+            isReadOnly={false}
+            preferenceType={'user'}
+          />
           <span className="flex-1" />
         </div>
         <div className="flex justify-end">
@@ -97,10 +102,10 @@ function Preferences(): JSX.Element {
 }
 
 /** Hide invisible preferences. Remote empty categories and subCategories */
-export function usePrefDefinitions() {
+export function usePrefDefinitions(preferenceDefinition: GenericPreferences) {
   return React.useMemo(
     () =>
-      Object.entries(userPreferenceDefinitions as GenericPreferences)
+      Object.entries(preferenceDefinition)
         .map(
           ([category, { subCategories, ...categoryData }]) =>
             [
@@ -131,12 +136,18 @@ export function usePrefDefinitions() {
 
 export function PreferencesContent({
   isReadOnly,
+  preferenceType,
   forwardRefs,
 }: {
   readonly isReadOnly: boolean;
+  readonly preferenceType: 'collection' | 'user';
   readonly forwardRefs?: (index: number, element: HTMLElement | null) => void;
 }): JSX.Element {
-  const definitions = usePrefDefinitions();
+  const definitions = usePrefDefinitions(
+    preferenceType === 'collection'
+      ? collectionPreferenceDefinitions
+      : userPreferenceDefinitions
+  );
   return (
     <div className="flex h-fit flex-col gap-6">
       {definitions.map(
@@ -166,20 +177,33 @@ export function PreferencesContent({
                         <Button.Small
                           onClick={(): void =>
                             items.forEach(([name]) => {
-                              userPreferences.set(
-                                category as 'general',
-                                subcategory as 'ui',
-                                name as 'theme',
-                                /*
-                                 * Need to get default value via this
-                                 * function as defaults may be changed
-                                 */
-                                userPreferences.definition(
+                              if (preferenceType === 'user') {
+                                userPreferences.set(
                                   category as 'general',
                                   subcategory as 'ui',
-                                  name as 'theme'
-                                ).defaultValue
-                              );
+                                  name as 'theme',
+                                  /*
+                                   * Need to get default value via this
+                                   * function as defaults may be changed
+                                   */
+                                  userPreferences.definition(
+                                    category as 'general',
+                                    subcategory as 'ui',
+                                    name as 'theme'
+                                  ).defaultValue
+                                );
+                              } else {
+                                collectionPreferences.set(
+                                  category as 'statistics',
+                                  subcategory as 'appearance',
+                                  name as 'layout',
+                                  collectionPreferences.definition(
+                                    category as 'statistics',
+                                    subcategory as 'appearance',
+                                    name as 'layout'
+                                  ).defaultValue
+                                );
+                              }
                             })
                           }
                         >
@@ -232,6 +256,7 @@ export function PreferencesContent({
                               item={item}
                               name={name}
                               subcategory={subcategory}
+                              preferencesType={preferenceType}
                             />
                           </div>
                         </>
@@ -280,21 +305,30 @@ function Item({
   subcategory,
   name,
   isReadOnly,
+  preferencesType,
 }: {
   readonly item: PreferenceItem<any>;
   readonly category: string;
   readonly subcategory: string;
   readonly name: string;
+  readonly preferencesType: 'collection' | 'user';
   readonly isReadOnly: boolean;
 }): JSX.Element {
   const Renderer =
     'renderer' in item ? item.renderer : DefaultPreferenceItemRender;
-  const [value, setValue] = userPreferences.use(
-    // Asserting types just to simplify typing
-    category as 'general',
-    subcategory as 'ui',
-    name as 'theme'
-  );
+  const [value, setValue] =
+    preferencesType === 'user'
+      ? userPreferences.use(
+          // Asserting types just to simplify typing
+          category as 'general',
+          subcategory as 'ui',
+          name as 'theme'
+        )
+      : collectionPreferences.use(
+          category as 'statistics',
+          subcategory as 'appearance',
+          name as 'layout'
+        );
   const children = (
     <Renderer
       category={category}

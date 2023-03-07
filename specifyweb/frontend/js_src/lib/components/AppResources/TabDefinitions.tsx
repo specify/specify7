@@ -23,6 +23,8 @@ import { userPreferenceDefinitions } from '../Preferences/UserDefinitions';
 import { userPreferences } from '../Preferences/userPreferences';
 import { useCodeMirrorExtensions } from './EditorComponents';
 import type { appResourceSubTypes } from './types';
+import { collectionPreferences } from '../Preferences/collectionPreferences';
+import { collectionPreferenceDefinitions } from '../Preferences/CollectionDefinitions';
 
 export type AppResourceTab = (props: {
   readonly isReadOnly: boolean;
@@ -115,7 +117,42 @@ const UserPreferencesEditor: AppResourceTab = function ({
   const Context = userPreferences.Context;
   return (
     <Context.Provider value={preferencesContext}>
-      <PreferencesContent isReadOnly={isReadOnly} />
+      <PreferencesContent isReadOnly={isReadOnly} preferenceType={'user'} />
+    </Context.Provider>
+  );
+};
+
+const CollectionPreferencesEditor: AppResourceTab = function ({
+  isReadOnly,
+  data,
+  onChange: handleChange,
+}): JSX.Element {
+  const [preferencesContext] = useLiveState<typeof collectionPreferences>(
+    React.useCallback(() => {
+      const collectionPreferences = new BasePreferences({
+        definitions: collectionPreferenceDefinitions,
+        values: {
+          resourceName: 'CollectionPreferences',
+          fetchUrl: '/context/collection_resource/',
+        },
+        defaultValues: undefined,
+        developmentGlobal: '_editingCollectionPreferences',
+        syncChanges: false,
+      });
+      collectionPreferences.setRaw(
+        JSON.parse(data === null || data.length === 0 ? '{}' : data)
+      );
+      return collectionPreferences;
+    }, [handleChange])
+  );
+
+  const Context = collectionPreferences.Context;
+  return (
+    <Context.Provider value={preferencesContext}>
+      <PreferencesContent
+        isReadOnly={isReadOnly}
+        preferenceType={'collection'}
+      />
     </Context.Provider>
   );
 };
@@ -128,7 +165,7 @@ export const visualAppResourceEditors: RR<
   report: undefined,
   user: UserPreferencesEditor,
   defaultUserPreferences: UserPreferencesEditor,
-  collection: undefined,
+  collection: CollectionPreferencesEditor,
   leafletLayers: undefined,
   rssExportFeed: undefined,
   expressSearchConfig: undefined,

@@ -1385,4 +1385,7 @@ export const preferencesText = createDictionary({
   collectionPreferences: {
     'en-us': 'Collection Preferences',
   },
+  refreshStatsPeriod: {
+    'en-us': 'Refresh stats interval (in hours)',
+  },
 } as const);

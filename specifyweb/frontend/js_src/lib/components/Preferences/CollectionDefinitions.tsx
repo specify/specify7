@@ -24,13 +24,17 @@ export const collectionPreferenceDefinitions = {
             renderer: () => <>{error('This should not get called')}</>,
             container: 'label',
           }),
-          defaultLayout: definePref<RA<StatLayout> | undefined>({
-            title: 'Defines the default layout of the stats page',
+          refreshStatsPeriod: definePref<number | undefined>({
+            title: preferencesText.refreshStatsPeriod(),
             requiresReload: false,
-            visible: false,
-            defaultValue: undefined,
-            renderer: () => <>{error('This should not get called')}</>,
-            container: 'label',
+            setOnBlurOnly: true,
+            visible: true,
+            defaultValue: 24,
+            type: 'java.lang.Double',
+            parser: {
+              min: 0,
+              max: 5000,
+            },
           }),
         },
       },

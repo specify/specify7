@@ -81,6 +81,7 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
           }
         | undefined;
       readonly developmentGlobal: string;
+      readonly editingDevelopmentGlobal?: string;
       readonly syncChanges?: boolean;
     }
   ) {}
