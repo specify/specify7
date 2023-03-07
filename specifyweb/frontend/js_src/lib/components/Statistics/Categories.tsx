@@ -12,7 +12,13 @@ import { hasTablePermission } from '../Permissions/helpers';
 import { generateStatUrl, resolveStatsSpec } from './hooks';
 import { StatItem } from './StatItems';
 import { dynamicStatsSpec, statsSpec } from './StatsSpec';
-import type { CustomStat, DefaultStat, QuerySpec, StatLayout } from './types';
+import type {
+  CustomStat,
+  DefaultStat,
+  QuerySpec,
+  StatFormatterSpec,
+  StatLayout,
+} from './types';
 
 function ItemOverride({
   item,
@@ -53,6 +59,7 @@ function areItemsValid(items: RA<CustomStat | DefaultStat>) {
 
 export function Categories({
   pageLayout,
+  formatterSpec,
   onAdd: handleAdd,
   onClick: handleClick,
   onRemove: handleRemove,
@@ -62,6 +69,7 @@ export function Categories({
   onLoad,
 }: {
   readonly pageLayout: StatLayout | undefined;
+  readonly formatterSpec: StatFormatterSpec;
   readonly onAdd: ((categoryIndex: number | undefined) => void) | undefined;
   readonly onClick: (
     item: CustomStat | DefaultStat,
@@ -151,6 +159,7 @@ export function Categories({
                         item={item}
                         itemIndex={itemIndex}
                         key={itemIndex}
+                        formatterSpec={formatterSpec}
                         onClick={
                           item.type === 'DefaultStat' &&
                           typeof handleClick === 'function' &&
@@ -170,27 +179,6 @@ export function Categories({
                                       ? item.label
                                       : item.pathToValue,
                                 })
-                            : undefined
-                        }
-                        onClone={
-                          item.type === 'CustomStat' ||
-                          item.itemType === 'QueryStat'
-                            ? () => {
-                                const resolvedStatsItem =
-                                  resolveStatsSpec(item);
-                                if (
-                                  resolvedStatsItem?.type === 'QueryBuilderStat'
-                                ) {
-                                  handleClick(
-                                    {
-                                      type: 'CustomStat',
-                                      querySpec: resolvedStatsItem.querySpec,
-                                      label: item.label,
-                                    },
-                                    categoryIndex
-                                  );
-                                }
-                              }
                             : undefined
                         }
                         onEdit={
@@ -234,6 +222,29 @@ export function Categories({
                                   itemIndex,
                                   newLabel
                                 );
+                              }
+                            : undefined
+                        }
+                        onClone={
+                          item.type === 'CustomStat' ||
+                          item.itemType === 'QueryStat'
+                            ? () => {
+                                const resolvedStatsItem = resolveStatsSpec(
+                                  item,
+                                  formatterSpec
+                                );
+                                if (
+                                  resolvedStatsItem?.type === 'QueryBuilderStat'
+                                ) {
+                                  handleClick(
+                                    {
+                                      type: 'CustomStat',
+                                      querySpec: resolvedStatsItem.querySpec,
+                                      label: item.label,
+                                    },
+                                    categoryIndex
+                                  );
+                                }
                               }
                             : undefined
                         }

@@ -54,6 +54,13 @@ export function StatsPage(): JSX.Element | null {
     'layout'
   );
 
+  const [showTotal] = collectionPreferences.use(
+    'statistics',
+    'appearance',
+    'showTotal'
+  );
+
+  const formatterSpec = React.useMemo(() => ({ showTotal }), [showTotal]);
   const [defaultLayout, setDefaultLayout] = React.useState<
     RA<StatLayout> | undefined
   >(undefined);
@@ -227,8 +234,17 @@ export function StatsPage(): JSX.Element | null {
     console.log(defaultLayoutTest);
   }
   // Used to set unknown categories once for layout initially, and every time for default layout
-  useDynamicCategorySetter(backEndResponse, handleChange, categoriesToFetch);
-  useDefaultDynamicCategorySetter(defaultBackEndResponse, setDefaultLayout);
+  useDynamicCategorySetter(
+    backEndResponse,
+    handleChange,
+    categoriesToFetch,
+    formatterSpec
+  );
+  useDefaultDynamicCategorySetter(
+    defaultBackEndResponse,
+    setDefaultLayout,
+    formatterSpec
+  );
 
   const filters = React.useMemo(
     () => ({
@@ -677,6 +693,7 @@ export function StatsPage(): JSX.Element | null {
           <div className="grid w-full grid-cols-[repeat(auto-fill,minmax(20rem,1fr))] gap-4 overflow-y-auto px-4 pb-6">
             <Categories
               pageLayout={pageLayout}
+              formatterSpec={formatterSpec}
               onAdd={
                 isEditing && canEditIndex(activePage.isShared)
                   ? (categoryindex): void =>
@@ -772,6 +789,8 @@ export function StatsPage(): JSX.Element | null {
         <AddStatDialog
           defaultStatsAddLeft={defaultStatsAddLeft}
           queries={queries}
+          formatterSpec={formatterSpec}
+          onInitialLoad={() => setDefaultCategoriesToFetch(allCategories)}
           onAdd={(item, itemIndex): void => {
             handleAdd(item, state.categoryIndex, itemIndex);
           }}
@@ -796,7 +815,6 @@ export function StatsPage(): JSX.Element | null {
                   }))
             );
           }}
-          onInitialLoad={() => setDefaultCategoriesToFetch(allCategories)}
           onLoad={handleDefaultLoad}
         />
       )}

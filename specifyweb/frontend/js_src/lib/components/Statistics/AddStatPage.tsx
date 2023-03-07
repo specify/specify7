@@ -2,18 +2,25 @@ import React from 'react';
 
 import { Ul } from '../Atoms';
 import { Categories } from './Categories';
-import type { CustomStat, DefaultStat, StatLayout } from './types';
+import type {
+  CustomStat,
+  DefaultStat,
+  StatFormatterSpec,
+  StatLayout,
+} from './types';
 
 export function AddStatPage({
   pageLabel,
   pageIndex,
   pageLayout,
+  formatterSpec,
   onClick: handleClick,
   onLoad,
 }: {
   readonly pageLabel: string;
   readonly pageIndex: number;
   readonly pageLayout: StatLayout | undefined;
+  readonly formatterSpec: StatFormatterSpec;
   readonly onClick:
     | ((
         item: CustomStat | DefaultStat,
@@ -42,6 +49,7 @@ export function AddStatPage({
       <Ul className="flex flex-col gap-2">
         <Categories
           pageLayout={pageLayout}
+          formatterSpec={formatterSpec}
           onAdd={undefined}
           onCategoryRename={undefined}
           onClick={handleClick}

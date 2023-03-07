@@ -17,11 +17,17 @@ import { QueryList } from '../Toolbar/Query';
 import { QueryTablesWrapper } from '../Toolbar/QueryTablesWrapper';
 import { AddStatPage } from './AddStatPage';
 import { FrontEndStatsResultDialog, queryToSpec } from './ResultsDialog';
-import type { CustomStat, DefaultStat, StatLayout } from './types';
+import type {
+  CustomStat,
+  DefaultStat,
+  StatFormatterSpec,
+  StatLayout,
+} from './types';
 
 export function AddStatDialog({
   defaultStatsAddLeft,
   queries,
+  formatterSpec,
   onClose: handleClose,
   onAdd: handleAdd,
   onLoad,
@@ -29,6 +35,7 @@ export function AddStatDialog({
 }: {
   readonly queries: RA<SerializedResource<SpQuery>> | undefined;
   readonly defaultStatsAddLeft: RA<StatLayout> | undefined;
+  readonly formatterSpec: StatFormatterSpec;
   readonly onClose: () => void;
   readonly onAdd: (item: CustomStat | DefaultStat, itemIndex: number) => void;
   readonly onLoad:
@@ -111,6 +118,7 @@ export function AddStatDialog({
                   pageIndex={index}
                   pageLabel={defaultLayoutPage.label}
                   pageLayout={defaultLayoutPage}
+                  formatterSpec={formatterSpec}
                   onClick={(item: CustomStat | DefaultStat): void => {
                     handleAdd(item, -1);
                     handleClose();

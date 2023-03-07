@@ -9,7 +9,12 @@ import { userInformation } from '../InitialContext/userInformation';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { formattedEntry } from '../WbPlanView/mappingHelpers';
 import { generateStatUrl } from './hooks';
-import type { BackEndStat, StatLayout, StatsSpec } from './types';
+import type {
+  BackEndStat,
+  StatFormatterGenerator,
+  StatLayout,
+  StatsSpec,
+} from './types';
 import type { DefaultStat, StatCategoryReturn } from './types';
 
 export const statsSpec: StatsSpec = {
@@ -81,17 +86,21 @@ export const statsSpec: StatsSpec = {
               type: 'BackEndStat',
               pathToValue: undefined,
               tableName: 'Preparation',
-              formatter: (
-                prep:
-                  | {
-                      readonly lots: number;
-                      readonly total: number;
-                    }
-                  | undefined
-              ) =>
-                prep === undefined
-                  ? undefined
-                  : `${formatNumber(prep.lots)} / ${formatNumber(prep.total)}`,
+              formatterGenerator:
+                ({ showTotal }) =>
+                (
+                  prep:
+                    | {
+                        readonly lots: number;
+                        readonly total: number;
+                      }
+                    | undefined
+                ) =>
+                  prep === undefined
+                    ? undefined
+                    : showTotal
+                    ? `${formatNumber(prep.lots)} / ${formatNumber(prep.total)}`
+                    : formatNumber(prep.lots),
             },
           },
         },
@@ -335,7 +344,7 @@ export const statsSpec: StatsSpec = {
               type: 'BackEndStat',
               pathToValue: 'countries',
               tableName: 'Geography',
-              formatter: (rawNumber: number | undefined) =>
+              formatterGenerator: () => (rawNumber: number | undefined) =>
                 f.maybe(rawNumber, formatNumber),
             },
           },
@@ -351,7 +360,7 @@ export const statsSpec: StatsSpec = {
               type: 'BackEndStat',
               pathToValue: undefined,
               tableName: 'Determination',
-              formatter: (rawNumber: number | undefined) =>
+              formatterGenerator: () => (rawNumber: number | undefined) =>
                 f.maybe(rawNumber, formatNumber),
             },
           },
@@ -550,7 +559,7 @@ const statSpecToItems = (
 function generateDynamicSpec(statsSpec: StatsSpec): RA<{
   readonly responseKey: string;
   readonly tableName: keyof Tables;
-  readonly formatter: (rawResult: any) => string | undefined;
+  readonly formatterGenerator: StatFormatterGenerator;
 }> {
   return Object.entries(statsSpec).flatMap(([_, { categories, urlPrefix }]) =>
     Object.entries(categories).flatMap(([categoryKey, { items }]) =>
@@ -562,7 +571,7 @@ function generateDynamicSpec(statsSpec: StatsSpec): RA<{
         .map(([itemKey, { spec }]) => ({
           responseKey: generateStatUrl(urlPrefix, categoryKey, itemKey),
           tableName: (spec as BackEndStat).tableName,
-          formatter: (spec as BackEndStat).formatter,
+          formatterGenerator: (spec as BackEndStat).formatterGenerator,
         }))
     )
   );

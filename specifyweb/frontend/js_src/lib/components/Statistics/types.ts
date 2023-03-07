@@ -66,12 +66,25 @@ export type QueryBuilderStat = State<
 >;
 export type BackendStatsResult = IR<any>;
 
-export type BackEndStat = State<
+export type StatFormatterSpec = {
+  showTotal: boolean;
+};
+
+export type StatFormatterGenerator = (
+  spec: StatFormatterSpec
+) => (rawResult: any) => string | undefined;
+export type BackEndStat = BackEndBase & {
+  readonly formatterGenerator: StatFormatterGenerator;
+};
+export type BackEndBase = State<
   'BackEndStat',
   {
     readonly pathToValue: string | undefined;
-    readonly formatter: (rawResult: any) => string | undefined;
     readonly tableName: keyof Tables;
   }
 >;
+export type BackEndStatResolve = BackEndBase & {
+  readonly fetchUrl: string;
+  readonly formatter: (rawResult: any) => string | undefined;
+};
 export type StatItemSpec = BackEndStat | QueryBuilderStat;

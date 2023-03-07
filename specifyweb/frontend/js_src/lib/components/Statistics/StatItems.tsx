@@ -21,12 +21,14 @@ import type {
   CustomStat,
   DefaultStat,
   QuerySpec,
+  StatFormatterSpec,
 } from './types';
 
 export function StatItem({
   item,
   categoryIndex,
   itemIndex,
+  formatterSpec,
   onRemove: handleRemove,
   onClick: handleClick,
   onEdit: handleEdit,
@@ -35,6 +37,7 @@ export function StatItem({
   onClone: handleClone,
 }: {
   readonly item: CustomStat | DefaultStat;
+  readonly formatterSpec: StatFormatterSpec;
   readonly categoryIndex: number;
   readonly itemIndex: number;
   readonly onRemove: (() => void) | undefined;
@@ -56,7 +59,7 @@ export function StatItem({
     (value: number | string) => handleLoad?.(categoryIndex, itemIndex, value),
     [handleLoad, categoryIndex, itemIndex]
   );
-  const resolvedSpec = useResolvedStatSpec(item);
+  const resolvedSpec = useResolvedStatSpec(item, formatterSpec);
 
   return resolvedSpec?.type === 'QueryBuilderStat' &&
     resolvedSpec.querySpec !== undefined ? (

@@ -17,12 +17,13 @@ import type { SpQuery } from '../DataModel/types';
 import { makeQueryField } from '../QueryBuilder/fromTree';
 import { dynamicStatsSpec, statsSpec } from './StatsSpec';
 import type {
-  BackEndStat,
+  BackEndStatResolve,
   BackendStatsResult,
   CustomStat,
   DefaultStat,
   QueryBuilderStat,
   QuerySpec,
+  StatFormatterSpec,
   StatLayout,
   StatsSpec,
 } from './types';
@@ -165,11 +166,9 @@ export const querySpecToResource = (
   );
 
 export function resolveStatsSpec(
-  item: CustomStat | DefaultStat
-):
-  | QueryBuilderStat
-  | (BackEndStat & { readonly fetchUrl: string })
-  | undefined {
+  item: CustomStat | DefaultStat,
+  formatterSpec: StatFormatterSpec
+): QueryBuilderStat | BackEndStatResolve | undefined {
   if (item.type === 'CustomStat') {
     return {
       type: 'QueryBuilderStat',
@@ -191,7 +190,7 @@ export function resolveStatsSpec(
             item.categoryName,
             item.itemName
           ),
-          formatter: statSpecItem.spec.formatter,
+          formatter: statSpecItem.spec.formatterGenerator(formatterSpec),
           tableName: statSpecItem.spec.tableName,
         }
       : {
@@ -202,12 +201,10 @@ export function resolveStatsSpec(
 }
 
 export function useResolvedStatSpec(
-  item: CustomStat | DefaultStat
-):
-  | QueryBuilderStat
-  | (BackEndStat & { readonly fetchUrl: string })
-  | undefined {
-  return React.useMemo(() => resolveStatsSpec(item), [item]);
+  item: CustomStat | DefaultStat,
+  formatterSpec: StatFormatterSpec
+): QueryBuilderStat | BackEndStatResolve | undefined {
+  return React.useMemo(() => resolveStatsSpec(item, formatterSpec), [item]);
 }
 
 export function getDynamicCategoriesToFetch(
@@ -339,10 +336,11 @@ export function useDefaultDynamicCategorySetter(
     previousGenerator: (
       oldLayout: RA<StatLayout> | undefined
     ) => RA<StatLayout> | undefined
-  ) => void
+  ) => void,
+  statFormatterSpec: StatFormatterSpec
 ) {
   React.useEffect(() => {
-    dynamicStatsSpec.forEach(({ responseKey, formatter }) => {
+    dynamicStatsSpec.forEach(({ responseKey, formatterGenerator }) => {
       if (
         defaultBackEndResponse !== undefined &&
         defaultBackEndResponse[responseKey] !== undefined
@@ -358,7 +356,7 @@ export function useDefaultDynamicCategorySetter(
                     defaultBackEndResponse,
                     oldCategory.items,
                     responseKey,
-                    formatter,
+                    formatterGenerator(statFormatterSpec),
                     statsSpec
                   ),
                 })),
@@ -376,10 +374,11 @@ export function useDynamicCategorySetter(
       oldCategory: StatLayout['categories']
     ) => StatLayout['categories']
   ) => void,
-  categoriesToFetch: RA<string>
+  categoriesToFetch: RA<string>,
+  formatterSpec: StatFormatterSpec
 ) {
   React.useEffect(() => {
-    dynamicStatsSpec.forEach(({ responseKey, formatter }) => {
+    dynamicStatsSpec.forEach(({ responseKey, formatterGenerator }) => {
       if (
         backEndResponse !== undefined &&
         backEndResponse[responseKey] !== undefined &&
@@ -392,7 +391,7 @@ export function useDynamicCategorySetter(
               backEndResponse,
               unknownCategory.items,
               responseKey,
-              formatter,
+              formatterGenerator(formatterSpec),
               statsSpec
             ),
           }))

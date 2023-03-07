@@ -368,7 +368,6 @@ def create_roles() -> None:
     full_access.policies.create(resource="/tree/%", action="%")
     full_access.policies.create(resource="/report", action="%")
     full_access.policies.create(resource="/querybuilder/%", action="%")
-    full_access.policies.create(resource="/preferences/statistics", action="edit_protected")
 
     # copy the appropriate roles into the individual collections.
     users = Specifyuser.objects.all()

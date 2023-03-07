@@ -24,11 +24,11 @@ export const collectionPreferenceDefinitions = {
             renderer: () => <>{error('This should not get called')}</>,
             container: 'label',
           }),
-          defaultLayout: definePref<RA<StatLayout> | undefined>({
-            title: 'Defines the default layout of the stats page',
+          showTotal: definePref<boolean>({
+            title: 'Defines if preparation stats include total',
             requiresReload: false,
             visible: false,
-            defaultValue: undefined,
+            defaultValue: false,
             renderer: () => <>{error('This should not get called')}</>,
             container: 'label',
           }),
