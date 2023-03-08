@@ -28,7 +28,7 @@ msgstr "Нет"
 #: components/AppResources/Create.tsx:80
 #: components/AppResources/EditorComponents.tsx:85
 #: components/Attachments/Dialog.tsx:53
-#: components/FormSliders/RecordSelectorFromIds.tsx:246
+#: components/FormSliders/RecordSelectorFromIds.tsx:251
 #: components/Forms/DeleteButton.tsx:108
 #: components/Forms/DeleteButton.tsx:132
 #: components/Forms/ResourceView.tsx:314
@@ -244,7 +244,7 @@ msgid "save"
 msgstr "Сохранить"
 
 #: components/Atoms/DataEntry.tsx:136
-#: components/FormSliders/RecordSelectorFromIds.tsx:175
+#: components/FormSliders/RecordSelectorFromIds.tsx:180
 #: components/Forms/Save.tsx:241
 #: components/Molecules/AutoComplete.tsx:512
 #: components/PickLists/index.tsx:298
@@ -265,7 +265,7 @@ msgstr "Добавить"
 msgid "open"
 msgstr "Открыть"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:180
+#: components/FormSliders/RecordSelectorFromIds.tsx:185
 #: components/Forms/DeleteButton.tsx:103
 #: components/Forms/DeleteButton.tsx:129
 #: components/Header/Notifications.tsx:231
@@ -440,7 +440,7 @@ msgstr "Редактировать"
 msgid "ignore"
 msgstr "Игнорировать"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:255
+#: components/FormSliders/RecordSelectorFromIds.tsx:260
 #: components/Toolbar/Language.tsx:114
 #. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Toolbar > Language
 msgid "proceed"

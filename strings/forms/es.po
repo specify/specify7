@@ -404,17 +404,17 @@ msgstr "Tipo de celda no compatible"
 msgid "additionalResultsOmitted"
 msgstr "Resultados adicionales omitidos"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:259
+#: components/FormSliders/RecordSelectorFromIds.tsx:264
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "recordSelectorUnloadProtect"
 msgstr "¿Continuar sin guardar?"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:262
+#: components/FormSliders/RecordSelectorFromIds.tsx:267
 #. 🟥When in record set and current record is unsaved and try to navigate to another record. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "recordSelectorUnloadProtectDescription"
 msgstr "Es posible que desee guardar este registro antes de navegar."
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:214
+#: components/FormSliders/RecordSelectorFromIds.tsx:219
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "creatingNewRecord"
 msgstr "Creando nuevo registro"
@@ -444,12 +444,12 @@ msgstr "Elemento de {recordSetItemTable:string}"
 msgid "duplicateRecordSetItemDescription"
 msgstr "Este registro ya está presente en el {recordSetTable:string} actual"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:172
+#: components/FormSliders/RecordSelectorFromIds.tsx:177
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "addToRecordSet"
 msgstr "Agregar al {recordSetTable:string}"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:177
+#: components/FormSliders/RecordSelectorFromIds.tsx:182
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "removeFromRecordSet"
 msgstr "Eliminar de {recordSetTable:string}"
