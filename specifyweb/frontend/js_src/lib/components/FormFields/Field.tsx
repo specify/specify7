@@ -117,7 +117,7 @@ function Field({
                 >
               )
                 ?.then(format)
-                .then((value) => value ?? '')
+                .then((value) => value ?? '') ?? ''
             : userText.noPermission()
           : undefined,
       /*
