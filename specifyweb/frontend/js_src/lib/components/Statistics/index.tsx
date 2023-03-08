@@ -42,16 +42,54 @@ import type { CustomStat, DefaultStat, StatLayout } from './types';
 
 export function StatsPage(): JSX.Element | null {
   useMenuItem('statistics');
-  const [collectionLayout, setCollectionLayout] = collectionPreferences.use(
+  const [initialSharedLayout, setSharedLayout] = collectionPreferences.use(
     'statistics',
     'appearance',
     'layout'
   );
 
-  const [personalLayout, setPersonalLayout] = userPreferences.use(
+  const [sharedLayout, setLocalSharedLayout] = React.useState<
+    RA<StatLayout> | undefined
+  >(initialSharedLayout);
+
+  const handleSharedLayoutChange = React.useCallback(
+    (
+      layout:
+        | RA<StatLayout>
+        | undefined
+        | ((
+            oldLayout: RA<StatLayout> | undefined
+          ) => RA<StatLayout> | undefined)
+    ) => {
+      setLocalSharedLayout(layout);
+      setSharedLayout(layout);
+    },
+    [setLocalSharedLayout, setSharedLayout]
+  );
+
+  const [initialPersonalLayout, setPersonalLayout] = userPreferences.use(
     'statistics',
     'appearance',
     'layout'
+  );
+
+  const [personalLayout, setLocalPersonalLayout] = React.useState<
+    RA<StatLayout> | undefined
+  >(initialPersonalLayout);
+
+  const handlePersonalLayoutChange = React.useCallback(
+    (
+      layout:
+        | RA<StatLayout>
+        | undefined
+        | ((
+            oldLayout: RA<StatLayout> | undefined
+          ) => RA<StatLayout> | undefined)
+    ) => {
+      setLocalPersonalLayout(layout);
+      setPersonalLayout(layout);
+    },
+    [setLocalPersonalLayout, setPersonalLayout]
   );
 
   const [showTotal] = collectionPreferences.use(
@@ -65,7 +103,7 @@ export function StatsPage(): JSX.Element | null {
     RA<StatLayout> | undefined
   >(undefined);
   const layout = {
-    [statsText.shared()]: collectionLayout,
+    [statsText.shared()]: sharedLayout,
     [statsText.private()]: personalLayout,
   };
 
@@ -116,7 +154,7 @@ export function StatsPage(): JSX.Element | null {
 
   const errorContextState = React.useMemo(
     () => ({
-      shared: collectionLayout,
+      shared: sharedLayout,
       personal: personalLayout,
       default: defaultLayout,
       onShared: activePage.isShared,
@@ -124,7 +162,7 @@ export function StatsPage(): JSX.Element | null {
       state,
     }),
     [
-      collectionLayout,
+      sharedLayout,
       personalLayout,
       defaultLayout,
       activePage.isShared,
@@ -136,12 +174,12 @@ export function StatsPage(): JSX.Element | null {
   useErrorContext('statistics', errorContextState);
 
   const getSourceLayoutSetter = (isShared: boolean) =>
-    isShared ? setCollectionLayout : setPersonalLayout;
+    isShared ? handleSharedLayoutChange : handlePersonalLayoutChange;
 
   const setCurrentLayout = getSourceLayoutSetter(activePage.isShared);
 
   const getSourceLayout = (isShared: boolean) =>
-    isShared ? collectionLayout : personalLayout;
+    isShared ? sharedLayout : personalLayout;
 
   const sourceLayout = getSourceLayout(activePage.isShared);
 
@@ -173,23 +211,23 @@ export function StatsPage(): JSX.Element | null {
   const defaultBackEndResponse = useBackendApi(defaultCategoriesToFetch);
 
   /*
-   * Initial Load For Collection and Personal Pages
+   * Initial Load For Shared and Personal Pages
    * If collection and personal layout are undefined initially, then we need to
    * fetch all unknown categories.
    * It is simpler to make the promise twice since throttledPromise returns the
    * previous promise if the spec is same
    */
   React.useEffect(() => {
-    if (collectionLayout === undefined) {
-      setCollectionLayout([defaultLayoutGenerated[0]]);
+    if (sharedLayout === undefined) {
+      handleSharedLayoutChange([defaultLayoutGenerated[0]]);
     }
-  }, [collectionLayout, setCollectionLayout]);
+  }, [sharedLayout, handleSharedLayoutChange]);
 
   React.useEffect(() => {
     if (personalLayout === undefined) {
-      setPersonalLayout([defaultLayoutGenerated[1]]);
+      handlePersonalLayoutChange([defaultLayoutGenerated[1]]);
     }
-  }, [setPersonalLayout, personalLayout]);
+  }, [handlePersonalLayoutChange, personalLayout]);
 
   /* Set Default Layout every time page is started from scratch*/
   React.useEffect(() => {
@@ -197,15 +235,15 @@ export function StatsPage(): JSX.Element | null {
   }, [setDefaultLayout]);
 
   const pageLastUpdated = activePage.isShared
-    ? collectionLayout?.[activePage.pageIndex].lastUpdated
+    ? sharedLayout?.[activePage.pageIndex].lastUpdated
     : personalLayout?.[activePage.pageIndex].lastUpdated;
 
   const canEdit = !activePage.isShared || hasEditPermission;
 
   const pageLayout = activePage.isShared
-    ? collectionLayout?.[activePage.pageIndex].categories === undefined
+    ? sharedLayout?.[activePage.pageIndex].categories === undefined
       ? undefined
-      : collectionLayout[activePage.pageIndex]
+      : sharedLayout[activePage.pageIndex]
     : personalLayout?.[activePage.pageIndex].categories === undefined
     ? undefined
     : personalLayout[activePage.pageIndex];
@@ -254,7 +292,7 @@ export function StatsPage(): JSX.Element | null {
   );
   const queries = useQueries(filters);
   const previousCollectionLayout = React.useRef(
-    collectionLayout as unknown as RA<StatLayout>
+    sharedLayout as unknown as RA<StatLayout>
   );
   const previousLayout = React.useRef(
     personalLayout as unknown as RA<StatLayout>
@@ -282,22 +320,21 @@ export function StatsPage(): JSX.Element | null {
   const [refreshLayout, setRefreshLayout] = React.useState(true);
   React.useLayoutEffect(() => {
     if (refreshLayout) {
-      setCollectionLayout((layout) =>
+      handleSharedLayoutChange((layout) =>
         layout === undefined
           ? undefined
           : layout.map((pageLayout) => getValueUndefined(pageLayout))
       );
-      setPersonalLayout((layout) =>
+      handlePersonalLayoutChange((layout) =>
         layout === undefined
           ? undefined
           : layout.map((pageLayout) => getValueUndefined(pageLayout))
       );
     }
     setRefreshLayout(false);
-    return () => {
-      cleanMaybeFulfilled();
-    };
+    return cleanMaybeFulfilled;
   }, [refreshLayout, setRefreshLayout]);
+
   React.useLayoutEffect(() => {
     setCurrentLayout((layout) =>
       layout === undefined
@@ -417,7 +454,7 @@ export function StatsPage(): JSX.Element | null {
     setCategoriesToFetch([]);
   };
 
-  return collectionLayout === undefined ? null : (
+  return sharedLayout === undefined ? null : (
     <Form
       className={`${className.containerFullGray} md:overflow-y-none overflow-y-auto`}
       onSubmit={(): void => {
@@ -471,8 +508,8 @@ export function StatsPage(): JSX.Element | null {
               <Button.Gray
                 onClick={(): void => {
                   cleanMaybeFulfilled();
-                  setCollectionLayout(undefined);
-                  setPersonalLayout(undefined);
+                  handleSharedLayoutChange(undefined);
+                  handlePersonalLayoutChange(undefined);
                   setCategoriesToFetch([]);
                   setActivePage({ isShared: true, pageIndex: 0 });
                   setRefreshLayout(true);
@@ -484,8 +521,8 @@ export function StatsPage(): JSX.Element | null {
 
             <Button.Gray
               onClick={(): void => {
-                setCollectionLayout(previousCollectionLayout.current);
-                setPersonalLayout(previousLayout.current);
+                handleSharedLayoutChange(previousCollectionLayout.current);
+                handlePersonalLayoutChange(previousLayout.current);
                 setState({ type: 'DefaultState' });
                 setActivePage(({ isShared, pageIndex }) => {
                   /*
@@ -517,8 +554,8 @@ export function StatsPage(): JSX.Element | null {
                 setState({
                   type: 'EditingState',
                 });
-                if (collectionLayout !== undefined)
-                  previousCollectionLayout.current = collectionLayout;
+                if (sharedLayout !== undefined)
+                  previousCollectionLayout.current = sharedLayout;
                 if (personalLayout !== undefined)
                   previousLayout.current = personalLayout;
               }}
@@ -541,7 +578,28 @@ export function StatsPage(): JSX.Element | null {
                 ([parentLayoutName, parentLayout], index) =>
                   parentLayout === undefined ? undefined : (
                     <li className="flex flex-col gap-2" key={index}>
-                      <H3 className="text-xl font-bold">{parentLayoutName}</H3>
+                      <div className="flex flex-1 gap-2">
+                        <H3 className="text-xl font-bold">
+                          {parentLayoutName}
+                        </H3>
+                        {isEditing && canEditIndex(index === 0) && (
+                          <div>
+                            <Button.Icon
+                              className={`max-w-fit ${className.blueButton}`}
+                              icon="plus"
+                              title={commonText.add()}
+                              onClick={(): void =>
+                                setState({
+                                  type: 'PageRenameState',
+                                  pageIndex: undefined,
+                                  isShared: index === 0,
+                                })
+                              }
+                            />
+                          </div>
+                        )}
+                      </div>
+
                       <Ul className="flex flex-col gap-2">
                         {parentLayout.map(({ label }, pageIndex) => (
                           <li key={pageIndex}>
@@ -570,23 +628,6 @@ export function StatsPage(): JSX.Element | null {
                             />
                           </li>
                         ))}
-
-                        {isEditing && canEditIndex(index === 0) && (
-                          <Button.Small
-                            className="max-w-fit"
-                            name={commonText.add()}
-                            variant={className.blueButton}
-                            onClick={(): void =>
-                              setState({
-                                type: 'PageRenameState',
-                                pageIndex: undefined,
-                                isShared: index === 0,
-                              })
-                            }
-                          >
-                            {commonText.add()}
-                          </Button.Small>
-                        )}
                       </Ul>
                     </li>
                   )
@@ -598,7 +639,7 @@ export function StatsPage(): JSX.Element | null {
               label={
                 typeof state.pageIndex === 'number'
                   ? state.isShared
-                    ? collectionLayout[state.pageIndex].label
+                    ? sharedLayout[state.pageIndex].label
                     : personalLayout?.[state.pageIndex].label
                   : undefined
               }

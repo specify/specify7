@@ -220,7 +220,7 @@ export function MenuButton({
   readonly onClick: string | (() => void);
   readonly props?: TagProps<'a'> & TagProps<'button'>;
 }): JSX.Element | null {
-  const [position] = usePref('header', 'appearance', 'position');
+  const [position] = userPreferences.use('header', 'appearance', 'position');
   const getClassName = (isActive: boolean): string => `
     p-4
     ${isActive ? 'bg-brand-300 !text-white' : 'text-gray-700'}

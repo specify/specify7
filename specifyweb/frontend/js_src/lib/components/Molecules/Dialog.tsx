@@ -259,7 +259,11 @@ export function Dialog({
     handleResize
   );
 
-  const [rememberPosition] = usePref('general', 'dialog', 'rememberPosition');
+  const [rememberPosition] = userPreferences.use(
+    'general',
+    'dialog',
+    'rememberPosition'
+  );
   const positionKey = rememberPosition ? dimensionsKey : undefined;
   const [dialogPositions = {}, setDialogPositions] = useCachedState(
     'dialogs',
@@ -514,7 +518,11 @@ function useDialogSize(
   dimensionsKey: string | undefined,
   handleResize: ((container: HTMLElement) => void) | undefined
 ): { readonly width: number; readonly height: number } | undefined {
-  const [rememberSize] = usePref('general', 'dialog', 'rememberSize');
+  const [rememberSize] = userPreferences.use(
+    'general',
+    'dialog',
+    'rememberSize'
+  );
   const sizeKey = rememberSize ? dimensionsKey : undefined;
   const [dialogSizes = {}, setDialogSizes] = useCachedState('dialogs', 'sizes');
   /*

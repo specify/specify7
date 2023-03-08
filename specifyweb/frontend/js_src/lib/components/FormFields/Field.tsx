@@ -116,7 +116,7 @@ function Field({
               : resource
                   ?.rgetPromise(field.name)
                   .then(format)
-                  .then((value) => value ?? '')
+                  .then((value: any) => value ?? '')
             : userText.noPermission()
           : undefined,
       /*
