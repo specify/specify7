@@ -88,18 +88,17 @@ export function QueryFields({
   }, [isDragging]);
 
   const handleDragStart = (
-    event: React.DragEvent<HTMLDivElement>,
+    event: React.DragEvent<HTMLLIElement>,
     index: number
   ) => {
     setDraggedItem(fields[index]);
     event.dataTransfer.effectAllowed = 'move';
     event.dataTransfer.setData('text/plain', String(index));
-    event.currentTarget.classList.add('dragging');
     setIsDragging(true);
   };
 
   const handleDragOver = (
-    event: React.DragEvent<HTMLDivElement>,
+    event: React.DragEvent<HTMLLIElement>,
     index: number
   ) => {
     event.preventDefault();
@@ -151,7 +150,7 @@ export function QueryFields({
     <Ul className="flex-1 overflow-y-auto" forwardRef={fieldsContainerRef}>
       {fields.map((field, line, { length }) => (
         <ErrorBoundary dismissible key={field.id}>
-          <div
+          <li
             className="flex items-center gap-2"
             draggable
             key={line}
@@ -206,7 +205,7 @@ export function QueryFields({
               onOpenMap={handleOpenMap?.bind(undefined, line)}
               onRemove={handleRemoveField?.bind(undefined, line)}
             />
-          </div>
+          </li>
         </ErrorBoundary>
       ))}
     </Ul>

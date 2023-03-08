@@ -232,7 +232,7 @@ export function QueryLine({
   const hasAny = field.filters.some(({ type }) => type === 'any');
 
   return (
-    <li
+    <div
       aria-current={isFocused ? 'location' : undefined}
       className="flex flex-1 gap-2 border-t border-t-gray-500 py-2"
     >
@@ -529,6 +529,6 @@ export function QueryLine({
           {icons.chevronDown}
         </Button.Small>
       </div>
-    </li>
+    </div>
   );
 }
