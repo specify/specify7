@@ -78,7 +78,8 @@ export function addMissingFields<TABLE_NAME extends keyof Tables>(
       : {
           [scoping.relationship.name]:
             record[scoping.relationship.name as 'id'] ??
-            (typeof record.id === 'number' ? undefined : scoping.resourceUrl),
+            (typeof record.id === 'number' ? undefined : scoping.resourceUrl) ??
+            null,
         }),
     /*
      * REFACTOR: convert all usages of this to camel case
