@@ -231,7 +231,7 @@ export function SubView({
           formType={formType}
           mode={
             !isAttachmentMisconfigured &&
-            relationship.isDependent() &&
+            (relationship.isDependent() || isButton) &&
             initialMode !== 'view'
               ? 'edit'
               : 'view'
