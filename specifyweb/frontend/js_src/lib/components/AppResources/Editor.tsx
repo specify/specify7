@@ -128,7 +128,7 @@ export function AppResourceEditor({
 
   return typeof resourceData === 'object' ? (
     <Container.Base className="flex-1 overflow-auto">
-      <DataEntry.Header>
+      <DataEntry.Header className='flex-wrap'>
         <div className="flex items-center justify-center gap-2">
           <div className="hidden md:block">
             {appResourceIcon(getResourceType(resource))}
