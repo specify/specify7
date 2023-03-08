@@ -189,7 +189,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
         dialog={dialog}
         headerButtons={(specifyNetworkBadge): JSX.Element => (
           <div className="flex flex-col items-center gap-2 md:flex-row md:gap-8">
-            <div className="flex gap-2">
+            <div className="flex gap-2 items-center">
               {headerButtons}
               <DataEntry.Visit
                 resource={
