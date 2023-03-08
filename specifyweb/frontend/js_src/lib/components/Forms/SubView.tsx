@@ -41,7 +41,7 @@ export function SubView({
   mode: initialMode,
   parentFormType,
   formType: initialFormType,
-  isButton,
+  isButton: rawIsButton,
   viewName = relationship.relatedModel.view,
   icon = relationship.relatedModel.name,
   sortField: initialSortField,
@@ -187,6 +187,9 @@ export function SubView({
     [relationship, formType, sortField, setFormType, setSortField]
   );
 
+  // See https://github.com/specify/specify7/issues/3127
+  const isButton =
+    rawIsButton || (initialMode === 'edit' && !relationship.isDependent());
   const [isOpen, _, handleClose, handleToggle] = useBooleanState(!isButton);
 
   const [isAttachmentConfigured] = usePromise(attachmentSettingsPromise, true);
@@ -231,6 +234,11 @@ export function SubView({
           formType={formType}
           mode={
             !isAttachmentMisconfigured &&
+            /*
+             * Only button subview's can display independent resources
+             * See https://github.com/specify/specify7/pull/3125#issue-1615911079
+             * for reasons why.
+             */
             (relationship.isDependent() || isButton) &&
             initialMode !== 'view'
               ? 'edit'
