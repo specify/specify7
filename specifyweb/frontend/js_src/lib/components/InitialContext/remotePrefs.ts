@@ -60,7 +60,7 @@ type DefinitionOf<KEY extends keyof CollectionDefinitions | keyof Definitions> =
     ? CollectionDefinitions[KEY]
     : never;
 
-export const getRemotePref = <KEY extends keyof Definitions>(
+export const getPref = <KEY extends keyof Definitions>(
   key: KEY
 ): TypeOf<Definitions[KEY]> =>
   parsePref(

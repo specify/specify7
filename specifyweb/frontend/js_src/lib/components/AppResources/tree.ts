@@ -172,6 +172,7 @@ export const getScopedAppResources = (
       directories[0] ??
       addMissingFields('SpAppResourceDir', {
         discipline: discipline.resource_uri,
+        collection: undefined,
       });
     return {
       label: (discipline.name as LocalizedString) ?? '',

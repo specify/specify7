@@ -20,7 +20,7 @@ import { error } from '../Errors/assert';
 import type { LogMessage } from '../Errors/interceptLogs';
 import { consoleLog, setLogContext } from '../Errors/interceptLogs';
 import { cachableUrl } from '../InitialContext';
-import { getRemotePref } from '../InitialContext/remotePrefs';
+import { getPref } from '../InitialContext/remotePrefs';
 import { formatUrl } from '../Router/queryString';
 import type { FormCellDefinition } from './cells';
 import { parseFormCell, processColumnDefinition } from './cells';
@@ -33,6 +33,7 @@ export type ViewDescription = ParsedFormDefinition & {
   readonly model: SpecifyModel;
   readonly errors?: RA<LogMessage>;
   readonly viewSetId?: number;
+  readonly name: string;
 };
 
 type AltView = {
@@ -85,6 +86,7 @@ export const fetchView = async (
           expectedResponseCodes: [Http.OK, Http.NOT_FOUND, Http.NO_CONTENT],
         }
       ).then(({ data, status }) => {
+        // FEATURE: add an easy way to cache ajax responses:
         views[name] =
           status === Http.NOT_FOUND || status === Http.NO_CONTENT
             ? undefined
@@ -119,6 +121,7 @@ export function parseViewDefinition(
     model,
     viewSetId: view.viewsetId ?? undefined,
     errors,
+    name: view.name,
     ...parsed,
   };
 }
@@ -265,6 +268,9 @@ function parseFormTableDefinition(
   const row = rows
     .flat()
     // FormTable consists of Fields and SubViews only
+    /*
+     * FEATURE: extract fields from panels too
+     */
     .filter(({ type }) => type === 'Field' || type === 'SubView')
     .map<FormCellDefinition>((cell) => ({
       ...cell,
@@ -350,7 +356,7 @@ function getColumnDefinitions(viewDefinition: Element): string {
   const definition =
     getColumnDefinition(
       viewDefinition,
-      getRemotePref('form.definition.columnSource')
+      getPref('form.definition.columnSource')
     ) ?? getColumnDefinition(viewDefinition, undefined);
   const resolved = definition ?? getParsedAttribute(viewDefinition, 'colDef');
   if (resolved === undefined)

@@ -1348,7 +1348,7 @@ export const preferencesText = createDictionary({
   },
   right: {
     'en-us': 'Right',
-    'es-es': 'Bien',
+    'es-es': 'Derecha',
     'fr-fr': 'Droite',
     'ru-ru': 'Верно',
     'uk-ua': 'правильно',
@@ -1384,5 +1384,33 @@ export const preferencesText = createDictionary({
   },
   collectionPreferences: {
     'en-us': 'Collection Preferences',
+  },
+  rememberDialogSizes: {
+    'en-us': 'Remember dialog window sizes',
+    'ru-ru': 'Запоминать размеры диалоговых окон',
+    'es-es': 'Recuerde los tamaños de las ventanas de diálogo',
+    'fr-fr': 'Se souvenir des tailles des fenêtres de dialogue',
+    'uk-ua': 'Запам’ятовувати розміри діалогових вікон',
+  },
+  rememberDialogPositions: {
+    'en-us': 'Remember dialog window positions',
+    'ru-ru': 'Запоминать позиции диалоговых окон',
+    'es-es': 'Recuerde las posiciones de las ventanas de diálogo',
+    'fr-fr': 'Se souvenir des positions des fenêtres de dialogue',
+    'uk-ua': 'Запам’ятовувати позиції діалогових вікон',
+  },
+  autoPlayMedia: {
+    'en-us': 'Automatically play media',
+    'ru-ru': 'Автоматически воспроизводить медиа',
+    'es-es': 'Reproducir automáticamente medios',
+    'fr-fr': 'Lecture automatique des médias',
+    'uk-ua': 'Автоматично відтворювати медіа',
+  },
+  useCustomTooltips: {
+    'en-us': 'Use modern tooltips',
+    'ru-ru': 'Использовать современные подсказки',
+    'es-es': 'Usar modernos tooltips',
+    'fr-fr': 'Utiliser des infobulles modernes',
+    'uk-ua': 'Використовувати сучасні підказки',
   },
 } as const);

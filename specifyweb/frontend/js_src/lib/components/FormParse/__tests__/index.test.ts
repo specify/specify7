@@ -9,7 +9,7 @@ import { ensure } from '../../../utils/types';
 import { removeKey } from '../../../utils/utils';
 import { strictParseXml } from '../../AppResources/codeMirrorLinters';
 import { schema } from '../../DataModel/schema';
-import { getRemotePref } from '../../InitialContext/remotePrefs';
+import { getPref } from '../../InitialContext/remotePrefs';
 import { formatUrl } from '../../Router/queryString';
 import type { FormCellDefinition } from '../cells';
 import type { ParsedFormDefinition, ViewDefinition } from '../index';
@@ -215,6 +215,7 @@ test('parseViewDefinition', () => {
   expect(removeKey(result, 'model')).toEqual({
     ...parsedTinyView,
     errors: [],
+    name: '',
     mode: 'view',
     formType: 'form',
     viewSetId: undefined,
@@ -335,7 +336,7 @@ describe('getColumnDefinitions', () => {
         strictParseXml(
           `<viewdef>
             <columnDef os="abc">A</columnDef>
-            <columnDef os="${getRemotePref(
+            <columnDef os="${getPref(
               'form.definition.columnSource'
             )}">B</columnDef>
           </viewdef>`

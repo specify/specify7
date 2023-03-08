@@ -3,8 +3,6 @@ import React from 'react';
 import { commonText } from '../../localization/common';
 import { localityText } from '../../localization/locality';
 import { queryText } from '../../localization/query';
-import { whitespaceSensitive } from '../../localization/utils';
-import { f } from '../../utils/functools';
 import type { Parser } from '../../utils/parser/definitions';
 import { resolveParser } from '../../utils/parser/definitions';
 import type { RA } from '../../utils/types';
@@ -392,11 +390,8 @@ export function QueryLine({
                     className={customSelectElementBackground}
                     disabled={handleChange === undefined}
                     title={
-                      f.maybe(
-                        queryFieldFilters[field.filters[index].type]
-                          .description,
-                        whitespaceSensitive
-                      ) ?? commonText.filter()
+                      queryFieldFilters[field.filters[index].type]
+                        .description ?? commonText.filter()
                     }
                     value={filter.type}
                     onChange={({ target }): void => {

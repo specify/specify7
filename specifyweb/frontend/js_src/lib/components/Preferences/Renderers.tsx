@@ -49,7 +49,7 @@ export const ColorPickerPreferenceItem: PreferenceItemComponent<string> =
           }}
         />
         <Input.Generic
-          className="sr-only"
+          className="sr-only !top-[unset] bottom-0 h-auto opacity-0"
           isReadOnly={isReadOnly}
           maxLength={7}
           minLength={7}

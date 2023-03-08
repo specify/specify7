@@ -8,7 +8,7 @@ import { queryText } from '../../localization/query';
 import { treeText } from '../../localization/tree';
 import { formData } from '../../utils/ajax/helpers';
 import { ping } from '../../utils/ajax/ping';
-import type { RA } from '../../utils/types';
+import type { GetOrSet, RA } from '../../utils/types';
 import { toLowerCase } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
@@ -19,7 +19,7 @@ import { schema } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { DeleteButton } from '../Forms/DeleteButton';
 import { ResourceView } from '../Forms/ResourceView';
-import { getRemotePref } from '../InitialContext/remotePrefs';
+import { getPref } from '../InitialContext/remotePrefs';
 import { Dialog } from '../Molecules/Dialog';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import type { Row } from './helpers';
@@ -35,6 +35,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
   actionRow,
   onChange: handleChange,
   onRefresh: handleRefresh,
+  setFocusPath,
 }: {
   readonly tableName: SCHEMA['tableName'];
   readonly focusRef: React.MutableRefObject<HTMLAnchorElement | null>;
@@ -43,6 +44,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
   readonly actionRow: Row | undefined;
   readonly onChange: (row: Row | undefined) => void;
   readonly onRefresh: () => void;
+  readonly setFocusPath: GetOrSet<RA<number> | undefined>[1];
 }): JSX.Element {
   const isRoot = ranks[0] === focusedRow?.rankId;
 
@@ -58,12 +60,13 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
   const resourceName = `/tree/edit/${toLowerCase(tableName)}` as const;
   const isSynonym = typeof focusedRow?.acceptedId === 'number';
 
-  const doExpandSynonymActionsPref = getRemotePref(
+  const doExpandSynonymActionsPref = getPref(
     `sp7.allow_adding_child_to_synonymized_parent.${tableName}`
   );
 
   const disableButtons =
     focusedRow === undefined || typeof currentAction === 'string';
+
   return currentAction === undefined ||
     actionRow === undefined ||
     focusedRow === undefined ||
@@ -108,7 +111,10 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
             disabled={disableButtons}
             nodeId={focusedRow?.nodeId}
             tableName={tableName}
-            onDeleted={handleRefresh}
+            onDeleted={() => {
+              handleRefresh();
+              setFocusPath((path) => path?.slice(0, -1));
+            }}
           />
         </li>
       ) : undefined}
@@ -438,6 +444,7 @@ function NodeDeleteButton({
         : undefined,
     [tableName, nodeId]
   );
+
   return disabled || resource === undefined ? (
     <Button.Small onClick={undefined}>{commonText.delete()}</Button.Small>
   ) : (

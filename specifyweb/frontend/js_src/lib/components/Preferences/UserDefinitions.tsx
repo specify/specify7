@@ -113,7 +113,7 @@ const altKeyName = globalThis.navigator?.appVersion.includes('Mac')
 /**
  * This is used to enforce the same generic value be used inside a PreferenceItem
  */
-export const definePref = <VALUE,>(
+export const defineItem = <VALUE,>(
   definition: PreferenceItem<VALUE>
 ): PreferenceItem<VALUE> => definition;
 
@@ -133,7 +133,7 @@ export const userPreferenceDefinitions = {
       ui: {
         title: preferencesText.ui(),
         items: {
-          language: definePref<Language>({
+          language: defineItem<Language>({
             title: commonText.language(),
             requiresReload: true,
             visible: true,
@@ -141,7 +141,7 @@ export const userPreferenceDefinitions = {
             renderer: LanguagePreferencesItem,
             container: 'label',
           }),
-          theme: definePref<'dark' | 'light' | 'system'>({
+          theme: defineItem<'dark' | 'light' | 'system'>({
             title: preferencesText.theme(),
             requiresReload: false,
             visible: true,
@@ -162,7 +162,7 @@ export const userPreferenceDefinitions = {
               },
             ],
           }),
-          reduceMotion: definePref<'noPreference' | 'reduce' | 'system'>({
+          reduceMotion: defineItem<'noPreference' | 'reduce' | 'system'>({
             title: preferencesText.reduceMotion(),
             description: preferencesText.reduceMotionDescription(),
             requiresReload: false,
@@ -184,7 +184,7 @@ export const userPreferenceDefinitions = {
               },
             ],
           }),
-          reduceTransparency: definePref<'noPreference' | 'reduce' | 'system'>({
+          reduceTransparency: defineItem<'noPreference' | 'reduce' | 'system'>({
             title: preferencesText.reduceTransparency(),
             description: preferencesText.reduceTransparencyDescription(),
             requiresReload: false,
@@ -206,7 +206,7 @@ export const userPreferenceDefinitions = {
               },
             ],
           }),
-          contrast: definePref<'less' | 'more' | 'noPreference' | 'system'>({
+          contrast: defineItem<'less' | 'more' | 'noPreference' | 'system'>({
             title: preferencesText.contrast(),
             requiresReload: false,
             visible: true,
@@ -231,7 +231,7 @@ export const userPreferenceDefinitions = {
               },
             ],
           }),
-          fontSize: definePref<number>({
+          fontSize: defineItem<number>({
             title: preferencesText.fontSize(),
             requiresReload: false,
             setOnBlurOnly: true,
@@ -243,7 +243,7 @@ export const userPreferenceDefinitions = {
               max: 1000,
             },
           }),
-          scaleInterface: definePref<boolean>({
+          scaleInterface: defineItem<boolean>({
             title: preferencesText.scaleInterface(),
             description: preferencesText.scaleInterfaceDescription(),
             requiresReload: false,
@@ -251,7 +251,7 @@ export const userPreferenceDefinitions = {
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
-          fontFamily: definePref<string>({
+          fontFamily: defineItem<string>({
             title: preferencesText.fontFamily(),
             description: preferencesText.fontFamilyDescription(),
             requiresReload: false,
@@ -260,12 +260,19 @@ export const userPreferenceDefinitions = {
             renderer: FontFamilyPreferenceItem,
             container: 'label',
           }),
+          useCustomTooltips: defineItem<boolean>({
+            title: preferencesText.useCustomTooltips(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
         },
       },
       appearance: {
         title: preferencesText.appearance(),
         items: {
-          background: definePref({
+          background: defineItem({
             title: preferencesText.background(),
             requiresReload: false,
             visible: true,
@@ -273,7 +280,7 @@ export const userPreferenceDefinitions = {
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
-          darkBackground: definePref({
+          darkBackground: defineItem({
             title: preferencesText.darkBackground(),
             requiresReload: false,
             visible: true,
@@ -281,7 +288,7 @@ export const userPreferenceDefinitions = {
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
-          accentColor1: definePref({
+          accentColor1: defineItem({
             title: preferencesText.accentColor1(),
             requiresReload: false,
             visible: true,
@@ -289,7 +296,7 @@ export const userPreferenceDefinitions = {
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
-          accentColor2: definePref({
+          accentColor2: defineItem({
             title: preferencesText.accentColor2(),
             requiresReload: false,
             visible: true,
@@ -297,7 +304,7 @@ export const userPreferenceDefinitions = {
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
-          accentColor3: definePref({
+          accentColor3: defineItem({
             title: preferencesText.accentColor3(),
             requiresReload: false,
             visible: true,
@@ -305,7 +312,7 @@ export const userPreferenceDefinitions = {
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
-          accentColor4: definePref({
+          accentColor4: defineItem({
             title: preferencesText.accentColor4(),
             requiresReload: false,
             visible: true,
@@ -313,7 +320,7 @@ export const userPreferenceDefinitions = {
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
-          accentColor5: definePref({
+          accentColor5: defineItem({
             title: preferencesText.accentColor5(),
             requiresReload: false,
             visible: true,
@@ -321,7 +328,7 @@ export const userPreferenceDefinitions = {
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
-          roundedCorners: definePref<boolean>({
+          roundedCorners: defineItem<boolean>({
             title: preferencesText.roundedCorners(),
             requiresReload: false,
             visible: true,
@@ -333,7 +340,7 @@ export const userPreferenceDefinitions = {
       application: {
         title: preferencesText.application(),
         items: {
-          allowDismissingErrors: definePref<boolean>({
+          allowDismissingErrors: defineItem<boolean>({
             title: preferencesText.allowDismissingErrors(),
             requiresReload: false,
             visible: 'protected',
@@ -345,7 +352,7 @@ export const userPreferenceDefinitions = {
       dialog: {
         title: preferencesText.dialogs(),
         items: {
-          updatePageTitle: definePref<boolean>({
+          updatePageTitle: defineItem<boolean>({
             title: preferencesText.updatePageTitle(),
             description: preferencesText.updatePageTitleDescription(),
             requiresReload: false,
@@ -353,7 +360,7 @@ export const userPreferenceDefinitions = {
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
-          transparentBackground: definePref<boolean>({
+          transparentBackground: defineItem<boolean>({
             title: preferencesText.translucentDialog(),
             description: preferencesText.translucentDialogDescription(),
             requiresReload: false,
@@ -361,29 +368,43 @@ export const userPreferenceDefinitions = {
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
-          blurContentBehindDialog: definePref<boolean>({
+          blurContentBehindDialog: defineItem<boolean>({
             title: preferencesText.blurContentBehindDialog(),
             requiresReload: false,
             visible: true,
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
-          showIcon: definePref<boolean>({
+          showIcon: defineItem<boolean>({
             title: preferencesText.showDialogIcon(),
             requiresReload: false,
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
-          closeOnEsc: definePref<boolean>({
+          closeOnEsc: defineItem<boolean>({
             title: preferencesText.closeOnEsc(),
             requiresReload: false,
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
-          closeOnOutsideClick: definePref<boolean>({
+          closeOnOutsideClick: defineItem<boolean>({
             title: preferencesText.closeOnOutsideClick(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
+          rememberPosition: defineItem<boolean>({
+            title: preferencesText.rememberDialogPositions(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
+          rememberSize: defineItem<boolean>({
+            title: preferencesText.rememberDialogSizes(),
             requiresReload: false,
             visible: true,
             defaultValue: true,
@@ -394,7 +415,7 @@ export const userPreferenceDefinitions = {
       behavior: {
         title: preferencesText.behavior(),
         items: {
-          altClickToSupressNewTab: definePref<boolean>({
+          altClickToSupressNewTab: defineItem<boolean>({
             title: preferencesText.altClickToSupressNewTab({ altKeyName }),
             description: preferencesText.altClickToSupressNewTabDescription({
               altKeyName,
@@ -404,7 +425,7 @@ export const userPreferenceDefinitions = {
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
-          unsavedIndicator: definePref<boolean>({
+          unsavedIndicator: defineItem<boolean>({
             title: preferencesText.showUnsavedIndicator(),
             description: preferencesText.showUnsavedIndicatorDescription(),
             requiresReload: false,
@@ -422,7 +443,7 @@ export const userPreferenceDefinitions = {
       general: {
         title: preferencesText.general(),
         items: {
-          mode: definePref<WelcomePageMode>({
+          mode: defineItem<WelcomePageMode>({
             title: preferencesText.content(),
             description: (
               <Link.NewTab href="https://github.com/specify/specify7/wiki/Customizing-the-splash-screen">
@@ -435,8 +456,7 @@ export const userPreferenceDefinitions = {
             renderer: WelcomePageModePreferenceItem,
             container: 'div',
           }),
-          // FEATURE: allow selecting attachments
-          source: definePref<string>({
+          source: defineItem<string>({
             title: <></>,
             requiresReload: false,
             // This item is rendered inside of WelcomePageModePreferenceItem
@@ -454,7 +474,7 @@ export const userPreferenceDefinitions = {
       appearance: {
         title: preferencesText.appearance(),
         items: {
-          position: definePref<'bottom' | 'left' | 'right' | 'top'>({
+          position: defineItem<'bottom' | 'left' | 'right' | 'top'>({
             title: preferencesText.position(),
             requiresReload: false,
             visible: true,
@@ -466,7 +486,7 @@ export const userPreferenceDefinitions = {
               { value: 'bottom', title: preferencesText.bottom() },
             ],
           }),
-          items: definePref<MenuPreferences>({
+          items: defineItem<MenuPreferences>({
             title: preferencesText.position(),
             requiresReload: false,
             visible: true,
@@ -487,7 +507,7 @@ export const userPreferenceDefinitions = {
       createInteractions: {
         title: preferencesText.createInteractions(),
         items: {
-          useSpaceAsDelimiter: definePref<'auto' | 'false' | 'true'>({
+          useSpaceAsDelimiter: defineItem<'auto' | 'false' | 'true'>({
             title: preferencesText.useSpaceAsDelimiter(),
             requiresReload: false,
             visible: true,
@@ -508,7 +528,7 @@ export const userPreferenceDefinitions = {
               },
             ],
           }),
-          useCommaAsDelimiter: definePref<'auto' | 'false' | 'true'>({
+          useCommaAsDelimiter: defineItem<'auto' | 'false' | 'true'>({
             title: preferencesText.useCommaAsDelimiter(),
             requiresReload: false,
             visible: true,
@@ -529,7 +549,7 @@ export const userPreferenceDefinitions = {
               },
             ],
           }),
-          useNewLineAsDelimiter: definePref<'auto' | 'false' | 'true'>({
+          useNewLineAsDelimiter: defineItem<'auto' | 'false' | 'true'>({
             title: preferencesText.useNewLineAsDelimiter(),
             requiresReload: false,
             visible: true,
@@ -550,7 +570,7 @@ export const userPreferenceDefinitions = {
               },
             ],
           }),
-          useCustomDelimiters: definePref<string>({
+          useCustomDelimiters: defineItem<string>({
             title: preferencesText.useCustomDelimiters(),
             description: preferencesText.useCustomDelimitersDescription(),
             requiresReload: false,
@@ -568,7 +588,7 @@ export const userPreferenceDefinitions = {
       general: {
         title: preferencesText.general(),
         items: {
-          shownTables: definePref<RA<number> | 'legacy'>({
+          shownTables: defineItem<RA<number> | 'legacy'>({
             title: <>_shownTables</>,
             requiresReload: false,
             visible: false,
@@ -581,7 +601,7 @@ export const userPreferenceDefinitions = {
       schema: {
         title: schemaText.schemaConfig(),
         items: {
-          language: definePref<string>({
+          language: defineItem<string>({
             title: commonText.language(),
             description: preferencesText.languageDescription(),
             requiresReload: true,
@@ -595,14 +615,14 @@ export const userPreferenceDefinitions = {
       behavior: {
         title: preferencesText.behavior(),
         items: {
-          textAreaAutoGrow: definePref<boolean>({
+          textAreaAutoGrow: defineItem<boolean>({
             title: preferencesText.textAreaAutoGrow(),
             requiresReload: false,
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
-          updatePageTitle: definePref<boolean>({
+          updatePageTitle: defineItem<boolean>({
             title: preferencesText.updatePageTitle(),
             description: preferencesText.updatePageTitleFormDescription(),
             requiresReload: false,
@@ -610,14 +630,14 @@ export const userPreferenceDefinitions = {
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
-          tableNameInTitle: definePref<boolean>({
+          tableNameInTitle: defineItem<boolean>({
             title: preferencesText.tableNameInTitle(),
             requiresReload: false,
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
-          formHeaderFormat: definePref<'full' | 'icon' | 'name'>({
+          formHeaderFormat: defineItem<'full' | 'icon' | 'name'>({
             title: preferencesText.formHeaderFormat(),
             requiresReload: false,
             visible: true,
@@ -637,7 +657,7 @@ export const userPreferenceDefinitions = {
               },
             ],
           }),
-          makeFormDialogsModal: definePref<boolean>({
+          makeFormDialogsModal: defineItem<boolean>({
             title: preferencesText.makeFormDialogsModal(),
             requiresReload: false,
             visible: true,
@@ -649,14 +669,14 @@ export const userPreferenceDefinitions = {
       definition: {
         title: resourcesText.formDefinition(),
         items: {
-          flexibleColumnWidth: definePref<boolean>({
+          flexibleColumnWidth: defineItem<boolean>({
             title: preferencesText.flexibleColumnWidth(),
             requiresReload: false,
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
-          flexibleSubGridColumnWidth: definePref<boolean>({
+          flexibleSubGridColumnWidth: defineItem<boolean>({
             title: preferencesText.flexibleSubGridColumnWidth(),
             requiresReload: false,
             visible: true,
@@ -668,7 +688,7 @@ export const userPreferenceDefinitions = {
       ui: {
         title: preferencesText.ui(),
         items: {
-          fontSize: definePref<number>({
+          fontSize: defineItem<number>({
             title: preferencesText.fontSize(),
             requiresReload: false,
             setOnBlurOnly: true,
@@ -680,7 +700,7 @@ export const userPreferenceDefinitions = {
               max: 1000,
             },
           }),
-          fontFamily: definePref<string>({
+          fontFamily: defineItem<string>({
             title: preferencesText.fontFamily(),
             description: preferencesText.fontFamilyDescription(),
             requiresReload: false,
@@ -689,7 +709,7 @@ export const userPreferenceDefinitions = {
             renderer: FontFamilyPreferenceItem,
             container: 'label',
           }),
-          maxWidth: definePref<number>({
+          maxWidth: defineItem<number>({
             title: preferencesText.maxFormWidth(),
             requiresReload: false,
             setOnBlurOnly: true,
@@ -701,35 +721,35 @@ export const userPreferenceDefinitions = {
               max: 10_000,
             },
           }),
-          limitMaxFieldWidth: definePref<boolean>({
+          limitMaxFieldWidth: defineItem<boolean>({
             title: preferencesText.limitMaxFieldWidth(),
             requiresReload: false,
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
-          specifyNetworkBadge: definePref<boolean>({
+          specifyNetworkBadge: defineItem<boolean>({
             title: preferencesText.specifyNetworkBadge(),
             requiresReload: false,
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
-          useAccessibleFullDatePicker: definePref<boolean>({
+          useAccessibleFullDatePicker: defineItem<boolean>({
             title: preferencesText.useAccessibleFullDatePicker(),
             requiresReload: false,
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
-          useAccessibleMonthPicker: definePref<boolean>({
+          useAccessibleMonthPicker: defineItem<boolean>({
             title: preferencesText.useAccessibleMonthPicker(),
             requiresReload: false,
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
-          rightAlignNumberFields: definePref<boolean>({
+          rightAlignNumberFields: defineItem<boolean>({
             title: preferencesText.rightAlignNumberFields(),
             requiresReload: false,
             visible: true,
@@ -741,7 +761,7 @@ export const userPreferenceDefinitions = {
       fieldBackground: {
         title: preferencesText.fieldBackgrounds(),
         items: {
-          default: definePref({
+          default: defineItem({
             title: preferencesText.fieldBackground(),
             requiresReload: false,
             visible: true,
@@ -749,7 +769,7 @@ export const userPreferenceDefinitions = {
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
-          disabled: definePref({
+          disabled: defineItem({
             title: preferencesText.disabledFieldBackground(),
             requiresReload: false,
             visible: true,
@@ -757,7 +777,7 @@ export const userPreferenceDefinitions = {
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
-          invalid: definePref({
+          invalid: defineItem({
             title: preferencesText.invalidFieldBackground(),
             requiresReload: false,
             visible: true,
@@ -765,7 +785,7 @@ export const userPreferenceDefinitions = {
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
-          required: definePref({
+          required: defineItem({
             title: preferencesText.requiredFieldBackground(),
             requiresReload: false,
             visible: true,
@@ -773,7 +793,7 @@ export const userPreferenceDefinitions = {
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
-          darkDefault: definePref({
+          darkDefault: defineItem({
             title: preferencesText.darkFieldBackground(),
             requiresReload: false,
             visible: true,
@@ -781,7 +801,7 @@ export const userPreferenceDefinitions = {
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
-          darkDisabled: definePref({
+          darkDisabled: defineItem({
             title: preferencesText.darkDisabledFieldBackground(),
             requiresReload: false,
             visible: true,
@@ -789,7 +809,7 @@ export const userPreferenceDefinitions = {
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
-          darkInvalid: definePref({
+          darkInvalid: defineItem({
             title: preferencesText.darkInvalidFieldBackground(),
             requiresReload: false,
             visible: true,
@@ -797,7 +817,7 @@ export const userPreferenceDefinitions = {
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
-          darkRequired: definePref({
+          darkRequired: defineItem({
             title: preferencesText.darkRequiredFieldBackground(),
             requiresReload: false,
             visible: true,
@@ -810,7 +830,7 @@ export const userPreferenceDefinitions = {
       appearance: {
         title: preferencesText.appearance(),
         items: {
-          foreground: definePref({
+          foreground: defineItem({
             title: preferencesText.foreground(),
             requiresReload: false,
             visible: true,
@@ -818,7 +838,7 @@ export const userPreferenceDefinitions = {
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
-          background: definePref({
+          background: defineItem({
             title: preferencesText.background(),
             requiresReload: false,
             visible: true,
@@ -826,7 +846,7 @@ export const userPreferenceDefinitions = {
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
-          darkForeground: definePref({
+          darkForeground: defineItem({
             title: preferencesText.darkForeground(),
             requiresReload: false,
             visible: true,
@@ -834,7 +854,7 @@ export const userPreferenceDefinitions = {
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
-          darkBackground: definePref({
+          darkBackground: defineItem({
             title: preferencesText.darkBackground(),
             requiresReload: false,
             visible: true,
@@ -847,7 +867,7 @@ export const userPreferenceDefinitions = {
       autoComplete: {
         title: preferencesText.autoComplete(),
         items: {
-          searchAlgorithm: definePref<
+          searchAlgorithm: defineItem<
             | 'contains'
             | 'containsCaseSensitive'
             | 'startsWith'
@@ -881,14 +901,14 @@ export const userPreferenceDefinitions = {
               },
             ],
           }),
-          highlightMatch: definePref<boolean>({
+          highlightMatch: defineItem<boolean>({
             title: preferencesText.highlightMatch(),
             requiresReload: false,
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
-          autoGrowAutoComplete: definePref<boolean>({
+          autoGrowAutoComplete: defineItem<boolean>({
             title: preferencesText.autoGrowAutoComplete(),
             requiresReload: false,
             visible: true,
@@ -900,7 +920,7 @@ export const userPreferenceDefinitions = {
       queryComboBox: {
         title: preferencesText.queryComboBox(),
         items: {
-          searchAlgorithm: definePref<'contains' | 'startsWith'>({
+          searchAlgorithm: defineItem<'contains' | 'startsWith'>({
             title: preferencesText.searchAlgorithm(),
             requiresReload: false,
             visible: true,
@@ -919,7 +939,7 @@ export const userPreferenceDefinitions = {
               },
             ],
           }),
-          treeSearchAlgorithm: definePref<'contains' | 'startsWith'>({
+          treeSearchAlgorithm: defineItem<'contains' | 'startsWith'>({
             title: preferencesText.treeSearchAlgorithm(),
             requiresReload: false,
             visible: true,
@@ -943,7 +963,7 @@ export const userPreferenceDefinitions = {
       recordSet: {
         title: '_recordSet' as LocalizedString,
         items: {
-          recordToOpen: definePref<'first' | 'last'>({
+          recordToOpen: defineItem<'first' | 'last'>({
             title: preferencesText.recordSetRecordToOpen(),
             requiresReload: false,
             visible: true,
@@ -965,7 +985,7 @@ export const userPreferenceDefinitions = {
       formTable: {
         title: formsText.formTable(),
         items: {
-          maxHeight: definePref<number>({
+          maxHeight: defineItem<number>({
             title: preferencesText.maxHeight(),
             requiresReload: false,
             visible: true,
@@ -988,7 +1008,7 @@ export const userPreferenceDefinitions = {
            * This has to be an object rather than an array to allow forms to
            * override this value when this value is undefined for a given table
            */
-          printOnSave: definePref<Partial<RR<keyof Tables, boolean>>>({
+          printOnSave: defineItem<Partial<RR<keyof Tables, boolean>>>({
             title: <>Generate label on form save</>,
             requiresReload: false,
             visible: false,
@@ -996,7 +1016,7 @@ export const userPreferenceDefinitions = {
             renderer: () => <>{error('This should not get called')}</>,
             container: 'div',
           }),
-          carryForward: definePref<{
+          carryForward: defineItem<{
             readonly [TABLE_NAME in keyof Tables]?: RA<
               TableFields<Tables[TABLE_NAME]>
             >;
@@ -1008,7 +1028,7 @@ export const userPreferenceDefinitions = {
             renderer: () => <>{error('This should not get called')}</>,
             container: 'div',
           }),
-          enableCarryForward: definePref<RA<keyof Tables>>({
+          enableCarryForward: defineItem<RA<keyof Tables>>({
             title: <>enableCarryForward</>,
             requiresReload: false,
             visible: false,
@@ -1021,7 +1041,7 @@ export const userPreferenceDefinitions = {
            * Since most tables are likely to have carry enabled, this pref is
            * negated (so as not waste too much space)
            */
-          disableClone: definePref<RA<keyof Tables>>({
+          disableClone: defineItem<RA<keyof Tables>>({
             title: <>disableClone</>,
             requiresReload: false,
             visible: false,
@@ -1029,7 +1049,7 @@ export const userPreferenceDefinitions = {
             renderer: () => <>{error('This should not get called')}</>,
             container: 'div',
           }),
-          disableAdd: definePref<RA<keyof Tables>>({
+          disableAdd: defineItem<RA<keyof Tables>>({
             title: <>disableAdd</>,
             requiresReload: false,
             visible: false,
@@ -1037,7 +1057,7 @@ export const userPreferenceDefinitions = {
             renderer: () => <>{error('This should not get called')}</>,
             container: 'div',
           }),
-          autoNumbering: definePref<{
+          autoNumbering: defineItem<{
             readonly [TABLE_NAME in keyof Tables]?: RA<
               TableFields<Tables[TABLE_NAME]>
             >;
@@ -1049,7 +1069,7 @@ export const userPreferenceDefinitions = {
             renderer: () => <>{error('This should not get called')}</>,
             container: 'div',
           }),
-          useCustomForm: definePref<RA<keyof Tables>>({
+          useCustomForm: defineItem<RA<keyof Tables>>({
             title: <>useCustomForm</>,
             requiresReload: false,
             visible: false,
@@ -1057,7 +1077,7 @@ export const userPreferenceDefinitions = {
             renderer: () => <>{error('This should not get called')}</>,
             container: 'div',
           }),
-          carryForwardShowHidden: definePref<boolean>({
+          carryForwardShowHidden: defineItem<boolean>({
             title: <>carryForwardShowHidden</>,
             requiresReload: false,
             visible: false,
@@ -1075,14 +1095,14 @@ export const userPreferenceDefinitions = {
       general: {
         title: preferencesText.general(),
         items: {
-          alwaysPrompt: definePref<boolean>({
+          alwaysPrompt: defineItem<boolean>({
             title: preferencesText.alwaysPrompt(),
             requiresReload: false,
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
-          sortOrder: definePref<
+          sortOrder: defineItem<
             keyof Collection['fields'] | `-${keyof Collection['fields']}`
           >({
             title: attachmentsText.orderBy(),
@@ -1097,27 +1117,44 @@ export const userPreferenceDefinitions = {
       },
     },
   },
+  attachments: {
+    title: attachmentsText.attachments(),
+    subCategories: {
+      behavior: {
+        title: preferencesText.behavior(),
+        items: {
+          autoPlay: defineItem<boolean>({
+            title: preferencesText.autoPlayMedia(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+        },
+      },
+    },
+  },
   treeEditor: {
     title: preferencesText.treeEditor(),
     subCategories: {
       behavior: {
         title: preferencesText.behavior(),
         items: {
-          autoScroll: definePref<boolean>({
+          autoScroll: defineItem<boolean>({
             title: preferencesText.autoScrollTree(),
             requiresReload: false,
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
-          searchCaseSensitive: definePref<boolean>({
+          searchCaseSensitive: defineItem<boolean>({
             title: preferencesText.searchCaseSensitive(),
             requiresReload: false,
             visible: true,
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
-          searchField: definePref<'fullName' | 'name'>({
+          searchField: defineItem<'fullName' | 'name'>({
             title: preferencesText.searchField(),
             requiresReload: false,
             visible: true,
@@ -1135,7 +1172,7 @@ export const userPreferenceDefinitions = {
               },
             ],
           }),
-          searchAlgorithm: definePref<'contains' | 'startsWith'>({
+          searchAlgorithm: defineItem<'contains' | 'startsWith'>({
             title: preferencesText.searchAlgorithm(),
             requiresReload: false,
             visible: true,
@@ -1160,7 +1197,7 @@ export const userPreferenceDefinitions = {
          */
         title: '_Geography' as LocalizedString,
         items: {
-          treeAccentColor: definePref({
+          treeAccentColor: defineItem({
             title: preferencesText.treeAccentColor(),
             requiresReload: false,
             visible: true,
@@ -1168,7 +1205,7 @@ export const userPreferenceDefinitions = {
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
-          synonymColor: definePref({
+          synonymColor: defineItem({
             title: preferencesText.synonymColor(),
             requiresReload: false,
             visible: true,
@@ -1181,7 +1218,7 @@ export const userPreferenceDefinitions = {
       taxon: {
         title: '_Taxon' as LocalizedString,
         items: {
-          treeAccentColor: definePref({
+          treeAccentColor: defineItem({
             title: preferencesText.treeAccentColor(),
             requiresReload: false,
             visible: true,
@@ -1189,7 +1226,7 @@ export const userPreferenceDefinitions = {
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
-          synonymColor: definePref({
+          synonymColor: defineItem({
             title: preferencesText.synonymColor(),
             requiresReload: false,
             visible: true,
@@ -1202,7 +1239,7 @@ export const userPreferenceDefinitions = {
       storage: {
         title: '_Storage' as LocalizedString,
         items: {
-          treeAccentColor: definePref({
+          treeAccentColor: defineItem({
             title: preferencesText.treeAccentColor(),
             requiresReload: false,
             visible: true,
@@ -1210,7 +1247,7 @@ export const userPreferenceDefinitions = {
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
-          synonymColor: definePref({
+          synonymColor: defineItem({
             title: preferencesText.synonymColor(),
             requiresReload: false,
             visible: true,
@@ -1223,7 +1260,7 @@ export const userPreferenceDefinitions = {
       geologicTimePeriod: {
         title: '_GeologicTimePeriod' as LocalizedString,
         items: {
-          treeAccentColor: definePref({
+          treeAccentColor: defineItem({
             title: preferencesText.treeAccentColor(),
             requiresReload: false,
             visible: true,
@@ -1231,7 +1268,7 @@ export const userPreferenceDefinitions = {
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
-          synonymColor: definePref({
+          synonymColor: defineItem({
             title: preferencesText.synonymColor(),
             requiresReload: false,
             visible: true,
@@ -1244,7 +1281,7 @@ export const userPreferenceDefinitions = {
       lithoStrat: {
         title: '_LithoStrat' as LocalizedString,
         items: {
-          treeAccentColor: definePref({
+          treeAccentColor: defineItem({
             title: preferencesText.treeAccentColor(),
             requiresReload: false,
             visible: true,
@@ -1252,7 +1289,7 @@ export const userPreferenceDefinitions = {
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
-          synonymColor: definePref({
+          synonymColor: defineItem({
             title: preferencesText.synonymColor(),
             requiresReload: false,
             visible: true,
@@ -1270,7 +1307,7 @@ export const userPreferenceDefinitions = {
       general: {
         title: preferencesText.general(),
         items: {
-          noRestrictionsMode: definePref<boolean>({
+          noRestrictionsMode: defineItem<boolean>({
             title: preferencesText.noRestrictionsMode(),
             description: (
               <span>
@@ -1286,14 +1323,14 @@ export const userPreferenceDefinitions = {
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
-          showNoReadTables: definePref<boolean>({
+          showNoReadTables: defineItem<boolean>({
             title: preferencesText.showNoReadTables(),
             requiresReload: false,
             visible: true,
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
-          shownTables: definePref<RA<number>>({
+          shownTables: defineItem<RA<number>>({
             title: <>_shownTables</>,
             requiresReload: false,
             visible: false,
@@ -1306,7 +1343,7 @@ export const userPreferenceDefinitions = {
       behavior: {
         title: preferencesText.behavior(),
         items: {
-          stickyScrolling: definePref<boolean>({
+          stickyScrolling: defineItem<boolean>({
             title: preferencesText.stickyScrolling(),
             requiresReload: false,
             visible: true,
@@ -1318,12 +1355,40 @@ export const userPreferenceDefinitions = {
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
+          exportFileDelimiter: defineItem<' ' | ',' | ';' | '\t' | '|'>({
+            title: preferencesText.exportFileDelimiter(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '\t',
+            values: [
+              {
+                value: ',',
+                title: wbText.comma(),
+              },
+              {
+                value: '\t',
+                title: wbText.tab(),
+              },
+              {
+                value: ';',
+                title: wbText.semicolon(),
+              },
+              {
+                value: ' ',
+                title: wbText.space(),
+              },
+              {
+                value: '|',
+                title: wbText.pipe(),
+              },
+            ],
+          }),
         },
       },
       appearance: {
         title: preferencesText.appearance(),
         items: {
-          condenseQueryResults: definePref<boolean>({
+          condenseQueryResults: defineItem<boolean>({
             title: preferencesText.condenseQueryResults(),
             requiresReload: false,
             visible: true,
@@ -1340,7 +1405,7 @@ export const userPreferenceDefinitions = {
       behavior: {
         title: preferencesText.behavior(),
         items: {
-          clearQueryFilters: definePref<boolean>({
+          clearQueryFilters: defineItem<boolean>({
             title: preferencesText.clearQueryFilters(),
             requiresReload: false,
             visible: true,
@@ -1357,7 +1422,7 @@ export const userPreferenceDefinitions = {
       editor: {
         title: preferencesText.spreadsheet(),
         items: {
-          minSpareRows: definePref<number>({
+          minSpareRows: defineItem<number>({
             title: preferencesText.minSpareRows(),
             requiresReload: false,
             visible: true,
@@ -1368,21 +1433,21 @@ export const userPreferenceDefinitions = {
               max: 100,
             },
           }),
-          autoWrapCol: definePref<boolean>({
+          autoWrapCol: defineItem<boolean>({
             title: preferencesText.autoWrapCols(),
             requiresReload: false,
             visible: true,
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
-          autoWrapRow: definePref<boolean>({
+          autoWrapRow: defineItem<boolean>({
             title: preferencesText.autoWrapRows(),
             requiresReload: false,
             visible: true,
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
-          tabMoveDirection: definePref<'col' | 'row'>({
+          tabMoveDirection: defineItem<'col' | 'row'>({
             title: preferencesText.tabMoveDirection(),
             description: preferencesText.tabMoveDirectionDescription(),
             requiresReload: false,
@@ -1399,7 +1464,7 @@ export const userPreferenceDefinitions = {
               },
             ],
           }),
-          enterMoveDirection: definePref<'col' | 'row'>({
+          enterMoveDirection: defineItem<'col' | 'row'>({
             title: preferencesText.enterMoveDirection(),
             description: preferencesText.enterMoveDirectionDescription(),
             requiresReload: false,
@@ -1416,14 +1481,14 @@ export const userPreferenceDefinitions = {
               },
             ],
           }),
-          enterBeginsEditing: definePref<boolean>({
+          enterBeginsEditing: defineItem<boolean>({
             title: preferencesText.enterBeginsEditing(),
             requiresReload: false,
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
-          filterPickLists: definePref<
+          filterPickLists: defineItem<
             'case-insensitive' | 'case-sensitive' | 'none'
           >({
             title: preferencesText.filterPickLists(),
@@ -1445,7 +1510,7 @@ export const userPreferenceDefinitions = {
               },
             ],
           }),
-          exportFileDelimiter: definePref<' ' | ',' | ';' | '\t' | '|'>({
+          exportFileDelimiter: defineItem<' ' | ',' | ';' | '\t' | '|'>({
             title: preferencesText.exportFileDelimiter(),
             requiresReload: false,
             visible: true,
@@ -1478,7 +1543,7 @@ export const userPreferenceDefinitions = {
       wbPlanView: {
         title: wbPlanText.dataMapper(),
         items: {
-          showNewDataSetWarning: definePref<boolean>({
+          showNewDataSetWarning: defineItem<boolean>({
             title: preferencesText.showNewDataSetWarning(),
             description: preferencesText.showNewDataSetWarningDescription(),
             requiresReload: false,
@@ -1486,7 +1551,7 @@ export const userPreferenceDefinitions = {
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
-          noRestrictionsMode: definePref<boolean>({
+          noRestrictionsMode: defineItem<boolean>({
             title: preferencesText.noRestrictionsMode(),
             description: (
               <span>
@@ -1502,7 +1567,7 @@ export const userPreferenceDefinitions = {
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
-          showNoAccessTables: definePref<boolean>({
+          showNoAccessTables: defineItem<boolean>({
             title: preferencesText.showNoAccessTables(),
             requiresReload: false,
             visible: true,
@@ -1519,14 +1584,14 @@ export const userPreferenceDefinitions = {
       behavior: {
         title: preferencesText.behavior(),
         items: {
-          lineWrap: definePref<boolean>({
+          lineWrap: defineItem<boolean>({
             title: preferencesText.lineWrap(),
             requiresReload: false,
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
-          indentSize: definePref<number>({
+          indentSize: defineItem<number>({
             title: preferencesText.indentSize(),
             requiresReload: false,
             visible: true,
@@ -1538,7 +1603,7 @@ export const userPreferenceDefinitions = {
             },
             type: 'java.lang.Integer',
           }),
-          indentWithTab: definePref<boolean>({
+          indentWithTab: defineItem<boolean>({
             title: preferencesText.indentWithTab(),
             requiresReload: false,
             visible: true,
@@ -1555,7 +1620,7 @@ export const userPreferenceDefinitions = {
       appearance: {
         title: preferencesText.appearance(),
         items: {
-          layout: definePref<RA<StatLayout> | undefined>({
+          layout: defineItem<RA<StatLayout> | undefined>({
             title: 'Defines the layout of the stats page',
             requiresReload: false,
             visible: false,
@@ -1573,42 +1638,42 @@ export const userPreferenceDefinitions = {
       behavior: {
         title: preferencesText.behavior(),
         items: {
-          doubleClickZoom: definePref<boolean>({
+          doubleClickZoom: defineItem<boolean>({
             title: preferencesText.doubleClickZoom(),
             requiresReload: false,
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
-          closePopupOnClick: definePref<boolean>({
+          closePopupOnClick: defineItem<boolean>({
             title: preferencesText.closePopupOnClick(),
             requiresReload: false,
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
-          animateTransitions: definePref<boolean>({
+          animateTransitions: defineItem<boolean>({
             title: preferencesText.animateTransitions(),
             requiresReload: false,
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
-          panInertia: definePref<boolean>({
+          panInertia: defineItem<boolean>({
             title: preferencesText.panInertia(),
             requiresReload: false,
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
-          mouseDrags: definePref<boolean>({
+          mouseDrags: defineItem<boolean>({
             title: preferencesText.mouseDrags(),
             requiresReload: false,
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
-          scrollWheelZoom: definePref<boolean>({
+          scrollWheelZoom: defineItem<boolean>({
             title: preferencesText.scrollWheelZoom(),
             requiresReload: false,
             visible: true,

@@ -10,7 +10,7 @@ import { icons } from '../Atoms/Icons';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { Conformations, KeyAction, Row, Stats } from './helpers';
 import { formatTreeStats, mapKey, scrollIntoView } from './helpers';
-import { getRemotePref } from '../InitialContext/remotePrefs';
+import { getPref } from '../InitialContext/remotePrefs';
 
 export function TreeRow({
   row,
@@ -129,7 +129,7 @@ export function TreeRow({
   const id = useId('tree-node');
   const isAction = actionRow === row;
 
-  const doIncludeAuthorPref = getRemotePref(`TaxonTreeEditor.DisplayAuthor`);
+  const doIncludeAuthorPref = getPref(`TaxonTreeEditor.DisplayAuthor`);
 
   const handleRef = React.useCallback(
     (element: HTMLButtonElement | null): void => {

@@ -5,7 +5,6 @@ import { useCachedState } from '../../hooks/useCachedState';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { schemaText } from '../../localization/schema';
-import { whitespaceSensitive } from '../../localization/utils';
 import { wbPlanText } from '../../localization/wbPlan';
 import type { IR, RA, RR } from '../../utils/types';
 import { Ul } from '../Atoms';
@@ -241,7 +240,7 @@ export function mappingOptionsMenu({
               },
             }).map(([id, { title, description }]) => (
               <li key={id}>
-                <Label.Inline title={whitespaceSensitive(description)}>
+                <Label.Inline title={description}>
                   <Input.Radio
                     checked={columnOptions.matchBehavior === id}
                     isReadOnly={isReadOnly}

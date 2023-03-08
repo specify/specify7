@@ -1,15 +1,13 @@
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
-import { useAsyncState } from '../../hooks/useAsyncState';
+import { useFormatted } from '../../hooks/useFormatted';
 import { commonText } from '../../localization/common';
 import { Link } from '../Atoms/Link';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { strictParseResourceUrl } from '../DataModel/resource';
 import { strictGetModel } from '../DataModel/schema';
-import { softFail } from '../Errors/Crash';
-import { format } from '../Forms/dataObjFormatters';
 import { hasTablePermission } from '../Permissions/helpers';
 
 export function FormattedResourceUrl({
@@ -30,19 +28,17 @@ export function FormattedResourceUrl({
 export function FormattedResource({
   resource,
   fallback = commonText.loading(),
+  asLink = true,
 }: {
   readonly resource: SpecifyResource<AnySchema>;
   readonly fallback?: string;
+  readonly asLink?: boolean;
 }): JSX.Element {
-  const [formatted = fallback] = useAsyncState(
-    React.useCallback(
-      async () => format(resource, undefined, true).catch(softFail),
-      [resource]
-    ),
-    false
-  );
+  const formatted = useFormatted(resource) ?? fallback;
+
   return typeof resource === 'object' &&
     hasTablePermission(resource.specifyModel.name, 'read') &&
+    asLink &&
     !resource.isNew() ? (
     <Link.NewTab href={resource.viewUrl()}>{formatted}</Link.NewTab>
   ) : (

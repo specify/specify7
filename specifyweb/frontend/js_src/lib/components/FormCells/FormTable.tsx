@@ -20,7 +20,7 @@ import { FormMeta } from '../FormMeta';
 import type { FormMode } from '../FormParse';
 import type { FormCellDefinition, SubViewSortField } from '../FormParse/cells';
 import { SearchDialog } from '../Forms/SearchDialog';
-import { RenderForm } from '../Forms/SpecifyForm';
+import { SpecifyForm } from '../Forms/SpecifyForm';
 import { useViewDefinition } from '../Forms/useViewDefinition';
 import { loadingGif } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
@@ -48,11 +48,6 @@ const cellToLabel = (
 const cellClassName =
   'sticky top-0 bg-[color:var(--form-foreground)] z-10 h-full -mx-1 pl-1 pt-1';
 
-const defaultSort: SubViewSortField = {
-  fieldNames: ['id'],
-  direction: 'asc',
-};
-
 // REFACTOR: split this component into smaller
 /**
  * Show several records in "grid view"
@@ -68,7 +63,7 @@ export function FormTable<SCHEMA extends AnySchema>({
   viewName = relationship.relatedModel.view,
   dialog,
   onClose: handleClose,
-  sortField = defaultSort,
+  sortField,
   onFetchMore: handleFetchMore,
 }: {
   readonly relationship: Relationship;
@@ -78,7 +73,7 @@ export function FormTable<SCHEMA extends AnySchema>({
   readonly onAdd:
     | ((resources: RA<SpecifyResource<SCHEMA>>) => void)
     | undefined;
-  readonly onDelete: (resource: SpecifyResource<SCHEMA>) => void;
+  readonly onDelete: ((resource: SpecifyResource<SCHEMA>) => void) | undefined;
   readonly mode: FormMode;
   readonly viewName?: string;
   readonly dialog: 'modal' | 'nonModal' | false;
@@ -86,18 +81,28 @@ export function FormTable<SCHEMA extends AnySchema>({
   readonly sortField: SubViewSortField | undefined;
   readonly onFetchMore: (() => Promise<void>) | undefined;
 }): JSX.Element {
-  const [sortConfig, setSortConfig] = React.useState<SortConfig<string>>({
-    sortField: sortField.fieldNames.join('.'),
-    ascending: sortField.direction === 'asc',
-  });
-
-  const resources = Array.from(unsortedResources).sort(
-    sortFunction(
-      // FEATURE: handle related fields
-      (resource) => resource.get(sortConfig.sortField),
-      !sortConfig.ascending
-    )
+  const [sortConfig, setSortConfig] = React.useState<
+    SortConfig<string> | undefined
+  >(
+    sortField === undefined
+      ? undefined
+      : {
+          sortField: sortField.fieldNames.join('.'),
+          ascending: sortField.direction === 'asc',
+        }
   );
+
+  const resources =
+    sortConfig === undefined
+      ? // Note, resources might be sorted by the back-end
+        unsortedResources
+      : Array.from(unsortedResources).sort(
+          sortFunction(
+            // FEATURE: handle related fields
+            (resource) => resource.get(sortConfig.sortField),
+            !sortConfig.ascending
+          )
+        );
 
   // When added a new resource, focus that row
   const addedResource = React.useRef<SpecifyResource<SCHEMA> | undefined>(
@@ -168,7 +173,8 @@ export function FormTable<SCHEMA extends AnySchema>({
     'definition',
     'flexibleSubGridColumnWidth'
   );
-  const displayDeleteButton = mode !== 'view';
+  const displayDeleteButton =
+    mode !== 'view' && typeof handleDelete === 'function';
   const displayViewButton = !isDependent;
   const headerIsVisible =
     resources.length !== 1 || !isExpanded[resources[0].cid];
@@ -234,7 +240,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                       onClick={(): void =>
                         setSortConfig({
                           sortField: fieldName,
-                          ascending: !sortConfig.ascending,
+                          ascending: !(sortConfig?.ascending ?? false),
                         })
                       }
                     >
@@ -282,7 +288,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                         tabIndex={-1}
                         visible
                       >
-                        <RenderForm
+                        <SpecifyForm
                           display="inline"
                           resource={resource}
                           viewDefinition={fullViewDefinition}
@@ -432,6 +438,7 @@ export function FormTable<SCHEMA extends AnySchema>({
   ) : (
     <Dialog
       buttons={commonText.close()}
+      dimensionsKey={relationship.name}
       header={header}
       headerButtons={addButton}
       modal={dialog === 'modal'}

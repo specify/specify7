@@ -7,7 +7,7 @@ import { ensure } from '../../utils/types';
 import { error } from '../Errors/assert';
 import type { StatLayout } from '../Statistics/types';
 import type { GenericPreferences } from './UserDefinitions';
-import { definePref } from './UserDefinitions';
+import { defineItem } from './UserDefinitions';
 
 export const collectionPreferenceDefinitions = {
   statistics: {
@@ -16,7 +16,7 @@ export const collectionPreferenceDefinitions = {
       appearance: {
         title: preferencesText.appearance(),
         items: {
-          layout: definePref<RA<StatLayout> | undefined>({
+          layout: defineItem<RA<StatLayout> | undefined>({
             title: 'Defines the layout of the stats page',
             requiresReload: false,
             visible: false,
@@ -24,7 +24,7 @@ export const collectionPreferenceDefinitions = {
             renderer: () => <>{error('This should not get called')}</>,
             container: 'label',
           }),
-          showTotal: definePref<boolean>({
+          showTotal: defineItem<boolean>({
             title: 'Defines if preparation stats include total',
             requiresReload: false,
             visible: false,

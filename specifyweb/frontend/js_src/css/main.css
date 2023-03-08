@@ -165,6 +165,10 @@
     @apply !bg-transparent text-brand-300 dark:text-brand-400;
   }
 
+  a.button {
+    @apply text-center;
+  }
+
   .link {
     @apply inline-flex cursor-pointer items-center gap-2
       text-black active:underline
@@ -196,18 +200,6 @@
 
   progress::-moz-progress-bar {
     @apply rounded bg-brand-200 dark:bg-brand-400;
-  }
-
-  /* Display tooltips as an overlay on touch-screen devices */
-  @media (pointer: coarse), (hover: none) {
-    [title] {
-      @apply relative inline-flex justify-center;
-    }
-
-    [title]:focus::after {
-      @apply absolute top-[90%] w-fit border border-black bg-white p-1
-        text-black content-[attr(title)];
-    }
   }
 
   /*

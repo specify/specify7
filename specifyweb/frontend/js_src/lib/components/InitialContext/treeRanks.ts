@@ -23,15 +23,19 @@ import { schema, strictGetModel } from '../DataModel/schema';
 import { fetchContext as fetchDomain } from '../DataModel/schemaBase';
 import type { Tables } from '../DataModel/types';
 
-export const getDomainResource = <
+export function getDomainResource<
   LEVEL extends keyof typeof schema.domainLevelIds
->(
-  level: LEVEL
-): SpecifyResource<Tables[Capitalize<LEVEL>]> | undefined =>
-  f.maybe(schema.domainLevelIds[level], (id) => {
-    const model = strictGetModel(level);
-    return new model.Resource({ id });
-  });
+>(level: LEVEL): SpecifyResource<Tables[Capitalize<LEVEL>]> | undefined {
+  const id = schema.domainLevelIds?.[level];
+  if (id === undefined) {
+    console.error(
+      `Trying to access domain resource ${level} before domain is loaded`
+    );
+    return;
+  }
+  const model = strictGetModel(level);
+  return new model.Resource({ id });
+}
 
 let treeDefinitions: {
   readonly [TREE_NAME in AnyTree['tableName']]: {
@@ -50,7 +54,10 @@ const treeScopes = {
   /* eslint-enable @typescript-eslint/naming-convention */
 } as const;
 
-// FEATURE: allow reordering trees
+/*
+ * FEATURE: allow reordering trees
+ *    See https://github.com/specify/specify7/issues/2121#issuecomment-1432158152
+ */
 const commonTrees = ['Geography', 'Storage', 'Taxon'] as const;
 const treesForPaleo = ['GeologicTimePeriod', 'LithoStrat'] as const;
 const allTrees = [...commonTrees, ...treesForPaleo] as const;

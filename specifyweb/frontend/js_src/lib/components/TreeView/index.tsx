@@ -1,5 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useSearchParameter } from '../../hooks/navigation';
 import { useAsyncState, usePromise } from '../../hooks/useAsyncState';
@@ -26,7 +27,7 @@ import type { SpecifyModel } from '../DataModel/specifyModel';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { ResourceView } from '../Forms/ResourceView';
 import { useMenuItem } from '../Header/useMenuItem';
-import { getRemotePref } from '../InitialContext/remotePrefs';
+import { getPref } from '../InitialContext/remotePrefs';
 import { isTreeModel, treeRanksPromise } from '../InitialContext/treeRanks';
 import { useTitle } from '../Molecules/AppTitle';
 import { supportsBackdropBlur } from '../Molecules/Dialog';
@@ -98,11 +99,9 @@ function TreeView<SCHEMA extends AnyTree>({
   useTitle(treeText.treeViewTitle({ treeName: table.label }));
 
   // Node sort order
-  const sortField = getRemotePref(
-    `${tableName as 'Geography'}.treeview_sort_field`
-  );
+  const sortField = getPref(`${tableName as 'Geography'}.treeview_sort_field`);
 
-  const includeAuthor = getRemotePref(`TaxonTreeEditor.DisplayAuthor`);
+  const includeAuthor = getPref(`TaxonTreeEditor.DisplayAuthor`);
 
   const baseUrl = `/api/specify_tree/${tableName.toLowerCase()}/${
     treeDefinition.id
@@ -118,7 +117,7 @@ function TreeView<SCHEMA extends AnyTree>({
     [baseUrl, sortField]
   );
 
-  const statsThreshold = getRemotePref(
+  const statsThreshold = getPref(
     `TreeEditor.Rank.Threshold.${tableName as 'Geography'}`
   );
   const getStats = React.useCallback(
@@ -164,7 +163,7 @@ function TreeView<SCHEMA extends AnyTree>({
 
   return rows === undefined ? null : (
     <Container.Full>
-      <header className="flex flex-wrap items-center gap-2">
+      <header className="flex items-center gap-2 overflow-x-auto sm:flex-wrap sm:overflow-x-visible">
         <TableIcon label name={table.name} />
         <H2 title={treeDefinition.get('remarks') ?? undefined}>
           {treeDefinition.get('name')}
@@ -198,6 +197,7 @@ function TreeView<SCHEMA extends AnyTree>({
             focusedRow={focusedRow}
             focusRef={toolbarButtonRef}
             ranks={rankIds}
+            setFocusPath={setFocusPath}
             tableName={tableName}
             onChange={setActionRow}
             onRefresh={(): void => {
@@ -268,9 +268,11 @@ function TreeView<SCHEMA extends AnyTree>({
                       )
                     }
                   >
-                    {collapsedRanks?.includes(rank.rankId) ?? false
-                      ? rankName[0]
-                      : rankName}
+                    {
+                      (collapsedRanks?.includes(rank.rankId) ?? false
+                        ? rankName[0]
+                        : rankName) as LocalizedString
+                    }
                   </Button.LikeLink>
                   {isEditingRanks &&
                   collapsedRanks?.includes(rank.rankId) !== true ? (

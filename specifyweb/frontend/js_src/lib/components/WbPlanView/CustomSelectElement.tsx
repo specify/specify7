@@ -25,6 +25,7 @@ import {
   tableIconSelected,
   tableIconUndefined,
 } from '../Molecules/TableIcon';
+import { titlePosition } from '../Molecules/Tooltips';
 import { scrollIntoView } from '../TreeView/helpers';
 
 type Properties =
@@ -296,7 +297,6 @@ function Option({
       className={classes.join(' ')}
       role="option"
       tabIndex={-1}
-      title={fullTitle === optionLabel ? tableLabel : fullTitle}
       onClick={
         typeof handleClick === 'function'
           ? (event): void => handleClick({ isDoubleClick: event.detail > 1 })
@@ -328,6 +328,7 @@ function Option({
                 ? wbPlanText.relationshipWithTable({ tableName: tableLabel })
                 : undefined
             }
+            {...{ [titlePosition]: 'right' }}
           >
             {icons.chevronRight}
           </span>
@@ -565,8 +566,8 @@ export function CustomSelectElement({
         aria-expanded={isOpen}
         aria-haspopup="listbox"
         className={`
-          flex min-h-[theme(spacing.8)] cursor-pointer
-          items-center gap-1 rounded border border-gray-500 px-1 dark:border-none
+          flex min-h-[theme(spacing.8)] min-w-max
+          cursor-pointer items-center gap-1 rounded border border-gray-500 px-1 dark:border-none md:min-w-[unset]
           ${
             defaultOption?.isRequired === true
               ? 'custom-select-input-required bg-[color:var(--custom-select-b2)]'
@@ -681,7 +682,7 @@ export function CustomSelectElement({
       aria-readonly={!has('interactive') || typeof handleChange !== 'function'}
       className={`
         h-fit flex-1 cursor-pointer overflow-x-hidden
-        rounded border border-brand-300 bg-[color:var(--custom-select-b1)]
+        rounded-b border border-brand-300 bg-[color:var(--custom-select-b1)]
         ${has('preview') ? '[z-index:2]' : ''}
         ${has('scroll') ? 'overflow-y-scroll' : 'overflow-y-auto'}
         ${has('shadow') ? 'max-h-[theme(spacing.64)] shadow-md' : ''}
@@ -739,6 +740,7 @@ export function CustomSelectElement({
       role={role}
       tabIndex={has('tabIndex') ? 0 : has('interactive') ? -1 : undefined}
       title={selectLabel}
+      {...{ [titlePosition]: 'top' }}
       onBlur={
         has('interactive')
           ? (event): void => {

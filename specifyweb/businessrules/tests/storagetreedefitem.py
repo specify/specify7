@@ -1,6 +1,6 @@
 from django.db.models import ProtectedError
 from specifyweb.specify.api_tests import ApiTests
-from ..exceptions import BusinessRuleException
+from ..exceptions import TreeBusinessRuleException
 from specifyweb.specify import models
 
 class StorageTreeDefItemTests(ApiTests):
@@ -22,7 +22,7 @@ class StorageTreeDefItemTests(ApiTests):
     def test_cannot_delete_root(self):
         self.rootstorage.delete()
 
-        with self.assertRaises(BusinessRuleException):
+        with self.assertRaises(TreeBusinessRuleException):
             self.rootstoragetreedefitem.delete()
 
     def test_delete_blocked_by_storage(self):

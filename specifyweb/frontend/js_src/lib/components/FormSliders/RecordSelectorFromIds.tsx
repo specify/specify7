@@ -91,13 +91,18 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
     };
   }, [ids, model]);
 
-  const [index, setIndex] = useTriggerState(defaultIndex ?? ids.length - 1);
+  const [index, setIndex] = useTriggerState(
+    Math.max(0, defaultIndex ?? ids.length - 1)
+  );
   React.useEffect(
     () =>
       setIndex((index) =>
-        typeof newResource === 'object'
-          ? rest.totalCount
-          : Math.min(index, rest.totalCount - 1)
+        Math.max(
+          0,
+          typeof newResource === 'object'
+            ? rest.totalCount
+            : Math.min(index, rest.totalCount - 1)
+        )
       ),
     [newResource, rest.totalCount]
   );
@@ -183,38 +188,44 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
       <ResourceView
         dialog={dialog}
         headerButtons={(specifyNetworkBadge): JSX.Element => (
-          <>
-            {headerButtons}
-            <DataEntry.Visit
-              resource={!isDependent && dialog !== false ? resource : undefined}
-            />
-            {hasTablePermission(model.name, isDependent ? 'create' : 'read') &&
-            typeof handleAdding === 'function' ? (
-              <DataEntry.Add
-                aria-label={addLabel}
-                disabled={mode === 'view'}
-                title={addLabel}
-                onClick={handleAdding}
+          <div className="flex flex-col items-center gap-2 md:flex-row md:gap-8">
+            <div className="flex gap-2">
+              {headerButtons}
+              <DataEntry.Visit
+                resource={
+                  !isDependent && dialog !== false ? resource : undefined
+                }
               />
-            ) : undefined}
-            {typeof handleRemove === 'function' && canRemove ? (
-              <DataEntry.Remove
-                aria-label={removeLabel}
-                disabled={resource === undefined || mode === 'view'}
-                title={removeLabel}
-                onClick={(): void => handleRemove('minusButton')}
-              />
-            ) : undefined}
-            {typeof newResource === 'object' ? (
-              <p className="flex-1">{formsText.creatingNewRecord()}</p>
-            ) : (
-              <span
-                className={`flex-1 ${dialog === false ? '-ml-2' : '-ml-4'}`}
-              />
-            )}
-            {specifyNetworkBadge}
-            {slider}
-          </>
+              {hasTablePermission(
+                model.name,
+                isDependent ? 'create' : 'read'
+              ) && typeof handleAdding === 'function' ? (
+                <DataEntry.Add
+                  aria-label={addLabel}
+                  disabled={mode === 'view'}
+                  title={addLabel}
+                  onClick={handleAdding}
+                />
+              ) : undefined}
+              {typeof handleRemove === 'function' && canRemove ? (
+                <DataEntry.Remove
+                  aria-label={removeLabel}
+                  disabled={resource === undefined || mode === 'view'}
+                  title={removeLabel}
+                  onClick={(): void => handleRemove('minusButton')}
+                />
+              ) : undefined}
+              {typeof newResource === 'object' ? (
+                <p className="flex-1">{formsText.creatingNewRecord()}</p>
+              ) : (
+                <span
+                  className={`flex-1 ${dialog === false ? '-ml-2' : '-ml-4'}`}
+                />
+              )}
+              {specifyNetworkBadge}
+            </div>
+            <div>{slider}</div>
+          </div>
         )}
         isDependent={isDependent}
         isLoading={isLoading || isExternalLoading}

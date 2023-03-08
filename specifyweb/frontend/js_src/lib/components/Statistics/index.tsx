@@ -252,7 +252,7 @@ export function StatsPage(): JSX.Element | null {
     }),
     []
   );
-  const queries = useQueries(filters, false);
+  const queries = useQueries(filters);
   const previousCollectionLayout = React.useRef(
     collectionLayout as unknown as RA<StatLayout>
   );
