@@ -20,6 +20,11 @@ import type {
   StatLayout,
 } from './types';
 
+/**
+ * Used for overriding phantom items (dynamic categories).
+ * If user doesn't have permission for dynamic category, then shows
+ * no permission text otherwise show loading
+ * */
 function ItemOverride({
   item,
 }: {

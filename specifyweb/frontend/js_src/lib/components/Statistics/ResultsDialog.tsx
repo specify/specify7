@@ -71,6 +71,7 @@ export function FrontEndStatsResultDialog({
                 handleEdit(query);
                 handleClose();
               }}
+              disabled={query.fields.length === 0}
             >
               {commonText.save()}
             </Button.Blue>

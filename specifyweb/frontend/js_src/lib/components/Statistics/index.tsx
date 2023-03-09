@@ -28,19 +28,24 @@ import { AddStatDialog } from './AddStatDialog';
 import { StatsAsideButton } from './Buttons';
 import { Categories } from './Categories';
 import {
+  getDefaultLayoutFlagged,
   getDynamicCategoriesToFetch,
   getOffsetOne,
   statsToTsv,
   useBackendApi,
   useDefaultDynamicCategorySetter,
-  useDefaultStatsToAdd,
   useDynamicCategorySetter,
 } from './hooks';
 import { StatsPageEditing } from './StatsPageEditing';
 import { defaultLayoutGenerated, dynamicStatsSpec } from './StatsSpec';
 import type { CustomStat, DefaultStat, StatLayout } from './types';
+import { MILLISECONDS } from '../Atoms/Internationalization';
+
+const TIME_DIFF_MINUTE = 1;
 
 export function StatsPage(): JSX.Element | null {
+  // TODO: Make stats page component smaller
+
   useMenuItem('statistics');
   const [initialSharedLayout, setSharedLayout] = collectionPreferences.use(
     'statistics',
@@ -138,7 +143,7 @@ export function StatsPage(): JSX.Element | null {
 
   const hasEditPermission = hasPermission(
     '/preferences/statistics',
-    'edit_protected'
+    'edit_shared'
   );
 
   const canEditIndex = (isCollection: boolean): boolean =>
@@ -194,6 +199,9 @@ export function StatsPage(): JSX.Element | null {
   const [defaultCategoriesToFetch, setDefaultCategoriesToFetch] =
     React.useState<RA<string>>([]);
 
+  /**
+   * Checks layout for absent dynamic categories and makes request for those categories.
+   * */
   React.useEffect(() => {
     const absentDynamicCategories =
       sourceLayout === undefined
@@ -219,7 +227,11 @@ export function StatsPage(): JSX.Element | null {
    */
   React.useEffect(() => {
     if (sharedLayout === undefined) {
-      handleSharedLayoutChange([defaultLayoutGenerated[0]]);
+      const date = new Date();
+      // Have to set the last updated manually, since this is the first load
+      handleSharedLayoutChange([
+        { ...defaultLayoutGenerated[0], lastUpdated: date.toJSON() },
+      ]);
     }
   }, [sharedLayout, handleSharedLayoutChange]);
 
@@ -298,7 +310,7 @@ export function StatsPage(): JSX.Element | null {
     personalLayout as unknown as RA<StatLayout>
   );
 
-  const defaultStatsAddLeft = useDefaultStatsToAdd(
+  const defaultStatsAddLeft = getDefaultLayoutFlagged(
     layout[activePage.isShared ? statsText.shared() : statsText.private()]?.[
       activePage.pageIndex
     ],
@@ -317,23 +329,26 @@ export function StatsPage(): JSX.Element | null {
     lastUpdated: undefined,
   });
 
-  const [refreshLayout, setRefreshLayout] = React.useState(true);
   React.useLayoutEffect(() => {
-    if (refreshLayout) {
-      handleSharedLayoutChange((layout) =>
+    if (pageLastUpdated === undefined) return;
+    const lastUpdatedParsed = new Date(pageLastUpdated).valueOf();
+    const currentTime = new Date().valueOf();
+    if (isNaN(lastUpdatedParsed) || isNaN(currentTime)) return;
+    const timeDiffMillSecond = Math.round(currentTime - lastUpdatedParsed);
+    if (timeDiffMillSecond < 0) return;
+    const timeDiffMinute = Math.floor(timeDiffMillSecond / (MILLISECONDS * 60));
+    if (timeDiffMinute >= TIME_DIFF_MINUTE) {
+      setCurrentLayout((layout) =>
         layout === undefined
           ? undefined
-          : layout.map((pageLayout) => getValueUndefined(pageLayout))
-      );
-      handlePersonalLayoutChange((layout) =>
-        layout === undefined
-          ? undefined
-          : layout.map((pageLayout) => getValueUndefined(pageLayout))
+          : layout.map((pageLayout, sourceIndex) =>
+              sourceIndex === activePage.pageIndex
+                ? getValueUndefined(pageLayout)
+                : pageLayout
+            )
       );
     }
-    setRefreshLayout(false);
-    return cleanMaybeFulfilled;
-  }, [refreshLayout, setRefreshLayout]);
+  }, [setCurrentLayout, activePage.pageIndex, activePage.isShared]);
 
   React.useLayoutEffect(() => {
     setCurrentLayout((layout) =>
@@ -356,8 +371,8 @@ export function StatsPage(): JSX.Element | null {
     activePage.isShared,
     pageLastUpdated,
     setCurrentLayout,
-    refreshLayout,
   ]);
+
   const handleAdd = (
     item: CustomStat | DefaultStat,
     categoryIndex?: number,
@@ -512,7 +527,6 @@ export function StatsPage(): JSX.Element | null {
                   handlePersonalLayoutChange(undefined);
                   setCategoriesToFetch([]);
                   setActivePage({ isShared: true, pageIndex: 0 });
-                  setRefreshLayout(true);
                 }}
               >
                 {`${commonText.reset()} [DEV]`}
@@ -570,10 +584,10 @@ export function StatsPage(): JSX.Element | null {
           <aside
             className={`
                  top-0 flex min-w-fit flex-1 flex-col divide-y-4 !divide-[color:var(--form-background)]
-                  md:sticky
+                 md:sticky
               `}
           >
-            <Ul className="flex flex-col gap-2">
+            <Ul className="flex flex-col gap-6">
               {Object.entries(layout).map(
                 ([parentLayoutName, parentLayout], index) =>
                   parentLayout === undefined ? undefined : (
@@ -583,9 +597,9 @@ export function StatsPage(): JSX.Element | null {
                           {parentLayoutName}
                         </H3>
                         {isEditing && canEditIndex(index === 0) && (
-                          <div>
+                          <div className="flex flex-1">
                             <Button.Icon
-                              className={`max-w-fit ${className.blueButton}`}
+                              className={`max-w-fit ${className.grayButton}`}
                               icon="plus"
                               title={commonText.add()}
                               onClick={(): void =>
