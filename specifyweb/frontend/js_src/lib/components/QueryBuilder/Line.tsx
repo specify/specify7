@@ -234,7 +234,7 @@ export function QueryLine({
   return (
     <div
       aria-current={isFocused ? 'location' : undefined}
-      className="flex flex-1 gap-2 border-t border-t-gray-500 py-2"
+      className="flex flex-1 gap-2 border-t border-t-gray-500 bg-[color:var(--form-foreground)] py-2"
     >
       {typeof handleRemove === 'function' && (
         <Button.Small

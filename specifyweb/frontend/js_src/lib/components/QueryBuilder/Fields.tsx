@@ -7,8 +7,9 @@ import type { Tables } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { scrollIntoView } from '../TreeView/helpers';
 import type { MappingPath } from '../WbPlanView/Mapper';
-import { QueryLine } from './Field';
+import { QueryLine } from './Line';
 import type { QueryField } from './helpers';
+import { Sortable } from '@shopify/draggable';
 
 export function QueryFields({
   baseTableName,
@@ -66,65 +67,41 @@ export function QueryFields({
 }): JSX.Element {
   const fieldsContainerRef = React.useRef<HTMLUListElement | null>(null);
 
-  const [draggedItem, setDraggedItem] = React.useState<QueryField | null>(null);
-
-  const [isDragging, setIsDragging] = React.useState(false);
-
+  //draggable and sortable code
   React.useEffect(() => {
-    if (isDragging) {
-      const listNode = fieldsContainerRef.current;
-      if (listNode === null) return;
-      const { top, bottom } = listNode.getBoundingClientRect();
-      const windowHeight = window.innerHeight;
-
-      if (top < 0) {
-        // The dragged item is at the top of the screen
-        listNode.scrollTop -= Math.abs(top);
-      } else if (bottom > windowHeight) {
-        // The dragged item is at the bottom of the screen
-        listNode.scrollTop += bottom - windowHeight;
-      }
-    }
-  }, [isDragging]);
-
-  const handleDragStart = (
-    event: React.DragEvent<HTMLLIElement>,
-    index: number
-  ) => {
-    setDraggedItem(fields[index]);
-    event.dataTransfer.effectAllowed = 'move';
-    event.dataTransfer.setData('text/plain', String(index));
-    setIsDragging(true);
-  };
-
-  const handleDragOver = (
-    event: React.DragEvent<HTMLLIElement>,
-    index: number
-  ) => {
-    event.preventDefault();
-
     if (handleChangeFields === undefined) return;
 
-    const draggedOverItem = fields[index];
+    if (fieldsContainerRef.current === null) return;
+    const sortable = new Sortable(fieldsContainerRef.current, {
+      draggable: 'li',
+      mirror: {
+        appendTo: document.getElementById('portal-root')!,
+        constrainDimensions: true,
+      },
+      distance: 4,
+    });
 
-    if (draggedItem === draggedOverItem) {
-      return;
-    }
+    sortable.on('sortable:stop', (event) => {
+      const newIndex = event.newIndex;
+      const oldIndex = event.oldIndex;
 
-    const newItems = Array.from(fields);
-    const draggedItemIndex = draggedItem ? newItems.indexOf(draggedItem) : -1;
+      const newItems = Array.from(fields);
 
-    if (draggedItemIndex < index && draggedItem !== null) {
-      newItems.splice(index + 1, 0, draggedItem);
-      newItems.splice(draggedItemIndex, 1);
-    } else if (draggedItemIndex > index && draggedItem !== null) {
-      newItems.splice(index, 0, draggedItem);
-      newItems.splice(draggedItemIndex + 1, 1);
-    }
+      if (oldIndex < newIndex) {
+        newItems.splice(newIndex + 1, 0, fields[oldIndex]);
+        newItems.splice(oldIndex, 1);
+      } else if (oldIndex > newIndex) {
+        newItems.splice(oldIndex, 0, fields[oldIndex]);
+        newItems.splice(oldIndex + 1, 1);
+      }
 
-    handleChangeFields(newItems);
-    setIsDragging(false);
-  };
+      handleChangeFields(newItems);
+    });
+
+    return () => {
+      sortable.destroy();
+    };
+  }, [fields, handleChangeFields]);
 
   // Scroll to bottom if added a child
   const oldFieldCount = React.useRef(fields.length);
@@ -150,21 +127,7 @@ export function QueryFields({
     <Ul className="flex-1 overflow-y-auto" forwardRef={fieldsContainerRef}>
       {fields.map((field, line, { length }) => (
         <ErrorBoundary dismissible key={field.id}>
-          <li
-            className="flex items-center gap-2"
-            draggable
-            key={line}
-            onDragOver={
-              handleChangeFields === undefined
-                ? undefined
-                : (event) => handleDragOver(event, line)
-            }
-            onDragStart={
-              handleChangeFields === undefined
-                ? undefined
-                : (event) => handleDragStart(event, line)
-            }
-          >
+          <li key={line}>
             <QueryLine
               baseTableName={baseTableName}
               enforceLengthLimit={enforceLengthLimit}
