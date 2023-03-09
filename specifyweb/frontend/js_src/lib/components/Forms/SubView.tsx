@@ -114,7 +114,7 @@ export function SubView({
           relationship.isDependent()
             ? new relationship.relatedTable.DependentCollection({
                 related: parentResource,
-                field: relationship.getReverse(),
+                field: reverse,
               })
             : new relationship.relatedTable.LazyCollection({
                 filters: {
@@ -228,7 +228,7 @@ export function SubView({
         <ReadOnlyContext.Provider
           value={
             isReadOnly ||
-            !isAttachmentMisconfigured ||
+            isAttachmentMisconfigured ||
             !relationship.isDependent()
           }
         >

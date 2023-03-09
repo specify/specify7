@@ -1,6 +1,7 @@
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
+import { eventListener } from '../../utils/events';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
@@ -32,6 +33,10 @@ import { schema } from './schema';
  * fetching the new one.
  */
 
+export const resourceEvents = eventListener<{
+  readonly deleted: SpecifyResource<AnySchema>;
+}>();
+
 /**
  * Fetch a single resource from the back-end
  */
@@ -56,6 +61,7 @@ export const fetchResource = async <
     status === Http.NOT_FOUND ? undefined! : serializeResource(record)
   );
 
+// BUG: trigger resourceEvents.deleted here
 export const deleteResource = async (
   tableName: keyof Tables,
   id: number

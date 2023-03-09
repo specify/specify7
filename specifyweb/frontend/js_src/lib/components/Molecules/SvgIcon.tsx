@@ -32,8 +32,8 @@ export function SvgIcon({
   return (
     <svg
       aria-hidden={label === undefined}
-      role={label === undefined ? undefined : 'img'}
       className={className}
+      role={label === undefined ? undefined : 'img'}
       viewBox={isAttachmentTable ? '0 0 1043.24 1040' : '0 0 1000 1000'}
       xmlns="http://www.w3.org/2000/svg"
     >
@@ -62,7 +62,7 @@ export function SvgIcon({
         <text
           dominantBaseline="central"
           fill="#FFFFFF"
-          fontFamily="Francois One"
+          fontFamily="Francois One,sans-serif"
           fontSize={`${fontSize}px`}
           textAnchor="middle"
           x="50%"

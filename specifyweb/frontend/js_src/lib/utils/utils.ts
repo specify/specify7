@@ -322,3 +322,11 @@ export const keysToLowerCase = <OBJECT extends IR<unknown>>(
 
 export const takeBetween = <T>(array: RA<T>, first: T, last: T): RA<T> =>
   array.slice(array.indexOf(first) + 1, array.indexOf(last) + 1);
+
+// Convert seconds to minutes and seconds and return the string
+export function formatTime(seconds: number): string {
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+  const paddedSeconds = remainingSeconds.toString().padStart(2, '0');
+  return `${minutes}:${paddedSeconds}`;
+}

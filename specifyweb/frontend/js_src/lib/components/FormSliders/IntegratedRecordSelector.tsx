@@ -145,10 +145,12 @@ export function IntegratedRecordSelector({
   viewName,
   collection,
   dialog,
-  onClose: handleClose,
   formType,
   sortField,
   relationship,
+  onClose: handleClose,
+  onAdd: handleAdd,
+  onDelete: handleDelete,
   ...rest
 }: Omit<
   Parameters<typeof RecordSelectorFromCollection>[0],
@@ -180,15 +182,24 @@ export function IntegratedRecordSelector({
           dialog={dialog}
           sortField={sortField}
           viewName={viewName}
-          onAdd={undefined}
+          onAdd={(resources): void => {
+            collection.add(resources);
+            if (typeof handleAdd === 'function') handleAdd(resources);
+          }}
           onClose={handleClose}
-          onDelete={undefined}
+          onDelete={
+            handleDelete === undefined
+              ? undefined
+              : (_resource, index): void => handleDelete(index, 'minusButton')
+          }
         />
       ) : (
         <RecordSelectorFromCollection
           collection={collection}
           defaultIndex={isToOne ? 0 : index}
           relationship={relationship}
+          onAdd={handleAdd}
+          onDelete={handleDelete}
           onSlide={(index): void =>
             typeof urlParameter === 'string'
               ? setIndex(index.toString())

@@ -177,7 +177,6 @@ export function MappingLineComponent({
         `}
         ref={lineRef}
         tabIndex={0}
-        title={wbPlanText.columnMapping()}
         onClick={handleFocus}
         onKeyDown={({ key }): void => handleKeyDown(key)}
       >

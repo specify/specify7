@@ -61,9 +61,10 @@ export type FieldTypes = {
     'Text',
     {
       readonly defaultValue: string | undefined;
-      // These are used by numeric fields only:
-      readonly min: number | undefined;
-      readonly max: number | undefined;
+      // These are used by numeric and date fields
+      readonly min: number | string | undefined;
+      readonly max: number | string | undefined;
+      // These are used by numeric field only
       readonly step: number | undefined;
       readonly minLength: number | undefined;
       readonly maxLength: number | undefined;
@@ -75,7 +76,6 @@ export type FieldTypes = {
       readonly pluginDefinition: PluginDefinition;
     }
   >;
-  readonly FilePicker: State<'FilePicker'>;
   readonly Blank: State<'Blank'>;
 };
 
@@ -226,7 +226,6 @@ const processFieldType: {
       fields,
     }),
   }),
-  FilePicker: () => ({ type: 'FilePicker' }),
   Blank: () => ({ type: 'Blank' }),
 };
 
@@ -242,7 +241,7 @@ const fieldTypesTranslations: IR<keyof FieldTypes> = {
   formattedtext: 'Text',
   label: 'Text',
   plugin: 'Plugin',
-  browse: 'FilePicker',
+  browse: 'Text',
 };
 
 export type FormFieldDefinition = FieldTypes[keyof FieldTypes] & {

@@ -222,6 +222,7 @@ test('parseViewDefinition', () => {
   expect(removeKey(result, 'table')).toEqual({
     ...parsedTinyView,
     errors: [],
+    name: '',
     mode: 'view',
     formType: 'form',
     viewSetId: undefined,

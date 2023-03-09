@@ -105,7 +105,7 @@ function AboutDialog({
               ],
               [welcomeText.databaseVersion(), getSystemInfo().database_version],
               [
-                welcomeText.schemaVersion(),
+                `${welcomeText.schemaVersion()}:`,
                 <Link.Default href="/specify/datamodel/" key="link">
                   {getSystemInfo().schema_version as LocalizedString}
                 </Link.Default>,

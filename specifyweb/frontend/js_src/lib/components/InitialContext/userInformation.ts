@@ -10,10 +10,9 @@ import type {
   SerializedRecord,
   SerializedResource,
 } from '../DataModel/helperTypes';
-import { fetchContext as fetchSchema } from '../DataModel/tables';
+import { serializeResource } from '../DataModel/serializers';
 import type { Agent, Collection, SpecifyUser } from '../DataModel/types';
 import { load } from './index';
-import { serializeResource } from '../DataModel/serializers';
 
 export type UserInformation = SerializedRecord<SpecifyUser> & {
   readonly name: LocalizedString;
@@ -35,11 +34,15 @@ export const fetchContext = load<
       // @ts-expect-error
       userInfo[key as keyof UserInformation] = value;
     });
-    return fetchSchema.then(() => {
-      userInfo.availableCollections =
-        availableCollections.map(serializeResource);
-      setDevelopmentGlobal('_user', userInfo);
-    });
+    await import('../DataModel/schema').then(
+      async ({ fetchContext }) => fetchContext
+    );
+    await import('../DataModel/schemaBase').then(
+      async ({ fetchContext }) => fetchContext
+    );
+    userInfo.availableCollections = availableCollections.map(serializeResource);
+    setDevelopmentGlobal('_user', userInfo);
+    return userInfo;
   }
 );
 

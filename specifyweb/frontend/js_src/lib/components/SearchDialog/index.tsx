@@ -15,6 +15,7 @@ import { Button } from '../Atoms/Button';
 import { Form } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
+import { SearchDialogContext } from '../Core/Contexts';
 import type { AnySchema, CommonFields } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
@@ -23,7 +24,7 @@ import type { SpQueryField } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import { raise } from '../Errors/Crash';
 import { format } from '../Formatters/formatters';
-import { RenderForm } from '../Forms/SpecifyForm';
+import { SpecifyForm } from '../Forms/SpecifyForm';
 import { useViewDefinition } from '../Forms/useViewDefinition';
 import { load } from '../InitialContext';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
@@ -37,7 +38,6 @@ import { formatUrl } from '../Router/queryString';
 import { xmlToSpec } from '../Syncer/xmlUtils';
 import { queryCbxExtendedSearch } from './helpers';
 import { dialogsSpec } from './spec';
-import { SearchDialogContext } from '../Core/Contexts';
 
 export const searchDialogDefinitions = Promise.all([
   load<Element>(
@@ -123,6 +123,7 @@ export function SearchDialog<SCHEMA extends AnySchema>({
           <Submit.Green form={id('form')}>{commonText.search()}</Submit.Green>
         </>
       }
+      dimensionsKey={`SearchDialog-${templateResource.specifyTable.name}`}
       header={commonText.search()}
       modal={false}
       onClose={handleClose}
@@ -152,7 +153,7 @@ export function SearchDialog<SCHEMA extends AnySchema>({
         }}
       >
         <SearchDialogContext.Provider value>
-          <RenderForm
+          <SpecifyForm
             display="inline"
             resource={templateResource}
             viewDefinition={viewDefinition}
@@ -204,8 +205,8 @@ export function SearchDialog<SCHEMA extends AnySchema>({
     <QueryBuilderSearch
       extraFilters={extraFilters}
       forceCollection={forceCollection}
-      table={templateResource.specifyTable}
       multiple={multiple}
+      table={templateResource.specifyTable}
       onClose={handleClose}
       onSelected={(records): void => {
         handleSelected(records);
@@ -233,7 +234,8 @@ function testFilter<SCHEMA extends AnySchema>(
       ? (resource.get(field) ?? 0) >= values[0] &&
         (resource.get(field) ?? 0) <= values[1]
       : operation === 'in'
-      ? values.some(f.equal(resource.get(field)))
+      ? // eslint-disable-next-line eqeqeq
+        values.some((value) => value == resource.get(field))
       : operation === 'less'
       ? values.every((value) => (resource.get(field) ?? 0) < value)
       : error('Invalid Query Combo Box search filter', {
@@ -291,6 +293,7 @@ function QueryBuilderSearch<SCHEMA extends AnySchema>({
       className={{
         container: dialogClassNames.wideContainer,
       }}
+      dimensionsKey="QueryBuilder"
       header={queryText.queryBuilder()}
       onClose={handleClose}
     >

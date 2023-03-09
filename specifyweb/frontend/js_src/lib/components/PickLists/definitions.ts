@@ -82,7 +82,12 @@ export function definePicklist(
   name: string,
   items: RA<SerializedResource<PickListItem>>
 ): SpecifyResource<PickList> {
-  const pickList = new tables.PickList.Resource();
+  const pickList = new tables.PickList.Resource(
+    {},
+    {
+      noBusinessRules: true,
+    }
+  );
   pickList.set('name', name);
   pickList.set('readOnly', true);
   pickList.set('isSystem', true);

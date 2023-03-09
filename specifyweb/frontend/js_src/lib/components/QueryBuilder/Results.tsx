@@ -435,6 +435,7 @@ function TableHeaderCell({
         )}
       </>
     ) : undefined;
+
   return (
     <div
       className="sticky w-full min-w-max border-b border-gray-500

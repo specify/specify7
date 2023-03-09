@@ -40,6 +40,7 @@ import {
 } from '../WbPlanView/mappingHelpers';
 import { getMappingLineData } from '../WbPlanView/navigator';
 import { navigatorSpecs } from '../WbPlanView/navigatorSpecs';
+import { CheckReadAccess } from './CheckReadAccess';
 import { MakeRecordSetButton } from './Components';
 import { QueryExportButtons } from './Export';
 import { QueryFields } from './Fields';
@@ -267,7 +268,10 @@ export function QueryBuilder({
             onClose={(): void => setMapFieldIndex(undefined)}
           />
         )}
-        {/* FEATURE: For embedded queries, add a button to open query in new tab */}
+        {/*
+         * FEATURE: For embedded queries, add a button to open query in new tab
+         *   See https://github.com/specify/specify7/issues/3000
+         */}
         {!isEmbedded && (
           <QueryHeader
             form={form}
@@ -289,6 +293,7 @@ export function QueryBuilder({
             onTriedToSave={handleTriedToSave}
           />
         )}
+        <CheckReadAccess query={query} />
         <Form
           className={`
           -mx-4 grid h-full gap-4 overflow-y-auto px-4

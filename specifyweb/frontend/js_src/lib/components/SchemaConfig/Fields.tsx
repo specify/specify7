@@ -2,6 +2,7 @@ import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { useId } from '../../hooks/useId';
+import { commonText } from '../../localization/common';
 import { schemaText } from '../../localization/schema';
 import type { RA } from '../../utils/types';
 import { sortFunction, split } from '../../utils/utils';
@@ -44,6 +45,9 @@ export function SchemaConfigFields({
         }
       >
         <optgroup label={schemaText.fields()}>
+          {items === undefined && (
+            <option value="">{commonText.loading()}</option>
+          )}
           {fields.map((item) => (
             <option key={item.id} value={item.id}>
               {item.name}

@@ -123,17 +123,20 @@ function Field({
       forwardRef={validationRef}
       name={name}
       {...validationAttributes}
-      /*
-       * Disable "text-align: right" in non webkit browsers
-       * as they don't support spinner's arrow customization
-       */
-      className={
-        parser.type === 'number' &&
-        rightAlignNumberFields &&
-        globalThis.navigator.userAgent.toLowerCase().includes('webkit')
-          ? `text-right ${isReadOnly ? '' : 'pr-6'}`
-          : ''
-      }
+      className={`
+        min-w-[theme(spacing.20)] 
+        ${
+          /*
+           * Disable "text-align: right" in non webkit browsers
+           * as they don't support spinner's arrow customization
+           */
+          parser.type === 'number' &&
+          rightAlignNumberFields &&
+          globalThis.navigator.userAgent.toLowerCase().includes('webkit')
+            ? `text-right ${isReadOnly ? '' : 'pr-6'}`
+            : ''
+        }
+      `}
       id={id}
       isReadOnly={isReadOnly}
       tabIndex={isReadOnly ? -1 : undefined}

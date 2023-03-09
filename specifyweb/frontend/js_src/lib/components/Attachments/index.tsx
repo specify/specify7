@@ -127,7 +127,7 @@ function Attachments(): JSX.Element {
     'scale'
   );
 
-  const [collection, fetchMore] = useCollection(
+  const [collection, setCollection, fetchMore] = useCollection(
     React.useCallback(
       async (offset) =>
         fetchCollection(
@@ -238,7 +238,13 @@ function Attachments(): JSX.Element {
           typeof collection === 'object' &&
           collection.totalCount === collection.records.length
         }
+        key={`${order}_${JSON.stringify(filter)}`}
         scale={scale}
+        onChange={(records): void =>
+          collection === undefined
+            ? undefined
+            : setCollection({ records, totalCount: collection.totalCount })
+        }
         onFetchMore={fetchMore}
       />
     </Container.FullGray>

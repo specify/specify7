@@ -10,11 +10,13 @@ import { useId } from '../../hooks/useId';
 import { hijackBackboneAjax } from '../../utils/ajax/backboneAjax';
 import { Http } from '../../utils/ajax/definitions';
 import { DataEntry } from '../Atoms/DataEntry';
+import { AttachmentsPlugin } from '../Attachments/Plugin';
 import { ReadOnlyContext, SearchDialogContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { FormCell } from '../FormCells';
 import type { ViewDescription } from '../FormParse';
+import { attachmentView } from '../FormParse/webOnlyViews';
 import { loadingGif } from '../Molecules';
 import { unsafeTriggerNotFound } from '../Router/Router';
 import { usePref } from '../UserPreferences/usePref';
@@ -26,7 +28,7 @@ FormLoadingContext.displayName = 'FormLoadingContext';
  * Renders a form from ViewDescription and populates it with data from the
  * resource
  */
-export function RenderForm<SCHEMA extends AnySchema>({
+export function SpecifyForm<SCHEMA extends AnySchema>({
   isLoading = false,
   resource,
   viewDefinition,
@@ -86,10 +88,15 @@ export function RenderForm<SCHEMA extends AnySchema>({
     React.useContext(ReadOnlyContext) || viewDefinition?.mode === 'view';
   const isInSearchDialog =
     React.useContext(SearchDialogContext) || viewDefinition?.mode === 'search';
-  return (
+  return viewDefinition?.name === attachmentView ? (
+    <AttachmentsPlugin resource={resource} />
+  ) : (
     <FormLoadingContext.Provider value={isAlreadyLoading || showLoading}>
       <div
-        className={`overflow-auto ${showLoading ? 'relative' : ''}`}
+        className={`
+          overflow-auto
+          ${showLoading ? 'relative' : ''}
+        `}
         lang={language}
       >
         {showLoading && (
@@ -112,9 +119,7 @@ export function RenderForm<SCHEMA extends AnySchema>({
         {formIsLoaded && (
           <DataEntry.Grid
             aria-hidden={showLoading}
-            className={
-              showLoading ? 'pointer-events-none opacity-50' : undefined
-            }
+            className={`${showLoading ? 'pointer-events-none opacity-50' : ''}`}
             display={viewDefinition?.columns.length === 1 ? 'block' : display}
             flexibleColumnWidth={flexibleColumnWidth}
             viewDefinition={viewDefinition}

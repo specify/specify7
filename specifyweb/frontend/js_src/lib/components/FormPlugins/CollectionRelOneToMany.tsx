@@ -12,19 +12,19 @@ import { DataEntry } from '../Atoms/DataEntry';
 import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { tables } from '../DataModel/tables';
 import type { CollectionObject } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
-import { SearchDialog } from '../SearchDialog';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { switchCollection } from '../RouterCommands/SwitchCollection';
+import { SearchDialog } from '../SearchDialog';
 import type { CollectionRelData } from './collectionRelData';
 import {
   fetchOtherCollectionData,
   processColRelationships,
 } from './collectionRelData';
-import { tables } from '../DataModel/tables';
 
 export function CollectionOneToManyPlugin({
   resource,
@@ -65,6 +65,11 @@ export function CollectionOneToManyPlugin({
       >
     | State<'MainState'>
   >({ type: 'MainState' });
+
+  const existingItemFilter =
+    data !== undefined && data !== false
+      ? data.collectionObjects.map(({ resource }) => resource.id.toString())
+      : undefined;
 
   const loading = React.useContext(LoadingContext);
   const navigate = useNavigate();
@@ -188,7 +193,14 @@ export function CollectionOneToManyPlugin({
       )}
       {state.type === 'SearchState' && typeof data === 'object' && (
         <SearchDialog
-          extraFilters={undefined}
+          extraFilters={[
+            {
+              field: 'id',
+              operation: 'in',
+              isNot: true,
+              value: existingItemFilter?.join(',') ?? '',
+            },
+          ]}
           forceCollection={data.otherCollection.id}
           multiple
           templateResource={state.templateResource}

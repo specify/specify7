@@ -115,8 +115,7 @@ export function AppResourceEditor({
   });
   const isInOverlay = isOverlay(React.useContext(OverlayContext));
   const headerButtons = (
-    <>
-      <AppResourceEditButton title={title}>{form()}</AppResourceEditButton>
+    <div className="flex flex-wrap gap-3">
       {!isInOverlay && (
         <Button.Blue
           aria-label={localityText.toggleFullScreen()}
@@ -127,7 +126,7 @@ export function AppResourceEditor({
           {isFullScreen ? icons.arrowsCollapse : icons.arrowsExpand}
         </Button.Blue>
       )}
-      <span className="-ml-4 flex-1" />
+      <span className="-ml-4 md:flex-1" />
       {typeof resourceData === 'object' && (
         <AppResourceLoad
           onLoaded={(data: string, mimeType: string): void => {
@@ -149,7 +148,7 @@ export function AppResourceEditor({
         data={resourceData?.data ?? ''}
         resource={resource}
       />
-    </>
+    </div>
   );
 
   const lastData = React.useRef<string | (() => string | null) | null>(
@@ -167,17 +166,27 @@ export function AppResourceEditor({
     ? children({
         headerString: formatted,
         headerJsx: (
-          <>
-            {appResourceIcon(getResourceType(resource))}
-            <h3 className="overflow-auto whitespace-nowrap text-2xl">
-              {formatted}
-            </h3>
+          <div className="flex items-center justify-center gap-2">
+            <div className="hidden md:block">
+              {appResourceIcon(getResourceType(resource))}
+            </div>
+            <div className="flex max-w-[90%] gap-1">
+              <h3 className="overflow-auto whitespace-nowrap text-2xl">
+                {formatted}
+              </h3>
+              <AppResourceEditButton title={title}>
+                {form()}
+              </AppResourceEditButton>
+            </div>
             <AppTitle title={formatted} />
-          </>
+          </div>
         ),
         headerButtons: headerButtons,
         form: (
-          <Form className="flex-1 overflow-hidden" forwardRef={setForm}>
+          <Form
+            className="max-h-[90%] min-h-[30vh] flex-1 overflow-auto"
+            forwardRef={setForm}
+          >
             <ReadOnlyContext.Provider value={isReadOnly}>
               <AppResourcesTabs
                 appResource={appResource}

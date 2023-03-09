@@ -240,7 +240,6 @@ export function LatLongUi({
                   disabled={isReadOnly}
                   id={id}
                   name="type"
-                  title={localityText.coordinateType()}
                   value={coordinateType}
                   onValueChange={(value): void => {
                     setCoordinateType(value as CoordinateType);

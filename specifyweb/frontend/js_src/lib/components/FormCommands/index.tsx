@@ -92,6 +92,7 @@ const commandRenderers: {
           loan.isNew() || !Boolean(loan.get('id')) ? (
             <Dialog
               buttons={commonText.close()}
+              dimensionsKey="ReturnLoan"
               header={label}
               onClose={handleHide}
             >
@@ -113,6 +114,7 @@ const commandRenderers: {
         </Button.Small>
         <Dialog
           buttons={commonText.close()}
+          dimensionsKey="Unsupported"
           header={formsText.commandUnavailable()}
           isOpen={isClicked}
           onClose={handleHide}
@@ -139,6 +141,7 @@ const commandRenderers: {
         </Button.Small>
         <Dialog
           buttons={commonText.close()}
+          dimensionsKey="WrongTable"
           header={formsText.commandUnavailable()}
           isOpen={isVisible}
           onClose={handleHide}

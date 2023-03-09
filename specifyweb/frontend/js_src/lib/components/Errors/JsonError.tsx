@@ -3,9 +3,9 @@ import React from 'react';
 import { backEndText } from '../../localization/backEnd';
 import { preferencesText } from '../../localization/preferences';
 import { className } from '../Atoms/className';
-import { TableIcon } from '../Molecules/TableIcon';
 import { getField } from '../DataModel/helpers';
 import { tables } from '../DataModel/tables';
+import { TableIcon } from '../Molecules/TableIcon';
 
 type JsonResponse = {
   readonly exception: string;
@@ -88,9 +88,7 @@ function BusinessRuleExceptionHeader({
         <h2 className={className.headerPrimary}>{exception}</h2>
       </div>
       <div className="flex space-x-2">
-        <em className={className.label} title={message}>
-          {message}
-        </em>
+        <em className={className.label}>{message}</em>
       </div>
     </>
   );
@@ -104,9 +102,7 @@ function formatBasicResponse(error: string): JSX.Element {
   return (
     <>
       <h2 className={className.headerPrimary}>{response.exception}</h2>
-      <em className={className.label} title={response.message}>
-        {response.message}
-      </em>
+      <em className={className.label}>{response.message}</em>
       <JsonBackendResponseFooter isDataOpen response={response} />
     </>
   );

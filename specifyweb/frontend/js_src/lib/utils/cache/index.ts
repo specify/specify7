@@ -51,7 +51,7 @@ let eventListenerIsInitialized = false;
 
 /** Listen for changes to localStorage from other tabs */
 function initialize(): void {
-  globalThis.window?.addEventListener(
+  globalThis.addEventListener(
     'storage',
     ({ storageArea, key: formattedKey, newValue }) => {
       // "key" is null only when running `localStorage.clear()`

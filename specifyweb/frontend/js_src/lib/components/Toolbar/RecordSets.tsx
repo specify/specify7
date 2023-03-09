@@ -169,6 +169,7 @@ export function RecordSetsDialog({
                 {buttons}
               </>
             }
+            dimensionsKey="RecordSets"
             header={commonText.countLine({
               resource: commonText.recordSets(),
               count: data.totalCount,

@@ -10,6 +10,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpQuery, SpQueryField, Tables } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import { hasPermission } from '../Permissions/helpers';
+import { getUserPref } from '../UserPreferences/helpers';
 import { mappingPathIsComplete } from '../WbPlanView/helpers';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import { QueryButton } from './Components';
@@ -38,7 +39,7 @@ export function QueryExportButtons({
     undefined
   );
 
-  function doQueryExport(url: string): void {
+  function doQueryExport(url: string, delimiter: string | undefined): void {
     if (typeof getQueryFieldRecords === 'function')
       queryResource.set('fields', getQueryFieldRecords());
     const serialized = queryResource.toJSON();
@@ -53,6 +54,7 @@ export function QueryExportButtons({
             generateMappingPathPreview(baseTableName, mappingPath)
           ),
         recordSetId,
+        delimiter,
       }),
     });
   }
@@ -85,7 +87,12 @@ export function QueryExportButtons({
         <QueryButton
           disabled={fields.length === 0}
           showConfirmation={showConfirmation}
-          onClick={(): void => doQueryExport('/stored_query/exportcsv/')}
+          onClick={(): void =>
+            doQueryExport(
+              '/stored_query/exportcsv/',
+              getUserPref('queryBuilder', 'behavior', 'exportFileDelimiter')
+            )
+          }
         >
           {queryText.createCsv()}
         </QueryButton>
@@ -96,7 +103,7 @@ export function QueryExportButtons({
           showConfirmation={showConfirmation}
           onClick={(): void =>
             hasLocalityColumns(fields)
-              ? doQueryExport('/stored_query/exportkml/')
+              ? doQueryExport('/stored_query/exportkml/', undefined)
               : setState('warning')
           }
         >

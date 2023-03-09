@@ -257,6 +257,13 @@ export const preferenceDefinitions = {
             renderer: FontFamilyPreferenceItem,
             container: 'label',
           }),
+          useCustomTooltips: defineItem<boolean>({
+            title: preferencesText.useCustomTooltips(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
         },
       },
       appearance: {
@@ -386,6 +393,20 @@ export const preferenceDefinitions = {
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
+          rememberPosition: defineItem<boolean>({
+            title: preferencesText.rememberDialogPositions(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
+          rememberSize: defineItem<boolean>({
+            title: preferencesText.rememberDialogSizes(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
         },
       },
       behavior: {
@@ -432,7 +453,10 @@ export const preferenceDefinitions = {
             renderer: WelcomePageModePreferenceItem,
             container: 'div',
           }),
-          // FEATURE: allow selecting attachments
+          /*
+           * FEATURE: allow selecting attachments
+           *   See https://github.com/specify/specify7/issues/2999
+           */
           source: defineItem<string>({
             title: <></>,
             requiresReload: false,
@@ -1107,6 +1131,23 @@ export const preferenceDefinitions = {
       },
     },
   },
+  attachments: {
+    title: attachmentsText.attachments(),
+    subCategories: {
+      behavior: {
+        title: preferencesText.behavior(),
+        items: {
+          autoPlay: defineItem<boolean>({
+            title: preferencesText.autoPlayMedia(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+        },
+      },
+    },
+  },
   treeEditor: {
     title: preferencesText.treeEditor(),
     subCategories: {
@@ -1327,6 +1368,34 @@ export const preferenceDefinitions = {
              */
             defaultValue: false,
             type: 'java.lang.Boolean',
+          }),
+          exportFileDelimiter: defineItem<' ' | ',' | ';' | '\t' | '|'>({
+            title: preferencesText.exportFileDelimiter(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: ',',
+            values: [
+              {
+                value: ',',
+                title: wbText.comma(),
+              },
+              {
+                value: '\t',
+                title: wbText.tab(),
+              },
+              {
+                value: ';',
+                title: wbText.semicolon(),
+              },
+              {
+                value: ' ',
+                title: wbText.space(),
+              },
+              {
+                value: '|',
+                title: wbText.pipe(),
+              },
+            ],
           }),
         },
       },

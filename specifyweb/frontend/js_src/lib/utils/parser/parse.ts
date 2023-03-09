@@ -1,8 +1,11 @@
 import type { Input } from '../../components/DataModel/saveBlockers';
+import { syncFieldFormat } from '../../components/Formatters/fieldFormat';
 import { hasNativeErrors } from '../../components/Forms/validationHelpers';
 import { formsText } from '../../localization/forms';
+import { f } from '../functools';
 import { mappedFind } from '../utils';
-import { Parser, parserFromType } from './definitions';
+import type { Parser } from './definitions';
+import { resolveParser } from './definitions';
 
 export type ValidParseResult = {
   readonly value: string;
@@ -65,8 +68,19 @@ export function parseValue(
       };
 }
 
+const boolParser = f.store(() =>
+  resolveParser(
+    {},
+    {
+      type: 'java.lang.Boolean',
+    }
+  )
+);
+
 export function parseBoolean(value: string): boolean {
-  const boolParser = parserFromType('java.lang.Boolean');
-  const parsed = parseValue(boolParser, undefined, value);
+  const parsed = parseValue(boolParser(), undefined, value);
   return parsed.isValid && parsed.parsed === true;
 }
+
+export const booleanFormatter = (value: boolean): string =>
+  syncFieldFormat(undefined, value, boolParser());

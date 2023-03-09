@@ -17,30 +17,10 @@ import { tables } from '../DataModel/tables';
  */
 export const webOnlyViews = f.store(() =>
   ensure<IR<ParsedFormDefinition>>()({
-    ObjectAttachment: {
-      columns: [undefined],
-      rows: [
-        [
-          {
-            id: undefined,
-            type: 'Field',
-            fieldNames: undefined,
-            fieldDefinition: {
-              isReadOnly: false,
-              type: 'Plugin',
-              pluginDefinition: {
-                type: 'AttachmentPlugin',
-              },
-            },
-            isRequired: false,
-            colSpan: 1,
-            align: 'left',
-            visible: true,
-            ariaLabel: undefined,
-          },
-        ],
-      ],
-    },
+    /*
+     * This is a special view that would be replaced by the <AttachmentPlugin />
+     */
+    [attachmentView]: { columns: [], rows: [] },
     SpecifyUser: autoGenerateViewDefinition(
       tables.SpecifyUser,
       'form',
@@ -85,6 +65,8 @@ export const webOnlyViews = f.store(() =>
     ),
   } as const)
 );
+
+export const attachmentView = 'ObjectAttachment';
 
 export const spAppResourceView = '_SpAppResourceView_name';
 export const spViewSetNameView = '_SpViewSetObj_name';

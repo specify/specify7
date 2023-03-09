@@ -16,7 +16,7 @@ import { FormField } from '../FormFields';
 import type { FormType } from '../FormParse';
 import { fetchView, resolveViewDefinition } from '../FormParse';
 import type { cellAlign, CellTypes } from '../FormParse/cells';
-import { RenderForm } from '../Forms/SpecifyForm';
+import { SpecifyForm } from '../Forms/SpecifyForm';
 import { SubView } from '../Forms/SubView';
 import { propsToFormMode } from '../Forms/useViewDefinition';
 import { TableIcon } from '../Molecules/TableIcon';
@@ -201,6 +201,7 @@ const cellRenderers: {
       () => ({
         ...cellData,
         mode,
+        name: 'panel',
         formType,
         table: resource.specifyTable,
       }),
@@ -208,7 +209,7 @@ const cellRenderers: {
     );
 
     const form = (
-      <RenderForm
+      <SpecifyForm
         display={display}
         resource={resource}
         viewDefinition={viewDefinition}

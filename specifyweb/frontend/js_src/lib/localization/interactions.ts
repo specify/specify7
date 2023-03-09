@@ -27,7 +27,7 @@ export const interactionsText = createDictionary({
     'en-us': '{tableName:string} Return',
     'ru-ru': 'Возврат {tableName:string}',
     'es-es': '{tableName:string} Devuelve',
-    'fr-fr': '{tableName:string} Retour',
+    'fr-fr': '{tableName:string} Retourner',
     'uk-ua': '{tableName:string} Повернення',
   },
   createRecord: {
@@ -55,7 +55,7 @@ export const interactionsText = createDictionary({
     'en-us': 'There are problems with the entry:',
     'ru-ru': 'Обнаружены ошибки:',
     'es-es': 'Hay problemas con la entrada:',
-    'fr-fr': "Il y a des problèmes avec l'entrée :",
+    'fr-fr': "Il y a des problèmes avec l'entrée:",
     'uk-ua': 'Є проблеми з входом:',
   },
   byChoosingRecordSet: {
@@ -63,10 +63,10 @@ export const interactionsText = createDictionary({
     'en-us': 'By choosing a recordset ({{count:none | one | ??}} available)',
     'ru-ru': 'Выбрав набор записей (доступно {{count:none | one | ??}})',
     'es-es':
-      'Eligiendo un juego de registros ({{count:none | one | ??}} available)',
+      'Eligiendo un juego de registros ({{count:none | uno | ??}} available)',
     'fr-fr': `
       En choisissant un jeu d'enregistrements ({{count:none | one | ??}}
-      disponible)
+      disponible(s))
     `,
     'uk-ua': 'Вибравши набір записів (доступно {{count:none | one | ??}})',
   },
@@ -78,7 +78,7 @@ export const interactionsText = createDictionary({
     'en-us': 'By entering {fieldName:string}s',
     'ru-ru': 'Ввести {fieldName:string}',
     'es-es': 'Introduciendo {fieldName:string}s',
-    'fr-fr': 'En saisissant {fieldName:string}s',
+    'fr-fr': 'En entrant {fieldName:string}s',
     'uk-ua': 'Ввівши {fieldName:string}s',
   },
   withoutPreparations: {
@@ -107,7 +107,7 @@ export const interactionsText = createDictionary({
     'ru-ru': 'Препараты не могут быть возвращены в этом контексте.',
     'es-es': 'Los preparados no se pueden devolver en este contexto.',
     'fr-fr': 'Les préparations ne peuvent être retournées dans ce cadre.',
-    'uk-ua': 'У цьому контексті препарати не підлягають поверненню.',
+    'uk-ua': 'У цьому контексті препарати не повертаються.',
   },
   noUnresolvedPreparations: {
     'en-us': 'There are no unresolved preparations for this loan.',
@@ -127,7 +127,7 @@ export const interactionsText = createDictionary({
     'en-us': 'Return',
     'ru-ru': 'Возвращение',
     'es-es': 'Devolver',
-    'fr-fr': 'Revenir',
+    'fr-fr': 'Retour',
     'uk-ua': 'Повернення',
   },
   resolve: {

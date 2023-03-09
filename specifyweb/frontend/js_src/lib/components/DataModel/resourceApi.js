@@ -6,14 +6,15 @@ import {removeKey} from '../../utils/utils';
 import {assert} from '../Errors/assert';
 import {softFail} from '../Errors/Crash';
 import {Backbone} from './backbone';
+import {attachBusinessRules} from './businessRules';
 import {
     getFieldsToNotClone,
     getResourceApiUrl,
     getResourceViewUrl,
+    resourceEvents,
     resourceFromUrl
 } from './resource';
 import {errorHandledBy} from '../Errors/FormatError';
-import {attachBusinessRules} from './businessRules';
 import {initializeResource} from './scoping';
 
 function eventHandlerForToOne(related, field) {
@@ -588,6 +589,11 @@ function eventHandlerForToOne(related, field) {
             });
 
             return resource._save.then(()=>resource);
+        },
+        async destroy(...args) {
+            const promise = await Backbone.Model.prototype.destroy.apply(this, ...args);
+            resourceEvents.trigger('deleted', this);
+            return promise;
         },
         toJSON() {
             const self = this;

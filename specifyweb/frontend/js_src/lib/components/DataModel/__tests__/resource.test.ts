@@ -60,22 +60,25 @@ overrideAjax('/api/specify/locality/1/', '', {
 test('deleteResource', async () =>
   expect(deleteResource('Locality', 1)).resolves.toBeUndefined());
 
+const localityId = 2;
+
 overrideAjax(
   '/api/specify/locality/',
   {
-    resource_uri: getResourceApiUrl('Locality', 2),
-    id: 2,
+    resource_uri: getResourceApiUrl('Locality', localityId),
+    id: localityId,
     localityname: 'name',
+    discipline: getResourceApiUrl('Discipline', 3),
   },
   {
     method: 'POST',
     responseCode: Http.CREATED,
     body: {
       resource_uri: '/api/specify/locality/2/',
+      discipline: getResourceApiUrl('Discipline', 3),
       localityname: 'name',
       srclatlongunit: 0,
       timestampcreated: '2022-08-31',
-      discipline: null,
     },
   }
 );
@@ -83,14 +86,14 @@ overrideAjax(
 test('createResource', async () =>
   expect(
     createResource('Locality', {
-      resource_uri: getResourceApiUrl('Locality', 2),
-      id: 2,
+      resource_uri: getResourceApiUrl('Locality', localityId),
+      id: localityId,
       localityName: 'name',
     })
   ).resolves.toEqual(
     addMissingFields('Locality', {
-      resource_uri: getResourceApiUrl('Locality', 2),
-      id: 2,
+      resource_uri: getResourceApiUrl('Locality', localityId),
+      id: localityId,
       localityName: 'name',
     })
   ));

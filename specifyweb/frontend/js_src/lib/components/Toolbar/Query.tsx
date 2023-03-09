@@ -17,6 +17,7 @@ import type { CollectionFetchFilters } from '../DataModel/collection';
 import { fetchCollection } from '../DataModel/collection';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
+import { resourceEvents } from '../DataModel/resource';
 import { getTableById, tables } from '../DataModel/tables';
 import type { SpQuery } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
@@ -55,7 +56,7 @@ export type QueryListContextType = {
 export function useQueries(
   spQueryFilter?: Partial<CollectionFetchFilters<SpQuery>>
 ): RA<SerializedResource<SpQuery>> | undefined {
-  return useAsyncState<RA<SerializedResource<SpQuery>>>(
+  const [queries, setQueries] = useAsyncState<RA<SerializedResource<SpQuery>>>(
     React.useCallback(
       async () =>
         fetchCollection('SpQuery', {
@@ -65,7 +66,16 @@ export function useQueries(
       [spQueryFilter]
     ),
     true
-  )[0];
+  );
+  React.useEffect(
+    () =>
+      resourceEvents.on('deleted', (resource) => {
+        if (resource.specifyTable.name === 'SpQuery')
+          setQueries(queries?.filter((query) => query.id !== resource.id));
+      }),
+    [queries]
+  );
+  return queries;
 }
 
 export function QueryListOutlet(): JSX.Element {

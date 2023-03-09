@@ -41,6 +41,7 @@ export type ViewDescription = ParsedFormDefinition & {
   readonly table: SpecifyTable;
   readonly errors?: RA<LogMessage>;
   readonly viewSetId?: number;
+  readonly name: string;
 };
 
 type AltView = {
@@ -95,6 +96,7 @@ export const fetchView = async (
           expectedResponseCodes: [Http.OK, Http.NOT_FOUND, Http.NO_CONTENT],
         }
       ).then(({ data, status }) => {
+        // FEATURE: add an easy way to cache ajax responses:
         views[name] =
           status === Http.NOT_FOUND || status === Http.NO_CONTENT
             ? undefined
@@ -133,6 +135,7 @@ export function parseViewDefinition(
     table,
     viewSetId: view.viewsetId ?? undefined,
     errors,
+    name: view.name,
     ...parsed,
   };
 }
@@ -283,6 +286,9 @@ function parseFormTableDefinition(
   const row = rows
     .flat()
     // FormTable consists of Fields and SubViews only
+    /*
+     * FEATURE: extract fields from panels too
+     */
     .filter(({ type }) => type === 'Field' || type === 'SubView')
     .map<FormCellDefinition>((cell) => ({
       ...cell,

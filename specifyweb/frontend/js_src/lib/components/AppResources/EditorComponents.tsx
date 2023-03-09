@@ -65,6 +65,7 @@ export function AppResourceEditButton({
       {isEditingMeta && (
         <Dialog
           buttons={commonText.close()}
+          dimensionsKey="AppResourceEdit"
           header={title}
           onClose={handleEditedMeta}
         >

@@ -154,6 +154,8 @@ export function WebLinkField({
       src={getIcon(icon) ?? unknownIcon}
     />
   );
+  const Component =
+    typeof url === 'string' && url.length > 0 ? Link.Gray : Button.Gray;
   return (
     <div
       className={
@@ -164,21 +166,16 @@ export function WebLinkField({
         <UiField field={field} id={id} name={name} resource={resource} />
       ) : undefined}
       {typeof definition === 'object' ? (
-        typeof url === 'string' && url.length > 0 ? (
-          <Link.Gray
-            className="ring-1 ring-gray-400 disabled:ring-gray-500 dark:ring-0 disabled:dark:ring-neutral-500"
-            href={url}
-            rel={isExternal ? 'noopener' : undefined}
-            target={isExternal ? '_blank' : undefined}
-            title={definition.description}
-          >
-            {image}
-          </Link.Gray>
-        ) : (
-          <Button.Gray title={definition.description} onClick={undefined}>
-            {image}
-          </Button.Gray>
-        )
+        <Component
+          className="ring-1 ring-gray-400 disabled:ring-gray-500 dark:ring-0 disabled:dark:ring-neutral-500"
+          href={url!}
+          rel={isExternal ? 'noopener' : undefined}
+          target={isExternal ? '_blank' : undefined}
+          title={definition.description}
+          onClick={undefined}
+        >
+          {image}
+        </Component>
       ) : undefined}
     </div>
   );

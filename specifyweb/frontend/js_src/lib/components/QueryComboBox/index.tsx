@@ -32,8 +32,6 @@ import {
 } from '../Formatters/formatters';
 import type { FormType } from '../FormParse';
 import { ResourceView, RESTRICT_ADDING } from '../Forms/ResourceView';
-import type { QueryComboBoxFilter } from '../SearchDialog';
-import { SearchDialog } from '../SearchDialog';
 import { SubViewContext } from '../Forms/SubView';
 import { isTreeTable } from '../InitialContext/treeRanks';
 import { userInformation } from '../InitialContext/userInformation';
@@ -41,6 +39,8 @@ import type { AutoCompleteItem } from '../Molecules/AutoComplete';
 import { AutoComplete } from '../Molecules/AutoComplete';
 import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
+import type { QueryComboBoxFilter } from '../SearchDialog';
+import { SearchDialog } from '../SearchDialog';
 import {
   getQueryComboBoxConditions,
   getRelatedCollectionId,
@@ -257,6 +257,11 @@ export function QueryComboBox({
     );
   }
 
+  const relatedTable =
+    (typeof typeSearch === 'object' ? typeSearch?.table : undefined) ??
+    field.relatedTable;
+
+  // FEATURE: use main table field if type search is not defined
   const fetchSource = React.useCallback(
     async (value: string): Promise<RA<AutoCompleteItem<string>>> =>
       isLoaded && typeof typeSearch === 'object' && typeof resource === 'object'
@@ -277,7 +282,7 @@ export function QueryComboBox({
                         : undefined,
                     treeData:
                       typeof treeData === 'object' ? treeData : undefined,
-                    typeSearch,
+                    relatedTable,
                     subViewRelationship,
                   }),
                 })
@@ -327,6 +332,7 @@ export function QueryComboBox({
       field,
       isLoaded,
       typeSearch,
+      relatedTable,
       subViewRelationship,
       collectionRelationships,
       forceCollection,
@@ -342,7 +348,7 @@ export function QueryComboBox({
 
   const isReadOnly = React.useContext(ReadOnlyContext);
   return (
-    <div className="flex w-full items-center">
+    <div className="flex w-full min-w-[theme(spacing.40)] items-center">
       <AutoComplete<string>
         aria-label={undefined}
         disabled={
@@ -450,13 +456,11 @@ export function QueryComboBox({
             <DataEntry.Search
               aria-pressed={state.type === 'SearchState'}
               onClick={
-                isLoaded &&
-                typeof typeSearch === 'object' &&
-                typeof resource === 'object'
+                isLoaded && typeof resource === 'object'
                   ? (): void =>
                       setState({
                         type: 'SearchState',
-                        templateResource: new typeSearch.table.Resource(
+                        templateResource: new relatedTable.Resource(
                           {},
                           {
                             noBusinessRules: true,
@@ -474,7 +478,7 @@ export function QueryComboBox({
                               typeof treeData === 'object'
                                 ? treeData
                                 : undefined,
-                            typeSearch,
+                            relatedTable,
                             subViewRelationship,
                           })
                             .map(serializeResource)

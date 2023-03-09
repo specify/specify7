@@ -18,6 +18,7 @@ snapshot(DataEntry.Grid, {
     formType: 'form',
     mode: 'edit',
     table: undefined as unknown as SpecifyTable,
+    name: 'test',
   },
   flexibleColumnWidth: true,
   display: 'block',

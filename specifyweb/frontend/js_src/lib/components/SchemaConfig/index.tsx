@@ -25,6 +25,7 @@ import {
 } from './Hooks';
 import type { SchemaData } from './schemaData';
 import { SchemaConfigTable } from './Table';
+import { useTitle } from '../Molecules/AppTitle';
 
 export type SpLocaleItemString = SerializedResource<SpLocaleItemStr>;
 export type NewSpLocaleItemString = PartialBy<SpLocaleItemString, 'id'>;
@@ -34,6 +35,7 @@ export type ItemType = 'formatted' | 'none' | 'pickList' | 'webLink';
 export function SchemaConfigMain(): JSX.Element {
   const { language: rawLanguage = '', tableName = '' } = useParams();
   const table = strictGetTable(tableName);
+  useTitle(schemaText.schemaViewTitle({ tableName: table.name }));
 
   const schemaData = useOutletContext<SchemaData>();
   const isReadOnly =
@@ -111,7 +113,7 @@ export function SchemaConfigMain(): JSX.Element {
           languages={schemaData.languages}
           onSave={canSave ? handleSave : undefined}
         />
-        <div className="flex flex-1 flex-col gap-4 overflow-hidden sm:flex-row">
+        <div className="flex flex-1 flex-col gap-4 overflow-y-auto sm:flex-row">
           <SchemaConfigTable
             container={container}
             desc={desc}

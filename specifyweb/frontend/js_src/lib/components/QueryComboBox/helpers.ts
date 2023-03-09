@@ -4,16 +4,17 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { idFromUrl } from '../DataModel/resource';
 import type { Relationship } from '../DataModel/specifyField';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { tables } from '../DataModel/tables';
 import type { SpQuery, SpQueryField } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { flippedSortTypes } from '../QueryBuilder/helpers';
 import { getUserPref } from '../UserPreferences/helpers';
+import type { TypeSearch } from './spec';
 import type { CollectionRelationships } from './useCollectionRelationships';
 import type { QueryComboBoxTreeData } from './useTreeData';
-import { TypeSearch } from './spec';
-import { tables } from '../DataModel/tables';
 
 export function makeComboBoxQuery({
   fieldName,
@@ -70,13 +71,13 @@ export function getQueryComboBoxConditions({
   collectionRelationships,
   treeData,
   subViewRelationship,
-  typeSearch: { table },
+  relatedTable,
 }: {
   readonly resource: SpecifyResource<AnySchema>;
   readonly fieldName: string;
   readonly treeData: QueryComboBoxTreeData | undefined;
   readonly collectionRelationships: CollectionRelationships | undefined;
-  readonly typeSearch: TypeSearch;
+  readonly relatedTable: SpecifyTable;
   readonly subViewRelationship: Relationship | undefined;
 }): RA<SpecifyResource<SpQueryField>> {
   const fields: WritableArray<SpecifyResource<SpQueryField>> = [];
@@ -145,7 +146,10 @@ export function getQueryComboBoxConditions({
   )
     // Add condition for current collection
     fields.push(
-      QueryFieldSpec.fromStringId(`${table.tableId}..collectionRelTypeId`, true)
+      QueryFieldSpec.fromStringId(
+        `${relatedTable.tableId}..collectionRelTypeId`,
+        true
+      )
         .toSpQueryField()
         .set('isDisplay', false)
         .set('operStart', queryFieldFilters.in.id)

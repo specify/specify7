@@ -41,7 +41,6 @@ describe('serializeResource', () => {
       dateOfDeath: null,
       dateOfDeathPrecision: null,
       dateType: null,
-      division: null,
       email: null,
       firstName: null,
       groups: [],

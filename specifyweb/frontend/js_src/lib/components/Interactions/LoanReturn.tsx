@@ -17,7 +17,7 @@ import { tables } from '../DataModel/tables';
 import type { Loan, LoanPreparation } from '../DataModel/types';
 import type { ViewDescription } from '../FormParse';
 import { autoGenerateViewDefinition } from '../Forms/generateFormDefinition';
-import { RenderForm } from '../Forms/SpecifyForm';
+import { SpecifyForm } from '../Forms/SpecifyForm';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
 import { PrepReturnRow } from './PrepReturnRow';
@@ -200,7 +200,7 @@ function PreparationReturn({
           handleClose();
         }}
       >
-        <RenderForm
+        <SpecifyForm
           display="block"
           resource={loanReturnPreparation.current}
           viewDefinition={loanReturnPrepForm()}

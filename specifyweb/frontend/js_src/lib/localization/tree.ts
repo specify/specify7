@@ -20,7 +20,7 @@ export const treeText = createDictionary({
     'en-us': 'Bad tree structure.',
     'ru-ru': 'У дерева плохая структура.',
     'es-es': 'Mala estructura de árbol.',
-    'fr-fr': 'Mauvaise arborescence.',
+    'fr-fr': 'Structure hiérarchique incorrecte.',
     'uk-ua': 'Погана структура дерева.',
   },
   move: {
@@ -41,7 +41,7 @@ export const treeText = createDictionary({
     'en-us': 'Undo Synonymy',
     'ru-ru': 'Отменить синонимию',
     'es-es': 'Deshacer sinonimia',
-    'fr-fr': 'Annuler la synonyme',
+    'fr-fr': 'Annuler la synonymie',
     'uk-ua': 'Скасувати синонімію',
   },
   synonymize: {

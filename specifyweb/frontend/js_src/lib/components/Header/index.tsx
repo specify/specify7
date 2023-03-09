@@ -16,6 +16,7 @@ import { icons } from '../Atoms/Icons';
 import type { TagProps } from '../Atoms/wrapper';
 import type { MenuItem } from '../Core/Main';
 import { userInformation } from '../InitialContext/userInformation';
+import { titleDelay, titlePosition } from '../Molecules/Tooltips';
 import { ActiveLink } from '../Router/ActiveLink';
 import { usePref } from '../UserPreferences/usePref';
 import type { MenuItemName } from './menuItemDefinitions';
@@ -146,20 +147,20 @@ export function Header({
         />
         <span className="flex-1" />
         <MenuButton
-          icon={icons.archive}
-          isCollapsed={isCollapsed}
-          preventOverflow
-          title={collectionLabel}
-          onClick="/specify/overlay/choose-collection/"
-        />
-        <UserTools isCollapsed={isCollapsed} isInUserTool={isInUserTool} />
-        <Notifications isCollapsed={isCollapsed} />
-        <MenuButton
           icon={icons.search}
           isActive={activeMenuItem === 'search'}
           isCollapsed={isCollapsed}
           title={commonText.search()}
           onClick="/specify/overlay/express-search/"
+        />
+        <Notifications isCollapsed={isCollapsed} />
+        <UserTools isCollapsed={isCollapsed} isInUserTool={isInUserTool} />
+        <MenuButton
+          icon={icons.archive}
+          isCollapsed={isCollapsed}
+          preventOverflow
+          title={collectionLabel}
+          onClick="/specify/overlay/choose-collection/"
         />
         {!isHorizontal && !forceCollapse ? (
           <MenuButton
@@ -219,6 +220,7 @@ export function MenuButton({
   readonly onClick: string | (() => void);
   readonly props?: TagProps<'a'> & TagProps<'button'>;
 }): JSX.Element | null {
+  const [position] = usePref('header', 'appearance', 'position');
   const getClassName = (isActive: boolean): string => `
     p-4
     ${isActive ? 'bg-brand-300 !text-white' : 'text-gray-700'}
@@ -228,6 +230,9 @@ export function MenuButton({
 
   const props = {
     ...extraProps,
+    [titleDelay]: 0,
+    [titlePosition]:
+      position === 'left' ? 'right' : position === 'right' ? 'left' : undefined,
     'aria-current': isActive ? 'page' : undefined,
     title: isCollapsed ? title : undefined,
   } as const;

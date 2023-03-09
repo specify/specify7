@@ -1,4 +1,5 @@
 import { requireContext } from '../../../tests/helpers';
+import { attachmentView } from '../../FormParse/webOnlyViews';
 import { ResourceBase } from '../resourceApi';
 import { LiteralField } from '../specifyField';
 import { tables } from '../tables';
@@ -216,20 +217,20 @@ test('localization is loaded', () =>
 
 test('localization is generated on the fly when empty', () =>
   expect(tables.DNASequencingRunAttachment.localization).toMatchInlineSnapshot(`
-      {
-        "items": {
-          "dnasequencingrunattachmentid": {
-            "desc": null,
-            "format": null,
-            "ishidden": true,
-            "isrequired": false,
-            "name": "ID",
-            "picklistname": null,
-            "weblinkname": null,
-          },
+    {
+      "items": {
+        "dnasequencingrunattachmentid": {
+          "desc": null,
+          "format": null,
+          "ishidden": true,
+          "isrequired": false,
+          "name": "ID",
+          "picklistname": null,
+          "weblinkname": null,
         },
-      }
-    `));
+      },
+    }
+  `));
 
 test('label is extracted from schema localization', () =>
   expect(tables.CollectionObject.label).toMatchInlineSnapshot(
@@ -260,7 +261,7 @@ test('view name is added on the front-end if missing', () =>
   expect(tables.SpQuery.view).toBe('Query'));
 
 test('view name is overwritten for attachments', () =>
-  expect(tables.Attachment.view).toBe('ObjectAttachment'));
+  expect(tables.Attachment.view).toBe(attachmentView));
 
 test('table name is used as view name if missing', () =>
   expect(tables.AccessionAuthorization.view).toBe(

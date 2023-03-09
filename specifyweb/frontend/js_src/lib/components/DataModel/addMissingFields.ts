@@ -4,8 +4,9 @@ import { filterArray } from '../../utils/types';
 import { formatUrl } from '../Router/queryString';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import type { AnySchema, SerializedResource } from './helperTypes';
-import { strictGetTable } from './tables';
+import { getScopingResource } from './scoping';
 import type { LiteralField, Relationship } from './specifyField';
+import { strictGetTable } from './tables';
 import type { Tables } from './types';
 
 type ResourceSpec = {
@@ -44,6 +45,8 @@ export function addMissingFields<TABLE_NAME extends keyof Tables>(
     optionalRelationships,
   };
 
+  const scoping = getScopingResource(table);
+
   return {
     // This is needed to preserve unknown fields
     ...record,
@@ -70,6 +73,14 @@ export function addMissingFields<TABLE_NAME extends keyof Tables>(
         )
       )
     ) as SerializedResource<Tables[TABLE_NAME]>),
+    ...(scoping === undefined
+      ? undefined
+      : {
+          [scoping.relationship.name]:
+            record[scoping.relationship.name as 'id'] ??
+            (typeof record.id === 'number' ? undefined : scoping.resourceUrl) ??
+            null,
+        }),
     /*
      * REFACTOR: convert all usages of this to camel case
      */

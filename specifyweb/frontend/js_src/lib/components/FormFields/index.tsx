@@ -5,7 +5,7 @@ import { useResourceValue } from '../../hooks/useResourceValue';
 import type { Parser } from '../../utils/parser/definitions';
 import { getValidationAttributes } from '../../utils/parser/definitions';
 import type { IR, RA } from '../../utils/types';
-import { Input, Textarea } from '../Atoms/Form';
+import { Textarea } from '../Atoms/Form';
 import { ReadOnlyContext, SearchDialogContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -184,25 +184,6 @@ const fieldRenderers: {
     );
   },
   Plugin: FormPlugin,
-  FilePicker({ id, name, isRequired }) {
-    // FEATURE: consider replacing this with AttachmentsPlugin for some field names
-    /*
-     * Not sure how this is supposed to work, thus the field is rendered as
-     * disabled
-     *
-     * Probably could overwrite the behaviour on case-by-case basis depending
-     * on the fieldName
-     */
-    return (
-      <Input.Generic
-        disabled
-        id={id}
-        name={name}
-        required={isRequired}
-        type="file"
-      />
-    );
-  },
   Blank: () => null,
 };
 
@@ -222,14 +203,19 @@ export function FormField({
   const Render = fieldRenderers[
     fieldDefinition.type
   ] as typeof fieldRenderers.Checkbox;
+
   const data = useDistantRelated(resource, fields);
   const isReadOnly = React.useContext(ReadOnlyContext);
   const isSearchDialog = React.useContext(SearchDialogContext);
+  const isIndependent =
+    fields
+      ?.slice(0, -1)
+      .some((field) => field.isRelationship && !field.isDependent()) ?? false;
   return (
     <ErrorBoundary dismissible>
       {data === undefined ? undefined : (
         <ReadOnlyContext.Provider
-          value={isReadOnly || data.resource !== resource}
+          value={isReadOnly || data.resource !== resource || isIndependent}
         >
           <Render
             {...rest}
