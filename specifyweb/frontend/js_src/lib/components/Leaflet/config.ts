@@ -13,7 +13,7 @@ export const mappingLocalityColumns: RA<string> = [
   'locality.latitude2',
   'locality.longitude2',
   'locality.latlongtype',
-  'locality.latlongaccuracy',
+  'locality.geocoorddetails.maxuncertaintyest',
 ];
 
 // Fields required to map locality in query builder
@@ -156,7 +156,7 @@ export const localityPinFields: RA<LocalityPinFields> = [
       ['Locality', 'latitude2'],
       ['Locality', 'longitude2'],
       ['Locality', 'latLongType'],
-      ['Locality', 'latLongAccuracy'],
+      ['Locality', 'geoCoordDetails', 'maxuUcertaintyEst'],
       ['Locality', 'geography', '$Country', 'name'],
       ['Locality', 'geography', '$State', 'name'],
       ['Locality', 'geography', '$County', 'name'],

@@ -91,13 +91,13 @@ export function showLeafletMap({
 }
 
 export function isValidAccuracy(
-  latlongaccuracy: string | undefined
-): latlongaccuracy is string {
+  maxuncertaintyest: string | undefined
+): maxuncertaintyest is string {
   try {
     return (
-      latlongaccuracy !== undefined &&
-      !Number.isNaN(Number.parseFloat(latlongaccuracy)) &&
-      Number.parseFloat(latlongaccuracy) >= 1
+      maxuncertaintyest !== undefined &&
+      !Number.isNaN(Number.parseFloat(maxuncertaintyest)) &&
+      Number.parseFloat(maxuncertaintyest) >= 1
     );
   } catch {
     return false;
@@ -202,7 +202,7 @@ export function getMarkersFromLocalityData({
     latitude2: getNumber('locality.latitude2'),
     longitude1: getNumber('locality.longitude1'),
     longitude2: getNumber('locality.longitude2'),
-    latlongaccuracy: getString('locality.latlongaccuracy'),
+    maxuncertaintyest: getString('locality.geocoorddetails.maxuncertaintyest'),
     latlongtype: getString('locality.latlongtype'),
   };
 
@@ -225,12 +225,12 @@ export function getMarkersFromLocalityData({
     parsedLocalityData.longitude2 === undefined
   ) {
     // A circle
-    if (isValidAccuracy(parsedLocalityData.latlongaccuracy))
+    if (isValidAccuracy(parsedLocalityData.maxuncertaintyest))
       markers.errorRadius.push(
         L.circle(
           [parsedLocalityData.latitude1, parsedLocalityData.longitude1],
           {
-            radius: Number.parseFloat(parsedLocalityData.latlongaccuracy),
+            radius: Number.parseFloat(parsedLocalityData.maxuncertaintyest),
           }
         )
       );

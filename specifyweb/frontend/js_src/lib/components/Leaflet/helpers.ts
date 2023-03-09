@@ -89,10 +89,10 @@ export const getLocalityData = (
               },
             }
           : {}),
-        'locality.latlongaccuracy': isValidAccuracy(
-          getField('locality.latlongaccuracy').value
+        'locality.geocoorddetails.maxuncertaintyest': isValidAccuracy(
+          getField('locality.geocoorddetails.maxuncertaintyest').value
         )
-          ? getField('locality.latlongaccuracy')
+          ? getField('locality.geocoorddetails.maxuncertaintyest')
           : { value: '', headerName: '' },
       }
     : false;
