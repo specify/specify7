@@ -31,8 +31,6 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   readonly saveBlockers?: Readonly<SaveBlockers<SCHEMA>>;
   readonly parent?: SpecifyResource<SCHEMA>;
   readonly noBusinessRules: boolean;
-  readonly _fetch?: unknown;
-  readonly _save?: unknown;
   readonly changed?: { [FIELD_NAME in TableFields<SCHEMA>]?: string | number };
   readonly collection: Collection<SCHEMA>;
   readonly businessRuleManager?: BusinessRuleManager<SCHEMA>;
