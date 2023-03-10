@@ -87,7 +87,7 @@ export function PrepDialog({
   const id = useId('prep-dialog');
   const navigate = useNavigate();
 
-  const [bulkValue, setBulkValue] = React.useState(1);
+  const [bulkValue, setBulkValue] = React.useState(0);
 
   const maxPrep = Math.max(...preparations.map(({ available }) => available));
 
@@ -218,7 +218,7 @@ export function PrepDialog({
                 <Input.Number
                   aria-label={interactionsText.selectedAmount()}
                   max={maxPrep}
-                  min={1}
+                  min={0}
                   title={interactionsText.selectedAmount()}
                   value={bulkValue}
                   onValueChange={(newCount) => {
