@@ -123,9 +123,8 @@ export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
           if (determinaton.collection != null) {
             determinaton.collection.models.map(
               (other: SpecifyResource<Determination>) => {
-                if (other.cid !== determinaton.cid) {
+                if (other.cid !== determinaton.cid)
                   other.set('isCurrent', false);
-                }
               }
             );
           }
@@ -256,9 +255,9 @@ export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
     ): void => updateLoanPrep(collection),
 
     customInit: (resource: SpecifyResource<LoanReturnPreparation>): void => {
-      resource.get('quantityReturned') == null &&
+      resource.get('quantityReturned') === null &&
         resource.set('quantityReturned', 0);
-      resource.get('quantityResolved') == null &&
+      resource.get('quantityResolved') === null &&
         resource.set('quantityResolved', 0);
     },
     fieldChecks: {

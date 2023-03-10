@@ -114,7 +114,10 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
   }
 
   private async checkUnique(fieldName: string): Promise<BusinessRuleResult> {
-    const toOneFields =
+    const toOneFields:
+      | RA<string>
+      | null[]
+      | RA<{ field: string; otherFields: string[] }> =
       this.rules?.uniqueIn !== undefined
         ? this.rules?.uniqueIn[fieldName as Lowercase<TableFields<SCHEMA>>] ??
           []
