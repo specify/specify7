@@ -91,13 +91,18 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
     };
   }, [ids, model]);
 
-  const [index, setIndex] = useTriggerState(defaultIndex ?? ids.length - 1);
+  const [index, setIndex] = useTriggerState(
+    Math.max(0, defaultIndex ?? ids.length - 1)
+  );
   React.useEffect(
     () =>
       setIndex((index) =>
-        typeof newResource === 'object'
-          ? rest.totalCount
-          : Math.min(index, rest.totalCount - 1)
+        Math.max(
+          0,
+          typeof newResource === 'object'
+            ? rest.totalCount
+            : Math.min(index, rest.totalCount - 1)
+        )
       ),
     [newResource, rest.totalCount]
   );
@@ -184,7 +189,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
         dialog={dialog}
         headerButtons={(specifyNetworkBadge): JSX.Element => (
           <div className="flex flex-col items-center gap-2 md:flex-row md:gap-8">
-            <div className="flex gap-2">
+            <div className="flex items-center gap-2">
               {headerButtons}
               <DataEntry.Visit
                 resource={
