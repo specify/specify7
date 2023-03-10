@@ -1,0 +1,17 @@
+{
+  "absolute": true,
+  "ignoreCase": true,
+  "minLines": 8,
+  "minTokens": 80,
+  "reporters": ["html", "json", "console"],
+  "ignore": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/tests/**",
+    "**/__tests__/**",
+    "**/tests.py",
+    "**/context/data/**"
+  ],
+  "languages": ["javascript", "typescript", "python"],
+  "mode": "weak"
+}
