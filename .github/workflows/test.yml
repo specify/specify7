@@ -279,6 +279,10 @@ jobs:
         run: |
           npx prettier --write --minify `echo "${{steps.changed.outputs.changed}}" | tr " " "\n"` || true
 
+      - name: Testing for duplicate codes
+        working-directory: specifyweb/frontend/js_src
+        run: npx jscpd --exitCode 1 ../../../
+
       - name: Commit linted files (if made any changes)
         working-directory: specifyweb/frontend/js_src
         # Creates a new commit. Amending an existing commit is a bad idea
