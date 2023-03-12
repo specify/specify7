@@ -23,7 +23,9 @@ export class Disambiguation {
     const cols = this.wbView.dataset.columns.length;
     const hiddenColumn = this.wbView.data[physicalRow][cols];
     const extra =
-      typeof hiddenColumn === 'string' ? JSON.parse(hiddenColumn) : {};
+      typeof hiddenColumn === 'string' && hiddenColumn.length > 0
+        ? JSON.parse(hiddenColumn)
+        : {};
     return extra.disambiguation ?? {};
   }
 

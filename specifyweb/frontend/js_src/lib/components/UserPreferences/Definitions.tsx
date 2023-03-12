@@ -1433,6 +1433,19 @@ export const preferenceDefinitions = {
   workBench: {
     title: wbText.workBench(),
     subCategories: {
+      general: {
+        title: preferencesText.general(),
+        items: {
+          liveValidation: defineItem<boolean>({
+            title: wbText.dataCheck(),
+            description: wbText.dataCheckDescription(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+        },
+      },
       editor: {
         title: preferencesText.spreadsheet(),
         items: {

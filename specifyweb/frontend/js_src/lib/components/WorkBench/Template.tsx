@@ -34,6 +34,7 @@ import { NotFoundView } from '../Router/NotFoundView';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import type { WbStatus } from './WbView';
 import { WbView as WbViewClass } from './WbView';
+import { usePref } from '../UserPreferences/usePref';
 
 function Navigation({
   name,
@@ -92,6 +93,7 @@ function WbView({
   readonly dataSetId: number;
 }): JSX.Element {
   const canUpdate = hasPermission('/workbench/dataset', 'update');
+  const [canLiveValidate] = usePref('workBench', 'general', 'liveValidation');
   return (
     <>
       <div
@@ -125,7 +127,10 @@ function WbView({
         ) : undefined}
         {!isUploaded && hasPermission('/workbench/dataset', 'validate') && (
           <>
-            <Button.Small className="wb-data-check" onClick={undefined}>
+            <Button.Small
+              className={`wb-data-check ${canLiveValidate ? '' : 'hidden'}`}
+              onClick={undefined}
+            >
               {wbText.dataCheck()}
             </Button.Small>
             <Button.Small
