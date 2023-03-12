@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { commonText } from '../../localization/common';
 import { resourcesText } from '../../localization/resources';
+import { f } from '../../utils/functools';
 import { ensure } from '../../utils/types';
 import { getUniqueName } from '../../utils/uniquifyName';
 import { ErrorMessage, Ul } from '../Atoms';
@@ -32,6 +33,8 @@ export function FormatterList(): JSX.Element {
   if (tableName === undefined) return <NotFoundView container={false} />;
   const table = strictGetTable(tableName);
   const currentItems = items.filter((item) => item.table === table);
+  const uniqueNames = f.unique(currentItems.map(({ name }) => name));
+  const hasDuplicates = uniqueNames.length !== currentItems.length;
   const hasDefault = currentItems.some(({ isDefault }) => isDefault);
   return (
     <div className="flex flex-col gap-2 overflow-auto">
@@ -55,6 +58,9 @@ export function FormatterList(): JSX.Element {
       {currentItems.length > 0 && !hasDefault ? (
         <ErrorMessage>{resourcesText.selectDefaultFormatter()}</ErrorMessage>
       ) : undefined}
+      {hasDuplicates && (
+        <ErrorMessage>{resourcesText.duplicateFormatters()}</ErrorMessage>
+      )}
       {!isReadOnly && (
         <div>
           <Button.Green

@@ -147,6 +147,9 @@ export const resourcesText = createDictionary({
   selectDefaultFormatter: {
     'en-us': 'Please mark one of these formatters as default',
   },
+  duplicateFormatters: {
+    'en-us': 'Formatter names must be unique',
+  },
   searchDialogDefinitions: {
     'en-us': 'Search Dialog Definitions',
     'ru-ru': 'Макеты диалогового окна поиска',
