@@ -81,6 +81,7 @@ export function AppResourceTextEditor({
   const isReadOnly = React.useContext(ReadOnlyContext);
   return (
     <CodeMirror
+      className="border border-brand-300 dark:border-none"
       extensions={writable(extensions)}
       readOnly={isReadOnly}
       ref={handleRef}
