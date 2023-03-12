@@ -25,6 +25,7 @@ import { FilePicker } from '../Molecules/FilePicker';
 import { ProtectedTable } from '../Permissions/PermissionDenied';
 import { attachmentSettingsPromise, uploadFile } from './attachments';
 import { AttachmentViewer } from './Viewer';
+import { GetOrSet } from '../../utils/types';
 
 export function AttachmentsPlugin(
   props: Parameters<typeof ProtectedAttachmentsPlugin>[0]
@@ -39,16 +40,11 @@ export function AttachmentsPlugin(
   );
 }
 
-function ProtectedAttachmentsPlugin({
-  resource,
-  mode = 'edit',
-}: {
-  readonly resource: SpecifyResource<AnySchema> | undefined;
-  readonly mode: FormMode;
-}): JSX.Element | null {
-  const [attachment, setAttachment] = useAsyncState<
-    SpecifyResource<Attachment> | false
-  >(
+/** Retrieve attachment related to a given resource */
+export function useAttachment(
+  resource: SpecifyResource<AnySchema> | undefined
+): GetOrSet<SpecifyResource<Attachment> | false | undefined> {
+  return useAsyncState(
     React.useCallback(
       async () =>
         f.maybe(resource, (resource) => toTable(resource, 'Attachment')) ??
@@ -58,6 +54,16 @@ function ProtectedAttachmentsPlugin({
     ),
     true
   );
+}
+
+function ProtectedAttachmentsPlugin({
+  resource,
+  mode = 'edit',
+}: {
+  readonly resource: SpecifyResource<AnySchema> | undefined;
+  readonly mode: FormMode;
+}): JSX.Element | null {
+  const [attachment, setAttachment] = useAttachment(resource);
   useErrorContext('attachment', attachment);
 
   const filePickerContainer = React.useRef<HTMLDivElement | null>(null);
