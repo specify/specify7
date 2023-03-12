@@ -129,6 +129,7 @@ async function determineFields<SCHEMA extends AnySchema>(
   { conditionField, fields }: Formatter['definition'],
   resource: SpecifyResource<SCHEMA>
 ): Promise<Formatter['definition']['fields'][number]['fields']> {
+  if (fields.length === 0) return [];
   if (conditionField === undefined) return fields[0].fields;
   const result = await fetchPathAsString(resource, conditionField);
   if (result === undefined) return fields[0].fields;
