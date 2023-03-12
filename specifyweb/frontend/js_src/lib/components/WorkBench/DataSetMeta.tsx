@@ -11,7 +11,7 @@ import { Http } from '../../utils/ajax/definitions';
 import { formData } from '../../utils/ajax/helpers';
 import { ping } from '../../utils/ajax/ping';
 import type { RA } from '../../utils/types';
-import { overwriteReadOnly } from '../../utils/types';
+import { defined, overwriteReadOnly } from '../../utils/types';
 import { uniquifyDataSetName } from '../../utils/uniquifyName';
 import { Button } from '../Atoms/Button';
 import { Form, Input, Label, Select } from '../Atoms/Form';
@@ -23,6 +23,7 @@ import { Backbone } from '../DataModel/backbone';
 import { fetchCollection } from '../DataModel/collection';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
+import { tables } from '../DataModel/tables';
 import type { SpecifyUser } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { useTitle } from '../Molecules/AppTitle';
@@ -35,7 +36,6 @@ import { hasPermission } from '../Permissions/helpers';
 import { unsafeNavigate } from '../Router/Router';
 import { getMaxDataSetLength } from '../WbImport/helpers';
 import type { Dataset } from '../WbPlanView/Wrapped';
-import { tables } from '../DataModel/tables';
 
 // FEATURE: allow exporting/importing the mapping
 export function DataSetMeta({
@@ -417,27 +417,52 @@ function ChangeOwner({
 }
 
 // A wrapper for DS Meta for embedding in the WB
-export const DataSetNameView = Backbone.View.extend({
-  __name__: 'DataSetNameView',
-  render() {
+export class DataSetNameView extends Backbone.View {
+  // eslint-disable-next-line functional/prefer-readonly-type
+  private dataSetMeta: (() => void) | undefined;
+
+  // eslint-disable-next-line functional/prefer-readonly-type
+  private changeOwnerView: (() => void) | undefined;
+
+  public constructor(
+    private readonly options: {
+      readonly dataset: Dataset;
+      readonly el: HTMLElement;
+      readonly display: (
+        jsx: JSX.Element,
+        element?: HTMLElement,
+        destructor?: () => void
+      ) => () => void;
+      readonly getRowCount: () => number;
+    }
+  ) {
+    super(options);
+  }
+
+  public render(): this {
+    const nameContainer =
+      this.options.el.getElementsByClassName('wb-name-container')?.[0];
     this.dataSetMeta = this.options.display(
       <DataSetName
         dataset={this.options.dataset}
         getRowCount={this.options.getRowCount}
       />,
-      this.el.getElementsByClassName('wb-name-container')[0]
+      defined(nameContainer, 'Unable to find Wb Name container') as HTMLElement
     );
     return this;
-  },
-  changeOwner() {
-    const handleClose = (): void => void this.changeOwnerView();
+  }
+
+  public changeOwner(): void {
+    const handleClose = (): void => void this.changeOwnerView?.();
     this.changeOwnerView = this.options.display(
       <ChangeOwner dataset={this.options.dataset} onClose={handleClose} />
     );
-  },
-  remove() {
-    this.dataSetMeta();
+  }
+
+  public remove(): this {
+    this.dataSetMeta?.();
     this.changeOwnerView?.();
     Backbone.View.prototype.remove.call(this);
-  },
-});
+    return this;
+  }
+}

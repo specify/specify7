@@ -59,7 +59,7 @@ export function CoordinateConverter({
   onClose: handleClose,
 }: {
   readonly hot: Handsontable;
-  readonly data: RA<RA<string>>;
+  readonly data: RA<RA<string | null>>;
   readonly columns: RA<string>;
   readonly coordinateColumns: RR<number, 'Lat' | 'Long'>;
   readonly onClose: () => void;

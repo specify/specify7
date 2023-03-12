@@ -32,7 +32,8 @@ import { Portal } from '../Molecules/Portal';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import { NotFoundView } from '../Router/NotFoundView';
 import type { Dataset } from '../WbPlanView/Wrapped';
-import { WBView } from './wbView';
+import type { WbStatus } from './WbView';
+import { WbView as WbViewClass } from './WbView';
 
 function Navigation({
   name,
@@ -123,13 +124,18 @@ function WbView({
           </Link.Small>
         ) : undefined}
         {!isUploaded && hasPermission('/workbench/dataset', 'validate') && (
-          <Button.Small
-            aria-haspopup="dialog"
-            className="wb-validate"
-            onClick={undefined}
-          >
-            {wbText.validate()}
-          </Button.Small>
+          <>
+            <Button.Small className="wb-data-check" onClick={undefined}>
+              {wbText.dataCheck()}
+            </Button.Small>
+            <Button.Small
+              aria-haspopup="dialog"
+              className="wb-validate"
+              onClick={undefined}
+            >
+              {wbText.validate()}
+            </Button.Small>
+          </>
         )}
         <Button.Small
           aria-haspopup="tree"
@@ -374,7 +380,7 @@ function useWbView(
     >
   >([]);
 
-  const mode = React.useRef<string | undefined>(undefined);
+  const mode = React.useRef<WbStatus | undefined>(undefined);
   const wasAborted = React.useRef<boolean>(false);
 
   const [hasUnloadProtect, setUnloadProtect] = React.useState<boolean>(false);
@@ -386,38 +392,36 @@ function useWbView(
     const contained = document.createElement('section');
     contained.setAttribute('class', `wbs-form ${className.containerFull}`);
     container.append(contained);
-    const view = new WBView({
-      el: contained,
-      dataset: dataSet,
-      refreshInitiatedBy: mode.current,
-      refreshInitiatorAborted: wasAborted.current,
-      onSetUnloadProtect: setUnloadProtect,
-      onDeleted: handleDeleted,
-      onDeletedConfirmation: handleDeletedConfirmation,
-      display(
-        jsx: JSX.Element,
-        element?: HTMLElement,
-        destructor?: () => void
-      ) {
-        let index = 0;
-        setPortals((portals) => {
-          index = portals.length;
-          return [...portals, { jsx, element }];
-        });
-        return () => {
-          setPortals((portals) => replaceItem(portals, index, undefined));
-          destructor?.();
-        };
-      },
-    })
-      .on('refresh', (newMode: string | undefined, newWasAborted = false) => {
+    const view = new WbViewClass(
+      dataSet,
+      mode.current,
+      wasAborted.current,
+      contained,
+      {
+        onSetUnloadProtect: setUnloadProtect,
+        onDeleted: handleDeleted,
+        onDeletedConfirmation: handleDeletedConfirmation,
+        display(jsx, element, destructor): () => void {
+          let index = 0;
+          setPortals((portals) => {
+            index = portals.length;
+            return [...portals, { jsx, element }];
+          });
+          return () => {
+            setPortals((portals) => replaceItem(portals, index, undefined));
+            destructor?.();
+          };
+        },
+      }
+    )
+      .on('refresh', (newMode: WbStatus | undefined, newWasAborted = false) => {
         setUnloadProtect(false);
         mode.current = newMode;
         wasAborted.current = newWasAborted;
         handleRefresh();
       })
       .render();
-    return () => view.remove();
+    return () => void view.remove();
   }, [treeRanksLoaded, container, dataSet]);
 
   return portals;

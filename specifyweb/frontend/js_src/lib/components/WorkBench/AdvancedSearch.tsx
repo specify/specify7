@@ -20,7 +20,7 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 type NavigationDirection = 'columnFirst' | 'rowFirst';
 type ReplaceMode = 'replaceAll' | 'replaceNext';
 
-export type SearchPreferences = {
+export type WbSearchPreferences = {
   readonly navigation: {
     readonly direction: NavigationDirection;
   };
@@ -60,7 +60,7 @@ const defaultSearchPreferences = {
 /**
  * Fetch cached search config or create a new one
  */
-export const getInitialSearchPreferences = (): SearchPreferences =>
+export const getInitialSearchPreferences = (): WbSearchPreferences =>
   getCache('workbench', 'searchProperties') ?? defaultSearchPreferences;
 
 function CheckboxLine({
@@ -70,9 +70,9 @@ function CheckboxLine({
   setState,
 }: {
   readonly children: string;
-  readonly property: keyof SearchPreferences['search'];
-  readonly state: SearchPreferences;
-  readonly setState: (state: SearchPreferences) => void;
+  readonly property: keyof WbSearchPreferences['search'];
+  readonly state: WbSearchPreferences;
+  readonly setState: (state: WbSearchPreferences) => void;
 }): JSX.Element {
   return (
     <Label.Inline>
@@ -98,8 +98,8 @@ function PreferencesDialog({
   onClose: handleClose,
   onChange: handleChange,
 }: {
-  readonly searchPreferences: SearchPreferences;
-  readonly onChange: (newSearchPreferences: SearchPreferences) => void;
+  readonly searchPreferences: WbSearchPreferences;
+  readonly onChange: (newSearchPreferences: WbSearchPreferences) => void;
   readonly onClose: () => void;
 }): JSX.Element {
   return (
@@ -195,12 +195,12 @@ export function WbAdvancedSearch({
   onChange: handleChange,
   initialSearchPreferences,
 }: {
-  readonly initialSearchPreferences: SearchPreferences;
-  readonly onChange: (newSearchPreferences: SearchPreferences) => void;
+  readonly initialSearchPreferences: WbSearchPreferences;
+  readonly onChange: (newSearchPreferences: WbSearchPreferences) => void;
 }): JSX.Element {
   const [isOpen, _, handleClose, handleToggle] = useBooleanState();
   const [searchPreferences, setSearchPreferences] =
-    React.useState<SearchPreferences>(initialSearchPreferences);
+    React.useState<WbSearchPreferences>(initialSearchPreferences);
 
   React.useEffect(() => {
     handleChange(searchPreferences);

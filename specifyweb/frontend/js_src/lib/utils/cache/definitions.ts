@@ -22,7 +22,7 @@ import type {
 import type { SortConfig } from '../../components/Molecules/Sorting';
 import type { Conformations } from '../../components/TreeView/helpers';
 import type { UserPreferences } from '../../components/UserPreferences/helpers';
-import type { SearchPreferences } from '../../components/WorkBench/AdvancedSearch';
+import type { WbSearchPreferences } from '../../components/WorkBench/AdvancedSearch';
 import type { IR, RA } from '../types';
 import { ensure } from '../types';
 
@@ -67,7 +67,7 @@ export type CacheDefinitions = {
     [Property in `currentLayer${LeafletCacheSalt}`]: string;
   };
   readonly workbench: {
-    readonly searchProperties: SearchPreferences;
+    readonly searchProperties: WbSearchPreferences;
   };
   readonly coordinateConverter: {
     readonly includeSymbols: boolean;
@@ -87,7 +87,11 @@ export type CacheDefinitions = {
      * WorkBench column sort setting in a given dataset
      * {Collection ID}_{Dataset ID}
      */
-    [key in `${number}_${number}`]: RA<hot.columnSorting.Config>;
+    [key in `${number}_${number}`]: RA<
+      hot.columnSorting.Config & {
+        readonly physicalCol: number;
+      }
+    >;
   };
   readonly sortConfig: {
     readonly [KEY in keyof SortConfigs]: SortConfig<SortConfigs[KEY]>;
