@@ -36,7 +36,7 @@ import {
 import type { Role } from './Role';
 import { fetchRoles } from './utils';
 import { tables } from '../DataModel/tables';
-import {formatUrl} from '../Router/queryString';
+import { formatUrl } from '../Router/queryString';
 
 export type RoleBase = {
   readonly roleId: number;
@@ -185,9 +185,12 @@ export function CollectionView({
                                 onClick={(event): void => {
                                   event.preventDefault();
                                   navigate(
-                                    formatUrl(`/specify/security/user/${userId}/`,{
-                                      collection: collection.id,
-                                    })
+                                    formatUrl(
+                                      `/specify/security/user/${userId}/`,
+                                      {
+                                        collection: collection.id,
+                                      }
+                                    )
                                   );
                                 }}
                               >
@@ -205,7 +208,11 @@ export function CollectionView({
                         href="/specify/security/user/new/"
                         onClick={(event): void => {
                           event.preventDefault();
-                          navigate(formatUrl('/specify/security/user/new/',{collection:collection.id}));
+                          navigate(
+                            formatUrl('/specify/security/user/new/', {
+                              collection: collection.id,
+                            })
+                          );
                         }}
                       >
                         {commonText.create()}

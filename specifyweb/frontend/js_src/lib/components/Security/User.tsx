@@ -3,7 +3,7 @@ import { useOutletContext, useParams } from 'react-router';
 import { useLocation, useNavigate } from 'react-router-dom';
 import type { State } from 'typesafe-reducer';
 
-import {useSearchParameter} from '../../hooks/navigation';
+import { useSearchParameter } from '../../hooks/navigation';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { useIsModified } from '../../hooks/useIsModified';
@@ -88,7 +88,7 @@ export function SecurityUser(): JSX.Element {
   const location = useStableLocation(useLocation());
   const state = locationToState(location, 'SecurityUser');
   const [initialCollection] = useSearchParameter('collection');
-  
+
   const { userId = '' } = useParams();
   const {
     getSetUsers: [users, setUsers],

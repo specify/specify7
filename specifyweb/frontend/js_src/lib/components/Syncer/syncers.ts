@@ -119,7 +119,7 @@ export const syncers = {
           children[tagName] ?? children[tagName.toLowerCase()] ?? [];
         const child = currentChildren[0];
         if (child === undefined && mode === 'required')
-          console.error(`Unable to find a <${tagName} /> child`);
+          console.error(`Unable to find <${tagName} /> child`);
         if (currentChildren.length > 1)
           console.warn(`Expected to find at most one <${tagName} /> child`);
         return child;

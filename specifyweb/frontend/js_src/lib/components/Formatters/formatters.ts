@@ -131,7 +131,7 @@ async function determineFields<SCHEMA extends AnySchema>(
 ): Promise<Formatter['definition']['fields'][number]['fields']> {
   if (fields.length === 0) return [];
   if (conditionField === undefined) return fields[0].fields;
-  const result = await fetchPathAsString(resource, conditionField);
+  const result = await fetchPathAsString(resource, conditionField, false);
   if (result === undefined) return fields[0].fields;
   return (
     fields.find(({ value }) => (value ?? '') === result)?.fields ??
@@ -146,7 +146,10 @@ async function formatField(
     separator,
     aggregator,
     fieldFormatter,
-  }: Formatter['definition']['fields'][number]['fields'][number],
+    formatFieldValue = true,
+  }: Formatter['definition']['fields'][number]['fields'][number] & {
+    readonly formatFieldValue?: boolean;
+  },
   parentResource: SpecifyResource<AnySchema>,
   tryBest: boolean
 ): Promise<string | undefined> {
@@ -166,12 +169,14 @@ async function formatField(
               formatter,
               tryBest as false
             ))
-      : await fieldFormat(
+      : formatFieldValue
+      ? await fieldFormat(
           field,
           resource.get(field.name) as string | undefined,
           undefined,
           fieldFormatter
-        );
+        )
+      : (resource.get(field.name) as string | null) ?? undefined;
   } else {
     formatted = tryBest
       ? naiveFormatter(parentResource.specifyTable.name, parentResource.id)
@@ -185,7 +190,8 @@ async function formatField(
 
 export async function fetchPathAsString(
   baseResource: SpecifyResource<AnySchema>,
-  field: RA<LiteralField | Relationship> | undefined
+  field: RA<LiteralField | Relationship> | undefined,
+  formatFieldValue = true
 ): Promise<string | undefined> {
   const value = await formatField(
     {
@@ -194,6 +200,7 @@ export async function fetchPathAsString(
       separator: '',
       aggregator: undefined,
       fieldFormatter: undefined,
+      formatFieldValue,
     },
     baseResource,
     false

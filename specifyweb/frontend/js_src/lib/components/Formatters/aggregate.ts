@@ -50,7 +50,7 @@ export async function aggregate(
         sortValue:
           resolvedAggregator.sortField === undefined
             ? undefined
-            : fetchPathAsString(resource, resolvedAggregator.sortField),
+            : fetchPathAsString(resource, resolvedAggregator.sortField, false),
       })
     )
   ).then((entries) => {
