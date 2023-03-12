@@ -84,7 +84,7 @@ export function FormattersPickList({
 
 export function FieldFormattersPickList({
   table,
-  value,
+  value = '',
   onChange: handleChange,
 }: {
   readonly table: SpecifyTable;

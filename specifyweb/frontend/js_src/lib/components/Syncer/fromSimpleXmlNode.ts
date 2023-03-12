@@ -104,7 +104,9 @@ function mergeNodes(
       if (child.type !== 'XmlNode') return child;
       const newChildren = writableChildren[child.tagName];
       const newChild = newChildren?.shift();
-      return newChild === undefined
+      return newChildren === undefined
+        ? child
+        : newChild === undefined
         ? undefined
         : fromSimpleXmlNode(child, newChild);
     })

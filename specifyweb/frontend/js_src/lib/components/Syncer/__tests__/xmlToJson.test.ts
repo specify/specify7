@@ -57,6 +57,24 @@ test('XML to JSON and back', () => {
   expect(jsonToXml(newParsed).outerHTML).toBe(newRawXml);
 });
 
+test('Unknown XML nodes are preserved', () => {
+  const rawXml = `<a a="1">
+\t<b/>
+\t<unknown a="b"/>
+</a>`;
+  const xml = strictParseXml(rawXml);
+  const parsed = xmlToJson(xml);
+  const simple = toSimpleXmlNode(parsed);
+  const newSimple: SimpleXmlNode = {
+    ...simple,
+    children: {
+      b: simple.children.b,
+    },
+  };
+  const newParsed = fromSimpleXmlNode(parsed, newSimple);
+  expect(jsonToXml(newParsed).outerHTML).toBe(rawXml);
+});
+
 const formatXml = (xml: string): string =>
   jsonToXml(formatXmlNode(xmlToJson(strictParseXml(xml)))).outerHTML;
 
