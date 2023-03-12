@@ -144,6 +144,9 @@ export const resourcesText = createDictionary({
     'en-us': 'Available Aggregators',
     'ru-ru': 'Доступные агрегаторы',
   },
+  selectDefaultFormatter: {
+    'en-us': 'Please mark one of these formatters as default',
+  },
   searchDialogDefinitions: {
     'en-us': 'Search Dialog Definitions',
     'ru-ru': 'Макеты диалогового окна поиска',

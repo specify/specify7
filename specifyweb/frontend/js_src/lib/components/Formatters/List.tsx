@@ -6,7 +6,7 @@ import { commonText } from '../../localization/common';
 import { resourcesText } from '../../localization/resources';
 import { ensure } from '../../utils/types';
 import { getUniqueName } from '../../utils/uniquifyName';
-import { Ul } from '../Atoms';
+import { ErrorMessage, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { ReadOnlyContext } from '../Core/Contexts';
@@ -25,10 +25,14 @@ export function FormatterList(): JSX.Element {
   const {
     items: [items, setItems],
   } = useOutletContext<FormatterTypesOutlet>();
+
   const isReadOnly = React.useContext(ReadOnlyContext);
   const navigate = useNavigate();
+
   if (tableName === undefined) return <NotFoundView container={false} />;
   const table = strictGetTable(tableName);
+  const currentItems = items.filter((item) => item.table === table);
+  const hasDefault = currentItems.some(({ isDefault }) => isDefault);
   return (
     <div className="flex flex-col gap-2 overflow-auto">
       <h4 className="text-xl">{table.label}</h4>
@@ -38,23 +42,23 @@ export function FormatterList(): JSX.Element {
           : resourcesText.availableAggregators()
       }:`}</h5>
       <Ul className="flex flex-1 flex-col gap-1 overflow-y-auto">
-        {items.map((item, index) =>
-          item.table === table ? (
-            <li key={index}>
-              <Link.Default href={getLink(item.name)}>
-                {`${item.title ?? item.name} ${
-                  item.isDefault ? `(${resourcesText.default()})` : ''
-                }`}
-              </Link.Default>
-            </li>
-          ) : undefined
-        )}
+        {currentItems.map((item, index) => (
+          <li key={index}>
+            <Link.Default href={getLink(item.name)}>
+              {`${item.title ?? item.name} ${
+                item.isDefault ? `(${resourcesText.default()})` : ''
+              }`}
+            </Link.Default>
+          </li>
+        ))}
       </Ul>
+      {currentItems.length > 0 && !hasDefault ? (
+        <ErrorMessage>{resourcesText.selectDefaultFormatter()}</ErrorMessage>
+      ) : undefined}
       {!isReadOnly && (
         <div>
           <Button.Green
             onClick={(): void => {
-              const currentItems = items.filter((item) => item.table === table);
               const newName = getUniqueName(
                 table.name,
                 currentItems.map((item) => item.name),
@@ -65,14 +69,11 @@ export function FormatterList(): JSX.Element {
                 table.label,
                 currentItems.map((item) => item.title ?? '')
               );
-              const hasDefault = currentItems.some(
-                ({ isDefault }) => isDefault
-              );
               const common = {
                 name: newName,
                 title: newTitle,
                 table,
-                isDefault: !hasDefault,
+                isDefault: currentItems.length === 0,
               } as const;
               const newItem =
                 type === 'formatter'
