@@ -5,12 +5,15 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { resourcesText } from '../../localization/resources';
 import type { RA } from '../../utils/types';
+import { removeItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
+import { Link } from '../Atoms/Link';
 import { fetchCollection } from '../DataModel/collection';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { deserializeResource } from '../DataModel/serializers';
 import type { SpecifyTable } from '../DataModel/specifyTable';
+import { ResourceView } from '../Forms/ResourceView';
 import { SearchDialog } from '../SearchDialog';
 
 const defaultPreviewSize = 4;
@@ -52,6 +55,9 @@ export function GenericFormatterPreview({
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   const templateResource = React.useMemo(() => new table!.Resource(), [table]);
 
+  const [previewIndex, setPreviewIndex] = React.useState<number | undefined>(
+    undefined
+  );
   return (
     <div
       // Setting width prevents dialog resizing when output is loaded
@@ -64,15 +70,41 @@ export function GenericFormatterPreview({
       {typeof formatted === 'object' ? (
         formatted.map((formatted, index) => (
           <div
-            className="rounded bg-[color:var(--form-background)] p-2"
+            className="flex gap-2 rounded bg-[color:var(--form-background)] p-2"
             key={index}
           >
+            {typeof resources?.[index] === 'object' && (
+              <Link.Icon
+                href={resources[index].viewUrl()}
+                icon="eye"
+                title={commonText.view()}
+                onClick={(event): void => {
+                  event.preventDefault();
+                  setPreviewIndex(index);
+                }}
+              />
+            )}
             <output>{formatted}</output>
           </div>
         ))
       ) : formatted === undefined ? (
         <p>{commonText.loading()}</p>
       ) : undefined}
+      {typeof previewIndex === 'number' &&
+        typeof resources?.[previewIndex] === 'object' && (
+          <ResourceView
+            dialog="modal"
+            isDependent={false}
+            isSubForm={false}
+            resource={resources[previewIndex]}
+            onAdd={undefined}
+            onClose={(): void => setPreviewIndex(undefined)}
+            onDeleted={(): void =>
+              setResources(removeItem(resources, previewIndex))
+            }
+            onSaved={undefined}
+          />
+        )}
       {isOpen && (
         <SearchDialog
           extraFilters={undefined}
