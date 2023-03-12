@@ -11,6 +11,7 @@ import { useTriggerState } from '../../hooks/useTriggerState';
 import { attachmentsText } from '../../localization/attachments';
 import { formsText } from '../../localization/forms';
 import { f } from '../../utils/functools';
+import type { GetOrSet } from '../../utils/types';
 import { Progress } from '../Atoms';
 import { LoadingContext } from '../Core/Contexts';
 import { toTable } from '../DataModel/helpers';
@@ -25,7 +26,6 @@ import { FilePicker } from '../Molecules/FilePicker';
 import { ProtectedTable } from '../Permissions/PermissionDenied';
 import { attachmentSettingsPromise, uploadFile } from './attachments';
 import { AttachmentViewer } from './Viewer';
-import { GetOrSet } from '../../utils/types';
 
 export function AttachmentsPlugin(
   props: Parameters<typeof ProtectedAttachmentsPlugin>[0]
