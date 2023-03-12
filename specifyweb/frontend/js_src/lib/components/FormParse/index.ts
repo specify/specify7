@@ -83,9 +83,10 @@ export const fetchView = async (
           formatUrl('/context/view.json', {
             name,
             // Don't spam the console with errors needlessly
-            ...(name in webOnlyViews() || getTable(name)?.isSystem === true
-              ? { quiet: '' }
-              : {}),
+            quiet:
+              name in webOnlyViews() || getTable(name)?.isSystem === true
+                ? ''
+                : undefined,
           })
         ),
         {

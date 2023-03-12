@@ -134,7 +134,7 @@ export function getResourceViewUrl(
 ): string {
   const url = `/specify/view/${tableName.toLowerCase()}/${resourceId}/`;
   return typeof recordSetId === 'number'
-    ? formatUrl(url, { recordSetId: recordSetId.toString() })
+    ? formatUrl(url, { recordSetId })
     : url;
 }
 
@@ -150,7 +150,7 @@ export function getResourceApiUrl(
     return `/api/specify/${tableName.toLowerCase()}/`;
   const url = `/api/specify/${tableName.toLowerCase()}/${resourceId}/`;
   return typeof recordSetId === 'number'
-    ? formatUrl(url, { recordSetId: recordSetId.toString() })
+    ? formatUrl(url, { recordSetId })
     : url;
 }
 

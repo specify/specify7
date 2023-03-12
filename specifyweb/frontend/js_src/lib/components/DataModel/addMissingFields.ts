@@ -135,7 +135,7 @@ function handleRelationship<TABLE_NAME extends keyof Tables>(
         record[field.name as keyof Tables[TABLE_NAME]['toManyIndependent']] ??
         (typeof otherSideName === 'string' && typeof record.id === 'number'
           ? formatUrl(`/api/specify/${field.relatedTable.name}`, {
-              [otherSideName]: record.id.toString(),
+              [otherSideName]: record.id,
             })
           : undefined)
       );

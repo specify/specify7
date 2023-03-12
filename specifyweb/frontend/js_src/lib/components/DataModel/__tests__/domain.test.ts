@@ -71,7 +71,7 @@ describe('fetchCollectionsForResource', () => {
   overrideAjax(
     formatUrl('/api/specify/collection/', {
       limit: '0',
-      discipline__division: divisionId.toString(),
+      discipline__division: divisionId,
     }),
     {
       meta: {

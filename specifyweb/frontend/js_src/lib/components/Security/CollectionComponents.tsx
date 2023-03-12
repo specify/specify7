@@ -20,6 +20,7 @@ import type { Collection } from '../DataModel/types';
 import { ResourceView } from '../Forms/ResourceView';
 import { userInformation } from '../InitialContext/userInformation';
 import { hasPermission } from '../Permissions/helpers';
+import { formatUrl } from '../Router/queryString';
 import { updateCollectionRole } from './CollectionRole';
 import { createCollectionRole } from './CreateRole';
 import { ImportExport } from './ImportExport';
@@ -42,12 +43,11 @@ export function CurrentUserLink({
       href={`/specify/security/user/${userInformation.id}/`}
       onClick={(event): void => {
         event.preventDefault();
-        navigate(`/specify/security/user/${userInformation.id}/`, {
-          state: {
-            type: 'SecurityUser',
-            initialCollectionId: collectionId,
-          },
-        });
+        navigate(
+          formatUrl(`/specify/security/user/${userInformation.id}/`, {
+            collection: collectionId,
+          })
+        );
       }}
     >
       {userInformation.name}

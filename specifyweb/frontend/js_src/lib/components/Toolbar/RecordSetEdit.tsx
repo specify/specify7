@@ -90,14 +90,14 @@ function QueryRecordSet({
     <QueryListDialog
       getQuerySelectUrl={(query): string =>
         formatUrl(`/specify/query/${query.id}/`, {
-          recordSetId: recordSet.id.toString(),
+          recordSetId: recordSet.id,
         })
       }
       newQueryUrl={formatUrl(
         `/specify/query/new/${getTableById(
           recordSet.get('dbTableId')
         ).name.toLowerCase()}/`,
-        { recordSetId: recordSet.id.toString() }
+        { recordSetId: recordSet.id }
       )}
       queries={queries}
       onClose={handleClose}

@@ -18,7 +18,7 @@ export function ShareRecord({
 }: {
   readonly resource: SpecifyResource<AnySchema>;
 }): JSX.Element {
-  const [recordsetid] = useSearchParameter('recordsetid');
+  const [recordsetid] = useSearchParameter('recordSetId');
   const recordSetId = f.parseInt(recordsetid);
   const collectionCode =
     userInformation.availableCollections.find(
@@ -30,14 +30,9 @@ export function ShareRecord({
     ) ?? '';
   const rawUrl =
     collectionCode.length > 0 && catalogNumber.length > 0
-      ? formatUrl(
-          `/specify/bycatalog/${collectionCode}/${catalogNumber}`,
-          typeof recordSetId === 'number'
-            ? {
-                recordSetId: recordSetId?.toString(),
-              }
-            : {}
-        )
+      ? formatUrl(`/specify/bycatalog/${collectionCode}/${catalogNumber}`, {
+          recordSetId,
+        })
       : getResourceViewUrl(
           resource.specifyTable.name,
           resource.id,

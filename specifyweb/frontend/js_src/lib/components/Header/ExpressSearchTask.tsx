@@ -167,7 +167,7 @@ function TableResult({
           name: table.name,
           // The URL may already have a "name" parameter
           ...parseUrl(ajaxUrl),
-          offset: offset.toString(),
+          offset,
         }),
         {
           // eslint-disable-next-line @typescript-eslint/naming-convention

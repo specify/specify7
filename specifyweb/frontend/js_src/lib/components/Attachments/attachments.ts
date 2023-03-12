@@ -114,9 +114,9 @@ export async function fetchThumbnail(
     src: formatUrl(settings.read, {
       coll: settings.collection,
       type: 'T',
-      fileName: attachment.attachmentLocation ?? '',
-      scale: scale.toString(),
-      ...(typeof token === 'string' ? { token } : {}),
+      fileName: attachment.attachmentLocation,
+      scale,
+      token,
     }),
     alt: attachment.attachmentLocation ?? undefined,
     width: scale,
@@ -132,9 +132,9 @@ export const formatAttachmentUrl = (
     ? formatUrl(settings.read, {
         coll: settings.collection,
         type: 'O',
-        fileName: attachment.attachmentLocation ?? '',
+        fileName: attachment.attachmentLocation,
         downloadName: attachment.origFilename?.replace(/^.*[/\\]/u, ''),
-        ...(typeof token === 'string' ? { token } : {}),
+        token,
       })
     : undefined;
 

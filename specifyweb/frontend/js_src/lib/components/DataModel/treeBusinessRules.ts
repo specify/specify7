@@ -70,7 +70,7 @@ const predictFullName = async (
           `/api/specify_tree/${treeName}/${parent.id}/predict_fullname/`,
           {
             name: resource.get('name'),
-            treeDefItemId: definitionItem.id?.toString(),
+            treeDefItemId: definitionItem.id,
           }
         ),
         {

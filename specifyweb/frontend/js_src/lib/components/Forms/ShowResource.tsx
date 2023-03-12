@@ -29,7 +29,7 @@ export function ShowResource({
   readonly resource: SpecifyResource<AnySchema>;
 }): JSX.Element | null {
   // Look to see if we are in the context of a Record Set
-  const [recordsetid] = useSearchParameter('recordsetid');
+  const [recordsetid] = useSearchParameter('recordSetId');
   const recordSetId = f.parseInt(recordsetid);
   const [recordSet] = useAsyncState<SpecifyResource<RecordSet> | false>(
     React.useCallback(

@@ -26,7 +26,7 @@ export function usePrimarySearch(
       if (query === '') return false;
       const ajaxUrl = formatUrl('/express_search/', {
         q: query,
-        limit: expressSearchFetchSize.toString(),
+        limit: expressSearchFetchSize,
       });
       return ajax<IR<QueryTableResult>>(
         ajaxUrl,
@@ -101,7 +101,7 @@ export function useSecondarySearch(
           const ajaxUrl = formatUrl('/express_search/related/', {
             q: query,
             name,
-            limit: expressSearchFetchSize.toString(),
+            limit: expressSearchFetchSize,
           });
           return ajax<RelatedTableResult>(
             ajaxUrl,

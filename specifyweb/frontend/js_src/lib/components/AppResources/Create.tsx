@@ -12,10 +12,7 @@ import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import {
-  deserializeResource,
-  serializeResource,
-} from '../DataModel/serializers';
+import { deserializeResource } from '../DataModel/serializers';
 import type { SpAppResourceDir } from '../DataModel/types';
 import {
   spAppResourceView,
@@ -25,6 +22,7 @@ import { ResourceView } from '../Forms/ResourceView';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
 import { NotFoundView } from '../Router/NotFoundView';
+import { formatUrl } from '../Router/queryString';
 import type { AppResourcesTree } from './hooks';
 import { useResourcesTree } from './hooks';
 import type { AppResourcesOutlet } from './index';
@@ -143,6 +141,17 @@ export const findAppResourceDirectory = (
       : findAppResourceDirectory(subCategories, searchKey)
   );
 
+/** Find "directoryKey" for an app resource directory with given id */
+export const findAppResourceDirectoryKey = (
+  tree: AppResourcesTree,
+  directoryId: number
+): string | undefined =>
+  mappedFind(tree, ({ key, directory, subCategories }) =>
+    directory?.id === directoryId
+      ? key
+      : findAppResourceDirectoryKey(subCategories, directoryId)
+  );
+
 function EditAppResource({
   directory,
   name,
@@ -193,13 +202,13 @@ function EditAppResource({
         unsetUnloadProtect();
         const path =
           type.tableName === 'SpAppResource' ? 'app-resource' : 'view-set';
-        navigate(`/specify/resources/${path}/new/`, {
-          state: {
-            type: 'AppResource',
-            resource: serializeResource(resource),
+        navigate(
+          formatUrl(`/specify/resources/${path}/new/`, {
             directoryKey,
-          },
-        });
+            name: resource.get('name'),
+            mimeType: resource.get('mimeType'),
+          })
+        );
         /*
          * Prevent saving a resource to fix
          * https://github.com/specify/specify7/issues/1596

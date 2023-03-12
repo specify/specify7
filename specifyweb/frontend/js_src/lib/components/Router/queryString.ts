@@ -7,13 +7,17 @@ import { keysToLowerCase } from '../../utils/utils';
 
 export function formatUrl(
   url: string,
-  parameters: IR<string>,
+  parameters: IR<string | number | undefined | null>,
   toLowerCase = true
 ): string {
   const urlObject = new URL(url, getUrl());
   urlObject.search = new URLSearchParams({
     ...Object.fromEntries(urlObject.searchParams),
-    ...(toLowerCase ? keysToLowerCase(parameters) : parameters),
+    ...Object.fromEntries(
+      Object.entries(
+        toLowerCase ? keysToLowerCase(parameters) : parameters
+      ).map(([key, value]) => [key, value?.toString() ?? ''])
+    ),
   }).toString();
   // If received a URL without hostname, return a URL without hostname
   return url.startsWith('/')

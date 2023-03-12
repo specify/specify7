@@ -113,7 +113,7 @@ function DisplayRecordSet({
                     getTableById(recordSet.get('dbTableId')).name,
                     records[0]?.recordId ?? 'new'
                   ),
-                  { recordSetId: recordSet.id.toString() }
+                  { recordSetId: recordSet.id }
                 ),
                 {
                   replace: true,
@@ -190,7 +190,7 @@ export function ViewResourceByCatalog(): JSX.Element {
 
 function ViewByCatalogProtected(): JSX.Element | null {
   const { collectionCode = '', catalogNumber = '' } = useParams();
-  const [recordSetId] = useSearchParameter('recordsetid');
+  const [recordSetId] = useSearchParameter('recordSetId');
 
   const navigate = useNavigate();
   const [id] = useAsyncState<number | false>(

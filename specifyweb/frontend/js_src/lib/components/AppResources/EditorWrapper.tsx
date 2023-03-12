@@ -1,10 +1,13 @@
 import React from 'react';
 import { useOutletContext } from 'react-router';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
+import { useSearchParameter } from '../../hooks/navigation';
 import { useAsyncState } from '../../hooks/useAsyncState';
+import { f } from '../../utils/functools';
 import { Container } from '../Atoms';
 import { DataEntry } from '../Atoms/DataEntry';
+import { addMissingFields } from '../DataModel/addMissingFields';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { fetchResource } from '../DataModel/resource';
 import type {
@@ -12,13 +15,17 @@ import type {
   SpAppResourceDir,
   SpViewSetObj,
 } from '../DataModel/types';
+import { userInformation } from '../InitialContext/userInformation';
 import { NotFoundView } from '../Router/NotFoundView';
-import { locationToState, useStableLocation } from '../Router/RouterState';
-import { findAppResourceDirectory } from './Create';
+import { formatUrl } from '../Router/queryString';
+import {
+  findAppResourceDirectory,
+  findAppResourceDirectoryKey,
+} from './Create';
 import { AppResourceEditor } from './Editor';
 import type { AppResourceMode } from './helpers';
 import { getAppResourceMode } from './helpers';
-import type { AppResources } from './hooks';
+import type { AppResources, AppResourcesTree } from './hooks';
 import { useResourcesTree } from './hooks';
 import type { AppResourcesOutlet } from './index';
 
@@ -38,12 +45,38 @@ export function Wrapper({
   const {
     getSet: [resources, setResources],
   } = useOutletContext<AppResourcesOutlet>();
-  const location = useStableLocation(useLocation());
+
+  const { name, mimeType, rawDirectoryKey, clone } = useProps();
+
+  const newResource = React.useMemo(
+    () =>
+      addMissingFields(
+        mode === 'appResources'
+          ? 'SpAppResource'
+          : ('SpViewSetObj' as 'SpAppResource'),
+        {
+          // I don't think this field is used anywhere
+          level: 0,
+          mimeType,
+          name: name?.trim() ?? '',
+          specifyUser: userInformation.resource_uri,
+        }
+      ),
+    [resources, name, mimeType]
+  );
+  const resource = useAppResource(newResource, resources, mode);
+
+  const initialData = useInitialData(f.parseInt(clone));
+
   const navigate = useNavigate();
-  const state = locationToState(location, 'AppResource');
-  const resource = useAppResource(state?.resource, resources, mode);
-  const initialData = useInitialData(state?.initialDataFrom);
-  const directory = useDirectory(state?.directoryKey, resource, resources);
+
+  const resourcesTree = useResourcesTree(resources);
+  const directory = useDirectory(
+    rawDirectoryKey,
+    resourcesTree,
+    resource,
+    resources
+  );
 
   const baseHref = `/specify/resources/${
     mode === 'appResources' ? 'app-resource' : 'view-set'
@@ -55,16 +88,19 @@ export function Wrapper({
     <AppResourceEditor
       directory={directory}
       initialData={initialData === false ? undefined : initialData}
-      resource={resource}
-      onClone={(resource, initialDataFrom): void =>
-        navigate(`${baseHref}/new/`, {
-          state: {
-            type: 'AppResource',
-            resource,
-            directoryKey: state?.directoryKey,
-            initialDataFrom,
-          },
-        })
+      resource={resource as SerializedResource<SpAppResource>}
+      onClone={(resource, clone): void =>
+        navigate(
+          formatUrl(`${baseHref}/new/`, {
+            directoryKey: findAppResourceDirectoryKey(
+              resourcesTree,
+              directory.id
+            ),
+            name: resource.name,
+            mimeType: 'mimeType' in resource ? resource.mimeType : undefined,
+            clone,
+          })
+        )
       }
       onDeleted={(): void => {
         const mode = getAppResourceMode(
@@ -108,19 +144,47 @@ export function Wrapper({
   );
 }
 
+/**
+ * If clicking on a URL in a visual app resource editor, query string parameters
+ * get cleared. This remembers previous parameters
+ */
+function useProps(): {
+  readonly mimeType: string | undefined;
+  readonly name: string | undefined;
+  readonly rawDirectoryKey: string | undefined;
+  readonly clone: string | undefined;
+} {
+  const { id: rawId } = useParams();
+  const [mimeType] = useSearchParameter('mimeType');
+  const [name] = useSearchParameter('name');
+  const [clone] = useSearchParameter('clone');
+  const [rawDirectoryKey] = useSearchParameter('directoryKey');
+  const freeze =
+    rawId === 'new' &&
+    mimeType === undefined &&
+    name === undefined &&
+    clone === undefined;
+  const data = { mimeType, name, clone, rawDirectoryKey };
+  const frozen = React.useRef(data);
+  if (freeze) return frozen.current;
+  else {
+    frozen.current = data;
+    return data;
+  }
+}
+
 function useAppResource(
-  resource: SerializedResource<SpAppResource | SpViewSetObj> | undefined,
+  newResource: SerializedResource<SpAppResource | SpViewSetObj> | undefined,
   resources: AppResources,
   mode: AppResourceMode
 ): SerializedResource<SpAppResource | SpViewSetObj> | undefined {
   const { id } = useParams();
   return React.useMemo(
     () =>
-      resource ??
       resources[mode as 'appResources'].find(
         (resource) => resource.id.toString() === id
-      ),
-    [resource, resources, id, mode]
+      ) ?? newResource,
+    [newResource, resources, id, mode]
   );
 }
 
@@ -143,16 +207,18 @@ function useInitialData(
 
 function useDirectory(
   directoryKey: string | undefined,
+  resourcesTree: AppResourcesTree,
   resource: SerializedResource<SpAppResource | SpViewSetObj> | undefined,
   resources: AppResources
 ): SerializedResource<SpAppResourceDir> | undefined {
-  const resourcesTree = useResourcesTree(resources);
   return React.useMemo(() => {
-    if (typeof directoryKey === 'string')
-      return findAppResourceDirectory(resourcesTree, directoryKey);
     const directoryUrl = resource?.spAppResourceDir;
-    return resources.directories.find(
+    const directory = resources.directories.find(
       (directory) => directory.resource_uri === directoryUrl
     );
+    if (typeof directory === 'object') return directory;
+    else if (typeof directoryKey === 'string')
+      return findAppResourceDirectory(resourcesTree, directoryKey);
+    else return undefined;
   }, [resourcesTree, directoryKey, resource, resources]);
 }

@@ -48,18 +48,24 @@ export function AppResourceEditor({
   onDeleted: handleDeleted,
   children,
 }: {
-  readonly resource: SerializedResource<SpAppResource | SpViewSetObject>;
+  readonly resource:
+    | SerializedResource<SpAppResource>
+    | SerializedResource<SpViewSetObject>;
   readonly directory: SerializedResource<SpAppResourceDir>;
   readonly initialData: string | undefined;
   readonly onDeleted: (() => void) | undefined;
   readonly onClone:
     | ((
-        resource: SerializedResource<SpAppResource | SpViewSetObject>,
+        resource:
+          | SerializedResource<SpAppResource>
+          | SerializedResource<SpViewSetObject>,
         initialData: number | undefined
       ) => void)
     | undefined;
   readonly onSaved: (
-    resource: SerializedResource<SpAppResource | SpViewSetObject>,
+    resource:
+      | SerializedResource<SpAppResource>
+      | SerializedResource<SpViewSetObject>,
     directory: SerializedResource<SpAppResourceDir>
   ) => void;
   readonly children: (renderProps: {
@@ -71,7 +77,7 @@ export function AppResourceEditor({
   }) => JSX.Element;
 }): JSX.Element | null {
   const appResource = React.useMemo(
-    () => deserializeResource(resource),
+    () => deserializeResource(resource as SerializedResource<SpAppResource>),
     [resource]
   );
   useErrorContext('appResource', resource);

@@ -43,7 +43,7 @@ export function DialogEditor(): JSX.Element | null {
     >
       {({ headerString, headerButtons, form, footer }): JSX.Element => (
         <Dialog
-          // FIXME: add dimensionsKey once attachments branch is merged
+          dimensionsKey="appResourceEditor"
           buttons={footer}
           header={headerString}
           headerButtons={headerButtons}

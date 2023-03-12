@@ -63,6 +63,12 @@ export type AppResourcesTree = RA<{
   /*
    * A string that would be stable thought the lifecycle of an object.
    * Used to identify a tree node when storing conformation it in localStorage.
+   *
+   * Directory key is created instead of using id, because app resource
+   * needs a way to identify directories that don't yet have IDs (i.e, when
+   * creating an app resource for a collection that didn't have any app resources
+   * before, the collection won't have any SpAppResourceDir record, thus not
+   * directory ID).
    */
   readonly key: string;
   readonly directory: SerializedResource<SpAppResourceDir> | undefined;
