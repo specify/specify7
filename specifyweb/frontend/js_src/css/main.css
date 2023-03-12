@@ -158,7 +158,7 @@
   }
 
   .button:is([aria-pressed='true'], [aria-selected='true'], [aria-current]):not(.aria-handled) {
-    @apply brightness-[1.2] dark:brightness-[1.5];
+    @apply brightness-[1.6] dark:brightness-[1.8];
   }
 
   button[aria-pressed='true']:not(.aria-handled).link {
