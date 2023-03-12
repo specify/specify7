@@ -130,6 +130,7 @@ export function AppResourceEditor({
       {typeof resourceData === 'object' && (
         <AppResourceLoad
           onLoaded={(data: string, mimeType: string): void => {
+            lastData.current = data;
             setResourceData({
               ...resourceData,
               data,

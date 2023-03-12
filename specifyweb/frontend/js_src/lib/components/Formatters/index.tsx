@@ -12,7 +12,11 @@ import { formattersRoutes } from './Routes';
 
 export function DataObjectFormatter(props: AppResourceTabProps): JSX.Element {
   const xmlNode = React.useMemo(() => {
-    const parsed = parseXml(props.data ?? '<formatters />');
+    const parsed = parseXml(
+      props.data === null || props.data === undefined
+        ? '<formatters />'
+        : props.data
+    );
     return typeof parsed === 'string' ? parsed : xmlToJson(parsed);
   }, [props.data]);
   const location = useStableLocation(useLocation());
