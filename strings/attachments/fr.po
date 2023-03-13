@@ -24,8 +24,8 @@ msgstr "Pièces jointes"
 msgid "scale"
 msgstr "Échelle"
 
-#: components/Attachments/Plugin.tsx:34
-#: components/Attachments/Plugin.tsx:109
+#: components/Attachments/Plugin.tsx:35
+#: components/Attachments/Plugin.tsx:115
 #: components/Attachments/index.tsx:67
 #. Used in: Components > Attachments > Plugin ⬤ Components > Attachments > Index
 msgid "attachmentServerUnavailable"
@@ -43,7 +43,7 @@ msgstr "Configurez votre serveur de pièces jointes"
 msgid "orderBy"
 msgstr "Trier par"
 
-#: components/Attachments/Plugin.tsx:113
+#: components/Attachments/Plugin.tsx:119
 #. Used in: Components > Attachments > Plugin
 msgid "uploadingInline"
 msgstr "Envoi en cours…"

@@ -114,7 +114,7 @@ msgstr "Créer"
 #: components/Attachments/Dialog.tsx:56
 #: components/Attachments/index.tsx:66
 #: components/Core/VersionMismatch.tsx:18
-#: components/FormCells/FormTable.tsx:440
+#: components/FormCells/FormTable.tsx:453
 #: components/FormCommands/ShowTransactions.tsx:104
 #: components/FormCommands/index.tsx:94
 #: components/FormCommands/index.tsx:116
@@ -306,7 +306,7 @@ msgstr "Outils"
 #: components/Core/Contexts.tsx:122
 #: components/Core/__tests__/Contexts.test.tsx:62
 #: components/Core/__tests__/Contexts.test.tsx:73
-#: components/FormCells/FormTable.tsx:192
+#: components/FormCells/FormTable.tsx:195
 #: components/FormCommands/ShowTransactions.tsx:55
 #: components/FormFields/ComboBox.tsx:135
 #: components/FormFields/Field.tsx:168
@@ -364,8 +364,8 @@ msgid "uploaded"
 msgstr "Importé"
 
 #: components/Atoms/DataEntry.tsx:151
-#: components/FormCells/FormTable.tsx:357
-#: components/FormCells/FormTable.tsx:366
+#: components/FormCells/FormTable.tsx:370
+#: components/FormCells/FormTable.tsx:379
 #: components/FormPlugins/CollectionRelOneToMany.tsx:135
 #: components/QueryBuilder/Components.tsx:150
 #: components/QueryBuilder/Field.tsx:241
@@ -517,7 +517,7 @@ msgstr "Ouvrir dans un nouvel onglet"
 msgid "goToHomepage"
 msgstr "Aller à la page d'accueil"
 
-#: components/FormCells/FormTable.tsx:260
+#: components/FormCells/FormTable.tsx:263
 #: components/QueryBuilder/Edit.tsx:96
 #. Used in: Components > Form Cells > Form Table ⬤ Components > Query Builder > Edit
 msgid "actions"
@@ -717,9 +717,9 @@ msgstr "Copier dans le presse-papiers"
 msgid "selected"
 msgstr "Sélectionné"
 
-#: components/FormCells/FormTable.tsx:215
-#: components/FormCells/FormTable.tsx:302
-#: components/FormCells/FormTable.tsx:304
+#: components/FormCells/FormTable.tsx:218
+#: components/FormCells/FormTable.tsx:305
+#: components/FormCells/FormTable.tsx:307
 #: components/Header/index.tsx:173
 #. Used in: Components > Form Cells > Form Table ⬤ Components > Header > Index
 msgid "expand"
@@ -730,8 +730,8 @@ msgstr "Agrandir"
 msgid "expandAll"
 msgstr "Tout agrandir"
 
-#: components/FormCells/FormTable.tsx:271
-#: components/FormCells/FormTable.tsx:273
+#: components/FormCells/FormTable.tsx:274
+#: components/FormCells/FormTable.tsx:276
 #: components/Header/index.tsx:173
 #. Used in: Components > Form Cells > Form Table ⬤ Components > Header > Index
 #, fuzzy
@@ -778,7 +778,7 @@ msgstr "Aucun disponible"
 #: components/AppResources/Filters.tsx:144
 #: components/Attachments/index.tsx:185
 #: components/Attachments/index.tsx:194
-#: components/FormCells/FormTable.tsx:141
+#: components/FormCells/FormTable.tsx:144
 #: components/Header/ExpressSearchTask.tsx:194
 #: components/Toolbar/Query.tsx:105
 #: components/Toolbar/RecordSets.tsx:181
