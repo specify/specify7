@@ -210,14 +210,15 @@ export async function format<SCHEMA extends AnySchema>(
     ? automaticFormatter ?? undefined
     : Promise.all(
         fields.map(async (field) => formatField(field, resource, tryBest))
-      ).then((values) =>
-        values.reduce<string>(
-          (result, { formatted, separator = '' }, index) =>
-            `${result}${
-              result.length === 0 && index !== 0 ? '' : separator
-            }${formatted}`,
-          ''
-        ) as LocalizedString
+      ).then(
+        (values) =>
+          values.reduce<string>(
+            (result, { formatted, separator = '' }, index) =>
+              `${result}${
+                result.length === 0 && index !== 0 ? '' : separator
+              }${formatted}`,
+            ''
+          ) as LocalizedString
       );
 }
 
