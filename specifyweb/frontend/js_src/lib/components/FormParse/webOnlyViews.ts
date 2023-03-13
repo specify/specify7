@@ -20,7 +20,21 @@ export const webOnlyViews = f.store(() =>
     /*
      * This is a special view that would be replaced by the <AttachmentPlugin />
      */
-    [attachmentView]: { columns: [], rows: [] },
+    [attachmentView]: {
+      columns: [undefined],
+      rows: [
+        [
+          {
+            id: undefined,
+            align: 'left',
+            colSpan: 1,
+            visible: true,
+            ariaLabel: schema.models.Attachment.label,
+            type: 'Blank',
+          },
+        ],
+      ],
+    },
     SpecifyUser: autoGenerateViewDefinition(
       schema.models.SpecifyUser,
       'form',
