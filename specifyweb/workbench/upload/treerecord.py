@@ -329,6 +329,7 @@ class BoundTreeRecord(NamedTuple):
                         rankid=tdiwpr.treedefitem.rankid,
                         definition=self.treedef,
                         parent_id=parent_info and parent_info['id'],
+                        isaccepted=True,
                         **attrs,
                     )
                 except (BusinessRuleException, IntegrityError) as e:
