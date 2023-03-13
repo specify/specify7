@@ -113,7 +113,6 @@ export const fetchContext = f
         overwriteReadOnly(
           table,
           'literalFields',
-
           processFields(
             tableDefinition.fields.map(
               (fieldDefinition) => new LiteralField(table, fieldDefinition)

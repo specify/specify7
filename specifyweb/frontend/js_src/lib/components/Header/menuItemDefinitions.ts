@@ -33,6 +33,7 @@ import {
 import { reportsAvailable } from '../Reports';
 import { filterMenuItems } from './menuItemProcessing';
 import { schema } from '../DataModel/schema';
+import { f } from '../../utils/functools';
 
 const rawMenuItems = ensure<IR<Omit<MenuItem, 'name'>>>()({
   dataEntry: {
@@ -108,6 +109,6 @@ export type MenuItemName = keyof typeof rawMenuItems | 'search';
 /**
  * Don't use this directly. Use useMenuItems() instead
  */
-export const rawMenuItemsPromise = fetchPermissions.then(async () =>
-  filterMenuItems(rawMenuItems)
+export const rawMenuItemsPromise = f.store(() =>
+  fetchPermissions.then(async () => filterMenuItems(rawMenuItems))
 );

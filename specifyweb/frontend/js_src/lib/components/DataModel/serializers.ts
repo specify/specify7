@@ -39,9 +39,7 @@ function serializeRecord<SCHEMA extends AnySchema>(
           ? (resource as SerializedResource<SCHEMA>)._tableName
           : undefined) ??
         parseResourceUrl(
-          'resource_uri' in resource
-            ? (resource as { readonly resource_uri: string }).resource_uri ?? ''
-            : ''
+          (resource as { readonly resource_uri: string }).resource_uri ?? ''
         )?.[0],
       `Unable to serialize resource because table name is unknown.${
         process.env.NODE_ENV === 'test'

@@ -77,7 +77,7 @@ export function HeaderItemsPreferenceItem({
   value,
   onChange: handleChange,
 }: PreferenceRendererProps<MenuPreferences>): JSX.Element {
-  const [rawMenuItems] = usePromise(rawMenuItemsPromise, false);
+  const [rawMenuItems] = usePromise(rawMenuItemsPromise(), false);
   const menuItems = useMenuItems();
   const rawUserTools = useUserTools();
   const userTools = React.useMemo(

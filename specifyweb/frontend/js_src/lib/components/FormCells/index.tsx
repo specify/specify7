@@ -21,11 +21,11 @@ import { SubView } from '../Forms/SubView';
 import { propsToFormMode } from '../Forms/useViewDefinition';
 import { TableIcon } from '../Molecules/TableIcon';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
-import { fetchPathAsString } from '../Formatters/aggregate';
 import { FormTableInteraction } from './FormTableInteraction';
 import { filterArray } from '../../utils/types';
 import { resourceOn } from '../DataModel/resource';
 import { softFail } from '../Errors/Crash';
+import { fetchPathAsString } from '../Formatters/formatters';
 
 const cellRenderers: {
   readonly [KEY in keyof CellTypes]: (props: {

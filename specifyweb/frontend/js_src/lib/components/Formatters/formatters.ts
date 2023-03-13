@@ -260,12 +260,16 @@ const autoGenerateFormatter = (table: SpecifyTable): Formatter => ({
 /**
  * Finds the most "Interesting" fields in a table (sorted by priority).
  * If you need only at most x fields, do .slice(0,x) on the result.
+ *
+ * @remarks
+ * This does not consider relationships. For some tables, relationships
+ * are more interesting than fields.
  */
 export const getMainTableFields = (tableName: keyof Tables): RA<LiteralField> =>
   tables[tableName].literalFields
     .filter(
-      ({ type, isHidden, isReadOnly }) =>
-        type === 'java.lang.String' && !isHidden && !isReadOnly
+      ({ type, isRequired, isHidden, isReadOnly }) =>
+        type === 'java.lang.String' && !isReadOnly && (isRequired || isHidden)
     )
     .sort(
       multiSortFunction(
