@@ -91,7 +91,7 @@ export function QueryFields({
         newItems.splice(newIndex + 1, 0, fields[oldIndex]);
         newItems.splice(oldIndex, 1);
       } else if (oldIndex > newIndex) {
-        newItems.splice(oldIndex, 0, fields[oldIndex]);
+        newItems.splice(newIndex, 0, fields[oldIndex]);
         newItems.splice(oldIndex + 1, 1);
       }
 
