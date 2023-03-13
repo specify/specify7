@@ -10,7 +10,7 @@ import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { group, replaceItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
-import { Form, Input } from '../Atoms/Form';
+import { Form, Input, Label } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { getField, serializeResource, toTable } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -133,6 +133,23 @@ export function PrepDialog({
       header={interactionsText.preparations()}
       onClose={handleClose}
     >
+      <Label.Inline className="gap-2">
+        {commonText.bulkSelect()}
+        <Input.Number
+          className="w-[unset]"
+          aria-label={interactionsText.selectedAmount()}
+          max={maxPrep}
+          min={0}
+          title={interactionsText.selectedAmount()}
+          value={bulkValue}
+          onValueChange={(newCount) => {
+            setBulkValue(newCount);
+            setSelected(
+              preparations.map(({ available }) => Math.min(available, newCount))
+            );
+          }}
+        />
+      </Label.Inline>
       <Form
         id={id('form')}
         onSubmit={(): void => {
@@ -209,31 +226,6 @@ export function PrepDialog({
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td />
-              <td />
-              <td />
-              <td>{commonText.bulkSelect()}</td>
-              <td>
-                <Input.Number
-                  aria-label={interactionsText.selectedAmount()}
-                  max={maxPrep}
-                  min={0}
-                  title={interactionsText.selectedAmount()}
-                  value={bulkValue}
-                  onValueChange={(newCount) => {
-                    setBulkValue(newCount);
-                    setSelected(
-                      preparations.map(({ available }) =>
-                        Math.min(available, newCount)
-                      )
-                    );
-                  }}
-                />
-              </td>
-              <td />
-              <td />
-            </tr>
             {preparations.map((preparation, index) => (
               <PrepDialogRow
                 key={index}
