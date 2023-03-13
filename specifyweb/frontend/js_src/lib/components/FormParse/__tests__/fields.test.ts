@@ -1,11 +1,12 @@
+import type { LocalizedString } from 'typesafe-i18n';
+
+import { reportsText } from '../../../localization/report';
 import { requireContext } from '../../../tests/helpers';
 import { strictParseXml } from '../../AppResources/codeMirrorLinters';
+import { getField } from '../../DataModel/helpers';
+import { schema } from '../../DataModel/schema';
 import { parseFormField } from '../fields';
 import { generateInit } from './helpers';
-import { LocalizedString } from 'typesafe-i18n';
-import { reportsText } from '../../../localization/report';
-import { schema } from '../../DataModel/schema';
-import { getField } from '../../DataModel/helpers';
 
 requireContext();
 
@@ -176,8 +177,7 @@ describe('parseFormField', () => {
     }));
 
   test('Invalid combo box', () => {
-    const consoleError = jest.fn();
-    jest.spyOn(console, 'error').mockImplementation(consoleError);
+    jest.spyOn(console, 'error').mockImplementation();
     expect(parse('<cell uiType="combobox"/>', {})).toEqual({
       defaultValue: undefined,
       isReadOnly: false,
@@ -214,8 +214,7 @@ describe('parseFormField', () => {
     }));
 
   test('Query Combo Box for non-relationship', () => {
-    const consoleError = jest.fn();
-    jest.spyOn(console, 'error').mockImplementation(consoleError);
+    jest.spyOn(console, 'error').mockImplementation();
     expect(parse('<cell uiType="querycbx"/>', {})).toEqual({
       isReadOnly: true,
       type: 'Blank',
@@ -258,10 +257,16 @@ describe('parseFormField', () => {
       },
     }));
 
-  test('File picker', () =>
-    expect(parse('<cell uiType="browse" />', {})).toEqual({
+  test('File picker is rendered as a text field', () =>
+    expect(parse('<cell uiType="browse" initialize="min=3" />', {})).toEqual({
+      defaultValue: undefined,
       isReadOnly: false,
-      type: 'FilePicker',
+      type: 'Text',
+      max: undefined,
+      maxLength: undefined,
+      min: undefined,
+      minLength: undefined,
+      step: undefined,
     }));
 });
 

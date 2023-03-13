@@ -1,6 +1,9 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useId } from '../../hooks/useId';
+import { commonText } from '../../localization/common';
+import { schemaText } from '../../localization/schema';
 import type { RA } from '../../utils/types';
 import { sortFunction, split } from '../../utils/utils';
 import { H3 } from '../Atoms';
@@ -8,8 +11,6 @@ import { Select } from '../Atoms/Form';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { SpLocaleContainerItem } from '../DataModel/types';
-import { schemaText } from '../../localization/schema';
-import { LocalizedString } from 'typesafe-i18n';
 
 export function SchemaConfigFields({
   model,
@@ -44,6 +45,9 @@ export function SchemaConfigFields({
         }
       >
         <optgroup label={schemaText.fields()}>
+          {items === undefined && (
+            <option value="">{commonText.loading()}</option>
+          )}
           {fields.map((item) => (
             <option key={item.id} value={item.id}>
               {item.name}

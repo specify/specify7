@@ -3,15 +3,20 @@ import { useLocation } from 'react-router';
 import { useNavigate } from 'react-router-dom';
 
 import { listen } from '../../utils/events';
-import type { GetSet } from '../../utils/types';
+import type { GetSet, WritableArray } from '../../utils/types';
 import { Link } from '../Atoms/Link';
 import { locationToState } from '../Router/RouterState';
+import { scrollIntoView } from '../TreeView/helpers';
 import { usePrefDefinitions } from './index';
 
 export function PreferencesAside({
   activeCategory,
+  setActiveCategory,
+  references,
 }: {
   readonly activeCategory: number | undefined;
+  readonly setActiveCategory: (activeCategory: number | undefined) => void;
+  readonly references: React.RefObject<WritableArray<HTMLElement | undefined>>;
 }): JSX.Element {
   const definitions = usePrefDefinitions();
   const navigate = useNavigate();
@@ -35,11 +40,23 @@ export function PreferencesAside({
   const [freezeCategory, setFreezeCategory] = useFrozenCategory();
   const currentIndex = freezeCategory ?? activeCategory;
 
+  React.useEffect(() => {
+    const active = location.hash.replace('#', '').toLowerCase();
+    const activeIndex = definitions.findIndex(
+      ([name]) => name.toLowerCase() === active
+    );
+    if (activeIndex !== -1) {
+      setActiveCategory(activeIndex);
+      const currentRef = references.current?.[activeIndex];
+      if (currentRef !== undefined) scrollIntoView(currentRef, 'start');
+    }
+  }, []);
+
   return (
     <aside
       className={`
-        top-0 flex min-w-fit flex-1 flex-col divide-y-4 divide-[color:var(--form-background)]
-        overflow-y-auto md:sticky
+        top-0 flex min-w-fit flex-shrink-0 flex-col divide-y-4 divide-[color:var(--form-background)]
+        overflow-y-auto md:sticky md:flex-1
       `}
     >
       {definitions.map(([category, { title }], index) => (

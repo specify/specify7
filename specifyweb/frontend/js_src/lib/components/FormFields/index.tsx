@@ -1,10 +1,11 @@
 import React from 'react';
 
+import { useDistantRelated } from '../../hooks/resource';
 import { useResourceValue } from '../../hooks/useResourceValue';
 import type { Parser } from '../../utils/parser/definitions';
 import { getValidationAttributes } from '../../utils/parser/definitions';
 import type { IR, RA } from '../../utils/types';
-import { Input, Textarea } from '../Atoms/Form';
+import { Textarea } from '../Atoms/Form';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
@@ -18,7 +19,6 @@ import { PrintOnSave, SpecifyFormCheckbox } from './Checkbox';
 import { Combobox } from './ComboBox';
 import { UiField } from './Field';
 import { QueryComboBox } from './QueryComboBox';
-import { useDistantRelated } from '../../hooks/resource';
 
 const fieldRenderers: {
   readonly [KEY in keyof FieldTypes]: (props: {
@@ -184,35 +184,15 @@ const fieldRenderers: {
     return (
       <UiField
         field={field}
-        name={name}
         id={id}
         mode={mode}
+        name={name}
         parser={parser}
         resource={resource}
       />
     );
   },
   Plugin: FormPlugin,
-  FilePicker({ id, mode, name, isRequired }) {
-    // FEATURE: consider replacing this with AttachmentsPlugin for some field names
-    /*
-     * Not sure how this is supposed to work, thus the field is rendered as
-     * disabled
-     *
-     * Probably could overwrite the behaviour on case-by-case basis depending
-     * on the fieldName
-     */
-    return (
-      <Input.Generic
-        disabled
-        id={id}
-        isReadOnly={mode === 'view'}
-        name={name}
-        required={isRequired}
-        type="file"
-      />
-    );
-  },
   Blank: () => null,
 };
 
@@ -234,17 +214,27 @@ export function FormField({
   const Render = fieldRenderers[
     fieldDefinition.type
   ] as typeof fieldRenderers.Checkbox;
+
   const data = useDistantRelated(resource, fields);
+
+  const isIndependent =
+    fields
+      ?.slice(0, -1)
+      .some((field) => field.isRelationship && !field.isDependent()) ?? false;
   return (
     <ErrorBoundary dismissible>
       {data === undefined ? undefined : (
         <Render
-          mode={isReadOnly || data.resource !== resource ? 'view' : mode}
+          mode={
+            isReadOnly || data.resource === undefined || isIndependent
+              ? 'view'
+              : mode
+          }
           {...rest}
           field={data.field}
-          name={fields?.map(({ name }) => name).join('.')}
           fieldDefinition={fieldDefinition as FieldTypes['Checkbox']}
           isRequired={rest.isRequired && mode !== 'search'}
+          name={fields?.map(({ name }) => name).join('.')}
           resource={data.resource}
         />
       )}

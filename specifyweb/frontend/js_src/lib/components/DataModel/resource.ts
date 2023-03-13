@@ -1,12 +1,14 @@
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
+import { eventListener } from '../../utils/events';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import { keysToLowerCase, removeKey } from '../../utils/utils';
 import { formatUrl } from '../Router/queryString';
 import { getUserPref } from '../UserPreferences/helpers';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { addMissingFields } from './addMissingFields';
 import { businessRuleDefs } from './businessRuleDefs';
 import { serializeResource } from './helpers';
@@ -20,7 +22,6 @@ import type { SpecifyResource } from './legacyTypes';
 import { getModel, schema } from './schema';
 import type { SpecifyModel } from './specifyModel';
 import type { Tables } from './types';
-import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 
 /*
  * REFACTOR: experiment with an object singleton:
@@ -30,6 +31,10 @@ import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
  * of. When requesting object fetch, return the previous fetched version, while
  * fetching the new one.
  */
+
+export const resourceEvents = eventListener<{
+  readonly deleted: SpecifyResource<AnySchema>;
+}>();
 
 /**
  * Fetch a single resource from the back-end
@@ -41,7 +46,7 @@ export const fetchResource = async <
 >(
   tableName: TABLE_NAME,
   id: number,
-  // @ts-expect-error Whether to trigger 404 on resource not foudn
+  // @ts-expect-error Whether to trigger 404 on resource not found
   strict: STRICT = true
 ): Promise<
   SerializedResource<SCHEMA> | (STRICT extends true ? never : undefined)
@@ -55,6 +60,7 @@ export const fetchResource = async <
     status === Http.NOT_FOUND ? undefined! : serializeResource(record)
   );
 
+// BUG: trigger resourceEvents.deleted here
 export const deleteResource = async (
   tableName: keyof Tables,
   id: number
@@ -198,6 +204,10 @@ export const resourceToJson = <SCHEMA extends AnySchema>(
  * zero-to-one
  * business rules and validation
  * prevent fetching multiple at the same time
+ * have separate types for new resource and resource (and on new resource
+ * required fields can be undefined and and id is undefined). Potentially,
+ * NewResource should extend Resource type since NewResource can turn into
+ * Resource when saved, so components should be able to handle that
  */
 
 /**

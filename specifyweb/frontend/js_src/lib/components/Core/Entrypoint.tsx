@@ -17,6 +17,13 @@ function entrypoint(): void {
   interceptLogs();
 
   console.group('Specify App Starting');
+  if (process.env.NODE_ENV === 'production') {
+    console.log(
+      '%cDocumentation for Developers:\n',
+      'font-weight: bold',
+      'https://github.com/specify/specify7/wiki/Docker-Workflow-for-Development'
+    );
+  }
   const entrypointName =
     parseDjangoDump<ReturnType<typeof getEntrypointName>>('entrypoint-name') ??
     'main';
@@ -30,8 +37,8 @@ function entrypoint(): void {
       throw new Error('Unable to find root element');
     root.setAttribute(
       'class',
-      `flex flex-col h-screen overflow-hidden bg-[color:var(--background)]
-      text-neutral-900 dark:text-neutral-200`
+      `flex h-screen print:h-auto overflow-hidden print:overflow-auto
+      bg-[color:var(--background)] text-neutral-900 dark:text-neutral-200`
     );
     portalRoot.setAttribute('class', 'text-neutral-900 dark:text-neutral-200');
     const reactRoot = createRoot(root);

@@ -6,11 +6,11 @@ import {
 } from 'react-router-dom';
 
 import { commonText } from '../../localization/common';
+import { userText } from '../../localization/user';
 import type { RA } from '../../utils/types';
 import { NotFoundView } from './NotFoundView';
 import type { EnhancedRoute } from './RouterUtils';
 import { toReactRoutes } from './RouterUtils';
-import { userText } from '../../localization/user';
 
 /* eslint-disable @typescript-eslint/promise-function-async */
 export const entrypointRoutes: RA<EnhancedRoute> = [
@@ -52,6 +52,7 @@ export const entrypointRoutes: RA<EnhancedRoute> = [
         ({ ContextLoader }) => ContextLoader
       ),
   },
+  // This should never be reached as back-end has a redict, but good to have it just in case
   {
     index: true,
     element: <Navigate to="/specify/" />,

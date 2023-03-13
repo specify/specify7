@@ -80,9 +80,9 @@ export function interceptLogs(): void {
      * 2. Add this file to "ignore list" in DevTools. Here is how:
      *    https://stackoverflow.com/q/7126822/8584605
      */
-    // eslint-disable-next-line no-console
+
     const defaultFunction = console[logType];
-    // eslint-disable-next-line no-console
+
     console[logType] = (...args: RA<unknown>): void => {
       const hasContext = Object.keys(context).length > 0;
       defaultFunction(...args, ...(hasContext ? [context] : []));

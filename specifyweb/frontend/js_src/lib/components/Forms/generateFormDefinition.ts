@@ -1,4 +1,11 @@
+import { schemaText } from '../../localization/schema';
+import { resolveParser } from '../../utils/parser/definitions';
+import type { RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { sortFunction, split } from '../../utils/utils';
+import type { AnySchema, TableFields } from '../DataModel/helperTypes';
+import type { LiteralField, Relationship } from '../DataModel/specifyField';
+import type { SpecifyModel } from '../DataModel/specifyModel';
 import type {
   FormMode,
   FormType,
@@ -6,15 +13,8 @@ import type {
   ViewDescription,
 } from '../FormParse';
 import type { CellTypes, FormCellDefinition } from '../FormParse/cells';
-import type { LiteralField, Relationship } from '../DataModel/specifyField';
-import type { SpecifyModel } from '../DataModel/specifyModel';
-import type { RA } from '../../utils/types';
-import { filterArray } from '../../utils/types';
-import { resolveParser } from '../../utils/parser/definitions';
-import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
-import { AnySchema, TableFields } from '../DataModel/helperTypes';
 import { hasTablePermission } from '../Permissions/helpers';
-import { schemaText } from '../../localization/schema';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 
 /**
  * If form definition is missing, this function will generate one on the fly
@@ -31,6 +31,7 @@ export function autoGenerateViewDefinition<SCHEMA extends AnySchema>(
       mode,
       fieldsToShow
     ),
+    name: '',
     formType,
     mode,
     model,
@@ -52,6 +53,7 @@ export function getFieldsForAutoView<SCHEMA extends AnySchema>(
   const filteredFields = baseFields.filter(
     (field) => !field.isHidden && !field.isReadOnly
   );
+  // BUG: if displayed as a dependent sub view, should hide relationship to parent
   const relationships = model.relationships
     .filter(
       (field) =>
@@ -228,6 +230,7 @@ function getFieldDefinition(
   field: LiteralField
 ): CellTypes['Field'] & FormCellDefinition {
   const parser = resolveParser(field);
+  // FEATURE: render date fields using Partial Date UI
   return {
     ...cellAttributes,
     type: 'Field',
@@ -262,7 +265,7 @@ function getFieldDefinition(
             max: parser.max,
             step: parser.step,
             minLength: parser.minLength,
-            maxLength: parser.maxLength
+            maxLength: parser.maxLength,
           }),
     },
   };

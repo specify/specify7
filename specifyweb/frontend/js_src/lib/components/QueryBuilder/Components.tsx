@@ -1,8 +1,10 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useSearchParameter } from '../../hooks/navigation';
 
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
+import { wbPlanText } from '../../localization/wbPlan';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
@@ -16,17 +18,17 @@ import type {
   SpQueryField,
   Tables,
 } from '../DataModel/types';
+import { recordSetView } from '../FormParse/webOnlyViews';
 import { ResourceView } from '../Forms/ResourceView';
 import { userInformation } from '../InitialContext/userInformation';
 import { loadingBar } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
+import { formatUrl } from '../Router/queryString';
+import { ButtonWithConfirmation } from '../WbPlanView/Components';
 import { mappingPathIsComplete } from '../WbPlanView/helpers';
 import type { QueryField } from './helpers';
 import { QuerySaveDialog } from './Save';
-import { ButtonWithConfirmation } from '../WbPlanView/Components';
-import { recordSetView } from '../FormParse/webOnlyViews';
-import { wbPlanText } from '../../localization/wbPlan';
 
 export function SaveQueryButtons({
   isReadOnly,
@@ -51,6 +53,8 @@ export function SaveQueryButtons({
   readonly onSaved: () => void;
   readonly onTriedToSave: () => boolean;
 }): JSX.Element {
+  const [recordSetId] = useSearchParameter('recordsetid');
+
   const [showDialog, setShowDialog] = React.useState<'save' | 'saveAs' | false>(
     false
   );
@@ -67,6 +71,7 @@ export function SaveQueryButtons({
   }
 
   const navigate = useNavigate();
+
   return (
     <>
       {typeof showDialog === 'string' && (
@@ -78,7 +83,15 @@ export function SaveQueryButtons({
             handleSaved();
             setShowDialog(false);
             unsetUnloadProtect();
-            navigate(`/specify/query/${queryId}/`, { replace: true });
+            navigate(
+              formatUrl(
+                `/specify/query/${queryId}/`,
+                recordSetId === undefined ? {} : { recordSetId }
+              ),
+              {
+                replace: true,
+              }
+            );
           }}
         />
       )}
@@ -122,8 +135,8 @@ export function ToggleMappingViewButton({
   return (
     <Button.Small
       aria-pressed={!showMappingView}
-      onClick={handleClick}
       disabled={fields.length === 0 && showMappingView}
+      onClick={handleClick}
     >
       {showMappingView
         ? wbPlanText.hideFieldMapper()

@@ -37,6 +37,7 @@ export const Link = {
   NewTab: linkComponent('Link.NewTab', className.link, (props) => ({
     ...props,
     target: '_blank',
+    rel: 'noopener',
     children: (
       <>
         {props.children}

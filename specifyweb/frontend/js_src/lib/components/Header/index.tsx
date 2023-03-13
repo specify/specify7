@@ -3,188 +3,268 @@
  */
 
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import type { LocalizedString } from 'typesafe-i18n';
 
-import { serializeResource } from '../DataModel/helpers';
-import { removeItem, sortFunction } from '../../utils/utils';
+import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
-import type { MenuItemName } from './menuItemDefinitions';
-import { formatUrl } from '../Router/queryString';
-import type { RR, WritableArray } from '../../utils/types';
-import { writable } from '../../utils/types';
-import { Form, Input, Select } from '../Atoms/Form';
-import { Link } from '../Atoms/Link';
+import { listen } from '../../utils/events';
+import type { RA } from '../../utils/types';
+import { Button } from '../Atoms/Button';
+import { className } from '../Atoms/className';
+import { icons } from '../Atoms/Icons';
+import type { TagProps } from '../Atoms/wrapper';
 import type { MenuItem } from '../Core/Main';
-import { MenuContext, SetMenuContext } from '../Core/Main';
-import { Submit } from '../Atoms/Submit';
-import { usePref } from '../UserPreferences/usePref';
-import { useTriggerState } from '../../hooks/useTriggerState';
-import { headerText } from '../../localization/header';
-import { toLargeSortConfig } from '../Molecules/Sorting';
-import { switchCollection } from '../RouterCommands/SwitchCollection';
-import { useSearchParameter } from '../../hooks/navigation';
+import { MenuContext } from '../Core/Main';
 import { schema } from '../DataModel/schema';
 import { userInformation } from '../InitialContext/userInformation';
+import { titleDelay, titlePosition } from '../Molecules/Tooltips';
+import { ActiveLink } from '../Router/ActiveLink';
+import { usePref } from '../UserPreferences/usePref';
+import type { MenuItemName } from './menuItemDefinitions';
+import { useUserTools } from './menuItemProcessing';
+import { Notifications } from './Notifications';
+import { UserTools } from './UserTools';
 
-let activeMenuItems: WritableArray<MenuItemName> = [];
+const collapseThreshold = 900;
 
-/**
- * Marks the corresponding menu item as active while the component with this
- * hook is active
- */
-export function useMenuItem(menuItem: MenuItemName): void {
-  const setMenuItem = React.useContext(SetMenuContext);
-  React.useEffect(() => {
-    activeMenuItems.push(menuItem);
-    setMenuItem(menuItem);
-    return () => {
-      const index = activeMenuItems.lastIndexOf(menuItem);
-      if (index !== -1)
-        activeMenuItems = writable(removeItem(activeMenuItems, index));
-      setMenuItem(activeMenuItems.at(-1));
-    };
-  }, [menuItem, setMenuItem]);
-}
-
-export function HeaderItems({
+export function Header({
   menuItems,
 }: {
-  readonly menuItems: RR<MenuItemName, MenuItem>;
+  readonly menuItems: RA<MenuItem>;
 }): JSX.Element {
+  const [rawIsCollapsed = false, setIsCollapsed] = useCachedState(
+    'header',
+    'isCollapsed'
+  );
+
+  const { pathname } = useLocation();
+  const userTools = useUserTools() ?? {};
+  const isInUserTool = Object.values(userTools)
+    .flatMap((group) => Object.values(group))
+    .some(
+      ({ url, name }) =>
+        pathname.startsWith(url) &&
+        !menuItems.some((item) => item.name === name)
+    );
+
+  // Collapse the menu on narrow screens
+  const [forceCollapse, setForceCollapse] = React.useState(false);
+  React.useEffect(() => {
+    const handleChange = (): void =>
+      document.body.clientWidth < collapseThreshold
+        ? setForceCollapse(true)
+        : setForceCollapse(false);
+    handleChange();
+    return listen(window, 'resize', handleChange);
+  }, [rawIsCollapsed, setIsCollapsed]);
+
+  const [position] = usePref('header', 'appearance', 'position');
+  const isHorizontal = position === 'top' || position === 'bottom';
+  // Top menu is only available as collapsed
+  const isCollapsed = rawIsCollapsed || isHorizontal || forceCollapse;
+
+  React.useLayoutEffect(() => {
+    const root = document.getElementById('root');
+    if (root === null) throw new Error('Unable to find root element');
+    const classNames = {
+      top: 'flex-col',
+      left: 'flex-row',
+      bottom: 'flex-col-reverse',
+      right: 'flex-row-reverse',
+    };
+    Object.entries(classNames).forEach(([key, className]) =>
+      root.classList.toggle(className, position === key)
+    );
+  }, [position]);
+
+  const collectionLabel = React.useMemo(
+    () =>
+      userInformation.availableCollections.find(
+        ({ id }) => id === schema.domainLevelIds.collection
+      )?.collectionName ?? commonText.chooseCollection(),
+    []
+  );
+
   const activeMenuItem = React.useContext(MenuContext);
   return (
-    <nav
-      aria-label={commonText.primary()}
+    <header
       className={`
-        order-2 -mt-2 flex flex-1 flex-row flex-wrap
-        px-2 lg:justify-center xl:m-0
+        flex bg-gray-100 shadow-md shadow-gray-400 [z-index:1]
+        dark:border-neutral-700 dark:bg-neutral-900
+        print:hidden
+        ${isHorizontal ? '' : 'flex-col'}
+        ${
+          position === 'left'
+            ? 'dark:border-r'
+            : position === 'top'
+            ? 'dark:border-b'
+            : position === 'right'
+            ? 'dark:border-l'
+            : 'dark:border-t'
+        }
       `}
     >
-      {Object.entries(menuItems).map(([name, menuItem]) => (
-        <MenuItemComponent
-          key={name}
+      <h1 className="contents">
+        <a
+          className={`
+              flex items-center
+              ${isCollapsed ? 'p-2' : 'p-4'}
+            `}
+          href="/specify/"
+        >
+          {/* Both logs are loaded to prevent flickering on collapse/expand */}
+          <img
+            alt=""
+            className={`
+                hover:animate-hue-rotate
+                ${isCollapsed ? 'hidden' : ''}
+              `}
+            src="/static/img/logo.svg"
+          />
+          <img
+            alt=""
+            className={`
+              hover:animate-hue-rotate
+              ${isCollapsed ? '' : 'hidden'}
+              ${isHorizontal ? 'w-10' : ''}
+            `}
+            src="/static/img/short_logo.svg"
+          />
+          <span className="sr-only">{commonText.goToHomepage()}</span>
+        </a>
+      </h1>
+      <nav
+        className={`
+          flex flex-1 overflow-auto
+          ${isHorizontal ? '' : 'flex-col'}
+        `}
+      >
+        <HeaderItems
+          activeMenuItem={activeMenuItem}
+          isCollapsed={isCollapsed}
+          menuItems={menuItems}
+        />
+        <span className="flex-1" />
+        <MenuButton
+          icon={icons.search}
+          isActive={activeMenuItem === 'search'}
+          isCollapsed={isCollapsed}
+          title={commonText.search()}
+          onClick="/specify/overlay/express-search/"
+        />
+        <Notifications isCollapsed={isCollapsed} />
+        <UserTools isCollapsed={isCollapsed} isInUserTool={isInUserTool} />
+        <MenuButton
+          icon={icons.archive}
+          isCollapsed={isCollapsed}
+          preventOverflow
+          title={collectionLabel}
+          onClick="/specify/overlay/choose-collection/"
+        />
+        {!isHorizontal && !forceCollapse ? (
+          <MenuButton
+            icon={
+              isCollapsed === (position === 'left')
+                ? icons.arrowRight
+                : icons.arrowLeft
+            }
+            isCollapsed={isCollapsed}
+            title={isCollapsed ? commonText.expand() : commonText.collapse()}
+            onClick={(): void => setIsCollapsed(!isCollapsed)}
+          />
+        ) : undefined}
+      </nav>
+    </header>
+  );
+}
+
+function HeaderItems({
+  menuItems,
+  isCollapsed,
+  activeMenuItem,
+}: {
+  readonly menuItems: RA<MenuItem>;
+  readonly isCollapsed: boolean;
+  readonly activeMenuItem: MenuItemName | undefined;
+}): JSX.Element {
+  return (
+    <>
+      {menuItems.map(({ url, name, ...menuItem }) => (
+        <MenuButton
           {...menuItem}
           isActive={name === activeMenuItem}
+          isCollapsed={isCollapsed}
+          key={name}
+          onClick={url}
         />
       ))}
-    </nav>
+    </>
   );
 }
 
-function MenuItemComponent({
+export function MenuButton({
   title,
-  url,
   icon,
-  visibilityKey,
-  isActive,
-}: MenuItem & { readonly isActive: boolean }): JSX.Element | null {
-  const [isVisible] = usePref('header', 'menu', visibilityKey);
-  return isVisible ? (
-    <Link.Default
-      aria-current={isActive ? 'page' : undefined}
-      className={`
-        relative
-        inline-flex
-        items-center
-        gap-2
-        rounded
-        p-3
-        text-gray-700
-        active:bg-white
-        dark:text-neutral-300
-        active:dark:bg-neutral-600
-        ${isActive ? 'bg-white dark:bg-neutral-600 lg:!bg-transparent' : ''}
-        lg:after:absolute
-        lg:after:-bottom-1
-        lg:after:left-0
-        lg:after:right-0
-        lg:after:h-2
-        lg:after:w-full
-        lg:after:bg-transparent
-        lg:hover:after:bg-gray-200
-        lg:hover:after:dark:bg-neutral-800
-        ${isActive ? 'lg:after:bg-gray-200' : ''}
-        ${isActive ? 'lg:after:dark:bg-neutral-800' : ''}
-      `}
-      href={url}
-      key={url}
-    >
+  isActive = false,
+  isCollapsed,
+  preventOverflow = false,
+  onClick: handleClick,
+  props: extraProps,
+}: {
+  readonly title: LocalizedString;
+  readonly icon: JSX.Element;
+  readonly isCollapsed: boolean;
+  readonly isActive?: boolean;
+  readonly preventOverflow?: boolean;
+  readonly onClick: string | (() => void);
+  readonly props?: TagProps<'a'> & TagProps<'button'>;
+}): JSX.Element | null {
+  const [position] = usePref('header', 'appearance', 'position');
+  const getClassName = (isActive: boolean): string => `
+    p-4
+    ${isActive ? 'bg-brand-300 !text-white' : 'text-gray-700'}
+    ${className.ariaHandled}
+    ${extraProps?.className ?? ''}
+  `;
+  const props = {
+    ...extraProps,
+    [titleDelay]: 0,
+    [titlePosition]:
+      position === 'left' ? 'right' : position === 'right' ? 'left' : undefined,
+    'aria-current': isActive ? 'page' : undefined,
+    title: isCollapsed ? title : undefined,
+  } as const;
+  const children = (
+    <>
       {icon}
-      {title}
-    </Link.Default>
-  ) : null;
-}
-
-export function CollectionSelector(): JSX.Element {
-  const [sortOrder] = usePref('chooseCollection', 'general', 'sortOrder');
-  const { direction, fieldNames } = toLargeSortConfig(sortOrder);
-  const sortedCollections = React.useMemo(
-    () =>
-      Array.from(userInformation.availableCollections)
-        .sort(
-          sortFunction(
-            // FEATURE: this only works for direct fields right now
-            (collection) => collection[fieldNames.join('.') as 'id'],
-            direction === 'desc'
-          )
-        )
-        .map(serializeResource),
-    [direction, fieldNames]
+      {preventOverflow && !isCollapsed ? (
+        <span className="relative flex w-full flex-1 items-center">
+          <span className="absolute w-[inherit] overflow-hidden text-ellipsis whitespace-nowrap">
+            {title}
+          </span>
+        </span>
+      ) : (
+        <span className={isCollapsed ? 'sr-only' : undefined}>{title}</span>
+      )}
+    </>
   );
-
-  const navigate = useNavigate();
-  return (
-    <Select
-      aria-label={headerText.currentCollection({
-        collectionTable: schema.models.Collection.label,
-      })}
-      className="flex-1"
-      title={headerText.currentCollection({
-        collectionTable: schema.models.Collection.label,
-      })}
-      value={schema.domainLevelIds.collection}
-      onValueChange={(value): void =>
-        switchCollection(navigate, Number.parseInt(value), '/specify/')
-      }
+  return typeof handleClick === 'string' ? (
+    <ActiveLink
+      {...props}
+      activeOverride={isActive ? true : undefined}
+      className={getClassName}
+      href={handleClick}
     >
-      {sortedCollections?.map(({ id, collectionName }) => (
-        <option key={id as number} value={id as number}>
-          {collectionName}
-        </option>
-      ))}
-    </Select>
-  );
-}
-
-export function ExpressSearch(): JSX.Element {
-  const [urlSearchQuery] = useSearchParameter('q');
-  const [searchQuery = '', setSearchQuery] = useTriggerState(urlSearchQuery);
-  const navigate = useNavigate();
-  return (
-    <Form
-      className="contents"
-      role="search"
-      onSubmit={(): void => {
-        const query = searchQuery.trim();
-        if (query.length === 0) return;
-        const url = formatUrl('/specify/express-search/', {
-          q: query,
-        });
-        navigate(url);
-      }}
+      {children}
+    </ActiveLink>
+  ) : (
+    <Button.LikeLink
+      onClick={handleClick}
+      {...props}
+      className={getClassName(isActive)}
     >
-      <Input.Generic
-        aria-label={commonText.search()}
-        autoComplete="on"
-        className="flex-1"
-        /* Name is for autocomplete purposes only */
-        name="searchQuery"
-        placeholder={commonText.search()}
-        type="search"
-        value={searchQuery}
-        onValueChange={setSearchQuery}
-      />
-      <Submit.Blue className="sr-only">{commonText.search()}</Submit.Blue>
-    </Form>
+      {children}
+    </Button.LikeLink>
   );
 }

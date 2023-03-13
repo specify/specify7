@@ -230,7 +230,7 @@ export const preferencesText = createDictionary({
     'en-us': 'Field background',
     'ru-ru': 'Фон поля',
     'es-es': 'Fondo de campo',
-    'fr-fr': 'Fond de champ',
+    'fr-fr': 'Fond de terrain',
     'uk-ua': 'Поле фону',
   },
   disabledFieldBackground: {
@@ -360,26 +360,11 @@ export const preferencesText = createDictionary({
     `,
   },
   header: {
-    'en-us': 'Top Level Menu',
-    'ru-ru': 'Главное меню',
-    'es-es': 'Menú de nivel superior',
-    'fr-fr': 'Menu de niveau supérieur',
-    'uk-ua': 'Меню верхнього рівня',
-  },
-  menu: {
-    'en-us': 'Menu',
-    'ru-ru': 'Меню',
-    'es-es': 'Menú',
-    'fr-fr': 'Menu',
-    'uk-ua': 'Меню',
-  },
-  showMenuItem: {
-    comment: 'Example: Show Data Entry. Or: Show Interactions. Or: Show Trees',
-    'en-us': 'Show {menuItem:string}',
-    'ru-ru': 'Показать {menuItem:string}',
-    'es-es': 'Mostrar {menuItem:string}',
-    'fr-fr': 'Afficher {menuItem:string}',
-    'uk-ua': 'Показати {menuItem:string}',
+    'en-us': 'Navigation Menu',
+    'ru-ru': 'Меню навигации',
+    'es-es': 'Menú de Navegación',
+    'fr-fr': 'le menu de navigation',
+    'uk-ua': 'Навігаційне меню',
   },
   application: {
     'en-us': 'Application',
@@ -1333,10 +1318,45 @@ export const preferencesText = createDictionary({
     'fr-fr': 'Ne pas utiliser',
     'uk-ua': 'Не використовувати',
   },
+  position: {
+    'en-us': 'Position',
+    'es-es': 'Posición',
+    'fr-fr': 'Position',
+    'ru-ru': 'Позиция',
+    'uk-ua': 'Позиція',
+  },
+  top: {
+    'en-us': 'Top',
+    'es-es': 'Arriba',
+    'fr-fr': 'Haut',
+    'ru-ru': 'Вершина',
+    'uk-ua': 'Топ',
+  },
+  bottom: {
+    'en-us': 'Bottom',
+    'es-es': 'Abajo',
+    'fr-fr': 'Bas',
+    'ru-ru': 'Нижний',
+    'uk-ua': 'Дно',
+  },
+  left: {
+    'en-us': 'Left',
+    'es-es': 'Izquierda',
+    'fr-fr': 'Gauche',
+    'ru-ru': 'Левый',
+    'uk-ua': 'Ліворуч',
+  },
+  right: {
+    'en-us': 'Right',
+    'es-es': 'Derecha',
+    'fr-fr': 'Droite',
+    'ru-ru': 'Верно',
+    'uk-ua': 'правильно',
+  },
   showUnsavedIndicator: {
     'en-us': 'Show unsaved changes indicator',
     'ru-ru': 'Показывать индикатор несохраненных изменений',
-    'es-es': 'Mostrar indicador de cambios no guardados',
+    'es-es': 'Mostrar el indicador de cambios no guardados',
     'fr-fr': "Afficher l'indicateur de modifications non enregistrées",
     'uk-ua': 'Показати індикатор незбережених змін',
   },
@@ -1346,7 +1366,7 @@ export const preferencesText = createDictionary({
       tab
     `,
     'es-es': `
-      Mostrar un "*" en el título de la pestaña cuando haya cambios sin guardar
+      Mostrar un "*" en el título de la pestaña cuando hay cambios sin guardar
       en la pestaña actual
     `,
     'fr-fr': `
@@ -1355,11 +1375,39 @@ export const preferencesText = createDictionary({
     `,
     'ru-ru': `
       Показывать «*» в заголовке вкладки, если на текущей вкладке есть
-      несохраненные изменения.
+      несохраненные изменения
     `,
     'uk-ua': `
       Показувати «*» у заголовку вкладки, якщо в поточній вкладці є незбережені
       зміни
     `,
+  },
+  rememberDialogSizes: {
+    'en-us': 'Remember dialog window sizes',
+    'ru-ru': 'Запоминать размеры диалоговых окон',
+    'es-es': 'Recuerde los tamaños de las ventanas de diálogo',
+    'fr-fr': 'Se souvenir des tailles des fenêtres de dialogue',
+    'uk-ua': 'Запам’ятовувати розміри діалогових вікон',
+  },
+  rememberDialogPositions: {
+    'en-us': 'Remember dialog window positions',
+    'ru-ru': 'Запоминать позиции диалоговых окон',
+    'es-es': 'Recuerde las posiciones de las ventanas de diálogo',
+    'fr-fr': 'Se souvenir des positions des fenêtres de dialogue',
+    'uk-ua': 'Запам’ятовувати позиції діалогових вікон',
+  },
+  autoPlayMedia: {
+    'en-us': 'Automatically play media',
+    'ru-ru': 'Автоматически воспроизводить медиа',
+    'es-es': 'Reproducir automáticamente medios',
+    'fr-fr': 'Lecture automatique des médias',
+    'uk-ua': 'Автоматично відтворювати медіа',
+  },
+  useCustomTooltips: {
+    'en-us': 'Use modern tooltips',
+    'ru-ru': 'Использовать современные подсказки',
+    'es-es': 'Usar modernos tooltips',
+    'fr-fr': 'Utiliser des infobulles modernes',
+    'uk-ua': 'Використовувати сучасні підказки',
   },
 } as const);

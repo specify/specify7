@@ -1,8 +1,10 @@
-import { filterArray, IR, R, RA, WritableArray } from '../../utils/types';
-import { PermissionsQueryItem } from '../Permissions';
 import { f } from '../../utils/functools';
+import type { IR, R, RA, WritableArray } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { group, KEY, replaceItem } from '../../utils/utils';
-import { Policy } from './Policy';
+import type { PermissionsQueryItem } from '../Permissions';
+import type { Policy } from './Policy';
+import { toolDefinitions, toolTables } from './registry';
 import {
   anyAction,
   anyResource,
@@ -16,7 +18,6 @@ import {
   tablePermissionsPrefix,
   toolPermissionPrefix,
 } from './utils';
-import { toolDefinitions, toolTables } from './registry';
 
 /**
  * Separate out tool tables from the raw list of policies received from the

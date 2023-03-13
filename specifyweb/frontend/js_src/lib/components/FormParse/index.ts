@@ -3,27 +3,29 @@
  * adding type safety and strictness to help resolve ambiguities
  */
 
+import type { LocalizedString } from 'typesafe-i18n';
+
 import { ajax } from '../../utils/ajax';
+import { Http } from '../../utils/ajax/definitions';
 import { f } from '../../utils/functools';
 import type { IR, R, RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import { getParsedAttribute } from '../../utils/utils';
 import { parseXml } from '../AppResources/codeMirrorLinters';
+import { formatDisjunction } from '../Atoms/Internationalization';
 import { parseJavaClassName } from '../DataModel/resource';
 import { strictGetModel } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { error } from '../Errors/assert';
+import type { LogMessage } from '../Errors/interceptLogs';
+import { consoleLog, setLogContext } from '../Errors/interceptLogs';
 import { cachableUrl } from '../InitialContext';
 import { getPref } from '../InitialContext/remotePrefs';
 import { formatUrl } from '../Router/queryString';
 import type { FormCellDefinition } from './cells';
 import { parseFormCell, processColumnDefinition } from './cells';
 import { postProcessFormDef } from './postProcessFormDef';
-import { Http } from '../../utils/ajax/definitions';
 import { webOnlyViews } from './webOnlyViews';
-import { consoleLog, LogMessage, setLogContext } from '../Errors/interceptLogs';
-import { LocalizedString } from 'typesafe-i18n';
-import { formatDisjunction } from '../Atoms/Internationalization';
 
 export type ViewDescription = ParsedFormDefinition & {
   readonly formType: FormType;
@@ -31,6 +33,7 @@ export type ViewDescription = ParsedFormDefinition & {
   readonly model: SpecifyModel;
   readonly errors?: RA<LogMessage>;
   readonly viewSetId?: number;
+  readonly name: string;
 };
 
 type AltView = {
@@ -63,7 +66,7 @@ export const fetchView = async (
 ): Promise<ViewDefinition | undefined> =>
   name in views
     ? Promise.resolve(views[name])
-    : ajax<string>(
+    : ajax(
         /*
          * NOTE: If getView hasn't yet been invoked, the view URLs won't be
          * marked as cachable
@@ -83,6 +86,7 @@ export const fetchView = async (
           expectedResponseCodes: [Http.OK, Http.NOT_FOUND, Http.NO_CONTENT],
         }
       ).then(({ data, status }) => {
+        // FEATURE: add an easy way to cache ajax responses:
         views[name] =
           status === Http.NOT_FOUND || status === Http.NO_CONTENT
             ? undefined
@@ -117,6 +121,7 @@ export function parseViewDefinition(
     model,
     viewSetId: view.viewsetId ?? undefined,
     errors,
+    name: view.name,
     ...parsed,
   };
 }
@@ -263,6 +268,9 @@ function parseFormTableDefinition(
   const row = rows
     .flat()
     // FormTable consists of Fields and SubViews only
+    /*
+     * FEATURE: extract fields from panels too
+     */
     .filter(({ type }) => type === 'Field' || type === 'SubView')
     .map<FormCellDefinition>((cell) => ({
       ...cell,

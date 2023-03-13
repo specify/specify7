@@ -1,4 +1,5 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
@@ -6,6 +7,7 @@ import { useErrorContext } from '../../hooks/useErrorContext';
 import { useId } from '../../hooks/useId';
 import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
+import { reportsText } from '../../localization/report';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
@@ -20,28 +22,59 @@ import {
   attachmentsAvailable,
   formatAttachmentUrl,
 } from '../Attachments/attachments';
-import { AttachmentsPlugin } from '../Attachments/Plugin';
+import { UploadAttachment } from '../Attachments/Plugin';
 import { LoadingContext } from '../Core/Contexts';
 import { fetchCollection } from '../DataModel/collection';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { fetchResource, idFromUrl } from '../DataModel/resource';
 import type { SpecifyModel } from '../DataModel/specifyModel';
-import type { SpAppResource, SpQuery, SpReport } from '../DataModel/types';
+import type { SpAppResource, SpQuery } from '../DataModel/types';
 import { error } from '../Errors/assert';
+import { unknownIcon } from '../InitialContext/icons';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { ReportForRecord } from './ForRecord';
+import type { ReportEntry } from './index';
 import { ReportRecordSets } from './RecordSets';
-import { unknownIcon } from '../InitialContext/icons';
-import { LocalizedString } from 'typesafe-i18n';
-import { reportsText } from '../../localization/report';
 
 export function Report({
-  appResource,
+  onClose: handleClose,
+  resource,
+  ...rest
+}: {
+  readonly resource: ReportEntry;
+  readonly resourceId: number | undefined;
+  readonly model: SpecifyModel | undefined;
+  readonly onClose: () => void;
+}): JSX.Element {
+  return resource.query === undefined ? (
+    <Dialog
+      buttons={commonText.close()}
+      header={reportsText.missingReportQuery()}
+      icon={<span className="text-blue-500">{icons.documentReport}</span>}
+      onClose={handleClose}
+    >
+      {reportsText.missingReportQueryDescription()}
+    </Dialog>
+  ) : resource.report === undefined ? (
+    <Dialog
+      buttons={commonText.close()}
+      header={reportsText.missingReport()}
+      icon={<span className="text-blue-500">{icons.documentReport}</span>}
+      onClose={handleClose}
+    >
+      {reportsText.missingReportDescription()}
+    </Dialog>
+  ) : (
+    <ReportDialog resource={resource} onClose={handleClose} {...rest} />
+  );
+}
+
+function ReportDialog({
+  resource: { appResource, report, query },
   resourceId,
   model,
   onClose: handleClose,
 }: {
-  readonly appResource: SerializedResource<SpAppResource>;
+  readonly resource: ReportEntry;
   readonly resourceId: number | undefined;
   readonly model: SpecifyModel | undefined;
   readonly onClose: () => void;
@@ -72,34 +105,6 @@ export function Report({
     true
   );
 
-  const [report] = useAsyncState<
-    SerializedResource<SpReport> | false | undefined
-  >(
-    React.useCallback(
-      async () =>
-        fetchCollection('SpReport', {
-          limit: 1,
-          appResource: appResource.id,
-        }).then(({ records }) => records[0] ?? false),
-      [appResource]
-    ),
-    false
-  );
-  const [query] = useAsyncState<SerializedResource<SpQuery> | false>(
-    React.useCallback(
-      () =>
-        typeof report === 'object'
-          ? f.maybe(idFromUrl(report.query ?? ''), async (id) =>
-              fetchResource('SpQuery', id, false).then(
-                (resource) => resource ?? false
-              )
-            ) ?? false
-          : undefined,
-      [report]
-    ),
-    false
-  );
-
   const [runCount, setRunCount] = React.useState(0);
   const [missingAttachments, setMissingAttachments] = useAsyncState(
     React.useCallback(
@@ -108,31 +113,13 @@ export function Report({
     ),
     true
   );
-  return query === false ? (
-    <Dialog
-      buttons={commonText.close()}
-      header={reportsText.missingReportQuery()}
-      icon={<span className="text-blue-500">{icons.documentReport}</span>}
-      onClose={handleClose}
-    >
-      {reportsText.missingReportQueryDescription()}
-    </Dialog>
-  ) : report === false ? (
-    <Dialog
-      buttons={commonText.close()}
-      header={reportsText.missingReport()}
-      icon={<span className="text-blue-500">{icons.documentReport}</span>}
-      onClose={handleClose}
-    >
-      {reportsText.missingReportDescription()}
-    </Dialog>
-  ) : Array.isArray(missingAttachments) && typeof definition === 'object' ? (
+  return Array.isArray(missingAttachments) && typeof definition === 'object' ? (
     missingAttachments.length === 0 ? (
       <ParametersDialog
         appResource={appResource}
         definition={definition}
         model={model}
-        query={typeof query === 'object' ? query : undefined}
+        query={query}
         resourceId={resourceId}
         onClose={handleClose}
       />
@@ -241,10 +228,8 @@ function FixImagesDialog({
       icon={<span className="text-blue-500">{icons.documentReport}</span>}
       onClose={(): void => setIndex(undefined)}
     >
-      <AttachmentsPlugin
-        mode="edit"
-        resource={undefined}
-        onUploadComplete={(attachment): void =>
+      <UploadAttachment
+        onUploaded={(attachment): void =>
           loading(
             attachment
               .set('title', missingAttachments[index])

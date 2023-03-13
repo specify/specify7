@@ -1,8 +1,9 @@
 import { Tab } from '@headlessui/react';
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
-import { resourcesText } from '../../localization/resources';
 import { commonText } from '../../localization/common';
+import { resourcesText } from '../../localization/resources';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
@@ -24,7 +25,6 @@ import {
   AppResourceTextEditor,
   visualAppResourceEditors,
 } from './TabDefinitions';
-import { LocalizedString } from 'typesafe-i18n';
 
 export function AppResourcesTabs({
   label,
@@ -93,6 +93,7 @@ export function AppResourcesTabs({
       className={{
         container: dialogClassNames.fullScreen,
       }}
+      dimensionsKey={false}
       header={label}
       headerButtons={headerButtons}
       icon={appResourceIcon(getResourceType(resource))}

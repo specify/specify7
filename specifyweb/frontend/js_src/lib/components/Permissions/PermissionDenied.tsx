@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { commonText } from '../../localization/common';
+import { userText } from '../../localization/user';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import type { AnyTree } from '../DataModel/helperTypes';
@@ -24,7 +25,6 @@ import {
   hasTreeAccess,
 } from './helpers';
 import type { getOperationPermissions } from './index';
-import { userText } from '../../localization/user';
 
 export type PermissionErrorSchema = {
   readonly NoMatchingRuleException: RA<{

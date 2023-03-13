@@ -1,25 +1,25 @@
 import React from 'react';
 
-import { f } from '../../utils/functools';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { useDistantRelated } from '../../hooks/resource';
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
+import { f } from '../../utils/functools';
+import { DataEntry } from '../Atoms/DataEntry';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { schema } from '../DataModel/schema';
+import type { Collection } from '../DataModel/specifyModel';
+import { UiCommand } from '../FormCommands';
+import { FormField } from '../FormFields';
 import type { FormMode, FormType } from '../FormParse';
 import { fetchView, resolveViewDefinition } from '../FormParse';
 import type { cellAlign, CellTypes } from '../FormParse/cells';
-import { schema } from '../DataModel/schema';
-import type { Collection } from '../DataModel/specifyModel';
-import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
-import { DataEntry } from '../Atoms/DataEntry';
-import { FormTableInteraction } from './FormTableInteraction';
-import { RenderForm } from '../Forms/SpecifyForm';
-import { UiCommand } from '../FormCommands';
-import { FormField } from '../FormFields';
+import { SpecifyForm } from '../Forms/SpecifyForm';
 import { SubView } from '../Forms/SubView';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { AnySchema } from '../DataModel/helperTypes';
 import { TableIcon } from '../Molecules/TableIcon';
-import { useDistantRelated } from '../../hooks/resource';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
+import { FormTableInteraction } from './FormTableInteraction';
 
 const cellRenderers: {
   readonly [KEY in keyof CellTypes]: (props: {
@@ -191,16 +191,21 @@ const cellRenderers: {
       );
   },
   Panel({ mode, formType, resource, cellData: { display, ...cellData } }) {
+    const viewDefinition = React.useMemo(
+      () => ({
+        ...cellData,
+        mode,
+        name: 'panel',
+        formType,
+        model: resource.specifyModel,
+      }),
+      [cellData, mode, formType, resource.specifyModel]
+    );
     const form = (
-      <RenderForm
+      <SpecifyForm
         display={display}
         resource={resource}
-        viewDefinition={{
-          ...cellData,
-          mode,
-          formType,
-          model: resource.specifyModel,
-        }}
+        viewDefinition={viewDefinition}
       />
     );
     return display === 'inline' ? <div className="mx-auto">{form}</div> : form;

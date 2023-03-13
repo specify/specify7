@@ -2,19 +2,19 @@
  * Parse and use Specify 6 UI Formatters
  */
 
-import { error } from '../Errors/assert';
 import { f } from '../../utils/functools';
+import type { IR, RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import {
   escapeRegExp,
   getAttribute,
   getBooleanAttribute,
   getParsedAttribute,
 } from '../../utils/utils';
+import { parseJavaClassName } from '../DataModel/resource';
+import { error } from '../Errors/assert';
 import { load } from '../InitialContext';
 import { formatUrl } from '../Router/queryString';
-import { parseJavaClassName } from '../DataModel/resource';
-import type { IR, RA } from '../../utils/types';
-import { filterArray } from '../../utils/types';
 
 let uiFormatters: IR<UiFormatter>;
 export const fetchContext = load<Document>(
@@ -89,6 +89,8 @@ export class UiFormatter {
   }
 
   public parse(value: string): RA<string> | undefined {
+    // Regex may be coming from the user, thus disable strict mode
+    // eslint-disable-next-line require-unicode-regexp
     const match = new RegExp(this.parseRegExp()).exec(value);
     return match?.slice(1);
   }

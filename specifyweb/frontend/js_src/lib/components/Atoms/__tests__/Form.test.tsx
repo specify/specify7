@@ -1,9 +1,9 @@
 import React from 'react';
 
+import { mount, snapshot } from '../../../tests/reactUtils';
 import type { RA } from '../../../utils/types';
 import { className } from '../className';
 import { Form, Input, Label, Select, Textarea } from '../Form';
-import { mount, snapshot } from '../../../tests/reactUtils';
 
 snapshot(Label.Block, { children: 'Test' });
 snapshot(Label.Inline, { children: 'Test' });

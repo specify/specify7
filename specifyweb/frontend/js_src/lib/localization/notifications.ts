@@ -60,14 +60,14 @@ export const notificationsText = createDictionary({
     'en-us': 'RSS Export feed has been updated.',
     'ru-ru': 'Элемент фида экспорта обновлен.',
     'es-es': 'Se ha actualizado el feed RSS Export.',
-    'fr-fr': "Le flux d'exportation RSS a été mis à jour.",
+    'fr-fr': "Le flux d'export RSS a été mis à jour.",
     'uk-ua': 'Стрічку експорту RSS оновлено.',
   },
   updateFeedFailed: {
     'en-us': 'Export feed update failed.',
     'ru-ru': 'Не удалось обновить экспортный канал.',
     'es-es': 'Error al exportar actualizaciones de canales.',
-    'fr-fr': "Échec de la mise à jour du flux d'exportation.",
+    'fr-fr': "la mise à jour du flux d'export a échoué",
     'uk-ua': 'Не вдалося експортувати оновлення каналу.',
   },
   dwcaExportCompleted: {

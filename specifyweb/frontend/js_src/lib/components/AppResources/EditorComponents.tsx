@@ -8,36 +8,36 @@ import type { Extension } from '@codemirror/state';
 import { EditorState } from '@codemirror/state';
 import { EditorView } from 'codemirror';
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
-import { getResourceType } from './filtersHelpers';
-import { jsonLinter, xmlLinter } from './codeMirrorLinters';
-import type { SpAppResource, SpViewSetObj } from '../DataModel/types';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { resourcesText } from '../../localization/resources';
-import { commonText } from '../../localization/common';
-import type { RA } from '../../utils/types';
-import { getAppResourceExtension } from './hooks';
-import { LoadingContext } from '../Core/Contexts';
-import { downloadFile, FilePicker, fileToText } from '../Molecules/FilePicker';
-import { Dialog } from '../Molecules/Dialog';
-import { DataEntry } from '../Atoms/DataEntry';
-import { Button } from '../Atoms/Button';
 import { useBooleanState } from '../../hooks/useBooleanState';
-import { appResourceSubTypes, appResourceTypes } from './types';
-import { SerializedResource } from '../DataModel/helperTypes';
-import { usePref } from '../UserPreferences/usePref';
+import { commonText } from '../../localization/common';
 import { notificationsText } from '../../localization/notifications';
-import { LocalizedString } from 'typesafe-i18n';
+import { resourcesText } from '../../localization/resources';
+import type { RA } from '../../utils/types';
+import { Button } from '../Atoms/Button';
+import { DataEntry } from '../Atoms/DataEntry';
+import { LoadingContext } from '../Core/Contexts';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { SpAppResource, SpViewSetObj } from '../DataModel/types';
+import { Dialog } from '../Molecules/Dialog';
+import { downloadFile, FilePicker, fileToText } from '../Molecules/FilePicker';
+import { usePref } from '../UserPreferences/usePref';
+import { jsonLinter, xmlLinter } from './codeMirrorLinters';
+import type { getResourceType } from './filtersHelpers';
+import { getAppResourceExtension } from './hooks';
+import { appResourceSubTypes, appResourceTypes } from './types';
 
 export const appResourceIcon = (
   type: ReturnType<typeof getResourceType>
 ): JSX.Element =>
   type === 'viewSet' ? (
-    <span title={resourcesText.formDefinitions()} aria-hidden>
+    <span aria-hidden title={resourcesText.formDefinitions()}>
       {appResourceTypes.viewSets.icon}
     </span>
   ) : (
-    <span title={appResourceSubTypes[type].label} aria-hidden>
+    <span aria-hidden title={appResourceSubTypes[type].label}>
       {appResourceSubTypes[type].icon}
     </span>
   );
@@ -57,6 +57,7 @@ export function AppResourceEditButton({
       {isEditingMeta && (
         <Dialog
           buttons={commonText.close()}
+          dimensionsKey="AppResourceEdit"
           header={title}
           onClose={handleEditedMeta}
         >

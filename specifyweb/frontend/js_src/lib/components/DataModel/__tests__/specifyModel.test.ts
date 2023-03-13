@@ -1,4 +1,5 @@
 import { requireContext } from '../../../tests/helpers';
+import { attachmentView } from '../../FormParse/webOnlyViews';
 import { ResourceBase } from '../resourceApi';
 import { schema } from '../schema';
 import { LiteralField } from '../specifyField';
@@ -261,7 +262,7 @@ test('view name is added on the front-end if missing', () =>
   expect(schema.models.SpQuery.view).toBe('Query'));
 
 test('view name is overwritten for attachments', () =>
-  expect(schema.models.Attachment.view).toBe('ObjectAttachment'));
+  expect(schema.models.Attachment.view).toBe(attachmentView));
 
 test('model name is used as view name if missing', () =>
   expect(schema.models.AccessionAuthorization.view).toBe(

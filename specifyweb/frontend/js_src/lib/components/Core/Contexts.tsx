@@ -9,6 +9,7 @@ import { crash } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { loadingBar } from '../Molecules';
 import { Dialog, dialogClassNames, LoadingScreen } from '../Molecules/Dialog';
+import { TooltipManager } from '../Molecules/Tooltips';
 import {
   SetUnloadProtectsContext,
   UnloadProtectsContext,
@@ -63,7 +64,9 @@ export function Contexts({
           holders.current = holders.current.filter((item) => item !== holderId);
           if (holders.current.length === 0) handleLoaded();
         })
-        .catch(crash);
+        .catch((error) => {
+          crash(error);
+        });
     },
     [handleLoading, handleLoaded]
   );
@@ -91,6 +94,7 @@ export function Contexts({
   setError = handleError;
 
   const [unloadProtects, setUnloadProtects] = React.useState<RA<string>>([]);
+
   const unloadProtectsRef = React.useRef(unloadProtects);
   const handleChangeUnloadProtects = React.useCallback(
     (value: RA<string> | ((oldValue: RA<string>) => RA<string>)): void => {
@@ -125,6 +129,7 @@ export function Contexts({
                   {children}
                 </React.Suspense>
               </LoadingContext.Provider>
+              <TooltipManager />
             </ErrorContext.Provider>
           </ErrorBoundary>
         </SetUnloadProtectsContext.Provider>

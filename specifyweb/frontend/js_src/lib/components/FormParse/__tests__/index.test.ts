@@ -1,26 +1,26 @@
+import type { LocalizedString } from 'typesafe-i18n';
+
 import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
+import { Http } from '../../../utils/ajax/definitions';
 import type { RA } from '../../../utils/types';
 import { ensure } from '../../../utils/types';
+import { removeKey } from '../../../utils/utils';
 import { strictParseXml } from '../../AppResources/codeMirrorLinters';
 import { schema } from '../../DataModel/schema';
 import { getPref } from '../../InitialContext/remotePrefs';
+import { formatUrl } from '../../Router/queryString';
 import type { FormCellDefinition } from '../cells';
-import type { ViewDefinition } from '../index';
+import type { ParsedFormDefinition, ViewDefinition } from '../index';
 import {
   exportsForTests,
   fetchView,
-  ParsedFormDefinition,
   parseFormDefinition,
   parseViewDefinition,
   resolveViewDefinition,
 } from '../index';
-import { formatUrl } from '../../Router/queryString';
-import { removeKey } from '../../../utils/utils';
-import { Http } from '../../../utils/ajax/definitions';
 import { spAppResourceView } from '../webOnlyViews';
-import { LocalizedString } from 'typesafe-i18n';
 
 const {
   views,
@@ -181,9 +181,8 @@ describe('fetchView', () => {
   );
 
   test('handles 404 errors gracefully', async () => {
-    const consoleError = jest.fn();
-    jest.spyOn(console, 'error').mockImplementation(consoleError);
-    expect(fetchView(notFoundViewName)).resolves.toBeUndefined();
+    jest.spyOn(console, 'error').mockImplementation();
+    await expect(fetchView(notFoundViewName)).resolves.toBeUndefined();
   });
 
   const frontEndOnlyView = spAppResourceView;
@@ -200,8 +199,7 @@ describe('fetchView', () => {
 });
 
 test('parseViewDefinition', () => {
-  const consoleWarn = jest.fn();
-  jest.spyOn(console, 'warn').mockImplementation(consoleWarn);
+  jest.spyOn(console, 'warn').mockImplementation();
   const result = parseViewDefinition(
     {
       ...viewDefinition,
@@ -217,6 +215,7 @@ test('parseViewDefinition', () => {
   expect(removeKey(result, 'model')).toEqual({
     ...parsedTinyView,
     errors: [],
+    name: '',
     mode: 'view',
     formType: 'form',
     viewSetId: undefined,
@@ -323,8 +322,7 @@ theories(parseFormTableColumns, {
 });
 
 test('parseFormDefinition', () => {
-  const consoleWarn = jest.fn();
-  jest.spyOn(console, 'warn').mockImplementation(consoleWarn);
+  jest.spyOn(console, 'warn').mockImplementation();
   expect(
     parseFormDefinition(tinyFormView, schema.models.CollectionObject)
   ).toEqual(parsedTinyView);

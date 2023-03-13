@@ -1,4 +1,5 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 import _ from 'underscore';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
@@ -14,15 +15,14 @@ import { serializeResource } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
+import type { LiteralField, Relationship } from '../DataModel/specifyField';
+import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Tables } from '../DataModel/types';
 import { UiField } from '../FormFields/Field';
 import type { FormMode, FormType } from '../FormParse';
 import { load } from '../InitialContext';
 import { getIcon, unknownIcon } from '../InitialContext/icons';
 import { formatUrl } from '../Router/queryString';
-import { SpecifyModel } from '../DataModel/specifyModel';
-import { LiteralField, Relationship } from '../DataModel/specifyField';
-import { LocalizedString } from 'typesafe-i18n';
 
 export const webLinks = load<Element>(
   formatUrl('/context/app.resource', { name: 'WebLinks' }),
@@ -135,6 +135,8 @@ export function WebLink({
       src={getIcon(icon) ?? unknownIcon}
     />
   );
+  const Component =
+    typeof url === 'string' && url.length > 0 ? Link.Gray : Button.Gray;
   return (
     <div
       className={
@@ -144,28 +146,23 @@ export function WebLink({
       {formType === 'form' && typeof field === 'object' ? (
         <UiField
           field={field}
-          name={name}
           id={id}
           mode={mode}
+          name={name}
           resource={resource}
         />
       ) : undefined}
       {typeof definition === 'object' ? (
-        typeof url === 'string' && url.length > 0 ? (
-          <Link.Gray
-            className="ring-1 ring-gray-400 disabled:ring-gray-500 dark:ring-0 disabled:dark:ring-neutral-500"
-            href={url}
-            rel={isExternal ? 'noopener' : undefined}
-            target={isExternal ? '_blank' : undefined}
-            title={definition.title}
-          >
-            {image}
-          </Link.Gray>
-        ) : (
-          <Button.Gray title={definition.title} onClick={undefined}>
-            {image}
-          </Button.Gray>
-        )
+        <Component
+          className="ring-1 ring-gray-400 disabled:ring-gray-500 dark:ring-0 disabled:dark:ring-neutral-500"
+          href={url!}
+          rel={isExternal ? 'noopener' : undefined}
+          target={isExternal ? '_blank' : undefined}
+          title={definition.title}
+          onClick={undefined}
+        >
+          {image}
+        </Component>
       ) : undefined}
     </div>
   );
@@ -182,7 +179,7 @@ function useDefinition(
   model: SpecifyModel | undefined,
   fieldName: string | undefined,
   webLink: string | undefined
-): ParsedWebLink | undefined | false {
+): ParsedWebLink | false | undefined {
   const [definition] = useAsyncState<ParsedWebLink | false>(
     React.useCallback(async () => {
       const fieldInfo = model?.getField(fieldName ?? '');
@@ -216,7 +213,7 @@ export function parseWebLink(definition: Element): ParsedWebLink | undefined {
     definition
       ?.querySelector('baseURLStr')
       ?.textContent?.trim()
-      .replace(/<\s*this\s*>/gu, '<_this>')
+      .replaceAll(/<\s*this\s*>/gu, '<_this>')
       .replaceAll('AMP', '&')
       .replaceAll('<', '<%= ')
       .replaceAll('>', ' %>') ?? '';

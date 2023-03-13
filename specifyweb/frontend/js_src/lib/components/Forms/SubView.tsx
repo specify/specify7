@@ -1,25 +1,25 @@
 import React from 'react';
 
-import { sortFunction } from '../../utils/utils';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { usePromise } from '../../hooks/useAsyncState';
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
-import type { FormMode, FormType } from '../FormParse';
+import { overwriteReadOnly } from '../../utils/types';
+import { sortFunction } from '../../utils/utils';
+import { Button } from '../Atoms/Button';
+import { attachmentRelatedTables } from '../Attachments';
+import { attachmentSettingsPromise } from '../Attachments/attachments';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
 import type { Relationship } from '../DataModel/specifyField';
 import type { Collection } from '../DataModel/specifyModel';
-import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
-import { Button } from '../Atoms/Button';
+import { raise, softFail } from '../Errors/Crash';
+import type { FormMode, FormType } from '../FormParse';
+import type { SubViewSortField } from '../FormParse/cells';
 import { IntegratedRecordSelector } from '../FormSliders/IntegratedRecordSelector';
-import { useTriggerState } from '../../hooks/useTriggerState';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { AnySchema } from '../DataModel/helperTypes';
-import { fail, softFail } from '../Errors/Crash';
 import { TableIcon } from '../Molecules/TableIcon';
-import { overwriteReadOnly } from '../../utils/types';
-import { SubViewSortField } from '../FormParse/cells';
-import { attachmentSettingsPromise } from '../Attachments/attachments';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { attachmentRelatedTables } from '../Attachments';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 
 export const SubViewContext = React.createContext<
   | {
@@ -34,8 +34,6 @@ export const SubViewContext = React.createContext<
   | undefined
 >(undefined);
 SubViewContext.displayName = 'SubViewContext';
-
-const fetchAttachmentSettings = () => attachmentSettingsPromise;
 
 export function SubView({
   relationship,
@@ -117,7 +115,7 @@ export function SubView({
           relationship.isDependent()
             ? new relationship.relatedModel.DependentCollection({
                 related: parentResource,
-                field: relationship.getReverse(),
+                field: reverse,
               })
             : new relationship.relatedModel.LazyCollection({
                 filters: {
@@ -170,7 +168,7 @@ export function SubView({
                 ? setCollection(collection)
                 : undefined
             )
-            .catch(fail);
+            .catch(raise);
         },
         true
       ),
@@ -191,13 +189,13 @@ export function SubView({
 
   const [isOpen, _, handleClose, handleToggle] = useBooleanState(!isButton);
 
-  const [isAttachmentConfigured] = useAsyncState(fetchAttachmentSettings, true);
+  const [isAttachmentConfigured] = usePromise(attachmentSettingsPromise, true);
 
   const isAttachmentTable = attachmentRelatedTables().includes(
     relationship.relatedModel.name
   );
 
-  const isAttachmentMisconfirgured =
+  const isAttachmentMisconfigured =
     isAttachmentTable && !isAttachmentConfigured;
 
   return (
@@ -232,7 +230,7 @@ export function SubView({
           dialog={isButton ? 'nonModal' : false}
           formType={formType}
           mode={
-            !isAttachmentMisconfirgured &&
+            !isAttachmentMisconfigured &&
             relationship.isDependent() &&
             initialMode !== 'view'
               ? 'edit'

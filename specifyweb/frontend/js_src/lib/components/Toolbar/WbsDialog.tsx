@@ -7,29 +7,30 @@
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { ajax } from '../../utils/ajax';
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
+import { wbPlanText } from '../../localization/wbPlan';
 import { wbText } from '../../localization/workbench';
-import { hasPermission } from '../Permissions/helpers';
+import { ajax } from '../../utils/ajax';
+import { Http } from '../../utils/ajax/definitions';
 import type { RA } from '../../utils/types';
 import { uniquifyDataSetName } from '../../utils/uniquifyName';
-import { LoadingContext } from '../Core/Contexts';
-import { DataSetMeta } from '../WorkBench/DataSetMeta';
+import { Button } from '../Atoms/Button';
+import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
+import { Link } from '../Atoms/Link';
+import { LoadingContext } from '../Core/Contexts';
+import { getField } from '../DataModel/helpers';
+import { schema } from '../DataModel/schema';
+import { DateElement } from '../Molecules/DateElement';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import type { SortConfig } from '../Molecules/Sorting';
+import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
+import { TableIcon } from '../Molecules/TableIcon';
+import { hasPermission } from '../Permissions/helpers';
 import { OverlayContext } from '../Router/Router';
 import type { Dataset, DatasetBrief } from '../WbPlanView/Wrapped';
-import { DateElement } from '../Molecules/DateElement';
-import { Button } from '../Atoms/Button';
-import { Link } from '../Atoms/Link';
-import { className } from '../Atoms/className';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { SortConfig, SortIndicator, useSortConfig } from '../Molecules/Sorting';
-import { Http } from '../../utils/ajax/definitions';
-import { wbPlanText } from '../../localization/wbPlan';
-import { schema } from '../DataModel/schema';
-import { getField } from '../DataModel/helpers';
-import { TableIcon } from '../Molecules/TableIcon';
+import { DataSetMeta } from '../WorkBench/DataSetMeta';
 
 const createEmptyDataSet = async (): Promise<Dataset> =>
   ajax<Dataset>(
@@ -194,6 +195,7 @@ export function DataSetsDialog({
       className={{
         container: dialogClassNames.wideContainer,
       }}
+      dimensionsKey="DataSetsDialog"
       header={
         showTemplates
           ? wbPlanText.copyPlan()
@@ -220,7 +222,7 @@ export function DataSetsDialog({
             <tbody>
               {datasets.map((dataset, index) => (
                 <tr key={index}>
-                  <td className="overflow-x-auto">
+                  <td className="min-w-[theme(spacing.40)] overflow-x-auto">
                     <Link.Default
                       className="font-bold"
                       href={`/specify/workbench/${dataset.id}/`}
@@ -233,7 +235,7 @@ export function DataSetsDialog({
                           : undefined
                       }
                     >
-                      <TableIcon name="Workbench" label={false} />
+                      <TableIcon label={false} name="Workbench" />
                       {dataset.name}
                     </Link.Default>
                   </td>

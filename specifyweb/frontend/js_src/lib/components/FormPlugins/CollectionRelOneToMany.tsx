@@ -5,6 +5,7 @@ import type { State } from 'typesafe-reducer';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { commonText } from '../../localization/common';
+import { userText } from '../../localization/user';
 import { removeItem, sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
@@ -13,6 +14,7 @@ import { LoadingContext } from '../Core/Contexts';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { CollectionObject } from '../DataModel/types';
+import { softFail } from '../Errors/Crash';
 import { SearchDialog } from '../Forms/SearchDialog';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
@@ -23,8 +25,6 @@ import {
   fetchOtherCollectionData,
   processColRelationships,
 } from './collectionRelData';
-import { softFail } from '../Errors/Crash';
-import { userText } from '../../localization/user';
 
 export function CollectionOneToManyPlugin({
   resource,
@@ -66,13 +66,18 @@ export function CollectionOneToManyPlugin({
     | State<'MainState'>
   >({ type: 'MainState' });
 
+  const existingItemFilter =
+    data !== undefined && data !== false
+      ? data.collectionObjects.map(({ resource }) => resource.id.toString())
+      : undefined;
+
   const loading = React.useContext(LoadingContext);
   const navigate = useNavigate();
   return data === false ? null : (
     <div
       className={`
         w-fit rounded bg-[color:var(--form-background)] p-2
-        ring-1 ring-gray-400 shadow-sm dark:ring-0
+        shadow-sm ring-1 ring-gray-400 dark:ring-0
       `}
     >
       <table className="grid-table grid-cols-[repeat(3,auto)] gap-2">
@@ -190,7 +195,13 @@ export function CollectionOneToManyPlugin({
       )}
       {state.type === 'SearchState' && typeof data === 'object' && (
         <SearchDialog
-          extraFilters={undefined}
+          extraFilters={[
+            {
+              field: 'id',
+              operation: 'notIn',
+              values: existingItemFilter ?? [],
+            },
+          ]}
           forceCollection={data.otherCollection.id}
           multiple
           templateResource={state.templateResource}

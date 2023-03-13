@@ -4,14 +4,14 @@
 
 import React from 'react';
 
-import { ping } from '../../utils/ajax/ping';
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
+import { headerText } from '../../localization/header';
+import { ping } from '../../utils/ajax/ping';
 import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
 import { Dialog } from '../Molecules/Dialog';
 import { OverlayContext } from '../Router/Router';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { headerText } from '../../localization/header';
 
 export function ForceUpdateFeedOverlay(): JSX.Element {
   const loading = React.useContext(LoadingContext);

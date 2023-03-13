@@ -3,6 +3,8 @@ import { useOutletContext } from 'react-router';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { commonText } from '../../localization/common';
+import { userText } from '../../localization/user';
+import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
 import type { GetOrSet, IR, RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
@@ -18,14 +20,12 @@ import { SearchDialog } from '../Forms/SearchDialog';
 import { userInformation } from '../InitialContext/userInformation';
 import { LoadingScreen } from '../Molecules/Dialog';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
+import { locationToState, useStableLocation } from '../Router/RouterState';
 import type { SecurityCollectionOutlet, UserRoles } from './Collection';
 import { createCollectionRole } from './CreateRole';
+import { decompressPolicies } from './policyConverter';
 import type { NewRole, Role } from './Role';
 import { RoleView } from './Role';
-import { decompressPolicies } from './policyConverter';
-import { Http } from '../../utils/ajax/definitions';
-import { locationToState, useStableLocation } from '../Router/RouterState';
-import { userText } from '../../localization/user';
 
 export const updateCollectionRole = async (
   [roles, setRoles]: GetOrSet<IR<Role> | undefined>,

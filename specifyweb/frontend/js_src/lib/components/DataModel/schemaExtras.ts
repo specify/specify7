@@ -4,16 +4,16 @@
 
 import type { IR, RA, RR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
+import { getField } from './helpers';
 import type { FilterTablesByEndsWith, TableFields } from './helperTypes';
 import { schema } from './schema';
 import { LiteralField, Relationship } from './specifyField';
 import type { SpecifyModel } from './specifyModel';
 import type { Tables } from './types';
-import { getField } from './helpers';
 
-export const schemaAliases: {
+export const schemaAliases: RR<'', IR<string>> & {
   readonly [TABLE_NAME in keyof Tables]?: IR<TableFields<Tables[TABLE_NAME]>>;
-} & RR<'', IR<string>> = {
+} = {
   '': {
     divisionCBX: 'division',
   },
