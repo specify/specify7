@@ -20,7 +20,7 @@ msgid "interactions"
 msgstr "Interacciones"
 
 #: components/Interactions/InteractionDialog.tsx:250
-#: components/Interactions/PrepDialog.tsx:118
+#: components/Interactions/PrepDialog.tsx:122
 #. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog
 msgid "addItems"
 msgstr "Añadir elementos"
@@ -31,7 +31,7 @@ msgid "recordReturn"
 msgstr "{modelName:string} Devuelve"
 
 #: components/Interactions/InteractionDialog.tsx:253
-#: components/Interactions/PrepDialog.tsx:119
+#: components/Interactions/PrepDialog.tsx:123
 #. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog
 msgid "createRecord"
 msgstr "Crear {modelName:string}"
@@ -71,7 +71,7 @@ msgstr "sin preparaciones"
 msgid "addUnassociated"
 msgstr "Agregar elemento no asociado"
 
-#: components/Interactions/PrepDialog.tsx:129
+#: components/Interactions/PrepDialog.tsx:133
 #. Used in: Components > Interactions > Prep Dialog
 msgid "preparations"
 msgstr "Preparativos"
@@ -113,14 +113,14 @@ msgstr "Devolver todos los preparativos"
 msgid "returnSelectedPreparations"
 msgstr "Devolver preparaciones seleccionadas"
 
-#: components/Interactions/PrepDialog.tsx:100
+#: components/Interactions/PrepDialog.tsx:104
 #. Used in: Components > Interactions > Prep Dialog
 msgid "selectAllAvailablePreparations"
 msgstr "Seleccione todas las preparaciones disponibles"
 
 #: components/FormMeta/CarryForward.tsx:228
-#: components/Interactions/PrepDialog.tsx:105
-#: components/Interactions/PrepDialog.tsx:188
+#: components/Interactions/PrepDialog.tsx:109
+#: components/Interactions/PrepDialog.tsx:209
 #: components/Interactions/PrepDialogRow.tsx:61
 #: components/Interactions/PrepDialogRow.tsx:63
 #: components/Interactions/PrepReturnDialog.tsx:129
@@ -130,9 +130,11 @@ msgstr "Seleccione todas las preparaciones disponibles"
 msgid "selectAll"
 msgstr "Seleccionar todo"
 
+#: components/Interactions/PrepDialog.tsx:139
+#: components/Interactions/PrepDialog.tsx:143
 #: components/Interactions/PrepDialogRow.tsx:78
 #: components/Interactions/PrepDialogRow.tsx:81
-#. Used in: Components > Interactions > Prep Dialog Row
+#. Used in: Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Dialog Row
 msgid "selectedAmount"
 msgstr "Importe seleccionado"
 
@@ -191,19 +193,19 @@ msgstr ""
 "devueltos y guardados"
 
 #: components/FormMeta/CarryForward.tsx:249
-#: components/Interactions/PrepDialog.tsx:112
+#: components/Interactions/PrepDialog.tsx:116
 #: components/Interactions/PrepReturnDialog.tsx:145
 #: components/QueryBuilder/Results.tsx:236
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Return Dialog ⬤ Components > Query Builder > Results
 msgid "deselectAll"
 msgstr "Deseleccionar todo"
 
-#: components/Interactions/PrepDialog.tsx:203
+#: components/Interactions/PrepDialog.tsx:224
 #. Used in: Components > Interactions > Prep Dialog
 msgid "available"
 msgstr "Disponible"
 
-#: components/Interactions/PrepDialog.tsx:204
+#: components/Interactions/PrepDialog.tsx:225
 #. Used in: Components > Interactions > Prep Dialog
 msgid "unavailable"
 msgstr "Indisponible"

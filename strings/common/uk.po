@@ -36,7 +36,7 @@ msgstr "Ні"
 #: components/Header/ChooseCollection.tsx:37
 #: components/Header/Forms.tsx:61
 #: components/Interactions/InteractionsDialog.tsx:249
-#: components/Interactions/PrepDialog.tsx:97
+#: components/Interactions/PrepDialog.tsx:101
 #: components/Interactions/PrepReturnDialog.tsx:114
 #: components/PickLists/index.tsx:300
 #: components/QueryBuilder/Components.tsx:151
@@ -149,7 +149,7 @@ msgstr "Створити"
 #: components/HomePage/AboutSpecify.tsx:60
 #: components/Interactions/InteractionDialog.tsx:200
 #: components/Interactions/InteractionDialog.tsx:232
-#: components/Interactions/PrepDialog.tsx:94
+#: components/Interactions/PrepDialog.tsx:98
 #: components/Interactions/PrepReturnDialog.tsx:69
 #: components/Leaflet/Map.tsx:26
 #: components/PickLists/index.tsx:269
@@ -203,7 +203,7 @@ msgstr "Створити"
 msgid "close"
 msgstr "Закрити"
 
-#: components/Interactions/PrepDialog.tsx:124
+#: components/Interactions/PrepDialog.tsx:128
 #: components/Interactions/PrepReturnDialog.tsx:151
 #: components/Security/SetPassword.tsx:37
 #: components/Toolbar/FormTablesEdit.tsx:53
@@ -220,7 +220,7 @@ msgstr "Застосувати"
 msgid "applyAll"
 msgstr "Застосувати до всіх"
 
-#: components/Interactions/PrepDialog.tsx:109
+#: components/Interactions/PrepDialog.tsx:113
 #: components/Interactions/PrepReturnDialog.tsx:133
 #. Used in: Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Return Dialog
 msgid "clearAll"
@@ -710,7 +710,7 @@ msgstr "Скопійовано!"
 msgid "copyToClipboard"
 msgstr "Копіювати в буфер обміну"
 
-#: components/Interactions/PrepDialog.tsx:202
+#: components/Interactions/PrepDialog.tsx:223
 #: components/WbPlanView/CustomSelectElement.tsx:285
 #. Used in: Components > Interactions > Prep Dialog ⬤ Components > Wb Plan View > Custom Select Element
 msgid "selected"
@@ -840,6 +840,11 @@ msgstr "онлайн"
 #. Used in: Components > Core > Online Status
 msgid "offline"
 msgstr "офлайн"
+
+#: components/Interactions/PrepDialog.tsx:137
+#. Used in: Components > Interactions > Prep Dialog
+msgid "bulkSelect"
+msgstr ""
 
 #: components/WorkBench/RemainingLoadingTime.tsx:44
 #. Used in: Components > Work Bench > Remaining Loading Time

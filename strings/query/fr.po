@@ -465,7 +465,7 @@ msgstr "Les champs suivants sont masqués dans la requête que vous avez import�
 msgid "importNoReadPermission"
 msgstr ""
 "La requête que vous avez importée contient des tables auxquelles vous "
-"n'avez pas accès en lecture :"
+"n'avez pas accès en lecture :"
 
 #: components/QueryBuilder/CheckReadAccess.tsx:43
 #. Used in: Components > Query Builder > Check Read Access
