@@ -602,6 +602,9 @@ export const commonText = createDictionary({
     'ru-ru': 'не в сети',
     'uk-ua': 'офлайн',
   },
+  bulkSelect: {
+    'en-us': 'Bulk Select',
+  },
   timeRemaining: {
     'en-us': 'Time remaining',
     'es-es': 'Tiempo restante',
