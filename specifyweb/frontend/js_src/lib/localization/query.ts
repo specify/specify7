@@ -649,7 +649,8 @@ export const queryText = createDictionary({
   importNoReadPermission: {
     'en-us':
       'The query you imported contains tables you do not have read access to:',
-    'es-es': `La consulta que importó contiene tablas a las que no tiene acceso de
+    'es-es': `
+      La consulta que importó contiene tablas a las que no tiene acceso de
       lectura:
     `,
     'fr-fr': `

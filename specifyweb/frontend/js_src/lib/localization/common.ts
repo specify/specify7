@@ -604,6 +604,10 @@ export const commonText = createDictionary({
   },
   bulkSelect: {
     'en-us': 'Bulk Select',
+    'es-es': '',
+    'fr-fr': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   timeRemaining: {
     'en-us': 'Time remaining',
