@@ -14,6 +14,14 @@
     @apply !transition-none !duration-0;
   }
 
+  body.dark {
+    color-scheme: dark;
+  }
+
+  body:not(.dark) {
+    color-scheme: light;
+  }
+
   body.no-rounded-corners *:not(.rounded-full) {
     @apply !rounded-none;
   }
@@ -45,8 +53,8 @@
   textarea,
   .textarea-shadow,
   select {
-    @apply rounded border-none bg-[color:var(--field-background)] p-1 text-[length:inherit]
-      leading-[unset] accent-brand-200 ring-1 ring-gray-500
+    @apply rounded border-none bg-[color:var(--field-background)] p-1 text-[length:inherit] leading-[unset]
+      accent-brand-200 shadow-sm ring-1 ring-gray-400
       dark:accent-brand-400 dark:ring-0
       [.has-alt-background_&]:optional:bg-white
       dark:[.has-alt-background_&]:optional:bg-neutral-900;
@@ -150,11 +158,15 @@
   }
 
   .button:is([aria-pressed='true'], [aria-selected='true'], [aria-current]):not(.aria-handled) {
-    @apply brightness-[1.2] dark:brightness-[1.5];
+    @apply brightness-[1.6] dark:brightness-[1.8];
   }
 
   button[aria-pressed='true']:not(.aria-handled).link {
     @apply !bg-transparent text-brand-300 dark:text-brand-400;
+  }
+
+  a.button {
+    @apply text-center;
   }
 
   .link {
@@ -187,18 +199,6 @@
 
   progress::-moz-progress-bar {
     @apply rounded bg-brand-200 dark:bg-brand-400;
-  }
-
-  /* Display tooltips as an overlay on touch-screen devices */
-  @media (pointer: coarse), (hover: none) {
-    [title] {
-      @apply relative inline-flex justify-center;
-    }
-
-    [title]:focus::after {
-      @apply absolute top-[90%] w-fit border border-black bg-white p-1
-        text-black content-[attr(title)];
-    }
   }
 
   /*

@@ -2,7 +2,7 @@ import _ from 'underscore';
 
 import {assert} from '../Errors/assert';
 import {Backbone} from './backbone';
-import {hasHierarchyField} from './schema';
+import {hasHierarchyField} from './tables';
 
 
 const Base =  Backbone.Collection.extend({
@@ -20,13 +20,14 @@ const Base =  Backbone.Collection.extend({
         collection.field = options.field;
         collection.related = options.related;
 
-        assert(collection.field.model === collection.model.specifyModel, "field doesn't belong to model");
-        assert(collection.field.relatedModel === collection.related.specifyModel, "field is not to related resource");
+        assert(collection.field.table === collection.table.specifyTable, "field doesn't belong to table");
+        assert(collection.field.relatedTable === collection.related.specifyTable, "field is not to related resource");
     }
 
     export const DependentCollection = Base.extend({
         __name__: "DependentCollectionBase",
         constructor(options, models=[]) {
+            this.table = this.model;
             assert(_.isArray(models));
             Base.call(this, models, options);
         },
@@ -63,17 +64,17 @@ const Base =  Backbone.Collection.extend({
     export const LazyCollection = Base.extend({
         __name__: "LazyCollectionBase",
         _neverFetched: true,
-        constructor(options) {
-            options ||= {};
+        constructor(options={}) {
+            this.table = this.model;
             Base.call(this, null, options);
             this.filters = options.filters || {};
             this.domainfilter = Boolean(options.domainfilter) && (
-              typeof this.model?.specifyModel !== 'object'
-              || hasHierarchyField(this.model.specifyModel)
+              typeof this.table?.specifyTable !== 'object'
+              || hasHierarchyField(this.table.specifyTable)
             );
         },
         url() {
-            return `/api/specify/${  this.model.specifyModel.name.toLowerCase()  }/`;
+            return `/api/specify/${  this.table.specifyTable.name.toLowerCase()  }/`;
         },
         isComplete() {
             return this.length === this._totalCount;

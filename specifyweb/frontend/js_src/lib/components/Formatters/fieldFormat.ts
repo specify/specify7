@@ -5,7 +5,7 @@ import { removeKey } from '../../utils/utils';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { LiteralField } from '../DataModel/specifyField';
 import type { PickList } from '../DataModel/types';
-import { getUiFormatters } from '../Forms/uiFormatters';
+import { getUiFormatters } from '../FieldFormatters';
 import { unsafeGetPickLists } from '../PickLists/definitions';
 import { fetchPickList, getPickListItems } from '../PickLists/fetch';
 
@@ -46,19 +46,19 @@ export async function fieldFormat(
 }
 
 function uiFormatter(
-  field: LiteralField | undefined,
+  field: Partial<LiteralField> | undefined,
   value: string,
   formatter?: string
 ): string | undefined {
   const uiFormatter =
-    getUiFormatters()[formatter ?? ''] ?? field?.getUiFormatter();
+    getUiFormatters()[formatter ?? ''] ?? field?.getUiFormatter?.();
   if (typeof uiFormatter === 'object') {
     const formatted = uiFormatter.format(value?.toString() ?? '');
     if (typeof formatted === 'string') return formatted;
     else
       console.error(
         `Invalid value for ${
-          formatter ?? field?.getFormat() ?? ''
+          formatter ?? field?.getFormat?.() ?? ''
         } formatter: ${value}`,
         { field }
       );

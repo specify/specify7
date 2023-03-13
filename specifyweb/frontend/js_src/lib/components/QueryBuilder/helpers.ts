@@ -4,7 +4,6 @@ import type { RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import { group, KEY, removeKey, sortFunction, VALUE } from '../../utils/utils';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { schema } from '../DataModel/schema';
 import type { SpQueryField, Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import { queryMappingLocalityColumns } from '../Leaflet/config';
@@ -17,10 +16,10 @@ import {
   splitJoinedMappingPath,
   valueIsToManyIndex,
 } from '../WbPlanView/mappingHelpers';
-import type { MappingLineData } from '../WbPlanView/navigator';
 import type { QueryFieldFilter } from './FieldFilter';
 import { queryFieldFilters } from './FieldFilter';
 import { QueryFieldSpec } from './fieldSpec';
+import { tables } from '../DataModel/tables';
 
 export type SortTypes = 'ascending' | 'descending' | undefined;
 export const sortTypes: RA<SortTypes> = [undefined, 'ascending', 'descending'];
@@ -220,7 +219,7 @@ function addLocalityFields(
   );
   const localityIndexes = fieldSpecs.map((spec) =>
     spec.joinPath.findIndex(
-      (part) => part.isRelationship && part.relatedModel.name === 'Locality'
+      (part) => part.isRelationship && part.relatedTable.name === 'Locality'
     )
   );
   const rawLocalityPaths: RA<MappingPath> = [
@@ -244,7 +243,7 @@ function addLocalityFields(
         ? parts[1]
         : error('Only direct locality fields are supported')
     )
-    .map((fieldName) => schema.models.Locality.strictGetField(fieldName).name);
+    .map((fieldName) => tables.Locality.strictGetField(fieldName).name);
 
   return addQueryFields(
     fields,
@@ -307,13 +306,6 @@ export function hasLocalityColumns(fields: RA<QueryField>): boolean {
   );
   return fieldNames.has('latitude1') && fieldNames.has('longitude1');
 }
-
-export const mutateLineData = (
-  lineData: RA<MappingLineData>
-): RA<MappingLineData> =>
-  lineData.filter(
-    ({ customSelectSubtype }) => customSelectSubtype !== 'toMany'
-  );
 
 export function smoothScroll(element: HTMLElement, top: number): void {
   if (typeof element.scrollTo === 'function')

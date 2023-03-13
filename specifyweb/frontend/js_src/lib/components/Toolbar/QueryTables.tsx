@@ -1,17 +1,18 @@
 import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
-import { queryText } from '../../localization/query';
 import { commonText } from '../../localization/common';
+import { queryText } from '../../localization/query';
 import type { GetSet, RA } from '../../utils/types';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
+import { ReadOnlyContext } from '../Core/Contexts';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { getModelById, strictGetModel } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { getTableById, strictGetTable } from '../DataModel/tables';
 import type { SpQuery, Tables } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
@@ -72,34 +73,33 @@ export const defaultQueryTablesConfig: RA<keyof Tables> = [
   'TreatmentEvent',
 ];
 
-export function useQueryModels(): GetSet<RA<SpecifyModel>> {
+export function useQueryTables(): GetSet<RA<SpecifyTable>> {
   const [tables, setTables] = usePref('queryBuilder', 'general', 'shownTables');
   const visibleTables =
     tables.length === 0
-      ? defaultQueryTablesConfig.map(strictGetModel)
-      : tables.map(getModelById);
+      ? defaultQueryTablesConfig.map(strictGetTable)
+      : tables.map(getTableById);
   const accessibleTables = visibleTables.filter(({ name }) =>
     hasTablePermission(name, 'read')
   );
   const handleChange = React.useCallback(
-    (models: RA<SpecifyModel>) =>
-      setTables(models.map((model) => model.tableId)),
+    (tables: RA<SpecifyTable>) =>
+      setTables(tables.map(({ tableId }) => tableId)),
     [setTables]
   );
   return [accessibleTables, handleChange];
 }
 
 export function QueryTables({
-  isReadOnly,
   queries,
   onClose: handleClose,
 }: {
-  readonly isReadOnly: boolean;
   readonly queries: RA<SerializedResource<SpQuery>> | undefined;
   readonly onClose: () => void;
 }): JSX.Element {
-  const [tables] = useQueryModels();
+  const [tables] = useQueryTables();
 
+  const isReadOnly = React.useContext(ReadOnlyContext);
   const [isEditing, handleEditing] = useBooleanState();
   const [isImporting, handleImporting] = useBooleanState();
   return isImporting ? (

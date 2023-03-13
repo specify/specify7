@@ -44,7 +44,7 @@ export const copyTextToClipboard = async (text: string): Promise<void> =>
   ).catch(softFail);
 
 /** Based on https://stackoverflow.com/a/30810322/8584605 */
-async function fallbackCopyTextToClipboard(text: string) {
+async function fallbackCopyTextToClipboard(text: string): Promise<void> {
   const textArea = document.createElement('textarea');
   textArea.value = text;
   textArea.classList.add('sr-only');

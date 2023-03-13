@@ -66,6 +66,7 @@ export const operationPolicies = {
     'unupload',
     'validate',
     'transfer',
+    'create_recordset',
   ],
 } as const;
 

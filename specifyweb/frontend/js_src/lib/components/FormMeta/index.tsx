@@ -88,14 +88,14 @@ function MetaDialog({
   return (
     <Dialog
       buttons={commonText.close()}
-      header={resource.specifyModel.label}
+      header={resource.specifyTable.label}
       modal={false}
       onClose={handleClose}
     >
       <Section
         buttons={
           <Definition
-            model={resource.specifyModel}
+            table={resource.specifyTable}
             viewDescription={viewDescription}
           />
         }
@@ -103,13 +103,13 @@ function MetaDialog({
       >
         {subView === undefined && (
           <>
-            <CloneConfig model={resource.specifyModel} />
+            <CloneConfig table={resource.specifyTable} />
             <CarryForwardConfig
-              model={resource.specifyModel}
-              parentModel={undefined}
+              table={resource.specifyTable}
+              parentTable={undefined}
               type="button"
             />
-            <AddButtonConfig model={resource.specifyModel} />
+            <AddButtonConfig table={resource.specifyTable} />
           </>
         )}
       </Section>
@@ -123,7 +123,7 @@ function MetaDialog({
             <GenerateLabel
               id={undefined}
               label={
-                interactionTables.has(resource.specifyModel.name)
+                interactionTables.has(resource.specifyTable.name)
                   ? reportsText.generateReport()
                   : reportsText.generateLabel()
               }
@@ -138,10 +138,10 @@ function MetaDialog({
             defaultValue={false}
             field={undefined}
             id={undefined}
-            model={resource.specifyModel}
+            table={resource.specifyTable}
             name={undefined}
             text={
-              interactionTables.has(resource.specifyModel.name)
+              interactionTables.has(resource.specifyTable.name)
                 ? reportsText.generateReportOnSave()
                 : reportsText.generateLabelOnSave()
             }
@@ -150,7 +150,7 @@ function MetaDialog({
       </Section>
       {subView !== undefined && (
         <Section header={formsText.subviewConfiguration()}>
-          <SubViewMeta model={resource.specifyModel} subView={subView} />
+          <SubViewMeta table={resource.specifyTable} subView={subView} />
         </Section>
       )}
       <Section

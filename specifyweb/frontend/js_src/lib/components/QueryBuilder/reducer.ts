@@ -10,7 +10,7 @@ import type { RA } from '../../utils/types';
 import { replaceItem } from '../../utils/utils';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { SpQuery, Tables } from '../DataModel/types';
 import {
   emptyMapping,
@@ -44,12 +44,12 @@ export type MainState = State<
 export const getInitialState = ({
   query,
   queryResource,
-  model,
+  table,
   autoRun,
 }: {
   readonly query: SerializedResource<SpQuery>;
   readonly queryResource: SpecifyResource<SpQuery>;
-  readonly model: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly autoRun: boolean;
 }): MainState => ({
   type: 'MainState',
@@ -63,7 +63,7 @@ export const getInitialState = ({
    * This value never changes. It is part of the state to be accessible by
    * the reducer
    */
-  baseTableName: model.name,
+  baseTableName: table.name,
 });
 
 type Actions =

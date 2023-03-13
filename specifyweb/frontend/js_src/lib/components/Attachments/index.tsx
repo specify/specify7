@@ -4,7 +4,7 @@
 
 import React from 'react';
 
-import { useAsyncState } from '../../hooks/useAsyncState';
+import { useAsyncState, usePromise } from '../../hooks/useAsyncState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { useCollection } from '../../hooks/useCollection';
 import { attachmentsText } from '../../localization/attachments';
@@ -16,27 +16,32 @@ import { Container, H2 } from '../Atoms';
 import { className } from '../Atoms/className';
 import { Input, Label, Select } from '../Atoms/Form';
 import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
-import { getModel, schema } from '../DataModel/schema';
+import { getTable, tables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { hasTablePermission } from '../Permissions/helpers';
+import { useNavigate } from 'react-router-dom';
+import { Dialog } from '../Molecules/Dialog';
 import { ProtectedTable } from '../Permissions/PermissionDenied';
 import { OrderPicker } from '../UserPreferences/Renderers';
 import { AttachmentGallery } from './Gallery';
+import { attachmentSettingsPromise } from './attachments';
 import { useMenuItem } from '../Header/MenuContext';
+
+export const attachmentRelatedTables = f.store(() =>
+  Object.keys(tables).filter((tableName) => tableName.endsWith('Attachment'))
+);
 
 const allTablesWithAttachments = f.store(() =>
   filterArray(
-    Object.keys(schema.models)
-      .filter((tableName) => tableName.endsWith('Attachment'))
-      .map((tableName) =>
-        getModel(tableName.slice(0, -1 * 'Attachment'.length))
-      )
+    attachmentRelatedTables().map((tableName) =>
+      getTable(tableName.slice(0, -1 * 'Attachment'.length))
+    )
   )
 );
 /** Exclude tables without read access*/
 export const tablesWithAttachments = f.store(() =>
-  allTablesWithAttachments().filter((model) =>
-    hasTablePermission(model.name, 'read')
+  allTablesWithAttachments().filter((table) =>
+    hasTablePermission(table.name, 'read')
   )
 );
 
@@ -46,11 +51,22 @@ const maxScale = 50;
 const defaultSortOrder = '-timestampCreated';
 const defaultFilter = { type: 'all' } as const;
 
-export function AttachmentsView(): JSX.Element {
-  return (
+export function AttachmentsView(): JSX.Element | null {
+  const navigate = useNavigate();
+  const [isConfigured] = usePromise(attachmentSettingsPromise, true);
+
+  return isConfigured === undefined ? null : isConfigured ? (
     <ProtectedTable action="read" tableName="Attachment">
       <Attachments />
     </ProtectedTable>
+  ) : (
+    <Dialog
+      buttons={commonText.close()}
+      header={attachmentsText.attachmentServerUnavailable()}
+      onClose={(): void => navigate('/specify/')}
+    >
+      {attachmentsText.attachmentServerUnavailableDescription()}
+    </Dialog>
   );
 }
 
@@ -111,7 +127,7 @@ function Attachments(): JSX.Element {
     'scale'
   );
 
-  const [collection, fetchMore] = useCollection(
+  const [collection, setCollection, fetchMore] = useCollection(
     React.useCallback(
       async (offset) =>
         fetchCollection(
@@ -126,7 +142,7 @@ function Attachments(): JSX.Element {
             ? { tableId__isNull: 'true' }
             : filter.type === 'byTable'
             ? {
-                tableId: schema.models[filter.tableName].tableId,
+                tableId: tables[filter.tableName].tableId,
               }
             : allTablesWithAttachments().length ===
               tablesWithAttachments().length
@@ -198,7 +214,7 @@ function Attachments(): JSX.Element {
           {attachmentsText.orderBy()}
           <div>
             <OrderPicker
-              model={schema.models.Attachment}
+              table={tables.Attachment}
               order={order}
               onChange={setOrder}
             />
@@ -222,7 +238,13 @@ function Attachments(): JSX.Element {
           typeof collection === 'object' &&
           collection.totalCount === collection.records.length
         }
+        key={`${order}_${JSON.stringify(filter)}`}
         scale={scale}
+        onChange={(records): void =>
+          collection === undefined
+            ? undefined
+            : setCollection({ records, totalCount: collection.totalCount })
+        }
         onFetchMore={fetchMore}
       />
     </Container.FullGray>

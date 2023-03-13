@@ -171,7 +171,7 @@ def set_password(request, userid):
     return http.HttpResponse('', status=204)
 
 class SetAgentsException(PermissionsException):
-    http_status = 400
+    status_code = 400
 
     def to_json(self):
         return {self.__class__.__name__: self.args[0]}
@@ -442,7 +442,7 @@ def agent_record_replacement(request: http.HttpRequest, old_agent_id, new_agent_
 
     # Create database connection cursor
     cursor = connection.cursor()
-    db_name = connection.get_connection_params()['db']
+    db_name = connection.settings_dict['NAME']
 
     with transaction.atomic():
         # Check to make sure both the old and new agent IDs exist in the table

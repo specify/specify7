@@ -1,6 +1,5 @@
 import { requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
-import { schema } from '../../DataModel/schema';
 import {
   findDuplicateMappings,
   getNameFromTreeRankName,
@@ -8,6 +7,7 @@ import {
   valueIsToManyIndex,
   valueIsTreeRank,
 } from '../mappingHelpers';
+import { schema } from '../../DataModel/schema';
 
 requireContext();
 

@@ -1,15 +1,15 @@
 import { requireContext } from '../../../tests/helpers';
-import { getModel, schema } from '../schema';
+import { getTable, tables } from '../tables';
 
 requireContext();
 
-describe('getModel', () => {
+describe('getTable', () => {
   test('CollectionObject', () =>
-    expect(getModel('CollectionObject')).toBe(schema.models.CollectionObject));
+    expect(getTable('CollectionObject')).toBe(tables.CollectionObject));
   test('collectionObject', () =>
-    expect(getModel('collectionObject')).toBe(schema.models.CollectionObject));
+    expect(getTable('collectionObject')).toBe(tables.CollectionObject));
   test('edu.ku.brc.specify.datamodel.Accession', () =>
-    expect(getModel('edu.ku.brc.specify.datamodel.Accession')).toBe(
-      schema.models.Accession
+    expect(getTable('edu.ku.brc.specify.datamodel.Accession')).toBe(
+      tables.Accession
     ));
 });

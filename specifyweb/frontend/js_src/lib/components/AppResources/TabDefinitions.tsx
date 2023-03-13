@@ -6,11 +6,11 @@ import type { ReactCodeMirrorRef } from '@uiw/react-codemirror';
 import CodeMirror from '@uiw/react-codemirror';
 import React from 'react';
 
-import { useId } from '../../hooks/useId';
 import { useLiveState } from '../../hooks/useLiveState';
 import { f } from '../../utils/functools';
 import type { RR } from '../../utils/types';
 import { writable } from '../../utils/types';
+import { ReadOnlyContext } from '../Core/Contexts';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type {
@@ -30,17 +30,21 @@ import { useCodeMirrorExtensions } from './EditorComponents';
 import type { appResourceSubTypes } from './types';
 
 export type AppResourceTabProps = {
-  readonly isReadOnly: boolean;
   readonly resource: SerializedResource<SpAppResource | SpViewSetObj>;
   readonly appResource: SpecifyResource<SpAppResource | SpViewSetObj>;
   readonly directory: SerializedResource<SpAppResourceDir>;
   readonly data: string | null;
   readonly showValidationRef: React.MutableRefObject<(() => void) | null>;
-  readonly onChange: (data: string | null) => void;
+  /**
+   * Instead of returning a string value on change, you return a function
+   * that returns a string value. This way, if new value is stored in an
+   * internal structure that is expensive to convert to string, it won't be
+   * converted to string until it is necessary.
+   */
+  readonly onChange: (data: string | (() => string | null) | null) => void;
 };
 
 export function AppResourceTextEditor({
-  isReadOnly,
   resource,
   appResource,
   data,
@@ -74,14 +78,17 @@ export function AppResourceTextEditor({
     },
     [stateRestored]
   );
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return (
     <CodeMirror
+      className="border border-brand-300 dark:border-none"
       extensions={writable(extensions)}
       readOnly={isReadOnly}
       ref={handleRef}
       theme={isDarkMode ? okaidia : xcodeLight}
       value={data ?? ''}
       /*
+       * FEATURE: show validation errors when editing recognized XML file
        * FEATURE: provide supported attributes for autocomplete
        *   https://codemirror.net/examples/autocompletion/
        *   https://github.com/codemirror/lang-xml#api-reference
@@ -95,16 +102,18 @@ export function AppResourceTextEditor({
 }
 
 function UserPreferencesEditor({
-  isReadOnly,
-  data,
+  data: initialData,
   onChange: handleChange,
 }: AppResourceTabProps): JSX.Element {
-  const id = useId('user-preferences');
   const [preferencesContext] = useLiveState<
     React.ContextType<typeof PreferencesContext>
   >(
     React.useCallback(() => {
-      const preferences = JSON.parse(data || '{}') as UserPreferences;
+      const preferences = JSON.parse(
+        typeof initialData === 'string' && initialData.length > 0
+          ? initialData
+          : '{}'
+      ) as UserPreferences;
       const setPrefs = setPrefsGenerator(() => preferences, false);
       return [
         (
@@ -125,12 +134,17 @@ function UserPreferencesEditor({
           handleChange(JSON.stringify(preferences));
         },
       ];
+      /*
+       * For simplicity and performance reasons assume initialData is not
+       * changed by the parent, except as a result of handleChange call
+       */
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [handleChange])
   );
 
   return (
     <PreferencesContext.Provider value={preferencesContext}>
-      <PreferencesContent id={id} isReadOnly={isReadOnly} />
+      <PreferencesContent />
     </PreferencesContext.Provider>
   );
 }

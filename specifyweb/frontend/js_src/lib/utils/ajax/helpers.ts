@@ -30,20 +30,22 @@ export function toLocalUrl(url: string): string | undefined {
  * "body" to ajax()
  */
 export function formData(
-  data: IR<Blob | RA<number | string> | boolean | number | string>
+  data: IR<Blob | RA<number | string> | boolean | number | string | undefined>
 ): FormData {
   const formData = new FormData();
   Object.entries(data).forEach(([key, value]) =>
-    formData.append(
-      key,
-      Array.isArray(value)
-        ? JSON.stringify(value)
-        : typeof value === 'number'
-        ? value.toString()
-        : typeof value === 'boolean'
-        ? value.toString()
-        : value
-    )
+    value === undefined
+      ? undefined
+      : formData.append(
+          key,
+          Array.isArray(value)
+            ? JSON.stringify(value)
+            : typeof value === 'number'
+            ? value.toString()
+            : typeof value === 'boolean'
+            ? value.toString()
+            : value
+        )
   );
   return formData;
 }

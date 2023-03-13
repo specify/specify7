@@ -45,6 +45,10 @@ const foreverPromise = new Promise<any>(() => {
  */
 export const foreverFetch = async <T>(): Promise<T> => foreverPromise;
 
+/**
+ * Initial context is locked by default so that front-end does not try to fetch
+ * current user and other context while the user is not authenticated
+ */
 export const unlockInitialContext = (entrypoint: typeof entrypointName): void =>
   unlock(entrypoint);
 
@@ -64,22 +68,24 @@ export const load = async <T>(path: string, mimeType: MimeType): Promise<T> =>
     // A very crude detection mechanism
     const isCached = timePassed < 100;
 
-    console.log(
-      `${path} %c[${
-        isCached
-          ? 'cached'
-          : `${formatNumber(f.round(timePassed / MILLISECONDS, 0.01))}s`
-      }]`,
-      `color: ${isCached ? '#9fa' : '#f99'}`
-    );
+    // So as not to spam the tests
+    if (process.env.NODE_ENV !== 'test')
+      console.log(
+        `${path} %c[${
+          isCached
+            ? 'cached'
+            : `${formatNumber(f.round(timePassed / MILLISECONDS, 0.01))}s`
+        }]`,
+        `color: ${isCached ? '#9fa' : '#f99'}`
+      );
     return data;
   });
 
 export const initialContext = Promise.all([
   // Fetch general context information (NOT CACHED)
-  import('../DataModel/schemaBase'),
-  // Fetch schema (cached)
   import('../DataModel/schema'),
+  // Fetch data model (cached)
+  import('../DataModel/tables'),
   // Fetch remote preferences (cached)
   import('./remotePrefs'),
   // Fetch icon definitions (cached)
@@ -87,7 +93,7 @@ export const initialContext = Promise.all([
   // Fetch general system information (cached)
   import('./systemInfo'),
   // Fetch UI formatters (cached)
-  import('../Forms/uiFormatters'),
+  import('../FieldFormatters'),
   // Fetch Specify 6 UI localization strings (CACHED)
   import('./legacyUiLocalization'),
   // Fetch user information (NOT CACHED)

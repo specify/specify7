@@ -13,7 +13,7 @@ import {
   getResourceApiUrl,
   strictIdFromUrl,
 } from '../DataModel/resource';
-import { schema } from '../DataModel/schema';
+import { tables } from '../DataModel/tables';
 import type { Address, Collection, SpecifyUser } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { hasTablePermission } from '../Permissions/helpers';
@@ -21,6 +21,7 @@ import type { RoleBase } from './Collection';
 import type { Role } from './Role';
 import { fetchRoles, fetchUserRoles } from './utils';
 import { serializeResource } from '../DataModel/serializers';
+import { schema } from '../DataModel/schema';
 
 /** Fetch roles from all collections */
 export function useCollectionRoles(
@@ -167,7 +168,7 @@ export function useUserAgents(
           return divisions.map(([divisionId, collections]) => ({
             divisionId,
             collections,
-            address: new schema.models.Address.Resource({
+            address: new tables.Address.Resource({
               agent: f.maybe(agents[divisionId]?.id, (agentId) =>
                 getResourceApiUrl('Agent', agentId)
               ),

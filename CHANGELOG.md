@@ -1,34 +1,335 @@
+
 # Changelog
+
+  
 
 All notable changes to this project will be documented in this file.
 
+  
+
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+
+  
+
+## Unreleased
+
+  
+
+Coming in the next few months:
+
+  
+
+- [Duplicate record merging tool](https://discourse.specifysoftware.org/t/record-merging-in-specify-7/939/9)
+
+- [Statistics page](https://discourse.specifysoftware.org/t/statistics-panel-for-specify-7/828)
+
+- [User Interface for editing Data Object Formatters and other XML resources](https://github.com/specify/specify7/pull/2796)
+
+- [And a lot more features](https://github.com/specify/specify7/pulls)
+
+## [7.8.9](https://github.com/specify/specify7/compare/v7.8.7...HEAD) (Unreleased)
+
+## [7.8.7.1](https://github.com/specify/specify7/compare/v7.8.7...v7.8.7.1) (March 3 2023)
+
+### Fixed
+
+- Resolved an issue with plugins being rendered as read-only ([#3076](https://github.com/specify/specify7/issues/3076))
+- "Year" in the date picker now requires the correct format ([#3075](https://github.com/specify/specify7/issues/3075))
+
+## [7.8.7](https://github.com/specify/specify7/compare/v7.8.6...v7.8.7) (March 1 2023)
+
+### Added
+
+- Attachments now have a dynamic preview when viewed that includes the ability
+  to download, open in a new tab, or view the record the attachment is
+  associated with. This new implementation now uses the form associated with the
+  attachment
+  table to allow setting defaults in the form definition (useful for `isPublic`
+  or `License`
+  information) ([#2787](https://github.com/specify/specify7/issues/2787)) –
+  *Requested by Gothenburg and others*
+- Date fields can now be directly pasted into and relative date input is now
+  accepted ([#2845](https://github.com/specify/specify7/issues/2845))
+  - Relative dates can be entered by double clicking on a date field and then typing
+    `today - 5 days` or a similar input with plus or minus the count of days,
+    weeks, months, or years
+- External image URLs can now be used for buttons or separator icons on the
+  forms ([#3032](https://github.com/specify/specify7/issues/2095))
+- The query export delimiter can now be
+  configured ([#2849](https://github.com/specify/specify7/issues/2849)) –
+  *Requested By Natural History Museums of Denmark*
+- Time remaining for WorkBench validation and uploading is now
+  shown ([#3058](https://github.com/specify/specify7/pull/3058)) - *Requested by
+  CSIRO*
+- Added a `CITATION.tff` file to allow users and researchers to cite Specify
+  when publishing or referencing the
+  software ([#3067](https://github.com/specify/specify7/pull/3067))
+- The Specify data model can now be downloaded as
+  XML ([#2594](https://github.com/specify/specify7/issues/2594))
+- The Specify data model can now be
+  printed ([#2988](https://github.com/specify/specify7/issues/2988))
+
+
+### Changed
+
+- Dialogs now remember their position when resized
+  ([#2691](https://github.com/specify/specify7/commit/1b5e1863c397387bf9ecb83cd660de0f48ee6ecb))
+- Strict mode for regular expressions is no longer enforced for user-submitted
+  regex ([#3042](https://github.com/specify/specify7/pull/3042)) - *Reported by
+  CSIRO*
+- The max year accepted in any date field is now limited to
+  9999 ([#3036](https://github.com/specify/specify7/pull/3036)) – *Reported by
+  Agriculture and Agri-Food Canada*
+- Non-docker installation instructions have been
+  improved ([#3043](https://github.com/specify/specify7/pull/3043)) – *Requested
+  by University of Florida*
+- A WorkBench row with all matched records will no longer be highlighted as a
+  new record ([#2966](https://github.com/specify/specify7/issues/2966))
+
+### Fixed
+
+- Fixed the inability to create new agents from the query combobox in the
+  Security & Accounts
+  panel ([#2696](https://github.com/specify/specify7/issues/2696)) – *Reported
+  By SAIAB, Natural History Museums of Denmark, and others*
+- Collectors are now sorted by `orderNumber` instead of `CollectorID`, matching
+  the Specify 6
+  behavior ([#2981](https://github.com/specify/specify7/issues/2981)) –
+  *Reported by Agriculture and Agri-Food Canada*
+- Paleo Context and other -to-one resources are now correctly stored upon
+  save ([#2785](https://github.com/specify/specify7/issues/2785)) - *Reported by
+  KU, The Ohio State University, and others*
+- Resolved unexpected behavior regarding tooltips introduced in the previous
+  release. Tooltips now trigger and dismiss as
+  expected ([#3060](https://github.com/specify/specify7/pull/3060))
+- Query combo boxes are now enabled for all tables even when type search is not
+  defined ([#3047](https://github.com/specify/specify7/issues/3047))
+- Queries exported from one user and imported on another user's account no
+  longer duplicates the import on both
+  accounts ([#3020](https://github.com/specify/specify7/issues/3020))
+
+## [7.8.6](https://github.com/specify/specify7/compare/v7.8.5...v7.8.6) (February 22 2023)
+
+### Changed
+
+- Top menu has been redesigned. It looks better, takes less space and offers
+  more customization options - you can change menu position, or order of menu
+  items. [More details](https://discourse.specifysoftware.org/t/seeking-feedback-new-vertical-navigation-menu/970) ([#2820](https://github.com/specify/specify7/issues/2820))
+- Instead of using default browser tooltips, Specify now displays modern
+  tooltips - they are easier to read thanks to larger font-size and are easier
+  to trigger. Plus, they even work on touch screen devices and you can
+  copy/paste text from
+  them. ([#3002](https://github.com/specify/specify7/pull/3002))
+- Updated back-end
+  dependencies ([#1915](https://github.com/specify/specify7/pull/1915))
+- Make form parsing much more forgiving to
+  mistakes ([#2666](https://github.com/specify/specify7/issues/2666), [#2716](https://github.com/specify/specify7/pull/2716))
+- The deletion dialog now shows a name of the resource you are about to delete
+  for extra
+  confirmation ([#2854](https://github.com/specify/specify7/issues/2854)) -
+  _Requested by The University of Michigan_
+- Improved French localization - thanks to @heathercole
+- Improved Ukrainian localization - thanks to @Kefir2105
+- Jump to tree node's parent after
+  deletion ([#2781](https://github.com/specify/specify7/issues/2781)) - _Requested by AAFC_
+- Don't allow adding duplicate Collection
+  Relationships ([#2987](https://github.com/specify/specify7/issues/2987)) -
+  _Requested by CSIRO_
+
+### Added
+
+- Add indicator in page title if there are unsaved
+  changes ([#1685](https://github.com/specify/specify7/issues/1685))
+- Reports dialog now shows an icon for base table report belongs
+  to ([#1109](https://github.com/specify/specify7/issues/1109)) - _Requested by University of Michigan_
+- Add support for restricting min length and max length of a text field on a
+  form ([#2022](https://github.com/specify/specify7/issues/2022))
+- Show the ID field name and table scope in schema
+  viewer ([#2080](https://github.com/specify/specify7/issues/2080))
+- Add easy way to show only dependent/independent relationships in schema
+  viewer ([#2855](https://github.com/specify/specify7/issues/2855))
+- Add an indicator if user lost internet connectivity to prevent data
+  loss ([#2711](https://github.com/specify/specify7/issues/2711))
+- Warn when importing a query that has hidden
+  fields ([#1318](https://github.com/specify/specify7/issues/1318))
+- Warn when opening a query that has fields without read
+  access ([#1661](https://github.com/specify/specify7/issues/1661))
+
+### Fixed
+
+- Fixed inability to print pages that have scroll
+  bars ([#2820](https://github.com/specify/specify7/issues/2820))
+- Fix formatted dates in XLSX data sets not always being imported
+  correctly ([#2027](https://github.com/specify/specify7/issues/2027)) - _Reported by CSIRO and others_
+- Maintain cell height for large text fields in grid
+  view ([#2765](https://github.com/specify/specify7/pull/2765)) - Fixed by
+  @cdamyx
+- Fixed contrast issues with buttons in Query
+  Builder ([#2611](https://github.com/specify/specify7/issues/2611)) - Fixed by
+  @cdamyx
+
+### Security
+
+- Make opening links in new tab
+  safer ([#2600](https://github.com/specify/specify7/issues/2600))
+
+## [7.8.5](https://github.com/specify/specify7/compare/v7.8.4...v7.8.5) (January 31 2022)
+
+### Added
+
+- Taxon Author can now be displayed in the tree
+  viewer ([#1121](https://github.com/specify/specify7/issues/1121)) - _Requested
+  by Geneva, New Mexico, Unitec, Agriculture and Agri-Food Canada, CSIRO, RBGE
+  and many others_
+- After a WorkBench upload, creation of a Record Set is now
+  optional ([#1848](https://github.com/specify/specify7/issues/1848)) -
+  _Requested by Auburn_
+- Spanish localization has been improved - thanks
+  to [@gallegonovato](https://github.com/gallegonovato) ([commits](https://github.com/specify/specify7/commits?author=gallegonovato)).
+  If you would like to contribute too,
+  please [see the instructions](https://discourse.specifysoftware.org/t/get-started-with-specify-7-localization/956)
+- To be more security conscious, Specify 7 source code is now regularly scanned
+  by GitHub's CodeQL tool, which is designed to find security
+  vulnerabilities ([commit](https://github.com/specify/specify7/commit/9465b9e0972fcc7b03cfa1aadf50cc1a20749ee9))
+- Added a "Collapse All" button to tree
+  viewer ([#2050](https://github.com/specify/specify7/issues/2050)) - _Requested
+  by CSIRO_
+
+### Changed
+
+- Data Model viewer has been redesigned to work better with printing the page
+  and to support `Ctrl+F` across fields in different
+  tables, along with other usability
+  improvements ([#2855](https://github.com/specify/specify7/issues/2855))
+- Low resolution PNG table icons have been replaced with modern SVG icons. For
+  most tables the new icons look similar. Attachments icons have been modified
+  to make text more
+  readable. ([#2368](https://github.com/specify/specify7/issues/2368))
+- Large text fields in grid view now maintain consistent
+  height ([#2765](https://github.com/specify/specify7/issues/2765)) - Fixed by
+  @cdamyx
+
+### Fixed
+
+- Permissions for dependent resources now cascade like
+  expected ([#2007](https://github.com/specify/specify7/issues/2007))
+- Lines in remote prefs that follow a commented out line were not parsed
+  correctly. This is now
+  fixed ([commit](https://github.com/specify/specify7/commit/91b80b709fe4bd8a546a7c4d756df91de17fff88))
+- Fixed values that start with a number (`5A`) being incorrectly coerced into a
+  number (`5`) (for visual purposes
+  only) ([#2805](https://github.com/specify/specify7/issues/2805)) - _Reported
+  by RBGE_
+- Fixed the `(formatted)` column in query results not having a table
+  icon ([#2536](https://github.com/specify/specify7/issues/2536))
+- All references to table names anywhere in the interface are now using the
+  table name you chose in the schema
+  configuration ([#2420](https://github.com/specify/specify7/issues/2420)
+  and [commit](https://github.com/specify/specify7/commit/a579909285a7c5b35dc1d32cd99f4919f654a688)) -
+  _Reported by RGBE_
+
+## [7.8.4](https://github.com/specify/specify7/compare/v7.8.3...v7.8.4) (18 January 2023)
+
+### Added
+
+- A new preference has been added allowing users to add children to synonymized
+  parents as well as synonymizing nodes
+  with children ([#751](https://github.com/specify/specify7/issues/751)
+  – [Instructions](https://discourse.specifysoftware.org/t/enable-creating-children-for-synonymized-nodes/987/4) –
+  _Requested by FWRI, CSIRO, AAFC, RBGE, Ville de Genève, and more_)
+- Added a Specify crash report visualizer. The tool is mostly for
+  internal use, but can be helpful for system administrators. See
+  [#2829](https://github.com/specify/specify7/pull/2829) for more
+  information
+
+### Changed
+
+- `500 error occurred` messages have been replaced by useful error
+  dialogs ([#108](https://github.com/specify/specify7/issues/108), [#2668](https://github.com/specify/specify7/issues/2668)
+  – _Requested by many institutions_)
+    - Error responses from the backend have been improved dramatically for
+      environments not using debug mode. Errors
+      from MySQL, Django, and other back-end components will now be displayed
+      outside of debug mode showing the
+      ExceptionType, message, and StackTrace in a format that can assist on-site
+      IT and collection administrators in
+      discovering and solving configuration problems.
+- Introduced a new Specify favicon and icons for a variety of
+  devices ([#2752](https://github.com/specify/specify7/pull/2752))
+- Small beauty improvements have been made, adding shadows and lighter borders
+  to fields throughout
+  Specify ([#2773](https://github.com/specify/specify7/pull/2773))
+- The Delete button has been moved to the Data Set Metadata menu in the
+  WorkBench ([#2755](https://github.com/specify/specify7/pull/2755))
+- Languages that have incomplete localization can be selected after a warning
+  for use in
+  Specify ([#2790](https://github.com/specify/specify7/pull/2790))
+- When no attachment server is present, you can no longer attempt to upload
+  files ([#2585](https://github.com/specify/specify7/issues/2585) - _Reported by
+  The University of Michigan_)
+- Interactions table names are now
+  dynamic ([#2420](https://github.com/specify/specify7/issues/2420) – _Requested
+  by
+  RBGE_)
+- Specify now ignores synonymized nodes when checking the tree
+  structure ([#2707](https://github.com/specify/specify7/issues/2707) – Reported
+  by The University of Michigan)
+
+### Fixed
+
+- Queries exported to CSV now use the field label as a heading rather than the
+  field's string
+  ID ([#1575](https://github.com/specify/specify7/issues/1575) – _Reported by
+  FWRI, CSIRO, RBGE, and many more_)
+- Exporting a query on a record set now is scoped to the record set query
+  results ([#2761](https://github.com/specify/specify7/issues/2761) – _Reported
+  by CSIRO_)
+- The print icon now matches other button's appearance in the GeoMap
+  viewer ([#2764](https://github.com/specify/specify7/pull/2764))
+- Available collections are now only fetched once rather than
+  twice ([#2770](https://github.com/specify/specify7/pull/2770))
+- Separator icons now display correctly on the
+  forms ([#2074](https://github.com/specify/specify7/issues/2074))
+- Exporting the data model to TSV now is exported
+  properly ([#2815](https://github.com/specify/specify7/issues/2815))
 
 ## [7.8.3](https://github.com/specify/specify7/compare/v7.8.2...v7.8.3) (9 January 2023)
 
-This update includes many bug fixes in addition to laying the groundwork for Specify's UI to support Spanish, French,
-Ukranian, and many more languages. If you are interested in helping support our localization effort, please see our
+This update includes many bug fixes in addition to laying the groundwork for
+Specify's UI to support Spanish, French,
+Ukranian, and many more languages. If you are interested in helping support our
+localization effort, please see our
 guide
-on **[Getting Started with Specify 7 Localization](https://discourse.specifysoftware.org/t/get-started-with-specify-7-localization/956)**
-and contact us at [support@specifysoftware.org](mailto:support@specifysoftware.org) if you have any questions or would
+on *
+*[Getting Started with Specify 7 Localization](https://discourse.specifysoftware.org/t/get-started-with-specify-7-localization/956)
+**
+and contact us
+at [support@specifysoftware.org](mailto:support@specifysoftware.org) if you have
+any questions or would
 like to help translate to a language we do not yet support.
 
 ### Changed
+
 - Global Prefs and Remote User Prefs are now differentiated in the App Resources
   viewer ([#2430](https://github.com/specify/specify7/issues/2430))
 - Usernames are no longer automatically capitalized in the navigation menu
-- Language codes now appear next to the language name ([#1903](https://github.com/specify/specify7/issues/1903))
+- Language codes now appear next to the language
+  name ([#1903](https://github.com/specify/specify7/issues/1903))
 - Empty record sets now inform the user that it cannot be opened in read-only
   mode ([#2698](https://github.com/specify/specify7/issues/2698))
 
 ### Fixed
+
 - Exchange In, Exchange Out, and Disposal attachments now function
-  properly ([#2525](https://github.com/specify/specify7/issues/2525) - _Requested by RBGE_)
+  properly ([#2525](https://github.com/specify/specify7/issues/2525) -
+  _Requested by RBGE_)
 - GeoMap full screen icon now conforms to rounded corner
   preference ([#2506](https://github.com/specify/specify7/issues/2506))
-- Fixed app resource creation being blocked because of it trying to get an invalid field
+- Fixed app resource creation being blocked because of it trying to get an
+  invalid field
 
 ### Updated
+
 - Updated the copyright year to 2023
 
 ## [7.8.2](https://github.com/specify/specify7/compare/v7.8.1...v7.8.2) (29 December 2022)
@@ -40,19 +341,22 @@ Specify 7. We will be adding Spanish and French localization in near future.
 
 Additionally, specify now includes the ability to store different
 collections' assets in separate folders.
-([#1056](https://github.com/specify/specify7/issues/1056#issuecomment-1368093439) - _Requested By
-  NHMD_)
+([#1056](https://github.com/specify/specify7/issues/1056#issuecomment-1368093439) -
+_Requested By
+NHMD_)
 
 [More information](https://discourse.specifysoftware.org/t/get-started-with-specify-7-localization/956)
 
 ## [7.8.1](https://github.com/specify/specify7/compare/v7.8.0...v7.8.1) (13 December 2022)
 
 ### Changed
+
 - Attachments now uses a photo icon instead of a
   link ([#2530](https://github.com/specify/specify7/issues/2530))
 - Animated shadows are now used when viewing attachments
 
 ### Fixed
+
 - The log in button now operates correctly when accessing the database via an
   anonymous user ([#2651](https://github.com/specify/specify7/issues/2651))
 
@@ -523,7 +827,8 @@ bugs: https://github.com/specify/webportal-installer/issues?q=is%3Aopen+is%3Aiss
 - An authentication process incompatibilty between Specify 7, SQL Alchemy,
   and MySQL 8.x is resolved.
 
-  Specify 6 does not yet support MySQL 8. ([#476](https://github.com/specify/specify7/issues/476))
+  Specify 6 does not yet support MySQL
+    8. ([#476](https://github.com/specify/specify7/issues/476))
 
 ## [7.3.0](https://github.com/specify/specify7/compare/v7.2.1...v7.3.0) (12 October 2017)
 
@@ -646,3 +951,4 @@ of Paleomap for Specify.
 ## [7.0.0](https://github.com/specify/specify7/commits/v7.0.0) (22 December 2014)
 
 [Bug fixes and new features](https://github.com/specify/specify7/commits/v7.0.0)
+

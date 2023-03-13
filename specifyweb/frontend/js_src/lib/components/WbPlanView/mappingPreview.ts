@@ -10,7 +10,7 @@
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { camelToHuman } from '../../utils/utils';
-import { strictGetModel } from '../DataModel/schema';
+import { strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import type { MappingPath } from './Mapper';
 import {
@@ -19,14 +19,16 @@ import {
   formatTreeRank,
   getNameFromTreeRankName,
   getNumberFromToManyIndex,
+  parsePartialField,
+  valueIsPartialField,
   valueIsToManyIndex,
   valueIsTreeRank,
 } from './mappingHelpers';
 import { getMappingLineData } from './navigator';
+import { navigatorSpecs } from './navigatorSpecs';
 
 /** Use table name instead of field name for the following fields: */
 const fieldsToHide = new Set<string>([
-  'name',
   'fullName',
   'localityName',
   formattedEntry,
@@ -36,7 +38,15 @@ const fieldsToHide = new Set<string>([
  * Use table name alongside field label (if field label consists of a single
  * word) for the following fields:
  */
-const genericFields = new Set<string>([]);
+const genericFields = new Set<string>([
+  'timestampCreated',
+  'timestampModified',
+  'createdByAgent',
+  'modifiedByAgent',
+  'guid',
+  'version',
+  'id',
+]);
 
 /**
  * If field label consists of a single word, it would be treated as generic
@@ -79,15 +89,17 @@ export function generateMappingPathPreview(
   baseTableName: keyof Tables,
   mappingPath: MappingPath
 ): string {
-  if (mappingPath.length === 0) return strictGetModel(baseTableName).label;
+  if (mappingPath.length === 0) return strictGetTable(baseTableName).label;
 
+  // Get labels for the fields
   const mappingLineData = getMappingLineData({
     baseTableName,
     mappingPath,
     generateFieldData: 'selectedOnly',
-    scope: 'queryBuilder',
+    spec: navigatorSpecs.permissive,
   });
 
+  // Extract labels from mappingLineData
   const fieldLabels = [
     mappingLineData[0].selectLabel ?? '',
     ...mappingLineData.map((mappingElementData) => {
@@ -95,15 +107,17 @@ export function generateMappingPathPreview(
       if (entry === undefined) return undefined;
       const [fieldName, { optionLabel }] = entry;
       return fieldName === formatTreeRank(anyTreeRank)
-        ? strictGetModel(mappingElementData.tableName!).label
+        ? strictGetTable(mappingElementData.tableName!).label
         : (optionLabel as string);
     }),
   ];
 
+  // Extract last number of path if any (i.e: Collection Object -> Collector -> #1 -> Address -> #2 -> Name)
   const toManyLocation = Array.from(mappingPath)
     .reverse()
     .findIndex(valueIsToManyIndex);
 
+  // Convert toManyLocation to a number
   const toManyIndex = mappingPath[mappingPath.length - 1 - toManyLocation];
   const toManyIndexNumber = toManyIndex
     ? getNumberFromToManyIndex(toManyIndex)
@@ -112,6 +126,8 @@ export function generateMappingPathPreview(
 
   const [databaseFieldName, databaseTableOrRankName, databaseParentTableName] =
     mappingPathSubset([baseTableName, ...mappingPath]);
+
+  // Attributes parts of filedLables to each variable or creates one if empty
   const [
     fieldName = camelToHuman(databaseFieldName),
     tableOrRankName = camelToHuman(
@@ -120,26 +136,38 @@ export function generateMappingPathPreview(
     parentTableName = camelToHuman(databaseParentTableName),
   ] = mappingPathSubset(fieldLabels);
 
-  const fieldNameFormatted = fieldsToHide.has(databaseFieldName)
-    ? undefined
-    : fieldName;
+  // Show filedname or not
+  const fieldNameFormatted =
+    fieldsToHide.has(databaseFieldName) ||
+    (databaseTableOrRankName !== 'CollectionObject' &&
+      databaseFieldName === 'name')
+      ? undefined
+      : fieldName;
+
+  // Extract the first part of fieldName (i.e: timestampCreated-fulldate)
+  const baseFieldName = valueIsPartialField(databaseFieldName)
+    ? parsePartialField(databaseFieldName)[0]
+    : databaseFieldName;
   // Treat fields whose label is single word as generic
   const fieldIsGeneric =
-    (genericFields.has(databaseFieldName) &&
-      fieldNameFormatted?.split(' ').length === 1) ||
+    genericFields.has(baseFieldName) ||
     (fieldNameFormatted?.split(' ').length === 1 &&
-      !nonGenericFields.has(databaseFieldName));
+      !nonGenericFields.has(baseFieldName));
+
   const tableNameNonEmpty =
     fieldNameFormatted === undefined
       ? tableOrRankName || fieldName
       : fieldIsGeneric
       ? tableOrRankName
       : undefined;
-  const tableNameFormatted = tablesToHide.has(databaseTableOrRankName)
-    ? [parentTableName || tableNameNonEmpty]
-    : genericTables.has(databaseTableOrRankName)
-    ? [parentTableName, tableNameNonEmpty]
-    : [tableNameNonEmpty];
+
+  const tableNameFormatted =
+    tablesToHide.has(databaseTableOrRankName) &&
+    databaseFieldName !== formattedEntry
+      ? [parentTableName || tableNameNonEmpty]
+      : genericTables.has(databaseTableOrRankName)
+      ? [parentTableName, tableNameNonEmpty]
+      : [tableNameNonEmpty];
 
   return filterArray([
     ...(valueIsTreeRank(databaseTableOrRankName)

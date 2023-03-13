@@ -84,7 +84,7 @@ export const wbText = createDictionary({
     'ru-ru': 'Заполнить Вверх',
     'es-es': 'Llena',
     'fr-fr': 'Remplir',
-    'uk-ua': 'Заповнювати',
+    'uk-ua': 'Заповнити',
   },
   revert: {
     'en-us': 'Revert',
@@ -94,18 +94,22 @@ export const wbText = createDictionary({
     'uk-ua': 'Повернути',
   },
   dataCheck: {
-    'en-us': 'Data Check',
+    'en-us': 'Live Validation',
     'ru-ru': 'Проверка данных',
     'es-es': 'Comprobación de datos',
     'fr-fr': 'Vérification des données',
     'uk-ua': 'Перевірка даних',
   },
   dataCheckOn: {
-    'en-us': 'Data Check: On',
+    'en-us': 'Live Validation: On',
     'ru-ru': 'Проверка данных: вкл.',
     'es-es': 'Comprobación de datos: activado',
     'fr-fr': 'Vérification des données : activée',
     'uk-ua': 'Перевірка даних: увімкнено',
+  },
+  dataCheckDescription: {
+    'en-us':
+      'Note, live validation is an experimental feature and is not a substitute for regular validation.',
   },
   changeOwner: {
     'en-us': 'Change Owner',
@@ -1008,7 +1012,7 @@ export const wbText = createDictionary({
     'en-us': 'Space',
     'ru-ru': 'Пробел',
     'es-es': 'Espacio',
-    'fr-fr': 'Espacer',
+    'fr-fr': 'Espace',
     'uk-ua': 'космос',
   },
   pipe: {
@@ -1298,8 +1302,8 @@ export const wbText = createDictionary({
     'en-us': 'Stop',
     'ru-ru': 'Стоп',
     'es-es': 'Deténgase',
-    'fr-fr': 'Arrêter',
-    'uk-ua': 'СТОП',
+    'fr-fr': 'Arrêt',
+    'uk-ua': 'СТІЙ',
   },
   wbStatusError: {
     'en-us': 'Error occurred during {operationName:string}',
@@ -1314,5 +1318,22 @@ export const wbText = createDictionary({
     'es-es': 'Actualizando árboles...',
     'fr-fr': 'Mise à jour des arbres...',
     'uk-ua': 'Оновлення дерев...',
+  },
+  recordSetName: {
+    comment: `
+      Default name of the record that would be created based on upload results
+    `,
+    'en-us': 'WB upload of "{dataSet:string}"',
+    'ru-ru': 'WB загрузка "{dataSet:string}"',
+    'es-es': 'Carga de WB de "{dataSet:string}"',
+    'fr-fr': 'Téléchargement WB de "{dataSet:string}"',
+    'uk-ua': 'WB завантаження "{dataSet:string}"',
+  },
+  ambiguousTaxaChild: {
+    'en-us': '{node:string} (in {parent:string})',
+    'ru-ru': '{node:string} (в {parent:string})',
+    'es-es': '{node:string} (en {parent:string})',
+    'fr-fr': '{node:string} (dans {parent:string})',
+    'uk-ua': '{node:string} (у {parent:string})',
   },
 } as const);

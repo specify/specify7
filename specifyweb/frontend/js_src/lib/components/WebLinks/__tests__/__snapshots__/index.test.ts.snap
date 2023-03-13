@@ -1,0 +1,71 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`weblinks are fetched and parsed correctly 1`] = `
+{
+  "AccessionNumber": {
+    "args": [
+      "accessionNumber",
+    ],
+    "description": "",
+    "isExternal": false,
+    "template": "http://specify6-test.nhm.ku.edu/echo.php?text1=<%= accessionNumber %>",
+  },
+  "CTScan": {
+    "args": [
+      "_this",
+    ],
+    "description": "",
+    "isExternal": false,
+    "template": "https://www.morphosource.org/biological_specimens/<%= _this %>",
+  },
+  "FishBase": {
+    "args": [
+      "genus",
+      "species",
+    ],
+    "description": "Displays a FishBase page for the Genus and Species",
+    "isExternal": false,
+    "template": "http://www.fishbase.org/Summary/<%= genus %>-<%= species %>.html",
+  },
+  "GUID": {
+    "args": [
+      "_this",
+    ],
+    "description": "",
+    "isExternal": false,
+    "template": "urn:uuid:<%= _this %>",
+  },
+  "Genbank": {
+    "args": [
+      "_this",
+    ],
+    "description": "",
+    "isExternal": false,
+    "template": "http://www.ncbi.nlm.nih.gov/nuccore/<%= _this %>",
+  },
+  "MailTo": {
+    "args": [
+      "email",
+    ],
+    "description": "Launches an email message window for sending an email.",
+    "isExternal": false,
+    "template": "mailto:<%= email %>",
+  },
+  "Specify7": {
+    "args": [
+      "catalogNumber",
+    ],
+    "description": "",
+    "isExternal": false,
+    "template": "https://ichthyology.specify.ku.edu/specify/bycatalog/KUI/<%= catalogNumber %>/",
+  },
+  "WEBLINK": {
+    "args": [
+      "_this",
+    ],
+    "description": "",
+    "isExternal": false,
+    "template": "http://specify6-test.nhm.ku.edu/echo.php?text1=<%= _this %>",
+  },
+}
+`;

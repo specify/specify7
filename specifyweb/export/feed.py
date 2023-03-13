@@ -1,18 +1,16 @@
+import errno
+import json
+import logging
 import os
 import time
-import errno
-import logging
-import json
-
 from xml.etree import ElementTree as ET
 
 from django.conf import settings
 
-from ..specify.models import Spappresourcedata, Collection, Specifyuser
+from .dwca import make_dwca
 from ..context.app_resource import get_app_resource
 from ..notifications.models import Message
-
-from .dwca import make_dwca
+from ..specify.models import Spappresourcedata, Collection, Specifyuser
 
 logger = logging.getLogger(__name__)
 
@@ -52,8 +50,8 @@ def update_feed(force=False, notify_user=None):
             temp_file = os.path.join(FEED_DIR, '%s.tmp.zip' % filename)
             collection = Collection.objects.get(id=item_node.attrib['collectionId'])
             user = Specifyuser.objects.get(id=item_node.attrib['userId'])
-            dwca_def, _ = get_app_resource(collection, user, item_node.attrib['definition'])
-            eml, _ = get_app_resource(collection, user, item_node.attrib['metadata'])
+            dwca_def, _, __ = get_app_resource(collection, user, item_node.attrib['definition'])
+            eml, _, __ = get_app_resource(collection, user, item_node.attrib['metadata'])
             make_dwca(collection, user, dwca_def, temp_file, eml=eml)
             os.rename(temp_file, path)
 

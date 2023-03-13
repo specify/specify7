@@ -3,8 +3,6 @@ import type { LocalizedString } from 'typesafe-i18n';
 import type { State } from 'typesafe-reducer';
 
 import { interactionsText } from '../../localization/interactions';
-import type { Preparations } from '../../utils/ajax/specifyApi';
-import { getInteractionsForPrepId } from '../../utils/ajax/specifyApi';
 import type { RA, RR } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Input } from '../Atoms/Form';
@@ -12,10 +10,12 @@ import { formatNumber } from '../Atoms/Internationalization';
 import { LoadingContext } from '../Core/Contexts';
 import { getField } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
+import { tables } from '../DataModel/tables';
 import type { ExchangeOut, Gift, Loan } from '../DataModel/types';
 import { syncFieldFormat } from '../Formatters/fieldFormat';
 import { ResourceView } from '../Forms/ResourceView';
+import type { Preparations } from './helpers';
+import { getInteractionsForPrepId } from './helpers';
 
 export function PrepDialogRow({
   preparation,
@@ -66,7 +66,7 @@ export function PrepDialogRow({
         </td>
         <td className="justify-end tabular-nums">
           {syncFieldFormat(
-            getField(schema.models.CollectionObject, 'catalogNumber'),
+            getField(tables.CollectionObject, 'catalogNumber'),
             preparation.catalogNumber
           )}
         </td>
@@ -114,10 +114,10 @@ export function PrepDialogRow({
                               ? {
                                   type: 'ResourceDialog',
                                   resource: new (loans.length === 1
-                                    ? schema.models.Loan
+                                    ? tables.Loan
                                     : gifts.length === 1
-                                    ? schema.models.Gift
-                                    : schema.models.ExchangeOut
+                                    ? tables.Gift
+                                    : tables.ExchangeOut
                                   ).Resource({
                                     id: [...loans, ...gifts, ...exchangeOuts][0]
                                       .id,
@@ -152,12 +152,12 @@ export function PrepDialogRow({
                   onClick={(): void =>
                     setState({
                       type: 'ResourceDialog',
-                      resource: new schema.models[tableName].Resource({ id }),
+                      resource: new tables[tableName].Resource({ id }),
                     })
                   }
                 >
                   {interactionsText.prepReturnFormatter({
-                    tableName: schema.models[tableName].label,
+                    tableName: tables[tableName].label,
                     resource: label,
                   })}
                 </Button.LikeLink>
@@ -171,7 +171,6 @@ export function PrepDialogRow({
           dialog="modal"
           isDependent={false}
           isSubForm={false}
-          mode="edit"
           resource={state.resource}
           onAdd={undefined}
           onClose={(): void => setState({ type: 'Main' })}

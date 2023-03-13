@@ -1,15 +1,14 @@
 import React from 'react';
 
-import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { useFormatted } from '../../hooks/useFormatted';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { Button } from '../Atoms/Button';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
+import { tables } from '../DataModel/tables';
 import type { SpQuery } from '../DataModel/types';
-import { format } from '../Formatters/dataObjFormatters';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { createQuery } from '../QueryBuilder';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
@@ -62,7 +61,6 @@ function RecordHistoryDialog({
         autoRun
         forceCollection={undefined}
         isEmbedded
-        isReadOnly={false}
         query={query}
         recordSet={undefined}
       />
@@ -80,13 +78,13 @@ function useEditHistoryQuery(
       typeof formatted === 'string'
         ? createQuery(
             formsText.historyOfEditsQueryName({ formattedRecord: formatted }),
-            schema.models.SpAuditLog
+            tables.SpAuditLog
           ).set('fields', [
             QueryFieldSpec.fromPath('SpAuditLog', ['tableNum'])
               .toSpQueryField()
               .set('isDisplay', false)
               .set('operStart', queryFieldFilters.equal.id)
-              .set('startValue', resource.specifyModel.tableId.toString()),
+              .set('startValue', resource.specifyTable.tableId.toString()),
             QueryFieldSpec.fromPath('SpAuditLog', ['recordId'])
               .toSpQueryField()
               .set('isDisplay', false)
@@ -116,16 +114,4 @@ function useEditHistoryQuery(
         : undefined,
     [resource, formatted]
   );
-}
-function useFormatted(
-  resource: SpecifyResource<AnySchema>
-): string | undefined {
-  const [formatted] = useAsyncState(
-    React.useCallback(
-      async () => format(resource, undefined, true),
-      [resource]
-    ),
-    true
-  );
-  return formatted;
 }

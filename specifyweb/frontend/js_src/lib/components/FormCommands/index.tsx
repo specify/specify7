@@ -6,13 +6,13 @@ import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { interactionsText } from '../../localization/interactions';
 import { Button } from '../Atoms/Button';
-import { formatList } from '../Atoms/Internationalization';
+import { formatDisjunction } from '../Atoms/Internationalization';
 import { toTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import type { UiCommands } from '../FormParse/commands';
-import { LoanReturn } from '../Interactions/PrepReturnDialog';
+import { LoanReturn } from '../Interactions/LoanReturn';
 import { Dialog } from '../Molecules/Dialog';
 import { ReportsView } from '../Reports';
 import { ShowLoansCommand } from './ShowTransactions';
@@ -42,7 +42,7 @@ export function GenerateLabel({
       {runReport ? (
         <ReportsView
           autoSelectSingle
-          model={resource.specifyModel}
+          table={resource.specifyTable}
           resourceId={resource.get('id')}
           onClose={handleHideReport}
         />
@@ -73,7 +73,7 @@ const commandRenderers: {
           {label}
         </Button.Small>
         {showLoans && (
-          <ErrorBoundary dismissable>
+          <ErrorBoundary dismissible>
             <ShowLoansCommand preparation={preparation} onClose={handleHide} />
           </ErrorBoundary>
         )}
@@ -92,6 +92,7 @@ const commandRenderers: {
           loan.isNew() || !Boolean(loan.get('id')) ? (
             <Dialog
               buttons={commonText.close()}
+              dimensionsKey="ReturnLoan"
               header={label}
               onClose={handleHide}
             >
@@ -113,6 +114,7 @@ const commandRenderers: {
         </Button.Small>
         <Dialog
           buttons={commonText.close()}
+          dimensionsKey="Unsupported"
           header={formsText.commandUnavailable()}
           isOpen={isClicked}
           onClose={handleHide}
@@ -139,13 +141,14 @@ const commandRenderers: {
         </Button.Small>
         <Dialog
           buttons={commonText.close()}
+          dimensionsKey="WrongTable"
           header={formsText.commandUnavailable()}
           isOpen={isVisible}
           onClose={handleHide}
         >
           {formsText.wrongTableForCommand({
-            currentTable: resource.specifyModel.name,
-            correctTable: formatList(supportedTables),
+            currentTable: resource.specifyTable.name,
+            correctTable: formatDisjunction(supportedTables),
           })}
         </Dialog>
       </>

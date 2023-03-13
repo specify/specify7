@@ -10,6 +10,8 @@
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
+import { useId } from '../../hooks/useId';
+import { useValidation } from '../../hooks/useValidation';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { wbPlanText } from '../../localization/wbPlan';
@@ -17,7 +19,7 @@ import type { IR, RA, RR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { camelToKebab, upperToKebab } from '../../utils/utils';
 import { iconClassName, icons } from '../Atoms/Icons';
-import { getModel } from '../DataModel/schema';
+import { getTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import {
   TableIcon,
@@ -25,6 +27,7 @@ import {
   tableIconSelected,
   tableIconUndefined,
 } from '../Molecules/TableIcon';
+import { titlePosition } from '../Molecules/Tooltips';
 import { scrollIntoView } from '../TreeView/helpers';
 import { emptyMapping } from './helpers';
 
@@ -64,10 +67,10 @@ type Properties =
   | 'arrow';
 export type CustomSelectType =
   | 'CLOSED_LIST'
-  | 'SIMPLE_LIST'
   | 'OPENED_LIST'
   | 'OPTIONS_LIST'
   | 'PREVIEW_LIST'
+  | 'SIMPLE_LIST'
   | 'SUGGESTION_LIST';
 /* eslint-disable @typescript-eslint/naming-convention */
 export const customSelectTypes: RR<CustomSelectType, RA<Properties>> = {
@@ -209,6 +212,8 @@ type CustomSelectElementPropsBase = {
   readonly role?: string;
   readonly previewOption?: CustomSelectElementDefaultOptionProps;
 
+  readonly validation?: string;
+
   readonly onOpen?: () => void;
 
   readonly onChange?: (event: ChangeEvent) => void;
@@ -283,7 +288,7 @@ function Option({
       'bg-[color:var(--custom-select-accent)]'
     );
 
-  const tableLabel = getModel(tableName ?? '')?.label;
+  const tableLabel = getTable(tableName ?? '')?.label;
 
   const fullTitle = filterArray([
     title ?? (typeof optionLabel === 'string' ? optionLabel : tableLabel),
@@ -294,16 +299,16 @@ function Option({
   return (
     // Keyboard events are handled by the parent
     // eslint-disable-next-line jsx-a11y/click-events-have-key-events
-    <span
+    <li
       aria-atomic="true"
       aria-current={isDefault ? 'location' : undefined}
       aria-disabled={!isEnabled || isDefault}
       aria-label={fullTitle}
       aria-selected={isDefault}
       className={classes.join(' ')}
+      // eslint-disable-next-line jsx-a11y/no-noninteractive-element-to-interactive-role
       role="option"
       tabIndex={-1}
-      title={fullTitle === optionLabel ? tableLabel : fullTitle}
       onClick={
         typeof handleClick === 'function'
           ? (event): void => handleClick({ isDoubleClick: event.detail > 1 })
@@ -335,13 +340,14 @@ function Option({
                 ? wbPlanText.relationshipWithTable({ tableName: tableLabel })
                 : undefined
             }
+            {...{ [titlePosition]: 'right' }}
           >
             {icons.chevronRight}
           </span>
         ) : (
           <span className={`print:hidden ${iconClassName}`} />
         ))}
-    </span>
+    </li>
   );
 }
 
@@ -445,6 +451,10 @@ const defaultDefaultOption = {
 
 export const customSelectElementBackground = 'bg-white dark:bg-neutral-600';
 
+/**
+ * An alternative to <select>. Used since we need to embed table icons in
+ * items. Needed until <selectmenu> is supported by all browsers.
+ */
 export function CustomSelectElement({
   customSelectType,
   customSelectSubtype = 'simple',
@@ -457,7 +467,7 @@ export function CustomSelectElement({
   onClose: handleClose,
   previewOption,
   autoMapperSuggestions,
-  role,
+  validation,
 }: CustomSelectElementPropsClosed | CustomSelectElementPropsOpen): JSX.Element {
   const has = React.useCallback(
     (property: Properties): boolean =>
@@ -525,6 +535,9 @@ export function CustomSelectElement({
   if (showUnmapOption && typeof defaultDefaultOption === 'string')
     inlineOptions = [defaultDefaultOption, ...inlineOptions];
 
+  const id = useId('listbox');
+  const { validationRef } = useValidation(validation);
+
   let header: JSX.Element | undefined;
   let preview: JSX.Element | undefined;
   let unmapOption: JSX.Element | undefined;
@@ -549,15 +562,21 @@ export function CustomSelectElement({
       </header>
     );
   else if (has('preview')) {
+    const handleClick = has('interactive')
+      ? isOpen
+        ? handleClose
+        : handleOpen
+      : undefined;
     preview = (
       // Not tabbable because keyboard events are handled separately
-      // eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/interactive-supports-focus
-      <header
+      <button
+        aria-controls={id('options')}
+        aria-describedby={id('validation')}
         aria-expanded={isOpen}
         aria-haspopup="listbox"
         className={`
-          flex min-h-[theme(spacing.8)] cursor-pointer
-          items-center gap-1 rounded border border-gray-500 px-1 dark:border-none
+          flex min-h-[theme(spacing.8)] min-w-max cursor-pointer
+          items-center gap-1 rounded border border-gray-500 px-1 text-left dark:border-none md:min-w-[unset]
           ${
             defaultOption?.isRequired === true
               ? 'custom-select-input-required bg-[color:var(--custom-select-b2)]'
@@ -571,10 +590,9 @@ export function CustomSelectElement({
           }
           ${isOpen ? 'rounded-b-none [z-index:3]' : ''}
         `}
-        role="button"
-        onClick={
-          has('interactive') ? (isOpen ? handleClose : handleOpen) : undefined
-        }
+        disabled={handleClick === undefined}
+        type="button"
+        onClick={handleClick}
       >
         {has('icon') && (
           <Icon
@@ -587,7 +605,8 @@ export function CustomSelectElement({
         )}
         <span
           className={`
-            flex-1 ${
+            flex-1
+            ${
               defaultOption.optionLabel === emptyMapping &&
               customSelectType !== 'SIMPLE_LIST'
                 ? 'font-extrabold text-red-600'
@@ -602,7 +621,7 @@ export function CustomSelectElement({
         {has('arrow') && (
           <span className="print:hidden">{icons.chevronDown}</span>
         )}
-      </header>
+      </button>
     );
 
     unmapOption = showUnmapOption ? (
@@ -673,15 +692,17 @@ export function CustomSelectElement({
   const customSelectOptions = (Boolean(unmapOption) || groups) && (
     <span
       aria-label={selectLabel}
+      aria-orientation="vertical"
       aria-readonly={!has('interactive') || typeof handleChange !== 'function'}
       className={`
         h-fit flex-1 cursor-pointer overflow-x-hidden
-        rounded border border-brand-300 bg-[color:var(--custom-select-b1)]
+        rounded-b border border-brand-300 bg-[color:var(--custom-select-b1)]
         ${has('preview') ? '[z-index:2]' : ''}
         ${has('scroll') ? 'overflow-y-scroll' : 'overflow-y-auto'}
         ${has('shadow') ? 'max-h-[theme(spacing.64)] shadow-md' : ''}
         ${customSelectType === 'SUGGESTION_LIST' ? '' : 'min-w-max'}
       `}
+      id={id('options')}
       ref={listOfOptionsRef}
       role="listbox"
       tabIndex={-1}
@@ -731,9 +752,9 @@ export function CustomSelectElement({
         ${customSelectClassNames[customSelectType] ?? ''}
       `}
       ref={customSelectElementRef}
-      role={role}
       tabIndex={has('tabIndex') ? 0 : has('interactive') ? -1 : undefined}
       title={selectLabel}
+      {...{ [titlePosition]: 'top' }}
       onBlur={
         has('interactive')
           ? (event): void => {
@@ -802,8 +823,7 @@ export function CustomSelectElement({
                     newTableName: inlineOptions[newIndex]?.tableName,
                     isDoubleClick: false,
                   });
-                  if (close || newValue !== defaultOption.optionName)
-                    handleClose?.();
+                  if (close) handleClose?.();
                 }
               }
             }
@@ -815,6 +835,37 @@ export function CustomSelectElement({
       {preview}
       {optionsShadow}
       {customSelectOptions}
+      {
+        /*
+         * A very hacky way to display validation messages for custom list-boxes
+         * Not sure if there is a simpler way that is at least this good until
+         * <selectmenu> is wildly supported.
+         */
+        (validation ?? '').length > 0 && (
+          <div
+            // Place the browser's tooltip at bottom center
+            className="sr-only bottom-0 top-[unset] flex w-full justify-center"
+          >
+            <input
+              id={id('validation')}
+              // Act as an error message, not an input
+              defaultValue={validation}
+              // Announce validation message to screen readers
+              aria-live="polite"
+              /*
+               * Set a validation message for input (using useValidation).
+               * It will be displayed by browsers on form submission
+               */
+              role="alert"
+              // Associate validation message with the listbox
+              ref={validationRef}
+              type="text"
+              // Don't show the input
+              className="sr-only"
+            />
+          </div>
+        )
+      }
     </article>
   );
 }

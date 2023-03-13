@@ -4,9 +4,9 @@ import { requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
 import { ensure } from '../../../utils/types';
 import { getField } from '../../DataModel/helpers';
-import { schema } from '../../DataModel/schema';
 import type { CellTypes, FormCellDefinition } from '../cells';
 import { exportsForTests, postProcessFormDef } from '../postProcessFormDef';
+import { tables } from '../../DataModel/tables';
 
 requireContext();
 
@@ -96,6 +96,8 @@ const missingLabelTextField = ensure<FormCellDefinition>()({
     max: undefined,
     step: undefined,
     type: 'Text',
+    minLength: undefined,
+    maxLength: undefined,
   },
 } as const);
 
@@ -104,7 +106,7 @@ test('postProcessFormDef', () =>
     postProcessFormDef(
       [undefined],
       [[blankLabel], [], [missingLabelCheckbox]],
-      schema.models.CollectionObject
+      tables.CollectionObject
     )
   ).toEqual({
     columns: [undefined, undefined, undefined],
@@ -116,8 +118,7 @@ test('postProcessFormDef', () =>
           ...missingLabelCheckbox,
           fieldDefinition: {
             ...missingLabelCheckbox.fieldDefinition,
-            label: getField(schema.models.CollectionObject, 'catalogNumber')
-              .label,
+            label: getField(tables.CollectionObject, 'catalogNumber').label,
           },
         },
       ],
@@ -130,7 +131,7 @@ test('createLabelsPostProcessor', () => {
       [looseLabel, missingLabelTextField],
       [blankLabel, checkboxWithLabel, divisionLabel],
     ],
-    schema.models.Accession,
+    tables.Accession,
     true
   );
   // Non-label cells are unchanged
@@ -143,7 +144,7 @@ test('createLabelsPostProcessor', () => {
   expect(processor(divisionLabel, 1, 2)).toEqual({
     ...divisionLabel,
     align: 'left',
-    text: getField(schema.models.Accession, 'division').label,
+    text: getField(tables.Accession, 'division').label,
   });
   expect(processor(blankLabel, 1, 0)).toEqual(blankCell);
 });
@@ -160,7 +161,7 @@ test('indexFields', () => {
         [labelCell, divisionComboBox],
         [missingLabelTextField, checkboxWithLabel],
       ],
-      schema.models.Accession
+      tables.Accession
     )
   ).toEqual({
     [missingLabelTextField.id]: {
@@ -176,7 +177,7 @@ test('indexFields', () => {
     [divisionComboBox.id]: {
       fieldNames: divisionComboBox.fieldNames,
       labelOverride: undefined,
-      altLabel: getField(schema.models.Accession, 'division').label,
+      altLabel: getField(tables.Accession, 'division').label,
     },
   });
 });
@@ -309,26 +310,26 @@ describe(addLabelTitle, () => {
           text: undefined,
           title: undefined,
         },
-        schema.models.CollectionObject
+        tables.CollectionObject
       )
     ).toEqual({
       ...labelCell,
-      text: getField(schema.models.CollectionObject, 'catalogNumber').label,
+      text: getField(tables.CollectionObject, 'catalogNumber').label,
       title: getField(
-        schema.models.CollectionObject,
+        tables.CollectionObject,
         'catalogNumber'
       ).getLocalizedDesc(),
     }));
 
   test("doesn't replace existing text", () =>
-    expect(addLabelTitle(labelCell, schema.models.CollectionObject)).toEqual(
+    expect(addLabelTitle(labelCell, tables.CollectionObject)).toEqual(
       labelCell
     ));
 
   test('adds label for division combo box', () =>
-    expect(addLabelTitle(divisionLabel, schema.models.Accession)).toEqual({
+    expect(addLabelTitle(divisionLabel, tables.Accession)).toEqual({
       ...divisionLabel,
-      text: getField(schema.models.Accession, 'division').label,
+      text: getField(tables.Accession, 'division').label,
     }));
 
   test('if all else fails, uses fieldName', () =>
@@ -339,7 +340,7 @@ describe(addLabelTitle, () => {
           text: undefined,
           fieldNames: ['a'],
         },
-        schema.models.Accession
+        tables.Accession
       )
     ).toEqual({ ...labelCell, text: 'a', fieldNames: ['a'] }));
 });
@@ -393,19 +394,19 @@ describe('addMissingLabel', () => {
       },
     };
 
-    expect(addMissingLabel(withLabel, schema.models.CollectionObject)).toEqual(
+    expect(addMissingLabel(withLabel, tables.CollectionObject)).toEqual(
       withLabel
     );
   });
 
   test('checkbox can get label from field label', () =>
     expect(
-      addMissingLabel(missingLabelCheckbox, schema.models.CollectionObject)
+      addMissingLabel(missingLabelCheckbox, tables.CollectionObject)
     ).toEqual({
       ...missingLabelCheckbox,
       fieldDefinition: {
         ...missingLabelCheckbox.fieldDefinition,
-        label: getField(schema.models.CollectionObject, 'catalogNumber').label,
+        label: getField(tables.CollectionObject, 'catalogNumber').label,
       },
     }));
 
@@ -414,17 +415,16 @@ describe('addMissingLabel', () => {
       ...missingLabelTextField,
       ariaLabel: 'test' as LocalizedString,
     };
-    expect(addMissingLabel(withLabel, schema.models.CollectionObject)).toEqual(
+    expect(addMissingLabel(withLabel, tables.CollectionObject)).toEqual(
       withLabel
     );
   });
 
   test('field cell can get label from field label', () =>
     expect(
-      addMissingLabel(missingLabelTextField, schema.models.CollectionObject)
+      addMissingLabel(missingLabelTextField, tables.CollectionObject)
     ).toEqual({
       ...missingLabelTextField,
-      ariaLabel: getField(schema.models.CollectionObject, 'catalogNumber')
-        .label,
+      ariaLabel: getField(tables.CollectionObject, 'catalogNumber').label,
     }));
 });

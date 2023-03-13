@@ -1,12 +1,12 @@
 import { f } from '../../utils/functools';
 import type { IR } from '../../utils/types';
 import { ensure } from '../../utils/types';
-import { schema } from '../DataModel/schema';
 import {
   autoGenerateViewDefinition,
   getFieldsForAutoView,
 } from '../Forms/generateFormDefinition';
 import type { ParsedFormDefinition } from './index';
+import { tables } from '../DataModel/tables';
 
 /**
  * Definitions for front-end form views.
@@ -17,41 +17,21 @@ import type { ParsedFormDefinition } from './index';
  */
 export const webOnlyViews = f.store(() =>
   ensure<IR<ParsedFormDefinition>>()({
-    ObjectAttachment: {
-      columns: [undefined],
-      rows: [
-        [
-          {
-            id: undefined,
-            type: 'Field',
-            fieldNames: undefined,
-            fieldDefinition: {
-              isReadOnly: false,
-              type: 'Plugin',
-              pluginDefinition: {
-                type: 'AttachmentPlugin',
-              },
-            },
-            isRequired: false,
-            colSpan: 1,
-            align: 'left',
-            visible: true,
-            ariaLabel: undefined,
-          },
-        ],
-      ],
-    },
+    /*
+     * This is a special view that would be replaced by the <AttachmentPlugin />
+     */
+    [attachmentView]: { columns: [], rows: [] },
     SpecifyUser: autoGenerateViewDefinition(
-      schema.models.SpecifyUser,
+      tables.SpecifyUser,
       'form',
       'edit',
-      getFieldsForAutoView(schema.models.SpecifyUser, ['password', 'userType'])
+      getFieldsForAutoView(tables.SpecifyUser, ['password', 'userType'])
     ),
     SpAppResource: autoGenerateViewDefinition(
-      schema.models.SpAppResource,
+      tables.SpAppResource,
       'form',
       'edit',
-      getFieldsForAutoView(schema.models.SpAppResource, [
+      getFieldsForAutoView(tables.SpAppResource, [
         'allPermissionLevel',
         'groupPermissionLevel',
         'level',
@@ -63,26 +43,30 @@ export const webOnlyViews = f.store(() =>
         'spReports',
       ])
     ),
+    // Hide non-name fields
     [spAppResourceView]: autoGenerateViewDefinition(
-      schema.models.SpAppResource,
+      tables.SpAppResource,
       'form',
       'edit',
       ['name']
     ),
+    // Hide non-name fields
     [spViewSetNameView]: autoGenerateViewDefinition(
-      schema.models.SpViewSetObj,
+      tables.SpViewSetObj,
       'form',
       'edit',
       ['name']
     ),
     [recordSetView]: autoGenerateViewDefinition(
-      schema.models.RecordSet,
+      tables.RecordSet,
       'form',
       'edit',
       ['name', 'remarks']
     ),
   } as const)
 );
+
+export const attachmentView = 'ObjectAttachment';
 
 export const spAppResourceView = '_SpAppResourceView_name';
 export const spViewSetNameView = '_SpViewSetObj_name';

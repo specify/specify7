@@ -10,6 +10,7 @@ import type { AnyTree } from '../DataModel/helperTypes';
 import { softFail } from '../Errors/Crash';
 import { strictGetTreeDefinitionItems } from '../InitialContext/treeRanks';
 import { getTransitionDuration } from '../UserPreferences/Hooks';
+import { tables } from '../DataModel/tables';
 
 export const fetchRows = async (fetchUrl: string) =>
   ajax<
@@ -23,6 +24,7 @@ export const fetchRows = async (fetchUrl: string) =>
         number,
         number | null,
         string | null,
+        string,
         number
       ]
     >
@@ -41,6 +43,7 @@ export const fetchRows = async (fetchUrl: string) =>
           rankId,
           acceptedId = undefined,
           acceptedName = undefined,
+          author = undefined,
           children,
         ],
         index,
@@ -54,6 +57,7 @@ export const fetchRows = async (fetchUrl: string) =>
         rankId,
         acceptedId,
         acceptedName,
+        author,
         children,
         isLastChild: index + 1 === length,
       })
@@ -192,13 +196,17 @@ export const formatTreeStats = (
 } => ({
   title: filterArray([
     commonText.colonLine({
-      label: treeText.directCollectionObjectCount(),
+      label: treeText.directCollectionObjectCount({
+        collectionObjectTable: tables.CollectionObject.label,
+      }),
       value: nodeStats.directCount.toString(),
     }),
     isLeaf
       ? undefined
       : commonText.colonLine({
-          label: treeText.indirectCollectionObjectCount(),
+          label: treeText.indirectCollectionObjectCount({
+            collectionObjectTable: tables.CollectionObject.label,
+          }),
           value: nodeStats.childCount.toString(),
         }),
   ]).join('\n'),

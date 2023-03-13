@@ -6,13 +6,21 @@
 import React from 'react';
 
 import type { SpecifyResource } from '../components/DataModel/legacyTypes';
-import { strictGetModel } from '../components/DataModel/schema';
+import { strictGetTable } from '../components/DataModel/tables';
 import type { Tables } from '../components/DataModel/types';
 import { crash } from '../components/Errors/Crash';
 import { f } from '../utils/functools';
 import type { GetOrSet } from '../utils/types';
 import { isFunction } from '../utils/types';
 import { useAsyncState } from './useAsyncState';
+
+/*
+ * FEATURE: when creating an object singleton, support not just existing resources
+ * FEATURE: add agent and accessible collections to store
+ * FEATURE: don't reRun format() unless changed
+ * FEATURE: evaluate relevancy of resource collection
+ * REFACTOR: integrate with useCollection when rewriting the ORM
+ */
 
 type Buckets = {
   readonly [TABLE_NAME in keyof Tables as `/api/specify/${TABLE_NAME}/`]?: Record<
@@ -115,7 +123,7 @@ export function useRecord<TABLE_NAME extends keyof Tables>(
   return useStore(
     React.useCallback(
       async (id: number) => {
-        const resource = new (strictGetModel(tableName).Resource)({ id });
+        const resource = new (strictGetTable(tableName).Resource)({ id });
         return resource.fetch();
       },
       [tableName]

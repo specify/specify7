@@ -1,6 +1,7 @@
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
+import { eventListener } from '../../utils/events';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
@@ -12,15 +13,16 @@ import { addMissingFields } from './addMissingFields';
 import { businessRuleDefs } from './businessRuleDefs';
 import type {
   AnySchema,
-  SerializedModel,
+  SerializedRecord,
   SerializedResource,
   TableFields,
 } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
-import { getModel, schema } from './schema';
-import type { SpecifyModel } from './specifyModel';
+import { getTable, tables } from './tables';
+import type { SpecifyTable } from './specifyTable';
 import type { Tables } from './types';
 import { serializeResource } from './serializers';
+import { schema } from './schema';
 
 /*
  * REFACTOR: experiment with an object singleton:
@@ -30,6 +32,10 @@ import { serializeResource } from './serializers';
  * of. When requesting object fetch, return the previous fetched version, while
  * fetching the new one.
  */
+
+export const resourceEvents = eventListener<{
+  readonly deleted: SpecifyResource<AnySchema>;
+}>();
 
 /**
  * Fetch a single resource from the back-end
@@ -46,7 +52,7 @@ export const fetchResource = async <
 ): Promise<
   SerializedResource<SCHEMA> | (STRICT extends true ? never : undefined)
 > =>
-  ajax<SerializedModel<SCHEMA>>(
+  ajax<SerializedRecord<SCHEMA>>(
     `/api/specify/${tableName.toLowerCase()}/${id}/`,
     // eslint-disable-next-line @typescript-eslint/naming-convention
     { headers: { Accept: 'application/json' } },
@@ -55,6 +61,7 @@ export const fetchResource = async <
     status === Http.NOT_FOUND ? undefined! : serializeResource(record)
   );
 
+// BUG: trigger resourceEvents.deleted here
 export const deleteResource = async (
   tableName: keyof Tables,
   id: number
@@ -71,7 +78,7 @@ export const createResource = async <TABLE_NAME extends keyof Tables>(
   tableName: TABLE_NAME,
   data: Partial<SerializedResource<Tables[TABLE_NAME]>>
 ): Promise<SerializedResource<Tables[TABLE_NAME]>> =>
-  ajax<SerializedModel<Tables[TABLE_NAME]>>(
+  ajax<SerializedRecord<Tables[TABLE_NAME]>>(
     `/api/specify/${tableName.toLowerCase()}/`,
     {
       method: 'POST',
@@ -97,7 +104,7 @@ export const saveResource = async <TABLE_NAME extends keyof Tables>(
   data: Partial<SerializedResource<Tables[TABLE_NAME]>>,
   handleConflict: (() => void) | void
 ): Promise<SerializedResource<Tables[TABLE_NAME]>> =>
-  ajax<SerializedModel<Tables[TABLE_NAME]>>(
+  ajax<SerializedRecord<Tables[TABLE_NAME]>>(
     `/api/specify/${tableName.toLowerCase()}/${id}/`,
     {
       method: 'PUT',
@@ -127,7 +134,7 @@ export function getResourceViewUrl(
 ): string {
   const url = `/specify/view/${tableName.toLowerCase()}/${resourceId}/`;
   return typeof recordSetId === 'number'
-    ? formatUrl(url, { recordSetId: recordSetId.toString() })
+    ? formatUrl(url, { recordSetId })
     : url;
 }
 
@@ -143,17 +150,17 @@ export function getResourceApiUrl(
     return `/api/specify/${tableName.toLowerCase()}/`;
   const url = `/api/specify/${tableName.toLowerCase()}/${resourceId}/`;
   return typeof recordSetId === 'number'
-    ? formatUrl(url, { recordSetId: recordSetId.toString() })
+    ? formatUrl(url, { recordSetId })
     : url;
 }
 
 export function parseResourceUrl(
   resourceUrl: string
-): readonly [modelName: keyof Tables, id: number | undefined] | undefined {
+): readonly [tableName: keyof Tables, id: number | undefined] | undefined {
   const parsed = /^\/api\/specify\/(\w+)\/(?:(\d+)\/)?$/u
     .exec(resourceUrl)
     ?.slice(1);
-  const tableName = getModel(parsed?.[0] ?? '')?.name;
+  const tableName = getTable(parsed?.[0] ?? '')?.name;
   return Array.isArray(parsed) && typeof tableName === 'string'
     ? [tableName, f.parseInt(parsed[1])]
     : undefined;
@@ -161,7 +168,7 @@ export function parseResourceUrl(
 
 export const strictParseResourceUrl = (
   resourceUrl: string
-): readonly [modelName: keyof Tables, id: number | undefined] =>
+): readonly [tableName: keyof Tables, id: number | undefined] =>
   defined(
     parseResourceUrl(resourceUrl),
     `Unable to parse resource API url: ${resourceUrl}`
@@ -175,21 +182,21 @@ export const strictIdFromUrl = (url: string): number =>
 
 export function resourceFromUrl(
   resourceUrl: string,
-  options?: ConstructorParameters<SpecifyModel['Resource']>[1]
+  options?: ConstructorParameters<SpecifyTable['Resource']>[1]
 ): SpecifyResource<AnySchema> | undefined {
   const parsed = parseResourceUrl(resourceUrl);
   if (parsed === undefined) return undefined;
   const [tableName, id] = parsed;
-  return new schema.models[tableName].Resource({ id }, options);
+  return new tables[tableName].Resource({ id }, options);
 }
 
 /**
  * This needs to exist outside of Resorce definition due to type conflicts
- * between AnySchema and table schemas defined in datamodel.ts
+ * between AnySchema and table schemas defined in dataModel.ts
  */
 export const resourceToJson = <SCHEMA extends AnySchema>(
   resource: SpecifyResource<SCHEMA>
-): SerializedModel<SCHEMA> => resource.toJSON() as SerializedModel<SCHEMA>;
+): SerializedRecord<SCHEMA> => resource.toJSON() as SerializedRecord<SCHEMA>;
 
 /*
  * Things to keep in mind:
@@ -198,6 +205,10 @@ export const resourceToJson = <SCHEMA extends AnySchema>(
  * zero-to-one
  * business rules and validation
  * prevent fetching multiple at the same time
+ * have separate types for new resource and resource (and on new resource
+ * required fields can be undefined and and id is undefined). Potentially,
+ * NewResource should extend Resource type since NewResource can turn into
+ * Resource when saved, so components should be able to handle that
  */
 
 /**
@@ -223,17 +234,17 @@ export function resourceOn(
   return (): void => resource.off(event.toLowerCase(), callback as () => void);
 }
 
-/** Extract model name from a Java class name */
+/** Extract table name from a Java class name */
 export const parseJavaClassName = (className: string): string =>
   className.split('.').at(-1) ?? '';
 
 export function getFieldsToNotClone(
-  model: SpecifyModel,
+  table: SpecifyTable,
   cloneAll: boolean
 ): RA<string> {
-  const fieldsToClone = getCarryOverPreference(model, cloneAll);
-  const uniqueFields = getUniqueFields(model);
-  return model.fields
+  const fieldsToClone = getCarryOverPreference(table, cloneAll);
+  const uniqueFields = getUniqueFields(table);
+  return table.fields
     .map(({ name }) => name)
     .filter(
       (fieldName) =>
@@ -242,16 +253,16 @@ export function getFieldsToNotClone(
 }
 
 const getCarryOverPreference = (
-  model: SpecifyModel,
+  table: SpecifyTable,
   cloneAll: boolean
 ): RA<string> =>
   (cloneAll
     ? undefined
-    : getUserPref('form', 'preferences', 'carryForward')?.[model.name]) ??
-  getFieldsToClone(model);
+    : getUserPref('form', 'preferences', 'carryForward')?.[table.name]) ??
+  getFieldsToClone(table);
 
-export const getFieldsToClone = (model: SpecifyModel): RA<string> =>
-  model.fields
+export const getFieldsToClone = (table: SpecifyTable): RA<string> =>
+  table.fields
     .filter(
       (field) =>
         !field.isVirtual &&
@@ -280,25 +291,25 @@ const uniqueFields = [
   'timestampModified',
 ];
 
-export const getUniqueFields = (model: SpecifyModel): RA<string> =>
+export const getUniqueFields = (table: SpecifyTable): RA<string> =>
   f.unique([
-    ...Object.entries(businessRules[model.name]?.uniqueIn ?? {})
+    ...Object.entries(businessRules[table.name]?.uniqueIn ?? {})
       .filter(
         ([_fieldName, uniquenessRules]) =>
           typeof uniquenessRules === 'string' &&
           uniquenessRules in schema.domainLevelIds
       )
-      .map(([fieldName]) => model.strictGetField(fieldName).name),
+      .map(([fieldName]) => table.strictGetField(fieldName).name),
     /*
      * Each attachment is assumed to refer to a unique attachment file
      * See https://github.com/specify/specify7/issues/1754#issuecomment-1157796585
      * Also, https://github.com/specify/specify7/issues/2562
      */
-    ...model.relationships
-      .filter(({ relatedModel }) => relatedModel.name.endsWith('Attachment'))
+    ...table.relationships
+      .filter(({ relatedTable }) => relatedTable.name.endsWith('Attachment'))
       .map(({ name }) => name),
     ...filterArray(
-      uniqueFields.map((fieldName) => model.getField(fieldName)?.name)
+      uniqueFields.map((fieldName) => table.getField(fieldName)?.name)
     ),
   ]);
 

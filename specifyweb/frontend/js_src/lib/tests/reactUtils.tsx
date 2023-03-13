@@ -1,6 +1,10 @@
 import { expect, test } from '@jest/globals';
-import type { Queries, queries } from '@testing-library/react';
-import type { RenderOptions, RenderResult } from '@testing-library/react';
+import type {
+  Queries,
+  queries,
+  RenderOptions,
+  RenderResult,
+} from '@testing-library/react';
 import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { UserEvent } from '@testing-library/user-event/dist/types/setup/setup';

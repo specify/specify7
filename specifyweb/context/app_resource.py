@@ -102,7 +102,7 @@ def load_resource(path, registry, resource_name):
     if resource is None: return None
     pathname = os.path.join(path, resource.attrib['file'])
     try:
-        return (open(pathname).read(), resource.attrib['mimetype'])
+        return (open(pathname).read(), resource.attrib['mimetype'], None)
     except IOError as e:
         if e.errno == errno.ENOENT: return None
         else: raise
@@ -120,15 +120,15 @@ def get_app_resource_from_db(collection, user, level, resource_name):
     filters = {
         'spappresource__name': resource_name,
         'spappresource__spappresourcedir__in': dirs
-        }
+    }
 
     try:
         resource = Spappresourcedata.objects.get(**filters)
-        return (resource.data, resource.spappresource.mimetype)
+        return (resource.data, resource.spappresource.mimetype, resource.spappresource.id)
     except Spappresourcedata.MultipleObjectsReturned:
         logger.warning('found multiple appresources for %s', filters)
         resource = Spappresourcedata.objects.filter(**filters)[0]
-        return (resource.data, resource.spappresource.mimetype)
+        return (resource.data, resource.spappresource.mimetype, resource.spappresource.id)
     except Spappresourcedata.DoesNotExist:
         # The resource does not exist in the database at the given level.
         return None

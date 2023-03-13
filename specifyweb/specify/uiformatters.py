@@ -6,11 +6,12 @@ Supports autonumbering mechanism
 import logging
 import re
 from datetime import date
-from django.core.exceptions import ObjectDoesNotExist
-from django.db import connection
 from typing import NamedTuple, List, Optional, Sequence
 from xml.etree import ElementTree
 from xml.sax.saxutils import quoteattr
+
+from django.core.exceptions import ObjectDoesNotExist
+from django.db import connection
 
 logger = logging.getLogger(__name__)
 
@@ -263,7 +264,7 @@ class CNNField(NumericField):
         return value.zfill(self.size)
 
 def get_uiformatter_by_name(collection, user, formatter_name: str) -> Optional[UIFormatter]:
-    xml, __ = get_app_resource(collection, user, "UIFormatters")
+    xml, _, __ = get_app_resource(collection, user, "UIFormatters")
     node = ElementTree.XML(xml).find('.//format[@name=%s]' % quoteattr(formatter_name))
     if node is None: return None
     external = node.find('external')

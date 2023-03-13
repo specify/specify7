@@ -14,15 +14,17 @@ import { DataEntry } from '../Atoms/DataEntry';
 import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
 import type { SerializedResource } from '../DataModel/helperTypes';
+import { deserializeResource } from '../DataModel/serializers';
+import { tables } from '../DataModel/tables';
 import type { Collection } from '../DataModel/types';
 import { ResourceView } from '../Forms/ResourceView';
 import { userInformation } from '../InitialContext/userInformation';
 import { hasPermission } from '../Permissions/helpers';
+import { formatUrl } from '../Router/queryString';
 import { updateCollectionRole } from './CollectionRole';
 import { createCollectionRole } from './CreateRole';
 import { ImportExport } from './ImportExport';
 import type { Role } from './Role';
-import { deserializeResource } from '../DataModel/serializers';
 
 /**
  * Display a button to open current user
@@ -41,12 +43,11 @@ export function CurrentUserLink({
       href={`/specify/security/user/${userInformation.id}/`}
       onClick={(event): void => {
         event.preventDefault();
-        navigate(`/specify/security/user/${userInformation.id}/`, {
-          state: {
-            type: 'SecurityUser',
-            initialCollectionId: collectionId,
-          },
-        });
+        navigate(
+          formatUrl(`/specify/security/user/${userInformation.id}/`, {
+            collection: collectionId,
+          })
+        );
       }}
     >
       {userInformation.name}
@@ -90,7 +91,6 @@ export function ViewCollectionButton({
           dialog="modal"
           isDependent={false}
           isSubForm={false}
-          mode="edit"
           resource={resource}
           onAdd={undefined}
           onClose={handleClose}
@@ -118,7 +118,11 @@ export function CollectionRoles({
 
   return (
     <section className="flex flex-col gap-1">
-      <h4 className="text-xl">{userText.collectionUserRoles()}</h4>
+      <h4 className="text-xl">
+        {userText.collectionUserRoles({
+          collectionTable: tables.Collection.label,
+        })}
+      </h4>
       {typeof roles === 'object' ? (
         <Ul>
           {Object.values(roles)

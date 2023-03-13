@@ -14,6 +14,7 @@ exports[`dependentFields 1`] = `
   "date2Precision": "date2",
   "date3Precision": "date3",
   "date4Precision": "date4",
+  "date5Precision": "date5",
   "dateOfBirthPrecision": "dateOfBirth",
   "dateOfDeathPrecision": "dateOfDeath",
   "determinedDatePrecision": "determinedDate",

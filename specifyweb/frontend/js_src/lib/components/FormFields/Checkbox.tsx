@@ -6,21 +6,22 @@ import { Input, Label } from '../Atoms/Form';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import { usePref } from '../UserPreferences/usePref';
+import { ReadOnlyContext } from '../Core/Contexts';
 
 export function PrintOnSave({
   id,
   name,
   field,
-  model,
+  table,
   text,
   defaultValue,
 }: {
   readonly id: string | undefined;
   readonly name: string | undefined;
   readonly field: LiteralField | Relationship | undefined;
-  readonly model: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly text: string | undefined;
   readonly defaultValue: boolean | undefined;
 }): JSX.Element {
@@ -29,14 +30,14 @@ export function PrintOnSave({
    * Need to check for object explicitly, because this cache key stored
    * boolean in the past
    */
-  const entry = typeof tables === 'object' ? tables[model.name] : undefined;
+  const entry = typeof tables === 'object' ? tables[table.name] : undefined;
   const handleChange = React.useCallback(
     (checked: boolean): void =>
       setTables({
         ...(typeof tables === 'object' ? tables : {}),
-        [model.name]: checked,
+        [table.name]: checked,
       }),
-    [setTables, tables, model.name]
+    [setTables, tables, table.name]
   );
   React.useEffect(() => {
     if (entry === undefined && defaultValue === true) handleChange(true);
@@ -66,32 +67,31 @@ export function SpecifyFormCheckbox({
   name,
   field,
   defaultValue,
-  isReadOnly,
   text,
 }: {
   readonly id: string | undefined;
   readonly name?: string | undefined;
-  readonly resource: SpecifyResource<AnySchema>;
+  readonly resource: SpecifyResource<AnySchema> | undefined;
   readonly field: LiteralField | undefined;
   readonly defaultValue: boolean | undefined;
-  readonly isReadOnly: boolean;
   readonly text: string | undefined;
 }): JSX.Element {
   const {
     value = false,
     updateValue,
     validationRef,
-  } = useResourceValue<boolean | string>(
+  } = useResourceValue<boolean | string | null>(
     resource,
     field,
     React.useMemo(() => ({ value: defaultValue }), [defaultValue])
   );
 
   const isChecked = React.useMemo(
-    () => parseBoolean(value.toString()),
+    () => (value === null ? false : parseBoolean(value?.toString())),
     [value]
   );
 
+  const isReadOnly = React.useContext(ReadOnlyContext);
   const input = (
     <Input.Checkbox
       checked={isChecked}

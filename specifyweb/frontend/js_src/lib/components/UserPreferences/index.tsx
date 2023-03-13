@@ -6,9 +6,8 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
 
-import { useAsyncState } from '../../hooks/useAsyncState';
+import { usePromise } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
-import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { preferencesText } from '../../localization/preferences';
 import { StringToJsx } from '../../localization/utils';
@@ -18,10 +17,10 @@ import { className } from '../Atoms/className';
 import { Form } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
-import { LoadingContext } from '../Core/Contexts';
+import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { hasPermission } from '../Permissions/helpers';
-import { PreferencesAside, useActiveCategory } from './Aside';
+import { PreferencesAside } from './Aside';
 import type {
   GenericPreferencesCategories,
   PreferenceItem,
@@ -36,13 +35,13 @@ import {
 import { prefEvents } from './Hooks';
 import { DefaultPreferenceItemRender } from './Renderers';
 import { usePref } from './usePref';
+import { useTopChild } from './useTopChild';
 
 function Preferences(): JSX.Element {
   const [changesMade, handleChangesMade] = useBooleanState();
   const [needsRestart, handleRestartNeeded] = useBooleanState();
 
   const loading = React.useContext(LoadingContext);
-  const id = useId('preferences');
   const navigate = useNavigate();
 
   React.useEffect(
@@ -54,7 +53,7 @@ function Preferences(): JSX.Element {
     [handleChangesMade, handleRestartNeeded]
   );
 
-  const { activeCategory, forwardRefs, containerRef } = useActiveCategory();
+  const { visibleChild, forwardRefs, scrollContainerRef } = useTopChild();
 
   return (
     <Container.FullGray>
@@ -73,14 +72,10 @@ function Preferences(): JSX.Element {
       >
         <div
           className="relative flex flex-col gap-6 overflow-y-auto md:flex-row"
-          ref={containerRef}
+          ref={scrollContainerRef}
         >
-          <PreferencesAside activeCategory={activeCategory} id={id} />
-          <PreferencesContent
-            forwardRefs={forwardRefs}
-            id={id}
-            isReadOnly={false}
-          />
+          <PreferencesAside activeCategory={visibleChild} />
+          <PreferencesContent forwardRefs={forwardRefs} />
           <span className="flex-1" />
         </div>
         <div className="flex justify-end">
@@ -129,14 +124,11 @@ export function usePrefDefinitions() {
 }
 
 export function PreferencesContent({
-  id,
-  isReadOnly,
   forwardRefs,
 }: {
-  readonly id: (prefix: string) => string;
-  readonly isReadOnly: boolean;
   readonly forwardRefs?: (index: number, element: HTMLElement | null) => void;
 }): JSX.Element {
+  const isReadOnly = React.useContext(ReadOnlyContext);
   const definitions = usePrefDefinitions();
   return (
     <div className="flex h-fit flex-col gap-6">
@@ -145,21 +137,23 @@ export function PreferencesContent({
           [category, { title, description = undefined, subCategories }],
           index
         ) => (
-          <ErrorBoundary dismissable key={category}>
+          <ErrorBoundary dismissible key={category}>
             <Container.Center
               className="gap-8 overflow-y-visible"
               forwardRef={forwardRefs?.bind(undefined, index)}
-              id={id(category)}
+              id={category}
             >
               <h3 className="text-2xl">{title}</h3>
               {description !== undefined && <p>{description}</p>}
               {subCategories.map(
                 ([subcategory, { title, description = undefined, items }]) => (
-                  <section className="flex flex-col gap-4" key={subcategory}>
-                    <div className="flex items-center">
-                      <span className="flex-1" />
+                  <section
+                    className="flex flex-col items-start gap-4 md:items-stretch"
+                    key={subcategory}
+                  >
+                    <div className="flex items-center gap-2">
                       <h4
-                        className={`${className.headerGray} text-center text-xl`}
+                        className={`${className.headerGray} text-xl md:text-center`}
                       >
                         {title}
                       </h4>
@@ -191,30 +185,29 @@ export function PreferencesContent({
                         !isReadOnly &&
                         (item.visible !== 'protected' ||
                           hasPermission('/preferences/user', 'edit_protected'));
-                      return (
-                        <label
-                          className={`
-                            flex items-start gap-2
+                      const props = {
+                        className: `
+                            flex items-start gap-2 md:flex-row flex-col
                             ${canEdit ? '' : '!cursor-not-allowed'}
-                          `}
-                          key={name}
-                          title={
-                            canEdit
-                              ? undefined
-                              : preferencesText.adminsOnlyPreference()
-                          }
-                        >
-                          <div className="flex flex-1 flex-col gap-2">
+                          `,
+                        key: name,
+                        title: canEdit
+                          ? undefined
+                          : preferencesText.adminsOnlyPreference(),
+                      } as const;
+                      const children = (
+                        <>
+                          <div className="flex flex-col items-start gap-2 md:flex-1 md:items-stretch">
                             <p
                               className={`
                                 flex min-h-[theme(spacing.8)] flex-1 items-center
-                                justify-end text-right
+                                justify-end md:text-right
                               `}
                             >
                               <FormatString text={item.title} />
                             </p>
                             {item.description !== undefined && (
-                              <p className="flex flex-1 justify-end text-right text-gray-500">
+                              <p className="flex flex-1 justify-end text-gray-500 md:text-right">
                                 <FormatString text={item.description} />
                               </p>
                             )}
@@ -225,15 +218,21 @@ export function PreferencesContent({
                               gap-2
                             `}
                           >
-                            <Item
-                              category={category}
-                              isReadOnly={!canEdit}
-                              item={item}
-                              name={name}
-                              subcategory={subcategory}
-                            />
+                            <ReadOnlyContext.Provider value={!canEdit}>
+                              <Item
+                                category={category}
+                                item={item}
+                                name={name}
+                                subcategory={subcategory}
+                              />
+                            </ReadOnlyContext.Provider>
                           </div>
-                        </label>
+                        </>
+                      );
+                      return 'container' in item && item.container === 'div' ? (
+                        <div {...props}>{children}</div>
+                      ) : (
+                        <label {...props}>{children}</label>
                       );
                     })}
                   </section>
@@ -273,13 +272,11 @@ function Item({
   category,
   subcategory,
   name,
-  isReadOnly,
 }: {
   readonly item: PreferenceItem<any>;
   readonly category: string;
   readonly subcategory: string;
   readonly name: string;
-  readonly isReadOnly: boolean;
 }): JSX.Element {
   const Renderer =
     'renderer' in item ? item.renderer : DefaultPreferenceItemRender;
@@ -293,7 +290,6 @@ function Item({
     <Renderer
       category={category}
       definition={item}
-      isReadOnly={isReadOnly}
       item={name}
       subcategory={subcategory}
       value={value}
@@ -301,16 +297,13 @@ function Item({
     />
   );
   return 'renderer' in item ? (
-    <ErrorBoundary dismissable>{children}</ErrorBoundary>
+    <ErrorBoundary dismissible>{children}</ErrorBoundary>
   ) : (
     children
   );
 }
 
 export function PreferencesWrapper(): JSX.Element | null {
-  const [preferences] = useAsyncState(
-    React.useCallback(async () => preferencesPromise, []),
-    true
-  );
+  const [preferences] = usePromise(preferencesPromise, true);
   return typeof preferences === 'object' ? <Preferences /> : null;
 }

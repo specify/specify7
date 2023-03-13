@@ -10,9 +10,9 @@ import { ping } from '../../utils/ajax/ping';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
-import { getModel, schema } from '../DataModel/schema';
+import { getTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
-import { isTreeModel } from '../InitialContext/treeRanks';
+import { isTreeTable } from '../InitialContext/treeRanks';
 import { AutoMapper } from './autoMapper';
 import { renameNewlyCreatedHeaders } from './headerHelper';
 import type {
@@ -34,6 +34,8 @@ import {
 import { getMappingLineData } from './navigator';
 import { uploadPlanBuilder } from './uploadPlanBuilder';
 import type { Dataset } from './Wrapped';
+import { schema } from '../DataModel/schema';
+import { navigatorSpecs } from './navigatorSpecs';
 
 export async function savePlan({
   dataset,
@@ -141,13 +143,14 @@ export function getMustMatchTables({
   readonly lines: RA<MappingLine>;
   readonly mustMatchPreferences: IR<boolean>;
 }): IR<boolean> {
-  const baseTableIsTree = isTreeModel(baseTableName);
+  const baseTableIsTree = isTreeTable(baseTableName);
   const arrayOfMappingPaths = lines.map((line) => line.mappingPath);
   const arrayOfMappingLineData = arrayOfMappingPaths.flatMap((mappingPath) =>
     getMappingLineData({
       mappingPath,
       baseTableName,
       generateFieldData: 'none',
+      spec: navigatorSpecs.wbPlanView,
     }).filter(
       (mappingElementData, index, list) =>
         // Exclude base table
@@ -168,12 +171,12 @@ export function getMustMatchTables({
     .map(({ tableName = '' }) => tableName)
     .filter(
       (tableName) =>
-        getModel(tableName) === undefined ||
+        getTable(tableName) === undefined ||
         (!tableName.endsWith('attribute') &&
           // Exclude embedded paleo context
           (!schema.embeddedPaleoContext || tableName !== 'PaleoContext'))
     )
-    .sort(sortFunction((tableName) => getModel(tableName)?.label ?? null));
+    .sort(sortFunction((tableName) => getTable(tableName)?.label ?? null));
 
   return {
     ...Object.fromEntries(
@@ -261,11 +264,11 @@ export function mutateMappingPath({
    * Get relationship type from current picklist to the next one both for
    * current value and next value
    */
-  const model = getModel(parentTableName ?? '');
-  const currentField = model?.getField(mappingPath[index] ?? '');
+  const table = getTable(parentTableName ?? '');
+  const currentField = table?.getField(mappingPath[index] ?? '');
   const isCurrentToMany =
     currentField?.isRelationship === true && relationshipIsToMany(currentField);
-  const newField = model?.getField(newValue);
+  const newField = table?.getField(newValue);
   const isNewToMany =
     newField?.isRelationship === true && relationshipIsToMany(newField);
 
@@ -334,6 +337,7 @@ export async function fetchAutoMapperSuggestions({
     showHiddenFields: true,
     getMappedFields: getMappedFields.bind(undefined, lines),
     generateFieldData: 'all',
+    spec: navigatorSpecs.wbPlanView,
   }).slice(-1);
 
   // Don't show suggestions if picklist has only one field / no fields
@@ -375,6 +379,7 @@ export async function fetchAutoMapperSuggestions({
         mappingPath: autoMapperResult,
         getMappedFields: getMappedFields.bind(undefined, lines),
         generateFieldData: 'selectedOnly',
+        spec: navigatorSpecs.wbPlanView,
       })
         .slice(baseMappingPath.length - pathOffset)
         .map((data) => ({

@@ -4,7 +4,6 @@ import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
 import type {
   Collection,
   CollectionObject,
@@ -12,8 +11,9 @@ import type {
   CollectionRelType,
 } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
-import { format } from '../Formatters/dataObjFormatters';
+import { format } from '../Formatters/formatters';
 import { deserializeResource } from '../DataModel/serializers';
+import { schema } from '../DataModel/schema';
 
 export type CollectionRelData = {
   readonly relationshipType: SpecifyResource<CollectionRelType>;

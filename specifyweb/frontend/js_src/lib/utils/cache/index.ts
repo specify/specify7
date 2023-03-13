@@ -51,7 +51,7 @@ let eventListenerIsInitialized = false;
 
 /** Listen for changes to localStorage from other tabs */
 function initialize(): void {
-  globalThis.window?.addEventListener(
+  globalThis.addEventListener(
     'storage',
     ({ storageArea, key: formattedKey, newValue }) => {
       // "key" is null only when running `localStorage.clear()`
@@ -115,8 +115,15 @@ export const setCache = <
 >(
   category: CATEGORY,
   key: KEY,
-  cacheValue: CacheDefinitions[CATEGORY][KEY]
-) => genericSet<CacheDefinitions[CATEGORY][KEY]>(category, key, cacheValue);
+  cacheValue: CacheDefinitions[CATEGORY][KEY],
+  triggerChange = true
+) =>
+  genericSet<CacheDefinitions[CATEGORY][KEY]>(
+    category,
+    key,
+    cacheValue,
+    triggerChange
+  );
 
 export const cacheEvents = eventListener<{
   readonly change: { readonly category: string; readonly key: string };
@@ -126,7 +133,8 @@ function genericSet<T>(
   category: string,
   key: string,
   // Any serializable value
-  value: T
+  value: T,
+  triggerChange = true
 ): T {
   if (!eventListenerIsInitialized) initialize();
 
@@ -141,7 +149,7 @@ function genericSet<T>(
     JSON.stringify(value)
   );
 
-  cacheEvents.trigger('change', { category, key });
+  if (triggerChange) cacheEvents.trigger('change', { category, key });
 
   return value;
 }

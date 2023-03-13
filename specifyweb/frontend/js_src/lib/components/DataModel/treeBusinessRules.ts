@@ -64,13 +64,13 @@ const predictFullName = async (
         throw new Error(badTreeStructureError);
       if ((resource.get('name')?.length ?? 0) === 0) return undefined;
 
-      const treeName = resource.specifyModel.name.toLowerCase();
+      const treeName = resource.specifyTable.name.toLowerCase();
       return ajax(
         formatUrl(
           `/api/specify_tree/${treeName}/${parent.id}/predict_fullname/`,
           {
             name: resource.get('name'),
-            treeDefItemId: definitionItem.id?.toString(),
+            treeDefItemId: definitionItem.id,
           }
         ),
         {

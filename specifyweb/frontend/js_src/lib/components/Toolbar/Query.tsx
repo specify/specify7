@@ -12,11 +12,13 @@ import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
+import { ReadOnlyContext } from '../Core/Contexts';
 import type { CollectionFetchFilters } from '../DataModel/collection';
 import { fetchCollection } from '../DataModel/collection';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { getModelById, schema } from '../DataModel/schema';
+import { resourceEvents } from '../DataModel/resource';
+import { getTableById, tables } from '../DataModel/tables';
 import type { SpQuery } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { DateElement } from '../Molecules/DateElement';
@@ -35,7 +37,6 @@ export function QueriesOverlay(): JSX.Element {
   return (
     <SafeOutlet<QueryListContextType>
       getQuerySelectUrl={undefined}
-      isReadOnly={false}
       newQueryUrl="/specify/overlay/queries/new/"
       queries={queries}
       onClose={handleClose}
@@ -48,7 +49,6 @@ const QUERY_FETCH_LIMIT = 5000;
 export type QueryListContextType = {
   readonly queries: RA<SerializedResource<SpQuery>> | undefined;
   readonly newQueryUrl: string;
-  readonly isReadOnly: boolean;
   readonly onClose: () => void;
   readonly getQuerySelectUrl?: (query: SerializedResource<SpQuery>) => string;
 };
@@ -56,7 +56,7 @@ export type QueryListContextType = {
 export function useQueries(
   spQueryFilter?: Partial<CollectionFetchFilters<SpQuery>>
 ): RA<SerializedResource<SpQuery>> | undefined {
-  return useAsyncState<RA<SerializedResource<SpQuery>>>(
+  const [queries, setQueries] = useAsyncState<RA<SerializedResource<SpQuery>>>(
     React.useCallback(
       async () =>
         fetchCollection('SpQuery', {
@@ -66,7 +66,16 @@ export function useQueries(
       [spQueryFilter]
     ),
     true
-  )[0];
+  );
+  React.useEffect(
+    () =>
+      resourceEvents.on('deleted', (resource) => {
+        if (resource.specifyTable.name === 'SpQuery')
+          setQueries(queries?.filter((query) => query.id !== resource.id));
+      }),
+    [queries]
+  );
+  return queries;
 }
 
 export function QueryListOutlet(): JSX.Element {
@@ -79,7 +88,6 @@ export function QueryListDialog({
   newQueryUrl,
   onClose: handleClose,
   getQuerySelectUrl,
-  isReadOnly,
 }: QueryListContextType): JSX.Element | null {
   return Array.isArray(queries) ? (
     <Dialog
@@ -99,22 +107,16 @@ export function QueryListDialog({
       icon={<span className="text-blue-500">{icons.documentSearch}</span>}
       onClose={handleClose}
     >
-      <QueryList
-        getQuerySelectUrl={getQuerySelectUrl}
-        isReadOnly={isReadOnly}
-        queries={queries}
-      />
+      <QueryList getQuerySelectUrl={getQuerySelectUrl} queries={queries} />
     </Dialog>
   ) : null;
 }
 
 function QueryList({
   queries: unsortedQueries,
-  isReadOnly,
   getQuerySelectUrl,
 }: {
   readonly queries: RA<SerializedResource<SpQuery>>;
-  readonly isReadOnly: boolean;
   readonly getQuerySelectUrl?: (query: SerializedResource<SpQuery>) => string;
 }): JSX.Element {
   const [sortConfig, handleSort, applySortConfig] = useSortConfig(
@@ -128,6 +130,7 @@ function QueryList({
     (query) => query[sortConfig.sortField]
   );
 
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return (
     <table className="grid-table grid-cols-[repeat(3,auto)_min-content] gap-2">
       <thead>
@@ -137,7 +140,7 @@ function QueryList({
             scope="col"
           >
             <Button.LikeLink onClick={(): void => handleSort('name')}>
-              {getField(schema.models.SpQuery, 'name').label}
+              {getField(tables.SpQuery, 'name').label}
               <SortIndicator fieldName="name" sortConfig={sortConfig} />
             </Button.LikeLink>
           </th>
@@ -145,7 +148,7 @@ function QueryList({
             <Button.LikeLink
               onClick={(): void => handleSort('timestampCreated')}
             >
-              {getField(schema.models.SpQuery, 'timestampCreated').label}
+              {getField(tables.SpQuery, 'timestampCreated').label}
               <SortIndicator
                 fieldName="timestampCreated"
                 sortConfig={sortConfig}
@@ -156,7 +159,7 @@ function QueryList({
             <Button.LikeLink
               onClick={(): void => handleSort('timestampModified')}
             >
-              {getField(schema.models.SpQuery, 'timestampModified').label}
+              {getField(tables.SpQuery, 'timestampModified').label}
               <SortIndicator
                 fieldName="timestampModified"
                 sortConfig={sortConfig}
@@ -178,7 +181,7 @@ function QueryList({
               >
                 <TableIcon
                   label
-                  name={getModelById(query.contextTableId).name}
+                  name={getTableById(query.contextTableId).name}
                 />
                 {query.name}
               </Link.Default>
@@ -202,16 +205,7 @@ function QueryList({
 }
 
 export function NewQuery(): JSX.Element {
-  const {
-    queries,
-    isReadOnly,
-    onClose: handleClose,
-  } = useOutletContext<QueryListContextType>();
-  return (
-    <QueryTables
-      isReadOnly={isReadOnly}
-      queries={queries}
-      onClose={handleClose}
-    />
-  );
+  const { queries, onClose: handleClose } =
+    useOutletContext<QueryListContextType>();
+  return <QueryTables queries={queries} onClose={handleClose} />;
 }

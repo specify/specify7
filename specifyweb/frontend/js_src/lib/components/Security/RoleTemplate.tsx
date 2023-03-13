@@ -12,7 +12,6 @@ import { keysToLowerCase, sortFunction } from '../../utils/utils';
 import { H3, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
-import { schema } from '../DataModel/schema';
 import { useAvailableCollections } from '../Forms/OtherCollectionView';
 import { Dialog } from '../Molecules/Dialog';
 import { hasPermission } from '../Permissions/helpers';
@@ -20,6 +19,7 @@ import type { SecurityOutlet } from '../Toolbar/Security';
 import type { NewRole, Role } from './Role';
 import type { BackEndRole } from './utils';
 import { fetchRoles } from './utils';
+import { schema } from '../DataModel/schema';
 
 export function CreateRole({
   scope,

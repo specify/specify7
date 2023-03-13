@@ -1,12 +1,14 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useSearchParameter } from '../../hooks/navigation';
-import { useAsyncState } from '../../hooks/useAsyncState';
+import { useAsyncState, usePromise } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { useId } from '../../hooks/useId';
+import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
 import type { RA } from '../../utils/types';
 import { caseInsensitiveHash, toggleItem } from '../../utils/utils';
@@ -19,17 +21,20 @@ import type {
   SerializedResource,
 } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { getModel, schema } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import { deserializeResource } from '../DataModel/serializers';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { getTable, tables } from '../DataModel/tables';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { ResourceView } from '../Forms/ResourceView';
+import { useMenuItem } from '../Header/MenuContext';
 import { getPref } from '../InitialContext/remotePrefs';
-import { isTreeModel, treeRanksPromise } from '../InitialContext/treeRanks';
+import { isTreeTable, treeRanksPromise } from '../InitialContext/treeRanks';
 import { useTitle } from '../Molecules/AppTitle';
 import { supportsBackdropBlur } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { ProtectedTree } from '../Permissions/PermissionDenied';
 import { NotFoundView } from '../Router/NotFoundView';
+import { formatUrl } from '../Router/queryString';
 import { EditTreeDefinition } from '../Toolbar/TreeRepair';
 import {
   useHighContrast,
@@ -46,8 +51,6 @@ import {
 } from './helpers';
 import { TreeRow } from './Row';
 import { TreeViewSearch } from './Search';
-import { deserializeResource } from '../DataModel/serializers';
-import { useMenuItem } from '../Header/MenuContext';
 
 const treeToPref = {
   Geography: 'geography',
@@ -69,7 +72,7 @@ function TreeView<SCHEMA extends AnyTree>({
     SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>
   >;
 }): JSX.Element | null {
-  const table = schema.models[tableName] as SpecifyModel<AnyTree>;
+  const table = tables[tableName] as SpecifyTable<AnyTree>;
 
   const rankIds = treeDefinitionItems.map(({ rankId }) => rankId);
 
@@ -101,13 +104,19 @@ function TreeView<SCHEMA extends AnyTree>({
   // Node sort order
   const sortField = getPref(`${tableName as 'Geography'}.treeview_sort_field`);
 
+  const includeAuthor = getPref(`TaxonTreeEditor.DisplayAuthor`);
+
   const baseUrl = `/api/specify_tree/${tableName.toLowerCase()}/${
     treeDefinition.id
   }`;
 
   const getRows = React.useCallback(
     async (parentId: number | 'null') =>
-      fetchRows(`${baseUrl}/${parentId}/${sortField}`),
+      fetchRows(
+        formatUrl(`${baseUrl}/${parentId}/${sortField}/`, {
+          includeAuthor: includeAuthor.toString(),
+        })
+      ),
     [baseUrl, sortField]
   );
 
@@ -157,7 +166,7 @@ function TreeView<SCHEMA extends AnyTree>({
 
   return rows === undefined ? null : (
     <Container.Full>
-      <header className="flex flex-wrap items-center gap-2">
+      <header className="flex items-center gap-2 overflow-x-auto sm:flex-wrap sm:overflow-x-visible">
         <TableIcon label name={table.name} />
         <H2 title={treeDefinition.get('remarks') ?? undefined}>
           {treeDefinition.get('name')}
@@ -175,13 +184,23 @@ function TreeView<SCHEMA extends AnyTree>({
         >
           {treeText.editRanks()}
         </Button.Small>
+        <Button.Small
+          disabled={conformation.length === 0}
+          onClick={(): void => {
+            setFocusPath([0]);
+            setConformation([]);
+          }}
+        >
+          {commonText.collapseAll()}
+        </Button.Small>
         <span className="-ml-2 flex-1" />
-        <ErrorBoundary dismissable>
+        <ErrorBoundary dismissible>
           <TreeViewActions<SCHEMA>
             actionRow={actionRow}
             focusedRow={focusedRow}
             focusRef={toolbarButtonRef}
             ranks={rankIds}
+            setFocusPath={setFocusPath}
             tableName={tableName}
             onChange={setActionRow}
             onRefresh={(): void => {
@@ -252,9 +271,11 @@ function TreeView<SCHEMA extends AnyTree>({
                       )
                     }
                   >
-                    {collapsedRanks?.includes(rank.rankId) ?? false
-                      ? rankName[0]
-                      : rankName}
+                    {
+                      (collapsedRanks?.includes(rank.rankId) ?? false
+                        ? rankName[0]
+                        : rankName) as LocalizedString
+                    }
                   </Button.LikeLink>
                   {isEditingRanks &&
                   collapsedRanks?.includes(rank.rankId) !== true ? (
@@ -291,6 +312,7 @@ function TreeView<SCHEMA extends AnyTree>({
               row={row}
               setFocusedRow={setFocusedRow}
               synonymColor={synonymColor}
+              treeName={tableName}
               onAction={(action): void => {
                 if (action === 'next')
                   if (rows[index + 1] === undefined) return undefined;
@@ -338,7 +360,6 @@ function EditTreeRank({
           dialog="modal"
           isDependent={false}
           isSubForm={false}
-          mode="edit"
           resource={resource}
           onAdd={undefined}
           onClose={handleClose}
@@ -350,23 +371,21 @@ function EditTreeRank({
   );
 }
 
-const fetchTreeRanks = async (): typeof treeRanksPromise => treeRanksPromise;
-
 export function TreeViewWrapper(): JSX.Element | null {
   useMenuItem('trees');
   const { tableName = '' } = useParams();
-  const treeName = getModel(tableName)?.name;
-  const [treeDefinitions] = useAsyncState(fetchTreeRanks, true);
+  const treeName = getTable(tableName)?.name;
+  const [treeDefinitions] = usePromise(treeRanksPromise, true);
   useErrorContext('treeDefinitions', treeDefinitions);
 
   const treeDefinition =
     typeof treeDefinitions === 'object' &&
     typeof treeName === 'string' &&
-    isTreeModel(treeName)
+    isTreeTable(treeName)
       ? caseInsensitiveHash(treeDefinitions, treeName)
       : undefined;
 
-  if (treeName === undefined || !isTreeModel(treeName)) return <NotFoundView />;
+  if (treeName === undefined || !isTreeTable(treeName)) return <NotFoundView />;
   return (
     <ProtectedTree action="read" treeName={treeName}>
       {typeof treeDefinition === 'object' ? (

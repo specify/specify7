@@ -11,7 +11,7 @@ import { Http } from '../../utils/ajax/definitions';
 import { formData } from '../../utils/ajax/helpers';
 import { ping } from '../../utils/ajax/ping';
 import type { RA } from '../../utils/types';
-import { overwriteReadOnly } from '../../utils/types';
+import { defined, overwriteReadOnly } from '../../utils/types';
 import { uniquifyDataSetName } from '../../utils/uniquifyName';
 import { Button } from '../Atoms/Button';
 import { Form, Input, Label, Select } from '../Atoms/Form';
@@ -19,19 +19,18 @@ import { icons } from '../Atoms/Icons';
 import { formatNumber } from '../Atoms/Internationalization';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
-import { createBackboneView } from '../Core/reactBackboneExtend';
 import { Backbone } from '../DataModel/backbone';
 import { fetchCollection } from '../DataModel/collection';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { schema } from '../DataModel/schema';
+import { tables } from '../DataModel/tables';
 import type { SpecifyUser } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { useTitle } from '../Molecules/AppTitle';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { DateElement } from '../Molecules/DateElement';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { FormattedResource } from '../Molecules/FormattedResource';
+import { FormattedResourceUrl } from '../Molecules/FormattedResource';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasPermission } from '../Permissions/helpers';
 import { unsafeNavigate } from '../Router/Router';
@@ -167,15 +166,12 @@ export function DataSetMeta({
           />
         </Label.Block>
         <Label.Block>
-          <b>{getField(schema.models.Workbench, 'remarks').label}:</b>
+          <b>{getField(tables.Workbench, 'remarks').label}:</b>
           <AutoGrowTextArea value={remarks} onValueChange={setRemarks} />
         </Label.Block>
         <div className="flex flex-col">
           <b>
-            {
-              getField(schema.models.WorkbenchTemplateMappingItem, 'metaData')
-                .label
-            }
+            {getField(tables.WorkbenchTemplateMappingItem, 'metaData').label}
           </b>
           <span>
             {commonText.colonLine({
@@ -199,8 +195,7 @@ export function DataSetMeta({
                 ),
               }}
               string={commonText.jsxColonLine({
-                label: getField(schema.models.Workbench, 'timestampCreated')
-                  .label,
+                label: getField(tables.Workbench, 'timestampCreated').label,
               })}
             />
           </span>
@@ -214,8 +209,7 @@ export function DataSetMeta({
                 ),
               }}
               string={commonText.jsxColonLine({
-                label: getField(schema.models.Workbench, 'timestampModified')
-                  .label,
+                label: getField(tables.Workbench, 'timestampModified').label,
               })}
             />
           </span>
@@ -246,13 +240,14 @@ export function DataSetMeta({
               components={{
                 wrap: (
                   <i>
-                    <FormattedResource resourceUrl={dataset.createdbyagent} />
+                    <FormattedResourceUrl
+                      resourceUrl={dataset.createdbyagent}
+                    />
                   </i>
                 ),
               }}
               string={commonText.jsxColonLine({
-                label: getField(schema.models.Workbench, 'createdByAgent')
-                  .label,
+                label: getField(tables.Workbench, 'createdByAgent').label,
               })}
             />
           </span>
@@ -262,7 +257,7 @@ export function DataSetMeta({
                 wrap: (
                   <i>
                     {typeof dataset.modifiedbyagent === 'string' ? (
-                      <FormattedResource
+                      <FormattedResourceUrl
                         resourceUrl={dataset.modifiedbyagent}
                       />
                     ) : (
@@ -272,8 +267,7 @@ export function DataSetMeta({
                 ),
               }}
               string={commonText.jsxColonLine({
-                label: getField(schema.models.Workbench, 'modifiedByAgent')
-                  .label,
+                label: getField(tables.Workbench, 'modifiedByAgent').label,
               })}
             />
           </span>
@@ -321,7 +315,7 @@ function DataSetName({
         )}
       </h2>
       <Button.Small onClick={handleOpen}>
-        {getField(schema.models.WorkbenchTemplateMappingItem, 'metaData').label}
+        {getField(tables.WorkbenchTemplateMappingItem, 'metaData').label}
       </Button.Small>
       {showMeta && (
         <DataSetMeta
@@ -422,30 +416,53 @@ function ChangeOwner({
   );
 }
 
-const WrappedDataSetName = createBackboneView(DataSetName);
-const ChangeOwnerView = createBackboneView(ChangeOwner);
-
 // A wrapper for DS Meta for embedding in the WB
-export const DataSetNameView = Backbone.View.extend({
-  __name__: 'DataSetNameView',
-  render() {
-    this.dataSetMeta = new WrappedDataSetName({
-      el: this.el.getElementsByClassName('wb-name-container')[0],
-      dataset: this.options.dataset,
-      getRowCount: this.options.getRowCount,
-    }).render();
+export class DataSetNameView extends Backbone.View {
+  // eslint-disable-next-line functional/prefer-readonly-type
+  private dataSetMeta: (() => void) | undefined;
+
+  // eslint-disable-next-line functional/prefer-readonly-type
+  private changeOwnerView: (() => void) | undefined;
+
+  public constructor(
+    private readonly options: {
+      readonly dataset: Dataset;
+      readonly el: HTMLElement;
+      readonly display: (
+        jsx: JSX.Element,
+        element?: HTMLElement,
+        destructor?: () => void
+      ) => () => void;
+      readonly getRowCount: () => number;
+    }
+  ) {
+    super(options);
+  }
+
+  public render(): this {
+    const nameContainer =
+      this.options.el.getElementsByClassName('wb-name-container')?.[0];
+    this.dataSetMeta = this.options.display(
+      <DataSetName
+        dataset={this.options.dataset}
+        getRowCount={this.options.getRowCount}
+      />,
+      defined(nameContainer, 'Unable to find Wb Name container') as HTMLElement
+    );
     return this;
-  },
-  changeOwner() {
-    const handleClose = (): void => void this.changeOwnerView.remove();
-    this.changeOwnerView = new ChangeOwnerView({
-      dataset: this.options.dataset,
-      onClose: handleClose,
-    }).render();
-  },
-  remove() {
-    this.dataSetMeta.remove();
-    this.changeOwnerView?.remove();
+  }
+
+  public changeOwner(): void {
+    const handleClose = (): void => void this.changeOwnerView?.();
+    this.changeOwnerView = this.options.display(
+      <ChangeOwner dataset={this.options.dataset} onClose={handleClose} />
+    );
+  }
+
+  public remove(): this {
+    this.dataSetMeta?.();
+    this.changeOwnerView?.();
     Backbone.View.prototype.remove.call(this);
-  },
-});
+    return this;
+  }
+}

@@ -5,9 +5,11 @@
 
 import React from 'react';
 
+import { usePromise } from '../../hooks/useAsyncState';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { useValidation } from '../../hooks/useValidation';
 import { commonText } from '../../localization/common';
+import { headerText } from '../../localization/header';
 import { preferencesText } from '../../localization/preferences';
 import { welcomeText } from '../../localization/welcome';
 import { getAvailableFonts } from '../../utils/fonts';
@@ -18,14 +20,18 @@ import {
   parserFromType,
 } from '../../utils/parser/definitions';
 import { parseValue } from '../../utils/parser/parse';
-import { Input, Select } from '../Atoms/Form';
+import type { RA } from '../../utils/types';
+import { Input, Select, Textarea } from '../Atoms/Form';
 import { iconClassName } from '../Atoms/Icons';
+import { ReadOnlyContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
-import { schema } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { tables } from '../DataModel/tables';
 import type { Collection } from '../DataModel/types';
+import { rawMenuItemsPromise } from '../Header/menuItemDefinitions';
+import { useMenuItems, useUserTools } from '../Header/menuItemProcessing';
 import { AutoComplete } from '../Molecules/AutoComplete';
-import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
+import { ListEdit } from '../Toolbar/QueryTablesEdit';
 import type { PreferenceItem, PreferenceRendererProps } from './Definitions';
 import { getPrefDefinition } from './helpers';
 import { usePref } from './usePref';
@@ -33,8 +39,8 @@ import { usePref } from './usePref';
 export function ColorPickerPreferenceItem({
   value,
   onChange: handleChange,
-  isReadOnly,
 }: PreferenceRendererProps<string>): JSX.Element {
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return (
     <div className={`relative ${iconClassName}`}>
       <span
@@ -44,7 +50,7 @@ export function ColorPickerPreferenceItem({
         }}
       />
       <Input.Generic
-        className="sr-only"
+        className="sr-only !top-[unset] bottom-0 h-auto opacity-0"
         isReadOnly={isReadOnly}
         maxLength={7}
         minLength={7}
@@ -58,30 +64,79 @@ export function ColorPickerPreferenceItem({
   );
 }
 
+export type MenuPreferences = {
+  readonly visible: RA<string>;
+  /**
+   * Need to explicitly keep track of hidden items so that when future Specify
+   * versions add new items to menu, they are visible by default
+   */
+  readonly hidden: RA<string>;
+};
+
+export function HeaderItemsPreferenceItem({
+  value,
+  onChange: handleChange,
+}: PreferenceRendererProps<MenuPreferences>): JSX.Element {
+  const [rawMenuItems] = usePromise(rawMenuItemsPromise, false);
+  const menuItems = useMenuItems();
+  const rawUserTools = useUserTools();
+  const userTools = React.useMemo(
+    () =>
+      rawUserTools === undefined || menuItems === undefined
+        ? undefined
+        : Object.values(rawUserTools)
+            .flatMap((entries) => Object.values(entries))
+            .flat()
+            .filter(
+              ({ name }) => !menuItems.some((item) => item.name === name)
+            ),
+    [rawUserTools, menuItems]
+  );
+
+  const defaultItems = rawMenuItems?.map(({ name }) => name) ?? [];
+  return menuItems === undefined || userTools === undefined ? (
+    <>{commonText.loading()}</>
+  ) : (
+    <ListEdit
+      allItems={[...menuItems, ...userTools].map(({ name, title }) => ({
+        name,
+        label: title,
+      }))}
+      availableLabel={headerText.userTools()}
+      defaultValues={defaultItems}
+      selectedLabel={headerText.menuItems()}
+      selectedValues={value.visible.length === 0 ? defaultItems : value.visible}
+      onChange={(selectedItems): void =>
+        handleChange({
+          visible: selectedItems,
+          hidden: defaultItems.filter((item) => !selectedItems.includes(item)),
+        })
+      }
+    />
+  );
+}
+
 export function CollectionSortOrderPreferenceItem({
   value,
   onChange: handleChange,
-  isReadOnly,
 }: PreferenceRendererProps<
   keyof Collection['fields'] | `-${keyof Collection['fields']}`
 >): JSX.Element {
   return (
     <OrderPicker
-      isReadOnly={isReadOnly}
-      model={schema.models.Collection}
       order={value}
+      table={tables.Collection}
       onChange={handleChange}
     />
   );
 }
 
 export function OrderPicker<SCHEMA extends AnySchema>({
-  model,
+  table,
   order,
   onChange: handleChange,
-  isReadOnly = false,
 }: {
-  readonly model: SpecifyModel<SCHEMA>;
+  readonly table: SpecifyTable<SCHEMA>;
   readonly order:
     | `-${string & keyof SCHEMA['fields']}`
     | (string & keyof SCHEMA['fields'])
@@ -91,8 +146,8 @@ export function OrderPicker<SCHEMA extends AnySchema>({
       | `-${string & keyof SCHEMA['fields']}`
       | (string & keyof SCHEMA['fields'])
   ) => void;
-  readonly isReadOnly?: boolean;
 }): JSX.Element {
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return (
     <Select
       disabled={isReadOnly}
@@ -103,7 +158,7 @@ export function OrderPicker<SCHEMA extends AnySchema>({
     >
       <option value="">{commonText.none()}</option>
       <optgroup label={commonText.ascending()}>
-        {model.literalFields
+        {table.literalFields
           .filter(
             /*
              * "order === name" is necessary in case Accession.timestampCreated
@@ -118,7 +173,7 @@ export function OrderPicker<SCHEMA extends AnySchema>({
           ))}
       </optgroup>
       <optgroup label={commonText.descending()}>
-        {model.literalFields
+        {table.literalFields
           .filter(({ isHidden, name }) => !isHidden || order?.slice(1) === name)
           .map(({ name, label }) => (
             <option key={name} value={`-${name}`}>
@@ -135,7 +190,6 @@ export const defaultFont = 'default';
 export function FontFamilyPreferenceItem({
   value,
   onChange: handleChange,
-  isReadOnly,
 }: PreferenceRendererProps<string>): JSX.Element {
   const items = React.useMemo(
     () => [
@@ -154,6 +208,7 @@ export function FontFamilyPreferenceItem({
     ],
     []
   );
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return isReadOnly ? (
     <Input.Text isReadOnly value={value} />
   ) : (
@@ -210,7 +265,6 @@ const welcomePageModes: PreferenceItem<WelcomePageMode> = {
 export function WelcomePageModePreferenceItem({
   value,
   onChange: handleChange,
-  isReadOnly,
 }: PreferenceRendererProps<WelcomePageMode>): JSX.Element {
   const [source, setSource] = usePref('welcomePage', 'general', 'source');
   const sourceDefinition = getPrefDefinition(
@@ -224,7 +278,6 @@ export function WelcomePageModePreferenceItem({
       <DefaultPreferenceItemRender
         category="welcomePage"
         definition={welcomePageModes}
-        isReadOnly={isReadOnly}
         item="mode"
         subcategory="general"
         value={value}
@@ -234,7 +287,6 @@ export function WelcomePageModePreferenceItem({
         <DefaultPreferenceItemRender
           category="welcomePage"
           definition={sourceDefinition}
-          isReadOnly={isReadOnly}
           item="source"
           subcategory="general"
           value={source}
@@ -250,7 +302,6 @@ export function DefaultPreferenceItemRender({
   definition,
   value,
   onChange: handleChange,
-  isReadOnly,
 }: PreferenceRendererProps<any>): JSX.Element {
   const parser =
     'type' in definition
@@ -270,6 +321,8 @@ export function DefaultPreferenceItemRender({
     definition.setOnBlurOnly === true
       ? (): void => handleChange(internalValue)
       : undefined;
+
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return 'values' in definition ? (
     <>
       <Select
@@ -298,7 +351,7 @@ export function DefaultPreferenceItemRender({
       onValueChange={handleChange}
     />
   ) : parser?.type === 'text' ? (
-    <AutoGrowTextArea
+    <Textarea
       forwardRef={validationRef}
       {...(validationAttributes ?? { type: 'text' })}
       isReadOnly={isReadOnly}

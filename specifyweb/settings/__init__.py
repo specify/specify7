@@ -92,9 +92,14 @@ LOCALE_PATHS = (
     ),
 )
 
+# On any changes here, also update languageCodeMapper in
+# /specifyweb/frontend/js_src/lib/localization/utils/config.ts
 LANGUAGES = [
     ('en-us', 'English'),
     ('ru-ru', 'русский'),
+    ('uk-ua', 'українська'),
+    ('fr-fr', 'français'),
+    ('es-es', 'español'),
 ]
 
 SITE_ID = 1
@@ -141,6 +146,11 @@ STATICFILES_DIRS = (
     ('config', SPECIFY_CONFIG_DIR),
 )
 
+# Add web app manifest
+WEBPACK_LOADER = {
+    'MANIFEST_FILE': os.path.join(SPECIFY_CONFIG_DIR, "/static/manifest.json"),
+}
+
 # List of finder classes that know how to find static files in
 # various locations.
 STATICFILES_FINDERS = (
@@ -183,6 +193,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'specifyweb.context.middleware.ContextMiddleware',
     'specifyweb.permissions.middleware.PermissionsMiddleware',
+    'specifyweb.middleware.general.GeneralMiddleware',
 ]
 
 ROOT_URLCONF = 'specifyweb.urls'
@@ -208,10 +219,11 @@ INSTALLED_APPS = (
     'specifyweb.notifications',
     'specifyweb.export',
     'specifyweb.raven_placeholder' if RAVEN_CONFIG is None else 'raven.contrib.django.raven_compat',
-    'django_jsonfield_backport',
 )
 
 AUTH_USER_MODEL = 'specify.Specifyuser'
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 AUTHENTICATION_BACKENDS = []
 if ALLOW_SUPPORT_LOGIN:

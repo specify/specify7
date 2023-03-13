@@ -1,5 +1,5 @@
 import {interactionBusinessRules} from './interactionBusinessRules';
-import {schema} from './schema';
+import {tables} from './tables';
 
 export const businessRuleDefs = Object.freeze({
         Accession: {
@@ -92,9 +92,9 @@ export const businessRuleDefs = Object.freeze({
                 guid: 'institution',
             },
             customInit(collectionObject) {
-                const ceField = collectionObject.specifyModel.getField('collectingevent');
+                const ceField = collectionObject.specifyTable.getField('collectingevent');
                 if (ceField.isDependent() && collectionObject.get('collectingevent') == null) {
-                    collectionObject.set('collectingevent', new schema.models.CollectingEvent.Resource());
+                    collectionObject.set('collectingevent', new tables.CollectingEvent.Resource());
                 }
             }
         },
@@ -107,7 +107,7 @@ export const businessRuleDefs = Object.freeze({
             onRemoved(det, detCollection) {
                 /*
                  * Example usage:
-                 * if (detCollection.related.specifyModel.name == 'CollectionObject') {
+                 * if (detCollection.related.specifyTable.name == 'CollectionObject') {
                  *     var collectionobject = detCollection.related;
                  *     console.log("removed determination", det, "from collection object", collectionobject);
                  * }
@@ -116,7 +116,7 @@ export const businessRuleDefs = Object.freeze({
             onAdded(det, detCollection) {
                 /*
                  * Example usage:
-                 * if (detCollection.related.specifyModel.name == 'CollectionObject') {
+                 * if (detCollection.related.specifyTable.name == 'CollectionObject') {
                  *     var collectionobject = detCollection.related;
                  *     console.log("added determination", det, "to collection object", collectionobject);
                  * }

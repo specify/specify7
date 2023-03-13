@@ -1,6 +1,6 @@
-import { schema } from '../components/DataModel/schema';
 import { setDevelopmentGlobal } from '../utils/types';
 import { group, sortFunction } from '../utils/utils';
+import { tables } from '../components/DataModel/tables';
 
 const javaTypeToTypeScript = {
   text: 'string',
@@ -28,10 +28,10 @@ const keyOrder = [
 ];
 
 function regenerate(): string {
-  const index = `export type Tables = {${Object.keys(schema.models)
+  const index = `export type Tables = {${Object.keys(tables)
     .map((tableName) => `readonly ${tableName}: ${tableName}`)
     .join(';')}};`;
-  const models = Object.entries(schema.models)
+  const tableTypes = Object.entries(tables)
     .map(
       ([tableName, { literalFields, relationships }]) =>
         `export type ${tableName} = {${Object.entries({
@@ -54,8 +54,8 @@ function regenerate(): string {
                 }${relationship.isDependent() ? 'Dependent' : 'Independent'}`,
                 `readonly ${relationship.name}:${
                   relationship.type.endsWith('-to-many')
-                    ? `RA<${relationship.relatedModel.name}>`
-                    : `${relationship.relatedModel.name}${
+                    ? `RA<${relationship.relatedTable.name}>`
+                    : `${relationship.relatedTable.name}${
                         relationship.isRequired ? '' : '|null'
                       }`
                 }`,
@@ -73,7 +73,7 @@ function regenerate(): string {
           .join(';')}}`
     )
     .join(';');
-  return `${index}${models}`;
+  return `${index}${tableTypes}`;
 }
 
 setDevelopmentGlobal('_regenerateSchema', (): void => {

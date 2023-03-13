@@ -3,7 +3,7 @@ import React from 'react';
 import type { IR } from '../../utils/types';
 import { replaceKey } from '../../utils/utils';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { SpQuery } from '../DataModel/types';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
@@ -15,14 +15,14 @@ export function ReportForRecord({
   query: rawQuery,
   parameters,
   definition,
-  model,
+  table,
   resourceId,
   onClose: handleClose,
 }: {
   readonly query: SerializedResource<SpQuery>;
   readonly definition: Element;
   readonly parameters: IR<string>;
-  readonly model: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly resourceId: number;
   readonly onClose: () => void;
 }): JSX.Element {
@@ -50,7 +50,7 @@ export function ReportForRecord({
             }
       )
     );
-    const newField = QueryFieldSpec.fromPath(model.name, [model.idField.name])
+    const newField = QueryFieldSpec.fromPath(table.name, [table.idField.name])
       .toSpQueryField()
       .set('operStart', queryFieldFilters.equal.id)
       .set('startValue', resourceId.toString())
@@ -60,7 +60,7 @@ export function ReportForRecord({
       ...query.fields,
       serializeResource(newField),
     ]);
-  }, [rawQuery, model, resourceId, clearQueryFilters]);
+  }, [rawQuery, table, resourceId, clearQueryFilters]);
 
   return (
     <RunReport

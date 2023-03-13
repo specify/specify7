@@ -9,12 +9,12 @@ import type { RA, WritableArray } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import { capitalize, insertItem, replaceItem } from '../../utils/utils';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { getModelById, schema, strictGetModel } from '../DataModel/schema';
+import { getTableById, strictGetTable, tables } from '../DataModel/tables';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { SpQueryField, Tables } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
-import { isTreeModel } from '../InitialContext/treeRanks';
+import { isTreeTable } from '../InitialContext/treeRanks';
 import type { MappingPath } from '../WbPlanView/Mapper';
 import {
   anyTreeRank,
@@ -55,13 +55,13 @@ function extractDatePart(fieldName: string): {
 
 // TEST: add comprehensive unit tests for this
 export class QueryFieldSpec {
-  public readonly baseTable: SpecifyModel;
+  public readonly baseTable: SpecifyTable;
 
   // eslint-disable-next-line functional/prefer-readonly-type
   public joinPath: RA<LiteralField | Relationship> = [];
 
   // eslint-disable-next-line functional/prefer-readonly-type
-  public table: SpecifyModel;
+  public table: SpecifyTable;
 
   // eslint-disable-next-line functional/prefer-readonly-type
   public datePart: DatePart | undefined = undefined;
@@ -81,7 +81,7 @@ export class QueryFieldSpec {
   // eslint-disable-next-line functional/prefer-readonly-type
   public isPhantom: boolean = false;
 
-  public constructor(baseTable: SpecifyModel) {
+  public constructor(baseTable: SpecifyTable) {
     this.baseTable = baseTable;
     this.table = this.baseTable;
   }
@@ -103,7 +103,7 @@ export class QueryFieldSpec {
                * to be called "ID" (case-sensitive)
                */
               typeof this.treeRank === 'string'
-                ? field === field.model.idField && this.treeRank !== anyTreeRank
+                ? field === field.table.idField && this.treeRank !== anyTreeRank
                   ? 'ID'
                   : field.name === 'author'
                   ? 'Author'
@@ -130,7 +130,7 @@ export class QueryFieldSpec {
 
   public toSpQueryField(): SpecifyResource<SpQueryField> {
     const attributes = this.toSpQueryAttributes();
-    return new schema.models.SpQueryField.Resource()
+    return new tables.SpQueryField.Resource()
       .set('isDisplay', true)
       .set('isNot', false)
       .set('startValue', '')
@@ -153,7 +153,7 @@ export class QueryFieldSpec {
         field.isRelationship
           ? relationshipIsToMany(field)
             ? formatToManyIndex(1)
-            : isTreeModel(field.relatedModel.name)
+            : isTreeTable(field.relatedTable.name)
             ? formatTreeRank(
                 index + 1 === length
                   ? this.treeRank ?? anyTreeRank
@@ -177,7 +177,7 @@ export class QueryFieldSpec {
         path.length === 1
           ? insertItem(path, 0, formatTreeRank(this.treeRank))
           : replaceItem(path, path.length - 2, formatTreeRank(this.treeRank));
-    if (isTreeModel(this.baseTable.name) && !valueIsTreeRank(path[0]))
+    if (isTreeTable(this.baseTable.name) && !valueIsTreeRank(path[0]))
       path = [formatTreeRank(anyTreeRank), ...path];
 
     // Format date field
@@ -194,9 +194,9 @@ export class QueryFieldSpec {
     const rest = filterArray(
       this.joinPath.map((field) =>
         field.isRelationship
-          ? field.relatedModel.name.toLowerCase() === field.name.toLowerCase()
-            ? field.relatedModel.tableId.toString()
-            : `${field.relatedModel.tableId}-${field.name}`
+          ? field.relatedTable.name.toLowerCase() === field.name.toLowerCase()
+            ? field.relatedTable.tableId.toString()
+            : `${field.relatedTable.tableId}-${field.name}`
           : undefined
       )
     );
@@ -207,8 +207,8 @@ export class QueryFieldSpec {
     baseTableName: keyof Tables,
     path: RA<string>
   ): QueryFieldSpec {
-    const rootTable = strictGetModel(baseTableName);
-    const fieldSpec = new QueryFieldSpec(strictGetModel(baseTableName));
+    const rootTable = strictGetTable(baseTableName);
+    const fieldSpec = new QueryFieldSpec(strictGetTable(baseTableName));
 
     const joinPath: WritableArray<LiteralField | Relationship> = [];
     let node = rootTable;
@@ -229,7 +229,7 @@ export class QueryFieldSpec {
       if (field.isTemporal()) fieldSpec.datePart = datePart ?? 'fullDate';
 
       joinPath.push(field);
-      if (field.isRelationship) node = field.relatedModel;
+      if (field.isRelationship) node = field.relatedTable;
       else if (index + 1 !== path.length)
         raise(new Error('Bad query field spec path'));
       return true;
@@ -260,12 +260,12 @@ export class QueryFieldSpec {
       ? fullPath.split(',').slice(0, -1)
       : fullPath.split(',');
 
-    const baseTable = getModelById(Number.parseInt(baseTableId));
+    const baseTable = getTableById(Number.parseInt(baseTableId));
 
     let model = baseTable;
     const joinPath = path.map((element) => {
       const [tableId, fieldName] = element.split('-');
-      const table = getModelById(Number.parseInt(tableId));
+      const table = getTableById(Number.parseInt(tableId));
       const field = model.strictGetField(fieldName ?? table.name);
       model = table;
       return field;
@@ -278,10 +278,10 @@ export class QueryFieldSpec {
     fieldSpec.joinPath = filterArray([...joinPath, field]);
     fieldSpec.table =
       typeof field === 'object' && field.isRelationship
-        ? field.relatedModel
+        ? field.relatedTable
         : model;
 
-    if (isTreeModel(fieldSpec.table.name)) {
+    if (isTreeTable(fieldSpec.table.name)) {
       /*
        * Parses such cases:
        * Kingdom Author (becomes Kingdom->Author)

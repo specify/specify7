@@ -15,8 +15,12 @@ import { Container, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { createResource } from '../DataModel/resource';
-import { schema, strictGetModel } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import {
+  deserializeResource,
+  serializeResource,
+} from '../DataModel/serializers';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { strictGetTable, tables } from '../DataModel/tables';
 import type { RecordSet, SpQuery, Tables } from '../DataModel/types';
 import { raise, softFail } from '../Errors/Crash';
 import { recordSetView } from '../FormParse/webOnlyViews';
@@ -35,15 +39,11 @@ import { sortTypes } from './helpers';
 import { QueryResultsTable } from './ResultsTable';
 import { QueryToForms } from './ToForms';
 import { QueryToMap } from './ToMap';
-import {
-  deserializeResource,
-  serializeResource,
-} from '../DataModel/serializers';
 
 export type QueryResultRow = RA<number | string | null>;
 
 export function QueryResults({
-  model,
+  table,
   label = commonText.results(),
   hasIdField,
   queryResource,
@@ -59,7 +59,7 @@ export function QueryResults({
   extraButtons,
   tableClassName = '',
 }: {
-  readonly model: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly label?: LocalizedString;
   readonly hasIdField: boolean;
   readonly queryResource: SpecifyResource<SpQuery> | undefined;
@@ -271,18 +271,18 @@ export function QueryResults({
             ) : undefined}
             <QueryToMap
               fieldSpecs={fieldSpecs}
-              model={model}
               results={loadedResults}
               selectedRows={selectedRows}
+              table={table}
               totalCount={totalCount}
               onFetchMore={
                 canFetchMore && !isFetching ? handleFetchMore : undefined
               }
             />
             <QueryToForms
-              model={model}
               results={results}
               selectedRows={selectedRows}
+              table={table}
               totalCount={totalCount}
               onDelete={(index): void => {
                 // Don't allow deleting while query results are being fetched
@@ -367,9 +367,9 @@ export function QueryResults({
             <QueryResultsTable
               fieldSpecs={fieldSpecs}
               hasIdField={hasIdField}
-              model={model}
               results={loadedResults}
               selectedRows={selectedRows}
+              table={table}
               onSelected={(rowIndex, isSelected, isShiftClick): void => {
                 /*
                  * If shift/ctrl/cmd key was held during click, toggle all rows
@@ -422,7 +422,8 @@ function TableHeaderCell({
   readonly sortConfig: QueryField['sortType'];
   readonly onSortChange?: (sortType: QueryField['sortType']) => void;
 }): JSX.Element {
-  const tableName = fieldSpec?.getField()?.model.name;
+  // TableName refers to the table the filed is from, not the base table name of the query
+  const tableName = fieldSpec?.table?.name;
 
   const content =
     typeof fieldSpec === 'object' ? (
@@ -434,6 +435,7 @@ function TableHeaderCell({
         )}
       </>
     ) : undefined;
+
   return (
     <div
       className="sticky w-full min-w-max border-b border-gray-500
@@ -491,7 +493,7 @@ function CreateRecordSet({
       <Button.Small
         aria-haspopup="dialog"
         onClick={(): void => {
-          const recordSet = new schema.models.RecordSet.Resource();
+          const recordSet = new tables.RecordSet.Resource();
           if (queryResource !== undefined && !queryResource.isNew())
             recordSet.set('name', queryResource.get('name'));
           setState({
@@ -500,14 +502,15 @@ function CreateRecordSet({
           });
         }}
       >
-        {queryText.createRecordSet()}
+        {queryText.createRecordSet({
+          recordSetTable: tables.RecordSet.label,
+        })}
       </Button.Small>
       {state.type === 'Editing' && (
         <ResourceView
           dialog="modal"
           isDependent={false}
           isSubForm={false}
-          mode="edit"
           resource={state.recordSet}
           viewName={recordSetView}
           onAdd={undefined}
@@ -520,7 +523,7 @@ function CreateRecordSet({
               ...serializeResource(state.recordSet),
               version: 1,
               type: 0,
-              dbTableId: strictGetModel(baseTableName).tableId,
+              dbTableId: strictGetTable(baseTableName).tableId,
               /*
                * Back-end has an exception for RecordSet table allowing passing
                * inline data for record set items.
@@ -546,7 +549,7 @@ function CreateRecordSet({
           }}
         />
       )}
-      {state.type === 'Saving' && recordSetFromQueryLoading}
+      {state.type === 'Saving' && recordSetFromQueryLoading()}
       {state.type === 'Saved' && (
         <RecordSetCreated
           recordSet={state.recordSet}

@@ -6,15 +6,16 @@ import { formsText } from '../../localization/forms';
 import { f } from '../../utils/functools';
 import { filterArray } from '../../utils/types';
 import { Button } from '../Atoms/Button';
-import { formatList } from '../Atoms/Internationalization';
 import { LoadingContext } from '../Core/Contexts';
-import { toTable, toTables } from '../DataModel/helpers';
-import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Locality } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
+import { AnySchema } from '../DataModel/helperTypes';
+import { toTable, toTables } from '../DataModel/helpers';
+import { formatDisjunction } from '../Atoms/Internationalization';
+import { tables } from '../DataModel/tables';
 
 type States =
   | State<
@@ -34,15 +35,16 @@ export function PaleoLocationMapPlugin({
   resource,
 }: {
   readonly id: string | undefined;
-  readonly resource: SpecifyResource<AnySchema>;
+  readonly resource: SpecifyResource<AnySchema> | undefined;
 }): JSX.Element | null {
   const [state, setState] = React.useState<States>({ type: 'MainState' });
   const loading = React.useContext(LoadingContext);
 
-  return hasTablePermission('CollectingEvent', 'read') &&
+  return typeof resource === 'object' &&
+    hasTablePermission('CollectingEvent', 'read') &&
     hasTablePermission('Locality', 'read') &&
     hasTablePermission('PaleoContext', 'read') ? (
-    <ErrorBoundary dismissable>
+    <ErrorBoundary dismissible>
       <Button.Small
         className="w-fit"
         id={id}
@@ -61,18 +63,22 @@ export function PaleoLocationMapPlugin({
           }
         >
           {formsText.wrongTableForPlugin({
-            currentTable: resource.specifyModel.name,
-            correctTable: formatList(paleoPluginTables),
+            currentTable: resource.specifyTable.name,
+            supportedTables: formatDisjunction(paleoPluginTables),
           })}
         </Dialog>
       )}
       {state.type === 'NoDataState' && (
         <Dialog
           buttons={commonText.close()}
-          header={formsText.paleoRequiresGeography()}
+          header={formsText.paleoRequiresGeography({
+            geographyTable: tables.Geography.label,
+          })}
           onClose={(): void => setState({ type: 'MainState' })}
         >
-          {formsText.paleoRequiresGeographyDescription()}
+          {formsText.paleoRequiresGeographyDescription({
+            localityTable: tables.Locality.label,
+          })}
         </Dialog>
       )}
       {state.type === 'LoadedState' && (

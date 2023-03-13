@@ -14,7 +14,6 @@ import { toResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceApiUrl } from '../DataModel/resource';
-import { schema } from '../DataModel/schema';
 import type {
   SpAppResource,
   SpAppResourceDir,
@@ -29,34 +28,32 @@ import {
   AppResourceTextEditor,
   visualAppResourceEditors,
 } from './TabDefinitions';
+import { schema } from '../DataModel/schema';
 
 export function AppResourcesTabs({
   label,
-  isReadOnly,
   showValidationRef,
   headerButtons,
   appResource,
   resource,
   directory,
   data,
-  isFullScreen,
-  onExitFullScreen: handleExitFullScreen,
+  index,
+  isFullScreen: [isFullScreen, handleChangeFullScreen],
   onChange: handleChange,
 }: {
   readonly label: LocalizedString;
-  readonly isReadOnly: boolean;
   readonly showValidationRef: React.MutableRefObject<(() => void) | null>;
   readonly appResource: SpecifyResource<SpAppResource | SpViewSetObject>;
   readonly resource: SerializedResource<SpAppResource | SpViewSetObject>;
   readonly directory: SerializedResource<SpAppResourceDir>;
   readonly headerButtons: JSX.Element;
   readonly data: string | null;
-  readonly isFullScreen: boolean;
-  readonly onExitFullScreen: () => void;
-  readonly onChange: (data: string | null) => void;
+  readonly isFullScreen: GetSet<boolean>;
+  readonly index: GetSet<number>;
+  readonly onChange: (data: string | (() => string | null) | null) => void;
 }): JSX.Element {
   const tabs = useEditorTabs(resource);
-  const index = React.useState<number>(0);
   const children = (
     <Tabs
       index={index}
@@ -67,7 +64,6 @@ export function AppResourcesTabs({
             appResource={appResource}
             data={data}
             directory={directory}
-            isReadOnly={isReadOnly}
             key={index}
             resource={resource}
             showValidationRef={showValidationRef}
@@ -80,13 +76,14 @@ export function AppResourcesTabs({
   return isFullScreen ? (
     <Dialog
       buttons={
-        <Button.Blue onClick={handleExitFullScreen}>
+        <Button.Blue onClick={(): void => handleChangeFullScreen(false)}>
           {commonText.close()}
         </Button.Blue>
       }
       className={{
         container: dialogClassNames.fullScreen,
       }}
+      dimensionsKey={false}
       header={label}
       headerButtons={headerButtons}
       icon={appResourceIcon(getResourceType(resource))}
@@ -190,10 +187,10 @@ export function Tabs({
           </Tab>
         ))}
       </Tab.List>
-      <Tab.Panels className="flex flex-1 overflow-hidden border border-brand-300 dark:border-none">
+      <Tab.Panels className="flex flex-1 overflow-hidden">
         {Object.values(tabs).map((element, index) => (
           <Tab.Panel className="flex flex-1 flex-col gap-4" key={index}>
-            <ErrorBoundary dismissable>{element}</ErrorBoundary>
+            <ErrorBoundary dismissible>{element}</ErrorBoundary>
           </Tab.Panel>
         ))}
       </Tab.Panels>

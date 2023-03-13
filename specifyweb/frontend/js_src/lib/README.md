@@ -85,6 +85,7 @@ Instead of `// TODO: ` comments, the front-end uses the following comments:
 - `// FIXME:` - a task that must be completed in this commit. This commonly
   includes temporary code modifications that must be reversed before pushing the
   code.
+- `// LOW:` - low priority/low urgency tasks.
 
   `ESLint` config has a rule that highlights all `FIXME` comments as errors,
   thus helping you to remember to fix them before committing.

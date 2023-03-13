@@ -12,7 +12,6 @@ import { useUnloadProtect } from '../../hooks/navigation';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
-import { whitespaceSensitive } from '../../localization/utils';
 import { wbPlanText } from '../../localization/wbPlan';
 import { wbText } from '../../localization/workbench';
 import { getCache } from '../../utils/cache';
@@ -22,8 +21,8 @@ import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
-import { LoadingContext } from '../Core/Contexts';
-import { strictGetModel } from '../DataModel/schema';
+import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
+import { strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
@@ -54,6 +53,7 @@ import {
 import { reducer } from './mappingReducer';
 import { findRequiredMissingFields } from './modelHelpers';
 import { getMappingLineData } from './navigator';
+import { navigatorSpecs } from './navigatorSpecs';
 import type { ColumnOptions } from './uploadPlanParser';
 import type { Dataset } from './Wrapped';
 
@@ -127,7 +127,6 @@ export const getDefaultMappingState = ({
 
 // REFACTOR: split component into smaller components
 export function Mapper(props: {
-  readonly isReadOnly: boolean;
   readonly dataset: Dataset;
   readonly baseTableName: keyof Tables;
   readonly onChangeBaseTable: () => void;
@@ -277,8 +276,9 @@ export function Mapper(props: {
       type: 'CloseSelectElementAction',
     });
 
+  const isReadOnly = React.useContext(ReadOnlyContext);
   const mapButtonEnabled =
-    !props.isReadOnly &&
+    !isReadOnly &&
     state.lines.length > 0 &&
     mappingPathIsComplete(state.mappingView) &&
     getMappedFieldsBind(state.mappingView).length === 0;
@@ -286,7 +286,7 @@ export function Mapper(props: {
   return (
     <Layout
       buttonsLeft={
-        props.isReadOnly ? undefined : (
+        isReadOnly ? undefined : (
           <>
             <ChangeBaseTable onClick={props.onChangeBaseTable} />
             <Button.Small
@@ -334,7 +334,6 @@ export function Mapper(props: {
                 mustMatchPreferences: state.mustMatchPreferences,
               })
             }
-            isReadOnly={props.isReadOnly}
             onChange={(mustMatchPreferences): void =>
               dispatch({
                 type: 'MustMatchPrefChangeAction',
@@ -359,7 +358,7 @@ export function Mapper(props: {
                 });
             }}
           />
-          {!props.isReadOnly && (
+          {!isReadOnly && (
             <Button.Small
               className={
                 state.mappingsAreValidated
@@ -384,9 +383,9 @@ export function Mapper(props: {
             aria-haspopup="dialog"
             href={`/specify/workbench/${props.dataset.id}/`}
           >
-            {props.isReadOnly ? wbText.dataEditor() : commonText.cancel()}
+            {isReadOnly ? wbText.dataEditor() : commonText.cancel()}
           </Link.Small>
-          {!props.isReadOnly && (
+          {!isReadOnly && (
             <Button.Small
               disabled={!state.changesMade}
               onClick={(): void => handleSave(false)}
@@ -401,14 +400,12 @@ export function Mapper(props: {
           <TableIcon label name={props.baseTableName} />
           <span title={wbText.dataSetName()}>{props.dataset.name}</span>
           <span title={wbPlanText.baseTable()}>
-            {` (${strictGetModel(props.baseTableName).label})`}
+            {` (${strictGetTable(props.baseTableName).label})`}
           </span>
           {props.dataset.uploadresult?.success === true && (
             <span
               className="flex items-center text-red-600"
-              title={whitespaceSensitive(
-                wbPlanText.dataSetUploadedDescription()
-              )}
+              title={wbPlanText.dataSetUploadedDescription()}
             >
               {` ${wbPlanText.dataSetUploaded()}`}
             </span>
@@ -417,7 +414,7 @@ export function Mapper(props: {
       }
       onClick={handleClose}
     >
-      {!props.isReadOnly && state.validationResults.length > 0 && (
+      {!isReadOnly && state.validationResults.length > 0 && (
         <ValidationResults
           baseTableName={props.baseTableName}
           getMappedFields={getMappedFieldsBind}
@@ -447,12 +444,13 @@ export function Mapper(props: {
               showHiddenFields: state.showHiddenFields,
               mustMatchPreferences: state.mustMatchPreferences,
               generateFieldData: 'all',
+              spec: navigatorSpecs.wbPlanView,
             }),
             customSelectType: 'OPENED_LIST',
             onChange({ isDoubleClick, ...rest }) {
               if (isDoubleClick && mapButtonEnabled)
                 dispatch({ type: 'MappingViewMapAction' });
-              else if (!props.isReadOnly)
+              else if (!isReadOnly)
                 dispatch({
                   type: 'ChangeSelectElementValueAction',
                   line: 'mappingView',
@@ -507,7 +505,7 @@ export function Mapper(props: {
 
           const lineData = getMappingLineProps({
             customSelectType: 'CLOSED_LIST',
-            onChange: props.isReadOnly
+            onChange: isReadOnly
               ? undefined
               : (payload): void =>
                   dispatch({
@@ -517,7 +515,7 @@ export function Mapper(props: {
                   }),
             onOpen: handleOpen,
             onClose: handleClose,
-            onAutoMapperSuggestionSelection: props.isReadOnly
+            onAutoMapperSuggestionSelection: isReadOnly
               ? undefined
               : (suggestion: string): void =>
                   dispatch({
@@ -526,7 +524,7 @@ export function Mapper(props: {
                   }),
             openSelectElement,
             autoMapperSuggestions:
-              (!props.isReadOnly && state.autoMapperSuggestions) || [],
+              (!isReadOnly && state.autoMapperSuggestions) || [],
             mappingLineData: getMappingLineData({
               baseTableName: props.baseTableName,
               mappingPath,
@@ -534,6 +532,7 @@ export function Mapper(props: {
               showHiddenFields: state.showHiddenFields,
               mustMatchPreferences: state.mustMatchPreferences,
               generateFieldData: 'all',
+              spec: navigatorSpecs.wbPlanView,
             }),
           });
 
@@ -546,7 +545,7 @@ export function Mapper(props: {
                   customSelectSubtype: 'simple',
                   fieldsData: mappingOptionsMenu({
                     id: (suffix) => id(`column-options-${line}-${suffix}`),
-                    isReadOnly: props.isReadOnly,
+                    isReadOnly,
                     columnOptions,
                     onChangeMatchBehaviour: (matchBehavior) =>
                       dispatch({
@@ -596,11 +595,10 @@ export function Mapper(props: {
             : lineData;
 
           return (
-            <ErrorBoundary dismissable key={line}>
+            <ErrorBoundary dismissible key={line}>
               <MappingLineComponent
                 headerName={headerName}
                 isFocused={line === state.focusedLine}
-                isReadOnly={props.isReadOnly}
                 lineData={fullLineData}
                 // Same key bindings as in QueryBuilder
                 onClearMapping={(): void =>
@@ -655,7 +653,7 @@ export function Mapper(props: {
       <MappingsControlPanel
         showHiddenFields={state.showHiddenFields}
         onAddNewHeader={
-          props.isReadOnly
+          isReadOnly
             ? undefined
             : (newHeaderName): void => {
                 dispatch({ type: 'AddNewHeaderAction', newHeaderName });

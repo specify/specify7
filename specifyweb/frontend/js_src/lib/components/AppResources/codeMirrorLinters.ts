@@ -23,9 +23,6 @@ export const xmlLinter = createLinter(({ state }) => {
 
 export const jsonLinter = createLinter(jsonParseLinter());
 
-export const xmlToString = (xml: Node): string =>
-  new XMLSerializer().serializeToString(xml);
-
 export function parseXml(string: string): Element | string {
   const parsedXml = new window.DOMParser().parseFromString(
     string,
@@ -48,6 +45,7 @@ export function parseXml(string: string): Element | string {
 
 export function strictParseXml(xml: string): Element {
   const parsed = parseXml(xml);
+  // eslint-disable-next-line functional/no-throw-statement
   if (typeof parsed === 'string') throw new Error(parsed);
   else return parsed;
 }

@@ -8,9 +8,10 @@ import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
+import { ReadOnlyContext } from '../Core/Contexts';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { getModelById, schema, strictGetModel } from '../DataModel/schema';
+import { getTableById, strictGetTable, tables } from '../DataModel/tables';
 import type {
   RecordSet,
   SpQuery,
@@ -29,7 +30,6 @@ import type { QueryField } from './helpers';
 import { QuerySaveDialog } from './Save';
 
 export function SaveQueryButtons({
-  isReadOnly,
   fields,
   saveRequired,
   isValid,
@@ -39,7 +39,6 @@ export function SaveQueryButtons({
   onSaved: handleSaved,
   onTriedToSave: handleTriedToSave,
 }: {
-  readonly isReadOnly: boolean;
   readonly fields: RA<QueryField>;
   readonly saveRequired: boolean;
   readonly isValid: () => boolean;
@@ -67,6 +66,7 @@ export function SaveQueryButtons({
   }
 
   const navigate = useNavigate();
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return (
     <>
       {typeof showDialog === 'string' && (
@@ -199,12 +199,12 @@ export function MakeRecordSetButton({
           if (typeof getQueryFieldRecords === 'function')
             queryResource.set('fields', getQueryFieldRecords());
 
-          const recordSet = new schema.models.RecordSet.Resource();
+          const recordSet = new tables.RecordSet.Resource();
 
           if (!queryResource.isNew())
             recordSet.set('name', queryResource.get('name'));
 
-          recordSet.set('dbTableId', strictGetModel(baseTableName).tableId);
+          recordSet.set('dbTableId', strictGetTable(baseTableName).tableId);
           // @ts-expect-error Adding a non-datamodel field
           recordSet.set('fromQuery', queryResource.toJSON());
           // @ts-expect-error Overwriting the resource back-end URL
@@ -212,7 +212,9 @@ export function MakeRecordSetButton({
           setRecordSet(recordSet);
         }}
       >
-        {queryText.createRecordSet()}
+        {queryText.createRecordSet({
+          recordSetTable: tables.RecordSet.label,
+        })}
       </QueryButton>
       {state === 'editing' || state === 'saving' ? (
         <>
@@ -221,7 +223,6 @@ export function MakeRecordSetButton({
               dialog="modal"
               isDependent={false}
               isSubForm={false}
-              mode="edit"
               resource={recordSet}
               viewName={recordSetView}
               onAdd={undefined}
@@ -231,7 +232,7 @@ export function MakeRecordSetButton({
               onSaving={(): void => setState('saving')}
             />
           )}
-          {state === 'saving' && recordSetFromQueryLoading}
+          {state === 'saving' && recordSetFromQueryLoading()}
         </>
       ) : undefined}
       {state === 'saved' && typeof recordSet === 'object' ? (
@@ -244,16 +245,20 @@ export function MakeRecordSetButton({
   );
 }
 
-export const recordSetFromQueryLoading = (
+export const recordSetFromQueryLoading = f.store(() => (
   <Dialog
     buttons={undefined}
-    header={queryText.recordSetToQuery()}
+    header={queryText.recordSetToQuery({
+      recordSetTable: tables.RecordSet.label,
+    })}
     onClose={undefined}
   >
-    {queryText.recordSetToQueryDescription()}
+    {queryText.recordSetToQueryDescription({
+      recordSetTable: tables.RecordSet.label,
+    })}
     {loadingBar}
   </Dialog>
-);
+));
 
 export function RecordSetCreated({
   recordSet,
@@ -265,11 +270,13 @@ export function RecordSetCreated({
   return (
     <Dialog
       buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
-      header={queryText.recordSetCreated()}
+      header={queryText.recordSetCreated({
+        recordSetTable: tables.RecordSet.label,
+      })}
       onClose={handleClose}
     >
       <Link.Default href={`/specify/record-set/${recordSet.id}/`}>
-        <TableIcon label name={getModelById(recordSet.get('dbTableId')).name} />
+        <TableIcon label name={getTableById(recordSet.get('dbTableId')).name} />
         {recordSet.get('name')}
       </Link.Default>
     </Dialog>

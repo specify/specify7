@@ -1,16 +1,15 @@
-import { filterArray, RA } from '../../utils/types';
-import type { AnySchema } from '../DataModel/helperTypes';
-import type { Collection, SpecifyModel } from '../DataModel/specifyModel';
-import { fetchFormatters, format } from './dataObjFormatters';
-import type { Aggregator } from './spec';
-import { SpecifyResource } from '../DataModel/legacyTypes';
 import { f } from '../../utils/functools';
+import type { RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
-import { fetchDistantRelated } from '../DataModel/helpers';
-import { LiteralField, Relationship } from '../DataModel/specifyField';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
+import { fetchFormatters, fetchPathAsString, format } from './formatters';
+import type { Aggregator } from './spec';
 
 export async function aggregate(
-  collection: RA<SpecifyResource<AnySchema>> | Collection<AnySchema>,
+  collection: Collection<AnySchema> | RA<SpecifyResource<AnySchema>>,
   aggregator?: Aggregator | string
 ): Promise<string> {
   const allResources = Array.isArray(collection)
@@ -18,8 +17,8 @@ export async function aggregate(
     : collection.models;
   if (allResources.length === 0) return '';
   const targetTable = Array.isArray(collection)
-    ? collection[0].specifyModel
-    : collection.model.specifyModel;
+    ? collection[0].specifyTable
+    : collection.table.specifyTable;
 
   const { aggregators } = await fetchFormatters;
 
@@ -45,13 +44,13 @@ export async function aggregate(
     console.error('Collection is incomplete');
 
   return Promise.all(
-    resources.map((resource) =>
+    resources.map(async (resource) =>
       f.all({
         formatted: format(resource, resolvedAggregator.formatter),
         sortValue:
           resolvedAggregator.sortField === undefined
             ? undefined
-            : fetchPathAsString(resource, resolvedAggregator.sortField),
+            : fetchPathAsString(resource, resolvedAggregator.sortField, false),
       })
     )
   ).then((entries) => {
@@ -71,31 +70,7 @@ export async function aggregate(
   });
 }
 
-/**
- * Climb the resource along the path, and convert the final result to a string
- * (either using formatter, aggregator or toString())
- */
-export const fetchPathAsString = (
-  resource: SpecifyResource<AnySchema>,
-  field: RA<LiteralField | Relationship>
-): Promise<string | undefined> =>
-  fetchDistantRelated(resource, field).then(async (data) => {
-    if (
-      data === undefined ||
-      data.field === undefined ||
-      data.resource === undefined
-    )
-      return undefined;
-    const { field, resource } = data;
-    if (field.isRelationship) {
-      const related = await resource.rgetPromise(field.name);
-      if (typeof related === 'object' && related !== null)
-        return format(related);
-      else return undefined;
-    } else return (resource.get(field.name) as number)?.toString() ?? undefined;
-  });
-
-const autoGenerateAggregator = (table: SpecifyModel): Aggregator => ({
+const autoGenerateAggregator = (table: SpecifyTable): Aggregator => ({
   name: table.name,
   title: table.name,
   table,

@@ -2,19 +2,21 @@ import React from 'react';
 import { useOutletContext } from 'react-router';
 import { useNavigate, useParams } from 'react-router-dom';
 
+import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { mainText } from '../../localization/main';
 import { resourcesText } from '../../localization/resources';
 import type { GetSet } from '../../utils/types';
 import { removeItem, replaceItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
-import { Input, Label } from '../Atoms/Form';
+import { Form, Input, Label } from '../Atoms/Form';
+import { Submit } from '../Atoms/Submit';
+import { ReadOnlyContext } from '../Core/Contexts';
 import { Dialog } from '../Molecules/Dialog';
 import { NotFoundView } from '../Router/NotFoundView';
 import { resolveRelative } from '../Router/Router';
 import { AggregatorElement } from './Aggregator';
 import { FormatterElement } from './Formatter';
-import { FormattersContext } from './index';
 import type { Aggregator, Formatter } from './spec';
 import type { FormatterTypesOutlet } from './Types';
 
@@ -29,10 +31,10 @@ export function FormatterWrapper(): JSX.Element {
     setItems(replaceItem(items, index, newItem));
   const getSet = [item, setItem] as const;
 
-  const context = React.useContext(FormattersContext)!;
-  const isReadOnly = context.isReadOnly;
+  const isReadOnly = React.useContext(ReadOnlyContext);
   const navigate = useNavigate();
   const handleClose = (): void => navigate(resolveRelative('../../'));
+  const id = useId('formatter');
   return index === -1 ? (
     <Dialog
       buttons={commonText.close()}
@@ -54,7 +56,7 @@ export function FormatterWrapper(): JSX.Element {
             {commonText.delete()}
           </Button.Red>
           <span className="-ml-2 flex-1" />
-          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+          <Submit.Blue form={id('form')}>{commonText.close()}</Submit.Blue>
         </>
       }
       header={commonText.colonLine({
@@ -66,53 +68,49 @@ export function FormatterWrapper(): JSX.Element {
       })}
       onClose={handleClose}
     >
-      <Label.Block>
-        {resourcesText.name()}
-        <Input.Text
-          isReadOnly={isReadOnly}
-          required
-          value={getSet[0].name}
-          onValueChange={(name): void => setItem({ ...item, name })}
-        />
-      </Label.Block>
-      <Label.Block>
-        {resourcesText.title()}
-        <Input.Text
-          isReadOnly={isReadOnly}
-          value={getSet[0].title}
-          onValueChange={(name): void => setItem({ ...item, name })}
-        />
-      </Label.Block>
-      <Label.Inline>
-        <Input.Checkbox
-          checked={getSet[0].isDefault}
-          isReadOnly={isReadOnly}
-          onClick={(): void =>
-            setItems(
-              // Ensure there is only one default
-              items.map((otherItem, itemIndex) =>
-                otherItem.table === item.table
-                  ? itemIndex === index
-                    ? { ...item, isDefault: !item.isDefault }
-                    : { ...otherItem, isDefault: false }
-                  : otherItem
+      <Form id={id('form')} onSubmit={handleClose}>
+        <Label.Block>
+          {resourcesText.name()}
+          <Input.Text
+            isReadOnly={isReadOnly}
+            required
+            value={getSet[0].name}
+            onValueChange={(name): void => setItem({ ...item, name })}
+          />
+        </Label.Block>
+        <Label.Block>
+          {resourcesText.title()}
+          <Input.Text
+            isReadOnly={isReadOnly}
+            value={getSet[0].title}
+            onValueChange={(name): void => setItem({ ...item, name })}
+          />
+        </Label.Block>
+        <Label.Inline>
+          <Input.Checkbox
+            checked={getSet[0].isDefault}
+            isReadOnly={isReadOnly}
+            onClick={(): void =>
+              setItems(
+                // Ensure there is only one default
+                items.map((otherItem, itemIndex) =>
+                  otherItem.table === item.table
+                    ? itemIndex === index
+                      ? { ...item, isDefault: !item.isDefault }
+                      : { ...otherItem, isDefault: false }
+                    : otherItem
+                )
               )
-            )
-          }
-        />
-        {resourcesText.default()}
-      </Label.Inline>
-      {type === 'formatter' ? (
-        <FormatterElement
-          isReadOnly={isReadOnly}
-          item={getSet as GetSet<Formatter>}
-        />
-      ) : (
-        <AggregatorElement
-          isReadOnly={isReadOnly}
-          item={getSet as GetSet<Aggregator>}
-        />
-      )}
+            }
+          />
+          {resourcesText.default()}
+        </Label.Inline>
+        {type === 'formatter' ? (
+          <FormatterElement item={getSet as GetSet<Formatter>} />
+        ) : (
+          <AggregatorElement item={getSet as GetSet<Aggregator>} />
+        )}
+      </Form>
     </Dialog>
   );
 }

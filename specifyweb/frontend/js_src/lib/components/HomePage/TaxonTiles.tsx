@@ -14,6 +14,7 @@ import {
   mergeNodes,
   pairNodes,
 } from './taxonTileHelpers';
+import { tables } from '../DataModel/tables';
 
 export function TaxonTiles(): JSX.Element {
   const [container, setContainer] = React.useState<SVGElement | null>(null);
@@ -48,7 +49,10 @@ export function TaxonTiles(): JSX.Element {
         className="absolute top-3 left-3 z-10 border bg-white px-2 py-0 opacity-80 dark:bg-black"
         title={
           typeof treeData === 'object'
-            ? welcomeText.taxonTilesDescription({ count: treeData.threshold })
+            ? welcomeText.taxonTilesDescription({
+                collectionObjectTable: tables.CollectionObject.label,
+                count: treeData.threshold,
+              })
             : undefined
         }
       >

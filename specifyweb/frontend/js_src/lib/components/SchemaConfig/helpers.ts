@@ -14,7 +14,7 @@ import type {
   NewSpLocaleItemString,
   SpLocaleItemString,
 } from './index';
-import type { DataObjectFormatter } from './schemaData';
+import type { SimpleFormatter } from './schemaData';
 
 let newStringId = 1;
 const defaultLanguage = 'en';
@@ -30,7 +30,7 @@ export function findString(
   /*
    * Start searching for matching string from the end. This would align
    * schema config behavior with the way back-end handles cases when there
-   * are duplicate SpLocalteItemStr records for the same field and same language
+   * are duplicate SpLocaleItemStr records for the same field and same language
    */
   const targetString = Array.from(strings ?? [])
     .reverse()
@@ -59,7 +59,7 @@ export function findString(
 /** Throws away unneeded fields */
 export const formatAggregators = (
   aggregators: RA<Aggregator | Formatter>
-): IR<DataObjectFormatter> =>
+): IR<SimpleFormatter> =>
   Object.fromEntries(
     aggregators.map(
       ({ name = '', title = '', table }) =>
@@ -77,7 +77,7 @@ export const formatAggregators = (
  * Filter down defined formatters
  */
 export const filterFormatters = (
-  formatters: IR<DataObjectFormatter>,
+  formatters: IR<SimpleFormatter>,
   targetTable: keyof Tables
 ): IR<string> =>
   Object.fromEntries(
@@ -129,11 +129,11 @@ export const localizedRelationshipTypes: IR<string> = {
  */
 export function javaTypeToHuman(
   type: string | null,
-  relatedModelName: string | undefined = ''
+  relatedTableName: string | undefined = ''
 ): string {
   if (type === null) return '';
   else if (type in localizedRelationshipTypes)
-    return `${localizedRelationshipTypes[type]} (${relatedModelName})`;
+    return `${localizedRelationshipTypes[type]} (${relatedTableName})`;
   else if (type.startsWith('java')) return type.split('.').at(-1)!;
   else return type;
 }

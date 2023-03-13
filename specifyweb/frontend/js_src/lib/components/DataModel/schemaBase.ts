@@ -14,7 +14,7 @@
 
 import type { RA, RR, Writable } from '../../utils/types';
 import { load } from '../InitialContext';
-import type { SpecifyModel } from './specifyModel';
+import type { SpecifyTable } from './specifyTable';
 import type { Tables } from './types';
 
 export type Schema = {
@@ -25,7 +25,7 @@ export type Schema = {
   readonly catalogNumFormatName: string;
   readonly orgHierarchy: RA<keyof Tables>;
   readonly models: {
-    readonly [TABLE_NAME in keyof Tables]: SpecifyModel<Tables[TABLE_NAME]>;
+    readonly [TABLE_NAME in keyof Tables]: SpecifyTable<Tables[TABLE_NAME]>;
   };
   readonly referenceSymbol: string;
   readonly treeSymbol: string;
@@ -80,7 +80,6 @@ const domainLevels = [
 ] as const;
 
 /*
- * REFACTOR: separate schema base (domain.json) from the rest of the schema
  * Scoping information is loaded and populated here.
  */
 export const fetchContext = load<

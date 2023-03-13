@@ -31,16 +31,24 @@ import { appResourceSubTypes, appResourceTypes } from './types';
 
 export const appResourceIcon = (
   type: ReturnType<typeof getResourceType>
-): JSX.Element =>
-  type === 'viewSet' ? (
-    <span aria-hidden title={resourcesText.formDefinitions()}>
-      {appResourceTypes.viewSets.icon}
-    </span>
-  ) : (
-    <span aria-hidden title={appResourceSubTypes[type].label}>
-      {appResourceSubTypes[type].icon}
-    </span>
-  );
+): JSX.Element => (
+  <span
+    /*
+     * FEATURE: include this title in aria-describedby on the button itself
+     *   so that screen readers announce the type after the name
+     */
+    aria-hidden
+    title={
+      type === 'viewSet'
+        ? resourcesText.formDefinitions()
+        : appResourceSubTypes[type].label
+    }
+  >
+    {type === 'viewSet'
+      ? appResourceTypes.viewSets.icon
+      : appResourceSubTypes[type].icon}
+  </span>
+);
 
 export function AppResourceEditButton({
   title,
@@ -57,6 +65,7 @@ export function AppResourceEditButton({
       {isEditingMeta && (
         <Dialog
           buttons={commonText.close()}
+          dimensionsKey="AppResourceEdit"
           header={title}
           onClose={handleEditedMeta}
         >

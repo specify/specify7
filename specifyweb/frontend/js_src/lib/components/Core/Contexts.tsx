@@ -1,15 +1,21 @@
 import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
-import { eventListener } from '../../utils/events';
-import type { GetOrSet, RA } from '../../utils/types';
+import type { RA } from '../../utils/types';
 import { setDevelopmentGlobal } from '../../utils/types';
 import { error } from '../Errors/assert';
 import { crash } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { loadingBar } from '../Molecules';
 import { Dialog, dialogClassNames, LoadingScreen } from '../Molecules/Dialog';
+import { TooltipManager } from '../Molecules/Tooltips';
+import {
+  SetUnloadProtectsContext,
+  UnloadProtectsContext,
+  UnloadProtectsRefContext,
+} from '../Router/Router';
 
 let setError: (
   error: (props: { readonly onClose: () => void }) => JSX.Element
@@ -27,13 +33,6 @@ export const displayError: typeof setError = (error) => setError(error);
 let legacyContext: (promise: Promise<unknown>) => void;
 export const legacyLoadingContext = (promise: Promise<unknown>) =>
   legacyContext(promise);
-
-export const unloadProtectEvents = eventListener<{
-  // Called when blockers changed, and there is more than one blocker
-  readonly blocked: RA<string>;
-  // Called when blockers changed, and there are no blockers left
-  readonly unblocked: undefined;
-}>();
 
 /**
  * Provide contexts used by other components
@@ -66,7 +65,9 @@ export function Contexts({
           holders.current = holders.current.filter((item) => item !== holderId);
           if (holders.current.length === 0) handleLoaded();
         })
-        .catch(crash);
+        .catch((error) => {
+          crash(error);
+        });
     },
     [handleLoading, handleLoaded]
   );
@@ -94,6 +95,7 @@ export function Contexts({
   setError = handleError;
 
   const [unloadProtects, setUnloadProtects] = React.useState<RA<string>>([]);
+
   const unloadProtectsRef = React.useRef(unloadProtects);
   const handleChangeUnloadProtects = React.useCallback(
     (value: RA<string> | ((oldValue: RA<string>) => RA<string>)): void => {
@@ -102,38 +104,43 @@ export function Contexts({
       setUnloadProtects(resolvedValue);
       unloadProtectsRef.current = resolvedValue;
 
-      if (resolvedValue.length > 0)
-        unloadProtectEvents.trigger('blocked', resolvedValue);
-      else unloadProtectEvents.trigger('unblocked');
-
       setDevelopmentGlobal('_unloadProtects', resolvedValue);
     },
     []
   );
 
+  const isReadOnly = React.useContext(ReadOnlyContext);
+  const isReadOnlyMode = useCachedState('forms', 'readOnlyMode')[0] ?? false;
   return (
     <UnloadProtectsContext.Provider value={unloadProtects}>
-      <SetUnloadProtectsContext.Provider value={handleChangeUnloadProtects}>
-        <ErrorBoundary>
-          <ErrorContext.Provider value={handleError}>
-            {errors}
-            <LoadingContext.Provider value={loadingHandler}>
-              <Dialog
-                buttons={undefined}
-                className={{ container: dialogClassNames.narrowContainer }}
-                header={commonText.loading()}
-                isOpen={isLoading}
-                onClose={undefined}
-              >
-                {loadingBar}
-              </Dialog>
-              <React.Suspense fallback={<LoadingScreen />}>
-                {children}
-              </React.Suspense>
-            </LoadingContext.Provider>
-          </ErrorContext.Provider>
-        </ErrorBoundary>
-      </SetUnloadProtectsContext.Provider>
+      <UnloadProtectsRefContext.Provider value={unloadProtectsRef}>
+        <SetUnloadProtectsContext.Provider value={handleChangeUnloadProtects}>
+          <ErrorBoundary>
+            <ErrorContext.Provider value={handleError}>
+              {errors}
+              <LoadingContext.Provider value={loadingHandler}>
+                <Dialog
+                  buttons={undefined}
+                  className={{ container: dialogClassNames.narrowContainer }}
+                  header={commonText.loading()}
+                  isOpen={isLoading}
+                  onClose={undefined}
+                >
+                  {loadingBar}
+                </Dialog>
+                <React.Suspense fallback={<LoadingScreen />}>
+                  <ReadOnlyContext.Provider
+                    value={isReadOnly || isReadOnlyMode}
+                  >
+                    {children}
+                  </ReadOnlyContext.Provider>
+                </React.Suspense>
+              </LoadingContext.Provider>
+              <TooltipManager />
+            </ErrorContext.Provider>
+          </ErrorBoundary>
+        </SetUnloadProtectsContext.Provider>
+      </UnloadProtectsRefContext.Provider>
     </UnloadProtectsContext.Provider>
   );
 }
@@ -160,14 +167,10 @@ export const ErrorContext = React.createContext<
 >(() => error('Not defined'));
 ErrorContext.displayName = 'ErrorContext';
 
-/**
- * List of current unload protects (used for preventing loss of unsaved changes)
- */
-export const UnloadProtectsContext = React.createContext<
-  RA<string> | undefined
->(undefined);
-UnloadProtectsContext.displayName = 'UnloadProtectsContext';
-export const SetUnloadProtectsContext = React.createContext<
-  GetOrSet<RA<string>>[1] | undefined
->(undefined);
-SetUnloadProtectsContext.displayName = 'SetUnloadProtectsContext';
+/** If true, renders everything below it as read only */
+export const ReadOnlyContext = React.createContext<boolean>(false);
+ReadOnlyContext.displayName = 'ReadOnlyContext';
+
+/** If true, form is rendered in a search dialog - required fields are not enforced */
+export const SearchDialogContext = React.createContext<boolean>(false);
+SearchDialogContext.displayName = 'SearchDialogContext';

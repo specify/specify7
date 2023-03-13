@@ -1,16 +1,22 @@
 import { requireContext } from '../../../tests/helpers';
 import { strictParseXml } from '../../AppResources/codeMirrorLinters';
-import { schema } from '../../DataModel/schema';
 import { parseUiCommand } from '../commands';
+import { tables } from '../../DataModel/tables';
+import {
+  SimpleXmlNode,
+  toSimpleXmlNode,
+  xmlToJson,
+} from '../../Syncer/xmlToJson';
 
 requireContext();
+
+const xml = (xml: string): SimpleXmlNode =>
+  toSimpleXmlNode(xmlToJson(strictParseXml(xml)));
 
 describe('parseUiCommand', () => {
   test('Simplest case', () => {
     jest.spyOn(console, 'error').mockImplementation();
-    expect(
-      parseUiCommand(strictParseXml('<cell />'), schema.models.CollectionObject)
-    ).toEqual({
+    expect(parseUiCommand(xml('<cell />'), tables.CollectionObject)).toEqual({
       commandDefinition: {
         type: 'Unsupported',
         name: undefined,
@@ -23,8 +29,8 @@ describe('parseUiCommand', () => {
     jest.spyOn(console, 'error').mockImplementation();
     expect(
       parseUiCommand(
-        strictParseXml('<cell name="test" label="test2" />'),
-        schema.models.CollectionObject
+        xml('<cell name="test" label="test2" />'),
+        tables.CollectionObject
       )
     ).toEqual({
       commandDefinition: {
@@ -38,8 +44,8 @@ describe('parseUiCommand', () => {
   test('Generate Label', () =>
     expect(
       parseUiCommand(
-        strictParseXml('<cell name="generateLabelBtn" label="FINDNEXT" />'),
-        schema.models.CollectionObject
+        xml('<cell name="generateLabelBtn" label="FINDNEXT" />'),
+        tables.CollectionObject
       )
     ).toEqual({
       commandDefinition: {
@@ -51,8 +57,8 @@ describe('parseUiCommand', () => {
   test('Show Loans Command', () =>
     expect(
       parseUiCommand(
-        strictParseXml('<cell name="someName" label="ShowLoansBtn" />'),
-        schema.models.Preparation
+        xml('<cell name="someName" label="ShowLoansBtn" />'),
+        tables.Preparation
       )
     ).toEqual({
       commandDefinition: {
@@ -64,8 +70,8 @@ describe('parseUiCommand', () => {
   test('Return Loan Command', () =>
     expect(
       parseUiCommand(
-        strictParseXml('<cell name="ReturnLoan" label="generateLabelBtn" />'),
-        schema.models.Loan
+        xml('<cell name="ReturnLoan" label="generateLabelBtn" />'),
+        tables.Loan
       )
     ).toEqual({
       commandDefinition: {

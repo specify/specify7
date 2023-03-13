@@ -17,6 +17,7 @@ import { softFail } from '../Errors/Crash';
 import { useTitle } from '../Molecules/AppTitle';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import type { Dataset, Status } from '../WbPlanView/Wrapped';
+import { RemainingLoadingTime } from './RemainingLoadingTime';
 
 // How often to query back-end
 const REFRESH_RATE = 2000;
@@ -75,7 +76,7 @@ export function WbStatus({
     unuploading: wbText.rollback(),
   }[status.uploaderstatus.operation];
 
-  const standartalizedOperation = {
+  const standardizedOperation = {
     validating: wbText.validating(),
     uploading: wbText.uploading(),
     unuploading: wbText.rollingBack(),
@@ -120,7 +121,7 @@ export function WbStatus({
             });
     else
       message = wbText.wbStatusOperationProgress({
-        operationName: standartalizedOperation,
+        operationName: standardizedOperation,
         current,
         total,
       });
@@ -172,6 +173,7 @@ export function WbStatus({
         {status.taskstatus === 'PROGRESS' && (
           <Progress max={total} value={current} />
         )}
+        <RemainingLoadingTime current={current} total={total} />
       </Label.Block>
     </Dialog>
   );

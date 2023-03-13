@@ -3,7 +3,6 @@ import React from 'react';
 import { mainText } from '../../localization/main';
 import { Http } from '../../utils/ajax/definitions';
 import type { RA, WritableArray } from '../../utils/types';
-import { jsonStringify } from '../../utils/utils';
 import { displayError } from '../Core/Contexts';
 import { userInformation } from '../InitialContext/userInformation';
 import { join } from '../Molecules';
@@ -11,7 +10,9 @@ import { formatPermissionsError } from '../Permissions/FormatError';
 import { PermissionError } from '../Permissions/PermissionDenied';
 import { unsafeTriggerNotFound } from '../Router/Router';
 import { ErrorDialog } from './ErrorDialog';
+import { formatJsonBackendResponse } from './JsonError';
 import { produceStackTrace } from './stackTrace';
+import { toSafeObject } from './interceptLogs';
 
 export function formatError(
   error: unknown,
@@ -79,7 +80,7 @@ export function formatError(
       errorMessage.push(...statusTextArray);
       copiableMessage.push(error);
     } else {
-      const serialized = jsonStringify(error, 4);
+      const serialized = JSON.stringify(toSafeObject(error), null, 4);
       errorObject.push(
         <p className="raw" key="raw">
           {serialized}
@@ -111,8 +112,7 @@ export function formatError(
 /** Format error message as JSON, HTML or plain text */
 function formatErrorResponse(error: string): JSX.Element {
   try {
-    const json = JSON.parse(error);
-    return <pre>{jsonStringify(json, 2)}</pre>;
+    return formatJsonBackendResponse(error);
   } catch {
     // Failed parsing error message as JSON
   }
@@ -205,7 +205,7 @@ export function handleAjaxError(
 }
 
 /** Create an iframe from HTML string */
-function ErrorIframe({
+export function ErrorIframe({
   children: error,
 }: {
   readonly children: string;
@@ -213,17 +213,14 @@ function ErrorIframe({
   const iframeRef = React.useRef<HTMLIFrameElement | null>(null);
   React.useEffect(() => {
     if (iframeRef.current === null) return;
-    const iframeDocument =
-      iframeRef.current.contentDocument ??
-      iframeRef.current.contentWindow?.document;
-    if (iframeDocument === undefined) return;
-    iframeDocument.body.innerHTML = error;
+    iframeRef.current.srcdoc = error;
   }, [error]);
 
   return (
     <iframe
-      className="h-full"
+      className="h-full w-full"
       ref={iframeRef}
+      sandbox="allow-scripts"
       title={mainText.errorOccurred()}
     />
   );

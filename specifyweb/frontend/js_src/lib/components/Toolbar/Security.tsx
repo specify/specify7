@@ -14,7 +14,6 @@ import { Container, H2, H3 } from '../Atoms';
 import { className } from '../Atoms/className';
 import { fetchCollection } from '../DataModel/collection';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { schema } from '../DataModel/schema';
 import type { Institution, SpecifyUser } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { useAvailableCollections } from '../Forms/OtherCollectionView';
@@ -26,6 +25,7 @@ import { processPolicies } from '../Security/policyConverter';
 import type { Role } from '../Security/Role';
 import type { BackEndRole } from '../Security/utils';
 import { serializeResource } from '../DataModel/serializers';
+import { tables } from '../DataModel/tables';
 
 export type SecurityOutlet = {
   readonly institution: SerializedResource<Institution> | undefined;
@@ -98,9 +98,9 @@ export function SecurityPanel(): JSX.Element | null {
   return (
     <Container.FullGray>
       <H2 className="text-2xl">{userText.securityPanel()}</H2>
-      <div className="flex h-0 flex-1 gap-4">
+      <div className="flex h-0 flex-1 flex-col gap-4 md:flex-row">
         <Aside institution={institution} />
-        <ErrorBoundary dismissable>
+        <ErrorBoundary dismissible>
           <SafeOutlet<SecurityOutlet> {...context} />
         </ErrorBoundary>
       </div>
@@ -118,14 +118,18 @@ function Aside({
     <aside className={className.containerBase}>
       {typeof institution === 'object' && (
         <section>
-          <H3>{schema.models.Institution.label}</H3>
+          <H3>{tables.Institution.label}</H3>
           <ActiveLink href="/specify/security/institution">
             {institution.name as LocalizedString}
           </ActiveLink>
         </section>
       )}
       <section>
-        <H3>{userText.collections()}</H3>
+        <H3>
+          {availableCollections.length === 0
+            ? tables.Collection.label
+            : userText.collections()}
+        </H3>
         <ul>
           {availableCollections.map((collection, index) => (
             <li key={index}>

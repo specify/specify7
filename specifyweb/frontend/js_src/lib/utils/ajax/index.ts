@@ -1,4 +1,6 @@
-import type { IR, RA } from '../types';
+import { f } from '../functools';
+import type { IR, R, RA } from '../types';
+import { setDevelopmentGlobal } from '../types';
 import { csrfToken } from './csrfToken';
 import { Http } from './definitions';
 import { csrfSafeMethod, isExternalUrl } from './helpers';
@@ -110,14 +112,16 @@ export const ajax = async <RESPONSE_TYPE = string>(
       })
         .then(async (response) => Promise.all([response, response.text()]))
         .then(
-          ([response, text]: readonly [Response, string]) =>
-            handleAjaxResponse<RESPONSE_TYPE>({
+          ([response, text]: readonly [Response, string]) => {
+            extractAppResourceId(url, response);
+            return handleAjaxResponse<RESPONSE_TYPE>({
               expectedResponseCodes,
               accept,
               strict,
               response,
               text,
-            }),
+            });
+          },
           // This happens when request is aborted (i.e, page is restarting)
           (error) => {
             console.error(error);
@@ -134,3 +138,18 @@ export const ajax = async <RESPONSE_TYPE = string>(
             });
           }
         );
+
+export const appResourceIds: R<number | undefined> = {};
+setDevelopmentGlobal('_appResourceIds', appResourceIds);
+
+/**
+ * Keep track of IDs of fetched app resources. This powers the app resource
+ * edit button in schema config
+ */
+function extractAppResourceId(url: string, response: Response): void {
+  const parsed = new URL(url, globalThis.location.origin);
+  if (parsed.pathname === '/context/app.resource')
+    appResourceIds[parsed.searchParams.get('name') ?? ''] = f.parseInt(
+      response.headers.get('X-Record-ID') ?? undefined
+    );
+}

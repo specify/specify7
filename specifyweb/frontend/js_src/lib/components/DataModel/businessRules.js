@@ -1,9 +1,8 @@
 import _ from 'underscore';
 
 import {formsText} from '../../localization/forms';
-import {globalEvents} from '../../utils/ajax/specifyApi';
 import {flippedPromise} from '../../utils/promise';
-import {formatList} from '../Atoms/Internationalization';
+import {formatConjunction} from '../Atoms/Internationalization';
 import {isTreeResource} from '../InitialContext/treeRanks';
 import {businessRuleDefs} from './businessRuleDefs';
 import {idFromUrl} from './resource';
@@ -12,11 +11,8 @@ import {initializeTreeRecord, treeBusinessRules} from './treeBusinessRules';
 
 let enabled = true;
 
-    globalEvents.on('initResource', (resource) =>
-        enabled && !resource.noBusinessRules ? attachTo(resource) : undefined
-    );
-
-    var attachTo = function(resource) {
+    export function attachBusinessRules(resource) {
+        if(!enabled) return;
         let mgr;
         mgr = resource.businessRuleMgr = new BusinessRuleMgr(resource);
         mgr.setupEvents();
@@ -24,11 +20,11 @@ let enabled = true;
         if(isTreeResource(resource))
             initializeTreeRecord(resource);
         mgr.doCustomInit();
-    };
+    }
 
     function BusinessRuleMgr(resource) {
         this.resource = resource;
-        this.rules = businessRuleDefs[this.resource.specifyModel.name];
+        this.rules = businessRuleDefs[this.resource.specifyTable.name];
         this.pending = Promise.resolve(null);
         this.fieldChangePromises = {};
         this.watchers = {};
@@ -77,7 +73,7 @@ let enabled = true;
         },
 
         added(resource, collection) {
-            if (resource.specifyModel && resource.specifyModel.getField('ordinal')) {
+            if (resource.specifyTable && resource.specifyTable.getField('ordinal')) {
                 resource.set('ordinal', collection.indexOf(resource));
             }
             this.addPromise(
@@ -176,7 +172,7 @@ let enabled = true;
                 ? {valid: true}
                 : {
                     valid: false,
-                    reason: formatList(_(invalids).pluck('reason'))
+                    reason: formatConjunction(_(invalids).pluck('reason'))
                 };
         });
     };
@@ -185,11 +181,11 @@ let enabled = true;
         if (fldInfo.length > 1)
           return parentFldInfo
             ? formsText.valuesOfMustBeUniqueToField({
-                values: formatList(fldInfo.map((fld) => fld.label)),
+                values: formatConjunction(fldInfo.map((fld) => fld.label)),
                 fieldName: parentFldInfo.label,
               })
             : formsText.valuesOfMustBeUniqueToDatabase({
-                values: formatList(fldInfo.map((fld) => fld.label))
+                values: formatConjunction(fldInfo.map((fld) => fld.label))
               });
         else
           return parentFldInfo
@@ -200,7 +196,7 @@ let enabled = true;
     var uniqueIn = function(toOneField, resource, valueFieldArgument) {
         const valueField = Array.isArray(valueFieldArgument) ? valueFieldArgument : [valueFieldArgument];
         const value = _.map(valueField, (v) => resource.get(v));
-        const valueFieldInfo = _.map(valueField, (v) => resource.specifyModel.getField(v));
+        const valueFieldInfo = _.map(valueField, (v) => resource.specifyTable.getField(v));
         const valueIsToOne = _.map(valueFieldInfo, (fi) => fi.type === 'many-to-one');
         const valueId = _.map(value, (v, index) => {
             if (valueIsToOne[index]) {
@@ -214,7 +210,7 @@ let enabled = true;
             }
         });
 
-        const toOneFieldInfo = toOneField ? resource.specifyModel.getField(toOneField) : undefined;
+        const toOneFieldInfo = toOneField ? resource.specifyTable.getField(toOneField) : undefined;
         const valid = {
             valid: true
         };
@@ -245,13 +241,13 @@ let enabled = true;
             for (const [f, element] of valueField.entries()) {
                 filters[element] = valueId[f] || value[f];
             }
-            const others = new resource.specifyModel.LazyCollection({
+            const others = new resource.specifyTable.LazyCollection({
                 filters
             });
             return others.fetch().then(() => _.any(others.models, (other) => hasSameValues(other, value, valueField, valueIsToOne, valueId)) ? invalid : valid);
         } else {
             const haveLocalColl = (resource.collection && resource.collection.related &&
-                                 toOneFieldInfo.relatedModel === resource.collection.related.specifyModel);
+                                 toOneFieldInfo.relatedTable === resource.collection.related.specifyTable);
 
             const localCollection = haveLocalColl ? _.compact(resource.collection.models) : [];
             const dupes = _.filter(localCollection, (other) => hasSameValues(other, value, valueField, valueIsToOne, valueId));
@@ -265,7 +261,7 @@ let enabled = true;
                 for (const [f, element] of valueField.entries()) {
                     filters[element] = valueId[f] || value[f];
                 }
-                const others = new resource.specifyModel.ToOneCollection({
+                const others = new resource.specifyTable.ToOneCollection({
                     related,
                     field: toOneFieldInfo,
                     filters

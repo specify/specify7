@@ -70,7 +70,7 @@ export const wbPlanText = createDictionary({
     'en-us': 'Match Behavior:',
     'ru-ru': 'Поведение при совпадении:',
     'es-es': 'Comportamiento de coincidencia:',
-    'fr-fr': 'Comportement de correspondance :',
+    'fr-fr': 'Comportement du concordance:',
     'uk-ua': 'Поведінка відповідності:',
   },
   columnMapping: {
@@ -288,6 +288,14 @@ export const wbPlanText = createDictionary({
       для завантаження вашою конфігурацією Specify. Додайте відсутні
       відображення або збережіть цей план завантаження як незавершений.
     `,
+  },
+  mappingIsRequired: {
+    comment: 'I.e, this field must be mapped before you can continue',
+    'en-us': 'Mapping is required',
+    'ru-ru': 'Необходимо сопоставление',
+    'es-es': 'Se requiere asignación',
+    'fr-fr': 'Liaison obligatoire',
+    'uk-ua': 'Необхідне співставлення',
   },
   continueEditing: {
     'en-us': 'Continue Editing',
@@ -564,7 +572,7 @@ export const wbPlanText = createDictionary({
     'es-es': 'Requerir datos para que coincidan con los registros existentes',
     'fr-fr':
       'Exiger que les données correspondent aux enregistrements existants',
-    'uk-ua': 'Вимагати відповідності даних існуючим записам',
+    'uk-ua': 'Вимагати, щоб дані відповідали існуючим записам',
   },
   matchingLogicUnavailable: {
     'en-us': 'Matching logic is unavailable for current mappings',

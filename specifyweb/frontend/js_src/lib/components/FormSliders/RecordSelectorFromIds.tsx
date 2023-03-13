@@ -9,14 +9,15 @@ import type { RA } from '../../utils/types';
 import { removeItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
-import { SetUnloadProtectsContext } from '../Core/Contexts';
+import { ReadOnlyContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import type { FormMode } from '../FormParse';
+import { tables } from '../DataModel/tables';
 import { ResourceView } from '../Forms/ResourceView';
 import { saveFormUnloadProtect } from '../Forms/Save';
 import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
+import { SetUnloadProtectsContext } from '../Router/Router';
 import type { RecordSelectorProps } from './RecordSelector';
 import { useRecordSelector } from './RecordSelector';
 
@@ -29,13 +30,12 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   newResource,
   onSlide: handleSlide,
   defaultIndex,
-  model,
+  table,
   viewName,
-  title = model.label,
+  title = table.label,
   headerButtons,
   dialog,
   isDependent,
-  mode,
   canRemove = true,
   isLoading: isExternalLoading = false,
   isInRecordSet = false,
@@ -57,7 +57,6 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   readonly headerButtons?: JSX.Element;
   readonly dialog: 'modal' | 'nonModal' | false;
   readonly isDependent: boolean;
-  readonly mode: FormMode;
   readonly viewName?: string;
   readonly canRemove?: boolean;
   readonly isLoading?: boolean;
@@ -72,7 +71,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   const [records, setRecords] = React.useState<
     RA<SpecifyResource<SCHEMA> | undefined>
   >(() =>
-    ids.map((id) => (id === undefined ? undefined : new model.Resource({ id })))
+    ids.map((id) => (id === undefined ? undefined : new table.Resource({ id })))
   );
 
   const previousIds = React.useRef(ids);
@@ -81,22 +80,27 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
       ids.map((id, index) => {
         if (id === undefined) return undefined;
         else if (records[index]?.id === id) return records[index];
-        else return new model.Resource({ id });
+        else return new table.Resource({ id });
       })
     );
 
     return (): void => {
       previousIds.current = ids;
     };
-  }, [ids, model]);
+  }, [ids, table]);
 
-  const [index, setIndex] = useTriggerState(defaultIndex ?? ids.length - 1);
+  const [index, setIndex] = useTriggerState(
+    Math.max(0, defaultIndex ?? ids.length - 1)
+  );
   React.useEffect(
     () =>
       setIndex((index) =>
-        typeof newResource === 'object'
-          ? rest.totalCount
-          : Math.min(index, rest.totalCount - 1)
+        Math.max(
+          0,
+          typeof newResource === 'object'
+            ? rest.totalCount
+            : Math.min(index, rest.totalCount - 1)
+        )
       ),
     [newResource, rest.totalCount]
   );
@@ -119,7 +123,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   } = useRecordSelector({
     ...rest,
     index,
-    model,
+    table,
     records:
       typeof newResource === 'object' ? [...records, newResource] : records,
     totalCount: rest.totalCount + (typeof newResource === 'object' ? 1 : 0),
@@ -167,67 +171,71 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
         : undefined,
   });
 
+  const addLabel = isInRecordSet
+    ? formsText.addToRecordSet({
+        recordSetTable: tables.RecordSet.label,
+      })
+    : commonText.add();
+  const removeLabel = isInRecordSet
+    ? formsText.removeFromRecordSet({
+        recordSetTable: tables.RecordSet.label,
+      })
+    : commonText.delete();
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return (
     <>
       <ResourceView
         dialog={dialog}
         headerButtons={(specifyNetworkBadge): JSX.Element => (
-          <>
-            {headerButtons}
-            <DataEntry.Visit
-              resource={!isDependent && dialog !== false ? resource : undefined}
-            />
-            {hasTablePermission(model.name, isDependent ? 'create' : 'read') &&
-            typeof handleAdding === 'function' ? (
-              <DataEntry.Add
-                aria-label={
-                  isInRecordSet ? formsText.addToRecordSet() : commonText.add()
+          <div className="flex flex-col items-center gap-2 md:flex-row md:gap-8">
+            <div className="flex gap-2">
+              {headerButtons}
+              <DataEntry.Visit
+                resource={
+                  !isDependent && dialog !== false ? resource : undefined
                 }
-                disabled={mode === 'view'}
-                title={
-                  isInRecordSet ? formsText.addToRecordSet() : commonText.add()
-                }
-                onClick={handleAdding}
               />
-            ) : undefined}
-            {typeof handleRemove === 'function' && canRemove ? (
-              <DataEntry.Remove
-                aria-label={
-                  isInRecordSet
-                    ? formsText.removeFromRecordSet()
-                    : commonText.delete()
-                }
-                disabled={resource === undefined || mode === 'view'}
-                title={
-                  isInRecordSet
-                    ? formsText.removeFromRecordSet()
-                    : commonText.delete()
-                }
-                onClick={(): void => handleRemove('minusButton')}
-              />
-            ) : undefined}
-            {typeof newResource === 'object' ? (
-              <p className="flex-1">{formsText.creatingNewRecord()}</p>
-            ) : (
-              <span
-                className={`flex-1 ${dialog === false ? '-ml-2' : '-ml-4'}`}
-              />
-            )}
-            {specifyNetworkBadge}
-            {slider}
-          </>
+              {hasTablePermission(
+                table.name,
+                isDependent ? 'create' : 'read'
+              ) && typeof handleAdding === 'function' ? (
+                <DataEntry.Add
+                  aria-label={addLabel}
+                  disabled={isReadOnly}
+                  title={addLabel}
+                  onClick={handleAdding}
+                />
+              ) : undefined}
+              {typeof handleRemove === 'function' && canRemove ? (
+                <DataEntry.Remove
+                  aria-label={removeLabel}
+                  disabled={resource === undefined || isReadOnly}
+                  title={removeLabel}
+                  onClick={(): void => handleRemove('minusButton')}
+                />
+              ) : undefined}
+              {typeof newResource === 'object' ? (
+                <p className="flex-1">{formsText.creatingNewRecord()}</p>
+              ) : (
+                <span
+                  className={`flex-1 ${dialog === false ? '-ml-2' : '-ml-4'}`}
+                />
+              )}
+              {specifyNetworkBadge}
+            </div>
+            <div>{slider}</div>
+          </div>
         )}
         isDependent={isDependent}
         isLoading={isLoading || isExternalLoading}
         isSubForm={false}
-        mode={mode}
         resource={resource}
         title={title}
         viewName={viewName}
         onAdd={handleClone}
         onClose={handleClose}
         onDeleted={
-          resource?.isNew() === true || hasTablePermission(model.name, 'delete')
+          resource?.isNew() === true || hasTablePermission(table.name, 'delete')
             ? handleRemove?.bind(undefined, 'deleteButton')
             : undefined
         }

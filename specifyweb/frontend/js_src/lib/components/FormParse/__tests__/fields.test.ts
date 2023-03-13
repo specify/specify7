@@ -4,21 +4,29 @@ import { reportsText } from '../../../localization/report';
 import { requireContext } from '../../../tests/helpers';
 import { strictParseXml } from '../../AppResources/codeMirrorLinters';
 import { getField } from '../../DataModel/helpers';
-import { schema } from '../../DataModel/schema';
 import { parseFormField } from '../fields';
 import { generateInit } from './helpers';
+import { tables } from '../../DataModel/tables';
+import {
+  SimpleXmlNode,
+  toSimpleXmlNode,
+  xmlToJson,
+} from '../../Syncer/xmlToJson';
 
 requireContext();
 
+const xml = (xml: string): SimpleXmlNode =>
+  toSimpleXmlNode(xmlToJson(strictParseXml(xml)));
+
 const parse = (
-  xml: string,
+  xmlString: string,
   parameters: Partial<Parameters<typeof parseFormField>[0]>
 ): ReturnType<typeof parseFormField> =>
   parseFormField({
-    cell: strictParseXml(xml),
+    cell: xml(xmlString),
     getProperty: generateInit({}),
-    model: schema.models.CollectionObject,
-    fields: [schema.models.CollectionObject.strictGetField('catalogNumber')],
+    table: tables.CollectionObject,
+    fields: [tables.CollectionObject.strictGetField('catalogNumber')],
     ...parameters,
   });
 
@@ -192,7 +200,7 @@ describe('parseFormField', () => {
     expect(
       parse('<cell uiType="querycbx"/>', {
         getProperty: generateInit({ cloneBtn: 'TRUE', name: 'NAME' }),
-        fields: [schema.models.CollectionObject.strictGetField('accession')],
+        fields: [tables.CollectionObject.strictGetField('accession')],
       })
     ).toEqual({
       isReadOnly: false,
@@ -204,7 +212,7 @@ describe('parseFormField', () => {
   test('Readonly Query Combo Box', () =>
     expect(
       parse('<cell uiType="querycbx" readOnly="true" />', {
-        fields: [schema.models.CollectionObject.strictGetField('accession')],
+        fields: [tables.CollectionObject.strictGetField('accession')],
       })
     ).toEqual({
       isReadOnly: true,
@@ -242,7 +250,7 @@ describe('parseFormField', () => {
   test('Text component is converted into partial date for data fields', () =>
     expect(
       parse('<cell uiType="text" />', {
-        fields: [getField(schema.models.CollectionObject, 'timestampCreated')],
+        fields: [getField(tables.CollectionObject, 'timestampCreated')],
       })
     ).toEqual({
       isReadOnly: false,
@@ -257,22 +265,28 @@ describe('parseFormField', () => {
       },
     }));
 
-  test('File picker', () =>
-    expect(parse('<cell uiType="browse" />', {})).toEqual({
+  test('File picker is rendered as a text field', () =>
+    expect(parse('<cell uiType="browse" initialize="min=3" />', {})).toEqual({
+      defaultValue: undefined,
       isReadOnly: false,
-      type: 'FilePicker',
+      type: 'Text',
+      max: undefined,
+      maxLength: undefined,
+      min: undefined,
+      minLength: undefined,
+      step: undefined,
     }));
 });
 
 test('parseFormField handles fields without uiType', () => {
   const consoleWarn = jest.fn();
   jest.spyOn(console, 'warn').mockImplementation(consoleWarn);
-  const cell = strictParseXml('<cell />');
+  const cell = xml('<cell />');
   expect(
     parseFormField({
       cell,
       getProperty: generateInit({}),
-      model: schema.models.CollectionObject,
+      table: tables.CollectionObject,
       fields: undefined,
     })
   ).toEqual({

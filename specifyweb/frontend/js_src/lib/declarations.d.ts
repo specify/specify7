@@ -2,11 +2,10 @@
  * Fixes for various issues with default TypeScript declaration fils
  */
 
-import type { To } from 'history';
 import type * as H from 'history';
+import type { To } from 'history';
 import type { localized } from 'typesafe-i18n/types/runtime/src/core';
 
-import type { SafeLocationState } from './components/Router/RouterState';
 import type { SafeLocationState } from './components/Router/RouterState';
 import type { IR, RA, RR } from './utils/types';
 
@@ -37,6 +36,17 @@ declare global {
      * from someValue rather than otherValue
      */
     fill<V>(value: V): RA<V>;
+
+    // This won't be needed in TypeScript 5.0. See https://github.com/microsoft/TypeScript/issues/48829
+    findLastIndex(
+      predicate: (value: T, index: number, array: T[]) => unknown
+    ): number;
+  }
+
+  interface ReadonlyArray<T> {
+    findLastIndex(
+      predicate: (value: T, index: number, array: T[]) => unknown
+    ): number;
   }
 
   /**

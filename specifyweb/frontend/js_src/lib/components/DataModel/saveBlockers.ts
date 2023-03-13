@@ -29,7 +29,11 @@ export type Blocker = {
   readonly deferred: boolean;
 };
 
-export type Input = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+export type Input =
+  | HTMLInputElement
+  | HTMLSelectElement
+  | HTMLTextAreaElement
+  | HTMLButtonElement;
 
 export class SaveBlockers<SCHEMA extends AnySchema> {
   private readonly resource: SpecifyResource<SCHEMA>;

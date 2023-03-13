@@ -11,10 +11,11 @@ import { Link } from '../Atoms/Link';
 import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { deserializeResource } from '../DataModel/serializers';
 import type { Preparation } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
-import { deserializeResource } from '../DataModel/serializers';
+import { tables } from '../DataModel/tables';
 
 function List({
   resources,
@@ -104,19 +105,31 @@ export function ShowLoansCommand({
       header={commonText.transactions()}
       onClose={handleClose}
     >
-      <H3>{interactionsText.openLoans()}</H3>
+      <H3>
+        {interactionsText.openLoans({
+          loanTable: tables.Loan.label,
+        })}
+      </H3>
       <List
         displayFieldName="loanNumber"
         fieldName="loan"
         resources={data.openLoans ?? []}
       />
-      <H3>{interactionsText.resolvedLoans()}</H3>
+      <H3>
+        {interactionsText.resolvedLoans({
+          loanTable: tables.Loan.label,
+        })}
+      </H3>
       <List
         displayFieldName="loanNumber"
         fieldName="loan"
         resources={data.resolvedLoans ?? []}
       />
-      <H3>{interactionsText.gifts()}</H3>
+      <H3>
+        {interactionsText.gifts({
+          giftTable: tables.Gift.label,
+        })}
+      </H3>
       <List
         displayFieldName="giftNumber"
         fieldName="gift"
@@ -124,7 +137,12 @@ export function ShowLoansCommand({
       />
       {Array.isArray(data.exchanges) && data.exchanges.length > 0 && (
         <>
-          <H3>{interactionsText.exchanges()}</H3>
+          <H3>
+            {interactionsText.exchanges({
+              exhangeInTable: tables.ExchangeIn.label,
+              exhangeOutTable: tables.ExchangeOut.label,
+            })}
+          </H3>
           <List
             displayFieldName="exchangeOutNumber"
             fieldName="exchange"

@@ -12,11 +12,11 @@ import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { DataEntry } from '../Atoms/DataEntry';
 import { Link } from '../Atoms/Link';
+import { ReadOnlyContext, SearchDialogContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Tables } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import type { FormMode } from '../FormParse';
 import { AppTitle } from '../Molecules/AppTitle';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
@@ -27,6 +27,7 @@ import { usePref } from '../UserPreferences/usePref';
 import { useResourceView } from './BaseResourceView';
 import { DeleteButton } from './DeleteButton';
 import { SaveButton } from './Save';
+import { propsToFormMode } from './useViewDefinition';
 
 /**
  * There is special behavior required when creating one of these resources,
@@ -74,18 +75,17 @@ export const NO_CLONE = new Set<keyof Tables>([
   'SpecifyUser',
 ]);
 
-export function augmentMode(
-  initialMode: FormMode,
+/**
+ * Make form read only if you don't have create/update permission
+ */
+export const augmentMode = (
+  isReadOnly: boolean,
   isNew: boolean,
   tableName: keyof Tables | undefined
-): FormMode {
-  if (tableName === undefined) return 'view';
-  else if (initialMode === 'edit')
-    return hasTablePermission(tableName, isNew ? 'create' : 'update')
-      ? 'edit'
-      : 'view';
-  else return initialMode;
-}
+): boolean =>
+  isReadOnly ||
+  tableName === undefined ||
+  !hasTablePermission(tableName, isNew ? 'create' : 'update');
 
 // REFACTOR: split this into smaller components
 export function ResourceView<SCHEMA extends AnySchema>({
@@ -101,7 +101,6 @@ export function ResourceView<SCHEMA extends AnySchema>({
   onAdd: handleAdd,
   onDeleted: handleDeleted = handleClose,
   children,
-  mode: initialMode,
   viewName,
   title: titleOverride,
   /*
@@ -113,7 +112,6 @@ export function ResourceView<SCHEMA extends AnySchema>({
 }: {
   readonly isLoading?: boolean;
   readonly resource: SpecifyResource<SCHEMA> | undefined;
-  readonly mode: FormMode;
   readonly viewName?: string;
   readonly headerButtons?: (
     specifyNetworkBadge: JSX.Element | undefined
@@ -133,12 +131,6 @@ export function ResourceView<SCHEMA extends AnySchema>({
   readonly isDependent: boolean;
   readonly title?: LocalizedString;
 }): JSX.Element {
-  const mode = augmentMode(
-    initialMode,
-    resource?.isNew() === true,
-    resource?.specifyModel.name
-  );
-
   const [isDeleted, setDeleted, setNotDeleted] = useBooleanState();
   // Remove isDeleted status when resource changes
   React.useEffect(setNotDeleted, [resource, setNotDeleted]);
@@ -162,6 +154,12 @@ export function ResourceView<SCHEMA extends AnySchema>({
     'makeFormDialogsModal'
   );
 
+  const isReadOnly = augmentMode(
+    React.useContext(ReadOnlyContext),
+    resource?.isNew() === true,
+    resource?.specifyTable.name
+  );
+  const isInSearchDialog = React.useContext(SearchDialogContext);
   const {
     formElement,
     formPreferences,
@@ -173,7 +171,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
   } = useResourceView({
     isLoading,
     isSubForm,
-    mode,
+    mode: propsToFormMode(isReadOnly, isInSearchDialog),
     resource,
     viewName,
   });
@@ -201,7 +199,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
         onAdd={handleAdd}
         onSaved={(): void => {
           const printOnSave = getUserPref('form', 'preferences', 'printOnSave');
-          if (printOnSave[resource.specifyModel.name] === true)
+          if (printOnSave[resource.specifyTable.name] === true)
             setState({
               type: 'Report',
               onDone: () => handleSaved(),
@@ -211,25 +209,27 @@ export function ResourceView<SCHEMA extends AnySchema>({
         onSaving={handleSaving}
       />
     ) : undefined;
+
   const report =
     state.type === 'Report' && typeof resource === 'object' ? (
       <ReportsView
         autoSelectSingle
-        model={resource.specifyModel}
         resourceId={resource.id}
+        table={resource.specifyTable}
         onClose={(): void => {
           state.onDone();
           setState({ type: 'Main' });
         }}
       />
     ) : undefined;
+
   const deleteButton =
     !isDependent &&
     !isSubForm &&
     typeof resource === 'object' &&
     !resource.isNew() &&
-    hasTablePermission(resource.specifyModel.name, 'delete') ? (
-      <ErrorBoundary dismissable>
+    hasTablePermission(resource.specifyTable.name, 'delete') ? (
+      <ErrorBoundary dismissible>
         <DeleteButton
           deletionMessage={deletionMessage}
           resource={resource}
@@ -237,6 +237,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
         />
       </ErrorBoundary>
     ) : undefined;
+
   const headerContent = (
     <>
       {specifyNetworkBadge}
@@ -254,18 +255,20 @@ export function ResourceView<SCHEMA extends AnySchema>({
         typeof extraButtons === 'object' ? (
           <DataEntry.Footer>
             {deleteButton}
-            {extraButtons ?? <span className="-ml-2 flex-1" />}
+            {extraButtons ?? <span className="-ml-2 md:flex-1" />}
             {saveButtonElement}
           </DataEntry.Footer>
         ) : undefined}
       </>
     );
+
     const headerComponents = headerButtons?.(headerContent) ?? (
       <>
         <span className="-ml-2 flex-1" />
         {headerContent}
       </>
     );
+
     return isSubForm ? (
       <DataEntry.SubForm>
         <DataEntry.SubFormHeader>
@@ -323,6 +326,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
         }`,
         content: `${className.formStyles} ${dialogClassNames.flexContent}`,
       }}
+      dimensionsKey={viewName ?? resource?.specifyTable.view}
       header={titleOverride ?? title}
       headerButtons={
         <>

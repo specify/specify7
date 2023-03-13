@@ -1,43 +1,45 @@
-/**
- * Very simple and fast XML formatter.
- * Originally based on https://jsfiddle.net/fbn5j7ya/
- */
-export function formatXml(
-  xmlString: string,
-  separator = '\t',
-  newLine = '\n'
-): string {
-  let formatted = '';
-  let indent = '';
-  const nodes = xmlString.slice(1, -1).split(/>\s*</u);
-  if (nodes[0].startsWith('?')) formatted += `<${nodes.shift()!}>${newLine}`;
-  nodes.forEach((node) => {
-    if (node.startsWith('/')) indent = indent.slice(separator.length);
-    formatted += `${indent}<${node}>${newLine}`;
-    if (!node.startsWith('/') && !node.endsWith('/') && !node.includes('</'))
-      indent += separator;
-  });
-  return formatted;
-}
+import type { LocalizedString } from 'typesafe-i18n';
 
-export const createXmlNode = (name: string): Element =>
-  document.implementation.createDocument(null, name).documentElement;
+import { f } from '../../utils/functools';
+import { parseBoolean } from '../../utils/parser/parse';
+import type { BaseSpec, SpecToJson } from './index';
+import { runParser } from './index';
+import type { SimpleXmlNode, XmlNode } from './xmlToJson';
+import { toSimpleXmlNode, xmlToJson } from './xmlToJson';
 
-/**
- * Create a new XML element based on an old one, but with a different tagName.
- * Old element is removed.
- * Loosely based on https://stackoverflow.com/a/15086834/8584605
- */
-export function renameXmlNode(element: Element, newTagName: string): Element {
-  const newElement = createXmlNode(newTagName);
-  Array.from(element.children, (child) => newElement.append(child));
+/** Get XML node attribute in a case-insensitive way */
+export const getAttribute = (
+  { attributes }: SimpleXmlNode | XmlNode,
+  name: string
+): string | undefined => attributes[name] ?? attributes[name.toLowerCase()];
 
-  Array.from(element.attributes, (attribute) =>
-    newElement.attributes.setNamedItem(attribute.cloneNode() as Attr)
+/** Like getAttribute, but also trim the value and discard empty values */
+export const getParsedAttribute = (
+  cell: SimpleXmlNode | XmlNode,
+  name: string
+): LocalizedString | undefined =>
+  f.maybe(getAttribute(cell, name)?.trim(), (value) =>
+    value.length === 0 ? undefined : (value as LocalizedString)
   );
 
-  element.parentNode?.replaceChild(newElement, element);
-  element.remove();
+export const getBooleanAttribute = (
+  cell: SimpleXmlNode | XmlNode,
+  name: string
+): boolean | undefined => f.maybe(getParsedAttribute(cell, name), parseBoolean);
 
-  return newElement;
-}
+/** Convert `<a></a>` to `<a />` */
+const reEmptyTag = /<(?<name>[^\s/>]+)(?<attributes>[^<>]*)><\/\k<name>>/gu;
+
+export const xmlToString = (xml: Node): string =>
+  new XMLSerializer()
+    .serializeToString(xml)
+    .replaceAll(reEmptyTag, '<$<name>$<attributes> />');
+
+export const createXmlSpec = <SPEC extends BaseSpec<SimpleXmlNode>>(
+  spec: SPEC
+): SPEC => spec;
+
+export const xmlToSpec = <SPEC extends BaseSpec<SimpleXmlNode>>(
+  xml: Element,
+  spec: SPEC
+): SpecToJson<SPEC> => runParser(spec, toSimpleXmlNode(xmlToJson(xml)));

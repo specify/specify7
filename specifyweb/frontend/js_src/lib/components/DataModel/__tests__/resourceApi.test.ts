@@ -2,16 +2,16 @@ import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
 import type { RA } from '../../../utils/types';
 import { replaceItem } from '../../../utils/utils';
-import type { SerializedModel } from '../helperTypes';
+import type { SerializedRecord } from '../helperTypes';
 import { getResourceApiUrl } from '../resource';
-import { schema } from '../schema';
 import type { Determination } from '../types';
+import { tables } from '../tables';
 
 requireContext();
 
-test('resource is created for correct model', () =>
-  expect(new schema.models.CollectionObject.Resource().specifyModel).toBe(
-    schema.models.CollectionObject
+test('resource is created for correct table', () =>
+  expect(new tables.CollectionObject.Resource().specifyTable).toBe(
+    tables.CollectionObject
   ));
 
 const collectionObjectId = 100;
@@ -24,7 +24,7 @@ const accessionUrl = getResourceApiUrl('Accession', accessionId);
 const collectingEventUrl = getResourceApiUrl('CollectingEvent', 8868);
 const determinationUrl = getResourceApiUrl('Determination', 123);
 
-const determinationsResponse: RA<Partial<SerializedModel<Determination>>> = [
+const determinationsResponse: RA<Partial<SerializedRecord<Determination>>> = [
   {
     resource_uri: determinationUrl,
     id: 123,
@@ -60,7 +60,7 @@ const collectingEventResponse = {
 overrideAjax(collectingEventUrl, collectingEventResponse);
 
 test('fetch', async () => {
-  const resource = new schema.models.CollectionObject.Resource({
+  const resource = new tables.CollectionObject.Resource({
     id: collectionObjectId,
   });
   expect(resource.populated).toBe(false);
@@ -73,7 +73,7 @@ test('fetch', async () => {
 
 describe('rgetPromise', () => {
   test('many-to-one', async () => {
-    const resource = new schema.models.CollectionObject.Resource({
+    const resource = new tables.CollectionObject.Resource({
       id: collectionObjectId,
     });
     const accession = await resource.rgetPromise('accession');
@@ -81,7 +81,7 @@ describe('rgetPromise', () => {
   });
 
   test('transient field', async () => {
-    const resource = new schema.models.CollectionObject.Resource({
+    const resource = new tables.CollectionObject.Resource({
       id: collectionObjectId,
     });
     await expect(
@@ -102,7 +102,7 @@ describe('rgetPromise', () => {
   });
 
   test('dependent zero-to-one', async () => {
-    const resource = new schema.models.Locality.Resource({ id: localityId });
+    const resource = new tables.Locality.Resource({ id: localityId });
     const localityDetails = await resource.rgetPromise('localityDetails');
     expect(localityDetails?.toJSON()).toEqual({
       ...localityDetailsResponse,
@@ -145,24 +145,24 @@ overrideAjax(
 
 describe('rgetCollection', () => {
   test('independent one-to-many', async () => {
-    const resource = new schema.models.AddressOfRecord.Resource({
+    const resource = new tables.AddressOfRecord.Resource({
       id: addressOfRecordId,
     });
     const accessions = await resource.rgetCollection('accessions');
-    expect(accessions.model.specifyModel).toBe(schema.models.Accession);
+    expect(accessions.table.specifyTable).toBe(tables.Accession);
     expect(accessions.models).toHaveLength(2);
     expect(accessions.models[1].populated).toBe(true);
     expect(accessions.toJSON()).toEqual(accessionsResponse);
   });
 
   test('dependent one-to-many', async () => {
-    const resource = new schema.models.Accession.Resource({ id: accessionId });
+    const resource = new tables.Accession.Resource({ id: accessionId });
     const agents = await resource.rgetCollection('accessionAgents');
     expect(agents.models).toHaveLength(0);
   });
 
   test('repeated calls for independent return different object', async () => {
-    const resource = new schema.models.CollectionObject.Resource({
+    const resource = new tables.CollectionObject.Resource({
       id: collectionObjectId,
     });
     const firstCollectingEvent = await resource.rgetPromise('collectingEvent');
@@ -172,7 +172,7 @@ describe('rgetCollection', () => {
   });
 
   test('repeated calls for dependent return same object', async () => {
-    const resource = new schema.models.CollectionObject.Resource({
+    const resource = new tables.CollectionObject.Resource({
       id: collectionObjectId,
     });
     const firstDeterminations = await resource.rgetCollection('determinations');
@@ -189,16 +189,16 @@ describe('rgetCollection', () => {
 
 describe('needsSaved', () => {
   test('changing field makes needsSaved true', () => {
-    const resource = new schema.models.CollectionObject.Resource({
+    const resource = new tables.CollectionObject.Resource({
       id: collectionObjectId,
     });
     expect(resource.needsSaved).toBe(false);
-    resource.set('catalogNumber', '123');
+    resource.set('text1', 'a');
     expect(resource.needsSaved).toBe(true);
   });
 
   test('changing dependent relationship makes needsSaved true', () => {
-    const resource = new schema.models.CollectionObject.Resource({
+    const resource = new tables.CollectionObject.Resource({
       id: collectionObjectId,
     });
     expect(resource.needsSaved).toBe(false);
@@ -231,7 +231,7 @@ overrideAjax(
 );
 
 test('save', async () => {
-  const resource = new schema.models.CollectionObject.Resource({
+  const resource = new tables.CollectionObject.Resource({
     id: collectionObjectId,
   });
   await resource.fetch();
@@ -264,11 +264,23 @@ test('save', async () => {
  */
 
 describe('placeInSameHierarchy', () => {
+  overrideAjax('/api/specify/collection/4/', {
+    id: 4,
+    discipline: getResourceApiUrl('Discipline', 3),
+    resource_uri: getResourceApiUrl('Collection', 4),
+  });
+
+  overrideAjax('/api/specify/collectionobject/5/', {
+    id: 5,
+    collection: getResourceApiUrl('Collection', 4),
+    resource_uri: getResourceApiUrl('CollectionObject', 5),
+  });
+
   test('simple case', async () => {
-    const collectionObject = new schema.models.CollectionObject.Resource({
-      id: 100,
+    const collectionObject = new tables.CollectionObject.Resource({
+      id: 5,
     });
-    const locality = new schema.models.Locality.Resource();
+    const locality = new tables.Locality.Resource();
     const hierarchyResource = await locality.placeInSameHierarchy(
       collectionObject
     );
@@ -277,38 +289,42 @@ describe('placeInSameHierarchy', () => {
   });
 
   test('undefined if Collection Object has no collection', async () => {
-    const collectionObject = new schema.models.CollectionObject.Resource({
-      id: 100,
-      resource_uri: collectionObjectUrl,
-    });
-    const locality = new schema.models.Locality.Resource();
+    const collectionObject = new tables.CollectionObject.Resource(
+      {
+        id: 6,
+        resource_uri: getResourceApiUrl('CollectionObject', 6),
+      },
+      { noBusinessRules: true }
+    );
+    const locality = new tables.Locality.Resource();
+    locality.set('discipline', null as never);
     await expect(
       locality.placeInSameHierarchy(collectionObject)
     ).resolves.toBeUndefined();
-    expect(locality.get('discipline')).toBeUndefined();
+    expect(locality.get('discipline')).toBeNull();
   });
 
   test('invalid hierarchy', async () => {
-    const collectionObject = new schema.models.CollectionObject.Resource({
+    const collectionObject = new tables.CollectionObject.Resource({
       id: 100,
     });
-    const author = new schema.models.Author.Resource();
+    const author = new tables.Author.Resource();
     await expect(
       author.placeInSameHierarchy(collectionObject)
     ).resolves.toBeUndefined();
   });
 
   test('object with no hierarchy', async () => {
-    const recordset = new schema.models.RecordSet.Resource({ id: 1 });
-    const collectionObject = new schema.models.CollectionObject.Resource();
+    const recordset = new tables.RecordSet.Resource({ id: 1 });
+    const collectionObject = new tables.CollectionObject.Resource();
     await expect(
       collectionObject.placeInSameHierarchy(recordset)
     ).resolves.toBeUndefined();
   });
 
   test('hierarchy in wrong direction', async () => {
-    const locality = new schema.models.Locality.Resource({ id: 100 });
-    const collectionObject = new schema.models.CollectionObject.Resource();
+    const locality = new tables.Locality.Resource({ id: 100 });
+    const collectionObject = new tables.CollectionObject.Resource();
     await expect(
       collectionObject.placeInSameHierarchy(locality)
     ).resolves.toBeUndefined();

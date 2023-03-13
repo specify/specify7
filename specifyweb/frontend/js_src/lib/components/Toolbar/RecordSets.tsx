@@ -3,20 +3,22 @@ import type { State } from 'typesafe-reducer';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
-import { formsText } from '../../localization/forms';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
 import { icons } from '../Atoms/Icons';
 import { formatNumber } from '../Atoms/Internationalization';
 import { Link } from '../Atoms/Link';
+import { ReadOnlyContext } from '../Core/Contexts';
+import { FormsDialog } from '../DataEntryTables';
 import { fetchCollection } from '../DataModel/collection';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { getModelById, schema } from '../DataModel/schema';
+import { deserializeResource } from '../DataModel/serializers';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { getTableById, tables } from '../DataModel/tables';
 import type { RecordSet } from '../DataModel/types';
-import { FormsDialog } from '../Header/Forms';
 import { userInformation } from '../InitialContext/userInformation';
 import { DateElement } from '../Molecules/DateElement';
 import { Dialog } from '../Molecules/Dialog';
@@ -25,45 +27,21 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { hasToolPermission } from '../Permissions/helpers';
 import { OverlayContext } from '../Router/Router';
 import { EditRecordSet } from './RecordSetEdit';
-import { deserializeResource } from '../DataModel/serializers';
 
 export function RecordSetsOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
-
-  const recordSetsPromise = React.useMemo(
-    async () =>
-      fetchCollection('RecordSet', {
-        specifyUser: userInformation.id,
-        type: 0,
-        limit: 5000,
-        domainFilter: true,
-        orderBy: '-timestampCreated',
-      }),
-    []
-  );
-  return (
-    <RecordSetsDialog
-      isReadOnly={false}
-      recordSetsPromise={recordSetsPromise}
-      onClose={handleClose}
-    />
-  );
+  return <RecordSetsDialog onClose={handleClose} />;
 }
 
 export function RecordSetsDialog({
-  recordSetsPromise,
   onClose: handleClose,
-  isReadOnly,
+  table,
   onConfigure: handleConfigure,
   onSelect: handleSelect,
   children = ({ children, dialog }): JSX.Element => dialog(children),
 }: {
-  readonly recordSetsPromise: Promise<{
-    readonly totalCount: number;
-    readonly records: RA<SerializedResource<RecordSet>>;
-  }>;
   readonly onClose: () => void;
-  readonly isReadOnly: boolean;
+  readonly table?: SpecifyTable;
   readonly onConfigure?: (recordSet: SerializedResource<RecordSet>) => void;
   readonly onSelect?: (recordSet: SerializedResource<RecordSet>) => void;
   readonly children?: (props: {
@@ -88,7 +66,18 @@ export function RecordSetsDialog({
   );
 
   const [unsortedData] = useAsyncState(
-    React.useCallback(async () => recordSetsPromise, [recordSetsPromise]),
+    React.useCallback(
+      async () =>
+        fetchCollection('RecordSet', {
+          specifyUser: userInformation.id,
+          type: 0,
+          limit: 5000,
+          domainFilter: true,
+          orderBy: '-timestampCreated',
+          dbTableId: table?.tableId,
+        }),
+      [table]
+    ),
     true
   );
   const data = React.useMemo(
@@ -105,6 +94,7 @@ export function RecordSetsDialog({
     [unsortedData, sortConfig]
   );
 
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return typeof data === 'object' ? (
     state.type === 'MainState' ? (
       children({
@@ -115,7 +105,7 @@ export function RecordSetsDialog({
               <tr>
                 <th scope="col">
                   <Button.LikeLink onClick={(): void => handleSort('name')}>
-                    {formsText.recordSet()}
+                    {tables.RecordSet.label}
                     <SortIndicator fieldName="name" sortConfig={sortConfig} />
                   </Button.LikeLink>
                 </th>
@@ -123,10 +113,7 @@ export function RecordSetsDialog({
                   <Button.LikeLink
                     onClick={(): void => handleSort('timestampCreated')}
                   >
-                    {
-                      getField(schema.models.RecordSet, 'timestampCreated')
-                        .label
-                    }
+                    {getField(tables.RecordSet, 'timestampCreated').label}
                     <SortIndicator
                       fieldName="timestampCreated"
                       sortConfig={sortConfig}
@@ -182,6 +169,7 @@ export function RecordSetsDialog({
                 {buttons}
               </>
             }
+            dimensionsKey="RecordSets"
             header={commonText.countLine({
               resource: commonText.recordSets(),
               count: data.totalCount,
@@ -196,21 +184,17 @@ export function RecordSetsDialog({
     ) : state.type === 'CreateState' ? (
       <FormsDialog
         onClose={handleClose}
-        onSelected={(model): void =>
+        onSelected={(table): void =>
           setState({
             type: 'EditState',
-            recordSet: new schema.models.RecordSet.Resource()
-              .set('dbTableId', model.tableId)
+            recordSet: new tables.RecordSet.Resource()
+              .set('dbTableId', table.tableId)
               .set('type', 0),
           })
         }
       />
     ) : state.type === 'EditState' ? (
-      <EditRecordSet
-        isReadOnly={isReadOnly}
-        recordSet={state.recordSet}
-        onClose={handleClose}
-      />
+      <EditRecordSet recordSet={state.recordSet} onClose={handleClose} />
     ) : null
   ) : null;
 }
@@ -253,7 +237,7 @@ function Row({
               : undefined
           }
         >
-          <TableIcon label name={getModelById(recordSet.dbTableId).name} />
+          <TableIcon label name={getTableById(recordSet.dbTableId).name} />
           {recordSet.name}
         </Link.Default>
       </td>

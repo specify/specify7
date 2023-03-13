@@ -1,9 +1,10 @@
 import { requireContext } from '../../../tests/helpers';
 import { strictParseXml } from '../../AppResources/codeMirrorLinters';
-import { schema } from '../../DataModel/schema';
+import { getField } from '../../DataModel/helpers';
+import { tables } from '../../DataModel/tables';
 import { formattersSpec } from '../../Formatters/spec';
 import { syncers } from '../syncers';
-import { formatXml } from '../xmlUtils';
+import { toSimpleXmlNode, updateXml, xmlToJson } from '../xmlToJson';
 
 requireContext();
 
@@ -23,44 +24,74 @@ test('Editing Data Object Formatter', () => {
       </aggregators>
     </formatters>`
   );
+  const xmlNode = xmlToJson(element);
+  const simpleXmlNode = toSimpleXmlNode(xmlNode);
 
   const spec = formattersSpec();
 
   const { serializer, deserializer } = syncers.object(spec);
-  const parsed = serializer(element);
+  const parsed = serializer(simpleXmlNode);
 
-  jest.spyOn(console, 'warn').mockImplementation(jest.fn());
-  jest.spyOn(console, 'error').mockImplementation(jest.fn());
-  deserializer(
-    {
-      ...parsed,
-      aggregators: [
-        {
-          ...parsed.aggregators[0],
-          table: schema.models.Agent,
+  const newSimpleXmlNode = deserializer({
+    formatters: [
+      ...parsed.formatters,
+      {
+        ...parsed.formatters[0],
+        definition: {
+          ...parsed.formatters[0].definition,
+          fields: [
+            {
+              ...parsed.formatters[0].definition.fields[0],
+              fields: [
+                ...parsed.formatters[0].definition.fields[0].fields,
+                {
+                  separator: '',
+                  aggregator: undefined,
+                  formatter: undefined,
+                  fieldFormatter: undefined,
+                  field: [getField(tables.Accession, 'accessionAgents')],
+                },
+              ],
+            },
+          ],
         },
-        ...parsed.aggregators,
-      ],
-    },
-    element
+      },
+    ],
+    aggregators: [
+      {
+        ...parsed.aggregators[0],
+        table: tables.Agent,
+      },
+      ...parsed.aggregators,
+    ],
+  });
+  const updatedXml = updateXml(xmlNode, newSimpleXmlNode).replaceAll(
+    '\t',
+    '  '
   );
 
-  // FIXME: use this XML beautifier
-  expect(formatXml(element.outerHTML, '  ')).toMatchInlineSnapshot(`
+  expect(updatedXml).toMatchInlineSnapshot(`
     "<formatters>
       <format name=\\"Accession\\" title=\\"Accession\\" class=\\"edu.ku.brc.specify.datamodel.Accession\\" default=\\"true\\">
         <!-- this comment will be preserved -->
-          <switch single=\\"true\\">
-            <fields>
-              <field>accessionNumber</field>
-            </fields>
-          </switch>
-        </format>
-        <aggregators>
-          <aggregator name=\\"AccessionAgent\\" title=\\"AccessionAgent\\" class=\\"edu.ku.brc.specify.datamodel.Agent\\" default=\\"true\\" separator=\\"; \\" ending=\\"\\" count=\\"\\" format=\\"AccessionAgent\\" orderfieldname=\\"\\" orderFieldName=\\"\\"/>
-          <aggregator name=\\"AccessionAgent\\" title=\\"AccessionAgent\\" class=\\"edu.ku.brc.specify.datamodel.AccessionAgent\\" default=\\"true\\" separator=\\"; \\" ending=\\"\\" count=\\"\\" format=\\"AccessionAgent\\" orderFieldName=\\"\\"/>
-        </aggregators>
-      </formatters>
-    "
+        <switch single=\\"true\\">
+          <fields>
+            <field>accessionNumber</field>
+          </fields>
+        </switch>
+      </format>
+      <format name=\\"Accession\\" title=\\"Accession\\" class=\\"edu.ku.brc.specify.datamodel.Accession\\" default=\\"true\\">
+        <switch single=\\"true\\">
+          <fields>
+            <field>accessionNumber</field>
+            <field>accessionAgents</field>
+          </fields>
+        </switch>
+      </format>
+      <aggregators>
+        <aggregator name=\\"AccessionAgent\\" title=\\"AccessionAgent\\" class=\\"edu.ku.brc.specify.datamodel.Agent\\" default=\\"true\\" separator=\\"; \\" ending=\\"\\" count=\\"\\" format=\\"AccessionAgent\\" orderfieldname=\\"\\"/>
+        <aggregator name=\\"AccessionAgent\\" title=\\"AccessionAgent\\" class=\\"edu.ku.brc.specify.datamodel.AccessionAgent\\" default=\\"true\\" separator=\\"; \\" ending=\\"\\" count=\\"\\" format=\\"AccessionAgent\\" orderfieldname=\\"\\"/>
+      </aggregators>
+    </formatters>"
   `);
 });

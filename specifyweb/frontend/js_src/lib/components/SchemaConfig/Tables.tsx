@@ -13,11 +13,11 @@ import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
-import { schema } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import { Dialog } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { formatUrl } from '../Router/queryString';
+import { tables } from '../DataModel/tables';
 
 export function SchemaConfigTables(): JSX.Element {
   const { language = '' } = useParams();
@@ -48,8 +48,8 @@ export function SchemaConfigTables(): JSX.Element {
     >
       <TableList
         cacheKey="schemaConfig"
-        getAction={(model): string =>
-          `/specify/schema-config/${language}/${model.name}/`
+        getAction={(table): string =>
+          `/specify/schema-config/${language}/${table.name}/`
         }
       />
     </Dialog>
@@ -71,9 +71,9 @@ export function TableList({
   children,
 }: {
   readonly cacheKey: CacheKey;
-  readonly getAction: (model: SpecifyModel) => string | (() => void);
-  readonly filter?: (showHiddenTables: boolean, model: SpecifyModel) => boolean;
-  readonly children?: (model: SpecifyModel) => React.ReactNode;
+  readonly getAction: (table: SpecifyTable) => string | (() => void);
+  readonly filter?: (showHiddenTables: boolean, table: SpecifyTable) => boolean;
+  readonly children?: (table: SpecifyTable) => React.ReactNode;
 }): JSX.Element {
   const [showHiddenTables = false, setShowHiddenTables] = useCachedState(
     cacheKey,
@@ -82,7 +82,7 @@ export function TableList({
 
   const sortedTables = React.useMemo(
     () =>
-      Object.values(schema.models)
+      Object.values(tables)
         .filter(
           filter?.bind(undefined, showHiddenTables) ??
             (showHiddenTables ? f.true : ({ isSystem }): boolean => !isSystem)
@@ -94,13 +94,13 @@ export function TableList({
   return (
     <>
       <Ul className="flex flex-1 flex-col gap-1 overflow-y-auto">
-        {sortedTables.map((model) => {
-          const action = getAction(model);
-          const extraContent = children?.(model);
+        {sortedTables.map((table) => {
+          const action = getAction(table);
+          const extraContent = children?.(table);
           const content = (
             <>
-              <TableIcon label={false} name={model.name} />
-              {model.name as LocalizedString}
+              <TableIcon label={false} name={table.name} />
+              {table.name as LocalizedString}
               {extraContent !== undefined && (
                 <>
                   <span className="-ml-2 flex-1" />
@@ -110,7 +110,7 @@ export function TableList({
             </>
           );
           return (
-            <li className="contents" key={model.tableId}>
+            <li className="contents" key={table.tableId}>
               {typeof action === 'function' ? (
                 <Button.LikeLink onClick={action}>{content}</Button.LikeLink>
               ) : (

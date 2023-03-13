@@ -346,8 +346,10 @@ def app_resource(request):
           raise Http404()
     elif result is None and quiet: 
           return HttpResponse(status=204)
-    resource, mimetype = result
-    return HttpResponse(resource, content_type=mimetype)
+    resource, mimetype, id = result
+    response = HttpResponse(resource, content_type=mimetype)
+    response['X-Record-ID'] = id
+    return  response
 
 
 @login_maybe_required
@@ -723,8 +725,8 @@ def api_endpoints_all(request):
 @cache_control(max_age=86400, public=True)
 @openapi(schema={
     "get": {
-        "parameters": {
-            "languages": {
+        "parameters": [
+            {
                 "name": "languages",
                 "in": "query",
                 "description": "Comma separate list of languages",
@@ -734,7 +736,7 @@ def api_endpoints_all(request):
                     "type": "string",
                 },
             },
-        },
+        ],
         "responses": {
             "200": {
                 "description": "List of available languages",

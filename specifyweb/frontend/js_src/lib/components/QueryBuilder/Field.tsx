@@ -3,8 +3,6 @@ import React from 'react';
 import { commonText } from '../../localization/common';
 import { localityText } from '../../localization/locality';
 import { queryText } from '../../localization/query';
-import { whitespaceSensitive } from '../../localization/utils';
-import { f } from '../../utils/functools';
 import type { Parser } from '../../utils/parser/definitions';
 import { resolveParser } from '../../utils/parser/definitions';
 import type { RA } from '../../utils/types';
@@ -14,7 +12,8 @@ import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Select } from '../Atoms/Form';
 import { iconClassName, icons } from '../Atoms/Icons';
-import { getModel, schema } from '../DataModel/schema';
+import { schema } from '../DataModel/schema';
+import { getTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { join } from '../Molecules';
 import { customSelectElementBackground } from '../WbPlanView/CustomSelectElement';
@@ -44,7 +43,8 @@ import {
 } from './FieldFilter';
 import type { DatePart } from './fieldSpec';
 import type { QueryField } from './helpers';
-import { mutateLineData, sortTypes } from './helpers';
+import { sortTypes } from './helpers';
+import { navigatorSpecs } from '../WbPlanView/navigatorSpecs';
 
 // REFACTOR: split this component into smaller components
 export function QueryLine({
@@ -118,7 +118,7 @@ export function QueryLine({
         !fieldName.startsWith(schema.fieldPartSeparator)
           ? getTableFromMappingPath(baseTableName, field.mappingPath)
           : undefined;
-      const dataModelField = getModel(tableName ?? '')?.getField(fieldName);
+      const dataModelField = getTable(tableName ?? '')?.getField(fieldName);
 
       let fieldType: QueryFieldType | undefined = undefined;
       let parser = undefined;
@@ -198,12 +198,12 @@ export function QueryLine({
     mappingPath: field.mappingPath,
     showHiddenFields,
     generateFieldData: 'all',
-    scope: 'queryBuilder',
+    spec: navigatorSpecs.queryBuilder,
     getMappedFields,
   });
 
   const mappingLineProps = getMappingLineProps({
-    mappingLineData: mutateLineData(lineData),
+    mappingLineData: lineData,
     customSelectType: 'CLOSED_LIST',
     onChange: handleMappingChange,
     onOpen: handleOpen,
@@ -279,8 +279,10 @@ export function QueryLine({
           }
         >
           {join(
-            mappingLineProps.map((mappingDetails) => (
-              <MappingElement {...mappingDetails} role="listitem" />
+            mappingLineProps.map((mappingDetails, index) => (
+              <li key={index} className="contents">
+                <MappingElement {...mappingDetails} />
+              </li>
             )),
             mappingElementDivider
           )}
@@ -306,7 +308,8 @@ export function QueryLine({
                         aria-label={queryText.or()}
                         aria-pressed={field.filters.length > 1}
                         className={`
-                          aria-handled print:hidden
+                          print:hidden
+                          ${className.ariaHandled}
                           ${isFieldComplete ? '' : 'invisible'}
                         `}
                         disabled={handleChange === undefined}
@@ -314,7 +317,7 @@ export function QueryLine({
                         variant={
                           field.filters.length > 1
                             ? className.blueButton
-                            : className.grayButton
+                            : className.lightGrayButton
                         }
                         onClick={(): void =>
                           handleFilterChange(field.filters.length, {
@@ -356,13 +359,13 @@ export function QueryLine({
                   <Button.Small
                     aria-label={queryText.negate()}
                     aria-pressed={field.filters[index].isNot}
-                    className="aria-handled"
+                    className={className.ariaHandled}
                     disabled={handleChange === undefined}
                     title={queryText.negate()}
                     variant={
                       field.filters[index].isNot
                         ? className.redButton
-                        : className.grayButton
+                        : className.lightGrayButton
                     }
                     onClick={(): void =>
                       handleFilterChange(index, {
@@ -383,11 +386,8 @@ export function QueryLine({
                     className={customSelectElementBackground}
                     disabled={handleChange === undefined}
                     title={
-                      f.maybe(
-                        queryFieldFilters[field.filters[index].type]
-                          .description,
-                        whitespaceSensitive
-                      ) ?? commonText.filter()
+                      queryFieldFilters[field.filters[index].type]
+                        .description ?? commonText.filter()
                     }
                     value={filter.type}
                     onChange={({ target }): void => {
@@ -466,10 +466,12 @@ export function QueryLine({
         <Button.Small
           aria-label={queryText.showButtonDescription()}
           aria-pressed={field.isDisplay}
-          className={`aria-handled ${isFieldComplete ? '' : 'invisible'}`}
+          className={`${className.ariaHandled} ${
+            isFieldComplete ? '' : 'invisible'
+          }`}
           title={queryText.showButtonDescription()}
           variant={
-            field.isDisplay ? className.greenButton : className.grayButton
+            field.isDisplay ? className.greenButton : className.lightGrayButton
           }
           onClick={handleChange?.bind(undefined, {
             ...field,

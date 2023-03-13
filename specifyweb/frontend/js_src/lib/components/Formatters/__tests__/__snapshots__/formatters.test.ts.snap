@@ -1,0 +1,2540 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`formatters are fetched and parsed correctly 1`] = `
+{
+  "aggregators": [
+    {
+      "formatter": "AccessionAgent",
+      "isDefault": true,
+      "limit": undefined,
+      "name": "AccessionAgent",
+      "separator": "; ",
+      "sortField": undefined,
+      "suffix": "",
+      "table": "[table AccessionAgent]",
+      "title": "AccessionAgent",
+    },
+    {
+      "formatter": "identity",
+      "isDefault": true,
+      "limit": undefined,
+      "name": "AccessionAttachment",
+      "separator": "; ",
+      "sortField": [
+        "[literalField ordinal]",
+      ],
+      "suffix": "",
+      "table": "[table AccessionAttachment]",
+      "title": "AccessionAttachment",
+    },
+    {
+      "formatter": "AccessionAuthorization",
+      "isDefault": true,
+      "limit": undefined,
+      "name": "AccessionAuthorization",
+      "separator": "; ",
+      "sortField": undefined,
+      "suffix": "",
+      "table": "[table AccessionAuthorization]",
+      "title": "AccessionAuthorization",
+    },
+    {
+      "formatter": "Address",
+      "isDefault": true,
+      "limit": undefined,
+      "name": "Address",
+      "separator": "; ",
+      "sortField": undefined,
+      "suffix": "",
+      "table": "[table Address]",
+      "title": "Address",
+    },
+    {
+      "formatter": "identity",
+      "isDefault": true,
+      "limit": undefined,
+      "name": "AgentAttachment",
+      "separator": "; ",
+      "sortField": [
+        "[literalField ordinal]",
+      ],
+      "suffix": "",
+      "table": "[table AgentAttachment]",
+      "title": "AgentAttachment",
+    },
+    {
+      "formatter": "Author",
+      "isDefault": true,
+      "limit": undefined,
+      "name": "Author",
+      "separator": "; ",
+      "sortField": [
+        "[literalField orderNumber]",
+      ],
+      "suffix": "",
+      "table": "[table Author]",
+      "title": "Author",
+    },
+    {
+      "formatter": "identity",
+      "isDefault": true,
+      "limit": undefined,
+      "name": "BorrowAttachment",
+      "separator": "; ",
+      "sortField": [
+        "[literalField ordinal]",
+      ],
+      "suffix": "",
+      "table": "[table BorrowAttachment]",
+      "title": "BorrowAttachment",
+    },
+    {
+      "formatter": "Citation",
+      "isDefault": true,
+      "limit": 0,
+      "name": "Citation",
+      "separator": " | ",
+      "sortField": undefined,
+      "suffix": "",
+      "table": "[table CollectionObjectCitation]",
+      "title": "Citation",
+    },
+    {
+      "formatter": "identity",
+      "isDefault": true,
+      "limit": undefined,
+      "name": "CollectingEventAttachment",
+      "separator": "; ",
+      "sortField": [
+        "[literalField ordinal]",
+      ],
+      "suffix": "",
+      "table": "[table CollectingEventAttachment]",
+      "title": "CollectingEventAttachment",
+    },
+    {
+      "formatter": "CollectionObject",
+      "isDefault": true,
+      "limit": undefined,
+      "name": "CollectionObject",
+      "separator": "; ",
+      "sortField": undefined,
+      "suffix": "",
+      "table": "[table CollectionObject]",
+      "title": "CollectionObject",
+    },
+    {
+      "formatter": "COattachment",
+      "isDefault": true,
+      "limit": 0,
+      "name": "CollectionObjectAttachment",
+      "separator": " | ",
+      "sortField": [
+        "[literalField ordinal]",
+      ],
+      "suffix": "",
+      "table": "[table CollectionObjectAttachment]",
+      "title": "CollectionObjectAttachment",
+    },
+    {
+      "formatter": "Collector",
+      "isDefault": true,
+      "limit": undefined,
+      "name": "Collector",
+      "separator": "; ",
+      "sortField": [
+        "[literalField orderNumber]",
+      ],
+      "suffix": "",
+      "table": "[table Collector]",
+      "title": "Collector",
+    },
+    {
+      "formatter": "identity",
+      "isDefault": true,
+      "limit": undefined,
+      "name": "ConservDescriptionAttachment",
+      "separator": "; ",
+      "sortField": [
+        "[literalField ordinal]",
+      ],
+      "suffix": "",
+      "table": "[table ConservDescriptionAttachment]",
+      "title": "ConservDescriptionAttachment",
+    },
+    {
+      "formatter": "identity",
+      "isDefault": true,
+      "limit": undefined,
+      "name": "ConservEventAttachment",
+      "separator": "; ",
+      "sortField": [
+        "[literalField ordinal]",
+      ],
+      "suffix": "",
+      "table": "[table ConservEventAttachment]",
+      "title": "ConservEventAttachment",
+    },
+    {
+      "formatter": "identity",
+      "isDefault": true,
+      "limit": undefined,
+      "name": "DNASequenceAttachment",
+      "separator": "; ",
+      "sortField": [
+        "[literalField ordinal]",
+      ],
+      "suffix": "",
+      "table": "[table DNASequenceAttachment]",
+      "title": "DNASequenceAttachment",
+    },
+    {
+      "formatter": "identity",
+      "isDefault": true,
+      "limit": undefined,
+      "name": "DNASequencingRunAttachment",
+      "separator": "; ",
+      "sortField": [
+        "[literalField ordinal]",
+      ],
+      "suffix": "",
+      "table": "[table DNASequencingRunAttachment]",
+      "title": "DNASequencingRunAttachment",
+    },
+    {
+      "formatter": "DNAsequence",
+      "isDefault": true,
+      "limit": 0,
+      "name": "DNAsequence",
+      "separator": "| ",
+      "sortField": undefined,
+      "suffix": "",
+      "table": "[table DNASequence]",
+      "title": "DNAsequence",
+    },
+    {
+      "formatter": "Determination",
+      "isDefault": true,
+      "limit": 1,
+      "name": "Determination",
+      "separator": "; ",
+      "sortField": undefined,
+      "suffix": "",
+      "table": "[table Determination]",
+      "title": "Determination",
+    },
+    {
+      "formatter": "identity",
+      "isDefault": true,
+      "limit": undefined,
+      "name": "FieldNotebookAttachment",
+      "separator": "; ",
+      "sortField": [
+        "[literalField ordinal]",
+      ],
+      "suffix": "",
+      "table": "[table FieldNotebookAttachment]",
+      "title": "FieldNotebookAttachment",
+    },
+    {
+      "formatter": "identity",
+      "isDefault": true,
+      "limit": undefined,
+      "name": "FieldNotebookPageAttachment",
+      "separator": "; ",
+      "sortField": [
+        "[literalField ordinal]",
+      ],
+      "suffix": "",
+      "table": "[table FieldNotebookPageAttachment]",
+      "title": "FieldNotebookPageAttachment",
+    },
+    {
+      "formatter": "identity",
+      "isDefault": true,
+      "limit": undefined,
+      "name": "FieldNotebookPageSetAttachment",
+      "separator": "; ",
+      "sortField": [
+        "[literalField ordinal]",
+      ],
+      "suffix": "",
+      "table": "[table FieldNotebookPageSetAttachment]",
+      "title": "FieldNotebookPageSetAttachment",
+    },
+    {
+      "formatter": "FundingAgent",
+      "isDefault": true,
+      "limit": undefined,
+      "name": "FundingAgent",
+      "separator": "; ",
+      "sortField": [
+        "[literalField orderNumber]",
+      ],
+      "suffix": "",
+      "table": "[table FundingAgent]",
+      "title": "FundingAgent",
+    },
+    {
+      "formatter": "LoanAgent",
+      "isDefault": true,
+      "limit": undefined,
+      "name": "GiftAttachment",
+      "separator": "; ",
+      "sortField": undefined,
+      "suffix": "",
+      "table": "[table GiftAttachment]",
+      "title": "GiftAttachment",
+    },
+    {
+      "formatter": "LoanAgent",
+      "isDefault": true,
+      "limit": undefined,
+      "name": "LoanAgent",
+      "separator": "; ",
+      "sortField": undefined,
+      "suffix": "",
+      "table": "[table LoanAgent]",
+      "title": "LoanAgent",
+    },
+    {
+      "formatter": "identity",
+      "isDefault": true,
+      "limit": undefined,
+      "name": "LoanAttachment",
+      "separator": "; ",
+      "sortField": [
+        "[literalField ordinal]",
+      ],
+      "suffix": "",
+      "table": "[table LoanAttachment]",
+      "title": "LoanAttachment",
+    },
+    {
+      "formatter": "LoanPreparation",
+      "isDefault": true,
+      "limit": 0,
+      "name": "LoanPrep",
+      "separator": "; ",
+      "sortField": undefined,
+      "suffix": "",
+      "table": "[table LoanPreparation]",
+      "title": "LoanPrep",
+    },
+    {
+      "formatter": "LoanReturnPreparation",
+      "isDefault": true,
+      "limit": 0,
+      "name": "LoanReturnPrep",
+      "separator": "; ",
+      "sortField": undefined,
+      "suffix": "",
+      "table": "[table LoanReturnPreparation]",
+      "title": "Loan Return Prep",
+    },
+    {
+      "formatter": "identity",
+      "isDefault": true,
+      "limit": undefined,
+      "name": "LocalityAttachment",
+      "separator": "; ",
+      "sortField": [
+        "[literalField ordinal]",
+      ],
+      "suffix": "",
+      "table": "[table LocalityAttachment]",
+      "title": "LocalityAttachment",
+    },
+    {
+      "formatter": "identity",
+      "isDefault": true,
+      "limit": undefined,
+      "name": "PermitAttachment",
+      "separator": "; ",
+      "sortField": [
+        "[literalField ordinal]",
+      ],
+      "suffix": "",
+      "table": "[table PermitAttachment]",
+      "title": "PermitAttachment",
+    },
+    {
+      "formatter": "Preparation",
+      "isDefault": true,
+      "limit": undefined,
+      "name": "Preparation",
+      "separator": "; ",
+      "sortField": undefined,
+      "suffix": "",
+      "table": "[table Preparation]",
+      "title": "Preparation",
+    },
+    {
+      "formatter": "identity",
+      "isDefault": true,
+      "limit": undefined,
+      "name": "PreparationAttachment",
+      "separator": "; ",
+      "sortField": [
+        "[literalField ordinal]",
+      ],
+      "suffix": "",
+      "table": "[table PreparationAttachment]",
+      "title": "PreparationAttachment",
+    },
+    {
+      "formatter": "identity",
+      "isDefault": true,
+      "limit": undefined,
+      "name": "ReferenceWorkAttachment",
+      "separator": "; ",
+      "sortField": [
+        "[literalField ordinal]",
+      ],
+      "suffix": "",
+      "table": "[table ReferenceWorkAttachment]",
+      "title": "ReferenceWorkAttachment",
+    },
+    {
+      "formatter": "identity",
+      "isDefault": true,
+      "limit": undefined,
+      "name": "RepositoryAgreementAttachment",
+      "separator": "; ",
+      "sortField": [
+        "[literalField ordinal]",
+      ],
+      "suffix": "",
+      "table": "[table RepositoryAgreementAttachment]",
+      "title": "RepositoryAgreementAttachment",
+    },
+    {
+      "formatter": "identity",
+      "isDefault": true,
+      "limit": undefined,
+      "name": "TaxonAttachment",
+      "separator": "; ",
+      "sortField": [
+        "[literalField ordinal]",
+      ],
+      "suffix": "",
+      "table": "[table TaxonAttachment]",
+      "title": "TaxonAttachment",
+    },
+    {
+      "formatter": "Voucher relationship",
+      "isDefault": true,
+      "limit": 0,
+      "name": "Voucher Relationship",
+      "separator": ";",
+      "sortField": [
+        "[literalField institutionCode]",
+      ],
+      "suffix": "",
+      "table": "[table VoucherRelationship]",
+      "title": "VoucherRelationship",
+    },
+  ],
+  "formatters": [
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField accessionNumber]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "Accession",
+      "table": "[table Accession]",
+      "title": "Accession",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[relationship agent]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": "Agent",
+                "separator": "",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField role]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": " - ",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "AccessionAgent",
+      "table": "[table AccessionAgent]",
+      "title": "AccessionAgent",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[relationship accession]",
+                  "[literalField accessionNumber]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "AccessionAuthorization",
+      "table": "[table AccessionAuthorization]",
+      "title": "AccessionAuthorization",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField address]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField address2]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": " ",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField city]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": ", ",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField state]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": ", ",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField postalCode]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": " ",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "Address",
+      "table": "[table Address]",
+      "title": "Address",
+    },
+    {
+      "definition": {
+        "conditionField": [
+          "[literalField agentType]",
+        ],
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField lastName]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": "0",
+          },
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField lastName]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField firstName]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": ", ",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField middleInitial]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": " ",
+              },
+            ],
+            "value": "1",
+          },
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField lastName]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": "2",
+          },
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField lastName]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": "3",
+          },
+        ],
+        "isSingle": false,
+      },
+      "isDefault": true,
+      "name": "Agent",
+      "table": "[table Agent]",
+      "title": "Agent",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField attachmentLocation]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "http://biimages.biodiversity.ku.edu/static/Ichthyology/originals/",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "Attachment",
+      "table": "[table Attachment]",
+      "title": "Attachment",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[relationship agent]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": "Agent",
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "Author",
+      "table": "[table Author]",
+      "title": "Author",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField schemeName]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "AutoNumberingScheme",
+      "table": "[table AutoNumberingScheme]",
+      "title": "AutoNumberingScheme",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField receivedDate]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "Borrow",
+      "table": "[table Borrow]",
+      "title": "Borrow",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[relationship attachment]",
+                  "[literalField attachmentLocation]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "http://biimages.biodiversity.ku.edu/static/Ichthyology/originals/",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "COattachment",
+      "table": "[table CollectionObjectAttachment]",
+      "title": "COattachment",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[relationship referenceWork]",
+                  "[literalField url]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "Citation",
+      "table": "[table CollectionObjectCitation]",
+      "title": "Citation",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField stationFieldNumber]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField startDate]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": ": ",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[relationship locality]",
+                  "[relationship geography]",
+                  "[literalField fullName]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": ": ",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[relationship locality]",
+                  "[literalField localityName]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": ": ",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[relationship locality]",
+                  "[literalField latitude1]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": ": ",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[relationship locality]",
+                  "[literalField longitude1]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": ": ",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": false,
+      "name": "CollectingEvent",
+      "table": "[table CollectingEvent]",
+      "title": "CollectingEvent",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": {
+          "attributes": {
+            "class": "edu.ku.brc.specify.ui.CollectingEventDataObjFmt",
+          },
+          "content": {
+            "children": {
+              "param": [
+                {
+                  "attributes": {
+                    "name": "format",
+                  },
+                  "content": {
+                    "string": "FN; DT; LC; LA, LO; CO, ST, CT",
+                    "type": "Text",
+                  },
+                  "tagName": "param",
+                  "type": "SimpleXmlNode",
+                },
+              ],
+            },
+            "type": "Children",
+          },
+          "tagName": "external",
+          "type": "SimpleXmlNode",
+        },
+        "fields": [],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "CollectingEventDetail",
+      "table": "[table CollectingEvent]",
+      "title": "CollectingEventDetail",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField stationFieldNumber]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField startDate]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": ", ",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": false,
+      "name": "CollectingEventSFN",
+      "table": "[table CollectingEvent]",
+      "title": "CollectingEventSFN",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": {
+          "attributes": {
+            "class": "edu.ku.brc.specify.ui.CollectingEventDataObjFmt",
+          },
+          "content": {
+            "children": {
+              "param": [
+                {
+                  "attributes": {
+                    "name": "format",
+                  },
+                  "content": {
+                    "string": "FN; DT; LC; LA, LO; CO, ST, CT",
+                    "type": "Text",
+                  },
+                  "tagName": "param",
+                  "type": "SimpleXmlNode",
+                },
+              ],
+            },
+            "type": "Children",
+          },
+          "tagName": "external",
+          "type": "SimpleXmlNode",
+        },
+        "fields": [],
+        "isSingle": true,
+      },
+      "isDefault": false,
+      "name": "CollectingEventStartDate",
+      "table": "[table CollectingEvent]",
+      "title": "CollectingEventStartDate",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField text1]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField text2]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": ": ",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField number1]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": ": ",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "CollectingTrip",
+      "table": "[table CollectingTrip]",
+      "title": "CollectingTrip",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField collectionName]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "Collection",
+      "table": "[table Collection]",
+      "title": "Collection",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField catalogNumber]",
+                ],
+                "fieldFormatter": "CatalogNumber",
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "CollectionObject",
+      "table": "[table CollectionObject]",
+      "title": "CollectionObject",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField name]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "CollectionRelType",
+      "table": "[table CollectionRelType]",
+      "title": "CollectionRelType",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[relationship agent]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": "Agent",
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "Collector",
+      "table": "[table Collector]",
+      "title": "Collector",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField name]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "Container",
+      "table": "[table Container]",
+      "title": "Container",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField primerDesignator]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "DNAPrimer",
+      "table": "[table DNAPrimer]",
+      "title": "DNAPrimer",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField text2]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "https://www.ncbi.nlm.nih.gov/nuccore/",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "DNAsequence",
+      "table": "[table DNASequence]",
+      "title": "DNAsequence",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField name]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "DataType",
+      "table": "[table DataType]",
+      "title": "DataType",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField deaccessionNumber]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "Deaccession",
+      "table": "[table Deaccession]",
+      "title": "Deaccession",
+    },
+    {
+      "definition": {
+        "conditionField": [
+          "[literalField isCurrent]",
+        ],
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[relationship preferredTaxon]",
+                  "[literalField fullName]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": "true",
+          },
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[relationship taxon]",
+                  "[literalField fullName]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": "false",
+          },
+        ],
+        "isSingle": false,
+      },
+      "isDefault": true,
+      "name": "Determination",
+      "table": "[table Determination]",
+      "title": "Determination",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField name]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "Discipline",
+      "table": "[table Discipline]",
+      "title": "Discipline",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField name]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "Division",
+      "table": "[table Division]",
+      "title": "Division",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField pageNumber]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[relationship pageSet]",
+                  "[relationship fieldNotebook]",
+                  "[literalField name]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": " - ",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "FieldNotebookPage",
+      "table": "[table FieldNotebookPage]",
+      "title": "FieldNotebookPage",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[relationship agent]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": "Agent",
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "FundingAgent",
+      "table": "[table FundingAgent]",
+      "title": "FundingAgent",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField fullName]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "Geography",
+      "table": "[table Geography]",
+      "title": "Geography",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField name]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "GeographyTreeDef",
+      "table": "[table GeographyTreeDef]",
+      "title": "GeographyTreeDef",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField name]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "GeographyTreeDefItem",
+      "table": "[table GeographyTreeDefItem]",
+      "title": "GeographyTreeDefItem",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField fullName]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "GeologicTimePeriod",
+      "table": "[table GeologicTimePeriod]",
+      "title": "GeologicTimePeriod",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField name]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "GeologicTimePeriodTreeDef",
+      "table": "[table GeologicTimePeriodTreeDef]",
+      "title": "GeologicTimePeriodTreeDef",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField journalName]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "Journal",
+      "table": "[table Journal]",
+      "title": "Journal",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField fullName]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "LithoStrat",
+      "table": "[table LithoStrat]",
+      "title": "LithoStrat",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField name]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "LithoStratTreeDef",
+      "table": "[table LithoStratTreeDef]",
+      "title": "LithoStratTreeDef",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField name]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "LithoStratTreeDefItem",
+      "table": "[table LithoStratTreeDefItem]",
+      "title": "LithoStratTreeDefItem",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField loanNumber]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "Loan",
+      "table": "[table Loan]",
+      "title": "Loan",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[relationship agent]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": "Agent",
+                "separator": "",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField role]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": " - ",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "LoanAgent",
+      "table": "[table LoanAgent]",
+      "title": "LoanAgent",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "LoanPreparation",
+      "table": "[table LoanPreparation]",
+      "title": "LoanPreparation",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[relationship loanPreparation]",
+                  "[relationship preparation]",
+                  "[relationship prepType]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": "PrepType",
+                "separator": "",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField quantityResolved]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": " - ",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "LoanReturnPreparation",
+      "table": "[table LoanReturnPreparation]",
+      "title": "LoanReturnPreparation",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField localityName]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[relationship geography]",
+                  "[literalField fullName]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "; ",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField latitude1]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "; ",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField longitude1]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": ", ",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "Locality",
+      "table": "[table Locality]",
+      "title": "Locality",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": {
+          "attributes": {
+            "class": "edu.ku.brc.specify.ui.LocalityLatLonFormatter",
+          },
+          "content": {
+            "children": {
+              "param": [
+                {
+                  "attributes": {
+                    "name": "type",
+                  },
+                  "content": {
+                    "string": "Latitude",
+                    "type": "Text",
+                  },
+                  "tagName": "param",
+                  "type": "SimpleXmlNode",
+                },
+                {
+                  "attributes": {
+                    "name": "dir",
+                  },
+                  "content": {
+                    "string": "symbol",
+                    "type": "Text",
+                  },
+                  "tagName": "param",
+                  "type": "SimpleXmlNode",
+                },
+                {
+                  "attributes": {
+                    "name": "dir",
+                  },
+                  "content": {
+                    "string": "DDDDDD",
+                    "type": "Text",
+                  },
+                  "tagName": "param",
+                  "type": "SimpleXmlNode",
+                },
+                {
+                  "attributes": {
+                    "name": "which",
+                  },
+                  "content": {
+                    "string": "1",
+                    "type": "Text",
+                  },
+                  "tagName": "param",
+                  "type": "SimpleXmlNode",
+                },
+              ],
+            },
+            "type": "Children",
+          },
+          "tagName": "external",
+          "type": "SimpleXmlNode",
+        },
+        "fields": [],
+        "isSingle": true,
+      },
+      "isDefault": false,
+      "name": "LocalityLatitude",
+      "table": "[table Locality]",
+      "title": "LocalityLatitude",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": {
+          "attributes": {
+            "class": "edu.ku.brc.specify.ui.LocalityLatLonFormatter",
+          },
+          "content": {
+            "children": {
+              "param": [
+                {
+                  "attributes": {
+                    "name": "type",
+                  },
+                  "content": {
+                    "string": "Longitude",
+                    "type": "Text",
+                  },
+                  "tagName": "param",
+                  "type": "SimpleXmlNode",
+                },
+                {
+                  "attributes": {
+                    "name": "dir",
+                  },
+                  "content": {
+                    "string": "symbol",
+                    "type": "Text",
+                  },
+                  "tagName": "param",
+                  "type": "SimpleXmlNode",
+                },
+                {
+                  "attributes": {
+                    "name": "dir",
+                  },
+                  "content": {
+                    "string": "DDDDDD",
+                    "type": "Text",
+                  },
+                  "tagName": "param",
+                  "type": "SimpleXmlNode",
+                },
+                {
+                  "attributes": {
+                    "name": "which",
+                  },
+                  "content": {
+                    "string": "1",
+                    "type": "Text",
+                  },
+                  "tagName": "param",
+                  "type": "SimpleXmlNode",
+                },
+              ],
+            },
+            "type": "Children",
+          },
+          "tagName": "external",
+          "type": "SimpleXmlNode",
+        },
+        "fields": [],
+        "isSingle": true,
+      },
+      "isDefault": false,
+      "name": "LocalityLongitude",
+      "table": "[table Locality]",
+      "title": "LocalityLongitude",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField paleoContextName]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[relationship chronosStrat]",
+                  "[literalField fullName]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": ", ",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[relationship lithoStrat]",
+                  "[literalField fullName]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": ", ",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "PaleoContext",
+      "table": "[table PaleoContext]",
+      "title": "PaleoContext",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField permitNumber]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "Permit",
+      "table": "[table Permit]",
+      "title": "Permit",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField name]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "PrepType",
+      "table": "[table PrepType]",
+      "title": "PrepType",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[relationship prepType]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": "PrepType",
+                "separator": "",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField countAmt]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": " - ",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "Preparation",
+      "table": "[table Preparation]",
+      "title": "Preparation",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField title]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "ReferenceWork",
+      "table": "[table ReferenceWork]",
+      "title": "ReferenceWork",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField shipmentDate]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField shipmentNumber]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": " - ",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField shipmentMethod]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": " - ",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "Shipment",
+      "table": "[table Shipment]",
+      "title": "Shipment",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField fullName]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "Storage",
+      "table": "[table Storage]",
+      "title": "Storage",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField name]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "StorageTreeDef",
+      "table": "[table StorageTreeDef]",
+      "title": "StorageTreeDef",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField name]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "StorageTreeDefItem",
+      "table": "[table StorageTreeDefItem]",
+      "title": "StorageTreeDefItem",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField fullName]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "Taxon",
+      "table": "[table Taxon]",
+      "title": "Taxon",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[relationship referenceWork]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": "ReferenceWork",
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "TaxonCitation",
+      "table": "[table TaxonCitation]",
+      "title": "TaxonCitation",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField name]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "TaxonTreeDef",
+      "table": "[table TaxonTreeDef]",
+      "title": "TaxonTreeDef",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField name]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "TaxonTreeDefItem",
+      "table": "[table TaxonTreeDefItem]",
+      "title": "TaxonTreeDefItem",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField projectNumber]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "institutionCode=",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField grantAgency]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "&collectionCode=",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField projectName]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "&catalogNumber=",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField url]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "&accesspoint=",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "Voucher",
+      "table": "[table Project]",
+      "title": "Voucher",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField institutionCode]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "institutionCode=",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField collectionCode]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "&collectionCode=",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField voucherNumber]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "&catalogNumber=",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField urlLink]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "&accesspoint=",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": true,
+      },
+      "isDefault": true,
+      "name": "Voucher relationship",
+      "table": "[table VoucherRelationship]",
+      "title": "VoucherRelationship",
+    },
+  ],
+}
+`;

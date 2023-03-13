@@ -4,8 +4,6 @@
  * @module
  */
 
-import type { LocalizedString } from 'typesafe-i18n';
-
 import type { KeysToLowerCase } from '../components/DataModel/helperTypes';
 import { f } from './functools';
 import type { IR, RA, RR } from './types';
@@ -303,28 +301,6 @@ export const index = <T extends { readonly id: number }>(data: RA<T>): IR<T> =>
 export const escapeRegExp = (string: string): string =>
   string.replaceAll(/[$()*+.?[\\\]^{|}]/g, '\\$&');
 
-/** Fix for "getAttribute" being case-sensetive for non-HTML elements */
-export const getAttribute = (cell: Element, name: string): string | undefined =>
-  cell.getAttribute(name.toLowerCase()) ?? cell.getAttribute(name) ?? undefined;
-
-/** Like getAttribute, but also trim the value and discard empty values */
-export const getParsedAttribute = (
-  cell: Element,
-  name: string
-): LocalizedString | undefined =>
-  f.maybe(getAttribute(cell, name)?.trim(), (value) =>
-    value.length === 0 ? undefined : (value as LocalizedString)
-  );
-
-export const getBooleanAttribute = (
-  cell: Element,
-  name: string
-): boolean | undefined =>
-  f.maybe(
-    getParsedAttribute(cell, name),
-    (value) => value.toLowerCase() === 'true'
-  );
-
 /** Recursively convert keys on an object to lowercase */
 export const keysToLowerCase = <OBJECT extends IR<unknown>>(
   resource: OBJECT
@@ -344,31 +320,13 @@ export const keysToLowerCase = <OBJECT extends IR<unknown>>(
     ])
   ) as unknown as KeysToLowerCase<OBJECT>;
 
-/**
- * A wrapper for JSON.stringify that can handle recursive objects
- *
- * Most of the time this in not needed. It is needed when serializing
- * unknown data type (i.e, in error messages)
- */
-export function jsonStringify(
-  object: unknown,
-  space: number | string | undefined = undefined
-): string {
-  const cache = new Set<unknown>();
-  return JSON.stringify(
-    object,
-    (_key, value) => {
-      if (typeof value === 'object' && value !== null)
-        if (cache.has(value)) return '[Circular]';
-        else {
-          cache.add(value);
-          return value;
-        }
-      else return value;
-    },
-    space
-  );
-}
-
 export const takeBetween = <T>(array: RA<T>, first: T, last: T): RA<T> =>
   array.slice(array.indexOf(first) + 1, array.indexOf(last) + 1);
+
+// Convert seconds to minutes and seconds and return the string
+export function formatTime(seconds: number): string {
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+  const paddedSeconds = remainingSeconds.toString().padStart(2, '0');
+  return `${minutes}:${paddedSeconds}`;
+}

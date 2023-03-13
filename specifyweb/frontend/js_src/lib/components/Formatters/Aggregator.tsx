@@ -1,30 +1,21 @@
 import React from 'react';
 
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { commonText } from '../../localization/common';
 import { resourcesText } from '../../localization/resources';
-import type { GetSet, RA } from '../../utils/types';
-import { Button } from '../Atoms/Button';
+import type { GetSet } from '../../utils/types';
 import { Input, Label } from '../Atoms/Form';
-import { SearchDialog } from '../Forms/SearchDialog';
+import { ReadOnlyContext } from '../Core/Contexts';
 import { hasTablePermission } from '../Permissions/helpers';
-import type { FieldType } from '../WbPlanView/mappingHelpers';
 import { aggregate } from './aggregate';
 import { FormattersPickList, ResourceMapping } from './Components';
+import { GenericFormatterPreview } from './Preview';
 import type { Aggregator } from './spec';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { fetchCollection } from '../DataModel/collection';
-import { SpecifyResource } from '../DataModel/legacyTypes';
-import { AnySchema } from '../DataModel/helperTypes';
-import { deserializeResource } from '../DataModel/serializers';
 
 export function AggregatorElement({
   item: [aggregator, setAggregator],
-  isReadOnly,
 }: {
   readonly item: GetSet<Aggregator>;
-  readonly isReadOnly: boolean;
 }): JSX.Element {
+  const isReadOnly = React.useContext(ReadOnlyContext);
   const [openIndex, setOpenIndex] = React.useState<number | undefined>(
     undefined
   );
@@ -57,11 +48,9 @@ export function AggregatorElement({
         />
       </Label.Block>
       {typeof aggregator.table === 'object' && (
-        <Label.Block>
-          {resourcesText.sortField()}
+        <fieldset>
+          <legend>{resourcesText.sortField()}</legend>
           <ResourceMapping
-            allowedMappings={allowedMappings}
-            isReadOnly={isReadOnly}
             mapping={[
               aggregator.sortField,
               (sortField): void =>
@@ -73,19 +62,22 @@ export function AggregatorElement({
             openIndex={[openIndex, setOpenIndex]}
             table={aggregator.table}
           />
-        </Label.Block>
+        </fieldset>
       )}
-      <FormattersPickList
-        // REFACTOR: create a readonly context, that would render everything below as readonly
-        isReadOnly={isReadOnly}
-        value={aggregator.formatter}
-        onChange={(formatter): void =>
-          setAggregator({
-            ...aggregator,
-            formatter,
-          })
-        }
-      />
+      <Label.Block>
+        {resourcesText.formatter()}
+        <FormattersPickList
+          table={aggregator.table}
+          type="formatters"
+          value={aggregator.formatter}
+          onChange={(formatter): void =>
+            setAggregator({
+              ...aggregator,
+              formatter,
+            })
+          }
+        />
+      </Label.Block>
       <Label.Block>
         {resourcesText.limit()}
         <Input.Number
@@ -109,71 +101,19 @@ export function AggregatorElement({
   );
 }
 
-const allowedMappings: RA<FieldType> = ['toOneIndependent', 'toOneDependent'];
-
-/*
- * FIXME: enforce no mappings to dependent fields
- *   mappings: ['fields', 'toOneIndependent', 'toManyIndependent'],
- */
-const defaultPreviewSize = 4;
-
 function AggregatorPreview({
   aggregator,
 }: {
   readonly aggregator: Aggregator;
 }): JSX.Element {
-  const [resources, setResources] = useAsyncState<
-    RA<SpecifyResource<AnySchema>>
-  >(
-    // Use last 10 records as a preview by default
-    React.useCallback(
-      async () =>
-        aggregator.table === undefined
-          ? undefined
-          : fetchCollection(aggregator.table.name, {
-              limit: defaultPreviewSize,
-              orderBy: '-id',
-            }).then(({ records }) => records.map(deserializeResource)),
-      []
-    ),
-    false
-  );
-  const [aggregated] = useAsyncState(
-    React.useCallback(
-      async () =>
-        resources === undefined ? false : aggregate(resources, aggregator),
-      [resources, aggregator]
-    ),
-    false
-  );
-
-  const [isOpen, handleOpen, handleClose] = useBooleanState();
-  const templateResource = React.useMemo(
-    () => new aggregator.table!.Resource(),
-    [aggregator.table]
-  );
-
   return (
-    <>
-      {resourcesText.preview()}
-      <div>
-        <Button.Green onClick={handleOpen}>{commonText.search()}</Button.Green>
-      </div>
-      {typeof aggregated === 'string' ? (
-        <output>{aggregated}</output>
-      ) : aggregated === undefined ? (
-        <p>{commonText.loading()}</p>
-      ) : undefined}
-      {isOpen && (
-        <SearchDialog
-          extraFilters={undefined}
-          forceCollection={undefined}
-          multiple
-          templateResource={templateResource}
-          onClose={handleClose}
-          onSelected={setResources}
-        />
+    <GenericFormatterPreview
+      doFormatting={React.useCallback(
+        async (resources) =>
+          aggregate(resources, aggregator).then((aggregated) => [aggregated]),
+        [aggregator]
       )}
-    </>
+      table={aggregator.table}
+    />
   );
 }

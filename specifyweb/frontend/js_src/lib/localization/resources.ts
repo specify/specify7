@@ -13,7 +13,7 @@ export const resourcesText = createDictionary({
     'en-us': 'App Resources',
     'ru-ru': 'Ресурсы приложения',
     'es-es': 'Recursos de la aplicación',
-    'fr-fr': "Ressources d'application",
+    'fr-fr': "Ressources de l'application",
     'uk-ua': 'Ресурси програми',
   },
   formDefinition: {
@@ -41,28 +41,28 @@ export const resourcesText = createDictionary({
     'en-us': 'Global Resources',
     'ru-ru': 'Глобальные ресурсы',
     'es-es': 'Recursos globales',
-    'fr-fr': 'Ressources mondiales',
+    'fr-fr': 'Ressources globales',
     'uk-ua': 'Глобальні ресурси',
   },
   disciplineResources: {
     'en-us': 'Discipline Resources',
     'ru-ru': 'Ресурсы дисциплины',
     'es-es': 'Recursos de disciplina',
-    'fr-fr': 'Ressources disciplinaires',
+    'fr-fr': 'Ressources de discipline',
     'uk-ua': 'Дисциплінарні ресурси',
   },
   type: {
     'en-us': 'Type',
     'ru-ru': 'Тип',
-    'es-es': 'Escribe',
-    'fr-fr': 'Taper',
+    'es-es': 'Tipo',
+    'fr-fr': 'Type',
     'uk-ua': 'Тип',
   },
   userTypes: {
     'en-us': 'User Types',
     'ru-ru': 'Типы пользователей',
     'es-es': 'Tipos de usuarios',
-    'fr-fr': "Types d'utilisateurs",
+    'fr-fr': "Types d'utilisateur",
     'uk-ua': 'Типи користувачів',
   },
   resources: {
@@ -111,7 +111,7 @@ export const resourcesText = createDictionary({
     'en-us': 'Web Links',
     'ru-ru': 'Веб-ссылки',
     'es-es': 'Enlaces web',
-    'fr-fr': 'Liens web',
+    'fr-fr': 'Liens Web',
     'uk-ua': 'Веб-посилання',
   },
   uiFormatters: {
@@ -143,6 +143,12 @@ export const resourcesText = createDictionary({
   availableAggregators: {
     'en-us': 'Available Aggregators',
     'ru-ru': 'Доступные агрегаторы',
+  },
+  selectDefaultFormatter: {
+    'en-us': 'Please mark one of these formatters as default',
+  },
+  duplicateFormatters: {
+    'en-us': 'Formatter names must be unique',
   },
   searchDialogDefinitions: {
     'en-us': 'Search Dialog Definitions',
@@ -183,7 +189,7 @@ export const resourcesText = createDictionary({
     'en-us': 'Other Properties Resource',
     'ru-ru': 'Другой Properties-ресурс',
     'es-es': 'Recurso de otras propiedades',
-    'fr-fr': 'Autres ressources de propriétés',
+    'fr-fr': 'Autre ressource de propriétés',
     'uk-ua': 'Ресурс інших властивостей',
   },
   otherAppResource: {
@@ -246,7 +252,7 @@ export const resourcesText = createDictionary({
     'en-us': 'Remote Preferences',
     'ru-ru': 'Удаленные настройки',
     'es-es': 'Preferencias remotas',
-    'fr-fr': 'Préférences à distance',
+    'fr-fr': 'Préférences distantes',
     'uk-ua': 'Віддалені параметри',
   },
   failedParsingXml: {
@@ -284,6 +290,9 @@ export const resourcesText = createDictionary({
   aggregator: {
     'en-us': 'Aggregator',
   },
+  defaultInline: {
+    'en-us': '(default)',
+  },
   sortField: {
     'en-us': 'Sort Field',
     'ru-ru': 'Поле сортировки',
@@ -291,6 +300,24 @@ export const resourcesText = createDictionary({
   preview: {
     'en-us': 'Preview:',
     'ru-ru': 'Предпросмотр:',
+  },
+  editorNotAvailable: {
+    'en-us': 'Visual editor is not available for this resource',
+  },
+  addDefinition: {
+    'en-us': 'Add definition',
+  },
+  deleteDefinition: {
+    'en-us': 'Delete definition',
+  },
+  addField: {
+    'en-us': 'Add field',
+  },
+  conditionField: {
+    'en-us': 'Condition Field',
+  },
+  condition: {
+    'en-us': 'Condition',
   },
   wrongScopeWarning: {
     'en-us': `

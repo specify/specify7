@@ -8,10 +8,10 @@ import { formatUrl } from '../Router/queryString';
 export const snServer = 'https://broker.spcoco.org';
 
 export const fetchLocalScientificName = async (
-  model: SpecifyResource<CollectionObject>,
+  table: SpecifyResource<CollectionObject>,
   defaultValue = ''
 ): Promise<string> =>
-  model.rgetCollection('determinations').then(({ models: determinations }) =>
+  table.rgetCollection('determinations').then(({ models: determinations }) =>
     determinations.length === 0
       ? defaultValue
       : determinations[0]

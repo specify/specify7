@@ -6,16 +6,20 @@ import React from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
 
-import { SetUnloadProtectsContext } from '../components/Core/Contexts';
-import { isOverlay, OverlayContext } from '../components/Router/Router';
+import {
+  isOverlay,
+  OverlayContext,
+  SetUnloadProtectsContext,
+} from '../components/Router/Router';
 import { locationToState } from '../components/Router/RouterState';
 import type { GetOrSet, GetSet, RA } from '../utils/types';
 import { defined } from '../utils/types';
 import { removeItem } from '../utils/utils';
 
 export function useSearchParameter(
-  name: string | undefined
+  rawName: string | undefined
 ): GetSet<string | undefined> {
+  const name = rawName?.toLowerCase();
   const [queryString, setQueryString] = useSearchParams();
 
   const isOverlayComponent = isOverlay(React.useContext(OverlayContext));

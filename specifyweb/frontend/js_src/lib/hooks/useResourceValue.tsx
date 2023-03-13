@@ -9,17 +9,17 @@ import type {
   LiteralField,
   Relationship,
 } from '../components/DataModel/specifyField';
+import { FormContext } from '../components/Forms/BaseResourceView';
 import { getDateInputValue } from '../utils/dayJs';
 import { listen } from '../utils/events';
 import { f } from '../utils/functools';
 import type { Parser } from '../utils/parser/definitions';
-import { mergeParsers, resolveParser } from '../utils/parser/definitions';
 import { parseValue } from '../utils/parser/parse';
 import { parseRelativeDate } from '../utils/relativeDate';
 import type { RA } from '../utils/types';
+import { useParser } from './resource';
 import { useBooleanState } from './useBooleanState';
 import { useValidation } from './useValidation';
-import { FormContext } from '../components/Forms/BaseResourceView';
 
 /**
  * A hook to integrate an Input with a field on a Backbone resource
@@ -41,7 +41,7 @@ export function useResourceValue<
   T extends boolean | number | string | null,
   INPUT extends Input = HTMLInputElement
 >(
-  resource: SpecifyResource<AnySchema>,
+  resource: SpecifyResource<AnySchema> | undefined,
   // If field is undefined, this hook behaves pretty much like useValidation()
   field: LiteralField | Relationship | undefined,
   // Default parser is usually coming from the form definition
@@ -57,7 +57,7 @@ export function useResourceValue<
 } {
   const { inputRef, validationRef, setValidation } = useValidation<INPUT>();
 
-  const [parser, setParser] = React.useState<Parser>({});
+  const parser = useParser(field, defaultParser);
 
   const [value, setValue] = React.useState<T | undefined>(undefined);
 
@@ -72,7 +72,7 @@ export function useResourceValue<
   const [ignoreError, handleIgnoreError, handleDontIgnoreError] =
     useBooleanState();
   React.useEffect(() => {
-    if (field === undefined) return;
+    if (field === undefined || resource === undefined) return;
     const getBlockers = (): RA<string> =>
       resource.saveBlockers
         ?.blockersForField(field.name)
@@ -127,8 +127,8 @@ export function useResourceValue<
      *   type explicitly as @typescript-eslint/strict-boolean-expressions can't
      *   infer implicit types
      */
-    function updateValue(newValue: T, reportErrors = true) {
-      if (ignoreChangeRef.current) return;
+    (newValue: T, reportErrors = true) => {
+      if (ignoreChangeRef.current || resource === undefined) return;
 
       /*
        * Converting ref to state so that React.useEffect can be triggered
@@ -205,26 +205,9 @@ export function useResourceValue<
     [input, resource]
   );
 
-  // Listen for resource update. Set parser. Set default value
+  // Listen for resource update. Set default value
   React.useEffect(() => {
-    if (field === undefined) return;
-
-    /*
-     * Disable parser when validation is disabled. This is useful in search
-     * dialogs where space and quote characters are interpreted differently,
-     * thus validation for them should be disabled.
-     */
-    const shouldResolveParser =
-      resource.noValidation !== true && typeof field === 'object';
-    const resolvedParser = shouldResolveParser
-      ? resolveParser(field)
-      : { type: 'text' as const };
-    const parser = shouldResolveParser
-      ? typeof defaultParser === 'object'
-        ? mergeParsers(resolvedParser, defaultParser)
-        : resolvedParser
-      : resolvedParser;
-    setParser(parser);
+    if (field === undefined || resource === undefined) return;
 
     if (
       parser.value !== undefined &&
@@ -247,7 +230,7 @@ export function useResourceValue<
        * in the form definition
        */
       (parser.type !== 'number' ||
-        resolvedParser.value !== 0 ||
+        parser.value !== 0 ||
         (defaultParser?.value ?? 0) !== 0)
     )
       resource.set(
@@ -261,11 +244,11 @@ export function useResourceValue<
           : parser.value) as never,
         { silent: true }
       );
-  }, [resource, field, defaultParser]);
+  }, [parser, resource, field, defaultParser]);
 
   React.useEffect(
     () =>
-      typeof field === 'object'
+      typeof field === 'object' && typeof resource === 'object'
         ? resourceOn(
             resource,
             `change:${field.name}`,

@@ -10,16 +10,16 @@ import {
   toTreeTable,
 } from '../helpers';
 import { getResourceApiUrl } from '../resource';
-import { schema } from '../schema';
-import type { Tables } from '../types';
 import { serializeResource } from '../serializers';
+import type { Tables } from '../types';
+import { tables } from '../tables';
 
 mockTime();
 requireContext();
 
 describe('serializeResource', () => {
   test('Agent resource', () => {
-    const resource = new schema.models.Agent.Resource();
+    const resource = new tables.Agent.Resource();
     expect(serializeResource(resource)).toEqual({
       _tableName: 'Agent',
       abbreviation: null,
@@ -31,6 +31,7 @@ describe('serializeResource', () => {
       collContentContact: null,
       collTechContact: null,
       createdByAgent: null,
+      division: getResourceApiUrl('Division', 2),
       date1: null,
       date1Precision: null,
       date2: null,
@@ -40,11 +41,11 @@ describe('serializeResource', () => {
       dateOfDeath: null,
       dateOfDeathPrecision: null,
       dateType: null,
-      division: null,
       email: null,
       firstName: null,
       groups: [],
       guid: null,
+      identifiers: [],
       initials: null,
       instContentContact: null,
       instTechContact: null,
@@ -57,6 +58,7 @@ describe('serializeResource', () => {
       modifiedByAgent: null,
       organization: null,
       remarks: null,
+      resource_uri: undefined,
       specifyUser: null,
       suffix: null,
       text1: null,
@@ -75,7 +77,7 @@ describe('serializeResource', () => {
     });
   });
   test('SpQuery resource', () => {
-    const resource = new schema.models.SpQuery.Resource();
+    const resource = new tables.SpQuery.Resource();
     resource.set('fields', [addMissingFields('SpQueryField', {})]);
     expect(serializeResource(resource)).toEqual({
       _tableName: 'SpQuery',
@@ -132,22 +134,22 @@ describe('serializeResource', () => {
 
 describe('isResourceOfType', () => {
   test('positive case', () => {
-    const resource = new schema.models.Agent.Resource();
+    const resource = new tables.Agent.Resource();
     expect(isResourceOfType(resource, 'Agent')).toBe(true);
   });
   test('negative case', () => {
-    const resource = new schema.models.Agent.Resource();
+    const resource = new tables.Agent.Resource();
     expect(isResourceOfType(resource, 'CollectionObject')).toBe(false);
   });
 });
 
 describe('toTable', () => {
   test('positive case', () => {
-    const resource = new schema.models.Agent.Resource();
+    const resource = new tables.Agent.Resource();
     expect(toTable(resource, 'Agent')).toBe(resource);
   });
   test('negative case', () => {
-    const resource = new schema.models.Agent.Resource();
+    const resource = new tables.Agent.Resource();
     expect(toTable(resource, 'CollectionObject')).toBeUndefined();
   });
 });
@@ -167,22 +169,22 @@ describe('toResource', () => {
 
 describe('toTreeTable', () => {
   test('positive case', () => {
-    const resource = new schema.models.Taxon.Resource();
+    const resource = new tables.Taxon.Resource();
     expect(toTreeTable(resource)).toBe(resource);
   });
   test('negative case', () => {
-    const resource = new schema.models.Agent.Resource();
+    const resource = new tables.Agent.Resource();
     expect(toTreeTable(resource)).toBeUndefined();
   });
 });
 
 describe('toTables', () => {
   test('positive case', () => {
-    const resource = new schema.models.Agent.Resource();
+    const resource = new tables.Agent.Resource();
     expect(toTables(resource, ['Agent', 'Accession'])).toBe(resource);
   });
   test('negative case', () => {
-    const resource = new schema.models.Agent.Resource();
+    const resource = new tables.Agent.Resource();
     expect(
       toTables(resource, ['CollectionObject', 'Accession'])
     ).toBeUndefined();
@@ -191,7 +193,7 @@ describe('toTables', () => {
 
 describe('fetchDistantRelated', () => {
   test('empty path', async () => {
-    const resource = new schema.models.Agent.Resource();
+    const resource = new tables.Agent.Resource();
     await expect(fetchDistantRelated(resource, [])).resolves.toEqual({
       resource,
       field: undefined,
@@ -199,7 +201,7 @@ describe('fetchDistantRelated', () => {
   });
 
   test('undefined path', async () => {
-    const resource = new schema.models.Agent.Resource();
+    const resource = new tables.Agent.Resource();
     await expect(fetchDistantRelated(resource, undefined)).resolves.toEqual({
       resource,
       field: undefined,
@@ -213,31 +215,48 @@ describe('fetchDistantRelated', () => {
     id: collectorId,
     agent: getResourceApiUrl('Agent', agentId),
   });
+
+  test('single field path', async () => {
+    const resource = new tables.Collector.Resource({ id: collectorId });
+    const field = tables.Collector.strictGetField('agent');
+    const data = (await fetchDistantRelated(resource, [field]))!;
+    expect(data.resource).toBe(resource);
+    expect(data.field).toBe(field);
+    expect(data.resource!.get('agent')).toBe(
+      getResourceApiUrl('Agent', agentId)
+    );
+  });
+
+  const emptyCollectorId = 2;
+  overrideAjax(`/api/specify/collector/${emptyCollectorId}/`, {
+    resource_uri: getResourceApiUrl('Collector', emptyCollectorId),
+    id: emptyCollectorId,
+  });
   const agent = {
     resource_uri: getResourceApiUrl('Agent', agentId),
     id: agentId,
     lastname: 'a',
   };
   overrideAjax(`/api/specify/agent/${agentId}/`, agent);
-  test('single field path', async () => {
-    const resource = new schema.models.Collector.Resource({ id: collectorId });
-    const field = schema.models.Collector.strictGetField('agent');
+  test('valid field with missing related resource', async () => {
+    const resource = new tables.Collector.Resource({
+      id: emptyCollectorId,
+    });
+    const field = tables.Collector.strictGetField('agent');
     const data = (await fetchDistantRelated(resource, [field]))!;
     expect(data.resource).toBe(resource);
     expect(data.field).toBe(field);
-    expect(data.resource.get('agent')).toBe(
-      getResourceApiUrl('Agent', agentId)
-    );
+    expect(data.resource!.get(field.name)).toBeUndefined();
   });
 
   test('multi field path', async () => {
-    const resource = new schema.models.Collector.Resource({ id: collectorId });
+    const resource = new tables.Collector.Resource({ id: collectorId });
     const fields = [
-      schema.models.Collector.strictGetField('agent'),
-      schema.models.Agent.strictGetField('lastName'),
+      tables.Collector.strictGetField('agent'),
+      tables.Agent.strictGetField('lastName'),
     ];
     const data = (await fetchDistantRelated(resource, fields))!;
-    expect(data.resource.toJSON()).toEqual(agent);
+    expect(data.resource!.toJSON()).toEqual(agent);
     expect(data.field).toBe(fields.at(-1));
   });
 });

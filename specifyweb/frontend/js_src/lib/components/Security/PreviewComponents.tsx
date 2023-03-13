@@ -6,12 +6,12 @@ import { userText } from '../../localization/user';
 import type { IR } from '../../utils/types';
 import { Input } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
-import { schema } from '../DataModel/schema';
 import type { Tables } from '../DataModel/types';
 import { TableIcon } from '../Molecules/TableIcon';
 import { tableActions } from '../Permissions/definitions';
 import type { PreviewCell } from './Preview';
 import { actionToLabel, resourceNameToLabel } from './utils';
+import { tables } from '../DataModel/tables';
 
 export function PreviewRow({
   row,
@@ -49,7 +49,7 @@ export function PreviewRow({
         ))}
         <div className="p-2" role="cell">
           <TableIcon label={false} name={tableName} />
-          {schema.models[tableName].label}
+          {tables[tableName].label}
         </div>
       </div>
       <div
@@ -85,7 +85,9 @@ export function PermissionExplanation({
       >
         <div role="row">
           {[
-            userText.collectionUserRoles(),
+            userText.collectionUserRoles({
+              collectionTable: tables.Collection.label,
+            }),
             userText.action(),
             userText.resource(),
           ].map((label, index, { length }) => (
@@ -141,7 +143,7 @@ export function PermissionExplanation({
         <div role="row">
           {[
             userText.userPolicies(),
-            schema.models.Collection.label,
+            tables.Collection.label,
             userText.action(),
             userText.resource(),
           ].map((label, index, { length }) => (

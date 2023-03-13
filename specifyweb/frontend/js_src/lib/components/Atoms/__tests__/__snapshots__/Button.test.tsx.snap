@@ -5,7 +5,7 @@ exports[`Button.Blue renders without errors 1`] = `
   <button
     class="button rounded cursor-pointer active:brightness-80 px-4 py-2
     disabled:bg-gray-200 disabled:text-gray-500 dark:disabled:!bg-neutral-700 gap-2
-    inline-flex items-center capitalize justify-center dialog-icon-info hover:bg-blue-700 bg-blue-600 text-white"
+    inline-flex items-center capitalize justify-center shadow-sm dialog-icon-info hover:bg-blue-700 bg-blue-600 text-white"
     type="button"
   />
 </DocumentFragment>
@@ -16,9 +16,9 @@ exports[`Button.BorderedGray renders without errors 1`] = `
   <button
     class="button rounded cursor-pointer active:brightness-80 px-4 py-2
     disabled:bg-gray-200 disabled:text-gray-500 dark:disabled:!bg-neutral-700 gap-2
-    inline-flex items-center capitalize justify-center button hover:bg-gray-400 bg-gray-300 text-gray-800
-    dark:bg-neutral-600 dark:text-gray-100 hover:dark:bg-neutral-500 ring-1 ring-gray-400 dark:ring-0
-    disabled:ring-gray-500 disabled:dark:ring-neutral-500"
+    inline-flex items-center capitalize justify-center shadow-sm button hover:bg-gray-400 bg-gray-300 text-gray-800 shadow-sm
+    dark:bg-neutral-600 dark:text-gray-100 hover:dark:bg-neutral-500 ring-1 ring-gray-400 shadow-sm dark:ring-0
+    disabled:ring-gray-400 disabled:dark:ring-neutral-500"
     type="button"
   />
 </DocumentFragment>
@@ -29,7 +29,7 @@ exports[`Button.Gray renders without errors 1`] = `
   <button
     class="button rounded cursor-pointer active:brightness-80 px-4 py-2
     disabled:bg-gray-200 disabled:text-gray-500 dark:disabled:!bg-neutral-700 gap-2
-    inline-flex items-center capitalize justify-center button hover:bg-gray-400 bg-gray-300 text-gray-800
+    inline-flex items-center capitalize justify-center shadow-sm button hover:bg-gray-400 bg-gray-300 text-gray-800 shadow-sm
     dark:bg-neutral-600 dark:text-gray-100 hover:dark:bg-neutral-500"
     type="button"
   />
@@ -41,7 +41,7 @@ exports[`Button.Green renders without errors 1`] = `
   <button
     class="button rounded cursor-pointer active:brightness-80 px-4 py-2
     disabled:bg-gray-200 disabled:text-gray-500 dark:disabled:!bg-neutral-700 gap-2
-    inline-flex items-center capitalize justify-center dialog-icon-success hover:bg-green-800 bg-green-700 text-white"
+    inline-flex items-center capitalize justify-center shadow-sm dialog-icon-success hover:bg-green-800 bg-green-700 text-white"
     type="button"
   />
 </DocumentFragment>
@@ -87,7 +87,7 @@ exports[`Button.LikeLink renders without errors 2`] = `
   <button
     class="button rounded cursor-pointer active:brightness-80 px-4 py-2
     disabled:bg-gray-200 disabled:text-gray-500 dark:disabled:!bg-neutral-700 gap-2
-    inline-flex items-center capitalize justify-center bg-gray-300 hover:bg-brand-200 dark:bg-neutral-600
+    inline-flex items-center capitalize justify-center shadow-sm bg-gray-300 hover:bg-brand-200 dark:bg-neutral-600
     hover:dark:bg-brand:400 text-gray-800 dark:text-white text-center"
     type="button"
   />
@@ -99,7 +99,7 @@ exports[`Button.Orange renders without errors 1`] = `
   <button
     class="button rounded cursor-pointer active:brightness-80 px-4 py-2
     disabled:bg-gray-200 disabled:text-gray-500 dark:disabled:!bg-neutral-700 gap-2
-    inline-flex items-center capitalize justify-center dialog-icon-warning hover:bg-orange-600 bg-orange-500 text-white"
+    inline-flex items-center capitalize justify-center shadow-sm dialog-icon-warning hover:bg-orange-600 bg-orange-500 text-white"
     type="button"
   />
 </DocumentFragment>
@@ -110,7 +110,7 @@ exports[`Button.Red renders without errors 1`] = `
   <button
     class="button rounded cursor-pointer active:brightness-80 px-4 py-2
     disabled:bg-gray-200 disabled:text-gray-500 dark:disabled:!bg-neutral-700 gap-2
-    inline-flex items-center capitalize justify-center dialog-icon-error hover:bg-red-800 bg-red-700 text-white"
+    inline-flex items-center capitalize justify-center shadow-sm dialog-icon-error hover:bg-red-800 bg-red-700 text-white"
     type="button"
   />
 </DocumentFragment>
@@ -121,7 +121,7 @@ exports[`Button.Small custom variant 1`] = `
   <button
     class="button rounded cursor-pointer active:brightness-80 px-4 py-2
     disabled:bg-gray-200 disabled:text-gray-500 dark:disabled:!bg-neutral-700 gap-2
-    inline-flex items-center capitalize justify-center !py-1 !px-2 a dialog-icon-info hover:bg-blue-700 bg-blue-600 text-white"
+    inline-flex items-center capitalize justify-center shadow-sm !py-1 !px-2 a dialog-icon-info hover:bg-blue-700 bg-blue-600 text-white"
     type="button"
   />
 </DocumentFragment>
@@ -132,9 +132,9 @@ exports[`Button.Small default variant 1`] = `
   <button
     class="button rounded cursor-pointer active:brightness-80 px-4 py-2
     disabled:bg-gray-200 disabled:text-gray-500 dark:disabled:!bg-neutral-700 gap-2
-    inline-flex items-center capitalize justify-center !py-1 !px-2 button hover:bg-gray-400 bg-gray-300 text-gray-800
-    dark:bg-neutral-600 dark:text-gray-100 hover:dark:bg-neutral-500 ring-1 ring-gray-400 dark:ring-0
-    disabled:ring-gray-500 disabled:dark:ring-neutral-500 hover:bg-brand-200 dark:hover:bg-brand-400"
+    inline-flex items-center capitalize justify-center shadow-sm !py-1 !px-2 button hover:bg-gray-400 bg-gray-300 text-gray-800 shadow-sm
+    dark:bg-neutral-600 dark:text-gray-100 hover:dark:bg-neutral-500 ring-1 ring-gray-400 shadow-sm dark:ring-0
+    disabled:ring-gray-400 disabled:dark:ring-neutral-500 hover:bg-brand-200 dark:hover:bg-brand-400"
     type="button"
   />
 </DocumentFragment>
@@ -145,7 +145,7 @@ exports[`DialogButton closes the dialog 1`] = `
   <button
     class="button rounded cursor-pointer active:brightness-80 px-4 py-2
     disabled:bg-gray-200 disabled:text-gray-500 dark:disabled:!bg-neutral-700 gap-2
-    inline-flex items-center capitalize justify-center button hover:bg-gray-400 bg-gray-300 text-gray-800
+    inline-flex items-center capitalize justify-center shadow-sm button hover:bg-gray-400 bg-gray-300 text-gray-800 shadow-sm
     dark:bg-neutral-600 dark:text-gray-100 hover:dark:bg-neutral-500"
     type="button"
   >

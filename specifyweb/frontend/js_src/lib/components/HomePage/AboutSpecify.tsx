@@ -12,7 +12,6 @@ import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
 import { fetchCollection } from '../DataModel/collection';
-import { schema } from '../DataModel/schema';
 import { supportLink } from '../Errors/ErrorDialog';
 import { produceStackTrace } from '../Errors/stackTrace';
 import { getSystemInfo } from '../InitialContext/systemInfo';
@@ -21,6 +20,7 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { downloadFile } from '../Molecules/FilePicker';
 import { hasTablePermission } from '../Permissions/helpers';
 import { OverlayContext } from '../Router/Router';
+import { tables } from '../DataModel/tables';
 
 export function AboutOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -105,7 +105,7 @@ function AboutDialog({
               ],
               [welcomeText.databaseVersion(), getSystemInfo().database_version],
               [
-                welcomeText.schemaVersion(),
+                `${welcomeText.schemaVersion()}:`,
                 <Link.Default href="/specify/datamodel/" key="link">
                   {getSystemInfo().schema_version as LocalizedString}
                 </Link.Default>,
@@ -119,18 +119,9 @@ function AboutDialog({
                     ],
                   ]
                 : []),
-              [
-                `${schema.models.Institution.label}:`,
-                getSystemInfo().institution,
-              ],
-              [
-                `${schema.models.Discipline.label}:`,
-                getSystemInfo().discipline,
-              ],
-              [
-                `${schema.models.Collection.label}:`,
-                getSystemInfo().collection,
-              ],
+              [`${tables.Institution.label}:`, getSystemInfo().institution],
+              [`${tables.Discipline.label}:`, getSystemInfo().discipline],
+              [`${tables.Collection.label}:`, getSystemInfo().collection],
               [
                 welcomeText.isaNumber(),
                 getSystemInfo().isa_number ?? commonText.notApplicable(),

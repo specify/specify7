@@ -1,13 +1,18 @@
 import { mockTime, requireContext } from '../../../tests/helpers';
 import { strictParseXml } from '../../AppResources/codeMirrorLinters';
-import { schema } from '../../DataModel/schema';
+import { tables } from '../../DataModel/tables';
+import type { SimpleXmlNode } from '../../Syncer/xmlToJson';
+import { toSimpleXmlNode, xmlToJson } from '../../Syncer/xmlToJson';
 import { parseUiPlugin } from '../plugins';
 import { generateInit } from './helpers';
 
 mockTime();
 requireContext();
 
-const cell = strictParseXml(`<cell formatting="test" />`);
+const xml = (xml: string): SimpleXmlNode =>
+  toSimpleXmlNode(xmlToJson(strictParseXml(xml)));
+
+const cell = xml(`<cell formatting="test" />`);
 
 const parse = (
   props: Partial<Parameters<typeof parseUiPlugin>[0]>
@@ -16,7 +21,7 @@ const parse = (
     cell,
     getProperty: generateInit({}),
     defaultValue: undefined,
-    model: schema.models.Locality,
+    table: tables.Locality,
     fields: undefined,
     ...props,
   });
@@ -68,7 +73,7 @@ describe('parseUiPlugin', () => {
     expect(
       parse({
         getProperty: generateInit({ name: 'PartialDateUI' }),
-        fields: [schema.models.Locality.strictGetField('timestampCreated')],
+        fields: [tables.Locality.strictGetField('timestampCreated')],
       })
     ).toEqual({
       type: 'PartialDateUI',
@@ -88,7 +93,7 @@ describe('parseUiPlugin', () => {
           tp: 'TEST',
           defaultPrecision: 'month-year',
         }),
-        fields: [schema.models.Locality.strictGetField('timestampCreated')],
+        fields: [tables.Locality.strictGetField('timestampCreated')],
         defaultValue: 'today + 3 days',
       })
     ).toEqual({
@@ -107,7 +112,7 @@ describe('parseUiPlugin', () => {
           name: 'CollectionRelOneToManyPlugin',
           relName: 'abc',
         }),
-        model: schema.models.CollectionObject,
+        table: tables.CollectionObject,
       })
     ).toEqual({
       type: 'CollectionRelOneToManyPlugin',
@@ -137,7 +142,7 @@ describe('parseUiPlugin', () => {
           name: 'ColRelTypePlugin',
           relName: 'abc',
         }),
-        model: schema.models.CollectionObject,
+        table: tables.CollectionObject,
       })
     ).toEqual({
       type: 'ColRelTypePlugin',
@@ -184,17 +189,6 @@ describe('parseUiPlugin', () => {
       icon: 'test',
     }));
 
-  test('Attachments Plugin', () =>
-    expect(
-      parse({
-        getProperty: generateInit({
-          name: 'AttachmentPlugin',
-        }),
-      })
-    ).toEqual({
-      type: 'AttachmentPlugin',
-    }));
-
   test('Host Taxon Plugin', () =>
     expect(
       parse({
@@ -202,7 +196,7 @@ describe('parseUiPlugin', () => {
           name: 'HostTaxonPlugin',
           relName: 'abc',
         }),
-        model: schema.models.CollectingEventAttribute,
+        table: tables.CollectingEventAttribute,
       })
     ).toEqual({
       type: 'HostTaxonPlugin',

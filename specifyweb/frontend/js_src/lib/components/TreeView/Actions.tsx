@@ -8,17 +8,18 @@ import { queryText } from '../../localization/query';
 import { treeText } from '../../localization/tree';
 import { formData } from '../../utils/ajax/helpers';
 import { ping } from '../../utils/ajax/ping';
-import type { RA } from '../../utils/types';
+import type { GetOrSet, RA } from '../../utils/types';
 import { toLowerCase } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
 import type { AnySchema, AnyTree } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { tables } from '../DataModel/tables';
 import { DeleteButton } from '../Forms/DeleteButton';
 import { ResourceView } from '../Forms/ResourceView';
+import { getPref } from '../InitialContext/remotePrefs';
 import { Dialog } from '../Molecules/Dialog';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import type { Row } from './helpers';
@@ -34,6 +35,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
   actionRow,
   onChange: handleChange,
   onRefresh: handleRefresh,
+  setFocusPath,
 }: {
   readonly tableName: SCHEMA['tableName'];
   readonly focusRef: React.MutableRefObject<HTMLAnchorElement | null>;
@@ -42,6 +44,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
   readonly actionRow: Row | undefined;
   readonly onChange: (row: Row | undefined) => void;
   readonly onRefresh: () => void;
+  readonly setFocusPath: GetOrSet<RA<number> | undefined>[1];
 }): JSX.Element {
   const isRoot = ranks[0] === focusedRow?.rankId;
 
@@ -57,8 +60,13 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
   const resourceName = `/tree/edit/${toLowerCase(tableName)}` as const;
   const isSynonym = typeof focusedRow?.acceptedId === 'number';
 
+  const doExpandSynonymActionsPref = getPref(
+    `sp7.allow_adding_child_to_synonymized_parent.${tableName}`
+  );
+
   const disableButtons =
     focusedRow === undefined || typeof currentAction === 'string';
+
   return currentAction === undefined ||
     actionRow === undefined ||
     focusedRow === undefined ||
@@ -103,7 +111,10 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
             disabled={disableButtons}
             nodeId={focusedRow?.nodeId}
             tableName={tableName}
-            onDeleted={handleRefresh}
+            onDeleted={() => {
+              handleRefresh();
+              setFocusPath((path) => path?.slice(0, -1));
+            }}
           />
         </li>
       ) : undefined}
@@ -113,7 +124,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
             addNew
             disabled={
               focusedRow === undefined ||
-              typeof focusedRow.acceptedId === 'number' ||
+              (doExpandSynonymActionsPref ? false : isSynonym) ||
               // Forbid adding children to the lowest rank
               ranks.at(-1) === focusedRow.rankId
             }
@@ -154,7 +165,9 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
             disabled={
               disableButtons ||
               isRoot ||
-              (!isSynonym && focusedRow.children > 0)
+              (doExpandSynonymActionsPref
+                ? false
+                : !isSynonym && focusedRow.children > 0)
             }
             onClick={(): void =>
               setAction(isSynonym ? 'desynonymize' : 'synonymize')
@@ -205,11 +218,11 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
   >(
     React.useCallback(() => {
       if (!isOpen) return undefined;
-      const model = schema.models[tableName] as SpecifyModel<AnyTree>;
-      const parentNode = new model.Resource({ id: nodeId });
+      const table = tables[tableName] as SpecifyTable<AnyTree>;
+      const parentNode = new table.Resource({ id: nodeId });
       let node = parentNode;
       if (addNew) {
-        node = new model.Resource();
+        node = new table.Resource();
         node.set('parent', parentNode.url());
       }
       return node;
@@ -230,7 +243,6 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
           dialog="nonModal"
           isDependent={false}
           isSubForm={false}
-          mode="edit"
           resource={resource}
           onAdd={isRoot ? undefined : setResource}
           onClose={handleClose}
@@ -262,8 +274,8 @@ function ActiveAction<SCHEMA extends AnyTree>({
   if (!['move', 'merge', 'synonymize', 'desynonymize'].includes(type))
     throw new Error('Invalid action type');
 
-  const model = schema.models[tableName] as SpecifyModel<AnyTree>;
-  const treeName = model.label;
+  const table = tables[tableName] as SpecifyTable<AnyTree>;
+  const treeName = table.label;
 
   const [showPrompt, setShowPrompt] = React.useState(type === 'desynonymize');
   const loading = React.useContext(LoadingContext);
@@ -427,10 +439,11 @@ function NodeDeleteButton({
   const resource = React.useMemo(
     () =>
       typeof nodeId === 'number'
-        ? new schema.models[tableName].Resource({ id: nodeId })
+        ? new tables[tableName].Resource({ id: nodeId })
         : undefined,
     [tableName, nodeId]
   );
+
   return disabled || resource === undefined ? (
     <Button.Small onClick={undefined}>{commonText.delete()}</Button.Small>
   ) : (

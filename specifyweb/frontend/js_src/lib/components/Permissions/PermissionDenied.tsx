@@ -5,7 +5,6 @@ import { userText } from '../../localization/user';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import type { AnyTree } from '../DataModel/helperTypes';
-import { schema } from '../DataModel/schema';
 import type { Tables } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
@@ -25,6 +24,7 @@ import {
   hasTreeAccess,
 } from './helpers';
 import type { getOperationPermissions } from './index';
+import { schema } from '../DataModel/schema';
 
 export type PermissionErrorSchema = {
   readonly NoMatchingRuleException: RA<{

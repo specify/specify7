@@ -14,9 +14,8 @@ import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
 import type { SpecifyUser } from '../DataModel/types';
-import { SearchDialog } from '../Forms/SearchDialog';
+import { SearchDialog } from '../SearchDialog';
 import { userInformation } from '../InitialContext/userInformation';
 import { LoadingScreen } from '../Molecules/Dialog';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
@@ -26,6 +25,7 @@ import { createCollectionRole } from './CreateRole';
 import { decompressPolicies } from './policyConverter';
 import type { NewRole, Role } from './Role';
 import { RoleView } from './Role';
+import { tables } from '../DataModel/tables';
 
 export const updateCollectionRole = async (
   [roles, setRoles]: GetOrSet<IR<Role> | undefined>,
@@ -218,7 +218,7 @@ function RoleUsers({
             <div>
               <Button.Green
                 onClick={(): void =>
-                  setAddingUser(new schema.models.SpecifyUser.Resource())
+                  setAddingUser(new tables.SpecifyUser.Resource())
                 }
               >
                 {commonText.add()}
@@ -230,8 +230,11 @@ function RoleUsers({
               extraFilters={[
                 {
                   field: 'id',
-                  operation: 'notIn',
-                  values: userRoles.map(({ userId }) => userId.toString()),
+                  isNot: true,
+                  operation: 'in',
+                  value: userRoles
+                    .map(({ userId }) => userId.toString())
+                    .join(','),
                 },
               ]}
               forceCollection={undefined}

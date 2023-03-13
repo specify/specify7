@@ -63,6 +63,12 @@ export type AppResourcesTree = RA<{
   /*
    * A string that would be stable thought the lifecycle of an object.
    * Used to identify a tree node when storing conformation it in localStorage.
+   *
+   * Directory key is created instead of using id, because app resource
+   * needs a way to identify directories that don't yet have IDs (i.e, when
+   * creating an app resource for a collection that didn't have any app resources
+   * before, the collection won't have any SpAppResourceDir record, thus not
+   * directory ID).
    */
   readonly key: string;
   readonly directory: SerializedResource<SpAppResourceDir> | undefined;
@@ -87,17 +93,19 @@ export function useAppResourceCount(
   );
 }
 
+/**
+ * Fetch resource contents
+ */
 export function useAppResourceData(
   resource: SerializedResource<SpAppResource | SpViewSetObject>,
   initialData: string | undefined
 ): {
-  readonly resourceData: SerializedResource<SpAppResourceData> | undefined;
-  readonly setResourceData: (
-    newResource: SerializedResource<SpAppResourceData> | undefined
-  ) => void;
+  readonly resourceData: GetOrSet<
+    SerializedResource<SpAppResourceData> | undefined
+  >;
   readonly isChanged: boolean;
 } {
-  const initialValue = React.useRef<string | null>('');
+  const initialValue = React.useRef<string>('');
   const [resourceData, setResourceData] = useAsyncState<
     SerializedResource<SpAppResourceData>
   >(
@@ -116,6 +124,10 @@ export function useAppResourceData(
               limit: 1,
               [relationshipName]: resource.id,
             }).then(({ records }) =>
+              /*
+               * For some reason, app resource can have multiple app resource
+               * datas (but it never does in practice)
+               */
               typeof records[0] === 'object' ? records[0] : newResource
             )
           : newResource;
@@ -126,8 +138,7 @@ export function useAppResourceData(
     true
   );
   return {
-    resourceData,
-    setResourceData,
+    resourceData: [resourceData, setResourceData],
     isChanged: initialValue.current !== resourceData?.data,
   };
 }

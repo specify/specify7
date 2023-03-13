@@ -6,7 +6,7 @@ import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { useSearchParameter } from '../../hooks/navigation';
-import { useAsyncState } from '../../hooks/useAsyncState';
+import { usePromise } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
@@ -22,7 +22,7 @@ import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
 import type { FilterTablesByEndsWith } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
+import { tables } from '../DataModel/tables';
 import type { TaxonTreeDef } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { ResourceView } from '../Forms/ResourceView';
@@ -65,10 +65,7 @@ export function TreeSelectDialog({
   readonly permissionName: 'read' | 'repair';
 }): JSX.Element | null {
   const loading = React.useContext(LoadingContext);
-  const [treeRanks] = useAsyncState(
-    React.useCallback(async () => treeRanksPromise, []),
-    true
-  );
+  const [treeRanks] = usePromise(treeRanksPromise, true);
   const [isFinished, setIsFinished] = useBooleanState();
 
   return typeof treeRanks === 'object' ? (
@@ -120,8 +117,7 @@ export function TreeSelectDialog({
                         }}
                       >
                         <TableIcon label={false} name={treeName} />
-                        {treeDefinition?.get('name') ??
-                          schema.models[treeName].label}
+                        {treeDefinition?.get('name') ?? tables[treeName].label}
                       </Link.Default>
                       {typeof treeDefinition === 'object' && (
                         <EditTreeDefinition treeDefinition={treeDefinition} />
@@ -176,14 +172,13 @@ export function EditTreeDefinition({
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   return (
-    <ErrorBoundary dismissable>
+    <ErrorBoundary dismissible>
       <DataEntry.Edit onClick={handleOpen} />
       {isOpen && (
         <ResourceView
           dialog="modal"
           isDependent={false}
           isSubForm={false}
-          mode="edit"
           resource={treeDefinition}
           onAdd={undefined}
           onClose={handleClose}

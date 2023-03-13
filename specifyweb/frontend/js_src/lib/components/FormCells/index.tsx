@@ -1,22 +1,24 @@
 import React from 'react';
 
+import { useDistantRelated } from '../../hooks/resource';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { f } from '../../utils/functools';
 import { DataEntry } from '../Atoms/DataEntry';
-import { fetchDistantRelated } from '../DataModel/helpers';
+import { ReadOnlyContext, SearchDialogContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema } from '../DataModel/schema';
-import type { Collection } from '../DataModel/specifyModel';
+import type { Collection } from '../DataModel/specifyTable';
+import { tables } from '../DataModel/tables';
 import { UiCommand } from '../FormCommands';
 import { FormField } from '../FormFields';
-import type { FormMode, FormType } from '../FormParse';
+import type { FormType } from '../FormParse';
 import { fetchView, resolveViewDefinition } from '../FormParse';
 import type { cellAlign, CellTypes } from '../FormParse/cells';
-import { RenderForm } from '../Forms/SpecifyForm';
+import { SpecifyForm } from '../Forms/SpecifyForm';
 import { SubView } from '../Forms/SubView';
+import { propsToFormMode } from '../Forms/useViewDefinition';
 import { TableIcon } from '../Molecules/TableIcon';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { fetchPathAsString } from '../Formatters/aggregate';
@@ -27,7 +29,6 @@ import { softFail } from '../Errors/Crash';
 
 const cellRenderers: {
   readonly [KEY in keyof CellTypes]: (props: {
-    readonly mode: FormMode;
     readonly cellData: CellTypes[KEY];
     readonly id: string | undefined;
     readonly formatId: (id: string) => string;
@@ -37,7 +38,6 @@ const cellRenderers: {
   }) => JSX.Element | null;
 } = {
   Field({
-    mode,
     cellData: { fieldDefinition, fieldNames, isRequired },
     id,
     formatId,
@@ -45,8 +45,8 @@ const cellRenderers: {
     formType,
   }) {
     const fields = React.useMemo(
-      () => resource.specifyModel.getFields(fieldNames?.join('.') ?? ''),
-      [resource.specifyModel, fieldNames]
+      () => resource.specifyTable.getFields(fieldNames?.join('.') ?? ''),
+      [resource.specifyTable, fieldNames]
     );
     return (
       <FormField
@@ -55,7 +55,6 @@ const cellRenderers: {
         formType={formType}
         id={typeof id === 'string' ? formatId(id.toString()) : undefined}
         isRequired={isRequired}
-        mode={mode}
         resource={resource}
       />
     );
@@ -82,14 +81,14 @@ const cellRenderers: {
         className="border-b border-gray-500"
         title={
           typeof forClass === 'string'
-            ? schema.models[forClass].localization.desc ?? undefined
+            ? tables[forClass].localization.desc ?? undefined
             : undefined
         }
       >
         {typeof forClass === 'string' ? (
           <>
             <TableIcon label={false} name={forClass} />
-            {schema.models[forClass].label}
+            {tables[forClass].label}
           </>
         ) : (
           <>
@@ -106,24 +105,21 @@ const cellRenderers: {
   },
   SubView({
     resource: rawResource,
-    mode: rawMode,
     formType: parentFormType,
     cellData: { fieldNames, formType, isButton, icon, viewName, sortField },
   }) {
-    const [data] = useAsyncState(
-      React.useCallback(
-        async () =>
-          fetchDistantRelated(
-            rawResource,
-            rawResource.specifyModel.getFields(fieldNames?.join('.') ?? '')
-          ),
-        [rawResource, fieldNames]
-      ),
-      false
+    const fields = React.useMemo(
+      () => rawResource.specifyTable.getFields(fieldNames?.join('.') ?? ''),
+      [rawResource, fieldNames]
     );
+    const data = useDistantRelated(rawResource, fields);
 
     const relationship =
       data?.field?.isRelationship === true ? data.field : undefined;
+
+    const isReadOnly =
+      React.useContext(ReadOnlyContext) || rawResource !== data?.resource;
+    const isInSearchDialog = React.useContext(SearchDialogContext);
 
     /*
      * SubView is turned into formTable if formTable is the default FormType for
@@ -133,15 +129,19 @@ const cellRenderers: {
       React.useCallback(
         async () =>
           typeof relationship === 'object'
-            ? fetchView(viewName ?? relationship.relatedModel.view)
+            ? fetchView(viewName ?? relationship.relatedTable.view)
                 .then((viewDefinition) =>
                   typeof viewDefinition === 'object'
-                    ? resolveViewDefinition(viewDefinition, formType, rawMode)
+                    ? resolveViewDefinition(
+                        viewDefinition,
+                        formType,
+                        propsToFormMode(isReadOnly, isInSearchDialog)
+                      )
                     : undefined
                 )
                 .then((definition) => definition?.formType ?? 'form')
             : undefined,
-        [viewName, formType, rawMode, relationship]
+        [viewName, formType, isReadOnly, isInSearchDialog, relationship]
       ),
       false
     );
@@ -153,19 +153,18 @@ const cellRenderers: {
         () =>
           typeof relationship === 'object' &&
           relationshipIsToMany(relationship) &&
+          typeof data?.resource === 'object' &&
           [
             'LoanPreparation',
             'GiftPreparation',
             'DisposalPreparation',
-          ].includes(relationship.relatedModel.name)
+          ].includes(relationship.relatedTable.name)
             ? data?.resource.rgetCollection(relationship.name)
             : false,
         [relationship, data?.resource]
       ),
       false
     );
-
-    const mode = rawResource === data?.resource ? rawMode : 'view';
     if (
       relationship === undefined ||
       data?.resource === undefined ||
@@ -173,33 +172,32 @@ const cellRenderers: {
       actualFormType === undefined
     )
       return null;
-    else if (interactionCollection === false || actualFormType === 'form')
-      return (
-        <SubView
-          formType={actualFormType}
-          icon={icon}
-          isButton={isButton}
-          mode={mode}
-          parentFormType={parentFormType}
-          parentResource={data.resource}
-          relationship={relationship}
-          sortField={sortField}
-          viewName={viewName}
-        />
-      );
-    else
-      return (
-        <FormTableInteraction
-          collection={interactionCollection}
-          dialog={false}
-          mode={mode}
-          sortField={sortField}
-          onClose={f.never}
-          onDelete={undefined}
-        />
-      );
+    return (
+      <ReadOnlyContext.Provider value={isReadOnly}>
+        {interactionCollection === false || actualFormType === 'form' ? (
+          <SubView
+            formType={actualFormType}
+            icon={icon}
+            isButton={isButton}
+            parentFormType={parentFormType}
+            parentResource={data.resource}
+            relationship={relationship}
+            sortField={sortField}
+            viewName={viewName}
+          />
+        ) : (
+          <FormTableInteraction
+            collection={interactionCollection}
+            dialog={false}
+            sortField={sortField}
+            onClose={f.never}
+            onDelete={undefined}
+          />
+        )}
+      </ReadOnlyContext.Provider>
+    );
   },
-  Panel({ mode, formType, resource, cellData: { display, definitions } }) {
+  Panel({ formType, resource, cellData: { display, definitions } }) {
     const [definitionIndex, setDefinitionIndex] = React.useState(0);
     React.useEffect(() => {
       let destructorCalled = false;
@@ -245,16 +243,26 @@ const cellRenderers: {
       };
     }, [resource, definitions]);
 
+    const isReadOnly = React.useContext(ReadOnlyContext);
+    const isInSearchDialog = React.useContext(SearchDialogContext);
+    const definition = definitions[definitionIndex].definition;
+    const mode = propsToFormMode(isReadOnly, isInSearchDialog);
+    const viewDefinition = React.useMemo(
+      () => ({
+        ...definition,
+        mode,
+        name: 'panel',
+        formType,
+        table: resource.specifyTable,
+      }),
+      [definition, formType, resource.specifyTable, mode]
+    );
+
     const form = (
-      <RenderForm
+      <SpecifyForm
         display={display}
         resource={resource}
-        viewDefinition={{
-          ...definitions[definitionIndex].definition,
-          mode,
-          formType,
-          model: resource.specifyModel,
-        }}
+        viewDefinition={viewDefinition}
       />
     );
     return display === 'inline' ? <div className="mx-auto">{form}</div> : form;
@@ -292,7 +300,6 @@ const cellRenderers: {
 
 export function FormCell({
   resource,
-  mode,
   cellData,
   id,
   formatId,
@@ -300,7 +307,6 @@ export function FormCell({
   align,
 }: {
   readonly resource: SpecifyResource<AnySchema>;
-  readonly mode: FormMode;
   readonly cellData: CellTypes[keyof CellTypes];
   readonly id: string | undefined;
   readonly formatId: (id: string) => string;
@@ -315,7 +321,6 @@ export function FormCell({
       formatId={formatId}
       formType={formType}
       id={id}
-      mode={mode}
       resource={resource}
     />
   );

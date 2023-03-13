@@ -18,6 +18,8 @@ import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { schema } from '../DataModel/schema';
+import { deserializeResource } from '../DataModel/serializers';
+import { tables } from '../DataModel/tables';
 import type { Institution } from '../DataModel/types';
 import { ResourceView } from '../Forms/ResourceView';
 import { userInformation } from '../InitialContext/userInformation';
@@ -30,7 +32,6 @@ import { createLibraryRole } from './CreateLibraryRole';
 import { ImportExport } from './ImportExport';
 import { updateLibraryRole } from './LibraryRole';
 import { policiesToTsv } from './registry';
-import { deserializeResource } from '../DataModel/serializers';
 
 export function SecurityInstitution(): JSX.Element | null {
   const { institution } = useOutletContext<SecurityOutlet>();
@@ -72,7 +73,7 @@ function InstitutionView({
           <div className="flex gap-2">
             <h3 className="text-2xl">
               {commonText.colonLine({
-                label: schema.models.Institution.label,
+                label: tables.Institution.label,
                 value: institution.name ?? '',
               })}
             </h3>
@@ -99,7 +100,7 @@ function InstitutionView({
                 ) : (
                   commonText.loading()
                 )}
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                   {hasPermission('/permissions/library/roles', 'create') && (
                     <Link.Green href="/specify/security/institution/role/create/">
                       {commonText.create()}
@@ -136,7 +137,11 @@ function InstitutionView({
               </section>
             )}
             <section className="flex flex-col gap-2">
-              <h4 className="text-xl">{userText.institutionUsers()}</h4>
+              <h4 className="text-xl">
+                {userText.institutionUsers({
+                  institutionTable: tables.Institution.label,
+                })}
+              </h4>
               {typeof users === 'object' ? (
                 <>
                   <Ul>
@@ -251,7 +256,6 @@ function ViewInstitutionButton({
           dialog="modal"
           isDependent={false}
           isSubForm={false}
-          mode="edit"
           resource={resource}
           onAdd={undefined}
           onClose={handleClose}

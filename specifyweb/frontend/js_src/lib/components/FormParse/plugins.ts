@@ -10,18 +10,19 @@ import type { State } from 'typesafe-reducer';
 import { f } from '../../utils/functools';
 import { parseRelativeDate } from '../../utils/relativeDate';
 import type { RA } from '../../utils/types';
-import { getParsedAttribute } from '../../utils/utils';
-import { formatList } from '../Atoms/Internationalization';
+import { formatDisjunction } from '../Atoms/Internationalization';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
-import { setLogContext } from '../Errors/interceptLogs';
+import { addContext } from '../Errors/logContext';
 import type { CoordinateType } from '../FormPlugins/LatLongUi';
 import { coordinateType } from '../FormPlugins/LatLongUi';
 import { paleoPluginTables } from '../FormPlugins/PaleoLocation';
 import type { PartialDatePrecision } from '../FormPlugins/PartialDateUi';
 import { hasTablePermission } from '../Permissions/helpers';
+import type { SimpleXmlNode } from '../Syncer/xmlToJson';
+import { getParsedAttribute } from '../Syncer/xmlUtils';
 
 export type UiPlugins = {
   readonly LatLonUI: State<
@@ -63,7 +64,6 @@ export type UiPlugins = {
       readonly icon: string;
     }
   >;
-  readonly AttachmentPlugin: State<'AttachmentPlugin'>;
   readonly HostTaxonPlugin: State<
     'HostTaxonPlugin',
     {
@@ -89,17 +89,17 @@ export type UiPlugins = {
 
 const processUiPlugin: {
   readonly [KEY in keyof UiPlugins]: (props: {
-    readonly cell: Element;
+    readonly cell: SimpleXmlNode;
     readonly getProperty: (name: string) => string | undefined;
     readonly defaultValue: string | undefined;
-    readonly model: SpecifyModel;
+    readonly table: SpecifyTable;
     readonly fields: RA<LiteralField | Relationship> | undefined;
   }) => UiPlugins[KEY | 'Blank' | 'WrongTable'] & {
     readonly ignoreFieldName?: boolean;
   };
 } = {
-  LatLonUI({ getProperty, model }) {
-    if (model.name !== 'Locality')
+  LatLonUI({ getProperty, table }) {
+    if (table.name !== 'Locality')
       return {
         type: 'WrongTable',
         supportedTables: ['Locality'],
@@ -115,9 +115,10 @@ const processUiPlugin: {
       ignoreFieldName: true,
     };
   },
-  PartialDateUI({ getProperty, defaultValue, model, fields }) {
+  // FEATURE: support specifying min/max value
+  PartialDateUI({ getProperty, defaultValue, table, fields }) {
     const defaultPrecision = getProperty('defaultPrecision')?.toLowerCase();
-    const dateFields = model.getFields(getProperty('df') ?? '') ?? fields;
+    const dateFields = table.getFields(getProperty('df') ?? '') ?? fields;
     if (dateFields === undefined) {
       console.error(
         "Can't display PartialDateUi because initialize.df is not set"
@@ -145,7 +146,7 @@ const processUiPlugin: {
       ignoreFieldName: false,
     };
   },
-  CollectionRelOneToManyPlugin: ({ getProperty, cell, model }) => {
+  CollectionRelOneToManyPlugin: ({ getProperty, cell, table }) => {
     const relationship = getProperty('relName');
     if (relationship === undefined) {
       console.error(
@@ -157,7 +158,7 @@ const processUiPlugin: {
       !hasTablePermission('CollectionRelType', 'read')
     )
       return { type: 'Blank' };
-    else if (model.name === 'CollectionObject')
+    else if (table.name === 'CollectionObject')
       return {
         type: 'CollectionRelOneToManyPlugin',
         relationship,
@@ -167,7 +168,7 @@ const processUiPlugin: {
     else return { type: 'WrongTable', supportedTables: ['CollectionObject'] };
   },
   // Collection one-to-one Relationship plugin
-  ColRelTypePlugin: ({ getProperty, cell, model }) => {
+  ColRelTypePlugin: ({ getProperty, cell, table }) => {
     const relationship = getProperty('relName');
     if (relationship === undefined) {
       console.error(
@@ -179,7 +180,7 @@ const processUiPlugin: {
       !hasTablePermission('CollectionRelType', 'read')
     )
       return { type: 'Blank' };
-    else if (model.name === 'CollectionObject')
+    else if (table.name === 'CollectionObject')
       return {
         type: 'ColRelTypePlugin',
         relationship,
@@ -188,8 +189,8 @@ const processUiPlugin: {
       };
     else return { type: 'WrongTable', supportedTables: ['CollectionObject'] };
   },
-  LocalityGeoRef: ({ model }) =>
-    model.name === 'Locality'
+  LocalityGeoRef: ({ table }) =>
+    table.name === 'Locality'
       ? { type: 'LocalityGeoRef', ignoreFieldName: true }
       : {
           type: 'WrongTable',
@@ -201,13 +202,9 @@ const processUiPlugin: {
     icon: getProperty('icon') ?? 'WebLink',
     ignoreFieldName: false,
   }),
-  AttachmentPlugin: () =>
-    hasTablePermission('Attachment', 'read')
-      ? { type: 'AttachmentPlugin', ignoreFieldName: true }
-      : { type: 'Blank' },
-  HostTaxonPlugin: ({ getProperty, model }) =>
+  HostTaxonPlugin: ({ getProperty, table }) =>
     hasTablePermission('CollectionRelType', 'read')
-      ? model.name === 'CollectingEventAttribute'
+      ? table.name === 'CollectingEventAttribute'
         ? {
             type: 'HostTaxonPlugin',
             relationship: getProperty('relName'),
@@ -218,15 +215,15 @@ const processUiPlugin: {
             supportedTables: ['CollectingEventAttribute'],
           }
       : { type: 'Blank' },
-  LocalityGoogleEarth: ({ model }) =>
-    model.name === 'Locality'
+  LocalityGoogleEarth: ({ table }) =>
+    table.name === 'Locality'
       ? { type: 'LocalityGoogleEarth', ignoreFieldName: true }
       : {
           type: 'WrongTable',
           supportedTables: ['Locality'],
         },
-  PaleoMap: ({ model }) =>
-    f.includes(paleoPluginTables, model.name)
+  PaleoMap: ({ table }) =>
+    f.includes(paleoPluginTables, table.name)
       ? { type: 'PaleoMap', ignoreFieldName: true }
       : {
           type: 'WrongTable',
@@ -248,31 +245,31 @@ export type PluginDefinition = UiPlugins[keyof UiPlugins];
 export function parseUiPlugin({
   cell,
   getProperty,
-  model,
+  table,
   fields,
   ...rest
 }: {
-  readonly cell: Element;
+  readonly cell: SimpleXmlNode;
   readonly getProperty: (name: string) => string | undefined;
   readonly defaultValue: string | undefined;
-  readonly model: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly fields: RA<LiteralField | Relationship> | undefined;
 }): PluginDefinition {
   const pluginName = (getProperty('name') ?? '') as keyof UiPlugins;
   const uiCommand = processUiPlugin[pluginName] ?? processUiPlugin.Unsupported;
 
-  setLogContext({ plugin: pluginName });
+  addContext({ plugin: pluginName });
   const { ignoreFieldName, ...result } = uiCommand({
     cell,
     getProperty,
-    model,
+    table,
     fields,
     ...rest,
   });
   if (result.type === 'WrongTable')
     console.error(
-      `Can't display ${pluginName} on ${model.name} form. Instead, try ` +
-        `displaying it on the ${formatList(result.supportedTables)} form`
+      `Can't display ${pluginName} on ${table.name} form. Instead, try ` +
+        `displaying it on the ${formatDisjunction(result.supportedTables)} form`
     );
   if (ignoreFieldName === true && fields !== undefined)
     console.warn(
@@ -284,6 +281,5 @@ export function parseUiPlugin({
         `If you need it for a label, consider using an id instead`
     );
 
-  setLogContext({ plugin: undefined });
   return result;
 }

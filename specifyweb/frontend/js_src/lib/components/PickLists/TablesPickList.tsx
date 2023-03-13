@@ -15,7 +15,7 @@ export function TablesPickList(
 ): JSX.Element | null {
   const getItems = React.useCallback(
     () =>
-      props.resource.get('type') === PickListTypes.ITEMS
+      props.resource?.get('type') === PickListTypes.ITEMS
         ? []
         : getPickListItems(pickListTablesPickList()),
     [props.resource, props.field]
@@ -23,16 +23,19 @@ export function TablesPickList(
   const [items, setItems] = React.useState<RA<PickListItemSimple>>([]);
   React.useEffect(
     () =>
-      resourceOn(
-        props.resource,
-        'change:type',
-        (): void => {
-          if (props.resource.get('type') === PickListTypes.ITEMS)
-            props.resource.set('tableName', null as never);
-          setItems(getItems());
-        },
-        true
-      ),
+      props.resource === undefined
+        ? undefined
+        : resourceOn(
+            props.resource,
+            'change:type',
+            (): void => {
+              if (props.resource === undefined) return;
+              if (props.resource.get('type') === PickListTypes.ITEMS)
+                props.resource.set('tableName', null as never);
+              setItems(getItems());
+            },
+            true
+          ),
     [props.resource, getItems]
   );
 

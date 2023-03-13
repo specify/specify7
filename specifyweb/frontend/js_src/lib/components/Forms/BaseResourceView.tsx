@@ -10,14 +10,14 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
 import { softFail } from '../Errors/Crash';
+import { format } from '../Formatters/formatters';
 import { FormMeta } from '../FormMeta';
 import type { FormMode } from '../FormParse';
 import { LoadingScreen } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { displaySpecifyNetwork, SpecifyNetworkBadge } from '../SpecifyNetwork';
 import { usePref } from '../UserPreferences/usePref';
-import { format } from '../Formatters/dataObjFormatters';
-import { RenderForm } from './SpecifyForm';
+import { SpecifyForm } from './SpecifyForm';
 import { useViewDefinition } from './useViewDefinition';
 
 export type ResourceViewProps<SCHEMA extends AnySchema> = {
@@ -42,13 +42,13 @@ export function useResourceView<SCHEMA extends AnySchema>({
   isLoading,
   resource,
   mode,
-  viewName = resource?.specifyModel.view,
+  viewName = resource?.specifyTable.view,
   isSubForm,
 }: ResourceViewProps<SCHEMA>): ResourceViewState {
   // Update title when resource changes
   const [formatted, setFormatted] = React.useState<LocalizedString>('');
   React.useEffect(() => {
-    setFormatted(resource?.specifyModel.label ?? commonText.loading());
+    setFormatted(resource?.specifyTable.label ?? commonText.loading());
     return typeof resource === 'object'
       ? resourceOn(
           resource,
@@ -74,16 +74,16 @@ export function useResourceView<SCHEMA extends AnySchema>({
   });
 
   const viewDefinition = useViewDefinition({
-    model: resource?.specifyModel,
+    table: resource?.specifyTable,
     viewName,
-    fallbackViewName: resource?.specifyModel.view,
+    fallbackViewName: resource?.specifyTable.view,
     formType: 'form',
     mode,
   });
 
   const specifyForm =
     typeof resource === 'object' ? (
-      <RenderForm
+      <SpecifyForm
         display={isSubForm ? 'inline' : 'block'}
         isLoading={isLoading}
         resource={resource}
@@ -101,8 +101,8 @@ export function useResourceView<SCHEMA extends AnySchema>({
     resource === undefined
       ? ''
       : resource.isNew()
-      ? formsText.newResourceTitle({ tableName: resource.specifyModel.label })
-      : resource.specifyModel.label;
+      ? formsText.newResourceTitle({ tableName: resource.specifyTable.label })
+      : resource.specifyTable.label;
   const title =
     formatted.length > 0
       ? commonText.colonLine({
@@ -119,7 +119,7 @@ export function useResourceView<SCHEMA extends AnySchema>({
       ) : (
         <>
           {typeof resource === 'object' && (
-            <TableIcon label name={resource.specifyModel.name} />
+            <TableIcon label name={resource.specifyTable.name} />
           )}
           {formHeaderFormat === 'full' ? title : formatted}
         </>
@@ -137,7 +137,11 @@ export function useResourceView<SCHEMA extends AnySchema>({
         </>
       ) : (
         <FormContext.Provider value={formMeta}>
-          <Form className={className} forwardRef={setForm} id={id('form')}>
+          <Form
+            className={`h-full ${className ?? ''}`}
+            forwardRef={setForm}
+            id={id('form')}
+          >
             {specifyForm}
             {children}
           </Form>

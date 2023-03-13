@@ -10,14 +10,15 @@ import type { State } from 'typesafe-reducer';
 
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
-import { getParsedAttribute } from '../../utils/utils';
-import { formatList } from '../Atoms/Internationalization';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import { formatDisjunction } from '../Atoms/Internationalization';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
-import { setLogContext } from '../Errors/interceptLogs';
+import { addContext } from '../Errors/logContext';
 import { legacyLocalize } from '../InitialContext/legacyUiLocalization';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
+import type { SimpleXmlNode } from '../Syncer/xmlToJson';
+import { getParsedAttribute } from '../Syncer/xmlUtils';
 
 export type UiCommands = {
   readonly GenerateLabel: State<'GenerateLabel'>;
@@ -39,22 +40,22 @@ export type UiCommands = {
 const processUiCommand: {
   readonly [KEY in keyof UiCommands]: (payload: {
     readonly name: string | undefined;
-    readonly model: SpecifyModel;
+    readonly table: SpecifyTable;
   }) => UiCommands[KEY | 'Blank' | 'WrongTable'];
 } = {
   GenerateLabel: () =>
     hasPermission('/report', 'execute')
       ? { type: 'GenerateLabel' }
       : { type: 'Blank' },
-  ShowLoans: ({ model }) =>
-    model.name === 'Preparation'
+  ShowLoans: ({ table }) =>
+    table.name === 'Preparation'
       ? { type: 'ShowLoans' }
       : { type: 'WrongTable', supportedTables: ['Preparation'] },
-  ReturnLoan: ({ model }) =>
+  ReturnLoan: ({ table }) =>
     !hasTablePermission('LoanPreparation', 'update') ||
     !hasTablePermission('LoanReturnPreparation', 'update')
       ? { type: 'Blank' }
-      : model.name === 'Loan'
+      : table.name === 'Loan'
       ? { type: 'ReturnLoan' }
       : { type: 'WrongTable', supportedTables: ['Loan'] },
   Unsupported: ({ name }) => {
@@ -77,8 +78,8 @@ export type CommandDefinition = {
 };
 
 export function parseUiCommand(
-  cell: Element,
-  model: SpecifyModel
+  cell: SimpleXmlNode,
+  table: SpecifyTable
 ): CommandDefinition {
   const name = getParsedAttribute(cell, 'name');
   const label = getParsedAttribute(cell, 'label');
@@ -87,16 +88,17 @@ export function parseUiCommand(
     processUiCommand[commandTranslation[label ?? '']] ??
     processUiCommand.Unsupported;
 
-  setLogContext({ command: label ?? name });
-  const definition = uiCommand({ name, model });
+  addContext({ command: label ?? name });
+  const definition = uiCommand({ name, table });
   if (definition.type === 'WrongTable')
     console.error(
       `Can't display ${label ?? name ?? 'plugin'} on ${
-        model.name
+        table.name
       } form. Instead, try ` +
-        `displaying it on the ${formatList(definition.supportedTables)} form`
+        `displaying it on the ${formatDisjunction(
+          definition.supportedTables
+        )} form`
     );
-  setLogContext({ command: undefined });
 
   return {
     commandDefinition: definition,

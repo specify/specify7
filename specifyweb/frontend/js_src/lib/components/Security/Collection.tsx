@@ -11,10 +11,9 @@ import type { GetOrSet, IR, RA } from '../../utils/types';
 import { defined } from '../../utils/types';
 import { index } from '../../utils/utils';
 import { Container, Ul } from '../Atoms';
-import { formatList } from '../Atoms/Internationalization';
+import { formatConjunction } from '../Atoms/Internationalization';
 import { Link } from '../Atoms/Link';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { schema } from '../DataModel/schema';
 import type { Collection } from '../DataModel/types';
 import { useAvailableCollections } from '../Forms/OtherCollectionView';
 import { userInformation } from '../InitialContext/userInformation';
@@ -36,6 +35,8 @@ import {
 } from './CollectionHooks';
 import type { Role } from './Role';
 import { fetchRoles } from './utils';
+import { tables } from '../DataModel/tables';
+import { formatUrl } from '../Router/queryString';
 
 export type RoleBase = {
   readonly roleId: number;
@@ -131,7 +132,7 @@ export function CollectionView({
           <div className="flex gap-2">
             <h3 className="text-2xl">
               {commonText.colonLine({
-                label: schema.models.Collection.label,
+                label: tables.Collection.label,
                 value: collection.collectionName ?? '',
               })}
             </h3>
@@ -149,7 +150,11 @@ export function CollectionView({
               </CollectionRoles>
             )}
             <section className="flex flex-col gap-2">
-              <h4 className="text-xl">{userText.collectionUsers()}</h4>
+              <h4 className="text-xl">
+                {userText.collectionUsers({
+                  collectionTable: tables.Collection.label,
+                })}
+              </h4>
               {typeof mergedUsers === 'object' ? (
                 mergedUsers.length === 0 ? (
                   commonText.none()
@@ -165,7 +170,7 @@ export function CollectionView({
                             {userName}
                             {roles.length > 0 && (
                               <span className="text-gray-500">
-                                {`(${formatList(
+                                {`(${formatConjunction(
                                   roles.map(({ roleName }) => roleName)
                                 )})`}
                               </span>
@@ -180,13 +185,12 @@ export function CollectionView({
                                 onClick={(event): void => {
                                   event.preventDefault();
                                   navigate(
-                                    `/specify/security/user/${userId}/`,
-                                    {
-                                      state: {
-                                        type: 'SecurityUser',
-                                        initialCollectionId: collection.id,
-                                      },
-                                    }
+                                    formatUrl(
+                                      `/specify/security/user/${userId}/`,
+                                      {
+                                        collection: collection.id,
+                                      }
+                                    )
                                   );
                                 }}
                               >
@@ -204,12 +208,11 @@ export function CollectionView({
                         href="/specify/security/user/new/"
                         onClick={(event): void => {
                           event.preventDefault();
-                          navigate('/specify/security/user/new/', {
-                            state: {
-                              type: 'SecurityUser',
-                              initialCollectionId: collection.id,
-                            },
-                          });
+                          navigate(
+                            formatUrl('/specify/security/user/new/', {
+                              collection: collection.id,
+                            })
+                          );
                         }}
                       >
                         {commonText.create()}

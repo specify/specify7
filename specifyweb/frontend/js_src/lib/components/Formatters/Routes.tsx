@@ -3,6 +3,7 @@ import React from 'react';
 import { Redirect } from '../Router/Redirect';
 import { toReactRoutes } from '../Router/RouterUtils';
 
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 export const formattersRoutes = toReactRoutes([
   {
     index: true,
@@ -45,3 +46,4 @@ export const formattersRoutes = toReactRoutes([
     ],
   },
 ]);
+/* eslint-enable @typescript-eslint/explicit-function-return-type */

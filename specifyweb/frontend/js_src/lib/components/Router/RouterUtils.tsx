@@ -1,24 +1,32 @@
 import React from 'react';
-import type { RouteObject } from 'react-router';
-import { Outlet, useOutletContext } from 'react-router';
 import type {
   IndexRouteObject,
   NonIndexRouteObject,
-} from 'react-router/dist/lib/context';
+  RouteObject,
+} from 'react-router';
+import { Outlet, useOutletContext } from 'react-router';
+import { useLocation, useParams } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import type { IR, RA, WritableArray } from '../../utils/types';
+import { softFail } from '../Errors/Crash';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { useTitle } from '../Molecules/AppTitle';
 import { LoadingScreen } from '../Molecules/Dialog';
 import { SetSingleResourceContext } from './Router';
-import { useLocation, useParams } from 'react-router-dom';
 import { useStableLocation } from './RouterState';
 
 /**
  * A wrapper for native React Routes object. Makes everything readonly.
  */
 export type EnhancedRoute = Readonly<
-  Omit<IndexRouteObject | NonIndexRouteObject, 'children' | 'element'>
+  Omit<
+    IndexRouteObject | NonIndexRouteObject,
+    /*
+     * Not using errorElement because of https://github.com/remix-run/react-router/discussions/9881
+     */
+    'children' | 'element' | 'errorElement'
+  >
 > & {
   readonly children?: RA<EnhancedRoute>;
   // Allow to define element as a function that returns an async
@@ -39,14 +47,17 @@ export type EnhancedRoute = Readonly<
   readonly isSingleResource?: boolean;
 };
 
+let index = 0;
+
 /** Convert EnhancedRoutes to RouteObjects */
 export const toReactRoutes = (
   enhancedRoutes: RA<EnhancedRoute>,
-  title?: LocalizedString
+  title?: LocalizedString,
+  dismissible: boolean = true
 ): WritableArray<RouteObject> =>
   enhancedRoutes.map<IndexRouteObject | NonIndexRouteObject>((data) => {
     const {
-      element: fetchElement,
+      element: rawElement,
       children,
       isSingleResource = false,
       ...enhancedRoute
@@ -57,33 +68,48 @@ export const toReactRoutes = (
       (typeof enhancedRoute.path !== 'string' ||
         !enhancedRoute.path.endsWith('*'))
     )
-      throw new Error(
-        '"isSingleResource" only has effect for path\'s that end with "*"'
+      softFail(
+        new Error(
+          '"isSingleResource" only has effect for path\'s that end with "*"'
+        )
       );
 
-    const element =
-      typeof fetchElement === 'function' ? (
+    const resolvedElement =
+      typeof rawElement === 'function' ? (
         <Async
           Element={React.lazy(async () =>
-            fetchElement().then((element) => ({ default: element }))
+            rawElement().then((element) => ({ default: element }))
           )}
           title={enhancedRoute.title ?? title}
         />
+      ) : rawElement === undefined ? (
+        enhancedRoute.index ? (
+          <></>
+        ) : undefined
       ) : (
-        fetchElement
+        rawElement
       );
 
+    index += 1;
+
     return {
+      id: index.toString(),
       ...enhancedRoute,
       index: enhancedRoute.index as unknown as false,
       children: Array.isArray(children)
         ? toReactRoutes(children, title)
         : undefined,
-      element: isSingleResource ? (
-        <SingleResource>{element}</SingleResource>
-      ) : (
-        element
-      ),
+      element:
+        process.env.NODE_ENV === 'test' ||
+        resolvedElement === undefined ? undefined : (
+          <ErrorBoundary dismissible={dismissible}>
+            {isSingleResource ? (
+              <SingleResource>{resolvedElement}</SingleResource>
+            ) : (
+              resolvedElement
+            )}
+          </ErrorBoundary>
+        ),
     };
   });
 
@@ -99,7 +125,6 @@ export function Async({
   Element,
   title,
 }: {
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly Element: React.FunctionComponent;
   readonly title: LocalizedString | undefined;
 }): JSX.Element {

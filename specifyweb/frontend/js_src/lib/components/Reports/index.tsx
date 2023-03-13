@@ -9,44 +9,49 @@ import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { split } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
-import { iconClassName, icons } from '../Atoms/Icons';
+import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { attachmentSettingsPromise } from '../Attachments/attachments';
 import { getField } from '../DataModel/helpers';
 import type {
-  SerializedModel,
+  SerializedRecord,
   SerializedResource,
 } from '../DataModel/helperTypes';
-import { schema } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
-import type { SpAppResource } from '../DataModel/types';
+import { serializeResource } from '../DataModel/serializers';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import type { SpAppResource, SpQuery, SpReport } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import { cachableUrl } from '../InitialContext';
+import { cachableUrl, contextUnlockedPromise } from '../InitialContext';
 import { DateElement } from '../Molecules/DateElement';
 import { Dialog } from '../Molecules/Dialog';
-import { FormattedResource } from '../Molecules/FormattedResource';
+import { FormattedResourceUrl } from '../Molecules/FormattedResource';
 import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
+import { TableIcon } from '../Molecules/TableIcon';
 import { formatUrl } from '../Router/queryString';
 import { OverlayContext } from '../Router/Router';
 import { Report } from './Report';
-import { serializeResource } from '../DataModel/serializers';
+import { tables } from '../DataModel/tables';
 
-export const reportsAvailable = ajax<{ readonly available: boolean }>(
-  cachableUrl('/context/report_runner_status.json'),
-  {
-    headers: { Accept: 'application/json' },
-  },
-  { strict: false }
-)
-  .then(({ data }) => data.available)
-  .catch(() => false);
+export const reportsAvailable = contextUnlockedPromise.then((entrypoint) =>
+  entrypoint === 'main'
+    ? ajax<{ readonly available: boolean }>(
+        cachableUrl('/context/report_runner_status.json'),
+        {
+          headers: { Accept: 'application/json' },
+        },
+        { strict: false }
+      )
+        .then(({ data }) => data.available)
+        .catch(() => false)
+    : false
+);
 
 export function ReportsOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
   return (
     <ReportsView
       autoSelectSingle={false}
-      model={undefined}
+      table={undefined}
       resourceId={undefined}
       onClose={handleClose}
     />
@@ -56,27 +61,37 @@ export function ReportsOverlay(): JSX.Element {
 const fetchAttachmentSettings = async (): Promise<true> =>
   attachmentSettingsPromise.then(f.true);
 
+export type ReportEntry = {
+  readonly appResource: SerializedResource<SpAppResource>;
+  readonly report: SerializedResource<SpReport> | undefined;
+  readonly query: SerializedResource<SpQuery> | undefined;
+};
+
 export function ReportsView({
-  // If resource ID is provided, model must be too
-  model,
+  // If resource ID is provided, table must be too
+  table,
   resourceId,
   autoSelectSingle,
   onClose: handleClose,
 }: {
-  readonly model: SpecifyModel | undefined;
+  readonly table: SpecifyTable | undefined;
   readonly resourceId: number | undefined;
   readonly autoSelectSingle: boolean;
   readonly onClose: () => void;
 }): JSX.Element | null {
-  const [appResources] = useAsyncState(
+  const [resources] = useAsyncState(
     React.useCallback(
       async () =>
         ajax<{
-          readonly objects: RA<SerializedModel<SpAppResource>>;
+          readonly objects: RA<{
+            readonly app_resource: SerializedRecord<SpAppResource>;
+            readonly report: SerializedRecord<SpReport> | null;
+            readonly query: SerializedRecord<SpQuery> | null;
+          }>;
         }>(
           formatUrl(
-            typeof model === 'object'
-              ? `/report_runner/get_reports_by_tbl/${model.tableId}/`
+            typeof table === 'object'
+              ? `/report_runner/get_reports_by_tbl/${table.tableId}/`
               : '/report_runner/get_reports/',
             {
               domainFilter: 'false',
@@ -87,11 +102,16 @@ export function ReportsView({
           }
         ).then(({ data: { objects } }) =>
           split(
-            objects.map(serializeResource),
-            (resource) => resource.mimeType?.includes('report') === true
+            objects.map<ReportEntry>((entry) => ({
+              appResource: serializeResource(entry.app_resource),
+              report: f.maybe(entry.report ?? undefined, serializeResource),
+              query: f.maybe(entry.query ?? undefined, serializeResource),
+            })),
+            ({ appResource }) =>
+              appResource.mimeType?.includes('report') === true
           )
         ),
-      [model]
+      [table]
     ),
     true
   );
@@ -101,11 +121,11 @@ export function ReportsView({
       () =>
         // Select the first one automatically
         autoSelectSingle &&
-        Array.isArray(appResources) &&
-        appResources.flat().length === 1
-          ? appResources.flat()[0]
+        Array.isArray(resources) &&
+        resources.flat().length === 1
+          ? resources.flat()[0]
           : undefined,
-      [autoSelectSingle, appResources]
+      [autoSelectSingle, resources]
     )
   );
 
@@ -114,14 +134,14 @@ export function ReportsView({
     true
   );
 
-  const [labels, reports] = appResources ?? [[], []];
+  const [labels, reports] = resources ?? [[], []];
 
-  return typeof appResources === 'object' && attachmentSettings ? (
+  return typeof resources === 'object' && attachmentSettings ? (
     typeof selectedReport === 'object' ? (
-      <ErrorBoundary dismissable>
+      <ErrorBoundary dismissible>
         <Report
-          appResource={selectedReport}
-          model={model}
+          table={table}
+          resource={selectedReport}
           resourceId={resourceId}
           onClose={handleClose}
         />
@@ -135,19 +155,23 @@ export function ReportsView({
       >
         <div className="flex flex-col gap-4">
           <section>
-            <h2>{reportsText.reports()}</h2>
+            <div className="flex items-center gap-2">
+              <h2>{reportsText.reports()}</h2>
+            </div>
             <ReportRow
               cacheKey="listOfReports"
-              icon="/images/Reports32x32.png"
+              fallbackIcon="Reports"
               resources={reports}
               onClick={setSelectedReport}
             />
           </section>
           <section>
-            <h2>{reportsText.labels()}</h2>
+            <div className="flex items-center gap-2">
+              <h2>{reportsText.labels()}</h2>
+            </div>
             <ReportRow
               cacheKey="listOfLabels"
-              icon="/images/Label32x32.png"
+              fallbackIcon="Labels"
               resources={labels}
               onClick={setSelectedReport}
             />
@@ -160,14 +184,14 @@ export function ReportsView({
 
 function ReportRow({
   resources: unsortedResources,
-  icon,
   cacheKey,
+  fallbackIcon,
   onClick: handleClick,
 }: {
-  readonly resources: RA<SerializedResource<SpAppResource>>;
-  readonly icon: string;
+  readonly resources: RA<ReportEntry>;
   readonly cacheKey: 'listOfLabels' | 'listOfReports';
-  readonly onClick: (resource: SerializedResource<SpAppResource>) => void;
+  readonly fallbackIcon: 'Labels' | 'Reports';
+  readonly onClick: (resource: ReportEntry) => void;
 }): JSX.Element {
   const [sortConfig, handleSort, applySortConfig] = useSortConfig(
     cacheKey,
@@ -177,10 +201,11 @@ function ReportRow({
     () =>
       applySortConfig(
         unsortedResources,
-        (record) => record[sortConfig.sortField]
+        ({ appResource }) => appResource[sortConfig.sortField]
       ),
     [sortConfig, unsortedResources]
   );
+
   return resources.length === 0 ? (
     <p>{commonText.noResults()}</p>
   ) : (
@@ -189,7 +214,7 @@ function ReportRow({
         <tr>
           <th>
             <Button.LikeLink onClick={(): void => handleSort('name')}>
-              {getField(schema.models.SpReport, 'name').label}
+              {getField(tables.SpReport, 'name').label}
               <SortIndicator fieldName="name" sortConfig={sortConfig} />
             </Button.LikeLink>
           </th>
@@ -197,40 +222,45 @@ function ReportRow({
             <Button.LikeLink
               onClick={(): void => handleSort('timestampCreated')}
             >
-              {getField(schema.models.SpReport, 'timestampCreated').label}
+              {getField(tables.SpReport, 'timestampCreated').label}
               <SortIndicator
                 fieldName="timestampCreated"
                 sortConfig={sortConfig}
               />
             </Button.LikeLink>
           </th>
-          <th>{getField(schema.models.SpReport, 'createdByAgent').label}</th>
+          <th>{getField(tables.SpReport, 'createdByAgent').label}</th>
           <td />
         </tr>
       </thead>
       <tbody>
-        {resources.map((resource) => (
-          <tr key={resource.id}>
+        {resources.map((entry) => (
+          <tr key={entry.appResource.id}>
             <td>
               <Button.LikeLink
                 className="flex-1"
-                title={resource.description ?? undefined}
-                onClick={(): void => handleClick(resource)}
+                title={entry.appResource.description ?? undefined}
+                onClick={(): void => handleClick(entry)}
               >
-                <img alt="" className={iconClassName} src={icon} />
-                {resource.name}
+                <TableIcon
+                  label
+                  name={entry.query?.contextName ?? fallbackIcon}
+                />
+                {entry.appResource.name}
               </Button.LikeLink>
             </td>
             <td>
-              <DateElement date={resource.timestampCreated} />
+              <DateElement date={entry.appResource.timestampCreated} />
             </td>
             <td>
-              <FormattedResource resourceUrl={resource.specifyUser} />
+              <FormattedResourceUrl
+                resourceUrl={entry.appResource.specifyUser}
+              />
             </td>
             <td>
               <Link.Icon
                 aria-label={commonText.edit()}
-                href={`/specify/resources/app-resource/${resource.id}/`}
+                href={`/specify/resources/app-resource/${entry.appResource.id}/`}
                 icon="pencil"
                 title={commonText.edit()}
               />

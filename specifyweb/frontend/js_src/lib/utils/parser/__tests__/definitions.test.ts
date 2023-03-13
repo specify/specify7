@@ -6,7 +6,7 @@ import type {
 import {
   formatterTypeMapper,
   UiFormatter,
-} from '../../../components/Forms/uiFormatters';
+} from '../../../components/FieldFormatters';
 import { setPref } from '../../../components/UserPreferences/helpers';
 import { formsText } from '../../../localization/forms';
 import { requireContext } from '../../../tests/helpers';
@@ -29,6 +29,7 @@ import {
   stringGuard,
   validators,
 } from '../definitions';
+import { tables } from '../../../components/DataModel/tables';
 
 requireContext();
 
@@ -67,7 +68,12 @@ const formatterFields = [
     pattern: '\\d{1,2}',
   }),
 ];
-const uiFormatter = new UiFormatter(false, formatterFields);
+const uiFormatter = new UiFormatter(
+  false,
+  'test',
+  formatterFields,
+  tables.CollectionObject
+);
 const title = formsText.requiredFormat({ format: uiFormatter.pattern()! });
 
 describe('resolveParser', () => {
@@ -108,6 +114,7 @@ describe('resolveParser', () => {
   });
   test('UiFormatter is converted to parser', () => {
     const field = {
+      isRelationship: false,
       type: 'java.lang.String',
       getUiFormatter: () => uiFormatter,
     } as unknown as LiteralField;
@@ -226,7 +233,9 @@ describe('formatterToParser', () => {
       ...parser
     } = formatterToParser({}, uiFormatter);
     expect(parser).toEqual({
-      pattern: new RegExp(uiFormatter.parseRegExp(), 'u'),
+      // Regex may be coming from the user, thus disable strict mode
+      // eslint-disable-next-line require-unicode-regexp
+      pattern: new RegExp(uiFormatter.parseRegExp()),
       title,
       placeholder: uiFormatter.pattern()!,
       value: uiFormatter.valueOrWild(),
@@ -248,7 +257,7 @@ describe('formatterToParser', () => {
 
   test('without autonumbering', () => {
     const field = {
-      model: {
+      table: {
         name: 'CollectionObject',
       },
       name: 'altCatalogNumber',

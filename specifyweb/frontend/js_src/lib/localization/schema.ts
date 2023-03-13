@@ -11,23 +11,23 @@ import { createDictionary } from './utils';
 export const schemaText = createDictionary({
   table: {
     'en-us': 'Table',
-    'ru-ru': 'Таблица',
+    'ru-ru': 'Стол',
     'es-es': 'Mesa',
-    'fr-fr': 'Table',
+    'fr-fr': 'Tableau',
     'uk-ua': 'Таблиця',
   },
   tables: {
     'en-us': 'Tables',
-    'ru-ru': 'Таблицы',
+    'ru-ru': 'Столы',
     'es-es': 'Mesas',
-    'fr-fr': 'les tables',
+    'fr-fr': 'Tableaux',
     'uk-ua': 'Таблиці',
   },
   tableName: {
     'en-us': 'Table Name',
     'ru-ru': 'Имя таблицы',
     'es-es': 'Nombre de la tabla',
-    'fr-fr': 'Nom de la table',
+    'fr-fr': 'Nom du tableau',
     'uk-ua': 'Назва таблиці',
   },
   schemaConfig: {
@@ -41,35 +41,35 @@ export const schemaText = createDictionary({
     'en-us': 'Schema changes have not been saved',
     'ru-ru': 'Изменения схемы не сохранены',
     'es-es': 'Los cambios de esquema no se han guardado',
-    'fr-fr': "Les modifications de schéma n'ont pas été enregistrées",
+    'fr-fr': "Les modifications du schéma n'ont pas été enregistrées",
     'uk-ua': 'Зміни схеми не збережено',
   },
   changeBaseTable: {
     'en-us': 'Change Base Table',
     'ru-ru': 'Изменить базовую таблицу',
     'es-es': 'Cambiar tabla base',
-    'fr-fr': 'Changer la table de base',
+    'fr-fr': 'Modifier la base de tableau',
     'uk-ua': 'Змінити базову таблицю',
   },
   field: {
     'en-us': 'Field',
     'ru-ru': 'Поле',
     'es-es': 'Campo',
-    'fr-fr': 'Domaine',
+    'fr-fr': 'Champ',
     'uk-ua': 'Поле',
   },
   fields: {
     'en-us': 'Fields',
     'ru-ru': 'Поля',
-    'es-es': 'Los campos',
-    'fr-fr': 'Des champs',
+    'es-es': 'Campos',
+    'fr-fr': 'Champs',
     'uk-ua': 'поля',
   },
   relationships: {
     'en-us': 'Relationships',
     'ru-ru': 'Отношения',
     'es-es': 'Relaciones',
-    'fr-fr': 'Des relations',
+    'fr-fr': 'Relations',
     'uk-ua': 'стосунки',
   },
   caption: {
@@ -118,7 +118,7 @@ export const schemaText = createDictionary({
     'en-us': 'One-to-one',
     'ru-ru': 'Один к одному',
     'es-es': 'Cara a cara',
-    'fr-fr': 'Un par un',
+    'fr-fr': 'Un à un',
     'uk-ua': 'Один до одного',
   },
   oneToMany: {
@@ -137,9 +137,9 @@ export const schemaText = createDictionary({
   },
   manyToMany: {
     'en-us': 'many-to-many',
-    'ru-ru': 'Многие-ко-многим',
+    'ru-ru': 'многие ко многим',
     'es-es': 'muchos a muchos',
-    'fr-fr': 'plusieurs à plusieurs',
+    'fr-fr': 'Plusieurs à plusieurs',
     'uk-ua': 'багато-до-багатьох',
   },
   fieldLength: {
@@ -151,9 +151,9 @@ export const schemaText = createDictionary({
   },
   readOnly: {
     'en-us': 'Read-only',
-    'ru-ru': 'Только чтение',
+    'ru-ru': 'Только для чтения',
     'es-es': 'Solo lectura',
-    'fr-fr': 'Lecture seulement',
+    'fr-fr': 'Lecture seule',
     'uk-ua': 'Лише для читання',
   },
   fieldFormat: {
@@ -165,7 +165,7 @@ export const schemaText = createDictionary({
   },
   formatted: {
     'en-us': 'Formatted',
-    'ru-ru': 'Форматирован',
+    'ru-ru': 'Отформатировано',
     'es-es': 'formateado',
     'fr-fr': 'Formaté',
     'uk-ua': 'Відформатований',
@@ -179,7 +179,7 @@ export const schemaText = createDictionary({
   },
   userDefined: {
     'en-us': 'User Defined',
-    'ru-ru': 'Создано пользователем',
+    'ru-ru': 'Определяемые пользователем',
     'es-es': 'Usuario definido',
     'fr-fr': "Défini par l'utilisateur",
     'uk-ua': 'Визначений користувачем',
@@ -193,7 +193,7 @@ export const schemaText = createDictionary({
   },
   fieldLabel: {
     'en-us': 'Label',
-    'ru-ru': 'Локализованный',
+    'ru-ru': 'Этикетка',
     'es-es': 'Etiqueta',
     'fr-fr': 'Étiquette',
     'uk-ua': 'Мітка',
@@ -205,9 +205,9 @@ export const schemaText = createDictionary({
     'fr-fr': 'Colonne de base de données',
     'uk-ua': 'Стовпець бази даних',
   },
-  relatedModel: {
+  relatedTable: {
     'en-us': 'Related Model',
-    'ru-ru': 'Родственная Таблица',
+    'ru-ru': 'Родственная модель',
     'es-es': 'Modelo relacionado',
     'fr-fr': 'Modèle associé',
     'uk-ua': "Пов'язана модель",
@@ -226,12 +226,26 @@ export const schemaText = createDictionary({
     'fr-fr': 'Dépendant',
     'uk-ua': 'Утриманець',
   },
+  independent: {
+    'en-us': 'Independent',
+    'es-es': 'Independiente',
+    'fr-fr': 'Indépendant',
+    'ru-ru': 'Независимый',
+    'uk-ua': 'Незалежний',
+  },
   downloadAsJson: {
     'en-us': 'Download as JSON',
     'ru-ru': 'Скачать как JSON',
     'es-es': 'Descargar como JSON',
     'fr-fr': 'Télécharger au format JSON',
     'uk-ua': 'Завантажити як JSON',
+  },
+  downloadAsXml: {
+    'en-us': 'Download as XML',
+    'ru-ru': 'Скачать как XML',
+    'es-es': 'Descargar como XML',
+    'fr-fr': 'Télécharger au format XML',
+    'uk-ua': 'Завантажити як XML',
   },
   downloadAsTsv: {
     'en-us': 'Download as TSV',
@@ -242,9 +256,9 @@ export const schemaText = createDictionary({
   },
   tableId: {
     'en-us': 'Table ID',
-    'ru-ru': 'Идентификатор',
+    'ru-ru': 'Идентификатор таблицы',
     'es-es': 'Identificación de la tabla',
-    'fr-fr': 'Identifiant du tableau',
+    'fr-fr': 'ID du tableau',
     'uk-ua': 'Ідентифікатор таблиці',
   },
   fieldCount: {
@@ -263,7 +277,7 @@ export const schemaText = createDictionary({
   },
   databaseSchema: {
     'en-us': 'Database Schema',
-    'ru-ru': 'Database Schema',
+    'ru-ru': 'Схема базы данных',
     'es-es': 'Esquema de base de datos',
     'fr-fr': 'Schéma de base de données',
     'uk-ua': 'Схема бази даних',
@@ -281,5 +295,40 @@ export const schemaText = createDictionary({
     'es-es': 'Tablas posibles',
     'fr-fr': 'Tableaux possibles',
     'uk-ua': 'Можливі таблиці',
+  },
+  goToTop: {
+    'en-us': 'Go to top',
+    'es-es': 'Ve arriba',
+    'fr-fr': 'Aller en haut',
+    'ru-ru': 'Перейти к началу',
+    'uk-ua': 'Перейти вгору',
+  },
+  idField: {
+    'en-us': 'ID Field',
+    'es-es': 'Campo de identificación',
+    'fr-fr': "Champ d'identification",
+    'ru-ru': 'Поле идентификатора',
+    'uk-ua': 'Поле ID',
+  },
+  scope: {
+    'en-us': 'Scope',
+    'es-es': 'Alcance',
+    'fr-fr': 'Portée',
+    'ru-ru': 'Объем',
+    'uk-ua': 'Область застосування',
+  },
+  schemaViewTitle: {
+    'en-us': 'Schema Config: {tableName:string}',
+    'es-es': 'Configuración de esquema: {tableName:string}',
+    'fr-fr': 'Configuration du schéma : {tableName:string}',
+    'ru-ru': 'Конфигурация схемы: {tableName:string}',
+    'uk-ua': 'Конфігурація схеми: {tableName:string}',
+  },
+  schemaExportFileName: {
+    'en-us': 'Specify 7 Data Model',
+    'ru-ru': 'Укажите модель данных 7',
+    'es-es': 'Specify 7 Modelo de datos',
+    'fr-fr': 'Specify 7 Modèle de données',
+    'uk-ua': 'Specify 7 Модель даних',
   },
 } as const);

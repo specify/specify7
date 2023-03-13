@@ -6,51 +6,43 @@ import type { CollectionFetchFilters } from '../../components/DataModel/collecti
 import type {
   AnySchema,
   AnyTree,
-  SerializedModel,
+  SerializedRecord,
 } from '../../components/DataModel/helperTypes';
 import type { SpecifyResource } from '../../components/DataModel/legacyTypes';
 import type { Tables } from '../../components/DataModel/types';
 import { formatUrl } from '../../components/Router/queryString';
-import { eventListener } from '../events';
 import type { IR, RA, RR } from '../types';
 import { filterArray } from '../types';
 import { formData } from './helpers';
 import { ajax } from './index';
-
-export const globalEvents = eventListener<{
-  readonly initResource: SpecifyResource<AnySchema>;
-  readonly newResource: SpecifyResource<AnySchema>;
-}>();
 
 // FEATURE: consider replacing this with Query Builder
 export const queryCbxExtendedSearch = async <SCHEMA extends AnySchema>(
   templateResource: SpecifyResource<SCHEMA>,
   forceCollection: number | undefined
 ): Promise<RA<SpecifyResource<SCHEMA>>> =>
-  ajax<RA<SerializedModel<SCHEMA>>>(
+  ajax<RA<SerializedRecord<SCHEMA>>>(
     formatUrl(
-      `/express_search/querycbx/${templateResource.specifyModel.name.toLowerCase()}/`,
+      `/express_search/querycbx/${templateResource.specifyTable.name.toLowerCase()}/`,
       {
         ...Object.fromEntries(
           filterArray(
             Object.entries(templateResource.toJSON()).map(([key, value]) => {
-              const field = templateResource.specifyModel.getField(key);
+              const field = templateResource.specifyTable.getField(key);
               return field && !field.isRelationship && Boolean(value)
                 ? [key, value]
                 : undefined;
             })
           )
         ),
-        ...(typeof forceCollection === 'number'
-          ? { forceCollection: forceCollection.toString() }
-          : {}),
+        forceCollection,
       }
     ),
     {
       headers: { Accept: 'application/json' },
     }
   ).then(({ data: results }) =>
-    results.map((result) => new templateResource.specifyModel.Resource(result))
+    results.map((result) => new templateResource.specifyTable.Resource(result))
   );
 
 export const fetchTreePath = async (treeResource: SpecifyResource<AnyTree>) =>
@@ -63,7 +55,7 @@ export const fetchTreePath = async (treeResource: SpecifyResource<AnyTree>) =>
           readonly name: string;
         };
       }>(
-        `/api/specify_tree/${treeResource.specifyModel.name.toLowerCase()}/${
+        `/api/specify_tree/${treeResource.specifyTable.name.toLowerCase()}/${
           treeResource.id
         }/path/`,
         {
@@ -158,15 +150,15 @@ export const fetchRows = async <
     fields,
     distinct = false,
     ...filters
-  }: CollectionFetchFilters<SCHEMA> & {
+  }: Omit<CollectionFetchFilters<SCHEMA>, 'fields'> & {
     readonly fields: FIELDS;
     readonly distinct?: boolean;
   },
   /**
    * Advanced filters, not type-safe.
    *
-   * Can query relationships by separating fields with "__"
-   * Can query partial dates (e.g. catalogedDate__year=2030)
+   * Can filter on relationships by separating fields with "__"
+   * Can filter on partial dates (e.g. catalogedDate__year=2030)
    * More info: https://docs.djangoproject.com/en/4.0/topics/db/queries/
    */
   advancedFilters: IR<number | string> = {}

@@ -1,9 +1,13 @@
 import type React from 'react';
 
+import { dayjs } from '../../utils/dayJs';
+import { databaseDateFormat } from '../../utils/parser/dateConfig';
+import { fullDateFormat } from '../../utils/parser/dateFormat';
+import { parseRelativeDate } from '../../utils/relativeDate';
 import type { RA } from '../../utils/types';
 import { split } from '../../utils/utils';
 import type { Input as InputType } from '../DataModel/saveBlockers';
-import { softFail } from '../Errors/Crash';
+import { parseDate } from '../FormPlugins/PartialDateUi';
 import { className } from './className';
 import { wrap } from './wrapper';
 
@@ -60,14 +64,13 @@ export const withHandleBlur = <TYPE extends InputType>(
     handleBlur?.(event);
   },
 });
-
 export const Input = {
   Radio: wrap<
     'input',
     {
-      readonly readOnly?: never;
+      readonly readOnly?: 'Use isReadOnly instead';
       readonly isReadOnly?: boolean;
-      readonly type?: never;
+      readonly type?: 'If you need to specify type, use Input.Generic';
       // This is used to forbid accidentally passing children
       readonly children?: undefined;
     }
@@ -105,9 +108,9 @@ export const Input = {
     'input',
     {
       readonly onValueChange?: (isChecked: boolean) => void;
-      readonly readOnly?: never;
+      readonly readOnly?: 'Use isReadOnly instead';
       readonly isReadOnly?: boolean;
-      readonly type?: never;
+      readonly type?: 'If you need to specify type, use Input.Generic';
       readonly children?: undefined;
     }
   >(
@@ -131,7 +134,7 @@ export const Input = {
     {
       readonly onValueChange?: (value: string) => void;
       readonly type?: 'If you need to specify type, use Input.Generic';
-      readonly readOnly?: never;
+      readonly readOnly?: 'Use isReadOnly instead';
       readonly isReadOnly?: boolean;
       readonly children?: undefined;
     }
@@ -155,7 +158,7 @@ export const Input = {
     {
       readonly onValueChange?: (value: string) => void;
       readonly onDatePaste?: (value: string) => void;
-      readonly readOnly?: never;
+      readonly readOnly?: 'Use isReadOnly instead';
       readonly isReadOnly?: boolean;
       readonly children?: undefined;
     }
@@ -163,46 +166,34 @@ export const Input = {
     'Input.Generic',
     'input',
     `${className.notTouchedInput} w-full`,
-    ({
-      onValueChange,
-      onDatePaste: handleDatePaste,
-      isReadOnly,
-      ...props
-    }) => ({
+    ({ onValueChange, isReadOnly, ...props }) => ({
       ...props,
       ...withHandleBlur(props.onBlur),
       onChange(event): void {
         onValueChange?.((event.target as HTMLInputElement).value);
         props.onChange?.(event);
       },
-      onPaste(event): void {
-        const target = event.target as HTMLInputElement;
-        // Ignore date paste if there is some selected text
-        const hasSelectedRegion = target.selectionEnd !== target.selectionStart;
-        // Handle pasting dates into input[type="date"] and [type="month"]
-        if (typeof handleDatePaste === 'function' && !hasSelectedRegion) {
-          const input =
-            target.tagName === 'INPUT'
-              ? target
-              : target.getElementsByTagName('input')[0];
-          const initialType = input.type;
+      onDoubleClick(event): void {
+        const input = event.target as HTMLInputElement;
+        if (input.type === 'date') {
           input.type = 'text';
-          try {
-            const value =
-              // @ts-expect-error globalThis.clipboardData does not have typings
-              (event.clipboardData ?? globalThis.clipboardData).getData(
-                'text/plain'
-              );
-            handleDatePaste(value);
-          } catch (error: unknown) {
-            softFail(error);
-          }
-
-          event.preventDefault();
-          input.type = initialType;
+          const parsed = parseDate('full', input.value);
+          if (parsed.isValid()) input.value = parsed.format(fullDateFormat());
         }
-
-        props.onPaste?.(event);
+        props.onDoubleClick?.(event);
+      },
+      onBlur(event): void {
+        const input = event.target as HTMLInputElement;
+        if (props.type === 'date' && input.type !== 'date') {
+          const relativeDate = parseRelativeDate(input.value);
+          if (relativeDate !== undefined) {
+            const parsed = dayjs(relativeDate);
+            if (parsed.isValid())
+              input.value = parsed.format(databaseDateFormat);
+          }
+          input.type = 'date';
+        }
+        withHandleBlur(props.onBlur).onBlur(event);
       },
       readOnly: isReadOnly,
     })
@@ -211,8 +202,8 @@ export const Input = {
     'input',
     {
       readonly onValueChange?: (value: number) => void;
-      readonly type?: never;
-      readonly readOnly?: never;
+      readonly type?: 'If you need to specify type, use Input.Generic';
+      readonly readOnly?: 'Use isReadOnly instead';
       readonly isReadOnly?: boolean;
       readonly children?: undefined;
     }
@@ -239,7 +230,7 @@ export const Textarea = wrap<
   {
     readonly children?: undefined;
     readonly onValueChange?: (value: string) => void;
-    readonly readOnly?: never;
+    readonly readOnly?: 'Use isReadOnly instead';
     readonly isReadOnly?: boolean;
     readonly autoGrow?: boolean;
   }
@@ -268,7 +259,7 @@ export const Select = wrap<
 >(
   'Select',
   'select',
-  `${className.notTouchedInput} w-full pr-5 bg-right cursor-pointer`,
+  `${className.notTouchedInput} w-full pr-5 bg-right cursor-pointer min-w-[theme(spacing.40)]`,
   ({ onValueChange, onValuesChange, ...props }) => ({
     ...props,
     /*

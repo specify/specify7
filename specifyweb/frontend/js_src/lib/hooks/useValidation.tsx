@@ -15,9 +15,7 @@ import type { RA } from '../utils/types';
  * validation message. Thus, you can call it on keydown to implement live
  * validation
  */
-export function useValidation<
-  T extends Input = HTMLInputElement | HTMLTextAreaElement
->(
+export function useValidation<T extends Input = Input>(
   // Can set validation message from state or a prop
   message: RA<string> | string = ''
 ): {

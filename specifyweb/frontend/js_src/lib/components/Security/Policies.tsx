@@ -11,6 +11,7 @@ import { Summary, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
+import { ReadOnlyContext } from '../Core/Contexts';
 import { smoothScroll } from '../QueryBuilder/helpers';
 import type { Policy, PolicyScope } from './Policy';
 import { hasTableActions, SecurityPolicy } from './Policy';
@@ -92,13 +93,11 @@ export function SecurityPoliciesWrapper({
  */
 export function SecurityPolicies({
   policies,
-  isReadOnly,
   onChange: handleChange,
   scope,
   limitHeight,
 }: {
   readonly policies: RA<Policy> | undefined;
-  readonly isReadOnly: boolean;
   readonly onChange: (policies: RA<Policy>) => void;
   readonly scope: PolicyScope;
   readonly limitHeight: boolean;
@@ -123,6 +122,7 @@ export function SecurityPolicies({
     'policiesLayout'
   );
 
+  const isReadOnly = React.useContext(ReadOnlyContext);
   return Array.isArray(policies) ? (
     <>
       <Ul
@@ -134,7 +134,6 @@ export function SecurityPolicies({
       >
         {policies.map((policy, index) => (
           <SecurityPolicy
-            isReadOnly={isReadOnly}
             isResourceMapped={(resource): boolean =>
               policies.some((policy) => policy.resource.startsWith(resource))
             }

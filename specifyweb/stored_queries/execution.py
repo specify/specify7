@@ -4,28 +4,23 @@ import logging
 import os
 import re
 import xml.dom.minidom
-
 from collections import namedtuple, defaultdict
 from datetime import datetime
 from functools import reduce
 
 from django.conf import settings
-from sqlalchemy.sql.expression import asc, desc, insert, literal
-from sqlalchemy import sql, orm
 from django.db import transaction
-from django.db.models import F
-
-
-from ..specify.models import Collection, Loan, Loanpreparation, Loanreturnpreparation
-from ..specify.auditlog import auditlog
+from sqlalchemy import sql, orm
+from sqlalchemy.sql.expression import asc, desc, insert, literal
 
 from . import models
 from .format import ObjectFormatter
 from .query_construct import QueryConstruct
 from .queryfield import QueryField
 from ..notifications.models import Message
-from ..specify.models import Collection
 from ..permissions.permissions import check_table_permissions
+from ..specify.auditlog import auditlog
+from ..specify.models import Loan, Loanpreparation, Loanreturnpreparation
 
 logger = logging.getLogger(__name__)
 
@@ -132,10 +127,10 @@ def do_export(spquery, collection, user, filename, exporttype, host):
             query_to_csv(session, collection, user, tableid, field_specs, path,
                          recordsetid=recordsetid, 
                          captions=spquery['captions'], strip_id=True,
-                         distinct=spquery['selectdistinct'])
+                         distinct=spquery['selectdistinct'], delimiter=spquery['delimiter'],)
         elif exporttype == 'kml':
             query_to_kml(session, collection, user, tableid, field_specs, path, spquery['captions'], host,
-                         recordsetid=recordsetid, add_header=True, strip_id=False)
+                         recordsetid=recordsetid, strip_id=False)
             message_type = 'query-export-to-kml-complete'
 
     Message.objects.create(user=user, content=json.dumps({
@@ -160,7 +155,7 @@ def stored_query_to_csv(query_id, collection, user, path):
 
 def query_to_csv(session, collection, user, tableid, field_specs, path,
                  recordsetid=None, captions=False, strip_id=False, row_filter=None,
-                 distinct=False):
+                 distinct=False, delimiter=','):
     """Build a sqlalchemy query using the QueryField objects given by
     field_specs and send the results to a CSV file at the given
     file path.
@@ -173,7 +168,7 @@ def query_to_csv(session, collection, user, tableid, field_specs, path,
     logger.debug('query_to_csv starting')
 
     with open(path, 'w', newline='', encoding='utf-8') as f:
-        csv_writer = csv.writer(f)
+        csv_writer = csv.writer(f, delimiter=delimiter)
         if captions:
             header = captions
             if not strip_id and not distinct:
@@ -447,7 +442,11 @@ def return_loan_preps(collection, user, agent, data):
     commit = data['commit']
 
     tableid = spquery['contexttableid']
-    assert tableid == Loanpreparation.specify_model.tableId
+    if not (tableid == Loanpreparation.specify_model.tableId): raise AssertionError(
+        f"Unexpected tableId '{tableid}' in request. Expected {Loanpreparation.specify_model.tableId}",
+        {"tableId" : tableid,
+         "expectedTableId": Loanpreparation.specify_model.tableId,
+         "localizationKey" : "unexpectedTableId"})
 
     with models.session_context() as session:
         model = models.models_by_tableid[tableid]
@@ -573,7 +572,11 @@ def build_query(session, collection, user, tableid, field_specs,
     if recordsetid is not None:
         logger.debug("joining query to recordset: %s", recordsetid)
         recordset = session.query(models.RecordSet).get(recordsetid)
-        assert recordset.dbTableId == tableid
+        if not (recordset.dbTableId == tableid): raise AssertionError(
+            f"Unexpected tableId '{tableid}' in request. Expected '{recordset.dbTableId}'",
+            {"tableId" : tableid,
+             "expectedTableId" : recordset.dbTableId,
+             "localizationKey" : "unexpectedTableId"})
         query = query.join(models.RecordSetItem, models.RecordSetItem.recordId == id_field) \
                 .filter(models.RecordSetItem.recordSet == recordset)
 

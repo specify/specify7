@@ -8,17 +8,17 @@ import { toTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
-import { schema } from '../DataModel/schema';
 import { userInformation } from '../InitialContext/userInformation';
 import { CopyButton } from '../Molecules/Copy';
 import { formatUrl } from '../Router/queryString';
+import { schema } from '../DataModel/schema';
 
 export function ShareRecord({
   resource,
 }: {
   readonly resource: SpecifyResource<AnySchema>;
 }): JSX.Element {
-  const [recordsetid] = useSearchParameter('recordsetid');
+  const [recordsetid] = useSearchParameter('recordSetId');
   const recordSetId = f.parseInt(recordsetid);
   const collectionCode =
     userInformation.availableCollections.find(
@@ -30,16 +30,11 @@ export function ShareRecord({
     ) ?? '';
   const rawUrl =
     collectionCode.length > 0 && catalogNumber.length > 0
-      ? formatUrl(
-          `/specify/bycatalog/${collectionCode}/${catalogNumber}`,
-          typeof recordSetId === 'number'
-            ? {
-                recordSetId: recordSetId?.toString(),
-              }
-            : {}
-        )
+      ? formatUrl(`/specify/bycatalog/${collectionCode}/${catalogNumber}`, {
+          recordSetId,
+        })
       : getResourceViewUrl(
-          resource.specifyModel.name,
+          resource.specifyTable.name,
           resource.id,
           recordSetId
         );

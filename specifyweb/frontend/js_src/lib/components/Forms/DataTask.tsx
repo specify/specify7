@@ -15,16 +15,19 @@ import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { LoadingContext } from '../Core/Contexts';
 import { fetchCollection } from '../DataModel/collection';
-import {
-  fetchCollectionsForResource,
-  getCollectionForResource,
-} from '../DataModel/domain';
+import { getField } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
-import { getModel, getModelById, schema } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import { schema } from '../DataModel/schema';
+import {
+  fetchCollectionsForResource,
+  getCollectionForResource,
+} from '../DataModel/scoping';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { getTable, getTableById, tables } from '../DataModel/tables';
 import type { CollectionObject, RecordSet } from '../DataModel/types';
+import { fieldFormat } from '../Formatters/fieldFormat';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
 import { ProtectedTable, ProtectedTool } from '../Permissions/PermissionDenied';
@@ -34,8 +37,6 @@ import { switchCollection } from '../RouterCommands/SwitchCollection';
 import { usePref } from '../UserPreferences/usePref';
 import { OtherCollection } from './OtherCollectionView';
 import { ViewResourceById } from './ShowResource';
-import { fieldFormat } from '../Formatters/fieldFormat';
-import { getField } from '../DataModel/helpers';
 
 export function ViewRecordSet(): JSX.Element {
   const { id, index } = useParams();
@@ -62,7 +63,7 @@ function RecordSetView({
   const [recordSet] = useAsyncState(
     React.useCallback(
       async () =>
-        new schema.models.RecordSet.Resource({
+        new tables.RecordSet.Resource({
           id: recordSetId,
         })
           .fetch()
@@ -109,10 +110,10 @@ function DisplayRecordSet({
             : navigate(
                 formatUrl(
                   getResourceViewUrl(
-                    getModelById(recordSet.get('dbTableId')).name,
+                    getTableById(recordSet.get('dbTableId')).name,
                     records[0]?.recordId ?? 'new'
                   ),
-                  { recordSetId: recordSet.id.toString() }
+                  { recordSetId: recordSet.id }
                 ),
                 {
                   replace: true,
@@ -129,7 +130,9 @@ function DisplayRecordSet({
       header={userText.permissionDeniedError()}
       onClose={(): void => navigate('/specify/')}
     >
-      {userText.emptyRecordSetsReadOnly()}
+      {userText.emptyRecordSetsReadOnly({
+        recordSetTable: tables.RecordSet.label,
+      })}
     </Dialog>
   ) : null;
 }
@@ -137,7 +140,7 @@ function DisplayRecordSet({
 /** Begins the process of creating a new resource */
 export function ViewResource(): JSX.Element {
   const { tableName = '', id } = useParams();
-  const parsedTableName = getModel(tableName)?.name;
+  const parsedTableName = getTable(tableName)?.name;
 
   return typeof parsedTableName === 'string' ? (
     <ViewResourceById id={id} tableName={parsedTableName} />
@@ -148,20 +151,20 @@ export function ViewResource(): JSX.Element {
 
 // FEATURE: consider displaying the resource without changing the URL
 export function ViewResourceByGuid({
-  model,
+  table,
   guid,
 }: {
-  readonly model: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly guid: string;
 }): JSX.Element | null {
   const [id] = useAsyncState<number | false>(
     React.useCallback(
       async () =>
-        fetchCollection((model as SpecifyModel<CollectionObject>).name, {
+        fetchCollection((table as SpecifyTable<CollectionObject>).name, {
           guid,
           limit: 1,
         }).then(({ records }) => records[0]?.id ?? false),
-      [model, guid]
+      [table, guid]
     ),
     true
   );
@@ -170,7 +173,7 @@ export function ViewResourceByGuid({
   React.useEffect(
     () =>
       typeof id === 'number'
-        ? navigate(getResourceViewUrl(model.name, id), { replace: true })
+        ? navigate(getResourceViewUrl(table.name, id), { replace: true })
         : undefined,
     [id]
   );
@@ -187,7 +190,7 @@ export function ViewResourceByCatalog(): JSX.Element {
 
 function ViewByCatalogProtected(): JSX.Element | null {
   const { collectionCode = '', catalogNumber = '' } = useParams();
-  const [recordSetId] = useSearchParameter('recordsetid');
+  const [recordSetId] = useSearchParameter('recordSetId');
 
   const navigate = useNavigate();
   const [id] = useAsyncState<number | false>(
@@ -213,7 +216,7 @@ function ViewByCatalogProtected(): JSX.Element | null {
        * so that the formatter for correct collection is fetched
        */
       const formatted = await fieldFormat(
-        getField(schema.models.CollectionObject, 'catalogNumber'),
+        getField(tables.CollectionObject, 'catalogNumber'),
         catalogNumber
       );
 

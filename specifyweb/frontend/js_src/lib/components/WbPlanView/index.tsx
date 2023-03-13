@@ -12,12 +12,13 @@ import { useErrorContext } from '../../hooks/useErrorContext';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { f } from '../../utils/functools';
+import { ReadOnlyContext } from '../Core/Contexts';
+import { useMenuItem } from '../Header/MenuContext';
 import { treeRanksPromise } from '../InitialContext/treeRanks';
 import { hasPermission } from '../Permissions/helpers';
 import { NotFoundView } from '../Router/NotFoundView';
 import type { Dataset } from './Wrapped';
 import { WbPlanView } from './Wrapped';
-import { useMenuItem } from '../Header/MenuContext';
 
 const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 
@@ -45,25 +46,28 @@ export function WbPlanViewWrapper(): JSX.Element | null {
   );
   useErrorContext('dataSet', dataSet);
 
+  const isReadOnly =
+    React.useContext(ReadOnlyContext) ||
+    !hasPermission('/workbench/dataset', 'update') ||
+    typeof dataSet !== 'object' ||
+    dataSet.uploadresult?.success === true;
+
   return dataSet === false ? (
     <NotFoundView />
   ) : treeRanksLoaded && typeof dataSet === 'object' ? (
-    <WbPlanView
-      dataset={dataSet}
-      headers={
-        dataSet.visualorder === null
-          ? dataSet.columns
-          : dataSet.visualorder.map(
-              (physicalCol) => dataSet.columns[physicalCol]
-            )
-      }
-      // Reorder headers if needed
-      isReadOnly={
-        (!hasPermission('/workbench/dataset', 'update') ||
-          dataSet.uploadresult?.success) ??
-        false
-      }
-      uploadPlan={dataSet.uploadplan}
-    />
+    <ReadOnlyContext.Provider value={isReadOnly}>
+      <WbPlanView
+        dataset={dataSet}
+        // Reorder headers if needed
+        headers={
+          dataSet.visualorder === null
+            ? dataSet.columns
+            : dataSet.visualorder.map(
+                (physicalCol) => dataSet.columns[physicalCol]
+              )
+        }
+        uploadPlan={dataSet.uploadplan}
+      />
+    </ReadOnlyContext.Provider>
   ) : null;
 }

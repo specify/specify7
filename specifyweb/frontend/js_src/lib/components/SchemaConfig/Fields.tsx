@@ -2,22 +2,23 @@ import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { useId } from '../../hooks/useId';
+import { commonText } from '../../localization/common';
 import { schemaText } from '../../localization/schema';
 import type { RA } from '../../utils/types';
 import { sortFunction, split } from '../../utils/utils';
 import { H3 } from '../Atoms';
 import { Select } from '../Atoms/Form';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { SpLocaleContainerItem } from '../DataModel/types';
 
 export function SchemaConfigFields({
-  model,
+  table,
   items,
   index,
   onChange: handleChange,
 }: {
-  readonly model: SpecifyModel;
+  readonly table: SpecifyTable;
   readonly items: RA<SerializedResource<SpLocaleContainerItem>> | undefined;
   readonly index: number;
   readonly onChange: (index: number) => void;
@@ -29,7 +30,7 @@ export function SchemaConfigFields({
   const currentId = items?.[index].id ?? 0;
   const [fields, relationships] = split(
     sortedItems,
-    (item) => model.getField(item.name)!.isRelationship
+    (item) => table.getField(item.name)!.isRelationship
   );
   return (
     <SchemaConfigColumn header={schemaText.fields()} id={id('fields-label')}>
@@ -44,6 +45,9 @@ export function SchemaConfigFields({
         }
       >
         <optgroup label={schemaText.fields()}>
+          {items === undefined && (
+            <option value="">{commonText.loading()}</option>
+          )}
           {fields.map((item) => (
             <option key={item.id} value={item.id}>
               {item.name}
