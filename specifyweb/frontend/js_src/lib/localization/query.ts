@@ -51,7 +51,7 @@ export const queryText = createDictionary({
   any: {
     'en-us': 'Any',
     'ru-ru': 'Любой',
-    'es-es': 'Alguna',
+    'es-es': 'Cualquier',
     'fr-fr': 'Tous',
     'uk-ua': 'Будь-який',
   },
@@ -101,8 +101,7 @@ export const queryText = createDictionary({
       actuelle inchangée.
     `,
     'uk-ua': `
-      Запит буде збережено під новою назвою, а поточний запит залишиться без
-      змін.
+      Запит буде збережено з новою назвою, а поточний запит залишиться без змін.
     `,
   },
   queryDeleteIncomplete: {
@@ -358,14 +357,14 @@ export const queryText = createDictionary({
     'ru-ru': '(отформатирован)',
     'es-es': '(formateado)',
     'fr-fr': '(formaté)',
-    'uk-ua': '(відформатовано)',
+    'uk-ua': '(відформатований)',
   },
   like: {
     'en-us': 'Like',
     'ru-ru': 'Подобно',
     'es-es': 'Como',
     'fr-fr': 'Comme',
-    'uk-ua': 'Подобається',
+    'uk-ua': 'Люблю',
   },
   likeDescription: {
     comment: 'Explains the use of special symbols for the "like" query filter',
@@ -407,7 +406,7 @@ export const queryText = createDictionary({
     'ru-ru': 'Больше чем',
     'es-es': 'Mas grande que',
     'fr-fr': 'Plus grand que',
-    'uk-ua': 'Більше, ніж, величніше ніж, крутіший за',
+    'uk-ua': 'Більш чим',
   },
   lessThan: {
     'en-us': 'Less than',
@@ -440,7 +439,7 @@ export const queryText = createDictionary({
   false: {
     'en-us': 'False',
     'ru-ru': 'Ложь',
-    'es-es': 'Falso',
+    'es-es': 'FALSO',
     'fr-fr': 'Faux',
     'uk-ua': 'помилковий',
   },
@@ -606,7 +605,7 @@ export const queryText = createDictionary({
     'ru-ru': 'Синонимизированный узел дерева',
     'es-es': 'Árbol Sinonimizar',
     'fr-fr': "Synonymiser l'arbre",
-    'uk-ua': 'Дерево синонімізувати',
+    'uk-ua': 'Синонімізувати дерево',
   },
   treeDesynonymize: {
     comment: 'Audit Log Action Type',
