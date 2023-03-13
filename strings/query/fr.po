@@ -64,7 +64,7 @@ msgstr "Valeur de début"
 msgid "endValue"
 msgstr "Valeur de fin"
 
-#: components/QueryBuilder/Components.tsx:95
+#: components/QueryBuilder/Components.tsx:108
 #: components/QueryBuilder/Save.tsx:72
 #. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Save
 msgid "saveQuery"
@@ -83,13 +83,13 @@ msgstr ""
 "La requête sera enregistrée avec un nouveau nom laissant la requête "
 "actuelle inchangée."
 
-#: components/QueryBuilder/Components.tsx:154
+#: components/QueryBuilder/Components.tsx:167
 #. Used in: Components > Query Builder > Components
 #, fuzzy
 msgid "queryDeleteIncomplete"
 msgstr "La définition de la requête contient des champs incomplets"
 
-#: components/QueryBuilder/Components.tsx:155
+#: components/QueryBuilder/Components.tsx:168
 #. Used in: Components > Query Builder > Components
 #, fuzzy
 msgid "queryDeleteIncompleteDescription"
@@ -103,19 +103,19 @@ msgstr ""
 msgid "queryUnloadProtect"
 msgstr "La définition de requête nouvelle ou modifiée n'a pas été enregistrée"
 
-#: components/QueryBuilder/Components.tsx:252
+#: components/QueryBuilder/Components.tsx:265
 #. 🟥Example: Creating a Record Set from Query. Used in: Components > Query Builder > Components
 #, fuzzy
 msgid "recordSetToQuery"
 msgstr "Création d'un {recordSetTable:string} à partir d'une requête"
 
-#: components/QueryBuilder/Components.tsx:257
+#: components/QueryBuilder/Components.tsx:270
 #. Used in: Components > Query Builder > Components
 #, fuzzy
 msgid "recordSetToQueryDescription"
 msgstr "Génération de {recordSetTable:string}..."
 
-#: components/QueryBuilder/Components.tsx:274
+#: components/QueryBuilder/Components.tsx:287
 #. Used in: Components > Query Builder > Components
 #, fuzzy
 msgid "recordSetCreated"
@@ -193,14 +193,14 @@ msgstr "Créer un CSV"
 msgid "createKml"
 msgstr "Créer un KML"
 
-#: components/QueryBuilder/Components.tsx:215
+#: components/QueryBuilder/Components.tsx:228
 #: components/QueryBuilder/Results.tsx:502
 #: components/WorkBench/RecordSet.tsx:36
 #. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Results ⬤ Components > Work Bench > Record Set
 msgid "createRecordSet"
 msgstr "Créer un {recordSetTable:string}"
 
-#: components/QueryBuilder/Components.tsx:106
+#: components/QueryBuilder/Components.tsx:119
 #. Used in: Components > Query Builder > Components
 msgid "saveAs"
 msgstr "Enregistrer sous"

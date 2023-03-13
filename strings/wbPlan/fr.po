@@ -321,14 +321,14 @@ msgstr "AutoMappeur"
 msgid "mappingEditor"
 msgstr "Explorateur de carte"
 
-#: components/QueryBuilder/Components.tsx:129
+#: components/QueryBuilder/Components.tsx:142
 #: components/WbPlanView/MapperComponents.tsx:367
 #. Used in: Components > Query Builder > Components ⬤ Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "hideFieldMapper"
 msgstr "Masquer le mappeur de champs"
 
-#: components/QueryBuilder/Components.tsx:130
+#: components/QueryBuilder/Components.tsx:143
 #: components/WbPlanView/MapperComponents.tsx:368
 #. Used in: Components > Query Builder > Components ⬤ Components > Wb Plan View > Mapper Components
 #, fuzzy

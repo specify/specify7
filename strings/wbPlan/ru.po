@@ -265,13 +265,13 @@ msgstr "AutoMapper"
 msgid "mappingEditor"
 msgstr "Обзор сопоставлений"
 
-#: components/QueryBuilder/Components.tsx:129
+#: components/QueryBuilder/Components.tsx:142
 #: components/WbPlanView/MapperComponents.tsx:367
 #. Used in: Components > Query Builder > Components ⬤ Components > Wb Plan View > Mapper Components
 msgid "hideFieldMapper"
 msgstr "Спрятать обзор сопоставлений"
 
-#: components/QueryBuilder/Components.tsx:130
+#: components/QueryBuilder/Components.tsx:143
 #: components/WbPlanView/MapperComponents.tsx:368
 #. Used in: Components > Query Builder > Components ⬤ Components > Wb Plan View > Mapper Components
 msgid "showFieldMapper"
