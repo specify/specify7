@@ -40,6 +40,7 @@ import {
 import { StatsPageEditing } from './StatsPageEditing';
 import { defaultLayoutGenerated, dynamicStatsSpec } from './StatsSpec';
 import type { CustomStat, DefaultStat, StatLayout } from './types';
+import { ProtectedAction } from '../Permissions/PermissionDenied';
 
 const TIME_DIFF_MINUTE = 60 * 24;
 
@@ -468,410 +469,422 @@ export function StatsPage(): JSX.Element | null {
     defaultLayout
   );
 
-  return sharedLayout === undefined ? null : (
-    <Form
-      className={`${className.containerFullGray} md:overflow-y-none overflow-y-auto`}
-      onSubmit={(): void => {
-        setState({ type: 'DefaultState' });
-        Promise.all([
-          userPreferences.awaitSynced(),
-          collectionPreferences.awaitSynced(),
-        ]).catch(softFail);
-      }}
-    >
-      <div className="flex flex-wrap items-center gap-2">
-        <H2 className="text-2xl">{statsText.statistics()}</H2>
-        <span className="-ml-2 flex-1" />
-        {pageLastUpdated !== undefined && (
-          <span>
-            {`${statsText.lastRefreshed()} `}
-            <DateElement date={pageLastUpdated} />
-          </span>
-        )}
-        <Button.Gray onClick={(): void => refreshPage()}>
-          {statsText.refresh()}
-        </Button.Gray>
-        {Object.values(layout).every((layouts) => layouts !== undefined) && (
-          <Button.Gray
-            onClick={(): void => {
-              const date = new Date();
-              const sourceIndex = activePage.isShared ? 0 : 1;
-              const pageIndex = activePage.pageIndex;
-              const statsTsv = statsToTsv(
-                layout,
-                activePage.isShared ? 0 : 1,
-                activePage.pageIndex
-              );
-              const sourceName = Object.keys(layout)[sourceIndex];
-              const pageName =
-                Object.values(layout)[sourceIndex]?.[pageIndex].label;
-              const fileName = `Specify 7 Statistics ${sourceName} ${
-                pageName ?? ''
-              } ${date.toDateString()} ${
-                date.toTimeString().split(' ')[0]
-              }.tsv`;
-              downloadFile(fileName, statsTsv).catch(softFail);
-            }}
-          >
-            {statsText.downloadAsTSV()}
-          </Button.Gray>
-        )}
-        {isEditing ? (
-          <>
-            {process.env.NODE_ENV === 'development' && (
+  return (
+    <ProtectedAction resource={'/querybuilder/query'} action={'execute'}>
+      {sharedLayout === undefined ? null : (
+        <Form
+          className={`${className.containerFullGray} md:overflow-y-none overflow-y-auto`}
+          onSubmit={(): void => {
+            setState({ type: 'DefaultState' });
+            Promise.all([
+              userPreferences.awaitSynced(),
+              collectionPreferences.awaitSynced(),
+            ]).catch(softFail);
+          }}
+        >
+          <div className="flex flex-wrap items-center gap-2">
+            <H2 className="text-2xl">{statsText.statistics()}</H2>
+            <span className="-ml-2 flex-1" />
+            {pageLastUpdated !== undefined && (
+              <span>
+                {`${statsText.lastRefreshed()} `}
+                <DateElement date={pageLastUpdated} />
+              </span>
+            )}
+            <Button.Gray onClick={(): void => refreshPage()}>
+              {statsText.refresh()}
+            </Button.Gray>
+            {Object.values(layout).every(
+              (layouts) => layouts !== undefined
+            ) && (
               <Button.Gray
                 onClick={(): void => {
-                  cleanMaybeFulfilled();
-                  handleSharedLayoutChange(undefined);
-                  handlePersonalLayoutChange(undefined);
-                  setCategoriesToFetch([]);
-                  setActivePage({ isShared: true, pageIndex: 0 });
+                  const date = new Date();
+                  const sourceIndex = activePage.isShared ? 0 : 1;
+                  const pageIndex = activePage.pageIndex;
+                  const statsTsv = statsToTsv(
+                    layout,
+                    activePage.isShared ? 0 : 1,
+                    activePage.pageIndex
+                  );
+                  const sourceName = Object.keys(layout)[sourceIndex];
+                  const pageName =
+                    Object.values(layout)[sourceIndex]?.[pageIndex].label;
+                  const fileName = `Specify 7 Statistics ${sourceName} ${
+                    pageName ?? ''
+                  } ${date.toDateString()} ${
+                    date.toTimeString().split(' ')[0]
+                  }.tsv`;
+                  downloadFile(fileName, statsTsv).catch(softFail);
                 }}
               >
-                {`${commonText.reset()} [DEV]`}
+                {statsText.downloadAsTSV()}
               </Button.Gray>
             )}
+            {isEditing ? (
+              <>
+                {process.env.NODE_ENV === 'development' && (
+                  <Button.Gray
+                    onClick={(): void => {
+                      cleanMaybeFulfilled();
+                      handleSharedLayoutChange(undefined);
+                      handlePersonalLayoutChange(undefined);
+                      setCategoriesToFetch([]);
+                      setActivePage({ isShared: true, pageIndex: 0 });
+                    }}
+                  >
+                    {`${commonText.reset()} [DEV]`}
+                  </Button.Gray>
+                )}
 
-            <Button.Gray
-              onClick={(): void => {
-                handleSharedLayoutChange(previousCollectionLayout.current);
-                handlePersonalLayoutChange(previousLayout.current);
-                setState({ type: 'DefaultState' });
-                setActivePage(({ isShared, pageIndex }) => {
-                  /*
-                   * Also handles cases where a new page is added and user clicks on cancel.
-                   * Shifts to the last page in the current group
-                   */
-                  const previousLayoutRef = isShared
-                    ? previousCollectionLayout
-                    : previousLayout;
-                  const newIndex = Math.min(
-                    pageIndex,
-                    previousLayoutRef.current.length - 1
-                  );
-                  return {
-                    isShared,
-                    pageIndex: newIndex,
-                  };
-                });
-              }}
-            >
-              {commonText.cancel()}
-            </Button.Gray>
-            <Submit.Gray>{commonText.save()}</Submit.Gray>
-          </>
-        ) : (
-          canEdit && (
-            <Button.Gray
-              onClick={(): void => {
-                setState({
-                  type: 'EditingState',
-                });
-                if (sharedLayout !== undefined)
-                  previousCollectionLayout.current = sharedLayout;
-                if (personalLayout !== undefined)
-                  previousLayout.current = personalLayout;
-              }}
-            >
-              {commonText.edit()}
-            </Button.Gray>
-          )
-        )}
-      </div>
-      <div className="flex flex-col md:overflow-hidden">
-        <div className="flex flex-col gap-2 overflow-y-hidden md:flex-row">
-          <aside
-            className={`
+                <Button.Gray
+                  onClick={(): void => {
+                    handleSharedLayoutChange(previousCollectionLayout.current);
+                    handlePersonalLayoutChange(previousLayout.current);
+                    setState({ type: 'DefaultState' });
+                    setActivePage(({ isShared, pageIndex }) => {
+                      /*
+                       * Also handles cases where a new page is added and user clicks on cancel.
+                       * Shifts to the last page in the current group
+                       */
+                      const previousLayoutRef = isShared
+                        ? previousCollectionLayout
+                        : previousLayout;
+                      const newIndex = Math.min(
+                        pageIndex,
+                        previousLayoutRef.current.length - 1
+                      );
+                      return {
+                        isShared,
+                        pageIndex: newIndex,
+                      };
+                    });
+                  }}
+                >
+                  {commonText.cancel()}
+                </Button.Gray>
+                <Submit.Gray>{commonText.save()}</Submit.Gray>
+              </>
+            ) : (
+              canEdit && (
+                <Button.Gray
+                  onClick={(): void => {
+                    setState({
+                      type: 'EditingState',
+                    });
+                    if (sharedLayout !== undefined)
+                      previousCollectionLayout.current = sharedLayout;
+                    if (personalLayout !== undefined)
+                      previousLayout.current = personalLayout;
+                  }}
+                >
+                  {commonText.edit()}
+                </Button.Gray>
+              )
+            )}
+          </div>
+          <div className="flex flex-col md:overflow-hidden">
+            <div className="flex flex-col gap-2 overflow-y-hidden md:flex-row">
+              <aside
+                className={`
                  top-0 flex min-w-fit flex-1 flex-col divide-y-4 !divide-[color:var(--form-background)]
                  md:sticky
               `}
-          >
-            <Ul className="flex flex-col gap-6">
-              {Object.entries(layout).map(
-                ([parentLayoutName, parentLayout], index) =>
-                  parentLayout === undefined ? undefined : (
-                    <li className="flex flex-col gap-2" key={index}>
-                      <div className="flex flex-1 gap-2">
-                        <H3 className="text-xl font-bold">
-                          {parentLayoutName}
-                        </H3>
-                        {isEditing && canEditIndex(index === 0) && (
-                          <div className="flex flex-1">
-                            <Button.Icon
-                              className={`max-w-fit ${className.grayButton}`}
-                              icon="plus"
-                              title={commonText.add()}
-                              onClick={(): void =>
-                                setState({
-                                  type: 'PageRenameState',
-                                  pageIndex: undefined,
-                                  isShared: index === 0,
-                                })
-                              }
-                            />
+              >
+                <Ul className="flex flex-col gap-6">
+                  {Object.entries(layout).map(
+                    ([parentLayoutName, parentLayout], index) =>
+                      parentLayout === undefined ? undefined : (
+                        <li className="flex flex-col gap-2" key={index}>
+                          <div className="flex flex-1 gap-2">
+                            <H3 className="text-xl font-bold">
+                              {parentLayoutName}
+                            </H3>
+                            {isEditing && canEditIndex(index === 0) && (
+                              <div className="flex flex-1">
+                                <Button.Icon
+                                  className={`max-w-fit ${className.grayButton}`}
+                                  icon="plus"
+                                  title={commonText.add()}
+                                  onClick={(): void =>
+                                    setState({
+                                      type: 'PageRenameState',
+                                      pageIndex: undefined,
+                                      isShared: index === 0,
+                                    })
+                                  }
+                                />
+                              </div>
+                            )}
                           </div>
-                        )}
-                      </div>
 
-                      <Ul className="flex flex-col gap-2">
-                        {parentLayout.map(({ label }, pageIndex) => (
-                          <li key={pageIndex}>
-                            <StatsAsideButton
-                              isCurrent={
-                                activePage.pageIndex === pageIndex &&
-                                activePage.isShared === (index === 0)
-                              }
-                              label={label}
-                              onClick={(): void =>
-                                setActivePage({
-                                  isShared: index === 0,
-                                  pageIndex,
-                                })
-                              }
-                              onRename={
-                                isEditing && canEditIndex(index === 0)
-                                  ? (): void =>
-                                      setState({
-                                        type: 'PageRenameState',
-                                        isShared: index === 0,
-                                        pageIndex,
-                                      })
-                                  : undefined
-                              }
-                            />
-                          </li>
-                        ))}
-                      </Ul>
-                    </li>
-                  )
+                          <Ul className="flex flex-col gap-2">
+                            {parentLayout.map(({ label }, pageIndex) => (
+                              <li key={pageIndex}>
+                                <StatsAsideButton
+                                  isCurrent={
+                                    activePage.pageIndex === pageIndex &&
+                                    activePage.isShared === (index === 0)
+                                  }
+                                  label={label}
+                                  onClick={(): void =>
+                                    setActivePage({
+                                      isShared: index === 0,
+                                      pageIndex,
+                                    })
+                                  }
+                                  onRename={
+                                    isEditing && canEditIndex(index === 0)
+                                      ? (): void =>
+                                          setState({
+                                            type: 'PageRenameState',
+                                            isShared: index === 0,
+                                            pageIndex,
+                                          })
+                                      : undefined
+                                  }
+                                />
+                              </li>
+                            ))}
+                          </Ul>
+                        </li>
+                      )
+                  )}
+                </Ul>
+              </aside>
+              {state.type === 'PageRenameState' && (
+                <StatsPageEditing
+                  label={
+                    typeof state.pageIndex === 'number'
+                      ? state.isShared
+                        ? sharedLayout[state.pageIndex].label
+                        : personalLayout?.[state.pageIndex].label
+                      : undefined
+                  }
+                  onAdd={
+                    typeof state.pageIndex === 'number'
+                      ? undefined
+                      : (label): void => {
+                          const targetSourceLayout = getSourceLayout(
+                            state.isShared
+                          );
+                          getSourceLayoutSetter(state.isShared)((layout) =>
+                            layout === undefined
+                              ? undefined
+                              : [
+                                  ...layout,
+                                  {
+                                    label,
+                                    categories: [],
+                                    lastUpdated: undefined,
+                                  },
+                                ]
+                          );
+                          setState({
+                            type: 'EditingState',
+                          });
+                          if (targetSourceLayout !== undefined) {
+                            setActivePage({
+                              pageIndex: targetSourceLayout.length,
+                              isShared: state.isShared,
+                            });
+                          }
+                        }
+                  }
+                  onClose={(): void => setState({ type: 'EditingState' })}
+                  onRemove={
+                    state.pageIndex === undefined ||
+                    (getSourceLayout(state.isShared) ?? []).length <= 1
+                      ? undefined
+                      : () => {
+                          const targetSourceLayout = getSourceLayout(
+                            state.isShared
+                          );
+                          if (
+                            targetSourceLayout !== undefined &&
+                            state.pageIndex !== undefined
+                          ) {
+                            getSourceLayoutSetter(state.isShared)((oldLayout) =>
+                              oldLayout === undefined
+                                ? undefined
+                                : removeItem(oldLayout, state.pageIndex!)
+                            );
+                            setState({
+                              type: 'EditingState',
+                            });
+                            setActivePage({
+                              pageIndex:
+                                activePage.isShared === state.isShared
+                                  ? getOffsetOne(
+                                      activePage.pageIndex,
+                                      state.pageIndex
+                                    )
+                                  : activePage.pageIndex,
+                              isShared: activePage.isShared,
+                            });
+                          }
+                        }
+                  }
+                  onRename={
+                    state.pageIndex === undefined
+                      ? undefined
+                      : (value) => {
+                          const targetSourceLayout = getSourceLayout(
+                            state.isShared
+                          );
+                          if (targetSourceLayout !== undefined) {
+                            getSourceLayoutSetter(state.isShared)((layout) =>
+                              layout === undefined ||
+                              state.pageIndex === undefined
+                                ? undefined
+                                : replaceItem(layout, state.pageIndex, {
+                                    ...layout[state.pageIndex],
+                                    label: value,
+                                  })
+                            );
+                          }
+                          setState({
+                            type: 'EditingState',
+                          });
+                        }
+                  }
+                />
               )}
-            </Ul>
-          </aside>
-          {state.type === 'PageRenameState' && (
-            <StatsPageEditing
-              label={
-                typeof state.pageIndex === 'number'
-                  ? state.isShared
-                    ? sharedLayout[state.pageIndex].label
-                    : personalLayout?.[state.pageIndex].label
-                  : undefined
-              }
-              onAdd={
-                typeof state.pageIndex === 'number'
-                  ? undefined
-                  : (label): void => {
-                      const targetSourceLayout = getSourceLayout(
-                        state.isShared
-                      );
-                      getSourceLayoutSetter(state.isShared)((layout) =>
-                        layout === undefined
-                          ? undefined
-                          : [
-                              ...layout,
-                              {
-                                label,
-                                categories: [],
-                                lastUpdated: undefined,
-                              },
-                            ]
-                      );
-                      setState({
-                        type: 'EditingState',
-                      });
-                      if (targetSourceLayout !== undefined) {
-                        setActivePage({
-                          pageIndex: targetSourceLayout.length,
-                          isShared: state.isShared,
-                        });
-                      }
-                    }
-              }
-              onClose={(): void => setState({ type: 'EditingState' })}
-              onRemove={
-                state.pageIndex === undefined ||
-                (getSourceLayout(state.isShared) ?? []).length <= 1
-                  ? undefined
-                  : () => {
-                      const targetSourceLayout = getSourceLayout(
-                        state.isShared
-                      );
-                      if (
-                        targetSourceLayout !== undefined &&
-                        state.pageIndex !== undefined
-                      ) {
-                        getSourceLayoutSetter(state.isShared)((oldLayout) =>
-                          oldLayout === undefined
-                            ? undefined
-                            : removeItem(oldLayout, state.pageIndex!)
-                        );
-                        setState({
-                          type: 'EditingState',
-                        });
-                        setActivePage({
-                          pageIndex:
-                            activePage.isShared === state.isShared
-                              ? getOffsetOne(
-                                  activePage.pageIndex,
-                                  state.pageIndex
-                                )
-                              : activePage.pageIndex,
-                          isShared: activePage.isShared,
-                        });
-                      }
-                    }
-              }
-              onRename={
-                state.pageIndex === undefined
-                  ? undefined
-                  : (value) => {
-                      const targetSourceLayout = getSourceLayout(
-                        state.isShared
-                      );
-                      if (targetSourceLayout !== undefined) {
-                        getSourceLayoutSetter(state.isShared)((layout) =>
-                          layout === undefined || state.pageIndex === undefined
-                            ? undefined
-                            : replaceItem(layout, state.pageIndex, {
-                                ...layout[state.pageIndex],
-                                label: value,
+              <div className="grid w-full grid-cols-[repeat(auto-fill,minmax(20rem,1fr))] gap-4 overflow-y-auto px-4 pb-6">
+                <Categories
+                  formatterSpec={formatterSpec}
+                  pageLayout={pageLayout}
+                  onAdd={
+                    isEditing && canEditIndex(activePage.isShared)
+                      ? (categoryindex): void =>
+                          typeof categoryindex === 'number'
+                            ? setState({
+                                type: 'AddingState',
+                                pageIndex: activePage.pageIndex,
+                                categoryIndex: categoryindex,
                               })
-                        );
-                      }
-                      setState({
-                        type: 'EditingState',
-                      });
-                    }
-              }
+                            : handleChange((oldCategory) => [
+                                ...oldCategory,
+                                {
+                                  label: '',
+                                  items: [],
+                                },
+                              ])
+                      : undefined
+                  }
+                  onCategoryRename={
+                    isEditing && canEditIndex(activePage.isShared)
+                      ? (newName, categoryIndex): void =>
+                          handleChange((oldCategory) =>
+                            replaceItem(oldCategory, categoryIndex, {
+                              ...oldCategory[categoryIndex],
+                              label: newName,
+                            })
+                          )
+                      : undefined
+                  }
+                  onClick={handleAdd}
+                  onEdit={
+                    isEditing
+                      ? undefined
+                      : (categoryIndex, itemIndex, querySpec): void =>
+                          handleChange((oldCategory) =>
+                            replaceItem(oldCategory, categoryIndex, {
+                              ...oldCategory[categoryIndex],
+                              items: replaceItem(
+                                oldCategory[categoryIndex].items,
+                                itemIndex,
+                                {
+                                  ...oldCategory[categoryIndex].items[
+                                    itemIndex
+                                  ],
+                                  ...(oldCategory[categoryIndex].items[
+                                    itemIndex
+                                  ].type === 'DefaultStat'
+                                    ? {}
+                                    : {
+                                        querySpec,
+                                        itemValue: undefined,
+                                      }),
+                                }
+                              ),
+                            })
+                          )
+                  }
+                  onLoad={handleLoad}
+                  onRemove={(categoryIndex, itemIndex): void =>
+                    handleChange((oldCategory) =>
+                      typeof itemIndex === 'number'
+                        ? replaceItem(oldCategory, categoryIndex, {
+                            ...oldCategory[categoryIndex],
+                            items: removeItem(
+                              oldCategory[categoryIndex].items,
+                              itemIndex
+                            ),
+                          })
+                        : removeItem(oldCategory, categoryIndex)
+                    )
+                  }
+                  onRename={
+                    isEditing && canEditIndex(activePage.isShared)
+                      ? (categoryIndex, itemIndex, newLabel): void =>
+                          handleChange((oldCategory) =>
+                            replaceItem(oldCategory, categoryIndex, {
+                              ...oldCategory[categoryIndex],
+                              items: replaceItem(
+                                oldCategory[categoryIndex].items,
+                                itemIndex,
+                                {
+                                  ...oldCategory[categoryIndex].items[
+                                    itemIndex
+                                  ],
+                                  label: newLabel,
+                                }
+                              ),
+                            })
+                          )
+                      : undefined
+                  }
+                />
+              </div>
+            </div>
+          </div>
+
+          {state.type === 'AddingState' && (
+            <AddStatDialog
+              defaultStatsAddLeft={defaultStatsAddLeft}
+              formatterSpec={formatterSpec}
+              queries={queries}
+              onAdd={(item, itemIndex): void => {
+                handleAdd(item, state.categoryIndex, itemIndex);
+              }}
+              onClose={(): void => {
+                setState({
+                  type: 'EditingState',
+                });
+                setDefaultLayout((layout) =>
+                  layout === undefined
+                    ? undefined
+                    : layout.map(({ label, categories, lastUpdated }) => ({
+                        label,
+                        categories: categories.map(({ label, items }) => ({
+                          label,
+                          items: items?.map((item) =>
+                            item.type === 'DefaultStat'
+                              ? (removeKey(item, 'isVisible') as DefaultStat)
+                              : item
+                          ),
+                        })),
+                        lastUpdated,
+                      }))
+                );
+              }}
+              onInitialLoad={() => setDefaultCategoriesToFetch(allCategories)}
+              onLoad={handleDefaultLoad}
             />
           )}
-          <div className="grid w-full grid-cols-[repeat(auto-fill,minmax(20rem,1fr))] gap-4 overflow-y-auto px-4 pb-6">
-            <Categories
-              formatterSpec={formatterSpec}
-              pageLayout={pageLayout}
-              onAdd={
-                isEditing && canEditIndex(activePage.isShared)
-                  ? (categoryindex): void =>
-                      typeof categoryindex === 'number'
-                        ? setState({
-                            type: 'AddingState',
-                            pageIndex: activePage.pageIndex,
-                            categoryIndex: categoryindex,
-                          })
-                        : handleChange((oldCategory) => [
-                            ...oldCategory,
-                            {
-                              label: '',
-                              items: [],
-                            },
-                          ])
-                  : undefined
-              }
-              onCategoryRename={
-                isEditing && canEditIndex(activePage.isShared)
-                  ? (newName, categoryIndex): void =>
-                      handleChange((oldCategory) =>
-                        replaceItem(oldCategory, categoryIndex, {
-                          ...oldCategory[categoryIndex],
-                          label: newName,
-                        })
-                      )
-                  : undefined
-              }
-              onClick={handleAdd}
-              onEdit={
-                isEditing
-                  ? undefined
-                  : (categoryIndex, itemIndex, querySpec): void =>
-                      handleChange((oldCategory) =>
-                        replaceItem(oldCategory, categoryIndex, {
-                          ...oldCategory[categoryIndex],
-                          items: replaceItem(
-                            oldCategory[categoryIndex].items,
-                            itemIndex,
-                            {
-                              ...oldCategory[categoryIndex].items[itemIndex],
-                              ...(oldCategory[categoryIndex].items[itemIndex]
-                                .type === 'DefaultStat'
-                                ? {}
-                                : {
-                                    querySpec,
-                                    itemValue: undefined,
-                                  }),
-                            }
-                          ),
-                        })
-                      )
-              }
-              onLoad={handleLoad}
-              onRemove={(categoryIndex, itemIndex): void =>
-                handleChange((oldCategory) =>
-                  typeof itemIndex === 'number'
-                    ? replaceItem(oldCategory, categoryIndex, {
-                        ...oldCategory[categoryIndex],
-                        items: removeItem(
-                          oldCategory[categoryIndex].items,
-                          itemIndex
-                        ),
-                      })
-                    : removeItem(oldCategory, categoryIndex)
-                )
-              }
-              onRename={
-                isEditing && canEditIndex(activePage.isShared)
-                  ? (categoryIndex, itemIndex, newLabel): void =>
-                      handleChange((oldCategory) =>
-                        replaceItem(oldCategory, categoryIndex, {
-                          ...oldCategory[categoryIndex],
-                          items: replaceItem(
-                            oldCategory[categoryIndex].items,
-                            itemIndex,
-                            {
-                              ...oldCategory[categoryIndex].items[itemIndex],
-                              label: newLabel,
-                            }
-                          ),
-                        })
-                      )
-                  : undefined
-              }
-            />
-          </div>
-        </div>
-      </div>
-
-      {state.type === 'AddingState' && (
-        <AddStatDialog
-          defaultStatsAddLeft={defaultStatsAddLeft}
-          formatterSpec={formatterSpec}
-          queries={queries}
-          onAdd={(item, itemIndex): void => {
-            handleAdd(item, state.categoryIndex, itemIndex);
-          }}
-          onClose={(): void => {
-            setState({
-              type: 'EditingState',
-            });
-            setDefaultLayout((layout) =>
-              layout === undefined
-                ? undefined
-                : layout.map(({ label, categories, lastUpdated }) => ({
-                    label,
-                    categories: categories.map(({ label, items }) => ({
-                      label,
-                      items: items?.map((item) =>
-                        item.type === 'DefaultStat'
-                          ? (removeKey(item, 'isVisible') as DefaultStat)
-                          : item
-                      ),
-                    })),
-                    lastUpdated,
-                  }))
-            );
-          }}
-          onInitialLoad={() => setDefaultCategoriesToFetch(allCategories)}
-          onLoad={handleDefaultLoad}
-        />
-      )}
-    </Form>
+        </Form>
+      )}{' '}
+    </ProtectedAction>
   );
 }

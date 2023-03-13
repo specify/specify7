@@ -106,6 +106,7 @@ const rawMenuItems = ensure<IR<Omit<MenuItem, 'name'>>>()({
     url: '/specify/statistics/',
     title: statsText.statistics(),
     icon: icons.chartBar,
+    enabled: () => hasPermission('/querybuilder/query', 'execute'),
   },
 } as const);
 
