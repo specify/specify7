@@ -1,11 +1,11 @@
 import type { Input } from '../../components/DataModel/saveBlockers';
 import { hasNativeErrors } from '../../components/Forms/validationHelpers';
 import { formsText } from '../../localization/forms';
+import { syncFieldFormat } from '../fieldFormat';
+import { f } from '../functools';
 import { mappedFind } from '../utils';
 import type { Parser } from './definitions';
 import { resolveParser } from './definitions';
-import { f } from '../functools';
-import { syncFieldFormat } from '../fieldFormat';
 
 export type ValidParseResult = {
   readonly value: string;

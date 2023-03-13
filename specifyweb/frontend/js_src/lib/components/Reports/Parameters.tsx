@@ -82,6 +82,7 @@ export function QueryParametersDialog({
           <Submit.Blue form={id('form')}>{reportsText.runReport()}</Submit.Blue>
         </>
       }
+      dimensionsKey="ReportParameters"
       header={query.name ?? reportsText.reports()}
       icon={<span className="text-blue-500">{icons.documentReport}</span>}
       onClose={handleClose}

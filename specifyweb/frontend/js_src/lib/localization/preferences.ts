@@ -230,7 +230,7 @@ export const preferencesText = createDictionary({
     'en-us': 'Field background',
     'ru-ru': 'Фон поля',
     'es-es': 'Fondo de campo',
-    'fr-fr': 'Fond de champ',
+    'fr-fr': 'Fond de terrain',
     'uk-ua': 'Поле фону',
   },
   disabledFieldBackground: {
@@ -1375,12 +1375,33 @@ export const preferencesText = createDictionary({
     `,
     'ru-ru': `
       Показывать «*» в заголовке вкладки, если на текущей вкладке есть
-      несохраненные изменения.
+      несохраненные изменения
     `,
     'uk-ua': `
       Показувати «*» у заголовку вкладки, якщо в поточній вкладці є незбережені
       зміни
     `,
+  },
+  rememberDialogSizes: {
+    'en-us': 'Remember dialog window sizes',
+    'ru-ru': 'Запоминать размеры диалоговых окон',
+    'es-es': 'Recuerde los tamaños de las ventanas de diálogo',
+    'fr-fr': 'Se souvenir des tailles des fenêtres de dialogue',
+    'uk-ua': 'Запам’ятовувати розміри діалогових вікон',
+  },
+  rememberDialogPositions: {
+    'en-us': 'Remember dialog window positions',
+    'ru-ru': 'Запоминать позиции диалоговых окон',
+    'es-es': 'Recuerde las posiciones de las ventanas de diálogo',
+    'fr-fr': 'Se souvenir des positions des fenêtres de dialogue',
+    'uk-ua': 'Запам’ятовувати позиції діалогових вікон',
+  },
+  autoPlayMedia: {
+    'en-us': 'Automatically play media',
+    'ru-ru': 'Автоматически воспроизводить медиа',
+    'es-es': 'Reproducir automáticamente medios',
+    'fr-fr': 'Lecture automatique des médias',
+    'uk-ua': 'Автоматично відтворювати медіа',
   },
   useCustomTooltips: {
     'en-us': 'Use modern tooltips',

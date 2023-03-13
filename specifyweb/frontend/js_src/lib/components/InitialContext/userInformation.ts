@@ -35,10 +35,14 @@ export const fetchContext = load<
       userInfo[key as keyof UserInformation] = value;
     });
     await import('../DataModel/schema').then(
-      ({ fetchContext }) => fetchContext
+      async ({ fetchContext }) => fetchContext
+    );
+    await import('../DataModel/schemaBase').then(
+      async ({ fetchContext }) => fetchContext
     );
     userInfo.availableCollections = availableCollections.map(serializeResource);
     setDevelopmentGlobal('_user', userInfo);
+    return userInfo;
   }
 );
 

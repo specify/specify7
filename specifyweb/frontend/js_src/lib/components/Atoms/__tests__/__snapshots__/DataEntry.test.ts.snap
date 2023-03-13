@@ -194,7 +194,7 @@ exports[`DataEntry.Cell invisible 1`] = `
 exports[`DataEntry.Footer renders without errors 1`] = `
 <DocumentFragment>
   <div
-    class="border-brand-300 border-t-2 flex print:hidden pt-2 gap-2"
+    class="border-brand-300 border-t-2 flex print:hidden pt-2 gap-2 flex-wrap justify-center flex-col md:flex-row"
     role="toolbar"
   >
     Test
@@ -216,7 +216,7 @@ exports[`DataEntry.Grid renders without errors 1`] = `
 exports[`DataEntry.Header renders without errors 1`] = `
 <DocumentFragment>
   <header
-    class="border-b-2 border-brand-300 flex items-center pb-2 gap-4"
+    class="border-b-2 border-brand-300 flex items-center pb-2 gap-2 md:gap-4 md:justify-between flex-col md:flex-row"
   >
     Test
   </header>
@@ -270,12 +270,12 @@ exports[`DataEntry.visit no resource 1`] = `<DocumentFragment />`;
 exports[`DataEntry.visit no resource 2`] = `
 <DocumentFragment>
   <a
-    aria-label="Visit"
+    aria-label="Open in New Tab"
     class="link !text-blue-700 print:hidden "
     href="RESOURCE_VIEW_URL"
     rel="noopener"
     target="_blank"
-    title="Visit"
+    title="Open in New Tab"
   >
     <span
       title="(opens in a new tab)"

@@ -15,7 +15,7 @@ import { FormField } from '../FormFields';
 import type { FormMode, FormType } from '../FormParse';
 import { fetchView, resolveViewDefinition } from '../FormParse';
 import type { cellAlign, CellTypes } from '../FormParse/cells';
-import { RenderForm } from '../Forms/SpecifyForm';
+import { SpecifyForm } from '../Forms/SpecifyForm';
 import { SubView } from '../Forms/SubView';
 import { TableIcon } from '../Molecules/TableIcon';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
@@ -191,16 +191,21 @@ const cellRenderers: {
       );
   },
   Panel({ mode, formType, resource, cellData: { display, ...cellData } }) {
+    const viewDefinition = React.useMemo(
+      () => ({
+        ...cellData,
+        mode,
+        name: 'panel',
+        formType,
+        model: resource.specifyModel,
+      }),
+      [cellData, mode, formType, resource.specifyModel]
+    );
     const form = (
-      <RenderForm
+      <SpecifyForm
         display={display}
         resource={resource}
-        viewDefinition={{
-          ...cellData,
-          mode,
-          formType,
-          model: resource.specifyModel,
-        }}
+        viewDefinition={viewDefinition}
       />
     );
     return display === 'inline' ? <div className="mx-auto">{form}</div> : form;

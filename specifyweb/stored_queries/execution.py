@@ -4,28 +4,23 @@ import logging
 import os
 import re
 import xml.dom.minidom
-
 from collections import namedtuple, defaultdict
 from datetime import datetime
 from functools import reduce
 
 from django.conf import settings
-from sqlalchemy.sql.expression import asc, desc, insert, literal
-from sqlalchemy import sql, orm
 from django.db import transaction
-from django.db.models import F
-
-
-from ..specify.models import Collection, Loan, Loanpreparation, Loanreturnpreparation
-from ..specify.auditlog import auditlog
+from sqlalchemy import sql, orm
+from sqlalchemy.sql.expression import asc, desc, insert, literal
 
 from . import models
 from .format import ObjectFormatter
 from .query_construct import QueryConstruct
 from .queryfield import QueryField
 from ..notifications.models import Message
-from ..specify.models import Collection
 from ..permissions.permissions import check_table_permissions
+from ..specify.auditlog import auditlog
+from ..specify.models import Loan, Loanpreparation, Loanreturnpreparation
 
 logger = logging.getLogger(__name__)
 
@@ -135,7 +130,7 @@ def do_export(spquery, collection, user, filename, exporttype, host):
                          distinct=spquery['selectdistinct'], delimiter=spquery['delimiter'],)
         elif exporttype == 'kml':
             query_to_kml(session, collection, user, tableid, field_specs, path, spquery['captions'], host,
-                         recordsetid=recordsetid, add_header=True, strip_id=False)
+                         recordsetid=recordsetid, strip_id=False)
             message_type = 'query-export-to-kml-complete'
 
     Message.objects.create(user=user, content=json.dumps({
@@ -160,7 +155,7 @@ def stored_query_to_csv(query_id, collection, user, path):
 
 def query_to_csv(session, collection, user, tableid, field_specs, path,
                  recordsetid=None, captions=False, strip_id=False, row_filter=None,
-                 distinct=False, delimiter='\t'):
+                 distinct=False, delimiter=','):
     """Build a sqlalchemy query using the QueryField objects given by
     field_specs and send the results to a CSV file at the given
     file path.

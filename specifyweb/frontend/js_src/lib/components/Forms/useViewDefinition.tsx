@@ -7,7 +7,7 @@ import type { SpecifyModel } from '../DataModel/specifyModel';
 import { softFail } from '../Errors/Crash';
 import type { FormMode, FormType, ViewDescription } from '../FormParse';
 import { fetchView, parseViewDefinition } from '../FormParse';
-import { webOnlyViews } from '../FormParse/webOnlyViews';
+import { attachmentView, webOnlyViews } from '../FormParse/webOnlyViews';
 import { usePref } from '../UserPreferences/usePref';
 import { autoGenerateViewDefinition } from './generateFormDefinition';
 
@@ -43,22 +43,24 @@ export function useViewDefinition({
   const [viewDefinition] = useAsyncState<ViewDescription>(
     React.useCallback(async () => {
       if (model === undefined) return undefined;
-      else if (viewName === 'ObjectAttachment')
+      else if (viewName === attachmentView)
         return {
-          ...webOnlyViews().ObjectAttachment,
+          ...webOnlyViews()[attachmentView],
           model,
+          name: attachmentView,
           formType,
           mode,
         };
       else if (useGeneratedForm)
         return autoGenerateViewDefinition(model, formType, mode);
-      const resolvedViewName = viewName ?? model.view;
+      const resolvedViewName = viewName || model.view;
       return fetchViewDefinition(resolvedViewName, model, formType, mode)
         .then(
           (definition) =>
             definition ??
             (typeof fallbackViewName === 'string' &&
-            fallbackViewName !== resolvedViewName
+            fallbackViewName !== resolvedViewName &&
+            fallbackViewName !== attachmentView
               ? fetchViewDefinition(fallbackViewName, model, formType, mode)
               : undefined)
         )
@@ -94,13 +96,19 @@ const fetchViewDefinition = async (
           softFail(
             new Error('View definition model does not match resource model')
           );
-        return viewDefinition;
+        return viewName === originalAttachmentsView
+          ? {
+              ...viewDefinition,
+              name: originalAttachmentsView,
+            }
+          : viewDefinition;
       } else
         return f.maybe(
           webOnlyViews()[viewName as keyof typeof webOnlyViews],
           ({ columns, rows }) => ({
             columns,
             rows,
+            name: '',
             formType,
             mode,
             model,
