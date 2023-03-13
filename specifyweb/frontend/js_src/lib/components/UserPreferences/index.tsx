@@ -82,8 +82,8 @@ function Preferences(): JSX.Element {
         >
           <PreferencesAside
             activeCategory={visibleChild}
-            setActiveCategory={setVisibleChild}
             references={references}
+            setActiveCategory={setVisibleChild}
           />
           <PreferencesContent forwardRefs={forwardRefs} isReadOnly={false} />
           <span className="flex-1" />
