@@ -320,6 +320,11 @@ class BoundTreeRecord(NamedTuple):
                 treeInfo=TreeInfo(tdiwpr.treedefitem.name, attrs.get('name', ""))
             )
 
+            # TODO: Create a more scaleable solution for setting
+            # default values for fields
+            if 'isaccepted' not in attrs:
+                attrs['isaccepted'] = True
+
             with transaction.atomic():
                 try:
                     obj = self._do_insert(
@@ -329,7 +334,6 @@ class BoundTreeRecord(NamedTuple):
                         rankid=tdiwpr.treedefitem.rankid,
                         definition=self.treedef,
                         parent_id=parent_info and parent_info['id'],
-                        isaccepted=True,
                         **attrs,
                     )
                 except (BusinessRuleException, IntegrityError) as e:
