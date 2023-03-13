@@ -56,6 +56,8 @@ function getGlobalAllResources(resources: AppResources): {
     globalDirectories.push(
       addMissingFields('SpAppResourceDir', {
         userType: 'Common',
+        collection: undefined,
+        discipline: undefined,
       })
     );
   /**
@@ -158,6 +160,7 @@ export const getScopedAppResources = (
       directories[0] ??
       addMissingFields('SpAppResourceDir', {
         discipline: discipline.resource_uri,
+        collection: undefined,
       });
     return {
       label: (discipline.name as LocalizedString) ?? '',

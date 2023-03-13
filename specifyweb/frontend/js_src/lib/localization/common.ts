@@ -261,6 +261,14 @@ export const commonText = createDictionary({
     'fr-fr': "(s'ouvre dans un nouvel onglet)",
     'uk-ua': '(відкривається в новій вкладці)',
   },
+  openInNewTab: {
+    comment: 'Used in a button that opens a link in a new tab',
+    'en-us': 'Open in New Tab',
+    'ru-ru': 'Открыть в новой вкладке',
+    'es-es': 'Abrir en una nueva pestaña',
+    'fr-fr': 'Ouvrir dans un nouvel onglet',
+    'uk-ua': 'Відкрити в новій вкладці',
+  },
   goToHomepage: {
     'en-us': 'Go to Home Page',
     'ru-ru': 'Вернуться на Домашнюю Страницу',
@@ -584,7 +592,7 @@ export const commonText = createDictionary({
     'en-us': 'online',
     'es-es': 'conectado',
     'fr-fr': 'en ligne',
-    'ru-ru': 'онлайн',
+    'ru-ru': 'В сети',
     'uk-ua': 'онлайн',
   },
   offline: {
@@ -596,5 +604,12 @@ export const commonText = createDictionary({
   },
   bulkSelect: {
     'en-us': 'Bulk Select',
+  },
+  timeRemaining: {
+    'en-us': 'Time remaining',
+    'es-es': 'Tiempo restante',
+    'fr-fr': 'Temps restant',
+    'ru-ru': 'Времени осталось',
+    'uk-ua': 'Час, що залишився',
   },
 } as const);

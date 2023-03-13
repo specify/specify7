@@ -17,6 +17,13 @@ function entrypoint(): void {
   interceptLogs();
 
   console.group('Specify App Starting');
+  if (process.env.NODE_ENV === 'production') {
+    console.log(
+      '%cDocumentation for Developers:\n',
+      'font-weight: bold',
+      'https://github.com/specify/specify7/wiki/Docker-Workflow-for-Development'
+    );
+  }
   const entrypointName =
     parseDjangoDump<ReturnType<typeof getEntrypointName>>('entrypoint-name') ??
     'main';

@@ -20,7 +20,7 @@ import { FormMeta } from '../FormMeta';
 import type { FormMode } from '../FormParse';
 import type { FormCellDefinition, SubViewSortField } from '../FormParse/cells';
 import { SearchDialog } from '../Forms/SearchDialog';
-import { RenderForm } from '../Forms/SpecifyForm';
+import { SpecifyForm } from '../Forms/SpecifyForm';
 import { useViewDefinition } from '../Forms/useViewDefinition';
 import { loadingGif } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
@@ -73,7 +73,7 @@ export function FormTable<SCHEMA extends AnySchema>({
   readonly onAdd:
     | ((resources: RA<SpecifyResource<SCHEMA>>) => void)
     | undefined;
-  readonly onDelete: (resource: SpecifyResource<SCHEMA>) => void;
+  readonly onDelete: ((resource: SpecifyResource<SCHEMA>) => void) | undefined;
   readonly mode: FormMode;
   readonly viewName?: string;
   readonly dialog: 'modal' | 'nonModal' | false;
@@ -173,7 +173,8 @@ export function FormTable<SCHEMA extends AnySchema>({
     'definition',
     'flexibleSubGridColumnWidth'
   );
-  const displayDeleteButton = mode !== 'view';
+  const displayDeleteButton =
+    mode !== 'view' && typeof handleDelete === 'function';
   const displayViewButton = !isDependent;
   const headerIsVisible =
     resources.length !== 1 || !isExpanded[resources[0].cid];
@@ -287,7 +288,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                         tabIndex={-1}
                         visible
                       >
-                        <RenderForm
+                        <SpecifyForm
                           display="inline"
                           resource={resource}
                           viewDefinition={fullViewDefinition}
@@ -437,6 +438,7 @@ export function FormTable<SCHEMA extends AnySchema>({
   ) : (
     <Dialog
       buttons={commonText.close()}
+      dimensionsKey={relationship.name}
       header={header}
       headerButtons={addButton}
       modal={dialog === 'modal'}

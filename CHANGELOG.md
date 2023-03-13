@@ -1,19 +1,112 @@
+
 # Changelog
+
+  
 
 All notable changes to this project will be documented in this file.
 
+  
+
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+
+  
 
 ## Unreleased
 
+  
+
 Coming in the next few months:
 
+  
+
 - [Duplicate record merging tool](https://discourse.specifysoftware.org/t/record-merging-in-specify-7/939/9)
+
 - [Statistics page](https://discourse.specifysoftware.org/t/statistics-panel-for-specify-7/828)
+
 - [User Interface for editing Data Object Formatters and other XML resources](https://github.com/specify/specify7/pull/2796)
+
 - [And a lot more features](https://github.com/specify/specify7/pulls)
 
-## [7.8.7](https://github.com/specify/specify7/compare/v7.8.6...HEAD) (Unreleased)
+## [7.8.9](https://github.com/specify/specify7/compare/v7.8.7...HEAD) (Unreleased)
+
+## [7.8.7.1](https://github.com/specify/specify7/compare/v7.8.7...v7.8.7.1) (March 3 2023)
+
+### Fixed
+
+- Resolved an issue with plugins being rendered as read-only ([#3076](https://github.com/specify/specify7/issues/3076))
+- "Year" in the date picker now requires the correct format ([#3075](https://github.com/specify/specify7/issues/3075))
+
+## [7.8.7](https://github.com/specify/specify7/compare/v7.8.6...v7.8.7) (March 1 2023)
+
+### Added
+
+- Attachments now have a dynamic preview when viewed that includes the ability
+  to download, open in a new tab, or view the record the attachment is
+  associated with. This new implementation now uses the form associated with the
+  attachment
+  table to allow setting defaults in the form definition (useful for `isPublic`
+  or `License`
+  information) ([#2787](https://github.com/specify/specify7/issues/2787)) –
+  *Requested by Gothenburg and others*
+- Date fields can now be directly pasted into and relative date input is now
+  accepted ([#2845](https://github.com/specify/specify7/issues/2845))
+  - Relative dates can be entered by double clicking on a date field and then typing
+    `today - 5 days` or a similar input with plus or minus the count of days,
+    weeks, months, or years
+- External image URLs can now be used for buttons or separator icons on the
+  forms ([#3032](https://github.com/specify/specify7/issues/2095))
+- The query export delimiter can now be
+  configured ([#2849](https://github.com/specify/specify7/issues/2849)) –
+  *Requested By Natural History Museums of Denmark*
+- Time remaining for WorkBench validation and uploading is now
+  shown ([#3058](https://github.com/specify/specify7/pull/3058)) - *Requested by
+  CSIRO*
+- Added a `CITATION.tff` file to allow users and researchers to cite Specify
+  when publishing or referencing the
+  software ([#3067](https://github.com/specify/specify7/pull/3067))
+- The Specify data model can now be downloaded as
+  XML ([#2594](https://github.com/specify/specify7/issues/2594))
+- The Specify data model can now be
+  printed ([#2988](https://github.com/specify/specify7/issues/2988))
+
+
+### Changed
+
+- Dialogs now remember their position when resized
+  ([#2691](https://github.com/specify/specify7/commit/1b5e1863c397387bf9ecb83cd660de0f48ee6ecb))
+- Strict mode for regular expressions is no longer enforced for user-submitted
+  regex ([#3042](https://github.com/specify/specify7/pull/3042)) - *Reported by
+  CSIRO*
+- The max year accepted in any date field is now limited to
+  9999 ([#3036](https://github.com/specify/specify7/pull/3036)) – *Reported by
+  Agriculture and Agri-Food Canada*
+- Non-docker installation instructions have been
+  improved ([#3043](https://github.com/specify/specify7/pull/3043)) – *Requested
+  by University of Florida*
+- A WorkBench row with all matched records will no longer be highlighted as a
+  new record ([#2966](https://github.com/specify/specify7/issues/2966))
+
+### Fixed
+
+- Fixed the inability to create new agents from the query combobox in the
+  Security & Accounts
+  panel ([#2696](https://github.com/specify/specify7/issues/2696)) – *Reported
+  By SAIAB, Natural History Museums of Denmark, and others*
+- Collectors are now sorted by `orderNumber` instead of `CollectorID`, matching
+  the Specify 6
+  behavior ([#2981](https://github.com/specify/specify7/issues/2981)) –
+  *Reported by Agriculture and Agri-Food Canada*
+- Paleo Context and other -to-one resources are now correctly stored upon
+  save ([#2785](https://github.com/specify/specify7/issues/2785)) - *Reported by
+  KU, The Ohio State University, and others*
+- Resolved unexpected behavior regarding tooltips introduced in the previous
+  release. Tooltips now trigger and dismiss as
+  expected ([#3060](https://github.com/specify/specify7/pull/3060))
+- Query combo boxes are now enabled for all tables even when type search is not
+  defined ([#3047](https://github.com/specify/specify7/issues/3047))
+- Queries exported from one user and imported on another user's account no
+  longer duplicates the import on both
+  accounts ([#3020](https://github.com/specify/specify7/issues/3020))
 
 ## [7.8.6](https://github.com/specify/specify7/compare/v7.8.5...v7.8.6) (February 22 2023)
 
@@ -858,3 +951,4 @@ of Paleomap for Specify.
 ## [7.0.0](https://github.com/specify/specify7/commits/v7.0.0) (22 December 2014)
 
 [Bug fixes and new features](https://github.com/specify/specify7/commits/v7.0.0)
+

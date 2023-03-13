@@ -394,6 +394,20 @@ export const preferenceDefinitions = {
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
+          rememberPosition: defineItem<boolean>({
+            title: preferencesText.rememberDialogPositions(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
+          rememberSize: defineItem<boolean>({
+            title: preferencesText.rememberDialogSizes(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
         },
       },
       behavior: {
@@ -1105,6 +1119,23 @@ export const preferenceDefinitions = {
       },
     },
   },
+  attachments: {
+    title: attachmentsText.attachments(),
+    subCategories: {
+      behavior: {
+        title: preferencesText.behavior(),
+        items: {
+          autoPlay: defineItem<boolean>({
+            title: preferencesText.autoPlayMedia(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+        },
+      },
+    },
+  },
   treeEditor: {
     title: preferencesText.treeEditor(),
     subCategories: {
@@ -1330,7 +1361,7 @@ export const preferenceDefinitions = {
             title: preferencesText.exportFileDelimiter(),
             requiresReload: false,
             visible: true,
-            defaultValue: '\t',
+            defaultValue: ',',
             values: [
               {
                 value: ',',

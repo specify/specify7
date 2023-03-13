@@ -281,7 +281,7 @@ export const queryText = createDictionary({
     'ru-ru': 'Сделать {recordSetTable:string}',
     'es-es': 'Crear {recordSetTable:string}',
     'fr-fr': 'Créer un {recordSetTable:string}',
-    'uk-ua': 'Створити {recordSetTable:string}',
+    'uk-ua': 'Створити {modelName:string}',
   },
   saveAs: {
     'en-us': 'Save As',

@@ -52,8 +52,10 @@ export type Parser = Partial<{
   readonly type: 'checkbox' | 'date' | 'number' | 'text';
   readonly minLength: number;
   readonly maxLength: number;
-  readonly min: number;
-  readonly max: number;
+  // Number, or a string date in yyyy-mm-dd format
+  readonly min: number | string;
+  // Number, or a string date in yyyy-mm-dd format
+  readonly max: number | string;
   readonly step: number;
   readonly placeholder: string;
   readonly pattern: RegExp;
@@ -166,7 +168,8 @@ export const parsers = f.store(
     'java.sql.Timestamp': {
       type: 'date',
       minLength: fullDateFormat().length,
-      maxLength: fullDateFormat().length,
+      // FEATURE: allow customizing this in global prefs
+      max: '9999-12-31',
       formatters: [
         formatter.toLowerCase,
         stringGuard((value) =>
@@ -287,12 +290,30 @@ export function mergeParsers(base: Parser, extra: Parser): Parser {
       ...concat
         .map((key) => [key, [...(base[key] ?? []), ...(extra[key] ?? [])]])
         .filter(([_key, value]) => value.length > 0),
-      ...takeMin.map((key) => [key, f.min(base[key], extra[key])]),
+      ...takeMin.map((key) => [key, resolveDate(base[key], extra[key], true)]),
       ...takeMax
-        .map((key) => [key, Math.max(...filterArray([base[key], extra[key]]))])
+        .map((key) => [key, resolveDate(base[key], extra[key], false)])
         .filter(([_key, value]) => Number.isFinite(value)),
     ].filter(([_key, value]) => value !== undefined)
   );
+}
+
+function resolveDate(
+  left: number | string | undefined,
+  right: number | string | undefined,
+  takeMin: boolean
+): number | string | undefined {
+  const values = filterArray([left, right]);
+  if (typeof values[0] === 'string') {
+    if (values.length === 1) return values[0];
+    const leftDate = new Date(values[0]);
+    const rightDate = new Date(values[1]);
+    return leftDate.getTime() < rightDate.getTime() === takeMin
+      ? values[0]
+      : values[1];
+  }
+  const callback = takeMin ? f.min : f.max;
+  return callback(...(values as RA<number | undefined>));
 }
 
 export function formatterToParser(
@@ -319,7 +340,9 @@ export function formatterToParser(
     autoNumberingFields?.includes(field.name ?? '') !== false;
 
   return {
-    pattern: regExpString === null ? undefined : new RegExp(regExpString, 'u'),
+    // Regex may be coming from the user, thus disable strict mode
+    // eslint-disable-next-line require-unicode-regexp
+    pattern: regExpString === null ? undefined : new RegExp(regExpString),
     title,
     formatters: [stringGuard(formatter.parse.bind(formatter))],
     validators: [
@@ -385,6 +408,7 @@ export function pluralizeParser(rawParser: Parser): Parser {
 
 // FEATURE: allow customizing this
 const separator = ',';
+
 /** Modify a regex pattern to allow a comma separate list of values */
 export function pluralizeRegex(regex: RegExp): RegExp {
   const pattern = browserifyRegex(regex);

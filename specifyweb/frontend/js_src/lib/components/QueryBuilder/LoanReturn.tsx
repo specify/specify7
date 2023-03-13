@@ -34,7 +34,7 @@ import type {
   SpQuery,
   SpQueryField,
 } from '../DataModel/types';
-import { RenderForm } from '../Forms/SpecifyForm';
+import { SpecifyForm } from '../Forms/SpecifyForm';
 import { userInformation } from '../InitialContext/userInformation';
 import { loanReturnPrepForm } from '../Interactions/PrepReturnDialog';
 import { Dialog } from '../Molecules/Dialog';
@@ -185,7 +185,7 @@ export function QueryLoanReturn({
                 )
               }
             >
-              <RenderForm
+              <SpecifyForm
                 display="block"
                 resource={state.loanReturnPreparation}
                 viewDefinition={loanReturnPrepForm()}
