@@ -17,7 +17,7 @@ function entrypoint(): void {
   interceptLogs();
 
   console.group('Specify App Starting');
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV === 'production') {
     console.log(
       '%cDocumentation for Developers:\n',
       'font-weight: bold',
