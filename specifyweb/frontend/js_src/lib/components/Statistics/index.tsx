@@ -328,6 +328,7 @@ export function StatsPage(): JSX.Element | null {
     if (timeDiffMillSecond < 0) return;
     const timeDiffMinute = Math.floor(timeDiffMillSecond / (MILLISECONDS * 60));
     if (timeDiffMinute >= TIME_DIFF_MINUTE) {
+      cleanMaybeFulfilled();
       setCurrentLayout((layout) =>
         layout === undefined
           ? undefined

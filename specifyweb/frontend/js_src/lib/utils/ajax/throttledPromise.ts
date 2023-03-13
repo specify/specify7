@@ -19,7 +19,7 @@ export const networkRequestsSpec: RR<
   }
 > = {
   queryStats: {
-    maxFetchCount: 10,
+    maxFetchCount: 5,
     currentRequests: currentRequestsGenerator<number | string | undefined>(),
   },
   backendStats: {
