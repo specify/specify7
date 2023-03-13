@@ -405,17 +405,17 @@ msgstr "Tipo de celda no compatible"
 msgid "additionalResultsOmitted"
 msgstr "Resultados adicionales omitidos"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:264
+#: components/FormSliders/RecordSelectorFromIds.tsx:271
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "recordSelectorUnloadProtect"
 msgstr "¿Continuar sin guardar?"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:267
+#: components/FormSliders/RecordSelectorFromIds.tsx:274
 #. 🟥When in record set and current record is unsaved and try to navigate to another record. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "recordSelectorUnloadProtectDescription"
 msgstr "Es posible que desee guardar este registro antes de navegar."
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:219
+#: components/FormSliders/RecordSelectorFromIds.tsx:223
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "creatingNewRecord"
 msgstr "Creando nuevo registro"

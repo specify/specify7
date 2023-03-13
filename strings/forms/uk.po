@@ -405,17 +405,17 @@ msgstr "Непідтримуваний тип клітинки"
 msgid "additionalResultsOmitted"
 msgstr "Додаткові результати обрізані"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:264
+#: components/FormSliders/RecordSelectorFromIds.tsx:271
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "recordSelectorUnloadProtect"
 msgstr "Продовжити без збереження?"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:267
+#: components/FormSliders/RecordSelectorFromIds.tsx:274
 #. 🟥When in record set and current record is unsaved and try to navigate to another record. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "recordSelectorUnloadProtectDescription"
 msgstr "Можливо, ви хочете зберегти цей запис, перш ніж покинути його."
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:219
+#: components/FormSliders/RecordSelectorFromIds.tsx:223
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "creatingNewRecord"
 msgstr "Створення нового запису"

@@ -17,7 +17,7 @@ msgstr "No"
 #: components/AppResources/Create.tsx:80
 #: components/AppResources/EditorComponents.tsx:85
 #: components/Attachments/Dialog.tsx:53
-#: components/FormSliders/RecordSelectorFromIds.tsx:251
+#: components/FormSliders/RecordSelectorFromIds.tsx:258
 #: components/Forms/DeleteButton.tsx:108
 #: components/Forms/DeleteButton.tsx:132
 #: components/Forms/ResourceView.tsx:315
@@ -429,7 +429,7 @@ msgstr "Edit"
 msgid "ignore"
 msgstr "Ignore"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:260
+#: components/FormSliders/RecordSelectorFromIds.tsx:267
 #: components/Toolbar/Language.tsx:114
 #. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Toolbar > Language
 msgid "proceed"

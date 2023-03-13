@@ -404,17 +404,17 @@ msgstr "Неподдерживаемый тип ячейки"
 msgid "additionalResultsOmitted"
 msgstr "Дополнительные результаты опущены"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:264
+#: components/FormSliders/RecordSelectorFromIds.tsx:271
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "recordSelectorUnloadProtect"
 msgstr "Продолжить без сохранения?"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:267
+#: components/FormSliders/RecordSelectorFromIds.tsx:274
 #. 🟥When in record set and current record is unsaved and try to navigate to another record. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "recordSelectorUnloadProtectDescription"
 msgstr "Не забудьте сохранить эту запись, прежде чем закрыть ее."
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:219
+#: components/FormSliders/RecordSelectorFromIds.tsx:223
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "creatingNewRecord"
 msgstr "Создание новой записи"
