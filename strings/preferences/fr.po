@@ -13,7 +13,7 @@ msgstr ""
 
 #: components/Header/userToolDefinitions.ts:46
 #: components/Router/Routes.tsx:321
-#: components/UserPreferences/index.tsx:60
+#: components/UserPreferences/index.tsx:66
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > User Preferences > Index
 msgid "preferences"
 msgstr "Préférences"
@@ -515,7 +515,7 @@ msgstr ""
 "données ou une corruption de la base de données. Veuillez vous assurer que "
 "vous savez ce que vous faites"
 
-#: components/UserPreferences/index.tsx:197
+#: components/UserPreferences/index.tsx:207
 #. Used in: Components > User Preferences > Index
 msgid "adminsOnlyPreference"
 msgstr "Vous n'avez pas l'autorisation de modifier cette option"

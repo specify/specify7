@@ -13,7 +13,7 @@ msgstr ""
 
 #: components/Header/userToolDefinitions.ts:46
 #: components/Router/Routes.tsx:321
-#: components/UserPreferences/index.tsx:60
+#: components/UserPreferences/index.tsx:66
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > User Preferences > Index
 msgid "preferences"
 msgstr "preferencias"
@@ -479,7 +479,7 @@ msgstr ""
 "corrupción de la base de datos. Por favor, asegúrese de saber lo que está "
 "haciendo"
 
-#: components/UserPreferences/index.tsx:197
+#: components/UserPreferences/index.tsx:207
 #. Used in: Components > User Preferences > Index
 msgid "adminsOnlyPreference"
 msgstr "No tiene permiso para cambiar esta opción"

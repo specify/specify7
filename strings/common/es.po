@@ -179,7 +179,7 @@ msgstr "Crear"
 #: components/Toolbar/QueryTablesEdit.tsx:74
 #: components/Toolbar/TreeRepair.tsx:75
 #: components/TreeView/Actions.tsx:358
-#: components/UserPreferences/index.tsx:85
+#: components/UserPreferences/index.tsx:95
 #: components/WbPlanView/MapperComponents.tsx:194
 #: components/WbPlanView/MapperComponents.tsx:411
 #: components/WbPlanView/State.tsx:36
@@ -233,7 +233,7 @@ msgstr "Limpiar todo"
 #: components/Security/MissingAgentsDialog.tsx:96
 #: components/Security/Role.tsx:213
 #: components/Security/UserCollections.tsx:73
-#: components/UserPreferences/index.tsx:83
+#: components/UserPreferences/index.tsx:93
 #: components/WbPlanView/Mapper.tsx:392
 #: components/WorkBench/DataSetMeta.tsx:123
 #: components/WorkBench/DevShowPlan.tsx:60
@@ -742,7 +742,7 @@ msgid "collapseAll"
 msgstr "Contraer todo"
 
 #: components/Toolbar/QueryTablesEdit.tsx:71
-#: components/UserPreferences/index.tsx:179
+#: components/UserPreferences/index.tsx:189
 #. Used in: Components > Toolbar > Query Tables Edit ⬤ Components > User Preferences > Index
 msgid "reset"
 msgstr "Restablecer"
