@@ -302,6 +302,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
    */
   const isFullHeight =
     dialog === 'modal' && typeof headerButtons === 'function' && !isSubForm;
+
   return (
     <Dialog
       buttons={
