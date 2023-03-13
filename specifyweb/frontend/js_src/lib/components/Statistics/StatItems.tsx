@@ -53,7 +53,7 @@ export function StatItem({
       ) => void)
     | undefined;
   readonly onRename: ((newLabel: string) => void) | undefined;
-  readonly onClone: (() => void) | undefined;
+  readonly onClone: ((querySpec: QuerySpec) => void) | undefined;
 }): JSX.Element | null {
   const handleLoadItem = React.useCallback(
     (value: number | string) => handleLoad?.(categoryIndex, itemIndex, value),
@@ -191,7 +191,7 @@ function QueryItem({
   readonly onEdit: ((querySpec: QuerySpec) => void) | undefined;
   readonly onRename: ((newLabel: string) => void) | undefined;
   readonly onLoad: ((value: number | string) => void) | undefined;
-  readonly onClone: (() => void) | undefined;
+  readonly onClone: ((querySpec: QuerySpec) => void) | undefined;
 }): JSX.Element | null {
   const [statState, setStatState] = React.useState<
     'error' | 'noPermission' | 'valid'

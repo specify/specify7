@@ -118,6 +118,17 @@ export function getDefaultLayoutFlagged(
   return statNotFound ? defaultLayoutFlagged : undefined;
 }
 
+export function useDefaultStatsToAdd(
+  layout: StatLayout | undefined,
+  defaultLayout: RA<StatLayout> | undefined
+): RA<StatLayout> | undefined {
+  return React.useMemo(
+    (): RA<StatLayout> | undefined =>
+      getDefaultLayoutFlagged(layout, defaultLayout),
+    [layout, defaultLayout]
+  );
+}
+
 export function queryCountPromiseGenerator(
   query: SpecifyResource<SpQuery>
 ): () => Promise<AjaxResponseObject<{ readonly count: number }>> {

@@ -26,7 +26,7 @@ export function StatsResult({
   readonly onRemove: (() => void) | undefined;
   readonly onEdit: ((querySpec: QuerySpec) => void) | undefined;
   readonly onRename: ((newLabel: string) => void) | undefined;
-  readonly onClone: (() => void) | undefined;
+  readonly onClone: ((querySpec: QuerySpec) => void) | undefined;
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   const isDisabled =

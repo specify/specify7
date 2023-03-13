@@ -28,12 +28,12 @@ import { AddStatDialog } from './AddStatDialog';
 import { StatsAsideButton } from './Buttons';
 import { Categories } from './Categories';
 import {
-  getDefaultLayoutFlagged,
   getDynamicCategoriesToFetch,
   getOffsetOne,
   statsToTsv,
   useBackendApi,
   useDefaultDynamicCategorySetter,
+  useDefaultStatsToAdd,
   useDynamicCategorySetter,
 } from './hooks';
 import { StatsPageEditing } from './StatsPageEditing';
@@ -41,7 +41,7 @@ import { defaultLayoutGenerated, dynamicStatsSpec } from './StatsSpec';
 import type { CustomStat, DefaultStat, StatLayout } from './types';
 import { MILLISECONDS } from '../Atoms/Internationalization';
 
-const TIME_DIFF_MINUTE = 1;
+const TIME_DIFF_MINUTE = 60 * 24;
 
 export function StatsPage(): JSX.Element | null {
   // TODO: Make stats page component smaller
@@ -227,11 +227,8 @@ export function StatsPage(): JSX.Element | null {
    */
   React.useEffect(() => {
     if (sharedLayout === undefined) {
-      const date = new Date();
       // Have to set the last updated manually, since this is the first load
-      handleSharedLayoutChange([
-        { ...defaultLayoutGenerated[0], lastUpdated: date.toJSON() },
-      ]);
+      handleSharedLayoutChange([defaultLayoutGenerated[0]]);
     }
   }, [sharedLayout, handleSharedLayoutChange]);
 
@@ -308,13 +305,6 @@ export function StatsPage(): JSX.Element | null {
   );
   const previousLayout = React.useRef(
     personalLayout as unknown as RA<StatLayout>
-  );
-
-  const defaultStatsAddLeft = getDefaultLayoutFlagged(
-    layout[activePage.isShared ? statsText.shared() : statsText.private()]?.[
-      activePage.pageIndex
-    ],
-    defaultLayout
   );
 
   const getValueUndefined = (layout: StatLayout): StatLayout => ({
@@ -468,6 +458,13 @@ export function StatsPage(): JSX.Element | null {
     );
     setCategoriesToFetch([]);
   };
+
+  const defaultStatsAddLeft = useDefaultStatsToAdd(
+    layout[activePage.isShared ? statsText.shared() : statsText.private()]?.[
+      activePage.pageIndex
+    ],
+    defaultLayout
+  );
 
   return sharedLayout === undefined ? null : (
     <Form

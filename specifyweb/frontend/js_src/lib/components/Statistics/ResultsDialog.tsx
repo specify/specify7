@@ -41,7 +41,7 @@ export function FrontEndStatsResultDialog({
   readonly onClose: () => void;
   readonly label: string;
   readonly onEdit: ((querySpec: QuerySpec) => void) | undefined;
-  readonly onClone: (() => void) | undefined;
+  readonly onClone: ((querySpec: QuerySpec) => void) | undefined;
 }): JSX.Element | null {
   const [query, setQuery] = useLiveState(
     React.useCallback(
@@ -56,9 +56,10 @@ export function FrontEndStatsResultDialog({
           {typeof handleClone === 'function' && (
             <Button.Blue
               onClick={(): void => {
-                handleClone();
+                handleClone(query);
                 handleClose();
               }}
+              disabled={query.fields.length === 0}
             >
               {formsText.clone()}
             </Button.Blue>

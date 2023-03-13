@@ -9,7 +9,7 @@ import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Input } from '../Atoms/Form';
 import { hasTablePermission } from '../Permissions/helpers';
-import { generateStatUrl, resolveStatsSpec } from './hooks';
+import { generateStatUrl } from './hooks';
 import { StatItem } from './StatItems';
 import { dynamicStatsSpec, statsSpec } from './StatsSpec';
 import type {
@@ -189,24 +189,15 @@ export function Categories({
                         onClone={
                           item.type === 'CustomStat' ||
                           item.itemType === 'QueryStat'
-                            ? () => {
-                                const resolvedStatsItem = resolveStatsSpec(
-                                  item,
-                                  formatterSpec
-                                );
-                                if (
-                                  resolvedStatsItem?.type === 'QueryBuilderStat'
-                                ) {
-                                  handleClick(
-                                    {
-                                      type: 'CustomStat',
-                                      querySpec: resolvedStatsItem.querySpec,
-                                      label: item.label,
-                                    },
-                                    categoryIndex
-                                  );
-                                }
-                              }
+                            ? (querySpec) =>
+                                handleClick(
+                                  {
+                                    type: 'CustomStat',
+                                    querySpec: querySpec,
+                                    label: item.label,
+                                  },
+                                  categoryIndex
+                                )
                             : undefined
                         }
                         onEdit={
