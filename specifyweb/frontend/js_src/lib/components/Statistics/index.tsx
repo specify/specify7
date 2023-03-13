@@ -13,6 +13,7 @@ import { H2, H3, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Form } from '../Atoms/Form';
+import { MILLISECONDS } from '../Atoms/Internationalization';
 import { Submit } from '../Atoms/Submit';
 import { softFail } from '../Errors/Crash';
 import { useMenuItem } from '../Header/useMenuItem';
@@ -39,7 +40,6 @@ import {
 import { StatsPageEditing } from './StatsPageEditing';
 import { defaultLayoutGenerated, dynamicStatsSpec } from './StatsSpec';
 import type { CustomStat, DefaultStat, StatLayout } from './types';
-import { MILLISECONDS } from '../Atoms/Internationalization';
 
 const TIME_DIFF_MINUTE = 60 * 24;
 
@@ -61,10 +61,10 @@ export function StatsPage(): JSX.Element | null {
     (
       layout:
         | RA<StatLayout>
-        | undefined
         | ((
             oldLayout: RA<StatLayout> | undefined
           ) => RA<StatLayout> | undefined)
+        | undefined
     ) => {
       setLocalSharedLayout(layout);
       setSharedLayout(layout);
@@ -86,10 +86,10 @@ export function StatsPage(): JSX.Element | null {
     (
       layout:
         | RA<StatLayout>
-        | undefined
         | ((
             oldLayout: RA<StatLayout> | undefined
           ) => RA<StatLayout> | undefined)
+        | undefined
     ) => {
       setLocalPersonalLayout(layout);
       setPersonalLayout(layout);
@@ -201,7 +201,8 @@ export function StatsPage(): JSX.Element | null {
 
   /**
    * Checks layout for absent dynamic categories and makes request for those categories.
-   * */
+   *
+   */
   React.useEffect(() => {
     const absentDynamicCategories =
       sourceLayout === undefined
@@ -322,7 +323,7 @@ export function StatsPage(): JSX.Element | null {
   React.useLayoutEffect(() => {
     if (pageLastUpdated === undefined) return;
     const lastUpdatedParsed = new Date(pageLastUpdated).valueOf();
-    const currentTime = new Date().valueOf();
+    const currentTime = Date.now();
     if (isNaN(lastUpdatedParsed) || isNaN(currentTime)) return;
     const timeDiffMillSecond = Math.round(currentTime - lastUpdatedParsed);
     if (timeDiffMillSecond < 0) return;

@@ -1,7 +1,7 @@
-import { RR, WritableArray } from '../types';
+import type { RR, WritableArray } from '../types';
 
 export type PromiseWithSpec<T> = Promise<T> & {
-  spec: string | number;
+  readonly spec: number | string;
 };
 const currentRequestsGenerator = <T>(): WritableArray<PromiseWithSpec<T>> => [];
 
