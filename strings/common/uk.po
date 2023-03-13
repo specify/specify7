@@ -31,7 +31,7 @@ msgstr "Ні"
 #: components/FormSliders/RecordSelectorFromIds.tsx:251
 #: components/Forms/DeleteButton.tsx:108
 #: components/Forms/DeleteButton.tsx:132
-#: components/Forms/ResourceView.tsx:314
+#: components/Forms/ResourceView.tsx:315
 #: components/Forms/SearchDialog.tsx:105
 #: components/Header/ChooseCollection.tsx:37
 #: components/Header/Forms.tsx:61
@@ -140,7 +140,7 @@ msgstr "Створити"
 #: components/Forms/DataTask.tsx:127
 #: components/Forms/DeleteBlocked.tsx:80
 #: components/Forms/ResourceView.tsx:185
-#: components/Forms/ResourceView.tsx:318
+#: components/Forms/ResourceView.tsx:319
 #: components/Forms/Save.tsx:263
 #: components/Forms/Save.tsx:273
 #: components/Forms/SearchDialog.tsx:256

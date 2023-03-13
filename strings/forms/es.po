@@ -168,7 +168,7 @@ msgstr "Solo se admiten valores numéricos en esta {pickListTable:string}"
 msgid "noData"
 msgstr "Sin datos."
 
-#: components/Toolbar/RecordSetEdit.tsx:41
+#: components/Toolbar/RecordSetEdit.tsx:42
 #. Used in: Components > Toolbar > Record Set Edit
 msgid "recordSetDeletionWarning"
 msgstr ""
@@ -212,7 +212,7 @@ msgstr "Siguiente registro"
 msgid "currentRecord"
 msgstr "Objeto actual (de {total:number|formatted})"
 
-#: components/Forms/ResourceView.tsx:358
+#: components/Forms/ResourceView.tsx:359
 #: components/Forms/Save.tsx:29
 #. Used in: Components > Forms > Resource View ⬤ Components > Forms > Save
 msgid "unsavedFormUnloadProtect"

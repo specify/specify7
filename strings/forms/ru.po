@@ -167,7 +167,7 @@ msgstr "В этом {pickListTable:string} допускаются только �
 msgid "noData"
 msgstr "Нет данных."
 
-#: components/Toolbar/RecordSetEdit.tsx:41
+#: components/Toolbar/RecordSetEdit.tsx:42
 #. Used in: Components > Toolbar > Record Set Edit
 msgid "recordSetDeletionWarning"
 msgstr ""
@@ -211,7 +211,7 @@ msgstr "Следующий объект"
 msgid "currentRecord"
 msgstr "Текущий объект (из {total:number|formatted})"
 
-#: components/Forms/ResourceView.tsx:358
+#: components/Forms/ResourceView.tsx:359
 #: components/Forms/Save.tsx:29
 #. Used in: Components > Forms > Resource View ⬤ Components > Forms > Save
 msgid "unsavedFormUnloadProtect"
