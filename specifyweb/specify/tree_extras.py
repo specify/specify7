@@ -280,17 +280,22 @@ def merge(node, into, agent):
 
     for retry in range(100):
         try:
-            id = node.id;
+            id = node.id
             node.delete()
             node.id = id
             mutation_log(TREE_MERGE, node, agent, node.parent,
                          [{'field_name': model.specify_model.idFieldName, 'old_value': node.id, 'new_value': into.id}])
             return
-        except ProtectedError as e:
-            related_model_name, field_name = re.search(r"'(\w+)\.(\w+)'$", e.args[0]).groups()
-            related_model = getattr(models, related_model_name)
-            assert related_model != model or field_name != 'parent', 'children were added during merge'
-            related_model.objects.filter(**{field_name: node}).update(**{field_name: target})
+        except ProtectedError as e: 
+            """ Cannot delete some instances of TREE because they are referenced 
+            through protected foreign keys: 'Table.field', Table.field', ... """
+            
+            regex_matches = re.finditer(r"'(\w+)\.(\w+)'", e.args[0])
+            for match in regex_matches:
+                related_model_name, field_name = match.groups()
+                related_model = getattr(models, related_model_name)
+                assert related_model != model or field_name != 'parent', 'children were added during merge'
+                related_model.objects.filter(**{field_name: node}).update(**{field_name: target})
 
     assert False, "failed to move all referrences to merged tree node"
 
