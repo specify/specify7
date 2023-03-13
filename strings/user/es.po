@@ -220,7 +220,7 @@ msgstr ""
 
 #: components/FormFields/Field.tsx:121
 #: components/FormFields/QueryComboBox.tsx:186
-#: components/Forms/dataObjFormatters.ts:257
+#: components/Forms/dataObjFormatters.ts:266
 #. 🟥Used in field formatter if user doesn't have read access to the related table. Used in: Components > Form Fields > Field ⬤ Components > Form Fields > Query Combo Box ⬤ Components > Forms > Data Obj Formatters
 #, fuzzy
 msgid "noPermission"
