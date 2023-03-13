@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import type { LocalizedString } from 'typesafe-i18n';
 import type { State } from 'typesafe-reducer';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
@@ -20,13 +21,12 @@ import { AppTitle } from '../Molecules/AppTitle';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { ReportsView } from '../Reports';
+import { UnloadProtectDialog } from '../Router/Router';
 import { getUserPref } from '../UserPreferences/helpers';
 import { usePref } from '../UserPreferences/usePref';
 import { useResourceView } from './BaseResourceView';
 import { DeleteButton } from './DeleteButton';
 import { SaveButton } from './Save';
-import { UnloadProtectDialog } from '../Router/Router';
-import { LocalizedString } from 'typesafe-i18n';
 
 /**
  * There is special behavior required when creating one of these resources,
@@ -211,6 +211,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
         onSaving={handleSaving}
       />
     ) : undefined;
+
   const report =
     state.type === 'Report' && typeof resource === 'object' ? (
       <ReportsView
@@ -223,13 +224,14 @@ export function ResourceView<SCHEMA extends AnySchema>({
         }}
       />
     ) : undefined;
+
   const deleteButton =
     !isDependent &&
     !isSubForm &&
     typeof resource === 'object' &&
     !resource.isNew() &&
     hasTablePermission(resource.specifyModel.name, 'delete') ? (
-      <ErrorBoundary dismissable>
+      <ErrorBoundary dismissible>
         <DeleteButton
           deletionMessage={deletionMessage}
           resource={resource}
@@ -237,6 +239,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
         />
       </ErrorBoundary>
     ) : undefined;
+
   const headerContent = (
     <>
       {specifyNetworkBadge}
@@ -254,18 +257,20 @@ export function ResourceView<SCHEMA extends AnySchema>({
         typeof extraButtons === 'object' ? (
           <DataEntry.Footer>
             {deleteButton}
-            {extraButtons ?? <span className="-ml-2 flex-1" />}
+            {extraButtons ?? <span className="-ml-2 md:flex-1" />}
             {saveButtonElement}
           </DataEntry.Footer>
         ) : undefined}
       </>
     );
+
     const headerComponents = headerButtons?.(headerContent) ?? (
       <>
         <span className="-ml-2 flex-1" />
         {headerContent}
       </>
     );
+
     return isSubForm ? (
       <DataEntry.SubForm>
         <DataEntry.SubFormHeader>
@@ -280,7 +285,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
       <Container.FullGray>
         <Container.Center className="!w-auto">
           <DataEntry.Header>
-            <AppTitle title={titleOverride ?? formatted} type="form" />
+            <AppTitle title={titleOverride ?? formatted} />
             <DataEntry.Title>{titleOverride ?? jsxFormatted}</DataEntry.Title>
             {headerComponents}
           </DataEntry.Header>
@@ -297,6 +302,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
    */
   const isFullHeight =
     dialog === 'modal' && typeof headerButtons === 'function' && !isSubForm;
+
   return (
     <Dialog
       buttons={
@@ -323,6 +329,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
         }`,
         content: `${className.formStyles} ${dialogClassNames.flexContent}`,
       }}
+      dimensionsKey={viewName ?? resource?.specifyModel.view}
       header={titleOverride ?? title}
       headerButtons={
         <>

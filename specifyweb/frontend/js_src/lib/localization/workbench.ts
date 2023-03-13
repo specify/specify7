@@ -20,7 +20,7 @@ export const wbText = createDictionary({
     'en-us': 'Roll Back',
     'ru-ru': 'Откат',
     'es-es': 'Retroceder',
-    'fr-fr': 'Rétablir',
+    'fr-fr': 'Retour en arriere',
     'uk-ua': 'Відкат',
   },
   validate: {
@@ -41,7 +41,7 @@ export const wbText = createDictionary({
     'en-us': 'Upload',
     'ru-ru': 'Загрузка',
     'es-es': 'Subir',
-    'fr-fr': 'Importer',
+    'fr-fr': 'Télécharger',
     'uk-ua': 'Завантажити',
   },
   rollingBack: {
@@ -84,7 +84,7 @@ export const wbText = createDictionary({
     'ru-ru': 'Заполнить Вверх',
     'es-es': 'Llena',
     'fr-fr': 'Remplir',
-    'uk-ua': 'Заповнювати',
+    'uk-ua': 'Заповнити',
   },
   revert: {
     'en-us': 'Revert',
@@ -1009,7 +1009,7 @@ export const wbText = createDictionary({
     'ru-ru': 'Пробел',
     'es-es': 'Espacio',
     'fr-fr': 'Espace',
-    'uk-ua': 'Простір',
+    'uk-ua': 'космос',
   },
   pipe: {
     'en-us': 'Pipe',
@@ -1123,7 +1123,7 @@ export const wbText = createDictionary({
     'ru-ru': 'Количество столбцов',
     'es-es': 'Número de columnas',
     'fr-fr': 'Le nombre de colonnes',
-    'uk-ua': 'Кількість колон',
+    'uk-ua': 'Кількість стовпців',
   },
   importedFileName: {
     'en-us': 'Import file name',
@@ -1298,8 +1298,8 @@ export const wbText = createDictionary({
     'en-us': 'Stop',
     'ru-ru': 'Стоп',
     'es-es': 'Deténgase',
-    'fr-fr': 'Arrêter',
-    'uk-ua': 'СТОП',
+    'fr-fr': 'Arrêt',
+    'uk-ua': 'СТІЙ',
   },
   wbStatusError: {
     'en-us': 'Error occurred during {operationName:string}',

@@ -1,4 +1,11 @@
+import { schemaText } from '../../localization/schema';
+import { resolveParser } from '../../utils/parser/definitions';
+import type { RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { sortFunction, split } from '../../utils/utils';
+import type { AnySchema, TableFields } from '../DataModel/helperTypes';
+import type { LiteralField, Relationship } from '../DataModel/specifyField';
+import type { SpecifyModel } from '../DataModel/specifyModel';
 import type {
   FormMode,
   FormType,
@@ -6,14 +13,8 @@ import type {
   ViewDescription,
 } from '../FormParse';
 import type { CellTypes, FormCellDefinition } from '../FormParse/cells';
-import type { LiteralField, Relationship } from '../DataModel/specifyField';
-import type { SpecifyModel } from '../DataModel/specifyModel';
-import type { RA } from '../../utils/types';
-import { filterArray } from '../../utils/types';
-import { resolveParser } from '../../utils/parser/definitions';
+import { hasTablePermission } from '../Permissions/helpers';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
-import { AnySchema, TableFields } from '../DataModel/helperTypes';
-import { schemaText } from '../../localization/schema';
 
 /**
  * If form definition is missing, this function will generate one on the fly
@@ -30,6 +31,7 @@ export function autoGenerateViewDefinition<SCHEMA extends AnySchema>(
       mode,
       fieldsToShow
     ),
+    name: '',
     formType,
     mode,
     model,
@@ -51,6 +53,7 @@ export function getFieldsForAutoView<SCHEMA extends AnySchema>(
   const filteredFields = baseFields.filter(
     (field) => !field.isHidden && !field.isReadOnly
   );
+  // BUG: if displayed as a dependent sub view, should hide relationship to parent
   const relationships = model.relationships
     .filter(
       (field) =>
@@ -138,7 +141,7 @@ function generateForm(
                   type: 'Label',
                   text: field.label,
                   labelForCellId: field.name,
-                  fieldName: field.name,
+                  fieldNames: [field.name],
                   title: field.getLocalizedDesc(),
                   ...cellAttributes,
                 },
@@ -167,51 +170,55 @@ function generateForm(
               forClass: undefined,
             },
           ],
-      ...relationships.flatMap(
-        (field) =>
-          [
+      ...relationships
+        .filter(({ relatedModel }) =>
+          hasTablePermission(relatedModel.name, 'read')
+        )
+        .flatMap(
+          (field) =>
             [
-              {
-                type: 'Label',
-                text: field.label,
-                labelForCellId: field.name,
-                fieldName: field.name,
-                title: field.getLocalizedDesc(),
-                ...cellAttributes,
-              },
-            ],
-            [
-              relationshipIsToMany(field)
-                ? ({
-                    ...cellAttributes,
-                    id: field.name,
-                    type: 'SubView',
-                    formType: 'form',
-                    mode,
-                    fieldName: field.name,
-                    viewName: undefined,
-                    isButton: true,
-                    icon: undefined,
-                    isRequired: false,
-                    sortField: 'id',
-                  } as const)
-                : ({
-                    ...cellAttributes,
-                    id: field.name,
-                    type: 'Field',
-                    fieldName: field.name,
-                    fieldDefinition: {
-                      type: 'QueryComboBox',
-                      hasCloneButton: false,
-                      typeSearch: undefined,
-                      isReadOnly: mode === 'view',
-                    },
-                    isRequired: false,
-                    viewName: undefined,
-                  } as const),
-            ],
-          ] as const
-      ),
+              [
+                {
+                  type: 'Label',
+                  text: field.label,
+                  labelForCellId: field.name,
+                  fieldNames: [field.name],
+                  title: field.getLocalizedDesc(),
+                  ...cellAttributes,
+                },
+              ],
+              [
+                relationshipIsToMany(field)
+                  ? ({
+                      ...cellAttributes,
+                      id: field.name,
+                      type: 'SubView',
+                      formType: 'form',
+                      mode,
+                      fieldNames: [field.name],
+                      viewName: undefined,
+                      isButton: true,
+                      icon: undefined,
+                      isRequired: false,
+                      sortField: { fieldNames: ['id'], direction: 'asc' },
+                    } as const)
+                  : ({
+                      ...cellAttributes,
+                      id: field.name,
+                      type: 'Field',
+                      fieldNames: [field.name],
+                      fieldDefinition: {
+                        type: 'QueryComboBox',
+                        hasCloneButton: false,
+                        typeSearch: undefined,
+                        isReadOnly: mode === 'view',
+                      },
+                      isRequired: false,
+                      viewName: undefined,
+                    } as const),
+              ],
+            ] as const
+        ),
     ]),
   };
 }
@@ -223,10 +230,11 @@ function getFieldDefinition(
   field: LiteralField
 ): CellTypes['Field'] & FormCellDefinition {
   const parser = resolveParser(field);
+  // FEATURE: render date fields using Partial Date UI
   return {
     ...cellAttributes,
     type: 'Field',
-    fieldName: field.name,
+    fieldNames: [field.name],
     isRequired: false,
     ariaLabel: undefined,
     fieldDefinition: {
@@ -256,6 +264,8 @@ function getFieldDefinition(
             min: parser.min,
             max: parser.max,
             step: parser.step,
+            minLength: parser.minLength,
+            maxLength: parser.maxLength,
           }),
     },
   };

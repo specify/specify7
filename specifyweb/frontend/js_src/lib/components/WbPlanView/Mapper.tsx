@@ -8,33 +8,36 @@
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 
-import { getCache } from '../../utils/cache';
-import type { Tables } from '../DataModel/types';
-import { listen } from '../../utils/events';
+import { useUnloadProtect } from '../../hooks/navigation';
+import { useErrorContext } from '../../hooks/useErrorContext';
+import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
+import { wbPlanText } from '../../localization/wbPlan';
 import { wbText } from '../../localization/workbench';
-import { smoothScroll } from '../QueryBuilder/helpers';
-import { strictGetModel } from '../DataModel/schema';
+import { getCache } from '../../utils/cache';
+import { listen } from '../../utils/events';
 import type { IR, RA } from '../../utils/types';
-import type { ColumnOptions } from './uploadPlanParser';
-import { columnOptionsAreDefault } from './linesGetter';
-import { reducer } from './mappingReducer';
-import { findRequiredMissingFields } from './modelHelpers';
-import { getMappingLineData } from './navigator';
+import { Ul } from '../Atoms';
+import { Button } from '../Atoms/Button';
+import { icons } from '../Atoms/Icons';
+import { Link } from '../Atoms/Link';
+import { LoadingContext } from '../Core/Contexts';
+import { strictGetModel } from '../DataModel/schema';
+import type { Tables } from '../DataModel/types';
+import { softFail } from '../Errors/Crash';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
+import { TableIcon } from '../Molecules/TableIcon';
+import { smoothScroll } from '../QueryBuilder/helpers';
+import { Layout } from './Header';
 import {
   fetchAutoMapperSuggestions,
   getMappedFields,
   getMustMatchTables,
   mappingPathIsComplete,
 } from './helpers';
-import { LoadingContext } from '../Core/Contexts';
-import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import { icons } from '../Atoms/Icons';
-import { useUnloadProtect } from '../../hooks/navigation';
-import type { Dataset } from './Wrapped';
 import type { MappingElementProps } from './LineComponents';
 import { getMappingLineProps, MappingLineComponent } from './LineComponents';
-import { Layout } from './Header';
+import { columnOptionsAreDefault } from './linesGetter';
 import {
   ChangeBaseTable,
   EmptyDataSetDialog,
@@ -46,15 +49,11 @@ import {
   ToggleMappingPath,
   ValidationResults,
 } from './MapperComponents';
-import { useErrorContext } from '../../hooks/useErrorContext';
-import { Button } from '../Atoms/Button';
-import { Link } from '../Atoms/Link';
-import { Ul } from '../Atoms';
-import { useId } from '../../hooks/useId';
-import { softFail } from '../Errors/Crash';
-import { TableIcon } from '../Molecules/TableIcon';
-import { whitespaceSensitive } from '../../localization/utils';
-import { wbPlanText } from '../../localization/wbPlan';
+import { reducer } from './mappingReducer';
+import { findRequiredMissingFields } from './modelHelpers';
+import { getMappingLineData } from './navigator';
+import type { ColumnOptions } from './uploadPlanParser';
+import type { Dataset } from './Wrapped';
 
 /*
  * Scope is used to differentiate between mapper definitions that should
@@ -405,9 +404,7 @@ export function Mapper(props: {
           {props.dataset.uploadresult?.success === true && (
             <span
               className="flex items-center text-red-600"
-              title={whitespaceSensitive(
-                wbPlanText.dataSetUploadedDescription()
-              )}
+              title={wbPlanText.dataSetUploadedDescription()}
             >
               {` ${wbPlanText.dataSetUploaded()}`}
             </span>
@@ -595,7 +592,7 @@ export function Mapper(props: {
             : lineData;
 
           return (
-            <ErrorBoundary dismissable key={line}>
+            <ErrorBoundary dismissible key={line}>
               <MappingLineComponent
                 headerName={headerName}
                 isFocused={line === state.focusedLine}

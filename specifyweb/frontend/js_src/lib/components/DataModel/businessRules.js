@@ -1,29 +1,26 @@
 import _ from 'underscore';
-import {globalEvents} from '../../utils/ajax/specifyApi';
-import {SaveBlockers} from './saveBlockers';
-import {initializeTreeRecord, treeBusinessRules} from './treeBusinessRules';
-import {businessRuleDefs} from './businessRuleDefs';
 
 import {formsText} from '../../localization/forms';
+import {flippedPromise} from '../../utils/promise';
 import {formatConjunction} from '../Atoms/Internationalization';
 import {isTreeResource} from '../InitialContext/treeRanks';
+import {businessRuleDefs} from './businessRuleDefs';
 import {idFromUrl} from './resource';
+import {SaveBlockers} from './saveBlockers';
+import {initializeTreeRecord, treeBusinessRules} from './treeBusinessRules';
 
-var enabled = true;
+let enabled = true;
 
-    globalEvents.on('initResource', (resource) =>
-        enabled && !resource.noBusinessRules ? attachTo(resource) : undefined
-    );
-
-    var attachTo = function(resource) {
-        var mgr;
+    export function attachBusinessRules(resource) {
+        if(!enabled) return;
+        let mgr;
         mgr = resource.businessRuleMgr = new BusinessRuleMgr(resource);
         mgr.setupEvents();
         resource.saveBlockers = new SaveBlockers(resource);
         if(isTreeResource(resource))
             initializeTreeRecord(resource);
         mgr.doCustomInit();
-    };
+    }
 
     function BusinessRuleMgr(resource) {
         this.resource = resource;
@@ -34,39 +31,40 @@ var enabled = true;
     }
 
     _(BusinessRuleMgr.prototype).extend({
-        addPromise: function(promise) {
+        addPromise(promise) {
             this.pending = Promise.allSettled([this.pending, promise]).then(()=>null);
         },
 
-        setupEvents: function() {
+        setupEvents() {
             this.resource.on('change', this.changed, this);
             this.resource.on('add', this.added, this);
             this.resource.on('remove', this.removed, this);
         },
 
-        invokeRule: function(ruleName, fieldName, args) {
-            var promise = this._invokeRule(ruleName, fieldName, args);
-            // var resource = this.resource;
-            // var msg = 'BR ' + ruleName + (fieldName ? '[' + fieldName + '] ': ' ') + 'finished on';
-            // promise.then(function(result) { console.debug(msg, resource, {args: args, result: result}); });
-            return promise;
+        invokeRule(ruleName, fieldName, args) {
+            /*
+             * Var resource = this.resource;
+             * var msg = 'BR ' + ruleName + (fieldName ? '[' + fieldName + '] ': ' ') + 'finished on';
+             * promise.then(function(result) { console.debug(msg, resource, {args: args, result: result}); });
+             */
+            return this._invokeRule(ruleName, fieldName, args);
         },
-        _invokeRule: function(ruleName, fieldName, args) {
-            var rule = this.rules && this.rules[ruleName];
-            if (!rule) return Promise.resolve('no rule: ' + ruleName);
+        async _invokeRule(ruleName, fieldName, args) {
+            let rule = this.rules && this.rules[ruleName];
+            if (!rule) return `no rule: ${  ruleName}`;
             if (fieldName) {
                 rule = rule[fieldName];
-                if (!rule) return Promise.resolve('no rule: ' + ruleName + ' for: ' + fieldName);
+                if (!rule) return `no rule: ${  ruleName  } for: ${  fieldName}`;
             }
-            return Promise.resolve(rule.apply(this, args));
+            return rule.apply(this, args);
         },
 
-        doCustomInit: function() {
+        doCustomInit() {
             this.addPromise(
                 this.invokeRule('customInit', null, [this.resource]));
         },
 
-        changed: function(resource) {
+        changed(resource) {
             if (!resource._fetch && !resource._save) {
                 _.each(resource.changed, function(__, fieldName) {
                     this.checkField(fieldName);
@@ -74,7 +72,7 @@ var enabled = true;
             }
         },
 
-        added: function(resource, collection) {
+        added(resource, collection) {
             if (resource.specifyModel && resource.specifyModel.getField('ordinal')) {
                 resource.set('ordinal', collection.indexOf(resource));
             }
@@ -82,25 +80,29 @@ var enabled = true;
                 this.invokeRule('onAdded', null, [resource, collection]));
         },
 
-        removed: function(resource, collection) {
+        removed(resource, collection) {
             this.addPromise(
                 this.invokeRule('onRemoved', null, [resource, collection]));
         },
 
-        checkField: function(fieldName) {
+        checkField(fieldName) {
             fieldName = fieldName.toLowerCase();
 
             const thisCheck  = flippedPromise();
-            // thisCheck.promise.then(function(result) { console.debug('BR finished checkField',
-            //                                                         {field: fieldName, result: result}); });
+            /*
+             * ThisCheck.promise.then(function(result) { console.debug('BR finished checkField',
+             *                                                         {field: fieldName, result: result}); });
+             */
             this.addPromise(thisCheck);
 
-            // If another change happens while the previous check is pending,
-            // that check is superseded by checking the new value.
-            this.fieldChangePromises[fieldName] && resoleFlippedPromise(this.fieldChangePromises[fieldName], 'superseded');
+            /*
+             * If another change happens while the previous check is pending,
+             * that check is superseded by checking the new value.
+             */
+            this.fieldChangePromises[fieldName] && this.fieldChangePromises[fieldName].resolve('superseded');
             this.fieldChangePromises[fieldName] = thisCheck;
 
-            var checks = [
+            const checks = [
                 this.invokeRule('customChecks', fieldName, [this.resource]),
                 this.checkUnique(fieldName)
             ];
@@ -108,15 +110,15 @@ var enabled = true;
             if(isTreeResource(this.resource))
                 checks.push(treeBusinessRules(this.resource, fieldName));
 
-            Promise.all(checks).then(function(results) {
-                // Only process these results if the change has not been superseded.
-                return (thisCheck === this.fieldChangePromises[fieldName]) &&
-                    this.processCheckFieldResults(fieldName, results);
-            }.bind(this)).then(function() { resoleFlippedPromise(thisCheck,'finished'); });
+            Promise.all(checks).then((results) =>
+                // Only process these results if the change has not been superseded
+                 (thisCheck === this.fieldChangePromises[fieldName]) &&
+                    this.processCheckFieldResults(fieldName, results)
+            ).then(() => { thisCheck.resolve('finished'); });
         },
-        processCheckFieldResults: function(fieldName, results) {
-            var resource = this.resource;
-            return Promise.all(results.map(function(result) {
+        async processCheckFieldResults(fieldName, results) {
+            const resource = this.resource;
+            return Promise.all(results.map((result) => {
                 if (!result) return null;
                 if (result.valid === false) {
                     resource.saveBlockers?.add(result.key, fieldName, result.reason);
@@ -126,47 +128,47 @@ var enabled = true;
                 return result.action && result.action();
             }));
         },
-        checkUnique: function(fieldName) {
-            var _this = this;
-            var results;
+        async checkUnique(fieldName) {
+            const _this = this;
+            let results;
             if (this.rules && this.rules.unique && _(this.rules.unique).contains(fieldName)) {
-                // field value is required to be globally unique.
+                // Field value is required to be globally unique.
                 results = [uniqueIn(null, this.resource, fieldName)];
             } else {
-                var toOneFields = (this.rules && this.rules.uniqueIn && this.rules.uniqueIn[fieldName]) || [];
+                let toOneFields = (this.rules && this.rules.uniqueIn && this.rules.uniqueIn[fieldName]) || [];
                 if (!_.isArray(toOneFields)) toOneFields = [toOneFields];
-                results = _.map(toOneFields, function(def) {
-                    var field = def;
-                    var fieldNames = [fieldName];
-                    if (typeof def != 'string') {
+                results = _.map(toOneFields, (def) => {
+                    let field = def;
+                    let fieldNames = [fieldName];
+                    if (typeof def !== 'string') {
                         fieldNames = fieldNames.concat(def.otherfields);
                         field = def.field;
                     }
                     return uniqueIn(field, _this.resource, fieldNames);
                 });
             }
-            Promise.all(results).then(function(results) {
-                _.chain(results).pluck('localDupes').compact().flatten().each(function(dup) {
-                    var event = dup.cid + ':' + fieldName;
+            Promise.all(results).then((results) => {
+                _.chain(results).pluck('localDupes').compact().flatten().each((dup) => {
+                    const event = `${dup.cid  }:${  fieldName}`;
                     if (_this.watchers[event]) return;
-                    _this.watchers[event] = dup.on('change remove', function() {
+                    _this.watchers[event] = dup.on('change remove', () => {
                         _this.checkField(fieldName);
                     });
                 });
             });
-            return combineUniquenessResults(results).then(function(result) {
-                // console.debug('BR finished checkUnique for', fieldName, result);
-                result.key = 'br-uniqueness-' + fieldName;
+            return combineUniquenessResults(results).then((result) => {
+                // Console.debug('BR finished checkUnique for', fieldName, result);
+                result.key = `br-uniqueness-${  fieldName}`;
                 return result;
             });
         }
     });
 
 
-    var combineUniquenessResults = function(deferredResults) {
-        return Promise.all(deferredResults).then(function(results) {
-            var invalids = _.filter(results, function(result) { return !result.valid; });
-            return invalids.length < 1
+    var combineUniquenessResults = async function(deferredResults) {
+        return Promise.all(deferredResults).then((results) => {
+            const invalids = _.filter(results, (result) => !result.valid);
+            return invalids.length === 0
                 ? {valid: true}
                 : {
                     valid: false,
@@ -175,7 +177,7 @@ var enabled = true;
         });
     };
 
-    var getUniqueInInvalidReason = function(parentFldInfo, fldInfo) {
+    const getUniqueInInvalidReason = function(parentFldInfo, fldInfo) {
         if (fldInfo.length > 1)
           return parentFldInfo
             ? formsText.valuesOfMustBeUniqueToField({
@@ -191,14 +193,14 @@ var enabled = true;
             : formsText.valueMustBeUniqueToDatabase();
     };
 
-    var uniqueIn = function(toOneField, resource, valueFieldArg) {
-        var valueField = Array.isArray(valueFieldArg) ? valueFieldArg : [valueFieldArg];
-        var value = _.map(valueField, function(v) { return resource.get(v);});
-        var valueFieldInfo = _.map(valueField, function(v) { return resource.specifyModel.getField(v); });
-        var valueIsToOne = _.map(valueFieldInfo, function(fi) { return fi.type === 'many-to-one'; });
-        var valueId = _.map(value, function(v, idx) {
-            if (valueIsToOne[idx]) {
-                if (_.isNull(v) || typeof v == 'undefined')  {
+    var uniqueIn = function(toOneField, resource, valueFieldArgument) {
+        const valueField = Array.isArray(valueFieldArgument) ? valueFieldArgument : [valueFieldArgument];
+        const value = _.map(valueField, (v) => resource.get(v));
+        const valueFieldInfo = _.map(valueField, (v) => resource.specifyModel.getField(v));
+        const valueIsToOne = _.map(valueFieldInfo, (fi) => fi.type === 'many-to-one');
+        const valueId = _.map(value, (v, index) => {
+            if (valueIsToOne[index]) {
+                if (_.isNull(v) || v === undefined)  {
                     return null;
                 } else {
                     return _.isString(v) ? idFromUrl(v) : v.id;
@@ -208,87 +210,67 @@ var enabled = true;
             }
         });
 
-        var toOneFieldInfo = toOneField ? resource.specifyModel.getField(toOneField) : undefined;
-        var valid = {
+        const toOneFieldInfo = toOneField ? resource.specifyModel.getField(toOneField) : undefined;
+        const valid = {
             valid: true
         };
-        var invalid = {
+        const invalid = {
             valid: false,
             reason: getUniqueInInvalidReason(toOneFieldInfo, valueFieldInfo)
         };
 
-        var allNullOrUndefinedToOnes = _.reduce(valueId, function(result, v, idx) {
-            return result &&
-                valueIsToOne[idx] ? _.isNull(valueId[idx]) : false;
-        }, true);
+        const allNullOrUndefinedToOnes = _.reduce(valueId, (result, v, index) => result &&
+                valueIsToOne[index] ? _.isNull(valueId[index]) : false, true);
         if (allNullOrUndefinedToOnes) {
             return Promise.resolve(valid);
         }
 
-        var hasSameVal = function(other, value, valueField, valueIsToOne, valueId) {
+        const hasSameValue = function(other, value, valueField, valueIsToOne, valueId) {
             if ((other.id != null) && other.id === resource.id) return false;
             if (other.cid === resource.cid) return false;
-            var otherVal = other.get(valueField);
-            if (valueIsToOne && typeof otherVal != 'undefined' && !(_.isString(otherVal))) {
-                return Number.parseInt(otherVal.id) === Number.parseInt(valueId);
-            } else {
-                return value === otherVal;
+            const otherValue = other.get(valueField);
+            return valueIsToOne && otherValue !== undefined && !(_.isString(otherValue)) ? Number.parseInt(otherValue.id) === Number.parseInt(valueId) : value === otherValue;
+        };
+
+        const hasSameValues = function(other, values, valueFields, valuesAreToOne, valueIds) {
+            return _.reduce(values, (result, value_, index) => result && hasSameValue(other, value_, valueFields[index], valuesAreToOne[index], valueIds[index]), true);
+        };
+
+        if (toOneField == null) {
+            const filters = {};
+            for (const [f, element] of valueField.entries()) {
+                filters[element] = valueId[f] || value[f];
             }
-        };
-
-        var hasSameValues = function(other, values, valueFields, valuesAreToOne, valueIds) {
-            return _.reduce(values, function(result, val, idx) {
-                return result && hasSameVal(other, val, valueFields[idx], valuesAreToOne[idx], valueIds[idx]);
-            }, true);
-        };
-
-        if (toOneField != null) {
-            var haveLocalColl = (resource.collection && resource.collection.related &&
+            const others = new resource.specifyModel.LazyCollection({
+                filters
+            });
+            return others.fetch().then(() => _.any(others.models, (other) => hasSameValues(other, value, valueField, valueIsToOne, valueId)) ? invalid : valid);
+        } else {
+            const haveLocalColl = (resource.collection && resource.collection.related &&
                                  toOneFieldInfo.relatedModel === resource.collection.related.specifyModel);
 
-            var localCollection = haveLocalColl ? _.compact(resource.collection.models) : [];
-            var dupes = _.filter(localCollection, function(other) { return hasSameValues(other, value, valueField, valueIsToOne, valueId); });
+            const localCollection = haveLocalColl ? _.compact(resource.collection.models) : [];
+            const dupes = _.filter(localCollection, (other) => hasSameValues(other, value, valueField, valueIsToOne, valueId));
             if (dupes.length > 0) {
                 invalid.localDupes = dupes;
                 return Promise.resolve(invalid);
             }
-            return resource.rget(toOneField).then(function(related) {
+            return resource.rget(toOneField).then((related) => {
                 if (!related) return valid;
-                var filters = {};
-                for (var f = 0; f < valueField.length; f++) {
-                    filters[valueField[f]] = valueId[f] || value[f];
+                const filters = {};
+                for (const [f, element] of valueField.entries()) {
+                    filters[element] = valueId[f] || value[f];
                 }
-                var others = new resource.specifyModel.ToOneCollection({
-                    related: related,
+                const others = new resource.specifyModel.ToOneCollection({
+                    related,
                     field: toOneFieldInfo,
-                    filters: filters
+                    filters
                 });
-                return others.fetch().then(function() {
-                    var inDatabase = others.chain().compact();
-                    inDatabase = haveLocalColl ? inDatabase.filter(function(other) {
-                        return !(resource.collection.get(other.id));
-                    }).value() : inDatabase.value();
-                    if (_.any(inDatabase, function(other) { return hasSameValues(other, value, valueField, valueIsToOne, valueId); })) {
-                        return invalid;
-                    } else {
-                        return valid;
-                    }
+                return others.fetch().then(() => {
+                    let inDatabase = others.chain().compact();
+                    inDatabase = haveLocalColl ? inDatabase.filter((other) => !(resource.collection.get(other.id))).value() : inDatabase.value();
+                    return _.any(inDatabase, (other) => hasSameValues(other, value, valueField, valueIsToOne, valueId)) ? invalid : valid;
                 });
-            });
-        } else {
-            var filters = {};
-            for (var f = 0; f < valueField.length; f++) {
-                filters[valueField[f]] = valueId[f] || value[f];
-            }
-            var others = new resource.specifyModel.LazyCollection({
-                filters: filters
-            });
-            return others.fetch().then(function() {
-                if (_.any(others.models, function(other) { return hasSameValues(other, value, valueField, valueIsToOne, valueId); })) {
-                    return invalid;
-                } else {
-                    return valid;
-                }
             });
         }
     };
@@ -297,21 +279,3 @@ var enabled = true;
 export function enableBusinessRules(e) {
     return enabled = e;
 }
-
-// REFACTOR: replace this with flippedPromise util in ../../utils/promise.ts
-/**
- * A promise that can be resolved from outside the promise
- * This is probably an anti-pattern and is included here only for compatability
- * with the legacy promise implementation (Q.js)
- */
-function flippedPromise() {
-  const promise = new Promise((resolve) =>
-      globalThis.setTimeout(() => {
-          promise.resolve = resolve;
-      }, 0)
-  );
-  return promise;
-}
-
-const resoleFlippedPromise = (promise, ...args) =>
-  globalThis.setTimeout(()=>promise.resolve(...args), 0);

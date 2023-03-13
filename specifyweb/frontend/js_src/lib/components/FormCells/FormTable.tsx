@@ -1,4 +1,5 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 import type { State } from 'typesafe-reducer';
 
 import { useId } from '../../hooks/useId';
@@ -15,11 +16,11 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
-import type { FormMode } from '../FormParse';
-import type { FormCellDefinition } from '../FormParse/cells';
 import { FormMeta } from '../FormMeta';
+import type { FormMode } from '../FormParse';
+import type { FormCellDefinition, SubViewSortField } from '../FormParse/cells';
 import { SearchDialog } from '../Forms/SearchDialog';
-import { RenderForm } from '../Forms/SpecifyForm';
+import { SpecifyForm } from '../Forms/SpecifyForm';
 import { useViewDefinition } from '../Forms/useViewDefinition';
 import { loadingGif } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
@@ -29,7 +30,6 @@ import { hasTablePermission } from '../Permissions/helpers';
 import { usePref } from '../UserPreferences/usePref';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { FormCell } from './index';
-import { LocalizedString } from 'typesafe-i18n';
 
 const cellToLabel = (
   model: SpecifyModel,
@@ -41,7 +41,7 @@ const cellToLabel = (
   text: cell.ariaLabel,
   title:
     cell.type === 'Field' || cell.type === 'SubView'
-      ? model.getField(cell.fieldName ?? '')?.getLocalizedDesc()
+      ? model.getField(cell.fieldNames?.join('.') ?? '')?.getLocalizedDesc()
       : undefined,
 });
 
@@ -63,7 +63,7 @@ export function FormTable<SCHEMA extends AnySchema>({
   viewName = relationship.relatedModel.view,
   dialog,
   onClose: handleClose,
-  sortField = 'id',
+  sortField,
   onFetchMore: handleFetchMore,
 }: {
   readonly relationship: Relationship;
@@ -73,24 +73,36 @@ export function FormTable<SCHEMA extends AnySchema>({
   readonly onAdd:
     | ((resources: RA<SpecifyResource<SCHEMA>>) => void)
     | undefined;
-  readonly onDelete: (resource: SpecifyResource<SCHEMA>) => void;
+  readonly onDelete: ((resource: SpecifyResource<SCHEMA>) => void) | undefined;
   readonly mode: FormMode;
   readonly viewName?: string;
   readonly dialog: 'modal' | 'nonModal' | false;
   readonly onClose: () => void;
-  readonly sortField: string | undefined;
+  readonly sortField: SubViewSortField | undefined;
   readonly onFetchMore: (() => Promise<void>) | undefined;
 }): JSX.Element {
-  const [sortConfig, setSortConfig] = React.useState<SortConfig<string>>({
-    sortField: sortField.startsWith('-') ? sortField.slice(1) : sortField,
-    ascending: !sortField.startsWith('-'),
-  });
-  const resources = Array.from(unsortedResources).sort(
-    sortFunction(
-      (resource) => resource.get(sortConfig.sortField),
-      !sortConfig.ascending
-    )
+  const [sortConfig, setSortConfig] = React.useState<
+    SortConfig<string> | undefined
+  >(
+    sortField === undefined
+      ? undefined
+      : {
+          sortField: sortField.fieldNames.join('.'),
+          ascending: sortField.direction === 'asc',
+        }
   );
+
+  const resources =
+    sortConfig === undefined
+      ? // Note, resources might be sorted by the back-end
+        unsortedResources
+      : Array.from(unsortedResources).sort(
+          sortFunction(
+            // FEATURE: handle related fields
+            (resource) => resource.get(sortConfig.sortField),
+            !sortConfig.ascending
+          )
+        );
 
   // When added a new resource, focus that row
   const addedResource = React.useRef<SpecifyResource<SCHEMA> | undefined>(
@@ -114,7 +126,7 @@ export function FormTable<SCHEMA extends AnySchema>({
       : undefined;
   const rowsRef = React.useRef<HTMLDivElement | null>(null);
   React.useEffect(() => {
-    if (typeof addedResource.current === 'undefined') return;
+    if (addedResource.current === undefined) return;
     const resourceIndex = resources.indexOf(addedResource.current);
     addedResource.current = undefined;
     if (resourceIndex === -1 || rowsRef.current === null) return;
@@ -161,7 +173,8 @@ export function FormTable<SCHEMA extends AnySchema>({
     'definition',
     'flexibleSubGridColumnWidth'
   );
-  const displayDeleteButton = mode !== 'view';
+  const displayDeleteButton =
+    mode !== 'view' && typeof handleDelete === 'function';
   const displayViewButton = !isDependent;
   const headerIsVisible =
     resources.length !== 1 || !isExpanded[resources[0].cid];
@@ -208,7 +221,9 @@ export function FormTable<SCHEMA extends AnySchema>({
               );
               const isSortable =
                 cell.type === 'Field' || cell.type === 'SubView';
-              const fieldName = isSortable ? cell.fieldName : undefined;
+              const fieldName = isSortable
+                ? cell.fieldNames?.join('.')
+                : undefined;
               return (
                 <DataEntry.Cell
                   align="center"
@@ -225,7 +240,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                       onClick={(): void =>
                         setSortConfig({
                           sortField: fieldName,
-                          ascending: !sortConfig.ascending,
+                          ascending: !(sortConfig?.ascending ?? false),
                         })
                       }
                     >
@@ -253,9 +268,9 @@ export function FormTable<SCHEMA extends AnySchema>({
                     <>
                       <div className="h-full" role="cell">
                         <Button.Small
-                          aria-label={commonText.contract()}
-                          title={commonText.contract()}
+                          aria-label={commonText.collapse()}
                           className="h-full"
+                          title={commonText.collapse()}
                           onClick={(): void =>
                             setExpandedRecords({
                               ...isExpanded,
@@ -273,7 +288,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                         tabIndex={-1}
                         visible
                       >
-                        <RenderForm
+                        <SpecifyForm
                           display="inline"
                           resource={resource}
                           viewDefinition={fullViewDefinition}
@@ -423,6 +438,7 @@ export function FormTable<SCHEMA extends AnySchema>({
   ) : (
     <Dialog
       buttons={commonText.close()}
+      dimensionsKey={relationship.name}
       header={header}
       headerButtons={addButton}
       modal={dialog === 'modal'}

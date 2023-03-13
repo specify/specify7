@@ -1,9 +1,11 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 import type { State } from 'typesafe-reducer';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
+import { interactionsText } from '../../localization/interactions';
 import { queryText } from '../../localization/query';
 import { ajax } from '../../utils/ajax';
 import { getDateInputValue } from '../../utils/dayJs';
@@ -14,6 +16,7 @@ import { Form } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
+import { getField } from '../DataModel/helpers';
 import type {
   SerializedModel,
   SerializedResource,
@@ -31,16 +34,13 @@ import type {
   SpQuery,
   SpQueryField,
 } from '../DataModel/types';
-import { RenderForm } from '../Forms/SpecifyForm';
+import { SpecifyForm } from '../Forms/SpecifyForm';
 import { userInformation } from '../InitialContext/userInformation';
 import { loanReturnPrepForm } from '../Interactions/PrepReturnDialog';
 import { Dialog } from '../Molecules/Dialog';
 import { mappingPathIsComplete } from '../WbPlanView/helpers';
 import { QueryButton } from './Components';
 import type { QueryField } from './helpers';
-import { LocalizedString } from 'typesafe-i18n';
-import { interactionsText } from '../../localization/interactions';
-import { getField } from '../DataModel/helpers';
 
 const returnLoanPreps = async (
   query: SerializedModel<SpQuery>,
@@ -185,7 +185,7 @@ export function QueryLoanReturn({
                 )
               }
             >
-              <RenderForm
+              <SpecifyForm
                 display="block"
                 resource={state.loanReturnPreparation}
                 viewDefinition={loanReturnPrepForm()}

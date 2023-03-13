@@ -3,12 +3,12 @@ import { useOutletContext, useParams } from 'react-router';
 import { useLocation, useNavigate } from 'react-router-dom';
 import type { State } from 'typesafe-reducer';
 
-import { deserializeResource } from '../../hooks/resource';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { useIsModified } from '../../hooks/useIsModified';
 import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
+import { userText } from '../../localization/user';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { formData } from '../../utils/ajax/helpers';
@@ -23,7 +23,7 @@ import { DataEntry } from '../Atoms/DataEntry';
 import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
 import { addMissingFields } from '../DataModel/addMissingFields';
-import { serializeResource } from '../DataModel/helpers';
+import { deserializeResource, serializeResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { idFromUrl } from '../DataModel/resource';
@@ -49,6 +49,7 @@ import {
   ProtectedAction,
   ProtectedTable,
 } from '../Permissions/PermissionDenied';
+import { locationToState, useStableLocation } from '../Router/RouterState';
 import type { SecurityOutlet } from '../Toolbar/Security';
 import type { SetAgentsResponse } from './MissingAgentsDialog';
 import { MissingAgentsDialog } from './MissingAgentsDialog';
@@ -72,8 +73,6 @@ import {
   useUserProviders,
 } from './UserPolicyHooks';
 import { anyResource, getAllActions } from './utils';
-import { locationToState, useStableLocation } from '../Router/RouterState';
-import { userText } from '../../localization/user';
 
 export function SecurityUser(): JSX.Element {
   const location = useStableLocation(useLocation());
@@ -228,7 +227,7 @@ function UserView({
     <Container.Base className="flex-1">
       <DataEntry.Header>
         <h3 className="text-2xl">{title}</h3>
-        <AppTitle title={formatted} type="form" />
+        <AppTitle title={formatted} />
       </DataEntry.Header>
       {form(
         <>
@@ -236,7 +235,7 @@ function UserView({
             <section>
               <h4 className="text-xl">{userText.accountSetupOptions()}</h4>
               <div className="flex items-center gap-2">
-                <ErrorBoundary dismissable>
+                <ErrorBoundary dismissible>
                   {canSetPassword && (
                     <SetPassword
                       isNew={userResource.isNew()}
@@ -257,7 +256,7 @@ function UserView({
             <section>
               <h4 className="text-xl">{schema.models.Institution.label}</h4>
               <div className="flex flex-col gap-2">
-                <ErrorBoundary dismissable>
+                <ErrorBoundary dismissible>
                   <SetSuperAdmin
                     allActions={allActions}
                     institutionPolicies={institutionPolicies}
@@ -294,7 +293,7 @@ function UserView({
               </div>
             </section>
           )}
-          <ErrorBoundary dismissable>
+          <ErrorBoundary dismissible>
             {hasPermission('/admin/user/oic_providers', 'read') && (
               <UserIdentityProviders identityProviders={identityProviders} />
             )}
@@ -382,7 +381,7 @@ function UserView({
                   ) : undefined
                 }
                 {typeof userResource.id === 'number' && (
-                  <ErrorBoundary dismissable>
+                  <ErrorBoundary dismissible>
                     <PreviewPermissions
                       changesMade={previewAffected}
                       collectionId={collectionId}
@@ -394,11 +393,11 @@ function UserView({
               </>
             )}
           </SetPermissionContext>
-          <ErrorBoundary dismissable>
+          <ErrorBoundary dismissible>
             <LegacyPermissions mode={mode} userResource={userResource} />
           </ErrorBoundary>
         </>,
-        '-mx-4 p-4 pt-0 flex-1 gap-8 [&_input]:max-w-[min(100%,var(--max-field-width))]'
+        '-mx-4 p-4 pt-0 flex-1 gap-8 [&_input]:max-w-[min(100%,var(--max-field-width))] overflow-auto'
       )}
       <DataEntry.Footer>
         {changesMade ? (

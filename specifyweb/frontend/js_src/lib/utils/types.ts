@@ -70,6 +70,40 @@ export const isFunction = <T>(
   typeof value === 'function';
 
 /**
+ * Allows to overwrite a read-only property in a type-safe way.
+ * In most cases it is recommended to change the typing rather or use a callback
+ * rather than use this utility.
+ * This utility is preferred over adding "// @ts-expect-error" because:
+ *  - This is more type safe (ts-expect-error disables all errors, not just
+ *    the read-only error)
+ *  - Using this utility makes it easy to see all the places that overwrite a
+ *    read only property
+ */
+export function overwriteReadOnly<
+  KEY extends string,
+  OBJECT extends { readonly [key in KEY]?: unknown }
+>(object: OBJECT, key: KEY, value: unknown): void {
+  // @ts-expect-error Overwriting read-only
+  object[key] = value;
+}
+
+/**
+ * Set a global variable when in development mode.
+ *
+ * Exposing the variables in global scope makes debugging easier.
+ *
+ * @remarks
+ * Using this function helps easily find all the places were global variables
+ * were set, and removes the need to silence the TypeScript error separately
+ * in each place
+ */
+export function setDevelopmentGlobal(name: string, value: unknown): void {
+  if (process.env.NODE_ENV === 'development')
+    // @ts-expect-error
+    globalThis[name] = value;
+}
+
+/**
  * Makes sure object extends a certain type
  *
  * @remarks
@@ -109,37 +143,3 @@ export const ensure =
   <T>() =>
   <V extends T>(value: V): V extends T ? V : never =>
     value as V extends T ? V : never;
-
-/**
- * Allows to overwrite a read-only property in a type-safe way.
- * In most cases it is recommended to change the typing rather or use a callback
- * rather than use this utility.
- * This utility is preferred over adding "// @ts-expect-error" because:
- *  - This is more type safe (ts-expect-error disables all errors, not just
- *    the read-only error)
- *  - Using this utility makes it easy to see all the places that overwrite a
- *    read only property
- */
-export function overwriteReadOnly<
-  KEY extends string,
-  OBJECT extends { readonly [key in KEY]?: unknown }
->(object: OBJECT, key: KEY, value: unknown): void {
-  // @ts-expect-error Overwriting read-only
-  object[key] = value;
-}
-
-/**
- * Set a global variable when in development mode.
- *
- * Exposing the variables in global scope makes debugging easier.
- *
- * @remarks
- * Using this function helps easily find all the places were global variables
- * were set, and removes the need to silence the TypeScript error separately
- * in each place
- */
-export function setDevelopmentGlobal(name: string, value: unknown): void {
-  if (process.env.NODE_ENV === 'development')
-    // @ts-expect-error
-    globalThis[name] = value;
-}

@@ -51,7 +51,7 @@ export const queryText = createDictionary({
   any: {
     'en-us': 'Any',
     'ru-ru': 'Любой',
-    'es-es': 'Alguna',
+    'es-es': 'Cualquier',
     'fr-fr': 'Tous',
     'uk-ua': 'Будь-який',
   },
@@ -101,8 +101,7 @@ export const queryText = createDictionary({
       actuelle inchangée.
     `,
     'uk-ua': `
-      Запит буде збережено під новою назвою, а поточний запит залишиться без
-      змін.
+      Запит буде збережено з новою назвою, а поточний запит залишиться без змін.
     `,
   },
   queryDeleteIncomplete: {
@@ -281,7 +280,7 @@ export const queryText = createDictionary({
     'ru-ru': 'Сделать {recordSetTable:string}',
     'es-es': 'Crear {recordSetTable:string}',
     'fr-fr': 'Créer un {recordSetTable:string}',
-    'uk-ua': 'Створити {recordSetTable:string}',
+    'uk-ua': 'Створити {modelName:string}',
   },
   saveAs: {
     'en-us': 'Save As',
@@ -358,14 +357,14 @@ export const queryText = createDictionary({
     'ru-ru': '(отформатирован)',
     'es-es': '(formateado)',
     'fr-fr': '(formaté)',
-    'uk-ua': '(відформатовано)',
+    'uk-ua': '(відформатований)',
   },
   like: {
     'en-us': 'Like',
     'ru-ru': 'Подобно',
     'es-es': 'Como',
     'fr-fr': 'Comme',
-    'uk-ua': 'Подобається',
+    'uk-ua': 'Люблю',
   },
   likeDescription: {
     comment: 'Explains the use of special symbols for the "like" query filter',
@@ -407,7 +406,7 @@ export const queryText = createDictionary({
     'ru-ru': 'Больше чем',
     'es-es': 'Mas grande que',
     'fr-fr': 'Plus grand que',
-    'uk-ua': 'Більше, ніж, величніше ніж, крутіший за',
+    'uk-ua': 'Більш чим',
   },
   lessThan: {
     'en-us': 'Less than',
@@ -440,7 +439,7 @@ export const queryText = createDictionary({
   false: {
     'en-us': 'False',
     'ru-ru': 'Ложь',
-    'es-es': 'Falso',
+    'es-es': 'FALSO',
     'fr-fr': 'Faux',
     'uk-ua': 'помилковий',
   },
@@ -606,7 +605,7 @@ export const queryText = createDictionary({
     'ru-ru': 'Синонимизированный узел дерева',
     'es-es': 'Árbol Sinonimizar',
     'fr-fr': "Synonymiser l'arbre",
-    'uk-ua': 'Дерево синонімізувати',
+    'uk-ua': 'Синонімізувати дерево',
   },
   treeDesynonymize: {
     comment: 'Audit Log Action Type',
@@ -637,5 +636,41 @@ export const queryText = createDictionary({
       Значення поля задовге. Максимальна дозволена довжина
       {maxLength:number|formatted}
     `,
+  },
+  importHiddenFields: {
+    'en-us': 'The following fields are hidden in the query you imported:',
+    'es-es': 'Los siguientes campos están ocultos en la consulta que importó:',
+    'fr-fr': `
+      Les champs suivants sont masqués dans la requête que vous avez importée :
+    `,
+    'ru-ru': 'В импортированном запросе скрыты следующие поля:',
+    'uk-ua': 'В імпортованому вами запиті приховано такі поля:',
+  },
+  importNoReadPermission: {
+    'en-us':
+      'The query you imported contains tables you do not have read access to:',
+    'es-es': `
+      La consulta que importó contiene tablas a las que no tiene acceso de
+      lectura:
+    `,
+    'fr-fr': `
+      La requête que vous avez importée contient des tables auxquelles vous
+      n'avez pas accès en lecture :
+    `,
+    'ru-ru': `
+      Импортированный запрос содержит таблицы, к которым у вас нет доступа для
+      чтения:
+    `,
+    'uk-ua': `
+      Запит, який ви імпортували, містить таблиці, до яких ви не маєте доступу
+      на читання:
+    `,
+  },
+  noReadPermission: {
+    'en-us': 'No read permission',
+    'es-es': 'Sin permiso de lectura',
+    'fr-fr': "Pas d'autorisation de lecture",
+    'ru-ru': 'Нет разрешения на чтение',
+    'uk-ua': 'Немає дозволу на читання',
   },
 } as const);

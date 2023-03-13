@@ -55,8 +55,8 @@ export function PreferencesAside({
   return (
     <aside
       className={`
-        top-0 flex min-w-fit flex-1 flex-col divide-y-4 divide-[color:var(--form-background)]
-        overflow-y-auto md:sticky
+        top-0 flex min-w-fit flex-shrink-0 flex-col divide-y-4 divide-[color:var(--form-background)]
+        overflow-y-auto md:sticky md:flex-1
       `}
     >
       {definitions.map(([category, { title }], index) => (

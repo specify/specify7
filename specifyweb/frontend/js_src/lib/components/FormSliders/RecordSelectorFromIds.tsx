@@ -1,5 +1,8 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
+import { unsetUnloadProtect } from '../../hooks/navigation';
+import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import type { RA } from '../../utils/types';
@@ -8,18 +11,15 @@ import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { schema } from '../DataModel/schema';
 import type { FormMode } from '../FormParse';
 import { ResourceView } from '../Forms/ResourceView';
+import { saveFormUnloadProtect } from '../Forms/Save';
 import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
+import { SetUnloadProtectsContext } from '../Router/Router';
 import type { RecordSelectorProps } from './RecordSelector';
 import { useRecordSelector } from './RecordSelector';
-import { useTriggerState } from '../../hooks/useTriggerState';
-import { UnloadProtectsContext } from '../Core/Contexts';
-import { unsetUnloadProtect } from '../../hooks/navigation';
-import { saveFormUnloadProtect } from '../Forms/Save';
-import { LocalizedString } from 'typesafe-i18n';
-import { schema } from '../DataModel/schema';
 
 /**
  * A Wrapper for RecordSelector that allows to specify list of records by their
@@ -91,13 +91,18 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
     };
   }, [ids, model]);
 
-  const [index, setIndex] = useTriggerState(defaultIndex ?? ids.length - 1);
+  const [index, setIndex] = useTriggerState(
+    Math.max(0, defaultIndex ?? ids.length - 1)
+  );
   React.useEffect(
     () =>
       setIndex((index) =>
-        typeof newResource === 'object'
-          ? rest.totalCount
-          : Math.min(index, rest.totalCount - 1)
+        Math.max(
+          0,
+          typeof newResource === 'object'
+            ? rest.totalCount
+            : Math.min(index, rest.totalCount - 1)
+        )
       ),
     [newResource, rest.totalCount]
   );
@@ -108,7 +113,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   const [unloadProtect, setUnloadProtect] = React.useState<
     (() => void) | undefined
   >(undefined);
-  const [_, setUnloadProtects] = React.useContext(UnloadProtectsContext)!;
+  const setUnloadProtects = React.useContext(SetUnloadProtectsContext)!;
 
   const {
     dialogs,
@@ -183,38 +188,44 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
       <ResourceView
         dialog={dialog}
         headerButtons={(specifyNetworkBadge): JSX.Element => (
-          <>
-            {headerButtons}
-            <DataEntry.Visit
-              resource={!isDependent && dialog !== false ? resource : undefined}
-            />
-            {hasTablePermission(model.name, isDependent ? 'create' : 'read') &&
-            typeof handleAdding === 'function' ? (
-              <DataEntry.Add
-                aria-label={addLabel}
-                disabled={mode === 'view'}
-                title={addLabel}
-                onClick={handleAdding}
+          <div className="flex flex-col items-center gap-2 md:flex-row md:gap-8">
+            <div className="flex items-center gap-2">
+              {headerButtons}
+              <DataEntry.Visit
+                resource={
+                  !isDependent && dialog !== false ? resource : undefined
+                }
               />
-            ) : undefined}
-            {typeof handleRemove === 'function' && canRemove ? (
-              <DataEntry.Remove
-                aria-label={removeLabel}
-                disabled={resource === undefined || mode === 'view'}
-                title={removeLabel}
-                onClick={(): void => handleRemove('minusButton')}
-              />
-            ) : undefined}
-            {typeof newResource === 'object' ? (
-              <p className="flex-1">{formsText.creatingNewRecord()}</p>
-            ) : (
-              <span
-                className={`flex-1 ${dialog === false ? '-ml-2' : '-ml-4'}`}
-              />
-            )}
-            {specifyNetworkBadge}
-            {slider}
-          </>
+              {hasTablePermission(
+                model.name,
+                isDependent ? 'create' : 'read'
+              ) && typeof handleAdding === 'function' ? (
+                <DataEntry.Add
+                  aria-label={addLabel}
+                  disabled={mode === 'view'}
+                  title={addLabel}
+                  onClick={handleAdding}
+                />
+              ) : undefined}
+              {typeof handleRemove === 'function' && canRemove ? (
+                <DataEntry.Remove
+                  aria-label={removeLabel}
+                  disabled={resource === undefined || mode === 'view'}
+                  title={removeLabel}
+                  onClick={(): void => handleRemove('minusButton')}
+                />
+              ) : undefined}
+              {typeof newResource === 'object' ? (
+                <p className="flex-1">{formsText.creatingNewRecord()}</p>
+              ) : (
+                <span
+                  className={`flex-1 ${dialog === false ? '-ml-2' : '-ml-4'}`}
+                />
+              )}
+              {specifyNetworkBadge}
+            </div>
+            <div>{slider}</div>
+          </div>
         )}
         isDependent={isDependent}
         isLoading={isLoading || isExternalLoading}
@@ -223,13 +234,13 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
         resource={resource}
         title={title}
         viewName={viewName}
+        onAdd={handleClone}
         onClose={handleClose}
         onDeleted={
           resource?.isNew() === true || hasTablePermission(model.name, 'delete')
             ? handleRemove?.bind(undefined, 'deleteButton')
             : undefined
         }
-        onAdd={handleClone}
         onSaved={(): void => handleSaved(resource!)}
       />
       {dialogs}

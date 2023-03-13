@@ -7,27 +7,30 @@
 import type hot from 'handsontable';
 import type { State } from 'typesafe-reducer';
 
-import type { AppResourceFilters } from '../../components/AppResources/filtersHelpers';
 import type { AppResourcesConformation } from '../../components/AppResources/Aside';
-import type { SearchPreferences } from '../../components/WorkBench/AdvancedSearch';
+import type { AppResourceFilters } from '../../components/AppResources/filtersHelpers';
+import type { AnyTree } from '../../components/DataModel/helperTypes';
 import type {
   Attachment,
   SpQuery,
   Tables,
 } from '../../components/DataModel/types';
-import type { UserPreferences } from '../../components/UserPreferences/helpers';
-import type { Conformations } from '../../components/TreeView/helpers';
-import type { IR, RA } from '../types';
-import { ensure } from '../types';
-import { AnyTree } from '../../components/DataModel/helperTypes';
-import {
+import type {
   LeafletCacheSalt,
   MarkerLayerName,
 } from '../../components/Leaflet/addOns';
-import { SortConfig } from '../../components/Molecules/Sorting';
+import type { SortConfig } from '../../components/Molecules/Sorting';
+import type { Conformations } from '../../components/TreeView/helpers';
+import type { UserPreferences } from '../../components/UserPreferences/helpers';
+import type { SearchPreferences } from '../../components/WorkBench/AdvancedSearch';
+import type { IR, RA } from '../types';
+import { ensure } from '../types';
 
 /** The types of cached values are defined here */
 export type CacheDefinitions = {
+  readonly header: {
+    readonly isCollapsed: boolean;
+  };
   readonly general: {
     readonly clearCacheOnException: boolean;
   };
@@ -71,13 +74,13 @@ export type CacheDefinitions = {
     readonly applyAll: boolean;
   };
   readonly tree: {
-    readonly /** Open nodes in a given tree */
-    [key in `conformations${AnyTree['tableName']}`]: Conformations;
-  } & {
     readonly [key in `focusPath${AnyTree['tableName']}`]: RA<number>;
   } & {
     readonly /** Collapsed ranks in a given tree */
     [key in `collapsedRanks${AnyTree['tableName']}`]: RA<number>;
+  } & {
+    readonly /** Open nodes in a given tree */
+    [key in `conformations${AnyTree['tableName']}`]: Conformations;
   };
   readonly workBenchSortConfig: {
     readonly /**
@@ -100,10 +103,10 @@ export type CacheDefinitions = {
     /** Attachments grid scale */
     readonly scale: number;
   };
-  readonly geoLocate: {
-    /** Remember dialog window dimentions from the last session */
-    readonly width: number;
-    readonly height: number;
+  /** Remember dialog window dimensions and positions from the last session */
+  readonly dialogs: {
+    readonly sizes: IR<readonly [width: number, height: number]>;
+    readonly positions: IR<readonly [x: number, y: number]>;
   };
   readonly userPreferences: {
     /**
@@ -142,7 +145,7 @@ export type SortConfigs = {
   readonly listOfDataSets: 'dateCreated' | 'dateUploaded' | 'name';
   readonly listOfReports: 'name' | 'timestampCreated';
   readonly listOfLabels: 'name' | 'timestampCreated';
-  readonly dataModelFields:
+  readonly schemaViewerFields:
     | 'databaseColumn'
     | 'description'
     | 'isHidden'
@@ -152,7 +155,7 @@ export type SortConfigs = {
     | 'length'
     | 'name'
     | 'type';
-  readonly dataModelRelationships:
+  readonly schemaViewerRelationships:
     | 'databaseColumn'
     | 'description'
     | 'isDependent'
@@ -164,7 +167,7 @@ export type SortConfigs = {
     | 'otherSideName'
     | 'relatedModel'
     | 'type';
-  readonly dataModelTables:
+  readonly schemaViewerTables:
     | 'fieldCount'
     | 'isHidden'
     | 'isSystem'
@@ -173,8 +176,6 @@ export type SortConfigs = {
     | 'relationshipCount'
     | 'tableId';
 };
-
-const cacheDefinitions = {} as unknown as CacheDefinitions;
 
 // Some circular types can't be expressed without interfaces
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
@@ -191,8 +192,9 @@ type CacheValue =
   | string
   | null
   | undefined;
+
 /**
  * This will trigger a TypeScript type error if any cache definition
  * contains a value that is not JSON-Serializable.
  */
-ensure<IR<IR<CacheValue>>>()(cacheDefinitions);
+ensure<IR<IR<CacheValue>>>()({} as unknown as CacheDefinitions);

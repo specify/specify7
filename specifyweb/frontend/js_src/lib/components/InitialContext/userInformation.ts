@@ -2,14 +2,17 @@
  * Fetch basic SpecifyUser information
  */
 
-import type { Agent, Collection, SpecifyUser } from '../DataModel/types';
-import { serializeResource } from '../DataModel/helpers';
-import { load } from './index';
-import { fetchContext as fetchSchema } from '../DataModel/schema';
+import type { LocalizedString } from 'typesafe-i18n';
+
 import type { RA, Writable } from '../../utils/types';
 import { setDevelopmentGlobal } from '../../utils/types';
-import { SerializedModel, SerializedResource } from '../DataModel/helperTypes';
-import { LocalizedString } from 'typesafe-i18n';
+import { serializeResource } from '../DataModel/helpers';
+import type {
+  SerializedModel,
+  SerializedResource,
+} from '../DataModel/helperTypes';
+import type { Agent, Collection, SpecifyUser } from '../DataModel/types';
+import { load } from './index';
 
 export type UserInformation = SerializedModel<SpecifyUser> & {
   readonly name: LocalizedString;
@@ -31,11 +34,15 @@ export const fetchContext = load<
       // @ts-expect-error
       userInfo[key as keyof UserInformation] = value;
     });
-    return fetchSchema.then(() => {
-      userInfo.availableCollections =
-        availableCollections.map(serializeResource);
-      setDevelopmentGlobal('_user', userInfo);
-    });
+    await import('../DataModel/schema').then(
+      async ({ fetchContext }) => fetchContext
+    );
+    await import('../DataModel/schemaBase').then(
+      async ({ fetchContext }) => fetchContext
+    );
+    userInfo.availableCollections = availableCollections.map(serializeResource);
+    setDevelopmentGlobal('_user', userInfo);
+    return userInfo;
   }
 );
 

@@ -2,6 +2,10 @@
  * Format a resource using resource formatters defined in Specify 6
  */
 
+import type { LocalizedString } from 'typesafe-i18n';
+
+import { formsText } from '../../localization/forms';
+import { userText } from '../../localization/user';
 import { ajax } from '../../utils/ajax';
 import { fieldFormat } from '../../utils/fieldFormat';
 import { resolveParser } from '../../utils/parser/definitions';
@@ -18,22 +22,16 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { LiteralField } from '../DataModel/specifyField';
-import type { Collection } from '../DataModel/specifyModel';
-import { SpecifyModel } from '../DataModel/specifyModel';
+import type { Collection, SpecifyModel } from '../DataModel/specifyModel';
 import type { Tables } from '../DataModel/types';
+import { softFail } from '../Errors/Crash';
 import {
   cachableUrl,
   contextUnlockedPromise,
   foreverFetch,
 } from '../InitialContext';
-import {
-  hasTablePermission,
-  mappingPathToTableNames,
-} from '../Permissions/helpers';
+import { hasPathPermission, hasTablePermission } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
-import { userText } from '../../localization/user';
-import { LocalizedString } from 'typesafe-i18n';
-import { formsText } from '../../localization/forms';
 
 export type Formatter = {
   readonly name: string | undefined;
@@ -172,7 +170,7 @@ export async function format<SCHEMA extends AnySchema>(
    * are missing
    */
   tryBest: boolean = false
-): Promise<LocalizedString | undefined> {
+  ): Promise<LocalizedString | undefined> {
   if (typeof resource !== 'object' || resource === null) return undefined;
   if (hasTablePermission(resource.specifyModel.name, 'read'))
     await resource.fetch();
@@ -207,10 +205,11 @@ export async function format<SCHEMA extends AnySchema>(
   const isEmptyResource = fields
     .map(({ fieldName }) => resource.get(fieldName.split('.')[0]))
     .every((value) => value === undefined || value === null || value === '');
+
   return isEmptyResource
     ? automaticFormatter ?? undefined
     : Promise.all(
-        fields.map((field) => formatField(field, resource, tryBest))
+        fields.map(async (field) => formatField(field, resource, tryBest))
       ).then((values) => values.join('') as LocalizedString);
 }
 
@@ -224,34 +223,39 @@ async function formatField(
   resource: SpecifyResource<AnySchema>,
   tryBest: boolean
 ): Promise<string> {
-  const field = resource.specifyModel.strictGetField(fieldName) as LiteralField;
   if (typeof fieldFormatter === 'string' && fieldFormatter === '') return '';
 
-  // Check if formatter contains a table withouth read access
-  const noAccessTable = mappingPathToTableNames(
-    resource.specifyModel.name,
-    fieldName.split('.'),
-    true
-  ).find((tableName) => !hasTablePermission(tableName, 'read'));
+  const fields = resource.specifyModel.getFields(fieldName);
+  if (fields === undefined) {
+    console.error(`Tried to get unknown field: ${fieldName}`);
+    return '';
+  }
+  const field = fields.at(-1)!;
+  if (field.isRelationship) {
+    console.error(`Unexpected formatting of a relationship field ${fieldName}`);
+    return '';
+  }
 
-  const formatted =
-    typeof noAccessTable === 'string'
-      ? tryBest
-        ? naiveFormatter(schema.models[noAccessTable].label, resource.id)
-        : userText.noPermission()
-      : await (
-          resource.rgetPromise(fieldName) as Promise<
-            SpecifyResource<AnySchema> | string | undefined
-          >
-        ).then(async (value) =>
-          formatter.length > 0 && typeof value === 'object'
-            ? (await format(value, formatter)) ?? ''
-            : fieldFormat(
-                field,
-                resolveParser(field),
-                value as string | undefined
-              )
-        );
+  const hasPermission = hasPathPermission(fields, 'read');
+
+  const formatted = hasPermission
+    ? await (
+        resource.rgetPromise(fieldName) as Promise<
+          SpecifyResource<AnySchema> | string | undefined
+        >
+      ).then(async (value) =>
+        formatter.length > 0 && typeof value === 'object'
+          ? (await format(value, formatter)) ?? ''
+          : fieldFormat(
+              field,
+              resolveParser(field),
+              value as string | undefined
+            )
+      )
+    : tryBest
+    ? naiveFormatter(resource.specifyModel.name, resource.id)
+    : userText.noPermission();
+
   return formatted === '' ? '' : `${separator}${formatted}`;
 }
 
@@ -307,13 +311,15 @@ export async function aggregate(
         className === collection.model.specifyModel.longName && isDefault
     );
 
-  if (aggregator === undefined) throw new Error('Aggregator not found');
+  if (aggregator === undefined) softFail(new Error('Aggregator not found'));
 
   if (!collection.isComplete()) console.error('Collection is incomplete');
 
   return Promise.all(
     collection.models.map(async (resource) =>
-      format(resource, aggregator.format)
+      format(resource, aggregator?.format)
     )
-  ).then((formatted) => filterArray(formatted).join(aggregator.separator));
+  ).then((formatted) =>
+    filterArray(formatted).join(aggregator?.separator ?? ', ')
+  );
 }

@@ -1,8 +1,9 @@
 import { Tab } from '@headlessui/react';
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
-import { resourcesText } from '../../localization/resources';
 import { commonText } from '../../localization/common';
+import { resourcesText } from '../../localization/resources';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
@@ -24,7 +25,6 @@ import {
   AppResourceTextEditor,
   visualAppResourceEditors,
 } from './TabDefinitions';
-import { LocalizedString } from 'typesafe-i18n';
 
 export function AppResourcesTabs({
   label,
@@ -68,7 +68,7 @@ export function AppResourcesTabs({
       <Tab.Panels className="h-full overflow-auto border border-brand-300 dark:border-none">
         {tabs.map(({ component: Component }, index) => (
           <Tab.Panel className="h-full" key={index}>
-            <ErrorBoundary dismissable>
+            <ErrorBoundary dismissible>
               <Component
                 appResource={appResource}
                 data={data}
@@ -93,6 +93,7 @@ export function AppResourcesTabs({
       className={{
         container: dialogClassNames.fullScreen,
       }}
+      dimensionsKey={false}
       header={label}
       headerButtons={headerButtons}
       icon={appResourceIcon(getResourceType(resource))}

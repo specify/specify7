@@ -2,6 +2,8 @@
  * Classes for a specify field
  */
 
+import type { LocalizedString } from 'typesafe-i18n';
+
 import type { IR } from '../../utils/types';
 import { camelToHuman } from '../../utils/utils';
 import { getUiFormatters, type UiFormatter } from '../Forms/uiFormatters';
@@ -14,7 +16,6 @@ import { unescape } from './schemaBase';
 import { getFieldOverwrite, getGlobalFieldOverwrite } from './schemaOverrides';
 import type { SpecifyModel } from './specifyModel';
 import type { PickList, Tables } from './types';
-import { LocalizedString } from 'typesafe-i18n';
 
 export type JavaType =
   // Strings

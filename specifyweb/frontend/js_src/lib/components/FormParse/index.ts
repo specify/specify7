@@ -3,31 +3,37 @@
  * adding type safety and strictness to help resolve ambiguities
  */
 
+import type { LocalizedString } from 'typesafe-i18n';
+
 import { ajax } from '../../utils/ajax';
+import { Http } from '../../utils/ajax/definitions';
 import { f } from '../../utils/functools';
 import type { IR, R, RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import { getParsedAttribute } from '../../utils/utils';
 import { parseXml } from '../AppResources/codeMirrorLinters';
+import { formatDisjunction } from '../Atoms/Internationalization';
 import { parseJavaClassName } from '../DataModel/resource';
 import { strictGetModel } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { error } from '../Errors/assert';
+import type { LogMessage } from '../Errors/interceptLogs';
+import { consoleLog, setLogContext } from '../Errors/interceptLogs';
 import { cachableUrl } from '../InitialContext';
 import { getPref } from '../InitialContext/remotePrefs';
 import { formatUrl } from '../Router/queryString';
 import type { FormCellDefinition } from './cells';
 import { parseFormCell, processColumnDefinition } from './cells';
 import { postProcessFormDef } from './postProcessFormDef';
-import { Http } from '../../utils/ajax/definitions';
 import { webOnlyViews } from './webOnlyViews';
-import { LocalizedString } from 'typesafe-i18n';
 
 export type ViewDescription = ParsedFormDefinition & {
   readonly formType: FormType;
   readonly mode: FormMode;
-  readonly model: SpecifyModel | undefined;
+  readonly model: SpecifyModel;
+  readonly errors?: RA<LogMessage>;
   readonly viewSetId?: number;
+  readonly name: string;
 };
 
 type AltView = {
@@ -60,7 +66,7 @@ export const fetchView = async (
 ): Promise<ViewDefinition | undefined> =>
   name in views
     ? Promise.resolve(views[name])
-    : ajax<string>(
+    : ajax(
         /*
          * NOTE: If getView hasn't yet been invoked, the view URLs won't be
          * marked as cachable
@@ -80,10 +86,15 @@ export const fetchView = async (
           expectedResponseCodes: [Http.OK, Http.NOT_FOUND, Http.NO_CONTENT],
         }
       ).then(({ data, status }) => {
+        // FEATURE: add an easy way to cache ajax responses:
         views[name] =
           status === Http.NOT_FOUND || status === Http.NO_CONTENT
             ? undefined
             : (JSON.parse(data) as ViewDefinition);
+        if (status === Http.NOT_FOUND)
+          console.error(
+            `Unable to find a view definition for the "${name}" view`
+          );
         return views[name];
       });
 
@@ -92,17 +103,26 @@ export function parseViewDefinition(
   defaultType: FormType,
   originalMode: FormMode
 ): ViewDescription | undefined {
+  setLogContext({ viewName: view.name });
   const resolved = resolveViewDefinition(view, defaultType, originalMode);
   if (resolved === undefined) return undefined;
   const { mode, formType, viewDefinition, model } = resolved;
   const parser =
     formType === 'formTable' ? parseFormTableDefinition : parseFormDefinition;
+
+  const logIndexBefore = consoleLog.length;
+  const parsed = parser(viewDefinition, model);
+  const errors = consoleLog.slice(logIndexBefore);
+  setLogContext({}, false);
+
   return {
     mode,
     formType,
     model,
     viewSetId: view.viewsetId ?? undefined,
-    ...parser(viewDefinition, model),
+    errors,
+    name: view.name,
+    ...parsed,
   };
 }
 
@@ -147,14 +167,22 @@ export function resolveViewDefinition(
       'Form definition does not contain a class attribute'
     )
   );
+  const resolvedFormType =
+    formType === 'formTable'
+      ? 'formTable'
+      : formTypes.find(
+          (type) => type.toLowerCase() === newFormType?.toLowerCase()
+        );
+  if (resolvedFormType === undefined)
+    console.warn(
+      `Unknown form type ${
+        newFormType ?? '(null)'
+      }. Expected one of ${formatDisjunction(formTypes)}`
+    );
+
   return {
     viewDefinition: actualViewDefinition,
-    formType:
-      formType === 'formTable'
-        ? 'formTable'
-        : formTypes.find(
-            (type) => type.toLowerCase() === newFormType?.toLowerCase()
-          ) ?? 'form',
+    formType: resolvedFormType ?? 'form',
     mode: mode === 'search' ? mode : altView.mode,
     model: strictGetModel(
       modelName === 'ObjectAttachmentIFace' ? 'Attachment' : modelName
@@ -223,7 +251,7 @@ export type ParsedFormDefinition = {
 
 function parseFormTableDefinition(
   viewDefinition: Element,
-  model: SpecifyModel | undefined
+  model: SpecifyModel
 ): ParsedFormDefinition {
   const { rows } = parseFormDefinition(viewDefinition, model);
   const labelsForCells = Object.fromEntries(
@@ -240,6 +268,9 @@ function parseFormTableDefinition(
   const row = rows
     .flat()
     // FormTable consists of Fields and SubViews only
+    /*
+     * FEATURE: extract fields from panels too
+     */
     .filter(({ type }) => type === 'Field' || type === 'SubView')
     .map<FormCellDefinition>((cell) => ({
       ...cell,
@@ -255,8 +286,8 @@ function parseFormTableDefinition(
           : undefined) ??
         labelsForCells[cell.id ?? '']?.text ??
         (cell.type === 'Field' || cell.type === 'SubView'
-          ? model?.getField(cell.fieldName ?? '')?.label ??
-            (cell.fieldName as LocalizedString)
+          ? model?.getField(cell.fieldNames?.join('.') ?? '')?.label ??
+            (cell.fieldNames?.join('.') as LocalizedString)
           : undefined),
       // Remove labels from checkboxes (as labels would be in the table header)
       ...(cell.type === 'Field' && cell.fieldDefinition.type === 'Checkbox'
@@ -291,11 +322,14 @@ function parseFormTableColumns(
  * Can't use querySelectorAll here because it is not supported in JSDom
  * See https://github.com/jsdom/jsdom/issues/2998
  */
-export const parseFormDefinition = (
+export function parseFormDefinition(
   viewDefinition: Element,
-  model: SpecifyModel | undefined
-): ParsedFormDefinition =>
-  postProcessFormDef(
+  model: SpecifyModel
+): ParsedFormDefinition {
+  setLogContext({
+    tableName: model.name,
+  });
+  return postProcessFormDef(
     processColumnDefinition(getColumnDefinitions(viewDefinition)),
     Array.from(
       Array.from(viewDefinition.children).find(
@@ -303,13 +337,20 @@ export const parseFormDefinition = (
       )?.children ?? []
     )
       .filter(({ tagName }) => tagName === 'row')
-      .map((row) =>
-        Array.from(row.children)
+      .map((row, index) => {
+        setLogContext({ row: index + 1 });
+
+        return Array.from(row.children)
           .filter(({ tagName }) => tagName === 'cell')
-          .map((cell) => parseFormCell(model, cell))
-      ),
+          .map((cell, index) => {
+            setLogContext({ cell: index + 1 });
+
+            return parseFormCell(model, cell);
+          });
+      }),
     model
   );
+}
 
 function getColumnDefinitions(viewDefinition: Element): string {
   const definition =
@@ -317,10 +358,10 @@ function getColumnDefinitions(viewDefinition: Element): string {
       viewDefinition,
       getPref('form.definition.columnSource')
     ) ?? getColumnDefinition(viewDefinition, undefined);
-  return defined(
-    definition ?? getParsedAttribute(viewDefinition, 'colDef'),
-    'Form definition does not contain column definition'
-  );
+  const resolved = definition ?? getParsedAttribute(viewDefinition, 'colDef');
+  if (resolved === undefined)
+    console.warn('Form definition does not contain column definition');
+  return resolved ?? '';
 }
 
 const getColumnDefinition = (
@@ -333,7 +374,6 @@ const getColumnDefinition = (
 
 export const exportsForTests = {
   views,
-  fetchView,
   parseViewDefinitions,
   resolveAltView,
   parseFormTableDefinition,

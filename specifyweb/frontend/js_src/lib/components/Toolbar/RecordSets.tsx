@@ -1,8 +1,7 @@
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 
-import { deserializeResource } from '../../hooks/resource';
-import { useAsyncState } from '../../hooks/useAsyncState';
+import { useAsyncState, usePromise } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
@@ -11,6 +10,7 @@ import { icons } from '../Atoms/Icons';
 import { formatNumber } from '../Atoms/Internationalization';
 import { Link } from '../Atoms/Link';
 import { fetchCollection } from '../DataModel/collection';
+import { deserializeResource, getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getModelById, schema } from '../DataModel/schema';
@@ -24,7 +24,6 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { hasToolPermission } from '../Permissions/helpers';
 import { OverlayContext } from '../Router/Router';
 import { EditRecordSet } from './RecordSetEdit';
-import { getField } from '../DataModel/helpers';
 
 export function RecordSetsOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -86,10 +85,7 @@ export function RecordSetsDialog({
     'name'
   );
 
-  const [unsortedData] = useAsyncState(
-    React.useCallback(async () => recordSetsPromise, [recordSetsPromise]),
-    true
-  );
+  const [unsortedData] = usePromise(recordSetsPromise, true);
   const data = React.useMemo(
     () =>
       typeof unsortedData === 'object'
@@ -181,6 +177,7 @@ export function RecordSetsDialog({
                 {buttons}
               </>
             }
+            dimensionsKey="RecordSets"
             header={commonText.countLine({
               resource: commonText.recordSets(),
               count: data.totalCount,

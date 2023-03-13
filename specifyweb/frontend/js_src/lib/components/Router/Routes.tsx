@@ -1,18 +1,17 @@
 import React from 'react';
 
+import { attachmentsText } from '../../localization/attachments';
+import { developmentText } from '../../localization/development';
+import { headerText } from '../../localization/header';
+import { preferencesText } from '../../localization/preferences';
 import { resourcesText } from '../../localization/resources';
+import { schemaText } from '../../localization/schema';
+import { userText } from '../../localization/user';
 import { welcomeText } from '../../localization/welcome';
 import { wbText } from '../../localization/workbench';
 import type { RA } from '../../utils/types';
 import { Redirect } from './Redirect';
 import type { EnhancedRoute } from './RouterUtils';
-import { WelcomeView } from '../HomePage';
-import { schemaText } from '../../localization/schema';
-import { headerText } from '../../localization/header';
-import { userText } from '../../localization/user';
-import { preferencesText } from '../../localization/preferences';
-import { attachmentsText } from '../../localization/attachments';
-import { developmentText } from '../../localization/development';
 
 // FEATURE: go over non-dynamic routes in all routers to make sure they have titles
 /* eslint-disable @typescript-eslint/promise-function-async */
@@ -24,7 +23,6 @@ export const routes: RA<EnhancedRoute> = [
         ({ ExpressSearchView }) => ExpressSearchView
       ),
     title: headerText.expressSearch(),
-    navigatable: false,
   },
   {
     path: 'express_search',
@@ -38,14 +36,12 @@ export const routes: RA<EnhancedRoute> = [
         index: true,
         title: schemaText.databaseSchema(),
         element: () =>
-          import('../Toolbar/DataModel').then(
-            ({ DataModelTables }) => DataModelTables
-          ),
+          import('../SchemaViewer').then(({ SchemaViewer }) => SchemaViewer),
       },
       {
         path: ':tableName',
         element: () =>
-          import('../Toolbar/DataModel').then(
+          import('../SchemaViewer/helpers').then(
             ({ DataModelRedirect }) => DataModelRedirect
           ),
       },
@@ -75,7 +71,6 @@ export const routes: RA<EnhancedRoute> = [
         children: [
           {
             index: true,
-            element: <></>,
           },
           {
             path: 'role',
@@ -126,7 +121,6 @@ export const routes: RA<EnhancedRoute> = [
         children: [
           {
             index: true,
-            element: <></>,
           },
           {
             path: 'role/',
@@ -418,7 +412,7 @@ export const routes: RA<EnhancedRoute> = [
   {
     index: true,
     title: welcomeText.pageTitle(),
-    element: <WelcomeView />,
+    element: () => import('../HomePage').then(({ WelcomeView }) => WelcomeView),
   },
   /*
    * The "*" route (the 404 case) was not added, as otherwise it would be

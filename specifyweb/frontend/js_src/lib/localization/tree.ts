@@ -20,7 +20,7 @@ export const treeText = createDictionary({
     'en-us': 'Bad tree structure.',
     'ru-ru': 'У дерева плохая структура.',
     'es-es': 'Mala estructura de árbol.',
-    'fr-fr': 'Mauvaise arborescence.',
+    'fr-fr': 'Structure hiérarchique incorrecte.',
     'uk-ua': 'Погана структура дерева.',
   },
   move: {
@@ -41,7 +41,7 @@ export const treeText = createDictionary({
     'en-us': 'Undo Synonymy',
     'ru-ru': 'Отменить синонимию',
     'es-es': 'Deshacer sinonimia',
-    'fr-fr': 'Annuler la synonyme',
+    'fr-fr': 'Annuler la synonymie',
     'uk-ua': 'Скасувати синонімію',
   },
   synonymize: {
@@ -139,7 +139,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Невозможно объединить в синонимы',
     'es-es': 'No se puede fusionar en sinónimos',
     'fr-fr': 'Impossible de fusionner en synonymes',
-    'uk-ua': 'Не можна об’єднувати в синоніми',
+    'uk-ua': 'Неможливо злити в синоніми',
   },
   cantSynonymizeSynonym: {
     'en-us': "Can't synonymize with a synonym",
@@ -358,5 +358,12 @@ export const treeText = createDictionary({
     'es-es': 'Editar rangos',
     'fr-fr': 'Modifier les rangs',
     'uk-ua': 'Редагувати ранги',
+  },
+  resourceToDelete: {
+    'en-us': 'This will permanently delete the following resource',
+    'es-es': 'Esto eliminará permanentemente el siguiente recurso',
+    'fr-fr': 'Cela supprimera définitivement la ressource suivante',
+    'ru-ru': 'Это навсегда удалит следующий ресурс',
+    'uk-ua': 'Це призведе до остаточного видалення наступного ресурсу',
   },
 } as const);

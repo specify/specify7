@@ -1,16 +1,18 @@
-import { icons } from './Icons';
-import { TagProps, wrap } from './wrapper';
 import React from 'react';
-import { RA } from '../../utils/types';
-import { ViewDescription } from '../FormParse';
-import { className } from './className';
+import type { LocalizedString } from 'typesafe-i18n';
+
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
-import { SpecifyResource } from '../DataModel/legacyTypes';
+import type { RA } from '../../utils/types';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { ViewDescription } from '../FormParse';
 import { Button } from './Button';
+import { className } from './className';
+import type { icons } from './Icons';
 import { Link } from './Link';
-import { AnySchema } from '../DataModel/helperTypes';
-import { LocalizedString } from 'typesafe-i18n';
+import type { TagProps } from './wrapper';
+import { wrap } from './wrapper';
 
 const dataEntryButton = (
   className: string,
@@ -158,10 +160,10 @@ export const DataEntry = {
   }): JSX.Element | null {
     return typeof resource === 'object' && !resource.isNew() ? (
       <Link.NewTab
-        aria-label={formsText.visit()}
+        aria-label={commonText.openInNewTab()}
         className={`${className.dataEntryVisit} ${localClassName}`}
         href={resource.viewUrl()}
-        title={formsText.visit()}
+        title={commonText.openInNewTab()}
       />
     ) : null;
   },

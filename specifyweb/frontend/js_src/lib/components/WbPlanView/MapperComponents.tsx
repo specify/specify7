@@ -1,31 +1,30 @@
 import React from 'react';
 
-import type { Tables } from '../DataModel/types';
-import { commonText } from '../../localization/common';
-import { strictGetModel } from '../DataModel/schema';
-import type { IR, RA, RR } from '../../utils/types';
-import type { ColumnOptions, MatchBehaviors } from './uploadPlanParser';
-import { getMappingLineData } from './navigator';
-import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
+import { useId } from '../../hooks/useId';
+import { commonText } from '../../localization/common';
+import { schemaText } from '../../localization/schema';
+import { wbPlanText } from '../../localization/wbPlan';
+import type { IR, RA, RR } from '../../utils/types';
+import { Ul } from '../Atoms';
+import { Button } from '../Atoms/Button';
+import { Input, Label } from '../Atoms/Form';
+import { strictGetModel } from '../DataModel/schema';
+import type { Tables } from '../DataModel/types';
+import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { TableIcon } from '../Molecules/TableIcon';
+import { usePref } from '../UserPreferences/usePref';
+import { ButtonWithConfirmation } from './Components';
 import type {
   HtmlGeneratorFieldData,
   MappingElementProps,
 } from './LineComponents';
 import { MappingPathComponent } from './LineComponents';
 import type { MappingPath } from './Mapper';
-import { Button } from '../Atoms/Button';
-import { Input, Label } from '../Atoms/Form';
-import { Ul } from '../Atoms';
-import { useId } from '../../hooks/useId';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { TableIcon } from '../Molecules/TableIcon';
-import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
-import { usePref } from '../UserPreferences/usePref';
-import { ButtonWithConfirmation } from './Components';
-import { whitespaceSensitive } from '../../localization/utils';
-import { schemaText } from '../../localization/schema';
-import { wbPlanText } from '../../localization/wbPlan';
+import { getMappingLineData } from './navigator';
+import type { ColumnOptions, MatchBehaviors } from './uploadPlanParser';
 
 export function MappingsControlPanel({
   showHiddenFields,
@@ -241,7 +240,7 @@ export function mappingOptionsMenu({
               },
             }).map(([id, { title, description }]) => (
               <li key={id}>
-                <Label.Inline title={whitespaceSensitive(description)}>
+                <Label.Inline title={description}>
                   <Input.Radio
                     checked={columnOptions.matchBehavior === id}
                     isReadOnly={isReadOnly}

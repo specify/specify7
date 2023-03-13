@@ -12,10 +12,10 @@
  * schema, but it's here for now.
  */
 
-import type { Tables } from './types';
+import type { RA, RR, Writable } from '../../utils/types';
 import { load } from '../InitialContext';
 import type { SpecifyModel } from './specifyModel';
-import type { RA, RR, Writable } from '../../utils/types';
+import type { Tables } from './types';
 
 export type Schema = {
   readonly domainLevelIds: RR<typeof domainLevels[number], number>;
@@ -79,8 +79,9 @@ const domainLevels = [
   'institution',
 ] as const;
 
-// REFACTOR: separate schema base (domain.json) from the rest of the schema
-// Scoping information is loaded and populated here.
+/*
+ * Scoping information is loaded and populated here.
+ */
 export const fetchContext = load<
   Omit<Schema, 'domainLevelIds'> & Schema['domainLevelIds']
 >('/context/domain.json', 'application/json').then((data) => {
@@ -98,7 +99,7 @@ export const schemaBase: Schema = schema;
 
 // Convenience function for unEscaping strings from schema localization information
 export const unescape = (string: string): string =>
-  string.replace(/([^\\])\\n/g, '$1\n');
+  string.replaceAll(/([^\\])\\n/g, '$1\n');
 
 if (process.env.NODE_ENV === 'development')
   import('../../tests/updateDataModel').catch(console.error);

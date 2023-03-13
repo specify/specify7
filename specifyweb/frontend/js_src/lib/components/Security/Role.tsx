@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import type { LocalizedString } from 'typesafe-i18n';
 import type { State } from 'typesafe-reducer';
 
 import { useUnloadProtect } from '../../hooks/navigation';
@@ -7,6 +8,9 @@ import { useErrorContext } from '../../hooks/useErrorContext';
 import { useLiveState } from '../../hooks/useLiveState';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
+import { mainText } from '../../localization/main';
+import { schemaText } from '../../localization/schema';
+import { userText } from '../../localization/user';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { replaceKey } from '../../utils/utils';
@@ -16,7 +20,9 @@ import { Form, Input, Label } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
+import { getField } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { schema } from '../DataModel/schema';
 import type { SpecifyUser } from '../DataModel/types';
 import { AppTitle } from '../Molecules/AppTitle';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
@@ -26,12 +32,6 @@ import type { UserRoles } from './Collection';
 import { ImportExport } from './ImportExport';
 import { SecurityPolicies, SecurityPoliciesWrapper } from './Policies';
 import type { Policy } from './Policy';
-import { mainText } from '../../localization/main';
-import { userText } from '../../localization/user';
-import { schemaText } from '../../localization/schema';
-import { LocalizedString } from 'typesafe-i18n';
-import { schema } from '../DataModel/schema';
-import { getField } from '../DataModel/helpers';
 
 export type NewRole = {
   readonly id: number | undefined;
@@ -115,7 +115,7 @@ export function RoleView({
           value: role.name,
         })}
       </h3>
-      <AppTitle title={role.name} type="form" />
+      <AppTitle title={role.name} />
       <Link.Default href={closeUrl}>
         {icons.arrowLeft}
         {parentName}

@@ -1,22 +1,22 @@
 import React from 'react';
 
-import type { SpLocaleContainerItem } from '../DataModel/types';
-import { javaTypeToHuman } from './helpers';
+import { commonText } from '../../localization/common';
+import { resourcesText } from '../../localization/resources';
+import { schemaText } from '../../localization/schema';
+import { Input, Label } from '../Atoms/Form';
+import { getField } from '../DataModel/helpers';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import { schema } from '../DataModel/schema';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
-import type { ItemType } from './index';
+import type { SpLocaleContainerItem } from '../DataModel/types';
+import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
+import type { WithFetchedStrings } from '../Toolbar/SchemaConfig';
 import { SchemaConfigColumn } from './Fields';
 import { SchemaConfigFormat } from './Format';
+import { javaTypeToHuman } from './helpers';
+import type { ItemType } from './index';
 import type { SchemaData } from './SetupHooks';
 import { maxSchemaValueLength } from './Table';
-import type { WithFetchedStrings } from '../Toolbar/SchemaConfig';
-import { Input, Label } from '../Atoms/Form';
-import { SerializedResource } from '../DataModel/helperTypes';
-import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
-import { schemaText } from '../../localization/schema';
-import { commonText } from '../../localization/common';
-import { schema } from '../DataModel/schema';
-import { resourcesText } from '../../localization/resources';
-import { getField } from '../DataModel/helpers';
 
 export function SchemaConfigField({
   schemaData,

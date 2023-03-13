@@ -1,7 +1,9 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
+import { notificationsText } from '../../localization/notifications';
 import { ajax } from '../../utils/ajax';
 import { formData } from '../../utils/ajax/helpers';
 import { ping } from '../../utils/ajax/ping';
@@ -9,23 +11,27 @@ import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
+import { icons } from '../Atoms/Icons';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { DateElement } from '../Molecules/DateElement';
-import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { Dialog, dialogClassNames, LoadingScreen } from '../Molecules/Dialog';
+import { MenuButton } from './index';
 import type { GenericNotification } from './NotificationRenderers';
 import { notificationRenderers } from './NotificationRenderers';
-import { notificationsText } from '../../localization/notifications';
-import { LocalizedString } from 'typesafe-i18n';
 
 const INITIAL_INTERVAL = 5000;
 const INTERVAL_MULTIPLIER = 1.1;
 
-export function Notifications(): JSX.Element {
+export function Notifications({
+  isCollapsed,
+}: {
+  readonly isCollapsed: boolean;
+}): JSX.Element {
   const [notifications, setNotifications] = React.useState<
     RA<GenericNotification> | undefined
   >(undefined);
 
-  const notificationCount = notifications?.length ?? 0;
+  const notificationCount = notifications?.length;
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   const freezeFetchPromise = React.useRef<Promise<void> | undefined>(undefined);
 
@@ -119,24 +125,31 @@ export function Notifications(): JSX.Element {
     };
   }, [isOpen]);
 
-  const hasUnread = notifications?.some(({ read }) => !read) ?? false;
-  const buttonRef = React.useRef<HTMLButtonElement | null>(null);
+  const unreadCount = notifications?.filter(({ read }) => !read).length ?? 0;
+  const title =
+    typeof notifications?.length === 'number'
+      ? notificationsText.notificationsCount({
+          count: notifications.length,
+        })
+      : notificationsText.notificationsLoading();
   return (
     <>
-      <Button.Small
-        aria-live="polite"
-        className={`${hasUnread ? 'bg-brand-300 dark:bg-brand-400' : ''}`}
-        disabled={notificationCount === 0}
-        forwardRef={buttonRef}
+      <MenuButton
+        icon={icons.bell}
+        isActive={isOpen}
+        isCollapsed={isCollapsed}
+        props={{
+          'aria-live': 'polite',
+          className:
+            unreadCount > 0 && !isOpen
+              ? '[&:not(:hover)]:!text-brand-300 [&:not(:hover)]:dark:!text-brand-400'
+              : undefined,
+          disabled: notificationCount === 0,
+        }}
+        title={title}
         onClick={handleOpen}
-      >
-        {typeof notifications?.length === 'number'
-          ? notificationsText.notificationsCount({
-              count: notifications.length,
-            })
-          : notificationsText.notificationsLoading()}
-      </Button.Small>
-      {Array.isArray(notifications) && (
+      />
+      {Array.isArray(notifications) ? (
         <Dialog
           buttons={commonText.close()}
           className={{
@@ -176,7 +189,7 @@ export function Notifications(): JSX.Element {
            */}
           <p>{notificationsText.mostRecentNotificationsTop()}</p>
           {notifications.map((notification, index) => (
-            <ErrorBoundary dismissable key={index}>
+            <ErrorBoundary dismissible key={index}>
               <NotificationComponent
                 notification={notification}
                 onDelete={(promise): void => {
@@ -189,7 +202,9 @@ export function Notifications(): JSX.Element {
             </ErrorBoundary>
           ))}
         </Dialog>
-      )}
+      ) : isOpen ? (
+        <LoadingScreen />
+      ) : undefined}
     </>
   );
 }

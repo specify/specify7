@@ -2,11 +2,11 @@ from django.db.models import ProtectedError
 
 from specifyweb.specify import models
 from specifyweb.specify.api_tests import ApiTests
-from ..exceptions import BusinessRuleException
+from ..exceptions import TreeBusinessRuleException
 
 class GeographyTreeDefItem(ApiTests):
     def test_cannot_delete_root(self):
-        with self.assertRaises(BusinessRuleException):
+        with self.assertRaises(TreeBusinessRuleException):
             self.geographytreedef.treedefitems.filter(parent=None).delete()
 
     def test_delete_blocked_by_geography(self):

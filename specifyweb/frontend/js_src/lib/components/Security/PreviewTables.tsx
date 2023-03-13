@@ -1,6 +1,8 @@
 import React from 'react';
 
 import { commonText } from '../../localization/common';
+import { schemaText } from '../../localization/schema';
+import { userText } from '../../localization/user';
 import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { group } from '../../utils/utils';
@@ -11,8 +13,6 @@ import { getTablePermissions } from '../Permissions';
 import type { PreviewCell } from './Preview';
 import { PreviewRow } from './PreviewComponents';
 import { resourceNameToModel } from './utils';
-import { userText } from '../../localization/user';
-import { schemaText } from '../../localization/schema';
 
 export function PreviewTables({
   query,

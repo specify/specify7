@@ -2,24 +2,23 @@ import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { useSearchParameter } from '../../hooks/navigation';
-import { deserializeResource } from '../../hooks/resource';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { f } from '../../utils/functools';
-import { serializeResource } from '../DataModel/helpers';
+import { deserializeResource, serializeResource } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
 import { getModel, schema } from '../DataModel/schema';
 import type { RecordSet } from '../DataModel/types';
 import { RecordSetWrapper } from '../FormSliders/RecordSet';
-import { useMenuItem } from '../Header';
+import { useMenuItem } from '../Header/useMenuItem';
 import { interactionTables } from '../Interactions/InteractionsDialog';
 import { ProtectedTable } from '../Permissions/PermissionDenied';
 import { NotFoundView } from '../Router/NotFoundView';
+import { locationToState, useStableLocation } from '../Router/RouterState';
 import { CheckLoggedInCollection, ViewResourceByGuid } from './DataTask';
 import { ResourceView } from './ResourceView';
-import { locationToState, useStableLocation } from '../Router/RouterState';
 
 export function ShowResource({
   resource,
@@ -138,8 +137,8 @@ export function ViewResourceById({
         tableName={model.name}
       >
         <CheckLoggedInCollection
-          resource={resource}
           isInRecordSet={isInRecordSet}
+          resource={resource}
         >
           <ShowResource resource={resource} />
         </CheckLoggedInCollection>

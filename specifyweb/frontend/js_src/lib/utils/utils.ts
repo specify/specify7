@@ -4,7 +4,8 @@
  * @module
  */
 
-import { LocalizedString } from 'typesafe-i18n';
+import type { LocalizedString } from 'typesafe-i18n';
+
 import type { KeysToLowerCase } from '../components/DataModel/helperTypes';
 import { f } from './functools';
 import type { IR, RA, RR } from './types';
@@ -32,10 +33,10 @@ export const lowerToHuman = (value: string): string =>
   value.toLowerCase().split('_').map(capitalize).join(' ');
 
 export const camelToKebab = (value: string): string =>
-  value.replace(/([a-z])([A-Z])/gu, '$1-$2').toLowerCase();
+  value.replaceAll(/([a-z])([A-Z])/gu, '$1-$2').toLowerCase();
 
 export const camelToHuman = (value: string): string =>
-  capitalize(value.replace(/([a-z])([A-Z])/gu, '$1 $2')).replace(
+  capitalize(value.replaceAll(/([a-z])([A-Z])/gu, '$1 $2')).replace(
     /Dna\b/,
     'DNA'
   );
@@ -134,7 +135,7 @@ export const sortFunction =
     if (leftValue === rightValue) return 0;
     return typeof leftValue === 'string' && typeof rightValue === 'string'
       ? (leftValue.localeCompare(rightValue) as -1 | 0 | 1)
-      : leftValue > rightValue
+      : (leftValue ?? 0) > (rightValue ?? 0)
       ? 1
       : -1;
   };
@@ -300,7 +301,7 @@ export const index = <T extends { readonly id: number }>(data: RA<T>): IR<T> =>
 
 /** Escape all characters that have special meaning in regular expressions */
 export const escapeRegExp = (string: string): string =>
-  string.replace(/[$()*+.?[\\\]^{|}]/g, '\\$&');
+  string.replaceAll(/[$()*+.?[\\\]^{|}]/g, '\\$&');
 
 /** Fix for "getAttribute" being case-sensetive for non-HTML elements */
 export const getAttribute = (cell: Element, name: string): string | undefined =>
@@ -371,3 +372,11 @@ export function jsonStringify(
 
 export const takeBetween = <T>(array: RA<T>, first: T, last: T): RA<T> =>
   array.slice(array.indexOf(first) + 1, array.indexOf(last) + 1);
+
+// Convert seconds to minutes and seconds and return the string
+export function formatTime(seconds: number): string {
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+  const paddedSeconds = remainingSeconds.toString().padStart(2, '0');
+  return `${minutes}:${paddedSeconds}`;
+}

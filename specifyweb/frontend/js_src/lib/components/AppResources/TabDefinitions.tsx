@@ -6,22 +6,22 @@ import type { ReactCodeMirrorRef } from '@uiw/react-codemirror';
 import CodeMirror from '@uiw/react-codemirror';
 import React from 'react';
 
-import type { SpAppResource, SpViewSetObj } from '../DataModel/types';
+import { useLiveState } from '../../hooks/useLiveState';
 import { f } from '../../utils/functools';
+import type { RR } from '../../utils/types';
+import { writable } from '../../utils/types';
+import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { SpAppResource, SpViewSetObj } from '../DataModel/types';
+import { PreferencesContent } from '../UserPreferences';
 import type { UserPreferences } from '../UserPreferences/helpers';
 import {
   getPrefDefinition,
   setPrefsGenerator,
 } from '../UserPreferences/helpers';
-import type { RR } from '../../utils/types';
-import { writable } from '../../utils/types';
-import { useCodeMirrorExtensions } from './EditorComponents';
 import { PreferencesContext, useDarkMode } from '../UserPreferences/Hooks';
-import { PreferencesContent } from '../UserPreferences';
-import { useLiveState } from '../../hooks/useLiveState';
-import { appResourceSubTypes } from './types';
-import { SerializedResource } from '../DataModel/helperTypes';
+import { useCodeMirrorExtensions } from './EditorComponents';
+import type { appResourceSubTypes } from './types';
 
 export type AppResourceTab = (props: {
   readonly isReadOnly: boolean;

@@ -1,25 +1,25 @@
 import React from 'react';
 
-import { fullDateFormat, monthFormat } from '../../utils/parser/dateFormat';
-import { dayjs, getDateInputValue } from '../../utils/dayJs';
-import { f } from '../../utils/functools';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { useSaveBlockers } from '../../hooks/resource';
+import { useValidation } from '../../hooks/useValidation';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
-import { resourceOn } from '../DataModel/resource';
-import type { RR } from '../../utils/types';
+import { dayjs, getDateInputValue } from '../../utils/dayJs';
+import { f } from '../../utils/functools';
+import { databaseDateFormat } from '../../utils/parser/dateConfig';
+import { fullDateFormat, monthFormat } from '../../utils/parser/dateFormat';
 import {
   getValidationAttributes,
   resolveParser,
 } from '../../utils/parser/definitions';
-import { Input, Select } from '../Atoms/Form';
+import type { RR } from '../../utils/types';
 import { Button } from '../Atoms/Button';
+import { Input, Select } from '../Atoms/Form';
 import { dateParts } from '../Atoms/Internationalization';
-import { useSaveBlockers } from '../../hooks/resource';
-import { useValidation } from '../../hooks/useValidation';
-import { AnySchema } from '../DataModel/helperTypes';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { resourceOn } from '../DataModel/resource';
 import { usePref } from '../UserPreferences/usePref';
-import { databaseDateFormat } from '../../utils/parser/dateConfig';
 
 export function isInputSupported(type: string): boolean {
   const input = document.createElement('input');
@@ -106,13 +106,15 @@ function unsafeParseFullDate(
 ): ReturnType<typeof dayjs> | undefined {
   if (fullDateFormat().toUpperCase() !== 'DD/MM/YYYY') return;
   const parsed = /(\d{2})\D(\d{2})\D(\d{4})/.exec(value)?.slice(1);
-  if (typeof parsed === 'undefined') return undefined;
+  if (parsed === undefined) return undefined;
   const [day, month, year] = parsed.map(f.unary(Number.parseInt));
   return dayjs(new Date(year, month - 1, day));
 }
 
-// TESTS: this has been very buggy. add tests
-// REFACTOR: split this component into smaller
+/*
+ * TESTS: this has been very buggy. add tests
+ * REFACTOR: split this component into smaller
+ */
 export function PartialDateUi<SCHEMA extends AnySchema>({
   resource,
   dateField,
@@ -123,7 +125,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
   id,
   canChangePrecision = true,
 }: {
-  readonly resource: SpecifyResource<SCHEMA>;
+  readonly resource: SpecifyResource<SCHEMA> | undefined;
   readonly dateField: string & keyof SCHEMA['fields'];
   readonly precisionField: (string & keyof SCHEMA['fields']) | undefined;
   readonly defaultPrecision: PartialDatePrecision;
@@ -163,19 +165,19 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
 
   const [precision, setPrecision] = React.useState<PartialDatePrecision>(
     () =>
-      reversePrecision[resource.get(precisionField ?? '') as 1 | 2 | 3] ??
+      reversePrecision[resource?.get(precisionField ?? '') as 1 | 2 | 3] ??
       defaultPrecision
   );
 
   const errors = useSaveBlockers({
     resource,
-    fieldName: dateField as string,
+    fieldName: dateField,
   });
   const { inputRef, validationRef } = useValidation(errors);
 
   const syncMoment = React.useCallback(
     (moment: ReturnType<typeof dayjs> | undefined) => {
-      const value = resource.get(dateField) ?? undefined;
+      const value = resource?.get(dateField) ?? undefined;
       const newMoment =
         value === undefined
           ? undefined
@@ -204,7 +206,12 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
   const isInitialized = React.useRef<boolean>(false);
 
   React.useEffect(() => {
-    if (typeof defaultValue === 'object' && resource.isNew())
+    if (resource === undefined) return;
+    if (
+      typeof defaultValue === 'object' &&
+      typeof resource === 'object' &&
+      resource.isNew()
+    )
       resource.set(dateField, getDateInputValue(defaultValue) as never, {
         silent: true,
       });
@@ -245,6 +252,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
   ]);
 
   React.useEffect(() => {
+    if (resource === undefined) return;
     /*
      * If resource changes, a new moment is set, but its value won't get
      * propagated on the first call to this useEffect.
@@ -319,10 +327,23 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
     const input = inputRef.current;
     if (isReadOnly || input === null) return;
 
-    const value = initialValue ?? inputValue.trim();
+    const value = initialValue ?? input.value.trim();
 
     setMoment(value.length > 0 ? parseDate(precision, value) : undefined);
   }
+
+  const validationAttributes = React.useMemo(
+    () =>
+      precision === 'month-year'
+        ? {}
+        : getValidationAttributes(
+            resolveParser(
+              {},
+              { type: precision === 'full' ? 'java.util.Date' : precision }
+            )
+          ),
+    [precision]
+  );
 
   return (
     <div className="flex gap-1">
@@ -330,8 +351,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
         <label>
           <span className="sr-only">{formsText.datePrecision()}</span>
           <Select
-            className="!w-auto print:hidden"
-            title={formsText.datePrecision()}
+            className="!w-auto !min-w-[unset] print:hidden"
             value={precision}
             onBlur={(): void => {
               if (moment === undefined) return;
@@ -341,7 +361,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
               if (precision === 'year') newMoment = newMoment.month(0);
 
               /*
-               * This avoids the following value in the console:
+               * This avoids the following message in the console:
                * "The specified value does not conform to the required format"
                */
               setInputValue('');
@@ -349,6 +369,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
               setMoment(newMoment);
             }}
             onChange={({ target }): void => {
+              if (resource === undefined) return;
               const precision = target.value as PartialDatePrecision;
               setPrecision(precision);
               const precisionIndex = precisions[precision];
@@ -371,11 +392,10 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
         isReadOnly={isReadOnly}
         value={inputValue}
         onBlur={f.zero(handleChange)}
-        onDatePaste={handleChange}
         onValueChange={setInputValue}
         {...(precision === 'year'
           ? {
-              ...getValidationAttributes(resolveParser({}, { type: 'year' })),
+              ...validationAttributes,
               placeholder: formsText.yearPlaceholder(),
             }
           : {
@@ -395,12 +415,8 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
                     type: dateType,
                     placeholder: fullDateFormat(),
                     title: moment?.format(fullDateFormat()),
-                    ...(dateSupported
-                      ? {}
-                      : {
-                          minLength: fullDateFormat().length,
-                          maxLength: fullDateFormat().length,
-                        }),
+                    min: validationAttributes.min,
+                    max: validationAttributes.max,
                   }),
             })}
       />

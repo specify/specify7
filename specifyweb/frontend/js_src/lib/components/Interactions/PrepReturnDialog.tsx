@@ -3,6 +3,7 @@ import React from 'react';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
+import { interactionsText } from '../../localization/interactions';
 import { getDateInputValue } from '../../utils/dayJs';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
@@ -10,17 +11,16 @@ import { replaceItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Form } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
+import { getField } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { Loan, LoanPreparation } from '../DataModel/types';
 import type { ViewDescription } from '../FormParse';
 import { autoGenerateViewDefinition } from '../Forms/generateFormDefinition';
-import { RenderForm } from '../Forms/SpecifyForm';
+import { SpecifyForm } from '../Forms/SpecifyForm';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
 import { PrepReturnRow } from './PrepReturnRow';
-import { interactionsText } from '../../localization/interactions';
-import { getField } from '../DataModel/helpers';
 
 export const loanReturnPrepForm = f.store(
   (): ViewDescription =>
@@ -203,7 +203,7 @@ function PreparationReturn({
           handleClose();
         }}
       >
-        <RenderForm
+        <SpecifyForm
           display="block"
           resource={loanReturnPreparation.current}
           viewDefinition={loanReturnPrepForm()}

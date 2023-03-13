@@ -1,7 +1,7 @@
 import React from 'react';
 
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { fetchUserPermissions } from './index';
-import {useAsyncState} from '../../hooks/useAsyncState';
 
 /**
  * Allows embedding resources from a different collection with corresponding

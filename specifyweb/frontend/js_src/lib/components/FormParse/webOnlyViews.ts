@@ -1,12 +1,12 @@
 import { f } from '../../utils/functools';
+import type { IR } from '../../utils/types';
+import { ensure } from '../../utils/types';
+import { schema } from '../DataModel/schema';
 import {
   autoGenerateViewDefinition,
   getFieldsForAutoView,
 } from '../Forms/generateFormDefinition';
 import type { ParsedFormDefinition } from './index';
-import { schema } from '../DataModel/schema';
-import type { IR } from '../../utils/types';
-import { ensure } from '../../utils/types';
 
 /**
  * Definitions for front-end form views.
@@ -17,30 +17,10 @@ import { ensure } from '../../utils/types';
  */
 export const webOnlyViews = f.store(() =>
   ensure<IR<ParsedFormDefinition>>()({
-    ObjectAttachment: {
-      columns: [undefined],
-      rows: [
-        [
-          {
-            id: undefined,
-            type: 'Field',
-            fieldName: undefined,
-            fieldDefinition: {
-              isReadOnly: false,
-              type: 'Plugin',
-              pluginDefinition: {
-                type: 'AttachmentPlugin',
-              },
-            },
-            isRequired: false,
-            colSpan: 1,
-            align: 'left',
-            visible: true,
-            ariaLabel: undefined,
-          },
-        ],
-      ],
-    },
+    /*
+     * This is a special view that would be replaced by the <AttachmentPlugin />
+     */
+    [attachmentView]: { columns: [], rows: [] },
     SpecifyUser: autoGenerateViewDefinition(
       schema.models.SpecifyUser,
       'form',
@@ -81,9 +61,18 @@ export const webOnlyViews = f.store(() =>
       'edit',
       ['name', 'remarks']
     ),
+    [recordSetNewView]: autoGenerateViewDefinition(
+      schema.models.RecordSet,
+      'form',
+      'edit',
+      ['name']
+    ),
   } as const)
 );
+
+export const attachmentView = 'ObjectAttachment';
 
 export const spAppResourceView = '_SpAppResourceView_name';
 export const spViewSetNameView = '_SpViewSetObj_name';
 export const recordSetView = '_RecordSet_name';
+export const recordSetNewView = '_RecordSet_name';

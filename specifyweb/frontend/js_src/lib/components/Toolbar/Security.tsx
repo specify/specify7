@@ -3,29 +3,29 @@
  */
 
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { userText } from '../../localization/user';
 import { ajax } from '../../utils/ajax';
-import { fetchCollection } from '../DataModel/collection';
-import type { Institution, SpecifyUser } from '../DataModel/types';
-import { serializeResource } from '../DataModel/helpers';
-import { index } from '../../utils/utils';
-import { hasPermission, hasTablePermission } from '../Permissions/helpers';
-import { schema } from '../DataModel/schema';
-import type { BackEndRole } from '../Security/utils';
 import type { GetOrSet, IR, RA } from '../../utils/types';
-import { userInformation } from '../InitialContext/userInformation';
+import { index } from '../../utils/utils';
 import { Container, H2, H3 } from '../Atoms';
+import { className } from '../Atoms/className';
+import { fetchCollection } from '../DataModel/collection';
+import { serializeResource } from '../DataModel/helpers';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import { schema } from '../DataModel/schema';
+import type { Institution, SpecifyUser } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { useAvailableCollections } from '../Forms/OtherCollectionView';
-import { SafeOutlet } from '../Router/RouterUtils';
-import type { Role } from '../Security/Role';
-import { className } from '../Atoms/className';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { SerializedResource } from '../DataModel/helperTypes';
+import { userInformation } from '../InitialContext/userInformation';
+import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import { ActiveLink } from '../Router/ActiveLink';
+import { SafeOutlet } from '../Router/RouterUtils';
 import { processPolicies } from '../Security/policyConverter';
-import { userText } from '../../localization/user';
-import { LocalizedString } from 'typesafe-i18n';
+import type { Role } from '../Security/Role';
+import type { BackEndRole } from '../Security/utils';
 
 export type SecurityOutlet = {
   readonly institution: SerializedResource<Institution> | undefined;
@@ -98,9 +98,9 @@ export function SecurityPanel(): JSX.Element | null {
   return (
     <Container.FullGray>
       <H2 className="text-2xl">{userText.securityPanel()}</H2>
-      <div className="flex h-0 flex-1 gap-4">
+      <div className="flex h-0 flex-1 flex-col gap-4 md:flex-row">
         <Aside institution={institution} />
-        <ErrorBoundary dismissable>
+        <ErrorBoundary dismissible>
           <SafeOutlet<SecurityOutlet> {...context} />
         </ErrorBoundary>
       </div>

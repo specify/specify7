@@ -2,14 +2,14 @@ import React from 'react';
 import { useOutletContext } from 'react-router';
 
 import { ajax } from '../../utils/ajax';
-import { removeKey } from '../../utils/utils';
-import type { BackEndRole } from './utils';
+import { Http } from '../../utils/ajax/definitions';
 import type { GetOrSet, IR } from '../../utils/types';
+import { removeKey } from '../../utils/utils';
 import type { SecurityCollectionOutlet } from './Collection';
+import { decompressPolicies, processPolicies } from './policyConverter';
 import type { NewRole, Role } from './Role';
 import { CreateRole } from './RoleTemplate';
-import { decompressPolicies, processPolicies } from './policyConverter';
-import { Http } from '../../utils/ajax/definitions';
+import type { BackEndRole } from './utils';
 
 export const createCollectionRole = async (
   setRoles: GetOrSet<IR<Role> | undefined>[1],

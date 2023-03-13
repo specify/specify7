@@ -1,4 +1,5 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useResourceValue } from '../../hooks/useResourceValue';
 import { commonText } from '../../localization/common';
@@ -8,9 +9,9 @@ import { Lat, Long, trimLatLong } from '../../utils/latLong';
 import { Input, Select } from '../Atoms/Form';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
+import { schema } from '../DataModel/schema';
 import type { Locality } from '../DataModel/types';
 import type { FormMode } from '../FormParse';
-import { LocalizedString } from 'typesafe-i18n';
 
 export const coordinateType = ['Point', 'Line', 'Rectangle'] as const;
 export type CoordinateType = typeof coordinateType[number];
@@ -33,7 +34,11 @@ function Coordinate({
   readonly onFormatted: (value: string | undefined) => void;
 }): JSX.Element {
   const { value, updateValue, validationRef, setValidation, parser } =
-    useResourceValue(resource, coordinateTextField, undefined);
+    useResourceValue(
+      resource,
+      schema.models.Locality.strictGetField(coordinateTextField),
+      undefined
+    );
   const isChanging = React.useRef<boolean>(false);
   React.useEffect(
     () =>
@@ -241,7 +246,6 @@ export function LatLongUi({
                   disabled={mode === 'view'}
                   id={id}
                   name="type"
-                  title={localityText.coordinateType()}
                   value={coordinateType}
                   onValueChange={(value): void => {
                     setCoordinateType(value as CoordinateType);

@@ -1,17 +1,19 @@
-import { SpecifyResource } from '../DataModel/legacyTypes';
-import { RecordSet } from '../DataModel/types';
-import { useNavigate } from 'react-router-dom';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { ResourceView } from '../Forms/ResourceView';
-import { formsText } from '../../localization/forms';
-import { hasToolPermission } from '../Permissions/helpers';
-import { Button } from '../Atoms/Button';
-import { getModelById, schema } from '../DataModel/schema';
 import React from 'react';
-import { userInformation } from '../InitialContext/userInformation';
-import { QueryListDialog, useQueries } from './Query';
-import { formatUrl } from '../Router/queryString';
+import { useNavigate } from 'react-router-dom';
+
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { formsText } from '../../localization/forms';
 import { queryText } from '../../localization/query';
+import { Button } from '../Atoms/Button';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { getModelById, schema } from '../DataModel/schema';
+import type { RecordSet } from '../DataModel/types';
+import { recordSetNewView } from '../FormParse/webOnlyViews';
+import { ResourceView } from '../Forms/ResourceView';
+import { userInformation } from '../InitialContext/userInformation';
+import { hasToolPermission } from '../Permissions/helpers';
+import { formatUrl } from '../Router/queryString';
+import { QueryListDialog, useQueries } from './Query';
 
 export function EditRecordSet({
   recordSet,
@@ -61,14 +63,15 @@ export function EditRecordSet({
           : 'edit'
       }
       resource={recordSet}
+      viewName={recordSetNewView}
       onAdd={undefined}
       onClose={handleClose}
       onDeleted={() => {
         handleDeleted?.();
         handleClose();
       }}
-      onSaving={handleSaving}
       onSaved={(): void => navigate(`/specify/record-set/${recordSet.id}/`)}
+      onSaving={handleSaving}
     />
   );
 }

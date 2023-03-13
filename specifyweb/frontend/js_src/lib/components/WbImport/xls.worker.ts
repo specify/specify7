@@ -31,7 +31,7 @@ context.onmessage = function (e) {
       type: 'array',
       raw: true,
       cellDates: true,
-      sheetRows: previewSize != null ? previewSize : 0,
+      sheetRows: previewSize == null ? 0 : previewSize,
     });
 
     const firstSheetName = workbook.SheetNames[0];

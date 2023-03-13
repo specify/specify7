@@ -1,4 +1,5 @@
 import { requireContext } from '../../../tests/helpers';
+import { attachmentView } from '../../FormParse/webOnlyViews';
 import { ResourceBase } from '../resourceApi';
 import { schema } from '../schema';
 import { LiteralField } from '../specifyField';
@@ -261,7 +262,7 @@ test('view name is added on the front-end if missing', () =>
   expect(schema.models.SpQuery.view).toBe('Query'));
 
 test('view name is overwritten for attachments', () =>
-  expect(schema.models.Attachment.view).toBe('ObjectAttachment'));
+  expect(schema.models.Attachment.view).toBe(attachmentView));
 
 test('model name is used as view name if missing', () =>
   expect(schema.models.AccessionAuthorization.view).toBe(
@@ -286,14 +287,10 @@ test('isHidden flag is set from localization', () =>
   expect(schema.models.CollectingEvent.isHidden).toBe(false));
 
 test('field aliases are loaded when present', () =>
-  expect(schema.models.Geography.fieldAliases).toMatchInlineSnapshot(`
-    [
-      {
-        "aname": "acceptedGeography",
-        "vname": "acceptedParent",
-      },
-    ]
-  `));
+  expect(schema.models.Geography.fieldAliases).toEqual({
+    acceptedparent: 'acceptedGeography',
+    divisioncbx: 'division',
+  }));
 
 test('can create a resource from model', () => {
   const resource = new schema.models.CollectionObject.Resource();
@@ -387,21 +384,25 @@ describe('getFields', () => {
       '[literalField collectionObjectId]',
     ]));
   test('get unknown field', () =>
-    expect(serialized(schema.models.CollectionObject.getFields('_a'))).toEqual(
-      []
-    ));
+    expect(schema.models.CollectionObject.getFields('_a')).toBeUndefined());
   test('handles empty field name case', () =>
-    expect(serialized(schema.models.CollectionObject.getFields(''))).toEqual(
-      []
-    ));
+    expect(schema.models.CollectionObject.getFields('')).toBeUndefined());
   test('throw on invalid field name', () =>
     expect(() =>
       schema.models.CollectionObject.getFields(false as unknown as string)
     ).toThrow('Invalid field name'));
-  test('can get a field using alias', () =>
+  test('can get a field using schema alias', () =>
     expect(
       serialized(schema.models.Geography.getFields('acceptedParent'))
     ).toEqual(['[relationship acceptedGeography]']));
+  test('can get a field using schemaExtras alias', () =>
+    expect(serialized(schema.models.PickList.getFields('fieldsCBX'))).toEqual([
+      '[literalField fieldName]',
+    ]));
+  test('can get a field using global schemaExtras alias', () =>
+    expect(
+      serialized(schema.models.Accession.getFields('divisionCBX'))
+    ).toEqual(['[relationship division]']));
   test('can get a field even if mistakenly provided table name', () =>
     expect(
       serialized(schema.models.Locality.getFields('locality.localityName'))
