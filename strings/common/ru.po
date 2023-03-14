@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-03-13 21:47+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2023-03-14 07:40+0000\n"
+"Last-Translator: Айша Базылжанова <abazylzanova@gmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/common/"
 "ru/>\n"
 "Language: ru\n"
@@ -840,9 +840,8 @@ msgstr "В сети"
 
 #. Used in: Components > Core > Online Status
 #: components/Core/OnlineStatus.tsx:51
-#, fuzzy
 msgid "offline"
-msgstr "не в сети"
+msgstr "Не в сети"
 
 #. Used in: Components > Interactions > Prep Dialog
 #: components/Interactions/PrepDialog.tsx:137
