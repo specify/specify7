@@ -13,7 +13,7 @@ from jsonschema import validate  # type: ignore
 from specifyweb.specify import models
 from specifyweb.specify.auditlog import auditlog
 from specifyweb.specify.datamodel import Table
-from specifyweb.specify.tree_extras import renumber_tree, reset_fullnames
+from specifyweb.specify.tree_extras import renumber_tree, set_fullnames
 from . import disambiguation
 from .upload_plan_schema import schema, parse_plan_with_basetable
 from .upload_result import Uploaded, UploadResult, ParseFailures, \
@@ -266,7 +266,7 @@ def fixup_trees(upload_plan: ScopedUploadable, results: List[UploadResult]) -> N
         for treedef in treedefs:
             if treedef.specify_model.name.lower().startswith(tree):
                 tic = time.perf_counter()
-                reset_fullnames(treedef, null_only=True)
+                set_fullnames(treedef, null_only=True)
                 toc = time.perf_counter()
                 logger.info(f"finished reset fullnames of {tree} tree in {toc-tic}s")
 
