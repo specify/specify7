@@ -3,6 +3,7 @@ import _ from 'underscore';
 
 import { listen } from '../../utils/events';
 import type { WritableArray } from '../../utils/types';
+import { scrollIntoView } from '../TreeView/helpers';
 
 /**
  * In a container with several children and a scroll bar, detect which
@@ -13,12 +14,22 @@ import type { WritableArray } from '../../utils/types';
  */
 export function useTopChild(): {
   readonly visibleChild: number | undefined;
+  readonly setVisibleChild: (visibleChild: number | undefined) => void;
+  readonly references: React.RefObject<WritableArray<HTMLElement | undefined>>;
   readonly forwardRefs: (index: number, element: HTMLElement | null) => void;
   readonly scrollContainerRef: React.RefCallback<HTMLDivElement | null>;
 } {
   const [activeCategory, setActiveCategory] = React.useState<
     number | undefined
   >(undefined);
+
+  const activeCategoryRef = React.useRef<number | undefined>(activeCategory);
+
+  const handleChange = React.useCallback((index: number | undefined) => {
+    setActiveCategory(index);
+    activeCategoryRef.current = index;
+  }, []);
+
   const references = React.useRef<WritableArray<HTMLElement | undefined>>([]);
 
   const [container, setContainer] = React.useState<HTMLDivElement | null>(null);
@@ -52,8 +63,12 @@ export function useTopChild(): {
 
   return {
     visibleChild: activeCategory,
+    setVisibleChild: handleChange,
+    references,
     forwardRefs: React.useCallback((index, element) => {
       references.current[index] = element ?? undefined;
+      if (element !== null && activeCategoryRef.current === index)
+        scrollIntoView(element, 'start');
     }, []),
     scrollContainerRef: setContainer,
   };
