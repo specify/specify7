@@ -57,6 +57,7 @@ export function SearchDialog<SCHEMA extends AnySchema>(props: {
   readonly templateResource: SpecifyResource<SCHEMA>;
   readonly multiple: boolean;
   readonly onClose: () => void;
+  readonly searchView: string | undefined;
   readonly onSelected: (resources: RA<SpecifyResource<SCHEMA>>) => void;
 }): JSX.Element | null {
   const [alwaysUseQueryBuilder] = usePref(
@@ -118,6 +119,7 @@ function SearchForm<SCHEMA extends AnySchema>({
   forceCollection,
   extraFilters = emptyArray,
   templateResource,
+  searchView,
   onSelected: handleSelected,
   onClose: handleClose,
   onUseQueryBuilder: handleUseQueryBuilder,
@@ -125,6 +127,7 @@ function SearchForm<SCHEMA extends AnySchema>({
   readonly forceCollection: number | undefined;
   readonly extraFilters: RA<QueryComboBoxFilter<SCHEMA>> | undefined;
   readonly templateResource: SpecifyResource<SCHEMA>;
+  readonly searchView: string | undefined;
   readonly onClose: () => void;
   readonly onSelected: (resources: RA<SpecifyResource<SCHEMA>>) => void;
   readonly onUseQueryBuilder: () => void;
@@ -133,11 +136,12 @@ function SearchForm<SCHEMA extends AnySchema>({
     viewNameExceptions[templateResource.specifyTable.name] ??
     `${templateResource.specifyTable}Search`;
 
+  const resolvedName = searchView ?? viewName;
   const viewDefinition = useViewDefinition({
-    table:
-      typeof viewName === 'string' ? templateResource.specifyTable : undefined,
-    viewName: typeof viewName === 'string' ? viewName : undefined,
-    fallbackViewName: templateResource.specifyTable.view,
+    table: templateResource.specifyTable,
+    viewName: resolvedName,
+    fallbackViewName:
+      resolvedName === viewName ? templateResource.specifyTable.view : viewName,
     formType: 'form',
     mode: 'search',
   });
