@@ -46,8 +46,9 @@ export function SchemaConfigFormat({
   const currentPickListId = Object.entries(schemaData.pickLists).find(
     ([_id, { name }]) => name === item.pickListName
   )?.[KEY];
+  const id = useId('schema-config-field');
 
-  const lineProps = { field, item, onFormatted: handleFormatted };
+  const lineProps = { field, item, id, onFormatted: handleFormatted };
   return (
     <fieldset className="flex flex-col gap-1">
       <legend>{schemaText.fieldFormat()}</legend>
@@ -122,7 +123,7 @@ export function SchemaConfigFormat({
           </>
         }
         label={tables.PickList.label}
-        name="webLink"
+        name="pickList"
         value={item.pickListName}
         values={{
           [schemaText.userDefined()]: userPickLists,
@@ -142,6 +143,7 @@ function FormatterLine({
   extraComponents,
   field,
   item,
+  id,
   onFormatted: handleFormatted,
 }: {
   readonly name: ItemType;
@@ -151,9 +153,9 @@ function FormatterLine({
   readonly extraComponents?: JSX.Element;
   readonly field: LiteralField | Relationship;
   readonly item: SerializedResource<SpLocaleContainerItem> & WithFetchedStrings;
+  readonly id: (suffix: string) => string;
   readonly onFormatted: (format: ItemType, value: string | null) => void;
 }): JSX.Element {
-  const id = useId('schema-config-field');
   const isReadOnly = React.useContext(ReadOnlyContext);
   return (
     <div className={className.labelForCheckbox}>
