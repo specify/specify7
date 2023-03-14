@@ -123,14 +123,6 @@ export const appResourceSubTypes = {
     icon: icons.variable,
     label: resourcesText.dataObjectFormatters(),
   },
-  searchDialogDefinitions: {
-    mimeType: 'text/xml',
-    name: 'DialogDefs',
-    documentationUrl:
-      'https://github.com/specify/specify6/blob/master/config/backstop/dialog_defs.xml',
-    icon: icons.documentSearch,
-    label: resourcesText.searchDialogDefinitions(),
-  },
   dataEntryTables: {
     mimeType: 'text/xml',
     name: 'DataEntryTaskInit',
