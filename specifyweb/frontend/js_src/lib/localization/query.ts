@@ -13,7 +13,7 @@ export const queryText = createDictionary({
     'en-us': 'Query',
     'ru-ru': 'Запрос',
     'es-es': 'Consulta',
-    'fr-fr': 'Requête',
+    'fr-fr': 'Mettre en doute',
     'uk-ua': 'Запит',
   },
   queries: {
@@ -52,21 +52,21 @@ export const queryText = createDictionary({
     'en-us': 'Any',
     'ru-ru': 'Любой',
     'es-es': 'Cualquier',
-    'fr-fr': 'Tous',
+    'fr-fr': "N'importe quel",
     'uk-ua': 'Будь-який',
   },
   startValue: {
     'en-us': 'Start Value',
     'ru-ru': 'Начальное значение',
     'es-es': 'Valor inicial',
-    'fr-fr': 'Valeur de début',
+    'fr-fr': 'Valeur de départ',
     'uk-ua': 'Початкове значення',
   },
   endValue: {
     'en-us': 'End Value',
     'ru-ru': 'Конечное значение',
     'es-es': 'Valor final',
-    'fr-fr': 'Valeur de fin',
+    'fr-fr': 'Valeur finale',
     'uk-ua': 'Кінцеве значення',
   },
   saveQuery: {
@@ -80,7 +80,7 @@ export const queryText = createDictionary({
     'en-us': 'Save query as...',
     'ru-ru': 'Сохранить запрос как...',
     'es-es': 'Guardar consulta como...',
-    'fr-fr': 'Enregistrer la requête sous…',
+    'fr-fr': 'Enregistrer la requête sous...',
     'uk-ua': 'Зберегти запит як...',
   },
   saveClonedQueryDescription: {
@@ -161,7 +161,7 @@ export const queryText = createDictionary({
     'en-us': 'Unable to export to KML',
     'ru-ru': 'Невозможно экспортировать в KML',
     'es-es': 'No se puede exportar a KML',
-    'fr-fr': "Impossible d'exporter au format KML",
+    'fr-fr': "Impossible d'exporter vers KML",
     'uk-ua': 'Не вдалося експортувати в KML',
   },
   missingCoordinatesForKmlDescription: {
@@ -279,7 +279,7 @@ export const queryText = createDictionary({
     'en-us': 'Create {recordSetTable:string}',
     'ru-ru': 'Сделать {recordSetTable:string}',
     'es-es': 'Crear {recordSetTable:string}',
-    'fr-fr': 'Créer un {recordSetTable:string}',
+    'fr-fr': 'Créer {tableInformationRequest:string}',
     'uk-ua': 'Створити {modelName:string}',
   },
   saveAs: {
@@ -307,7 +307,7 @@ export const queryText = createDictionary({
     'en-us': 'Move Down',
     'ru-ru': 'Переместить вниз',
     'es-es': 'Mover hacia abajo',
-    'fr-fr': 'Déplacer vers le bas',
+    'fr-fr': 'Descendre',
     'uk-ua': 'Рухатися вниз',
   },
   sort: {
@@ -384,9 +384,9 @@ export const queryText = createDictionary({
       Use "_" para hacer coincidir un solo carácter
     `,
     'fr-fr': `
-      Utilisez « % » pour correspondre à n'importe quel nombre de caractères.
+      Utilisez "%" pour correspondre à n\'importe quel nombre de caractères.
 
-      Utilisez « _ » pour correspondre à un seul caractère
+      Utilisez "_" pour correspondre à un seul caractère
     `,
     'uk-ua': `
       Використовуйте "%", щоб відповідати будь-якій кількості символів.
@@ -440,7 +440,7 @@ export const queryText = createDictionary({
     'en-us': 'False',
     'ru-ru': 'Ложь',
     'es-es': 'FALSO',
-    'fr-fr': 'Faux',
+    'fr-fr': 'FAUX',
     'uk-ua': 'помилковий',
   },
   trueOrNull: {
@@ -503,7 +503,7 @@ export const queryText = createDictionary({
     'en-us': 'Starts With',
     'ru-ru': 'Начинается с',
     'es-es': 'Comienza con',
-    'fr-fr': 'Commence par',
+    'fr-fr': 'Commence avec',
     'uk-ua': 'Починається з',
   },
   or: {
@@ -531,7 +531,7 @@ export const queryText = createDictionary({
     'en-us': 'Items have been returned',
     'ru-ru': 'Items have been returned',
     'es-es': 'Los artículos han sido devueltos',
-    'fr-fr': 'Les éléments ont été retournés',
+    'fr-fr': 'Les articles ont été retournés',
     'uk-ua': 'Товари повернуто',
   },
   queryResults: {
@@ -629,7 +629,7 @@ export const queryText = createDictionary({
       {maxLength:number|formatted}
     `,
     'fr-fr': `
-      La valeur du champ est trop longue. La longueur maximale autorisée est de
+      La valeur du champ est trop longue. La longueur maximale autorisée est
       {maxLength:number|formatted}
     `,
     'uk-ua': `
@@ -655,7 +655,7 @@ export const queryText = createDictionary({
     `,
     'fr-fr': `
       La requête que vous avez importée contient des tables auxquelles vous
-      n'avez pas accès en lecture :
+      n'avez pas accès en lecture :
     `,
     'ru-ru': `
       Импортированный запрос содержит таблицы, к которым у вас нет доступа для
