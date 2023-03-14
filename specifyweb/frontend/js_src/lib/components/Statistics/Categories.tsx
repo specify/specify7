@@ -152,7 +152,7 @@ export function Categories({
                     ? `flex-1 overflow-auto ${
                         checkEmptyItems ? 'p-0' : 'p-3 pt-3'
                       }`
-                    : 'grid grid-cols-[auto_1fr_max-content] gap-2 overflow-auto'
+                    : 'grid grid-cols-[auto_1fr_max-content] gap-2 overflow-auto p-2'
                 }
               >
                 {areItemsValid(items) ? (

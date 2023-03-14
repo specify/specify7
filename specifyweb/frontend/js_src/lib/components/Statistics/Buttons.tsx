@@ -19,7 +19,7 @@ export function StatsAsideButton({
       <Button.Small
         aria-current={isCurrent ? 'page' : undefined}
         className={`min-w-[theme(spacing.40)] flex-1 !justify-start normal-case ${
-          isCurrent ? 'bg-brand-300 text-white' : ''
+          isCurrent ? 'bg-brand-300 text-white !ring-brand-300' : ''
         }`}
         onClick={handleClick}
       >
