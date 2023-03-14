@@ -604,7 +604,7 @@ export const commonText = createDictionary({
   },
   bulkSelect: {
     'en-us': 'Bulk Select',
-    'es-es': 'Selección masiva',
+    'es-es': 'Selección en masa',
     'fr-fr': 'Sélection groupée',
     'ru-ru': 'Массовый выбор',
     'uk-ua': 'Масовий вибір',
