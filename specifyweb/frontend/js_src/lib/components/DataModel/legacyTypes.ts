@@ -166,6 +166,7 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
     readonly onSaveConflict?: () => void;
     readonly errorOnAlreadySaving?: boolean;
   }): Promise<SpecifyResource<SCHEMA>>;
+  readonly deleted: boolean;
   destroy(): Promise<void>;
   fetch(): Promise<SpecifyResource<SCHEMA>>;
   viewUrl(): string;
@@ -178,7 +179,6 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
       | (string & keyof SCHEMA['toManyDependent'])
       | (string & keyof SCHEMA['toManyIndependent'])
   ): Promise<number | undefined>;
-  format(): Promise<string>;
   url(): string;
   placeInSameHierarchy(
     resource: SpecifyResource<AnySchema>

@@ -82,7 +82,8 @@ export async function format<SCHEMA extends AnySchema>(
    */
   tryBest = false
 ): Promise<LocalizedString | undefined> {
-  if (typeof resource !== 'object' || resource === null) return undefined;
+  if (typeof resource !== 'object' || resource === null || resource.deleted)
+    return undefined;
   if (hasTablePermission(resource.specifyTable.name, 'read'))
     await resource.fetch();
   const resolvedDefaultFormatter =

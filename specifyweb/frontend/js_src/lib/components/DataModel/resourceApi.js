@@ -590,8 +590,10 @@ function eventHandlerForToOne(related, field) {
 
             return resource._save.then(()=>resource);
         },
+        deleted: false,
         async destroy(...args) {
             const promise = await Backbone.Model.prototype.destroy.apply(this, ...args);
+            this.deleted = true;
             resourceEvents.trigger('deleted', this);
             return promise;
         },

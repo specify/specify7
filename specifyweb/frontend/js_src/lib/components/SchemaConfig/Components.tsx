@@ -58,18 +58,16 @@ export function PickList({
       aria-label={label}
       className={className}
       disabled={disabled}
-      value={value ?? '0'}
-      onValueChange={(value): void =>
-        handleChange(value === '0' ? null : value)
-      }
+      value={value ?? ''}
+      onValueChange={(value): void => handleChange(value === '' ? null : value)}
     >
       {Object.keys(groups).length === 0 ? (
-        <option disabled value="0">
+        <option disabled value="">
           {commonText.noneAvailable()}
         </option>
       ) : (
         <>
-          <option value="0">{commonText.none()}</option>
+          <option value="">{commonText.none()}</option>
           {/*
            * If current value is not present in the list, add it, and mark as
            * invalid

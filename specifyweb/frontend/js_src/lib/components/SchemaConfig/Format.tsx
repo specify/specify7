@@ -10,18 +10,20 @@ import { KEY, sortFunction, split } from '../../utils/utils';
 import { className } from '../Atoms/className';
 import { Input, Label } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
-import { ReadOnlyContext } from '../Core/Contexts';
+import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import { tables } from '../DataModel/tables';
 import type { SpLocaleContainerItem } from '../DataModel/types';
+import { ResourceLink } from '../Molecules/ResourceLink';
 import { hasToolPermission } from '../Permissions/helpers';
 import type { WithFetchedStrings } from '../Toolbar/SchemaConfig';
 import { PickList } from './Components';
 import { getItemType, isFormatterAvailable } from './helpers';
 import type { ItemType } from './index';
 import type { SchemaData } from './schemaData';
+import { fetchSchemaPickLists } from './schemaData';
 
 export function SchemaConfigFormat({
   schemaData,
@@ -43,9 +45,6 @@ export function SchemaConfigFormat({
       .sort(sortFunction(f.id))
       .map((name) => [name, name] as const)
   );
-  const currentPickListId = Object.entries(schemaData.pickLists).find(
-    ([_id, { name }]) => name === item.pickListName
-  )?.[KEY];
   const id = useId('schema-config-field');
 
   const lineProps = { field, item, id, onFormatted: handleFormatted };
@@ -100,27 +99,11 @@ export function SchemaConfigFormat({
          */
         {...lineProps}
         extraComponents={
-          <>
-            {typeof currentPickListId === 'string' &&
-            hasToolPermission('pickLists', 'read') ? (
-              <Link.Icon
-                aria-label={commonText.edit()}
-                className={className.dataEntryEdit}
-                href={`/specify/view/picklist/${currentPickListId}/`}
-                icon="pencil"
-                title={commonText.edit()}
-              />
-            ) : undefined}
-            {hasToolPermission('pickLists', 'create') && (
-              <Link.Icon
-                aria-label={commonText.add()}
-                className={className.dataEntryAdd}
-                href="/specify/view/picklist/new/"
-                icon="plus"
-                title={commonText.add()}
-              />
-            )}
-          </>
+          <PickListEditing
+            schemaData={schemaData}
+            value={item.pickListName}
+            onChange={(value): void => handleFormatted('pickList', value)}
+          />
         }
         label={tables.PickList.label}
         name="pickList"
@@ -189,5 +172,89 @@ function FormatterLine({
       )}
       {extraComponents}
     </div>
+  );
+}
+
+function PickListEditing({
+  value,
+  onChange: handleChange,
+  schemaData,
+}: {
+  readonly value: string | null;
+  readonly onChange: (value: string | null) => void;
+  readonly schemaData: SchemaData;
+}): JSX.Element {
+  const currentPickList = React.useMemo(() => {
+    const id = f.parseInt(
+      Object.entries(schemaData.pickLists).find(
+        ([_id, { name }]) => name === value
+      )?.[KEY]
+    );
+    return typeof id === 'number'
+      ? new tables.PickList.Resource({ id })
+      : undefined;
+  }, [schemaData.pickLists, value]);
+
+  const [newPickList, setNewPickList] = React.useState(
+    () => new tables.PickList.Resource()
+  );
+  const loading = React.useContext(LoadingContext);
+  const handleChanged = (): void =>
+    loading(
+      fetchSchemaPickLists().then((pickLists) => {
+        setNewPickList(new tables.PickList.Resource());
+        schemaData.update({
+          ...schemaData,
+          pickLists,
+        });
+      })
+    );
+  const resourceView = {
+    onSaved: handleChanged,
+    onDeleted: handleChanged,
+  } as const;
+  return (
+    <>
+      {typeof currentPickList === 'object' &&
+      hasToolPermission('pickLists', 'read') ? (
+        <ResourceLink
+          component={Link.Icon}
+          resource={currentPickList}
+          props={{
+            title: commonText.edit(),
+            icon: 'pencil',
+            className: className.dataEntryEdit,
+          }}
+          resourceView={{
+            onDeleted(): void {
+              handleChange(null);
+              resourceView.onDeleted();
+            },
+            onSaved(): void {
+              handleChange(currentPickList.get('name'));
+              resourceView.onSaved();
+            },
+          }}
+        />
+      ) : undefined}
+      {hasToolPermission('pickLists', 'create') && (
+        <ResourceLink
+          component={Link.Icon}
+          props={{
+            title: commonText.add(),
+            icon: 'plus',
+            className: className.dataEntryAdd,
+          }}
+          resource={newPickList}
+          resourceView={{
+            ...resourceView,
+            onSaved: (): void => {
+              handleChange(newPickList.get('name'));
+              resourceView.onSaved();
+            },
+          }}
+        />
+      )}
+    </>
   );
 }

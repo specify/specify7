@@ -1,7 +1,7 @@
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { f } from '../../utils/functools';
-import type { IR, RA } from '../../utils/types';
+import type { GetOrSet, IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { index } from '../../utils/utils';
 import { fetchCollection } from '../DataModel/collection';
@@ -15,7 +15,7 @@ import { fetchSchemaLanguages } from '../Toolbar/Language';
 import { webLinks } from '../WebLinks';
 import { formatAggregators } from './helpers';
 
-export type SchemaData = {
+type RawSchemaData = {
   readonly languages: IR<LocalizedString>;
   readonly tables: IR<SerializedResource<SpLocaleContainer>>;
   readonly formatters: IR<SimpleFormatter>;
@@ -26,6 +26,10 @@ export type SchemaData = {
     readonly name: string;
     readonly isSystem: boolean;
   }>;
+};
+
+export type SchemaData = RawSchemaData & {
+  readonly update: GetOrSet<RawSchemaData | undefined>[1];
 };
 
 export type SimpleFormatter = {
@@ -39,7 +43,7 @@ type SimpleFieldFormatter = {
   readonly value: string;
 };
 
-export const fetchSchemaData = async (): Promise<SchemaData> =>
+export const fetchSchemaData = async (): Promise<RawSchemaData> =>
   f.all({
     languages: fetchSchemaLanguages(),
     tables: fetchCollection('SpLocaleContainer', {
@@ -65,19 +69,24 @@ export const fetchSchemaData = async (): Promise<SchemaData> =>
     webLinks: webLinks.then((webLinks) =>
       Object.keys(webLinks).map((value) => [value, value] as const)
     ),
-    pickLists: fetchPickLists().then((pickLists) =>
-      Object.fromEntries(
-        filterArray(Object.values(pickLists))
-          .map(serializeResource)
-          .map(({ id, name, isSystem }) => [
-            id,
-            {
-              name,
-              isSystem,
-            },
-            // Filter out front-end only pick lists
-          ])
-          .filter(([id]) => typeof id === 'number')
-      )
-    ),
+    pickLists: fetchSchemaPickLists(),
   });
+
+export const fetchSchemaPickLists = async (): Promise<
+  SchemaData['pickLists']
+> =>
+  fetchPickLists().then((pickLists) =>
+    Object.fromEntries(
+      filterArray(Object.values(pickLists))
+        .map(serializeResource)
+        .map(({ id, name, isSystem }) => [
+          id,
+          {
+            name,
+            isSystem,
+          },
+          // Filter out front-end only pick lists
+        ])
+        .filter(([id]) => typeof id === 'number')
+    )
+  );

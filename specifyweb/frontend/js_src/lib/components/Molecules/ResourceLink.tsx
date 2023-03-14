@@ -7,6 +7,7 @@ import { className } from '../Atoms/className';
 import { Link } from '../Atoms/Link';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { getResourceViewUrl } from '../DataModel/resource';
 import { deserializeResource } from '../DataModel/serializers';
 import { ResourceView } from '../Forms/ResourceView';
 
@@ -32,6 +33,7 @@ export function ResourceLink<COMPONENT extends typeof Link['Icon']>({
   >;
 }): JSX.Element {
   const [isOpen, _, handleClose, handleToggle] = useBooleanState();
+  React.useEffect(handleClose, [resource]);
 
   function handleClosed(): void {
     handleClose();
@@ -44,7 +46,9 @@ export function ResourceLink<COMPONENT extends typeof Link['Icon']>({
     ...props,
     'aria-disabled': disabled,
     'aria-pressed': isOpen,
-    href: resource?.viewUrl()!,
+    href: resource?.isNew()
+      ? getResourceViewUrl(resource.specifyTable.name, undefined)
+      : resource?.viewUrl()!,
     title: commonText.view(),
     onClick: (event): void => {
       event.preventDefault();
@@ -63,7 +67,10 @@ export function ResourceLink<COMPONENT extends typeof Link['Icon']>({
         <ResourceView
           dialog="modal"
           onAdd={undefined}
-          onSaved={handleClosed}
+          onSaved={(): void => {
+            resourceView.onSaved?.();
+            handleClose();
+          }}
           {...resourceView}
           isDependent={false}
           isSubForm={false}
