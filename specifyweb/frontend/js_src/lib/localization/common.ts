@@ -599,7 +599,7 @@ export const commonText = createDictionary({
     'en-us': 'offline',
     'es-es': 'desconectado',
     'fr-fr': 'hors ligne',
-    'ru-ru': 'не в сети',
+    'ru-ru': 'Не в сети',
     'uk-ua': 'офлайн',
   },
   bulkSelect: {
