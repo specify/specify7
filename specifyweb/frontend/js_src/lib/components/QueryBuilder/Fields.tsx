@@ -1,3 +1,4 @@
+import { Sortable } from '@shopify/draggable';
 import React from 'react';
 
 import { useReadyEffect } from '../../hooks/useReadyEffect';
@@ -7,9 +8,8 @@ import type { Tables } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { scrollIntoView } from '../TreeView/helpers';
 import type { MappingPath } from '../WbPlanView/Mapper';
-import { QueryLine } from './Line';
 import type { QueryField } from './helpers';
-import { Sortable } from '@shopify/draggable';
+import { QueryLine } from './Line';
 
 export function QueryFields({
   baseTableName,
@@ -67,7 +67,7 @@ export function QueryFields({
 }): JSX.Element {
   const fieldsContainerRef = React.useRef<HTMLUListElement | null>(null);
 
-  //draggable and sortable code
+  // Draggable and sortable code
   React.useEffect(() => {
     if (handleChangeFields === undefined) return;
 
