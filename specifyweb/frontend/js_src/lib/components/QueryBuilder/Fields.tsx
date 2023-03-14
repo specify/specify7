@@ -96,6 +96,7 @@ export function QueryFields({
       }
 
       handleChangeFields(newItems);
+      handleLineFocus?.(newIndex);
     });
 
     return () => {
