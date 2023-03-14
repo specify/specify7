@@ -32,6 +32,7 @@ import type { QueryFieldFilter } from '../QueryBuilder/FieldFilter';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
+import { usePref } from '../UserPreferences/usePref';
 import { queryCbxExtendedSearch } from './helpers';
 
 const resourceLimit = 100;
@@ -43,7 +44,6 @@ export type QueryComboBoxFilter<SCHEMA extends AnySchema> = {
   readonly value: string;
 };
 
-// FEATURE: store this in CollectionPreferences and allow customizing
 const viewNameExceptions: Partial<RR<keyof Tables, string>> = {
   GeologicTimePeriod: 'ChronosStratSearch',
 };
@@ -59,7 +59,14 @@ export function SearchDialog<SCHEMA extends AnySchema>(props: {
   readonly onClose: () => void;
   readonly onSelected: (resources: RA<SpecifyResource<SCHEMA>>) => void;
 }): JSX.Element | null {
-  const [useQueryBuilder, handleUseQueryBuilder] = useBooleanState();
+  const [alwaysUseQueryBuilder] = usePref(
+    'form',
+    'queryComboBox',
+    'alwaysUseQueryBuilder'
+  );
+  const [useQueryBuilder, handleUseQueryBuilder] = useBooleanState(
+    alwaysUseQueryBuilder
+  );
   return useQueryBuilder ? (
     <QueryBuilderSearch
       {...props}

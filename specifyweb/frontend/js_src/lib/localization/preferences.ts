@@ -1410,4 +1410,7 @@ export const preferencesText = createDictionary({
     'fr-fr': 'Utiliser des infobulles modernes',
     'uk-ua': 'Використовувати сучасні підказки',
   },
+  alwaysUseQueryBuilder: {
+    'en-us': 'Always use query builder search inside of search form',
+  },
 } as const);

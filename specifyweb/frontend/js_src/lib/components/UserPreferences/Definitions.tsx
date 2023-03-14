@@ -972,6 +972,13 @@ export const preferenceDefinitions = {
               },
             ],
           }),
+          alwaysUseQueryBuilder: defineItem<boolean>({
+            title: preferencesText.alwaysUseQueryBuilder(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
         },
       },
       recordSet: {
