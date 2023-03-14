@@ -1,0 +1,111 @@
+import React from 'react';
+
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { commonText } from '../../localization/common';
+import type { PartialBy } from '../../utils/types';
+import { className } from '../Atoms/className';
+import { Link } from '../Atoms/Link';
+import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { deserializeResource } from '../DataModel/serializers';
+import { ResourceView } from '../Forms/ResourceView';
+
+export function ResourceLink<COMPONENT extends typeof Link['Icon']>({
+  resource,
+  component: Component,
+  props: rawProps,
+  resourceView,
+  children,
+}: {
+  readonly resource: SpecifyResource<AnySchema> | undefined;
+  readonly component: COMPONENT;
+  readonly props: 'title' extends keyof Omit<Parameters<COMPONENT>[0], 'href'>
+    ? PartialBy<Omit<Parameters<COMPONENT>[0], 'href'>, 'title'>
+    : Omit<Parameters<COMPONENT>[0], 'href'>;
+  readonly children?: Parameters<COMPONENT>[0]['children'];
+  readonly resourceView: PartialBy<
+    Omit<
+      Parameters<typeof ResourceView>[0],
+      'isDependent' | 'isSubForm' | 'resource'
+    >,
+    'dialog' | 'onAdd' | 'onClose' | 'onSaved'
+  >;
+}): JSX.Element {
+  const [isOpen, _, handleClose, handleToggle] = useBooleanState();
+
+  function handleClosed(): void {
+    handleClose();
+    resourceView.onClose?.();
+  }
+
+  const props = rawProps as Omit<Parameters<COMPONENT>[0], 'href'>;
+  const disabled = resource === undefined || props['aria-disabled'] === true;
+  const allProps: Parameters<COMPONENT>[0] = {
+    ...props,
+    'aria-disabled': disabled,
+    'aria-pressed': isOpen,
+    href: resource?.viewUrl()!,
+    title: commonText.view(),
+    onClick: (event): void => {
+      event.preventDefault();
+      if (disabled) return;
+      handleToggle();
+      props.onClick?.(event);
+    },
+    children,
+  };
+  const AnyComponent = Component as (props: typeof allProps) => JSX.Element;
+
+  return (
+    <>
+      <AnyComponent {...allProps} />
+      {isOpen && (
+        <ResourceView
+          dialog="modal"
+          onAdd={undefined}
+          onSaved={handleClosed}
+          {...resourceView}
+          isDependent={false}
+          isSubForm={false}
+          resource={resource}
+          onClose={handleClosed}
+        />
+      )}
+    </>
+  );
+}
+
+export function ResourceEdit({
+  resource,
+  onSaved: handleSaved,
+}: {
+  readonly resource: SpecifyResource<AnySchema>;
+  readonly onSaved?: () => void;
+}): JSX.Element {
+  return (
+    <ResourceLink
+      component={Link.Icon}
+      props={{
+        className: className.dataEntryEdit,
+        title: commonText.edit(),
+        icon: 'pencil',
+      }}
+      resource={resource}
+      resourceView={{
+        onDeleted: undefined,
+        onSaved: handleSaved,
+      }}
+    />
+  );
+}
+
+export function RecordEdit({
+  resource,
+  onSaved: handleSaved,
+}: {
+  readonly resource: SerializedResource<AnySchema>;
+  readonly onSaved?: () => void;
+}): JSX.Element {
+  const record = React.useMemo(() => deserializeResource(resource), [resource]);
+  return <ResourceEdit resource={record} onSaved={handleSaved} />;
+}

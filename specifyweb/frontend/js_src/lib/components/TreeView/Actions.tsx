@@ -1,7 +1,6 @@
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
-import { useBooleanState } from '../../hooks/useBooleanState';
 import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
@@ -18,9 +17,9 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
 import { DeleteButton } from '../Forms/DeleteButton';
-import { ResourceView } from '../Forms/ResourceView';
 import { getPref } from '../InitialContext/remotePrefs';
 import { Dialog } from '../Molecules/Dialog';
+import { ResourceLink } from '../Molecules/ResourceLink';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import type { Row } from './helpers';
 import { checkMoveViolatesEnforced } from './helpers';
@@ -211,13 +210,10 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
   readonly isRoot: boolean;
   readonly onRefresh: () => void;
 }): JSX.Element | null {
-  const [isOpen, _, handleClose, handleToggle] = useBooleanState();
-
   const [resource, setResource] = useLiveState<
     SpecifyResource<AnySchema> | undefined
   >(
     React.useCallback(() => {
-      if (!isOpen) return undefined;
       const table = tables[tableName] as SpecifyTable<AnyTree>;
       const parentNode = new table.Resource({ id: nodeId });
       let node = parentNode;
@@ -226,31 +222,25 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
         node.set('parent', parentNode.url());
       }
       return node;
-    }, [isOpen, nodeId, tableName, addNew])
+    }, [nodeId, tableName, addNew])
   );
 
   return (
-    <>
-      <Button.Small
-        aria-pressed={isOpen}
-        disabled={nodeId === undefined || disabled}
-        onClick={handleToggle}
-      >
-        {label}
-      </Button.Small>
-      {isOpen && typeof resource === 'object' && (
-        <ResourceView
-          dialog="nonModal"
-          isDependent={false}
-          isSubForm={false}
-          resource={resource}
-          onAdd={isRoot ? undefined : setResource}
-          onClose={handleClose}
-          onDeleted={handleRefresh}
-          onSaved={handleRefresh}
-        />
-      )}
-    </>
+    <ResourceLink
+      component={Link.Small}
+      props={{
+        'aria-disabled': disabled,
+      }}
+      resource={resource}
+      resourceView={{
+        dialog: 'nonModal',
+        onAdd: isRoot ? undefined : setResource,
+        onDeleted: handleRefresh,
+        onSaved: handleRefresh,
+      }}
+    >
+      {label}
+    </ResourceLink>
   );
 }
 

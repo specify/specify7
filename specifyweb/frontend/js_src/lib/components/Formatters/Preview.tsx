@@ -13,7 +13,7 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { deserializeResource } from '../DataModel/serializers';
 import type { SpecifyTable } from '../DataModel/specifyTable';
-import { ResourceView } from '../Forms/ResourceView';
+import { ResourceLink } from '../Molecules/ResourceLink';
 import { SearchDialog } from '../SearchDialog';
 
 const defaultPreviewSize = 4;
@@ -55,9 +55,6 @@ export function GenericFormatterPreview({
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   const templateResource = React.useMemo(() => new table!.Resource(), [table]);
 
-  const [previewIndex, setPreviewIndex] = React.useState<number | undefined>(
-    undefined
-  );
   return (
     <div
       // Setting width prevents dialog resizing when output is loaded
@@ -74,13 +71,15 @@ export function GenericFormatterPreview({
             key={index}
           >
             {typeof resources?.[index] === 'object' && (
-              <Link.Icon
-                href={resources[index].viewUrl()}
-                icon="eye"
-                title={commonText.view()}
-                onClick={(event): void => {
-                  event.preventDefault();
-                  setPreviewIndex(index);
+              <ResourceLink
+                component={Link.Icon}
+                props={{
+                  icon: 'eye',
+                }}
+                resource={resources[index]}
+                resourceView={{
+                  onDeleted: (): void =>
+                    setResources(removeItem(resources, index)),
                 }}
               />
             )}
@@ -90,21 +89,6 @@ export function GenericFormatterPreview({
       ) : formatted === undefined ? (
         <p>{commonText.loading()}</p>
       ) : undefined}
-      {typeof previewIndex === 'number' &&
-        typeof resources?.[previewIndex] === 'object' && (
-          <ResourceView
-            dialog="modal"
-            isDependent={false}
-            isSubForm={false}
-            resource={resources[previewIndex]}
-            onAdd={undefined}
-            onClose={(): void => setPreviewIndex(undefined)}
-            onDeleted={(): void =>
-              setResources(removeItem(resources, previewIndex))
-            }
-            onSaved={undefined}
-          />
-        )}
       {isOpen && (
         <SearchDialog
           extraFilters={undefined}

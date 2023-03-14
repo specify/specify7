@@ -9,6 +9,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { strictParseResourceUrl } from '../DataModel/resource';
 import { strictGetTable } from '../DataModel/tables';
 import { hasTablePermission } from '../Permissions/helpers';
+import { ResourceLink } from './ResourceLink';
 
 export function FormattedResourceUrl({
   resourceUrl,
@@ -40,7 +41,14 @@ export function FormattedResource({
     hasTablePermission(resource.specifyTable.name, 'read') &&
     asLink &&
     !resource.isNew() ? (
-    <Link.NewTab href={resource.viewUrl()}>{formatted}</Link.NewTab>
+    <ResourceLink
+      component={Link.Default}
+      props={{}}
+      resource={resource}
+      resourceView={{ onDeleted: undefined }}
+    >
+      {formatted}
+    </ResourceLink>
   ) : (
     <>{formatted}</>
   );

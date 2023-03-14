@@ -2,7 +2,6 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
 
-import { useBooleanState } from '../../hooks/useBooleanState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { commonText } from '../../localization/common';
 import { userText } from '../../localization/user';
@@ -10,14 +9,11 @@ import type { GetOrSet, IR } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
-import { DataEntry } from '../Atoms/DataEntry';
 import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { deserializeResource } from '../DataModel/serializers';
 import { tables } from '../DataModel/tables';
 import type { Collection } from '../DataModel/types';
-import { ResourceView } from '../Forms/ResourceView';
 import { userInformation } from '../InitialContext/userInformation';
 import { hasPermission } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
@@ -70,35 +66,6 @@ export function CreateCollectionRoleButton({
     >
       {commonText.create()}
     </Link.Green>
-  );
-}
-
-export function ViewCollectionButton({
-  collection,
-}: {
-  readonly collection: SerializedResource<Collection>;
-}): JSX.Element {
-  const [isOpen, handleOpen, handleClose] = useBooleanState();
-  const resource = React.useMemo(
-    () => deserializeResource(collection),
-    [collection]
-  );
-  return (
-    <>
-      <DataEntry.Edit onClick={handleOpen} />
-      {isOpen && (
-        <ResourceView
-          dialog="modal"
-          isDependent={false}
-          isSubForm={false}
-          resource={resource}
-          onAdd={undefined}
-          onClose={handleClose}
-          onDeleted={undefined}
-          onSaved={undefined}
-        />
-      )}
-    </>
   );
 }
 

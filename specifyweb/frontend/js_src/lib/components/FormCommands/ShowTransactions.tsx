@@ -12,10 +12,11 @@ import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { deserializeResource } from '../DataModel/serializers';
+import { tables } from '../DataModel/tables';
 import type { Preparation } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
+import { ResourceLink } from '../Molecules/ResourceLink';
 import { hasTablePermission } from '../Permissions/helpers';
-import { tables } from '../DataModel/tables';
 
 function List({
   resources,
@@ -34,7 +35,7 @@ function List({
       return interactions
         .map((resource) => ({
           label: resource.get(displayFieldName),
-          href: resource.viewUrl(),
+          resource,
         }))
         .sort(sortFunction(({ label }) => label));
     }, [resources, fieldName, displayFieldName]),
@@ -45,9 +46,16 @@ function List({
     <>{commonText.noResults()}</>
   ) : Array.isArray(entries) ? (
     <Ul>
-      {entries.map(({ label, href }, index) => (
+      {entries.map(({ label, resource }, index) => (
         <li key={index}>
-          <Link.NewTab href={href}>{label}</Link.NewTab>
+          <ResourceLink
+            component={Link.Default}
+            props={{}}
+            resource={resource}
+            resourceView={{ onDeleted: undefined }}
+          >
+            {label}
+          </ResourceLink>
         </li>
       ))}
     </Ul>

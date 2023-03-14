@@ -14,28 +14,25 @@ import type { RA } from '../../utils/types';
 import { caseInsensitiveHash, toggleItem } from '../../utils/utils';
 import { Container, H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
-import { DataEntry } from '../Atoms/DataEntry';
 import type {
   AnyTree,
   FilterTablesByEndsWith,
   SerializedResource,
 } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { deserializeResource } from '../DataModel/serializers';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { getTable, tables } from '../DataModel/tables';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import { ResourceView } from '../Forms/ResourceView';
 import { useMenuItem } from '../Header/MenuContext';
 import { getPref } from '../InitialContext/remotePrefs';
 import { isTreeTable, treeRanksPromise } from '../InitialContext/treeRanks';
 import { useTitle } from '../Molecules/AppTitle';
 import { supportsBackdropBlur } from '../Molecules/Dialog';
+import { RecordEdit, ResourceEdit } from '../Molecules/ResourceLink';
 import { TableIcon } from '../Molecules/TableIcon';
 import { ProtectedTree } from '../Permissions/PermissionDenied';
 import { NotFoundView } from '../Router/NotFoundView';
 import { formatUrl } from '../Router/queryString';
-import { EditTreeDefinition } from '../Toolbar/TreeRepair';
 import {
   useHighContrast,
   useReducedTransparency,
@@ -171,7 +168,10 @@ function TreeView<SCHEMA extends AnyTree>({
         <H2 title={treeDefinition.get('remarks') ?? undefined}>
           {treeDefinition.get('name')}
         </H2>
-        <EditTreeDefinition treeDefinition={treeDefinition} />
+        <ResourceEdit
+          resource={treeDefinition}
+          onSaved={(): void => globalThis.location.reload()}
+        />
         <TreeViewSearch<SCHEMA>
           forwardRef={searchBoxRef}
           tableName={tableName}
@@ -279,7 +279,10 @@ function TreeView<SCHEMA extends AnyTree>({
                   </Button.LikeLink>
                   {isEditingRanks &&
                   collapsedRanks?.includes(rank.rankId) !== true ? (
-                    <EditTreeRank rank={rank} />
+                    <RecordEdit
+                      resource={rank}
+                      onSaved={(): void => globalThis.location.reload()}
+                    />
                   ) : undefined}
                 </div>
               );
@@ -342,32 +345,6 @@ function TreeView<SCHEMA extends AnyTree>({
         </ul>
       </div>
     </Container.Full>
-  );
-}
-
-function EditTreeRank({
-  rank,
-}: {
-  readonly rank: SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>;
-}): JSX.Element {
-  const [isOpen, handleOpen, handleClose] = useBooleanState();
-  const resource = React.useMemo(() => deserializeResource(rank), [rank]);
-  return (
-    <>
-      <DataEntry.Edit onClick={handleOpen} />
-      {isOpen ? (
-        <ResourceView
-          dialog="modal"
-          isDependent={false}
-          isSubForm={false}
-          resource={resource}
-          onAdd={undefined}
-          onClose={handleClose}
-          onDeleted={undefined}
-          onSaved={(): void => globalThis.location.reload()}
-        />
-      ) : null}
-    </>
   );
 }
 

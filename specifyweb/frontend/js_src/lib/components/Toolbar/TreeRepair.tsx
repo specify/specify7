@@ -16,21 +16,18 @@ import { f } from '../../utils/functools';
 import { toLowerCase } from '../../utils/utils';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
-import { DataEntry } from '../Atoms/DataEntry';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
-import type { FilterTablesByEndsWith } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { tables } from '../DataModel/tables';
 import type { TaxonTreeDef } from '../DataModel/types';
-import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import { ResourceView } from '../Forms/ResourceView';
 import {
   getDisciplineTrees,
   treeRanksPromise,
 } from '../InitialContext/treeRanks';
 import { Dialog } from '../Molecules/Dialog';
+import { ResourceEdit } from '../Molecules/ResourceLink';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasPermission, hasTreeAccess } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
@@ -120,7 +117,10 @@ export function TreeSelectDialog({
                         {treeDefinition?.get('name') ?? tables[treeName].label}
                       </Link.Default>
                       {typeof treeDefinition === 'object' && (
-                        <EditTreeDefinition treeDefinition={treeDefinition} />
+                        <ResourceEdit
+                          resource={treeDefinition}
+                          onSaved={(): void => globalThis.location.reload()}
+                        />
                       )}
                     </div>
                   </li>
@@ -162,30 +162,5 @@ export function TreeRepairOverlay(): JSX.Element {
       onClick={setTree}
       onClose={handleClose}
     />
-  );
-}
-
-export function EditTreeDefinition({
-  treeDefinition,
-}: {
-  readonly treeDefinition: SpecifyResource<FilterTablesByEndsWith<'TreeDef'>>;
-}): JSX.Element {
-  const [isOpen, handleOpen, handleClose] = useBooleanState();
-  return (
-    <ErrorBoundary dismissible>
-      <DataEntry.Edit onClick={handleOpen} />
-      {isOpen && (
-        <ResourceView
-          dialog="modal"
-          isDependent={false}
-          isSubForm={false}
-          resource={treeDefinition}
-          onAdd={undefined}
-          onClose={handleClose}
-          onDeleted={undefined}
-          onSaved={(): void => globalThis.location.reload()}
-        />
-      )}
-    </ErrorBoundary>
   );
 }
