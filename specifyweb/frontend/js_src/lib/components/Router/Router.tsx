@@ -156,7 +156,6 @@ function parseClickEvent(
     const localUrl = toLocalUrl(link.href);
     if (typeof localUrl === 'string') {
       event.preventDefault();
-      link.getAttribute('href');
       if (
         process.env.NODE_ENV !== 'production' &&
         link.getAttribute('href')!.startsWith('.')
@@ -305,7 +304,7 @@ function isSingleResource(
   { pathname }: SafeLocation,
   singleResource: string | undefined
 ): boolean {
-  if (singleResource === undefined) return false;
+  if (singleResource === undefined || singleResource.length === 0) return false;
   return (
     pathname.startsWith(singleResource) &&
     globalThis.location.pathname.startsWith(singleResource)
