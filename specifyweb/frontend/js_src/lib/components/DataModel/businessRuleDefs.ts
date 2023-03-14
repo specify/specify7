@@ -4,7 +4,8 @@ import {
   checkPrepAvailability,
   getTotalLoaned,
   getTotalResolved,
-  interactionCache,
+  getTotalReturned,
+  previousLoanPreparations,
   updateLoanPrep,
 } from './interactionBusinessRules';
 import { SpecifyResource } from './legacyTypes';
@@ -242,6 +243,10 @@ export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
     },
   },
   LoanPreparation: {
+    customInit: (resource: SpecifyResource<LoanPreparation>): void => {
+      if (!resource.isNew())
+        resource.rgetCollection('loanReturnPreparations').then(updateLoanPrep);
+    },
     fieldChecks: {
       quantity: (iprep: SpecifyResource<LoanPreparation>): void => {
         checkPrepAvailability(iprep);
@@ -255,74 +260,82 @@ export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
     ): void => updateLoanPrep(collection),
 
     customInit: (resource: SpecifyResource<LoanReturnPreparation>): void => {
-      resource.get('quantityReturned') === null &&
-        resource.set('quantityReturned', 0);
-      resource.get('quantityResolved') === null &&
-        resource.set('quantityResolved', 0);
+      const returned = resource.get('quantityReturned');
+      const resolved = resource.get('quantityResolved');
+      if (returned === undefined) resource.set('quantityReturned', 0);
+      if (resolved === undefined) resource.set('quantityResolved', 0);
+      if (!resource.isNew()) {
+        previousLoanPreparations.previousReturned[resource.cid] =
+          Number(returned);
+        previousLoanPreparations.previousResolved[resource.cid] =
+          Number(resolved);
+      }
+      updateLoanPrep(resource.collection);
     },
     fieldChecks: {
       quantityreturned: (
         loanReturnPrep: SpecifyResource<LoanReturnPreparation>
       ): void => {
-        const returned = loanReturnPrep.get('quantityReturned');
-        const previousReturned = interactionCache().previousReturned[
-          Number(loanReturnPrep.cid)
-        ]
-          ? interactionCache().previousReturned[Number(loanReturnPrep.cid)]
-          : 0;
-        if (returned !== null && returned != previousReturned) {
-          const delta = returned - previousReturned;
-          let resolved = loanReturnPrep.get('quantityResolved');
-          const totalLoaned = getTotalLoaned(loanReturnPrep);
-          const totalResolved = getTotalResolved(loanReturnPrep);
-          const max =
-            typeof totalLoaned === 'number' && typeof totalResolved === 'number'
-              ? totalLoaned - totalResolved
-              : 0;
-          if (resolved !== null && delta + resolved > max) {
-            loanReturnPrep.set('quantityReturned', previousReturned);
+        const returned = Number(loanReturnPrep.get('quantityReturned'))!;
+        const previousReturned =
+          previousLoanPreparations.previousReturned[loanReturnPrep.cid] ?? 0;
+        const previousResolved =
+          previousLoanPreparations.previousResolved[loanReturnPrep.cid] ?? 0;
+
+        const totalLoaned = getTotalLoaned(loanReturnPrep)!;
+
+        const totalResolved = getTotalResolved(loanReturnPrep)!;
+        const available = totalLoaned - totalResolved;
+
+        if (returned != previousReturned) {
+          if (returned === available && previousReturned - returned === 1) {
+          } else if (returned < 0 || previousReturned < 0) {
+            loanReturnPrep.set('quantityReturned', 0);
           } else {
-            resolved = loanReturnPrep.get('quantityResolved')! + delta;
-            interactionCache().previousResolved[Number(loanReturnPrep.cid)] =
-              resolved;
-            loanReturnPrep.set('quantityResolved', resolved);
+            const changeInReturn = returned - previousReturned;
+            previousLoanPreparations.previousResolved[loanReturnPrep.cid] =
+              changeInReturn + previousResolved;
+            loanReturnPrep.set(
+              'quantityResolved',
+              changeInReturn + previousResolved
+            );
           }
-          interactionCache().previousReturned[Number(loanReturnPrep.cid)] =
-            loanReturnPrep.get('quantityReturned');
-          updateLoanPrep(loanReturnPrep.collection);
         }
+
+        if (returned > totalLoaned)
+          loanReturnPrep.set('quantityReturned', totalLoaned);
+
+        const returnedLeft = totalLoaned - getTotalReturned(loanReturnPrep)!;
+        if (returned > returnedLeft)
+          loanReturnPrep.set('quantityReturned', returnedLeft);
+
+        if (previousResolved < returned) {
+          loanReturnPrep.set('quantityResolved', returned);
+          previousLoanPreparations.previousResolved[loanReturnPrep.cid] =
+            returned;
+        }
+
+        previousLoanPreparations.previousReturned[loanReturnPrep.cid] =
+          returned;
+        updateLoanPrep(loanReturnPrep.collection);
       },
       quantityresolved: (
         loanReturnPrep: SpecifyResource<LoanReturnPreparation>
       ): void => {
-        const resolved = loanReturnPrep.get('quantityResolved');
-        const previousResolved = interactionCache().previousResolved[
-          Number(loanReturnPrep.cid)
-        ]
-          ? interactionCache().previousResolved[Number(loanReturnPrep.cid)]
-          : 0;
-        if (resolved != previousResolved) {
-          const returned = loanReturnPrep.get('quantityReturned');
-          const totalLoaned = getTotalLoaned(loanReturnPrep);
-          const totalResolved = getTotalResolved(loanReturnPrep);
-          const max =
-            typeof totalLoaned === 'number' && typeof totalResolved === 'number'
-              ? totalLoaned - totalResolved
-              : 0;
-          if (resolved !== null && returned !== null) {
-            if (resolved > max) {
-              loanReturnPrep.set('quantityResolved', previousResolved);
-            }
-            if (resolved < returned) {
-              interactionCache().previousReturned[Number(loanReturnPrep.cid)] =
-                resolved;
-              loanReturnPrep.set('quantityReturned', resolved);
-            }
-          }
-          interactionCache().previousResolved[Number(loanReturnPrep.cid)] =
-            loanReturnPrep.get('quantityResolved');
-          updateLoanPrep(loanReturnPrep.collection);
+        const resolved = Number(loanReturnPrep.get('quantityResolved'));
+
+        const totalLoaned = getTotalLoaned(loanReturnPrep)!;
+        const totalResolved = getTotalResolved(loanReturnPrep)!;
+        const available = totalLoaned - totalResolved;
+        if (resolved > available) {
+          loanReturnPrep.set('quantityResolved', available);
         }
+
+        if (resolved < 0) loanReturnPrep.set('quantityResolved', 0);
+
+        previousLoanPreparations.previousResolved[loanReturnPrep.cid] =
+          resolved;
+        updateLoanPrep(loanReturnPrep.collection);
       },
     },
   },

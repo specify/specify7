@@ -1,32 +1,85 @@
-import { formsText } from '../../localization/forms';
 import { getPrepAvailability } from '../../utils/ajax/specifyApi';
-import { f } from '../../utils/functools';
 import { AnyInteractionPreparation } from './helperTypes';
 import { SpecifyResource } from './legacyTypes';
 import { fetchResource, idFromUrl } from './resource';
 import { Collection } from './specifyModel';
 import { LoanPreparation, LoanReturnPreparation } from './types';
 
-type InteractionBusinessRules = {
-  previousReturned: { [prepCid: number]: number };
-  previousResolved: { [prepCid: number]: number };
+type PreviousLoanReturnPreparations = {
+  previousReturned: {
+    [cid: string]: number;
+  };
+  previousResolved: {
+    [cid: string]: number;
+  };
 };
 
-export var interactionCache = f.store(
-  (): InteractionBusinessRules => ({
-    previousReturned: {},
-    previousResolved: {},
-  })
-);
+/**
+ * This object is used to maintain an 'asychronous' count of previousReturned
+ * and previousResolved for LoanReturnPreparation.
+ * The internal _previous_attributes can not be used here as that would cause an infinite
+ * recursion chain
+ *
+ * For uses of this object, see the LoanReturnPreparation business rules in
+ * businessRuleDefs.ts
+ */
+export const previousLoanPreparations: PreviousLoanReturnPreparations = {
+  previousReturned: {},
+  previousResolved: {},
+};
+
+/**
+ * Given a LoanReturnPreparation, return its LoanPreparation's quantity
+ */
 
 export const getTotalLoaned = (
   loanReturnPrep: SpecifyResource<LoanReturnPreparation>
 ): number | undefined => {
-  return loanReturnPrep.collection
+  return loanReturnPrep.collection !== undefined
     ? loanReturnPrep.collection.related?.get('quantity')
     : undefined;
 };
 
+/**
+ * Given a LoanReturnPreparation, return its LoanPreparation's quantityReturned
+ */
+export const getTotalReturned = (
+  loanReturnPrep: SpecifyResource<LoanReturnPreparation>
+) => {
+  return loanReturnPrep.collection !== null
+    ? loanReturnPrep.collection.models.reduce((sum, loanPrep) => {
+        const returned = loanPrep.get('quantityReturned');
+        return loanPrep.cid != loanReturnPrep.cid
+          ? sum + (typeof returned === 'number' ? returned : 0)
+          : sum;
+      }, 0)
+    : loanReturnPrep.get('quantityReturned');
+};
+
+/**
+ * Given a LoanReturnPreparation, return its LoanPreparation's quantityResolved
+ */
+export const getTotalResolved = (
+  loanReturnPrep: SpecifyResource<LoanReturnPreparation>
+) => {
+  return loanReturnPrep.collection !== null
+    ? loanReturnPrep.collection.models.reduce((sum, loanPrep) => {
+        const resolved = loanPrep.get('quantityResolved');
+        return loanPrep.cid != loanReturnPrep.cid
+          ? sum + (typeof resolved === 'number' ? resolved : 0)
+          : sum;
+      }, 0)
+    : loanReturnPrep.get('quantityResolved');
+};
+
+/**
+ * Given a collection of LoanReturnPreparations, iterate through the
+ * collection and store the sum all of the quantityReturned and quantityResolved
+ * into an object
+ *
+ * Then, update the related Loan Preparation and set its quantityReturned and
+ * quantityResolved to the summed object values
+ */
 export const updateLoanPrep = (
   collection: Collection<LoanReturnPreparation>
 ) => {
@@ -38,59 +91,46 @@ export const updateLoanPrep = (
       (memo: { returned: number; resolved: number }, loanReturnPrep) => {
         const returned = loanReturnPrep.get('quantityReturned');
         const resolved = loanReturnPrep.get('quantityResolved');
-        memo.returned += typeof returned === 'number' ? returned : 0;
-        memo.resolved += typeof resolved === 'number' ? resolved : 0;
+        memo.returned +=
+          typeof returned === 'number' || typeof returned === 'string'
+            ? Number(returned)
+            : 0;
+        memo.resolved +=
+          typeof resolved === 'number' || typeof resolved === 'string'
+            ? Number(resolved)
+            : 0;
         return memo;
       },
       { returned: 0, resolved: 0 }
     );
-    const loanPrep: SpecifyResource<LoanPreparation> =
-      collection.related as SpecifyResource<LoanPreparation>;
+    const loanPrep = collection.related as SpecifyResource<LoanPreparation>;
     loanPrep.set('quantityReturned', sums.returned);
     loanPrep.set('quantityResolved', sums.resolved);
   }
 };
 
-export const getTotalResolved = (
-  loanReturnPrep: SpecifyResource<LoanReturnPreparation>
-) => {
-  return loanReturnPrep.collection
-    ? loanReturnPrep.collection.models.reduce((sum, loanPrep) => {
-        const resolved = loanPrep.get('quantityResolved');
-        return loanPrep.cid != loanReturnPrep.cid
-          ? sum + (typeof resolved === 'number' ? resolved : 0)
-          : sum;
-      }, 0)
-    : loanReturnPrep.get('quantityResolved');
-};
-
-const updatePrepBlockers = (
+/**
+ * Check to enure an Interaction Preparation's quantity is greater
+ * than or equal to zero and less than preparation's count.
+ * If the interactionPrep's quantity exceeds this range, set it
+ * to the closest maxiumum of the range
+ */
+const validateInteractionPrepQuantity = (
   interactionPrep: SpecifyResource<AnyInteractionPreparation>
-): Promise<void> => {
+) => {
   const prepUri = interactionPrep.get('preparation') ?? '';
   const prepId = idFromUrl(prepUri);
-  return prepId === undefined
+  prepId === undefined
     ? Promise.resolve()
-    : fetchResource('Preparation', prepId)
-        .then((preparation) => {
-          const prepQuanity = interactionPrep.get('quantity');
-          return typeof preparation.countAmt === 'number' &&
-            typeof prepQuanity === 'number'
-            ? preparation.countAmt >= prepQuanity
-            : false;
-        })
-        .then((isValid) => {
-          if (!isValid) {
-            if (interactionPrep.saveBlockers?.blockers)
-              interactionPrep.saveBlockers?.add(
-                'parseError-quantity',
-                'quantity',
-                formsText.invalidValue()
-              );
-          } else {
-            interactionPrep.saveBlockers?.remove('parseError-quantity');
-          }
-        });
+    : fetchResource('Preparation', prepId).then((preparation) => {
+        const prepQuanity = interactionPrep.get('quantity');
+
+        if (typeof preparation.countAmt === 'number') {
+          if (Number(prepQuanity) >= preparation.countAmt)
+            interactionPrep.set('quantity', preparation.countAmt);
+          if (Number(prepQuanity) < 0) interactionPrep.set('quantity', 0);
+        }
+      });
 };
 
 export const checkPrepAvailability = (
@@ -102,19 +142,17 @@ export const checkPrepAvailability = (
   ) {
     const prepUri = interactionPrep.get('preparation');
     const prepId = typeof prepUri === 'string' ? idFromUrl(prepUri) : undefined;
-    updatePrepBlockers(interactionPrep);
+    validateInteractionPrepQuantity(interactionPrep);
     const interactionId = interactionPrep.isNew()
       ? undefined
       : interactionPrep.get('id');
-    const interactionModelName = interactionPrep.isNew()
-      ? undefined
-      : interactionPrep.specifyModel.name;
+    const interactionModelName = interactionPrep.specifyModel.name;
     if (prepId !== undefined)
-      getPrepAvailability(prepId, interactionId, interactionModelName!).then(
+      getPrepAvailability(prepId, interactionId, interactionModelName).then(
         (available) => {
           const quantity = interactionPrep.get('quantity');
           if (
-            typeof available != 'undefined' &&
+            available != 'null' &&
             typeof quantity === 'number' &&
             Number(available[0]) < quantity
           ) {
