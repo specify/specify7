@@ -152,9 +152,9 @@ export function ResourceView<SCHEMA extends AnySchema>({
 
   const [showUnloadProtect, setShowUnloadProtect] = React.useState(false);
 
-  const [state, setState] = React.useState<
-    State<'Main'> | State<'Report', { readonly onDone: () => void }>
-  >({ type: 'Main' });
+  const [state, setState] = React.useState<State<'Main'> | State<'Report'>>({
+    type: 'Main',
+  });
 
   const [makeFormDialogsModal] = usePref(
     'form',
@@ -204,9 +204,8 @@ export function ResourceView<SCHEMA extends AnySchema>({
           if (printOnSave[resource.specifyModel.name] === true)
             setState({
               type: 'Report',
-              onDone: () => handleSaved(),
             });
-          else handleSaved();
+          handleSaved();
         }}
         onSaving={handleSaving}
       />
@@ -219,7 +218,6 @@ export function ResourceView<SCHEMA extends AnySchema>({
         model={resource.specifyModel}
         resourceId={resource.id}
         onClose={(): void => {
-          state.onDone();
           setState({ type: 'Main' });
         }}
       />
