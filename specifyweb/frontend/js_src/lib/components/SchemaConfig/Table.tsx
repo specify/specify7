@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 
 import { commonText } from '../../localization/common';
 import { schemaText } from '../../localization/schema';
-import { appResourceIds } from '../../utils/ajax';
 import { className } from '../Atoms/className';
 import { Input, Label } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
@@ -18,6 +17,7 @@ import { SchemaConfigColumn } from './Fields';
 import { filterFormatters } from './helpers';
 import type { NewSpLocaleItemString, SpLocaleItemString } from './index';
 import type { SchemaData } from './schemaData';
+import { appResourceIds } from '../../utils/ajax/helpers';
 
 export const maxSchemaValueLength = getField(
   tables.SpLocaleItemStr,

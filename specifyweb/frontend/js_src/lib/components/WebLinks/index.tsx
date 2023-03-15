@@ -3,7 +3,7 @@ import React from 'react';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
-import { isExternalUrl } from '../../utils/ajax/helpers';
+import { getAppResourceUrl, isExternalUrl } from '../../utils/ajax/helpers';
 import type { GetSet, IR, RA } from '../../utils/types';
 import { caseInsensitiveHash } from '../../utils/utils';
 import { Ul } from '../Atoms';
@@ -22,16 +22,12 @@ import type { FormType } from '../FormParse';
 import { load } from '../InitialContext';
 import { getIcon, unknownIcon } from '../InitialContext/icons';
 import { Dialog } from '../Molecules/Dialog';
-import { formatUrl } from '../Router/queryString';
 import { xmlToSpec } from '../Syncer/xmlUtils';
 import type { WebLink } from './spec';
 import { webLinksSpec } from './spec';
 
 export const webLinks = Promise.all([
-  load<Element>(
-    formatUrl('/context/app.resource', { name: 'WebLinks' }),
-    'text/xml'
-  ),
+  load<Element>(getAppResourceUrl('WebLinks'), 'text/xml'),
   import('../DataModel/tables').then(async ({ fetchContext }) => fetchContext),
 ]).then(([xml]) =>
   Object.fromEntries(

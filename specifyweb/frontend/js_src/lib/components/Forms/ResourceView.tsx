@@ -202,7 +202,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
           if (printOnSave[resource.specifyTable.name] === true)
             setState({
               type: 'Report',
-              onDone: () => handleSaved(),
+              onDone: handleSaved,
             });
           else handleSaved();
         }}

@@ -19,10 +19,10 @@ import {
   contextUnlockedPromise,
   foreverFetch,
 } from '../InitialContext';
-import { formatUrl } from '../Router/queryString';
 import type { Preferences } from './Definitions';
 import { preferenceDefinitions } from './Definitions';
 import { prefEvents } from './Hooks';
+import { getAppResourceUrl } from '../../utils/ajax/helpers';
 
 export function getPrefDefinition<
   CATEGORY extends keyof Preferences,
@@ -294,10 +294,7 @@ export const preferencesPromise = contextUnlockedPromise.then(
                 ).then(({ data }) => data)
               ),
             defaultItems: ajax(
-              formatUrl('/context/app.resource', {
-                name: defaultResourceName,
-                quiet: '',
-              }),
+              getAppResourceUrl(defaultResourceName, 'quiet'),
               {
                 headers: { Accept: 'text/plain' },
               },

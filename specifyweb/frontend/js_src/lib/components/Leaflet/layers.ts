@@ -7,8 +7,8 @@ import {
   contextUnlockedPromise,
   foreverFetch,
 } from '../InitialContext';
-import { formatUrl } from '../Router/queryString';
 import L from './extend';
+import { getAppResourceUrl } from '../../utils/ajax/helpers';
 
 export const leafletLayersEndpoint =
   'https://files.specifysoftware.org/specify7/7.7.0/leaflet-layers.json';
@@ -138,12 +138,7 @@ export const leafletLayersPromise: Promise<typeof defaultTileLayers> =
   contextUnlockedPromise.then(async (entrypoint) =>
     entrypoint === 'main'
       ? ajax(
-          cachableUrl(
-            formatUrl('/context/app.resource', {
-              name: 'leaflet-layers',
-              quiet: '',
-            })
-          ),
+          cachableUrl(getAppResourceUrl('leaflet-layers', 'quiet')),
           { headers: { Accept: 'text/plain' } },
           { strict: false, expectedResponseCodes: [Http.OK, Http.NO_CONTENT] }
         )

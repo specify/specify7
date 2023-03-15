@@ -8,18 +8,15 @@ import { escapeRegExp } from '../../utils/utils';
 import { parseJavaClassName } from '../DataModel/resource';
 import { error } from '../Errors/assert';
 import { load } from '../InitialContext';
-import { formatUrl } from '../Router/queryString';
 import { xmlToSpec } from '../Syncer/xmlUtils';
 import { fieldFormattersSpec } from './spec';
 import { SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
+import { getAppResourceUrl } from '../../utils/ajax/helpers';
 
 let uiFormatters: IR<UiFormatter>;
 export const fetchContext = Promise.all([
-  load<Element>(
-    formatUrl('/context/app.resource', { name: 'UIFormatters' }),
-    'text/xml'
-  ),
+  load<Element>(getAppResourceUrl('UIFormatters'), 'text/xml'),
   import('../DataModel/tables').then(async ({ fetchContext }) => fetchContext),
 ]).then(([formatters]) => {
   uiFormatters = Object.fromEntries(

@@ -23,13 +23,13 @@ import {
   foreverFetch,
 } from '../InitialContext';
 import { hasPathPermission, hasTablePermission } from '../Permissions/helpers';
-import { formatUrl } from '../Router/queryString';
 import { xmlToSpec } from '../Syncer/xmlUtils';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { aggregate } from './aggregate';
 import { fieldFormat } from './fieldFormat';
 import type { Aggregator, Formatter } from './spec';
 import { formattersSpec } from './spec';
+import { getAppResourceUrl } from '../../utils/ajax/helpers';
 
 export const fetchFormatters: Promise<{
   readonly formatters: RA<Formatter>;
@@ -37,15 +37,10 @@ export const fetchFormatters: Promise<{
 }> = contextUnlockedPromise.then(async (entrypoint) =>
   entrypoint === 'main'
     ? Promise.all([
-        ajax<Element>(
-          cachableUrl(
-            formatUrl('/context/app.resource', { name: 'DataObjFormatters' })
-          ),
-          {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            headers: { Accept: 'text/xml' },
-          }
-        ).then(({ data }) => data),
+        ajax<Element>(cachableUrl(getAppResourceUrl('DataObjFormatters')), {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          headers: { Accept: 'text/xml' },
+        }).then(({ data }) => data),
         fetchSchema,
         fetchDomain,
       ]).then(([definitions]) => xmlToSpec(definitions, formattersSpec()))

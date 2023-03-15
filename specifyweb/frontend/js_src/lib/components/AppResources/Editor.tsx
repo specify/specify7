@@ -39,6 +39,8 @@ import {
 import { getResourceType } from './filtersHelpers';
 import { useAppResourceData } from './hooks';
 import { AppResourcesTabs } from './Tabs';
+import { clearUrlCache } from '../RouterCommands/CacheBuster';
+import { getAppResourceUrl } from '../../utils/ajax/helpers';
 
 export function AppResourceEditor({
   resource,
@@ -293,6 +295,9 @@ export function AppResourceEditor({
                           ) ?? null,
                       });
                       await appResourceData.save();
+                      await clearUrlCache(
+                        getAppResourceUrl(appResource.get('name'))
+                      );
 
                       setResourceData(
                         serializeResource(
@@ -300,7 +305,6 @@ export function AppResourceEditor({
                         ) as SerializedResource<SpAppResourceData>
                       );
 
-                      // FIXME: clear app resource cache on save
                       handleSaved(resource, resourceDirectory);
                     })
                   );
