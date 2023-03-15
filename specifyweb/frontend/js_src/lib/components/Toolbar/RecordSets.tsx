@@ -27,6 +27,7 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { hasToolPermission } from '../Permissions/helpers';
 import { OverlayContext } from '../Router/Router';
 import { EditRecordSet } from './RecordSetEdit';
+import { usePaginator } from './Paginator';
 
 export function RecordSetsOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -65,18 +66,29 @@ export function RecordSetsDialog({
     'name'
   );
 
+  const [currentPage, setCurrentPage] = React.useState<number>(0);
+  const [rowsPerPage, setRowPerPage] = React.useState<number>(10);
+  const { paginator } = usePaginator({
+    totalCount: data?.totalCount,
+    onPageChange: handlePageChange,
+    currentPage,
+    rowsPerPage,
+    rowsPerPageValue,
+  });
+
   const [unsortedData] = useAsyncState(
     React.useCallback(
       async () =>
         fetchCollection('RecordSet', {
           specifyUser: userInformation.id,
           type: 0,
-          limit: 5000,
+          limit: rowsPerPage,
           domainFilter: true,
           orderBy: '-timestampCreated',
+          offset: currentPage * rowsPerPage,
           dbTableId: table?.tableId,
         }),
-      [table]
+      [table, rowsPerPage]
     ),
     true
   );
@@ -100,59 +112,62 @@ export function RecordSetsDialog({
       children({
         ...data,
         children: (
-          <table className="grid-table grid-cols-[1fr_auto_min-content_min-content] gap-2">
-            <thead>
-              <tr>
-                <th scope="col">
-                  <Button.LikeLink onClick={(): void => handleSort('name')}>
-                    {tables.RecordSet.label}
-                    <SortIndicator fieldName="name" sortConfig={sortConfig} />
-                  </Button.LikeLink>
-                </th>
-                <th scope="col">
-                  <Button.LikeLink
-                    onClick={(): void => handleSort('timestampCreated')}
-                  >
-                    {getField(tables.RecordSet, 'timestampCreated').label}
-                    <SortIndicator
-                      fieldName="timestampCreated"
-                      sortConfig={sortConfig}
-                    />
-                  </Button.LikeLink>
-                </th>
-                <th scope="col">{commonText.size()}</th>
-                <td />
-              </tr>
-            </thead>
-            <tbody>
-              {data.records.map((recordSet) => (
-                <Row
-                  key={recordSet.id}
-                  recordSet={recordSet}
-                  onConfigure={handleConfigure?.bind(undefined, recordSet)}
-                  onEdit={
-                    isReadOnly
-                      ? undefined
-                      : (): void =>
-                          setState({
-                            type: 'EditState',
-                            recordSet: deserializeResource(recordSet),
-                          })
-                  }
-                  onSelect={
-                    typeof handleSelect === 'function'
-                      ? (): void => handleSelect(recordSet)
-                      : undefined
-                  }
-                />
-              ))}
-              {data.totalCount !== data.records.length && (
+          <>
+            <table className="grid-table grid-cols-[1fr_auto_min-content_min-content] gap-2">
+              <thead>
                 <tr>
-                  <td colSpan={3}>{commonText.listTruncated()}</td>
+                  <th scope="col">
+                    <Button.LikeLink onClick={(): void => handleSort('name')}>
+                      {tables.RecordSet.label}
+                      <SortIndicator fieldName="name" sortConfig={sortConfig} />
+                    </Button.LikeLink>
+                  </th>
+                  <th scope="col">
+                    <Button.LikeLink
+                      onClick={(): void => handleSort('timestampCreated')}
+                    >
+                      {getField(tables.RecordSet, 'timestampCreated').label}
+                      <SortIndicator
+                        fieldName="timestampCreated"
+                        sortConfig={sortConfig}
+                      />
+                    </Button.LikeLink>
+                  </th>
+                  <th scope="col">{commonText.size()}</th>
+                  <td />
                 </tr>
-              )}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {data.records.map((recordSet) => (
+                  <Row
+                    key={recordSet.id}
+                    recordSet={recordSet}
+                    onConfigure={handleConfigure?.bind(undefined, recordSet)}
+                    onEdit={
+                      isReadOnly
+                        ? undefined
+                        : (): void =>
+                            setState({
+                              type: 'EditState',
+                              recordSet: deserializeResource(recordSet),
+                            })
+                    }
+                    onSelect={
+                      typeof handleSelect === 'function'
+                        ? (): void => handleSelect(recordSet)
+                        : undefined
+                    }
+                  />
+                ))}
+                {data.totalCount !== data.records.length && (
+                  <tr>
+                    <td colSpan={3}>{commonText.listTruncated()}</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+            {paginator}
+          </>
         ),
         dialog: (children, buttons) => (
           <Dialog
