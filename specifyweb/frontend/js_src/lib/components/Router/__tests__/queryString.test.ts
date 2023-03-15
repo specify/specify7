@@ -42,6 +42,10 @@ theories(resolveRelative, [
     out: '/a/b/a/b?a=b&c=3',
   },
   {
+    in: ['./a/b', 'http://localhost:3000/a/b?a=b&c=3'],
+    out: '/a/b/a/b?a=b&c=3',
+  },
+  {
     in: ['../a/b?c=5&d=e', 'http://localhost:3000/a/b/?a=b&c=3'],
     out: '/a/a/b?a=b&c=5&d=e',
   },

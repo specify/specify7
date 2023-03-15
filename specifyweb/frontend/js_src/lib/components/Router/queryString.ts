@@ -3,6 +3,7 @@
  */
 
 import type { Path } from '@remix-run/router';
+import { resolvePath } from '@remix-run/router';
 
 import type { IR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
@@ -45,10 +46,12 @@ export function resolveRelative(
   relativePath: string,
   currentUrl = getUrl()
 ): string {
-  const url = new URL(relativePath, currentUrl);
+  const bareUrl = new URL(currentUrl).pathname;
+  const url = resolvePath(relativePath, bareUrl);
+  const query = new URL(relativePath, currentUrl);
   const search = {
     ...parseUrl(currentUrl),
-    ...Object.fromEntries(url.searchParams),
+    ...Object.fromEntries(query.searchParams),
   };
   const queryString = new URLSearchParams(search).toString();
   const fullUrl = {

@@ -172,5 +172,7 @@ export const visualAppResourceEditors = f.store<
   otherXmlResource: undefined,
   otherJsonResource: undefined,
   otherPropertiesResource: undefined,
+  // FIXME: add JSON editor for XML resources 🔥
+  // FIXME: add validation for XML and JSON resources 🔥
   otherAppResources: undefined,
 }));
