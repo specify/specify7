@@ -231,7 +231,7 @@ async function formatField(
   }: Formatter['fields'][number]['fields'][number],
   resource: SpecifyResource<AnySchema>,
   tryBest: boolean
-): Promise<{ formatted: string; separator?: string }> {
+): Promise<{ readonly formatted: string; readonly separator?: string }> {
   if (typeof fieldFormatter === 'string' && fieldFormatter === '')
     return { formatted: '' };
 
@@ -266,7 +266,7 @@ async function formatField(
     ? naiveFormatter(resource.specifyModel.name, resource.id)
     : userText.noPermission();
 
-  return { formatted: formatted, separator: formatted ? separator : '' };
+  return { formatted, separator: formatted ? separator : '' };
 }
 
 const resolveFormatter = (
