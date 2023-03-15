@@ -157,7 +157,7 @@ export const statsText = createDictionary({
     'en-us': 'Collection Objects Inventorized',
   },
   lastRefreshed: {
-    'en-us': 'Last Refreshed',
+    'en-us': 'Last refreshed',
   },
   source: {
     'en-us': 'Source',

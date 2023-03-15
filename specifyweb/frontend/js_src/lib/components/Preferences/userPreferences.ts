@@ -38,9 +38,7 @@ userPreferences.events.on(
 );
 
 // Fetch up to date preferences from the back-end
-userPreferences
-  .fetch()
-  .catch(() => console.log('Error in fetching user preferences'));
+userPreferences.fetch().catch(console.error);
 
 // Sync preferences between browser tabs in real time
 cacheEvents.on('change', ({ category, key }) => {

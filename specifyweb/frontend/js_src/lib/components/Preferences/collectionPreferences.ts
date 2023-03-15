@@ -35,9 +35,7 @@ collectionPreferences.events.on(
 );
 
 // Fetch up to date preferences from the back-end
-collectionPreferences
-  .fetch()
-  .catch(() => console.log('Error fetching collection preferences'));
+collectionPreferences.fetch().catch(console.error);
 
 // Sync preferences between browser tabs in real time
 cacheEvents.on('change', ({ category, key }) => {
