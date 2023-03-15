@@ -7,6 +7,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { formsText } from '../../localization/forms';
 import { userText } from '../../localization/user';
 import { ajax } from '../../utils/ajax';
+import { getAppResourceUrl } from '../../utils/ajax/helpers';
 import type { RA } from '../../utils/types';
 import { KEY, multiSortFunction, sortFunction } from '../../utils/utils';
 import { fetchDistantRelated } from '../DataModel/helpers';
@@ -29,7 +30,6 @@ import { aggregate } from './aggregate';
 import { fieldFormat } from './fieldFormat';
 import type { Aggregator, Formatter } from './spec';
 import { formattersSpec } from './spec';
-import { getAppResourceUrl } from '../../utils/ajax/helpers';
 
 export const fetchFormatters: Promise<{
   readonly formatters: RA<Formatter>;
@@ -98,24 +98,12 @@ export async function format<SCHEMA extends AnySchema>(
     ? naiveFormatter(resource.specifyTable.label, resource.id)
     : undefined;
 
-  /*
-   * Don't format resource if all relevant fields are empty, or formatter has
-   * no fields
-   */
-  const isEmptyResource = fields
-    .map(({ field }) =>
-      field?.[0] === undefined
-        ? undefined
-        : field[0].isRelationship && field[0].isDependent()
-        ? resource.getDependentResource(field[0].name)
-        : resource.get(field[0].name)
-    )
-    .every((value) => value === undefined || value === null || value === '');
-  return isEmptyResource
-    ? automaticFormatter ?? undefined
-    : Promise.all(
-        fields.map(async (field) => formatField(field, resource, tryBest))
-      ).then((values) => (values ?? '').join('') as LocalizedString);
+  return Promise.all(
+    fields.map(async (field) => formatField(field, resource, tryBest))
+  ).then((values) => {
+    const joined = values.join('') as LocalizedString;
+    return joined.length === 0 ? automaticFormatter : joined;
+  });
 }
 
 /**

@@ -176,7 +176,8 @@ export function QueryComboBox({
                           resource,
                           typeof typeSearch === 'object'
                             ? typeSearch.formatter
-                            : undefined
+                            : undefined,
+                          true
                         )
                     ).then((formatted) => ({
                       label:
