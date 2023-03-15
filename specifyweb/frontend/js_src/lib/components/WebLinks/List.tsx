@@ -41,10 +41,10 @@ export function WebLinkList(): JSX.Element {
               name: '',
               table: undefined,
               description: '',
-              url: '',
-              parameters: [],
+              parts: [],
               usages: [],
             };
+            // FIXME: integrate web link editor into schema config
             setItems([...items, newItem]);
             navigate(getLink(items.length));
           }}
@@ -56,5 +56,4 @@ export function WebLinkList(): JSX.Element {
   );
 }
 
-const getLink = (index: number): string =>
-  resolveRelative(`./web-link/${index}`);
+const getLink = (index: number): string => resolveRelative(`./${index}`);

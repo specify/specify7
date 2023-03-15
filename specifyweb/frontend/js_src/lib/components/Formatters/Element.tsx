@@ -47,7 +47,7 @@ export function XmlEditorShell<
 
   const isReadOnly = React.useContext(ReadOnlyContext);
   const navigate = useNavigate();
-  const handleClose = (): void => navigate(resolveRelative('../../'));
+  const handleClose = (): void => navigate(resolveRelative('../'));
   const id = useId('item');
   return item === undefined ? (
     <Dialog
