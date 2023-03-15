@@ -300,16 +300,13 @@ const isCurrentUrl = (relativeUrl: string): boolean =>
   new URL(relativeUrl, globalThis.location.origin).pathname ===
   globalThis.location.pathname;
 
-function isSingleResource(
+const isSingleResource = (
   { pathname }: SafeLocation,
   singleResource: string | undefined
-): boolean {
-  if (singleResource === undefined || singleResource.length === 0) return false;
-  return (
-    pathname.startsWith(singleResource) &&
-    globalThis.location.pathname.startsWith(singleResource)
-  );
-}
+): boolean =>
+  singleResource !== undefined &&
+  pathname.startsWith(singleResource) &&
+  globalThis.location.pathname.startsWith(singleResource);
 
 export function UnloadProtectDialog({
   children,

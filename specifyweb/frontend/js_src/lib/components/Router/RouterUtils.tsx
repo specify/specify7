@@ -164,7 +164,12 @@ function SingleResource({
     parameters['*'] === undefined
       ? -1
       : location.pathname.indexOf(parameters['*']);
-  const path = index === -1 ? undefined : location.pathname.slice(0, index);
+  const path =
+    index === -1
+      ? undefined
+      : index === 0
+      ? location.pathname
+      : location.pathname.slice(0, index);
   if (process.env.NODE_ENV !== 'production' && path === undefined)
     throw new Error(
       'Unable to extract the base path for the single resource URL'
