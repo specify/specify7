@@ -2,7 +2,6 @@ import _ from 'underscore';
 
 import { cacheEvents, getCache, setCache } from '../../utils/cache';
 import { MILLISECONDS } from '../Atoms/Internationalization';
-import { softFail } from '../Errors/Crash';
 import { BasePreferences } from './BasePreferences';
 import { collectionPreferenceDefinitions } from './CollectionDefinitions';
 
@@ -36,7 +35,9 @@ collectionPreferences.events.on(
 );
 
 // Fetch up to date preferences from the back-end
-collectionPreferences.fetch().catch(softFail);
+collectionPreferences
+  .fetch()
+  .catch(() => console.log('Error fetching collection preferences'));
 
 // Sync preferences between browser tabs in real time
 cacheEvents.on('change', ({ category, key }) => {

@@ -9,7 +9,11 @@ import { useTriggerState } from '../../hooks/useTriggerState';
 import { queryText } from '../../localization/query';
 import { dayjs } from '../../utils/dayJs';
 import type { Parser } from '../../utils/parser/definitions';
-import { parseRelativeDate, reRelativeDate } from '../../utils/relativeDate';
+import {
+  parseRelativeDate,
+  reRelativeDate,
+  today,
+} from '../../utils/relativeDate';
 import { Button } from '../Atoms/Button';
 import { Input, Select } from '../Atoms/Form';
 import { QueryInputField } from './FieldFilter';
@@ -72,11 +76,11 @@ export function DateQueryInputField({
             }
           } else {
             setRelative((oldRelative) =>
-              parsed === undefined ? 'today + 0 day' : oldRelative
+              parsed === undefined ? `${today} + 0 day` : oldRelative
             );
             setAbsolute(currentValue);
             if (parsed === undefined) {
-              handleChange?.('today + 0 day');
+              handleChange?.(`${today} + 0 day`);
             }
           }
         }}
@@ -125,7 +129,7 @@ function DateSplit({
   }>(parsed);
   const { direction, size, type } = values;
   const commitChange = () =>
-    handleChange?.(`today ${direction} ${size} ${type}`);
+    handleChange?.(`${today} ${direction} ${size} ${type}`);
   return (
     <div className="flex flex-row gap-1">
       <Select

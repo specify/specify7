@@ -24,6 +24,7 @@ import type { QueryFieldFilter } from './FieldFilter';
 import { queryFieldFilters } from './FieldFilter';
 import { QueryFieldSpec } from './fieldSpec';
 import { currentUserValue } from './SpecifyUserAutoComplete';
+import { today } from '../../utils/relativeDate';
 
 export type SortTypes = 'ascending' | 'descending' | undefined;
 export const sortTypes: RA<SortTypes> = [undefined, 'ascending', 'descending'];
@@ -68,7 +69,8 @@ export function parseQueryFields(
          */
         const startValue =
           typeof field.startValue === 'string' &&
-          fieldSpec.datePart === 'fullDate'
+          fieldSpec.datePart === 'fullDate' &&
+          !field.startValue.includes(today)
             ? field.startValue
                 .split(',')
                 .map((value) =>
@@ -351,7 +353,7 @@ const containsRelativeDate = (
 ) =>
   fieldSpecMapped.some(
     ([field, fieldSpec]) =>
-      field.filters.some(({ startValue }) => startValue.includes('today')) &&
+      field.filters.some(({ startValue }) => startValue.includes(today)) &&
       fieldSpec.datePart === 'fullDate'
   );
 

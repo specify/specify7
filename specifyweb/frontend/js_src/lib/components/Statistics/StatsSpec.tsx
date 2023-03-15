@@ -16,6 +16,7 @@ import type {
   StatsSpec,
 } from './types';
 import type { DefaultStat, StatCategoryReturn } from './types';
+import { today } from '../../utils/relativeDate';
 
 export const statsSpec: StatsSpec = {
   collection: {
@@ -372,7 +373,7 @@ export const statsSpec: StatsSpec = {
                   {
                     path: 'catalogedDate',
                     operStart: queryFieldFilters.greaterOrEqual.id,
-                    startValue: `today - 1 week`,
+                    startValue: `${today} - 1 week`,
                   },
                 ],
               },
@@ -391,7 +392,7 @@ export const statsSpec: StatsSpec = {
                   {
                     path: 'catalogedDate',
                     operStart: queryFieldFilters.greaterOrEqual.id,
-                    startValue: `today - 1 month`,
+                    startValue: `${today} - 1 month`,
                   },
                 ],
               },
@@ -410,7 +411,7 @@ export const statsSpec: StatsSpec = {
                   {
                     path: 'catalogedDate',
                     operStart: queryFieldFilters.greaterOrEqual.id,
-                    startValue: `today - 1 year`,
+                    startValue: `${today} - 1 year`,
                   },
                 ],
               },
