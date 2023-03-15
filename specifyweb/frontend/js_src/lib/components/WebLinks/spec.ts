@@ -79,7 +79,6 @@ const webLinkSpec = f.store(() =>
   })
 );
 
-// FIXME: allow using a formatted resource as an argument
 const argumentSpec = f.store(() =>
   createXmlSpec({
     name: pipe(
@@ -129,6 +128,7 @@ const usedBySpec = f.store(() =>
 
 type ParsedWebLink =
   | State<'Field', { readonly field: RA<LiteralField | Relationship> }>
+  | State<'FormattedResource', { readonly formatter: string }>
   | State<'PromptField', { readonly label: string }>
   | State<'ThisField'>
   | State<'UrlPart', { readonly value: string }>;
@@ -149,6 +149,8 @@ const parseDefinition = (item: RawWebLink): RA<ParsedWebLink> =>
           }
     );
 
+const formatter = 'formatter_';
+
 function parseField(item: RawWebLink, part: string): ParsedWebLink {
   if (item.table !== undefined) {
     const field = item.table.getFields(part);
@@ -156,9 +158,15 @@ function parseField(item: RawWebLink, part: string): ParsedWebLink {
   }
   if (part.trim() === 'this') return { type: 'ThisField' };
   const field = item.parameters.find(({ name }) => name === part.trim());
+  if (typeof field === 'object' && field.name.startsWith(formatter))
+    return {
+      type: 'FormattedResource',
+      formatter: field.title,
+    };
   return {
     type: 'PromptField',
-    label: field?.title ?? field?.name ?? part,
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+    label: field?.title || field?.name || part,
   };
 }
 
@@ -191,6 +199,12 @@ function reconstructWeblink(
             name: 'this',
             title: 'This',
             shouldPrompt: false,
+          }
+        : parameter.type === 'FormattedResource'
+        ? {
+            name: `${formatter}${parameter.formatter}`,
+            title: parameter.formatter,
+            shouldPrompt: true,
           }
         : parameter.value
     );

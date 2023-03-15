@@ -1,18 +1,32 @@
 import React from 'react';
 
+import { commonText } from '../../localization/common';
 import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
-import type { GetSet } from '../../utils/types';
+import { f } from '../../utils/functools';
+import type { GetSet, RR } from '../../utils/types';
 import { removeItem, replaceItem } from '../../utils/utils';
 import { H3, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
-import { Input } from '../Atoms/Form';
+import { Input, Select } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { ReadOnlyContext } from '../Core/Contexts';
 import type { SpecifyTable } from '../DataModel/specifyTable';
-import { ResourceMapping } from '../Formatters/Components';
+import {
+  GenericFormatterPickList,
+  ResourceMapping,
+} from '../Formatters/Components';
+import { fetchFormatters } from '../Formatters/formatters';
 import type { WebLink } from './spec';
+
+const labels: RR<WebLink['parts'][number]['type'], string> = {
+  PromptField: resourcesText.promptField(),
+  Field: schemaText.field(),
+  ThisField: resourcesText.thisField(),
+  UrlPart: resourcesText.urlPart(),
+  FormattedResource: resourcesText.formattedResource(),
+};
 
 export function WebLinkDefinition({
   item: [item, setItem],
@@ -31,15 +45,47 @@ export function WebLinkDefinition({
       <Ul className="grid grid-cols-[auto_1fr_auto] gap-4 [&>li]:contents">
         {item.parts.map((part, index) => (
           <li key={index}>
-            <span>
-              {part.type === 'PromptField'
-                ? resourcesText.promptField()
-                : part.type === 'Field'
-                ? schemaText.field()
-                : part.type === 'ThisField'
-                ? resourcesText.thisField()
-                : resourcesText.urlPart()}
-            </span>
+            <Select
+              value={part.type}
+              placeholder={resourcesText.type()}
+              onValueChange={(type): void =>
+                handleChange(
+                  replaceItem(
+                    item.parts,
+                    index,
+                    type === 'PromptField'
+                      ? {
+                          type: 'PromptField',
+                          label: '',
+                        }
+                      : type === 'Field'
+                      ? {
+                          type: 'Field',
+                          field: [],
+                        }
+                      : type === 'ThisField'
+                      ? {
+                          type: 'ThisField',
+                        }
+                      : type === 'FormattedResource'
+                      ? {
+                          type: 'FormattedResource',
+                          formatter: '',
+                        }
+                      : {
+                          type: 'UrlPart',
+                          value: '',
+                        }
+                  )
+                )
+              }
+            >
+              {Object.entries(labels).map(([type, label]) => (
+                <option key={type} value={type}>
+                  {label}
+                </option>
+              ))}
+            </Select>
             <Part
               part={[
                 part,
@@ -70,40 +116,21 @@ export function WebLinkDefinition({
               handleChange([...item.parts, { type: 'UrlPart', value: '' }])
             }
           >
-            {resourcesText.addUrlPart()}
-          </Button.Blue>
-          <Button.Blue
-            onClick={(): void =>
-              handleChange([...item.parts, { type: 'Field', field: [] }])
-            }
-          >
-            {resourcesText.addField()}
-          </Button.Blue>
-          <Button.Blue
-            onClick={(): void =>
-              handleChange([
-                ...item.parts,
-                {
-                  type: 'PromptField',
-                  label: '',
-                },
-              ])
-            }
-          >
-            {resourcesText.addPromptField()}
-          </Button.Blue>
-          <Button.Blue
-            onClick={(): void =>
-              handleChange([...item.parts, { type: 'ThisField' }])
-            }
-          >
-            {resourcesText.addThisField()}
+            {commonText.add()}
           </Button.Blue>
         </div>
       )}
     </>
   );
 }
+
+const formattersPromise = f.store(async () =>
+  fetchFormatters.then(({ formatters }) =>
+    Object.fromEntries(
+      formatters.map((formatter) => [formatter.name, formatter])
+    )
+  )
+);
 
 function Part({
   table,
@@ -123,19 +150,35 @@ function Part({
           onValueChange={(value): void => setParameter({ ...part, value })}
         />
       ) : part.type === 'Field' ? (
-        <ResourceMapping
-          isRequired
-          mapping={[
-            part.field,
-            (field = []): void => setParameter({ ...part, field }),
-          ]}
-          openIndex={openIndex}
-          table={table!}
-        />
-      ) : part.type === 'ThisField' ? null : (
+        table === undefined ? (
+          resourcesText.selectTableFirst()
+        ) : (
+          <ResourceMapping
+            mapping={[
+              part.field,
+              (field = []): void => setParameter({ ...part, field }),
+            ]}
+            openIndex={openIndex}
+            table={table}
+          />
+        )
+      ) : part.type === 'ThisField' ? null : part.type ===
+        'FormattedResource' ? (
+        table === undefined ? (
+          resourcesText.selectTableFirst()
+        ) : (
+          <GenericFormatterPickList
+            itemsPromise={formattersPromise()}
+            table={table}
+            value={part.formatter}
+            onChange={(formatter): void => setParameter({ ...part, formatter })}
+          />
+        )
+      ) : (
         <Input.Text
           isReadOnly={isReadOnly}
           value={part.label}
+          placeholder={schemaText.fieldLabel()}
           onValueChange={(label): void => setParameter({ ...part, label })}
         />
       )}

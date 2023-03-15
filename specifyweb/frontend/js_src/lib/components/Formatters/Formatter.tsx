@@ -12,11 +12,12 @@ import { Input, Label } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { ReadOnlyContext } from '../Core/Contexts';
 import type { SpecifyTable } from '../DataModel/specifyTable';
+import { fetchContext as fetchFieldFormatters } from '../FieldFormatters';
 import { hasTablePermission } from '../Permissions/helpers';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import {
-  FieldFormattersPickList,
   FormattersPickList,
+  GenericFormatterPickList,
   ResourceMapping,
 } from './Components';
 import { format } from './formatters';
@@ -283,7 +284,8 @@ function FieldFormatter({
   if (lastField === undefined) return null;
   else if (!lastField.isRelationship)
     return (
-      <FieldFormattersPickList
+      <GenericFormatterPickList
+        itemsPromise={fetchFieldFormatters}
         table={lastField.table}
         value={field.fieldFormatter}
         onChange={(fieldFormatter): void =>

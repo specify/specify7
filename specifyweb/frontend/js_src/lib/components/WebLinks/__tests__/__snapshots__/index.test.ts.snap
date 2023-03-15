@@ -125,12 +125,16 @@ exports[`weblinks are fetched and parsed correctly 1`] = `
         "value": "https://ichthyology.specify.ku.edu/specify/bycatalog/KUI/",
       },
       {
-        "label": "",
+        "label": "catalogNumber",
         "type": "PromptField",
       },
       {
         "type": "UrlPart",
         "value": "/",
+      },
+      {
+        "formatter": "Accession",
+        "type": "FormattedResource",
       },
     ],
     "table": undefined,

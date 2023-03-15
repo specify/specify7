@@ -1,12 +1,13 @@
 import React from 'react';
 import { useOutletContext } from 'react-router';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { usePromise } from '../../hooks/useAsyncState';
 import { useId } from '../../hooks/useId';
 import { resourcesText } from '../../localization/resources';
 import { wbPlanText } from '../../localization/wbPlan';
 import { f } from '../../utils/functools';
-import type { GetSet, RA } from '../../utils/types';
+import type { GetSet, IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { multiSortFunction, sortFunction } from '../../utils/utils';
 import { Ul } from '../Atoms';
@@ -14,7 +15,6 @@ import { Input } from '../Atoms/Form';
 import { ReadOnlyContext } from '../Core/Contexts';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
-import { fetchContext as fetchFieldFormatters } from '../FieldFormatters';
 import { join } from '../Molecules';
 import { emptyMapping, mutateMappingPath } from '../WbPlanView/helpers';
 import {
@@ -65,7 +65,6 @@ export function FormattersPickList({
       <Input.Text
         isReadOnly={isReadOnly}
         list={id('list')}
-        min={0}
         placeholder={resourcesText.defaultInline()}
         step={1}
         value={value ?? ''}
@@ -82,18 +81,25 @@ export function FormattersPickList({
   );
 }
 
-export function FieldFormattersPickList({
+export function GenericFormatterPickList<
+  ITEM extends {
+    readonly title: LocalizedString | undefined;
+    readonly table: SpecifyTable | undefined;
+  }
+>({
   table,
   value = '',
+  itemsPromise,
   onChange: handleChange,
 }: {
   readonly table: SpecifyTable;
   readonly value: string | undefined;
+  readonly itemsPromise: Promise<IR<ITEM>>;
   readonly onChange: (value: string) => void;
 }): JSX.Element {
   const isReadOnly = React.useContext(ReadOnlyContext);
   const id = useId('formatters');
-  const [allFormatters = {}] = usePromise(fetchFieldFormatters, false);
+  const [allFormatters = {}] = usePromise(itemsPromise, false);
   const formatters = React.useMemo(
     () =>
       Object.entries(allFormatters)
@@ -105,7 +111,7 @@ export function FieldFormattersPickList({
           multiSortFunction(
             ([_name, { table }]) => typeof table === 'object',
             true,
-            ([_name, { title }]) => title
+            ([_name, { title }]) => title ?? ''
           )
         ),
     [allFormatters, table]

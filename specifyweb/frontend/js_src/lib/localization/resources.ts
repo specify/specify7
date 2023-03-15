@@ -293,6 +293,9 @@ export const resourcesText = createDictionary({
   aggregator: {
     'en-us': 'Aggregator',
   },
+  formattedResource: {
+    'en-us': 'Formatted Resource',
+  },
   defaultInline: {
     'en-us': '(default)',
   },
@@ -316,17 +319,8 @@ export const resourcesText = createDictionary({
   deleteDefinition: {
     'en-us': 'Delete definition',
   },
-  addUrlPart: {
-    'en-us': 'Add URL part',
-  },
   urlPart: {
     'en-us': 'URL part',
-  },
-  addPromptField: {
-    'en-us': 'Add prompt field',
-  },
-  addThisField: {
-    'en-us': 'Add this field',
   },
   promptField: {
     'en-us': 'Prompt field',
@@ -336,6 +330,9 @@ export const resourcesText = createDictionary({
   },
   thisField: {
     'en-us': 'This field',
+  },
+  selectTableFirst: {
+    'en-us': 'Select table first',
   },
   conditionField: {
     'en-us': 'Condition Field',
