@@ -300,6 +300,7 @@ export function AppResourceEditor({
                         ) as SerializedResource<SpAppResourceData>
                       );
 
+                      // FIXME: clear app resource cache on save
                       handleSaved(resource, resourceDirectory);
                     })
                   );

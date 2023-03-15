@@ -8,8 +8,11 @@ import type { RA } from '../../../utils/types';
 import { ensure } from '../../../utils/types';
 import { removeKey } from '../../../utils/utils';
 import { strictParseXml } from '../../AppResources/codeMirrorLinters';
+import { tables } from '../../DataModel/tables';
 import { getPref } from '../../InitialContext/remotePrefs';
 import { formatUrl } from '../../Router/queryString';
+import type { SimpleXmlNode } from '../../Syncer/xmlToJson';
+import { toSimpleXmlNode, xmlToJson } from '../../Syncer/xmlToJson';
 import type { FormCellDefinition } from '../cells';
 import type { ParsedFormDefinition, ViewDefinition } from '../index';
 import {
@@ -20,12 +23,6 @@ import {
   resolveViewDefinition,
 } from '../index';
 import { spAppResourceView } from '../webOnlyViews';
-import { tables } from '../../DataModel/tables';
-import {
-  SimpleXmlNode,
-  toSimpleXmlNode,
-  xmlToJson,
-} from '../../Syncer/xmlToJson';
 
 const {
   views,

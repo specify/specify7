@@ -3,7 +3,7 @@ import React from 'react';
 import { commonText } from '../../localization/common';
 import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
-import type { GetSet } from '../../utils/types';
+import type { GetSet, RA } from '../../utils/types';
 import { removeItem, replaceItem } from '../../utils/utils';
 import { ErrorMessage } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -11,6 +11,8 @@ import { className } from '../Atoms/className';
 import { Input, Label } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { ReadOnlyContext } from '../Core/Contexts';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { fetchContext as fetchFieldFormatters } from '../FieldFormatters';
 import { hasTablePermission } from '../Permissions/helpers';
@@ -59,10 +61,7 @@ export function FormatterElement({
       ) : (
         <ErrorMessage>{resourcesText.editorNotAvailable()}</ErrorMessage>
       )}
-      {typeof formatter.table === 'object' &&
-      hasTablePermission(formatter.table.name, 'read') ? (
-        <FormatterPreview formatter={formatter} />
-      ) : undefined}
+      <FormatterPreview formatter={formatter} />
     </>
   );
 }
@@ -120,7 +119,7 @@ function Definitions({
               onDelete={
                 trimmedFields.length < 2
                   ? undefined
-                  : () =>
+                  : (): void =>
                       handleChange(
                         removeItem(formatter.definition.fields, index)
                       )
@@ -336,21 +335,20 @@ function FormatterPreview({
   formatter,
 }: {
   readonly formatter: Formatter;
-}): JSX.Element {
-  return (
-    <ResourcePreview
-      doFormatting={React.useCallback(
-        async (resources) =>
-          Promise.all(
-            resources.map(async (resource) =>
-              format(resource, formatter, false).then(
-                (formatted) => formatted ?? ''
-              )
-            )
-          ),
-        [formatter]
-      )}
-      table={formatter.table}
-    />
+}): JSX.Element | null {
+  const doFormatting = React.useCallback(
+    async (resources: RA<SpecifyResource<AnySchema>>) =>
+      Promise.all(
+        resources.map(async (resource) =>
+          format(resource, formatter, false).then(
+            (formatted) => formatted ?? ''
+          )
+        )
+      ),
+    [formatter]
   );
+  return typeof formatter.table === 'object' &&
+    hasTablePermission(formatter.table.name, 'read') ? (
+    <ResourcePreview doFormatting={doFormatting} table={formatter.table} />
+  ) : null;
 }

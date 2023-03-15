@@ -1,9 +1,11 @@
 import React from 'react';
 
 import { resourcesText } from '../../localization/resources';
-import type { GetSet } from '../../utils/types';
+import type { GetSet, RA } from '../../utils/types';
 import { Input, Label } from '../Atoms/Form';
 import { ReadOnlyContext } from '../Core/Contexts';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { hasTablePermission } from '../Permissions/helpers';
 import { aggregate } from './aggregate';
 import { FormattersPickList, ResourceMapping } from './Components';
@@ -93,10 +95,7 @@ export function AggregatorElement({
           }
         />
       </Label.Block>
-      {typeof aggregator.table === 'object' &&
-      hasTablePermission(aggregator.table.name, 'read') ? (
-        <AggregatorPreview aggregator={aggregator} />
-      ) : undefined}
+      <AggregatorPreview aggregator={aggregator} />
     </>
   );
 }
@@ -105,15 +104,14 @@ function AggregatorPreview({
   aggregator,
 }: {
   readonly aggregator: Aggregator;
-}): JSX.Element {
-  return (
-    <ResourcePreview
-      doFormatting={React.useCallback(
-        async (resources) =>
-          aggregate(resources, aggregator).then((aggregated) => [aggregated]),
-        [aggregator]
-      )}
-      table={aggregator.table}
-    />
+}): JSX.Element | null {
+  const doFormatting = React.useCallback(
+    async (resources: RA<SpecifyResource<AnySchema>>) =>
+      aggregate(resources, aggregator).then((aggregated) => [aggregated]),
+    [aggregator]
   );
+  return typeof aggregator.table === 'object' &&
+    hasTablePermission(aggregator.table.name, 'read') ? (
+    <ResourcePreview doFormatting={doFormatting} table={aggregator.table} />
+  ) : null;
 }

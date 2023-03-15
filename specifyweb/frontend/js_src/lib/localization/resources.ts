@@ -347,4 +347,7 @@ export const resourcesText = createDictionary({
       this resource
     `,
   },
+  thisFieldName: {
+    'en-us': 'This field name (for preview purposes only)',
+  },
 } as const);

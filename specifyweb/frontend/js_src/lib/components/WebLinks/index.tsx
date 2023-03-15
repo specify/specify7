@@ -16,7 +16,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
-import { fetchPathAsString } from '../Formatters/formatters';
+import { fetchPathAsString, format } from '../Formatters/formatters';
 import { UiField } from '../FormFields/Field';
 import type { FormType } from '../FormParse';
 import { load } from '../InitialContext';
@@ -54,7 +54,7 @@ export function WebLinkField({
   readonly id: string | undefined;
   readonly name: string | undefined;
   readonly field: LiteralField | Relationship | undefined;
-  readonly webLink: string | undefined;
+  readonly webLink: WebLink | string | undefined;
   readonly icon: string;
   readonly formType: FormType;
 }): JSX.Element {
@@ -103,6 +103,8 @@ export function WebLinkField({
                   : undefined
                 : part.type === 'PromptField'
                 ? { prompt: part.label }
+                : part.type === 'FormattedResource'
+                ? format(resource, part.formatter, false)
                 : part.value
             )
           ).then((values) => values.map((value) => value ?? ''));
@@ -117,7 +119,13 @@ export function WebLinkField({
 
   const image = (
     <img
-      alt={typeof definition === 'object' ? definition.description : webLink}
+      alt={
+        typeof definition === 'object'
+          ? definition.description
+          : typeof webLink === 'object'
+          ? webLink.name
+          : webLink
+      }
       className="max-h-[theme(spacing.5)] max-w-[theme(spacing.10)]"
       src={getIcon(icon) ?? unknownIcon}
     />
@@ -167,10 +175,11 @@ export function WebLinkField({
 function useDefinition(
   table: SpecifyTable | undefined,
   fieldName: string | undefined,
-  webLink: string | undefined
+  webLink: WebLink | string | undefined
 ): WebLink | false | undefined {
   const [definition] = useAsyncState<WebLink | false>(
     React.useCallback(async () => {
+      if (typeof webLink === 'object') return webLink;
       const fieldInfo = table?.getField(fieldName ?? '');
       const webLinkName = webLink ?? fieldInfo?.getWebLinkName();
       const definition = await webLinks.then((definitions) =>
