@@ -15,10 +15,10 @@ import { ReadOnlyContext } from '../Core/Contexts';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { strictGetTable } from '../DataModel/tables';
 import { NotFoundView } from '../Router/NotFoundView';
-import { resolveRelative } from '../Router/Router';
 import { ForwardOutlet } from '../Router/RouterUtils';
 import type { Aggregator, Formatter } from './spec';
 import type { FormatterTypesOutlet } from './Types';
+import { resolveRelative } from '../Router/queryString';
 
 export function FormatterList(): JSX.Element {
   const { type, tableName } = useParams();

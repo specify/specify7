@@ -4,9 +4,9 @@ import { useOutletContext } from 'react-router';
 import { filterArray } from '../../utils/types';
 import { group } from '../../utils/utils';
 import { formatNumber } from '../Atoms/Internationalization';
-import { resolveRelative } from '../Router/Router';
 import { TableList } from '../SchemaConfig/Tables';
 import type { FormatterTypesOutlet } from './Types';
+import { resolveRelative } from '../Router/queryString';
 
 export function FormatterTablesList(): JSX.Element {
   const {

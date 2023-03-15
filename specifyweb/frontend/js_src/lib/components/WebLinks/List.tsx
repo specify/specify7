@@ -8,8 +8,8 @@ import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { TableIcon } from '../Molecules/TableIcon';
-import { resolveRelative } from '../Router/Router';
 import type { WebLinkOutlet } from './Editor';
+import { resolveRelative } from '../Router/queryString';
 
 export function WebLinkList(): JSX.Element {
   const {

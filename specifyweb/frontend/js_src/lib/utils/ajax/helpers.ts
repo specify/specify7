@@ -15,7 +15,7 @@ export const isExternalUrl = (url: string): boolean =>
   new URL(url, globalThis.location.origin).origin !==
     globalThis.location.origin;
 
-/*
+/**
  * Make sure the given URL is from current origin and give it back without
  * domain name
  */
@@ -70,7 +70,7 @@ export function extractAppResourceId(url: string, response: Response): void {
 
 export const getAppResourceUrl = (
   name: string,
-  quiet: 'quiet' | undefined = 'quiet'
+  quiet: 'quiet' | undefined = undefined
 ): string =>
   formatUrl('/context/app.resource', {
     name,
