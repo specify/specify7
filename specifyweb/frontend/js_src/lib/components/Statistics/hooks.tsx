@@ -27,6 +27,7 @@ import type {
   StatLayout,
   StatsSpec,
 } from './types';
+import { MILLISECONDS } from '../Atoms/Internationalization';
 
 /**
  * Returns state which gets updated everytime backend stat is fetched. Used for dynamic categories since they don't
@@ -460,4 +461,32 @@ export function generateStatUrl(
  * */
 export function getOffsetOne(base: number, target: number) {
   return Math.max(Math.min(Math.sign(target - base - 1), 0) + base, 0);
+}
+export const setLayoutUndefined = (layout: StatLayout): StatLayout => ({
+  label: layout.label,
+  categories: layout.categories.map((category) => ({
+    label: category.label,
+    items: category.items?.map((item) => ({
+      ...item,
+      itemValue: undefined,
+    })),
+  })),
+  lastUpdated: undefined,
+});
+export function applyRefreshLayout(
+  layout: RA<StatLayout> | undefined,
+  refreshTimeMinutes: number
+): RA<StatLayout> | undefined {
+  return layout?.map((pageLayout) => {
+    if (pageLayout.lastUpdated == undefined) return pageLayout;
+    const lastUpdatedParsed = new Date(pageLayout.lastUpdated).valueOf();
+    const currentTime = Date.now();
+    if (isNaN(lastUpdatedParsed) || isNaN(currentTime)) return pageLayout;
+    const timeDiffMillSecond = Math.round(currentTime - lastUpdatedParsed);
+    if (timeDiffMillSecond < 0) return pageLayout;
+    const timeDiffMinute = Math.floor(timeDiffMillSecond / (MILLISECONDS * 60));
+    if (timeDiffMinute >= refreshTimeMinutes)
+      return setLayoutUndefined(pageLayout);
+    return pageLayout;
+  });
 }

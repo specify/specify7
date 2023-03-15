@@ -33,7 +33,7 @@ export const collectionPreferenceDefinitions = {
             container: 'label',
           }),
           refreshRate: defineItem<number>({
-            title: 'Defines the rate of autorefresh',
+            title: 'Defines the rate of auto refresh in hours',
             requiresReload: false,
             visible: false,
             defaultValue: 24,

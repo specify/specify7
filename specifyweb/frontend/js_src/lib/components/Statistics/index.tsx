@@ -13,7 +13,6 @@ import { H2, H3, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Form } from '../Atoms/Form';
-import { MILLISECONDS } from '../Atoms/Internationalization';
 import { Submit } from '../Atoms/Submit';
 import { softFail } from '../Errors/Crash';
 import { useMenuItem } from '../Header/useMenuItem';
@@ -24,13 +23,14 @@ import { hasPermission } from '../Permissions/helpers';
 import { collectionPreferences } from '../Preferences/collectionPreferences';
 import { userPreferences } from '../Preferences/userPreferences';
 import { useQueries } from '../Toolbar/Query';
-import { defaultLayoutTest } from './__tests__/layout.tests';
 import { AddStatDialog } from './AddStatDialog';
 import { StatsAsideButton } from './Buttons';
 import { Categories } from './Categories';
 import {
+  applyRefreshLayout,
   getDynamicCategoriesToFetch,
   getOffsetOne,
+  setLayoutUndefined,
   statsToTsv,
   useBackendApi,
   useDefaultDynamicCategorySetter,
@@ -42,8 +42,6 @@ import { defaultLayoutGenerated, dynamicStatsSpec } from './StatsSpec';
 import type { CustomStat, DefaultStat, StatLayout } from './types';
 import { ProtectedAction } from '../Permissions/PermissionDenied';
 
-const TIME_DIFF_MINUTE = 60 * 24;
-
 export function StatsPage(): JSX.Element {
   return (
     <ProtectedAction resource={'/querybuilder/query'} action={'execute'}>
@@ -51,6 +49,7 @@ export function StatsPage(): JSX.Element {
     </ProtectedAction>
   );
 }
+
 function ProtectedStatsPage(): JSX.Element | null {
   // TODO: Make stats page component smaller
 
@@ -59,6 +58,12 @@ function ProtectedStatsPage(): JSX.Element | null {
     'statistics',
     'appearance',
     'layout'
+  );
+
+  const [refreshRate] = collectionPreferences.use(
+    'statistics',
+    'appearance',
+    'refreshRate'
   );
 
   const [sharedLayout, setLocalSharedLayout] = React.useState<
@@ -111,7 +116,10 @@ function ProtectedStatsPage(): JSX.Element | null {
     'showTotal'
   );
 
-  const formatterSpec = React.useMemo(() => ({ showTotal }), [showTotal]);
+  const formatterSpec = React.useMemo(
+    () => ({ showTotal: showTotal }),
+    [showTotal]
+  );
   const [defaultLayout, setDefaultLayout] = React.useState<
     RA<StatLayout> | undefined
   >(undefined);
@@ -315,41 +323,19 @@ function ProtectedStatsPage(): JSX.Element | null {
     personalLayout as unknown as RA<StatLayout>
   );
 
-  const getValueUndefined = (layout: StatLayout): StatLayout => ({
-    label: layout.label,
-    categories: layout.categories.map((category) => ({
-      label: category.label,
-      items: category.items?.map((item) => ({
-        ...item,
-        itemValue: undefined,
-      })),
-    })),
-    lastUpdated: undefined,
-  });
+  React.useLayoutEffect(() => {
+    handleSharedLayoutChange((layout) =>
+      applyRefreshLayout(layout, refreshRate * 60)
+    );
+    handlePersonalLayoutChange((layout) =>
+      applyRefreshLayout(layout, refreshRate * 60)
+    );
+  }, [handlePersonalLayoutChange, handleSharedLayoutChange]);
 
   React.useLayoutEffect(() => {
-    if (pageLastUpdated === undefined) return;
-    const lastUpdatedParsed = new Date(pageLastUpdated).valueOf();
-    const currentTime = Date.now();
-    if (isNaN(lastUpdatedParsed) || isNaN(currentTime)) return;
-    const timeDiffMillSecond = Math.round(currentTime - lastUpdatedParsed);
-    if (timeDiffMillSecond < 0) return;
-    const timeDiffMinute = Math.floor(timeDiffMillSecond / (MILLISECONDS * 60));
-    if (timeDiffMinute >= TIME_DIFF_MINUTE) {
-      cleanMaybeFulfilled();
-      setCurrentLayout((layout) =>
-        layout === undefined
-          ? undefined
-          : layout.map((pageLayout, sourceIndex) =>
-              sourceIndex === activePage.pageIndex
-                ? getValueUndefined(pageLayout)
-                : pageLayout
-            )
-      );
-    }
-  }, [setCurrentLayout, activePage.pageIndex, activePage.isShared]);
-
-  React.useLayoutEffect(() => {
+    // This function will be called every time layout changes so needs to filter
+    // cases where page is already updated
+    if (pageLastUpdated !== undefined) return;
     setCurrentLayout((layout) =>
       layout === undefined
         ? undefined
@@ -370,6 +356,7 @@ function ProtectedStatsPage(): JSX.Element | null {
     activePage.isShared,
     pageLastUpdated,
     setCurrentLayout,
+    pageLayout,
   ]);
 
   const handleAdd = (
@@ -462,7 +449,7 @@ function ProtectedStatsPage(): JSX.Element | null {
         : replaceItem(
             layout,
             activePage.pageIndex,
-            getValueUndefined(layout[activePage.pageIndex])
+            setLayoutUndefined(layout[activePage.pageIndex])
           )
     );
     setCategoriesToFetch([]);
@@ -532,7 +519,10 @@ function ProtectedStatsPage(): JSX.Element | null {
                   handleSharedLayoutChange(undefined);
                   handlePersonalLayoutChange(undefined);
                   setCategoriesToFetch([]);
-                  setActivePage({ isShared: true, pageIndex: 0 });
+                  setActivePage({
+                    isShared: true,
+                    pageIndex: 0,
+                  });
                 }}
               >
                 {`${commonText.reset()} [DEV]`}
