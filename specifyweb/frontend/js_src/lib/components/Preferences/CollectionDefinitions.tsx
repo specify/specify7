@@ -31,6 +31,7 @@ export const collectionPreferenceDefinitions = {
             defaultValue: false,
             renderer: () => <>{error('This should not get called')}</>,
             container: 'label',
+            type: 'java.lang.Boolean',
           }),
           refreshRate: defineItem<number>({
             title: 'Defines the rate of auto refresh in hours',
@@ -39,6 +40,7 @@ export const collectionPreferenceDefinitions = {
             defaultValue: 24,
             renderer: () => <>{error('This should not get called')}</>,
             container: 'label',
+            type: 'java.lang.Float',
           }),
         },
       },
