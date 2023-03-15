@@ -1,5 +1,6 @@
 import { parserFromType } from '../../utils/parser/definitions';
 import { parseValue } from '../../utils/parser/parse';
+import { today } from '../../utils/relativeDate';
 import type { RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import { group, KEY, removeKey, sortFunction, VALUE } from '../../utils/utils';
@@ -24,7 +25,6 @@ import type { QueryFieldFilter } from './FieldFilter';
 import { queryFieldFilters } from './FieldFilter';
 import { QueryFieldSpec } from './fieldSpec';
 import { currentUserValue } from './SpecifyUserAutoComplete';
-import { today } from '../../utils/relativeDate';
 
 export type SortTypes = 'ascending' | 'descending' | undefined;
 export const sortTypes: RA<SortTypes> = [undefined, 'ascending', 'descending'];

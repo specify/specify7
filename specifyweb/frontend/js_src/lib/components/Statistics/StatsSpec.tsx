@@ -1,6 +1,7 @@
 import { statsText } from '../../localization/stats';
 import { getDateInputValue } from '../../utils/dayJs';
 import { f } from '../../utils/functools';
+import { today } from '../../utils/relativeDate';
 import type { RA } from '../../utils/types';
 import { ensure } from '../../utils/types';
 import { formatNumber } from '../Atoms/Internationalization';
@@ -16,7 +17,6 @@ import type {
   StatsSpec,
 } from './types';
 import type { DefaultStat, StatCategoryReturn } from './types';
-import { today } from '../../utils/relativeDate';
 
 export const statsSpec: StatsSpec = {
   collection: {

@@ -8,6 +8,7 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { queryText } from '../../localization/query';
 import { dayjs } from '../../utils/dayJs';
+import { databaseDateFormat } from '../../utils/parser/dateConfig';
 import type { Parser } from '../../utils/parser/definitions';
 import {
   parseRelativeDate,
@@ -17,7 +18,6 @@ import {
 import { Button } from '../Atoms/Button';
 import { Input, Select } from '../Atoms/Form';
 import { QueryInputField } from './FieldFilter';
-import { databaseDateFormat } from '../../utils/parser/dateConfig';
 
 export function DateQueryInputField({
   currentValue,
@@ -65,7 +65,15 @@ export function DateQueryInputField({
         title="switch"
         onClick={(): void => {
           toggleAbsolute();
-          if (!isAbsolute) {
+          if (isAbsolute) {
+            setRelative((oldRelative) =>
+              parsed === undefined ? `${today} + 0 day` : oldRelative
+            );
+            setAbsolute(currentValue);
+            if (parsed === undefined) {
+              handleChange?.(`${today} + 0 day`);
+            }
+          } else {
             if (reRelativeDate.test(currentValue)) {
               const parsedDate = dayjs(parseRelativeDate(currentValue)).format(
                 databaseDateFormat
@@ -73,14 +81,6 @@ export function DateQueryInputField({
               handleChange?.(parsedDate);
               setRelative(currentValue);
               setAbsolute((oldAbsolute) => oldAbsolute ?? parsedDate);
-            }
-          } else {
-            setRelative((oldRelative) =>
-              parsed === undefined ? `${today} + 0 day` : oldRelative
-            );
-            setAbsolute(currentValue);
-            if (parsed === undefined) {
-              handleChange?.(`${today} + 0 day`);
             }
           }
         }}
@@ -133,18 +133,19 @@ function DateSplit({
   return (
     <div className="flex flex-row gap-1">
       <Select
+        disabled={handleChange === undefined}
         value={direction}
         onBlur={commitChange}
         onValueChange={(newValue): void => {
           setValues({ ...values, direction: newValue });
           handleChanging?.();
         }}
-        disabled={handleChange === undefined}
       >
         <option value="+">{queryText.future()}</option>
         <option value="-">{queryText.past()}</option>
       </Select>
       <Input.Number
+        disabled={handleChange === undefined}
         min={0}
         value={size}
         onBlur={commitChange}
@@ -155,16 +156,15 @@ function DateSplit({
           });
           handleChanging?.();
         }}
-        disabled={handleChange === undefined}
       />
       <Select
+        disabled={handleChange === undefined}
         value={type}
         onBlur={commitChange}
         onValueChange={(newValue) => {
           setValues({ ...values, type: newValue });
           handleChanging?.();
         }}
-        disabled={handleChange === undefined}
       >
         <option value="day">{queryText.day()}</option>
         <option value="week">{queryText.week()}</option>

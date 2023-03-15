@@ -1,9 +1,9 @@
 import { mockTime, requireContext } from '../../../tests/helpers';
+import { today } from '../../../utils/relativeDate';
 import { strictParseXml } from '../../AppResources/codeMirrorLinters';
 import { schema } from '../../DataModel/schema';
 import { parseUiPlugin } from '../plugins';
 import { generateInit } from './helpers';
-import { today } from '../../../utils/relativeDate';
 
 mockTime();
 requireContext();
