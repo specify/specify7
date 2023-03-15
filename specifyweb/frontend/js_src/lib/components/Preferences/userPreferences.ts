@@ -22,8 +22,12 @@ export const userPreferences = new BasePreferences({
   developmentGlobal: '_userPreferences',
   syncChanges: true,
 });
+
+// Load initial values from cache
 userPreferences.setRaw(getCache(cacheKey, 'cached') ?? {});
 userPreferences.setDefaults(getCache(cacheKey, 'defaultCached') ?? {});
+
+// Update cache on preferences changes
 userPreferences.events.on(
   'update',
   _.debounce(() => {
@@ -33,8 +37,11 @@ userPreferences.events.on(
     setCache(cacheKey, 'defaultCached', userPreferences.getDefaults());
   }, throttleRate)
 );
+
+// Fetch up to date preferences from the back-end
 userPreferences.fetch().catch(softFail);
 
+// Sync preferences between browser tabs in real time
 cacheEvents.on('change', ({ category, key }) => {
   if (category !== cacheKey) return;
   if (key === 'cached')

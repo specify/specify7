@@ -19,7 +19,11 @@ export const collectionPreferences = new BasePreferences({
   developmentGlobal: '_collectionPreferences',
   syncChanges: true,
 });
+
+// Load initial values from cache
 collectionPreferences.setRaw(getCache(cacheKey, 'cached') ?? {});
+
+// Update cache on preferences changes
 collectionPreferences.events.on(
   'update',
   _.debounce(
@@ -30,8 +34,11 @@ collectionPreferences.events.on(
     throttleRate
   )
 );
+
+// Fetch up to date preferences from the back-end
 collectionPreferences.fetch().catch(softFail);
 
+// Sync preferences between browser tabs in real time
 cacheEvents.on('change', ({ category, key }) => {
   if (category !== cacheKey) return;
   if (key === 'cached')
