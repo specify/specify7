@@ -144,6 +144,9 @@ export const resourcesText = createDictionary({
     'en-us': 'Available Aggregators',
     'ru-ru': 'Доступные агрегаторы',
   },
+  availableWebLink: {
+    'en-us': 'Available Web Links',
+  },
   selectDefaultFormatter: {
     'en-us': 'Please mark one of these formatters as default',
   },
@@ -304,14 +307,35 @@ export const resourcesText = createDictionary({
   editorNotAvailable: {
     'en-us': 'Visual editor is not available for this resource',
   },
+  definition: {
+    'en-us': 'Definition',
+  },
   addDefinition: {
     'en-us': 'Add definition',
   },
   deleteDefinition: {
     'en-us': 'Delete definition',
   },
+  addUrlPart: {
+    'en-us': 'Add URL part',
+  },
+  urlPart: {
+    'en-us': 'URL part',
+  },
+  addPromptField: {
+    'en-us': 'Add prompt field',
+  },
+  addThisField: {
+    'en-us': 'Add this field',
+  },
+  promptField: {
+    'en-us': 'Prompt field',
+  },
   addField: {
     'en-us': 'Add field',
+  },
+  thisField: {
+    'en-us': 'This field',
   },
   conditionField: {
     'en-us': 'Condition Field',

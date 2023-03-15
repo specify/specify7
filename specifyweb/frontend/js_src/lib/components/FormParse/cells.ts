@@ -49,6 +49,7 @@ export const processColumnDefinition = (
     .map((definition) => /(\d+)px/u.exec(definition)?.[1] ?? '')
     .map(f.parseInt);
 
+// FIXME: allow \= and \" for escaping
 export const parseSpecifyProperties = (props = ''): IR<string> =>
   Object.fromEntries(
     filterArray(

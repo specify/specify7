@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { useErrorContext } from '../../hooks/useErrorContext';
+import { useTriggerState } from '../../hooks/useTriggerState';
 import { formsText } from '../../localization/forms';
 import { localityText } from '../../localization/locality';
 import { defined } from '../../utils/types';
@@ -98,19 +99,19 @@ export function AppResourceEditor({
   const showValidationRef = React.useRef<(() => void) | null>(null);
   const [isFullScreen, setIsFullScreen] = React.useState(false);
   const syncData = React.useCallback(() => {
-    const getData = lastData.current;
+    const getData = lastDataRef.current;
     if (typeof getData === 'function')
       setResourceData((resourceData) => ({
         ...defined(resourceData, 'App Resource Data is not defined'),
         data: getData(),
       }));
-  }, []);
+  }, [setResourceData]);
   const handleChangeFullScreen = React.useCallback(
     (value: boolean) => {
       setIsFullScreen(value);
       syncData();
     },
-    [setResourceData]
+    [syncData]
   );
 
   const { title, formatted, form } = useResourceView({
@@ -136,7 +137,6 @@ export function AppResourceEditor({
       {typeof resourceData === 'object' && (
         <AppResourceLoad
           onLoaded={(data: string, mimeType: string): void => {
-            lastData.current = data;
             setResourceData({
               ...resourceData,
               data,
@@ -158,16 +158,21 @@ export function AppResourceEditor({
     </div>
   );
 
-  const lastData = React.useRef<string | (() => string | null) | null>(
-    resourceData?.data ?? null
-  );
-  const [possiblyChanged, setPossiblyChanged] = React.useState(false);
+  const [lastData, setLastData] = useTriggerState<
+    string | (() => string | null) | null
+  >(resourceData?.data ?? null);
+  const lastDataRef = React.useRef(lastData);
+  lastDataRef.current = lastData;
+  const possiblyChanged = typeof lastData === 'function';
 
   const [tabIndex, setTabIndex] = React.useState<number>(0);
-  const handleChangeTab = React.useCallback((index: number) => {
-    setTabIndex(index);
-    syncData();
-  }, []);
+  const handleChangeTab = React.useCallback(
+    (index: number) => {
+      setTabIndex(index);
+      syncData();
+    },
+    [syncData]
+  );
 
   return typeof resourceData === 'object'
     ? children({
@@ -188,7 +193,7 @@ export function AppResourceEditor({
             <AppTitle title={formatted} />
           </div>
         ),
-        headerButtons: headerButtons,
+        headerButtons,
         form: (
           <Form
             className="max-h-[90%] min-h-[30vh] flex-1 overflow-auto"
@@ -206,10 +211,8 @@ export function AppResourceEditor({
                 resource={resource}
                 showValidationRef={showValidationRef}
                 onChange={(data): void => {
-                  lastData.current = data;
-                  setPossiblyChanged(typeof data === 'function');
-                  if (typeof data !== 'function')
-                    setResourceData({ ...resourceData, data });
+                  if (typeof data === 'function') setLastData(() => data);
+                  else setResourceData({ ...resourceData, data });
                 }}
               />
             </ReadOnlyContext.Provider>
@@ -274,9 +277,9 @@ export function AppResourceEditor({
                       const resource = serializeResource(appResource);
 
                       const data =
-                        typeof lastData.current === 'function'
-                          ? lastData.current()
-                          : lastData.current;
+                        typeof lastDataRef.current === 'function'
+                          ? lastDataRef.current()
+                          : lastDataRef.current;
                       const appResourceData = deserializeResource({
                         ...resourceData,
                         data,

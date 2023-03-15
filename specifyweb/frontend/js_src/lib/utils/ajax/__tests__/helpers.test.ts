@@ -6,6 +6,10 @@ theories(isExternalUrl, [
   { in: ['http://localhost/'], out: false },
   { in: ['http://google.com/'], out: true },
   { in: ['/page'], out: false },
+  { in: [''], out: false },
+  { in: ['/'], out: false },
+  { in: ['  /  '], out: false },
+  { in: ['  @#$ @#%^ '], out: false },
 ]);
 
 theories(toLocalUrl, [

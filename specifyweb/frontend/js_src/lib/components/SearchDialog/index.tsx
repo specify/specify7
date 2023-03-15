@@ -57,7 +57,7 @@ export function SearchDialog<SCHEMA extends AnySchema>(props: {
   readonly templateResource: SpecifyResource<SCHEMA>;
   readonly multiple: boolean;
   readonly onClose: () => void;
-  readonly searchView: string | undefined;
+  readonly searchView?: string;
   readonly onSelected: (resources: RA<SpecifyResource<SCHEMA>>) => void;
 }): JSX.Element | null {
   const [alwaysUseQueryBuilder] = usePref(
@@ -127,7 +127,7 @@ function SearchForm<SCHEMA extends AnySchema>({
   readonly forceCollection: number | undefined;
   readonly extraFilters: RA<QueryComboBoxFilter<SCHEMA>> | undefined;
   readonly templateResource: SpecifyResource<SCHEMA>;
-  readonly searchView: string | undefined;
+  readonly searchView?: string;
   readonly onClose: () => void;
   readonly onSelected: (resources: RA<SpecifyResource<SCHEMA>>) => void;
   readonly onUseQueryBuilder: () => void;

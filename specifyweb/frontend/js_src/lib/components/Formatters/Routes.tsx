@@ -30,16 +30,11 @@ export const formattersRoutes = toReactRoutes([
             index: true,
           },
           {
-            path: 'name',
-            children: [
-              {
-                path: ':name',
-                element: async () =>
-                  import('./Element').then(
-                    ({ FormatterWrapper }) => FormatterWrapper
-                  ),
-              },
-            ],
+            path: ':index',
+            element: async () =>
+              import('./Element').then(
+                ({ FormatterWrapper }) => FormatterWrapper
+              ),
           },
         ],
       },

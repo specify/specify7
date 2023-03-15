@@ -20,7 +20,7 @@ import {
   ResourceMapping,
 } from './Components';
 import { format } from './formatters';
-import { GenericFormatterPreview } from './Preview';
+import { ResourcePreview } from './Preview';
 import type { Formatter } from './spec';
 
 export function FormatterElement({
@@ -336,7 +336,7 @@ function FormatterPreview({
   readonly formatter: Formatter;
 }): JSX.Element {
   return (
-    <GenericFormatterPreview
+    <ResourcePreview
       doFormatting={React.useCallback(
         async (resources) =>
           Promise.all(

@@ -15,6 +15,7 @@ test('DialogButton closes the dialog', async () => {
   );
 
   const button = getByRole('button');
+  expect(handleClose).toHaveBeenCalledTimes(0);
   await user.click(button);
   expect(handleClose).toHaveBeenCalledTimes(1);
 

@@ -26,7 +26,7 @@ test('f.zero', () => {
   expect(f.zero(callback)(...args)).toEqual([]);
 });
 
-test('f.id', () => {
+test('f.id returns the value it was passed', () => {
   const id = {};
   expect(f.id(id)).toBe(id);
 });

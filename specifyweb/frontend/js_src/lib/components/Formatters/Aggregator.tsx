@@ -7,7 +7,7 @@ import { ReadOnlyContext } from '../Core/Contexts';
 import { hasTablePermission } from '../Permissions/helpers';
 import { aggregate } from './aggregate';
 import { FormattersPickList, ResourceMapping } from './Components';
-import { GenericFormatterPreview } from './Preview';
+import { ResourcePreview } from './Preview';
 import type { Aggregator } from './spec';
 
 export function AggregatorElement({
@@ -107,7 +107,7 @@ function AggregatorPreview({
   readonly aggregator: Aggregator;
 }): JSX.Element {
   return (
-    <GenericFormatterPreview
+    <ResourcePreview
       doFormatting={React.useCallback(
         async (resources) =>
           aggregate(resources, aggregator).then((aggregated) => [aggregated]),

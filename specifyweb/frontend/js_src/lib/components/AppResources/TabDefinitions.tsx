@@ -26,6 +26,7 @@ import {
   setPrefsGenerator,
 } from '../UserPreferences/helpers';
 import { PreferencesContext, useDarkMode } from '../UserPreferences/Hooks';
+import { WebLinkEditor } from '../WebLinks/Editor';
 import { useCodeMirrorExtensions } from './EditorComponents';
 import type { appResourceSubTypes } from './types';
 
@@ -162,7 +163,7 @@ export const visualAppResourceEditors = f.store<
   leafletLayers: undefined,
   rssExportFeed: undefined,
   expressSearchConfig: undefined,
-  webLinks: undefined,
+  webLinks: WebLinkEditor,
   uiFormatters: undefined,
   dataObjectFormatters: DataObjectFormatter,
   searchDialogDefinitions: undefined,

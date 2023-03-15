@@ -18,7 +18,7 @@ import { SearchDialog } from '../SearchDialog';
 
 const defaultPreviewSize = 4;
 
-export function GenericFormatterPreview({
+export function ResourcePreview({
   table,
   doFormatting,
 }: {
