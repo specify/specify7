@@ -94,15 +94,24 @@ export function CreateAppResource(): JSX.Element {
             ([key, { icon, mimeType, name = '', documentationUrl, label }]) => (
               <tr key={key}>
                 <td>
-                  <Button.LikeLink
-                    onClick={(): void => {
-                      setMimeType(mimeType ?? '');
-                      setName(name);
-                    }}
-                  >
-                    {icon}
-                    {label}
-                  </Button.LikeLink>
+                  {name === '' ? (
+                    <Button.LikeLink
+                      onClick={(): void => {
+                        setMimeType(mimeType ?? '');
+                        setName(name);
+                      }}
+                    >
+                      {icon}
+                      {label}
+                    </Button.LikeLink>
+                  ) : (
+                    <Link.Default
+                      href={getUrl(directoryKey, type, name, mimeType ?? '')}
+                    >
+                      {icon}
+                      {label}
+                    </Link.Default>
+                  )}
                 </td>
                 <td>
                   {typeof documentationUrl === 'string' && (
@@ -152,6 +161,20 @@ export const findAppResourceDirectoryKey = (
       : findAppResourceDirectoryKey(subCategories, directoryId)
   );
 
+function getUrl(
+  directoryKey: string,
+  type: AppResourceType,
+  name: string,
+  mimeType: string | undefined
+): string {
+  const path = type.tableName === 'SpAppResource' ? 'app-resource' : 'view-set';
+  return formatUrl(`/specify/resources/${path}/new/`, {
+    directoryKey,
+    name,
+    mimeType,
+  });
+}
+
 function EditAppResource({
   directory,
   name,
@@ -200,14 +223,13 @@ function EditAppResource({
       onSaved={f.never}
       onSaving={(unsetUnloadProtect): false => {
         unsetUnloadProtect();
-        const path =
-          type.tableName === 'SpAppResource' ? 'app-resource' : 'view-set';
         navigate(
-          formatUrl(`/specify/resources/${path}/new/`, {
+          getUrl(
             directoryKey,
-            name: resource.get('name'),
-            mimeType: resource.get('mimeType'),
-          })
+            type,
+            resource.get('name'),
+            resource.get('mimeType') ?? undefined
+          )
         );
         /*
          * Prevent saving a resource to fix
