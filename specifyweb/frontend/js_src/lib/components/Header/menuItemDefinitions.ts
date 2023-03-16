@@ -103,7 +103,7 @@ const rawMenuItems = ensure<IR<Omit<MenuItem, 'name'>>>()({
     },
   },
   statistics: {
-    url: '/specify/statistics/',
+    url: '/specify/stats',
     title: statsText.statistics(),
     icon: icons.chartBar,
     enabled: () => hasPermission('/querybuilder/query', 'execute'),

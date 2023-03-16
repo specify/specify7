@@ -36,10 +36,12 @@ export function FrontEndStatsResultDialog({
   label,
   onEdit: handleEdit,
   onClone: handleClone,
+  matchClone,
 }: {
   readonly query: SpecifyResource<SpQuery>;
   readonly onClose: () => void;
   readonly label: string;
+  readonly matchClone: boolean;
   readonly onEdit: ((querySpec: QuerySpec) => void) | undefined;
   readonly onClone: ((querySpec: QuerySpec) => void) | undefined;
 }): JSX.Element | null {
@@ -49,17 +51,19 @@ export function FrontEndStatsResultDialog({
       [originalQuery]
     )
   );
+  const isDisabled =
+    query.fields.length === 0 || (matchClone && handleClone === undefined);
   return (
     <Dialog
       buttons={
         <div className="flex flex-1 gap-2">
-          {typeof handleClone === 'function' && (
+          {matchClone && (
             <Button.Blue
               onClick={(): void => {
-                handleClone(query);
+                handleClone?.(query);
                 handleClose();
               }}
-              disabled={query.fields.length === 0}
+              disabled={isDisabled}
             >
               {formsText.clone()}
             </Button.Blue>
@@ -72,7 +76,7 @@ export function FrontEndStatsResultDialog({
                 handleEdit(query);
                 handleClose();
               }}
-              disabled={query.fields.length === 0}
+              disabled={isDisabled}
             >
               {commonText.save()}
             </Button.Blue>

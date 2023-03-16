@@ -65,6 +65,7 @@ function areItemsValid(items: RA<CustomStat | DefaultStat>) {
 export function Categories({
   pageLayout,
   formatterSpec,
+  hasPermission,
   onAdd: handleAdd,
   onClick: handleClick,
   onRemove: handleRemove,
@@ -75,6 +76,7 @@ export function Categories({
 }: {
   readonly pageLayout: StatLayout | undefined;
   readonly formatterSpec: StatFormatterSpec;
+  readonly hasPermission: boolean;
   readonly onAdd: ((categoryIndex: number | undefined) => void) | undefined;
   readonly onClick: (
     item: CustomStat | DefaultStat,
@@ -133,7 +135,7 @@ export function Categories({
                 checkEmptyItems ? (
                   <h5 className="font-semibold">{label}</h5>
                 ) : (
-                  <h3 className="rounded-t bg-brand-200 p-3 pt-[0.1rem] pb-[0.1rem] text-lg font-semibold text-white">
+                  <h3 className="overflow-auto rounded-t bg-brand-200 p-3 pt-[0.1rem] pb-[0.1rem] text-lg font-semibold text-white">
                     {label}
                   </h3>
                 )
@@ -166,9 +168,7 @@ export function Categories({
                         itemIndex={itemIndex}
                         key={itemIndex}
                         onClick={
-                          item.type === 'DefaultStat' &&
-                          typeof handleClick === 'function' &&
-                          checkEmptyItems
+                          item.type === 'DefaultStat' && checkEmptyItems
                             ? (): void =>
                                 handleClick({
                                   type: 'DefaultStat',
@@ -187,8 +187,7 @@ export function Categories({
                             : undefined
                         }
                         onClone={
-                          item.type === 'CustomStat' ||
-                          item.itemType === 'QueryStat'
+                          hasPermission
                             ? (querySpec) =>
                                 handleClick(
                                   {
@@ -204,22 +203,20 @@ export function Categories({
                           checkEmptyItems || handleEdit === undefined
                             ? undefined
                             : item.type === 'DefaultStat'
-                            ? handleClick === undefined
-                              ? undefined
-                              : (querySpec, itemName): void =>
-                                  handleClick(
-                                    {
-                                      type: 'CustomStat',
-                                      label: itemName,
-                                      querySpec: {
-                                        tableName: querySpec.tableName,
-                                        fields: querySpec.fields,
-                                        isDistinct: querySpec.isDistinct,
-                                      },
+                            ? (querySpec, itemName): void =>
+                                handleClick(
+                                  {
+                                    type: 'CustomStat',
+                                    label: itemName,
+                                    querySpec: {
+                                      tableName: querySpec.tableName,
+                                      fields: querySpec.fields,
+                                      isDistinct: querySpec.isDistinct,
                                     },
-                                    categoryIndex,
-                                    itemIndex
-                                  )
+                                  },
+                                  categoryIndex,
+                                  itemIndex
+                                )
                             : (querySpec): void =>
                                 handleEdit?.(
                                   categoryIndex,

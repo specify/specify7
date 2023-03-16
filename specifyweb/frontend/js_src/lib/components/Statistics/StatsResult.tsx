@@ -72,6 +72,7 @@ export function StatsResult({
           onClone={handleClone}
           onClose={handleClose}
           onEdit={handleEdit}
+          matchClone={true}
         />
       ) : undefined}
     </>

@@ -451,7 +451,7 @@ export function generateStatUrl(
   const urlSpecMapped = [urlPrefix, categoryKey, itemKey]
     .map((urlSpec) => (urlSpec === 'phantomItem' ? undefined : urlSpec))
     .filter((urlSpec) => urlSpec !== undefined);
-  return `/statistics/${urlSpecMapped.join('/')}/`;
+  return `/stats/${urlSpecMapped.join('/')}/`;
 }
 
 /**

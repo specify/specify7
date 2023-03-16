@@ -13,7 +13,7 @@ import type { StatLayout } from '../types';
 import { defaultLayoutTest, statsSpecTest } from './layout.tests';
 
 const backEndResponse = {
-  '/statistics/collection/preparations/': {
+  '/stats/collection/preparations/': {
     'C&S': {
       lots: 826,
       total: 430,
@@ -27,7 +27,7 @@ const backEndResponse = {
       total: 460,
     },
   },
-  '/statistics/collection/type_specimens/': {
+  '/stats/collection/type_specimens/': {
     Holotype: 19,
     Neotype: 1,
   },
@@ -39,7 +39,7 @@ theories(applyStatBackendResponse, [
     in: [
       backEndResponse,
       defaultLayoutTest[0].categories[3].items,
-      '/statistics/collection/type_specimens/',
+      '/stats/collection/type_specimens/',
       (rawNumber: number | undefined) => f.maybe(rawNumber, formatNumber),
       statsSpecTest,
     ],
@@ -70,7 +70,7 @@ theories(applyStatBackendResponse, [
     in: [
       backEndResponse,
       defaultLayoutTest[0].categories[1].items,
-      '/statistics/collection/preparations/',
+      '/stats/collection/preparations/',
       (
         prep:
           | {
@@ -121,7 +121,7 @@ theories(applyStatBackendResponse, [
     in: [
       backEndResponse,
       defaultLayoutTest[0].categories[0].items,
-      '/statistics/collection/type_specimens/',
+      '/stats/collection/type_specimens/',
       (rawNumber: number | undefined) => f.maybe(rawNumber, formatNumber),
       statsSpecTest,
     ],
@@ -131,7 +131,7 @@ theories(applyStatBackendResponse, [
     in: [
       backEndResponse,
       defaultLayoutTest[0].categories[1].items,
-      '/statistics/collection/type_specimens/',
+      '/stats/collection/type_specimens/',
       (rawNumber: number | undefined) => f.maybe(rawNumber, formatNumber),
       statsSpecTest,
     ],
@@ -274,8 +274,8 @@ theories(getDynamicCategoriesToFetch, [
   {
     in: [defaultLayoutTest],
     out: [
-      '/statistics/collection/preparations/',
-      '/statistics/collection/type_specimens/',
+      '/stats/collection/preparations/',
+      '/stats/collection/type_specimens/',
     ],
   },
 ]);
@@ -283,10 +283,10 @@ theories(getDynamicCategoriesToFetch, [
 theories(generateStatUrl, [
   {
     in: ['collection', 'holdings', 'loans'],
-    out: '/statistics/collection/holdings/loans/',
+    out: '/stats/collection/holdings/loans/',
   },
   {
     in: ['collection/user', 'preparations', 'phantomItem'],
-    out: '/statistics/collection/user/preparations/',
+    out: '/stats/collection/user/preparations/',
   },
 ]);

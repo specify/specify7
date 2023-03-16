@@ -234,7 +234,6 @@ function ProtectedStatsPage(): JSX.Element | null {
 
   const backEndResponse = useBackendApi(categoriesToFetch);
   const defaultBackEndResponse = useBackendApi(defaultCategoriesToFetch);
-
   /*
    * Initial Load For Shared and Personal Pages
    * If collection and personal layout are undefined initially, then we need to
@@ -323,7 +322,7 @@ function ProtectedStatsPage(): JSX.Element | null {
     personalLayout as unknown as RA<StatLayout>
   );
 
-  React.useLayoutEffect(() => {
+  React.useEffect(() => {
     handleSharedLayoutChange((layout) =>
       applyRefreshLayout(layout, refreshRate * 60)
     );
@@ -332,7 +331,7 @@ function ProtectedStatsPage(): JSX.Element | null {
     );
   }, [handlePersonalLayoutChange, handleSharedLayoutChange]);
 
-  React.useLayoutEffect(() => {
+  React.useEffect(() => {
     // This function will be called every time layout changes so needs to filter
     // cases where page is already updated
     if (pageLastUpdated !== undefined) return;
@@ -745,6 +744,7 @@ function ProtectedStatsPage(): JSX.Element | null {
             <Categories
               formatterSpec={formatterSpec}
               pageLayout={pageLayout}
+              hasPermission={canEditIndex(activePage.isShared)}
               onAdd={
                 isEditing && canEditIndex(activePage.isShared)
                   ? (categoryindex): void =>

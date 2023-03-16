@@ -18,7 +18,7 @@ from .specify import urls as api_urls
 from .specify.views import images, properties
 from .stored_queries import urls as query_urls
 from .workbench import urls as wb_urls
-from .statistics import urls as stat_urls
+from .stats import urls as stat_urls
 
 urlpatterns = [
 

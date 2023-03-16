@@ -398,7 +398,7 @@ export const routes: RA<EnhancedRoute> = [
     ],
   },
   {
-    path: 'statistics',
+    path: 'stats',
     title: statsText.statistics(),
     element: () =>
       import('../Statistics/index').then(({ StatsPage }) => StatsPage),
