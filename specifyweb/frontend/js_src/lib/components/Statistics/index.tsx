@@ -20,6 +20,7 @@ import { userInformation } from '../InitialContext/userInformation';
 import { DateElement } from '../Molecules/DateElement';
 import { downloadFile } from '../Molecules/FilePicker';
 import { hasPermission } from '../Permissions/helpers';
+import { ProtectedAction } from '../Permissions/PermissionDenied';
 import { collectionPreferences } from '../Preferences/collectionPreferences';
 import { userPreferences } from '../Preferences/userPreferences';
 import { useQueries } from '../Toolbar/Query';
@@ -40,11 +41,10 @@ import {
 import { StatsPageEditing } from './StatsPageEditing';
 import { defaultLayoutGenerated, dynamicStatsSpec } from './StatsSpec';
 import type { CustomStat, DefaultStat, StatLayout } from './types';
-import { ProtectedAction } from '../Permissions/PermissionDenied';
 
 export function StatsPage(): JSX.Element {
   return (
-    <ProtectedAction resource={'/querybuilder/query'} action={'execute'}>
+    <ProtectedAction action="execute" resource="/querybuilder/query">
       <ProtectedStatsPage />
     </ProtectedAction>
   );
@@ -116,10 +116,7 @@ function ProtectedStatsPage(): JSX.Element | null {
     'showTotal'
   );
 
-  const formatterSpec = React.useMemo(
-    () => ({ showTotal: showTotal }),
-    [showTotal]
-  );
+  const formatterSpec = React.useMemo(() => ({ showTotal }), [showTotal]);
   const [defaultLayout, setDefaultLayout] = React.useState<
     RA<StatLayout> | undefined
   >(undefined);
@@ -332,8 +329,10 @@ function ProtectedStatsPage(): JSX.Element | null {
   }, [handlePersonalLayoutChange, handleSharedLayoutChange]);
 
   React.useEffect(() => {
-    // This function will be called every time layout changes so needs to filter
-    // cases where page is already updated
+    /*
+     * This function will be called every time layout changes so needs to filter
+     * cases where page is already updated
+     */
     if (pageLastUpdated !== undefined) return;
     setCurrentLayout((layout) =>
       layout === undefined
@@ -743,8 +742,8 @@ function ProtectedStatsPage(): JSX.Element | null {
           <div className="grid w-full grid-cols-[repeat(auto-fill,minmax(20rem,1fr))] gap-4 overflow-y-auto px-4 pb-6">
             <Categories
               formatterSpec={formatterSpec}
-              pageLayout={pageLayout}
               hasPermission={canEditIndex(activePage.isShared)}
+              pageLayout={pageLayout}
               onAdd={
                 isEditing && canEditIndex(activePage.isShared)
                   ? (categoryindex): void =>

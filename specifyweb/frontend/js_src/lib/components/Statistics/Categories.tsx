@@ -24,7 +24,8 @@ import type {
  * Used for overriding phantom items (dynamic categories).
  * If user doesn't have permission for dynamic category, then shows
  * no permission text otherwise show loading
- * */
+ *
+ */
 function ItemOverride({
   item,
 }: {
@@ -192,7 +193,7 @@ export function Categories({
                                 handleClick(
                                   {
                                     type: 'CustomStat',
-                                    querySpec: querySpec,
+                                    querySpec,
                                     label: item.label,
                                   },
                                   categoryIndex

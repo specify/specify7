@@ -49,7 +49,7 @@ export function AddStatPage({
       <Ul className="flex flex-col gap-2">
         <Categories
           formatterSpec={formatterSpec}
-          hasPermission={true}
+          hasPermission
           pageLayout={pageLayout}
           onAdd={undefined}
           onCategoryRename={undefined}

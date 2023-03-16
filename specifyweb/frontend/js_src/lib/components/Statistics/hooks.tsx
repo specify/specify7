@@ -9,6 +9,7 @@ import { throttledPromise } from '../../utils/ajax/throttledPromise';
 import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { keysToLowerCase } from '../../utils/utils';
+import { MILLISECONDS } from '../Atoms/Internationalization';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import { deserializeResource, serializeResource } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -27,7 +28,6 @@ import type {
   StatLayout,
   StatsSpec,
 } from './types';
-import { MILLISECONDS } from '../Atoms/Internationalization';
 
 /**
  * Returns state which gets updated everytime backend stat is fetched. Used for dynamic categories since they don't
@@ -80,7 +80,8 @@ function backEndStatPromiseGenerator(
  * Flags default statistics which aren't on the current page. We cannot use filter to return a list
  * since item value can be undefined. In that case, the item value will have to fetched and then set
  * in the layout and thus filtered items will have to be mapped to the original layout
- * */
+ *
+ */
 
 export function getDefaultLayoutFlagged(
   layout: StatLayout | undefined,
@@ -222,7 +223,8 @@ export function useResolvedStatSpec(
  *  This is used to handle cases where dynamic categories are never loaded
  *  which can happen if we either add new dynamic categories or user closes
  *  stats page before categories are loaded.
- * */
+ *
+ */
 export function getDynamicCategoriesToFetch(
   layout: RA<StatLayout>
 ): RA<string> {
@@ -254,7 +256,8 @@ export function getDynamicCategoriesToFetch(
  * Converts the entire layout into TSV format. Currently, it is restricted to current source
  * and current page, but it can convert the entire layout too. Skips undefined items and empty
  * categories
- * */
+ *
+ */
 export function statsToTsv(
   layout: IR<RA<StatLayout> | undefined>,
   layoutPageIndex: number,
@@ -286,7 +289,8 @@ export function statsToTsv(
 
 /**
  * Calls the promise generator and sets the fetched item value into the layout.
- * */
+ *
+ */
 export function useStatValueLoad<
   PROMISE_TYPE extends number | string | undefined
 >(
@@ -313,7 +317,8 @@ export function useStatValueLoad<
  * Since there can be multiple dynamic categories, it doesn't change the items if
  * backend response doesn't match the item's expected API endpoint
  * Also doesn't change items if it is not a dynamic category
- * */
+ *
+ */
 export function applyStatBackendResponse(
   backEndResponse: BackendStatsResult,
   items: RA<CustomStat | DefaultStat>,
@@ -363,7 +368,8 @@ export function applyStatBackendResponse(
 /**
  * Iterates over the default layout and applies backend response for dynamic categories
  * to each source and page.
- * */
+ *
+ */
 
 export function useDefaultDynamicCategorySetter(
   defaultBackEndResponse: BackendStatsResult | undefined,
@@ -405,7 +411,8 @@ export function useDefaultDynamicCategorySetter(
 /**
  * Same as useDefaultDynamicCategorySetter but restricts dynamic stat category fetch updates
  * to the current layout
- * */
+ *
+ */
 export function useDynamicCategorySetter(
   backEndResponse: BackendStatsResult | undefined,
   handleChange: (
@@ -442,7 +449,8 @@ export function useDynamicCategorySetter(
 
 /**
  * Generates the API endpoint url using stats spec definition
- * */
+ *
+ */
 export function generateStatUrl(
   urlPrefix: string,
   categoryKey: string,
@@ -458,7 +466,8 @@ export function generateStatUrl(
  * Generates new indexes to jump to when user deletes a page. For example,
  * if current page index is 3 and user deletes page index 5, then jump to index 3 (current index)
  * If user is on page 5 and deletes page 3, then go to index 4
- * */
+ *
+ */
 export function getOffsetOne(base: number, target: number) {
   return Math.max(Math.min(Math.sign(target - base - 1), 0) + base, 0);
 }

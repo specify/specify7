@@ -68,11 +68,11 @@ export function StatsResult({
       {isOpen && query !== undefined && label !== undefined ? (
         <FrontEndStatsResultDialog
           label={label}
+          matchClone
           query={query}
           onClone={handleClone}
           onClose={handleClose}
           onEdit={handleEdit}
-          matchClone={true}
         />
       ) : undefined}
     </>
