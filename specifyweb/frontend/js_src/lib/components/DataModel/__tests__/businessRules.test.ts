@@ -60,11 +60,13 @@ const collectionObjectResponse = {
 overrideAjax(collectionObjectUrl, collectionObjectResponse);
 overrideAjax(determinationUrl, determinationResponse);
 
-test('collectionObject customInit', () => {
+test('collectionObject customInit', async () => {
   const resource = new schema.models.CollectionObject.Resource({
     id: collectionObjectId,
   });
+  await resource.fetch();
   expect(resource.get('collectingEvent')).toBeDefined();
+  resource.save();
 });
 
 describe('determination business rules', () => {
@@ -113,4 +115,43 @@ test('dnaSequence genesequence fieldCheck', async () => {
   expect(dnaSequence.get('totalResidues')).toBe(10);
   expect(dnaSequence.get('compA')).toBe(3);
   expect(dnaSequence.get('ambiguousResidues')).toBe(4);
+});
+
+test('global uniquenessRule', async () => {
+  const testPermit = new schema.models.Permit.Resource({
+    id: 1,
+    permitNumber: '20',
+  });
+  await testPermit.save();
+  const duplicatePermit = new schema.models.Permit.Resource({
+    id: 2,
+    permitNumber: '20',
+  });
+  expect(
+    duplicatePermit
+      .fetch()
+      .then((permit) => permit.businessRuleManager?.checkField('permitNumber'))
+  ).resolves.toBe({
+    key: 'br-uniqueness-permitnumber',
+    valid: false,
+    reason: 'Value must be unique to Database',
+  });
+});
+
+test('scoped uniqueness rule', async () => {
+  const resource = new schema.models.CollectionObject.Resource({
+    id: 221,
+    catalogNumber: '000022002',
+  });
+  expect(
+    resource
+      .fetch()
+      .then((collectionObject) =>
+        collectionObject.businessRuleManager?.checkField('catalogNumber')
+      )
+  ).resolves.toBe({
+    key: 'br-uniqueness-catalognumber',
+    valid: false,
+    reason: 'Value must be unique to Collection',
+  });
 });
