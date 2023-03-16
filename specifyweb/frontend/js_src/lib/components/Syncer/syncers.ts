@@ -5,9 +5,9 @@ import { parseBoolean } from '../../utils/parser/parse';
 import type { RA } from '../../utils/types';
 import { formatDisjunction } from '../Atoms/Internationalization';
 import { parseJavaClassName } from '../DataModel/resource';
-import { getTable, getTableById, tables } from '../DataModel/tables';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
+import { getTable, getTableById, tables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import {
   getLogContext,
@@ -105,7 +105,10 @@ export const syncers = {
     },
     (table) => table?.tableId ?? 0
   ),
-  toBoolean: syncer<string, boolean>(parseBoolean, (value) => value.toString()),
+  toBoolean: syncer<string, boolean>(
+    parseBoolean,
+    (value) => value?.toString() ?? false
+  ),
   toDecimal: syncer<string, number | undefined>(
     f.parseInt,
     (value) => value?.toString() ?? ''
@@ -141,7 +144,7 @@ export const syncers = {
         });
         return children[tagName] ?? children[tagName.toLowerCase()] ?? [];
       },
-      (newChildren) => ({
+      (newChildren = []) => ({
         type: 'SimpleXmlNode',
         tagName: '',
         attributes: {},
@@ -170,7 +173,8 @@ export const syncers = {
           setLogContext(context);
           return result;
         }),
-      (elements) => elements.map(deserializer)
+      // This might be undefined if JSON editor was used, and a typo was made
+      (elements) => elements?.map(deserializer) ?? []
     ),
   maybe: <SYNCER extends Syncer<any, any>>(syncerDefinition: SYNCER) =>
     syncer<
@@ -195,7 +199,7 @@ export const syncers = {
       (object) =>
         ({
           ...object,
-          [key]: syncers.object(spec(object)).serializer(object[key]),
+          [key]: syncers.object(spec(object ?? {})).serializer(object?.[key]),
         } as unknown as NEW_OBJECT),
       (object) =>
         ({
@@ -206,7 +210,7 @@ export const syncers = {
              * (they only differ by object[key])
              */
             .object(spec(object as unknown as OBJECT))
-            .deserializer(object[key]),
+            .deserializer(object?.[key]),
         } as unknown as OBJECT)
     ),
   field: (tableName: keyof Tables | undefined) =>
@@ -244,7 +248,7 @@ export const syncers = {
       (object) =>
         ({
           ...object,
-          [key]: deserializer(object),
+          [key]: deserializer(object ?? {}),
         } as unknown as OBJECT)
     ),
   enum: <ITEM extends string>(items: RA<ITEM>, caseSensitive = false) =>

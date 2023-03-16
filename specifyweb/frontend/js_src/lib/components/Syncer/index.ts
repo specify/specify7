@@ -128,5 +128,5 @@ export const runBuilder = <RAW, SPEC extends BaseSpec<RAW>>(
   shape: SpecToJson<SPEC>
 ): RA<RAW> =>
   Object.entries(spec).map(([key, definition]) =>
-    definition.deserializer(shape[key])
+    definition.deserializer(shape?.[key])
   );
