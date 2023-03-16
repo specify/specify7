@@ -30,7 +30,10 @@ import { WebLinkEditor } from '../WebLinks/Editor';
 import { useCodeMirrorExtensions } from './EditorComponents';
 import type { appResourceSubTypes } from './types';
 
+export type AppResourceEditorType = 'visual' | 'json' | 'xml' | 'generic';
+
 export type AppResourceTabProps = {
+  readonly editorType: AppResourceEditorType;
   readonly resource: SerializedResource<SpAppResource | SpViewSetObj>;
   readonly appResource: SpecifyResource<SpAppResource | SpViewSetObj>;
   readonly directory: SerializedResource<SpAppResourceDir>;
@@ -51,7 +54,9 @@ export function AppResourceTextEditor({
   data,
   showValidationRef,
   onChange: handleChange,
-}: AppResourceTabProps): JSX.Element {
+}: Omit<AppResourceTabProps, 'onChange'> & {
+  readonly onChange: (data: string) => void;
+}): JSX.Element {
   const isDarkMode = useDarkMode();
   const extensions = useCodeMirrorExtensions(resource, appResource);
 
@@ -153,26 +158,44 @@ function UserPreferencesEditor({
 export const visualAppResourceEditors = f.store<
   RR<
     keyof typeof appResourceSubTypes,
-    ((props: AppResourceTabProps) => JSX.Element) | undefined
+    | {
+        readonly visual?: (props: AppResourceTabProps) => JSX.Element;
+        readonly json?: (props: AppResourceTabProps) => JSX.Element;
+        readonly xml?: (props: AppResourceTabProps) => JSX.Element;
+      }
+    | undefined
   >
 >(() => ({
   label: undefined,
   report: undefined,
-  userPreferences: UserPreferencesEditor,
-  defaultUserPreferences: UserPreferencesEditor,
+  userPreferences: {
+    visual: UserPreferencesEditor,
+    json: AppResourceTextEditor,
+  },
+  defaultUserPreferences: {
+    visual: UserPreferencesEditor,
+    json: AppResourceTextEditor,
+  },
   leafletLayers: undefined,
   rssExportFeed: undefined,
   expressSearchConfig: undefined,
-  webLinks: WebLinkEditor,
+  webLinks: {
+    visual: WebLinkEditor,
+    json: WebLinkEditor,
+    xml: AppResourceTextEditor,
+  },
   uiFormatters: undefined,
-  dataObjectFormatters: DataObjectFormatter,
+  dataObjectFormatters: {
+    visual: DataObjectFormatter,
+    json: DataObjectFormatter,
+    xml: AppResourceTextEditor,
+  },
   searchDialogDefinitions: undefined,
   dataEntryTables: undefined,
   interactionsTables: undefined,
   otherXmlResource: undefined,
   otherJsonResource: undefined,
   otherPropertiesResource: undefined,
-  // FIXME: add JSON editor for XML resources 🔥
   // FIXME: add validation for XML and JSON resources 🔥
   otherAppResources: undefined,
 }));

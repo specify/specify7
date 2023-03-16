@@ -138,14 +138,19 @@ export function AppResourceDownload({
 
 const linterKey = `parseError:${'spAppResourceDatas'.toLowerCase()}`;
 
+export function useIndent(): string {
+  const [indentSize] = usePref('appResources', 'behavior', 'indentSize');
+  const [indentWithTab] = usePref('appResources', 'behavior', 'indentWithTab');
+  return indentWithTab ? '\t' : ' '.repeat(indentSize);
+}
+
 export function useCodeMirrorExtensions(
   resource: SerializedResource<SpAppResource | SpViewSetObj>,
   appResource: SpecifyResource<SpAppResource | SpViewSetObj>
 ): RA<Extension> {
   const [lineWrap] = usePref('appResources', 'behavior', 'lineWrap');
   const [indentSize] = usePref('appResources', 'behavior', 'indentSize');
-  const [indentWithTab] = usePref('appResources', 'behavior', 'indentWithTab');
-  const indentCharacter = indentWithTab ? '\t' : ' '.repeat(indentSize);
+  const indentCharacter = useIndent();
 
   const mode = getAppResourceExtension(resource);
   const [extensions, setExtensions] = React.useState<RA<Extension>>([]);

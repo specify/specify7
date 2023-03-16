@@ -15,33 +15,64 @@ import type { BaseSpec, SpecToJson, Syncer } from '../Syncer';
 import { syncers } from '../Syncer/syncers';
 import type { SimpleXmlNode, XmlNode } from '../Syncer/xmlToJson';
 import { toSimpleXmlNode, xmlToJson } from '../Syncer/xmlToJson';
+import { JsonEditorForXml } from './JsonEditor';
 import { formattersRoutes } from './Routes';
 import { formattersSpec } from './spec';
 
 export function DataObjectFormatter(props: AppResourceTabProps): JSX.Element {
   return (
     <XmlEditor
+      context={FormattersContext}
       props={props}
       rootTagName="formatters"
       routes={formattersRoutes}
       spec={formattersSpec()}
-      context={FormattersContext}
     />
   );
 }
 
-export function XmlEditor<SPEC extends BaseSpec<SimpleXmlNode>>({
-  props,
-  rootTagName,
-  routes,
-  spec,
-  context: Context,
-}: {
+export type XmlEditorProps<SPEC extends BaseSpec<SimpleXmlNode>> = {
   readonly props: AppResourceTabProps;
   readonly rootTagName: string;
   readonly routes: WritableArray<RouteObject>;
   readonly spec: SPEC;
-  readonly context: React.Context<XmlEditorContext<SPEC>>;
+  readonly context: React.Context<XmlEditorContext<SPEC> | undefined>;
+};
+
+export function XmlEditor<SPEC extends BaseSpec<SimpleXmlNode>>({
+  context: Context,
+  ...rest
+}: XmlEditorProps<SPEC>): JSX.Element {
+  return rest.props.editorType === 'json' ? (
+    <JsonEditorForXml {...rest} />
+  ) : (
+    <WrappedXmlEditor {...rest}>
+      {(props): JSX.Element => (
+        <Context.Provider value={props}>
+          <RenderRoutes routes={rest.routes} />
+        </Context.Provider>
+      )}
+    </WrappedXmlEditor>
+  );
+}
+
+function RenderRoutes({
+  routes,
+}: {
+  readonly routes: WritableArray<RouteObject>;
+}): JSX.Element {
+  const location = useStableLocation(useLocation());
+  const jsxElement = useRoutes(routes, location);
+  return jsxElement ?? <NotFoundView container={false} />;
+}
+
+export function WrappedXmlEditor<SPEC extends BaseSpec<SimpleXmlNode>>({
+  props,
+  rootTagName,
+  spec,
+  children,
+}: Omit<XmlEditorProps<SPEC>, 'context' | 'routes'> & {
+  readonly children: (props: XmlEditorContext<SPEC>) => JSX.Element;
 }): JSX.Element {
   const xmlNode = React.useMemo(() => {
     const parsed = parseXml(
@@ -51,8 +82,6 @@ export function XmlEditor<SPEC extends BaseSpec<SimpleXmlNode>>({
     );
     return typeof parsed === 'string' ? parsed : xmlToJson(parsed);
   }, [props.data, rootTagName]);
-  const location = useStableLocation(useLocation());
-  const jsxElement = useRoutes(routes, location);
 
   const syncer = React.useMemo(() => syncers.object(spec), [spec]);
   const { serializer } = syncer;
@@ -79,32 +108,29 @@ export function XmlEditor<SPEC extends BaseSpec<SimpleXmlNode>>({
       <pre>{xmlNode}</pre>
     </>
   ) : (
-    <Context.Provider
-      value={{
-        ...props,
-        xmlNode,
-        syncer,
-        parsed,
-      }}
-    >
-      {jsxElement ?? <NotFoundView container={false} />}
-    </Context.Provider>
+    children({
+      ...props,
+      xmlNode,
+      syncer,
+      parsed,
+    })
   );
 }
 
 export type XmlEditorContext<SPEC extends BaseSpec<SimpleXmlNode>> =
-  | (Omit<AppResourceTabProps, 'data'> & {
+  | Omit<AppResourceTabProps, 'data'> & {
       readonly xmlNode: XmlNode;
       readonly syncer: Syncer<SimpleXmlNode, SpecToJson<SPEC>>;
       readonly parsed: GetOrSet<SpecToJson<SPEC>>;
-    })
-  | undefined;
+    };
 
 export function createXmlContext<SPEC extends BaseSpec<SimpleXmlNode>>(
   spec: SPEC
-): React.Context<XmlEditorContext<SPEC>> {
+): React.Context<XmlEditorContext<SPEC> | undefined> {
   void spec;
-  const context = React.createContext<XmlEditorContext<SPEC>>(undefined);
+  const context = React.createContext<XmlEditorContext<SPEC> | undefined>(
+    undefined
+  );
   context.displayName = 'XmlEditorContext';
   return context;
 }

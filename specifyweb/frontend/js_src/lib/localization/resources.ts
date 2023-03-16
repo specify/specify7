@@ -230,6 +230,20 @@ export const resourcesText = createDictionary({
     'fr-fr': 'Éditeur de texte',
     'uk-ua': 'Текстовий редактор',
   },
+  xmlEditor: {
+    'en-us': 'XML Editor',
+    'ru-ru': 'XML-редактор',
+    'es-es': 'Editor XML',
+    'fr-fr': 'Éditeur XML',
+    'uk-ua': 'XML-редактор',
+  },
+  jsonEditor: {
+    'en-us': 'JSON Editor',
+    'ru-ru': 'JSON-редактор',
+    'es-es': 'Editor JSON',
+    'fr-fr': 'Éditeur JSON',
+    'uk-ua': 'JSON-редактор',
+  },
   visualEditor: {
     'en-us': 'Visual Editor',
     'ru-ru': 'Визуальный редактор',
