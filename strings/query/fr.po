@@ -228,53 +228,53 @@ msgstr "Enregistrer sous"
 msgid "anyRank"
 msgstr "(tout grade)"
 
-#: components/QueryBuilder/Field.tsx:518
-#: components/QueryBuilder/Field.tsx:519
+#: components/QueryBuilder/Line.tsx:518
+#: components/QueryBuilder/Line.tsx:519
 #: components/Toolbar/QueryTablesEdit.tsx:187
-#. Used in: Components > Query Builder > Field ⬤ Components > Toolbar > Query Tables Edit
+#. Used in: Components > Query Builder > Line ⬤ Components > Toolbar > Query Tables Edit
 #, fuzzy
 msgid "moveUp"
 msgstr "Déplacer vers le haut"
 
-#: components/QueryBuilder/Field.tsx:525
-#: components/QueryBuilder/Field.tsx:526
+#: components/QueryBuilder/Line.tsx:525
+#: components/QueryBuilder/Line.tsx:526
 #: components/Toolbar/QueryTablesEdit.tsx:193
-#. Used in: Components > Query Builder > Field ⬤ Components > Toolbar > Query Tables Edit
+#. Used in: Components > Query Builder > Line ⬤ Components > Toolbar > Query Tables Edit
 #, fuzzy
 msgid "moveDown"
 msgstr "Descendre"
 
-#: components/QueryBuilder/Field.tsx:493
-#: components/QueryBuilder/Field.tsx:501
-#. Used in: Components > Query Builder > Field
+#: components/QueryBuilder/Line.tsx:493
+#: components/QueryBuilder/Line.tsx:501
+#. Used in: Components > Query Builder > Line
 #, fuzzy
 msgid "sort"
 msgstr "Trier"
 
-#: components/QueryBuilder/Field.tsx:490
-#: components/QueryBuilder/Field.tsx:498
-#. Used in: Components > Query Builder > Field
+#: components/QueryBuilder/Line.tsx:490
+#: components/QueryBuilder/Line.tsx:498
+#. Used in: Components > Query Builder > Line
 #, fuzzy
 msgid "ascendingSort"
 msgstr "Tri croissant"
 
-#: components/QueryBuilder/Field.tsx:492
-#: components/QueryBuilder/Field.tsx:500
-#. Used in: Components > Query Builder > Field
+#: components/QueryBuilder/Line.tsx:492
+#: components/QueryBuilder/Line.tsx:500
+#. Used in: Components > Query Builder > Line
 #, fuzzy
 msgid "descendingSort"
 msgstr "Tri décroissant"
 
-#: components/QueryBuilder/Field.tsx:364
-#: components/QueryBuilder/Field.tsx:368
-#. Used in: Components > Query Builder > Field
+#: components/QueryBuilder/Line.tsx:364
+#: components/QueryBuilder/Line.tsx:368
+#. Used in: Components > Query Builder > Line
 #, fuzzy
 msgid "negate"
 msgstr "Nier"
 
-#: components/QueryBuilder/Field.tsx:471
-#: components/QueryBuilder/Field.tsx:476
-#. Used in: Components > Query Builder > Field
+#: components/QueryBuilder/Line.tsx:471
+#: components/QueryBuilder/Line.tsx:476
+#. Used in: Components > Query Builder > Line
 #, fuzzy
 msgid "showButtonDescription"
 msgstr "Afficher dans les résultats"
@@ -403,10 +403,10 @@ msgstr "et"
 msgid "startsWith"
 msgstr "Commence avec"
 
-#: components/QueryBuilder/Field.tsx:312
-#: components/QueryBuilder/Field.tsx:320
-#: components/QueryBuilder/Field.tsx:347
-#. Used in: Components > Query Builder > Field
+#: components/QueryBuilder/Line.tsx:312
+#: components/QueryBuilder/Line.tsx:320
+#: components/QueryBuilder/Line.tsx:347
+#. Used in: Components > Query Builder > Line
 #, fuzzy
 msgid "or"
 msgstr "ou"

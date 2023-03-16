@@ -369,15 +369,15 @@ msgstr "Завантажено"
 #: components/FormCells/FormTable.tsx:379
 #: components/FormPlugins/CollectionRelOneToMany.tsx:135
 #: components/QueryBuilder/Components.tsx:163
-#: components/QueryBuilder/Field.tsx:241
-#: components/QueryBuilder/Field.tsx:243
-#: components/QueryBuilder/Field.tsx:351
-#: components/QueryBuilder/Field.tsx:354
+#: components/QueryBuilder/Line.tsx:241
+#: components/QueryBuilder/Line.tsx:243
+#: components/QueryBuilder/Line.tsx:351
+#: components/QueryBuilder/Line.tsx:354
 #: components/Security/Policy.tsx:93
 #: components/Security/Policy.tsx:95
 #: components/Security/Role.tsx:182
 #: components/Toolbar/QueryTablesEdit.tsx:227
-#. Used in: Components > Atoms > Data Entry ⬤ Components > Form Cells > Form Table ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Field ⬤ Components > Security > Policy ⬤ Components > Security > Role ⬤ Components > Toolbar > Query Tables Edit
+#. Used in: Components > Atoms > Data Entry ⬤ Components > Form Cells > Form Table ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Line ⬤ Components > Security > Policy ⬤ Components > Security > Role ⬤ Components > Toolbar > Query Tables Edit
 msgid "remove"
 msgstr "Видалити"
 
@@ -682,9 +682,9 @@ msgid "id"
 msgstr "ІД"
 
 #: components/Attachments/index.tsx:169
-#: components/QueryBuilder/Field.tsx:388
-#: components/QueryBuilder/Field.tsx:394
-#. Used in: Components > Attachments > Index ⬤ Components > Query Builder > Field
+#: components/QueryBuilder/Line.tsx:388
+#: components/QueryBuilder/Line.tsx:394
+#. Used in: Components > Attachments > Index ⬤ Components > Query Builder > Line
 msgid "filter"
 msgstr "Фільтр"
 
