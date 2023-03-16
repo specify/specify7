@@ -62,7 +62,11 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     this.resource.on('remove', this.removed, this);
   }
 
-  public checkField(fieldName: keyof SCHEMA['fields']) {
+  public async checkField(
+    fieldName: keyof SCHEMA['fields']
+  ): Promise<BusinessRuleResult | void> {
+    fieldName =
+      typeof fieldName === 'string' ? fieldName.toLowerCase() : fieldName;
     const thisCheck: ResolvablePromise<string> = flippedPromise();
     this.addPromise(thisCheck);
 
@@ -83,15 +87,13 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
         )
       );
 
-    Promise.all(checks)
+    return Promise.all(checks)
       .then((results) => {
         return thisCheck === this.fieldChangePromises[fieldName as string]
           ? this.processCheckFieldResults(fieldName, results)
           : undefined;
       })
-      .then(() => {
-        thisCheck.resolve('finished');
-      });
+      .then(() => thisCheck.resolve('finished'));
   }
 
   private processCheckFieldResults(
