@@ -1,12 +1,14 @@
 import type { State } from 'typesafe-reducer';
 
 import type { IR, R, RA } from '../../utils/types';
+import { setDevelopmentGlobal } from '../../utils/types';
 import { replaceItem } from '../../utils/utils';
-import { LogMessage } from './interceptLogs';
+import type { LogMessage } from './interceptLogs';
 
 let context: R<unknown> = {};
 let contextTimeout: ReturnType<typeof setTimeout> | undefined = undefined;
 export const getLogContext = (): IR<unknown> => context;
+setDevelopmentGlobal('_getLogContext', getLogContext);
 
 export function setLogContext(newContext: IR<unknown>): void {
   context = newContext;
@@ -30,6 +32,7 @@ type PathPart = BasePathPart &
     | State<'Child', { readonly tagName: string }>
     | State<'Children', { readonly tagName: string }>
     | State<'Index', { readonly index: number }>
+    | State<'Content'>
     | State<'Root', { readonly node: unknown }>
   );
 

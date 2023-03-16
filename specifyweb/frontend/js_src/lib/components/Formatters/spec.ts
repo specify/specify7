@@ -80,7 +80,8 @@ const formatterSpec = f.store(() =>
     ),
     definition: pipe(
       syncers.xmlChild('switch'),
-      syncers.default<SimpleXmlNode>(() => createSimpleXmlNode('switch'))
+      syncers.default<SimpleXmlNode>(() => createSimpleXmlNode('switch')),
+      syncers.captureLogContext
     ),
   })
 );

@@ -18,22 +18,15 @@ type Serializer<RAW, PARSED> = (input: RAW) => PARSED;
 
 type Deserializer<RAW, PARSED> = (value: PARSED) => RAW;
 
+/**
+ * This function exists just to improve typing
+ */
 export const syncer = <RAW, PARSED>(
   serializer: Serializer<RAW, PARSED>,
   deserializer: Deserializer<RAW, PARSED>
 ): Syncer<RAW, PARSED> => ({
-  serializer: (raw: RAW): PARSED => {
-    const context = getLogContext();
-    const result = serializer(raw);
-    setLogContext(context);
-    return result;
-  },
-  deserializer: (raw: PARSED): RAW => {
-    const context = getLogContext();
-    const result = deserializer(raw);
-    setLogContext(context);
-    return result;
-  },
+  serializer,
+  deserializer,
 });
 
 /**
@@ -117,7 +110,12 @@ export const runParser = <RAW, SPEC extends BaseSpec<RAW>>(
   if (!Array.isArray(path))
     pushContext({ type: 'Root', node: [raw], extras: { spec } });
   const result = Object.fromEntries(
-    Object.entries(spec).map(([key, { serializer }]) => [key, serializer(raw)])
+    Object.entries(spec).map(([key, { serializer }]) => {
+      const context = getLogContext();
+      const value = serializer(raw);
+      setLogContext(context);
+      return [key, value] as const;
+    })
   );
   setLogContext(logContext);
   return result;

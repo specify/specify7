@@ -3,6 +3,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { f } from '../../utils/functools';
 import { parseBoolean } from '../../utils/parser/parse';
 import type { RA } from '../../utils/types';
+import { IR } from '../../utils/types';
 import { formatDisjunction } from '../Atoms/Internationalization';
 import { parseJavaClassName } from '../DataModel/resource';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
@@ -19,6 +20,11 @@ import { runBuilder, runParser, syncer } from './index';
 import { mergeSimpleXmlNodes } from './mergeSimpleXmlNodes';
 import type { SimpleXmlNode } from './xmlToJson';
 import { getAttribute } from './xmlUtils';
+
+type NodeWithContext = {
+  readonly node: SimpleXmlNode;
+  readonly logContext: IR<unknown>;
+};
 
 export const syncers = {
   xmlAttribute: <MODE extends 'empty' | 'required' | 'skip'>(
@@ -55,7 +61,10 @@ export const syncers = {
       }
     ),
   xmlContent: syncer<SimpleXmlNode, string | undefined>(
-    ({ text }) => text,
+    ({ text }) => {
+      pushContext({ type: 'Content' });
+      return text;
+    },
     (text) => ({
       type: 'SimpleXmlNode',
       tagName: '',
@@ -116,13 +125,14 @@ export const syncers = {
   xmlChild: (tagName: string, mode: 'optional' | 'required' = 'required') =>
     syncer<SimpleXmlNode, SimpleXmlNode | undefined>(
       ({ children }) => {
-        pushContext({ type: 'Child', tagName });
-
         const currentChildren =
           children[tagName] ?? children[tagName.toLowerCase()] ?? [];
         const child = currentChildren[0];
         if (child === undefined && mode === 'required')
           console.error(`Unable to find <${tagName} /> child`);
+
+        pushContext({ type: 'Child', tagName });
+
         if (currentChildren.length > 1)
           console.warn(`Expected to find at most one <${tagName} /> child`);
         return child;
@@ -184,9 +194,16 @@ export const syncers = {
       (element) => f.maybe(element, syncerDefinition.serializer),
       (element) => f.maybe(element, syncerDefinition.deserializer)
     ),
+  captureLogContext: syncer<SimpleXmlNode, NodeWithContext>(
+    (node) => ({
+      node,
+      logContext: getLogContext(),
+    }),
+    ({ node }) => node
+  ),
   dependent: <
     KEY extends string,
-    OBJECT extends { readonly [key in KEY]: SimpleXmlNode },
+    OBJECT extends { readonly [key in KEY]: NodeWithContext },
     SUB_SPEC extends BaseSpec<SimpleXmlNode>,
     NEW_OBJECT extends Omit<OBJECT, KEY> & {
       readonly [key in KEY]: SpecToJson<SUB_SPEC>;
@@ -196,11 +213,14 @@ export const syncers = {
     spec: (dependent: OBJECT) => SUB_SPEC
   ) =>
     syncer<OBJECT, NEW_OBJECT>(
-      (object) =>
-        ({
+      (object) => {
+        const item = object?.[key] as NodeWithContext;
+        if (typeof item === 'object') setLogContext(item.logContext);
+        return {
           ...object,
-          [key]: syncers.object(spec(object ?? {})).serializer(object?.[key]),
-        } as unknown as NEW_OBJECT),
+          [key]: syncers.object(spec(object ?? {})).serializer(item?.node),
+        } as unknown as NEW_OBJECT;
+      },
       (object) =>
         ({
           ...object,
