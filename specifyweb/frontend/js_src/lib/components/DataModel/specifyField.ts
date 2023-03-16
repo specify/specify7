@@ -10,11 +10,11 @@ import { getUiFormatters, type UiFormatter } from '../FieldFormatters';
 import { isTreeTable } from '../InitialContext/treeRanks';
 import { getFrontEndPickLists } from '../PickLists/definitions';
 import type { SpecifyResource } from './legacyTypes';
-import type { SchemaLocalization } from './tables';
-import { strictGetTable } from './tables';
 import { schema, unescape } from './schema';
 import { getFieldOverwrite, getGlobalFieldOverwrite } from './schemaOverrides';
 import type { SpecifyTable } from './specifyTable';
+import type { SchemaLocalization } from './tables';
+import { getTable, strictGetTable } from './tables';
 import type { PickList, Tables } from './types';
 
 export type JavaType =
@@ -69,7 +69,7 @@ export type RelationshipDefinition = {
   readonly readOnly?: boolean;
 };
 
-abstract class FieldBase {
+export abstract class FieldBase {
   public readonly table: SpecifyTable;
 
   public readonly isRelationship: boolean = false;
@@ -223,8 +223,23 @@ abstract class FieldBase {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   public toJSON(): string {
     return `[${this.isRelationship ? 'relationship' : 'literalField'} ${
-      this.name
-    }]`;
+      this.table.name
+    }.${this.name}]`;
+  }
+
+  public static fromJson(
+    value: string
+  ): LiteralField | Relationship | undefined {
+    if (!value.endsWith(']')) return undefined;
+    const name = value.startsWith('[literalField')
+      ? 'literalField'
+      : value.startsWith('[relationship')
+      ? 'relationship'
+      : undefined;
+    if (name === undefined) return undefined;
+    const parts = value.replace(`[${name} `, '').replace(']', '').split('.');
+    if (parts.length !== 2) return undefined;
+    return getTable(parts[0])?.getField(parts[1]);
   }
 }
 

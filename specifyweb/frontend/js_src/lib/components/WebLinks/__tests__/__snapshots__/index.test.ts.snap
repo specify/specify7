@@ -12,7 +12,7 @@ exports[`weblinks are fetched and parsed correctly 1`] = `
       },
       {
         "field": [
-          "[literalField accessionNumber]",
+          "[literalField Accession.accessionNumber]",
         ],
         "type": "Field",
       },
@@ -103,7 +103,7 @@ exports[`weblinks are fetched and parsed correctly 1`] = `
       },
       {
         "field": [
-          "[literalField email]",
+          "[literalField Agent.email]",
         ],
         "type": "Field",
       },

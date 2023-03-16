@@ -4,6 +4,7 @@ import { useErrorContext } from '../../hooks/useErrorContext';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { formsText } from '../../localization/forms';
 import { localityText } from '../../localization/locality';
+import { getAppResourceUrl } from '../../utils/ajax/helpers';
 import { defined } from '../../utils/types';
 import { getUniqueName } from '../../utils/uniquifyName';
 import { Button } from '../Atoms/Button';
@@ -29,6 +30,7 @@ import { SaveButton } from '../Forms/Save';
 import { AppTitle } from '../Molecules/AppTitle';
 import { hasToolPermission } from '../Permissions/helpers';
 import { isOverlay, OverlayContext } from '../Router/Router';
+import { clearUrlCache } from '../RouterCommands/CacheBuster';
 import { isXmlSubType } from './Create';
 import {
   AppResourceDownload,
@@ -39,8 +41,6 @@ import {
 import { getResourceType } from './filtersHelpers';
 import { useAppResourceData } from './hooks';
 import { AppResourcesTabs } from './Tabs';
-import { clearUrlCache } from '../RouterCommands/CacheBuster';
-import { getAppResourceUrl } from '../../utils/ajax/helpers';
 
 export function AppResourceEditor({
   resource,
@@ -103,10 +103,15 @@ export function AppResourceEditor({
   const syncData = React.useCallback(() => {
     const getData = lastDataRef.current;
     if (typeof getData === 'function')
-      setResourceData((resourceData) => ({
-        ...defined(resourceData, 'App Resource Data is not defined'),
-        data: getData(),
-      }));
+      setResourceData((resourceData) => {
+        const data = getData();
+        return data === undefined
+          ? resourceData
+          : {
+              ...defined(resourceData, 'App Resource Data is not defined'),
+              data,
+            };
+      });
   }, [setResourceData]);
   const handleChangeFullScreen = React.useCallback(
     (value: boolean) => {
@@ -161,7 +166,7 @@ export function AppResourceEditor({
   );
 
   const [lastData, setLastData] = useTriggerState<
-    string | (() => string | null) | null
+    string | (() => string | null | undefined) | null
   >(resourceData?.data ?? null);
   const lastDataRef = React.useRef(lastData);
   lastDataRef.current = lastData;
@@ -284,7 +289,7 @@ export function AppResourceEditor({
                           : lastDataRef.current;
                       const appResourceData = deserializeResource({
                         ...resourceData,
-                        data,
+                        data: data === undefined ? resourceData.data : data,
                         spAppResource:
                           toTable(appResource, 'SpAppResource')?.get(
                             'resource_uri'

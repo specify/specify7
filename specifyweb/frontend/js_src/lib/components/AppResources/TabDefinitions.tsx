@@ -45,7 +45,9 @@ export type AppResourceTabProps = {
    * internal structure that is expensive to convert to string, it won't be
    * converted to string until it is necessary.
    */
-  readonly onChange: (data: string | (() => string | null) | null) => void;
+  readonly onChange: (
+    data: string | (() => string | null | undefined) | null
+  ) => void;
 };
 
 export function AppResourceTextEditor({

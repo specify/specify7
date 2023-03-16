@@ -8,6 +8,8 @@ import type { SimpleXmlNode } from '../Syncer/xmlToJson';
 import { updateXml } from '../Syncer/xmlToJson';
 import type { XmlEditorContext, XmlEditorProps } from './index';
 import { WrappedXmlEditor } from './index';
+import { SpecifyTable } from '../DataModel/specifyTable';
+import { FieldBase } from '../DataModel/specifyField';
 
 /**
  * Use the syncer library for xml<-->json synchronization to
@@ -40,12 +42,19 @@ function JsonEditor<SPEC extends BaseSpec<SimpleXmlNode>>({
 
   function handleChanged(data: string): void {
     setData(data);
-    try {
-      const parsed = JSON.parse(data);
-      handleChange(() => updateXml(xmlNode, deserializer(parsed)));
-    } catch (error) {
-      console.error(error);
-    }
+    handleChange(() => {
+      try {
+        const parsed = JSON.parse(data, (_key, value) =>
+          typeof value === 'string'
+            ? SpecifyTable.fromJson(value) ?? FieldBase.fromJson(value) ?? value
+            : value
+        );
+        return updateXml(xmlNode, deserializer(parsed));
+      } catch (error) {
+        console.error(error);
+        return undefined;
+      }
+    });
   }
 
   const resource = React.useMemo(

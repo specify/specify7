@@ -2,6 +2,7 @@ import { requireContext } from '../../../tests/helpers';
 import { getUiFormatters } from '../../FieldFormatters';
 import { getField } from '../helpers';
 import { schema } from '../schema';
+import { SpecifyTable } from '../specifyTable';
 import { strictGetTable, tables } from '../tables';
 
 requireContext();
@@ -240,12 +241,35 @@ describe('isTemporal', () => {
 describe('toJSON', () => {
   test('field', () =>
     expect(tables.CollectionObject.getField('catalogNumber')?.toJSON()).toBe(
-      '[literalField catalogNumber]'
+      '[literalField CollectionObject.catalogNumber]'
     ));
   test('relationship', () =>
     expect(
       tables.CollectionObject.getField('accession.division')?.toJSON()
-    ).toBe('[relationship division]'));
+    ).toBe('[relationship CollectionObject.division]'));
+});
+
+describe('fromJson', () => {
+  test('CollectionObject.catalogNumber', () =>
+    expect(
+      SpecifyTable.fromJson('[literalField CollectionObject.catalogNumber]')
+    ).toBe(getField(tables.CollectionObject, 'catalogNumber')));
+  test('Accession.createdByAgent', () =>
+    expect(
+      SpecifyTable.fromJson('[relationship Accession.createdByAgent]')
+    ).toBe(getField(tables.Accession, 'createdByAgent')));
+  test('Table name typo', () =>
+    expect(
+      SpecifyTable.fromJson('[literalField Accessions.createdByAgent]')
+    ).toBeUndefined());
+  test('Invalid type', () =>
+    expect(SpecifyTable.fromJson('[table Accession.text1]')).toBeUndefined());
+  test('Incorrect formatting', () =>
+    expect(
+      SpecifyTable.fromJson('table CollectionObject.catalogNumber')
+    ).toBeUndefined());
+  test('Empty container', () =>
+    expect(SpecifyTable.fromJson('[]')).toBeUndefined());
 });
 
 describe('Relationship', () => {

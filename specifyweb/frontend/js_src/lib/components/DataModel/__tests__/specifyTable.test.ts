@@ -3,234 +3,24 @@ import { attachmentView } from '../../FormParse/webOnlyViews';
 import { ResourceBase } from '../resourceApi';
 import { LiteralField } from '../specifyField';
 import { tables } from '../tables';
+import { SpecifyTable } from '../specifyTable';
 
 requireContext();
 
 test('literal fields are loaded', () =>
-  expect(tables.CollectionObject.literalFields).toMatchInlineSnapshot(`
-    [
-      "[literalField actualTotalCountAmt]",
-      "[literalField availability]",
-      "[literalField catalogNumber]",
-      "[literalField catalogedDate]",
-      "[literalField catalogedDatePrecision]",
-      "[literalField catalogedDateVerbatim]",
-      "[literalField collectionMemberId]",
-      "[literalField countAmt]",
-      "[literalField reservedText]",
-      "[literalField timestampModified]",
-      "[literalField date1]",
-      "[literalField date1Precision]",
-      "[literalField deaccessioned]",
-      "[literalField embargoReason]",
-      "[literalField embargoReleaseDate]",
-      "[literalField embargoReleaseDatePrecision]",
-      "[literalField embargoStartDate]",
-      "[literalField embargoStartDatePrecision]",
-      "[literalField guid]",
-      "[literalField integer1]",
-      "[literalField integer2]",
-      "[literalField text2]",
-      "[literalField inventoryDate]",
-      "[literalField inventoryDatePrecision]",
-      "[literalField modifier]",
-      "[literalField name]",
-      "[literalField notifications]",
-      "[literalField numberOfDuplicates]",
-      "[literalField number1]",
-      "[literalField number2]",
-      "[literalField objectCondition]",
-      "[literalField ocr]",
-      "[literalField text1]",
-      "[literalField altCatalogNumber]",
-      "[literalField projectNumber]",
-      "[literalField remarks]",
-      "[literalField reservedInteger3]",
-      "[literalField reservedInteger4]",
-      "[literalField reservedText2]",
-      "[literalField reservedText3]",
-      "[literalField restrictions]",
-      "[literalField sgrStatus]",
-      "[literalField description]",
-      "[literalField text3]",
-      "[literalField text4]",
-      "[literalField text5]",
-      "[literalField text6]",
-      "[literalField text7]",
-      "[literalField text8]",
-      "[literalField timestampCreated]",
-      "[literalField totalCountAmt]",
-      "[literalField totalValue]",
-      "[literalField uniqueIdentifier]",
-      "[literalField version]",
-      "[literalField visibility]",
-      "[literalField fieldNumber]",
-      "[literalField yesNo1]",
-      "[literalField yesNo2]",
-      "[literalField yesNo3]",
-      "[literalField yesNo4]",
-      "[literalField yesNo5]",
-      "[literalField yesNo6]",
-    ]
-  `));
+  expect(tables.CollectionObject.literalFields).toMatchSnapshot());
 
 test('relationships are loaded', () =>
-  expect(tables.CollectionObject.relationships).toMatchInlineSnapshot(`
-    [
-      "[relationship accession]",
-      "[relationship agent1]",
-      "[relationship appraisal]",
-      "[relationship cataloger]",
-      "[relationship collectionObjectAttribute]",
-      "[relationship collection]",
-      "[relationship collectionObjectAttachments]",
-      "[relationship collectionObjectAttrs]",
-      "[relationship collectionObjectCitations]",
-      "[relationship collectionObjectProperties]",
-      "[relationship conservDescriptions]",
-      "[relationship container]",
-      "[relationship containerOwner]",
-      "[relationship createdByAgent]",
-      "[relationship currentDetermination]",
-      "[relationship determinations]",
-      "[relationship dnaSequences]",
-      "[relationship modifiedByAgent]",
-      "[relationship embargoAuthority]",
-      "[relationship exsiccataItems]",
-      "[relationship collectingEvent]",
-      "[relationship fieldNotebookPage]",
-      "[relationship inventorizedBy]",
-      "[relationship leftSideRels]",
-      "[relationship otherIdentifiers]",
-      "[relationship paleoContext]",
-      "[relationship preparations]",
-      "[relationship projects]",
-      "[relationship rightSideRels]",
-      "[relationship treatmentEvents]",
-      "[relationship visibilitySetBy]",
-      "[relationship voucherRelationships]",
-    ]
-  `));
+  expect(tables.CollectionObject.relationships).toMatchSnapshot());
 
 test('fields are loaded', () =>
-  expect(tables.CollectionObject.fields).toMatchInlineSnapshot(`
-    [
-      "[literalField actualTotalCountAmt]",
-      "[literalField availability]",
-      "[literalField catalogNumber]",
-      "[literalField catalogedDate]",
-      "[literalField catalogedDatePrecision]",
-      "[literalField catalogedDateVerbatim]",
-      "[literalField collectionMemberId]",
-      "[literalField countAmt]",
-      "[literalField reservedText]",
-      "[literalField timestampModified]",
-      "[literalField date1]",
-      "[literalField date1Precision]",
-      "[literalField deaccessioned]",
-      "[literalField embargoReason]",
-      "[literalField embargoReleaseDate]",
-      "[literalField embargoReleaseDatePrecision]",
-      "[literalField embargoStartDate]",
-      "[literalField embargoStartDatePrecision]",
-      "[literalField guid]",
-      "[literalField integer1]",
-      "[literalField integer2]",
-      "[literalField text2]",
-      "[literalField inventoryDate]",
-      "[literalField inventoryDatePrecision]",
-      "[literalField modifier]",
-      "[literalField name]",
-      "[literalField notifications]",
-      "[literalField numberOfDuplicates]",
-      "[literalField number1]",
-      "[literalField number2]",
-      "[literalField objectCondition]",
-      "[literalField ocr]",
-      "[literalField text1]",
-      "[literalField altCatalogNumber]",
-      "[literalField projectNumber]",
-      "[literalField remarks]",
-      "[literalField reservedInteger3]",
-      "[literalField reservedInteger4]",
-      "[literalField reservedText2]",
-      "[literalField reservedText3]",
-      "[literalField restrictions]",
-      "[literalField sgrStatus]",
-      "[literalField description]",
-      "[literalField text3]",
-      "[literalField text4]",
-      "[literalField text5]",
-      "[literalField text6]",
-      "[literalField text7]",
-      "[literalField text8]",
-      "[literalField timestampCreated]",
-      "[literalField totalCountAmt]",
-      "[literalField totalValue]",
-      "[literalField uniqueIdentifier]",
-      "[literalField version]",
-      "[literalField visibility]",
-      "[literalField fieldNumber]",
-      "[literalField yesNo1]",
-      "[literalField yesNo2]",
-      "[literalField yesNo3]",
-      "[literalField yesNo4]",
-      "[literalField yesNo5]",
-      "[literalField yesNo6]",
-      "[relationship accession]",
-      "[relationship agent1]",
-      "[relationship appraisal]",
-      "[relationship cataloger]",
-      "[relationship collectionObjectAttribute]",
-      "[relationship collection]",
-      "[relationship collectionObjectAttachments]",
-      "[relationship collectionObjectAttrs]",
-      "[relationship collectionObjectCitations]",
-      "[relationship collectionObjectProperties]",
-      "[relationship conservDescriptions]",
-      "[relationship container]",
-      "[relationship containerOwner]",
-      "[relationship createdByAgent]",
-      "[relationship currentDetermination]",
-      "[relationship determinations]",
-      "[relationship dnaSequences]",
-      "[relationship modifiedByAgent]",
-      "[relationship embargoAuthority]",
-      "[relationship exsiccataItems]",
-      "[relationship collectingEvent]",
-      "[relationship fieldNotebookPage]",
-      "[relationship inventorizedBy]",
-      "[relationship leftSideRels]",
-      "[relationship otherIdentifiers]",
-      "[relationship paleoContext]",
-      "[relationship preparations]",
-      "[relationship projects]",
-      "[relationship rightSideRels]",
-      "[relationship treatmentEvents]",
-      "[relationship visibilitySetBy]",
-      "[relationship voucherRelationships]",
-    ]
-  `));
+  expect(tables.CollectionObject.fields).toMatchSnapshot());
 
 test('localization is loaded', () =>
   expect(tables.CollectionObject.localization).toMatchSnapshot());
 
 test('localization is generated on the fly when empty', () =>
-  expect(tables.DNASequencingRunAttachment.localization).toMatchInlineSnapshot(`
-    {
-      "items": {
-        "dnasequencingrunattachmentid": {
-          "desc": null,
-          "format": null,
-          "ishidden": true,
-          "isrequired": false,
-          "name": "ID",
-          "picklistname": null,
-          "weblinkname": null,
-        },
-      },
-    }
-  `));
+  expect(tables.DNASequencingRunAttachment.localization).toMatchSnapshot());
 
 test('label is extracted from schema localization', () =>
   expect(tables.CollectionObject.label).toMatchInlineSnapshot(
@@ -362,23 +152,26 @@ const serialized = (serializable: unknown): unknown =>
 describe('getFields', () => {
   test('get direct literal field', () =>
     expect(serialized(tables.CollectionObject.getFields('date1'))).toEqual([
-      '[literalField date1]',
+      '[literalField CollectionObject.date1]',
     ]));
   test('get direct relationship', () =>
     expect(serialized(tables.CollectionObject.getFields('accession'))).toEqual([
-      '[relationship accession]',
+      '[relationship CollectionObject.accession]',
     ]));
   test('get indirect field', () =>
     expect(
       serialized(tables.CollectionObject.getFields('accession.remarks'))
-    ).toEqual(['[relationship accession]', '[literalField remarks]']));
+    ).toEqual([
+      '[relationship CollectionObject.accession]',
+      '[literalField Accession.remarks]',
+    ]));
   test('get id field', () =>
     expect(
       serialized(tables.CollectionObject.getFields('collectionObjectId'))
-    ).toEqual(['[literalField collectionObjectId]']));
+    ).toEqual(['[literalField CollectionObject.collectionObjectId]']));
   test('get id field using alias', () =>
     expect(serialized(tables.CollectionObject.getFields('id'))).toEqual([
-      '[literalField collectionObjectId]',
+      '[literalField CollectionObject.collectionObjectId]',
     ]));
   test('get unknown field', () =>
     expect(tables.CollectionObject.getFields('_a')).toBeUndefined());
@@ -390,20 +183,20 @@ describe('getFields', () => {
     ).toThrow('Invalid field name'));
   test('can get a field using schema alias', () =>
     expect(serialized(tables.Geography.getFields('acceptedParent'))).toEqual([
-      '[relationship acceptedGeography]',
+      '[relationship Geography.acceptedGeography]',
     ]));
   test('can get a field using schemaExtras alias', () =>
     expect(serialized(tables.PickList.getFields('fieldsCBX'))).toEqual([
-      '[literalField fieldName]',
+      '[literalField PickList.fieldName]',
     ]));
   test('can get a field using global schemaExtras alias', () =>
     expect(serialized(tables.Accession.getFields('divisionCBX'))).toEqual([
-      '[relationship division]',
+      '[relationship Accession.division]',
     ]));
   test('can get a field even if mistakenly provided table name', () =>
     expect(
       serialized(tables.Locality.getFields('locality.localityName'))
-    ).toEqual(['[literalField localityName]']));
+    ).toEqual(['[literalField Locality.localityName]']));
   test('throws when trying to use dot notation on a literal field', () =>
     expect(() => tables.CollectionObject.getFields('date1.date1')).toThrow(
       /is not a relationship/u
@@ -539,3 +332,20 @@ describe('getScopingPath', () => {
 
 test('toJSON', () =>
   expect(tables.CollectionObject.toJSON()).toBe('[table CollectionObject]'));
+
+describe('fromJson', () => {
+  test('CollectionObject', () =>
+    expect(SpecifyTable.fromJson('[table CollectionObject]')).toBe(
+      tables.CollectionObject
+    ));
+  test('Accession', () =>
+    expect(SpecifyTable.fromJson('[table Accession]')).toBe(tables.Accession));
+  test('Table name typo', () =>
+    expect(SpecifyTable.fromJson('[table Accessions]')).toBeUndefined());
+  test('Invalid type', () =>
+    expect(SpecifyTable.fromJson('[relationship Accessions]')).toBeUndefined());
+  test('Incorrect formatting', () =>
+    expect(SpecifyTable.fromJson('table Accessions')).toBeUndefined());
+  test('Empty container', () =>
+    expect(SpecifyTable.fromJson('[]')).toBeUndefined());
+});

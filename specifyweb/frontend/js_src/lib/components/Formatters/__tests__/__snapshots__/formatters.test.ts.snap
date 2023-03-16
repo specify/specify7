@@ -21,7 +21,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       "name": "AccessionAttachment",
       "separator": "; ",
       "sortField": [
-        "[literalField ordinal]",
+        "[literalField AccessionAttachment.ordinal]",
       ],
       "suffix": "",
       "table": "[table AccessionAttachment]",
@@ -56,7 +56,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       "name": "AgentAttachment",
       "separator": "; ",
       "sortField": [
-        "[literalField ordinal]",
+        "[literalField AgentAttachment.ordinal]",
       ],
       "suffix": "",
       "table": "[table AgentAttachment]",
@@ -69,7 +69,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       "name": "Author",
       "separator": "; ",
       "sortField": [
-        "[literalField orderNumber]",
+        "[literalField Author.orderNumber]",
       ],
       "suffix": "",
       "table": "[table Author]",
@@ -82,7 +82,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       "name": "BorrowAttachment",
       "separator": "; ",
       "sortField": [
-        "[literalField ordinal]",
+        "[literalField BorrowAttachment.ordinal]",
       ],
       "suffix": "",
       "table": "[table BorrowAttachment]",
@@ -106,7 +106,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       "name": "CollectingEventAttachment",
       "separator": "; ",
       "sortField": [
-        "[literalField ordinal]",
+        "[literalField CollectingEventAttachment.ordinal]",
       ],
       "suffix": "",
       "table": "[table CollectingEventAttachment]",
@@ -130,7 +130,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       "name": "CollectionObjectAttachment",
       "separator": " | ",
       "sortField": [
-        "[literalField ordinal]",
+        "[literalField CollectionObjectAttachment.ordinal]",
       ],
       "suffix": "",
       "table": "[table CollectionObjectAttachment]",
@@ -143,7 +143,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       "name": "Collector",
       "separator": "; ",
       "sortField": [
-        "[literalField orderNumber]",
+        "[literalField Collector.orderNumber]",
       ],
       "suffix": "",
       "table": "[table Collector]",
@@ -156,7 +156,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       "name": "ConservDescriptionAttachment",
       "separator": "; ",
       "sortField": [
-        "[literalField ordinal]",
+        "[literalField ConservDescriptionAttachment.ordinal]",
       ],
       "suffix": "",
       "table": "[table ConservDescriptionAttachment]",
@@ -169,7 +169,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       "name": "ConservEventAttachment",
       "separator": "; ",
       "sortField": [
-        "[literalField ordinal]",
+        "[literalField ConservEventAttachment.ordinal]",
       ],
       "suffix": "",
       "table": "[table ConservEventAttachment]",
@@ -182,7 +182,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       "name": "DNASequenceAttachment",
       "separator": "; ",
       "sortField": [
-        "[literalField ordinal]",
+        "[literalField DNASequenceAttachment.ordinal]",
       ],
       "suffix": "",
       "table": "[table DNASequenceAttachment]",
@@ -195,7 +195,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       "name": "DNASequencingRunAttachment",
       "separator": "; ",
       "sortField": [
-        "[literalField ordinal]",
+        "[literalField DNASequencingRunAttachment.ordinal]",
       ],
       "suffix": "",
       "table": "[table DNASequencingRunAttachment]",
@@ -230,7 +230,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       "name": "FieldNotebookAttachment",
       "separator": "; ",
       "sortField": [
-        "[literalField ordinal]",
+        "[literalField FieldNotebookAttachment.ordinal]",
       ],
       "suffix": "",
       "table": "[table FieldNotebookAttachment]",
@@ -243,7 +243,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       "name": "FieldNotebookPageAttachment",
       "separator": "; ",
       "sortField": [
-        "[literalField ordinal]",
+        "[literalField FieldNotebookPageAttachment.ordinal]",
       ],
       "suffix": "",
       "table": "[table FieldNotebookPageAttachment]",
@@ -256,7 +256,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       "name": "FieldNotebookPageSetAttachment",
       "separator": "; ",
       "sortField": [
-        "[literalField ordinal]",
+        "[literalField FieldNotebookPageSetAttachment.ordinal]",
       ],
       "suffix": "",
       "table": "[table FieldNotebookPageSetAttachment]",
@@ -269,7 +269,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       "name": "FundingAgent",
       "separator": "; ",
       "sortField": [
-        "[literalField orderNumber]",
+        "[literalField FundingAgent.orderNumber]",
       ],
       "suffix": "",
       "table": "[table FundingAgent]",
@@ -304,7 +304,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       "name": "LoanAttachment",
       "separator": "; ",
       "sortField": [
-        "[literalField ordinal]",
+        "[literalField LoanAttachment.ordinal]",
       ],
       "suffix": "",
       "table": "[table LoanAttachment]",
@@ -339,7 +339,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       "name": "LocalityAttachment",
       "separator": "; ",
       "sortField": [
-        "[literalField ordinal]",
+        "[literalField LocalityAttachment.ordinal]",
       ],
       "suffix": "",
       "table": "[table LocalityAttachment]",
@@ -352,7 +352,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       "name": "PermitAttachment",
       "separator": "; ",
       "sortField": [
-        "[literalField ordinal]",
+        "[literalField PermitAttachment.ordinal]",
       ],
       "suffix": "",
       "table": "[table PermitAttachment]",
@@ -376,7 +376,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       "name": "PreparationAttachment",
       "separator": "; ",
       "sortField": [
-        "[literalField ordinal]",
+        "[literalField PreparationAttachment.ordinal]",
       ],
       "suffix": "",
       "table": "[table PreparationAttachment]",
@@ -389,7 +389,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       "name": "ReferenceWorkAttachment",
       "separator": "; ",
       "sortField": [
-        "[literalField ordinal]",
+        "[literalField ReferenceWorkAttachment.ordinal]",
       ],
       "suffix": "",
       "table": "[table ReferenceWorkAttachment]",
@@ -402,7 +402,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       "name": "RepositoryAgreementAttachment",
       "separator": "; ",
       "sortField": [
-        "[literalField ordinal]",
+        "[literalField RepositoryAgreementAttachment.ordinal]",
       ],
       "suffix": "",
       "table": "[table RepositoryAgreementAttachment]",
@@ -415,7 +415,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       "name": "TaxonAttachment",
       "separator": "; ",
       "sortField": [
-        "[literalField ordinal]",
+        "[literalField TaxonAttachment.ordinal]",
       ],
       "suffix": "",
       "table": "[table TaxonAttachment]",
@@ -428,7 +428,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       "name": "Voucher Relationship",
       "separator": ";",
       "sortField": [
-        "[literalField institutionCode]",
+        "[literalField VoucherRelationship.institutionCode]",
       ],
       "suffix": "",
       "table": "[table VoucherRelationship]",
@@ -446,7 +446,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField accessionNumber]",
+                  "[literalField Accession.accessionNumber]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -473,7 +473,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[relationship agent]",
+                  "[relationship AccessionAgent.agent]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": "Agent",
@@ -482,7 +482,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField role]",
+                  "[literalField AccessionAgent.role]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -509,8 +509,8 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[relationship accession]",
-                  "[literalField accessionNumber]",
+                  "[relationship AccessionAuthorization.accession]",
+                  "[literalField Accession.accessionNumber]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -537,7 +537,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField address]",
+                  "[literalField Address.address]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -546,7 +546,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField address2]",
+                  "[literalField Address.address2]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -555,7 +555,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField city]",
+                  "[literalField Address.city]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -564,7 +564,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField state]",
+                  "[literalField Address.state]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -573,7 +573,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField postalCode]",
+                  "[literalField Address.postalCode]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -593,7 +593,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     {
       "definition": {
         "conditionField": [
-          "[literalField agentType]",
+          "[literalField Agent.agentType]",
         ],
         "external": undefined,
         "fields": [
@@ -602,7 +602,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField lastName]",
+                  "[literalField Agent.lastName]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -616,7 +616,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField lastName]",
+                  "[literalField Agent.lastName]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -625,7 +625,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField firstName]",
+                  "[literalField Agent.firstName]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -634,7 +634,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField middleInitial]",
+                  "[literalField Agent.middleInitial]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -648,7 +648,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField lastName]",
+                  "[literalField Agent.lastName]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -662,7 +662,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField lastName]",
+                  "[literalField Agent.lastName]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -689,7 +689,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField attachmentLocation]",
+                  "[literalField Attachment.attachmentLocation]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -716,7 +716,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[relationship agent]",
+                  "[relationship Author.agent]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": "Agent",
@@ -743,7 +743,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField schemeName]",
+                  "[literalField AutoNumberingScheme.schemeName]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -770,7 +770,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField receivedDate]",
+                  "[literalField Borrow.receivedDate]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -797,8 +797,8 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[relationship attachment]",
-                  "[literalField attachmentLocation]",
+                  "[relationship CollectionObjectAttachment.attachment]",
+                  "[literalField Attachment.attachmentLocation]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -825,8 +825,8 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[relationship referenceWork]",
-                  "[literalField url]",
+                  "[relationship CollectionObjectCitation.referenceWork]",
+                  "[literalField ReferenceWork.url]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -853,7 +853,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField stationFieldNumber]",
+                  "[literalField CollectingEvent.stationFieldNumber]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -862,7 +862,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField startDate]",
+                  "[literalField CollectingEvent.startDate]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -871,9 +871,9 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[relationship locality]",
-                  "[relationship geography]",
-                  "[literalField fullName]",
+                  "[relationship CollectingEvent.locality]",
+                  "[relationship Locality.geography]",
+                  "[literalField Geography.fullName]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -882,8 +882,8 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[relationship locality]",
-                  "[literalField localityName]",
+                  "[relationship CollectingEvent.locality]",
+                  "[literalField Locality.localityName]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -892,8 +892,8 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[relationship locality]",
-                  "[literalField latitude1]",
+                  "[relationship CollectingEvent.locality]",
+                  "[literalField Locality.latitude1]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -902,8 +902,8 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[relationship locality]",
-                  "[literalField longitude1]",
+                  "[relationship CollectingEvent.locality]",
+                  "[literalField Locality.longitude1]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -927,25 +927,21 @@ exports[`formatters are fetched and parsed correctly 1`] = `
           "attributes": {
             "class": "edu.ku.brc.specify.ui.CollectingEventDataObjFmt",
           },
-          "content": {
-            "children": {
-              "param": [
-                {
-                  "attributes": {
-                    "name": "format",
-                  },
-                  "content": {
-                    "string": "FN; DT; LC; LA, LO; CO, ST, CT",
-                    "type": "Text",
-                  },
-                  "tagName": "param",
-                  "type": "SimpleXmlNode",
+          "children": {
+            "param": [
+              {
+                "attributes": {
+                  "name": "format",
                 },
-              ],
-            },
-            "type": "Children",
+                "children": {},
+                "tagName": "param",
+                "text": "FN; DT; LC; LA, LO; CO, ST, CT",
+                "type": "SimpleXmlNode",
+              },
+            ],
           },
           "tagName": "external",
+          "text": undefined,
           "type": "SimpleXmlNode",
         },
         "fields": [],
@@ -966,7 +962,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField stationFieldNumber]",
+                  "[literalField CollectingEvent.stationFieldNumber]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -975,7 +971,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField startDate]",
+                  "[literalField CollectingEvent.startDate]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -999,25 +995,21 @@ exports[`formatters are fetched and parsed correctly 1`] = `
           "attributes": {
             "class": "edu.ku.brc.specify.ui.CollectingEventDataObjFmt",
           },
-          "content": {
-            "children": {
-              "param": [
-                {
-                  "attributes": {
-                    "name": "format",
-                  },
-                  "content": {
-                    "string": "FN; DT; LC; LA, LO; CO, ST, CT",
-                    "type": "Text",
-                  },
-                  "tagName": "param",
-                  "type": "SimpleXmlNode",
+          "children": {
+            "param": [
+              {
+                "attributes": {
+                  "name": "format",
                 },
-              ],
-            },
-            "type": "Children",
+                "children": {},
+                "tagName": "param",
+                "text": "FN; DT; LC; LA, LO; CO, ST, CT",
+                "type": "SimpleXmlNode",
+              },
+            ],
           },
           "tagName": "external",
+          "text": undefined,
           "type": "SimpleXmlNode",
         },
         "fields": [],
@@ -1038,7 +1030,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField text1]",
+                  "[literalField CollectingTrip.text1]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -1047,7 +1039,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField text2]",
+                  "[literalField CollectingTrip.text2]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -1056,7 +1048,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField number1]",
+                  "[literalField CollectingTrip.number1]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -1083,7 +1075,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField collectionName]",
+                  "[literalField Collection.collectionName]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -1110,7 +1102,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField catalogNumber]",
+                  "[literalField CollectionObject.catalogNumber]",
                 ],
                 "fieldFormatter": "CatalogNumber",
                 "formatter": undefined,
@@ -1137,7 +1129,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField name]",
+                  "[literalField CollectionRelType.name]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -1164,7 +1156,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[relationship agent]",
+                  "[relationship Collector.agent]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": "Agent",
@@ -1191,7 +1183,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField name]",
+                  "[literalField Container.name]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -1218,7 +1210,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField primerDesignator]",
+                  "[literalField DNAPrimer.primerDesignator]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -1245,7 +1237,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField text2]",
+                  "[literalField DNASequence.text2]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -1272,7 +1264,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField name]",
+                  "[literalField DataType.name]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -1299,7 +1291,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField deaccessionNumber]",
+                  "[literalField Deaccession.deaccessionNumber]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -1319,7 +1311,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     {
       "definition": {
         "conditionField": [
-          "[literalField isCurrent]",
+          "[literalField Determination.isCurrent]",
         ],
         "external": undefined,
         "fields": [
@@ -1328,8 +1320,8 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[relationship preferredTaxon]",
-                  "[literalField fullName]",
+                  "[relationship Determination.preferredTaxon]",
+                  "[literalField Taxon.fullName]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -1343,8 +1335,8 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[relationship taxon]",
-                  "[literalField fullName]",
+                  "[relationship Determination.taxon]",
+                  "[literalField Taxon.fullName]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -1371,7 +1363,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField name]",
+                  "[literalField Discipline.name]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -1398,7 +1390,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField name]",
+                  "[literalField Division.name]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -1425,7 +1417,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField pageNumber]",
+                  "[literalField FieldNotebookPage.pageNumber]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -1434,9 +1426,9 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[relationship pageSet]",
-                  "[relationship fieldNotebook]",
-                  "[literalField name]",
+                  "[relationship FieldNotebookPage.pageSet]",
+                  "[relationship FieldNotebookPageSet.fieldNotebook]",
+                  "[literalField FieldNotebook.name]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -1463,7 +1455,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[relationship agent]",
+                  "[relationship FundingAgent.agent]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": "Agent",
@@ -1490,7 +1482,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField fullName]",
+                  "[literalField Geography.fullName]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -1517,7 +1509,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField name]",
+                  "[literalField GeographyTreeDef.name]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -1544,7 +1536,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField name]",
+                  "[literalField GeographyTreeDefItem.name]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -1571,7 +1563,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField fullName]",
+                  "[literalField GeologicTimePeriod.fullName]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -1598,7 +1590,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField name]",
+                  "[literalField GeologicTimePeriodTreeDef.name]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -1625,7 +1617,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField journalName]",
+                  "[literalField Journal.journalName]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -1652,7 +1644,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField fullName]",
+                  "[literalField LithoStrat.fullName]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -1679,7 +1671,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField name]",
+                  "[literalField LithoStratTreeDef.name]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -1706,7 +1698,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField name]",
+                  "[literalField LithoStratTreeDefItem.name]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -1733,7 +1725,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField loanNumber]",
+                  "[literalField Loan.loanNumber]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -1760,7 +1752,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[relationship agent]",
+                  "[relationship LoanAgent.agent]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": "Agent",
@@ -1769,7 +1761,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField role]",
+                  "[literalField LoanAgent.role]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -1808,9 +1800,9 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[relationship loanPreparation]",
-                  "[relationship preparation]",
-                  "[relationship prepType]",
+                  "[relationship LoanReturnPreparation.loanPreparation]",
+                  "[relationship LoanPreparation.preparation]",
+                  "[relationship Preparation.prepType]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": "PrepType",
@@ -1819,7 +1811,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField quantityResolved]",
+                  "[literalField LoanReturnPreparation.quantityResolved]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -1846,7 +1838,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField localityName]",
+                  "[literalField Locality.localityName]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -1855,8 +1847,8 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[relationship geography]",
-                  "[literalField fullName]",
+                  "[relationship Locality.geography]",
+                  "[literalField Geography.fullName]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -1865,7 +1857,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField latitude1]",
+                  "[literalField Locality.latitude1]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -1874,7 +1866,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField longitude1]",
+                  "[literalField Locality.longitude1]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -1898,58 +1890,48 @@ exports[`formatters are fetched and parsed correctly 1`] = `
           "attributes": {
             "class": "edu.ku.brc.specify.ui.LocalityLatLonFormatter",
           },
-          "content": {
-            "children": {
-              "param": [
-                {
-                  "attributes": {
-                    "name": "type",
-                  },
-                  "content": {
-                    "string": "Latitude",
-                    "type": "Text",
-                  },
-                  "tagName": "param",
-                  "type": "SimpleXmlNode",
+          "children": {
+            "param": [
+              {
+                "attributes": {
+                  "name": "type",
                 },
-                {
-                  "attributes": {
-                    "name": "dir",
-                  },
-                  "content": {
-                    "string": "symbol",
-                    "type": "Text",
-                  },
-                  "tagName": "param",
-                  "type": "SimpleXmlNode",
+                "children": {},
+                "tagName": "param",
+                "text": "Latitude",
+                "type": "SimpleXmlNode",
+              },
+              {
+                "attributes": {
+                  "name": "dir",
                 },
-                {
-                  "attributes": {
-                    "name": "dir",
-                  },
-                  "content": {
-                    "string": "DDDDDD",
-                    "type": "Text",
-                  },
-                  "tagName": "param",
-                  "type": "SimpleXmlNode",
+                "children": {},
+                "tagName": "param",
+                "text": "symbol",
+                "type": "SimpleXmlNode",
+              },
+              {
+                "attributes": {
+                  "name": "dir",
                 },
-                {
-                  "attributes": {
-                    "name": "which",
-                  },
-                  "content": {
-                    "string": "1",
-                    "type": "Text",
-                  },
-                  "tagName": "param",
-                  "type": "SimpleXmlNode",
+                "children": {},
+                "tagName": "param",
+                "text": "DDDDDD",
+                "type": "SimpleXmlNode",
+              },
+              {
+                "attributes": {
+                  "name": "which",
                 },
-              ],
-            },
-            "type": "Children",
+                "children": {},
+                "tagName": "param",
+                "text": "1",
+                "type": "SimpleXmlNode",
+              },
+            ],
           },
           "tagName": "external",
+          "text": undefined,
           "type": "SimpleXmlNode",
         },
         "fields": [],
@@ -1967,58 +1949,48 @@ exports[`formatters are fetched and parsed correctly 1`] = `
           "attributes": {
             "class": "edu.ku.brc.specify.ui.LocalityLatLonFormatter",
           },
-          "content": {
-            "children": {
-              "param": [
-                {
-                  "attributes": {
-                    "name": "type",
-                  },
-                  "content": {
-                    "string": "Longitude",
-                    "type": "Text",
-                  },
-                  "tagName": "param",
-                  "type": "SimpleXmlNode",
+          "children": {
+            "param": [
+              {
+                "attributes": {
+                  "name": "type",
                 },
-                {
-                  "attributes": {
-                    "name": "dir",
-                  },
-                  "content": {
-                    "string": "symbol",
-                    "type": "Text",
-                  },
-                  "tagName": "param",
-                  "type": "SimpleXmlNode",
+                "children": {},
+                "tagName": "param",
+                "text": "Longitude",
+                "type": "SimpleXmlNode",
+              },
+              {
+                "attributes": {
+                  "name": "dir",
                 },
-                {
-                  "attributes": {
-                    "name": "dir",
-                  },
-                  "content": {
-                    "string": "DDDDDD",
-                    "type": "Text",
-                  },
-                  "tagName": "param",
-                  "type": "SimpleXmlNode",
+                "children": {},
+                "tagName": "param",
+                "text": "symbol",
+                "type": "SimpleXmlNode",
+              },
+              {
+                "attributes": {
+                  "name": "dir",
                 },
-                {
-                  "attributes": {
-                    "name": "which",
-                  },
-                  "content": {
-                    "string": "1",
-                    "type": "Text",
-                  },
-                  "tagName": "param",
-                  "type": "SimpleXmlNode",
+                "children": {},
+                "tagName": "param",
+                "text": "DDDDDD",
+                "type": "SimpleXmlNode",
+              },
+              {
+                "attributes": {
+                  "name": "which",
                 },
-              ],
-            },
-            "type": "Children",
+                "children": {},
+                "tagName": "param",
+                "text": "1",
+                "type": "SimpleXmlNode",
+              },
+            ],
           },
           "tagName": "external",
+          "text": undefined,
           "type": "SimpleXmlNode",
         },
         "fields": [],
@@ -2039,7 +2011,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField paleoContextName]",
+                  "[literalField PaleoContext.paleoContextName]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -2048,8 +2020,8 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[relationship chronosStrat]",
-                  "[literalField fullName]",
+                  "[relationship PaleoContext.chronosStrat]",
+                  "[literalField GeologicTimePeriod.fullName]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -2058,8 +2030,8 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[relationship lithoStrat]",
-                  "[literalField fullName]",
+                  "[relationship PaleoContext.lithoStrat]",
+                  "[literalField LithoStrat.fullName]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -2086,7 +2058,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField permitNumber]",
+                  "[literalField Permit.permitNumber]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -2113,7 +2085,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField name]",
+                  "[literalField PrepType.name]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -2140,7 +2112,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[relationship prepType]",
+                  "[relationship Preparation.prepType]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": "PrepType",
@@ -2149,7 +2121,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField countAmt]",
+                  "[literalField Preparation.countAmt]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -2176,7 +2148,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField title]",
+                  "[literalField ReferenceWork.title]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -2203,7 +2175,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField shipmentDate]",
+                  "[literalField Shipment.shipmentDate]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -2212,7 +2184,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField shipmentNumber]",
+                  "[literalField Shipment.shipmentNumber]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -2221,7 +2193,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField shipmentMethod]",
+                  "[literalField Shipment.shipmentMethod]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -2248,7 +2220,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField fullName]",
+                  "[literalField Storage.fullName]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -2275,7 +2247,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField name]",
+                  "[literalField StorageTreeDef.name]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -2302,7 +2274,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField name]",
+                  "[literalField StorageTreeDefItem.name]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -2329,7 +2301,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField fullName]",
+                  "[literalField Taxon.fullName]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -2356,7 +2328,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[relationship referenceWork]",
+                  "[relationship TaxonCitation.referenceWork]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": "ReferenceWork",
@@ -2383,7 +2355,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField name]",
+                  "[literalField TaxonTreeDef.name]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -2410,7 +2382,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField name]",
+                  "[literalField TaxonTreeDefItem.name]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -2437,7 +2409,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField projectNumber]",
+                  "[literalField Project.projectNumber]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -2446,7 +2418,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField grantAgency]",
+                  "[literalField Project.grantAgency]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -2455,7 +2427,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField projectName]",
+                  "[literalField Project.projectName]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -2464,7 +2436,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField url]",
+                  "[literalField Project.url]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -2491,7 +2463,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField institutionCode]",
+                  "[literalField VoucherRelationship.institutionCode]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -2500,7 +2472,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField collectionCode]",
+                  "[literalField VoucherRelationship.collectionCode]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -2509,7 +2481,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField voucherNumber]",
+                  "[literalField VoucherRelationship.voucherNumber]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,
@@ -2518,7 +2490,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
               {
                 "aggregator": undefined,
                 "field": [
-                  "[literalField urlLink]",
+                  "[literalField VoucherRelationship.urlLink]",
                 ],
                 "fieldFormatter": undefined,
                 "formatter": undefined,

@@ -54,7 +54,9 @@ export function AppResourcesTabs({
   readonly data: string | null;
   readonly isFullScreen: GetSet<boolean>;
   readonly index: GetSet<number>;
-  readonly onChange: (data: string | (() => string | null) | null) => void;
+  readonly onChange: (
+    data: string | (() => string | null | undefined) | null
+  ) => void;
 }): JSX.Element {
   const tabs = useEditorTabs(resource);
   const children = (
