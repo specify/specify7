@@ -29,13 +29,7 @@ import { webLinksSpec } from './spec';
 export const webLinks = Promise.all([
   load<Element>(getAppResourceUrl('WebLinks'), 'text/xml'),
   import('../DataModel/tables').then(async ({ fetchContext }) => fetchContext),
-]).then(([xml]) =>
-  Object.fromEntries(
-    xmlToSpec(xml, webLinksSpec()).webLinks.map(
-      (webLink) => [webLink.name, webLink] as const
-    )
-  )
-);
+]).then(([xml]) => xmlToSpec(xml, webLinksSpec()).webLinks);
 
 export function WebLinkField({
   resource,
@@ -178,8 +172,12 @@ function useDefinition(
       if (typeof webLink === 'object') return webLink;
       const fieldInfo = table?.getField(fieldName ?? '');
       const webLinkName = webLink ?? fieldInfo?.getWebLinkName();
-      const definition = await webLinks.then((definitions) =>
-        caseInsensitiveHash(definitions, webLinkName ?? '')
+      const definitions = await webLinks;
+      const definition = caseInsensitiveHash(
+        Object.fromEntries(
+          definitions.map((definition) => [definition.name, definition])
+        ),
+        webLinkName
       );
       if (typeof definition === 'object') return definition;
 

@@ -2,19 +2,14 @@ import { schemaText } from '../../localization/schema';
 import type { IR, RA } from '../../utils/types';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import type {
-  JavaType,
-  LiteralField,
-  Relationship,
-} from '../DataModel/specifyField';
-import type { SpLocaleContainerItem, Tables } from '../DataModel/types';
+import type { SpLocaleContainerItem } from '../DataModel/types';
 import type { Aggregator, Formatter } from '../Formatters/spec';
 import type {
   ItemType,
   NewSpLocaleItemString,
   SpLocaleItemString,
 } from './index';
-import type { SimpleFormatter } from './schemaData';
+import type { SchemaFormatter } from './schemaData';
 
 let newStringId = 1;
 const defaultLanguage = 'en';
@@ -59,32 +54,13 @@ export function findString(
 /** Throws away unneeded fields */
 export const formatAggregators = (
   aggregators: RA<Aggregator | Formatter>
-): IR<SimpleFormatter> =>
-  Object.fromEntries(
-    aggregators.map(
-      ({ name = '', title = '', table }) =>
-        [
-          name,
-          {
-            title: title ?? name,
-            tableName: table?.name,
-          },
-        ] as const
-    )
-  );
-
-/**
- * Filter down defined formatters
- */
-export const filterFormatters = (
-  formatters: IR<SimpleFormatter>,
-  targetTable: keyof Tables
-): IR<string> =>
-  Object.fromEntries(
-    Object.entries(formatters)
-      .filter(([_name, { tableName }]) => tableName === targetTable)
-      .map(([name, { title }]) => [name, title] as const)
-  );
+): RA<SchemaFormatter> =>
+  aggregators.map(({ name = '', title = '', table }, index) => ({
+    name,
+    title: title === '' ? name : title,
+    tableName: table?.name,
+    index,
+  }));
 
 /**
  * Determine what kind of item SpLocalItem is based on what fields it has
@@ -102,19 +78,6 @@ export function getItemType(
   } else {
     return 'formatted';
   }
-}
-
-const webLinkTypes = new Set<JavaType>(['text', 'java.lang.String']);
-
-export function isFormatterAvailable(
-  field: LiteralField | Relationship,
-  formatter: ItemType
-): boolean {
-  if (formatter === 'none' || formatter === 'pickList') return true;
-  else if (formatter === 'webLink')
-    return !field.isRelationship && webLinkTypes.has(field.type);
-  else if (formatter === 'formatted') return !field.isRelationship;
-  else return false;
 }
 
 export const localizedRelationshipTypes: IR<string> = {

@@ -16,11 +16,11 @@ import { Submit } from '../Atoms/Submit';
 import { ReadOnlyContext } from '../Core/Contexts';
 import { Dialog } from '../Molecules/Dialog';
 import { NotFoundView } from '../Router/NotFoundView';
+import { resolveRelative } from '../Router/queryString';
 import { AggregatorElement } from './Aggregator';
 import { FormatterElement } from './Formatter';
 import type { Aggregator, Formatter } from './spec';
 import type { FormatterTypesOutlet } from './Types';
-import { resolveRelative } from '../Router/queryString';
 
 export function XmlEditorShell<
   ITEM extends { readonly name: string },

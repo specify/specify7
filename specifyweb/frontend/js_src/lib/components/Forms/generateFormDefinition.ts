@@ -34,7 +34,7 @@ export function autoGenerateViewDefinition<SCHEMA extends AnySchema>(
     name: '',
     formType,
     mode,
-    table: table,
+    table,
   };
 }
 
@@ -211,6 +211,7 @@ function generateForm(
                         type: 'QueryComboBox',
                         hasCloneButton: false,
                         typeSearch: undefined,
+                        searchView: undefined,
                         isReadOnly: mode === 'view',
                       },
                       isRequired: false,

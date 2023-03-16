@@ -13,15 +13,16 @@ import { fetchFormatters } from '../Formatters/formatters';
 import { fetchPickLists } from '../PickLists/definitions';
 import { fetchSchemaLanguages } from '../Toolbar/Language';
 import { webLinks } from '../WebLinks';
+import type { WebLink } from '../WebLinks/spec';
 import { formatAggregators } from './helpers';
 
 type RawSchemaData = {
   readonly languages: IR<LocalizedString>;
   readonly tables: IR<SerializedResource<SpLocaleContainer>>;
-  readonly formatters: IR<SimpleFormatter>;
-  readonly aggregators: IR<SimpleFormatter>;
+  readonly formatters: RA<SchemaFormatter>;
+  readonly aggregators: RA<SchemaFormatter>;
   readonly uiFormatters: RA<SimpleFieldFormatter>;
-  readonly webLinks: RA<readonly [string, string]>;
+  readonly webLinks: RA<WebLink & { readonly index: number }>;
   readonly pickLists: IR<{
     readonly name: string;
     readonly isSystem: boolean;
@@ -32,9 +33,11 @@ export type SchemaData = RawSchemaData & {
   readonly update: GetOrSet<RawSchemaData | undefined>[1];
 };
 
-export type SimpleFormatter = {
+export type SchemaFormatter = {
+  readonly name: string;
   readonly title: LocalizedString;
   readonly tableName: keyof Tables | undefined;
+  readonly index: number;
 };
 
 type SimpleFieldFormatter = {
@@ -67,7 +70,7 @@ export const fetchSchemaData = async (): Promise<RawSchemaData> =>
         .filter(({ value }) => value)
     ),
     webLinks: webLinks.then((webLinks) =>
-      Object.keys(webLinks).map((value) => [value, value] as const)
+      webLinks.map((webLink, index) => ({ ...webLink, index }))
     ),
     pickLists: fetchSchemaPickLists(),
   });

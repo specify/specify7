@@ -8,6 +8,7 @@ import { ReadOnlyContext } from '../Core/Contexts';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
+import { tables } from '../DataModel/tables';
 import type { SpLocaleContainerItem } from '../DataModel/types';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import type { WithFetchedStrings } from '../Toolbar/SchemaConfig';
@@ -17,7 +18,6 @@ import { javaTypeToHuman } from './helpers';
 import type { ItemType } from './index';
 import type { SchemaData } from './schemaData';
 import { maxSchemaValueLength } from './Table';
-import { tables } from '../DataModel/tables';
 
 export function SchemaConfigField({
   schemaData,

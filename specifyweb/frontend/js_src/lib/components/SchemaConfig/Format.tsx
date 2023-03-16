@@ -1,9 +1,11 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { schemaText } from '../../localization/schema';
+import { appResourceIds } from '../../utils/ajax/helpers';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import { KEY, sortFunction, split } from '../../utils/utils';
@@ -20,7 +22,7 @@ import { ResourceLink } from '../Molecules/ResourceLink';
 import { hasToolPermission } from '../Permissions/helpers';
 import type { WithFetchedStrings } from '../Toolbar/SchemaConfig';
 import { PickList } from './Components';
-import { getItemType, isFormatterAvailable } from './helpers';
+import { getItemType } from './helpers';
 import type { ItemType } from './index';
 import type { SchemaData } from './schemaData';
 import { fetchSchemaPickLists } from './schemaData';
@@ -84,11 +86,17 @@ export function SchemaConfigFormat({
       />
       <FormatterLine
         {...lineProps}
+        extraComponents={
+          <WebLinkEditing schemaData={schemaData} value={item.webLinkName} />
+        }
         label={schemaText.webLink()}
         name="webLink"
         value={item.webLinkName}
         values={{
-          '': schemaData.webLinks,
+          '': schemaData.webLinks
+            .filter(({ table }) => table === undefined || table === field.table)
+            .sort(sortFunction(({ table }) => typeof table === 'object', true))
+            .map(({ name }) => [name, name] as const),
         }}
       />
       <FormatterLine
@@ -102,7 +110,7 @@ export function SchemaConfigFormat({
           <PickListEditing
             schemaData={schemaData}
             value={item.pickListName}
-            onChange={(value): void => handleFormatted('pickList', value)}
+            onChange={(pickList): void => handleFormatted('pickList', pickList)}
           />
         }
         label={tables.PickList.label}
@@ -140,12 +148,13 @@ function FormatterLine({
   readonly onFormatted: (format: ItemType, value: string | null) => void;
 }): JSX.Element {
   const isReadOnly = React.useContext(ReadOnlyContext);
+  const enabled = name !== 'formatted' || field.isRelationship;
   return (
     <div className={className.labelForCheckbox}>
       <Label.Inline>
         <Input.Radio
           checked={name === getItemType(item)}
-          disabled={!isFormatterAvailable(field, name)}
+          disabled={!enabled}
           isReadOnly={isReadOnly}
           name={id('format')}
           value="none"
@@ -163,14 +172,14 @@ function FormatterLine({
       {values && (
         <PickList
           className="w-0 flex-1"
-          disabled={isReadOnly || !isFormatterAvailable(field, name)}
+          disabled={isReadOnly || !enabled}
           groups={values}
           label={label}
           value={value}
           onChange={(value): void => handleFormatted(name, value)}
         />
       )}
-      {extraComponents}
+      {enabled && extraComponents}
     </div>
   );
 }
@@ -219,12 +228,12 @@ function PickListEditing({
       hasToolPermission('pickLists', 'read') ? (
         <ResourceLink
           component={Link.Icon}
-          resource={currentPickList}
           props={{
             title: commonText.edit(),
             icon: 'pencil',
             className: className.dataEntryEdit,
           }}
+          resource={currentPickList}
           resourceView={{
             onDeleted(): void {
               handleChange(null);
@@ -257,4 +266,46 @@ function PickListEditing({
       )}
     </>
   );
+}
+
+function WebLinkEditing({
+  value,
+  schemaData,
+}: {
+  readonly value: string | null;
+  readonly schemaData: SchemaData;
+}): JSX.Element | null {
+  const index = schemaData.webLinks.find(({ name }) => name === value)?.index;
+  const resourceId = appResourceIds.WebLinks;
+  const navigate = useNavigate();
+  return typeof resourceId === 'number' ? (
+    <>
+      {typeof index === 'number' && (
+        <Link.Icon
+          className={className.dataEntryEdit}
+          href={`/specify/resources/app-resource/${resourceId}/web-link/${index}/`}
+          icon="pencil"
+          title={commonText.edit()}
+          onClick={(event): void => {
+            event.preventDefault();
+            navigate(
+              `/specify/overlay/resources/app-resource/${resourceId}/web-link/${index}/`
+            );
+          }}
+        />
+      )}
+      <Link.Icon
+        className={className.dataEntryAdd}
+        href={`/specify/resources/app-resource/${resourceId}/web-link/`}
+        icon="plus"
+        title={commonText.add()}
+        onClick={(event): void => {
+          event.preventDefault();
+          navigate(
+            `/specify/overlay/resources/app-resource/${resourceId}/web-link/`
+          );
+        }}
+      />
+    </>
+  ) : null;
 }

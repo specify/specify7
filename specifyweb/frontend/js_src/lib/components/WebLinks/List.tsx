@@ -44,7 +44,6 @@ export function WebLinkList(): JSX.Element {
               parts: [],
               usages: [],
             };
-            // FIXME: integrate web link editor into schema config
             setItems([...items, newItem]);
             navigate(getLink(items.length));
           }}
