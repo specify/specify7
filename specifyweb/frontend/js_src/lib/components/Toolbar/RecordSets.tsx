@@ -27,7 +27,7 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { hasToolPermission } from '../Permissions/helpers';
 import { OverlayContext } from '../Router/Router';
 import { EditRecordSet } from './RecordSetEdit';
-import { usePaginator } from './Paginator';
+import { usePaginator } from '../Molecules/Paginator';
 
 export function RecordSetsOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
