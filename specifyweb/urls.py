@@ -57,5 +57,5 @@ urlpatterns = [
     url(r'^export/', include(export_urls)), # permissions added
     url(r'^permissions/', include(permissions_urls)), # permissions added
     # url(r'^testcontext/', include()),
-    url(r'^statistics/', include(stat_urls))
+    url(r'^stats/', include(stat_urls))
 ]
