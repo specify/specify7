@@ -33,7 +33,7 @@ export type BusinessRuleDefs<SCHEMA extends AnySchema> = {
   readonly uniqueIn?: UniquenessRule<SCHEMA>;
   readonly customInit?: (resource: SpecifyResource<SCHEMA>) => void;
   readonly fieldChecks?: {
-    [FIELD_NAME in TableFields<SCHEMA> as Lowercase<FIELD_NAME>]?: (
+    [FIELD_NAME in TableFields<SCHEMA>]?: (
       resource: SpecifyResource<SCHEMA>
     ) => Promise<BusinessRuleResult | undefined> | void;
   };
@@ -59,7 +59,7 @@ type MappedBusinessRuleDefs = {
 export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
   BorrowMaterial: {
     fieldChecks: {
-      quantityreturned: (
+      quantityReturned: (
         borrowMaterial: SpecifyResource<BorrowMaterial>
       ): void => {
         const returned = borrowMaterial.get('quantityReturned');
@@ -79,7 +79,7 @@ export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
 
         newVal && borrowMaterial.set('quantityReturned', newVal);
       },
-      quantityresolved: (
+      quantityResolved: (
         borrowMaterial: SpecifyResource<BorrowMaterial>
       ): void => {
         const resolved = borrowMaterial.get('quantityResolved');
@@ -165,7 +165,7 @@ export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
                 };
           });
       },
-      iscurrent: (
+      isCurrent: (
         determination: SpecifyResource<Determination>
       ): Promise<BusinessRuleResult> | void => {
         if (
@@ -194,7 +194,7 @@ export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
   },
   DNASequence: {
     fieldChecks: {
-      genesequence: (dnaSequence: SpecifyResource<DNASequence>): void => {
+      geneSequence: (dnaSequence: SpecifyResource<DNASequence>): void => {
         const current = dnaSequence.get('geneSequence');
         if (current === null) return;
         const countObj = { a: 0, t: 0, g: 0, c: 0, ambiguous: 0 };
@@ -273,7 +273,7 @@ export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
       updateLoanPrep(resource.collection);
     },
     fieldChecks: {
-      quantityreturned: (
+      quantityReturned: (
         loanReturnPrep: SpecifyResource<LoanReturnPreparation>
       ): void => {
         const returned = Number(loanReturnPrep.get('quantityReturned'))!;
@@ -319,7 +319,7 @@ export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
           returned;
         updateLoanPrep(loanReturnPrep.collection);
       },
-      quantityresolved: (
+      quantityResolved: (
         loanReturnPrep: SpecifyResource<LoanReturnPreparation>
       ): void => {
         const resolved = Number(loanReturnPrep.get('quantityResolved'));
