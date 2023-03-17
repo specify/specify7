@@ -439,11 +439,7 @@ def record_merge_fx(model_name: str, old_model_id: int, new_model_id: int) -> ht
         except (ValueError):
             continue
 
-        print(foreign_table.name + ':')
-
         for col in [c[1] for c in column_names]:
-            print('- ' + col)
-
             # Determine the field name to filter on
             field_name = col.lower()
             field_name_id = f'{field_name}_id'
@@ -456,8 +452,6 @@ def record_merge_fx(model_name: str, old_model_id: int, new_model_id: int) -> ht
             # Update and save the foreign model objects with the new_model_id
             for obj in foreign_objects:
                 setattr(obj, field_name_id, new_model_id)
-                
-                print('****saving: ' + col)
 
                 def record_merge_recur():
                     # Determine which of the records will be assigned as old and new with the timestampcreated field
@@ -477,7 +471,6 @@ def record_merge_fx(model_name: str, old_model_id: int, new_model_id: int) -> ht
                                            x.id))
                     
                     # Make a recursive call to record_merge to resolve duplication error
-                    print('!!!Recursion!!!')
                     response = record_merge_fx(table_name, old_record.pk, new_record.pk)
                     if old_record.pk != obj.pk:
                         update_record(new_record)
@@ -489,8 +482,6 @@ def record_merge_fx(model_name: str, old_model_id: int, new_model_id: int) -> ht
                         record.save()
                     except (IntegrityError, BusinessRuleException) as e:
                         # Catch duplicate error and recursively run record merge
-                        print('!!!IntegrityError!!!')
-                        # Check for duplication error
                         if e.args[0] == 1062 and "Duplicate" in str(e) or \
                             'must have unique' in str(e):
                             return record_merge_recur()
