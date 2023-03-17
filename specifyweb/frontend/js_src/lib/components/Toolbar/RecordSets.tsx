@@ -61,13 +61,10 @@ export function RecordSetsDialog({
     | State<'MainState'>
   >({ type: 'MainState' });
 
-  const [sortConfig, handleSort, applySortConfig] = useSortConfig(
-    'listOfRecordSets',
-    'name'
-  );
+  const [sortConfig, handleSort] = useSortConfig('listOfRecordSets', 'name');
 
   const { paginator, limit, offset } = usePaginator();
-  const [unsortedData] = useAsyncState(
+  const [data] = useAsyncState(
     React.useCallback(
       async () =>
         fetchCollection('RecordSet', {
@@ -75,26 +72,13 @@ export function RecordSetsDialog({
           type: 0,
           limit,
           domainFilter: true,
-          orderBy: '-timestampCreated',
+          orderBy: `${sortConfig.ascending ? '' : '-'}${sortConfig.sortField}`,
           offset,
           dbTableId: table?.tableId,
         }),
-      [table, limit, offset]
+      [table, limit, offset, sortConfig]
     ),
     true
-  );
-  const data = React.useMemo(
-    () =>
-      typeof unsortedData === 'object'
-        ? {
-            ...unsortedData,
-            records: applySortConfig(
-              unsortedData.records,
-              (recordSet) => recordSet[sortConfig.sortField]
-            ),
-          }
-        : undefined,
-    [unsortedData, sortConfig]
   );
 
   const isReadOnly = React.useContext(ReadOnlyContext);
