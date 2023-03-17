@@ -224,13 +224,16 @@ export const syncers = {
       (object) =>
         ({
           ...object,
-          [key]: syncers
-            /*
-             * "object" is actually NEW_SPEC, but the difference shouldn't matter
-             * (they only differ by object[key])
-             */
-            .object(spec(object as unknown as OBJECT))
-            .deserializer(object?.[key]),
+          [key]: {
+            node: syncers
+              /*
+               * "object" is actually NEW_SPEC, but the difference shouldn't matter
+               * (they only differ by object[key])
+               */
+              .object(spec(object as unknown as OBJECT))
+              .deserializer(object?.[key]),
+            context: getLogContext(),
+          },
         } as unknown as OBJECT)
     ),
   field: (tableName: keyof Tables | undefined) =>
