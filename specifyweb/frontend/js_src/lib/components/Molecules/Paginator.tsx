@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
 import type { GetSet } from '../../utils/types';
 import { Select } from '../Atoms/Form';
@@ -10,9 +11,14 @@ import { Slider } from '../FormSliders/Slider';
  * Infinity hitting the practical limits
  */
 const infinity = 500;
-const pageSizes = [10, 50, 100];
+export const pageSizes = [10, 50, 100, infinity];
 
-export function usePaginator(defaultRowsPerPage: number = 10): {
+export type Paginators = 'recordSets';
+
+export function usePaginator(
+  cacheName: Paginators,
+  defaultRowsPerPage: typeof pageSizes[number] = 10
+): {
   readonly paginator: (totalCount: number | undefined) => JSX.Element;
   readonly currentPage: GetSet<number>;
   readonly limit: number;
@@ -20,7 +26,10 @@ export function usePaginator(defaultRowsPerPage: number = 10): {
 } {
   const getSetPage = React.useState<number>(0);
   const [currentPage, setCurrentPage] = getSetPage;
-  const [pageSize, setPageSize] = React.useState<number>(defaultRowsPerPage);
+  const [pageSize = defaultRowsPerPage, setPageSize] = useCachedState(
+    'pageSizes',
+    cacheName
+  );
   return {
     paginator(totalCount): JSX.Element {
       const pageCount =
@@ -50,10 +59,11 @@ export function usePaginator(defaultRowsPerPage: number = 10): {
             >
               {pageSizes.map((size) => (
                 <option key={size} value={size}>
-                  {formatNumber(size)}
+                  {size === infinity
+                    ? commonText.unlimited()
+                    : formatNumber(size)}
                 </option>
               ))}
-              <option value={infinity}>{commonText.unlimited()}</option>
             </Select>
           </div>
         </div>
