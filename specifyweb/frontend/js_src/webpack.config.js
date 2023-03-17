@@ -53,6 +53,17 @@ module.exports = (_environment, argv) =>
         },
       ],
     },
+    devServer: {
+      hot: true,
+      port: 8080,
+      host: '0.0.0.0',
+      setupExitSignals: true,
+      client: {
+        overlay: true,
+      },
+      static: false,
+      watchFiles: ['lib/**/*'],
+    },
     resolve: {
       /**
        * Resolve TypeScript files first. This way, when a .js file is
