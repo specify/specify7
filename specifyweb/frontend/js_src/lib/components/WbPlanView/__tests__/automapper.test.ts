@@ -3,8 +3,9 @@ import { theories } from '../../../tests/utils';
 import type { RA } from '../../../utils/types';
 import type { AutoMapperResults } from '../autoMapper';
 import {
-  type AutoMapperConstructorParameters,
   AutoMapper as AutoMapperConstructor,
+  type AutoMapperConstructorParameters,
+  circularTables,
 } from '../autoMapper';
 
 requireContext();
@@ -198,3 +199,22 @@ theories(
     },
   ]
 );
+
+test('circular tables are calculated correctly', () =>
+  expect(circularTables()).toMatchInlineSnapshot(`
+    [
+      "[table Agent]",
+      "[table Container]",
+      "[table Geography]",
+      "[table GeographyTreeDefItem]",
+      "[table GeologicTimePeriod]",
+      "[table GeologicTimePeriodTreeDefItem]",
+      "[table LithoStrat]",
+      "[table LithoStratTreeDefItem]",
+      "[table ReferenceWork]",
+      "[table Storage]",
+      "[table StorageTreeDefItem]",
+      "[table Taxon]",
+      "[table TaxonTreeDefItem]",
+    ]
+  `));

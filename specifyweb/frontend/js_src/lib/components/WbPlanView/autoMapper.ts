@@ -13,7 +13,7 @@ import type { IR, R, RA, Writable, WritableArray } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { findArrayDivergencePoint } from '../../utils/utils';
 import type { AnyTree } from '../DataModel/helperTypes';
-import { getModel, strictGetModel } from '../DataModel/schema';
+import { getModel, schema, strictGetModel } from '../DataModel/schema';
 import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Tables } from '../DataModel/types';
@@ -602,6 +602,10 @@ export class AutoMapper {
       if (
         // Don't iterate over the same table again
         this.searchedTables.includes(tableName) ||
+        // Don't allow circular mappings
+        (mappingPath.length > 0 &&
+          tableName === this.baseTable.name &&
+          !circularTables().includes(this.baseTable)) ||
         // Don't go beyond the depth limit
         mappingPath.length > depthLimit
       )
@@ -989,3 +993,12 @@ export class AutoMapper {
     return !pathContainsToManyReferences && !this.allowMultipleMappings;
   }
 }
+
+/**
+ * Tables that have relationships to themself
+ */
+export const circularTables = f.store<RA<SpecifyModel>>(() =>
+  Object.values(schema.models).filter(({ relationships, name }) =>
+    relationships.some(({ relatedModel }) => relatedModel.name === name)
+  )
+);
