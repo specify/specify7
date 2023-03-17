@@ -110,6 +110,12 @@ const globalFieldOverrides: {
   Attachment: {
     tableID: 'optional',
   },
+  CollectionRelationship: {
+    collectionRelType: 'required',
+  },
+  CollectionRelType: {
+    name: 'required',
+  },
   Taxon: {
     parent: 'required',
     isAccepted: 'readOnly',
