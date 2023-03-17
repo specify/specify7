@@ -8,10 +8,11 @@ type Position = {
 };
 
 export function findNodePosition(xml: string, path: RA<LogPathPart>): Position {
-  const element = findElement(xml, path);
+  const declaration = xml.startsWith('<?') ? xml.indexOf('>') + 1 : 0;
+  const element = findElement(xml.slice(declaration), path);
   return {
-    from: element.from,
-    to: Math.max(element.from, element.to),
+    from: element.from + declaration,
+    to: Math.max(element.from, element.to) + declaration,
   };
 }
 
@@ -122,28 +123,27 @@ function finder(
 ): number | undefined {
   let depth = 0;
   let match: RegExpExecArray | null;
-  let isInComment = false;
   reTag.lastIndex = 0;
   while ((match = reTag.exec(xml)) !== null) {
     const [part] = match;
-    if (part === '<!--') isInComment = true;
-    else if (part === '-->') isInComment = false;
-    else if (isInComment) continue;
+    if (part === '<!--')
+      reTag.lastIndex = xml.indexOf('-->', reTag.lastIndex) + 3;
     else if (part.startsWith('</')) {
       depth -= 1;
       if (depth < 0) return undefined;
       if (depth === 0 && tagEnd?.(part) === true) return match.index;
     } else if (part.startsWith('<')) {
-      // Skip CDATA
-      if (part[1] === '!') continue;
-      if (depth === 0 && tagStart?.(part) === true) return match.index;
+      if (part.endsWith('?>')) continue;
+      else if (part.startsWith('<![CDATA['))
+        reTag.lastIndex = xml.indexOf(']]>', reTag.lastIndex) + 3;
+      else if (depth === 0 && tagStart?.(part) === true) return match.index;
       else if (!part.endsWith('/>')) depth += 1;
     }
   }
   return undefined;
 }
 
-const reTag = /<!--|-->|<\/?[^/>]+\/?>/gu;
+const reTag = /<!--|<!\[CDATA\[|<\/?[^/>]+\/?>/gu;
 
 export const exportsForTests = {
   findChild,

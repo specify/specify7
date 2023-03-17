@@ -20,6 +20,16 @@ theories(findNodePosition, [
   },
   {
     in: [
+      '<?xml version="1.0" encoding="UTF-8"?>\n<a b="a" a="b" c="d"><b></b></a>',
+      [
+        { type: 'Root', node: '' },
+        { type: 'Attribute', attribute: 'a' },
+      ],
+    ],
+    out: { from: 48, to: 53 },
+  },
+  {
+    in: [
       '<a b="a" a="b" c="d"><b><c><!--<c>--></c>\n<c tar="bar"></c></b></a>',
       [
         { type: 'Root', node: '' },
@@ -65,7 +75,7 @@ theories(findChild, [
   { in: ['<a />', 'b', 0], out: undefined },
   { in: ['<b />', 'b', 0], out: 0 },
   { in: ['<b/>', 'b', 0], out: 0 },
-  { in: ['<![CDATA[MailTo]]><b/>', 'b', 0], out: 18 },
+  { in: ['<![CDATA[<bar>]]><b/>', 'b', 0], out: 17 },
   { in: ['<b a="b"></b><b><!--<a />--></b>', 'b', 1], out: 13 },
   { in: ['<a></a><a /><b bar="var" />', 'b', 0], out: 12 },
   { in: ['<a href="b" d></a><b tar></b>', 'b', 0], out: 18 },
