@@ -39,6 +39,7 @@ export function usePaginator(defaultRowsPerPage: number = 10): {
           )}
           <div className="flex flex-1 justify-end">
             <Select
+              className="!w-auto"
               value={pageSize}
               onValueChange={(rawNewPageSize): void => {
                 const newPageSize = Number.parseInt(rawNewPageSize);
