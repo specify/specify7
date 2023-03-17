@@ -12,20 +12,13 @@ from django import http
 from django.conf import settings
 from django.db import IntegrityError, router, transaction, connection, models
 from django.db.models.deletion import Collector
-from django.db.models.base import ModelBase
-from django.db.models.fields.related_descriptors import ForeignKeyDeferredAttribute
-from django.db.models.query import QuerySet
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_http_methods, require_POST
 from django.apps import apps
 from specifyweb.businessrules.exceptions import BusinessRuleException
-from django.core.exceptions import FieldError, FieldDoesNotExist
-from django.db.models.deletion import ProtectedError
 
 from specifyweb.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, PermissionsException, check_permission_targets
-from specifyweb.specify.load_datamodel import Table
-from specifyweb.workbench.upload.upload_result import FailedBusinessRule
 from . import api, models as spmodels
 from .specify_jar import specify_jar
 
