@@ -26,7 +26,7 @@ export const treeText = createDictionary({
   move: {
     'en-us': 'Move',
     'ru-ru': 'Переместить',
-    'es-es': 'Moverse',
+    'es-es': 'Mover',
     'fr-fr': 'Déplacer',
     'uk-ua': 'рухатися',
   },
@@ -56,7 +56,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Операция провалена',
     'es-es': 'Operación fallida',
     'fr-fr': "L'opération a échoué",
-    'uk-ua': 'Операція не вдалася',
+    'uk-ua': 'Операція не виконана',
   },
   actionFailedDescription: {
     'en-us':
@@ -234,7 +234,9 @@ export const treeText = createDictionary({
     'es-es':
       'Seleccione un objetivo para "{nodeName:string}" para ser sinónimo',
     'fr-fr': 'Sélectionnez une cible pour "{nodeName:string}" à synonyme de',
-    'uk-ua': 'Виберіть ціль для "{nodeName:string}", який буде синонімічним',
+    'uk-ua': `
+      Виберіть ціль для "{nodeName:string}", до якого потрібно синонімізувати
+    `,
   },
   synonymizeMessage: {
     'en-us': `
