@@ -55,7 +55,7 @@ export function FormatterList(): JSX.Element {
             })
           : ensure<Aggregator>()({
               ...common,
-              separator: ', ',
+              separator: '; ',
               suffix: '',
               limit: undefined,
               formatter: undefined,

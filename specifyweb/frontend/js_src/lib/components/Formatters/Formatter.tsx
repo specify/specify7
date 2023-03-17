@@ -187,7 +187,7 @@ function Fields({
                 setFields([
                   ...fields,
                   {
-                    separator: '',
+                    separator: ' ',
                     aggregator: undefined,
                     formatter: undefined,
                     fieldFormatter: undefined,
