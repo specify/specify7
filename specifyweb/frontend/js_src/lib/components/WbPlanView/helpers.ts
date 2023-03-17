@@ -9,6 +9,7 @@ import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { getModel, schema } from '../DataModel/schema';
 import type { Tables } from '../DataModel/types';
@@ -26,6 +27,7 @@ import {
   findDuplicateMappings,
   formatToManyIndex,
   formatTreeRank,
+  getGenericMappingPath,
   mappingPathToString,
   relationshipIsToMany,
   valueIsToManyIndex,
@@ -371,21 +373,43 @@ export async function fetchAutoMapperSuggestions({
 
   if (autoMapperResults === undefined) return [];
 
-  return autoMapperResults
-    .slice(0, MAX_SUGGESTIONS_COUNT)
-    .map((autoMapperResult) => ({
-      mappingPath: autoMapperResult,
-      mappingLineData: getMappingLineData({
-        baseTableName,
-        mappingPath: autoMapperResult,
-        getMappedFields: getMappedFields.bind(undefined, lines),
-        generateFieldData: 'selectedOnly',
-      })
-        .slice(baseMappingPath.length - pathOffset)
-        .map((data) => ({
-          ...data,
-          customSelectType: 'PREVIEW_LIST',
-          isOpen: true,
-        })),
-    }));
+  const sliceLength = baseMappingPath.length - pathOffset;
+
+  return filterArray(
+    autoMapperResults.slice(0, MAX_SUGGESTIONS_COUNT).map((result) => {
+      if (sliceLength > 0) {
+        const baseTable = schema.models[baseTableName].getRelationship(
+          getGenericMappingPath(result.slice(0, sliceLength)).join('.')
+        )?.relatedModel;
+        if (baseTable === undefined) {
+          console.error('Unable to find the base table', {
+            result,
+            localMappingPath,
+            baseTableName,
+          });
+          return undefined;
+        }
+        return {
+          baseTableName: baseTable.name,
+          mappingPath: result.slice(sliceLength),
+        };
+      } else
+        return {
+          baseTableName,
+          mappingPath: result,
+        };
+    })
+  ).map(({ baseTableName, mappingPath }) => ({
+    mappingPath,
+    mappingLineData: getMappingLineData({
+      baseTableName,
+      mappingPath,
+      getMappedFields: getMappedFields.bind(undefined, lines),
+      generateFieldData: 'selectedOnly',
+    }).map((data) => ({
+      ...data,
+      customSelectType: 'PREVIEW_LIST',
+      isOpen: true,
+    })),
+  }));
 }
