@@ -19,6 +19,9 @@ import type {
   SpViewSetObj,
 } from '../DataModel/types';
 import { DataObjectFormatter } from '../Formatters';
+import { formattersSpec } from '../Formatters/spec';
+import type { BaseSpec } from '../Syncer';
+import type { SimpleXmlNode } from '../Syncer/xmlToJson';
 import { PreferencesContent } from '../UserPreferences';
 import type { UserPreferences } from '../UserPreferences/helpers';
 import {
@@ -27,10 +30,11 @@ import {
 } from '../UserPreferences/helpers';
 import { PreferencesContext, useDarkMode } from '../UserPreferences/Hooks';
 import { WebLinkEditor } from '../WebLinks/Editor';
+import { webLinksSpec } from '../WebLinks/spec';
 import { useCodeMirrorExtensions } from './EditorComponents';
 import type { appResourceSubTypes } from './types';
 
-export type AppResourceEditorType = 'visual' | 'json' | 'xml' | 'generic';
+export type AppResourceEditorType = 'generic' | 'json' | 'visual' | 'xml';
 
 export type AppResourceTabProps = {
   readonly editorType: AppResourceEditorType;
@@ -49,65 +53,67 @@ export type AppResourceTabProps = {
     data: string | (() => string | null | undefined) | null
   ) => void;
 };
+const generateEditor = (xmlSpec: (() => BaseSpec<SimpleXmlNode>) | undefined) =>
+  function AppResourceTextEditor({
+    resource,
+    appResource,
+    data,
+    showValidationRef,
+    onChange: handleChange,
+  }: Omit<AppResourceTabProps, 'onChange'> & {
+    readonly onChange: (data: string) => void;
+  }): JSX.Element {
+    const isDarkMode = useDarkMode();
+    const extensions = useCodeMirrorExtensions(resource, appResource, xmlSpec);
 
-export function AppResourceTextEditor({
-  resource,
-  appResource,
-  data,
-  showValidationRef,
-  onChange: handleChange,
-}: Omit<AppResourceTabProps, 'onChange'> & {
-  readonly onChange: (data: string) => void;
-}): JSX.Element {
-  const isDarkMode = useDarkMode();
-  const extensions = useCodeMirrorExtensions(resource, appResource);
+    const [stateRestored, setStateRestored] = React.useState<boolean>(false);
+    const codeMirrorRef = React.useRef<ReactCodeMirrorRef | null>(null);
+    React.useEffect(() => {
+      showValidationRef.current = (): void => {
+        const editorView = codeMirrorRef.current?.view;
+        f.maybe(editorView, openLintPanel);
+      };
+    }, [showValidationRef]);
+    const selectionRef = React.useRef<unknown | undefined>(undefined);
 
-  const [stateRestored, setStateRestored] = React.useState<boolean>(false);
-  const codeMirrorRef = React.useRef<ReactCodeMirrorRef | null>(null);
-  React.useEffect(() => {
-    showValidationRef.current = (): void => {
-      const editorView = codeMirrorRef.current?.view;
-      f.maybe(editorView, openLintPanel);
-    };
-  }, [showValidationRef]);
-  const selectionRef = React.useRef<unknown | undefined>(undefined);
+    const handleRef = React.useCallback(
+      (ref: ReactCodeMirrorRef | null) => {
+        codeMirrorRef.current = ref;
+        // Restore selection state when switching tabs or toggling full screen
+        if (!stateRestored && typeof ref?.view === 'object') {
+          if (selectionRef.current !== undefined)
+            ref.view.dispatch({
+              selection: EditorSelection.fromJSON(selectionRef.current),
+            });
+          setStateRestored(true);
+        }
+      },
+      [stateRestored]
+    );
+    const isReadOnly = React.useContext(ReadOnlyContext);
+    return (
+      <CodeMirror
+        className="border border-brand-300 dark:border-none"
+        extensions={writable(extensions)}
+        readOnly={isReadOnly}
+        ref={handleRef}
+        theme={isDarkMode ? okaidia : xcodeLight}
+        value={data ?? ''}
+        /*
+         * FEATURE: provide supported attributes for autocomplete
+         *   https://codemirror.net/examples/autocompletion/
+         *   https://github.com/codemirror/lang-xml#api-reference
+         */
+        onChange={handleChange}
+        onUpdate={({ state }): void => {
+          selectionRef.current = state.selection.toJSON();
+        }}
+      />
+    );
+  };
 
-  const handleRef = React.useCallback(
-    (ref: ReactCodeMirrorRef | null) => {
-      codeMirrorRef.current = ref;
-      // Restore selection state when switching tabs or toggling full screen
-      if (!stateRestored && typeof ref?.view === 'object') {
-        if (selectionRef.current !== undefined)
-          ref.view.dispatch({
-            selection: EditorSelection.fromJSON(selectionRef.current),
-          });
-        setStateRestored(true);
-      }
-    },
-    [stateRestored]
-  );
-  const isReadOnly = React.useContext(ReadOnlyContext);
-  return (
-    <CodeMirror
-      className="border border-brand-300 dark:border-none"
-      extensions={writable(extensions)}
-      readOnly={isReadOnly}
-      ref={handleRef}
-      theme={isDarkMode ? okaidia : xcodeLight}
-      value={data ?? ''}
-      /*
-       * FEATURE: show validation errors when editing recognized XML file
-       * FEATURE: provide supported attributes for autocomplete
-       *   https://codemirror.net/examples/autocompletion/
-       *   https://github.com/codemirror/lang-xml#api-reference
-       */
-      onChange={handleChange}
-      onUpdate={({ state }): void => {
-        selectionRef.current = state.selection.toJSON();
-      }}
-    />
-  );
-}
+export const AppResourceTextEditor = generateEditor(undefined);
+export const generateXmlEditor = generateEditor;
 
 function UserPreferencesEditor({
   data: initialData,
@@ -184,13 +190,13 @@ export const visualAppResourceEditors = f.store<
   webLinks: {
     visual: WebLinkEditor,
     json: WebLinkEditor,
-    xml: AppResourceTextEditor,
+    xml: generateXmlEditor(webLinksSpec),
   },
   uiFormatters: undefined,
   dataObjectFormatters: {
     visual: DataObjectFormatter,
     json: DataObjectFormatter,
-    xml: AppResourceTextEditor,
+    xml: generateXmlEditor(formattersSpec),
   },
   searchDialogDefinitions: undefined,
   dataEntryTables: undefined,
@@ -198,6 +204,5 @@ export const visualAppResourceEditors = f.store<
   otherXmlResource: undefined,
   otherJsonResource: undefined,
   otherPropertiesResource: undefined,
-  // FIXME: add validation for XML and JSON resources 🔥
   otherAppResources: undefined,
 }));

@@ -23,6 +23,8 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpAppResource, SpViewSetObj } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import { downloadFile, FilePicker, fileToText } from '../Molecules/FilePicker';
+import type { BaseSpec } from '../Syncer';
+import type { SimpleXmlNode } from '../Syncer/xmlToJson';
 import { usePref } from '../UserPreferences/usePref';
 import { jsonLinter, xmlLinter } from './codeMirrorLinters';
 import type { getResourceType } from './filtersHelpers';
@@ -146,7 +148,8 @@ export function useIndent(): string {
 
 export function useCodeMirrorExtensions(
   resource: SerializedResource<SpAppResource | SpViewSetObj>,
-  appResource: SpecifyResource<SpAppResource | SpViewSetObj>
+  appResource: SpecifyResource<SpAppResource | SpViewSetObj>,
+  xmlSpec: (() => BaseSpec<SimpleXmlNode>) | undefined
 ): RA<Extension> {
   const [lineWrap] = usePref('appResources', 'behavior', 'lineWrap');
   const [indentSize] = usePref('appResources', 'behavior', 'indentSize');
@@ -172,7 +175,7 @@ export function useCodeMirrorExtensions(
         : mode === 'properties'
         ? [StreamLanguage.define(properties)]
         : mode === 'jrxml' || mode === 'xml'
-        ? [xml(), xmlLinter(handleLinted)]
+        ? [xml(), xmlLinter(xmlSpec?.())(handleLinted)]
         : [];
     setExtensions([
       ...language,
@@ -183,7 +186,7 @@ export function useCodeMirrorExtensions(
     ]);
 
     return (): void => appResource.saveBlockers?.remove(linterKey);
-  }, [appResource, mode, lineWrap, indentCharacter, indentSize]);
+  }, [appResource, mode, lineWrap, indentCharacter, indentSize, xmlSpec]);
 
   return extensions;
 }

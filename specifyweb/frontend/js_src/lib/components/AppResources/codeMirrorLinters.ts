@@ -5,7 +5,16 @@ import type { Extension, Text } from '@codemirror/state';
 import type { EditorView } from 'codemirror';
 
 import type { RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { mappedFind } from '../../utils/utils';
+import { consoleLog } from '../Errors/interceptLogs';
+import type { LogPathPart } from '../Errors/logContext';
+import { getLogContext, pathKey, setLogContext } from '../Errors/logContext';
+import type { BaseSpec } from '../Syncer';
+import { findNodePosition } from '../Syncer/findNodePosition';
+import { syncers } from '../Syncer/syncers';
+import type { SimpleXmlNode } from '../Syncer/xmlToJson';
+import { toSimpleXmlNode, xmlToJson } from '../Syncer/xmlToJson';
 
 export const createLinter =
   (handler: (view: EditorView) => RA<Diagnostic>) =>
@@ -16,10 +25,49 @@ export const createLinter =
       return results;
     });
 
-export const xmlLinter = createLinter(({ state }) => {
-  const parsed = parseXml(state.doc.toString());
-  return typeof parsed === 'string' ? [formatXmlError(state.doc, parsed)] : [];
-});
+export const xmlLinter = (
+  spec: BaseSpec<SimpleXmlNode> | undefined
+): ReturnType<typeof createLinter> =>
+  createLinter(({ state }) => {
+    const string = state.doc.toString();
+    const parsed = parseXml(string);
+    return typeof parsed === 'string'
+      ? [formatXmlError(state.doc, parsed)]
+      : typeof spec === 'object'
+      ? parseXmlUsingSpec(spec, parsed, string)
+      : [];
+  });
+
+function parseXmlUsingSpec(
+  spec: BaseSpec<SimpleXmlNode>,
+  xml: Element,
+  string: string
+): RA<Diagnostic> {
+  const parsed = xmlToJson(xml);
+  const simple = toSimpleXmlNode(parsed);
+  const { serializer } = syncers.object(spec);
+
+  const logContext = getLogContext();
+  const logIndexBefore = consoleLog.length;
+  serializer(simple);
+  const errors = consoleLog.slice(logIndexBefore);
+  setLogContext(logContext);
+
+  return filterArray(
+    errors.map(({ context, type, message }) =>
+      Array.isArray(context[pathKey])
+        ? {
+            severity:
+              type === 'error' ? 'error' : type === 'warn' ? 'warning' : 'info',
+            message: message
+              .map((part) => (part as number).toString())
+              .join('\n'),
+            ...findNodePosition(string, context[pathKey] as RA<LogPathPart>),
+          }
+        : undefined
+    )
+  );
+}
 
 export const jsonLinter = createLinter(jsonParseLinter());
 

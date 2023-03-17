@@ -26,7 +26,7 @@ export function setLogContext(newContext: IR<unknown>): void {
 }
 
 type BasePathPart = { readonly extras?: IR<unknown> };
-type PathPart = BasePathPart &
+export type LogPathPart = BasePathPart &
   (
     | State<'Attribute', { readonly attribute: string }>
     | State<'Child', { readonly tagName: string }>
@@ -39,7 +39,7 @@ type PathPart = BasePathPart &
 /**
  * Add context to errors and validation messages
  */
-export const pushContext = (part: PathPart): void =>
+export const pushContext = (part: LogPathPart): void =>
   modifyContext((path) => [...path, part]);
 
 function modifyContext(
