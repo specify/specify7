@@ -26,7 +26,7 @@ class Tree(models.Model):
     class Meta:
         abstract = True
 
-    def save(self, *args, skip_tree_extras=False, skip_fullname_set=False, **kwargs):
+    def save(self, *args, skip_tree_extras=False, **kwargs):
         def save():
             super(Tree, self).save(*args, **kwargs)
 
@@ -103,15 +103,13 @@ class Tree(models.Model):
                  }})
 
         if prev_self is None:
-             if not skip_fullname_set:
-                set_fullnames(self.definition, null_only=True, node_number_range=[self.nodenumber, self.highestchildnodenumber])
+            set_fullnames(self.definition, null_only=True, node_number_range=[self.nodenumber, self.highestchildnodenumber])
         elif (
             prev_self.name != self.name
             or prev_self.definitionitem_id != self.definitionitem_id
             or prev_self.parent_id != self.parent_id
         ):
-            if not skip_fullname_set:
-                set_fullnames(self.definition, node_number_range=[self.nodenumber, self.highestchildnodenumber])
+            set_fullnames(self.definition, node_number_range=[self.nodenumber, self.highestchildnodenumber])
 
     def accepted_id_attr(self):
         return 'accepted{}_id'.format(self._meta.db_table)
@@ -278,7 +276,7 @@ def merge(node, into, agent):
             merge(child, matched[0], agent)
         else:
             child.parent = target
-            child.save(skip_fullname_set=True)
+            child.save()
     new_target = model.objects.get(id=into.id)
     set_fullnames(new_target.definition, node_number_range=[new_target.nodenumber, new_target.highestchildnodenumber])
     for retry in range(100):
