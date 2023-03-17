@@ -10,6 +10,42 @@ import logging
 logger = logging.getLogger(__name__)
 from django.db import connection
 
+def import_taxon(current_taxon_row, previous_taxon_row):
+    for rank_index in range(len(current_taxon_row)):
+        if not (current_taxon_row[rank_index] == previous_taxon_row[rank_index]):
+            insert_taxon_row(current_taxon_row, rank_index)
+            break
+
+
+def coalesce(value1, value2):
+    if value1 is None:
+        if value2 is None:
+            return None
+        return value2
+    if value2 is None:
+        return value1
+    return value2
+
+
+def insert_taxon_row(taxon_row_to_insert, rank_index):
+    running_parent_id = None
+    for index in range(0, rank_index):
+        running_parent_id = coalesce(running_parent_id,
+                                     taxon_row_to_insert[index])
+
+    for updating_index in range(rank_index, len(taxon_row_to_insert)):
+        updating_taxon = taxon_row_to_insert[updating_index]
+        update_id(updating_taxon, running_parent_id)
+        running_parent_id = coalesce(running_parent_id, updating_taxon)
+
+
+
+def update_id(num1, num2):
+    if num1 is None:
+        return
+    logger.warning('setting parent of ', num1, ' to ', num2)
+
+
 @login_maybe_required
 @openapi(schema={
     'get': {
@@ -76,7 +112,7 @@ def collection_locality_geography(request) -> HttpResponse:
     cursor = connection.cursor()
     ####LOC_GEO
     # COUNTRIES
-    geography_dict = {}
+    '''geography_dict = {}
     #don't need geographyid
     cursor.execute(
         """
@@ -90,7 +126,28 @@ def collection_locality_geography(request) -> HttpResponse:
                 and GEO.nodenumber between g.nodenumber and g.HighestChildNodeNumber) As GEO2
         """)
     geography_dict['countries'] = int((cursor.fetchone()[0]))
-    return http.JsonResponse(geography_dict)
+    
+    '''
+    previous_row = [None, None, None, None, None, None, None, None]
+    cursor.execute(
+        """
+        SELECT kingdom, phylum, class, order_, family, genus, species, subspecies from taxon_to_import limit 20; 
+        """
+    )
+    taxon_to_import = list(cursor.fetchall())
+
+
+    for taxon_counter in range(len(taxon_to_import)):
+        logger.warning('On row: ')
+        logger.warning(taxon_counter)
+        import_taxon(taxon_to_import[taxon_counter], previous_row)
+        previous_row = taxon_to_import[taxon_counter]
+
+    return http.JsonResponse({3: 5})
+
+
+
+
 
 @login_maybe_required
 @openapi(schema={
