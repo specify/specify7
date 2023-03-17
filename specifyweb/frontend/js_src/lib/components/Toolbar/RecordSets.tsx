@@ -64,6 +64,9 @@ export function RecordSetsDialog({
   const [sortConfig, handleSort] = useSortConfig('listOfRecordSets', 'name');
 
   const { paginator, limit, offset } = usePaginator();
+  const orderBy = `${sortConfig.ascending ? '' : '-'}${
+    sortConfig.sortField
+  }` as const;
   const [data] = useAsyncState(
     React.useCallback(
       async () =>
@@ -72,11 +75,11 @@ export function RecordSetsDialog({
           type: 0,
           limit,
           domainFilter: true,
-          orderBy: `${sortConfig.ascending ? '' : '-'}${sortConfig.sortField}`,
+          orderBy,
           offset,
           dbTableId: table?.tableId,
         }),
-      [table, limit, offset, sortConfig]
+      [table, limit, offset, orderBy]
     ),
     true
   );
