@@ -21,6 +21,7 @@ import { userInformation } from '../InitialContext/userInformation';
 import { titleDelay, titlePosition } from '../Molecules/Tooltips';
 import { ActiveLink } from '../Router/ActiveLink';
 import { usePref } from '../UserPreferences/usePref';
+import { Logo } from './Logo';
 import type { MenuItemName } from './menuItemDefinitions';
 import { useUserTools } from './menuItemProcessing';
 import { Notifications } from './Notifications';
@@ -105,35 +106,7 @@ export function Header({
         }
       `}
     >
-      <h1 className="contents">
-        <a
-          className={`
-              flex items-center
-              ${isCollapsed ? 'p-2' : 'p-4'}
-            `}
-          href="/specify/"
-        >
-          {/* Both logs are loaded to prevent flickering on collapse/expand */}
-          <img
-            alt=""
-            className={`
-                hover:animate-hue-rotate
-                ${isCollapsed ? 'hidden' : ''}
-              `}
-            src="/static/img/logo.svg"
-          />
-          <img
-            alt=""
-            className={`
-              hover:animate-hue-rotate
-              ${isCollapsed ? '' : 'hidden'}
-              ${isHorizontal ? 'w-10' : ''}
-            `}
-            src="/static/img/short_logo.svg"
-          />
-          <span className="sr-only">{commonText.goToHomepage()}</span>
-        </a>
-      </h1>
+      <Logo isCollapsed={isCollapsed} isHorizontal={isHorizontal} />
       <nav
         className={`
           flex flex-1 overflow-auto

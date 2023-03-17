@@ -1410,4 +1410,10 @@ export const preferencesText = createDictionary({
     'fr-fr': 'Utiliser des infobulles modernes',
     'uk-ua': 'Використовувати сучасні підказки',
   },
+  customLogo: {
+    'en-us': 'Show custom logo',
+  },
+  customLogoCollapsed: {
+    'en-us': 'Show custom logo (when menu is collapsed)',
+  },
 } as const);
