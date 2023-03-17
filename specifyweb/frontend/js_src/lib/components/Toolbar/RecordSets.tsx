@@ -22,12 +22,12 @@ import type { RecordSet } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { DateElement } from '../Molecules/DateElement';
 import { Dialog } from '../Molecules/Dialog';
+import { usePaginator } from '../Molecules/Paginator';
 import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasToolPermission } from '../Permissions/helpers';
 import { OverlayContext } from '../Router/Router';
 import { EditRecordSet } from './RecordSetEdit';
-import { usePaginator } from '../Molecules/Paginator';
 
 export function RecordSetsOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -66,29 +66,20 @@ export function RecordSetsDialog({
     'name'
   );
 
-  const [currentPage, setCurrentPage] = React.useState<number>(0);
-  const [rowsPerPage, setRowPerPage] = React.useState<number>(10);
-  const { paginator } = usePaginator({
-    totalCount: data?.totalCount,
-    onPageChange: handlePageChange,
-    currentPage,
-    rowsPerPage,
-    rowsPerPageValue,
-  });
-
+  const { paginator, limit, offset } = usePaginator();
   const [unsortedData] = useAsyncState(
     React.useCallback(
       async () =>
         fetchCollection('RecordSet', {
           specifyUser: userInformation.id,
           type: 0,
-          limit: rowsPerPage,
+          limit,
           domainFilter: true,
           orderBy: '-timestampCreated',
-          offset: currentPage * rowsPerPage,
+          offset,
           dbTableId: table?.tableId,
         }),
-      [table, rowsPerPage]
+      [table, limit, offset]
     ),
     true
   );
@@ -166,7 +157,7 @@ export function RecordSetsDialog({
                 )}
               </tbody>
             </table>
-            {paginator}
+            {paginator(data?.totalCount)}
           </>
         ),
         dialog: (children, buttons) => (
