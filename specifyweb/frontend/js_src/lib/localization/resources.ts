@@ -187,7 +187,7 @@ export const resourcesText = createDictionary({
   custom: {
     'en-us': 'Custom',
     'ru-ru': 'Настроить',
-    'es-es': 'Disfraz',
+    'es-es': 'Costumbre',
     'fr-fr': 'Personnalisé',
     'uk-ua': 'Custom',
   },

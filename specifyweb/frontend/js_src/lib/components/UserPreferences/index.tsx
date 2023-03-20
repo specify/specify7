@@ -53,7 +53,13 @@ function Preferences(): JSX.Element {
     [handleChangesMade, handleRestartNeeded]
   );
 
-  const { visibleChild, forwardRefs, scrollContainerRef } = useTopChild();
+  const {
+    visibleChild,
+    setVisibleChild,
+    forwardRefs,
+    scrollContainerRef,
+    references,
+  } = useTopChild();
 
   return (
     <Container.FullGray>
@@ -74,7 +80,11 @@ function Preferences(): JSX.Element {
           className="relative flex flex-col gap-6 overflow-y-auto md:flex-row"
           ref={scrollContainerRef}
         >
-          <PreferencesAside activeCategory={visibleChild} />
+          <PreferencesAside
+            activeCategory={visibleChild}
+            references={references}
+            setActiveCategory={setVisibleChild}
+          />
           <PreferencesContent forwardRefs={forwardRefs} isReadOnly={false} />
           <span className="flex-1" />
         </div>

@@ -112,7 +112,7 @@ export function SchemaConfigMain(): JSX.Element {
         languages={schemaData.languages}
         onSave={canSave ? handleSave : undefined}
       />
-      <div className="flex flex-1 flex-col gap-4 overflow-y-auto sm:flex-row">
+      <div className="flex flex-1 flex-col gap-4 overflow-y-auto sm:flex-row sm:overflow-hidden">
         <SchemaConfigTable
           container={container}
           desc={desc}

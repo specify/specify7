@@ -101,6 +101,8 @@ database both though Django ORM and though SQLAlchemy.
 Back-end root directory
 is [./specifyweb/](https://github.com/specify/specify7/tree/production/specifyweb)
 
+[We have a video of a full back-end overview from January 2023 available here](https://drive.google.com/file/d/1OW60g99aiPw1Y8uHdCUxZCiVnLbFhObG/view?usp=sharing)
+
 ## IDE Setup
 
 No special IDE configuration is required, but some optional plugins would
