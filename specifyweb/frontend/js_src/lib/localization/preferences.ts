@@ -1411,9 +1411,13 @@ export const preferencesText = createDictionary({
     'uk-ua': 'Використовувати сучасні підказки',
   },
   customLogo: {
-    'en-us': 'Show custom logo',
+    'en-us': 'Expanded Image URL',
   },
   customLogoCollapsed: {
-    'en-us': 'Show custom logo (when menu is collapsed)',
+    'en-us': 'Collapsed Image URL',
+  },
+  customLogoDescription: {
+    'en-us':
+      'A URL to an image that would be displayed next to the Specify logo in the navigation menu',
   },
 } as const);

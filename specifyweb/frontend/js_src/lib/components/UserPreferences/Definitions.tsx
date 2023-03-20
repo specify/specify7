@@ -505,6 +505,7 @@ export const preferenceDefinitions = {
             visible: true,
             defaultValue: '',
             type: 'text',
+            description: preferencesText.customLogoDescription(),
           }),
           customLogoCollapsed: defineItem<string>({
             title: preferencesText.customLogoCollapsed(),
