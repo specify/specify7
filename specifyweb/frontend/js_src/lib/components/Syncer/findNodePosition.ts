@@ -122,6 +122,32 @@ function finder(
   tagStart: ((part: string) => boolean) | undefined
 ): number | undefined {
   let depth = 0;
+  return (
+    xmlStringTraverse(
+      xml,
+      (match) => {
+        if (depth === 0 && tagStart?.(match[0]) === true) return match.index;
+        else if (!match[0].endsWith('/>')) depth += 1;
+        return undefined;
+      },
+      (match) => {
+        depth -= 1;
+        if (depth < 0) return null;
+        if (depth === 0 && tagEnd?.(match[0]) === true) return match.index;
+        return undefined;
+      }
+    ) ?? undefined
+  );
+}
+
+export function xmlStringTraverse<T>(
+  xml: string,
+  /**
+   * Return anything other than undefined to stop the traversal
+   */
+  startMatch: (match: RegExpExecArray) => undefined | T,
+  endMatch: (match: RegExpExecArray) => undefined | T
+): T | undefined {
   let match: RegExpExecArray | null;
   reTag.lastIndex = 0;
   while ((match = reTag.exec(xml)) !== null) {
@@ -129,15 +155,16 @@ function finder(
     if (part === '<!--')
       reTag.lastIndex = xml.indexOf('-->', reTag.lastIndex) + 3;
     else if (part.startsWith('</')) {
-      depth -= 1;
-      if (depth < 0) return undefined;
-      if (depth === 0 && tagEnd?.(part) === true) return match.index;
+      const end = endMatch(match);
+      if (end !== undefined) return end;
     } else if (part.startsWith('<')) {
       if (part.endsWith('?>')) continue;
       else if (part.startsWith('<![CDATA['))
         reTag.lastIndex = xml.indexOf(']]>', reTag.lastIndex) + 3;
-      else if (depth === 0 && tagStart?.(part) === true) return match.index;
-      else if (!part.endsWith('/>')) depth += 1;
+      else {
+        const start = startMatch(match);
+        if (start !== undefined) return start;
+      }
     }
   }
   return undefined;

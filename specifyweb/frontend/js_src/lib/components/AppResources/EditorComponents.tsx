@@ -30,6 +30,7 @@ import { jsonLinter, xmlLinter } from './codeMirrorLinters';
 import type { getResourceType } from './filtersHelpers';
 import { getAppResourceExtension } from './hooks';
 import { appResourceSubTypes, appResourceTypes } from './types';
+import { getUserPref } from '../UserPreferences/helpers';
 
 export const appResourceIcon = (
   type: ReturnType<typeof getResourceType>
@@ -143,6 +144,19 @@ const linterKey = `parseError:${'spAppResourceDatas'.toLowerCase()}`;
 export function useIndent(): string {
   const [indentSize] = usePref('appResources', 'behavior', 'indentSize');
   const [indentWithTab] = usePref('appResources', 'behavior', 'indentWithTab');
+  return indentWithTab ? '\t' : ' '.repeat(indentSize);
+}
+
+/**
+ * Use useIndent() instead whenever possible
+ */
+export function getIndent(): string {
+  const indentSize = getUserPref('appResources', 'behavior', 'indentSize');
+  const indentWithTab = getUserPref(
+    'appResources',
+    'behavior',
+    'indentWithTab'
+  );
   return indentWithTab ? '\t' : ' '.repeat(indentSize);
 }
 

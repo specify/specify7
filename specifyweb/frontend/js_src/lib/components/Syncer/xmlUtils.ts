@@ -2,6 +2,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { f } from '../../utils/functools';
 import { parseBoolean } from '../../utils/parser/parse';
+import { formatXmlAttributes } from './formatXmlAttributes';
 import type { BaseSpec, SpecToJson } from './index';
 import { runParser } from './index';
 import type { SimpleXmlNode, XmlNode } from './xmlToJson';
@@ -31,9 +32,11 @@ export const getBooleanAttribute = (
 const reEmptyTag = /<(?<name>[^\s/>]+)(?<attributes>[^<>]*)><\/\k<name>>/gu;
 
 export const xmlToString = (xml: Node): string =>
-  new XMLSerializer()
-    .serializeToString(xml)
-    .replaceAll(reEmptyTag, '<$<name>$<attributes> />');
+  formatXmlAttributes(
+    new XMLSerializer()
+      .serializeToString(xml)
+      .replaceAll(reEmptyTag, '<$<name>$<attributes> />')
+  );
 
 export const createXmlSpec = <SPEC extends BaseSpec<SimpleXmlNode>>(
   spec: SPEC
