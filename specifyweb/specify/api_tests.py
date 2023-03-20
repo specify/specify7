@@ -633,10 +633,53 @@ class ReplaceRecordTests(ApiTests):
             content_type='text/plain')
         self.assertEqual(response.status_code, 204)
 
-       # Assert that only one of the Authors remains
+        # Assert that only one of the Authors remains
         self.assertEqual(models.Author.objects.filter(id=2550).exists(), False)
         self.assertEqual(models.Author.objects.filter(id=2554).exists(), True)
 
         # Asser that only one of the Agents remains
         self.assertEqual(models.Agent.objects.filter(id=4462).exists(), False)
         self.assertEqual(models.Agent.objects.filter(id=4458).exists(), True)
+
+    def test_agent_address_replacement(self):
+        c = Client()
+        c.force_login(self.specifyuser)
+
+        # Create agents and a collector relationship
+        agent_1 = models.Agent.objects.create(
+            id=7,
+            agenttype=0,
+            firstname="agent",
+            lastname="007",
+            specifyuser=None)
+        agent_2 = models.Agent.objects.create(
+            id=6,
+            agenttype=0,
+            firstname="agent",
+            lastname="006",
+            specifyuser=None)
+
+        # Create mock addresses
+        models.Address.objects.create(
+            id=1,
+            timestampcreated="22022-11-30 14:34:51.000",
+            address="1234 Main St.",
+            agent=agent_1
+        )
+        models.Address.objects.create(
+            id=2,
+            timestampcreated="2022-11-30 14:33:30.000",
+            address="5678 Rainbow Rd.",
+            agent=agent_2
+        )
+
+        # Assert that the api request ran successfully
+        response = c.post(
+            f'/api/specify/agent/replace/{agent_2.id}/{agent_1.id}/',
+            data=[],
+            content_type='text/plain')
+        self.assertEqual(response.status_code, 204)
+        
+        # Assert there is only one address the points to agent_1
+        self.assertEqual(models.Address.objects.filter(agent_id=7).count(), 1)
+        self.assertEqual(models.Address.objects.filter(agent_id=6).exists(), False)
