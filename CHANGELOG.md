@@ -29,6 +29,34 @@ Coming in the next few months:
 
 ## [7.8.9](https://github.com/specify/specify7/compare/v7.8.7...HEAD) (Unreleased)
 
+## [7.8.8](https://github.com/specify/specify7/compare/v7.8.7.1...v7.8.8) (March 20 2023)
+
+### Added
+
+- A new warning for attachments that are too large to upload has been
+  added ([#729](https://github.com/specify/specify7/issues/729))
+- A webpack visualizer has been added for development purposes ([#3119](https://github.com/specify/specify7/pull/3119))
+
+### Fixed
+
+- "Export to KML" functionality has been returned ([#3088](https://github.com/specify/specify7/issues/3088) - *Reported
+  by CSIRO*)
+- Fixed issue that prevented some users from merging items in the
+  trees ([#3133](https://github.com/specify/specify7/pull/3133) - *Reported by RBGE and AAFC*)
+- Display issues preventing the "Name" field from displaying in the Security & Accounts panel has been resolved
+  - ([#3140](https://github.com/specify/specify7/issues/3140) - *Reported by SAIAB*)
+- Record sets can no longer have a negative index value ([#3033](https://github.com/specify/specify7/issues/3033))
+- The color picker is now correctly positioned in Safari ([#2215](https://github.com/specify/specify7/issues/2215))
+- The default export delimiter is once again "Comma" instead of "
+  Tab" ([#3106](https://github.com/specify/specify7/issues/3106) - *Reported by FWRI*)
+- Fixed some app resources not displaying due to a scoping bug ([#3014](https://github.com/specify/specify7/issues/3104)
+  - *Reported by SAIAB*)
+- System information is now stored in the stack
+  trace ([5be8ece](https://github.com/specify/specify7/commit/5be8ece6cd5937354622b9efae162a9cd7aeb329))
+- Header overflowing has been resolved in the App Resources
+  viewer ([#3103](https://github.com/specify/specify7/issues/3103))
+
+
 ## [7.8.7.1](https://github.com/specify/specify7/compare/v7.8.7...v7.8.7.1) (March 3 2023)
 
 ### Fixed
