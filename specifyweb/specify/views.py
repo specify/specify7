@@ -400,6 +400,7 @@ class ReplaceRecordPT(PermissionTarget):
     update = PermissionTargetAction()
     delete = PermissionTargetAction()
 
+@transaction.atomic
 def record_merge_fx(model_name: str, old_model_id: int, new_model_id: int) -> http.HttpResponse:
     """Replaces all the foreign keys referencing the old record ID
     with the new record ID, and deletes the old record record.
@@ -414,6 +415,12 @@ def record_merge_fx(model_name: str, old_model_id: int, new_model_id: int) -> ht
         return http.HttpResponseNotFound(model_name + "ID: " + str(old_model_id) + " does not exist.")
     if not target_model.objects.filter(id=new_model_id).select_for_update().exists():
         return http.HttpResponseNotFound(model_name + "ID: " + str(new_model_id) + " does not exist.")
+    
+    # Get dependent fields and objects of the target object
+    target_object = target_model.objects.get(id=old_model_id)
+    dependant_table_names = [rel.relatedModelName
+        for rel in target_object.specify_model.relationships
+        if api.is_dependent_field(target_object, rel.name)]
 
     # Get all of the columns in all of the tables of specify the are foreign keys referencing AgentID
     foreign_key_cols = []
@@ -444,6 +451,13 @@ def record_merge_fx(model_name: str, old_model_id: int, new_model_id: int) -> ht
 
             # Update and save the foreign model objects with the new_model_id
             for obj in foreign_objects:
+                # If it is a dependent field, delete the object instead of updating it.
+                # This is done inorder to avoid duplicates
+                if table_name in dependant_table_names:
+                    obj.delete()
+                    continue
+
+                # Set new value for the field
                 setattr(obj, field_name_id, new_model_id)
 
                 def record_merge_recur():
@@ -534,8 +548,8 @@ def record_merge(request: http.HttpRequest, model_name: str, old_model_id: int, 
     check_permission_targets(None, request.specify_user.id, [ReplaceRecordPT.update, ReplaceRecordPT.delete])
 
     # TODO: Test reocord merging targeting records other than Agent before allowing generic merging
-    if model_name.lower() != 'Agent'.lower():
-        return http.HttpResponseForbidden(f'Record Merging for the {model_name} table is not yet tested.')
+    # if model_name.lower() != 'Agent'.lower():
+    #     return http.HttpResponseForbidden(f'Record Merging for the {model_name} table is not yet been fully tested.')
 
     response = record_merge_fx(model_name, old_model_id, new_model_id)
     return response
