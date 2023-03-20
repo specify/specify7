@@ -210,7 +210,6 @@ const findDefaultFormatter = (
     .filter((formatter) => formatter.table === table)
     .sort(sortFunction(({ isDefault }) => isDefault, true))?.[KEY];
 
-const autoGenerateFields = 2;
 const autoGenerateFormatter = (table: SpecifyTable): Formatter => ({
   name: table.name,
   title: table.name,
@@ -224,7 +223,11 @@ const autoGenerateFormatter = (table: SpecifyTable): Formatter => ({
       {
         value: undefined,
         fields: getMainTableFields(table.name)
-          .slice(0, autoGenerateFields)
+          /*
+           * Selecting just one field, because then don't have to worry about
+           * separator
+           */
+          .slice(0, 1)
           .map((field) => ({
             field: [field],
             separator: '',
