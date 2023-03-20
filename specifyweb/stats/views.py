@@ -12,9 +12,10 @@ from django.db import connection
 
 def import_taxon(current_taxon_row, previous_taxon_row):
     for rank_index in range(len(current_taxon_row)):
-        if not (current_taxon_row[rank_index] == previous_taxon_row[rank_index]):
-            insert_taxon_row(current_taxon_row, rank_index)
+        if not (current_taxon_row[rank_index] == previous_taxon_row[rank_index]['name']):
+            return insert_taxon_row(current_taxon_row, rank_index, previous_taxon_row[0:rank_index])
             break
+    return previous_taxon_row
 
 
 def coalesce(value1, value2):
@@ -27,23 +28,47 @@ def coalesce(value1, value2):
     return value2
 
 
-def insert_taxon_row(taxon_row_to_insert, rank_index):
+def insert_taxon_row(taxon_row_to_insert, rank_index, previous_parents):
     running_parent_id = None
-    for index in range(0, rank_index):
+    previous_taxon_to_return = []
+    for index in range(len(previous_parents)):
         running_parent_id = coalesce(running_parent_id,
-                                     taxon_row_to_insert[index])
+                                     previous_parents[index]['id'])
+        previous_taxon_to_return.append({
+            'name': previous_parents[index]['name'],
+            'id': previous_parents[index]['id']
+        }
+        )
 
     for updating_index in range(rank_index, len(taxon_row_to_insert)):
         updating_taxon = taxon_row_to_insert[updating_index]
-        update_id(updating_taxon, running_parent_id)
-        running_parent_id = coalesce(running_parent_id, updating_taxon)
+        new_parent_id = update_id(updating_taxon, running_parent_id,
+                                  updating_index)
+        previous_taxon_to_return.append(
+            {
+                'name': updating_taxon,
+                'id': new_parent_id
+            }
+        )
+        running_parent_id = coalesce(running_parent_id, new_parent_id)
+    return previous_taxon_to_return
 
 
-
-def update_id(num1, num2):
-    if num1 is None:
-        return
-    logger.warning('setting parent of ', num1, ' to ', num2)
+def update_id(id, parent_id, updating_index):
+    if id is None:
+        return None
+    cursor = connection.cursor()
+    sql_str = """insert into fake_taxon (name_, rankid, parentid) values('{n}', {rid}, {pid});""".format(n=id,
+                rid=updating_index,
+                pid="null" if parent_id is None else parent_id)
+    logger.warning(sql_str)
+    cursor.execute(sql_str)
+    cursor.execute(
+        """select max(faketaxonid) from fake_taxon"""
+    )
+    return_id, = cursor.fetchone()
+    #logger.warning(f"setting parent of id:  {return_id}, name: , {id},  to , {parent_id},  at rank , {updating_index}")
+    return return_id
 
 
 @login_maybe_required
@@ -128,20 +153,20 @@ def collection_locality_geography(request) -> HttpResponse:
     geography_dict['countries'] = int((cursor.fetchone()[0]))
     
     '''
-    previous_row = [None, None, None, None, None, None, None, None]
+    previous_row = [{'name': None, 'id': 1} for c in range(8)]
     cursor.execute(
         """
-        SELECT kingdom, phylum, class, order_, family, genus, species, subspecies from taxon_to_import limit 20; 
+        SELECT kingdom, phylum, class, order_, family, genus, species, subspecies from taxon_to_import; 
         """
     )
     taxon_to_import = list(cursor.fetchall())
 
 
     for taxon_counter in range(len(taxon_to_import)):
-        logger.warning('On row: ')
-        logger.warning(taxon_counter)
-        import_taxon(taxon_to_import[taxon_counter], previous_row)
-        previous_row = taxon_to_import[taxon_counter]
+        if taxon_counter % 100 == 0:
+            logger.warning('On row: ')
+            logger.warning(taxon_counter)
+        previous_row = import_taxon(taxon_to_import[taxon_counter], previous_row)
 
     return http.JsonResponse({3: 5})
 
