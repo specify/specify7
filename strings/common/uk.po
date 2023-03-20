@@ -31,7 +31,7 @@ msgstr "Ні"
 #: components/FormSliders/RecordSelectorFromIds.tsx:258
 #: components/Forms/DeleteButton.tsx:108
 #: components/Forms/DeleteButton.tsx:132
-#: components/Forms/ResourceView.tsx:315
+#: components/Forms/ResourceView.tsx:293
 #: components/Forms/SearchDialog.tsx:105
 #: components/Header/ChooseCollection.tsx:37
 #: components/Header/Forms.tsx:61
@@ -136,11 +136,11 @@ msgstr "Створити"
 #: components/FormPlugins/PaleoLocation.tsx:86
 #: components/FormPlugins/index.tsx:203
 #: components/FormPlugins/index.tsx:275
-#: components/FormSliders/RecordSet.tsx:386
+#: components/FormSliders/RecordSet.tsx:387
 #: components/Forms/DataTask.tsx:127
 #: components/Forms/DeleteBlocked.tsx:80
-#: components/Forms/ResourceView.tsx:185
-#: components/Forms/ResourceView.tsx:319
+#: components/Forms/ResourceView.tsx:180
+#: components/Forms/ResourceView.tsx:297
 #: components/Forms/Save.tsx:263
 #: components/Forms/Save.tsx:273
 #: components/Forms/SearchDialog.tsx:256
@@ -304,7 +304,7 @@ msgid "tools"
 msgstr "Інструменти"
 
 #: components/Core/ContextLoader.tsx:51
-#: components/Core/Contexts.tsx:122
+#: components/Core/Contexts.tsx:123
 #: components/Core/__tests__/Contexts.test.tsx:62
 #: components/Core/__tests__/Contexts.test.tsx:73
 #: components/FormCells/FormTable.tsx:195
@@ -795,7 +795,7 @@ msgstr "{resource:string} <wrap>({count:number|formatted})</wrap>"
 #: components/FormCommands/index.tsx:126
 #: components/FormFields/useTypeSearch.tsx:89
 #: components/FormPlugins/index.tsx:212
-#: components/FormSliders/RecordSet.tsx:299
+#: components/FormSliders/RecordSet.tsx:300
 #: components/Forms/BaseResourceView.tsx:108
 #: components/Leaflet/index.ts:144
 #: components/Molecules/FilePicker.tsx:112

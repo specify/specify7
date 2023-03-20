@@ -213,7 +213,7 @@ msgstr "Siguiente registro"
 msgid "currentRecord"
 msgstr "Objeto actual (de {total:number|formatted})"
 
-#: components/Forms/ResourceView.tsx:359
+#: components/Forms/ResourceView.tsx:337
 #: components/Forms/Save.tsx:29
 #. Used in: Components > Forms > Resource View ⬤ Components > Forms > Save
 msgid "unsavedFormUnloadProtect"
@@ -435,12 +435,12 @@ msgstr "Marcha atrás"
 msgid "deletedInline"
 msgstr "(borrado)"
 
-#: components/FormSliders/RecordSet.tsx:387
+#: components/FormSliders/RecordSet.tsx:388
 #. 🟥Example: Duplicate Record Set Item. Used in: Components > Form Sliders > Record Set
 msgid "duplicateRecordSetItem"
 msgstr "Elemento de {recordSetItemTable:string}"
 
-#: components/FormSliders/RecordSet.tsx:392
+#: components/FormSliders/RecordSet.tsx:393
 #. Used in: Components > Form Sliders > Record Set
 msgid "duplicateRecordSetItemDescription"
 msgstr "Este registro ya está presente en el {recordSetTable:string} actual"
@@ -634,12 +634,12 @@ msgstr "Nuevo {tableName:string}"
 msgid "resourceFormatter"
 msgstr "{tableName:string} №{id:number}"
 
-#: components/Forms/ResourceView.tsx:186
+#: components/Forms/ResourceView.tsx:181
 #. Used in: Components > Forms > Resource View
 msgid "resourceDeleted"
 msgstr "Recurso eliminado"
 
-#: components/Forms/ResourceView.tsx:189
+#: components/Forms/ResourceView.tsx:184
 #. Used in: Components > Forms > Resource View
 msgid "resourceDeletedDescription"
 msgstr "El elemento se eliminó con éxito."

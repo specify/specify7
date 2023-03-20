@@ -250,7 +250,7 @@ msgstr "Enregistrement suivant"
 msgid "currentRecord"
 msgstr "Objet actuel (hors de {total:number|formatted})"
 
-#: components/Forms/ResourceView.tsx:359
+#: components/Forms/ResourceView.tsx:337
 #: components/Forms/Save.tsx:29
 #. Used in: Components > Forms > Resource View ⬤ Components > Forms > Save
 #, fuzzy
@@ -513,13 +513,13 @@ msgstr "Inverse"
 msgid "deletedInline"
 msgstr "(supprimé)"
 
-#: components/FormSliders/RecordSet.tsx:387
+#: components/FormSliders/RecordSet.tsx:388
 #. 🟥Example: Duplicate Record Set Item. Used in: Components > Form Sliders > Record Set
 #, fuzzy
 msgid "duplicateRecordSetItem"
 msgstr "Dupliquer {recordSetItemTable:string}"
 
-#: components/FormSliders/RecordSet.tsx:392
+#: components/FormSliders/RecordSet.tsx:393
 #. Used in: Components > Form Sliders > Record Set
 #, fuzzy
 msgid "duplicateRecordSetItemDescription"
@@ -750,13 +750,13 @@ msgstr "Nouveau {tableName:string}"
 msgid "resourceFormatter"
 msgstr "{tableName:string} #{id:number}"
 
-#: components/Forms/ResourceView.tsx:186
+#: components/Forms/ResourceView.tsx:181
 #. Used in: Components > Forms > Resource View
 #, fuzzy
 msgid "resourceDeleted"
 msgstr "Ressource supprimée"
 
-#: components/Forms/ResourceView.tsx:189
+#: components/Forms/ResourceView.tsx:184
 #. Used in: Components > Forms > Resource View
 #, fuzzy
 msgid "resourceDeletedDescription"
