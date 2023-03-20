@@ -257,6 +257,7 @@ function RecordSet<SCHEMA extends AnySchema>({
 
   const [hasDuplicate, handleHasDuplicate, handleDismissDuplicate] =
     useBooleanState();
+
   const handleAdd = (
     resources: RA<SpecifyResource<SCHEMA>>,
     wasNew: boolean
