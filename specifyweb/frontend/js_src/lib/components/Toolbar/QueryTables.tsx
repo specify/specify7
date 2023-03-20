@@ -10,10 +10,9 @@ import { DataEntry } from '../Atoms/DataEntry';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { ReadOnlyContext } from '../Core/Contexts';
-import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { getTableById, strictGetTable } from '../DataModel/tables';
-import type { SpQuery, Tables } from '../DataModel/types';
+import type { Tables } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasTablePermission, hasToolPermission } from '../Permissions/helpers';
@@ -91,10 +90,8 @@ export function useQueryTables(): GetSet<RA<SpecifyTable>> {
 }
 
 export function QueryTables({
-  queries,
   onClose: handleClose,
 }: {
-  readonly queries: RA<SerializedResource<SpQuery>> | undefined;
   readonly onClose: () => void;
 }): JSX.Element {
   const [tables] = useQueryTables();
@@ -103,7 +100,7 @@ export function QueryTables({
   const [isEditing, handleEditing] = useBooleanState();
   const [isImporting, handleImporting] = useBooleanState();
   return isImporting ? (
-    <QueryImport queries={queries} onClose={handleClose} />
+    <QueryImport onClose={handleClose} />
   ) : isEditing ? (
     <QueryTablesEdit onClose={handleClose} />
   ) : (

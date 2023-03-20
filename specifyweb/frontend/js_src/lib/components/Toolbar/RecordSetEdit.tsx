@@ -9,10 +9,9 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getTableById, tables } from '../DataModel/tables';
 import type { RecordSet } from '../DataModel/types';
 import { ResourceView } from '../Forms/ResourceView';
-import { userInformation } from '../InitialContext/userInformation';
 import { hasToolPermission } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
-import { QueryListDialog, useQueries } from './Query';
+import { QueryListDialog } from './Query';
 import { ReadOnlyContext } from '../Core/Contexts';
 
 export function EditRecordSet({
@@ -77,15 +76,6 @@ function QueryRecordSet({
   readonly recordSet: SpecifyResource<RecordSet>;
   readonly onClose: () => void;
 }): JSX.Element {
-  const filters = React.useMemo(
-    () => ({
-      specifyUser: userInformation.id,
-      contextTableId: recordSet.get('dbTableId'),
-    }),
-    [recordSet]
-  );
-  const queries = useQueries(filters);
-
   return (
     <QueryListDialog
       getQuerySelectUrl={(query): string =>
@@ -99,7 +89,6 @@ function QueryRecordSet({
         ).name.toLowerCase()}/`,
         { recordSetId: recordSet.id }
       )}
-      queries={queries}
       onClose={handleClose}
     />
   );

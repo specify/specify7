@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAsyncState } from '../../hooks/useAsyncState';
 
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
@@ -14,17 +15,15 @@ import { Form } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
+import { fetchRows } from '../DataModel/collection';
 import { getField } from '../DataModel/helpers';
-import type {
-  SerializedRecord,
-  SerializedResource,
-} from '../DataModel/helperTypes';
+import type { SerializedRecord } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceApiUrl } from '../DataModel/resource';
 import { tables } from '../DataModel/tables';
 import type { SpQuery } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
-import { Dialog, LoadingScreen } from '../Molecules/Dialog';
+import { Dialog } from '../Molecules/Dialog';
 import { FilePicker, fileToText } from '../Molecules/FilePicker';
 import { TableIcon } from '../Molecules/TableIcon';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
@@ -32,11 +31,9 @@ import { QueryFieldSpec } from './fieldSpec';
 
 export function QueryImport({
   onClose: handleClose,
-  queries,
 }: {
   readonly onClose: () => void;
-  readonly queries: RA<SerializedResource<SpQuery>> | undefined;
-}): JSX.Element {
+}): JSX.Element | null {
   const loading = React.useContext(LoadingContext);
   const navigate = useNavigate();
 
@@ -53,7 +50,20 @@ export function QueryImport({
       navigate(`/specify/query/${queryResource.id}/`);
   }, [queryResource, hiddenFields]);
 
-  return typeof queries === 'object' ? (
+  const [queriesNames] = useAsyncState(
+    React.useCallback(
+      async () =>
+        fetchRows('SpQuery', {
+          fields: { name: ['string'] },
+          distinct: true,
+          limit: 0,
+        }),
+      []
+    ),
+    true
+  );
+
+  return typeof queriesNames === 'object' ? (
     <Dialog
       buttons={commonText.cancel()}
       header={commonText.import()}
@@ -123,7 +133,7 @@ export function QueryImport({
                       'name',
                       getUniqueName(
                         queryResource.get('name'),
-                        queries.map(({ name }) => name),
+                        queriesNames.map(({ name }) => name),
                         getField(tables.SpQuery, 'name').length
                       )
                     )
@@ -164,7 +174,5 @@ export function QueryImport({
         )}
       </>
     </Dialog>
-  ) : (
-    <LoadingScreen />
-  );
+  ) : null;
 }

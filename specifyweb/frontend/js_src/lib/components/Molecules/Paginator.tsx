@@ -13,7 +13,7 @@ import { Slider } from '../FormSliders/Slider';
 const infinity = 500;
 export const pageSizes = [10, 50, 100, infinity];
 
-export type Paginators = 'recordSets';
+export type Paginators = 'recordSets' | 'queryBuilder';
 
 export function usePaginator(
   cacheName: Paginators,
@@ -48,7 +48,7 @@ export function usePaginator(
           )}
           <div className="flex flex-1 justify-end">
             <Select
-              className="!w-auto"
+              className={pageSize === infinity ? 'w-auto' : 'w-16'}
               value={pageSize}
               onValueChange={(rawNewPageSize): void => {
                 const newPageSize = Number.parseInt(rawNewPageSize);

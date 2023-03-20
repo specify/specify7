@@ -64,9 +64,11 @@ export function RecordSetsDialog({
   const [sortConfig, handleSort] = useSortConfig('listOfRecordSets', 'name');
 
   const { paginator, limit, offset } = usePaginator('recordSets');
+
   const orderBy = `${sortConfig.ascending ? '' : '-'}${
     sortConfig.sortField
   }` as const;
+
   const [data] = useAsyncState(
     React.useCallback(
       async () =>
@@ -85,6 +87,7 @@ export function RecordSetsDialog({
   );
 
   const isReadOnly = React.useContext(ReadOnlyContext);
+
   return typeof data === 'object' ? (
     state.type === 'MainState' ? (
       children({
