@@ -16,7 +16,7 @@ theories(getIcon, [
   {
     in: ['Reports32x32.png'],
     out: '/images/Reports32x32.png',
-  }
+  },
 ]);
 
 test('Unknown icon', () => {

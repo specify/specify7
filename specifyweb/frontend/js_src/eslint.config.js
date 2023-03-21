@@ -7,7 +7,7 @@ module.exports = [
   ...eslintConfigReact,
   {
     languageOptions: {
-      sourceType: "module",
+      sourceType: 'module',
       parserOptions: {
         project: './tsconfig.json',
       },

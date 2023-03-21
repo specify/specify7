@@ -9,7 +9,7 @@ const Base = require('eslint/use-at-your-own-risk').FlatESLint;
 
 class ESLint extends Base {
   // Remove unsupported options as they throw an error
-  constructor({ignorePath, ...options}) {
+  constructor({ ignorePath, ...options }) {
     super(options);
   }
 }
