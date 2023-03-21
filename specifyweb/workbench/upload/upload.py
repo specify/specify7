@@ -143,8 +143,8 @@ def do_upload_dataset(
             if not rs:
                 break
             for r in rs:
-                last_rownumber = r.rownumber
-                yield r.data
+                yield from (r.data for r in rs)
+                last_rownumber = rs[-1].rownumber
 
     with create_connection() as result_conn:
         result_conn.set_autocommit(False)
