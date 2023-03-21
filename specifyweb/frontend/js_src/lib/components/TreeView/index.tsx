@@ -49,6 +49,34 @@ import {
 import { TreeRow } from './Row';
 import { TreeViewSearch } from './Search';
 
+export function TreeViewWrapper(): JSX.Element | null {
+  useMenuItem('trees');
+  const { tableName = '' } = useParams();
+  const treeName = getTable(tableName)?.name;
+  const [treeDefinitions] = usePromise(treeRanksPromise, true);
+  useErrorContext('treeDefinitions', treeDefinitions);
+
+  const treeDefinition =
+    typeof treeDefinitions === 'object' &&
+    typeof treeName === 'string' &&
+    isTreeTable(treeName)
+      ? caseInsensitiveHash(treeDefinitions, treeName)
+      : undefined;
+
+  if (treeName === undefined || !isTreeTable(treeName)) return <NotFoundView />;
+  return (
+    <ProtectedTree action="read" treeName={treeName}>
+      {typeof treeDefinition === 'object' ? (
+        <TreeView
+          tableName={treeName}
+          treeDefinition={treeDefinition.definition}
+          treeDefinitionItems={treeDefinition.ranks}
+        />
+      ) : null}
+    </ProtectedTree>
+  );
+}
+
 const treeToPref = {
   Geography: 'geography',
   Taxon: 'taxon',
@@ -58,6 +86,7 @@ const treeToPref = {
 } as const;
 const defaultConformation: RA<never> = [];
 
+// REFACTOR: extract logic into smaller hooks
 function TreeView<SCHEMA extends AnyTree>({
   tableName,
   treeDefinition,
@@ -187,7 +216,7 @@ function TreeView<SCHEMA extends AnyTree>({
         <Button.Small
           disabled={conformation.length === 0}
           onClick={(): void => {
-            setFocusPath([0]);
+            setFocusPath([rows[0].nodeId]);
             setConformation([]);
           }}
         >
@@ -219,8 +248,8 @@ function TreeView<SCHEMA extends AnyTree>({
           shadow-md shadow-gray-500 outline-none
           ${highContrast ? 'border dark:border-white' : 'bg-gradient-to-bl'}
         `}
-        role="none table"
         // First role is for screen readers. Second is for styling
+        role="none table"
         style={
           {
             '--cols': treeDefinitionItems.length,
@@ -239,7 +268,8 @@ function TreeView<SCHEMA extends AnyTree>({
           // Unset and set focus path to trigger a useEffect hook in <TreeNode>
           setFocusPath([-1]);
           globalThis.setTimeout(
-            () => setFocusPath(focusPath.length > 0 ? focusPath : [0]),
+            () =>
+              setFocusPath(focusPath.length > 0 ? focusPath : [rows[0].nodeId]),
             0
           );
         }}
@@ -261,7 +291,7 @@ function TreeView<SCHEMA extends AnyTree>({
                   }
                 `}
                   key={index}
-                  role="columnheader"
+                  role="none columnheader"
                 >
                   <Button.LikeLink
                     id={id(rank.rankId.toString())}
@@ -300,10 +330,7 @@ function TreeView<SCHEMA extends AnyTree>({
                   ?.slice(1) as Conformations
               }
               focusPath={
-                (focusPath[0] === 0 && index === 0) ||
-                focusPath[0] === row.nodeId
-                  ? focusPath.slice(1)
-                  : undefined
+                focusPath[0] === row.nodeId ? focusPath.slice(1) : undefined
               }
               getRows={getRows}
               getStats={getStats}
@@ -345,33 +372,5 @@ function TreeView<SCHEMA extends AnyTree>({
         </ul>
       </div>
     </Container.Full>
-  );
-}
-
-export function TreeViewWrapper(): JSX.Element | null {
-  useMenuItem('trees');
-  const { tableName = '' } = useParams();
-  const treeName = getTable(tableName)?.name;
-  const [treeDefinitions] = usePromise(treeRanksPromise, true);
-  useErrorContext('treeDefinitions', treeDefinitions);
-
-  const treeDefinition =
-    typeof treeDefinitions === 'object' &&
-    typeof treeName === 'string' &&
-    isTreeTable(treeName)
-      ? caseInsensitiveHash(treeDefinitions, treeName)
-      : undefined;
-
-  if (treeName === undefined || !isTreeTable(treeName)) return <NotFoundView />;
-  return (
-    <ProtectedTree action="read" treeName={treeName}>
-      {typeof treeDefinition === 'object' ? (
-        <TreeView
-          tableName={treeName}
-          treeDefinition={treeDefinition.definition}
-          treeDefinitionItems={treeDefinition.ranks}
-        />
-      ) : null}
-    </ProtectedTree>
   );
 }
