@@ -134,7 +134,7 @@ function SearchForm<SCHEMA extends AnySchema>({
 }): JSX.Element | null {
   const viewName =
     viewNameExceptions[templateResource.specifyTable.name] ??
-    `${templateResource.specifyTable}Search`;
+    `${templateResource.specifyTable.name}Search`;
 
   const resolvedName = searchView ?? viewName;
   const viewDefinition = useViewDefinition({
