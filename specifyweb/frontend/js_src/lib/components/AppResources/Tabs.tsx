@@ -34,6 +34,7 @@ import {
 } from './TabDefinitions';
 
 export function AppResourcesTabs({
+  tab: Component,
   label,
   showValidationRef,
   headerButtons,
@@ -41,10 +42,10 @@ export function AppResourcesTabs({
   resource,
   directory,
   data,
-  index,
   isFullScreen: [isFullScreen, handleChangeFullScreen],
   onChange: handleChange,
 }: {
+  readonly tab: Component;
   readonly label: LocalizedString;
   readonly showValidationRef: React.MutableRefObject<(() => void) | null>;
   readonly appResource: SpecifyResource<SpAppResource | SpViewSetObject>;
@@ -53,29 +54,18 @@ export function AppResourcesTabs({
   readonly headerButtons: JSX.Element;
   readonly data: string | null;
   readonly isFullScreen: GetSet<boolean>;
-  readonly index: GetSet<number>;
   readonly onChange: (
     data: string | (() => string | null | undefined) | null
   ) => void;
 }): JSX.Element {
-  const tabs = useEditorTabs(resource);
   const children = (
-    <Tabs
-      index={index}
-      tabs={Object.fromEntries(
-        tabs.map(({ label, component: Component }, index) => [
-          label,
-          <Component
-            appResource={appResource}
-            data={data}
-            directory={directory}
-            key={index}
-            resource={resource}
-            showValidationRef={showValidationRef}
-            onChange={handleChange}
-          />,
-        ])
-      )}
+    <Component
+      appResource={appResource}
+      data={data}
+      directory={directory}
+      resource={resource}
+      showValidationRef={showValidationRef}
+      onChange={handleChange}
     />
   );
   return isFullScreen ? (
@@ -101,7 +91,11 @@ export function AppResourcesTabs({
   );
 }
 
-function useEditorTabs(
+type Component = (
+  props: Omit<AppResourceTabProps, 'editorType'>
+) => JSX.Element;
+
+export function useEditorTabs(
   resource: SerializedResource<SpAppResource | SpViewSetObject>
 ): RA<{
   readonly label: LocalizedString;
