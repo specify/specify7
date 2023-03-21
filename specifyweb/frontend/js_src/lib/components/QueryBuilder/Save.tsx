@@ -63,7 +63,7 @@ export function QuerySaveDialog({
       buttons={
         <>
           <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-          <Submit.Blue form={id('form')}>{commonText.save()}</Submit.Blue>
+          <Submit.Save form={id('form')}>{commonText.save()}</Submit.Save>
         </>
       }
       className={{

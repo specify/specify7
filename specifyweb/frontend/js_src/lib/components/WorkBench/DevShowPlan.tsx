@@ -9,6 +9,7 @@ import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { Dialog } from '../Molecules/Dialog';
 import type { UploadPlan } from '../WbPlanView/uploadPlanParser';
 import { wbPlanText } from '../../localization/wbPlan';
+import { Submit } from '../Atoms/Submit';
 
 /**
  * Show upload plan as JSON. Available in Development only
@@ -35,7 +36,7 @@ export function DevShowPlan({
       buttons={
         <>
           <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-          <Button.Green
+          <Submit.Save
             onClick={(): void => {
               const plan =
                 uploadPlan.length === 0 ? null : JSON.parse(uploadPlan);
@@ -58,7 +59,7 @@ export function DevShowPlan({
             }}
           >
             {commonText.save()}
-          </Button.Green>
+          </Submit.Save>
         </>
       }
       header={wbPlanText.dataMapper()}

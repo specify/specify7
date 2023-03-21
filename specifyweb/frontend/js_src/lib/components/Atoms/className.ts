@@ -12,9 +12,9 @@ export const dialogIconTriggers = {
 };
 
 const buttonClassName = 'button';
-const grayButton = `${buttonClassName} hover:bg-gray-400 bg-gray-300 text-gray-800 shadow-sm
+const grayButton = `${buttonClassName} hover:brightness-150 bg-[color:var(--gray-button-color)] text-gray-800 shadow-sm
     dark:bg-neutral-600 dark:text-gray-100 hover:dark:bg-neutral-500`;
-const lightGrayButton = `${buttonClassName} hover:bg-gray-400 bg-gray-100 text-gray-800 shadow-sm
+const lightGrayButton = `${buttonClassName} hover:brightness-150 bg-[color:var(--light-gray-button-color)] text-gray-800 shadow-sm
     dark:bg-neutral-600 dark:text-gray-100 hover:dark:bg-neutral-500`;
 const containerBaseUnstyled = `flex flex-col gap-4 overflow-scroll
   overflow-x-auto [overflow-y:overlay] [scrollbar-gutter:stable]`;
@@ -30,6 +30,7 @@ const borderedGrayButton = `${grayButton} ring-1 ring-gray-400 shadow-sm dark:ri
     disabled:ring-gray-400 disabled:dark:ring-neutral-500`;
 
 // REFACTOR: reduce this once everything is using React. Can move things into tailwind.config.js
+
 export const className = {
   /*
    * Most fields in Specify are rendered on top of var(--form-background). For
@@ -62,10 +63,11 @@ export const className = {
   smallButton: `${niceButton} !py-1 !px-2`,
   borderedGrayButton,
   defaultSmallButtonVariant: `${borderedGrayButton} hover:bg-brand-200 dark:hover:bg-brand-400`,
-  redButton: `${dialogIconTriggers.error} hover:bg-red-800 bg-red-700 text-white`,
-  blueButton: `${dialogIconTriggers.info} hover:bg-blue-700 bg-blue-600 text-white`,
-  orangeButton: `${dialogIconTriggers.warning} hover:bg-orange-600 bg-orange-500 text-white`,
-  greenButton: `${dialogIconTriggers.success} hover:bg-green-800 bg-green-700 text-white`,
+  redButton: `${dialogIconTriggers.error} hover:brightness-150 bg-[color:var(--red-button-color)]  text-white`,
+  blueButton: `${dialogIconTriggers.info} hover:brightness-150 bg-[color:var(--blue-button-color)]  text-white`,
+  orangeButton: `${dialogIconTriggers.warning} hover:brightness-150 bg-[color:var(--orange-button-color)] text-white`,
+  greenButton: `${dialogIconTriggers.success} hover:brightness-150 bg-[color:var(--green-button-color)] text-white`,
+  saveButton: `hover:brightness-150 text-white bg-[color:var(--save-button-color)]`,
   fancyButton: `bg-gray-300 hover:bg-brand-200 dark:bg-neutral-600
     hover:dark:bg-brand:400 text-gray-800 dark:text-white text-center`,
   containerFull,

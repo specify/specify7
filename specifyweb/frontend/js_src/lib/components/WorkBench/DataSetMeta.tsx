@@ -120,7 +120,7 @@ export function DataSetMeta({
           )}
           <span className="-ml-2 flex-1" />
           <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-          <Submit.Blue form={id('form')}>{commonText.save()}</Submit.Blue>
+          <Submit.Save form={id('form')}>{commonText.save()}</Submit.Save>
         </>
       }
       header={wbText.dataSetMeta()}

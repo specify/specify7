@@ -1410,4 +1410,25 @@ export const preferencesText = createDictionary({
     'fr-fr': 'Utiliser des infobulles modernes',
     'uk-ua': 'Використовувати сучасні підказки',
   },
+  saveButtonColor: {
+    'en-us': 'Save button color',
+  },
+  grayButtonColor: {
+    'en-us': 'Gray button color',
+  },
+  lightGrayButtonColor: {
+    'en-us': 'Light gray button color',
+  },
+  redButtonColor: {
+    'en-us': 'Red button color',
+  },
+  blueButtonColor: {
+    'en-us': 'Blue button color',
+  },
+  orangeButtonColor: {
+    'en-us': 'Orange button color',
+  },
+  greenButtonColor: {
+    'en-us': 'Green button color',
+  },
 } as const);

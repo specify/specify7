@@ -90,7 +90,7 @@ function Preferences(): JSX.Element {
         </div>
         <div className="flex justify-end">
           {changesMade ? (
-            <Submit.Green>{commonText.save()}</Submit.Green>
+            <Submit.Save>{commonText.save()}</Submit.Save>
           ) : (
             <Link.Gray href="/specify/">{commonText.close()}</Link.Gray>
           )}

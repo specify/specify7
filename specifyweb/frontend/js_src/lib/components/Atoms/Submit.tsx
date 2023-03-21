@@ -25,6 +25,7 @@ const submitButton = (name: string, buttonClassName: string) =>
       value: children,
     })
   );
+
 export const Submit = {
   Small: submitButton(
     'Submit.Small',
@@ -53,5 +54,9 @@ export const Submit = {
   Green: submitButton(
     'Submit.Green',
     `${className.niceButton} ${className.greenButton}`
+  ),
+  Save: submitButton(
+    'Submit.Save',
+    `${className.niceButton} ${className.saveButton}`
   ),
 } as const;

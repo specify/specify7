@@ -9,6 +9,7 @@ import type { IR, RA } from '../../utils/types';
 import { H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Select } from '../Atoms/Form';
+import { Submit } from '../Atoms/Submit';
 import type { SchemaData } from './SetupHooks';
 
 export function SchemaConfigHeader({
@@ -33,7 +34,7 @@ export function SchemaConfigHeader({
         {schemaText.changeBaseTable()}
       </Button.Small>
       <span className="-ml-2 flex-1" />
-      <Button.Small onClick={handleSave}>{commonText.save()}</Button.Small>
+      <Submit.Save onClick={handleSave}>{commonText.save()}</Submit.Save>
     </header>
   );
 }

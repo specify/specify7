@@ -309,7 +309,7 @@ function ParametersDialog({
       buttons={
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Submit.Green form={id('form')}>{commonText.save()}</Submit.Green>
+          <Submit.Save form={id('form')}>{commonText.save()}</Submit.Save>
         </>
       }
       header={reportsText.reportParameters()}

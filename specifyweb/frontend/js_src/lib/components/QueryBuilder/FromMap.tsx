@@ -6,6 +6,7 @@ import { f } from '../../utils/functools';
 import type { RA, Writable, WritableArray } from '../../utils/types';
 import { insertItem, replaceItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
+import { Submit } from '../Atoms/Submit';
 import { LeafletMap } from '../Leaflet/Map';
 import { mappingPathToString } from '../WbPlanView/mappingHelpers';
 import type { QueryField } from './helpers';
@@ -69,7 +70,7 @@ export function QueryFromMap({
       buttons={
         <>
           <Button.Gray onClick={handleClose}>{commonText.cancel()}</Button.Gray>
-          <Button.Blue onClick={handleSave}>{commonText.save()}</Button.Blue>
+          <Submit.Save onClick={handleSave}>{commonText.save()}</Submit.Save>
         </>
       }
       forwardRef={setMap}

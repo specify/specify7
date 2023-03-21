@@ -97,6 +97,25 @@ export function SetCssVariables(): null {
       accentColor3: getUserPref('general', 'appearance', 'accentColor3'),
       accentColor4: getUserPref('general', 'appearance', 'accentColor4'),
       accentColor5: getUserPref('general', 'appearance', 'accentColor5'),
+      saveButtonColor: getUserPref('general', 'appearance', 'saveButtonColor'),
+      grayButtonColor: getUserPref('general', 'appearance', 'grayButtonColor'),
+      lightGrayButtonColor: getUserPref(
+        'general',
+        'appearance',
+        'lightGrayButtonColor'
+      ),
+      redButtonColor: getUserPref('general', 'appearance', 'redButtonColor'),
+      blueButtonColor: getUserPref('general', 'appearance', 'blueButtonColor'),
+      orangeButtonColor: getUserPref(
+        'general',
+        'appearance',
+        'orangeButtonColor'
+      ),
+      greenButtonColor: getUserPref(
+        'general',
+        'appearance',
+        'greenButtonColor'
+      ),
       roundedCorners: getUserPref('general', 'appearance', 'roundedCorners'),
       formForeground: getUserPref('form', 'appearance', 'foreground'),
       darkFormForeground: getUserPref('form', 'appearance', 'darkForeground'),
@@ -216,6 +235,70 @@ export function SetCssVariables(): null {
     () =>
       document.body.style.setProperty('--accent-color-500', prefs.accentColor5),
     [prefs.accentColor5]
+  );
+
+  //Buttons color preferences
+  React.useEffect(
+    () =>
+      document.body.style.setProperty(
+        '--save-button-color',
+        prefs.saveButtonColor
+      ),
+    [prefs.saveButtonColor]
+  );
+
+  React.useEffect(
+    () =>
+      document.body.style.setProperty(
+        '--gray-button-color',
+        prefs.grayButtonColor
+      ),
+    [prefs.grayButtonColor]
+  );
+
+  React.useEffect(
+    () =>
+      document.body.style.setProperty(
+        '--light-gray-button-color',
+        prefs.lightGrayButtonColor
+      ),
+    [prefs.lightGrayButtonColor]
+  );
+
+  React.useEffect(
+    () =>
+      document.body.style.setProperty(
+        '--red-button-color',
+        prefs.redButtonColor
+      ),
+    [prefs.redButtonColor]
+  );
+
+  React.useEffect(
+    () =>
+      document.body.style.setProperty(
+        '--blue-button-color',
+        prefs.blueButtonColor
+      ),
+    [prefs.blueButtonColor]
+  );
+
+  React.useEffect(
+    () =>
+      document.body.style.setProperty(
+        '--orange-button-color',
+        prefs.orangeButtonColor
+      ),
+    [prefs.orangeButtonColor]
+  );
+
+  React.useEffect(
+    () =>
+      document.body.style.setProperty(
+        '--green-button-color',
+        prefs.greenButtonColor
+      ),
+    [prefs.greenButtonColor]
   );
 
   React.useEffect(

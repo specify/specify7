@@ -21,6 +21,7 @@ import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
+import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import { strictGetModel } from '../DataModel/schema';
 import type { Tables } from '../DataModel/types';
@@ -385,12 +386,12 @@ export function Mapper(props: {
             {props.isReadOnly ? wbText.dataEditor() : commonText.cancel()}
           </Link.Small>
           {!props.isReadOnly && (
-            <Button.Small
+            <Submit.Save
               disabled={!state.changesMade}
               onClick={(): void => handleSave(false)}
             >
               {commonText.save()}
-            </Button.Small>
+            </Submit.Save>
           )}
         </>
       }

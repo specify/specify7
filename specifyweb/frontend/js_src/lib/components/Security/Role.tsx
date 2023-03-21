@@ -209,9 +209,7 @@ export function RoleView({
           />
         )}
         {!isReadOnly && (
-          <Submit.Green disabled={!changesMade}>
-            {commonText.save()}
-          </Submit.Green>
+          <Submit.Save disabled={!changesMade}>{commonText.save()}</Submit.Save>
         )}
       </div>
       {state.type === 'DeletionPromptState' && (
