@@ -12,6 +12,7 @@ import { strictDependentFields } from '../FormMeta/CarryForward';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { CompareField } from './CompareField';
 import { MergingHeader } from './Header';
+import { f } from '../../utils/functools';
 
 export function CompareRecords({
   formId,
@@ -123,19 +124,22 @@ function findDiffering(
   return showMatching ? differing : hideDependent(differing);
 }
 
-export const unMergeableFields = new Set([
-  ...specialFields,
-  /*
-   * FEATURE: remove this from here to allow merging guids.
-   *    This was disabled for now as back-end does not allow front-end to
-   *    modify GUIDs.
-   *    See https://github.com/specify/specify7/issues/2907#issuecomment-1416916477
-   */
-  'guid',
-  'timestampCreated',
-  'timestampModified',
-  'version',
-]);
+export const unMergeableFields = f.store(
+  () =>
+    new Set([
+      ...specialFields,
+      /*
+       * FEATURE: remove this from here to allow merging guids.
+       *    This was disabled for now as back-end does not allow front-end to
+       *    modify GUIDs.
+       *    See https://github.com/specify/specify7/issues/2907#issuecomment-1416916477
+       */
+      'guid',
+      'timestampCreated',
+      'timestampModified',
+      'version',
+    ])
+);
 
 function findDifferingFields(
   showMatching: boolean,
@@ -145,7 +149,7 @@ function findDifferingFields(
   // Don't display independent -to-many relationships
   const fields = model.fields.filter(
     (field) =>
-      !unMergeableFields.has(field.name) &&
+      !unMergeableFields().has(field.name) &&
       (!field.isRelationship ||
         field.isDependent() ||
         !relationshipIsToMany(field))
@@ -171,7 +175,7 @@ function findDifferingFields(
               )
           ).size > 1
       )
-      .filter(({ name }) => !unMergeableFields.has(name));
+      .filter(({ name }) => !unMergeableFields().has(name));
     /*
      * Even if user said to not show matching, show matching anyway in cases
      * where doing otherwise would result in it not showing any fields at all,

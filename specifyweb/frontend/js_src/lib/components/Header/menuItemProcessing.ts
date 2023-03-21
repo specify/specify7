@@ -16,13 +16,16 @@ import { usePref } from '../UserPreferences/usePref';
 import { rawMenuItemsPromise } from './menuItemDefinitions';
 import { rawUserToolsPromise } from './userToolDefinitions';
 
-const itemsPromise = f.all({
-  menuItems: rawMenuItemsPromise,
-  userTools: rawUserToolsPromise,
-});
+const itemsPromise = f.store(() =>
+  f.all({
+    menuItems: rawMenuItemsPromise,
+    userTools: rawUserToolsPromise,
+  })
+);
+
 export function useMenuItems(): RA<MenuItem> | undefined {
   const [preference] = usePref('header', 'appearance', 'items');
-  const [items] = usePromise(itemsPromise, false);
+  const [items] = usePromise(itemsPromise(), false);
   return React.useMemo(() => {
     if (items === undefined) return undefined;
     const { menuItems, userTools } = items;
@@ -54,7 +57,7 @@ export function useMenuItems(): RA<MenuItem> | undefined {
 
 export function useUserTools(): IR<IR<MenuItem>> | undefined {
   const [{ visible }] = usePref('header', 'appearance', 'items');
-  const [items] = usePromise(itemsPromise, false);
+  const [items] = usePromise(itemsPromise(), false);
   return React.useMemo(() => {
     if (items === undefined) return undefined;
     const { menuItems, userTools } = items;

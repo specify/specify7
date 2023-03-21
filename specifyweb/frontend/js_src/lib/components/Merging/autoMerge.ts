@@ -128,7 +128,9 @@ export const resourceToGeneric = (
   );
   return Object.fromEntries(
     Object.entries(resource)
-      .filter(([key]) => !unMergeableFields.has(key) && !uniqueFields.has(key))
+      .filter(
+        ([key]) => !unMergeableFields().has(key) && !uniqueFields.has(key)
+      )
       .map(([key, value]) => [
         key,
         Array.isArray(value)

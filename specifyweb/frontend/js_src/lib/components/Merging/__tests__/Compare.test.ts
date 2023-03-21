@@ -1,6 +1,6 @@
-import { exportsForTests } from '../Compare';
 import { requireContext } from '../../../tests/helpers';
 import { schema } from '../../DataModel/schema';
+import { exportsForTests } from '../Compare';
 
 const { findDiffering } = exportsForTests;
 
@@ -52,6 +52,7 @@ describe('findDiffering', () => {
         "firstName",
         "lastName",
         "middleInitial",
+        "division",
       ]
     `));
 });

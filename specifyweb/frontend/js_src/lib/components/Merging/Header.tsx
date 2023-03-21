@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { resourceEvents } from '../../hooks/store';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { mergingText } from '../../localization/merging';
@@ -16,6 +15,7 @@ import { FormattedResource } from '../Molecules/FormattedResource';
 import { TableIcon } from '../Molecules/TableIcon';
 import { MergeButton } from './CompareField';
 import { UsagesSection } from './Usages';
+import { resourceEvents } from '../DataModel/resource';
 
 export function MergingHeader({
   merged,
