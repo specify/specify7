@@ -14,7 +14,6 @@ from django.db import IntegrityError, router, transaction, connection, models
 from django.db.models.deletion import Collector
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_http_methods, require_POST
-from django.apps import apps
 from specifyweb.businessrules.exceptions import BusinessRuleException
 
 from specifyweb.permissions.permissions import PermissionTarget, \
@@ -403,10 +402,11 @@ class ReplaceRecordPT(PermissionTarget):
 @transaction.atomic
 def record_merge_fx(model_name: str, old_model_id: int, new_model_id: int) -> http.HttpResponse:
     """Replaces all the foreign keys referencing the old record ID
-    with the new record ID, and deletes the old record record.
+    with the new record ID, and deletes the old record.
     """
     # Confirm the target model table exists
-    target_model = apps.get_model('specify', model_name.lower())
+    model_name = model_name.capitalize().lower()
+    target_model = getattr(spmodels, model_name)
     if target_model is None:
         return http.HttpResponseNotFound("model_name: " + model_name + "does not exist.")
 
@@ -422,20 +422,20 @@ def record_merge_fx(model_name: str, old_model_id: int, new_model_id: int) -> ht
         for rel in target_object.specify_model.relationships
         if api.is_dependent_field(target_object, rel.name)]
 
-    # Get all of the columns in all of the tables of specify the are foreign keys referencing AgentID
+    # Get all of the columns in all of the tables of specify the are foreign keys referencing model ID
     foreign_key_cols = []
     for table in spmodels.datamodel.tables:
         for relationship in table.relationships:
             if relationship.relatedModelName.lower() == model_name.lower():
                 foreign_key_cols.append((table.name, relationship.name))
 
-    # Build query to update all of the records with foreign keys referencing the AgentID
+    # Build query to update all of the records with foreign keys referencing the model ID
     for table_name, column_names in groupby(foreign_key_cols, lambda x: x[0]):
         foreign_table = spmodels.datamodel.get_table(table_name)
         if foreign_table is None:
             continue
         try:
-            foreign_model = apps.get_model('specify', table_name.lower())
+            foreign_model = getattr(spmodels, table_name.lower())
         except (ValueError):
             continue
 
@@ -452,7 +452,7 @@ def record_merge_fx(model_name: str, old_model_id: int, new_model_id: int) -> ht
             # Update and save the foreign model objects with the new_model_id
             for obj in foreign_objects:
                 # If it is a dependent field, delete the object instead of updating it.
-                # This is done inorder to avoid duplicates
+                # This is done in order to avoid duplicates
                 if table_name in dependant_table_names:
                     obj.delete()
                     continue
@@ -497,7 +497,7 @@ def record_merge_fx(model_name: str, old_model_id: int, new_model_id: int) -> ht
                 if response is not None and response.status_code != 204:
                     return response
 
-    # Dedupe by deleting the agent that is being replaced and updating the old AgentID to the new one
+    # Dedupe by deleting the agent that is being replaced and updating the old model ID to the new one
     target_model.objects.get(id=old_model_id).delete()
 
     return http.HttpResponse('', status=204)
