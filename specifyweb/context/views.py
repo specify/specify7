@@ -19,7 +19,7 @@ from django.utils.translation import gettext as _
 from django.views.decorators.cache import cache_control, never_cache
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_http_methods
-from django.views.i18n import set_language
+from django.views.i18n import LANGUAGE_QUERY_PARAMETER
 
 from specifyweb.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, \
@@ -295,6 +295,40 @@ def domain(request):
 
     return HttpResponse(json.dumps(domain), content_type='application/json')
 
+@openapi(schema={
+    "parameters": [
+            {
+                "name" : "name",
+                "in":"query",
+                "required" : True,
+                "schema": {
+                    "type": "string"
+                },
+                "description" : "The name of the app resource to fetch"
+            },
+            {
+                "name" : "quiet",
+                "in": "query",
+                "required" : False,
+                "schema": {
+                    "type": "boolean",
+                    "default": False,
+                },
+                "allowEmptyValue": True,
+                "description": "Flag to indicate that if the AppResource does not exist, return response with code 204 instead of 404"
+            }
+        ],
+    "get" : {
+        "responses": {
+            "404": {
+                "description": "'name' parameter was not provided, or App Resource was not found"
+            },
+            "204": {
+                "description" : "App Resource was not found but 'quiet' flag was provided"
+            }
+        }
+    }
+})
 @login_maybe_required
 @require_http_methods(['GET', 'HEAD'])
 @cache_control(max_age=86400, private=True)
@@ -304,10 +338,14 @@ def app_resource(request):
         resource_name = request.GET['name']
     except:
         raise Http404()
+    quiet = "quiet" in request.GET and request.GET['quiet'].lower() != 'false'
     result = get_app_resource(request.specify_collection,
                               request.specify_user,
                               resource_name)
-    if result is None: raise Http404()
+    if result is None and not quiet: 
+          raise Http404()
+    elif result is None and quiet: 
+          return HttpResponse(status=204)
     resource, mimetype = result
     return HttpResponse(resource, content_type=mimetype)
 
@@ -357,11 +395,46 @@ def schema_localization(request):
     lang = request.GET.get('lang', request.LANGUAGE_CODE)
     return JsonResponse(get_schema_localization(request.specify_collection, 0, lang))
 
+@openapi(schema={
+    "parameters": [
+            {
+                "name" : "name",
+                "in":"query",
+                "required" : True,
+                "schema": {
+                    "type": "string"
+                },
+                "description" : "The name of the view to fetch"
+            },
+            {
+                "name" : "quiet",
+                "in": "query",
+                "required" : False,
+                "schema": {
+                    "type": "boolean",
+                    "default": False,
+                },
+                "allowEmptyValue": True,
+                "description": "Flag to indicate that if the view does not exist, return response with code 204 instead of 404"
+            }
+        ],
+    "get" : {
+        "responses": {
+            "404": {
+                "description": "'name' parameter was not provided, or view was not found"
+            },
+            "204": {
+                "description" : "View was not found but 'quiet' flag was provided"
+            }
+        }
+    }
+})
 @require_http_methods(['GET', 'HEAD'])
 @login_maybe_required
 @cache_control(max_age=86400, private=True)
 def view(request):
     """Return a Specify view definition by name taking into account the logged in user and collection."""
+    quiet = "quiet" in request.GET and request.GET['quiet'].lower() != 'false'
     if 'collectionid' in request.GET:
         # Allow a URL parameter to override the logged in collection.
         collection = Collection.objects.get(id=request.GET['collectionid'])
@@ -372,8 +445,13 @@ def view(request):
         view_name = request.GET['name']
     except:
         raise Http404()
-    data = get_view(collection, request.specify_user, view_name)
 
+    # If view can not be found, return 204 if quiet and 404 otherwise
+    try:
+        data = get_view(collection, request.specify_user, view_name)
+    except Http404 as exception:
+        if quiet: return HttpResponse(status=204)
+        raise exception
     return HttpResponse(json.dumps(data), content_type="application/json")
 
 @require_http_methods(['GET', 'HEAD'])
@@ -643,16 +721,113 @@ def api_endpoints_all(request):
 
 @require_http_methods(['GET', 'POST', 'HEAD'])
 @cache_control(max_age=86400, public=True)
+@openapi(schema={
+    "get": {
+        "parameters": [
+            {
+                "name": "languages",
+                "in": "query",
+                "description": "Comma separate list of languages",
+                "example": "en-us,uk-ua,ru-ru",
+                "required": False,
+                "schema": {
+                    "type": "string",
+                },
+            },
+        ],
+        "responses": {
+            "200": {
+                "description": "List of available languages",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "object",
+                                "properties": {
+                                    "bidi": {
+                                        "type": "boolean",
+                                    },
+                                    "code": {
+                                        "type": "string",
+                                        "example": "uk",
+                                    },
+                                    "is_current": {
+                                        "description": "Is currently selected language",
+                                        "type": "boolean",
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Ukrainian",
+                                    },
+                                    "name_local": {
+                                        "type": "string",
+                                        "example": "Українська",
+                                    },
+                                    "name_translated": {
+                                        "type": "string",
+                                        "example": "Ukrainian",
+                                    },
+                                },
+                            },
+                        },
+                    }
+                },
+            }
+        }
+    },
+    'post': {
+        "requestBody": {
+            "required": True,
+            "description": "Login information",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "language": {
+                                "type": "string",
+                                "example": "uk-ua",
+                            },
+                        },
+                    }
+                }
+            }
+        },
+        "responses": {
+            "204": {"description": "Language changed"},
+        }
+    },
+})
 def languages(request):
     """Get List of available languages OR set current language."""
     if request.method == 'POST':
-        return set_language(request)
+        data = json.load(request)
+        language = data.get(LANGUAGE_QUERY_PARAMETER, settings.LANGUAGE_CODE)
+        # Based on django.views.i18n.set_language, but does not check for
+        # validity of language code. This allows front-end to enable a dev-only
+        # language like "underscore" or "double"
+        response = HttpResponse(status=204)
+        response.set_cookie(
+            settings.LANGUAGE_COOKIE_NAME,
+            language,
+            max_age=settings.LANGUAGE_COOKIE_AGE,
+            path=settings.LANGUAGE_COOKIE_PATH,
+            domain=settings.LANGUAGE_COOKIE_DOMAIN,
+        )
+        return response
     else:  # GET or HEAD
+        languages = request.GET.get('languages', None)
+        if languages is None:
+            languages = [code for code,name in settings.LANGUAGES]
+        else:
+            languages = languages.split(',')
+
         return JsonResponse({
             code:{
                 **get_language_info(code),
                 'is_current': code==request.LANGUAGE_CODE
-            } for code, name in settings.LANGUAGES
+            } for code in languages
         })
 
 @require_http_methods(['GET', 'HEAD'])

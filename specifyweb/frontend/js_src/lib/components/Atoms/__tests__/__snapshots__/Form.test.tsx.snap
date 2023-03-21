@@ -1,0 +1,92 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Form> removes notSubmitted class name on submit 1`] = `
+<DocumentFragment>
+  <form
+    aria-label="form"
+    class="flex flex-col gap-4"
+  >
+    <input
+      type="submit"
+    />
+  </form>
+</DocumentFragment>
+`;
+
+exports[`<Input.Checkbox> calls onValueChange on click 1`] = `
+<DocumentFragment>
+  <input
+    class="not-touched rounded-xs"
+    type="checkbox"
+  />
+</DocumentFragment>
+`;
+
+exports[`<Input.Radio> ignores change if disabled 1`] = `
+<DocumentFragment>
+  <input
+    class="not-touched"
+    disabled=""
+    type="radio"
+  />
+</DocumentFragment>
+`;
+
+exports[`<Select> removes notTouched className on blur 1`] = `
+<DocumentFragment>
+  <select
+    class="w-full pr-5 bg-right cursor-pointer min-w-[theme(spacing.40)]"
+  >
+    <option />
+  </select>
+</DocumentFragment>
+`;
+
+exports[`<Select> select multiple calls onValuesChange 1`] = `
+<DocumentFragment>
+  <select
+    class="not-touched w-full pr-5 bg-right cursor-pointer min-w-[theme(spacing.40)]"
+    multiple=""
+  >
+    <option />
+    <option
+      class="dark:bg-neutral-100"
+      value="a"
+    />
+    <option
+      class="dark:bg-neutral-100"
+      value="b"
+    />
+  </select>
+</DocumentFragment>
+`;
+
+exports[`<Textarea> removes notTouched className on blur 1`] = `
+<DocumentFragment>
+  <textarea
+    class="max-w-full min-w-[theme(spacing.20)] min-h-[theme(spacing.8)]"
+  >
+    a
+  </textarea>
+</DocumentFragment>
+`;
+
+exports[`Label.Block renders without errors 1`] = `
+<DocumentFragment>
+  <label
+    class="flex flex-col"
+  >
+    Test
+  </label>
+</DocumentFragment>
+`;
+
+exports[`Label.Inline renders without errors 1`] = `
+<DocumentFragment>
+  <label
+    class="cursor-pointer inline-flex gap-1 items-center"
+  >
+    Test
+  </label>
+</DocumentFragment>
+`;

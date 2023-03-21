@@ -1,5 +1,7 @@
 # Front-end tests
 
-These run as part of a pre-commit hook and in GitHub action.
+Tests are located in the `__tests__` directory inside of each component.
 
-Most `.js` and `.coffee` tests are no longer used.
+This directory contains only helpers for tests
+
+// TEST: get rid of unused files in fixtures directory

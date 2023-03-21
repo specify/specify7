@@ -5,14 +5,14 @@ from django.views.decorators.http import require_GET, require_POST
 from django.http import HttpResponse, Http404
 from django.db import connection, transaction
 
-from .views import login_maybe_required
+from .views import login_maybe_required, openapi
 from .api import get_object_or_404, obj_to_data, toJson
 from .models import datamodel
 from .auditcodes import TREE_MOVE
 from . import tree_extras
 
 from sqlalchemy.orm import aliased
-from sqlalchemy import sql, types, distinct
+from sqlalchemy import sql, types, distinct, case
 
 from specifyweb.stored_queries import models
 from specifyweb.businessrules.exceptions import BusinessRuleException
@@ -33,9 +33,85 @@ def tree_mutation(mutation):
         return HttpResponse(toJson(result), content_type="application/json")
     return wrapper
 
+@openapi(schema={
+    "get": {
+        "parameters": [
+            {
+                "name": "includeauthor",
+                "in": "query",
+                "required": False,
+                "schema": {
+                    "type": "number"
+                },
+                "description": "If parameter is present, include the author of the requested node in the response \
+                    if the tree is taxon and node's rankid >= paramter value."
+            }
+        ],
+        "responses": {
+            "200": {
+                "description": "Returns a list of nodes with parent <parentid> restricted to the tree defined by <treedef>. \
+                Nodes are sorted by <sortfield>",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "array",
+                                "prefixItems": [
+                                    {
+                                        "type" : "integer",
+                                        "description" : "The id of the child node"
+                                    },
+                                    {
+                                        "type" : "string",
+                                        "description" : "The name of the child node"
+                                    },
+                                    {
+                                        "type" : "string",
+                                        "description" : "The fullName of the child node"
+                                    },
+                                    {
+                                        "type" : "integer",
+                                        "description" : "The nodenumber of the child node"
+                                    },
+                                    {
+                                        "type" : "integer",
+                                        "description" : "The highestChildNodeNumber of the child node"
+                                    },
+                                    {
+                                        "type" : "integer",
+                                        "description" : "The rankId of the child node"
+                                    },
+                                    {
+                                        "type" : "number",
+                                        "description" : "The acceptedId of the child node. Returns null if the node has no acceptedId"
+                                    },
+                                    {
+                                        "type" : "string",
+                                        "description" : "The fullName of the child node's accepted node. Returns null if the node has no acceptedId"
+                                    },
+                                    {
+                                        "type" : "string",
+                                        "description" : "The author of the child node. \
+                                        Returns null if <tree> is not taxon or the rankId of the node is less than <includeAuthor> paramter"
+                                    },
+                                    {
+                                        "type" : "integer",
+                                        "description" : "The number of children the child node has"
+                                    }
+                                ],
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+})
 @login_maybe_required
 @require_GET
 def tree_view(request, treedef, tree, parentid, sortfield):
+
     """Returns a list of <tree> nodes with parent <parentid> restricted to
     the tree defined by treedefid = <treedef>. The nodes are sorted
     according to <sortfield>.
@@ -50,6 +126,15 @@ def tree_view(request, treedef, tree, parentid, sortfield):
     child_id = getattr(child, node._id)
     treedef_col = getattr(node, tree_table.name.lower() + "treedefid")
     orderby = tree_table.name.lower() + '.' + sortfield
+    
+    """
+        Also include the author of the node in the response if requested and the tree is the taxon tree.
+        There is a preference which can be enabled from within Specify which adds the author next to the 
+        fullname on the front end. 
+        See https://github.com/specify/specify7/pull/2818 for more context and a breakdown regarding 
+        implementation/design decisions
+    """
+    includeAuthor= request.GET.get('includeauthor') if 'includeauthor' in request.GET else False
 
     cols =(id_col,
            node.name,
@@ -62,15 +147,23 @@ def tree_view(request, treedef, tree, parentid, sortfield):
         )
 
     with models.session_context() as session:
-        query = session.query(*cols, sql.functions.count(child_id)) \
-                        .outerjoin(child, child.parentid == id_col) \
-                        .outerjoin(accepted, node.acceptedid == getattr(accepted, node._id)) \
-                        .group_by(*cols) \
+        query = session.query(id_col,
+                              node.name,
+                              node.fullName,
+                              node.nodeNumber,
+                              node.highestChildNodeNumber,
+                              node.rankId,
+                              node.AcceptedID,
+                              accepted.fullName,
+                              node.author if (includeAuthor and tree=='taxon') else "NULL",
+                              sql.functions.count(child_id)) \
+                        .outerjoin(child, child.ParentID == id_col) \
+                        .outerjoin(accepted, node.AcceptedID == getattr(accepted, node._id)) \
+                        .group_by(id_col) \
                         .filter(treedef_col == int(treedef)) \
                         .filter(node.parentid == parentid) \
                         .order_by(orderby)
         results = list(query)
-
     return HttpResponse(toJson(results), content_type='application/json')
 
 @login_maybe_required

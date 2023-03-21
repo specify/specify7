@@ -1,24 +1,26 @@
-import re
-import io
 import csv
+import io
+import re
 import unittest
-from jsonschema import validate # type: ignore
-from datetime import datetime, date
+from datetime import date
+
 from hypothesis import given, strategies as st
+from jsonschema import validate  # type: ignore
 
 from specifyweb.specify import auditcodes
 from specifyweb.specify.datamodel import datamodel
-from specifyweb.stored_queries.format import LDLM_TO_MYSQL, MYSQL_TO_MONTH, MYSQL_TO_YEAR
-
+from specifyweb.stored_queries.format import LDLM_TO_MYSQL, MYSQL_TO_MONTH, \
+    MYSQL_TO_YEAR
 from .base import UploadTestsBase, get_table
-from ..upload_result import Uploaded, Matched, NullRecord, ParseFailures, ParseFailure, FailedBusinessRule
-from ..upload import do_upload, do_upload_csv
-from ..parsing import parse_coord, parse_date, ParseResult as PR, ParseFailure as PF
-from ..upload_table import UploadTable
-from ..treerecord import TreeRecord
 from ..column_options import ColumnOptions
+from ..parsing import parse_coord, parse_date, ParseResult as PR
+from ..treerecord import TreeRecord
+from ..upload import do_upload, do_upload_csv
 from ..upload_plan_schema import parse_column_options
+from ..upload_result import Uploaded, Matched, NullRecord, ParseFailures, \
+    ParseFailure
 from ..upload_results_schema import schema as upload_results_schema
+from ..upload_table import UploadTable
 
 co = datamodel.get_table_strict('Collectionobject')
 
@@ -26,11 +28,11 @@ class DateParsingTests(unittest.TestCase):
 
     def test_bad1(self) -> None:
         result = parse_date(co, 'catalogeddate', '%d/%m/%Y', 'foobar', 'catdate')
-        self.assertEqual(ParseFailure(message='date value must contain four digit year: foobar', column='catdate'), result)
+        self.assertEqual(ParseFailure(message='invalidYear', payload={'value':'foobar'}, column='catdate'), result)
 
     def test_bad2(self) -> None:
         result = parse_date(co, 'catalogeddate', '%d/%m/%Y', '1978-7-24', 'catdate')
-        self.assertEqual(ParseFailure(message='bad date value: 1978-7-24 expected: %d/%m/%Y', column='catdate'), result)
+        self.assertEqual(ParseFailure(message='badDateFormat', payload={'value':'1978-7-24', 'format':'%d/%m/%Y'}, column='catdate'), result)
 
     @given(st.dates(min_value=date(1000,1,1)), st.sampled_from([f for f in LDLM_TO_MYSQL.values() if '%Y' in f]))
     def test_full_date(self, date, format) -> None:
@@ -179,32 +181,6 @@ class ParsingTests(UploadTestsBase):
                 for a in r.picklistAdditions:
                     self.assertEqual(1, get_table('Spauditlog').objects.filter(recordid=a.id, action=auditcodes.INSERT, tablenum=get_table('Picklistitem').specify_model.tableId).count(), "New picklistitem recorded in audit log.")
 
-
-    def test_picklist_size_overflow(self) -> None:
-        plan = UploadTable(
-            name='Collectionobject',
-            wbcols={'catalognumber': parse_column_options('catno'), 'text1': parse_column_options('habitat')},
-            static={},
-            toOne={},
-            toMany={}
-        ).apply_scoping(self.collection)
-        data = [
-            {'catno': '1', 'habitat': 'River'},
-            {'catno': '2', 'habitat': 'Lake'},
-            {'catno': '3', 'habitat': 'Stream'},
-            {'catno': '4', 'habitat': 'Ocean'},
-            {'catno': '5', 'habitat': 'Lagoon'},
-        ]
-        results = do_upload(self.collection, data, plan, self.agent.id)
-        for result in results:
-            validate([result.to_json()], upload_results_schema)
-
-        self.assertIsInstance(results[0].record_result, Uploaded)
-        self.assertIsInstance(results[1].record_result, Uploaded)
-        self.assertIsInstance(results[2].record_result, Uploaded)
-        self.assertIsInstance(results[3].record_result, FailedBusinessRule)
-        self.assertIsInstance(results[4].record_result, FailedBusinessRule)
-
     def test_uiformatter_match(self) -> None:
         plan = UploadTable(
             name='Collectionobject',
@@ -299,9 +275,8 @@ class ParsingTests(UploadTestsBase):
         result2 = results[2].record_result
         assert isinstance(result2, ParseFailures)
         self.assertEqual([ParseFailure(
-            message="\"Hon.\" is not a legal value in this picklist field.\n"
-                    "Click on the arrow to choose among available "
-                    "options.",
+            message='failedParsingPickList',
+            payload={'value': 'Hon.'},
             column='title'
         )], result2.failures)
 
@@ -363,7 +338,7 @@ class ParsingTests(UploadTestsBase):
         failed_result = upload_results[0].record_result
         self.assertIsInstance(failed_result, ParseFailures)
         assert isinstance(failed_result, ParseFailures) # make typechecker happy
-        self.assertEqual([ParseFailure(message='date value must contain four digit year: foobar', column='Start Date Collected'), ParseFailure(message='date value must contain four digit year: bad date', column='ID Date')], failed_result.failures)
+        self.assertEqual([ParseFailure(message='invalidYear', payload={'value':'foobar'}, column='Start Date Collected'), ParseFailure(message='invalidYear', payload={'value': 'bad date'}, column='ID Date')], failed_result.failures)
 
     def test_out_of_range_lat_long(self) -> None:
         reader = csv.DictReader(io.StringIO(
@@ -374,7 +349,7 @@ class ParsingTests(UploadTestsBase):
         failed_result = upload_results[0].record_result
         self.assertIsInstance(failed_result, ParseFailures)
         assert isinstance(failed_result, ParseFailures) # make typechecker happy
-        self.assertEqual([ParseFailure(message="latitude absolute value must be less than 90 degrees: 128° 06.07' N", column='Latitude1'), ParseFailure(message="longitude absolute value must be less than 180 degrees: 191° 02.42' W", column='Longitude1')], failed_result.failures)
+        self.assertEqual([ParseFailure(message='latitudeOutOfRange', payload={'value':'128° 06.07\' N'}, column='Latitude1'), ParseFailure(message='longitudeOutOfRange', payload={'value': '191° 02.42\' W'}, column='Longitude1')], failed_result.failures)
 
     def test_agent_type(self) -> None:
         plan = UploadTable(
@@ -390,7 +365,7 @@ class ParsingTests(UploadTestsBase):
         data = [
             {'agenttype': "Person", 'lastname': 'Doe'},
             {'agenttype': "Organization", 'lastname': 'Ministry of Silly Walks'},
-            {'agenttype': "Extra Terrestrial", 'lastname': 'Zoidberg'},
+            {'agenttype': "Extra terrestrial", 'lastname': 'Zoidberg'},
             {'agenttype': "other", 'lastname': 'Juju'},
             {'agenttype': "group", 'lastname': 'Van Halen'},
         ]
@@ -406,7 +381,7 @@ class ParsingTests(UploadTestsBase):
 
         result2 = results[2].record_result
         assert isinstance(result2, ParseFailures)
-        self.assertEqual([ParseFailure(message="bad agent type: Extra terrestrial. Expected one of ['Organization', 'Person', 'Other', 'Group']", column='agenttype')], result2.failures)
+        self.assertEqual([ParseFailure(message='failedParsingAgentType',payload={'badType':'Extra terrestrial','validTypes':['Organization', 'Person', 'Other', 'Group']}, column='agenttype')], result2.failures)
 
         result3 = results[3].record_result
         assert isinstance(result3, Uploaded)
@@ -431,7 +406,7 @@ class ParsingTests(UploadTestsBase):
         results = do_upload(self.collection, data, plan, self.agent.id)
 
         self.assertIsInstance(results[0].record_result, Uploaded)
-        self.assertEqual(results[1].record_result, ParseFailures(failures=[ParseFailure(message='this field must be empty if "Species" is empty', column='Species Author')]))
+        self.assertEqual(results[1].record_result, ParseFailures(failures=[ParseFailure(message='invalidPartialRecord', payload={'column':'Species'}, column='Species Author')]))
 
     def test_value_too_long(self) -> None:
         plan = TreeRecord(
@@ -450,7 +425,7 @@ class ParsingTests(UploadTestsBase):
 
         self.assertIsInstance(results[0].record_result, Uploaded)
         self.assertIsInstance(results[1].record_result, Uploaded)
-        self.assertEqual(results[2].record_result, ParseFailures(failures=[ParseFailure(message='value must not have length greater than 128', column='Species Author')]))
+        self.assertEqual(results[2].record_result, ParseFailures(failures=[ParseFailure(message='valueTooLong', payload={'maxLength': 128}, column='Species Author')]))
 
 
 class MatchingBehaviorTests(UploadTestsBase):
@@ -805,7 +780,7 @@ class NullAllowedTests(UploadTestsBase):
             validate([result.to_json()], upload_results_schema)
 
         self.assertIsInstance(results[0].record_result, Uploaded)
-        self.assertEqual(results[1].record_result, ParseFailures(failures=[ParseFailure(message='field is required by upload plan mapping', column='firstname')]))
+        self.assertEqual(results[1].record_result, ParseFailures(failures=[ParseFailure(message='field is required by upload plan mapping', payload={}, column='firstname')]))
         self.assertIsInstance(results[2].record_result, Uploaded)
 
     def test_wbcols_with_null_disallowed_and_ignoreWhenBlank(self) -> None:
@@ -831,7 +806,7 @@ class NullAllowedTests(UploadTestsBase):
             validate([result.to_json()], upload_results_schema)
 
         self.assertIsInstance(results[0].record_result, Uploaded)
-        self.assertEqual(results[1].record_result, ParseFailures(failures=[ParseFailure(message='field is required by upload plan mapping', column='firstname')]))
+        self.assertEqual(results[1].record_result, ParseFailures(failures=[ParseFailure(message='field is required by upload plan mapping', payload={}, column='firstname')]))
         self.assertIsInstance(results[2].record_result, Uploaded)
         self.assertIsInstance(results[3].record_result, Matched)
         self.assertIsInstance(results[4].record_result, Uploaded)
@@ -859,7 +834,7 @@ class NullAllowedTests(UploadTestsBase):
             validate([result.to_json()], upload_results_schema)
 
         self.assertIsInstance(results[0].record_result, Uploaded)
-        self.assertEqual(results[1].record_result, ParseFailures(failures=[ParseFailure(message='field is required by upload plan mapping', column='firstname')]))
+        self.assertEqual(results[1].record_result, ParseFailures(failures=[ParseFailure(message='field is required by upload plan mapping', payload={}, column='firstname')]))
         self.assertIsInstance(results[2].record_result, Uploaded)
         self.assertIsInstance(results[3].record_result, Matched)
         self.assertIsInstance(results[4].record_result, Matched)

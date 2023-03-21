@@ -6,9 +6,10 @@ import json
 import logging
 import re
 from typing import Any, Dict, List, Optional, Tuple, Iterable, Union, \
-    NamedTuple, Callable
-from typing_extensions import TypedDict
+    Callable
 from urllib.parse import urlencode
+
+from typing_extensions import TypedDict
 
 logger = logging.getLogger(__name__)
 
@@ -17,6 +18,7 @@ from django.db import transaction
 from django.http import (HttpResponse, HttpResponseBadRequest,
                          Http404, HttpResponseNotAllowed, QueryDict)
 from django.core.exceptions import ObjectDoesNotExist, FieldError, FieldDoesNotExist
+
 from django.db.models.fields.related import ForeignKey
 from django.db.models.fields import DateTimeField, FloatField, DecimalField
 # from django.utils.deprecation import CallableBool
@@ -27,6 +29,7 @@ from . import models
 from .autonumbering import autonumber_and_save, AutonumberOverflowException
 from .filter_by_col import filter_by_collection
 from .auditlog import auditlog
+from .calculated_fields import calculate_extra_fields
 
 ReadPermChecker = Callable[[Any], None]
 
@@ -364,6 +367,11 @@ def cleanData(model, data: Dict[str, Any], agent) -> Dict[str, Any]:
         del cleaned['timestampcreated']
     except KeyError:
         pass
+
+    # Password should be set though the /api/set_password/<id>/ endpoint
+    if model is get_model('Specifyuser') and 'password' in cleaned:
+        del cleaned['password']
+
     return cleaned
 
 def create_obj(collection, agent, model, data: Dict[str, Any], parent_obj=None):
@@ -702,36 +710,8 @@ def _obj_to_data(obj, perm_checker: ReadPermChecker) -> Dict[str, Any]:
                      and obj.specify_model.get_field(ro.get_accessor_name()) is not None))
     # Add a meta data field with the resource's URI.
     data['resource_uri'] = uri_for_model(obj.__class__.__name__.lower(), obj.id)
-    # Special cases
-    # TODO: move these into a "calculated fields" system
-    if isinstance(obj, get_model('Preparation')):
-        data['isonloan'] = obj.isonloan()
-    elif isinstance(obj, get_model('Specifyuser')):
-        data['isadmin'] = obj.userpolicy_set.filter(collection=None, resource='%', action='%').exists()
-    elif isinstance(obj, get_model('Collectionobject')):
-        dets = data['determinations']
-        currDets = [det['resource_uri'] for det in dets if det['iscurrent']] if dets is not None else []
-        data['currentdetermination'] = currDets[0] if len(currDets) > 0 else None;
-    elif isinstance(obj, get_model('Loan')):
-        preps = data['loanpreparations']
-        items = 0
-        quantities = 0
-        unresolvedItems = 0
-        unresolvedQuantities = 0
-        for prep in preps:
-            items = items + 1;
-            prep_quantity = prep['quantity'] if prep['quantity'] is not None else 0
-            prep_quantityresolved = prep['quantityresolved'] if prep['quantityresolved'] is not None else 0
-            quantities = quantities + prep_quantity
-            if not prep['isresolved']:
-                unresolvedItems = unresolvedItems + 1;
-                unresolvedQuantities = unresolvedQuantities + (prep_quantity - prep_quantityresolved)
-        data['totalPreps'] = items
-        data['totalItems'] = quantities
-        data['unresolvedPreps'] = unresolvedItems
-        data['unresolvedItems'] = unresolvedQuantities
-        data['resolvedPreps'] = items - unresolvedItems
-        data['resolvedItems'] = quantities - unresolvedQuantities
+
+    data.update(calculate_extra_fields(obj, data))
     return data
 
 def to_many_to_data(obj, rel, checker: ReadPermChecker) -> Union[str, List[Dict[str, Any]]]:
@@ -777,10 +757,19 @@ CollectionPayload = TypedDict('CollectionPayload', {
 def get_collection(logged_in_collection, model, checker: ReadPermChecker, control_params=GetCollectionForm.defaults, params={}) -> CollectionPayload:
     """Return a list of structured data for the objects from 'model'
     subject to the request 'params'."""
+
+    objs = apply_filters(logged_in_collection, params, model, control_params)
+
+    try:
+        return objs_to_data_(objs, objs.count(), lambda o: _obj_to_data(o, checker), control_params['offset'], control_params['limit'])
+    except FieldError as e:
+        raise OrderByError(e)
+
+def apply_filters(logged_in_collection, params, model, control_params=GetCollectionForm.defaults):
+    filters = {}
+
     if isinstance(model, str):
         model = get_model_or_404(model)
-
-    filters = {}
 
     for param, val in list(params.items()):
         if param in control_params:
@@ -796,6 +785,7 @@ def get_collection(logged_in_collection, model, checker: ReadPermChecker, contro
         objs = model.objects.filter(**filters)
     except (ValueError, FieldError) as e:
         raise FilterError(e)
+
     if control_params['domainfilter'] == 'true':
         objs = filter_by_collection(objs, logged_in_collection)
     if control_params['orderby']:
@@ -803,28 +793,31 @@ def get_collection(logged_in_collection, model, checker: ReadPermChecker, contro
             objs = objs.order_by(control_params['orderby'])
         except FieldError as e:
             raise OrderByError(e)
-    try:
-        return objs_to_data_(objs, checker, control_params['offset'], control_params['limit'])
-    except FieldError as e:
-        raise OrderByError(e)
+
+    return objs
 
 def objs_to_data(objs, offset=0, limit=20) -> CollectionPayload:
     """Wrapper for backwards compatibility."""
-    return objs_to_data_(objs, lambda x: None, offset, limit)
+    return objs_to_data_(objs, objs.count(), lambda o: _obj_to_data(o, lambda x: None), offset, limit)
 
-def objs_to_data_(objs, checker: ReadPermChecker, offset=0, limit=20) -> CollectionPayload:
+def objs_to_data_(
+    objs,
+    total_count,
+    mapper: Callable[[Any], Dict[str, Any]],
+    offset=0,
+    limit=20
+) -> CollectionPayload:
     """Return a collection structure with a list of the data of given objects
     and collection meta data.
     """
     offset, limit = int(offset), int(limit)
-    total_count = objs.count()
 
     if limit == 0:
         objs = objs[offset:]
     else:
         objs = objs[offset:offset + limit]
 
-    return {'objects': [_obj_to_data(o, checker) for o in objs],
+    return {'objects': [mapper(o) for o in objs],
             'meta': {'limit': limit,
                      'offset': offset,
                      'total_count': total_count}}
@@ -840,32 +833,48 @@ def uri_for_model(model, id=None) -> str:
         uri += '%d/' % int(id)
     return uri
 
-class RowsForm(forms.Form):
+class RowsForm(GetCollectionForm):
     fields = forms.CharField(required=True) # type: ignore
     distinct = forms.CharField(required=False)
-    limit = forms.IntegerField(required=False)
+    defaults = dict(
+        domainfilter=None,
+        limit=0,
+        offset=0,
+        orderby=None,
+        distinct=False,
+        fields=None,
+    )
 
 def rows(request, model_name: str) -> HttpResponse:
     enforce(request.specify_collection, request.specify_user_agent, [f'/table/{model_name.lower()}'], "read")
 
     form = RowsForm(request.GET)
+
     if not form.is_valid():
         return HttpResponseBadRequest(toJson(form.errors), content_type='application/json')
-    try:
-        model = get_model(model_name)
-    except AttributeError as e:
-        raise Http404(e)
-    query = model.objects.all()
+
+    query = apply_filters(request.specify_collection, request.GET, model_name, form.cleaned_data)
     fields = form.cleaned_data['fields'].split(',')
     try:
         query = query.values_list(*fields).order_by(*fields)
     except FieldError as e:
         return HttpResponseBadRequest(e)
-    query = filter_by_collection(query, request.specify_collection)
+    if form.cleaned_data['domainfilter'] == 'true':
+        query = filter_by_collection(query, request.specify_collection)
+    if form.cleaned_data['orderby']:
+        try:
+            query = query.order_by(form.cleaned_data['orderby'])
+        except FieldError as e:
+            raise OrderByError(e)
     if form.cleaned_data['distinct']:
         query = query.distinct()
+
     limit = form.cleaned_data['limit']
-    if limit:
-        query = query[:limit]
+    offset = form.cleaned_data['offset']
+    if limit == 0:
+        query = query[offset:]
+    else:
+        query = query[offset:offset + limit]
+
     data = list(query)
     return HttpResponse(toJson(data), content_type='application/json')

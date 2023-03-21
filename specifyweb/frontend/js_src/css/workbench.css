@@ -2,7 +2,7 @@
 
 /* Show table icons in column headers */
 .htCore thead th > .relative {
-  @apply flex justify-center items-center;
+  @apply flex items-center justify-center;
 }
 
 .htCore .colHeader {
@@ -15,12 +15,12 @@
 
 /* Sorting direction */
 .handsontable .columnSorting::before {
-  @apply order-2 !static pr-1 !mt-1 !bg-center;
+  @apply !static order-2 !mt-1 !bg-center pr-1;
 }
 
 /* Sorting priority index */
 .handsontable .columnSorting::after {
-  @apply order-2 !static !mt-2 -ml-2;
+  @apply !static order-2 !mt-2 -ml-2;
 }
 
 /* Highlighted cells' headers */
@@ -30,7 +30,7 @@
 
 /* Picklists */
 .handsontable td .htAutocompleteArrow {
-  @apply text-black dark:text-white cursor-pointer;
+  @apply cursor-pointer text-black dark:text-white;
 }
 
 .handsontable td .htAutocompleteArrow:hover {
@@ -49,7 +49,9 @@
 
 /* Cell navigation */
 
-.wbs-form :is(.wb-no-match-cell, .wb-modified-cell, .htCommentCell, .wb-search-match-cell),
+.wbs-form
+  :is(.wb-no-match-cell,
+  .wb-modified-cell, .htCommentCell, .wb-search-match-cell),
 .wb-navigation-section {
   @apply !bg-[color:var(--accent-color)];
 }
@@ -79,7 +81,7 @@
 /* Handsontable dark mode */
 .handsontable td,
 .htContextMenu table tbody tr td {
-  @apply dark:bg-neutral-800 dark:border-neutral-500;
+  @apply dark:border-neutral-500 dark:bg-neutral-800;
 }
 
 .htContextMenu table tbody tr td {
@@ -91,7 +93,8 @@
 }
 
 .htContextMenu td.highlight,
-.handsontable.listbox :is(tr td.current, tr:hover td) {
+.handsontable.listbox tr td.current,
+.handsontable.listbox tr:hover td {
   @apply dark:!bg-neutral-600;
 }
 
@@ -101,7 +104,7 @@
 }
 
 .handsontable th {
-  @apply dark:bg-neutral-900 dark:text-white dark:!border-neutral-800;
+  @apply dark:!border-neutral-800 dark:bg-neutral-900 dark:text-white;
 }
 
 .handsontable tr:first-child td {
@@ -118,7 +121,7 @@
 }
 
 .htCommentTextArea {
-  @apply dark:text-white cursor-auto dark:border-none dark:bg-neutral-800;
+  @apply cursor-auto dark:border-none dark:bg-neutral-800 dark:text-white;
 }
 
 .htCommentCell:after {

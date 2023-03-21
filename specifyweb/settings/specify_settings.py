@@ -35,6 +35,12 @@ WEB_ATTACHMENT_KEY = None
 # The collection name to use with the web attachment server.
 WEB_ATTACHMENT_COLLECTION = None
 
+# If True, and WEB_ATTACHMENT_COLLECTION is None, attachments for each
+# collection would be stored in separate folders
+# Note, this is not recommended. See:
+# https://github.com/specify/specify7/pull/2375/commits/5cb767121b135fc8ce1bcf0b3cd1724b1d452725#diff-688a4b186646bf0680896b3dc52d2c8c4c1f0fa7c510b482cc7671ed170def7eR28-R42
+SEPARATE_WEB_ATTACHMENT_FOLDERS = False
+
 # Set to true if the asset server requires auth token to get files.
 WEB_ATTACHMENT_REQUIRES_KEY_FOR_GET = False
 

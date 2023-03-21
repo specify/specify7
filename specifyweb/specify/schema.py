@@ -4,7 +4,7 @@ from django import http
 from django.conf import settings
 from django.utils.translation import gettext as _
 from django.views.decorators.http import require_GET
-from typing import Dict, List, Tuple, Union
+from typing import Dict, List, Tuple
 
 from .datamodel import (
     Field,
@@ -120,11 +120,11 @@ def generate_openapi_for_tables():
                 "limit": {
                     "name": "limit",
                     "in": "query",
-                    "description": "Return at most 'limit' items",
+                    "description": "Return at most 'limit' items. 0 - no limit",
                     "required": False,
                     "schema": {
                         "type": "number",
-                        "minimum": 1,
+                        "minimum": 0,
                         "default": 20,
                     },
                 },
@@ -147,6 +147,16 @@ def generate_openapi_for_tables():
                     "schema": {
                         "type": "boolean",
                         "default": False,
+                    },
+                },
+                "domainfilter_default": {
+                    "name": "domainfilter",
+                    "in": "query",
+                    "description": "Use the logged_in_collection to limit request to relevant items",
+                    "required": False,
+                    "schema": {
+                        "type": "boolean",
+                        "default": True,
                     },
                 },
                 "orderby": {
@@ -563,16 +573,12 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
                             "example": "localityname,latitude1,longitude1",
                             "description": "Comma separated list of fileds to fetch",
                         },
+                        {"$ref": "#/components/parameters/limit"},
+                        {"$ref": "#/components/parameters/offset"},
                         {
-                            "name": "limit",
-                            "in": "query",
-                            "required": False,
-                            "schema": {
-                                "type": "number",
-                                "default": 0,
-                            },
-                            "description": "Max number of rows to return. 0 - no limit",
+                            "$ref": "#/components/parameters/domainfilter"
                         },
+                        {"$ref": "#/components/parameters/orderby"},
                         {
                             "name": "distinct",
                             "in": "query",
@@ -582,10 +588,17 @@ def table_to_endpoint(table: Table) -> List[Tuple[str, Dict]]:
                                 "default": False,
                             },
                             "description": "Whether results should be distinct",
-                        }
+                        },
                     ],
                     "summary": f"Get rows from the {table.django_name} table",
-                    "description": f"Get rows from the {table.django_name} table",
+                    "description": (
+                        f"Query multiple records from the {table.django_name} table<br>"
+                        f"Filterring is supported by providing field values as GET parameters<br>"
+                        f"Example: /api/specify_rows/sometable/?field=value. Advanced filtering "
+                        f"options are also supported (e.g. ?numericfield__gte=4). More filters "
+                        f"are documented here: "
+                        f"https://docs.djangoproject.com/en/4.0/ref/models/querysets/#field-lookups-1"
+                    ),
                     "responses": {
                         "200": {
                             "description": "Empty response",
@@ -706,7 +719,10 @@ def field_to_schema(field: Field) -> Dict:
         OpenAPI schema's schema object for a field of a table
     """
     if field.is_relationship:
-        assert isinstance(field, Relationship)
+        if not isinstance(field, Relationship): raise AssertionError(
+            f"Field '{field.name}' is not a Relationship", 
+            {"field" : field.name, 
+            "localizaitonKey" : "fieldNotRelationship"})
         if field.dependent:
             if (
                 field.type == "one-to-one"

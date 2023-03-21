@@ -1,4 +1,69 @@
-# Specify 7
+
+# [Specify 7](https://www.specifysoftware.org/products/specify-7/)
+
+The [Specify Collections Consortium](https://www.specifysoftware.org) is pleased
+to offer Specify 7, a web implementation of our biological collections data
+management platform.
+
+We encourage members to use
+our [Dockerized compositions](https://github.com/specify/docker-compositions) of
+Specify 7. You can choose a version, make the necessary adjustments and then run
+a single command to get everything working. It is very simple and can be easily
+updated when new versions are released. Members can contact us
+at [support@specifysoftware.org](mailto:support@specifysoftware.org) to gain
+access to this repository.
+
+The new generation of Specify combines the interface design components and data
+management foundation of Specify 6 with the efficiency and ease-of-use of
+web-based data access and cloud computing. The Specify 7 web application uses
+the same interface layout language as Specify 6, so any user interface
+customization made in one product is mirrored in the other. Also Specify 6 and
+Specify 7 use the same data model and can work from the same Specify MySQL
+database, which means they can be run simultaneously with any Specify
+collection. By providing an easy migration path to the web, Specify 7 helps
+transition Specify 6 collections to cloud computing. It is also a great starting
+platform for collections which prefer zero workstation software installation and
+ubiquitous web browser access.
+
+Specify 7’s server/browser architecture open the door for computing support of
+collaborative digitization projects and for remote hosting of institutional or
+project specimen databases. Without the need for a local area or campus network
+to connect to the MySQL data server, Specify 7 gives you and your collaborators
+access to a shared specimen database through any web browser. Without adequate
+IT support to maintain a secure database server? With the Specify 7 server
+software supported on generic Linux servers, museums can utilize a server
+hosting service to provide support for the technical complexities of systems
+administration, security management, and backing-up. Want to create a joint
+database with remote collaborators for a collaborative digitizing effort? No
+problem! Host, hire a hosting service or use
+our [Specify Cloud](https://www.specifysoftware.org/products/cloud/) service for
+your Specify database, set up accounts and go. We provide the same efficient
+user interface and printed reports and labels customization, and help desk
+support for Specify 7 as we do for Specify 6.
+
+**Secure.**
+Support for Single Sign-On (SSO) integrates Specify 7 with a campus or
+institutional identity providers. It supports all identity providers (IdPs) that
+have an OpenID endpoints.
+
+The Security and Accounts tool allows administrators to give access based on
+roles and policies. Create, edit, and copy roles among collections and
+databases. Administrators can give users as many or few permissions as desired,
+from guest accounts to collection managers.
+
+**Accessible.**
+It is important that web applications work for people with disabilities. Specify
+7 is developed with this top of mind, not only meeting international
+accessibility standards but also providing a better experience for everyone.
+
+Specify 7 is largely compliant with the main WWW accessibility standard – **WCAG
+2.1 (AA)**. It supports screen readers and allows each user to customize their
+color scheme and appearance as well as reduce motion and resize all elements.
+
+This accessible design respects system and web browser preferences for date
+formats, language, theme, and animations.
+
+---
 
 The Specify Collections Consortium is funded by its member
 institutions. The Consortium web site is:
@@ -17,32 +82,73 @@ under GNU General Public License 2 (GPL2).
 ## Table of Contents
 
 - [Specify 7](#specify-7)
-  - [Table of Contents](#table-of-contents)
-  - [Docker installation](#docker-installation)
-  - [Installation](#installation)
-    - [Installing system dependencies](#installing-system-dependencies)
-    - [Installing Specify 6](#installing-specify-6)
-    - [Cloning Specify 7 source repository](#cloning-specify-7-source-repository)
-    - [Setting up Python Virtual Environment](#setting-up-python-virtual-environment)
-    - [Building](#building)
-    - [Adjusting settings files](#adjusting-settings-files)
-    - [Turning on debugging](#turning-on-debugging)
-    - [The development server](#the-development-server)
-    - [The Specify 7 worker](#the-specify-7-worker)
-    - [Installing production requirements](#installing-production-requirements)
-    - [Setting up Apache](#setting-up-apache)
-    - [Restarting Apache](#restarting-apache)
-  - [Updating Specify 7](#updating-specify-7)
-  - [Updating the database (Specify 6) version](#updating-the-database-specify-6-version)
+    - [Table of Contents](#table-of-contents)
+    - [Changelog](#changelog)
+    - [Installation](#installation)
+        - [Docker installation](#docker-installation-recommended)
+          (**Recommended**)
+        - [Local installation](#local-installation)
+            - [Installing system dependencies](#installing-system-dependencies)
+            - [Installing Specify 6](#installing-specify-6)
+            - [Cloning Specify 7 source repository](#cloning-specify-7-source-repository)
+            - [Setting up Python Virtual Environment](#setting-up-python-virtual-environment)
+            - [Building](#building)
+            - [Adjusting settings files](#adjusting-settings-files)
+            - [Turning on debugging](#turning-on-debugging)
+            - [The development server](#the-development-server)
+            - [The Specify 7 worker](#the-specify-7-worker)
+            - [Installing production requirements](#installing-production-requirements)
+            - [Setting up Apache](#setting-up-apache)
+            - [Restarting Apache](#restarting-apache)
+    - [Updating Specify 7](#updating-specify-7)
+    - [Updating the database (Specify 6) version](#updating-the-database-specify-6-version)
+    - [Localizing Specify 7](#localizing-specify-7)
 
-## Docker installation
+## Changelog
 
-Beginning with version 7.6.0 the recommend deployment of Specify 7 is
-via Docker. Please contact Specify support for detailed Docker
-deployment instructions. For existing non-Docker installations the
-relevant instructions have been updated below.
+Changelog is available in [CHANGELOG.md](./CHANGELOG.md)
 
-## Installation
+# Installation
+
+We encourage all users to read our documentation on the Community Forum
+regarding installing and deploying Specify –
+[**Specify 7 Installation Instructions**](https://discourse.specifysoftware.org/t/specify-7-installation-instructions/755).
+
+If you are an existing Specify 6 user who is looking to evaluate Specify 7, you
+can contact [support@specifysoftware.org](mailto:support@specifysoftware.org)
+along with a copy of your database and we can configure a temporary deployment
+for evaluation purposes.
+
+## Docker Installation (Recommended)
+
+### Specify Collections Consortium (SCC) Members:
+
+We encourage members to use
+our  [Dockerized compositions](https://github.com/specify/docker-compositions)
+of Specify 7. You can choose your desired version, make the necessary
+adjustments and then run a single command to get everything
+working. It is very simple and can be easily updated when new versions are
+released. Documentation for deploying Specify
+using Docker is available within the repository.
+
+[**📨 Click here to request
+access
+**](mailto:support@specifysoftware.org?subject=Requesting%20Docker%20Repository%20Access&body=My%20GitHub%20username%20is%3A%20%0D%0AMy%20Specify%20Member%20Institution%20is%3A%20%0D%0AAdditional%20Questions%20or%20Notes%3A%20)
+or email  [support@specifysoftware.org](mailto:support@specifysoftware.org)
+with your GitHub username, member
+institution or collection, and any additional questions you have for us.
+
+### Non-Members:
+
+If your institution is not a member of the Specify Collections Consortium, you
+can follow
+the [local installation instructions](#local-installation) below or
+contact [membership@specifysoftware.org](mailto:membership@specifysoftware.org)
+to learn more about joining the SCC to
+receiving configuration assistance, support, and hosting services if you are
+interested.
+
+## Local Installation
 
 After completing these instructions you will be able to run the test
 server and interact with the Django based Specify webapp in your
@@ -62,12 +168,14 @@ version, if problems arise).
 
 ### Installing system dependencies
 
-Specify 7 requires Python 3.6. Ubuntu 20.04 LTS is recommended. For
+Specify 7 requires Python 3.8. Ubuntu 20.04 LTS is recommended. For
 other distributions these instructions will have to be adapted.
 
 Ubuntu 20.04 LTS:
 
 ```shell
+sudo apt install -y curl
+curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
 sudo apt-get -y install --no-install-recommends \
   build-essential \
   git \
@@ -75,10 +183,9 @@ sudo apt-get -y install --no-install-recommends \
   libmariadbclient-dev \
   libsasl2-dev \
   nodejs \
-  npm \
   python3-venv \
-  python3.6 \
-  python3.6-dev \
+  python3.8 \
+  python3.8-dev \
   redis \
   unzip
 ```
@@ -102,6 +209,12 @@ yum install -y \
   unzip
 ```
 
+Afterward, please make sure you have Node.js 18 installed:
+
+```
+node -v
+```
+
 ### Installing Specify 6
 
 A copy of the most recent Specify 6 release is required on the server
@@ -111,9 +224,9 @@ Specify 7. It is possible to copy the Specify 6 install from another
 Linux system to avoid the need to install Java on the server.
 
 ```shell
-wget https://update.specifysoftware.org/6801/Specify_unix_64.sh
-sh Specify_unix_64.sh -q -dir ./Specify6.8.01
-sudo ln -s $(pwd)/Specify6.8.01 /opt/Specify
+wget https://update.specifysoftware.org/6802/Specify_unix_64.sh
+sh Specify_unix_64.sh -q -dir ./Specify6.8.03
+sudo ln -s $(pwd)/Specify6.8.03 /opt/Specify
 ```
 
 ### Cloning Specify 7 source repository
@@ -127,6 +240,27 @@ git clone https://github.com/specify/specify7.git
 You will now have a specify7 directory containing the source
 tree.
 
+Note, by default, `git clone` checks out the `production` branch of Specify 7.
+That branch contains the latest tested features and bug fixes. If you prefer a
+more stable release, you can switch to one of our tagged released.
+
+```shell
+cd specify7
+git checkout tags/v7.8.6
+```
+
+Tagged releases are coming out every other week and undergo more testing.
+
+See [the list of tags](https://github.com/specify/specify7/tags) to check what's
+the latest stable release.
+
+### Adjusting settings files
+
+In the directory `specify7/specifyweb/settings` you will find the
+`specify_settings.py` file. Make a copy of this file as
+`local_specify_settings.py` and edit it. The file contains comments
+explaining the various settings.
+
 ### Setting up Python Virtual Environment
 
 Using a Python
@@ -136,8 +270,9 @@ system. Also, it avoids having to use a superuser account to install
 the Python dependencies.
 
 ```shell
-python3.6 -m venv specify7/ve
-specify7/ve/bin/pip install -r specify7/requirements.txt
+python3.8 -m venv specify7/ve
+specify7/ve/bin/pip install wheel
+specify7/ve/bin/pip install --upgrade -r specify7/requirements.txt
 ```
 
 ### Building
@@ -146,31 +281,35 @@ To build Specify 7 use the default make target.
 
 ```shell
 cd specify7
+source ve/bin/activate
 make
 ```
 
+> Note, if `source` command is not available on your system, try running
+> `. ve/bin/activate` instead
+
 Other make targets:
 
-#### make build
+#### `make build`
 
 Runs all necessary build steps.
 
-#### make frontend
+#### `make frontend`
 
 Installs or updates Javascript dependencies and builds the Javascript
 modules only.
 
-#### make clean
+#### `make clean`
 
 Removes all generated files.
 
 The following targets require the virualenv to be activated:
 
-#### make pip_requirements
+#### `make pip_requirements`
 
 Install or updates Python dependencies.
 
-#### make django_migrations
+#### `make django_migrations`
 
 Applies Specify schema changes to the database named in the
 settings. This step may fail if the master user configured in the
@@ -179,21 +318,14 @@ settings does not have DDL privileges. Changing the `MASTER_NAME` and
 changes to be applied. Afterward, the master user settings can be
 restored.
 
-#### make runserver
+#### `make runserver`
 
 A shortcut for running the Django development server.
 
-#### make webpack_watch
+#### `make webpack_watch`
 
 Run webpack in watch mode so that changes to the frontend source code
 will be automatically compiled. Useful during the development process.
-
-### Adjusting settings files
-
-In the directory `specify7/specifyweb/settings` you will find the
-`specify_settings.py` file. Make a copy of this file as
-`local_specify_settings.py` and edit it. The file contains comments
-explaining the various settings.
 
 ### Turning on debugging
 
@@ -205,6 +337,9 @@ Debugging can be enabled by creating the file
 `specify7/specifyweb/settings/debug.py` with the contents, `DEBUG = True`.
 
 ### The development server
+
+> NOTE: development server should only be run in debug mode. See previous
+> section for instructions on how to turn on debugging.
 
 Specify7 can be run using the Django development server.
 
@@ -317,10 +452,16 @@ CentOS / Red Hat:
 sudo systemctl restart httpd.service
 ```
 
+### Nginx configuration
+
+Specify 7 is web-server agnostic.
+Example [nginx.conf](https://github.com/specify/specify7/blob/production/nginx.conf)
+(note, you would have to adjust the host names and enable HTTPs).
+
 ## Updating Specify 7
 
 Specify 7.4.0 and prior versions were based on Python 2.7. If updating
-from one of these versions, it will be necessary to install Python 3.6
+from one of these versions, it will be necessary to install Python 3.8
 by running the `apt-get` commands in the
 [Install system dependencies](#install-system-dependencies) and the
 [Production requirements](#production-requirements) steps. Then
@@ -368,8 +509,17 @@ database with a new version of Specify 6 and follow the Specify 6
 update procedures.
 
 Once the database version is updated, a corresponding copy of Specify
-6 must be provided to the Specify 7 server by repeating the
-[Installing Specify 6](#installing-specify-6) section of this guide
-for the new version of Specify 6.
+6 must be provided to the Specify 7 server by repeating
+the [Installing Specify 6](#installing-specify-6) section of this guide for the
+new version of Specify 6.
 
 [![analytics](https://www.google-analytics.com/collect?v=1&t=pageview&dl=https%3A%2F%2Fgithub.com%2Fspecify%2Fspecify7&uid=readme&tid=UA-169822764-3)]()
+
+## Localizing Specify 7
+
+Specify 7 interface is localized to a few languages out of the box. We welcome
+contributions of new translations. We are using
+[Weblate](https://hosted.weblate.org/projects/specify-7/) continuous
+localization
+platform.
+[Instructions on how you can contribute](https://discourse.specifysoftware.org/t/get-started-with-specify-7-localization/956)

@@ -1,12 +1,16 @@
 .PHONY: build clean watch
 
 build:
-	npm install
+	npm ci
 	npx webpack -o ../static/js --mode=production
+
+profile: 
+	npx webpack --mode=production --profile --json > stats.json
+	npx webpack-bundle-analyzer stats.json
+
 clean:
 	rm -rf node_modules
 	rm -rf ../static/js
-	rm -rf testBuild
 
 watch:
 	npx webpack -w --mode development -o ../static/js
