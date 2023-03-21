@@ -462,6 +462,7 @@ function TableHeaderCell({
         )}
       </>
     ) : undefined;
+
   return (
     <div
       className="sticky z-[2] w-full min-w-max border-b

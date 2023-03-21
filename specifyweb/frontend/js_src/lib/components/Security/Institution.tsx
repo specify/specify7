@@ -99,7 +99,7 @@ function InstitutionView({
                 ) : (
                   commonText.loading()
                 )}
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                   {hasPermission('/permissions/library/roles', 'create') && (
                     <Link.Green href="/specify/security/institution/role/create/">
                       {commonText.create()}

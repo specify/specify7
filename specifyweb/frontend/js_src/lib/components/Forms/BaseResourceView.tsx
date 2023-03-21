@@ -17,7 +17,7 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { displaySpecifyNetwork, SpecifyNetworkBadge } from '../SpecifyNetwork';
 import { usePref } from '../UserPreferences/usePref';
 import { format } from './dataObjFormatters';
-import { RenderForm } from './SpecifyForm';
+import { SpecifyForm } from './SpecifyForm';
 import { useViewDefinition } from './useViewDefinition';
 
 export type ResourceViewProps<SCHEMA extends AnySchema> = {
@@ -83,7 +83,7 @@ export function useResourceView<SCHEMA extends AnySchema>({
 
   const specifyForm =
     typeof resource === 'object' ? (
-      <RenderForm
+      <SpecifyForm
         display={isSubForm ? 'inline' : 'block'}
         isLoading={isLoading}
         resource={resource}
@@ -137,7 +137,11 @@ export function useResourceView<SCHEMA extends AnySchema>({
         </>
       ) : (
         <FormContext.Provider value={formMeta}>
-          <Form className={className} forwardRef={setForm} id={id('form')}>
+          <Form
+            className={`h-full ${className ?? ''}`}
+            forwardRef={setForm}
+            id={id('form')}
+          >
             {specifyForm}
             {children}
           </Form>

@@ -2,7 +2,6 @@ import React from 'react';
 
 import { LoadingContext } from '../components/Core/Contexts';
 import { raise } from '../components/Errors/Crash';
-import { f } from '../utils/functools';
 import type { GetOrSet } from '../utils/types';
 
 /**
@@ -45,12 +44,13 @@ export function useAsyncState<T>(
   React.useLayoutEffect(() => {
     // If callback changes, state is reset while new state is fetching
     setState(undefined);
-    const wrapped = loadingScreen ? loading : f.id;
-    wrapped(
-      Promise.resolve(callback())
-        .then((newState) => (destructorCalled ? undefined : setState(newState)))
-        .catch(raise)
+
+    const promise = Promise.resolve(callback()).then((newState) =>
+      destructorCalled ? undefined : setState(newState)
     );
+
+    if (loadingScreen) loading(promise);
+    else promise.catch(raise);
 
     let destructorCalled = false;
     return (): void => {

@@ -11,10 +11,7 @@ import { toLowerCase } from '../../utils/utils';
 import { icons } from '../Atoms/Icons';
 import type { MenuItem } from '../Core/Main';
 import { getDisciplineTrees } from '../InitialContext/treeRanks';
-import {
-  fetchContext as fetchUserInfo,
-  userInformation,
-} from '../InitialContext/userInformation';
+import { userInformation } from '../InitialContext/userInformation';
 import { fetchContext as userPermission } from '../Permissions';
 import {
   hasPermission,
@@ -145,7 +142,12 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
 /**
  * Do not us directly. Use useUserTools() instead
  */
-export const rawUserToolsPromise = Promise.all([userPermission, fetchUserInfo])
+export const rawUserToolsPromise = Promise.all([
+  userPermission,
+  import('../InitialContext/userInformation').then(
+    async ({ fetchContext }) => fetchContext
+  ),
+])
   .then(async () =>
     Promise.all(
       Object.entries(rawUserTools).map(

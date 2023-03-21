@@ -2,16 +2,18 @@ import _ from 'underscore';
 
 import {hijackBackboneAjax} from '../../utils/ajax/backboneAjax';
 import {Http} from '../../utils/ajax/definitions';
-import {globalEvents} from '../../utils/ajax/specifyApi';
 import {removeKey} from '../../utils/utils';
 import {assert} from '../Errors/assert';
 import {softFail} from '../Errors/Crash';
 import {Backbone} from './backbone';
 import {specialFields} from './helpers';
+import {attachBusinessRules} from './businessRules';
+import {initializeResource} from './domain';
 import {
     getFieldsToNotClone,
     getResourceApiUrl,
     getResourceViewUrl,
+    resourceEvents,
     resourceFromUrl
 } from './resource';
 
@@ -103,9 +105,10 @@ function eventHandlerForToOne(related, field) {
                 }
             });
 
-            globalEvents.trigger('initResource', this);
+            if(!this.noBusinessRules)
+                attachBusinessRules(this);
             if(this.isNew())
-                globalEvents.trigger('newResource', this);
+                initializeResource(this);
             /*
              * Business rules may set some fields on resource creation
              * Those default values should not trigger unload protect
@@ -592,6 +595,11 @@ function eventHandlerForToOne(related, field) {
             });
 
             return resource._save.then(()=>resource);
+        },
+        async destroy(...args) {
+            const promise = await Backbone.Model.prototype.destroy.apply(this, ...args);
+            resourceEvents.trigger('deleted', this);
+            return promise;
         },
         toJSON() {
             const self = this;

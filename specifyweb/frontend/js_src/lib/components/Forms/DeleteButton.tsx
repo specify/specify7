@@ -5,6 +5,8 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
+import { treeText } from '../../localization/tree';
+import { StringToJsx } from '../../localization/utils';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { runQuery } from '../../utils/ajax/specifyApi';
@@ -24,6 +26,8 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { createQuery } from '../QueryBuilder';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
+import { FormattedResource } from '../Molecules/FormattedResource';
+import { TableIcon } from '../Molecules/TableIcon';
 import type { DeleteBlocker } from './DeleteBlocked';
 import { DeleteBlockers } from './DeleteBlocked';
 import { parentTableRelationship } from './parentTables';
@@ -67,6 +71,9 @@ export function DeleteButton<SCHEMA extends AnySchema>({
   const loading = React.useContext(LoadingContext);
 
   const isBlocked = Array.isArray(blockers) && blockers.length > 0;
+
+  const iconName = resource.specifyModel.name;
+
   return (
     <>
       <ButtonComponent
@@ -118,6 +125,21 @@ export function DeleteButton<SCHEMA extends AnySchema>({
             onClose={handleClose}
           >
             {deletionMessage}
+            <div>
+              <StringToJsx
+                components={{
+                  wrap: (
+                    <i className="flex items-center gap-2">
+                      <TableIcon label={false} name={iconName} />
+                      <FormattedResource asLink={false} resource={resource} />
+                    </i>
+                  ),
+                }}
+                string={commonText.jsxColonLine({
+                  label: treeText.resourceToDelete(),
+                })}
+              />
+            </div>
           </Dialog>
         ) : (
           <Dialog

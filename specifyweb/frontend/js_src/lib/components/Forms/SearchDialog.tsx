@@ -28,7 +28,7 @@ import { createQuery } from '../QueryBuilder';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
 import { formatUrl } from '../Router/queryString';
 import { format } from './dataObjFormatters';
-import { RenderForm } from './SpecifyForm';
+import { SpecifyForm } from './SpecifyForm';
 import { useViewDefinition } from './useViewDefinition';
 
 const dialogDefinitions = load<Element>(
@@ -120,6 +120,7 @@ export function SearchDialog<SCHEMA extends AnySchema>({
           <Submit.Green form={id('form')}>{commonText.search()}</Submit.Green>
         </>
       }
+      dimensionsKey={`SearchDialog-${templateResource.specifyModel.name}`}
       header={commonText.search()}
       modal={false}
       onClose={handleClose}
@@ -150,7 +151,7 @@ export function SearchDialog<SCHEMA extends AnySchema>({
             .finally(handleLoaded);
         }}
       >
-        <RenderForm
+        <SpecifyForm
           display="inline"
           resource={templateResource}
           viewDefinition={viewDefinition}
@@ -230,7 +231,7 @@ const testFilter = <SCHEMA extends AnySchema>(
       values.some((value) => value == resource.get(field))
     : operation === 'notIn'
     ? // eslint-disable-next-line eqeqeq
-      values.every((value) => value == resource.get(field))
+      values.every((value) => value != resource.get(field))
     : operation === 'lessThan'
     ? values.every((value) => (resource.get(field) ?? 0) < value)
     : error('Invalid Query Combo Box search filter', {
@@ -280,6 +281,7 @@ function QueryBuilderSearch<SCHEMA extends AnySchema>({
       className={{
         container: dialogClassNames.wideContainer,
       }}
+      dimensionsKey="QueryBuilder"
       header={queryText.queryBuilder()}
       onClose={handleClose}
     >

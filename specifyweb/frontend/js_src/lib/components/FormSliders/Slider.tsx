@@ -58,7 +58,7 @@ export function Slider({
           <Input.Number
             className={`
               no-arrows absolute top-0 left-0 h-full bg-white
-              text-center font-bold ring-0 dark:bg-neutral-600
+              text-center font-bold ring-1 dark:bg-neutral-600
             `}
             disabled={
               handleChange === undefined || (max === 1 && resolvedValue === 1)

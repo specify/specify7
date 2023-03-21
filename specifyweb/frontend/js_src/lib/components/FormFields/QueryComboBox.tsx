@@ -163,7 +163,7 @@ export function QueryComboBox({
               .then((resource) =>
                 resource === undefined || resource === null
                   ? {
-                      label: '',
+                      label: '' as LocalizedString,
                       resource: undefined,
                     }
                   : (value === formattedRef.current?.value &&
@@ -255,6 +255,11 @@ export function QueryComboBox({
     );
   }
 
+  const relatedTable =
+    (typeof typeSearch === 'object' ? typeSearch?.relatedModel : undefined) ??
+    field.relatedModel;
+
+  // FEATURE: use main table field if type search is not defined
   const fetchSource = React.useCallback(
     async (value: string): Promise<RA<AutoCompleteItem<string>>> =>
       isLoaded && typeof typeSearch === 'object' && typeof resource === 'object'
@@ -275,7 +280,7 @@ export function QueryComboBox({
                         : undefined,
                     treeData:
                       typeof treeData === 'object' ? treeData : undefined,
-                    typeSearch,
+                    relatedTable,
                     subViewRelationship,
                   }),
                 })
@@ -313,6 +318,7 @@ export function QueryComboBox({
       field,
       isLoaded,
       typeSearch,
+      relatedTable,
       subViewRelationship,
       collectionRelationships,
       forceCollection,
@@ -327,7 +333,7 @@ export function QueryComboBox({
     hasTablePermission(field.relatedModel.name, 'create');
 
   return (
-    <div className="flex w-full items-center">
+    <div className="flex w-full min-w-[theme(spacing.40)] items-center">
       <AutoComplete<string>
         aria-label={undefined}
         disabled={
@@ -435,9 +441,7 @@ export function QueryComboBox({
             <DataEntry.Search
               aria-pressed={state.type === 'SearchState'}
               onClick={
-                isLoaded &&
-                typeof typeSearch === 'object' &&
-                typeof resource === 'object'
+                isLoaded && typeof resource === 'object'
                   ? (): void =>
                       setState({
                         type: 'SearchState',
@@ -453,7 +457,7 @@ export function QueryComboBox({
                               typeof treeData === 'object'
                                 ? treeData
                                 : undefined,
-                            typeSearch,
+                            relatedTable,
                             subViewRelationship,
                           })
                             .map(serializeResource)

@@ -213,6 +213,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
         onSaving={handleSaving}
       />
     ) : undefined;
+
   const report =
     state.type === 'Report' && typeof resource === 'object' ? (
       <ReportsView
@@ -225,6 +226,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
         }}
       />
     ) : undefined;
+
   const deleteButton =
     !isDependent &&
     !isSubForm &&
@@ -239,6 +241,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
         />
       </ErrorBoundary>
     ) : undefined;
+
   const headerContent = (
     <>
       {specifyNetworkBadge}
@@ -260,18 +263,20 @@ export function ResourceView<SCHEMA extends AnySchema>({
         typeof extraButtons === 'object' ? (
           <DataEntry.Footer>
             {deleteButton}
-            {extraButtons ?? <span className="-ml-2 flex-1" />}
+            {extraButtons ?? <span className="-ml-2 md:flex-1" />}
             {saveButtonElement}
           </DataEntry.Footer>
         ) : undefined}
       </>
     );
+
     const headerComponents = headerButtons?.(headerContent) ?? (
       <>
         <span className="-ml-2 flex-1" />
         {headerContent}
       </>
     );
+
     return isSubForm ? (
       <DataEntry.SubForm>
         <DataEntry.SubFormHeader>
@@ -303,6 +308,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
    */
   const isFullHeight =
     dialog === 'modal' && typeof headerButtons === 'function' && !isSubForm;
+
   return (
     <Dialog
       buttons={
@@ -330,6 +336,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
         content: `${className.formStyles} ${dialogClassNames.flexContent}`,
       }}
       header={customTitle ?? title}
+      dimensionsKey={viewName ?? resource?.specifyModel.view}
       headerButtons={
         <>
           {headerButtons?.(specifyNetworkBadge) ?? (

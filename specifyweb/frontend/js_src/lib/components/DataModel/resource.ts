@@ -1,6 +1,7 @@
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
+import { eventListener } from '../../utils/events';
 import { f } from '../../utils/functools';
 import type { DeepPartial, RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
@@ -22,14 +23,10 @@ import { getModel, schema } from './schema';
 import type { SpecifyModel } from './specifyModel';
 import type { Tables } from './types';
 
-/*
- * REFACTOR: experiment with an object singleton:
- * There is only ever one instance of a record with the same table name
- * and id. Any changes in one place propagate to all the other places where
- * that record is used. Record is only fetched once and updates are kept track
- * of. When requesting object fetch, return the previous fetched version, while
- * fetching the new one.
- */
+// FEATURE: use this everywhere
+export const resourceEvents = eventListener<{
+  readonly deleted: SpecifyResource<AnySchema>;
+}>();
 
 /**
  * Fetch a single resource from the back-end
@@ -57,6 +54,7 @@ export const fetchResource = async <
     status === Http.NOT_FOUND ? undefined! : serializeResource(record)
   );
 
+// BUG: trigger resourceEvents.deleted here
 export const deleteResource = async (
   tableName: keyof Tables,
   id: number

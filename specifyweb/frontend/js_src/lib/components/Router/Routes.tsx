@@ -36,14 +36,12 @@ export const routes: RA<EnhancedRoute> = [
         index: true,
         title: schemaText.databaseSchema(),
         element: () =>
-          import('../Toolbar/DataModel').then(
-            ({ DataModelTables }) => DataModelTables
-          ),
+          import('../SchemaViewer').then(({ SchemaViewer }) => SchemaViewer),
       },
       {
         path: ':tableName',
         element: () =>
-          import('../Toolbar/DataModel').then(
+          import('../SchemaViewer/helpers').then(
             ({ DataModelRedirect }) => DataModelRedirect
           ),
       },

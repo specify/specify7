@@ -20,7 +20,7 @@ const containerBaseUnstyled = `flex flex-col gap-4 overflow-scroll
   overflow-x-auto [overflow-y:overlay] [scrollbar-gutter:stable]`;
 const containerBase = `${containerBaseUnstyled} bg-[color:var(--form-foreground)]
   rounded p-4 shadow-gray-400 shadow-2xl`;
-const containerFull = 'flex flex-col gap-4 h-full p-4';
+const containerFull = 'flex flex-col gap-4 sm:h-full p-1 sm:p-4';
 const formStyles =
   'text-[length:var(--form-font-size)] font-[family-name:var(--form-font-family)]';
 const niceButton = `${buttonClassName} rounded cursor-pointer active:brightness-80 px-4 py-2
@@ -74,7 +74,8 @@ export const className = {
   containerBase,
   containerCenter: `${containerBase} max-w-[min(100%,var(--form-max-width))]
     mx-auto w-full ${formStyles}`,
-  formHeader: 'border-b-2 border-brand-300 flex items-center pb-2 gap-4',
+  formHeader:
+    'border-b-2 border-brand-300 flex items-center pb-2 gap-2 md:gap-4 md:justify-between flex-col md:flex-row',
   formTitle: 'text-lg font-bold flex items-center gap-2',
   formStyles,
   limitedWidth: `max-w-[min(100%,var(--max-field-width))]`,
@@ -82,7 +83,8 @@ export const className = {
   headerGray: 'text-gray-500 dark:text-neutral-400',
   // These values must be synchronised with main.css
   dataEntryGrid: 'data-entry-grid',
-  formFooter: 'border-brand-300 border-t-2 flex print:hidden pt-2 gap-2',
+  formFooter:
+    'border-brand-300 border-t-2 flex print:hidden pt-2 gap-2 flex-wrap justify-center flex-col md:flex-row',
   dataEntryAdd: '!text-green-700 print:hidden',
   dataEntryView: '!text-orange-400 print:hidden',
   dataEntryEdit: '!text-orange-400 print:hidden',

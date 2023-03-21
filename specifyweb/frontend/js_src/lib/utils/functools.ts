@@ -171,4 +171,8 @@ export const f = {
     const data = filterArray(array);
     return data.length === 0 ? undefined : Math.min(...data);
   },
+  max(...array: RA<number | undefined>): number | undefined {
+    const data = filterArray(array);
+    return data.length === 0 ? undefined : Math.max(...data);
+  },
 } as const;

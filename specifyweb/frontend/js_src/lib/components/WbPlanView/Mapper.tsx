@@ -12,7 +12,6 @@ import { useUnloadProtect } from '../../hooks/navigation';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
-import { whitespaceSensitive } from '../../localization/utils';
 import { wbPlanText } from '../../localization/wbPlan';
 import { wbText } from '../../localization/workbench';
 import { getCache } from '../../utils/cache';
@@ -405,9 +404,7 @@ export function Mapper(props: {
           {props.dataset.uploadresult?.success === true && (
             <span
               className="flex items-center text-red-600"
-              title={whitespaceSensitive(
-                wbPlanText.dataSetUploadedDescription()
-              )}
+              title={wbPlanText.dataSetUploadedDescription()}
             >
               {` ${wbPlanText.dataSetUploaded()}`}
             </span>

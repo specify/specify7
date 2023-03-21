@@ -103,10 +103,10 @@ export type CacheDefinitions = {
     /** Attachments grid scale */
     readonly scale: number;
   };
-  readonly geoLocate: {
-    /** Remember dialog window dimentions from the last session */
-    readonly width: number;
-    readonly height: number;
+  /** Remember dialog window dimensions and positions from the last session */
+  readonly dialogs: {
+    readonly sizes: IR<readonly [width: number, height: number]>;
+    readonly positions: IR<readonly [x: number, y: number]>;
   };
   readonly userPreferences: {
     /**
@@ -148,7 +148,7 @@ export type SortConfigs = {
   readonly listOfDataSets: 'dateCreated' | 'dateUploaded' | 'name';
   readonly listOfReports: 'name' | 'timestampCreated';
   readonly listOfLabels: 'name' | 'timestampCreated';
-  readonly dataModelFields:
+  readonly schemaViewerFields:
     | 'databaseColumn'
     | 'description'
     | 'isHidden'
@@ -158,7 +158,7 @@ export type SortConfigs = {
     | 'length'
     | 'name'
     | 'type';
-  readonly dataModelRelationships:
+  readonly schemaViewerRelationships:
     | 'databaseColumn'
     | 'description'
     | 'isDependent'
@@ -170,7 +170,7 @@ export type SortConfigs = {
     | 'otherSideName'
     | 'relatedModel'
     | 'type';
-  readonly dataModelTables:
+  readonly schemaViewerTables:
     | 'fieldCount'
     | 'isHidden'
     | 'isSystem'

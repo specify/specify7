@@ -116,8 +116,8 @@ function Field({
                   SpecifyResource<AnySchema> | undefined
                 >
               )
-                .then(format)
-                .then((value) => value ?? '')
+                ?.then(format)
+                .then((value) => value ?? '') ?? ''
             : userText.noPermission()
           : undefined,
       /*
@@ -140,17 +140,20 @@ function Field({
       forwardRef={validationRef}
       name={name}
       {...validationAttributes}
-      /*
-       * Disable "text-align: right" in non webkit browsers
-       * as they don't support spinner's arrow customization
-       */
-      className={
-        validationAttributes.type === 'number' &&
-        rightAlignNumberFields &&
-        globalThis.navigator.userAgent.toLowerCase().includes('webkit')
-          ? `text-right ${isReadOnly ? '' : 'pr-6'}`
-          : ''
-      }
+      className={`
+        min-w-[theme(spacing.20)] md:min-w-[unset]
+        ${
+          /*
+           * Disable "text-align: right" in non webkit browsers
+           * as they don't support spinner's arrow customization
+           */
+          validationAttributes.type === 'number' &&
+          rightAlignNumberFields &&
+          globalThis.navigator.userAgent.toLowerCase().includes('webkit')
+            ? `text-right ${isReadOnly ? '' : 'pr-6'}`
+            : ''
+        }
+      `}
       id={id}
       isReadOnly={isReadOnly}
       required={'required' in validationAttributes && mode !== 'search'}

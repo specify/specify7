@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { useFormatted } from '../../hooks/useFormatted';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { Button } from '../Atoms/Button';
@@ -9,8 +9,7 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { SpQuery } from '../DataModel/types';
-import { format } from '../Forms/dataObjFormatters';
-import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { Dialog, dialogClassNames, LoadingScreen } from '../Molecules/Dialog';
 import { createQuery } from '../QueryBuilder';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
@@ -67,7 +66,9 @@ function RecordHistoryDialog({
         recordSet={undefined}
       />
     </Dialog>
-  ) : null;
+  ) : (
+    <LoadingScreen />
+  );
 }
 
 function useEditHistoryQuery(
@@ -116,16 +117,4 @@ function useEditHistoryQuery(
         : undefined,
     [resource, formatted]
   );
-}
-function useFormatted(
-  resource: SpecifyResource<AnySchema>
-): string | undefined {
-  const [formatted] = useAsyncState(
-    React.useCallback(
-      async () => format(resource, undefined, true),
-      [resource]
-    ),
-    true
-  );
-  return formatted;
 }

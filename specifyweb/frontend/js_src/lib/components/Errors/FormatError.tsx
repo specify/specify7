@@ -215,6 +215,7 @@ export function ErrorIframe({
     <iframe
       className="h-full w-full"
       ref={iframeRef}
+      sandbox="allow-scripts"
       title={mainText.errorOccurred()}
     />
   );

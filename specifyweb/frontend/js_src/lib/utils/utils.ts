@@ -405,3 +405,11 @@ export const chunk = <T>(array: RA<T>, chunkSize: number): RA<RA<T>> =>
     Array.from({ length: Math.ceil(array.length / chunkSize) }),
     (_, index) => array.slice(index * chunkSize, (index + 1) * chunkSize)
   );
+
+/** Convert seconds to minutes and seconds and return the string */
+export function formatTime(seconds: number): string {
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+  const paddedSeconds = remainingSeconds.toString().padStart(2, '0');
+  return `${minutes}:${paddedSeconds}`;
+}

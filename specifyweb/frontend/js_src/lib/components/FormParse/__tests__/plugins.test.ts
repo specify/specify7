@@ -184,17 +184,6 @@ describe('parseUiPlugin', () => {
       icon: 'test',
     }));
 
-  test('Attachments Plugin', () =>
-    expect(
-      parse({
-        getProperty: generateInit({
-          name: 'AttachmentPlugin',
-        }),
-      })
-    ).toEqual({
-      type: 'AttachmentPlugin',
-    }));
-
   test('Host Taxon Plugin', () =>
     expect(
       parse({

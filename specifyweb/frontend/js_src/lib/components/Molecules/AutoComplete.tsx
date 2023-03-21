@@ -402,7 +402,7 @@ export function AutoComplete<T>({
         className={`
           ${className.notTouchedInput}
           ${inputProps.className ?? ''}
-          w-full pr-[1.5em]
+          w-full min-w-[theme(spacing.20)] pr-[1.5em] sm:min-w-[unset]
         `}
       />
       {listHasItems && !disabled ? toggleButton : undefined}

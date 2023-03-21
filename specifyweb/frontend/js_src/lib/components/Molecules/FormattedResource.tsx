@@ -1,15 +1,13 @@
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
+import { useFormatted } from '../../hooks/useFormatted';
 import { commonText } from '../../localization/common';
-import { f } from '../../utils/functools';
 import { Link } from '../Atoms/Link';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { resourceOn, strictParseResourceUrl } from '../DataModel/resource';
+import { strictParseResourceUrl } from '../DataModel/resource';
 import { strictGetModel } from '../DataModel/schema';
-import { softFail } from '../Errors/Crash';
-import { format } from '../Forms/dataObjFormatters';
 import { hasTablePermission } from '../Permissions/helpers';
 
 export function FormattedResourceUrl({
@@ -36,21 +34,7 @@ export function FormattedResource({
   readonly fallback?: LocalizedString;
   readonly asLink?: boolean;
 }): JSX.Element | null {
-  const [formatted, setFormatted] = React.useState<string>(fallback);
-
-  React.useEffect(
-    () =>
-      resourceOn(
-        resource,
-        'change',
-        () =>
-          void format(resource, undefined, true)
-            .then((formatted) => f.maybe(formatted, setFormatted))
-            .catch(softFail),
-        true
-      ),
-    [resource, fallback]
-  );
+  const formatted = useFormatted(resource) ?? fallback;
 
   return typeof resource === 'object' &&
     hasTablePermission(resource.specifyModel.name, 'read') &&

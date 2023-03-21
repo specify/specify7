@@ -5,23 +5,31 @@
 
 import React from 'react';
 
-import type { AnySchema } from '../components/DataModel/helperTypes';
 import type { SpecifyResource } from '../components/DataModel/legacyTypes';
 import { strictGetModel } from '../components/DataModel/schema';
 import type { Tables } from '../components/DataModel/types';
 import { crash } from '../components/Errors/Crash';
-import { eventListener } from '../utils/events';
 import { f } from '../utils/functools';
 import type { GetOrSet } from '../utils/types';
 import { isFunction } from '../utils/types';
 import { useAsyncState } from './useAsyncState';
 
-// FEATURE: use this everywhere
-export const resourceEvents = eventListener<{
-  readonly deleted: SpecifyResource<AnySchema>;
-}>();
-
-// FEATURE: cache formatted resources
+/*
+ * FEATURE: add agent and accessible collections to store
+ * FEATURE: don't reRun format() unless changed
+ * FEATURE: evaluate relevancy of resource collection
+ * FEATURE: cache formatted resources
+ * REFACTOR: integrate with useCollection when rewriting the ORM
+ */
+/*
+ * REFACTOR: experiment with an object singleton:
+ * There is only ever one instance of a record with the same table name
+ * and id. Any changes in one place propagate to all the other places where
+ * that record is used. Record is only fetched once and updates are kept track
+ * of. When requesting object fetch, return the previous fetched version, while
+ * fetching the new one.
+ * FEATURE: when creating an object singleton, support not just existing resources
+ */
 
 type Buckets = {
   readonly [TABLE_NAME in keyof Tables as `/api/specify/${TABLE_NAME}/`]?: Record<

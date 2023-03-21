@@ -1,5 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useSearchParameter } from '../../hooks/navigation';
 import { useAsyncState, usePromise } from '../../hooks/useAsyncState';
@@ -165,7 +166,7 @@ function TreeView<SCHEMA extends AnyTree>({
 
   return rows === undefined ? null : (
     <Container.Full>
-      <header className="flex flex-wrap items-center gap-2">
+      <header className="flex items-center gap-2 overflow-x-auto sm:flex-wrap sm:overflow-x-visible">
         <TableIcon label name={table.name} />
         <H2 title={treeDefinition.get('remarks') ?? undefined}>
           {treeDefinition.get('name')}
@@ -199,6 +200,7 @@ function TreeView<SCHEMA extends AnyTree>({
             focusedRow={focusedRow}
             focusRef={toolbarButtonRef}
             ranks={rankIds}
+            setFocusPath={setFocusPath}
             tableName={tableName}
             onChange={setActionRow}
             onRefresh={(): void => {
@@ -269,9 +271,11 @@ function TreeView<SCHEMA extends AnyTree>({
                       )
                     }
                   >
-                    {collapsedRanks?.includes(rank.rankId) ?? false
-                      ? rankName[0]
-                      : rankName}
+                    {
+                      (collapsedRanks?.includes(rank.rankId) ?? false
+                        ? rankName[0]
+                        : rankName) as LocalizedString
+                    }
                   </Button.LikeLink>
                   {isEditingRanks &&
                   collapsedRanks?.includes(rank.rankId) !== true ? (

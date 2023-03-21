@@ -13,6 +13,7 @@ import type { SerializedResource } from '../DataModel/helperTypes';
 import { createResource, saveResource } from '../DataModel/resource';
 import { strictGetModel } from '../DataModel/schema';
 import type { SpLocaleItemStr } from '../DataModel/types';
+import { useTitle } from '../Molecules/AppTitle';
 import { hasToolPermission } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
 import { SchemaConfigHeader } from './Components';
@@ -34,6 +35,8 @@ export type ItemType = 'formatted' | 'none' | 'pickList' | 'webLink';
 export function SchemaConfigMain(): JSX.Element {
   const { language: rawLanguage = '', tableName = '' } = useParams();
   const model = strictGetModel(tableName);
+
+  useTitle(schemaText.schemaViewTitle({ tableName }));
 
   const schemaData = useOutletContext<SchemaData>();
   const isReadOnly =
@@ -109,7 +112,7 @@ export function SchemaConfigMain(): JSX.Element {
         languages={schemaData.languages}
         onSave={canSave ? handleSave : undefined}
       />
-      <div className="flex flex-1 flex-col gap-4 overflow-hidden sm:flex-row">
+      <div className="flex flex-1 flex-col gap-4 overflow-y-auto sm:flex-row sm:overflow-hidden">
         <SchemaConfigTable
           container={container}
           desc={desc}

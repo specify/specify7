@@ -80,6 +80,7 @@ export function LeafletMap({
           ? dialogClassNames.fullScreen
           : dialogClassNames.extraWideContainer,
       }}
+      dimensionsKey="LeafletMap"
       header={header}
       headerButtons={headerButtons}
       modal={modal}

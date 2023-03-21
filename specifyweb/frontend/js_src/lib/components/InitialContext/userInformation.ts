@@ -11,7 +11,6 @@ import type {
   SerializedModel,
   SerializedResource,
 } from '../DataModel/helperTypes';
-import { fetchContext as fetchSchema } from '../DataModel/schema';
 import type { Agent, Collection, SpecifyUser } from '../DataModel/types';
 import { load } from './index';
 
@@ -35,11 +34,15 @@ export const fetchContext = load<
       // @ts-expect-error
       userInfo[key as keyof UserInformation] = value;
     });
-    return fetchSchema.then(() => {
-      userInfo.availableCollections =
-        availableCollections.map(serializeResource);
-      setDevelopmentGlobal('_user', userInfo);
-    });
+    await import('../DataModel/schema').then(
+      async ({ fetchContext }) => fetchContext
+    );
+    await import('../DataModel/schemaBase').then(
+      async ({ fetchContext }) => fetchContext
+    );
+    userInfo.availableCollections = availableCollections.map(serializeResource);
+    setDevelopmentGlobal('_user', userInfo);
+    return userInfo;
   }
 );
 
