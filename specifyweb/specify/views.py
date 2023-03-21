@@ -405,7 +405,7 @@ def record_merge_fx(model_name: str, old_model_id: int, new_model_id: int) -> ht
     with the new record ID, and deletes the old record.
     """
     # Confirm the target model table exists
-    model_name = model_name.capitalize().lower()
+    model_name = model_name.capitalize().lower().title()
     target_model = getattr(spmodels, model_name)
     if target_model is None:
         return http.HttpResponseNotFound("model_name: " + model_name + "does not exist.")
@@ -435,7 +435,7 @@ def record_merge_fx(model_name: str, old_model_id: int, new_model_id: int) -> ht
         if foreign_table is None:
             continue
         try:
-            foreign_model = getattr(spmodels, table_name.lower())
+            foreign_model = getattr(spmodels, table_name.lower().title())
         except (ValueError):
             continue
 
