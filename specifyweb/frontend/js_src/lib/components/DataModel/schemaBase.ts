@@ -12,9 +12,9 @@
  * schema, but it's here for now.
  */
 
+import type { RR, Writable } from '../../utils/types';
 import { load } from '../InitialContext';
 import type { SpecifyModel } from './specifyModel';
-import type { RR, Writable } from '../../utils/types';
 import type { Tables } from './types';
 
 export type Schema = {

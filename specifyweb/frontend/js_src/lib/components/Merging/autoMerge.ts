@@ -15,9 +15,9 @@ import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { AgentVariant, Tables } from '../DataModel/types';
 import { strictDependentFields } from '../FormMeta/CarryForward';
 import { format } from '../Forms/dataObjFormatters';
+import { getUserPref } from '../UserPreferences/helpers';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { unMergeableFields } from './Compare';
-import { getUserPref } from '../UserPreferences/helpers';
 
 /**
  * Automatically merge n records into one. Used for smart defaults

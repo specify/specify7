@@ -181,8 +181,10 @@ function QueryList({
           <tr key={query.id} title={query.remarks ?? undefined}>
             <td>
               <Link.Default
-                // BUG: consider applying these styles everywhere
-                // className="max-w-full overflow-auto text-left"
+                /*
+                 * BUG: consider applying these styles everywhere
+                 * className="max-w-full overflow-auto text-left"
+                 */
                 className="overflow-x-auto"
                 href={
                   getQuerySelectUrl?.(query) ?? `/specify/query/${query.id}/`

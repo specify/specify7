@@ -6,11 +6,13 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { commonText } from '../../localization/common';
 import { getCache } from '../../utils/cache';
+import { f } from '../../utils/functools';
 import type { IR, R, RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import { camelToHuman, multiSortFunction } from '../../utils/utils';
 import { error } from '../Errors/assert';
 import { attachmentView } from '../FormParse/webOnlyViews';
+import { parentTableRelationship } from '../Forms/parentTables';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import {
   DependentCollection,
@@ -37,8 +39,6 @@ import {
   type RelationshipDefinition,
   LiteralField,
 } from './specifyField';
-import { parentTableRelationship } from '../Forms/parentTables';
-import { f } from '../../utils/functools';
 
 type FieldAlias = {
   readonly vname: string;

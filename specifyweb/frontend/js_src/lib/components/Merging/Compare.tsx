@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { useCachedState } from '../../hooks/useCachedState';
+import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Form } from '../Atoms/Form';
 import { deserializeResource, specialFields } from '../DataModel/helpers';
@@ -12,7 +13,6 @@ import { strictDependentFields } from '../FormMeta/CarryForward';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { CompareField } from './CompareField';
 import { MergingHeader } from './Header';
-import { f } from '../../utils/functools';
 
 export function CompareRecords({
   formId,

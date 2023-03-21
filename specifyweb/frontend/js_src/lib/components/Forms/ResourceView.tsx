@@ -335,8 +335,8 @@ export function ResourceView<SCHEMA extends AnySchema>({
         }`,
         content: `${className.formStyles} ${dialogClassNames.flexContent}`,
       }}
-      header={customTitle ?? title}
       dimensionsKey={viewName ?? resource?.specifyModel.view}
+      header={customTitle ?? title}
       headerButtons={
         <>
           {headerButtons?.(specifyNetworkBadge) ?? (

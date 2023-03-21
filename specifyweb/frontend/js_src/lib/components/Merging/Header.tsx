@@ -8,6 +8,7 @@ import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { resourceEvents } from '../DataModel/resource';
 import { ResourceView } from '../Forms/ResourceView';
 import { DateElement } from '../Molecules/DateElement';
 import { dialogClassNames } from '../Molecules/Dialog';
@@ -15,7 +16,6 @@ import { FormattedResource } from '../Molecules/FormattedResource';
 import { TableIcon } from '../Molecules/TableIcon';
 import { MergeButton } from './CompareField';
 import { UsagesSection } from './Usages';
-import { resourceEvents } from '../DataModel/resource';
 
 export function MergingHeader({
   merged,

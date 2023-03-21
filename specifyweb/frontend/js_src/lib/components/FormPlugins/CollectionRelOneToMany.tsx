@@ -57,8 +57,8 @@ export function CollectionOneToManyPlugin({
           readonly collectionName: string;
         }
       >
-    | State<'SearchState'>
     | State<'MainState'>
+    | State<'SearchState'>
   >({ type: 'MainState' });
 
   const existingItemFilter =
@@ -190,8 +190,8 @@ export function CollectionOneToManyPlugin({
             },
           ]}
           forceCollection={data.otherCollection.id}
-          multiple
           model={schema.models.CollectionObject}
+          multiple
           onClose={(): void => setState({ type: 'MainState' })}
           onSelected={(addedResources): void => {
             const addedRelationships = addedResources.map((addedResource) => {

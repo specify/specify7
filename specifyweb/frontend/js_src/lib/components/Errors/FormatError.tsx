@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { mainText } from '../../localization/main';
+import type { AjaxErrorMode } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import type { RA, WritableArray } from '../../utils/types';
 import { jsonStringify } from '../../utils/utils';
@@ -12,7 +13,6 @@ import { PermissionError } from '../Permissions/PermissionDenied';
 import { unsafeTriggerNotFound } from '../Router/Router';
 import { ErrorDialog } from './ErrorDialog';
 import { formatJsonBackendResponse } from './JsonError';
-import { AjaxErrorMode } from '../../utils/ajax';
 import { produceStackTrace } from './stackTrace';
 
 export function formatError(
@@ -185,9 +185,9 @@ export function handleAjaxError(
     displayError(({ onClose: handleClose }) => (
       <ErrorDialog
         copiableMessage={copiableMessage}
+        dismissible={errorMode === 'dismissible'}
         header={mainText.errorOccurred()}
         onClose={handleClose}
-        dismissible={errorMode === 'dismissible'}
       >
         {errorObject}
       </ErrorDialog>

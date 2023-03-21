@@ -6,9 +6,9 @@ import {removeKey} from '../../utils/utils';
 import {assert} from '../Errors/assert';
 import {softFail} from '../Errors/Crash';
 import {Backbone} from './backbone';
-import {specialFields} from './helpers';
 import {attachBusinessRules} from './businessRules';
 import {initializeResource} from './domain';
+import {specialFields} from './helpers';
 import {
     getFieldsToNotClone,
     getResourceApiUrl,
