@@ -50,6 +50,10 @@ export const Submit = {
     'Submit.Orange',
     `${className.niceButton} ${className.orangeButton}`
   ),
+  Specify: submitButton(
+    'Submit.Specify',
+    `${className.niceButton} ${className.specifyButton}`
+  ),
   Green: submitButton(
     'Submit.Green',
     `${className.niceButton} ${className.greenButton}`
