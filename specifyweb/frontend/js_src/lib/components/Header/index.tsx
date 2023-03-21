@@ -222,7 +222,7 @@ export function MenuButton({
 }): JSX.Element | null {
   const [position] = usePref('header', 'appearance', 'position');
   const getClassName = (isActive: boolean): string => `
-    p-[1vh]
+    p-[1.5vh]
     ${isActive ? 'bg-brand-300 !text-white' : 'text-gray-700'}
     ${className.ariaHandled}
     ${extraProps?.className ?? ''}
