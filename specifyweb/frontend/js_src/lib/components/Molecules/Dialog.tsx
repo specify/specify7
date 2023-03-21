@@ -476,7 +476,7 @@ export function Dialog({
          */}
         <div
           className={`
-            -mx-1 flex-1 overflow-y-auto px-1 py-4 text-gray-700
+            -mx-1 flex-1 px-1 py-4 text-gray-700
             dark:text-neutral-350 ${contentClassName}
           `}
           id={id('content')}
