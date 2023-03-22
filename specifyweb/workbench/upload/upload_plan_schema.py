@@ -4,7 +4,7 @@ from specifyweb.specify.datamodel import datamodel, Table, Relationship
 from specifyweb.specify.load_datamodel import DoesNotExistError
 from specifyweb.specify import models
 
-from .upload_table import UploadTable, OneToOneTable, MustMatchTable
+from .upload_table import DeferredScopeUploadTable, UploadTable, OneToOneTable, MustMatchTable
 from .tomany import ToManyRecord
 from .treerecord import TreeRecord, MustMatchTreeRecord
 from .uploadable import Uploadable
@@ -241,8 +241,34 @@ def parse_uploadable(collection, table: Table, to_parse: Dict) -> Uploadable:
 
 def parse_upload_table(collection, table: Table, to_parse: Dict) -> UploadTable:
 
+    defer_scope = {("Collectionrelationship", "rightside"): ('collectionreltype', 'name')}
+
     def rel_table(key: str) -> Table:
         return datamodel.get_table_strict(table.get_relationship(key).relatedModelName)
+    
+    def defer_scope_upload_table(default_collection, table: Table, to_parse:Dict, deferred_information) -> DeferredScopeUploadTable:
+        related_key = defer_scope[deferred_information][0]
+        filter_field = defer_scope[deferred_information][1]
+        relationship_overrides = {"rightside" : "rightsidecollection"}
+        relationship_name = deferred_information[1] if deferred_information[1] not in relationship_overrides.keys() else relationship_overrides[deferred_information[1]]
+        return DeferredScopeUploadTable(
+            name=table.django_name,
+            related_key=related_key,
+            relationship_name=relationship_name,
+            filter_field=filter_field,
+            overrideScope= to_parse['overrideScope'] if 'overrideScope' in to_parse.keys() else None,
+            wbcols={k: parse_column_options(v) for k,v in to_parse['wbcols'].items()},
+            static=to_parse['static'],
+            toOne={
+                key: defer_scope_upload_table(collection, rel_table(key), to_one, (table.django_name, key)) if (table.django_name, key) in defer_scope.keys()
+                    else parse_uploadable(collection, rel_table(key), to_one)
+                    for key, to_one in to_parse['toOne'].items()
+            },
+            toMany={
+                key: [parse_to_many_record(default_collection, rel_table(key), record) for record in to_manys]
+                for key, to_manys in to_parse['toMany'].items()
+            } 
+        )
 
     return UploadTable(
         name=table.django_name,
@@ -250,8 +276,10 @@ def parse_upload_table(collection, table: Table, to_parse: Dict) -> UploadTable:
         wbcols={k: parse_column_options(v) for k,v in to_parse['wbcols'].items()},
         static=to_parse['static'],
         toOne={
-            key: parse_uploadable(collection, rel_table(key), to_one)
-            for key, to_one in to_parse['toOne'].items()
+            key: defer_scope_upload_table(collection, rel_table(key), to_one['uploadTable'], (table.django_name, key)) 
+                if (table.django_name, key) in defer_scope.keys()
+                else parse_uploadable(collection, rel_table(key), to_one)
+                for key, to_one in to_parse['toOne'].items()
         },
         toMany={
             key: [parse_to_many_record(collection, rel_table(key), record) for record in to_manys]

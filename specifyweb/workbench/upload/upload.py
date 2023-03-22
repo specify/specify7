@@ -11,9 +11,11 @@ from django.db.utils import OperationalError, IntegrityError
 from jsonschema import validate  # type: ignore
 
 from specifyweb.specify import models
+from specifyweb.specify.datamodel import datamodel
 from specifyweb.specify.auditlog import auditlog
 from specifyweb.specify.datamodel import Table
 from specifyweb.specify.tree_extras import renumber_tree, reset_fullnames
+from specifyweb.workbench.upload.upload_table import DeferredScopeUploadTable
 from . import disambiguation
 from .upload_plan_schema import schema, parse_plan_with_basetable
 from .upload_result import Uploaded, UploadResult, ParseFailures, \
@@ -187,6 +189,23 @@ def get_ds_upload_plan(collection, ds: Spdataset) -> Tuple[Table, ScopedUploadab
     base_table, plan = parse_plan_with_basetable(collection, plan)
     return base_table, plan.apply_scoping(collection)
 
+def apply_deferred_scopes(default_collection, upload_plan: ScopedUploadable, rows: Rows) -> ScopedUploadable:
+    _upload_plan = upload_plan
+    if hasattr(upload_plan, 'toOne'):
+        for key, uploadable in upload_plan.toOne.items():
+            if isinstance(uploadable, DeferredScopeUploadTable):
+                related_uploadable = upload_plan.toOne[uploadable.related_key]
+                related_column_name = related_uploadable.wbcols['name'][0]
+                filter_value = rows[0][related_column_name]
+                
+                filter_search = {uploadable.filter_field : filter_value}
+                related = getattr(models, datamodel.get_table(uploadable.related_key).django_name).objects.get(**filter_search)
+                collection_id = getattr(related, uploadable.relationship_name).id
+                scoped = uploadable.add_colleciton_override(collection_id).apply_scoping(default_collection, deffer=False)
+                _upload_plan.toOne[key] = scoped
+    return _upload_plan
+
+
 
 def do_upload(
         collection,
@@ -201,6 +220,7 @@ def do_upload(
     cache: Dict = {}
     _auditor = Auditor(collection=collection, audit_log=None if no_commit else auditlog)
     total = len(rows) if isinstance(rows, Sized) else None
+    deffered_upload_plan = apply_deferred_scopes(collection, upload_plan, rows)
     with savepoint("main upload"):
         tic = time.perf_counter()
         results: List[UploadResult] = []
@@ -208,7 +228,7 @@ def do_upload(
             _cache = cache.copy() if cache is not None and allow_partial else cache
             da = disambiguations[i] if disambiguations else None
             with savepoint("row upload") if allow_partial else no_savepoint():
-                bind_result = upload_plan.disambiguate(da).bind(collection, row, uploading_agent_id, _auditor, cache)
+                bind_result = deffered_upload_plan.disambiguate(da).bind(collection, row, uploading_agent_id, _auditor, cache)
                 result = UploadResult(bind_result, {}, {}) if isinstance(bind_result, ParseFailures) else bind_result.process_row()
                 results.append(result)
                 if progress is not None:

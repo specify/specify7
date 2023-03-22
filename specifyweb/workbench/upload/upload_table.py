@@ -56,6 +56,28 @@ class UploadTable(NamedTuple):
 
     def unparse(self) -> Dict:
         return { 'baseTableName': self.name, 'uploadable': self.to_json() }
+    
+class DeferredScopeUploadTable(NamedTuple):
+    name: str
+    overrideScope: Optional[Dict[str, Optional[int]]]
+    wbcols: Dict[str, ColumnOptions]
+    static: Dict[str, Any]
+    toOne: Dict[str, Uploadable]
+    toMany: Dict[str, List[ToManyRecord]]
+
+    related_key: str
+    relationship_name: str
+    filter_field: str
+
+    def apply_scoping(self, collection, deffer: bool = True) -> "ScopedUploadTable":
+        if not deffer:
+            from .scoping import apply_scoping_to_uploadtable as apply_scoping
+            return apply_scoping(self, collection)
+        else: return self
+
+    def add_colleciton_override(self, collection_id) -> "DeferredScopeUploadTable":
+        return self._replace(overrideScope = {"collection": collection_id})
+
 
 class ScopedUploadTable(NamedTuple):
     name: str
