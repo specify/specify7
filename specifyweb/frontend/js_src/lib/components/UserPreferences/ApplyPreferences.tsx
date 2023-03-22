@@ -237,7 +237,7 @@ export function SetCssVariables(): null {
     [prefs.accentColor5]
   );
 
-  //Buttons color preferences
+  // Buttons color preferences
   React.useEffect(
     () =>
       document.body.style.setProperty(
