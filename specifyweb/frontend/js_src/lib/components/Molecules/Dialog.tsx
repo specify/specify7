@@ -50,10 +50,10 @@ const commonContainer = 'rounded resize max-w-[90%] shadow-lg shadow-gray-500';
 export const dialogClassNames = {
   fullScreen: '!transform-none !w-full !h-full',
   freeContainer: `${commonContainer} max-h-[90%]`,
-  narrowContainer: `${commonContainer} max-h-[50%] min-w-[min(20rem,90%)]
+  narrowContainer: `${commonContainer} max-h-[90%] sm:max-h-[50%] min-w-[min(20rem,90%)]
     lg:max-w-[50%]`,
   normalContainer: `${commonContainer} max-h-[90%] min-w-[min(30rem,90%)]`,
-  wideContainer: `${commonContainer} max-h-[90%] min-w-[min(40rem,90%)]`,
+  wideContainer: `${commonContainer} max-h-screen min-w-[min(40rem,90%)]`,
   extraWideContainer: `${commonContainer} max-h-[90%] min-w-[min(20rem,90%)]
     w-[min(60rem,90%)] h-[60rem]`,
   flexContent: 'flex flex-col gap-2',
@@ -449,7 +449,7 @@ export function Dialog({
       {/* "p-4 -m-4" increases the handle size for easier dragging */}
       <span
         className={`
-          flex items-center gap-4
+          flex items-center gap-2 md:gap-4
           ${isFullScreen ? '' : '-m-4 cursor-move p-4'}
           ${showOrangeBar ? '' : 'flex-wrap'}
         `}

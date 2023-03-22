@@ -1,19 +1,68 @@
+
 # Changelog
+
+  
 
 All notable changes to this project will be documented in this file.
 
+  
+
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+
+  
 
 ## Unreleased
 
+  
+
 Coming in the next few months:
 
+  
+
 - [Duplicate record merging tool](https://discourse.specifysoftware.org/t/record-merging-in-specify-7/939/9)
+
 - [Statistics page](https://discourse.specifysoftware.org/t/statistics-panel-for-specify-7/828)
+
 - [User Interface for editing Data Object Formatters and other XML resources](https://github.com/specify/specify7/pull/2796)
+
 - [And a lot more features](https://github.com/specify/specify7/pulls)
 
-## [7.8.8](https://github.com/specify/specify7/compare/v7.8.7...HEAD) (Unreleased)
+## [7.8.9](https://github.com/specify/specify7/compare/v7.8.7...HEAD) (Unreleased)
+
+## [7.8.8](https://github.com/specify/specify7/compare/v7.8.7.1...v7.8.8) (March 20 2023)
+
+### Added
+
+- A new warning for attachments that are too large to upload has been
+  added ([#729](https://github.com/specify/specify7/issues/729))
+- A webpack visualizer has been added for development purposes ([#3119](https://github.com/specify/specify7/pull/3119))
+
+### Fixed
+
+- "Export to KML" functionality has been returned ([#3088](https://github.com/specify/specify7/issues/3088) - *Reported
+  by CSIRO*)
+- Fixed issue that prevented some users from merging items in the
+  trees ([#3133](https://github.com/specify/specify7/pull/3133) - *Reported by RBGE and AAFC*)
+- Display issues preventing the "Name" field from displaying in the Security & Accounts panel has been resolved
+  - ([#3140](https://github.com/specify/specify7/issues/3140) - *Reported by SAIAB*)
+- Record sets can no longer have a negative index value ([#3033](https://github.com/specify/specify7/issues/3033))
+- The color picker is now correctly positioned in Safari ([#2215](https://github.com/specify/specify7/issues/2215))
+- The default export delimiter is once again "Comma" instead of "
+  Tab" ([#3106](https://github.com/specify/specify7/issues/3106) - *Reported by FWRI*)
+- Fixed some app resources not displaying due to a scoping bug ([#3014](https://github.com/specify/specify7/issues/3104)
+  - *Reported by SAIAB*)
+- System information is now stored in the stack
+  trace ([5be8ece](https://github.com/specify/specify7/commit/5be8ece6cd5937354622b9efae162a9cd7aeb329))
+- Header overflowing has been resolved in the App Resources
+  viewer ([#3103](https://github.com/specify/specify7/issues/3103))
+
+
+## [7.8.7.1](https://github.com/specify/specify7/compare/v7.8.7...v7.8.7.1) (March 3 2023)
+
+### Fixed
+
+- Resolved an issue with plugins being rendered as read-only ([#3076](https://github.com/specify/specify7/issues/3076))
+- "Year" in the date picker now requires the correct format ([#3075](https://github.com/specify/specify7/issues/3075))
 
 ## [7.8.7](https://github.com/specify/specify7/compare/v7.8.6...v7.8.7) (March 1 2023)
 
@@ -110,8 +159,7 @@ Coming in the next few months:
 - Improved French localization - thanks to @heathercole
 - Improved Ukrainian localization - thanks to @Kefir2105
 - Jump to tree node's parent after
-  deletion ([#2781](https://github.com/specify/specify7/issues/2781)) -
-  _Requested by AAFC_
+  deletion ([#2781](https://github.com/specify/specify7/issues/2781)) - _Requested by AAFC_
 - Don't allow adding duplicate Collection
   Relationships ([#2987](https://github.com/specify/specify7/issues/2987)) -
   _Requested by CSIRO_
@@ -121,8 +169,7 @@ Coming in the next few months:
 - Add indicator in page title if there are unsaved
   changes ([#1685](https://github.com/specify/specify7/issues/1685))
 - Reports dialog now shows an icon for base table report belongs
-  to ([#1109](https://github.com/specify/specify7/issues/1109)) - _Requested by
-  University of Michigan_
+  to ([#1109](https://github.com/specify/specify7/issues/1109)) - _Requested by University of Michigan_
 - Add support for restricting min length and max length of a text field on a
   form ([#2022](https://github.com/specify/specify7/issues/2022))
 - Show the ID field name and table scope in schema
@@ -141,8 +188,7 @@ Coming in the next few months:
 - Fixed inability to print pages that have scroll
   bars ([#2820](https://github.com/specify/specify7/issues/2820))
 - Fix formatted dates in XLSX data sets not always being imported
-  correctly ([#2027](https://github.com/specify/specify7/issues/2027)) -
-  _Reported by CSIRO and others_
+  correctly ([#2027](https://github.com/specify/specify7/issues/2027)) - _Reported by CSIRO and others_
 - Maintain cell height for large text fields in grid
   view ([#2765](https://github.com/specify/specify7/pull/2765)) - Fixed by
   @cdamyx
@@ -933,3 +979,4 @@ of Paleomap for Specify.
 ## [7.0.0](https://github.com/specify/specify7/commits/v7.0.0) (22 December 2014)
 
 [Bug fixes and new features](https://github.com/specify/specify7/commits/v7.0.0)
+

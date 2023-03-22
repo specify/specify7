@@ -1,4 +1,3 @@
-import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { takeBetween } from '../../utils/utils';
 import { raise } from '../Errors/Crash';
@@ -61,15 +60,19 @@ export function initializeResource(resource: SpecifyResource<AnySchema>): void {
       .catch(raise);
 }
 
-export const getDomainResource = <
+export function getDomainResource<
   LEVEL extends keyof typeof schema.domainLevelIds
->(
-  level: LEVEL
-): SpecifyResource<Tables[Capitalize<LEVEL>]> | undefined =>
-  f.maybe(schema.domainLevelIds?.[level], (id) => {
-    const model = strictGetModel(level);
-    return new model.Resource({ id });
-  });
+>(level: LEVEL): SpecifyResource<Tables[Capitalize<LEVEL>]> | undefined {
+  const id = schema.domainLevelIds?.[level];
+  if (id === undefined) {
+    console.error(
+      `Trying to access domain resource ${level} before domain is loaded`
+    );
+    return undefined;
+  }
+  const model = strictGetModel(level);
+  return new model.Resource({ id });
+}
 
 export function getScopingResource(
   table: SpecifyModel

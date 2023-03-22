@@ -49,11 +49,8 @@ export function useAsyncState<T>(
       destructorCalled ? undefined : setState(newState)
     );
 
-    if (loadingScreen) {
-      loading(promise);
-    } else {
-      promise.catch(raise);
-    }
+    if (loadingScreen) loading(promise);
+    else promise.catch(raise);
 
     let destructorCalled = false;
     return (): void => {

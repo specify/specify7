@@ -75,7 +75,7 @@ overrideAjax(
     responseCode: Http.CREATED,
     body: {
       resource_uri: '/api/specify/locality/2/',
-      discipline: getResourceApiUrl('Discipline', 3),
+      discipline: null,
       localityname: 'name',
       srclatlongunit: 0,
       timestampcreated: '2022-08-31',
@@ -95,6 +95,7 @@ test('createResource', async () =>
       resource_uri: getResourceApiUrl('Locality', localityId),
       id: localityId,
       localityName: 'name',
+      discipline: getResourceApiUrl('Discipline', 3),
     })
   ));
 

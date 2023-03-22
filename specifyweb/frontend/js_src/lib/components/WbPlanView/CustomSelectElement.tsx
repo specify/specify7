@@ -566,8 +566,8 @@ export function CustomSelectElement({
         aria-expanded={isOpen}
         aria-haspopup="listbox"
         className={`
-          flex min-h-[theme(spacing.8)] cursor-pointer
-          items-center gap-1 rounded border border-gray-500 px-1 dark:border-none
+          flex min-h-[theme(spacing.8)] min-w-max
+          cursor-pointer items-center gap-1 rounded border border-gray-500 px-1 dark:border-none md:min-w-[unset]
           ${
             defaultOption?.isRequired === true
               ? 'custom-select-input-required bg-[color:var(--custom-select-b2)]'
@@ -682,7 +682,7 @@ export function CustomSelectElement({
       aria-readonly={!has('interactive') || typeof handleChange !== 'function'}
       className={`
         h-fit flex-1 cursor-pointer overflow-x-hidden
-        rounded border border-brand-300 bg-[color:var(--custom-select-b1)]
+        rounded-b border border-brand-300 bg-[color:var(--custom-select-b1)]
         ${has('preview') ? '[z-index:2]' : ''}
         ${has('scroll') ? 'overflow-y-scroll' : 'overflow-y-auto'}
         ${has('shadow') ? 'max-h-[theme(spacing.64)] shadow-md' : ''}

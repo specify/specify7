@@ -46,13 +46,13 @@ function AppResourcesView({
 
   return (
     <Container.FullGray>
-      <div className="flex items-center gap-4">
+      <div className="flex flex-wrap items-center gap-4">
         <H2 className="text-2xl">{resourcesText.resources()}</H2>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex gap-2">
           <AppResourcesFilters initialResources={resources} />
         </div>
       </div>
-      <div className="flex h-0 flex-1 gap-4">
+      <div className="flex flex-1 flex-col gap-4 sm:h-0 md:flex-row">
         <AppResourcesAside
           isEmbedded={false}
           isReadOnly={false}

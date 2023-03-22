@@ -7,6 +7,7 @@ testing
 specifypanel/ve
 specifyweb/virtenv
 venv/
+ve/
 seed-database
 
 /specifyweb/settings/local_settings.py
@@ -25,8 +26,10 @@ seed-database
 /specifyweb/frontend/static/js
 /specifyweb/frontend/static/css
 /specifyweb/frontend/static/manifest.json
-/specifyweb/frontend/js_src/node_modules
+node_modules
 /specifyweb/frontend/js_src/testBuild
 /specifyweb/frontend/js_src/docs
 /specifyweb/frontend/js_src/coverage
 /local_specifyweb_apache.conf
+/specifyweb/frontend/js_src/stats.json
+/specifyweb/frontend/js_src/dist
