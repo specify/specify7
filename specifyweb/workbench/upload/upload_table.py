@@ -21,6 +21,7 @@ logger = logging.getLogger(__name__)
 
 class UploadTable(NamedTuple):
     name: str
+    overrideScope: Optional[Dict[str, Optional[int]]]
     wbcols: Dict[str, ColumnOptions]
     static: Dict[str, Any]
     toOne: Dict[str, Uploadable]

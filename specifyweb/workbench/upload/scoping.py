@@ -1,4 +1,4 @@
-from typing import Dict, Any, Union, Callable
+from typing import Dict, Any, Optional, Callable
 
 from specifyweb.specify.datamodel import datamodel, Table, Relationship
 from specifyweb.specify.load_datamodel import DoesNotExistError
@@ -80,11 +80,19 @@ def extend_columnoptions(colopts: ColumnOptions, collection, tablename: str, fie
         dateformat=get_date_format(),
     )
 
+def get_scoping_overrides(ut: UploadTable) -> Optional[int]:
+    if (ut.overrideScope is not None):
+        return ut.overrideScope
 
 def apply_scoping_to_uploadtable(ut: UploadTable, collection) -> ScopedUploadTable:
     table = datamodel.get_table_strict(ut.name)
 
     adjust_to_ones = to_one_adjustments(collection, table)
+    
+    scope_overrides = get_scoping_overrides(ut)
+    if scope_overrides is not None:
+        collection = models.Collection.objects.filter(id=scope_overrides['collection']).get()
+    
 
     return ScopedUploadTable(
         name=ut.name,

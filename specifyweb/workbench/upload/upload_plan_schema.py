@@ -42,6 +42,14 @@ schema: Dict = {
             'type': 'object',
             'description': 'The uploadTable structure defines how to upload data for a given table.',
             'properties': {
+                'overrideScope' : {
+                    'description' : '',
+                    'type' : 'object',
+                    'properties': {
+                        'collection' : { '$ref': '#/definitions/scopingOverride'}
+                        },
+                    'additionalProperties' : False,
+                    },
                 'wbcols': { '$ref': '#/definitions/wbcols' },
                 'static': { '$ref': '#/definitions/static' },
                 'toOne': { '$ref': '#/definitions/toOne' },
@@ -196,6 +204,12 @@ this column will never be considered for matching purposes, only for uploading.'
                 {'ispublic': True, 'license': 'CC BY-NC-ND 2.0'}
             ]
         },
+        'scopingOverride' : {
+            'description' : '',
+            'default' : None,
+            'oneOf' : [ {'type': 'integer'},
+                        {'type': 'null'}]
+        }
     }
 }
 
@@ -232,6 +246,7 @@ def parse_upload_table(collection, table: Table, to_parse: Dict) -> UploadTable:
 
     return UploadTable(
         name=table.django_name,
+        overrideScope= to_parse['overrideScope'] if 'overrideScope' in to_parse.keys() else None,
         wbcols={k: parse_column_options(v) for k,v in to_parse['wbcols'].items()},
         static=to_parse['static'],
         toOne={
