@@ -1,6 +1,7 @@
 import React from 'react';
 
 import type { RA } from '../../utils/types';
+import { Link } from '../Atoms/Link';
 import { BrokerRow, BrokerTable } from './Components';
 import { occurrenceDataProviders, speciesDataProviders } from './config';
 import type { BrokerRecord } from './fetchers';
@@ -21,29 +22,23 @@ export function SpecifyNetworkResponse({
   const blankColumns = Math.max(0, minColumns - responses.length);
   return responses.length === 0 ? null : (
     <BrokerTable
-      className="data"
       header={
         <>
           <td />
           {responses.map(({ provider, record }) => (
-            <th key={provider.code} scope="col">
-              <div>
-                <img alt="" src={`${provider.icon_url}&icon_status=active`} />
-                <span>
-                  {provider.label}{' '}
-                  {typeof record['s2n:view_url'] === 'string' ? (
-                    <a
-                      href={record['s2n:view_url']}
-                      rel="noreferrer"
-                      target="_blank"
-                    >
-                      (link)
-                    </a>
-                  ) : (
-                    ''
-                  )}
-                </span>
-              </div>
+            <th key={provider.code} scope="col" className="justify-center">
+              <img
+                className="h-table-icon w-table-icon"
+                alt=""
+                src={`${provider.icon_url}&icon_status=active`}
+              />
+              {typeof record['s2n:view_url'] === 'string' ? (
+                <Link.NewTab href={record['s2n:view_url']}>
+                  {provider.label}
+                </Link.NewTab>
+              ) : (
+                provider.label
+              )}
             </th>
           ))}
           {Array.from({ length: blankColumns }, (_, index) => (
@@ -51,6 +46,7 @@ export function SpecifyNetworkResponse({
           ))}
         </>
       }
+      columns={responses.length + blankColumns}
     >
       {mapBrokerFields(
         reorderBrokerFields(
@@ -67,14 +63,15 @@ export function SpecifyNetworkResponse({
       ).map(({ label, title, originalCells, cells }) => (
         <BrokerRow
           cells={[...cells, ...Array.from({ length: blankColumns }, () => '')]}
-          className={
+          // FIXME: look though all ids and classNames and migrate them
+          cellClassName={
             new Set(
               originalCells
                 .filter(Boolean)
                 .map((value) => JSON.stringify(value))
             ).size === 1
-              ? 'identical'
-              : ''
+              ? undefined
+              : 'text-red-500'
           }
           header={label}
           key={label}

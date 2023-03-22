@@ -1,14 +1,13 @@
-import type { IR } from '../../utils/types';
-import { R, RA } from '../../utils/types';
-import { Field, LocalityData } from '../Leaflet/helpers';
+import type { IR, R, RA } from '../../utils/types';
+import { findArrayDivergencePoint } from '../../utils/utils';
+import type { Field, LocalityData } from '../Leaflet/helpers';
+import type { MappingPath } from '../WbPlanView/Mapper';
 import {
   deflateMappingPaths,
   getCanonicalMappingPath,
   mappingPathToString,
   splitJoinedMappingPath,
 } from '../WbPlanView/mappingHelpers';
-import { MappingPath } from '../WbPlanView/Mapper';
-import { findArrayDivergencePoint } from '../../utils/utils';
 
 const fieldOrder: IR<{ readonly after: string }> = {
   'gbif:acceptedScientificName': { after: 'dwc:scientificName' },

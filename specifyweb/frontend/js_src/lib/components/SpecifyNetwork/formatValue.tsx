@@ -35,7 +35,7 @@ function String({
     <div
       aria-multiline="true"
       aria-readonly="true"
-      className="w-full min-w-[theme(spacing.24)] rounded border p-2"
+      className="w-full min-w-[theme(spacing.24)] rounded border border-gray-500 p-2"
       role="textbox"
     >
       {`${value?.toString() ?? ''}`}

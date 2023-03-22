@@ -1,6 +1,7 @@
 import React from 'react';
 
 import type { RA } from '../../utils/types';
+import { className } from '../Atoms/className';
 
 export function BrokerSection({
   anchor,
@@ -13,7 +14,7 @@ export function BrokerSection({
 }): JSX.Element {
   return (
     <section id={anchor}>
-      <h3>{label}</h3>
+      <h3 className={`text-lg ${className.headerPrimary}`}>{label}</h3>
       {children}
     </section>
   );
@@ -22,14 +23,32 @@ export function BrokerSection({
 export function BrokerTable({
   className,
   header,
+  columns,
   children,
 }: {
   readonly className?: string;
   readonly header?: JSX.Element | RA<JSX.Element>;
+  readonly columns: number;
   readonly children: RA<JSX.Element>;
 }): JSX.Element {
   return (
-    <table className={className}>
+    <table
+      className={`
+        grid-table w-full grid-cols-[auto_repeat(var(--columns),auto)]
+        lg:grid-cols-[auto_repeat(var(--columns),1fr)]
+        [&_:is(td,th)]:p-2 [&_tbody_:is(td,th)]:border
+        [&_tbody_:is(td,th)]:border-gray-300
+        dark:[&_tbody_:is(td,th)]:border-neutral-700 [&_tbody_td]:break-words
+        [&_thead_:is(td,th)]:bg-gray-300
+        [&_thead_:is(td,th)]:dark:bg-neutral-700
+        ${className ?? ''}
+      `}
+      style={
+        {
+          '--columns': columns,
+        } as React.CSSProperties
+      }
+    >
       {header && (
         <thead>
           <tr>{header}</tr>
@@ -44,20 +63,22 @@ export function BrokerRow({
   header,
   title,
   cells,
-  className = '',
+  cellClassName = '',
 }: {
   readonly header: string;
   readonly title?: string;
   readonly cells: RA<JSX.Element | string>;
-  readonly className?: string;
+  readonly cellClassName?: string;
 }): JSX.Element {
   return (
-    <tr className={className}>
-      <th scope="row" title={title}>
+    <tr>
+      <th scope="row" title={title} className="text-left">
         {header}
       </th>
       {cells.map((column, index) => (
-        <td key={index}>{column}</td>
+        <td key={index} className={cellClassName}>
+          {column}
+        </td>
       ))}
     </tr>
   );

@@ -58,7 +58,7 @@ function IssuesTable({
 
   return issues.length === 0 ? null : (
     <BrokerSection anchor="issues" label={specifyNetworkText.dataQuality()}>
-      <BrokerTable className="issues">
+      <BrokerTable columns={1}>
         {issues.map(({ provider, record }) => (
           <BrokerRow
             cells={[
