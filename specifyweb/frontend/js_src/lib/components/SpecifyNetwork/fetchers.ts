@@ -51,7 +51,7 @@ const extractResponseRecord = (
         provider: response.records[0].provider,
       };
 
-function validateBrokerResponse(response: {
+export function validateBrokerResponse(response: {
   readonly errors: IR<unknown>;
   readonly records: RA<unknown>;
 }): boolean {
@@ -84,14 +84,14 @@ type BrokerProvider = {
   readonly label: string;
 };
 
-type RawBrokerResponse = {
+export type RawBrokerResponse<TYPE extends IR<unknown> = IR<unknown>> = {
   readonly errors: IR<unknown>;
   readonly service: string;
   readonly provider: BrokerProvider;
   readonly records: RA<{
     readonly errors: IR<unknown>;
     readonly provider: BrokerProvider;
-    readonly records: RA<IR<unknown>>;
+    readonly records: RA<TYPE>;
   }>;
 };
 

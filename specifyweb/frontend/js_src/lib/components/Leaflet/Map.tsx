@@ -27,13 +27,13 @@ export function LeafletMap({
   onClose: handleClose,
   modal = true,
 }: {
-  readonly localityPoints: RA<LocalityData>;
+  readonly localityPoints?: RA<LocalityData>;
   readonly onMarkerClick?: (index: number, event: L.LeafletEvent) => void;
   readonly forwardRef?: React.RefCallback<LeafletInstance>;
   readonly header?: LocalizedString;
   readonly headerButtons?: JSX.Element;
   readonly buttons?: JSX.Element | LocalizedString;
-  readonly onClose?: () => void;
+  readonly onClose: () => void;
   readonly modal?: boolean;
 }): JSX.Element {
   const [container, setContainer] = React.useState<HTMLDivElement | null>(null);
@@ -55,7 +55,7 @@ export function LeafletMap({
     const map = showLeafletMap({
       tileLayers,
       container,
-      localityPoints,
+      localityPoints: localityPoints ?? [],
       onMarkerClick: (...args) => handleClickRef.current?.(...args),
     });
     setHandleResize(() => throttle(() => map.invalidateSize(), resizeThrottle));

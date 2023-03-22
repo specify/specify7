@@ -14,6 +14,7 @@ import {
   formatLocalityDataObject,
   parseLocalityPinFields,
 } from '../Leaflet/localityRecordDataExtractor';
+import { hasPermission } from '../Permissions/helpers';
 
 export type OccurrenceData = {
   readonly collectionObjectId: number;
@@ -23,10 +24,12 @@ export type OccurrenceData = {
   readonly fetchMoreData: () => Promise<LocalityData | false>;
 };
 
+const LIMIT = 10_000;
+
 export const fetchLocalOccurrences = async (
   resource: SpecifyResource<CollectionObject> | SpecifyResource<Taxon>
 ): Promise<RA<OccurrenceData>> => {
-  const LIMIT = 10_000;
+  if (!hasPermission('/querybuilder/query', 'execute')) return [];
 
   const taxon =
     toTable(resource, 'Taxon') ??

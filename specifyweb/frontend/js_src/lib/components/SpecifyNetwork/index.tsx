@@ -17,7 +17,7 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { CollectionObject, Taxon } from '../DataModel/types';
 import { LoadingScreen } from '../Molecules/Dialog';
-import { hasPermission, hasTablePermission } from '../Permissions/helpers';
+import { hasTablePermission } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
 import { getUserPref } from '../UserPreferences/helpers';
 
@@ -26,7 +26,6 @@ export const displaySpecifyNetwork = (
 ): resource is SpecifyResource<CollectionObject> | SpecifyResource<Taxon> =>
   getUserPref('form', 'ui', 'specifyNetworkBadge') &&
   hasTablePermission('Locality', 'read') &&
-  hasPermission('/querybuilder/query', 'execute') &&
   resource?.isNew() === false &&
   ['Taxon', 'CollectionObject'].includes(resource.specifyModel.name);
 
