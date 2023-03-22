@@ -36,7 +36,7 @@ def collection_preparations(request) -> HttpResponse:
         SELECT pt.Name, count(PreparationID), if(sum(countAmt) is null, 0, sum(countAmt))
         FROM preparation p
                  INNER JOIN preptype pt ON pt.PrepTypeID = p.PrepTypeID
-        WHERE CollectionMemberID = % s
+        WHERE CollectionMemberID = %s
         group by pt.Name
         """,
         [request.specify_collection.id]
@@ -118,7 +118,7 @@ def collection_type_specimens(request) -> HttpResponse:
         """
         SELECT TypeStatusName, count(DeterminationID) AS DeterminationCount
         FROM determination
-        WHERE CollectionMemberID = % s
+        WHERE CollectionMemberID = %s
           AND TypeStatusName is not null
         group by TypeStatusName
         """,
