@@ -15,7 +15,7 @@ export function AppResourcesWrapper(): JSX.Element {
   return (
     <ProtectedTool action="read" tool="resources">
       <ProtectedTable action="read" tableName="Discipline">
-        <ProtectedTable action="read" tableName="Discipline">
+        <ProtectedTable action="read" tableName="Collection">
           <ProtectedTable action="read" tableName="SpecifyUser">
             <AppResourcesDataFetcher />
           </ProtectedTable>

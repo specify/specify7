@@ -204,20 +204,20 @@ const getCollectionResources = (
   resources: AppResources
 ): AppResourcesTree => [
   {
-    label: resourcesText.userTypes(),
-    key: 'userTypes',
-    directory: undefined,
-    appResources: [],
-    viewSets: [],
-    subCategories: sortTree(getUserTypeResources(collection, resources)),
-  },
-  {
     label: userText.users(),
     key: 'users',
     directory: undefined,
     appResources: [],
     viewSets: [],
     subCategories: sortTree(getUserResources(collection, resources)),
+  },
+  {
+    label: resourcesText.userTypes(),
+    key: 'userTypes',
+    directory: undefined,
+    appResources: [],
+    viewSets: [],
+    subCategories: sortTree(getUserTypeResources(collection, resources)),
   },
 ];
 
@@ -252,29 +252,27 @@ const getUserResources = (
   collection: SerializedResource<Collection>,
   resources: AppResources
 ): AppResourcesTree =>
-  resources.users
-    .map((user) => {
-      const directories = resources.directories.filter(
-        (directory) =>
-          directory.collection === collection.resource_uri &&
-          directory.specifyUser === user.resource_uri &&
-          directory.isPersonal
-      );
-      const directory =
-        directories[0] ??
-        addMissingFields('SpAppResourceDir', {
-          collection: collection.resource_uri,
-          discipline: collection.discipline,
-          specifyUser: user.resource_uri,
-          isPersonal: true,
-        });
+  resources.users.map((user) => {
+    const directories = resources.directories.filter(
+      (directory) =>
+        directory.collection === collection.resource_uri &&
+        directory.specifyUser === user.resource_uri &&
+        directory.isPersonal
+    );
+    const directory =
+      directories[0] ??
+      addMissingFields('SpAppResourceDir', {
+        collection: collection.resource_uri,
+        discipline: collection.discipline,
+        specifyUser: user.resource_uri,
+        isPersonal: true,
+      });
 
-      return {
-        label: user.name as LocalizedString,
-        key: `collection_${collection.id}_user_${user.id}`,
-        directory,
-        ...mergeDirectories(directories, resources),
-        subCategories: [],
-      };
-    })
-    .sort(sortFunction(({ label }) => label));
+    return {
+      label: user.name as LocalizedString,
+      key: `collection_${collection.id}_user_${user.id}`,
+      directory,
+      ...mergeDirectories(directories, resources),
+      subCategories: [],
+    };
+  });
