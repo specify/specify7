@@ -354,6 +354,10 @@ export const resourcesText = createDictionary({
   condition: {
     'en-us': 'Condition',
   },
+  addConditionFieldFirst: {
+    'en-us':
+      'Multiple definitions can only be specified after you set a condition field',
+  },
   wrongScopeWarning: {
     'en-us': `
       This resource belongs to a different collection/discipline that the one

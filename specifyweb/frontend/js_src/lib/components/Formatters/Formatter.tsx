@@ -131,6 +131,10 @@ function Definitions({
       {!isReadOnly && (
         <div>
           <Button.Green
+            disabled={!hasCondition}
+            title={
+              hasCondition ? undefined : resourcesText.addConditionFieldFirst()
+            }
             onClick={(): void =>
               handleChange([
                 ...formatter.definition.fields,
