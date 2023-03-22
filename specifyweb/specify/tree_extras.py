@@ -494,7 +494,7 @@ def set_fullnames(table, treedefid, depth, reverse=False, null_only=False):
         definition_joins=definition_joins(table, depth),
         null_only="and t0.fullname is null" if null_only else "",
     )
-    logger.debug('fullname update sql:\n%s', sql)
+    logger.warning(sql)
     return cursor.execute(sql)
 
 def predict_fullname(table, depth, parentid, defitemid, name, reverse=False):
