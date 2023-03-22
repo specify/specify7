@@ -75,6 +75,8 @@ theories(findChild, [
   { in: ['<a />', 'b', 0], out: undefined },
   { in: ['<b />', 'b', 0], out: 0 },
   { in: ['<b/>', 'b', 0], out: 0 },
+  { in: ['<bar /><b />', 'b', 0], out: 7 },
+  { in: ['<b\n/>', 'b', 0], out: 0 },
   { in: ['<![CDATA[<bar>]]><b/>', 'b', 0], out: 17 },
   { in: ['<b a="b"></b><b><!--<a />--></b>', 'b', 1], out: 13 },
   { in: ['<a></a><a /><b bar="var" />', 'b', 0], out: 12 },

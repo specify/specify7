@@ -103,10 +103,15 @@ function findChild(
       return false;
     },
     (part) => {
+      const start = `<${tagName}`;
       if (
-        part.startsWith(`<${tagName} `) ||
-        part.startsWith(`<${tagName}>`) ||
-        part.startsWith(`<${tagName}/>`)
+        part.startsWith(start) &&
+        /*
+         * I.e, if tagName is 'format', startsWith() would also match
+         * <formatter>, thus have to check for that. Using startsWith() in place
+         * of regex as a performance optimization.
+         */
+        !/\w/u.test(part.charAt(start.length))
       ) {
         if (currentIndex === index) return true;
         else if (part.endsWith('/>')) currentIndex += 1;
