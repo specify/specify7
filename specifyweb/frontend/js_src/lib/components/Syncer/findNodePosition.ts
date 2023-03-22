@@ -150,8 +150,8 @@ export function xmlStringTraverse<T>(
   /**
    * Return anything other than undefined to stop the traversal
    */
-  startMatch: (match: RegExpExecArray) => undefined | T,
-  endMatch: (match: RegExpExecArray) => undefined | T
+  startMatch: (match: RegExpExecArray) => T | undefined,
+  endMatch: (match: RegExpExecArray) => T | undefined
 ): T | undefined {
   let match: RegExpExecArray | null;
   reTag.lastIndex = 0;

@@ -25,9 +25,9 @@ import {
   strictIdFromUrl,
   strictParseResourceUrl,
 } from '../resource';
-import type { CollectionObject } from '../types';
 import { serializeResource } from '../serializers';
 import { tables } from '../tables';
+import type { CollectionObject } from '../types';
 
 const { getCarryOverPreference, getFieldsToClone } = exportsForTests;
 

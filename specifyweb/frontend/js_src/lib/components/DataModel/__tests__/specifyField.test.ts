@@ -2,8 +2,8 @@ import { requireContext } from '../../../tests/helpers';
 import { getUiFormatters } from '../../FieldFormatters';
 import { getField } from '../helpers';
 import { schema } from '../schema';
-import { strictGetTable, tables } from '../tables';
 import { FieldBase } from '../specifyField';
+import { strictGetTable, tables } from '../tables';
 
 requireContext();
 
