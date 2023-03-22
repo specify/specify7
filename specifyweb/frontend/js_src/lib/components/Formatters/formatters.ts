@@ -99,7 +99,7 @@ export async function format<SCHEMA extends AnySchema>(
     : undefined;
 
   return Promise.all(
-    fields.map(async (field) => formatField(field, resource, tryBest))
+    fields.map(async (field) => formatField(field, resource))
   ).then((values) => {
     const joined = values.join('') as LocalizedString;
     return joined.length === 0 ? automaticFormatter : joined;
@@ -134,8 +134,7 @@ async function formatField(
   }: Formatter['definition']['fields'][number]['fields'][number] & {
     readonly formatFieldValue?: boolean;
   },
-  parentResource: SpecifyResource<AnySchema>,
-  tryBest: boolean
+  parentResource: SpecifyResource<AnySchema>
 ): Promise<string | undefined> {
   let formatted: string | undefined = undefined;
   const hasPermission = hasPathPermission(fields ?? [], 'read');
@@ -148,11 +147,7 @@ async function formatField(
     formatted = field.isRelationship
       ? await (relationshipIsToMany(field)
           ? aggregate(await resource.rgetCollection(field.name), aggregator)
-          : format(
-              await resource.rgetPromise(field.name),
-              formatter,
-              tryBest as false
-            ))
+          : format(await resource.rgetPromise(field.name), formatter))
       : formatFieldValue
       ? await fieldFormat(
           field,
@@ -161,11 +156,7 @@ async function formatField(
           fieldFormatter
         )
       : (resource.get(field.name) as string | null) ?? undefined;
-  } else {
-    formatted = tryBest
-      ? naiveFormatter(parentResource.specifyTable.name, parentResource.id)
-      : userText.noPermission();
-  }
+  } else formatted = userText.noPermission();
 
   return formatted === undefined || formatted === ''
     ? ''
@@ -186,8 +177,7 @@ export async function fetchPathAsString(
       fieldFormatter: undefined,
       formatFieldValue,
     },
-    baseResource,
-    false
+    baseResource
   );
   return value?.toString();
 }

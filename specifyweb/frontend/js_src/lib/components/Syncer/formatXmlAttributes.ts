@@ -2,7 +2,7 @@ import type { WritableArray } from '../../utils/types';
 import { getIndent } from '../AppResources/EditorComponents';
 import { xmlStringTraverse } from './findNodePosition';
 
-const maxLineLength = 60;
+const maxLineLength = 80;
 
 /**
  * This assumes xml string was output by XMLSerializer thus most of the

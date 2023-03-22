@@ -102,8 +102,7 @@ describe('formatField', () => {
           fieldFormatter: undefined,
           separator: ', ',
         },
-        parentResource,
-        true
+        parentResource
       )
     ).resolves.toBe(', Person');
   });
