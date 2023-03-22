@@ -334,48 +334,48 @@ export const preferenceDefinitions = {
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
-          grayButtonColor: defineItem({
-            title: preferencesText.grayButtonColor(),
+          secondaryButtonColor: defineItem({
+            title: preferencesText.secondaryButtonColor(),
             requiresReload: false,
             visible: true,
             defaultValue: '#d4d4d4',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
-          lightGrayButtonColor: defineItem({
-            title: preferencesText.lightGrayButtonColor(),
+          secondaryLightButtonColor: defineItem({
+            title: preferencesText.secondaryLightButtonColor(),
             requiresReload: false,
             visible: true,
             defaultValue: '#f5f5f5',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
-          redButtonColor: defineItem({
-            title: preferencesText.redButtonColor(),
+          dangerButtonColor: defineItem({
+            title: preferencesText.dangerButtonColor(),
             requiresReload: false,
             visible: true,
             defaultValue: '#b91c1c',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
-          blueButtonColor: defineItem({
-            title: preferencesText.blueButtonColor(),
+          infoButtonColor: defineItem({
+            title: preferencesText.infoButtonColor(),
             requiresReload: false,
             visible: true,
             defaultValue: '#1d4ed8',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
-          orangeButtonColor: defineItem({
-            title: preferencesText.orangeButtonColor(),
+          warningButtonColor: defineItem({
+            title: preferencesText.warningButtonColor(),
             requiresReload: false,
             visible: true,
             defaultValue: '#ea580c',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
-          greenButtonColor: defineItem({
-            title: preferencesText.greenButtonColor(),
+          successButtonColor: defineItem({
+            title: preferencesText.successButtonColor(),
             requiresReload: false,
             visible: true,
             defaultValue: '#166534',

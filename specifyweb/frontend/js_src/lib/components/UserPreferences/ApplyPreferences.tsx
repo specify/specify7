@@ -98,23 +98,31 @@ export function SetCssVariables(): null {
       accentColor4: getUserPref('general', 'appearance', 'accentColor4'),
       accentColor5: getUserPref('general', 'appearance', 'accentColor5'),
       saveButtonColor: getUserPref('general', 'appearance', 'saveButtonColor'),
-      grayButtonColor: getUserPref('general', 'appearance', 'grayButtonColor'),
-      lightGrayButtonColor: getUserPref(
+      secondaryButtonColor: getUserPref(
         'general',
         'appearance',
-        'lightGrayButtonColor'
+        'secondaryButtonColor'
       ),
-      redButtonColor: getUserPref('general', 'appearance', 'redButtonColor'),
-      blueButtonColor: getUserPref('general', 'appearance', 'blueButtonColor'),
-      orangeButtonColor: getUserPref(
+      secondaryLightButtonColor: getUserPref(
         'general',
         'appearance',
-        'orangeButtonColor'
+        'secondaryLightButtonColor'
       ),
-      greenButtonColor: getUserPref(
+      dangerButtonColor: getUserPref(
         'general',
         'appearance',
-        'greenButtonColor'
+        'dangerButtonColor'
+      ),
+      infoButtonColor: getUserPref('general', 'appearance', 'infoButtonColor'),
+      warningButtonColor: getUserPref(
+        'general',
+        'appearance',
+        'warningButtonColor'
+      ),
+      successButtonColor: getUserPref(
+        'general',
+        'appearance',
+        'successButtonColor'
       ),
       roundedCorners: getUserPref('general', 'appearance', 'roundedCorners'),
       formForeground: getUserPref('form', 'appearance', 'foreground'),
@@ -250,55 +258,55 @@ export function SetCssVariables(): null {
   React.useEffect(
     () =>
       document.body.style.setProperty(
-        '--gray-button-color',
-        prefs.grayButtonColor
+        '--secondary-button-color',
+        prefs.secondaryButtonColor
       ),
-    [prefs.grayButtonColor]
+    [prefs.secondaryButtonColor]
   );
 
   React.useEffect(
     () =>
       document.body.style.setProperty(
-        '--light-gray-button-color',
-        prefs.lightGrayButtonColor
+        '--secondary-light-button-color',
+        prefs.secondaryLightButtonColor
       ),
-    [prefs.lightGrayButtonColor]
+    [prefs.secondaryLightButtonColor]
   );
 
   React.useEffect(
     () =>
       document.body.style.setProperty(
-        '--red-button-color',
-        prefs.redButtonColor
+        '--danger-button-color',
+        prefs.dangerButtonColor
       ),
-    [prefs.redButtonColor]
+    [prefs.dangerButtonColor]
   );
 
   React.useEffect(
     () =>
       document.body.style.setProperty(
-        '--blue-button-color',
-        prefs.blueButtonColor
+        '--info-button-color',
+        prefs.infoButtonColor
       ),
-    [prefs.blueButtonColor]
+    [prefs.infoButtonColor]
   );
 
   React.useEffect(
     () =>
       document.body.style.setProperty(
-        '--orange-button-color',
-        prefs.orangeButtonColor
+        '--warning-button-color',
+        prefs.warningButtonColor
       ),
-    [prefs.orangeButtonColor]
+    [prefs.warningButtonColor]
   );
 
   React.useEffect(
     () =>
       document.body.style.setProperty(
-        '--green-button-color',
-        prefs.greenButtonColor
+        '--success-button-color',
+        prefs.successButtonColor
       ),
-    [prefs.greenButtonColor]
+    [prefs.successButtonColor]
   );
 
   React.useEffect(

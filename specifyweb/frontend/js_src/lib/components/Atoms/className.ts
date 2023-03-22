@@ -12,9 +12,9 @@ export const dialogIconTriggers = {
 };
 
 const buttonClassName = 'button';
-const grayButton = `${buttonClassName} hover:brightness-150 bg-[color:var(--gray-button-color)] text-gray-800 shadow-sm
+const grayButton = `${buttonClassName} hover:brightness-150 bg-[color:var(--secondary-button-color)] text-gray-800 shadow-sm
     dark:bg-neutral-600 dark:text-gray-100 hover:dark:bg-neutral-500`;
-const lightGrayButton = `${buttonClassName} hover:brightness-150 bg-[color:var(--light-gray-button-color)] text-gray-800 shadow-sm
+const lightGrayButton = `${buttonClassName} hover:brightness-150 bg-[color:var(--secondary-light-button-color)] text-gray-800 shadow-sm
     dark:bg-neutral-600 dark:text-gray-100 hover:dark:bg-neutral-500`;
 const containerBaseUnstyled = `flex flex-col gap-4 overflow-scroll
   overflow-x-auto [overflow-y:overlay] [scrollbar-gutter:stable]`;
@@ -63,10 +63,10 @@ export const className = {
   smallButton: `${niceButton} !py-1 !px-2`,
   borderedGrayButton,
   defaultSmallButtonVariant: `${borderedGrayButton} hover:bg-brand-200 dark:hover:bg-brand-400`,
-  redButton: `${dialogIconTriggers.error} hover:brightness-150 bg-[color:var(--red-button-color)]  text-white`,
-  blueButton: `${dialogIconTriggers.info} hover:brightness-150 bg-[color:var(--blue-button-color)]  text-white`,
-  orangeButton: `${dialogIconTriggers.warning} hover:brightness-150 bg-[color:var(--orange-button-color)] text-white`,
-  greenButton: `${dialogIconTriggers.success} hover:brightness-150 bg-[color:var(--green-button-color)] text-white`,
+  redButton: `${dialogIconTriggers.error} hover:brightness-150 bg-[color:var(--danger-button-color)]  text-white`,
+  blueButton: `${dialogIconTriggers.info} hover:brightness-150 bg-[color:var(--info-button-color)]  text-white`,
+  orangeButton: `${dialogIconTriggers.warning} hover:brightness-150 bg-[color:var(--warning-button-color)] text-white`,
+  greenButton: `${dialogIconTriggers.success} hover:brightness-150 bg-[color:var(--success-button-color)] text-white`,
   saveButton: `hover:brightness-150 text-white bg-[color:var(--save-button-color)]`,
   fancyButton: `bg-gray-300 hover:bg-brand-200 dark:bg-neutral-600
     hover:dark:bg-brand:400 text-gray-800 dark:text-white text-center`,

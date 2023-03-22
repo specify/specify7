@@ -1413,22 +1413,22 @@ export const preferencesText = createDictionary({
   saveButtonColor: {
     'en-us': 'Save button color',
   },
-  grayButtonColor: {
-    'en-us': 'Gray button color',
+  secondaryButtonColor: {
+    'en-us': 'Secondary button color',
   },
-  lightGrayButtonColor: {
-    'en-us': 'Light gray button color',
+  secondaryLightButtonColor: {
+    'en-us': 'Secondary light button color',
   },
-  redButtonColor: {
-    'en-us': 'Red button color',
+  dangerButtonColor: {
+    'en-us': 'Danger button color',
   },
-  blueButtonColor: {
-    'en-us': 'Blue button color',
+  infoButtonColor: {
+    'en-us': 'Info button color',
   },
-  orangeButtonColor: {
-    'en-us': 'Orange button color',
+  warningButtonColor: {
+    'en-us': 'Warning button color',
   },
-  greenButtonColor: {
-    'en-us': 'Green button color',
+  successButtonColor: {
+    'en-us': 'Success button color',
   },
 } as const);
