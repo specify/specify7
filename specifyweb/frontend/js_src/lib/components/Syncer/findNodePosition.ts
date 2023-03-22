@@ -157,9 +157,11 @@ export function xmlStringTraverse<T>(
   reTag.lastIndex = 0;
   while ((match = reTag.exec(xml)) !== null) {
     const [part] = match;
-    if (part === '<!--')
-      reTag.lastIndex = xml.indexOf('-->', reTag.lastIndex) + 3;
-    else if (part.startsWith('</')) {
+    if (part === '<!--') {
+      const commentEnd = xml.indexOf('-->', reTag.lastIndex);
+      if (commentEnd === -1) return undefined;
+      reTag.lastIndex = commentEnd + 3;
+    } else if (part.startsWith('</')) {
       const end = endMatch(match);
       if (end !== undefined) return end;
     } else if (part.startsWith('<')) {

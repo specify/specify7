@@ -53,7 +53,7 @@ function formatTag(part: string, indent: string, extraIndent: string): string {
   )}\n${indent}${close}`;
 }
 
-const reAttribute = /\s[^=]+="[^"]+"/gu;
+const reAttribute = /\s[^=]+="[^"]*"/gu;
 
 const formatAttributes = (part: string, indent: string): string =>
   part.replaceAll(reAttribute, (match) => `\n${indent}${match.trim()}`);

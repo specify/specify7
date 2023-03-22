@@ -11,9 +11,22 @@ import {
 } from '../../Router/Router';
 import { Contexts, ErrorContext, LoadingContext } from '../Contexts';
 
+/*
+ * Normally, expect(mockedFunction).toHaveBeenCalledTimes(...) is used instead,
+ * but I couldn't get the mock to work correctly (possibly because Jest's
+ * mocking support for ESModels is still limited 😥)
+ */
+let crashCallCount = 0;
+beforeEach(() => {
+  crashCallCount = 0;
+});
+
 jest.mock('../../Errors/Crash', () => ({
+  __esModule: true,
   ...jest.requireActual('../../Errors/Crash'),
-  crash: jest.fn(),
+  crash: jest.fn(() => {
+    crashCallCount += 1;
+  }),
 }));
 
 test('<Contexts> is providing error context', async () => {
@@ -72,11 +85,11 @@ test('<Contexts> provide a loading context', async () => {
   const newHeading = await findByRole('heading', {
     name: commonText.loading(),
   });
-  const { crash } = await import('../../Errors/Crash');
-  expect(crash).not.toHaveBeenCalled();
+
+  expect(crashCallCount).toBe(0);
   rejectedPromise.reject('error');
   await waitForElementToBeRemoved(newHeading);
-  expect(crash).toHaveBeenCalledTimes(1);
+  expect(crashCallCount).toBe(1);
 });
 
 test('<Contexts> is providing UnloadProtectsContext', () => {

@@ -153,13 +153,6 @@ export const resourcesText = createDictionary({
   duplicateFormatters: {
     'en-us': 'Formatter names must be unique',
   },
-  searchDialogDefinitions: {
-    'en-us': 'Search Dialog Definitions',
-    'ru-ru': 'Макеты диалогового окна поиска',
-    'es-es': 'Definiciones del diálogo de búsqueda',
-    'fr-fr': 'Définitions de la boîte de dialogue de recherche',
-    'uk-ua': 'Визначення діалогового вікна пошуку',
-  },
   dataEntryTables: {
     'en-us': 'Data Entry Tables',
     'ru-ru': 'Таблицы ввода данных',

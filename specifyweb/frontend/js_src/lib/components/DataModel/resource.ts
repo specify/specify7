@@ -18,11 +18,11 @@ import type {
   TableFields,
 } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
-import { getTable, tables } from './tables';
-import type { SpecifyTable } from './specifyTable';
-import type { Tables } from './types';
-import { serializeResource } from './serializers';
 import { schema } from './schema';
+import { serializeResource } from './serializers';
+import type { SpecifyTable } from './specifyTable';
+import { getTable, tables } from './tables';
+import type { Tables } from './types';
 
 /*
  * REFACTOR: experiment with an object singleton:
@@ -74,22 +74,22 @@ export const deleteResource = async (
     { expectedResponseCodes: [Http.NO_CONTENT] }
   ).then(f.void);
 
-export const createResource = async <TABLE_NAME extends keyof Tables>(
+export async function createResource<TABLE_NAME extends keyof Tables>(
   tableName: TABLE_NAME,
-  data: Partial<SerializedResource<Tables[TABLE_NAME]>>
-): Promise<SerializedResource<Tables[TABLE_NAME]>> =>
-  ajax<SerializedRecord<Tables[TABLE_NAME]>>(
+  fullData: Partial<SerializedResource<Tables[TABLE_NAME]>>
+): Promise<SerializedResource<Tables[TABLE_NAME]>> {
+  const { id: _, resource_uri: __, ...data } = fullData;
+  return ajax<SerializedRecord<Tables[TABLE_NAME]>>(
     `/api/specify/${tableName.toLowerCase()}/`,
     {
       method: 'POST',
       body: keysToLowerCase(
         removeKey(
-          addMissingFields(tableName, data, {
+          addMissingFields(tableName, data as typeof fullData, {
             optionalFields: 'omit',
             toManyRelationships: 'omit',
             optionalRelationships: 'omit',
           }),
-          'id',
           '_tableName'
         )
       ),
@@ -97,6 +97,7 @@ export const createResource = async <TABLE_NAME extends keyof Tables>(
     },
     { expectedResponseCodes: [Http.CREATED] }
   ).then(({ data }) => serializeResource(data));
+}
 
 export const saveResource = async <TABLE_NAME extends keyof Tables>(
   tableName: TABLE_NAME,

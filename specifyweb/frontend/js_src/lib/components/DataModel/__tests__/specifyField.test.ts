@@ -2,8 +2,8 @@ import { requireContext } from '../../../tests/helpers';
 import { getUiFormatters } from '../../FieldFormatters';
 import { getField } from '../helpers';
 import { schema } from '../schema';
-import { SpecifyTable } from '../specifyTable';
 import { strictGetTable, tables } from '../tables';
+import { FieldBase } from '../specifyField';
 
 requireContext();
 
@@ -246,30 +246,30 @@ describe('toJSON', () => {
   test('relationship', () =>
     expect(
       tables.CollectionObject.getField('accession.division')?.toJSON()
-    ).toBe('[relationship CollectionObject.division]'));
+    ).toBe('[relationship Accession.division]'));
 });
 
 describe('fromJson', () => {
   test('CollectionObject.catalogNumber', () =>
     expect(
-      SpecifyTable.fromJson('[literalField CollectionObject.catalogNumber]')
+      FieldBase.fromJson('[literalField CollectionObject.catalogNumber]')
     ).toBe(getField(tables.CollectionObject, 'catalogNumber')));
   test('Accession.createdByAgent', () =>
-    expect(
-      SpecifyTable.fromJson('[relationship Accession.createdByAgent]')
-    ).toBe(getField(tables.Accession, 'createdByAgent')));
+    expect(FieldBase.fromJson('[relationship Accession.createdByAgent]')).toBe(
+      getField(tables.Accession, 'createdByAgent')
+    ));
   test('Table name typo', () =>
     expect(
-      SpecifyTable.fromJson('[literalField Accessions.createdByAgent]')
+      FieldBase.fromJson('[literalField Accessions.createdByAgent]')
     ).toBeUndefined());
   test('Invalid type', () =>
-    expect(SpecifyTable.fromJson('[table Accession.text1]')).toBeUndefined());
+    expect(FieldBase.fromJson('[table Accession.text1]')).toBeUndefined());
   test('Incorrect formatting', () =>
     expect(
-      SpecifyTable.fromJson('table CollectionObject.catalogNumber')
+      FieldBase.fromJson('table CollectionObject.catalogNumber')
     ).toBeUndefined());
   test('Empty container', () =>
-    expect(SpecifyTable.fromJson('[]')).toBeUndefined());
+    expect(FieldBase.fromJson('[]')).toBeUndefined());
 });
 
 describe('Relationship', () => {

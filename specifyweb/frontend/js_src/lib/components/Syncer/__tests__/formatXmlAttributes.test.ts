@@ -3,22 +3,28 @@ import { formatXmlAttributes } from '../formatXmlAttributes';
 
 theories(formatXmlAttributes, [
   {
-    name: 'Handles children and comments',
+    name: 'Split attributes into multiple lines',
     in: [
-      '<br />\n  <format name="Accession" title="Accession" class="edu.ku.brc.specify.datamodel.Accession" default="true"><switch name="Accession" title="Accession" abc="def" /><!-- <switch name="Accession" title="Accession" abc="def" /> --></format>',
+      `<br />
+  <format name="Accession" title="Accession" class="edu.ku.brc.specify.datamodel.Accession" abc="" default="true"></format>`,
     ],
     out: `<br />
   <format
     name="Accession"
     title="Accession"
     class="edu.ku.brc.specify.datamodel.Accession"
+    abc=""
     default="true"
   ></format>`,
   },
   {
-    name: 'Split attributes into multiple lines',
+    name: 'Handles children and comments',
     in: [
-      '<br />\n  <format name="Accession" title="Accession" class="edu.ku.brc.specify.datamodel.Accession" default="true"></format>',
+      `<br />
+  <format name="Accession" title="Accession" class="edu.ku.brc.specify.datamodel.Accession" default="true">
+    <switch name="Accession" title="Accession" abc="def" />
+    <!-- <switch name="Accession" title="Accession" abc="def" /> -->
+  </format>`,
     ],
     out: `<br />
   <format
@@ -26,9 +32,11 @@ theories(formatXmlAttributes, [
     title="Accession"
     class="edu.ku.brc.specify.datamodel.Accession"
     default="true"
-  ></format>`,
+  >
+    <switch name="Accession" title="Accession" abc="def" />
+    <!-- <switch name="Accession" title="Accession" abc="def" /> -->
+  </format>`,
   },
-
   {
     name: 'Only long lines are formatted',
     in: ['<br />\n  <format name="Accession" title="Accession"></format>'],

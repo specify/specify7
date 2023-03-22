@@ -7,7 +7,7 @@ import { tables } from '../../DataModel/tables';
 mockTime();
 requireContext();
 
-test('formatters are fetched and parsed correctly', async () =>
+test('field formatters are fetched and parsed correctly', async () =>
   expect(fetchContext).resolves.toMatchSnapshot());
 
 const getFormatter = (): UiFormatter | undefined =>

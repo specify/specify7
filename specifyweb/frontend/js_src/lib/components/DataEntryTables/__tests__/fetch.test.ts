@@ -15,6 +15,6 @@ test('fetches and parses list of data entry forms', async () =>
     'Taxon',
     'Agent',
     'Geography',
-    'DNASequences',
+    'DNASequence',
     'ReferenceWork',
   ]));

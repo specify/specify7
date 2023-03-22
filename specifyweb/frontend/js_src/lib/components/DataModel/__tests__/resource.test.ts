@@ -74,7 +74,6 @@ overrideAjax(
     method: 'POST',
     responseCode: Http.CREATED,
     body: {
-      resource_uri: '/api/specify/locality/2/',
       discipline: getResourceApiUrl('Discipline', 3),
       localityname: 'name',
       srclatlongunit: 0,
@@ -86,14 +85,17 @@ overrideAjax(
 test('createResource', async () =>
   expect(
     createResource('Locality', {
-      resource_uri: getResourceApiUrl('Locality', localityId),
-      id: localityId,
       localityName: 'name',
+      // This should get ignored
+      resource_uri: getResourceApiUrl('Locality', 123),
+      // This should get ignored
+      id: 44,
     })
   ).resolves.toEqual(
     addMissingFields('Locality', {
       resource_uri: getResourceApiUrl('Locality', localityId),
       id: localityId,
+      discipline: getResourceApiUrl('Discipline', 3),
       localityName: 'name',
     })
   ));
