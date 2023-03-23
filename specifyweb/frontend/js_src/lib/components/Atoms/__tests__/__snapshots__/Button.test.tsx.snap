@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Button.Blue renders without errors 1`] = `
+exports[`Button.Info renders without errors 1`] = `
 <DocumentFragment>
   <button
     class="button rounded cursor-pointer active:brightness-80 px-4 py-2
@@ -24,7 +24,7 @@ exports[`Button.BorderedGray renders without errors 1`] = `
 </DocumentFragment>
 `;
 
-exports[`Button.Gray renders without errors 1`] = `
+exports[`Button.Secondary renders without errors 1`] = `
 <DocumentFragment>
   <button
     class="button rounded cursor-pointer active:brightness-80 px-4 py-2
@@ -36,7 +36,7 @@ exports[`Button.Gray renders without errors 1`] = `
 </DocumentFragment>
 `;
 
-exports[`Button.Green renders without errors 1`] = `
+exports[`Button.Success renders without errors 1`] = `
 <DocumentFragment>
   <button
     class="button rounded cursor-pointer active:brightness-80 px-4 py-2
@@ -94,7 +94,7 @@ exports[`Button.LikeLink renders without errors 2`] = `
 </DocumentFragment>
 `;
 
-exports[`Button.Orange renders without errors 1`] = `
+exports[`Button.Warning renders without errors 1`] = `
 <DocumentFragment>
   <button
     class="button rounded cursor-pointer active:brightness-80 px-4 py-2
@@ -105,7 +105,7 @@ exports[`Button.Orange renders without errors 1`] = `
 </DocumentFragment>
 `;
 
-exports[`Button.Red renders without errors 1`] = `
+exports[`Button.Danger renders without errors 1`] = `
 <DocumentFragment>
   <button
     class="button rounded cursor-pointer active:brightness-80 px-4 py-2

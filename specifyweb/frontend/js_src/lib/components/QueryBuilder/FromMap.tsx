@@ -69,7 +69,9 @@ export function QueryFromMap({
     <LeafletMap
       buttons={
         <>
-          <Button.Gray onClick={handleClose}>{commonText.cancel()}</Button.Gray>
+          <Button.Secondary onClick={handleClose}>
+            {commonText.cancel()}
+          </Button.Secondary>
           <Submit.Save onClick={handleSave}>{commonText.save()}</Submit.Save>
         </>
       }

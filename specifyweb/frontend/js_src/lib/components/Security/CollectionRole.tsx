@@ -216,13 +216,13 @@ function RoleUsers({
           </Ul>
           {hasPermission('/permissions/user/roles', 'update', collectionId) && (
             <div>
-              <Button.Green
+              <Button.Success
                 onClick={(): void =>
                   setAddingUser(new schema.models.SpecifyUser.Resource())
                 }
               >
                 {commonText.add()}
-              </Button.Green>
+              </Button.Success>
             </div>
           )}
           {typeof addingUser === 'object' ? (

@@ -26,7 +26,7 @@ export function RollbackConfirmation({
       buttons={
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Button.Red
+          <Button.Danger
             onClick={() =>
               loading(
                 ping(`/api/workbench/unupload/${dataSetId}/`, {
@@ -38,7 +38,7 @@ export function RollbackConfirmation({
             }
           >
             {wbText.rollback()}
-          </Button.Red>
+          </Button.Danger>
         </>
       }
     >

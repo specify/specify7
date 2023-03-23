@@ -90,7 +90,7 @@ export function AttachmentViewer({
   );
 
   const [autoPlay] = usePref('attachments', 'behavior', 'autoPlay');
-  const Component = typeof originalUrl === 'string' ? Link.Blue : Button.Blue;
+  const Component = typeof originalUrl === 'string' ? Link.Blue : Button.Info;
   const table = f.maybe(serialized.tableID ?? undefined, getAttachmentTable);
   return (
     <div className="flex h-full gap-8">

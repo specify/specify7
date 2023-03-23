@@ -163,17 +163,17 @@ function AppResourcesExpand({
 }): JSX.Element {
   return (
     <>
-      <Button.Blue
+      <Button.Info
         className="grow"
         onClick={(): void =>
           handleChange(buildAppResourceConformation(resourcesTree))
         }
       >
         {commonText.expandAll()}
-      </Button.Blue>
-      <Button.Blue className="grow" onClick={(): void => handleChange([])}>
+      </Button.Info>
+      <Button.Info className="grow" onClick={(): void => handleChange([])}>
         {commonText.collapseAll()}
-      </Button.Blue>
+      </Button.Info>
     </>
   );
 }

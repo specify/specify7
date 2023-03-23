@@ -67,11 +67,11 @@ export function TablesListEdit({
     <Dialog
       buttons={
         <>
-          <Button.Blue onClick={(): void => handleChanged(defaultTables)}>
+          <Button.Info onClick={(): void => handleChanged(defaultTables)}>
             {commonText.reset()}
-          </Button.Blue>
+          </Button.Info>
           <span className="-ml-2 flex-1" />
-          <Button.Blue onClick={handleClose}>{commonText.close()}</Button.Blue>
+          <Button.Info onClick={handleClose}>{commonText.close()}</Button.Info>
         </>
       }
       header={header}

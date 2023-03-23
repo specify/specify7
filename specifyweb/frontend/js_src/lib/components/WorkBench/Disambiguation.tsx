@@ -34,7 +34,7 @@ export function DisambiguationDialog({
       buttons={
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Button.Blue
+          <Button.Info
             disabled={selected === undefined}
             onClick={(): void => {
               handleSelected(selected!);
@@ -42,8 +42,8 @@ export function DisambiguationDialog({
             }}
           >
             {commonText.apply()}
-          </Button.Blue>
-          <Button.Blue
+          </Button.Info>
+          <Button.Info
             disabled={selected === undefined}
             onClick={(): void => {
               handleSelectedAll(selected!);
@@ -51,7 +51,7 @@ export function DisambiguationDialog({
             }}
           >
             {commonText.applyAll()}
-          </Button.Blue>
+          </Button.Info>
         </>
       }
       header={wbText.disambiguateMatches()}

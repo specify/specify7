@@ -166,7 +166,7 @@ export function RoleView({
       <div className="flex gap-2">
         {typeof role.id === 'number' &&
         hasPermission(permissionName, 'delete', collectionId) ? (
-          <Button.Red
+          <Button.Danger
             disabled={
               userRoles === undefined && typeof handleAddUsers === 'function'
             }
@@ -180,7 +180,7 @@ export function RoleView({
             }
           >
             {commonText.remove()}
-          </Button.Red>
+          </Button.Danger>
         ) : undefined}
         {changesMade ? (
           <Link.Red
@@ -217,9 +217,9 @@ export function RoleView({
           buttons={
             <>
               <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-              <Button.Red onClick={handleDelete}>
+              <Button.Danger onClick={handleDelete}>
                 {commonText.delete()}
-              </Button.Red>
+              </Button.Danger>
             </>
           }
           header={userText.deleteRoleWithUsers()}

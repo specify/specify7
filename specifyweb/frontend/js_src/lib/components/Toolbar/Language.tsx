@@ -105,14 +105,14 @@ export function LanguageSelection<LANGUAGES extends string>({
           buttons={
             <>
               <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-              <Button.Blue
+              <Button.Info
                 onClick={(): void => {
                   handleChange(warningLanguage);
                   setWarningLanguage(undefined);
                 }}
               >
                 {commonText.proceed()}
-              </Button.Blue>
+              </Button.Info>
             </>
           }
           className={{

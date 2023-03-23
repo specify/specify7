@@ -168,11 +168,11 @@ export function RecordSetsDialog({
               <>
                 <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
                 {!isReadOnly && hasToolPermission('recordSets', 'create') && (
-                  <Button.Blue
+                  <Button.Info
                     onClick={(): void => setState({ type: 'CreateState' })}
                   >
                     {commonText.new()}
-                  </Button.Blue>
+                  </Button.Info>
                 )}
                 {buttons}
               </>

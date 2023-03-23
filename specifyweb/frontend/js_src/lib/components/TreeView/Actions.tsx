@@ -368,7 +368,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
           buttons={
             <>
               <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-              <Button.Blue
+              <Button.Info
                 onClick={(): void =>
                   loading(
                     action()
@@ -384,7 +384,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
                   : type === 'synonymize'
                   ? treeText.synonymizeNode()
                   : treeText.desynonymizeNode()}
-              </Button.Blue>
+              </Button.Info>
             </>
           }
           header={

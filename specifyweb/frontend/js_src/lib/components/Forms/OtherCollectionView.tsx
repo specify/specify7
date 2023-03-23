@@ -67,13 +67,13 @@ export function OtherCollection({
                 <Ul className="flex gap-2">
                   {collections.map(({ id, collectionName }) => (
                     <li key={id}>
-                      <Button.Blue
+                      <Button.Info
                         onClick={(): void =>
                           switchCollection(navigate, collections[0].id)
                         }
                       >
                         {collectionName as LocalizedString}
-                      </Button.Blue>
+                      </Button.Info>
                     </li>
                   ))}
                 </Ul>
@@ -86,13 +86,13 @@ export function OtherCollection({
                   })}
                 </p>
                 <div>
-                  <Button.Blue
+                  <Button.Info
                     onClick={(): void =>
                       switchCollection(navigate, collections[0].id)
                     }
                   >
                     {collections[0].collectionName as LocalizedString}
-                  </Button.Blue>
+                  </Button.Info>
                 </div>
               </>
             )}

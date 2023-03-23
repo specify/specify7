@@ -93,14 +93,14 @@ export function AppResourceEditor({
   const headerButtons = (
     <div className="flex flex-wrap gap-3">
       <AppTitle title={formatted} />
-      <Button.Blue
+      <Button.Info
         aria-label={localityText.toggleFullScreen()}
         aria-pressed={isFullScreen}
         title={localityText.toggleFullScreen()}
         onClick={handleToggleFullScreen}
       >
         {isFullScreen ? icons.arrowsCollapse : icons.arrowsExpand}
-      </Button.Blue>
+      </Button.Info>
       <span className="-ml-4 md:flex-1" />
       {typeof resourceData === 'object' && (
         <AppResourceLoad
@@ -128,7 +128,7 @@ export function AppResourceEditor({
 
   return typeof resourceData === 'object' ? (
     <Container.Base className="flex-1 overflow-auto">
-      <DataEntry.Header className='flex-wrap'>
+      <DataEntry.Header className="flex-wrap">
         <div className="flex items-center justify-center gap-2">
           <div className="hidden md:block">
             {appResourceIcon(getResourceType(resource))}

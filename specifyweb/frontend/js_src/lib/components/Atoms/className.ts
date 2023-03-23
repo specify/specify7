@@ -12,9 +12,9 @@ export const dialogIconTriggers = {
 };
 
 const buttonClassName = 'button';
-const grayButton = `${buttonClassName} hover:brightness-150 bg-[color:var(--secondary-button-color)] text-gray-800 shadow-sm
+const secondaryButton = `${buttonClassName} hover:brightness-150 bg-[color:var(--secondary-button-color)] text-gray-800 shadow-sm
     dark:bg-neutral-600 dark:text-gray-100 hover:dark:bg-neutral-500`;
-const lightGrayButton = `${buttonClassName} hover:brightness-150 bg-[color:var(--secondary-light-button-color)] text-gray-800 shadow-sm
+const secondaryLightButton = `${buttonClassName} hover:brightness-150 bg-[color:var(--secondary-light-button-color)] text-gray-800 shadow-sm
     dark:bg-neutral-600 dark:text-gray-100 hover:dark:bg-neutral-500`;
 const containerBaseUnstyled = `flex flex-col gap-4 overflow-scroll
   overflow-x-auto [overflow-y:overlay] [scrollbar-gutter:stable]`;
@@ -26,7 +26,7 @@ const formStyles =
 const niceButton = `${buttonClassName} rounded cursor-pointer active:brightness-80 px-4 py-2
     disabled:bg-gray-200 disabled:text-gray-500 dark:disabled:!bg-neutral-700 gap-2
     inline-flex items-center capitalize justify-center shadow-sm`;
-const borderedGrayButton = `${grayButton} ring-1 ring-gray-400 shadow-sm dark:ring-0
+const borderedGrayButton = `${secondaryButton} ring-1 ring-gray-400 shadow-sm dark:ring-0
     disabled:ring-gray-400 disabled:dark:ring-neutral-500`;
 
 // REFACTOR: reduce this once everything is using React. Can move things into tailwind.config.js
@@ -57,16 +57,16 @@ export const className = {
   button: buttonClassName,
   link: 'link',
   icon: 'icon link',
-  grayButton,
-  lightGrayButton,
+  secondaryButton,
+  secondaryLightButton,
   niceButton,
   smallButton: `${niceButton} !py-1 !px-2`,
   borderedGrayButton,
   defaultSmallButtonVariant: `${borderedGrayButton} hover:bg-brand-200 dark:hover:bg-brand-400`,
-  redButton: `${dialogIconTriggers.error} hover:brightness-150 bg-[color:var(--danger-button-color)]  text-white`,
-  blueButton: `${dialogIconTriggers.info} hover:brightness-150 bg-[color:var(--info-button-color)]  text-white`,
-  orangeButton: `${dialogIconTriggers.warning} hover:brightness-150 bg-[color:var(--warning-button-color)] text-white`,
-  greenButton: `${dialogIconTriggers.success} hover:brightness-150 bg-[color:var(--success-button-color)] text-white`,
+  dangerButton: `${dialogIconTriggers.error} hover:brightness-150 bg-[color:var(--danger-button-color)]  text-white`,
+  infoButton: `${dialogIconTriggers.info} hover:brightness-150 bg-[color:var(--info-button-color)]  text-white`,
+  warningButton: `${dialogIconTriggers.warning} hover:brightness-150 bg-[color:var(--warning-button-color)] text-white`,
+  successButton: `${dialogIconTriggers.success} hover:brightness-150 bg-[color:var(--success-button-color)] text-white`,
   saveButton: `hover:brightness-150 text-white bg-[color:var(--save-button-color)]`,
   fancyButton: `bg-gray-300 hover:bg-brand-200 dark:bg-neutral-600
     hover:dark:bg-brand:400 text-gray-800 dark:text-white text-center`,

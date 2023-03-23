@@ -105,7 +105,7 @@ export function ErrorDialog({
     <Dialog
       buttons={
         <>
-          <Button.Blue
+          <Button.Info
             onClick={(): void =>
               void downloadFile(
                 /*
@@ -121,7 +121,7 @@ export function ErrorDialog({
             }
           >
             {commonText.downloadErrorMessage()}
-          </Button.Blue>
+          </Button.Info>
           <span className="-ml-2 flex-1" />
           <Label.Inline>
             <Input.Checkbox
@@ -130,7 +130,7 @@ export function ErrorDialog({
             />
             {headerText.clearCache()}
           </Label.Inline>
-          <Button.Red
+          <Button.Danger
             onClick={(): void =>
               legacyLoadingContext(
                 (clearCacheOnException
@@ -141,9 +141,9 @@ export function ErrorDialog({
             }
           >
             {commonText.goToHomepage()}
-          </Button.Red>
+          </Button.Danger>
           {canClose && (
-            <Button.Blue
+            <Button.Info
               onClick={(): void => {
                 setUnloadProtects?.(
                   initialUnloadProtects.current.length === 0
@@ -154,7 +154,7 @@ export function ErrorDialog({
               }}
             >
               {commonText.dismiss()}
-            </Button.Blue>
+            </Button.Info>
           )}
         </>
       }

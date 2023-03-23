@@ -491,7 +491,7 @@ export function Dialog({
           >
             {typeof buttons === 'string' ? (
               // If button was passed directly as text, render it as Blue.Button
-              <Button.DialogClose component={Button.Blue}>
+              <Button.DialogClose component={Button.Info}>
                 {buttons}
               </Button.DialogClose>
             ) : (

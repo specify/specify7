@@ -165,7 +165,7 @@ export function CoordinateConverter({
       buttons={
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Button.Blue onClick={handleClose}>{commonText.apply()}</Button.Blue>
+          <Button.Info onClick={handleClose}>{commonText.apply()}</Button.Info>
         </>
       }
       header={wbText.coordinateConverter()}

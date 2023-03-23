@@ -231,13 +231,13 @@ export function InteractionDialog({
             <>
               <Button.DialogClose>{commonText.close()}</Button.DialogClose>
               {typeof itemCollection === 'object' ? (
-                <Button.Blue
+                <Button.Info
                   onClick={(): void =>
                     availablePrepsReady(undefined, undefined, [])
                   }
                 >
                   {interactionsText.addUnassociated()}
-                </Button.Blue>
+                </Button.Info>
               ) : model.name === 'Loan' || action.model.name === 'Loan' ? (
                 <Link.Blue href={getResourceViewUrl('Loan')}>
                   {interactionsText.withoutPreparations()}
@@ -301,7 +301,7 @@ export function InteractionDialog({
                 {...attributes}
               />
               <div>
-                <Button.Blue
+                <Button.Info
                   disabled={
                     catalogNumbers.length === 0 ||
                     inputRef.current?.validity.valid !== true
@@ -309,7 +309,7 @@ export function InteractionDialog({
                   onClick={(): void => handleProceed(undefined)}
                 >
                   {commonText.next()}
-                </Button.Blue>
+                </Button.Info>
               </div>
               {state.type === 'PreparationSelectState' &&
               Object.keys(state.problems).length > 0 ? (
@@ -326,7 +326,7 @@ export function InteractionDialog({
                     )
                   )}
                   <div>
-                    <Button.Blue
+                    <Button.Info
                       onClick={(): void =>
                         setState({
                           ...state,
@@ -335,7 +335,7 @@ export function InteractionDialog({
                       }
                     >
                       {commonText.ignore()}
-                    </Button.Blue>
+                    </Button.Info>
                   </div>
                 </>
               ) : undefined}

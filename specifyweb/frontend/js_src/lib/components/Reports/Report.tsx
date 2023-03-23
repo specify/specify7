@@ -197,9 +197,9 @@ function FixImagesDialog({
       buttons={
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Button.Orange onClick={handleIgnore}>
+          <Button.Warning onClick={handleIgnore}>
             {commonText.ignore()}
-          </Button.Orange>
+          </Button.Warning>
         </>
       }
       header={reportsText.reportProblems()}
