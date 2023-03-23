@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
@@ -90,6 +91,8 @@ export function DeleteButton<SCHEMA extends AnySchema>({
 
   const iconName = resource.specifyModel.name;
 
+  const navigate = useNavigate();
+
   return (
     <>
       <ButtonComponent
@@ -124,6 +127,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
                      */
                     overwriteReadOnly(resource, 'needsSaved', false);
                     loading(resource.destroy().then(handleDeleted));
+                    navigate('/specify/', { replace: true });
                   }}
                 >
                   {commonText.delete()}
