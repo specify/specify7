@@ -1,4 +1,3 @@
-import { treemap } from 'd3';
 import React from 'react';
 import _ from 'underscore';
 
