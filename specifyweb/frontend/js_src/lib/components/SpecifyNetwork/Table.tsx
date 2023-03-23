@@ -4,46 +4,23 @@ import { specifyNetworkText } from '../../localization/specifyNetwork';
 import type { IR, RA } from '../../utils/types';
 import { schema } from '../DataModel/schema';
 import { loadingGif } from '../Molecules';
-import { SpecifyNetworkMap } from '../SpecifyNetworkMap';
 import { BrokerRow, BrokerSection, BrokerTable } from './Components';
 import type { BrokerRecord } from './fetchers';
 import { extractBrokerField } from './fetchers';
 import { SpecifyNetworkResponse } from './Response';
 
-export function SpecifyNetworkTable({
+export function SpecifyNetworkOccurrence({
   occurrence,
-  species,
-  speciesName,
 }: {
   readonly occurrence: RA<BrokerRecord> | undefined;
-  readonly species: RA<BrokerRecord> | undefined;
-  readonly speciesName: string | undefined;
-}): JSX.Element {
-  return (
-    <div className="flex flex-col gap-8">
-      {typeof occurrence === 'object' && occurrence.length > 0 ? (
-        <>
-          <IssuesTable occurrence={occurrence} />
-          <OccurrenceTable occurrence={occurrence} />
-        </>
-      ) : undefined}
-      {typeof species === 'object' ? (
-        <>
-          <SpeciesTable species={species} />
-          {typeof speciesName === 'string' && (
-            <SpecifyNetworkMap
-              occurrence={occurrence}
-              species={species}
-              speciesName={speciesName}
-            />
-          )}
-        </>
-      ) : (
-        <BrokerSection anchor="name" label={schema.models.Taxon.label}>
-          {loadingGif}
-        </BrokerSection>
-      )}
-    </div>
+}): JSX.Element | null {
+  return typeof occurrence === 'object' && occurrence.length > 0 ? (
+    <>
+      <IssuesTable occurrence={occurrence} />
+      <OccurrenceTable occurrence={occurrence} />
+    </>
+  ) : (
+    loadingGif
   );
 }
 
@@ -106,14 +83,14 @@ function OccurrenceTable({
   );
 }
 
-function SpeciesTable({
+export function SpecifyNetworkSpecies({
   species,
 }: {
-  readonly species: RA<BrokerRecord>;
+  readonly species: RA<BrokerRecord> | undefined;
 }): JSX.Element {
-  return (
-    <BrokerSection anchor="name" label={schema.models.Taxon.label}>
-      <SpecifyNetworkResponse responses={species} />
-    </BrokerSection>
+  return species === undefined ? (
+    loadingGif
+  ) : (
+    <SpecifyNetworkResponse responses={species} />
   );
 }

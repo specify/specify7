@@ -1,39 +1,25 @@
 import React from 'react';
 
-import { useSearchParameter } from '../../hooks/navigation';
 import { commonText } from '../../localization/common';
 import { specifyNetworkText } from '../../localization/specifyNetwork';
-import { loadingGif } from '../Molecules';
-import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { OverlayContext } from '../Router/Router';
-import { extractBrokerField } from './fetchers';
+import type { GetOrSet, RA, RR } from '../../utils/types';
+import { Dialog } from '../Molecules/Dialog';
+import { BrokerRecord, extractBrokerField } from './fetchers';
 import { useOccurrence, useSpecies } from './hooks';
-import { SpecifyNetworkTable } from './Table';
+import type { SpecifyNetworkBadge } from './index';
+import { SpecifyNetworkOccurrence, SpecifyNetworkSpecies } from './Table';
+import { SpecifyNetworkMap } from './Map';
+import { schema } from '../DataModel/schema';
 
-export function SpecifyNetworkOverlay(): JSX.Element {
-  const [species = ''] = useSearchParameter('species');
-  const [guid = ''] = useSearchParameter('guid');
-  const handleClose = React.useContext(OverlayContext);
-  return species.length === 0 && guid.length === 0 ? (
-    <Dialog
-      buttons={commonText.close()}
-      header={specifyNetworkText.specifyNetwork()}
-      onClose={handleClose}
-    >
-      {specifyNetworkText.occurrenceOrGuidRequired()}
-    </Dialog>
-  ) : (
-    <Overlay guid={guid} species={species} />
-  );
-}
-
-function Overlay({
+export function SpecifyNetworkOverlays({
   species: localSpecies,
   guid,
+  open: [open, setOpen],
 }: {
   readonly species: string;
   readonly guid: string;
-}): JSX.Element {
+  readonly open: GetOrSet<RA<SpecifyNetworkBadge>>;
+}): JSX.Element | null {
   const occurrence = useOccurrence(guid);
   const occurrenceSpeciesName = React.useMemo(
     () =>
@@ -53,33 +39,48 @@ function Overlay({
         : undefined) ?? occurrenceSpeciesName,
     [species, occurrenceSpeciesName]
   );
-  const handleClose = React.useContext(OverlayContext);
-  return occurrence?.length === 0 && species?.length === 0 ? (
+  return open.length === 0 ? null : occurrence?.length === 0 &&
+    species?.length === 0 ? (
     <Dialog
       buttons={commonText.close()}
       header={specifyNetworkText.noDataError()}
-      onClose={handleClose}
+      onClose={(): void => setOpen([])}
     >
       {specifyNetworkText.noDataErrorDescription()}
     </Dialog>
   ) : (
-    <Dialog
-      buttons={commonText.close()}
-      className={{
-        container: dialogClassNames.wideContainer,
-      }}
-      header={speciesName ?? specifyNetworkText.specifyNetwork()}
-      onClose={handleClose}
-    >
-      {occurrence === undefined ? (
-        loadingGif
-      ) : (
-        <SpecifyNetworkTable
-          occurrence={occurrence}
-          species={species}
-          speciesName={speciesName}
-        />
-      )}
-    </Dialog>
+    <>
+      {open.map((badge) => {
+        const Component = badges[badge];
+        return (
+          <Dialog
+            buttons={commonText.close()}
+            onClose={(): void => setOpen(open.filter((open) => open !== badge))}
+            header={schema.models[badge].label}
+          >
+            <Component
+              occurrence={occurrence}
+              species={species}
+              taxonId={taxonId}
+              speciesName={speciesName}
+            />
+          </Dialog>
+        );
+      })}
+    </>
   );
 }
+
+const badges: RR<
+  SpecifyNetworkBadge,
+  (props: {
+    readonly occurrence: RA<BrokerRecord> | undefined;
+    readonly species: RA<BrokerRecord> | undefined;
+    readonly taxonId: number | undefined;
+    readonly speciesName: string | undefined;
+  }) => JSX.Element
+> = {
+  CollectionObject: SpecifyNetworkOccurrence,
+  Taxon: SpecifyNetworkSpecies,
+  Locality: SpecifyNetworkMap,
+};

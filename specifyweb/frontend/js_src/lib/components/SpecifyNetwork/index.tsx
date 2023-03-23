@@ -4,22 +4,24 @@
  */
 
 import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { commonText } from '../../localization/common';
 import { specifyNetworkText } from '../../localization/specifyNetwork';
 import { f } from '../../utils/functools';
+import type { RA } from '../../utils/types';
+import { toggleItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
-import { Link } from '../Atoms/Link';
 import { toTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { CollectionObject, Taxon } from '../DataModel/types';
-import { LoadingScreen } from '../Molecules/Dialog';
+import { Dialog } from '../Molecules/Dialog';
+import { TableIcon } from '../Molecules/TableIcon';
 import { hasTablePermission } from '../Permissions/helpers';
-import { formatUrl } from '../Router/queryString';
 import { getUserPref } from '../UserPreferences/helpers';
+import { SpecifyNetworkOverlays } from './Overlay';
 
 export const displaySpecifyNetwork = (
   resource: SpecifyResource<AnySchema> | undefined
@@ -28,6 +30,8 @@ export const displaySpecifyNetwork = (
   hasTablePermission('Locality', 'read') &&
   resource?.isNew() === false &&
   ['Taxon', 'CollectionObject'].includes(resource.specifyModel.name);
+
+export type SpecifyNetworkBadge = 'CollectionObject' | 'Locality' | 'Taxon';
 
 export function SpecifyNetworkBadge({
   resource,
@@ -48,55 +52,81 @@ export function SpecifyNetworkBadge({
             resource.rgetPromise(
               'currentDetermination.taxon.fullName' as never
             ) as string
-        ),
+        ) ??
+        '',
       [resource]
     ),
     false
   );
+  const guid = toTable(resource, 'CollectionObject')?.get('guid') ?? '';
+  const isDisabled = speciesName === '' && guid === '';
+  const getSetOpen = React.useState<RA<SpecifyNetworkBadge>>([]);
+  const [open, setOpen] = getSetOpen;
+  /*
+   * Note, this is not reset if resource changes as if they used the badge for
+   * one resource, likely would also use it for the next resource
+   */
+  const [startFetching, handleStartFetching] = useBooleanState();
+  const handleToggle = (name: SpecifyNetworkBadge) => (): void => {
+    setOpen(toggleItem(open, name));
+    handleStartFetching();
+  };
 
-  const url = formatUrl('/specify/overlay/specify-network/compare/', {
-    species: speciesName ?? '',
-    guid: toTable(resource, 'CollectionObject')?.get('guid') ?? '',
-  });
-  const navigate = useNavigate();
-  const location = useLocation();
-  const Component =
-    typeof speciesName === 'string' ? Link.Default : Button.LikeLink;
-
-  // If link was clicked before resource was fully loaded, show loading message
-  const [isPending, handlePending, handleNotPending] = useBooleanState();
-  React.useEffect(() => {
-    if (isPending && typeof speciesName === 'string') {
-      handleNotPending();
-      navigate(url, {
-        // FIXME: this won't be needed once agent merging is merged
-        state: {
-          type: 'BackgroundLocation',
-          location,
-        },
-      });
-    }
-  }, [isPending, location, handleNotPending, navigate, url, speciesName]);
-
-  return (
-    <>
-      {isPending && <LoadingScreen />}
-      <Component
-        aria-label={specifyNetworkText.specifyNetwork()}
-        href={url}
-        title={specifyNetworkText.specifyNetwork()}
-        onClick={(event): void => {
-          if (typeof speciesName === 'string') return;
-          event.preventDefault();
-          handlePending();
-        }}
-      >
+  return open.length > 0 && isDisabled ? (
+    <Dialog
+      buttons={commonText.close()}
+      header={specifyNetworkText.specifyNetwork()}
+      onClose={(): void => setOpen([])}
+    >
+      {specifyNetworkText.occurrenceOrGuidRequired()}
+    </Dialog>
+  ) : (
+    // eslint-disable-next-line jsx-a11y/mouse-events-have-key-events,jsx-a11y/no-static-element-interactions
+    <div
+      className="flex rounded-full border-2 border-brand-300"
+      title={specifyNetworkText.specifyNetwork()}
+      /*
+       * Start loading data as soon as hovered over the badge, even before
+       * click, thus providing better UX
+       */
+      onMouseOver={handleStartFetching}
+    >
+      <div className="relative flex w-8 items-center justify-center rounded-full">
         <img
-          alt=""
-          className="h-7"
-          src="/static/img/specify_network_logo_long.svg"
+          alt={specifyNetworkText.specifyNetwork()}
+          className="absolute -left-2 h-9 w-9 max-w-[unset]"
+          src="/static/img/specify_network_logo.svg"
         />
-      </Component>
-    </>
+      </div>
+      <div className="flex gap-2 p-1 pr-2">
+        {guid !== '' && (
+          <Button.LikeLink
+            onClick={handleToggle('CollectionObject')}
+            onFocus={handleStartFetching}
+          >
+            <TableIcon label name="CollectionObject" />
+          </Button.LikeLink>
+        )}
+        <Button.LikeLink
+          onClick={handleToggle('Taxon')}
+          onFocus={handleStartFetching}
+        >
+          <TableIcon label name="Taxon" />
+        </Button.LikeLink>
+        <Button.LikeLink
+          onClick={handleToggle('Locality')}
+          onFocus={handleStartFetching}
+        >
+          <TableIcon label name="Locality" />
+        </Button.LikeLink>
+      </div>
+      {startFetching && (
+        <SpecifyNetworkOverlays
+          guid={guid}
+          open={getSetOpen}
+          species={speciesName ?? ''}
+        />
+      )}
+    </div>
   );
 }
