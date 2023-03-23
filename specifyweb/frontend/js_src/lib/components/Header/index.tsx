@@ -117,7 +117,7 @@ export function Header({
           <img
             alt=""
             className={`
-                rounded-md hover:animate-hue-rotate
+                rounded hover:animate-hue-rotate
                 ${isCollapsed ? 'hidden' : ''}
               `}
             src="/static/img/logo.svg"
@@ -125,7 +125,7 @@ export function Header({
           <img
             alt=""
             className={`
-              rounded-md hover:animate-hue-rotate
+              rounded hover:animate-hue-rotate
               ${isCollapsed ? '' : 'hidden'}
               ${isHorizontal ? 'w-10' : ''}
             `}
@@ -223,9 +223,7 @@ export function MenuButton({
   const [position] = usePref('header', 'appearance', 'position');
   const getClassName = (isActive: boolean): string => `
     p-4
-    ${
-      isActive ? 'bg-brand-300 !text-white rounded-md m-2' : 'text-gray-700 m-2'
-    }
+    ${isActive ? 'bg-brand-300 !text-white rounded m-2' : 'text-gray-700 m-2'}
     ${className.ariaHandled}
     ${extraProps?.className ?? ''}
   `;
