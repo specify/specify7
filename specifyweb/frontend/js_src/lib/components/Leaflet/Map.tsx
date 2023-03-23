@@ -25,7 +25,7 @@ export function LeafletMap({
   headerButtons,
   buttons = commonText.close(),
   onClose: handleClose,
-  modal = true,
+  dialog = 'modal',
 }: {
   readonly localityPoints?: RA<LocalityData>;
   readonly onMarkerClick?: (index: number, event: L.LeafletEvent) => void;
@@ -34,7 +34,7 @@ export function LeafletMap({
   readonly headerButtons?: JSX.Element;
   readonly buttons?: JSX.Element | LocalizedString;
   readonly onClose: () => void;
-  readonly modal?: boolean;
+  readonly dialog?: 'modal' | 'nonModal' | false;
 }): JSX.Element {
   const [container, setContainer] = React.useState<HTMLDivElement | null>(null);
 
@@ -70,7 +70,15 @@ export function LeafletMap({
     handleToggleFullScreen,
   ]);
 
-  return (
+  const children = (
+    <div
+      ref={setContainer}
+      style={{ '--transition-duration': 0 } as React.CSSProperties}
+    />
+  );
+  return dialog === false ? (
+    children
+  ) : (
     <Dialog
       buttons={buttons}
       className={{
@@ -81,14 +89,11 @@ export function LeafletMap({
       dimensionsKey="LeafletMap"
       header={header}
       headerButtons={headerButtons}
-      modal={modal}
+      modal={dialog === 'modal'}
       onClose={handleClose}
       onResize={handleResize}
     >
-      <div
-        ref={setContainer}
-        style={{ '--transition-duration': 0 } as React.CSSProperties}
-      />
+      {children}
     </Dialog>
   );
 }

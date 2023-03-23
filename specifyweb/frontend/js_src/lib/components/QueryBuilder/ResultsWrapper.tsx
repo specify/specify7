@@ -22,28 +22,45 @@ import { QueryResults } from './Results';
 const fetchSize = 40;
 
 export function QueryResultsWrapper({
-  baseTableName,
-  model,
-  queryRunCount,
-  queryResource,
-  fields,
-  recordSetId,
   createRecordSet,
   extraButtons,
-  forceCollection,
+  model,
   onSelected: handleSelected,
-  onSortChange: handleSortChange,
-}: {
-  readonly baseTableName: keyof Tables;
+  ...props
+}: ResultsProps & {
   readonly model: SpecifyModel;
+  readonly createRecordSet: JSX.Element | undefined;
+  readonly extraButtons: JSX.Element | undefined;
+  readonly onSelected?: (selected: RA<number>) => void;
+}): JSX.Element | null {
+  const newProps = useQueryResultsWrapper(props);
+
+  return newProps === undefined ? (
+    props.queryRunCount === 0 ? null : (
+      <div className="flex-1 snap-start">{loadingGif}</div>
+    )
+  ) : (
+    <div className="flex flex-1 snap-start overflow-hidden">
+      <ErrorBoundary dismissible>
+        <QueryResults
+          {...newProps}
+          createRecordSet={createRecordSet}
+          extraButtons={extraButtons}
+          model={model}
+          onSelected={handleSelected}
+        />
+      </ErrorBoundary>
+    </div>
+  );
+}
+
+type ResultsProps = {
+  readonly baseTableName: keyof Tables;
   readonly queryRunCount: number;
   readonly queryResource: SpecifyResource<SpQuery>;
   readonly fields: RA<QueryField>;
   readonly recordSetId: number | undefined;
-  readonly createRecordSet: JSX.Element | undefined;
-  readonly extraButtons: JSX.Element | undefined;
   readonly forceCollection: number | undefined;
-  readonly onSelected?: (selected: RA<number>) => void;
   readonly onSortChange?: (
     /*
      * Since this component may add fields to the query, it needs to send back
@@ -51,7 +68,26 @@ export function QueryResultsWrapper({
      */
     newFields: RA<QueryField>
   ) => void;
-}): JSX.Element | null {
+};
+
+type PartialProps = Omit<
+  Parameters<typeof QueryResults>[0],
+  'createRecordSet' | 'extraButtons' | 'model' | 'onSelected'
+>;
+
+/**
+ * Extracting the logic into a hook so that can be reused even outside the
+ * Query Builder (in the Specify Network)
+ */
+export function useQueryResultsWrapper({
+  baseTableName,
+  queryRunCount,
+  queryResource,
+  fields,
+  recordSetId,
+  forceCollection,
+  onSortChange: handleSortChange,
+}: ResultsProps): PartialProps | undefined {
   const fetchResults = React.useCallback(
     async (offset: number) =>
       ajax<{ readonly results: RA<QueryResultRow> }>(
@@ -81,7 +117,7 @@ export function QueryResultsWrapper({
    * the query results until query is reRun
    */
   const [props, setProps] = React.useState<
-    Omit<Parameters<typeof QueryResults>[0], 'totalCount'> | undefined
+    Omit<PartialProps, 'totalCount'> | undefined
   >(undefined);
 
   const [totalCount, setTotalCount] = React.useState<number | undefined>(
@@ -130,7 +166,6 @@ export function QueryResultsWrapper({
     initialData
       .then((initialData) =>
         setProps({
-          model,
           hasIdField: queryResource.get('selectDistinct') !== true,
           queryResource,
           fetchSize,
@@ -157,9 +192,6 @@ export function QueryResultsWrapper({
                   );
                 }
               : undefined,
-          createRecordSet,
-          extraButtons,
-          onSelected: handleSelected,
         })
       )
       .catch(raise);
@@ -171,18 +203,12 @@ export function QueryResultsWrapper({
     queryResource,
     queryRunCount,
     recordSetId,
-    model,
   ]);
 
-  return props === undefined ? (
-    queryRunCount === 0 ? null : (
-      <div className="flex-1 snap-start">{loadingGif}</div>
-    )
-  ) : (
-    <div className="flex flex-1 snap-start overflow-hidden">
-      <ErrorBoundary dismissible>
-        <QueryResults {...props} totalCount={totalCount} />
-      </ErrorBoundary>
-    </div>
-  );
+  return props === undefined
+    ? undefined
+    : {
+        ...props,
+        totalCount,
+      };
 }

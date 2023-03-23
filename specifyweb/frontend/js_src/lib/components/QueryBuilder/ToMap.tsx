@@ -340,14 +340,17 @@ function useFetchLoop(
 ): void {
   const [lastResults, setLastResults] =
     React.useState<RA<QueryResultRow> | void>(undefined);
-  React.useEffect(
-    () =>
-      void handleFetchMore?.()
-        .then((results) => {
-          setLastResults(results);
-          f.maybe(results, handleAdd);
-        })
-        .catch(softFail),
-    [handleFetchMore, handleAdd, lastResults]
-  );
+  React.useEffect(() => {
+    void handleFetchMore?.()
+      .then((results) => {
+        if (destructorCalled) return;
+        setLastResults(results);
+        f.maybe(results, handleAdd);
+      })
+      .catch(softFail);
+    let destructorCalled = false;
+    return (): void => {
+      destructorCalled = true;
+    };
+  }, [handleFetchMore, handleAdd, lastResults]);
 }

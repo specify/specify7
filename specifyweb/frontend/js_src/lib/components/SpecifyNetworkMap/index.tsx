@@ -31,6 +31,7 @@ export function SpecifyNetworkMap({
     React.useCallback(() => fetchLocalOccurrences(resource), [resource]),
     false
   );
+  // FIXME: add these to query map
   const projection = useProjectionLayers(speciesName);
   const gbif = React.useMemo(
     () => f.maybe(species, getGbifLayers),
@@ -44,6 +45,8 @@ export function SpecifyNetworkMap({
     ...gbif?.layers,
     ...iDigBio?.layers,
   };
+
+  // FIXME: add these to query map
   const layerDetails = filterArray([
     specifyNetworkText.mapDescription(),
     projection?.description,
@@ -180,7 +183,8 @@ function MapWrapper({
     <LeafletMap
       forwardRef={setLeaflet}
       header={specifyNetworkText.specifyNetworkMap()}
-      onClose={handleClose}
+      onClose={f.never}
+      dialog={false}
     />
   );
 }
