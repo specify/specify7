@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { ajax } from '../../utils/ajax';
-import type { RA } from '../../utils/types';
+import type { IR, RA } from '../../utils/types';
 import { keysToLowerCase, replaceItem } from '../../utils/utils';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpecifyModel } from '../DataModel/specifyModel';
@@ -9,6 +9,7 @@ import type { SpQuery, Tables } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { loadingGif } from '../Molecules';
+import { mappingPathIsComplete } from '../WbPlanView/helpers';
 import type { QueryField } from './helpers';
 import {
   augmentQueryFields,
@@ -75,6 +76,17 @@ type PartialProps = Omit<
   'createRecordSet' | 'extraButtons' | 'model' | 'onSelected'
 >;
 
+const fetchResults = async (
+  fetchPayload: IR<unknown>,
+  offset: number
+): Promise<RA<QueryResultRow>> =>
+  ajax<{ readonly results: RA<QueryResultRow> }>('/stored_query/ephemeral/', {
+    method: 'POST',
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    headers: { Accept: 'application/json' },
+    body: { ...fetchPayload, offset },
+  }).then(({ data }) => data.results);
+
 /**
  * Extracting the logic into a hook so that can be reused even outside the
  * Query Builder (in the Specify Network)
@@ -88,30 +100,6 @@ export function useQueryResultsWrapper({
   forceCollection,
   onSortChange: handleSortChange,
 }: ResultsProps): PartialProps | undefined {
-  const fetchResults = React.useCallback(
-    async (offset: number) =>
-      ajax<{ readonly results: RA<QueryResultRow> }>(
-        '/stored_query/ephemeral/',
-        {
-          method: 'POST',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          headers: { Accept: 'application/json' },
-          body: keysToLowerCase({
-            ...queryResource.toJSON(),
-            fields: unParseQueryFields(
-              baseTableName,
-              augmentQueryFields(baseTableName, fields, false)
-            ),
-            collectionId: forceCollection,
-            recordSetId,
-            limit: fetchSize,
-            offset,
-          }),
-        }
-      ).then(({ data }) => data.results),
-    [forceCollection, fields, baseTableName, queryResource, recordSetId]
-  );
-
   /*
    * Need to store all props in a state so that query field edits do not affect
    * the query results until query is reRun
@@ -132,7 +120,19 @@ export function useQueryResultsWrapper({
     setProps(undefined);
 
     const countOnly = queryResource.get('countOnly') === true;
-    const allFields = augmentQueryFields(baseTableName, fields, countOnly);
+    const allFields = augmentQueryFields(
+      baseTableName,
+      fields.filter(({ mappingPath }) => mappingPathIsComplete(mappingPath)),
+      countOnly
+    );
+
+    const fetchPayload = keysToLowerCase({
+      ...queryResource.toJSON(),
+      fields: unParseQueryFields(baseTableName, allFields),
+      collectionId: forceCollection,
+      recordSetId,
+      limit: fetchSize,
+    });
 
     setTotalCount(undefined);
     ajax<{ readonly count: number }>('/stored_query/ephemeral/', {
@@ -140,10 +140,7 @@ export function useQueryResultsWrapper({
       // eslint-disable-next-line @typescript-eslint/naming-convention
       headers: { Accept: 'application/json' },
       body: keysToLowerCase({
-        ...queryResource.toJSON(),
-        collectionId: forceCollection,
-        fields: unParseQueryFields(baseTableName, allFields),
-        recordSetId,
+        ...fetchPayload,
         countOnly: true,
       }),
     })
@@ -155,13 +152,18 @@ export function useQueryResultsWrapper({
       countOnly ||
       // Run as "count only" if there are no visible fields
       displayedFields.length === 0;
+
     const initialData = isCountOnly
       ? Promise.resolve(undefined)
-      : fetchResults(0);
-    const fieldSpecs = queryFieldsToFieldSpecs(
+      : fetchResults(fetchPayload, 0);
+    const fieldSpecsAndFields = queryFieldsToFieldSpecs(
       baseTableName,
       displayedFields
-    ).map(([_field, fieldSpec]) => fieldSpec);
+    );
+    const fieldSpecs = fieldSpecsAndFields.map(
+      ([_field, fieldSpec]) => fieldSpec
+    );
+    const queryFields = fieldSpecsAndFields.map(([field]) => field);
 
     initialData
       .then((initialData) =>
@@ -169,15 +171,20 @@ export function useQueryResultsWrapper({
           hasIdField: queryResource.get('selectDistinct') !== true,
           queryResource,
           fetchSize,
-          fetchResults: isCountOnly ? undefined : fetchResults,
+          fetchResults: isCountOnly
+            ? undefined
+            : fetchResults.bind(undefined, fetchPayload),
+          allFields,
+          displayedFields: queryFields,
           fieldSpecs,
           initialData,
-          sortConfig: fields
+          // FIXME: test this
+          sortConfig: queryFields
             .filter(({ isDisplay }) => isDisplay)
             .map((field) => field.sortType),
           onSortChange:
             typeof handleSortChange === 'function'
-              ? (fieldSpec, sortType) => {
+              ? (fieldSpec, sortType): void => {
                   /*
                    * If some fields are not displayed, visual index and actual field
                    * index differ

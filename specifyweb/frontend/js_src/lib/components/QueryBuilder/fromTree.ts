@@ -60,6 +60,7 @@ const defaultFields: RR<
       operStart: queryFieldFilters.trueOrNull.id,
       isDisplay: false,
     }),
+    makeField('collectingEvent.locality.localityName', {}),
   ],
   Geography: async (nodeId, rankName) => [
     makeField('catalogNumber', {}),

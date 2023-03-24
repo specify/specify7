@@ -25,6 +25,7 @@ import {
 import { LeafletMap } from '../Leaflet/Map';
 import { findLocalityColumnsInDataSet } from '../Leaflet/wbLocalityDataExtractor';
 import { LoadingScreen } from '../Molecules/Dialog';
+import { extractQueryTaxonId } from '../SpecifyNetwork/Map';
 import { defaultColumnOptions } from '../WbPlanView/linesGetter';
 import type { SplitMappingPath } from '../WbPlanView/mappingHelpers';
 import {
@@ -32,6 +33,7 @@ import {
   splitJoinedMappingPath,
 } from '../WbPlanView/mappingHelpers';
 import type { QueryFieldSpec } from './fieldSpec';
+import type { QueryField } from './helpers';
 import type { QueryResultRow } from './Results';
 import { queryIdField } from './Results';
 
@@ -41,6 +43,7 @@ export function QueryToMap({
   selectedRows,
   model,
   fieldSpecs,
+  fields,
   onFetchMore: handleFetchMore,
 }: {
   readonly results: RA<QueryResultRow>;
@@ -48,6 +51,7 @@ export function QueryToMap({
   readonly selectedRows: ReadonlySet<number>;
   readonly model: SpecifyModel;
   readonly fieldSpecs: RA<QueryFieldSpec>;
+  readonly fields: RA<QueryField>;
   readonly onFetchMore: (() => Promise<RA<QueryResultRow> | void>) | undefined;
 }): JSX.Element | null {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
@@ -63,6 +67,7 @@ export function QueryToMap({
       </Button.Small>
       {isOpen && ids.length > 0 ? (
         <QueryToMapDialog
+          fields={fields}
           localityMappings={localityMappings}
           results={results}
           tableName={model.name}
@@ -155,6 +160,7 @@ export function QueryToMapDialog({
   totalCount,
   localityMappings,
   tableName,
+  fields,
   onClose: handleClose,
   onFetchMore: handleFetchMore,
 }: {
@@ -162,6 +168,7 @@ export function QueryToMapDialog({
   readonly totalCount: number | undefined;
   readonly localityMappings: RA<RA<LocalityColumn>>;
   readonly tableName: keyof Tables;
+  readonly fields: RA<QueryField>;
   readonly onClose: () => void;
   readonly onFetchMore: (() => Promise<RA<QueryResultRow> | void>) | undefined;
 }): JSX.Element {
@@ -174,6 +181,11 @@ export function QueryToMapDialog({
       }
     | undefined
   >(undefined);
+
+  const taxonId = React.useMemo(
+    () => extractQueryTaxonId(tableName, fields),
+    [tableName, fields]
+  );
 
   const markerEvents = React.useMemo(
     () => eventListener<{ readonly updated: undefined }>(),

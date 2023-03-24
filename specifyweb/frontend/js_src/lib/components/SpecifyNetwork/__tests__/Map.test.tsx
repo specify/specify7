@@ -5,7 +5,7 @@ import { serializeResource } from '../../DataModel/helpers';
 import { getResourceApiUrl } from '../../DataModel/resource';
 import { queryFromTree } from '../../QueryBuilder/fromTree';
 import { parseQueryFields } from '../../QueryBuilder/helpers';
-import { exportsForTests } from '../Map';
+import { exportsForTests, extractQueryTaxonId } from '../Map';
 
 requireContext();
 
@@ -32,7 +32,7 @@ overrideAjax(getResourceApiUrl('TaxonTreeDefItem', rankId), () =>
   addMissingFields('TaxonTreeDefItem', rank)
 );
 
-test('getFields', async () => {
+test('getFields and extractQueryTaxonId', async () => {
   const queryResource = await queryFromTree('Taxon', taxonId);
   const query = serializeResource(queryResource);
   const originalFields = parseQueryFields(query.fields ?? []).map(
@@ -70,4 +70,6 @@ test('getFields', async () => {
       },
     ]
   `);
+
+  expect(extractQueryTaxonId('CollectionObject', newFields)).toBe(taxonId);
 });

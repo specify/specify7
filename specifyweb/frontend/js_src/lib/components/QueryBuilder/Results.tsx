@@ -54,6 +54,8 @@ type Props = {
     | ((offset: number) => Promise<RA<QueryResultRow>>)
     | undefined;
   readonly totalCount: number | undefined;
+  readonly displayedFields: RA<QueryField>;
+  readonly allFields: RA<QueryField>;
   readonly fieldSpecs: RA<QueryFieldSpec>;
   // This is undefined when running query in countOnly mode
   readonly initialData: RA<QueryResultRow> | undefined;
@@ -76,6 +78,7 @@ export function QueryResults(props: Props): JSX.Element {
     queryResource,
     fetchResults,
     fieldSpecs,
+    allFields,
     initialData,
     sortConfig,
     onSelected: handleSelected,
@@ -187,6 +190,7 @@ export function QueryResults(props: Props): JSX.Element {
             ) : undefined}
             <QueryToMap
               fieldSpecs={fieldSpecs}
+              fields={allFields}
               model={model}
               results={loadedResults}
               selectedRows={selectedRows}
