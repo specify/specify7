@@ -1,7 +1,7 @@
 
 import logging
 from functools import reduce
-from typing import List, Dict, Any, NamedTuple, Union, Optional, Set
+from typing import List, Dict, Any, NamedTuple, Union, Optional, Set, Callable
 
 from django.db import transaction, IntegrityError
 
@@ -59,7 +59,7 @@ class UploadTable(NamedTuple):
     
 class DeferredScopeUploadTable(NamedTuple):
     name: str
-    overrideScope: Optional[Dict[str, Optional[int]]]
+    overrideScope: Optional[Dict[str, Optional[Union[int, Callable[[int], int]]]]]
     wbcols: Dict[str, ColumnOptions]
     static: Dict[str, Any]
     toOne: Dict[str, Uploadable]
@@ -75,8 +75,33 @@ class DeferredScopeUploadTable(NamedTuple):
             return apply_scoping(self, collection)
         else: return self
 
-    def add_colleciton_override(self, collection_id) -> "DeferredScopeUploadTable":
-        return self._replace(overrideScope = {"collection": collection_id})
+    def add_colleciton_override(self, collection: Union[int, Callable[[int], int]]) -> "DeferredScopeUploadTable":
+        return self._replace(overrideScope = {"collection": collection})
+    
+    def disambiguate(self, da: Disambiguation):
+        return self._replace(da = da)
+    
+    def get_treedefs(self) -> Set:
+        return (
+            set(td for toOne in self.toOne.values() for td in toOne.get_treedefs()) |
+            set(td for toMany in self.toMany.values() for tmr in toMany for td in tmr.get_treedefs())
+        )
+
+    def bind(self, default_collection, row: Row, uploadingAgentId: int, auditor: Auditor, cache: Optional[Dict]=None, row_index: Optional[int] = None) -> Union["BoundUploadTable", ParseFailures]:
+        if 'collection' in self.overrideScope.keys():
+            if isinstance(self.overrideScope['collection'], int):
+                collection_id = self.overrideScope['collection']
+                collection = models.Collection.objects.get(id=collection_id)
+                scoped = self.apply_scoping(collection, deffer=False)
+            elif isinstance(self.overrideScope['collection'], Callable):
+                collection = self.overrideScope['collection'](self, row_index)
+                scoped = self.apply_scoping(collection, deffer=False)
+        
+        if scoped is None: scoped = self.apply_scoping(default_collection, deffer=False)
+
+        scoped_disambiguated = scoped.disambiguate(self.da) if hasattr(self, "da") else scoped
+        
+        return scoped_disambiguated.bind(default_collection, row, uploadingAgentId, auditor, cache, row_index)
 
 
 class ScopedUploadTable(NamedTuple):
@@ -114,12 +139,12 @@ class ScopedUploadTable(NamedTuple):
         )
 
 
-    def bind(self, collection, row: Row, uploadingAgentId: int, auditor: Auditor, cache: Optional[Dict]=None) -> Union["BoundUploadTable", ParseFailures]:
+    def bind(self, collection, row: Row, uploadingAgentId: int, auditor: Auditor, cache: Optional[Dict]=None, row_index: Optional[int] = None) -> Union["BoundUploadTable", ParseFailures]:
         parsedFields, parseFails = parse_many(collection, self.name, self.wbcols, row)
 
         toOne: Dict[str, BoundUploadable] = {}
         for fieldname, uploadable in self.toOne.items():
-            result = uploadable.bind(collection, row, uploadingAgentId, auditor, cache)
+            result = uploadable.bind(collection, row, uploadingAgentId, auditor, cache, row_index)
             if isinstance(result, ParseFailures):
                 parseFails += result.failures
             else:
@@ -129,7 +154,7 @@ class ScopedUploadTable(NamedTuple):
         for fieldname, records in self.toMany.items():
             boundRecords: List[BoundToManyRecord] = []
             for record in records:
-                result_ = record.bind(collection, row, uploadingAgentId, auditor, cache)
+                result_ = record.bind(collection, row, uploadingAgentId, auditor, cache, row_index)
                 if isinstance(result_, ParseFailures):
                     parseFails += result_.failures
                 else:
@@ -161,8 +186,8 @@ class OneToOneTable(UploadTable):
         return { 'oneToOneTable': self._to_json() }
 
 class ScopedOneToOneTable(ScopedUploadTable):
-    def bind(self, collection, row: Row, uploadingAgentId: int, auditor: Auditor, cache: Optional[Dict]=None) -> Union["BoundOneToOneTable", ParseFailures]:
-        b = super().bind(collection, row, uploadingAgentId, auditor, cache)
+    def bind(self, collection, row: Row, uploadingAgentId: int, auditor: Auditor, cache: Optional[Dict]=None, row_index: Optional[int] = None) -> Union["BoundOneToOneTable", ParseFailures]:
+        b = super().bind(collection, row, uploadingAgentId, auditor, cache, row_index)
         return BoundOneToOneTable(*b) if isinstance(b, BoundUploadTable) else b
 
 class MustMatchTable(UploadTable):
@@ -174,8 +199,8 @@ class MustMatchTable(UploadTable):
         return { 'mustMatchTable': self._to_json() }
 
 class ScopedMustMatchTable(ScopedUploadTable):
-    def bind(self, collection, row: Row, uploadingAgentId: int, auditor: Auditor, cache: Optional[Dict]=None) -> Union["BoundMustMatchTable", ParseFailures]:
-        b = super().bind(collection, row, uploadingAgentId, auditor, cache)
+    def bind(self, collection, row: Row, uploadingAgentId: int, auditor: Auditor, cache: Optional[Dict]=None, row_index: Optional[int] = None) -> Union["BoundMustMatchTable", ParseFailures]:
+        b = super().bind(collection, row, uploadingAgentId, auditor, cache, row_index)
         return BoundMustMatchTable(*b) if isinstance(b, BoundUploadTable) else b
 
 
