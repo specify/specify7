@@ -296,6 +296,9 @@ export const preferencesText = createDictionary({
     'fr-fr': 'Apparence',
     'uk-ua': 'Зовнішній вигляд',
   },
+  buttonColor: {
+    'en-us': 'Buttons',
+  },
   translucentDialog: {
     'en-us': 'Translucent dialogs',
     'ru-ru': 'Полупрозрачные диалоги',

@@ -100,28 +100,28 @@ export function SetCssVariables(): null {
       saveButtonColor: getUserPref('general', 'appearance', 'saveButtonColor'),
       secondaryButtonColor: getUserPref(
         'general',
-        'appearance',
+        'buttonColor',
         'secondaryButtonColor'
       ),
       secondaryLightButtonColor: getUserPref(
         'general',
-        'appearance',
+        'buttonColor',
         'secondaryLightButtonColor'
       ),
       dangerButtonColor: getUserPref(
         'general',
-        'appearance',
+        'buttonColor',
         'dangerButtonColor'
       ),
-      infoButtonColor: getUserPref('general', 'appearance', 'infoButtonColor'),
+      infoButtonColor: getUserPref('general', 'buttonColor', 'infoButtonColor'),
       warningButtonColor: getUserPref(
         'general',
-        'appearance',
+        'buttonColor',
         'warningButtonColor'
       ),
       successButtonColor: getUserPref(
         'general',
-        'appearance',
+        'buttonColor',
         'successButtonColor'
       ),
       roundedCorners: getUserPref('general', 'appearance', 'roundedCorners'),
