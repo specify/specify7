@@ -34,7 +34,7 @@ export function TaxonTiles(): JSX.Element {
 
     const resizeObserver = new ResizeObserver(_.debounce(render, 50));
 
-    if (container !== null) resizeObserver.observe(container);
+    resizeObserver.observe(container);
 
     const genusId = typeof genusRankId === 'number' ? genusRankId : undefined;
     const titleGenerator = getTitleGenerator(genusId);
