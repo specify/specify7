@@ -52,14 +52,17 @@ export function QueryToMap({
 }): JSX.Element | null {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   const ids = useSelectedResults(results, selectedRows);
-  const localityMappings = useLocalityMappings(model.name, fieldSpecs);
+  const localityMappings = React.useMemo(
+    () => fieldSpecsToLocalityMappings(model.name, fieldSpecs),
+    [model.name, fieldSpecs]
+  );
   return localityMappings.length === 0 ? null : (
     <>
       <Button.Small disabled={results.length === 0} onClick={handleOpen}>
         {localityText.geoMap()}
       </Button.Small>
       {isOpen && ids.length > 0 ? (
-        <Dialog
+        <QueryToMapDialog
           localityMappings={localityMappings}
           results={results}
           tableName={model.name}
@@ -92,44 +95,42 @@ type LocalityColumn = {
   readonly columnIndex: number;
 };
 
-function useLocalityMappings(
+export function fieldSpecsToLocalityMappings(
   tableName: keyof Tables,
   fieldSpecs: RA<QueryFieldSpec>
-): RA<RA<LocalityColumn>> {
-  return React.useMemo(() => {
-    const splitPaths = fieldSpecsToMappingPaths(fieldSpecs);
-    const mappingPaths = splitPaths.map(({ mappingPath }) =>
-      mappingPathToString(mappingPath)
-    );
-    return findLocalityColumnsInDataSet(tableName, splitPaths).map(
-      (localityColumns) => {
-        const mapped = Object.entries(localityColumns)
-          .filter(([key]) => queryMappingLocalityColumns.includes(key))
-          .map(([localityColumn, mapping]) => {
-            const pathToLocalityField = splitJoinedMappingPath(localityColumn);
-            if (pathToLocalityField.length !== 2)
-              throw new Error('Only direct locality fields are supported');
-            const fieldName = pathToLocalityField.at(-1)!;
-            return {
-              localityColumn: fieldName,
-              columnIndex: mappingPaths.indexOf(mapping),
-            };
-          });
+) {
+  const splitPaths = fieldSpecsToMappingPaths(fieldSpecs);
+  const mappingPaths = splitPaths.map(({ mappingPath }) =>
+    mappingPathToString(mappingPath)
+  );
+  return findLocalityColumnsInDataSet(tableName, splitPaths).map(
+    (localityColumns) => {
+      const mapped = Object.entries(localityColumns)
+        .filter(([key]) => queryMappingLocalityColumns.includes(key))
+        .map(([localityColumn, mapping]) => {
+          const pathToLocalityField = splitJoinedMappingPath(localityColumn);
+          if (pathToLocalityField.length !== 2)
+            throw new Error('Only direct locality fields are supported');
+          const fieldName = pathToLocalityField.at(-1)!;
+          return {
+            localityColumn: fieldName,
+            columnIndex: mappingPaths.indexOf(mapping),
+          };
+        });
 
-        const basePath = splitJoinedMappingPath(
-          localityColumns['locality.longitude1']
-        ).slice(0, -1);
-        const idPath = mappingPathToString([...basePath, 'localityId']);
-        return [
-          ...mapped,
-          {
-            localityColumn: 'localityId',
-            columnIndex: mappingPaths.indexOf(idPath),
-          },
-        ];
-      }
-    );
-  }, [tableName, fieldSpecs]);
+      const basePath = splitJoinedMappingPath(
+        localityColumns['locality.longitude1']
+      ).slice(0, -1);
+      const idPath = mappingPathToString([...basePath, 'localityId']);
+      return [
+        ...mapped,
+        {
+          localityColumn: 'localityId',
+          columnIndex: mappingPaths.indexOf(idPath),
+        },
+      ];
+    }
+  );
 }
 
 const fieldSpecsToMappingPaths = (
@@ -149,7 +150,7 @@ type LocalityDataWithId = {
   readonly localityData: LocalityData;
 };
 
-function Dialog({
+export function QueryToMapDialog({
   results,
   totalCount,
   localityMappings,

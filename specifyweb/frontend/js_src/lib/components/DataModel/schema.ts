@@ -151,6 +151,17 @@ setDevelopmentGlobal('_schema', schema);
  * Can wrap this function call in defined() to cast result to SpecifyModel
  */
 export function getModel(name: string): SpecifyModel | undefined {
+  if (
+    process.env.NODE_ENV !== 'production' &&
+    Object.keys(schema.models).length === 0
+  )
+    throw new Error(
+      `Trying to get a table before data model is fetched.${
+        process.env.NODE_ENV === 'test'
+          ? ' If this is part of a test, you need to add requireContext() at the top of the test file'
+          : ''
+      }`
+    );
   const lowerCase = name.toLowerCase();
   return name === ''
     ? undefined

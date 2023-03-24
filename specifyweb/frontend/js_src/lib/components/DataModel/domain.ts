@@ -65,6 +65,7 @@ export function getDomainResource<
 >(level: LEVEL): SpecifyResource<Tables[Capitalize<LEVEL>]> | undefined {
   const id = schema.domainLevelIds?.[level];
   if (id === undefined) {
+    if ((level as 'collectionObject') === 'collectionObject') return undefined;
     console.error(
       `Trying to access domain resource ${level} before domain is loaded`
     );

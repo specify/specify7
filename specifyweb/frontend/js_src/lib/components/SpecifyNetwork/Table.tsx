@@ -1,26 +1,39 @@
 import React from 'react';
 
+import { commonText } from '../../localization/common';
 import { specifyNetworkText } from '../../localization/specifyNetwork';
 import type { IR, RA } from '../../utils/types';
 import { schema } from '../DataModel/schema';
-import { loadingGif } from '../Molecules';
+import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { BrokerRow, BrokerSection, BrokerTable } from './Components';
 import type { BrokerRecord } from './fetchers';
 import { extractBrokerField } from './fetchers';
+import { NoBrokerData } from './Overlay';
 import { SpecifyNetworkResponse } from './Response';
 
 export function SpecifyNetworkOccurrence({
   occurrence,
+  onClose: handleClose,
 }: {
   readonly occurrence: RA<BrokerRecord> | undefined;
-}): JSX.Element | null {
-  return typeof occurrence === 'object' && occurrence.length > 0 ? (
-    <>
-      <IssuesTable occurrence={occurrence} />
-      <OccurrenceTable occurrence={occurrence} />
-    </>
+  readonly onClose: () => void;
+}): JSX.Element {
+  return typeof occurrence === 'object' ? (
+    occurrence.length === 0 ? (
+      <NoBrokerData onClose={handleClose} />
+    ) : (
+      <Dialog
+        buttons={commonText.close()}
+        header={schema.models.CollectionObject.label}
+        modal={false}
+        onClose={handleClose}
+      >
+        <IssuesTable occurrence={occurrence} />
+        <OccurrenceTable occurrence={occurrence} />
+      </Dialog>
+    )
   ) : (
-    loadingGif
+    <LoadingScreen />
   );
 }
 
@@ -85,12 +98,25 @@ function OccurrenceTable({
 
 export function SpecifyNetworkSpecies({
   species,
+  speciesName,
+  onClose: handleClose,
 }: {
   readonly species: RA<BrokerRecord> | undefined;
+  readonly speciesName: string | undefined;
+  readonly onClose: () => void;
 }): JSX.Element {
   return species === undefined ? (
-    loadingGif
+    <LoadingScreen />
+  ) : species.length === 0 ? (
+    <NoBrokerData onClose={handleClose} />
   ) : (
-    <SpecifyNetworkResponse responses={species} />
+    <Dialog
+      buttons={commonText.close()}
+      header={speciesName ?? schema.models.Taxon.label}
+      modal={false}
+      onClose={handleClose}
+    >
+      <SpecifyNetworkResponse responses={species} />
+    </Dialog>
   );
 }

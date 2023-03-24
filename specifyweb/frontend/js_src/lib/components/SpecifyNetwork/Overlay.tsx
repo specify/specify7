@@ -4,20 +4,22 @@ import { commonText } from '../../localization/common';
 import { specifyNetworkText } from '../../localization/specifyNetwork';
 import type { GetOrSet, RA, RR } from '../../utils/types';
 import { Dialog } from '../Molecules/Dialog';
-import { BrokerRecord, extractBrokerField } from './fetchers';
+import type { BrokerRecord } from './fetchers';
+import { extractBrokerField } from './fetchers';
 import { useOccurrence, useSpecies } from './hooks';
 import type { SpecifyNetworkBadge } from './index';
-import { SpecifyNetworkOccurrence, SpecifyNetworkSpecies } from './Table';
 import { SpecifyNetworkMap } from './Map';
-import { schema } from '../DataModel/schema';
+import { SpecifyNetworkOccurrence, SpecifyNetworkSpecies } from './Table';
 
 export function SpecifyNetworkOverlays({
   species: localSpecies,
   guid,
+  taxonId,
   open: [open, setOpen],
 }: {
   readonly species: string;
   readonly guid: string;
+  readonly taxonId: number | undefined | false;
   readonly open: GetOrSet<RA<SpecifyNetworkBadge>>;
 }): JSX.Element | null {
   const occurrence = useOccurrence(guid);
@@ -39,35 +41,38 @@ export function SpecifyNetworkOverlays({
         : undefined) ?? occurrenceSpeciesName,
     [species, occurrenceSpeciesName]
   );
-  return open.length === 0 ? null : occurrence?.length === 0 &&
-    species?.length === 0 ? (
-    <Dialog
-      buttons={commonText.close()}
-      header={specifyNetworkText.noDataError()}
-      onClose={(): void => setOpen([])}
-    >
-      {specifyNetworkText.noDataErrorDescription()}
-    </Dialog>
-  ) : (
+  return open.length === 0 ? null : (
     <>
       {open.map((badge) => {
         const Component = badges[badge];
         return (
-          <Dialog
-            buttons={commonText.close()}
+          <Component
+            key={badge}
+            occurrence={occurrence}
+            species={species}
+            speciesName={speciesName}
+            taxonId={taxonId}
             onClose={(): void => setOpen(open.filter((open) => open !== badge))}
-            header={schema.models[badge].label}
-          >
-            <Component
-              occurrence={occurrence}
-              species={species}
-              taxonId={taxonId}
-              speciesName={speciesName}
-            />
-          </Dialog>
+          />
         );
       })}
     </>
+  );
+}
+
+export function NoBrokerData({
+  onClose: handleClose,
+}: {
+  readonly onClose: () => void;
+}): JSX.Element {
+  return (
+    <Dialog
+      buttons={commonText.close()}
+      header={specifyNetworkText.noDataError()}
+      onClose={handleClose}
+    >
+      {specifyNetworkText.noDataErrorDescription()}
+    </Dialog>
   );
 }
 
@@ -76,8 +81,9 @@ const badges: RR<
   (props: {
     readonly occurrence: RA<BrokerRecord> | undefined;
     readonly species: RA<BrokerRecord> | undefined;
-    readonly taxonId: number | undefined;
+    readonly taxonId: number | false | undefined;
     readonly speciesName: string | undefined;
+    readonly onClose: () => void;
   }) => JSX.Element
 > = {
   CollectionObject: SpecifyNetworkOccurrence,

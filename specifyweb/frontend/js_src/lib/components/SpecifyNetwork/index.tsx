@@ -38,26 +38,28 @@ export function SpecifyNetworkBadge({
 }: {
   readonly resource: SpecifyResource<CollectionObject> | SpecifyResource<Taxon>;
 }): JSX.Element {
-  const [speciesName] = useAsyncState(
+  const [taxon] = useAsyncState(
     React.useCallback(
       () =>
-        f.maybe(toTable(resource, 'Taxon'), async (resource) =>
-          resource
-            .fetch()
-            .then((resource) => resource.get('fullName') ?? undefined)
-        ) ??
-        f.maybe(
-          toTable(resource, 'CollectionObject'),
-          (resource) =>
-            resource.rgetPromise(
-              'currentDetermination.taxon.fullName' as never
-            ) as string
-        ) ??
-        '',
+        Promise.resolve(
+          f.maybe(toTable(resource, 'Taxon'), async (resource) =>
+            resource.fetch()
+          ) ??
+            f.maybe(toTable(resource, 'CollectionObject'), (resource) =>
+              resource.rgetPromise('currentDetermination.taxon' as never)
+            ) ??
+            undefined
+        ).then((taxon) => taxon ?? false),
       [resource]
     ),
     false
   );
+  const speciesName = React.useMemo(
+    () => (taxon === false ? undefined : taxon?.get('fullName') ?? undefined),
+    [taxon]
+  );
+  const isNoSpecies =
+    taxon === false || (typeof taxon === 'object' && taxon.id === undefined);
   const guid = toTable(resource, 'CollectionObject')?.get('guid') ?? '';
   const isDisabled = speciesName === '' && guid === '';
   const getSetOpen = React.useState<RA<SpecifyNetworkBadge>>([]);
@@ -107,12 +109,14 @@ export function SpecifyNetworkBadge({
             <TableIcon label name="CollectionObject" />
           </Button.LikeLink>
         )}
-        <Button.LikeLink
-          onClick={handleToggle('Taxon')}
-          onFocus={handleStartFetching}
-        >
-          <TableIcon label name="Taxon" />
-        </Button.LikeLink>
+        {!isNoSpecies && (
+          <Button.LikeLink
+            onClick={handleToggle('Taxon')}
+            onFocus={handleStartFetching}
+          >
+            <TableIcon label name="Taxon" />
+          </Button.LikeLink>
+        )}
         <Button.LikeLink
           onClick={handleToggle('Locality')}
           onFocus={handleStartFetching}
@@ -124,6 +128,7 @@ export function SpecifyNetworkBadge({
         <SpecifyNetworkOverlays
           guid={guid}
           open={getSetOpen}
+          taxonId={isNoSpecies ? false : taxon?.id}
           species={speciesName ?? ''}
         />
       )}
