@@ -56,7 +56,7 @@ export function QueryHeader({
   readonly onSaved: () => void;
   readonly toggleMapping: () => void;
 }): JSX.Element {
-  //detects any query being deleted and updates it every where and redirect
+  // Detects any query being deleted and updates it every where and redirect
   const navigate = useNavigate();
   React.useEffect(
     () =>
