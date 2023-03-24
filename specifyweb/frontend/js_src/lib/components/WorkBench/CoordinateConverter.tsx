@@ -101,7 +101,8 @@ export function CoordinateConverter({
 
     const includeSymbolsFunction = includeSymbols
       ? (coordinate: string): string => coordinate
-      : (coordinate: string): string => coordinate.replace(/[^\s\w.-]/gu, '');
+      : (coordinate: string): string =>
+          coordinate.replaceAll(/[^\s\w\-.]/gu, '');
 
     const stripCardinalDirections = (finalValue: string): string =>
       showDirection
