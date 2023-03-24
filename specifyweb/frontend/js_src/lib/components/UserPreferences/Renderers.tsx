@@ -28,12 +28,12 @@ import type { Collection } from '../DataModel/types';
 import { AutoComplete } from '../Molecules/AutoComplete';
 import { ListEdit } from '../Toolbar/QueryTablesEdit';
 import type { PreferenceItem, PreferenceItemComponent } from './Definitions';
-import { getPrefDefinition } from './helpers';
 import { usePref } from './usePref';
 import { headerText } from '../../localization/header';
 import { useMenuItems, useUserTools } from '../Header/menuItemProcessing';
 import { rawMenuItemsPromise } from '../Header/menuItemDefinitions';
 import { usePromise } from '../../hooks/useAsyncState';
+import { AttachmentPicker } from './AttachmentPicker';
 
 export const ColorPickerPreferenceItem: PreferenceItemComponent<string> =
   function ColorPickerPreferenceItem({
@@ -200,7 +200,6 @@ const welcomePageModes: PreferenceItem<WelcomePageMode> = {
     {
       value: 'customImage',
       title: preferencesText.customImage(),
-      description: preferencesText.customImageDescription(),
     },
     // FEATURE: make documentation more user friendly and reEnable this:
     /*
@@ -219,12 +218,7 @@ export const WelcomePageModePreferenceItem: PreferenceItemComponent<WelcomePageM
     onChange: handleChange,
     isReadOnly,
   }) {
-    const [source, setSource] = usePref('welcomePage', 'general', 'source');
-    const sourceDefinition = getPrefDefinition(
-      'welcomePage',
-      'general',
-      'source'
-    );
+    const [url, setUrl] = usePref('welcomePage', 'general', 'source');
 
     return (
       <>
@@ -237,17 +231,16 @@ export const WelcomePageModePreferenceItem: PreferenceItemComponent<WelcomePageM
           value={value}
           onChange={handleChange}
         />
-        {value === 'customImage' || value === 'embeddedWebpage' ? (
-          <DefaultPreferenceItemRender
-            category="welcomePage"
-            definition={sourceDefinition}
+        {value === 'customImage' && (
+          <AttachmentPicker
+            url={url === 'default' ? undefined : url}
+            onChange={(url): void => {
+              setUrl(url);
+              if (url === 'default') handleChange('default');
+            }}
             isReadOnly={isReadOnly}
-            item="source"
-            subcategory="general"
-            value={source}
-            onChange={setSource}
           />
-        ) : undefined}
+        )}
       </>
     );
   };
@@ -332,6 +325,7 @@ export const DefaultPreferenceItemRender: PreferenceItemComponent<any> =
       definition.setOnBlurOnly === true
         ? (): void => handleChange(internalValue)
         : undefined;
+
     return 'values' in definition ? (
       <>
         <Select

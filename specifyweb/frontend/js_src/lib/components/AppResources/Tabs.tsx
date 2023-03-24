@@ -5,7 +5,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { commonText } from '../../localization/common';
 import { resourcesText } from '../../localization/resources';
 import { f } from '../../utils/functools';
-import type { RA } from '../../utils/types';
+import type { GetSet, IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
@@ -134,4 +134,47 @@ function useEditorTabs(
       },
     ]);
   }, [subType]);
+}
+
+export function Tabs({
+  tabs,
+  index: [currentIndex, handleChange],
+}: {
+  readonly tabs: IR<JSX.Element>;
+  readonly index: GetSet<number>;
+}): JSX.Element {
+  return (
+    <Tab.Group selectedIndex={currentIndex} onChange={handleChange}>
+      <Tab.List
+        // Don't display tabs if there is only one tab
+        className={`flex flex-wrap gap-2 ${
+          Object.keys(tabs).length === 1 ? 'sr-only' : ''
+        }`}
+      >
+        {Object.keys(tabs).map((label, index) => (
+          <Tab
+            className={`${className.niceButton} ${className.blueButton}`}
+            key={index}
+            /**
+             * HeadlessUI does not trigger onChange on click on current tab.
+             * This is a workaround. It overrides their click handler only
+             * if the option IS current.
+             */
+            onClick={
+              currentIndex === index ? () => handleChange(index) : undefined
+            }
+          >
+            {label}
+          </Tab>
+        ))}
+      </Tab.List>
+      <Tab.Panels className="flex flex-1 overflow-hidden">
+        {Object.values(tabs).map((element, index) => (
+          <Tab.Panel className="flex flex-1 flex-col gap-4" key={index}>
+            <ErrorBoundary dismissible>{element}</ErrorBoundary>
+          </Tab.Panel>
+        ))}
+      </Tab.Panels>
+    </Tab.Group>
+  );
 }

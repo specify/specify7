@@ -23,12 +23,14 @@ export function AttachmentGallery({
   scale,
   isComplete,
   onChange: handleChange,
+  onClick,
 }: {
   readonly attachments: RA<SerializedResource<Attachment>>;
   readonly onFetchMore: () => Promise<void>;
   readonly scale: number;
   readonly isComplete: boolean;
   readonly onChange: (attachments: RA<SerializedResource<Attachment>>) => void;
+  readonly onClick?: (attachment: SerializedResource<Attachment>) => void;
 }): JSX.Element {
   const containerRef = React.useRef<HTMLElement | null>(null);
 
@@ -85,7 +87,11 @@ export function AttachmentGallery({
               related[index],
               (item): void => setRelated(replaceItem(related, index, item)),
             ]}
-            onOpen={(): void => setOpenIndex(index)}
+            onOpen={(): void =>
+              typeof onClick === 'function'
+                ? onClick(attachment)
+                : setOpenIndex(index)
+            }
             onViewRecord={(model, id): void =>
               setViewRecord(new model.Resource({ id }))
             }

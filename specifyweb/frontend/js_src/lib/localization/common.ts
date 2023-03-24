@@ -616,4 +616,10 @@ export const commonText = createDictionary({
     'ru-ru': 'Времени осталось',
     'uk-ua': 'Час, що залишився',
   },
+  change: {
+    'en-us': 'Change',
+  },
+  pick: {
+    'en-us': 'Pick',
+  },
 } as const);
