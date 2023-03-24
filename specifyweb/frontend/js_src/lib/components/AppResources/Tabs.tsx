@@ -33,7 +33,7 @@ import {
   visualAppResourceEditors,
 } from './TabDefinitions';
 
-export function AppResourcesTabs({
+export function AppResourcesTab({
   tab: Component,
   label,
   showValidationRef,

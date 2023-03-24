@@ -42,7 +42,7 @@ import {
 } from './EditorComponents';
 import { getResourceType } from './filtersHelpers';
 import { useAppResourceData } from './hooks';
-import { AppResourcesTabs, useEditorTabs } from './Tabs';
+import { AppResourcesTab, useEditorTabs } from './Tabs';
 
 export function AppResourceEditor({
   resource,
@@ -143,20 +143,22 @@ export function AppResourceEditor({
 
   const headerButtons = (
     <div className="flex flex-wrap gap-3">
-      <div className="flex">
-        <Select
-          value={tab}
-          onValueChange={(index): void =>
-            handleChangeTab(f.parseInt(index) ?? 0)
-          }
-        >
-          {tabs.map(({ label }, index) => (
-            <option key={index} value={index}>
-              {label}
-            </option>
-          ))}
-        </Select>
-      </div>
+      {tabs.length > 1 && (
+        <div className="flex">
+          <Select
+            value={tab}
+            onValueChange={(index): void =>
+              handleChangeTab(f.parseInt(index) ?? 0)
+            }
+          >
+            {tabs.map(({ label }, index) => (
+              <option key={index} value={index}>
+                {label}
+              </option>
+            ))}
+          </Select>
+        </div>
+      )}
       {!isInOverlay && (
         <Button.Blue
           aria-label={localityText.toggleFullScreen()}
@@ -225,7 +227,7 @@ export function AppResourceEditor({
             forwardRef={setForm}
           >
             <ReadOnlyContext.Provider value={isReadOnly}>
-              <AppResourcesTabs
+              <AppResourcesTab
                 appResource={appResource}
                 data={resourceData.data}
                 directory={directory}

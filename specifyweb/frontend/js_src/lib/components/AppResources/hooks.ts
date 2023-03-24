@@ -123,12 +123,13 @@ export function useAppResourceData(
           ? await fetchCollection('SpAppResourceData', {
               limit: 1,
               [relationshipName]: resource.id,
-            }).then(({ records }) =>
-              /*
-               * For some reason, app resource can have multiple app resource
-               * datas (but it never does in practice)
-               */
-              typeof records[0] === 'object' ? records[0] : newResource
+            }).then(
+              ({ records }) =>
+                /*
+                 * For some reason, app resource can have multiple app resource
+                 * datas (but it never does in practice)
+                 */
+                records[0] ?? newResource
             )
           : newResource;
       const newData = fixLineBreaks(dataResource.data ?? '');
