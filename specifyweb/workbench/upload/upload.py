@@ -21,7 +21,7 @@ from .upload_plan_schema import schema, parse_plan_with_basetable
 from .upload_result import Uploaded, UploadResult, ParseFailures, \
     json_to_UploadResult
 from .uploadable import ScopedUploadable, Row, Disambiguation, Auditor
-from ..models import Spdataset
+from ..models import Spdataset, Collection
 
 Rows = Union[List[Row], csv.DictReader]
 Progress = Callable[[int, Optional[int]], None]
@@ -192,7 +192,7 @@ def get_ds_upload_plan(collection, ds: Spdataset) -> Tuple[Table, ScopedUploadab
 def apply_deferred_scopes(upload_plan: ScopedUploadable, rows: Rows) -> ScopedUploadable:
     is_deferred = lambda uploadable: isinstance(uploadable, DeferredScopeUploadTable)
 
-    def collection_override_function(deferred_upload_plan: DeferredScopeUploadTable, row_index: int) -> models.Collection:
+    def collection_override_function(deferred_upload_plan: DeferredScopeUploadTable, row_index: int) -> Collection:
         related_uploadable = upload_plan.toOne[deferred_upload_plan.related_key]
         related_column_name = related_uploadable.wbcols['name'][0]
         filter_value = rows[row_index][related_column_name]

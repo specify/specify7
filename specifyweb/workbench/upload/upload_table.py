@@ -7,6 +7,7 @@ from django.db import transaction, IntegrityError
 
 from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.specify import models
+from ..models import Collection
 from .column_options import ColumnOptions, ExtendedColumnOptions
 from .parsing import parse_many, ParseResult, ParseFailure
 from .tomany import ToManyRecord, ScopedToManyRecord, BoundToManyRecord
@@ -74,7 +75,7 @@ class DeferredScopeUploadTable(NamedTuple):
     # (which follows the same logic as in UploadTable), or a function which has the parameter
     # signature: (deferred_upload_plan: DeferredScopeUploadTable, row_index: int) -> models.Collection
     # (see apply_deferred_scopes in .upload.py)
-    overrideScope: Optional[Dict[Literal["collection"], Union[int, Callable[["DeferredScopeUploadTable", int], models.Collection]]]]
+    overrideScope: Optional[Dict[Literal["collection"], Union[int, Callable[["DeferredScopeUploadTable", int], Collection]]]]
     wbcols: Dict[str, ColumnOptions]
     static: Dict[str, Any]
     toOne: Dict[str, Uploadable]
@@ -90,7 +91,7 @@ class DeferredScopeUploadTable(NamedTuple):
             return apply_scoping_to_uploadtable(self, collection)
         else: return self
 
-    def add_colleciton_override(self, collection: Union[int, Callable[["DeferredScopeUploadTable", int], models.Collection]]) -> "DeferredScopeUploadTable":
+    def add_colleciton_override(self, collection: Union[int, Callable[["DeferredScopeUploadTable", int], Collection]]) -> "DeferredScopeUploadTable":
         ''' To modify the overrideScope after the DeferredScope UploadTable is created, use add_colleciton_override
         To properly apply scoping (see self.bind()), the <collection> should either be a collection's id, or a callable (function), 
         which has paramaters that accept: this DeferredScope UploadTable, and an integer representing the current row_index.
