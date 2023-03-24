@@ -197,7 +197,7 @@ def collection_locality_geography(request) -> HttpResponse:
         genus, genus_guid, genus_author, genus_common_name, genus_remarks, genus_source,
         species, species_guid, species_author, species_common_name, species_remarks, species_source,
         subspecies, subspecies_guid, subspecies_author, subspecies_common_name, subspecies_remarks, subspecies_source
-        FROM full_taxon_to_import_guid_new; 
+        FROM full_taxon_to_import_mcr_fixed; 
         """
     )
     taxon_to_import = list(cursor.fetchall())
