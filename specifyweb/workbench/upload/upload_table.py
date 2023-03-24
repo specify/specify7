@@ -1,7 +1,7 @@
 
 import logging
 from functools import reduce
-from typing import List, Dict, Any, NamedTuple, Union, Optional, Set, Callable
+from typing import List, Dict, Any, NamedTuple, Union, Optional, Set, Callable, Literal
 
 from django.db import transaction, IntegrityError
 
@@ -21,15 +21,15 @@ logger = logging.getLogger(__name__)
 
 class UploadTable(NamedTuple):
     name: str
-    overrideScope: Optional[Dict[str, Optional[int]]]
+    overrideScope: Optional[Dict[Literal['collection'], Optional[int]]]
     wbcols: Dict[str, ColumnOptions]
     static: Dict[str, Any]
     toOne: Dict[str, Uploadable]
     toMany: Dict[str, List[ToManyRecord]]
 
     def apply_scoping(self, collection) -> "ScopedUploadTable":
-        from .scoping import apply_scoping_to_uploadtable as apply_scoping
-        return apply_scoping(self, collection)
+        from .scoping import apply_scoping_to_uploadtable
+        return apply_scoping_to_uploadtable(self, collection)
 
     def get_cols(self) -> Set[str]:
         return set(cd.column for cd in self.wbcols.values()) \
@@ -58,8 +58,23 @@ class UploadTable(NamedTuple):
         return { 'baseTableName': self.name, 'uploadable': self.to_json() }
     
 class DeferredScopeUploadTable(NamedTuple):
+    ''' In the case that the scoping of a record in a WorkBench upload can not be known 
+    until the values of the rows are known, the scope of the record should be deferred until 
+    the row is being processed. 
+
+    When the upload table is parsed in .upload_plan_schema.py, if a table contains a field which scoping 
+    is unknown, a DeferredScope UploadTable is created. 
+
+    As suggested by the name, the DeferredScope UploadTable is not scoped or disambiguated until its bind()
+    method is called. In which case, the rows of the dataset are known and the scoping can be deduced  
+    '''
     name: str
-    overrideScope: Optional[Dict[str, Optional[Union[int, Callable[[int], int]]]]]
+    
+    # In a DeferredScopeUploadTable, the overrideScope value can be either an integer 
+    # (which follows the same logic as in UploadTable), or a function which has the parameter
+    # signature: (deferred_upload_plan: DeferredScopeUploadTable, row_index: int) -> models.Collection
+    # (see apply_deferred_scopes in .upload.py)
+    overrideScope: Optional[Dict[Literal["collection"], Union[int, Callable[["DeferredScopeUploadTable", int], models.Collection]]]]
     wbcols: Dict[str, ColumnOptions]
     static: Dict[str, Any]
     toOne: Dict[str, Uploadable]
@@ -69,17 +84,34 @@ class DeferredScopeUploadTable(NamedTuple):
     relationship_name: str
     filter_field: str
 
-    def apply_scoping(self, collection, deffer: bool = True) -> "ScopedUploadTable":
-        if not deffer:
-            from .scoping import apply_scoping_to_uploadtable as apply_scoping
-            return apply_scoping(self, collection)
+    def apply_scoping(self, collection, defer: bool = True) -> Union["ScopedUploadTable", "DeferredScopeUploadTable"]:
+        if not defer:
+            from .scoping import apply_scoping_to_uploadtable
+            return apply_scoping_to_uploadtable(self, collection)
         else: return self
 
-    def add_colleciton_override(self, collection: Union[int, Callable[[int], int]]) -> "DeferredScopeUploadTable":
+    def add_colleciton_override(self, collection: Union[int, Callable[["DeferredScopeUploadTable", int], models.Collection]]) -> "DeferredScopeUploadTable":
+        ''' To modify the overrideScope after the DeferredScope UploadTable is created, use add_colleciton_override
+        To properly apply scoping (see self.bind()), the <collection> should either be a collection's id, or a callable (function), 
+        which has paramaters that accept: this DeferredScope UploadTable, and an integer representing the current row_index.
+        
+        Note that _replace(**kwargs) does not modify the original object. It insteads creates a new object with the same attributes except for
+        those added/changed in the paramater kwargs. 
+        
+        '''
         return self._replace(overrideScope = {"collection": collection})
     
     def disambiguate(self, da: Disambiguation):
-        return self._replace(da = da)
+        '''Disambiguation should only be used when the UploadTable is completely Scoped. 
+        
+        When a caller attempts to disambiguate a DeferredScope UploadTable, create and return
+        a copy of the DeferredScope Upload Table with the Disambiguation stored in a 
+        'disambiguation' attribute.
+
+        If this attribute exists when the DeferredScoped UploadTable is scoped, 
+        then disambiguate the new Scoped UploadTable using the stored Disambiguation
+        '''
+        return self._replace(disambiguation = da)
     
     def get_treedefs(self) -> Set:
         return (
@@ -87,20 +119,35 @@ class DeferredScopeUploadTable(NamedTuple):
             set(td for toMany in self.toMany.values() for tmr in toMany for td in tmr.get_treedefs())
         )
 
-    def bind(self, default_collection, row: Row, uploadingAgentId: int, auditor: Auditor, cache: Optional[Dict]=None, row_index: Optional[int] = None) -> Union["BoundUploadTable", ParseFailures]:
+    def bind(self, default_collection, row: Row, uploadingAgentId: int, auditor: Auditor, cache: Optional[Dict]=None, row_index: Optional[int] = None
+             ) -> Union["BoundUploadTable", ParseFailures]:
+        
+        scoped = None
+        
+        ''' If the collection should be overridden and an integer (collection id) is provided, 
+        then get the collection with that id and apply the proper scoping.
+
+        Otherwise, if a funciton is provided (see apply_deferred_scopes in .upload.py), then call the function 
+        with the row and row_index to get the needed collection
+        '''
         if 'collection' in self.overrideScope.keys():
             if isinstance(self.overrideScope['collection'], int):
                 collection_id = self.overrideScope['collection']
                 collection = models.Collection.objects.get(id=collection_id)
-                scoped = self.apply_scoping(collection, deffer=False)
+                scoped = self.apply_scoping(collection, defer=False)
             elif isinstance(self.overrideScope['collection'], Callable):
                 collection = self.overrideScope['collection'](self, row_index)
-                scoped = self.apply_scoping(collection, deffer=False)
+                scoped = self.apply_scoping(collection, defer=False)
         
-        if scoped is None: scoped = self.apply_scoping(default_collection, deffer=False)
+        # If the collection/scope should not be overriden, defer to the default behavior and assume 
+        # the record should be uploaded in the logged-in collection
+        if scoped is None: scoped = self.apply_scoping(default_collection, defer=False)
 
-        scoped_disambiguated = scoped.disambiguate(self.da) if hasattr(self, "da") else scoped
+        # If the DeferredScope UploadTable contained any disambiguation data, then apply the disambiguation to the new
+        # ScopedUploadTable
+        scoped_disambiguated = scoped.disambiguate(self.da) if hasattr(self, "disambiguation") else scoped
         
+        # Finally bind the ScopedUploadTable and return the BoundUploadTable or ParseFailures 
         return scoped_disambiguated.bind(default_collection, row, uploadingAgentId, auditor, cache, row_index)
 
 
@@ -139,7 +186,8 @@ class ScopedUploadTable(NamedTuple):
         )
 
 
-    def bind(self, collection, row: Row, uploadingAgentId: int, auditor: Auditor, cache: Optional[Dict]=None, row_index: Optional[int] = None) -> Union["BoundUploadTable", ParseFailures]:
+    def bind(self, collection, row: Row, uploadingAgentId: int, auditor: Auditor, cache: Optional[Dict]=None, row_index: Optional[int] = None
+             ) -> Union["BoundUploadTable", ParseFailures]:
         parsedFields, parseFails = parse_many(collection, self.name, self.wbcols, row)
 
         toOne: Dict[str, BoundUploadable] = {}
@@ -186,7 +234,8 @@ class OneToOneTable(UploadTable):
         return { 'oneToOneTable': self._to_json() }
 
 class ScopedOneToOneTable(ScopedUploadTable):
-    def bind(self, collection, row: Row, uploadingAgentId: int, auditor: Auditor, cache: Optional[Dict]=None, row_index: Optional[int] = None) -> Union["BoundOneToOneTable", ParseFailures]:
+    def bind(self, collection, row: Row, uploadingAgentId: int, auditor: Auditor, cache: Optional[Dict]=None, row_index: Optional[int] = None
+             ) -> Union["BoundOneToOneTable", ParseFailures]:
         b = super().bind(collection, row, uploadingAgentId, auditor, cache, row_index)
         return BoundOneToOneTable(*b) if isinstance(b, BoundUploadTable) else b
 
@@ -199,7 +248,8 @@ class MustMatchTable(UploadTable):
         return { 'mustMatchTable': self._to_json() }
 
 class ScopedMustMatchTable(ScopedUploadTable):
-    def bind(self, collection, row: Row, uploadingAgentId: int, auditor: Auditor, cache: Optional[Dict]=None, row_index: Optional[int] = None) -> Union["BoundMustMatchTable", ParseFailures]:
+    def bind(self, collection, row: Row, uploadingAgentId: int, auditor: Auditor, cache: Optional[Dict]=None, row_index: Optional[int] = None
+             ) -> Union["BoundMustMatchTable", ParseFailures]:
         b = super().bind(collection, row, uploadingAgentId, auditor, cache, row_index)
         return BoundMustMatchTable(*b) if isinstance(b, BoundUploadTable) else b
 

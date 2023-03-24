@@ -9,6 +9,7 @@ from .tomany import ToManyRecord
 from .treerecord import TreeRecord, MustMatchTreeRecord
 from .uploadable import Uploadable
 from .column_options import ColumnOptions
+from .scoping import DEFERRED_SCOPING
 
 
 schema: Dict = {
@@ -241,16 +242,14 @@ def parse_uploadable(collection, table: Table, to_parse: Dict) -> Uploadable:
 
 def parse_upload_table(collection, table: Table, to_parse: Dict) -> UploadTable:
 
-    defer_scope = {("Collectionrelationship", "rightside"): ('collectionreltype', 'name')}
-
     def rel_table(key: str) -> Table:
         return datamodel.get_table_strict(table.get_relationship(key).relatedModelName)
     
-    def defer_scope_upload_table(default_collection, table: Table, to_parse:Dict, deferred_information) -> DeferredScopeUploadTable:
-        related_key = defer_scope[deferred_information][0]
-        filter_field = defer_scope[deferred_information][1]
-        relationship_overrides = {"rightside" : "rightsidecollection"}
-        relationship_name = deferred_information[1] if deferred_information[1] not in relationship_overrides.keys() else relationship_overrides[deferred_information[1]]
+    def defer_scope_upload_table(default_collection, table: Table, to_parse: Dict, deferred_information: Tuple[str, str]) -> DeferredScopeUploadTable:
+        related_key = DEFERRED_SCOPING[deferred_information][0]
+        filter_field = DEFERRED_SCOPING[deferred_information][1]
+        relationship_name = DEFERRED_SCOPING[deferred_information][2]
+        
         return DeferredScopeUploadTable(
             name=table.django_name,
             related_key=related_key,
@@ -260,7 +259,8 @@ def parse_upload_table(collection, table: Table, to_parse: Dict) -> UploadTable:
             wbcols={k: parse_column_options(v) for k,v in to_parse['wbcols'].items()},
             static=to_parse['static'],
             toOne={
-                key: defer_scope_upload_table(collection, rel_table(key), to_one, (table.django_name, key)) if (table.django_name, key) in defer_scope.keys()
+                key: defer_scope_upload_table(collection, rel_table(key), to_one, (table.django_name, key)) 
+                    if (table.django_name, key) in DEFERRED_SCOPING.keys()
                     else parse_uploadable(collection, rel_table(key), to_one)
                     for key, to_one in to_parse['toOne'].items()
             },
@@ -277,7 +277,7 @@ def parse_upload_table(collection, table: Table, to_parse: Dict) -> UploadTable:
         static=to_parse['static'],
         toOne={
             key: defer_scope_upload_table(collection, rel_table(key), to_one['uploadTable'], (table.django_name, key)) 
-                if (table.django_name, key) in defer_scope.keys()
+                if (table.django_name, key) in DEFERRED_SCOPING.keys()
                 else parse_uploadable(collection, rel_table(key), to_one)
                 for key, to_one in to_parse['toOne'].items()
         },

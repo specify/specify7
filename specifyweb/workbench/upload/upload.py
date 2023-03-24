@@ -190,25 +190,28 @@ def get_ds_upload_plan(collection, ds: Spdataset) -> Tuple[Table, ScopedUploadab
     return base_table, plan.apply_scoping(collection)
 
 def apply_deferred_scopes(upload_plan: ScopedUploadable, rows: Rows) -> ScopedUploadable:
-    _upload_plan = upload_plan
+    is_deferred = lambda uploadable: isinstance(uploadable, DeferredScopeUploadTable)
+
+    def collection_override_function(deferred_upload_plan: DeferredScopeUploadTable, row_index: int) -> models.Collection:
+        related_uploadable = upload_plan.toOne[deferred_upload_plan.related_key]
+        related_column_name = related_uploadable.wbcols['name'][0]
+        filter_value = rows[row_index][related_column_name]
+        
+        filter_search = {deferred_upload_plan.filter_field : filter_value}
+        related = getattr(models, datamodel.get_table(deferred_upload_plan.related_key).django_name).objects.get(**filter_search)
+        collection_id = getattr(related, deferred_upload_plan.relationship_name).id
+        collection = models.Collection.objects.get(id=collection_id)
+        return collection
+
     if hasattr(upload_plan, 'toOne'):
         for key, uploadable in upload_plan.toOne.items():
-            if isinstance(uploadable, DeferredScopeUploadTable):
+            _uploadable = uploadable
+            if _uploadable.toOne != {}: _uploadable = apply_deferred_scopes(_uploadable, rows)
+            if is_deferred(_uploadable):
+                _uploadable = _uploadable.add_colleciton_override(collection_override_function)
+            upload_plan.toOne[key] = _uploadable
 
-                def collection_override_function(deferred_upload_plan: DeferredScopeUploadTable, row_index: int):
-                    related_uploadable = upload_plan.toOne[deferred_upload_plan.related_key]
-                    related_column_name = related_uploadable.wbcols['name'][0]
-                    filter_value = rows[row_index][related_column_name]
-                    
-                    filter_search = {deferred_upload_plan.filter_field : filter_value}
-                    related = getattr(models, datamodel.get_table(deferred_upload_plan.related_key).django_name).objects.get(**filter_search)
-                    collection_id = getattr(related, deferred_upload_plan.relationship_name).id
-                    collection = models.Collection.objects.get(id=collection_id)
-                    return collection
-
-                scoped = uploadable.add_colleciton_override(collection_override_function)
-                _upload_plan.toOne[key] = scoped
-    return _upload_plan
+    return upload_plan
 
 
 def do_upload(

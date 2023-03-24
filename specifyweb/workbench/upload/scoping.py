@@ -1,4 +1,4 @@
-from typing import Dict, Any, Optional, Callable
+from typing import Dict, Any, Optional, Tuple, Callable
 
 from specifyweb.specify.datamodel import datamodel, Table, Relationship
 from specifyweb.specify.load_datamodel import DoesNotExistError
@@ -11,6 +11,30 @@ from .upload_table import UploadTable, ScopedUploadTable, OneToOneTable, ScopedO
 from .tomany import ToManyRecord, ScopedToManyRecord
 from .treerecord import TreeRecord, ScopedTreeRecord
 from .column_options import ColumnOptions, ExtendedColumnOptions
+
+""" There are cases in which the scoping of records should be dependent on another record/column in a WorkBench dataset.
+
+The DEFERRED_SCOPING dictonary defines the information needed to extract the correct scope to upload/validate a record into.
+
+The structure of DEFERRED_SCOPING is as following:
+    The keys are tuples containing the django table name and a relationship that should be scoped. 
+    
+    The values are tuples containing the table name, field to filter on, and value to pull from that field to use as the collection for the 
+    tableName.fieldName in the associated key of DEFERRED_SCOPING
+
+    For example, consider the following the deferred scoping information:
+        ("Collectionrelationship", "rightside"): ('collectionreltype', 'name', 'rightsidecollection')
+
+    This information describes the following process to be performed: 
+    
+    'when uploading the rightside of a Collection Relationship, get the Collection Rel Type in the database from the dataset by 
+    filtering Collection Rel Types in the database by name. Then, set the collection of the Collectionrelationship rightside equal to the Collection Rel Type's 
+    rightSideCollection' 
+
+    See .upload_plan_schema.py for how this is used
+
+"""
+DEFERRED_SCOPING: Dict[Tuple[str, str], Tuple[str, str, str]] = {("Collectionrelationship", "rightside"): ('collectionreltype', 'name', 'rightsidecollection')}
 
 def scoping_relationships(collection, table: Table) -> Dict[str, int]:
     extra_static: Dict[str, int] = {}
