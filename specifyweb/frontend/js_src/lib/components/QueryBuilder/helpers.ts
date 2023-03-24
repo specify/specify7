@@ -110,6 +110,11 @@ export function parseQueryFields(
   }));
 }
 
+/**
+ * Values for query fields with this ID are returned from the back-end, but
+ * not shown in the results. This is used if field was added to a query
+ * automatically to power some feature (i.e, GeoMap)
+ */
 const PHANTOM_FIELD_ID = -1;
 
 export const queryFieldsToFieldSpecs = (
@@ -148,7 +153,7 @@ export const augmentQueryFields = (
     ? fields
     : baseTableName === 'SpAuditLog'
     ? addQueryFields(fields, auditLogMappingPaths, true)
-    : addLocalityFields(baseTableName, fields, isDistinct);
+    : addLocalityFields(baseTableName, fields);
 
 /**
  * It is expected by QueryResultsWrapper that this function does not change
@@ -210,11 +215,8 @@ const addQueryFields = (
  */
 function addLocalityFields(
   baseTableName: keyof Tables,
-  fields: RA<QueryField>,
-  isDistinct: boolean
+  fields: RA<QueryField>
 ): RA<QueryField> {
-  if (isDistinct) return fields;
-
   const fieldSpecs = fields.map((field) =>
     QueryFieldSpec.fromPath(baseTableName, field.mappingPath)
   );
