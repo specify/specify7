@@ -83,6 +83,14 @@ export const routes: RA<EnhancedRoute> = [
                   ),
               },
               {
+                path: 'new',
+                title: userText.newRole(),
+                element: () =>
+                  import('../Security/LibraryRole').then(
+                    ({ SecurityLibraryRole }) => SecurityLibraryRole
+                  ),
+              },
+              {
                 path: ':roleId',
                 element: () =>
                   import('../Security/LibraryRole').then(
