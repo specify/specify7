@@ -170,7 +170,7 @@ export async function format<SCHEMA extends AnySchema>(
    * are missing
    */
   tryBest: boolean = false
-  ): Promise<LocalizedString | undefined> {
+): Promise<LocalizedString | undefined> {
   if (typeof resource !== 'object' || resource === null) return undefined;
   if (hasTablePermission(resource.specifyModel.name, 'read'))
     await resource.fetch();
@@ -210,7 +210,16 @@ export async function format<SCHEMA extends AnySchema>(
     ? automaticFormatter ?? undefined
     : Promise.all(
         fields.map(async (field) => formatField(field, resource, tryBest))
-      ).then((values) => values.join('') as LocalizedString);
+      ).then(
+        (values) =>
+          values.reduce<string>(
+            (result, { formatted, separator = '' }, index) =>
+              `${result}${
+                result.length === 0 && index !== 0 ? '' : separator
+              }${formatted}`,
+            ''
+          ) as LocalizedString
+      );
 }
 
 async function formatField(
@@ -222,18 +231,19 @@ async function formatField(
   }: Formatter['fields'][number]['fields'][number],
   resource: SpecifyResource<AnySchema>,
   tryBest: boolean
-): Promise<string> {
-  if (typeof fieldFormatter === 'string' && fieldFormatter === '') return '';
+): Promise<{ readonly formatted: string; readonly separator?: string }> {
+  if (typeof fieldFormatter === 'string' && fieldFormatter === '')
+    return { formatted: '' };
 
   const fields = resource.specifyModel.getFields(fieldName);
   if (fields === undefined) {
     console.error(`Tried to get unknown field: ${fieldName}`);
-    return '';
+    return { formatted: '' };
   }
   const field = fields.at(-1)!;
   if (field.isRelationship) {
     console.error(`Unexpected formatting of a relationship field ${fieldName}`);
-    return '';
+    return { formatted: '' };
   }
 
   const hasPermission = hasPathPermission(fields, 'read');
@@ -256,7 +266,7 @@ async function formatField(
     ? naiveFormatter(resource.specifyModel.name, resource.id)
     : userText.noPermission();
 
-  return formatted === '' ? '' : `${separator}${formatted}`;
+  return { formatted, separator: formatted ? separator : '' };
 }
 
 const resolveFormatter = (

@@ -1359,7 +1359,7 @@ export const userPreferenceDefinitions = {
             title: preferencesText.exportFileDelimiter(),
             requiresReload: false,
             visible: true,
-            defaultValue: '\t',
+            defaultValue: ',',
             values: [
               {
                 value: ',',

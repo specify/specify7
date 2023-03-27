@@ -31,7 +31,7 @@ export function getDomainResource<
     console.error(
       `Trying to access domain resource ${level} before domain is loaded`
     );
-    return;
+    return undefined;
   }
   const model = strictGetModel(level);
   return new model.Resource({ id });

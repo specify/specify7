@@ -42,6 +42,7 @@ export const fetchContext = load<
     );
     userInfo.availableCollections = availableCollections.map(serializeResource);
     setDevelopmentGlobal('_user', userInfo);
+    return userInfo;
   }
 );
 

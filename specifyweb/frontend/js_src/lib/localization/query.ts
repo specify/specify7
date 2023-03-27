@@ -13,7 +13,7 @@ export const queryText = createDictionary({
     'en-us': 'Query',
     'ru-ru': 'Запрос',
     'es-es': 'Consulta',
-    'fr-fr': 'Requête',
+    'fr-fr': 'Mettre en doute',
     'uk-ua': 'Запит',
   },
   queries: {
@@ -51,22 +51,22 @@ export const queryText = createDictionary({
   any: {
     'en-us': 'Any',
     'ru-ru': 'Любой',
-    'es-es': 'Alguna',
-    'fr-fr': 'Tous',
+    'es-es': 'Cualquier',
+    'fr-fr': "N'importe quel",
     'uk-ua': 'Будь-який',
   },
   startValue: {
     'en-us': 'Start Value',
     'ru-ru': 'Начальное значение',
     'es-es': 'Valor inicial',
-    'fr-fr': 'Valeur de début',
+    'fr-fr': 'Valeur de départ',
     'uk-ua': 'Початкове значення',
   },
   endValue: {
     'en-us': 'End Value',
     'ru-ru': 'Конечное значение',
     'es-es': 'Valor final',
-    'fr-fr': 'Valeur de fin',
+    'fr-fr': 'Valeur finale',
     'uk-ua': 'Кінцеве значення',
   },
   saveQuery: {
@@ -80,7 +80,7 @@ export const queryText = createDictionary({
     'en-us': 'Save query as...',
     'ru-ru': 'Сохранить запрос как...',
     'es-es': 'Guardar consulta como...',
-    'fr-fr': 'Enregistrer la requête sous…',
+    'fr-fr': 'Enregistrer la requête sous...',
     'uk-ua': 'Зберегти запит як...',
   },
   saveClonedQueryDescription: {
@@ -101,8 +101,7 @@ export const queryText = createDictionary({
       actuelle inchangée.
     `,
     'uk-ua': `
-      Запит буде збережено під новою назвою, а поточний запит залишиться без
-      змін.
+      Запит буде збережено з новою назвою, а поточний запит залишиться без змін.
     `,
   },
   queryDeleteIncomplete: {
@@ -162,7 +161,7 @@ export const queryText = createDictionary({
     'en-us': 'Unable to export to KML',
     'ru-ru': 'Невозможно экспортировать в KML',
     'es-es': 'No se puede exportar a KML',
-    'fr-fr': "Impossible d'exporter au format KML",
+    'fr-fr': "Impossible d'exporter vers KML",
     'uk-ua': 'Не вдалося експортувати в KML',
   },
   missingCoordinatesForKmlDescription: {
@@ -280,7 +279,7 @@ export const queryText = createDictionary({
     'en-us': 'Create {recordSetTable:string}',
     'ru-ru': 'Сделать {recordSetTable:string}',
     'es-es': 'Crear {recordSetTable:string}',
-    'fr-fr': 'Créer un {recordSetTable:string}',
+    'fr-fr': 'Créer {tableInformationRequest:string}',
     'uk-ua': 'Створити {modelName:string}',
   },
   saveAs: {
@@ -308,7 +307,7 @@ export const queryText = createDictionary({
     'en-us': 'Move Down',
     'ru-ru': 'Переместить вниз',
     'es-es': 'Mover hacia abajo',
-    'fr-fr': 'Déplacer vers le bas',
+    'fr-fr': 'Descendre',
     'uk-ua': 'Рухатися вниз',
   },
   sort: {
@@ -358,14 +357,14 @@ export const queryText = createDictionary({
     'ru-ru': '(отформатирован)',
     'es-es': '(formateado)',
     'fr-fr': '(formaté)',
-    'uk-ua': '(відформатовано)',
+    'uk-ua': '(відформатований)',
   },
   like: {
     'en-us': 'Like',
     'ru-ru': 'Подобно',
     'es-es': 'Como',
     'fr-fr': 'Comme',
-    'uk-ua': 'Подобається',
+    'uk-ua': 'Люблю',
   },
   likeDescription: {
     comment: 'Explains the use of special symbols for the "like" query filter',
@@ -385,9 +384,9 @@ export const queryText = createDictionary({
       Use "_" para hacer coincidir un solo carácter
     `,
     'fr-fr': `
-      Utilisez « % » pour correspondre à n'importe quel nombre de caractères.
+      Utilisez "%" pour correspondre à n\'importe quel nombre de caractères.
 
-      Utilisez « _ » pour correspondre à un seul caractère
+      Utilisez "_" pour correspondre à un seul caractère
     `,
     'uk-ua': `
       Використовуйте "%", щоб відповідати будь-якій кількості символів.
@@ -407,7 +406,7 @@ export const queryText = createDictionary({
     'ru-ru': 'Больше чем',
     'es-es': 'Mas grande que',
     'fr-fr': 'Plus grand que',
-    'uk-ua': 'Більше, ніж, величніше ніж, крутіший за',
+    'uk-ua': 'Більш чим',
   },
   lessThan: {
     'en-us': 'Less than',
@@ -440,8 +439,8 @@ export const queryText = createDictionary({
   false: {
     'en-us': 'False',
     'ru-ru': 'Ложь',
-    'es-es': 'Falso',
-    'fr-fr': 'Faux',
+    'es-es': 'FALSO',
+    'fr-fr': 'FAUX',
     'uk-ua': 'помилковий',
   },
   trueOrNull: {
@@ -504,7 +503,7 @@ export const queryText = createDictionary({
     'en-us': 'Starts With',
     'ru-ru': 'Начинается с',
     'es-es': 'Comienza con',
-    'fr-fr': 'Commence par',
+    'fr-fr': 'Commence avec',
     'uk-ua': 'Починається з',
   },
   or: {
@@ -532,7 +531,7 @@ export const queryText = createDictionary({
     'en-us': 'Items have been returned',
     'ru-ru': 'Items have been returned',
     'es-es': 'Los artículos han sido devueltos',
-    'fr-fr': 'Les éléments ont été retournés',
+    'fr-fr': 'Les articles ont été retournés',
     'uk-ua': 'Товари повернуто',
   },
   queryResults: {
@@ -606,7 +605,7 @@ export const queryText = createDictionary({
     'ru-ru': 'Синонимизированный узел дерева',
     'es-es': 'Árbol Sinonimizar',
     'fr-fr': "Synonymiser l'arbre",
-    'uk-ua': 'Дерево синонімізувати',
+    'uk-ua': 'Синонімізувати дерево',
   },
   treeDesynonymize: {
     comment: 'Audit Log Action Type',
@@ -630,7 +629,7 @@ export const queryText = createDictionary({
       {maxLength:number|formatted}
     `,
     'fr-fr': `
-      La valeur du champ est trop longue. La longueur maximale autorisée est de
+      La valeur du champ est trop longue. La longueur maximale autorisée est
       {maxLength:number|formatted}
     `,
     'uk-ua': `

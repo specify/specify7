@@ -355,7 +355,7 @@ export function QueryBuilder({
           } else runQuery('regular');
         }}
       >
-        <div className="flex snap-start flex-col gap-4 overflow-hidden">
+        <div className="flex snap-start flex-col gap-4 overflow-y-auto">
           {state.showMappingView && (
             <MappingView
               mappingElementProps={getMappingLineProps({
@@ -429,6 +429,15 @@ export function QueryBuilder({
                       type: 'ChangeFieldAction',
                       line,
                       field,
+                    })
+            }
+            onChangeFields={
+              isReadOnly
+                ? undefined
+                : (fields): void =>
+                    dispatch({
+                      type: 'ChangeFieldsAction',
+                      fields,
                     })
             }
             onClose={(): void =>

@@ -17,7 +17,7 @@ function entrypoint(): void {
   interceptLogs();
 
   console.group('Specify App Starting');
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV === 'production') {
     console.log(
       '%cDocumentation for Developers:\n',
       'font-weight: bold',
@@ -40,7 +40,10 @@ function entrypoint(): void {
       `flex h-screen print:h-auto overflow-hidden print:overflow-auto
       bg-[color:var(--background)] text-neutral-900 dark:text-neutral-200`
     );
-    portalRoot.setAttribute('class', 'text-neutral-900 dark:text-neutral-200');
+    portalRoot.setAttribute(
+      'class',
+      'text-neutral-900 dark:text-neutral-200 list-none'
+    );
     const reactRoot = createRoot(root);
     reactRoot.render(
       <React.StrictMode>

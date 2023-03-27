@@ -96,6 +96,7 @@ const mainSections = new Set([
   'message',
   'href',
   'errorContext',
+  'systemInformation',
   'pageHtml',
   'consoleLog',
   'navigator',

@@ -205,7 +205,7 @@ exports[`DataEntry.Footer renders without errors 1`] = `
 exports[`DataEntry.Grid renders without errors 1`] = `
 <DocumentFragment>
   <div
-    class="grid overflow-x-auto items-center p-1 -ml-1 gap-2"
+    class="grid items-center p-1 -ml-1 gap-2"
     style="grid-template-columns: 1fr 2fr 3fr auto;"
   >
     Test
