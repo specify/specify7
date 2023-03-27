@@ -31,7 +31,7 @@ import { rawMenuItemsPromise } from '../Header/menuItemDefinitions';
 import { useMenuItems, useUserTools } from '../Header/menuItemProcessing';
 import { AutoComplete } from '../Molecules/AutoComplete';
 import { ListEdit } from '../Toolbar/QueryTablesEdit';
-import { AttachmentPicker } from './AttachmentPicker';
+import { AttachmentPicker } from '../Molecules/AttachmentPicker';
 import type { PreferenceItem, PreferenceItemComponent } from './Definitions';
 import { usePref } from './usePref';
 

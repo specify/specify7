@@ -12,7 +12,7 @@ import { AttachmentsView } from '../Attachments';
 import { fetchOriginalUrl } from '../Attachments/attachments';
 import { UploadAttachment, useAttachment } from '../Attachments/Plugin';
 import { LoadingContext } from '../Core/Contexts';
-import { Dialog } from '../Molecules/Dialog';
+import { Dialog } from './Dialog';
 
 const types = ['url', 'image', 'attachments', 'attachments'] as const;
 
