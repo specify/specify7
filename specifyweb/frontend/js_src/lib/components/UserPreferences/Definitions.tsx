@@ -343,8 +343,8 @@ export const preferenceDefinitions = {
           }),
         },
       },
-      buttonColor: {
-        title: preferencesText.buttonColor(),
+      button: {
+        title: preferencesText.button(),
         items: {
           saveButtonColor: defineItem({
             title: preferencesText.saveButtonColor(),
