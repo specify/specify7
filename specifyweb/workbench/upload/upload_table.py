@@ -7,7 +7,6 @@ from django.db import transaction, IntegrityError
 
 from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.specify import models
-from ..models import Collection
 from .column_options import ColumnOptions, ExtendedColumnOptions
 from .parsing import parse_many, ParseResult, ParseFailure
 from .tomany import ToManyRecord, ScopedToManyRecord, BoundToManyRecord
@@ -75,7 +74,7 @@ class DeferredScopeUploadTable(NamedTuple):
     # (which follows the same logic as in UploadTable), or a function which has the parameter
     # signature: (deferred_upload_plan: DeferredScopeUploadTable, row_index: int) -> models.Collection
     # (see apply_deferred_scopes in .upload.py)
-    overrideScope: Optional[Dict[Literal["collection"], Union[int, Callable[["DeferredScopeUploadTable", int], Collection]]]]
+    overrideScope: Optional[Dict[Literal["collection"], Union[int, Callable[["DeferredScopeUploadTable", int], Any]]]]
     wbcols: Dict[str, ColumnOptions]
     static: Dict[str, Any]
     toOne: Dict[str, Uploadable]
@@ -91,7 +90,12 @@ class DeferredScopeUploadTable(NamedTuple):
             return apply_scoping_to_uploadtable(self, collection)
         else: return self
 
-    def add_colleciton_override(self, collection: Union[int, Callable[["DeferredScopeUploadTable", int], Collection]]) -> "DeferredScopeUploadTable":
+    def get_cols(self) -> Set[str]:
+        return set(cd.column for cd in self.wbcols.values()) \
+            | set(col for u in self.toOne.values() for col in u.get_cols()) \
+            | set(col for rs in self.toMany.values() for r in rs for col in r.get_cols())
+
+    def add_colleciton_override(self, collection: Union[int, Callable[["DeferredScopeUploadTable", int], Any]]) -> "DeferredScopeUploadTable":
         ''' To modify the overrideScope after the DeferredScope UploadTable is created, use add_colleciton_override
         To properly apply scoping (see self.bind()), the <collection> should either be a collection's id, or a callable (function), 
         which has paramaters that accept: this DeferredScope UploadTable, and an integer representing the current row_index.
@@ -150,6 +154,27 @@ class DeferredScopeUploadTable(NamedTuple):
         
         # Finally bind the ScopedUploadTable and return the BoundUploadTable or ParseFailures 
         return scoped_disambiguated.bind(default_collection, row, uploadingAgentId, auditor, cache, row_index)
+    
+    def _to_json(self) -> Dict:
+        result = dict(
+            wbcols={k: v.to_json() for k,v in self.wbcols.items()},
+            static=self.static
+        )
+        result['toOne'] = {
+            key: uploadable.to_json()
+            for key, uploadable in self.toOne.items()
+        }
+        result['toMany'] = {
+            key: [to_many.to_json() for to_many in to_manys]
+            for key, to_manys in self.toMany.items()
+        }
+        return result
+
+    def to_json(self) -> Dict:
+        return { 'uploadTable': self._to_json() }
+
+    def unparse(self) -> Dict:
+        return { 'baseTableName': self.name, 'uploadable': self.to_json() }
 
 
 class ScopedUploadTable(NamedTuple):
