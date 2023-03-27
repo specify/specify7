@@ -17,7 +17,7 @@ import { Container, H2 } from '../Atoms';
 import { className } from '../Atoms/className';
 import { Input, Label, Select } from '../Atoms/Form';
 import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
-import { SerializedResource } from '../DataModel/helperTypes';
+import type { SerializedResource } from '../DataModel/helperTypes';
 import { getModel, schema } from '../DataModel/schema';
 import type { Attachment, Tables } from '../DataModel/types';
 import { useMenuItem } from '../Header/useMenuItem';
@@ -256,8 +256,8 @@ function Attachments({
             ? undefined
             : setCollection({ records, totalCount: collection.totalCount })
         }
-        onFetchMore={fetchMore}
         onClick={onClick}
+        onFetchMore={fetchMore}
       />
     </Container.FullGray>
   );

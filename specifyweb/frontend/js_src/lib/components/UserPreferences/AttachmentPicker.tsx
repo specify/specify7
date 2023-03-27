@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
@@ -32,17 +33,17 @@ export function AttachmentPicker({
   const [UrlNotFound, setUrlNotFound] = React.useState(false);
 
   const [type, setType] = React.useState<
-    'url' | 'image' | 'attachments' | 'attachments'
+    'attachments' | 'attachments' | 'image' | 'url'
   >('url');
   const types = ['url', 'image', 'attachments', 'attachments'] as const;
 
   return (
     <>
-      {!isReadOnly ? (
+      {isReadOnly ? undefined : (
         <Button.Gray onClick={() => setIsCustom(!isCustom)}>
           {url === undefined ? commonText.pick() : commonText.change()}
         </Button.Gray>
-      ) : undefined}
+      )}
       {url !== undefined && !isReadOnly ? (
         <Button.Gray
           onClick={() => {
@@ -53,16 +54,16 @@ export function AttachmentPicker({
           {commonText.delete()}
         </Button.Gray>
       ) : undefined}
-      {url !== undefined ? (
+      {url === undefined ? null : (
         <img
-          className={`max-h-full max-w-full object-contain`}
+          className="max-h-full max-w-full object-contain"
           src={url}
           style={{
             width: `10rem`,
             height: `10rem`,
           }}
         />
-      ) : null}
+      )}
 
       {isCustom && (
         <Dialog
@@ -73,9 +74,10 @@ export function AttachmentPicker({
           }}
         >
           <Tabs
+            index={[types.indexOf(type), (index) => setType(types[index])]}
             tabs={{
               [preferencesText.url()]: (
-                <Textarea onValueChange={handleChange} value={url} />
+                <Textarea value={url} onValueChange={handleChange} />
               ),
               [wbText.upload()]: (
                 <UploadAttachment
@@ -89,22 +91,21 @@ export function AttachmentPicker({
                   onClick={(attachment): void => {
                     loading(
                       fetchOriginalUrl(attachment).then((url) => {
-                        url !== undefined
-                          ? handleChange(url)
-                          : setUrlNotFound(true);
+                        url === undefined
+                          ? setUrlNotFound(true)
+                          : handleChange(url);
                       })
                     );
                   }}
                 />
               ),
             }}
-            index={[types.indexOf(type), (index) => setType(types[index])]}
           />
-          {UrlNotFound === true && (
+          {UrlNotFound && (
             <Dialog
               buttons={commonText.cancel()}
-              onClose={() => setUrlNotFound(false)}
               header={attachmentsText.attachments()}
+              onClose={() => setUrlNotFound(false)}
             >
               {preferencesText.attachmentFailed()}
             </Dialog>
