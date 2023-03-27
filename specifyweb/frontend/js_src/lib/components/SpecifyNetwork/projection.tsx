@@ -7,8 +7,8 @@ import type { IR, R } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import L from '../Leaflet/extend';
 import { DateElement } from '../Molecules/DateElement';
-import type { RawBrokerResponse } from '../SpecifyNetwork/fetchers';
-import { validateBrokerResponse } from '../SpecifyNetwork/fetchers';
+import type { RawBrokerResponse } from './fetchers';
+import { validateBrokerResponse } from './fetchers';
 
 const maxProjectionLayers = 10;
 

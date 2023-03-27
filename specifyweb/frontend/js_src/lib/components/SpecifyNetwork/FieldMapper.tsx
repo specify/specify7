@@ -7,7 +7,7 @@ import React from 'react';
 import { specifyNetworkText } from '../../localization/specifyNetwork';
 import type { IR, RA } from '../../utils/types';
 import { camelToHuman, capitalize } from '../../utils/utils';
-import { BrokerValue } from './formatValue';
+import { BrokerValue } from './FormatValue';
 
 // Replace a word with a mapped variant
 const fieldPartMapper: IR<string> = {

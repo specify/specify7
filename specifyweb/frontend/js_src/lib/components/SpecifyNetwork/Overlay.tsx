@@ -11,17 +11,46 @@ import type { SpecifyNetworkBadge } from './index';
 import { SpecifyNetworkMap } from './Map';
 import { SpecifyNetworkOccurrence, SpecifyNetworkSpecies } from './Table';
 
+export type BrokerData = {
+  readonly occurrence: RA<BrokerRecord> | undefined;
+  readonly species: RA<BrokerRecord> | undefined;
+  readonly taxonId: number | false | undefined;
+  readonly speciesName: string | undefined;
+};
+
 export function SpecifyNetworkOverlays({
-  species: localSpecies,
+  species,
   guid,
   taxonId,
   open: [open, setOpen],
 }: {
   readonly species: string;
   readonly guid: string;
-  readonly taxonId: number | undefined | false;
+  readonly taxonId: number | false | undefined;
   readonly open: GetOrSet<RA<SpecifyNetworkBadge>>;
 }): JSX.Element | null {
+  const data = useBrokerData(species, guid, taxonId);
+  return open.length === 0 ? null : (
+    <>
+      {open.map((badge) => {
+        const Component = badges[badge];
+        return (
+          <Component
+            data={data}
+            key={badge}
+            onClose={(): void => setOpen(open.filter((open) => open !== badge))}
+          />
+        );
+      })}
+    </>
+  );
+}
+
+function useBrokerData(
+  localSpecies: string,
+  guid: string,
+  taxonId: number | false | undefined
+): BrokerData {
   const occurrence = useOccurrence(guid);
   const occurrenceSpeciesName = React.useMemo(
     () =>
@@ -41,22 +70,15 @@ export function SpecifyNetworkOverlays({
         : undefined) ?? occurrenceSpeciesName,
     [species, occurrenceSpeciesName]
   );
-  return open.length === 0 ? null : (
-    <>
-      {open.map((badge) => {
-        const Component = badges[badge];
-        return (
-          <Component
-            key={badge}
-            occurrence={occurrence}
-            species={species}
-            speciesName={speciesName}
-            taxonId={taxonId}
-            onClose={(): void => setOpen(open.filter((open) => open !== badge))}
-          />
-        );
-      })}
-    </>
+  return React.useMemo(
+    () => ({
+      occurrence,
+      species,
+      speciesName,
+      taxonId,
+      guid,
+    }),
+    [occurrence, species, speciesName, taxonId, guid]
   );
 }
 
@@ -79,10 +101,7 @@ export function NoBrokerData({
 const badges: RR<
   SpecifyNetworkBadge,
   (props: {
-    readonly occurrence: RA<BrokerRecord> | undefined;
-    readonly species: RA<BrokerRecord> | undefined;
-    readonly taxonId: number | false | undefined;
-    readonly speciesName: string | undefined;
+    readonly data: BrokerData;
     readonly onClose: () => void;
   }) => JSX.Element
 > = {

@@ -25,7 +25,7 @@ import {
 import { LeafletMap } from '../Leaflet/Map';
 import { findLocalityColumnsInDataSet } from '../Leaflet/wbLocalityDataExtractor';
 import { LoadingScreen } from '../Molecules/Dialog';
-import { extractQueryTaxonId } from '../SpecifyNetwork/Map';
+import { extractQueryTaxonId, useExtendedMap } from '../SpecifyNetwork/Map';
 import { defaultColumnOptions } from '../WbPlanView/linesGetter';
 import type { SplitMappingPath } from '../WbPlanView/mappingHelpers';
 import {
@@ -186,6 +186,7 @@ export function QueryToMapDialog({
     () => extractQueryTaxonId(tableName, fields),
     [tableName, fields]
   );
+  const description = useExtendedMap({ map, taxonId });
 
   const markerEvents = React.useMemo(
     () => eventListener<{ readonly updated: undefined }>(),
@@ -263,6 +264,7 @@ export function QueryToMapDialog({
           />
         ) : undefined
       }
+      description={description}
       localityPoints={initialData.localityData}
       onClose={handleClose}
       onMarkerClick={initialData.onClick}

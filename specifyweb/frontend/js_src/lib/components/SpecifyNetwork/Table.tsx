@@ -8,14 +8,14 @@ import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { BrokerRow, BrokerSection, BrokerTable } from './Components';
 import type { BrokerRecord } from './fetchers';
 import { extractBrokerField } from './fetchers';
-import { NoBrokerData } from './Overlay';
+import { BrokerData, NoBrokerData } from './Overlay';
 import { SpecifyNetworkResponse } from './Response';
 
 export function SpecifyNetworkOccurrence({
-  occurrence,
+  data: { occurrence },
   onClose: handleClose,
 }: {
-  readonly occurrence: RA<BrokerRecord> | undefined;
+  readonly data: BrokerData;
   readonly onClose: () => void;
 }): JSX.Element {
   return typeof occurrence === 'object' ? (
@@ -47,7 +47,7 @@ function IssuesTable({
   );
 
   return issues.length === 0 ? null : (
-    <BrokerSection anchor="issues" label={specifyNetworkText.dataQuality()}>
+    <BrokerSection label={specifyNetworkText.dataQuality()}>
       <BrokerTable columns={1}>
         {issues.map(({ provider, record }) => (
           <BrokerRow
@@ -90,19 +90,17 @@ function OccurrenceTable({
     }));
 
   return (
-    <BrokerSection anchor="occ" label={schema.models.CollectionObject.label}>
+    <BrokerSection label={schema.models.CollectionObject.label}>
       <SpecifyNetworkResponse responses={alteredResponse} />
     </BrokerSection>
   );
 }
 
 export function SpecifyNetworkSpecies({
-  species,
-  speciesName,
+  data: { species, speciesName },
   onClose: handleClose,
 }: {
-  readonly species: RA<BrokerRecord> | undefined;
-  readonly speciesName: string | undefined;
+  readonly data: BrokerData;
   readonly onClose: () => void;
 }): JSX.Element {
   return species === undefined ? (

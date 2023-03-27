@@ -21,13 +21,18 @@ import {
   QueryToMapDialog,
 } from '../QueryBuilder/ToMap';
 import { getGenericMappingPath } from '../WbPlanView/mappingHelpers';
-import { NoBrokerData } from './Overlay';
+import { BrokerData, NoBrokerData } from './Overlay';
+import { LeafletInstance } from '../Leaflet/addOns';
+import { useProjectionLayers } from './projection';
+import { getGbifLayers, useIdbLayers } from './overlays';
+import { layerGroup } from 'leaflet';
+import { specifyNetworkText } from '../../localization/specifyNetwork';
 
 export function SpecifyNetworkMap({
-  taxonId,
+  data: { taxonId },
   onClose: handleClose,
 }: {
-  readonly taxonId: number | false | undefined;
+  readonly data: BrokerData;
   readonly onClose: () => void;
 }): JSX.Element {
   const [queryResource] = useAsyncState(
@@ -163,6 +168,57 @@ export function extractQueryTaxonId(
       'More than one taxon id found in the query. Using the first one'
     );
   return pairedFields[0];
+}
+
+export function useExtendedMap({
+  map,
+  taxonId,
+}: {
+  readonly map: LeafletInstance | null;
+  readonly taxonId: number | undefined;
+}): JSX.Element | undefined {
+  const projection = useProjectionLayers(speciesName);
+  const gbif = React.useMemo(
+    () => f.maybe(species, getGbifLayers),
+    [species],
+    []
+  );
+  const iDigBio = useIdbLayers(occurrence, speciesName);
+
+  const overlays = React.useMemo(
+    () => ({
+      ...projection?.layers,
+      ...gbif?.layers,
+      ...iDigBio?.layers,
+    }),
+    [projection, gbif, iDigBio]
+  );
+
+  const loadedOverlays = React.useRef<Set<string>>(new Set());
+  React.useEffect(() => {
+    if (typeof map === 'undefined' || typeof layerGroup === 'undefined') return;
+    const addedOverlays = Object.keys(overlays).filter(
+      (label) => !loadedOverlays.current.has(label)
+    );
+    const addLayers = addAggregatorOverlays(map, layerGroup);
+    addLayers(
+      Object.fromEntries(addedOverlays.map((label) => [label, overlays[label]]))
+    );
+    addedOverlays.forEach((label) => {
+      loadedOverlays.current.add(label);
+    });
+  }, [map, overlays]);
+
+  return (
+    <>
+      {filterArray([
+        specifyNetworkText.mapDescription(),
+        projection?.description,
+        gbif?.description,
+        iDigBio?.description,
+      ])}
+    </>
+  );
 }
 
 export const exportsForTests = {

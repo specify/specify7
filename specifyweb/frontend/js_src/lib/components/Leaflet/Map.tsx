@@ -23,6 +23,7 @@ export function LeafletMap({
   forwardRef,
   header = localityText.geoMap(),
   headerButtons,
+  description,
   buttons = commonText.close(),
   onClose: handleClose,
   dialog = 'modal',
@@ -32,6 +33,7 @@ export function LeafletMap({
   readonly forwardRef?: React.RefCallback<LeafletInstance>;
   readonly header?: LocalizedString;
   readonly headerButtons?: JSX.Element;
+  readonly description?: JSX.Element;
   readonly buttons?: JSX.Element | LocalizedString;
   readonly onClose: () => void;
   readonly dialog?: 'modal' | 'nonModal' | false;
@@ -93,6 +95,7 @@ export function LeafletMap({
       onClose={handleClose}
       onResize={handleResize}
     >
+      {description}
       {children}
     </Dialog>
   );

@@ -5,8 +5,8 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { specifyNetworkText } from '../../localization/specifyNetwork';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
-import type { BrokerRecord } from '../SpecifyNetwork/fetchers';
-import { extractBrokerField } from '../SpecifyNetwork/fetchers';
+import type { BrokerRecord } from './fetchers';
+import { extractBrokerField } from './fetchers';
 import type { BrokerOverlay } from './projection';
 
 export function getGbifLayers(

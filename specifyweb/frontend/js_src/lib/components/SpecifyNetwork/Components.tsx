@@ -4,16 +4,14 @@ import type { RA } from '../../utils/types';
 import { className } from '../Atoms/className';
 
 export function BrokerSection({
-  anchor,
   label,
   children,
 }: {
-  readonly anchor: string;
   readonly label: string;
   readonly children: React.ReactNode;
 }): JSX.Element {
   return (
-    <section id={anchor}>
+    <section>
       <h3 className={`text-lg ${className.headerPrimary}`}>{label}</h3>
       {children}
     </section>
