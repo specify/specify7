@@ -32,14 +32,14 @@ msgstr "À propos de Spécifier 7"
 msgid "downloadInformation"
 msgstr "Télécharger l'information"
 
-#: components/HomePage/TaxonTiles.tsx:59
+#: components/HomePage/TaxonTiles.tsx:80
 #: components/UserPreferences/Renderers.tsx:198
 #. Used in: Components > Home Page > Taxon Tiles ⬤ Components > User Preferences > Renderers
 #, fuzzy
 msgid "taxonTiles"
 msgstr "Tuiles Taxon"
 
-#: components/HomePage/TaxonTiles.tsx:52
+#: components/HomePage/TaxonTiles.tsx:73
 #. Used in: Components > Home Page > Taxon Tiles
 #, fuzzy
 msgid "taxonTilesDescription"

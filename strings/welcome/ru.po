@@ -19,13 +19,13 @@ msgstr "О Specify 7"
 msgid "downloadInformation"
 msgstr "Скачать информацию"
 
-#: components/HomePage/TaxonTiles.tsx:59
+#: components/HomePage/TaxonTiles.tsx:80
 #: components/UserPreferences/Renderers.tsx:198
 #. Used in: Components > Home Page > Taxon Tiles ⬤ Components > User Preferences > Renderers
 msgid "taxonTiles"
 msgstr "Плитки таксонов"
 
-#: components/HomePage/TaxonTiles.tsx:52
+#: components/HomePage/TaxonTiles.tsx:73
 #. Used in: Components > Home Page > Taxon Tiles
 msgid "taxonTilesDescription"
 msgstr ""
