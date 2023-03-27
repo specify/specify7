@@ -1,7 +1,7 @@
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
-import { unsetUnloadProtect } from '../../hooks/navigation';
+import { unsetUnloadProtect, useSearchParameter } from '../../hooks/navigation';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
@@ -32,7 +32,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   defaultIndex,
   model,
   viewName,
-  title = model.label,
+  title,
   headerButtons,
   dialog,
   isDependent,
@@ -45,6 +45,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   onAdd: handleAdd,
   onClone: handleClone,
   onDelete: handleDelete,
+  createNewRecordSet,
   ...rest
 }: Omit<RecordSelectorProps<SCHEMA>, 'index' | 'records'> & {
   /*
@@ -69,6 +70,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   readonly onClone:
     | ((newResource: SpecifyResource<SCHEMA>) => void)
     | undefined;
+  readonly createNewRecordSet?: (ids: RA<number | undefined>) => void;
 }): JSX.Element | null {
   const [records, setRecords] = React.useState<
     RA<SpecifyResource<SCHEMA> | undefined>
@@ -77,6 +79,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   );
 
   const previousIds = React.useRef(ids);
+
   React.useEffect(() => {
     setRecords((records) =>
       ids.map((id, index) => {
@@ -183,6 +186,10 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
         recordSetTable: schema.models.RecordSet.label,
       })
     : commonText.delete();
+
+  //determine if in scope of new data entry and set title header
+  const [recordsetid] = useSearchParameter('recordsetid');
+
   return (
     <>
       <ResourceView
@@ -197,37 +204,42 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                   !isDependent && dialog !== false ? resource : undefined
                 }
               />
+              {recordsetid === undefined ? undefined : (
+                <>
+                  {hasTablePermission(
+                    model.name,
+                    isDependent ? 'create' : 'read'
+                  ) && typeof handleAdding === 'function' ? (
+                    <DataEntry.Add
+                      aria-label={addLabel}
+                      disabled={mode === 'view'}
+                      title={addLabel}
+                      onClick={handleAdding}
+                    />
+                  ) : undefined}
 
-              {hasTablePermission(
-                model.name,
-                isDependent ? 'create' : 'read'
-              ) && typeof handleAdding === 'function' ? (
-                <DataEntry.Add
-                  aria-label={addLabel}
-                  disabled={mode === 'view'}
-                  title={addLabel}
-                  onClick={handleAdding}
-                />
-              ) : undefined}
+                  {typeof handleRemove === 'function' && canRemove ? (
+                    <DataEntry.Remove
+                      aria-label={removeLabel}
+                      disabled={resource === undefined || mode === 'view'}
+                      title={removeLabel}
+                      onClick={(): void => handleRemove('minusButton')}
+                    />
+                  ) : undefined}
 
-              {typeof handleRemove === 'function' && canRemove ? (
-                <DataEntry.Remove
-                  aria-label={removeLabel}
-                  disabled={resource === undefined || mode === 'view'}
-                  title={removeLabel}
-                  onClick={(): void => handleRemove('minusButton')}
-                />
-              ) : undefined}
+                  {typeof newResource === 'object' ? (
+                    <p className="flex-1">{formsText.creatingNewRecord()}</p>
+                  ) : (
+                    <span
+                      className={`flex-1 ${
+                        dialog === false ? '-ml-2' : '-ml-4'
+                      }`}
+                    />
+                  )}
 
-              {typeof newResource === 'object' ? (
-                <p className="flex-1">{formsText.creatingNewRecord()}</p>
-              ) : (
-                <span
-                  className={`flex-1 ${dialog === false ? '-ml-2' : '-ml-4'}`}
-                />
+                  {specifyNetworkBadge}
+                </>
               )}
-
-              {specifyNetworkBadge}
             </div>
             <div>{slider}</div>
           </div>

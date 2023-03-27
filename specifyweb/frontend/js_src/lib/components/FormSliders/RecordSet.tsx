@@ -31,6 +31,7 @@ import { locationToState, useStableLocation } from '../Router/RouterState';
 import { EditRecordSet } from '../Toolbar/RecordSetEdit';
 import type { RecordSelectorProps } from './RecordSelector';
 import { RecordSelectorFromIds } from './RecordSelectorFromIds';
+import { Button } from '../Atoms/Button';
 
 export function RecordSetWrapper<SCHEMA extends AnySchema>({
   recordSet,
@@ -53,10 +54,11 @@ export function RecordSetWrapper<SCHEMA extends AnySchema>({
       setIndex(savedRecordSetItemIndex);
       return;
     }
-    if (resource.isNew()) {
+    if (resource.isNew() || recordSet.isNew()) {
       setIndex(0);
       return;
     }
+
     loading(
       fetchCollection('RecordSetItem', {
         recordSet: recordSet.id,
@@ -88,10 +90,14 @@ export function RecordSetWrapper<SCHEMA extends AnySchema>({
   const [totalCount] = useAsyncState(
     React.useCallback(
       async () =>
-        fetchCollection('RecordSetItem', {
-          limit: 1,
-          recordSet: recordSet.id,
-        }).then(({ totalCount }) => totalCount),
+        recordSet.isNew()
+          ? resource.isNew()
+            ? 0
+            : 1
+          : fetchCollection('RecordSetItem', {
+              limit: 1,
+              recordSet: recordSet.id,
+            }).then(({ totalCount }) => totalCount),
       [recordSet.id]
     ),
     true
@@ -108,6 +114,7 @@ export function RecordSetWrapper<SCHEMA extends AnySchema>({
       onAdd={undefined}
       onClose={handleClose}
       onSlide={undefined}
+      key={recordSet.cid}
     />
   );
 }
@@ -187,7 +194,7 @@ function RecordSet<SCHEMA extends AnySchema>({
     RA<number | undefined>
   >(() => {
     const array = [];
-    array[totalCount - 1] = undefined;
+    if (totalCount > 0) array[totalCount - 1] = undefined;
     return array;
   });
 
@@ -222,7 +229,7 @@ function RecordSet<SCHEMA extends AnySchema>({
   const [isLoading, handleLoading, handleLoaded] = useBooleanState();
   const handleFetch = React.useCallback(
     (index: number): void => {
-      if (index >= totalCount) return;
+      if (index >= totalCount || recordSet.isNew()) return;
       handleLoading();
       fetchItems(
         recordSet.id,
@@ -249,7 +256,12 @@ function RecordSet<SCHEMA extends AnySchema>({
   // Fetch ID of record at current index
   const currentRecordId = ids[currentIndex];
   React.useEffect(() => {
-    if (currentRecordId === undefined) handleFetch(currentIndex);
+    if (currentRecordId === undefined) {
+      if (recordSet.isNew()) {
+        setIds([currentRecord.id]);
+      }
+      handleFetch(currentIndex);
+    }
     return (): void => {
       previousIndex.current = currentIndex;
     };
@@ -264,12 +276,14 @@ function RecordSet<SCHEMA extends AnySchema>({
   ): void =>
     loading(
       Promise.all(
-        resources.map(async (resource) =>
-          createResource('RecordSetItem', {
-            recordId: resource.id,
-            recordSet: recordSet.get('resource_uri'),
-          })
-        )
+        recordSet.isNew()
+          ? []
+          : resources.map(async (resource) =>
+              createResource('RecordSetItem', {
+                recordId: resource.id,
+                recordSet: recordSet.get('resource_uri'),
+              })
+            )
       ).then(() => {
         const oldTotalCount = totalCount;
         setTotalCount(oldTotalCount + resources.length);
@@ -283,13 +297,38 @@ function RecordSet<SCHEMA extends AnySchema>({
       })
     );
 
+  async function createNewRecordSet(
+    ids: RA<number | undefined>
+  ): Promise<void> {
+    await recordSet.save();
+    await Promise.all(
+      ids.map(async (resource) =>
+        createResource('RecordSetItem', {
+          recordId: resource,
+          recordSet: recordSet.get('resource_uri'),
+        })
+      )
+    );
+    navigate(`/specify/record-set/${recordSet.id}/`);
+  }
+
   return (
     <>
       <RecordSelectorFromIds<SCHEMA>
         {...rest}
         defaultIndex={currentIndex}
         dialog={dialog}
-        headerButtons={<EditRecordSetButton recordSet={recordSet} />}
+        headerButtons={
+          recordSet.isNew() && ids.length > 0 && !currentRecord.isNew() ? (
+            <>
+              <Button.Orange onClick={() => loading(createNewRecordSet(ids))}>
+                {commonText.newRecordSet()}
+              </Button.Orange>
+            </>
+          ) : (
+            <EditRecordSetButton recordSet={recordSet} />
+          )
+        }
         ids={ids}
         isDependent={false}
         isInRecordSet
@@ -297,10 +336,14 @@ function RecordSet<SCHEMA extends AnySchema>({
         mode={mode}
         model={currentRecord.specifyModel}
         newResource={currentRecord.isNew() ? currentRecord : undefined}
-        title={commonText.colonLine({
-          label: schema.models.RecordSet.label,
-          value: recordSet.get('name'),
-        })}
+        title={
+          recordSet.isNew()
+            ? undefined
+            : commonText.colonLine({
+                label: schema.models.RecordSet.label,
+                value: recordSet.get('name'),
+              })
+        }
         totalCount={totalCount}
         onAdd={
           hasToolPermission('recordSets', 'create')
@@ -381,6 +424,7 @@ function RecordSet<SCHEMA extends AnySchema>({
         onSlide={(index, replace): void =>
           go(index, ids[index], undefined, replace)
         }
+        createNewRecordSet={createNewRecordSet}
       />
       {hasDuplicate && (
         <Dialog

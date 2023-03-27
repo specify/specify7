@@ -30,7 +30,7 @@ export function ShowResource({
   // Look to see if we are in the context of a Record Set
   const [recordsetid] = useSearchParameter('recordsetid');
   const recordSetId = f.parseInt(recordsetid);
-  const [recordSet] = useAsyncState<SpecifyResource<RecordSet> | false>(
+  const [recordSet] = useAsyncState<SpecifyResource<RecordSet>>(
     React.useCallback(
       () =>
         typeof recordSetId === 'number'
@@ -51,7 +51,10 @@ export function ShowResource({
                     )
                   : undefined
             )
-          : false,
+          : new schema.models.RecordSet.Resource({
+              dbTableId: resource.specifyModel.tableId,
+              type: 0,
+            }),
       [recordSetId]
     ),
     true
