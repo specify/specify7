@@ -12,7 +12,7 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 4.16-dev\n"
 
-#: components/QueryBuilder/Header.tsx:69
+#: components/QueryBuilder/Header.tsx:85
 #: components/QueryBuilder/Toolbar.tsx:61
 #: components/Reports/RecordSets.tsx:99
 #: components/Toolbar/RecordSetEdit.tsx:52
@@ -141,7 +141,7 @@ msgstr ""
 msgid "invalidPicklistValue"
 msgstr "{value:string} (текущее, недопустимое значение)"
 
-#: components/QueryBuilder/Header.tsx:63
+#: components/QueryBuilder/Header.tsx:79
 #. 🟥Used in query builder header when querying on record set. Used in: Components > Query Builder > Header
 msgid "queryRecordSetTitle"
 msgstr ""
@@ -376,7 +376,7 @@ msgstr "Результаты запроса"
 msgid "browseInForms"
 msgstr "Открыть записи"
 
-#: components/QueryBuilder/Header.tsx:81
+#: components/QueryBuilder/Header.tsx:97
 #. Used in: Components > Query Builder > Header
 msgid "editQuery"
 msgstr "Редактировать запрос"

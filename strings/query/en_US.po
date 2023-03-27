@@ -1,7 +1,7 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/QueryBuilder/Header.tsx:69
+#: components/QueryBuilder/Header.tsx:85
 #: components/QueryBuilder/Toolbar.tsx:61
 #: components/Reports/RecordSets.tsx:99
 #: components/Toolbar/RecordSetEdit.tsx:52
@@ -130,7 +130,7 @@ msgstr ""
 msgid "invalidPicklistValue"
 msgstr "{value:string} (current, invalid value)"
 
-#: components/QueryBuilder/Header.tsx:63
+#: components/QueryBuilder/Header.tsx:79
 #. 🟥Used in query builder header when querying on record set. Used in: Components > Query Builder > Header
 msgid "queryRecordSetTitle"
 msgstr ""
@@ -365,7 +365,7 @@ msgstr "Query Results"
 msgid "browseInForms"
 msgstr "Browse in Forms"
 
-#: components/QueryBuilder/Header.tsx:81
+#: components/QueryBuilder/Header.tsx:97
 #. Used in: Components > Query Builder > Header
 msgid "editQuery"
 msgstr "Edit Query"

@@ -800,7 +800,7 @@ msgstr "{resource:string} <wrap>({count:number|formatted})</wrap>"
 #: components/Forms/BaseResourceView.tsx:108
 #: components/Leaflet/index.ts:144
 #: components/Molecules/FilePicker.tsx:112
-#: components/QueryBuilder/Header.tsx:68
+#: components/QueryBuilder/Header.tsx:84
 #: components/QueryBuilder/ToForms.tsx:57
 #: components/SchemaConfig/Field.tsx:43
 #: components/SchemaConfig/Table.tsx:47
