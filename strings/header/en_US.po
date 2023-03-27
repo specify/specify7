@@ -6,7 +6,7 @@ msgstr "Content-Type: text/plain\n"
 msgid "skipToContent"
 msgstr "Skip to Content"
 
-#: components/Header/menuItemProcessing.ts:63
+#: components/Header/menuItemProcessing.ts:65
 #. Used in: Components > Header > Menu Item Processing
 msgid "main"
 msgstr "Main"
