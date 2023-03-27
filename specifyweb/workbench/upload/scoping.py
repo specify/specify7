@@ -104,10 +104,6 @@ def extend_columnoptions(colopts: ColumnOptions, collection, tablename: str, fie
         dateformat=get_date_format(),
     )
 
-def get_scoping_overrides(ut: UploadTable) -> Optional[int]:
-    if (ut.overrideScope is not None):
-        return ut.overrideScope
-
 def apply_scoping_to_uploadtable(ut: UploadTable, collection) -> ScopedUploadTable:
     table = datamodel.get_table_strict(ut.name)
 

@@ -21,11 +21,12 @@ logger = logging.getLogger(__name__)
 
 class UploadTable(NamedTuple):
     name: str
-    overrideScope: Optional[Dict[Literal['collection'], Optional[int]]]
     wbcols: Dict[str, ColumnOptions]
     static: Dict[str, Any]
     toOne: Dict[str, Uploadable]
     toMany: Dict[str, List[ToManyRecord]]
+
+    overrideScope: Optional[Dict[Literal['collection'], Optional[int]]] = None
 
     def apply_scoping(self, collection) -> "ScopedUploadTable":
         from .scoping import apply_scoping_to_uploadtable
@@ -69,12 +70,6 @@ class DeferredScopeUploadTable(NamedTuple):
     method is called. In which case, the rows of the dataset are known and the scoping can be deduced  
     '''
     name: str
-    
-    # In a DeferredScopeUploadTable, the overrideScope value can be either an integer 
-    # (which follows the same logic as in UploadTable), or a function which has the parameter
-    # signature: (deferred_upload_plan: DeferredScopeUploadTable, row_index: int) -> models.Collection
-    # (see apply_deferred_scopes in .upload.py)
-    overrideScope: Optional[Dict[Literal["collection"], Union[int, Callable[["DeferredScopeUploadTable", int], Any]]]]
     wbcols: Dict[str, ColumnOptions]
     static: Dict[str, Any]
     toOne: Dict[str, Uploadable]
@@ -83,6 +78,12 @@ class DeferredScopeUploadTable(NamedTuple):
     related_key: str
     relationship_name: str
     filter_field: str
+
+    # In a DeferredScopeUploadTable, the overrideScope value can be either an integer 
+    # (which follows the same logic as in UploadTable), or a function which has the parameter
+    # signature: (deferred_upload_plan: DeferredScopeUploadTable, row_index: int) -> models.Collection
+    # (see apply_deferred_scopes in .upload.py)
+    overrideScope: Optional[Dict[Literal["collection"], Union[int, Callable[["DeferredScopeUploadTable", int], Any]]]] = None
 
     def apply_scoping(self, collection, defer: bool = True) -> Union["ScopedUploadTable", "DeferredScopeUploadTable"]:
         if not defer:
