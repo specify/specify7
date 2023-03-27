@@ -23,7 +23,7 @@ export function AttachmentGallery({
   scale,
   isComplete,
   onChange: handleChange,
-  onClick,
+  onClick: handleClick,
 }: {
   readonly attachments: RA<SerializedResource<Attachment>>;
   readonly onFetchMore: () => Promise<void>;
@@ -88,8 +88,8 @@ export function AttachmentGallery({
               (item): void => setRelated(replaceItem(related, index, item)),
             ]}
             onOpen={(): void =>
-              typeof onClick === 'function'
-                ? onClick(attachment)
+              typeof handleClick === 'function'
+                ? handleClick(attachment)
                 : setOpenIndex(index)
             }
             onViewRecord={(model, id): void =>

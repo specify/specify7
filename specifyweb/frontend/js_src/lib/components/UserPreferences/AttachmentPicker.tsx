@@ -1,4 +1,5 @@
 import React from 'react';
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
@@ -13,6 +14,8 @@ import { UploadAttachment, useAttachment } from '../Attachments/Plugin';
 import { LoadingContext } from '../Core/Contexts';
 import { Dialog } from '../Molecules/Dialog';
 
+const types = ['url', 'image', 'attachments', 'attachments'] as const;
+
 export function AttachmentPicker({
   url,
   onChange: handleChange,
@@ -25,24 +28,23 @@ export function AttachmentPicker({
   const [attachment, setAttachment] = useAttachment(undefined);
   useErrorContext('attachment', attachment);
 
-  const [isCustom, setIsCustom] = React.useState(false);
+  const [isOpen, , , handleToggle] = useBooleanState();
 
   const loading = React.useContext(LoadingContext);
 
-  const [UrlNotFound, setUrlNotFound] = React.useState(false);
+  const [urlNotFound, setUrlNotFound] = React.useState(false);
 
   const [type, setType] = React.useState<
     'url' | 'image' | 'attachments' | 'attachments'
   >('url');
-  const types = ['url', 'image', 'attachments', 'attachments'] as const;
 
   return (
     <>
-      {!isReadOnly ? (
-        <Button.Gray onClick={() => setIsCustom(!isCustom)}>
+      {!isReadOnly && (
+        <Button.Gray onClick={() => handleToggle()}>
           {url === undefined ? commonText.pick() : commonText.change()}
         </Button.Gray>
-      ) : undefined}
+      )}
       {url !== undefined && !isReadOnly ? (
         <Button.Gray
           onClick={() => {
@@ -53,7 +55,7 @@ export function AttachmentPicker({
           {commonText.delete()}
         </Button.Gray>
       ) : undefined}
-      {url !== undefined ? (
+      {url !== undefined && (
         <img
           className={`max-h-full max-w-full object-contain`}
           src={url}
@@ -62,14 +64,14 @@ export function AttachmentPicker({
             height: `10rem`,
           }}
         />
-      ) : null}
+      )}
 
-      {isCustom && (
+      {isOpen && (
         <Dialog
           buttons={commonText.close()}
           header={preferencesText.pickAttachment()}
           onClose={(): void => {
-            setIsCustom(!isCustom);
+            handleToggle();
           }}
         >
           <Tabs
@@ -100,7 +102,7 @@ export function AttachmentPicker({
             }}
             index={[types.indexOf(type), (index) => setType(types[index])]}
           />
-          {UrlNotFound === true && (
+          {urlNotFound === true && (
             <Dialog
               buttons={commonText.cancel()}
               onClose={() => setUrlNotFound(false)}

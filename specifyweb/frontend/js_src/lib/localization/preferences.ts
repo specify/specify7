@@ -1407,6 +1407,6 @@ export const preferencesText = createDictionary({
     'en-us': 'Pick an attachment',
   },
   attachmentFailed: {
-    'en-us': 'The attachment failde to load.',
+    'en-us': 'The attachment failed to load.',
   },
 } as const);
