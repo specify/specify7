@@ -3,6 +3,7 @@ import { mockTime, requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
 import { Http } from '../../../utils/ajax/definitions';
 import type { RA } from '../../../utils/types';
+import { userPreferences } from '../../Preferences/userPreferences';
 import { addMissingFields } from '../addMissingFields';
 import { serializeResource } from '../helpers';
 import type { AnySchema, TableFields } from '../helperTypes';
@@ -27,7 +28,6 @@ import {
 } from '../resource';
 import { schema } from '../schema';
 import type { CollectionObject } from '../types';
-import { userPreferences } from '../../Preferences/userPreferences';
 
 const { getCarryOverPreference, getFieldsToClone } = exportsForTests;
 

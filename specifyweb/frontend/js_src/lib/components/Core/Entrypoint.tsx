@@ -7,8 +7,8 @@ import { parseDjangoDump } from '../../utils/ajax/csrfToken';
 import { interceptLogs } from '../Errors/interceptLogs';
 import type { getEntrypointName } from '../InitialContext';
 import { unlockInitialContext } from '../InitialContext';
-import { EntrypointRouter } from '../Router/EntrypointRouter';
 import { SetCssVariables } from '../Preferences/ApplyPreferences';
+import { EntrypointRouter } from '../Router/EntrypointRouter';
 import { Contexts } from './Contexts';
 
 function entrypoint(): void {

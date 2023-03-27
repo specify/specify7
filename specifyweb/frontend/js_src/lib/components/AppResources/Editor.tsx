@@ -38,8 +38,8 @@ import {
 import { getResourceType } from './filtersHelpers';
 import { useAppResourceData } from './hooks';
 import { AppResourcesTabs } from './Tabs';
-import { ScopedAppResourceDir } from './types';
 import { getScope } from './tree';
+import type { ScopedAppResourceDir } from './types';
 
 export function AppResourceEditor({
   resource,
@@ -129,7 +129,7 @@ export function AppResourceEditor({
 
   return typeof resourceData === 'object' ? (
     <Container.Base className="flex-1 overflow-auto">
-      <DataEntry.Header className='flex-wrap'>
+      <DataEntry.Header className="flex-wrap">
         <div className="flex items-center justify-center gap-2">
           <div className="hidden md:block">
             {appResourceIcon(getResourceType(resource))}
