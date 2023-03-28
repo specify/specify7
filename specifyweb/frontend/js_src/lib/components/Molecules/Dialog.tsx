@@ -167,6 +167,18 @@ export function Dialog({
 }): JSX.Element {
   const id = useId('modal');
 
+  const root = document.getElementById('root');
+  React.useEffect(() => {
+    if (modal === true) {
+      root?.setAttribute('inert', 'true');
+    } else {
+      root?.removeAttribute('inert');
+    }
+    return () => {
+      root?.removeAttribute('inert');
+    };
+  }, [modal]);
+
   const [modifyTitle] = usePref('general', 'dialog', 'updatePageTitle');
   useTitle(modal && isOpen && modifyTitle ? header : undefined);
 

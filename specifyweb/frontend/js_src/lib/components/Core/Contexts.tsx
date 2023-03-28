@@ -123,6 +123,7 @@ export function Contexts({
                   header={commonText.loading()}
                   isOpen={isLoading}
                   onClose={undefined}
+                  modal={false}
                 >
                   {loadingBar}
                 </Dialog>
