@@ -169,7 +169,7 @@ export function Dialog({
 
   const root = document.getElementById('root');
   React.useEffect(() => {
-    if (modal === true) {
+    if (modal) {
       root?.setAttribute('inert', 'true');
     } else {
       root?.removeAttribute('inert');
