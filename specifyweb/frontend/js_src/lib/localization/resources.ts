@@ -233,4 +233,7 @@ export const resourcesText = createDictionary({
     'fr-fr': 'Préférences distantes',
     'uk-ua': 'Віддалені параметри',
   },
+  newFormDefinition: {
+    'en-us': 'New form definition',
+  },
 } as const);

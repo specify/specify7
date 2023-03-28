@@ -198,6 +198,7 @@ function EditAppResource({
          */
         return false;
       }}
+      title={resourcesText.newFormDefinition()}
     />
   );
 }
