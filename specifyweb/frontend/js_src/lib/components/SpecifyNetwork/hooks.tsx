@@ -1,9 +1,13 @@
-import { RA } from '../../utils/types';
-import { BrokerRecord, fetchName, fetchOccurrence } from './fetchers';
-import { useAsyncState } from '../../hooks/useAsyncState';
 import React from 'react';
 
-export function useOccurrence(guid: string): RA<BrokerRecord> | undefined {
+import { useAsyncState } from '../../hooks/useAsyncState';
+import type { RA } from '../../utils/types';
+import type { BrokerRecord } from './fetchers';
+import { fetchName, fetchOccurrence } from './fetchers';
+
+export function useOccurrence(
+  guid: string | undefined = ''
+): RA<BrokerRecord> | undefined {
   return useAsyncState(
     React.useCallback(
       async () => (guid === '' ? [] : fetchOccurrence(guid)),

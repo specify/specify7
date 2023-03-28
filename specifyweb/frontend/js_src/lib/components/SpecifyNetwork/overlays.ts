@@ -5,6 +5,8 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { specifyNetworkText } from '../../localization/specifyNetwork';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
+import { schema } from '../DataModel/schema';
+import { userInformation } from '../InitialContext/userInformation';
 import type { BrokerRecord } from './fetchers';
 import { extractBrokerField } from './fetchers';
 import type { BrokerOverlay } from './projection';
@@ -98,15 +100,15 @@ export function useIdbLayers(
 ): BrokerOverlay | undefined {
   const [layers] = useAsyncState<BrokerOverlay>(
     React.useCallback(() => {
-      if (occurrence === undefined) return;
       const idbScientificName =
-        extractBrokerField(occurrence, 'idb', 'dwc:scientificName') ??
+        extractBrokerField(occurrence ?? [], 'idb', 'dwc:scientificName') ??
         scientificName;
-      const collectionCode = extractBrokerField(
-        occurrence,
-        'idb',
-        'dwc:collectionCode'
-      );
+      const collectionCode =
+        extractBrokerField(occurrence ?? [], 'idb', 'dwc:collectionCode') ??
+        userInformation.availableCollections.find(
+          ({ id }) => id === schema.domainLevelIds.collection
+        )?.code ??
+        undefined;
       if (idbScientificName === undefined) return;
       return f
         .all({

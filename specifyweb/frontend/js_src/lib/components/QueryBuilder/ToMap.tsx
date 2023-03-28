@@ -26,6 +26,8 @@ import { LeafletMap } from '../Leaflet/Map';
 import { findLocalityColumnsInDataSet } from '../Leaflet/wbLocalityDataExtractor';
 import { LoadingScreen } from '../Molecules/Dialog';
 import { extractQueryTaxonId, useExtendedMap } from '../SpecifyNetwork/Map';
+import type { BrokerData } from '../SpecifyNetwork/Overlay';
+import { useMapData } from '../SpecifyNetwork/Overlay';
 import { defaultColumnOptions } from '../WbPlanView/linesGetter';
 import type { SplitMappingPath } from '../WbPlanView/mappingHelpers';
 import {
@@ -157,6 +159,7 @@ type LocalityDataWithId = {
 
 export function QueryToMapDialog({
   results,
+  brokerData,
   totalCount,
   localityMappings,
   tableName,
@@ -165,6 +168,7 @@ export function QueryToMapDialog({
   onFetchMore: handleFetchMore,
 }: {
   readonly results: RA<QueryResultRow>;
+  readonly brokerData?: BrokerData;
   readonly totalCount: number | undefined;
   readonly localityMappings: RA<RA<LocalityColumn>>;
   readonly tableName: keyof Tables;
@@ -172,7 +176,7 @@ export function QueryToMapDialog({
   readonly onClose: () => void;
   readonly onFetchMore: (() => Promise<RA<QueryResultRow> | void>) | undefined;
 }): JSX.Element {
-  const [map, setMap] = React.useState<LeafletInstance | null>(null);
+  const [map, setMap] = React.useState<LeafletInstance | undefined>(undefined);
   const localityData = React.useRef<RA<LocalityDataWithId>>([]);
   const [initialData, setInitialData] = React.useState<
     | {
@@ -183,10 +187,11 @@ export function QueryToMapDialog({
   >(undefined);
 
   const taxonId = React.useMemo(
-    () => extractQueryTaxonId(tableName, fields),
-    [tableName, fields]
+    () => brokerData?.taxonId ?? extractQueryTaxonId(tableName, fields),
+    [tableName, fields, brokerData?.taxonId]
   );
-  const description = useExtendedMap({ map, taxonId });
+  const data = useMapData(brokerData, taxonId);
+  const description = useExtendedMap(map, data);
 
   const markerEvents = React.useMemo(
     () => eventListener<{ readonly updated: undefined }>(),
@@ -224,10 +229,10 @@ export function QueryToMapDialog({
   useFetchLoop(handleFetchMore, handleAddPoints);
 
   React.useEffect(() => {
-    if (map === null) return undefined;
+    if (map === undefined) return undefined;
 
     function emptyQueue(): void {
-      if (map === null) return;
+      if (map === undefined) return;
       addLeafletMarkers(tableName, map, localityData.current);
       localityData.current = [];
     }
@@ -241,6 +246,7 @@ export function QueryToMapDialog({
        * This will only add initial locality data
        * That is needed so that the map can zoom in to correct place
        */
+      description={description}
       forwardRef={setMap}
       header={
         typeof totalCount === 'number'
@@ -264,7 +270,6 @@ export function QueryToMapDialog({
           />
         ) : undefined
       }
-      description={description}
       localityPoints={initialData.localityData}
       onClose={handleClose}
       onMarkerClick={initialData.onClick}

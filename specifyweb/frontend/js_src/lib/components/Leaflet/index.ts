@@ -6,6 +6,7 @@
 
 import { commonText } from '../../localization/common';
 import type { RA, WritableArray } from '../../utils/types';
+import { overwriteReadOnly } from '../../utils/types';
 import { className } from '../Atoms/className';
 import { legacyNonJsxIcons } from '../Atoms/Icons';
 import { getUserPref } from '../UserPreferences/helpers';
@@ -68,6 +69,12 @@ export function showLeafletMap({
     tileLayers.overlays
   );
   controlLayers.addTo(map);
+  const leafletMap = map as LeafletInstance;
+  overwriteReadOnly(leafletMap, 'controlLayers', controlLayers);
+  if (
+    !Array.isArray((controlLayers as LeafletInstance['controlLayers'])._layers)
+  )
+    throw new Error('Unable to retrieve layer names');
 
   // Hide controls when printing map
   container
@@ -75,12 +82,10 @@ export function showLeafletMap({
     ?.classList.add('print:hidden');
 
   addPrintMapButton(map);
-  rememberSelectedBaseLayers(map, tileLayers.baseMaps, 'MainMap');
+  rememberSelectedBaseLayers(map, tileLayers.baseMaps);
 
   return addMarkersToMap(
-    map,
-    tileLayers.overlays,
-    controlLayers,
+    leafletMap,
     localityPoints.map((pointDataDict, index) =>
       getMarkersFromLocalityData({
         localityData: pointDataDict,

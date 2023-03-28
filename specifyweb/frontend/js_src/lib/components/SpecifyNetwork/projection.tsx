@@ -9,6 +9,7 @@ import L from '../Leaflet/extend';
 import { DateElement } from '../Molecules/DateElement';
 import type { RawBrokerResponse } from './fetchers';
 import { validateBrokerResponse } from './fetchers';
+import { brokerUrl } from './config';
 
 const maxProjectionLayers = 10;
 
@@ -36,7 +37,7 @@ export function useProjectionLayers(
         scientificName === undefined
           ? undefined
           : ajax<RawProjectionResponse>(
-              `/broker/api/v1/map/?namestr=${scientificName}&scenariocode=worldclim-curr&provider=lm`,
+              `${brokerUrl}/api/v1/map/?namestr=${scientificName}&scenariocode=worldclim-curr&provider=lm`,
               {
                 headers: {
                   Accept: 'application/json',

@@ -9,6 +9,7 @@ import { Button } from '../Atoms/Button';
 import { LeafletMap } from '../Leaflet/Map';
 import { mappingPathToString } from '../WbPlanView/mappingHelpers';
 import type { QueryField } from './helpers';
+import { LeafletInstance } from '../Leaflet/addOns';
 
 const emptyArray: RA<never> = [];
 const defaultPoint = [0, 10] as const;
@@ -33,10 +34,10 @@ export function QueryFromMap({
     undefined
   );
 
-  const [map, setMap] = React.useState<L.Map | null>(null);
+  const [map, setMap] = React.useState<LeafletInstance | undefined>(undefined);
 
   React.useEffect(() => {
-    if (map === null) return;
+    if (map === undefined) return;
 
     const indexes = findCoordinateLines(fields, lineNumber);
     setLineIndexes(indexes);
@@ -178,9 +179,13 @@ const setMarkerMoveHandler = (
     callback([lat, lng]);
   });
 
-function usePolygon(map: L.Map | null, start: Pair, end: Pair): void {
+function usePolygon(
+  map: LeafletInstance | undefined,
+  start: Pair,
+  end: Pair
+): void {
   React.useEffect(() => {
-    if (map === null) return undefined;
+    if (map === undefined) return undefined;
     const polygon = L.polygon(pointsToPolygon(start, end), {
       interactive: false,
     });

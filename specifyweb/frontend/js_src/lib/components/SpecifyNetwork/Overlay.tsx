@@ -1,8 +1,10 @@
 import React from 'react';
 
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import { specifyNetworkText } from '../../localization/specifyNetwork';
 import type { GetOrSet, RA, RR } from '../../utils/types';
+import { fetchResource } from '../DataModel/resource';
 import { Dialog } from '../Molecules/Dialog';
 import type { BrokerRecord } from './fetchers';
 import { extractBrokerField } from './fetchers';
@@ -46,9 +48,9 @@ export function SpecifyNetworkOverlays({
   );
 }
 
-function useBrokerData(
-  localSpecies: string,
-  guid: string,
+export function useBrokerData(
+  localSpecies: string | undefined,
+  guid: string | undefined,
   taxonId: number | false | undefined
 ): BrokerData {
   const occurrence = useOccurrence(guid);
@@ -80,6 +82,27 @@ function useBrokerData(
     }),
     [occurrence, species, speciesName, taxonId, guid]
   );
+}
+
+export function useMapData(
+  brokerData: BrokerData | undefined,
+  taxonId: number | false | undefined
+): BrokerData {
+  const [speciesName] = useAsyncState(
+    React.useCallback(
+      () =>
+        brokerData?.speciesName ??
+        (typeof taxonId === 'number'
+          ? fetchResource('Taxon', taxonId).then(
+              (resource) => resource?.fullName ?? undefined
+            )
+          : undefined),
+      [brokerData?.speciesName, taxonId]
+    ),
+    false
+  );
+  const newBrokerData = useBrokerData(speciesName, undefined, taxonId);
+  return brokerData ?? newBrokerData;
 }
 
 export function NoBrokerData({

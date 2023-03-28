@@ -1,7 +1,9 @@
+import { layerGroup } from 'leaflet';
 import React from 'react';
 
 import { useResource } from '../../hooks/resource';
 import { useAsyncState } from '../../hooks/useAsyncState';
+import { specifyNetworkText } from '../../localization/specifyNetwork';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
@@ -9,6 +11,7 @@ import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { SpQuery, Tables } from '../DataModel/types';
+import type { LeafletInstance } from '../Leaflet/addOns';
 import { LoadingScreen } from '../Molecules/Dialog';
 import { queryFromTree } from '../QueryBuilder/fromTree';
 import type { QueryField } from '../QueryBuilder/helpers';
@@ -21,15 +24,13 @@ import {
   QueryToMapDialog,
 } from '../QueryBuilder/ToMap';
 import { getGenericMappingPath } from '../WbPlanView/mappingHelpers';
-import { BrokerData, NoBrokerData } from './Overlay';
-import { LeafletInstance } from '../Leaflet/addOns';
-import { useProjectionLayers } from './projection';
+import type { BrokerData } from './Overlay';
+import { NoBrokerData } from './Overlay';
 import { getGbifLayers, useIdbLayers } from './overlays';
-import { layerGroup } from 'leaflet';
-import { specifyNetworkText } from '../../localization/specifyNetwork';
+import { useProjectionLayers } from './projection';
 
 export function SpecifyNetworkMap({
-  data: { taxonId },
+  data,
   onClose: handleClose,
 }: {
   readonly data: BrokerData;
@@ -38,27 +39,33 @@ export function SpecifyNetworkMap({
   const [queryResource] = useAsyncState(
     React.useCallback(
       async () =>
-        typeof taxonId === 'number'
-          ? queryFromTree('Taxon', taxonId)
+        typeof data.taxonId === 'number'
+          ? queryFromTree('Taxon', data.taxonId)
           : undefined,
-      [taxonId]
+      [data.taxonId]
     ),
     true
   );
-  return taxonId === false ? (
+  return data.taxonId === false ? (
     <NoBrokerData onClose={handleClose} />
-  ) : taxonId === undefined || queryResource === undefined ? (
+  ) : data.taxonId === undefined || queryResource === undefined ? (
     <LoadingScreen />
   ) : (
-    <MapWrapper queryResource={queryResource} onClose={handleClose} />
+    <MapWrapper
+      data={data}
+      queryResource={queryResource}
+      onClose={handleClose}
+    />
   );
 }
 
 function MapWrapper({
   queryResource,
+  data,
   onClose: handleClose,
 }: {
   readonly queryResource: SpecifyResource<SpQuery>;
+  readonly data: BrokerData;
   readonly onClose: () => void;
 }): JSX.Element {
   const [query] = useResource(queryResource);
@@ -75,7 +82,7 @@ function MapWrapper({
   return props === undefined ? (
     <LoadingScreen />
   ) : (
-    <Map props={props} onClose={handleClose} />
+    <Map data={data} props={props} onClose={handleClose} />
   );
 }
 
@@ -113,9 +120,11 @@ const tableName = 'CollectionObject';
 
 function Map({
   props,
+  data,
   onClose: handleClose,
 }: {
   readonly props: Exclude<ReturnType<typeof useQueryResultsWrapper>, undefined>;
+  readonly data: BrokerData;
   readonly onClose: () => void;
 }): JSX.Element {
   const {
@@ -136,6 +145,7 @@ function Map({
     <LoadingScreen />
   ) : (
     <QueryToMapDialog
+      brokerData={data}
       fields={props.allFields}
       localityMappings={localityMappings}
       results={loadedResults}
@@ -170,19 +180,12 @@ export function extractQueryTaxonId(
   return pairedFields[0];
 }
 
-export function useExtendedMap({
-  map,
-  taxonId,
-}: {
-  readonly map: LeafletInstance | null;
-  readonly taxonId: number | undefined;
-}): JSX.Element | undefined {
+export function useExtendedMap(
+  map: LeafletInstance | undefined,
+  { speciesName, species, occurrence }: BrokerData
+): JSX.Element | undefined {
   const projection = useProjectionLayers(speciesName);
-  const gbif = React.useMemo(
-    () => f.maybe(species, getGbifLayers),
-    [species],
-    []
-  );
+  const gbif = React.useMemo(() => f.maybe(species, getGbifLayers), [species]);
   const iDigBio = useIdbLayers(occurrence, speciesName);
 
   const overlays = React.useMemo(
@@ -194,19 +197,13 @@ export function useExtendedMap({
     [projection, gbif, iDigBio]
   );
 
-  const loadedOverlays = React.useRef<Set<string>>(new Set());
   React.useEffect(() => {
-    if (typeof map === 'undefined' || typeof layerGroup === 'undefined') return;
-    const addedOverlays = Object.keys(overlays).filter(
-      (label) => !loadedOverlays.current.has(label)
-    );
-    const addLayers = addAggregatorOverlays(map, layerGroup);
-    addLayers(
-      Object.fromEntries(addedOverlays.map((label) => [label, overlays[label]]))
-    );
-    addedOverlays.forEach((label) => {
-      loadedOverlays.current.add(label);
-    });
+    if (map === undefined || layerGroup === undefined) return;
+    Object.entries(overlays)
+      .filter(([label]) =>
+        map.controlLayers._layers.every(({ name }) => name !== label)
+      )
+      .forEach(([label, layer]) => map.controlLayers.addOverlay(layer, label));
   }, [map, overlays]);
 
   return (

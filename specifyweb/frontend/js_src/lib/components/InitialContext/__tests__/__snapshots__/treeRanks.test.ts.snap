@@ -372,5 +372,3 @@ exports[`getDisciplineTrees 1`] = `
   "Taxon",
 ]
 `;
-
-exports[`strictGetTreeDefinitionItems Taxon 1`] = `undefined`;

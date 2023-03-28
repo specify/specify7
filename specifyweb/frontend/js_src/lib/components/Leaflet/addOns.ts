@@ -4,20 +4,17 @@ import { localityText } from '../../localization/locality';
 import { getCache, setCache } from '../../utils/cache';
 import type { IR, RA, RR } from '../../utils/types';
 import { overwriteReadOnly } from '../../utils/types';
-import { capitalize, KEY } from '../../utils/utils';
 import L from './extend';
 import type { LeafletMarker, MarkerGroups } from './index';
 import { preferredBaseLayer, preferredOverlay } from './layers';
 
-export type LeafletCacheSalt = 'CoMap' | 'MainMap';
+const mapName = 'main';
 
 export function rememberSelectedBaseLayers(
   map: L.Map,
-  layers: IR<L.TileLayer>,
-  cacheSalt: LeafletCacheSalt
+  layers: IR<L.TileLayer>
 ): void {
-  const cacheName = `currentLayer${cacheSalt}` as const;
-  const currentLayer = getCache('leaflet', cacheName);
+  const currentLayer = getCache('leafletCurrentLayer', mapName);
   const baseLayer =
     (typeof currentLayer === 'string' && currentLayer in layers
       ? layers[currentLayer]
@@ -25,38 +22,37 @@ export function rememberSelectedBaseLayers(
   baseLayer.addTo(map);
 
   map.on('baselayerchange', ({ name }: { readonly name: string }) => {
-    setCache('leaflet', cacheName, name);
+    setCache('leafletCurrentLayer', mapName, name);
   });
 }
 
 function rememberSelectedOverlays(
-  map: L.Map,
-  layers: IR<L.FeatureGroup | L.TileLayer>,
-  defaultOverlays: IR<boolean> = {}
+  map: LeafletInstance,
+  defaultVisibleOverlays: IR<boolean> = {}
 ): void {
   const handleOverlayEvent: LayersControlEventHandlerFn = ({ layer, type }) => {
-    const layerName = Object.entries(layers).find(
-      ([_, layerObject]) => layerObject === layer
-    )?.[KEY];
-    if (typeof layerName === 'string')
-      setCache(
-        'leaflet',
-        `show${capitalize(layerName) as Capitalize<MarkerLayerName>}` as const,
-        type === 'overlayadd'
-      );
+    const name = map.controlLayers._layers.find(
+      (entry) => entry.layer === layer
+    )?.name;
+    if (typeof name === 'string')
+      setCache('leafletOverlays', name, type === 'overlayadd');
+    else
+      console.error('Unable to find the name of the overlay', { layer, map });
   };
 
-  Object.keys(layers)
-    .filter(
-      (layerName) =>
-        getCache(
-          'leaflet',
-          `show${capitalize(layerName) as Capitalize<MarkerLayerName>}` as const
-        ) ??
-        defaultOverlays[layerName] ??
-        false
-    )
-    .forEach((layerName) => layers[layerName].addTo(map));
+  const isVisible = (name: string, defaultValue = false): boolean =>
+    getCache('leafletOverlays', name) ??
+    defaultVisibleOverlays[name] ??
+    defaultValue;
+  map.controlLayers._layers
+    .filter(({ name }) => isVisible(name))
+    .forEach(({ layer }) => layer.addTo(map));
+  const originalAddOverlay = map.controlLayers.addOverlay;
+  map.controlLayers.addOverlay = (layer, name): typeof map.controlLayers => {
+    originalAddOverlay.call(map.controlLayers, layer, name);
+    if (isVisible(name, true)) layer.addTo(map);
+    return map.controlLayers;
+  };
 
   map.on('overlayadd', handleOverlayEvent);
   map.on('overlayremove', handleOverlayEvent);
@@ -98,12 +94,16 @@ const defaultLabels = {
 
 export type LeafletInstance = L.Map & {
   readonly addMarkers: (markers: RA<MarkerGroups>) => void;
+  readonly controlLayers: L.Control.Layers & {
+    readonly _layers: RA<{
+      readonly layer: L.FeatureGroup | L.TileLayer;
+      readonly name: string;
+    }>;
+  };
 };
 
 export function addMarkersToMap(
-  map: L.Map,
-  defaultOverlays: IR<L.TileLayer>,
-  controlLayers: L.Control.Layers,
+  map: LeafletInstance,
   markers: RA<MarkerGroups>,
   labels: Partial<RR<MarkerLayerName, string>> = defaultLabels
 ): LeafletInstance {
@@ -148,14 +148,10 @@ export function addMarkersToMap(
     )
   );
 
-  rememberSelectedOverlays(
-    map,
-    { ...defaultOverlays, ...layerGroups },
-    {
-      ...defaultMarkerGroupsState,
-      [preferredOverlay]: true,
-    }
-  );
+  rememberSelectedOverlays(map, {
+    ...defaultMarkerGroupsState,
+    [preferredOverlay]: true,
+  });
 
   const addedGroups = new Set<MarkerLayerName>();
 
@@ -170,7 +166,7 @@ export function addMarkersToMap(
           // Add layer groups' checkboxes to the layer control menu
           const label =
             labels?.[markerGroupName] ?? defaultLabels[markerGroupName];
-          controlLayers.addOverlay(layerGroups[markerGroupName], label);
+          map.controlLayers.addOverlay(layerGroups[markerGroupName], label);
           addedGroups.add(markerGroupName);
         })
       )
@@ -178,7 +174,7 @@ export function addMarkersToMap(
 
   addMarkers(markers);
 
-  const leafletMap = map as LeafletInstance;
+  const leafletMap = map;
   overwriteReadOnly(leafletMap, 'addMarkers', addMarkers);
   return leafletMap;
 }

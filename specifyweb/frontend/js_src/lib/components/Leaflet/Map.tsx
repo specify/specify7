@@ -30,7 +30,7 @@ export function LeafletMap({
 }: {
   readonly localityPoints?: RA<LocalityData>;
   readonly onMarkerClick?: (index: number, event: L.LeafletEvent) => void;
-  readonly forwardRef?: React.RefCallback<LeafletInstance>;
+  readonly forwardRef?: (map: LeafletInstance | undefined) => void;
   readonly header?: LocalizedString;
   readonly headerButtons?: JSX.Element;
   readonly description?: JSX.Element;
@@ -63,7 +63,10 @@ export function LeafletMap({
     setHandleResize(() => throttle(() => map.invalidateSize(), resizeThrottle));
     addFullScreenButton(map, handleToggleFullScreen);
     forwardRef?.(map);
-    return (): void => void map.remove();
+    return (): void => {
+      void map.remove();
+      forwardRef?.(undefined);
+    };
   }, [
     tileLayers,
     container,

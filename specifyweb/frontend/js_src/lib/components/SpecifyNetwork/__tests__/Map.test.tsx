@@ -35,10 +35,25 @@ overrideAjax(getResourceApiUrl('TaxonTreeDefItem', rankId), () =>
 test('getFields and extractQueryTaxonId', async () => {
   const queryResource = await queryFromTree('Taxon', taxonId);
   const query = serializeResource(queryResource);
-  const originalFields = parseQueryFields(query.fields ?? []).map(
-    ({ mappingPath }) => mappingPath.join('.')
-  );
-  const newFields = getFields(query);
+
+  /*
+   * Even though locality is part of the query at the moment, remove it to
+   * test if the code
+   * can detect that it's missing and add it back. This would be useful in
+   * the future once users would be able to customize the query from tree
+   * (https://github.com/specify/specify7/issues/2703)
+   */
+  const queryWithoutLocality = {
+    ...query,
+    fields: query.fields.filter(
+      (field) => !field.stringId.includes('locality')
+    ),
+  };
+
+  const originalFields = parseQueryFields(
+    queryWithoutLocality.fields ?? []
+  ).map(({ mappingPath }) => mappingPath.join('.'));
+  const newFields = getFields(queryWithoutLocality);
   const addedFields = newFields.filter(
     ({ mappingPath }) => !originalFields.includes(mappingPath.join('.'))
   );
