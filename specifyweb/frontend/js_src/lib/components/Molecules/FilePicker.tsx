@@ -140,6 +140,7 @@ export const downloadFile = async (
 ): Promise<void> =>
   new Promise((resolve) => {
     const iframe = document.createElement('iframe');
+    iframe.classList.add('absolute');
     iframe.addEventListener('load', () => {
       if (iframe.contentWindow === null) return;
       const element = iframe.contentWindow.document.createElement('a');
