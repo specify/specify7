@@ -2,14 +2,15 @@ import React from 'react';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { specifyNetworkText } from '../../localization/specifyNetwork';
+import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
-import { IR } from '../../utils/types';
 import { schema } from '../DataModel/schema';
 import { userInformation } from '../InitialContext/userInformation';
+import L from '../Leaflet/extend';
 import type { BrokerRecord } from './fetchers';
 import { extractBrokerField } from './fetchers';
-import L from '../Leaflet/extend';
+import { keysToLowerCase } from '../../utils/utils';
 
 export type BrokerOverlay = {
   readonly layers: IR<L.TileLayer>;
@@ -24,14 +25,14 @@ export function getGbifLayers(
 
   return {
     layers: {
-      [`GBIF ${legendGradient('#ee0', '#d11')}`]: L.tileLayer(
+      [`GBIF ${legendGradient}`]: L.tileLayer(
         'https://api.gbif.org/v2/map/occurrence/{source}/{z}/{x}/{y}{format}?{params}',
         {
           attribution: '',
           // @ts-expect-error
           source: 'density',
           format: '@1x.png',
-          className: 'saturated',
+          className: 'saturate-150',
           params: Object.entries({
             srs: 'EPSG:3857',
             style: 'classic.poly',
@@ -49,55 +50,52 @@ export function getGbifLayers(
   };
 }
 
-const legendGradient = (leftColor: string, rightColor: string): string => `<span
+const legendGradient = `<span
   aria-hidden="true"
-  style="--left-color: ${leftColor}; --right-color: ${rightColor}"
-  class="leaflet-legend-gradient"
-></span>`;
+  class="flex justify-between flex-1 p-1 bg-gradient-to-r from-yellow-400 to-red-400"
+>
+  <span>0</span>
+  <span>100+</span>
+</span>`;
 
-async function getIdbLayer(
+const getIdbLayer = async (
   scientificName: string,
   collectionCode: string | undefined,
   layerName: string,
-  className?: string
-): Promise<IR<L.TileLayer>> {
-  let request: Response | undefined;
-  try {
-    request = await fetch('https://search.idigbio.org/v2/mapping/', {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json',
-      },
-      body: JSON.stringify({
-        rq: {
-          scientificname: scientificName,
-          ...(typeof collectionCode === 'string'
-            ? {
-                collectioncode: collectionCode,
-              }
-            : {}),
-        },
-        type: 'auto',
-        threshold: 100_000,
-      }),
-    });
-  } catch {
-    return {};
-  }
-  const response: {
+  className: string = 'saturate-200 brightness-125'
+): Promise<IR<L.TileLayer>> =>
+  ajax<{
     readonly itemCount: number;
     readonly tiles: string;
-  } = await request.json();
-
-  if (response.itemCount === 0) return {};
-
-  return {
-    [layerName]: L.tileLayer(response.tiles, {
-      attribution: 'iDigBio and the user community',
-      className: className ?? 'hyper-saturated',
-    }),
-  };
-}
+  }>(
+    'https://search.idigbio.org/v2/mapping/',
+    {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+      },
+      body: {
+        rq: keysToLowerCase({
+          scientificName,
+          collectionCode,
+        }),
+        type: 'auto',
+        threshold: 100_000,
+      },
+    },
+    { strict: false }
+  )
+    .then(({ data }) =>
+      data.itemCount === 0
+        ? {}
+        : {
+            [layerName]: L.tileLayer(data.tiles, {
+              attribution: 'iDigBio and the user community',
+              className,
+            }),
+          }
+    )
+    .catch(() => ({}));
 
 export function useIdbLayers(
   occurrence: RA<BrokerRecord> | undefined,
@@ -114,21 +112,21 @@ export function useIdbLayers(
           ({ id }) => id === schema.domainLevelIds.collection
         )?.code ??
         undefined;
-      if (idbScientificName === undefined) return;
+      if (idbScientificName === undefined) return undefined;
       return f
         .all({
           global: getIdbLayer(
             idbScientificName,
             undefined,
-            `iDigBio ${legendPoint('#197')}`
+            `iDigBio ${legendPoint('bg-emerald-500')}`
           ),
           collection: getIdbLayer(
             idbScientificName,
             collectionCode,
             `iDigBio (${
               collectionCode ?? 'collection'
-            } points only) ${legendPoint('#e68')}`,
-            'hue-rotate'
+            } points only) ${legendPoint('bg-rose-500')}`,
+            'hue-rotate-180 saturate-150 brightness-125'
           ),
         })
         .then(({ global, collection }) => ({
@@ -138,14 +136,13 @@ export function useIdbLayers(
           },
           description: specifyNetworkText.iDigBioDescription(),
         }));
-    }, [occurrence]),
+    }, [occurrence, scientificName]),
     false
   );
   return layers;
 }
 
-const legendPoint = (color: string): string => `<span
+const legendPoint = (color: string): string => `<div
   aria-hidden="true"
-  style="--color: ${color}"
-  class="leaflet-legend-point"
-></span>`;
+  class="w-4 h-4 ${color} rounded-full"
+></div>`;

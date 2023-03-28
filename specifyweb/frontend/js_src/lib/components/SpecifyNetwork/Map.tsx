@@ -203,14 +203,16 @@ export function useExtendedMap(
       .forEach(([label, layer]) => map.controlLayers.addOverlay(layer, label));
   }, [map, overlays]);
 
-  return (
-    <>
-      {filterArray([
-        specifyNetworkText.mapDescription(),
-        gbif?.description,
-        iDigBio?.description,
-      ])}
-    </>
+  const items = filterArray([
+    specifyNetworkText.mapDescription(),
+    gbif?.description,
+    iDigBio?.description,
+  ]);
+  return items.length === 0 ? undefined : (
+    <details>
+      <summary>{specifyNetworkText.mapDetails()}</summary>
+      {items}
+    </details>
   );
 }
 

@@ -11,7 +11,7 @@ import { formatUrl } from '../Router/queryString';
 import L from './extend';
 
 export const leafletLayersEndpoint =
-  'https://files.specifysoftware.org/specify7/7.7.0/leaflet-layers.json';
+  'https://files.specifysoftware.org/specify7/7.8.9/leaflet-layers.json';
 
 /**
  * TileServers and WMS servers that Leaflet should use
@@ -67,6 +67,15 @@ export const defaultTileLayers: RR<'baseMaps' | 'overlays', IR<L.TileLayer>> = {
         maxZoom: 23,
         attribution:
           'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+      }
+    ),
+    'Satellite Map (ESRI) (grayscale)': L.tileLayer(
+      'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+      {
+        maxZoom: 23,
+        attribution:
+          'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+        className: 'grayscale brightness-150',
       }
     ),
     'Satellite Map (Géoportail/France)': L.tileLayer(

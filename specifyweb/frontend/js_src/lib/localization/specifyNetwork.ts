@@ -14,13 +14,6 @@ export const specifyNetworkText = createDictionary({
     'fr-fr': 'Réseau Specify',
     'uk-ua': 'Вкажіть мережу',
   },
-  specifyNetworkMap: {
-    'en-us': 'Specify Network Map',
-    'ru-ru': 'Specify Network Карта',
-    'es-es': 'Specify Network Mapa',
-    'fr-fr': 'Specify Network Carte',
-    'uk-ua': 'Specify Network Карта',
-  },
   occurrenceOrGuidRequired: {
     'en-us': 'Species Name or GUID must be provided to display this page',
   },
@@ -28,13 +21,13 @@ export const specifyNetworkText = createDictionary({
   noDataErrorDescription: {
     'en-us': 'Please try searching for a different record',
   },
-  extendingSpecimen: {
-    'en-us': 'Extending the Specimen...',
-  },
   dataQuality: { 'en-us': 'Data Quality' },
   reportedBy: { 'en-us': 'Reported by {provider:string}' },
   collectionDate: { 'en-us': 'Collection Date' },
   projectionLayerLabel: { 'en-us': 'Lifemapper Distribution Model' },
+  mapDetails: {
+    'en-us': 'Details',
+  },
   mapDescription: {
     'en-us':
       'This map shows all occurrences of this taxon from iDigBio and GBIF.',
@@ -53,5 +46,4 @@ export const specifyNetworkText = createDictionary({
       points.
     `,
   },
-  distribution: { 'en-us': 'Distribution' },
 } as const);
