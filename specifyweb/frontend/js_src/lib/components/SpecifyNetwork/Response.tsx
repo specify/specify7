@@ -63,7 +63,6 @@ export function SpecifyNetworkResponse({
       ).map(({ label, title, originalCells, cells }) => (
         <BrokerRow
           cells={[...cells, ...Array.from({ length: blankColumns }, () => '')]}
-          // FIXME: look though all ids and classNames and migrate them
           cellClassName={
             new Set(
               originalCells

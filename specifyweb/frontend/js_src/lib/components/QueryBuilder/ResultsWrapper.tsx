@@ -178,7 +178,6 @@ export function useQueryResultsWrapper({
           displayedFields: queryFields,
           fieldSpecs,
           initialData,
-          // FIXME: test this
           sortConfig: queryFields
             .filter(({ isDisplay }) => isDisplay)
             .map((field) => field.sortType),
