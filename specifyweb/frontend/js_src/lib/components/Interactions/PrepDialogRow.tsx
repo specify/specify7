@@ -14,6 +14,7 @@ import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
 import { getField } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { getResourceViewUrl } from '../DataModel/resource';
 import { schema } from '../DataModel/schema';
 import type { ExchangeOut, Gift, Loan } from '../DataModel/types';
 import { ResourceView } from '../Forms/ResourceView';
@@ -65,10 +66,13 @@ export function PrepDialogRow({
             onValueChange={(): void => handleChange(checked ? 0 : available)}
           />
         </td>
-        {typeof preparation.coId === 'number' ? (
+        {typeof preparation.collectionObjectId === 'number' ? (
           <td className="justify-end tabular-nums">
             <Link.NewTab
-              href={`/specify/view/collectionobject/${preparation.coId}`}
+              href={getResourceViewUrl(
+                'CollectionObject',
+                preparation.collectionObjectId
+              )}
             >
               {
                 syncFieldFormat(
@@ -93,7 +97,9 @@ export function PrepDialogRow({
 
         {typeof preparation.taxonId === 'number' ? (
           <td>
-            <Link.NewTab href={`/specify/view/taxon/${preparation.taxonId}`}>
+            <Link.NewTab
+              href={getResourceViewUrl('Taxon', preparation.taxonId)}
+            >
               {preparation.taxon as LocalizedString}
             </Link.NewTab>
           </td>

@@ -173,7 +173,7 @@ export function InteractionDialog({
       type: 'PreparationSelectState',
       entries: prepsData.map((prepData) => ({
         catalogNumber: prepData[0],
-        coId: prepData[1],
+        collectionObjectId: prepData[1],
         taxon: prepData[2],
         taxonId: prepData[3],
         preparationId: prepData[4],

@@ -70,7 +70,7 @@ export const fetchTreePath = async (treeResource: SpecifyResource<AnyTree>) =>
 
 export type Preparations = RA<{
   readonly catalogNumber: string;
-  readonly coId: number;
+  readonly collectionObjectId: number;
   readonly taxon: string;
   readonly taxonId: number;
   readonly preparationId: number;
