@@ -172,6 +172,7 @@ function EditAppResource({
       isSubForm={false}
       mode="edit"
       resource={resource}
+      title={resourcesText.newFormDefinition()}
       viewName={
         type.tableName === 'SpAppResource'
           ? spAppResourceView
@@ -198,7 +199,6 @@ function EditAppResource({
          */
         return false;
       }}
-      title={resourcesText.newFormDefinition()}
     />
   );
 }
