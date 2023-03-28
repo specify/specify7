@@ -1,15 +1,20 @@
-import L from 'leaflet';
 import React from 'react';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { specifyNetworkText } from '../../localization/specifyNetwork';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
+import { IR } from '../../utils/types';
 import { schema } from '../DataModel/schema';
 import { userInformation } from '../InitialContext/userInformation';
 import type { BrokerRecord } from './fetchers';
 import { extractBrokerField } from './fetchers';
-import type { BrokerOverlay } from './projection';
+import L from '../Leaflet/extend';
+
+export type BrokerOverlay = {
+  readonly layers: IR<L.TileLayer>;
+  readonly description: JSX.Element | string;
+};
 
 export function getGbifLayers(
   name: RA<BrokerRecord>

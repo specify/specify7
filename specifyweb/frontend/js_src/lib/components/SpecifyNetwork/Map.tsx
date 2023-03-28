@@ -27,7 +27,6 @@ import { getGenericMappingPath } from '../WbPlanView/mappingHelpers';
 import type { BrokerData } from './Overlay';
 import { NoBrokerData } from './Overlay';
 import { getGbifLayers, useIdbLayers } from './overlays';
-import { useProjectionLayers } from './projection';
 
 export function SpecifyNetworkMap({
   data,
@@ -184,17 +183,15 @@ export function useExtendedMap(
   map: LeafletInstance | undefined,
   { speciesName, species, occurrence }: BrokerData
 ): JSX.Element | undefined {
-  const projection = useProjectionLayers(speciesName);
   const gbif = React.useMemo(() => f.maybe(species, getGbifLayers), [species]);
   const iDigBio = useIdbLayers(occurrence, speciesName);
 
   const overlays = React.useMemo(
     () => ({
-      ...projection?.layers,
       ...gbif?.layers,
       ...iDigBio?.layers,
     }),
-    [projection, gbif, iDigBio]
+    [gbif, iDigBio]
   );
 
   React.useEffect(() => {
@@ -210,7 +207,6 @@ export function useExtendedMap(
     <>
       {filterArray([
         specifyNetworkText.mapDescription(),
-        projection?.description,
         gbif?.description,
         iDigBio?.description,
       ])}
