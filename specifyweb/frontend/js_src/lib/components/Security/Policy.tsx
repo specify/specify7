@@ -152,14 +152,19 @@ export function SecurityPolicy({
                       [partName, { label, actions, isInstitutional }],
                       _index,
                       { length }
-                    ) =>
+                    ) => {
+                      const parts = resourceNameToParts(resource);
+                      const optionResource = partsToResourceName([
+                        ...parts.slice(0, index),
+                        partName,
+                      ]);
                       /*
                        * Don't show Any if there is only one other option,
                        * and it is the default value
                        */
-                      partName === anyResource &&
-                      length <= 2 &&
-                      resourceParts[index] !== anyResource ? undefined : (
+                      return partName === anyResource &&
+                        length <= 2 &&
+                        resourceParts[index] !== anyResource ? undefined : (
                         <option
                           disabled={
                             /*
@@ -167,12 +172,10 @@ export function SecurityPolicy({
                              * Already mapped
                              */
                             (actions.length > 0 &&
-                              isResourceMapped(
-                                partsToResourceName([
-                                  ...resourceNameToParts(resource),
-                                  partName,
-                                ])
-                              )) ||
+                              // Don't disable if this is the current resource
+                              partsToResourceName(parts.slice(0, index + 1)) !==
+                                optionResource &&
+                              isResourceMapped(optionResource)) ||
                             /*
                              * Disable institutional policies on the
                              * collection level
@@ -184,7 +187,8 @@ export function SecurityPolicy({
                         >
                           {label}
                         </option>
-                      )
+                      );
+                    }
                   );
                   return groupName === '' ? (
                     children

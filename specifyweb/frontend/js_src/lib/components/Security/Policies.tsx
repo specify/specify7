@@ -15,7 +15,7 @@ import { ReadOnlyContext } from '../Core/Contexts';
 import { smoothScroll } from '../QueryBuilder/helpers';
 import type { Policy, PolicyScope } from './Policy';
 import { hasTableActions, SecurityPolicy } from './Policy';
-import { getAllActions } from './utils';
+import { getAllActions, permissionSeparator } from './utils';
 
 export function SecurityPoliciesWrapper({
   policies,
@@ -135,7 +135,13 @@ export function SecurityPolicies({
         {policies.map((policy, index) => (
           <SecurityPolicy
             isResourceMapped={(resource): boolean =>
-              policies.some((policy) => policy.resource.startsWith(resource))
+              policies.some(
+                (policy) =>
+                  policy.resource === resource ||
+                  policy.resource.startsWith(
+                    `${resource}${permissionSeparator}`
+                  )
+              )
             }
             key={index}
             orientation={orientation}
