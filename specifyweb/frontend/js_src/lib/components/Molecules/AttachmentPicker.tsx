@@ -13,6 +13,9 @@ import { AttachmentsView } from '../Attachments';
 import { fetchOriginalUrl } from '../Attachments/attachments';
 import { UploadAttachment, useAttachment } from '../Attachments/Plugin';
 import { LoadingContext } from '../Core/Contexts';
+import { serializeResource } from '../DataModel/helpers';
+import { SerializedResource } from '../DataModel/helperTypes';
+import { Attachment } from '../DataModel/types';
 import { Dialog } from './Dialog';
 
 const types = ['url', 'image', 'attachments', 'attachments'] as const;
@@ -39,11 +42,20 @@ export function AttachmentPicker({
     'attachments' | 'attachments' | 'image' | 'url'
   >('url');
 
+  function handleAttachment(attachment: SerializedResource<Attachment>): void {
+    loading(
+      fetchOriginalUrl(attachment).then((url) => {
+        url === undefined ? setUrlNotFound(true) : handleChange(url);
+      })
+    );
+    handleToggle();
+  }
+
   return (
     <>
       {!isReadOnly && (
         <Button.Gray onClick={() => handleToggle()}>
-          {url === undefined ? commonText.pick() : commonText.change()}
+          {url === undefined ? commonText.pickImage() : commonText.change()}
         </Button.Gray>
       )}
 
@@ -86,22 +98,12 @@ export function AttachmentPicker({
               [wbText.upload()]: (
                 <UploadAttachment
                   onUploaded={(attachment): void => {
-                    setAttachment(attachment);
+                    handleAttachment(serializeResource(attachment));
                   }}
                 />
               ),
               [attachmentsText.attachments()]: (
-                <AttachmentsView
-                  onClick={(attachment): void => {
-                    loading(
-                      fetchOriginalUrl(attachment).then((url) => {
-                        url === undefined
-                          ? setUrlNotFound(true)
-                          : handleChange(url);
-                      })
-                    );
-                  }}
-                />
+                <AttachmentsView onClick={handleAttachment} />
               ),
             }}
           />
