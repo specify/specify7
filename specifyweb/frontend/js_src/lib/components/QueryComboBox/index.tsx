@@ -166,7 +166,7 @@ export function QueryComboBox({
               .then((resource) =>
                 resource === undefined || resource === null
                   ? {
-                      label: '',
+                      label: '' as LocalizedString,
                       resource: undefined,
                     }
                   : (value === formattedRef.current?.value &&

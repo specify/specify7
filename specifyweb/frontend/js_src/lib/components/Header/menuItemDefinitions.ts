@@ -19,6 +19,7 @@ import {
   attachmentSettingsPromise,
 } from '../Attachments/attachments';
 import type { MenuItem } from '../Core/Main';
+import { schema } from '../DataModel/schema';
 import { getDisciplineTrees } from '../InitialContext/treeRanks';
 import {
   fetchContext as fetchPermissions,
@@ -32,8 +33,6 @@ import {
 } from '../Permissions/helpers';
 import { reportsAvailable } from '../Reports';
 import { filterMenuItems } from './menuItemProcessing';
-import { schema } from '../DataModel/schema';
-import { f } from '../../utils/functools';
 
 const rawMenuItems = ensure<IR<Omit<MenuItem, 'name'>>>()({
   dataEntry: {
@@ -109,6 +108,6 @@ export type MenuItemName = keyof typeof rawMenuItems | 'search';
 /**
  * Don't use this directly. Use useMenuItems() instead
  */
-export const rawMenuItemsPromise = f.store(() =>
-  fetchPermissions.then(async () => filterMenuItems(rawMenuItems))
+export const rawMenuItemsPromise = fetchPermissions.then(async () =>
+  filterMenuItems(rawMenuItems)
 );

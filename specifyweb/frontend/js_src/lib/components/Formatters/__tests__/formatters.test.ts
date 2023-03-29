@@ -108,7 +108,10 @@ describe('formatField', () => {
         },
         parentResource
       )
-    ).resolves.toBe(', Person');
+    ).resolves.toEqual({
+      formatted: 'Person',
+      separator: ', ',
+    });
   });
 });
 

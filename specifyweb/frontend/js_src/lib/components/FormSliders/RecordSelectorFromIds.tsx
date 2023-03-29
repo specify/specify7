@@ -187,14 +187,16 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
       <ResourceView
         dialog={dialog}
         headerButtons={(specifyNetworkBadge): JSX.Element => (
-          <div className="flex flex-col items-center gap-2 md:flex-row md:gap-8">
-            <div className="flex gap-2">
+          <div className="flex flex-col items-center gap-2 md:contents md:flex-row md:gap-8">
+            <div className="flex items-center gap-2 md:contents">
               {headerButtons}
+
               <DataEntry.Visit
                 resource={
                   !isDependent && dialog !== false ? resource : undefined
                 }
               />
+
               {hasTablePermission(
                 table.name,
                 isDependent ? 'create' : 'read'
@@ -206,6 +208,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                   onClick={handleAdding}
                 />
               ) : undefined}
+
               {typeof handleRemove === 'function' && canRemove ? (
                 <DataEntry.Remove
                   aria-label={removeLabel}
@@ -214,6 +217,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                   onClick={(): void => handleRemove('minusButton')}
                 />
               ) : undefined}
+
               {typeof newResource === 'object' ? (
                 <p className="flex-1">{formsText.creatingNewRecord()}</p>
               ) : (
@@ -221,6 +225,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                   className={`flex-1 ${dialog === false ? '-ml-2' : '-ml-4'}`}
                 />
               )}
+
               {specifyNetworkBadge}
             </div>
             <div>{slider}</div>
@@ -241,7 +246,9 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
         }
         onSaved={(): void => handleSaved(resource!)}
       />
+
       {dialogs}
+
       {typeof unloadProtect === 'function' && (
         <Dialog
           buttons={

@@ -12,6 +12,8 @@ import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { columnDefinitionsToCss, DataEntry } from '../Atoms/DataEntry';
 import { icons } from '../Atoms/Icons';
+import { useAttachment } from '../Attachments/Plugin';
+import { AttachmentViewer } from '../Attachments/Viewer';
 import { ReadOnlyContext, SearchDialogContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -19,17 +21,18 @@ import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { FormMeta } from '../FormMeta';
 import type { FormCellDefinition, SubViewSortField } from '../FormParse/cells';
-import { propsToFormMode, useViewDefinition } from '../Forms/useViewDefinition';
+import { attachmentView } from '../FormParse/webOnlyViews';
 import { SpecifyForm } from '../Forms/SpecifyForm';
+import { propsToFormMode, useViewDefinition } from '../Forms/useViewDefinition';
 import { loadingGif } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
 import type { SortConfig } from '../Molecules/Sorting';
 import { SortIndicator } from '../Molecules/Sorting';
 import { hasTablePermission } from '../Permissions/helpers';
+import { SearchDialog } from '../SearchDialog';
 import { usePref } from '../UserPreferences/usePref';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { FormCell } from './index';
-import { SearchDialog } from '../SearchDialog';
 
 const cellToLabel = (
   table: SpecifyTable,
@@ -321,35 +324,39 @@ export function FormTable<SCHEMA extends AnySchema>({
                             isInSearchDialog || viewDefinition.mode === 'search'
                           }
                         >
-                          {viewDefinition.rows[0].map(
-                            (
-                              {
-                                colSpan,
-                                align,
-                                visible,
-                                id: cellId,
-                                ...cellData
-                              },
-                              index
-                            ) => (
-                              <DataEntry.Cell
-                                align={align}
-                                colSpan={colSpan}
-                                key={index}
-                                role="cell"
-                                visible={visible}
-                              >
-                                <FormCell
+                          {viewDefinition.name === attachmentView ? (
+                            <Attachment resource={resource} />
+                          ) : (
+                            viewDefinition.rows[0].map(
+                              (
+                                {
+                                  colSpan,
+                                  align,
+                                  visible,
+                                  id: cellId,
+                                  ...cellData
+                                },
+                                index
+                              ) => (
+                                <DataEntry.Cell
                                   align={align}
-                                  cellData={cellData}
-                                  formatId={(suffix: string): string =>
-                                    id(`${index}-${suffix}`)
-                                  }
-                                  formType="formTable"
-                                  id={cellId}
-                                  resource={resource}
-                                />
-                              </DataEntry.Cell>
+                                  colSpan={colSpan}
+                                  key={index}
+                                  role="cell"
+                                  visible={visible}
+                                >
+                                  <FormCell
+                                    align={align}
+                                    cellData={cellData}
+                                    formatId={(suffix: string): string =>
+                                      id(`${index}-${suffix}`)
+                                    }
+                                    formType="formTable"
+                                    id={cellId}
+                                    resource={resource}
+                                  />
+                                </DataEntry.Cell>
+                              )
                             )
                           )}
                         </SearchDialogContext.Provider>
@@ -462,5 +469,28 @@ export function FormTable<SCHEMA extends AnySchema>({
     >
       {children}
     </Dialog>
+  );
+}
+
+function Attachment({
+  resource,
+}: {
+  readonly resource: SpecifyResource<AnySchema> | undefined;
+}): JSX.Element | null {
+  const related = React.useState<SpecifyResource<AnySchema> | undefined>(
+    undefined
+  );
+  const [attachment] = useAttachment(resource);
+  return typeof attachment === 'object' ? (
+    <AttachmentViewer
+      attachment={attachment}
+      related={related}
+      showMeta={false}
+      onViewRecord={undefined}
+    />
+  ) : attachment === false ? (
+    <p>{formsText.noData()}</p>
+  ) : (
+    loadingGif
   );
 }

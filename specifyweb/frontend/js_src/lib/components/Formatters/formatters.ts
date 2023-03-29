@@ -104,7 +104,13 @@ export async function format<SCHEMA extends AnySchema>(
   return Promise.all(
     fields.map(async (field) => formatField(field, resource, cycleDetection))
   ).then((values) => {
-    const joined = values.join('') as LocalizedString;
+    const joined = values.reduce<string>(
+      (result, { formatted, separator = '' }, index) =>
+        `${result}${
+          result.length === 0 && index !== 0 ? '' : separator
+        }${formatted}`,
+      ''
+    ) as LocalizedString;
     return joined.length === 0 ? automaticFormatter : joined;
   });
 }
@@ -139,7 +145,7 @@ async function formatField(
   },
   parentResource: SpecifyResource<AnySchema>,
   cycleDetection: RA<SpecifyResource<AnySchema>> = []
-): Promise<string | undefined> {
+): Promise<{ readonly formatted: string; readonly separator?: string }> {
   const isCycle = cycleDetection.some(
     (resource) =>
       resource.id === parentResource.id &&
@@ -151,9 +157,9 @@ async function formatField(
   const hasPermission = hasPathPermission(fields ?? [], 'read');
   if (hasPermission) {
     const data = await fetchDistantRelated(parentResource, fields);
-    if (data === undefined) return undefined;
+    if (data === undefined) return { formatted: '' };
     const { resource, field } = data;
-    if (field === undefined || resource === undefined) return undefined;
+    if (field === undefined || resource === undefined) return { formatted: '' };
 
     formatted = field.isRelationship
       ? isCycle
@@ -180,9 +186,10 @@ async function formatField(
       : (resource.get(field.name) as string | null) ?? undefined;
   } else formatted = userText.noPermission();
 
-  return formatted === undefined || formatted === ''
-    ? ''
-    : `${separator}${formatted}`;
+  return {
+    formatted: formatted ?? '',
+    separator: (formatted ?? '') === '' ? '' : separator,
+  };
 }
 
 export async function fetchPathAsString(
