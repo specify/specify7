@@ -61,7 +61,10 @@ export function LeafletMap({
       onMarkerClick: (...args) => handleClickRef.current?.(...args),
     });
     setHandleResize(() => throttle(() => map.invalidateSize(), resizeThrottle));
-    addFullScreenButton(map, handleToggleFullScreen);
+    addFullScreenButton(map, () => {
+      handleToggleFullScreen();
+      map.invalidateSize();
+    });
     forwardRef?.(map);
     return (): void => {
       void map.remove();

@@ -4,7 +4,7 @@ import { localityText } from '../../localization/locality';
 import { getCache, setCache } from '../../utils/cache';
 import type { IR, RA, RR } from '../../utils/types';
 import { overwriteReadOnly } from '../../utils/types';
-import L from './extend';
+import L, { leafletControls } from './extend';
 import type { LeafletMarker, MarkerGroups } from './index';
 import { preferredBaseLayer, preferredOverlay } from './layers';
 
@@ -62,13 +62,13 @@ export function addFullScreenButton(
   map: L.Map,
   callback: (isEnabled: boolean) => void
 ): void {
-  // @ts-expect-error
-  new L.Control.FullScreen({ position: 'topleft', callback }).addTo(map);
+  new (leafletControls.FullScreen(callback))({ position: 'topleft' }).addTo(
+    map
+  );
 }
 
 export function addPrintMapButton(map: L.Map): void {
-  // @ts-expect-error
-  new L.Control.PrintMap({ position: 'topleft' }).addTo(map);
+  new leafletControls.PrintMap({ position: 'topleft' }).addTo(map);
 }
 
 const markerLayerName = [
