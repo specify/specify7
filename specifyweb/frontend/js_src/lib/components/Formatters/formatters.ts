@@ -61,12 +61,14 @@ export const naiveFormatter = (
 export async function format<SCHEMA extends AnySchema>(
   resource: SpecifyResource<SCHEMA> | undefined,
   defaultFormatter: Formatter | string | undefined,
-  tryBest: true
+  tryBest: true,
+  cycleDetection?: RA<SpecifyResource<AnySchema>>
 ): Promise<LocalizedString>;
 export async function format<SCHEMA extends AnySchema>(
   resource: SpecifyResource<SCHEMA> | undefined,
   defaultFormatter?: Formatter | string,
-  tryBest?: false
+  tryBest?: false,
+  cycleDetection?: RA<SpecifyResource<AnySchema>>
 ): Promise<LocalizedString | undefined>;
 export async function format<SCHEMA extends AnySchema>(
   resource: SpecifyResource<SCHEMA> | undefined,
@@ -75,7 +77,8 @@ export async function format<SCHEMA extends AnySchema>(
    * Format a resource even if no formatter is present, or some permissions
    * are missing
    */
-  tryBest = false
+  tryBest = false,
+  cycleDetection: RA<SpecifyResource<AnySchema>> = []
 ): Promise<LocalizedString | undefined> {
   if (typeof resource !== 'object' || resource === null || resource.deleted)
     return undefined;
@@ -99,7 +102,7 @@ export async function format<SCHEMA extends AnySchema>(
     : undefined;
 
   return Promise.all(
-    fields.map(async (field) => formatField(field, resource))
+    fields.map(async (field) => formatField(field, resource, cycleDetection))
   ).then((values) => {
     const joined = values.join('') as LocalizedString;
     return joined.length === 0 ? automaticFormatter : joined;
@@ -134,8 +137,16 @@ async function formatField(
   }: Formatter['definition']['fields'][number]['fields'][number] & {
     readonly formatFieldValue?: boolean;
   },
-  parentResource: SpecifyResource<AnySchema>
+  parentResource: SpecifyResource<AnySchema>,
+  cycleDetection: RA<SpecifyResource<AnySchema>> = []
 ): Promise<string | undefined> {
+  const isCycle = cycleDetection.some(
+    (resource) =>
+      resource.id === parentResource.id &&
+      resource.specifyTable === parentResource.specifyTable
+  );
+  const cycleDetector = [...cycleDetection, parentResource];
+
   let formatted: string | undefined = undefined;
   const hasPermission = hasPathPermission(fields ?? [], 'read');
   if (hasPermission) {
@@ -145,9 +156,20 @@ async function formatField(
     if (field === undefined || resource === undefined) return undefined;
 
     formatted = field.isRelationship
-      ? await (relationshipIsToMany(field)
-          ? aggregate(await resource.rgetCollection(field.name), aggregator)
-          : format(await resource.rgetPromise(field.name), formatter))
+      ? isCycle
+        ? ''
+        : await (relationshipIsToMany(field)
+            ? aggregate(
+                await resource.rgetCollection(field.name),
+                aggregator,
+                cycleDetector
+              )
+            : format(
+                await resource.rgetPromise(field.name),
+                formatter,
+                false,
+                cycleDetector
+              ))
       : formatFieldValue
       ? await fieldFormat(
           field,
