@@ -8,7 +8,8 @@ import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { BrokerRow, BrokerSection, BrokerTable } from './Components';
 import type { BrokerRecord } from './fetchers';
 import { extractBrokerField } from './fetchers';
-import { BrokerData, NoBrokerData } from './Overlay';
+import type { BrokerData } from './Overlay';
+import { NoBrokerData } from './Overlay';
 import { SpecifyNetworkResponse } from './Response';
 
 export function SpecifyNetworkOccurrence({

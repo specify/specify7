@@ -115,9 +115,9 @@ const mergeFields: RA<{
       [year, month, day].every(Boolean) ? (
         <input
           aria-label={specifyNetworkText.collectionDate()}
+          className="pointer-events-none text-inherit"
           readOnly
           tabIndex={-1}
-          className="pointer-events-none text-inherit"
           type="date"
           value={`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`}
         />

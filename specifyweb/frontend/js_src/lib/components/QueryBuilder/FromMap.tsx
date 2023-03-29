@@ -6,10 +6,10 @@ import { f } from '../../utils/functools';
 import type { RA, Writable, WritableArray } from '../../utils/types';
 import { insertItem, replaceItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
+import type { LeafletInstance } from '../Leaflet/addOns';
 import { LeafletMap } from '../Leaflet/Map';
 import { mappingPathToString } from '../WbPlanView/mappingHelpers';
 import type { QueryField } from './helpers';
-import { LeafletInstance } from '../Leaflet/addOns';
 
 const emptyArray: RA<never> = [];
 const defaultPoint = [0, 10] as const;

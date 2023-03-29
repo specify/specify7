@@ -22,14 +22,15 @@ export function SpecifyNetworkResponse({
   const blankColumns = Math.max(0, minColumns - responses.length);
   return responses.length === 0 ? null : (
     <BrokerTable
+      columns={responses.length + blankColumns}
       header={
         <>
           <td />
           {responses.map(({ provider, record }) => (
-            <th key={provider.code} scope="col" className="justify-center">
+            <th className="justify-center" key={provider.code} scope="col">
               <img
-                className="h-table-icon w-table-icon"
                 alt=""
+                className="h-table-icon w-table-icon"
                 src={`${provider.icon_url}&icon_status=active`}
               />
               {typeof record['s2n:view_url'] === 'string' ? (
@@ -46,7 +47,6 @@ export function SpecifyNetworkResponse({
           ))}
         </>
       }
-      columns={responses.length + blankColumns}
     >
       {mapBrokerFields(
         reorderBrokerFields(
@@ -62,7 +62,6 @@ export function SpecifyNetworkResponse({
         )
       ).map(({ label, title, originalCells, cells }) => (
         <BrokerRow
-          cells={[...cells, ...Array.from({ length: blankColumns }, () => '')]}
           cellClassName={
             new Set(
               originalCells
@@ -72,6 +71,7 @@ export function SpecifyNetworkResponse({
               ? undefined
               : 'text-red-500'
           }
+          cells={[...cells, ...Array.from({ length: blankColumns }, () => '')]}
           header={label}
           key={label}
           title={title}

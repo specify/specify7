@@ -1,9 +1,9 @@
+import { overrideAjax } from '../../../tests/ajax';
+import { requireContext } from '../../../tests/helpers';
+import { addMissingFields } from '../../DataModel/addMissingFields';
+import { getResourceApiUrl } from '../../DataModel/resource';
 import { allTrees } from '../../InitialContext/treeRanks';
 import { queryFromTree } from '../fromTree';
-import { getResourceApiUrl } from '../../DataModel/resource';
-import { overrideAjax } from '../../../tests/ajax';
-import { addMissingFields } from '../../DataModel/addMissingFields';
-import { requireContext } from '../../../tests/helpers';
 
 requireContext();
 

@@ -1,4 +1,6 @@
 import { requireContext } from '../../../tests/helpers';
+import { theories } from '../../../tests/utils';
+import { schema } from '../../DataModel/schema';
 import {
   allTrees,
   exportsForTests,
@@ -8,8 +10,6 @@ import {
   isTreeResource,
   strictGetTreeDefinitionItems,
 } from '../treeRanks';
-import { theories } from '../../../tests/utils';
-import { schema } from '../../DataModel/schema';
 
 const { getTreeScope } = exportsForTests;
 

@@ -1,6 +1,7 @@
 import { queryText } from '../../localization/query';
 import type { IR, RA, RR } from '../../utils/types';
 import { defined } from '../../utils/types';
+import { getDomainResource } from '../DataModel/domain';
 import type { AnyTree, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getTreeModel, schema } from '../DataModel/schema';
@@ -16,7 +17,6 @@ import { queryFieldFilters } from './FieldFilter';
 import { QueryFieldSpec } from './fieldSpec';
 import { flippedSortTypes } from './helpers';
 import { createQuery } from './index';
-import { getDomainResource } from '../DataModel/domain';
 
 function makeField(
   path: string,

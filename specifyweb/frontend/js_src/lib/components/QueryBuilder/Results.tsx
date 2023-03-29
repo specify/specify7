@@ -189,8 +189,8 @@ export function QueryResults(props: Props): JSX.Element {
               )
             ) : undefined}
             <QueryToMap
-              fieldSpecs={fieldSpecs}
               fields={allFields}
+              fieldSpecs={fieldSpecs}
               model={model}
               results={loadedResults}
               selectedRows={selectedRows}
@@ -337,7 +337,7 @@ export function useFetchQueryResults({
   fetchResults,
   totalCount: initialTotalCount,
   fetchSize,
-}: Pick<Props, 'initialData' | 'fetchResults' | 'totalCount' | 'fetchSize'>): {
+}: Pick<Props, 'fetchResults' | 'fetchSize' | 'initialData' | 'totalCount'>): {
   readonly results: GetSet<RA<QueryResultRow | undefined> | undefined>;
   readonly fetchersRef: {
     readonly current: IR<Promise<RA<QueryResultRow> | void>>;

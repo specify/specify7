@@ -329,7 +329,7 @@
 
 /** Improve Leaflet layer legend styling */
 .leaflet-control-layers-overlays > label > div {
-  @apply flex gap-2 items-center;
+  @apply flex items-center gap-2;
 }
 
 .leaflet-control-layers-overlays > label > div > span {
@@ -337,7 +337,7 @@
 }
 
 .leaflet-control-layers-selector {
-  @apply m-0 p-0 static;
+  @apply static m-0 p-0;
 }
 
 /*

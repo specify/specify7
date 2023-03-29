@@ -40,7 +40,7 @@ export function SpecifyNetworkBadge({
 }): JSX.Element {
   const [taxon] = useAsyncState(
     React.useCallback(
-      () =>
+      async () =>
         Promise.resolve(
           f.maybe(toTable(resource, 'Taxon'), async (resource) =>
             resource.fetch()
@@ -128,8 +128,8 @@ export function SpecifyNetworkBadge({
         <SpecifyNetworkOverlays
           guid={guid}
           open={getSetOpen}
-          taxonId={isNoSpecies ? false : taxon?.id}
           species={speciesName ?? ''}
+          taxonId={isNoSpecies ? false : taxon?.id}
         />
       )}
     </div>

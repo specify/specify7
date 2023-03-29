@@ -70,11 +70,11 @@ export function BrokerRow({
 }): JSX.Element {
   return (
     <tr>
-      <th scope="row" title={title} className="text-left">
+      <th className="text-left" scope="row" title={title}>
         {header}
       </th>
       {cells.map((column, index) => (
-        <td key={index} className={cellClassName}>
+        <td className={cellClassName} key={index}>
           {column}
         </td>
       ))}

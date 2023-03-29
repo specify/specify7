@@ -5,12 +5,12 @@ import { specifyNetworkText } from '../../localization/specifyNetwork';
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
+import { keysToLowerCase } from '../../utils/utils';
 import { schema } from '../DataModel/schema';
 import { userInformation } from '../InitialContext/userInformation';
 import L from '../Leaflet/extend';
 import type { BrokerRecord } from './fetchers';
 import { extractBrokerField } from './fetchers';
-import { keysToLowerCase } from '../../utils/utils';
 
 export type BrokerOverlay = {
   readonly layers: IR<L.TileLayer>;
