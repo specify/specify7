@@ -125,7 +125,7 @@ function FormatterPicker({
   /*
    * This is undefined if browser cached app resource response since before
    * back-end begun sending app resource ids.
-   * FIXME: handle that case by re-fetching
+   * FIXME: handle that case by re-fetching (or creating a resource if needed)
    */
   const resourceId = appResourceIds.DataObjFormatters;
   const urlPart = type === 'format' ? 'formatter' : 'aggregator';

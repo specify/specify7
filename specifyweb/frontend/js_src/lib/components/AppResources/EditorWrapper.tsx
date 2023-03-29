@@ -4,10 +4,13 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { useSearchParameter } from '../../hooks/navigation';
 import { useAsyncState } from '../../hooks/useAsyncState';
+import { ajax } from '../../utils/ajax';
+import { getAppResourceUrl } from '../../utils/ajax/helpers';
 import { f } from '../../utils/functools';
 import { Container } from '../Atoms';
 import { DataEntry } from '../Atoms/DataEntry';
 import { addMissingFields } from '../DataModel/addMissingFields';
+import { toResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { fetchResource } from '../DataModel/resource';
 import type {
@@ -23,11 +26,13 @@ import {
   findAppResourceDirectoryKey,
 } from './Create';
 import { AppResourceEditor } from './Editor';
+import { getAppResourceType } from './filtersHelpers';
 import type { AppResourceMode } from './helpers';
 import { getAppResourceMode } from './helpers';
 import type { AppResources, AppResourcesTree } from './hooks';
 import { useResourcesTree } from './hooks';
 import type { AppResourcesOutlet } from './index';
+import { appResourceSubTypes } from './types';
 
 export function AppResourceView(): JSX.Element {
   return <Wrapper mode="appResources" />;
@@ -62,11 +67,11 @@ export function Wrapper({
           specifyUser: userInformation.resource_uri,
         }
       ),
-    [resources, name, mimeType]
+    [resources, name, mimeType, mode]
   );
   const resource = useAppResource(newResource, resources, mode);
 
-  const initialData = useInitialData(f.parseInt(clone));
+  const initialData = useInitialData(resource, f.parseInt(clone));
 
   const navigate = useNavigate();
 
@@ -81,8 +86,7 @@ export function Wrapper({
   const baseHref = `/specify/resources/${
     mode === 'appResources' ? 'app-resource' : 'view-set'
   }`;
-  return initialData === undefined ? null : resource === undefined ||
-    directory === undefined ? (
+  return initialData === undefined ? null : directory === undefined ? (
     <NotFoundView container={false} />
   ) : (
     <AppResourceEditor
@@ -174,10 +178,10 @@ function useProps(): {
 }
 
 function useAppResource(
-  newResource: SerializedResource<SpAppResource | SpViewSetObj> | undefined,
+  newResource: SerializedResource<SpAppResource | SpViewSetObj>,
   resources: AppResources,
   mode: AppResourceMode
-): SerializedResource<SpAppResource | SpViewSetObj> | undefined {
+): SerializedResource<SpAppResource | SpViewSetObj> {
   const { id } = useParams();
   return React.useMemo(
     () =>
@@ -189,18 +193,33 @@ function useAppResource(
 }
 
 function useInitialData(
+  resource: SerializedResource<SpAppResource | SpViewSetObj>,
   initialDataFrom: number | undefined
 ): string | false | undefined {
   return useAsyncState(
-    React.useCallback(
-      async () =>
-        initialDataFrom === undefined
-          ? false
-          : fetchResource('SpAppResourceData', initialDataFrom).then(
-              ({ data }) => data ?? ''
-            ),
-      [initialDataFrom]
-    ),
+    React.useCallback(async () => {
+      if (typeof initialDataFrom === 'number')
+        return fetchResource('SpAppResourceData', initialDataFrom).then(
+          ({ data }) => data ?? ''
+        );
+      const subType = f.maybe(
+        toResource(resource, 'SpAppResource'),
+        getAppResourceType
+      );
+      if (typeof subType === 'string') {
+        const type = appResourceSubTypes[subType];
+        const useTemplate =
+          typeof type.name === 'string' &&
+          (!('useTemplate' in type) || type.useTemplate);
+        if (useTemplate)
+          return ajax(getAppResourceUrl(type.name), {
+            headers: {},
+          }).then(({ data }) => data);
+      }
+      return false;
+      // Run this only once
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [initialDataFrom]),
     true
   )[0];
 }

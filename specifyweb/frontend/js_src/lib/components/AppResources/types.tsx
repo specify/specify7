@@ -28,7 +28,7 @@ export const appResourceTypes: RR<AppResourceMode, AppResourceType> = {
   },
 };
 
-export type AppResourceSubType = {
+type AppResourceSubType = {
   readonly mimeType: string | undefined;
   readonly name: string | undefined;
   readonly documentationUrl: string | undefined;
@@ -51,7 +51,7 @@ export type AppResourceSubType = {
  * current resource. Thus, subtypes should be sorted from the most
  * specific to the least specific.
  */
-export const appResourceSubTypes = {
+export const appResourceSubTypes = ensure<IR<AppResourceSubType>>()({
   label: {
     mimeType: 'jrxml/label',
     name: undefined,
@@ -185,6 +185,4 @@ export const appResourceSubTypes = {
     icon: icons.document,
     label: resourcesText.otherAppResource(),
   },
-} as const;
-
-ensure<IR<AppResourceSubType>>()(appResourceSubTypes);
+} as const);
