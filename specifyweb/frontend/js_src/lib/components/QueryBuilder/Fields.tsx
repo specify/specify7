@@ -81,6 +81,15 @@ export function QueryFields({
       distance: 4,
     });
 
+    sortable.on('sortable:start', (event) => {
+      const target = event.dragEvent.originalEvent.target as HTMLElement;
+      if (
+        ['A', 'BUTTON', 'INPUT', 'SELECT', 'TEXTAREA'].includes(target.tagName)
+      )
+        event.cancel();
+      console.log(event);
+    });
+
     sortable.on('sortable:stop', (event) => {
       const newIndex = event.newIndex;
       const oldIndex = event.oldIndex;
