@@ -122,7 +122,6 @@ export function Contexts({
                   className={{ container: dialogClassNames.narrowContainer }}
                   header={commonText.loading()}
                   isOpen={isLoading}
-                  modal={false}
                   onClose={undefined}
                 >
                   {loadingBar}
