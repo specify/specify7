@@ -128,13 +128,31 @@ export const resourcesText = createDictionary({
     'fr-fr': "Formateurs d'enregistrement",
     'uk-ua': 'Форматувальники записів',
   },
+  formatter: {
+    'en-us': 'Formatter',
+    'ru-ru': 'Форматировщик',
+  },
   formatters: {
     'en-us': 'Formatters',
     'ru-ru': 'Форматировщики',
   },
+  formatterDescription: {
+    'en-us':
+      'Formatter determines how to transform individual database resources into readable text by selecting specific fields and applying a designated separator between them.',
+  },
+  aggregator: {
+    'en-us': 'Aggregator',
+  },
   aggregators: {
     'en-us': 'Aggregators',
     'ru-ru': 'Агрегаторы',
+  },
+  aggregatorDescription: {
+    'en-us':
+      'Aggregator determines how to consolidate multiple resources into a single text string by utilizing formatters and inserting a separator between them',
+  },
+  formattedResource: {
+    'en-us': 'Formatted Resource',
   },
   availableFormatters: {
     'en-us': 'Available Formatters',
@@ -293,16 +311,6 @@ export const resourcesText = createDictionary({
     'en-us': 'Limit',
     'ru-ru': 'Лимит',
   },
-  formatter: {
-    'en-us': 'Formatter',
-    'ru-ru': 'Форматировщик',
-  },
-  aggregator: {
-    'en-us': 'Aggregator',
-  },
-  formattedResource: {
-    'en-us': 'Formatted Resource',
-  },
   defaultInline: {
     'en-us': '(default)',
   },
@@ -346,6 +354,10 @@ export const resourcesText = createDictionary({
   },
   condition: {
     'en-us': 'Condition',
+  },
+  conditionDescription: {
+    'en-us':
+      'This formatter will be used only if the condition field value is equal to this condition',
   },
   addConditionFieldFirst: {
     'en-us':

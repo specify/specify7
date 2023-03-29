@@ -108,6 +108,7 @@ function Definitions({
                     })
                   }
                 />
+                <span>{resourcesText.conditionDescription()}</span>
               </Label.Block>
             )}
             <Fields
