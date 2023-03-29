@@ -73,7 +73,7 @@ export const supportsBackdropBlur = globalThis.CSS.supports(
   '((-webkit-backdrop-filter: none) or (backdrop-filter: none))'
 );
 
-//used for 'inert' attribute addition
+// Used for 'inert' attribute addition
 const root = document.getElementById('root');
 
 /**
@@ -171,7 +171,7 @@ export function Dialog({
   const id = useId('modal');
 
   React.useEffect(() => {
-    const shouldInert = modal && isOpen === true;
+    const shouldInert = modal && isOpen;
     root?.toggleAttribute('inert', shouldInert);
     return () => {
       root?.removeAttribute('inert');
