@@ -132,7 +132,8 @@ export function AppResourceEditor({
   const isInOverlay = isOverlay(React.useContext(OverlayContext));
 
   const tabs = useEditorTabs(resource);
-  const [tab, setTab] = useLiveState(React.useCallback(() => 0, [tabs]));
+  const [tabIndex, setTab] = useLiveState(React.useCallback(() => 0, [tabs]));
+  const tab = Math.min(tabIndex, tabs.length - 1);
   const handleChangeTab = React.useCallback(
     (index: number) => {
       setTab(index);

@@ -30,7 +30,7 @@ export function WebLinkList({
               ) : (
                 <span />
               )}
-              {item.name}
+              <span>{item.name}</span>
             </Link.Default>
           </li>
         ))}
