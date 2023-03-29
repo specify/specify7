@@ -190,7 +190,6 @@ def get_ds_upload_plan(collection, ds: Spdataset) -> Tuple[Table, ScopedUploadab
     return base_table, plan.apply_scoping(collection)
 
 def apply_deferred_scopes(upload_plan: ScopedUploadable, rows: Rows) -> ScopedUploadable:
-    is_deferred = lambda uploadable: isinstance(uploadable, DeferredScopeUploadTable)
 
     def collection_override_function(deferred_upload_plan: DeferredScopeUploadTable, row_index: int) -> Collection:
         related_uploadable = upload_plan.toOne[deferred_upload_plan.related_key]
@@ -206,8 +205,8 @@ def apply_deferred_scopes(upload_plan: ScopedUploadable, rows: Rows) -> ScopedUp
     if hasattr(upload_plan, 'toOne'):
         for key, uploadable in upload_plan.toOne.items():
             _uploadable = uploadable
-            if _uploadable.toOne != {}: _uploadable = apply_deferred_scopes(_uploadable, rows)
-            if is_deferred(_uploadable):
+            if hasattr(_uploadable, 'toOne'): _uploadable = apply_deferred_scopes(_uploadable, rows)
+            if isinstance(_uploadable, DeferredScopeUploadTable):
                 _uploadable = _uploadable.add_colleciton_override(collection_override_function)
             upload_plan.toOne[key] = _uploadable
 
