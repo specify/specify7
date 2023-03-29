@@ -107,6 +107,9 @@ export const resourcesText = createDictionary({
     'fr-fr': 'Configuration de la recherche express',
     'uk-ua': 'Конфігурація експрес-пошуку',
   },
+  typeSearches: {
+    'en-us': 'Type Searches',
+  },
   webLinks: {
     'en-us': 'Web Links',
     'ru-ru': 'Веб-ссылки',

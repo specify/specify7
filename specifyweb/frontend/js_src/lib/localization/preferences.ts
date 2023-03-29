@@ -1413,4 +1413,7 @@ export const preferencesText = createDictionary({
   alwaysUseQueryBuilder: {
     'en-us': 'Always use query builder search inside of search form',
   },
+  localizeResourceNames: {
+    'en-us': 'Localize the names of recognized app resources',
+  },
 } as const);

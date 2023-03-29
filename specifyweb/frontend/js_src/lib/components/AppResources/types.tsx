@@ -99,6 +99,14 @@ export const appResourceSubTypes = {
     icon: icons.search,
     label: resourcesText.expressSearchConfig(),
   },
+  typeSearches: {
+    mimeType: 'text/xml',
+    name: 'TypeSearches',
+    documentationUrl:
+      'https://discourse.specifysoftware.org/t/adding-a-non-native-query-combo-box/859#h-1-type-search-definition-typesearch_defxml-8',
+    icon: icons.documentSearch,
+    label: resourcesText.typeSearches(),
+  },
   webLinks: {
     mimeType: 'text/xml',
     name: 'WebLinks',

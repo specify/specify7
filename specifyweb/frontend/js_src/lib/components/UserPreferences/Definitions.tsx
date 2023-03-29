@@ -1615,6 +1615,18 @@ export const preferenceDefinitions = {
   appResources: {
     title: resourcesText.appResources(),
     subCategories: {
+      appearance: {
+        title: preferencesText.appearance(),
+        items: {
+          localizeResourceNames: defineItem<boolean>({
+            title: preferencesText.localizeResourceNames(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
+        },
+      },
       behavior: {
         title: preferencesText.behavior(),
         items: {

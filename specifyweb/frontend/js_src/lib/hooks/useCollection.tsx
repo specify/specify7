@@ -21,16 +21,15 @@ export function useCollection<SCHEMA extends AnySchema>(
     Promise<SerializedCollection<SCHEMA> | undefined> | undefined
   >(undefined);
 
-  const sizeRef = React.useRef<number>(0);
-
   const callback = React.useCallback(async () => {
     if (typeof fetchRef.current === 'object')
       return fetchRef.current.then(f.undefined);
-    fetchRef.current = fetch(sizeRef.current).then((data) => {
-      sizeRef.current = sizeRef.current += data.records.length;
-      fetchRef.current = undefined;
-      return data;
-    });
+    fetchRef.current = fetch(collectionRef.current?.records.length ?? 0).then(
+      (data) => {
+        fetchRef.current = undefined;
+        return data;
+      }
+    );
     return fetchRef.current;
   }, [fetch]);
 
@@ -40,11 +39,14 @@ export function useCollection<SCHEMA extends AnySchema>(
     React.useCallback(async () => {
       currentCallback.current = callback;
       fetchRef.current = undefined;
-      sizeRef.current = 0;
       return callback();
     }, [callback]),
     false
   );
+  const collectionRef = React.useRef<
+    SerializedCollection<SCHEMA> | undefined
+  >();
+  collectionRef.current = collection;
 
   const fetchMore = React.useCallback(
     async () =>

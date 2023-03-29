@@ -91,7 +91,7 @@ const remoteUserType = 'Prefs'.toLowerCase();
 const disambiguateGlobalPrefs = (
   appResources: RA<SerializedResource<SpAppResource>>,
   directories: RA<SerializedResource<SpAppResourceDir>>
-): RA<SerializedResource<SpAppResource>> =>
+): AppResourcesTree[number]['appResources'] =>
   appResources.map((resource) => {
     if (resource.name !== prefResource) return resource;
     const directory = directories.find(
@@ -101,9 +101,9 @@ const disambiguateGlobalPrefs = (
     if (!directory) return resource;
     const userType = directory.userType?.toLowerCase();
     if (userType === globalUserType)
-      return { ...resource, name: resourcesText.globalPreferences() };
+      return { ...resource, label: resourcesText.globalPreferences() };
     else if (userType === remoteUserType)
-      return { ...resource, name: resourcesText.remotePreferences() };
+      return { ...resource, label: resourcesText.remotePreferences() };
     else return resource;
   });
 

@@ -343,6 +343,7 @@ function ResourceItem({
 }: {
   readonly resource: SerializedResource<SpAppResource | SpViewSetObj> & {
     readonly type: ReturnType<typeof getResourceType>;
+    readonly label?: LocalizedString;
   };
   readonly onOpen:
     | ((resource: SerializedResource<SpAppResource | SpViewSetObj>) => void)
@@ -381,9 +382,9 @@ function ResourceItem({
       }
     >
       {appResourceIcon(resource.type)}
-      {typeof resource.name === 'string'
-        ? (resource.name as LocalizedString)
-        : commonText.nullInline()}
+      {('label' in resource ? resource.label : undefined) ??
+        (resource.name as LocalizedString) ??
+        commonText.nullInline()}
     </ActiveLink>
   );
 }
