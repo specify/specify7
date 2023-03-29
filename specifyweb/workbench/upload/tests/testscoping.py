@@ -1,8 +1,8 @@
 
-from ..upload_plan_schema import schema, parse_plan
-from ..upload_table import UploadTable, OneToOneTable, ScopedUploadTable, ScopedOneToOneTable
+from ..upload_plan_schema import schema, parse_plan, parse_plan_with_basetable
+from ..upload_table import UploadTable, OneToOneTable, ScopedUploadTable, ScopedOneToOneTable, DeferredScopeUploadTable, ColumnOptions
 
-from .base import UploadTestsBase
+from .base import UploadTestsBase, get_table
 from . import example_plan
 
 
@@ -47,3 +47,89 @@ class ScopingTests(UploadTestsBase):
         ).apply_scoping(self.collection)
 
         self.assertIsInstance(plan.toOne['paleocontext'], ScopedOneToOneTable)
+
+    def collection_rel_type_being_deferred(self) -> None:
+
+        unparsed_upload_plan = {
+            "baseTableName": "collectionrelationship",
+            "uploadable": {
+                "uploadTable": {
+                    "wbcols": {},
+                    "static": {},
+                    "toOne": {
+                        "leftside": {
+                            "uploadTable": {
+                                "wbcols": {
+                                    "catalognumber": "Cat #"
+                                },
+                                "static": {},
+                                "toOne": {},
+                                "toMany": {}
+                            }
+                        },
+                        "rightside": {
+                            "uploadTable": {
+                                "wbcols": {
+                                    "catalognumber": "Cat # (2)"
+                                },
+                                "static": {},
+                                "toOne": {},
+                                "toMany": {}
+                            }
+                        },
+                        "collectionreltype": {
+                            "uploadTable": {
+                                "wbcols": {
+                                    "name": "Collection Rel Type"
+                                },
+                                "static": {},
+                                "toOne": {},
+                                "toMany": {}
+                            }
+                        }
+                    },
+                    "toMany": {}
+                }
+            }
+        }
+        table, parsed_plan = parse_plan_with_basetable(self.collection, unparsed_upload_plan)
+
+        expected_plan = UploadTable(
+            name='Collectionrelationship', 
+            wbcols={}, 
+            static={}, 
+            toOne={
+                'leftside': UploadTable(
+                    name='Collectionobject', 
+                    wbcols={'catalognumber': ColumnOptions(column='Cat #', matchBehavior='ignoreNever', nullAllowed=True, default=None)},
+                    static={},
+                    toOne={},
+                    toMany={},
+                    overrideScope=None
+                    ), 
+                    
+                'rightside': DeferredScopeUploadTable(
+                    name='Collectionobject', 
+                    wbcols={'catalognumber': ColumnOptions(column='Cat # (2)', matchBehavior='ignoreNever', nullAllowed=True, default=None)}, 
+                    static={}, 
+                    toOne={}, 
+                    toMany={}, 
+                    related_key='collectionreltype', 
+                    relationship_name='rightsidecollection', 
+                    filter_field='name', 
+                    overrideScope=None
+                    ), 
+                    
+                'collectionreltype': UploadTable(
+                    name='Collectionreltype', 
+                    wbcols={'name': ColumnOptions(column='Collection Rel Type', matchBehavior='ignoreNever', nullAllowed=True, default=None)}, 
+                    static={}, 
+                    toOne={}, 
+                    toMany={}, 
+                    overrideScope=None
+                    )
+                }, 
+                toMany={}, 
+                overrideScope=None)
+        
+        self.assertEqual(parsed_plan, expected_plan)
