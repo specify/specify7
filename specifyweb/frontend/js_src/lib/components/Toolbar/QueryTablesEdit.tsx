@@ -178,75 +178,77 @@ export function ListEdit({
   }
 
   return (
-    <div className="grid grid-cols-[auto_1fr_auto_1fr] grid-rows-1">
-      <div className="flex flex-col justify-center">
-        <Button.Icon
-          disabled={isReadOnly || selectedSubset.length === 0}
-          icon="chevronUp"
-          title={queryText.moveUp()}
-          onClick={handleMoveUp}
-        />
-        <Button.Icon
-          disabled={isReadOnly || selectedSubset.length === 0}
-          icon="chevronDown"
-          title={queryText.moveDown()}
-          onClick={handleMoveDown}
-        />
-      </div>
-      <Label.Block>
-        {selectedLabel}
-        <Select
-          className="flex-1"
-          disabled={isReadOnly}
-          multiple
-          size={10}
-          value={selectedSubset}
-          onValuesChange={(tables): void =>
-            setSelectedSubset(tables as RA<keyof Tables>)
-          }
-        >
-          {selectedItems.map(({ name, label }) => (
-            <option key={name} value={name}>
-              {label}
-            </option>
-          ))}
-        </Select>
-      </Label.Block>
-      <div className="flex gap-2">
-        <div className="flex items-center">
+    <div className="grid grid-rows-1 md:grid-cols-[auto_1fr_auto_1fr] md:flex-row">
+      <div className="flex md:contents">
+        <div className="flex flex-col justify-center">
           <Button.Icon
-            disabled={isReadOnly || possibleSubset.length === 0}
-            icon="chevronLeft"
-            title={commonText.add()}
-            onClick={handleAdd}
+            disabled={isReadOnly || selectedSubset.length === 0}
+            icon="chevronUp"
+            title={queryText.moveUp()}
+            onClick={handleMoveUp}
           />
           <Button.Icon
             disabled={isReadOnly || selectedSubset.length === 0}
-            icon="chevronRight"
-            title={commonText.remove()}
-            onClick={handleRemove}
+            icon="chevronDown"
+            title={queryText.moveDown()}
+            onClick={handleMoveDown}
           />
         </div>
+        <Label.Block>
+          {selectedLabel}
+          <Select
+            className="flex-1"
+            disabled={isReadOnly}
+            multiple
+            size={10}
+            value={selectedSubset}
+            onValuesChange={(tables): void =>
+              setSelectedSubset(tables as RA<keyof Tables>)
+            }
+          >
+            {selectedItems.map(({ name, label }) => (
+              <option key={name} value={name}>
+                {label}
+              </option>
+            ))}
+          </Select>
+        </Label.Block>
       </div>
-      <Label.Block>
-        {availableLabel}
-        <Select
-          className="flex-1"
-          disabled={isReadOnly}
-          multiple
-          size={10}
-          value={possibleSubset}
-          onValuesChange={(tables): void =>
-            setPossibleSubset(tables as RA<keyof Tables>)
-          }
-        >
-          {possibleItems.map(({ name, label }) => (
-            <option key={name} value={name}>
-              {label}
-            </option>
-          ))}
-        </Select>
-      </Label.Block>
+      <div className="flex items-center justify-center">
+        <Button.Icon
+          disabled={isReadOnly || possibleSubset.length === 0}
+          icon="chevronLeft"
+          title={commonText.add()}
+          onClick={handleAdd}
+        />
+        <Button.Icon
+          disabled={isReadOnly || selectedSubset.length === 0}
+          icon="chevronRight"
+          title={commonText.remove()}
+          onClick={handleRemove}
+        />
+      </div>
+      <div className="flex w-60 justify-end md:flex-col">
+        <Label.Block>
+          {availableLabel}
+          <Select
+            className="flex-1"
+            disabled={isReadOnly}
+            multiple
+            size={10}
+            value={possibleSubset}
+            onValuesChange={(tables): void =>
+              setPossibleSubset(tables as RA<keyof Tables>)
+            }
+          >
+            {possibleItems.map(({ name, label }) => (
+              <option key={name} value={name}>
+                {label}
+              </option>
+            ))}
+          </Select>
+        </Label.Block>
+      </div>
     </div>
   );
 }

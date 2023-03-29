@@ -147,20 +147,20 @@ export function Header({
         />
         <span className="flex-1" />
         <MenuButton
-          icon={icons.archive}
-          isCollapsed={isCollapsed}
-          preventOverflow
-          title={collectionLabel}
-          onClick="/specify/overlay/choose-collection/"
-        />
-        <UserTools isCollapsed={isCollapsed} isInUserTool={isInUserTool} />
-        <Notifications isCollapsed={isCollapsed} />
-        <MenuButton
           icon={icons.search}
           isActive={activeMenuItem === 'search'}
           isCollapsed={isCollapsed}
           title={commonText.search()}
           onClick="/specify/overlay/express-search/"
+        />
+        <Notifications isCollapsed={isCollapsed} />
+        <UserTools isCollapsed={isCollapsed} isInUserTool={isInUserTool} />
+        <MenuButton
+          icon={icons.archive}
+          isCollapsed={isCollapsed}
+          preventOverflow
+          title={collectionLabel}
+          onClick="/specify/overlay/choose-collection/"
         />
         {!isHorizontal && !forceCollapse ? (
           <MenuButton

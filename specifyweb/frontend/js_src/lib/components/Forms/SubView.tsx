@@ -115,7 +115,7 @@ export function SubView({
           relationship.isDependent()
             ? new relationship.relatedModel.DependentCollection({
                 related: parentResource,
-                field: relationship.getReverse(),
+                field: reverse,
               })
             : new relationship.relatedModel.LazyCollection({
                 filters: {
@@ -195,7 +195,7 @@ export function SubView({
     relationship.relatedModel.name
   );
 
-  const isAttachmentMisconfirgured =
+  const isAttachmentMisconfigured =
     isAttachmentTable && !isAttachmentConfigured;
 
   return (
@@ -230,7 +230,7 @@ export function SubView({
           dialog={isButton ? 'nonModal' : false}
           formType={formType}
           mode={
-            !isAttachmentMisconfirgured &&
+            !isAttachmentMisconfigured &&
             relationship.isDependent() &&
             initialMode !== 'view'
               ? 'edit'

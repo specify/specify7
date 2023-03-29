@@ -29,7 +29,10 @@ export function SchemaViewerTable({
   return model === undefined ? (
     <NotFoundView />
   ) : (
-    <section className="flex flex-col gap-4" ref={forwardRef}>
+    <section
+      className="flex flex-col gap-4 print:m-8 print:text-xs"
+      ref={forwardRef}
+    >
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2">
           <TableIcon label={false} name={model.name} />

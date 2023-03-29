@@ -11,16 +11,10 @@ import type {
 import type { SpecifyResource } from '../../components/DataModel/legacyTypes';
 import type { Tables } from '../../components/DataModel/types';
 import { formatUrl } from '../../components/Router/queryString';
-import { eventListener } from '../events';
 import type { IR, RA, RR } from '../types';
 import { filterArray } from '../types';
 import { formData } from './helpers';
 import { ajax } from './index';
-
-export const globalEvents = eventListener<{
-  readonly initResource: SpecifyResource<AnySchema>;
-  readonly newResource: SpecifyResource<AnySchema>;
-}>();
 
 // FEATURE: consider replacing this with Query Builder
 export const queryCbxExtendedSearch = async <SCHEMA extends AnySchema>(

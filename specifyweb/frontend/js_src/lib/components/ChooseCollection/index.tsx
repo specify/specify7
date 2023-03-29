@@ -125,7 +125,7 @@ function Wrapped({
         {errors.length > 0 && <ErrorMessage>{errors}</ErrorMessage>}
         {hasAccess ? (
           <>
-            <div className="-ml-1 flex max-h-56 flex-col gap-2 overflow-y-auto pl-1">
+            <div className="-ml-1 flex max-h-[50vh] flex-col gap-2 overflow-y-auto pl-1">
               {sortedCollections.map(({ id, collectionname }) => (
                 <Label.Inline key={id}>
                   <Input.Radio

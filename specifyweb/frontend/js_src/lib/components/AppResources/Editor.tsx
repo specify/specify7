@@ -91,8 +91,7 @@ export function AppResourceEditor({
     resource: appResource,
   });
   const headerButtons = (
-    <>
-      <AppResourceEditButton title={title}>{form()}</AppResourceEditButton>
+    <div className="flex flex-wrap gap-3">
       <AppTitle title={formatted} />
       <Button.Blue
         aria-label={localityText.toggleFullScreen()}
@@ -102,7 +101,7 @@ export function AppResourceEditor({
       >
         {isFullScreen ? icons.arrowsCollapse : icons.arrowsExpand}
       </Button.Blue>
-      <span className="-ml-4 flex-1" />
+      <span className="-ml-4 md:flex-1" />
       {typeof resourceData === 'object' && (
         <AppResourceLoad
           onLoaded={(data: string, mimeType: string): void => {
@@ -124,19 +123,28 @@ export function AppResourceEditor({
         data={resourceData?.data ?? ''}
         resource={resource}
       />
-    </>
+    </div>
   );
 
   return typeof resourceData === 'object' ? (
-    <Container.Base className="flex-1 overflow-hidden">
-      <DataEntry.Header>
-        {appResourceIcon(getResourceType(resource))}
-        <h3 className="overflow-auto whitespace-nowrap text-2xl">
-          {formatted}
-        </h3>
+    <Container.Base className="flex-1 overflow-auto">
+      <DataEntry.Header className='flex-wrap'>
+        <div className="flex items-center justify-center gap-2">
+          <div className="hidden md:block">
+            {appResourceIcon(getResourceType(resource))}
+          </div>
+          <div className="flex max-w-[90%] gap-1">
+            <h3 className="overflow-auto whitespace-nowrap text-2xl">
+              {formatted}
+            </h3>
+            <AppResourceEditButton title={title}>
+              {form()}
+            </AppResourceEditButton>
+          </div>
+        </div>
         {headerButtons}
       </DataEntry.Header>
-      <Form className="flex-1 overflow-hidden" forwardRef={setForm}>
+      <Form className="max-h-screen flex-1 overflow-auto" forwardRef={setForm}>
         <AppResourcesTabs
           appResource={appResource}
           data={resourceData.data}

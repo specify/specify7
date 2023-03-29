@@ -64,7 +64,7 @@ export const DataEntry = {
   >(
     'DataEntry.Grid',
     'div',
-    `overflow-x-auto items-center p-1 -ml-1 gap-2`,
+    `items-center p-1 -ml-1 gap-2`,
     ({
       viewDefinition,
       display,
@@ -160,10 +160,10 @@ export const DataEntry = {
   }): JSX.Element | null {
     return typeof resource === 'object' && !resource.isNew() ? (
       <Link.NewTab
-        aria-label={formsText.visit()}
+        aria-label={commonText.openInNewTab()}
         className={`${className.dataEntryVisit} ${localClassName}`}
         href={resource.viewUrl()}
-        title={formsText.visit()}
+        title={commonText.openInNewTab()}
       />
     ) : null;
   },

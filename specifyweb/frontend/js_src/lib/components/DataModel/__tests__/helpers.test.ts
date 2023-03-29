@@ -40,7 +40,7 @@ describe('serializeResource', () => {
       dateOfDeath: null,
       dateOfDeathPrecision: null,
       dateType: null,
-      division: null,
+      division: getResourceApiUrl('Division', 2),
       email: null,
       firstName: null,
       groups: [],

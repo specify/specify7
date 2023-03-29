@@ -294,7 +294,7 @@ class BoundTreeRecord(NamedTuple):
             return UploadResult(
                 FailedBusinessRule(
                     'missingRequiredTreeParent',
-                    {'names':repr(names)},
+                    {'names':names}, # {'names':repr(names)},
                     info
                 ),
                 {}, {}

@@ -226,7 +226,9 @@ describe('formatterToParser', () => {
       ...parser
     } = formatterToParser({}, uiFormatter);
     expect(parser).toEqual({
-      pattern: new RegExp(uiFormatter.parseRegExp(), 'u'),
+      // Regex may be coming from the user, thus disable strict mode
+      // eslint-disable-next-line require-unicode-regexp
+      pattern: new RegExp(uiFormatter.parseRegExp()),
       title,
       placeholder: uiFormatter.pattern()!,
       value: uiFormatter.valueOrWild(),

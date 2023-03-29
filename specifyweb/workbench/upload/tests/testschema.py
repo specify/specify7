@@ -74,6 +74,7 @@ class OtherSchemaTests(unittest.TestCase):
         validate(column_opts, schema['definitions']['columnOptions'])
         parse_column_options(column_opts)
 
+    @settings(deadline=None)
     @given(column_opts=infer)
     def test_column_options_to_json(self, column_opts: ColumnOptions):
         j = column_opts.to_json()

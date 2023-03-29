@@ -1,6 +1,5 @@
-import { globalEvents } from '../../utils/ajax/specifyApi';
 import type { RA } from '../../utils/types';
-import { capitalize, takeBetween } from '../../utils/utils';
+import { takeBetween } from '../../utils/utils';
 import { raise } from '../Errors/Crash';
 import { getCollectionPref } from '../InitialContext/remotePrefs';
 import { getDomainResource } from '../InitialContext/treeRanks';
@@ -11,42 +10,27 @@ import type { AnySchema } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
 import { getResourceApiUrl, idFromUrl } from './resource';
 import { schema } from './schema';
+import type { Relationship } from './specifyField';
+import type { SpecifyModel } from './specifyModel';
 import type { CollectionObject } from './types';
 
 /**
  * Some tasks to do after a new resource is created
  */
-globalEvents.on('newResource', (resource) => {
-  const domainField = resource.specifyModel.getScopingRelationship();
-  if (domainField === undefined) return;
+export function initializeResource(resource: SpecifyResource<AnySchema>): void {
+  const scoping = getScopingResource(resource.specifyModel);
+  if (scoping === undefined) return;
+  if (!Boolean(resource.get(scoping.relationship.name)))
+    resource.set(scoping.relationship.name, scoping.resourceUrl as never);
 
-  const domainFieldName =
-    domainField.name as keyof typeof schema.domainLevelIds;
-
-  const parentResource = getDomainResource(domainFieldName);
-
-  if (
-    typeof parentResource === 'object' &&
-    !Boolean(resource.get(domainField.name))
-  )
-    resource.set(
-      domainField.name,
-      getResourceApiUrl(
-        capitalize(domainFieldName),
-        schema.domainLevelIds[domainFieldName]
-      ) as never
-    );
-
-  // Need to make sure parentResource isn't null to fix issue introduced by 8abf5d5
-  if (!hasTablePermission(capitalize(domainFieldName), 'read')) return;
-  if (parentResource === undefined) return;
+  if (!hasTablePermission(scoping.relationship.relatedModel.name, 'read'))
+    return;
 
   const collectionObject = toTable(resource, 'CollectionObject');
   if (collectionObject === undefined) return;
 
-  const colId = parentResource.get('id');
   if (
-    getCollectionPref('CO_CREATE_COA', colId) &&
+    getCollectionPref('CO_CREATE_COA', schema.domainLevelIds.collection) &&
     hasTablePermission('CollectionObjectAttribute', 'create')
   ) {
     const attribute = new schema.models.CollectionObjectAttribute.Resource();
@@ -55,7 +39,7 @@ globalEvents.on('newResource', (resource) => {
   }
 
   if (
-    getCollectionPref('CO_CREATE_PREP', colId) &&
+    getCollectionPref('CO_CREATE_PREP', schema.domainLevelIds.collection) &&
     hasTablePermission('Preparation', 'create')
   )
     collectionObject
@@ -66,7 +50,7 @@ globalEvents.on('newResource', (resource) => {
       .catch(raise);
 
   if (
-    getCollectionPref('CO_CREATE_DET', colId) &&
+    getCollectionPref('CO_CREATE_DET', schema.domainLevelIds.collection) &&
     hasTablePermission('Determination', 'create')
   )
     collectionObject
@@ -75,7 +59,31 @@ globalEvents.on('newResource', (resource) => {
         determinations.add(new schema.models.Determination.Resource())
       )
       .catch(raise);
-});
+}
+
+export function getScopingResource(
+  table: SpecifyModel
+):
+  | { readonly relationship: Relationship; readonly resourceUrl: string }
+  | undefined {
+  const domainField = table.getScopingRelationship();
+  if (domainField === undefined) return;
+
+  const domainFieldName =
+    domainField.name as keyof typeof schema.domainLevelIds;
+
+  const parentResource = getDomainResource(domainFieldName);
+
+  return typeof parentResource === 'object'
+    ? {
+        relationship: domainField,
+        resourceUrl: getResourceApiUrl(
+          domainField.relatedModel.name,
+          schema.domainLevelIds[domainFieldName]
+        ),
+      }
+    : undefined;
+}
 
 /**
  * @returns a list of collections the resource belongs too.

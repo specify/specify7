@@ -386,16 +386,6 @@ export function AutoComplete<T>({
             pendingValueRef.current = value;
         }}
         {...inputProps}
-        onBlur={withHandleBlur(inputProps?.onBlur).onBlur}
-        /*
-         * Padding for the button. Using "em" so as to match @tailwind/forms
-         * styles for <select>
-         */
-        className={`
-          ${className.notTouchedInput}
-          ${inputProps.className ?? ''}
-          w-full pr-[1.5em]
-        `}
         displayValue={(item: AutoCompleteItem<T> | null): string =>
           typeof item === 'string'
             ? item
@@ -404,6 +394,16 @@ export function AutoComplete<T>({
             : item?.searchValue ?? ''
         }
         ref={forwardChildRef}
+        onBlur={withHandleBlur(inputProps?.onBlur).onBlur}
+        /*
+         * Padding for the button. Using "em" so as to match @tailwind/forms
+         * styles for <select>
+         */
+        className={`
+          ${className.notTouchedInput}
+          ${inputProps.className ?? ''}
+          w-full min-w-[theme(spacing.20)] pr-[1.5em]
+        `}
       />
       {listHasItems && !disabled ? toggleButton : undefined}
       {/*

@@ -2,6 +2,7 @@ import React from 'react';
 
 import { schemaText } from '../../localization/schema';
 import { f } from '../../utils/functools';
+import { booleanFormatter } from '../../utils/parser/parse';
 import type { RA, RR } from '../../utils/types';
 import { ensure } from '../../utils/types';
 import { H3 } from '../Atoms';
@@ -13,7 +14,6 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { localizedRelationshipTypes } from '../SchemaConfig/helpers';
 import type { SchemaViewerRow, SchemaViewerValue } from './helpers';
 import { SchemaViewerTableList } from './TableList';
-import { booleanFormatter } from '../../utils/parser/parse';
 
 export function SchemaViewerRelationships({
   table,

@@ -63,7 +63,6 @@ import {
   flip,
   FloatingPortal,
   offset,
-  safePolygon,
   shift,
   useFloating,
 } from '@floating-ui/react';
@@ -73,6 +72,7 @@ import { useId } from '../../hooks/useId';
 import { whitespaceSensitive } from '../../localization/utils';
 import { listen } from '../../utils/events';
 import { f } from '../../utils/functools';
+import type { RA } from '../../utils/types';
 import { oneRem } from '../Atoms';
 import { usePref } from '../UserPreferences/usePref';
 
@@ -217,7 +217,6 @@ window?.addEventListener(
   'touchstart',
   () => {
     delayFocusIn = 0;
-    /** Delay before showing tooltip if using touch */
     delayMouseIn = 0;
   },
   { once: true }
@@ -238,32 +237,24 @@ function useInteraction(
 ): void {
   const [isEnabled] = usePref('general', 'ui', 'useCustomTooltips');
 
-  const timeOut = React.useRef<ReturnType<typeof setTimeout> | undefined>(
-    undefined
-  );
   const [currentElement, setCurrentElement] = React.useState<
     HTMLElement | undefined
   >(undefined);
   const currentElementRef = React.useRef<HTMLElement | undefined>(undefined);
   const currentTitle = React.useRef<string | undefined>(undefined);
-  const handleCloseRef = React.useRef<(() => void) | undefined>(undefined);
 
   const floatingIdRef = React.useRef(floatingId);
   floatingIdRef.current = floatingId;
 
-  // Revert old title attribute for the previous button
-  const revertDomChanges = React.useCallback(() => {
-    if (typeof currentTitle.current === 'string')
-      currentElementRef.current?.setAttribute('title', currentTitle.current);
-    currentElementRef.current?.removeAttribute('aria-describedby');
+  // Hold a list of clean up functions for side effects
+  const flushQueue = React.useRef<RA<() => void>>([]);
+  const flush = React.useCallback(() => {
+    flushQueue.current.forEach(f.call);
+    flushQueue.current = [];
   }, []);
-
-  const clear = React.useCallback((): void => {
-    clearTimeout(timeOut.current);
-    timeOut.current = undefined;
-    handleCloseRef.current?.();
-    revertDomChanges();
-  }, [revertDomChanges]);
+  const toFlush = React.useCallback((callback: () => void) => {
+    flushQueue.current = [...flushQueue.current, callback];
+  }, []);
 
   const containerRef = React.useRef(container);
   containerRef.current = container;
@@ -273,11 +264,17 @@ function useInteraction(
 
   const handleClose = React.useCallback((): void => {
     setContent(undefined, undefined, defaultPlacement);
+
+    // Revert old title attribute for the previous button
+    if (typeof currentTitle.current === 'string')
+      currentElementRef.current?.setAttribute('title', currentTitle.current);
+    currentElementRef.current?.removeAttribute('aria-describedby');
+
+    flush();
+    currentTitle.current = undefined;
     currentElementRef.current = undefined;
     setCurrentElement(undefined);
-    currentTitle.current = undefined;
-    handleCloseRef.current?.();
-  }, [setContent]);
+  }, [setContent, flush]);
 
   // Handle blur/mouseleave
   const handleOut = React.useCallback(
@@ -287,24 +284,15 @@ function useInteraction(
         event.target !== currentElementRef.current
       )
         return;
-      clear();
+      flush();
 
       if (event.type === 'focus') handleClose();
       else {
-        // See https://floating-ui.com/docs/useHover#safepolygon
-        const mouseEvent = event as MouseEvent;
-        const handler = safePolygon()({
-          ...contextRef.current,
-          x: mouseEvent.clientX,
-          y: mouseEvent.clientY,
-          onClose: handleClose,
-        });
-        globalThis.addEventListener('mousemove', handler);
-        handleCloseRef.current = (): void =>
-          globalThis.removeEventListener('mousemove', handler);
+        const timeOut = setTimeout(handleClose, 400);
+        toFlush(() => clearTimeout(timeOut));
       }
     },
-    [clear, handleClose]
+    [flush, handleClose]
   );
 
   React.useEffect(
@@ -324,6 +312,10 @@ function useInteraction(
     function handleIn(event: FocusEvent | MouseEvent): void {
       const target = event.target as HTMLElement;
       if (target?.getAttribute === undefined) return;
+      if (target === containerRef.current) {
+        flush();
+        return;
+      }
       const title = target.getAttribute('title');
       if (typeof title !== 'string' || title.length === 0) return;
       display(event.type as 'focus' | 'mouseenter', target, title);
@@ -335,17 +327,29 @@ function useInteraction(
       title: string
     ): void {
       const isDisplayed =
-        currentElementRef.current !== undefined &&
-        timeOut.current === undefined;
+        currentElementRef.current !== undefined && contextRef.current.open;
 
-      clear();
+      handleClose();
       // Remove the title attribute to silence default browser titles
       element.removeAttribute('title');
       currentElementRef.current = element;
       setCurrentElement(element);
       currentTitle.current = title;
 
-      const handleSet = (): void => {
+      // Set exit event listener
+      toFlush(
+        listen(
+          element,
+          type === 'focus' ? ('blur' as const) : ('mouseleave' as const),
+          handleOut,
+          {
+            passive: true,
+            once: true,
+          }
+        )
+      );
+
+      function handleSet(): void {
         setContent(
           element,
           whitespaceSensitive(title),
@@ -356,17 +360,7 @@ function useInteraction(
         );
         if (typeof floatingIdRef.current === 'string')
           element.setAttribute('aria-describedby', floatingIdRef.current);
-
-        // Set exit event listener
-        element.addEventListener(
-          type === 'focus' ? ('blur' as const) : ('mouseleave' as const),
-          handleOut,
-          {
-            passive: true,
-            once: true,
-          }
-        );
-      };
+      }
 
       const customDelay = f.maybe(
         element.getAttribute(titleDelay) ?? undefined,
@@ -387,7 +381,8 @@ function useInteraction(
          */
         const delay =
           customDelay ?? (type === 'focus' ? delayFocusIn : delayMouseIn);
-        timeOut.current = setTimeout(handleSet, delay);
+        const timeOut = setTimeout(handleSet, delay);
+        toFlush(() => clearTimeout(timeOut));
       }
     }
 
@@ -403,7 +398,7 @@ function useInteraction(
       mouseEnter();
       focus();
     };
-  }, [setContent, clear, handleOut, isEnabled]);
+  }, [setContent, flush, handleOut, handleClose, isEnabled, toFlush]);
 
   /*
    * Close the tooltip if the element that triggered it was removed

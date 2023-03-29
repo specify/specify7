@@ -46,7 +46,7 @@ export function SchemaViewerTableList<
     <div
       className={`
         grid-table
-        w-fit flex-1 grid-cols-[repeat(var(--cols),auto)] rounded border border-gray-400 dark:border-neutral-500
+        w-fit flex-1 grid-cols-[repeat(var(--cols),auto)] rounded border border-gray-400 dark:border-neutral-500 print:p-1
         ${className}
       `}
       role="table"
@@ -57,7 +57,7 @@ export function SchemaViewerTableList<
           <div
             className={`
               sticky top-0 border border-gray-400 bg-[color:var(--background)]
-              p-2 font-bold dark:border-neutral-500
+              p-2 font-bold dark:border-neutral-500 print:p-1
             `}
             key={name}
             role="columnheader"
@@ -105,7 +105,7 @@ function Cell({
 }): JSX.Element {
   return (
     <div
-      className="border border-gray-400 p-2 dark:border-neutral-500"
+      className="border border-gray-400 p-2 dark:border-neutral-500 print:p-1"
       role="cell"
     >
       {children}

@@ -103,10 +103,10 @@ export type CacheDefinitions = {
     /** Attachments grid scale */
     readonly scale: number;
   };
-  readonly geoLocate: {
-    /** Remember dialog window dimentions from the last session */
-    readonly width: number;
-    readonly height: number;
+  /** Remember dialog window dimensions and positions from the last session */
+  readonly dialogs: {
+    readonly sizes: IR<readonly [width: number, height: number]>;
+    readonly positions: IR<readonly [x: number, y: number]>;
   };
   readonly userPreferences: {
     /**

@@ -105,3 +105,21 @@ development. Many IDEs have plugins for closer integration.
 
   Configure your IDE to get all settings from that file. No additional
   configuration is required.
+
+### Profile Webpack-Bundle-Visualizer
+
+![Webpack Bundle Visualizer](https://cloud.githubusercontent.com/assets/302213/20628702/93f72404-b338-11e6-92d4-9a365550a701.gif)
+
+This tool helps you visualize your webpack bundle interactive report. To use it,
+simply run the following command in your js_src directory:
+
+```
+make profile
+```
+
+This will generate a report that can be opened in your browser.
+
+To learn more about how to analyze your report, check out this blog post
+(https://blog.jakoblind.no/webpack-bundle-analyzer/#what-should-i-look-for-in-the-reports).
+It provides some helpful tips on what to look for in the report and how to
+optimize your webpack configuration to improve your bundle size and

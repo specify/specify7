@@ -22,7 +22,7 @@ import {
   attachmentsAvailable,
   formatAttachmentUrl,
 } from '../Attachments/attachments';
-import { AttachmentsPlugin } from '../Attachments/Plugin';
+import { UploadAttachment } from '../Attachments/Plugin';
 import { LoadingContext } from '../Core/Contexts';
 import { fetchCollection } from '../DataModel/collection';
 import type { SerializedResource } from '../DataModel/helperTypes';
@@ -228,10 +228,8 @@ function FixImagesDialog({
       icon={<span className="text-blue-500">{icons.documentReport}</span>}
       onClose={(): void => setIndex(undefined)}
     >
-      <AttachmentsPlugin
-        mode="edit"
-        resource={undefined}
-        onUploadComplete={(attachment): void =>
+      <UploadAttachment
+        onUploaded={(attachment): void =>
           loading(
             attachment
               .set('title', missingAttachments[index])

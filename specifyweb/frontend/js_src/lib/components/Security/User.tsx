@@ -397,7 +397,7 @@ function UserView({
             <LegacyPermissions mode={mode} userResource={userResource} />
           </ErrorBoundary>
         </>,
-        '-mx-4 p-4 pt-0 flex-1 gap-8 [&_input]:max-w-[min(100%,var(--max-field-width))]'
+        '-mx-4 p-4 pt-0 flex-1 gap-8 [&_input]:max-w-[min(100%,var(--max-field-width))] overflow-auto'
       )}
       <DataEntry.Footer>
         {changesMade ? (

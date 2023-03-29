@@ -480,6 +480,19 @@ schema = json.loads(r'''
             }
           ]
         },
+        "prefixItems" : {
+          "type": "array",
+          "items" : {
+            "oneOf": [
+              {
+                "$ref": "#/definitions/Schema"
+              },
+              {
+                "$ref": "#/definitions/Reference"
+              }
+            ]
+          }
+        },
         "properties": {
           "type": "object",
           "additionalProperties": {

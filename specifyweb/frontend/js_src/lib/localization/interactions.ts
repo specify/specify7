@@ -107,7 +107,7 @@ export const interactionsText = createDictionary({
     'ru-ru': 'Препараты не могут быть возвращены в этом контексте.',
     'es-es': 'Los preparados no se pueden devolver en este contexto.',
     'fr-fr': 'Les préparations ne peuvent être retournées dans ce cadre.',
-    'uk-ua': 'У цьому контексті препарати не підлягають поверненню.',
+    'uk-ua': 'У цьому контексті препарати не повертаються.',
   },
   noUnresolvedPreparations: {
     'en-us': 'There are no unresolved preparations for this loan.',
@@ -127,7 +127,7 @@ export const interactionsText = createDictionary({
     'en-us': 'Return',
     'ru-ru': 'Возвращение',
     'es-es': 'Devolver',
-    'fr-fr': 'Revenir',
+    'fr-fr': 'Retour',
     'uk-ua': 'Повернення',
   },
   resolve: {
@@ -328,9 +328,9 @@ export const interactionsText = createDictionary({
     comment: 'Example: Create a Loan',
     'en-us': 'Create a {tableLoan:string}',
     'es-es': 'Crear un {tableLoan:string}',
-    'fr-fr': 'Créer un {tableLoan:string}',
+    'fr-fr': 'Créer un {tableGift:string}',
     'ru-ru': 'Создайте {tableLoan:string}',
-    'uk-ua': 'Створити {tableLoan:string}',
+    'uk-ua': 'Створити {tableGift:string}',
   },
   editLoan: {
     comment: 'Example: Edit a Loan',
@@ -345,16 +345,16 @@ export const interactionsText = createDictionary({
     'en-us': 'Create a {tableGift:string}',
     'es-es': 'Crear una {tableGift:string}',
     'fr-fr': 'Créer un {tableGift:string}',
-    'ru-ru': 'Создайте {tableGift:string}',
+    'ru-ru': 'Создайте {tableLoan:string}',
     'uk-ua': 'Створити {tableGift:string}',
   },
   editGift: {
     comment: 'Example: Edit a Gift',
     'en-us': 'Edit {tableGift:string}',
     'es-es': 'Edite {tableGift:string}',
-    'fr-fr': 'Modifier {tableGift:string}',
-    'ru-ru': 'Изменить {tableGift:string}',
-    'uk-ua': 'Редагувати {tableGift:string}',
+    'fr-fr': 'Modifier {tableLoan:string}',
+    'ru-ru': 'Изменить {tableLoan:string}',
+    'uk-ua': 'Редагувати {tableLoan:string}',
   },
   createInformationRequest: {
     comment: 'Example: Create a Infrormation Request',
@@ -362,6 +362,6 @@ export const interactionsText = createDictionary({
     'es-es': 'Crear {tableInformationRequest:string}',
     'fr-fr': 'Créer {tableInformationRequest:string}',
     'ru-ru': 'Создать {tableInformationRequest:string}',
-    'uk-ua': 'Створити {tableInformationRequest:string}',
+    'uk-ua': 'Створити {modelName:string}',
   },
 } as const);
