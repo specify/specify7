@@ -50,7 +50,7 @@
     "leaflet": "^1.7.1",
     "leaflet-gesture-handling": "^1.2.2",
     "leaflet.featuregroup.subgroup": "^1.0.2",
-    "leaflet.markercluster": "^1.5.0",
+    "leaflet.markercluster": "^1.5.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-draggable": "^4.4.5",

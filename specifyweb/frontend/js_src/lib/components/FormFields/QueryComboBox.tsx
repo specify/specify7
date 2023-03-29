@@ -145,6 +145,10 @@ export function QueryComboBox({
   const formattedRef = React.useRef<
     { readonly value: string; readonly formatted: LocalizedString } | undefined
   >(undefined);
+  /*
+   * REFACTOR: split this into two states to improve performance
+   *   (so that places that just need resource don't have to wait on formatting)
+   */
   const [formatted] = useAsyncState<{
     readonly label: LocalizedString;
     readonly resource: SpecifyResource<AnySchema> | undefined;

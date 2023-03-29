@@ -24,7 +24,6 @@ export const specifyNetworkText = createDictionary({
   dataQuality: { 'en-us': 'Data Quality' },
   reportedBy: { 'en-us': 'Reported by {provider:string}' },
   collectionDate: { 'en-us': 'Collection Date' },
-  projectionLayerLabel: { 'en-us': 'Lifemapper Distribution Model' },
   mapDetails: {
     'en-us': 'Details',
   },
