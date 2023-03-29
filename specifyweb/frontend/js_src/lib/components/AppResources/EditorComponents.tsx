@@ -25,12 +25,12 @@ import { Dialog } from '../Molecules/Dialog';
 import { downloadFile, FilePicker, fileToText } from '../Molecules/FilePicker';
 import type { BaseSpec } from '../Syncer';
 import type { SimpleXmlNode } from '../Syncer/xmlToJson';
+import { getUserPref } from '../UserPreferences/helpers';
 import { usePref } from '../UserPreferences/usePref';
 import { jsonLinter, xmlLinter } from './codeMirrorLinters';
 import type { getResourceType } from './filtersHelpers';
 import { getAppResourceExtension } from './hooks';
 import { appResourceSubTypes, appResourceTypes } from './types';
-import { getUserPref } from '../UserPreferences/helpers';
 
 export const appResourceIcon = (
   type: ReturnType<typeof getResourceType>
@@ -169,7 +169,10 @@ export function useCodeMirrorExtensions(
   const [indentSize] = usePref('appResources', 'behavior', 'indentSize');
   const indentCharacter = useIndent();
 
-  const mode = getAppResourceExtension(resource);
+  const mode = React.useMemo(
+    () => getAppResourceExtension(resource),
+    [resource]
+  );
   const [extensions, setExtensions] = React.useState<RA<Extension>>([]);
   React.useEffect(() => {
     function handleLinted(results: RA<Diagnostic>): void {

@@ -59,14 +59,16 @@ export function AppResourcesTab({
   ) => void;
 }): JSX.Element {
   const children = (
-    <Component
-      appResource={appResource}
-      data={data}
-      directory={directory}
-      resource={resource}
-      showValidationRef={showValidationRef}
-      onChange={handleChange}
-    />
+    <ErrorBoundary dismissible>
+      <Component
+        appResource={appResource}
+        data={data}
+        directory={directory}
+        resource={resource}
+        showValidationRef={showValidationRef}
+        onChange={handleChange}
+      />
+    </ErrorBoundary>
   );
   return isFullScreen ? (
     <Dialog

@@ -11,6 +11,8 @@ import { headerText } from '../../localization/header';
 import { formData } from '../../utils/ajax/helpers';
 import { ping } from '../../utils/ajax/ping';
 import { f } from '../../utils/functools';
+import type { RA } from '../../utils/types';
+import type { AppResourcesConformation } from '../AppResources/Aside';
 import { AppResourcesAside } from '../AppResources/Aside';
 import type { AppResourceFilters } from '../AppResources/filtersHelpers';
 import type { AppResources } from '../AppResources/hooks';
@@ -38,48 +40,52 @@ export function MakeDwcaOverlay(): JSX.Element | null {
     <PickAppResource
       header={headerText.chooseDwca()}
       resources={resources}
+      filters={dwcaAppResourceFilter}
       onClose={handleClose}
       onSelected={(definition): void => setDefinition(definition?.name)}
     />
   ) : isExporting ? (
     <ExportStarted onClose={handleClose} />
   ) : (
-    <>
-      <PickAppResource
-        header={headerText.chooseMetadataResource()}
-        resources={resources}
-        skippable
-        onClose={(): void => setDefinition(undefined)}
-        onSelected={(metadata): void => {
-          handleExporting();
-          loading(startExport(definition, metadata?.name));
-        }}
-      />
-      ;
-    </>
+    <PickAppResource
+      header={headerText.chooseMetadataResource()}
+      resources={resources}
+      skippable
+      onClose={(): void => setDefinition(undefined)}
+      filters={dwcaAppResourceFilter}
+      onSelected={(metadata): void => {
+        handleExporting();
+        loading(startExport(definition, metadata?.name));
+      }}
+    />
   );
 }
 
-const initialFilters: AppResourceFilters = {
+export const dwcaAppResourceFilter: AppResourceFilters = {
   viewSets: false,
   appResources: ['otherXmlResource', 'otherAppResources'],
 };
 
-function PickAppResource({
+export function PickAppResource({
   resources,
   header,
   skippable = false,
+  filters,
   onClose: handleClose,
   onSelected: handleSelected,
 }: {
   readonly resources: AppResources;
   readonly header: LocalizedString;
   readonly skippable?: boolean;
+  readonly filters: AppResourceFilters;
   readonly onSelected: (
     appResource: SerializedResource<SpAppResource> | undefined
   ) => void;
   readonly onClose: () => void;
 }): JSX.Element {
+  const conformations = React.useState<
+    RA<AppResourcesConformation> | undefined
+  >(undefined);
   return (
     <Dialog
       buttons={
@@ -99,7 +105,8 @@ function PickAppResource({
     >
       <ReadOnlyContext.Provider value>
         <AppResourcesAside
-          initialFilters={initialFilters}
+          conformations={conformations}
+          filters={filters}
           isEmbedded
           resources={resources}
           onOpen={(selected): void =>

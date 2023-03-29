@@ -31,7 +31,9 @@ export type AppResources = {
   readonly viewSets: RA<SerializedResource<SpViewSetObj>>;
 };
 
-export function useAppResources(): GetOrSet<AppResources | undefined> {
+export function useAppResources(
+  loadingScreen: boolean = true
+): GetOrSet<AppResources | undefined> {
   return useAsyncState(
     React.useCallback(
       async () =>
@@ -57,7 +59,7 @@ export function useAppResources(): GetOrSet<AppResources | undefined> {
         }),
       []
     ),
-    true
+    loadingScreen
   );
 }
 
@@ -193,7 +195,7 @@ function getResourceExtension(
   resource: SerializedResource<SpAppResource>
 ): 'jrxml' | 'json' | 'properties' | 'txt' | 'xml' {
   const type = appResourceSubTypes[getAppResourceType(resource)];
-  const mimeType = type?.mimeType ?? resource.mimeType?.toLowerCase() ?? '';
+  const mimeType = resource.mimeType?.toLowerCase() ?? type?.mimeType ?? '';
   if (mimeType in mimeMapper) return mimeMapper[mimeType];
   else if (mimeType.startsWith('jrxml')) return 'jrxml';
   else if (resource.name === 'preferences' && mimeType === '')

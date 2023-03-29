@@ -14,12 +14,10 @@ import { Input, Label } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { Dialog } from '../Molecules/Dialog';
-import type { AppResourceFilters as AppResourceFiltersType } from './filtersHelpers';
 import {
   allAppResources,
   countAppResources,
   defaultAppResourceFilters,
-  filterAppResources,
   isAllAppResourceTypes,
 } from './filtersHelpers';
 import type { AppResources } from './hooks';
@@ -195,33 +193,5 @@ function RadioButton({
     >
       {children}
     </button>
-  );
-}
-
-export function useFilteredAppResources(
-  initialResources: AppResources,
-  initialFilters: AppResourceFiltersType | undefined = defaultAppResourceFilters
-): AppResources {
-  const [filters, setFilters] = useCachedState('appResources', 'filters');
-
-  /*
-   * Allows to temporary override configured app resource filters. Before
-   * unmount, previous value is returned
-   */
-  React.useEffect(() => {
-    if (initialFilters === defaultAppResourceFilters) return undefined;
-    setFilters(initialFilters);
-    const oldFilter = filters;
-    return (): void => setFilters(oldFilter);
-    /*
-     * Only run this on mount
-     */
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [setFilters, initialFilters]);
-
-  const nonNullFilters = filters ?? initialFilters;
-  return React.useMemo(
-    () => filterAppResources(initialResources, nonNullFilters),
-    [nonNullFilters, initialResources]
   );
 }

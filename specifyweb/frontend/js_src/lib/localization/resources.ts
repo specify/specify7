@@ -100,6 +100,9 @@ export const resourcesText = createDictionary({
     'fr-fr': "Flux d'exportation RSS",
     'uk-ua': 'Канал експорту RSS',
   },
+  exports: {
+    'en-us': 'Exports',
+  },
   expressSearchConfig: {
     'en-us': 'Express Search Config',
     'ru-ru': 'Конфигурация быстрого поиска',
@@ -375,5 +378,23 @@ export const resourcesText = createDictionary({
   },
   thisFieldName: {
     'en-us': 'This field name (for preview purposes only)',
+  },
+  publishEveryDays: {
+    'en-us': 'Publish every N days',
+  },
+  publish: {
+    'en-us': 'Publish',
+  },
+  fileName: {
+    'en-us': 'File name',
+  },
+  runAsUser: {
+    'en-us': 'Run as user',
+  },
+  notifyUser: {
+    'en-us': 'Send completion notification to user',
+  },
+  runInCollection: {
+    'en-us': 'Run in collection',
   },
 } as const);

@@ -165,6 +165,9 @@ export const headerText = createDictionary({
     'fr-fr': "La réparation de l'arbre est terminée.",
     'uk-ua': 'Ремонт дерева завершено.',
   },
+  choose: {
+    'en-us': 'Choose',
+  },
   chooseDwca: {
     'en-us': 'Choose DwCA',
     'ru-ru': 'Выберите ДвКА',
@@ -172,12 +175,18 @@ export const headerText = createDictionary({
     'fr-fr': 'Choisissez DwCA',
     'uk-ua': 'Виберіть DwCA',
   },
+  dwcaResource: {
+    'en-us': 'DwCA Resource',
+  },
   chooseMetadataResource: {
     'en-us': 'Choose Metadata resource',
     'ru-ru': 'Выберите ресурс метаданных',
     'es-es': 'Seleccione un recurso de los metadatos',
     'fr-fr': 'Choisissez la ressource de métadonnées',
     'uk-ua': 'Виберіть ресурс метаданих',
+  },
+  metadataResource: {
+    'en-us': 'Metadata Resource',
   },
   expressSearch: {
     'en-us': 'Express Search',

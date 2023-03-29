@@ -33,6 +33,8 @@ import { WebLinkEditor } from '../WebLinks/Editor';
 import { webLinksSpec } from '../WebLinks/spec';
 import { useCodeMirrorExtensions } from './EditorComponents';
 import type { appResourceSubTypes } from './types';
+import { RssExportFeedEditor } from '../ExportFeed';
+import { exportFeedSpec } from '../ExportFeed/spec';
 
 export type AppResourceEditorType = 'generic' | 'json' | 'visual' | 'xml';
 
@@ -185,8 +187,13 @@ export const visualAppResourceEditors = f.store<
     json: AppResourceTextEditor,
   },
   leafletLayers: undefined,
-  rssExportFeed: undefined,
+  rssExportFeed: {
+    visual: RssExportFeedEditor,
+    json: RssExportFeedEditor,
+    xml: generateXmlEditor(exportFeedSpec),
+  },
   expressSearchConfig: undefined,
+  typeSearches: undefined,
   webLinks: {
     visual: WebLinkEditor,
     json: WebLinkEditor,
