@@ -34,6 +34,15 @@ export type AppResourceSubType = {
   readonly documentationUrl: string | undefined;
   readonly icon: JSX.Element;
   readonly label: LocalizedString;
+  /**
+   * Whether when creating a new app resource of this type, should copy the
+   * contents from an existing app resource of that type that is in current
+   * scope.
+   * Default value:
+   * If app resource type can only have one specific name, this is true
+   * Else false
+   */
+  readonly useTemplate?: boolean;
 };
 
 /**
@@ -66,6 +75,7 @@ export const appResourceSubTypes = {
       'https://discourse.specifysoftware.org/t/specify-7-user-preferences-webinar/861',
     icon: icons.cog,
     label: preferencesText.userPreferences(),
+    useTemplate: false,
   },
   defaultUserPreferences: {
     mimeType: 'application/json',

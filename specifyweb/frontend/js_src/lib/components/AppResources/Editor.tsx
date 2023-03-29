@@ -13,7 +13,7 @@ import { Button } from '../Atoms/Button';
 import { Form, Select } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
-import { toTable } from '../DataModel/helpers';
+import { toResource, toTable } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { createResource } from '../DataModel/resource';
 import {
@@ -40,9 +40,10 @@ import {
   appResourceIcon,
   AppResourceLoad,
 } from './EditorComponents';
-import { getResourceType } from './filtersHelpers';
+import { getAppResourceType, getResourceType } from './filtersHelpers';
 import { useAppResourceData } from './hooks';
 import { AppResourcesTab, useEditorTabs } from './Tabs';
+import { appResourceSubTypes } from './types';
 
 export function AppResourceEditor({
   resource,
@@ -301,6 +302,24 @@ export function AppResourceEditor({
                           'spAppResourceDir',
                           resourceDirectory.resource_uri
                         );
+
+                      const subType = f.maybe(
+                        toResource(
+                          serializeResource(appResource),
+                          'SpAppResource'
+                        ),
+                        getAppResourceType
+                      );
+                      // Set a mime type if it's not set yet
+                      if (typeof subType === 'string') {
+                        const type = appResourceSubTypes[subType];
+                        if (typeof type.name === 'string')
+                          appResource.set(
+                            'mimeType',
+                            type.mimeType ?? appResource.get('mimeType')
+                          );
+                      }
+
                       await appResource.save();
                       const resource = serializeResource(appResource);
 

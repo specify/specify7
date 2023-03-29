@@ -192,7 +192,8 @@ export const getAppResourceExtension = (
 function getResourceExtension(
   resource: SerializedResource<SpAppResource>
 ): 'jrxml' | 'json' | 'properties' | 'txt' | 'xml' {
-  const mimeType = resource.mimeType?.toLowerCase() ?? '';
+  const type = appResourceSubTypes[getAppResourceType(resource)];
+  const mimeType = type?.mimeType ?? resource.mimeType?.toLowerCase() ?? '';
   if (mimeType in mimeMapper) return mimeMapper[mimeType];
   else if (mimeType.startsWith('jrxml')) return 'jrxml';
   else if (resource.name === 'preferences' && mimeType === '')
