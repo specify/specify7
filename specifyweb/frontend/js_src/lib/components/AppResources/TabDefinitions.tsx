@@ -35,6 +35,8 @@ import { useCodeMirrorExtensions } from './EditorComponents';
 import type { appResourceSubTypes } from './types';
 import { RssExportFeedEditor } from '../ExportFeed';
 import { exportFeedSpec } from '../ExportFeed/spec';
+import { viewSetsSpec } from '../FormEditor/spec';
+import { FormEditor } from '../FormEditor';
 
 export type AppResourceEditorType = 'generic' | 'json' | 'visual' | 'xml';
 
@@ -167,7 +169,7 @@ function UserPreferencesEditor({
 
 export const visualAppResourceEditors = f.store<
   RR<
-    keyof typeof appResourceSubTypes,
+    keyof typeof appResourceSubTypes | 'viewSet',
     | {
         readonly visual?: (props: AppResourceTabProps) => JSX.Element;
         readonly json?: (props: AppResourceTabProps) => JSX.Element;
@@ -176,6 +178,11 @@ export const visualAppResourceEditors = f.store<
     | undefined
   >
 >(() => ({
+  viewSet: {
+    visual: FormEditor,
+    json: FormEditor,
+    xml: generateXmlEditor(viewSetsSpec),
+  },
   label: undefined,
   report: undefined,
   userPreferences: {

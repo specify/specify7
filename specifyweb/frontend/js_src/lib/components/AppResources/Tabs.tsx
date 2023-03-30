@@ -105,10 +105,9 @@ export function useEditorTabs(
     props: Omit<AppResourceTabProps, 'editorType'>
   ) => JSX.Element;
 }> {
-  const subType = f.maybe(
-    toResource(resource, 'SpAppResource'),
-    getAppResourceType
-  );
+  const subType =
+    f.maybe(toResource(resource, 'SpAppResource'), getAppResourceType) ??
+    'viewSet';
   return React.useMemo(() => {
     const editors =
       typeof subType === 'string'
