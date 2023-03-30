@@ -247,7 +247,7 @@ function Attachments(): JSX.Element {
             ? undefined
             : setCollection({ records, totalCount: collection.totalCount })
         }
-        onFetchMore={fetchMore}
+        onFetchMore={collection === undefined ? undefined :fetchMore}
       />
     </Container.FullGray>
   );
