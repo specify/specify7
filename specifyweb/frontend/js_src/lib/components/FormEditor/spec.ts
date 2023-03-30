@@ -7,7 +7,7 @@ import type { RR } from '../../utils/types';
 import type { Tables } from '../DataModel/types';
 import { pipe, SpecToJson, syncer } from '../Syncer';
 import { syncers } from '../Syncer/syncers';
-import { createSimpleXmlNode } from '../Syncer/xmlToJson';
+import { createSimpleXmlNode, SimpleXmlNode } from '../Syncer/xmlToJson';
 import { createXmlSpec } from '../Syncer/xmlUtils';
 import { getUniqueName } from '../../utils/uniquifyName';
 
@@ -67,7 +67,7 @@ const viewSpec = f.store(() =>
       syncers.maybe(syncers.javaClassName)
     ),
     businessRules: pipe(
-      syncers.xmlAttribute('busrules', 'required'),
+      syncers.xmlAttribute('busrules', 'skip'),
       syncers.default<LocalizedString>('')
     ),
     altViews: pipe(
@@ -135,6 +135,15 @@ const viewDefSpec = f.store(() =>
       syncers.xmlAttribute('type', 'required'),
       syncers.default<LocalizedString>('form'),
       syncers.enum(['form', 'formtable', 'iconview', 'rstable'])
+    ),
+    raw: syncer<SimpleXmlNode, SimpleXmlNode>(
+      (node) => ({
+        ...node,
+        // Remove attributes so that they don't overwrite the values above
+        attributes: {},
+        children: node.children,
+      }),
+      f.id
     ),
   })
 );

@@ -13,6 +13,8 @@ export const formEditorRoutes = toReactRoutes([
       },
       {
         path: ':tableName',
+        element: async () =>
+          import('./Table').then(({ FormEditorTable }) => FormEditorTable),
         children: [
           {
             path: ':name',
