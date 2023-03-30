@@ -75,7 +75,7 @@ export function useCollection<SCHEMA extends AnySchema>(
                         collection,
                         'Try to fetch more before collection is fetch.'
                       ).records,
-                      ...result!.records,
+                      ...result.records,
                     ],
                     totalCount: defined(collection).totalCount,
                   }))
