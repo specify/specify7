@@ -50,7 +50,7 @@ export function Logo({
         ) : (
           <img
             alt=""
-            className={`max-w-[theme(spacing.10)]
+            className={`max-h-[theme(spacing.24)] max-w-[theme(spacing.24)]
         hover:animate-hue-rotate
         ${isCollapsed ? 'hidden' : ''}
       `}
@@ -62,7 +62,7 @@ export function Logo({
         ) : (
           <img
             alt=""
-            className={`max-w-[theme(spacing.8)]
+            className={`max-h-[theme(spacing.16)] max-w-[theme(spacing.16)]
       hover:animate-hue-rotate
       ${isCollapsed ? '' : 'hidden'}
       ${isHorizontal ? 'w-10' : ''}
