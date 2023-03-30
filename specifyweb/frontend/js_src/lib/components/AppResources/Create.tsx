@@ -173,9 +173,13 @@ function EditAppResource({
       isSubForm={false}
       mode="edit"
       resource={resource}
-      title={formsText.newResourceTitle({
-        tableName: resourcesText.formDefinition(),
-      })}
+      title={
+        type.tableName === 'SpViewSetObj'
+          ? formsText.newResourceTitle({
+              tableName: resourcesText.formDefinition(),
+            })
+          : undefined
+      }
       viewName={
         type.tableName === 'SpAppResource'
           ? spAppResourceView
