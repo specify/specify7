@@ -84,10 +84,15 @@ export function QueryFields({
     sortable.on('sortable:start', (event) => {
       const target = event.dragEvent.originalEvent.target as HTMLElement;
       if (
-        ['A', 'BUTTON', 'INPUT', 'SELECT', 'TEXTAREA'].includes(target.tagName)
-      )
+        target.closest('button') !== null ||
+        target.closest('a') !== null ||
+        target.closest('input') !== null ||
+        target.closest('select') !== null ||
+        target.closest('textarea') !== null ||
+        target.closest('article') !== null
+      ) {
         event.cancel();
-      console.log(event);
+      }
     });
 
     sortable.on('sortable:stop', (event) => {
