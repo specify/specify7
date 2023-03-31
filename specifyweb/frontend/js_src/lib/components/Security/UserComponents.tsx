@@ -94,11 +94,13 @@ export function UserRoles({
   collectionId,
   userRoles,
   onChange: handleChange,
+  isReadOnly,
 }: {
   readonly collectionRoles: RR<number, RA<Role> | undefined> | undefined;
   readonly collectionId: number;
   readonly userRoles: IR<RA<RoleBase> | undefined> | undefined;
   readonly onChange: (value: IR<RA<RoleBase> | undefined>) => void;
+  readonly isReadOnly?: boolean;
 }): JSX.Element | null {
   return typeof userRoles !== 'object' ||
     typeof userRoles[collectionId] === 'object' ? (
@@ -115,7 +117,9 @@ export function UserRoles({
                     checked={userRoles?.[collectionId]?.some(
                       ({ roleId }) => roleId === role.id
                     )}
-                    disabled={!Array.isArray(userRoles?.[collectionId])}
+                    disabled={
+                      !Array.isArray(userRoles?.[collectionId]) || isReadOnly
+                    }
                     onValueChange={(): void =>
                       handleChange(
                         replaceKey(

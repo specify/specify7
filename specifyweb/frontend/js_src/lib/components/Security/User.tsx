@@ -147,8 +147,10 @@ function UserView({
   useErrorContext('userResource', userResource);
   const [userRoles, setUserRoles, initialUserRoles, changedRoles] =
     useUserRoles(userResource, collections);
+
   const [userPolicies, setUserPolicies, initialUserPolicies, changedPolicies] =
     useUserPolicies(userResource, collections, initialCollectionId);
+
   const [version, setVersion] = React.useState<number>(0);
   const userAgents = useUserAgents(userResource.id, collections, version);
   const identityProviders = useUserProviders(userResource.id);
@@ -336,6 +338,7 @@ function UserView({
                     collectionRoles={collectionRoles}
                     userRoles={userRoles}
                     onChange={setUserRoles}
+                    isReadOnly={userPolicies?.[collectionId]?.length === 0}
                   />
                 )}
                 {
