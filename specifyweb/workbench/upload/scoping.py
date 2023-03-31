@@ -34,7 +34,10 @@ The structure of DEFERRED_SCOPING is as following:
     See .upload_plan_schema.py for how this is used
 
 """
-DEFERRED_SCOPING: Dict[Tuple[str, str], Tuple[str, str, str]] = {("Collectionrelationship", "rightside"): ('collectionreltype', 'name', 'rightsidecollection')}
+DEFERRED_SCOPING: Dict[Tuple[str, str], Tuple[str, str, str]] = {
+    ("Collectionrelationship", "rightside"): ('collectionreltype', 'name', 'rightsidecollection'),
+    ("Collectionrelationship", "leftside"): ('collectionreltype', 'name', 'leftsidecollection'),
+    }
 
 def scoping_relationships(collection, table: Table) -> Dict[str, int]:
     extra_static: Dict[str, int] = {}
