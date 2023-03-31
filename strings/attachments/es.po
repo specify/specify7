@@ -48,7 +48,7 @@ msgstr "ordenar por"
 msgid "uploadingInline"
 msgstr "Subiendo…"
 
-#: components/Attachments/Gallery.tsx:95
+#: components/Attachments/Gallery.tsx:97
 #. Used in: Components > Attachments > Gallery
 msgid "noAttachments"
 msgstr "No hay archivos adjuntos"

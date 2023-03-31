@@ -48,7 +48,7 @@ msgstr "Trier par"
 msgid "uploadingInline"
 msgstr "Envoi en cours…"
 
-#: components/Attachments/Gallery.tsx:95
+#: components/Attachments/Gallery.tsx:97
 #. Used in: Components > Attachments > Gallery
 msgid "noAttachments"
 msgstr "Il n'y a pas de pièces jointes"

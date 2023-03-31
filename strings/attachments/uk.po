@@ -49,7 +49,7 @@ msgstr "Сортувати по"
 msgid "uploadingInline"
 msgstr "Завантаження…"
 
-#: components/Attachments/Gallery.tsx:95
+#: components/Attachments/Gallery.tsx:97
 #. Used in: Components > Attachments > Gallery
 msgid "noAttachments"
 msgstr "Прикріплень нема"

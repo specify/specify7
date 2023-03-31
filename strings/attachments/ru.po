@@ -50,7 +50,7 @@ msgstr "Сортировать по"
 msgid "uploadingInline"
 msgstr "Закачивание…"
 
-#: components/Attachments/Gallery.tsx:95
+#: components/Attachments/Gallery.tsx:97
 #. Used in: Components > Attachments > Gallery
 msgid "noAttachments"
 msgstr "В вашей коллекции нет вложений"
