@@ -16,6 +16,7 @@ import {
   BorrowMaterial,
   CollectionObject,
   Determination,
+  DisposalPreparation,
   DNASequence,
   GiftPreparation,
   LoanPreparation,
@@ -189,6 +190,13 @@ export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
           determination.set('isCurrent', true);
         }
         return Promise.resolve({ valid: true });
+      },
+    },
+  },
+  DisposalPreparation: {
+    fieldChecks: {
+      quantity: (disposalPrep: SpecifyResource<DisposalPreparation>): void => {
+        checkPrepAvailability(disposalPrep);
       },
     },
   },
