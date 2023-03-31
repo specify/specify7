@@ -87,10 +87,11 @@ export function jsonToXml(node: XmlNode): Element {
  * Behavior to keep in mind:
  * - When merging SortedXmlNode back with XmlNode, the attributes in XmlNode
  *   are kept, unless they are explicitly set to undefined in "updated".
- *   Similarly, all children in XmlNode are kept, unless there is an exploit
+ *   Similarly, all children in XmlNode are kept, unless there is an explicit
  *   entry for that key in content.children object.
  * - Comment notes are never included in SimpleXmlNode as it's assumed they are
- *   never modified by it.
+ *   never modified by it. Merging SimpleXmlNode back into XmlNode preserves
+ *   the comments
  * - When converting to SimpleXmlNode, both lower case and camel case versions
  *   of attributes and tag names are accepted. When converting back, attributes
  *   are converted to lower case, but tag names are left as is.

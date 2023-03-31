@@ -23,7 +23,10 @@ export function FormEditorTable(): JSX.Element {
   const {
     viewSets: [viewSets],
   } = useOutletContext<FormEditorOutlet>();
-  const currentViewSets = viewSets.views.filter((view) => view.table === table);
+  const currentViewSets = React.useMemo(
+    () => viewSets.views.filter((view) => view.table === table),
+    [viewSets.views, table]
+  );
   const isReadOnly = React.useContext(ReadOnlyContext);
   const navigate = useNavigate();
   return table === undefined ? (

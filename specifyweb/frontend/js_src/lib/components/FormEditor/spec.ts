@@ -3,11 +3,15 @@
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { f } from '../../utils/functools';
-import type { RR } from '../../utils/types';
+import type { RA, RR } from '../../utils/types';
 import type { Tables } from '../DataModel/types';
 import { pipe, SpecToJson, syncer } from '../Syncer';
 import { syncers } from '../Syncer/syncers';
-import { createSimpleXmlNode, SimpleXmlNode } from '../Syncer/xmlToJson';
+import {
+  createSimpleXmlNode,
+  SimpleXmlNode,
+  XmlNode,
+} from '../Syncer/xmlToJson';
 import { createXmlSpec } from '../Syncer/xmlUtils';
 import { getUniqueName } from '../../utils/uniquifyName';
 
@@ -21,14 +25,19 @@ export const viewSetsSpec = f.store(() =>
         pipe(
           syncers.object(viewSpec()),
           syncer(
-            ({ businessRules: _, ...rest }) => rest,
-            (rest) => ({
+            ({ businessRules: _, table, ...node }) => ({
+              ...node,
+              table: table.parsed,
+              legacyTable: table.bad,
+            }),
+            ({ table, legacyTable, ...node }) => ({
               // FIXME: consier how altview definitions should be handled
-              ...rest,
+              ...node,
+              table: { parsed: table, bad: legacyTable },
               businessRules:
-                typeof rest.table === 'object'
+                typeof table === 'object'
                   ? `edu.ku.brc.specify.datamodel.busrules.${
-                      businessRules[rest.table.name] ?? rest.table.name
+                      businessRules[table.name] ?? table.name
                     }BusRules`
                   : '',
             })
@@ -43,26 +52,42 @@ export const viewSetsSpec = f.store(() =>
       syncers.map(
         pipe(
           syncers.object(viewDefSpec()),
-          syncer(f.id, (node) => ({
-            ...node,
-            legacyGetTable:
-              node.legacyGetTable ??
-              (node.name?.endsWith('Search') === true
-                ? 'edu.ku.brc.af.ui.forms.DataGetterForHashMap'
-                : 'edu.ku.brc.af.ui.forms.DataGetterForObj'),
-            legacySetTable:
-              node.legacySetTable ??
-              (node.name?.endsWith('Search') === true
-                ? 'edu.ku.brc.af.ui.forms.DataSetterForHashMap'
-                : 'edu.ku.brc.af.ui.forms.DataSetterForObj'),
-          }))
+          syncer(
+            ({ table, ...node }) => ({
+              ...node,
+              table: table.parsed,
+              legacyTable: table.bad,
+            }),
+            ({ table, legacyTable, ...node }) => ({
+              ...node,
+              table: {
+                parsed: table,
+                bad: legacyTable,
+              },
+              legacyGetTable:
+                node.legacyGetTable ??
+                (node.name?.endsWith('Search') === true
+                  ? 'edu.ku.brc.af.ui.forms.DataGetterForHashMap'
+                  : 'edu.ku.brc.af.ui.forms.DataGetterForObj'),
+              legacySetTable:
+                node.legacySetTable ??
+                (node.name?.endsWith('Search') === true
+                  ? 'edu.ku.brc.af.ui.forms.DataSetterForHashMap'
+                  : 'edu.ku.brc.af.ui.forms.DataSetterForObj'),
+            })
+          )
         )
       )
     ),
   })
 );
 
-export type ViewSets = SpecToJson<ReturnType<typeof viewSetsSpec>>;
+type RawViewSets = SpecToJson<ReturnType<typeof viewSetsSpec>>;
+export type ViewSets = Omit<RawViewSets, 'viewDefs'> & {
+  readonly viewDefs: RA<
+    Omit<RawViewSets['viewDefs'][number], 'raw'> & { readonly raw: XmlNode }
+  >;
+};
 
 /**
  * Most of the time business rules class name can be inferred from table name.
@@ -82,7 +107,7 @@ const viewSpec = f.store(() =>
     ),
     table: pipe(
       syncers.xmlAttribute('class', 'required'),
-      syncers.maybe(syncers.javaClassName)
+      syncers.preserveInvalid(syncers.javaClassName(false))
     ),
     businessRules: pipe(
       syncers.xmlAttribute('busrules', 'skip'),
@@ -178,7 +203,7 @@ const viewDefSpec = f.store(() =>
     name: syncers.xmlAttribute('name', 'required'),
     table: pipe(
       syncers.xmlAttribute('class', 'required'),
-      syncers.maybe(syncers.javaClassName)
+      syncers.preserveInvalid(syncers.javaClassName(false))
     ),
     type: pipe(
       syncers.xmlAttribute('type', 'required'),
@@ -197,8 +222,9 @@ const viewDefSpec = f.store(() =>
     ),
     /*
      * Not parsing the rest of the form definition but leaving it as is so
-     * as to not slow down the performance too much for big files.
-     * Instead, this will be validated by formDefinitionSpec() later on
+     * as not to slow down the performance too much for big files.
+     * Instead, the contents of the form definition will validated by
+     * formDefinitionSpec() later on
      */
     raw: syncer<SimpleXmlNode, SimpleXmlNode>(
       (node) => ({

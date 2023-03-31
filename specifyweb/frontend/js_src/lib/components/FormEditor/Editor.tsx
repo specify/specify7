@@ -14,7 +14,16 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { NotFoundView } from '../Router/NotFoundView';
 import { resolveRelative } from '../Router/queryString';
 import type { FormEditorOutlet } from './index';
+import { FormEditorContext } from './index';
 import { getViewDefinitions } from './View';
+import { jsonToXml, XmlNode, xmlToJson } from '../Syncer/xmlToJson';
+import { GetSet } from '../../utils/types';
+import { generateXmlEditor } from '../AppResources/TabDefinitions';
+import { formDefinitionSpec } from './viewSpec';
+import { xmlToString } from '../Syncer/xmlUtils';
+import { formatXmlNode } from '../Syncer/formatXmlNode';
+import { parseXml } from '../AppResources/codeMirrorLinters';
+import _ from 'underscore';
 
 export function FormEditorWrapper(): JSX.Element {
   const {
@@ -26,14 +35,19 @@ export function FormEditorWrapper(): JSX.Element {
   const {
     viewSets: [viewSets, setViewSets],
   } = useOutletContext<FormEditorOutlet>();
-  const view = viewSets.views.find(
-    (view) => view.name === viewName && view.table === table
+  const view = React.useMemo(
+    () =>
+      viewSets.views.find(
+        (view) => view.name === viewName && view.table === table
+      ),
+    [viewSets.views, viewName, table]
   );
-  const viewDefinition = viewSets.viewDefs.find(
+  const viewDefinitionIndex = viewSets.viewDefs.findIndex(
     (viewDefinition) =>
       viewDefinition.name === viewDefinitionName &&
       viewDefinition.table === table
   );
+  const viewDefinition = viewSets.viewDefs[viewDefinitionIndex];
 
   const isReadOnly = React.useContext(ReadOnlyContext);
   const navigate = useNavigate();
@@ -43,7 +57,7 @@ export function FormEditorWrapper(): JSX.Element {
     viewDefinition === undefined ? (
     <NotFoundView />
   ) : (
-    <div className="flex flex-col gap-2 overflow-auto">
+    <div className="flex flex-1 flex-col gap-2 overflow-auto">
       <div className="flex items-center gap-2">
         <h4
           className={`${className.headerPrimary} flex items-center gap-2 text-xl`}
@@ -66,7 +80,7 @@ export function FormEditorWrapper(): JSX.Element {
               };
               const newViewDefs = removeItem(
                 viewSets.viewDefs,
-                viewSets.viewDefs.indexOf(viewDefinition)
+                viewDefinitionIndex
               );
               const remainingDefinitions = getViewDefinitions(
                 newView,
@@ -93,16 +107,80 @@ export function FormEditorWrapper(): JSX.Element {
         {icons.arrowLeft}
         {table.name}
       </Link.Default>
-      <pre className="flex-1">
-        {/* FIXME: handle rename. ensure name is unique */}
-        {/* FIXME: show description */}
-        {/* FIXME: allow editing column size definitions */}
-        {/* FIXME: allow editing row size definitions */}
-        {/* FIXME: allow editing business rules */}
-        {/* FIXME: allow editing rows definitions */}
-        {/* FIXME: show a live preview */}
-        {JSON.stringify(viewDefinition.raw.children, null, 2)}
-      </pre>
+      <Editor
+        key={`${tableName}_${viewName}_${viewDefinitionName}`}
+        viewDefinition={[
+          viewDefinition.raw,
+          (raw): void =>
+            setViewSets({
+              ...viewSets,
+              viewDefs: replaceItem(viewSets.viewDefs, viewDefinitionIndex, {
+                ...viewDefinition,
+                raw,
+              }),
+            }),
+        ]}
+      />
+    </div>
+  );
+}
+
+const XmlEditor = generateXmlEditor(formDefinitionSpec);
+const debounceRate = 100;
+
+/*
+ * FIXME: handle rename. ensure name is unique
+ * FIXME: show description
+ * FIXME: allow editing column size definitions
+ * FIXME: allow editing row size definitions
+ * FIXME: allow editing business rules
+ * FIXME: allow editing rows definitions
+ * FIXME: show a live preview
+ */
+function Editor({
+  // FIXME: call setDefinition
+  viewDefinition: [definition, setDefinition],
+}: {
+  readonly viewDefinition: GetSet<XmlNode>;
+}): JSX.Element {
+  const initialXml = React.useMemo(
+    () =>
+      xmlToString(jsonToXml(formatXmlNode({ ...definition, attributes: {} }))),
+    // Run this only once
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
+  const [xml, setXml] = React.useState(initialXml);
+
+  const setRef = React.useRef(setDefinition);
+  setRef.current = setDefinition;
+  const update = React.useMemo(
+    () =>
+      _.debounce((node: string) => {
+        const parsed = parseXml(node);
+        if (typeof parsed === 'object') setRef.current(xmlToJson(parsed));
+      }, debounceRate),
+    []
+  );
+
+  function handleChange(xml: string): void {
+    setXml(xml);
+    update(xml);
+  }
+
+  const { appResource, resource, showValidationRef, directory } =
+    React.useContext(FormEditorContext)!;
+  return (
+    <div className="flex-1 overflow-auto">
+      <XmlEditor
+        data={xml}
+        onChange={handleChange}
+        appResource={appResource}
+        showValidationRef={showValidationRef}
+        resource={resource}
+        directory={directory}
+        editorType="xml"
+      />
     </div>
   );
 }

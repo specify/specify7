@@ -371,7 +371,7 @@ export const resourcesText = createDictionary({
   },
   wrongScopeWarning: {
     'en-us': `
-      This resource belongs to a different collection/discipline that the one
+      This resource belongs to a different collection/discipline than the one
       you are currently in. It's recommended to switch collection before editing
       this resource
     `,

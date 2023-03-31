@@ -84,16 +84,17 @@ export const syncers = {
         (typeof defaultValue === 'function' ? defaultValue() : defaultValue),
       (value) => value
     ),
-  javaClassName: syncer<string, SpecifyTable | undefined>(
-    (className) => {
-      const tableName = parseJavaClassName(className);
-      const table = getTable(tableName ?? className);
-      if (table === undefined)
-        console.error(`Unknown table: ${className ?? '(null)'}`);
-      return table;
-    },
-    (table) => table?.longName ?? ''
-  ),
+  javaClassName: (strict: boolean = true) =>
+    syncer<string, SpecifyTable | undefined>(
+      (className) => {
+        const tableName = parseJavaClassName(className);
+        const table = getTable(tableName ?? className);
+        if (strict && table === undefined)
+          console.error(`Unknown table: ${className ?? '(null)'}`);
+        return table;
+      },
+      (table) => table?.longName ?? ''
+    ),
   tableName: syncer<string, SpecifyTable | undefined>(
     (tableName) => {
       const table = getTable(tableName);
@@ -297,5 +298,33 @@ export const syncers = {
     syncer<string, RA<string>>(
       (value) => value.split(separator),
       (value) => value.join(separator)
+    ),
+  /**
+   * I.e, if table name referred to unknown table, preserve the unknown name
+   * while using the new one
+   */
+  preserveInvalid: <IN, OUT>({
+    serializer,
+    deserializer,
+  }: Syncer<IN, OUT | undefined>) =>
+    syncer<
+      IN | undefined,
+      {
+        readonly parsed: OUT | undefined;
+        readonly bad: IN | undefined;
+      }
+    >(
+      (raw) => {
+        const parsed = f.maybe(raw, serializer);
+        return {
+          bad: raw !== undefined && parsed === undefined ? raw : undefined,
+          parsed,
+        };
+      },
+      /*
+       * If new value is undefined because failed parsing, but old value
+       *  wasn't, then use the old value
+       */
+      ({ bad, parsed }) => (parsed === undefined ? bad : deserializer(parsed))
     ),
 } as const;

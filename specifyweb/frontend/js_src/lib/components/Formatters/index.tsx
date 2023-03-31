@@ -8,7 +8,6 @@ import { resourcesText } from '../../localization/resources';
 import type { GetOrSet, WritableArray } from '../../utils/types';
 import { parseXml } from '../AppResources/codeMirrorLinters';
 import type { AppResourceTabProps } from '../AppResources/TabDefinitions';
-import { error } from '../Errors/assert';
 import { NotFoundView } from '../Router/NotFoundView';
 import { useStableLocation } from '../Router/RouterState';
 import type { BaseSpec, SpecToJson, Syncer } from '../Syncer';
@@ -88,13 +87,9 @@ export function WrappedXmlEditor<SPEC extends BaseSpec<SimpleXmlNode>>({
   const parsed = useTriggerState(
     React.useMemo(
       () =>
-        serializer(
-          toSimpleXmlNode(
-            typeof xmlNode === 'object'
-              ? xmlNode
-              : error('Unable to edit invalid XML')
-          )
-        ),
+        typeof xmlNode === 'object'
+          ? serializer(toSimpleXmlNode(xmlNode))
+          : (undefined as never),
       [serializer, xmlNode]
     )
   );

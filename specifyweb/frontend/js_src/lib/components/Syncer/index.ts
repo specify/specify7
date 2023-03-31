@@ -107,6 +107,7 @@ export const runParser = <RAW, SPEC extends BaseSpec<RAW>>(
 ): SpecToJson<SPEC> => {
   const logContext = getLogContext();
   const path = logContext[pathKey];
+  // If runParser() is called inside of runParser(), don't push root again
   if (!Array.isArray(path))
     pushContext({ type: 'Root', node: [raw], extras: { spec } });
   const result = Object.fromEntries(

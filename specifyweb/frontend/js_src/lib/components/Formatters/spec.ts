@@ -71,7 +71,7 @@ const formatterSpec = f.store(() =>
     title: syncers.xmlAttribute('title', 'empty'),
     table: pipe(
       syncers.xmlAttribute('class', 'required'),
-      syncers.maybe(syncers.javaClassName)
+      syncers.maybe(syncers.javaClassName())
     ),
     isDefault: pipe(
       syncers.xmlAttribute('default', 'empty'),
@@ -133,7 +133,7 @@ const aggregatorSpec = f.store(() =>
     title: syncers.xmlAttribute('title', 'empty'),
     table: pipe(
       syncers.xmlAttribute('class', 'required'),
-      syncers.maybe(syncers.javaClassName)
+      syncers.maybe(syncers.javaClassName())
     ),
     isDefault: pipe(
       syncers.xmlAttribute('default', 'empty'),

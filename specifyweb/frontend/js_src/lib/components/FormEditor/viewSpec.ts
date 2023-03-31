@@ -8,7 +8,7 @@ import type { SimpleXmlNode } from '../Syncer/xmlToJson';
 import { createSimpleXmlNode } from '../Syncer/xmlToJson';
 import { createXmlSpec } from '../Syncer/xmlUtils';
 
-const formDefinitionSpec = f.store(() =>
+export const formDefinitionSpec = f.store(() =>
   createXmlSpec({
     columnDefinitions: pipe(
       syncers.xmlChildren('columnDef'),

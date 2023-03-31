@@ -14,7 +14,7 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { NotFoundView } from '../Router/NotFoundView';
 import { resolveRelative } from '../Router/queryString';
 import type { FormEditorOutlet } from './index';
-import { ViewSets } from './spec';
+import type { ViewSets } from './spec';
 
 export function FormEditorView(): JSX.Element {
   const { tableName = '', viewName = '' } = useParams();
@@ -22,10 +22,17 @@ export function FormEditorView(): JSX.Element {
   const {
     viewSets: [viewSets],
   } = useOutletContext<FormEditorOutlet>();
-  const view = viewSets.views.find(
-    (view) => view.name === viewName && view.table === table
+  const view = React.useMemo(
+    () =>
+      viewSets.views.find(
+        (view) => view.name === viewName && view.table === table
+      ),
+    [viewSets.views, table]
   );
-  const viewDefinitions = getViewDefinitions(view, viewSets.viewDefs);
+  const viewDefinitions = React.useMemo(
+    () => getViewDefinitions(view, viewSets.viewDefs),
+    [view, viewSets.viewDefs]
+  );
 
   return table === undefined || view === undefined ? (
     <NotFoundView />
@@ -73,5 +80,7 @@ export const getViewDefinitions = (
   ).filter(
     (definition) =>
       // Ignore form table definitions that just reference another view
-      definition.raw.children.definition === undefined
+      !definition.raw.children.some(
+        (node) => node.type === 'XmlNode' && node.tagName === 'definition'
+      )
   );
