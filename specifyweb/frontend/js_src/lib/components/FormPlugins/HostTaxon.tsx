@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
+import { commonText } from '../../localization/common';
 import { f } from '../../utils/functools';
 import { Input } from '../Atoms/Form';
 import { fetchCollection } from '../DataModel/collection';
@@ -11,7 +12,6 @@ import type { CollectingEventAttribute } from '../DataModel/types';
 import { QueryComboBox } from '../FormFields/QueryComboBox';
 import type { FormMode, FormType } from '../FormParse';
 import { hasTreeAccess } from '../Permissions/helpers';
-import { commonText } from '../../localization/common';
 
 const template = document.createElement('template');
 template.innerHTML =
