@@ -81,18 +81,21 @@ export function QueryFields({
       distance: 4,
     });
 
+    const interactiveElements = [
+      'button',
+      'a',
+      'input',
+      'select',
+      'textarea',
+      '.custom-select',
+    ];
+
     sortable.on('sortable:start', (event) => {
       const target = event.dragEvent.originalEvent.target as HTMLElement;
       if (
-        target.closest('button') !== null ||
-        target.closest('a') !== null ||
-        target.closest('input') !== null ||
-        target.closest('select') !== null ||
-        target.closest('textarea') !== null ||
-        target.closest('article') !== null
-      ) {
+        interactiveElements.some((element) => target.closest(element) !== null)
+      )
         event.cancel();
-      }
     });
 
     sortable.on('sortable:stop', (event) => {
