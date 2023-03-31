@@ -23,6 +23,7 @@ export const viewSetsSpec = f.store(() =>
           syncer(
             ({ businessRules: _, ...rest }) => rest,
             (rest) => ({
+              // FIXME: consier how altview definitions should be handled
               ...rest,
               businessRules:
                 typeof rest.table === 'object'
@@ -39,7 +40,24 @@ export const viewSetsSpec = f.store(() =>
       syncers.xmlChild('viewdefs'),
       syncers.default(() => createSimpleXmlNode('viewdefs')),
       syncers.xmlChildren('viewdef'),
-      syncers.map(syncers.object(viewDefSpec()))
+      syncers.map(
+        pipe(
+          syncers.object(viewDefSpec()),
+          syncer(f.id, (node) => ({
+            ...node,
+            legacyGetTable:
+              node.legacyGetTable ??
+              (node.name?.endsWith('Search') === true
+                ? 'edu.ku.brc.af.ui.forms.DataGetterForHashMap'
+                : 'edu.ku.brc.af.ui.forms.DataGetterForObj'),
+            legacySetTable:
+              node.legacySetTable ??
+              (node.name?.endsWith('Search') === true
+                ? 'edu.ku.brc.af.ui.forms.DataSetterForHashMap'
+                : 'edu.ku.brc.af.ui.forms.DataSetterForObj'),
+          }))
+        )
+      )
     ),
   })
 );
@@ -71,15 +89,32 @@ const viewSpec = f.store(() =>
       syncers.default<LocalizedString>('')
     ),
     altViews: pipe(
-      syncers.xmlChildren('altviews'),
-      syncers.map(syncers.object(altViewsSpec()))
+      syncers.xmlChild('altviews'),
+      syncers.default<SimpleXmlNode>(() => createSimpleXmlNode('altviews')),
+      syncers.object(altViewsSpec())
+    ),
+    legacyIsInternal: pipe(
+      syncers.xmlAttribute('isInternal', 'skip'),
+      syncers.maybe(syncers.toBoolean)
+    ),
+    legacyIsExternal: pipe(
+      syncers.xmlAttribute('isExternal', 'skip'),
+      syncers.maybe(syncers.toBoolean)
+    ),
+    legacyUseBusinessRules: pipe(
+      syncers.xmlAttribute('useDefBusRule', 'skip'),
+      syncers.maybe(syncers.toBoolean)
+    ),
+    legacyResourceLabels: pipe(
+      syncers.xmlAttribute('resourceLabels', 'skip'),
+      syncers.maybe(syncers.toBoolean)
     ),
   })
 );
 
 const altViewsSpec = f.store(() =>
   createXmlSpec({
-    altView: pipe(
+    altViews: pipe(
       syncers.xmlChildren('altview'),
       syncers.map(
         pipe(
@@ -101,26 +136,40 @@ const altViewsSpec = f.store(() =>
         }))
       )
     ),
+    legacySelector: syncers.xmlAttribute('selector', 'skip'),
+    legacyDefaultMode: pipe(
+      syncers.xmlAttribute('defaultMode', 'skip'),
+      syncers.maybe(syncers.enum(['view', 'edit', 'search']))
+    ),
   })
 );
 
 const altViewSpec = f.store(() =>
   createXmlSpec({
-    default: pipe(
-      syncers.xmlAttribute('default', 'skip'),
-      syncers.default<LocalizedString>(''),
-      syncers.toBoolean
-    ),
     name: pipe(
       syncers.xmlAttribute('name', 'required'),
       syncers.default<LocalizedString>('')
     ),
+    viewDef: syncers.xmlAttribute('viewDef', 'required'),
     mode: pipe(
       syncers.xmlAttribute('mode', 'required'),
       syncers.default<LocalizedString>('view'),
       syncers.enum(['edit', 'view', 'search'])
     ),
-    viewDef: syncers.xmlAttribute('viewDef', 'required'),
+    default: pipe(
+      syncers.xmlAttribute('default', 'skip'),
+      // FIXME: test that default does not add value when not needed
+      // FIXME: consider making default return undefined if value matches default
+      syncers.default<LocalizedString>(''),
+      syncers.toBoolean
+    ),
+    legacyTitle: syncers.xmlAttribute('title', 'skip'),
+    legacyLabel: syncers.xmlAttribute('label', 'skip'),
+    legacyValidated: pipe(
+      syncers.xmlAttribute('validated', 'skip'),
+      syncers.maybe(syncers.toBoolean)
+    ),
+    legacySelectorValue: syncers.xmlAttribute('selector_value', 'skip'),
   })
 );
 
@@ -136,6 +185,21 @@ const viewDefSpec = f.store(() =>
       syncers.default<LocalizedString>('form'),
       syncers.enum(['form', 'formtable', 'iconview', 'rstable'])
     ),
+    legacyGetTable: syncers.xmlAttribute('getTable', 'required'),
+    legacySetTable: syncers.xmlAttribute('setTable', 'required'),
+    legacyEditableDialog: pipe(
+      syncers.xmlAttribute('editableDlg', 'skip'),
+      syncers.maybe(syncers.toBoolean)
+    ),
+    legacyUseResourceLabels: pipe(
+      syncers.xmlAttribute('useResourceLabels', 'skip'),
+      syncers.maybe(syncers.toBoolean)
+    ),
+    /*
+     * Not parsing the rest of the form definition but leaving it as is so
+     * as to not slow down the performance too much for big files.
+     * Instead, this will be validated by formDefinitionSpec() later on
+     */
     raw: syncer<SimpleXmlNode, SimpleXmlNode>(
       (node) => ({
         ...node,

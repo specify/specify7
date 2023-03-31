@@ -13,11 +13,28 @@ export const formEditorRoutes = toReactRoutes([
       },
       {
         path: ':tableName',
-        element: async () =>
-          import('./Table').then(({ FormEditorTable }) => FormEditorTable),
         children: [
           {
-            path: ':name',
+            index: true,
+            element: async () =>
+              import('./Table').then(({ FormEditorTable }) => FormEditorTable),
+          },
+          {
+            path: ':viewName',
+            children: [
+              {
+                index: true,
+                element: async () =>
+                  import('./View').then(({ FormEditorView }) => FormEditorView),
+              },
+              {
+                path: ':viewDefinitionName',
+                element: async () =>
+                  import('./Editor').then(
+                    ({ FormEditorWrapper }) => FormEditorWrapper
+                  ),
+              },
+            ],
           },
         ],
       },
