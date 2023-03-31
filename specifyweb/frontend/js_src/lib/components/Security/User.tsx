@@ -336,9 +336,9 @@ function UserView({
                   <UserRoles
                     collectionId={collectionId}
                     collectionRoles={collectionRoles}
+                    isReadOnly={userPolicies?.[collectionId]?.length === 0}
                     userRoles={userRoles}
                     onChange={setUserRoles}
-                    isReadOnly={userPolicies?.[collectionId]?.length === 0}
                   />
                 )}
                 {
