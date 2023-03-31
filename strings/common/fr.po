@@ -309,7 +309,7 @@ msgstr "Outils"
 #: components/FormCells/FormTable.tsx:195
 #: components/FormCommands/ShowTransactions.tsx:55
 #: components/FormFields/ComboBox.tsx:135
-#: components/FormFields/Field.tsx:168
+#: components/FormFields/Field.tsx:166
 #: components/FormFields/QueryComboBox.tsx:379
 #: components/FormPlugins/CollectionRelOneToMany.tsx:157
 #: components/FormPlugins/CollectionRelOneToOne.tsx:38
