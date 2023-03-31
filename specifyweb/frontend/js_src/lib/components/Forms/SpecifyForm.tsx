@@ -88,6 +88,7 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
     <FormLoadingContext.Provider value={isAlreadyLoading || showLoading}>
       <div
         className={`
+          shrink-0
           overflow-auto
           ${showLoading ? 'relative' : ''}
         `}

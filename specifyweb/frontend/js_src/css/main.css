@@ -100,7 +100,7 @@
 
   [type='checkbox'],
   [type='radio'] {
-    @apply cursor-pointer text-brand-200 focus:!ring-2 focus:!ring-offset-1
+    @apply cursor-pointer text-brand-200 focus:border-none focus:!ring-2 focus:!ring-offset-0
       dark:text-brand-400;
   }
 
