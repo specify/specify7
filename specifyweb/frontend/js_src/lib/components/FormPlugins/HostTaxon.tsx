@@ -11,6 +11,7 @@ import type { CollectingEventAttribute } from '../DataModel/types';
 import { QueryComboBox } from '../FormFields/QueryComboBox';
 import type { FormMode, FormType } from '../FormParse';
 import { hasTreeAccess } from '../Permissions/helpers';
+import { commonText } from '../../localization/common';
 
 const template = document.createElement('template');
 template.innerHTML =
@@ -44,26 +45,32 @@ export function HostTaxon({
               .maybe(records[0], deserializeResource)
               ?.rgetPromise('rightSideCollection')
           )
-          .then((collection) => collection?.get('id')),
+          .then((collection) => collection?.get('id') ?? false),
       [relationship]
     ),
     false
   );
-  return rightSideCollection === undefined ? (
-    <Input.Text isReadOnly />
-  ) : hasTreeAccess('Taxon', 'read') ? (
-    <QueryComboBox
-      field={schema.models.CollectingEventAttribute.strictGetRelationship(
-        'hostTaxon'
-      )}
-      forceCollection={rightSideCollection}
-      formType={formType}
-      id={id}
-      isRequired={isRequired}
-      mode={mode}
-      relatedModel={schema.models.Taxon}
-      resource={resource}
-      typeSearch={hostTaxonTypeSearch}
-    />
+
+  return hasTreeAccess('Taxon', 'read') ? (
+    typeof rightSideCollection === 'number' ? (
+      <QueryComboBox
+        field={schema.models.CollectingEventAttribute.strictGetRelationship(
+          'hostTaxon'
+        )}
+        forceCollection={rightSideCollection}
+        formType={formType}
+        id={id}
+        isRequired={isRequired}
+        mode={mode}
+        relatedModel={schema.models.Taxon}
+        resource={resource}
+        typeSearch={hostTaxonTypeSearch}
+      />
+    ) : (
+      <Input.Text
+        isReadOnly
+        value={rightSideCollection === false ? undefined : commonText.loading()}
+      />
+    )
   ) : null;
 }
