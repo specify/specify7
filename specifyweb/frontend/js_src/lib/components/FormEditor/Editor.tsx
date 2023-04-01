@@ -138,14 +138,12 @@ const debounceRate = 100;
  * FIXME: show a live preview
  */
 function Editor({
-  // FIXME: call setDefinition
   viewDefinition: [definition, setDefinition],
 }: {
   readonly viewDefinition: GetSet<XmlNode>;
 }): JSX.Element {
   const initialXml = React.useMemo(
-    () =>
-      xmlToString(jsonToXml(formatXmlNode({ ...definition, attributes: {} }))),
+    () => xmlToString(jsonToXml(formatXmlNode(definition))),
     // Run this only once
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []

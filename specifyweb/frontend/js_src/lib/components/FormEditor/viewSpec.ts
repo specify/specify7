@@ -74,11 +74,18 @@ const cellSpec = f.store(() =>
       syncers.maybe(syncers.toDecimal),
       syncers.default<number>(1)
     ),
-    cols: pipe(
+    // When invisible, field is rendered with visibility="hidden"
+    invisible: pipe(
+      syncers.xmlAttribute('visible', 'skip'),
+      syncers.maybe(syncers.toBoolean),
+      syncers.default<boolean>(false)
+    ),
+    legacyCols: pipe(
       syncers.xmlAttribute('cols', 'skip'),
       syncers.maybe(syncers.toDecimal)
     ),
-    rows: pipe(
+    // In sp6, determines the height of the cell
+    legacyRows: pipe(
       syncers.xmlAttribute('colSpan', 'skip'),
       syncers.maybe(syncers.toDecimal)
     ),
@@ -89,12 +96,6 @@ const cellSpec = f.store(() =>
     legacyVisible: pipe(
       syncers.xmlAttribute('visible', 'skip'),
       syncers.maybe(syncers.toBoolean)
-    ),
-    // When invisible, field is rendered with visibility="hidden"
-    invisible: pipe(
-      syncers.xmlAttribute('visible', 'skip'),
-      syncers.maybe(syncers.toBoolean),
-      syncers.default<boolean>(false)
     ),
     // In sp6, if true, disconnects the field from the database
     legacyIgnore: pipe(

@@ -286,7 +286,7 @@ export const syncers = {
           : items.find((item) => item.toLowerCase() === lowerValue);
         if (item === undefined)
           console.error(
-            `Unknown value ${value}. Expected one of ${formatDisjunction(
+            `Unknown value "${value}". Expected one of ${formatDisjunction(
               items
             )}`
           );
