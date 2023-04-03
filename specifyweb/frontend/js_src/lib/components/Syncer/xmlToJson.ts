@@ -5,7 +5,7 @@ import { filterArray } from '../../utils/types';
 import { group } from '../../utils/utils';
 import { error } from '../Errors/assert';
 import { fromSimpleXmlNode } from './fromSimpleXmlNode';
-import { xmlToString } from './xmlUtils';
+import { setOriginalSyncerInput, xmlToString } from './xmlUtils';
 
 export type XmlNode = State<
   'XmlNode',
@@ -124,23 +124,29 @@ export function toSimpleXmlNode(node: XmlNode): SimpleXmlNode {
   if (children.length === 0) {
     const string = textContent.join(' ').trim();
     if (string.length > 0)
-      return {
-        type: 'SimpleXmlNode',
-        tagName: node.tagName,
-        attributes: node.attributes,
-        text: string,
-        children: {},
-      };
+      return setOriginalSyncerInput(
+        {
+          type: 'SimpleXmlNode',
+          tagName: node.tagName,
+          attributes: node.attributes,
+          text: string,
+          children: {},
+        },
+        node
+      );
   }
-  return {
-    type: 'SimpleXmlNode',
-    tagName: node.tagName,
-    attributes: node.attributes,
-    text: undefined,
-    children: Object.fromEntries(
-      group(children.map((node) => [node.tagName, toSimpleXmlNode(node)]))
-    ),
-  };
+  return setOriginalSyncerInput(
+    {
+      type: 'SimpleXmlNode',
+      tagName: node.tagName,
+      attributes: node.attributes,
+      text: undefined,
+      children: Object.fromEntries(
+        group(children.map((node) => [node.tagName, toSimpleXmlNode(node)]))
+      ),
+    },
+    node
+  );
 }
 
 export const createSimpleXmlNode = (tagName: string): SimpleXmlNode => ({
@@ -155,5 +161,5 @@ export const createSimpleXmlNode = (tagName: string): SimpleXmlNode => ({
  * Given original parsed XML and an array of updates, apply the updates and
  * covert it all back to XML string
  */
-export const updateXml = (old: XmlNode, updated: SimpleXmlNode): string =>
-  xmlToString(jsonToXml(fromSimpleXmlNode(old, updated)));
+export const updateXml = (updated: SimpleXmlNode): string =>
+  xmlToString(jsonToXml(fromSimpleXmlNode(updated)));

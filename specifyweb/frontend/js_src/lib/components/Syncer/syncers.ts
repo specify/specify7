@@ -2,7 +2,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { f } from '../../utils/functools';
 import { parseBoolean } from '../../utils/parser/parse';
-import type { RA } from '../../utils/types';
+import type { RA, RR } from '../../utils/types';
 import { IR } from '../../utils/types';
 import { formatDisjunction } from '../Atoms/Internationalization';
 import { parseJavaClassName } from '../DataModel/resource';
@@ -19,12 +19,19 @@ import type { BaseSpec, SpecToJson, Syncer } from './index';
 import { runBuilder, runParser, syncer } from './index';
 import { mergeSimpleXmlNodes } from './mergeSimpleXmlNodes';
 import type { SimpleXmlNode } from './xmlToJson';
-import { getAttribute } from './xmlUtils';
+import { createSimpleXmlNode } from './xmlToJson';
+import {
+  getAttribute,
+  getOriginalSyncerInput,
+  setOriginalSyncerInput,
+} from './xmlUtils';
 
-type NodeWithContext = {
-  readonly node: SimpleXmlNode;
+type NodeWithContext<T> = {
+  readonly node: T;
   readonly logContext: IR<unknown>;
 };
+
+const switchDefault: unique symbol = Symbol('SwitchDefault');
 
 export const syncers = {
   xmlAttribute: <MODE extends 'empty' | 'required' | 'skip'>(
@@ -143,7 +150,17 @@ export const syncers = {
         tagName: '',
         attributes: {},
         text: undefined,
-        children: { [tagName]: child === undefined ? [] : [child] },
+        children: {
+          [tagName]:
+            child === undefined
+              ? []
+              : [
+                  {
+                    ...child,
+                    tagName,
+                  },
+                ],
+        },
       })
     ),
   xmlChildren: (tagName: string) =>
@@ -160,13 +177,23 @@ export const syncers = {
         tagName: '',
         attributes: {},
         text: undefined,
-        children: { [tagName]: newChildren },
+        children: {
+          [tagName]: newChildren.map((child) => ({ ...child, tagName })),
+        },
       })
     ),
   object: <SPEC extends BaseSpec<SimpleXmlNode>>(spec: SPEC) =>
     syncer<SimpleXmlNode, SpecToJson<SPEC>>(
-      (raw) => runParser(spec, raw),
-      (shape) => mergeSimpleXmlNodes(runBuilder(spec, shape))
+      (raw) => {
+        const result = runParser(spec, raw);
+        setOriginalSyncerInput(result, getOriginalSyncerInput(raw));
+        return result;
+      },
+      (shape) => {
+        const merged = mergeSimpleXmlNodes(runBuilder(spec, shape));
+        setOriginalSyncerInput(merged, getOriginalSyncerInput(shape));
+        return merged;
+      }
     ),
   map: <SYNCER extends Syncer<any, any>>({
     serializer,
@@ -195,16 +222,17 @@ export const syncers = {
       (element) => f.maybe(element, syncerDefinition.serializer),
       (element) => f.maybe(element, syncerDefinition.deserializer)
     ),
-  captureLogContext: syncer<SimpleXmlNode, NodeWithContext>(
-    (node) => ({
-      node,
-      logContext: getLogContext(),
-    }),
-    ({ node }) => node
-  ),
+  captureLogContext: <T>() =>
+    syncer<T, NodeWithContext<T>>(
+      (node) => ({
+        node,
+        logContext: getLogContext(),
+      }),
+      ({ node }) => node
+    ),
   dependent: <
     KEY extends string,
-    OBJECT extends { readonly [key in KEY]: NodeWithContext },
+    OBJECT extends { readonly [key in KEY]: NodeWithContext<SimpleXmlNode> },
     SUB_SPEC extends BaseSpec<SimpleXmlNode>,
     NEW_OBJECT extends Omit<OBJECT, KEY> & {
       readonly [key in KEY]: SpecToJson<SUB_SPEC>;
@@ -215,7 +243,7 @@ export const syncers = {
   ) =>
     syncer<OBJECT, NEW_OBJECT>(
       (object) => {
-        const item = object?.[key] as NodeWithContext;
+        const item = object?.[key] as NodeWithContext<SimpleXmlNode>;
         if (typeof item === 'object') setLogContext(item.logContext);
         return {
           ...object,
@@ -327,4 +355,160 @@ export const syncers = {
        */
       ({ bad, parsed }) => (parsed === undefined ? bad : deserializer(parsed))
     ),
+  static: <T>(value: T) =>
+    syncer<SimpleXmlNode, T>(
+      () => value,
+      () => createSimpleXmlNode('')
+    ),
+  switchDefault,
+  switch: <
+    IN,
+    KEY extends PropertyKey,
+    SYNCER_IN,
+    TYPE extends string,
+    MAPPER extends {
+      readonly [KEY in TYPE]: (
+        input: IN
+      ) => Syncer<SYNCER_IN, { readonly type: string }>;
+    },
+    DEFAULT extends Syncer<SYNCER_IN, IR<unknown>>
+  >(
+    condition: (value: IN) => TYPE,
+    key: KEY,
+    node: Syncer<IN, SYNCER_IN>,
+    mapper: MAPPER,
+    defaultCase: (input: IN) => DEFAULT
+  ) =>
+    syncer<
+      IN,
+      IN &
+        RR<
+          KEY,
+          {
+            readonly rawType: TYPE;
+          } & (
+            | ReturnType<ReturnType<MAPPER[TYPE]>['serializer']>
+            | ({
+                readonly type: typeof switchDefault;
+              } & ReturnType<DEFAULT['serializer']>)
+          )
+        >
+    >(
+      (input) => {
+        const type = condition(input);
+        // FIXME: remove redundancy?
+        if (type in mapper) {
+          const { serializer } = mapper[type](input);
+          return {
+            ...input,
+            rawType: type,
+            [key]: serializer(node.serializer(input)),
+          };
+        } else {
+          const { serializer } = defaultCase(input);
+          return {
+            ...input,
+            [key]: {
+              type: switchDefault,
+              rawType: type,
+              ...serializer(node.serializer(input)),
+            },
+          };
+        }
+      },
+      (cell) => {
+        const {
+          [key]: { rawType, ...switched },
+          ...object
+        } = cell;
+        const result =
+          switched.type === switchDefault
+            ? mapper[rawType](object as IN).deserializer(switched)
+            : defaultCase(object as IN).deserializer(switched);
+        return node.deserializer(result);
+      }
+    ),
+  /*switch: <
+    IN,
+    TYPE extends string,
+    MAPPER extends {
+      readonly [KEY in TYPE]: (input: IN) => BaseSpec<SimpleXmlNode> & {
+        readonly type: Syncer<SimpleXmlNode, string>;
+      };
+    },
+    DEFAULT extends (input: IN) => BaseSpec<SimpleXmlNode>
+  >(
+    condition: (value: IN) => TYPE,
+    node: (value: IN) => SimpleXmlNode,
+    mapper: MAPPER,
+    defaultCase: DEFAULT
+  ) =>
+    syncer<
+      IN,
+      | SpecToJson<ReturnType<MAPPER[TYPE]>>
+      | ({
+          readonly type: typeof switchDefault;
+        } & SpecToJson<ReturnType<DEFAULT>>)
+    >(
+      (input) => {
+        const type = condition(input);
+        if (type in mapper) {
+          const spec = mapper[type];
+          return syncers.object(spec(input)).serializer(node(input));
+        } else {
+          const serialized = syncers
+            .object(defaultCase(input))
+            .serializer(node(input));
+          return {
+            type: switchDefault,
+            ...serialized,
+          };
+        }
+      },
+      ({ type, ...rest }) => {
+        const spec = type === switchDefault ? defaultCase : mapper[type];
+        // FIXME: figure out what should this be called with here
+        return syncers.object(spec(rest)).deserializer(rest);
+      }
+    ),*/
+  /*switch: <
+    IN,
+    TYPE extends string,
+    MAPPER extends {
+      readonly [KEY in TYPE]: (input: IN) => BaseSpec<SimpleXmlNode>;
+    },
+    DEFAULT extends (input: IN) => BaseSpec<SimpleXmlNode>
+  >(
+    condition: (value: IN) => TYPE,
+    node: (value: IN) => SimpleXmlNode,
+    mapper: MAPPER,
+    defaultCase: DEFAULT
+  ) =>
+    syncer<
+      IN,
+      | ({ readonly type: TYPE } & SpecToJson<ReturnType<MAPPER[TYPE]>>)
+      | ({
+          readonly type: typeof switchDefault;
+        } & SpecToJson<ReturnType<DEFAULT>>)
+      // {
+      //     readonly [KEY in TYPE]: {
+      //       readonly type: KEY;
+      //     } & SpecToJson<MAPPER[KEY]>;
+      //   }[TYPE]
+    >(
+      (input) => {
+        const type = condition(input);
+        const spec = mapper[type] ?? defaultCase;
+        const serialized = syncers.object(spec(input)).serializer(node(input));
+        return {
+          type: type in mapper ? type : switchDefault,
+          ...serialized,
+        };
+      },
+      ({ type, ...rest }) => {
+        const spec = type === switchDefault ? defaultCase : mapper[type];
+        // FIXME: figure out what should this be called with here
+        return syncers.object(spec(rest)).deserializer(rest);
+      }
+    ),*/
 } as const;

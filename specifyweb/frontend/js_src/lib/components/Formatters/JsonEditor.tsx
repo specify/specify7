@@ -27,7 +27,6 @@ export function JsonEditorForXml<SPEC extends BaseSpec<SimpleXmlNode>>(
 
 function JsonEditor<SPEC extends BaseSpec<SimpleXmlNode>>({
   parsed: [parsed],
-  xmlNode,
   syncer: { deserializer },
   onChange: handleChange,
   ...rest
@@ -49,7 +48,7 @@ function JsonEditor<SPEC extends BaseSpec<SimpleXmlNode>>({
             ? SpecifyTable.fromJson(value) ?? FieldBase.fromJson(value) ?? value
             : value
         );
-        return updateXml(xmlNode, deserializer(parsed));
+        return updateXml(deserializer(parsed));
       } catch (error) {
         console.error(error);
         return undefined;

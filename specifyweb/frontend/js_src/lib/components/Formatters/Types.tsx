@@ -21,7 +21,6 @@ export type FormatterTypesOutlet = {
 
 export function FormatterTypes(): JSX.Element {
   const {
-    xmlNode,
     parsed: [parsed, setParsed],
     syncer: { deserializer },
     onChange: handleChange,
@@ -41,7 +40,7 @@ export function FormatterTypes(): JSX.Element {
         (value): void => {
           const newData = { ...parsed, [resolvedType]: value };
           setParsed(newData);
-          handleChange(() => updateXml(xmlNode, deserializer(newData)));
+          handleChange(() => updateXml(deserializer(newData)));
         },
       ]}
       parsed={parsed}

@@ -81,11 +81,12 @@ const formatterSpec = f.store(() =>
     definition: pipe(
       syncers.xmlChild('switch'),
       syncers.default<SimpleXmlNode>(() => createSimpleXmlNode('switch')),
-      syncers.captureLogContext
+      syncers.captureLogContext()
     ),
   })
 );
 
+// FIXME: test deserializer when table name changed
 const switchSpec = ({ table }: SpecToJson<ReturnType<typeof formatterSpec>>) =>
   createXmlSpec({
     isSingle: pipe(

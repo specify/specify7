@@ -30,7 +30,6 @@ const exportFeedRoutes = toReactRoutes([
 
 function Editor(): JSX.Element {
   const {
-    xmlNode,
     parsed: [parsed, setParsed],
     syncer: { deserializer },
     onChange: handleChange,
@@ -39,7 +38,7 @@ function Editor(): JSX.Element {
     parsed,
     (definition): void => {
       setParsed(definition);
-      handleChange(() => updateXml(xmlNode, deserializer(definition)));
+      handleChange(() => updateXml(deserializer(definition)));
     },
   ];
   return <ExportFeedEditor definition={definition} />;

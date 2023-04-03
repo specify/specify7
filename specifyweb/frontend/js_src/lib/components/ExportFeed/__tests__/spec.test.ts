@@ -9,7 +9,9 @@ test('Export Feed is parsed correctly', async () =>
       headers: {
         Accept: 'text/xml',
       },
-    }).then(({ data }) => xmlToSpec(data, exportFeedSpec()))
+    }).then(({ data }) =>
+      JSON.parse(JSON.stringify(xmlToSpec(data, exportFeedSpec())))
+    )
   ).resolves.toMatchInlineSnapshot(`
     {
       "description": "RSS feed for KUBI Ichthyology Voucher collections",

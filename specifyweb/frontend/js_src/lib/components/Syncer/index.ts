@@ -10,8 +10,11 @@ import {
  * Transformer was the original name, but that clashes with Node.js
  */
 export type Syncer<RAW, PARSED> = {
-  readonly serializer: Serializer<RAW, PARSED>;
-  readonly deserializer: Deserializer<RAW, PARSED>;
+  serializer(input: RAW): PARSED;
+  deserializer(value: PARSED): RAW;
+  // FIXME: remove or uncomment
+  // readonly serializer: Serializer<RAW, PARSED>;
+  // readonly deserializer: Deserializer<RAW, PARSED>;
 };
 
 type Serializer<RAW, PARSED> = (input: RAW) => PARSED;

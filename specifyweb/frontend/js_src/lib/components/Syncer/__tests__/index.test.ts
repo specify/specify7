@@ -33,6 +33,7 @@ test('Editing Data Object Formatter', () => {
   const parsed = serializer(simpleXmlNode);
 
   const newSimpleXmlNode = deserializer({
+    ...parsed,
     formatters: [
       ...parsed.formatters,
       {
@@ -65,10 +66,7 @@ test('Editing Data Object Formatter', () => {
       ...parsed.aggregators,
     ],
   });
-  const updatedXml = updateXml(xmlNode, newSimpleXmlNode).replaceAll(
-    '\t',
-    '  '
-  );
+  const updatedXml = updateXml(newSimpleXmlNode).replaceAll('\t', '  ');
 
   expect(updatedXml).toMatchInlineSnapshot(`
     "<formatters>
@@ -91,6 +89,7 @@ test('Editing Data Object Formatter', () => {
         class=\\"edu.ku.brc.specify.datamodel.Accession\\"
         default=\\"true\\"
       >
+        <!-- this comment will be preserved -->
         <switch single=\\"true\\">
           <fields>
             <field>accessionNumber</field>
@@ -122,6 +121,76 @@ test('Editing Data Object Formatter', () => {
           orderfieldname=\\"\\"
         />
       </aggregators>
+    </formatters>"
+  `);
+});
+
+test('Removing a child does not carry over unknown attributes from previous node', () => {
+  const element = strictParseXml(`<formatters>
+      <format
+        name="Accession"
+        title="Accession"
+        class="edu.ku.brc.specify.datamodel.Accession"
+      >
+        <switch a="b">
+          <fields>
+            <field e="f"><b g="l">a</b></field>
+            <field sep=",">accessionNumber</field>
+          </fields>
+        </switch>
+      </format>
+      <aggregators></aggregators>
+    </formatters>`);
+
+  const xmlNode = xmlToJson(element);
+  const simpleXmlNode = toSimpleXmlNode(xmlNode);
+
+  const spec = formattersSpec();
+
+  const { serializer, deserializer } = syncers.object(spec);
+  const parsed = serializer(simpleXmlNode);
+
+  const formatter = parsed.formatters[0].definition;
+  const newSimpleXmlNode = deserializer({
+    ...parsed,
+    formatters: [
+      {
+        ...parsed.formatters[0],
+        definition: {
+          ...formatter,
+          fields: [
+            {
+              ...formatter.fields[0],
+              fields: [
+                // Removed first field. Modified second
+                {
+                  ...formatter.fields[0].fields[1],
+                  separator: '__',
+                },
+              ],
+            },
+          ],
+        },
+      },
+    ],
+  });
+
+  const updatedXml = updateXml(newSimpleXmlNode).replaceAll('\t', '  ');
+  expect(updatedXml).toMatchInlineSnapshot(`
+    "<formatters>
+      <format
+        name=\\"Accession\\"
+        title=\\"Accession\\"
+        class=\\"edu.ku.brc.specify.datamodel.Accession\\"
+        default=\\"false\\"
+      >
+        <switch a=\\"b\\" single=\\"true\\">
+          <fields>
+            <field sep=\\"__\\">accessionNumber</field>
+          </fields>
+        </switch>
+      </format>
+      <aggregators/>
     </formatters>"
   `);
 });

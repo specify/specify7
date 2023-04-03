@@ -28,7 +28,6 @@ export type WebLinkOutlet = {
 
 export function WebLinkEditorWrapper(): JSX.Element {
   const {
-    xmlNode,
     parsed: [parsed, setParsed],
     syncer: { deserializer },
     onChange: handleChange,
@@ -38,7 +37,7 @@ export function WebLinkEditorWrapper(): JSX.Element {
     (webLinks): void => {
       const parsed = { webLinks };
       setParsed(parsed);
-      handleChange(() => updateXml(xmlNode, deserializer(parsed)));
+      handleChange(() => updateXml(deserializer(parsed)));
     },
   ];
   return (
