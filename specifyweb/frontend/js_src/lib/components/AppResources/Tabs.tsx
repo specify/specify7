@@ -93,17 +93,13 @@ export function AppResourcesTab({
   );
 }
 
-type Component = (
-  props: Omit<AppResourceTabProps, 'editorType'>
-) => JSX.Element;
+type Component = (props: AppResourceTabProps) => JSX.Element;
 
 export function useEditorTabs(
   resource: SerializedResource<SpAppResource | SpViewSetObject>
 ): RA<{
   readonly label: LocalizedString;
-  readonly component: (
-    props: Omit<AppResourceTabProps, 'editorType'>
-  ) => JSX.Element;
+  readonly component: (props: AppResourceTabProps) => JSX.Element;
 }> {
   const subType =
     f.maybe(toResource(resource, 'SpAppResource'), getAppResourceType) ??
@@ -118,7 +114,7 @@ export function useEditorTabs(
           {
             label: labels.generic,
             component(props): JSX.Element {
-              return <AppResourceTextEditor {...props} editorType="generic" />;
+              return <AppResourceTextEditor {...props} />;
             },
           },
         ]
@@ -133,7 +129,7 @@ export function useEditorTabs(
                         {type === 'visual' && (
                           <OtherCollectionWarning directory={props.directory} />
                         )}
-                        <Editor {...props} editorType={type} />
+                        <Editor {...props} />
                       </>
                     );
                   },

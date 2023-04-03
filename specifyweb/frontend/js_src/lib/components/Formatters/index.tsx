@@ -14,7 +14,6 @@ import type { BaseSpec, SpecToJson, Syncer } from '../Syncer';
 import { syncers } from '../Syncer/syncers';
 import type { SimpleXmlNode, XmlNode } from '../Syncer/xmlToJson';
 import { toSimpleXmlNode, xmlToJson } from '../Syncer/xmlToJson';
-import { JsonEditorForXml } from './JsonEditor';
 import { formattersRoutes } from './Routes';
 import { formattersSpec } from './spec';
 
@@ -42,9 +41,7 @@ export function XmlEditor<SPEC extends BaseSpec<SimpleXmlNode>>({
   context: Context,
   ...rest
 }: XmlEditorProps<SPEC>): JSX.Element {
-  return rest.props.editorType === 'json' ? (
-    <JsonEditorForXml {...rest} />
-  ) : (
+  return (
     <WrappedXmlEditor {...rest}>
       {(props): JSX.Element => (
         <Context.Provider value={props}>

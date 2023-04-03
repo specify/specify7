@@ -41,7 +41,6 @@ import { FormEditor } from '../FormEditor';
 export type AppResourceEditorType = 'generic' | 'json' | 'visual' | 'xml';
 
 export type AppResourceTabProps = {
-  readonly editorType: AppResourceEditorType;
   readonly resource: SerializedResource<SpAppResource | SpViewSetObj>;
   readonly appResource: SpecifyResource<SpAppResource | SpViewSetObj>;
   readonly directory: SerializedResource<SpAppResourceDir>;
@@ -180,7 +179,6 @@ export const visualAppResourceEditors = f.store<
 >(() => ({
   viewSet: {
     visual: FormEditor,
-    json: FormEditor,
     xml: generateXmlEditor(viewSetsSpec),
   },
   label: undefined,
@@ -196,20 +194,17 @@ export const visualAppResourceEditors = f.store<
   leafletLayers: undefined,
   rssExportFeed: {
     visual: RssExportFeedEditor,
-    json: RssExportFeedEditor,
     xml: generateXmlEditor(exportFeedSpec),
   },
   expressSearchConfig: undefined,
   typeSearches: undefined,
   webLinks: {
     visual: WebLinkEditor,
-    json: WebLinkEditor,
     xml: generateXmlEditor(webLinksSpec),
   },
   uiFormatters: undefined,
   dataObjectFormatters: {
     visual: DataObjectFormatter,
-    json: DataObjectFormatter,
     xml: generateXmlEditor(formattersSpec),
   },
   searchDialogDefinitions: undefined,
