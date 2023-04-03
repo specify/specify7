@@ -4,13 +4,18 @@ import { strictParseXml } from '../../AppResources/codeMirrorLinters';
 import { formatXmlNode } from '../../Syncer/formatXmlNode';
 import { syncers } from '../../Syncer/syncers';
 import type { XmlNode } from '../../Syncer/xmlToJson';
-import { jsonToXml, toSimpleXmlNode, xmlToJson } from '../../Syncer/xmlToJson';
+import {
+  jsonToXml,
+  toSimpleXmlNode,
+  updateXml,
+  xmlToJson,
+} from '../../Syncer/xmlToJson';
 import { xmlToString } from '../../Syncer/xmlUtils';
 import { exportsForTests } from '../index';
 import type { ViewSets } from '../spec';
 import { viewSetsSpec } from '../spec';
 
-const { injectRawXml, replaceXmlContent } = exportsForTests;
+const { injectRawXml } = exportsForTests;
 
 requireContext();
 
@@ -76,18 +81,20 @@ test('Can edit a form definition', () => {
   const { serializer, deserializer } = syncers.object(viewSetsSpec());
   const xmlNode = xmlToJson(strictParseXml(xml));
   const parsed = serializer(toSimpleXmlNode(xmlNode));
-  const augmented = injectRawXml(xmlNode, parsed);
+  const augmented = injectRawXml(parsed);
   const raw = augmented.viewDefs[0].raw;
 
   // Verify that view sets are parsed correctly
-  expect({
+  const reconstructed = {
     ...augmented,
     viewDefs: replaceItem(
       augmented.viewDefs,
       0,
       removeKey(augmented.viewDefs[0], 'raw')
     ),
-  }).toMatchSnapshot();
+  };
+  // Get rid of symbols
+  expect(JSON.parse(JSON.stringify(reconstructed))).toMatchSnapshot();
 
   // Verify that view definition xml can be converted back to the same string
   const initialXml = process(raw);
@@ -144,7 +151,5 @@ test('Can edit a form definition', () => {
   };
 
   // Verify that can turn it all back
-  expect(
-    replaceXmlContent(xmlNode, deserializer, newAugmented)
-  ).toMatchSnapshot();
+  expect(updateXml(deserializer(newAugmented))).toMatchSnapshot();
 });

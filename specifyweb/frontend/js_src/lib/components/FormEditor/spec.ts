@@ -4,15 +4,17 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { f } from '../../utils/functools';
 import type { RA, RR } from '../../utils/types';
+import { defined } from '../../utils/types';
 import type { Tables } from '../DataModel/types';
 import { pipe, SpecToJson, syncer } from '../Syncer';
 import { syncers } from '../Syncer/syncers';
 import {
   createSimpleXmlNode,
   SimpleXmlNode,
+  toSimpleXmlNode,
   XmlNode,
 } from '../Syncer/xmlToJson';
-import { createXmlSpec } from '../Syncer/xmlUtils';
+import { createXmlSpec, getOriginalSyncerInput } from '../Syncer/xmlUtils';
 import { getUniqueName } from '../../utils/uniquifyName';
 
 export const viewSetsSpec = f.store(() =>
@@ -164,7 +166,7 @@ const altViewsSpec = f.store(() =>
     legacySelector: syncers.xmlAttribute('selector', 'skip'),
     legacyDefaultMode: pipe(
       syncers.xmlAttribute('defaultMode', 'skip'),
-      syncers.maybe(syncers.enum(['view', 'edit', 'search']))
+      syncers.maybe(syncers.enum(['view', 'edit', 'search'] as const))
     ),
   })
 );
@@ -179,7 +181,7 @@ const altViewSpec = f.store(() =>
     mode: pipe(
       syncers.xmlAttribute('mode', 'required'),
       syncers.default<LocalizedString>('view'),
-      syncers.enum(['edit', 'view', 'search'])
+      syncers.enum(['edit', 'view', 'search'] as const)
     ),
     default: pipe(
       syncers.xmlAttribute('default', 'skip'),
@@ -208,7 +210,7 @@ const viewDefSpec = f.store(() =>
     type: pipe(
       syncers.xmlAttribute('type', 'required'),
       syncers.default<LocalizedString>('form'),
-      syncers.enum(['form', 'formtable', 'iconview', 'rstable'])
+      syncers.enum(['form', 'formtable', 'iconview', 'rstable'] as const)
     ),
     legacyGetTable: syncers.xmlAttribute('getTable', 'required'),
     legacySetTable: syncers.xmlAttribute('setTable', 'required'),
@@ -226,14 +228,13 @@ const viewDefSpec = f.store(() =>
      * Instead, the contents of the form definition will validated by
      * formDefinitionSpec() later on
      */
-    raw: syncer<SimpleXmlNode, SimpleXmlNode>(
+    raw: syncer<SimpleXmlNode, XmlNode>(
       (node) => ({
-        ...node,
+        ...defined(getOriginalSyncerInput(node), ''),
         // Remove attributes so that they don't overwrite the values above
         attributes: {},
-        children: node.children,
       }),
-      f.id
+      toSimpleXmlNode
     ),
   })
 );
