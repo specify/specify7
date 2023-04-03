@@ -102,13 +102,14 @@ export function AttachmentViewer({
         {originalUrl === undefined ? (
           loadingGif
         ) : type === 'image' ? (
-          <img alt={title} src={originalUrl} />
+          <img alt={title} src={originalUrl} crossOrigin="anonymous" />
         ) : type === 'video' ? (
           /*
            * Subtitles for attachments not yet supported
            */
           // eslint-disable-next-line jsx-a11y/media-has-caption
           <video
+            crossOrigin="anonymous"
             autoPlay={autoPlay}
             className="h-full w-full"
             controls
@@ -120,6 +121,7 @@ export function AttachmentViewer({
            */
           // eslint-disable-next-line jsx-a11y/media-has-caption
           <audio
+            crossOrigin="anonymous"
             autoPlay={autoPlay}
             className="w-full"
             controls
@@ -134,6 +136,7 @@ export function AttachmentViewer({
           >
             <img
               alt={title}
+              crossOrigin="anonymous"
               className="h-full w-full object-scale-down"
               src={thumbnail?.src}
             />
