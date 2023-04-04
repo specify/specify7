@@ -25,30 +25,32 @@ export function AttachmentGallery({
   onChange: handleChange,
 }: {
   readonly attachments: RA<SerializedResource<Attachment>>;
-  readonly onFetchMore: () => Promise<void>;
+  readonly onFetchMore: (() => Promise<void>) | undefined;
   readonly scale: number;
   readonly isComplete: boolean;
   readonly onChange: (attachments: RA<SerializedResource<Attachment>>) => void;
 }): JSX.Element {
   const containerRef = React.useRef<HTMLElement | null>(null);
 
-  const fillPage = React.useCallback(
+  const rawFillPage = React.useCallback(
     async () =>
       // Fetch more attachments when within 200px of the bottom
       containerRef.current !== null &&
       containerRef.current.scrollTop + preFetchDistance >
         containerRef.current.scrollHeight - containerRef.current.clientHeight
-        ? handleFetchMore().catch(raise)
+        ? handleFetchMore?.().catch(raise)
         : undefined,
     [handleFetchMore]
   );
+
+  const fillPage = handleFetchMore === undefined ? undefined : rawFillPage;
 
   React.useEffect(
     () =>
       // Fetch attachments while scroll bar is not visible
       void (containerRef.current?.scrollHeight ===
       containerRef.current?.clientHeight
-        ? fillPage().catch(raise)
+        ? fillPage?.().catch(raise)
         : undefined),
     [fillPage, attachments]
   );
@@ -123,12 +125,14 @@ export function AttachmentGallery({
           }
           onClose={(): void => setOpenIndex(undefined)}
           onNext={
-            isComplete && openIndex === attachments.length
+            handleFetchMore !== undefined &&
+            isComplete &&
+            openIndex === attachments.length
               ? undefined
               : (): void => {
                   setOpenIndex(openIndex + 1);
                   if (attachments[openIndex + 1] === undefined)
-                    loading(handleFetchMore());
+                    loading(handleFetchMore!());
                 }
           }
           onPrevious={
