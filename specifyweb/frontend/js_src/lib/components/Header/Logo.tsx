@@ -54,8 +54,8 @@ export function Logo({
         hover:animate-hue-rotate
         ${isCollapsed ? 'hidden' : ''}
       `}
-            src={logo}
             crossOrigin="anonymous"
+            src={logo}
           />
         )}
         {collapsedLogo === '' ? (
@@ -68,8 +68,8 @@ export function Logo({
       ${isCollapsed ? '' : 'hidden'}
       ${isHorizontal ? 'w-10' : ''}
     `}
-            src={collapsedLogo}
             crossOrigin="anonymous"
+            src={collapsedLogo}
           />
         )}
         <span className="sr-only">{commonText.goToHomepage()}</span>
