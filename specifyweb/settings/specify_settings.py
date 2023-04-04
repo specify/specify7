@@ -4,6 +4,9 @@
 # of Specify 6 of the same version as the Specify database.
 THICK_CLIENT_LOCATION = '/opt/Specify'
 
+#DATABASE_ENGINE = 'postgres'
+DATABASE_ENGINE = 'mysql'
+
 # Set the database name to the MySQL database you
 # want to access which must be a Specify database already
 # be initialized from a backup or by using the Specify Wizard

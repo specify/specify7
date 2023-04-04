@@ -18,7 +18,10 @@ from django.db import transaction
 from django.http import (HttpResponse, HttpResponseBadRequest,
                          Http404, HttpResponseNotAllowed, QueryDict)
 from django.core.exceptions import ObjectDoesNotExist, FieldError, FieldDoesNotExist
+
+from django.db.models.fields.related import ForeignKey
 from django.db.models.fields import DateTimeField, FloatField, DecimalField
+# from django.utils.deprecation import CallableBool
 
 from specifyweb.permissions.permissions import enforce, check_table_permissions, check_field_permissions, table_permissions_checker
 

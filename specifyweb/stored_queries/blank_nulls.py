@@ -39,4 +39,4 @@ def _blank_nulls(element: blank_nulls, compiler: MySQLCompiler_mysqldb, **kwargs
     if isinstance(element.clauses.clauses[0], blank_nulls):
         return expr
     else:
-        return "IFNULL(%s, '')" % expr
+        return "coalesce(%s, '')" % expr

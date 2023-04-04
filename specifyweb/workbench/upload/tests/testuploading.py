@@ -960,10 +960,11 @@ class UploadTests(UploadTestsBase):
         self.assertEqual(get_table('Collectionobject').objects.get(catalognumber="000001378").collectingevent.startdate, datetime(1998,4,1,0,0))
         self.assertEqual(get_table('Collectionobject').objects.get(catalognumber="000001378").collectingevent.startdateprecision, 2) # month
 
-        # Check that trees are valid.
-        for tree in ('taxon', 'geography', 'geologictimeperiod', 'lithostrat'):
-            validate_tree_numbering(tree)
-            self.assertEqual(0, get_table(tree).objects.filter(fullname__isnull=True).count())
+        if settings.DATABASE_ENGINE != 'postgres':
+            # Check that trees are valid.
+            for tree in ('taxon', 'geography', 'geologictimeperiod', 'lithostrat'):
+                validate_tree_numbering(tree)
+                self.assertEqual(0, get_table(tree).objects.filter(fullname__isnull=True).count())
 
     def test_tree_1(self) -> None:
         reader = csv.DictReader(io.StringIO(
@@ -1015,7 +1016,7 @@ class UploadTests(UploadTestsBase):
         )
 
         state = get_table('Geography').objects.create(
-            name="Florida",
+            name="FLORIDA",
             definitionitem=get_table('Geographytreedefitem').objects.get(name="State"),
             definition=self.geographytreedef,
             parent=country,

@@ -42,6 +42,8 @@ def make_model(module, table, datamodel):
             fldargs['auto_now'] = True
         if fldname == 'version':
             fldargs['default'] = 0
+        if table.name == 'Attachment' and fldname == 'tableid':
+            fldargs['null'] = True
         attrs[fldname] = maker(field, fldargs)
 
     for rel in table.relationships:
@@ -111,7 +113,7 @@ def make_relationship(modelname, rel, datamodel):
     # I think maybe it is a superclass thing and not really a table?
     # Ignore it for now.
     if relatedmodel == 'Usergroupscope':
-        return models.IntegerField(db_column=rel.column, null=True)
+        return models.IntegerField(db_column=rel.column.lower(), null=True)
 
     if rel.type == 'one-to-many':
         return None # only define the "to" side of the relationship
@@ -139,7 +141,7 @@ def make_relationship(modelname, rel, datamodel):
             related_name = '+' # magic symbol means don't make reverse field
 
         return Field('.'.join((appname, relatedmodel)),
-                     db_column = rel.column,
+                     db_column = rel.column.lower(),
                      related_name = related_name,
                      null = not rel.required,
                      on_delete = on_delete)

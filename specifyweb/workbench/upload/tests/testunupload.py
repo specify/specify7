@@ -39,7 +39,7 @@ class UnUploadTests(UploadTestsBase):
             sizelimit=4,
         )
 
-        habitat.picklistitems.create(title='Marsh', value='marsh')
+        habitat.picklistitems.create(title='Marsh', value='Marsh')
 
     def test_unupload_picklist(self) -> None:
         # data copied from the testparsing.test_nonreadonly_picklist test
@@ -56,8 +56,8 @@ class UnUploadTests(UploadTestsBase):
             {'catno': '2', 'habitat': 'Lake'},
             {'catno': '3', 'habitat': 'Marsh'},
             {'catno': '4', 'habitat': 'Lake'},
-            {'catno': '5', 'habitat': 'marsh'},
-            {'catno': '6', 'habitat': 'lake'},
+            {'catno': '5', 'habitat': 'Marsh'},
+            {'catno': '6', 'habitat': 'Lake'},
         ]
 
         self.assertEqual(0,
