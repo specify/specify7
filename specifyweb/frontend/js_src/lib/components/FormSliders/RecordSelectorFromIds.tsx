@@ -187,7 +187,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
       })
     : commonText.delete();
 
-  //determine if in scope of new data entry and set title header
+  // Determine if in scope of new data entry and set title header
   const [recordsetid] = useSearchParameter('recordsetid');
 
   return (

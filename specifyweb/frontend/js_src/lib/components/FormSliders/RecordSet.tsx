@@ -10,6 +10,7 @@ import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
 import { clamp, split } from '../../utils/utils';
+import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
 import { LoadingContext } from '../Core/Contexts';
 import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
@@ -31,7 +32,6 @@ import { locationToState, useStableLocation } from '../Router/RouterState';
 import { EditRecordSet } from '../Toolbar/RecordSetEdit';
 import type { RecordSelectorProps } from './RecordSelector';
 import { RecordSelectorFromIds } from './RecordSelectorFromIds';
-import { Button } from '../Atoms/Button';
 
 export function RecordSetWrapper<SCHEMA extends AnySchema>({
   recordSet,
@@ -107,6 +107,7 @@ export function RecordSetWrapper<SCHEMA extends AnySchema>({
     <RecordSet
       dialog={false}
       index={resource.isNew() ? totalCount : index}
+      key={recordSet.cid}
       mode="edit"
       record={resource}
       recordSet={recordSet}
@@ -114,7 +115,6 @@ export function RecordSetWrapper<SCHEMA extends AnySchema>({
       onAdd={undefined}
       onClose={handleClose}
       onSlide={undefined}
-      key={recordSet.cid}
     />
   );
 }
@@ -316,15 +316,14 @@ function RecordSet<SCHEMA extends AnySchema>({
     <>
       <RecordSelectorFromIds<SCHEMA>
         {...rest}
+        createNewRecordSet={createNewRecordSet}
         defaultIndex={currentIndex}
         dialog={dialog}
         headerButtons={
           recordSet.isNew() && ids.length > 0 && !currentRecord.isNew() ? (
-            <>
-              <Button.Orange onClick={() => loading(createNewRecordSet(ids))}>
-                {commonText.newRecordSet()}
-              </Button.Orange>
-            </>
+            <Button.Orange onClick={() => loading(createNewRecordSet(ids))}>
+              {commonText.newRecordSet()}
+            </Button.Orange>
           ) : (
             <EditRecordSetButton recordSet={recordSet} />
           )
@@ -424,7 +423,6 @@ function RecordSet<SCHEMA extends AnySchema>({
         onSlide={(index, replace): void =>
           go(index, ids[index], undefined, replace)
         }
-        createNewRecordSet={createNewRecordSet}
       />
       {hasDuplicate && (
         <Dialog
