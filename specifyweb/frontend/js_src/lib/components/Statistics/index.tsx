@@ -51,7 +51,7 @@ export function StatsPage(): JSX.Element {
 }
 
 function ProtectedStatsPage(): JSX.Element | null {
-  // TODO: Make stats page component smaller
+  // REFACTOR: Make stats page component smaller.
 
   useMenuItem('statistics');
   const [initialSharedLayout, setSharedLayout] = collectionPreferences.use(

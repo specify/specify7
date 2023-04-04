@@ -85,6 +85,7 @@ export type BackEndBase = State<
 >;
 export type BackEndStatResolve = BackEndBase & {
   readonly fetchUrl: string;
+  // Add type assertions for rawResult
   readonly formatter: (rawResult: any) => string | undefined;
 };
 export type StatItemSpec = BackEndStat | QueryBuilderStat;

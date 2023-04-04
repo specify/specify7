@@ -201,6 +201,7 @@ export function Categories({
                             : undefined
                         }
                         onEdit={
+                          // REFACTOR: Use if/else conditions
                           checkEmptyItems || handleEdit === undefined
                             ? undefined
                             : item.type === 'DefaultStat'
