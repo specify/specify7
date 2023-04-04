@@ -29,7 +29,7 @@ Coming in the next few months:
 
 ## [7.8.10](https://github.com/specify/specify7/compare/v7.8.9...HEAD) (Unreleased)
 
-## [7.8.9](https://github.com/specify/specify7/compare/v7.8.8...HEAD) (April 4 2023)
+## [7.8.9](https://github.com/specify/specify7/compare/v7.8.8...HEAD) (4 April 2023)
 
 ### Added
 
@@ -58,7 +58,7 @@ Coming in the next few months:
 - When creating a new record set, only the Name field is now visible ([#2782](https://github.com/specify/specify7/issues/2782))
 - More collections are now visible when selecting a collection upon login ([#2588](https://github.com/specify/specify7/issues/2588) – *Requested by the University of Michigan*)
 
-## [7.8.8](https://github.com/specify/specify7/compare/v7.8.7.1...v7.8.8) (March 20 2023)
+## [7.8.8](https://github.com/specify/specify7/compare/v7.8.7.1...v7.8.8) (20 March 2023)
 
 ### Added
 
@@ -86,14 +86,14 @@ Coming in the next few months:
   viewer ([#3103](https://github.com/specify/specify7/issues/3103))
 
 
-## [7.8.7.1](https://github.com/specify/specify7/compare/v7.8.7...v7.8.7.1) (March 3 2023)
+## [7.8.7.1](https://github.com/specify/specify7/compare/v7.8.7...v7.8.7.1) (3 March 2023)
 
 ### Fixed
 
 - Resolved an issue with plugins being rendered as read-only ([#3076](https://github.com/specify/specify7/issues/3076))
 - "Year" in the date picker now requires the correct format ([#3075](https://github.com/specify/specify7/issues/3075))
 
-## [7.8.7](https://github.com/specify/specify7/compare/v7.8.6...v7.8.7) (March 1 2023)
+## [7.8.7](https://github.com/specify/specify7/compare/v7.8.6...v7.8.7) (1 March 2023)
 
 ### Added
 
@@ -165,7 +165,7 @@ Coming in the next few months:
   longer duplicates the import on both
   accounts ([#3020](https://github.com/specify/specify7/issues/3020))
 
-## [7.8.6](https://github.com/specify/specify7/compare/v7.8.5...v7.8.6) (February 22 2023)
+## [7.8.6](https://github.com/specify/specify7/compare/v7.8.5...v7.8.6) (22 February 2023)
 
 ### Changed
 
@@ -230,7 +230,7 @@ Coming in the next few months:
 - Make opening links in new tab
   safer ([#2600](https://github.com/specify/specify7/issues/2600))
 
-## [7.8.5](https://github.com/specify/specify7/compare/v7.8.4...v7.8.5) (January 31 2022)
+## [7.8.5](https://github.com/specify/specify7/compare/v7.8.4...v7.8.5) (31 January 2022)
 
 ### Added
 
