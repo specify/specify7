@@ -50,7 +50,7 @@ const predictFullName = async (
         parent.id === resource.id ||
         parent.get('rankId') >= definitionItem.get('rankId')
       )
-        throw new Error(badTreeStructureError);
+        throw new Error('badTreeStructureError');
       if ((resource.get('name')?.length ?? 0) === 0) return undefined;
 
       const treeName = resource.specifyModel.name.toLowerCase();
@@ -77,7 +77,7 @@ const predictFullName = async (
         } as const)
     )
     .catch((error) => {
-      if (error.message === badTreeStructureError && reportBadStructure)
+      if (error.message === 'badTreeStructureError' && reportBadStructure)
         return {
           key: 'tree-structure',
           valid: false,
