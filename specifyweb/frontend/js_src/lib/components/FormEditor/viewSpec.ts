@@ -2,7 +2,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { f } from '../../utils/functools';
 import { tables } from '../DataModel/tables';
-import { pipe } from '../Syncer';
+import { pipe, SpecToJson, syncer } from '../Syncer';
 import { syncers } from '../Syncer/syncers';
 import type { SimpleXmlNode } from '../Syncer/xmlToJson';
 import { createSimpleXmlNode } from '../Syncer/xmlToJson';
@@ -18,6 +18,10 @@ export const formDefinitionSpec = f.store(() =>
       syncers.xmlChild('rowDef', 'optional'),
       syncers.maybe(syncers.object(rowSizeDefinitionSpec()))
     ),
+    legacyBusinessRules: pipe(
+      syncers.xmlChild('enableRules', 'optional'),
+      syncers.maybe(syncers.object(legacyBusinessRulesSpec()))
+    ),
     rows: pipe(
       syncers.xmlChild('rows'),
       syncers.default<SimpleXmlNode>(() => createSimpleXmlNode('std')),
@@ -25,15 +29,51 @@ export const formDefinitionSpec = f.store(() =>
       syncers.map(
         pipe(
           syncers.xmlChildren('cell'),
-          syncers.map(syncers.object(cellSpec()))
+          syncers.map(
+            pipe(
+              syncers.object(cellSpec()),
+              syncers.switch(
+                'rest',
+                'definition',
+                pipe(
+                  syncers.xmlAttribute('type', 'required'),
+                  syncers.default('field')
+                ),
+                {
+                  label: 'Label',
+                  field: 'Field',
+                  separator: 'Separator',
+                  subview: 'SubView',
+                  panel: 'Panel',
+                  command: 'Command',
+                  iconview: 'IconView',
+                } as const,
+                {
+                  Label: labelSpec,
+                  Field: fieldSpec,
+                  Separator: separatorSpec,
+                  SubView: subViewSpec,
+                  Panel: panelSpec,
+                  Command: commandSpec,
+                  IconView: iconViewSpec,
+                  unknown: unknownCellSpec,
+                } as const
+              )
+            )
+          )
         )
       )
     ),
   })
 );
 
+type Cell = SpecToJson<
+  ReturnType<typeof formDefinitionSpec>
+>['rows'][number][number];
+
 const columnDefinitionSpec = f.store(() =>
   createXmlSpec({
+    // Commonly one of 'lnx', 'mac', 'exp'
     os: syncers.xmlAttribute('os', 'skip'),
     definition: syncers.xmlContent,
   })
@@ -52,6 +92,13 @@ const rowSizeDefinitionSpec = f.store(() =>
   })
 );
 
+const legacyBusinessRulesSpec = f.store(() =>
+  createXmlSpec({
+    id: syncers.xmlAttribute('id', 'required'),
+    rule: syncers.xmlContent,
+  })
+);
+
 /**
  * Build a list of tables for which the "formTable" display type should be
  * enabled. This list is not a perfect optimization of what tables have a
@@ -66,37 +113,61 @@ const tablesWithFormTable = f.store(() =>
 const cellSpec = f.store(() =>
   createXmlSpec({
     id: syncers.xmlAttribute('id', 'skip'),
-    name: syncers.xmlAttribute('name', 'skip'),
-    type: syncers.xmlAttribute('type', 'required'),
+    /*type: pipe(
+      syncers.xmlAttribute('type', 'required'),
+      syncers.preserveInvalid(
+        syncers.enum([
+          'label',
+          'field',
+          'separator',
+          'subview',
+          'panel',
+          'command',
+          'iconview',
+        ] as const)
+      )
+    ),*/
     // Make cell occupy more than one column
     colSpan: pipe(
       syncers.xmlAttribute('colSpan', 'skip'),
       syncers.maybe(syncers.toDecimal),
       syncers.default<number>(1)
     ),
+    description: syncers.xmlAttribute('desc', 'skip'),
     // When invisible, field is rendered with visibility="hidden"
     invisible: pipe(
       syncers.xmlAttribute('visible', 'skip'),
       syncers.maybe(syncers.toBoolean),
       syncers.default<boolean>(false)
     ),
-    legacyCols: pipe(
-      syncers.xmlAttribute('cols', 'skip'),
-      syncers.maybe(syncers.toDecimal)
+    // FIXME: add commonInit
+    initialize: pipe(
+      syncers.xmlAttribute('initialize', 'skip'),
+      syncers.default<LocalizedString>(''),
+      // FIXME: make this production ready
+      syncer(
+        (value) =>
+          Object.fromEntries(
+            value.split(';').map((part) => {
+              const [name, ...values] = part.split('=');
+              return [
+                name.toLowerCase(),
+                values.join('=').replaceAll('%3B', ';'),
+              ] as const;
+            })
+          ),
+        (properties) =>
+          Object.entries(properties)
+            .map(
+              ([key, value]) =>
+                `${key.toLowerCase()}=${value.replaceAll(';', '%3B')}`
+            )
+            .join(';')
+      ),
+      syncers.captureLogContext()
     ),
-    // In sp6, determines the height of the cell
-    legacyRows: pipe(
-      syncers.xmlAttribute('colSpan', 'skip'),
-      syncers.maybe(syncers.toDecimal)
-    ),
-    /*
-     * In sp6, if false, might make the field invisible. Not used by sp7
-     * as it is not implemented consistently by sp6
-     */
-    legacyVisible: pipe(
-      syncers.xmlAttribute('visible', 'skip'),
-      syncers.maybe(syncers.toBoolean)
-    ),
+    // FIXME: check how this handles duplicate attributes (especially when they were modified)
+    rest: syncers.captureLogContext(),
     // In sp6, if true, disconnects the field from the database
     legacyIgnore: pipe(
       syncers.xmlAttribute('ignore', 'skip'),
@@ -104,6 +175,80 @@ const cellSpec = f.store(() =>
     ),
   })
 );
+
+const labelSpec = f.store(() =>
+  createXmlSpec({
+    label: syncers.xmlAttribute('label', 'skip'),
+    labelForCellId: syncers.xmlAttribute('labelFor', 'skip'),
+    icon: syncers.xmlAttribute('icon', 'skip'),
+  })
+);
+
+const fieldSpec = (cell: SpecToJson<ReturnType<typeof cellSpec>>) =>
+  createXmlSpec({
+    name: syncers.xmlAttribute('name', 'required'),
+  });
+
+const separatorSpec = f.store(() =>
+  createXmlSpec({
+    label: syncers.xmlAttribute('label', 'skip'),
+    icon: syncers.xmlAttribute('icon', 'skip'),
+    forClass: pipe(
+      syncers.xmlAttribute('forClass', 'skip'),
+      syncers.maybe(syncers.tableName)
+    ),
+    canCollapse: pipe(
+      syncers.xmlAttribute('collapse', 'skip'),
+      syncers.default<LocalizedString>(''),
+      syncers.toBoolean
+    ),
+  })
+);
+
+const subViewSpec = (cell: SpecToJson<ReturnType<typeof cellSpec>>) =>
+  createXmlSpec({
+    // FIXME: parse further
+    name: syncers.xmlAttribute('name', 'required'),
+    defaultType: pipe(
+      syncers.xmlAttribute('defaultType', 'skip'),
+      syncers.maybe(syncers.enum(['form', 'table', 'icon'] as const))
+    ),
+    label: syncers.xmlAttribute('label', 'skip'),
+    viewSetName: syncers.xmlAttribute('viewSetName', 'skip'),
+    viewName: syncers.xmlAttribute('viewName', 'skip'),
+    isReadOnly: pipe(
+      syncers.xmlAttribute('readOnly', 'skip'),
+      syncers.default<LocalizedString>(''),
+      syncers.toBoolean
+    ),
+    legacyRows: pipe(
+      syncers.xmlAttribute('rows', 'skip'),
+      syncers.maybe(syncers.toDecimal)
+    ),
+    legacyValidationType: pipe(
+      syncers.xmlAttribute('valType', 'skip'),
+      syncers.maybe(syncers.enum(['Changed', 'Focus', 'None', 'OK'] as const))
+    ),
+    // FIXME: add initialize
+    // FIXME: handle common init
+    // FIXME: handle border init
+  });
+
+const panelSpec = (cell: SpecToJson<ReturnType<typeof cellSpec>>) =>
+  createXmlSpec({});
+
+const commandSpec = (cell: SpecToJson<ReturnType<typeof cellSpec>>) =>
+  createXmlSpec({});
+
+const iconViewSpec = (cell: SpecToJson<ReturnType<typeof cellSpec>>) =>
+  createXmlSpec({
+    viewSetName: syncers.xmlAttribute('viewSetName', 'skip'),
+    viewName: syncers.xmlAttribute('viewName', 'skip'),
+  });
+
+// FIXME: test that this carries over attributes and contents correctly
+// FIXME: test changing cell type (and preserving attributes in the process???)
+const unknownCellSpec = f.store(() => createXmlSpec({}));
 
 export const exportsForTests = {
   tablesWithFormTable,

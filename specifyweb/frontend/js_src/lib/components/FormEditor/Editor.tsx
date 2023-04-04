@@ -177,7 +177,6 @@ function Editor({
         showValidationRef={showValidationRef}
         resource={resource}
         directory={directory}
-        editorType="xml"
       />
     </div>
   );
