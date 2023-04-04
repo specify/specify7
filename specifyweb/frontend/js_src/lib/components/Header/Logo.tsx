@@ -55,6 +55,7 @@ export function Logo({
         ${isCollapsed ? 'hidden' : ''}
       `}
             src={logo}
+            crossOrigin="anonymous"
           />
         )}
         {collapsedLogo === '' ? (
@@ -68,6 +69,7 @@ export function Logo({
       ${isHorizontal ? 'w-10' : ''}
     `}
             src={collapsedLogo}
+            crossOrigin="anonymous"
           />
         )}
         <span className="sr-only">{commonText.goToHomepage()}</span>
