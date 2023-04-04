@@ -29,7 +29,7 @@ Coming in the next few months:
 
 ## [7.8.10](https://github.com/specify/specify7/compare/v7.8.9...HEAD) (Unreleased)
 
-## [7.8.9](https://github.com/specify/specify7/compare/v7.8.8...HEAD) (4 April 2023)
+## [7.8.9](https://github.com/specify/specify7/compare/v7.8.8...v7.8.9) (4 April 2023)
 
 ### Added
 
