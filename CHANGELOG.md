@@ -21,13 +21,13 @@ Coming in the next few months:
 
 - [Duplicate record merging tool](https://discourse.specifysoftware.org/t/record-merging-in-specify-7/939/9)
 
-- [Statistics page](https://discourse.specifysoftware.org/t/statistics-panel-for-specify-7/828)
-
 - [User Interface for editing Data Object Formatters, Forms, and other XML resources](https://github.com/specify/specify7/pull/2796)
 
 - [And a lot more features](https://github.com/specify/specify7/pulls)
 
 ## [7.8.10](https://github.com/specify/specify7/compare/v7.8.9...HEAD) (Unreleased)
+
+- [Statistics page](https://discourse.specifysoftware.org/t/statistics-panel-for-specify-7/828)
 
 ## [7.8.9](https://github.com/specify/specify7/compare/v7.8.8...v7.8.9) (4 April 2023)
 
