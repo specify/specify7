@@ -15,7 +15,7 @@ import { userPreferences } from '../Preferences/userPreferences';
 import { rawMenuItemsPromise } from './menuItemDefinitions';
 import { rawUserToolsPromise } from './userToolDefinitions';
 
-const itemsPromise = f.store(() =>
+const itemsPromise = f.store(async () =>
   f.all({
     menuItems: rawMenuItemsPromise,
     userTools: rawUserToolsPromise,
