@@ -354,7 +354,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     }
   }
 
-  private invokeRule(
+  private async invokeRule(
     ruleName: keyof BusinessRuleDefs<SCHEMA>,
     fieldName: keyof SCHEMA['fields'] | undefined,
     args: RA<any>
