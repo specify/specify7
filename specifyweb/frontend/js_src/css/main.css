@@ -176,8 +176,8 @@
   .link {
     @apply inline-flex cursor-pointer items-center gap-2
       text-left text-black active:underline enabled:hover:text-brand-300
-      disabled:!ring-0 disabled:cursor-text dark:text-gray-200
-      disabled:active:no-underline;
+      disabled:cursor-text disabled:!ring-0 disabled:active:no-underline
+      dark:text-gray-200;
   }
 
   a.link {
