@@ -124,6 +124,7 @@ const fetchItems = async (
 ): Promise<RA<readonly [index: number, id: number]>> =>
   fetchRows('RecordSetItem', {
     limit: fetchSize,
+    domainFilter: false,
     recordSet: recordSetId,
     orderBy: 'id',
     offset,

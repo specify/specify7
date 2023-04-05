@@ -166,7 +166,7 @@ export function ViewResourceByGuid({
         fetchCollection((model as SpecifyModel<CollectionObject>).name, {
           guid,
           limit: 1,
-          domainFilter: true,
+          domainFilter: false,
         }).then(({ records }) => records[0]?.id ?? false),
       [model, guid]
     ),

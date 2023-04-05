@@ -25,11 +25,33 @@ describe('fetchCollection', () => {
       totalCount: 2,
     }));
 
+  const baseInstitutionRecord = {
+    resource_uri: getResourceApiUrl('Institution', 1),
+  };
+  overrideAjax('/api/specify/institution/?limit=1', {
+    meta: {
+      total_count: 2,
+    },
+    objects: [baseInstitutionRecord],
+  });
+
+  test("If query can't be scoped, it won't be", async () =>
+    expect(
+      /*
+       * Deposit "domainFilter: true", false will be sent to back-end because
+       * this table can't be scoped
+       */
+      fetchCollection('Institution', { limit: 1, domainFilter: true })
+    ).resolves.toEqual({
+      records: [addMissingFields('Institution', baseInstitutionRecord)],
+      totalCount: 2,
+    }));
+
   const baseLocalityRecord = {
     resource_uri: getResourceApiUrl('Locality', 1),
   };
   overrideAjax(
-    '/api/specify/locality/?limit=1&localityname=Test&orderby=-latlongaccuracy&yesno1=True&domainfilter=false',
+    '/api/specify/locality/?limit=1&localityname=Test&orderby=-latlongaccuracy&yesno1=True',
     {
       meta: {
         total_count: 2,
@@ -53,7 +75,7 @@ describe('fetchCollection', () => {
     }));
 
   overrideAjax(
-    '/api/specify/locality/?limit=1&localityname__istarswith=Test&id__in=1%2C2&domainfilter=false',
+    '/api/specify/locality/?limit=1&localityname__istarswith=Test&id__in=1%2C2',
     {
       meta: {
         total_count: 2,

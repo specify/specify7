@@ -76,11 +76,15 @@ export const fetchCollection = async <
             Object.entries({
               ...filters,
               ...advancedFilters,
-            }).map(([key, value]) =>
-              value === undefined
+            }).map(([key, value]) => {
+              const mapped =
+                value === undefined
+                  ? undefined
+                  : mapValue(key, value, tableName);
+              return mapped === undefined
                 ? undefined
-                : [key.toLowerCase(), mapValue(key, value, tableName)]
-            )
+                : ([key.toLowerCase(), mapped] as const);
+            })
           )
         )
       )
@@ -96,11 +100,13 @@ function mapValue(
   key: string,
   value: unknown,
   tableName: keyof Tables
-): string {
+): string | undefined {
   if (key === 'orderBy') return (value as string).toString().toLowerCase();
   else if (key === 'domainFilter') {
     const scopingField = schema.models[tableName].getScopingRelationship();
-    return (value === true && typeof scopingField === 'object').toString();
+    return value === true && typeof scopingField === 'object'
+      ? 'true'
+      : undefined;
   } else if (typeof value === 'boolean') return value ? 'True' : 'False';
   else return (value as string).toString();
 }

@@ -58,30 +58,24 @@ describe('unsafeFetchPickList', () => {
   const otherPickList = {
     resource_uri: getResourceApiUrl('PickList', 2),
   };
-  overrideAjax(
-    '/api/specify/picklist/?name=otherCollection&limit=1&domainfilter=false',
-    {
-      meta: {
-        total_count: 1,
-      },
-      objects: [otherPickList],
-    }
-  );
+  overrideAjax('/api/specify/picklist/?name=otherCollection&limit=1', {
+    meta: {
+      total_count: 1,
+    },
+    objects: [otherPickList],
+  });
   test('pick list from other collection', async () => {
     const resource = await unsafeFetchPickList('otherCollection');
     const serialized = serializeResource(resource!);
     expect(serialized).toEqual(addMissingFields('PickList', otherPickList));
   });
 
-  overrideAjax(
-    '/api/specify/picklist/?name=unknownPickList&limit=1&domainfilter=false',
-    {
-      meta: {
-        total_count: 0,
-      },
-      objects: [],
-    }
-  );
+  overrideAjax('/api/specify/picklist/?name=unknownPickList&limit=1', {
+    meta: {
+      total_count: 0,
+    },
+    objects: [],
+  });
 
   overrideAjax(
     '/api/specify/picklist/?name=unknownPickList&limit=1&domainfilter=true',
@@ -135,7 +129,7 @@ describe('fetchPickListItems', () => {
   });
 
   overrideAjax(
-    '/api/specify_rows/locality/?limit=0&distinct=true&fields=localityname',
+    '/api/specify_rows/locality/?limit=0&domainfilter=true&distinct=true&fields=localityname',
     [['abc']]
   );
   test('entire column', async () => {
