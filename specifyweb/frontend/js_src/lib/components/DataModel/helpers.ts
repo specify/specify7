@@ -1,8 +1,9 @@
 import { f } from '../../utils/functools';
-import type { RA } from '../../utils/types';
+import type { RA, ValueOf } from '../../utils/types';
 import { defined } from '../../utils/types';
 import { removeKey } from '../../utils/utils';
 import { isTreeResource } from '../InitialContext/treeRanks';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { addMissingFields } from './addMissingFields';
 import type {
   AnySchema,
@@ -17,7 +18,6 @@ import { schema, strictGetModel } from './schema';
 import type { LiteralField, Relationship } from './specifyField';
 import type { SpecifyModel } from './specifyModel';
 import type { Tables } from './types';
-import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 
 /** Like resource.toJSON(), but keys are converted to camel case */
 export const serializeResource = <SCHEMA extends AnySchema>(
@@ -28,28 +28,24 @@ export const serializeResource = <SCHEMA extends AnySchema>(
     (resource as SpecifyResource<SCHEMA>)?.specifyModel?.name
   );
 
-const specialFields = new Set([
+export const specialFields = new Set([
   'id',
   'resource_uri',
   'recordset_info',
   '_tableName',
 ]);
 
-/** Recursive helper for serializeResource */
-function serializeModel<SCHEMA extends AnySchema>(
-  resource: SerializedModel<SCHEMA>,
+// REFACTOR: get rid of the need for this
+export function resourceToModel<SCHEMA extends AnySchema = AnySchema>(
+  resource: SerializedModel<SCHEMA> | SerializedResource<SCHEMA>,
   tableName?: keyof Tables
-): SerializedResource<SCHEMA> {
-  const model = strictGetModel(
+) {
+  return strictGetModel(
     defined(
-      (tableName as SCHEMA['tableName']) ??
-        ('_tableName' in resource
-          ? (resource as SerializedResource<SCHEMA>)._tableName
-          : undefined) ??
+      tableName ??
+        (resource as SerializedResource<SCHEMA>)._tableName ??
         parseResourceUrl(
-          'resource_uri' in resource
-            ? (resource as { readonly resource_uri: string }).resource_uri ?? ''
-            : ''
+          'resource_uri' in resource ? (resource.resource_uri as string) : ''
         )?.[0],
       `Unable to serialize resource because table name is unknown.${
         process.env.NODE_ENV === 'test'
@@ -58,6 +54,14 @@ function serializeModel<SCHEMA extends AnySchema>(
       }`
     )
   );
+}
+
+/** Recursive helper for serializeResource */
+function serializeModel<SCHEMA extends AnySchema>(
+  resource: SerializedModel<SCHEMA>,
+  tableName?: keyof Tables
+): SerializedResource<SCHEMA> {
+  const model = resourceToModel(resource, tableName);
   const fields = [...model.fields.map(({ name }) => name), model.idField.name];
 
   return addMissingFields(
@@ -131,7 +135,7 @@ export const toResource = <TABLE_NAME extends keyof Tables>(
  * that deal with generic schemas (accept AnySchema or a SCHEMA extends AnySchema)
  */
 export const getField = <
-  SCHEMA extends Tables[keyof Tables],
+  SCHEMA extends ValueOf<Tables>,
   FIELD extends TableFields<SCHEMA>
 >(
   model: SpecifyModel<SCHEMA>,

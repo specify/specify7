@@ -6,20 +6,21 @@ import json
 import mimetypes
 from functools import wraps
 from itertools import groupby
-from typing import Optional
 
 from django import http
+from django.apps import apps
 from django.conf import settings
 from django.db import IntegrityError, router, transaction, connection, models
 from django.db.models.deletion import Collector
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_http_methods, require_POST
-from specifyweb.businessrules.exceptions import BusinessRuleException
 
+from specifyweb.businessrules.exceptions import BusinessRuleException
 from specifyweb.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, PermissionsException, check_permission_targets
 from . import api, models as spmodels
 from .specify_jar import specify_jar
+
 
 def login_maybe_required(view):
     @wraps(view)
@@ -90,15 +91,19 @@ def delete_blockers(request, model, id):
     collector = Collector(using=using)
     collector.delete_blockers = []
     collector.collect([obj])
-    result = [
-        {
-            'table': sub_objs[0].__class__.__name__,
-            'field': field.name,
-            'id': sub_objs[0].id
-        }
-        for field, sub_objs in collector.delete_blockers
-    ]
+    result = flatten([
+        [
+            {
+                'table': sub_objs[0].__class__.__name__,
+                'field': field.name,
+                'ids': [sub_obj.id for sub_obj in sub_objs]
+            }
+        ] for field, sub_objs in collector.delete_blockers
+    ])
     return http.HttpResponse(api.toJson(result), content_type='application/json')
+
+def flatten(l):
+    return [item for sublist in l for item in sublist]
 
 @login_maybe_required
 @require_http_methods(['GET', 'HEAD'])
@@ -337,7 +342,7 @@ def check_collection_access_against_agents(userid: int) -> None:
     if missing_for_6 or missing_for_7:
         all_divisions = spmodels.Division.objects.filter(
             disciplines__collections__id__in=[cid for cid, _ in sp6_collections] + [c.id for c in sp7_collections]
-        ).values_list('id', flat=True)
+        ).values_list('id', flat=True).distinct()
         raise MissingAgentForAccessibleCollection({
             'missing_for_6': missing_for_6,
             'missing_for_7': missing_for_7,
@@ -402,11 +407,10 @@ class ReplaceRecordPT(PermissionTarget):
 @transaction.atomic
 def record_merge_fx(model_name: str, old_model_id: int, new_model_id: int) -> http.HttpResponse:
     """Replaces all the foreign keys referencing the old record ID
-    with the new record ID, and deletes the old record.
+    with the new record ID, and deletes the old record record.
     """
     # Confirm the target model table exists
-    model_name = model_name.lower().title()
-    target_model = getattr(spmodels, model_name)
+    target_model = apps.get_model('specify', model_name.lower())
     if target_model is None:
         return http.HttpResponseNotFound("model_name: " + model_name + "does not exist.")
 
@@ -422,20 +426,20 @@ def record_merge_fx(model_name: str, old_model_id: int, new_model_id: int) -> ht
         for rel in target_object.specify_model.relationships
         if api.is_dependent_field(target_object, rel.name)]
 
-    # Get all of the columns in all of the tables of specify the are foreign keys referencing model ID
+    # Get all of the columns in all of the tables of specify the are foreign keys referencing AgentID
     foreign_key_cols = []
     for table in spmodels.datamodel.tables:
         for relationship in table.relationships:
             if relationship.relatedModelName.lower() == model_name.lower():
                 foreign_key_cols.append((table.name, relationship.name))
 
-    # Build query to update all of the records with foreign keys referencing the model ID
+    # Build query to update all of the records with foreign keys referencing the AgentID
     for table_name, column_names in groupby(foreign_key_cols, lambda x: x[0]):
         foreign_table = spmodels.datamodel.get_table(table_name)
         if foreign_table is None:
             continue
         try:
-            foreign_model = getattr(spmodels, table_name.lower().title())
+            foreign_model = apps.get_model('specify', table_name.lower())
         except (ValueError):
             continue
 
@@ -452,7 +456,7 @@ def record_merge_fx(model_name: str, old_model_id: int, new_model_id: int) -> ht
             # Update and save the foreign model objects with the new_model_id
             for obj in foreign_objects:
                 # If it is a dependent field, delete the object instead of updating it.
-                # This is done in order to avoid duplicates
+                # This is done inorder to avoid duplicates
                 if table_name in dependant_table_names:
                     obj.delete()
                     continue
@@ -497,7 +501,7 @@ def record_merge_fx(model_name: str, old_model_id: int, new_model_id: int) -> ht
                 if response is not None and response.status_code != 204:
                     return response
 
-    # Dedupe by deleting the agent that is being replaced and updating the old model ID to the new one
+    # Dedupe by deleting the agent that is being replaced and updating the old AgentID to the new one
     target_model.objects.get(id=old_model_id).delete()
 
     return http.HttpResponse('', status=204)

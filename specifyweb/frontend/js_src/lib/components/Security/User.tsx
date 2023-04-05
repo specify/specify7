@@ -49,7 +49,7 @@ import {
   ProtectedAction,
   ProtectedTable,
 } from '../Permissions/PermissionDenied';
-import { locationToState, useStableLocation } from '../Router/RouterState';
+import { locationToState } from '../Router/RouterState';
 import type { SecurityOutlet } from '../Toolbar/Security';
 import type { SetAgentsResponse } from './MissingAgentsDialog';
 import { MissingAgentsDialog } from './MissingAgentsDialog';
@@ -75,7 +75,7 @@ import {
 import { anyResource, getAllActions } from './utils';
 
 export function SecurityUser(): JSX.Element {
-  const location = useStableLocation(useLocation());
+  const location = useLocation();
   const state = locationToState(location, 'SecurityUser');
   const { userId = '' } = useParams();
   const {
@@ -147,8 +147,10 @@ function UserView({
   useErrorContext('userResource', userResource);
   const [userRoles, setUserRoles, initialUserRoles, changedRoles] =
     useUserRoles(userResource, collections);
+
   const [userPolicies, setUserPolicies, initialUserPolicies, changedPolicies] =
     useUserPolicies(userResource, collections, initialCollectionId);
+
   const [version, setVersion] = React.useState<number>(0);
   const userAgents = useUserAgents(userResource.id, collections, version);
   const identityProviders = useUserProviders(userResource.id);
@@ -334,6 +336,7 @@ function UserView({
                   <UserRoles
                     collectionId={collectionId}
                     collectionRoles={collectionRoles}
+                    isReadOnly={userPolicies?.[collectionId]?.length === 0}
                     userRoles={userRoles}
                     onChange={setUserRoles}
                   />
@@ -440,24 +443,16 @@ function UserView({
                */
               loading(
                 (hasPermission('/admin/user/agents', 'update')
-                  ? ajax(
-                      `/api/set_agents/${userResource.id}/`,
-                      {
-                        method: 'POST',
-                        headers: {},
-                        body: filterArray(
-                          userAgents!.map(({ address }) =>
-                            idFromUrl(address.get('agent') ?? '')
-                          )
-                        ),
-                      },
-                      {
-                        expectedResponseCodes: [
-                          Http.NO_CONTENT,
-                          Http.BAD_REQUEST,
-                        ],
-                      }
-                    )
+                  ? ajax(`/api/set_agents/${userResource.id}/`, {
+                      method: 'POST',
+                      headers: {},
+                      body: filterArray(
+                        userAgents!.map(({ address }) =>
+                          idFromUrl(address.get('agent') ?? '')
+                        )
+                      ),
+                      expectedErrors: [Http.BAD_REQUEST],
+                    })
                   : Promise.resolve({
                       data: '',
                       status: Http.NO_CONTENT,
@@ -477,12 +472,7 @@ function UserView({
                             method: 'PUT',
                             body: decompressPolicies(institutionPolicies),
                             headers: { Accept: 'text/plain' },
-                          },
-                          {
-                            expectedResponseCodes: [
-                              Http.NO_CONTENT,
-                              Http.BAD_REQUEST,
-                            ],
+                            expectedErrors: [Http.BAD_REQUEST],
                           }
                         ).then(({ data, status }) => {
                           /*
@@ -514,16 +504,10 @@ function UserView({
                     canContinue === true
                       ? Promise.all([
                           typeof password === 'string' && password !== ''
-                            ? ping(
-                                `/api/set_password/${userResource.id}/`,
-                                {
-                                  method: 'POST',
-                                  body: formData({ password }),
-                                },
-                                {
-                                  expectedResponseCodes: [Http.NO_CONTENT],
-                                }
-                              )
+                            ? ping(`/api/set_password/${userResource.id}/`, {
+                                method: 'POST',
+                                body: formData({ password }),
+                              })
                             : undefined,
                           ...Object.entries(userRoles ?? {})
                             .filter(
@@ -542,9 +526,6 @@ function UserView({
                                       body: roles.map(({ roleId }) => ({
                                         id: roleId,
                                       })),
-                                    },
-                                    {
-                                      expectedResponseCodes: [Http.NO_CONTENT],
                                     }
                                   )
                                 : undefined
@@ -564,9 +545,6 @@ function UserView({
                                     {
                                       method: 'PUT',
                                       body: decompressPolicies(policies),
-                                    },
-                                    {
-                                      expectedResponseCodes: [Http.NO_CONTENT],
                                     }
                                   )
                                 : undefined

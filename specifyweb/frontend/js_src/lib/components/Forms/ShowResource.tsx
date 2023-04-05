@@ -18,7 +18,7 @@ import { useMenuItem } from '../Header/useMenuItem';
 import { interactionTables } from '../Interactions/InteractionsDialog';
 import { ProtectedTable } from '../Permissions/PermissionDenied';
 import { NotFoundView } from '../Router/NotFoundView';
-import { locationToState, useStableLocation } from '../Router/RouterState';
+import { locationToState } from '../Router/RouterState';
 import { CheckLoggedInCollection, ViewResourceByGuid } from './DataTask';
 import { ResourceView } from './ResourceView';
 
@@ -121,7 +121,7 @@ export function ViewResourceById({
   readonly id: string | undefined;
 }): JSX.Element {
   const model = getModel(tableName);
-  const location = useStableLocation(useLocation());
+  const location = useLocation();
   const state = locationToState(location, 'RecordSet');
   const record = React.useMemo(
     () => f.maybe(state?.resource, deserializeResource),

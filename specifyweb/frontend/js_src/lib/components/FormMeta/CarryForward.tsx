@@ -22,7 +22,7 @@ import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { NO_CLONE } from '../Forms/ResourceView';
 import { Dialog } from '../Molecules/Dialog';
-import { usePref } from '../UserPreferences/usePref';
+import { userPreferences } from '../Preferences/userPreferences';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 
 /**
@@ -62,6 +62,15 @@ const dependentFieldSeeker = (suffix: string): IR<string> =>
       .filter(([_dependent, source]) => typeof source === 'string')
   ) as IR<string>;
 
+export const strictDependentFields = f.store<IR<string>>(() => ({
+  // Fields like endDatePrecision
+  ...dependentFieldSeeker('precision'),
+  // Fields like endDateVerbatim
+  ...dependentFieldSeeker('verbatim'),
+  // Fields like endDepthUnit
+  ...dependentFieldSeeker('unit'),
+}));
+
 /**
  * Dependent -> Source
  * When value in one field is based on another, don't show the dependent field in
@@ -72,12 +81,7 @@ export const dependentFields = f.store<IR<string>>(() => ({
   lat2text: 'latitude2',
   long1text: 'longitude1',
   long2text: 'longitude2',
-  // Fields like endDatePrecision
-  ...dependentFieldSeeker('precision'),
-  // Fields like endDateVerbatim
-  ...dependentFieldSeeker('verbatim'),
-  // Fields like endDepthUnit
-  ...dependentFieldSeeker('unit'),
+  ...strictDependentFields(),
 }));
 
 export function CarryForwardConfig({
@@ -90,7 +94,7 @@ export function CarryForwardConfig({
   readonly type: 'button' | 'cog';
 }): JSX.Element | null {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
-  const [globalEnabled, setGlobalEnabled] = usePref(
+  const [globalEnabled, setGlobalEnabled] = userPreferences.use(
     'form',
     'preferences',
     'enableCarryForward'
@@ -147,13 +151,13 @@ function CarryForwardConfigDialog({
   readonly parentModel: SpecifyModel | undefined;
   readonly onClose: () => void;
 }): JSX.Element {
-  const [showHiddenFields, setShowHiddenFields] = usePref(
+  const [showHiddenFields, setShowHiddenFields] = userPreferences.use(
     'form',
     'preferences',
     'carryForwardShowHidden'
   );
 
-  const [globalConfig, setGlobalConfig] = usePref(
+  const [globalConfig, setGlobalConfig] = userPreferences.use(
     'form',
     'preferences',
     'carryForward'

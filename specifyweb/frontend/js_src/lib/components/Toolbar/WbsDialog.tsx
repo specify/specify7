@@ -12,7 +12,6 @@ import { commonText } from '../../localization/common';
 import { wbPlanText } from '../../localization/wbPlan';
 import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/definitions';
 import type { RA } from '../../utils/types';
 import { uniquifyDataSetName } from '../../utils/uniquifyName';
 import { Button } from '../Atoms/Button';
@@ -33,27 +32,20 @@ import type { Dataset, DatasetBrief } from '../WbPlanView/Wrapped';
 import { DataSetMeta } from '../WorkBench/DataSetMeta';
 
 const createEmptyDataSet = async (): Promise<Dataset> =>
-  ajax<Dataset>(
-    '/api/workbench/dataset/',
-    {
-      method: 'POST',
-      body: {
-        name: await uniquifyDataSetName(
-          wbText.newDataSetName({ date: new Date().toDateString() })
-        ),
-        importedfilename: '',
-        columns: [],
-        rows: [],
-      },
-      headers: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        Accept: 'application/json',
-      },
+  ajax<Dataset>('/api/workbench/dataset/', {
+    method: 'POST',
+    body: {
+      name: await uniquifyDataSetName(
+        wbText.newDataSetName({ date: new Date().toDateString() })
+      ),
+      importedfilename: '',
+      columns: [],
+      rows: [],
     },
-    {
-      expectedResponseCodes: [Http.CREATED],
-    }
-  ).then(({ data }) => data);
+    headers: {
+      Accept: 'application/json',
+    },
+  }).then(({ data }) => data);
 
 /** Wrapper for Data Set Meta */
 export function DataSetMetaOverlay(): JSX.Element | null {
@@ -63,7 +55,6 @@ export function DataSetMetaOverlay(): JSX.Element | null {
     React.useCallback(
       async () =>
         ajax<Dataset>(`/api/workbench/dataset/${dataSetId}/`, {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           headers: { Accept: 'application/json' },
         }).then(({ data }) => data),
       [dataSetId]
@@ -137,7 +128,6 @@ export function DataSetsDialog({
       async () =>
         ajax<RA<DatasetBrief>>(
           `/api/workbench/dataset/${showTemplates ? '?with_plan' : ''}`,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           { headers: { Accept: 'application/json' } }
         ).then(({ data }) => data),
       [showTemplates]

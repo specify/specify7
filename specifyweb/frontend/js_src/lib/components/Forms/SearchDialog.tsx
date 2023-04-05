@@ -8,7 +8,6 @@ import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { queryText } from '../../localization/query';
 import { queryCbxExtendedSearch } from '../../utils/ajax/specifyApi';
-import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Ul } from '../Atoms';
@@ -51,18 +50,29 @@ export type QueryComboBoxFilter<SCHEMA extends AnySchema> = {
 export function SearchDialog<SCHEMA extends AnySchema>({
   forceCollection,
   extraFilters = [],
-  templateResource,
+  model,
   multiple,
   onSelected: handleSelected,
   onClose: handleClose,
 }: {
   readonly forceCollection: number | undefined;
   readonly extraFilters: RA<QueryComboBoxFilter<SCHEMA>> | undefined;
-  readonly templateResource: SpecifyResource<SCHEMA>;
+  readonly model: SpecifyModel<SCHEMA>;
   readonly multiple: boolean;
   readonly onClose: () => void;
   readonly onSelected: (resources: RA<SpecifyResource<SCHEMA>>) => void;
 }): JSX.Element | null {
+  const templateResource = React.useMemo(
+    () =>
+      new model.Resource(
+        {},
+        {
+          noBusinessRules: true,
+          noValidation: true,
+        }
+      ),
+    [model]
+  );
   const [viewName, setViewName] = useAsyncState(
     React.useCallback(
       async () =>
@@ -70,20 +80,19 @@ export function SearchDialog<SCHEMA extends AnySchema>({
           (element) =>
             element
               .querySelector(
-                `dialog[type="search"][name="${templateResource.specifyModel.searchDialog}"]`
+                `dialog[type="search"][name="${model.searchDialog}"]`
               )
               ?.getAttribute('view') ?? false
         ),
-      [templateResource]
+      [model]
     ),
     true
   );
 
   const viewDefinition = useViewDefinition({
-    model:
-      typeof viewName === 'string' ? templateResource.specifyModel : undefined,
+    model: typeof viewName === 'string' ? model : undefined,
     viewName: typeof viewName === 'string' ? viewName : undefined,
-    fallbackViewName: templateResource.specifyModel.view,
+    fallbackViewName: model.view,
     formType: 'form',
     mode: 'search',
   });
@@ -132,7 +141,9 @@ export function SearchDialog<SCHEMA extends AnySchema>({
                 )
               ).then((results) =>
                 setResults(
-                  results.sort(sortFunction(({ formatted }) => formatted))
+                  Array.from(results).sort(
+                    sortFunction(({ formatted }) => formatted)
+                  )
                 )
               )
             )
@@ -160,10 +171,7 @@ export function SearchDialog<SCHEMA extends AnySchema>({
               {results.map(({ id, formatted, resource }) => (
                 <li key={id}>
                   <Link.Default
-                    href={getResourceViewUrl(
-                      templateResource.specifyModel.name,
-                      id
-                    )}
+                    href={getResourceViewUrl(model.name, id)}
                     onClick={(event): void => {
                       event.preventDefault();
                       handleSelected([resource]);
@@ -189,8 +197,9 @@ export function SearchDialog<SCHEMA extends AnySchema>({
     </Dialog>
   ) : viewName === false ? (
     <QueryBuilderSearch
+      // BUG: pass on extraFilters
       forceCollection={forceCollection}
-      model={templateResource.specifyModel}
+      model={model}
       multiple={multiple}
       onClose={handleClose}
       onSelected={(records): void => {
@@ -217,9 +226,12 @@ const testFilter = <SCHEMA extends AnySchema>(
     ? (resource.get(field) ?? 0) < values[0] ||
       (resource.get(field) ?? 0) > values[1]
     : operation === 'in'
-    ? values.some(f.equal(resource.get(field)))
+    ? // Cast numbers to strings
+      // eslint-disable-next-line eqeqeq
+      values.some((value) => value == resource.get(field))
     : operation === 'notIn'
-    ? values.every((value) => resource.get(field) != value)
+    ? // eslint-disable-next-line eqeqeq
+      values.every((value) => value != resource.get(field))
     : operation === 'lessThan'
     ? values.every((value) => (resource.get(field) ?? 0) < value)
     : error('Invalid Query Combo Box search filter', {
@@ -276,7 +288,6 @@ function QueryBuilderSearch<SCHEMA extends AnySchema>({
       <QueryBuilder
         forceCollection={forceCollection}
         isEmbedded
-        isReadOnly={false}
         query={query}
         recordSet={undefined}
         onSelected={setSelected}

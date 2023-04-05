@@ -8,7 +8,6 @@ import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { queryText } from '../../localization/query';
 import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/definitions';
 import { formData } from '../../utils/ajax/helpers';
 import { f } from '../../utils/functools';
 import { Button } from '../Atoms/Button';
@@ -16,8 +15,7 @@ import { DataEntry } from '../Atoms/DataEntry';
 import { Form, Input } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
-import { deserializeResource } from '../DataModel/helpers';
-import { getField } from '../DataModel/helpers';
+import { deserializeResource, getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
@@ -136,6 +134,7 @@ function DwcaQueryExport({
         ajax(`/export/extract_query/${queryResource.id}/`, {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           headers: { Accept: 'text/plain' },
+          errorMode: 'dismissible',
         }).then(({ data: xml }) => xml),
       [queryResource.id]
     ),
@@ -185,22 +184,19 @@ function QueryExport({
         id={id('form')}
         onSubmit={(): void =>
           loading(
-            ajax<SerializedResource<SpReport>>(
-              '/report_runner/create/',
-              {
-                method: 'POST',
-                body: formData({
-                  queryid: queryResource.id,
-                  mimetype: asLabel ? 'jrxml/label' : 'jrxml/report',
-                  name: name.trim(),
-                }),
-                headers: {
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  Accept: 'application/json',
-                },
+            ajax<SerializedResource<SpReport>>('/report_runner/create/', {
+              method: 'POST',
+              body: formData({
+                queryid: queryResource.id,
+                mimetype: asLabel ? 'jrxml/label' : 'jrxml/report',
+                name: name.trim(),
+              }),
+              headers: {
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                Accept: 'application/json',
               },
-              { expectedResponseCodes: [Http.CREATED] }
-            )
+              errorMode: 'dismissible',
+            })
               .then(async ({ data: reportJson }) => {
                 const report = new schema.models.SpReport.Resource(reportJson);
                 return report.rgetPromise('appResource');

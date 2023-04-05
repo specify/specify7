@@ -53,7 +53,6 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
    */
   readonly ids: RA<number | undefined>;
   readonly newResource: SpecifyResource<SCHEMA> | undefined;
-  readonly defaultIndex?: number;
   readonly title: LocalizedString | undefined;
   readonly headerButtons?: JSX.Element;
   readonly dialog: 'modal' | 'nonModal' | false;
@@ -149,28 +148,25 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
             if (ids.length === 1) handleClose();
           }
         : undefined,
-    onSlide:
-      typeof handleSlide === 'function'
-        ? (index, replace, callback): void => {
-            function doSlide(): void {
-              setIndex(index);
-              handleSlide?.(index, replace);
-              callback?.();
-            }
+    onSlide: (index, replace, callback): void => {
+      function doSlide(): void {
+        setIndex(index);
+        handleSlide?.(index, replace);
+        callback?.();
+      }
 
-            if (
-              currentResource?.needsSaved === true ||
-              /*
-               * If adding new resource that hasn't yet been modified, show a
-               * warning anyway because navigating away before saving in a
-               * RecordSet cancels the record adding process
-               */
-              currentResource?.isNew() === true
-            )
-              setUnloadProtect(() => doSlide);
-            else doSlide();
-          }
-        : undefined,
+      if (
+        currentResource?.needsSaved === true ||
+        /*
+         * If adding new resource that hasn't yet been modified, show a
+         * warning anyway because navigating away before saving in a
+         * RecordSet cancels the record adding process
+         */
+        currentResource?.isNew() === true
+      )
+        setUnloadProtect(() => doSlide);
+      else doSlide();
+    },
   });
 
   const addLabel = isInRecordSet

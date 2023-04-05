@@ -10,7 +10,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpQuery, SpQueryField, Tables } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import { hasPermission } from '../Permissions/helpers';
-import { getUserPref } from '../UserPreferences/helpers';
+import { userPreferences } from '../Preferences/userPreferences';
 import { mappingPathIsComplete } from '../WbPlanView/helpers';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import { QueryButton } from './Components';
@@ -56,6 +56,7 @@ export function QueryExportButtons({
         recordSetId,
         delimiter,
       }),
+      errorMode: 'dismissible',
     });
   }
 
@@ -90,7 +91,11 @@ export function QueryExportButtons({
           onClick={(): void =>
             doQueryExport(
               '/stored_query/exportcsv/',
-              getUserPref('queryBuilder', 'behavior', 'exportFileDelimiter')
+              userPreferences.get(
+                'queryBuilder',
+                'behavior',
+                'exportFileDelimiter'
+              )
             )
           }
         >

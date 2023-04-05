@@ -124,7 +124,7 @@ export const caseInsensitiveHash = <
 
 /** Generate a sort function for Array.prototype.sort */
 export const sortFunction =
-  <T, V extends boolean | number | string | null | undefined>(
+  <T, V extends Date | boolean | number | string | null | undefined>(
     mapper: (value: T) => V,
     reverse = false
   ): ((left: T, right: T) => -1 | 0 | 1) =>
@@ -249,23 +249,27 @@ export const removeKey = <
     Object.entries(object).filter(([key]) => !f.includes(toOmit, key))
   );
 
-export const clamp = (min: number, value: number, max: number) =>
+export const clamp = (min: number, value: number, max: number): number =>
   Math.max(min, Math.min(max, value));
 
 /** Create a new array with a new item at a given position */
-export const insertItem = <T>(array: RA<T>, index: number, item: T): RA<T> => [
-  ...array.slice(0, index),
-  item,
-  ...array.slice(index),
-];
+export const insertItem = <T>(
+  array: RA<T>,
+  index: number,
+  newItem: T
+): RA<T> => [...array.slice(0, index), newItem, ...array.slice(index)];
 
 /** Create a new array with a given item replaced */
-export const replaceItem = <T>(array: RA<T>, index: number, item: T): RA<T> =>
-  array[index] === item
+export const replaceItem = <T>(
+  array: RA<T>,
+  index: number,
+  newItem: T
+): RA<T> =>
+  array[index] === newItem
     ? array
     : [
         ...array.slice(0, index),
-        item,
+        newItem,
         ...(index === -1 ? [] : array.slice(index + 1)),
       ];
 
@@ -280,6 +284,29 @@ export const toggleItem = <T>(array: RA<T>, item: T): RA<T> =>
   array.includes(item)
     ? array.filter((value) => value !== item)
     : [...array, item];
+
+export const moveItem = <T>(
+  array: RA<T>,
+  index: number,
+  direction: 'down' | 'up'
+): RA<T> =>
+  direction === 'up'
+    ? index <= 0
+      ? array
+      : [
+          ...array.slice(0, index - 1),
+          array[index],
+          array[index - 1],
+          ...array.slice(index + 1),
+        ]
+    : index + 1 >= array.length
+    ? array
+    : [
+        ...array.slice(0, index),
+        array[index + 1],
+        array[index],
+        ...array.slice(index + 2),
+      ];
 
 /** Creates a new object with a given key replaced */
 export const replaceKey = <T extends IR<unknown>>(
@@ -373,7 +400,17 @@ export function jsonStringify(
 export const takeBetween = <T>(array: RA<T>, first: T, last: T): RA<T> =>
   array.slice(array.indexOf(first) + 1, array.indexOf(last) + 1);
 
-// Convert seconds to minutes and seconds and return the string
+/**
+ * Split array into sub-arrays of at most chunkSize
+ * Behavior is undefined if chunkSize is less than 1 or not a decimal
+ */
+export const chunk = <T>(array: RA<T>, chunkSize: number): RA<RA<T>> =>
+  Array.from(
+    Array.from({ length: Math.ceil(array.length / chunkSize) }),
+    (_, index) => array.slice(index * chunkSize, (index + 1) * chunkSize)
+  );
+
+/** Convert seconds to minutes and seconds and return the string */
 export function formatTime(seconds: number): string {
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = seconds % 60;

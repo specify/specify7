@@ -1,6 +1,7 @@
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { interactionsText } from '../../localization/interactions';
+import { mergingText } from '../../localization/merging';
 import { queryText } from '../../localization/query';
 import { reportsText } from '../../localization/report';
 import { treeText } from '../../localization/tree';
@@ -182,6 +183,12 @@ export const overlayRoutes: RA<EnhancedRoute> = [
           import('../HomePage/AboutSpecify').then(
             ({ AboutOverlay }) => AboutOverlay
           ),
+      },
+      {
+        path: 'merge/:tableName/',
+        title: mergingText.mergeRecords(),
+        element: () =>
+          import('../Merging/index').then(({ MergingDialog }) => MergingDialog),
       },
     ],
   },

@@ -224,6 +224,7 @@ export function useAdmins():
               }>;
             }>('/permissions/list_admins/', {
               headers: { Accept: 'application/json' },
+              errorMode: 'dismissible',
             }).then(({ data }) => ({
               admins: new Set(data.sp7_admins.map(({ userid }) => userid)),
               legacyAdmins: new Set(

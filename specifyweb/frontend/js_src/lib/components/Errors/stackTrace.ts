@@ -22,14 +22,18 @@ Promise.all(
       .then(async ({ fetchContext }) => fetchContext)
       .then((schema) => removeKey(schema, 'models')),
     remotePrefs: import('../InitialContext/remotePrefs').then(
-      ({ fetchContext }) => fetchContext
+      async ({ fetchContext }) => fetchContext
     ),
-    userPreferences: import('../UserPreferences/helpers').then(
-      ({ preferencesPromise, getRawUserPreferences }) =>
-        preferencesPromise.then(() => getRawUserPreferences())
+    userPreferences: import('../Preferences/userPreferences').then(
+      ({ userPreferences }) =>
+        userPreferences.fetch().then(() => userPreferences.getRaw())
+    ),
+    collectionPreferences: import('../Preferences/collectionPreferences').then(
+      ({ collectionPreferences }) =>
+        collectionPreferences.fetch().then(() => collectionPreferences.getRaw())
     ),
     userInformation: import('../InitialContext/userInformation').then(
-      ({ fetchContext }) => fetchContext
+      async ({ fetchContext }) => fetchContext
     ),
   }).map(async ([key, promise]) => {
     resolvedStackTrace[key] = await promise;
@@ -51,7 +55,10 @@ export const produceStackTrace = (message: unknown): string =>
     pageHtml: document.documentElement.outerHTML,
     localStorage: { ...localStorage },
     // Network log and page load telemetry
-    eventLog: globalThis.performance.getEntries(),
+    eventLog:
+      process.env.NODE_ENV === 'test'
+        ? []
+        : globalThis.performance.getEntries(),
     navigator: {
       userAgent: navigator.userAgent,
       language: navigator.language,

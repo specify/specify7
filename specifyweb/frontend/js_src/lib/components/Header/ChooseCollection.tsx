@@ -10,13 +10,17 @@ import { serializeResource } from '../DataModel/helpers';
 import { schema } from '../DataModel/schema';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
+import { toLargeSortConfig } from '../Molecules/Sorting';
 import { OverlayContext } from '../Router/Router';
 import { switchCollection } from '../RouterCommands/SwitchCollection';
-import { usePref } from '../UserPreferences/usePref';
-import { toLargeSortConfig } from '../Molecules/Sorting';
+import { userPreferences } from '../Preferences/userPreferences';
 
 export function ChooseCollection(): JSX.Element {
-  const [sortOrder] = usePref('chooseCollection', 'general', 'sortOrder');
+  const [sortOrder] = userPreferences.use(
+    'chooseCollection',
+    'general',
+    'sortOrder'
+  );
   const sortedCollections = React.useMemo(() => {
     const { direction, fieldNames } = toLargeSortConfig(sortOrder);
     return Array.from(userInformation.availableCollections)

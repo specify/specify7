@@ -66,7 +66,7 @@ export function getScopingResource(
 ):
   | { readonly relationship: Relationship; readonly resourceUrl: string }
   | undefined {
-  const domainField = table.getScopingRelationship();
+  const domainField = table.getDirectScope();
   if (domainField === undefined) return;
 
   const domainFieldName =
@@ -98,7 +98,7 @@ export function getCollectionForResource(
   const collectionUrl = resource.get('collectionMemberId') as number | null;
   if (typeof collectionUrl === 'number') return collectionUrl;
 
-  const domainField = resource.specifyModel.getScopingRelationship();
+  const domainField = resource.specifyModel.getDirectScope();
   if (domainField === undefined) return undefined;
 
   const domainResourceId = idFromUrl(resource.get(domainField.name) ?? '');
@@ -109,13 +109,13 @@ export function getCollectionForResource(
 }
 
 /**
- * If resource has a getScopingRelationship, find all collections that resource
+ * If resource has a scoping relationship, find all collections that resource
  * belongs too
  */
 export async function fetchCollectionsForResource(
   resource: SpecifyResource<AnySchema>
 ): Promise<RA<number> | undefined> {
-  const domainField = resource.specifyModel.getScopingRelationship();
+  const domainField = resource.specifyModel.getDirectScope();
   if (domainField === undefined) return undefined;
   const domainResource = await (
     resource as SpecifyResource<CollectionObject>

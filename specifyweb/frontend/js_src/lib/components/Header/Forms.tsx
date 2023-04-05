@@ -107,7 +107,6 @@ const url = cachableUrl(
 const fetchLegacyForms = f.store(
   async (): Promise<RA<FormEntry>> =>
     ajax<Document>(url, {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       headers: { Accept: 'text/xml' },
     }).then(async ({ data }) => {
       await fetchSchema;

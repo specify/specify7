@@ -8,6 +8,7 @@ import {softFail} from '../Errors/Crash';
 import {Backbone} from './backbone';
 import {attachBusinessRules} from './businessRules';
 import {initializeResource} from './domain';
+import {specialFields} from './helpers';
 import {
     getFieldsToNotClone,
     getResourceApiUrl,
@@ -60,12 +61,13 @@ function eventHandlerForToOne(related, field) {
             }
             case 'add':
             case 'remove': {
-                // Annotate add and remove events with the field in which they occured
-                args[0] = `${event  }:${  field.name.toLowerCase()}`;
+                // Annotate add and remove events with the field in which they occurred
+                args[0] = `${event}:${field.name.toLowerCase()}`;
                 this.trigger.apply(this, args);
                 break;
             }
-            }};
+            }
+            }
     }
 
 
@@ -128,8 +130,7 @@ function eventHandlerForToOne(related, field) {
             const newResource = new this.constructor(
               removeKey(
                 this.attributes,
-                'resource_uri',
-                'id',
+                ...specialFields,
                 ...exemptFields
               )
             );
@@ -227,6 +228,10 @@ function eventHandlerForToOne(related, field) {
             this.dependentResources[field.name.toLowerCase()] = toMany;
             toMany.on('all', eventHandlerForToMany(toMany, field), this);
         },
+        // Separate name to simplify typing
+        bulkSet(attributes,options) {
+            return this.set(attributes,options);
+        },
         set(key, value, options) {
             // This may get called with "null" or "undefined"
             const newValue = value ?? undefined;
@@ -285,7 +290,13 @@ function eventHandlerForToOne(related, field) {
                 return _.isUndefined(newValue) ? accumulator : Object.assign(accumulator, {[newFieldName]: newValue});
             }, {});
 
-            return Backbone.Model.prototype.set.call(this, adjustedAttributes, options);
+            const result = Backbone.Model.prototype.set.call(this, adjustedAttributes, options);
+            /*
+             * Unlike "change", if changing multiple fields at once, this
+             * triggers only once after all changes
+             */
+            this.trigger('changed');
+            return result;
         },
         _handleField(value, fieldName) {
             if(fieldName === '_tablename') return ['_tablename', undefined];
@@ -548,6 +559,7 @@ function eventHandlerForToOne(related, field) {
         save({onSaveConflict:handleSaveConflict,errorOnAlreadySaving=true}={}) {
             const resource = this;
             if (resource._save) {
+                // REFACTOR: instead of erroring on save, just return same promise again
                 if(errorOnAlreadySaving)
                     throw new Error('resource is already being saved');
                 else return resource._save;
@@ -561,7 +573,7 @@ function eventHandlerForToOne(related, field) {
               .then(()=>resource.trigger('saved'));
             resource._save =
               typeof handleSaveConflict === 'function'
-                ? hijackBackboneAjax([Http.OK, Http.CONFLICT, Http.CREATED], save, (status) =>{
+                ? hijackBackboneAjax([Http.CONFLICT], save, (status) =>{
                       if(status === Http.CONFLICT) {
                           handleSaveConflict()
                           errorHandled = true;
@@ -601,6 +613,8 @@ function eventHandlerForToOne(related, field) {
                     json[fieldName] = related ? related.toJSON() : null;
                 }
             });
+            if(typeof this.get('resource_uri') !== 'string')
+                json._tableName = this.specifyModel.name;
             return json;
         },
         // Caches a reference to Promise so as not to start fetching twice
@@ -639,6 +653,7 @@ function eventHandlerForToOne(related, field) {
             if (!myPath || !otherPath) return undefined;
             if (myPath.length > otherPath.length) return undefined;
             const diff = _(otherPath).rest(myPath.length - 1).reverse();
+            // REFACTOR: use mappingPathToString in all places like this
             return other.rget(diff.join('.')).then((common) => {
                 if(common === undefined) return undefined;
                 self.set(_(diff).last(), common.url());

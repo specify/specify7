@@ -11,6 +11,7 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { preferencesText } from '../../localization/preferences';
 import { StringToJsx } from '../../localization/utils';
+import { f } from '../../utils/functools';
 import { Container, H2, Key } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
@@ -21,21 +22,24 @@ import { LoadingContext } from '../Core/Contexts';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { hasPermission } from '../Permissions/helpers';
 import { PreferencesAside } from './Aside';
-import type {
-  GenericPreferencesCategories,
-  PreferenceItem,
-} from './Definitions';
-import { preferenceDefinitions } from './Definitions';
-import {
-  awaitPrefsSynced,
-  getPrefDefinition,
-  preferencesPromise,
-  setPref,
-} from './helpers';
-import { prefEvents } from './Hooks';
+import { collectionPreferences } from './collectionPreferences';
 import { DefaultPreferenceItemRender } from './Renderers';
-import { usePref } from './usePref';
+import type { GenericPreferences, PreferenceItem } from './UserDefinitions';
+import { userPreferenceDefinitions } from './UserDefinitions';
+import { userPreferences } from './userPreferences';
 import { useTopChild } from './useTopChild';
+
+/**
+ * Fetch app resource that stores current user preferences
+ *
+ * If app resource data with user preferences does not exists does not exist,
+ * check if SpAppResourceDir and SpAppResource exist and create them if needed,
+ * then, create the app resource data itself
+ */
+const preferencesPromise = Promise.all([
+  userPreferences.fetch(),
+  collectionPreferences.fetch(),
+]).then(f.true);
 
 function Preferences(): JSX.Element {
   const [changesMade, handleChangesMade] = useBooleanState();
@@ -46,7 +50,7 @@ function Preferences(): JSX.Element {
 
   React.useEffect(
     () =>
-      prefEvents.on('update', (payload) => {
+      userPreferences.events.on('update', (payload) => {
         if (payload?.definition?.requiresReload === true) handleRestartNeeded();
         handleChangesMade();
       }),
@@ -68,11 +72,13 @@ function Preferences(): JSX.Element {
         className="contents"
         onSubmit={(): void =>
           loading(
-            awaitPrefsSynced().then(() =>
-              needsRestart
-                ? globalThis.location.assign('/specify/')
-                : navigate('/specify/')
-            )
+            userPreferences
+              .awaitSynced()
+              .then(() =>
+                needsRestart
+                  ? globalThis.location.assign('/specify/')
+                  : navigate('/specify/')
+              )
           )
         }
       >
@@ -104,7 +110,7 @@ function Preferences(): JSX.Element {
 export function usePrefDefinitions() {
   return React.useMemo(
     () =>
-      Object.entries(preferenceDefinitions as GenericPreferencesCategories)
+      Object.entries(userPreferenceDefinitions as GenericPreferences)
         .map(
           ([category, { subCategories, ...categoryData }]) =>
             [
@@ -154,8 +160,16 @@ export function PreferencesContent({
               forwardRef={forwardRefs?.bind(undefined, index)}
               id={category}
             >
-              <h3 className="text-2xl">{title}</h3>
-              {description !== undefined && <p>{description}</p>}
+              <h3 className="text-2xl">
+                {typeof title === 'function' ? title() : title}
+              </h3>
+              {description !== undefined && (
+                <p>
+                  {typeof description === 'function'
+                    ? description()
+                    : description}
+                </p>
+              )}
               {subCategories.map(
                 ([subcategory, { title, description = undefined, items }]) => (
                   <section
@@ -166,31 +180,40 @@ export function PreferencesContent({
                       <h4
                         className={`${className.headerGray} text-xl md:text-center`}
                       >
-                        {title}
+                        {typeof title === 'function' ? title() : title}
                       </h4>
                       <div className="flex flex-1 justify-end">
                         <Button.Small
                           onClick={(): void =>
-                            items.forEach(([name]) =>
-                              setPref(
-                                category,
-                                subcategory,
-                                name,
+                            items.forEach(([name]) => {
+                              userPreferences.set(
+                                category as 'general',
+                                subcategory as 'ui',
+                                name as 'theme',
                                 /*
                                  * Need to get default value via this
                                  * function as defaults may be changed
                                  */
-                                getPrefDefinition(category, subcategory, name)
-                                  .defaultValue
-                              )
-                            )
+                                userPreferences.definition(
+                                  category as 'general',
+                                  subcategory as 'ui',
+                                  name as 'theme'
+                                ).defaultValue
+                              );
+                            })
                           }
                         >
                           {commonText.reset()}
                         </Button.Small>
                       </div>
                     </div>
-                    {description !== undefined && <p>{description}</p>}
+                    {description !== undefined && (
+                      <p>
+                        {typeof description === 'function'
+                          ? description()
+                          : description}
+                      </p>
+                    )}
                     {items.map(([name, item]) => {
                       const canEdit =
                         !isReadOnly &&
@@ -205,7 +228,7 @@ export function PreferencesContent({
                         title: canEdit
                           ? undefined
                           : preferencesText.adminsOnlyPreference(),
-                      } as const;
+                      };
                       const children = (
                         <>
                           <div className="flex flex-col items-start gap-2 md:flex-1 md:items-stretch">
@@ -215,11 +238,23 @@ export function PreferencesContent({
                                 justify-end md:text-right
                               `}
                             >
-                              <FormatString text={item.title} />
+                              <FormatString
+                                text={
+                                  typeof item.title === 'function'
+                                    ? item.title()
+                                    : item.title
+                                }
+                              />
                             </p>
                             {item.description !== undefined && (
                               <p className="flex flex-1 justify-end text-gray-500 md:text-right">
-                                <FormatString text={item.description} />
+                                <FormatString
+                                  text={
+                                    typeof item.description === 'function'
+                                      ? item.description()
+                                      : item.description
+                                  }
+                                />
                               </p>
                             )}
                           </div>
@@ -292,7 +327,7 @@ function Item({
 }): JSX.Element {
   const Renderer =
     'renderer' in item ? item.renderer : DefaultPreferenceItemRender;
-  const [value, setValue] = usePref(
+  const [value, setValue] = userPreferences.use(
     // Asserting types just to simplify typing
     category as 'general',
     subcategory as 'ui',
@@ -317,6 +352,6 @@ function Item({
 }
 
 export function PreferencesWrapper(): JSX.Element | null {
-  const [preferences] = usePromise(preferencesPromise, true);
-  return typeof preferences === 'object' ? <Preferences /> : null;
+  const [hasFetched] = usePromise(preferencesPromise, true);
+  return hasFetched === true ? <Preferences /> : null;
 }

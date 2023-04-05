@@ -10,7 +10,7 @@ import type { AnyTree } from '../DataModel/helperTypes';
 import { schema } from '../DataModel/schema';
 import { softFail } from '../Errors/Crash';
 import { strictGetTreeDefinitionItems } from '../InitialContext/treeRanks';
-import { getTransitionDuration } from '../UserPreferences/Hooks';
+import { getTransitionDuration } from '../Preferences/Hooks';
 
 export const fetchRows = async (fetchUrl: string) =>
   ajax<
@@ -76,14 +76,11 @@ export type Stats = RR<
  * Fetch tree node usage stats
  */
 export const fetchStats = async (url: string): Promise<Stats> =>
-  ajax<RA<readonly [number, number, number]>>(
-    url,
-    {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      headers: { Accept: 'application/json' },
-    },
-    { strict: false }
-  )
+  ajax<RA<readonly [number, number, number]>>(url, {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    headers: { Accept: 'application/json' },
+    errorMode: 'silent',
+  })
     .then(({ data }) =>
       Object.fromEntries(
         data.map(([childId, directCount, allCount]) => [

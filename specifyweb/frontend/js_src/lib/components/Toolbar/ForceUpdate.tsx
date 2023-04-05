@@ -36,6 +36,7 @@ export function ForceUpdateFeedOverlay(): JSX.Element {
               loading(
                 ping('/export/force_update/', {
                   method: 'POST',
+                  errorMode: 'dismissible',
                 })
                   .then(handleActivated)
                   .catch(handleDeactivated)

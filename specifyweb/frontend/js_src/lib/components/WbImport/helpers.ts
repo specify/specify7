@@ -8,7 +8,6 @@ import ImportXLSWorker from 'worker-loader!./xls.worker';
 
 import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/definitions';
 import { f } from '../../utils/functools';
 import { databaseDateFormat } from '../../utils/parser/dateConfig';
 import { fullDateFormat } from '../../utils/parser/dateFormat';
@@ -172,21 +171,18 @@ export const createDataSet = async ({
   uniquifyDataSetName(dataSetName)
     .then(async (dataSetName) => {
       const { rows, header } = extractHeader(data, hasHeader);
-      return ajax<Dataset>(
-        '/api/workbench/dataset/',
-        {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-          },
-          body: {
-            name: dataSetName,
-            importedfilename: fileName,
-            columns: header,
-            rows,
-          },
+      return ajax<Dataset>('/api/workbench/dataset/', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
         },
-        { expectedResponseCodes: [Http.CREATED] }
-      );
+        body: {
+          name: dataSetName,
+          importedfilename: fileName,
+          columns: header,
+          rows,
+        },
+        errorMode: 'dismissible',
+      });
     })
     .then(({ data }) => data);

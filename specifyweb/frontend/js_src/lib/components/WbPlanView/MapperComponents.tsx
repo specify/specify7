@@ -15,7 +15,7 @@ import type { Tables } from '../DataModel/types';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
-import { usePref } from '../UserPreferences/usePref';
+import { userPreferences } from '../Preferences/userPreferences';
 import { ButtonWithConfirmation } from './Components';
 import type {
   HtmlGeneratorFieldData,
@@ -180,7 +180,7 @@ export function EmptyDataSetDialog({
 }: {
   readonly lineCount: number;
 }): JSX.Element | null {
-  const [dialogEnabled] = usePref(
+  const [dialogEnabled] = userPreferences.use(
     'workBench',
     'wbPlanView',
     'showNewDataSetWarning'

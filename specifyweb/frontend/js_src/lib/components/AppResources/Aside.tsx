@@ -214,7 +214,7 @@ function TreeItem({
     >
       <Button.LikeLink
         aria-controls={id('li')}
-        className="font-bold"
+        className="font-bold inline text-left"
         id={id('label')}
         onClick={(): void =>
           handleFold(
@@ -226,7 +226,7 @@ function TreeItem({
       >
         <StringToJsx
           components={{
-            wrap: (count) => <span className="text-neutral-500">{count}</span>,
+            wrap: (count) => <span className="text-neutral-500 pl-2">{count}</span>,
           }}
           string={commonText.jsxCountLine({
             resource: label,

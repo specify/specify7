@@ -11,11 +11,13 @@ import { formsText } from '../../localization/forms';
 import { headerText } from '../../localization/header';
 import { interactionsText } from '../../localization/interactions';
 import { localityText } from '../../localization/locality';
+import { mergingText } from '../../localization/merging';
 import { preferencesText } from '../../localization/preferences';
 import { queryText } from '../../localization/query';
 import { reportsText } from '../../localization/report';
 import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
+import { statsText } from '../../localization/stats';
 import type { Language } from '../../localization/utils/config';
 import { LANGUAGE } from '../../localization/utils/config';
 import { wbPlanText } from '../../localization/wbPlan';
@@ -23,12 +25,15 @@ import { wbText } from '../../localization/workbench';
 import type { Parser } from '../../utils/parser/definitions';
 import type { IR, RA, RR } from '../../utils/types';
 import { defined, ensure, overwriteReadOnly } from '../../utils/types';
+import { camelToHuman } from '../../utils/utils';
 import { Link } from '../Atoms/Link';
 import { getField } from '../DataModel/helpers';
 import type { TableFields } from '../DataModel/helperTypes';
+import { schema } from '../DataModel/schema';
 import type { JavaType } from '../DataModel/specifyField';
 import type { Collection, Tables } from '../DataModel/types';
 import { error, softError } from '../Errors/assert';
+import type { StatLayout } from '../Statistics/types';
 import {
   LanguagePreferencesItem,
   SchemaLanguagePreferenceItem,
@@ -55,14 +60,23 @@ export type PreferenceItemComponent<VALUE> = (props: {
 }) => JSX.Element;
 
 /**
+ * Have to be careful as preferences may be used before schema is loaded
+ */
+const tableLabel = (tableName: keyof Tables): string =>
+  schema.models[tableName]?.label ?? camelToHuman(tableName);
+
+/**
  * Represents a single preference option
  *
  * The concept seems similar to the "Feature Gates" in Firefox:
  * https://firefox-source-docs.mozilla.org/toolkit/components/featuregates/featuregates/
  */
 export type PreferenceItem<VALUE> = {
-  readonly title: JSX.Element | LocalizedString;
-  readonly description?: JSX.Element | LocalizedString;
+  readonly title: JSX.Element | LocalizedString | (() => LocalizedString);
+  readonly description?:
+    | JSX.Element
+    | LocalizedString
+    | (() => LocalizedString);
   // Whether the page needs to be reloaded for this preference to apply
   readonly requiresReload: boolean;
   /*
@@ -111,20 +125,20 @@ const altKeyName = globalThis.navigator?.appVersion.includes('Mac')
 /**
  * This is used to enforce the same generic value be used inside a PreferenceItem
  */
-const defineItem = <VALUE,>(
+export const defineItem = <VALUE,>(
   definition: PreferenceItem<VALUE>
 ): PreferenceItem<VALUE> => definition;
 
-export type GenericPreferencesCategories = IR<{
-  readonly title: LocalizedString;
-  readonly description?: LocalizedString;
+export type GenericPreferences = IR<{
+  readonly title: LocalizedString | (() => LocalizedString);
+  readonly description?: LocalizedString | (() => LocalizedString);
   readonly subCategories: IR<{
-    readonly title: LocalizedString;
-    readonly description?: LocalizedString;
+    readonly title: LocalizedString | (() => LocalizedString);
+    readonly description?: LocalizedString | (() => LocalizedString);
     readonly items: IR<PreferenceItem<any>>;
   }>;
 }>;
-export const preferenceDefinitions = {
+export const userPreferenceDefinitions = {
   general: {
     title: preferencesText.general(),
     subCategories: {
@@ -454,10 +468,6 @@ export const preferenceDefinitions = {
             renderer: WelcomePageModePreferenceItem,
             container: 'div',
           }),
-          /*
-           * FEATURE: allow selecting attachments
-           *   See https://github.com/specify/specify7/issues/2999
-           */
           source: defineItem<string>({
             title: <></>,
             requiresReload: false,
@@ -963,7 +973,7 @@ export const preferenceDefinitions = {
         },
       },
       recordSet: {
-        title: '_recordSet' as LocalizedString,
+        title: () => tableLabel('RecordSet'),
         items: {
           recordToOpen: defineItem<'first' | 'last'>({
             title: preferencesText.recordSetRecordToOpen(),
@@ -1193,11 +1203,7 @@ export const preferenceDefinitions = {
         },
       },
       geography: {
-        /*
-         * This would be replaced with labels from schema once
-         * schema is loaded
-         */
-        title: '_Geography' as LocalizedString,
+        title: () => tableLabel('Geography'),
         items: {
           treeAccentColor: defineItem({
             title: preferencesText.treeAccentColor(),
@@ -1218,7 +1224,7 @@ export const preferenceDefinitions = {
         },
       },
       taxon: {
-        title: '_Taxon' as LocalizedString,
+        title: () => tableLabel('Taxon'),
         items: {
           treeAccentColor: defineItem({
             title: preferencesText.treeAccentColor(),
@@ -1239,7 +1245,7 @@ export const preferenceDefinitions = {
         },
       },
       storage: {
-        title: '_Storage' as LocalizedString,
+        title: () => tableLabel('Storage'),
         items: {
           treeAccentColor: defineItem({
             title: preferencesText.treeAccentColor(),
@@ -1260,7 +1266,7 @@ export const preferenceDefinitions = {
         },
       },
       geologicTimePeriod: {
-        title: '_GeologicTimePeriod' as LocalizedString,
+        title: () => tableLabel('GeologicTimePeriod'),
         items: {
           treeAccentColor: defineItem({
             title: preferencesText.treeAccentColor(),
@@ -1281,7 +1287,7 @@ export const preferenceDefinitions = {
         },
       },
       lithoStrat: {
-        title: '_LithoStrat' as LocalizedString,
+        title: () => tableLabel('LithoStrat'),
         items: {
           treeAccentColor: defineItem({
             title: preferencesText.treeAccentColor(),
@@ -1394,6 +1400,43 @@ export const preferenceDefinitions = {
             title: preferencesText.condenseQueryResults(),
             requiresReload: false,
             visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+        },
+      },
+    },
+  },
+  recordMerging: {
+    title: mergingText.recordMerging(),
+    subCategories: {
+      behavior: {
+        title: preferencesText.behavior(),
+        items: {
+          autoPopulate: defineItem<boolean>({
+            title: mergingText.autoPopulate(),
+            description: preferencesText.autoPopulateDescription(),
+            requiresReload: false,
+            visible: 'protected',
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+        },
+      },
+      agent: {
+        title: () => tableLabel('Agent'),
+        items: {
+          createVariants: defineItem<boolean>({
+            title: () =>
+              preferencesText.autoCreateVariants({
+                agentVariantTable: tableLabel('AgentVariant'),
+              }),
+            description: () =>
+              preferencesText.autoCreateVariantsDescription({
+                agentVariantTable: tableLabel('AgentVariant'),
+              }),
+            requiresReload: false,
+            visible: 'protected',
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
@@ -1616,6 +1659,24 @@ export const preferenceDefinitions = {
       },
     },
   },
+  statistics: {
+    title: statsText.statistics(),
+    subCategories: {
+      appearance: {
+        title: preferencesText.appearance(),
+        items: {
+          layout: defineItem<RA<StatLayout> | undefined>({
+            title: 'Defines the layout of the stats page',
+            requiresReload: false,
+            visible: false,
+            defaultValue: undefined,
+            renderer: () => <>{error('This should not get called')}</>,
+            container: 'label',
+          }),
+        },
+      },
+    },
+  },
   leaflet: {
     title: localityText.geoMap(),
     subCategories: {
@@ -1670,38 +1731,12 @@ export const preferenceDefinitions = {
   },
 } as const;
 
-ensure<GenericPreferencesCategories>()(preferenceDefinitions);
-
 // Use tree table labels as titles for the tree editor sections
 import('../DataModel/schema')
   .then(async ({ fetchContext, schema }) =>
     fetchContext.then(() => {
-      const trees = preferenceDefinitions.treeEditor.subCategories;
-      overwriteReadOnly(
-        trees.geography,
-        'title',
-        schema.models.Geography.label
-      );
-      overwriteReadOnly(trees.taxon, 'title', schema.models.Taxon.label);
-      overwriteReadOnly(trees.storage, 'title', schema.models.Storage.label);
-      overwriteReadOnly(
-        trees.geologicTimePeriod,
-        'title',
-        schema.models.GeologicTimePeriod.label
-      );
-      overwriteReadOnly(
-        trees.lithoStrat,
-        'title',
-        schema.models.LithoStrat.label
-      );
-      overwriteReadOnly(
-        preferenceDefinitions.form.subCategories.recordSet,
-        'title',
-        schema.models.RecordSet.label
-      );
-
       const treeSearchBehavior =
-        preferenceDefinitions.treeEditor.subCategories.behavior.items
+        userPreferenceDefinitions.treeEditor.subCategories.behavior.items
           .searchField;
       if ('values' in treeSearchBehavior) {
         const values = treeSearchBehavior.values as RA<{
@@ -1736,5 +1771,4 @@ import('../DataModel/schema')
   // Not using softFail here to avoid circular dependency
   .catch(console.error);
 
-export type Preferences = GenericPreferencesCategories &
-  typeof preferenceDefinitions;
+ensure<GenericPreferences>()(userPreferenceDefinitions);

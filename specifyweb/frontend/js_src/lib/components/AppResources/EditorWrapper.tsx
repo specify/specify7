@@ -5,13 +5,9 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { fetchResource } from '../DataModel/resource';
-import type {
-  SpAppResource,
-  SpAppResourceDir,
-  SpViewSetObj,
-} from '../DataModel/types';
+import type { SpAppResource, SpViewSetObj } from '../DataModel/types';
 import { NotFoundView } from '../Router/NotFoundView';
-import { locationToState, useStableLocation } from '../Router/RouterState';
+import { locationToState } from '../Router/RouterState';
 import { findAppResourceDirectory } from './Create';
 import { AppResourceEditor } from './Editor';
 import type { AppResourceMode } from './helpers';
@@ -19,6 +15,7 @@ import { getAppResourceMode } from './helpers';
 import type { AppResources } from './hooks';
 import { useResourcesTree } from './hooks';
 import type { AppResourcesOutlet } from './index';
+import { ScopedAppResourceDir } from './types';
 
 export function AppResourceView(): JSX.Element {
   return <Wrapper mode="appResources" />;
@@ -36,7 +33,7 @@ export function Wrapper({
   const {
     getSet: [resources, setResources],
   } = useOutletContext<AppResourcesOutlet>();
-  const location = useStableLocation(useLocation());
+  const location = useLocation();
   const navigate = useNavigate();
   const state = locationToState(location, 'AppResource');
   const resource = useAppResource(state?.resource, resources, mode);
@@ -132,7 +129,7 @@ function useDirectory(
   directoryKey: string | undefined,
   resource: SerializedResource<SpAppResource | SpViewSetObj> | undefined,
   resources: AppResources
-): SerializedResource<SpAppResourceDir> | undefined {
+): ScopedAppResourceDir | undefined {
   const resourcesTree = useResourcesTree(resources);
   return React.useMemo(() => {
     if (typeof directoryKey === 'string')

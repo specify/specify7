@@ -1,8 +1,8 @@
+import type { PartialBy, ValueOf } from '../../../utils/types';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
-import type { PartialBy } from '../../../utils/types';
 import { strictParseXml } from '../../AppResources/codeMirrorLinters';
 import { schema } from '../../DataModel/schema';
 import type { CellTypes, FormCellDefinition } from '../cells';
@@ -96,7 +96,7 @@ theories(parseSpecifyProperties, [
 ]);
 
 const cell = (
-  cell: CellTypes[keyof CellTypes] &
+  cell: ValueOf<CellTypes> &
     PartialBy<
       FormCellDefinition,
       'align' | 'ariaLabel' | 'colSpan' | 'id' | 'visible'
@@ -170,7 +170,7 @@ describe('parseFormCell', () => {
           step: undefined,
           type: 'Text',
           maxLength: undefined,
-          minLength: undefined
+          minLength: undefined,
         },
       })
     ));
@@ -196,7 +196,7 @@ describe('parseFormCell', () => {
           step: undefined,
           type: 'Text',
           maxLength: undefined,
-          minLength: undefined
+          minLength: undefined,
         },
       })
     ));
@@ -237,7 +237,7 @@ describe('parseFormCell', () => {
           step: undefined,
           type: 'Text',
           maxLength: undefined,
-          minLength: undefined
+          minLength: undefined,
         },
       })
     );
@@ -265,7 +265,7 @@ describe('parseFormCell', () => {
           step: undefined,
           type: 'Text',
           minLength: undefined,
-          maxLength: undefined
+          maxLength: undefined,
         },
       })
     ));
