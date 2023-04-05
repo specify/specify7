@@ -201,8 +201,8 @@ msgstr "API de las tablas"
 msgid "operationsApi"
 msgstr "API para las operaciones"
 
-#: components/AppResources/Create.tsx:88
-#: components/AppResources/Create.tsx:114
+#: components/AppResources/Create.tsx:89
+#: components/AppResources/Create.tsx:115
 #: components/AppResources/Filters.tsx:156
 #: components/Header/userToolDefinitions.ts:101
 #: components/Preferences/UserDefinitions.tsx:450

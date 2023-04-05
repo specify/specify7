@@ -324,8 +324,8 @@ msgstr "Cuentas de usuario asignadas a este {collectionTable:string}"
 
 #: components/Security/SetPassword.tsx:40
 #: components/Security/SetPassword.tsx:92
-#: components/Security/UserComponents.tsx:185
 #: components/Security/UserComponents.tsx:189
+#: components/Security/UserComponents.tsx:193
 #. Used in: Components > Security > Set Password ⬤ Components > Security > User Components
 #, fuzzy
 msgid "setPassword"
@@ -389,7 +389,7 @@ msgstr "Roles del usuario"
 msgid "collectionUserRoles"
 msgstr "{collectionTable:string} Funciones de usuario"
 
-#: components/Security/UserComponents.tsx:107
+#: components/Security/UserComponents.tsx:109
 #. Used in: Components > Security > User Components
 #, fuzzy
 msgid "assignedUserRoles"
@@ -407,7 +407,7 @@ msgstr "Políticas de permisos de funciones"
 msgid "userPolicies"
 msgstr "Políticas de permisos de usuario"
 
-#: components/Security/User.tsx:354
+#: components/Security/User.tsx:357
 #. Used in: Components > Security > User
 #, fuzzy
 msgid "customUserPolices"
@@ -571,13 +571,13 @@ msgstr ""
 "No se configura ningún proveedor de identidad externo. Puede configurar "
 "algunos en la configuración del servidor Especificar 7"
 
-#: components/Security/UserComponents.tsx:237
+#: components/Security/UserComponents.tsx:241
 #. Used in: Components > Security > User Components
 #, fuzzy
 msgid "legacyPermissions"
 msgstr "Especificar 6 permisos"
 
-#: components/Security/UserComponents.tsx:192
+#: components/Security/UserComponents.tsx:196
 #. Used in: Components > Security > User Components
 #, fuzzy
 msgid "setPasswordBeforeSavePrompt"
@@ -603,7 +603,7 @@ msgstr "Este agente ya está asociado con un usuario diferente."
 msgid "setAgentsBeforeProceeding"
 msgstr "Configure los siguientes agentes antes de continuar:"
 
-#: components/Security/UserComponents.tsx:205
+#: components/Security/UserComponents.tsx:209
 #. Used in: Components > Security > User Components
 #, fuzzy
 msgid "externalIdentityProviders"
@@ -645,7 +645,7 @@ msgstr "¿Eliminar rol que tiene usuarios?"
 msgid "deleteRoleWithUsersDescription"
 msgstr "Los usuarios no se eliminarán, pero perderían este rol."
 
-#: components/Security/User.tsx:279
+#: components/Security/User.tsx:281
 #. Used in: Components > Security > User
 #, fuzzy
 msgid "institutionPolicies"
@@ -653,13 +653,13 @@ msgstr ""
 "Políticas personalizadas a nivel de institución (se aplican a todas las "
 "colecciones asignadas)"
 
-#: components/Security/User.tsx:646
+#: components/Security/User.tsx:649
 #. Used in: Components > Security > User
 #, fuzzy
 msgid "cantRemoveLastAdmin"
 msgstr "No se puede eliminar el estado de administrador de la institución"
 
-#: components/Security/User.tsx:649
+#: components/Security/User.tsx:652
 #. Used in: Components > Security > User
 #, fuzzy
 msgid "cantRemoveLastAdminDescription"
@@ -698,7 +698,7 @@ msgstr ""
 "(Algunas políticas que se aplican solo a nivel de institución no están "
 "presentes aquí a nivel de colección)."
 
-#: components/Security/User.tsx:236
+#: components/Security/User.tsx:238
 #. Used in: Components > Security > User
 #, fuzzy
 msgid "accountSetupOptions"

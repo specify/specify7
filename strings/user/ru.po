@@ -324,8 +324,8 @@ msgstr "Учетные записи пользователей, назначен
 
 #: components/Security/SetPassword.tsx:40
 #: components/Security/SetPassword.tsx:92
-#: components/Security/UserComponents.tsx:185
 #: components/Security/UserComponents.tsx:189
+#: components/Security/UserComponents.tsx:193
 #. Used in: Components > Security > Set Password ⬤ Components > Security > User Components
 #, fuzzy
 msgid "setPassword"
@@ -389,7 +389,7 @@ msgstr "Роли пользователей"
 msgid "collectionUserRoles"
 msgstr "{collectionTable:string} Роли пользователей"
 
-#: components/Security/UserComponents.tsx:107
+#: components/Security/UserComponents.tsx:109
 #. Used in: Components > Security > User Components
 #, fuzzy
 msgid "assignedUserRoles"
@@ -407,7 +407,7 @@ msgstr "Политики разрешений ролей"
 msgid "userPolicies"
 msgstr "Политики разрешений пользователей"
 
-#: components/Security/User.tsx:354
+#: components/Security/User.tsx:357
 #. Used in: Components > Security > User
 #, fuzzy
 msgid "customUserPolices"
@@ -571,13 +571,13 @@ msgstr ""
 "Внешний поставщик удостоверений не настроен. Вы можете настроить некоторые "
 "в настройках сервера Specify 7."
 
-#: components/Security/UserComponents.tsx:237
+#: components/Security/UserComponents.tsx:241
 #. Used in: Components > Security > User Components
 #, fuzzy
 msgid "legacyPermissions"
 msgstr "Укажите 6 разрешений"
 
-#: components/Security/UserComponents.tsx:192
+#: components/Security/UserComponents.tsx:196
 #. Used in: Components > Security > User Components
 #, fuzzy
 msgid "setPasswordBeforeSavePrompt"
@@ -603,7 +603,7 @@ msgstr "Этот агент уже связан с другим пользова
 msgid "setAgentsBeforeProceeding"
 msgstr "Прежде чем продолжить, установите следующие агенты:"
 
-#: components/Security/UserComponents.tsx:205
+#: components/Security/UserComponents.tsx:209
 #. Used in: Components > Security > User Components
 #, fuzzy
 msgid "externalIdentityProviders"
@@ -645,7 +645,7 @@ msgstr "Удалить роль, в которой есть пользовате
 msgid "deleteRoleWithUsersDescription"
 msgstr "Пользователи не будут удалены, но потеряют эту роль."
 
-#: components/Security/User.tsx:279
+#: components/Security/User.tsx:281
 #. Used in: Components > Security > User
 #, fuzzy
 msgid "institutionPolicies"
@@ -653,13 +653,13 @@ msgstr ""
 "Пользовательские политики на уровне учреждения (применяются ко всем "
 "назначенным коллекциям)"
 
-#: components/Security/User.tsx:646
+#: components/Security/User.tsx:649
 #. Used in: Components > Security > User
 #, fuzzy
 msgid "cantRemoveLastAdmin"
 msgstr "Не удается удалить статус администратора учреждения"
 
-#: components/Security/User.tsx:649
+#: components/Security/User.tsx:652
 #. Used in: Components > Security > User
 #, fuzzy
 msgid "cantRemoveLastAdminDescription"
@@ -698,7 +698,7 @@ msgstr ""
 "(Некоторые политики, которые применяются только на уровне учреждения, "
 "отсутствуют здесь на уровне коллекции.)"
 
-#: components/Security/User.tsx:236
+#: components/Security/User.tsx:238
 #. Used in: Components > Security > User
 #, fuzzy
 msgid "accountSetupOptions"

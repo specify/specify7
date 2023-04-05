@@ -308,8 +308,8 @@ msgstr "Comptes d'utilisateurs attribués à ce {collectionTable:string}"
 
 #: components/Security/SetPassword.tsx:40
 #: components/Security/SetPassword.tsx:92
-#: components/Security/UserComponents.tsx:185
 #: components/Security/UserComponents.tsx:189
+#: components/Security/UserComponents.tsx:193
 #. Used in: Components > Security > Set Password ⬤ Components > Security > User Components
 msgid "setPassword"
 msgstr "Définir le mot de passe"
@@ -366,7 +366,7 @@ msgstr "Rôles utilisateur"
 msgid "collectionUserRoles"
 msgstr "{collectionTable:string} Rôles d'utilisateur"
 
-#: components/Security/UserComponents.tsx:107
+#: components/Security/UserComponents.tsx:109
 #. Used in: Components > Security > User Components
 msgid "assignedUserRoles"
 msgstr "Rôles utilisateur attribués"
@@ -383,7 +383,7 @@ msgstr "Politiques d'autorisation de rôle"
 msgid "userPolicies"
 msgstr "Politiques d'autorisation des utilisateurs"
 
-#: components/Security/User.tsx:354
+#: components/Security/User.tsx:357
 #. Used in: Components > Security > User
 #, fuzzy
 msgid "customUserPolices"
@@ -528,12 +528,12 @@ msgstr ""
 "Aucun fournisseur d'identité externe n'est configuré. Vous pouvez en "
 "configurer certains dans les paramètres du serveur de Specify 7"
 
-#: components/Security/UserComponents.tsx:237
+#: components/Security/UserComponents.tsx:241
 #. Used in: Components > Security > User Components
 msgid "legacyPermissions"
 msgstr "Autorisations de Specify 6"
 
-#: components/Security/UserComponents.tsx:192
+#: components/Security/UserComponents.tsx:196
 #. Used in: Components > Security > User Components
 msgid "setPasswordBeforeSavePrompt"
 msgstr ""
@@ -558,7 +558,7 @@ msgstr "Cet agent est déjà associé à un autre utilisateur."
 msgid "setAgentsBeforeProceeding"
 msgstr "Veuillez définir les agents suivants avant de continuer :"
 
-#: components/Security/UserComponents.tsx:205
+#: components/Security/UserComponents.tsx:209
 #. Used in: Components > Security > User Components
 msgid "externalIdentityProviders"
 msgstr "Fournisseurs d'identité externes :"
@@ -597,7 +597,7 @@ msgstr "Supprimer le rôle qui a des utilisateurs ?"
 msgid "deleteRoleWithUsersDescription"
 msgstr "Les utilisateurs ne seront pas supprimés, mais ils perdraient ce rôle."
 
-#: components/Security/User.tsx:279
+#: components/Security/User.tsx:281
 #. Used in: Components > Security > User
 #, fuzzy
 msgid "institutionPolicies"
@@ -605,12 +605,12 @@ msgstr ""
 "Politiques personnalisées au niveau de l'établissement (s'appliquent à "
 "toutes les collections attribuées)"
 
-#: components/Security/User.tsx:646
+#: components/Security/User.tsx:649
 #. Used in: Components > Security > User
 msgid "cantRemoveLastAdmin"
 msgstr "Impossible de supprimer le statut d'administrateur de l'établissement"
 
-#: components/Security/User.tsx:649
+#: components/Security/User.tsx:652
 #. Used in: Components > Security > User
 msgid "cantRemoveLastAdminDescription"
 msgstr ""
@@ -647,7 +647,7 @@ msgstr ""
 "(Certaines politiques qui s'appliquent uniquement au niveau de "
 "l'institution ne sont pas présentes ici au niveau de la collection.)"
 
-#: components/Security/User.tsx:236
+#: components/Security/User.tsx:238
 #. Used in: Components > Security > User
 #, fuzzy
 msgid "accountSetupOptions"

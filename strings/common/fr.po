@@ -23,8 +23,8 @@ msgstr "Specify 7"
 msgid "no"
 msgstr "Non"
 
-#: components/AppResources/Create.tsx:58
-#: components/AppResources/Create.tsx:80
+#: components/AppResources/Create.tsx:59
+#: components/AppResources/Create.tsx:81
 #: components/AppResources/EditorComponents.tsx:85
 #: components/Attachments/Dialog.tsx:53
 #: components/FormSliders/RecordSelectorFromIds.tsx:258
@@ -54,7 +54,7 @@ msgstr "Non"
 #: components/Security/Role.tsx:194
 #: components/Security/Role.tsx:221
 #: components/Security/RoleTemplate.tsx:93
-#: components/Security/User.tsx:404
+#: components/Security/User.tsx:407
 #: components/Statistics/index.tsx:550
 #: components/Toolbar/ForceUpdate.tsx:33
 #: components/Toolbar/FormTablesEdit.tsx:52
@@ -168,8 +168,8 @@ msgstr "Créer"
 #: components/SchemaConfig/Languages.tsx:31
 #: components/Security/Role.tsx:197
 #: components/Security/SetPassword.tsx:36
-#: components/Security/User.tsx:406
-#: components/Security/User.tsx:645
+#: components/Security/User.tsx:409
+#: components/Security/User.tsx:648
 #: components/Security/UserCollections.tsx:71
 #: components/Security/UserInviteLink.tsx:55
 #: components/SpecifyNetwork/index.tsx:227
@@ -359,7 +359,7 @@ msgstr "Outils"
 #: components/Security/UserCollections.tsx:131
 #: components/Security/UserCollections.tsx:283
 #: components/Security/UserComponents.tsx:88
-#: components/Security/UserComponents.tsx:161
+#: components/Security/UserComponents.tsx:165
 #: components/Statistics/Categories.tsx:50
 #: components/Statistics/StatsResult.tsx:42
 #: components/Statistics/StatsResult.tsx:52
@@ -439,8 +439,8 @@ msgstr "Nouveau"
 #: components/Reports/index.tsx:264
 #: components/SchemaConfig/Format.tsx:115
 #: components/SchemaConfig/Format.tsx:119
-#: components/Security/UserComponents.tsx:150
 #: components/Security/UserComponents.tsx:154
+#: components/Security/UserComponents.tsx:158
 #: components/Statistics/Buttons.tsx:31
 #: components/Statistics/index.tsx:567
 #: components/Toolbar/RecordSets.tsx:269
@@ -453,7 +453,7 @@ msgstr "Modifier"
 
 #: components/Interactions/InteractionDialog.tsx:337
 #: components/Reports/Report.tsx:201
-#: components/Security/UserComponents.tsx:183
+#: components/Security/UserComponents.tsx:187
 #. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Reports > Report ⬤ Components > Security > User Components
 msgid "ignore"
 msgstr "Ignorer"

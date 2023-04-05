@@ -268,8 +268,8 @@ msgstr "User Accounts Assigned to this {collectionTable:string}"
 
 #: components/Security/SetPassword.tsx:40
 #: components/Security/SetPassword.tsx:92
-#: components/Security/UserComponents.tsx:185
 #: components/Security/UserComponents.tsx:189
+#: components/Security/UserComponents.tsx:193
 #. Used in: Components > Security > Set Password ⬤ Components > Security > User Components
 msgid "setPassword"
 msgstr "Set Password"
@@ -323,7 +323,7 @@ msgstr "User Roles"
 msgid "collectionUserRoles"
 msgstr "{collectionTable:string} User Roles"
 
-#: components/Security/UserComponents.tsx:107
+#: components/Security/UserComponents.tsx:109
 #. Used in: Components > Security > User Components
 msgid "assignedUserRoles"
 msgstr "Assigned User Roles"
@@ -338,7 +338,7 @@ msgstr "Role Permission Policies"
 msgid "userPolicies"
 msgstr "User Permission Policies"
 
-#: components/Security/User.tsx:354
+#: components/Security/User.tsx:357
 #. Used in: Components > Security > User
 msgid "customUserPolices"
 msgstr "Custom Collection-level Policies (applies to this collection only)"
@@ -473,12 +473,12 @@ msgstr ""
 "No external identity provider is configured. You can configure some in "
 "Specify 7 server settings"
 
-#: components/Security/UserComponents.tsx:237
+#: components/Security/UserComponents.tsx:241
 #. Used in: Components > Security > User Components
 msgid "legacyPermissions"
 msgstr "Specify 6 Permissions"
 
-#: components/Security/UserComponents.tsx:192
+#: components/Security/UserComponents.tsx:196
 #. Used in: Components > Security > User Components
 msgid "setPasswordBeforeSavePrompt"
 msgstr ""
@@ -500,7 +500,7 @@ msgstr "This agent is already associated with a different user."
 msgid "setAgentsBeforeProceeding"
 msgstr "Please set the following agents before proceeding:"
 
-#: components/Security/UserComponents.tsx:205
+#: components/Security/UserComponents.tsx:209
 #. Used in: Components > Security > User Components
 msgid "externalIdentityProviders"
 msgstr "External identity providers:"
@@ -535,17 +535,17 @@ msgstr "Delete role that has users?"
 msgid "deleteRoleWithUsersDescription"
 msgstr "Users will not be deleted, but they would lose this role."
 
-#: components/Security/User.tsx:279
+#: components/Security/User.tsx:281
 #. Used in: Components > Security > User
 msgid "institutionPolicies"
 msgstr "Custom Institution-level Policies (applies to all assigned collections)"
 
-#: components/Security/User.tsx:646
+#: components/Security/User.tsx:649
 #. Used in: Components > Security > User
 msgid "cantRemoveLastAdmin"
 msgstr "Can't remove Institution Admin status"
 
-#: components/Security/User.tsx:649
+#: components/Security/User.tsx:652
 #. Used in: Components > Security > User
 msgid "cantRemoveLastAdminDescription"
 msgstr "There must be at least one Institution Admin in institution"
@@ -578,7 +578,7 @@ msgstr ""
 "(Some policies that apply only at the institution-level are not present "
 "here at the collection-level.)"
 
-#: components/Security/User.tsx:236
+#: components/Security/User.tsx:238
 #. Used in: Components > Security > User
 msgid "accountSetupOptions"
 msgstr "Account Setup Options"
