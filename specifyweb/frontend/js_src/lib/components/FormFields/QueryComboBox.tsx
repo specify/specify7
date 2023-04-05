@@ -52,6 +52,7 @@ import {
 import { useCollectionRelationships } from './useCollectionRelationships';
 import { useTreeData } from './useTreeData';
 import { useTypeSearch } from './useTypeSearch';
+import { schema } from '../DataModel/schema';
 
 /*
  * REFACTOR: split this component
@@ -354,7 +355,13 @@ export function QueryComboBox({
 
   const canAdd =
     !RESTRICT_ADDING.has(field.relatedModel.name) &&
-    hasTablePermission(field.relatedModel.name, 'create');
+    hasTablePermission(field.relatedModel.name, 'create') &&
+    /*
+     * Don't allow creating resources in another collection util
+     * https://github.com/specify/specify7/issues/1886 is fixed
+     */
+    (forceCollection === undefined ||
+      forceCollection === schema.domainLevelIds.collection);
 
   return (
     <div className="flex w-full min-w-[theme(spacing.40)] items-center">
