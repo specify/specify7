@@ -339,7 +339,7 @@ export const reducer = generateReducer<MappingState, MappingActions>({
     ...state,
     lines: modifyLine(state, state.openSelectElement!.line, {
       mappingPath:
-        state.autoMapperSuggestions![Number(suggestion) - 1].mappingPath,
+        state.autoMapperSuggestions![Number.parseInt(suggestion) - 1].fullPath,
     }),
     openSelectElement: undefined,
     autoMapperSuggestions: undefined,

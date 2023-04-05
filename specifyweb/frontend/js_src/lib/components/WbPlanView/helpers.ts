@@ -391,16 +391,19 @@ export async function fetchAutoMapperSuggestions({
         }
         return {
           baseTableName: baseTable.name,
+          fullPath: result,
           mappingPath: result.slice(sliceLength),
         };
       } else
         return {
           baseTableName,
+          fullPath: result,
           mappingPath: result,
         };
     })
-  ).map(({ baseTableName, mappingPath }) => ({
+  ).map(({ baseTableName, fullPath, mappingPath }) => ({
     mappingPath,
+    fullPath,
     mappingLineData: getMappingLineData({
       baseTableName,
       mappingPath,

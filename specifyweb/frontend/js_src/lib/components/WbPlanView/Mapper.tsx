@@ -83,6 +83,7 @@ export type MappingLine = {
 export type AutoMapperSuggestion = {
   readonly mappingLineData: RA<MappingElementProps>;
   readonly mappingPath: MappingPath;
+  readonly fullPath: MappingPath;
 };
 
 export type MappingState = State<
