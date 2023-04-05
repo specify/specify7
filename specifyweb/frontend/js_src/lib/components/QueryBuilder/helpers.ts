@@ -1,15 +1,18 @@
 import { parserFromType } from '../../utils/parser/definitions';
 import { parseValue } from '../../utils/parser/parse';
+import { today } from '../../utils/relativeDate';
 import type { RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import { group, KEY, removeKey, sortFunction, VALUE } from '../../utils/utils';
+import { serializeResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { schema } from '../DataModel/schema';
-import type { SpQueryField, Tables } from '../DataModel/types';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { getModel, schema } from '../DataModel/schema';
+import type { SpQuery, SpQueryField, Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import { queryMappingLocalityColumns } from '../Leaflet/config';
 import { uniqueMappingPaths } from '../Leaflet/wbLocalityDataExtractor';
-import { getTransitionDuration } from '../UserPreferences/Hooks';
+import { getTransitionDuration } from '../Preferences/Hooks';
 import { mappingPathIsComplete } from '../WbPlanView/helpers';
 import type { MappingPath } from '../WbPlanView/Mapper';
 import {
@@ -21,6 +24,7 @@ import type { MappingLineData } from '../WbPlanView/navigator';
 import type { QueryFieldFilter } from './FieldFilter';
 import { queryFieldFilters } from './FieldFilter';
 import { QueryFieldSpec } from './fieldSpec';
+import { currentUserValue } from './SpecifyUserAutoComplete';
 
 export type SortTypes = 'ascending' | 'descending' | undefined;
 export const sortTypes: RA<SortTypes> = [undefined, 'ascending', 'descending'];
@@ -65,7 +69,8 @@ export function parseQueryFields(
          */
         const startValue =
           typeof field.startValue === 'string' &&
-          fieldSpec.datePart === 'fullDate'
+          fieldSpec.datePart === 'fullDate' &&
+          !field.startValue.includes(today)
             ? field.startValue
                 .split(',')
                 .map((value) =>
@@ -148,7 +153,7 @@ export const augmentQueryFields = (
     ? fields
     : baseTableName === 'SpAuditLog'
     ? addQueryFields(fields, auditLogMappingPaths, true)
-    : addLocalityFields(baseTableName, fields, isDistinct);
+    : addLocalityFields(baseTableName, fields);
 
 /**
  * It is expected by QueryResultsWrapper that this function does not change
@@ -210,11 +215,8 @@ const addQueryFields = (
  */
 function addLocalityFields(
   baseTableName: keyof Tables,
-  fields: RA<QueryField>,
-  isDistinct: boolean
+  fields: RA<QueryField>
 ): RA<QueryField> {
-  if (isDistinct) return fields;
-
   const fieldSpecs = fields.map((field) =>
     QueryFieldSpec.fromPath(baseTableName, field.mappingPath)
   );
@@ -322,4 +324,54 @@ export function smoothScroll(element: HTMLElement, top: number): void {
       behavior: getTransitionDuration() === 0 ? 'auto' : 'smooth',
     });
   else element.scrollTop = element.scrollHeight;
+}
+
+const containsOr = (
+  fieldSpecMapped: RA<readonly [QueryField, QueryFieldSpec]>
+) => fieldSpecMapped.some(([field]) => field.filters.length > 1);
+
+const containsSpecifyUsername = (
+  baseTableName: keyof Tables,
+  fieldSpecMapped: RA<readonly [QueryField, QueryFieldSpec]>
+) =>
+  fieldSpecMapped.some(([field]) => {
+    const includesUserValue = field.filters.some(({ startValue }) =>
+      startValue.includes(currentUserValue)
+    );
+    const terminatingField = schema.models[baseTableName].getField(
+      mappingPathToString(field.mappingPath)
+    );
+    const endsWithSpecifyUser =
+      terminatingField?.isRelationship === false &&
+      terminatingField.name === 'name' &&
+      terminatingField.model.name === 'SpecifyUser';
+    return endsWithSpecifyUser && includesUserValue;
+  });
+
+const containsRelativeDate = (
+  fieldSpecMapped: RA<readonly [QueryField, QueryFieldSpec]>
+) =>
+  fieldSpecMapped.some(
+    ([field, fieldSpec]) =>
+      field.filters.some(({ startValue }) => startValue.includes(today)) &&
+      fieldSpec.datePart === 'fullDate'
+  );
+
+// If contains modern fields/functionality set isFavourite to false, to not appear directly in 6
+export function isModern(query: SpecifyResource<SpQuery>): boolean {
+  const serializedQuery = serializeResource(query);
+  const baseTableName = getModel(serializedQuery.contextName)?.name;
+  if (baseTableName === undefined) return false;
+  const fields = serializedQuery.fields;
+
+  const fieldSpecsMapped = queryFieldsToFieldSpecs(
+    baseTableName,
+    parseQueryFields(fields)
+  );
+
+  return (
+    containsOr(fieldSpecsMapped) ||
+    containsSpecifyUsername(baseTableName, fieldSpecsMapped) ||
+    containsRelativeDate(fieldSpecsMapped)
+  );
 }

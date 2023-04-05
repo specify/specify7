@@ -74,7 +74,7 @@ import { listen } from '../../utils/events';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { oneRem } from '../Atoms';
-import { usePref } from '../UserPreferences/usePref';
+import { userPreferences } from '../Preferences/userPreferences';
 
 /**
  * Add this attribute to element to remove delay before title becomes visible
@@ -235,7 +235,7 @@ function useInteraction(
   context: FloatingContext,
   floatingId: string | undefined
 ): void {
-  const [isEnabled] = usePref('general', 'ui', 'useCustomTooltips');
+  const [isEnabled] = userPreferences.use('general', 'ui', 'useCustomTooltips');
 
   const [currentElement, setCurrentElement] = React.useState<
     HTMLElement | undefined

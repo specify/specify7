@@ -19,10 +19,9 @@ import type { FormMode } from '../FormParse';
 import { AppTitle } from '../Molecules/AppTitle';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
+import { userPreferences } from '../Preferences/userPreferences';
 import { reportEvents } from '../Reports/Context';
 import { UnloadProtectDialog } from '../Router/Router';
-import { getUserPref } from '../UserPreferences/helpers';
-import { usePref } from '../UserPreferences/usePref';
 import { useResourceView } from './BaseResourceView';
 import { DeleteButton } from './DeleteButton';
 import { SaveButton } from './Save';
@@ -151,7 +150,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
 
   const [showUnloadProtect, setShowUnloadProtect] = React.useState(false);
 
-  const [makeFormDialogsModal] = usePref(
+  const [makeFormDialogsModal] = userPreferences.use(
     'form',
     'behavior',
     'makeFormDialogsModal'
@@ -195,7 +194,11 @@ export function ResourceView<SCHEMA extends AnySchema>({
         resource={resource}
         onAdd={handleAdd}
         onSaved={(): void => {
-          const printOnSave = getUserPref('form', 'preferences', 'printOnSave');
+          const printOnSave = userPreferences.get(
+            'form',
+            'preferences',
+            'printOnSave'
+          );
           if (printOnSave[resource.specifyModel.name] === true)
             reportEvents.trigger('createReport', resource);
           handleSaved();
