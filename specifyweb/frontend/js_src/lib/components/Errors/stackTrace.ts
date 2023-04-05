@@ -22,14 +22,16 @@ Promise.all(
       .then(async ({ fetchContext }) => fetchContext)
       .then((schema) => removeKey(schema, 'models')),
     remotePrefs: import('../InitialContext/remotePrefs').then(
-      ({ fetchContext }) => fetchContext
+      async ({ fetchContext }) => fetchContext
     ),
-    userPreferences: import('../UserPreferences/helpers').then(
-      ({ preferencesPromise, getRawUserPreferences }) =>
-        preferencesPromise.then(() => getRawUserPreferences())
+    userPreferences: import('../Preferences/userPreferences').then(
+      ({ userPreferences }) => userPreferences.getRaw()
+    ),
+    collectionPreferences: import('../Preferences/collectionPreferences').then(
+      ({ collectionPreferences }) => collectionPreferences.getRaw()
     ),
     userInformation: import('../InitialContext/userInformation').then(
-      ({ fetchContext }) => fetchContext
+      async ({ fetchContext }) => fetchContext
     ),
   }).map(async ([key, promise]) => {
     resolvedStackTrace[key] = await promise;

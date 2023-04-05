@@ -13,12 +13,12 @@ import { Link } from '../Atoms/Link';
 import { legacyLoadingContext } from '../Core/Contexts';
 import { Dialog } from '../Molecules/Dialog';
 import { downloadFile } from '../Molecules/FilePicker';
-import { clearCache } from '../RouterCommands/CacheBuster';
-import { usePref } from '../UserPreferences/usePref';
+import { userPreferences } from '../Preferences/userPreferences';
 import {
   SetUnloadProtectsContext,
   UnloadProtectsContext,
 } from '../Router/Router';
+import { clearCache } from '../RouterCommands/CacheBuster';
 
 const supportEmail = 'support@specifysoftware.org' as LocalizedString;
 export const supportLink = (
@@ -76,7 +76,7 @@ export function ErrorDialog({
     return (): void => void errors.delete(id);
   }, [id]);
 
-  const [canDismiss] = usePref(
+  const [canDismiss] = userPreferences.use(
     'general',
     'application',
     'allowDismissingErrors'

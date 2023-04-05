@@ -33,14 +33,11 @@ import { useTitle } from '../Molecules/AppTitle';
 import { supportsBackdropBlur } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { ProtectedTree } from '../Permissions/PermissionDenied';
+import { useHighContrast, useReducedTransparency } from '../Preferences/Hooks';
+import { userPreferences } from '../Preferences/userPreferences';
 import { NotFoundView } from '../Router/NotFoundView';
 import { formatUrl } from '../Router/queryString';
 import { EditTreeDefinition } from '../Toolbar/TreeRepair';
-import {
-  useHighContrast,
-  useReducedTransparency,
-} from '../UserPreferences/Hooks';
-import { usePref } from '../UserPreferences/usePref';
 import { TreeViewActions } from './Actions';
 import type { Conformations, Row, Stats } from './helpers';
 import {
@@ -153,12 +150,12 @@ function TreeView<SCHEMA extends AnyTree>({
 
   const reduceTransparency = useReducedTransparency();
   const highContrast = useHighContrast();
-  const [treeAccentColor] = usePref(
+  const [treeAccentColor] = userPreferences.use(
     'treeEditor',
     treeToPref[tableName],
     'treeAccentColor'
   );
-  const [synonymColor] = usePref(
+  const [synonymColor] = userPreferences.use(
     'treeEditor',
     treeToPref[tableName],
     'synonymColor'

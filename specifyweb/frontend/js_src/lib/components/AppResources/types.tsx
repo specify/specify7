@@ -3,11 +3,20 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { preferencesText } from '../../localization/preferences';
 import { reportsText } from '../../localization/report';
 import { resourcesText } from '../../localization/resources';
-import type { IR, RR } from '../../utils/types';
+import type { IR, RA, RR } from '../../utils/types';
 import { ensure } from '../../utils/types';
 import { icons } from '../Atoms/Icons';
 import type { Tables } from '../DataModel/types';
 import type { AppResourceMode } from './helpers';
+import { SerializedResource } from '../DataModel/helperTypes';
+import { SpAppResourceDir } from '../DataModel/types';
+
+export type AppResourceScope =
+  | 'global'
+  | 'discipline'
+  | 'collection'
+  | 'user'
+  | 'userType';
 
 export type AppResourceType = {
   readonly tableName: keyof Tables & ('SpAppResource' | 'SpViewSetObj');
@@ -28,12 +37,17 @@ export const appResourceTypes: RR<AppResourceMode, AppResourceType> = {
   },
 };
 
+export type ScopedAppResourceDir = SerializedResource<SpAppResourceDir> & {
+  readonly scope: AppResourceScope;
+};
+
 export type AppResourceSubType = {
   readonly mimeType: string | undefined;
   readonly name: string | undefined;
   readonly documentationUrl: string | undefined;
   readonly icon: JSX.Element;
   readonly label: LocalizedString;
+  readonly scope?: RA<AppResourceScope>;
 };
 
 /**
@@ -59,13 +73,14 @@ export const appResourceSubTypes = {
     icon: icons.documentReport,
     label: reportsText.report(),
   },
-  userPreferences: {
+  user: {
     mimeType: 'application/json',
     name: 'UserPreferences',
     documentationUrl:
       'https://discourse.specifysoftware.org/t/specify-7-user-preferences-webinar/861',
     icon: icons.cog,
     label: preferencesText.userPreferences(),
+    scope: ['user'],
   },
   defaultUserPreferences: {
     mimeType: 'application/json',
@@ -74,6 +89,14 @@ export const appResourceSubTypes = {
       'https://github.com/specify/specify7/wiki/Setting-default-user-preferences',
     icon: icons.cog,
     label: preferencesText.defaultUserPreferences(),
+  },
+  collection: {
+    mimeType: 'application/json',
+    name: 'CollectionPreferences',
+    documentationUrl: undefined,
+    icon: icons.cog,
+    label: preferencesText.collectionPreferences(),
+    scope: ['collection'],
   },
   leafletLayers: {
     mimeType: 'application/json',
