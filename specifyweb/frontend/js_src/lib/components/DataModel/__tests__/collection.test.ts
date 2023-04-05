@@ -29,7 +29,7 @@ describe('fetchCollection', () => {
     resource_uri: getResourceApiUrl('Locality', 1),
   };
   overrideAjax(
-    '/api/specify/locality/?limit=1&localityname=Test&orderby=-latlongaccuracy&domainfilter=true',
+    '/api/specify/locality/?limit=1&localityname=Test&orderby=-latlongaccuracy&yesno1=True&domainfilter=false',
     {
       meta: {
         total_count: 2,
@@ -44,7 +44,8 @@ describe('fetchCollection', () => {
         limit: 1,
         localityName: 'Test',
         orderBy: '-latLongAccuracy',
-        domainFilter: true,
+        yesNo1: true,
+        domainFilter: false,
       })
     ).resolves.toEqual({
       records: [addMissingFields('Locality', baseLocalityRecord)],

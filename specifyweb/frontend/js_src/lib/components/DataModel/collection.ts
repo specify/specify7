@@ -101,7 +101,8 @@ function mapValue(
   else if (key === 'domainFilter') {
     const scopingField = schema.models[tableName].getScopingRelationship();
     return (value === true && typeof scopingField === 'object').toString();
-  } else return (value as string).toString();
+  } else if (typeof value === 'boolean') return value ? 'True' : 'False';
+  else return (value as string).toString();
 }
 
 /**
