@@ -40,9 +40,10 @@ export function SecurityPanel(): JSX.Element | null {
     React.useCallback(
       async () =>
         hasTablePermission('Institution', 'read')
-          ? fetchCollection('Institution', { limit: 1 }).then(
-              ({ records }) => records[0]
-            )
+          ? fetchCollection('Institution', {
+              limit: 1,
+              domainFilter: false,
+            }).then(({ records }) => records[0])
           : undefined,
       []
     ),
@@ -53,9 +54,10 @@ export function SecurityPanel(): JSX.Element | null {
     React.useCallback(
       async () =>
         hasTablePermission('SpecifyUser', 'read')
-          ? fetchCollection('SpecifyUser', { limit: 0 }).then(({ records }) =>
-              index(records)
-            )
+          ? fetchCollection('SpecifyUser', {
+              limit: 0,
+              domainFilter: false,
+            }).then(({ records }) => index(records))
           : {
               [userInformation.id]: serializeResource(userInformation),
             },

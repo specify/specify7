@@ -134,7 +134,7 @@ export async function fetchCollectionsForResource(
     ? undefined
     : fetchCollection(
         'Collection',
-        { limit: 0 },
+        { limit: 0, domainFilter: false },
         {
           [fieldsBetween]: domainResource.id.toString(),
         }

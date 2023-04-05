@@ -36,7 +36,7 @@ export function useCollectionRelationships(
       return f.all({
         left: fetchCollection(
           'CollectionRelType',
-          { limit: DEFAULT_FETCH_LIMIT },
+          { limit: DEFAULT_FETCH_LIMIT, domainFilter: false },
           {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             leftsidecollection_id: schema.domainLevelIds.collection,
@@ -49,7 +49,7 @@ export function useCollectionRelationships(
         ),
         right: fetchCollection(
           'CollectionRelType',
-          { limit: DEFAULT_FETCH_LIMIT },
+          { limit: DEFAULT_FETCH_LIMIT, domainFilter: false },
           {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             rightsidecollection_id: schema.domainLevelIds.collection,

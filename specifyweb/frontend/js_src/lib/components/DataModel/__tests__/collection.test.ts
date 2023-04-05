@@ -10,7 +10,7 @@ describe('fetchCollection', () => {
   const baseCoRecord = {
     resource_uri: getResourceApiUrl('CollectionObject', 1),
   };
-  overrideAjax('/api/specify/collectionobject/?limit=1', {
+  overrideAjax('/api/specify/collectionobject/?limit=1&domainfilter=true', {
     meta: {
       total_count: 2,
     },
@@ -18,7 +18,9 @@ describe('fetchCollection', () => {
   });
 
   test('Simple collection objects query', async () =>
-    expect(fetchCollection('CollectionObject', { limit: 1 })).resolves.toEqual({
+    expect(
+      fetchCollection('CollectionObject', { limit: 1, domainFilter: true })
+    ).resolves.toEqual({
       records: [addMissingFields('CollectionObject', baseCoRecord)],
       totalCount: 2,
     }));
@@ -27,7 +29,7 @@ describe('fetchCollection', () => {
     resource_uri: getResourceApiUrl('Locality', 1),
   };
   overrideAjax(
-    '/api/specify/locality/?limit=1&localityname=Test&orderby=-latlongaccuracy',
+    '/api/specify/locality/?limit=1&localityname=Test&orderby=-latlongaccuracy&domainfilter=true',
     {
       meta: {
         total_count: 2,
@@ -42,6 +44,7 @@ describe('fetchCollection', () => {
         limit: 1,
         localityName: 'Test',
         orderBy: '-latLongAccuracy',
+        domainFilter: true,
       })
     ).resolves.toEqual({
       records: [addMissingFields('Locality', baseLocalityRecord)],
@@ -49,7 +52,7 @@ describe('fetchCollection', () => {
     }));
 
   overrideAjax(
-    '/api/specify/locality/?limit=1&localityname__istarswith=Test&id__in=1%2C2',
+    '/api/specify/locality/?limit=1&localityname__istarswith=Test&id__in=1%2C2&domainfilter=false',
     {
       meta: {
         total_count: 2,
@@ -62,7 +65,7 @@ describe('fetchCollection', () => {
     expect(
       fetchCollection(
         'Locality',
-        { limit: 1 },
+        { limit: 1, domainFilter: false },
         {
           localityName__iStarsWith: 'Test',
           id__in: '1,2',

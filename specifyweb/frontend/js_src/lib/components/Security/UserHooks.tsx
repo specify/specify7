@@ -150,6 +150,7 @@ export function useUserAgents(
                   {
                     limit: 1,
                     specifyUser: userId,
+                    domainFilter: false,
                   },
                   {
                     division__in: divisions.map(([id]) => id).join(','),

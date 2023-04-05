@@ -93,6 +93,7 @@ function Attachments(): JSX.Element {
             'Attachment',
             {
               limit: 1,
+              domainFilter: true,
             },
             allTablesWithAttachments().length === tablesWithAttachments().length
               ? {}
@@ -104,7 +105,7 @@ function Attachments(): JSX.Element {
           ).then<number>(({ totalCount }) => totalCount),
           unused: fetchCollection(
             'Attachment',
-            { limit: 1 },
+            { limit: 1, domainFilter: true },
             { tableId__isNull: 'true' }
           ).then<number>(({ totalCount }) => totalCount),
           byTable: f.all(
@@ -114,6 +115,7 @@ function Attachments(): JSX.Element {
                 fetchCollection('Attachment', {
                   limit: 1,
                   tableID: tableId,
+                  domainFilter: true,
                 }).then<number>(({ totalCount }) => totalCount),
               ])
             )

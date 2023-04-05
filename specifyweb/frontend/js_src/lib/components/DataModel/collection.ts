@@ -25,7 +25,7 @@ export type CollectionFetchFilters<SCHEMA extends AnySchema> = Partial<
 > & {
   readonly limit: number;
   readonly offset?: number;
-  readonly domainFilter?: boolean;
+  readonly domainFilter: boolean;
   readonly orderBy?:
     | keyof CommonFields
     | keyof SCHEMA['fields']
@@ -79,12 +79,7 @@ export const fetchCollection = async <
             }).map(([key, value]) =>
               value === undefined
                 ? undefined
-                : [
-                    key.toLowerCase(),
-                    key === 'orderBy'
-                      ? value.toString().toLowerCase()
-                      : value.toString(),
-                  ]
+                : [key.toLowerCase(), mapValue(key, value, tableName)]
             )
           )
         )
@@ -96,6 +91,18 @@ export const fetchCollection = async <
     records: objects.map(serializeResource),
     totalCount: meta.total_count,
   }));
+
+function mapValue(
+  key: string,
+  value: unknown,
+  tableName: keyof Tables
+): string {
+  if (key === 'orderBy') return (value as string).toString().toLowerCase();
+  else if (key === 'domainFilter') {
+    const scopingField = schema.models[tableName].getScopingRelationship();
+    return (value === true && typeof scopingField === 'object').toString();
+  } else return (value as string).toString();
+}
 
 /**
  * Fetch a related collection via an relationship independent -to-many
@@ -129,6 +136,7 @@ export async function fetchRelated<
   const response = fetchCollection(relationship.relatedModel.name, {
     limit,
     [reverseName]: id,
+    domainFilter: false,
   });
   return response as Promise<{
     readonly records: RA<

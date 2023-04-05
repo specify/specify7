@@ -6,12 +6,12 @@ import { fetchRows } from '../../utils/ajax/specifyApi';
 import { f } from '../../utils/functools';
 import type { R, RA } from '../../utils/types';
 import { defined } from '../../utils/types';
-import { sortFunction, toLowerCase } from '../../utils/utils';
+import { sortFunction } from '../../utils/utils';
 import { fetchCollection } from '../DataModel/collection';
 import { deserializeResource, serializeResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { schema, strictGetModel } from '../DataModel/schema';
+import { strictGetModel } from '../DataModel/schema';
 import type { PickList, PickListItem, Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import type { PickListItemSimple } from '../FormFields/ComboBox';
@@ -112,10 +112,7 @@ async function fetchFromTable(
   const tableName = strictGetModel(pickList.get('tableName')).name;
   if (!hasTablePermission(tableName, 'read')) return [];
   const { records } = await fetchCollection(tableName, {
-    domainFilter: !f.includes(
-      Object.keys(schema.domainLevelIds),
-      toLowerCase(tableName)
-    ),
+    domainFilter: true,
     limit,
   });
   return Promise.all(
@@ -149,6 +146,7 @@ async function fetchFromField(
     limit,
     fields: { [fieldName]: ['string', 'number', 'boolean', 'null'] },
     distinct: true,
+    domainFilter: true,
   }).then((rows) =>
     rows
       .map((row) => row[fieldName] ?? '')

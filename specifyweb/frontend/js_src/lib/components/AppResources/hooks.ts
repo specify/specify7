@@ -33,26 +33,32 @@ export function useAppResources(): GetOrSet<AppResources | undefined> {
     React.useCallback(
       async () =>
         f.all({
-          directories: fetchCollection('SpAppResourceDir', { limit: 0 }).then<
-            AppResources['directories']
-          >(({ records }) =>
+          directories: fetchCollection('SpAppResourceDir', {
+            limit: 0,
+            domainFilter: false,
+          }).then<AppResources['directories']>(({ records }) =>
             records.map((record) => ({ ...record, scope: getScope(record) }))
           ),
-          disciplines: fetchCollection('Discipline', { limit: 0 }).then(
-            ({ records }) => records
-          ),
-          collections: fetchCollection('Collection', { limit: 0 }).then(
-            ({ records }) => records
-          ),
-          users: fetchCollection('SpecifyUser', { limit: 0 }).then(
-            ({ records }) => records
-          ),
-          appResources: fetchCollection('SpAppResource', { limit: 0 }).then(
-            ({ records }) => records
-          ),
-          viewSets: fetchCollection('SpViewSetObj', { limit: 0 }).then(
-            ({ records }) => records
-          ),
+          disciplines: fetchCollection('Discipline', {
+            limit: 0,
+            domainFilter: false,
+          }).then(({ records }) => records),
+          collections: fetchCollection('Collection', {
+            limit: 0,
+            domainFilter: false,
+          }).then(({ records }) => records),
+          users: fetchCollection('SpecifyUser', {
+            limit: 0,
+            domainFilter: false,
+          }).then(({ records }) => records),
+          appResources: fetchCollection('SpAppResource', {
+            limit: 0,
+            domainFilter: false,
+          }).then(({ records }) => records),
+          viewSets: fetchCollection('SpViewSetObj', {
+            limit: 0,
+            domainFilter: false,
+          }).then(({ records }) => records),
         }),
       []
     ),
@@ -117,6 +123,7 @@ export function useAppResourceData(
           ? await fetchCollection('SpAppResourceData', {
               limit: 1,
               [relationshipName]: resource.id,
+              domainFilter: false,
             }).then(({ records }) =>
               typeof records[0] === 'object' ? records[0] : newResource
             )

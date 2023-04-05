@@ -343,8 +343,8 @@ function DataSetName({
 const fetchListOfUsers = async (): Promise<
   RA<SerializedResource<SpecifyUser>>
 > =>
-  fetchCollection('SpecifyUser', { limit: 500 }).then(({ records: users }) =>
-    users.filter(({ id }) => id !== userInformation.id)
+  fetchCollection('SpecifyUser', { limit: 500, domainFilter: false }).then(
+    ({ records: users }) => users.filter(({ id }) => id !== userInformation.id)
   );
 
 function ChangeOwner({

@@ -34,8 +34,8 @@ import { getTableOverwrite, modelViews } from './schemaOverrides';
 import type { Relationship } from './specifyField';
 import {
   type FieldDefinition,
-  type RelationshipDefinition,
   LiteralField,
+  type RelationshipDefinition,
 } from './specifyField';
 
 type FieldAlias = {
@@ -412,18 +412,24 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
     return this.localization.aggregator ?? undefined;
   }
 
+  private scopingRelationship: Relationship | false | undefined;
+
   /**
    * Returns the relationship field of this model that places it in
    * the collection -> discipline -> division -> institution scoping
    * hierarchy.
    */
   public getScopingRelationship(): Relationship | undefined {
-    return schema.orgHierarchy
-      .map((fieldName) => this.getField(fieldName))
-      .find(
-        (field): field is Relationship =>
-          field?.isRelationship === true && !relationshipIsToMany(field)
-      );
+    this.scopingRelationship ??=
+      schema.orgHierarchy
+        .map((fieldName) => this.getField(fieldName))
+        .find(
+          (field): field is Relationship =>
+            field?.isRelationship === true && !relationshipIsToMany(field)
+        ) ?? false;
+    return this.scopingRelationship === false
+      ? undefined
+      : this.scopingRelationship;
   }
 
   /**

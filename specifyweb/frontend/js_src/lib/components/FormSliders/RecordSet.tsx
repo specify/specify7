@@ -62,6 +62,7 @@ export function RecordSetWrapper<SCHEMA extends AnySchema>({
         recordSet: recordSet.id,
         limit: 1,
         recordId: resource.id,
+        domainFilter: false,
       }).then(async ({ records }) => {
         const recordSetItemId = records[0]?.id;
         if (recordSetItemId === undefined) {
@@ -77,6 +78,7 @@ export function RecordSetWrapper<SCHEMA extends AnySchema>({
           {
             recordSet: recordSet.id,
             limit: 1,
+            domainFilter: false,
           },
           { id__lt: recordSetItemId }
         );
@@ -91,6 +93,7 @@ export function RecordSetWrapper<SCHEMA extends AnySchema>({
         fetchCollection('RecordSetItem', {
           limit: 1,
           recordSet: recordSet.id,
+          domainFilter: false,
         }).then(({ totalCount }) => totalCount),
       [recordSet.id]
     ),
@@ -316,6 +319,7 @@ function RecordSet<SCHEMA extends AnySchema>({
                             recordSet: recordSet.id,
                             recordId: resource.id,
                             limit: 1,
+                            domainFilter: false,
                           }).then(({ totalCount }) => totalCount !== 0),
                     })
                   )
@@ -347,6 +351,7 @@ function RecordSet<SCHEMA extends AnySchema>({
                         limit: 1,
                         recordId: ids[currentIndex],
                         recordSet: recordSet.id,
+                        domainFilter: false,
                       }).then(async ({ records }) =>
                         deleteResource(
                           'RecordSetItem',

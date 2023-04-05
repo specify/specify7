@@ -85,6 +85,7 @@ function ReportDialog({
         fetchCollection('SpAppResourceData', {
           limit: 1,
           spAppResource: appResource.id,
+          domainFilter: false,
         })
           .then(({ records }) =>
             parseXml(
@@ -153,6 +154,7 @@ async function fixupImages(definition: Document): Promise<RA<string>> {
     'Attachment',
     {
       limit: 0,
+      domainFilter: false,
     },
     {
       title__in: Object.keys(fileNames).join(','),

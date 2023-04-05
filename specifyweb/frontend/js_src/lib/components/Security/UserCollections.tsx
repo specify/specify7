@@ -44,7 +44,7 @@ function UserCollectionsUi({
   const [allCollections] = useAsyncState(
     React.useCallback(
       async () =>
-        fetchCollection('Collection', { limit: 0 }).then(
+        fetchCollection('Collection', { limit: 0, domainFilter: false }).then(
           ({ records }) => records
         ),
       []

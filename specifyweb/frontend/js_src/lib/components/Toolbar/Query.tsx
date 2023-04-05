@@ -62,6 +62,7 @@ export function useQueries(
       async () =>
         fetchCollection('SpQuery', {
           limit: QUERY_FETCH_LIMIT,
+          domainFilter: false,
           ...(spQueryFilter ?? { specifyUser: userInformation.id }),
         }).then(({ records }) => records),
       [spQueryFilter]

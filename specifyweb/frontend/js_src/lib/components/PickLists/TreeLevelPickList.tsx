@@ -55,6 +55,7 @@ export const fetchLowestChildRank = async (
         limit: 1,
         parent: resource.id,
         orderBy: 'rankId',
+        domainFilter: false,
       }).then(({ records }) => records[0]?.rankId ?? -1);
 
 /**

@@ -16,7 +16,6 @@ import { Form } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { softFail } from '../Errors/Crash';
 import { useMenuItem } from '../Header/useMenuItem';
-import { userInformation } from '../InitialContext/userInformation';
 import { DateElement } from '../Molecules/DateElement';
 import { downloadFile } from '../Molecules/FilePicker';
 import { hasPermission } from '../Permissions/helpers';
@@ -301,13 +300,7 @@ function ProtectedStatsPage(): JSX.Element | null {
     formatterSpec
   );
 
-  const filters = React.useMemo(
-    () => ({
-      specifyUser: userInformation.id,
-    }),
-    []
-  );
-  const queries = useQueries(filters);
+  const queries = useQueries();
   const previousCollectionLayout = React.useRef(
     sharedLayout as unknown as RA<StatLayout>
   );

@@ -70,6 +70,7 @@ export function useContainerString(
         fetchCollection('SpLocaleItemStr', {
           limit: 0,
           [itemType]: container.id,
+          domainFilter: false,
         }).then(({ records }) => {
           initialValue.current = findString(
             records,
@@ -119,11 +120,13 @@ export function useContainerItems(
             items: fetchCollection('SpLocaleContainerItem', {
               limit: 0,
               container: container.id,
+              domainFilter: false,
             }),
             names: fetchCollection(
               'SpLocaleItemStr',
               {
                 limit: 0,
+                domainFilter: false,
               },
               {
                 itemName__container: container.id,
@@ -137,6 +140,7 @@ export function useContainerItems(
               'SpLocaleItemStr',
               {
                 limit: 0,
+                domainFilter: false,
               },
               {
                 itemDesc__container: container.id,

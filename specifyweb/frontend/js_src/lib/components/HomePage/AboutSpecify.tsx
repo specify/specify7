@@ -155,7 +155,7 @@ function DatabaseCreationDate(): JSX.Element {
   const [date] = useAsyncState(
     React.useCallback(
       async () =>
-        fetchCollection('SpVersion', { limit: 1 }).then(
+        fetchCollection('SpVersion', { limit: 1, domainFilter: false }).then(
           ({ records }) => records[0]?.timestampCreated
         ),
       []
