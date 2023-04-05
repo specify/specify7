@@ -11,10 +11,11 @@ msgstr "Content-Type: text/plain\n"
 msgid "appResources"
 msgstr "Ресурсы приложения"
 
+#: components/AppResources/Create.tsx:184
 #: components/FormMeta/Definition.tsx:29
 #: components/FormMeta/Definition.tsx:55
 #: components/Preferences/UserDefinitions.tsx:670
-#. Used in: Components > Form Meta > Definition ⬤ Components > Preferences > User Definitions
+#. Used in: Components > App Resources > Create ⬤ Components > Form Meta > Definition ⬤ Components > Preferences > User Definitions
 msgid "formDefinition"
 msgstr "Схема формы"
 
@@ -42,7 +43,7 @@ msgstr "Глобальные ресурсы"
 msgid "disciplineResources"
 msgstr "Ресурсы дисциплины"
 
-#: components/AppResources/Create.tsx:87
+#: components/AppResources/Create.tsx:88
 #: components/SchemaConfig/Field.tsx:73
 #. Used in: Components > App Resources > Create ⬤ Components > Schema Config > Field
 msgid "type"
@@ -162,8 +163,8 @@ msgstr "Текстовый редактор"
 msgid "visualEditor"
 msgstr "Визуальный редактор"
 
-#: components/AppResources/Create.tsx:59
-#: components/AppResources/Create.tsx:81
+#: components/AppResources/Create.tsx:60
+#: components/AppResources/Create.tsx:82
 #. Used in: Components > App Resources > Create
 msgid "selectResourceType"
 msgstr "Выберите тип ресурса"
