@@ -14,18 +14,18 @@ msgstr ""
 #: components/AppResources/Filters.tsx:72
 #: components/AppResources/Filters.tsx:119
 #: components/Header/userToolDefinitions.ts:58
-#: components/Router/Routes.tsx:196
+#: components/Preferences/UserDefinitions.tsx:1582
+#: components/Router/Routes.tsx:197
 #: components/Security/registry.ts:210
-#: components/UserPreferences/Definitions.tsx:1584
-#. Used in: Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Security > Registry ⬤ Components > User Preferences > Definitions
+#. Used in: Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Security > Registry
 #, fuzzy
 msgid "appResources"
 msgstr "Recursos de la aplicación"
 
 #: components/FormMeta/Definition.tsx:29
 #: components/FormMeta/Definition.tsx:55
-#: components/UserPreferences/Definitions.tsx:672
-#. Used in: Components > Form Meta > Definition ⬤ Components > User Preferences > Definitions
+#: components/Preferences/UserDefinitions.tsx:670
+#. Used in: Components > Form Meta > Definition ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "formDefinition"
 msgstr "Definición de formulario"
@@ -33,7 +33,7 @@ msgstr "Definición de formulario"
 #: components/AppResources/EditorComponents.tsx:36
 #: components/AppResources/Filters.tsx:60
 #: components/AppResources/Filters.tsx:103
-#: components/AppResources/types.tsx:27
+#: components/AppResources/types.tsx:36
 #. Used in: Components > App Resources > Editor Components ⬤ Components > App Resources > Filters ⬤ Components > App Resources > Types
 #, fuzzy
 msgid "formDefinitions"
@@ -46,13 +46,13 @@ msgstr "Definiciones de formulario"
 msgid "loadFile"
 msgstr "Cargar archivo"
 
-#: components/AppResources/tree.ts:24
+#: components/AppResources/tree.ts:37
 #. Used in: Components > App Resources > Tree
 #, fuzzy
 msgid "globalResources"
 msgstr "Recursos globales"
 
-#: components/AppResources/tree.ts:30
+#: components/AppResources/tree.ts:43
 #. Used in: Components > App Resources > Tree
 #, fuzzy
 msgid "disciplineResources"
@@ -65,7 +65,7 @@ msgstr "Recursos de disciplina"
 msgid "type"
 msgstr "Tipo"
 
-#: components/AppResources/tree.ts:207
+#: components/AppResources/tree.ts:218
 #. Used in: Components > App Resources > Tree
 #, fuzzy
 msgid "userTypes"
@@ -85,85 +85,85 @@ msgid "subCategories"
 msgstr "Subcategorías"
 
 #: components/AppResources/Aside.tsx:313
-#: components/Router/Routes.tsx:204
+#: components/Router/Routes.tsx:205
 #. Used in: Components > App Resources > Aside ⬤ Components > Router > Routes
 #, fuzzy
 msgid "addResource"
 msgstr "Agregar recurso"
 
-#: components/AppResources/types.tsx:22
+#: components/AppResources/types.tsx:31
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "appResource"
 msgstr "Recurso de la aplicación"
 
-#: components/AppResources/types.tsx:92
+#: components/AppResources/types.tsx:115
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "rssExportFeed"
 msgstr "Fuente de exportación RSS"
 
-#: components/AppResources/types.tsx:100
+#: components/AppResources/types.tsx:123
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "expressSearchConfig"
 msgstr "Configuración de búsqueda rápida"
 
-#: components/AppResources/types.tsx:108
+#: components/AppResources/types.tsx:131
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "webLinks"
 msgstr "Enlaces web"
 
-#: components/AppResources/types.tsx:116
+#: components/AppResources/types.tsx:139
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "uiFormatters"
 msgstr "formateadores de campo"
 
-#: components/AppResources/types.tsx:124
+#: components/AppResources/types.tsx:147
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "dataObjectFormatters"
 msgstr "Formateadores de registros"
 
-#: components/AppResources/types.tsx:132
+#: components/AppResources/types.tsx:155
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "searchDialogDefinitions"
 msgstr "Definiciones del diálogo de búsqueda"
 
-#: components/AppResources/types.tsx:140
+#: components/AppResources/types.tsx:163
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "dataEntryTables"
 msgstr "Tablas de entrada de datos"
 
-#: components/AppResources/types.tsx:148
+#: components/AppResources/types.tsx:171
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "interactionsTables"
 msgstr "Tablas de interacciones"
 
-#: components/AppResources/types.tsx:155
+#: components/AppResources/types.tsx:178
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "otherXmlResource"
 msgstr "Otro recurso XML"
 
-#: components/AppResources/types.tsx:162
+#: components/AppResources/types.tsx:185
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "otherJsonResource"
 msgstr "Otro recurso JSON"
 
-#: components/AppResources/types.tsx:169
+#: components/AppResources/types.tsx:192
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "otherPropertiesResource"
 msgstr "Recurso de otras propiedades"
 
-#: components/AppResources/types.tsx:176
+#: components/AppResources/types.tsx:199
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "otherAppResource"
@@ -183,7 +183,7 @@ msgstr "filtros"
 msgid "custom"
 msgstr "Costumbre"
 
-#: components/AppResources/types.tsx:84
+#: components/AppResources/types.tsx:107
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "leafletLayers"
@@ -208,13 +208,13 @@ msgstr "editor visual"
 msgid "selectResourceType"
 msgstr "Seleccionar tipo de recurso"
 
-#: components/AppResources/tree.ts:104
+#: components/AppResources/tree.ts:116
 #. Used in: Components > App Resources > Tree
 #, fuzzy
 msgid "globalPreferences"
 msgstr "Preferencias globales"
 
-#: components/AppResources/tree.ts:106
+#: components/AppResources/tree.ts:118
 #. Used in: Components > App Resources > Tree
 #, fuzzy
 msgid "remotePreferences"

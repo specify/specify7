@@ -27,9 +27,9 @@ msgid "failedParsingFloat"
 msgstr "valeur \"{value:string}\" n'est pas une valeur à virgule flottante valide"
 
 #: components/WorkBench/resultsParser.ts:182
-#: components/WorkBench/wbView.js:854
-#: components/WorkBench/wbView.js:861
-#: components/WorkBench/wbView.js:1357
+#: components/WorkBench/wbView.js:875
+#: components/WorkBench/wbView.js:882
+#: components/WorkBench/wbView.js:1378
 #. Used in: Components > Work Bench > Results Parser ⬤ Components > Work Bench > Wb View
 msgid "failedParsingPickList"
 msgstr ""

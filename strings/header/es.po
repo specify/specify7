@@ -16,19 +16,19 @@ msgstr ""
 msgid "skipToContent"
 msgstr "Saltar al contenido"
 
-#: components/Header/menuItemProcessing.ts:65
+#: components/Header/menuItemProcessing.ts:64
 #. Used in: Components > Header > Menu Item Processing
 msgid "main"
 msgstr "Inicio"
 
-#: components/Header/ChooseCollection.tsx:42
 #: components/Header/ChooseCollection.tsx:46
+#: components/Header/ChooseCollection.tsx:50
 #. 🟥Example: Current Collection. Used in: Components > Header > Choose Collection
 msgid "currentCollection"
 msgstr "Actual {collectionTable:string}"
 
 #: components/Header/Forms.tsx:63
-#: components/Header/menuItemDefinitions.ts:40
+#: components/Header/menuItemDefinitions.ts:41
 #: components/Router/OverlayRoutes.tsx:60
 #. Used in: Components > Header > Forms ⬤ Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes
 msgid "dataEntry"
@@ -125,7 +125,7 @@ msgstr "Seleccione un recurso de los metadatos"
 #: components/Header/ExpressSearchTask.tsx:47
 #: components/Header/ExpressSearchTask.tsx:103
 #: components/Router/OverlayRoutes.tsx:44
-#: components/Router/Routes.tsx:25
+#: components/Router/Routes.tsx:26
 #. Used in: Components > Header > Express Search Task ⬤ Components > Router > Overlay Routes ⬤ Components > Router > Routes
 msgid "expressSearch"
 msgstr "Búsqueda rápida"
@@ -140,16 +140,16 @@ msgstr "Búsqueda principal"
 msgid "secondarySearch"
 msgstr "Búsqueda secundaria"
 
-#: components/UserPreferences/Renderers.tsx:308
-#. Used in: Components > User Preferences > Renderers
+#: components/Preferences/Renderers.tsx:311
+#. Used in: Components > Preferences > Renderers
 msgid "menuItems"
 msgstr "Elementos de menú"
 
 #: components/Header/UserTools.tsx:48
 #: components/Header/UserTools.tsx:79
+#: components/Preferences/Renderers.tsx:312
 #: components/Router/OverlayRoutes.tsx:36
-#: components/UserPreferences/Renderers.tsx:309
-#. Used in: Components > Header > User Tools ⬤ Components > Router > Overlay Routes ⬤ Components > User Preferences > Renderers
+#. Used in: Components > Header > User Tools ⬤ Components > Preferences > Renderers ⬤ Components > Router > Overlay Routes
 msgid "userTools"
 msgstr "Herramientas"
 
@@ -202,11 +202,11 @@ msgid "operationsApi"
 msgstr "API para las operaciones"
 
 #: components/AppResources/Create.tsx:88
-#: components/AppResources/Create.tsx:109
+#: components/AppResources/Create.tsx:114
 #: components/AppResources/Filters.tsx:156
 #: components/Header/userToolDefinitions.ts:101
-#: components/UserPreferences/Definitions.tsx:448
-#. Used in: Components > App Resources > Create ⬤ Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > User Preferences > Definitions
+#: components/Preferences/UserDefinitions.tsx:450
+#. Used in: Components > App Resources > Create ⬤ Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions
 msgid "documentation"
 msgstr "Documentación"
 
@@ -227,7 +227,7 @@ msgstr "Foro de la Comunidad"
 
 #: components/Errors/ErrorDialog.tsx:131
 #: components/Header/userToolDefinitions.ts:125
-#: components/Router/Routes.tsx:391
+#: components/Router/Routes.tsx:392
 #: components/RouterCommands/CacheBuster.tsx:41
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Router Commands > Cache Buster
 msgid "clearCache"

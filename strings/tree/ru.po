@@ -12,7 +12,7 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 4.16-dev\n"
 
-#: components/Header/menuItemDefinitions.ts:51
+#: components/Header/menuItemDefinitions.ts:52
 #: components/Router/OverlayRoutes.tsx:68
 #: components/Toolbar/TreeRepair.tsx:45
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Tree Repair
@@ -174,14 +174,14 @@ msgstr "«{nodeName:string}» больше не будет синонимом «
 msgid "acceptedName"
 msgstr "Предпочтительний: {name:string}"
 
-#: components/TreeView/index.tsx:102
+#: components/TreeView/index.tsx:99
 #. Used in: Components > Tree View > Index
 msgid "treeViewTitle"
 msgstr "{treeName:string} Дерево"
 
-#: components/TreeView/Search.tsx:62
-#: components/TreeView/Search.tsx:63
-#: components/TreeView/Search.tsx:64
+#: components/TreeView/Search.tsx:66
+#: components/TreeView/Search.tsx:67
+#: components/TreeView/Search.tsx:68
 #. Used in: Components > Tree View > Search
 msgid "searchTreePlaceholder"
 msgstr "Поиск"
@@ -221,7 +221,7 @@ msgstr "Количество прямых {collectionObjectTable:string}"
 msgid "indirectCollectionObjectCount"
 msgstr "Количество непрямых {collectionObjectTable:string}"
 
-#: components/TreeView/index.tsx:185
+#: components/TreeView/index.tsx:182
 #. Used in: Components > Tree View > Index
 msgid "editRanks"
 msgstr "Изменить ранги"

@@ -1,7 +1,7 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/ChooseCollection/index.tsx:168
+#: components/ChooseCollection/index.tsx:176
 #: components/Header/UserTools.tsx:54
 #: components/Header/userToolDefinitions.ts:38
 #: components/Login/OicLogin.tsx:84
@@ -142,26 +142,26 @@ msgstr "Master Key"
 msgid "incorrectPassword"
 msgstr "Password was incorrect."
 
-#: components/Forms/OtherCollectionView.tsx:58
+#: components/Forms/OtherCollectionView.tsx:62
 #. Used in: Components > Forms > Other Collection View
 msgid "noAccessToResource"
 msgstr ""
 "You do not have access to any {collectionTable:string} containing this "
 "resource through the currently logged in account"
 
-#: components/Forms/OtherCollectionView.tsx:63
+#: components/Forms/OtherCollectionView.tsx:67
 #. Used in: Components > Forms > Other Collection View
 msgid "resourceInaccessible"
 msgstr ""
 "The requested resource cannot be accessed while logged into the current "
 "collection."
 
-#: components/Forms/OtherCollectionView.tsx:66
+#: components/Forms/OtherCollectionView.tsx:70
 #. Used in: Components > Forms > Other Collection View
 msgid "selectCollection"
 msgstr "Select one of the following collections:"
 
-#: components/Forms/OtherCollectionView.tsx:84
+#: components/Forms/OtherCollectionView.tsx:88
 #. 🟥Example: You can login to the Collection, to proceed:. Used in: Components > Forms > Other Collection View
 msgid "loginToProceed"
 msgstr "You can login to the {collectionTable:string}, to proceed:"
@@ -182,11 +182,14 @@ msgstr ""
 #: components/FormFields/Field.tsx:121
 #: components/FormFields/QueryComboBox.tsx:186
 #: components/Forms/dataObjFormatters.ts:267
-#. 🟥Used in field formatter if user doesn't have read access to the related table. Used in: Components > Form Fields > Field ⬤ Components > Form Fields > Query Combo Box ⬤ Components > Forms > Data Obj Formatters
+#: components/Statistics/Categories.tsx:49
+#: components/Statistics/StatItems.tsx:165
+#: components/Statistics/StatItems.tsx:238
+#. 🟥Used in field formatter if user doesn't have read access to the related table. Used in: Components > Form Fields > Field ⬤ Components > Form Fields > Query Combo Box ⬤ Components > Forms > Data Obj Formatters ⬤ Components > Statistics > Categories ⬤ Components > Statistics > Stat Items
 msgid "noPermission"
 msgstr "NO PERMISSION"
 
-#: components/Forms/DataTask.tsx:128
+#: components/Forms/DataTask.tsx:132
 #: components/Permissions/PermissionDenied.tsx:223
 #. Used in: Components > Forms > Data Task ⬤ Components > Permissions > Permission Denied
 msgid "permissionDeniedError"
@@ -199,7 +202,7 @@ msgstr ""
 "You don't have any policy or role that gives you permission to do the "
 "following action:"
 
-#: components/Forms/DataTask.tsx:131
+#: components/Forms/DataTask.tsx:135
 #. Used in: Components > Forms > Data Task
 msgid "emptyRecordSetsReadOnly"
 msgstr "Cannot open empty {recordSetTable:string} when in Read-Only mode"
@@ -209,7 +212,7 @@ msgstr "Cannot open empty {recordSetTable:string} when in Read-Only mode"
 msgid "permissionDeniedForUrl"
 msgstr "Permission denied when accessing <url />"
 
-#: components/ChooseCollection/index.tsx:155
+#: components/ChooseCollection/index.tsx:163
 #. Used in: Components > Choose Collection > Index
 msgid "noAccessToCollections"
 msgstr ""
@@ -247,7 +250,7 @@ msgstr "Save user first"
 msgid "mustBeManager"
 msgstr "User must be saved as Manager first"
 
-#: components/AppResources/tree.ts:215
+#: components/AppResources/tree.ts:226
 #: components/Security/CollectionRole.tsx:198
 #. Used in: Components > App Resources > Tree ⬤ Components > Security > Collection Role
 msgid "users"
@@ -298,7 +301,7 @@ msgid "configureCollectionAccess"
 msgstr "Select user collection access"
 
 #: components/Header/userToolDefinitions.ts:68
-#: components/Router/Routes.tsx:61
+#: components/Router/Routes.tsx:62
 #: components/Toolbar/Security.tsx:100
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Toolbar > Security
 msgid "securityPanel"
@@ -404,13 +407,13 @@ msgstr "All Actions"
 msgid "collectionAccess"
 msgstr "Enable Collection Access"
 
-#: components/Router/Routes.tsx:130
+#: components/Router/Routes.tsx:131
 #: components/Security/RoleTemplate.tsx:96
 #. Used in: Components > Router > Routes ⬤ Components > Security > Role Template
 msgid "createRole"
 msgstr "Create Role"
 
-#: components/Router/Routes.tsx:138
+#: components/Router/Routes.tsx:139
 #: components/Security/RoleTemplate.tsx:83
 #. Used in: Components > Router > Routes ⬤ Components > Security > Role Template
 msgid "newRole"
@@ -579,3 +582,9 @@ msgstr ""
 #. Used in: Components > Security > User
 msgid "accountSetupOptions"
 msgstr "Account Setup Options"
+
+#: components/QueryBuilder/SpecifyUserAutoComplete.tsx:9
+#: components/QueryBuilder/SpecifyUserAutoComplete.tsx:10
+#. Used in: Components > Query Builder > Specify User Auto Complete
+msgid "currentUser"
+msgstr "Current User"

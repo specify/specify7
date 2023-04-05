@@ -4,24 +4,24 @@ msgstr "Content-Type: text/plain\n"
 #: components/AppResources/Filters.tsx:72
 #: components/AppResources/Filters.tsx:119
 #: components/Header/userToolDefinitions.ts:58
-#: components/Router/Routes.tsx:196
+#: components/Preferences/UserDefinitions.tsx:1582
+#: components/Router/Routes.tsx:197
 #: components/Security/registry.ts:210
-#: components/UserPreferences/Definitions.tsx:1584
-#. Used in: Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Security > Registry ⬤ Components > User Preferences > Definitions
+#. Used in: Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Security > Registry
 msgid "appResources"
 msgstr "Ресурсы приложения"
 
 #: components/FormMeta/Definition.tsx:29
 #: components/FormMeta/Definition.tsx:55
-#: components/UserPreferences/Definitions.tsx:672
-#. Used in: Components > Form Meta > Definition ⬤ Components > User Preferences > Definitions
+#: components/Preferences/UserDefinitions.tsx:670
+#. Used in: Components > Form Meta > Definition ⬤ Components > Preferences > User Definitions
 msgid "formDefinition"
 msgstr "Схема формы"
 
 #: components/AppResources/EditorComponents.tsx:36
 #: components/AppResources/Filters.tsx:60
 #: components/AppResources/Filters.tsx:103
-#: components/AppResources/types.tsx:27
+#: components/AppResources/types.tsx:36
 #. Used in: Components > App Resources > Editor Components ⬤ Components > App Resources > Filters ⬤ Components > App Resources > Types
 msgid "formDefinitions"
 msgstr "Определения форм"
@@ -32,12 +32,12 @@ msgstr "Определения форм"
 msgid "loadFile"
 msgstr "Загрузить файл"
 
-#: components/AppResources/tree.ts:24
+#: components/AppResources/tree.ts:37
 #. Used in: Components > App Resources > Tree
 msgid "globalResources"
 msgstr "Глобальные ресурсы"
 
-#: components/AppResources/tree.ts:30
+#: components/AppResources/tree.ts:43
 #. Used in: Components > App Resources > Tree
 msgid "disciplineResources"
 msgstr "Ресурсы дисциплины"
@@ -48,7 +48,7 @@ msgstr "Ресурсы дисциплины"
 msgid "type"
 msgstr "Тип"
 
-#: components/AppResources/tree.ts:207
+#: components/AppResources/tree.ts:218
 #. Used in: Components > App Resources > Tree
 msgid "userTypes"
 msgstr "Типы пользователей"
@@ -65,72 +65,72 @@ msgid "subCategories"
 msgstr "Подкатегории"
 
 #: components/AppResources/Aside.tsx:313
-#: components/Router/Routes.tsx:204
+#: components/Router/Routes.tsx:205
 #. Used in: Components > App Resources > Aside ⬤ Components > Router > Routes
 msgid "addResource"
 msgstr "Добавить ресурс"
 
-#: components/AppResources/types.tsx:22
+#: components/AppResources/types.tsx:31
 #. Used in: Components > App Resources > Types
 msgid "appResource"
 msgstr "Ресурс приложения"
 
-#: components/AppResources/types.tsx:92
+#: components/AppResources/types.tsx:115
 #. Used in: Components > App Resources > Types
 msgid "rssExportFeed"
 msgstr "RSS-канал экспорта"
 
-#: components/AppResources/types.tsx:100
+#: components/AppResources/types.tsx:123
 #. Used in: Components > App Resources > Types
 msgid "expressSearchConfig"
 msgstr "Конфигурация быстрого поиска"
 
-#: components/AppResources/types.tsx:108
+#: components/AppResources/types.tsx:131
 #. Used in: Components > App Resources > Types
 msgid "webLinks"
 msgstr "Веб-ссылки"
 
-#: components/AppResources/types.tsx:116
+#: components/AppResources/types.tsx:139
 #. Used in: Components > App Resources > Types
 msgid "uiFormatters"
 msgstr "Форматировщики полей"
 
-#: components/AppResources/types.tsx:124
+#: components/AppResources/types.tsx:147
 #. Used in: Components > App Resources > Types
 msgid "dataObjectFormatters"
 msgstr "Форматировщики записей"
 
-#: components/AppResources/types.tsx:132
+#: components/AppResources/types.tsx:155
 #. Used in: Components > App Resources > Types
 msgid "searchDialogDefinitions"
 msgstr "Макеты диалогового окна поиска"
 
-#: components/AppResources/types.tsx:140
+#: components/AppResources/types.tsx:163
 #. Used in: Components > App Resources > Types
 msgid "dataEntryTables"
 msgstr "Таблицы ввода данных"
 
-#: components/AppResources/types.tsx:148
+#: components/AppResources/types.tsx:171
 #. Used in: Components > App Resources > Types
 msgid "interactionsTables"
 msgstr "Таблицы взаимодействий"
 
-#: components/AppResources/types.tsx:155
+#: components/AppResources/types.tsx:178
 #. Used in: Components > App Resources > Types
 msgid "otherXmlResource"
 msgstr "Другой XML-ресурс"
 
-#: components/AppResources/types.tsx:162
+#: components/AppResources/types.tsx:185
 #. Used in: Components > App Resources > Types
 msgid "otherJsonResource"
 msgstr "Другой JSON-ресурс"
 
-#: components/AppResources/types.tsx:169
+#: components/AppResources/types.tsx:192
 #. Used in: Components > App Resources > Types
 msgid "otherPropertiesResource"
 msgstr "Другой Properties-ресурс"
 
-#: components/AppResources/types.tsx:176
+#: components/AppResources/types.tsx:199
 #. Used in: Components > App Resources > Types
 msgid "otherAppResource"
 msgstr "Другой Ресурс"
@@ -147,7 +147,7 @@ msgstr "Фильтры"
 msgid "custom"
 msgstr "Настроить"
 
-#: components/AppResources/types.tsx:84
+#: components/AppResources/types.tsx:107
 #. Used in: Components > App Resources > Types
 msgid "leafletLayers"
 msgstr "Слои Leaflet"
@@ -168,12 +168,12 @@ msgstr "Визуальный редактор"
 msgid "selectResourceType"
 msgstr "Выберите тип ресурса"
 
-#: components/AppResources/tree.ts:104
+#: components/AppResources/tree.ts:116
 #. Used in: Components > App Resources > Tree
 msgid "globalPreferences"
 msgstr "Глобальные настройки"
 
-#: components/AppResources/tree.ts:106
+#: components/AppResources/tree.ts:118
 #. Used in: Components > App Resources > Tree
 msgid "remotePreferences"
 msgstr "Удаленные настройки"

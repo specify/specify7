@@ -12,7 +12,7 @@ msgstr ""
 "X-Generator: Weblate 4.16-dev\n"
 
 #: components/HomePage/index.tsx:49
-#: components/Router/Routes.tsx:414
+#: components/Router/Routes.tsx:421
 #. Used in: Components > Home Page > Index ⬤ Components > Router > Routes
 #, fuzzy
 msgid "pageTitle"
@@ -33,8 +33,8 @@ msgid "downloadInformation"
 msgstr "Télécharger l'information"
 
 #: components/HomePage/TaxonTiles.tsx:80
-#: components/UserPreferences/Renderers.tsx:198
-#. Used in: Components > Home Page > Taxon Tiles ⬤ Components > User Preferences > Renderers
+#: components/Preferences/Renderers.tsx:197
+#. Used in: Components > Home Page > Taxon Tiles ⬤ Components > Preferences > Renderers
 #, fuzzy
 msgid "taxonTiles"
 msgstr "Tuiles Taxon"

@@ -11,7 +11,7 @@ msgstr "Content-Type: text/plain\n"
 msgid "query"
 msgstr "Query"
 
-#: components/Header/menuItemDefinitions.ts:70
+#: components/Header/menuItemDefinitions.ts:71
 #: components/Router/OverlayRoutes.tsx:96
 #: components/Toolbar/Query.tsx:106
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Query
@@ -20,16 +20,19 @@ msgstr "Queries"
 
 #: components/Forms/SearchDialog.tsx:108
 #: components/Forms/SearchDialog.tsx:273
+#: components/Preferences/UserDefinitions.tsx:1305
 #: components/Security/registry.ts:202
-#: components/UserPreferences/Definitions.tsx:1307
-#. Used in: Components > Forms > Search Dialog ⬤ Components > Security > Registry ⬤ Components > User Preferences > Definitions
+#. Used in: Components > Forms > Search Dialog ⬤ Components > Preferences > User Definitions ⬤ Components > Security > Registry
 msgid "queryBuilder"
 msgstr "Query Builder"
 
-#: components/QueryBuilder/index.tsx:132
+#: components/QueryBuilder/index.tsx:128
 #: components/Router/OverlayRoutes.tsx:111
-#: components/Toolbar/QueryTables.tsx:125
-#. Used in: Components > Query Builder > Index ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Query Tables
+#: components/Statistics/AddStatDialog.tsx:65
+#: components/Statistics/AddStatDialog.tsx:138
+#: components/Statistics/AddStatDialog.tsx:147
+#: components/Toolbar/QueryTablesWrapper.tsx:152
+#. Used in: Components > Query Builder > Index ⬤ Components > Router > Overlay Routes ⬤ Components > Statistics > Add Stat Dialog ⬤ Components > Toolbar > Query Tables Wrapper
 msgid "newQueryName"
 msgstr "New Query"
 
@@ -38,66 +41,66 @@ msgstr "New Query"
 msgid "searchFields"
 msgstr "Searched fields"
 
-#: components/QueryBuilder/FieldFilter.tsx:371
+#: components/QueryBuilder/FieldFilter.tsx:411
 #. Used in: Components > Query Builder > Field Filter
 msgid "any"
 msgstr "Any"
 
-#: components/QueryBuilder/FieldFilter.tsx:300
-#: components/QueryBuilder/FieldFilter.tsx:346
+#: components/QueryBuilder/FieldFilter.tsx:335
+#: components/QueryBuilder/FieldFilter.tsx:385
 #. Used in: Components > Query Builder > Field Filter
 msgid "startValue"
 msgstr "Start Value"
 
-#: components/QueryBuilder/FieldFilter.tsx:309
+#: components/QueryBuilder/FieldFilter.tsx:346
 #. Used in: Components > Query Builder > Field Filter
 msgid "endValue"
 msgstr "End Value"
 
-#: components/QueryBuilder/Components.tsx:108
-#: components/QueryBuilder/Save.tsx:72
+#: components/QueryBuilder/Components.tsx:109
+#: components/QueryBuilder/Save.tsx:73
 #. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Save
 msgid "saveQuery"
 msgstr "Save Query"
 
-#: components/QueryBuilder/Save.tsx:72
+#: components/QueryBuilder/Save.tsx:73
 #. Used in: Components > Query Builder > Save
 msgid "saveClonedQuery"
 msgstr "Save query as..."
 
-#: components/QueryBuilder/Save.tsx:75
+#: components/QueryBuilder/Save.tsx:76
 #. Used in: Components > Query Builder > Save
 msgid "saveClonedQueryDescription"
 msgstr "The query will be saved with a new name leaving the current query unchanged."
 
-#: components/QueryBuilder/Components.tsx:167
+#: components/QueryBuilder/Components.tsx:168
 #. Used in: Components > Query Builder > Components
 msgid "queryDeleteIncomplete"
 msgstr "Query definition contains incomplete fields"
 
-#: components/QueryBuilder/Components.tsx:168
+#: components/QueryBuilder/Components.tsx:169
 #. Used in: Components > Query Builder > Components
 msgid "queryDeleteIncompleteDescription"
 msgstr ""
 "There are uncompleted fields in the query definition. Do you want to remove "
 "them?"
 
-#: components/QueryBuilder/Wrapped.tsx:128
+#: components/QueryBuilder/Wrapped.tsx:146
 #. Used in: Components > Query Builder > Wrapped
 msgid "queryUnloadProtect"
 msgstr "The new or modified query definition has not been saved"
 
-#: components/QueryBuilder/Components.tsx:265
+#: components/QueryBuilder/Components.tsx:266
 #. 🟥Example: Creating a Record Set from Query. Used in: Components > Query Builder > Components
 msgid "recordSetToQuery"
 msgstr "Creating a {recordSetTable:string} from Query"
 
-#: components/QueryBuilder/Components.tsx:270
+#: components/QueryBuilder/Components.tsx:271
 #. Used in: Components > Query Builder > Components
 msgid "recordSetToQueryDescription"
 msgstr "Generating {recordSetTable:string}..."
 
-#: components/QueryBuilder/Components.tsx:287
+#: components/QueryBuilder/Components.tsx:288
 #. Used in: Components > Query Builder > Components
 msgid "recordSetCreated"
 msgstr "{recordSetTable:string} Created"
@@ -137,12 +140,12 @@ msgstr ""
 "Query: \"{queryName:string}\" on {recordSetTable:string}: "
 "\"{recordSetName:string}\""
 
-#: components/QueryBuilder/fromTree.ts:185
+#: components/QueryBuilder/fromTree.ts:190
 #. 🟥Used in query builder header when querying on tree node usages. Used in: Components > Query Builder > From Tree
 msgid "treeQueryName"
 msgstr "{tableName:string} using \"{nodeFullName:string}"
 
-#: components/QueryBuilder/Wrapped.tsx:391
+#: components/QueryBuilder/Wrapped.tsx:409
 #. Used in: Components > Query Builder > Wrapped
 msgid "newButtonDescription"
 msgstr "Add New Field"
@@ -157,24 +160,24 @@ msgstr "Count"
 msgid "distinct"
 msgstr "Distinct"
 
-#: components/QueryBuilder/Export.tsx:97
+#: components/QueryBuilder/Export.tsx:101
 #. Used in: Components > Query Builder > Export
 msgid "createCsv"
 msgstr "Create CSV"
 
-#: components/QueryBuilder/Export.tsx:110
+#: components/QueryBuilder/Export.tsx:114
 #. Used in: Components > Query Builder > Export
 msgid "createKml"
 msgstr "Create KML"
 
-#: components/QueryBuilder/Components.tsx:228
+#: components/QueryBuilder/Components.tsx:229
 #: components/QueryBuilder/Results.tsx:502
 #: components/WorkBench/RecordSet.tsx:36
 #. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Results ⬤ Components > Work Bench > Record Set
 msgid "createRecordSet"
 msgstr "Create {recordSetTable:string}"
 
-#: components/QueryBuilder/Components.tsx:119
+#: components/QueryBuilder/Components.tsx:120
 #. Used in: Components > Query Builder > Components
 msgid "saveAs"
 msgstr "Save As"
@@ -184,34 +187,34 @@ msgstr "Save As"
 msgid "anyRank"
 msgstr "(any rank)"
 
-#: components/QueryBuilder/Line.tsx:518
-#: components/QueryBuilder/Line.tsx:519
+#: components/QueryBuilder/Line.tsx:525
+#: components/QueryBuilder/Line.tsx:526
 #: components/Toolbar/QueryTablesEdit.tsx:187
 #. Used in: Components > Query Builder > Line ⬤ Components > Toolbar > Query Tables Edit
 msgid "moveUp"
 msgstr "Move Up"
 
-#: components/QueryBuilder/Line.tsx:525
-#: components/QueryBuilder/Line.tsx:526
+#: components/QueryBuilder/Line.tsx:532
+#: components/QueryBuilder/Line.tsx:533
 #: components/Toolbar/QueryTablesEdit.tsx:193
 #. Used in: Components > Query Builder > Line ⬤ Components > Toolbar > Query Tables Edit
 msgid "moveDown"
 msgstr "Move Down"
 
-#: components/QueryBuilder/Line.tsx:493
-#: components/QueryBuilder/Line.tsx:501
+#: components/QueryBuilder/Line.tsx:500
+#: components/QueryBuilder/Line.tsx:508
 #. Used in: Components > Query Builder > Line
 msgid "sort"
 msgstr "Sort"
 
-#: components/QueryBuilder/Line.tsx:490
-#: components/QueryBuilder/Line.tsx:498
+#: components/QueryBuilder/Line.tsx:497
+#: components/QueryBuilder/Line.tsx:505
 #. Used in: Components > Query Builder > Line
 msgid "ascendingSort"
 msgstr "Ascending Sort"
 
-#: components/QueryBuilder/Line.tsx:492
-#: components/QueryBuilder/Line.tsx:500
+#: components/QueryBuilder/Line.tsx:499
+#: components/QueryBuilder/Line.tsx:507
 #. Used in: Components > Query Builder > Line
 msgid "descendingSort"
 msgstr "Descending Sort"
@@ -222,8 +225,8 @@ msgstr "Descending Sort"
 msgid "negate"
 msgstr "Negate"
 
-#: components/QueryBuilder/Line.tsx:471
-#: components/QueryBuilder/Line.tsx:476
+#: components/QueryBuilder/Line.tsx:478
+#: components/QueryBuilder/Line.tsx:483
 #. Used in: Components > Query Builder > Line
 msgid "showButtonDescription"
 msgstr "Show in results"
@@ -238,97 +241,97 @@ msgstr "(aggregated)"
 msgid "formattedInline"
 msgstr "(formatted)"
 
-#: components/QueryBuilder/FieldFilter.tsx:378
+#: components/QueryBuilder/FieldFilter.tsx:418
 #. Used in: Components > Query Builder > Field Filter
 msgid "like"
 msgstr "Like"
 
-#: components/QueryBuilder/FieldFilter.tsx:379
+#: components/QueryBuilder/FieldFilter.tsx:419
 #. 🟥Explains the use of special symbols for the "like" query filter. Used in: Components > Query Builder > Field Filter
 msgid "likeDescription"
 msgstr ""
 "Use \"%\" to match any number of characters.\n"
 "Use \"_\" to match a single character"
 
-#: components/QueryBuilder/FieldFilter.tsx:387
+#: components/QueryBuilder/FieldFilter.tsx:427
 #. Used in: Components > Query Builder > Field Filter
 msgid "equal"
 msgstr "Equal"
 
-#: components/QueryBuilder/FieldFilter.tsx:396
+#: components/QueryBuilder/FieldFilter.tsx:436
 #. Used in: Components > Query Builder > Field Filter
 msgid "greaterThan"
 msgstr "Greater than"
 
-#: components/QueryBuilder/FieldFilter.tsx:405
+#: components/QueryBuilder/FieldFilter.tsx:445
 #. Used in: Components > Query Builder > Field Filter
 msgid "lessThan"
 msgstr "Less than"
 
-#: components/QueryBuilder/FieldFilter.tsx:414
+#: components/QueryBuilder/FieldFilter.tsx:454
 #. Used in: Components > Query Builder > Field Filter
 msgid "greaterOrEqualTo"
 msgstr "Greater or Equal to"
 
-#: components/QueryBuilder/FieldFilter.tsx:423
+#: components/QueryBuilder/FieldFilter.tsx:463
 #. Used in: Components > Query Builder > Field Filter
 msgid "lessOrEqualTo"
 msgstr "Less or Equal to"
 
-#: components/QueryBuilder/FieldFilter.tsx:432
+#: components/QueryBuilder/FieldFilter.tsx:472
 #. Used in: Components > Query Builder > Field Filter
 msgid "true"
 msgstr "True"
 
-#: components/QueryBuilder/FieldFilter.tsx:440
+#: components/QueryBuilder/FieldFilter.tsx:480
 #. Used in: Components > Query Builder > Field Filter
 msgid "false"
 msgstr "False"
 
-#: components/QueryBuilder/FieldFilter.tsx:495
+#: components/QueryBuilder/FieldFilter.tsx:535
 #. Used in: Components > Query Builder > Field Filter
 msgid "trueOrNull"
 msgstr "True or Empty"
 
-#: components/QueryBuilder/FieldFilter.tsx:503
+#: components/QueryBuilder/FieldFilter.tsx:543
 #. Used in: Components > Query Builder > Field Filter
 msgid "falseOrNull"
 msgstr "False or Empty"
 
-#: components/QueryBuilder/FieldFilter.tsx:448
+#: components/QueryBuilder/FieldFilter.tsx:488
 #. Used in: Components > Query Builder > Field Filter
 msgid "between"
 msgstr "Between"
 
-#: components/QueryBuilder/FieldFilter.tsx:457
+#: components/QueryBuilder/FieldFilter.tsx:497
 #. Used in: Components > Query Builder > Field Filter
 msgid "in"
 msgstr "In"
 
-#: components/QueryBuilder/FieldFilter.tsx:458
+#: components/QueryBuilder/FieldFilter.tsx:498
 #. Used in: Components > Query Builder > Field Filter
 msgid "inDescription"
 msgstr "A comma-separated list of values"
 
-#: components/QueryBuilder/FieldFilter.tsx:470
-#: components/UserPreferences/Definitions.tsx:1189
-#. Used in: Components > Query Builder > Field Filter ⬤ Components > User Preferences > Definitions
+#: components/Preferences/UserDefinitions.tsx:1187
+#: components/QueryBuilder/FieldFilter.tsx:510
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter
 msgid "contains"
 msgstr "Contains"
 
-#: components/QueryBuilder/FieldFilter.tsx:488
+#: components/QueryBuilder/FieldFilter.tsx:528
 #. Used in: Components > Query Builder > Field Filter
 msgid "empty"
 msgstr "Empty"
 
-#: components/QueryBuilder/FieldFilter.tsx:305
+#: components/QueryBuilder/FieldFilter.tsx:341
 #. Used in: Components > Query Builder > Field Filter
 msgid "and"
 msgstr "and"
 
-#: components/QueryBuilder/FieldFilter.tsx:479
-#: components/UserPreferences/Definitions.tsx:1185
-#. Used in: Components > Query Builder > Field Filter ⬤ Components > User Preferences > Definitions
+#: components/Preferences/UserDefinitions.tsx:1183
+#: components/QueryBuilder/FieldFilter.tsx:519
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter
 msgid "startsWith"
 msgstr "Starts With"
 
@@ -411,10 +414,40 @@ msgstr "Tree Synonymize"
 msgid "treeDesynonymize"
 msgstr "Tree Desynonymize"
 
-#: components/QueryBuilder/FieldFilter.tsx:113
+#: components/QueryBuilder/FieldFilter.tsx:116
 #. Used in: Components > Query Builder > Field Filter
 msgid "tooLongErrorMessage"
 msgstr "Field value is too long. Max allowed length is {maxLength:number|formatted}"
+
+#: components/QueryBuilder/RelativeDate.tsx:144
+#. Used in: Components > Query Builder > Relative Date
+msgid "future"
+msgstr "Future"
+
+#: components/QueryBuilder/RelativeDate.tsx:145
+#. Used in: Components > Query Builder > Relative Date
+msgid "past"
+msgstr "Past"
+
+#: components/QueryBuilder/RelativeDate.tsx:169
+#. Used in: Components > Query Builder > Relative Date
+msgid "day"
+msgstr "Day"
+
+#: components/QueryBuilder/RelativeDate.tsx:170
+#. Used in: Components > Query Builder > Relative Date
+msgid "week"
+msgstr "Week"
+
+#: components/QueryBuilder/RelativeDate.tsx:171
+#. Used in: Components > Query Builder > Relative Date
+msgid "month"
+msgstr "Month"
+
+#: components/QueryBuilder/RelativeDate.tsx:172
+#. Used in: Components > Query Builder > Relative Date
+msgid "year"
+msgstr "Year"
 
 #: components/QueryBuilder/Import.tsx:148
 #. Used in: Components > Query Builder > Import

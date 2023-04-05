@@ -1,28 +1,28 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/UserPreferences/Definitions.tsx:1546
+#: components/Preferences/UserDefinitions.tsx:1544
 #: components/WorkBench/DevShowPlan.tsx:64
 #: components/WorkBench/Template.tsx:122
-#. Used in: Components > User Preferences > Definitions ⬤ Components > Work Bench > Dev Show Plan ⬤ Components > Work Bench > Template
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Work Bench > Dev Show Plan ⬤ Components > Work Bench > Template
 msgid "dataMapper"
 msgstr "Сопоставления"
 
 #: components/WbPlanView/State.tsx:37
-#: components/WorkBench/wbView.js:274
-#: components/WorkBench/wbView.js:1896
+#: components/WorkBench/wbView.js:275
+#: components/WorkBench/wbView.js:1917
 #. Used in: Components > Wb Plan View > State ⬤ Components > Work Bench > Wb View
 msgid "noUploadPlan"
 msgstr "План загрузки не определен"
 
-#: components/WorkBench/wbView.js:277
-#: components/WorkBench/wbView.js:1899
+#: components/WorkBench/wbView.js:278
+#: components/WorkBench/wbView.js:1920
 #. Used in: Components > Work Bench > Wb View
 msgid "noUploadPlanDescription"
 msgstr "Для этого набора данных не определен план загрузки. Создать эго сейчас?"
 
-#: components/WorkBench/wbView.js:385
 #: components/WorkBench/wbView.js:386
+#: components/WorkBench/wbView.js:387
 #. Used in: Components > Work Bench > Wb View
 msgid "unmappedColumn"
 msgstr "Несопоставленный столбец"
@@ -265,13 +265,13 @@ msgstr "AutoMapper"
 msgid "mappingEditor"
 msgstr "Обзор сопоставлений"
 
-#: components/QueryBuilder/Components.tsx:142
+#: components/QueryBuilder/Components.tsx:143
 #: components/WbPlanView/MapperComponents.tsx:367
 #. Used in: Components > Query Builder > Components ⬤ Components > Wb Plan View > Mapper Components
 msgid "hideFieldMapper"
 msgstr "Спрятать обзор сопоставлений"
 
-#: components/QueryBuilder/Components.tsx:143
+#: components/QueryBuilder/Components.tsx:144
 #: components/WbPlanView/MapperComponents.tsx:368
 #. Used in: Components > Query Builder > Components ⬤ Components > Wb Plan View > Mapper Components
 msgid "showFieldMapper"

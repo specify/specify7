@@ -1,7 +1,7 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/Header/menuItemDefinitions.ts:51
+#: components/Header/menuItemDefinitions.ts:52
 #: components/Router/OverlayRoutes.tsx:68
 #: components/Toolbar/TreeRepair.tsx:45
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Tree Repair
@@ -165,14 +165,14 @@ msgstr ""
 msgid "acceptedName"
 msgstr "Preferred: {name:string}"
 
-#: components/TreeView/index.tsx:102
+#: components/TreeView/index.tsx:99
 #. Used in: Components > Tree View > Index
 msgid "treeViewTitle"
 msgstr "{treeName:string} Tree"
 
-#: components/TreeView/Search.tsx:62
-#: components/TreeView/Search.tsx:63
-#: components/TreeView/Search.tsx:64
+#: components/TreeView/Search.tsx:66
+#: components/TreeView/Search.tsx:67
+#: components/TreeView/Search.tsx:68
 #. Used in: Components > Tree View > Search
 msgid "searchTreePlaceholder"
 msgstr "Search Tree"
@@ -212,7 +212,7 @@ msgstr "Direct {collectionObjectTable:string} Count"
 msgid "indirectCollectionObjectCount"
 msgstr "Indirect {collectionObjectTable:string} Count"
 
-#: components/TreeView/index.tsx:185
+#: components/TreeView/index.tsx:182
 #. Used in: Components > Tree View > Index
 msgid "editRanks"
 msgstr "Edit Ranks"

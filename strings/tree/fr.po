@@ -11,7 +11,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 4.16-dev\n"
 
-#: components/Header/menuItemDefinitions.ts:51
+#: components/Header/menuItemDefinitions.ts:52
 #: components/Router/OverlayRoutes.tsx:68
 #: components/Toolbar/TreeRepair.tsx:45
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Tree Repair
@@ -186,14 +186,14 @@ msgstr "\"{nodeName:string}\" ne sera plus synonyme de \"{synonymName:string}\".
 msgid "acceptedName"
 msgstr "Préféré : {name:string}"
 
-#: components/TreeView/index.tsx:102
+#: components/TreeView/index.tsx:99
 #. Used in: Components > Tree View > Index
 msgid "treeViewTitle"
 msgstr "Arbre {treeName:string}"
 
-#: components/TreeView/Search.tsx:62
-#: components/TreeView/Search.tsx:63
-#: components/TreeView/Search.tsx:64
+#: components/TreeView/Search.tsx:66
+#: components/TreeView/Search.tsx:67
+#: components/TreeView/Search.tsx:68
 #. Used in: Components > Tree View > Search
 msgid "searchTreePlaceholder"
 msgstr "Rechercher dans l'arbre"
@@ -236,7 +236,7 @@ msgstr "Comptage direct {collectionObjectTable:string}"
 msgid "indirectCollectionObjectCount"
 msgstr "Comptage {collectionObjectTable:string} indirect"
 
-#: components/TreeView/index.tsx:185
+#: components/TreeView/index.tsx:182
 #. Used in: Components > Tree View > Index
 #, fuzzy
 msgid "editRanks"

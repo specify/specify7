@@ -10,25 +10,25 @@ msgid "table"
 msgstr "Table"
 
 #: components/Attachments/index.tsx:201
-#: components/Router/Routes.tsx:355
+#: components/Router/Routes.tsx:356
 #: components/SchemaConfig/Tables.tsx:55
 #. Used in: Components > Attachments > Index ⬤ Components > Router > Routes ⬤ Components > Schema Config > Tables
 msgid "tables"
 msgstr "Tables"
 
-#: components/UserPreferences/Definitions.tsx:654
+#: components/Preferences/UserDefinitions.tsx:652
 #: components/WbPlanView/MapperComponents.tsx:435
-#. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Plan View > Mapper Components
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Plan View > Mapper Components
 msgid "tableName"
 msgstr "Table Name"
 
 #: components/Header/userToolDefinitions.ts:51
-#: components/Router/Routes.tsx:329
+#: components/Preferences/UserDefinitions.tsx:602
+#: components/Router/Routes.tsx:330
 #: components/SchemaConfig/Components.tsx:27
 #: components/SchemaConfig/Languages.tsx:34
 #: components/Security/registry.ts:198
-#: components/UserPreferences/Definitions.tsx:604
-#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Languages ⬤ Components > Security > Registry ⬤ Components > User Preferences > Definitions
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Languages ⬤ Components > Security > Registry
 msgid "schemaConfig"
 msgstr "Schema Config"
 
@@ -156,7 +156,7 @@ msgstr "Web Link"
 msgid "userDefined"
 msgstr "User Defined"
 
-#: components/Router/Routes.tsx:344
+#: components/Router/Routes.tsx:345
 #: components/SchemaConfig/Languages.tsx:27
 #: components/SchemaConfig/Languages.tsx:75
 #. Used in: Components > Router > Routes ⬤ Components > Schema Config > Languages
@@ -235,8 +235,8 @@ msgid "relationshipCount"
 msgstr "Relationship count"
 
 #: components/Header/userToolDefinitions.ts:120
-#: components/Router/Routes.tsx:33
-#: components/Router/Routes.tsx:37
+#: components/Router/Routes.tsx:34
+#: components/Router/Routes.tsx:38
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes
 msgid "databaseSchema"
 msgstr "Database Schema"

@@ -1,18 +1,18 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/QueryBuilder/Line.tsx:462
-#: components/QueryBuilder/Line.tsx:463
+#: components/QueryBuilder/Line.tsx:469
+#: components/QueryBuilder/Line.tsx:470
 #. Used in: Components > Query Builder > Line
 msgid "openMap"
 msgstr "Open Map"
 
 #: components/Leaflet/Map.tsx:24
+#: components/Preferences/UserDefinitions.tsx:1636
 #: components/QueryBuilder/ToMap.tsx:59
 #: components/QueryBuilder/ToMap.tsx:241
-#: components/UserPreferences/Definitions.tsx:1620
 #: components/WorkBench/Template.tsx:230
-#. Used in: Components > Leaflet > Map ⬤ Components > Query Builder > To Map ⬤ Components > User Preferences > Definitions ⬤ Components > Work Bench > Template
+#. Used in: Components > Leaflet > Map ⬤ Components > Preferences > User Definitions ⬤ Components > Query Builder > To Map ⬤ Components > Work Bench > Template
 msgid "geoMap"
 msgstr "GeoMap"
 
@@ -133,8 +133,8 @@ msgstr "Latitude"
 msgid "longitude"
 msgstr "Longitude"
 
-#: components/AppResources/Editor.tsx:97
-#: components/AppResources/Editor.tsx:99
+#: components/AppResources/Editor.tsx:98
+#: components/AppResources/Editor.tsx:100
 #: components/Leaflet/extend.ts:36
 #: components/Leaflet/extend.ts:37
 #. Used in: Components > App Resources > Editor ⬤ Components > Leaflet > Extend

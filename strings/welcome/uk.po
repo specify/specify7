@@ -2,7 +2,7 @@ msgid ""
 msgstr "Content-Type: text/plain\n"
 
 #: components/HomePage/index.tsx:49
-#: components/Router/Routes.tsx:414
+#: components/Router/Routes.tsx:421
 #. Used in: Components > Home Page > Index ⬤ Components > Router > Routes
 #, fuzzy
 msgid "pageTitle"
@@ -23,8 +23,8 @@ msgid "downloadInformation"
 msgstr "Завантажити інформацію"
 
 #: components/HomePage/TaxonTiles.tsx:80
-#: components/UserPreferences/Renderers.tsx:198
-#. Used in: Components > Home Page > Taxon Tiles ⬤ Components > User Preferences > Renderers
+#: components/Preferences/Renderers.tsx:197
+#. Used in: Components > Home Page > Taxon Tiles ⬤ Components > Preferences > Renderers
 #, fuzzy
 msgid "taxonTiles"
 msgstr "Taxon Tiles"

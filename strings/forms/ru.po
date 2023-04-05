@@ -12,14 +12,15 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 4.16-dev\n"
 
-#: components/UserPreferences/Definitions.tsx:588
-#. Used in: Components > User Preferences > Definitions
+#: components/Preferences/UserDefinitions.tsx:586
+#. Used in: Components > Preferences > User Definitions
 msgid "forms"
 msgstr "Формы"
 
 #: components/Atoms/DataEntry.tsx:141
 #: components/Forms/Save.tsx:229
-#. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Save
+#: components/Statistics/ResultsDialog.tsx:68
+#. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Save ⬤ Components > Statistics > Results Dialog
 msgid "clone"
 msgstr "Клонировать"
 
@@ -96,7 +97,7 @@ msgstr ""
 "и что палеоконтекст имеет географический возраст с заполнено как минимум "
 "время начала или время окончания."
 
-#: components/FormPlugins/PartialDateUi.tsx:309
+#: components/FormPlugins/PartialDateUi.tsx:317
 #. Used in: Components > Form Plugins > Partial Date Ui
 msgid "invalidDate"
 msgstr "Недействительная дата"
@@ -113,27 +114,27 @@ msgstr ""
 msgid "deleteConfirmationDescription"
 msgstr "Это действие не может быть отменено."
 
-#: components/FormPlugins/PartialDateUi.tsx:352
+#: components/FormPlugins/PartialDateUi.tsx:360
 #. Used in: Components > Form Plugins > Partial Date Ui
 msgid "datePrecision"
 msgstr "Точность даты"
 
-#: components/FormPlugins/PartialDateUi.tsx:384
+#: components/FormPlugins/PartialDateUi.tsx:392
 #. 🟥A placeholder for partial date field when "month /year" type is selected. Visible only in browsers that don't support the "month" input type. Used in: Components > Form Plugins > Partial Date Ui
 msgid "monthYear"
 msgstr "Месяц / Год"
 
-#: components/FormPlugins/PartialDateUi.tsx:399
+#: components/FormPlugins/PartialDateUi.tsx:407
 #. 🟥A placeholder for partial date field when "year" type is selected. Used in: Components > Form Plugins > Partial Date Ui
 msgid "yearPlaceholder"
 msgstr "ГГГГ"
 
-#: components/FormPlugins/PartialDateUi.tsx:427
+#: components/FormPlugins/PartialDateUi.tsx:435
 #. Used in: Components > Form Plugins > Partial Date Ui
 msgid "today"
 msgstr "Сегодня"
 
-#: components/FormPlugins/PartialDateUi.tsx:429
+#: components/FormPlugins/PartialDateUi.tsx:437
 #. Used in: Components > Form Plugins > Partial Date Ui
 msgid "todayButtonDescription"
 msgstr "Установить на текущую дату"
@@ -183,15 +184,15 @@ msgstr "Сначала нужко сохранить запись"
 
 #: components/FormSliders/Slider.tsx:31
 #: components/FormSliders/Slider.tsx:33
-#: components/UserPreferences/Definitions.tsx:977
-#. Used in: Components > Form Sliders > Slider ⬤ Components > User Preferences > Definitions
+#: components/Preferences/UserDefinitions.tsx:975
+#. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 msgid "firstRecord"
 msgstr "Первый объект"
 
 #: components/FormSliders/Slider.tsx:97
 #: components/FormSliders/Slider.tsx:99
-#: components/UserPreferences/Definitions.tsx:981
-#. Used in: Components > Form Sliders > Slider ⬤ Components > User Preferences > Definitions
+#: components/Preferences/UserDefinitions.tsx:979
+#. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 msgid "lastRecord"
 msgstr "Последний объект"
 
@@ -212,7 +213,7 @@ msgstr "Следующий объект"
 msgid "currentRecord"
 msgstr "Текущий объект (из {total:number|formatted})"
 
-#: components/Forms/ResourceView.tsx:337
+#: components/Forms/ResourceView.tsx:340
 #: components/Forms/Save.tsx:29
 #. Used in: Components > Forms > Resource View ⬤ Components > Forms > Save
 msgid "unsavedFormUnloadProtect"
@@ -340,8 +341,8 @@ msgstr "Поле обязательно для заполнения."
 msgid "invalidValue"
 msgstr "Недопустимое значение"
 
-#: components/FormPlugins/PartialDateUi.tsx:306
-#: components/FormPlugins/PartialDateUi.tsx:308
+#: components/FormPlugins/PartialDateUi.tsx:314
+#: components/FormPlugins/PartialDateUi.tsx:316
 #: utils/parser/definitions.ts:183
 #: utils/parser/definitions.ts:185
 #: utils/parser/definitions.ts:324
@@ -454,7 +455,7 @@ msgstr "Добавить в {recordSetTable:string}"
 msgid "removeFromRecordSet"
 msgstr "Удалить из {recordSetTable:string}"
 
-#: components/Molecules/AutoComplete.tsx:520
+#: components/Molecules/AutoComplete.tsx:529
 #. Used in: Components > Molecules > Auto Complete
 msgid "nothingFound"
 msgstr "Ничего не найдено"
@@ -532,7 +533,7 @@ msgstr "Использовать локализованные названия �
 msgid "historyOfEdits"
 msgstr "История изменений"
 
-#: components/FormMeta/EditHistory.tsx:81
+#: components/FormMeta/EditHistory.tsx:80
 #. Used in: Components > Form Meta > Edit History
 msgid "historyOfEditsQueryName"
 msgstr "История изменений для \"{formattedRecord:string}\""
@@ -563,7 +564,7 @@ msgstr "Поделиться объектом"
 msgid "findUsages"
 msgstr "Найти использование"
 
-#: components/FormMeta/PickListUsages.tsx:69
+#: components/FormMeta/PickListUsages.tsx:68
 #. Used in: Components > Form Meta > Pick List Usages
 msgid "usagesOfPickList"
 msgstr "Использование \"{pickList:string}\" списка выбора"
@@ -574,8 +575,8 @@ msgid "subForm"
 msgstr "Форма"
 
 #: components/FormMeta/SubViewMeta.tsx:37
-#: components/UserPreferences/Definitions.tsx:988
-#. Used in: Components > Form Meta > Sub View Meta ⬤ Components > User Preferences > Definitions
+#: components/Preferences/UserDefinitions.tsx:986
+#. Used in: Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 msgid "formTable"
 msgstr "Таблица"
 
@@ -610,7 +611,7 @@ msgstr "Отключить режим только для чтения"
 msgid "enableReadOnly"
 msgstr "Включить режим только для чтения"
 
-#: components/Toolbar/FormTablesEdit.tsx:125
+#: components/Toolbar/FormTablesEdit.tsx:129
 #. Used in: Components > Toolbar > Form Tables Edit
 msgid "configureDataEntryTables"
 msgstr "Настроить таблицы ввода данных"
@@ -621,8 +622,8 @@ msgstr "Настроить таблицы ввода данных"
 msgid "formMeta"
 msgstr "Мета-данные формы"
 
-#: components/AppResources/Editor.tsx:187
-#: components/Forms/BaseResourceView.tsx:104
+#: components/AppResources/Editor.tsx:188
+#: components/Forms/BaseResourceView.tsx:112
 #: components/Forms/dataObjFormatters.ts:149
 #. Used in: Components > App Resources > Editor ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Data Obj Formatters
 msgid "newResourceTitle"
@@ -633,13 +634,13 @@ msgstr "Новый {tableName:string}"
 msgid "resourceFormatter"
 msgstr "{tableName:string} #{id:number}"
 
-#: components/Forms/ResourceView.tsx:181
+#: components/Forms/ResourceView.tsx:180
 #. Used in: Components > Forms > Resource View
 #, fuzzy
 msgid "resourceDeleted"
 msgstr "Ресурс удален"
 
-#: components/Forms/ResourceView.tsx:184
+#: components/Forms/ResourceView.tsx:183
 #. Used in: Components > Forms > Resource View
 msgid "resourceDeletedDescription"
 msgstr "Успешно удален."

@@ -12,19 +12,19 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 4.16-dev\n"
 
-#: components/QueryBuilder/Line.tsx:462
-#: components/QueryBuilder/Line.tsx:463
+#: components/QueryBuilder/Line.tsx:469
+#: components/QueryBuilder/Line.tsx:470
 #. Used in: Components > Query Builder > Line
 #, fuzzy
 msgid "openMap"
 msgstr "Відкрийте карту"
 
 #: components/Leaflet/Map.tsx:24
+#: components/Preferences/UserDefinitions.tsx:1636
 #: components/QueryBuilder/ToMap.tsx:59
 #: components/QueryBuilder/ToMap.tsx:241
-#: components/UserPreferences/Definitions.tsx:1620
 #: components/WorkBench/Template.tsx:230
-#. Used in: Components > Leaflet > Map ⬤ Components > Query Builder > To Map ⬤ Components > User Preferences > Definitions ⬤ Components > Work Bench > Template
+#. Used in: Components > Leaflet > Map ⬤ Components > Preferences > User Definitions ⬤ Components > Query Builder > To Map ⬤ Components > Work Bench > Template
 #, fuzzy
 msgid "geoMap"
 msgstr "Геокарта"
@@ -168,8 +168,8 @@ msgstr "Широта"
 msgid "longitude"
 msgstr "Довгота"
 
-#: components/AppResources/Editor.tsx:97
-#: components/AppResources/Editor.tsx:99
+#: components/AppResources/Editor.tsx:98
+#: components/AppResources/Editor.tsx:100
 #: components/Leaflet/extend.ts:36
 #: components/Leaflet/extend.ts:37
 #. Used in: Components > App Resources > Editor ⬤ Components > Leaflet > Extend

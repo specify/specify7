@@ -11,12 +11,12 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 4.15.1\n"
 
-#: components/Molecules/AppTitle.tsx:49
+#: components/Molecules/AppTitle.tsx:57
 #. 🟥Formatting for the title in the web page title bar. Used in: Components > Molecules > App Title
 msgid "appTitle"
 msgstr "{baseTitle:string} | Specify 7"
 
-#: components/Molecules/AppTitle.tsx:48
+#: components/Molecules/AppTitle.tsx:56
 #. 🟥Default page title. Used in: Components > Molecules > App Title
 msgid "baseAppTitle"
 msgstr "Specify 7"

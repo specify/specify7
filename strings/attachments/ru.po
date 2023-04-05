@@ -13,10 +13,10 @@ msgstr ""
 "X-Generator: Weblate 4.16\n"
 
 #: components/Attachments/index.tsx:167
-#: components/Header/menuItemDefinitions.ts:96
-#: components/Router/Routes.tsx:159
-#: components/UserPreferences/Definitions.tsx:1123
-#. Used in: Components > Attachments > Index ⬤ Components > Header > Menu Item Definitions ⬤ Components > Router > Routes ⬤ Components > User Preferences > Definitions
+#: components/Header/menuItemDefinitions.ts:97
+#: components/Preferences/UserDefinitions.tsx:1121
+#: components/Router/Routes.tsx:160
+#. Used in: Components > Attachments > Index ⬤ Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes
 msgid "attachments"
 msgstr "Вложения"
 
@@ -40,8 +40,8 @@ msgstr "Настройте свой сервер вложений"
 
 #: components/Attachments/index.tsx:216
 #: components/FormMeta/SubViewMeta.tsx:42
-#: components/UserPreferences/Definitions.tsx:1110
-#. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > User Preferences > Definitions
+#: components/Preferences/UserDefinitions.tsx:1108
+#. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 msgid "orderBy"
 msgstr "Сортировать по"
 

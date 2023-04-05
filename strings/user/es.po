@@ -11,7 +11,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 4.16.2-dev\n"
 
-#: components/ChooseCollection/index.tsx:168
+#: components/ChooseCollection/index.tsx:176
 #: components/Header/UserTools.tsx:54
 #: components/Header/userToolDefinitions.ts:38
 #: components/Login/OicLogin.tsx:84
@@ -175,7 +175,7 @@ msgstr "Llave maestra"
 msgid "incorrectPassword"
 msgstr "La contraseña era incorrecta."
 
-#: components/Forms/OtherCollectionView.tsx:58
+#: components/Forms/OtherCollectionView.tsx:62
 #. Used in: Components > Forms > Other Collection View
 #, fuzzy
 msgid "noAccessToResource"
@@ -183,7 +183,7 @@ msgstr ""
 "No tiene acceso a ningún {collectionTable:string} que contenga este recurso "
 "a través de la cuenta actualmente iniciada"
 
-#: components/Forms/OtherCollectionView.tsx:63
+#: components/Forms/OtherCollectionView.tsx:67
 #. Used in: Components > Forms > Other Collection View
 #, fuzzy
 msgid "resourceInaccessible"
@@ -191,13 +191,13 @@ msgstr ""
 "No se puede acceder al recurso solicitado mientras se está conectado a la "
 "colección actual."
 
-#: components/Forms/OtherCollectionView.tsx:66
+#: components/Forms/OtherCollectionView.tsx:70
 #. Used in: Components > Forms > Other Collection View
 #, fuzzy
 msgid "selectCollection"
 msgstr "Seleccione una de las siguientes colecciones:"
 
-#: components/Forms/OtherCollectionView.tsx:84
+#: components/Forms/OtherCollectionView.tsx:88
 #. 🟥Example: You can login to the Collection, to proceed:. Used in: Components > Forms > Other Collection View
 #, fuzzy
 msgid "loginToProceed"
@@ -221,12 +221,15 @@ msgstr ""
 #: components/FormFields/Field.tsx:121
 #: components/FormFields/QueryComboBox.tsx:186
 #: components/Forms/dataObjFormatters.ts:267
-#. 🟥Used in field formatter if user doesn't have read access to the related table. Used in: Components > Form Fields > Field ⬤ Components > Form Fields > Query Combo Box ⬤ Components > Forms > Data Obj Formatters
+#: components/Statistics/Categories.tsx:49
+#: components/Statistics/StatItems.tsx:165
+#: components/Statistics/StatItems.tsx:238
+#. 🟥Used in field formatter if user doesn't have read access to the related table. Used in: Components > Form Fields > Field ⬤ Components > Form Fields > Query Combo Box ⬤ Components > Forms > Data Obj Formatters ⬤ Components > Statistics > Categories ⬤ Components > Statistics > Stat Items
 #, fuzzy
 msgid "noPermission"
 msgstr "SIN AUTORIZACIÓN"
 
-#: components/Forms/DataTask.tsx:128
+#: components/Forms/DataTask.tsx:132
 #: components/Permissions/PermissionDenied.tsx:223
 #. Used in: Components > Forms > Data Task ⬤ Components > Permissions > Permission Denied
 #, fuzzy
@@ -241,7 +244,7 @@ msgstr ""
 "No tiene ninguna política o rol que le dé permiso para realizar la "
 "siguiente acción:"
 
-#: components/Forms/DataTask.tsx:131
+#: components/Forms/DataTask.tsx:135
 #. Used in: Components > Forms > Data Task
 #, fuzzy
 msgid "emptyRecordSetsReadOnly"
@@ -255,7 +258,7 @@ msgstr ""
 msgid "permissionDeniedForUrl"
 msgstr "Permiso denegado al acceder a <url />"
 
-#: components/ChooseCollection/index.tsx:155
+#: components/ChooseCollection/index.tsx:163
 #. Used in: Components > Choose Collection > Index
 #, fuzzy
 msgid "noAccessToCollections"
@@ -300,7 +303,7 @@ msgstr "Guardar usuario primero"
 msgid "mustBeManager"
 msgstr "El usuario debe guardarse primero como Administrador"
 
-#: components/AppResources/tree.ts:215
+#: components/AppResources/tree.ts:226
 #: components/Security/CollectionRole.tsx:198
 #. Used in: Components > App Resources > Tree ⬤ Components > Security > Collection Role
 #, fuzzy
@@ -360,7 +363,7 @@ msgid "configureCollectionAccess"
 msgstr "Seleccione el acceso a la colección de usuarios"
 
 #: components/Header/userToolDefinitions.ts:68
-#: components/Router/Routes.tsx:61
+#: components/Router/Routes.tsx:62
 #: components/Toolbar/Security.tsx:100
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Toolbar > Security
 #, fuzzy
@@ -490,14 +493,14 @@ msgstr "Todas las acciones"
 msgid "collectionAccess"
 msgstr "Habilitar acceso a la colección"
 
-#: components/Router/Routes.tsx:130
+#: components/Router/Routes.tsx:131
 #: components/Security/RoleTemplate.tsx:96
 #. Used in: Components > Router > Routes ⬤ Components > Security > Role Template
 #, fuzzy
 msgid "createRole"
 msgstr "Crear rol"
 
-#: components/Router/Routes.tsx:138
+#: components/Router/Routes.tsx:139
 #: components/Security/RoleTemplate.tsx:83
 #. Used in: Components > Router > Routes ⬤ Components > Security > Role Template
 #, fuzzy
@@ -700,3 +703,9 @@ msgstr ""
 #, fuzzy
 msgid "accountSetupOptions"
 msgstr "Opciones de configuración de cuenta"
+
+#: components/QueryBuilder/SpecifyUserAutoComplete.tsx:9
+#: components/QueryBuilder/SpecifyUserAutoComplete.tsx:10
+#. Used in: Components > Query Builder > Specify User Auto Complete
+msgid "currentUser"
+msgstr ""
