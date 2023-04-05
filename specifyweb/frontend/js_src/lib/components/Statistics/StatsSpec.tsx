@@ -371,7 +371,7 @@ export const statsSpec: StatsSpec = {
                     path: formattedEntry,
                   },
                   {
-                    path: 'catalogedDate',
+                    path: 'timestampCreated',
                     operStart: queryFieldFilters.greaterOrEqual.id,
                     startValue: `${today} - 1 week`,
                   },
@@ -390,7 +390,7 @@ export const statsSpec: StatsSpec = {
                     path: formattedEntry,
                   },
                   {
-                    path: 'catalogedDate',
+                    path: 'timestampCreated',
                     operStart: queryFieldFilters.greaterOrEqual.id,
                     startValue: `${today} - 1 month`,
                   },
@@ -409,7 +409,7 @@ export const statsSpec: StatsSpec = {
                     path: formattedEntry,
                   },
                   {
-                    path: 'catalogedDate',
+                    path: 'timestampCreated',
                     operStart: queryFieldFilters.greaterOrEqual.id,
                     startValue: `${today} - 1 year`,
                   },
