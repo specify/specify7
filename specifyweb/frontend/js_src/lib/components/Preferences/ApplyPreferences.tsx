@@ -51,7 +51,7 @@ export function SetCssVariables(): null {
     []
   );
   /*
-   * Could do this using usePref, but I am afraid about the performance impact
+   * Could do this using userPreferences.use, but I am afraid about the performance impact
    * of ~30 user hooks, each of which has ~5 React hooks.
    */
   const prefs = React.useMemo(

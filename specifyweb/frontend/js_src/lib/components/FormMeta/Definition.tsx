@@ -70,7 +70,7 @@ function UseAutoForm({ model }: { readonly model: SpecifyModel }): JSX.Element {
     'preferences',
     'useCustomForm'
   );
-  const [useAllFields, setUseAllFields] = usePref(
+  const [useAllFields, setUseAllFields] = userPreferences.use(
     'form',
     'definition',
     'autoGenerateWillAllFields'
