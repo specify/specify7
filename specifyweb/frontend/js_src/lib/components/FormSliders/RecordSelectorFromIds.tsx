@@ -45,7 +45,6 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   onAdd: handleAdd,
   onClone: handleClone,
   onDelete: handleDelete,
-  createNewRecordSet,
   ...rest
 }: Omit<RecordSelectorProps<SCHEMA>, 'index' | 'records'> & {
   /*
@@ -70,7 +69,6 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   readonly onClone:
     | ((newResource: SpecifyResource<SCHEMA>) => void)
     | undefined;
-  readonly createNewRecordSet?: (ids: RA<number | undefined>) => void;
 }): JSX.Element | null {
   const [records, setRecords] = React.useState<
     RA<SpecifyResource<SCHEMA> | undefined>
@@ -187,9 +185,6 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
       })
     : commonText.delete();
 
-  // Determine if in scope of new data entry and set title header
-  const [recordsetid] = useSearchParameter('recordsetid');
-
   return (
     <>
       <ResourceView
@@ -198,50 +193,44 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
           <div className="flex flex-col items-center gap-2 md:contents md:flex-row md:gap-8">
             <div className="flex items-center gap-2 md:contents">
               {headerButtons}
-
               <DataEntry.Visit
                 resource={
                   !isDependent && dialog !== false ? resource : undefined
                 }
               />
-              {recordsetid === undefined ? undefined : (
-                <>
-                  {hasTablePermission(
-                    model.name,
-                    isDependent ? 'create' : 'read'
-                  ) && typeof handleAdding === 'function' ? (
-                    <DataEntry.Add
-                      aria-label={addLabel}
-                      disabled={mode === 'view'}
-                      title={addLabel}
-                      onClick={handleAdding}
-                    />
-                  ) : undefined}
 
-                  {typeof handleRemove === 'function' && canRemove ? (
-                    <DataEntry.Remove
-                      aria-label={removeLabel}
-                      disabled={resource === undefined || mode === 'view'}
-                      title={removeLabel}
-                      onClick={(): void => handleRemove('minusButton')}
-                    />
-                  ) : undefined}
+              {hasTablePermission(
+                model.name,
+                isDependent ? 'create' : 'read'
+              ) && typeof handleAdding === 'function' ? (
+                <DataEntry.Add
+                  aria-label={addLabel}
+                  disabled={mode === 'view'}
+                  title={addLabel}
+                  onClick={handleAdding}
+                />
+              ) : undefined}
 
-                  {typeof newResource === 'object' ? (
-                    <p className="flex-1">{formsText.creatingNewRecord()}</p>
-                  ) : (
-                    <span
-                      className={`flex-1 ${
-                        dialog === false ? '-ml-2' : '-ml-4'
-                      }`}
-                    />
-                  )}
+              {typeof handleRemove === 'function' && canRemove ? (
+                <DataEntry.Remove
+                  aria-label={removeLabel}
+                  disabled={resource === undefined || mode === 'view'}
+                  title={removeLabel}
+                  onClick={(): void => handleRemove('minusButton')}
+                />
+              ) : undefined}
 
-                  {specifyNetworkBadge}
-                </>
+              {typeof newResource === 'object' && handleAdd !== undefined ? (
+                <p className="flex-1">{formsText.creatingNewRecord()}</p>
+              ) : (
+                <span
+                  className={`flex-1 ${dialog === false ? '-ml-2' : '-ml-4'}`}
+                />
               )}
+
+              {specifyNetworkBadge}
             </div>
-            <div>{slider}</div>
+            {rest.totalCount > 1 && <div>{slider}</div>}
           </div>
         )}
         isDependent={isDependent}

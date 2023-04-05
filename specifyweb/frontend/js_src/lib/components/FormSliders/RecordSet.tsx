@@ -256,11 +256,11 @@ function RecordSet<SCHEMA extends AnySchema>({
   // Fetch ID of record at current index
   const currentRecordId = ids[currentIndex];
   React.useEffect(() => {
-    if (currentRecordId === undefined) {
+    if (currentRecordId === undefined)
       if (recordSet.isNew() && !currentRecord.isNew())
         setIds([currentRecord.id]);
       else handleFetch(currentIndex);
-    }
+
     return (): void => {
       previousIndex.current = currentIndex;
     };
@@ -301,9 +301,9 @@ function RecordSet<SCHEMA extends AnySchema>({
   ): Promise<void> {
     await recordSet.save();
     await Promise.all(
-      ids.map(async (resource) =>
+      ids.map(async (recordId) =>
         createResource('RecordSetItem', {
-          recordId: resource,
+          recordId: recordId,
           recordSet: recordSet.get('resource_uri'),
         })
       )
@@ -315,14 +315,15 @@ function RecordSet<SCHEMA extends AnySchema>({
     <>
       <RecordSelectorFromIds<SCHEMA>
         {...rest}
-        createNewRecordSet={createNewRecordSet}
         defaultIndex={currentIndex}
         dialog={dialog}
         headerButtons={
-          recordSet.isNew() && ids.length > 0 && !currentRecord.isNew() ? (
-            <Button.Orange onClick={() => loading(createNewRecordSet(ids))}>
-              {commonText.newRecordSet()}
-            </Button.Orange>
+          recordSet.isNew() ? (
+            ids.length > 0 && !currentRecord.isNew() ? (
+              <Button.Orange onClick={() => loading(createNewRecordSet(ids))}>
+                {commonText.newRecordSet()}
+              </Button.Orange>
+            ) : undefined
           ) : (
             <EditRecordSetButton recordSet={recordSet} />
           )
@@ -344,7 +345,7 @@ function RecordSet<SCHEMA extends AnySchema>({
         }
         totalCount={totalCount}
         onAdd={
-          hasToolPermission('recordSets', 'create')
+          hasToolPermission('recordSets', 'create') && !recordSet.isNew()
             ? async (resources) =>
                 // Detect duplicate record set item
                 Promise.all(
@@ -379,7 +380,8 @@ function RecordSet<SCHEMA extends AnySchema>({
         onClose={handleClose}
         onDelete={
           (recordSet.isNew() || hasToolPermission('recordSets', 'delete')) &&
-          (!currentRecord.isNew() || totalCount !== 0)
+          (!currentRecord.isNew() || totalCount !== 0) &&
+          !recordSet.isNew()
             ? (_index, source): void => {
                 if (currentRecord.isNew()) return;
                 loading(
