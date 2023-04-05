@@ -1,4 +1,4 @@
-from typing import Dict, Any, Optional, Tuple, Callable
+from typing import Dict, Any, Optional, Tuple, Callable, Union
 
 from specifyweb.specify.datamodel import datamodel, Table, Relationship
 from specifyweb.specify.load_datamodel import DoesNotExistError
@@ -7,7 +7,7 @@ from specifyweb.specify.uiformatters import get_uiformatter
 from specifyweb.stored_queries.format import get_date_format
 
 from .uploadable import Uploadable, ScopedUploadable
-from .upload_table import UploadTable, ScopedUploadTable, OneToOneTable, ScopedOneToOneTable
+from .upload_table import UploadTable, DeferredScopeUploadTable, ScopedUploadTable, OneToOneTable, ScopedOneToOneTable
 from .tomany import ToManyRecord, ScopedToManyRecord
 from .treerecord import TreeRecord, ScopedTreeRecord
 from .column_options import ColumnOptions, ExtendedColumnOptions
@@ -107,7 +107,7 @@ def extend_columnoptions(colopts: ColumnOptions, collection, tablename: str, fie
         dateformat=get_date_format(),
     )
 
-def apply_scoping_to_uploadtable(ut: UploadTable, collection) -> ScopedUploadTable:
+def apply_scoping_to_uploadtable(ut: Union[UploadTable, DeferredScopeUploadTable], collection) -> ScopedUploadTable:
     table = datamodel.get_table_strict(ut.name)
 
     adjust_to_ones = to_one_adjustments(collection, table)

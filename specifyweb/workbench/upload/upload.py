@@ -15,13 +15,13 @@ from specifyweb.specify.datamodel import datamodel
 from specifyweb.specify.auditlog import auditlog
 from specifyweb.specify.datamodel import Table
 from specifyweb.specify.tree_extras import renumber_tree, reset_fullnames
-from specifyweb.workbench.upload.upload_table import DeferredScopeUploadTable
+from specifyweb.workbench.upload.upload_table import DeferredScopeUploadTable, ScopedUploadTable
 from . import disambiguation
 from .upload_plan_schema import schema, parse_plan_with_basetable
 from .upload_result import Uploaded, UploadResult, ParseFailures, \
     json_to_UploadResult
 from .uploadable import ScopedUploadable, Row, Disambiguation, Auditor
-from ..models import Spdataset, Collection
+from specifyweb.specify.models import Spdataset
 
 Rows = Union[List[Row], csv.DictReader]
 Progress = Callable[[int, Optional[int]], None]
@@ -189,9 +189,9 @@ def get_ds_upload_plan(collection, ds: Spdataset) -> Tuple[Table, ScopedUploadab
     base_table, plan = parse_plan_with_basetable(collection, plan)
     return base_table, plan.apply_scoping(collection)
 
-def apply_deferred_scopes(upload_plan: ScopedUploadable, rows: Rows) -> ScopedUploadable:
+def apply_deferred_scopes(upload_plan: ScopedUploadTable, rows: Rows) -> ScopedUploadTable:
 
-    def collection_override_function(deferred_upload_plan: DeferredScopeUploadTable, row_index: int) -> Collection:
+    def collection_override_function(deferred_upload_plan: DeferredScopeUploadTable, row_index: int) -> models.Collection:
         related_uploadable = upload_plan.toOne[deferred_upload_plan.related_key]
         related_column_name = related_uploadable.wbcols['name'][0]
         filter_value = rows[row_index][related_column_name]

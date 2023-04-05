@@ -72,12 +72,14 @@ class DeferredScopeUploadTable(NamedTuple):
     name: str
     wbcols: Dict[str, ColumnOptions]
     static: Dict[str, Any]
-    toOne: Dict[str, Uploadable]
-    toMany: Dict[str, List[ToManyRecord]]
+    toOne: Dict[str, Union[Uploadable, ScopedUploadable]]
+    toMany: Dict[str, List[Union[ToManyRecord, ScopedToManyRecord]]]
 
     related_key: str
     relationship_name: str
     filter_field: str
+
+    disambiguation: Disambiguation = None
 
     """ In a DeferredScopeUploadTable, the overrideScope value can be either an integer 
     (which follows the same logic as in UploadTable), or a function which has the parameter

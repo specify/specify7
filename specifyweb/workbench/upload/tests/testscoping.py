@@ -2,7 +2,7 @@ from ..upload_plan_schema import schema, parse_plan
 from ..upload_table import UploadTable, OneToOneTable, ScopedUploadTable, ScopedOneToOneTable, DeferredScopeUploadTable, ColumnOptions, ExtendedColumnOptions
 from ..upload import do_upload
 
-from specifyweb.specify.models import Splocalecontaineritem, Splocalecontainer, Collectionobject, Collectionrelationship
+from specifyweb.specify import models
 from .base import UploadTestsBase, get_table
 from . import example_plan
 
@@ -191,7 +191,7 @@ class ScopingTests(UploadTestsBase):
                     nullAllowed=True, 
                     default=None, 
                     uiformatter=None, 
-                    schemaitem= Splocalecontaineritem.objects.get(name='name', container=Splocalecontainer.objects.get(name='collectionreltype', discipline_id=self.discipline.id)), 
+                    schemaitem= models.Splocalecontaineritem.objects.get(name='name', container=models.Splocalecontainer.objects.get(name='collectionreltype', discipline_id=self.discipline.id)), 
                     picklist=None, 
                     dateformat='%m/%d/%Y')}, 
                 static={}, 
@@ -216,8 +216,8 @@ class ScopingTests(UploadTestsBase):
         left_side_cat_nums = [n.zfill(9) for n in '32 23'.split()]
         right_side_cat_nums = [n.zfill(9) for n in '999 888'.split()]
 
-        left_side_query = Collectionobject.objects.filter(collection_id=self.collection.id, catalognumber__in=left_side_cat_nums)
-        right_side_query = Collectionobject.objects.filter(collection_id=self.right_side_collection.id, catalognumber__in=right_side_cat_nums)
+        left_side_query = models.Collectionobject.objects.filter(collection_id=self.collection.id, catalognumber__in=left_side_cat_nums)
+        right_side_query = models.Collectionobject.objects.filter(collection_id=self.right_side_collection.id, catalognumber__in=right_side_cat_nums)
 
         self.assertEqual(left_side_query.count(), 2)
         self.assertEqual(right_side_query.count(), 2)
