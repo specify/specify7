@@ -15,9 +15,9 @@ import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { AgentVariant, Tables } from '../DataModel/types';
 import { strictDependentFields } from '../FormMeta/CarryForward';
 import { format } from '../Forms/dataObjFormatters';
-import { getUserPref } from '../UserPreferences/helpers';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { unMergeableFields } from './Compare';
+import { userPreferences } from '../Preferences/userPreferences';
 
 /**
  * Automatically merge n records into one. Used for smart defaults
@@ -187,7 +187,8 @@ export const postMergeResource = async (
 const postProcessors: Partial<RR<keyof Tables, typeof postMergeResource>> = {
   // Add agent variants
   async Agent(resources, merged) {
-    if (!getUserPref('recordMerging', 'agent', 'createVariants')) return merged;
+    if (!userPreferences.get('recordMerging', 'agent', 'createVariants'))
+      return merged;
 
     const [formattedMerged, ...formattedResources] = await Promise.all(
       [merged as SerializedResource<AnySchema>, ...resources].map(

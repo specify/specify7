@@ -262,7 +262,7 @@ function Option({
 
   if ((!isEnabled || isDefault) && !isRelationship)
     classes.push(
-      '!cursor-not-allowed text-gray-500',
+      '!cursor-not-allowed dark:text-white',
       'bg-[color:var(--custom-select-b1)]'
     );
   else
@@ -273,7 +273,7 @@ function Option({
 
   if (isDefault)
     classes.push(
-      'custom-select-option-selected cursor-auto',
+      'custom-select-option-selected cursor-auto dark:text-white',
       'bg-[color:var(--custom-select-accent)]'
     );
 

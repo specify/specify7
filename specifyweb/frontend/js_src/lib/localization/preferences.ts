@@ -1402,6 +1402,9 @@ export const preferencesText = createDictionary({
       записи на основе вариаций имени/фамилии.
     `,
   },
+  collectionPreferences: {
+    'en-us': 'Collection Preferences',
+  },
   rememberDialogSizes: {
     'en-us': 'Remember dialog window sizes',
     'ru-ru': 'Запоминать размеры диалоговых окон',

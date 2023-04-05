@@ -333,7 +333,7 @@ export function QueryComboBox({
     hasTablePermission(field.relatedModel.name, 'create');
 
   return (
-    <div className="flex w-full min-w-[theme(spacing.40)] items-center">
+    <div className="flex w-full min-w-[theme(spacing.40)] items-center sm:min-w-[unset]">
       <AutoComplete<string>
         aria-label={undefined}
         disabled={

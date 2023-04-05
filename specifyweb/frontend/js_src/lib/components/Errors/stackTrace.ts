@@ -24,9 +24,13 @@ Promise.all(
     remotePrefs: import('../InitialContext/remotePrefs').then(
       async ({ fetchContext }) => fetchContext
     ),
-    userPreferences: import('../UserPreferences/helpers').then(
-      async ({ preferencesPromise, getRawUserPreferences }) =>
-        preferencesPromise.then(() => getRawUserPreferences())
+    userPreferences: import('../Preferences/userPreferences').then(
+      ({ userPreferences }) =>
+        userPreferences.fetch().then(() => userPreferences.getRaw())
+    ),
+    collectionPreferences: import('../Preferences/collectionPreferences').then(
+      ({ collectionPreferences }) =>
+        collectionPreferences.fetch().then(() => collectionPreferences.getRaw())
     ),
     userInformation: import('../InitialContext/userInformation').then(
       async ({ fetchContext }) => fetchContext

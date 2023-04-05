@@ -17,6 +17,7 @@ import { queryText } from '../../localization/query';
 import { reportsText } from '../../localization/report';
 import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
+import { statsText } from '../../localization/stats';
 import type { Language } from '../../localization/utils/config';
 import { LANGUAGE } from '../../localization/utils/config';
 import { wbPlanText } from '../../localization/wbPlan';
@@ -32,6 +33,7 @@ import { schema } from '../DataModel/schema';
 import type { JavaType } from '../DataModel/specifyField';
 import type { Collection, Tables } from '../DataModel/types';
 import { error, softError } from '../Errors/assert';
+import type { StatLayout } from '../Statistics/types';
 import {
   LanguagePreferencesItem,
   SchemaLanguagePreferenceItem,
@@ -123,11 +125,11 @@ const altKeyName = globalThis.navigator?.appVersion.includes('Mac')
 /**
  * This is used to enforce the same generic value be used inside a PreferenceItem
  */
-const defineItem = <VALUE,>(
+export const defineItem = <VALUE,>(
   definition: PreferenceItem<VALUE>
 ): PreferenceItem<VALUE> => definition;
 
-export type GenericPreferencesCategories = IR<{
+export type GenericPreferences = IR<{
   readonly title: LocalizedString | (() => LocalizedString);
   readonly description?: LocalizedString | (() => LocalizedString);
   readonly subCategories: IR<{
@@ -136,7 +138,7 @@ export type GenericPreferencesCategories = IR<{
     readonly items: IR<PreferenceItem<any>>;
   }>;
 }>;
-export const preferenceDefinitions = {
+export const userPreferenceDefinitions = {
   general: {
     title: preferencesText.general(),
     subCategories: {
@@ -466,10 +468,6 @@ export const preferenceDefinitions = {
             renderer: WelcomePageModePreferenceItem,
             container: 'div',
           }),
-          /*
-           * FEATURE: allow selecting attachments
-           *   See https://github.com/specify/specify7/issues/2999
-           */
           source: defineItem<string>({
             title: <></>,
             requiresReload: false,
@@ -1661,6 +1659,24 @@ export const preferenceDefinitions = {
       },
     },
   },
+  statistics: {
+    title: statsText.statistics(),
+    subCategories: {
+      appearance: {
+        title: preferencesText.appearance(),
+        items: {
+          layout: defineItem<RA<StatLayout> | undefined>({
+            title: 'Defines the layout of the stats page',
+            requiresReload: false,
+            visible: false,
+            defaultValue: undefined,
+            renderer: () => <>{error('This should not get called')}</>,
+            container: 'label',
+          }),
+        },
+      },
+    },
+  },
   leaflet: {
     title: localityText.geoMap(),
     subCategories: {
@@ -1715,14 +1731,12 @@ export const preferenceDefinitions = {
   },
 } as const;
 
-ensure<GenericPreferencesCategories>()(preferenceDefinitions);
-
 // Use tree table labels as titles for the tree editor sections
 import('../DataModel/schema')
   .then(async ({ fetchContext, schema }) =>
     fetchContext.then(() => {
       const treeSearchBehavior =
-        preferenceDefinitions.treeEditor.subCategories.behavior.items
+        userPreferenceDefinitions.treeEditor.subCategories.behavior.items
           .searchField;
       if ('values' in treeSearchBehavior) {
         const values = treeSearchBehavior.values as RA<{
@@ -1757,5 +1771,4 @@ import('../DataModel/schema')
   // Not using softFail here to avoid circular dependency
   .catch(console.error);
 
-export type Preferences = GenericPreferencesCategories &
-  typeof preferenceDefinitions;
+ensure<GenericPreferences>()(userPreferenceDefinitions);

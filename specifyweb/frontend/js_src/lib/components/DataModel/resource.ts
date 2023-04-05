@@ -6,8 +6,8 @@ import { f } from '../../utils/functools';
 import type { DeepPartial, RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import { keysToLowerCase, removeKey } from '../../utils/utils';
+import { userPreferences } from '../Preferences/userPreferences';
 import { formatUrl } from '../Router/queryString';
-import { getUserPref } from '../UserPreferences/helpers';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { addMissingFields } from './addMissingFields';
 import { businessRuleDefs } from './businessRuleDefs';
@@ -243,8 +243,9 @@ const getCarryOverPreference = (
 ): RA<string> =>
   (cloneAll
     ? undefined
-    : getUserPref('form', 'preferences', 'carryForward')?.[model.name]) ??
-  getFieldsToClone(model);
+    : userPreferences.get('form', 'preferences', 'carryForward')?.[
+        model.name
+      ]) ?? getFieldsToClone(model);
 
 export const getFieldsToClone = (model: SpecifyModel): RA<string> =>
   model.fields

@@ -19,7 +19,7 @@ import { dateParts } from '../Atoms/Internationalization';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
-import { usePref } from '../UserPreferences/usePref';
+import { userPreferences } from '../Preferences/userPreferences';
 
 export function isInputSupported(type: string): boolean {
   const input = document.createElement('input');
@@ -134,8 +134,16 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
   readonly id: string | undefined;
   readonly canChangePrecision?: boolean;
 }): JSX.Element {
-  const [useDatePicker] = usePref('form', 'ui', 'useAccessibleFullDatePicker');
-  const [useMonthPicker] = usePref('form', 'ui', 'useAccessibleMonthPicker');
+  const [useDatePicker] = userPreferences.use(
+    'form',
+    'ui',
+    'useAccessibleFullDatePicker'
+  );
+  const [useMonthPicker] = userPreferences.use(
+    'form',
+    'ui',
+    'useAccessibleMonthPicker'
+  );
   const {
     dateType,
     dateSupported,

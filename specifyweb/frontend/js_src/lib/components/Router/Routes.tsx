@@ -6,6 +6,7 @@ import { headerText } from '../../localization/header';
 import { preferencesText } from '../../localization/preferences';
 import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
+import { statsText } from '../../localization/stats';
 import { userText } from '../../localization/user';
 import { welcomeText } from '../../localization/welcome';
 import { wbText } from '../../localization/workbench';
@@ -320,7 +321,7 @@ export const routes: RA<EnhancedRoute> = [
     path: 'user-preferences',
     title: preferencesText.preferences(),
     element: () =>
-      import('../UserPreferences').then(
+      import('../Preferences').then(
         ({ PreferencesWrapper }) => PreferencesWrapper
       ),
   },
@@ -395,6 +396,12 @@ export const routes: RA<EnhancedRoute> = [
           ),
       },
     ],
+  },
+  {
+    path: 'stats',
+    title: statsText.statistics(),
+    element: () =>
+      import('../Statistics/index').then(({ StatsPage }) => StatsPage),
   },
   {
     path: 'developer',

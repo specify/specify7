@@ -15,8 +15,8 @@ import { icons } from '../Atoms/Icons';
 import { compareStrings } from '../Atoms/Internationalization';
 import type { TagProps } from '../Atoms/wrapper';
 import { softFail } from '../Errors/Crash';
-import { usePref } from '../UserPreferences/usePref';
 import { Portal } from './Portal';
+import { userPreferences } from '../Preferences/userPreferences';
 
 const debounceRate = 300;
 
@@ -115,7 +115,11 @@ export function AutoComplete<T>({
   >(undefined);
   const resultsRef = React.useRef<RA<AutoCompleteItem<T>> | undefined>(results);
 
-  const [searchAlgorithm] = usePref('form', 'autoComplete', 'searchAlgorithm');
+  const [searchAlgorithm] = userPreferences.use(
+    'form',
+    'autoComplete',
+    'searchAlgorithm'
+  );
 
   const filterItems = React.useCallback(
     (newResults: RA<AutoCompleteItem<T>>, pendingValue: string) =>
@@ -251,7 +255,7 @@ export function AutoComplete<T>({
 
   const isInDialog = typeof React.useContext(DialogContext) === 'function';
 
-  const [autoGrowAutoComplete] = usePref(
+  const [autoGrowAutoComplete] = userPreferences.use(
     'form',
     'autoComplete',
     'autoGrowAutoComplete'
@@ -327,7 +331,11 @@ export function AutoComplete<T>({
     return listen(globalThis, 'scroll', handleScroll, true);
   }, [dataList, input, isInDialog, autoGrowAutoComplete]);
 
-  const [highlightMatch] = usePref('form', 'autoComplete', 'highlightMatch');
+  const [highlightMatch] = userPreferences.use(
+    'form',
+    'autoComplete',
+    'highlightMatch'
+  );
 
   const inputRef = React.useRef<HTMLInputElement | null>(null);
   const forwardChildRef: React.RefCallback<HTMLInputElement> =
@@ -345,7 +353,7 @@ export function AutoComplete<T>({
   const [currentItem, setCurrentItem] = React.useState<
     AutoCompleteItem<T> | string | undefined
   >(undefined);
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     const newCurrentItem = resultsRef.current?.find(
       ({ label, searchValue }) => (searchValue ?? label) === currentValue
     );
@@ -368,6 +376,7 @@ export function AutoComplete<T>({
       disabled={disabled}
       nullable
       value={currentItem}
+      // Triggers on enter or selects new item
       onChange={(
         value: AutoCompleteItem<T> | string | null | undefined
       ): void => {

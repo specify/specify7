@@ -10,7 +10,7 @@ import type { AnyTree } from '../DataModel/helperTypes';
 import { schema } from '../DataModel/schema';
 import { softFail } from '../Errors/Crash';
 import { strictGetTreeDefinitionItems } from '../InitialContext/treeRanks';
-import { getTransitionDuration } from '../UserPreferences/Hooks';
+import { getTransitionDuration } from '../Preferences/Hooks';
 
 export const fetchRows = async (fetchUrl: string) =>
   ajax<

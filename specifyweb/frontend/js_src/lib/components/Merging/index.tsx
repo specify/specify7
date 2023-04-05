@@ -30,9 +30,9 @@ import type { Tables } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import { formatUrl } from '../Router/queryString';
 import { OverlayContext, OverlayLocation } from '../Router/Router';
-import { getUserPref } from '../UserPreferences/helpers';
 import { autoMerge, postMergeResource } from './autoMerge';
 import { CompareRecords } from './Compare';
+import { userPreferences } from '../Preferences/userPreferences';
 
 const recordMergingTables = new Set<keyof Tables>(['Agent']);
 
@@ -152,7 +152,7 @@ function Merging({
               autoMerge(
                 model,
                 initialRecords.current,
-                getUserPref('recordMerging', 'behavior', 'autoPopulate')
+                userPreferences.get('recordMerging', 'behavior', 'autoPopulate')
               )
             ).then((merged) =>
               deserializeResource(merged as SerializedResource<AnySchema>)

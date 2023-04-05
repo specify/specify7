@@ -249,23 +249,27 @@ export const removeKey = <
     Object.entries(object).filter(([key]) => !f.includes(toOmit, key))
   );
 
-export const clamp = (min: number, value: number, max: number) =>
+export const clamp = (min: number, value: number, max: number): number =>
   Math.max(min, Math.min(max, value));
 
 /** Create a new array with a new item at a given position */
-export const insertItem = <T>(array: RA<T>, index: number, item: T): RA<T> => [
-  ...array.slice(0, index),
-  item,
-  ...array.slice(index),
-];
+export const insertItem = <T>(
+  array: RA<T>,
+  index: number,
+  newItem: T
+): RA<T> => [...array.slice(0, index), newItem, ...array.slice(index)];
 
 /** Create a new array with a given item replaced */
-export const replaceItem = <T>(array: RA<T>, index: number, item: T): RA<T> =>
-  array[index] === item
+export const replaceItem = <T>(
+  array: RA<T>,
+  index: number,
+  newItem: T
+): RA<T> =>
+  array[index] === newItem
     ? array
     : [
         ...array.slice(0, index),
-        item,
+        newItem,
         ...(index === -1 ? [] : array.slice(index + 1)),
       ];
 

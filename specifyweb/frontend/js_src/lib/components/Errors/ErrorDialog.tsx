@@ -14,12 +14,12 @@ import { Link } from '../Atoms/Link';
 import { legacyLoadingContext } from '../Core/Contexts';
 import { Dialog } from '../Molecules/Dialog';
 import { downloadFile } from '../Molecules/FilePicker';
+import { userPreferences } from '../Preferences/userPreferences';
 import {
   SetUnloadProtectsContext,
   UnloadProtectsContext,
 } from '../Router/Router';
 import { clearCache } from '../RouterCommands/CacheBuster';
-import { usePref } from '../UserPreferences/usePref';
 import type { ToastMessage } from './Toasts';
 import { SetToastsContext } from './Toasts';
 
@@ -79,7 +79,7 @@ export function ErrorDialog({
     return (): void => void errors.delete(id);
   }, [id]);
 
-  const [canDismiss] = usePref(
+  const [canDismiss] = userPreferences.use(
     'general',
     'application',
     'allowDismissingErrors'
