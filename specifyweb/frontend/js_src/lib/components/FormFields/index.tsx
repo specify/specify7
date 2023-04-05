@@ -14,7 +14,7 @@ import type { FormMode, FormType } from '../FormParse';
 import type { FieldTypes, FormFieldDefinition } from '../FormParse/fields';
 import { FormPlugin } from '../FormPlugins';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
-import { usePref } from '../UserPreferences/usePref';
+import { userPreferences } from '../Preferences/userPreferences';
 import { PrintOnSave, SpecifyFormCheckbox } from './Checkbox';
 import { Combobox } from './ComboBox';
 import { UiField } from './Field';
@@ -94,7 +94,11 @@ const fieldRenderers: {
       [parser]
     );
 
-    const [autoGrow] = usePref('form', 'behavior', 'textAreaAutoGrow');
+    const [autoGrow] = userPreferences.use(
+      'form',
+      'behavior',
+      'textAreaAutoGrow'
+    );
     const Component =
       autoGrow && formType !== 'formTable' ? AutoGrowTextArea : Textarea;
 

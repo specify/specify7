@@ -1,16 +1,20 @@
 import { parseDate } from '../components/FormPlugins/PartialDateUi';
 import { mappedFind } from './utils';
 
-const reParse =
-  /today\s*([+-])\s*(\d+)\s*(second|minute|hour|day|week|month|year)/u;
+export const today = 'today';
+
+export const reRelativeDate = new RegExp(
+  `${today}\\s*([+-])\\s*(\\d+)\\s*(second|minute|hour|day|week|month|year)`,
+  'u'
+);
 
 /**
  * Parse a date like 'today + 2 days' or 'today - 4 weeks'
  */
 export function parseRelativeDate(value: string): Date | undefined {
-  if (value === 'today') return new Date();
+  if (value === today) return new Date();
 
-  const parsed = reParse.exec(value.toLowerCase())?.slice(1);
+  const parsed = reRelativeDate.exec(value.toLowerCase())?.slice(1);
   if (Array.isArray(parsed)) {
     const [direction, size, type] = parsed;
     const number = (direction === '-' ? -1 : 1) * Number.parseInt(size);

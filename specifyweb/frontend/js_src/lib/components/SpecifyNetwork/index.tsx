@@ -17,21 +17,21 @@ import { toTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { CollectionObject, Taxon } from '../DataModel/types';
-import { softFail } from '../Errors/Crash';
-import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { getSystemInfo } from '../InitialContext/systemInfo';
 import type { LocalityData } from '../Leaflet/helpers';
-import { leafletLayersPromise } from '../Leaflet/layers';
-import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
-import { getUserPref } from '../UserPreferences/helpers';
+import type { OccurrenceData } from './map';
+import { fetchLocalOccurrences } from './map';
 import {
   fetchOccurrenceName,
   formatLifemapperViewPageRequest,
   snServer,
 } from './fetch';
-import type { OccurrenceData } from './map';
-import { fetchLocalOccurrences } from './map';
+import { userPreferences } from '../Preferences/userPreferences';
+import { leafletLayersPromise } from '../Leaflet/layers';
+import { Dialog, LoadingScreen } from '../Molecules/Dialog';
+import { softFail } from '../Errors/Crash';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
 
 type LoadedAction = Action<'LoadedAction', { readonly version: string }>;
 
@@ -138,7 +138,7 @@ type OutgoingMessage =
 export const displaySpecifyNetwork = (
   resource: SpecifyResource<AnySchema> | undefined
 ): resource is SpecifyResource<CollectionObject> | SpecifyResource<Taxon> =>
-  getUserPref('form', 'ui', 'specifyNetworkBadge') &&
+  userPreferences.get('form', 'ui', 'specifyNetworkBadge') &&
   hasTablePermission('Locality', 'read') &&
   hasPermission('/querybuilder/query', 'execute') &&
   resource?.isNew() === false &&

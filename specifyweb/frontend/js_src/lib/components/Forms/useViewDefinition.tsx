@@ -8,8 +8,8 @@ import { softFail } from '../Errors/Crash';
 import type { FormMode, FormType, ViewDescription } from '../FormParse';
 import { fetchView, parseViewDefinition } from '../FormParse';
 import { attachmentView, webOnlyViews } from '../FormParse/webOnlyViews';
-import { usePref } from '../UserPreferences/usePref';
 import { autoGenerateViewDefinition } from './generateFormDefinition';
+import { userPreferences } from '../Preferences/userPreferences';
 
 /**
  * By default, Specify 7 replaces all ObjectAttachment forms with
@@ -37,7 +37,11 @@ export function useViewDefinition({
   readonly formType: FormType;
   readonly mode: FormMode;
 }): ViewDescription | undefined {
-  const [globalConfig] = usePref('form', 'preferences', 'useCustomForm');
+  const [globalConfig] = userPreferences.use(
+    'form',
+    'preferences',
+    'useCustomForm'
+  );
   const useGeneratedForm =
     Array.isArray(globalConfig) && f.includes(globalConfig, model?.name);
   const [viewDefinition] = useAsyncState<ViewDescription>(

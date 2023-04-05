@@ -12,7 +12,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { LiteralField } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { Dialog } from '../Molecules/Dialog';
-import { usePref } from '../UserPreferences/usePref';
+import { userPreferences } from '../Preferences/userPreferences';
 
 export function AutoNumbering({
   resource,
@@ -51,7 +51,7 @@ function AutoNumberingDialog({
   readonly fields: RA<LiteralField>;
   readonly onClose: () => void;
 }): JSX.Element {
-  const [globalConfig, setGlobalConfig] = usePref(
+  const [globalConfig, setGlobalConfig] = userPreferences.use(
     'form',
     'preferences',
     'autoNumbering'
