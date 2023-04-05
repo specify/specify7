@@ -257,10 +257,9 @@ function RecordSet<SCHEMA extends AnySchema>({
   const currentRecordId = ids[currentIndex];
   React.useEffect(() => {
     if (currentRecordId === undefined) {
-      if (recordSet.isNew()) {
+      if (recordSet.isNew() && !currentRecord.isNew())
         setIds([currentRecord.id]);
-      }
-      handleFetch(currentIndex);
+      else handleFetch(currentIndex);
     }
     return (): void => {
       previousIndex.current = currentIndex;
