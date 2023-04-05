@@ -34,8 +34,8 @@ import { getTableOverwrite, modelViews } from './schemaOverrides';
 import type { Relationship } from './specifyField';
 import {
   type FieldDefinition,
-  LiteralField,
   type RelationshipDefinition,
+  LiteralField,
 } from './specifyField';
 
 type FieldAlias = {
@@ -412,7 +412,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
     return this.localization.aggregator ?? undefined;
   }
 
-  private scopingRelationship: Relationship | false | undefined;
+  private readonly scopingRelationship: Relationship | false | undefined;
 
   /**
    * Returns the relationship field of this model that places it in

@@ -17,7 +17,7 @@ import type {
 } from '../DataModel/types';
 import { getAppResourceCount, getAppResourceMode } from './helpers';
 import { getAppResourceTree, getScope } from './tree';
-import { ScopedAppResourceDir } from './types';
+import type { ScopedAppResourceDir } from './types';
 
 export type AppResources = {
   readonly directories: RA<ScopedAppResourceDir>;
