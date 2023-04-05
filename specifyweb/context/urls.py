@@ -5,7 +5,7 @@ Defines the urls for the app context subsystem
 from django.conf.urls import include, url
 from django.urls import path
 
-from . import views, user_resources
+from . import views, user_resources, collection_resources
 from ..attachment_gw.views import get_settings as attachment_settings
 from ..report_runner.views import get_status as report_runner_status
 
@@ -31,6 +31,11 @@ urlpatterns = [
     url(r'^attachment_settings.json$', attachment_settings),
     url(r'^report_runner_status.json$', report_runner_status),
 
-    path('user_resource/', user_resources.resources),
-    path('user_resource/<int:resourceid>/', user_resources.resource),
+    path('user_resource/', user_resources.user_resources),
+    path('user_resource/<int:resourceid>/', user_resources.user_resource),
+
+    path('collection_resource/', collection_resources.collection_resources),
+    path('collection_resource/<int:resourceid>/', collection_resources.collection_resource),
+
+
 ]
