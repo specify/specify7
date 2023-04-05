@@ -1,7 +1,7 @@
 
 import logging
 from functools import reduce
-from typing import List, Dict, Any, NamedTuple, Union, Optional, Set, Callable, Literal
+from typing import List, Dict, Any, NamedTuple, Union, Optional, Set, Callable, Literal, get_type_hints
 
 from django.db import transaction, IntegrityError
 
@@ -79,13 +79,23 @@ class DeferredScopeUploadTable(NamedTuple):
     relationship_name: str
     filter_field: str
 
-    # In a DeferredScopeUploadTable, the overrideScope value can be either an integer 
-    # (which follows the same logic as in UploadTable), or a function which has the parameter
-    # signature: (deferred_upload_plan: DeferredScopeUploadTable, row_index: int) -> models.Collection
-    # (see apply_deferred_scopes in .upload.py)
-    overrideScope: Optional[Dict[Literal["collection"], Union[int, Callable[["DeferredScopeUploadTable", int], Any]]]] = None
+    """ In a DeferredScopeUploadTable, the overrideScope value can be either an integer 
+    (which follows the same logic as in UploadTable), or a function which has the parameter
+    signature: (deferred_upload_plan: DeferredScopeUploadTable, row_index: int) -> models.Collection
+    (see apply_deferred_scopes in .upload.py)
 
-    def apply_scoping(self, collection, defer: bool = True) -> Union["ScopedUploadTable", "DeferredScopeUploadTable"]:
+    overrideScope should be of type 
+        Optional[Dict[Literal["collection"], Union[int, Callable[["DeferredScopeUploadTable", int], Any]]]]
+    
+    But recursively using the type within the class definition of a NamedTuple is not supported in our version 
+    of mypy
+    See https://github.com/python/mypy/issues/8695
+    """
+    overrideScope: Optional[Dict[Literal["collection"], Union[int, Callable[[NamedTuple, int], Any]]]] = None
+
+    
+    # Typehint for return type should be:  Union["ScopedUploadTable", "DeferredScopeUploadTable"]
+    def apply_scoping(self, collection, defer: bool = True) -> Union["ScopedUploadTable", NamedTuple]:
         if not defer:
             from .scoping import apply_scoping_to_uploadtable
             return apply_scoping_to_uploadtable(self, collection)
@@ -96,7 +106,12 @@ class DeferredScopeUploadTable(NamedTuple):
             | set(col for u in self.toOne.values() for col in u.get_cols()) \
             | set(col for rs in self.toMany.values() for r in rs for col in r.get_cols())
 
-    def add_colleciton_override(self, collection: Union[int, Callable[["DeferredScopeUploadTable", int], Any]]) -> "DeferredScopeUploadTable":
+
+    """
+        The Typehint for parameter collection should be: Union[int, Callable[["DeferredScopeUploadTable", int], Any]]
+        The Typehint for return type should be: "DeferredScopeUploadTable"
+    """
+    def add_colleciton_override(self, collection: Union[int, Callable[[NamedTuple, int], Any]]) -> NamedTuple:
         ''' To modify the overrideScope after the DeferredScope UploadTable is created, use add_colleciton_override
         To properly apply scoping (see self.bind()), the <collection> should either be a collection's id, or a callable (function), 
         which has paramaters that accept: this DeferredScope UploadTable, and an integer representing the current row_index.
