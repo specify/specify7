@@ -623,11 +623,10 @@ msgstr "Configurar tablas de entrada de datos"
 msgid "formMeta"
 msgstr "Formulario Meta"
 
-#: components/AppResources/Create.tsx:183
 #: components/AppResources/Editor.tsx:188
 #: components/Forms/BaseResourceView.tsx:112
 #: components/Forms/dataObjFormatters.ts:149
-#. Used in: Components > App Resources > Create ⬤ Components > App Resources > Editor ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Data Obj Formatters
+#. Used in: Components > App Resources > Editor ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Data Obj Formatters
 msgid "newResourceTitle"
 msgstr "Nuevo {tableName:string}"
 

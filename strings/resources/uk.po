@@ -12,11 +12,10 @@ msgstr "Content-Type: text/plain\n"
 msgid "appResources"
 msgstr "Ресурси програми"
 
-#: components/AppResources/Create.tsx:184
 #: components/FormMeta/Definition.tsx:29
 #: components/FormMeta/Definition.tsx:55
 #: components/Preferences/UserDefinitions.tsx:670
-#. Used in: Components > App Resources > Create ⬤ Components > Form Meta > Definition ⬤ Components > Preferences > User Definitions
+#. Used in: Components > Form Meta > Definition ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "formDefinition"
 msgstr "Визначення форми"
@@ -49,7 +48,7 @@ msgstr "Глобальні ресурси"
 msgid "disciplineResources"
 msgstr "Дисциплінарні ресурси"
 
-#: components/AppResources/Create.tsx:88
+#: components/AppResources/Create.tsx:87
 #: components/SchemaConfig/Field.tsx:73
 #. Used in: Components > App Resources > Create ⬤ Components > Schema Config > Field
 #, fuzzy
@@ -192,8 +191,8 @@ msgstr "Текстовий редактор"
 msgid "visualEditor"
 msgstr "Візуальний редактор"
 
-#: components/AppResources/Create.tsx:60
-#: components/AppResources/Create.tsx:82
+#: components/AppResources/Create.tsx:59
+#: components/AppResources/Create.tsx:81
 #. Used in: Components > App Resources > Create
 #, fuzzy
 msgid "selectResourceType"
