@@ -72,7 +72,7 @@ class DeferredScopeUploadTable(NamedTuple):
     name: str
     wbcols: Dict[str, ColumnOptions]
     static: Dict[str, Any]
-    toOne: Dict[str, Union[Uploadable, ScopedUploadable]]
+    toOne: Dict[str, Union[UploadTable, "ScopedUploadTable"]]
     toMany: Dict[str, List[Union[ToManyRecord, ScopedToManyRecord]]]
 
     related_key: str
@@ -153,7 +153,7 @@ class DeferredScopeUploadTable(NamedTuple):
         Otherwise, if a funciton is provided (see apply_deferred_scopes in .upload.py), then call the function 
         with the row and row_index to get the needed collection
         '''
-        if 'collection' in self.overrideScope.keys():
+        if 'collection' in self.overrideScope.keys(): # type: ignore
             if isinstance(self.overrideScope['collection'], int):
                 collection_id = self.overrideScope['collection']
                 collection = models.Collection.objects.get(id=collection_id)

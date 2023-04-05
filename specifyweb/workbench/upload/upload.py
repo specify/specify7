@@ -21,7 +21,7 @@ from .upload_plan_schema import schema, parse_plan_with_basetable
 from .upload_result import Uploaded, UploadResult, ParseFailures, \
     json_to_UploadResult
 from .uploadable import ScopedUploadable, Row, Disambiguation, Auditor
-from specifyweb.specify.models import Spdataset
+from ..models import Spdataset
 
 Rows = Union[List[Row], csv.DictReader]
 Progress = Callable[[int, Optional[int]], None]
