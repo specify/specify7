@@ -288,10 +288,6 @@ function ProtectedStatsPage(): JSX.Element | null {
       ),
     [activePage.pageIndex, activePage.isShared]
   );
-
-  if (process.env.NODE_ENV === 'development') {
-    console.log('Layout Updates');
-  }
   // Used to set unknown categories once for layout initially, and every time for default layout
   useDynamicCategorySetter(
     backEndResponse,
