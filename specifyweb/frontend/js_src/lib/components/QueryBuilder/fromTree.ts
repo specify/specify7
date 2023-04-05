@@ -7,6 +7,7 @@ import { getTreeModel, schema } from '../DataModel/schema';
 import type {
   SpQuery,
   SpQueryField,
+  Tables,
   TaxonTreeDefItem,
 } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
@@ -18,14 +19,12 @@ import { QueryFieldSpec } from './fieldSpec';
 import { flippedSortTypes } from './helpers';
 import { createQuery } from './index';
 
-function makeField(
+export function makeQueryField(
+  tableName: keyof Tables,
   path: string,
   options: Partial<SerializedResource<SpQueryField>>
 ): SpecifyResource<SpQueryField> {
-  const field = QueryFieldSpec.fromPath(
-    schema.models.CollectionObject.name,
-    path.split('.')
-  )
+  const field = QueryFieldSpec.fromPath(tableName, path.split('.'))
     .toSpQueryField()
     .set('sortType', flippedSortTypes.none);
 
@@ -38,6 +37,12 @@ function makeField(
 
   return field;
 }
+
+const makeField = (
+  path: string,
+  options: Partial<SerializedResource<SpQueryField>>
+): SpecifyResource<SpQueryField> =>
+  makeQueryField('CollectionObject', path, options);
 
 const defaultFields: RR<
   AnyTree['tableName'],

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSearchParameter } from '../../hooks/navigation';
 
+import { useSearchParameter } from '../../hooks/navigation';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { wbPlanText } from '../../localization/wbPlan';
@@ -65,8 +65,9 @@ export function SaveQueryButtons({
     if (
       typeof getQueryFieldRecords === 'function' &&
       (newState === 'save' || newState === 'saveAs')
-    )
+    ) {
       queryResource.set('fields', getQueryFieldRecords());
+    }
     setShowDialog(newState);
   }
 

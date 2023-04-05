@@ -8,6 +8,7 @@ import { headerText } from '../../localization/header';
 import { interactionsText } from '../../localization/interactions';
 import { queryText } from '../../localization/query';
 import { reportsText } from '../../localization/report';
+import { statsText } from '../../localization/stats';
 import { treeText } from '../../localization/tree';
 import { wbText } from '../../localization/workbench';
 import { getCache } from '../../utils/cache';
@@ -100,6 +101,12 @@ const rawMenuItems = ensure<IR<Omit<MenuItem, 'name'>>>()({
       await attachmentSettingsPromise;
       return attachmentsAvailable();
     },
+  },
+  statistics: {
+    url: '/specify/stats',
+    title: statsText.statistics(),
+    icon: icons.chartBar,
+    enabled: () => hasPermission('/querybuilder/query', 'execute'),
   },
 } as const);
 

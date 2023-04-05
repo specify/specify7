@@ -4,6 +4,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useSearchParameter } from '../../hooks/navigation';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useErrorContext } from '../../hooks/useErrorContext';
+import { hijackBackboneAjax } from '../../utils/ajax/backboneAjax';
+import { Http } from '../../utils/ajax/definitions';
 import { f } from '../../utils/functools';
 import { deserializeResource, serializeResource } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
@@ -32,9 +34,23 @@ export function ShowResource({
     React.useCallback(
       () =>
         typeof recordSetId === 'number'
-          ? new schema.models.RecordSet.Resource({
-              id: recordSetId,
-            }).fetch()
+          ? hijackBackboneAjax(
+              [Http.OK, Http.NOT_FOUND],
+              async () =>
+                new schema.models.RecordSet.Resource({
+                  id: recordSetId,
+                }).fetch(),
+              (status) =>
+                status === Http.NOT_FOUND
+                  ? navigate(
+                      getResourceViewUrl(
+                        resource.specifyModel.name,
+                        resource.id
+                      ),
+                      { replace: true }
+                    )
+                  : undefined
+            )
           : false,
       [recordSetId]
     ),

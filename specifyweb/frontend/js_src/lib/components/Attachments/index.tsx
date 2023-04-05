@@ -23,7 +23,7 @@ import { useMenuItem } from '../Header/useMenuItem';
 import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { ProtectedTable } from '../Permissions/PermissionDenied';
-import { OrderPicker } from '../UserPreferences/Renderers';
+import { OrderPicker } from '../Preferences/Renderers';
 import { attachmentSettingsPromise } from './attachments';
 import { AttachmentGallery } from './Gallery';
 
@@ -247,7 +247,7 @@ function Attachments(): JSX.Element {
             ? undefined
             : setCollection({ records, totalCount: collection.totalCount })
         }
-        onFetchMore={fetchMore}
+        onFetchMore={collection === undefined ? undefined : fetchMore}
       />
     </Container.FullGray>
   );

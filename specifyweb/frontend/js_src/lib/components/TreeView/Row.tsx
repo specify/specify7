@@ -7,10 +7,10 @@ import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
-import { getPref } from '../InitialContext/remotePrefs';
-import { getUserPref } from '../UserPreferences/helpers';
+import { userPreferences } from '../Preferences/userPreferences';
 import type { Conformations, KeyAction, Row, Stats } from './helpers';
 import { formatTreeStats, mapKey, scrollIntoView } from './helpers';
+import { getPref } from '../InitialContext/remotePrefs';
 
 export function TreeRow({
   row,
@@ -135,7 +135,7 @@ export function TreeRow({
     (element: HTMLButtonElement | null): void => {
       if (element === null) return;
       element.focus();
-      if (getUserPref('treeEditor', 'behavior', 'autoScroll'))
+      if (userPreferences.get('treeEditor', 'behavior', 'autoScroll'))
         scrollIntoView(element);
     },
     []

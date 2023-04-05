@@ -25,7 +25,7 @@ import { NotFoundView } from '../Router/NotFoundView';
 import type { AppResourcesTree } from './hooks';
 import { useResourcesTree } from './hooks';
 import type { AppResourcesOutlet } from './index';
-import type { AppResourceType } from './types';
+import type { AppResourceType, ScopedAppResourceDir } from './types';
 import { appResourceSubTypes, appResourceTypes } from './types';
 
 /**
@@ -90,28 +90,33 @@ export function CreateAppResource(): JSX.Element {
         </thead>
         <tbody>
           {Object.entries(appResourceSubTypes).map(
-            ([key, { icon, mimeType, name = '', documentationUrl, label }]) => (
-              <tr key={key}>
-                <td>
-                  <Button.LikeLink
-                    onClick={(): void => {
-                      setMimeType(mimeType ?? '');
-                      setName(name);
-                    }}
-                  >
-                    {icon}
-                    {label}
-                  </Button.LikeLink>
-                </td>
-                <td>
-                  {typeof documentationUrl === 'string' && (
-                    <Link.NewTab href={documentationUrl}>
-                      {headerText.documentation()}
-                    </Link.NewTab>
-                  )}
-                </td>
-              </tr>
-            )
+            ([
+              key,
+              { icon, mimeType, name = '', documentationUrl, label, ...rest },
+            ]) =>
+              'scope' in rest &&
+              !f.includes(rest.scope, directory.scope) ? undefined : (
+                <tr key={key}>
+                  <td>
+                    <Button.LikeLink
+                      onClick={(): void => {
+                        setMimeType(mimeType ?? '');
+                        setName(name);
+                      }}
+                    >
+                      {icon}
+                      {label}
+                    </Button.LikeLink>
+                  </td>
+                  <td>
+                    {typeof documentationUrl === 'string' && (
+                      <Link.NewTab href={documentationUrl}>
+                        {headerText.documentation()}
+                      </Link.NewTab>
+                    )}
+                  </td>
+                </tr>
+              )
           )}
         </tbody>
       </table>
@@ -129,7 +134,7 @@ export function CreateAppResource(): JSX.Element {
 export const findAppResourceDirectory = (
   tree: AppResourcesTree,
   searchKey: string
-): SerializedResource<SpAppResourceDir> | undefined =>
+): ScopedAppResourceDir | undefined =>
   mappedFind(tree, ({ key, directory, subCategories }) =>
     key === searchKey
       ? directory
