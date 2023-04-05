@@ -2,12 +2,11 @@
 Tests for api.py
 """
 
-import datetime
 import json
-from django.db import connection
-from django.db.models import Max
-from django.test import TestCase, TransactionTestCase, Client
 from unittest import skip
+
+from django.db.models import Max
+from django.test import TestCase, Client
 
 from specifyweb.permissions.models import UserPolicy
 from specifyweb.specify import api, models
@@ -628,8 +627,8 @@ class ReplaceRecordTests(ApiTests):
             ordernumber=7,
             agent=agent_1,
             referencework=reference_work_1,
-            timestampcreated="2022-11-30 14:34:51.000", #datetime(2022, 11, 30, 14, 34, 51, 0),
-            timestampmodified="2022-11-30 14:33:30.000" #datetime(2022, 11, 30, 14, 36, 56, 0)
+            timestampcreated="2022-11-30 14:34:51.000",
+            timestampmodified="2022-11-30 14:33:30.000"
         )
         models.Author.objects.create(
             id=2554,
