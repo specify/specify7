@@ -117,7 +117,7 @@ export function Header({
           <img
             alt=""
             className={`
-                rounded hover:animate-hue-rotate
+                hover:animate-hue-rotate
                 ${isCollapsed ? 'hidden' : ''}
               `}
             src="/static/img/logo.svg"
