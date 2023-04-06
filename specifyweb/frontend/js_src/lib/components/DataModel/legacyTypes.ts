@@ -14,6 +14,21 @@ import type {
 } from './helperTypes';
 import type { Collection, SpecifyTable } from './specifyTable';
 
+type AllowedFields<SCHEMA extends AnySchema> =
+  | keyof CommonFields
+  | keyof SCHEMA['fields']
+  | keyof SCHEMA['toManyDependent']
+  | keyof SCHEMA['toManyIndependent']
+  | keyof SCHEMA['toOneDependent']
+  | keyof SCHEMA['toOneIndependent'];
+
+type AllowedValues<SCHEMA extends AnySchema> = (CommonFields &
+  IR<never> &
+  SCHEMA['fields'] &
+  SCHEMA['toManyDependent'] &
+  SCHEMA['toManyIndependent'] &
+  SCHEMA['toOneDependent'] &
+  SCHEMA['toOneIndependent'])[AllowedFields<SCHEMA>];
 /*
  * FEATURE: need to improve the typing to handle the following:
  *    Dynamic references
@@ -43,20 +58,8 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
    */
   /* eslint-disable @typescript-eslint/method-signature-style */
   get<
-    FIELD_NAME extends
-      | keyof CommonFields
-      | keyof SCHEMA['fields']
-      | keyof SCHEMA['toManyDependent']
-      | keyof SCHEMA['toManyIndependent']
-      | keyof SCHEMA['toOneDependent']
-      | keyof SCHEMA['toOneIndependent'],
-    VALUE extends (CommonFields &
-      IR<never> &
-      SCHEMA['fields'] &
-      SCHEMA['toManyDependent'] &
-      SCHEMA['toManyIndependent'] &
-      SCHEMA['toOneDependent'] &
-      SCHEMA['toOneIndependent'])[FIELD_NAME],
+    FIELD_NAME extends AllowedFields<SCHEMA>,
+    VALUE extends AllowedValues<SCHEMA>,
   >(
     fieldName: FIELD_NAME
     // eslint-disable-next-line functional/prefer-readonly-type
@@ -118,20 +121,8 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
     filters?: CollectionFetchFilters<VALUE[number]>
   ): Promise<Collection<VALUE[number]>>;
   set<
-    FIELD_NAME extends
-      | keyof CommonFields
-      | keyof SCHEMA['fields']
-      | keyof SCHEMA['toManyDependent']
-      | keyof SCHEMA['toManyIndependent']
-      | keyof SCHEMA['toOneDependent']
-      | keyof SCHEMA['toOneIndependent'],
-    VALUE extends (CommonFields &
-      IR<never> &
-      SCHEMA['fields'] &
-      SCHEMA['toManyDependent'] &
-      SCHEMA['toManyIndependent'] &
-      SCHEMA['toOneDependent'] &
-      SCHEMA['toOneIndependent'])[FIELD_NAME],
+    FIELD_NAME extends AllowedFields<SCHEMA>,
+    VALUE extends AllowedValues<SCHEMA>,
   >(
     fieldName: FIELD_NAME,
     value: readonly [VALUE] extends readonly [never]
