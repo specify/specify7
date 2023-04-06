@@ -2,6 +2,7 @@ import { Sortable } from '@shopify/draggable';
 import React from 'react';
 
 import { useReadyEffect } from '../../hooks/useReadyEffect';
+import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Ul } from '../Atoms';
 import type { Tables } from '../DataModel/types';
@@ -10,7 +11,6 @@ import { scrollIntoView } from '../TreeView/helpers';
 import type { MappingPath } from '../WbPlanView/Mapper';
 import type { QueryField } from './helpers';
 import { QueryLine } from './Line';
-import { f } from '../../utils/functools';
 
 export function QueryFields({
   baseTableName,
