@@ -43,7 +43,14 @@ export function ExpressSearchOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
   return (
     <Dialog
-      buttons={<Submit.Blue form={formId}>{commonText.search()}</Submit.Blue>}
+      buttons={
+        <>
+          <Submit.Orange onClick={handleClose}>
+            {commonText.cancel()}
+          </Submit.Orange>
+          <Submit.Blue form={formId}>{commonText.search()}</Submit.Blue>
+        </>
+      }
       header={headerText.expressSearch()}
       onClose={handleClose}
     >
