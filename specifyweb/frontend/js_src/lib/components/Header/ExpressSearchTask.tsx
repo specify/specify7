@@ -32,6 +32,7 @@ import {
   useSecondarySearch,
 } from './ExpressSearchHooks';
 import { useMenuItem } from './useMenuItem';
+import { Button } from '../Atoms/Button';
 
 export function ExpressSearchOverlay(): JSX.Element {
   useMenuItem('search');
@@ -45,9 +46,7 @@ export function ExpressSearchOverlay(): JSX.Element {
     <Dialog
       buttons={
         <>
-          <Submit.Orange onClick={handleClose}>
-            {commonText.cancel()}
-          </Submit.Orange>
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
           <Submit.Blue form={formId}>{commonText.search()}</Submit.Blue>
         </>
       }
