@@ -13,6 +13,7 @@ import { headerText } from '../../localization/header';
 import { ajax } from '../../utils/ajax';
 import type { GetSet, IR, RA } from '../../utils/types';
 import { Container, H2, H3 } from '../Atoms';
+import { Button } from '../Atoms/Button';
 import { Form, Input } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
@@ -32,7 +33,6 @@ import {
   useSecondarySearch,
 } from './ExpressSearchHooks';
 import { useMenuItem } from './useMenuItem';
-import { Button } from '../Atoms/Button';
 
 export function ExpressSearchOverlay(): JSX.Element {
   useMenuItem('search');
