@@ -11,10 +11,10 @@ import type { SerializedResource } from '../DataModel/helperTypes';
 import { getTableById } from '../DataModel/tables';
 import type { RecordSet, SpAppResource, SpQuery } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
-import { parseSpecifyProperties } from '../FormParse/cells';
 import { userInformation } from '../InitialContext/userInformation';
 import { RecordSetsDialog } from '../Toolbar/RecordSets';
 import { QueryParametersDialog } from './Parameters';
+import { parseSpecifyProperties } from '../FormEditor/viewSpec';
 
 export function ReportRecordSets({
   query,

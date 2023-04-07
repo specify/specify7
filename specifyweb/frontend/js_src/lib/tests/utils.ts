@@ -13,17 +13,17 @@ export function theories<ARGUMENTS_TYPE extends RA<unknown>, RETURN_TYPE>(
   testFunction: (...arguments_: ARGUMENTS_TYPE) => RETURN_TYPE,
   inputOutputSet:
     | IR<
-        | readonly [ARGUMENTS_TYPE, RETURN_TYPE]
+        | readonly [Readonly<ARGUMENTS_TYPE>, RETURN_TYPE]
         | {
-            readonly in: ARGUMENTS_TYPE;
+            readonly in: Readonly<ARGUMENTS_TYPE>;
             readonly out: RETURN_TYPE;
           }
       >
     | RA<
-        | readonly [ARGUMENTS_TYPE, RETURN_TYPE]
+        | readonly [Readonly<ARGUMENTS_TYPE>, RETURN_TYPE]
         | {
             readonly name?: string;
-            readonly in: ARGUMENTS_TYPE;
+            readonly in: Readonly<ARGUMENTS_TYPE>;
             readonly out: RETURN_TYPE;
           }
       >

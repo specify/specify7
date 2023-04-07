@@ -24,7 +24,11 @@ const findElement = (xml: string, path: RA<LogPathPart>): Position =>
       else if (part.type === 'Attribute') {
         const endPosition = xml.indexOf('>', from);
         const node = xml.slice(from, endPosition);
-        const match = new RegExp(`${part.attribute}="([^"]+)"`, 'u').exec(node);
+        // Handle virtual attribute name like "initialize abC"
+        const name = part.attribute.includes(' ')
+          ? part.attribute.split(' ')[0]
+          : part.attribute;
+        const match = new RegExp(`${name}="([^"]+)"`, 'u').exec(node);
         if (match === null) return { from, to: endPosition };
         const newFrom = from + match.index;
         return {

@@ -66,13 +66,13 @@ const webLinkSpec = f.store(() =>
     ),
     parameters: pipe(
       syncers.xmlChild('args'),
-      syncers.default(() => createSimpleXmlNode('args')),
+      syncers.default(createSimpleXmlNode),
       syncers.xmlChildren('weblinkdefarg'),
       syncers.map(syncers.object(argumentSpec()))
     ),
     usages: pipe(
       syncers.xmlChild('usedByList'),
-      syncers.default(() => createSimpleXmlNode('usedByList')),
+      syncers.default(createSimpleXmlNode),
       syncers.xmlChildren('usedby'),
       syncers.map(syncers.object(usedBySpec()))
     ),

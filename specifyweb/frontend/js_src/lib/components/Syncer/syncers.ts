@@ -31,8 +31,6 @@ type NodeWithContext<T> = {
   readonly logContext: IR<unknown>;
 };
 
-const switchDefault: unique symbol = Symbol('SwitchDefault');
-
 export const syncers = {
   xmlAttribute: <MODE extends 'empty' | 'required' | 'skip'>(
     attribute: string,
@@ -124,10 +122,14 @@ export const syncers = {
   ),
   toBoolean: syncer<string, boolean>(
     parseBoolean,
-    (value) => value?.toString() ?? false
+    (value) => value?.toString() ?? ''
   ),
   toDecimal: syncer<string, number | undefined>(
     f.parseInt,
+    (value) => value?.toString() ?? ''
+  ),
+  toFloat: syncer<string, number | undefined>(
+    f.parseFloat,
     (value) => value?.toString() ?? ''
   ),
   xmlChild: (tagName: string, mode: 'optional' | 'required' = 'required') =>
@@ -265,7 +267,7 @@ export const syncers = {
           },
         } as unknown as OBJECT)
     ),
-  field: (tableName: keyof Tables | undefined) =>
+  field: (tableName: keyof Tables | undefined, strict = true) =>
     syncer<string | undefined, RA<LiteralField | Relationship> | undefined>(
       (fieldName) => {
         if (
@@ -275,7 +277,8 @@ export const syncers = {
         )
           return undefined;
         const field = tables[tableName].getFields(fieldName);
-        if (field === undefined) console.error(`Unknown field: ${fieldName}`);
+        if (field === undefined && strict)
+          console.error(`Unknown field: ${fieldName}`);
         return field;
       },
       (fieldName) => fieldName?.map(({ name }) => name).join('.')
@@ -322,6 +325,21 @@ export const syncers = {
       },
       (value) => value ?? ''
     ),
+  numericEnum: <ITEM extends number>(items: RA<ITEM>) =>
+    syncer<number | undefined, ITEM | undefined>(
+      (value) => {
+        if (value === undefined) return undefined;
+        const hasItem = f.includes(items, value);
+        if (hasItem === undefined)
+          console.error(
+            `Unknown value "${value}". Expected one of ${formatDisjunction(
+              items.map((item) => item.toString())
+            )}`
+          );
+        return hasItem ? value : undefined;
+      },
+      (value) => value
+    ),
   split: (separator: string) =>
     syncer<string, RA<string>>(
       (value) => value.split(separator),
@@ -358,17 +376,18 @@ export const syncers = {
   static: <T>(value: T) =>
     syncer<SimpleXmlNode, T>(
       () => value,
-      () => createSimpleXmlNode('')
+      () => createSimpleXmlNode()
     ),
-  switchDefault,
   switch: <
     TYPE_MAPPER extends IR<string>,
     NODE_KEY extends string,
     IN extends { readonly [KEY in NODE_KEY]: NodeWithContext<SimpleXmlNode> },
     KEY extends string,
+    EXTRA,
     MAPPER extends {
       readonly [KEY in TYPE_MAPPER[keyof TYPE_MAPPER] | 'unknown']: (
-        input: IN
+        input: IN,
+        extra: EXTRA & { readonly rawType: keyof TYPE_MAPPER }
       ) => BaseSpec<SimpleXmlNode>;
     },
     MAPPED extends {
@@ -384,7 +403,8 @@ export const syncers = {
     key: KEY,
     attributeSyncer: Syncer<SimpleXmlNode, string>,
     typeMapper: TYPE_MAPPER,
-    mapper: MAPPER
+    mapper: MAPPER,
+    extraPayload: EXTRA
   ) =>
     syncer<IN, IN & { readonly [_KEY in KEY]: MAPPED }>(
       (cell) => {
@@ -396,10 +416,14 @@ export const syncers = {
         setLogContext(logContext);
 
         const type =
-          (typeMapper[rawType] as TYPE_MAPPER[keyof TYPE_MAPPER]) ??
-          ('unknown' as const);
+          ((typeMapper[rawType] ??
+            typeMapper[
+              rawType.toLowerCase()
+            ]) as TYPE_MAPPER[keyof TYPE_MAPPER]) ?? ('unknown' as const);
         const spec = mapper[type] ?? mapper.unknown;
-        const { serializer } = syncers.object(spec(cell));
+        const { serializer } = syncers.object(
+          spec(cell, { ...extraPayload, rawType })
+        );
 
         return {
           ...cell,
@@ -411,11 +435,18 @@ export const syncers = {
         } as IN & { readonly [_KEY in KEY]: MAPPED };
       },
       ({ [key]: definition, ...cell }) => {
+        // FIXME: use definition.type over definition.rawType
+        // FIXME: put resolved rawType back into the node
+        const rawType = definition.rawType;
         const type =
-          (typeMapper[definition.rawType] as TYPE_MAPPER[keyof TYPE_MAPPER]) ??
-          ('unknown' as const);
+          ((typeMapper[rawType] ??
+            typeMapper[
+              rawType.toString().toLowerCase()
+            ]) as TYPE_MAPPER[keyof TYPE_MAPPER]) ?? ('unknown' as const);
         const spec = mapper[type] ?? mapper.unknown;
-        const { deserializer } = syncers.object(spec(cell as unknown as IN));
+        const { deserializer } = syncers.object(
+          spec(cell as unknown as IN, { ...extraPayload, rawType })
+        );
         const rawNode: NodeWithContext<SimpleXmlNode> = {
           node: deserializer(definition),
           logContext: {},

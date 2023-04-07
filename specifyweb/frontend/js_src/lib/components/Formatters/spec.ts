@@ -32,7 +32,7 @@ export const formattersSpec = f.store(() =>
     ),
     aggregators: pipe(
       syncers.xmlChild('aggregators'),
-      syncers.default<SimpleXmlNode>(() => createSimpleXmlNode('aggregators')),
+      syncers.default<SimpleXmlNode>(createSimpleXmlNode),
       syncers.xmlChildren('aggregator'),
       syncers.map(
         pipe(
@@ -80,7 +80,7 @@ const formatterSpec = f.store(() =>
     ),
     definition: pipe(
       syncers.xmlChild('switch'),
-      syncers.default<SimpleXmlNode>(() => createSimpleXmlNode('switch')),
+      syncers.default<SimpleXmlNode>(createSimpleXmlNode),
       syncers.captureLogContext()
     ),
   })

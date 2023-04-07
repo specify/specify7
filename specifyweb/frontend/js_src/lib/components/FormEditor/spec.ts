@@ -21,7 +21,7 @@ export const viewSetsSpec = f.store(() =>
   createXmlSpec({
     views: pipe(
       syncers.xmlChild('views'),
-      syncers.default(() => createSimpleXmlNode('views')),
+      syncers.default(createSimpleXmlNode),
       syncers.xmlChildren('view'),
       syncers.map(
         pipe(
@@ -49,7 +49,7 @@ export const viewSetsSpec = f.store(() =>
     ),
     viewDefs: pipe(
       syncers.xmlChild('viewdefs'),
-      syncers.default(() => createSimpleXmlNode('viewdefs')),
+      syncers.default(createSimpleXmlNode),
       syncers.xmlChildren('viewdef'),
       syncers.map(
         pipe(
@@ -102,6 +102,7 @@ const businessRules: Partial<RR<keyof Tables, string>> = {
 const viewSpec = f.store(() =>
   createXmlSpec({
     name: syncers.xmlAttribute('name', 'required'),
+    // Used for tooltips in sp6
     title: syncers.xmlAttribute('objTitle', 'skip'),
     description: pipe(
       syncers.xmlChild('desc', 'optional'),
@@ -117,7 +118,7 @@ const viewSpec = f.store(() =>
     ),
     altViews: pipe(
       syncers.xmlChild('altviews'),
-      syncers.default<SimpleXmlNode>(() => createSimpleXmlNode('altviews')),
+      syncers.default<SimpleXmlNode>(createSimpleXmlNode),
       syncers.object(altViewsSpec())
     ),
     legacyIsInternal: pipe(

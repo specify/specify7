@@ -149,7 +149,7 @@ export function toSimpleXmlNode(node: XmlNode): SimpleXmlNode {
   );
 }
 
-export const createSimpleXmlNode = (tagName: string): SimpleXmlNode => ({
+export const createSimpleXmlNode = (tagName: string = ''): SimpleXmlNode => ({
   type: 'SimpleXmlNode',
   tagName,
   attributes: {},

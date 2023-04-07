@@ -10,7 +10,6 @@ import type { State } from 'typesafe-reducer';
 
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
-import { filterArray } from '../../utils/types';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { getTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
@@ -35,6 +34,7 @@ import type { FormFieldDefinition } from './fields';
 import { parseFormField } from './fields';
 import type { FormType, ParsedFormDefinition } from './index';
 import { parseFormDefinition } from './index';
+import { parseSpecifyProperties } from '../FormEditor/viewSpec';
 
 // Parse column width definitions
 export const processColumnDefinition = (
@@ -48,14 +48,6 @@ export const processColumnDefinition = (
     .filter((_, index) => index % 2 === 0)
     .map((definition) => /(\d+)px/u.exec(definition)?.[1] ?? '')
     .map(f.parseInt);
-
-// BUG: allow \= and \" for escaping
-export const parseSpecifyProperties = (props = ''): IR<string> =>
-  Object.fromEntries(
-    filterArray(
-      props.split(';').map((line) => /([^=]+)=(.+)/u.exec(line)?.slice(1, 3))
-    ).map(([key, value]) => [key.trim().toLowerCase(), value.trim()])
-  );
 
 export type CellTypes = {
   readonly Field: State<

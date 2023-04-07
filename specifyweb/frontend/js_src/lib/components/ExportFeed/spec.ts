@@ -44,7 +44,7 @@ const itemSpec = f.store(() =>
     metadata: syncers.xmlAttribute('metadata', 'required'),
     days: pipe(
       syncers.xmlAttribute('days', 'required'),
-      syncers.maybe(syncers.toDecimal)
+      syncers.maybe(syncers.toFloat)
     ),
     fileName: syncers.xmlAttribute('filename', 'required'),
     publish: pipe(
