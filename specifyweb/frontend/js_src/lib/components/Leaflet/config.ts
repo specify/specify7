@@ -156,7 +156,7 @@ export const localityPinFields: RA<LocalityPinFields> = [
       ['Locality', 'latitude2'],
       ['Locality', 'longitude2'],
       ['Locality', 'latLongType'],
-      ['Locality', 'geoCoordDetails', 'maxuUcertaintyEst'],
+      ['Locality', 'geoCoordDetails', 'maxUncertaintyEst'],
       ['Locality', 'geography', '$Country', 'name'],
       ['Locality', 'geography', '$State', 'name'],
       ['Locality', 'geography', '$County', 'name'],
