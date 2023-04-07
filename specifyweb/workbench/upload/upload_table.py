@@ -72,8 +72,8 @@ class DeferredScopeUploadTable(NamedTuple):
     name: str
     wbcols: Dict[str, ColumnOptions]
     static: Dict[str, Any]
-    toOne: Dict[str, Union[UploadTable, "ScopedUploadTable"]]
-    toMany: Dict[str, List[Union[ToManyRecord, ScopedToManyRecord]]]
+    toOne: Dict[str, Uploadable]
+    toMany: Dict[str, List[ToManyRecord]]
 
     related_key: str
     relationship_name: str
@@ -153,7 +153,7 @@ class DeferredScopeUploadTable(NamedTuple):
         Otherwise, if a funciton is provided (see apply_deferred_scopes in .upload.py), then call the function 
         with the row and row_index to get the needed collection
         '''
-        if 'collection' in self.overrideScope.keys(): # type: ignore
+        if  self.overrideScope is not None and'collection' in self.overrideScope.keys():
             if isinstance(self.overrideScope['collection'], int):
                 collection_id = self.overrideScope['collection']
                 collection = models.Collection.objects.get(id=collection_id)
@@ -168,7 +168,7 @@ class DeferredScopeUploadTable(NamedTuple):
 
         # If the DeferredScope UploadTable contained any disambiguation data, then apply the disambiguation to the new
         # ScopedUploadTable
-        scoped_disambiguated = scoped.disambiguate(self.da) if hasattr(self, "disambiguation") else scoped
+        scoped_disambiguated = scoped.disambiguate(self.disambiguation) if self.disambiguate is not None else scoped
         
         # Finally bind the ScopedUploadTable and return the BoundUploadTable or ParseFailures 
         return scoped_disambiguated.bind(default_collection, row, uploadingAgentId, auditor, cache, row_index)
