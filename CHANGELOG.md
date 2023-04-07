@@ -30,8 +30,8 @@ Coming in the next few months:
 ### Added
 
 - Add the statistics page allowing users to build custom queries and view counts. ([#501](https://github.com/specify/specify7/issues/501) - *Requested by SDSU, CSIRO, Cleveland Museum of Natural History*)
-- Adds support for relative dates in full date queries (Queries using relative dates will not be visible in Specify 6 'Saved Queries'. By default, they will appear in 'Other Queries'. 
-- Adds support for picking the Current User as name in queries that end with Specify User (Queries using Current User will not be Specify 6 'Saved Queries'. By default, they will appear in 'Other Queries'.
+- Add support for relative dates in full date queries (Queries using relative dates will not be visible in Specify 6 'Saved Queries'. By default, they will appear in 'Other Queries'. 
+- Add support for picking the Current User as name in queries that end with Specify User (Queries using Current User will not be Specify 6 'Saved Queries'. By default, they will appear in 'Other Queries'.
 
 ### Fixed
 - Available resources for creating are now properly scoped
