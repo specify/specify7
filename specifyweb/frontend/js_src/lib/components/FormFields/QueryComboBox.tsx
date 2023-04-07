@@ -164,7 +164,7 @@ export function QueryComboBox({
               .then((resource) =>
                 resource === undefined || resource === null
                   ? {
-                      label: '',
+                      label: '' as LocalizedString,
                       resource: undefined,
                     }
                   : (value === formattedRef.current?.value &&
@@ -347,7 +347,7 @@ export function QueryComboBox({
     hasTablePermission(field.relatedModel.name, 'create');
 
   return (
-    <div className="flex w-full min-w-[theme(spacing.40)] items-center">
+    <div className="flex w-full min-w-[theme(spacing.40)] items-center sm:min-w-[unset]">
       <AutoComplete<string>
         aria-label={undefined}
         disabled={

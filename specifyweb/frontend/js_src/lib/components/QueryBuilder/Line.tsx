@@ -232,9 +232,9 @@ export function QueryLine({
   const hasAny = field.filters.some(({ type }) => type === 'any');
 
   return (
-    <li
+    <div
       aria-current={isFocused ? 'location' : undefined}
-      className="flex gap-2 border-t border-t-gray-500 py-2"
+      className="flex flex-1 gap-2 border-t border-t-gray-500 bg-[color:var(--form-foreground)] py-2"
     >
       {typeof handleRemove === 'function' && (
         <Button.Small
@@ -440,6 +440,13 @@ export function QueryLine({
                     fieldName={mappingPathToString(field.mappingPath)}
                     filter={field.filters[index]}
                     parser={fieldMeta.parser}
+                    terminatingField={
+                      isFieldComplete
+                        ? schema.models[baseTableName].getField(
+                            mappingPathToString(field.mappingPath)
+                          )
+                        : undefined
+                    }
                     onChange={
                       typeof handleChange === 'function'
                         ? (startValue): void =>
@@ -529,6 +536,6 @@ export function QueryLine({
           {icons.chevronDown}
         </Button.Small>
       </div>
-    </li>
+    </div>
   );
 }

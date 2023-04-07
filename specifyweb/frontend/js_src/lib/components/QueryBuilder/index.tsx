@@ -14,7 +14,7 @@ import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { RecordSet, SpQuery } from '../DataModel/types';
 import { isTreeModel } from '../InitialContext/treeRanks';
 import { userInformation } from '../InitialContext/userInformation';
-import { hasPermission, hasToolPermission } from '../Permissions/helpers';
+import { hasToolPermission } from '../Permissions/helpers';
 import { ProtectedTool, ProtectedTree } from '../Permissions/PermissionDenied';
 import { NotFoundView } from '../Router/NotFoundView';
 import { queryFromTree } from './fromTree';
@@ -51,10 +51,6 @@ function QueryBuilderWrapper({
     <QueryBuilder
       autoRun={autoRun}
       forceCollection={undefined}
-      isReadOnly={
-        !hasPermission('/querybuilder/query', 'execute') &&
-        !hasToolPermission('queryBuilder', query.isNew() ? 'create' : 'update')
-      }
       query={query}
       recordSet={typeof recordSet === 'object' ? recordSet : undefined}
     />

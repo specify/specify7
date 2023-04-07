@@ -12,7 +12,7 @@ export const userText = createDictionary({
   logIn: {
     'en-us': 'Log In',
     'ru-ru': 'Авторизоваться',
-    'es-es': 'Iniciar sesión',
+    'es-es': 'Acceso',
     'fr-fr': 'Connexion',
     'uk-ua': 'Увійти',
   },
@@ -62,7 +62,7 @@ export const userText = createDictionary({
   changePassword: {
     'en-us': 'Change Password',
     'ru-ru': 'Изменить пароль',
-    'es-es': 'Cambia la contraseña',
+    'es-es': 'Cambiar la contraseña',
     'fr-fr': 'Modifier le mot de passe',
     'uk-ua': 'Змінити пароль',
   },
@@ -458,7 +458,7 @@ export const userText = createDictionary({
     'es-es': 'El usuario debe guardarse primero como Administrador',
     'fr-fr':
       "L'utilisateur doit d'abord être enregistré en tant que gestionnaire",
-    'uk-ua': 'Спочатку користувача потрібно зберегти як менеджера',
+    'uk-ua': 'Спочатку потрібно зберегти користувача як менеджера',
   },
   users: {
     'en-us': 'User Accounts',
@@ -542,7 +542,7 @@ export const userText = createDictionary({
   userRoleLibrary: {
     'en-us': 'Institution Library of Role Templates',
     'ru-ru': 'Библиотека шаблонов ролей учреждения',
-    'es-es': 'Biblioteca institucional de plantillas de roles',
+    'es-es': 'Biblioteca institucional de plantillas de funciones',
     'fr-fr': 'Bibliothèque institutionnelle de modèles de rôle',
     'uk-ua': 'Бібліотека шаблонів ролей установи',
   },
@@ -865,7 +865,7 @@ export const userText = createDictionary({
     'ru-ru': 'Внешние поставщики удостоверений:',
     'es-es': 'Proveedores de identidad externos:',
     'fr-fr': "Fournisseurs d'identité externes :",
-    'uk-ua': 'Зовнішні постачальники ідентифікаційної інформації:',
+    'uk-ua': 'Постачальники зовнішньої ідентифікації:',
   },
   allTables: {
     'en-us': 'All tables',
@@ -1010,5 +1010,9 @@ export const userText = createDictionary({
     'es-es': 'Opciones de configuración de cuenta',
     'fr-fr': 'Options de configuration du compte',
     'uk-ua': 'Параметри налаштування облікового запису',
+  },
+  currentUser: {
+    'en-us': 'Current User',
+    'ru-ru': 'Текущий пользователь',
   },
 } as const);

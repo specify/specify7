@@ -17,8 +17,8 @@ import { FormCell } from '../FormCells';
 import type { ViewDescription } from '../FormParse';
 import { attachmentView } from '../FormParse/webOnlyViews';
 import { loadingGif } from '../Molecules';
+import { userPreferences } from '../Preferences/userPreferences';
 import { unsafeTriggerNotFound } from '../Router/Router';
-import { usePref } from '../UserPreferences/usePref';
 
 const FormLoadingContext = React.createContext<boolean>(false);
 FormLoadingContext.displayName = 'FormLoadingContext';
@@ -76,18 +76,19 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
   const isAlreadyLoading = React.useContext(FormLoadingContext);
   const showLoading =
     !isAlreadyLoading && (!formIsLoaded || isLoading || isShowingOldResource);
-  const [flexibleColumnWidth] = usePref(
+  const [flexibleColumnWidth] = userPreferences.use(
     'form',
     'definition',
     'flexibleColumnWidth'
   );
-  const [language] = usePref('form', 'schema', 'language');
+  const [language] = userPreferences.use('form', 'schema', 'language');
   return viewDefinition?.name === attachmentView ? (
     <AttachmentsPlugin mode={viewDefinition.mode} resource={resource} />
   ) : (
     <FormLoadingContext.Provider value={isAlreadyLoading || showLoading}>
       <div
         className={`
+          shrink-0
           overflow-auto
           ${showLoading ? 'relative' : ''}
         `}

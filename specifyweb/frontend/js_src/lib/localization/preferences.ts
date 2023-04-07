@@ -230,7 +230,7 @@ export const preferencesText = createDictionary({
     'en-us': 'Field background',
     'ru-ru': 'Фон поля',
     'es-es': 'Fondo de campo',
-    'fr-fr': 'Fond de champ',
+    'fr-fr': 'Fond de terrain',
     'uk-ua': 'Поле фону',
   },
   disabledFieldBackground: {
@@ -1375,12 +1375,15 @@ export const preferencesText = createDictionary({
     `,
     'ru-ru': `
       Показывать «*» в заголовке вкладки, если на текущей вкладке есть
-      несохраненные изменения.
+      несохраненные изменения
     `,
     'uk-ua': `
       Показувати «*» у заголовку вкладки, якщо в поточній вкладці є незбережені
       зміни
     `,
+  },
+  collectionPreferences: {
+    'en-us': 'Collection Preferences',
   },
   rememberDialogSizes: {
     'en-us': 'Remember dialog window sizes',

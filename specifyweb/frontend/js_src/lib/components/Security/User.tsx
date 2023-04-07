@@ -147,8 +147,10 @@ function UserView({
   useErrorContext('userResource', userResource);
   const [userRoles, setUserRoles, initialUserRoles, changedRoles] =
     useUserRoles(userResource, collections);
+
   const [userPolicies, setUserPolicies, initialUserPolicies, changedPolicies] =
     useUserPolicies(userResource, collections, initialCollectionId);
+
   const [version, setVersion] = React.useState<number>(0);
   const userAgents = useUserAgents(userResource.id, collections, version);
   const identityProviders = useUserProviders(userResource.id);
@@ -334,6 +336,7 @@ function UserView({
                   <UserRoles
                     collectionId={collectionId}
                     collectionRoles={collectionRoles}
+                    isReadOnly={userPolicies?.[collectionId]?.length === 0}
                     userRoles={userRoles}
                     onChange={setUserRoles}
                   />
@@ -397,7 +400,7 @@ function UserView({
             <LegacyPermissions mode={mode} userResource={userResource} />
           </ErrorBoundary>
         </>,
-        '-mx-4 p-4 pt-0 flex-1 gap-8 [&_input]:max-w-[min(100%,var(--max-field-width))]'
+        '-mx-4 p-4 pt-0 flex-1 gap-8 [&_input]:max-w-[min(100%,var(--max-field-width))] overflow-auto'
       )}
       <DataEntry.Footer>
         {changesMade ? (

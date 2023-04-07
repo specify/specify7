@@ -9,7 +9,7 @@ import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { FormType } from '../FormParse';
 import type { SubViewContext } from '../Forms/SubView';
 import { toLargeSortConfig, toSmallSortConfig } from '../Molecules/Sorting';
-import { OrderPicker } from '../UserPreferences/Renderers';
+import { OrderPicker } from '../Preferences/Renderers';
 
 export function SubViewMeta({
   subView,

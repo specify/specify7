@@ -93,10 +93,6 @@ type Actions =
     >
   | Action<'ChangeFieldsAction', { readonly fields: RA<QueryField> }>
   | Action<'FocusLineAction', { readonly line: number }>
-  | Action<
-      'LineMoveAction',
-      { readonly line: number; readonly direction: 'down' | 'up' }
-    >
   | Action<'ResetStateAction', { readonly state: MainState }>
   | Action<'RunQueryAction'>
   | Action<'SavedQueryAction'>
