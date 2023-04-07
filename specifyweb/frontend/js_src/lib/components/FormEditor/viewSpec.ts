@@ -485,7 +485,7 @@ const fieldSpec = (
           ComboBox: comboBoxSpec,
           Text: textSpec,
           TextArea: textAreaSpec,
-          Plugin: pluginSpec,
+          Plugin: pluginWrapperSpec,
           QueryComboBox: queryComboBoxSpec,
           CheckBox: checkBoxSpec,
           // FIXME: figure out how this works in sp6
@@ -666,21 +666,7 @@ const textAreaSpec = (
     ),
   });
 
-const pluginSpec = (
-  field: SpecToJson<ReturnType<typeof rawFieldSpec>>,
-  {
-    cell,
-    table,
-  }: {
-    readonly cell: SpecToJson<ReturnType<typeof cellSpec>>;
-    readonly table: SpecifyTable | undefined;
-  }
-) =>
-  createXmlSpec({
-    // Disable plugin if cell with this id has no value
-    legacyWatchCellById: syncers.xmlAttribute('initialize watch', 'skip'),
-  });
-
+// FIXME: make sure all fields use the "default" argument
 const queryComboBoxSpec = f.store(() =>
   createXmlSpec({
     // Customize view name
@@ -828,6 +814,172 @@ const browseSpec = f.store(() =>
     ),
   })
 );
+
+const pluginWrapperSpec = (
+  field: SpecToJson<ReturnType<typeof rawFieldSpec>>,
+  {
+    cell,
+    table,
+  }: {
+    readonly cell: SpecToJson<ReturnType<typeof cellSpec>>;
+    readonly table: SpecifyTable | undefined;
+  }
+) =>
+  createXmlSpec({
+    // Disable plugin if cell with this id has no value
+    legacyWatchCellById: syncers.xmlAttribute('initialize watch', 'skip'),
+    definition: pipe(
+      syncer(
+        (node) => ({
+          rest: syncers.captureLogContext<SimpleXmlNode>().serializer(node),
+        }),
+        ({ rest }) =>
+          syncers.captureLogContext<SimpleXmlNode>().deserializer(rest)
+      ),
+      syncers.switch(
+        'rest',
+        'definition',
+        pipe(
+          syncers.xmlAttribute('initialize name', 'required'),
+          syncers.default('unknown')
+        ),
+        {
+          LatLonUI: 'LatLongUi',
+          PartialDateUI: 'PartialDateUi',
+          CollectionRelOneToManyPlugin: 'CollectionRelOneToManyPlugin',
+          ColRelTypePlugin: 'ColRelTypePlugin',
+          LocalityGeoRef: 'LocalityGeoRef',
+          LocalityGoogleEarth: 'LeafletMap',
+          WebLinkButton: 'WebLinkButton',
+          AttachmentPlugin: 'AttachmentPlugin',
+          HostTaxonPlugin: 'HostTaxonPlugin',
+          PaleoMap: 'PaleoMap',
+          ContainersColObjPlugin: 'ContainersColObjPlugin',
+          TaxonLabelFormatting: 'TaxonLabelFormatting',
+          ContainerPlugin: 'ContainerPlugin',
+          // Google Earth Export plugin
+          DefItemEditorPlugin: 'DefItemEditorPlugin',
+          LocalityWorldWind: 'WorldWind',
+          PasswordStrengthUI: 'PasswordStrengthUI',
+        } as const,
+        {
+          LatLongUi: pluginSpec.latLong,
+          PartialDateUi: pluginSpec.partialDate,
+          CollectionRelOneToManyPlugin: pluginSpec.collectionRelOneToMany,
+          ColRelTypePlugin: pluginSpec.colRelType,
+          LocalityGeoRef: pluginSpec.localityGeoRef,
+          LeafletMap: emptySpec,
+          WebLinkButton: pluginSpec.webLink,
+          AttachmentPlugin: emptySpec,
+          HostTaxonPlugin: pluginSpec.hostTaxon,
+          PaleoMap: emptySpec,
+          ContainersColObjPlugin: emptySpec,
+          TaxonLabelFormatting: emptySpec,
+          ContainerPlugin: emptySpec,
+          DefItemEditorPlugin: emptySpec,
+          PasswordStrengthUI: emptySpec,
+          WorldWind: emptySpec,
+          unknown: emptySpec,
+        } as const,
+        { field, cell, table }
+      )
+    ),
+  });
+
+const pluginSpec = {
+  latLong: () =>
+    createXmlSpec({
+      // Specify 7 only
+      step: pipe(
+        syncers.xmlAttribute('initialize step', 'skip'),
+        syncers.maybe(syncers.toFloat)
+      ),
+      // Specify 7 only
+      defaultType: pipe(
+        syncers.xmlAttribute('initialize latLongType', 'skip'),
+        syncers.maybe(syncers.enum(['Point', 'Line', 'Rectangle'] as const)),
+        syncers.default('Point')
+      ),
+    }),
+  partialDate: (
+    _: unknown,
+    { table }: { readonly table: SpecifyTable | undefined }
+  ) =>
+    createXmlSpec({
+      dateField: pipe(
+        syncers.xmlAttribute('initialize df', 'required'),
+        syncers.maybe(syncers.field(table?.name))
+      ),
+      datePrecisionField: pipe(
+        syncers.xmlAttribute('initialize tp', 'skip'),
+        syncers.maybe(syncers.field(table?.name))
+      ),
+      // Specify 7 only
+      defaultType: pipe(
+        syncers.xmlAttribute('initialize defaultPrecision', 'skip'),
+        syncers.maybe(syncers.enum(['year', 'month-year', 'full'] as const)),
+        syncers.default('full')
+      ),
+      // Specify 7 only
+      canChangePrecision: pipe(
+        syncers.xmlAttribute('initialize canChangePrecision', 'skip'),
+        syncers.maybe(syncers.toBoolean),
+        syncers.default(true)
+      ),
+    }),
+  collectionRelOneToMany: () =>
+    createXmlSpec({
+      relationshipName: syncers.xmlAttribute('initialize relName', 'required'),
+      // Specify 7 only
+      // FIXME: this is redundant with "formatName"
+      dataObjectFormatter: syncers.xmlAttribute(
+        'initialize formatting',
+        'skip'
+      ),
+    }),
+  colRelType: () =>
+    createXmlSpec({
+      relationshipName: syncers.xmlAttribute('initialize relName', 'required'),
+      // Specify 7 only
+      // FIXME: this is redundant with "formatName"
+      dataObjectFormatter: syncers.xmlAttribute(
+        'initialize formatting',
+        'skip'
+      ),
+      legacyForceRightSide: pipe(
+        syncers.xmlAttribute('initialize forceRightSide', 'skip'),
+        syncers.maybe(syncers.toBoolean),
+        syncers.default(false)
+      ),
+    }),
+  localityGeoRef: () =>
+    createXmlSpec({
+      /*
+       * If geography is not set, get the value from a field with
+       * this ID instead
+       */
+      legacyGeographyId: syncers.xmlAttribute('initialize geoId', 'skip'),
+      /*
+       * If locality is not set, get the value from a field with
+       * this ID instead
+       */
+      legacyLocalityId: syncers.xmlAttribute('initialize locId', 'skip'),
+      /*
+       * ID of the LatLongUI plugin. If set, precision and
+       * latLongMethod will be updated after geo-referencing
+       */
+      legacyLatLongUiId: syncers.xmlAttribute('initialize llid', 'skip'),
+    }),
+  webLink: () =>
+    createXmlSpec({
+      webLinkName: syncers.xmlAttribute('initialize webLink', 'required'),
+      icon: syncers.xmlAttribute('initialize icon', 'skip'),
+    }),
+  hostTaxon: () =>
+    createXmlSpec({
+      relationshipName: syncers.xmlAttribute('initialize relName', 'required'),
+    }),
+} as const;
 
 export const exportsForTests = {
   tablesWithFormTable,
