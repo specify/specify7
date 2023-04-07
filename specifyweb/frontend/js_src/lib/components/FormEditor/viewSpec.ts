@@ -7,8 +7,13 @@ import { syncers } from '../Syncer/syncers';
 import type { SimpleXmlNode } from '../Syncer/xmlToJson';
 import { createSimpleXmlNode } from '../Syncer/xmlToJson';
 import { createXmlSpec } from '../Syncer/xmlUtils';
-import { filterArray, IR } from '../../utils/types';
+import { filterArray, IR, RA, RR } from '../../utils/types';
 import { SpecifyTable } from '../DataModel/specifyTable';
+import { LiteralField, Relationship } from '../DataModel/specifyField';
+import { toLargeSortConfig, toSmallSortConfig } from '../Molecules/Sorting';
+import { Tables } from '../DataModel/types';
+import { paleoPluginTables } from '../FormPlugins/PaleoLocation';
+import { formatDisjunction } from '../Atoms/Internationalization';
 
 export const formDefinitionSpec = (table: SpecifyTable | undefined) =>
   createXmlSpec({
@@ -72,6 +77,46 @@ const rowsSpec = (table: SpecifyTable | undefined) =>
                   unknown: emptySpec,
                 } as const,
                 table
+              ),
+              // Make sure command is on a correct table
+              syncer(
+                (cell) => {
+                  if (cell.definition.type !== 'Command') return cell;
+                  const name =
+                    cell.definition.name ??
+                    (f.includes(
+                      Object.keys(commandTables),
+                      cell.definition.label
+                    )
+                      ? cell.definition.label
+                      : undefined);
+                  if (name === undefined) return cell;
+                  const allowedTable = commandTables[name];
+                  if (
+                    allowedTable !== undefined &&
+                    table !== undefined &&
+                    allowedTable !== table.name
+                  ) {
+                    console.error(
+                      `Can't display ${
+                        cell.definition.label ?? name ?? 'plugin'
+                      } on the ${table.name} form. Instead, try ` +
+                        `displaying it on the ${tables[allowedTable].label} form`
+                    );
+                    return {
+                      ...cell,
+                      definition: { ...cell.definition, name: undefined },
+                    };
+                  }
+                  return {
+                    ...cell,
+                    definition: {
+                      ...cell.definition,
+                      name,
+                    },
+                  };
+                },
+                (cell) => cell
               )
             )
           )
@@ -146,10 +191,6 @@ const preProcessProps = syncer<SimpleXmlNode, SimpleXmlNode>(
   }
 );
 
-type Cell = SpecToJson<
-  ReturnType<typeof formDefinitionSpec>
->['rows']['rows'][number][number];
-
 const columnDefinitionSpec = f.store(() =>
   createXmlSpec({
     // Commonly one of 'lnx', 'mac', 'exp'
@@ -199,8 +240,10 @@ const cellSpec = f.store(() =>
       syncers.default<number>(1)
     ),
     description: syncers.xmlAttribute('desc', 'skip'),
-    // Specify 7 only
-    // When invisible, field is rendered with visibility="hidden"
+    /*
+     * Specify 7 only
+     * When invisible, field is rendered with visibility="hidden"
+     */
     visible: pipe(
       syncers.xmlAttribute('invisible', 'skip'),
       syncers.maybe(syncers.toBoolean),
@@ -211,6 +254,7 @@ const cellSpec = f.store(() =>
       )
     ),
     title: syncers.xmlAttribute('initialize title', 'skip'),
+    // Default: right for labels, left for the rest
     align: pipe(
       syncers.xmlAttribute('initialize align', 'skip'),
       syncers.maybe(syncers.enum(['left', 'right', 'center']))
@@ -300,7 +344,26 @@ const subViewSpec = (
 ) =>
   createXmlSpec({
     // FIXME: parse further
-    name: syncers.xmlAttribute('name', 'required'),
+    name: pipe(
+      syncers.xmlAttribute('name', 'required'),
+      syncers.maybe(syncers.field(table?.name)),
+      syncer(
+        (fields: RA<LiteralField | Relationship> | undefined) => {
+          const field = fields?.at(-1);
+          if (field?.isRelationship === false) {
+            console.error('SubView can only be used to display a relationship');
+            return undefined;
+          }
+          if (field?.type === 'many-to-many') {
+            // ResourceApi does not support .rget() on a many-to-many
+            console.error('Many-to-many relationships are not supported');
+            return undefined;
+          }
+          return fields;
+        },
+        (field) => field
+      )
+    ),
     defaultType: pipe(
       syncers.xmlAttribute('defaultType', 'skip'),
       syncers.maybe(syncers.enum(['form', 'table', 'icon'] as const))
@@ -331,7 +394,29 @@ const subViewSpec = (
     // Specify 7 only
     sortField: pipe(
       syncers.xmlAttribute('initialize sortField', 'skip'),
-      syncers.maybe(syncers.field(table?.name))
+      syncers.maybe(
+        syncer(
+          (raw: string) => {
+            const parsed = toLargeSortConfig(raw);
+            const fieldNames = syncers
+              .field(table?.name)
+              .serializer(parsed.fieldNames.join('.'));
+            return fieldNames === undefined
+              ? undefined
+              : {
+                  ...parsed,
+                  fieldNames,
+                };
+          },
+          (parsed) =>
+            parsed === undefined
+              ? ''
+              : toSmallSortConfig({
+                  ...parsed,
+                  fieldNames: parsed.fieldNames.map(({ name }) => name),
+                })
+        )
+      )
     ),
     legacyNoScrollBars: pipe(
       syncers.xmlAttribute('initialize noScrollBars', 'skip'),
@@ -376,6 +461,7 @@ const panelSpec = (
   table: SpecifyTable | undefined
 ) =>
   createXmlSpec({
+    panelType: syncers.xmlAttribute('initialize panelType', 'skip'),
     columnDefinitions: syncers.xmlAttribute('colDef', 'skip'),
     rowDefinitions: syncers.xmlAttribute('rowDef', 'skip'),
     legacyName: syncers.xmlAttribute('name', 'skip'),
@@ -394,17 +480,17 @@ const veryUnsafeRows = (
 ): Syncer<SimpleXmlNode, SimpleXmlNode> =>
   rows(table) as unknown as Syncer<SimpleXmlNode, SimpleXmlNode>;
 
+const commandTables = {
+  generateLabelBtn: undefined,
+  ShowLoansBtn: 'Preparation',
+  ReturnLoan: 'Loan',
+} as const;
+
 const commandSpec = f.store(() =>
   createXmlSpec({
     name: pipe(
       syncers.xmlAttribute('name', 'required'),
-      syncers.maybe(
-        syncers.enum([
-          'generateLabelBtn',
-          'ShowLoansBtn',
-          'ReturnLoan',
-        ] as const)
-      )
+      syncers.maybe(syncers.enum(Object.keys(commandTables)))
     ),
     legacyCommandType: pipe(
       syncers.xmlAttribute('commandType', 'skip'),
@@ -489,7 +575,7 @@ const fieldSpec = (
           QueryComboBox: queryComboBoxSpec,
           CheckBox: checkBoxSpec,
           // FIXME: figure out how this works in sp6
-          TriState: emptySpec,
+          TriState: checkBoxSpec,
           Spinner: spinnerSpec,
           List: listSpec,
           Image: imageSpec,
@@ -527,7 +613,7 @@ const specialFieldNames = new Set([
 // FIXME: add defaults everywhere where appropriate
 const rawFieldSpec = (table: SpecifyTable | undefined) =>
   createXmlSpec({
-    name: pipe(
+    field: pipe(
       syncers.xmlAttribute('name', 'skip'),
       syncers.preserveInvalid(
         syncer((name) => {
@@ -882,9 +968,42 @@ const pluginWrapperSpec = (
           unknown: emptySpec,
         } as const,
         { field, cell, table }
+      ),
+      syncer(
+        (node) => {
+          const tables = pluginTables[node.definition.type];
+          if (
+            tables !== undefined &&
+            table !== undefined &&
+            tables.includes(table.name)
+          )
+            console.error(
+              `Can't display ${node.definition.rawType} on ${table.name} form. Instead, try ` +
+                `displaying it on the ${formatDisjunction(tables)} form`
+            );
+          return node;
+        },
+        (node) => node
       )
     ),
   });
+
+const pluginTables: Partial<
+  RR<
+    SpecToJson<
+      ReturnType<typeof pluginWrapperSpec>
+    >['definition']['definition']['type'],
+    RA<keyof Tables>
+  >
+> = {
+  LatLongUi: ['Locality'],
+  CollectionRelOneToManyPlugin: ['CollectionObject'],
+  ColRelTypePlugin: ['CollectionObject'],
+  LocalityGeoRef: ['Locality'],
+  HostTaxonPlugin: ['CollectingEventAttribute'],
+  LeafletMap: ['Locality'],
+  PaleoMap: paleoPluginTables,
+};
 
 const pluginSpec = {
   latLong: () =>
