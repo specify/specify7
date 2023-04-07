@@ -88,16 +88,19 @@ const typeSearchSpec = f.store(() =>
       syncers.maybe(syncers.toDecimal),
       syncers.maybe(syncers.tableId)
     ),
+    // Sp6 concatenates this into SQL. Vulnerable to SQL injection
     searchFields: pipe(
       syncers.xmlAttribute('searchField', 'required'),
       syncers.maybe(syncers.split(','))
     ),
+    // Sp6 concatenates this into SQL. Vulnerable to SQL injection
     displayFields: pipe(
       syncers.xmlAttribute('displayCols', 'required'),
       syncers.maybe(syncers.split(','))
     ),
     format: syncers.xmlAttribute('format', 'empty'),
     formatter: syncers.xmlAttribute('dataObjFormatter', 'empty'),
+    // Sp6 executes this query directly. Quite vulnerable
     query: syncers.xmlContent,
   })
 );

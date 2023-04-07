@@ -10,6 +10,7 @@ import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { getTable, getTableById, tables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
+import { error } from '../Errors/assert';
 import {
   getLogContext,
   pushContext,
@@ -31,6 +32,7 @@ type NodeWithContext<T> = {
   readonly logContext: IR<unknown>;
 };
 
+// FIXME: add tests for each syncer
 export const syncers = {
   xmlAttribute: <MODE extends 'empty' | 'required' | 'skip'>(
     attribute: string,
@@ -78,7 +80,34 @@ export const syncers = {
       children: {},
     })
   ),
+  /**
+   * Use a default value if not present.
+   * If current value is already equal to default, unset it
+   * If you don't want the value to be unset, use syncers.fallback instead
+   *
+   * As a rule of thumb, if attribute is required and default value is not
+   * empty string, use syncers.fallback. If it is optional, or default value is
+   * not useful (i.e, empty string for a "name" attribute), use syncers.default
+   */
   default: <T>(
+    defaultValue: T extends (...args: RA<unknown>) => unknown
+      ? never
+      : T | (() => T)
+  ) =>
+    syncer<T | undefined, T>(
+      (value) =>
+        value ??
+        (typeof defaultValue === 'function' ? defaultValue() : defaultValue),
+      (value) =>
+        value ===
+        (typeof defaultValue === 'function' ? defaultValue() : defaultValue)
+          ? undefined
+          : value
+    ),
+  /**
+   * Like syncers.default, but don't unset the value if it matches the default
+   */
+  fallback: <T>(
     defaultValue: T extends (...args: RA<unknown>) => unknown
       ? never
       : T | (() => T)
@@ -125,11 +154,19 @@ export const syncers = {
     (value) => value?.toString() ?? ''
   ),
   toDecimal: syncer<string, number | undefined>(
-    f.parseInt,
+    (raw) => {
+      const parsed = f.parseInt(raw);
+      if (parsed === undefined) console.error('Invalid decimal number');
+      return parsed;
+    },
     (value) => value?.toString() ?? ''
   ),
   toFloat: syncer<string, number | undefined>(
-    f.parseFloat,
+    (raw) => {
+      const parsed = f.parseFloat(raw);
+      if (parsed === undefined) console.error('Invalid floating point number');
+      return parsed;
+    },
     (value) => value?.toString() ?? ''
   ),
   xmlChild: (tagName: string, mode: 'optional' | 'required' = 'required') =>
@@ -345,6 +382,44 @@ export const syncers = {
       (value) => value.split(separator),
       (value) => value.join(separator)
     ),
+  /*
+   * Like, syncers.split, but:
+   * - Allows escaping separator using backslash
+   * - Trims whitespace around separator
+   * - Inserts whitespace back when deserializing
+   */
+  fancySplit: (separator: string) =>
+    separator.length === 0 || separator.length > 1
+      ? error('Only single character separators are supported')
+      : syncer<string, RA<string>>(
+          (values) => {
+            const parts = [];
+            let isEscaped = false;
+            let currentPart = '';
+            Array.from(values.split(''), (character, index) => {
+              if (character === separator && !isEscaped) {
+                parts.push(currentPart);
+                currentPart = '';
+              } else {
+                if (isEscaped) currentPart += '\\';
+                if (
+                  character !== '\\' ||
+                  isEscaped ||
+                  values[index + 1] === undefined ||
+                  values[index + 1] !== separator
+                )
+                  currentPart += character;
+                isEscaped = character === '\\' && !isEscaped;
+              }
+            });
+            parts.push(currentPart.trim());
+            return parts;
+          },
+          (values) =>
+            values
+              .map((value) => value.replaceAll(separator, `\\${separator}`))
+              .join(` ${separator}`)
+        ),
   /**
    * I.e, if table name referred to unknown table, preserve the unknown name
    * while using the new one
@@ -401,7 +476,7 @@ export const syncers = {
   >(
     nodeKey: NODE_KEY,
     key: KEY,
-    attributeSyncer: Syncer<SimpleXmlNode, string>,
+    attributeSyncer: Syncer<SimpleXmlNode, string | undefined>,
     typeMapper: TYPE_MAPPER,
     mapper: MAPPER,
     extraPayload: EXTRA
@@ -411,7 +486,7 @@ export const syncers = {
         const { node, logContext } = cell[nodeKey];
 
         setLogContext(logContext);
-        const rawType = attributeSyncer.serializer(node);
+        const rawType = attributeSyncer.serializer(node) ?? 'unknown';
         syncers.enum(Object.keys(typeMapper)).serializer(rawType);
         setLogContext(logContext);
 

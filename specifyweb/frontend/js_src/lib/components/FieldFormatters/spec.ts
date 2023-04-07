@@ -1,9 +1,9 @@
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { f } from '../../utils/functools';
-import { getTable } from '../DataModel/tables';
 import type { LiteralField } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
+import { getTable } from '../DataModel/tables';
 import type { SpecToJson } from '../Syncer';
 import { pipe, syncer } from '../Syncer';
 import { syncers } from '../Syncer/syncers';
@@ -59,8 +59,8 @@ const formatterSpec = f.store(() =>
   createXmlSpec({
     isSystem: pipe(
       syncers.xmlAttribute('system', 'required'),
-      syncers.default<LocalizedString>(''),
-      syncers.toBoolean
+      syncers.maybe(syncers.toBoolean),
+      syncers.fallback(false)
     ),
     name: pipe(
       syncers.xmlAttribute('name', 'required'),
@@ -73,8 +73,8 @@ const formatterSpec = f.store(() =>
     rawField: syncers.xmlAttribute('fieldName', 'skip'),
     isDefault: pipe(
       syncers.xmlAttribute('default', 'skip'),
-      syncers.default<LocalizedString>(''),
-      syncers.toBoolean
+      syncers.maybe(syncers.toBoolean),
+      syncers.default(false)
     ),
     autoNumber: pipe(
       syncers.xmlChild('autonumber', 'optional'),
@@ -95,14 +95,13 @@ const fieldSpec = f.store(() =>
   createXmlSpec({
     type: pipe(
       syncers.xmlAttribute('type', 'required'),
-      syncers.default<LocalizedString>('alphanumeric'),
+      syncers.fallback<LocalizedString>('alphanumeric'),
       // TEST: check if sp6 defines any other types not present in this list
       syncers.enum(Object.keys(formatterTypeMapper))
     ),
     size: pipe(
       syncers.xmlAttribute('size', 'skip'),
-      syncers.default<LocalizedString>(''),
-      syncers.toDecimal,
+      syncers.maybe(syncers.toDecimal),
       syncers.default<number>(1)
     ),
     value: pipe(
@@ -111,13 +110,13 @@ const fieldSpec = f.store(() =>
     ),
     byYear: pipe(
       syncers.xmlAttribute('byYear', 'skip'),
-      syncers.default<LocalizedString>(''),
-      syncers.toBoolean
+      syncers.maybe(syncers.toBoolean),
+      syncers.default(false)
     ),
     autoIncrement: pipe(
       syncers.xmlAttribute('inc', 'skip'),
-      syncers.default<LocalizedString>(''),
-      syncers.toBoolean
+      syncers.maybe(syncers.toBoolean),
+      syncers.default(false)
     ),
     pattern: syncers.xmlAttribute('pattern', 'skip'),
   })

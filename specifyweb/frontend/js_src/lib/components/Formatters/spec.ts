@@ -32,7 +32,7 @@ export const formattersSpec = f.store(() =>
     ),
     aggregators: pipe(
       syncers.xmlChild('aggregators'),
-      syncers.default<SimpleXmlNode>(createSimpleXmlNode),
+      syncers.fallback<SimpleXmlNode>(createSimpleXmlNode),
       syncers.xmlChildren('aggregator'),
       syncers.map(
         pipe(
@@ -75,12 +75,12 @@ const formatterSpec = f.store(() =>
     ),
     isDefault: pipe(
       syncers.xmlAttribute('default', 'empty'),
-      syncers.default<LocalizedString>(''),
-      syncers.toBoolean
+      syncers.maybe(syncers.toBoolean),
+      syncers.default(false)
     ),
     definition: pipe(
       syncers.xmlChild('switch'),
-      syncers.default<SimpleXmlNode>(createSimpleXmlNode),
+      syncers.fallback<SimpleXmlNode>(createSimpleXmlNode),
       syncers.captureLogContext()
     ),
   })
@@ -138,8 +138,8 @@ const aggregatorSpec = f.store(() =>
     ),
     isDefault: pipe(
       syncers.xmlAttribute('default', 'empty'),
-      syncers.default<LocalizedString>(''),
-      syncers.toBoolean
+      syncers.maybe(syncers.toBoolean),
+      syncers.default(false)
     ),
     separator: pipe(
       syncers.xmlAttribute('separator', 'empty', false),
@@ -148,8 +148,7 @@ const aggregatorSpec = f.store(() =>
     suffix: syncers.xmlAttribute('ending', 'empty', false),
     limit: pipe(
       syncers.xmlAttribute('count', 'empty', false),
-      syncers.default<LocalizedString>(''),
-      syncers.toDecimal
+      syncers.maybe(syncers.toDecimal)
     ),
     formatter: syncers.xmlAttribute('format', 'empty'),
     sortField: syncers.xmlAttribute('orderFieldName', 'empty'),

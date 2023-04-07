@@ -150,13 +150,13 @@ function Editor({
   );
   const [xml, setXml] = React.useState(initialXml);
 
-  const setRef = React.useRef(setDefinition);
-  setRef.current = setDefinition;
+  const updateRef = React.useRef(setDefinition);
+  updateRef.current = setDefinition;
   const update = React.useMemo(
     () =>
       _.debounce((node: string) => {
         const parsed = parseXml(node);
-        if (typeof parsed === 'object') setRef.current(xmlToJson(parsed));
+        if (typeof parsed === 'object') updateRef.current(xmlToJson(parsed));
       }, debounceRate),
     []
   );

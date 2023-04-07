@@ -57,6 +57,9 @@ const trimTextNodes = (children: XmlNode['children']): XmlNode['children'] =>
     }, [])
   );
 
+/**
+ * Remove redundant whitespace-only text nodes
+ */
 function removeWhitespaceNode(
   children: XmlNode['children']
 ): XmlNode['children'] {

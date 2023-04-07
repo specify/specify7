@@ -5,6 +5,8 @@ import { tables } from '../../DataModel/tables';
 import { formattersSpec } from '../../Formatters/spec';
 import { syncers } from '../syncers';
 import { toSimpleXmlNode, updateXml, xmlToJson } from '../xmlToJson';
+import { createXmlSpec } from '../xmlUtils';
+import { pipe } from '../index';
 
 requireContext();
 
@@ -192,5 +194,30 @@ test('Removing a child does not carry over unknown attributes from previous node
       </format>
       <aggregators/>
     </formatters>"
+  `);
+});
+
+test(`Default value VS Fallback value`, () => {
+  const xml = strictParseXml(`<root />`);
+  const xmlNode = xmlToJson(xml);
+  const simpleXmlNode = toSimpleXmlNode(xmlNode);
+
+  const spec = createXmlSpec({
+    fallback: pipe(
+      syncers.xmlAttribute('fallback', 'skip'),
+      syncers.fallback('fallbackValue')
+    ),
+    default: pipe(
+      syncers.xmlAttribute('default', 'skip'),
+      syncers.default('defaultValue')
+    ),
+  });
+
+  const { serializer, deserializer } = syncers.object(spec);
+  const parsed = deserializer(serializer(simpleXmlNode));
+  const updatedXml = updateXml(parsed).replaceAll('\t', '  ');
+  expect(updatedXml).toMatchInlineSnapshot(`
+    "<?xml version=\\"1.0\\" encoding=\\"UTF-8\\"?>
+    <root fallback=\\"fallbackValue\\"/>"
   `);
 });

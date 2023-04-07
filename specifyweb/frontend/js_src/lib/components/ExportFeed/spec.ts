@@ -50,7 +50,7 @@ const itemSpec = f.store(() =>
     publish: pipe(
       syncers.xmlAttribute('publish', 'required'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default<boolean>(false)
+      syncers.fallback<boolean>(false)
     ),
     title: pipe(
       syncers.xmlChild('title', 'optional'),

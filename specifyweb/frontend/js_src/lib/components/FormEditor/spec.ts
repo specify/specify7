@@ -19,7 +19,7 @@ export const viewSetsSpec = f.store(() =>
   createXmlSpec({
     views: pipe(
       syncers.xmlChild('views'),
-      syncers.default(createSimpleXmlNode),
+      syncers.fallback(createSimpleXmlNode),
       syncers.xmlChildren('view'),
       syncers.map(
         pipe(
@@ -47,7 +47,7 @@ export const viewSetsSpec = f.store(() =>
     ),
     viewDefs: pipe(
       syncers.xmlChild('viewdefs'),
-      syncers.default(createSimpleXmlNode),
+      syncers.fallback(createSimpleXmlNode),
       syncers.xmlChildren('viewdef'),
       syncers.map(
         pipe(
@@ -116,20 +116,22 @@ const viewSpec = f.store(() =>
     ),
     altViews: pipe(
       syncers.xmlChild('altviews'),
-      syncers.default<SimpleXmlNode>(createSimpleXmlNode),
+      syncers.fallback<SimpleXmlNode>(createSimpleXmlNode),
       syncers.object(altViewsSpec())
     ),
     legacyIsInternal: pipe(
       syncers.xmlAttribute('isInternal', 'skip'),
       syncers.maybe(syncers.toBoolean)
     ),
+    // Not used in the code, but specified in the xml often
     legacyIsExternal: pipe(
       syncers.xmlAttribute('isExternal', 'skip'),
       syncers.maybe(syncers.toBoolean)
     ),
     legacyUseBusinessRules: pipe(
       syncers.xmlAttribute('useDefBusRule', 'skip'),
-      syncers.maybe(syncers.toBoolean)
+      syncers.maybe(syncers.toBoolean),
+      syncers.default(true)
     ),
     legacyResourceLabels: pipe(
       syncers.xmlAttribute('resourceLabels', 'skip'),
@@ -179,15 +181,13 @@ const altViewSpec = f.store(() =>
     viewDef: syncers.xmlAttribute('viewDef', 'required'),
     mode: pipe(
       syncers.xmlAttribute('mode', 'required'),
-      syncers.default<LocalizedString>('view'),
-      syncers.enum(['edit', 'view', 'search'] as const)
+      syncers.maybe(syncers.enum(['edit', 'view', 'search'] as const)),
+      syncers.fallback<LocalizedString>('view' as const)
     ),
     default: pipe(
       syncers.xmlAttribute('default', 'skip'),
-      // FIXME: test that default does not add value when not needed
-      // FIXME: consider making default return undefined if value matches default
-      syncers.default<LocalizedString>(''),
-      syncers.toBoolean
+      syncers.maybe(syncers.toBoolean),
+      syncers.default(false)
     ),
     legacyTitle: syncers.xmlAttribute('title', 'skip'),
     legacyLabel: syncers.xmlAttribute('label', 'skip'),
@@ -208,14 +208,17 @@ const viewDefSpec = f.store(() =>
     ),
     type: pipe(
       syncers.xmlAttribute('type', 'required'),
-      syncers.default<LocalizedString>('form'),
-      syncers.enum(['form', 'formtable', 'iconview', 'rstable'] as const)
+      syncers.maybe(
+        syncers.enum(['form', 'formtable', 'iconview', 'rstable'] as const)
+      ),
+      syncers.fallback<LocalizedString>('form')
     ),
     legacyGetTable: syncers.xmlAttribute('getTable', 'required'),
     legacySetTable: syncers.xmlAttribute('setTable', 'required'),
     legacyEditableDialog: pipe(
       syncers.xmlAttribute('editableDlg', 'skip'),
-      syncers.maybe(syncers.toBoolean)
+      syncers.maybe(syncers.toBoolean),
+      syncers.default(true)
     ),
     legacyUseResourceLabels: pipe(
       syncers.xmlAttribute('useResourceLabels', 'skip'),

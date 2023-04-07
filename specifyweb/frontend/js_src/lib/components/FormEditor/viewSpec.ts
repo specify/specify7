@@ -1,5 +1,3 @@
-import type { LocalizedString } from 'typesafe-i18n';
-
 import { f } from '../../utils/functools';
 import { tables } from '../DataModel/tables';
 import { pipe, SpecToJson, Syncer, syncer } from '../Syncer';
@@ -35,7 +33,7 @@ export const formDefinitionSpec = (table: SpecifyTable | undefined) =>
 const rows = (table: SpecifyTable | undefined) =>
   pipe(
     syncers.xmlChild('rows'),
-    syncers.default<SimpleXmlNode>(createSimpleXmlNode),
+    syncers.fallback<SimpleXmlNode>(createSimpleXmlNode),
     syncers.object(rowsSpec(table))
   );
 
@@ -55,7 +53,7 @@ const rowsSpec = (table: SpecifyTable | undefined) =>
                 'definition',
                 pipe(
                   syncers.xmlAttribute('type', 'required'),
-                  syncers.default('field')
+                  syncers.fallback('field')
                 ),
                 {
                   label: 'Label',
@@ -147,7 +145,11 @@ const rowsSpec = (table: SpecifyTable | undefined) =>
         }
       )
     ),
-    columnDefinitions: syncers.xmlAttribute('colDef', 'skip'),
+    columnDefinitions: pipe(
+      syncers.xmlAttribute('colDef', 'skip'),
+      syncers.default(''),
+      syncers.split(',')
+    ),
   });
 
 /**
@@ -203,12 +205,16 @@ const rowSizeDefinitionSpec = f.store(() =>
   createXmlSpec({
     auto: pipe(
       syncers.xmlAttribute('auto', 'skip'),
-      syncers.default<LocalizedString>(''),
-      syncers.toBoolean
+      syncers.maybe(syncers.toBoolean),
+      syncers.default(false)
     ),
     cell: syncers.xmlAttribute('cell', 'skip'),
-    sep: syncers.xmlAttribute('cell', 'skip'),
-    definition: syncers.xmlContent,
+    sep: syncers.xmlAttribute('sep', 'skip'),
+    definition: pipe(
+      syncers.xmlContent,
+      syncers.default(''),
+      syncers.split(',')
+    ),
   })
 );
 
@@ -248,6 +254,7 @@ const cellSpec = f.store(() =>
       syncers.xmlAttribute('invisible', 'skip'),
       syncers.maybe(syncers.toBoolean),
       syncers.default<boolean>(false),
+      // Flip the value
       syncer(
         (value) => !value,
         (value) => !value
@@ -275,7 +282,8 @@ const cellSpec = f.store(() =>
     // In sp6, if true, disconnects the field from the database
     legacyIgnore: pipe(
       syncers.xmlAttribute('ignore', 'skip'),
-      syncers.maybe(syncers.toBoolean)
+      syncers.maybe(syncers.toBoolean),
+      syncers.default(false)
     ),
     // FIXME: check how this handles duplicate attributes (especially when they were modified)
     rest: syncers.captureLogContext(),
@@ -320,8 +328,8 @@ const separatorSpec = f.store(() =>
     ),
     canCollapse: pipe(
       syncers.xmlAttribute('collapse', 'skip'),
-      syncers.default<LocalizedString>(''),
-      syncers.toBoolean
+      syncers.maybe(syncers.toBoolean),
+      syncers.default(false)
     ),
   })
 );
@@ -375,16 +383,18 @@ const subViewSpec = (
     viewName: syncers.xmlAttribute('viewName', 'skip'),
     isReadOnly: pipe(
       syncers.xmlAttribute('readOnly', 'skip'),
-      syncers.default<LocalizedString>(''),
-      syncers.toBoolean
+      syncers.maybe(syncers.toBoolean),
+      syncers.default(false)
     ),
     legacyRows: pipe(
       syncers.xmlAttribute('rows', 'skip'),
-      syncers.maybe(syncers.toDecimal)
+      syncers.maybe(syncers.toDecimal),
+      syncers.default(5)
     ),
     legacyValidationType: pipe(
       syncers.xmlAttribute('valType', 'skip'),
-      syncers.maybe(syncers.enum(['Changed', 'Focus', 'None', 'OK'] as const))
+      syncers.maybe(syncers.enum(['Changed', 'Focus', 'None', 'OK'] as const)),
+      syncers.default('Changed')
     ),
     displayAsButton: pipe(
       syncers.xmlAttribute('initialize btn', 'skip'),
@@ -463,9 +473,24 @@ const panelSpec = (
   table: SpecifyTable | undefined
 ) =>
   createXmlSpec({
+    columnDefinitions: pipe(
+      syncers.xmlAttribute('colDef', 'skip'),
+      syncers.default(''),
+      syncers.split(',')
+    ),
+    rowDefinitions: pipe(
+      syncers.xmlAttribute('rowDef', 'skip'),
+      syncers.default(''),
+      syncers.split(',')
+    ),
+    /*
+     * This is recognized by sp6 code, but never actually used to influence
+     * anything.
+     * The original sp6 docs mention that if set to "buttonbar", the elements
+     * would be centered.
+     */
     panelType: syncers.xmlAttribute('initialize panelType', 'skip'),
-    columnDefinitions: syncers.xmlAttribute('colDef', 'skip'),
-    rowDefinitions: syncers.xmlAttribute('rowDef', 'skip'),
+    // Used by sp6 to control panels (using hardcoded java logic)
     legacyName: syncers.xmlAttribute('name', 'skip'),
     ...borderSpec(),
     rows: veryUnsafeRows(table),
@@ -546,7 +571,7 @@ const fieldSpec = (
         'definition',
         pipe(
           syncers.xmlAttribute('uiType', 'required'),
-          syncers.default('text')
+          syncers.fallback('text')
         ),
         {
           combobox: 'ComboBox',
@@ -655,6 +680,7 @@ const rawFieldSpec = (table: SpecifyTable | undefined) =>
     legacyFormat: syncers.xmlAttribute('format', 'skip'),
     // Example: CollectingEventDetail
     dataObjectFormatter: syncers.xmlAttribute('formatName', 'skip'),
+    // Example: CatalogNumberNumeric
     uiFieldFormatter: syncers.xmlAttribute('uiFieldFormatter', 'skip'),
     rest: syncers.captureLogContext(),
   });
@@ -665,7 +691,7 @@ const comboBoxSpec = f.store(() =>
     // FIXME: go over all attributes to see what sp7 should start supporting
     legacyData: pipe(
       syncers.xmlAttribute('initialize data', 'skip'),
-      syncers.maybe(syncers.split(','))
+      syncers.maybe(syncers.fancySplit(','))
     ),
   })
 );
@@ -822,7 +848,10 @@ const spinnerSpec = f.store(() =>
 
 const listSpec = f.store(() =>
   createXmlSpec({
-    legacyDisplayType: syncers.xmlAttribute('dsptype', 'skip'),
+    legacyDisplayType: pipe(
+      syncers.xmlAttribute('dsptype', 'skip'),
+      syncers.default('list')
+    ),
     legacyRows: pipe(
       syncers.xmlAttribute('rows', 'skip'),
       syncers.maybe(syncers.toDecimal),
@@ -830,7 +859,7 @@ const listSpec = f.store(() =>
     ),
     legacyData: pipe(
       syncers.xmlAttribute('data', 'skip'),
-      syncers.maybe(syncers.split(','))
+      syncers.maybe(syncers.fancySplit(','))
     ),
   })
 );
@@ -927,10 +956,7 @@ const pluginWrapperSpec = (
       syncers.switch(
         'rest',
         'definition',
-        pipe(
-          syncers.xmlAttribute('initialize name', 'required'),
-          syncers.default('unknown')
-        ),
+        syncers.xmlAttribute('initialize name', 'required'),
         {
           LatLonUI: 'LatLongUi',
           PartialDateUI: 'PartialDateUi',
