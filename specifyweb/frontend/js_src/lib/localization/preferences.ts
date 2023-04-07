@@ -970,6 +970,9 @@ export const preferencesText = createDictionary({
       'Inclure le nom de la table dans le titre de la page du navigateur',
     'uk-ua': 'Включіть назву таблиці в заголовок сторінки браузера',
   },
+  focusFirstField: {
+    'en-us': 'Focus first field',
+  },
   doubleClickZoom: {
     'en-us': 'Double click to zoom',
     'ru-ru': 'Дважды щелкните, чтобы увеличить',

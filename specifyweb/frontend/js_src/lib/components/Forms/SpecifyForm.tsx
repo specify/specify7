@@ -82,6 +82,29 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
     'flexibleColumnWidth'
   );
   const [language] = userPreferences.use('form', 'schema', 'language');
+
+  const [focusFirstFieldPref] = userPreferences.use(
+    'form',
+    'behavior',
+    'focusFirstField'
+  );
+  const formRef = React.useRef<HTMLDivElement | null>(null);
+
+  React.useEffect(() => {
+    if (focusFirstFieldPref === true) {
+      const timeoutId = setTimeout(() => {
+        if (formRef.current === null) return;
+        const firstFocusableElement = formRef.current.querySelector(
+          'button, a, input:not([type="hidden"]), select, textarea, [tabindex]:not([tabindex="-1"])'
+        ) as HTMLElement;
+
+        firstFocusableElement?.focus();
+      }, 100);
+      return () => clearTimeout(timeoutId);
+    }
+    return undefined;
+  }, [resource]);
+
   return viewDefinition?.name === attachmentView ? (
     <AttachmentsPlugin mode={viewDefinition.mode} resource={resource} />
   ) : (
@@ -93,6 +116,7 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
           ${showLoading ? 'relative' : ''}
         `}
         lang={language}
+        ref={formRef}
       >
         {showLoading && (
           <div
