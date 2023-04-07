@@ -52,11 +52,9 @@ export const xmlToJson = (element: Element): XmlNode => ({
  * Reverse conversion to JSON
  */
 export function jsonToXml(node: XmlNode): Element {
-  const xmlDocument = document.implementation.createDocument(
-    null,
-    node.tagName
-  );
+  const xmlDocument = document.implementation.createDocument(null, null);
   const element = xmlDocument.createElement(node.tagName);
+  xmlDocument.append(element);
   Object.entries(node.attributes).forEach(([name, value]) =>
     value === undefined ? undefined : element.setAttribute(name, value)
   );

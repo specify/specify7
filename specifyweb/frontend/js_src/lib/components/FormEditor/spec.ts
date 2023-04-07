@@ -1,5 +1,3 @@
-// FIXME: figure out if "<?xml version="1.0" encoding="UTF-8"?>" should be added
-
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { f } from '../../utils/functools';

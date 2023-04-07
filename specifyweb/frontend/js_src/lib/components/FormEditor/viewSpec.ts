@@ -326,17 +326,19 @@ const separatorSpec = f.store(() =>
   })
 );
 
-const borderSpec = createXmlSpec({
-  legacyBorderStyle: pipe(
-    syncers.xmlAttribute('initialize border', 'skip'),
-    syncers.maybe(
-      syncers.enum(['etched', 'lowered', 'raised', 'empty', 'line'])
-    )
-  ),
-  // Used only if border style is line
-  legacyBorderColor: syncers.xmlAttribute('initialize borderColor', 'skip'),
-  legacyBackgroundColor: syncers.xmlAttribute('initialize bgColor', 'skip'),
-});
+const borderSpec = f.store(() =>
+  createXmlSpec({
+    legacyBorderStyle: pipe(
+      syncers.xmlAttribute('initialize border', 'skip'),
+      syncers.maybe(
+        syncers.enum(['etched', 'lowered', 'raised', 'empty', 'line'])
+      )
+    ),
+    // Used only if border style is line
+    legacyBorderColor: syncers.xmlAttribute('initialize borderColor', 'skip'),
+    legacyBackgroundColor: syncers.xmlAttribute('initialize bgColor', 'skip'),
+  })
+);
 
 const subViewSpec = (
   _cell: SpecToJson<ReturnType<typeof cellSpec>>,
@@ -453,7 +455,7 @@ const subViewSpec = (
       syncers.maybe(syncers.toBoolean),
       syncers.default<boolean>(false)
     ),
-    ...borderSpec,
+    ...borderSpec(),
   });
 
 const panelSpec = (
@@ -465,7 +467,7 @@ const panelSpec = (
     columnDefinitions: syncers.xmlAttribute('colDef', 'skip'),
     rowDefinitions: syncers.xmlAttribute('rowDef', 'skip'),
     legacyName: syncers.xmlAttribute('name', 'skip'),
-    ...borderSpec,
+    ...borderSpec(),
     rows: veryUnsafeRows(table),
   });
 

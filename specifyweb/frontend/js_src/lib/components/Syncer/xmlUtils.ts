@@ -32,12 +32,42 @@ export const getBooleanAttribute = (
 /** Convert `<a></a>` to `<a />` */
 const reEmptyTag = /<(?<name>[^\s/>]+)(?<attributes>[^<>]*)><\/\k<name>>/gu;
 
-export const xmlToString = (xml: Node): string =>
-  formatXmlAttributes(
+/**
+ * Handles being called with the Document or with the root element
+ * Adds XML declaration, but only if not already present
+ * Converts `<a></a>` to `<a />`
+ * Splits attributes into multiple lines for long lines
+ */
+export function xmlToString(xml: Node): string {
+  const document =
+    xml.ownerDocument === null ? (xml as Document) : xml.ownerDocument;
+  const isRoot =
+    xml.ownerDocument === null ||
+    xml.parentNode === document ||
+    xml.parentElement === xml.ownerDocument.documentElement;
+  if (isRoot) {
+    const hasXmlDeclaration =
+      document.firstChild instanceof ProcessingInstruction &&
+      document.firstChild.target === 'xml';
+    if (!hasXmlDeclaration) {
+      const processingInstruction = document.createProcessingInstruction(
+        'xml',
+        'version="1.0" encoding="UTF-8"'
+      );
+      document.insertBefore(processingInstruction, document.firstChild);
+    }
+  }
+  const element = isRoot ? document : xml;
+  // Split attributes into multiple liens for long lines
+  return formatXmlAttributes(
     new XMLSerializer()
-      .serializeToString(xml)
+      .serializeToString(element)
+      // Insert new line after XML Declaration
+      .replace(/^<\?xml.*?\?>\n?/u, (match) => `${match.trim()}\n`)
+      // Use self-closing tags for empty elements
       .replaceAll(reEmptyTag, '<$<name>$<attributes> />')
   );
+}
 
 export const createXmlSpec = <SPEC extends BaseSpec<SimpleXmlNode>>(
   spec: SPEC
