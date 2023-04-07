@@ -135,11 +135,14 @@ class DeferredScopeUploadTable(NamedTuple):
         then disambiguate the new Scoped UploadTable using the stored Disambiguation
         '''
         return self._replace(disambiguation = da)
-    
+
     def get_treedefs(self) -> Set:
+        """ This method is needed because a ScopedUploadTable may call this when calling its own get_treedefs()
+        This returns an empty set unless the toOne or toMany Uploadable is a TreeRecord
+        """
         return (
-            set(td for toOne in self.toOne.values() for td in toOne.get_treedefs()) |
-            set(td for toMany in self.toMany.values() for tmr in toMany for td in tmr.get_treedefs())
+            set(td for toOne in self.toOne.values() for td in toOne.get_treedefs()) | # type: ignore
+            set(td for toMany in self.toMany.values() for tmr in toMany for td in tmr.get_treedefs()) # type: ignore
         )
 
     def bind(self, default_collection, row: Row, uploadingAgentId: int, auditor: Auditor, cache: Optional[Dict]=None, row_index: Optional[int] = None
@@ -159,7 +162,7 @@ class DeferredScopeUploadTable(NamedTuple):
                 collection = models.Collection.objects.get(id=collection_id)
                 scoped = self.apply_scoping(collection, defer=False)
             elif isinstance(self.overrideScope['collection'], Callable):
-                collection = self.overrideScope['collection'](self, row_index)
+                collection = self.overrideScope['collection'](self, row_index) if row_index is not None else default_collection
                 scoped = self.apply_scoping(collection, defer=False)
         
         # If the collection/scope should not be overriden, defer to the default behavior and assume 
@@ -168,8 +171,7 @@ class DeferredScopeUploadTable(NamedTuple):
 
         # If the DeferredScope UploadTable contained any disambiguation data, then apply the disambiguation to the new
         # ScopedUploadTable
-        scoped_disambiguated = scoped.disambiguate(self.disambiguation) if self.disambiguate is not None else scoped
-        
+        scoped_disambiguated = scoped.disambiguate(self.disambiguation) if self.disambiguation is not None else scoped
         # Finally bind the ScopedUploadTable and return the BoundUploadTable or ParseFailures 
         return scoped_disambiguated.bind(default_collection, row, uploadingAgentId, auditor, cache, row_index)
     

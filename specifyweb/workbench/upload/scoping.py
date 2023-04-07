@@ -113,7 +113,7 @@ def apply_scoping_to_uploadtable(ut: Union[UploadTable, DeferredScopeUploadTable
     adjust_to_ones = to_one_adjustments(collection, table)
     
     if ut.overrideScope is not None and isinstance(ut.overrideScope['collection'], int):
-        collection = models.Collection.objects.filter(id=ut.overrideScope['collection']).get()
+        collection = getattr(models, "Collection").objects.filter(id=ut.overrideScope['collection']).get()
     
 
     return ScopedUploadTable(
