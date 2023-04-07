@@ -31,8 +31,6 @@ class Scoping(namedtuple('Scoping', 'obj')):
 
     def borrowagent(self): return Scoping(self.obj.agent)()
 
-    def collectingeventattribute(self): return Scoping(self.obj.collectingevent)
-
     def conservevent(self): return Scoping(self.obj.conservdescription)()
 
     def fieldnotebookpage(self): return Scoping(self.obj.pageset)()
