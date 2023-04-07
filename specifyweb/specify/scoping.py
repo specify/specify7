@@ -29,11 +29,19 @@ class Scoping(namedtuple('Scoping', 'obj')):
 
     def agent(self): return self._simple_division_scope()
 
+    def borrowagent(self): return Scoping(self.obj.agent)()
+
+    def collectingeventattribute(self): return Scoping(self.obj.collectingevent)
+
     def conservevent(self): return Scoping(self.obj.conservdescription)()
 
     def fieldnotebookpage(self): return Scoping(self.obj.pageset)()
 
     def fieldnotebookpageset(self): return Scoping(self.obj.fieldnotebook)()
+
+    def gift(self): return self._simple_discipline_scope()
+
+    def loan(self): return self._simple_discipline_scope()
 
     def taxon(self):
         return DISCIPLINE_SCOPE, self.obj.definition.discipline.id
@@ -47,7 +55,11 @@ class Scoping(namedtuple('Scoping', 'obj')):
         return DIVISION_SCOPE, self.obj.division_id
 
     def _simple_collection_scope(self):
-        return COLLECTION_SCOPE, self.obj.collectionmemberid
+        if hasattr(self.obj, "collectionmemberid"): 
+            return COLLECTION_SCOPE, self.obj.collectionmemberid
+        
+        if hasattr(self.obj, "collection_id"):
+            return COLLECTION_SCOPE, self.obj.collection_id
 
     def _infer_scope(self):
         if hasattr(self.obj, "division_id"): return self._simple_division_scope()
