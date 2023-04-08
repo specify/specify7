@@ -77,9 +77,11 @@ const rowsSpec = (table: SpecifyTable | undefined) =>
                 table
               ),
               // Make sure command is on a correct table
-              syncer(
+              syncers.change(
+                'definition',
                 (cell) => {
-                  if (cell.definition.type !== 'Command') return cell;
+                  if (cell.definition.type !== 'Command')
+                    return cell.definition;
                   const name =
                     cell.definition.name ??
                     (f.includes(
@@ -88,7 +90,7 @@ const rowsSpec = (table: SpecifyTable | undefined) =>
                     )
                       ? cell.definition.label
                       : undefined);
-                  if (name === undefined) return cell;
+                  if (name === undefined) return cell.definition;
                   const allowedTable = commandTables[name];
                   if (
                     allowedTable !== undefined &&
@@ -101,20 +103,14 @@ const rowsSpec = (table: SpecifyTable | undefined) =>
                       } on the ${table.name} form. Instead, try ` +
                         `displaying it on the ${tables[allowedTable].label} form`
                     );
-                    return {
-                      ...cell,
-                      definition: { ...cell.definition, name: undefined },
-                    };
+                    return { ...cell.definition, name: undefined };
                   }
                   return {
-                    ...cell,
-                    definition: {
-                      ...cell.definition,
-                      name,
-                    },
+                    ...cell.definition,
+                    name,
                   };
                 },
-                (cell) => cell
+                ({ definition }) => definition
               )
             )
           )
@@ -122,7 +118,7 @@ const rowsSpec = (table: SpecifyTable | undefined) =>
       )
     ),
     condition: pipe(
-      syncers.xmlAttribute('condition', 'skip'),
+      syncers.xmlAttribute('condition', 'skip', false),
       syncer(
         (rawCondition) => {
           if (rawCondition === undefined) return undefined;
@@ -254,11 +250,7 @@ const cellSpec = f.store(() =>
       syncers.xmlAttribute('invisible', 'skip'),
       syncers.maybe(syncers.toBoolean),
       syncers.default<boolean>(false),
-      // Flip the value
-      syncer(
-        (value) => !value,
-        (value) => !value
-      )
+      syncers.flip
     ),
     title: syncers.xmlAttribute('initialize title', 'skip'),
     // Default: right for labels, left for the rest
@@ -613,15 +605,13 @@ const fieldSpec = (
         } as const,
         { cell, table }
       ),
-      syncer(
-        (cell) => ({
-          ...cell,
-          isReadOnly:
-            cell.isReadOnly ||
-            cell.definition.rawType === 'dsptextfield' ||
-            cell.definition.rawType === 'label',
-        }),
-        (cell) => cell
+      syncers.change(
+        'isReadOnly',
+        (cell) =>
+          cell.isReadOnly ||
+          cell.definition.rawType === 'dsptextfield' ||
+          cell.definition.rawType === 'label',
+        ({ isReadOnly }) => isReadOnly
       )
     ),
   });
@@ -677,7 +667,7 @@ const rawFieldSpec = (table: SpecifyTable | undefined) =>
     ),
     defaultValue: syncers.xmlAttribute('default', 'skip'),
     // Example: '%s'
-    legacyFormat: syncers.xmlAttribute('format', 'skip'),
+    legacyFormat: syncers.xmlAttribute('format', 'skip', false),
     // Example: CollectingEventDetail
     dataObjectFormatter: syncers.xmlAttribute('formatName', 'skip'),
     // Example: CatalogNumberNumeric
@@ -690,7 +680,7 @@ const comboBoxSpec = f.store(() =>
     pickListName: syncers.xmlAttribute('pickList', 'skip'),
     // FIXME: go over all attributes to see what sp7 should start supporting
     legacyData: pipe(
-      syncers.xmlAttribute('initialize data', 'skip'),
+      syncers.xmlAttribute('initialize data', 'skip', false),
       syncers.maybe(syncers.fancySplit(','))
     ),
   })
@@ -858,7 +848,7 @@ const listSpec = f.store(() =>
       syncers.default(15)
     ),
     legacyData: pipe(
-      syncers.xmlAttribute('data', 'skip'),
+      syncers.xmlAttribute('data', 'skip', false),
       syncers.maybe(syncers.fancySplit(','))
     ),
   })

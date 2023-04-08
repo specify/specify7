@@ -5,21 +5,35 @@ import {
   pushContext,
   setLogContext,
 } from '../Errors/logContext';
+import { syncers } from './syncers';
 
 /**
  * Transformer was the original name, but that clashes with Node.js
  */
 export type Syncer<RAW, PARSED> = {
+  /*
+   * Using method signature style rather than property type style to allow
+   * for bivariance
+   * See https://stackoverflow.com/questions/52667959/what-is-the-purpose-of-bivariancehack-in-typescript-types
+   */
+  // eslint-disable-next-line @typescript-eslint/method-signature-style
   serializer(input: RAW): PARSED;
+  // eslint-disable-next-line @typescript-eslint/method-signature-style
   deserializer(value: PARSED): RAW;
-  // FIXME: remove or uncomment
-  // readonly serializer: Serializer<RAW, PARSED>;
-  // readonly deserializer: Deserializer<RAW, PARSED>;
 };
 
 type Serializer<RAW, PARSED> = (input: RAW) => PARSED;
 
 type Deserializer<RAW, PARSED> = (value: PARSED) => RAW;
+
+export type SyncerIn<SYNCER extends Syncer<unknown, unknown>> =
+  SYNCER extends Syncer<infer INPUT, unknown> ? INPUT : never;
+
+export type SyncerOut<SYNCER extends Syncer<unknown, unknown>> =
+  SYNCER extends Syncer<unknown, infer OUTPUT> ? OUTPUT : never;
+
+export type ExtractSyncer<T extends typeof syncers[keyof typeof syncers]> =
+  T extends (...args: RA<any>) => Syncer<unknown, unknown> ? ReturnType<T> : T;
 
 /**
  * This function exists just to improve typing

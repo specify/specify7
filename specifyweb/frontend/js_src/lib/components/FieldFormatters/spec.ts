@@ -105,7 +105,7 @@ const fieldSpec = f.store(() =>
       syncers.default<number>(1)
     ),
     value: pipe(
-      syncers.xmlAttribute('value', 'skip'),
+      syncers.xmlAttribute('value', 'skip', false),
       syncers.default<LocalizedString>(' ')
     ),
     byYear: pipe(
@@ -118,7 +118,7 @@ const fieldSpec = f.store(() =>
       syncers.maybe(syncers.toBoolean),
       syncers.default(false)
     ),
-    pattern: syncers.xmlAttribute('pattern', 'skip'),
+    pattern: syncers.xmlAttribute('pattern', 'skip', false),
   })
 );
 

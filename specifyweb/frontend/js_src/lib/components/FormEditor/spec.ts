@@ -147,10 +147,11 @@ const altViewsSpec = f.store(() =>
       syncers.map(
         pipe(
           syncers.object(altViewSpec()),
-          syncer(f.id, (rest) => ({
-            ...rest,
-            name: rest.name ?? rest.viewDef,
-          }))
+          syncers.change(
+            'name',
+            ({ name }) => name,
+            ({ name, viewDef }) => name ?? viewDef
+          )
         )
       ),
       // Sp6 expects altView names to be unique
@@ -195,7 +196,7 @@ const altViewSpec = f.store(() =>
       syncers.xmlAttribute('validated', 'skip'),
       syncers.maybe(syncers.toBoolean)
     ),
-    legacySelectorValue: syncers.xmlAttribute('selector_value', 'skip'),
+    legacySelectorValue: syncers.xmlAttribute('selector_value', 'skip', false),
   })
 );
 

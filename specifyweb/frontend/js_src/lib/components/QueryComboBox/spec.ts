@@ -98,7 +98,7 @@ const typeSearchSpec = f.store(() =>
       syncers.xmlAttribute('displayCols', 'required'),
       syncers.maybe(syncers.split(','))
     ),
-    format: syncers.xmlAttribute('format', 'empty'),
+    format: syncers.xmlAttribute('format', 'empty', false),
     formatter: syncers.xmlAttribute('dataObjFormatter', 'empty'),
     // Sp6 executes this query directly. Quite vulnerable
     query: syncers.xmlContent,

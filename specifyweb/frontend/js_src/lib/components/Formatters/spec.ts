@@ -37,17 +37,12 @@ export const formattersSpec = f.store(() =>
       syncers.map(
         pipe(
           syncers.object(aggregatorSpec()),
-          syncer(
-            ({ table, sortField, ...rest }) => ({
-              ...rest,
-              table,
-              sortField: syncers.field(table?.name).serializer(sortField),
-            }),
-            ({ table, sortField, ...rest }) => ({
-              ...rest,
-              table,
-              sortField: syncers.field(table?.name).deserializer(sortField),
-            })
+          syncers.change(
+            'sortField',
+            ({ table, sortField }) =>
+              syncers.field(table?.name).serializer(sortField),
+            ({ table, sortField }) =>
+              syncers.field(table?.name).deserializer(sortField)
           )
         )
       )
@@ -147,10 +142,10 @@ const aggregatorSpec = f.store(() =>
     ),
     suffix: syncers.xmlAttribute('ending', 'empty', false),
     limit: pipe(
-      syncers.xmlAttribute('count', 'empty', false),
+      syncers.xmlAttribute('count', 'skip'),
       syncers.maybe(syncers.toDecimal)
     ),
     formatter: syncers.xmlAttribute('format', 'empty'),
-    sortField: syncers.xmlAttribute('orderFieldName', 'empty'),
+    sortField: syncers.xmlAttribute('orderFieldName', 'skip'),
   })
 );

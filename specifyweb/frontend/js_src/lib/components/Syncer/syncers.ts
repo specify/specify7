@@ -32,11 +32,21 @@ type NodeWithContext<T> = {
   readonly logContext: IR<unknown>;
 };
 
-// FIXME: add tests for each syncer
 export const syncers = {
+  /**
+   * Getting an XML attribute, but with a lot of bells and whistles
+   */
   xmlAttribute: <MODE extends 'empty' | 'required' | 'skip'>(
     attribute: string,
+    /**
+     * Modes:
+     *   empty - if there is no value, the attribute should still be present, but
+     *           assigned to ""
+     *   required - if there is no value, trigger an error
+     *   skip - optional attribute, if there is no value, skip it
+     */
     mode: MODE,
+    /** If true, trims the value. Also, converts "" to undefined */
     trim = true
   ) =>
     syncer<SimpleXmlNode, LocalizedString | undefined>(
@@ -47,11 +57,12 @@ export const syncers = {
         });
         const rawValue = getAttribute(cell, attribute);
         const trimmed = trim ? rawValue?.trim() : rawValue;
-        if (mode === 'required' && trimmed === '')
-          console.error(`Required attribute "${attribute}" is empty`);
-        else if (mode === 'required' && trimmed === undefined)
-          console.error(`Required attribute "${attribute}" is missing`);
-        return trimmed;
+        if (mode === 'required')
+          if (trimmed === '')
+            console.error(`Required attribute "${attribute}" is empty`);
+          else if (trimmed === undefined)
+            console.error(`Required attribute "${attribute}" is missing`);
+        return trim && trimmed === '' ? undefined : trimmed;
       },
       (rawValue = '') => {
         const value = trim ? rawValue.trim() : rawValue;
@@ -60,17 +71,21 @@ export const syncers = {
           tagName: '',
           attributes: {
             [attribute.toLowerCase()]:
-              mode === 'skip' && value === '' ? undefined : value,
+              value === '' && mode !== 'empty' ? undefined : value,
           },
           text: undefined,
           children: {},
         };
       }
     ),
+
+  /**
+   * Get content of an XML node and trim it
+   */
   xmlContent: syncer<SimpleXmlNode, string | undefined>(
     ({ text }) => {
       pushContext({ type: 'Content' });
-      return text;
+      return text?.trim();
     },
     (text) => ({
       type: 'SimpleXmlNode',
@@ -80,6 +95,7 @@ export const syncers = {
       children: {},
     })
   ),
+
   /**
    * Use a default value if not present.
    * If current value is already equal to default, unset it
@@ -99,11 +115,13 @@ export const syncers = {
         value ??
         (typeof defaultValue === 'function' ? defaultValue() : defaultValue),
       (value) =>
+        value === undefined ||
         value ===
-        (typeof defaultValue === 'function' ? defaultValue() : defaultValue)
+          (typeof defaultValue === 'function' ? defaultValue() : defaultValue)
           ? undefined
           : value
     ),
+
   /**
    * Like syncers.default, but don't unset the value if it matches the default
    */
@@ -116,59 +134,104 @@ export const syncers = {
       (value) =>
         value ??
         (typeof defaultValue === 'function' ? defaultValue() : defaultValue),
-      (value) => value
+      (value) =>
+        value ??
+        (typeof defaultValue === 'function' ? defaultValue() : defaultValue)
     ),
+
+  /**
+   * Parse a string like "edu.ku.brc.specify.datamodel.Accession" into
+   * an Accession table object
+   */
   javaClassName: (strict: boolean = true) =>
-    syncer<string, SpecifyTable | undefined>(
+    syncer<string | undefined, SpecifyTable | undefined>(
       (className) => {
-        const tableName = parseJavaClassName(className);
-        const table = getTable(tableName ?? className);
+        const tableName = f.maybe(className, parseJavaClassName);
+        const table = getTable(tableName ?? className ?? '');
         if (strict && table === undefined)
-          console.error(`Unknown table: ${className ?? '(null)'}`);
+          console.error(
+            `Unknown table${
+              (className ?? '').length === 0
+                ? ''
+                : `: ${tableName ?? className ?? ''}`
+            }`
+          );
         return table;
       },
-      (table) => table?.longName ?? ''
+      (table) => table?.longName
     ),
-  tableName: syncer<string, SpecifyTable | undefined>(
+
+  /**
+   * Parse a string like "Accession" into an Accession table object
+   */
+  tableName: syncer<string | undefined, SpecifyTable | undefined>(
     (tableName) => {
-      const table = getTable(tableName);
+      const table = f.maybe(tableName, getTable);
       if (table === undefined)
-        console.error(`Unknown table: ${tableName ?? '(null)'}`);
+        console.error(
+          `Unknown table${
+            (tableName ?? '').length === 0 ? '' : `: ${tableName ?? ''}`
+          }`
+        );
       return table;
     },
-    (model) => model?.name ?? ''
+    (model) => model?.name
   ),
-  tableId: syncer<number, SpecifyTable | undefined>(
+
+  /**
+   * Parse a number like 1 into a Collection Object table object
+   */
+  tableId: syncer<number | undefined, SpecifyTable | undefined>(
     (tableId) => {
       try {
-        return getTableById(tableId);
+        return f.maybe(tableId, getTableById);
       } catch (error) {
-        console.error(error);
+        console.error((error as Error).message);
         return undefined;
       }
     },
-    (table) => table?.tableId ?? 0
+    (table) => table?.tableId
   ),
-  toBoolean: syncer<string, boolean>(
-    parseBoolean,
-    (value) => value?.toString() ?? ''
+
+  /** Flip a boolean value */
+  flip: syncer<boolean, boolean>(
+    (value) => !value,
+    (value) => !value
   ),
-  toDecimal: syncer<string, number | undefined>(
+
+  /** Convert any string to boolean */
+  toBoolean: syncer<string, boolean>(parseBoolean, (value) => value.toString()),
+
+  /** Convert string value to number */
+  toDecimal: syncer<string | undefined, number | undefined>(
     (raw) => {
       const parsed = f.parseInt(raw);
       if (parsed === undefined) console.error('Invalid decimal number');
       return parsed;
     },
-    (value) => value?.toString() ?? ''
+    (value) => value?.toString()
   ),
-  toFloat: syncer<string, number | undefined>(
+
+  /** Convert string value to number */
+  toFloat: syncer<string | undefined, number | undefined>(
     (raw) => {
       const parsed = f.parseFloat(raw);
       if (parsed === undefined) console.error('Invalid floating point number');
       return parsed;
     },
-    (value) => value?.toString() ?? ''
+    (value) => value?.toString()
   ),
+
+  /**
+   * Get an XML child node (case insensitively)
+   *
+   * By default, emits an error if child is not found
+   *
+   * @remarks
+   * When using this, syncers.xmlChild is commonly accompanied by
+   * syncers.fallback(createXmlNode) to create an XML node if one does not
+   * exist already
+   */
   xmlChild: (tagName: string, mode: 'optional' | 'required' = 'required') =>
     syncer<SimpleXmlNode, SimpleXmlNode | undefined>(
       ({ children }) => {
@@ -202,6 +265,10 @@ export const syncers = {
         },
       })
     ),
+
+  /**
+   * Get all children of a given tag name (case-insensitively)
+   */
   xmlChildren: (tagName: string) =>
     syncer<SimpleXmlNode, RA<SimpleXmlNode>>(
       ({ children }) => {
@@ -221,6 +288,10 @@ export const syncers = {
         },
       })
     ),
+
+  /**
+   * Run a nested spec (another syncer)
+   */
   object: <SPEC extends BaseSpec<SimpleXmlNode>>(spec: SPEC) =>
     syncer<SimpleXmlNode, SpecToJson<SPEC>>(
       (raw) => {
@@ -234,6 +305,10 @@ export const syncers = {
         return merged;
       }
     ),
+
+  /**
+   * Map array of values of a syncer
+   */
   map: <SYNCER extends Syncer<any, any>>({
     serializer,
     deserializer,
@@ -253,14 +328,34 @@ export const syncers = {
       // This might be undefined if JSON editor was used, and a typo was made
       (elements) => elements?.map(deserializer) ?? []
     ),
-  maybe: <SYNCER extends Syncer<any, any>>(syncerDefinition: SYNCER) =>
+
+  /**
+   * Call a syncer only if value is not undefined
+   */
+  maybe: <SYNCER extends Syncer<any, any>>({
+    serializer,
+    deserializer,
+  }: SYNCER) =>
     syncer<
       Parameters<SYNCER['serializer']>[0] | undefined,
       ReturnType<SYNCER['serializer']> | undefined
     >(
-      (element) => f.maybe(element, syncerDefinition.serializer),
-      (element) => f.maybe(element, syncerDefinition.deserializer)
+      (element) => f.maybe(element, serializer),
+      (element) => f.maybe(element, deserializer)
     ),
+
+  /**
+   * As a reminder log context is powering the system that figures out where to
+   * put the error message in the xml editor
+   *
+   * Return back the passed in value, but also with current log context captured.
+   *
+   * Later, can call setLogContext with logContext to restore the log context.
+   *
+   * This is useful when i.e, you begun validating an object in one spec, but
+   * want to finish validating it in another spec, while still preserving the
+   * log context.
+   */
   captureLogContext: <T>() =>
     syncer<T, NodeWithContext<T>>(
       (node) => ({
@@ -269,6 +364,17 @@ export const syncers = {
       }),
       ({ node }) => node
     ),
+
+  /**
+   * In the current object, replace one key with a result of syncers.object,
+   *
+   * Where syncers.object is called with a spec which was returned from a
+   * function that accepts the whole current object as a parameter
+   *
+   * Useful when you begun validating in one place and want to finish validating
+   * in another place (i.e, got the field name attribute in one place, but need
+   * the table name before can finish parsing the field name)
+   */
   dependent: <
     KEY extends string,
     OBJECT extends { readonly [key in KEY]: NodeWithContext<SimpleXmlNode> },
@@ -300,18 +406,20 @@ export const syncers = {
                */
               .object(spec(object as unknown as OBJECT))
               .deserializer(object?.[key]),
-            context: getLogContext(),
+            logContext: getLogContext(),
           },
         } as unknown as OBJECT)
     ),
+
+  /**
+   * Parse a field from a given table.
+   *
+   * Handles multiple fields concatenated with a dot (i.e, "accession.text1")
+   */
   field: (tableName: keyof Tables | undefined, strict = true) =>
     syncer<string | undefined, RA<LiteralField | Relationship> | undefined>(
       (fieldName) => {
-        if (
-          fieldName === undefined ||
-          fieldName === '' ||
-          tableName === undefined
-        )
+        if (fieldName === undefined || tableName === undefined)
           return undefined;
         const field = tables[tableName].getFields(fieldName);
         if (field === undefined && strict)
@@ -320,6 +428,10 @@ export const syncers = {
       },
       (fieldName) => fieldName?.map(({ name }) => name).join('.')
     ),
+
+  /**
+   * Modify one key on an object
+   */
   change: <
     KEY extends string,
     RAW,
@@ -343,10 +455,14 @@ export const syncers = {
           [key]: deserializer(object ?? {}),
         } as unknown as OBJECT)
     ),
+
+  /**
+   * Ensure that value is one of the accepted variants
+   */
   enum: <ITEM extends string>(items: RA<ITEM>, caseSensitive = false) =>
-    syncer<string, ITEM | undefined>(
+    syncer<string | undefined, ITEM | undefined>(
       (value) => {
-        const lowerValue = value.toLowerCase();
+        const lowerValue = value?.toLowerCase();
         const item = caseSensitive
           ? f.includes(items, value)
             ? value
@@ -354,20 +470,24 @@ export const syncers = {
           : items.find((item) => item.toLowerCase() === lowerValue);
         if (item === undefined)
           console.error(
-            `Unknown value "${value}". Expected one of ${formatDisjunction(
-              items
-            )}`
+            `Unknown value "${
+              value ?? ''
+            }". Expected one of ${formatDisjunction(items)}`
           );
         return item;
       },
-      (value) => value ?? ''
+      (value) => value
     ),
+
+  /**
+   * Like syncers.enum, but for numbers
+   */
   numericEnum: <ITEM extends number>(items: RA<ITEM>) =>
     syncer<number | undefined, ITEM | undefined>(
       (value) => {
         if (value === undefined) return undefined;
         const hasItem = f.includes(items, value);
-        if (hasItem === undefined)
+        if (!hasItem)
           console.error(
             `Unknown value "${value}". Expected one of ${formatDisjunction(
               items.map((item) => item.toString())
@@ -377,49 +497,50 @@ export const syncers = {
       },
       (value) => value
     ),
+
+  /**
+   * Simply split/join string with a given separator
+   */
   split: (separator: string) =>
     syncer<string, RA<string>>(
-      (value) => value.split(separator),
+      (value) => (value === '' ? [] : value.split(separator)),
       (value) => value.join(separator)
     ),
-  /*
+
+  /**
    * Like, syncers.split, but:
-   * - Allows escaping separator using backslash
-   * - Trims whitespace around separator
-   * - Inserts whitespace back when deserializing
+   * - Handled escaping separator using backslash (i.e, "a\\,b" -> ["a,b"])
+   * - Trims whitespace around separator (i.e, "a, b" -> ["a", "b"])
+   * - Inserts whitespace back when deserializing (i.e, ["a", "b"] -> "a, b")
    */
   fancySplit: (separator: string) =>
-    separator.length === 0 || separator.length > 1
-      ? error('Only single character separators are supported')
-      : syncer<string, RA<string>>(
+    separator.length === 1
+      ? syncer<string, RA<string>>(
           (values) => {
             const parts = [];
             let isEscaped = false;
             let currentPart = '';
             Array.from(values.split(''), (character, index) => {
               if (character === separator && !isEscaped) {
-                parts.push(currentPart);
+                parts.push(currentPart.trim());
                 currentPart = '';
               } else {
-                if (isEscaped) currentPart += '\\';
-                if (
-                  character !== '\\' ||
-                  isEscaped ||
-                  values[index + 1] === undefined ||
-                  values[index + 1] !== separator
-                )
+                if (character !== '\\' || values[index + 1] !== separator)
                   currentPart += character;
                 isEscaped = character === '\\' && !isEscaped;
               }
             });
-            parts.push(currentPart.trim());
+            const trimmed = currentPart.trim();
+            if (trimmed.length > 0) parts.push(trimmed);
             return parts;
           },
           (values) =>
             values
               .map((value) => value.replaceAll(separator, `\\${separator}`))
-              .join(` ${separator}`)
-        ),
+              .join(`${separator} `)
+        )
+      : error('Only single character separators are supported'),
+
   /**
    * I.e, if table name referred to unknown table, preserve the unknown name
    * while using the new one
@@ -448,11 +569,21 @@ export const syncers = {
        */
       ({ bad, parsed }) => (parsed === undefined ? bad : deserializer(parsed))
     ),
+
+  /**
+   * Static value
+   */
   static: <T>(value: T) =>
     syncer<SimpleXmlNode, T>(
       () => value,
       () => createSimpleXmlNode()
     ),
+
+  // FIXME: add tests for "switch"
+  /**
+   * A very comprehensive syncer for dynamically calling correct spec based on
+   * a value of a given attribute
+   */
   switch: <
     TYPE_MAPPER extends IR<string>,
     NODE_KEY extends string,
@@ -474,11 +605,35 @@ export const syncers = {
       };
     }[keyof TYPE_MAPPER]
   >(
+    /**
+     * They key in the original object at which the
+     * NodeWithContext<SimpleXmlNode> is located
+     */
     nodeKey: NODE_KEY,
+    /**
+     * They key at which the output from the syncer would be located
+     */
     key: KEY,
+    /**
+     * A syncer for getting/setting the attribute value that determines which
+     * spec to use
+     */
     attributeSyncer: Syncer<SimpleXmlNode, string | undefined>,
+    /**
+     * A map between original attribute types and internal attribute types
+     *
+     * Useful for synonymization multiple types to a single one
+     * Useful for renaming poorly named types to better ones while still
+     * maintaining backwards compatibility
+     */
     typeMapper: TYPE_MAPPER,
+    /**
+     * The mapper between a mapped type and a spec
+     */
     mapper: MAPPER,
+    /**
+     * Optional extra payload to pass to the function that returns the spec
+     */
     extraPayload: EXTRA
   ) =>
     syncer<IN, IN & { readonly [_KEY in KEY]: MAPPED }>(
