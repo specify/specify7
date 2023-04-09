@@ -177,7 +177,7 @@ class DeferredScopeUploadTable(NamedTuple):
         # If the DeferredScope UploadTable contained any disambiguation data, then apply the disambiguation to the new
         # ScopedUploadTable
         # Because ScopedUploadTable.disambiguate() has return type of ScopedUploadable, we must specify the type as ScopedUploadTable
-        scoped_disambiguated: ScopedUploadTable = scoped.disambiguate(self.disambiguation) if self.disambiguation is not None else scoped
+        scoped_disambiguated = cast(ScopedUploadTable, scoped.disambiguate(self.disambiguation)) if self.disambiguation is not None else scoped
         # Finally bind the ScopedUploadTable and return the BoundUploadTable or ParseFailures 
         return scoped_disambiguated.bind(default_collection, row, uploadingAgentId, auditor, cache, row_index)
     
