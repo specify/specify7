@@ -10,6 +10,7 @@ from . import example_plan
 class ScopingTests(UploadTestsBase):
 
     def setUp(self) -> None:
+        super().setUp()
         self.rel_type_name = "ToRightSide"
 
         self.right_side_collection = get_table('Collection').objects.create(
