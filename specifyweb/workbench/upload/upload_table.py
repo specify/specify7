@@ -1,7 +1,7 @@
 
 import logging
 from functools import reduce
-from typing import List, Dict, Any, NamedTuple, Union, Optional, Set, Callable, Literal
+from typing import List, Dict, Any, NamedTuple, Union, Optional, Set, Callable, Literal, cast
 
 from django.db import transaction, IntegrityError
 
@@ -169,9 +169,14 @@ class DeferredScopeUploadTable(NamedTuple):
         # the record should be uploaded in the logged-in collection
         if scoped is None: scoped = self.apply_scoping(default_collection, defer=False)
 
+        # self.apply_scoping is annotated to Union["ScopedUploadTable", Any]
+        # But at this point we know the variable scoped will always be a ScopedUploadTable
+        # We tell typing the type of the variable scoped will be ScopedUploadTable with the cast() function
+        scoped = cast(ScopedUploadTable, scoped)
+
         # If the DeferredScope UploadTable contained any disambiguation data, then apply the disambiguation to the new
         # ScopedUploadTable
-        scoped_disambiguated: Union[ScopedUploadable, ScopedUploadTable] = scoped.disambiguate(self.disambiguation) if self.disambiguation is not None else scoped # type: ignore
+        scoped_disambiguated = scoped.disambiguate(self.disambiguation) if self.disambiguation is not None else scoped
         # Finally bind the ScopedUploadTable and return the BoundUploadTable or ParseFailures 
         return scoped_disambiguated.bind(default_collection, row, uploadingAgentId, auditor, cache, row_index)
     
