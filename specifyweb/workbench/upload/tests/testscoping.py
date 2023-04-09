@@ -67,9 +67,6 @@ class ScopingTests(UploadTestsBase):
                 }
             }
         }
-        
-        
-        return super().setUp()
 
     def test_embedded_collectingevent(self) -> None:
         self.collection.isembeddedcollectingevent = True
