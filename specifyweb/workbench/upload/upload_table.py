@@ -159,9 +159,9 @@ class DeferredScopeUploadTable(NamedTuple):
         if  self.overrideScope is not None and'collection' in self.overrideScope.keys():
             if isinstance(self.overrideScope['collection'], int):
                 collection_id = self.overrideScope['collection']
-                collection = models.Collection.objects.get(id=collection_id)
+                collection = getattr(models, "Collection").objects.get(id=collection_id)
                 scoped = self.apply_scoping(collection, defer=False)
-            elif isinstance(self.overrideScope['collection'], Callable):
+            elif callable(self.overrideScope['collection']):
                 collection = self.overrideScope['collection'](self, row_index) if row_index is not None else default_collection
                 scoped = self.apply_scoping(collection, defer=False)
         
@@ -171,7 +171,7 @@ class DeferredScopeUploadTable(NamedTuple):
 
         # If the DeferredScope UploadTable contained any disambiguation data, then apply the disambiguation to the new
         # ScopedUploadTable
-        scoped_disambiguated = scoped.disambiguate(self.disambiguation) if self.disambiguation is not None else scoped
+        scoped_disambiguated: Union[ScopedUploadable, ScopedUploadTable] = scoped.disambiguate(self.disambiguation) if self.disambiguation is not None else scoped # type: ignore
         # Finally bind the ScopedUploadTable and return the BoundUploadTable or ParseFailures 
         return scoped_disambiguated.bind(default_collection, row, uploadingAgentId, auditor, cache, row_index)
     
