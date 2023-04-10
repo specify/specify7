@@ -31,11 +31,21 @@ class Resources(View):
     def post(self, request) -> http.HttpResponse:
         post_data = json.loads(request.body)
         with transaction.atomic():
-            directory, _ = Spappresourcedir.objects.get_or_create(
+            directories_matched = Spappresourcedir.objects.filter(
                 collection=request.specify_collection,
                 discipline=request.specify_collection.discipline,
                 **self._spappresourcedirfilter(request)
             )
+
+            if len(directories_matched) == 0:
+                directory = Spappresourcedir.objects.create(
+                collection=request.specify_collection,
+                discipline=request.specify_collection.discipline,
+                **self._spappresourcedirfilter(request)
+                )
+            else:
+                directory = directories_matched[0]
+
             resource = Spappresource.objects.create(
                 spappresourcedir=directory,
                 level=0,
