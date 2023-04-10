@@ -93,9 +93,10 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
   React.useEffect(() => {
     if (focusFirstFieldPref) {
       const timeoutId = setTimeout(() => {
-        const firstFocusableElement = formRef.current?.querySelector(
-          'button, a, input:not([type="hidden"]), select, textarea, [tabindex]:not([tabindex="-1"])'
-        )!;
+        const firstFocusableElement =
+          formRef.current?.querySelector<HTMLElement>(
+            'button, a, input:not([type="hidden"]), select, textarea, [tabindex]:not([tabindex="-1"])'
+          )!;
 
         firstFocusableElement?.focus();
       }, 100);
