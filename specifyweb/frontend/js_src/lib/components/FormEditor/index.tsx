@@ -44,9 +44,7 @@ export function FormEditorWrapper(): JSX.Element {
       return originalParsed.current;
     }, [initialParsed])
   );
-  // FIXME: add tests for JSON editor of forms
 
-  // FIXME: add tests
   const viewSets: GetSet<ViewSets> = [
     parsed,
     (parsed): void => {

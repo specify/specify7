@@ -7,14 +7,9 @@ import { pipe } from '../index';
 import { syncers } from '../syncers';
 import { toSimpleXmlNode, updateXml, xmlToJson } from '../xmlToJson';
 import { createXmlSpec } from '../xmlUtils';
+import { formatXmlForTests as format } from './utils';
 
 requireContext();
-
-/**
- * Make snapshots more readable
- */
-const format = (xml: string): string =>
-  xml.replaceAll('\t', '  ').replaceAll('"', "'");
 
 test('Editing Data Object Formatter', () => {
   const element = strictParseXml(

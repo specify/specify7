@@ -216,7 +216,7 @@ const rowSizeDefinitionSpec = f.store(() =>
 
 const legacyBusinessRulesSpec = f.store(() =>
   createXmlSpec({
-    id: syncers.xmlAttribute('id', 'required'),
+    id: syncers.xmlAttribute('id', 'skip'),
     rule: syncers.xmlContent,
   })
 );

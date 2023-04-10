@@ -1,5 +1,16 @@
 import { requireContext } from '../../../tests/helpers';
-import { exportsForTests, parseSpecifyProperties } from '../viewSpec';
+import { strictParseXml } from '../../AppResources/codeMirrorLinters';
+import { tables } from '../../DataModel/tables';
+import { formatXmlForTests } from '../../Syncer/__tests__/utils';
+import { syncers } from '../../Syncer/syncers';
+import { toSimpleXmlNode, updateXml, xmlToJson } from '../../Syncer/xmlToJson';
+import {
+  exportsForTests,
+  formDefinitionSpec,
+  parseSpecifyProperties,
+} from '../viewSpec';
+import { testFormDefinition } from './testFormDefinition';
+import { error } from '../../Errors/assert';
 
 requireContext();
 
@@ -59,3 +70,42 @@ describe('buildSpecifyProperties', () =>
     test(`parses ${output}`, () =>
       expect(buildSpecifyProperties(input)).toEqual(output))
   ));
+
+test('Can edit form definition', () => {
+  const xml = strictParseXml(`<viewdef>${testFormDefinition}</viewdef>`);
+  const xmlNode = xmlToJson(xml);
+  const simpleXmlNode = toSimpleXmlNode(xmlNode);
+  const { serializer, deserializer } = syncers.object(
+    formDefinitionSpec(tables.Accession)
+  );
+  const parsed = serializer(simpleXmlNode);
+  const updated = deserializer({
+    ...parsed,
+    columnDefinitions: [
+      parsed.columnDefinitions[0],
+      ...parsed.columnDefinitions,
+    ],
+    rows: {
+      ...parsed.rows,
+      rows: [
+        parsed.rows.rows[0],
+        [
+          ...parsed.rows.rows[0],
+          {
+            ...parsed.rows.rows[0][1],
+            definition:
+              parsed.rows.rows[0][1].definition.type === 'Label'
+                ? {
+                    ...parsed.rows.rows[0][1].definition,
+                    label: 'New Label',
+                  }
+                : error('Expected a label cell at this position'),
+          },
+        ],
+        ...parsed.rows.rows,
+      ],
+    },
+  });
+  const updatedXml = formatXmlForTests(updateXml(updated));
+  expect(updatedXml).toMatchSnapshot();
+});

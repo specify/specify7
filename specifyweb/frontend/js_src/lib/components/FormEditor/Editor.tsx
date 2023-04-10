@@ -24,6 +24,7 @@ import { xmlToString } from '../Syncer/xmlUtils';
 import { formatXmlNode } from '../Syncer/formatXmlNode';
 import { parseXml } from '../AppResources/codeMirrorLinters';
 import _ from 'underscore';
+import { SpecifyTable } from '../DataModel/specifyTable';
 
 export function FormEditorWrapper(): JSX.Element {
   const {
@@ -109,6 +110,7 @@ export function FormEditorWrapper(): JSX.Element {
       </Link.Default>
       <Editor
         key={`${tableName}_${viewName}_${viewDefinitionName}`}
+        table={table}
         viewDefinition={[
           viewDefinition.raw,
           (raw): void =>
@@ -125,7 +127,6 @@ export function FormEditorWrapper(): JSX.Element {
   );
 }
 
-const XmlEditor = generateXmlEditor(formDefinitionSpec);
 const debounceRate = 100;
 
 /*
@@ -139,8 +140,10 @@ const debounceRate = 100;
  */
 function Editor({
   viewDefinition: [definition, setDefinition],
+  table,
 }: {
   readonly viewDefinition: GetSet<XmlNode>;
+  readonly table: SpecifyTable;
 }): JSX.Element {
   const initialXml = React.useMemo(
     () => xmlToString(jsonToXml(formatXmlNode(definition))),
@@ -159,6 +162,11 @@ function Editor({
         if (typeof parsed === 'object') updateRef.current(xmlToJson(parsed));
       }, debounceRate),
     []
+  );
+
+  const XmlEditor = React.useMemo(
+    () => generateXmlEditor(() => formDefinitionSpec(table)),
+    [table]
   );
 
   function handleChange(xml: string): void {
