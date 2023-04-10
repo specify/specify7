@@ -93,8 +93,7 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
   React.useEffect(() => {
     if (focusFirstFieldPref === true) {
       const timeoutId = setTimeout(() => {
-        if (formRef.current === null) return;
-        const firstFocusableElement = formRef.current.querySelector(
+        const firstFocusableElement = formRef.current?.querySelector(
           'button, a, input:not([type="hidden"]), select, textarea, [tabindex]:not([tabindex="-1"])'
         ) as HTMLElement;
 
@@ -103,7 +102,7 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
       return () => clearTimeout(timeoutId);
     }
     return undefined;
-  }, [resource]);
+  }, [resource.specifyModel]);
 
   return viewDefinition?.name === attachmentView ? (
     <AttachmentsPlugin mode={viewDefinition.mode} resource={resource} />
