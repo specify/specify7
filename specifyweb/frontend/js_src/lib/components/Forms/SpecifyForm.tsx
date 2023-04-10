@@ -91,11 +91,11 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
   const formRef = React.useRef<HTMLDivElement | null>(null);
 
   React.useEffect(() => {
-    if (focusFirstFieldPref === true) {
+    if (focusFirstFieldPref) {
       const timeoutId = setTimeout(() => {
         const firstFocusableElement = formRef.current?.querySelector(
           'button, a, input:not([type="hidden"]), select, textarea, [tabindex]:not([tabindex="-1"])'
-        ) as HTMLElement;
+        )!;
 
         firstFocusableElement?.focus();
       }, 100);
