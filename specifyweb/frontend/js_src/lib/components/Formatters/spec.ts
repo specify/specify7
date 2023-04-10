@@ -81,7 +81,6 @@ const formatterSpec = f.store(() =>
   })
 );
 
-// FIXME: test deserializer when table name changed
 const switchSpec = ({ table }: SpecToJson<ReturnType<typeof formatterSpec>>) =>
   createXmlSpec({
     isSingle: pipe(

@@ -524,9 +524,38 @@ const tests: {
         }),
       ],
       in: { definition: { node: createSimpleXmlNode('b'), logContext: {} } },
-      final: { definition: { node: createSimpleXmlNode(''), logContext: {} } },
       out: { definition: { a: undefined } },
+      final: { definition: { node: createSimpleXmlNode(), logContext: {} } },
       error: ['Required attribute "b" is missing'],
+    },
+    {
+      arguments: [
+        'definition',
+        (input) => ({
+          a: pipe(
+            syncers.xmlAttribute('a', 'skip'),
+            // @ts-expect-error TS Getting confused
+            syncers.fallback(input.tableName)
+          ),
+        }),
+      ],
+      in: {
+        // @ts-expect-error TS Getting confused
+        tableName: 'A',
+        definition: { node: createSimpleXmlNode(), logContext: {} },
+      },
+      // @ts-expect-error TS Getting confused
+      out: { tableName: 'A', definition: { a: 'A' } },
+      final: {
+        // @ts-expect-error TS Getting confused
+        tableName: 'B',
+        definition: {
+          node: { ...createSimpleXmlNode(), attributes: { a: 'B' } },
+          logContext: {},
+        },
+      },
+      // @ts-expect-error TS Getting confused
+      newOut: { tableName: 'B', definition: {} },
     },
   ],
 
