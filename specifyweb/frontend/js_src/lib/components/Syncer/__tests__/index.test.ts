@@ -3,12 +3,18 @@ import { strictParseXml } from '../../AppResources/codeMirrorLinters';
 import { getField } from '../../DataModel/helpers';
 import { tables } from '../../DataModel/tables';
 import { formattersSpec } from '../../Formatters/spec';
+import { pipe } from '../index';
 import { syncers } from '../syncers';
 import { toSimpleXmlNode, updateXml, xmlToJson } from '../xmlToJson';
 import { createXmlSpec } from '../xmlUtils';
-import { pipe } from '../index';
 
 requireContext();
+
+/**
+ * Make snapshots more readable
+ */
+const format = (xml: string): string =>
+  xml.replaceAll('\t', '  ').replaceAll('"', "'");
 
 test('Editing Data Object Formatter', () => {
   const element = strictParseXml(
@@ -68,31 +74,32 @@ test('Editing Data Object Formatter', () => {
       ...parsed.aggregators,
     ],
   });
-  const updatedXml = updateXml(newSimpleXmlNode).replaceAll('\t', '  ');
+  const updatedXml = format(updateXml(newSimpleXmlNode));
 
   expect(updatedXml).toMatchInlineSnapshot(`
-    "<formatters>
+    "<?xml version='1.0' encoding='UTF-8'?>
+    <formatters>
       <format
-        name=\\"Accession\\"
-        title=\\"Accession\\"
-        class=\\"edu.ku.brc.specify.datamodel.Accession\\"
-        default=\\"true\\"
+        name='Accession'
+        title='Accession'
+        class='edu.ku.brc.specify.datamodel.Accession'
+        default='true'
       >
         <!-- this comment will be preserved -->
-        <switch single=\\"true\\">
+        <switch single='true'>
           <fields>
             <field>accessionNumber</field>
           </fields>
         </switch>
       </format>
       <format
-        name=\\"Accession\\"
-        title=\\"Accession\\"
-        class=\\"edu.ku.brc.specify.datamodel.Accession\\"
-        default=\\"true\\"
+        name='Accession'
+        title='Accession'
+        class='edu.ku.brc.specify.datamodel.Accession'
+        default='true'
       >
         <!-- this comment will be preserved -->
-        <switch single=\\"true\\">
+        <switch single='true'>
           <fields>
             <field>accessionNumber</field>
             <field>accessionAgents</field>
@@ -101,26 +108,22 @@ test('Editing Data Object Formatter', () => {
       </format>
       <aggregators>
         <aggregator
-          name=\\"AccessionAgent\\"
-          title=\\"AccessionAgent\\"
-          class=\\"edu.ku.brc.specify.datamodel.Agent\\"
-          default=\\"true\\"
-          separator=\\"; \\"
-          ending=\\"\\"
-          count=\\"\\"
-          format=\\"AccessionAgent\\"
-          orderfieldname=\\"\\"
+          name='AccessionAgent'
+          title='AccessionAgent'
+          class='edu.ku.brc.specify.datamodel.Agent'
+          default='true'
+          separator=''
+          ending=''
+          format='AccessionAgent'
         />
         <aggregator
-          name=\\"AccessionAgent\\"
-          title=\\"AccessionAgent\\"
-          class=\\"edu.ku.brc.specify.datamodel.AccessionAgent\\"
-          default=\\"true\\"
-          separator=\\"; \\"
-          ending=\\"\\"
-          count=\\"\\"
-          format=\\"AccessionAgent\\"
-          orderfieldname=\\"\\"
+          name='AccessionAgent'
+          title='AccessionAgent'
+          class='edu.ku.brc.specify.datamodel.AccessionAgent'
+          default='true'
+          separator=''
+          ending=''
+          format='AccessionAgent'
         />
       </aggregators>
     </formatters>"
@@ -177,18 +180,19 @@ test('Removing a child does not carry over unknown attributes from previous node
     ],
   });
 
-  const updatedXml = updateXml(newSimpleXmlNode).replaceAll('\t', '  ');
+  const updatedXml = format(updateXml(newSimpleXmlNode));
   expect(updatedXml).toMatchInlineSnapshot(`
-    "<formatters>
+    "<?xml version='1.0' encoding='UTF-8'?>
+    <formatters>
       <format
-        name=\\"Accession\\"
-        title=\\"Accession\\"
-        class=\\"edu.ku.brc.specify.datamodel.Accession\\"
-        default=\\"false\\"
+        name='Accession'
+        title='Accession'
+        class='edu.ku.brc.specify.datamodel.Accession'
+        default=''
       >
-        <switch a=\\"b\\" single=\\"true\\">
+        <switch a='b' single='true'>
           <fields>
-            <field sep=\\"__\\">accessionNumber</field>
+            <field sep='__'>accessionNumber</field>
           </fields>
         </switch>
       </format>
@@ -215,9 +219,92 @@ test(`Default value VS Fallback value`, () => {
 
   const { serializer, deserializer } = syncers.object(spec);
   const parsed = deserializer(serializer(simpleXmlNode));
-  const updatedXml = updateXml(parsed).replaceAll('\t', '  ');
+  const updatedXml = format(updateXml(parsed));
   expect(updatedXml).toMatchInlineSnapshot(`
-    "<?xml version=\\"1.0\\" encoding=\\"UTF-8\\"?>
-    <root fallback=\\"fallbackValue\\"/>"
+    "<?xml version='1.0' encoding='UTF-8'?>
+    <root fallback='fallbackValue'/>"
+  `);
+});
+
+/**
+ * Test modifying and removing attributes and children when there are two
+ * specs operating on the same node. This happens in the form system, where
+ * cellSpec and fieldSpec and textFieldSpec might all be run on the same node.
+ */
+test('Unknown attributes & nested syncers', () => {
+  const xml = strictParseXml(`<root a1="A1" ar="AR1" u1="U1" b1="B1" br="BR1">
+    <a aa="aaa" aar="AAR" />
+    <ar aa="aaa" />
+    <b bb="bbb" bbr="BBR" />
+    <br bb="bbb" />
+    <u uu="uuu" />
+  </root>`);
+  const xmlNode = xmlToJson(xml);
+  const simpleXmlNode = toSimpleXmlNode(xmlNode);
+
+  const spec = createXmlSpec({
+    attributeA: syncers.xmlAttribute('a1', 'required'),
+    removeA: syncers.xmlAttribute('ar', 'skip'),
+    removeChildA: syncers.xmlChild('ar', 'optional'),
+    childA: pipe(
+      syncers.xmlChild('a', 'required'),
+      syncers.object(
+        createXmlSpec({
+          attributeAa: syncers.xmlAttribute('aa', 'required'),
+          removeA: syncers.xmlAttribute('aar', 'skip'),
+        })
+      )
+    ),
+    nested: syncers.object(
+      createXmlSpec({
+        attributeB: syncers.xmlAttribute('b1', 'required'),
+        removeB: syncers.xmlAttribute('br', 'skip'),
+        removeChildB: syncers.xmlChild('br', 'optional'),
+        childB: pipe(
+          syncers.xmlChild('b', 'required'),
+          syncers.object(
+            createXmlSpec({
+              removeB: syncers.xmlAttribute('bbr', 'skip'),
+              attributeBb: syncers.xmlAttribute('bb', 'required'),
+            })
+          )
+        ),
+      })
+    ),
+  });
+
+  const { serializer, deserializer } = syncers.object(spec);
+  const parsed = serializer(simpleXmlNode);
+  const updated = deserializer({
+    ...parsed,
+    attributeA: 'A2',
+    removeA: undefined,
+    removeChildA: undefined,
+    childA: {
+      ...parsed.childA,
+      attributeAa: 'aaa2',
+      removeA: undefined,
+    },
+    nested: {
+      ...parsed.nested,
+      attributeB: 'B2',
+      removeB: undefined,
+      removeChildB: undefined,
+      childB: {
+        ...parsed.nested.childB,
+        removeB: undefined,
+        attributeBb: 'bbb2',
+      },
+    },
+  });
+
+  const updatedXml = format(updateXml(updated));
+  expect(updatedXml).toMatchInlineSnapshot(`
+    "<?xml version='1.0' encoding='UTF-8'?>
+    <root a1='A2' u1='U1' b1='B2'>
+      <a aa='aaa2'/>
+      <b bb='bbb2'/>
+      <u uu='uuu'/>
+    </root>"
   `);
 });

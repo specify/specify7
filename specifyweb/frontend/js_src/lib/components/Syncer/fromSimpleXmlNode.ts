@@ -29,7 +29,8 @@ const fromSimpleNode = (
         /*
          * If attribute was explicitly set to undefined, remove it.
          * If attribute is missing from the attributes object, reuse the old
-         * value
+         * value (this would be the case for unknown attributes - those that are
+         * not part of the syncer's spec)
          */
         if (key in updated.attributes && updated.attributes[key] === undefined)
           return undefined;
@@ -88,7 +89,6 @@ const removeDuplicateText = (
   );
 
 function mergeNodes(
-  // FIXME: get rid of old. use symbol instead
   oldChildren: XmlNode['children'],
   newChildren: SimpleChildren
 ): XmlNode['children'] {
@@ -113,11 +113,16 @@ function mergeNodes(
       if (child.type !== 'XmlNode') return child;
       const newChildren = writableChildren[child.tagName];
       const newChild = newChildren?.shift();
+      /*
+       * This happens if child is unknown (i.e, not part of the syncer's spec)
+       */
       return newChildren === undefined
         ? child
-        : newChild === undefined
+        : // Child was removed
+        newChild === undefined
         ? undefined
-        : fromSimpleXmlNode(newChild);
+        : // Child was modified
+          fromSimpleXmlNode(newChild);
     })
   );
   return Object.values(writableChildren)

@@ -57,8 +57,12 @@ export function xmlToString(xml: Node): string {
       document.insertBefore(processingInstruction, document.firstChild);
     }
   }
+  /*
+   * If element to be serialized is the root element, then serialize the
+   * document element instead (this way XML declaration would be included)
+   */
   const element = isRoot ? document : xml;
-  // Split attributes into multiple liens for long lines
+  // Split attributes into multiple lines for long lines
   return formatXmlAttributes(
     new XMLSerializer()
       .serializeToString(element)

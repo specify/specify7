@@ -967,10 +967,6 @@ const tests: {
         },
       },
     },
-    /*
-     * FIXME: test changing rawType
-     * FIXME: test changing type and see what happens to rawType
-     */
   ],
 };
 

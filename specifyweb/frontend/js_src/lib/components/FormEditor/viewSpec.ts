@@ -546,8 +546,7 @@ const iconViewSpec = f.store(() =>
   })
 );
 
-// FIXME: test that this carries over attributes and contents correctly
-// FIXME: test changing cell type (and preserving attributes in the process???)
+// FIXME: when changing cell type, remove attributes
 const emptySpec = f.store(() => createXmlSpec({}));
 
 const fieldSpec = (
@@ -566,8 +565,8 @@ const fieldSpec = (
         ),
         {
           combobox: 'ComboBox',
-          formattedtext: 'Text',
           text: 'Text',
+          formattedtext: 'Text',
           dsptextfield: 'Text',
           label: 'Text',
           textfieldinfo: 'Text',
@@ -626,7 +625,6 @@ const specialFieldNames = new Set([
   'sendEMail',
 ]);
 
-// FIXME: add defaults everywhere where appropriate
 const rawFieldSpec = (table: SpecifyTable | undefined) =>
   createXmlSpec({
     field: pipe(
@@ -769,7 +767,6 @@ const textAreaSpec = (
     ),
   });
 
-// FIXME: make sure all fields use the "default" argument
 const queryComboBoxSpec = f.store(() =>
   createXmlSpec({
     // Customize view name
