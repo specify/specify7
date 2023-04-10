@@ -72,7 +72,7 @@ const rowsSpec = (table: SpecifyTable | undefined) =>
                   Panel: panelSpec,
                   Command: commandSpec,
                   IconView: iconViewSpec,
-                  unknown: emptySpec,
+                  Unknown: emptySpec,
                 } as const,
                 table
               ),
@@ -345,7 +345,6 @@ const subViewSpec = (
   table: SpecifyTable | undefined
 ) =>
   createXmlSpec({
-    // FIXME: parse further
     name: pipe(
       syncers.xmlAttribute('name', 'required'),
       syncers.maybe(syncers.field(table?.name)),
@@ -601,7 +600,7 @@ const fieldSpec = (
           Url: emptySpec,
           Browse: browseSpec,
           ColorChooser: emptySpec,
-          unknown: emptySpec,
+          Unknown: emptySpec,
         } as const,
         { cell, table }
       ),
@@ -983,7 +982,7 @@ const pluginWrapperSpec = (
           DefItemEditorPlugin: emptySpec,
           PasswordStrengthUI: emptySpec,
           WorldWind: emptySpec,
-          unknown: emptySpec,
+          Unknown: emptySpec,
         } as const,
         { field, cell, table }
       ),

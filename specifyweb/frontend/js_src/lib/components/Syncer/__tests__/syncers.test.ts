@@ -1,5 +1,6 @@
 import { requireContext } from '../../../tests/helpers';
 import type { RA, RR, WritableArray } from '../../../utils/types';
+import { getField } from '../../DataModel/helpers';
 import { FieldBase } from '../../DataModel/specifyField';
 import { SpecifyTable } from '../../DataModel/specifyTable';
 import { tables } from '../../DataModel/tables';
@@ -11,7 +12,6 @@ import { pipe } from '../index';
 import { syncers } from '../syncers';
 import { createSimpleXmlNode } from '../xmlToJson';
 import { createXmlSpec } from '../xmlUtils';
-import { getField } from '../../DataModel/helpers';
 
 requireContext();
 
@@ -688,6 +688,260 @@ const tests: {
       in: createSimpleXmlNode(),
       out: 1,
     },
+  ],
+
+  switch: [
+    {
+      // Simple case with missing attribute and default value
+      arguments: [
+        'rest',
+        'definition',
+        pipe(syncers.xmlAttribute('type', 'required'), syncers.fallback('a')),
+        {
+          aa: 'A',
+          a: 'A',
+          b: 'B',
+        },
+        {
+          A: () =>
+            createXmlSpec({
+              attributeA: pipe(
+                syncers.xmlAttribute('a', 'skip'),
+                syncers.default('a')
+              ),
+            }),
+          B: () =>
+            createXmlSpec({
+              attributeB: pipe(
+                syncers.xmlAttribute('b', 'skip'),
+                syncers.default('b')
+              ),
+            }),
+          Unknown: () => createXmlSpec({}),
+        },
+        { test: 'A' },
+      ],
+      in: {
+        rest: { node: createSimpleXmlNode(), logContext: {} },
+      },
+      out: {
+        // @ts-expect-error TS getting confused
+        rest: {
+          node: createSimpleXmlNode(),
+          logContext: {},
+        },
+        // @ts-expect-error TS getting confused
+        definition: {
+          type: 'A',
+          rawType: 'a',
+          attributeA: 'a',
+        },
+      },
+      final: {
+        rest: {
+          node: { ...createSimpleXmlNode(), attributes: { type: 'a' } },
+          logContext: {},
+        },
+      },
+      error: ['Required attribute "type" is missing'],
+    },
+    {
+      // Unknown type
+      arguments: [
+        'rest',
+        'definition',
+        syncers.xmlAttribute('type', 'skip'),
+        {
+          aa: 'A',
+          a: 'A',
+          b: 'B',
+        },
+        {
+          A: () =>
+            createXmlSpec({
+              attributeA: pipe(
+                syncers.xmlAttribute('a', 'skip'),
+                syncers.default('a')
+              ),
+            }),
+          B: () =>
+            createXmlSpec({
+              attributeB: pipe(
+                syncers.xmlAttribute('b', 'skip'),
+                syncers.default('b')
+              ),
+            }),
+          Unknown: () => createXmlSpec({}),
+        },
+        { test: 'A' },
+      ],
+      in: {
+        rest: {
+          node: { ...createSimpleXmlNode(), attributes: { type: 'c' } },
+          logContext: {},
+        },
+      },
+      out: {
+        // @ts-expect-error TS getting confused
+        rest: {
+          node: { ...createSimpleXmlNode(), attributes: { type: 'c' } },
+          logContext: {},
+        },
+        // @ts-expect-error TS getting confused
+        definition: {
+          type: 'Unknown',
+          rawType: 'c',
+        },
+      },
+      error: ['Unknown value "c". Expected one of aa, a, or b'],
+    },
+    {
+      // Modifying the type
+      arguments: [
+        'rest',
+        'definition',
+        syncers.xmlAttribute('type', 'skip'),
+        {
+          aa: 'A',
+          a: 'A',
+          bb: 'B',
+          b: 'B',
+        },
+        {
+          A: () =>
+            createXmlSpec({
+              attributeA: pipe(
+                syncers.xmlAttribute('a', 'skip'),
+                syncers.default('a')
+              ),
+            }),
+          B: () =>
+            createXmlSpec({
+              attributeB: pipe(
+                syncers.xmlAttribute('b', 'skip'),
+                syncers.default('b')
+              ),
+            }),
+          Unknown: () => createXmlSpec({}),
+        },
+        { test: 'A' },
+      ],
+      in: {
+        rest: {
+          node: { ...createSimpleXmlNode(), attributes: { type: 'a' } },
+          logContext: {},
+        },
+      },
+      out: {
+        // @ts-expect-error TS getting confused
+        rest: {
+          node: { ...createSimpleXmlNode(), attributes: { type: 'a' } },
+          logContext: {},
+        },
+        // @ts-expect-error TS getting confused
+        definition: {
+          type: 'A',
+          rawType: 'a',
+          attributeA: 'a',
+        },
+      },
+      newOut: {
+        // @ts-expect-error TS getting confused
+        rest: {
+          node: { ...createSimpleXmlNode(), attributes: { type: 'a' } },
+          logContext: {},
+        },
+        // @ts-expect-error TS getting confused
+        definition: {
+          type: 'B',
+          rawType: 'a',
+          attributeB: 'b2',
+        },
+      },
+      final: {
+        rest: {
+          node: {
+            ...createSimpleXmlNode(),
+            attributes: { type: 'bb', b: 'b2' },
+          },
+          logContext: {},
+        },
+      },
+    },
+    {
+      // Modifying the raw type
+      arguments: [
+        'rest',
+        'definition',
+        syncers.xmlAttribute('type', 'skip'),
+        {
+          aa: 'A',
+          a: 'A',
+          bb: 'B',
+          b: 'B',
+        },
+        {
+          A: () =>
+            createXmlSpec({
+              attributeA: pipe(
+                syncers.xmlAttribute('a', 'skip'),
+                syncers.default('a')
+              ),
+            }),
+          B: () =>
+            createXmlSpec({
+              attributeB: pipe(
+                syncers.xmlAttribute('b', 'skip'),
+                syncers.default('b')
+              ),
+            }),
+          Unknown: () => createXmlSpec({}),
+        },
+        { test: 'A' },
+      ],
+      in: {
+        rest: {
+          node: { ...createSimpleXmlNode(), attributes: { type: 'aa' } },
+          logContext: {},
+        },
+      },
+      out: {
+        // @ts-expect-error TS getting confused
+        rest: {
+          node: { ...createSimpleXmlNode(), attributes: { type: 'aa' } },
+          logContext: {},
+        },
+        // @ts-expect-error TS getting confused
+        definition: {
+          type: 'A',
+          rawType: 'aa',
+          attributeA: 'a',
+        },
+      },
+      newOut: {
+        // @ts-expect-error TS getting confused
+        rest: {
+          node: { ...createSimpleXmlNode(), attributes: { type: 'aa' } },
+          logContext: {},
+        },
+        // @ts-expect-error TS getting confused
+        definition: {
+          type: 'A',
+          rawType: 'a',
+          attributeA: 'a',
+        },
+      },
+      final: {
+        rest: {
+          node: { ...createSimpleXmlNode(), attributes: { type: 'a' } },
+          logContext: {},
+        },
+      },
+    },
+    /*
+     * FIXME: test changing rawType
+     * FIXME: test changing type and see what happens to rawType
+     */
   ],
 };
 

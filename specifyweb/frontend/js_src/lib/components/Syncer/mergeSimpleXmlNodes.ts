@@ -10,7 +10,7 @@ export const mergeSimpleXmlNodes = (
   specs: RA<SimpleXmlNode>
 ): SimpleXmlNode => ({
   type: 'SimpleXmlNode',
-  tagName: specs[0].tagName,
+  tagName: specs[0]?.tagName ?? '',
   attributes: mergeAttributes(specs.map((spec) => spec.attributes ?? {})),
   ...mergeContent(specs),
 });

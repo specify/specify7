@@ -579,7 +579,6 @@ export const syncers = {
       () => createSimpleXmlNode()
     ),
 
-  // FIXME: add tests for "switch"
   /**
    * A very comprehensive syncer for dynamically calling correct spec based on
    * a value of a given attribute
@@ -591,7 +590,7 @@ export const syncers = {
     KEY extends string,
     EXTRA,
     MAPPER extends {
-      readonly [KEY in TYPE_MAPPER[keyof TYPE_MAPPER] | 'unknown']: (
+      readonly [KEY in TYPE_MAPPER[keyof TYPE_MAPPER] | 'Unknown']: (
         input: IN,
         extra: EXTRA & { readonly rawType: keyof TYPE_MAPPER }
       ) => BaseSpec<SimpleXmlNode>;
@@ -601,7 +600,7 @@ export const syncers = {
         ReturnType<MAPPER[TYPE_MAPPER[KEY]]>
       > & {
         readonly type: TYPE_MAPPER[KEY];
-        readonly rawType: keyof TYPE_MAPPER;
+        readonly rawType: keyof TYPE_MAPPER & string;
       };
     }[keyof TYPE_MAPPER]
   >(
@@ -641,7 +640,7 @@ export const syncers = {
         const { node, logContext } = cell[nodeKey];
 
         setLogContext(logContext);
-        const rawType = attributeSyncer.serializer(node) ?? 'unknown';
+        const rawType = attributeSyncer.serializer(node) ?? 'Unknown';
         syncers.enum(Object.keys(typeMapper)).serializer(rawType);
         setLogContext(logContext);
 
@@ -649,8 +648,8 @@ export const syncers = {
           ((typeMapper[rawType] ??
             typeMapper[
               rawType.toLowerCase()
-            ]) as TYPE_MAPPER[keyof TYPE_MAPPER]) ?? ('unknown' as const);
-        const spec = mapper[type] ?? mapper.unknown;
+            ]) as TYPE_MAPPER[keyof TYPE_MAPPER]) ?? ('Unknown' as const);
+        const spec = mapper[type] ?? mapper.Unknown;
         const { serializer } = syncers.object(
           spec(cell, { ...extraPayload, rawType })
         );
@@ -665,20 +664,35 @@ export const syncers = {
         } as IN & { readonly [_KEY in KEY]: MAPPED };
       },
       ({ [key]: definition, ...cell }) => {
-        // FIXME: use definition.type over definition.rawType
-        // FIXME: put resolved rawType back into the node
         const rawType = definition.rawType;
-        const type =
+        const typeFromRawType =
           ((typeMapper[rawType] ??
             typeMapper[
               rawType.toString().toLowerCase()
-            ]) as TYPE_MAPPER[keyof TYPE_MAPPER]) ?? ('unknown' as const);
-        const spec = mapper[type] ?? mapper.unknown;
+            ]) as TYPE_MAPPER[keyof TYPE_MAPPER]) ?? ('Unknown' as const);
+        /**
+         * Let's say a->A, aa->A, b->B
+         * If original type was `aa` and new mapped type is `A`, then keep `a`
+         * as original type (rather than `a`)
+         * However, if new mapped type is `B`, then use the first rawType that
+         * matches `B` (which is `b`)
+         */
+        const resolvedRawType =
+          typeFromRawType === definition.type
+            ? rawType
+            : Object.entries(typeMapper).find(
+                ([_raw, mapped]) => mapped === definition.type
+              )?.[0] ?? rawType;
+        const spec = mapper[definition.type] ?? mapper.Unknown;
         const { deserializer } = syncers.object(
           spec(cell as unknown as IN, { ...extraPayload, rawType })
         );
+        const node = deserializer(definition);
         const rawNode: NodeWithContext<SimpleXmlNode> = {
-          node: deserializer(definition),
+          node: mergeSimpleXmlNodes([
+            node,
+            attributeSyncer.deserializer(resolvedRawType),
+          ]),
           logContext: {},
         };
         return {
