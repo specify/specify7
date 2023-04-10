@@ -98,7 +98,7 @@ export function Async({
   return (
     <React.Suspense fallback={<LoadingScreen />}>
       {typeof title === 'string' && (
-        <AppTitle title={title} source={undefined} />
+        <AppTitle source={undefined} title={title} />
       )}
       <Element />
     </React.Suspense>
