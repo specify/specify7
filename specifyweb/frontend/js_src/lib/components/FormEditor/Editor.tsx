@@ -166,7 +166,6 @@ const debounceRate = 100;
  * FIXME: allow editing row size definitions
  * FIXME: allow editing business rules
  * FIXME: allow editing rows definitions
- * FIXME: show a live preview
  */
 function Editor({
   viewDefinition: [definition, setDefinition],
@@ -176,7 +175,21 @@ function Editor({
   readonly table: SpecifyTable;
 }): JSX.Element {
   const initialXml = React.useMemo(
-    () => xmlToString(jsonToXml(formatXmlNode(definition)), false),
+    () =>
+      xmlToString(
+        jsonToXml(
+          formatXmlNode({
+            ...definition,
+            /*
+             * Don't allow editing view definition attributes (for simplicity,
+             * but also because there aren't many use cases for editing them -
+             * sp7 does not support most of them)
+             */
+            attributes: {},
+          })
+        ),
+        false
+      ),
     // Run this only once
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []

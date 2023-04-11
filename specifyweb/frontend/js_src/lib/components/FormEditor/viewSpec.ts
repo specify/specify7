@@ -277,7 +277,6 @@ const cellSpec = f.store(() =>
       syncers.maybe(syncers.toBoolean),
       syncers.default(false)
     ),
-    // FIXME: check how this handles duplicate attributes (especially when they were modified)
     rest: syncers.captureLogContext(),
   })
 );

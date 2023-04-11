@@ -72,13 +72,10 @@ const injectRawXml = (
   viewDefs: initialParsed.viewDefs.map((definition) => ({
     ...definition,
     // Add XmlNode
-    raw: {
-      ...defined(
-        getOriginalSyncerInput(definition),
-        'Unable to attach raw form definitions to parsed form definitions'
-      ),
-      attributes: {},
-    },
+    raw: defined(
+      getOriginalSyncerInput(definition),
+      'Unable to attach raw form definitions to parsed form definitions'
+    ),
   })),
 });
 

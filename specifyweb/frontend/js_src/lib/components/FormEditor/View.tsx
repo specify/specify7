@@ -78,9 +78,11 @@ export const getViewDefinitions = (
         viewDefs.find(({ name }) => name === definitionName)
       )
   ).filter(
-    (definition) =>
-      // Ignore form table definitions that just reference another view
-      !definition.raw.children.some(
-        (node) => node.type === 'XmlNode' && node.tagName === 'definition'
-      )
+    ({ raw }) =>
+      /**
+       * Only view definitions of type "form" contain actual view definition.
+       * The "formtable" and "iconview" are always empty stubs. Thus, visual
+       * editor should only show "form" view definitions
+       */
+      raw.attributes.type === 'form'
   );
