@@ -122,20 +122,20 @@ msgstr "Выберите ДвКА"
 msgid "chooseMetadataResource"
 msgstr "Выберите ресурс метаданных"
 
-#: components/Header/ExpressSearchTask.tsx:47
-#: components/Header/ExpressSearchTask.tsx:103
+#: components/Header/ExpressSearchTask.tsx:53
+#: components/Header/ExpressSearchTask.tsx:109
 #: components/Router/OverlayRoutes.tsx:44
 #: components/Router/Routes.tsx:26
 #. Used in: Components > Header > Express Search Task ⬤ Components > Router > Overlay Routes ⬤ Components > Router > Routes
 msgid "expressSearch"
 msgstr "Экспресс-поиск"
 
-#: components/Header/ExpressSearchTask.tsx:113
+#: components/Header/ExpressSearchTask.tsx:119
 #. Used in: Components > Header > Express Search Task
 msgid "primarySearch"
 msgstr "Основной поиск"
 
-#: components/Header/ExpressSearchTask.tsx:119
+#: components/Header/ExpressSearchTask.tsx:125
 #. Used in: Components > Header > Express Search Task
 msgid "secondarySearch"
 msgstr "Вторичный поиск"

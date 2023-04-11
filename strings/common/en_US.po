@@ -23,6 +23,7 @@ msgstr "No"
 #: components/Forms/ResourceView.tsx:296
 #: components/Forms/SearchDialog.tsx:105
 #: components/Header/ChooseCollection.tsx:41
+#: components/Header/ExpressSearchTask.tsx:49
 #: components/Header/Forms.tsx:61
 #: components/Interactions/InteractionsDialog.tsx:249
 #: components/Interactions/PrepDialog.tsx:101
@@ -67,7 +68,7 @@ msgstr "No"
 #: components/WorkBench/Disambiguation.tsx:36
 #: components/WorkBench/wbView.js:1888
 #: components/WorkBench/wbView.js:1982
-#. Used in: Components > App Resources > Create ⬤ Components > App Resources > Editor Components ⬤ Components > Attachments > Dialog ⬤ Components > Form Sliders > Record Selector From Ids ⬤ Components > Forms > Delete Button ⬤ Components > Forms > Resource View ⬤ Components > Forms > Search Dialog ⬤ Components > Header > Choose Collection ⬤ Components > Header > Forms ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Return Dialog ⬤ Components > Pick Lists > Index ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Edit ⬤ Components > Query Builder > From Map ⬤ Components > Query Builder > Import ⬤ Components > Query Builder > Loan Return ⬤ Components > Reports > Parameters ⬤ Components > Reports > Report ⬤ Components > Reports > Index ⬤ Components > Router > Router ⬤ Components > Security > Import Export ⬤ Components > Security > Missing Agents Dialog ⬤ Components > Security > Role ⬤ Components > Security > Role Template ⬤ Components > Security > User ⬤ Components > Statistics > Index ⬤ Components > Toolbar > Force Update ⬤ Components > Toolbar > Form Tables Edit ⬤ Components > Toolbar > Language ⬤ Components > Toolbar > Master Key ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets ⬤ Components > Toolbar > Tree Repair ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Tree View > Actions ⬤ Components > Wb Plan View > Mapper ⬤ Components > Wb Plan View > Mapper Components ⬤ Components > Wb Plan View > State ⬤ Components > Work Bench > Components ⬤ Components > Work Bench > Coordinate Converter ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Disambiguation ⬤ Components > Work Bench > Wb View
+#. Used in: Components > App Resources > Create ⬤ Components > App Resources > Editor Components ⬤ Components > Attachments > Dialog ⬤ Components > Form Sliders > Record Selector From Ids ⬤ Components > Forms > Delete Button ⬤ Components > Forms > Resource View ⬤ Components > Forms > Search Dialog ⬤ Components > Header > Choose Collection ⬤ Components > Header > Express Search Task ⬤ Components > Header > Forms ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Return Dialog ⬤ Components > Pick Lists > Index ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Edit ⬤ Components > Query Builder > From Map ⬤ Components > Query Builder > Import ⬤ Components > Query Builder > Loan Return ⬤ Components > Reports > Parameters ⬤ Components > Reports > Report ⬤ Components > Reports > Index ⬤ Components > Router > Router ⬤ Components > Security > Import Export ⬤ Components > Security > Missing Agents Dialog ⬤ Components > Security > Role ⬤ Components > Security > Role Template ⬤ Components > Security > User ⬤ Components > Statistics > Index ⬤ Components > Toolbar > Force Update ⬤ Components > Toolbar > Form Tables Edit ⬤ Components > Toolbar > Language ⬤ Components > Toolbar > Master Key ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets ⬤ Components > Toolbar > Tree Repair ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Tree View > Actions ⬤ Components > Wb Plan View > Mapper ⬤ Components > Wb Plan View > Mapper Components ⬤ Components > Wb Plan View > State ⬤ Components > Work Bench > Components ⬤ Components > Work Bench > Coordinate Converter ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Disambiguation ⬤ Components > Work Bench > Wb View
 msgid "cancel"
 msgstr "Cancel"
 
@@ -390,10 +391,10 @@ msgstr "Remove"
 #: components/Forms/SearchDialog.tsx:111
 #: components/Forms/SearchDialog.tsx:115
 #: components/Forms/SearchDialog.tsx:248
-#: components/Header/ExpressSearchTask.tsx:46
-#: components/Header/ExpressSearchTask.tsx:69
-#: components/Header/ExpressSearchTask.tsx:74
-#: components/Header/ExpressSearchTask.tsx:106
+#: components/Header/ExpressSearchTask.tsx:50
+#: components/Header/ExpressSearchTask.tsx:75
+#: components/Header/ExpressSearchTask.tsx:80
+#: components/Header/ExpressSearchTask.tsx:112
 #: components/Header/index.tsx:153
 #: components/WorkBench/Template.tsx:248
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Search Dialog ⬤ Components > Header > Express Search Task ⬤ Components > Header > Index ⬤ Components > Work Bench > Template
@@ -572,12 +573,12 @@ msgstr "Record Count"
 msgid "size"
 msgstr "Size"
 
-#: components/Header/ExpressSearchTask.tsx:145
+#: components/Header/ExpressSearchTask.tsx:151
 #. Used in: Components > Header > Express Search Task
 msgid "running"
 msgstr "Running…"
 
-#: components/Header/ExpressSearchTask.tsx:147
+#: components/Header/ExpressSearchTask.tsx:153
 #. Used in: Components > Header > Express Search Task
 msgid "noMatches"
 msgstr "No Matches"
@@ -786,7 +787,7 @@ msgstr "None available"
 #: components/Attachments/index.tsx:185
 #: components/Attachments/index.tsx:194
 #: components/FormCells/FormTable.tsx:144
-#: components/Header/ExpressSearchTask.tsx:194
+#: components/Header/ExpressSearchTask.tsx:200
 #: components/Toolbar/Query.tsx:105
 #: components/Toolbar/RecordSets.tsx:181
 #: components/Toolbar/WbsDialog.tsx:202

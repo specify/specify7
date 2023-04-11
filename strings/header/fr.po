@@ -141,8 +141,8 @@ msgstr "Choisissez DwCA"
 msgid "chooseMetadataResource"
 msgstr "Choisissez la ressource de métadonnées"
 
-#: components/Header/ExpressSearchTask.tsx:47
-#: components/Header/ExpressSearchTask.tsx:103
+#: components/Header/ExpressSearchTask.tsx:53
+#: components/Header/ExpressSearchTask.tsx:109
 #: components/Router/OverlayRoutes.tsx:44
 #: components/Router/Routes.tsx:26
 #. Used in: Components > Header > Express Search Task ⬤ Components > Router > Overlay Routes ⬤ Components > Router > Routes
@@ -150,13 +150,13 @@ msgstr "Choisissez la ressource de métadonnées"
 msgid "expressSearch"
 msgstr "Recherche express"
 
-#: components/Header/ExpressSearchTask.tsx:113
+#: components/Header/ExpressSearchTask.tsx:119
 #. Used in: Components > Header > Express Search Task
 #, fuzzy
 msgid "primarySearch"
 msgstr "Recherche principale"
 
-#: components/Header/ExpressSearchTask.tsx:119
+#: components/Header/ExpressSearchTask.tsx:125
 #. Used in: Components > Header > Express Search Task
 #, fuzzy
 msgid "secondarySearch"
