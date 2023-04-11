@@ -44,6 +44,7 @@ export function AppResourcesTab({
   data,
   isFullScreen: [isFullScreen, handleChangeFullScreen],
   onChange: handleChange,
+  onSetCleanup: setCleanup,
 }: {
   readonly tab: Component;
   readonly label: LocalizedString;
@@ -57,6 +58,7 @@ export function AppResourcesTab({
   readonly onChange: (
     data: string | (() => string | null | undefined) | null
   ) => void;
+  readonly onSetCleanup: (callback: () => Promise<void>) => void;
 }): JSX.Element {
   const children = (
     <ErrorBoundary dismissible>
@@ -67,6 +69,7 @@ export function AppResourcesTab({
         resource={resource}
         showValidationRef={showValidationRef}
         onChange={handleChange}
+        onSetCleanup={setCleanup}
       />
     </ErrorBoundary>
   );

@@ -202,6 +202,7 @@ export function AppResourceEditor({
   const lastDataRef = React.useRef(lastData);
   lastDataRef.current = lastData;
   const possiblyChanged = typeof lastData === 'function';
+  const [cleaup,setCleanup] = React.useState<(()=>Promise<void>)|undefined>(undefined);
 
   return typeof resourceData === 'object'
     ? children({
@@ -243,6 +244,7 @@ export function AppResourceEditor({
                   if (typeof data === 'function') setLastData(() => data);
                   else setResourceData({ ...resourceData, data });
                 }}
+                onSetCleanup={setCleanup}
               />
             </ReadOnlyContext.Provider>
           </Form>
@@ -343,6 +345,7 @@ export function AppResourceEditor({
                       await clearUrlCache(
                         getAppResourceUrl(appResource.get('name'))
                       );
+                      await cleaup?.();
 
                       setResourceData(
                         serializeResource(

@@ -69,6 +69,17 @@ export type FormType = typeof formTypes[number];
 export type FormMode = 'edit' | 'search' | 'view';
 
 const views: R<ViewDefinition | undefined> = {};
+
+export const getViewSetApiUrl = (viewName:string): string =>
+  formatUrl('/context/view.json', {
+    viewName,
+    // Don't spam the console with errors needlessly
+    quiet:
+      viewName in webOnlyViews() || getTable(viewName)?.isSystem === true
+        ? ''
+        : undefined,
+  })
+
 export const fetchView = async (
   name: string
 ): Promise<ViewDefinition | undefined> =>
@@ -80,14 +91,7 @@ export const fetchView = async (
          * marked as cachable
          */
         cachableUrl(
-          formatUrl('/context/view.json', {
-            name,
-            // Don't spam the console with errors needlessly
-            quiet:
-              name in webOnlyViews() || getTable(name)?.isSystem === true
-                ? ''
-                : undefined,
-          })
+          getViewSetApiUrl(name)
         ),
         {
           // eslint-disable-next-line @typescript-eslint/naming-convention

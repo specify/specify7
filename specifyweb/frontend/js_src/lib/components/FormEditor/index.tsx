@@ -1,11 +1,14 @@
 import React from 'react';
 
 import { useLiveState } from '../../hooks/useLiveState';
-import type { GetSet } from '../../utils/types';
+import {f} from '../../utils/functools';
+import type { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
 import type { AppResourceTabProps } from '../AppResources/TabDefinitions';
 import { createXmlContext, XmlEditor } from '../Formatters';
+import { getViewSetApiUrl } from '../FormParse';
 import { SafeOutlet } from '../Router/RouterUtils';
+import { clearUrlCache } from '../RouterCommands/CacheBuster';
 import type { SpecToJson } from '../Syncer';
 import { updateXml } from '../Syncer/xmlToJson';
 import { getOriginalSyncerInput } from '../Syncer/xmlUtils';
@@ -26,7 +29,10 @@ export function FormEditor(props: AppResourceTabProps): JSX.Element {
 }
 
 export type FormEditorOutlet = {
-  readonly viewSets: GetSet<ViewSets>;
+  readonly viewSets: readonly [
+    ViewSets,
+    (viewSets: ViewSets, changedViewNames: RA<string>) => void
+  ];
 };
 
 export function FormEditorWrapper(): JSX.Element {
@@ -34,6 +40,7 @@ export function FormEditorWrapper(): JSX.Element {
     parsed: [initialParsed],
     syncer: { deserializer },
     onChange: handleChange,
+    onSetCleanup:handleSetCleanup
   } = React.useContext(FormEditorContext)!;
 
   const originalParsed = React.useRef<ViewSets | undefined>(undefined);
@@ -45,17 +52,29 @@ export function FormEditorWrapper(): JSX.Element {
     }, [initialParsed])
   );
 
-  const viewSets: GetSet<ViewSets> = [
-    parsed,
-    (parsed): void => {
-      setParsed(parsed);
-      handleChange(() =>
-        // FIXME: detect modified views and clean their cache on save
-        updateXml(deserializer(parsed))
-      );
-    },
-  ];
-  return <SafeOutlet<FormEditorOutlet> viewSets={viewSets} />;
+  const [changed, setChanged] = React.useState<ReadonlySet<string>>(new Set());
+
+  return (
+    <SafeOutlet<FormEditorOutlet>
+      viewSets={[
+        parsed,
+        (parsed, changedViewNames): void => {
+          setChanged((changed) => new Set([...changed, ...changedViewNames]));
+          setParsed(parsed);
+          handleChange(() =>
+            updateXml(deserializer(parsed))
+          );
+          handleSetCleanup(async ()=>
+            Promise.all(
+              Array.from(changed, async (viewName) =>
+                clearUrlCache(getViewSetApiUrl(viewName))
+              )
+            ).then(f.void)
+          );
+        },
+      ]}
+    />
+  );
 }
 
 export const FormEditorContext = createXmlContext(viewSetsSpec());

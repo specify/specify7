@@ -112,7 +112,7 @@ export function FormEditorWrapper(): JSX.Element {
                     ? removeItem(viewSets.views, viewIndex)
                     : replaceItem(viewSets.views, viewIndex, newView),
                 viewDefs: newViewDefs,
-              });
+              },[viewName]);
               navigate(resolveRelative(`../../`));
             }}
           >
@@ -150,7 +150,7 @@ export function FormEditorWrapper(): JSX.Element {
                 ...viewDefinition,
                 raw,
               }),
-            }),
+            },[viewName]),
         ]}
       />
     </div>

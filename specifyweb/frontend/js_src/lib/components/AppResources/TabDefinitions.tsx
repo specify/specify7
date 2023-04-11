@@ -18,8 +18,12 @@ import type {
   SpAppResourceDir,
   SpViewSetObj,
 } from '../DataModel/types';
+import { RssExportFeedEditor } from '../ExportFeed';
+import { exportFeedSpec } from '../ExportFeed/spec';
 import { DataObjectFormatter } from '../Formatters';
 import { formattersSpec } from '../Formatters/spec';
+import { FormEditor } from '../FormEditor';
+import { viewSetsSpec } from '../FormEditor/spec';
 import type { BaseSpec } from '../Syncer';
 import type { SimpleXmlNode } from '../Syncer/xmlToJson';
 import { PreferencesContent } from '../UserPreferences';
@@ -33,10 +37,6 @@ import { WebLinkEditor } from '../WebLinks/Editor';
 import { webLinksSpec } from '../WebLinks/spec';
 import { useCodeMirrorExtensions } from './EditorComponents';
 import type { appResourceSubTypes } from './types';
-import { RssExportFeedEditor } from '../ExportFeed';
-import { exportFeedSpec } from '../ExportFeed/spec';
-import { viewSetsSpec } from '../FormEditor/spec';
-import { FormEditor } from '../FormEditor';
 
 export type AppResourceEditorType = 'generic' | 'json' | 'visual' | 'xml';
 
@@ -55,6 +55,7 @@ export type AppResourceTabProps = {
   readonly onChange: (
     data: string | (() => string | null | undefined) | null
   ) => void;
+  readonly onSetCleanup: (callback:()=>Promise<void>)=>void;
 };
 const generateEditor = (xmlSpec: (() => BaseSpec<SimpleXmlNode>) | undefined) =>
   function AppResourceTextEditor({
