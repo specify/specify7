@@ -61,8 +61,7 @@ export const statsText = createDictionary({
     'ru-ru': 'Просроченные Займы',
   },
   taxonomicTree: {
-    'en-us': 'Taxonomic Tree',
-    'ru-ru': 'Таксономическое дерево',
+    'en-us': 'Taxon Tree Nodes',
   },
   classes: {
     'en-us': 'Classes',

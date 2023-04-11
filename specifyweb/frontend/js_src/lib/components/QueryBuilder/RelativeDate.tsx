@@ -58,10 +58,10 @@ export function DateQueryInputField({
   );
 
   return (
-    <div className="flex items-center">
+    <div className="flex items-center gap-1">
       <Button.Icon
         disabled={handleChange === undefined}
-        icon="selector"
+        icon="dateSwitch"
         title="switch"
         onClick={(): void => {
           toggleAbsolute();
