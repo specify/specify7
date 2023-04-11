@@ -1,5 +1,6 @@
 import React from 'react';
 import ContentLoader from 'react-content-loader';
+
 import { userPreferences } from '../Preferences/userPreferences';
 
 const DEFAULT_FETCH_LIMIT = 20;
@@ -11,19 +12,19 @@ export function AttachmentGallerySkeleton(): JSX.Element {
     const rectWidth = 22;
     const rectHeight = 22;
     const rectRadius = 2;
-    let rectX = 5; // starting x position
-    let rectY = 0; // starting y position
-    let rectangles = []; // array to hold the generated rectangles
+    let rectX = 5; // Starting x position
+    let rectY = 0; // Starting y position
+    const rectangles = []; // Array to hold the generated rectangles
 
     for (let i = 0; i < DEFAULT_FETCH_LIMIT; i++) {
       rectangles.push(
         <rect
-          x={rectX}
-          y={rectY}
+          height={rectHeight}
           rx={rectRadius}
           ry={rectRadius}
           width={rectWidth}
-          height={rectHeight}
+          x={rectX}
+          y={rectY}
         />
       );
 
@@ -41,11 +42,11 @@ export function AttachmentGallerySkeleton(): JSX.Element {
   return (
     <div className="h-full w-full">
       <ContentLoader
-        viewBox="0 0 115 150"
-        backgroundColor={'#333'}
-        foregroundColor={'#999'}
+        animate={motionPref !== 'reduce'}
+        backgroundColor="#333"
+        foregroundColor="#999"
         speed={3}
-        animate={motionPref === 'reduce' ? false : true}
+        viewBox="0 0 115 150"
       >
         {createRectangles()}
       </ContentLoader>

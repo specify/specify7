@@ -8,6 +8,7 @@ import { fetchResource } from '../DataModel/resource';
 import type { SpAppResource, SpViewSetObj } from '../DataModel/types';
 import { NotFoundView } from '../Router/NotFoundView';
 import { locationToState, useStableLocation } from '../Router/RouterState';
+import { AppResourceSkeleton } from '../SkeletonLoaders/AppResource';
 import { findAppResourceDirectory } from './Create';
 import { AppResourceEditor } from './Editor';
 import type { AppResourceMode } from './helpers';
@@ -15,8 +16,7 @@ import { getAppResourceMode } from './helpers';
 import type { AppResources } from './hooks';
 import { useResourcesTree } from './hooks';
 import type { AppResourcesOutlet } from './index';
-import { ScopedAppResourceDir } from './types';
-import { AppResourceSkeleton } from '../SkeletonLoaders/AppResource';
+import type { ScopedAppResourceDir } from './types';
 
 export function AppResourceView(): JSX.Element {
   return <Wrapper mode="appResources" />;

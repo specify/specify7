@@ -11,9 +11,9 @@ import type { Attachment } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { ResourceView } from '../Forms/ResourceView';
+import { AttachmentGallerySkeleton } from '../SkeletonLoaders/AttachmentGallery';
 import { AttachmentCell } from './Cell';
 import { AttachmentDialog } from './Dialog';
-import { AttachmentGallerySkeleton } from '../SkeletonLoaders/AttachmentGallery';
 
 const preFetchDistance = 200;
 

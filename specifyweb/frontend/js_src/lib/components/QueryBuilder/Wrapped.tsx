@@ -25,6 +25,7 @@ import { isTreeModel, treeRanksPromise } from '../InitialContext/treeRanks';
 import { useTitle } from '../Molecules/AppTitle';
 import { hasPermission, hasToolPermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
+import { QueryBuilderSkeleton } from '../SkeletonLoaders/QueryBuilder';
 import { getMappedFields, mappingPathIsComplete } from '../WbPlanView/helpers';
 import { getMappingLineProps } from '../WbPlanView/LineComponents';
 import { MappingView } from '../WbPlanView/MapperComponents';
@@ -45,7 +46,6 @@ import { mutateLineData, smoothScroll, unParseQueryFields } from './helpers';
 import { getInitialState, reducer } from './reducer';
 import { QueryResultsWrapper } from './ResultsWrapper';
 import { QueryToolbar } from './Toolbar';
-import { QueryBuilderSkeleton } from '../SkeletonLoaders/QueryBuilder';
 
 const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 
