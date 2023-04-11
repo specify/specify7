@@ -33,6 +33,7 @@ import { hasTablePermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { FormCell } from './index';
+import { AttachmentPluginSkeleton } from '../SkeletonLoaders/AttachmentPlugin';
 
 const cellToLabel = (
   model: SpecifyModel,
@@ -481,6 +482,6 @@ function Attachment({
   ) : attachment === false ? (
     <p>{formsText.noData()}</p>
   ) : (
-    loadingGif
+    <AttachmentPluginSkeleton />
   );
 }

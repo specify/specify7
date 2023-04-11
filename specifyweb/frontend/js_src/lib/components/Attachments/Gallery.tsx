@@ -11,9 +11,9 @@ import type { Attachment } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { ResourceView } from '../Forms/ResourceView';
-import { loadingGif } from '../Molecules';
 import { AttachmentCell } from './Cell';
 import { AttachmentDialog } from './Dialog';
+import { AttachmentGallerySkeleton } from '../SkeletonLoaders/AttachmentGallery';
 
 const preFetchDistance = 200;
 
@@ -93,9 +93,11 @@ export function AttachmentGallery({
             }
           />
         ))}
-        {isComplete
-          ? attachments.length === 0 && <p>{attachmentsText.noAttachments()}</p>
-          : loadingGif}
+        {isComplete ? (
+          attachments.length === 0 && <p>{attachmentsText.noAttachments()}</p>
+        ) : (
+          <AttachmentGallerySkeleton />
+        )}
       </Container.Base>
       {typeof viewRecord === 'object' && (
         <ErrorBoundary dismissible>

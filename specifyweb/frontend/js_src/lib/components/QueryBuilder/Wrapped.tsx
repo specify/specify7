@@ -45,6 +45,7 @@ import { mutateLineData, smoothScroll, unParseQueryFields } from './helpers';
 import { getInitialState, reducer } from './reducer';
 import { QueryResultsWrapper } from './ResultsWrapper';
 import { QueryToolbar } from './Toolbar';
+import { QueryBuilderSkeleton } from '../SkeletonLoaders/QueryBuilder';
 
 const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 
@@ -92,7 +93,7 @@ export function QueryBuilder({
       'queryBuilder',
       queryResource.isNew() ? 'create' : 'update'
     );
-  const [treeRanksLoaded = false] = useAsyncState(fetchTreeRanks, true);
+  const [treeRanksLoaded = false] = useAsyncState(fetchTreeRanks, false);
 
   const [query, setQuery] = useResource(queryResource);
   useErrorContext('query', query);
@@ -557,5 +558,7 @@ export function QueryBuilder({
         )}
       </Form>
     </Container.Full>
-  ) : null;
+  ) : (
+    <QueryBuilderSkeleton />
+  );
 }

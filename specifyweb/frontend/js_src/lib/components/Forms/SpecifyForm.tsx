@@ -19,6 +19,7 @@ import { attachmentView } from '../FormParse/webOnlyViews';
 import { loadingGif } from '../Molecules';
 import { userPreferences } from '../Preferences/userPreferences';
 import { unsafeTriggerNotFound } from '../Router/Router';
+import { FormSkeleton } from '../SkeletonLoaders/Form';
 
 const FormLoadingContext = React.createContext<boolean>(false);
 FormLoadingContext.displayName = 'FormLoadingContext';
@@ -71,6 +72,7 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
   const resolvedResource = loadedResource ?? oldResourceRef.current;
   const formIsLoaded =
     typeof viewDefinition === 'object' && typeof resolvedResource === 'object';
+  // const formIsLoaded = false;
 
   // If parent resource is loading, don't duplicate the loading bar in children
   const isAlreadyLoading = React.useContext(FormLoadingContext);
@@ -111,7 +113,7 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
             {loadingGif}
           </div>
         )}
-        {formIsLoaded && (
+        {formIsLoaded ? (
           <DataEntry.Grid
             aria-hidden={showLoading}
             className={`${showLoading ? 'pointer-events-none opacity-50' : ''}`}
@@ -147,6 +149,8 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
               </React.Fragment>
             ))}
           </DataEntry.Grid>
+        ) : (
+          <FormSkeleton />
         )}
       </div>
     </FormLoadingContext.Provider>

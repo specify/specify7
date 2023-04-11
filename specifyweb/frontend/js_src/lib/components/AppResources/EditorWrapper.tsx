@@ -16,6 +16,7 @@ import type { AppResources } from './hooks';
 import { useResourcesTree } from './hooks';
 import type { AppResourcesOutlet } from './index';
 import { ScopedAppResourceDir } from './types';
+import { AppResourceSkeleton } from '../SkeletonLoaders/AppResource';
 
 export function AppResourceView(): JSX.Element {
   return <Wrapper mode="appResources" />;
@@ -43,8 +44,9 @@ export function Wrapper({
   const baseHref = `/specify/resources/${
     mode === 'appResources' ? 'app-resource' : 'view-set'
   }`;
-  return initialData === undefined ? null : resource === undefined ||
-    directory === undefined ? (
+  return initialData === undefined ? (
+    <AppResourceSkeleton />
+  ) : resource === undefined || directory === undefined ? (
     <NotFoundView container={false} />
   ) : (
     <AppResourceEditor
@@ -121,7 +123,7 @@ function useInitialData(
             ),
       [initialDataFrom]
     ),
-    true
+    false
   )[0];
 }
 
