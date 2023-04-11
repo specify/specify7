@@ -212,7 +212,8 @@ test('parseViewDefinition', () => {
       },
     },
     'form',
-    'view'
+    'view',
+    tables.CollectionObject
   )!;
   expect(result).toBeDefined();
   expect(result.table?.name).toBe(tables.CollectionObject.name);

@@ -38,7 +38,7 @@ const reEmptyTag = /<(?<name>[^\s/>]+)(?<attributes>[^<>]*)><\/\k<name>>/gu;
  * Converts `<a></a>` to `<a />`
  * Splits attributes into multiple lines for long lines
  */
-export function xmlToString(xml: Node): string {
+export function xmlToString(xml: Node, insertDeclaration = true): string {
   const document =
     xml.ownerDocument === null ? (xml as Document) : xml.ownerDocument;
   const isRoot =
@@ -49,7 +49,7 @@ export function xmlToString(xml: Node): string {
     const hasXmlDeclaration =
       document.firstChild instanceof ProcessingInstruction &&
       document.firstChild.target === 'xml';
-    if (!hasXmlDeclaration) {
+    if (!hasXmlDeclaration && insertDeclaration) {
       const processingInstruction = document.createProcessingInstruction(
         'xml',
         'version="1.0" encoding="UTF-8"'

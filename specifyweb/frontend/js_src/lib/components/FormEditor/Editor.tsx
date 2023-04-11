@@ -1,30 +1,38 @@
 import React from 'react';
 import { useOutletContext } from 'react-router';
 import { useNavigate, useParams } from 'react-router-dom';
+import type { LocalizedString } from 'typesafe-i18n';
+import _ from 'underscore';
 
+import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
+import { userText } from '../../localization/user';
+import type { GetSet } from '../../utils/types';
 import { removeItem, replaceItem } from '../../utils/utils';
+import { parseXml } from '../AppResources/codeMirrorLinters';
+import { generateXmlEditor } from '../AppResources/TabDefinitions';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { ReadOnlyContext } from '../Core/Contexts';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import { getTable } from '../DataModel/tables';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
+import type { ViewDescription } from '../FormParse';
+import { parseViewDefinition } from '../FormParse';
+import { SpecifyForm } from '../Forms/SpecifyForm';
 import { TableIcon } from '../Molecules/TableIcon';
 import { NotFoundView } from '../Router/NotFoundView';
 import { resolveRelative } from '../Router/queryString';
+import { formatXmlNode } from '../Syncer/formatXmlNode';
+import type { XmlNode } from '../Syncer/xmlToJson';
+import { jsonToXml, xmlToJson } from '../Syncer/xmlToJson';
+import { xmlToString } from '../Syncer/xmlUtils';
 import type { FormEditorOutlet } from './index';
 import { FormEditorContext } from './index';
 import { getViewDefinitions } from './View';
-import { jsonToXml, XmlNode, xmlToJson } from '../Syncer/xmlToJson';
-import { GetSet } from '../../utils/types';
-import { generateXmlEditor } from '../AppResources/TabDefinitions';
 import { formDefinitionSpec } from './viewSpec';
-import { xmlToString } from '../Syncer/xmlUtils';
-import { formatXmlNode } from '../Syncer/formatXmlNode';
-import { parseXml } from '../AppResources/codeMirrorLinters';
-import _ from 'underscore';
-import { SpecifyTable } from '../DataModel/specifyTable';
 
 export function FormEditorWrapper(): JSX.Element {
   const {
@@ -52,6 +60,14 @@ export function FormEditorWrapper(): JSX.Element {
 
   const isReadOnly = React.useContext(ReadOnlyContext);
   const navigate = useNavigate();
+  const [layout = 'horizontal', setLayout] = useCachedState(
+    'formEditor',
+    'layout'
+  );
+  const buttonTitle =
+    layout === 'vertical'
+      ? userText.switchToHorizontalLayout()
+      : userText.switchToVerticalLayout();
 
   return table === undefined ||
     view === undefined ||
@@ -104,10 +120,24 @@ export function FormEditorWrapper(): JSX.Element {
           </Button.Red>
         )}
       </div>
-      <Link.Default href={resolveRelative(`../../`)}>
-        {icons.arrowLeft}
-        {table.name}
-      </Link.Default>
+      <div className="flex flex-wrap gap-4">
+        <Link.Default href={resolveRelative(`../../`)}>
+          {icons.arrowLeft}
+          {table.name}
+        </Link.Default>
+        <Button.Small
+          aria-label={buttonTitle}
+          title={buttonTitle}
+          variant={className.blueButton}
+          onClick={(): void =>
+            setLayout(layout === 'vertical' ? 'horizontal' : 'vertical')
+          }
+        >
+          {layout === 'horizontal'
+            ? icons.switchVertical
+            : icons.switchHorizontal}
+        </Button.Small>
+      </div>
       <Editor
         key={`${tableName}_${viewName}_${viewDefinitionName}`}
         table={table}
@@ -146,7 +176,7 @@ function Editor({
   readonly table: SpecifyTable;
 }): JSX.Element {
   const initialXml = React.useMemo(
-    () => xmlToString(jsonToXml(formatXmlNode(definition))),
+    () => xmlToString(jsonToXml(formatXmlNode(definition)), false),
     // Run this only once
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
@@ -174,17 +204,92 @@ function Editor({
     update(xml);
   }
 
+  const [layout = 'horizontal'] = useCachedState('formEditor', 'layout');
+
   const { appResource, resource, showValidationRef, directory } =
     React.useContext(FormEditorContext)!;
   return (
-    <div className="flex-1 overflow-auto">
+    <div
+      className={`
+        flex flex-1 gap-4 
+        ${
+          layout === 'horizontal' ? 'overflow-auto' : 'flex-col overflow-hidden'
+        }
+      `}
+    >
       <XmlEditor
-        data={xml}
-        onChange={handleChange}
         appResource={appResource}
-        showValidationRef={showValidationRef}
-        resource={resource}
+        data={xml}
         directory={directory}
+        resource={resource}
+        showValidationRef={showValidationRef}
+        className={layout === 'horizontal' ? '' : 'max-h-[50%] overflow-auto'}
+        onChange={handleChange}
+      />
+      <ErrorBoundary dismissible>
+        <FormPreview table={table} xml={xml} />
+      </ErrorBoundary>
+    </div>
+  );
+}
+
+/*
+ * FIXME: once form parsing is rewriten, instead of running spec again here,
+ *  make it piggy back on the one from XmlEditor
+ */
+function FormPreview({
+  xml,
+  table,
+}: {
+  readonly xml: LocalizedString;
+  readonly table: SpecifyTable;
+}): JSX.Element {
+  const [viewDefinition, setViewDefinition] = React.useState<
+    ViewDescription | undefined
+  >(undefined);
+  React.useEffect(() => {
+    try {
+      const parsed = parseViewDefinition(
+        {
+          altviews: {
+            [table.name]: {
+              default: 'true',
+              mode: 'edit',
+              name: '',
+              viewdef: table.name,
+            },
+          },
+          busrules: '',
+          class: table.longName,
+          name: table.name,
+          resourcelabels: 'true',
+          viewdefs: {
+            [table.name]: xml,
+          },
+          viewsetLevel: '',
+          viewsetName: '',
+          viewsetSource: '',
+          viewsetId: null,
+        },
+        'form',
+        'edit',
+        table
+      );
+      setViewDefinition(parsed);
+    } catch {}
+  }, [xml, table]);
+  const resource = React.useMemo(() => new table.Resource(), [table]);
+  const [layout = 'horizontal'] = useCachedState('formEditor', 'layout');
+  return (
+    <div
+      className={`flex flex-col gap-2 ${
+        layout === 'horizontal' ? 'max-w-[50%]' : 'max-h-[50%]'
+      }`}
+    >
+      <SpecifyForm
+        display="block"
+        resource={resource}
+        viewDefinition={viewDefinition}
       />
     </div>
   );

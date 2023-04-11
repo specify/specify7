@@ -62,9 +62,11 @@ const generateEditor = (xmlSpec: (() => BaseSpec<SimpleXmlNode>) | undefined) =>
     appResource,
     data,
     showValidationRef,
+    className = '',
     onChange: handleChange,
   }: Omit<AppResourceTabProps, 'onChange'> & {
     readonly onChange: (data: string) => void;
+    readonly className?: string;
   }): JSX.Element {
     const isDarkMode = useDarkMode();
     const extensions = useCodeMirrorExtensions(resource, appResource, xmlSpec);
@@ -96,7 +98,7 @@ const generateEditor = (xmlSpec: (() => BaseSpec<SimpleXmlNode>) | undefined) =>
     const isReadOnly = React.useContext(ReadOnlyContext);
     return (
       <CodeMirror
-        className="border border-brand-300 dark:border-none"
+        className={`w-full border border-brand-300 dark:border-none ${className}`}
         extensions={writable(extensions)}
         readOnly={isReadOnly}
         ref={handleRef}

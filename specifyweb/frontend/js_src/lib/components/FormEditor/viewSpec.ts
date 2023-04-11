@@ -989,7 +989,7 @@ const pluginWrapperSpec = (
           if (
             tables !== undefined &&
             table !== undefined &&
-            tables.includes(table.name)
+            !tables.includes(table.name)
           )
             console.error(
               `Can't display ${node.definition.rawType} on ${table.name} form. Instead, try ` +

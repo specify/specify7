@@ -92,7 +92,7 @@ const fetchViewDefinition = async (
   )
     .then((viewDefinition) =>
       typeof viewDefinition === 'object'
-        ? parseViewDefinition(viewDefinition, formType, mode)
+        ? parseViewDefinition(viewDefinition, formType, mode, table)
         : undefined
     )
     .then((viewDefinition) => {
