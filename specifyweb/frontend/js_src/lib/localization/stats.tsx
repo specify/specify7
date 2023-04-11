@@ -32,6 +32,9 @@ export const statsText = createDictionary({
   typeSpecimens: {
     'en-us': 'Type Specimens',
   },
+  curation: {
+    'en-us': 'Curation',
+  },
   familiesRepresented: {
     'en-us': 'Families Represented',
     'ru-ru': 'Семей',

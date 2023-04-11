@@ -489,7 +489,7 @@ export const statsSpec: StatsSpec = {
     urlPrefix: 'collection/user',
     categories: {
       holdings: {
-        label: statsText.collection(),
+        label: statsText.curation(),
         items: {
           collectionObjectsCataloged: {
             label: statsText.collectionObjectsCataloged(),
