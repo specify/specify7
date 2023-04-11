@@ -14,6 +14,7 @@ import {
 } from '../Syncer/xmlToJson';
 import { createXmlSpec, getOriginalSyncerInput } from '../Syncer/xmlUtils';
 import { getUniqueName } from '../../utils/uniquifyName';
+import { tables } from '../DataModel/tables';
 
 export const viewSetsSpec = f.store(() =>
   createXmlSpec({
@@ -32,6 +33,8 @@ export const viewSetsSpec = f.store(() =>
             }),
             ({ table, legacyTable, ...node }) => ({
               // FIXME: consier how altview definitions should be handled
+              // FIXME: generate formtable for tablesWithFormTable() if not already present
+              // FIXME: generate iconview for all attachment tables
               ...node,
               table: { parsed: table, bad: legacyTable },
               businessRules:
@@ -80,6 +83,17 @@ export const viewSetsSpec = f.store(() =>
       )
     ),
   })
+);
+
+/**
+ * Build a list of tables for which the "formTable" display type should be
+ * enabled. This list is not a perfect optimization of what tables have a
+ * "formTable" display option in sp6 out of the box, but it's good enough
+ */
+const tablesWithFormTable = f.store(() =>
+  Object.values(tables).filter(
+    (table) => !table.isHidden && !table.overrides.isHidden && !table.isSystem
+  )
 );
 
 type RawViewSets = SpecToJson<ReturnType<typeof viewSetsSpec>>;
@@ -166,6 +180,7 @@ const altViewsSpec = f.store(() =>
       )
     ),
     legacySelector: syncers.xmlAttribute('selector', 'skip'),
+    // Present in the sp6 source code, but never used for anything
     legacyDefaultMode: pipe(
       syncers.xmlAttribute('defaultMode', 'skip'),
       syncers.maybe(syncers.enum(['view', 'edit', 'search'] as const))
@@ -241,3 +256,7 @@ const viewDefSpec = f.store(() =>
     ),
   })
 );
+
+export const exportsForTests = {
+  tablesWithFormTable,
+};

@@ -221,17 +221,6 @@ const legacyBusinessRulesSpec = f.store(() =>
   })
 );
 
-/**
- * Build a list of tables for which the "formTable" display type should be
- * enabled. This list is not a perfect optimization of what tables have a
- * "formTable" display option in sp6 out of the box, but it's good enough
- */
-const tablesWithFormTable = f.store(() =>
-  Object.values(tables).filter(
-    (table) => !table.isHidden && !table.overrides.isHidden && !table.isSystem
-  )
-);
-
 const cellSpec = f.store(() =>
   createXmlSpec({
     id: syncers.xmlAttribute('id', 'skip'),
@@ -1114,6 +1103,5 @@ const pluginSpec = {
 } as const;
 
 export const exportsForTests = {
-  tablesWithFormTable,
   buildSpecifyProperties,
 };

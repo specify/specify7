@@ -14,10 +14,7 @@ import { error } from '../../Errors/assert';
 
 requireContext();
 
-const { tablesWithFormTable, buildSpecifyProperties } = exportsForTests;
-
-test('Tables with form tables computed correctly', () =>
-  expect(tablesWithFormTable()).toMatchSnapshot());
+const { buildSpecifyProperties } = exportsForTests;
 
 const cases = {
   '': {},

@@ -2,8 +2,12 @@ import React from 'react';
 import { useOutletContext } from 'react-router';
 import { useNavigate, useParams } from 'react-router-dom';
 
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
+import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
+import { f } from '../../utils/functools';
+import type { RA } from '../../utils/types';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
@@ -11,11 +15,13 @@ import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { ReadOnlyContext } from '../Core/Contexts';
 import { getTable } from '../DataModel/tables';
+import { Dialog } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { NotFoundView } from '../Router/NotFoundView';
 import { resolveRelative } from '../Router/queryString';
+import { CreateFormDefinition } from './Create';
 import type { FormEditorOutlet } from './index';
-import { getViewDefinitions } from './View';
+import type { ViewSets } from './spec';
 
 export function FormEditorTable(): JSX.Element {
   const { tableName = '' } = useParams();
@@ -28,7 +34,9 @@ export function FormEditorTable(): JSX.Element {
     [viewSets.views, table]
   );
   const isReadOnly = React.useContext(ReadOnlyContext);
+  const [isCreating, handleCreating, handleNotCreating] = useBooleanState();
   const navigate = useNavigate();
+  const [isUnavailable, setUnavailable] = React.useState(false);
   return table === undefined ? (
     <NotFoundView />
   ) : (
@@ -52,18 +60,13 @@ export function FormEditorTable(): JSX.Element {
                 href={resolveRelative(`./${view.name!}`)}
                 onClick={(event): void => {
                   // If there is only one view definition, don't even show this page to simplify things
-                  const viewDefinitions = getViewDefinitions(
+                  const viewDefinitions = getViewDefinitionIndexes(
                     view,
                     viewSets.viewDefs
                   );
-                  if (viewDefinitions.length === 1) {
-                    event.preventDefault();
-                    navigate(
-                      resolveRelative(
-                        `./${view.name!}/${viewDefinitions[0].name!}`
-                      )
-                    );
-                  }
+                  event.preventDefault();
+                  if (viewDefinitions.length === 0) setUnavailable(true);
+                  else navigate(resolveRelative(`./${view.name!}`));
                 }}
               >
                 {view.name!}
@@ -71,7 +74,44 @@ export function FormEditorTable(): JSX.Element {
             </li>
           ))}
       </Ul>
-      {!isReadOnly && <Button.Green>{commonText.create()}</Button.Green>}
+      {isUnavailable && (
+        <Dialog
+          buttons={commonText.close()}
+          header={resourcesText.definition()}
+          onClose={(): void => setUnavailable(false)}
+        >
+          {resourcesText.editorNotAvailable()}
+        </Dialog>
+      )}
+      {!isReadOnly && (
+        <>
+          {isCreating && (
+            <CreateFormDefinition table={table} onClose={handleNotCreating} />
+          )}
+          <Button.Green onClick={handleCreating}>
+            {commonText.create()}
+          </Button.Green>
+        </>
+      )}
     </div>
   );
 }
+
+export const getViewDefinitionIndexes = (
+  view: ViewSets['views'][number] | undefined,
+  viewDefs: ViewSets['viewDefs']
+): RA<number> =>
+  f
+    .unique(view?.altViews.altViews.map(({ viewDef }) => viewDef) ?? [])
+    .map((definitionName) =>
+      viewDefs.findIndex(({ name }) => name === definitionName)
+    )
+    .filter(
+      (index) =>
+        /**
+         * Only view definitions of type "form" contain actual view definition.
+         * The "formtable" and "iconview" are always empty stubs. Thus, visual
+         * editor should only show "form" view definitions
+         */
+        viewDefs[index]?.raw.attributes.type === 'form'
+    );

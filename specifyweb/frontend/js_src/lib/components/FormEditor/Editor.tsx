@@ -31,15 +31,11 @@ import { jsonToXml, xmlToJson } from '../Syncer/xmlToJson';
 import { xmlToString } from '../Syncer/xmlUtils';
 import type { FormEditorOutlet } from './index';
 import { FormEditorContext } from './index';
-import { getViewDefinitions } from './View';
+import { getViewDefinitionIndexes } from './Table';
 import { formDefinitionSpec } from './viewSpec';
 
 export function FormEditorWrapper(): JSX.Element {
-  const {
-    tableName = '',
-    viewName = '',
-    viewDefinitionName = '',
-  } = useParams();
+  const { tableName = '', viewName = '' } = useParams();
   const table = getTable(tableName);
   const {
     viewSets: [viewSets, setViewSets],
@@ -51,11 +47,10 @@ export function FormEditorWrapper(): JSX.Element {
       ),
     [viewSets.views, viewName, table]
   );
-  const viewDefinitionIndex = viewSets.viewDefs.findIndex(
-    (viewDefinition) =>
-      viewDefinition.name === viewDefinitionName &&
-      viewDefinition.table === table
-  );
+  const viewDefinitionIndex = getViewDefinitionIndexes(
+    view,
+    viewSets.viewDefs
+  )[0];
   const viewDefinition = viewSets.viewDefs[viewDefinitionIndex];
 
   const isReadOnly = React.useContext(ReadOnlyContext);
@@ -71,7 +66,8 @@ export function FormEditorWrapper(): JSX.Element {
 
   return table === undefined ||
     view === undefined ||
-    viewDefinition === undefined ? (
+    viewDefinition === undefined ||
+    viewDefinitionIndex === -1 ? (
     <NotFoundView />
   ) : (
     <div className="flex flex-1 flex-col gap-2 overflow-auto">
@@ -99,20 +95,23 @@ export function FormEditorWrapper(): JSX.Element {
                 viewSets.viewDefs,
                 viewDefinitionIndex
               );
-              const remainingDefinitions = getViewDefinitions(
+              const remainingDefinitions = getViewDefinitionIndexes(
                 newView,
                 newViewDefs
               );
               const viewIndex = viewSets.views.indexOf(newView);
-              setViewSets({
-                ...viewSets,
-                views:
-                  // Remove view if there are no more view definitions
-                  remainingDefinitions.length === 0
-                    ? removeItem(viewSets.views, viewIndex)
-                    : replaceItem(viewSets.views, viewIndex, newView),
-                viewDefs: newViewDefs,
-              },[viewName]);
+              setViewSets(
+                {
+                  ...viewSets,
+                  views:
+                    // Remove view if there are no more view definitions
+                    remainingDefinitions.length === 0
+                      ? removeItem(viewSets.views, viewIndex)
+                      : replaceItem(viewSets.views, viewIndex, newView),
+                  viewDefs: newViewDefs,
+                },
+                [viewName]
+              );
               navigate(resolveRelative(`../../`));
             }}
           >
@@ -139,18 +138,21 @@ export function FormEditorWrapper(): JSX.Element {
         </Button.Small>
       </div>
       <Editor
-        key={`${tableName}_${viewName}_${viewDefinitionName}`}
+        key={`${tableName}_${viewName}`}
         table={table}
         viewDefinition={[
           viewDefinition.raw,
           (raw): void =>
-            setViewSets({
-              ...viewSets,
-              viewDefs: replaceItem(viewSets.viewDefs, viewDefinitionIndex, {
-                ...viewDefinition,
-                raw,
-              }),
-            },[viewName]),
+            setViewSets(
+              {
+                ...viewSets,
+                viewDefs: replaceItem(viewSets.viewDefs, viewDefinitionIndex, {
+                  ...viewDefinition,
+                  raw,
+                }),
+              },
+              [viewName]
+            ),
         ]}
       />
     </div>
@@ -232,11 +234,11 @@ function Editor({
     >
       <XmlEditor
         appResource={appResource}
+        className={layout === 'horizontal' ? '' : 'max-h-[50%] overflow-auto'}
         data={xml}
         directory={directory}
         resource={resource}
         showValidationRef={showValidationRef}
-        className={layout === 'horizontal' ? '' : 'max-h-[50%] overflow-auto'}
         onChange={handleChange}
       />
       <ErrorBoundary dismissible>
@@ -289,7 +291,9 @@ function FormPreview({
         table
       );
       setViewDefinition(parsed);
-    } catch {}
+    } catch {
+      // Ignore errors, as they would already be reported by the editor
+    }
   }, [xml, table]);
   const resource = React.useMemo(() => new table.Resource(), [table]);
   const [layout = 'horizontal'] = useCachedState('formEditor', 'layout');

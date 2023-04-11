@@ -55,7 +55,7 @@ export type AppResourceTabProps = {
   readonly onChange: (
     data: string | (() => string | null | undefined) | null
   ) => void;
-  readonly onSetCleanup: (callback:()=>Promise<void>)=>void;
+  readonly onSetCleanup: (callback: () => Promise<void>) => void;
 };
 const generateEditor = (xmlSpec: (() => BaseSpec<SimpleXmlNode>) | undefined) =>
   function AppResourceTextEditor({
@@ -65,7 +65,7 @@ const generateEditor = (xmlSpec: (() => BaseSpec<SimpleXmlNode>) | undefined) =>
     showValidationRef,
     className = '',
     onChange: handleChange,
-  }: Omit<AppResourceTabProps, 'onChange'> & {
+  }: Omit<AppResourceTabProps, 'onChange' | 'onSetCleanup'> & {
     readonly onChange: (data: string) => void;
     readonly className?: string;
   }): JSX.Element {
