@@ -72,7 +72,6 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
   const resolvedResource = loadedResource ?? oldResourceRef.current;
   const formIsLoaded =
     typeof viewDefinition === 'object' && typeof resolvedResource === 'object';
-  // Const formIsLoaded = false;
 
   // If parent resource is loading, don't duplicate the loading bar in children
   const isAlreadyLoading = React.useContext(FormLoadingContext);

@@ -1,55 +1,25 @@
 import React from 'react';
-import ContentLoader from 'react-content-loader';
+import { Skeleton } from './Skeleton';
+import { DEFAULT_FETCH_LIMIT } from '../DataModel/collection';
 
-import { userPreferences } from '../Preferences/userPreferences';
+export const AttachmentGallerySkeleton = () => (
+  <Skeleton viewBox="0 0 115 150">{createRectangles()}</Skeleton>
+);
 
-const DEFAULT_FETCH_LIMIT = 20;
+function createRectangles() {
+  const rectWidth = 22;
+  const rectHeight = 22;
+  const rectRadius = 2;
+  const rectangles = Array.from({ length: DEFAULT_FETCH_LIMIT }, (_, index) => (
+    <rect
+      height={rectHeight}
+      rx={rectRadius}
+      ry={rectRadius}
+      width={rectWidth}
+      x={rectWidth * index + 5}
+      y={rectHeight * index + Math.floor(index / 4) * 10}
+    />
+  ));
 
-export function AttachmentGallerySkeleton(): JSX.Element {
-  const [motionPref] = userPreferences.use('general', 'ui', 'reduceMotion');
-
-  function createRectangles() {
-    const rectWidth = 22;
-    const rectHeight = 22;
-    const rectRadius = 2;
-    let rectX = 5; // Starting x position
-    let rectY = 0; // Starting y position
-    const rectangles = []; // Array to hold the generated rectangles
-
-    for (let i = 0; i < DEFAULT_FETCH_LIMIT; i++) {
-      rectangles.push(
-        <rect
-          height={rectHeight}
-          rx={rectRadius}
-          ry={rectRadius}
-          width={rectWidth}
-          x={rectX}
-          y={rectY}
-        />
-      );
-
-      rectX += rectWidth + 5;
-
-      if ((i + 1) % 4 === 0) {
-        rectX = 5;
-        rectY += rectHeight + 10;
-      }
-    }
-
-    return rectangles;
-  }
-
-  return (
-    <div className="h-full w-full">
-      <ContentLoader
-        animate={motionPref !== 'reduce'}
-        backgroundColor="#333"
-        foregroundColor="#999"
-        speed={3}
-        viewBox="0 0 115 150"
-      >
-        {createRectangles()}
-      </ContentLoader>
-    </div>
-  );
+  return rectangles;
 }
