@@ -49,7 +49,7 @@ type UniquenessRules = {
 export type UniquenessRule<SCHEMA extends AnySchema> = {
   [FIELD_NAME in TableFields<SCHEMA> as Lowercase<FIELD_NAME>]?:
     | RA<string>
-    | null[]
+    | RA<null>
     | RA<{ field: string; otherFields: string[] }>;
 };
 
@@ -349,16 +349,22 @@ export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
   },
 };
 
+// From this code, Typescript believes that a businessRuleDefs uniqueIn can be from any table
+// For example, it believes the following is possible:
+// BusinessRuleDefs<BorrowMaterial> & {uniqueIn: UniquenessRule<Accession> | UniquenessRule<AccessionAgent> | ...}
+// @ts-expect-error
 export const businessRuleDefs: MappedBusinessRuleDefs = Object.fromEntries(
-  Object.keys({ ...uniqueRules, ...nonUniqueBusinessRuleDefs }).map(
-    (table: keyof Tables) => {
-      const ruleDefs =
-        nonUniqueBusinessRuleDefs[table] === undefined
-          ? { uniqueIn: uniqueRules[table] }
-          : Object.assign({}, nonUniqueBusinessRuleDefs[table], {
-              uniqueIn: uniqueRules[table],
-            });
-      return [table, ruleDefs];
-    }
-  )
+  (
+    Object.keys({ ...uniqueRules, ...nonUniqueBusinessRuleDefs }) as Array<
+      keyof Tables
+    >
+  ).map((table) => {
+    const ruleDefs =
+      nonUniqueBusinessRuleDefs[table] === undefined
+        ? { uniqueIn: uniqueRules[table] }
+        : Object.assign({}, nonUniqueBusinessRuleDefs[table], {
+            uniqueIn: uniqueRules[table],
+          });
+    return [table, ruleDefs];
+  })
 );

@@ -28,7 +28,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
   }
 
   private addPromise(
-    promise: Promise<BusinessRuleResult | string | undefined>
+    promise: Promise<BusinessRuleResult | string | void | undefined>
   ): void {
     this.pendingPromises = Promise.allSettled([
       this.pendingPromises,
@@ -98,8 +98,8 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
 
   private processCheckFieldResults(
     fieldName: keyof SCHEMA['fields'],
-    results: RA<BusinessRuleResult | undefined>
-  ): Promise<(void | null)[]> {
+    results: RA<BusinessRuleResult | undefined | void>
+  ): Promise<RA<void | null>> {
     return Promise.all(
       results.map((result) => {
         if (!result) return null;
@@ -125,17 +125,19 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
   private async checkUnique(
     fieldName: keyof SCHEMA['fields']
   ): Promise<BusinessRuleResult> {
-    const toOneFields:
-      | RA<string>
-      | null[]
-      | RA<{ field: string; otherFields: string[] }> =
+    const toOneFields =
       this.rules?.uniqueIn !== undefined
         ? this.rules?.uniqueIn[fieldName as Lowercase<TableFields<SCHEMA>>] ??
           []
         : [];
 
+    // Typescript thinks that map() does not exist on NonNullable<UniquenessRule<SCHEMA>>
+    // However, map() exists on every possible type of UniquenessRule<SCHEMA>
+    // @ts-expect-error
     const results: RA<Promise<BusinessRuleResult<SCHEMA>>> = toOneFields.map(
-      (uniqueRule) => {
+      (
+        uniqueRule: string | null | { field: string; otherFields: string[] }
+      ) => {
         let field = uniqueRule;
         let fieldNames: string[] | null = [fieldName as string];
         if (uniqueRule === null) {
@@ -358,19 +360,26 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     ruleName: keyof BusinessRuleDefs<SCHEMA>,
     fieldName: keyof SCHEMA['fields'] | undefined,
     args: RA<any>
-  ): Promise<BusinessRuleResult | undefined> {
-    if (this.rules === undefined) {
+  ): Promise<BusinessRuleResult | undefined | void> {
+    if (this.rules === undefined || ruleName === 'uniqueIn') {
       return Promise.resolve(undefined);
     }
     let rule = this.rules[ruleName];
 
-    if (rule === undefined) return Promise.resolve(undefined);
-    if (fieldName !== undefined) {
+    if (
+      rule !== undefined &&
+      ruleName === 'fieldChecks' &&
+      fieldName !== undefined
+    )
       rule = rule[fieldName as keyof typeof rule];
-    }
+
     if (rule === undefined) return Promise.resolve(undefined);
 
-    return Promise.resolve(rule.apply(this, args));
+    // For some reason, Typescript still thinks that this.rules["fieldChecks"] is a valid rule
+    // thus rule.apply() would be invalid
+    // However, rule will never be this.rules["fieldChecks"]
+    // @ts-expect-error
+    return Promise.resolve(rule.apply(undefined, args));
   }
 }
 
