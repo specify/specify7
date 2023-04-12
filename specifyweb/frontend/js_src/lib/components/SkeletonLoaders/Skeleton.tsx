@@ -1,13 +1,15 @@
-import React, { ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import React from 'react';
 import ContentLoader from 'react-content-loader';
+
 import { userPreferences } from '../Preferences/userPreferences';
 import { useDarkMode } from '../Preferences/Hooks';
 
 type SkeletonProps = {
-  speed?: number;
-  viewBox?: string;
-  className?: string;
-  children: ReactNode;
+  readonly speed?: number;
+  readonly viewBox?: string;
+  readonly className?: string;
+  readonly children: ReactNode;
 };
 
 export function Skeleton({

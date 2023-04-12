@@ -1,16 +1,17 @@
 import React from 'react';
-import { Skeleton } from './Skeleton';
-import { DEFAULT_FETCH_LIMIT } from '../DataModel/collection';
 
-export const AttachmentGallerySkeleton = () => (
-  <Skeleton viewBox="0 0 115 150">{createRectangles()}</Skeleton>
-);
+import { DEFAULT_FETCH_LIMIT } from '../DataModel/collection';
+import { Skeleton } from './Skeleton';
+
+export function AttachmentGallerySkeleton() {
+  return <Skeleton viewBox="0 0 115 150">{createRectangles()}</Skeleton>;
+}
 
 function createRectangles() {
   const rectWidth = 22;
   const rectHeight = 22;
   const rectRadius = 2;
-  const rectangles = Array.from({ length: DEFAULT_FETCH_LIMIT }, (_, index) => (
+  return Array.from({ length: DEFAULT_FETCH_LIMIT }, (_, index) => (
     <rect
       height={rectHeight}
       rx={rectRadius}
@@ -20,6 +21,4 @@ function createRectangles() {
       y={rectHeight + (rectHeight + 10) * Math.floor(index / 4)}
     />
   ));
-
-  return rectangles;
 }
