@@ -2,8 +2,8 @@ import type { ReactNode } from 'react';
 import React from 'react';
 import ContentLoader from 'react-content-loader';
 
-import { userPreferences } from '../Preferences/userPreferences';
 import { useDarkMode } from '../Preferences/Hooks';
+import { userPreferences } from '../Preferences/userPreferences';
 
 type SkeletonProps = {
   readonly speed?: number;
@@ -24,8 +24,8 @@ export function Skeleton({
     <div className={className}>
       <ContentLoader
         animate={motionPref !== 'reduce'}
-        backgroundColor={themePref === true ? '#333' : '#e2e2e5'}
-        foregroundColor={themePref === true ? '#999' : '#f5f3f5'}
+        backgroundColor={themePref ? '#333' : '#e2e2e5'}
+        foregroundColor={themePref ? '#999' : '#f5f3f5'}
         speed={speed}
         viewBox={viewBox}
       >
