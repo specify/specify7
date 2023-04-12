@@ -24,6 +24,10 @@ export const formDefinitionSpec = (table: SpecifyTable | undefined) =>
       syncers.maybe(syncers.object(rowSizeDefinitionSpec()))
     ),
     legacyBusinessRules: pipe(
+      /*
+       * This element is often present, but empty. Looking at sp6 code, there
+       * is no difference between it being emmpty and not being there at all
+       */
       syncers.xmlChild('enableRules', 'optional'),
       syncers.maybe(syncers.object(legacyBusinessRulesSpec()))
     ),
@@ -202,7 +206,7 @@ const rowSizeDefinitionSpec = f.store(() =>
     auto: pipe(
       syncers.xmlAttribute('auto', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default(false)
+      syncers.default<boolean>(false)
     ),
     cell: syncers.xmlAttribute('cell', 'skip'),
     sep: syncers.xmlAttribute('sep', 'skip'),
@@ -264,7 +268,7 @@ const cellSpec = f.store(() =>
     legacyIgnore: pipe(
       syncers.xmlAttribute('ignore', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default(false)
+      syncers.default<boolean>(false)
     ),
     rest: syncers.captureLogContext(),
   })
@@ -309,7 +313,7 @@ const separatorSpec = f.store(() =>
     canCollapse: pipe(
       syncers.xmlAttribute('collapse', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default(false)
+      syncers.default<boolean>(false)
     ),
   })
 );
@@ -363,7 +367,7 @@ const subViewSpec = (
     isReadOnly: pipe(
       syncers.xmlAttribute('readOnly', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default(false)
+      syncers.default<boolean>(false)
     ),
     legacyRows: pipe(
       syncers.xmlAttribute('rows', 'skip'),
@@ -524,12 +528,12 @@ const iconViewSpec = f.store(() =>
     legacyNoSeparator: pipe(
       syncers.xmlAttribute('initialize noSep', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default(false)
+      syncers.default<boolean>(false)
     ),
     legacyNoMoreButton: pipe(
       syncers.xmlAttribute('initialize noSepMoreBtn', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default(false)
+      syncers.default<boolean>(false)
     ),
   })
 );
@@ -633,12 +637,12 @@ const rawFieldSpec = (table: SpecifyTable | undefined) =>
     legacyEditOnCreate: pipe(
       syncers.xmlAttribute('initialize editOnCreate', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default(false)
+      syncers.default<boolean>(false)
     ),
     isRequired: pipe(
       syncers.xmlAttribute('required', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default(false)
+      syncers.default<boolean>(false)
     ),
     isReadOnly: pipe(
       syncers.xmlAttribute('readonly', 'skip'),
@@ -684,7 +688,7 @@ const textSpec = f.store(() =>
     isPassword: pipe(
       syncers.xmlAttribute('initialize isPassword', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default(false)
+      syncers.default<boolean>(false)
     ),
     legacyColumns: pipe(
       syncers.xmlAttribute('cols', 'skip'),
@@ -695,13 +699,13 @@ const textSpec = f.store(() =>
     legacyAllEdit: pipe(
       syncers.xmlAttribute('initialize allEdit', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default(false)
+      syncers.default<boolean>(false)
     ),
     // Allow entering only a part of the formatted field be typed in (used for search forms)
     legacyIsPartial: pipe(
       syncers.xmlAttribute('initialize isPartial', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default(false)
+      syncers.default<boolean>(false)
     ),
     // Only displayed in sp6 for uiType="textfieldinfo"
     legacyDisplayDialog: syncers.xmlAttribute('initialize displayDlg', 'skip'),
@@ -709,7 +713,7 @@ const textSpec = f.store(() =>
     legacyTransparent: pipe(
       syncers.xmlAttribute('initialize transparent', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default(false)
+      syncers.default<boolean>(false)
     ),
     /*
      * Used only if uiType="formattedtext". For Catalog Number field.
@@ -719,7 +723,7 @@ const textSpec = f.store(() =>
     legacyIsSeries: pipe(
       syncers.xmlAttribute('initialize series', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default(false)
+      syncers.default<boolean>(false)
     ),
     /*
      * Assume that the value received from the user is already formatted and
@@ -729,7 +733,7 @@ const textSpec = f.store(() =>
     legacyAssumeFormatted: pipe(
       syncers.xmlAttribute('initialize fromUiFmt', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default(false)
+      syncers.default<boolean>(false)
     ),
   })
 );
@@ -763,29 +767,29 @@ const queryComboBoxSpec = f.store(() =>
     showSearchButton: pipe(
       syncers.xmlAttribute('initialize searchBtn', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default(true)
+      syncers.default<boolean>(true)
     ),
     showCloneButton: pipe(
       syncers.xmlAttribute('initialize cloneBtn', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default(false)
+      syncers.default<boolean>(false)
     ),
     showEditButton: pipe(
       syncers.xmlAttribute('initialize editBtn', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default(true)
+      syncers.default<boolean>(true)
     ),
     showNewButton: pipe(
       syncers.xmlAttribute('initialize newBtn', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default(true)
+      syncers.default<boolean>(true)
     ),
     legacyHelpContext: syncers.xmlAttribute('initialize hc', 'skip'),
     // Make query compatible with multiple ORMs
     legacyAdjustQuery: pipe(
       syncers.xmlAttribute('initialize adjustQuery', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default(true)
+      syncers.default<boolean>(true)
     ),
   })
 );
@@ -797,7 +801,7 @@ const checkBoxSpec = f.store(() =>
     legacyIsEditable: pipe(
       syncers.xmlAttribute('initialize editable', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default(false)
+      syncers.default<boolean>(false)
     ),
   })
 );
@@ -858,7 +862,7 @@ const imageSpec = f.store(() =>
     legacyHasBorder: pipe(
       syncers.xmlAttribute('initialize border', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default(true)
+      syncers.default<boolean>(true)
     ),
     legacyUrl: syncers.xmlAttribute('initialize url', 'skip'),
     legacyIcon: syncers.xmlAttribute('initialize icon', 'skip'),
@@ -875,12 +879,12 @@ const browseSpec = f.store(() =>
     legacyDirectoriesOnly: pipe(
       syncers.xmlAttribute('initialize dirsonly', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default(false)
+      syncers.default<boolean>(false)
     ),
     legacyUseAlternateFilePicker: pipe(
       syncers.xmlAttribute('initialize forInput', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default(true)
+      syncers.default<boolean>(true)
     ),
     /*
      * Extension to filter files by. Example "jpg". Only one is supported
@@ -1045,7 +1049,7 @@ const pluginSpec = {
       canChangePrecision: pipe(
         syncers.xmlAttribute('initialize canChangePrecision', 'skip'),
         syncers.maybe(syncers.toBoolean),
-        syncers.default(true)
+        syncers.default<boolean>(true)
       ),
     }),
   collectionRelOneToMany: () =>
@@ -1070,7 +1074,7 @@ const pluginSpec = {
       legacyForceRightSide: pipe(
         syncers.xmlAttribute('initialize forceRightSide', 'skip'),
         syncers.maybe(syncers.toBoolean),
-        syncers.default(false)
+        syncers.default<boolean>(false)
       ),
     }),
   localityGeoRef: () =>

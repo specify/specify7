@@ -202,7 +202,9 @@ export function AppResourceEditor({
   const lastDataRef = React.useRef(lastData);
   lastDataRef.current = lastData;
   const possiblyChanged = typeof lastData === 'function';
-  const [cleaup,setCleanup] = React.useState<(()=>Promise<void>)|undefined>(undefined);
+  const [cleaup, setCleanup] = React.useState<
+    (() => Promise<void>) | undefined
+  >(undefined);
 
   return typeof resourceData === 'object'
     ? children({
@@ -342,9 +344,10 @@ export function AppResourceEditor({
                           ) ?? null,
                       });
                       await appResourceData.save();
-                      await clearUrlCache(
-                        getAppResourceUrl(appResource.get('name'))
-                      );
+                      if (appResource.specifyTable.name === 'SpAppResource')
+                        await clearUrlCache(
+                          getAppResourceUrl(appResource.get('name'))
+                        );
                       await cleaup?.();
 
                       setResourceData(

@@ -74,7 +74,7 @@ const formatterSpec = f.store(() =>
     isDefault: pipe(
       syncers.xmlAttribute('default', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default(false)
+      syncers.default<boolean>(false)
     ),
     autoNumber: pipe(
       syncers.xmlChild('autonumber', 'optional'),
@@ -111,12 +111,12 @@ const fieldSpec = f.store(() =>
     byYear: pipe(
       syncers.xmlAttribute('byYear', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default(false)
+      syncers.default<boolean>(false)
     ),
     autoIncrement: pipe(
       syncers.xmlAttribute('inc', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default(false)
+      syncers.default<boolean>(false)
     ),
     pattern: syncers.xmlAttribute('pattern', 'skip', false),
   })

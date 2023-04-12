@@ -209,13 +209,15 @@ function ChooseName({
     viewSets: [viewSets, setViewSets],
   } = useOutletContext<FormEditorOutlet>();
 
-  const [name, setName] = React.useState(() =>
+  const getUnique = (name: string): string =>
     getUniqueName(
-      template === 'new' ? table.name : template.name,
+      name,
       viewSets.views.map(({ name }) => name ?? ''),
       Number.POSITIVE_INFINITY,
       'name'
-    )
+    );
+  const [name, setName] = React.useState(() =>
+    getUnique(template === 'new' ? table.name : template.name)
   );
 
   const navigate = useNavigate();
@@ -233,10 +235,12 @@ function ChooseName({
       <Form
         id={id}
         onSubmit={(): void => {
-          setViewSets(createViewDefinition(viewSets, name, table, template), [
-            name,
-          ]);
-          navigate(resolveRelative(`./${name}`));
+          const uniqueName = getUnique(name);
+          setViewSets(
+            createViewDefinition(viewSets, uniqueName, table, template),
+            [uniqueName]
+          );
+          navigate(resolveRelative(`./${uniqueName}`));
         }}
       >
         <Label.Block>

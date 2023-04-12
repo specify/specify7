@@ -71,7 +71,7 @@ const formatterSpec = f.store(() =>
     isDefault: pipe(
       syncers.xmlAttribute('default', 'empty'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default(false)
+      syncers.default<boolean>(false)
     ),
     definition: pipe(
       syncers.xmlChild('switch'),
@@ -133,7 +133,7 @@ const aggregatorSpec = f.store(() =>
     isDefault: pipe(
       syncers.xmlAttribute('default', 'empty'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default(false)
+      syncers.default<boolean>(false)
     ),
     separator: pipe(
       syncers.xmlAttribute('separator', 'empty', false),

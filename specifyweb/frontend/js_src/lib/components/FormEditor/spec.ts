@@ -127,7 +127,7 @@ const viewSpec = f.store(() =>
     legacyUseBusinessRules: pipe(
       syncers.xmlAttribute('useDefBusRule', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default(true)
+      syncers.default<boolean>(true)
     ),
     legacyResourceLabels: pipe(
       syncers.xmlAttribute('resourceLabels', 'skip'),
@@ -143,6 +143,7 @@ const altViewsSpec = f.store(() =>
       syncers.map(
         pipe(
           syncers.object(altViewSpec()),
+          // Use viewDef as name if name not provided (to match sp6 behavior)
           syncers.change(
             'name',
             ({ name }) => name,
@@ -185,7 +186,7 @@ const altViewSpec = f.store(() =>
     default: pipe(
       syncers.xmlAttribute('default', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default(false)
+      syncers.default<boolean>(false)
     ),
     legacyTitle: syncers.xmlAttribute('title', 'skip'),
     legacyLabel: syncers.xmlAttribute('label', 'skip'),
@@ -216,7 +217,7 @@ const viewDefSpec = f.store(() =>
     legacyEditableDialog: pipe(
       syncers.xmlAttribute('editableDlg', 'skip'),
       syncers.maybe(syncers.toBoolean),
-      syncers.default(true)
+      syncers.default<boolean>(true)
     ),
     legacyUseResourceLabels: pipe(
       syncers.xmlAttribute('useResourceLabels', 'skip'),
