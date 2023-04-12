@@ -185,12 +185,21 @@ export function FormEditorWrapper(): JSX.Element {
 const debounceRate = 100;
 
 /*
- * FIXME: handle rename. ensure name is unique
  * FIXME: show description
  * FIXME: allow editing column size definitions
  * FIXME: allow editing row size definitions
  * FIXME: allow editing business rules
  * FIXME: allow editing rows definitions
+ */
+/**
+ * Note: renaming an existing view is not allowed because the old name might be
+ * used in a subview in this OR a different file. To make it worse, some
+ * references to this view name in a different file might actually refer to a
+ * different view by the same name (i.e, CollectionObject view, but from a
+ * different collection).
+ * To avoid all that complexity, renaming is not allowed. If someone really
+ * needs to rename, they can create a new view with proper name based on the old
+ * one and then delete the old one.
  */
 function Editor({
   viewDefinition: [definition, setDefinition],

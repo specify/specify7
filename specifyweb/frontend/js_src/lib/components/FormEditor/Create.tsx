@@ -7,10 +7,8 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { resourcesText } from '../../localization/resources';
-import { ajax } from '../../utils/ajax';
-import type { RA } from '../../utils/types';
 import { getUniqueName } from '../../utils/uniquifyName';
-import { camelToHuman, group, split } from '../../utils/utils';
+import { group } from '../../utils/utils';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
@@ -19,15 +17,15 @@ import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import type { SpecifyTable } from '../DataModel/specifyTable';
-import type { Tables } from '../DataModel/types';
 import type { ViewDefinition } from '../FormParse';
 import { parseViewDefinition } from '../FormParse';
 import { SpecifyForm } from '../Forms/SpecifyForm';
-import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
-import { formatUrl, resolveRelative } from '../Router/queryString';
+import { resolveRelative } from '../Router/queryString';
+import { createViewDefinition } from './createView';
+import type { AllTableViews } from './fetchAllViews';
+import { fetchAllViews } from './fetchAllViews';
 import type { FormEditorOutlet } from './index';
-import type { ViewSets } from './spec';
 
 export function CreateFormDefinition({
   table,
@@ -35,7 +33,9 @@ export function CreateFormDefinition({
   readonly table: SpecifyTable;
 }): JSX.Element {
   const [isCreating, handleCreating, handleNotCreating] = useBooleanState();
-  const [views, setViews] = React.useState<Views | undefined>(undefined);
+  const [views, setViews] = React.useState<AllTableViews | undefined>(
+    undefined
+  );
   const loading = React.useContext(LoadingContext);
 
   const [template, setTemplate] = React.useState<
@@ -100,94 +100,6 @@ export function CreateFormDefinition({
   );
 }
 
-type PresentableViewDefinition = ViewDefinition & {
-  readonly category: string;
-  readonly editUrl: string | undefined;
-};
-
-type Views = {
-  readonly database: RA<
-    PresentableViewDefinition & { readonly collectionId: number }
-  >;
-  readonly disk: RA<PresentableViewDefinition>;
-};
-
-/**
- * Fetch all views for a given table accessible to current user in each collection
- * Note: this may result in duplicates
- */
-export const fetchAllViews = async (
-  tableName: keyof Tables,
-  cache = false
-): Promise<Views> =>
-  Promise.all(
-    userInformation.availableCollections.map(async ({ id }) =>
-      ajax<RA<ViewDefinition>>(
-        formatUrl('/context/views.json', {
-          table: tableName,
-          collectionid: id,
-        }),
-        {
-          headers: {
-            Accept: 'application/json',
-          },
-          cache: cache ? undefined : 'no-cache',
-        }
-      ).then(({ data }) => data.map((view) => ({ ...view, collectionId: id })))
-    )
-  ).then((data) => {
-    const [disk, database] = split(
-      data.flat(),
-      (view) => view.viewsetFile === null
-    );
-    /*
-     * Note, several requests may return the same view definition
-     */
-    return {
-      // Deduplicate views from database
-      database: Object.values(
-        Object.fromEntries(
-          database.map((view) => [`${view.viewsetId ?? ''}_${view.name}`, view])
-        )
-      ).map((view) => augmentDatabaseView(tableName, view)),
-      // Deduplicate views from disk
-      disk: Object.values(
-        Object.fromEntries(
-          disk.map((view) => [`${view.viewsetFile ?? ''}_${view.name}`, view])
-        )
-      ).map(augmentDiskView),
-    };
-  });
-
-const augmentDatabaseView = (
-  tableName: keyof Tables,
-  view: ViewDefinition & { readonly collectionId: number }
-): PresentableViewDefinition & { readonly collectionId: number } => ({
-  ...view,
-  category:
-    (view.viewsetLevel === 'Collection'
-      ? userInformation.availableCollections.find(
-          ({ id }) => id === view.collectionId
-        )?.collectionName
-      : undefined) ?? camelToHuman(view.viewsetLevel),
-  editUrl:
-    view.viewsetId === null
-      ? undefined
-      : `/specify/resources/view-set/${view.viewsetId}/${tableName}/${view.name}/`,
-});
-
-const augmentDiskView = (view: ViewDefinition): PresentableViewDefinition => ({
-  ...view,
-  category:
-    typeof view.viewsetFile === 'string'
-      ? localizePath(view.viewsetFile)
-      : camelToHuman(view.viewsetLevel),
-  editUrl: undefined,
-});
-
-const localizePath = (path: string): string =>
-  path.split('/').slice(0, -1).map(camelToHuman).join(' > ');
-
 function ListViews({
   table,
   header,
@@ -196,7 +108,7 @@ function ListViews({
 }: {
   readonly table: SpecifyTable;
   readonly header: LocalizedString;
-  readonly views: Views['database'] | Views['disk'];
+  readonly views: AllTableViews['database'] | AllTableViews['disk'];
   readonly onSelect: (view: ViewDefinition) => void;
 }): JSX.Element {
   const grouped = React.useMemo(
@@ -321,7 +233,9 @@ function ChooseName({
       <Form
         id={id}
         onSubmit={(): void => {
-          setViewSets(handleSelect(name, template, viewSets), [name]);
+          setViewSets(createViewDefinition(viewSets, name, table, template), [
+            name,
+          ]);
           navigate(resolveRelative(`./${name}`));
         }}
       >
@@ -331,19 +245,4 @@ function ChooseName({
       </Form>
     </Dialog>
   );
-}
-
-function handleSelect(
-  name: string,
-  template: ViewDefinition | 'new',
-  viewSets: ViewSets
-): ViewSets {
-  /*
-   * FIXME: consier how altview definitions should be handled
-   * FIXME: generate formtable for tablesWithFormTable() if not already present
-   * FIXME: generate iconview for all attachment tables
-   * FIXME: make sure comments and unknowns are preserved
-   */
-  // FIXME: finish this
-  console.log(view);
 }
