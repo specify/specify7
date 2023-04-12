@@ -90,11 +90,11 @@ export function FrontEndStatsResultDialog({
       onClose={handleClose}
     >
       <QueryBuilder
+        autoRun
         forceCollection={undefined}
         isEmbedded
         query={originalQuery}
         recordSet={undefined}
-        autoRun={true}
         onChange={
           typeof handleEdit === 'function'
             ? ({ fields, isDistinct }): void =>
