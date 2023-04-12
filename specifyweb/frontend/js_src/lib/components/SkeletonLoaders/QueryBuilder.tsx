@@ -1,32 +1,42 @@
 import React from 'react';
-
 import { Skeleton } from './Skeleton';
 
 export function QueryBuilderSkeleton() {
   return (
-    <Skeleton viewBox="0 0 240 400">
-      <rect height="5" rx="2" ry="2" width="5" x="9" y="5" />
-      <rect height="5" rx="2" ry="2" width="41" x="20" y="5" />
-      <rect height="5" rx="2" ry="2" width="25" x="132" y="5" />
-      <rect height="5" rx="2" ry="2" width="25" x="161" y="5" />
-
-      <rect height="5" rx="2" ry="2" width="52" x="9" y="20" />
-      <rect height="38" rx="2" ry="2" width="52" x="9" y="27" />
-      <rect height="38" rx="2" ry="2" width="52" x="65" y="27" />
-      <rect height="38" rx="2" ry="2" width="5" x="121" y="27" />
-
-      <rect height="5" rx="2" ry="2" width="185" x="11" y="80" />
-      <rect height="5" rx="2" ry="2" width="5" x="198" y="80" />
-      <rect height="5" rx="2" ry="2" width="5" x="204" y="80" />
-      <rect height="5" rx="2" ry="2" width="5" x="210" y="80" />
-      <rect height="5" rx="2" ry="2" width="5" x="216" y="80" />
-
-      <rect height="5" rx="2" ry="2" width="5" x="13" y="190" />
-      <rect height="5" rx="2" ry="2" width="45" x="22" y="190" />
-
-      <rect height="5" rx="2" ry="2" width="5" x="122" y="190" />
-      <rect height="7" rx="2" ry="2" width="30" x="168" y="188.5" />
-      <rect height="7" rx="2" ry="2" width="30" x="132" y="188.5" />
-    </Skeleton>
+    <div className="flex h-full flex-col justify-between p-4">
+      <div className="flex flex-col gap-8">
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex gap-2">
+            <Skeleton.SmallCircle />
+            <Skeleton.Line className="!w-56" />
+          </div>
+          <div className="flex gap-2">
+            <Skeleton.SmallRectangle />
+            <Skeleton.SmallRectangle />
+          </div>
+        </div>
+        <div className="flex gap-2">
+          <div className="flex flex-col gap-2">
+            <Skeleton.TallRectangle className="h-44 !w-56" />
+          </div>
+          <div className="flex flex-col gap-2">
+            <Skeleton.TallRectangle className="h-44 !w-56" />
+          </div>
+          <Skeleton.ThinRectangle className="!h-44" />
+        </div>
+      </div>
+      <div className="flex justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <Skeleton.SmallSquare />
+          <Skeleton.Line />
+        </div>
+        <div className="flex items-center gap-2">
+          <Skeleton.SmallSquare />
+          <Skeleton.Line />
+          <Skeleton.SmallRectangle />
+          <Skeleton.SmallRectangle />
+        </div>
+      </div>
+    </div>
   );
 }

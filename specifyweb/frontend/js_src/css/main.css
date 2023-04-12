@@ -341,3 +341,10 @@
 .cm-editor {
   @apply h-full;
 }
+
+.skeleton {
+  @apply bg-gray-200 dark:bg-neutral-600;
+}
+body:not(.reduce-motion) .skeleton {
+  @apply animate-pulse;
+}

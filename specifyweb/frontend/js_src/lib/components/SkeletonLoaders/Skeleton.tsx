@@ -1,36 +1,31 @@
-import type { ReactNode } from 'react';
 import React from 'react';
-import ContentLoader from 'react-content-loader';
 
-import { userPreferences } from '../Preferences/userPreferences';
-import { useDarkMode } from '../Preferences/Hooks';
-
-type SkeletonProps = {
-  readonly speed?: number;
-  readonly viewBox?: string;
-  readonly className?: string;
-  readonly children: ReactNode;
+export const Skeleton = {
+  Line({ className }: { readonly className?: string }): JSX.Element {
+    return <div className={`${className} skeleton h-4 w-14 rounded`} />;
+  },
+  LongLine({ className }: { readonly className?: string }): JSX.Element {
+    return <div className={`${className} skeleton h-4 rounded`} />;
+  },
+  Square({ className }: { readonly className?: string }): JSX.Element {
+    return <div className={`${className} skeleton h-32 rounded `} />;
+  },
+  SmallSquare({ className }: { readonly className?: string }): JSX.Element {
+    return <div className={`${className} skeleton h-6 w-6 rounded`} />;
+  },
+  Rectangle({ className }: { readonly className?: string }): JSX.Element {
+    return <div className={`${className} skeleton h-6 w-64 rounded`} />;
+  },
+  SmallRectangle({ className }: { readonly className?: string }): JSX.Element {
+    return <div className={`${className} skeleton h-6 w-16 rounded`} />;
+  },
+  TallRectangle({ className }: { readonly className?: string }): JSX.Element {
+    return <div className={`${className} skeleton w-32 rounded`} />;
+  },
+  ThinRectangle({ className }: { readonly className?: string }): JSX.Element {
+    return <div className={`${className} skeleton h-32 w-6 rounded`} />;
+  },
+  SmallCircle({ className }: { readonly className?: string }): JSX.Element {
+    return <div className={`${className} skeleton w-6 rounded-full`} />;
+  },
 };
-
-export function Skeleton({
-  speed = 3,
-  viewBox = '0 0 200 400',
-  className = 'h-full w-full',
-  children,
-}: SkeletonProps): JSX.Element {
-  const [motionPref] = userPreferences.use('general', 'ui', 'reduceMotion');
-  const themePref = useDarkMode();
-  return (
-    <div className={className}>
-      <ContentLoader
-        animate={motionPref !== 'reduce'}
-        backgroundColor={themePref === true ? '#333' : '#e2e2e5'}
-        foregroundColor={themePref === true ? '#999' : '#f5f3f5'}
-        speed={speed}
-        viewBox={viewBox}
-      >
-        {children}
-      </ContentLoader>
-    </div>
-  );
-}

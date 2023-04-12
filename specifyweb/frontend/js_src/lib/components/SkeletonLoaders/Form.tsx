@@ -1,42 +1,38 @@
 import React from 'react';
-
 import { Skeleton } from './Skeleton';
 
 export function FormSkeleton() {
   return (
-    <Skeleton className="h-full w-[120vh]">
-      <rect height="3" rx="2" ry="2" width="22" x="9" y="6" />
-      <rect height="5" rx="2" ry="2" width="41" x="33" y="5" />
-      <rect height="3" rx="2" ry="2" width="22" x="107" y="6" />
-      <rect height="5" rx="2" ry="2" width="25" x="131" y="5" />
-      <rect height="5" rx="2" ry="2" width="25" x="157" y="5" />
-
-      <rect height="5" rx="2" ry="2" width="52" x="9" y="18" />
-      <circle cx="66" cy="20.5" r="3" />
-      <circle cx="74" cy="20.5" r="3" />
-      <rect height="3" rx="2" ry="2" width="22" x="9" y="25" />
-
-      <rect height="3" rx="2" ry="2" width="22" x="28" y="35" />
-      <rect height="5" rx="2" ry="2" width="100" x="54" y="34" />
-      <circle cx="158" cy="36.5" r="2" />
-      <circle cx="163" cy="36.5" r="2" />
-      <circle cx="168" cy="36.5" r="2" />
-
-      <rect height="5" rx="2" ry="2" width="52" x="9" y="53" />
-      <circle cx="66" cy="55.5" r="3" />
-      <rect height="3" rx="2" ry="2" width="22" x="9" y="60" />
-
-      <rect height="20" rx="2" ry="2" width="96" x="86" y="47.5" />
-
-      <rect height="5" rx="2" ry="2" width="52" x="9" y="73" />
-      <circle cx="66" cy="75.5" r="3" />
-
-      <rect height="3" rx="2" ry="2" width="22" x="9" y="93" />
-      <rect height="7" rx="2" ry="2" width="25" x="9" y="98" />
-      <rect height="7" rx="2" ry="2" width="25" x="40" y="98" />
-      <rect height="7" rx="2" ry="2" width="25" x="125" y="98" />
-
-      <rect height="5" rx="2" ry="2" width="130" x="9" y="120" />
-    </Skeleton>
+    <div className="w-[120vh]">
+      {Array.from({ length: 3 }, () => (
+        <div className="justify-beween m-1 mb-8 flex flex-col flex-wrap gap-4">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <Skeleton.Line />
+              <Skeleton.SmallRectangle />
+            </div>
+            <div className="flex gap-2">
+              <Skeleton.Line />
+              <Skeleton.SmallRectangle />
+              <Skeleton.SmallCircle />
+              <Skeleton.SmallCircle />
+              <Skeleton.SmallCircle />
+            </div>
+            <div className="flex items-center gap-2">
+              <Skeleton.Line />
+              <Skeleton.SmallRectangle />
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <Skeleton.SmallRectangle />
+            <Skeleton.SmallSquare />
+            <Skeleton.SmallSquare />
+          </div>
+          <div>
+            <Skeleton.LongLine />
+          </div>
+        </div>
+      ))}
+    </div>
   );
 }

@@ -149,6 +149,7 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
             ))}
           </DataEntry.Grid>
         ) : (
+          // <FormSkeleton />
           <FormSkeleton />
         )}
       </div>
