@@ -112,7 +112,10 @@ def get_viewsets_from_db(collection, user, level):
     def viewsets():
         for o in objs:
             try:
-                yield o.spviewsetobj.id, ElementTree.fromstring(force_bytes(o.data))
+                # Like default parser, but preserves comments
+                parser = ElementTree.XMLParser(
+                    target=ElementTree.TreeBuilder(insert_comments=True))
+                yield o.spviewsetobj.id, ElementTree.fromstring(force_bytes(o.data), parser=parser)
             except Exception as e:
                 logger.error("Bad XML in view set: %s\n%s  id = %s", e, o, o.id)
 
@@ -144,7 +147,10 @@ def get_viewset_from_file(path, filename):
     """Just load the XML for a viewset from path and pull out the root."""
     file_path = os.path.join(path, filename)
     try:
-        return ElementTree.parse(file_path).getroot()
+        # Like default parser, but preserves comments
+        parser = ElementTree.XMLParser(
+            target=ElementTree.TreeBuilder(insert_comments=True))
+        return ElementTree.parse(file_path, parser).getroot()
     except Exception as e:
         logger.error("Couldn't load viewset from %s\n$s", file_path, e)
         raise
