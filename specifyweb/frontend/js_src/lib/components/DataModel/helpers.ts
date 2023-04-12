@@ -116,7 +116,9 @@ export const toTable = <TABLE_NAME extends keyof Tables>(
   resource: SpecifyResource<AnySchema>,
   tableName: TABLE_NAME
 ): SpecifyResource<Tables[TABLE_NAME]> | undefined =>
-  resource.specifyModel.name === tableName ? resource : undefined;
+  resource.specifyModel.name === tableName
+    ? (resource as SpecifyResource<Tables[TABLE_NAME]>)
+    : undefined;
 
 export const toResource = <TABLE_NAME extends keyof Tables>(
   resource: SerializedResource<AnySchema>,
@@ -150,7 +152,9 @@ export const toTables = <TABLE_NAME extends keyof Tables>(
   resource: SpecifyResource<AnySchema>,
   tableNames: RA<TABLE_NAME>
 ): SpecifyResource<Tables[TABLE_NAME]> | undefined =>
-  f.includes(tableNames, resource.specifyModel.name) ? resource : undefined;
+  f.includes(tableNames, resource.specifyModel.name)
+    ? (resource as SpecifyResource<Tables[TABLE_NAME]>)
+    : undefined;
 
 export const deserializeResource = <SCHEMA extends AnySchema>(
   serializedResource: SerializedModel<SCHEMA> | SerializedResource<SCHEMA>
