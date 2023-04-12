@@ -94,6 +94,7 @@ export function FrontEndStatsResultDialog({
         isEmbedded
         query={originalQuery}
         recordSet={undefined}
+        autoRun={true}
         onChange={
           typeof handleEdit === 'function'
             ? ({ fields, isDistinct }): void =>
