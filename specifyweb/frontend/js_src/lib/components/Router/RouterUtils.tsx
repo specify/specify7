@@ -175,7 +175,7 @@ function SingleResource({
       throw new Error(
         'Unable to extract the base path for the single resource URL'
       );
-    else {
+    else if (index > 0) {
       const decodedPath = decodeURIComponent(location.pathname.slice(0, index));
       if (path !== decodedPath)
         error(

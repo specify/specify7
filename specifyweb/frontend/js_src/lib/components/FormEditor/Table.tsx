@@ -2,14 +2,12 @@ import React from 'react';
 import { useOutletContext } from 'react-router';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Ul } from '../Atoms';
-import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
@@ -34,7 +32,6 @@ export function FormEditorTable(): JSX.Element {
     [viewSets.views, table]
   );
   const isReadOnly = React.useContext(ReadOnlyContext);
-  const [isCreating, handleCreating, handleNotCreating] = useBooleanState();
   const navigate = useNavigate();
   const [isUnavailable, setUnavailable] = React.useState(false);
   return table === undefined ? (
@@ -65,6 +62,12 @@ export function FormEditorTable(): JSX.Element {
                     viewSets.viewDefs
                   );
                   event.preventDefault();
+                  if (viewDefinitions.length > 1)
+                    console.warn(
+                      'More than one view definition with type="form" ' +
+                        'discovered for the same view. Only the first one is ' +
+                        'accessible in the visual editor'
+                    );
                   if (viewDefinitions.length === 0) setUnavailable(true);
                   else navigate(resolveRelative(`./${view.name!}`));
                 }}
@@ -83,16 +86,7 @@ export function FormEditorTable(): JSX.Element {
           {resourcesText.editorNotAvailable()}
         </Dialog>
       )}
-      {!isReadOnly && (
-        <>
-          {isCreating && (
-            <CreateFormDefinition table={table} onClose={handleNotCreating} />
-          )}
-          <Button.Green onClick={handleCreating}>
-            {commonText.create()}
-          </Button.Green>
-        </>
-      )}
+      {!isReadOnly && <CreateFormDefinition table={table} />}
     </div>
   );
 }

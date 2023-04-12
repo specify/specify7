@@ -56,12 +56,14 @@ export type ViewDefinition = {
   readonly busrules: string;
   readonly class: string;
   readonly name: string;
+  readonly view: string;
   readonly resourcelabels: 'false' | 'true';
   readonly viewdefs: IR<string>;
   readonly viewsetLevel: string;
   readonly viewsetName: string;
   readonly viewsetSource: string;
   readonly viewsetId: number | null;
+  readonly viewsetFile: string | null;
 };
 
 export const formTypes = ['form', 'formTable'] as const;
@@ -70,7 +72,7 @@ export type FormMode = 'edit' | 'search' | 'view';
 
 const views: R<ViewDefinition | undefined> = {};
 
-export const getViewSetApiUrl = (viewName:string): string =>
+export const getViewSetApiUrl = (viewName: string): string =>
   formatUrl('/context/view.json', {
     viewName,
     // Don't spam the console with errors needlessly
@@ -78,7 +80,7 @@ export const getViewSetApiUrl = (viewName:string): string =>
       viewName in webOnlyViews() || getTable(viewName)?.isSystem === true
         ? ''
         : undefined,
-  })
+  });
 
 export const fetchView = async (
   name: string
@@ -90,9 +92,7 @@ export const fetchView = async (
          * NOTE: If getView hasn't yet been invoked, the view URL won't be
          * marked as cachable
          */
-        cachableUrl(
-          getViewSetApiUrl(name)
-        ),
+        cachableUrl(getViewSetApiUrl(name)),
         {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           headers: { Accept: 'text/plain' },

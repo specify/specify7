@@ -3,18 +3,15 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { f } from '../../utils/functools';
 import type { RA, RR } from '../../utils/types';
 import { defined } from '../../utils/types';
-import type { Tables } from '../DataModel/types';
-import { pipe, SpecToJson, syncer } from '../Syncer';
-import { syncers } from '../Syncer/syncers';
-import {
-  createSimpleXmlNode,
-  SimpleXmlNode,
-  toSimpleXmlNode,
-  XmlNode,
-} from '../Syncer/xmlToJson';
-import { createXmlSpec, getOriginalSyncerInput } from '../Syncer/xmlUtils';
 import { getUniqueName } from '../../utils/uniquifyName';
 import { tables } from '../DataModel/tables';
+import type { Tables } from '../DataModel/types';
+import type { SpecToJson } from '../Syncer';
+import { pipe, syncer } from '../Syncer';
+import { syncers } from '../Syncer/syncers';
+import type { SimpleXmlNode, XmlNode } from '../Syncer/xmlToJson';
+import { createSimpleXmlNode, toSimpleXmlNode } from '../Syncer/xmlToJson';
+import { createXmlSpec, getOriginalSyncerInput } from '../Syncer/xmlUtils';
 
 export const viewSetsSpec = f.store(() =>
   createXmlSpec({
@@ -32,9 +29,6 @@ export const viewSetsSpec = f.store(() =>
               legacyTable: table.bad,
             }),
             ({ table, legacyTable, ...node }) => ({
-              // FIXME: consier how altview definitions should be handled
-              // FIXME: generate formtable for tablesWithFormTable() if not already present
-              // FIXME: generate iconview for all attachment tables
               ...node,
               table: { parsed: table, bad: legacyTable },
               businessRules:

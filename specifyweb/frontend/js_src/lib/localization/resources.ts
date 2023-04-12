@@ -397,4 +397,13 @@ export const resourcesText = createDictionary({
   runInCollection: {
     'en-us': 'Run in collection',
   },
+  createNewForm: {
+    'en-us': 'Create new form',
+  },
+  copyFromExistingForm: {
+    'en-us': 'Copy from existing form',
+  },
+  copyDefaultForm: {
+    'en-us': 'Copy default form',
+  },
 } as const);
