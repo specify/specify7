@@ -7,7 +7,9 @@ import _ from 'underscore';
 import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
 import { userText } from '../../localization/user';
+import { f } from '../../utils/functools';
 import type { GetSet } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { removeItem, replaceItem } from '../../utils/utils';
 import { parseXml } from '../AppResources/codeMirrorLinters';
 import { generateXmlEditor } from '../AppResources/TabDefinitions';
@@ -40,13 +42,14 @@ export function FormEditorWrapper(): JSX.Element {
   const {
     viewSets: [viewSets, setViewSets],
   } = useOutletContext<FormEditorOutlet>();
-  const view = React.useMemo(
+  const viewIndex = React.useMemo(
     () =>
-      viewSets.views.find(
+      viewSets.views.findIndex(
         (view) => view.name === viewName && view.table === table
       ),
     [viewSets.views, viewName, table]
   );
+  const view = viewSets.views[viewIndex];
   const viewDefinitionIndex = getViewDefinitionIndexes(
     view,
     viewSets.viewDefs
@@ -68,7 +71,7 @@ export function FormEditorWrapper(): JSX.Element {
     view === undefined ||
     viewDefinition === undefined ||
     viewDefinitionIndex === -1 ? (
-    <NotFoundView />
+    <NotFoundView container={false} />
   ) : (
     <div className="flex flex-1 flex-col gap-2 overflow-auto">
       <div className="flex items-center gap-2">
@@ -82,37 +85,57 @@ export function FormEditorWrapper(): JSX.Element {
         {!isReadOnly && (
           <Button.Red
             onClick={(): void => {
-              const newView = {
-                ...view,
-                altViews: {
-                  ...view.altViews,
-                  altViews: view.altViews.altViews.filter(
-                    ({ viewDef }) => viewDef !== viewDefinition.name
-                  ),
-                },
-              };
-              const newViewDefs = removeItem(
-                viewSets.viewDefs,
-                viewDefinitionIndex
+              const remainingViewDefinitions = filterArray(
+                f
+                  .unique(
+                    view.altViews.altViews.filter(
+                      ({ viewDef }) => viewDef !== viewDefinition.name
+                    )
+                  )
+                  .map(({ name }) =>
+                    viewSets.viewDefs.find(
+                      (definition) => definition.name === name
+                    )
+                  )
               );
-              const remainingDefinitions = getViewDefinitionIndexes(
-                newView,
-                newViewDefs
+
+              const newViews = removeItem(viewSets.views, viewIndex);
+
+              /*
+               * This is unlikely, but the code checks that view definitions
+               * are not used by any other view, before deleting them
+               *
+               * Also, rather than deleting all unused view definitions, only
+               * delete the ones that would become unused after this view is
+               * deleted
+               */
+              const usedViewDefinitions = new Set(
+                newViews.flatMap(({ altViews }) =>
+                  altViews.altViews.map(({ viewDef }) => viewDef)
+                )
               );
-              const viewIndex = viewSets.views.indexOf(newView);
+
+              const unusedViewDefinitions = new Set(
+                remainingViewDefinitions.filter(
+                  ({ name }) => !usedViewDefinitions.has(name)
+                )
+              );
+
+              const newViewDefs = viewSets.viewDefs.filter(
+                (viewDefinition, index) =>
+                  index !== viewDefinitionIndex &&
+                  !unusedViewDefinitions.has(viewDefinition)
+              );
+
               setViewSets(
                 {
                   ...viewSets,
-                  views:
-                    // Remove view if there are no more view definitions
-                    remainingDefinitions.length === 0
-                      ? removeItem(viewSets.views, viewIndex)
-                      : replaceItem(viewSets.views, viewIndex, newView),
+                  views: newViews,
                   viewDefs: newViewDefs,
                 },
                 [viewName]
               );
-              navigate(resolveRelative(`../../`));
+              navigate(resolveRelative(`../`));
             }}
           >
             {commonText.delete()}
@@ -120,7 +143,7 @@ export function FormEditorWrapper(): JSX.Element {
         )}
       </div>
       <div className="flex flex-wrap gap-4">
-        <Link.Default href={resolveRelative(`../../`)}>
+        <Link.Default href={resolveRelative(`../`)}>
           {icons.arrowLeft}
           {table.name}
         </Link.Default>
@@ -277,6 +300,7 @@ function FormPreview({
           busrules: '',
           class: table.longName,
           name: table.name,
+          view: '',
           resourcelabels: 'true',
           viewdefs: {
             [table.name]: xml,
@@ -284,6 +308,7 @@ function FormPreview({
           viewsetLevel: '',
           viewsetName: '',
           viewsetSource: '',
+          viewsetFile: null,
           viewsetId: null,
         },
         'form',
