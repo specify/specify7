@@ -16,8 +16,8 @@ function createRectangles() {
       rx={rectRadius}
       ry={rectRadius}
       width={rectWidth}
-      x={rectWidth * index + 5}
-      y={rectHeight * index + Math.floor(index / 4) * 10}
+      x={rectWidth * (index % 4) + 5}
+      y={rectHeight + (rectHeight + 10) * Math.floor(index / 4)}
     />
   ));
 

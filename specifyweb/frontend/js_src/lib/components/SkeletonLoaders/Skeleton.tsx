@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react';
 import ContentLoader from 'react-content-loader';
 import { userPreferences } from '../Preferences/userPreferences';
+import { useDarkMode } from '../Preferences/Hooks';
 
 type SkeletonProps = {
   speed?: number;
@@ -16,12 +17,13 @@ export function Skeleton({
   children,
 }: SkeletonProps): JSX.Element {
   const [motionPref] = userPreferences.use('general', 'ui', 'reduceMotion');
+  const themePref = useDarkMode();
   return (
     <div className={className}>
       <ContentLoader
         animate={motionPref !== 'reduce'}
-        backgroundColor="#333"
-        foregroundColor="#999"
+        backgroundColor={themePref === true ? '#333' : '#e2e2e5'}
+        foregroundColor={themePref === true ? '#999' : '#f5f3f5'}
         speed={speed}
         viewBox={viewBox}
       >
