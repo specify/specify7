@@ -29,6 +29,7 @@ import { QueryEditButton } from '../QueryBuilder/Edit';
 import { OverlayContext } from '../Router/Router';
 import { SafeOutlet } from '../Router/RouterUtils';
 import { QueryTablesWrapper } from './QueryTablesWrapper';
+import { DialogListSkeleton } from '../SkeletonLoaders/DialogList';
 
 export function QueriesOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -66,7 +67,7 @@ export function useQueries(
         }).then(({ records }) => records),
       [spQueryFilter]
     ),
-    true
+    false
   );
   React.useEffect(
     () =>
@@ -91,7 +92,20 @@ export function QueryListDialog({
   getQuerySelectUrl,
   isReadOnly,
 }: QueryListContextType): JSX.Element | null {
-  return Array.isArray(queries) ? (
+  return queries === undefined ? (
+    <Dialog
+      buttons={
+        <>
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+        </>
+      }
+      onClose={handleClose}
+      header={queryText.queries()}
+      icon={<span className="text-blue-500">{icons.documentSearch}</span>}
+    >
+      <DialogListSkeleton />
+    </Dialog>
+  ) : Array.isArray(queries) ? (
     <Dialog
       buttons={
         <>

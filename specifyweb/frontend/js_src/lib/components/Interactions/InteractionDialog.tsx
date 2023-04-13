@@ -226,6 +226,7 @@ export function InteractionDialog({
       recordSetsPromise={recordSetsPromise}
       onClose={handleClose}
       onSelect={handleProceed}
+      displayLoading={true}
     >
       {({ children, totalCount }): JSX.Element => (
         <Dialog

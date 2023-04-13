@@ -24,6 +24,7 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { hasToolPermission } from '../Permissions/helpers';
 import { OverlayContext } from '../Router/Router';
 import { EditRecordSet } from './RecordSetEdit';
+import { DialogListSkeleton } from '../SkeletonLoaders/DialogList';
 
 export function RecordSetsOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -55,6 +56,7 @@ export function RecordSetsDialog({
   onConfigure: handleConfigure,
   onSelect: handleSelect,
   children = ({ children, dialog }): JSX.Element => dialog(children),
+  displayLoading = false,
 }: {
   readonly recordSetsPromise: Promise<{
     readonly totalCount: number;
@@ -73,6 +75,7 @@ export function RecordSetsDialog({
       buttons?: JSX.Element
     ) => JSX.Element;
   }) => JSX.Element;
+  readonly displayLoading?: boolean;
 }): JSX.Element | null {
   const [state, setState] = React.useState<
     | State<'CreateState'>
@@ -85,7 +88,7 @@ export function RecordSetsDialog({
     'name'
   );
 
-  const [unsortedData] = usePromise(recordSetsPromise, true);
+  const [unsortedData] = usePromise(recordSetsPromise, displayLoading);
   const data = React.useMemo(
     () =>
       typeof unsortedData === 'object'
@@ -208,7 +211,20 @@ export function RecordSetsDialog({
         onClose={handleClose}
       />
     ) : null
-  ) : null;
+  ) : displayLoading === true ? null : (
+    <Dialog
+      buttons={
+        <>
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+        </>
+      }
+      onClose={handleClose}
+      header={commonText.recordSets()}
+      icon={<span className="text-blue-500">{icons.collection}</span>}
+    >
+      <DialogListSkeleton />
+    </Dialog>
+  );
 }
 
 function Row({
