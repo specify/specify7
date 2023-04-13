@@ -1,12 +1,12 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/Molecules/AppTitle.tsx:57
+#: components/Molecules/AppTitle.tsx:63
 #. 🟥Formatting for the title in the web page title bar. Used in: Components > Molecules > App Title
 msgid "appTitle"
 msgstr "{baseTitle:string} | Specify 7"
 
-#: components/Molecules/AppTitle.tsx:56
+#: components/Molecules/AppTitle.tsx:62
 #. 🟥Default page title. Used in: Components > Molecules > App Title
 msgid "baseAppTitle"
 msgstr "Specify 7"
