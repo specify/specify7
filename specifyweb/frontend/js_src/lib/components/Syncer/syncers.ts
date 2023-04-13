@@ -148,8 +148,8 @@ export const syncers = {
       (className) => {
         const tableName = f.maybe(className, parseJavaClassName);
         const table = getTable(tableName ?? className ?? '');
-        if (strict && table === undefined)
-          console.error(
+        if (table === undefined && tableName !== 'ObjectAttachmentIFace')
+          console[strict ? 'error' : 'warn'](
             `Unknown table${
               (className ?? '').length === 0
                 ? ''
@@ -422,8 +422,8 @@ export const syncers = {
         if (fieldName === undefined || tableName === undefined)
           return undefined;
         const field = tables[tableName].getFields(fieldName);
-        if (field === undefined && strict)
-          console.error(`Unknown field: ${fieldName}`);
+        if (field === undefined)
+          console[strict ? 'error' : 'warn'](`Unknown field: ${fieldName}`);
         return field;
       },
       (fieldName) => fieldName?.map(({ name }) => name).join('.')

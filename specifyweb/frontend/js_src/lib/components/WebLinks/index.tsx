@@ -64,10 +64,13 @@ export function WebLinkField({
     )
     .join('');
   const [showPrompt, setShowPrompt] = React.useState(false);
-  const isExternal = React.useMemo(
-    () => url !== undefined && isExternalUrl(url),
-    [url]
-  );
+  const isExternal = React.useMemo(() => {
+    try {
+      return url !== undefined && isExternalUrl(url);
+    } catch {
+      return true;
+    }
+  }, [url]);
 
   React.useEffect(() => {
     if (

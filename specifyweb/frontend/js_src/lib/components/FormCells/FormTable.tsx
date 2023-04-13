@@ -9,9 +9,9 @@ import { formsText } from '../../localization/forms';
 import type { IR, RA } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
-import { className } from '../Atoms/className';
 import { columnDefinitionsToCss, DataEntry } from '../Atoms/DataEntry';
 import { icons } from '../Atoms/Icons';
+import { Link } from '../Atoms/Link';
 import { useAttachment } from '../Attachments/Plugin';
 import { AttachmentViewer } from '../Attachments/Viewer';
 import { ReadOnlyContext, SearchDialogContext } from '../Core/Contexts';
@@ -365,10 +365,14 @@ export function FormTable<SCHEMA extends AnySchema>({
                   )}
                   <div className="flex h-full flex-col gap-2" role="cell">
                     {displayViewButton && isExpanded[resource.cid] ? (
-                      <DataEntry.Visit
-                        className={`flex-1 ${className.smallButton} ${className.defaultSmallButtonVariant}`}
-                        resource={resource}
-                      />
+                      <Link.Small
+                        aria-label={commonText.openInNewTab()}
+                        className="flex-1"
+                        href={resource.viewUrl()}
+                        title={commonText.openInNewTab()}
+                      >
+                        {icons.externalLink}
+                      </Link.Small>
                     ) : undefined}
                     {displayDeleteButton &&
                     (!resource.isNew() ||

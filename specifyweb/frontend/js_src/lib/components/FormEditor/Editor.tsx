@@ -31,6 +31,7 @@ import { formatXmlNode } from '../Syncer/formatXmlNode';
 import type { XmlNode } from '../Syncer/xmlToJson';
 import { jsonToXml, xmlToJson } from '../Syncer/xmlToJson';
 import { xmlToString } from '../Syncer/xmlUtils';
+import { InFormEditorContext } from './Context';
 import type { FormEditorOutlet } from './index';
 import { FormEditorContext } from './index';
 import { getViewDefinitionIndexes } from './Table';
@@ -171,7 +172,10 @@ export function FormEditorWrapper(): JSX.Element {
                 ...viewSets,
                 viewDefs: replaceItem(viewSets.viewDefs, viewDefinitionIndex, {
                   ...viewDefinition,
-                  raw,
+                  raw: {
+                    ...raw,
+                    attributes: viewDefinition.raw.attributes,
+                  },
                 }),
               },
               [viewName]
@@ -184,13 +188,6 @@ export function FormEditorWrapper(): JSX.Element {
 
 const debounceRate = 100;
 
-/*
- * FIXME: show description
- * FIXME: allow editing column size definitions
- * FIXME: allow editing row size definitions
- * FIXME: allow editing business rules
- * FIXME: allow editing rows definitions
- */
 /**
  * Note: renaming an existing view is not allowed because the old name might be
  * used in a subview in this OR a different file. To make it worse, some
@@ -241,7 +238,8 @@ function Editor({
     []
   );
 
-  const XmlEditor = React.useMemo(
+  // Was originally called "XmlEditor", but can't use that name due to IDE bug
+  const EditXml = React.useMemo(
     () => generateXmlEditor(() => formDefinitionSpec(table)),
     [table]
   );
@@ -264,7 +262,7 @@ function Editor({
         }
       `}
     >
-      <XmlEditor
+      <EditXml
         appResource={appResource}
         className={layout === 'horizontal' ? '' : 'max-h-[50%] overflow-auto'}
         data={xml}
@@ -337,11 +335,13 @@ function FormPreview({
         layout === 'horizontal' ? 'max-w-[50%]' : 'max-h-[50%]'
       }`}
     >
-      <SpecifyForm
-        display="block"
-        resource={resource}
-        viewDefinition={viewDefinition}
-      />
+      <InFormEditorContext.Provider value>
+        <SpecifyForm
+          display="block"
+          resource={resource}
+          viewDefinition={viewDefinition}
+        />
+      </InFormEditorContext.Provider>
     </div>
   );
 }

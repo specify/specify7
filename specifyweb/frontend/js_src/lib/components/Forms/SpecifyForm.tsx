@@ -20,9 +20,15 @@ import { attachmentView } from '../FormParse/webOnlyViews';
 import { loadingGif } from '../Molecules';
 import { unsafeTriggerNotFound } from '../Router/Router';
 import { usePref } from '../UserPreferences/usePref';
+import { RA } from '../../utils/types';
 
-const FormLoadingContext = React.createContext<boolean>(false);
-FormLoadingContext.displayName = 'FormLoadingContext';
+const SpecifyFormContext = React.createContext<{
+  // Used to avoid duplicate loading bars
+  readonly isLoading: boolean;
+  // Used to detect recursion
+  readonly parents: RA<string>;
+}>({ loading: false, parents: [] });
+SpecifyFormContext.displayName = 'SpecifyFormContext';
 
 /**
  * Renders a form from ViewDescription and populates it with data from the
@@ -74,9 +80,20 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
     typeof viewDefinition === 'object' && typeof resolvedResource === 'object';
 
   // If parent resource is loading, don't duplicate the loading bar in children
-  const isAlreadyLoading = React.useContext(FormLoadingContext);
+  const formContext = React.useContext(SpecifyFormContext);
+  const isAlreadyLoading = formContext.loading;
   const showLoading =
     !isAlreadyLoading && (!formIsLoaded || isLoading || isShowingOldResource);
+  const newFormContext = React.useMemo(
+    () => ({
+      isLoading: isAlreadyLoading || showLoading,
+      parents: [
+        ...formContext.parents,
+        ...(viewDefinition === undefined ? [] : [viewDefinition?.name]),
+      ],
+    }),
+    [formContext, isAlreadyLoading, showLoading, viewDefinition?.name]
+  );
   const [flexibleColumnWidth] = usePref(
     'form',
     'definition',
@@ -91,7 +108,7 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
   return viewDefinition?.name === attachmentView ? (
     <AttachmentsPlugin resource={resource} />
   ) : (
-    <FormLoadingContext.Provider value={isAlreadyLoading || showLoading}>
+    <SpecifyFormContext.Provider value={newFormContext}>
       <div
         className={`overflow-auto
           ${showLoading ? 'relative' : ''}
@@ -156,6 +173,6 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
           </DataEntry.Grid>
         )}
       </div>
-    </FormLoadingContext.Provider>
+    </SpecifyFormContext.Provider>
   );
 }

@@ -10,13 +10,13 @@ theories(findNodePosition, [
   },
   {
     in: [
-      '<a b="a" a="b" c="d"><b></b></a>',
+      '<a ba="b" a="b" c="d"><b></b></a>',
       [
         { type: 'Root', node: '' },
         { type: 'Attribute', attribute: 'a' },
       ],
     ],
-    out: { from: 9, to: 14 },
+    out: { from: 10, to: 15 },
   },
   {
     in: [

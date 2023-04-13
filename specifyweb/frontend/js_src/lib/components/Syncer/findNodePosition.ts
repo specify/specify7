@@ -28,7 +28,7 @@ const findElement = (xml: string, path: RA<LogPathPart>): Position =>
         const name = part.attribute.includes(' ')
           ? part.attribute.split(' ')[0]
           : part.attribute;
-        const match = new RegExp(`${name}="([^"]+)"`, 'u').exec(node);
+        const match = new RegExp(`\\b${name}="([^"]+)"`, 'u').exec(node);
         if (match === null) return { from, to: endPosition };
         const newFrom = from + match.index;
         return {

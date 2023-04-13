@@ -1,7 +1,7 @@
-import type { IR, RA } from '../types';
-import { R, setDevelopmentGlobal } from '../types';
 import { formatUrl } from '../../components/Router/queryString';
 import { f } from '../functools';
+import type { IR, R, RA } from '../types';
+import { setDevelopmentGlobal } from '../types';
 
 // These HTTP methods do not require CSRF protection
 export const csrfSafeMethod = new Set(['GET', 'HEAD', 'OPTIONS', 'TRACE']);
