@@ -95,23 +95,6 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
         `}
         lang={language}
       >
-        {showLoading && (
-          <div
-            className={`
-              z-10 flex h-full w-full items-center justify-center
-              ${
-                /*
-                 * If form is not yet visible, the logo should be reserving
-                 * some space for itself so as not to overlap with the
-                 * form header and the save button
-                 */
-                formIsLoaded ? 'absolute' : ''
-              }
-            `}
-          >
-            {loadingGif}
-          </div>
-        )}
         {formIsLoaded ? (
           <DataEntry.Grid
             aria-hidden={showLoading}
