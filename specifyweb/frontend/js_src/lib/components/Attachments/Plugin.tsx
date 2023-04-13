@@ -17,6 +17,7 @@ import { LoadingContext } from '../Core/Contexts';
 import { toTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { getModel } from '../DataModel/schema';
 import type { Attachment } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
 import type { FormMode } from '../FormParse';
@@ -26,7 +27,6 @@ import { FilePicker } from '../Molecules/FilePicker';
 import { ProtectedTable } from '../Permissions/PermissionDenied';
 import { attachmentSettingsPromise, uploadFile } from './attachments';
 import { AttachmentViewer } from './Viewer';
-import { getModel } from '../DataModel/schema';
 
 export function AttachmentsPlugin(
   props: Parameters<typeof ProtectedAttachmentsPlugin>[0]
@@ -96,7 +96,7 @@ function ProtectedAttachmentsPlugin({
                 resource.specifyModel.name.indexOf('Attachment')
               );
               const model = getModel(slicedName);
-              attachment?.set('tableID', model?.tableId as number);
+              attachment?.set('tableID', model?.tableId!);
             }
 
             resource?.set('attachment', attachment as never);
