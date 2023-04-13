@@ -3,7 +3,7 @@ import { Skeleton } from './Skeleton';
 
 export function QueryBuilderSkeleton() {
   return (
-    <div className="flex h-full flex-col justify-between p-4">
+    <div className="flex h-full flex-col justify-between gap-4 p-4">
       <div className="flex flex-col gap-8">
         <div className="flex items-center justify-between gap-2">
           <div className="flex gap-2">
