@@ -222,11 +222,11 @@ export function InteractionDialog({
     />
   ) : (
     <RecordSetsDialog
+      displayLoading
       isReadOnly
       recordSetsPromise={recordSetsPromise}
       onClose={handleClose}
       onSelect={handleProceed}
-      displayLoading={true}
     >
       {({ children, totalCount }): JSX.Element => (
         <Dialog
