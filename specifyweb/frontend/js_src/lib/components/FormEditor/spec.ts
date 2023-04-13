@@ -4,12 +4,18 @@ import { f } from '../../utils/functools';
 import type { RA, RR } from '../../utils/types';
 import { defined } from '../../utils/types';
 import { getUniqueName } from '../../utils/uniquifyName';
+import { strictParseXml } from '../AppResources/codeMirrorLinters';
 import type { Tables } from '../DataModel/types';
+import type { ViewDefinition } from '../FormParse';
 import type { SpecToJson } from '../Syncer';
 import { pipe, syncer } from '../Syncer';
 import { syncers } from '../Syncer/syncers';
 import type { SimpleXmlNode, XmlNode } from '../Syncer/xmlToJson';
-import { createSimpleXmlNode, toSimpleXmlNode } from '../Syncer/xmlToJson';
+import {
+  createSimpleXmlNode,
+  toSimpleXmlNode,
+  xmlToJson,
+} from '../Syncer/xmlToJson';
 import { createXmlSpec, getOriginalSyncerInput } from '../Syncer/xmlUtils';
 
 export const viewSetsSpec = f.store(() =>
@@ -18,62 +24,13 @@ export const viewSetsSpec = f.store(() =>
       syncers.xmlChild('views'),
       syncers.fallback(createSimpleXmlNode),
       syncers.xmlChildren('view'),
-      syncers.map(
-        pipe(
-          syncers.object(viewSpec()),
-          syncer(
-            ({ businessRules: _, table, ...node }) => ({
-              ...node,
-              table: table.parsed,
-              legacyTable: table.bad,
-            }),
-            ({ table, legacyTable, ...node }) => ({
-              ...node,
-              table: { parsed: table, bad: legacyTable },
-              businessRules:
-                typeof table === 'object'
-                  ? `edu.ku.brc.specify.datamodel.busrules.${
-                      businessRules[table.name] ?? table.name
-                    }BusRules`
-                  : '',
-            })
-          )
-        )
-      )
+      syncers.map(resolvedViewSpec())
     ),
     viewDefs: pipe(
       syncers.xmlChild('viewdefs'),
       syncers.fallback(createSimpleXmlNode),
       syncers.xmlChildren('viewdef'),
-      syncers.map(
-        pipe(
-          syncers.object(viewDefSpec()),
-          syncer(
-            ({ table, ...node }) => ({
-              ...node,
-              table: table.parsed,
-              legacyTable: table.bad,
-            }),
-            ({ table, legacyTable, ...node }) => ({
-              ...node,
-              table: {
-                parsed: table,
-                bad: legacyTable,
-              },
-              legacyGetTable:
-                node.legacyGetTable ??
-                (node.name?.endsWith('Search') === true
-                  ? 'edu.ku.brc.af.ui.forms.DataGetterForHashMap'
-                  : 'edu.ku.brc.af.ui.forms.DataGetterForObj'),
-              legacySetTable:
-                node.legacySetTable ??
-                (node.name?.endsWith('Search') === true
-                  ? 'edu.ku.brc.af.ui.forms.DataSetterForHashMap'
-                  : 'edu.ku.brc.af.ui.forms.DataSetterForObj'),
-            })
-          )
-        )
-      )
+      syncers.map(resolvedViewDefSpec())
     ),
   })
 );
@@ -84,6 +41,55 @@ export type ViewSets = Omit<RawViewSets, 'viewDefs'> & {
     Omit<RawViewSets['viewDefs'][number], 'raw'> & { readonly raw: XmlNode }
   >;
 };
+
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+const resolvedViewSpec = () =>
+  pipe(
+    syncers.object(viewSpec()),
+    syncer(
+      ({ businessRules: _, table, ...node }) => ({
+        ...node,
+        table: table.parsed,
+        legacyTable: table.bad,
+      }),
+      ({ table, legacyTable, ...node }) => ({
+        ...node,
+        table: { parsed: table, bad: legacyTable },
+        businessRules:
+          typeof table === 'object'
+            ? `edu.ku.brc.specify.datamodel.busrules.${
+                businessRules[table.name] ?? table.name
+              }BusRules`
+            : '',
+      })
+    )
+  );
+
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export function parseFormView(definition: ViewDefinition) {
+  const view = resolvedViewSpec().serializer(
+    toSimpleXmlNode(xmlToJson(strictParseXml(definition.view)))
+  );
+  const usedDefinitions = view.altViews.altViews.map(({ viewDef }) => viewDef);
+  return {
+    view,
+    viewDefinitions: Object.values(definition.viewdefs)
+      .map((definition) =>
+        resolvedViewDefSpec().serializer(
+          toSimpleXmlNode(xmlToJson(strictParseXml(definition)))
+        )
+      )
+      .filter(({ name }) =>
+        /*
+         * Only duplicate view definitions that were used in altviews. I.e,
+         * if "ObjectAttachment" viewdef view was referenced by
+         * "CollectionObjectAttachment Table" viewdef, don't create another
+         * ObjectAttachment
+         */
+        usedDefinitions.includes(name)
+      ),
+  };
+}
 
 /**
  * Most of the time business rules class name can be inferred from table name.
@@ -197,6 +203,35 @@ const altViewSpec = f.store(() =>
     legacySelectorValue: syncers.xmlAttribute('selector_value', 'skip', false),
   })
 );
+
+const resolvedViewDefSpec = () =>
+  pipe(
+    syncers.object(viewDefSpec()),
+    syncer(
+      ({ table, ...node }) => ({
+        ...node,
+        table: table.parsed,
+        legacyTable: table.bad,
+      }),
+      ({ table, legacyTable, ...node }) => ({
+        ...node,
+        table: {
+          parsed: table,
+          bad: legacyTable,
+        },
+        legacyGetTable:
+          node.legacyGetTable ??
+          (node.name?.endsWith('Search') === true
+            ? 'edu.ku.brc.af.ui.forms.DataGetterForHashMap'
+            : 'edu.ku.brc.af.ui.forms.DataGetterForObj'),
+        legacySetTable:
+          node.legacySetTable ??
+          (node.name?.endsWith('Search') === true
+            ? 'edu.ku.brc.af.ui.forms.DataSetterForHashMap'
+            : 'edu.ku.brc.af.ui.forms.DataSetterForObj'),
+      })
+    )
+  );
 
 const viewDefSpec = f.store(() =>
   createXmlSpec({

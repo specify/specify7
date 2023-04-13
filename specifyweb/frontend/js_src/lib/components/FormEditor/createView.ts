@@ -1,22 +1,26 @@
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { getUniqueName } from '../../utils/uniquifyName';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
+import { getLogContext, setLogContext } from '../Errors/logContext';
 import type { ViewDefinition } from '../FormParse';
 import { fromSimpleXmlNode } from '../Syncer/fromSimpleXmlNode';
 import { createSimpleXmlNode } from '../Syncer/xmlToJson';
 import type { ViewSets } from './spec';
+import { parseFormView } from './spec';
 
 export const createViewDefinition = (
   viewSets: ViewSets,
+  /** The name is expected to be already unique */
   name: string,
   table: SpecifyTable,
   template: ViewDefinition | 'new'
 ): ViewSets =>
   template === 'new'
     ? createNewView(viewSets, name, table)
-    : createViewFromTemplate(viewSets, name, table, template);
+    : createViewFromTemplate(viewSets, name, template);
 
 /**
  * Build a list of tables for which the "formTable" display type should be
@@ -25,7 +29,10 @@ export const createViewDefinition = (
  */
 const tablesWithFormTable = f.store<RA<SpecifyTable>>(() =>
   Object.values(tables).filter(
-    (table) => !table.isHidden && !table.overrides.isHidden && !table.isSystem
+    (table) =>
+      !table.isHidden &&
+      !table.overrides.isHidden &&
+      (!table.isSystem || table.name.endsWith('Attachment'))
   )
 );
 
@@ -95,11 +102,9 @@ function createNewView(
     views: [...viewSets.views, view],
     viewDefs: [
       ...viewSets.viewDefs,
-      getFormView(formTableName, table),
+      getFormView(formName, table),
       ...(hasIconView ? [getIconView(iconViewName, table)] : []),
-      ...(hasFormTable
-        ? [getTableView(formTableName, formTableName, table)]
-        : []),
+      ...(hasFormTable ? [getTableView(formTableName, formName, table)] : []),
     ],
   };
 }
@@ -230,15 +235,57 @@ const getFormView = (name: string, table: SpecifyTable): Definition => ({
 const getUniqueDefinitionName = (name: string, viewSets: ViewSets): string =>
   getUniqueName(
     name,
-    viewSets.views.map((view) => view.name ?? '')
+    viewSets.viewDefs.map((view) => view.name ?? '')
   );
 
+/**
+ * Make sure the names are unique, and add new view to the view set
+ */
 function createViewFromTemplate(
   viewSets: ViewSets,
   name: string,
-  table: SpecifyTable,
   template: ViewDefinition
-): ViewSets {}
+): ViewSets {
+  const logContext = getLogContext();
+  const { view, viewDefinitions } = parseFormView(template);
+  setLogContext(logContext);
+  const originalNames = filterArray(
+    view.altViews.altViews.map(({ viewDef }) => viewDef)
+  );
+  const nameMapper = Object.fromEntries(
+    originalNames.map((name) => [name, getUniqueDefinitionName(name, viewSets)])
+  );
+  return {
+    ...viewSets,
+    views: [
+      ...viewSets.views,
+      {
+        ...view,
+        name,
+        altViews: {
+          ...view.altViews,
+          altViews: view.altViews.altViews.map((altView) => ({
+            ...altView,
+            viewDef:
+              typeof altView.viewDef === 'string'
+                ? nameMapper[altView.viewDef] ?? altView.viewDef
+                : altView.viewDef,
+          })),
+        },
+      },
+    ],
+    viewDefs: [
+      ...viewSets.viewDefs,
+      ...viewDefinitions.map((definition) => ({
+        ...definition,
+        name:
+          typeof definition.name === 'string'
+            ? nameMapper[definition.name] ?? definition.name
+            : definition.name,
+      })),
+    ],
+  };
+}
 
 export const exportsForTests = {
   tablesWithFormTable,

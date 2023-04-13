@@ -15,7 +15,7 @@ import { className } from '../Atoms/className';
 import { Form, Input, Label } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
-import { LoadingContext } from '../Core/Contexts';
+import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { ViewDefinition } from '../FormParse';
 import { parseViewDefinition } from '../FormParse';
@@ -183,14 +183,16 @@ export function PreviewView({
           </Button.Blue>
         </>
       }
-      header={view.name}
+      header={`${resourcesText.preview()} ${view.name}`}
       onClose={handleClose}
     >
-      <SpecifyForm
-        display="block"
-        resource={resource}
-        viewDefinition={viewDefinition}
-      />
+      <ReadOnlyContext.Provider value>
+        <SpecifyForm
+          display="block"
+          resource={resource}
+          viewDefinition={viewDefinition}
+        />
+      </ReadOnlyContext.Provider>
     </Dialog>
   );
 }
@@ -226,7 +228,7 @@ function ChooseName({
       buttons={
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Submit.Blue>{commonText.create()}</Submit.Blue>
+          <Submit.Blue form={id}>{commonText.create()}</Submit.Blue>
         </>
       }
       header={resourcesText.formDefinition()}

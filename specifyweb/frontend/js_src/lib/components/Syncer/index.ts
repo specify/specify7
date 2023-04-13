@@ -109,6 +109,13 @@ export type BaseSpec<RAW = unknown> = IR<Syncer<RAW, any>>;
 
 export const createSpec = <SPEC extends BaseSpec>(spec: SPEC): SPEC => spec;
 
+/*
+ * FEATURE: make values that could be undefined optional
+ *  Currently it requires all values to be there, even if "undefined".
+ *  I tried different implementations of a UndefinedOptional<>, utility type,
+ *  but it caused type errors in other places. Might have to wait for
+ *  https://github.com/microsoft/TypeScript/issues/32562
+ */
 export type SpecToJson<SPEC extends BaseSpec<any>> = {
   readonly [KEY in string & keyof SPEC]: SPEC[KEY] extends Syncer<
     any,

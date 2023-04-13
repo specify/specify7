@@ -74,7 +74,7 @@ const views: R<ViewDefinition | undefined> = {};
 
 export const getViewSetApiUrl = (viewName: string): string =>
   formatUrl('/context/view.json', {
-    viewName,
+    name: viewName,
     // Don't spam the console with errors needlessly
     quiet:
       viewName in webOnlyViews() || getTable(viewName)?.isSystem === true
