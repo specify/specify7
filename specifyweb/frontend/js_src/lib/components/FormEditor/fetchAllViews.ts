@@ -1,10 +1,10 @@
-import {ajax} from '../../utils/ajax';
-import type {RA} from '../../utils/types';
-import {camelToHuman, split} from '../../utils/utils';
-import type {Tables} from '../DataModel/types';
-import type {ViewDefinition} from '../FormParse';
-import {userInformation} from '../InitialContext/userInformation';
-import {formatUrl} from '../Router/queryString';
+import { ajax } from '../../utils/ajax';
+import type { RA } from '../../utils/types';
+import { camelToHuman, split } from '../../utils/utils';
+import type { Tables } from '../DataModel/types';
+import type { ViewDefinition } from '../FormParse';
+import { userInformation } from '../InitialContext/userInformation';
+import { formatUrl } from '../Router/queryString';
 
 type PresentableViewDefinition = ViewDefinition & {
   readonly category: string;
@@ -86,10 +86,18 @@ const augmentDiskView = (view: ViewDefinition): PresentableViewDefinition => ({
   ...view,
   category:
     typeof view.viewsetFile === 'string'
-      ? localizePath(view.viewsetFile)
+      ? filePathToHuman(view.viewsetFile)
       : camelToHuman(view.viewsetLevel),
   editUrl: undefined,
 });
 
-const localizePath = (path: string): string =>
-  path.split('/').slice(0, -1).map(camelToHuman).join(' > ');
+export function filePathToHuman(path: string): string {
+  const parts = path
+    .split('/')
+    .filter((part) => part !== '.' && part.length > 0);
+  const baseParts = parts.slice(0, -1);
+  const fileName = parts.at(-1)!.split('.')[0];
+  return (baseParts.at(-1) === fileName ? baseParts : [...baseParts, fileName])
+    .map(camelToHuman)
+    .join(' > ');
+}

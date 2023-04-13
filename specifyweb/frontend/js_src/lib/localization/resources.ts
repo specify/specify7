@@ -406,6 +406,9 @@ export const resourcesText = createDictionary({
   copyDefaultForm: {
     'en-us': 'Copy default form',
   },
+  copyDefaultForms: {
+    'en-us': 'Copy default forms',
+  },
   saveFormFirst: {
     'en-us': 'Save form first',
   },

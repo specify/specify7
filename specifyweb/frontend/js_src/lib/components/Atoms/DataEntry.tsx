@@ -4,10 +4,13 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import type { RA } from '../../utils/types';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { ViewDescription } from '../FormParse';
 import { Button } from './Button';
 import { className } from './className';
 import type { icons } from './Icons';
+import { Link } from './Link';
 import type { TagProps } from './wrapper';
 import { wrap } from './wrapper';
 
@@ -148,5 +151,21 @@ export const DataEntry = {
     commonText.remove(),
     'minus'
   ),
+  Visit({
+    className: localClassName = '',
+    resource,
+  }: {
+    readonly className?: string;
+    readonly resource: SpecifyResource<AnySchema> | undefined;
+  }): JSX.Element | null {
+    return typeof resource === 'object' && !resource.isNew() ? (
+      <Link.NewTab
+        aria-label={commonText.openInNewTab()}
+        className={`${className.dataEntryVisit} ${localClassName}`}
+        href={resource.viewUrl()}
+        title={commonText.openInNewTab()}
+      />
+    ) : null;
+  },
 };
 /* eslint-enable @typescript-eslint/naming-convention */

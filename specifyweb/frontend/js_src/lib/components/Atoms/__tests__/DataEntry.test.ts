@@ -1,6 +1,8 @@
 import { snapshot } from '../../../tests/reactUtils';
 import { theories } from '../../../tests/utils';
 import { f } from '../../../utils/functools';
+import type { AnySchema } from '../../DataModel/helperTypes';
+import type { SpecifyResource } from '../../DataModel/legacyTypes';
 import type { SpecifyTable } from '../../DataModel/specifyTable';
 import { columnDefinitionsToCss, DataEntry } from '../DataEntry';
 
@@ -69,3 +71,17 @@ snapshot(DataEntry.Edit, { onClick: f.never });
 snapshot(DataEntry.Clone, { onClick: f.never });
 snapshot(DataEntry.Search, { onClick: f.never });
 snapshot(DataEntry.Remove, { onClick: f.never });
+
+describe('DataEntry.visit', () => {
+  snapshot(DataEntry.Visit, { resource: undefined }, 'no resource');
+  snapshot(
+    DataEntry.Visit,
+    {
+      resource: {
+        isNew: () => false,
+        viewUrl: () => 'RESOURCE_VIEW_URL',
+      } as unknown as SpecifyResource<AnySchema>,
+    },
+    'no resource'
+  );
+});

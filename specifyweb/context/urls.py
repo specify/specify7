@@ -23,6 +23,7 @@ urlpatterns = [
     url(r'^domain.json$', views.domain),
     url(r'^view.json$', views.view),
     url(r'^views.json$', views.views),
+    url(r'^viewsets.json$', views.viewsets),
     url(r'^datamodel.json$', views.datamodel),
     url(r'^schema_localization.json$', views.schema_localization),
     url(r'^app.resource$', views.app_resource),

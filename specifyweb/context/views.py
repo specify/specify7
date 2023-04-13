@@ -499,6 +499,39 @@ def views(request):
     data = view_helper(request,limit)
     return HttpResponse(json.dumps(data), content_type="application/json")
 
+@openapi(schema={
+    "get": {
+        "responses": {
+            "200": {
+                "description": "List of Specify 6 viewset xml files",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                            }
+                        },
+                    },
+                },
+            }
+        }
+    }
+})
+@require_http_methods(['GET', 'HEAD'])
+@login_maybe_required
+@cache_control(max_age=86400, private=True)
+def viewsets(request):
+    """Retrive a list of Specify 6 viewset xml files."""
+    viewsets = []
+    for root, dir, files in os.walk(settings.SPECIFY_CONFIG_DIR):
+        for file in files:
+            if file.endswith('.views.xml'):
+                viewsets.append(
+                    os.path.relpath(os.path.join(root, file),settings.SPECIFY_CONFIG_DIR)
+                )
+    return HttpResponse(json.dumps(viewsets), content_type="application/json")
+
 
 def view_helper(request, limit):
     if 'collectionid' in request.GET:

@@ -27,7 +27,7 @@ const SpecifyFormContext = React.createContext<{
   readonly isLoading: boolean;
   // Used to detect recursion
   readonly parents: RA<string>;
-}>({ loading: false, parents: [] });
+}>({ isLoading: false, parents: [] });
 SpecifyFormContext.displayName = 'SpecifyFormContext';
 
 /**
@@ -81,7 +81,7 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
 
   // If parent resource is loading, don't duplicate the loading bar in children
   const formContext = React.useContext(SpecifyFormContext);
-  const isAlreadyLoading = formContext.loading;
+  const isAlreadyLoading = formContext.isLoading;
   const showLoading =
     !isAlreadyLoading && (!formIsLoaded || isLoading || isShowingOldResource);
   const newFormContext = React.useMemo(

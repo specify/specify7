@@ -51,7 +51,7 @@ export function Wrapper({
     getSet: [resources, setResources],
   } = useOutletContext<AppResourcesOutlet>();
 
-  const { name, mimeType, rawDirectoryKey, clone } = useProps();
+  const { name, mimeType, rawDirectoryKey, clone, templateFile } = useProps();
 
   const newResource = React.useMemo(
     () =>
@@ -71,7 +71,7 @@ export function Wrapper({
   );
   const resource = useAppResource(newResource, resources, mode);
 
-  const initialData = useInitialData(resource, f.parseInt(clone));
+  const initialData = useInitialData(resource, f.parseInt(clone), templateFile);
 
   const navigate = useNavigate();
 
@@ -157,18 +157,20 @@ function useProps(): {
   readonly name: string | undefined;
   readonly rawDirectoryKey: string | undefined;
   readonly clone: string | undefined;
+  readonly templateFile: string | undefined;
 } {
   const { id: rawId } = useParams();
   const [mimeType] = useSearchParameter('mimeType');
   const [name] = useSearchParameter('name');
   const [clone] = useSearchParameter('clone');
   const [rawDirectoryKey] = useSearchParameter('directoryKey');
+  const [templateFile] = useSearchParameter('templateFile');
   const freeze =
     rawId === 'new' &&
     mimeType === undefined &&
     name === undefined &&
     clone === undefined;
-  const data = { mimeType, name, clone, rawDirectoryKey };
+  const data = { mimeType, name, clone, rawDirectoryKey, templateFile };
   const frozen = React.useRef(data);
   if (freeze) return frozen.current;
   else {
@@ -194,7 +196,8 @@ function useAppResource(
 
 function useInitialData(
   resource: SerializedResource<SpAppResource | SpViewSetObj>,
-  initialDataFrom: number | undefined
+  initialDataFrom: number | undefined,
+  templateFile: string | undefined
 ): string | false | undefined {
   return useAsyncState(
     React.useCallback(async () => {
@@ -202,6 +205,18 @@ function useInitialData(
         return fetchResource('SpAppResourceData', initialDataFrom).then(
           ({ data }) => data ?? ''
         );
+      else if (typeof templateFile === 'string') {
+        if (templateFile.includes('..'))
+          console.error(
+            'Relative paths not allowed. Path is always relative to /static/config/'
+          );
+        else
+          return ajax(`/static/config/${templateFile}`, {
+            headers: {},
+          })
+            .then(({ data }) => data ?? '')
+            .catch(() => '');
+      }
       const subType = f.maybe(
         toResource(resource, 'SpAppResource'),
         getAppResourceType
@@ -219,7 +234,7 @@ function useInitialData(
       return false;
       // Run this only once
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [initialDataFrom]),
+    }, [initialDataFrom, templateFile]),
     true
   )[0];
 }
