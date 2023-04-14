@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { useCachedState } from '../../hooks/useCachedState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { resourcesText } from '../../localization/resources';
 import type { GetOrSet } from '../../utils/types';
@@ -15,7 +16,7 @@ export function AppResourcesWrapper(): JSX.Element {
   return (
     <ProtectedTool action="read" tool="resources">
       <ProtectedTable action="read" tableName="Discipline">
-        <ProtectedTable action="read" tableName="Discipline">
+        <ProtectedTable action="read" tableName="Collection">
           <ProtectedTable action="read" tableName="SpecifyUser">
             <AppResourcesDataFetcher />
           </ProtectedTable>
@@ -44,6 +45,9 @@ function AppResourcesView({
 }): JSX.Element {
   const [resources] = getSet;
 
+  const conformations = useCachedState('appResources', 'conformation');
+  const [filters] = useCachedState('appResources', 'filters');
+
   return (
     <Container.FullGray>
       <div className="flex flex-wrap items-center gap-4">
@@ -53,7 +57,12 @@ function AppResourcesView({
         </div>
       </div>
       <div className="flex flex-1 flex-col gap-4 sm:h-0 md:flex-row">
-        <AppResourcesAside isEmbedded={false} resources={resources} />
+        <AppResourcesAside
+          conformations={conformations}
+          filters={filters}
+          isEmbedded={false}
+          resources={resources}
+        />
         <SafeOutlet<AppResourcesOutlet>
           getSet={getSet as GetOrSet<AppResources>}
         />

@@ -11,10 +11,11 @@ import type { LocalizedString } from 'typesafe-i18n';
 import type { IR, RA, WritableArray } from '../../utils/types';
 import { softFail } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import { useTitle } from '../Molecules/AppTitle';
+import { AppTitle } from '../Molecules/AppTitle';
 import { LoadingScreen } from '../Molecules/Dialog';
 import { SetSingleResourceContext } from './Router';
 import { useStableLocation } from './RouterState';
+import { error } from '../Errors/assert';
 
 /**
  * A wrapper for native React Routes object. Makes everything readonly.
@@ -128,10 +129,11 @@ export function Async({
   readonly Element: React.FunctionComponent;
   readonly title: LocalizedString | undefined;
 }): JSX.Element {
-  useTitle(title);
-
   return (
     <React.Suspense fallback={<LoadingScreen />}>
+      {typeof title === 'string' && (
+        <AppTitle title={title} source={undefined} />
+      )}
       <Element />
     </React.Suspense>
   );
@@ -159,15 +161,35 @@ function SingleResource({
   const parameters = useParams();
   const location = useStableLocation(useLocation());
 
+  const parsedUrl = decodeURIComponent(location.pathname);
   const index =
-    parameters['*'] === undefined
-      ? -1
-      : location.pathname.indexOf(parameters['*']);
-  const path = index === -1 ? undefined : location.pathname.slice(0, index);
-  if (process.env.NODE_ENV !== 'production' && path === undefined)
-    throw new Error(
-      'Unable to extract the base path for the single resource URL'
-    );
+    parameters['*'] === undefined ? -1 : parsedUrl.indexOf(parameters['*']);
+  const path =
+    index === -1
+      ? undefined
+      : index === 0
+      ? location.pathname
+      : location.pathname.slice(0, index);
+  if (process.env.NODE_ENV !== 'production') {
+    if (path === undefined)
+      throw new Error(
+        'Unable to extract the base path for the single resource URL'
+      );
+    else if (index > 0) {
+      const decodedPath = decodeURIComponent(location.pathname.slice(0, index));
+      if (path !== decodedPath)
+        error(
+          "Path and decoded path don't match.\n" +
+            'To fix this, make sure base URL does not contain any escaped characters',
+          {
+            path,
+            decodedPath,
+            location,
+            parameters,
+          }
+        );
+    }
+  }
 
   React.useEffect(() => {
     handleSet(path);

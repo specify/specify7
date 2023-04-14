@@ -14,20 +14,19 @@ import { Container, Ul } from '../Atoms';
 import { formatConjunction } from '../Atoms/Internationalization';
 import { Link } from '../Atoms/Link';
 import type { SerializedResource } from '../DataModel/helperTypes';
+import { tables } from '../DataModel/tables';
 import type { Collection } from '../DataModel/types';
 import { useAvailableCollections } from '../Forms/OtherCollectionView';
 import { userInformation } from '../InitialContext/userInformation';
 import { useTitle } from '../Molecules/AppTitle';
+import { RecordEdit } from '../Molecules/ResourceLink';
 import { SetPermissionContext } from '../Permissions/Context';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import { NotFoundView } from '../Router/NotFoundView';
+import { formatUrl } from '../Router/queryString';
 import { SafeOutlet } from '../Router/RouterUtils';
 import type { SecurityOutlet } from '../Toolbar/Security';
-import {
-  CollectionRoles,
-  CurrentUserLink,
-  ViewCollectionButton,
-} from './CollectionComponents';
+import { CollectionRoles, CurrentUserLink } from './CollectionComponents';
 import {
   mergeCollectionUsers,
   useCollectionUserRoles,
@@ -35,8 +34,6 @@ import {
 } from './CollectionHooks';
 import type { Role } from './Role';
 import { fetchRoles } from './utils';
-import { tables } from '../DataModel/tables';
-import { formatUrl } from '../Router/queryString';
 
 export type RoleBase = {
   readonly roleId: number;
@@ -137,7 +134,7 @@ export function CollectionView({
               })}
             </h3>
             {hasTablePermission('Collection', 'read') && (
-              <ViewCollectionButton collection={collection} />
+              <RecordEdit resource={collection} />
             )}
           </div>
           <div className="flex flex-1 flex-col gap-6 overflow-y-scroll">

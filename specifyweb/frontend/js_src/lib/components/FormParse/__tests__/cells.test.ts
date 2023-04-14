@@ -5,11 +5,7 @@ import { theories } from '../../../tests/utils';
 import type { PartialBy } from '../../../utils/types';
 import { strictParseXml } from '../../AppResources/codeMirrorLinters';
 import type { CellTypes, FormCellDefinition } from '../cells';
-import {
-  parseFormCell,
-  parseSpecifyProperties,
-  processColumnDefinition,
-} from '../cells';
+import { parseFormCell, processColumnDefinition } from '../cells';
 import { tables } from '../../DataModel/tables';
 import {
   SimpleXmlNode,
@@ -44,60 +40,6 @@ theories(processColumnDefinition, [
   },
   { in: ['130px,2px,705px,25px,95px,0px,p:g'], out: [130, 705, 95] },
   { in: ['p,2px,p:g(4),p:g,p,0px'], out: [undefined, undefined, undefined] },
-]);
-
-theories(parseSpecifyProperties, [
-  {
-    in: [''],
-    out: {},
-  },
-  {
-    in: ['name=Agent;title=Catalog Agent'],
-    out: {
-      name: 'Agent',
-      title: 'Catalog Agent',
-    },
-  },
-  {
-    in: ['name=PartialDateUI;df=catalogedDate;tp=catalogedDatePrecision'],
-    out: {
-      name: 'PartialDateUI',
-      df: 'catalogedDate',
-      tp: 'catalogedDatePrecision',
-    },
-  },
-  {
-    in: ['name=CollectingEvent;clonebtn=true'],
-    out: {
-      name: 'CollectingEvent',
-      clonebtn: 'true',
-    },
-  },
-  {
-    in: ['align=left;'],
-    out: {
-      align: 'left',
-    },
-  },
-  {
-    in: ['align=right;fg=0,190,0'],
-    out: {
-      align: 'right',
-      fg: '0,190,0',
-    },
-  },
-  {
-    in: [
-      'name=LocalityGeoRef;title=Geo Ref;geoid=geography;locid=localityName;llid=5',
-    ],
-    out: {
-      name: 'LocalityGeoRef',
-      title: 'Geo Ref',
-      geoid: 'geography',
-      locid: 'localityName',
-      llid: '5',
-    },
-  },
 ]);
 
 const cell = (

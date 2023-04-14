@@ -116,9 +116,11 @@ export const caseInsensitiveHash = <
     | Uncapitalize<KEY>
     | Uppercase<KEY>
 ): DICTIONARY[KEY] =>
-  Object.entries(dictionary).find(
-    ([key]) => (key as string).toLowerCase() === searchKey.toLowerCase()
-  )?.[VALUE] as DICTIONARY[KEY];
+  searchKey in dictionary
+    ? dictionary[searchKey as KEY]
+    : (Object.entries(dictionary).find(
+        ([key]) => (key as string).toLowerCase() === searchKey.toLowerCase()
+      )?.[VALUE] as DICTIONARY[KEY]);
 
 /** Generate a sort function for Array.prototype.sort */
 export const sortFunction =

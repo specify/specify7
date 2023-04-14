@@ -30,6 +30,9 @@ export const schemaText = createDictionary({
     'fr-fr': 'Nom du tableau',
     'uk-ua': 'Назва таблиці',
   },
+  withoutTable: {
+    'en-us': 'Without Table',
+  },
   schemaConfig: {
     'en-us': 'Schema Config',
     'ru-ru': 'Конфигурация схемы',

@@ -5,35 +5,45 @@ import {
   pushContext,
   setLogContext,
 } from '../Errors/logContext';
+import { syncers } from './syncers';
 
 /**
  * Transformer was the original name, but that clashes with Node.js
  */
 export type Syncer<RAW, PARSED> = {
-  readonly serializer: Serializer<RAW, PARSED>;
-  readonly deserializer: Deserializer<RAW, PARSED>;
+  /*
+   * Using method signature style rather than property type style to allow
+   * for bivariance
+   * See https://stackoverflow.com/questions/52667959/what-is-the-purpose-of-bivariancehack-in-typescript-types
+   */
+  // eslint-disable-next-line @typescript-eslint/method-signature-style
+  serializer(input: RAW): PARSED;
+  // eslint-disable-next-line @typescript-eslint/method-signature-style
+  deserializer(value: PARSED): RAW;
 };
 
 type Serializer<RAW, PARSED> = (input: RAW) => PARSED;
 
 type Deserializer<RAW, PARSED> = (value: PARSED) => RAW;
 
+export type SyncerIn<SYNCER extends Syncer<unknown, unknown>> =
+  SYNCER extends Syncer<infer INPUT, unknown> ? INPUT : never;
+
+export type SyncerOut<SYNCER extends Syncer<unknown, unknown>> =
+  SYNCER extends Syncer<unknown, infer OUTPUT> ? OUTPUT : never;
+
+export type ExtractSyncer<T extends typeof syncers[keyof typeof syncers]> =
+  T extends (...args: RA<any>) => Syncer<unknown, unknown> ? ReturnType<T> : T;
+
+/**
+ * This function exists just to improve typing
+ */
 export const syncer = <RAW, PARSED>(
   serializer: Serializer<RAW, PARSED>,
   deserializer: Deserializer<RAW, PARSED>
 ): Syncer<RAW, PARSED> => ({
-  serializer: (raw: RAW): PARSED => {
-    const context = getLogContext();
-    const result = serializer(raw);
-    setLogContext(context);
-    return result;
-  },
-  deserializer: (raw: PARSED): RAW => {
-    const context = getLogContext();
-    const result = deserializer(raw);
-    setLogContext(context);
-    return result;
-  },
+  serializer,
+  deserializer,
 });
 
 /**
@@ -99,6 +109,13 @@ export type BaseSpec<RAW = unknown> = IR<Syncer<RAW, any>>;
 
 export const createSpec = <SPEC extends BaseSpec>(spec: SPEC): SPEC => spec;
 
+/*
+ * FEATURE: make values that could be undefined optional
+ *  Currently it requires all values to be there, even if "undefined".
+ *  I tried different implementations of a UndefinedOptional<>, utility type,
+ *  but it caused type errors in other places. Might have to wait for
+ *  https://github.com/microsoft/TypeScript/issues/32562
+ */
 export type SpecToJson<SPEC extends BaseSpec<any>> = {
   readonly [KEY in string & keyof SPEC]: SPEC[KEY] extends Syncer<
     any,
@@ -114,10 +131,16 @@ export const runParser = <RAW, SPEC extends BaseSpec<RAW>>(
 ): SpecToJson<SPEC> => {
   const logContext = getLogContext();
   const path = logContext[pathKey];
+  // If runParser() is called inside of runParser(), don't push root again
   if (!Array.isArray(path))
     pushContext({ type: 'Root', node: [raw], extras: { spec } });
   const result = Object.fromEntries(
-    Object.entries(spec).map(([key, { serializer }]) => [key, serializer(raw)])
+    Object.entries(spec).map(([key, { serializer }]) => {
+      const context = getLogContext();
+      const value = serializer(raw);
+      setLogContext(context);
+      return [key, value] as const;
+    })
   );
   setLogContext(logContext);
   return result;
@@ -128,5 +151,5 @@ export const runBuilder = <RAW, SPEC extends BaseSpec<RAW>>(
   shape: SpecToJson<SPEC>
 ): RA<RAW> =>
   Object.entries(spec).map(([key, definition]) =>
-    definition.deserializer(shape[key])
+    definition.deserializer(shape?.[key])
   );

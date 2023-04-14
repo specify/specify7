@@ -1,7 +1,7 @@
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { f } from '../../utils/functools';
-import type { IR, RA } from '../../utils/types';
+import type { GetOrSet, IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { index } from '../../utils/utils';
 import { fetchCollection } from '../DataModel/collection';
@@ -13,24 +13,31 @@ import { fetchFormatters } from '../Formatters/formatters';
 import { fetchPickLists } from '../PickLists/definitions';
 import { fetchSchemaLanguages } from '../Toolbar/Language';
 import { webLinks } from '../WebLinks';
+import type { WebLink } from '../WebLinks/spec';
 import { formatAggregators } from './helpers';
 
-export type SchemaData = {
+type RawSchemaData = {
   readonly languages: IR<LocalizedString>;
   readonly tables: IR<SerializedResource<SpLocaleContainer>>;
-  readonly formatters: IR<SimpleFormatter>;
-  readonly aggregators: IR<SimpleFormatter>;
+  readonly formatters: RA<SchemaFormatter>;
+  readonly aggregators: RA<SchemaFormatter>;
   readonly uiFormatters: RA<SimpleFieldFormatter>;
-  readonly webLinks: RA<readonly [string, string]>;
+  readonly webLinks: RA<WebLink & { readonly index: number }>;
   readonly pickLists: IR<{
     readonly name: string;
     readonly isSystem: boolean;
   }>;
 };
 
-export type SimpleFormatter = {
+export type SchemaData = RawSchemaData & {
+  readonly update: GetOrSet<RawSchemaData | undefined>[1];
+};
+
+export type SchemaFormatter = {
+  readonly name: string;
   readonly title: LocalizedString;
   readonly tableName: keyof Tables | undefined;
+  readonly index: number;
 };
 
 type SimpleFieldFormatter = {
@@ -39,7 +46,7 @@ type SimpleFieldFormatter = {
   readonly value: string;
 };
 
-export const fetchSchemaData = async (): Promise<SchemaData> =>
+export const fetchSchemaData = async (): Promise<RawSchemaData> =>
   f.all({
     languages: fetchSchemaLanguages(),
     tables: fetchCollection('SpLocaleContainer', {
@@ -63,21 +70,26 @@ export const fetchSchemaData = async (): Promise<SchemaData> =>
         .filter(({ value }) => value)
     ),
     webLinks: webLinks.then((webLinks) =>
-      Object.keys(webLinks).map((value) => [value, value] as const)
+      webLinks.map((webLink, index) => ({ ...webLink, index }))
     ),
-    pickLists: fetchPickLists().then((pickLists) =>
-      Object.fromEntries(
-        filterArray(Object.values(pickLists))
-          .map(serializeResource)
-          .map(({ id, name, isSystem }) => [
-            id,
-            {
-              name,
-              isSystem,
-            },
-            // Filter out front-end only pick lists
-          ])
-          .filter(([id]) => typeof id === 'number')
-      )
-    ),
+    pickLists: fetchSchemaPickLists(),
   });
+
+export const fetchSchemaPickLists = async (): Promise<
+  SchemaData['pickLists']
+> =>
+  fetchPickLists().then((pickLists) =>
+    Object.fromEntries(
+      filterArray(Object.values(pickLists))
+        .map(serializeResource)
+        .map(({ id, name, isSystem }) => [
+          id,
+          {
+            name,
+            isSystem,
+          },
+          // Filter out front-end only pick lists
+        ])
+        .filter(([id]) => typeof id === 'number')
+    )
+  );

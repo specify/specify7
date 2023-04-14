@@ -64,6 +64,7 @@ export function QueryComboBox({
   hasCloneButton = false,
   typeSearch: initialTypeSearch,
   forceCollection,
+  searchView,
   relatedTable: initialRelatedTable,
 }: {
   readonly id: string | undefined;
@@ -74,6 +75,7 @@ export function QueryComboBox({
   readonly hasCloneButton?: boolean;
   readonly typeSearch: TypeSearch | string | undefined;
   readonly forceCollection: number | undefined;
+  readonly searchView?: string;
   readonly relatedTable?: SpecifyTable | undefined;
 }): JSX.Element {
   React.useEffect(() => {
@@ -164,7 +166,7 @@ export function QueryComboBox({
               .then((resource) =>
                 resource === undefined || resource === null
                   ? {
-                      label: '',
+                      label: '' as LocalizedString,
                       resource: undefined,
                     }
                   : (value === formattedRef.current?.value &&
@@ -174,7 +176,8 @@ export function QueryComboBox({
                           resource,
                           typeof typeSearch === 'object'
                             ? typeSearch.formatter
-                            : undefined
+                            : undefined,
+                          true
                         )
                     ).then((formatted) => ({
                       label:
@@ -578,6 +581,7 @@ export function QueryComboBox({
           forceCollection={forceCollection ?? relatedCollectionId}
           multiple={false}
           templateResource={state.templateResource}
+          searchView={searchView}
           onClose={(): void => setState({ type: 'MainState' })}
           onSelected={([selectedResource]): void =>
             // @ts-expect-error Need to refactor this to use generics

@@ -4,6 +4,7 @@ import type { Input } from '../components/DataModel/saveBlockers';
 import { isInputTouched } from '../components/Forms/validationHelpers';
 import { listen } from '../utils/events';
 import type { RA } from '../utils/types';
+import { InFormEditorContext } from '../components/FormEditor/Context';
 
 /**
  * An integration into native browser error reporting mechanism.
@@ -66,27 +67,31 @@ export function useValidation<T extends Input = Input>(
     });
   }, []);
 
-  const setValidation = React.useCallback(function setValidation(
-    message: RA<string> | string,
-    type: 'auto' | 'focus' | 'silent' = 'auto'
-  ): void {
-    const joined = Array.isArray(message) ? message.join('\n') : message;
-    if (validationMessageRef.current === joined && type !== 'focus') return;
+  const isInFormEditor = React.useContext(InFormEditorContext);
 
-    validationMessageRef.current = joined;
-    const input = inputRef.current;
-    if (!input) return;
-    // Empty string clears validation error
-    input.setCustomValidity(joined);
+  const setValidation = React.useCallback(
+    function setValidation(
+      message: RA<string> | string,
+      type: 'auto' | 'focus' | 'silent' = 'auto'
+    ): void {
+      const joined = Array.isArray(message) ? message.join('\n') : message;
+      if (validationMessageRef.current === joined && type !== 'focus') return;
 
-    if (joined !== '' && isInputTouched(input) && type !== 'silent')
-      input.reportValidity();
-    else if (isFirstError.current) {
-      isFirstError.current = false;
-      input.reportValidity();
-    }
-  },
-  []);
+      validationMessageRef.current = joined;
+      const input = inputRef.current;
+      if (!input || isInFormEditor) return;
+      // Empty string clears validation error
+      input.setCustomValidity(joined);
+
+      if (joined !== '' && isInputTouched(input) && type !== 'silent')
+        input.reportValidity();
+      else if (isFirstError.current) {
+        isFirstError.current = false;
+        input.reportValidity();
+      }
+    },
+    [isInFormEditor]
+  );
 
   React.useEffect(() => setValidation(message), [message, setValidation]);
 

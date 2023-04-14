@@ -170,7 +170,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
         path: 'make-dwca',
         title: headerText.makeDwca(),
         element: () =>
-          import('../Toolbar/Dwca').then(
+          import('../ExportFeed/Dwca').then(
             ({ MakeDwcaOverlay }) => MakeDwcaOverlay
           ),
       },
@@ -178,7 +178,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
         path: 'force-update-feed',
         title: headerText.updateExportFeed(),
         element: () =>
-          import('../Toolbar/ForceUpdate').then(
+          import('../ExportFeed/ForceUpdate').then(
             ({ ForceUpdateFeedOverlay }) => ForceUpdateFeedOverlay
           ),
       },

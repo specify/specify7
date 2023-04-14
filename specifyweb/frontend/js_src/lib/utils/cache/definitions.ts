@@ -141,6 +141,9 @@ export type CacheDefinitions = {
     readonly filters: AppResourceFilters;
     readonly showHiddenTables: boolean;
   };
+  readonly formEditor: {
+    readonly layout: 'vertical' | 'horizontal';
+  };
 };
 
 export type SortConfigs = {

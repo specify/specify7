@@ -11,7 +11,7 @@ import type {
 } from '../../components/DataModel/specifyField';
 import { error } from '../../components/Errors/assert';
 import type { UiFormatter } from '../../components/FieldFormatters';
-import { monthsPickList } from '../../components/PickLists/definitions';
+import { monthsPickListName } from '../../components/PickLists/definitions';
 import { getUserPref } from '../../components/UserPreferences/helpers';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
@@ -210,7 +210,7 @@ export const parsers = f.store(
       validators: [validators.number],
       // Caution: getMonth is 0-based
       value: (new Date().getMonth() + 1).toString(),
-      pickListName: monthsPickList?.().get('name'),
+      pickListName: monthsPickListName,
     },
 
     day: {

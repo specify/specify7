@@ -1,7 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
-import type { State } from 'typesafe-reducer';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useIsModified } from '../../hooks/useIsModified';
@@ -20,7 +19,7 @@ import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { AppTitle } from '../Molecules/AppTitle';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
-import { ReportsView } from '../Reports';
+import { reportEvents } from '../Reports/Context';
 import { UnloadProtectDialog } from '../Router/Router';
 import { getUserPref } from '../UserPreferences/helpers';
 import { usePref } from '../UserPreferences/usePref';
@@ -144,10 +143,6 @@ export function ResourceView<SCHEMA extends AnySchema>({
 
   const [showUnloadProtect, setShowUnloadProtect] = React.useState(false);
 
-  const [state, setState] = React.useState<
-    State<'Main'> | State<'Report', { readonly onDone: () => void }>
-  >({ type: 'Main' });
-
   const [makeFormDialogsModal] = usePref(
     'form',
     'behavior',
@@ -200,26 +195,10 @@ export function ResourceView<SCHEMA extends AnySchema>({
         onSaved={(): void => {
           const printOnSave = getUserPref('form', 'preferences', 'printOnSave');
           if (printOnSave[resource.specifyTable.name] === true)
-            setState({
-              type: 'Report',
-              onDone: () => handleSaved(),
-            });
-          else handleSaved();
+            reportEvents.trigger('createReport', resource);
+          handleSaved();
         }}
         onSaving={handleSaving}
-      />
-    ) : undefined;
-
-  const report =
-    state.type === 'Report' && typeof resource === 'object' ? (
-      <ReportsView
-        autoSelectSingle
-        resourceId={resource.id}
-        table={resource.specifyTable}
-        onClose={(): void => {
-          state.onDone();
-          setState({ type: 'Main' });
-        }}
       />
     ) : undefined;
 
@@ -248,7 +227,6 @@ export function ResourceView<SCHEMA extends AnySchema>({
   if (dialog === false) {
     const formattedChildren = (
       <>
-        {report}
         {form(children, 'overflow-y-auto')}
         {typeof deleteButton === 'object' ||
         typeof saveButtonElement === 'object' ||
@@ -300,6 +278,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
    */
   const isFullHeight =
     dialog === 'modal' && typeof headerButtons === 'function' && !isSubForm;
+
   return (
     <Dialog
       buttons={

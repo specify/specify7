@@ -117,34 +117,32 @@ export function ImportExport({
                     commonText.none()
                   ) : (
                     <Ul>
-                      {Array.from(roles)
-                        .sort(sortFunction(({ role }) => role.name))
-                        .map(({ role, isChecked }, index) => (
-                          <li key={index}>
-                            {category === 'unchanged' ? (
-                              role.name
-                            ) : (
-                              <Label.Inline>
-                                <Input.Checkbox
-                                  checked={isChecked}
-                                  onValueChange={(): void =>
-                                    setNewRoles(
-                                      replaceKey(
-                                        newRoles,
-                                        category,
-                                        replaceItem(roles, index, {
-                                          role,
-                                          isChecked: !isChecked,
-                                        })
-                                      )
+                      {roles.map(({ role, isChecked }, index) => (
+                        <li key={index}>
+                          {category === 'unchanged' ? (
+                            role.name
+                          ) : (
+                            <Label.Inline>
+                              <Input.Checkbox
+                                checked={isChecked}
+                                onValueChange={(): void =>
+                                  setNewRoles(
+                                    replaceKey(
+                                      newRoles,
+                                      category,
+                                      replaceItem(roles, index, {
+                                        role,
+                                        isChecked: !isChecked,
+                                      })
                                     )
-                                  }
-                                />
-                                {role.name}
-                              </Label.Inline>
-                            )}
-                          </li>
-                        ))}
+                                  )
+                                }
+                              />
+                              {role.name}
+                            </Label.Inline>
+                          )}
+                        </li>
+                      ))}
                     </Ul>
                   )}
                 </section>
@@ -205,6 +203,14 @@ export function ImportExport({
                                         ];
                                   })
                               )
+                            ).map(
+                              ([category, roles]) =>
+                                [
+                                  category,
+                                  Array.from(roles).sort(
+                                    sortFunction(({ role }) => role.name)
+                                  ),
+                                ] as const
                             )
                           )
                         )

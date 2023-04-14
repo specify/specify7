@@ -9,9 +9,15 @@ import { mainText } from '../../localization/main';
 import { UnloadProtectsContext } from '../Router/Router';
 import { usePref } from '../UserPreferences/usePref';
 
-export function AppTitle({ title }: { readonly title: LocalizedString }): null {
+export function AppTitle({
+  title,
+  source = 'form',
+}: {
+  readonly title: LocalizedString;
+  readonly source?: 'form' | undefined;
+}): null {
   const [updateTitle] = usePref('form', 'behavior', 'updatePageTitle');
-  useTitle(updateTitle ? title : undefined);
+  useTitle(source !== 'form' && updateTitle ? title : undefined);
   return null;
 }
 

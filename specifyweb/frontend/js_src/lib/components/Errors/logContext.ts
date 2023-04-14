@@ -1,12 +1,14 @@
 import type { State } from 'typesafe-reducer';
 
 import type { IR, R, RA } from '../../utils/types';
+import { setDevelopmentGlobal } from '../../utils/types';
 import { replaceItem } from '../../utils/utils';
-import { LogMessage } from './interceptLogs';
+import type { LogMessage } from './interceptLogs';
 
 let context: R<unknown> = {};
 let contextTimeout: ReturnType<typeof setTimeout> | undefined = undefined;
 export const getLogContext = (): IR<unknown> => context;
+setDevelopmentGlobal('_getLogContext', getLogContext);
 
 export function setLogContext(newContext: IR<unknown>): void {
   context = newContext;
@@ -24,19 +26,20 @@ export function setLogContext(newContext: IR<unknown>): void {
 }
 
 type BasePathPart = { readonly extras?: IR<unknown> };
-type PathPart = BasePathPart &
+export type LogPathPart = BasePathPart &
   (
     | State<'Attribute', { readonly attribute: string }>
     | State<'Child', { readonly tagName: string }>
     | State<'Children', { readonly tagName: string }>
     | State<'Index', { readonly index: number }>
+    | State<'Content'>
     | State<'Root', { readonly node: unknown }>
   );
 
 /**
  * Add context to errors and validation messages
  */
-export const pushContext = (part: PathPart): void =>
+export const pushContext = (part: LogPathPart): void =>
   modifyContext((path) => [...path, part]);
 
 function modifyContext(

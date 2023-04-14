@@ -23,6 +23,9 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpAppResource, SpViewSetObj } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import { downloadFile, FilePicker, fileToText } from '../Molecules/FilePicker';
+import type { BaseSpec } from '../Syncer';
+import type { SimpleXmlNode } from '../Syncer/xmlToJson';
+import { getUserPref } from '../UserPreferences/helpers';
 import { usePref } from '../UserPreferences/usePref';
 import { jsonLinter, xmlLinter } from './codeMirrorLinters';
 import type { getResourceType } from './filtersHelpers';
@@ -138,16 +141,38 @@ export function AppResourceDownload({
 
 const linterKey = `parseError:${'spAppResourceDatas'.toLowerCase()}`;
 
+export function useIndent(): string {
+  const [indentSize] = usePref('appResources', 'behavior', 'indentSize');
+  const [indentWithTab] = usePref('appResources', 'behavior', 'indentWithTab');
+  return indentWithTab ? '\t' : ' '.repeat(indentSize);
+}
+
+/**
+ * Use useIndent() instead whenever possible
+ */
+export function getIndent(): string {
+  const indentSize = getUserPref('appResources', 'behavior', 'indentSize');
+  const indentWithTab = getUserPref(
+    'appResources',
+    'behavior',
+    'indentWithTab'
+  );
+  return indentWithTab ? '\t' : ' '.repeat(indentSize);
+}
+
 export function useCodeMirrorExtensions(
   resource: SerializedResource<SpAppResource | SpViewSetObj>,
-  appResource: SpecifyResource<SpAppResource | SpViewSetObj>
+  appResource: SpecifyResource<SpAppResource | SpViewSetObj>,
+  xmlSpec: (() => BaseSpec<SimpleXmlNode>) | undefined
 ): RA<Extension> {
   const [lineWrap] = usePref('appResources', 'behavior', 'lineWrap');
   const [indentSize] = usePref('appResources', 'behavior', 'indentSize');
-  const [indentWithTab] = usePref('appResources', 'behavior', 'indentWithTab');
-  const indentCharacter = indentWithTab ? '\t' : ' '.repeat(indentSize);
+  const indentCharacter = useIndent();
 
-  const mode = getAppResourceExtension(resource);
+  const mode = React.useMemo(
+    () => getAppResourceExtension(resource),
+    [resource]
+  );
   const [extensions, setExtensions] = React.useState<RA<Extension>>([]);
   React.useEffect(() => {
     function handleLinted(results: RA<Diagnostic>): void {
@@ -167,7 +192,7 @@ export function useCodeMirrorExtensions(
         : mode === 'properties'
         ? [StreamLanguage.define(properties)]
         : mode === 'jrxml' || mode === 'xml'
-        ? [xml(), xmlLinter(handleLinted)]
+        ? [xml(), xmlLinter(xmlSpec?.())(handleLinted)]
         : [];
     setExtensions([
       ...language,
@@ -178,7 +203,7 @@ export function useCodeMirrorExtensions(
     ]);
 
     return (): void => appResource.saveBlockers?.remove(linterKey);
-  }, [appResource, mode, lineWrap, indentCharacter, indentSize]);
+  }, [appResource, mode, lineWrap, indentCharacter, indentSize, xmlSpec]);
 
   return extensions;
 }

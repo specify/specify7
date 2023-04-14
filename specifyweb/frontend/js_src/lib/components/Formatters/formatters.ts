@@ -7,6 +7,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { formsText } from '../../localization/forms';
 import { userText } from '../../localization/user';
 import { ajax } from '../../utils/ajax';
+import { getAppResourceUrl } from '../../utils/ajax/helpers';
 import type { RA } from '../../utils/types';
 import { KEY, multiSortFunction, sortFunction } from '../../utils/utils';
 import { fetchDistantRelated } from '../DataModel/helpers';
@@ -23,7 +24,6 @@ import {
   foreverFetch,
 } from '../InitialContext';
 import { hasPathPermission, hasTablePermission } from '../Permissions/helpers';
-import { formatUrl } from '../Router/queryString';
 import { xmlToSpec } from '../Syncer/xmlUtils';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { aggregate } from './aggregate';
@@ -37,15 +37,10 @@ export const fetchFormatters: Promise<{
 }> = contextUnlockedPromise.then(async (entrypoint) =>
   entrypoint === 'main'
     ? Promise.all([
-        ajax<Element>(
-          cachableUrl(
-            formatUrl('/context/app.resource', { name: 'DataObjFormatters' })
-          ),
-          {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            headers: { Accept: 'text/xml' },
-          }
-        ).then(({ data }) => data),
+        ajax<Element>(cachableUrl(getAppResourceUrl('DataObjFormatters')), {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          headers: { Accept: 'text/xml' },
+        }).then(({ data }) => data),
         fetchSchema,
         fetchDomain,
       ]).then(([definitions]) => xmlToSpec(definitions, formattersSpec()))
@@ -66,12 +61,14 @@ export const naiveFormatter = (
 export async function format<SCHEMA extends AnySchema>(
   resource: SpecifyResource<SCHEMA> | undefined,
   defaultFormatter: Formatter | string | undefined,
-  tryBest: true
+  tryBest: true,
+  cycleDetection?: RA<SpecifyResource<AnySchema>>
 ): Promise<LocalizedString>;
 export async function format<SCHEMA extends AnySchema>(
   resource: SpecifyResource<SCHEMA> | undefined,
   defaultFormatter?: Formatter | string,
-  tryBest?: false
+  tryBest?: false,
+  cycleDetection?: RA<SpecifyResource<AnySchema>>
 ): Promise<LocalizedString | undefined>;
 export async function format<SCHEMA extends AnySchema>(
   resource: SpecifyResource<SCHEMA> | undefined,
@@ -80,9 +77,11 @@ export async function format<SCHEMA extends AnySchema>(
    * Format a resource even if no formatter is present, or some permissions
    * are missing
    */
-  tryBest = false
+  tryBest = false,
+  cycleDetection: RA<SpecifyResource<AnySchema>> = []
 ): Promise<LocalizedString | undefined> {
-  if (typeof resource !== 'object' || resource === null) return undefined;
+  if (typeof resource !== 'object' || resource === null || resource.deleted)
+    return undefined;
   if (hasTablePermission(resource.specifyTable.name, 'read'))
     await resource.fetch();
   const resolvedDefaultFormatter =
@@ -102,24 +101,18 @@ export async function format<SCHEMA extends AnySchema>(
     ? naiveFormatter(resource.specifyTable.label, resource.id)
     : undefined;
 
-  /*
-   * Don't format resource if all relevant fields are empty, or formatter has
-   * no fields
-   */
-  const isEmptyResource = fields
-    .map(({ field }) =>
-      field?.[0] === undefined
-        ? undefined
-        : field[0].isRelationship && field[0].isDependent()
-        ? resource.getDependentResource(field[0].name)
-        : resource.get(field[0].name)
-    )
-    .every((value) => value === undefined || value === null || value === '');
-  return isEmptyResource
-    ? automaticFormatter ?? undefined
-    : Promise.all(
-        fields.map(async (field) => formatField(field, resource, tryBest))
-      ).then((values) => (values ?? '').join('') as LocalizedString);
+  return Promise.all(
+    fields.map(async (field) => formatField(field, resource, cycleDetection))
+  ).then((values) => {
+    const joined = values.reduce<string>(
+      (result, { formatted, separator = '' }, index) =>
+        `${result}${
+          result.length === 0 && index !== 0 ? '' : separator
+        }${formatted}`,
+      ''
+    ) as LocalizedString;
+    return joined.length === 0 ? automaticFormatter : joined;
+  });
 }
 
 /**
@@ -151,24 +144,38 @@ async function formatField(
     readonly formatFieldValue?: boolean;
   },
   parentResource: SpecifyResource<AnySchema>,
-  tryBest: boolean
-): Promise<string | undefined> {
+  cycleDetection: RA<SpecifyResource<AnySchema>> = []
+): Promise<{ readonly formatted: string; readonly separator?: string }> {
+  const isCycle = cycleDetection.some(
+    (resource) =>
+      resource.id === parentResource.id &&
+      resource.specifyTable === parentResource.specifyTable
+  );
+  const cycleDetector = [...cycleDetection, parentResource];
+
   let formatted: string | undefined = undefined;
   const hasPermission = hasPathPermission(fields ?? [], 'read');
   if (hasPermission) {
     const data = await fetchDistantRelated(parentResource, fields);
-    if (data === undefined) return undefined;
+    if (data === undefined) return { formatted: '' };
     const { resource, field } = data;
-    if (field === undefined || resource === undefined) return undefined;
+    if (field === undefined || resource === undefined) return { formatted: '' };
 
     formatted = field.isRelationship
-      ? await (relationshipIsToMany(field)
-          ? aggregate(await resource.rgetCollection(field.name), aggregator)
-          : format(
-              await resource.rgetPromise(field.name),
-              formatter,
-              tryBest as false
-            ))
+      ? isCycle
+        ? ''
+        : await (relationshipIsToMany(field)
+            ? aggregate(
+                await resource.rgetCollection(field.name),
+                aggregator,
+                cycleDetector
+              )
+            : format(
+                await resource.rgetPromise(field.name),
+                formatter,
+                false,
+                cycleDetector
+              ))
       : formatFieldValue
       ? await fieldFormat(
           field,
@@ -177,15 +184,12 @@ async function formatField(
           fieldFormatter
         )
       : (resource.get(field.name) as string | null) ?? undefined;
-  } else {
-    formatted = tryBest
-      ? naiveFormatter(parentResource.specifyTable.name, parentResource.id)
-      : userText.noPermission();
-  }
+  } else formatted = userText.noPermission();
 
-  return formatted === undefined || formatted === ''
-    ? ''
-    : `${separator}${formatted}`;
+  return {
+    formatted: formatted ?? '',
+    separator: (formatted ?? '') === '' ? '' : separator,
+  };
 }
 
 /**
@@ -206,8 +210,7 @@ export async function fetchPathAsString(
       fieldFormatter: undefined,
       formatFieldValue,
     },
-    baseResource,
-    false
+    baseResource
   );
   return value?.toString();
 }
@@ -230,7 +233,6 @@ const findDefaultFormatter = (
     .filter((formatter) => formatter.table === table)
     .sort(sortFunction(({ isDefault }) => isDefault, true))?.[KEY];
 
-const autoGenerateFields = 2;
 const autoGenerateFormatter = (table: SpecifyTable): Formatter => ({
   name: table.name,
   title: table.name,
@@ -244,7 +246,11 @@ const autoGenerateFormatter = (table: SpecifyTable): Formatter => ({
       {
         value: undefined,
         fields: getMainTableFields(table.name)
-          .slice(0, autoGenerateFields)
+          /*
+           * Selecting just one field, because then don't have to worry about
+           * separator
+           */
+          .slice(0, 1)
           .map((field) => ({
             field: [field],
             separator: '',

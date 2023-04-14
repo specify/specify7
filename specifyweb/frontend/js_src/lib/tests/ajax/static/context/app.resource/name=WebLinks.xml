@@ -115,14 +115,21 @@
   </weblinkdef>
   <weblinkdef>
     <name><![CDATA[Specify7]]></name>
+    <table><![CDATA[Accession]]></table>
     <desc><![CDATA[]]></desc>
     <baseURLStr>
-            <![CDATA[https://ichthyology.specify.ku.edu/specify/bycatalog/KUI/<catalogNumber>/]]></baseURLStr>
+            <![CDATA[https://ichthyology.specify.ku.edu/specify/bycatalog/KUI/<catalogNumber>/<formatter_Accession>]]></baseURLStr>
     <args>
       <weblinkdefarg>
         <name><![CDATA[catalogNumber]]></name>
         <prompt><![CDATA[true]]></prompt>
         <isEditable><![CDATA[false]]></isEditable>
+      </weblinkdefarg>
+      <weblinkdefarg>
+        <name>formatter_Accession</name>
+        <title>Accession</title>
+        <prompt>true</prompt>
+        <isEditable>false</isEditable>
       </weblinkdefarg>
     </args>
     <usedByList />

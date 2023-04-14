@@ -2,32 +2,41 @@ import { filterArray } from '../../utils/types';
 import { insertItem, replaceItem } from '../../utils/utils';
 import { formatXmlNode } from './formatXmlNode';
 import type { SimpleChildren, SimpleXmlNode, XmlNode } from './xmlToJson';
+import { getOriginalSyncerInput } from './xmlUtils';
+import { error } from '../Errors/assert';
 
 /**
  * Apply the changes made to SimpleXmlNode onto the XmlNode
  * (of if XmlNode is undefined, convert SimpleXmlNode to XmlNode)
  */
-export const fromSimpleXmlNode = (
-  old: XmlNode | undefined,
-  updated: SimpleXmlNode
-): XmlNode => formatXmlNode(fromSimpleNode(old, updated));
+export const fromSimpleXmlNode = (updated: SimpleXmlNode): XmlNode =>
+  formatXmlNode(fromSimpleNode(updated));
 
 const fromSimpleNode = (
-  old: XmlNode | undefined,
-  updated: SimpleXmlNode
+  updated: SimpleXmlNode,
+  old = getOriginalSyncerInput(updated)
 ): XmlNode => ({
   type: 'XmlNode',
-  tagName: old?.tagName ?? updated.tagName,
+  tagName:
+    old?.tagName ??
+    (updated.tagName || error('Unable to retrieve the tag name')),
   attributes: Object.fromEntries(
     filterArray(
       Object.keys({
         ...old?.attributes,
         ...updated.attributes,
-      }).map((key) =>
-        key in updated.attributes && updated.attributes[key] === undefined
-          ? undefined
-          : [key.toLowerCase(), updated.attributes[key] ?? old!.attributes[key]]
-      )
+      }).map((key) => {
+        /*
+         * If attribute was explicitly set to undefined, remove it.
+         * If attribute is missing from the attributes object, reuse the old
+         * value (this would be the case for unknown attributes - those that are
+         * not part of the syncer's spec)
+         */
+        if (key in updated.attributes && updated.attributes[key] === undefined)
+          return undefined;
+        const value = updated.attributes[key] ?? old?.attributes[key];
+        return value === undefined ? undefined : [key.toLowerCase(), value];
+      })
     )
   ),
   children: mergeChildren(old?.children ?? [], updated),
@@ -104,11 +113,16 @@ function mergeNodes(
       if (child.type !== 'XmlNode') return child;
       const newChildren = writableChildren[child.tagName];
       const newChild = newChildren?.shift();
+      /*
+       * This happens if child is unknown (i.e, not part of the syncer's spec)
+       */
       return newChildren === undefined
         ? child
-        : newChild === undefined
+        : // Child was removed
+        newChild === undefined
         ? undefined
-        : fromSimpleXmlNode(child, newChild);
+        : // Child was modified
+          fromSimpleXmlNode(newChild);
     })
   );
   return Object.values(writableChildren)
@@ -123,7 +137,7 @@ function mergeNodes(
         (child) =>
           child.type === 'XmlNode' && child.tagName === newChild.tagName
       );
-      const newNode = fromSimpleXmlNode(undefined, newChild);
+      const newNode = fromSimpleXmlNode(newChild);
       return insertionIndex === -1
         ? [...children, newNode]
         : insertItem(children, insertionIndex + 1, newNode);

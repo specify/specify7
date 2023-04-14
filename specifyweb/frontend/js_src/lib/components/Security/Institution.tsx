@@ -4,7 +4,6 @@ import { useLocation } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
-import { useBooleanState } from '../../hooks/useBooleanState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { commonText } from '../../localization/common';
 import { userText } from '../../localization/user';
@@ -13,18 +12,16 @@ import type { RA } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Container, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
-import { DataEntry } from '../Atoms/DataEntry';
 import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { schema } from '../DataModel/schema';
-import { deserializeResource } from '../DataModel/serializers';
 import { tables } from '../DataModel/tables';
 import type { Institution } from '../DataModel/types';
-import { ResourceView } from '../Forms/ResourceView';
 import { userInformation } from '../InitialContext/userInformation';
 import { useTitle } from '../Molecules/AppTitle';
 import { downloadFile } from '../Molecules/FilePicker';
+import { RecordEdit } from '../Molecules/ResourceLink';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import { SafeOutlet } from '../Router/RouterUtils';
 import type { SecurityOutlet } from '../Toolbar/Security';
@@ -77,7 +74,7 @@ function InstitutionView({
                 value: institution.name ?? '',
               })}
             </h3>
-            <ViewInstitutionButton institution={institution} />
+            <RecordEdit resource={institution} />
           </div>
           <div className="flex flex-1 flex-col gap-8 overflow-y-scroll">
             {hasPermission('/permissions/library/roles', 'read') && (
@@ -236,33 +233,4 @@ export function useAdmins():
     ),
     false
   )[0];
-}
-
-function ViewInstitutionButton({
-  institution,
-}: {
-  readonly institution: SerializedResource<Institution>;
-}): JSX.Element {
-  const [isOpen, handleOpen, handleClose] = useBooleanState();
-  const resource = React.useMemo(
-    () => deserializeResource(institution),
-    [institution]
-  );
-  return (
-    <>
-      <DataEntry.Edit onClick={handleOpen} />
-      {isOpen && (
-        <ResourceView
-          dialog="modal"
-          isDependent={false}
-          isSubForm={false}
-          resource={resource}
-          onAdd={undefined}
-          onClose={handleClose}
-          onDeleted={undefined}
-          onSaved={undefined}
-        />
-      )}
-    </>
-  );
 }

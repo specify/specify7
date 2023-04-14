@@ -14,28 +14,25 @@ import type { RA } from '../../utils/types';
 import { caseInsensitiveHash, toggleItem } from '../../utils/utils';
 import { Container, H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
-import { DataEntry } from '../Atoms/DataEntry';
 import type {
   AnyTree,
   FilterTablesByEndsWith,
   SerializedResource,
 } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { deserializeResource } from '../DataModel/serializers';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { getTable, tables } from '../DataModel/tables';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import { ResourceView } from '../Forms/ResourceView';
 import { useMenuItem } from '../Header/MenuContext';
 import { getPref } from '../InitialContext/remotePrefs';
 import { isTreeTable, treeRanksPromise } from '../InitialContext/treeRanks';
 import { useTitle } from '../Molecules/AppTitle';
 import { supportsBackdropBlur } from '../Molecules/Dialog';
+import { RecordEdit, ResourceEdit } from '../Molecules/ResourceLink';
 import { TableIcon } from '../Molecules/TableIcon';
 import { ProtectedTree } from '../Permissions/PermissionDenied';
 import { NotFoundView } from '../Router/NotFoundView';
 import { formatUrl } from '../Router/queryString';
-import { EditTreeDefinition } from '../Toolbar/TreeRepair';
 import {
   useHighContrast,
   useReducedTransparency,
@@ -52,6 +49,34 @@ import {
 import { TreeRow } from './Row';
 import { TreeViewSearch } from './Search';
 
+export function TreeViewWrapper(): JSX.Element | null {
+  useMenuItem('trees');
+  const { tableName = '' } = useParams();
+  const treeName = getTable(tableName)?.name;
+  const [treeDefinitions] = usePromise(treeRanksPromise, true);
+  useErrorContext('treeDefinitions', treeDefinitions);
+
+  const treeDefinition =
+    typeof treeDefinitions === 'object' &&
+    typeof treeName === 'string' &&
+    isTreeTable(treeName)
+      ? caseInsensitiveHash(treeDefinitions, treeName)
+      : undefined;
+
+  if (treeName === undefined || !isTreeTable(treeName)) return <NotFoundView />;
+  return (
+    <ProtectedTree action="read" treeName={treeName}>
+      {typeof treeDefinition === 'object' ? (
+        <TreeView
+          tableName={treeName}
+          treeDefinition={treeDefinition.definition}
+          treeDefinitionItems={treeDefinition.ranks}
+        />
+      ) : null}
+    </ProtectedTree>
+  );
+}
+
 const treeToPref = {
   Geography: 'geography',
   Taxon: 'taxon',
@@ -61,6 +86,7 @@ const treeToPref = {
 } as const;
 const defaultConformation: RA<never> = [];
 
+// REFACTOR: extract logic into smaller hooks
 function TreeView<SCHEMA extends AnyTree>({
   tableName,
   treeDefinition,
@@ -171,7 +197,10 @@ function TreeView<SCHEMA extends AnyTree>({
         <H2 title={treeDefinition.get('remarks') ?? undefined}>
           {treeDefinition.get('name')}
         </H2>
-        <EditTreeDefinition treeDefinition={treeDefinition} />
+        <ResourceEdit
+          resource={treeDefinition}
+          onSaved={(): void => globalThis.location.reload()}
+        />
         <TreeViewSearch<SCHEMA>
           forwardRef={searchBoxRef}
           tableName={tableName}
@@ -187,7 +216,7 @@ function TreeView<SCHEMA extends AnyTree>({
         <Button.Small
           disabled={conformation.length === 0}
           onClick={(): void => {
-            setFocusPath([0]);
+            setFocusPath([rows[0].nodeId]);
             setConformation([]);
           }}
         >
@@ -219,8 +248,8 @@ function TreeView<SCHEMA extends AnyTree>({
           shadow-md shadow-gray-500 outline-none
           ${highContrast ? 'border dark:border-white' : 'bg-gradient-to-bl'}
         `}
-        role="none table"
         // First role is for screen readers. Second is for styling
+        role="none table"
         style={
           {
             '--cols': treeDefinitionItems.length,
@@ -239,7 +268,8 @@ function TreeView<SCHEMA extends AnyTree>({
           // Unset and set focus path to trigger a useEffect hook in <TreeNode>
           setFocusPath([-1]);
           globalThis.setTimeout(
-            () => setFocusPath(focusPath.length > 0 ? focusPath : [0]),
+            () =>
+              setFocusPath(focusPath.length > 0 ? focusPath : [rows[0].nodeId]),
             0
           );
         }}
@@ -261,7 +291,7 @@ function TreeView<SCHEMA extends AnyTree>({
                   }
                 `}
                   key={index}
-                  role="columnheader"
+                  role="none columnheader"
                 >
                   <Button.LikeLink
                     id={id(rank.rankId.toString())}
@@ -279,7 +309,10 @@ function TreeView<SCHEMA extends AnyTree>({
                   </Button.LikeLink>
                   {isEditingRanks &&
                   collapsedRanks?.includes(rank.rankId) !== true ? (
-                    <EditTreeRank rank={rank} />
+                    <RecordEdit
+                      resource={rank}
+                      onSaved={(): void => globalThis.location.reload()}
+                    />
                   ) : undefined}
                 </div>
               );
@@ -297,10 +330,7 @@ function TreeView<SCHEMA extends AnyTree>({
                   ?.slice(1) as Conformations
               }
               focusPath={
-                (focusPath[0] === 0 && index === 0) ||
-                focusPath[0] === row.nodeId
-                  ? focusPath.slice(1)
-                  : undefined
+                focusPath[0] === row.nodeId ? focusPath.slice(1) : undefined
               }
               getRows={getRows}
               getStats={getStats}
@@ -342,59 +372,5 @@ function TreeView<SCHEMA extends AnyTree>({
         </ul>
       </div>
     </Container.Full>
-  );
-}
-
-function EditTreeRank({
-  rank,
-}: {
-  readonly rank: SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>;
-}): JSX.Element {
-  const [isOpen, handleOpen, handleClose] = useBooleanState();
-  const resource = React.useMemo(() => deserializeResource(rank), [rank]);
-  return (
-    <>
-      <DataEntry.Edit onClick={handleOpen} />
-      {isOpen ? (
-        <ResourceView
-          dialog="modal"
-          isDependent={false}
-          isSubForm={false}
-          resource={resource}
-          onAdd={undefined}
-          onClose={handleClose}
-          onDeleted={undefined}
-          onSaved={(): void => globalThis.location.reload()}
-        />
-      ) : null}
-    </>
-  );
-}
-
-export function TreeViewWrapper(): JSX.Element | null {
-  useMenuItem('trees');
-  const { tableName = '' } = useParams();
-  const treeName = getTable(tableName)?.name;
-  const [treeDefinitions] = usePromise(treeRanksPromise, true);
-  useErrorContext('treeDefinitions', treeDefinitions);
-
-  const treeDefinition =
-    typeof treeDefinitions === 'object' &&
-    typeof treeName === 'string' &&
-    isTreeTable(treeName)
-      ? caseInsensitiveHash(treeDefinitions, treeName)
-      : undefined;
-
-  if (treeName === undefined || !isTreeTable(treeName)) return <NotFoundView />;
-  return (
-    <ProtectedTree action="read" treeName={treeName}>
-      {typeof treeDefinition === 'object' ? (
-        <TreeView
-          tableName={treeName}
-          treeDefinition={treeDefinition.definition}
-          treeDefinitionItems={treeDefinition.ranks}
-        />
-      ) : null}
-    </ProtectedTree>
   );
 }

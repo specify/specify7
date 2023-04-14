@@ -1,12 +1,12 @@
 import { f } from '../../utils/functools';
 import type { IR } from '../../utils/types';
 import { ensure } from '../../utils/types';
+import { tables } from '../DataModel/tables';
 import {
   autoGenerateViewDefinition,
   getFieldsForAutoView,
 } from '../Forms/generateFormDefinition';
 import type { ParsedFormDefinition } from './index';
-import { tables } from '../DataModel/tables';
 
 /**
  * Definitions for front-end form views.
@@ -20,7 +20,21 @@ export const webOnlyViews = f.store(() =>
     /*
      * This is a special view that would be replaced by the <AttachmentPlugin />
      */
-    [attachmentView]: { columns: [], rows: [] },
+    [attachmentView]: {
+      columns: [undefined],
+      rows: [
+        [
+          {
+            id: undefined,
+            align: 'left',
+            colSpan: 1,
+            visible: true,
+            ariaLabel: tables.Attachment.label,
+            type: 'Blank',
+          },
+        ],
+      ],
+    },
     SpecifyUser: autoGenerateViewDefinition(
       tables.SpecifyUser,
       'form',

@@ -1,5 +1,3 @@
-import type { Path } from '@remix-run/router';
-import { resolvePath } from '@remix-run/router';
 import type { SafeLocation } from 'history';
 import React from 'react';
 import type { SafeNavigateFunction } from 'react-router';
@@ -22,6 +20,7 @@ import { Dialog } from '../Molecules/Dialog';
 import { getUserPref } from '../UserPreferences/helpers';
 import { NotFoundView } from './NotFoundView';
 import { overlayRoutes } from './OverlayRoutes';
+import { locationToUrl } from './queryString';
 import { toReactRoutes } from './RouterUtils';
 import { routes } from './Routes';
 
@@ -156,7 +155,6 @@ function parseClickEvent(
     const localUrl = toLocalUrl(link.href);
     if (typeof localUrl === 'string') {
       event.preventDefault();
-      link.getAttribute('href');
       if (
         process.env.NODE_ENV !== 'production' &&
         link.getAttribute('href')!.startsWith('.')
@@ -177,14 +175,6 @@ function parseClickEvent(
   }
   return undefined;
 }
-
-const locationToUrl = (location: Path): string =>
-  `${location.pathname}${location.search}${location.hash}`;
-
-export const resolveRelative = (relativePath: string): string =>
-  toLocalUrl(
-    locationToUrl(resolvePath(relativePath, globalThis.location.href))
-  )!;
 
 function Overlay({
   overlay,
@@ -301,16 +291,13 @@ const isCurrentUrl = (relativeUrl: string): boolean =>
   new URL(relativeUrl, globalThis.location.origin).pathname ===
   globalThis.location.pathname;
 
-function isSingleResource(
+const isSingleResource = (
   { pathname }: SafeLocation,
   singleResource: string | undefined
-): boolean {
-  if (singleResource === undefined) return false;
-  return (
-    pathname.startsWith(singleResource) &&
-    globalThis.location.pathname.startsWith(singleResource)
-  );
-}
+): boolean =>
+  singleResource !== undefined &&
+  pathname.startsWith(singleResource) &&
+  globalThis.location.pathname.startsWith(singleResource);
 
 export function UnloadProtectDialog({
   children,

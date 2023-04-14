@@ -259,7 +259,7 @@ export const Select = wrap<
 >(
   'Select',
   'select',
-  `${className.notTouchedInput} w-full pr-5 bg-right cursor-pointer min-w-[theme(spacing.40)]`,
+  `${className.notTouchedInput} w-full pr-5 bg-right cursor-pointer`,
   ({ onValueChange, onValuesChange, ...props }) => ({
     ...props,
     /*

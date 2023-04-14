@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { commonText } from '../../localization/common';
 import { schemaText } from '../../localization/schema';
-import { appResourceIds } from '../../utils/ajax';
+import { appResourceIds } from '../../utils/ajax/helpers';
 import { className } from '../Atoms/className';
 import { Input, Label } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
@@ -15,7 +15,6 @@ import type { SpLocaleContainer } from '../DataModel/types';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { PickList } from './Components';
 import { SchemaConfigColumn } from './Fields';
-import { filterFormatters } from './helpers';
 import type { NewSpLocaleItemString, SpLocaleItemString } from './index';
 import type { SchemaData } from './schemaData';
 
@@ -115,19 +114,25 @@ function FormatterPicker({
   const isReadOnly = React.useContext(ReadOnlyContext);
   const kind = type === 'format' ? 'formatters' : 'aggregators';
   const table = getTable(container.name);
-  const formatters =
-    table === undefined ? {} : filterFormatters(schemaData[kind], table.name);
+  const formatters = Object.fromEntries(
+    schemaData[kind]
+      .filter(({ tableName }) => tableName === table?.name)
+      .map(({ name, title }) => [name, title] as const)
+  );
   const formatterName = container[type];
-  const formatter =
-    typeof formatterName === 'string' ? formatters[formatterName] : undefined;
   const navigate = useNavigate();
 
   /*
    * This is undefined if browser cached app resource response since before
    * back-end begun sending app resource ids.
+   * FIXME: handle that case by re-fetching (or creating a resource if needed)
    */
   const resourceId = appResourceIds.DataObjFormatters;
   const urlPart = type === 'format' ? 'formatter' : 'aggregator';
+  const index = schemaData.formatters.find(
+    (formatter) =>
+      formatter.name === formatterName && formatter.tableName === table?.name
+  )?.index;
 
   return (
     <Label.Block>
@@ -145,20 +150,16 @@ function FormatterPicker({
         />
         {typeof resourceId === 'number' && typeof table === 'object' ? (
           <>
-            {typeof formatter === 'string' && (
+            {typeof index === 'number' && (
               <Link.Icon
                 className={className.dataEntryEdit}
-                href={`/specify/resources/app-resource/${resourceId}/${urlPart}/${
-                  table.name
-                }/name/${formatterName!}/`}
+                href={`/specify/resources/app-resource/${resourceId}/${urlPart}/${table.name}/${index}/`}
                 icon="pencil"
                 title={commonText.edit()}
                 onClick={(event): void => {
                   event.preventDefault();
                   navigate(
-                    `/specify/overlay/resources/app-resource/${resourceId}/${urlPart}/${
-                      table.name
-                    }/name/${formatterName!}/`
+                    `/specify/overlay/resources/app-resource/${resourceId}/${urlPart}/${table.name}/${index}/`
                   );
                 }}
               />

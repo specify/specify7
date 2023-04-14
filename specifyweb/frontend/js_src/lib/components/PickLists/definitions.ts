@@ -14,9 +14,9 @@ import { getField } from '../DataModel/helpers';
 import type { SerializedResource, TableFields } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { deserializeResource } from '../DataModel/serializers';
+import { tables } from '../DataModel/tables';
 import type { PickList, PickListItem, Tables } from '../DataModel/types';
 import { hasToolPermission } from '../Permissions/helpers';
-import { tables } from '../DataModel/tables';
 
 let pickLists: R<SpecifyResource<PickList> | undefined> = {};
 
@@ -225,25 +225,24 @@ export const getFrontEndPickLists = f.store<{
   return frontEndPickLists;
 });
 
-export const fetchPickLists = f.store(
-  async (): Promise<IR<SpecifyResource<PickList> | undefined>> =>
-    (hasToolPermission('pickLists', 'read')
-      ? fetchCollection('PickList', {
-          domainFilter: true,
-          limit: 0,
-        }).then(({ records }) => records)
-      : Promise.resolve([])
-    ).then(async (records) => {
-      getFrontEndPickLists();
-      pickLists = {
-        ...pickLists,
-        ...Object.fromEntries(
-          records.map(
-            (pickList) =>
-              [pickList.name, deserializeResource(pickList)] as const
-          )
-        ),
-      };
-      return pickLists;
-    })
-);
+export const fetchPickLists = async (): Promise<
+  IR<SpecifyResource<PickList> | undefined>
+> =>
+  (hasToolPermission('pickLists', 'read')
+    ? fetchCollection('PickList', {
+        domainFilter: true,
+        limit: 0,
+      }).then(({ records }) => records)
+    : Promise.resolve([])
+  ).then(async (records) => {
+    getFrontEndPickLists();
+    pickLists = {
+      ...pickLists,
+      ...Object.fromEntries(
+        records.map(
+          (pickList) => [pickList.name, deserializeResource(pickList)] as const
+        )
+      ),
+    };
+    return pickLists;
+  });

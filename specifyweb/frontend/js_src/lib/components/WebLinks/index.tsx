@@ -1,80 +1,35 @@
 import React from 'react';
-import type { LocalizedString } from 'typesafe-i18n';
-import _ from 'underscore';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
-import { ajax } from '../../utils/ajax';
-import { isExternalUrl } from '../../utils/ajax/helpers';
-import type { IR, RA } from '../../utils/types';
-import {
-  caseInsensitiveHash,
-  keysToLowerCase,
-  removeKey,
-} from '../../utils/utils';
+import { useId } from '../../hooks/useId';
+import { commonText } from '../../localization/common';
+import { getAppResourceUrl, isExternalUrl } from '../../utils/ajax/helpers';
+import type { GetSet, IR, RA } from '../../utils/types';
+import { caseInsensitiveHash } from '../../utils/utils';
+import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
+import { Form, Input, Label } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
-import type { AnySchema, AnyTree } from '../DataModel/helperTypes';
+import { Submit } from '../Atoms/Submit';
+import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
-import { serializeResource } from '../DataModel/serializers';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
-import type { Tables } from '../DataModel/types';
+import { fetchPathAsString, format } from '../Formatters/formatters';
 import { UiField } from '../FormFields/Field';
 import type { FormType } from '../FormParse';
 import { load } from '../InitialContext';
 import { getIcon, unknownIcon } from '../InitialContext/icons';
-import { formatUrl } from '../Router/queryString';
+import { Dialog } from '../Molecules/Dialog';
 import { xmlToSpec } from '../Syncer/xmlUtils';
 import type { WebLink } from './spec';
 import { webLinksSpec } from './spec';
 
 export const webLinks = Promise.all([
-  load<Element>(
-    formatUrl('/context/app.resource', { name: 'WebLinks' }),
-    'text/xml'
-  ),
+  load<Element>(getAppResourceUrl('WebLinks'), 'text/xml'),
   import('../DataModel/tables').then(async ({ fetchContext }) => fetchContext),
-]).then(([xml]) =>
-  Object.fromEntries(
-    xmlToSpec(xml, webLinksSpec()).webLinks.map(
-      (webLink) => [webLink.name, webLink] as const
-    )
-  )
-);
-
-const specialResourcesFields: {
-  readonly [TABLE_NAME in keyof Tables]?: (
-    resource: SpecifyResource<Tables[TABLE_NAME]>
-  ) => Promise<IR<string | undefined>>;
-} = {
-  Taxon: async (resource) =>
-    fetchTreePath(resource).then((path) => ({
-      genus: path?.Genus?.name,
-      species: path?.Species?.name,
-    })),
-};
-
-const fetchTreePath = async (treeResource: SpecifyResource<AnyTree>) =>
-  typeof treeResource.id === 'number'
-    ? ajax<{
-        readonly Genus?: {
-          readonly name: string;
-        };
-        readonly Species?: {
-          readonly name: string;
-        };
-      }>(
-        `/api/specify_tree/${treeResource.specifyTable.name.toLowerCase()}/${
-          treeResource.id
-        }/path/`,
-        {
-          headers: {
-            Accept: 'application/json',
-          },
-        }
-      ).then(({ data }) => data)
-    : undefined;
+]).then(([xml]) => xmlToSpec(xml, webLinksSpec()).webLinks);
 
 export function WebLinkField({
   resource,
@@ -89,7 +44,7 @@ export function WebLinkField({
   readonly id: string | undefined;
   readonly name: string | undefined;
   readonly field: LiteralField | Relationship | undefined;
-  readonly webLink: string | undefined;
+  readonly webLink: WebLink | string | undefined;
   readonly icon: string;
   readonly formType: FormType;
 }): JSX.Element {
@@ -99,10 +54,23 @@ export function WebLinkField({
     webLink
   );
 
-  const [{ url, isExternal }, setUrl] = React.useState<{
-    readonly url: string | undefined;
-    readonly isExternal: boolean;
-  }>({ url: undefined, isExternal: false });
+  const [builtUrl, setUrl] = React.useState<
+    RA<string | { readonly prompt: string }> | undefined
+  >(undefined);
+  const [prompt, setPrompt] = React.useState<IR<string | undefined>>({});
+  const url = builtUrl
+    ?.map((part) =>
+      typeof part === 'string' ? part : prompt?.[part.prompt] ?? ''
+    )
+    .join('');
+  const [showPrompt, setShowPrompt] = React.useState(false);
+  const isExternal = React.useMemo(() => {
+    try {
+      return url !== undefined && isExternalUrl(url);
+    } catch {
+      return true;
+    }
+  }, [url]);
 
   React.useEffect(() => {
     if (
@@ -111,47 +79,49 @@ export function WebLinkField({
       resource === undefined
     )
       return;
-    const { args, template } = definition;
+    const { parts } = definition;
 
-    async function buildUrl(): Promise<string> {
-      if (resource === undefined) return '';
-      let parameters = Object.fromEntries(
-        args.map((name) => [name, undefined]) ?? []
-      );
-      parameters = {
-        ...parameters,
-        ...keysToLowerCase(parameters),
-        // Lower case variants
-        ...resource.toJSON(),
-        // Camel case variants
-        ...removeKey(serializeResource(resource), '_tableName'),
-        ...(await specialResourcesFields?.[resource.specifyTable.name]),
-      };
-      return _.template(template)({
-        ...parameters,
-        _this: parameters[field?.name ?? ''],
-      });
-    }
+    const buildUrl = async (): Promise<
+      RA<string | { readonly prompt: string }>
+    > =>
+      resource === undefined
+        ? []
+        : Promise.all(
+            parts.map((part) =>
+              part.type === 'Field'
+                ? fetchPathAsString(resource, part.field)
+                : part.type === 'ThisField'
+                ? typeof field === 'object'
+                  ? fetchPathAsString(resource, [field])
+                  : undefined
+                : part.type === 'PromptField'
+                ? { prompt: part.label }
+                : part.type === 'FormattedResource'
+                ? format(resource, part.formatter, false)
+                : part.value
+            )
+          ).then((values) => values.map((value) => value ?? ''));
 
     return resourceOn(
       resource,
       'change',
-      (): void =>
-        void buildUrl().then((url) =>
-          setUrl({
-            url,
-            isExternal: isExternalUrl(url),
-          })
-        ),
+      (): void => void buildUrl().then(setUrl),
       true
     );
-  }, [resource, field?.name, definition, formType]);
+  }, [resource, field, definition, formType]);
 
   const image = (
     <img
-      alt={typeof definition === 'object' ? definition.description : webLink}
+      alt={
+        typeof definition === 'object'
+          ? definition.description
+          : typeof webLink === 'object'
+          ? webLink.name
+          : webLink
+      }
       className="max-h-[theme(spacing.5)] max-w-[theme(spacing.10)]"
       src={getIcon(icon) ?? unknownIcon}
+      crossOrigin="anonymous"
     />
   );
   const Component =
@@ -172,45 +142,55 @@ export function WebLinkField({
           rel={isExternal ? 'noopener' : undefined}
           target={isExternal ? '_blank' : undefined}
           title={definition.description}
-          onClick={undefined}
+          onClick={(event): void => {
+            if (url === undefined) return;
+            if (definition.parts.some(({ type }) => type === 'PromptField')) {
+              event.preventDefault();
+              setShowPrompt(true);
+            }
+          }}
         >
           {image}
+          {showPrompt && (
+            <Prompt
+              label={definition.name}
+              parts={definition.parts}
+              prompt={[prompt, setPrompt]}
+              url={url}
+              onClose={(): void => setShowPrompt(false)}
+            />
+          )}
         </Component>
       ) : undefined}
     </div>
   );
 }
 
-type ParsedWebLink = {
-  readonly description: LocalizedString;
-  readonly template: string;
-  readonly args: RA<string>;
-  readonly isExternal: boolean;
-};
-
 function useDefinition(
   table: SpecifyTable | undefined,
   fieldName: string | undefined,
-  webLink: string | undefined
-): ParsedWebLink | false | undefined {
-  const [definition] = useAsyncState<ParsedWebLink | false>(
+  webLink: WebLink | string | undefined
+): WebLink | false | undefined {
+  const [definition] = useAsyncState<WebLink | false>(
     React.useCallback(async () => {
+      if (typeof webLink === 'object') return webLink;
       const fieldInfo = table?.getField(fieldName ?? '');
-      const webLinkName = fieldInfo?.getWebLinkName() ?? webLink;
-      const definition = await webLinks.then(
-        (definitions) =>
-          definitions[webLinkName ?? ''] ??
-          caseInsensitiveHash(definitions, webLinkName ?? '')
+      const webLinkName = webLink ?? fieldInfo?.getWebLinkName();
+      const definitions = await webLinks;
+      const definition = caseInsensitiveHash(
+        Object.fromEntries(
+          definitions.map((definition) => [definition.name, definition])
+        ),
+        webLinkName
       );
-      if (typeof definition === 'object')
-        return parseWebLink(definition) ?? false;
+      if (typeof definition === 'object') return definition;
 
-      if (table === undefined) return false;
-      console.error("Couldn't determine WebLink", {
-        tableName: table.name,
-        fieldName,
-        webLinkName,
-      });
+      if (table !== undefined)
+        console.error("Couldn't determine WebLink", {
+          tableName: table.name,
+          fieldName,
+          webLinkName,
+        });
       return false;
     }, [table, fieldName, webLink]),
     false
@@ -218,28 +198,59 @@ function useDefinition(
   return definition;
 }
 
-export function parseWebLink({
-  description,
+function Prompt({
+  label,
+  parts,
+  prompt: [prompt, setPrompt],
   url,
-  parameters,
-}: WebLink): ParsedWebLink | undefined {
-  const template =
-    url
-      ?.replaceAll(/<\s*this\s*>/gu, '<_this>')
-      .replaceAll('AMP', '&')
-      .replaceAll('<', '<%= ')
-      .replaceAll('>', ' %>') ?? '';
-
-  const args = parameters.map(({ name }) =>
-    name === 'this' ? '_this' : name ?? ''
+  onClose: handleClose,
+}: {
+  readonly label: string;
+  readonly parts: WebLink['parts'];
+  readonly prompt: GetSet<IR<string | undefined>>;
+  readonly url: string | undefined;
+  readonly onClose: () => void;
+}): JSX.Element {
+  const id = useId('web-link-prompt');
+  return (
+    <Dialog
+      buttons={
+        <>
+          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+          <Submit.Blue form={id('form')}>{commonText.open()}</Submit.Blue>
+        </>
+      }
+      header={label}
+      onClose={handleClose}
+    >
+      <Form
+        id={id('form')}
+        onSubmit={(): void => {
+          if (typeof url === 'string') window.open(url, '_blank');
+          handleClose();
+        }}
+      >
+        <Ul className="flex flex-col gap-2">
+          {parts.map((part, index) =>
+            part.type === 'PromptField' ? (
+              <li key={index}>
+                <Label.Block>
+                  {part.label}
+                  <Input.Text
+                    value={prompt[part.label] ?? ''}
+                    onValueChange={(value): void =>
+                      setPrompt({
+                        ...prompt,
+                        [part.label]: value,
+                      })
+                    }
+                  />
+                </Label.Block>
+              </li>
+            ) : undefined
+          )}
+        </Ul>
+      </Form>
+    </Dialog>
   );
-
-  return template === undefined
-    ? undefined
-    : {
-        description,
-        template,
-        args,
-        isExternal: false,
-      };
 }

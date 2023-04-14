@@ -10,7 +10,8 @@ import type { Aggregator } from './spec';
 
 export async function aggregate(
   collection: Collection<AnySchema> | RA<SpecifyResource<AnySchema>>,
-  aggregator?: Aggregator | string
+  aggregator?: Aggregator | string,
+  cycleDetector: RA<SpecifyResource<AnySchema>> = []
 ): Promise<string> {
   const allResources = Array.isArray(collection)
     ? collection
@@ -46,7 +47,12 @@ export async function aggregate(
   return Promise.all(
     resources.map(async (resource) =>
       f.all({
-        formatted: format(resource, resolvedAggregator.formatter),
+        formatted: format(
+          resource,
+          resolvedAggregator.formatter,
+          false,
+          cycleDetector
+        ),
         sortValue:
           resolvedAggregator.sortField === undefined
             ? undefined

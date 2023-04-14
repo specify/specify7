@@ -1,9 +1,7 @@
-import { f } from '../functools';
-import type { IR, R, RA } from '../types';
-import { setDevelopmentGlobal } from '../types';
+import type { IR, RA } from '../types';
 import { csrfToken } from './csrfToken';
 import { Http } from './definitions';
-import { csrfSafeMethod, isExternalUrl } from './helpers';
+import { csrfSafeMethod, extractAppResourceId, isExternalUrl } from './helpers';
 import { handleAjaxResponse } from './response';
 
 // REFACTOR: add a central place for all API endpoint definitions
@@ -138,18 +136,3 @@ export const ajax = async <RESPONSE_TYPE = string>(
             });
           }
         );
-
-export const appResourceIds: R<number | undefined> = {};
-setDevelopmentGlobal('_appResourceIds', appResourceIds);
-
-/**
- * Keep track of IDs of fetched app resources. This powers the app resource
- * edit button in schema config
- */
-function extractAppResourceId(url: string, response: Response): void {
-  const parsed = new URL(url, globalThis.location.origin);
-  if (parsed.pathname === '/context/app.resource')
-    appResourceIds[parsed.searchParams.get('name') ?? ''] = f.parseInt(
-      response.headers.get('X-Record-ID') ?? undefined
-    );
-}

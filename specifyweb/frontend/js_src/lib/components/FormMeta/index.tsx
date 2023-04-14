@@ -5,15 +5,18 @@ import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { reportsText } from '../../localization/report';
+import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
 import { f } from '../../utils/functools';
 import { H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
+import { Link } from '../Atoms/Link';
 import { toTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { GenerateLabel } from '../FormCommands';
+import { InFormEditorContext } from '../FormEditor/Context';
 import { PrintOnSave } from '../FormFields/Checkbox';
 import type { ViewDescription } from '../FormParse';
 import { SubViewContext } from '../Forms/SubView';
@@ -24,6 +27,7 @@ import {
   ProtectedAction,
   ProtectedTool,
 } from '../Permissions/PermissionDenied';
+import { UnloadProtectsContext } from '../Router/Router';
 import { AutoNumbering } from './AutoNumbering';
 import { CarryForwardConfig } from './CarryForward';
 import { AddButtonConfig, CloneConfig } from './Clone';
@@ -51,7 +55,10 @@ export function FormMeta({
   const [isOpen, _, handleClose, handleToggle] = useBooleanState();
   const [isReadOnly = false] = useCachedState('forms', 'readOnlyMode');
   const subView = React.useContext(SubViewContext);
-  return typeof resource === 'object' ? (
+  const isInFormEditor = React.useContext(InFormEditorContext);
+  return isInFormEditor && typeof viewDescription === 'object' ? (
+    <FormEditorLink viewDescription={viewDescription} />
+  ) : typeof resource === 'object' ? (
     <>
       <Button.Small
         aria-label={formsText.formMeta()}
@@ -71,6 +78,41 @@ export function FormMeta({
           onClose={handleClose}
         />
       ) : undefined}
+    </>
+  ) : null;
+}
+
+function FormEditorLink({
+  viewDescription,
+}: {
+  readonly viewDescription: ViewDescription;
+}): JSX.Element | null {
+  const needsSaving =
+    (React.useContext(UnloadProtectsContext)?.length ?? 0) > 0;
+  const [showAlert, handleShowAlert, handleHideAlert] = useBooleanState();
+  return typeof viewDescription.viewSetId === 'number' ? (
+    <>
+      <Link.Small
+        href={`/specify/resources/view-set/${viewDescription.viewSetId}/${viewDescription.table.name}/${viewDescription.name}/`}
+        onClick={(event): void => {
+          if (!needsSaving) return;
+          event.preventDefault();
+          handleShowAlert();
+        }}
+        title={commonText.edit()}
+        aria-label={commonText.edit()}
+      >
+        {icons.pencil}
+      </Link.Small>
+      {showAlert && (
+        <Dialog
+          buttons={commonText.close()}
+          header={resourcesText.saveFormFirst()}
+          onClose={handleHideAlert}
+        >
+          {resourcesText.saveFormFirstDescription()}
+        </Dialog>
+      )}
     </>
   ) : null;
 }
@@ -105,8 +147,8 @@ function MetaDialog({
           <>
             <CloneConfig table={resource.specifyTable} />
             <CarryForwardConfig
-              table={resource.specifyTable}
               parentTable={undefined}
+              table={resource.specifyTable}
               type="button"
             />
             <AddButtonConfig table={resource.specifyTable} />
@@ -138,8 +180,8 @@ function MetaDialog({
             defaultValue={false}
             field={undefined}
             id={undefined}
-            table={resource.specifyTable}
             name={undefined}
+            table={resource.specifyTable}
             text={
               interactionTables.has(resource.specifyTable.name)
                 ? reportsText.generateReportOnSave()
@@ -150,7 +192,7 @@ function MetaDialog({
       </Section>
       {subView !== undefined && (
         <Section header={formsText.subviewConfiguration()}>
-          <SubViewMeta table={resource.specifyTable} subView={subView} />
+          <SubViewMeta subView={subView} table={resource.specifyTable} />
         </Section>
       )}
       <Section

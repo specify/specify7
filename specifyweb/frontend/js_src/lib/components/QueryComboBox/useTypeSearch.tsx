@@ -5,16 +5,13 @@ import { filterArray } from '../../utils/types';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { load } from '../InitialContext';
-import { formatUrl } from '../Router/queryString';
 import { xmlToSpec } from '../Syncer/xmlUtils';
 import type { TypeSearch } from './spec';
 import { typeSearchesSpec } from './spec';
+import { getAppResourceUrl } from '../../utils/ajax/helpers';
 
 export const typeSearches = Promise.all([
-  load<Element>(
-    formatUrl('/context/app.resource', { name: 'TypeSearches' }),
-    'text/xml'
-  ),
+  load<Element>(getAppResourceUrl('TypeSearches'), 'text/xml'),
   import('../DataModel/tables').then(async ({ fetchContext }) => fetchContext),
 ]).then(([xml]) =>
   filterArray(xmlToSpec(xml, typeSearchesSpec()).typeSearches)
@@ -38,7 +35,8 @@ export function useTypeSearch(
       return typeSearches.then(
         (typeSearches) =>
           typeSearches.find(({ name }) => name === initialTypeSearch) ??
-          typeSearches.find(({ table }) => table === relatedTable)
+          typeSearches.find(({ table }) => table === relatedTable) ??
+          false
       );
     }, [initialTypeSearch, relatedTable]),
     false

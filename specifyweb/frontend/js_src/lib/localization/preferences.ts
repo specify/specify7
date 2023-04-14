@@ -230,7 +230,7 @@ export const preferencesText = createDictionary({
     'en-us': 'Field background',
     'ru-ru': 'Фон поля',
     'es-es': 'Fondo de campo',
-    'fr-fr': 'Fond de champ',
+    'fr-fr': 'Fond de terrain',
     'uk-ua': 'Поле фону',
   },
   disabledFieldBackground: {
@@ -1375,7 +1375,7 @@ export const preferencesText = createDictionary({
     `,
     'ru-ru': `
       Показывать «*» в заголовке вкладки, если на текущей вкладке есть
-      несохраненные изменения.
+      несохраненные изменения
     `,
     'uk-ua': `
       Показувати «*» у заголовку вкладки, якщо в поточній вкладці є незбережені
@@ -1409,5 +1409,11 @@ export const preferencesText = createDictionary({
     'es-es': 'Usar modernos tooltips',
     'fr-fr': 'Utiliser des infobulles modernes',
     'uk-ua': 'Використовувати сучасні підказки',
+  },
+  alwaysUseQueryBuilder: {
+    'en-us': 'Always use query builder search inside of search form',
+  },
+  localizeResourceNames: {
+    'en-us': 'Localize the names of recognized app resources',
   },
 } as const);

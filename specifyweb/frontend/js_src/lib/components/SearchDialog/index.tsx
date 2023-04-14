@@ -1,14 +1,13 @@
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
-import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
-import type { RA } from '../../utils/types';
+import type { RA, RR } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -20,13 +19,12 @@ import type { AnySchema, CommonFields } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
 import type { SpecifyTable } from '../DataModel/specifyTable';
-import type { SpQueryField } from '../DataModel/types';
+import type { SpQueryField, Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import { raise } from '../Errors/Crash';
 import { format } from '../Formatters/formatters';
 import { SpecifyForm } from '../Forms/SpecifyForm';
 import { useViewDefinition } from '../Forms/useViewDefinition';
-import { load } from '../InitialContext';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { ProtectedAction } from '../Permissions/PermissionDenied';
 import { createQuery } from '../QueryBuilder';
@@ -34,18 +32,8 @@ import type { QueryFieldFilter } from '../QueryBuilder/FieldFilter';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
-import { formatUrl } from '../Router/queryString';
-import { xmlToSpec } from '../Syncer/xmlUtils';
+import { usePref } from '../UserPreferences/usePref';
 import { queryCbxExtendedSearch } from './helpers';
-import { dialogsSpec } from './spec';
-
-export const searchDialogDefinitions = Promise.all([
-  load<Element>(
-    formatUrl('/context/app.resource', { name: 'DialogDefs' }),
-    'text/xml'
-  ),
-  import('../DataModel/tables').then(async ({ fetchContext }) => fetchContext),
-]).then(([xml]) => xmlToSpec(xml, dialogsSpec()).dialogs);
 
 const resourceLimit = 100;
 
@@ -56,46 +44,104 @@ export type QueryComboBoxFilter<SCHEMA extends AnySchema> = {
   readonly value: string;
 };
 
+const viewNameExceptions: Partial<RR<keyof Tables, string>> = {
+  GeologicTimePeriod: 'ChronosStratSearch',
+};
+
 /**
  * Display a resource search dialog
  */
-export function SearchDialog<SCHEMA extends AnySchema>({
-  forceCollection,
-  extraFilters = [],
-  templateResource,
-  multiple,
-  onSelected: handleSelected,
-  onClose: handleClose,
-}: {
+export function SearchDialog<SCHEMA extends AnySchema>(props: {
   readonly forceCollection: number | undefined;
   readonly extraFilters: RA<QueryComboBoxFilter<SCHEMA>> | undefined;
   readonly templateResource: SpecifyResource<SCHEMA>;
   readonly multiple: boolean;
   readonly onClose: () => void;
+  readonly searchView?: string;
   readonly onSelected: (resources: RA<SpecifyResource<SCHEMA>>) => void;
 }): JSX.Element | null {
-  const [viewName, setViewName] = useAsyncState(
-    React.useCallback(
-      async () =>
-        searchDialogDefinitions.then(
-          (definitions) =>
-            definitions.find(
-              ({ type, name }) =>
-                type === 'search' &&
-                name.toLowerCase() ===
-                  templateResource.specifyTable.searchDialog?.toLowerCase()
-            )?.view ?? false
-        ),
-      [templateResource]
-    ),
-    true
+  const [alwaysUseQueryBuilder] = usePref(
+    'form',
+    'queryComboBox',
+    'alwaysUseQueryBuilder'
+  );
+  const [useQueryBuilder, handleUseQueryBuilder] = useBooleanState(
+    alwaysUseQueryBuilder
+  );
+  return useQueryBuilder ? (
+    <QueryBuilderSearch
+      {...props}
+      table={props.templateResource.specifyTable}
+      onSelected={(records): void => {
+        props.onSelected(records);
+        props.onClose();
+      }}
+    />
+  ) : (
+    <SearchForm {...props} onUseQueryBuilder={handleUseQueryBuilder} />
+  );
+}
+
+const filterResults = <SCHEMA extends AnySchema>(
+  results: RA<SpecifyResource<SCHEMA>>,
+  extraFilters: RA<QueryComboBoxFilter<SCHEMA>>
+): RA<SpecifyResource<SCHEMA>> =>
+  results.filter((result) =>
+    extraFilters.every((filter) => testFilter(result, filter))
   );
 
+function testFilter<SCHEMA extends AnySchema>(
+  resource: SpecifyResource<SCHEMA>,
+  { operation, field, value, isNot }: QueryComboBoxFilter<SCHEMA>
+): boolean {
+  const values = value.split(',').map(f.trim);
+  const result =
+    operation === 'between'
+      ? (resource.get(field) ?? 0) >= values[0] &&
+        (resource.get(field) ?? 0) <= values[1]
+      : operation === 'in'
+      ? // eslint-disable-next-line eqeqeq
+        values.some((value) => value == resource.get(field))
+      : operation === 'less'
+      ? values.every((value) => (resource.get(field) ?? 0) < value)
+      : error('Invalid Query Combo Box search filter', {
+          filter: {
+            operation,
+            field,
+            values,
+          },
+          resource,
+        });
+  return isNot ? !result : result;
+}
+
+function SearchForm<SCHEMA extends AnySchema>({
+  forceCollection,
+  extraFilters = emptyArray,
+  templateResource,
+  searchView,
+  onSelected: handleSelected,
+  onClose: handleClose,
+  onUseQueryBuilder: handleUseQueryBuilder,
+}: {
+  readonly forceCollection: number | undefined;
+  readonly extraFilters: RA<QueryComboBoxFilter<SCHEMA>> | undefined;
+  readonly templateResource: SpecifyResource<SCHEMA>;
+  readonly searchView?: string;
+  readonly onClose: () => void;
+  readonly onSelected: (resources: RA<SpecifyResource<SCHEMA>>) => void;
+  readonly onUseQueryBuilder: () => void;
+}): JSX.Element | null {
+  const viewName =
+    viewNameExceptions[templateResource.specifyTable.name] ??
+    `${templateResource.specifyTable.name}Search`;
+
+  const resolvedName = searchView ?? viewName;
   const viewDefinition = useViewDefinition({
-    table:
-      typeof viewName === 'string' ? templateResource.specifyTable : undefined,
-    viewName: typeof viewName === 'string' ? viewName : undefined,
-    fallbackViewName: templateResource.specifyTable.view,
+    table: templateResource.specifyTable,
+    viewName: resolvedName,
+    fallbackViewName:
+      resolvedName === viewName ? templateResource.specifyTable.view : viewName,
     formType: 'form',
     mode: 'search',
   });
@@ -110,13 +156,14 @@ export function SearchDialog<SCHEMA extends AnySchema>({
     | undefined
   >(undefined);
   const id = useId('search-dialog');
-  return typeof viewName === 'string' ? (
+
+  return (
     <Dialog
       buttons={
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
           <ProtectedAction action="execute" resource="/querybuilder/query">
-            <Button.Blue onClick={(): void => setViewName(false)}>
+            <Button.Blue onClick={handleUseQueryBuilder}>
               {queryText.queryBuilder()}
             </Button.Blue>
           </ProtectedAction>
@@ -201,64 +248,21 @@ export function SearchDialog<SCHEMA extends AnySchema>({
         </Ul>
       </Form>
     </Dialog>
-  ) : viewName === false ? (
-    <QueryBuilderSearch
-      extraFilters={extraFilters}
-      forceCollection={forceCollection}
-      multiple={multiple}
-      table={templateResource.specifyTable}
-      onClose={handleClose}
-      onSelected={(records): void => {
-        handleSelected(records);
-        handleClose();
-      }}
-    />
-  ) : null;
-}
-
-const filterResults = <SCHEMA extends AnySchema>(
-  results: RA<SpecifyResource<SCHEMA>>,
-  extraFilters: RA<QueryComboBoxFilter<SCHEMA>>
-): RA<SpecifyResource<SCHEMA>> =>
-  results.filter((result) =>
-    extraFilters.every((filter) => testFilter(result, filter))
   );
-
-function testFilter<SCHEMA extends AnySchema>(
-  resource: SpecifyResource<SCHEMA>,
-  { operation, field, value, isNot }: QueryComboBoxFilter<SCHEMA>
-): boolean {
-  const values = value.split(',').map(f.trim);
-  const result =
-    operation === 'between'
-      ? (resource.get(field) ?? 0) >= values[0] &&
-        (resource.get(field) ?? 0) <= values[1]
-      : operation === 'in'
-      ? // eslint-disable-next-line eqeqeq
-        values.some((value) => value == resource.get(field))
-      : operation === 'less'
-      ? values.every((value) => (resource.get(field) ?? 0) < value)
-      : error('Invalid Query Combo Box search filter', {
-          filter: {
-            operation,
-            field,
-            values,
-          },
-          resource,
-        });
-  return isNot ? !result : result;
 }
+
+const emptyArray = [] as const;
 
 function QueryBuilderSearch<SCHEMA extends AnySchema>({
   forceCollection,
-  extraFilters,
+  extraFilters = emptyArray,
   table,
   onSelected: handleSelected,
   onClose: handleClose,
   multiple,
 }: {
   readonly forceCollection: number | undefined;
-  readonly extraFilters: RA<QueryComboBoxFilter<SCHEMA>>;
+  readonly extraFilters: RA<QueryComboBoxFilter<SCHEMA>> | undefined;
   readonly table: SpecifyTable<SCHEMA>;
   readonly onClose: () => void;
   readonly onSelected: (resources: RA<SpecifyResource<SCHEMA>>) => void;

@@ -6,13 +6,11 @@ import type { SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { cachableUrl } from '../InitialContext';
-import { formatUrl } from '../Router/queryString';
 import { xmlToSpec } from '../Syncer/xmlUtils';
 import { interactionEntries } from './spec';
+import { getAppResourceUrl } from '../../utils/ajax/helpers';
 
-const url = cachableUrl(
-  formatUrl('/context/app.resource', { name: 'InteractionsTaskInit' })
-);
+const url = cachableUrl(getAppResourceUrl('InteractionsTaskInit'));
 export const fetchLegacyInteractions = f.store(async () =>
   ajax<Element>(url, {
     headers: { Accept: 'text/xml' },

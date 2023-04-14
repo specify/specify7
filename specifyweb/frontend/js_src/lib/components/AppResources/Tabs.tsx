@@ -5,7 +5,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { commonText } from '../../localization/common';
 import { resourcesText } from '../../localization/resources';
 import { f } from '../../utils/functools';
-import type { GetSet, IR, RA } from '../../utils/types';
+import type { GetSet, IR, RA, RR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { WarningMessage } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -14,6 +14,7 @@ import { toResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceApiUrl } from '../DataModel/resource';
+import { schema } from '../DataModel/schema';
 import type {
   SpAppResource,
   SpAppResourceDir,
@@ -23,14 +24,17 @@ import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { appResourceIcon } from './EditorComponents';
 import { getAppResourceType, getResourceType } from './filtersHelpers';
-import type { AppResourceTabProps } from './TabDefinitions';
+import type {
+  AppResourceEditorType,
+  AppResourceTabProps,
+} from './TabDefinitions';
 import {
   AppResourceTextEditor,
   visualAppResourceEditors,
 } from './TabDefinitions';
-import { schema } from '../DataModel/schema';
 
-export function AppResourcesTabs({
+export function AppResourcesTab({
+  tab: Component,
   label,
   showValidationRef,
   headerButtons,
@@ -38,10 +42,11 @@ export function AppResourcesTabs({
   resource,
   directory,
   data,
-  index,
   isFullScreen: [isFullScreen, handleChangeFullScreen],
   onChange: handleChange,
+  onSetCleanup: setCleanup,
 }: {
+  readonly tab: Component;
   readonly label: LocalizedString;
   readonly showValidationRef: React.MutableRefObject<(() => void) | null>;
   readonly appResource: SpecifyResource<SpAppResource | SpViewSetObject>;
@@ -50,28 +55,23 @@ export function AppResourcesTabs({
   readonly headerButtons: JSX.Element;
   readonly data: string | null;
   readonly isFullScreen: GetSet<boolean>;
-  readonly index: GetSet<number>;
-  readonly onChange: (data: string | (() => string | null) | null) => void;
+  readonly onChange: (
+    data: string | (() => string | null | undefined) | null
+  ) => void;
+  readonly onSetCleanup: (callback: () => Promise<void>) => void;
 }): JSX.Element {
-  const tabs = useEditorTabs(resource);
   const children = (
-    <Tabs
-      index={index}
-      tabs={Object.fromEntries(
-        tabs.map(({ label, component: Component }, index) => [
-          label,
-          <Component
-            appResource={appResource}
-            data={data}
-            directory={directory}
-            key={index}
-            resource={resource}
-            showValidationRef={showValidationRef}
-            onChange={handleChange}
-          />,
-        ])
-      )}
-    />
+    <ErrorBoundary dismissible>
+      <Component
+        appResource={appResource}
+        data={data}
+        directory={directory}
+        resource={resource}
+        showValidationRef={showValidationRef}
+        onChange={handleChange}
+        onSetCleanup={setCleanup}
+      />
+    </ErrorBoundary>
   );
   return isFullScreen ? (
     <Dialog
@@ -96,43 +96,59 @@ export function AppResourcesTabs({
   );
 }
 
-function useEditorTabs(
+type Component = (props: AppResourceTabProps) => JSX.Element;
+
+export function useEditorTabs(
   resource: SerializedResource<SpAppResource | SpViewSetObject>
 ): RA<{
   readonly label: LocalizedString;
   readonly component: (props: AppResourceTabProps) => JSX.Element;
 }> {
-  const subType = f.maybe(
-    toResource(resource, 'SpAppResource'),
-    getAppResourceType
-  );
+  const subType =
+    f.maybe(toResource(resource, 'SpAppResource'), getAppResourceType) ??
+    'viewSet';
   return React.useMemo(() => {
-    const VisualEditor =
+    const editors =
       typeof subType === 'string'
         ? visualAppResourceEditors()[subType]
         : undefined;
-    return filterArray([
-      typeof VisualEditor === 'function'
-        ? {
-            label: resourcesText.visualEditor(),
-            component(props) {
-              return (
-                <>
-                  <OtherCollectionWarning directory={props.directory} />
-                  <VisualEditor {...props} />
-                </>
-              );
+    return editors === undefined
+      ? [
+          {
+            label: labels.generic,
+            component(props): JSX.Element {
+              return <AppResourceTextEditor {...props} />;
             },
-          }
-        : undefined,
-      // FEATURE: add JSON editor for XML resources 🔥 (based on Syncer)
-      {
-        label: resourcesText.textEditor(),
-        component: AppResourceTextEditor,
-      },
-    ]);
+          },
+        ]
+      : filterArray(
+          Object.entries(editors).map(([type, Editor]) =>
+            typeof Editor === 'function'
+              ? {
+                  label: labels[type],
+                  component(props): JSX.Element {
+                    return (
+                      <>
+                        {type === 'visual' && (
+                          <OtherCollectionWarning directory={props.directory} />
+                        )}
+                        <Editor {...props} />
+                      </>
+                    );
+                  },
+                }
+              : undefined
+          )
+        );
   }, [subType]);
 }
+
+const labels: RR<AppResourceEditorType, string> = {
+  visual: resourcesText.visualEditor(),
+  xml: resourcesText.xmlEditor(),
+  json: resourcesText.jsonEditor(),
+  generic: resourcesText.textEditor(),
+};
 
 /* Display a warning when editing resources from a different collection */
 function OtherCollectionWarning({

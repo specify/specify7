@@ -7,11 +7,10 @@ exports[`type searches are fetched and parsed correctly 1`] = `
       "accessionNumber",
     ],
     "format": "%s",
-    "formatter": "",
     "name": "AccessionCO",
     "searchFields": [
       [
-        "[literalField accessionNumber]",
+        "[literalField Accession.accessionNumber]",
       ],
     ],
     "table": "[table Accession]",
@@ -27,7 +26,7 @@ exports[`type searches are fetched and parsed correctly 1`] = `
     "name": "Agent",
     "searchFields": [
       [
-        "[literalField lastName]",
+        "[literalField Agent.lastName]",
       ],
     ],
     "table": "[table Agent]",
@@ -43,7 +42,7 @@ exports[`type searches are fetched and parsed correctly 1`] = `
     "name": "AgentSSPU",
     "searchFields": [
       [
-        "[literalField lastName]",
+        "[literalField Agent.lastName]",
       ],
     ],
     "table": "[table Agent]",
@@ -54,11 +53,10 @@ exports[`type searches are fetched and parsed correctly 1`] = `
       "appraisalNumber",
     ],
     "format": "%s",
-    "formatter": "",
     "name": "Appraisal",
     "searchFields": [
       [
-        "[literalField appraisalNumber]",
+        "[literalField Appraisal.appraisalNumber]",
       ],
     ],
     "table": "[table Appraisal]",
@@ -69,11 +67,10 @@ exports[`type searches are fetched and parsed correctly 1`] = `
       "schemeName",
     ],
     "format": "%s",
-    "formatter": "",
     "name": "AutoNumberingScheme",
     "searchFields": [
       [
-        "[literalField schemeName]",
+        "[literalField AutoNumberingScheme.schemeName]",
       ],
     ],
     "table": "[table AutoNumberingScheme]",
@@ -84,11 +81,10 @@ exports[`type searches are fetched and parsed correctly 1`] = `
       "fullName",
     ],
     "format": "%s",
-    "formatter": "",
     "name": "BioStrat",
     "searchFields": [
       [
-        "[literalField name]",
+        "[literalField GeologicTimePeriod.name]",
       ],
     ],
     "table": "[table GeologicTimePeriod]",
@@ -99,11 +95,10 @@ exports[`type searches are fetched and parsed correctly 1`] = `
       "schemeName",
     ],
     "format": "%s",
-    "formatter": "",
     "name": "CatAutoNumberingScheme",
     "searchFields": [
       [
-        "[literalField schemeName]",
+        "[literalField AutoNumberingScheme.schemeName]",
       ],
     ],
     "table": "[table AutoNumberingScheme]",
@@ -114,11 +109,10 @@ exports[`type searches are fetched and parsed correctly 1`] = `
       "fullName",
     ],
     "format": "%s",
-    "formatter": "",
     "name": "ChronosStrat",
     "searchFields": [
       [
-        "[literalField name]",
+        "[literalField GeologicTimePeriod.name]",
       ],
     ],
     "table": "[table GeologicTimePeriod]",
@@ -132,11 +126,10 @@ exports[`type searches are fetched and parsed correctly 1`] = `
       "geo.fullName",
     ],
     "format": "%s; %s; %s; %s",
-    "formatter": "",
     "name": "CollectingEvent",
     "searchFields": [
       [
-        "[literalField stationFieldNumber]",
+        "[literalField CollectingEvent.stationFieldNumber]",
       ],
     ],
     "table": "[table CollectingEvent]",
@@ -153,7 +146,7 @@ exports[`type searches are fetched and parsed correctly 1`] = `
     "name": "CollectingTrip",
     "searchFields": [
       [
-        "[literalField collectingTripName]",
+        "[literalField CollectingTrip.collectingTripName]",
       ],
     ],
     "table": "[table CollectingTrip]",
@@ -168,7 +161,7 @@ exports[`type searches are fetched and parsed correctly 1`] = `
     "name": "CollectionObject",
     "searchFields": [
       [
-        "[literalField catalogNumber]",
+        "[literalField CollectionObject.catalogNumber]",
       ],
     ],
     "table": "[table CollectionObject]",
@@ -179,11 +172,10 @@ exports[`type searches are fetched and parsed correctly 1`] = `
       "name",
     ],
     "format": "%s",
-    "formatter": "",
     "name": "Container",
     "searchFields": [
       [
-        "[literalField name]",
+        "[literalField Container.name]",
       ],
     ],
     "table": "[table Container]",
@@ -194,11 +186,10 @@ exports[`type searches are fetched and parsed correctly 1`] = `
       "name",
     ],
     "format": "%s",
-    "formatter": "",
     "name": "ContainerOwner",
     "searchFields": [
       [
-        "[literalField name]",
+        "[literalField Container.name]",
       ],
     ],
     "table": "[table Container]",
@@ -209,11 +200,10 @@ exports[`type searches are fetched and parsed correctly 1`] = `
       "primerDesignator",
     ],
     "format": "%s",
-    "formatter": "",
     "name": "DNAPrimer",
     "searchFields": [
       [
-        "[literalField primerDesignator]",
+        "[literalField DNAPrimer.primerDesignator]",
       ],
     ],
     "table": "[table DNAPrimer]",
@@ -228,7 +218,7 @@ exports[`type searches are fetched and parsed correctly 1`] = `
     "name": "Deaccession",
     "searchFields": [
       [
-        "[literalField deaccessionNumber]",
+        "[literalField Deaccession.deaccessionNumber]",
       ],
     ],
     "table": "[table Deaccession]",
@@ -239,11 +229,10 @@ exports[`type searches are fetched and parsed correctly 1`] = `
       "name",
     ],
     "format": "%s",
-    "formatter": "",
     "name": "Discipline",
     "searchFields": [
       [
-        "[literalField name]",
+        "[literalField Discipline.name]",
       ],
     ],
     "table": "[table Discipline]",
@@ -258,7 +247,7 @@ exports[`type searches are fetched and parsed correctly 1`] = `
     "name": "Disposal",
     "searchFields": [
       [
-        "[literalField disposalNumber]",
+        "[literalField Disposal.disposalNumber]",
       ],
     ],
     "table": "[table Disposal]",
@@ -269,11 +258,10 @@ exports[`type searches are fetched and parsed correctly 1`] = `
       "name",
     ],
     "format": "%s",
-    "formatter": "",
     "name": "Division",
     "searchFields": [
       [
-        "[literalField name]",
+        "[literalField Division.name]",
       ],
     ],
     "table": "[table Division]",
@@ -284,11 +272,10 @@ exports[`type searches are fetched and parsed correctly 1`] = `
       "title",
     ],
     "format": "%s",
-    "formatter": "",
     "name": "Exsiccata",
     "searchFields": [
       [
-        "[literalField title]",
+        "[literalField Exsiccata.title]",
       ],
     ],
     "table": "[table Exsiccata]",
@@ -304,7 +291,7 @@ exports[`type searches are fetched and parsed correctly 1`] = `
     "name": "FieldNotebookPage",
     "searchFields": [
       [
-        "[literalField pageNumber]",
+        "[literalField FieldNotebookPage.pageNumber]",
       ],
     ],
     "table": "[table FieldNotebookPage]",
@@ -319,7 +306,7 @@ exports[`type searches are fetched and parsed correctly 1`] = `
     "name": "Geography",
     "searchFields": [
       [
-        "[literalField name]",
+        "[literalField Geography.name]",
       ],
     ],
     "table": "[table Geography]",
@@ -330,11 +317,10 @@ exports[`type searches are fetched and parsed correctly 1`] = `
       "fullName",
     ],
     "format": "%s",
-    "formatter": "",
     "name": "GeologicTimePeriod",
     "searchFields": [
       [
-        "[literalField name]",
+        "[literalField GeologicTimePeriod.name]",
       ],
     ],
     "table": "[table GeologicTimePeriod]",
@@ -345,11 +331,10 @@ exports[`type searches are fetched and parsed correctly 1`] = `
       "journalName",
     ],
     "format": "%s",
-    "formatter": "",
     "name": "Journal",
     "searchFields": [
       [
-        "[literalField journalName]",
+        "[literalField Journal.journalName]",
       ],
     ],
     "table": "[table Journal]",
@@ -360,11 +345,10 @@ exports[`type searches are fetched and parsed correctly 1`] = `
       "fullName",
     ],
     "format": "%s",
-    "formatter": "",
     "name": "LithoStrat",
     "searchFields": [
       [
-        "[literalField name]",
+        "[literalField LithoStrat.name]",
       ],
     ],
     "table": "[table LithoStrat]",
@@ -380,7 +364,7 @@ exports[`type searches are fetched and parsed correctly 1`] = `
     "name": "Locality",
     "searchFields": [
       [
-        "[literalField localityName]",
+        "[literalField Locality.localityName]",
       ],
     ],
     "table": "[table Locality]",
@@ -391,11 +375,10 @@ exports[`type searches are fetched and parsed correctly 1`] = `
       "viewName",
     ],
     "format": "%s",
-    "formatter": "",
     "name": "MorphBankView",
     "searchFields": [
       [
-        "[literalField viewName]",
+        "[literalField MorphBankView.viewName]",
       ],
     ],
     "table": "[table MorphBankView]",
@@ -413,15 +396,15 @@ exports[`type searches are fetched and parsed correctly 1`] = `
     "name": "PaleoContext",
     "searchFields": [
       [
-        "[literalField paleoContextName]",
+        "[literalField PaleoContext.paleoContextName]",
       ],
       [
-        "[relationship chronosStrat]",
-        "[literalField fullName]",
+        "[relationship PaleoContext.chronosStrat]",
+        "[literalField GeologicTimePeriod.fullName]",
       ],
       [
-        "[relationship lithoStrat]",
-        "[literalField fullName]",
+        "[relationship PaleoContext.lithoStrat]",
+        "[literalField LithoStrat.fullName]",
       ],
     ],
     "table": "[table PaleoContext]",
@@ -432,11 +415,10 @@ exports[`type searches are fetched and parsed correctly 1`] = `
       "permitNumber",
     ],
     "format": "%s",
-    "formatter": "",
     "name": "Permit",
     "searchFields": [
       [
-        "[literalField permitNumber]",
+        "[literalField Permit.permitNumber]",
       ],
     ],
     "table": "[table Permit]",
@@ -447,11 +429,10 @@ exports[`type searches are fetched and parsed correctly 1`] = `
       "name",
     ],
     "format": "%s",
-    "formatter": "",
     "name": "PrepType",
     "searchFields": [
       [
-        "[literalField name]",
+        "[literalField PrepType.name]",
       ],
     ],
     "table": "[table PrepType]",
@@ -462,11 +443,10 @@ exports[`type searches are fetched and parsed correctly 1`] = `
       "title",
     ],
     "format": "%s",
-    "formatter": "",
     "name": "ReferenceWork",
     "searchFields": [
       [
-        "[literalField title]",
+        "[literalField ReferenceWork.title]",
       ],
     ],
     "table": "[table ReferenceWork]",
@@ -477,11 +457,10 @@ exports[`type searches are fetched and parsed correctly 1`] = `
       "repositoryAgreementNumber",
     ],
     "format": "%s",
-    "formatter": "",
     "name": "RepositoryAgreement",
     "searchFields": [
       [
-        "[literalField repositoryAgreementNumber]",
+        "[literalField RepositoryAgreement.repositoryAgreementNumber]",
       ],
     ],
     "table": "[table RepositoryAgreement]",
@@ -492,11 +471,10 @@ exports[`type searches are fetched and parsed correctly 1`] = `
       "fullName",
     ],
     "format": "%s",
-    "formatter": "",
     "name": "Storage",
     "searchFields": [
       [
-        "[literalField name]",
+        "[literalField Storage.name]",
       ],
     ],
     "table": "[table Storage]",
@@ -511,7 +489,7 @@ exports[`type searches are fetched and parsed correctly 1`] = `
     "name": "Taxon",
     "searchFields": [
       [
-        "[literalField fullName]",
+        "[literalField Taxon.fullName]",
       ],
     ],
     "table": "[table Taxon]",
@@ -522,11 +500,10 @@ exports[`type searches are fetched and parsed correctly 1`] = `
       "name",
     ],
     "format": "%s",
-    "formatter": "",
     "name": "TaxonTreeDefItem",
     "searchFields": [
       [
-        "[literalField name]",
+        "[literalField TaxonTreeDefItem.name]",
       ],
     ],
     "table": "[table TaxonTreeDefItem]",

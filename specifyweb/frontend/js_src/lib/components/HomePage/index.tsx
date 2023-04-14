@@ -51,7 +51,7 @@ function WelcomeScreenContent(): JSX.Element {
   ) : mode === 'default' ? (
     defaultSplashScreen
   ) : (
-    <img alt="" className="h-full" src={source} />
+    <img alt="" className="h-full" src={source} crossOrigin="anonymous" />
   );
 }
 

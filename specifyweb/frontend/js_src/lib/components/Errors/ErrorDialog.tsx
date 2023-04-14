@@ -17,7 +17,7 @@ import {
   SetUnloadProtectsContext,
   UnloadProtectsContext,
 } from '../Router/Router';
-import { clearCache } from '../RouterCommands/CacheBuster';
+import { clearAllCache } from '../RouterCommands/CacheBuster';
 import { usePref } from '../UserPreferences/usePref';
 
 const supportEmail = 'support@specifysoftware.org' as LocalizedString;
@@ -134,7 +134,7 @@ export function ErrorDialog({
             onClick={(): void =>
               legacyLoadingContext(
                 (clearCacheOnException
-                  ? clearCache()
+                  ? clearAllCache()
                   : Promise.resolve(undefined)
                 ).then(() => globalThis.location.assign('/specify/'))
               )

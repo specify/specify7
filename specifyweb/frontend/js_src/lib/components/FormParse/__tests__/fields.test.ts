@@ -4,14 +4,11 @@ import { reportsText } from '../../../localization/report';
 import { requireContext } from '../../../tests/helpers';
 import { strictParseXml } from '../../AppResources/codeMirrorLinters';
 import { getField } from '../../DataModel/helpers';
+import { tables } from '../../DataModel/tables';
+import type { SimpleXmlNode } from '../../Syncer/xmlToJson';
+import { toSimpleXmlNode, xmlToJson } from '../../Syncer/xmlToJson';
 import { parseFormField } from '../fields';
 import { generateInit } from './helpers';
-import { tables } from '../../DataModel/tables';
-import {
-  SimpleXmlNode,
-  toSimpleXmlNode,
-  xmlToJson,
-} from '../../Syncer/xmlToJson';
 
 requireContext();
 
@@ -199,7 +196,11 @@ describe('parseFormField', () => {
   test('Query Combo Box', () =>
     expect(
       parse('<cell uiType="querycbx"/>', {
-        getProperty: generateInit({ cloneBtn: 'TRUE', name: 'NAME' }),
+        getProperty: generateInit({
+          cloneBtn: 'TRUE',
+          name: 'NAME',
+          searchView: 'a',
+        }),
         fields: [tables.CollectionObject.strictGetField('accession')],
       })
     ).toEqual({
@@ -207,6 +208,7 @@ describe('parseFormField', () => {
       hasCloneButton: true,
       type: 'QueryComboBox',
       typeSearch: 'NAME',
+      searchView: 'a',
     }));
 
   test('Readonly Query Combo Box', () =>

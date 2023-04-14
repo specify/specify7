@@ -71,6 +71,7 @@ snapshot(DataEntry.Edit, { onClick: f.never });
 snapshot(DataEntry.Clone, { onClick: f.never });
 snapshot(DataEntry.Search, { onClick: f.never });
 snapshot(DataEntry.Remove, { onClick: f.never });
+
 describe('DataEntry.visit', () => {
   snapshot(DataEntry.Visit, { resource: undefined }, 'no resource');
   snapshot(

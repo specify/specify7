@@ -27,7 +27,7 @@ import type { SpecifyResource } from './legacyTypes';
 import { parseJavaClassName } from './resource';
 import { ResourceBase } from './resourceApi';
 import type { SchemaLocalization } from './tables';
-import { getSchemaLocalization } from './tables';
+import { getSchemaLocalization, getTable } from './tables';
 import { schema, unescape } from './schema';
 import { schemaAliases } from './schemaExtras';
 import { getTableOverwrite, tableViews } from './schemaOverrides';
@@ -446,5 +446,11 @@ export class SpecifyTable<SCHEMA extends AnySchema = AnySchema> {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   public toJSON(): string {
     return `[table ${this.name}]`;
+  }
+
+  public static fromJson(value: string): SpecifyTable | undefined {
+    if (!value.startsWith('[table ') || !value.endsWith(']')) return undefined;
+    const tableName = value.replace('[table ', '').replace(']', '');
+    return getTable(tableName);
   }
 }

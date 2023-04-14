@@ -54,6 +54,8 @@ function extractDatePart(fieldName: string): {
 }
 
 // TEST: add comprehensive unit tests for this
+//    can use the test cases added here as a basis:
+//    https://github.com/specify/specify7/commit/7c2dab6e3074caf384ffe62dc760bd9f8262ad09
 export class QueryFieldSpec {
   public readonly baseTable: SpecifyTable;
 

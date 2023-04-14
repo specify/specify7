@@ -4,6 +4,7 @@
 
 import React from 'react';
 
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { SafeOutlet } from '../Router/RouterUtils';
 import type {
   NewSpLocaleItemString,
@@ -11,7 +12,6 @@ import type {
 } from '../SchemaConfig';
 import type { SchemaData } from '../SchemaConfig/schemaData';
 import { fetchSchemaData } from '../SchemaConfig/schemaData';
-import { useAsyncState } from '../../hooks/useAsyncState';
 
 export type WithFetchedStrings = {
   readonly strings: {
@@ -21,9 +21,9 @@ export type WithFetchedStrings = {
 };
 
 export function SchemaConfig(): JSX.Element | null {
-  const schemaData = useAsyncState(fetchSchemaData, true)[0];
+  const [schemaData, setSchemaData] = useAsyncState(fetchSchemaData, true);
 
   return schemaData === undefined ? null : (
-    <SafeOutlet<SchemaData> {...schemaData} />
+    <SafeOutlet<SchemaData> {...schemaData} update={setSchemaData} />
   );
 }

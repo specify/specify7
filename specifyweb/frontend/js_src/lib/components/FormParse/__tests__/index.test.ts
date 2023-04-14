@@ -8,8 +8,11 @@ import type { RA } from '../../../utils/types';
 import { ensure } from '../../../utils/types';
 import { removeKey } from '../../../utils/utils';
 import { strictParseXml } from '../../AppResources/codeMirrorLinters';
+import { tables } from '../../DataModel/tables';
 import { getPref } from '../../InitialContext/remotePrefs';
 import { formatUrl } from '../../Router/queryString';
+import type { SimpleXmlNode } from '../../Syncer/xmlToJson';
+import { toSimpleXmlNode, xmlToJson } from '../../Syncer/xmlToJson';
 import type { FormCellDefinition } from '../cells';
 import type { ParsedFormDefinition, ViewDefinition } from '../index';
 import {
@@ -20,12 +23,6 @@ import {
   resolveViewDefinition,
 } from '../index';
 import { spAppResourceView } from '../webOnlyViews';
-import { tables } from '../../DataModel/tables';
-import {
-  SimpleXmlNode,
-  toSimpleXmlNode,
-  xmlToJson,
-} from '../../Syncer/xmlToJson';
 
 const {
   views,
@@ -220,10 +217,12 @@ const viewDefinition: ViewDefinition = {
   viewdefs: {
     Preparation: formView,
   },
+  view: '',
   viewsetLevel: '',
   viewsetName: '',
   viewsetSource: '',
   viewsetId: null,
+  viewsetFile: null,
 };
 
 describe('fetchView', () => {
@@ -284,7 +283,8 @@ test('parseViewDefinition', () => {
       },
     },
     'form',
-    'view'
+    'view',
+    tables.CollectionObject
   )!;
   expect(result).toBeDefined();
   expect(result.table?.name).toBe(tables.CollectionObject.name);
@@ -302,7 +302,7 @@ test('resolveViewDefinition', () => {
   const result = resolveViewDefinition(viewDefinition, 'form', 'view')!;
   expect(result).toBeDefined();
   expect(result.viewDefinition).toEqual(simpleFormView);
-  expect(result.table.name).toBe(tables.CollectionObject.name);
+  expect(result.table?.name).toBe(tables.CollectionObject.name);
   expect(result.formType).toBe('form');
   expect(result.mode).toBe('view');
 });

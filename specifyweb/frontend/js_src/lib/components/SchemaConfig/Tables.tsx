@@ -56,6 +56,10 @@ export function SchemaConfigTables(): JSX.Element {
   );
 }
 
+/**
+ * Get the names of all cache categories in cache definitions that have
+ * a "showHiddenTables" key
+ */
 type CacheKey = {
   readonly [KEY in keyof CacheDefinitions]: CacheDefinitions[KEY] extends {
     readonly showHiddenTables: boolean;

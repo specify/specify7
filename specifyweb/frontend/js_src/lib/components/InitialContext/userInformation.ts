@@ -34,10 +34,10 @@ export const fetchContext = load<
       // @ts-expect-error
       userInfo[key as keyof UserInformation] = value;
     });
-    await import('../DataModel/schema').then(
+    await import('../DataModel/tables').then(
       async ({ fetchContext }) => fetchContext
     );
-    await import('../DataModel/schemaBase').then(
+    await import('../DataModel/schema').then(
       async ({ fetchContext }) => fetchContext
     );
     userInfo.availableCollections = availableCollections.map(serializeResource);
