@@ -22,6 +22,10 @@ import { propsToFormMode } from '../Forms/useViewDefinition';
 import { TableIcon } from '../Molecules/TableIcon';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { FormTableInteraction } from './FormTableInteraction';
+import { filterArray } from '../../utils/types';
+import { resourceOn } from '../DataModel/resource';
+import { softFail } from '../Errors/Crash';
+import { fetchPathAsString } from '../Formatters/formatters';
 
 const cellRenderers: {
   readonly [KEY in keyof CellTypes]: (props: {
@@ -193,19 +197,65 @@ const cellRenderers: {
       </ReadOnlyContext.Provider>
     );
   },
-  Panel({ formType, resource, cellData: { display, ...cellData } }) {
+  Panel({ formType, resource, cellData: { display, definitions } }) {
+    const [definitionIndex, setDefinitionIndex] = React.useState(0);
+    React.useEffect(() => {
+      let destructorCalled = false;
+      const watchFields = f.unique(
+        filterArray(
+          definitions.map(({ condition }) =>
+            condition?.type === 'Value' ? condition?.field[0].name : undefined
+          )
+        )
+      );
+
+      const handleChange = () =>
+        Promise.resolve().then(async () => {
+          let foundIndex = 0;
+          for (const [index, { condition }] of Object.entries(definitions)) {
+            if (condition === undefined) continue;
+            if (condition.type === 'Always') {
+              foundIndex = Number.parseInt(index);
+              break;
+            }
+            const value = await fetchPathAsString(resource, condition.field);
+            if (!destructorCalled && value === condition.value) {
+              foundIndex = Number.parseInt(index);
+              break;
+            }
+          }
+          setDefinitionIndex(foundIndex);
+        });
+      handleChange().catch(softFail);
+
+      const destructors = watchFields.map((fieldName) =>
+        resourceOn(
+          resource,
+          `change:${fieldName}`,
+          () => handleChange().catch(softFail),
+          false
+        )
+      );
+
+      return (): void => {
+        destructors.forEach((destructor) => destructor());
+        destructorCalled = true;
+      };
+    }, [resource, definitions]);
+
     const isReadOnly = React.useContext(ReadOnlyContext);
     const isInSearchDialog = React.useContext(SearchDialogContext);
+    const definition = definitions[definitionIndex].definition;
     const mode = propsToFormMode(isReadOnly, isInSearchDialog);
     const viewDefinition = React.useMemo(
       () => ({
-        ...cellData,
+        ...definition,
         mode,
         name: 'panel',
         formType,
         table: resource.specifyTable,
       }),
-      [cellData, formType, resource.specifyTable, mode]
+      [definition, formType, resource.specifyTable, mode]
     );
 
     const form = (

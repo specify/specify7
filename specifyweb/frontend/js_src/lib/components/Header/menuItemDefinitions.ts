@@ -11,6 +11,7 @@ import { reportsText } from '../../localization/report';
 import { treeText } from '../../localization/tree';
 import { wbText } from '../../localization/workbench';
 import { getCache } from '../../utils/cache';
+import { f } from '../../utils/functools';
 import type { IR } from '../../utils/types';
 import { ensure } from '../../utils/types';
 import { icons } from '../Atoms/Icons';
@@ -108,6 +109,6 @@ export type MenuItemName = keyof typeof rawMenuItems | 'search';
 /**
  * Don't use this directly. Use useMenuItems() instead
  */
-export const rawMenuItemsPromise = fetchPermissions.then(async () =>
-  filterMenuItems(rawMenuItems)
+export const rawMenuItemsPromise = f.store(async () =>
+  fetchPermissions.then(async () => filterMenuItems(rawMenuItems))
 );

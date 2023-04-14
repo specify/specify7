@@ -4,6 +4,7 @@
  */
 
 import type { LocalizedString } from 'typesafe-i18n';
+import type { State } from 'typesafe-reducer';
 
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
@@ -13,6 +14,7 @@ import { defined, filterArray } from '../../utils/types';
 import { parseXml } from '../AppResources/codeMirrorLinters';
 import { formatDisjunction } from '../Atoms/Internationalization';
 import { parseJavaClassName } from '../DataModel/resource';
+import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { getTable, strictGetTable } from '../DataModel/tables';
 import { error } from '../Errors/assert';
@@ -128,7 +130,10 @@ export function parseViewDefinition(
   const { mode, formType, viewDefinition, table = currentTable } = resolved;
 
   const parser =
-    formType === 'formTable' ? parseFormTableDefinition : parseFormDefinition;
+    formType === 'formTable'
+      ? parseFormTableDefinition
+      : (viewDefinition: SimpleXmlNode, table: SpecifyTable) =>
+          parseFormDefinition(viewDefinition, table)[0].definition;
 
   const logIndexBefore = consoleLog.length;
   const parsed = parser(viewDefinition, table);
@@ -275,7 +280,7 @@ function parseFormTableDefinition(
   viewDefinition: SimpleXmlNode,
   table: SpecifyTable
 ): ParsedFormDefinition {
-  const { rows } = parseFormDefinition(viewDefinition, table);
+  const { rows } = parseFormDefinition(viewDefinition, table)[0].definition;
   const labelsForCells = Object.fromEntries(
     filterArray(
       rows
@@ -340,43 +345,89 @@ function parseFormTableColumns(
   ];
 }
 
+export type ConditionalFormDefinition = RA<{
+  readonly condition:
+    | State<
+        'Value',
+        {
+          readonly field: RA<LiteralField | Relationship>;
+          readonly value: string;
+        }
+      >
+    | State<'Always'>
+    | undefined;
+  readonly definition: ParsedFormDefinition;
+}>;
+
 export function parseFormDefinition(
   viewDefinition: SimpleXmlNode,
   table: SpecifyTable
-): ParsedFormDefinition {
+): ConditionalFormDefinition {
+  const rowsContainers = viewDefinition?.children?.rows ?? [];
   const context = getLogContext();
-  const rowsContainer = viewDefinition?.children?.rows.at(0);
-  const rows = rowsContainer?.children?.row ?? [];
-  const data = postProcessFormDef(
-    processColumnDefinition(getColumnDefinitions(viewDefinition)),
-    rows.map((row, index) => {
-      const context = getLogContext();
-      pushContext({
-        type: 'Child',
-        tagName: 'row',
-        extras: { row: index + 1 },
-      });
-
-      const data = row.children.cell?.map((cell, index) => {
+  const definition = rowsContainers.map((rowsContainer, definitionIndex) => {
+    const context = getLogContext();
+    pushContext({
+      type: 'Root',
+      node: rowsContainer,
+      extras: { definitionIndex },
+    });
+    const rows = rowsContainer?.children?.row ?? [];
+    const definition = postProcessFormDef(
+      processColumnDefinition(getColumnDefinitions(viewDefinition)),
+      rows.map((row, index) => {
         const context = getLogContext();
         pushContext({
           type: 'Child',
-          tagName: 'cell',
+          tagName: 'row',
           extras: { row: index + 1 },
         });
 
-        const data = parseFormCell(table, cell);
+        const data = row.children.cell?.map((cell, index) => {
+          const context = getLogContext();
+          pushContext({
+            type: 'Child',
+            tagName: 'cell',
+            extras: { row: index + 1 },
+          });
 
+          const data = parseFormCell(table, cell);
+
+          setLogContext(context);
+          return data;
+        });
         setLogContext(context);
-        return data;
-      });
-      setLogContext(context);
-      return data ?? [];
-    }),
-    table
-  );
+        return data ?? [];
+      }),
+      table
+    );
+
+    const condition = getParsedAttribute(rowsContainer, 'condition')?.split(
+      '='
+    );
+    if (typeof condition === 'object') {
+      if (condition.length === 1 && condition[0] === 'always')
+        return { condition: { type: 'Always' }, definition } as const;
+      const value = condition.slice(1).join('=');
+      const parsedField = table.getFields(condition[0]);
+      if (Array.isArray(parsedField)) {
+        return {
+          condition: {
+            type: 'Value',
+            field: parsedField,
+            value,
+          },
+          definition,
+        } as const;
+      }
+    }
+
+    setLogContext(context);
+    return { condition: undefined, definition };
+  });
+
   setLogContext(context);
-  return data;
+  return definition;
 }
 
 function getColumnDefinitions(viewDefinition: SimpleXmlNode): string {
@@ -385,10 +436,8 @@ function getColumnDefinitions(viewDefinition: SimpleXmlNode): string {
       viewDefinition,
       getPref('form.definition.columnSource')
     ) ?? getColumnDefinition(viewDefinition, undefined);
-  const resolved = definition ?? getParsedAttribute(viewDefinition, 'colDef');
-  if (resolved === undefined)
-    console.warn('Form definition does not contain column definition');
-  return resolved ?? '';
+  // Specify 7 handles forms without column definition fine, so no need to warn for this
+  return definition ?? getParsedAttribute(viewDefinition, 'colDef') ?? '';
 }
 
 const getColumnDefinition = (

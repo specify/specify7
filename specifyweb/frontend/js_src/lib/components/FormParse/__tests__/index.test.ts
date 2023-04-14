@@ -79,6 +79,56 @@ const formView = `<viewdef type="form" class="edu.ku.brc.specify.datamodel.Colle
   </viewdef>`;
 const simpleFormView = xml(formView);
 
+const baseCell = {
+  id: undefined,
+  colSpan: 1,
+  align: 'left',
+  visible: true,
+  ariaLabel: undefined,
+} as const;
+
+const parsedFormView = {
+  columns: [1, undefined, undefined],
+  rows: [
+    [
+      {
+        ...baseCell,
+        align: 'center',
+        colSpan: 2,
+        id: 'tt',
+        type: 'Field',
+        fieldDefinition: {
+          type: 'Text',
+          min: undefined,
+          max: undefined,
+          step: undefined,
+          isReadOnly: false,
+          defaultValue: undefined,
+        },
+        fieldNames: ['catalogNumber'],
+        isRequired: false,
+        ariaLabel: 'test' as LocalizedString,
+      },
+      {
+        ...baseCell,
+        align: 'center',
+        colSpan: 1,
+        type: 'Field',
+        fieldDefinition: {
+          type: 'Checkbox',
+          label: undefined,
+          printOnSave: false,
+          defaultValue: false,
+          isReadOnly: false,
+        },
+        fieldNames: ['accession', 'text1'],
+        isRequired: false,
+        ariaLabel: '2' as LocalizedString,
+      },
+    ],
+  ],
+};
+
 const formTableView = `<viewdef type="formtable" />`;
 
 const tinyFormView = `<viewdef type="form" class="edu.ku.brc.specify.datamodel.CollectionObject">
@@ -93,14 +143,6 @@ const tinyFormView = `<viewdef type="form" class="edu.ku.brc.specify.datamodel.C
     </row> 
   </rows>
 </viewdef>`;
-
-const baseCell = {
-  id: undefined,
-  colSpan: 1,
-  align: 'left',
-  visible: true,
-  ariaLabel: undefined,
-} as const;
 
 const parsedTinyView: ParsedFormDefinition = {
   columns: [1, undefined, undefined],
@@ -124,6 +166,33 @@ const parsedTinyView: ParsedFormDefinition = {
         type: 'Unsupported',
         cellType: undefined,
       },
+      {
+        ...baseCell,
+        colSpan: 2,
+        type: 'Unsupported',
+        cellType: undefined,
+      },
+    ],
+  ],
+};
+
+const conditionalTinyFormView = strictParseXml(
+  `<cell>
+    ${Array.from(
+      strictParseXml(tinyFormView).children,
+      (child) => child.outerHTML
+    ).join('\n')}
+     <rows condition="accession.accessionNumber=42" colDef="2px,4px,1px">
+      <row>
+        <cell colSpan="4" />
+      </row> 
+    </rows>
+</cell>`
+);
+const parsedConditionalTinyView: ParsedFormDefinition = {
+  columns: [2, 1],
+  rows: [
+    [
       {
         ...baseCell,
         colSpan: 2,
@@ -266,47 +335,7 @@ theories(resolveAltView, [
 test('parseFormTableDefinition', () =>
   expect(
     parseFormTableDefinition(simpleFormView, tables.CollectionObject)
-  ).toEqual({
-    columns: [1, undefined, undefined],
-    rows: [
-      [
-        {
-          ...baseCell,
-          align: 'center',
-          colSpan: 2,
-          id: 'tt',
-          type: 'Field',
-          fieldDefinition: {
-            type: 'Text',
-            min: undefined,
-            max: undefined,
-            step: undefined,
-            isReadOnly: false,
-            defaultValue: undefined,
-          },
-          fieldNames: ['catalogNumber'],
-          isRequired: false,
-          ariaLabel: 'test' as LocalizedString,
-        },
-        {
-          ...baseCell,
-          align: 'center',
-          colSpan: 1,
-          type: 'Field',
-          fieldDefinition: {
-            type: 'Checkbox',
-            label: undefined,
-            printOnSave: false,
-            defaultValue: false,
-            isReadOnly: false,
-          },
-          fieldNames: ['accession', 'text1'],
-          isRequired: false,
-          ariaLabel: '2' as LocalizedString,
-        },
-      ],
-    ],
-  }));
+  ).toEqual(parsedFormView));
 
 const formTableColumns = [
   { colSpan: 1 },
@@ -328,11 +357,49 @@ theories(parseFormTableColumns, {
   },
 });
 
-test('parseFormDefinition', () => {
-  jest.spyOn(console, 'warn').mockImplementation();
-  expect(
-    parseFormDefinition(xml(tinyFormView), tables.CollectionObject)
-  ).toEqual(parsedTinyView);
+describe('parseFormDefinition', () => {
+  test('single view definition', () => {
+    jest.spyOn(console, 'warn').mockImplementation();
+    expect(
+      parseFormDefinition(strictParseXml(tinyFormView), tables.CollectionObject)
+    ).toEqual([
+      {
+        condition: undefined,
+        definition: parsedTinyView,
+      },
+    ]);
+  });
+
+  test('conditional view definitions', () => {
+    jest.spyOn(console, 'warn').mockImplementation();
+    expect(
+      parseFormDefinition(conditionalTinyFormView, tables.CollectionObject).map(
+        ({ condition, ...rest }) => ({
+          ...rest,
+          condition:
+            condition === undefined || condition.type !== 'Value'
+              ? condition
+              : {
+                  ...condition,
+                  field: condition.field.map((field) => field.name),
+                },
+        })
+      )
+    ).toEqual([
+      {
+        condition: undefined,
+        definition: parsedTinyView,
+      },
+      {
+        condition: {
+          type: 'Value',
+          field: ['accession', 'accessionNumber'],
+          value: '42',
+        },
+        definition: parsedConditionalTinyView,
+      },
+    ]);
+  });
 });
 
 describe('getColumnDefinitions', () => {
@@ -340,7 +407,7 @@ describe('getColumnDefinitions', () => {
   test('can customize the column definition source', () =>
     expect(
       getColumnDefinitions(
-        xml(
+        strictParseXml(
           `<viewdef>
             <columnDef os="abc">A</columnDef>
             <columnDef os="${getPref(
