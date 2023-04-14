@@ -385,7 +385,7 @@ export function getMappingLineData({
       const formatted =
         spec.includeFormattedAggregated &&
         (spec.includeRootFormattedAggregated ||
-          internalState.mappingLineData.length !== 0) &&
+          internalState.mappingLineData.length > 0) &&
         ((generateFieldData === 'all' &&
           (!isTreeTable(table.name) ||
             mappingPath[internalState.position - 1] ===
