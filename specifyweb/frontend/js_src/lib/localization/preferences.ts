@@ -1416,4 +1416,7 @@ export const preferencesText = createDictionary({
   localizeResourceNames: {
     'en-us': 'Localize the names of recognized app resources',
   },
+  splitLongXml: {
+    'en-us': 'Split long lines of XML into multiple lines',
+  },
 } as const);

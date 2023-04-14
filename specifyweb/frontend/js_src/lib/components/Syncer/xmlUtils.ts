@@ -3,6 +3,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { f } from '../../utils/functools';
 import { parseBoolean } from '../../utils/parser/parse';
 import type { IR } from '../../utils/types';
+import { getUserPref } from '../UserPreferences/helpers';
 import { formatXmlAttributes } from './formatXmlAttributes';
 import type { BaseSpec, SpecToJson } from './index';
 import { runParser } from './index';
@@ -62,15 +63,16 @@ export function xmlToString(xml: Node, insertDeclaration = true): string {
    * document element instead (this way XML declaration would be included)
    */
   const element = isRoot ? document : xml;
+  const formatted = new XMLSerializer()
+    .serializeToString(element)
+    // Insert new line after XML Declaration
+    .replace(/^<\?xml.*?\?>\n?/u, (match) => `${match.trim()}\n`)
+    // Use self-closing tags for empty elements
+    .replaceAll(reEmptyTag, '<$<name>$<attributes> />');
   // Split attributes into multiple lines for long lines
-  return formatXmlAttributes(
-    new XMLSerializer()
-      .serializeToString(element)
-      // Insert new line after XML Declaration
-      .replace(/^<\?xml.*?\?>\n?/u, (match) => `${match.trim()}\n`)
-      // Use self-closing tags for empty elements
-      .replaceAll(reEmptyTag, '<$<name>$<attributes> />')
-  );
+  return getUserPref('appResources', 'behavior', 'splitLongXml')
+    ? formatXmlAttributes(formatted)
+    : formatted;
 }
 
 export const createXmlSpec = <SPEC extends BaseSpec<SimpleXmlNode>>(

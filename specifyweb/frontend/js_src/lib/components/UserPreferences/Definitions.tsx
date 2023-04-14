@@ -1656,6 +1656,13 @@ export const preferenceDefinitions = {
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
+          splitLongXml: defineItem<boolean>({
+            title: preferencesText.splitLongXml(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
         },
       },
     },
