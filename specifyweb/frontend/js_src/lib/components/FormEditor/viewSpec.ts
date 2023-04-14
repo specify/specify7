@@ -519,7 +519,16 @@ const commandSpec = f.store(() =>
       syncers.xmlAttribute('action', 'skip'),
       syncers.maybe(syncers.enum(['ReturnLoan'] as const))
     ),
-    label: syncers.xmlAttribute('label', 'skip'),
+    label: pipe(
+      syncers.xmlAttribute('label', 'skip'),
+      syncers.maybe(
+        // A migration for https://github.com/specify/specify6/issues/203
+        syncer(
+          (label) => (label === 'SHOW_LOANS' ? 'SHOW_INTERACTIONS' : label),
+          f.id
+        )
+      )
+    ),
     legacyIsDefault: pipe(
       syncers.xmlAttribute('default', 'skip'),
       syncers.maybe(syncers.toBoolean)
