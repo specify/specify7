@@ -115,7 +115,9 @@ export function FormatterWrapper(): JSX.Element {
             <Input.Text
               isReadOnly={isReadOnly}
               value={getSet[0].title}
-              onValueChange={(name): void => getSet[1]({ ...getSet[0], name })}
+              onValueChange={(title): void =>
+                getSet[1]({ ...getSet[0], title })
+              }
             />
           </Label.Block>
           <Label.Inline>
