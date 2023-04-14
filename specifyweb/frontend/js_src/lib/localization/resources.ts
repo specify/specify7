@@ -358,8 +358,8 @@ export const resourcesText = createDictionary({
   conditionField: {
     'en-us': 'Condition Field',
   },
-  condition: {
-    'en-us': 'Condition',
+  conditionFieldValue: {
+    'en-us': 'Condition Field Value',
   },
   conditionDescription: {
     'en-us':

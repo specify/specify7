@@ -97,7 +97,7 @@ function Definitions({
           <div className="flex flex-col gap-2" key={index}>
             {hasCondition && (
               <Label.Block>
-                {resourcesText.condition()}
+                {resourcesText.conditionFieldValue()}
                 <Input.Text
                   isReadOnly={isReadOnly}
                   value={value ?? ''}

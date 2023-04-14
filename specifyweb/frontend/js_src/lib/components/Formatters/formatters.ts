@@ -212,7 +212,7 @@ export async function fetchPathAsString(
     },
     baseResource
   );
-  return value?.toString();
+  return value.formatted;
 }
 
 const resolveFormatter = (
