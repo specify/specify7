@@ -206,6 +206,15 @@ export function getMappingLineData({
   readonly mustMatchPreferences?: IR<boolean>;
   readonly spec: NavigatorSpec;
 }): RA<MappingLineData> {
+  if (
+    process.env.NODE_ENV !== 'production' &&
+    mappingPath.includes(anyTreeRank)
+  )
+    throw new Error(
+      'Mapping path should not contain anyTreeRank. ' +
+        'You likely meant to use formatTreeRank(anyTreeRank) instead'
+    );
+
   const isNoRestrictionsMode = spec.isNoRestrictions();
   const canDoAction = spec.hasActionPermission();
   const ensurePermission = spec.ensurePermission();
@@ -574,9 +583,14 @@ export function getMappingLineData({
     baseTableName,
   });
 
-  return spec.includeToManyReferenceNumbers
+  const filtered = spec.includeToManyReferenceNumbers
     ? internalState.mappingLineData
     : internalState.mappingLineData.filter(
         ({ customSelectSubtype }) => customSelectSubtype !== 'toMany'
+      );
+  return spec.includeAnyTreeRank || spec.includeSpecificTreeRanks
+    ? filtered
+    : filtered.filter(
+        ({ customSelectSubtype }) => customSelectSubtype !== 'tree'
       );
 }

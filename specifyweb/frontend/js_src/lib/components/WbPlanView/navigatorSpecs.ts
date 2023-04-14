@@ -99,7 +99,7 @@ const queryBuilder: NavigatorSpec = {
    * tables without read access
    */
   hasActionPermission: () => hasPermission('/querybuilder/query', 'execute'),
-  includeRelationshipsFromTree: false,
+  includeRelationshipsFromTree: true,
   includeToManyToTree: true,
   // All fields are optional in the query builder
   enforceRequiredFields: false,
@@ -108,16 +108,23 @@ const queryBuilder: NavigatorSpec = {
 
 // Navigator preset used by Record Formatter Editor
 const formatterEditor: NavigatorSpec = {
-  ...queryBuilder,
+  includeReadOnly: true,
   isNoRestrictions: () => true,
+  includeToManyReferenceNumbers: false,
   includeSpecificTreeRanks: false,
+  includeAnyTreeRank: false,
+  includeFormattedAggregated: true,
   includeRootFormattedAggregated: false,
   allowTransientToMany: false,
+  useSchemaOverrides: false,
   includeAllTreeFields: false,
   allowNestedToMany: false,
+  ensurePermission: () => undefined,
   hasActionPermission: () => true,
   includeRelationshipsFromTree: true,
   includeToManyToTree: true,
+  // All fields are optional in the query builder
+  enforceRequiredFields: false,
   includePartialDates: false,
 };
 

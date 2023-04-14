@@ -15,6 +15,7 @@ import { Input } from '../Atoms/Form';
 import { ReadOnlyContext } from '../Core/Contexts';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
+import { isTreeTable } from '../InitialContext/treeRanks';
 import { join } from '../Molecules';
 import { emptyMapping, mutateMappingPath } from '../WbPlanView/helpers';
 import {
@@ -24,8 +25,10 @@ import {
 } from '../WbPlanView/LineComponents';
 import { handleMappingLineKey } from '../WbPlanView/Mapper';
 import {
+  anyTreeRank,
   formattedEntry,
   formatToManyIndex,
+  formatTreeRank,
   parsePartialField,
   relationshipIsToMany,
   valueIsPartialField,
@@ -157,7 +160,9 @@ export function ResourceMapping({
     return filterArray([
       ...rawPath,
       ...(rawPath.length === 0
-        ? [emptyMapping]
+        ? isTreeTable(table.name)
+          ? [formatTreeRank(anyTreeRank), emptyMapping]
+          : [emptyMapping]
         : relationship?.isRelationship === false
         ? []
         : relationshipIsToMany(relationship)
@@ -198,6 +203,7 @@ export function ResourceMapping({
             ...payload,
             mappingPath,
             ignoreToMany: true,
+            ignoreTreeRanks: true,
           });
           setMappingPath(path);
           const purePath = path
