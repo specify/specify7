@@ -35,6 +35,7 @@ export function useResourcePreview(table: SpecifyTable): {
         fetchCollection(table.name, {
           limit: defaultPreviewSize,
           orderBy: '-id',
+          domainFilter: true,
         }).then(({ records }) => records.map(deserializeResource)),
       [table]
     ),
