@@ -158,11 +158,10 @@ export function ResourceMapping({
     const rawPath = mapping?.map(({ name }) => name) ?? [];
     const relationship = mapping?.at(-1);
     return filterArray([
+      ...(isTreeTable(table.name) ? [formatTreeRank(anyTreeRank)] : []),
       ...rawPath,
       ...(rawPath.length === 0
-        ? isTreeTable(table.name)
-          ? [formatTreeRank(anyTreeRank), emptyMapping]
-          : [emptyMapping]
+        ? [emptyMapping]
         : relationship?.isRelationship === false
         ? []
         : relationshipIsToMany(relationship)
