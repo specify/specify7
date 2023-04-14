@@ -36,6 +36,7 @@ export type QueryFieldType =
   | 'checkbox'
   | 'date'
   | 'formatter'
+  | 'aggregator'
   | 'id'
   | 'number'
   | 'text';
@@ -360,7 +361,7 @@ export const queryFieldFilters: RR<
     readonly description: LocalizedString | undefined;
     // If true, show pick list item titles. Else, show free input
     readonly renderPickList: boolean;
-    readonly types?: RA<QueryFieldType>;
+    readonly types: RA<QueryFieldType>;
     readonly component?: typeof SingleField;
     // Whether to do front-end validation
     readonly hasParser: boolean;
@@ -372,6 +373,15 @@ export const queryFieldFilters: RR<
     description: undefined,
     renderPickList: false,
     hasParser: false,
+    types: [
+      'checkbox',
+      'date',
+      'id',
+      'number',
+      'text',
+      'formatter',
+      'aggregator',
+    ],
   },
   like: {
     id: 0,
@@ -488,6 +498,7 @@ export const queryFieldFilters: RR<
     label: queryText.empty(),
     description: undefined,
     renderPickList: false,
+    types: ['checkbox', 'date', 'id', 'number', 'text'],
     hasParser: false,
   },
   trueOrNull: {

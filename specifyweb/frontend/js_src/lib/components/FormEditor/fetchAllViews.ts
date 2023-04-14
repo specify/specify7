@@ -31,7 +31,7 @@ export const fetchAllViews = async (
       ajax<RA<ViewDefinition>>(
         formatUrl('/context/views.json', {
           table: tableName,
-          collectionid: id,
+          collectionId: id,
         }),
         {
           headers: {

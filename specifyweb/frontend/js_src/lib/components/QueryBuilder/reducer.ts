@@ -132,6 +132,7 @@ export const reducer = generateReducer<MainState, Actions>({
       line: action.direction === 'up' ? action.line - 1 : action.line + 1,
       index: undefined,
     },
+    saveRequired: true,
     fields:
       action.direction === 'up'
         ? [
@@ -186,6 +187,11 @@ export const reducer = generateReducer<MainState, Actions>({
       fields: replaceItem(state.fields, line, {
         ...state.fields[line],
         mappingPath: newMappingPath,
+        dataObjFormatter:
+          mappingPathIsComplete(newMappingPath) &&
+          action.currentTableName === action.newTableName
+            ? undefined
+            : state.fields[line].dataObjFormatter,
       }),
       autoMapperSuggestions: undefined,
       saveRequired: true,

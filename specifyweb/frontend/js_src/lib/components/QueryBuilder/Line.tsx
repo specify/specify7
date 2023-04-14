@@ -29,12 +29,14 @@ import { handleMappingLineKey } from '../WbPlanView/Mapper';
 import {
   mappingPathToString,
   parsePartialField,
+  relationshipIsToMany,
   valueIsPartialField,
 } from '../WbPlanView/mappingHelpers';
 import {
   getMappingLineData,
   getTableFromMappingPath,
 } from '../WbPlanView/navigator';
+import { navigatorSpecs } from '../WbPlanView/navigatorSpecs';
 import type { QueryFieldFilter, QueryFieldType } from './FieldFilter';
 import {
   filtersWithDefaultValue,
@@ -42,9 +44,9 @@ import {
   QueryLineFilter,
 } from './FieldFilter';
 import type { DatePart } from './fieldSpec';
+import { QueryFieldFormatter } from './Formatter';
 import type { QueryField } from './helpers';
 import { sortTypes } from './helpers';
-import { navigatorSpecs } from '../WbPlanView/navigatorSpecs';
 
 // REFACTOR: split this component into smaller components
 export function QueryLine({
@@ -105,27 +107,40 @@ export function QueryLine({
     readonly fieldType: QueryFieldType | undefined;
     readonly parser: Parser | undefined;
     readonly canOpenMap: boolean;
-  }>({ fieldType: undefined, parser: undefined, canOpenMap: false });
+    readonly tableName: keyof Tables | undefined;
+  }>({
+    fieldType: undefined,
+    parser: undefined,
+    canOpenMap: false,
+    tableName: undefined,
+  });
 
   React.useEffect(
     () => {
-      const partialField = field.mappingPath.at(-1) ?? '';
+      const isFormatted =
+        field.mappingPath.at(-1)?.startsWith(schema.fieldPartSeparator) ??
+        false;
+      const mappingPath = isFormatted
+        ? field.mappingPath.slice(0, -1)
+        : field.mappingPath;
+      const partialField = mappingPath.at(-1) ?? '';
       const [fieldName, datePart] = valueIsPartialField(partialField)
         ? parsePartialField<DatePart>(partialField)
-        : [field.mappingPath.at(-1)!, undefined];
-      const tableName =
-        mappingPathIsComplete(field.mappingPath) &&
-        !fieldName.startsWith(schema.fieldPartSeparator)
-          ? getTableFromMappingPath(baseTableName, field.mappingPath)
-          : undefined;
-      const dataModelField = getTable(tableName ?? '')?.getField(fieldName);
+        : [partialField, undefined];
+      const isMapped = mappingPathIsComplete(field.mappingPath);
+      const tableName = isMapped
+        ? getTableFromMappingPath(baseTableName, field.mappingPath)
+        : undefined;
+      const dataModelField = isFormatted
+        ? undefined
+        : getTable(tableName ?? '')?.getField(fieldName);
 
       let fieldType: QueryFieldType | undefined = undefined;
       let parser = undefined;
       const hasParser =
         typeof dataModelField === 'object' &&
         !dataModelField.isRelationship &&
-        mappingPathIsComplete(field.mappingPath);
+        isMapped;
       let canOpenMap = false;
       if (hasParser) {
         parser = {
@@ -143,7 +158,11 @@ export function QueryLine({
             : parser.type ?? 'text';
 
         canOpenMap = fieldName === 'latitude1' || fieldName === 'longitude1';
-      }
+      } else if (isMapped)
+        fieldType =
+          dataModelField?.isRelationship && relationshipIsToMany(dataModelField)
+            ? 'aggregator'
+            : 'formatter';
 
       const updatedFilters = hasParser
         ? field.filters.map((filter) => {
@@ -176,7 +195,7 @@ export function QueryLine({
         ({ type }, index) => type !== 'any' || index === anyFilter
       );
 
-      setFieldMeta({ parser, fieldType, canOpenMap });
+      setFieldMeta({ parser, fieldType, canOpenMap, tableName });
 
       if (
         newFilters.length !== updatedFilters.length ||
@@ -229,7 +248,8 @@ export function QueryLine({
         : filterName === 'any'
   );
   const filtersVisible =
-    availableFilters.length > 1 || availableFilters[0][0] !== 'any';
+    availableFilters.length > 0 &&
+    (availableFilters.length > 1 || availableFilters[0][0] !== 'any');
 
   const hasAny = field.filters.some(({ type }) => type === 'any');
 
@@ -280,12 +300,33 @@ export function QueryLine({
         >
           {join(
             mappingLineProps.map((mappingDetails, index) => (
-              <li key={index} className="contents">
+              <li className="contents" key={index}>
                 <MappingElement {...mappingDetails} />
               </li>
             )),
             mappingElementDivider
           )}
+          {(fieldMeta.fieldType === 'formatter' ||
+            fieldMeta.fieldType === 'aggregator') &&
+          typeof fieldMeta.tableName === 'string' ? (
+            <>
+              {mappingElementDivider}
+              <QueryFieldFormatter
+                formatter={field.dataObjFormatter}
+                tableName={fieldMeta.tableName}
+                type={fieldMeta.fieldType}
+                onChange={
+                  handleChange === undefined
+                    ? undefined
+                    : (dataObjectFormatter): void =>
+                        handleChange({
+                          ...field,
+                          dataObjFormatter: dataObjectFormatter,
+                        })
+                }
+              />
+            </>
+          ) : undefined}
         </div>
         {filtersVisible && (
           <div

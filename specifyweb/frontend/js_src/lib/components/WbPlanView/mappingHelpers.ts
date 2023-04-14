@@ -148,7 +148,9 @@ export const getCanonicalMappingPath = (
 export const getGenericMappingPath = (mappingPath: MappingPath): MappingPath =>
   mappingPath.filter(
     (mappingPathPart) =>
-      !valueIsToManyIndex(mappingPathPart) && !valueIsTreeRank(mappingPathPart)
+      !valueIsToManyIndex(mappingPathPart) &&
+      !valueIsTreeRank(mappingPathPart) &&
+      mappingPathPart !== formattedEntry
   );
 
 /**

@@ -65,8 +65,16 @@ const pendingState = {
   baseTableName: 'CollectionObject',
 } as const;
 
+export function QueryBuilder(
+  props: Parameters<typeof Wrapped>[0]
+): JSX.Element | null {
+  useMenuItem('queries');
+  const [treeRanksLoaded = false] = useAsyncState(fetchTreeRanks, true);
+  return treeRanksLoaded ? <Wrapped {...props} /> : null;
+}
+
 // REFACTOR: split this component
-export function QueryBuilder({
+function Wrapped({
   query: queryResource,
   recordSet,
   forceCollection,
@@ -81,11 +89,7 @@ export function QueryBuilder({
   readonly isEmbedded?: boolean;
   readonly autoRun?: boolean;
   readonly onSelected?: (selected: RA<number>) => void;
-}): JSX.Element | null {
-  useMenuItem('queries');
-
-  const [treeRanksLoaded = false] = useAsyncState(fetchTreeRanks, true);
-
+}): JSX.Element {
   const [query, setQuery] = useResource(queryResource);
   useErrorContext('query', query);
 
@@ -141,6 +145,7 @@ export function QueryBuilder({
           id: Math.max(-1, ...state.fields.map(({ id }) => id)) + 1,
           mappingPath,
           sortType: undefined,
+          dataObjFormatter: undefined,
           filters: [
             {
               type: 'any',
@@ -236,7 +241,7 @@ export function QueryBuilder({
   );
   const resultsShown = state.queryRunCount !== 0;
 
-  return treeRanksLoaded ? (
+  return (
     <ReadOnlyContext.Provider value={isReadOnly}>
       <Container.Full
         className={`overflow-hidden ${isEmbedded ? 'py-0' : ''}`}
@@ -545,5 +550,5 @@ export function QueryBuilder({
         </Form>
       </Container.Full>
     </ReadOnlyContext.Provider>
-  ) : null;
+  );
 }
