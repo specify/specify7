@@ -5,6 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useSearchParameter } from '../../hooks/navigation';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { ajax } from '../../utils/ajax';
+import { Http } from '../../utils/ajax/definitions';
 import { getAppResourceUrl } from '../../utils/ajax/helpers';
 import { f } from '../../utils/functools';
 import { Container } from '../Atoms';
@@ -227,9 +228,13 @@ function useInitialData(
           typeof type.name === 'string' &&
           (!('useTemplate' in type) || type.useTemplate);
         if (useTemplate)
-          return ajax(getAppResourceUrl(type.name), {
-            headers: {},
-          }).then(({ data }) => data);
+          return ajax(
+            getAppResourceUrl(type.name, 'quiet'),
+            {
+              headers: {},
+            },
+            { expectedResponseCodes: [Http.OK, Http.NO_CONTENT] }
+          ).then(({ data }) => data);
       }
       return false;
       // Run this only once
