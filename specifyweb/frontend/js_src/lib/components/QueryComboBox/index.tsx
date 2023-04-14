@@ -327,7 +327,10 @@ export function QueryComboBox({
               .flatMap(({ data: { results } }) => results)
               .map(([id, label]) => ({
                 data: getResourceApiUrl(field.relatedTable.name, id),
-                label,
+                label:
+                  label.trim().length === 0
+                    ? naiveFormatter(field.relatedTable.name, id)
+                    : label,
               }))
           )
         : [],
