@@ -100,10 +100,10 @@ function Definitions({
                 {resourcesText.condition()}
                 <Input.Text
                   isReadOnly={isReadOnly}
-                  value={value}
+                  value={value ?? ''}
                   onValueChange={(value): void =>
                     handleChanged({
-                      value,
+                      value: value.length === 0 ? undefined : value,
                       fields,
                     })
                   }

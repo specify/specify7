@@ -122,5 +122,5 @@ export function ResourcePreview({
     ),
     false
   );
-  return children((_, index) => formatted?.[index]);
+  return children((_, index) => formatted?.[index] ?? commonText.loading());
 }
