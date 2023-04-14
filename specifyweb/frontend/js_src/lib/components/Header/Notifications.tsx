@@ -51,7 +51,10 @@ export function Notifications({
 
     let timeout: NodeJS.Timeout | undefined = undefined;
 
-    function doFetch(): void {
+    function doFetch(since?: Date): void {
+      const queryString = since
+        ? `?since=${encodeURIComponent(since.toISOString())}`
+        : '';
       /*
        * Poll interval is scaled exponentially to reduce requests if the tab is
        * left open.
@@ -69,7 +72,7 @@ export function Notifications({
               }
             >
           >(
-            `/notifications/messages/`,
+            `/notifications/messages/${queryString}`,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             { headers: { Accept: 'application/json' } },
             /*
@@ -109,7 +112,7 @@ export function Notifications({
           timeout =
             document.visibilityState === 'hidden'
               ? undefined
-              : globalThis.setTimeout(doFetch, pullInterval);
+              : globalThis.setTimeout(() => doFetch(new Date()), pullInterval);
           return undefined;
         })
         .catch(console.error);
