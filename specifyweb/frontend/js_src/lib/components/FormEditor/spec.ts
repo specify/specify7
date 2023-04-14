@@ -70,7 +70,9 @@ export function parseFormView(definition: ViewDefinition) {
   const view = resolvedViewSpec().serializer(
     toSimpleXmlNode(xmlToJson(strictParseXml(definition.view)))
   );
-  const usedDefinitions = view.altViews.altViews.map(({ viewDef }) => viewDef);
+  const usedDefinitions = new Set(
+    view.altViews.altViews.map(({ viewDef }) => viewDef)
+  );
   return {
     view,
     viewDefinitions: Object.values(definition.viewdefs)
@@ -86,7 +88,7 @@ export function parseFormView(definition: ViewDefinition) {
          * "CollectionObjectAttachment Table" viewdef, don't create another
          * ObjectAttachment
          */
-        usedDefinitions.includes(name)
+        usedDefinitions.has(name)
       ),
   };
 }
@@ -265,11 +267,7 @@ const viewDefSpec = f.store(() =>
      * formDefinitionSpec() later on
      */
     raw: syncer<SimpleXmlNode, XmlNode>(
-      (node) => ({
-        ...defined(getOriginalSyncerInput(node), ''),
-        // Remove attributes so that they don't overwrite the values above
-        attributes: {},
-      }),
+      (node) => defined(getOriginalSyncerInput(node), ''),
       toSimpleXmlNode
     ),
   })

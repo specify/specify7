@@ -107,5 +107,5 @@ export const getViewDefinitionIndexes = (
          * The "formtable" and "iconview" are always empty stubs. Thus, visual
          * editor should only show "form" view definitions
          */
-        viewDefs[index]?.raw.attributes.type === 'form'
+        viewDefs[index]?.type === 'form'
     );
