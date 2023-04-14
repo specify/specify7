@@ -373,8 +373,13 @@ export function parseFormDefinition(
       extras: { definitionIndex },
     });
     const rows = rowsContainer?.children?.row ?? [];
+    const directColumnDefinitions = getColumnDefinitions(rowsContainer);
     const definition = postProcessFormDef(
-      processColumnDefinition(getColumnDefinitions(viewDefinition)),
+      processColumnDefinition(
+        directColumnDefinitions.length === 0
+          ? getColumnDefinitions(viewDefinition)
+          : directColumnDefinitions
+      ),
       rows.map((row, index) => {
         const context = getLogContext();
         pushContext({

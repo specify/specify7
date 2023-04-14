@@ -2033,10 +2033,13 @@ exports[`Formatters are fetched and parsed correctly 1`] = `
 exports[`getMainTableFields 1`] = `
 {
   "Accession": [
+    "accessionNumber",
     "accessionCondition",
     "verbatimDate",
   ],
-  "AccessionAgent": [],
+  "AccessionAgent": [
+    "role",
+  ],
   "AccessionAttachment": [],
   "AccessionAuthorization": [],
   "AccessionCitation": [],
@@ -2058,14 +2061,20 @@ exports[`getMainTableFields 1`] = `
   "AgentGeography": [
     "role",
   ],
-  "AgentIdentifier": [],
-  "AgentSpecialty": [],
+  "AgentIdentifier": [
+    "identifier",
+  ],
+  "AgentSpecialty": [
+    "specialtyName",
+  ],
   "AgentVariant": [
     "country",
     "language",
     "variant",
   ],
-  "Appraisal": [],
+  "Appraisal": [
+    "appraisalNumber",
+  ],
   "Attachment": [
     "attachmentLocation",
     "copyrightDate",
@@ -2079,9 +2088,12 @@ exports[`getMainTableFields 1`] = `
     "creativeCommons",
   ],
   "AttachmentMetadata": [
+    "name",
     "value",
   ],
-  "AttachmentTag": [],
+  "AttachmentTag": [
+    "tag",
+  ],
   "AttributeDef": [
     "fieldName",
   ],
@@ -2092,11 +2104,16 @@ exports[`getMainTableFields 1`] = `
     "schemeName",
   ],
   "Borrow": [
+    "invoiceNumber",
     "status",
   ],
-  "BorrowAgent": [],
+  "BorrowAgent": [
+    "role",
+  ],
   "BorrowAttachment": [],
-  "BorrowMaterial": [],
+  "BorrowMaterial": [
+    "materialNumber",
+  ],
   "BorrowReturnMaterial": [],
   "CollectingEvent": [
     "endDateVerbatim",
@@ -2231,6 +2248,7 @@ exports[`getMainTableFields 1`] = `
   ],
   "DataType": [],
   "Deaccession": [
+    "deaccessionNumber",
     "type",
   ],
   "DeaccessionAgent": [
@@ -2262,8 +2280,12 @@ exports[`getMainTableFields 1`] = `
   "Discipline": [
     "regNumber",
   ],
-  "Disposal": [],
-  "DisposalAgent": [],
+  "Disposal": [
+    "disposalNumber",
+  ],
+  "DisposalAgent": [
+    "role",
+  ],
   "DisposalAttachment": [],
   "DisposalPreparation": [],
   "Division": [
@@ -2277,17 +2299,22 @@ exports[`getMainTableFields 1`] = `
   "ExchangeInAttachment": [],
   "ExchangeInPrep": [],
   "ExchangeOut": [
+    "exchangeOutNumber",
     "srcGeography",
     "srcTaxonomy",
   ],
   "ExchangeOutAttachment": [],
   "ExchangeOutPrep": [],
-  "Exsiccata": [],
+  "Exsiccata": [
+    "title",
+  ],
   "ExsiccataItem": [],
   "Extractor": [],
   "FieldNotebook": [],
   "FieldNotebookAttachment": [],
-  "FieldNotebookPage": [],
+  "FieldNotebookPage": [
+    "pageNumber",
+  ],
   "FieldNotebookPageAttachment": [],
   "FieldNotebookPageSet": [
     "method",
@@ -2304,28 +2331,41 @@ exports[`getMainTableFields 1`] = `
     "validation",
   ],
   "Geography": [
+    "name",
     "commonName",
     "abbrev",
     "text1",
     "text2",
   ],
-  "GeographyTreeDef": [],
-  "GeographyTreeDefItem": [],
+  "GeographyTreeDef": [
+    "name",
+  ],
+  "GeographyTreeDefItem": [
+    "name",
+  ],
   "GeologicTimePeriod": [
+    "name",
     "standard",
     "text1",
     "text2",
   ],
-  "GeologicTimePeriodTreeDef": [],
-  "GeologicTimePeriodTreeDefItem": [],
+  "GeologicTimePeriodTreeDef": [
+    "name",
+  ],
+  "GeologicTimePeriodTreeDefItem": [
+    "name",
+  ],
   "Gift": [
+    "giftNumber",
     "receivedComments",
     "srcGeography",
     "srcTaxonomy",
     "status",
     "text5",
   ],
-  "GiftAgent": [],
+  "GiftAgent": [
+    "role",
+  ],
   "GiftAttachment": [],
   "GiftPreparation": [],
   "GroupPerson": [],
@@ -2348,19 +2388,29 @@ exports[`getMainTableFields 1`] = `
     "name",
   ],
   "LatLonPolygonPnt": [],
-  "LithoStrat": [],
-  "LithoStratTreeDef": [],
-  "LithoStratTreeDefItem": [],
+  "LithoStrat": [
+    "name",
+  ],
+  "LithoStratTreeDef": [
+    "name",
+  ],
+  "LithoStratTreeDefItem": [
+    "name",
+  ],
   "Loan": [
+    "loanNumber",
     "purposeOfLoan",
     "receivedComments",
     "status",
   ],
-  "LoanAgent": [],
+  "LoanAgent": [
+    "role",
+  ],
   "LoanAttachment": [],
   "LoanPreparation": [],
   "LoanReturnPreparation": [],
   "Locality": [
+    "localityName",
     "namedPlace",
     "relationToNamedPlace",
     "shortName",
@@ -2392,6 +2442,7 @@ exports[`getMainTableFields 1`] = `
     "utmDatum",
   ],
   "LocalityNameAlias": [
+    "name",
     "source",
   ],
   "MaterialSample": [
@@ -2408,7 +2459,9 @@ exports[`getMainTableFields 1`] = `
     "specimenPart",
     "viewAngle",
   ],
-  "OtherIdentifier": [],
+  "OtherIdentifier": [
+    "identifier",
+  ],
   "PaleoContext": [
     "text2",
     "text3",
@@ -2416,14 +2469,21 @@ exports[`getMainTableFields 1`] = `
     "text5",
   ],
   "PcrPerson": [],
-  "Permit": [],
+  "Permit": [
+    "permitNumber",
+  ],
   "PermitAttachment": [],
   "PickList": [
+    "name",
     "filterFieldName",
     "filterValue",
   ],
-  "PickListItem": [],
-  "PrepType": [],
+  "PickListItem": [
+    "title",
+  ],
+  "PrepType": [
+    "name",
+  ],
   "Preparation": [
     "barCode",
     "description",
@@ -2493,21 +2553,27 @@ exports[`getMainTableFields 1`] = `
     "text9",
   ],
   "Project": [
+    "projectName",
     "url",
   ],
-  "RecordSet": [],
+  "RecordSet": [
+    "name",
+  ],
   "RecordSetItem": [],
   "ReferenceWork": [
+    "title",
     "isbn",
   ],
   "ReferenceWorkAttachment": [],
   "RepositoryAgreement": [
+    "repositoryAgreementNumber",
     "text1",
     "text2",
     "text3",
   ],
   "RepositoryAgreementAttachment": [],
   "Shipment": [
+    "shipmentNumber",
     "insuredForAmount",
     "weight",
   ],
@@ -2576,18 +2642,24 @@ exports[`getMainTableFields 1`] = `
     "actions",
   ],
   "SpPrincipal": [
+    "name",
     "groupSubClass",
     "groupType",
   ],
   "SpQuery": [
     "contextName",
+    "name",
   ],
   "SpQueryField": [
+    "fieldName",
     "formatName",
     "stringId",
+    "tableList",
     "columnAlias",
   ],
-  "SpReport": [],
+  "SpReport": [
+    "name",
+  ],
   "SpSymbiotaInstance": [],
   "SpTaskSemaphore": [
     "machineName",
@@ -2609,20 +2681,27 @@ exports[`getMainTableFields 1`] = `
     "name",
   ],
   "SpecifyUser": [
+    "name",
     "loginCollectionName",
     "loginDisciplineName",
     "password",
     "email",
   ],
   "Storage": [
+    "name",
     "abbrev",
     "text1",
     "text2",
   ],
   "StorageAttachment": [],
-  "StorageTreeDef": [],
-  "StorageTreeDefItem": [],
+  "StorageTreeDef": [
+    "name",
+  ],
+  "StorageTreeDefItem": [
+    "name",
+  ],
   "Taxon": [
+    "name",
     "cultivarName",
     "unitName1",
     "unitName2",
@@ -2711,8 +2790,11 @@ exports[`getMainTableFields 1`] = `
     "pageNumber",
     "plateNumber",
   ],
-  "TaxonTreeDef": [],
+  "TaxonTreeDef": [
+    "name",
+  ],
   "TaxonTreeDefItem": [
+    "name",
     "formatToken",
   ],
   "TreatmentEvent": [

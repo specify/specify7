@@ -361,7 +361,10 @@ describe('parseFormDefinition', () => {
   test('single view definition', () => {
     jest.spyOn(console, 'warn').mockImplementation();
     expect(
-      parseFormDefinition(strictParseXml(tinyFormView), tables.CollectionObject)
+      parseFormDefinition(
+        toSimpleXmlNode(xmlToJson(strictParseXml(tinyFormView))),
+        tables.CollectionObject
+      )
     ).toEqual([
       {
         condition: undefined,
@@ -373,18 +376,19 @@ describe('parseFormDefinition', () => {
   test('conditional view definitions', () => {
     jest.spyOn(console, 'warn').mockImplementation();
     expect(
-      parseFormDefinition(conditionalTinyFormView, tables.CollectionObject).map(
-        ({ condition, ...rest }) => ({
-          ...rest,
-          condition:
-            condition === undefined || condition.type !== 'Value'
-              ? condition
-              : {
-                  ...condition,
-                  field: condition.field.map((field) => field.name),
-                },
-        })
-      )
+      parseFormDefinition(
+        toSimpleXmlNode(xmlToJson(conditionalTinyFormView)),
+        tables.CollectionObject
+      ).map(({ condition, ...rest }) => ({
+        ...rest,
+        condition:
+          condition === undefined || condition.type !== 'Value'
+            ? condition
+            : {
+                ...condition,
+                field: condition.field.map((field) => field.name),
+              },
+      }))
     ).toEqual([
       {
         condition: undefined,
@@ -407,13 +411,17 @@ describe('getColumnDefinitions', () => {
   test('can customize the column definition source', () =>
     expect(
       getColumnDefinitions(
-        strictParseXml(
-          `<viewdef>
+        toSimpleXmlNode(
+          xmlToJson(
+            strictParseXml(
+              `<viewdef>
             <columnDef os="abc">A</columnDef>
             <columnDef os="${getPref(
               'form.definition.columnSource'
             )}">B</columnDef>
           </viewdef>`
+            )
+          )
         )
       )
     ).toBe('B'));
