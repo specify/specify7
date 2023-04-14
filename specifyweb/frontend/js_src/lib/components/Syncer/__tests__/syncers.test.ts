@@ -216,6 +216,7 @@ const tests: {
       in: 'edu.ku.brc.specify.datamodel.Accessions',
       out: undefined,
       final: undefined,
+      warn: ['Unknown table: Accessions'],
     },
     {
       arguments: [],
@@ -580,6 +581,7 @@ const tests: {
       in: 'accessions',
       out: undefined,
       final: undefined,
+      warn: ['Unknown field: accessions'],
     },
   ],
 

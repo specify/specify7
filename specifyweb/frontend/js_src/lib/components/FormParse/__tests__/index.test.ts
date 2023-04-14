@@ -148,10 +148,12 @@ const viewDefinition: ViewDefinition = {
   viewdefs: {
     Preparation: formView,
   },
+  view: '',
   viewsetLevel: '',
   viewsetName: '',
   viewsetSource: '',
   viewsetId: null,
+  viewsetFile: null,
 };
 
 describe('fetchView', () => {
@@ -231,7 +233,7 @@ test('resolveViewDefinition', () => {
   const result = resolveViewDefinition(viewDefinition, 'form', 'view')!;
   expect(result).toBeDefined();
   expect(result.viewDefinition).toEqual(simpleFormView);
-  expect(result.table.name).toBe(tables.CollectionObject.name);
+  expect(result.table?.name).toBe(tables.CollectionObject.name);
   expect(result.formType).toBe('form');
   expect(result.mode).toBe('view');
 });

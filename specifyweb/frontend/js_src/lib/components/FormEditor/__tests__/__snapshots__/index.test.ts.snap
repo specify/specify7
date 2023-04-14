@@ -4,6 +4,7 @@ exports[`Can edit a form definition 1`] = `
 {
   "viewDefs": [
     {
+      "legacyEditableDialog": true,
       "legacyGetTable": "edu.ku.brc.af.ui.forms.DataGetterForObj",
       "legacySetTable": "edu.ku.brc.af.ui.forms.DataSetterForObj",
       "name": "Accession",
@@ -31,6 +32,7 @@ exports[`Can edit a form definition 1`] = `
       },
       "description": "The Accession form.",
       "legacyResourceLabels": false,
+      "legacyUseBusinessRules": true,
       "name": "Accession",
       "table": "[table Accession]",
     },
@@ -63,12 +65,7 @@ exports[`Can edit a form definition 2`] = `
 				  mode=\\"view\\"
 				  default=\\"true\\"
 				/>
-				<altview
-				  name=\\"Accession View (Edited)\\"
-				  viewdef=\\"Accession\\"
-				  mode=\\"edit\\"
-				  default=\\"false\\"
-				/>
+				<altview name=\\"Accession View (Edited)\\" viewdef=\\"Accession\\" mode=\\"edit\\"/>
 			</altviews>
 		</view>
 	</views>

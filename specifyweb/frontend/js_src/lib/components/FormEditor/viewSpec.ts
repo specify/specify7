@@ -1,17 +1,19 @@
 import { f } from '../../utils/functools';
+import type { IR, RA, RR } from '../../utils/types';
+import { filterArray } from '../../utils/types';
+import { formatDisjunction } from '../Atoms/Internationalization';
+import type { LiteralField, Relationship } from '../DataModel/specifyField';
+import type { SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
-import { pipe, SpecToJson, Syncer, syncer } from '../Syncer';
+import type { Tables } from '../DataModel/types';
+import { paleoPluginTables } from '../FormPlugins/PaleoLocation';
+import { toLargeSortConfig, toSmallSortConfig } from '../Molecules/Sorting';
+import type { SpecToJson, Syncer } from '../Syncer';
+import { pipe, syncer } from '../Syncer';
 import { syncers } from '../Syncer/syncers';
 import type { SimpleXmlNode } from '../Syncer/xmlToJson';
 import { createSimpleXmlNode } from '../Syncer/xmlToJson';
 import { createXmlSpec } from '../Syncer/xmlUtils';
-import { filterArray, IR, RA, RR } from '../../utils/types';
-import { SpecifyTable } from '../DataModel/specifyTable';
-import { LiteralField, Relationship } from '../DataModel/specifyField';
-import { toLargeSortConfig, toSmallSortConfig } from '../Molecules/Sorting';
-import { Tables } from '../DataModel/types';
-import { paleoPluginTables } from '../FormPlugins/PaleoLocation';
-import { formatDisjunction } from '../Atoms/Internationalization';
 
 export const formDefinitionSpec = (table: SpecifyTable | undefined) =>
   createXmlSpec({
@@ -276,18 +278,23 @@ const cellSpec = f.store(() =>
 
 export const parseSpecifyProperties = (value = '', prefix = ''): IR<string> =>
   Object.fromEntries(
-    value.split(';').map((part) => {
-      const [name, ...values] = part.split('=');
-      return [
-        `${prefix}${name.toLowerCase()}`,
-        values.join('=').replaceAll('%3B', ';'),
-      ] as const;
-    })
+    filterArray(
+      value.split(';').map((part) => {
+        const [rawName, ...values] = part.split('=');
+        const name = rawName.toLowerCase().trim();
+        return name.length === 0
+          ? undefined
+          : ([
+              `${prefix}${name.toLowerCase()}`,
+              values.join('=').trim().replaceAll('%3B', ';'),
+            ] as const);
+      })
+    )
   );
 
-const buildSpecifyProperties = (properties: IR<string>) =>
+const buildSpecifyProperties = (properties: IR<string>): string =>
   Object.entries(properties)
-    .filter(([_key, value]) => value.length > 0)
+    .filter(([key, value]) => key.length > 0 && value.length > 0)
     .map(
       ([key, value]) => `${key.toLowerCase()}=${value.replaceAll(';', '%3B')}`
     )
@@ -1055,8 +1062,10 @@ const pluginSpec = {
   collectionRelOneToMany: () =>
     createXmlSpec({
       relationshipName: syncers.xmlAttribute('initialize relName', 'required'),
-      // Specify 7 only
-      // FIXME: this is redundant with "formatName"
+      /*
+       * Specify 7 only
+       * FIXME: this is redundant with "formatName"
+       */
       dataObjectFormatter: syncers.xmlAttribute(
         'initialize formatting',
         'skip'
@@ -1065,8 +1074,10 @@ const pluginSpec = {
   colRelType: () =>
     createXmlSpec({
       relationshipName: syncers.xmlAttribute('initialize relName', 'required'),
-      // Specify 7 only
-      // FIXME: this is redundant with "formatName"
+      /*
+       * Specify 7 only
+       * FIXME: this is redundant with "formatName"
+       */
       dataObjectFormatter: syncers.xmlAttribute(
         'initialize formatting',
         'skip'

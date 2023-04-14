@@ -350,7 +350,7 @@ exports[`fetchAllViews 1`] = `
           "viewdef": "AccessionSearch",
         },
       },
-      "category": "Backstop",
+      "category": "Backstop > Search",
       "class": "edu.ku.brc.specify.datamodel.Accession",
       "collectionId": 98304,
       "editUrl": undefined,

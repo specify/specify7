@@ -72,7 +72,7 @@ test('Can edit a form definition', () => {
   expect(JSON.parse(JSON.stringify(reconstructed))).toMatchSnapshot();
 
   // Verify that view definition xml can be converted back to the same string
-  const initialXml = process(raw);
+  const initialXml = process({ ...raw, attributes: {} });
   expect(initialXml).toBe(
     process(
       xmlToJson(strictParseXml(`<viewdef>${testFormDefinition}</viewdef>`))

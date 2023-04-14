@@ -437,7 +437,7 @@ export const syncers = {
     RAW,
     PARSED,
     OBJECT extends { readonly [key in KEY]: RAW },
-    NEW_OBJECT extends OBJECT & { readonly [key in KEY]: PARSED }
+    NEW_OBJECT extends Omit<OBJECT, KEY> & { readonly [key in KEY]: PARSED }
   >(
     key: KEY,
     serializer: (object: OBJECT) => PARSED,

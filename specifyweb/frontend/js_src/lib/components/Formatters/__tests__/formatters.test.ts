@@ -19,8 +19,13 @@ const { formatField } = exportsForTests;
 
 requireContext();
 
-test('formatters are fetched and parsed correctly', async () =>
-  expect(fetchFormatters).resolves.toMatchSnapshot());
+test('Formatters are fetched and parsed correctly', async () =>
+  expect(
+    fetchFormatters.then((results) =>
+      // Remove symbols
+      JSON.parse(JSON.stringify(results))
+    )
+  ).resolves.toMatchSnapshot());
 
 const mainTableFields: {
   readonly [TABLE_NAME in keyof Tables]?: RA<TableFields<Tables[TABLE_NAME]>>;

@@ -1,6 +1,7 @@
 import { requireContext } from '../../../tests/helpers';
 import { strictParseXml } from '../../AppResources/codeMirrorLinters';
 import { tables } from '../../DataModel/tables';
+import { error } from '../../Errors/assert';
 import { formatXmlForTests } from '../../Syncer/__tests__/utils';
 import { syncers } from '../../Syncer/syncers';
 import { toSimpleXmlNode, updateXml, xmlToJson } from '../../Syncer/xmlToJson';
@@ -10,7 +11,6 @@ import {
   parseSpecifyProperties,
 } from '../viewSpec';
 import { testFormDefinition } from './testFormDefinition';
-import { error } from '../../Errors/assert';
 
 requireContext();
 
@@ -50,22 +50,33 @@ const cases = {
     a: 'b=c',
     d: 'e=f;',
   },
+  ';a=b;': {
+    a: 'b',
+  },
+};
+
+const inCases = {
   'a=;b': {
     a: '',
     b: '',
   },
+  '=a;': {},
 };
 
 describe('parseSpecifyProperties', () =>
-  void Object.entries(cases).forEach(([input, output]) =>
+  void Object.entries({ ...cases, ...inCases }).forEach(([input, output]) =>
     test(`parses ${input}`, () =>
       expect(parseSpecifyProperties(input)).toEqual(output))
   ));
 
 describe('buildSpecifyProperties', () =>
   void Object.entries(cases).forEach(([output, input]) =>
-    test(`parses ${output}`, () =>
-      expect(buildSpecifyProperties(input)).toEqual(output))
+    test(`parses ${output}`, () => {
+      const trimmed = output.endsWith(';') ? output.slice(0, -1) : output;
+      expect(buildSpecifyProperties(input)).toEqual(
+        trimmed.startsWith(';') ? trimmed.slice(1) : trimmed
+      );
+    })
   ));
 
 test('Can edit form definition', () => {

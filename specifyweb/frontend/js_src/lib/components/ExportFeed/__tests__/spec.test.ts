@@ -20,9 +20,7 @@ test('Export Feed is parsed correctly', async () =>
           "collectionId": 4,
           "days": 7,
           "definition": "DwCA_FishCollection",
-          "description": undefined,
           "fileName": "kui-dwca.zip",
-          "guid": undefined,
           "id": "8f79c802-a58c-447f-99aa-1d6a0790825a",
           "metadata": "DwCA_Metadata",
           "notifyUserId": 2,
@@ -31,7 +29,6 @@ test('Export Feed is parsed correctly', async () =>
           "userId": 2,
         },
       ],
-      "language": undefined,
       "title": "KUBI ichthyology RSS Feed",
     }
   `));

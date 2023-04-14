@@ -30,7 +30,7 @@ exports[` renders without errors 2`] = `
 <DocumentFragment>
   <button
     aria-label="View"
-    class="icon link rounded !text-orange-400 print:hidden "
+    class="icon link rounded !text-cyan-400 print:hidden "
     icon="eye"
     title="View"
     type="button"

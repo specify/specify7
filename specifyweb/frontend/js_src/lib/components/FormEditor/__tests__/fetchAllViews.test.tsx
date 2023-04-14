@@ -14,11 +14,11 @@ theories(filePathToHuman, [
   },
   {
     in: ['common/global.views.xml'],
-    out: 'Common -> Global',
+    out: 'Common > Global',
   },
   {
     in: ['common/global/manager.views.xml'],
-    out: 'Common -> Global -> Manager',
+    out: 'Common > Global > Manager',
   },
   {
     in: ['manager.all.views.xml'],
@@ -26,10 +26,10 @@ theories(filePathToHuman, [
   },
   {
     in: ['./common/manager.all.views.xml'],
-    out: 'Common -> Manager',
+    out: 'Common > Manager',
   },
   {
     in: ['/common/file/manager.all.views.xml'],
-    out: 'Common -> File -> Manager',
+    out: 'Common > File > Manager',
   },
 ]);
