@@ -108,7 +108,11 @@ function Definitions({
                     })
                   }
                 />
-                <span>{resourcesText.conditionDescription()}</span>
+                <span>
+                  {index === 0
+                    ? resourcesText.elseConditionDescription()
+                    : resourcesText.conditionDescription()}
+                </span>
               </Label.Block>
             )}
             <Fields
@@ -186,7 +190,7 @@ function Fields({
           />
         ))}
         <tr>
-          <td className="col-span-3">
+          <td className="col-span-3 !gap-2">
             <Button.Green
               onClick={(): void =>
                 setFields([

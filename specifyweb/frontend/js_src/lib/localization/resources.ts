@@ -365,6 +365,10 @@ export const resourcesText = createDictionary({
     'en-us':
       'This formatter will be used only if the condition field value is equal to this condition',
   },
+  elseConditionDescription: {
+    'en-us':
+      'This formatter will be used only if the condition field value is equal to this condition or if no other formatter matches its condition',
+  },
   addConditionFieldFirst: {
     'en-us':
       'Multiple definitions can only be specified after you set a condition field',
