@@ -5,6 +5,7 @@ import { commonText } from '../../localization/common';
 import { Select } from '../Atoms/Form';
 import type { Tables } from '../DataModel/types';
 import { fetchFormatters } from '../Formatters/formatters';
+import { mappingElementDivider } from '../WbPlanView/LineComponents';
 
 export function QueryFieldFormatter({
   type,
@@ -41,21 +42,23 @@ export function QueryFieldFormatter({
     typeof formatter === 'string' ? (
       <>{commonText.loading()}</>
     ) : null
-  ) : (
-    // <div> needed for proper sizing
-    <div>
-      <Select
-        disabled={handleChange === undefined}
-        value={formatter}
-        onValueChange={handleChange}
-      >
-        <option />
-        {availableFormatters.map(({ name, title }, index) => (
-          <option key={index} value={name}>
-            {title}
-          </option>
-        ))}
-      </Select>
-    </div>
-  );
+  ) : availableFormatters.length > 1 ? (
+    <>
+      {mappingElementDivider}
+      <div>
+        <Select
+          disabled={handleChange === undefined}
+          value={formatter}
+          onValueChange={handleChange}
+        >
+          <option />
+          {availableFormatters.map(({ name, title }, index) => (
+            <option key={index} value={name}>
+              {title}
+            </option>
+          ))}
+        </Select>
+      </div>
+    </>
+  ) : null;
 }
