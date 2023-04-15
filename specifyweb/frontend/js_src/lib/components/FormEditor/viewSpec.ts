@@ -639,7 +639,7 @@ const rawFieldSpec = (table: SpecifyTable | undefined) =>
       syncers.xmlAttribute('name', 'skip'),
       syncers.preserveInvalid(
         syncer((name) => {
-          const parsed = syncers.field(table?.name, false).serializer(name);
+          const parsed = syncers.field(table?.name, 'silent').serializer(name);
           if (
             parsed === undefined &&
             name !== undefined &&
@@ -647,7 +647,7 @@ const rawFieldSpec = (table: SpecifyTable | undefined) =>
           )
             console.error(`Unknown field name: ${name}`);
           return parsed;
-        }, syncers.field(table?.name).deserializer)
+        }, syncers.field(table?.name, 'strict').deserializer)
       )
     ),
     legacyEditOnCreate: pipe(

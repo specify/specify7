@@ -2,8 +2,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { f } from '../../utils/functools';
 import { parseBoolean } from '../../utils/parser/parse';
-import type { RA } from '../../utils/types';
-import { IR } from '../../utils/types';
+import type { IR, RA } from '../../utils/types';
 import { formatDisjunction } from '../Atoms/Internationalization';
 import { parseJavaClassName } from '../DataModel/resource';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
@@ -416,14 +415,19 @@ export const syncers = {
    *
    * Handles multiple fields concatenated with a dot (i.e, "accession.text1")
    */
-  field: (tableName: keyof Tables | undefined, strict = true) =>
+  field: (
+    tableName: keyof Tables | undefined,
+    mode: 'silent' | 'strict' | 'warn' = 'strict'
+  ) =>
     syncer<string | undefined, RA<LiteralField | Relationship> | undefined>(
       (fieldName) => {
         if (fieldName === undefined || tableName === undefined)
           return undefined;
         const field = tables[tableName].getFields(fieldName);
-        if (field === undefined)
-          console[strict ? 'error' : 'warn'](`Unknown field: ${fieldName}`);
+        if (field === undefined && mode !== 'silent')
+          console[mode === 'strict' ? 'error' : 'warn'](
+            `Unknown field: ${fieldName}`
+          );
         return field;
       },
       (fieldName) => fieldName?.map(({ name }) => name).join('.')
@@ -600,7 +604,7 @@ export const syncers = {
         ReturnType<MAPPER[TYPE_MAPPER[KEY]]>
       > & {
         readonly type: TYPE_MAPPER[KEY];
-        readonly rawType: keyof TYPE_MAPPER & string;
+        readonly rawType: string & keyof TYPE_MAPPER;
       };
     }[keyof TYPE_MAPPER]
   >(

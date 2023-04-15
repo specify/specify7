@@ -100,6 +100,12 @@ const generateEditor = (xmlSpec: (() => BaseSpec<SimpleXmlNode>) | undefined) =>
     return (
       <CodeMirror
         className={`w-full border border-brand-300 dark:border-none ${className}`}
+        /*
+         * Disable spell check if we are doing own validation as otherwise it's
+         * hard to differentiate between browser's spell check errors and our
+         * validation errors
+         */
+        spellCheck={typeof xmlSpec === 'function'}
         extensions={writable(extensions)}
         readOnly={isReadOnly}
         ref={handleRef}

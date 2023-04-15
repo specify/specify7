@@ -151,7 +151,7 @@ const tests: {
       final: undefined,
     },
     {
-      arguments: [() => undefined],
+      arguments: [(): undefined => undefined],
       in: undefined,
       out: undefined,
       final: undefined,
@@ -178,7 +178,7 @@ const tests: {
       final: 'default',
     },
     {
-      arguments: [() => undefined],
+      arguments: [(): undefined => undefined],
       in: undefined,
       out: undefined,
       final: undefined,
@@ -577,11 +577,17 @@ const tests: {
       error: ['Unknown field: accessions'],
     },
     {
-      arguments: ['CollectionObject', false],
+      arguments: ['CollectionObject', 'warn'],
       in: 'accessions',
       out: undefined,
       final: undefined,
       warn: ['Unknown field: accessions'],
+    },
+    {
+      arguments: ['CollectionObject', 'silent'],
+      in: 'accessions',
+      out: undefined,
+      final: undefined,
     },
   ],
 

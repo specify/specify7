@@ -36,6 +36,20 @@ export const legacyLoadingContext = (promise: Promise<unknown>) =>
   legacyContext(promise);
 
 /**
+ * Wait 50ms before displaying loading screen
+ *   -> to avoid blinking a loading screen for resolved promises
+ *      (that can also trigger bugs, like this one:
+ *      https://github.com/specify/specify7/issues/884#issuecomment-1509324664)
+ * Wait 50sm before removing loading screen
+ *   -> to avoid flashing the screen when one loading screen is immediately
+ *      followed by another one
+ * 50ms was chosen as the longest delay that I don't notice in comparison to 0ms
+ * (on an fast macbook pro with high refresh rate). The value might have to be
+ * adjusted in the future
+ */
+const loadingScreenDelay = 50;
+
+/**
  * Provide contexts used by other components
  *
  * It is best practice to use context as little as possible, as they make
@@ -56,15 +70,21 @@ export function Contexts({
   // Loading Context
   const holders = React.useRef<RA<number>>([]);
   const [isLoading, handleLoading, handleLoaded] = useBooleanState();
+  const loadingTimeout = React.useRef<
+    ReturnType<typeof setTimeout> | undefined
+  >(undefined);
   const loadingHandler = React.useCallback(
     (promise: Promise<unknown>): void => {
       const holderId = Math.max(-1, ...holders.current) + 1;
       holders.current = [...holders.current, holderId];
-      handleLoading();
+      clearTimeout(loadingTimeout.current);
+      loadingTimeout.current = setTimeout(handleLoading, loadingScreenDelay);
       promise
         .finally(() => {
           holders.current = holders.current.filter((item) => item !== holderId);
-          if (holders.current.length === 0) handleLoaded();
+          if (holders.current.length > 0) return;
+          clearTimeout(loadingTimeout.current);
+          loadingTimeout.current = setTimeout(handleLoaded, loadingScreenDelay);
         })
         .catch(crash);
     },
