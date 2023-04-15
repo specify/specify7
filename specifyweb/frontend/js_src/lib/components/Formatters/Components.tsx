@@ -31,6 +31,7 @@ import {
   formatToManyIndex,
   formatTreeRank,
   getGenericMappingPath,
+  mappingPathToString,
   parsePartialField,
   relationshipIsToMany,
   valueIsPartialField,
@@ -153,8 +154,7 @@ export function ResourceMapping({
   readonly openIndex: GetSet<number | undefined>;
   readonly isRequired?: boolean;
 }): JSX.Element {
-  // FIXME: change to careful useLiveState
-  const [mappingPath, setMappingPath] = React.useState(() => {
+  const sourcePath = React.useMemo(() => {
     const rawPath =
       mapping?.map((field) => [
         field.name,
@@ -175,7 +175,24 @@ export function ResourceMapping({
         ? []
         : [formattedEntry]),
     ]);
-  });
+  }, [mapping, table.name]);
+  const [mappingPath, setMappingPath] = React.useState(sourcePath);
+
+  React.useEffect(() => {
+    const isSamePath =
+      mappingPathToString(
+        mappingPath.at(-1) === emptyMapping
+          ? mappingPath.slice(0, -1)
+          : mappingPath
+      ) ===
+      mappingPathToString(
+        sourcePath.at(-1) === formattedEntry
+          ? sourcePath.slice(0, -1)
+          : sourcePath
+      );
+    // Fix for https://github.com/specify/specify7/issues/3332
+    if (!isSamePath) setMappingPath(sourcePath);
+  }, [mappingPath, sourcePath]);
 
   const isReadOnly = React.useContext(ReadOnlyContext);
   const lineData = React.useMemo(
