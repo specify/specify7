@@ -12,6 +12,7 @@ import type { GetSet, RA } from '../../utils/types';
 import { removeItem, replaceItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Form, Input, Label } from '../Atoms/Form';
+import { icons } from '../Atoms/Icons';
 import { Submit } from '../Atoms/Submit';
 import { ReadOnlyContext } from '../Core/Contexts';
 import { Dialog } from '../Molecules/Dialog';
@@ -79,6 +80,7 @@ export function XmlEditorShell<
           (item as unknown as { readonly title: string | undefined }).title ??
           item.name,
       })}
+      icon={icons.variable}
       onClose={handleClose}
     >
       <Form id={id('form')} onSubmit={handleClose}>
