@@ -44,39 +44,18 @@ exports[`Can edit a form definition 2`] = `
 "<?xml version=\\"1.0\\" encoding=\\"UTF-8\\"?>
 <viewset name=\\"Fish Views\\" xmlns:xsi=\\"http://www.w3.org/2001/XMLSchema-instance\\">
 	<views>
-		<view
-		  name=\\"Accession\\"
-		  class=\\"edu.ku.brc.specify.datamodel.Accession\\"
-		  busrules=\\"edu.ku.brc.specify.datamodel.busrules.AccessionBusRules\\"
-		  resourcelabels=\\"false\\"
-		>
+		<view name=\\"Accession\\" class=\\"edu.ku.brc.specify.datamodel.Accession\\" busrules=\\"edu.ku.brc.specify.datamodel.busrules.AccessionBusRules\\" resourcelabels=\\"false\\">
 			<desc>The Accession form.</desc>
 			<!-- Some comment -->
 			<altviews>
-				<altview
-				  name=\\"Accession View\\"
-				  viewdef=\\"Accession\\"
-				  mode=\\"view\\"
-				  default=\\"true\\"
-				/>
-				<altview
-				  name=\\"Accession View (2)\\"
-				  viewdef=\\"Accession\\"
-				  mode=\\"view\\"
-				  default=\\"true\\"
-				/>
+				<altview name=\\"Accession View\\" viewdef=\\"Accession\\" mode=\\"view\\" default=\\"true\\"/>
+				<altview name=\\"Accession View (2)\\" viewdef=\\"Accession\\" mode=\\"view\\" default=\\"true\\"/>
 				<altview name=\\"Accession View (Edited)\\" viewdef=\\"Accession\\" mode=\\"edit\\"/>
 			</altviews>
 		</view>
 	</views>
 	<viewdefs>
-		<viewdef
-		  type=\\"form\\"
-		  name=\\"Accession\\"
-		  class=\\"edu.ku.brc.specify.datamodel.Accession\\"
-		  gettable=\\"edu.ku.brc.af.ui.forms.DataGetterForObj\\"
-		  settable=\\"edu.ku.brc.af.ui.forms.DataSetterForObj\\"
-		>
+		<viewdef type=\\"form\\" name=\\"Accession\\" class=\\"edu.ku.brc.specify.datamodel.Accession\\" gettable=\\"edu.ku.brc.af.ui.forms.DataGetterForObj\\" settable=\\"edu.ku.brc.af.ui.forms.DataSetterForObj\\">
 			<desc>The Accession form.</desc>
 			<enableRules/>
 			<columnDef>100px,2px,175px,5px,140px,2px,161px,5px,75px,2px,160px,0px,15px,p:g</columnDef>
@@ -97,23 +76,9 @@ exports[`Can edit a form definition 2`] = `
 				</row>
 				<row>
 					<cell type=\\"label\\" labelfor=\\"12\\"/>
-					<cell
-					  type=\\"field\\"
-					  id=\\"12\\"
-					  name=\\"dateAccessioned\\"
-					  uitype=\\"formattedtext\\"
-					  uifieldformatter=\\"Date\\"
-					  default=\\"today\\"
-					/>
+					<cell type=\\"field\\" id=\\"12\\" name=\\"dateAccessioned\\" uitype=\\"formattedtext\\" uifieldformatter=\\"Date\\" default=\\"today\\"/>
 					<cell type=\\"label\\" labelfor=\\"6\\"/>
-					<cell
-					  type=\\"field\\"
-					  id=\\"6\\"
-					  name=\\"dateReceived\\"
-					  uitype=\\"formattedtext\\"
-					  uifieldformatter=\\"Date\\"
-					  default=\\"today\\"
-					/>
+					<cell type=\\"field\\" id=\\"6\\" name=\\"dateReceived\\" uitype=\\"formattedtext\\" uifieldformatter=\\"Date\\" default=\\"today\\"/>
 				</row>
 			</rows>
 		</viewdef>

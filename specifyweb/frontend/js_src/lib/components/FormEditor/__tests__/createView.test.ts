@@ -227,6 +227,7 @@ const viewSets = (): ViewSets =>
     ],
   });
 
+/** Reformat the result to reduce snapshot size and make it more readable */
 const processViewSet = (viewSet: ViewSets): IR<unknown> =>
   // Get rid of symbols
   JSON.parse(
@@ -234,7 +235,9 @@ const processViewSet = (viewSet: ViewSets): IR<unknown> =>
       ...viewSet,
       viewDefs: viewSet.viewDefs.map(({ raw, ...rest }) => ({
         ...rest,
-        raw: formatXmlForTests(xmlToString(jsonToXml(raw), false)),
+        raw: formatXmlForTests(
+          xmlToString(jsonToXml({ ...raw, attributes: {} }), false)
+        ),
       })),
     })
   );

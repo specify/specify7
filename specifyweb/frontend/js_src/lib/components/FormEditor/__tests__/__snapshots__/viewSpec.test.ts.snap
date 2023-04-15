@@ -13,26 +13,14 @@ exports[`Can edit form definition 1`] = `
   <rowDef auto='true' cell='p' sep='1px'/>
   <rows>
     <row>
-      <cell
-        type='field'
-        id='1'
-        name='accessionNumber'
-        uitype='formattedtext'
-        initialize=''
-      />
+      <cell type='field' id='1' name='accessionNumber' uitype='formattedtext' initialize=''/>
       <cell type='label' labelfor='2' initialize=''/>
       <cell type='field' id='2' name='status' uitype='combobox' initialize=''/>
       <cell type='label' labelfor='3' initialize=''/>
       <cell type='field' id='3' name='type' uitype='combobox' initialize=''/>
     </row>
     <row>
-      <cell
-        type='field'
-        id='1'
-        name='accessionNumber'
-        uitype='formattedtext'
-        initialize=''
-      />
+      <cell type='field' id='1' name='accessionNumber' uitype='formattedtext' initialize=''/>
       <cell type='label' labelfor='2' initialize=''/>
       <cell type='field' id='2' name='status' uitype='combobox' initialize=''/>
       <cell type='label' labelfor='3' initialize=''/>
@@ -40,13 +28,7 @@ exports[`Can edit form definition 1`] = `
       <cell type='label' labelfor='2' label='New Label' initialize=''/>
     </row>
     <row>
-      <cell
-        type='field'
-        id='1'
-        name='accessionNumber'
-        uitype='formattedtext'
-        initialize=''
-      />
+      <cell type='field' id='1' name='accessionNumber' uitype='formattedtext' initialize=''/>
       <cell type='label' labelfor='2' initialize=''/>
       <cell type='field' id='2' name='status' uitype='combobox' initialize=''/>
       <cell type='label' labelfor='3' initialize=''/>
@@ -54,25 +36,9 @@ exports[`Can edit form definition 1`] = `
     </row>
     <row>
       <cell type='label' labelfor='12' initialize=''/>
-      <cell
-        type='field'
-        id='12'
-        name='dateAccessioned'
-        uitype='formattedtext'
-        uifieldformatter='Date'
-        default='today'
-        initialize=''
-      />
+      <cell type='field' id='12' name='dateAccessioned' uitype='formattedtext' uifieldformatter='Date' default='today' initialize=''/>
       <cell type='label' labelfor='6' initialize=''/>
-      <cell
-        type='field'
-        id='6'
-        name='dateReceived'
-        uitype='formattedtext'
-        uifieldformatter='Date'
-        default='today'
-        initialize=''
-      />
+      <cell type='field' id='6' name='dateReceived' uitype='formattedtext' uifieldformatter='Date' default='today' initialize=''/>
     </row>
   </rows>
 </viewdef>"

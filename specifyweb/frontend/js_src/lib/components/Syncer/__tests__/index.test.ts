@@ -74,12 +74,7 @@ test('Editing Data Object Formatter', () => {
   expect(updatedXml).toMatchInlineSnapshot(`
     "<?xml version='1.0' encoding='UTF-8'?>
     <formatters>
-      <format
-        name='Accession'
-        title='Accession'
-        class='edu.ku.brc.specify.datamodel.Accession'
-        default='true'
-      >
+      <format name='Accession' title='Accession' class='edu.ku.brc.specify.datamodel.Accession' default='true'>
         <!-- this comment will be preserved -->
         <switch single='true'>
           <fields>
@@ -87,12 +82,7 @@ test('Editing Data Object Formatter', () => {
           </fields>
         </switch>
       </format>
-      <format
-        name='Accession'
-        title='Accession'
-        class='edu.ku.brc.specify.datamodel.Accession'
-        default='true'
-      >
+      <format name='Accession' title='Accession' class='edu.ku.brc.specify.datamodel.Accession' default='true'>
         <!-- this comment will be preserved -->
         <switch single='true'>
           <fields>
@@ -102,24 +92,8 @@ test('Editing Data Object Formatter', () => {
         </switch>
       </format>
       <aggregators>
-        <aggregator
-          name='AccessionAgent'
-          title='AccessionAgent'
-          class='edu.ku.brc.specify.datamodel.Agent'
-          default='true'
-          separator=''
-          ending=''
-          format='AccessionAgent'
-        />
-        <aggregator
-          name='AccessionAgent'
-          title='AccessionAgent'
-          class='edu.ku.brc.specify.datamodel.AccessionAgent'
-          default='true'
-          separator=''
-          ending=''
-          format='AccessionAgent'
-        />
+        <aggregator name='AccessionAgent' title='AccessionAgent' class='edu.ku.brc.specify.datamodel.Agent' default='true' separator='' ending='' format='AccessionAgent'/>
+        <aggregator name='AccessionAgent' title='AccessionAgent' class='edu.ku.brc.specify.datamodel.AccessionAgent' default='true' separator='' ending='' format='AccessionAgent'/>
       </aggregators>
     </formatters>"
   `);
@@ -179,12 +153,7 @@ test('Removing a child does not carry over unknown attributes from previous node
   expect(updatedXml).toMatchInlineSnapshot(`
     "<?xml version='1.0' encoding='UTF-8'?>
     <formatters>
-      <format
-        name='Accession'
-        title='Accession'
-        class='edu.ku.brc.specify.datamodel.Accession'
-        default=''
-      >
+      <format name='Accession' title='Accession' class='edu.ku.brc.specify.datamodel.Accession' default=''>
         <switch a='b' single='true'>
           <fields>
             <field sep='__'>accessionNumber</field>
