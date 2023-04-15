@@ -13,17 +13,23 @@ export type CustomStat = State<
   }
 >;
 
+export type PartialQueryFieldWithPath = Partial<
+  SerializedResource<SpQueryField>
+> & {
+  readonly path: string;
+};
+
 export type DefaultStat = State<
   'DefaultStat',
   {
-    readonly itemType: 'BackEndStat' | 'QueryStat';
+    readonly itemType: 'BackEndStat' | 'QueryStat' | 'DynamicStat';
     readonly pageName: string;
     readonly categoryName: string;
     readonly itemName: string;
     readonly label: string;
     readonly itemValue: number | string | undefined;
     readonly isVisible?: boolean;
-    readonly pathToValue?: string;
+    readonly pathToValue?: string | number | null;
   }
 >;
 
@@ -38,9 +44,7 @@ export type StatLayout = {
 
 export type QuerySpec = {
   readonly tableName: keyof Tables;
-  readonly fields: RA<
-    Partial<SerializedResource<SpQueryField>> & { readonly path: string }
-  >;
+  readonly fields: RA<PartialQueryFieldWithPath>;
   readonly isDistinct?: boolean | null;
 };
 
@@ -59,7 +63,7 @@ export type StatsSpec = IR<{
 }>;
 
 export type QueryBuilderStat = State<
-  'QueryBuilderStat',
+  'QueryStat',
   {
     readonly querySpec: QuerySpec;
   }
@@ -73,13 +77,14 @@ export type StatFormatterSpec = {
 export type StatFormatterGenerator = (
   spec: StatFormatterSpec
 ) => (rawResult: any) => string | undefined;
+
 export type BackEndStat = BackEndBase & {
   readonly formatterGenerator: StatFormatterGenerator;
 };
 export type BackEndBase = State<
   'BackEndStat',
   {
-    readonly pathToValue: string | undefined;
+    readonly pathToValue: string | undefined | null | number;
     readonly tableName: keyof Tables;
   }
 >;
@@ -88,4 +93,13 @@ export type BackEndStatResolve = BackEndBase & {
   // Add type assertions for rawResult
   readonly formatter: (rawResult: any) => string | undefined;
 };
-export type StatItemSpec = BackEndStat | QueryBuilderStat;
+export type StatItemSpec = BackEndStat | QueryBuilderStat | DynamicStat;
+
+export type DynamicStat = State<
+  'DynamicStat',
+  {
+    readonly dynamicQuerySpec: QuerySpec;
+    readonly additionalFields: RA<PartialQueryFieldWithPath>;
+    readonly tableNames: RA<keyof Tables>;
+  }
+>;

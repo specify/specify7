@@ -29,18 +29,21 @@ import { StatsAsideButton } from './Buttons';
 import { Categories } from './Categories';
 import {
   applyRefreshLayout,
-  getDynamicCategoriesToFetch,
+  getBackendUrlToFetch,
   getOffsetOne,
   setLayoutUndefined,
   statsToTsv,
   useBackendApi,
   useDefaultDynamicCategorySetter,
   useDefaultStatsToAdd,
-  useDynamicCategorySetter,
+  useBackEndCategorySetter,
+  getDynamicQuerySpecsToFetch,
 } from './hooks';
 import { StatsPageEditing } from './StatsPageEditing';
-import { defaultLayoutGenerated, dynamicStatsSpec } from './StatsSpec';
+import { defaultLayoutGenerated, backEndStatsSpec } from './StatsSpec';
 import type { CustomStat, DefaultStat, StatLayout } from './types';
+import { IR } from '../../utils/types';
+import { QuerySpec } from './types';
 
 export function StatsPage(): JSX.Element {
   return (
@@ -54,6 +57,7 @@ function ProtectedStatsPage(): JSX.Element | null {
   // REFACTOR: Make stats page component smaller.
 
   useMenuItem('statistics');
+  console.log('Change');
   const [initialSharedLayout, setSharedLayout] = collectionPreferences.use(
     'statistics',
     'appearance',
@@ -202,12 +206,15 @@ function ProtectedStatsPage(): JSX.Element | null {
   const sourceLayout = getSourceLayout(activePage.isShared);
 
   const allCategories = React.useMemo(
-    () => dynamicStatsSpec.map(({ responseKey }) => responseKey),
+    () => backEndStatsSpec.map(({ responseKey }) => responseKey),
     []
   );
   const [categoriesToFetch, setCategoriesToFetch] = React.useState<RA<string>>(
     []
   );
+  const [dynamicQueriesToRun, setDynamicQueriesToRun] = React.useState<
+    RA<IR<QuerySpec>>
+  >([]);
 
   const [defaultCategoriesToFetch, setDefaultCategoriesToFetch] =
     React.useState<RA<string>>([]);
@@ -217,17 +224,31 @@ function ProtectedStatsPage(): JSX.Element | null {
    *
    */
   React.useEffect(() => {
-    const absentDynamicCategories =
-      sourceLayout === undefined
-        ? []
-        : getDynamicCategoriesToFetch(sourceLayout);
-    const notCurrentlyFetching = absentDynamicCategories.filter(
+    const absentBackEndCategories =
+      sourceLayout === undefined ? [] : getBackendUrlToFetch(sourceLayout);
+    const notCurrentlyFetching = absentBackEndCategories.filter(
       (category) => !categoriesToFetch.includes(category)
     );
     if (notCurrentlyFetching.length > 0) {
       setCategoriesToFetch([...categoriesToFetch, ...notCurrentlyFetching]);
     }
   }, [sourceLayout, categoriesToFetch, setCategoriesToFetch]);
+
+  React.useEffect(() => {
+    const absentDynamicCategories =
+      sourceLayout === undefined
+        ? []
+        : getDynamicQuerySpecsToFetch(sourceLayout);
+    const notCurrentlyRunning = absentDynamicCategories.filter(
+      (item) =>
+        !dynamicQueriesToRun.some((currentlyRunning) =>
+          Object.keys(currentlyRunning).includes(Object.keys(item)[0])
+        )
+    );
+    if (notCurrentlyRunning.length > 0) {
+      setDynamicQueriesToRun([...dynamicQueriesToRun, ...notCurrentlyRunning]);
+    }
+  }, [sourceLayout, dynamicQueriesToRun, setDynamicQueriesToRun]);
 
   const backEndResponse = useBackendApi(categoriesToFetch);
   const defaultBackEndResponse = useBackendApi(defaultCategoriesToFetch);
@@ -289,7 +310,7 @@ function ProtectedStatsPage(): JSX.Element | null {
     [activePage.pageIndex, activePage.isShared]
   );
   // Used to set unknown categories once for layout initially, and every time for default layout
-  useDynamicCategorySetter(
+  useBackEndCategorySetter(
     backEndResponse,
     handleChange,
     categoriesToFetch,

@@ -11,7 +11,7 @@ import { Input } from '../Atoms/Form';
 import { hasTablePermission } from '../Permissions/helpers';
 import { generateStatUrl } from './hooks';
 import { StatItem } from './StatItems';
-import { dynamicStatsSpec, statsSpec } from './StatsSpec';
+import { backEndStatsSpec, statsSpec } from './StatsSpec';
 import type {
   CustomStat,
   DefaultStat,
@@ -39,7 +39,7 @@ function ItemOverride({
           item.itemName
         )
       : undefined;
-  const dynamicSpecResolve = dynamicStatsSpec.find(
+  const dynamicSpecResolve = backEndStatsSpec.find(
     ({ responseKey }) => responseKey === urlToFetch
   );
   return (

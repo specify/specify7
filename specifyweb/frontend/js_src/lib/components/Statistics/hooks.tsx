@@ -16,18 +16,20 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { SpQuery } from '../DataModel/types';
 import { makeQueryField } from '../QueryBuilder/fromTree';
-import { dynamicStatsSpec, statsSpec } from './StatsSpec';
+import { backEndStatsSpec, dynamicStatsSpec, statsSpec } from './StatsSpec';
 import type {
   BackEndStatResolve,
   BackendStatsResult,
   CustomStat,
   DefaultStat,
+  DynamicStat,
   QueryBuilderStat,
   QuerySpec,
   StatFormatterSpec,
   StatLayout,
   StatsSpec,
 } from './types';
+import { PartialQueryFieldWithPath } from './types';
 
 /**
  * Returns state which gets updated everytime backend stat is fetched. Used for dynamic categories since they don't
@@ -46,6 +48,23 @@ export function useBackendApi(
   const [backendStat] = useMultipleAsyncState(backEndStatPromises, false);
 
   return backendStat;
+}
+
+export function useDynamicGroups(
+  dynamicEphemeralFieldSpecs: RA<IR<QuerySpec>>
+): IR<RA<string | number | undefined> | undefined> | undefined {
+  const dynamicEphereralPromises = React.useMemo(
+    () =>
+      dynamicEphemeralFieldSpecs.length === 0
+        ? undefined
+        : dynamicEphermeralPromiseGenerator(dynamicEphemeralFieldSpecs),
+    [dynamicEphemeralFieldSpecs]
+  );
+  const [dynamicEphemeralResults] = useMultipleAsyncState(
+    dynamicEphereralPromises,
+    false
+  );
+  return dynamicEphemeralResults;
 }
 
 function backEndStatPromiseGenerator(
@@ -73,6 +92,47 @@ function backEndStatPromiseGenerator(
           key
         ),
     ])
+  );
+}
+
+function dynamicEphermeralPromiseGenerator(
+  dynamicEphemeralFieldSpecs: RA<IR<QuerySpec>>
+): IR<() => Promise<RA<number | string | undefined> | undefined>> {
+  return Object.fromEntries(
+    dynamicEphemeralFieldSpecs.map((dynamicFieldSpec) =>
+      Object.entries(dynamicFieldSpec).map(([key, queryFieldSpec]) => [
+        key,
+        async () =>
+          throttledPromise<RA<string | number | undefined> | undefined>(
+            'dynamicStatGroups',
+            async () =>
+              ajax<{ readonly results: RA<RA<number | string | null>> }>(
+                '/stored_query/ephemeral',
+                {
+                  method: 'POST',
+                  headers: {
+                    Accept: 'application/json',
+                  },
+                  body: keysToLowerCase({
+                    ...serializeResource(
+                      querySpecToResource(
+                        statsText.statistics(),
+                        queryFieldSpec
+                      )
+                    ),
+                    limit: 0,
+                  }),
+                },
+                { expectedResponseCodes: Object.values(Http) }
+              ).then(({ data }) =>
+                data.results.map((distinctGroup) =>
+                  distinctGroup[0] === null ? undefined : distinctGroup[0]
+                )
+              ),
+            key
+          ),
+      ])
+    )
   );
 }
 
@@ -182,33 +242,45 @@ export function resolveStatsSpec(
 ): BackEndStatResolve | QueryBuilderStat | undefined {
   if (item.type === 'CustomStat') {
     return {
-      type: 'QueryBuilderStat',
+      type: 'QueryStat',
       querySpec: item.querySpec,
     };
-  } else {
-    const statSpecItem =
-      statsSpec[item.pageName]?.categories?.[item.categoryName]?.items?.[
-        item.itemName
-      ];
-    return statSpecItem === undefined
-      ? undefined
-      : statSpecItem.spec.type === 'BackEndStat'
-      ? {
-          type: 'BackEndStat',
-          pathToValue: item.pathToValue ?? statSpecItem.spec.pathToValue,
-          fetchUrl: generateStatUrl(
-            statsSpec[item.pageName].urlPrefix,
-            item.categoryName,
-            item.itemName
-          ),
-          formatter: statSpecItem.spec.formatterGenerator(formatterSpec),
-          tableName: statSpecItem.spec.tableName,
-        }
-      : {
-          type: 'QueryBuilderStat',
-          querySpec: statSpecItem.spec.querySpec,
-        };
   }
+  const statSpecItem =
+    statsSpec[item.pageName]?.categories?.[item.categoryName]?.items?.[
+      item.itemName
+    ];
+  if (statSpecItem === undefined) return undefined;
+  const statUrl = generateStatUrl(
+    statsSpec[item.pageName].urlPrefix,
+    item.categoryName,
+    item.itemName
+  );
+  if (statSpecItem.spec.type === 'BackEndStat')
+    return {
+      type: 'BackEndStat',
+      pathToValue: item.pathToValue ?? statSpecItem.spec.pathToValue,
+      fetchUrl: statUrl,
+      formatter: statSpecItem.spec.formatterGenerator(formatterSpec),
+      tableName: statSpecItem.spec.tableName,
+    };
+  if (statSpecItem.spec.type === 'DynamicStat') {
+    const dynamicQueryFromSpec = dynamicStatsSpec.find(
+      ({ responseKey }) => statUrl === responseKey
+    );
+    if (dynamicQueryFromSpec === undefined) return undefined;
+    return {
+      type: 'QueryStat',
+      querySpec: {
+        tableName: dynamicQueryFromSpec.tableName,
+        fields: dynamicQueryFromSpec.fields,
+      },
+    };
+  }
+  return {
+    type: 'QueryStat',
+    querySpec: statSpecItem.spec.querySpec,
+  };
 }
 
 export function useResolvedStatSpec(
@@ -225,9 +297,7 @@ export function useResolvedStatSpec(
  *  stats page before categories are loaded.
  *
  */
-export function getDynamicCategoriesToFetch(
-  layout: RA<StatLayout>
-): RA<string> {
+export function getBackendUrlToFetch(layout: RA<StatLayout>): RA<string> {
   return Array.from(
     new Set(
       layout.flatMap(({ categories }) =>
@@ -246,6 +316,32 @@ export function getDynamicCategoriesToFetch(
                 : undefined
             )
           )
+        )
+      )
+    )
+  );
+}
+
+export function getDynamicQuerySpecsToFetch(
+  layout: RA<StatLayout>
+): RA<IR<QuerySpec>> {
+  return layout.flatMap(({ categories }) =>
+    categories.flatMap(({ items }) =>
+      filterArray(
+        items.map((item) =>
+          item.type === 'DefaultStat' && item.itemType === 'DynamicStat'
+            ? {
+                [generateStatUrl(
+                  statsSpec[item.pageName].urlPrefix,
+                  item.categoryName,
+                  item.itemName
+                )]: (
+                  statsSpec[item.pageName].categories[item.categoryName].items[
+                    item.itemName
+                  ].spec as DynamicStat
+                ).dynamicQuerySpec,
+              }
+            : undefined
         )
       )
     )
@@ -381,7 +477,7 @@ export function useDefaultDynamicCategorySetter(
   statFormatterSpec: StatFormatterSpec
 ) {
   React.useEffect(() => {
-    dynamicStatsSpec.forEach(({ responseKey, formatterGenerator }) => {
+    backEndStatsSpec.forEach(({ responseKey, formatterGenerator }) => {
       if (
         defaultBackEndResponse !== undefined &&
         defaultBackEndResponse[responseKey] !== undefined
@@ -413,7 +509,7 @@ export function useDefaultDynamicCategorySetter(
  * to the current layout
  *
  */
-export function useDynamicCategorySetter(
+export function useBackEndCategorySetter(
   backEndResponse: BackendStatsResult | undefined,
   handleChange: (
     newCategories: (
@@ -424,7 +520,7 @@ export function useDynamicCategorySetter(
   formatterSpec: StatFormatterSpec
 ) {
   React.useEffect(() => {
-    dynamicStatsSpec.forEach(({ responseKey, formatterGenerator }) => {
+    backEndStatsSpec.forEach(({ responseKey, formatterGenerator }) => {
       if (
         backEndResponse !== undefined &&
         backEndResponse[responseKey] !== undefined &&
@@ -445,6 +541,81 @@ export function useDynamicCategorySetter(
       }
     });
   }, [backEndResponse, handleChange]);
+}
+
+export function useDynamicCategorySetter(
+  dynamicEphemeralResponse:
+    | IR<RA<string | number | null> | undefined>
+    | undefined,
+  handleChange: (
+    newCategories: (
+      oldCategory: StatLayout['categories']
+    ) => StatLayout['categories']
+  ) => void
+) {
+  React.useEffect(() => {
+    dynamicStatsSpec.forEach(({ responseKey }) => {
+      if (
+        dynamicEphemeralResponse !== undefined &&
+        dynamicEphemeralResponse[responseKey] !== undefined
+      ) {
+        handleChange((oldCategory) =>
+          oldCategory.map((dynamicCategory) => ({
+            ...dynamicCategory,
+            items: applyDynamicCategoryResponse(
+              dynamicEphemeralResponse[responseKey] as RA<
+                string | number | null
+              >,
+              dynamicCategory.items,
+              responseKey,
+              statsSpec
+            ),
+          }))
+        );
+      }
+    });
+  }, [handleChange, dynamicEphemeralResponse]);
+}
+
+function applyDynamicCategoryResponse(
+  dynamicEphemeralResponse: RA<string | number | null>,
+  items: RA<CustomStat | DefaultStat>,
+  responseKey: string,
+  statsSpec: StatsSpec
+): RA<CustomStat | DefaultStat> {
+  const dynamicPhantomItem = items.find(
+    (item) =>
+      item.type === 'DefaultStat' &&
+      item.itemName === 'dynamicPhantomItem' &&
+      item.pathToValue === undefined
+  );
+  const dynamicPhantomUrlPrefix =
+    dynamicPhantomItem === undefined || dynamicPhantomItem.type === 'CustomStat'
+      ? undefined
+      : statsSpec[dynamicPhantomItem.pageName].urlPrefix;
+  const dynamicPhantomItemResponseKey =
+    dynamicPhantomUrlPrefix === undefined
+      ? undefined
+      : generateStatUrl(
+          dynamicPhantomUrlPrefix,
+          (dynamicPhantomItem as DefaultStat).categoryName,
+          (dynamicPhantomItem as DefaultStat).itemName
+        );
+  const isMyResponse = dynamicPhantomItemResponseKey === responseKey;
+  return dynamicPhantomItem !== undefined &&
+    isMyResponse &&
+    dynamicPhantomItem.type === 'DefaultStat'
+    ? dynamicEphemeralResponse.map((pathToValue) => ({
+        type: 'DefaultStat',
+        pageName: dynamicPhantomItem.pageName,
+        itemName: 'dynamicPhantomItem',
+        categoryName: dynamicPhantomItem.categoryName,
+        label: pathToValue === null ? 'null' : pathToValue.toString(),
+        itemValue: undefined,
+        itemType: 'QueryStat',
+        pathToValue: pathToValue,
+      }))
+    : items;
 }
 
 /**
@@ -498,4 +669,12 @@ export function applyRefreshLayout(
       return setLayoutUndefined(pageLayout);
     return pageLayout;
   });
+}
+
+export function appendDynamicPathToValue(
+  pathToValue: string | null | number,
+  fields: RA<PartialQueryFieldWithPath>
+): RA<PartialQueryFieldWithPath> {
+  const groupField = fields.at(-1);
+  if (groupField === undefined) return fields;
 }
