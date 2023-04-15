@@ -14,7 +14,8 @@ import { AutoMapper } from './autoMapper';
 import type { MappingLine } from './Mapper';
 import type { ColumnOptions, UploadPlan } from './uploadPlanParser';
 import { parseUploadPlan } from './uploadPlanParser';
-import { emptyMapping } from './helpers';
+
+import { emptyMapping } from './mappingHelpers';
 
 export const defaultColumnOptions: ColumnOptions = {
   matchBehavior: 'ignoreNever',

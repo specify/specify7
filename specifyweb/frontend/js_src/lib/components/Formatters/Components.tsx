@@ -17,7 +17,7 @@ import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { isTreeTable } from '../InitialContext/treeRanks';
 import { join } from '../Molecules';
-import { emptyMapping, mutateMappingPath } from '../WbPlanView/helpers';
+import { mutateMappingPath } from '../WbPlanView/helpers';
 import {
   getMappingLineProps,
   MappingElement,
@@ -26,14 +26,14 @@ import {
 import { handleMappingLineKey } from '../WbPlanView/Mapper';
 import {
   anyTreeRank,
+  emptyMapping,
   formattedEntry,
   formatToManyIndex,
   formatTreeRank,
+  getGenericMappingPath,
   parsePartialField,
   relationshipIsToMany,
   valueIsPartialField,
-  valueIsToManyIndex,
-  valueIsTreeRank,
 } from '../WbPlanView/mappingHelpers';
 import { getMappingLineData } from '../WbPlanView/navigator';
 import { navigatorSpecs } from '../WbPlanView/navigatorSpecs';
@@ -153,19 +153,26 @@ export function ResourceMapping({
   readonly openIndex: GetSet<number | undefined>;
   readonly isRequired?: boolean;
 }): JSX.Element {
-  // Note, this assumes the "mapping" prop can only be changed by this component
+  // FIXME: change to careful useLiveState
   const [mappingPath, setMappingPath] = React.useState(() => {
-    const rawPath = mapping?.map(({ name }) => name) ?? [];
+    const rawPath =
+      mapping?.map((field) => [
+        field.name,
+        ...(field.isRelationship && relationshipIsToMany(field)
+          ? [formatToManyIndex(1)]
+          : []),
+        ...(field.isRelationship && isTreeTable(field.relatedTable.name)
+          ? [formatTreeRank(anyTreeRank)]
+          : []),
+      ]) ?? [];
     const relationship = mapping?.at(-1);
     return filterArray([
       ...(isTreeTable(table.name) ? [formatTreeRank(anyTreeRank)] : []),
-      ...rawPath,
+      ...rawPath.flat(),
       ...(rawPath.length === 0
         ? [emptyMapping]
         : relationship?.isRelationship === false
         ? []
-        : relationshipIsToMany(relationship)
-        ? [formatToManyIndex(1), formattedEntry]
         : [formattedEntry]),
     ]);
   });
@@ -189,7 +196,7 @@ export function ResourceMapping({
       (mappingPath.length === 0 || mappingPath[0] === emptyMapping)
         ? [wbPlanText.mappingIsRequired()]
         : [],
-    [lineData, mappingPath, isRequired]
+    [mappingPath, isRequired]
   );
 
   const mappingLineProps = getMappingLineProps({
@@ -204,19 +211,21 @@ export function ResourceMapping({
             ignoreToMany: true,
             ignoreTreeRanks: true,
           });
-          setMappingPath(path);
-          const purePath = path
-            .map((part) =>
+          const purePath = getGenericMappingPath(
+            path.map((part) =>
               valueIsPartialField(part) ? parsePartialField(part)[0] : part
             )
-            .filter(
-              (part) =>
-                part !== emptyMapping &&
-                part !== formattedEntry &&
-                !valueIsToManyIndex(part) &&
-                !valueIsTreeRank(part)
-            );
-          setMapping(table.getFields(purePath.join('.')));
+          );
+          const inflatedPath = table.getFields(purePath.join('.'));
+          const lastField = inflatedPath?.at(-1);
+          setMappingPath(
+            lastField?.isRelationship === true &&
+              relationshipIsToMany(lastField) &&
+              !navigatorSpecs.formatterEditor.allowTransientToMany
+              ? [...path, formattedEntry]
+              : path
+          );
+          setMapping(inflatedPath);
         },
     onOpen: setOpenIndex,
     onClose: () => setOpenIndex(undefined),

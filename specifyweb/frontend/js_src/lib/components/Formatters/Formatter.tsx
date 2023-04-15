@@ -292,21 +292,24 @@ function FieldFormatter({
   if (lastField === undefined) return null;
   else if (!lastField.isRelationship)
     return (
-      <GenericFormatterPickList
-        itemsPromise={fetchFieldFormatters}
-        table={lastField.table}
-        value={field.fieldFormatter}
-        onChange={(fieldFormatter): void =>
-          handleChange({
-            ...field,
-            fieldFormatter,
-          })
-        }
-      />
+      <Label.Inline className="w-full">
+        {schemaText.fieldFormat()}
+        <GenericFormatterPickList
+          itemsPromise={fetchFieldFormatters}
+          table={lastField.table}
+          value={field.fieldFormatter}
+          onChange={(fieldFormatter): void =>
+            handleChange({
+              ...field,
+              fieldFormatter,
+            })
+          }
+        />
+      </Label.Inline>
     );
   else if (relationshipIsToMany(lastField))
     return (
-      <Label.Inline>
+      <Label.Inline className="w-full">
         {resourcesText.aggregator()}
         <FormattersPickList
           table={lastField.relatedTable}
@@ -323,7 +326,7 @@ function FieldFormatter({
     );
   else
     return (
-      <Label.Inline>
+      <Label.Inline className="w-full">
         {resourcesText.formatter()}
         <FormattersPickList
           table={lastField.relatedTable}

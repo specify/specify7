@@ -25,15 +25,12 @@ import { isTreeTable, treeRanksPromise } from '../InitialContext/treeRanks';
 import { useTitle } from '../Molecules/AppTitle';
 import { hasPermission } from '../Permissions/helpers';
 import { usePref } from '../UserPreferences/usePref';
-import {
-  emptyMapping,
-  getMappedFields,
-  mappingPathIsComplete,
-} from '../WbPlanView/helpers';
+import { getMappedFields, mappingPathIsComplete } from '../WbPlanView/helpers';
 import { getMappingLineProps } from '../WbPlanView/LineComponents';
 import { MappingView } from '../WbPlanView/MapperComponents';
 import {
   anyTreeRank,
+  emptyMapping,
   formattedEntry,
   formatTreeRank,
   valueIsTreeRank,

@@ -13,13 +13,13 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { SpQuery, Tables } from '../DataModel/types';
 import {
-  emptyMapping,
   mappingPathIsComplete,
   mutateMappingPath,
 } from '../WbPlanView/helpers';
 import type { MappingPath } from '../WbPlanView/Mapper';
 import type { QueryField } from './helpers';
 import { parseQueryFields } from './helpers';
+import { emptyMapping } from '../WbPlanView/mappingHelpers';
 
 export type MainState = State<
   'MainState',

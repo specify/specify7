@@ -29,7 +29,8 @@ import {
 } from '../Molecules/TableIcon';
 import { titlePosition } from '../Molecules/Tooltips';
 import { scrollIntoView } from '../TreeView/helpers';
-import { emptyMapping } from './helpers';
+
+import { emptyMapping } from './mappingHelpers';
 
 type Properties =
   /*
@@ -532,8 +533,7 @@ export function CustomSelectElement({
     has('unmapOption') &&
     defaultOption.optionName !== emptyMapping;
 
-  if (showUnmapOption && typeof defaultDefaultOption === 'string')
-    inlineOptions = [defaultDefaultOption, ...inlineOptions];
+  if (showUnmapOption) inlineOptions = [defaultDefaultOption, ...inlineOptions];
 
   const id = useId('listbox');
   const { validationRef } = useValidation(validation);
@@ -643,7 +643,9 @@ export function CustomSelectElement({
     ) : undefined;
 
     const fieldNames = inlineOptions
-      .map(({ optionLabel }) => optionLabel)
+      .map(({ optionLabel }) =>
+        optionLabel === emptyMapping ? wbPlanText.notSelected() : optionLabel
+      )
       .filter((option): option is string => typeof option === 'string');
     optionsShadow =
       !isOpen && has('scroll') && fieldNames.length > 0 ? (

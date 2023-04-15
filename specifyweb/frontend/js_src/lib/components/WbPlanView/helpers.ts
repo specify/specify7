@@ -24,6 +24,7 @@ import type {
 } from './Mapper';
 import {
   anyTreeRank,
+  emptyMapping,
   findDuplicateMappings,
   formatToManyIndex,
   formatTreeRank,
@@ -209,8 +210,6 @@ export const getMappedFields = (
   lines
     .filter((line) => pathStartsWith(line.mappingPath, mappingPathFilter))
     .map((line) => line.mappingPath[mappingPathFilter.length]);
-
-export const emptyMapping = '0';
 
 export const mappingPathIsComplete = (mappingPath: MappingPath): boolean =>
   mappingPath.at(-1) !== emptyMapping;

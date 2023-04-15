@@ -20,7 +20,6 @@ import {
 } from '../InitialContext/treeRanks';
 import { hasTablePermission, hasTreeAccess } from '../Permissions/helpers';
 import type { CustomSelectSubtype } from './CustomSelectElement';
-import { emptyMapping } from './helpers';
 import type {
   HtmlGeneratorFieldData,
   MappingElementProps,
@@ -28,6 +27,7 @@ import type {
 import type { MappingPath } from './Mapper';
 import {
   anyTreeRank,
+  emptyMapping,
   formatPartialField,
   formattedEntry,
   formatToManyIndex,
@@ -283,7 +283,9 @@ export function getMappingLineData({
         partName: nextPart,
         fieldName:
           valueIsTreeRank(nextPart) || valueIsToManyIndex(nextPart)
-            ? mappingPath[internalState.position - 1]
+            ? valueIsToManyIndex(mappingPath[internalState.position - 1])
+              ? mappingPath[internalState.position - 2]
+              : mappingPath[internalState.position - 1]
             : nextPart,
       };
     },
@@ -410,12 +412,10 @@ export function getMappingLineData({
         const isInToMany = internalState.mappingLineData.some(
           ({ customSelectSubtype }) => customSelectSubtype === 'toMany'
         );
-        if (isInToMany)
-          /*
-           * Uncomment to explicitly allow mapping to "(aggregated)":
-           * commitInstanceData('simple', table, [formatted]);
-           */
+        if (isInToMany) {
+          commitInstanceData('simple', table, [formatted]);
           return;
+        }
       }
 
       /*

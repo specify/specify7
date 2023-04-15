@@ -15,7 +15,6 @@ import { softFail } from '../Errors/Crash';
 import { uniquifyHeaders } from './headerHelper';
 import {
   deduplicateMappings,
-  emptyMapping,
   mappingPathIsComplete,
   mutateMappingPath,
 } from './helpers';
@@ -28,6 +27,7 @@ import type {
   SelectElementPosition,
 } from './Mapper';
 import type { MatchBehaviors } from './uploadPlanParser';
+import { emptyMapping } from './mappingHelpers';
 
 const modifyLine = (
   state: MappingState,

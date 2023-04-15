@@ -30,7 +30,6 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { smoothScroll } from '../QueryBuilder/helpers';
 import { Layout } from './Header';
 import {
-  emptyMapping,
   fetchAutoMapperSuggestions,
   getMappedFields,
   getMustMatchTables,
@@ -56,6 +55,7 @@ import { getMappingLineData } from './navigator';
 import { navigatorSpecs } from './navigatorSpecs';
 import type { ColumnOptions } from './uploadPlanParser';
 import type { Dataset } from './Wrapped';
+import { emptyMapping } from './mappingHelpers';
 
 /*
  * Scope is used to differentiate between mapper definitions that should
