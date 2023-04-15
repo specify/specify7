@@ -168,7 +168,16 @@ function Fields({
   readonly onDelete: (() => void) | undefined;
 }): JSX.Element {
   return (
-    <table className="grid-table grid-cols-[min-content_auto_auto_min-content] gap-2">
+    <table
+      /*
+       * REFACTOR: replace min-w-[35rem] with a container query that replaces
+       *   table layout with list layout
+       */
+      className={`
+        grid-table min-w-[35rem] grid-cols-[min-content_auto_auto_min-content]
+        gap-2
+      `}
+    >
       <thead>
         <tr>
           <th>{resourcesText.separator()}</th>
