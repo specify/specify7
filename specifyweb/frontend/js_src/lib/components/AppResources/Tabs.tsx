@@ -9,7 +9,6 @@ import type { GetSet, IR, RA, RR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { WarningMessage } from '../Atoms';
 import { Button } from '../Atoms/Button';
-import { className } from '../Atoms/className';
 import { toResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -23,6 +22,7 @@ import type {
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { appResourceIcon } from './EditorComponents';
+import { radioButtonClassName } from './Filters';
 import { getAppResourceType, getResourceType } from './filtersHelpers';
 import type {
   AppResourceEditorType,
@@ -182,13 +182,15 @@ export function Tabs({
     <Tab.Group selectedIndex={currentIndex} onChange={handleChange}>
       <Tab.List
         // Don't display tabs if there is only one tab
-        className={`flex flex-wrap gap-2 ${
-          Object.keys(tabs).length === 1 ? 'sr-only' : ''
-        }`}
+        className={`
+          inline-flex w-fit flex-wrap gap-2 rounded
+          bg-[color:var(--form-background)]
+          ${Object.keys(tabs).length === 1 ? 'sr-only' : ''}
+        `}
       >
         {Object.keys(tabs).map((label, index) => (
           <Tab
-            className={`${className.niceButton} ${className.blueButton}`}
+            className={radioButtonClassName(currentIndex === index)}
             key={index}
             /**
              * HeadlessUI does not trigger onChange on click on current tab.
@@ -196,7 +198,9 @@ export function Tabs({
              * if the option IS current.
              */
             onClick={
-              currentIndex === index ? () => handleChange(index) : undefined
+              currentIndex === index
+                ? (): void => handleChange(index)
+                : undefined
             }
           >
             {label}
