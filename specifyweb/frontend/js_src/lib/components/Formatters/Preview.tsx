@@ -32,11 +32,21 @@ export function useResourcePreview(table: SpecifyTable): {
     // Use last 4 records as a preview by default
     React.useCallback(
       async () =>
-        fetchCollection(table.name, {
-          limit: defaultPreviewSize,
-          orderBy: '-id',
-          domainFilter: true,
-        }).then(({ records }) => records.map(deserializeResource)),
+        fetchCollection(
+          table.name,
+          {
+            limit: defaultPreviewSize,
+            domainFilter: true,
+          },
+          {
+            orderBy: [
+              ...(table.getField('timestampModified') === undefined
+                ? []
+                : ['-timestampModified']),
+              '-id',
+            ].join(','),
+          }
+        ).then(({ records }) => records.map(deserializeResource)),
       [table]
     ),
     false
