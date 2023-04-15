@@ -62,6 +62,7 @@ import {
   autoUpdate,
   flip,
   FloatingPortal,
+  hide,
   offset,
   shift,
   useFloating,
@@ -105,6 +106,7 @@ export function TooltipManager(): JSX.Element {
         }),
         shift(),
         arrow({ element: arrowRef }),
+        hide(),
       ],
       // Reposition tooltip on scroll
       whileElementsMounted: (...args) =>
@@ -158,9 +160,11 @@ export function TooltipManager(): JSX.Element {
     )[placement.split('-')[0]] ?? 'bottom';
   const { x: arrowX, y: arrowY } = middlewareData.arrow ?? {};
 
+  const isHidden = middlewareData.hide?.referenceHidden;
+
   return (
     <FloatingPortal id="portal-root">
-      {isOpen && typeof text === 'string' ? (
+      {isOpen && typeof text === 'string' && !isHidden ? (
         <span
           className={`
             top-0 left-0 z-[10000] block w-max whitespace-pre-line rounded
