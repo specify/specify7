@@ -99,6 +99,13 @@ const generateEditor = (xmlSpec: (() => BaseSpec<SimpleXmlNode>) | undefined) =>
     const isReadOnly = React.useContext(ReadOnlyContext);
     return (
       <CodeMirror
+        extensions={writable(extensions)}
+        readOnly={isReadOnly}
+        ref={handleRef}
+        theme={isDarkMode ? okaidia : xcodeLight}
+        onUpdate={({ state }): void => {
+          selectionRef.current = state.selection.toJSON();
+        }}
         className={`w-full border border-brand-300 dark:border-none ${className}`}
         /*
          * Disable spell check if we are doing own validation as otherwise it's
@@ -106,10 +113,6 @@ const generateEditor = (xmlSpec: (() => BaseSpec<SimpleXmlNode>) | undefined) =>
          * validation errors
          */
         spellCheck={typeof xmlSpec === 'function'}
-        extensions={writable(extensions)}
-        readOnly={isReadOnly}
-        ref={handleRef}
-        theme={isDarkMode ? okaidia : xcodeLight}
         value={data ?? ''}
         /*
          * FEATURE: provide supported attributes for autocomplete
@@ -117,9 +120,6 @@ const generateEditor = (xmlSpec: (() => BaseSpec<SimpleXmlNode>) | undefined) =>
          *   https://github.com/codemirror/lang-xml#api-reference
          */
         onChange={handleChange}
-        onUpdate={({ state }): void => {
-          selectionRef.current = state.selection.toJSON();
-        }}
       />
     );
   };

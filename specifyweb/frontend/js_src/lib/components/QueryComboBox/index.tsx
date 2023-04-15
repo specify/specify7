@@ -583,8 +583,8 @@ export function QueryComboBox({
           extraFilters={state.extraConditions}
           forceCollection={forceCollection ?? relatedCollectionId}
           multiple={false}
-          templateResource={state.templateResource}
           searchView={searchView}
+          templateResource={state.templateResource}
           onClose={(): void => setState({ type: 'MainState' })}
           onSelected={([selectedResource]): void =>
             // @ts-expect-error Need to refactor this to use generics

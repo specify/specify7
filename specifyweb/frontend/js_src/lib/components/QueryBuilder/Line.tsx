@@ -168,8 +168,7 @@ export function QueryLine({
         ? field.filters.map((filter) => {
             const resetFilter =
               fieldType === undefined ||
-              queryFieldFilters[filter.type].types?.includes(fieldType) ===
-                false;
+              !queryFieldFilters[filter.type].types?.includes(fieldType);
             return resetFilter
               ? ({
                   type: 'any',

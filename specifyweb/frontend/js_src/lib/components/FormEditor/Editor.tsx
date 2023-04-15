@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
 import _ from 'underscore';
 
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
 import { userText } from '../../localization/user';
@@ -40,7 +41,6 @@ import type { FormEditorOutlet } from './index';
 import { FormEditorContext } from './index';
 import { getViewDefinitionIndexes } from './Table';
 import { formDefinitionSpec } from './viewSpec';
-import { useBooleanState } from '../../hooks/useBooleanState';
 
 export function FormEditorWrapper(): JSX.Element {
   const { tableName = '', viewName = '' } = useParams();
@@ -347,8 +347,8 @@ function FormPreview({
       <InFormEditorContext.Provider value>
         <LoadingContext.Provider value={loadingHandler}>
           <SpecifyForm
-            isLoading={isLoading}
             display="block"
+            isLoading={isLoading}
             resource={resource}
             viewDefinition={viewDefinition}
           />

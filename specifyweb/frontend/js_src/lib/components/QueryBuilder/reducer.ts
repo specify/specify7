@@ -17,9 +17,9 @@ import {
   mutateMappingPath,
 } from '../WbPlanView/helpers';
 import type { MappingPath } from '../WbPlanView/Mapper';
+import { emptyMapping } from '../WbPlanView/mappingHelpers';
 import type { QueryField } from './helpers';
 import { parseQueryFields } from './helpers';
-import { emptyMapping } from '../WbPlanView/mappingHelpers';
 
 export type MainState = State<
   'MainState',

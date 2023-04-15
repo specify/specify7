@@ -21,22 +21,22 @@ import type { RA, RR } from '../../utils/types';
 import { removeKey } from '../../utils/utils';
 import { Input, Select, selectMultipleSize } from '../Atoms/Form';
 import { getField } from '../DataModel/helpers';
+import { tables } from '../DataModel/tables';
 import type { PickListItemSimple } from '../FormFields/ComboBox';
 import { hasNativeErrors } from '../Forms/validationHelpers';
 import { fetchPickList, getPickListItems } from '../PickLists/fetch';
 import { mappingElementDivider } from '../WbPlanView/LineComponents';
 import type { QueryField } from './helpers';
-import { tables } from '../DataModel/tables';
 
 /**
  * Formatters and aggregators don't yet support any filtering options.
  * See https://github.com/specify/specify7/issues/318
  */
 export type QueryFieldType =
+  | 'aggregator'
   | 'checkbox'
   | 'date'
   | 'formatter'
-  | 'aggregator'
   | 'id'
   | 'number'
   | 'text';

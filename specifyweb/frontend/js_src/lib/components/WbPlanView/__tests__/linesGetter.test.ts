@@ -6,8 +6,8 @@ import type { IR, RA } from '../../../utils/types';
 import type { Tables } from '../../DataModel/types';
 import { getLinesFromHeaders, getLinesFromUploadPlan } from '../linesGetter';
 import type { MappingLine } from '../Mapper';
-import type { UploadPlan } from '../uploadPlanParser';
 import { emptyMapping } from '../mappingHelpers';
+import type { UploadPlan } from '../uploadPlanParser';
 
 requireContext();
 

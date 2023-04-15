@@ -26,8 +26,8 @@ import type {
   MappingState,
   SelectElementPosition,
 } from './Mapper';
-import type { MatchBehaviors } from './uploadPlanParser';
 import { emptyMapping } from './mappingHelpers';
+import type { MatchBehaviors } from './uploadPlanParser';
 
 const modifyLine = (
   state: MappingState,
