@@ -17,7 +17,11 @@ import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
-import { ReadOnlyContext } from '../Core/Contexts';
+import {
+  LoadingContext,
+  ReadOnlyContext,
+  useLoadingLogic,
+} from '../Core/Contexts';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { getTable } from '../DataModel/tables';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
@@ -36,6 +40,7 @@ import type { FormEditorOutlet } from './index';
 import { FormEditorContext } from './index';
 import { getViewDefinitionIndexes } from './Table';
 import { formDefinitionSpec } from './viewSpec';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 export function FormEditorWrapper(): JSX.Element {
   const { tableName = '', viewName = '' } = useParams();
@@ -329,6 +334,10 @@ function FormPreview({
   }, [xml, table]);
   const resource = React.useMemo(() => new table.Resource(), [table]);
   const [layout = 'horizontal'] = useCachedState('formEditor', 'layout');
+
+  const [isLoading, handleLoading, handleLoaded] = useBooleanState();
+  const loadingHandler = useLoadingLogic(handleLoading, handleLoaded);
+
   return (
     <div
       className={`flex flex-col gap-2 ${
@@ -336,11 +345,14 @@ function FormPreview({
       }`}
     >
       <InFormEditorContext.Provider value>
-        <SpecifyForm
-          display="block"
-          resource={resource}
-          viewDefinition={viewDefinition}
-        />
+        <LoadingContext.Provider value={loadingHandler}>
+          <SpecifyForm
+            isLoading={isLoading}
+            display="block"
+            resource={resource}
+            viewDefinition={viewDefinition}
+          />
+        </LoadingContext.Provider>
       </InFormEditorContext.Provider>
     </div>
   );

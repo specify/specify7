@@ -25,6 +25,7 @@ let setError: (
  * BUG: this is hacky, and it happened at least 2 times that setError was
  *   undefined. Come up with a cleaner solution
  */
+// eslint-disable-next-line functional/prefer-tacit
 export const displayError: typeof setError = (error) => setError(error);
 
 /*
@@ -32,22 +33,8 @@ export const displayError: typeof setError = (error) => setError(error);
  * REFACTOR: remove this once everything is using react
  */
 let legacyContext: (promise: Promise<unknown>) => void;
-export const legacyLoadingContext = (promise: Promise<unknown>) =>
+export const legacyLoadingContext = (promise: Promise<unknown>): void =>
   legacyContext(promise);
-
-/**
- * Wait 50ms before displaying loading screen
- *   -> to avoid blinking a loading screen for resolved promises
- *      (that can also trigger bugs, like this one:
- *      https://github.com/specify/specify7/issues/884#issuecomment-1509324664)
- * Wait 50sm before removing loading screen
- *   -> to avoid flashing the screen when one loading screen is immediately
- *      followed by another one
- * 50ms was chosen as the longest delay that I don't notice in comparison to 0ms
- * (on an fast macbook pro with high refresh rate). The value might have to be
- * adjusted in the future
- */
-const loadingScreenDelay = 50;
 
 /**
  * Provide contexts used by other components
@@ -68,28 +55,8 @@ export function Contexts({
   readonly children: JSX.Element | RA<JSX.Element>;
 }): JSX.Element {
   // Loading Context
-  const holders = React.useRef<RA<number>>([]);
   const [isLoading, handleLoading, handleLoaded] = useBooleanState();
-  const loadingTimeout = React.useRef<
-    ReturnType<typeof setTimeout> | undefined
-  >(undefined);
-  const loadingHandler = React.useCallback(
-    (promise: Promise<unknown>): void => {
-      const holderId = Math.max(-1, ...holders.current) + 1;
-      holders.current = [...holders.current, holderId];
-      clearTimeout(loadingTimeout.current);
-      loadingTimeout.current = setTimeout(handleLoading, loadingScreenDelay);
-      promise
-        .finally(() => {
-          holders.current = holders.current.filter((item) => item !== holderId);
-          if (holders.current.length > 0) return;
-          clearTimeout(loadingTimeout.current);
-          loadingTimeout.current = setTimeout(handleLoaded, loadingScreenDelay);
-        })
-        .catch(crash);
-    },
-    [handleLoading, handleLoaded]
-  );
+  const loadingHandler = useLoadingLogic(handleLoading, handleLoaded);
   legacyContext = loadingHandler;
 
   // Error Context
@@ -162,6 +129,47 @@ export function Contexts({
         </SetUnloadProtectsContext.Provider>
       </UnloadProtectsRefContext.Provider>
     </UnloadProtectsContext.Provider>
+  );
+}
+
+/**
+ * Wait 50ms before displaying loading screen
+ *   -> to avoid blinking a loading screen for resolved promises
+ *      (that can also trigger bugs, like this one:
+ *      https://github.com/specify/specify7/issues/884#issuecomment-1509324664)
+ * Wait 50sm before removing loading screen
+ *   -> to avoid flashing the screen when one loading screen is immediately
+ *      followed by another one
+ * 50ms was chosen as the longest delay that I don't notice in comparison to 0ms
+ * (on an fast macbook pro with high refresh rate). The value might have to be
+ * adjusted in the future
+ */
+const loadingScreenDelay = 50;
+
+export function useLoadingLogic(
+  handleLoading: () => void,
+  handleLoaded: () => void
+): (promise: Promise<unknown>) => void {
+  const holders = React.useRef<RA<number>>([]);
+  const loadingTimeout = React.useRef<
+    ReturnType<typeof setTimeout> | undefined
+  >(undefined);
+  return React.useCallback(
+    (promise: Promise<unknown>): void => {
+      const holderId = Math.max(-1, ...holders.current) + 1;
+      holders.current = [...holders.current, holderId];
+      clearTimeout(loadingTimeout.current);
+      loadingTimeout.current = setTimeout(handleLoading, loadingScreenDelay);
+      promise
+        .finally(() => {
+          holders.current = holders.current.filter((item) => item !== holderId);
+          if (holders.current.length > 0) return;
+          clearTimeout(loadingTimeout.current);
+          loadingTimeout.current = setTimeout(handleLoaded, loadingScreenDelay);
+        })
+        .catch(crash);
+    },
+    [handleLoading, handleLoaded]
   );
 }
 

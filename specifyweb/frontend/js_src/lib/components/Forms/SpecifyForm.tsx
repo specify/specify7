@@ -9,6 +9,7 @@ import { useErrorContext } from '../../hooks/useErrorContext';
 import { useId } from '../../hooks/useId';
 import { hijackBackboneAjax } from '../../utils/ajax/backboneAjax';
 import { Http } from '../../utils/ajax/definitions';
+import type { RA } from '../../utils/types';
 import { DataEntry } from '../Atoms/DataEntry';
 import { AttachmentsPlugin } from '../Attachments/Plugin';
 import { ReadOnlyContext, SearchDialogContext } from '../Core/Contexts';
@@ -20,7 +21,6 @@ import { attachmentView } from '../FormParse/webOnlyViews';
 import { loadingGif } from '../Molecules';
 import { unsafeTriggerNotFound } from '../Router/Router';
 import { usePref } from '../UserPreferences/usePref';
-import { RA } from '../../utils/types';
 
 const SpecifyFormContext = React.createContext<{
   // Used to avoid duplicate loading bars
