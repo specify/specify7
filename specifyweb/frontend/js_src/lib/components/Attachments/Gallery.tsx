@@ -25,10 +25,15 @@ export function AttachmentGallery({
   onChange: handleChange,
 }: {
   readonly attachments: RA<SerializedResource<Attachment>>;
-  readonly onFetchMore: (() => Promise<void>) | undefined;
+  readonly onFetchMore:
+    | (() => Promise<RA<number | undefined> | void>)
+    | undefined;
   readonly scale: number;
   readonly isComplete: boolean;
-  readonly onChange: (attachments: RA<SerializedResource<Attachment>>) => void;
+  readonly onChange: (
+    attachment: SerializedResource<Attachment>,
+    index: number
+  ) => void;
 }): JSX.Element {
   const containerRef = React.useRef<HTMLElement | null>(null);
 
@@ -61,6 +66,7 @@ export function AttachmentGallery({
   const [openIndex, setOpenIndex] = React.useState<number | undefined>(
     undefined
   );
+
   const [related, setRelated] = React.useState<
     RA<SpecifyResource<AnySchema> | undefined>
   >([]);
@@ -121,7 +127,7 @@ export function AttachmentGallery({
             (item): void => setRelated(replaceItem(related, openIndex, item)),
           ]}
           onChange={(newAttachment): void =>
-            handleChange(replaceItem(attachments, openIndex, newAttachment))
+            handleChange(newAttachment, openIndex)
           }
           onClose={(): void => setOpenIndex(undefined)}
           onNext={
