@@ -103,3 +103,8 @@ export type DynamicStat = State<
     readonly tableNames: RA<keyof Tables>;
   }
 >;
+
+export type DynamicQuerySpec = {
+  readonly key: string;
+  readonly spec: QuerySpec;
+};

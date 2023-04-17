@@ -38,12 +38,17 @@ import {
   useDefaultStatsToAdd,
   useBackEndCategorySetter,
   getDynamicQuerySpecsToFetch,
+  useDynamicGroups,
+  useDynamicCategorySetter,
 } from './hooks';
 import { StatsPageEditing } from './StatsPageEditing';
 import { defaultLayoutGenerated, backEndStatsSpec } from './StatsSpec';
-import type { CustomStat, DefaultStat, StatLayout } from './types';
-import { IR } from '../../utils/types';
-import { QuerySpec } from './types';
+import type {
+  CustomStat,
+  DefaultStat,
+  DynamicQuerySpec,
+  StatLayout,
+} from './types';
 
 export function StatsPage(): JSX.Element {
   return (
@@ -213,7 +218,7 @@ function ProtectedStatsPage(): JSX.Element | null {
     []
   );
   const [dynamicQueriesToRun, setDynamicQueriesToRun] = React.useState<
-    RA<IR<QuerySpec>>
+    RA<DynamicQuerySpec>
   >([]);
 
   const [defaultCategoriesToFetch, setDefaultCategoriesToFetch] =
@@ -240,10 +245,8 @@ function ProtectedStatsPage(): JSX.Element | null {
         ? []
         : getDynamicQuerySpecsToFetch(sourceLayout);
     const notCurrentlyRunning = absentDynamicCategories.filter(
-      (item) =>
-        !dynamicQueriesToRun.some((currentlyRunning) =>
-          Object.keys(currentlyRunning).includes(Object.keys(item)[0])
-        )
+      (maybeRunningSpec) =>
+        !dynamicQueriesToRun.some(({ key }) => key === maybeRunningSpec.key)
     );
     if (notCurrentlyRunning.length > 0) {
       setDynamicQueriesToRun([...dynamicQueriesToRun, ...notCurrentlyRunning]);
@@ -252,6 +255,8 @@ function ProtectedStatsPage(): JSX.Element | null {
 
   const backEndResponse = useBackendApi(categoriesToFetch);
   const defaultBackEndResponse = useBackendApi(defaultCategoriesToFetch);
+  const dynamicCategoriesResponse = useDynamicGroups(dynamicQueriesToRun);
+
   /*
    * Initial Load For Shared and Personal Pages
    * If collection and personal layout are undefined initially, then we need to
@@ -321,6 +326,7 @@ function ProtectedStatsPage(): JSX.Element | null {
     setDefaultLayout,
     formatterSpec
   );
+  useDynamicCategorySetter(dynamicCategoriesResponse, handleChange);
 
   const filters = React.useMemo(
     () => ({
@@ -534,6 +540,7 @@ function ProtectedStatsPage(): JSX.Element | null {
                   handleSharedLayoutChange(undefined);
                   handlePersonalLayoutChange(undefined);
                   setCategoriesToFetch([]);
+                  setDynamicQueriesToRun([]);
                   setActivePage({
                     isShared: true,
                     pageIndex: 0,

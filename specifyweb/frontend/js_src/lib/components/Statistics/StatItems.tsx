@@ -61,7 +61,7 @@ export function StatItem({
   );
   const resolvedSpec = useResolvedStatSpec(item, formatterSpec);
 
-  return resolvedSpec?.type === 'QueryBuilderStat' &&
+  return resolvedSpec?.type === 'QueryStat' &&
     resolvedSpec.querySpec !== undefined ? (
     <QueryItem
       label={item.label}
@@ -82,12 +82,13 @@ export function StatItem({
     />
   ) : item?.type === 'DefaultStat' &&
     resolvedSpec?.type === 'BackEndStat' &&
-    resolvedSpec?.pathToValue !== undefined ? (
+    resolvedSpec?.pathToValue !== undefined &&
+    resolvedSpec?.pathToValue !== null ? (
     <BackEndItem
       fetchUrl={resolvedSpec.fetchUrl}
       formatter={resolvedSpec.formatter}
       label={item.label}
-      pathToValue={resolvedSpec.pathToValue}
+      pathToValue={resolvedSpec.pathToValue.toString()}
       tableName={resolvedSpec.tableName}
       value={item.itemValue}
       onClick={handleClick}

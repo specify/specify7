@@ -22,6 +22,7 @@ import type {
   BackendStatsResult,
   CustomStat,
   DefaultStat,
+  DynamicQuerySpec,
   DynamicStat,
   QueryBuilderStat,
   QuerySpec,
@@ -30,6 +31,7 @@ import type {
   StatsSpec,
 } from './types';
 import { PartialQueryFieldWithPath } from './types';
+import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 
 /**
  * Returns state which gets updated everytime backend stat is fetched. Used for dynamic categories since they don't
@@ -51,8 +53,8 @@ export function useBackendApi(
 }
 
 export function useDynamicGroups(
-  dynamicEphemeralFieldSpecs: RA<IR<QuerySpec>>
-): IR<RA<string | number | undefined> | undefined> | undefined {
+  dynamicEphemeralFieldSpecs: RA<DynamicQuerySpec>
+): IR<RA<string | number | null> | undefined> | undefined {
   const dynamicEphereralPromises = React.useMemo(
     () =>
       dynamicEphemeralFieldSpecs.length === 0
@@ -96,43 +98,38 @@ function backEndStatPromiseGenerator(
 }
 
 function dynamicEphermeralPromiseGenerator(
-  dynamicEphemeralFieldSpecs: RA<IR<QuerySpec>>
-): IR<() => Promise<RA<number | string | undefined> | undefined>> {
+  dynamicEphemeralFieldSpecs: RA<DynamicQuerySpec>
+): IR<() => Promise<RA<number | string | null> | undefined>> {
   return Object.fromEntries(
-    dynamicEphemeralFieldSpecs.map((dynamicFieldSpec) =>
-      Object.entries(dynamicFieldSpec).map(([key, queryFieldSpec]) => [
-        key,
-        async () =>
-          throttledPromise<RA<string | number | undefined> | undefined>(
-            'dynamicStatGroups',
-            async () =>
-              ajax<{ readonly results: RA<RA<number | string | null>> }>(
-                '/stored_query/ephemeral',
-                {
-                  method: 'POST',
-                  headers: {
-                    Accept: 'application/json',
-                  },
-                  body: keysToLowerCase({
-                    ...serializeResource(
-                      querySpecToResource(
-                        statsText.statistics(),
-                        queryFieldSpec
-                      )
-                    ),
-                    limit: 0,
-                  }),
+    dynamicEphemeralFieldSpecs.map(({ key, spec }) => [
+      key,
+      async () =>
+        throttledPromise<RA<string | number | null> | undefined>(
+          'dynamicStatGroups',
+          async () =>
+            ajax<{ readonly results: RA<RA<number | string | null>> }>(
+              '/stored_query/ephemeral/',
+              {
+                method: 'POST',
+                headers: {
+                  Accept: 'application/json',
                 },
-                { expectedResponseCodes: Object.values(Http) }
-              ).then(({ data }) =>
-                data.results.map((distinctGroup) =>
-                  distinctGroup[0] === null ? undefined : distinctGroup[0]
-                )
-              ),
-            key
-          ),
-      ])
-    )
+                body: keysToLowerCase({
+                  ...serializeResource(
+                    querySpecToResource(statsText.statistics(), spec)
+                  ),
+                  limit: 0,
+                }),
+              },
+              { expectedResponseCodes: Object.values(Http) }
+            ).then(({ data }) =>
+              data.results.map((distinctGroup) =>
+                distinctGroup[0] === null ? null : distinctGroup[0]
+              )
+            ),
+          key
+        ),
+    ])
   );
 }
 
@@ -268,12 +265,16 @@ export function resolveStatsSpec(
     const dynamicQueryFromSpec = dynamicStatsSpec.find(
       ({ responseKey }) => statUrl === responseKey
     );
-    if (dynamicQueryFromSpec === undefined) return undefined;
+    if (dynamicQueryFromSpec === undefined || item.pathToValue === undefined)
+      return undefined;
     return {
       type: 'QueryStat',
       querySpec: {
         tableName: dynamicQueryFromSpec.tableName,
-        fields: dynamicQueryFromSpec.fields,
+        fields: appendDynamicPathToValue(
+          item.pathToValue,
+          dynamicQueryFromSpec.fields
+        ),
       },
     };
   }
@@ -324,18 +325,19 @@ export function getBackendUrlToFetch(layout: RA<StatLayout>): RA<string> {
 
 export function getDynamicQuerySpecsToFetch(
   layout: RA<StatLayout>
-): RA<IR<QuerySpec>> {
+): RA<DynamicQuerySpec> {
   return layout.flatMap(({ categories }) =>
     categories.flatMap(({ items }) =>
       filterArray(
         items.map((item) =>
           item.type === 'DefaultStat' && item.itemType === 'DynamicStat'
             ? {
-                [generateStatUrl(
+                key: generateStatUrl(
                   statsSpec[item.pageName].urlPrefix,
                   item.categoryName,
                   item.itemName
-                )]: (
+                ),
+                spec: (
                   statsSpec[item.pageName].categories[item.categoryName].items[
                     item.itemName
                   ].spec as DynamicStat
@@ -677,4 +679,13 @@ export function appendDynamicPathToValue(
 ): RA<PartialQueryFieldWithPath> {
   const groupField = fields.at(-1);
   if (groupField === undefined) return fields;
+  const startField = {
+    ...groupField,
+    operStart:
+      pathToValue === null
+        ? queryFieldFilters.empty.id
+        : queryFieldFilters.equal.id,
+    startValue: pathToValue === null ? '' : pathToValue.toString(),
+  };
+  return [...fields.slice(0, -1), startField];
 }
