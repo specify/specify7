@@ -1,5 +1,4 @@
 import { statsText } from '../../localization/stats';
-import { f } from '../../utils/functools';
 import { today } from '../../utils/relativeDate';
 import type { RA } from '../../utils/types';
 import { ensure } from '../../utils/types';
@@ -199,17 +198,25 @@ export const statsSpec: StatsSpec = {
                     isDisplay: false,
                   },
                   {
+                    isNot: true,
                     path: `preferredTaxon.${formatTreeRank(
                       anyTreeRank
                     )}.definitionItem.name`,
-                    operStart: queryFieldFilters.any.id,
+                    operStart: queryFieldFilters.empty.id,
                   },
                 ],
                 isDistinct: true,
               },
               additionalFields: [
                 {
-                  path: formattedEntry,
+                  path: `preferredTaxon.${formatTreeRank(anyTreeRank)}.name`,
+                  isDisplay: true,
+                  operStart: queryFieldFilters.any.id,
+                },
+                {
+                  path: `preferredTaxon.${formatTreeRank(anyTreeRank)}.id`,
+                  isDisplay: true,
+                  operStart: queryFieldFilters.any.id,
                 },
               ],
             },
@@ -293,14 +300,23 @@ export const statsSpec: StatsSpec = {
       type_specimens: {
         label: statsText.typeSpecimens(),
         items: {
-          dynamicPhantomIte: {
+          dynamicPhantomItem: {
             label: statsText.typeSpecimens(),
             spec: {
-              type: 'BackEndStat',
-              pathToValue: undefined,
-              tableName: 'Determination',
-              formatterGenerator: () => (rawNumber: number | undefined) =>
-                f.maybe(rawNumber, formatNumber),
+              type: 'DynamicStat',
+              tableNames: ['Determination'],
+              dynamicQuerySpec: {
+                tableName: 'Determination',
+                fields: [
+                  {
+                    isNot: true,
+                    path: 'typeStatusName',
+                    operStart: queryFieldFilters.empty.id,
+                  },
+                ],
+                isDistinct: true,
+              },
+              additionalFields: [{ path: formattedEntry }],
             },
           },
         },
@@ -503,7 +519,7 @@ function generateBackEndSpec(statsSpec: StatsSpec): RA<{
 function generateDynamicSpec(statsSpec: StatsSpec): RA<{
   responseKey: string;
   fields: RA<PartialQueryFieldWithPath>;
-  tableName: keyof Tables;
+  tableNames: RA<keyof Tables>;
 }> {
   return Object.entries(statsSpec).flatMap(([_, { categories, urlPrefix }]) =>
     Object.entries(categories).flatMap(([categoryKey, { items }]) =>
@@ -511,7 +527,7 @@ function generateDynamicSpec(statsSpec: StatsSpec): RA<{
         .filter(([_, { spec }]) => spec.type === 'DynamicStat')
         .map(([itemKey, { spec }]) => ({
           responseKey: generateStatUrl(urlPrefix, categoryKey, itemKey),
-          tableName: (spec as DynamicStat).dynamicQuerySpec.tableName,
+          tableNames: (spec as DynamicStat).tableNames,
           fields: [
             ...(spec as DynamicStat).additionalFields,
             ...(spec as DynamicStat).dynamicQuerySpec.fields,

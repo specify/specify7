@@ -270,11 +270,12 @@ export function resolveStatsSpec(
     return {
       type: 'QueryStat',
       querySpec: {
-        tableName: dynamicQueryFromSpec.tableName,
+        tableName: statSpecItem.spec.dynamicQuerySpec.tableName,
         fields: appendDynamicPathToValue(
           item.pathToValue,
           dynamicQueryFromSpec.fields
         ),
+        isDistinct: true,
       },
     };
   }
@@ -428,6 +429,7 @@ export function applyStatBackendResponse(
     (item) =>
       item.type === 'DefaultStat' &&
       item.itemName === 'phantomItem' &&
+      item.itemType === 'BackEndStat' &&
       item.pathToValue === undefined
   );
 
@@ -588,7 +590,7 @@ function applyDynamicCategoryResponse(
   const dynamicPhantomItem = items.find(
     (item) =>
       item.type === 'DefaultStat' &&
-      item.itemName === 'dynamicPhantomItem' &&
+      item.itemType === 'DynamicStat' &&
       item.pathToValue === undefined
   );
   const dynamicPhantomUrlPrefix =
@@ -612,7 +614,7 @@ function applyDynamicCategoryResponse(
         pageName: dynamicPhantomItem.pageName,
         itemName: 'dynamicPhantomItem',
         categoryName: dynamicPhantomItem.categoryName,
-        label: pathToValue === null ? 'null' : pathToValue.toString(),
+        label: pathToValue === null ? 'null' : pathToValue.toString(), // Use Localizaed Version of null
         itemValue: undefined,
         itemType: 'QueryStat',
         pathToValue: pathToValue,
@@ -686,6 +688,8 @@ export function appendDynamicPathToValue(
         ? queryFieldFilters.empty.id
         : queryFieldFilters.equal.id,
     startValue: pathToValue === null ? '' : pathToValue.toString(),
+    isDisplay: false,
+    isNot: false,
   };
   return [...fields.slice(0, -1), startField];
 }
