@@ -45,4 +45,10 @@ export const specifyNetworkText = createDictionary({
       points.
     `,
   },
+  connectToGbif: {
+    'en-us': 'Connect to GBIF',
+  },
+  searchForInstitution: {
+    'en-us': 'Search for your institution:',
+  },
 } as const);

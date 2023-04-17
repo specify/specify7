@@ -195,6 +195,9 @@ export const commonText = createDictionary({
     'fr-fr': 'Modifier',
     'uk-ua': 'Редагувати',
   },
+  change: {
+    'en-us': 'Change',
+  },
   ignore: {
     'en-us': 'Ignore',
     'ru-ru': 'Игнорировать',

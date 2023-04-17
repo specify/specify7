@@ -1,10 +1,9 @@
-import React from 'react';
-
 import { preferencesText } from '../../localization/preferences';
+import { specifyNetworkText } from '../../localization/specifyNetwork';
 import { statsText } from '../../localization/stats';
+import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { ensure } from '../../utils/types';
-import { error } from '../Errors/assert';
 import type { StatLayout } from '../Statistics/types';
 import type { GenericPreferences } from './UserDefinitions';
 import { defineItem } from './UserDefinitions';
@@ -21,7 +20,7 @@ export const collectionPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: undefined,
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'label',
           }),
           showTotal: defineItem<boolean>({
@@ -29,7 +28,7 @@ export const collectionPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: false,
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'label',
             type: 'java.lang.Boolean',
           }),
@@ -38,9 +37,22 @@ export const collectionPreferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: 24,
-            renderer: () => <>{error('This should not get called')}</>,
+            renderer: f.never,
             container: 'label',
             type: 'java.lang.Float',
+          }),
+        },
+      },
+      specifyNetwork: {
+        title: specifyNetworkText.specifyNetwork(),
+        items: {
+          publishingOrganization: defineItem<string | undefined>({
+            title: 'Stores GBIF\'s "publishingOrgKey"',
+            requiresReload: false,
+            visible: false,
+            defaultValue: undefined,
+            renderer: f.never,
+            container: 'label',
           }),
         },
       },
