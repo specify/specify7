@@ -16,7 +16,6 @@ import type {
   AnySchema,
   SerializedModel,
   SerializedResource,
-  TableFields,
 } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
 import { getModel, schema } from './schema';
@@ -258,17 +257,6 @@ export const getFieldsToClone = (model: SpecifyModel): RA<string> =>
     )
     .map(({ name }) => name);
 
-// REFACTOR: move this into businessRuleDefs.ts
-const businessRules = businessRuleDefs as {
-  readonly [TABLE_NAME in keyof Tables]?: {
-    readonly uniqueIn?: {
-      readonly [FIELD_NAME in Lowercase<TableFields<Tables[TABLE_NAME]>>]?:
-        | Lowercase<keyof Tables>
-        | unknown;
-    };
-  };
-};
-
 const uniqueFields = [
   'guid',
   'timestampCreated',
@@ -279,10 +267,9 @@ const uniqueFields = [
 
 export const getUniqueFields = (model: SpecifyModel): RA<string> =>
   f.unique([
-    ...Object.entries(businessRules[model.name]?.uniqueIn ?? {})
+    ...Object.entries(businessRuleDefs[model.name]?.uniqueIn ?? {})
       .filter(
         ([_fieldName, uniquenessRules]) =>
-          typeof uniquenessRules === 'string' &&
           uniquenessRules in schema.domainLevelIds
       )
       .map(([fieldName]) => model.strictGetField(fieldName).name),
