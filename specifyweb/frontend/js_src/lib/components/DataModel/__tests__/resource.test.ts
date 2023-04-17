@@ -251,6 +251,7 @@ describe('getUniqueFields', () => {
   test('CollectionObject', () =>
     expect(getUniqueFields(schema.models.CollectionObject)).toEqual([
       'catalogNumber',
+      'uniqueIdentifier',
       'guid',
       'collectionObjectAttachments',
       'timestampCreated',
@@ -259,6 +260,7 @@ describe('getUniqueFields', () => {
     ]));
   test('Locality', () =>
     expect(getUniqueFields(schema.models.Locality)).toEqual([
+      'uniqueIdentifier',
       'localityAttachments',
       'guid',
       'timestampCreated',
