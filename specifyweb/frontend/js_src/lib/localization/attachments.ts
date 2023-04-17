@@ -84,4 +84,11 @@ export const attachmentsText = createDictionary({
     'ru-ru': 'Показать форму',
     'uk-ua': 'Показати форму',
   },
+  attachmentHaltLimit: {
+    'en-us':
+      'No attachments have been found in the first {halt:number} records.',
+  },
+  fetchNextAttachments: {
+    'en-us': 'Try to fetch next attachments',
+  },
 } as const);

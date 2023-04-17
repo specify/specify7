@@ -20,6 +20,9 @@ import { hasTablePermission } from '../Permissions/helpers';
 import { SetUnloadProtectsContext } from '../Router/Router';
 import type { RecordSelectorProps } from './RecordSelector';
 import { useRecordSelector } from './RecordSelector';
+import { RecordSetAttachments } from '../Attachments/RecordSetAttachment';
+import { attachmentsText } from '../../localization/attachments';
+import { tablesWithAttachments } from '../Attachments';
 
 /**
  * A Wrapper for RecordSelector that allows to specify list of records by their
@@ -45,6 +48,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   onAdd: handleAdd,
   onClone: handleClone,
   onDelete: handleDelete,
+  onFetch: handleFetch,
   ...rest
 }: Omit<RecordSelectorProps<SCHEMA>, 'index' | 'records'> & {
   /*
@@ -69,12 +73,17 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   readonly onClone:
     | ((newResource: SpecifyResource<SCHEMA>) => void)
     | undefined;
+  readonly onFetch?: (
+    index: number
+  ) => Promise<undefined | RA<number | undefined>>;
 }): JSX.Element | null {
   const [records, setRecords] = React.useState<
     RA<SpecifyResource<SCHEMA> | undefined>
   >(() =>
     ids.map((id) => (id === undefined ? undefined : new model.Resource({ id })))
   );
+
+  const [attachmentState, setAttachmentState] = React.useState(false);
 
   const previousIds = React.useRef(ids);
   React.useEffect(() => {
@@ -183,6 +192,9 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
         recordSetTable: schema.models.RecordSet.label,
       })
     : commonText.delete();
+
+  const hasAttachments = tablesWithAttachments().includes(model);
+
   return (
     <>
       <ResourceView
@@ -191,13 +203,11 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
           <div className="flex flex-col items-center gap-2 md:contents md:flex-row md:gap-8">
             <div className="flex items-center gap-2 md:contents">
               {headerButtons}
-
               <DataEntry.Visit
                 resource={
                   !isDependent && dialog !== false ? resource : undefined
                 }
               />
-
               {hasTablePermission(
                 model.name,
                 isDependent ? 'create' : 'read'
@@ -209,7 +219,6 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                   onClick={handleAdding}
                 />
               ) : undefined}
-
               {typeof handleRemove === 'function' && canRemove ? (
                 <DataEntry.Remove
                   aria-label={removeLabel}
@@ -218,7 +227,6 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                   onClick={(): void => handleRemove('minusButton')}
                 />
               ) : undefined}
-
               {typeof newResource === 'object' ? (
                 <p className="flex-1">{formsText.creatingNewRecord()}</p>
               ) : (
@@ -226,7 +234,18 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                   className={`flex-1 ${dialog === false ? '-ml-2' : '-ml-4'}`}
                 />
               )}
-
+              {hasAttachments && (
+                <Button.Blue onClick={() => setAttachmentState(true)}>
+                  {attachmentsText.attachments()}
+                </Button.Blue>
+              )}
+              {attachmentState === true ? (
+                <RecordSetAttachments
+                  records={records}
+                  onClose={() => setAttachmentState(!attachmentState)}
+                  onFetch={handleFetch}
+                />
+              ) : null}
               {specifyNetworkBadge}
             </div>
             <div>{slider}</div>

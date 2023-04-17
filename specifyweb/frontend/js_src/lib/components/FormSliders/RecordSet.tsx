@@ -198,7 +198,7 @@ function RecordSet<SCHEMA extends AnySchema>({
     replace: boolean = false
   ): void =>
     recordId === undefined
-      ? handleFetch(index)
+      ? handleFetchMore(index)
       : navigate(
           getResourceViewUrl(
             currentRecord.specifyModel.name,
@@ -221,10 +221,10 @@ function RecordSet<SCHEMA extends AnySchema>({
   const previousIndex = React.useRef<number>(currentIndex);
   const [isLoading, handleLoading, handleLoaded] = useBooleanState();
   const handleFetch = React.useCallback(
-    (index: number): void => {
-      if (index >= totalCount) return;
+    async (index: number): Promise<undefined | RA<number | undefined>> => {
+      if (index >= totalCount) return undefined;
       handleLoading();
-      fetchItems(
+      return fetchItems(
         recordSet.id,
         // If new index is smaller (i.e, going back), fetch previous 40 IDs
         clamp(
@@ -232,28 +232,41 @@ function RecordSet<SCHEMA extends AnySchema>({
           previousIndex.current > index ? index - fetchSize + 1 : index,
           totalCount
         )
-      )
-        .then((updates) =>
-          setIds((oldIds = []) => {
-            handleLoaded();
-            const newIds = updateIds(oldIds, updates);
-            go(index, newIds[index]);
-            return newIds;
-          })
-        )
-        .catch(softFail);
+      ).then(
+        (updates) =>
+          new Promise((resolve) =>
+            setIds((oldIds = []) => {
+              handleLoaded();
+              const newIds = updateIds(oldIds, updates);
+              resolve(newIds);
+              return newIds;
+            })
+          )
+      );
     },
     [totalCount, recordSet.id, loading, handleLoading, handleLoaded]
+  );
+
+  const handleFetchMore = React.useCallback(
+    (index: number): void => {
+      handleFetch(index)
+        .then((newIds) => {
+          if (newIds === undefined) return;
+          go(index, newIds[index]);
+        })
+        .catch(softFail);
+    },
+    [handleFetch]
   );
 
   // Fetch ID of record at current index
   const currentRecordId = ids[currentIndex];
   React.useEffect(() => {
-    if (currentRecordId === undefined) handleFetch(currentIndex);
+    if (currentRecordId === undefined) handleFetchMore(currentIndex);
     return (): void => {
       previousIndex.current = currentIndex;
     };
-  }, [totalCount, currentRecordId, handleFetch, currentIndex]);
+  }, [totalCount, currentRecordId, handleFetchMore, currentIndex]);
 
   const [hasDuplicate, handleHasDuplicate, handleDismissDuplicate] =
     useBooleanState();
@@ -381,6 +394,7 @@ function RecordSet<SCHEMA extends AnySchema>({
         onSlide={(index, replace): void =>
           go(index, ids[index], undefined, replace)
         }
+        onFetch={handleFetch}
       />
       {hasDuplicate && (
         <Dialog
