@@ -639,6 +639,7 @@ function eventHandlerForToOne(related, field) {
             if (!myPath || !otherPath) return undefined;
             if (myPath.length > otherPath.length) return undefined;
             const diff = _(otherPath).rest(myPath.length - 1).reverse();
+            // REFACTOR: use mappingPathToString in all places like this
             return other.rget(diff.join('.')).then((common) => {
                 if(common === undefined) return undefined;
                 self.set(_(diff).last(), common.url());

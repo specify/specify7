@@ -119,11 +119,11 @@ export function useQueryResultsWrapper({
     // Display the loading GIF
     setProps(undefined);
 
-    const countOnly = queryResource.get('countOnly') === true;
+    const isDistinct = queryResource.get('selectDistinct') === true;
     const allFields = augmentQueryFields(
       baseTableName,
       fields.filter(({ mappingPath }) => mappingPathIsComplete(mappingPath)),
-      countOnly
+      isDistinct
     );
 
     const fetchPayload = keysToLowerCase({
@@ -148,6 +148,7 @@ export function useQueryResultsWrapper({
       .catch(raise);
 
     const displayedFields = allFields.filter((field) => field.isDisplay);
+    const countOnly = queryResource.get('countOnly') === true;
     const isCountOnly =
       countOnly ||
       // Run as "count only" if there are no visible fields
@@ -168,7 +169,7 @@ export function useQueryResultsWrapper({
     initialData
       .then((initialData) =>
         setProps({
-          hasIdField: queryResource.get('selectDistinct') !== true,
+          hasIdField: !isDistinct,
           queryResource,
           fetchSize,
           fetchResults: isCountOnly

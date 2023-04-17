@@ -10,9 +10,11 @@ import type { RA, RR } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Input } from '../Atoms/Form';
 import { formatNumber } from '../Atoms/Internationalization';
+import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
 import { getField } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { getResourceViewUrl } from '../DataModel/resource';
 import { schema } from '../DataModel/schema';
 import type { ExchangeOut, Gift, Loan } from '../DataModel/types';
 import { ResourceView } from '../Forms/ResourceView';
@@ -64,14 +66,46 @@ export function PrepDialogRow({
             onValueChange={(): void => handleChange(checked ? 0 : available)}
           />
         </td>
-        <td className="justify-end tabular-nums">
-          {syncFieldFormat(
-            getField(schema.models.CollectionObject, 'catalogNumber'),
-            undefined,
-            preparation.catalogNumber
-          )}
-        </td>
-        <td>{preparation.taxon}</td>
+        {typeof preparation.collectionObjectId === 'number' ? (
+          <td className="justify-end tabular-nums">
+            <Link.NewTab
+              href={getResourceViewUrl(
+                'CollectionObject',
+                preparation.collectionObjectId
+              )}
+            >
+              {
+                syncFieldFormat(
+                  getField(schema.models.CollectionObject, 'catalogNumber'),
+                  undefined,
+                  preparation.catalogNumber
+                ) as LocalizedString
+              }
+            </Link.NewTab>
+          </td>
+        ) : (
+          <td className="justify-end tabular-nums">
+            {
+              syncFieldFormat(
+                getField(schema.models.CollectionObject, 'catalogNumber'),
+                undefined,
+                preparation.catalogNumber
+              ) as LocalizedString
+            }
+          </td>
+        )}
+
+        {typeof preparation.taxonId === 'number' ? (
+          <td>
+            <Link.NewTab
+              href={getResourceViewUrl('Taxon', preparation.taxonId)}
+            >
+              {preparation.taxon as LocalizedString}
+            </Link.NewTab>
+          </td>
+        ) : (
+          <td>{preparation.taxon}</td>
+        )}
         <td>{preparation.prepType}</td>
         <td>
           <Input.Number

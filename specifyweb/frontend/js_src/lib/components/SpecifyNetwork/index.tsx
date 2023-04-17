@@ -20,13 +20,13 @@ import type { CollectionObject, Taxon } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasTablePermission } from '../Permissions/helpers';
-import { getUserPref } from '../UserPreferences/helpers';
 import { SpecifyNetworkOverlays } from './Overlay';
+import { userPreferences } from '../Preferences/userPreferences';
 
 export const displaySpecifyNetwork = (
   resource: SpecifyResource<AnySchema> | undefined
 ): resource is SpecifyResource<CollectionObject> | SpecifyResource<Taxon> =>
-  getUserPref('form', 'ui', 'specifyNetworkBadge') &&
+  userPreferences.get('form', 'ui', 'specifyNetworkBadge') &&
   hasTablePermission('Locality', 'read') &&
   resource?.isNew() === false &&
   ['Taxon', 'CollectionObject'].includes(resource.specifyModel.name);

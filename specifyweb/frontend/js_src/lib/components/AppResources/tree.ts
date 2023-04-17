@@ -16,6 +16,19 @@ import type {
 } from '../DataModel/types';
 import { userTypes } from '../PickLists/definitions';
 import type { AppResources, AppResourcesTree } from './hooks';
+import { AppResourceScope, ScopedAppResourceDir } from './types';
+
+export const getScope = (
+  directory: SerializedResource<SpAppResourceDir>
+): AppResourceScope => {
+  if (directory.discipline === null && directory.collection === null)
+    return 'global';
+  else if (directory.collection === null) return 'discipline';
+  else if (directory.userType === null && !directory.isPersonal)
+    return 'collection';
+  else if (!directory.isPersonal) return 'userType';
+  else return 'user';
+};
 
 export const getAppResourceTree = (
   resources: AppResources
@@ -45,21 +58,20 @@ const sortTree = (tree: AppResourcesTree): AppResourcesTree =>
     }));
 
 function getGlobalAllResources(resources: AppResources): {
-  readonly directory: SerializedResource<SpAppResourceDir>;
+  readonly directory: ScopedAppResourceDir;
   readonly appResources: RA<SerializedResource<SpAppResource>>;
   readonly viewSets: RA<SerializedResource<SpViewSetObj>>;
 } {
   const globalDirectories = resources.directories.filter(
-    ({ discipline, collection }) => discipline === null && collection === null
+    (directory) => directory.scope === 'global'
   );
   if (globalDirectories.length === 0)
-    globalDirectories.push(
-      addMissingFields('SpAppResourceDir', {
+    globalDirectories.push({
+      ...addMissingFields('SpAppResourceDir', {
         userType: 'Common',
-        collection: undefined,
-        discipline: undefined,
-      })
-    );
+      }),
+      scope: 'global',
+    });
   /**
    * Even though there are several global directories, for consistency, all
    * global resources are added to the one that has userType==='Common'
@@ -153,8 +165,8 @@ export const getScopedAppResources = (
   resources.disciplines.map((discipline) => {
     const directories = resources.directories.filter(
       (directory) =>
-        directory.discipline === discipline.resource_uri &&
-        directory.collection === null
+        directory.scope === 'discipline' &&
+        directory.discipline === discipline.resource_uri
     );
     const directory =
       directories[0] ??
@@ -181,8 +193,7 @@ const getDisciplineAppResources = (
       const directories = resources.directories.filter(
         (directory) =>
           directory.collection === collection.resource_uri &&
-          directory.userType === null &&
-          !directory.isPersonal
+          directory.scope === 'collection'
       );
       const directory =
         directories[0] ??
@@ -230,7 +241,7 @@ const getUserTypeResources = (
       (directory) =>
         directory.collection === collection.resource_uri &&
         directory.userType?.toLowerCase() === userType.toLowerCase() &&
-        !directory.isPersonal
+        directory.scope === 'userType'
     );
     const directory =
       directories[0] ??
@@ -258,7 +269,7 @@ const getUserResources = (
         (directory) =>
           directory.collection === collection.resource_uri &&
           directory.specifyUser === user.resource_uri &&
-          directory.isPersonal
+          directory.scope === 'user'
       );
       const directory =
         directories[0] ??

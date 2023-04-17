@@ -15,41 +15,41 @@ import '../../../css/workbench.css';
 import Handsontable from 'handsontable';
 import $ from 'jquery';
 import React from 'react';
+import _ from 'underscore';
 
-import {backEndText} from '../../localization/backEnd';
-import {commonText} from '../../localization/common';
-import {whitespaceSensitive} from '../../localization/utils';
-import {LANGUAGE} from '../../localization/utils/config';
-import {wbPlanText} from '../../localization/wbPlan';
-import {wbText} from '../../localization/workbench';
-import {ajax} from '../../utils/ajax';
-import {Http} from '../../utils/ajax/definitions';
-import {ping} from '../../utils/ajax/ping';
-import {getCache, setCache} from '../../utils/cache';
-import {f} from '../../utils/functools';
-import {filterArray} from '../../utils/types';
-import {capitalize, clamp, mappedFind, throttle} from '../../utils/utils';
-import {oneRem} from '../Atoms';
-import {Button} from '../Atoms/Button';
-import {iconClassName, legacyNonJsxIcons} from '../Atoms/Icons';
-import {Link} from '../Atoms/Link';
-import {legacyLoadingContext} from '../Core/Contexts';
-import {Backbone} from '../DataModel/backbone';
-import {serializeResource} from '../DataModel/helpers';
-import {getModel, schema, strictGetModel} from '../DataModel/schema';
-import {crash, raise} from '../Errors/Crash';
-import {getIcon, unknownIcon} from '../InitialContext/icons';
-import {strictGetTreeDefinitionItems} from '../InitialContext/treeRanks';
-import {loadingBar} from '../Molecules';
-import {Dialog} from '../Molecules/Dialog';
+import { backEndText } from '../../localization/backEnd';
+import { commonText } from '../../localization/common';
+import { whitespaceSensitive } from '../../localization/utils';
+import { LANGUAGE } from '../../localization/utils/config';
+import { wbPlanText } from '../../localization/wbPlan';
+import { wbText } from '../../localization/workbench';
+import { ajax } from '../../utils/ajax';
+import { Http } from '../../utils/ajax/definitions';
+import { ping } from '../../utils/ajax/ping';
+import { getCache, setCache } from '../../utils/cache';
+import { f } from '../../utils/functools';
+import { filterArray } from '../../utils/types';
+import { capitalize, clamp, mappedFind, throttle } from '../../utils/utils'
+import { oneRem } from '../Atoms';
+import { Button } from '../Atoms/Button';
+import { iconClassName, legacyNonJsxIcons } from '../Atoms/Icons';
+import { Link } from '../Atoms/Link';
+import { legacyLoadingContext } from '../Core/Contexts';
+import { Backbone } from '../DataModel/backbone';
+import { serializeResource } from '../DataModel/helpers';
+import { getModel, schema, strictGetModel } from '../DataModel/schema';
+import { crash, raise } from '../Errors/Crash';
+import { getIcon, unknownIcon } from '../InitialContext/icons';
+import { strictGetTreeDefinitionItems } from '../InitialContext/treeRanks';
+import { loadingBar } from '../Molecules';
+import { Dialog } from '../Molecules/Dialog';
 import {
   hasPermission,
   hasTablePermission,
   hasTreeAccess,
 } from '../Permissions/helpers';
-import {fetchPickList} from '../PickLists/fetch';
-import {getUserPref} from '../UserPreferences/helpers';
-import {pathStartsWith} from '../WbPlanView/helpers';
+import { fetchPickList } from '../PickLists/fetch';
+import { pathStartsWith } from '../WbPlanView/helpers';
 import {
   formatToManyIndex,
   formatTreeRank,
@@ -57,20 +57,22 @@ import {
   mappingPathToString,
   valueIsTreeRank,
 } from '../WbPlanView/mappingHelpers';
-import {getTableFromMappingPath} from '../WbPlanView/navigator';
-import {parseUploadPlan} from '../WbPlanView/uploadPlanParser';
-import {RollbackConfirmation} from './Components';
-import {DataSetNameView} from './DataSetMeta';
-import {DevShowPlan} from './DevShowPlan';
-import {DisambiguationDialog} from './Disambiguation';
-import {downloadDataSet} from './helpers';
-import {getSelectedLast, getSelectedRegions} from './hotHelpers';
-import {CreateRecordSetButton} from './RecordSet';
-import {WbUploaded} from './Results';
-import {resolveValidationMessage} from './resultsParser';
-import {WbStatus} from './Status';
-import {wbViewTemplate} from './Template';
-import {WBUtils} from './wbUtils';
+
+import { userPreferences } from '../Preferences/userPreferences';
+import { getTableFromMappingPath } from '../WbPlanView/navigator';
+import { parseUploadPlan } from '../WbPlanView/uploadPlanParser';
+import { RollbackConfirmation } from './Components';
+import { DataSetNameView } from './DataSetMeta';
+import { DevShowPlan } from './DevShowPlan';
+import { DisambiguationDialog } from './Disambiguation';
+import { downloadDataSet } from './helpers';
+import { getSelectedLast, getSelectedRegions } from './hotHelpers';
+import { CreateRecordSetButton } from './RecordSet';
+import { WbUploaded } from './Results';
+import { resolveValidationMessage } from './resultsParser';
+import { WbStatus } from './Status';
+import { wbViewTemplate } from './Template';
+import { WBUtils } from './wbUtils';
 
 const metaKeys = [
   'isNew',
@@ -405,7 +407,11 @@ export const WBView = Backbone.View.extend({
            * Number of blanks rows at the bottom of the spreadsheet.
            * (allows to add new rows easily)
            */
-          minSpareRows: getUserPref('workBench', 'editor', 'minSpareRows'),
+          minSpareRows: userPreferences.get(
+            'workBench',
+            'editor',
+            'minSpareRows'
+          ),
           comments: {
             displayDelay: 100,
           },
@@ -425,19 +431,29 @@ export const WBView = Backbone.View.extend({
            */
           invalidCellClassName: '-',
           rowHeaders: true,
-          autoWrapCol: getUserPref('workBench', 'editor', 'autoWrapCol'),
-          autoWrapRow: getUserPref('workBench', 'editor', 'autoWrapRow'),
-          enterBeginsEditing: getUserPref(
+          autoWrapCol: userPreferences.get(
+            'workBench',
+            'editor',
+            'autoWrapCol'
+          ),
+          autoWrapRow: userPreferences.get(
+            'workBench',
+            'editor',
+            'autoWrapRow'
+          ),
+          enterBeginsEditing: userPreferences.get(
             'workBench',
             'editor',
             'enterBeginsEditing'
           ),
           enterMoves:
-            getUserPref('workBench', 'editor', 'enterMoveDirection') === 'col'
+            userPreferences.get('workBench', 'editor', 'enterMoveDirection') ===
+            'col'
               ? { col: 1, row: 0 }
               : { col: 0, row: 1 },
           tabMoves:
-            getUserPref('workBench', 'editor', 'tabMoveDirection') === 'col'
+            userPreferences.get('workBench', 'editor', 'tabMoveDirection') ===
+            'col'
               ? { col: 1, row: 0 }
               : { col: 0, row: 1 },
           manualColumnResize: true,
@@ -724,11 +740,17 @@ export const WBView = Backbone.View.extend({
               strict: pickLists[physicalCol].readOnly,
               allowInvalid: true,
               filter:
-                getUserPref('workBench', 'editor', 'filterPickLists') ===
-                'none',
+                userPreferences.get(
+                  'workBench',
+                  'editor',
+                  'filterPickLists'
+                ) === 'none',
               filteringCaseSensitive:
-                getUserPref('workBench', 'editor', 'filterPickLists') ===
-                'case-sensitive',
+                userPreferences.get(
+                  'workBench',
+                  'editor',
+                  'filterPickLists'
+                ) === 'case-sensitive',
               sortByRelevance: false,
               trimDropdown: false,
             }

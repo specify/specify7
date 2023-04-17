@@ -637,6 +637,24 @@ export const queryText = createDictionary({
       {maxLength:number|formatted}
     `,
   },
+  future: {
+    'en-us': 'Future',
+  },
+  past: {
+    'en-us': 'Past',
+  },
+  day: {
+    'en-us': 'Day',
+  },
+  week: {
+    'en-us': 'Week',
+  },
+  month: {
+    'en-us': 'Month',
+  },
+  year: {
+    'en-us': 'Year',
+  },
   importHiddenFields: {
     'en-us': 'The following fields are hidden in the query you imported:',
     'es-es': 'Los siguientes campos están ocultos en la consulta que importó:',

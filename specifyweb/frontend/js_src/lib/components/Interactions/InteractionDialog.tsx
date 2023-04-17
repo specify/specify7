@@ -47,8 +47,8 @@ import type {
 } from '../DataModel/types';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { Dialog } from '../Molecules/Dialog';
+import { userPreferences } from '../Preferences/userPreferences';
 import { RecordSetsDialog } from '../Toolbar/RecordSets';
-import { usePref } from '../UserPreferences/usePref';
 import { PrepDialog } from './PrepDialog';
 
 export function InteractionDialog({
@@ -173,14 +173,16 @@ export function InteractionDialog({
       type: 'PreparationSelectState',
       entries: prepsData.map((prepData) => ({
         catalogNumber: prepData[0],
-        taxon: prepData[1],
-        preparationId: prepData[2],
-        prepType: prepData[3],
-        countAmount: prepData[4],
-        loaned: f.parseInt(prepData[5] ?? undefined) ?? 0,
-        gifted: f.parseInt(prepData[6] ?? undefined) ?? 0,
-        exchanged: f.parseInt(prepData[7] ?? undefined) ?? 0,
-        available: Number.parseInt(prepData[8]),
+        collectionObjectId: prepData[1],
+        taxon: prepData[2],
+        taxonId: prepData[3],
+        preparationId: prepData[4],
+        prepType: prepData[5],
+        countAmount: prepData[6],
+        loaned: f.parseInt(prepData[7] ?? undefined) ?? 0,
+        gifted: f.parseInt(prepData[8] ?? undefined) ?? 0,
+        exchanged: f.parseInt(prepData[9] ?? undefined) ?? 0,
+        available: Number.parseInt(prepData[10]),
       })),
       problems,
     });
@@ -352,22 +354,22 @@ function useParser(searchField: LiteralField | undefined): {
   readonly split: (values: string) => RA<string>;
   readonly attributes: IR<string>;
 } {
-  const [useSpaceAsDelimiter] = usePref(
+  const [useSpaceAsDelimiter] = userPreferences.use(
     'interactions',
     'createInteractions',
     'useSpaceAsDelimiter'
   );
-  const [useCommaAsDelimiter] = usePref(
+  const [useCommaAsDelimiter] = userPreferences.use(
     'interactions',
     'createInteractions',
     'useCommaAsDelimiter'
   );
-  const [useNewLineAsDelimiter] = usePref(
+  const [useNewLineAsDelimiter] = userPreferences.use(
     'interactions',
     'createInteractions',
     'useNewLineAsDelimiter'
   );
-  const [useCustomDelimiters] = usePref(
+  const [useCustomDelimiters] = userPreferences.use(
     'interactions',
     'createInteractions',
     'useCustomDelimiters'

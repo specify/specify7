@@ -5,12 +5,12 @@ import { treeText } from '../../localization/tree';
 import { ajax } from '../../utils/ajax';
 import type { RA, RR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
+import { throttle } from '../../utils/utils';
 import type { AnyTree } from '../DataModel/helperTypes';
 import { schema } from '../DataModel/schema';
 import { softFail } from '../Errors/Crash';
 import { strictGetTreeDefinitionItems } from '../InitialContext/treeRanks';
-import { getTransitionDuration } from '../UserPreferences/Hooks';
-import { throttle } from '../../utils/utils';
+import { getTransitionDuration } from '../Preferences/Hooks';
 
 export const fetchRows = async (fetchUrl: string) =>
   ajax<

@@ -18,7 +18,7 @@ import type { Collection } from '../DataModel/specifyModel';
 import type { FormMode } from '../FormParse';
 import { aggregate, format } from '../Forms/dataObjFormatters';
 import { hasTablePermission } from '../Permissions/helpers';
-import { usePref } from '../UserPreferences/usePref';
+import { userPreferences } from '../Preferences/userPreferences';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 
 export function UiField({
@@ -130,7 +130,7 @@ function Field({
     false
   );
 
-  const [rightAlignNumberFields] = usePref(
+  const [rightAlignNumberFields] = userPreferences.use(
     'form',
     'ui',
     'rightAlignNumberFields'
@@ -141,15 +141,13 @@ function Field({
       name={name}
       {...validationAttributes}
       // This is undefined when resource.noValidation = true
-      className={`
-        min-w-[theme(spacing.20)] 
-        ${
-          validationAttributes.type === 'number' &&
-          rightAlignNumberFields &&
-          globalThis.navigator.userAgent.toLowerCase().includes('webkit')
-            ? `text-right ${isReadOnly ? '' : 'pr-6'}`
-            : ''
-        }`}
+      className={
+        validationAttributes.type === 'number' &&
+        rightAlignNumberFields &&
+        globalThis.navigator.userAgent.toLowerCase().includes('webkit')
+          ? `text-right ${isReadOnly ? '' : 'pr-6'}`
+          : ''
+      }
       id={id}
       isReadOnly={isReadOnly}
       /*
