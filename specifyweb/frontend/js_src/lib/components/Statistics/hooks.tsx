@@ -567,7 +567,7 @@ export function useDynamicCategorySetter(
           oldCategory.map((dynamicCategory) => ({
             ...dynamicCategory,
             items: applyDynamicCategoryResponse(
-              dynamicEphemeralResponse[responseKey]!,
+              dynamicEphemeralResponse[responseKey],
               dynamicCategory.items,
               responseKey,
               statsSpec
@@ -581,7 +581,7 @@ export function useDynamicCategorySetter(
 
 export function useDefaultDynamicCategorySetter(
   defaultDynamicEphemeralResponse:
-    | IR<RA<string | number | null> | undefined>
+    | IR<RA<number | string | null> | undefined>
     | undefined,
   setDefaultLayout: (
     previousGenerator: (
@@ -617,7 +617,7 @@ export function useDefaultDynamicCategorySetter(
 }
 
 function applyDynamicCategoryResponse(
-  dynamicEphemeralResponse: RA<string | number | null> | undefined,
+  dynamicEphemeralResponse: RA<number | string | null> | undefined,
   items: RA<CustomStat | DefaultStat>,
   responseKey: string,
   statsSpec: StatsSpec

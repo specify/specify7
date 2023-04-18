@@ -30,22 +30,22 @@ import { Categories } from './Categories';
 import {
   applyRefreshLayout,
   getBackendUrlToFetch,
+  getDynamicQuerySpecsToFetch,
   getOffsetOne,
   setLayoutUndefined,
   statsToTsv,
   useBackendApi,
-  useDefaultBackendCategorySetter,
-  useDefaultStatsToAdd,
   useBackEndCategorySetter,
-  getDynamicQuerySpecsToFetch,
-  useDynamicGroups,
-  useDynamicCategorySetter,
+  useDefaultBackendCategorySetter,
   useDefaultDynamicCategorySetter,
+  useDefaultStatsToAdd,
+  useDynamicCategorySetter,
+  useDynamicGroups,
 } from './hooks';
 import { StatsPageEditing } from './StatsPageEditing';
 import {
-  defaultLayoutGenerated,
   backEndStatsSpec,
+  defaultLayoutGenerated,
   dynamicStatsSpec,
 } from './StatsSpec';
 import type {

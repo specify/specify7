@@ -5,6 +5,7 @@ import { ensure } from '../../utils/types';
 import type { Tables } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
+import { flippedSortTypes } from '../QueryBuilder/helpers';
 import {
   anyTreeRank,
   formattedEntry,
@@ -20,7 +21,6 @@ import type {
   StatsSpec,
 } from './types';
 import type { DefaultStat, StatCategoryReturn } from './types';
-import { flippedSortTypes } from '../QueryBuilder/helpers';
 
 export const statsSpec: StatsSpec = {
   collection: {
@@ -541,9 +541,9 @@ function generateBackEndSpec(statsSpec: StatsSpec): RA<{
 }
 
 function generateDynamicSpec(statsSpec: StatsSpec): RA<{
-  responseKey: string;
-  tableNames: RA<keyof Tables>;
-  dynamicQuerySpec: QuerySpec;
+  readonly responseKey: string;
+  readonly tableNames: RA<keyof Tables>;
+  readonly dynamicQuerySpec: QuerySpec;
 }> {
   return Object.entries(statsSpec).flatMap(([_, { categories, urlPrefix }]) =>
     Object.entries(categories).flatMap(([categoryKey, { items }]) =>
