@@ -14,6 +14,9 @@ export const leafletLayersEndpoint =
   'https://files.specifysoftware.org/specify7/7.8.9/leaflet-layers.json';
 
 /**
+ * DO NOT USE THIS OBJECT DIRECTLY (except in tests).
+ * Use leafletLayersPromise instead.
+ *
  * TileServers and WMS servers that Leaflet should use
  *
  * These layers are only used when:

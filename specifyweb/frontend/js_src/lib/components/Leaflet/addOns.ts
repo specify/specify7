@@ -21,9 +21,10 @@ export function rememberSelectedBaseLayers(
       : layers[preferredBaseLayer]) ?? Object.values(layers)[0];
   baseLayer.addTo(map);
 
-  map.on('baselayerchange', ({ name }: { readonly name: string }) => {
-    setCache('leafletCurrentLayer', mapName, name);
-  });
+  // FIXME: undo
+  // map.on('baselayerchange', ({ name }: { readonly name: string }) => {
+  //   setCache('leafletCurrentLayer', mapName, name);
+  // });
 }
 
 function rememberSelectedOverlays(
@@ -54,8 +55,9 @@ function rememberSelectedOverlays(
     return map.controlLayers;
   };
 
-  map.on('overlayadd', handleOverlayEvent);
-  map.on('overlayremove', handleOverlayEvent);
+  // FIXME: undo
+  // map.on('overlayadd', handleOverlayEvent);
+  // map.on('overlayremove', handleOverlayEvent);
 }
 
 export function addFullScreenButton(

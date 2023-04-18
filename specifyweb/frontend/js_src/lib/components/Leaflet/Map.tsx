@@ -21,23 +21,24 @@ export function LeafletMap({
   localityPoints,
   onMarkerClick: handleMarkerClick,
   forwardRef,
-  header = localityText.geoMap(),
-  headerButtons,
-  description,
-  buttons = commonText.close(),
-  onClose: handleClose,
-  dialog = 'modal',
+  ...rest
 }: {
   readonly localityPoints?: RA<LocalityData>;
   readonly onMarkerClick?: (index: number, event: L.LeafletEvent) => void;
   readonly forwardRef?: (map: LeafletInstance | undefined) => void;
-  readonly header?: LocalizedString;
-  readonly headerButtons?: JSX.Element;
-  readonly description?: JSX.Element;
-  readonly buttons?: JSX.Element | LocalizedString;
-  readonly onClose: () => void;
-  readonly dialog?: 'modal' | 'nonModal' | false;
-}): JSX.Element {
+} & (
+  | {
+      readonly dialog: false;
+    }
+  | {
+      readonly header?: LocalizedString;
+      readonly headerButtons?: JSX.Element;
+      readonly description?: JSX.Element;
+      readonly buttons?: JSX.Element | LocalizedString;
+      readonly onClose: () => void;
+      readonly dialog?: 'modal' | 'nonModal';
+    }
+)): JSX.Element {
   const [container, setContainer] = React.useState<HTMLDivElement | null>(null);
 
   const [handleResize, setHandleResize] = React.useState<
@@ -81,27 +82,41 @@ export function LeafletMap({
   const children = (
     <div
       ref={setContainer}
-      style={{ '--transition-duration': 0 } as React.CSSProperties}
+      style={
+        {
+          '--transition-duration': 0,
+          /**
+           * Create a new stacking context, so that elements in the map don't
+           * appear over non-map elements (i.e, Dialog). Not sure why they
+           * don't do it by default
+           */
+          zIndex: 0,
+        } as React.CSSProperties
+      }
     />
   );
-  return dialog === false ? (
+  return rest.dialog === false && !isFullScreen ? (
     children
   ) : (
     <Dialog
-      buttons={buttons}
+      buttons={
+        ('buttons' in rest ? rest.buttons : undefined) ?? commonText.close()
+      }
       className={{
         container: isFullScreen
           ? dialogClassNames.fullScreen
           : dialogClassNames.extraWideContainer,
       }}
       dimensionsKey="LeafletMap"
-      header={header}
-      headerButtons={headerButtons}
-      modal={dialog === 'modal'}
-      onClose={handleClose}
+      header={
+        ('header' in rest ? rest.header : undefined) ?? localityText.geoMap()
+      }
+      headerButtons={'headerButtons' in rest ? rest.headerButtons : undefined}
+      modal={rest.dialog === 'modal'}
+      onClose={'onClose' in rest ? rest.onClose : handleToggleFullScreen}
       onResize={handleResize}
     >
-      {description}
+      {'description' in rest ? rest.description : undefined}
       {children}
     </Dialog>
   );

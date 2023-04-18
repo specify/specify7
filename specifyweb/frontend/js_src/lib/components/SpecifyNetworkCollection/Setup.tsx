@@ -37,6 +37,7 @@ function PickInstitution({
 }: {
   readonly institution: SpecifyResource<Institution>;
 }): JSX.Element {
+  // FIXME: store in in institutional prferences instead
   const [, setOrganizationKey] = collectionPreferences.use(
     'statistics',
     'specifyNetwork',

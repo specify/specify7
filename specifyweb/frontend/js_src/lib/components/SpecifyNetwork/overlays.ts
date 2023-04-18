@@ -9,6 +9,7 @@ import { keysToLowerCase } from '../../utils/utils';
 import { schema } from '../DataModel/schema';
 import { userInformation } from '../InitialContext/userInformation';
 import L from '../Leaflet/extend';
+import { formatUrl } from '../Router/queryString';
 import type { BrokerRecord } from './fetchers';
 import { extractBrokerField } from './fetchers';
 
@@ -25,30 +26,34 @@ export function getGbifLayers(
 
   return {
     layers: {
-      [`GBIF ${legendGradient}`]: L.tileLayer(
-        'https://api.gbif.org/v2/map/occurrence/{source}/{z}/{x}/{y}{format}?{params}',
-        {
-          attribution: '',
-          // @ts-expect-error
-          source: 'density',
-          format: '@1x.png',
-          className: 'saturate-150',
-          params: Object.entries({
-            srs: 'EPSG:3857',
-            style: 'classic.poly',
-            bin: 'hex',
-            hexPerTile: 20,
-            taxonKey,
-          })
-            .map(([key, value]) => `${key}=${value}`)
-
-            .join('&'),
-        }
-      ),
+      [`GBIF ${legendGradient}`]: getGbifLayer({ taxonKey }),
     },
     description: specifyNetworkText.gbifDescription(),
   };
 }
+
+export const getGbifLayer = (mapData: IR<string>, pane?: string): L.TileLayer =>
+  L.tileLayer(
+    formatUrl(
+      'https://api.gbif.org/v2/map/occurrence/{source}/{z}/{x}/{y}{format}',
+      {
+        srs: 'EPSG:3857',
+        style: 'classic.poly',
+        bin: 'hex',
+        ...mapData,
+      },
+      false
+    )
+      .replaceAll('%7B', '{')
+      .replaceAll('%7D', '}'),
+    {
+      attribution: '',
+      pane,
+      // @ts-expect-error
+      source: 'density',
+      format: '@1x.png',
+    }
+  );
 
 const legendGradient = `<span
   aria-hidden="true"

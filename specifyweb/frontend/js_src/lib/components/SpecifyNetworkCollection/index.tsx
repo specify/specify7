@@ -11,7 +11,9 @@ import { Container } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Label, Select } from '../Atoms/Form';
+import { Link } from '../Atoms/Link';
 import { schema } from '../DataModel/schema';
+import { loadingGif } from '../Molecules';
 import { collectionPreferences } from '../Preferences/collectionPreferences';
 import { formatUrl } from '../Router/queryString';
 import { GbifMap } from './Map';
@@ -24,7 +26,7 @@ export function SpecifyNetworkCollection(): JSX.Element | null {
     'publishingOrganization'
   );
   return (
-    <Container.Full>
+    <Container.Full className="gap-8">
       {key === undefined ? <RetrieveGbifKey /> : <Institution />}
     </Container.Full>
   );
@@ -63,6 +65,7 @@ function Institution(): JSX.Element | null {
       <section className="flex flex-col gap-2">
         <header className="flex items-center gap-2">
           <h3 className={className.headerPrimary}>{organizationTitle}</h3>
+          <Link.NewTab href={`https://www.gbif.org/publisher/${key}`} />
           <Button.Icon
             icon="backspace"
             title={commonText.change()}
@@ -99,7 +102,7 @@ function Collections({
         ),
       [key]
     ),
-    true
+    false
   );
 
   const [collection, setCollection] = useCachedState(
@@ -117,21 +120,28 @@ function Collections({
     [collection]
   );
 
-  return collections === undefined ? null : (
+  return collections === undefined ? (
+    loadingGif
+  ) : (
     <section className="flex flex-col gap-2">
-      <Label.Inline>
-        <span className={className.headerPrimary}>
-          {schema.models.Collection.label}
-        </span>
-        <Select value={collection} onValueChange={setCollection}>
-          <option />
-          {collections.map(({ title, key }) => (
-            <option key={key} value={key}>
-              {title}
-            </option>
-          ))}
-        </Select>
-      </Label.Inline>
+      <div className="flex items-center gap-1">
+        <Label.Inline>
+          <span className={className.headerPrimary}>
+            {schema.models.Collection.label}
+          </span>
+          <Select value={collection} onValueChange={setCollection}>
+            <option />
+            {collections.map(({ title, key }) => (
+              <option key={key} value={key}>
+                {title}
+              </option>
+            ))}
+          </Select>
+        </Label.Inline>
+        {typeof collection === 'string' && (
+          <Link.NewTab href={`https://www.gbif.org/dataset/${collection}`} />
+        )}
+      </div>
       {typeof mapData === 'object' && (
         <>
           <p>{specifyNetworkText.collectionDistributionMap()}</p>
