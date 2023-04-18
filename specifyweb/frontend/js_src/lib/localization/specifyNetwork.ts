@@ -51,4 +51,16 @@ export const specifyNetworkText = createDictionary({
   searchForInstitution: {
     'en-us': 'Search for your institution:',
   },
+  institutionDistributionMap: {
+    'en-us': `
+      Distribution map of all of the digitized specimens curated in your
+      Institution
+    `,
+  },
+  collectionDistributionMap: {
+    'en-us': `
+      Distribution map of all of the digitized specimens curated in your
+      Collection
+    `,
+  },
 } as const);
