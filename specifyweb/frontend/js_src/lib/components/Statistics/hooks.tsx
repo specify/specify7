@@ -15,6 +15,7 @@ import { deserializeResource, serializeResource } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { SpQuery } from '../DataModel/types';
+import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { makeQueryField } from '../QueryBuilder/fromTree';
 import { backEndStatsSpec, dynamicStatsSpec, statsSpec } from './StatsSpec';
 import type {
@@ -30,8 +31,7 @@ import type {
   StatLayout,
   StatsSpec,
 } from './types';
-import { PartialQueryFieldWithPath } from './types';
-import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
+import type { PartialQueryFieldWithPath } from './types';
 
 /**
  * Returns state which gets updated everytime backend stat is fetched. Used for dynamic categories since they don't
@@ -54,7 +54,7 @@ export function useBackendApi(
 
 export function useDynamicGroups(
   dynamicEphemeralFieldSpecs: RA<DynamicQuerySpec>
-): IR<RA<string | number | null> | undefined> | undefined {
+): IR<RA<number | string | null> | undefined> | undefined {
   const dynamicEphereralPromises = React.useMemo(
     () =>
       dynamicEphemeralFieldSpecs.length === 0
@@ -104,7 +104,7 @@ function dynamicEphermeralPromiseGenerator(
     dynamicEphemeralFieldSpecs.map(({ key, spec }) => [
       key,
       async () =>
-        throttledPromise<RA<string | number | null> | undefined>(
+        throttledPromise<RA<number | string | null> | undefined>(
           'dynamicStatGroups',
           async () =>
             ajax<{ readonly results: RA<RA<number | string | null>> }>(
@@ -547,7 +547,7 @@ export function useBackEndCategorySetter(
 
 export function useDynamicCategorySetter(
   dynamicEphemeralResponse:
-    | IR<RA<string | number | null> | undefined>
+    | IR<RA<number | string | null> | undefined>
     | undefined,
   handleChange: (
     newCategories: (
@@ -565,9 +565,7 @@ export function useDynamicCategorySetter(
           oldCategory.map((dynamicCategory) => ({
             ...dynamicCategory,
             items: applyDynamicCategoryResponse(
-              dynamicEphemeralResponse[responseKey] as RA<
-                string | number | null
-              >,
+              dynamicEphemeralResponse[responseKey]!,
               dynamicCategory.items,
               responseKey,
               statsSpec
@@ -580,7 +578,7 @@ export function useDynamicCategorySetter(
 }
 
 function applyDynamicCategoryResponse(
-  dynamicEphemeralResponse: RA<string | number | null>,
+  dynamicEphemeralResponse: RA<number | string | null>,
   items: RA<CustomStat | DefaultStat>,
   responseKey: string,
   statsSpec: StatsSpec
@@ -615,7 +613,7 @@ function applyDynamicCategoryResponse(
         label: pathToValue === null ? 'null' : pathToValue.toString(), // Use Localizaed Version of null
         itemValue: undefined,
         itemType: 'QueryStat',
-        pathToValue: pathToValue,
+        pathToValue,
       }))
     : items;
 }
@@ -674,7 +672,7 @@ export function applyRefreshLayout(
 }
 
 export function appendDynamicPathToValue(
-  pathToValue: string | null | number,
+  pathToValue: number | string | null,
   fields: RA<PartialQueryFieldWithPath>
 ): RA<PartialQueryFieldWithPath> {
   const groupField = fields.at(-1);

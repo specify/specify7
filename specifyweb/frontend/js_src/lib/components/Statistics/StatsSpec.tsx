@@ -532,8 +532,8 @@ function generateBackEndSpec(statsSpec: StatsSpec): RA<{
 }
 
 function generateDynamicSpec(statsSpec: StatsSpec): RA<{
-  responseKey: string;
-  tableNames: RA<keyof Tables>;
+  readonly responseKey: string;
+  readonly tableNames: RA<keyof Tables>;
 }> {
   return Object.entries(statsSpec).flatMap(([_, { categories, urlPrefix }]) =>
     Object.entries(categories).flatMap(([categoryKey, { items }]) =>

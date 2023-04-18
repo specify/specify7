@@ -22,14 +22,14 @@ export type PartialQueryFieldWithPath = Partial<
 export type DefaultStat = State<
   'DefaultStat',
   {
-    readonly itemType: 'BackEndStat' | 'QueryStat' | 'DynamicStat';
+    readonly itemType: 'BackEndStat' | 'DynamicStat' | 'QueryStat';
     readonly pageName: string;
     readonly categoryName: string;
     readonly itemName: string;
     readonly label: string;
     readonly itemValue: number | string | undefined;
     readonly isVisible?: boolean;
-    readonly pathToValue?: string | number | null;
+    readonly pathToValue?: number | string | null;
   }
 >;
 
@@ -84,7 +84,7 @@ export type BackEndStat = BackEndBase & {
 export type BackEndBase = State<
   'BackEndStat',
   {
-    readonly pathToValue: string | undefined | null | number;
+    readonly pathToValue: number | string | null | undefined;
     readonly tableName: keyof Tables;
   }
 >;
@@ -93,7 +93,7 @@ export type BackEndStatResolve = BackEndBase & {
   // Add type assertions for rawResult
   readonly formatter: (rawResult: any) => string | undefined;
 };
-export type StatItemSpec = BackEndStat | QueryBuilderStat | DynamicStat;
+export type StatItemSpec = BackEndStat | DynamicStat | QueryBuilderStat;
 
 export type DynamicStat = State<
   'DynamicStat',
