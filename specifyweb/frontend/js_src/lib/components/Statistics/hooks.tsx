@@ -24,7 +24,6 @@ import type {
   CustomStat,
   DefaultStat,
   DynamicQuerySpec,
-  DynamicStat,
   QueryBuilderStat,
   QuerySpec,
   StatFormatterSpec,
@@ -328,22 +327,25 @@ export function getDynamicQuerySpecsToFetch(
   return layout.flatMap(({ categories }) =>
     categories.flatMap(({ items }) =>
       filterArray(
-        items.map((item) =>
-          item.type === 'DefaultStat' && item.itemType === 'DynamicStat'
-            ? {
-                key: generateStatUrl(
-                  statsSpec[item.pageName].urlPrefix,
-                  item.categoryName,
-                  item.itemName
-                ),
-                spec: (
-                  statsSpec[item.pageName].categories[item.categoryName].items[
-                    item.itemName
-                  ].spec as DynamicStat
-                ).dynamicQuerySpec,
-              }
-            : undefined
-        )
+        items.map((item) => {
+          if (item.type === 'DefaultStat' && item.itemType === 'DynamicStat') {
+            const itemKey = generateStatUrl(
+              statsSpec[item.pageName].urlPrefix,
+              item.categoryName,
+              item.itemName
+            );
+            const dynamicSpec = dynamicStatsSpec.find(
+              ({ responseKey }) => responseKey === itemKey
+            );
+            if (dynamicSpec !== undefined) {
+              return {
+                key: itemKey,
+                spec: dynamicSpec.dynamicQuerySpec,
+              };
+            }
+          }
+          return undefined;
+        })
       )
     )
   );
@@ -464,12 +466,12 @@ export function applyStatBackendResponse(
 }
 
 /**
- * Iterates over the default layout and applies backend response for dynamic categories
+ * Iterates over the default layout and applies backend response for backend categories
  * to each source and page.
  *
  */
 
-export function useDefaultDynamicCategorySetter(
+export function useDefaultBackendCategorySetter(
   defaultBackEndResponse: BackendStatsResult | undefined,
   setDefaultLayout: (
     previousGenerator: (
@@ -577,12 +579,50 @@ export function useDynamicCategorySetter(
   }, [handleChange, dynamicEphemeralResponse]);
 }
 
+export function useDefaultDynamicCategorySetter(
+  defaultDynamicEphemeralResponse:
+    | IR<RA<string | number | null> | undefined>
+    | undefined,
+  setDefaultLayout: (
+    previousGenerator: (
+      oldLayout: RA<StatLayout> | undefined
+    ) => RA<StatLayout> | undefined
+  ) => void
+) {
+  React.useEffect(() => {
+    dynamicStatsSpec.forEach(({ responseKey }) => {
+      if (
+        defaultDynamicEphemeralResponse !== undefined &&
+        defaultDynamicEphemeralResponse[responseKey] !== undefined
+      ) {
+        setDefaultLayout((oldLayout) =>
+          oldLayout === undefined
+            ? undefined
+            : oldLayout.map((oldPage) => ({
+                ...oldPage,
+                categories: oldPage.categories.map((oldCategory) => ({
+                  ...oldCategory,
+                  items: applyDynamicCategoryResponse(
+                    defaultDynamicEphemeralResponse[responseKey],
+                    oldCategory.items,
+                    responseKey,
+                    statsSpec
+                  ),
+                })),
+              }))
+        );
+      }
+    });
+  }, [defaultDynamicEphemeralResponse, setDefaultLayout]);
+}
+
 function applyDynamicCategoryResponse(
-  dynamicEphemeralResponse: RA<number | string | null>,
+  dynamicEphemeralResponse: RA<string | number | null> | undefined,
   items: RA<CustomStat | DefaultStat>,
   responseKey: string,
   statsSpec: StatsSpec
 ): RA<CustomStat | DefaultStat> {
+  if (dynamicEphemeralResponse === undefined) return items;
   const dynamicPhantomItem = items.find(
     (item) =>
       item.type === 'DefaultStat' &&

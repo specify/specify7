@@ -34,15 +34,20 @@ import {
   setLayoutUndefined,
   statsToTsv,
   useBackendApi,
-  useDefaultDynamicCategorySetter,
+  useDefaultBackendCategorySetter,
   useDefaultStatsToAdd,
   useBackEndCategorySetter,
   getDynamicQuerySpecsToFetch,
   useDynamicGroups,
   useDynamicCategorySetter,
+  useDefaultDynamicCategorySetter,
 } from './hooks';
 import { StatsPageEditing } from './StatsPageEditing';
-import { defaultLayoutGenerated, backEndStatsSpec } from './StatsSpec';
+import {
+  defaultLayoutGenerated,
+  backEndStatsSpec,
+  dynamicStatsSpec,
+} from './StatsSpec';
 import type {
   CustomStat,
   DefaultStat,
@@ -214,6 +219,14 @@ function ProtectedStatsPage(): JSX.Element | null {
     () => backEndStatsSpec.map(({ responseKey }) => responseKey),
     []
   );
+  const allDynamicQueries = React.useMemo(
+    () =>
+      dynamicStatsSpec.map(({ responseKey, dynamicQuerySpec }) => ({
+        key: responseKey,
+        spec: dynamicQuerySpec,
+      })),
+    []
+  );
   const [categoriesToFetch, setCategoriesToFetch] = React.useState<RA<string>>(
     []
   );
@@ -224,6 +237,8 @@ function ProtectedStatsPage(): JSX.Element | null {
   const [defaultCategoriesToFetch, setDefaultCategoriesToFetch] =
     React.useState<RA<string>>([]);
 
+  const [defaultDynamicQueriesToRun, setDefaultDynamicQueriesToRun] =
+    React.useState<RA<DynamicQuerySpec>>([]);
   /**
    * Checks layout for absent dynamic categories and makes request for those categories.
    *
@@ -256,6 +271,9 @@ function ProtectedStatsPage(): JSX.Element | null {
   const backEndResponse = useBackendApi(categoriesToFetch);
   const defaultBackEndResponse = useBackendApi(defaultCategoriesToFetch);
   const dynamicCategoriesResponse = useDynamicGroups(dynamicQueriesToRun);
+  const defaultDynamicCategoriesResponse = useDynamicGroups(
+    defaultDynamicQueriesToRun
+  );
 
   /*
    * Initial Load For Shared and Personal Pages
@@ -321,10 +339,14 @@ function ProtectedStatsPage(): JSX.Element | null {
     categoriesToFetch,
     formatterSpec
   );
-  useDefaultDynamicCategorySetter(
+  useDefaultBackendCategorySetter(
     defaultBackEndResponse,
     setDefaultLayout,
     formatterSpec
+  );
+  useDefaultDynamicCategorySetter(
+    defaultDynamicCategoriesResponse,
+    setDefaultLayout
   );
   useDynamicCategorySetter(dynamicCategoriesResponse, handleChange);
 
@@ -888,7 +910,10 @@ function ProtectedStatsPage(): JSX.Element | null {
                   }))
             );
           }}
-          onInitialLoad={() => setDefaultCategoriesToFetch(allCategories)}
+          onInitialLoad={() => {
+            setDefaultCategoriesToFetch(allCategories);
+            setDefaultDynamicQueriesToRun(allDynamicQueries);
+          }}
           onLoad={handleDefaultLoad}
         />
       )}

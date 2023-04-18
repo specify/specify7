@@ -2,7 +2,6 @@ import { statsText } from '../../localization/stats';
 import { today } from '../../utils/relativeDate';
 import type { RA } from '../../utils/types';
 import { ensure } from '../../utils/types';
-import { formatNumber } from '../Atoms/Internationalization';
 import type { Tables } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
@@ -15,11 +14,13 @@ import { generateStatUrl } from './hooks';
 import type {
   BackEndStat,
   DynamicStat,
+  QuerySpec,
   StatFormatterGenerator,
   StatLayout,
   StatsSpec,
 } from './types';
 import type { DefaultStat, StatCategoryReturn } from './types';
+import { flippedSortTypes } from '../QueryBuilder/helpers';
 
 export const statsSpec: StatsSpec = {
   collection: {
@@ -88,27 +89,26 @@ export const statsSpec: StatsSpec = {
       preparations: {
         label: statsText.preparations(),
         items: {
-          phantomItem: {
+          dynamicPhantomItem: {
             label: statsText.preparations(),
             spec: {
-              type: 'BackEndStat',
-              pathToValue: undefined,
-              tableName: 'Preparation',
-              formatterGenerator:
-                ({ showTotal }) =>
-                (
-                  prep:
-                    | {
-                        readonly lots: number;
-                        readonly total: number;
-                      }
-                    | undefined
-                ) =>
-                  prep === undefined
-                    ? undefined
-                    : showTotal
-                    ? `${formatNumber(prep.lots)} / ${formatNumber(prep.total)}`
-                    : formatNumber(prep.lots),
+              type: 'DynamicStat',
+              tableNames: ['CollectionObject', 'Preparation', 'PrepType'],
+              dynamicQuerySpec: {
+                tableName: 'CollectionObject',
+                fields: [
+                  {
+                    isNot: true,
+                    path: 'preparations.prepType.name',
+                    operStart: queryFieldFilters.empty.id,
+                  },
+                ],
+                isDistinct: true,
+              },
+              querySpec: {
+                tableName: 'CollectionObject',
+                fields: [{ path: formattedEntry }],
+              },
             },
           },
         },
@@ -199,6 +199,14 @@ export const statsSpec: StatsSpec = {
                   {
                     path: 'determinations.isCurrent',
                     operStart: queryFieldFilters.true.id,
+                    isDisplay: false,
+                  },
+                  {
+                    path: `determinations.preferredTaxon.${formatTreeRank(
+                      anyTreeRank
+                    )}.definitionItem.rankId`,
+                    operStart: queryFieldFilters.any.id,
+                    sortType: flippedSortTypes.ascending,
                     isDisplay: false,
                   },
                   {
@@ -308,6 +316,7 @@ export const statsSpec: StatsSpec = {
           },
         },
       },
+
       // eslint-disable-next-line @typescript-eslint/naming-convention
       type_specimens: {
         label: statsText.typeSpecimens(),
@@ -532,8 +541,9 @@ function generateBackEndSpec(statsSpec: StatsSpec): RA<{
 }
 
 function generateDynamicSpec(statsSpec: StatsSpec): RA<{
-  readonly responseKey: string;
-  readonly tableNames: RA<keyof Tables>;
+  responseKey: string;
+  tableNames: RA<keyof Tables>;
+  dynamicQuerySpec: QuerySpec;
 }> {
   return Object.entries(statsSpec).flatMap(([_, { categories, urlPrefix }]) =>
     Object.entries(categories).flatMap(([categoryKey, { items }]) =>
@@ -542,6 +552,7 @@ function generateDynamicSpec(statsSpec: StatsSpec): RA<{
         .map(([itemKey, { spec }]) => ({
           responseKey: generateStatUrl(urlPrefix, categoryKey, itemKey),
           tableNames: (spec as DynamicStat).tableNames,
+          dynamicQuerySpec: (spec as DynamicStat).dynamicQuerySpec,
         }))
     )
   );
