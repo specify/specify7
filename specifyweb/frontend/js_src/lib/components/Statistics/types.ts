@@ -99,7 +99,7 @@ export type DynamicStat = State<
   'DynamicStat',
   {
     readonly dynamicQuerySpec: QuerySpec;
-    readonly additionalFields: RA<PartialQueryFieldWithPath>;
+    readonly querySpec: QuerySpec;
     readonly tableNames: RA<keyof Tables>;
   }
 >;

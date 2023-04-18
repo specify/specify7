@@ -19,7 +19,7 @@ export const statsSpecTest: StatsSpec = {
           specimens: {
             label: statsText.collectionObjects(),
             spec: {
-              type: 'QueryBuilderStat',
+              type: 'QueryStat',
               querySpec: {
                 tableName: 'CollectionObject',
                 fields: [
@@ -107,7 +107,7 @@ export const statsSpecTest: StatsSpec = {
           collectionObjectsCataloged: {
             label: statsText.collectionObjectsCataloged(),
             spec: {
-              type: 'QueryBuilderStat',
+              type: 'QueryStat',
               querySpec: {
                 tableName: 'CollectionObject',
                 fields: [

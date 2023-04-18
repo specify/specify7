@@ -123,9 +123,7 @@ function dynamicEphermeralPromiseGenerator(
               },
               { expectedResponseCodes: Object.values(Http) }
             ).then(({ data }) =>
-              data.results.map((distinctGroup) =>
-                distinctGroup[0] === null ? null : distinctGroup[0]
-              )
+              data.results.map((distinctGroup) => distinctGroup[0])
             ),
           key
         ),
@@ -261,28 +259,28 @@ export function resolveStatsSpec(
       formatter: statSpecItem.spec.formatterGenerator(formatterSpec),
       tableName: statSpecItem.spec.tableName,
     };
-  if (statSpecItem.spec.type === 'DynamicStat') {
-    const dynamicQueryFromSpec = dynamicStatsSpec.find(
-      ({ responseKey }) => statUrl === responseKey
-    );
-    if (dynamicQueryFromSpec === undefined || item.pathToValue === undefined)
-      return undefined;
+  if (
+    statSpecItem.spec.type === 'DynamicStat' &&
+    item.pathToValue !== undefined
+  ) {
     return {
       type: 'QueryStat',
       querySpec: {
-        tableName: statSpecItem.spec.dynamicQuerySpec.tableName,
-        fields: appendDynamicPathToValue(
-          item.pathToValue,
-          dynamicQueryFromSpec.fields
-        ),
-        isDistinct: true,
+        tableName: statSpecItem.spec.querySpec.tableName,
+        fields: appendDynamicPathToValue(item.pathToValue, [
+          ...statSpecItem.spec.querySpec.fields,
+          ...statSpecItem.spec.dynamicQuerySpec.fields,
+        ]),
+        isDistinct: statSpecItem.spec.querySpec.isDistinct,
       },
     };
   }
-  return {
-    type: 'QueryStat',
-    querySpec: statSpecItem.spec.querySpec,
-  };
+  if (statSpecItem.spec.type === 'QueryStat')
+    return {
+      type: 'QueryStat',
+      querySpec: statSpecItem.spec.querySpec,
+    };
+  return undefined;
 }
 
 export function useResolvedStatSpec(

@@ -15,7 +15,6 @@ import { generateStatUrl } from './hooks';
 import type {
   BackEndStat,
   DynamicStat,
-  PartialQueryFieldWithPath,
   StatFormatterGenerator,
   StatLayout,
   StatsSpec,
@@ -188,18 +187,23 @@ export const statsSpec: StatsSpec = {
             label: statsText.taxonomicTree(),
             spec: {
               type: 'DynamicStat',
-              tableNames: ['Determination', 'Taxon', 'TaxonTreeDefItem'],
+              tableNames: [
+                'CollectionObject',
+                'Determination',
+                'Taxon',
+                'TaxonTreeDefItem',
+              ],
               dynamicQuerySpec: {
-                tableName: 'Determination',
+                tableName: 'CollectionObject',
                 fields: [
                   {
-                    path: 'isCurrent',
+                    path: 'determinations.isCurrent',
                     operStart: queryFieldFilters.true.id,
                     isDisplay: false,
                   },
                   {
                     isNot: true,
-                    path: `preferredTaxon.${formatTreeRank(
+                    path: `determinations.preferredTaxon.${formatTreeRank(
                       anyTreeRank
                     )}.definitionItem.name`,
                     operStart: queryFieldFilters.empty.id,
@@ -207,18 +211,26 @@ export const statsSpec: StatsSpec = {
                 ],
                 isDistinct: true,
               },
-              additionalFields: [
-                {
-                  path: `preferredTaxon.${formatTreeRank(anyTreeRank)}.name`,
-                  isDisplay: true,
-                  operStart: queryFieldFilters.any.id,
-                },
-                {
-                  path: `preferredTaxon.${formatTreeRank(anyTreeRank)}.id`,
-                  isDisplay: true,
-                  operStart: queryFieldFilters.any.id,
-                },
-              ],
+              querySpec: {
+                tableName: 'CollectionObject',
+                fields: [
+                  {
+                    path: `determinations.preferredTaxon.${formatTreeRank(
+                      anyTreeRank
+                    )}.fullName`,
+                    isDisplay: true,
+                    operStart: queryFieldFilters.any.id,
+                  },
+                  {
+                    path: `determinations.preferredTaxon.${formatTreeRank(
+                      anyTreeRank
+                    )}.id`,
+                    isDisplay: true,
+                    operStart: queryFieldFilters.any.id,
+                  },
+                ],
+                isDistinct: true,
+              },
             },
           },
         },
@@ -316,7 +328,10 @@ export const statsSpec: StatsSpec = {
                 ],
                 isDistinct: true,
               },
-              additionalFields: [{ path: formattedEntry }],
+              querySpec: {
+                tableName: 'Determination',
+                fields: [{ path: formattedEntry }],
+              },
             },
           },
         },
@@ -518,7 +533,6 @@ function generateBackEndSpec(statsSpec: StatsSpec): RA<{
 
 function generateDynamicSpec(statsSpec: StatsSpec): RA<{
   responseKey: string;
-  fields: RA<PartialQueryFieldWithPath>;
   tableNames: RA<keyof Tables>;
 }> {
   return Object.entries(statsSpec).flatMap(([_, { categories, urlPrefix }]) =>
@@ -528,10 +542,6 @@ function generateDynamicSpec(statsSpec: StatsSpec): RA<{
         .map(([itemKey, { spec }]) => ({
           responseKey: generateStatUrl(urlPrefix, categoryKey, itemKey),
           tableNames: (spec as DynamicStat).tableNames,
-          fields: [
-            ...(spec as DynamicStat).additionalFields,
-            ...(spec as DynamicStat).dynamicQuerySpec.fields,
-          ],
         }))
     )
   );
