@@ -60,7 +60,7 @@ function Institution(): JSX.Element | null {
     key === undefined ||
     mapData === undefined ? null : (
     <>
-      <section>
+      <section className="flex flex-col gap-2">
         <header className="flex items-center gap-2">
           <h3 className={className.headerPrimary}>{organizationTitle}</h3>
           <Button.Icon
@@ -117,13 +117,14 @@ function Collections({
     [collection]
   );
 
-  return collections === undefined || mapData === undefined ? null : (
-    <section>
+  return collections === undefined ? null : (
+    <section className="flex flex-col gap-2">
       <Label.Inline>
         <span className={className.headerPrimary}>
           {schema.models.Collection.label}
         </span>
         <Select value={collection} onValueChange={setCollection}>
+          <option />
           {collections.map(({ title, key }) => (
             <option key={key} value={key}>
               {title}
@@ -131,8 +132,12 @@ function Collections({
           ))}
         </Select>
       </Label.Inline>
-      <p>{specifyNetworkText.collectionDistributionMap()}</p>
-      <GbifMap mapData={mapData} />
+      {typeof mapData === 'object' && (
+        <>
+          <p>{specifyNetworkText.collectionDistributionMap()}</p>
+          <GbifMap mapData={mapData} />
+        </>
+      )}
     </section>
   );
 }

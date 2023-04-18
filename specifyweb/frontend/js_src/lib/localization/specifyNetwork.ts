@@ -63,4 +63,6 @@ export const specifyNetworkText = createDictionary({
       Collection
     `,
   },
+  startYear: { 'en-us': 'Start Year' },
+  endYear: { 'en-us': 'End Year' },
 } as const);
