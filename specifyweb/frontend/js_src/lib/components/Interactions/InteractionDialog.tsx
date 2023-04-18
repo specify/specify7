@@ -304,10 +304,7 @@ export function InteractionDialog({
               />
               <div>
                 <Button.Blue
-                  disabled={
-                    catalogNumbers.length === 0 ||
-                    inputRef.current?.validity.valid !== true
-                  }
+                  disabled={catalogNumbers.length === 0}
                   onClick={(): void => handleProceed(undefined)}
                 >
                   {commonText.next()}
