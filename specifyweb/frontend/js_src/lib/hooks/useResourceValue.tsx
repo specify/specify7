@@ -154,7 +154,8 @@ export function useResourceValue<
       const parseResults = parseValue(
         parser,
         inputRef.current ?? undefined,
-        newValue?.toString() ?? ''
+        newValue?.toString() ?? '',
+        false
       );
 
       const parsedValue = parseResults.isValid ? parseResults.parsed : newValue;
