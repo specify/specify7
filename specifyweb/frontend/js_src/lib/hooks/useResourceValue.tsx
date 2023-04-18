@@ -9,6 +9,7 @@ import type {
   LiteralField,
   Relationship,
 } from '../components/DataModel/specifyField';
+import { FormContext } from '../components/Forms/BaseResourceView';
 import { getDateInputValue } from '../utils/dayJs';
 import { listen } from '../utils/events';
 import { f } from '../utils/functools';
@@ -19,7 +20,6 @@ import { parseRelativeDate } from '../utils/relativeDate';
 import type { RA } from '../utils/types';
 import { useBooleanState } from './useBooleanState';
 import { useValidation } from './useValidation';
-import { FormContext } from '../components/Forms/BaseResourceView';
 
 /**
  * A hook to integrate an Input with a field on a Backbone resource
