@@ -140,6 +140,9 @@ export type CacheDefinitions = {
       RA<RA<{ readonly itemName: string; readonly value: number | string }>>
     >;
   };
+  readonly specifyNetwork: {
+    readonly lastDatSetKey: string;
+  };
 };
 
 export type SortConfigs = {

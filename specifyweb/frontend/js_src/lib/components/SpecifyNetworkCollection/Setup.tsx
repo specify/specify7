@@ -1,13 +1,16 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { specifyNetworkText } from '../../localization/specifyNetwork';
+import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
 import type { IR, RA } from '../../utils/types';
 import { defined } from '../../utils/types';
-import { H3, Ul } from '../Atoms';
+import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
-import { Input } from '../Atoms/Form';
+import { className } from '../Atoms/className';
+import { Input, Label } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import { getDomainResource } from '../DataModel/domain';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -15,7 +18,6 @@ import type { Institution } from '../DataModel/types';
 import { loadingGif } from '../Molecules';
 import { collectionPreferences } from '../Preferences/collectionPreferences';
 import { formatUrl } from '../Router/queryString';
-import { LocalizedString } from 'typesafe-i18n';
 
 export function RetrieveGbifKey(): JSX.Element | null {
   const [institution] = useAsyncState(fetchInstitution, true);
@@ -52,42 +54,63 @@ function PickInstitution({
   );
   return (
     <>
-      <H3>{specifyNetworkText.connectToGbif()}</H3>
-      <Input.Text value={searchQuery} onValueChange={setSearchQuery} />
+      <h2 className={className.headerPrimary}>
+        {specifyNetworkText.connectToGbif()}
+      </h2>
+      <Label.Block>
+        {specifyNetworkText.searchForInstitution()}
+        <Input.Text value={searchQuery} onValueChange={setSearchQuery} />
+      </Label.Block>
       {results === undefined ? (
         loadingGif
       ) : (
-        <Ul className="flex flex-col gap-2">
-          {results.map(({ title, key }) => (
-            <li key={key} className="flex gap-2">
-              <Button.LikeLink onClick={(): void => setOrganizationKey(key)}>
-                {title}
-              </Button.LikeLink>
-              <Link.NewTab href={`https://www.gbif.org/publisher/${key}`} />
-            </li>
-          ))}
-        </Ul>
+        <>
+          <p>{`${wbText.searchResults()}:`}</p>
+          <Ul className="flex flex-col gap-2">
+            {results.map(({ title, key }) => (
+              <li className="flex gap-2" key={key}>
+                <Button.LikeLink onClick={(): void => setOrganizationKey(key)}>
+                  {title}
+                </Button.LikeLink>
+                <Link.NewTab href={`https://www.gbif.org/publisher/${key}`} />
+              </li>
+            ))}
+          </Ul>
+        </>
       )}
     </>
   );
 }
 
 const fetchPossibleInstitutions = async (
-  query: string,
-  offset: number = 0
+  query: string
 ): Promise<
   RA<{
     readonly title: LocalizedString;
     readonly key: string;
   }>
 > =>
+  paginateGbif(
+    formatUrl('https://api.gbif.org/v1/organization/', {
+      q: query,
+    })
+  ).then((results) =>
+    results.map(({ title, key }) => ({
+      title: title as LocalizedString,
+      key: key as string,
+    }))
+  );
+
+export const paginateGbif = async (
+  url: string,
+  offset: number = 0
+): Promise<RA<IR<unknown>>> =>
   ajax<{
     readonly limit: number;
     readonly count: number;
     readonly results: RA<IR<unknown>>;
   }>(
-    formatUrl('https://api.gbif.org/v1/organization/', {
-      q: query,
+    formatUrl(url, {
       offset: offset.toString(),
     }),
     {
@@ -96,11 +119,6 @@ const fetchPossibleInstitutions = async (
       },
     }
   ).then(async ({ data: { results, limit, count } }) => [
-    ...results.map(({ title, key }) => ({
-      title: title as LocalizedString,
-      key: key as string,
-    })),
-    ...(count < limit + offset
-      ? await fetchPossibleInstitutions(query, offset + limit)
-      : []),
+    ...results,
+    ...(count > limit + offset ? await paginateGbif(url, offset + limit) : []),
   ]);
