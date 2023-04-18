@@ -45,7 +45,8 @@ export function useResourceValue<
   // If field is undefined, this hook behaves pretty much like useValidation()
   field: LiteralField | Relationship | undefined,
   // Default parser is usually coming from the form definition
-  defaultParser: Parser | undefined
+  defaultParser: Parser | undefined,
+  trim?: boolean
 ): ReturnType<typeof useValidation> & {
   readonly value: T | undefined;
   readonly updateValue: (newValue: T, reportError?: boolean) => void;
@@ -155,7 +156,7 @@ export function useResourceValue<
         parser,
         inputRef.current ?? undefined,
         newValue?.toString() ?? '',
-        false
+        trim
       );
 
       const parsedValue = parseResults.isValid ? parseResults.parsed : newValue;
