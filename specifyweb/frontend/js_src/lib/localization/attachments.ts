@@ -89,6 +89,6 @@ export const attachmentsText = createDictionary({
       'No attachments have been found in the first {halt:number} records.',
   },
   fetchNextAttachments: {
-    'en-us': 'Try to fetch next attachments',
+    'en-us': 'Look for more attachments',
   },
 } as const);

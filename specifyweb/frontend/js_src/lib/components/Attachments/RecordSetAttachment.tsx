@@ -20,9 +20,9 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
 }: {
   readonly records: RA<SpecifyResource<SCHEMA> | undefined>;
   readonly onClose: () => void;
-  readonly onFetch?: (
-    index: number
-  ) => Promise<undefined | RA<number | undefined>>;
+  readonly onFetch?:
+    | ((index: number) => Promise<void | RA<number | undefined>>)
+    | undefined;
 }): JSX.Element {
   const recordFetched = React.useRef<number>(0);
 
@@ -69,20 +69,20 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
     haltValue === records.length ? (
       <>{attachmentsText.noAttachments()}</>
     ) : (
-      <>
+      <div className="flex flex-col gap-4">
         {attachmentsText.attachmentHaltLimit({ halt: haltValue })}
         <Button.Orange
           onClick={() => {
-            if (haltValue * 2 > records.length) {
+            if (haltValue + 300 > records.length) {
               setHaltValue(records.length);
             } else {
-              setHaltValue(haltValue * 2);
+              setHaltValue(haltValue + 300);
             }
           }}
         >
           {attachmentsText.fetchNextAttachments()}
         </Button.Orange>
-      </>
+      </div>
     )
   ) : (
     <AttachmentGallery

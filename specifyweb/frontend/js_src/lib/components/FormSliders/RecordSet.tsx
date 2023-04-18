@@ -220,6 +220,7 @@ function RecordSet<SCHEMA extends AnySchema>({
 
   const previousIndex = React.useRef<number>(currentIndex);
   const [isLoading, handleLoading, handleLoaded] = useBooleanState();
+
   const handleFetch = React.useCallback(
     async (index: number): Promise<undefined | RA<number | undefined>> => {
       if (index >= totalCount) return undefined;
