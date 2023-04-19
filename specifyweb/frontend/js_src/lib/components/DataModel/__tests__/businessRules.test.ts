@@ -127,18 +127,23 @@ describe('business rules', () => {
 
 describe('uniquenessRules', () => {
   const permitOneId = 1;
-  overrideAjax(getResourceApiUrl('Permit', permitOneId), {
-    resource_uri: getResourceApiUrl('Permit', permitOneId),
+  const permitOneUrl = getResourceApiUrl('Permit', permitOneId);
+  overrideAjax(permitOneUrl, {
+    id: permitOneId,
+    resource_uri: permitOneUrl,
     permitNumber: '20',
   });
 
   const permitTwoId = 2;
-  overrideAjax(getResourceApiUrl('Permit', permitTwoId), {
-    resource_uri: getResourceApiUrl('Permit', permitTwoId),
+  const permitTwoUrl = getResourceApiUrl('Permit', permitTwoId);
+  overrideAjax(permitTwoUrl, {
+    id: permitTwoId,
+    resource_uri: permitTwoUrl,
     permitNumber: '20',
   });
 
   overrideAjax(getResourceApiUrl('CollectionObject', 221), {
+    id: 221,
     resource_uri: getResourceApiUrl('CollectionObject', 221),
     catalogNumber: '000022002',
   });
@@ -146,11 +151,13 @@ describe('uniquenessRules', () => {
   test('global uniquenessRule', async () => {
     const testPermit = new schema.models.Permit.Resource({
       id: permitOneId,
+      permitNumber: '20',
     });
     await testPermit.save();
 
     const duplicatePermit = new schema.models.Permit.Resource({
       id: permitTwoId,
+      permitNumber: '20',
     });
     expect(
       duplicatePermit
@@ -168,6 +175,7 @@ describe('uniquenessRules', () => {
   test('scoped uniqueness rule', async () => {
     const resource = new schema.models.CollectionObject.Resource({
       id: 221,
+      catalogNumber: '000022002',
     });
     expect(
       resource
