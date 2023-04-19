@@ -307,7 +307,9 @@ export function InteractionDialog({
                   disabled={catalogNumbers.length === 0}
                   onClick={(): void => handleProceed(undefined)}
                 >
-                  {commonText.next()}
+                  {state.type === 'PreparationSelectState' && state.problems
+                    ? commonText.update()
+                    : commonText.next()}
                 </Button.Blue>
               </div>
               {state.type === 'PreparationSelectState' &&
