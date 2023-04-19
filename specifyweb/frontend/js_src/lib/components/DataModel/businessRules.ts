@@ -125,7 +125,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
   private async checkUnique(
     fieldName: keyof SCHEMA['fields']
   ): Promise<BusinessRuleResult> {
-    const toOneFields =
+    const scopeFields =
       this.rules?.uniqueIn !== undefined
         ? this.rules?.uniqueIn[fieldName as Lowercase<TableFields<SCHEMA>>] ??
           []
@@ -134,19 +134,17 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     // Typescript thinks that map() does not exist on NonNullable<UniquenessRule<SCHEMA>>
     // However, map() exists on every possible type of UniquenessRule<SCHEMA>
     // @ts-expect-error
-    const results: RA<Promise<BusinessRuleResult<SCHEMA>>> = toOneFields.map(
+    const results: RA<Promise<BusinessRuleResult<SCHEMA>>> = scopeFields.map(
       (
         uniqueRule: string | null | { field: string; otherFields: string[] }
       ) => {
-        let field = uniqueRule;
+        let scope = uniqueRule;
         let fieldNames: string[] | null = [fieldName as string];
-        if (uniqueRule === null) {
-          fieldNames = null;
-        } else if (typeof uniqueRule != 'string') {
+        if (uniqueRule !== null && typeof uniqueRule != 'string') {
           fieldNames = fieldNames.concat(uniqueRule.otherFields);
-          field = uniqueRule.field;
+          scope = uniqueRule.field;
         }
-        return this.uniqueIn(field as string, fieldNames);
+        return this.uniqueIn(scope as string, fieldNames);
       }
     );
 
@@ -182,28 +180,28 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
   }
 
   private getUniqueInvalidReason(
-    parentFieldInfo: Relationship | LiteralField,
-    fieldInfo: RA<LiteralField | Relationship>
+    scopeField: Relationship | LiteralField | undefined,
+    field: RA<LiteralField | Relationship>
   ): string {
-    if (fieldInfo.length > 1)
-      return parentFieldInfo
+    if (field.length > 1)
+      return scopeField
         ? formsText.valuesOfMustBeUniqueToField({
-            values: formatConjunction(fieldInfo.map((fld) => fld.label)),
-            fieldName: parentFieldInfo.label,
+            values: formatConjunction(field.map((fld) => fld.label)),
+            fieldName: scopeField.label,
           })
         : formsText.valuesOfMustBeUniqueToDatabase({
-            values: formatConjunction(fieldInfo.map((fld) => fld.label)),
+            values: formatConjunction(field.map((fld) => fld.label)),
           });
     else
-      return parentFieldInfo
+      return scopeField
         ? formsText.valueMustBeUniqueToField({
-            fieldName: parentFieldInfo.label,
+            fieldName: scopeField.label,
           })
         : formsText.valueMustBeUniqueToDatabase();
   }
 
   private uniqueIn(
-    toOneField: string | undefined | null,
+    scope: string | undefined | null,
     fieldNames: RA<string> | string | null
   ): Promise<BusinessRuleResult<SCHEMA>> {
     if (fieldNames === null) {
@@ -234,9 +232,9 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
       } else return undefined;
     });
 
-    const toOneFieldInfo =
-      toOneField !== null && toOneField !== undefined
-        ? (this.resource.specifyModel.getField(toOneField) as Relationship)
+    const scopeFieldInfo =
+      scope !== null && scope !== undefined
+        ? (this.resource.specifyModel.getField(scope) as Relationship)
         : undefined;
 
     const allNullOrUndefinedToOnes = fieldIds.reduce(
@@ -247,11 +245,9 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
 
     const invalidResponse: BusinessRuleResult<SCHEMA> = {
       valid: false,
-      reason:
-        toOneFieldInfo !== undefined &&
-        !fieldInfo.some((field) => field === undefined)
-          ? this.getUniqueInvalidReason(toOneFieldInfo, fieldInfo)
-          : '',
+      reason: !fieldInfo.some((field) => field === undefined)
+        ? this.getUniqueInvalidReason(scopeFieldInfo, fieldInfo)
+        : '',
     };
 
     if (allNullOrUndefinedToOnes) return Promise.resolve({ valid: true });
@@ -275,7 +271,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
       );
     };
 
-    if (toOneField != null) {
+    if (scope != null) {
       const localCollection =
         this.resource.collection?.models !== undefined
           ? this.resource.collection.models.filter(
@@ -293,7 +289,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
       }
 
       const relatedPromise: Promise<SpecifyResource<AnySchema>> =
-        this.resource.rgetPromise(toOneField);
+        this.resource.rgetPromise(scope);
 
       return relatedPromise.then((related) => {
         if (!related) return Promise.resolve({ valid: true });
@@ -303,7 +299,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
         }
         const others = new this.resource.specifyModel.ToOneCollection({
           related: related,
-          field: toOneFieldInfo,
+          field: scopeFieldInfo,
           filters: filters as Partial<
             {
               readonly orderby: string;
