@@ -46,10 +46,6 @@ export const interactionsText = createDictionary({
   },
   preparationsNotFoundFor: {
     'en-us': 'No preparations were found for the following Catalog Numbers.',
-    'ru-ru': 'Никаких препаратов не обнаружено.',
-    'es-es': 'No se encontraron preparados.',
-    'fr-fr': "Aucune préparation n'a été trouvée.",
-    'uk-ua': 'Препаратів не виявлено.',
   },
   problemsFound: {
     'en-us': 'There are problems with the entry:',
