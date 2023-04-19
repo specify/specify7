@@ -214,7 +214,7 @@ function TreeItem({
     >
       <Button.LikeLink
         aria-controls={id('li')}
-        className="inline text-left font-bold"
+        className="inline font-bold"
         id={id('label')}
         onClick={(): void =>
           handleFold(
