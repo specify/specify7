@@ -536,7 +536,10 @@ export function AutoComplete<T>({
 }
 
 const toggleButton = (
-  <Combobox.Button className="absolute inset-y-0 right-0">
+  <Combobox.Button
+    className="absolute inset-y-0 right-0"
+    aria-label={commonText.expand()}
+  >
     {/* Copied from the @tailwind/forms styles for <select> */}
     <svg
       className="h-[1.5em] w-[1.5em]"
