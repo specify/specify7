@@ -71,14 +71,17 @@ describe('business rules', () => {
   });
 
   describe('determination business rules', () => {
-    const determination = new schema.models.Determination.Resource({
-      id: determinationId,
-    });
     test('determination customInit', async () => {
+      const determination = new schema.models.Determination.Resource({
+        id: determinationId,
+      });
       await determination.fetch();
       expect(determination.get('isCurrent')).toBe(true);
     });
     test('only one determination isCurrent', async () => {
+      const determination = new schema.models.Determination.Resource({
+        id: determinationId,
+      });
       const resource = new schema.models.CollectionObject.Resource({
         id: collectionObjectId,
       });
@@ -88,6 +91,9 @@ describe('business rules', () => {
       expect(determination.get('isCurrent')).toBe(false);
     });
     test('determination taxon field check', async () => {
+      const determination = new schema.models.Determination.Resource({
+        id: determinationId,
+      });
       const taxonId = 19345;
       const taxonUrl = getResourceApiUrl('Taxon', taxonId);
       const taxonResponse = {
