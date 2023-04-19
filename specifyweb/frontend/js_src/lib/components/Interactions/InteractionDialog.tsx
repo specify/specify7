@@ -86,6 +86,8 @@ export function InteractionDialog({
     | State<'MainState'>
   >({ type: 'MainState' });
 
+  const [disableIgnore, setDisableIgnore] = React.useState(false);
+
   const { parser, split, attributes } = useParser(searchField);
   const { validationRef, inputRef, setValidation } =
     useValidation<HTMLTextAreaElement>();
@@ -161,7 +163,10 @@ export function InteractionDialog({
           loanPreparation.set('quantityResolved', 0);
         });
         itemCollection.add(item);
-      } else showPrepSelectDlg(prepsData, formatProblems(prepsData, missing));
+      } else {
+        showPrepSelectDlg(prepsData, formatProblems(prepsData, missing));
+        setDisableIgnore(true);
+      }
     } else showPrepSelectDlg(prepsData, {});
   }
 
@@ -191,7 +196,9 @@ export function InteractionDialog({
     prepsData: RA<PreparationRow>,
     missing: RA<string>
   ): IR<RA<string>> => ({
-    ...(missing.length > 0 ? { [interactionsText.missing()]: missing } : {}),
+    ...(missing.length > 0
+      ? { [interactionsText.preparationsNotFoundFor()]: missing }
+      : {}),
     ...(prepsData.length === 0
       ? { [interactionsText.preparationsNotFound()]: [] }
       : {}),
@@ -335,6 +342,7 @@ export function InteractionDialog({
                           problems: {},
                         })
                       }
+                      disabled={disableIgnore}
                     >
                       {commonText.ignore()}
                     </Button.Blue>
