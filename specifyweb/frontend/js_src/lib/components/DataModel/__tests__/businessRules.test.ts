@@ -138,7 +138,7 @@ describe('uniquenessRules', () => {
     permitNumber: '20',
   });
 
-  overrideAjax('CollectionObject', {
+  overrideAjax(getResourceApiUrl('CollectionObject', 221), {
     resource_uri: getResourceApiUrl('CollectionObject', 221),
     catalogNumber: '000022002',
   });
