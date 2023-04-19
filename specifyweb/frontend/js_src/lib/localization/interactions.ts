@@ -37,13 +37,6 @@ export const interactionsText = createDictionary({
     'fr-fr': 'Créer {modelName:string}',
     'uk-ua': 'Створити {modelName:string}',
   },
-  missing: {
-    'en-us': 'Missing:',
-    'ru-ru': 'Отсутствует:',
-    'es-es': 'Desaparecidos:',
-    'fr-fr': 'Manquant:',
-    'uk-ua': 'Відсутні:',
-  },
   preparationsNotFound: {
     'en-us': 'No preparations were found.',
     'ru-ru': 'Никаких препаратов не обнаружено.',
