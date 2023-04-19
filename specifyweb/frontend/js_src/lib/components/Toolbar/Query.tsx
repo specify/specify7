@@ -194,7 +194,7 @@ export function QueryList({
                 {typeof callBack === 'string' ? (
                   /*
                    * BUG: consider applying these styles everywhere
-                   * className="max-w-full overflow-auto text-left"
+                   * className="max-w-full overflow-auto"
                    */
                   <Link.Default className="overflow-x-auto" href={callBack}>
                     {text}
