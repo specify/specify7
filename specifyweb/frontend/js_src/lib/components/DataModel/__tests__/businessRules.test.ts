@@ -61,10 +61,10 @@ overrideAjax(collectionObjectUrl, collectionObjectResponse);
 overrideAjax(determinationUrl, determinationResponse);
 
 describe('business rules', () => {
-  const resource = new schema.models.CollectionObject.Resource({
-    id: collectionObjectId,
-  });
   test('collectionObject customInit', async () => {
+    const resource = new schema.models.CollectionObject.Resource({
+      id: collectionObjectId,
+    });
     await resource.fetch();
     expect(resource.get('collectingEvent')).toBeDefined();
     resource.save();
@@ -79,6 +79,9 @@ describe('business rules', () => {
       expect(determination.get('isCurrent')).toBe(true);
     });
     test('only one determination isCurrent', async () => {
+      const resource = new schema.models.CollectionObject.Resource({
+        id: collectionObjectId,
+      });
       await resource.rgetCollection('determinations').then((collection) => {
         collection.add(new schema.models.Determination.Resource());
       });
