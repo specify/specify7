@@ -125,29 +125,29 @@ describe('business rules', () => {
   });
 });
 
+const permitOneId = 1;
+const permitOneUrl = getResourceApiUrl('Permit', permitOneId);
+overrideAjax(permitOneUrl, {
+  id: permitOneId,
+  resource_uri: permitOneUrl,
+  permitNumber: '20',
+});
+
+const permitTwoId = 2;
+const permitTwoUrl = getResourceApiUrl('Permit', permitTwoId);
+overrideAjax(permitTwoUrl, {
+  id: permitTwoId,
+  resource_uri: permitTwoUrl,
+  permitNumber: '20',
+});
+
+overrideAjax(getResourceApiUrl('CollectionObject', 221), {
+  id: 221,
+  resource_uri: getResourceApiUrl('CollectionObject', 221),
+  catalogNumber: '000022002',
+});
+
 describe('uniquenessRules', () => {
-  const permitOneId = 1;
-  const permitOneUrl = getResourceApiUrl('Permit', permitOneId);
-  overrideAjax(permitOneUrl, {
-    id: permitOneId,
-    resource_uri: permitOneUrl,
-    permitNumber: '20',
-  });
-
-  const permitTwoId = 2;
-  const permitTwoUrl = getResourceApiUrl('Permit', permitTwoId);
-  overrideAjax(permitTwoUrl, {
-    id: permitTwoId,
-    resource_uri: permitTwoUrl,
-    permitNumber: '20',
-  });
-
-  overrideAjax(getResourceApiUrl('CollectionObject', 221), {
-    id: 221,
-    resource_uri: getResourceApiUrl('CollectionObject', 221),
-    catalogNumber: '000022002',
-  });
-
   test('global uniquenessRule', async () => {
     const testPermit = new schema.models.Permit.Resource({
       id: permitOneId,
