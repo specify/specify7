@@ -33,6 +33,11 @@ import { useValidation } from './useValidation';
  * If field value is invalid, save blocker is set. It is cleared as soon
  * as field value is corrected
  *
+ * Takes care of attaching error message to field (useValidation)
+ *
+ * Sets the default value if needed
+ *
+ *
  * TEST: add tests for this hook
  * REFACTOR: consider breaking this hook into smaller hooks
  *
