@@ -23,7 +23,7 @@ const Parts = {
 
 const blackList = /[^\s\d"'\-.:ensw°]/giu;
 export const trimLatLong = (value: string): string =>
-  value.replaceAll(blackList, '');
+  value.replaceAll(blackList, '').trimStart();
 
 const parsers = [
   {
