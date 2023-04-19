@@ -54,10 +54,7 @@ export function StatsResult({
         </>
       ) : (
         <li className="flex gap-2">
-          <Button.LikeLink
-            className="flex-1 text-left"
-            onClick={handleClickResolved}
-          >
+          <Button.LikeLink className="flex-1" onClick={handleClickResolved}>
             <span className="self-start">{label}</span>
             <span className="-ml-2 flex-1" />
             <span className="self-start">{value ?? commonText.loading()}</span>
