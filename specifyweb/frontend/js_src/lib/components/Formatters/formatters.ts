@@ -61,12 +61,14 @@ export const naiveFormatter = (
 export async function format<SCHEMA extends AnySchema>(
   resource: SpecifyResource<SCHEMA> | undefined,
   defaultFormatter: Formatter | string | undefined,
-  tryBest: true
+  tryBest: true,
+  cycleDetection?: RA<SpecifyResource<AnySchema>>
 ): Promise<LocalizedString>;
 export async function format<SCHEMA extends AnySchema>(
   resource: SpecifyResource<SCHEMA> | undefined,
   defaultFormatter?: Formatter | string,
-  tryBest?: false
+  tryBest?: false,
+  cycleDetection?: RA<SpecifyResource<AnySchema>>
 ): Promise<LocalizedString | undefined>;
 export async function format<SCHEMA extends AnySchema>(
   resource: SpecifyResource<SCHEMA> | undefined,
@@ -75,7 +77,8 @@ export async function format<SCHEMA extends AnySchema>(
    * Format a resource even if no formatter is present, or some permissions
    * are missing
    */
-  tryBest = false
+  tryBest = false,
+  cycleDetection: RA<SpecifyResource<AnySchema>> = []
 ): Promise<LocalizedString | undefined> {
   if (typeof resource !== 'object' || resource === null || resource.deleted)
     return undefined;
@@ -99,9 +102,15 @@ export async function format<SCHEMA extends AnySchema>(
     : undefined;
 
   return Promise.all(
-    fields.map(async (field) => formatField(field, resource, tryBest))
+    fields.map(async (field) => formatField(field, resource, cycleDetection))
   ).then((values) => {
-    const joined = values.join('') as LocalizedString;
+    const joined = values.reduce<string>(
+      (result, { formatted, separator = '' }, index) =>
+        `${result}${
+          result.length === 0 && index !== 0 ? '' : separator
+        }${formatted}`,
+      ''
+    ) as LocalizedString;
     return joined.length === 0 ? automaticFormatter : joined;
   });
 }
@@ -135,24 +144,38 @@ async function formatField(
     readonly formatFieldValue?: boolean;
   },
   parentResource: SpecifyResource<AnySchema>,
-  tryBest: boolean
-): Promise<string | undefined> {
+  cycleDetection: RA<SpecifyResource<AnySchema>> = []
+): Promise<{ readonly formatted: string; readonly separator?: string }> {
+  const isCycle = cycleDetection.some(
+    (resource) =>
+      resource.id === parentResource.id &&
+      resource.specifyTable === parentResource.specifyTable
+  );
+  const cycleDetector = [...cycleDetection, parentResource];
+
   let formatted: string | undefined = undefined;
   const hasPermission = hasPathPermission(fields ?? [], 'read');
   if (hasPermission) {
     const data = await fetchDistantRelated(parentResource, fields);
-    if (data === undefined) return undefined;
+    if (data === undefined) return { formatted: '' };
     const { resource, field } = data;
-    if (field === undefined || resource === undefined) return undefined;
+    if (field === undefined || resource === undefined) return { formatted: '' };
 
     formatted = field.isRelationship
-      ? await (relationshipIsToMany(field)
-          ? aggregate(await resource.rgetCollection(field.name), aggregator)
-          : format(
-              await resource.rgetPromise(field.name),
-              formatter,
-              tryBest as false
-            ))
+      ? isCycle
+        ? ''
+        : await (relationshipIsToMany(field)
+            ? aggregate(
+                await resource.rgetCollection(field.name),
+                aggregator,
+                cycleDetector
+              )
+            : format(
+                await resource.rgetPromise(field.name),
+                formatter,
+                false,
+                cycleDetector
+              ))
       : formatFieldValue
       ? await fieldFormat(
           field,
@@ -161,17 +184,18 @@ async function formatField(
           fieldFormatter
         )
       : (resource.get(field.name) as string | null) ?? undefined;
-  } else {
-    formatted = tryBest
-      ? naiveFormatter(parentResource.specifyTable.name, parentResource.id)
-      : userText.noPermission();
-  }
+  } else formatted = userText.noPermission();
 
-  return formatted === undefined || formatted === ''
-    ? ''
-    : `${separator}${formatted}`;
+  return {
+    formatted: formatted ?? '',
+    separator: (formatted ?? '') === '' ? '' : separator,
+  };
 }
 
+/**
+ * Climb the resource along the path, and convert the final result to a string
+ * (either using formatter, aggregator or toString())
+ */
 export async function fetchPathAsString(
   baseResource: SpecifyResource<AnySchema>,
   field: RA<LiteralField | Relationship> | undefined,
@@ -186,10 +210,9 @@ export async function fetchPathAsString(
       fieldFormatter: undefined,
       formatFieldValue,
     },
-    baseResource,
-    false
+    baseResource
   );
-  return value?.toString();
+  return value.formatted;
 }
 
 const resolveFormatter = (
@@ -210,7 +233,6 @@ const findDefaultFormatter = (
     .filter((formatter) => formatter.table === table)
     .sort(sortFunction(({ isDefault }) => isDefault, true))?.[KEY];
 
-const autoGenerateFields = 2;
 const autoGenerateFormatter = (table: SpecifyTable): Formatter => ({
   name: table.name,
   title: table.name,
@@ -224,7 +246,11 @@ const autoGenerateFormatter = (table: SpecifyTable): Formatter => ({
       {
         value: undefined,
         fields: getMainTableFields(table.name)
-          .slice(0, autoGenerateFields)
+          /*
+           * Selecting just one field, because then don't have to worry about
+           * separator
+           */
+          .slice(0, 1)
           .map((field) => ({
             field: [field],
             separator: '',
@@ -240,12 +266,16 @@ const autoGenerateFormatter = (table: SpecifyTable): Formatter => ({
 /**
  * Finds the most "Interesting" fields in a table (sorted by priority).
  * If you need only at most x fields, do .slice(0,x) on the result.
+ *
+ * @remarks
+ * This does not consider relationships. For some tables, relationships
+ * are more interesting than fields.
  */
 export const getMainTableFields = (tableName: keyof Tables): RA<LiteralField> =>
   tables[tableName].literalFields
     .filter(
-      ({ type, isHidden, isReadOnly }) =>
-        type === 'java.lang.String' && !isHidden && !isReadOnly
+      ({ type, isRequired, isHidden, isReadOnly }) =>
+        type === 'java.lang.String' && !isReadOnly && (isRequired || isHidden)
     )
     .sort(
       multiSortFunction(

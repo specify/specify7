@@ -10,13 +10,13 @@ theories(findNodePosition, [
   },
   {
     in: [
-      '<a b="a" a="b" c="d"><b></b></a>',
+      '<a ba="b" a="b" c="d"><b></b></a>',
       [
         { type: 'Root', node: '' },
         { type: 'Attribute', attribute: 'a' },
       ],
     ],
-    out: { from: 9, to: 14 },
+    out: { from: 10, to: 15 },
   },
   {
     in: [
@@ -75,6 +75,8 @@ theories(findChild, [
   { in: ['<a />', 'b', 0], out: undefined },
   { in: ['<b />', 'b', 0], out: 0 },
   { in: ['<b/>', 'b', 0], out: 0 },
+  { in: ['<bar /><b />', 'b', 0], out: 7 },
+  { in: ['<b\n/>', 'b', 0], out: 0 },
   { in: ['<![CDATA[<bar>]]><b/>', 'b', 0], out: 17 },
   { in: ['<b a="b"></b><b><!--<a />--></b>', 'b', 1], out: 13 },
   { in: ['<a></a><a /><b bar="var" />', 'b', 0], out: 12 },

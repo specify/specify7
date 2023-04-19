@@ -61,8 +61,11 @@ export const writable = <T>(value: T): Writable<T> => value;
 
 /**
  * "typeof value === 'function'" does not narrow the type in some cases where
- * a generic is involed
+ * a generic is involved (in particular, when the generic itself could be a
+ * function)
  * See more: https://github.com/microsoft/TypeScript/issues/37663
+ * Note, this is not completely type safe, so prefer typeof value === 'function'
+ * unless that doesn't work
  */
 export const isFunction = <T>(
   value: T

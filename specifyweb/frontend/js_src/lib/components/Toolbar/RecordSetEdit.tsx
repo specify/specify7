@@ -13,6 +13,7 @@ import { hasToolPermission } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
 import { QueryListDialog } from './Query';
 import { ReadOnlyContext } from '../Core/Contexts';
+import { recordSetView } from '../FormParse/webOnlyViews';
 
 export function EditRecordSet({
   recordSet,
@@ -55,6 +56,7 @@ export function EditRecordSet({
           isDependent={false}
           isSubForm={false}
           resource={recordSet}
+          viewName={recordSetView}
           onAdd={undefined}
           onClose={handleClose}
           onDeleted={() => {

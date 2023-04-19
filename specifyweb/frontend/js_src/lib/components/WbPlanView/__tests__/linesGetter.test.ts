@@ -4,9 +4,9 @@ import { requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
 import type { IR, RA } from '../../../utils/types';
 import type { Tables } from '../../DataModel/types';
-import { emptyMapping } from '../helpers';
 import { getLinesFromHeaders, getLinesFromUploadPlan } from '../linesGetter';
 import type { MappingLine } from '../Mapper';
+import { emptyMapping } from '../mappingHelpers';
 import type { UploadPlan } from '../uploadPlanParser';
 
 requireContext();

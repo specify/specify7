@@ -25,6 +25,7 @@ import { Dialog } from '../Molecules/Dialog';
 import { downloadFile, FilePicker, fileToText } from '../Molecules/FilePicker';
 import type { BaseSpec } from '../Syncer';
 import type { SimpleXmlNode } from '../Syncer/xmlToJson';
+import { getUserPref } from '../UserPreferences/helpers';
 import { usePref } from '../UserPreferences/usePref';
 import { jsonLinter, xmlLinter } from './codeMirrorLinters';
 import type { getResourceType } from './filtersHelpers';
@@ -146,6 +147,19 @@ export function useIndent(): string {
   return indentWithTab ? '\t' : ' '.repeat(indentSize);
 }
 
+/**
+ * Use useIndent() instead whenever possible
+ */
+export function getIndent(): string {
+  const indentSize = getUserPref('appResources', 'behavior', 'indentSize');
+  const indentWithTab = getUserPref(
+    'appResources',
+    'behavior',
+    'indentWithTab'
+  );
+  return indentWithTab ? '\t' : ' '.repeat(indentSize);
+}
+
 export function useCodeMirrorExtensions(
   resource: SerializedResource<SpAppResource | SpViewSetObj>,
   appResource: SpecifyResource<SpAppResource | SpViewSetObj>,
@@ -155,7 +169,10 @@ export function useCodeMirrorExtensions(
   const [indentSize] = usePref('appResources', 'behavior', 'indentSize');
   const indentCharacter = useIndent();
 
-  const mode = getAppResourceExtension(resource);
+  const mode = React.useMemo(
+    () => getAppResourceExtension(resource),
+    [resource]
+  );
   const [extensions, setExtensions] = React.useState<RA<Extension>>([]);
   React.useEffect(() => {
     function handleLinted(results: RA<Diagnostic>): void {

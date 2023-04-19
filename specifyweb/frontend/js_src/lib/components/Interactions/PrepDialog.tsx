@@ -9,7 +9,7 @@ import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { group, replaceItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
-import { Form } from '../Atoms/Form';
+import { Form, Input, Label } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { ReadOnlyContext } from '../Core/Contexts';
 import { getField, toTable } from '../DataModel/helpers';
@@ -86,6 +86,10 @@ export function PrepDialog({
 
   // BUG: make this readOnly if don't have necessary permissions
   const isReadOnly = React.useContext(ReadOnlyContext);
+
+  const [bulkValue, setBulkValue] = React.useState(0);
+  const maxPrep = Math.max(...preparations.map(({ available }) => available));
+
   return (
     <Dialog
       buttons={
@@ -128,6 +132,23 @@ export function PrepDialog({
       header={interactionsText.preparations()}
       onClose={handleClose}
     >
+      <Label.Inline className="gap-2">
+        {commonText.bulkSelect()}
+        <Input.Number
+          aria-label={interactionsText.selectedAmount()}
+          className="w-[unset]"
+          max={maxPrep}
+          min={0}
+          title={interactionsText.selectedAmount()}
+          value={bulkValue}
+          onValueChange={(newCount) => {
+            setBulkValue(newCount);
+            setSelected(
+              preparations.map(({ available }) => Math.min(available, newCount))
+            );
+          }}
+        />
+      </Label.Inline>
       <Form
         id={id('form')}
         onSubmit={(): void => {

@@ -98,7 +98,7 @@ export function XmlEntryList<
   const uniqueNames = f.unique(currentItems.map(({ name }) => name));
   const hasDuplicates = uniqueNames.length !== currentItems.length;
 
-  /** Get an item without throwing of TypeScript */
+  /** Get an item without throwing off TypeScript */
   const read = <TYPE,>(item: ITEM, key: string): TYPE | undefined =>
     (item as IR<TYPE | undefined>)[key];
 

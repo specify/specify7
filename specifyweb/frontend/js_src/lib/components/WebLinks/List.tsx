@@ -1,20 +1,21 @@
 import React from 'react';
-import { useOutletContext } from 'react-router';
 import { useNavigate } from 'react-router-dom';
 
 import { commonText } from '../../localization/common';
 import { resourcesText } from '../../localization/resources';
+import type { GetSet, RA } from '../../utils/types';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { TableIcon } from '../Molecules/TableIcon';
-import type { WebLinkOutlet } from './Editor';
 import { resolveRelative } from '../Router/queryString';
+import type { WebLink } from './spec';
 
-export function WebLinkList(): JSX.Element {
-  const {
-    items: [items, setItems],
-  } = useOutletContext<WebLinkOutlet>();
+export function WebLinkList({
+  items: [items, setItems],
+}: {
+  readonly items: GetSet<RA<WebLink>>;
+}): JSX.Element {
   const navigate = useNavigate();
 
   return (
@@ -29,7 +30,7 @@ export function WebLinkList(): JSX.Element {
               ) : (
                 <span />
               )}
-              {item.name}
+              <span>{item.name}</span>
             </Link.Default>
           </li>
         ))}

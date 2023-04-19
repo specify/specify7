@@ -65,6 +65,17 @@ export const anyTreeRank = `${schema.fieldPartSeparator}any`;
 export const formattedEntry = `${schema.fieldPartSeparator}formatted`;
 
 /**
+ * Used in mapping path to represent "NOT MAPPED".
+ * This exists to make it trivially easy to detect paths that are not yet
+ * fully mapped (see mappingPathIsComplete).
+ * Though, if I were to design this all from scratch today, I would use
+ * LiteralField and Relationship objects in my mapping paths rather than their
+ * field names, which would also make it easy to detect incomplete path:
+ * mappingPath.at(-1)?.isRelationship !== false
+ */
+export const emptyMapping = '0';
+
+/**
  * Returns a complete tree rank name from a tree rank name
  * (e.x Kingdom => $Kingdom)
  * Opposite of getNameFromTreeRankName
@@ -148,7 +159,10 @@ export const getCanonicalMappingPath = (
 export const getGenericMappingPath = (mappingPath: MappingPath): MappingPath =>
   mappingPath.filter(
     (mappingPathPart) =>
-      !valueIsToManyIndex(mappingPathPart) && !valueIsTreeRank(mappingPathPart)
+      !valueIsToManyIndex(mappingPathPart) &&
+      !valueIsTreeRank(mappingPathPart) &&
+      mappingPathPart !== formattedEntry &&
+      mappingPathPart !== emptyMapping
   );
 
 /**

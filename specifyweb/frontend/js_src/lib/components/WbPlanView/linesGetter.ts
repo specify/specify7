@@ -12,9 +12,9 @@ import type { Tables } from '../DataModel/types';
 import type { AutoMapperResults } from './autoMapper';
 import { AutoMapper } from './autoMapper';
 import type { MappingLine } from './Mapper';
+import { emptyMapping } from './mappingHelpers';
 import type { ColumnOptions, UploadPlan } from './uploadPlanParser';
 import { parseUploadPlan } from './uploadPlanParser';
-import { emptyMapping } from './helpers';
 
 export const defaultColumnOptions: ColumnOptions = {
   matchBehavior: 'ignoreNever',

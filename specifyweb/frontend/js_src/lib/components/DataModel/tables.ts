@@ -113,7 +113,6 @@ export const fetchContext = f
         overwriteReadOnly(
           table,
           'literalFields',
-
           processFields(
             tableDefinition.fields.map(
               (fieldDefinition) => new LiteralField(table, fieldDefinition)
@@ -159,11 +158,14 @@ setDevelopmentGlobal('_tables', tables);
  * Can wrap this function call in defined() to cast result to SpecifyTable
  */
 export function getTable(name: string): SpecifyTable | undefined {
-  if (
-    process.env.NODE_ENV === 'development' &&
-    Object.keys(tables).length === 0
-  )
-    throw new Error('Calling getTable() before data model is fetched');
+  if (process.env.NODE_ENV !== 'production' && Object.keys(tables).length === 0)
+    throw new Error(
+      `Calling getTable() before data model is fetched.${
+        process.env.NODE_ENV === 'test'
+          ? ' If this is part of a test, remember to include requireContext() at the top of the test file'
+          : ''
+      }`
+    );
 
   const lowerCase = name.toLowerCase();
   return name === ''

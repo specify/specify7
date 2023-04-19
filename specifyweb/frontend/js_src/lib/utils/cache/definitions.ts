@@ -144,6 +144,9 @@ export type CacheDefinitions = {
     readonly showHiddenTables: boolean;
   };
   readonly pageSizes: RR<Paginators, typeof pageSizes[number]>;
+  readonly formEditor: {
+    readonly layout: 'vertical' | 'horizontal';
+  };
 };
 
 export type SortConfigs = {

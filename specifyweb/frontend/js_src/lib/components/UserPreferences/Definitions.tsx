@@ -1615,6 +1615,18 @@ export const preferenceDefinitions = {
   appResources: {
     title: resourcesText.appResources(),
     subCategories: {
+      appearance: {
+        title: preferencesText.appearance(),
+        items: {
+          localizeResourceNames: defineItem<boolean>({
+            title: preferencesText.localizeResourceNames(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
+        },
+      },
       behavior: {
         title: preferencesText.behavior(),
         items: {
@@ -1639,6 +1651,13 @@ export const preferenceDefinitions = {
           }),
           indentWithTab: defineItem<boolean>({
             title: preferencesText.indentWithTab(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+          splitLongXml: defineItem<boolean>({
+            title: preferencesText.splitLongXml(),
             requiresReload: false,
             visible: true,
             defaultValue: false,

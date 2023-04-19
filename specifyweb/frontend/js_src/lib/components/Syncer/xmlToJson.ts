@@ -5,7 +5,7 @@ import { filterArray } from '../../utils/types';
 import { group } from '../../utils/utils';
 import { error } from '../Errors/assert';
 import { fromSimpleXmlNode } from './fromSimpleXmlNode';
-import { xmlToString } from './xmlUtils';
+import { setOriginalSyncerInput, xmlToString } from './xmlUtils';
 
 export type XmlNode = State<
   'XmlNode',
@@ -52,11 +52,9 @@ export const xmlToJson = (element: Element): XmlNode => ({
  * Reverse conversion to JSON
  */
 export function jsonToXml(node: XmlNode): Element {
-  const xmlDocument = document.implementation.createDocument(
-    null,
-    node.tagName
-  );
+  const xmlDocument = document.implementation.createDocument(null, null);
   const element = xmlDocument.createElement(node.tagName);
+  xmlDocument.append(element);
   Object.entries(node.attributes).forEach(([name, value]) =>
     value === undefined ? undefined : element.setAttribute(name, value)
   );
@@ -87,10 +85,11 @@ export function jsonToXml(node: XmlNode): Element {
  * Behavior to keep in mind:
  * - When merging SortedXmlNode back with XmlNode, the attributes in XmlNode
  *   are kept, unless they are explicitly set to undefined in "updated".
- *   Similarly, all children in XmlNode are kept, unless there is an exploit
+ *   Similarly, all children in XmlNode are kept, unless there is an explicit
  *   entry for that key in content.children object.
  * - Comment notes are never included in SimpleXmlNode as it's assumed they are
- *   never modified by it.
+ *   never modified by it. Merging SimpleXmlNode back into XmlNode preserves
+ *   the comments
  * - When converting to SimpleXmlNode, both lower case and camel case versions
  *   of attributes and tag names are accepted. When converting back, attributes
  *   are converted to lower case, but tag names are left as is.
@@ -123,26 +122,32 @@ export function toSimpleXmlNode(node: XmlNode): SimpleXmlNode {
   if (children.length === 0) {
     const string = textContent.join(' ').trim();
     if (string.length > 0)
-      return {
-        type: 'SimpleXmlNode',
-        tagName: node.tagName,
-        attributes: node.attributes,
-        text: string,
-        children: {},
-      };
+      return setOriginalSyncerInput(
+        {
+          type: 'SimpleXmlNode',
+          tagName: node.tagName,
+          attributes: node.attributes,
+          text: string,
+          children: {},
+        },
+        node
+      );
   }
-  return {
-    type: 'SimpleXmlNode',
-    tagName: node.tagName,
-    attributes: node.attributes,
-    text: undefined,
-    children: Object.fromEntries(
-      group(children.map((node) => [node.tagName, toSimpleXmlNode(node)]))
-    ),
-  };
+  return setOriginalSyncerInput(
+    {
+      type: 'SimpleXmlNode',
+      tagName: node.tagName,
+      attributes: node.attributes,
+      text: undefined,
+      children: Object.fromEntries(
+        group(children.map((node) => [node.tagName, toSimpleXmlNode(node)]))
+      ),
+    },
+    node
+  );
 }
 
-export const createSimpleXmlNode = (tagName: string): SimpleXmlNode => ({
+export const createSimpleXmlNode = (tagName: string = ''): SimpleXmlNode => ({
   type: 'SimpleXmlNode',
   tagName,
   attributes: {},
@@ -154,5 +159,5 @@ export const createSimpleXmlNode = (tagName: string): SimpleXmlNode => ({
  * Given original parsed XML and an array of updates, apply the updates and
  * covert it all back to XML string
  */
-export const updateXml = (old: XmlNode, updated: SimpleXmlNode): string =>
-  xmlToString(jsonToXml(fromSimpleXmlNode(old, updated)));
+export const updateXml = (updated: SimpleXmlNode): string =>
+  xmlToString(jsonToXml(fromSimpleXmlNode(updated)));

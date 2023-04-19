@@ -48,7 +48,6 @@ function FormDefinitionDialog({
   readonly viewDescription: ViewDescription | undefined;
   readonly onClose: () => void;
 }): JSX.Element {
-  const viewSetId = viewDescription?.viewSetId;
   return (
     <Dialog
       buttons={commonText.close()}
@@ -57,8 +56,12 @@ function FormDefinitionDialog({
     >
       <UseAutoForm table={table} />
       <UseLabels />
-      {typeof viewSetId === 'number' && (
-        <EditFormDefinition viewSetId={viewSetId} />
+      {typeof viewDescription?.viewSetId === 'number' && (
+        <EditFormDefinition
+          viewSetId={viewDescription.viewSetId}
+          table={table}
+          name={viewDescription.name}
+        />
       )}
     </Dialog>
   );
@@ -120,12 +123,18 @@ function UseLabels(): JSX.Element {
 
 function EditFormDefinition({
   viewSetId,
+  table,
+  name,
 }: {
   readonly viewSetId: number;
+  readonly table: SpecifyTable;
+  readonly name: string;
 }): JSX.Element {
   return (
     <ProtectedTool action="read" tool="resources">
-      <Link.NewTab href={`/specify/resources/view-set/${viewSetId}/`}>
+      <Link.NewTab
+        href={`/specify/resources/view-set/${viewSetId}/${table.name}/${name}`}
+      >
         {formsText.editFormDefinition()}
       </Link.NewTab>
     </ProtectedTool>

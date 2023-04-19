@@ -4,18 +4,12 @@ import { requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
 import type { PartialBy } from '../../../utils/types';
 import { strictParseXml } from '../../AppResources/codeMirrorLinters';
-import type { CellTypes, FormCellDefinition } from '../cells';
-import {
-  parseFormCell,
-  parseSpecifyProperties,
-  processColumnDefinition,
-} from '../cells';
+import type { LiteralField } from '../../DataModel/specifyField';
 import { tables } from '../../DataModel/tables';
-import {
-  SimpleXmlNode,
-  toSimpleXmlNode,
-  xmlToJson,
-} from '../../Syncer/xmlToJson';
+import type { SimpleXmlNode } from '../../Syncer/xmlToJson';
+import { toSimpleXmlNode, xmlToJson } from '../../Syncer/xmlToJson';
+import type { CellTypes, FormCellDefinition } from '../cells';
+import { parseFormCell, processColumnDefinition } from '../cells';
 
 requireContext();
 
@@ -44,60 +38,6 @@ theories(processColumnDefinition, [
   },
   { in: ['130px,2px,705px,25px,95px,0px,p:g'], out: [130, 705, 95] },
   { in: ['p,2px,p:g(4),p:g,p,0px'], out: [undefined, undefined, undefined] },
-]);
-
-theories(parseSpecifyProperties, [
-  {
-    in: [''],
-    out: {},
-  },
-  {
-    in: ['name=Agent;title=Catalog Agent'],
-    out: {
-      name: 'Agent',
-      title: 'Catalog Agent',
-    },
-  },
-  {
-    in: ['name=PartialDateUI;df=catalogedDate;tp=catalogedDatePrecision'],
-    out: {
-      name: 'PartialDateUI',
-      df: 'catalogedDate',
-      tp: 'catalogedDatePrecision',
-    },
-  },
-  {
-    in: ['name=CollectingEvent;clonebtn=true'],
-    out: {
-      name: 'CollectingEvent',
-      clonebtn: 'true',
-    },
-  },
-  {
-    in: ['align=left;'],
-    out: {
-      align: 'left',
-    },
-  },
-  {
-    in: ['align=right;fg=0,190,0'],
-    out: {
-      align: 'right',
-      fg: '0,190,0',
-    },
-  },
-  {
-    in: [
-      'name=LocalityGeoRef;title=Geo Ref;geoid=geography;locid=localityName;llid=5',
-    ],
-    out: {
-      name: 'LocalityGeoRef',
-      title: 'Geo Ref',
-      geoid: 'geography',
-      locid: 'localityName',
-      llid: '5',
-    },
-  },
 ]);
 
 const cell = (
@@ -390,40 +330,78 @@ describe('parseFormCell', () => {
       })
     ));
 
-  test('Panel', () =>
+  test('Panel with conditional rendering', () =>
     expect(
-      parseFormCell(
-        tables.CollectionObject,
-        xml(
-          `<cell type="panel" colDef="1px,2px,2px">
+      JSON.parse(
+        JSON.stringify(
+          parseFormCell(
+            tables.CollectionObject,
+            xml(
+              `<cell type="panel" colDef="1px,2px,2px">
             <rows>
               <row>
                 <cell type="Label" label="FINDNEXT" labelfor=" 42" />
               </row>
             </rows>
+            <rows coldef="1px" condition="accession.accessionNumber=123">
+            </rows>
+            <rows condition="always">
+            </rows>
           </cell>`
+            )
+          )
         )
       )
     ).toEqual(
       cell({
         type: 'Panel',
-        columns: [1, 2],
         align: 'left',
-        rows: [
-          [
-            cell({
-              align: 'right',
-              labelForCellId: '42',
-              type: 'Label',
-              fieldNames: undefined,
-              text: 'Find Next' as LocalizedString,
-              title: undefined,
-            }),
-            cell({
-              type: 'Blank',
-              visible: false,
-            }),
-          ],
+        definitions: [
+          {
+            condition: undefined,
+            definition: {
+              columns: [1, 2],
+              rows: [
+                [
+                  cell({
+                    align: 'right',
+                    labelForCellId: '42',
+                    type: 'Label',
+                    fieldNames: undefined,
+                    text: 'Find Next' as LocalizedString,
+                    title: undefined,
+                  }),
+                  cell({
+                    type: 'Blank',
+                    visible: false,
+                  }),
+                ],
+              ],
+            },
+          },
+          {
+            condition: {
+              type: 'Value',
+              field: [
+                '[relationship CollectionObject.accession]' as unknown as LiteralField,
+                '[literalField Accession.accessionNumber]' as unknown as LiteralField,
+              ],
+              value: '123',
+            },
+            definition: {
+              columns: [1],
+              rows: [],
+            },
+          },
+          {
+            condition: {
+              type: 'Always',
+            },
+            definition: {
+              columns: [1, 2],
+              rows: [],
+            },
+          },
         ],
         display: 'block',
       })
@@ -440,8 +418,15 @@ describe('parseFormCell', () => {
     ).toEqual(
       cell({
         type: 'Panel',
-        columns: [undefined, 2],
-        rows: [],
+        definitions: [
+          {
+            condition: undefined,
+            definition: {
+              columns: [undefined, 2],
+              rows: [],
+            },
+          },
+        ],
         display: 'inline',
       })
     ));

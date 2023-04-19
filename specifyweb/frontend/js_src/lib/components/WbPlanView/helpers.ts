@@ -10,6 +10,7 @@ import { ping } from '../../utils/ajax/ping';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
+import { schema } from '../DataModel/schema';
 import { getTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { isTreeTable } from '../InitialContext/treeRanks';
@@ -23,6 +24,7 @@ import type {
 } from './Mapper';
 import {
   anyTreeRank,
+  emptyMapping,
   findDuplicateMappings,
   formatToManyIndex,
   formatTreeRank,
@@ -32,10 +34,9 @@ import {
   valueIsTreeRank,
 } from './mappingHelpers';
 import { getMappingLineData } from './navigator';
+import { navigatorSpecs } from './navigatorSpecs';
 import { uploadPlanBuilder } from './uploadPlanBuilder';
 import type { Dataset } from './Wrapped';
-import { schema } from '../DataModel/schema';
-import { navigatorSpecs } from './navigatorSpecs';
 
 export async function savePlan({
   dataset,
@@ -210,18 +211,18 @@ export const getMappedFields = (
     .filter((line) => pathStartsWith(line.mappingPath, mappingPathFilter))
     .map((line) => line.mappingPath[mappingPathFilter.length]);
 
-export const emptyMapping = '0';
-
 export const mappingPathIsComplete = (mappingPath: MappingPath): boolean =>
   mappingPath.at(-1) !== emptyMapping;
 
 /*
  * The most important function in WbPlanView
- * It decides how to modify the mapping path when a different picklist
+ *
+ * It decides how to modify the mapping path when a different combo box
  *  item is selected.
+ *
  * It is also responsible for deciding when to spawn a new box to the right
  *  of the current one and whether to reset the mapping path to the right of
- *  the selected box on value changes
+ *  the selected box when value changes
  */
 export function mutateMappingPath({
   mappingPath: originalPath,
@@ -232,6 +233,7 @@ export function mutateMappingPath({
   currentTableName,
   newTableName,
   ignoreToMany = false,
+  ignoreTreeRanks = false,
 }: {
   readonly mappingPath: MappingPath;
   readonly index: number;
@@ -245,20 +247,30 @@ export function mutateMappingPath({
    * (in WbPlanView). Else, #1 is selected automatically (in QueryBuilder)
    */
   readonly ignoreToMany?: boolean;
+  /*
+   * If false, allows to choose a tree rank (or "any rank")
+   * Else, "any rank" is selected automatically
+   */
+  readonly ignoreTreeRanks?: boolean;
 }): MappingPath {
   let mappingPath = Array.from(originalPath);
 
   /*
-   * If ignoring -to-many, originalIndex needs to be corrected since -to-many
-   * boxes were not rendered
+   * If ignoring -to-many or tree ranks, originalIndex needs to be corrected
+   * since -to-many boxes were not rendered
    */
-  const index = ignoreToMany
-    ? mappingPath.reduce(
-        (index, part, partIndex) =>
-          index >= partIndex && valueIsToManyIndex(part) ? index + 1 : index,
-        originalIndex
-      )
-    : originalIndex;
+  const index =
+    ignoreToMany || ignoreTreeRanks
+      ? mappingPath.reduce(
+          (index, part, partIndex) =>
+            partIndex <= index &&
+            ((ignoreToMany && valueIsToManyIndex(part)) ||
+              (ignoreTreeRanks && valueIsTreeRank(part)))
+              ? index + 1
+              : index,
+          originalIndex
+        )
+      : originalIndex;
 
   /*
    * Get relationship type from current picklist to the next one both for
@@ -271,19 +283,21 @@ export function mutateMappingPath({
   const newField = table?.getField(newValue);
   const isNewToMany =
     newField?.isRelationship === true && relationshipIsToMany(newField);
+  const isNewTree =
+    newField?.isRelationship === true &&
+    isTreeTable(newField.relatedTable.name);
 
   /*
    * Don't reset the boxes to the right of the current box if relationship
    * types are the same (or non-existent in both cases) and the new box is a
-   * -to-many, a tree rank or a different relationship to the same table
+   * -to-many, a non-any tree rank or a different relationship to the same table
    */
   const preserveMappingPathToRight =
     isCurrentToMany === isNewToMany &&
     (valueIsToManyIndex(newValue) ||
       valueIsTreeRank(newValue) ||
       currentTableName === newTableName) &&
-    mappingPath[index] !== formatTreeRank(anyTreeRank) &&
-    newValue !== formatTreeRank(anyTreeRank);
+    mappingPath[index] !== formatTreeRank(anyTreeRank);
 
   if (preserveMappingPathToRight) mappingPath[index] = newValue;
   // Clear mapping path to the right of current box
@@ -294,9 +308,13 @@ export function mutateMappingPath({
         ...mappingPath.slice(0, index + 1),
         ...(mappingPath.length > index + 1
           ? mappingPath.slice(index + 1)
-          : ignoreToMany && isNewToMany
-          ? [formatToManyIndex(1), emptyMapping]
-          : [emptyMapping]),
+          : [
+              ...(ignoreToMany && isNewToMany ? [formatToManyIndex(1)] : []),
+              ...(ignoreTreeRanks && isNewTree
+                ? [formatTreeRank(anyTreeRank)]
+                : []),
+              emptyMapping,
+            ]),
       ]
     : mappingPath;
 }

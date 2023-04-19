@@ -97,17 +97,22 @@ function Definitions({
           <div className="flex flex-col gap-2" key={index}>
             {hasCondition && (
               <Label.Block>
-                {resourcesText.condition()}
+                {resourcesText.conditionFieldValue()}
                 <Input.Text
                   isReadOnly={isReadOnly}
-                  value={value}
+                  value={value ?? ''}
                   onValueChange={(value): void =>
                     handleChanged({
-                      value,
+                      value: value.length === 0 ? undefined : value,
                       fields,
                     })
                   }
                 />
+                <span>
+                  {index === 0
+                    ? resourcesText.elseConditionDescription()
+                    : resourcesText.conditionDescription()}
+                </span>
               </Label.Block>
             )}
             <Fields
@@ -131,6 +136,10 @@ function Definitions({
       {!isReadOnly && (
         <div>
           <Button.Green
+            disabled={!hasCondition}
+            title={
+              hasCondition ? undefined : resourcesText.addConditionFieldFirst()
+            }
             onClick={(): void =>
               handleChange([
                 ...formatter.definition.fields,
@@ -159,7 +168,16 @@ function Fields({
   readonly onDelete: (() => void) | undefined;
 }): JSX.Element {
   return (
-    <table className="grid-table grid-cols-[min-content_auto_auto_min-content] gap-2">
+    <table
+      /*
+       * REFACTOR: replace min-w-[35rem] with a container query that replaces
+       *   table layout with list layout
+       */
+      className={`
+        grid-table min-w-[35rem] grid-cols-[min-content_auto_auto_min-content]
+        gap-2
+      `}
+    >
       <thead>
         <tr>
           <th>{resourcesText.separator()}</th>
@@ -181,7 +199,7 @@ function Fields({
           />
         ))}
         <tr>
-          <td className="col-span-3">
+          <td className="col-span-3 !gap-2">
             <Button.Green
               onClick={(): void =>
                 setFields([
@@ -283,21 +301,24 @@ function FieldFormatter({
   if (lastField === undefined) return null;
   else if (!lastField.isRelationship)
     return (
-      <GenericFormatterPickList
-        itemsPromise={fetchFieldFormatters}
-        table={lastField.table}
-        value={field.fieldFormatter}
-        onChange={(fieldFormatter): void =>
-          handleChange({
-            ...field,
-            fieldFormatter,
-          })
-        }
-      />
+      <Label.Inline className="w-full">
+        {schemaText.fieldFormat()}
+        <GenericFormatterPickList
+          itemsPromise={fetchFieldFormatters}
+          table={lastField.table}
+          value={field.fieldFormatter}
+          onChange={(fieldFormatter): void =>
+            handleChange({
+              ...field,
+              fieldFormatter,
+            })
+          }
+        />
+      </Label.Inline>
     );
   else if (relationshipIsToMany(lastField))
     return (
-      <Label.Inline>
+      <Label.Inline className="w-full">
         {resourcesText.aggregator()}
         <FormattersPickList
           table={lastField.relatedTable}
@@ -314,7 +335,7 @@ function FieldFormatter({
     );
   else
     return (
-      <Label.Inline>
+      <Label.Inline className="w-full">
         {resourcesText.formatter()}
         <FormattersPickList
           table={lastField.relatedTable}

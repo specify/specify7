@@ -5,6 +5,7 @@ import type { AppResourceTabProps } from '../AppResources/TabDefinitions';
 import { createXmlContext, XmlEditor } from '../Formatters';
 import { SafeOutlet } from '../Router/RouterUtils';
 import { updateXml } from '../Syncer/xmlToJson';
+import { WebLinkList } from './List';
 import { webLinkRoutes } from './Routes';
 import type { WebLink } from './spec';
 import { webLinksSpec } from './spec';
@@ -27,22 +28,23 @@ export type WebLinkOutlet = {
 
 export function WebLinkEditorWrapper(): JSX.Element {
   const {
-    xmlNode,
     parsed: [parsed, setParsed],
     syncer: { deserializer },
     onChange: handleChange,
   } = React.useContext(WebLinksContext)!;
+  const items: GetSet<RA<WebLink>> = [
+    parsed.webLinks,
+    (webLinks): void => {
+      const parsed = { webLinks };
+      setParsed(parsed);
+      handleChange(() => updateXml(deserializer(parsed)));
+    },
+  ];
   return (
-    <SafeOutlet<WebLinkOutlet>
-      items={[
-        parsed.webLinks,
-        (webLinks): void => {
-          const parsed = { webLinks };
-          setParsed(parsed);
-          handleChange(() => updateXml(xmlNode, deserializer(parsed)));
-        },
-      ]}
-    />
+    <>
+      <WebLinkList items={items} />
+      <SafeOutlet<WebLinkOutlet> items={items} />
+    </>
   );
 }
 

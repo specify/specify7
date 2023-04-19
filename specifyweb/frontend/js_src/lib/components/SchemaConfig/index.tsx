@@ -13,6 +13,7 @@ import type { SerializedResource } from '../DataModel/helperTypes';
 import { createResource, saveResource } from '../DataModel/resource';
 import { strictGetTable } from '../DataModel/tables';
 import type { SpLocaleItemStr } from '../DataModel/types';
+import { useTitle } from '../Molecules/AppTitle';
 import { hasToolPermission } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
 import { SchemaConfigHeader } from './Components';
@@ -25,7 +26,6 @@ import {
 } from './Hooks';
 import type { SchemaData } from './schemaData';
 import { SchemaConfigTable } from './Table';
-import { useTitle } from '../Molecules/AppTitle';
 
 export type SpLocaleItemString = SerializedResource<SpLocaleItemStr>;
 export type NewSpLocaleItemString = PartialBy<SpLocaleItemString, 'id'>;
@@ -113,7 +113,7 @@ export function SchemaConfigMain(): JSX.Element {
           languages={schemaData.languages}
           onSave={canSave ? handleSave : undefined}
         />
-        <div className="flex flex-1 flex-col gap-4 overflow-y-auto sm:flex-row">
+        <div className="flex flex-1 flex-col gap-4 overflow-y-auto sm:flex-row sm:overflow-hidden">
           <SchemaConfigTable
             container={container}
             desc={desc}

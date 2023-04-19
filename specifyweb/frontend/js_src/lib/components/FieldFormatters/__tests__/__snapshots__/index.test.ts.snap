@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`formatters are fetched and parsed correctly 1`] = `
+exports[`field formatters are fetched and parsed correctly 1`] = `
 {
   "AccessionNumber": UiFormatter {
     "fields": [
@@ -41,6 +41,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       },
     ],
     "isSystem": true,
+    "table": "[table Accession]",
     "title": "AccessionNumber",
   },
   "AccessionNumberByYear": UiFormatter {
@@ -82,6 +83,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       },
     ],
     "isSystem": true,
+    "table": "[table Accession]",
     "title": "AccessionNumberByYear",
   },
   "AccessionStringFormatter": UiFormatter {
@@ -95,6 +97,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       },
     ],
     "isSystem": true,
+    "table": "[table Accession]",
     "title": "AccessionStringFormatter",
   },
   "CatalogNumber": UiFormatter {
@@ -122,6 +125,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       },
     ],
     "isSystem": false,
+    "table": "[table CollectionObject]",
     "title": "CatalogNumber",
   },
   "CatalogNumberAlphaNumByYear": UiFormatter {
@@ -149,6 +153,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       },
     ],
     "isSystem": false,
+    "table": "[table CollectionObject]",
     "title": "CatalogNumberAlphaNumByYear",
   },
   "CatalogNumberNumeric": CatalogNumberNumeric {
@@ -162,6 +167,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       },
     ],
     "isSystem": true,
+    "table": "[table CollectionObject]",
     "title": "Catalog Number Numeric",
   },
   "CatalogNumberNumericRegex": UiFormatter {
@@ -175,11 +181,13 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       },
     ],
     "isSystem": false,
+    "table": "[table CollectionObject]",
     "title": "CatalogNumberNumericRegex",
   },
   "Date": UiFormatter {
     "fields": [],
     "isSystem": true,
+    "table": undefined,
     "title": "Date",
   },
   "DeaccessionNumber": UiFormatter {
@@ -221,6 +229,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       },
     ],
     "isSystem": true,
+    "table": "[table Deaccession]",
     "title": "DeaccessionNumber",
   },
   "GiftNumber": UiFormatter {
@@ -248,6 +257,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       },
     ],
     "isSystem": true,
+    "table": "[table Gift]",
     "title": "GiftNumber",
   },
   "InfoRequestNumber": UiFormatter {
@@ -275,6 +285,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       },
     ],
     "isSystem": true,
+    "table": "[table InfoRequest]",
     "title": "InfoRequestNumber",
   },
   "KUITeach": CatalogNumberNumeric {
@@ -288,6 +299,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       },
     ],
     "isSystem": true,
+    "table": "[table CollectionObject]",
     "title": "Catalog Number Numeric",
   },
   "LoanNumber": UiFormatter {
@@ -315,6 +327,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       },
     ],
     "isSystem": true,
+    "table": "[table Loan]",
     "title": "LoanNumber",
   },
   "NumericBigDecimal": UiFormatter {
@@ -328,6 +341,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       },
     ],
     "isSystem": true,
+    "table": undefined,
     "title": "NumericBigDecimal",
   },
   "NumericByte": UiFormatter {
@@ -341,6 +355,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       },
     ],
     "isSystem": true,
+    "table": undefined,
     "title": "NumericByte",
   },
   "NumericDouble": UiFormatter {
@@ -354,6 +369,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       },
     ],
     "isSystem": true,
+    "table": undefined,
     "title": "NumericDouble",
   },
   "NumericFloat": UiFormatter {
@@ -367,6 +383,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       },
     ],
     "isSystem": true,
+    "table": undefined,
     "title": "NumericFloat",
   },
   "NumericInteger": UiFormatter {
@@ -380,6 +397,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       },
     ],
     "isSystem": true,
+    "table": undefined,
     "title": "NumericInteger",
   },
   "NumericLong": UiFormatter {
@@ -393,6 +411,7 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       },
     ],
     "isSystem": true,
+    "table": undefined,
     "title": "NumericLong",
   },
   "NumericShort": UiFormatter {
@@ -406,26 +425,31 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       },
     ],
     "isSystem": true,
+    "table": undefined,
     "title": "NumericShort",
   },
   "PartialDate": UiFormatter {
     "fields": [],
     "isSystem": false,
+    "table": undefined,
     "title": "PartialDate",
   },
   "PartialDateMonth": UiFormatter {
     "fields": [],
     "isSystem": false,
+    "table": undefined,
     "title": "PartialDateMonth",
   },
   "PartialDateYear": UiFormatter {
     "fields": [],
     "isSystem": false,
+    "table": undefined,
     "title": "PartialDateYear",
   },
   "SearchDate": UiFormatter {
     "fields": [],
     "isSystem": true,
+    "table": undefined,
     "title": "SearchDate",
   },
 }

@@ -18,8 +18,12 @@ import type {
   SpAppResourceDir,
   SpViewSetObj,
 } from '../DataModel/types';
+import { RssExportFeedEditor } from '../ExportFeed';
+import { exportFeedSpec } from '../ExportFeed/spec';
 import { DataObjectFormatter } from '../Formatters';
 import { formattersSpec } from '../Formatters/spec';
+import { FormEditor } from '../FormEditor';
+import { viewSetsSpec } from '../FormEditor/spec';
 import type { BaseSpec } from '../Syncer';
 import type { SimpleXmlNode } from '../Syncer/xmlToJson';
 import { PreferencesContent } from '../UserPreferences';
@@ -37,7 +41,6 @@ import type { appResourceSubTypes } from './types';
 export type AppResourceEditorType = 'generic' | 'json' | 'visual' | 'xml';
 
 export type AppResourceTabProps = {
-  readonly editorType: AppResourceEditorType;
   readonly resource: SerializedResource<SpAppResource | SpViewSetObj>;
   readonly appResource: SpecifyResource<SpAppResource | SpViewSetObj>;
   readonly directory: SerializedResource<SpAppResourceDir>;
@@ -52,6 +55,7 @@ export type AppResourceTabProps = {
   readonly onChange: (
     data: string | (() => string | null | undefined) | null
   ) => void;
+  readonly onSetCleanup: (callback: () => Promise<void>) => void;
 };
 const generateEditor = (xmlSpec: (() => BaseSpec<SimpleXmlNode>) | undefined) =>
   function AppResourceTextEditor({
@@ -59,9 +63,11 @@ const generateEditor = (xmlSpec: (() => BaseSpec<SimpleXmlNode>) | undefined) =>
     appResource,
     data,
     showValidationRef,
+    className = '',
     onChange: handleChange,
-  }: Omit<AppResourceTabProps, 'onChange'> & {
+  }: Omit<AppResourceTabProps, 'onChange' | 'onSetCleanup'> & {
     readonly onChange: (data: string) => void;
+    readonly className?: string;
   }): JSX.Element {
     const isDarkMode = useDarkMode();
     const extensions = useCodeMirrorExtensions(resource, appResource, xmlSpec);
@@ -93,11 +99,20 @@ const generateEditor = (xmlSpec: (() => BaseSpec<SimpleXmlNode>) | undefined) =>
     const isReadOnly = React.useContext(ReadOnlyContext);
     return (
       <CodeMirror
-        className="border border-brand-300 dark:border-none"
         extensions={writable(extensions)}
         readOnly={isReadOnly}
         ref={handleRef}
         theme={isDarkMode ? okaidia : xcodeLight}
+        onUpdate={({ state }): void => {
+          selectionRef.current = state.selection.toJSON();
+        }}
+        className={`w-full border border-brand-300 dark:border-none ${className}`}
+        /*
+         * Disable spell check if we are doing own validation as otherwise it's
+         * hard to differentiate between browser's spell check errors and our
+         * validation errors
+         */
+        spellCheck={typeof xmlSpec === 'function'}
         value={data ?? ''}
         /*
          * FEATURE: provide supported attributes for autocomplete
@@ -105,9 +120,6 @@ const generateEditor = (xmlSpec: (() => BaseSpec<SimpleXmlNode>) | undefined) =>
          *   https://github.com/codemirror/lang-xml#api-reference
          */
         onChange={handleChange}
-        onUpdate={({ state }): void => {
-          selectionRef.current = state.selection.toJSON();
-        }}
       />
     );
   };
@@ -165,7 +177,7 @@ function UserPreferencesEditor({
 
 export const visualAppResourceEditors = f.store<
   RR<
-    keyof typeof appResourceSubTypes,
+    keyof typeof appResourceSubTypes | 'viewSet',
     | {
         readonly visual?: (props: AppResourceTabProps) => JSX.Element;
         readonly json?: (props: AppResourceTabProps) => JSX.Element;
@@ -174,6 +186,10 @@ export const visualAppResourceEditors = f.store<
     | undefined
   >
 >(() => ({
+  viewSet: {
+    visual: FormEditor,
+    xml: generateXmlEditor(viewSetsSpec),
+  },
   label: undefined,
   report: undefined,
   userPreferences: {
@@ -185,17 +201,19 @@ export const visualAppResourceEditors = f.store<
     json: AppResourceTextEditor,
   },
   leafletLayers: undefined,
-  rssExportFeed: undefined,
+  rssExportFeed: {
+    visual: RssExportFeedEditor,
+    xml: generateXmlEditor(exportFeedSpec),
+  },
   expressSearchConfig: undefined,
+  typeSearches: undefined,
   webLinks: {
     visual: WebLinkEditor,
-    json: WebLinkEditor,
     xml: generateXmlEditor(webLinksSpec),
   },
   uiFormatters: undefined,
   dataObjectFormatters: {
     visual: DataObjectFormatter,
-    json: DataObjectFormatter,
     xml: generateXmlEditor(formattersSpec),
   },
   searchDialogDefinitions: undefined,

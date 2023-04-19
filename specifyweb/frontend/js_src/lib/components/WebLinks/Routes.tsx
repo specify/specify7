@@ -18,8 +18,6 @@ export const webLinkRoutes = toReactRoutes([
     children: [
       {
         index: true,
-        element: async () =>
-          import('./List').then(({ WebLinkList }) => WebLinkList),
       },
       {
         path: ':index',

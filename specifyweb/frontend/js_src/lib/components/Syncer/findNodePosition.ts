@@ -24,7 +24,11 @@ const findElement = (xml: string, path: RA<LogPathPart>): Position =>
       else if (part.type === 'Attribute') {
         const endPosition = xml.indexOf('>', from);
         const node = xml.slice(from, endPosition);
-        const match = new RegExp(`${part.attribute}="([^"]+)"`, 'u').exec(node);
+        // Handle virtual attribute name like "initialize abC"
+        const name = part.attribute.includes(' ')
+          ? part.attribute.split(' ')[0]
+          : part.attribute;
+        const match = new RegExp(`\\b${name}="([^"]+)"`, 'u').exec(node);
         if (match === null) return { from, to: endPosition };
         const newFrom = from + match.index;
         return {
@@ -103,10 +107,15 @@ function findChild(
       return false;
     },
     (part) => {
+      const start = `<${tagName}`;
       if (
-        part.startsWith(`<${tagName} `) ||
-        part.startsWith(`<${tagName}>`) ||
-        part.startsWith(`<${tagName}/>`)
+        part.startsWith(start) &&
+        /*
+         * I.e, if tagName is 'format', startsWith() would also match
+         * <formatter>, thus have to check for that. Using startsWith() in place
+         * of regex as a performance optimization.
+         */
+        !/\w/u.test(part.charAt(start.length))
       ) {
         if (currentIndex === index) return true;
         else if (part.endsWith('/>')) currentIndex += 1;
@@ -122,22 +131,51 @@ function finder(
   tagStart: ((part: string) => boolean) | undefined
 ): number | undefined {
   let depth = 0;
+  return (
+    xmlStringTraverse(
+      xml,
+      (match) => {
+        if (depth === 0 && tagStart?.(match[0]) === true) return match.index;
+        else if (!match[0].endsWith('/>')) depth += 1;
+        return undefined;
+      },
+      (match) => {
+        depth -= 1;
+        if (depth < 0) return null;
+        if (depth === 0 && tagEnd?.(match[0]) === true) return match.index;
+        return undefined;
+      }
+    ) ?? undefined
+  );
+}
+
+export function xmlStringTraverse<T>(
+  xml: string,
+  /**
+   * Return anything other than undefined to stop the traversal
+   */
+  startMatch: (match: RegExpExecArray) => T | undefined,
+  endMatch: (match: RegExpExecArray) => T | undefined
+): T | undefined {
   let match: RegExpExecArray | null;
   reTag.lastIndex = 0;
   while ((match = reTag.exec(xml)) !== null) {
     const [part] = match;
-    if (part === '<!--')
-      reTag.lastIndex = xml.indexOf('-->', reTag.lastIndex) + 3;
-    else if (part.startsWith('</')) {
-      depth -= 1;
-      if (depth < 0) return undefined;
-      if (depth === 0 && tagEnd?.(part) === true) return match.index;
+    if (part === '<!--') {
+      const commentEnd = xml.indexOf('-->', reTag.lastIndex);
+      if (commentEnd === -1) return undefined;
+      reTag.lastIndex = commentEnd + 3;
+    } else if (part.startsWith('</')) {
+      const end = endMatch(match);
+      if (end !== undefined) return end;
     } else if (part.startsWith('<')) {
       if (part.endsWith('?>')) continue;
       else if (part.startsWith('<![CDATA['))
         reTag.lastIndex = xml.indexOf(']]>', reTag.lastIndex) + 3;
-      else if (depth === 0 && tagStart?.(part) === true) return match.index;
-      else if (!part.endsWith('/>')) depth += 1;
+      else {
+        const start = startMatch(match);
+        if (start !== undefined) return start;
+      }
     }
   }
   return undefined;

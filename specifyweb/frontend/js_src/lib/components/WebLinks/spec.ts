@@ -66,13 +66,13 @@ const webLinkSpec = f.store(() =>
     ),
     parameters: pipe(
       syncers.xmlChild('args'),
-      syncers.default(() => createSimpleXmlNode('args')),
+      syncers.fallback(createSimpleXmlNode),
       syncers.xmlChildren('weblinkdefarg'),
       syncers.map(syncers.object(argumentSpec()))
     ),
     usages: pipe(
       syncers.xmlChild('usedByList'),
-      syncers.default(() => createSimpleXmlNode('usedByList')),
+      syncers.fallback(createSimpleXmlNode),
       syncers.xmlChildren('usedby'),
       syncers.map(syncers.object(usedBySpec()))
     ),
@@ -91,17 +91,16 @@ const argumentSpec = f.store(() =>
       syncers.maybe(syncers.xmlContent),
       syncers.default<LocalizedString>('')
     ),
+    // Specify 7 only
     shouldPrompt: pipe(
       syncers.xmlChild('prompt'),
       syncers.maybe(syncers.xmlContent),
-      syncers.default<LocalizedString>(''),
-      syncers.toBoolean
+      syncers.maybe(syncers.toBoolean)
     ),
     isEditable: pipe(
       syncers.xmlChild('isEditable', 'optional'),
       syncers.maybe(syncers.xmlContent),
-      syncers.default<LocalizedString>(''),
-      syncers.toBoolean,
+      syncers.maybe(syncers.toBoolean),
       /**
        * "isEditable" appears unused in Specify 6, but is always set to
        * false
@@ -116,8 +115,7 @@ const usedBySpec = f.store(() =>
     table: pipe(
       syncers.xmlChild('tableName'),
       syncers.maybe(syncers.xmlContent),
-      syncers.default<LocalizedString>(''),
-      syncers.tableName
+      syncers.maybe(syncers.tableName)
     ),
     fieldName: pipe(
       syncers.xmlChild('fieldName'),

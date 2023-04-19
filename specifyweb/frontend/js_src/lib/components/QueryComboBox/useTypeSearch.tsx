@@ -35,7 +35,8 @@ export function useTypeSearch(
       return typeSearches.then(
         (typeSearches) =>
           typeSearches.find(({ name }) => name === initialTypeSearch) ??
-          typeSearches.find(({ table }) => table === relatedTable)
+          typeSearches.find(({ table }) => table === relatedTable) ??
+          false
       );
     }, [initialTypeSearch, relatedTable]),
     false

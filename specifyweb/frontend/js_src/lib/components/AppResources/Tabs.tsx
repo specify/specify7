@@ -9,7 +9,6 @@ import type { GetSet, IR, RA, RR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { WarningMessage } from '../Atoms';
 import { Button } from '../Atoms/Button';
-import { className } from '../Atoms/className';
 import { toResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -23,6 +22,7 @@ import type {
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { appResourceIcon } from './EditorComponents';
+import { radioButtonClassName } from './Filters';
 import { getAppResourceType, getResourceType } from './filtersHelpers';
 import type {
   AppResourceEditorType,
@@ -33,7 +33,8 @@ import {
   visualAppResourceEditors,
 } from './TabDefinitions';
 
-export function AppResourcesTabs({
+export function AppResourcesTab({
+  tab: Component,
   label,
   showValidationRef,
   headerButtons,
@@ -41,10 +42,11 @@ export function AppResourcesTabs({
   resource,
   directory,
   data,
-  index,
   isFullScreen: [isFullScreen, handleChangeFullScreen],
   onChange: handleChange,
+  onSetCleanup: setCleanup,
 }: {
+  readonly tab: Component;
   readonly label: LocalizedString;
   readonly showValidationRef: React.MutableRefObject<(() => void) | null>;
   readonly appResource: SpecifyResource<SpAppResource | SpViewSetObject>;
@@ -53,30 +55,23 @@ export function AppResourcesTabs({
   readonly headerButtons: JSX.Element;
   readonly data: string | null;
   readonly isFullScreen: GetSet<boolean>;
-  readonly index: GetSet<number>;
   readonly onChange: (
     data: string | (() => string | null | undefined) | null
   ) => void;
+  readonly onSetCleanup: (callback: () => Promise<void>) => void;
 }): JSX.Element {
-  const tabs = useEditorTabs(resource);
   const children = (
-    <Tabs
-      index={index}
-      tabs={Object.fromEntries(
-        tabs.map(({ label, component: Component }, index) => [
-          label,
-          <Component
-            appResource={appResource}
-            data={data}
-            directory={directory}
-            key={index}
-            resource={resource}
-            showValidationRef={showValidationRef}
-            onChange={handleChange}
-          />,
-        ])
-      )}
-    />
+    <ErrorBoundary dismissible>
+      <Component
+        appResource={appResource}
+        data={data}
+        directory={directory}
+        resource={resource}
+        showValidationRef={showValidationRef}
+        onChange={handleChange}
+        onSetCleanup={setCleanup}
+      />
+    </ErrorBoundary>
   );
   return isFullScreen ? (
     <Dialog
@@ -101,18 +96,17 @@ export function AppResourcesTabs({
   );
 }
 
-function useEditorTabs(
+type Component = (props: AppResourceTabProps) => JSX.Element;
+
+export function useEditorTabs(
   resource: SerializedResource<SpAppResource | SpViewSetObject>
 ): RA<{
   readonly label: LocalizedString;
-  readonly component: (
-    props: Omit<AppResourceTabProps, 'editorType'>
-  ) => JSX.Element;
+  readonly component: (props: AppResourceTabProps) => JSX.Element;
 }> {
-  const subType = f.maybe(
-    toResource(resource, 'SpAppResource'),
-    getAppResourceType
-  );
+  const subType =
+    f.maybe(toResource(resource, 'SpAppResource'), getAppResourceType) ??
+    'viewSet';
   return React.useMemo(() => {
     const editors =
       typeof subType === 'string'
@@ -123,7 +117,7 @@ function useEditorTabs(
           {
             label: labels.generic,
             component(props): JSX.Element {
-              return <AppResourceTextEditor {...props} editorType="generic" />;
+              return <AppResourceTextEditor {...props} />;
             },
           },
         ]
@@ -138,7 +132,7 @@ function useEditorTabs(
                         {type === 'visual' && (
                           <OtherCollectionWarning directory={props.directory} />
                         )}
-                        <Editor {...props} editorType={type} />
+                        <Editor {...props} />
                       </>
                     );
                   },
@@ -188,13 +182,15 @@ export function Tabs({
     <Tab.Group selectedIndex={currentIndex} onChange={handleChange}>
       <Tab.List
         // Don't display tabs if there is only one tab
-        className={`flex flex-wrap gap-2 ${
-          Object.keys(tabs).length === 1 ? 'sr-only' : ''
-        }`}
+        className={`
+          inline-flex w-fit flex-wrap gap-2 rounded
+          bg-[color:var(--form-background)]
+          ${Object.keys(tabs).length === 1 ? 'sr-only' : ''}
+        `}
       >
         {Object.keys(tabs).map((label, index) => (
           <Tab
-            className={`${className.niceButton} ${className.blueButton}`}
+            className={radioButtonClassName(currentIndex === index)}
             key={index}
             /**
              * HeadlessUI does not trigger onChange on click on current tab.
@@ -202,7 +198,9 @@ export function Tabs({
              * if the option IS current.
              */
             onClick={
-              currentIndex === index ? () => handleChange(index) : undefined
+              currentIndex === index
+                ? (): void => handleChange(index)
+                : undefined
             }
           >
             {label}

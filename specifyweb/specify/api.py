@@ -787,7 +787,8 @@ def apply_filters(logged_in_collection, params, model, control_params=GetCollect
         objs = filter_by_collection(objs, logged_in_collection)
     if control_params['orderby']:
         try:
-            objs = objs.order_by(control_params['orderby'])
+            fields = control_params['orderby'].split(',')
+            objs = objs.order_by(*fields)
         except FieldError as e:
             raise OrderByError(e)
 

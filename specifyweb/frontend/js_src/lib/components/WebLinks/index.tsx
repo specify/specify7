@@ -64,10 +64,13 @@ export function WebLinkField({
     )
     .join('');
   const [showPrompt, setShowPrompt] = React.useState(false);
-  const isExternal = React.useMemo(
-    () => url !== undefined && isExternalUrl(url),
-    [url]
-  );
+  const isExternal = React.useMemo(() => {
+    try {
+      return url !== undefined && isExternalUrl(url);
+    } catch {
+      return true;
+    }
+  }, [url]);
 
   React.useEffect(() => {
     if (
@@ -117,6 +120,7 @@ export function WebLinkField({
           : webLink
       }
       className="max-h-[theme(spacing.5)] max-w-[theme(spacing.10)]"
+      crossOrigin="anonymous"
       src={getIcon(icon) ?? unknownIcon}
     />
   );
@@ -132,21 +136,23 @@ export function WebLinkField({
         <UiField field={field} id={id} name={name} resource={resource} />
       ) : undefined}
       {typeof definition === 'object' ? (
-        <Component
-          className="ring-1 ring-gray-400 disabled:ring-gray-500 dark:ring-0 disabled:dark:ring-neutral-500"
-          href={url!}
-          rel={isExternal ? 'noopener' : undefined}
-          target={isExternal ? '_blank' : undefined}
-          title={definition.description}
-          onClick={(event): void => {
-            if (url === undefined) return;
-            if (definition.parts.some(({ type }) => type === 'PromptField')) {
-              event.preventDefault();
-              setShowPrompt(true);
-            }
-          }}
-        >
-          {image}
+        <>
+          <Component
+            className="ring-1 ring-gray-400 disabled:ring-gray-500 dark:ring-0 disabled:dark:ring-neutral-500"
+            href={url!}
+            rel={isExternal ? 'noopener' : undefined}
+            target={isExternal ? '_blank' : undefined}
+            title={definition.description}
+            onClick={(event): void => {
+              if (url === undefined) return;
+              if (definition.parts.some(({ type }) => type === 'PromptField')) {
+                event.preventDefault();
+                setShowPrompt(true);
+              }
+            }}
+          >
+            {image}
+          </Component>
           {showPrompt && (
             <Prompt
               label={definition.name}
@@ -156,7 +162,7 @@ export function WebLinkField({
               onClose={(): void => setShowPrompt(false)}
             />
           )}
-        </Component>
+        </>
       ) : undefined}
     </div>
   );

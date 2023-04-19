@@ -100,12 +100,18 @@ export const resourcesText = createDictionary({
     'fr-fr': "Flux d'exportation RSS",
     'uk-ua': 'Канал експорту RSS',
   },
+  exports: {
+    'en-us': 'Exports',
+  },
   expressSearchConfig: {
     'en-us': 'Express Search Config',
     'ru-ru': 'Конфигурация быстрого поиска',
     'es-es': 'Configuración de búsqueda rápida',
     'fr-fr': 'Configuration de la recherche express',
     'uk-ua': 'Конфігурація експрес-пошуку',
+  },
+  typeSearches: {
+    'en-us': 'Type Searches',
   },
   webLinks: {
     'en-us': 'Web Links',
@@ -128,13 +134,31 @@ export const resourcesText = createDictionary({
     'fr-fr': "Formateurs d'enregistrement",
     'uk-ua': 'Форматувальники записів',
   },
+  formatter: {
+    'en-us': 'Formatter',
+    'ru-ru': 'Форматировщик',
+  },
   formatters: {
     'en-us': 'Formatters',
     'ru-ru': 'Форматировщики',
   },
+  formatterDescription: {
+    'en-us':
+      'Formatter determines how to transform individual database resources into readable text by selecting specific fields and applying a designated separator between them.',
+  },
+  aggregator: {
+    'en-us': 'Aggregator',
+  },
   aggregators: {
     'en-us': 'Aggregators',
     'ru-ru': 'Агрегаторы',
+  },
+  aggregatorDescription: {
+    'en-us':
+      'Aggregator determines how to consolidate multiple resources into a single text string by utilizing formatters and inserting a separator between them',
+  },
+  formattedResource: {
+    'en-us': 'Formatted Resource',
   },
   availableFormatters: {
     'en-us': 'Available Formatters',
@@ -152,13 +176,6 @@ export const resourcesText = createDictionary({
   },
   duplicateFormatters: {
     'en-us': 'Formatter names must be unique',
-  },
-  searchDialogDefinitions: {
-    'en-us': 'Search Dialog Definitions',
-    'ru-ru': 'Макеты диалогового окна поиска',
-    'es-es': 'Definiciones del diálogo de búsqueda',
-    'fr-fr': 'Définitions de la boîte de dialogue de recherche',
-    'uk-ua': 'Визначення діалогового вікна пошуку',
   },
   dataEntryTables: {
     'en-us': 'Data Entry Tables',
@@ -212,7 +229,7 @@ export const resourcesText = createDictionary({
   custom: {
     'en-us': 'Custom',
     'ru-ru': 'Настроить',
-    'es-es': 'Disfraz',
+    'es-es': 'Costumbre',
     'fr-fr': 'Personnalisé',
     'uk-ua': 'Custom',
   },
@@ -300,16 +317,6 @@ export const resourcesText = createDictionary({
     'en-us': 'Limit',
     'ru-ru': 'Лимит',
   },
-  formatter: {
-    'en-us': 'Formatter',
-    'ru-ru': 'Форматировщик',
-  },
-  aggregator: {
-    'en-us': 'Aggregator',
-  },
-  formattedResource: {
-    'en-us': 'Formatted Resource',
-  },
   defaultInline: {
     'en-us': '(default)',
   },
@@ -351,17 +358,65 @@ export const resourcesText = createDictionary({
   conditionField: {
     'en-us': 'Condition Field',
   },
-  condition: {
-    'en-us': 'Condition',
+  conditionFieldValue: {
+    'en-us': 'Condition Field Value',
+  },
+  conditionDescription: {
+    'en-us':
+      'This formatter will be used only if the condition field value is equal to this condition',
+  },
+  elseConditionDescription: {
+    'en-us':
+      'This formatter will be used only if the condition field value is equal to this condition or if no other formatter matches its condition',
+  },
+  addConditionFieldFirst: {
+    'en-us':
+      'Multiple definitions can only be specified after you set a condition field',
   },
   wrongScopeWarning: {
     'en-us': `
-      This resource belongs to a different collection/discipline that the one
+      This resource belongs to a different collection/discipline than the one
       you are currently in. It's recommended to switch collection before editing
       this resource
     `,
   },
   thisFieldName: {
     'en-us': 'This field name (for preview purposes only)',
+  },
+  publishEveryDays: {
+    'en-us': 'Publish every N days',
+  },
+  publish: {
+    'en-us': 'Publish',
+  },
+  fileName: {
+    'en-us': 'File name',
+  },
+  runAsUser: {
+    'en-us': 'Run as user',
+  },
+  notifyUser: {
+    'en-us': 'Send completion notification to user',
+  },
+  runInCollection: {
+    'en-us': 'Run in collection',
+  },
+  createNewForm: {
+    'en-us': 'Create new form',
+  },
+  copyFromExistingForm: {
+    'en-us': 'Copy from existing form',
+  },
+  copyDefaultForm: {
+    'en-us': 'Copy default form',
+  },
+  copyDefaultForms: {
+    'en-us': 'Copy default forms',
+  },
+  saveFormFirst: {
+    'en-us': 'Save form first',
+  },
+  saveFormFirstDescription: {
+    'en-us': 'You need to save this form before you edit another one',
   },
 } as const);

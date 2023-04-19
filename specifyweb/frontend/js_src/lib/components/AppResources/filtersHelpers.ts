@@ -65,8 +65,8 @@ export const getAppResourceType = (
 ): keyof typeof appResourceSubTypes =>
   resource.name === 'preferences' && (resource.mimeType ?? '') === ''
     ? 'otherPropertiesResource'
-    : Object.entries(appResourceSubTypes).find(
-        ([_key, { name, mimeType }]) =>
-          (name === undefined || name === resource.name) &&
-          (mimeType === undefined || mimeType === resource.mimeType)
+    : Object.entries(appResourceSubTypes).find(([_key, { name, mimeType }]) =>
+        name === undefined
+          ? mimeType === resource.mimeType
+          : name === resource.name
       )?.[KEY] ?? 'otherAppResources';

@@ -25,15 +25,12 @@ import { isTreeTable, treeRanksPromise } from '../InitialContext/treeRanks';
 import { useTitle } from '../Molecules/AppTitle';
 import { hasPermission } from '../Permissions/helpers';
 import { usePref } from '../UserPreferences/usePref';
-import {
-  emptyMapping,
-  getMappedFields,
-  mappingPathIsComplete,
-} from '../WbPlanView/helpers';
+import { getMappedFields, mappingPathIsComplete } from '../WbPlanView/helpers';
 import { getMappingLineProps } from '../WbPlanView/LineComponents';
 import { MappingView } from '../WbPlanView/MapperComponents';
 import {
   anyTreeRank,
+  emptyMapping,
   formattedEntry,
   formatTreeRank,
   valueIsTreeRank,
@@ -65,8 +62,16 @@ const pendingState = {
   baseTableName: 'CollectionObject',
 } as const;
 
+export function QueryBuilder(
+  props: Parameters<typeof Wrapped>[0]
+): JSX.Element | null {
+  useMenuItem('queries');
+  const [treeRanksLoaded = false] = useAsyncState(fetchTreeRanks, true);
+  return treeRanksLoaded ? <Wrapped {...props} /> : null;
+}
+
 // REFACTOR: split this component
-export function QueryBuilder({
+function Wrapped({
   query: queryResource,
   recordSet,
   forceCollection,
@@ -81,11 +86,7 @@ export function QueryBuilder({
   readonly isEmbedded?: boolean;
   readonly autoRun?: boolean;
   readonly onSelected?: (selected: RA<number>) => void;
-}): JSX.Element | null {
-  useMenuItem('queries');
-
-  const [treeRanksLoaded = false] = useAsyncState(fetchTreeRanks, true);
-
+}): JSX.Element {
   const [query, setQuery] = useResource(queryResource);
   useErrorContext('query', query);
 
@@ -141,6 +142,7 @@ export function QueryBuilder({
           id: Math.max(-1, ...state.fields.map(({ id }) => id)) + 1,
           mappingPath,
           sortType: undefined,
+          dataObjFormatter: undefined,
           filters: [
             {
               type: 'any',
@@ -236,7 +238,7 @@ export function QueryBuilder({
   );
   const resultsShown = state.queryRunCount !== 0;
 
-  return treeRanksLoaded ? (
+  return (
     <ReadOnlyContext.Provider value={isReadOnly}>
       <Container.Full
         className={`overflow-hidden ${isEmbedded ? 'py-0' : ''}`}
@@ -344,7 +346,7 @@ export function QueryBuilder({
             } else runQuery('regular');
           }}
         >
-          <div className="flex snap-start flex-col gap-4 overflow-hidden">
+          <div className="flex snap-start flex-col gap-4 overflow-y-auto">
             {state.showMappingView && (
               <MappingView
                 mappingElementProps={getMappingLineProps({
@@ -413,6 +415,15 @@ export function QueryBuilder({
                   ? undefined
                   : (line, field): void =>
                       dispatch({ type: 'ChangeFieldAction', line, field })
+              }
+              onChangeFields={
+                isReadOnly
+                  ? undefined
+                  : (fields): void =>
+                      dispatch({
+                        type: 'ChangeFieldsAction',
+                        fields,
+                      })
               }
               onClose={(): void =>
                 dispatch({
@@ -536,5 +547,5 @@ export function QueryBuilder({
         </Form>
       </Container.Full>
     </ReadOnlyContext.Provider>
-  ) : null;
+  );
 }

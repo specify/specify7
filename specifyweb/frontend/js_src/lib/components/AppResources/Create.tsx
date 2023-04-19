@@ -2,10 +2,13 @@ import React from 'react';
 import { useOutletContext } from 'react-router';
 import { useNavigate, useParams } from 'react-router-dom';
 
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { resourcesText } from '../../localization/resources';
+import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
+import type { RA } from '../../utils/types';
 import { mappedFind } from '../../utils/utils';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -14,6 +17,7 @@ import { addMissingFields } from '../DataModel/addMissingFields';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { deserializeResource } from '../DataModel/serializers';
 import type { SpAppResourceDir } from '../DataModel/types';
+import { filePathToHuman } from '../FormEditor/fetchAllViews';
 import {
   spAppResourceView,
   spViewSetNameView,
@@ -52,6 +56,9 @@ export function CreateAppResource(): JSX.Element {
     undefined
   );
   const [mimeType, setMimeType] = React.useState<string | undefined>(undefined);
+  const [templateFile, setTemplateFile] = React.useState<
+    string | false | undefined
+  >(undefined);
   return directory === undefined ? (
     <NotFoundView container={false} />
   ) : type === undefined ? (
@@ -99,6 +106,7 @@ export function CreateAppResource(): JSX.Element {
                       onClick={(): void => {
                         setMimeType(mimeType ?? '');
                         setName(name);
+                        setTemplateFile(false);
                       }}
                     >
                       {icon}
@@ -126,11 +134,14 @@ export function CreateAppResource(): JSX.Element {
         </tbody>
       </table>
     </Dialog>
+  ) : templateFile === undefined && type.tableName === 'SpViewSetObj' ? (
+    <ViewSetTemplates onSelect={setTemplateFile} />
   ) : (
     <EditAppResource
       directory={directory}
       mimeType={mimeType || undefined}
       name={name}
+      templateFile={templateFile === false ? undefined : templateFile}
       type={type}
     />
   );
@@ -165,14 +176,68 @@ function getUrl(
   directoryKey: string,
   type: AppResourceType,
   name: string,
-  mimeType: string | undefined
+  mimeType: string | undefined,
+  templateFile?: string
 ): string {
   const path = type.tableName === 'SpAppResource' ? 'app-resource' : 'view-set';
   return formatUrl(`/specify/resources/${path}/new/`, {
     directoryKey,
     name,
     mimeType,
+    templateFile,
   });
+}
+
+function ViewSetTemplates({
+  onSelect: handleSelect,
+}: {
+  readonly onSelect: (fileName: string | false) => void;
+}): JSX.Element | null {
+  const [viewSets] = useAsyncState(
+    React.useCallback(
+      async () =>
+        ajax<RA<string>>(
+          `/context/viewsets.json`,
+          {
+            method: 'GET',
+            headers: {
+              Accept: 'application/json',
+            },
+          },
+          {
+            strict: false,
+          }
+        )
+          .then(({ data }) => {
+            if (data.length === 0) handleSelect(false);
+            return data;
+          })
+          .catch((error) => {
+            console.error(error);
+            handleSelect(false);
+            return undefined;
+          }),
+      [handleSelect]
+    ),
+    true
+  );
+  return viewSets === undefined ? null : (
+    <Dialog
+      buttons={commonText.new()}
+      header={resourcesText.copyDefaultForms()}
+      onClose={(): void => handleSelect(false)}
+    >
+      <Ul className="flex flex-col gap-2">
+        {viewSets.map((path, index) => (
+          <li key={index}>
+            <Button.LikeLink onClick={(): void => handleSelect(path)}>
+              {filePathToHuman(path)}
+            </Button.LikeLink>
+          </li>
+        ))}
+      </Ul>
+    </Dialog>
+  );
 }
 
 function EditAppResource({
@@ -180,11 +245,13 @@ function EditAppResource({
   name,
   type,
   mimeType,
+  templateFile,
 }: {
   readonly directory: SerializedResource<SpAppResourceDir>;
   readonly name: string;
   readonly type: AppResourceType;
   readonly mimeType: string | undefined;
+  readonly templateFile: string | undefined;
 }): JSX.Element {
   const resource = React.useMemo(
     () =>
@@ -228,7 +295,8 @@ function EditAppResource({
             directoryKey,
             type,
             resource.get('name'),
-            resource.get('mimeType') ?? undefined
+            resource.get('mimeType') ?? undefined,
+            templateFile
           )
         );
         /*

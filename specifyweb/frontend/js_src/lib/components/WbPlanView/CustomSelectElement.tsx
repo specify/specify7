@@ -29,7 +29,7 @@ import {
 } from '../Molecules/TableIcon';
 import { titlePosition } from '../Molecules/Tooltips';
 import { scrollIntoView } from '../TreeView/helpers';
-import { emptyMapping } from './helpers';
+import { emptyMapping } from './mappingHelpers';
 
 type Properties =
   /*
@@ -273,7 +273,7 @@ function Option({
 
   if ((!isEnabled || isDefault) && !isRelationship)
     classes.push(
-      '!cursor-not-allowed text-gray-500',
+      '!cursor-not-allowed dark:text-white',
       'bg-[color:var(--custom-select-b1)]'
     );
   else
@@ -284,7 +284,7 @@ function Option({
 
   if (isDefault)
     classes.push(
-      'custom-select-option-selected cursor-auto',
+      'custom-select-option-selected cursor-auto dark:text-white',
       'bg-[color:var(--custom-select-accent)]'
     );
 
@@ -532,8 +532,7 @@ export function CustomSelectElement({
     has('unmapOption') &&
     defaultOption.optionName !== emptyMapping;
 
-  if (showUnmapOption && typeof defaultDefaultOption === 'string')
-    inlineOptions = [defaultDefaultOption, ...inlineOptions];
+  if (showUnmapOption) inlineOptions = [defaultDefaultOption, ...inlineOptions];
 
   const id = useId('listbox');
   const { validationRef } = useValidation(validation);
@@ -643,7 +642,9 @@ export function CustomSelectElement({
     ) : undefined;
 
     const fieldNames = inlineOptions
-      .map(({ optionLabel }) => optionLabel)
+      .map(({ optionLabel }) =>
+        optionLabel === emptyMapping ? wbPlanText.notSelected() : optionLabel
+      )
       .filter((option): option is string => typeof option === 'string');
     optionsShadow =
       !isOpen && has('scroll') && fieldNames.length > 0 ? (
@@ -847,18 +848,18 @@ export function CustomSelectElement({
             className="sr-only bottom-0 top-[unset] flex w-full justify-center"
           >
             <input
-              id={id('validation')}
-              // Act as an error message, not an input
-              defaultValue={validation}
-              // Announce validation message to screen readers
-              aria-live="polite"
+              ref={validationRef}
               /*
                * Set a validation message for input (using useValidation).
                * It will be displayed by browsers on form submission
                */
+              id={id('validation')}
+              // Announce validation message to screen readers
+              aria-live="polite"
+              // Act as an error message, not an input
               role="alert"
               // Associate validation message with the listbox
-              ref={validationRef}
+              defaultValue={validation}
               type="text"
               // Don't show the input
               className="sr-only"

@@ -10,7 +10,6 @@ import type { State } from 'typesafe-reducer';
 
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
-import { filterArray } from '../../utils/types';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { getTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
@@ -33,8 +32,9 @@ import type { CommandDefinition } from './commands';
 import { parseUiCommand } from './commands';
 import type { FormFieldDefinition } from './fields';
 import { parseFormField } from './fields';
-import type { FormType, ParsedFormDefinition } from './index';
+import type { ConditionalFormDefinition, FormType } from './index';
 import { parseFormDefinition } from './index';
+import { parseSpecifyProperties } from '../FormEditor/viewSpec';
 
 // Parse column width definitions
 export const processColumnDefinition = (
@@ -48,14 +48,6 @@ export const processColumnDefinition = (
     .filter((_, index) => index % 2 === 0)
     .map((definition) => /(\d+)px/u.exec(definition)?.[1] ?? '')
     .map(f.parseInt);
-
-// BUG: allow \= and \" for escaping
-export const parseSpecifyProperties = (props = ''): IR<string> =>
-  Object.fromEntries(
-    filterArray(
-      props.split(';').map((line) => /([^=]+)=(.+)/u.exec(line)?.slice(1, 3))
-    ).map(([key, value]) => [key.trim().toLowerCase(), value.trim()])
-  );
 
 export type CellTypes = {
   readonly Field: State<
@@ -96,7 +88,10 @@ export type CellTypes = {
   >;
   readonly Panel: State<
     'Panel',
-    ParsedFormDefinition & { readonly display: 'block' | 'inline' }
+    {
+      readonly display: 'block' | 'inline';
+      readonly definitions: ConditionalFormDefinition;
+    }
   >;
   readonly Command: State<
     'Command',
@@ -243,12 +238,12 @@ const processCellType: {
   Panel: ({ cell, table }) => {
     const oldContext = getLogContext();
     pushContext({ type: 'Child', tagName: 'Panel' });
-    const definition = parseFormDefinition(cell, table);
+    const definitions = parseFormDefinition(cell, table);
     setLogContext(oldContext);
 
     return {
       type: 'Panel',
-      ...definition,
+      definitions,
       display:
         getParsedAttribute(cell, 'panelType')?.toLowerCase() === 'buttonbar'
           ? 'inline'

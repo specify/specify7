@@ -166,7 +166,7 @@ export function QueryComboBox({
               .then((resource) =>
                 resource === undefined || resource === null
                   ? {
-                      label: '',
+                      label: '' as LocalizedString,
                       resource: undefined,
                     }
                   : (value === formattedRef.current?.value &&
@@ -327,7 +327,10 @@ export function QueryComboBox({
               .flatMap(({ data: { results } }) => results)
               .map(([id, label]) => ({
                 data: getResourceApiUrl(field.relatedTable.name, id),
-                label,
+                label:
+                  label.trim().length === 0
+                    ? naiveFormatter(field.relatedTable.name, id)
+                    : label,
               }))
           )
         : [],
@@ -580,8 +583,8 @@ export function QueryComboBox({
           extraFilters={state.extraConditions}
           forceCollection={forceCollection ?? relatedCollectionId}
           multiple={false}
-          templateResource={state.templateResource}
           searchView={searchView}
+          templateResource={state.templateResource}
           onClose={(): void => setState({ type: 'MainState' })}
           onSelected={([selectedResource]): void =>
             // @ts-expect-error Need to refactor this to use generics

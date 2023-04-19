@@ -11,6 +11,7 @@ import { useTriggerState } from '../../hooks/useTriggerState';
 import { attachmentsText } from '../../localization/attachments';
 import { formsText } from '../../localization/forms';
 import { f } from '../../utils/functools';
+import type { GetOrSet } from '../../utils/types';
 import { Progress } from '../Atoms';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { toTable } from '../DataModel/helpers';
@@ -38,14 +39,11 @@ export function AttachmentsPlugin(
   );
 }
 
-function ProtectedAttachmentsPlugin({
-  resource,
-}: {
-  readonly resource: SpecifyResource<AnySchema> | undefined;
-}): JSX.Element | null {
-  const [attachment, setAttachment] = useAsyncState<
-    SpecifyResource<Attachment> | false
-  >(
+/** Retrieve attachment related to a given resource */
+export function useAttachment(
+  resource: SpecifyResource<AnySchema> | undefined
+): GetOrSet<SpecifyResource<Attachment> | false | undefined> {
+  return useAsyncState(
     React.useCallback(
       async () =>
         f.maybe(resource, (resource) => toTable(resource, 'Attachment')) ??
@@ -55,6 +53,14 @@ function ProtectedAttachmentsPlugin({
     ),
     true
   );
+}
+
+function ProtectedAttachmentsPlugin({
+  resource,
+}: {
+  readonly resource: SpecifyResource<AnySchema> | undefined;
+}): JSX.Element | null {
+  const [attachment, setAttachment] = useAttachment(resource);
   const isReadOnly = React.useContext(ReadOnlyContext);
   useErrorContext('attachment', attachment);
 

@@ -9,7 +9,7 @@ export const dataEntryItems = f.store(() =>
   createXmlSpec({
     items: pipe(
       syncers.xmlChild('std'),
-      syncers.default<SimpleXmlNode>(() => createSimpleXmlNode('std')),
+      syncers.fallback<SimpleXmlNode>(createSimpleXmlNode),
       syncers.xmlChildren('view'),
       syncers.map(syncers.object(dataEntryItem()))
     ),

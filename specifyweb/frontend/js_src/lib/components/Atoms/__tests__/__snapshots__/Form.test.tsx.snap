@@ -35,7 +35,7 @@ exports[`<Input.Radio> ignores change if disabled 1`] = `
 exports[`<Select> removes notTouched className on blur 1`] = `
 <DocumentFragment>
   <select
-    class="w-full pr-5 bg-right cursor-pointer min-w-[theme(spacing.40)]"
+    class="w-full pr-5 bg-right cursor-pointer"
   >
     <option />
   </select>
@@ -45,7 +45,7 @@ exports[`<Select> removes notTouched className on blur 1`] = `
 exports[`<Select> select multiple calls onValuesChange 1`] = `
 <DocumentFragment>
   <select
-    class="not-touched w-full pr-5 bg-right cursor-pointer min-w-[theme(spacing.40)]"
+    class="not-touched w-full pr-5 bg-right cursor-pointer"
     multiple=""
   >
     <option />

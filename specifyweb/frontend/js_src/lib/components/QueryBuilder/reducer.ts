@@ -13,11 +13,11 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { SpQuery, Tables } from '../DataModel/types';
 import {
-  emptyMapping,
   mappingPathIsComplete,
   mutateMappingPath,
 } from '../WbPlanView/helpers';
 import type { MappingPath } from '../WbPlanView/Mapper';
+import { emptyMapping } from '../WbPlanView/mappingHelpers';
 import type { QueryField } from './helpers';
 import { parseQueryFields } from './helpers';
 
@@ -132,6 +132,7 @@ export const reducer = generateReducer<MainState, Actions>({
       line: action.direction === 'up' ? action.line - 1 : action.line + 1,
       index: undefined,
     },
+    saveRequired: true,
     fields:
       action.direction === 'up'
         ? [
@@ -186,6 +187,11 @@ export const reducer = generateReducer<MainState, Actions>({
       fields: replaceItem(state.fields, line, {
         ...state.fields[line],
         mappingPath: newMappingPath,
+        dataObjFormatter:
+          mappingPathIsComplete(newMappingPath) &&
+          action.currentTableName === action.newTableName
+            ? undefined
+            : state.fields[line].dataObjFormatter,
       }),
       autoMapperSuggestions: undefined,
       saveRequired: true,

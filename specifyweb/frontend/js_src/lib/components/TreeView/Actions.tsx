@@ -186,7 +186,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
       type={currentAction}
       onCancelAction={(): void => setAction(undefined)}
       onCompleteAction={(): void => {
-        setAction(currentAction);
+        setAction(undefined);
         handleRefresh();
       }}
     />

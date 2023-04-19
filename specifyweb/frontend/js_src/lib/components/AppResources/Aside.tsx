@@ -2,14 +2,13 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
 
-import { useCachedState } from '../../hooks/useCachedState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { resourcesText } from '../../localization/resources';
 import { StringToJsx } from '../../localization/utils';
 import { f } from '../../utils/functools';
-import type { RA } from '../../utils/types';
+import type { GetSet, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { multiSortFunction, removeItem, replaceItem } from '../../utils/utils';
 import { Ul } from '../Atoms';
@@ -24,35 +23,48 @@ import { hasToolPermission } from '../Permissions/helpers';
 import { ActiveLink, useIsActive } from '../Router/ActiveLink';
 import { scrollIntoView } from '../TreeView/helpers';
 import { appResourceIcon } from './EditorComponents';
-import { useFilteredAppResources } from './Filters';
 import type { AppResourceFilters as AppResourceFiltersType } from './filtersHelpers';
-import { getResourceType } from './filtersHelpers';
+import {
+  defaultAppResourceFilters,
+  filterAppResources,
+  getResourceType,
+} from './filtersHelpers';
 import { buildAppResourceConformation, getAppResourceMode } from './helpers';
 import type { AppResources, AppResourcesTree } from './hooks';
 import { useAppResourceCount, useResourcesTree } from './hooks';
 import { appResourceSubTypes } from './types';
 
+const emptyArray = [] as const;
+
 export function AppResourcesAside({
-  resources: initialResources,
-  initialFilters,
+  resources: unfilteredResources,
+  filters = defaultAppResourceFilters,
   isEmbedded,
   onOpen: handleOpen,
+  conformations: [initialConformations = emptyArray, setConformations],
 }: {
   readonly resources: AppResources;
-  readonly initialFilters?: AppResourceFiltersType;
+  readonly filters: AppResourceFiltersType | undefined;
   readonly isEmbedded: boolean;
   readonly onOpen?: (
     resource: SerializedResource<SpAppResource | SpViewSetObj>
   ) => void;
+  readonly conformations: GetSet<RA<AppResourcesConformation> | undefined>;
 }): JSX.Element {
-  const [conformations = [], setConformations] = useCachedState(
-    'appResources',
-    'conformation'
+  const resources = React.useMemo(
+    () => filterAppResources(unfilteredResources, filters),
+    [filters, unfilteredResources]
   );
-  const resources = useFilteredAppResources(initialResources, initialFilters);
   const resourcesTree = useResourcesTree(resources);
   useErrorContext('appResourcesTree', resourcesTree);
 
+  const conformations = React.useMemo(
+    () =>
+      initialConformations === emptyArray
+        ? buildAppResourceConformation(resourcesTree)
+        : initialConformations,
+    [initialConformations, resourcesTree]
+  );
   useOpenCurrent(conformations, setConformations, resourcesTree);
 
   return (
@@ -108,7 +120,7 @@ function useOpenCurrent(
           updateConformation(
             item,
             conformation?.children.find(
-              (conformation) => conformation.key === category.key
+              (conformation) => conformation.key === item.key
             )
           )
         )
@@ -343,6 +355,7 @@ function ResourceItem({
 }: {
   readonly resource: SerializedResource<SpAppResource | SpViewSetObj> & {
     readonly type: ReturnType<typeof getResourceType>;
+    readonly label?: LocalizedString;
   };
   readonly onOpen:
     | ((resource: SerializedResource<SpAppResource | SpViewSetObj>) => void)
@@ -381,9 +394,9 @@ function ResourceItem({
       }
     >
       {appResourceIcon(resource.type)}
-      {typeof resource.name === 'string'
-        ? (resource.name as LocalizedString)
-        : commonText.nullInline()}
+      {('label' in resource ? resource.label : undefined) ??
+        (resource.name as LocalizedString) ??
+        commonText.nullInline()}
     </ActiveLink>
   );
 }

@@ -4,6 +4,7 @@ import type { RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import { group, KEY, removeKey, sortFunction, VALUE } from '../../utils/utils';
 import type { SerializedResource } from '../DataModel/helperTypes';
+import { tables } from '../DataModel/tables';
 import type { SpQueryField, Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import { queryMappingLocalityColumns } from '../Leaflet/config';
@@ -19,7 +20,6 @@ import {
 import type { QueryFieldFilter } from './FieldFilter';
 import { queryFieldFilters } from './FieldFilter';
 import { QueryFieldSpec } from './fieldSpec';
-import { tables } from '../DataModel/tables';
 
 export type SortTypes = 'ascending' | 'descending' | undefined;
 export const sortTypes: RA<SortTypes> = [undefined, 'ascending', 'descending'];
@@ -38,6 +38,7 @@ export type QueryField = {
   readonly mappingPath: MappingPath;
   readonly sortType: SortTypes;
   readonly isDisplay: boolean;
+  readonly dataObjFormatter: string | undefined;
   readonly filters: RA<{
     readonly type: QueryFieldFilter;
     readonly startValue: string;
@@ -89,6 +90,7 @@ export function parseQueryFields(
             id: index,
             mappingPath,
             sortType: sortTypes[field.sortType],
+            dataObjFormatter: field.formatName ?? undefined,
             filter: {
               type: defined(
                 Object.entries(queryFieldFilters).find(
@@ -193,6 +195,7 @@ const addQueryFields = (
           sortType: undefined,
           isDisplay: true,
           parser: undefined,
+          dataObjFormatter: undefined,
           filters: [
             {
               type: 'any',
@@ -263,6 +266,7 @@ export const unParseQueryFields = (
     ([field, fieldSpec], index) => {
       const commonData = {
         ...fieldSpec.toSpQueryAttributes(),
+        formatName: field.dataObjFormatter,
         sortType: sortTypes.indexOf(field.sortType),
         position: index,
         isDisplay: field.isDisplay,

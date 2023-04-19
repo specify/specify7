@@ -25,7 +25,6 @@ export function error(message: Error | string, ...rest: RA<unknown>): never {
   if (!(errorDetails in error))
     Object.defineProperty(error, errorDetails, {
       value: rest,
-      enumerable: false,
     });
   throw error;
 }

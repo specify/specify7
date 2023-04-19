@@ -105,7 +105,7 @@ export const wbPlanText = createDictionary({
     'en-us': 'Hidden Fields',
     'ru-ru': 'Скрытые поля',
     'es-es': 'Campos Ocultos',
-    'fr-fr': 'Champs cachés',
+    'fr-fr': 'Champs masqués',
     'uk-ua': 'Приховані поля',
   },
   revealHiddenFormFields: {
@@ -185,7 +185,7 @@ export const wbPlanText = createDictionary({
       uniquement pour le téléchargement.
     `,
     'uk-ua': `
-      Якщо встановлено значення «Завжди ігнорувати», значення в цьому стовпці
+      Якщо встановлено значення «Ігнорувати завжди», значення в цьому стовпці
       ніколи не розглядатиметься для цілей зіставлення, лише для завантаження.
     `,
   },
@@ -572,7 +572,7 @@ export const wbPlanText = createDictionary({
     'es-es': 'Requerir datos para que coincidan con los registros existentes',
     'fr-fr':
       'Exiger que les données correspondent aux enregistrements existants',
-    'uk-ua': 'Вимагати, щоб дані відповідали існуючим записам',
+    'uk-ua': 'Вимагати відповідності даних існуючим записам',
   },
   matchingLogicUnavailable: {
     'en-us': 'Matching logic is unavailable for current mappings',

@@ -30,7 +30,6 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { smoothScroll } from '../QueryBuilder/helpers';
 import { Layout } from './Header';
 import {
-  emptyMapping,
   fetchAutoMapperSuggestions,
   getMappedFields,
   getMustMatchTables,
@@ -50,6 +49,7 @@ import {
   ToggleMappingPath,
   ValidationResults,
 } from './MapperComponents';
+import { emptyMapping } from './mappingHelpers';
 import { reducer } from './mappingReducer';
 import { findRequiredMissingFields } from './modelHelpers';
 import { getMappingLineData } from './navigator';

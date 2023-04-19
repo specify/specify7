@@ -26,8 +26,8 @@ const interactionEntry = f.store(() =>
     ),
     isFavorite: pipe(
       syncers.xmlAttribute('isOnLeft', 'required'),
-      syncers.default<LocalizedString>(''),
-      syncers.toBoolean
+      syncers.maybe(syncers.toBoolean),
+      syncers.fallback(false)
     ),
   })
 );

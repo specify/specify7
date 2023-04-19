@@ -65,6 +65,7 @@ export const className = {
   redButton: `${dialogIconTriggers.error} hover:bg-red-800 bg-red-700 text-white`,
   blueButton: `${dialogIconTriggers.info} hover:bg-blue-700 bg-blue-600 text-white`,
   orangeButton: `${dialogIconTriggers.warning} hover:bg-orange-600 bg-orange-500 text-white`,
+  specifyButton: `bg-brand-300 text-white`,
   greenButton: `${dialogIconTriggers.success} hover:bg-green-800 bg-green-700 text-white`,
   fancyButton: `bg-gray-300 hover:bg-brand-200 dark:bg-neutral-600
     hover:dark:bg-brand:400 text-gray-800 dark:text-white text-center`,
@@ -86,7 +87,7 @@ export const className = {
   formFooter:
     'border-brand-300 border-t-2 flex print:hidden pt-2 gap-2 flex-wrap justify-center flex-col md:flex-row',
   dataEntryAdd: '!text-green-700 print:hidden',
-  dataEntryView: '!text-orange-400 print:hidden',
+  dataEntryView: '!text-cyan-400 print:hidden',
   dataEntryEdit: '!text-orange-400 print:hidden',
   dataEntryClone: '!text-amber-700 print:hidden',
   dataEntrySearch: '!text-blue-500 print:hidden',

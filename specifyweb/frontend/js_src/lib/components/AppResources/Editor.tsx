@@ -1,17 +1,19 @@
 import React from 'react';
 
 import { useErrorContext } from '../../hooks/useErrorContext';
+import { useLiveState } from '../../hooks/useLiveState';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { formsText } from '../../localization/forms';
 import { localityText } from '../../localization/locality';
 import { getAppResourceUrl } from '../../utils/ajax/helpers';
+import { f } from '../../utils/functools';
 import { defined } from '../../utils/types';
 import { getUniqueName } from '../../utils/uniquifyName';
 import { Button } from '../Atoms/Button';
-import { Form } from '../Atoms/Form';
+import { Form, Select } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
-import { toTable } from '../DataModel/helpers';
+import { toResource, toTable } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { createResource } from '../DataModel/resource';
 import {
@@ -38,9 +40,10 @@ import {
   appResourceIcon,
   AppResourceLoad,
 } from './EditorComponents';
-import { getResourceType } from './filtersHelpers';
+import { getAppResourceType, getResourceType } from './filtersHelpers';
 import { useAppResourceData } from './hooks';
-import { AppResourcesTabs } from './Tabs';
+import { AppResourcesTab, useEditorTabs } from './Tabs';
+import { appResourceSubTypes } from './types';
 
 export function AppResourceEditor({
   resource,
@@ -128,8 +131,36 @@ export function AppResourceEditor({
     resource: appResource,
   });
   const isInOverlay = isOverlay(React.useContext(OverlayContext));
+
+  const tabs = useEditorTabs(resource);
+  const [tabIndex, setTab] = useLiveState(React.useCallback(() => 0, [tabs]));
+  const tab = Math.min(tabIndex, tabs.length - 1);
+  const handleChangeTab = React.useCallback(
+    (index: number) => {
+      setTab(index);
+      syncData();
+    },
+    [syncData]
+  );
+
   const headerButtons = (
     <div className="flex flex-wrap gap-3">
+      {tabs.length > 1 && (
+        <div className="flex">
+          <Select
+            value={tab}
+            onValueChange={(index): void =>
+              handleChangeTab(f.parseInt(index) ?? 0)
+            }
+          >
+            {tabs.map(({ label }, index) => (
+              <option key={index} value={index}>
+                {label}
+              </option>
+            ))}
+          </Select>
+        </div>
+      )}
       {!isInOverlay && (
         <Button.Blue
           aria-label={localityText.toggleFullScreen()}
@@ -171,14 +202,12 @@ export function AppResourceEditor({
   const lastDataRef = React.useRef(lastData);
   lastDataRef.current = lastData;
   const possiblyChanged = typeof lastData === 'function';
-
-  const [tabIndex, setTabIndex] = React.useState<number>(0);
-  const handleChangeTab = React.useCallback(
-    (index: number) => {
-      setTabIndex(index);
-      syncData();
-    },
-    [syncData]
+  const [cleanup, setCleanup] = React.useState<
+    (() => Promise<void>) | undefined
+  >(undefined);
+  const handleSetCleanup = React.useCallback(
+    (callback: (() => Promise<void>) | undefined) => setCleanup(() => callback),
+    []
   );
 
   return typeof resourceData === 'object'
@@ -207,20 +236,21 @@ export function AppResourceEditor({
             forwardRef={setForm}
           >
             <ReadOnlyContext.Provider value={isReadOnly}>
-              <AppResourcesTabs
+              <AppResourcesTab
                 appResource={appResource}
                 data={resourceData.data}
                 directory={directory}
                 headerButtons={headerButtons}
-                index={[tabIndex, handleChangeTab]}
                 isFullScreen={[isFullScreen, handleChangeFullScreen]}
                 label={formatted}
                 resource={resource}
                 showValidationRef={showValidationRef}
+                tab={tabs[tab].component}
                 onChange={(data): void => {
                   if (typeof data === 'function') setLastData(() => data);
                   else setResourceData({ ...resourceData, data });
                 }}
+                onSetCleanup={handleSetCleanup}
               />
             </ReadOnlyContext.Provider>
           </Form>
@@ -280,6 +310,24 @@ export function AppResourceEditor({
                           'spAppResourceDir',
                           resourceDirectory.resource_uri
                         );
+
+                      const subType = f.maybe(
+                        toResource(
+                          serializeResource(appResource),
+                          'SpAppResource'
+                        ),
+                        getAppResourceType
+                      );
+                      // Set a mime type if it's not set yet
+                      if (typeof subType === 'string') {
+                        const type = appResourceSubTypes[subType];
+                        if (typeof type.name === 'string')
+                          appResource.set(
+                            'mimeType',
+                            type.mimeType ?? appResource.get('mimeType')
+                          );
+                      }
+
                       await appResource.save();
                       const resource = serializeResource(appResource);
 
@@ -300,9 +348,11 @@ export function AppResourceEditor({
                           ) ?? null,
                       });
                       await appResourceData.save();
-                      await clearUrlCache(
-                        getAppResourceUrl(appResource.get('name'))
-                      );
+                      if (appResource.specifyTable.name === 'SpAppResource')
+                        await clearUrlCache(
+                          getAppResourceUrl(appResource.get('name'))
+                        );
+                      await cleanup?.();
 
                       setResourceData(
                         serializeResource(

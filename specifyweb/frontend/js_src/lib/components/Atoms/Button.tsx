@@ -110,6 +110,10 @@ export const Button = {
     'Button.Orange',
     `${className.niceButton} ${className.orangeButton}`
   ),
+  Specify: button(
+    'Button.Specify',
+    `${className.niceButton} ${className.specifyButton}`
+  ),
   Green: button(
     'Button.Green',
     `${className.niceButton} ${className.greenButton}`

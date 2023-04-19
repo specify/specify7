@@ -14,10 +14,13 @@ import type {
   SpAppResourceData,
   SpAppResourceDir,
   SpecifyUser,
-  SpViewSetObj as SpViewSetObject,
+  SpViewSetObj,
 } from '../DataModel/types';
+import { usePref } from '../UserPreferences/usePref';
+import { getAppResourceType } from './filtersHelpers';
 import { getAppResourceCount, getAppResourceMode } from './helpers';
 import { getAppResourceTree } from './tree';
+import { appResourceSubTypes } from './types';
 
 export type AppResources = {
   readonly directories: RA<SerializedResource<SpAppResourceDir>>;
@@ -25,10 +28,12 @@ export type AppResources = {
   readonly collections: RA<SerializedResource<Collection>>;
   readonly users: RA<SerializedResource<SpecifyUser>>;
   readonly appResources: RA<SerializedResource<SpAppResource>>;
-  readonly viewSets: RA<SerializedResource<SpViewSetObject>>;
+  readonly viewSets: RA<SerializedResource<SpViewSetObj>>;
 };
 
-export function useAppResources(): GetOrSet<AppResources | undefined> {
+export function useAppResources(
+  loadingScreen: boolean = true
+): GetOrSet<AppResources | undefined> {
   return useAsyncState(
     React.useCallback(
       async () =>
@@ -54,7 +59,7 @@ export function useAppResources(): GetOrSet<AppResources | undefined> {
         }),
       []
     ),
-    true
+    loadingScreen
   );
 }
 
@@ -72,16 +77,48 @@ export type AppResourcesTree = RA<{
    */
   readonly key: string;
   readonly directory: SerializedResource<SpAppResourceDir> | undefined;
-  readonly appResources: RA<SerializedResource<SpAppResource>>;
-  readonly viewSets: RA<SerializedResource<SpViewSetObject>>;
+  readonly appResources: RA<
+    SerializedResource<SpAppResource> & {
+      readonly label?: LocalizedString;
+    }
+  >;
+  readonly viewSets: RA<SerializedResource<SpViewSetObj>>;
   readonly subCategories: AppResourcesTree;
 }>;
 
 export function useResourcesTree(resources: AppResources): AppResourcesTree {
-  return React.useMemo<AppResourcesTree>(
-    () => getAppResourceTree(resources),
-    [resources]
+  const [localize] = usePref(
+    'appResources',
+    'appearance',
+    'localizeResourceNames'
   );
+  return React.useMemo<AppResourcesTree>(() => {
+    const tree = getAppResourceTree(resources);
+    return localize ? localizeTree(tree) : tree;
+  }, [resources, localize]);
+}
+
+const localizeTree = (tree: AppResourcesTree): AppResourcesTree =>
+  tree.map(({ appResources, subCategories, ...rest }) => ({
+    ...rest,
+    appResources: appResources.map(localizeResource),
+    subCategories: localizeTree(subCategories),
+  }));
+
+function localizeResource(
+  resource: SerializedResource<SpAppResource> & {
+    readonly label?: LocalizedString;
+  }
+): SerializedResource<SpAppResource> & { readonly label?: LocalizedString } {
+  const type = appResourceSubTypes[getAppResourceType(resource)];
+  // Check that resource of this type can only have one specific name
+  return typeof type.name === 'string'
+    ? {
+        ...resource,
+        // Then replace the name with a localized label unless it's already set
+        label: resource.label ?? type.label,
+      }
+    : resource;
 }
 
 export function useAppResourceCount(
@@ -97,7 +134,7 @@ export function useAppResourceCount(
  * Fetch resource contents
  */
 export function useAppResourceData(
-  resource: SerializedResource<SpAppResource | SpViewSetObject>,
+  resource: SerializedResource<SpAppResource | SpViewSetObj>,
   initialData: string | undefined
 ): {
   readonly resourceData: GetOrSet<
@@ -123,12 +160,13 @@ export function useAppResourceData(
           ? await fetchCollection('SpAppResourceData', {
               limit: 1,
               [relationshipName]: resource.id,
-            }).then(({ records }) =>
-              /*
-               * For some reason, app resource can have multiple app resource
-               * datas (but it never does in practice)
-               */
-              typeof records[0] === 'object' ? records[0] : newResource
+            }).then(
+              ({ records }) =>
+                /*
+                 * For some reason, app resource can have multiple app resource
+                 * datas (but it never does in practice)
+                 */
+                records[0] ?? newResource
             )
           : newResource;
       const newData = fixLineBreaks(dataResource.data ?? '');
@@ -147,7 +185,7 @@ const fixLineBreaks = (string: string): string =>
   string.replaceAll(/[\n\r]+/gu, '\n');
 
 export const getAppResourceExtension = (
-  resource: SerializedResource<SpAppResource | SpViewSetObject>
+  resource: SerializedResource<SpAppResource | SpViewSetObj>
 ): string =>
   resource._tableName === 'SpViewSetObj'
     ? 'xml'
@@ -156,7 +194,8 @@ export const getAppResourceExtension = (
 function getResourceExtension(
   resource: SerializedResource<SpAppResource>
 ): 'jrxml' | 'json' | 'properties' | 'txt' | 'xml' {
-  const mimeType = resource.mimeType?.toLowerCase() ?? '';
+  const type = appResourceSubTypes[getAppResourceType(resource)];
+  const mimeType = resource.mimeType?.toLowerCase() ?? type?.mimeType ?? '';
   if (mimeType in mimeMapper) return mimeMapper[mimeType];
   else if (mimeType.startsWith('jrxml')) return 'jrxml';
   else if (resource.name === 'preferences' && mimeType === '')

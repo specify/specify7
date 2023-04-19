@@ -41,7 +41,7 @@ test('XML to JSON and back', () => {
     },
   };
 
-  const newParsed = fromSimpleXmlNode(parsed, newSimple);
+  const newParsed = fromSimpleXmlNode(newSimple);
   const newRawXml = `<test a="b">
 \t<child1 b="c">
 \t\t<!-- comment <b /> -->
@@ -71,7 +71,7 @@ test('Unknown XML nodes are preserved', () => {
       b: simple.children.b,
     },
   };
-  const newParsed = fromSimpleXmlNode(parsed, newSimple);
+  const newParsed = fromSimpleXmlNode(newSimple);
   expect(jsonToXml(newParsed).outerHTML).toBe(rawXml);
 });
 

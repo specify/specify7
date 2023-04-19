@@ -8,14 +8,12 @@ import { resourcesText } from '../../localization/resources';
 import type { GetOrSet, WritableArray } from '../../utils/types';
 import { parseXml } from '../AppResources/codeMirrorLinters';
 import type { AppResourceTabProps } from '../AppResources/TabDefinitions';
-import { error } from '../Errors/assert';
 import { NotFoundView } from '../Router/NotFoundView';
 import { useStableLocation } from '../Router/RouterState';
 import type { BaseSpec, SpecToJson, Syncer } from '../Syncer';
 import { syncers } from '../Syncer/syncers';
 import type { SimpleXmlNode, XmlNode } from '../Syncer/xmlToJson';
 import { toSimpleXmlNode, xmlToJson } from '../Syncer/xmlToJson';
-import { JsonEditorForXml } from './JsonEditor';
 import { formattersRoutes } from './Routes';
 import { formattersSpec } from './spec';
 
@@ -43,9 +41,7 @@ export function XmlEditor<SPEC extends BaseSpec<SimpleXmlNode>>({
   context: Context,
   ...rest
 }: XmlEditorProps<SPEC>): JSX.Element {
-  return rest.props.editorType === 'json' ? (
-    <JsonEditorForXml {...rest} />
-  ) : (
+  return (
     <WrappedXmlEditor {...rest}>
       {(props): JSX.Element => (
         <Context.Provider value={props}>
@@ -88,13 +84,9 @@ export function WrappedXmlEditor<SPEC extends BaseSpec<SimpleXmlNode>>({
   const parsed = useTriggerState(
     React.useMemo(
       () =>
-        serializer(
-          toSimpleXmlNode(
-            typeof xmlNode === 'object'
-              ? xmlNode
-              : error('Unable to edit invalid XML')
-          )
-        ),
+        typeof xmlNode === 'object'
+          ? serializer(toSimpleXmlNode(xmlNode))
+          : (undefined as never),
       [serializer, xmlNode]
     )
   );

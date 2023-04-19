@@ -1,15 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`formatters are fetched and parsed correctly 1`] = `
+exports[`Formatters are fetched and parsed correctly 1`] = `
 {
   "aggregators": [
     {
       "formatter": "AccessionAgent",
       "isDefault": true,
-      "limit": undefined,
       "name": "AccessionAgent",
       "separator": "; ",
-      "sortField": undefined,
       "suffix": "",
       "table": "[table AccessionAgent]",
       "title": "AccessionAgent",
@@ -17,7 +15,6 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     {
       "formatter": "identity",
       "isDefault": true,
-      "limit": undefined,
       "name": "AccessionAttachment",
       "separator": "; ",
       "sortField": [
@@ -30,10 +27,8 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     {
       "formatter": "AccessionAuthorization",
       "isDefault": true,
-      "limit": undefined,
       "name": "AccessionAuthorization",
       "separator": "; ",
-      "sortField": undefined,
       "suffix": "",
       "table": "[table AccessionAuthorization]",
       "title": "AccessionAuthorization",
@@ -41,10 +36,8 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     {
       "formatter": "Address",
       "isDefault": true,
-      "limit": undefined,
       "name": "Address",
       "separator": "; ",
-      "sortField": undefined,
       "suffix": "",
       "table": "[table Address]",
       "title": "Address",
@@ -52,7 +45,6 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     {
       "formatter": "identity",
       "isDefault": true,
-      "limit": undefined,
       "name": "AgentAttachment",
       "separator": "; ",
       "sortField": [
@@ -65,7 +57,6 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     {
       "formatter": "Author",
       "isDefault": true,
-      "limit": undefined,
       "name": "Author",
       "separator": "; ",
       "sortField": [
@@ -78,7 +69,6 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     {
       "formatter": "identity",
       "isDefault": true,
-      "limit": undefined,
       "name": "BorrowAttachment",
       "separator": "; ",
       "sortField": [
@@ -94,7 +84,6 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       "limit": 0,
       "name": "Citation",
       "separator": " | ",
-      "sortField": undefined,
       "suffix": "",
       "table": "[table CollectionObjectCitation]",
       "title": "Citation",
@@ -102,7 +91,6 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     {
       "formatter": "identity",
       "isDefault": true,
-      "limit": undefined,
       "name": "CollectingEventAttachment",
       "separator": "; ",
       "sortField": [
@@ -115,10 +103,8 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     {
       "formatter": "CollectionObject",
       "isDefault": true,
-      "limit": undefined,
       "name": "CollectionObject",
       "separator": "; ",
-      "sortField": undefined,
       "suffix": "",
       "table": "[table CollectionObject]",
       "title": "CollectionObject",
@@ -139,7 +125,6 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     {
       "formatter": "Collector",
       "isDefault": true,
-      "limit": undefined,
       "name": "Collector",
       "separator": "; ",
       "sortField": [
@@ -152,7 +137,6 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     {
       "formatter": "identity",
       "isDefault": true,
-      "limit": undefined,
       "name": "ConservDescriptionAttachment",
       "separator": "; ",
       "sortField": [
@@ -165,7 +149,6 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     {
       "formatter": "identity",
       "isDefault": true,
-      "limit": undefined,
       "name": "ConservEventAttachment",
       "separator": "; ",
       "sortField": [
@@ -178,7 +161,6 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     {
       "formatter": "identity",
       "isDefault": true,
-      "limit": undefined,
       "name": "DNASequenceAttachment",
       "separator": "; ",
       "sortField": [
@@ -191,7 +173,6 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     {
       "formatter": "identity",
       "isDefault": true,
-      "limit": undefined,
       "name": "DNASequencingRunAttachment",
       "separator": "; ",
       "sortField": [
@@ -207,7 +188,6 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       "limit": 0,
       "name": "DNAsequence",
       "separator": "| ",
-      "sortField": undefined,
       "suffix": "",
       "table": "[table DNASequence]",
       "title": "DNAsequence",
@@ -218,7 +198,6 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       "limit": 1,
       "name": "Determination",
       "separator": "; ",
-      "sortField": undefined,
       "suffix": "",
       "table": "[table Determination]",
       "title": "Determination",
@@ -226,7 +205,6 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     {
       "formatter": "identity",
       "isDefault": true,
-      "limit": undefined,
       "name": "FieldNotebookAttachment",
       "separator": "; ",
       "sortField": [
@@ -239,7 +217,6 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     {
       "formatter": "identity",
       "isDefault": true,
-      "limit": undefined,
       "name": "FieldNotebookPageAttachment",
       "separator": "; ",
       "sortField": [
@@ -252,7 +229,6 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     {
       "formatter": "identity",
       "isDefault": true,
-      "limit": undefined,
       "name": "FieldNotebookPageSetAttachment",
       "separator": "; ",
       "sortField": [
@@ -265,7 +241,6 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     {
       "formatter": "FundingAgent",
       "isDefault": true,
-      "limit": undefined,
       "name": "FundingAgent",
       "separator": "; ",
       "sortField": [
@@ -278,10 +253,8 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     {
       "formatter": "LoanAgent",
       "isDefault": true,
-      "limit": undefined,
       "name": "GiftAttachment",
       "separator": "; ",
-      "sortField": undefined,
       "suffix": "",
       "table": "[table GiftAttachment]",
       "title": "GiftAttachment",
@@ -289,10 +262,8 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     {
       "formatter": "LoanAgent",
       "isDefault": true,
-      "limit": undefined,
       "name": "LoanAgent",
       "separator": "; ",
-      "sortField": undefined,
       "suffix": "",
       "table": "[table LoanAgent]",
       "title": "LoanAgent",
@@ -300,7 +271,6 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     {
       "formatter": "identity",
       "isDefault": true,
-      "limit": undefined,
       "name": "LoanAttachment",
       "separator": "; ",
       "sortField": [
@@ -316,7 +286,6 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       "limit": 0,
       "name": "LoanPrep",
       "separator": "; ",
-      "sortField": undefined,
       "suffix": "",
       "table": "[table LoanPreparation]",
       "title": "LoanPrep",
@@ -327,7 +296,6 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       "limit": 0,
       "name": "LoanReturnPrep",
       "separator": "; ",
-      "sortField": undefined,
       "suffix": "",
       "table": "[table LoanReturnPreparation]",
       "title": "Loan Return Prep",
@@ -335,7 +303,6 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     {
       "formatter": "identity",
       "isDefault": true,
-      "limit": undefined,
       "name": "LocalityAttachment",
       "separator": "; ",
       "sortField": [
@@ -348,7 +315,6 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     {
       "formatter": "identity",
       "isDefault": true,
-      "limit": undefined,
       "name": "PermitAttachment",
       "separator": "; ",
       "sortField": [
@@ -361,10 +327,8 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     {
       "formatter": "Preparation",
       "isDefault": true,
-      "limit": undefined,
       "name": "Preparation",
       "separator": "; ",
-      "sortField": undefined,
       "suffix": "",
       "table": "[table Preparation]",
       "title": "Preparation",
@@ -372,7 +336,6 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     {
       "formatter": "identity",
       "isDefault": true,
-      "limit": undefined,
       "name": "PreparationAttachment",
       "separator": "; ",
       "sortField": [
@@ -385,7 +348,6 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     {
       "formatter": "identity",
       "isDefault": true,
-      "limit": undefined,
       "name": "ReferenceWorkAttachment",
       "separator": "; ",
       "sortField": [
@@ -398,7 +360,6 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     {
       "formatter": "identity",
       "isDefault": true,
-      "limit": undefined,
       "name": "RepositoryAgreementAttachment",
       "separator": "; ",
       "sortField": [
@@ -411,7 +372,6 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     {
       "formatter": "identity",
       "isDefault": true,
-      "limit": undefined,
       "name": "TaxonAttachment",
       "separator": "; ",
       "sortField": [
@@ -438,22 +398,16 @@ exports[`formatters are fetched and parsed correctly 1`] = `
   "formatters": [
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField Accession.accessionNumber]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -465,31 +419,23 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[relationship AccessionAgent.agent]",
                 ],
-                "fieldFormatter": undefined,
                 "formatter": "Agent",
                 "separator": "",
               },
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField AccessionAgent.role]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": " - ",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -501,23 +447,17 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[relationship AccessionAuthorization.accession]",
                   "[literalField Accession.accessionNumber]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -529,58 +469,40 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField Address.address]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "",
               },
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField Address.address2]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": " ",
               },
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField Address.city]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": ", ",
               },
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField Address.state]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": ", ",
               },
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField Address.postalCode]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": " ",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -595,17 +517,13 @@ exports[`formatters are fetched and parsed correctly 1`] = `
         "conditionField": [
           "[literalField Agent.agentType]",
         ],
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField Agent.lastName]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "",
               },
             ],
@@ -614,30 +532,21 @@ exports[`formatters are fetched and parsed correctly 1`] = `
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField Agent.lastName]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "",
               },
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField Agent.firstName]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": ", ",
               },
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField Agent.middleInitial]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": " ",
               },
             ],
@@ -646,12 +555,9 @@ exports[`formatters are fetched and parsed correctly 1`] = `
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField Agent.lastName]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "",
               },
             ],
@@ -660,12 +566,9 @@ exports[`formatters are fetched and parsed correctly 1`] = `
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField Agent.lastName]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "",
               },
             ],
@@ -681,22 +584,16 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField Attachment.attachmentLocation]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "http://biimages.biodiversity.ku.edu/static/Ichthyology/originals/",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -708,22 +605,17 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[relationship Author.agent]",
                 ],
-                "fieldFormatter": undefined,
                 "formatter": "Agent",
                 "separator": "",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -735,22 +627,16 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField AutoNumberingScheme.schemeName]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -762,22 +648,16 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField Borrow.receivedDate]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -789,23 +669,17 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[relationship CollectionObjectAttachment.attachment]",
                   "[literalField Attachment.attachmentLocation]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "http://biimages.biodiversity.ku.edu/static/Ichthyology/originals/",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -817,23 +691,17 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[relationship CollectionObjectCitation.referenceWork]",
                   "[literalField ReferenceWork.url]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -845,72 +713,51 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField CollectingEvent.stationFieldNumber]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "",
               },
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField CollectingEvent.startDate]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": ": ",
               },
               {
-                "aggregator": undefined,
                 "field": [
                   "[relationship CollectingEvent.locality]",
                   "[relationship Locality.geography]",
                   "[literalField Geography.fullName]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": ": ",
               },
               {
-                "aggregator": undefined,
                 "field": [
                   "[relationship CollectingEvent.locality]",
                   "[literalField Locality.localityName]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": ": ",
               },
               {
-                "aggregator": undefined,
                 "field": [
                   "[relationship CollectingEvent.locality]",
                   "[literalField Locality.latitude1]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": ": ",
               },
               {
-                "aggregator": undefined,
                 "field": [
                   "[relationship CollectingEvent.locality]",
                   "[literalField Locality.longitude1]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": ": ",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -922,7 +769,6 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
         "external": {
           "attributes": {
             "class": "edu.ku.brc.specify.ui.CollectingEventDataObjFmt",
@@ -941,7 +787,6 @@ exports[`formatters are fetched and parsed correctly 1`] = `
             ],
           },
           "tagName": "external",
-          "text": undefined,
           "type": "SimpleXmlNode",
         },
         "fields": [],
@@ -954,31 +799,22 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField CollectingEvent.stationFieldNumber]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "",
               },
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField CollectingEvent.startDate]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": ", ",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -990,7 +826,6 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
         "external": {
           "attributes": {
             "class": "edu.ku.brc.specify.ui.CollectingEventDataObjFmt",
@@ -1009,7 +844,6 @@ exports[`formatters are fetched and parsed correctly 1`] = `
             ],
           },
           "tagName": "external",
-          "text": undefined,
           "type": "SimpleXmlNode",
         },
         "fields": [],
@@ -1022,40 +856,28 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField CollectingTrip.text1]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "",
               },
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField CollectingTrip.text2]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": ": ",
               },
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField CollectingTrip.number1]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": ": ",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -1067,22 +889,16 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField Collection.collectionName]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -1094,22 +910,17 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField CollectionObject.catalogNumber]",
                 ],
                 "fieldFormatter": "CatalogNumber",
-                "formatter": undefined,
                 "separator": "",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -1121,22 +932,16 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField CollectionRelType.name]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -1148,22 +953,17 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[relationship Collector.agent]",
                 ],
-                "fieldFormatter": undefined,
                 "formatter": "Agent",
                 "separator": "",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -1175,22 +975,16 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField Container.name]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -1202,22 +996,16 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField DNAPrimer.primerDesignator]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -1229,22 +1017,16 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField DNASequence.text2]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "https://www.ncbi.nlm.nih.gov/nuccore/",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -1256,22 +1038,16 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField DataType.name]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -1283,22 +1059,16 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField Deaccession.deaccessionNumber]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -1313,18 +1083,14 @@ exports[`formatters are fetched and parsed correctly 1`] = `
         "conditionField": [
           "[literalField Determination.isCurrent]",
         ],
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[relationship Determination.preferredTaxon]",
                   "[literalField Taxon.fullName]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "",
               },
             ],
@@ -1333,13 +1099,10 @@ exports[`formatters are fetched and parsed correctly 1`] = `
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[relationship Determination.taxon]",
                   "[literalField Taxon.fullName]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "",
               },
             ],
@@ -1355,22 +1118,16 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField Discipline.name]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -1382,22 +1139,16 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField Division.name]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -1409,33 +1160,24 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField FieldNotebookPage.pageNumber]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "",
               },
               {
-                "aggregator": undefined,
                 "field": [
                   "[relationship FieldNotebookPage.pageSet]",
                   "[relationship FieldNotebookPageSet.fieldNotebook]",
                   "[literalField FieldNotebook.name]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": " - ",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -1447,22 +1189,17 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[relationship FundingAgent.agent]",
                 ],
-                "fieldFormatter": undefined,
                 "formatter": "Agent",
                 "separator": "",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -1474,22 +1211,16 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField Geography.fullName]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -1501,22 +1232,16 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField GeographyTreeDef.name]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -1528,22 +1253,16 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField GeographyTreeDefItem.name]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -1555,22 +1274,16 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField GeologicTimePeriod.fullName]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -1582,22 +1295,16 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField GeologicTimePeriodTreeDef.name]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -1609,22 +1316,16 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField Journal.journalName]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -1636,22 +1337,16 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField LithoStrat.fullName]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -1663,22 +1358,16 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField LithoStratTreeDef.name]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -1690,22 +1379,16 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField LithoStratTreeDefItem.name]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -1717,22 +1400,16 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField Loan.loanNumber]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -1744,31 +1421,23 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[relationship LoanAgent.agent]",
                 ],
-                "fieldFormatter": undefined,
                 "formatter": "Agent",
                 "separator": "",
               },
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField LoanAgent.role]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": " - ",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -1780,8 +1449,6 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [],
         "isSingle": true,
       },
@@ -1792,33 +1459,25 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[relationship LoanReturnPreparation.loanPreparation]",
                   "[relationship LoanPreparation.preparation]",
                   "[relationship Preparation.prepType]",
                 ],
-                "fieldFormatter": undefined,
                 "formatter": "PrepType",
                 "separator": "",
               },
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField LoanReturnPreparation.quantityResolved]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": " - ",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -1830,50 +1489,35 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField Locality.localityName]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "",
               },
               {
-                "aggregator": undefined,
                 "field": [
                   "[relationship Locality.geography]",
                   "[literalField Geography.fullName]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "; ",
               },
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField Locality.latitude1]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "; ",
               },
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField Locality.longitude1]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": ", ",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -1885,7 +1529,6 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
         "external": {
           "attributes": {
             "class": "edu.ku.brc.specify.ui.LocalityLatLonFormatter",
@@ -1931,7 +1574,6 @@ exports[`formatters are fetched and parsed correctly 1`] = `
             ],
           },
           "tagName": "external",
-          "text": undefined,
           "type": "SimpleXmlNode",
         },
         "fields": [],
@@ -1944,7 +1586,6 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
         "external": {
           "attributes": {
             "class": "edu.ku.brc.specify.ui.LocalityLatLonFormatter",
@@ -1990,7 +1631,6 @@ exports[`formatters are fetched and parsed correctly 1`] = `
             ],
           },
           "tagName": "external",
-          "text": undefined,
           "type": "SimpleXmlNode",
         },
         "fields": [],
@@ -2003,42 +1643,30 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField PaleoContext.paleoContextName]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "",
               },
               {
-                "aggregator": undefined,
                 "field": [
                   "[relationship PaleoContext.chronosStrat]",
                   "[literalField GeologicTimePeriod.fullName]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": ", ",
               },
               {
-                "aggregator": undefined,
                 "field": [
                   "[relationship PaleoContext.lithoStrat]",
                   "[literalField LithoStrat.fullName]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": ", ",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -2050,22 +1678,16 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField Permit.permitNumber]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -2077,22 +1699,16 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField PrepType.name]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -2104,31 +1720,23 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[relationship Preparation.prepType]",
                 ],
-                "fieldFormatter": undefined,
                 "formatter": "PrepType",
                 "separator": "",
               },
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField Preparation.countAmt]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": " - ",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -2140,22 +1748,16 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField ReferenceWork.title]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -2167,40 +1769,28 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField Shipment.shipmentDate]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "",
               },
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField Shipment.shipmentNumber]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": " - ",
               },
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField Shipment.shipmentMethod]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": " - ",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -2212,22 +1802,16 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField Storage.fullName]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -2239,22 +1823,16 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField StorageTreeDef.name]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -2266,22 +1844,16 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField StorageTreeDefItem.name]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -2293,22 +1865,16 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField Taxon.fullName]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -2320,22 +1886,17 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[relationship TaxonCitation.referenceWork]",
                 ],
-                "fieldFormatter": undefined,
                 "formatter": "ReferenceWork",
                 "separator": "",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -2347,22 +1908,16 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField TaxonTreeDef.name]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -2374,22 +1929,16 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField TaxonTreeDefItem.name]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -2401,49 +1950,34 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField Project.projectNumber]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "institutionCode=",
               },
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField Project.grantAgency]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "&collectionCode=",
               },
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField Project.projectName]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "&catalogNumber=",
               },
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField Project.url]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "&accesspoint=",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -2455,49 +1989,34 @@ exports[`formatters are fetched and parsed correctly 1`] = `
     },
     {
       "definition": {
-        "conditionField": undefined,
-        "external": undefined,
         "fields": [
           {
             "fields": [
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField VoucherRelationship.institutionCode]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "institutionCode=",
               },
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField VoucherRelationship.collectionCode]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "&collectionCode=",
               },
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField VoucherRelationship.voucherNumber]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "&catalogNumber=",
               },
               {
-                "aggregator": undefined,
                 "field": [
                   "[literalField VoucherRelationship.urlLink]",
                 ],
-                "fieldFormatter": undefined,
-                "formatter": undefined,
                 "separator": "&accesspoint=",
               },
             ],
-            "value": undefined,
           },
         ],
         "isSingle": true,
@@ -2507,6 +2026,811 @@ exports[`formatters are fetched and parsed correctly 1`] = `
       "table": "[table VoucherRelationship]",
       "title": "VoucherRelationship",
     },
+  ],
+}
+`;
+
+exports[`getMainTableFields 1`] = `
+{
+  "Accession": [
+    "accessionNumber",
+    "accessionCondition",
+    "verbatimDate",
+  ],
+  "AccessionAgent": [
+    "role",
+  ],
+  "AccessionAttachment": [],
+  "AccessionAuthorization": [],
+  "AccessionCitation": [],
+  "Address": [
+    "address3",
+    "address4",
+    "address5",
+    "positionHeld",
+    "typeOfAddr",
+  ],
+  "AddressOfRecord": [],
+  "Agent": [
+    "initials",
+    "suffix",
+    "verbatimDate1",
+    "verbatimDate2",
+  ],
+  "AgentAttachment": [],
+  "AgentGeography": [
+    "role",
+  ],
+  "AgentIdentifier": [
+    "identifier",
+  ],
+  "AgentSpecialty": [
+    "specialtyName",
+  ],
+  "AgentVariant": [
+    "country",
+    "language",
+    "variant",
+  ],
+  "Appraisal": [
+    "appraisalNumber",
+  ],
+  "Attachment": [
+    "attachmentLocation",
+    "copyrightDate",
+    "copyrightHolder",
+    "credit",
+    "dateImaged",
+    "license",
+    "mimeType",
+  ],
+  "AttachmentImageAttribute": [
+    "creativeCommons",
+  ],
+  "AttachmentMetadata": [
+    "name",
+    "value",
+  ],
+  "AttachmentTag": [
+    "tag",
+  ],
+  "AttributeDef": [
+    "fieldName",
+  ],
+  "Author": [],
+  "AutoNumberingScheme": [
+    "formatName",
+    "schemeClassName",
+    "schemeName",
+  ],
+  "Borrow": [
+    "invoiceNumber",
+    "status",
+  ],
+  "BorrowAgent": [
+    "role",
+  ],
+  "BorrowAttachment": [],
+  "BorrowMaterial": [
+    "materialNumber",
+  ],
+  "BorrowReturnMaterial": [],
+  "CollectingEvent": [
+    "endDateVerbatim",
+    "reservedText1",
+    "reservedText2",
+    "startDateVerbatim",
+    "stationFieldNumberModifier1",
+    "stationFieldNumberModifier2",
+    "stationFieldNumberModifier3",
+    "uniqueIdentifier",
+  ],
+  "CollectingEventAttachment": [],
+  "CollectingEventAttr": [
+    "strValue",
+  ],
+  "CollectingEventAttribute": [],
+  "CollectingEventAuthorization": [],
+  "CollectingTrip": [
+    "cruise",
+    "endDateVerbatim",
+    "sponsor",
+    "startDateVerbatim",
+    "text3",
+    "text4",
+    "vessel",
+  ],
+  "CollectingTripAttachment": [],
+  "CollectingTripAttribute": [],
+  "CollectingTripAuthorization": [],
+  "Collection": [
+    "catalogNumFormatName",
+    "webPortalURI",
+    "webSiteURI",
+  ],
+  "CollectionObject": [
+    "name",
+    "availability",
+    "catalogedDateVerbatim",
+    "modifier",
+    "notifications",
+    "objectCondition",
+    "reservedText3",
+    "restrictions",
+    "uniqueIdentifier",
+  ],
+  "CollectionObjectAttachment": [],
+  "CollectionObjectAttr": [
+    "strValue",
+  ],
+  "CollectionObjectAttribute": [
+    "direction",
+    "distanceUnits",
+    "positionState",
+    "text15",
+    "text9",
+  ],
+  "CollectionObjectCitation": [],
+  "CollectionObjectProperty": [
+    "text10",
+    "text11",
+    "text12",
+    "text13",
+    "text14",
+    "text15",
+    "text16",
+    "text17",
+    "text18",
+    "text19",
+    "text2",
+    "text20",
+    "text21",
+    "text22",
+    "text23",
+    "text24",
+    "text25",
+    "text26",
+    "text27",
+    "text28",
+    "text29",
+    "text3",
+    "text30",
+    "text4",
+    "text5",
+    "text6",
+    "text7",
+    "text8",
+    "text9",
+  ],
+  "CollectionRelType": [],
+  "CollectionRelationship": [
+    "text1",
+    "text2",
+  ],
+  "Collector": [],
+  "CommonNameTx": [
+    "author",
+    "country",
+    "language",
+    "variant",
+  ],
+  "CommonNameTxCitation": [
+    "figureNumber",
+    "pageNumber",
+    "plateNumber",
+  ],
+  "ConservDescription": [],
+  "ConservDescriptionAttachment": [],
+  "ConservEvent": [],
+  "ConservEventAttachment": [],
+  "Container": [],
+  "DNAPrimer": [
+    "primerReferenceLinkReverse",
+  ],
+  "DNASequence": [
+    "boldTranslationMatrix",
+    "genbankAccessionNumber",
+    "text3",
+  ],
+  "DNASequenceAttachment": [],
+  "DNASequencingRun": [
+    "pcrPrimerSequence5_3",
+    "sequencePrimerSequence5_3",
+    "text1",
+    "text2",
+    "text3",
+  ],
+  "DNASequencingRunAttachment": [],
+  "DNASequencingRunCitation": [
+    "figureNumber",
+    "pageNumber",
+    "plateNumber",
+  ],
+  "DataType": [],
+  "Deaccession": [
+    "deaccessionNumber",
+    "type",
+  ],
+  "DeaccessionAgent": [
+    "role",
+  ],
+  "DeaccessionAttachment": [],
+  "Determination": [
+    "alternateName",
+    "nameUsage",
+    "addendum",
+    "confidence",
+    "featureOrBasis",
+    "method",
+    "qualifier",
+    "subSpQualifier",
+    "text4",
+    "text5",
+    "text6",
+    "text7",
+    "text8",
+    "varQualifier",
+  ],
+  "DeterminationCitation": [
+    "figureNumber",
+    "pageNumber",
+    "plateNumber",
+  ],
+  "Determiner": [],
+  "Discipline": [
+    "regNumber",
+  ],
+  "Disposal": [
+    "disposalNumber",
+  ],
+  "DisposalAgent": [
+    "role",
+  ],
+  "DisposalAttachment": [],
+  "DisposalPreparation": [],
+  "Division": [
+    "discipline",
+    "regNumber",
+  ],
+  "ExchangeIn": [
+    "srcGeography",
+    "srcTaxonomy",
+  ],
+  "ExchangeInAttachment": [],
+  "ExchangeInPrep": [],
+  "ExchangeOut": [
+    "exchangeOutNumber",
+    "srcGeography",
+    "srcTaxonomy",
+  ],
+  "ExchangeOutAttachment": [],
+  "ExchangeOutPrep": [],
+  "Exsiccata": [
+    "title",
+  ],
+  "ExsiccataItem": [],
+  "Extractor": [],
+  "FieldNotebook": [],
+  "FieldNotebookAttachment": [],
+  "FieldNotebookPage": [
+    "pageNumber",
+  ],
+  "FieldNotebookPageAttachment": [],
+  "FieldNotebookPageSet": [
+    "method",
+  ],
+  "FieldNotebookPageSetAttachment": [],
+  "FundingAgent": [],
+  "GeoCoordDetail": [
+    "geoRefAccuracyUnits",
+    "geoRefVerificationStatus",
+    "noGeoRefBecause",
+    "originalCoordSystem",
+    "protocol",
+    "source",
+    "validation",
+  ],
+  "Geography": [
+    "name",
+    "commonName",
+    "abbrev",
+    "text1",
+    "text2",
+  ],
+  "GeographyTreeDef": [
+    "name",
+  ],
+  "GeographyTreeDefItem": [
+    "name",
+  ],
+  "GeologicTimePeriod": [
+    "name",
+    "standard",
+    "text1",
+    "text2",
+  ],
+  "GeologicTimePeriodTreeDef": [
+    "name",
+  ],
+  "GeologicTimePeriodTreeDefItem": [
+    "name",
+  ],
+  "Gift": [
+    "giftNumber",
+    "receivedComments",
+    "srcGeography",
+    "srcTaxonomy",
+    "status",
+    "text5",
+  ],
+  "GiftAgent": [
+    "role",
+  ],
+  "GiftAttachment": [],
+  "GiftPreparation": [],
+  "GroupPerson": [],
+  "InfoRequest": [
+    "firstName",
+    "lastName",
+    "email",
+    "institution",
+  ],
+  "Institution": [
+    "iconURI",
+    "regNumber",
+  ],
+  "InstitutionNetwork": [],
+  "Journal": [
+    "issn",
+    "text1",
+  ],
+  "LatLonPolygon": [
+    "name",
+  ],
+  "LatLonPolygonPnt": [],
+  "LithoStrat": [
+    "name",
+  ],
+  "LithoStratTreeDef": [
+    "name",
+  ],
+  "LithoStratTreeDefItem": [
+    "name",
+  ],
+  "Loan": [
+    "loanNumber",
+    "purposeOfLoan",
+    "receivedComments",
+    "status",
+  ],
+  "LoanAgent": [
+    "role",
+  ],
+  "LoanAttachment": [],
+  "LoanPreparation": [],
+  "LoanReturnPreparation": [],
+  "Locality": [
+    "localityName",
+    "namedPlace",
+    "relationToNamedPlace",
+    "shortName",
+    "originalElevationUnit",
+    "uniqueIdentifier",
+    "verbatimElevation",
+    "verbatimLatitude",
+    "verbatimLongitude",
+  ],
+  "LocalityAttachment": [],
+  "LocalityCitation": [
+    "figureNumber",
+    "pageNumber",
+    "plateNumber",
+  ],
+  "LocalityDetail": [
+    "nationalParkName",
+    "baseMeridian",
+    "endDepthUnit",
+    "endDepthVerbatim",
+    "hucCode",
+    "mgrsZone",
+    "paleoLat",
+    "paleoLng",
+    "rangeDirection",
+    "startDepthUnit",
+    "startDepthVerbatim",
+    "townshipDirection",
+    "utmDatum",
+  ],
+  "LocalityNameAlias": [
+    "name",
+    "source",
+  ],
+  "MaterialSample": [
+    "sraBioProjectID",
+    "sraBioSampleID",
+  ],
+  "MorphBankView": [
+    "viewName",
+    "developmentState",
+    "form",
+    "imagingPreparationTechnique",
+    "imagingTechnique",
+    "sex",
+    "specimenPart",
+    "viewAngle",
+  ],
+  "OtherIdentifier": [
+    "identifier",
+  ],
+  "PaleoContext": [
+    "text2",
+    "text3",
+    "text4",
+    "text5",
+  ],
+  "PcrPerson": [],
+  "Permit": [
+    "permitNumber",
+  ],
+  "PermitAttachment": [],
+  "PickList": [
+    "name",
+    "filterFieldName",
+    "filterValue",
+  ],
+  "PickListItem": [
+    "title",
+  ],
+  "PrepType": [
+    "name",
+  ],
+  "Preparation": [
+    "barCode",
+    "description",
+    "sampleNumber",
+    "status",
+    "text12",
+    "text13",
+  ],
+  "PreparationAttachment": [],
+  "PreparationAttr": [
+    "strValue",
+  ],
+  "PreparationAttribute": [
+    "text11",
+    "text12",
+    "text13",
+    "text14",
+    "text15",
+    "text16",
+    "text17",
+    "text18",
+    "text19",
+    "text20",
+    "text21",
+    "text22",
+    "text23",
+    "text24",
+    "text25",
+    "text26",
+    "text3",
+    "text4",
+    "text5",
+    "text6",
+    "text7",
+    "text8",
+    "text9",
+  ],
+  "PreparationProperty": [
+    "text10",
+    "text11",
+    "text12",
+    "text13",
+    "text14",
+    "text15",
+    "text16",
+    "text17",
+    "text18",
+    "text19",
+    "text2",
+    "text20",
+    "text21",
+    "text22",
+    "text23",
+    "text24",
+    "text25",
+    "text26",
+    "text27",
+    "text28",
+    "text29",
+    "text3",
+    "text30",
+    "text4",
+    "text5",
+    "text6",
+    "text7",
+    "text8",
+    "text9",
+  ],
+  "Project": [
+    "projectName",
+    "url",
+  ],
+  "RecordSet": [
+    "name",
+  ],
+  "RecordSetItem": [],
+  "ReferenceWork": [
+    "title",
+    "isbn",
+  ],
+  "ReferenceWorkAttachment": [],
+  "RepositoryAgreement": [
+    "repositoryAgreementNumber",
+    "text1",
+    "text2",
+    "text3",
+  ],
+  "RepositoryAgreementAttachment": [],
+  "Shipment": [
+    "shipmentNumber",
+    "insuredForAmount",
+    "weight",
+  ],
+  "SpAppResource": [
+    "name",
+    "description",
+    "metaData",
+    "mimeType",
+  ],
+  "SpAppResourceData": [],
+  "SpAppResourceDir": [
+    "disciplineType",
+    "userType",
+  ],
+  "SpAuditLog": [],
+  "SpAuditLogField": [
+    "fieldName",
+  ],
+  "SpExportSchema": [
+    "schemaName",
+    "description",
+    "schemaVersion",
+  ],
+  "SpExportSchemaItem": [
+    "fieldName",
+    "dataType",
+    "description",
+    "formatter",
+  ],
+  "SpExportSchemaItemMapping": [
+    "remarks",
+  ],
+  "SpExportSchemaMapping": [
+    "mappingName",
+    "description",
+  ],
+  "SpFieldValueDefault": [
+    "fieldName",
+    "tableName",
+    "strValue",
+  ],
+  "SpLocaleContainer": [
+    "name",
+    "pickListName",
+    "aggregator",
+    "defaultUI",
+    "format",
+    "type",
+  ],
+  "SpLocaleContainerItem": [
+    "name",
+    "pickListName",
+    "webLinkName",
+    "format",
+    "type",
+  ],
+  "SpLocaleItemStr": [
+    "language",
+    "text",
+    "country",
+    "variant",
+  ],
+  "SpPermission": [
+    "name",
+    "permissionClass",
+    "actions",
+  ],
+  "SpPrincipal": [
+    "name",
+    "groupSubClass",
+    "groupType",
+  ],
+  "SpQuery": [
+    "contextName",
+    "name",
+  ],
+  "SpQueryField": [
+    "fieldName",
+    "formatName",
+    "stringId",
+    "tableList",
+    "columnAlias",
+  ],
+  "SpReport": [
+    "name",
+  ],
+  "SpSymbiotaInstance": [],
+  "SpTaskSemaphore": [
+    "machineName",
+    "taskName",
+    "context",
+  ],
+  "SpVersion": [
+    "appName",
+    "appVersion",
+    "schemaVersion",
+  ],
+  "SpViewSetObj": [
+    "name",
+    "fileName",
+    "description",
+    "metaData",
+  ],
+  "SpVisualQuery": [
+    "name",
+  ],
+  "SpecifyUser": [
+    "name",
+    "loginCollectionName",
+    "loginDisciplineName",
+    "password",
+    "email",
+  ],
+  "Storage": [
+    "name",
+    "abbrev",
+    "text1",
+    "text2",
+  ],
+  "StorageAttachment": [],
+  "StorageTreeDef": [
+    "name",
+  ],
+  "StorageTreeDefItem": [
+    "name",
+  ],
+  "Taxon": [
+    "name",
+    "cultivarName",
+    "unitName1",
+    "unitName2",
+    "unitName3",
+    "unitName4",
+    "citesStatus",
+    "colStatus",
+    "esaStatus",
+    "groupNumber",
+    "isisNumber",
+    "labelFormat",
+    "ncbiTaxonNumber",
+    "environmentalProtectionStatus",
+    "taxonomicSerialNumber",
+    "text1",
+    "text2",
+    "text10",
+    "text11",
+    "text12",
+    "text13",
+    "text14",
+    "text15",
+    "text16",
+    "text17",
+    "text18",
+    "text19",
+    "text20",
+    "unitInd1",
+    "unitInd2",
+    "unitInd3",
+    "unitInd4",
+    "usfwsCode",
+  ],
+  "TaxonAttachment": [],
+  "TaxonAttribute": [
+    "text10",
+    "text11",
+    "text12",
+    "text13",
+    "text14",
+    "text15",
+    "text16",
+    "text17",
+    "text18",
+    "text19",
+    "text2",
+    "text20",
+    "text21",
+    "text22",
+    "text23",
+    "text24",
+    "text25",
+    "text26",
+    "text27",
+    "text28",
+    "text29",
+    "text3",
+    "text30",
+    "text31",
+    "text32",
+    "text33",
+    "text34",
+    "text35",
+    "text36",
+    "text37",
+    "text38",
+    "text39",
+    "text4",
+    "text40",
+    "text41",
+    "text42",
+    "text43",
+    "text44",
+    "text45",
+    "text46",
+    "text47",
+    "text48",
+    "text5",
+    "text6",
+    "text7",
+    "text8",
+    "text9",
+  ],
+  "TaxonCitation": [
+    "figureNumber",
+    "pageNumber",
+    "plateNumber",
+  ],
+  "TaxonTreeDef": [
+    "name",
+  ],
+  "TaxonTreeDefItem": [
+    "name",
+    "formatToken",
+  ],
+  "TreatmentEvent": [
+    "fieldNumber",
+    "location",
+  ],
+  "TreatmentEventAttachment": [],
+  "VoucherRelationship": [],
+  "Workbench": [
+    "exportInstitutionName",
+    "lockedByUserName",
+    "name",
+    "srcFilePath",
+  ],
+  "WorkbenchDataItem": [],
+  "WorkbenchRow": [
+    "cardImageFullPath",
+    "lat1Text",
+    "lat2Text",
+    "long1Text",
+    "long2Text",
+  ],
+  "WorkbenchRowExportedRelationship": [],
+  "WorkbenchRowImage": [
+    "attachToTableName",
+    "cardImageFullPath",
+  ],
+  "WorkbenchTemplate": [
+    "name",
+    "srcFilePath",
+  ],
+  "WorkbenchTemplateMappingItem": [
+    "fieldName",
+    "importedColName",
+    "caption",
+    "metaData",
   ],
 }
 `;

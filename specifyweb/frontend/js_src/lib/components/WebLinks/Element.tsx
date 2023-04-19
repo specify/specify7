@@ -42,7 +42,11 @@ export function WebLinkWrapper(): JSX.Element {
               disabled={isReaOnly}
               value={item.table?.name ?? ''}
               onValueChange={(tableName): void =>
-                setItem({ ...item, table: strictGetTable(tableName) })
+                setItem({
+                  ...item,
+                  table:
+                    tableName === '' ? undefined : strictGetTable(tableName),
+                })
               }
             >
               <option value="">{schemaText.withoutTable()}</option>

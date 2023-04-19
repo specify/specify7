@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
@@ -9,6 +10,7 @@ import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { tables } from '../DataModel/tables';
+import { resourceEvents } from '../DataModel/resource';
 import type { RecordSet, SpQuery, SpQueryField } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { TableIcon } from '../Molecules/TableIcon';
@@ -52,6 +54,20 @@ export function QueryHeader({
   readonly onSaved: () => void;
   readonly toggleMapping: () => void;
 }): JSX.Element {
+  // Detects any query being deleted and updates it every where and redirect
+  const navigate = useNavigate();
+  React.useEffect(
+    () =>
+      resourceEvents.on('deleted', (resource) => {
+        if (
+          resource.specifyTable.name === 'SpQuery' &&
+          resource.id === query.id
+        )
+          navigate('/specify/', { replace: true });
+      }),
+    [query]
+  );
+
   return (
     <header className="flex flex-col items-center justify-between gap-2 overflow-x-auto whitespace-nowrap sm:flex-row sm:overflow-x-visible">
       <div className="flex items-center justify-center gap-2">
