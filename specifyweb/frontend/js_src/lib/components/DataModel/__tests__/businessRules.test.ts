@@ -40,8 +40,8 @@ test('uniqueness rules assigned correctly', async () => {
 const determinationId = 321;
 const determinationUrl = getResourceApiUrl('Determination', determinationId);
 const determinationResponse: Partial<SerializedModel<Determination>> = {
-  resource_uri: determinationUrl,
   id: determinationId,
+  resource_uri: determinationUrl,
 };
 
 const collectionObjectId = 220;
@@ -53,8 +53,8 @@ const collectionObjectResponse = {
   id: collectionObjectId,
   resource_uri: collectionObjectUrl,
   catalognumber: '000022002',
-  collection: getResourceApiUrl('CollectionObject', 4),
-  determinations: [determinationResponse],
+  collection: getResourceApiUrl('Collection', 4),
+  determinations: determinationUrl,
 };
 
 overrideAjax(collectionObjectUrl, collectionObjectResponse);
@@ -70,7 +70,7 @@ describe('business rules', () => {
     resource.save();
   });
 
-  test('determination business rules', () => {
+  describe('determination business rules', () => {
     const determination = new schema.models.Determination.Resource({
       id: determinationId,
     });
