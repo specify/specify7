@@ -147,7 +147,7 @@ describe('uniquenessRules', () => {
     const testPermit = new schema.models.Permit.Resource({
       id: permitOneId,
     });
-    await testPermit.fetch();
+    await testPermit.save();
 
     const duplicatePermit = new schema.models.Permit.Resource({
       id: permitTwoId,
