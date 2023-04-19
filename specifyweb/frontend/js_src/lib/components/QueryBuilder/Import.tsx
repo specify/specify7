@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAsyncState } from '../../hooks/useAsyncState';
 
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { wbPlanText } from '../../localization/wbPlan';
