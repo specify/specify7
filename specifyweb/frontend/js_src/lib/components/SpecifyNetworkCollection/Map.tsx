@@ -12,7 +12,7 @@ import { loadingGif } from '../Molecules';
 import { Range } from '../Molecules/Range';
 import { formatUrl } from '../Router/queryString';
 import { getGbifLayer } from '../SpecifyNetwork/overlays';
-import { f } from '../../utils/functools';
+import { getLayerPaneZindex } from '../Leaflet';
 
 const rangeDefaults = [0, new Date().getFullYear()];
 const debounceRate = 500;
@@ -88,8 +88,6 @@ function MapWrapper({
 
   React.useEffect(() => {
     if (map === undefined) return;
-    // FIXME: remove
-    return;
 
     /**
      * Display the GBIF layer below all other overlays, but above base map
@@ -97,13 +95,8 @@ function MapWrapper({
      */
     const customPaneName = 'customPane';
     const customPane = map.createPane(customPaneName);
-    // 400 is the default overlayPane z-index at the moment
-    const defaultOverlayPaneZindex = 400;
-    const overlayPaneZindex =
-      f.parseInt(map.getPane('overlayPane')?.style.zIndex) ??
-      defaultOverlayPaneZindex;
-    // Lower z-index than overlayPane (default z-index is 400)
-    customPane.style.zIndex = (overlayPaneZindex - 1).toString();
+    const layersPaneZindex = getLayerPaneZindex(map);
+    customPane.style.zIndex = (layersPaneZindex + 1).toString();
 
     if (overlay.current) map.removeLayer(overlay.current);
     overlay.current = getGbifLayer(
@@ -115,12 +108,7 @@ function MapWrapper({
       },
       customPaneName
     );
-
-    /*
-     * FIXME: bring overlay to top
-     * const labelsLayer = Object.values(leafletTileServers.overlays)[0]();
-     * labelsLayer.bringToFront();
-     */
+    map.addLayer(overlay.current);
   }, [map, range, mapData]);
 
   return <LeafletMap dialog={false} forwardRef={setMap} />;

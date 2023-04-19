@@ -1,7 +1,7 @@
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
-import { usePromise } from '../../hooks/useAsyncState';
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { localityText } from '../../localization/locality';
@@ -13,7 +13,7 @@ import { addFullScreenButton } from './addOns';
 import type L from './extend';
 import type { LocalityData } from './helpers';
 import { showLeafletMap } from './index';
-import { leafletLayersPromise } from './layers';
+import { fetchLeafletLayers } from './layers';
 
 const resizeThrottle = 250;
 
@@ -45,7 +45,7 @@ export function LeafletMap({
     (() => void) | undefined
   >(undefined);
   const [isFullScreen, __, ___, handleToggleFullScreen] = useBooleanState();
-  const [tileLayers] = usePromise(leafletLayersPromise, true);
+  const [tileLayers] = useAsyncState(fetchLeafletLayers, true);
 
   const handleClickRef =
     React.useRef<typeof handleMarkerClick>(handleMarkerClick);

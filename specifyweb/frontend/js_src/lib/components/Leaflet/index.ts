@@ -5,6 +5,7 @@
  */
 
 import { commonText } from '../../localization/common';
+import { f } from '../../utils/functools';
 import type { RA, WritableArray } from '../../utils/types';
 import { overwriteReadOnly } from '../../utils/types';
 import { className } from '../Atoms/className';
@@ -20,7 +21,8 @@ import {
 import { mappingLocalityColumns } from './config';
 import L from './extend';
 import type { Field, LocalityData } from './helpers';
-import type { leafletLayersPromise } from './layers';
+import type { fetchLeafletLayers } from './layers';
+import { overlayPaneName } from './layers';
 
 const DEFAULT_ZOOM = 5;
 
@@ -30,7 +32,7 @@ export function showLeafletMap({
   localityPoints = [],
   onMarkerClick: handleMarkerClick,
 }: {
-  readonly tileLayers: Awaited<typeof leafletLayersPromise>;
+  readonly tileLayers: Awaited<ReturnType<typeof fetchLeafletLayers>>;
   readonly container: HTMLDivElement;
   readonly localityPoints: RA<LocalityData>;
   readonly onMarkerClick?: (index: number, event: L.LeafletEvent) => void;
@@ -80,6 +82,15 @@ export function showLeafletMap({
       'scrollWheelZoom'
     ),
   }).setView(defaultCenter, defaultZoom);
+
+  /**
+   * Create a new pane for all overlay layers rather than have overlays and base
+   * maps on the same pane - to allow for greater z-index control
+   */
+  const overlayPane = map.createPane(overlayPaneName);
+  const layersPaneZindex = getLayerPaneZindex(map);
+  overlayPane.style.zIndex = (layersPaneZindex + 10).toString();
+
   const controlLayers = L.control.layers(
     tileLayers.baseMaps,
     tileLayers.overlays
@@ -108,6 +119,14 @@ export function showLeafletMap({
         onMarkerClick: handleMarkerClick?.bind(undefined, index),
       })
     )
+  );
+}
+
+export function getLayerPaneZindex(map: L.Map): number {
+  // 200 is the default tilePane z-index in Leaflet
+  const defaultLayersPaneZindex = 200;
+  return (
+    f.parseInt(map.getPane('tilePane')?.style.zIndex) ?? defaultLayersPaneZindex
   );
 }
 

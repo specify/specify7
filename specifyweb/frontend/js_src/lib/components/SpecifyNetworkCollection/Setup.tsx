@@ -65,7 +65,7 @@ function PickInstitution({
       {results === undefined ? (
         loadingGif
       ) : (
-        <>
+        <div>
           <p>{`${wbText.searchResults()}:`}</p>
           <Ul className="flex flex-col gap-2">
             {results.map(({ title, key }) => (
@@ -77,7 +77,7 @@ function PickInstitution({
               </li>
             ))}
           </Ul>
-        </>
+        </div>
       )}
     </>
   );
