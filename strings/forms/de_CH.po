@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-04-20 13:52+0000\n"
+"PO-Revision-Date: 2023-04-20 17:50+0000\n"
 "Last-Translator: Daniel Fernandez <daniel.fernandez@sac-cas.ch>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/forms/de_CH/>\n"
@@ -23,3 +23,13 @@ msgstr "Formulare"
 #: components/Statistics/ResultsDialog.tsx:68
 msgid "clone"
 msgstr "Klone"
+
+#. Used in: Components > Data Model > Business Rules
+#: components/DataModel/businessRules.js:192
+msgid "valueMustBeUniqueToField"
+msgstr "Der Wert muss für {fieldName:string} eindeutig sein"
+
+#. Used in: Components > Forms > Save
+#: components/Forms/Save.tsx:230
+msgid "cloneDescription"
+msgstr "Erstellen einer kompletten Kopie des aktuellen Datensatzes"
