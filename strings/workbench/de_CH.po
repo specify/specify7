@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-04-20 13:53+0000\n"
+"PO-Revision-Date: 2023-04-20 17:49+0000\n"
 "Last-Translator: Daniel Fernandez <daniel.fernandez@sac-cas.ch>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/workbench/de_CH/>\n"
@@ -19,3 +19,17 @@ msgstr ""
 #: components/WorkBench/wbView.js:232
 msgid "workBench"
 msgstr "WorkBench"
+
+#. Used in: Components > Work Bench > Components ⬤ Components > Work Bench > Status ⬤ Components > Work Bench > Template
+#: components/WorkBench/Components.tsx:40
+#: components/WorkBench/Status.tsx:76
+#: components/WorkBench/Template.tsx:149
+#, fuzzy
+msgid "rollback"
+msgstr "Zurücksetzen"
+
+#. Used in: Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Template
+#: components/WbPlanView/Mapper.tsx:378
+#: components/WorkBench/Template.tsx:131
+msgid "validate"
+msgstr "Validieren"
