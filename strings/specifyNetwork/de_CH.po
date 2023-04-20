@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-04-20 13:53+0000\n"
+"PO-Revision-Date: 2023-04-20 17:49+0000\n"
 "Last-Translator: Daniel Fernandez <daniel.fernandez@sac-cas.ch>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/specifyNetwork/de_CH/>\n"
@@ -22,3 +22,10 @@ msgstr "Specify Network"
 #: components/SpecifyNetwork/index.tsx:228
 msgid "failedToOpenPopUp"
 msgstr "Die Specify Network Page konnte nicht geöffnet werden"
+
+#. Used in: Components > Specify Network > Index
+#: components/SpecifyNetwork/index.tsx:231
+msgid "failedToOpenPopUpDescription"
+msgstr ""
+"Bitte vergewissern Sie sich, dass Ihr Browser keine Pop-up-Fenster "
+"blockiert, und versuchen Sie es erneut."
