@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-04-20 13:53+0000\n"
+"PO-Revision-Date: 2023-04-20 17:49+0000\n"
 "Last-Translator: Daniel Fernandez <daniel.fernandez@sac-cas.ch>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/locality/de_CH/>\n"
@@ -26,3 +26,15 @@ msgstr "Karte öffnen"
 #: components/WorkBench/Template.tsx:230
 msgid "geoMap"
 msgstr "Karte"
+
+#. 🟥Used in GeoMap header while records are still being fetched. Used in: Components > Query Builder > To Map
+#: components/QueryBuilder/ToMap.tsx:237
+msgid "queryMapSubset"
+msgstr ""
+"GeoMap hat {plotted:number|formatted} von {total:number|formatted} "
+"Datensätzen gezeichnet"
+
+#. Used in: Components > Query Builder > To Map
+#: components/QueryBuilder/ToMap.tsx:234
+msgid "queryMapAll"
+msgstr "GeoMap hat {plotted:number|formatted} Datensätze gezeichnet"
