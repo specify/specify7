@@ -3,7 +3,7 @@
  *
  * @module
  */
-import React, { MutableRefObject } from 'react';
+import React from 'react';
 import type { DraggableData } from 'react-draggable';
 import Draggable from 'react-draggable';
 import type { Props } from 'react-modal';
