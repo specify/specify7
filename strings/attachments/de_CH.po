@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-04-20 13:52+0000\n"
+"PO-Revision-Date: 2023-04-20 17:50+0000\n"
 "Last-Translator: Daniel Fernandez <daniel.fernandez@sac-cas.ch>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/attachments/de_CH/>\n"
@@ -24,3 +24,48 @@ msgstr "Anhänge"
 #: components/Attachments/index.tsx:227
 msgid "scale"
 msgstr "Massstab"
+
+#. Used in: Components > Attachments > Plugin ⬤ Components > Attachments > Index
+#: components/Attachments/Plugin.tsx:35
+#: components/Attachments/Plugin.tsx:115
+#: components/Attachments/index.tsx:67
+msgid "attachmentServerUnavailable"
+msgstr "Attachment-Server nicht verfügbar"
+
+#. Used in: Components > Attachments > Index
+#: components/Attachments/index.tsx:70
+msgid "attachmentServerUnavailableDescription"
+msgstr "Richten Sie Ihren Attachment-Server ein"
+
+#. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
+#: components/Attachments/index.tsx:216
+#: components/FormMeta/SubViewMeta.tsx:42
+#: components/Preferences/UserDefinitions.tsx:1108
+msgid "orderBy"
+msgstr "Sortiere nach"
+
+#. Used in: Components > Attachments > Plugin
+#: components/Attachments/Plugin.tsx:119
+msgid "uploadingInline"
+msgstr "Am Hochladen…"
+
+#. Used in: Components > Attachments > Gallery
+#: components/Attachments/Gallery.tsx:97
+msgid "noAttachments"
+msgstr "Es gibt keine Anhänge"
+
+#. Used in: Components > Attachments > Dialog
+#: components/Attachments/Dialog.tsx:82
+msgid "showForm"
+msgstr "Formular anzeigen"
+
+#. Used in: Components > Attachments > Cell
+#: components/Attachments/Cell.tsx:127
+msgid "unableToFindRelatedRecord"
+msgstr "Verknüpfter Datensatz kann nicht gefunden werden"
+
+#. Used in: Components > Attachments > Cell
+#: components/Attachments/Cell.tsx:130
+msgid "unableToFindRelatedRecordDescription"
+msgstr ""
+"Es konnte kein Datensatz gefunden werden, auf den sich dieser Anhang bezieht."
