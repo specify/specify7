@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-04-20 13:53+0000\n"
+"PO-Revision-Date: 2023-04-20 17:49+0000\n"
 "Last-Translator: Daniel Fernandez <daniel.fernandez@sac-cas.ch>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/query/de_CH/>\n"
@@ -21,3 +21,18 @@ msgstr ""
 #: components/TreeView/Actions.tsx:89
 msgid "query"
 msgstr "Abfrage"
+
+#. Used in: Components > Forms > Search Dialog ⬤ Components > Preferences > User Definitions ⬤ Components > Security > Registry
+#: components/Forms/SearchDialog.tsx:108
+#: components/Forms/SearchDialog.tsx:273
+#: components/Preferences/UserDefinitions.tsx:1305
+#: components/Security/registry.ts:202
+msgid "queryBuilder"
+msgstr "Query Builder"
+
+#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Query
+#: components/Header/menuItemDefinitions.ts:71
+#: components/Router/OverlayRoutes.tsx:96
+#: components/Toolbar/Query.tsx:106
+msgid "queries"
+msgstr "Abfragen"
