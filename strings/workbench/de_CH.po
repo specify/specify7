@@ -1,2 +1,21 @@
 msgid ""
-msgstr "X-Generator: Weblate\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit"
+msgstr ""
+"Report-Msgid-Bugs-To: support@specifysoftware.org\n"
+"PO-Revision-Date: 2023-04-20 13:53+0000\n"
+"Last-Translator: Daniel Fernandez <daniel.fernandez@sac-cas.ch>\n"
+"Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
+"specify-7/workbench/de_CH/>\n"
+"Language: de_CH\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.18-dev\n"
+
+#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Work Bench > Wb View
+#: components/Header/menuItemDefinitions.ts:92
+#: components/Preferences/UserDefinitions.tsx:1420
+#: components/Router/OverlayRoutes.tsx:133
+#: components/WorkBench/wbView.js:232
+msgid "workBench"
+msgstr "WorkBench"
