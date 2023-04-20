@@ -315,7 +315,10 @@ export function InteractionDialog({
                     catalogNumbers.length === 0 ||
                     inputRef.current?.validity.valid !== true
                   }
-                  onClick={(): void => handleProceed(undefined)}
+                  onClick={(): void => {
+                    handleProceed(undefined);
+                    setDisableIgnore(false);
+                  }}
                 >
                   {commonText.next()}
                 </Button.Blue>
