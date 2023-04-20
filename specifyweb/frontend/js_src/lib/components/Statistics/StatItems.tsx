@@ -6,6 +6,7 @@ import type { AjaxResponseObject } from '../../utils/ajax';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { throttledPromise } from '../../utils/ajax/throttledPromise';
+import type { RA } from '../../utils/types';
 import { formatNumber } from '../Atoms/Internationalization';
 import type { Tables } from '../DataModel/types';
 import { hasTablePermission } from '../Permissions/helpers';
@@ -24,7 +25,6 @@ import type {
   QuerySpec,
   StatFormatterSpec,
 } from './types';
-import { RA } from '../../utils/types';
 
 export function StatItem({
   item,
@@ -68,10 +68,10 @@ export function StatItem({
   return resolvedSpec?.type === 'QueryStat' &&
     resolvedSpec.querySpec !== undefined ? (
     <QueryItem
+      hasPermission={hasPermission}
       label={item.label}
       querySpec={resolvedSpec.querySpec}
       value={item.itemValue}
-      hasPermission={hasPermission}
       onClick={handleClick}
       onClone={handleClone}
       onEdit={
@@ -92,10 +92,10 @@ export function StatItem({
     <BackEndItem
       fetchUrl={resolvedSpec.fetchUrl}
       formatter={resolvedSpec.formatter}
-      label={item.label}
-      querySpec={resolvedSpec.querySpec}
       hasPermission={hasPermission}
+      label={item.label}
       pathToValue={resolvedSpec.pathToValue.toString()}
+      querySpec={resolvedSpec.querySpec}
       tableNames={resolvedSpec.tableNames}
       value={item.itemValue}
       onClick={handleClick}
@@ -179,13 +179,13 @@ function BackEndItem({
   useStatValueLoad(value, promiseGenerator, handleLoadResolve);
   return (
     <StatsResult
+      hasPermission={hasPermission}
       label={label}
       query={
-        querySpecResolved !== undefined
-          ? querySpecToResource(label, querySpecResolved)
-          : undefined
+        querySpecResolved === undefined
+          ? undefined
+          : querySpecToResource(label, querySpecResolved)
       }
-      hasPermission={hasPermission}
       value={hasStatPermission ? value : userText.noPermission()}
       onClick={handleClick}
       onClone={undefined}
@@ -257,9 +257,9 @@ function QueryItem({
 
   return (
     <StatsResult
+      hasPermission={hasPermission}
       label={label}
       query={query}
-      hasPermission={hasPermission}
       value={
         statState === 'noPermission'
           ? userText.noPermission()

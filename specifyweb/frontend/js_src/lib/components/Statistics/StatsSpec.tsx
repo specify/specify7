@@ -2,9 +2,11 @@ import { statsText } from '../../localization/stats';
 import { today } from '../../utils/relativeDate';
 import type { RA } from '../../utils/types';
 import { ensure } from '../../utils/types';
+import { formatNumber } from '../Atoms/Internationalization';
 import type { Tables } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
+import { flippedSortTypes } from '../QueryBuilder/helpers';
 import {
   anyTreeRank,
   formattedEntry,
@@ -20,8 +22,6 @@ import type {
   StatsSpec,
 } from './types';
 import type { DefaultStat, StatCategoryReturn } from './types';
-import { flippedSortTypes } from '../QueryBuilder/helpers';
-import { formatNumber } from '../Atoms/Internationalization';
 
 export const statsSpec: StatsSpec = {
   collection: {

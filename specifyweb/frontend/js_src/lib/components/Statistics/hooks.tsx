@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { useMultipleAsyncState } from '../../hooks/useAsyncState';
+import { commonText } from '../../localization/common';
 import { statsText } from '../../localization/stats';
 import type { AjaxResponseObject } from '../../utils/ajax';
 import { ajax } from '../../utils/ajax';
@@ -31,7 +32,6 @@ import type {
   StatsSpec,
 } from './types';
 import type { PartialQueryFieldWithPath } from './types';
-import { commonText } from '../../localization/common';
 
 /**
  * Returns state which gets updated everytime backend stat is fetched. Used for dynamic categories since they don't

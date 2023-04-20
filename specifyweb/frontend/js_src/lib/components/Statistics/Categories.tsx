@@ -8,6 +8,7 @@ import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Input } from '../Atoms/Form';
+import type { Tables } from '../DataModel/types';
 import { hasTablePermission } from '../Permissions/helpers';
 import { generateStatUrl } from './hooks';
 import { StatItem } from './StatItems';
@@ -19,7 +20,6 @@ import type {
   StatFormatterSpec,
   StatLayout,
 } from './types';
-import { Tables } from '../DataModel/types';
 
 /**
  * Used for overriding backend and dynamic items (dynamic categories).
@@ -66,11 +66,11 @@ function ItemOverride({
 }
 
 function areItemsValid(items: RA<CustomStat | DefaultStat>) {
-  const itemNameToSearch = ['phantomItem', 'dynamicPhantomItem'];
+  const itemNameToSearch = new Set(['phantomItem', 'dynamicPhantomItem']);
   return !items.some(
     (item) =>
       item.type === 'DefaultStat' &&
-      itemNameToSearch.includes(item.itemName) &&
+      itemNameToSearch.has(item.itemName) &&
       item.pathToValue === undefined
   );
 }
@@ -177,10 +177,10 @@ export function Categories({
                       <StatItem
                         categoryIndex={categoryIndex}
                         formatterSpec={formatterSpec}
+                        hasPermission={hasPermission}
                         item={item}
                         itemIndex={itemIndex}
                         key={itemIndex}
-                        hasPermission={hasPermission}
                         onClick={
                           item.type === 'DefaultStat' && checkEmptyItems
                             ? (): void =>

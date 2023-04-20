@@ -70,17 +70,15 @@ export function FrontEndStatsResultDialog({
           )}
           <span className="-ml-2 flex-1" />
           <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-          {
-            <Button.Blue
-              disabled={isDisabled || handleEdit === undefined}
-              onClick={(): void => {
-                handleEdit?.(query);
-                handleClose();
-              }}
-            >
-              {commonText.save()}
-            </Button.Blue>
-          }
+          <Button.Blue
+            disabled={isDisabled || handleEdit === undefined}
+            onClick={(): void => {
+              handleEdit?.(query);
+              handleClose();
+            }}
+          >
+            {commonText.save()}
+          </Button.Blue>
         </div>
       }
       className={{
@@ -90,11 +88,11 @@ export function FrontEndStatsResultDialog({
       onClose={handleClose}
     >
       <QueryBuilder
+        autoRun={matchClone}
         forceCollection={undefined}
         isEmbedded
         query={originalQuery}
         recordSet={undefined}
-        autoRun={matchClone}
         onChange={
           typeof handleEdit === 'function'
             ? ({ fields, isDistinct }): void =>
