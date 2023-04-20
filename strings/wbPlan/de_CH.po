@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-04-20 13:52+0000\n"
+"PO-Revision-Date: 2023-04-20 17:50+0000\n"
 "Last-Translator: Daniel Fernandez <daniel.fernandez@sac-cas.ch>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/wbPlan/de_CH/>\n"
@@ -18,3 +18,24 @@ msgstr ""
 #: components/WorkBench/Template.tsx:122
 msgid "dataMapper"
 msgstr "Datenzuordnung"
+
+#. Used in: Components > Work Bench > Wb View
+#: components/WorkBench/wbView.js:386
+#: components/WorkBench/wbView.js:387
+msgid "unmappedColumn"
+msgstr "Nicht gemappte Spalte"
+
+#. Used in: Components > Work Bench > Wb View
+#: components/WorkBench/wbView.js:278
+#: components/WorkBench/wbView.js:1920
+msgid "noUploadPlanDescription"
+msgstr ""
+"Für diesen Datensatz wurde noch kein Upload-Plan definiert. Jetzt einen "
+"erstellen?"
+
+#. Used in: Components > Wb Plan View > State ⬤ Components > Work Bench > Wb View
+#: components/WbPlanView/State.tsx:37
+#: components/WorkBench/wbView.js:275
+#: components/WorkBench/wbView.js:1917
+msgid "noUploadPlan"
+msgstr "Es wurde kein Uploadplan definiert"
