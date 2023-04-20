@@ -22,6 +22,9 @@ import {
   operationPolicies,
   tableActions,
 } from './definitions';
+import { testPermissionResult } from './cachedtest';
+
+export let cachedPermissionResponse = undefined;
 
 let operationPermissions: RR<
   number,
@@ -108,32 +111,38 @@ export const queryUserPermissions = async (
   import('../DataModel/schema')
     .then(async ({ fetchContext }) => fetchContext)
     .then(async (schema) =>
-      ajax<{
-        readonly details: RA<PermissionsQueryItem>;
-      }>('/permissions/query/', {
-        headers: { Accept: 'application/json' },
-        method: 'POST',
-        body: {
-          collectionid: collectionId,
-          userid: userId,
-          queries: [
-            ...Object.entries(operationPolicies).map(([policy, actions]) => ({
-              resource: policy,
-              actions,
-            })),
-            ...Object.keys(schema.models)
-              .map(tableNameToResourceName)
-              .map((resource) => ({
-                resource,
-                actions: tableActions,
-              })),
-            ...Object.entries(frontEndPermissions).map(([policy, actions]) => ({
-              resource: policy,
-              actions,
-            })),
-          ],
-        },
-      })
+      testPermissionResult === undefined
+        ? ajax<{
+            readonly details: RA<PermissionsQueryItem>;
+          }>('/permissions/query/', {
+            headers: { Accept: 'application/json' },
+            method: 'POST',
+            body: {
+              collectionid: collectionId,
+              userid: userId,
+              queries: [
+                ...Object.entries(operationPolicies).map(
+                  ([policy, actions]) => ({
+                    resource: policy,
+                    actions,
+                  })
+                ),
+                ...Object.keys(schema.models)
+                  .map(tableNameToResourceName)
+                  .map((resource) => ({
+                    resource,
+                    actions: tableActions,
+                  })),
+                ...Object.entries(frontEndPermissions).map(
+                  ([policy, actions]) => ({
+                    resource: policy,
+                    actions,
+                  })
+                ),
+              ],
+            },
+          })
+        : Promise.resolve({ data: testPermissionResult })
     )
     .then(({ data }) =>
       /*

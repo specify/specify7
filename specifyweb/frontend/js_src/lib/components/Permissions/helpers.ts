@@ -13,7 +13,6 @@ import {
   getOperationPermissions,
   getTablePermissions,
 } from './index';
-
 /*
  * FEATURE: use localized action and resource names in all these log messages
  * REFACTOR: use <ProtectedTable> and etc in favor of this function
