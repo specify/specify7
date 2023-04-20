@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-04-20 13:53+0000\n"
+"PO-Revision-Date: 2023-04-20 17:49+0000\n"
 "Last-Translator: Daniel Fernandez <daniel.fernandez@sac-cas.ch>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/main/de_CH/>\n"
@@ -16,3 +16,60 @@ msgstr ""
 #: components/Molecules/AppTitle.tsx:63
 msgid "appTitle"
 msgstr "{baseTitle:string} | Specify 7"
+
+#. 🟥Used in title. Used in: Components > Router > Not Found View
+#: components/Router/NotFoundView.tsx:15
+#: components/Router/NotFoundView.tsx:20
+msgid "pageNotFound"
+msgstr "Seite wurde nicht gefunden"
+
+#. 🟥Used in the heading on 404 page. Used in: Components > Router > Not Found View
+#: components/Router/NotFoundView.tsx:25
+msgid "nothingWasFound"
+msgstr "Hoppla! Es wurde nichts gefunden :-("
+
+#. 🟥Default page title. Used in: Components > Molecules > App Title
+#: components/Molecules/AppTitle.tsx:62
+msgid "baseAppTitle"
+msgstr "Specify 7"
+
+#. 🟥Used in the paragraph on 404 page. Used in: Components > Router > Not Found View
+#: components/Router/NotFoundView.tsx:26
+msgid "pageNotFoundDescription"
+msgstr ""
+"Die Seite, die Sie suchen, wurde möglicherweise entfernt, ihr Name wurde "
+"geändert oder sie ist vorübergehend nicht verfügbar."
+
+#. Used in: Components > Router > Not Found View
+#: components/Router/NotFoundView.tsx:29
+msgid "returnToHomepage"
+msgstr "Zurück zur Startseite"
+
+#. Used in: Components > Errors > Error Dialog ⬤ Components > Errors > Format Error
+#: components/Errors/ErrorDialog.tsx:58
+#: components/Errors/FormatError.tsx:186
+#: components/Errors/FormatError.tsx:216
+msgid "errorOccurred"
+msgstr "Sorry, da ist etwas schief gelaufen"
+
+#. Used in: Components > Errors > Error Dialog
+#: components/Errors/ErrorDialog.tsx:166
+msgid "errorOccurredDescription"
+msgstr ""
+"Es tut uns leid, aber es scheint, dass Sie auf einen Fehler in Specify 7 "
+"gestossen sind, der uns möglicherweise nicht bekannt ist."
+
+#. Used in: Components > Errors > Error Dialog
+#: components/Errors/ErrorDialog.tsx:167
+msgid "criticalErrorOccurredDescription"
+msgstr ""
+"Um zu verhindern, dass Datensätze beschädigt werden, müssen wir an einer "
+"sicheren Position neu beginnen - der Startseite."
+
+#. Used in: Components > Errors > Error Dialog
+#: components/Errors/ErrorDialog.tsx:35
+msgid "errorResolutionDescription"
+msgstr ""
+"Wenn dieses Problem weiterhin besteht, wenden Sie sich bitte an Ihren IT-"
+"Support. Wenn es sich um eine Specify Cloud-Datenbank handelt, laden Sie "
+"bitte die Fehlermeldung herunter und senden Sie sie an <email />."
