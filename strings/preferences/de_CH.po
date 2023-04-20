@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-04-20 13:53+0000\n"
+"PO-Revision-Date: 2023-04-20 17:49+0000\n"
 "Last-Translator: Daniel Fernandez <daniel.fernandez@sac-cas.ch>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/preferences/de_CH/>\n"
@@ -18,3 +18,14 @@ msgstr ""
 #: components/Router/Routes.tsx:322
 msgid "preferences"
 msgstr "Einstellungen"
+
+#. Used in: Components > App Resources > Types
+#: components/AppResources/types.tsx:82
+msgid "userPreferences"
+msgstr "Benutzereinstellungen"
+
+#. Used in: Components > Header > User Tool Definitions
+#: components/Header/userToolDefinitions.ts:44
+#, fuzzy
+msgid "customization"
+msgstr "Anpassung"
