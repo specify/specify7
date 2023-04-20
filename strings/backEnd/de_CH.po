@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-04-20 13:52+0000\n"
+"PO-Revision-Date: 2023-04-20 17:50+0000\n"
 "Last-Translator: Daniel Fernandez <daniel.fernandez@sac-cas.ch>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/backEnd/de_CH/>\n"
@@ -17,3 +17,13 @@ msgstr ""
 #, fuzzy
 msgid "failedParsingBoolean"
 msgstr "value \"{value:string}\" nicht auflösbar zu Wahr oder Falsch"
+
+#. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:178
+msgid "failedParsingDecimal"
+msgstr "\"{value:string}\" ist kein gültiger Dezimalwert"
+
+#. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:180
+msgid "failedParsingFloat"
+msgstr "\"{value:string}\" ist kein gültiger Gleitkommawert"
