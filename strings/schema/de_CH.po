@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-04-20 13:53+0000\n"
+"PO-Revision-Date: 2023-04-20 17:49+0000\n"
 "Last-Translator: Daniel Fernandez <daniel.fernandez@sac-cas.ch>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/schema/de_CH/>\n"
@@ -26,3 +26,19 @@ msgstr "Tabelle"
 #: components/SchemaConfig/Tables.tsx:55
 msgid "tables"
 msgstr "Tabellen"
+
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Plan View > Mapper Components
+#: components/Preferences/UserDefinitions.tsx:652
+#: components/WbPlanView/MapperComponents.tsx:435
+msgid "tableName"
+msgstr "Tabellennamen"
+
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Languages ⬤ Components > Security > Registry
+#: components/Header/userToolDefinitions.ts:51
+#: components/Preferences/UserDefinitions.tsx:602
+#: components/Router/Routes.tsx:330
+#: components/SchemaConfig/Components.tsx:27
+#: components/SchemaConfig/Languages.tsx:34
+#: components/Security/registry.ts:198
+msgid "schemaConfig"
+msgstr "Schema konfigurieren"
