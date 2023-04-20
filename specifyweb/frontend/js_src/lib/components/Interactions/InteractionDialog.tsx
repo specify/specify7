@@ -339,13 +339,13 @@ export function InteractionDialog({
                   )}
                   <div>
                     <Button.Blue
+                      disabled={disableIgnore}
                       onClick={(): void =>
                         setState({
                           ...state,
                           problems: {},
                         })
                       }
-                      disabled={disableIgnore}
                     >
                       {commonText.ignore()}
                     </Button.Blue>
