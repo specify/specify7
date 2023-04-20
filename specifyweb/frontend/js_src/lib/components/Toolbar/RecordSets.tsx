@@ -21,11 +21,7 @@ import { getTableById, tables } from '../DataModel/tables';
 import type { RecordSet } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { DateElement } from '../Molecules/DateElement';
-import {
-  Dialog,
-  LoadingScreen,
-  useFreezeDialogSize,
-} from '../Molecules/Dialog';
+import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { usePaginator } from '../Molecules/Paginator';
 import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import { TableIcon } from '../Molecules/TableIcon';
