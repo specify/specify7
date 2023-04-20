@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-04-20 13:53+0000\n"
+"PO-Revision-Date: 2023-04-20 17:49+0000\n"
 "Last-Translator: Daniel Fernandez <daniel.fernandez@sac-cas.ch>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/header/de_CH/>\n"
@@ -16,3 +16,55 @@ msgstr ""
 #: components/Core/Main.tsx:65
 msgid "skipToContent"
 msgstr "Weiter zum Inhalt"
+
+#. 🟥Example: Current Collection. Used in: Components > Header > Choose Collection
+#: components/Header/ChooseCollection.tsx:46
+#: components/Header/ChooseCollection.tsx:50
+#, fuzzy
+msgid "currentCollection"
+msgstr "Derzeitige {collectionTable:string}"
+
+#. Used in: Components > Header > Menu Item Processing
+#: components/Header/menuItemProcessing.ts:64
+msgid "main"
+msgstr "Allgemein"
+
+#. Used in: Components > Toolbar > Force Update
+#: components/Toolbar/ForceUpdate.tsx:49
+msgid "updateExportFeedConfirmation"
+msgstr "Export-Feed aktualisieren?"
+
+#. Used in: Components > Toolbar > Force Update
+#: components/Toolbar/ForceUpdate.tsx:27
+msgid "feedExportStartedDescription"
+msgstr ""
+"Aktualisierung gestartet. Sie erhalten eine Benachrichtigung für jedes "
+"aktualisierte Feed-Element."
+
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
+#: components/Header/userToolDefinitions.ts:95
+#: components/Router/OverlayRoutes.tsx:172
+msgid "updateExportFeed"
+msgstr "RSS-Feed aktualisieren"
+
+#. Used in: Components > Toolbar > Force Update
+#: components/Toolbar/ForceUpdate.tsx:52
+msgid "updateExportFeedConfirmationDescription"
+msgstr "Jetzt alle RSS-Export-Feed-Elemente aktualisieren?"
+
+#. Used in: Components > Toolbar > Force Update
+#: components/Toolbar/ForceUpdate.tsx:24
+msgid "feedExportStarted"
+msgstr "Aktualisierung des Export-Feeds gestartet"
+
+#. Used in: Components > Toolbar > Dwca
+#: components/Toolbar/Dwca.tsx:121
+msgid "dwcaExportStarted"
+msgstr "DwCA-Export gestartet"
+
+#. Used in: Components > Toolbar > Dwca
+#: components/Toolbar/Dwca.tsx:124
+msgid "dwcaExportStartedDescription"
+msgstr ""
+"Export gestartet. Sie erhalten eine Benachrichtigung, sobald der Export "
+"abgeschlossen ist."
