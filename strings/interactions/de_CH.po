@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-04-20 13:52+0000\n"
+"PO-Revision-Date: 2023-04-20 17:50+0000\n"
 "Last-Translator: Daniel Fernandez <daniel.fernandez@sac-cas.ch>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/interactions/de_CH/>\n"
@@ -20,3 +20,15 @@ msgstr ""
 #, fuzzy
 msgid "interactions"
 msgstr "Interaktionen"
+
+#. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog
+#: components/Interactions/InteractionDialog.tsx:252
+#: components/Interactions/PrepDialog.tsx:122
+msgid "addItems"
+msgstr "Elemente hinzufügen"
+
+#. Used in: Components > Interactions > Interaction Dialog
+#: components/Interactions/InteractionDialog.tsx:254
+#, fuzzy
+msgid "recordReturn"
+msgstr "{modelName:string} Return"
