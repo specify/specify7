@@ -15,6 +15,7 @@ import {
   tableNameToResourceName,
   tablePermissionsPrefix,
 } from '../Security/utils';
+import { testPermissionResult } from './cachedtest';
 import type { derivedPolicies } from './definitions';
 import {
   frontEndPermissions,
@@ -22,9 +23,8 @@ import {
   operationPolicies,
   tableActions,
 } from './definitions';
-import { testPermissionResult } from './cachedtest';
 
-export let cachedPermissionResponse = undefined;
+export const cachedPermissionResponse = undefined;
 
 let operationPermissions: RR<
   number,

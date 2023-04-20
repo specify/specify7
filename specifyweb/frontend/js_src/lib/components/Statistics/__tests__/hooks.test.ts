@@ -5,8 +5,8 @@ import { formatNumber } from '../../Atoms/Internationalization';
 import {
   applyStatBackendResponse,
   generateStatUrl,
-  getDefaultLayoutFlagged,
   getBackendUrlToFetch,
+  getDefaultLayoutFlagged,
   getOffsetOne,
 } from '../hooks';
 import type { StatLayout } from '../types';

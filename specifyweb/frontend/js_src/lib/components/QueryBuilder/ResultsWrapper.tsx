@@ -9,6 +9,7 @@ import type { SpQuery, Tables } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { loadingGif } from '../Molecules';
+import { mappingPathIsComplete } from '../WbPlanView/helpers';
 import type { QueryField } from './helpers';
 import {
   augmentQueryFields,
@@ -17,7 +18,6 @@ import {
 } from './helpers';
 import type { QueryResultRow } from './Results';
 import { QueryResults } from './Results';
-import { mappingPathIsComplete } from '../WbPlanView/helpers';
 
 // TODO: [FEATURE] allow customizing this and other constants as make sense
 const fetchSize = 40;

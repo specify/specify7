@@ -63,7 +63,7 @@ export class BasePreferences<DEFINITIONS extends GenericPreferences> {
   // eslint-disable-next-line functional/prefer-readonly-type
   private isSyncPending = false;
 
-  private onSet: undefined | (() => void) = undefined;
+  private readonly onSet: (() => void) | undefined = undefined;
 
   // eslint-disable-next-line functional/prefer-readonly-type
   private syncTimeoutInstance: ReturnType<typeof setTimeout> | undefined =

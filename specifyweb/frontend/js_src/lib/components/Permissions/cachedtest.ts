@@ -1,5 +1,5 @@
-import { RA } from '../../utils/types';
-import { PermissionsQueryItem } from './index';
+import type { RA } from '../../utils/types';
+import type { PermissionsQueryItem } from './index';
 
 export const testPermissionResult: {
   readonly allowed: boolean;
