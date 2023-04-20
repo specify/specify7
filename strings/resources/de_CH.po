@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-04-20 13:53+0000\n"
+"PO-Revision-Date: 2023-04-20 17:49+0000\n"
 "Last-Translator: Daniel Fernandez <daniel.fernandez@sac-cas.ch>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/resources/de_CH/>\n"
@@ -30,3 +30,17 @@ msgstr "App Resources"
 #: components/Preferences/UserDefinitions.tsx:670
 msgid "formDefinition"
 msgstr "Formular Definition"
+
+#. Used in: Components > App Resources > Editor Components ⬤ Components > App Resources > Filters ⬤ Components > App Resources > Types
+#: components/AppResources/EditorComponents.tsx:36
+#: components/AppResources/Filters.tsx:60
+#: components/AppResources/Filters.tsx:103
+#: components/AppResources/types.tsx:36
+msgid "formDefinitions"
+msgstr "Formular Definitionen"
+
+#. Used in: Components > App Resources > Editor Components
+#: components/AppResources/EditorComponents.tsx:81
+#: components/AppResources/EditorComponents.tsx:86
+msgid "loadFile"
+msgstr "Datei Laden"
