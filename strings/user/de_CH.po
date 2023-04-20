@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-04-20 13:53+0000\n"
+"PO-Revision-Date: 2023-04-20 17:49+0000\n"
 "Last-Translator: Daniel Fernandez <daniel.fernandez@sac-cas.ch>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/user/de_CH/>\n"
@@ -28,3 +28,15 @@ msgstr "Anmelden"
 #: components/Login/index.tsx:132
 msgid "username"
 msgstr "Benutzername"
+
+#. Used in: Components > Form Fields > Query Combo Box ⬤ Components > Form Plugins > Collection Rel One To Many
+#: components/FormFields/QueryComboBox.tsx:520
+#: components/FormPlugins/CollectionRelOneToMany.tsx:188
+msgid "collectionAccessDenied"
+msgstr "Sie haben keinen Zugang zu dieser Sammlung"
+
+#. Used in: Components > Login > Index ⬤ Components > Security > Set Password
+#: components/Login/index.tsx:143
+#: components/Security/SetPassword.tsx:54
+msgid "password"
+msgstr "Kennwort"
