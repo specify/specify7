@@ -98,7 +98,7 @@ export function AttachmentViewer({
         {originalUrl === undefined ? (
           loadingGif
         ) : type === 'image' ? (
-          <img alt={title} src={originalUrl} />
+          <img alt={title} src={originalUrl} className="max-h-[70vh]" />
         ) : type === 'video' ? (
           /*
            * Subtitles for attachments not yet supported
