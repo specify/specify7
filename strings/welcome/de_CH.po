@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-04-20 13:53+0000\n"
+"PO-Revision-Date: 2023-04-20 17:49+0000\n"
 "Last-Translator: Daniel Fernandez <daniel.fernandez@sac-cas.ch>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/welcome/de_CH/>\n"
@@ -17,3 +17,21 @@ msgstr ""
 #: components/Router/Routes.tsx:421
 msgid "pageTitle"
 msgstr "Willkommen"
+
+#. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:56
+msgid "downloadInformation"
+msgstr "Download Information"
+
+#. Used in: Components > Home Page > Taxon Tiles ⬤ Components > Preferences > Renderers
+#: components/HomePage/TaxonTiles.tsx:80
+#: components/Preferences/Renderers.tsx:197
+msgid "taxonTiles"
+msgstr "Taxon-Kacheln"
+
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Home Page > About Specify ⬤ Components > Router > Overlay Routes
+#: components/Header/userToolDefinitions.ts:103
+#: components/HomePage/AboutSpecify.tsx:68
+#: components/Router/OverlayRoutes.tsx:180
+msgid "aboutSpecify"
+msgstr "Über Specify 7"
