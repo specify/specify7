@@ -13,6 +13,7 @@ export function StatsResult({
   value,
   query,
   label,
+  hasPermission,
   onClick: handleClick,
   onRemove: handleRemove,
   onEdit: handleEdit,
@@ -21,6 +22,7 @@ export function StatsResult({
 }: {
   readonly value: number | string | undefined;
   readonly query: SpecifyResource<SpQuery> | undefined;
+  readonly hasPermission: boolean;
   readonly label: string | undefined;
   readonly onClick: (() => void) | undefined;
   readonly onRemove: (() => void) | undefined;
@@ -29,18 +31,31 @@ export function StatsResult({
   readonly onClone: ((querySpec: QuerySpec) => void) | undefined;
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
-  const isDisabled =
-    handleEdit === undefined &&
-    handleRename === undefined &&
-    handleClick === undefined;
-  const handleClickResolved = isDisabled
-    ? undefined
-    : handleClick ?? (query === undefined ? undefined : handleOpen);
+
+  /**
+   * Cases
+   *
+   * 1. In the add stats dialog, default to clicking.
+   *
+   * 2. In the normal page and normal mode
+   *    a. If it doesn't have query, disable
+   *    b. If it has query, allow viewing the query.
+   *
+   * 3. In the normal page and edit mode and have permission
+   *    a. It is a query stat or a back end stat -> use handleRename
+   *
+   * 4. In the normal page and edit mode but no permission
+   *    a. Disable everything.
+   *
+   */
+  const isDisabled = handleRename !== undefined && !hasPermission;
+  const handleClickResolved =
+    handleClick ?? (isDisabled || query === undefined ? undefined : handleOpen);
   return (
     <>
       {label === undefined ? (
         <li>{commonText.loading()}</li>
-      ) : typeof handleRename === 'function' ? (
+      ) : typeof handleRename === 'function' && hasPermission ? (
         <>
           <Button.Icon
             icon="trash"

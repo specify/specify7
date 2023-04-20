@@ -10,6 +10,7 @@ import { formatNumber } from '../Atoms/Internationalization';
 import type { Tables } from '../DataModel/types';
 import { hasTablePermission } from '../Permissions/helpers';
 import {
+  appendDynamicPathToValue,
   queryCountPromiseGenerator,
   querySpecToResource,
   useResolvedStatSpec,
@@ -23,12 +24,14 @@ import type {
   QuerySpec,
   StatFormatterSpec,
 } from './types';
+import { RA } from '../../utils/types';
 
 export function StatItem({
   item,
   categoryIndex,
   itemIndex,
   formatterSpec,
+  hasPermission,
   onRemove: handleRemove,
   onClick: handleClick,
   onEdit: handleEdit,
@@ -40,6 +43,7 @@ export function StatItem({
   readonly formatterSpec: StatFormatterSpec;
   readonly categoryIndex: number;
   readonly itemIndex: number;
+  readonly hasPermission: boolean;
   readonly onRemove: (() => void) | undefined;
   readonly onClick: (() => void) | undefined;
   readonly onEdit:
@@ -67,6 +71,7 @@ export function StatItem({
       label={item.label}
       querySpec={resolvedSpec.querySpec}
       value={item.itemValue}
+      hasPermission={hasPermission}
       onClick={handleClick}
       onClone={handleClone}
       onEdit={
@@ -88,8 +93,10 @@ export function StatItem({
       fetchUrl={resolvedSpec.fetchUrl}
       formatter={resolvedSpec.formatter}
       label={item.label}
+      querySpec={resolvedSpec.querySpec}
+      hasPermission={hasPermission}
       pathToValue={resolvedSpec.pathToValue.toString()}
-      tableName={resolvedSpec.tableName}
+      tableNames={resolvedSpec.tableNames}
       value={item.itemValue}
       onClick={handleClick}
       onLoad={handleLoadItem}
@@ -101,11 +108,13 @@ export function StatItem({
 
 function BackEndItem({
   value,
-  tableName,
+  tableNames,
   fetchUrl,
   pathToValue,
   formatter,
   label,
+  querySpec,
+  hasPermission,
   onClick: handleClick,
   onRemove: handleRemove,
   onRename: handleRename,
@@ -114,8 +123,10 @@ function BackEndItem({
   readonly value: number | string | undefined;
   readonly fetchUrl: string;
   readonly pathToValue: string;
-  readonly tableName: keyof Tables;
+  readonly tableNames: RA<keyof Tables>;
   readonly label: string;
+  readonly querySpec: QuerySpec | undefined;
+  readonly hasPermission: boolean;
   readonly formatter: (rawValue: any) => string | undefined;
   readonly onClick: (() => void) | undefined;
   readonly onRemove: (() => void) | undefined;
@@ -123,9 +134,16 @@ function BackEndItem({
   readonly onLoad: ((value: number | string) => void) | undefined;
 }): JSX.Element {
   const [hasStatPermission, setStatPermission] = React.useState<boolean>(
-    hasTablePermission(tableName, 'read')
+    tableNames.every((tableName) => hasTablePermission(tableName, 'read'))
   );
   const handleLoadResolve = hasStatPermission ? handleLoad : undefined;
+  const querySpecResolved =
+    querySpec === undefined
+      ? undefined
+      : {
+          ...querySpec,
+          fields: appendDynamicPathToValue(pathToValue, querySpec.fields),
+        };
   const promiseGenerator = React.useCallback(
     async () =>
       throttledPromise<BackendStatsResult | undefined>(
@@ -162,7 +180,12 @@ function BackEndItem({
   return (
     <StatsResult
       label={label}
-      query={undefined}
+      query={
+        querySpecResolved !== undefined
+          ? querySpecToResource(label, querySpecResolved)
+          : undefined
+      }
+      hasPermission={hasPermission}
       value={hasStatPermission ? value : userText.noPermission()}
       onClick={handleClick}
       onClone={undefined}
@@ -177,6 +200,7 @@ function QueryItem({
   value,
   label,
   querySpec,
+  hasPermission,
   onClick: handleClick,
   onRemove: handleRemove,
   onEdit: handleEdit,
@@ -187,6 +211,7 @@ function QueryItem({
   readonly value: number | string | undefined;
   readonly querySpec: QuerySpec;
   readonly label: string;
+  readonly hasPermission: boolean;
   readonly onClick: (() => void) | undefined;
   readonly onRemove: (() => void) | undefined;
   readonly onEdit: ((querySpec: QuerySpec) => void) | undefined;
@@ -234,6 +259,7 @@ function QueryItem({
     <StatsResult
       label={label}
       query={query}
+      hasPermission={hasPermission}
       value={
         statState === 'noPermission'
           ? userText.noPermission()

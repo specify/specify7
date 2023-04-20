@@ -31,6 +31,7 @@ import type {
   StatsSpec,
 } from './types';
 import type { PartialQueryFieldWithPath } from './types';
+import { commonText } from '../../localization/common';
 
 /**
  * Returns state which gets updated everytime backend stat is fetched. Used for dynamic categories since they don't
@@ -53,7 +54,7 @@ export function useBackendApi(
 
 export function useDynamicGroups(
   dynamicEphemeralFieldSpecs: RA<DynamicQuerySpec>
-): IR<RA<number | string | null> | undefined> | undefined {
+): IR<RA<string | null> | undefined> | undefined {
   const dynamicEphereralPromises = React.useMemo(
     () =>
       dynamicEphemeralFieldSpecs.length === 0
@@ -98,12 +99,12 @@ function backEndStatPromiseGenerator(
 
 function dynamicEphermeralPromiseGenerator(
   dynamicEphemeralFieldSpecs: RA<DynamicQuerySpec>
-): IR<() => Promise<RA<number | string | null> | undefined>> {
+): IR<() => Promise<RA<string | null> | undefined>> {
   return Object.fromEntries(
     dynamicEphemeralFieldSpecs.map(({ key, spec }) => [
       key,
       async () =>
-        throttledPromise<RA<number | string | null> | undefined>(
+        throttledPromise<RA<string | null> | undefined>(
           'dynamicStatGroups',
           async () =>
             ajax<{ readonly results: RA<RA<number | string | null>> }>(
@@ -122,7 +123,9 @@ function dynamicEphermeralPromiseGenerator(
               },
               { expectedResponseCodes: Object.values(Http) }
             ).then(({ data }) =>
-              data.results.map((distinctGroup) => distinctGroup[0])
+              data.results.map((distinctGroup) =>
+                distinctGroup[0] === null ? null : distinctGroup[0].toString()
+              )
             ),
           key
         ),
@@ -256,7 +259,8 @@ export function resolveStatsSpec(
       pathToValue: item.pathToValue ?? statSpecItem.spec.pathToValue,
       fetchUrl: statUrl,
       formatter: statSpecItem.spec.formatterGenerator(formatterSpec),
-      tableName: statSpecItem.spec.tableName,
+      tableNames: statSpecItem.spec.tableNames,
+      querySpec: statSpecItem.spec.querySpec,
     };
   if (
     statSpecItem.spec.type === 'DynamicStat' &&
@@ -548,9 +552,7 @@ export function useBackEndCategorySetter(
 }
 
 export function useDynamicCategorySetter(
-  dynamicEphemeralResponse:
-    | IR<RA<number | string | null> | undefined>
-    | undefined,
+  dynamicEphemeralResponse: IR<RA<string | null> | undefined> | undefined,
   handleChange: (
     newCategories: (
       oldCategory: StatLayout['categories']
@@ -581,7 +583,7 @@ export function useDynamicCategorySetter(
 
 export function useDefaultDynamicCategorySetter(
   defaultDynamicEphemeralResponse:
-    | IR<RA<number | string | null> | undefined>
+    | IR<RA<string | null> | undefined>
     | undefined,
   setDefaultLayout: (
     previousGenerator: (
@@ -617,7 +619,7 @@ export function useDefaultDynamicCategorySetter(
 }
 
 function applyDynamicCategoryResponse(
-  dynamicEphemeralResponse: RA<number | string | null> | undefined,
+  dynamicEphemeralResponse: RA<string | null> | undefined,
   items: RA<CustomStat | DefaultStat>,
   responseKey: string,
   statsSpec: StatsSpec
@@ -650,7 +652,7 @@ function applyDynamicCategoryResponse(
         pageName: dynamicPhantomItem.pageName,
         itemName: 'dynamicPhantomItem',
         categoryName: dynamicPhantomItem.categoryName,
-        label: pathToValue === null ? 'null' : pathToValue.toString(), // Use Localizaed Version of null
+        label: pathToValue === null ? commonText.nullInline() : pathToValue,
         itemValue: undefined,
         itemType: 'QueryStat',
         pathToValue,

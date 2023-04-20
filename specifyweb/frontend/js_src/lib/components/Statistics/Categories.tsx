@@ -50,7 +50,7 @@ function ItemOverride({
     ({ responseKey }) => responseKey === urlToFetch
   );
   const tablesToCheck: RA<keyof Tables> = [
-    ...(backEndSpecResolve === undefined ? [] : [backEndSpecResolve.tableName]),
+    ...(backEndSpecResolve === undefined ? [] : backEndSpecResolve.tableNames),
     ...(dynamicSpecResolve === undefined ? [] : dynamicSpecResolve.tableNames),
   ];
 
@@ -163,7 +163,7 @@ export function Categories({
               )}
               <Ul
                 className={
-                  handleRename === undefined
+                  handleCategoryRename === undefined
                     ? `flex-1 overflow-auto ${
                         checkEmptyItems ? 'p-0' : 'p-3 pt-3'
                       }`
@@ -180,6 +180,7 @@ export function Categories({
                         item={item}
                         itemIndex={itemIndex}
                         key={itemIndex}
+                        hasPermission={hasPermission}
                         onClick={
                           item.type === 'DefaultStat' && checkEmptyItems
                             ? (): void =>

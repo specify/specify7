@@ -859,7 +859,7 @@ function ProtectedStatsPage(): JSX.Element | null {
                 )
               }
               onRename={
-                isEditing && canEditIndex(activePage.isShared)
+                isEditing
                   ? (categoryIndex, itemIndex, newLabel): void =>
                       handleChange((oldCategory) =>
                         replaceItem(oldCategory, categoryIndex, {

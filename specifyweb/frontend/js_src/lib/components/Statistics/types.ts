@@ -85,7 +85,9 @@ export type BackEndBase = State<
   'BackEndStat',
   {
     readonly pathToValue: number | string | null | undefined;
-    readonly tableName: keyof Tables;
+    readonly tableNames: RA<keyof Tables>;
+    readonly querySpec?: QuerySpec;
+    readonly additionalFields?: RA<PartialQueryFieldWithPath>;
   }
 >;
 export type BackEndStatResolve = BackEndBase & {
