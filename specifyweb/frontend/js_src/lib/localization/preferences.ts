@@ -1413,4 +1413,7 @@ export const preferencesText = createDictionary({
     'fr-fr': 'Utiliser des infobulles modernes',
     'uk-ua': 'Використовувати сучасні підказки',
   },
+  displayOriginalAttachment: {
+    'en-us': 'Display original in preview',
+  },
 } as const);

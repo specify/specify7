@@ -23,6 +23,7 @@ import { loadingGif } from '../Molecules';
 import { userPreferences } from '../Preferences/userPreferences';
 import { fetchOriginalUrl, fetchThumbnail } from './attachments';
 import { AttachmentRecordLink, getAttachmentTable } from './Cell';
+import { Thumbnail } from './Preview';
 
 export function AttachmentViewer({
   attachment,
@@ -44,6 +45,12 @@ export function AttachmentViewer({
   const [originalUrl] = useAsyncState(
     React.useCallback(async () => fetchOriginalUrl(serialized), [serialized]),
     false
+  );
+
+  const [displayAttachment] = userPreferences.use(
+    'attachments',
+    'behavior',
+    'display'
   );
 
   const title = attachment.get('title') as LocalizedString | undefined;
@@ -93,49 +100,57 @@ export function AttachmentViewer({
   const Component = typeof originalUrl === 'string' ? Link.Blue : Button.Blue;
   const table = f.maybe(serialized.tableID ?? undefined, getAttachmentTable);
   return (
-    <div className="flex h-full gap-8">
-      <div className="flex min-h-[30vw] w-full min-w-[30vh] flex-1 items-center">
-        {originalUrl === undefined ? (
-          loadingGif
-        ) : type === 'image' ? (
-          <img alt={title} src={originalUrl} />
-        ) : type === 'video' ? (
-          /*
-           * Subtitles for attachments not yet supported
-           */
-          // eslint-disable-next-line jsx-a11y/media-has-caption
-          <video
-            autoPlay={autoPlay}
-            className="h-full w-full"
-            controls
-            src={originalUrl}
-          />
-        ) : type === 'audio' ? (
-          /*
-           * Subtitles for attachments not yet supported
-           */
-          // eslint-disable-next-line jsx-a11y/media-has-caption
-          <audio
-            autoPlay={autoPlay}
-            className="w-full"
-            controls
-            src={originalUrl}
-          />
-        ) : (
-          <object
-            aria-label={title}
-            className="h-full w-full border-0"
-            data={originalUrl}
-            type={mimeType}
-          >
-            <img
-              alt={title}
-              className="h-full w-full object-scale-down"
-              src={thumbnail?.src}
+    <div className="flex h-full justify-center gap-8">
+      {displayAttachment ? (
+        <div className="flex min-h-[30vw] w-full min-w-[30vh] flex-1 items-center">
+          {originalUrl === undefined ? (
+            loadingGif
+          ) : type === 'image' ? (
+            <img alt={title} src={originalUrl} />
+          ) : type === 'video' ? (
+            /*
+             * Subtitles for attachments not yet supported
+             */
+            // eslint-disable-next-line jsx-a11y/media-has-caption
+            <video
+              autoPlay={autoPlay}
+              className="h-full w-full"
+              controls
+              src={originalUrl}
             />
-          </object>
-        )}
-      </div>
+          ) : type === 'audio' ? (
+            /*
+             * Subtitles for attachments not yet supported
+             */
+            // eslint-disable-next-line jsx-a11y/media-has-caption
+            <audio
+              autoPlay={autoPlay}
+              className="w-full"
+              controls
+              src={originalUrl}
+            />
+          ) : (
+            <object
+              aria-label={title}
+              className="h-full w-full border-0"
+              data={originalUrl}
+              type={mimeType}
+            >
+              <img
+                alt={title}
+                className="h-full w-full object-scale-down"
+                src={thumbnail?.src}
+              />
+            </object>
+          )}
+        </div>
+      ) : (
+        <Thumbnail
+          attachment={serializeResource(attachment)}
+          thumbnail={thumbnail}
+          className="!border-none"
+        />
+      )}
       {
         /*
          * Note, when new attachment is being created, the showMeta menu must

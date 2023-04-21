@@ -34,12 +34,14 @@ export function AttachmentPreview({
   );
 }
 
-function Thumbnail({
+export function Thumbnail({
   attachment,
   thumbnail,
+  className,
 }: {
   readonly attachment: SerializedResource<Attachment>;
   readonly thumbnail: AttachmentThumbnail | undefined;
+  readonly className?: string;
 }): JSX.Element {
   return thumbnail === undefined ? (
     loadingGif
@@ -50,7 +52,7 @@ function Thumbnail({
           ? attachment.title
           : thumbnail.alt
       }
-      className={`
+      className={`${className}
         max-h-full max-w-full border-8 border-white object-contain
         dark:border-black
       `}

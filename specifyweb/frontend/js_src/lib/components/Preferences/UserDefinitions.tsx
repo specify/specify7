@@ -1130,6 +1130,13 @@ export const userPreferenceDefinitions = {
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
+          display: defineItem<boolean>({
+            title: preferencesText.displayOriginalAttachment(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
         },
       },
     },
