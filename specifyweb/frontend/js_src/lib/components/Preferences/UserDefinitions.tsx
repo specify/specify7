@@ -1130,7 +1130,7 @@ export const userPreferenceDefinitions = {
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
-          display: defineItem<boolean>({
+          displayOriginal: defineItem<boolean>({
             title: preferencesText.displayOriginalAttachment(),
             requiresReload: false,
             visible: true,

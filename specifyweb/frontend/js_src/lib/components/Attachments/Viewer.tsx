@@ -50,7 +50,7 @@ export function AttachmentViewer({
   const [displayOriginal] = userPreferences.use(
     'attachments',
     'behavior',
-    'display'
+    'displayOriginal'
   );
 
   const title = attachment.get('title') as LocalizedString | undefined;
