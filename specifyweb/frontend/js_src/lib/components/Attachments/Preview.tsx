@@ -52,7 +52,8 @@ export function Thumbnail({
           ? attachment.title
           : thumbnail.alt
       }
-      className={`${className}
+      className={`
+        ${className}
         max-h-full max-w-full border-8 border-white object-contain
         dark:border-black
       `}

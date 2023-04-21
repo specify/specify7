@@ -47,7 +47,7 @@ export function AttachmentViewer({
     false
   );
 
-  const [displayAttachment] = userPreferences.use(
+  const [displayOriginal] = userPreferences.use(
     'attachments',
     'behavior',
     'display'
@@ -101,7 +101,7 @@ export function AttachmentViewer({
   const table = f.maybe(serialized.tableID ?? undefined, getAttachmentTable);
   return (
     <div className="flex h-full justify-center gap-8">
-      {displayAttachment ? (
+      {displayOriginal ? (
         <div className="flex min-h-[30vw] w-full min-w-[30vh] flex-1 items-center">
           {originalUrl === undefined ? (
             loadingGif
@@ -145,11 +145,15 @@ export function AttachmentViewer({
           )}
         </div>
       ) : (
-        <Thumbnail
-          attachment={serializeResource(attachment)}
-          thumbnail={thumbnail}
-          className="!border-none"
-        />
+        <div className="flex items-center">
+          <span className="-ml-2 flex-1" />
+          <Thumbnail
+            attachment={serializeResource(attachment)}
+            thumbnail={thumbnail}
+            className="!border-none"
+          />
+          <span className="-ml-2 flex-1" />
+        </div>
       )}
       {
         /*
