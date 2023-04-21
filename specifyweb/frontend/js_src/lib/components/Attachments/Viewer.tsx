@@ -147,8 +147,8 @@ export function AttachmentViewer({
       ) : (
         <Thumbnail
           attachment={serializeResource(attachment)}
-          thumbnail={thumbnail}
           className="!border-none"
+          thumbnail={thumbnail}
         />
       )}
       {
