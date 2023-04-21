@@ -6,6 +6,7 @@ import '@testing-library/jest-dom';
 import './__mocks__/CSS';
 import './__mocks__/Response';
 import './__mocks__/matchMedia';
+import './__mocks__/ResizeObserver';
 
 import { configure } from '@testing-library/react';
 import failOnConsole from 'jest-fail-on-console';
