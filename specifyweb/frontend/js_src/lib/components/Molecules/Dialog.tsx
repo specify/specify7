@@ -572,11 +572,12 @@ function useTitleChangeNotice(dimensionKey: string | undefined): void {
   }, [dimensionKey]);
 }
 
-export function useFreezeDialogSize(
+function useFreezeDialogSize(
   containerSizeRef: HTMLDivElement | null,
-  dimensionKey: string | false | undefined
+  dimensionKey: string | undefined
 ): void {
   React.useEffect(() => {
+    if (dimensionKey === undefined) return;
     if (containerSizeRef === null) return undefined;
     let oldHeight = containerSizeRef.offsetHeight;
     let oldWidth = containerSizeRef.offsetWidth;

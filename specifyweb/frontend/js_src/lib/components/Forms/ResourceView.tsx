@@ -298,7 +298,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
         )
       }
       className={{
-        container: `${dialogClassNames.normalContainer}`,
+        container: dialogClassNames.normalContainer,
         content: `${className.formStyles} ${dialogClassNames.flexContent}`,
       }}
       dimensionsKey={viewName ?? resource?.specifyTable.view}
