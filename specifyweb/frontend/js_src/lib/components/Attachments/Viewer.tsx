@@ -149,8 +149,8 @@ export function AttachmentViewer({
           <span className="-ml-2 flex-1" />
           <Thumbnail
             attachment={serializeResource(attachment)}
-            thumbnail={thumbnail}
             className="!border-none"
+            thumbnail={thumbnail}
           />
           <span className="-ml-2 flex-1" />
         </div>
