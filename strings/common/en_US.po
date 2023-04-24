@@ -280,7 +280,7 @@ msgid "delete"
 msgstr "Delete"
 
 #: components/Attachments/Dialog.tsx:108
-#: components/Interactions/InteractionDialog.tsx:313
+#: components/Interactions/InteractionDialog.tsx:314
 #: components/WorkBench/GeoLocate.tsx:98
 #. Used in: Components > Attachments > Dialog ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Work Bench > Geo Locate
 msgid "next"
@@ -442,7 +442,7 @@ msgstr "New"
 msgid "edit"
 msgstr "Edit"
 
-#: components/Interactions/InteractionDialog.tsx:339
+#: components/Interactions/InteractionDialog.tsx:340
 #: components/Reports/Report.tsx:201
 #: components/Security/UserComponents.tsx:187
 #. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Reports > Report ⬤ Components > Security > User Components

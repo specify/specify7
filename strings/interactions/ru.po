@@ -20,18 +20,18 @@ msgstr ""
 msgid "interactions"
 msgstr "Взаимодействия"
 
-#: components/Interactions/InteractionDialog.tsx:252
+#: components/Interactions/InteractionDialog.tsx:253
 #: components/Interactions/PrepDialog.tsx:122
 #. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog
 msgid "addItems"
 msgstr "Добавить элементы"
 
-#: components/Interactions/InteractionDialog.tsx:254
+#: components/Interactions/InteractionDialog.tsx:255
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "recordReturn"
 msgstr "Возврат {modelName:string}"
 
-#: components/Interactions/InteractionDialog.tsx:255
+#: components/Interactions/InteractionDialog.tsx:256
 #: components/Interactions/PrepDialog.tsx:123
 #. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog
 msgid "createRecord"
@@ -47,28 +47,28 @@ msgstr "Отсутствует:"
 msgid "preparationsNotFound"
 msgstr "Никаких препаратов не обнаружено."
 
-#: components/Interactions/InteractionDialog.tsx:319
+#: components/Interactions/InteractionDialog.tsx:320
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "problemsFound"
 msgstr "Обнаружены ошибки:"
 
-#: components/Interactions/InteractionDialog.tsx:261
+#: components/Interactions/InteractionDialog.tsx:262
 #. 🟥See documentation for syntax for plural rules. Used in: Components > Interactions > Interaction Dialog
 #, fuzzy
 msgid "byChoosingRecordSet"
 msgstr "Выбрав набор записей (доступно {{count:none | one | ??}})"
 
-#: components/Interactions/InteractionDialog.tsx:267
+#: components/Interactions/InteractionDialog.tsx:268
 #. 🟥Field name is localized. Coming from Schema Configuration. I.e, By entering Catalog Numbers. Used in: Components > Interactions > Interaction Dialog
 msgid "byEnteringNumbers"
 msgstr "Ввести {fieldName:string}"
 
-#: components/Interactions/InteractionDialog.tsx:245
+#: components/Interactions/InteractionDialog.tsx:246
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "withoutPreparations"
 msgstr "Без подготовки"
 
-#: components/Interactions/InteractionDialog.tsx:241
+#: components/Interactions/InteractionDialog.tsx:242
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "addUnassociated"
 msgstr "Добавить несвязанный элемент"
