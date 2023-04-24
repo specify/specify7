@@ -94,15 +94,19 @@ export function AttachmentViewer({
   const table = f.maybe(serialized.tableID ?? undefined, getAttachmentTable);
   return (
     <div className="flex h-full gap-8">
-      <div className="flex max-h-screen min-h-[30vw] w-full min-w-[30vh] flex-1 items-center">
+      <div className="flex min-h-[theme(spacing.60)] w-full min-w-[theme(spacing.60)] flex-1 items-center">
         {originalUrl === undefined ? (
           loadingGif
         ) : type === 'image' ? (
-          <img
-            alt={title}
-            className="max-h-full max-w-full object-contain"
-            src={originalUrl}
-          />
+          <>
+            <span className="-ml-2 flex-1" />
+            <img
+              alt={title}
+              className="flex-2 max-h-full max-w-full object-contain"
+              src={originalUrl}
+            />
+            <span className="-ml-2 flex-1" />
+          </>
         ) : type === 'video' ? (
           /*
            * Subtitles for attachments not yet supported
