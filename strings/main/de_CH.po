@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-04-20 17:49+0000\n"
+"PO-Revision-Date: 2023-04-24 08:52+0000\n"
 "Last-Translator: Daniel Fernandez <daniel.fernandez@sac-cas.ch>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/main/de_CH/>\n"
@@ -73,3 +73,57 @@ msgstr ""
 "Wenn dieses Problem weiterhin besteht, wenden Sie sich bitte an Ihren IT-"
 "Support. Wenn es sich um eine Specify Cloud-Datenbank handelt, laden Sie "
 "bitte die Fehlermeldung herunter und senden Sie sie an <email />."
+
+#. 🟥Careful with the <xml> tags when localizing. Used in: Components > Errors > Error Dialog
+#: components/Errors/ErrorDialog.tsx:52
+msgid "errorResolutionSecondDescription"
+msgstr ""
+"Benutzer von <memberLink>Mitgliedsinstitutionen</memberLink> können in "
+"unserem <discourseLink>Community Forum</discourseLink> nach Antworten suchen "
+"und um Hilfe bitten."
+
+#. Used in: Core > __tests__ > Contexts ⬤ Components > Errors > Error Dialog
+#: components/Core/__tests__/Contexts.test.tsx:34
+#: components/Errors/ErrorDialog.tsx:175
+msgid "errorMessage"
+msgstr "Fehlermeldung"
+
+#. Used in: Components > Router > Router
+#: components/Router/Router.tsx:278
+msgid "leavePageConfirmation"
+msgstr "Sind Sie sicher, dass Sie diese Seite verlassen wollen?"
+
+#. Used in: Components > Security > Role
+#: components/Security/Role.tsx:88
+msgid "leavePageConfirmationDescription"
+msgstr ""
+"Nicht gespeicherte Änderungen gehen verloren, wenn Sie diese Seite verlassen."
+
+#. Used in: Components > Router > Router
+#: components/Router/Router.tsx:274
+msgid "leave"
+msgstr "Verlassen"
+
+#. Used in: Components > Core > Version Mismatch
+#: components/Core/VersionMismatch.tsx:22
+msgid "versionMismatch"
+msgstr "Die Specify Version stimmt nicht mit der Datenbankversion überein"
+
+#. Used in: Components > Core > Version Mismatch
+#: components/Core/VersionMismatch.tsx:26
+msgid "versionMismatchDescription"
+msgstr ""
+"Die Specify Version {specifySixVersion:string} stimmt nicht mit der "
+"Datenbankversion {databaseVersion:string} überein."
+
+#. Used in: Components > Core > Version Mismatch
+#: components/Core/VersionMismatch.tsx:31
+msgid "versionMismatchSecondDescription"
+msgstr ""
+"Einige Funktionen von Specify 7 funktionieren daher möglicherweise nicht "
+"richtig."
+
+#. Used in: Components > Core > Version Mismatch
+#: components/Core/VersionMismatch.tsx:34
+msgid "versionMismatchInstructions"
+msgstr "Anweisungen zur Behebung der Abweichung des Specify Schemas"
