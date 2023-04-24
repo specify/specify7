@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-04-20 17:49+0000\n"
+"PO-Revision-Date: 2023-04-24 09:51+0000\n"
 "Last-Translator: Daniel Fernandez <daniel.fernandez@sac-cas.ch>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/locality/de_CH/>\n"
@@ -38,3 +38,52 @@ msgstr ""
 #: components/QueryBuilder/ToMap.tsx:234
 msgid "queryMapAll"
 msgstr "GeoMap hat {plotted:number|formatted} Datensätze gezeichnet"
+
+#. Used in: Components > Leaflet > Add Ons
+#: components/Leaflet/addOns.ts:95
+msgid "polygonBoundaries"
+msgstr "Polygon-Grenzen"
+
+#. Used in: Components > Leaflet > Add Ons
+#: components/Leaflet/addOns.ts:96
+msgid "errorRadius"
+msgstr "Fehlerradius"
+
+#. Used in: Components > Form Plugins > Leaflet
+#: components/FormPlugins/Leaflet.tsx:84
+msgid "showMap"
+msgstr "Karte anzeigen"
+
+#. Used in: Components > Form Plugins > Leaflet
+#: components/FormPlugins/Leaflet.tsx:41
+msgid "noCoordinates"
+msgstr "Keine Koordinaten"
+
+#. Used in: Components > Form Plugins > Leaflet
+#: components/FormPlugins/Leaflet.tsx:44
+msgid "notEnoughInformationToMap"
+msgstr ""
+"{localityTable:string} muss Koordinaten haben, um kartiert werden zu können."
+
+#. Used in: Components > Leaflet > Add Ons
+#: components/Leaflet/addOns.ts:93
+msgid "occurrencePoints"
+msgstr "Stecknadeln"
+
+#. Used in: Components > Leaflet > Add Ons
+#: components/Leaflet/addOns.ts:94
+msgid "occurrencePolygons"
+msgstr "Polygone"
+
+#. Used in: Components > Form Plugins > Geo Locate ⬤ Components > Molecules > Geo Locate ⬤ Components > Work Bench > Template
+#: components/FormPlugins/GeoLocate.tsx:33
+#: components/Molecules/GeoLocate.tsx:70
+#: components/Molecules/GeoLocate.tsx:74
+#: components/WorkBench/Template.tsx:220
+msgid "geoLocate"
+msgstr "GEO Lokalisierung"
+
+#. Used in: Components > Form Plugins > Geo Locate
+#: components/FormPlugins/GeoLocate.tsx:113
+msgid "geographyRequired"
+msgstr "{geographyTable:string} muss kartiert werden"
