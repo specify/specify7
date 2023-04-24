@@ -16,10 +16,10 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { FormCell } from '../FormCells';
 import type { ViewDescription } from '../FormParse';
 import { attachmentView } from '../FormParse/webOnlyViews';
+import { loadingGif } from '../Molecules';
 import { userPreferences } from '../Preferences/userPreferences';
 import { unsafeTriggerNotFound } from '../Router/Router';
 import { FormSkeleton } from '../SkeletonLoaders/Form';
-import { loadingGif } from '../Molecules';
 
 const FormLoadingContext = React.createContext<boolean>(false);
 FormLoadingContext.displayName = 'FormLoadingContext';
