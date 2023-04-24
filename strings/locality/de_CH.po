@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-04-24 09:51+0000\n"
+"PO-Revision-Date: 2023-04-24 13:51+0000\n"
 "Last-Translator: Daniel Fernandez <daniel.fernandez@sac-cas.ch>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/locality/de_CH/>\n"
@@ -87,3 +87,99 @@ msgstr "GEO Lokalisierung"
 #: components/FormPlugins/GeoLocate.tsx:113
 msgid "geographyRequired"
 msgstr "{geographyTable:string} muss kartiert werden"
+
+#. Used in: Components > Form Plugins > Geo Locate
+#: components/FormPlugins/GeoLocate.tsx:118
+msgid "geographyRequiredDescription"
+msgstr ""
+"Das GeoLocate-Plugin erfordert, dass das Koordinaten-Feld eingegeben wird."
+
+#. Used in: Components > Form Plugins > Lat Long Ui
+#: components/FormPlugins/LatLongUi.tsx:272
+msgid "coordinates"
+msgstr "Koordinaten"
+
+#. 🟥Represents coordinates. Careful with translation. Used in: Components > Form Plugins > Lat Long Ui
+#: components/FormPlugins/LatLongUi.tsx:275
+msgid "northWestCorner"
+msgstr "NW-Ecke"
+
+#. 🟥Represents coordinates. Careful with translation. Used in: Components > Form Plugins > Lat Long Ui
+#: components/FormPlugins/LatLongUi.tsx:287
+msgid "southEastCorner"
+msgstr "SO-Ecke"
+
+#. Used in: Components > Form Plugins > Lat Long Ui
+#: components/FormPlugins/LatLongUi.tsx:244
+msgid "coordinateType"
+msgstr "Koordinatentyp"
+
+#. Used in: Components > Form Plugins > Lat Long Ui
+#: components/FormPlugins/LatLongUi.tsx:255
+msgid "point"
+msgstr "Punkt"
+
+#. Used in: Components > Form Plugins > Lat Long Ui
+#: components/FormPlugins/LatLongUi.tsx:256
+msgid "line"
+msgstr "Linie"
+
+#. Used in: Components > Form Plugins > Lat Long Ui
+#: components/FormPlugins/LatLongUi.tsx:257
+msgid "rectangle"
+msgstr "Rechteck"
+
+#. Used in: Components > Form Plugins > Lat Long Ui
+#: components/FormPlugins/LatLongUi.tsx:263
+msgid "parsed"
+msgstr "Geparst"
+
+#. Used in: Components > Form Plugins > Lat Long Ui
+#: components/FormPlugins/LatLongUi.tsx:170
+#: components/FormPlugins/LatLongUi.tsx:261
+msgid "latitude"
+msgstr "Breitengrad"
+
+#. Used in: Components > Form Plugins > Lat Long Ui
+#: components/FormPlugins/LatLongUi.tsx:184
+#: components/FormPlugins/LatLongUi.tsx:262
+msgid "longitude"
+msgstr "Längengrad"
+
+#. Used in: Components > App Resources > Editor ⬤ Components > Leaflet > Extend
+#: components/AppResources/Editor.tsx:98
+#: components/AppResources/Editor.tsx:100
+#: components/Leaflet/extend.ts:36
+#: components/Leaflet/extend.ts:37
+msgid "toggleFullScreen"
+msgstr "Vollbildmodus"
+
+#. Used in: Components > Work Bench > Coordinate Converter
+#: components/WorkBench/CoordinateConverter.tsx:23
+msgid "degrees"
+msgstr "DD.DDDD (32.7619)"
+
+#. Used in: Components > Work Bench > Coordinate Converter
+#: components/WorkBench/CoordinateConverter.tsx:28
+msgid "degreesMinutes"
+msgstr "DD MMMM (32. 45.714)"
+
+#. Used in: Components > Work Bench > Coordinate Converter
+#: components/WorkBench/CoordinateConverter.tsx:33
+msgid "degreesMinutesSeconds"
+msgstr "DD MM SS.SS (32 45 42.84)"
+
+#. Used in: Components > Work Bench > Coordinate Converter
+#: components/WorkBench/CoordinateConverter.tsx:43
+msgid "degreesMinutesWithDirection"
+msgstr "DD MM.MM N/S/O/W (32 45.714 N)"
+
+#. Used in: Components > Work Bench > Coordinate Converter
+#: components/WorkBench/CoordinateConverter.tsx:48
+msgid "degreesMinutesSecondsWithDirection"
+msgstr "DD MM SS.SS N/S/O/W (32 45 42.84 N)"
+
+#. Used in: Components > Work Bench > Coordinate Converter
+#: components/WorkBench/CoordinateConverter.tsx:38
+msgid "degreesWithDirection"
+msgstr "DD.DDDD N/S/O/W (32.7619 N)"
