@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-04-20 17:50+0000\n"
+"PO-Revision-Date: 2023-04-24 12:51+0000\n"
 "Last-Translator: Daniel Fernandez <daniel.fernandez@sac-cas.ch>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/report/de_CH/>\n"
@@ -37,3 +37,76 @@ msgstr "Auswertung"
 #, fuzzy
 msgid "reports"
 msgstr "Berichte"
+
+#. Used in: Components > Reports > Report
+#: components/Reports/Report.tsx:210
+msgid "missingAttachments"
+msgstr "Fehlende Anhänge"
+
+#. Used in: Components > Reports > Report
+#: components/Reports/Report.tsx:205
+msgid "reportProblems"
+msgstr "Probleme mit Bericht"
+
+#. Used in: Components > Reports > Report
+#: components/Reports/Report.tsx:209
+msgid "reportProblemsDescription"
+msgstr "Der ausgewählte Bericht hat folgende Probleme:"
+
+#. Used in: Components > Reports > Report
+#: components/Reports/Report.tsx:214
+#: components/Reports/Report.tsx:216
+msgid "fix"
+msgstr "Korrektur"
+
+#. Used in: Components > Reports > Report
+#: components/Reports/Report.tsx:227
+msgid "chooseFile"
+msgstr "Datei auswählen"
+
+#. Used in: Components > Reports > Report
+#: components/Reports/Report.tsx:315
+msgid "reportParameters"
+msgstr "Parameter des Berichts"
+
+#. Used in: Components > Reports > Parameters
+#: components/Reports/Parameters.tsx:82
+msgid "runReport"
+msgstr "Bericht ausführen"
+
+#. Used in: Components > Reports > Report
+#: components/Reports/Report.tsx:60
+msgid "missingReport"
+msgstr "Fehlender Bericht"
+
+#. Used in: Components > Reports > Report
+#: components/Reports/Report.tsx:64
+msgid "missingReportDescription"
+msgstr "Es kann kein SpReport für diese App-Ressource gefunden werden"
+
+#. Used in: Components > Form Meta > Index
+#: components/FormMeta/index.tsx:128
+msgid "generateLabel"
+msgstr "Etikett generieren"
+
+#. Used in: Components > Form Meta > Index ⬤ Components > Form Parse > Fields ⬤ Form Parse > __tests__ > Fields
+#: components/FormMeta/index.tsx:146
+#: components/FormParse/fields.ts:119
+#: components/FormParse/__tests__/fields.test.ts:131
+msgid "generateLabelOnSave"
+msgstr "Etikett beim Speichern generieren"
+
+#. Used in: Components > Form Meta > Index
+#: components/FormMeta/index.tsx:127
+msgid "generateReport"
+msgstr "Bericht generieren"
+
+#. Used in: Components > Form Meta > Index
+#: components/FormMeta/index.tsx:145
+msgid "generateReportOnSave"
+msgstr "Bericht beim Speichern generieren"
+
+#. Used in: Components > Reports > Report
+#: components/Reports/Report.tsx:55
+msgid "missingReportQueryDescription"
+msgstr "Dieser Bericht hat keine zugehörige Abfrage"
