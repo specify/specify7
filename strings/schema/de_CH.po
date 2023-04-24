@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-04-20 17:49+0000\n"
+"PO-Revision-Date: 2023-04-24 08:52+0000\n"
 "Last-Translator: Daniel Fernandez <daniel.fernandez@sac-cas.ch>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/schema/de_CH/>\n"
@@ -42,3 +42,14 @@ msgstr "Tabellennamen"
 #: components/Security/registry.ts:198
 msgid "schemaConfig"
 msgstr "Schema konfigurieren"
+
+#. Used in: Components > Schema Config > Index
+#: components/SchemaConfig/index.tsx:75
+msgid "unsavedSchemaUnloadProtect"
+msgstr "Schema Änderungen wurden nicht gespeichert"
+
+#. Used in: Components > Schema Config > Components ⬤ Components > Wb Plan View > Mapper Components
+#: components/SchemaConfig/Components.tsx:33
+#: components/WbPlanView/MapperComponents.tsx:317
+msgid "changeBaseTable"
+msgstr "Basis-Tabelle ändern"
