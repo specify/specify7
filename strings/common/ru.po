@@ -53,10 +53,10 @@ msgstr "Нет"
 #: components/Router/Router.tsx:273
 #: components/Security/ImportExport.tsx:81
 #: components/Security/MissingAgentsDialog.tsx:93
-#: components/Security/Role.tsx:194
+#: components/Security/Role.tsx:195
 #: components/Security/Role.tsx:221
 #: components/Security/RoleTemplate.tsx:93
-#: components/Security/User.tsx:407
+#: components/Security/User.tsx:414
 #: components/Statistics/index.tsx:550
 #: components/Toolbar/ForceUpdate.tsx:33
 #: components/Toolbar/FormTablesEdit.tsx:52
@@ -168,10 +168,10 @@ msgstr "Создать"
 #: components/Reports/Report.tsx:50
 #: components/Reports/Report.tsx:59
 #: components/SchemaConfig/Languages.tsx:31
-#: components/Security/Role.tsx:197
+#: components/Security/Role.tsx:198
 #: components/Security/SetPassword.tsx:36
-#: components/Security/User.tsx:409
-#: components/Security/User.tsx:648
+#: components/Security/User.tsx:416
+#: components/Security/User.tsx:650
 #: components/Security/UserCollections.tsx:71
 #: components/Security/UserInviteLink.tsx:55
 #: components/SpecifyNetwork/index.tsx:227

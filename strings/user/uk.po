@@ -652,13 +652,13 @@ msgstr ""
 "Спеціальна політика на рівні установи (застосовується до всіх призначених "
 "колекцій)"
 
-#: components/Security/User.tsx:649
+#: components/Security/User.tsx:651
 #. Used in: Components > Security > User
 #, fuzzy
 msgid "cantRemoveLastAdmin"
 msgstr "Неможливо видалити статус адміністратора установи"
 
-#: components/Security/User.tsx:652
+#: components/Security/User.tsx:654
 #. Used in: Components > Security > User
 #, fuzzy
 msgid "cantRemoveLastAdminDescription"

@@ -653,13 +653,13 @@ msgstr ""
 "Políticas personalizadas a nivel de institución (se aplican a todas las "
 "colecciones asignadas)"
 
-#: components/Security/User.tsx:649
+#: components/Security/User.tsx:651
 #. Used in: Components > Security > User
 #, fuzzy
 msgid "cantRemoveLastAdmin"
 msgstr "No se puede eliminar el estado de administrador de la institución"
 
-#: components/Security/User.tsx:652
+#: components/Security/User.tsx:654
 #. Used in: Components > Security > User
 #, fuzzy
 msgid "cantRemoveLastAdminDescription"
