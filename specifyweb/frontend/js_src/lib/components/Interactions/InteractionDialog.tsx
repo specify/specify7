@@ -22,7 +22,7 @@ import type {
   ValidParseResult,
 } from '../../utils/parser/parse';
 import { parseValue } from '../../utils/parser/parse';
-import type { IR, RA, WritableArray } from '../../utils/types';
+import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { H3 } from '../Atoms';
@@ -149,15 +149,6 @@ export function InteractionDialog({
     recordSet: SerializedResource<RecordSet> | undefined,
     prepsData: RA<PreparationRow>
   ) {
-    let missing: WritableArray<string> = [];
-
-    const catalogNumbers2 = prepsData.map((preparation) => preparation[0]);
-    if (entries) {
-      missing = catalogNumbers2.filter(
-        (catalogNumber) => !entries.includes(catalogNumber)
-      );
-    }
-
     if (
       prepsData.length === 0 &&
       recordSet === undefined &&
@@ -172,6 +163,11 @@ export function InteractionDialog({
       handleClose();
       return;
     }
+    const catalogNumbers = prepsData.map(([catalogNumber]) => catalogNumber);
+    const missing = catalogNumbers.filter(
+      (catalogNumber) => !entries?.includes(catalogNumber)
+    );
+
     if (missing.length > 0) {
       setState({ type: 'MissingState', missing });
     } else showPrepSelectDlg(prepsData);
