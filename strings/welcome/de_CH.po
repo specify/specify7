@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-04-20 17:49+0000\n"
+"PO-Revision-Date: 2023-04-24 09:51+0000\n"
 "Last-Translator: Daniel Fernandez <daniel.fernandez@sac-cas.ch>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/welcome/de_CH/>\n"
@@ -35,3 +35,97 @@ msgstr "Taxon-Kacheln"
 #: components/Router/OverlayRoutes.tsx:180
 msgid "aboutSpecify"
 msgstr "Über Specify 7"
+
+#. Used in: Components > Home Page > Taxon Tiles
+#: components/HomePage/TaxonTiles.tsx:73
+msgid "taxonTilesDescription"
+msgstr ""
+"Zeigt Taxa mit {count:number|formatted} oder mehr "
+"{collectionObjectTable:string} Datensätzen"
+
+#. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:79
+msgid "fullAddress"
+msgstr ""
+"Specify Collections Consortium <br />\n"
+"Biodiversity Institute <br />\n"
+"University of Kansas <br />\n"
+"1345 Jayhawk Blvd. <br />\n"
+"Lawrence, KS 66045 USA"
+
+#. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:91
+msgid "disclosure"
+msgstr ""
+"Die Specify-Software ist ein Produkt des Specify Collections Consortiums, "
+"das von seinen Mitgliedsinstitutionen verwaltet und finanziert wird. Zu den "
+"Gründungsmitgliedern des Konsortiums gehören: Commonwealth Scientific and "
+"Industrial Research Organisation (CSIRO), Denmark Consortium of Museums, "
+"University of Florida, University of Kansas und University of Michigan. Das "
+"Konsortium arbeitet unter dem gemeinnützigen, 501(c)3, U.S. Steuerstatus des "
+"University of Kansas Center for Research. Specify wurde von 1996 bis 2018 "
+"durch Zuschüsse der U.S. National Science Foundation unterstützt."
+
+#. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:92
+msgid "licence"
+msgstr ""
+"Specify 7, Copyright 2023, University of Kansas Center for Research. Specify "
+"kommt mit ABSOLUT KEINER GARANTIE. Dies ist freie, quelloffene Software, "
+"lizenziert unter GNU General Public License v2."
+
+#. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:95
+msgid "systemInformation"
+msgstr "Systeminformationen"
+
+#. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:99
+msgid "specifyVersion"
+msgstr "Specify 7 Version:"
+
+#. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:100
+msgid "gitSha"
+msgstr "Git SHA:"
+
+#. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:101
+msgid "buildDate"
+msgstr "Datum des Builds:"
+
+#. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:103
+msgid "specifySixVersion"
+msgstr "Specify 6 Version:"
+
+#. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:106
+msgid "databaseVersion"
+msgstr "Datenbankversion:"
+
+#. Used in: Components > Home Page > About Specify ⬤ Components > Schema Viewer > Index
+#: components/HomePage/AboutSpecify.tsx:108
+#: components/SchemaViewer/index.tsx:34
+msgid "schemaVersion"
+msgstr "Datenbankschema-Version"
+
+#. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:113
+msgid "databaseName"
+msgstr "Datenbank-Name:"
+
+#. 🟥I believe ISA stands for Institution Service Agreement. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:135
+msgid "isaNumber"
+msgstr "ISA-Nummer:"
+
+#. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:138
+msgid "browser"
+msgstr "Browser:"
+
+#. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:117
+msgid "databaseCreationDate"
+msgstr "Datenbank Erstelldatum:"
