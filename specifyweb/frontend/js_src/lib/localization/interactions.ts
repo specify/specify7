@@ -37,13 +37,6 @@ export const interactionsText = createDictionary({
     'fr-fr': 'Créer {modelName:string}',
     'uk-ua': 'Створити {modelName:string}',
   },
-  preparationsNotFound: {
-    'en-us': 'No preparations were found.',
-    'ru-ru': 'Никаких препаратов не обнаружено.',
-    'es-es': 'No se encontraron preparados.',
-    'fr-fr': "Aucune préparation n'a été trouvée.",
-    'uk-ua': 'Препаратів не виявлено.',
-  },
   preparationsNotFoundFor: {
     'en-us': 'No preparations were found for the following Catalog Numbers:',
   },

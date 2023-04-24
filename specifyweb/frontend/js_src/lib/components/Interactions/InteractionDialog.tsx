@@ -122,12 +122,12 @@ export function InteractionDialog({
               loanNumbers: recordSet === undefined ? catalogNumbers : undefined,
             },
           }
-        ).then(({ data }) => {
+        ).then(({ data }) =>
           setState({
             type: 'LoanReturnDoneState',
             result: data[0],
-          });
-        })
+          })
+        )
       );
     else if (typeof recordSet === 'object')
       loading(
@@ -151,12 +151,9 @@ export function InteractionDialog({
   ) {
     let missing: WritableArray<string> = [];
 
-    let catalogNumbers: WritableArray<string> = Array.from(
-      prepsData,
-      (preparation) => preparation[0]
-    );
+    const catalogNumbers2 = prepsData.map((preparation) => preparation[0]);
     if (entries) {
-      missing = catalogNumbers.filter(
+      missing = catalogNumbers2.filter(
         (catalogNumber) => !entries.includes(catalogNumber)
       );
     }
@@ -177,9 +174,7 @@ export function InteractionDialog({
     }
     if (missing.length > 0) {
       setState({ type: 'MissingState', missing: missing });
-    } else {
-      showPrepSelectDlg(prepsData);
-    }
+    } else showPrepSelectDlg(prepsData);
   }
 
   const showPrepSelectDlg = (prepsData: RA<PreparationRow>): void =>
@@ -309,9 +304,7 @@ export function InteractionDialog({
               <div>
                 <Button.Blue
                   disabled={catalogNumbers.length === 0}
-                  onClick={(): void => {
-                    handleProceed(undefined);
-                  }}
+                  onClick={(): void => handleProceed(undefined)}
                 >
                   {state.type === 'MissingState' ||
                   state.type === 'InvalidState'
