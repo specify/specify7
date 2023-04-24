@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-04-24 08:52+0000\n"
+"PO-Revision-Date: 2023-04-24 09:51+0000\n"
 "Last-Translator: Daniel Fernandez <daniel.fernandez@sac-cas.ch>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/resources/de_CH/>\n"
@@ -184,3 +184,8 @@ msgstr "Globale Einstellungen"
 #: components/AppResources/tree.ts:118
 msgid "remotePreferences"
 msgstr "Remote-Einstellungen"
+
+#. Used in: Components > App Resources > Tree
+#: components/AppResources/tree.ts:43
+msgid "disciplineResources"
+msgstr "Disziplin-Ressourcen"
