@@ -17,10 +17,8 @@ export function AppResourceSkeleton() {
         </div>
       </div>
       <div className="flex flex-col gap-4 p-4">
-        {Array.from({ length: 15 }, () => (
-          <div>
-            <Skeleton.LongLine />
-          </div>
+        {Array.from({ length: 15 }, (_, index) => (
+          <Skeleton.LongLine key={index} />
         ))}
       </div>
     </div>

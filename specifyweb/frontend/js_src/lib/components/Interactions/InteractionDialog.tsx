@@ -222,7 +222,6 @@ export function InteractionDialog({
     />
   ) : (
     <RecordSetsDialog
-      displayLoading
       isReadOnly
       recordSetsPromise={recordSetsPromise}
       onClose={handleClose}

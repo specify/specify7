@@ -19,6 +19,7 @@ import { attachmentView } from '../FormParse/webOnlyViews';
 import { userPreferences } from '../Preferences/userPreferences';
 import { unsafeTriggerNotFound } from '../Router/Router';
 import { FormSkeleton } from '../SkeletonLoaders/Form';
+import { loadingGif } from '../Molecules';
 
 const FormLoadingContext = React.createContext<boolean>(false);
 FormLoadingContext.displayName = 'FormLoadingContext';
@@ -74,8 +75,7 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
 
   // If parent resource is loading, don't duplicate the loading bar in children
   const isAlreadyLoading = React.useContext(FormLoadingContext);
-  const showLoading =
-    !isAlreadyLoading && (!formIsLoaded || isLoading || isShowingOldResource);
+  const showLoading = !isAlreadyLoading && (isLoading || isShowingOldResource);
   const [flexibleColumnWidth] = userPreferences.use(
     'form',
     'definition',
@@ -94,6 +94,23 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
         `}
         lang={language}
       >
+        {showLoading && (
+          <div
+            className={`
+               z-10 flex h-full w-full items-center justify-center
+               ${
+                 /*
+                  * If form is not yet visible, the logo should be reserving
+                  * some space for itself so as not to overlap with the
+                  * form header and the save button
+                  */
+                 formIsLoaded ? 'absolute' : ''
+               }
+             `}
+          >
+            {loadingGif}
+          </div>
+        )}
         {formIsLoaded ? (
           <DataEntry.Grid
             aria-hidden={showLoading}
