@@ -76,12 +76,6 @@ export function InteractionDialog({
 }): JSX.Element {
   const [state, setState] = React.useState<
     | State<
-        'PreparationSelectState',
-        {
-          readonly entries: Preparations;
-        }
-      >
-    | State<
         'InvalidState',
         {
           readonly invalid: RA<string>;
@@ -91,6 +85,12 @@ export function InteractionDialog({
         'MissingState',
         {
           readonly missing: RA<string>;
+        }
+      >
+    | State<
+        'PreparationSelectState',
+        {
+          readonly entries: Preparations;
         }
       >
     | State<'LoanReturnDoneState', { readonly result: number }>
@@ -173,7 +173,7 @@ export function InteractionDialog({
       return;
     }
     if (missing.length > 0) {
-      setState({ type: 'MissingState', missing: missing });
+      setState({ type: 'MissingState', missing });
     } else showPrepSelectDlg(prepsData);
   }
 
@@ -195,7 +195,7 @@ export function InteractionDialog({
       })),
     });
 
-  function handleParse(): undefined | RA<string> {
+  function handleParse(): RA<string> | undefined {
     const parseResults = split(catalogNumbers).map((value) =>
       parseValue(parser, inputRef.current ?? undefined, value)
     );
