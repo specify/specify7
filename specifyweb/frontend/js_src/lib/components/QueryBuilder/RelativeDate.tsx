@@ -136,18 +136,6 @@ function DateSplit({
     handleChange?.(`${today} ${direction} ${size} ${type}`);
   return (
     <div className="flex flex-row gap-1">
-      <Select
-        disabled={handleChange === undefined}
-        value={direction}
-        onBlur={commitChange}
-        onValueChange={(newValue): void => {
-          setValues({ ...values, direction: newValue });
-          handleChanging?.();
-        }}
-      >
-        <option value="+">{queryText.future()}</option>
-        <option value="-">{queryText.past()}</option>
-      </Select>
       <Input.Number
         disabled={handleChange === undefined}
         min={0}
@@ -174,6 +162,18 @@ function DateSplit({
         <option value="week">{queryText.week()}</option>
         <option value="month">{queryText.month()}</option>
         <option value="year">{queryText.year()}</option>
+      </Select>
+      <Select
+        disabled={handleChange === undefined}
+        value={direction}
+        onBlur={commitChange}
+        onValueChange={(newValue): void => {
+          setValues({ ...values, direction: newValue });
+          handleChanging?.();
+        }}
+      >
+        <option value="-">{queryText.past()}</option>
+        <option value="+">{queryText.future()}</option>
       </Select>
     </div>
   );

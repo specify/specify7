@@ -638,22 +638,22 @@ export const queryText = createDictionary({
     `,
   },
   future: {
-    'en-us': 'Future',
+    'en-us': 'in the future',
   },
   past: {
-    'en-us': 'Past',
+    'en-us': 'in the past',
   },
   day: {
-    'en-us': 'Day',
+    'en-us': 'Days',
   },
   week: {
-    'en-us': 'Week',
+    'en-us': 'Weeks',
   },
   month: {
-    'en-us': 'Month',
+    'en-us': 'Months',
   },
   year: {
-    'en-us': 'Year',
+    'en-us': 'Years',
   },
   switchToRelative: {
     'en-us': 'Switch to relative',
