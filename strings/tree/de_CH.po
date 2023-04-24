@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-04-20 17:50+0000\n"
+"PO-Revision-Date: 2023-04-24 17:50+0000\n"
 "Last-Translator: Daniel Fernandez <daniel.fernandez@sac-cas.ch>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/tree/de_CH/>\n"
@@ -24,7 +24,6 @@ msgstr "Zusammenführen"
 
 #. Used in: Components > Data Model > Tree Business Rules
 #: components/DataModel/treeBusinessRules.ts:95
-#, fuzzy
 msgid "badStructure"
 msgstr "Fehlerhafte Baumstruktur."
 
@@ -34,3 +33,114 @@ msgstr "Fehlerhafte Baumstruktur."
 #: components/Toolbar/TreeRepair.tsx:45
 msgid "trees"
 msgstr "Hierarchien"
+
+#. Used in: Components > Tree View > Actions
+#: components/TreeView/Actions.tsx:176
+msgid "synonymize"
+msgstr "Synonymisieren"
+
+#. Used in: Components > Tree View > Actions
+#: components/TreeView/Actions.tsx:176
+msgid "undoSynonymy"
+msgstr "Synonymie rückgängig machen"
+
+#. Used in: Components > Tree View > Actions
+#: components/TreeView/Actions.tsx:359
+msgid "actionFailed"
+msgstr "Vorgang fehlgeschlagen"
+
+#. Used in: Components > Tree View > Actions
+#: components/TreeView/Actions.tsx:362
+msgid "actionFailedDescription"
+msgstr ""
+"Der Vorgang konnte aufgrund der folgenden Fehler nicht ausgeführt werden:"
+
+#. Used in: Components > Tree View > Actions
+#: components/TreeView/Actions.tsx:381
+#: components/TreeView/Actions.tsx:392
+msgid "moveNode"
+msgstr "Knoten verschieben"
+
+#. Used in: Components > Tree View > Actions
+#: components/TreeView/Actions.tsx:132
+msgid "addChild"
+msgstr "Kind hinzuzufügen"
+
+#. Used in: Components > Tree View > Actions
+#: components/TreeView/Actions.tsx:343
+msgid "moveNodeHere"
+msgstr "Verschiebe \"{nodeName:string}\" hierhin"
+
+#. Used in: Components > Tree View > Actions
+#: components/TreeView/Actions.tsx:402
+msgid "nodeMoveMessage"
+msgstr ""
+"Der {treeName:string} Knoten \"{nodeName:string}\" wird zusammen mit allen "
+"seinen Unterknoten unter den neuen übergeordneten Knoten \""
+"{parentName:string}\" platziert."
+
+#. Used in: Components > Tree View > Actions
+#: components/TreeView/Actions.tsx:318
+msgid "cantMoveHere"
+msgstr "Dieser Knoten kann nicht hierhin verschoben werden"
+
+#. Used in: Components > Tree View > Actions
+#: components/TreeView/Actions.tsx:323
+msgid "cantMergeHere"
+msgstr "Dieser Knoten kann hier nicht zusammengelegt werden"
+
+#. Used in: Components > Tree View > Actions
+#: components/TreeView/Actions.tsx:319
+msgid "cantMoveToSynonym"
+msgstr "Kann nicht zu einem Synonym verschieben"
+
+#. Used in: Components > Tree View > Actions
+#: components/TreeView/Actions.tsx:324
+msgid "cantMergeIntoSynonym"
+msgstr "Kann nicht zu Synonymen zusammenführen"
+
+#. Used in: Components > Tree View > Actions
+#: components/TreeView/Actions.tsx:327
+msgid "cantSynonymizeSynonym"
+msgstr "Kann nicht mit einem Synonym synonymisiert werden"
+
+#. Used in: Components > Tree View > Actions
+#: components/TreeView/Actions.tsx:302
+msgid "nodeMoveHintMessage"
+msgstr "Wählen Sie ein neues Elternelement für \"{nodeName:string}\""
+
+#. Used in: Components > Tree View > Row
+#: components/TreeView/Row.tsx:200
+#, fuzzy
+msgid "leafNode"
+msgstr "Blatt-Knoten"
+
+#. 🟥Used to show tree node's direct and indirect usages. Used in: Components > Tree View > Helpers
+#: components/TreeView/helpers.ts:215
+msgid "nodeStats"
+msgstr "({directCount:number|formatted}, {childCount:number|formatted})"
+
+#. 🟥Used to show leaf tree node's direct usages. Used in: Components > Tree View > Helpers
+#: components/TreeView/helpers.ts:214
+msgid "leafNodeStats"
+msgstr "({directCount:number|formatted})"
+
+#. 🟥Example: Direct Collection Object count. Used in: Components > Tree View > Helpers
+#: components/TreeView/helpers.ts:199
+msgid "directCollectionObjectCount"
+msgstr "Direkte {collectionObjectTable:string} Anzahl"
+
+#. 🟥Example: Indirect Collection Object count. Used in: Components > Tree View > Helpers
+#: components/TreeView/helpers.ts:207
+msgid "indirectCollectionObjectCount"
+msgstr "Indirekte {collectionObjectTable:string} Anzahl"
+
+#. Used in: Components > Tree View > Index
+#: components/TreeView/index.tsx:182
+msgid "editRanks"
+msgstr "Positionen bearbeiten"
+
+#. Used in: Components > Forms > Delete Button
+#: components/Forms/DeleteButton.tsx:155
+msgid "resourceToDelete"
+msgstr "Dadurch wird die folgende Ressource dauerhaft gelöscht"
