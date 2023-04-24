@@ -60,13 +60,13 @@ export function DateQueryInputField({
   return (
     <div className="flex items-center gap-1">
       <Button.Icon
+        disabled={handleChange === undefined}
         icon="selector"
         title={
           isAbsolute
             ? queryText.switchToRelative()
             : queryText.switchToAbsolute()
         }
-        disabled={handleChange === undefined}
         onClick={(): void => {
           toggleAbsolute();
           if (isAbsolute) {
