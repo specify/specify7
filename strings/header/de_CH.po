@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-04-20 17:49+0000\n"
+"PO-Revision-Date: 2023-04-24 13:51+0000\n"
 "Last-Translator: Daniel Fernandez <daniel.fernandez@sac-cas.ch>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/header/de_CH/>\n"
@@ -68,3 +68,179 @@ msgid "dwcaExportStartedDescription"
 msgstr ""
 "Export gestartet. Sie erhalten eine Benachrichtigung, sobald der Export "
 "abgeschlossen ist."
+
+#. Used in: Components > Header > Forms ⬤ Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes
+#: components/Header/Forms.tsx:63
+#: components/Header/menuItemDefinitions.ts:41
+#: components/Router/OverlayRoutes.tsx:60
+msgid "dataEntry"
+msgstr "Datenerfassung"
+
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
+#: components/Header/userToolDefinitions.ts:89
+#: components/Router/OverlayRoutes.tsx:164
+msgid "makeDwca"
+msgstr "DwC-Archiv erstellen"
+
+#. Used in: Components > Query Builder > Edit
+#: components/QueryBuilder/Edit.tsx:217
+msgid "labelName"
+msgstr "Etikett Name"
+
+#. Used in: Components > Query Builder > Edit
+#: components/QueryBuilder/Edit.tsx:217
+msgid "reportName"
+msgstr "Name des Berichts"
+
+#. Used in: Components > Query Builder > Edit
+#: components/QueryBuilder/Edit.tsx:181
+msgid "createLabel"
+msgstr "Neues Label erstellen"
+
+#. Used in: Components > Query Builder > Edit
+#: components/QueryBuilder/Edit.tsx:181
+msgid "createReport"
+msgstr "Neuen Bericht erstellen"
+
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Tree Repair
+#: components/Header/userToolDefinitions.ts:73
+#: components/Router/OverlayRoutes.tsx:148
+#: components/Toolbar/TreeRepair.tsx:162
+msgid "repairTree"
+msgstr "Baum reparieren"
+
+#. Used in: Components > Toolbar > Tree Repair
+#: components/Toolbar/TreeRepair.tsx:157
+msgid "treeRepairComplete"
+msgstr "Die Baumreparatur ist abgeschlossen."
+
+#. Used in: Components > Toolbar > Dwca
+#: components/Toolbar/Dwca.tsx:39
+msgid "chooseDwca"
+msgstr "DwCA wählen"
+
+#. Used in: Components > Toolbar > Dwca
+#: components/Toolbar/Dwca.tsx:49
+msgid "chooseMetadataResource"
+msgstr "Metadaten-Ressource auswählen"
+
+#. Used in: Components > Header > Express Search Task ⬤ Components > Router > Overlay Routes ⬤ Components > Router > Routes
+#: components/Header/ExpressSearchTask.tsx:53
+#: components/Header/ExpressSearchTask.tsx:109
+#: components/Router/OverlayRoutes.tsx:44
+#: components/Router/Routes.tsx:26
+msgid "expressSearch"
+msgstr "Express-Suche"
+
+#. Used in: Components > Header > Express Search Task
+#: components/Header/ExpressSearchTask.tsx:119
+msgid "primarySearch"
+msgstr "Primäre Suche"
+
+#. Used in: Components > Header > Express Search Task
+#: components/Header/ExpressSearchTask.tsx:125
+msgid "secondarySearch"
+msgstr "Sekundäre Suche"
+
+#. Used in: Components > Preferences > Renderers
+#: components/Preferences/Renderers.tsx:311
+msgid "menuItems"
+msgstr "Menü-Einträge"
+
+#. Used in: Components > Header > User Tools ⬤ Components > Preferences > Renderers ⬤ Components > Router > Overlay Routes
+#: components/Header/UserTools.tsx:48
+#: components/Header/UserTools.tsx:79
+#: components/Preferences/Renderers.tsx:312
+#: components/Router/OverlayRoutes.tsx:36
+msgid "userTools"
+msgstr "Benutzerwerkzeuge"
+
+#. Used in: Components > Header > User Tools
+#: components/Header/UserTools.tsx:78
+msgid "userToolsForUser"
+msgstr "Benutzerwerkzeuge ({userName:string})"
+
+#. Used in: Components > Toolbar > Language
+#: components/Toolbar/Language.tsx:86
+#: components/Toolbar/Language.tsx:162
+msgid "helpLocalizeSpecify"
+msgstr "Hilf beim übersetzen von Specify 7"
+
+#. Used in: Components > Toolbar > Language
+#: components/Toolbar/Language.tsx:98
+msgid "helpLocalizeSpecifyDescription"
+msgstr ""
+"Wir wären sehr dankbar für Ihre Unterstützung bei der Übersetzung der "
+"Specify 7 Benutzeroberfläche. Wenn Sie daran interessiert sind, lesen Sie "
+"bitte <link>die Anleitung</link>."
+
+#. Used in: Components > Toolbar > Language
+#: components/Toolbar/Language.tsx:156
+msgid "incompleteInline"
+msgstr "(unvollständig)"
+
+#. Used in: Components > Toolbar > Language
+#: components/Toolbar/Language.tsx:121
+msgid "incompleteLocalization"
+msgstr "Unvollständige Übersetzung"
+
+#. Used in: Components > Toolbar > Language
+#: components/Toolbar/Language.tsx:133
+msgid "incompleteLocalizationDescription"
+msgstr ""
+"Die Übersetzung in diese Sprache ist noch nicht abgeschlossen. Bei einigen "
+"Elementen fehlt möglicherweise die Lokalisierung oder sie sind nicht korrekt "
+"lokalisiert. Wenn Sie daran interessiert sind, uns bei der Vervollständigung "
+"der Übersetzung zu helfen, <link>befolgen Sie bitte die Anweisungen.</link>"
+
+#. Used in: Components > Header > User Tool Definitions
+#: components/Header/userToolDefinitions.ts:130
+msgid "tableApi"
+msgstr "Tabellen-API"
+
+#. Used in: Components > Header > User Tool Definitions
+#: components/Header/userToolDefinitions.ts:135
+msgid "operationsApi"
+msgstr "Operations-API"
+
+#. Used in: Components > App Resources > Create ⬤ Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions
+#: components/AppResources/Create.tsx:89
+#: components/AppResources/Create.tsx:115
+#: components/AppResources/Filters.tsx:156
+#: components/Header/userToolDefinitions.ts:101
+#: components/Preferences/UserDefinitions.tsx:450
+msgid "documentation"
+msgstr "Dokumentation"
+
+#. Used in: Components > Header > User Tool Definitions
+#: components/Header/userToolDefinitions.ts:118
+msgid "developers"
+msgstr "Ressourcen für Entwickler"
+
+#. Used in: Components > Header > User Tool Definitions
+#: components/Header/userToolDefinitions.ts:108
+msgid "forum"
+msgstr "Community-Forum"
+
+#. Used in: Components > Errors > Error Dialog ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Router Commands > Cache Buster
+#: components/Errors/ErrorDialog.tsx:131
+#: components/Header/userToolDefinitions.ts:125
+#: components/Router/Routes.tsx:392
+#: components/RouterCommands/CacheBuster.tsx:41
+msgid "clearCache"
+msgstr "Browser-Cache leeren"
+
+#. Used in: Components > Router Commands > Cache Buster
+#: components/RouterCommands/CacheBuster.tsx:44
+msgid "cacheCleared"
+msgstr "Der Cache wurde geleert. Bitte laden Sie die Seite neu."
+
+#. Used in: Components > Header > User Tool Definitions
+#: components/Header/userToolDefinitions.ts:113
+msgid "technicalDocumentation"
+msgstr "Technische Dokumentation"
+
+#. Used in: Components > Header > User Tool Definitions
+#: components/Header/userToolDefinitions.ts:56
+msgid "administration"
+msgstr "Administrative Werkzeuge"
