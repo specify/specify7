@@ -397,12 +397,14 @@ export const routes: RA<EnhancedRoute> = [
     ],
   },
   // FIXME: re-enable this
-  /*{
-    path: 'stats',
-    title: statsText.statistics(),
-    element: () =>
-      import('../Statistics/index').then(({ StatsPage }) => StatsPage),
-  },*/
+  /*
+   *{
+   *path: 'stats',
+   *title: statsText.statistics(),
+   *element: () =>
+   *  import('../Statistics/index').then(({ StatsPage }) => StatsPage),
+   *},
+   */
   {
     path: 'developer',
     children: [
