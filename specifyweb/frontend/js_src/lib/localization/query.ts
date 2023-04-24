@@ -655,6 +655,12 @@ export const queryText = createDictionary({
   year: {
     'en-us': 'Year',
   },
+  switchToRelative: {
+    'en-us': 'Switch to relative',
+  },
+  switchToAbsolute: {
+    'en-us': 'Switch to absolute',
+  },
   importHiddenFields: {
     'en-us': 'The following fields are hidden in the query you imported:',
     'es-es': 'Los siguientes campos están ocultos en la consulta que importó:',
