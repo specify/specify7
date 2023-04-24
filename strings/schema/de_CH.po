@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-04-24 08:52+0000\n"
+"PO-Revision-Date: 2023-04-24 09:51+0000\n"
 "Last-Translator: Daniel Fernandez <daniel.fernandez@sac-cas.ch>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/schema/de_CH/>\n"
@@ -53,3 +53,236 @@ msgstr "Schema Änderungen wurden nicht gespeichert"
 #: components/WbPlanView/MapperComponents.tsx:317
 msgid "changeBaseTable"
 msgstr "Basis-Tabelle ändern"
+
+#. Used in: Components > Schema Config > Field
+#: components/SchemaConfig/Field.tsx:44
+msgid "field"
+msgstr "Feld"
+
+#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Schema Viewer > Fields
+#: components/FormMeta/CarryForward.tsx:266
+#: components/Forms/generateFormDefinition.ts:129
+#: components/SchemaConfig/Fields.tsx:36
+#: components/SchemaConfig/Fields.tsx:47
+#: components/SchemaViewer/Fields.tsx:42
+msgid "fields"
+msgstr "Felder"
+
+#. Used in: Components > Schema Config > Field ⬤ Components > Schema Config > Table
+#: components/SchemaConfig/Field.tsx:49
+#: components/SchemaConfig/Table.tsx:53
+msgid "caption"
+msgstr "Beschriftung"
+
+#. Used in: Components > Schema Config > Field ⬤ Components > Schema Config > Table ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv ⬤ Components > Security > Role
+#: components/SchemaConfig/Field.tsx:59
+#: components/SchemaConfig/Table.tsx:63
+#: components/SchemaViewer/Fields.tsx:58
+#: components/SchemaViewer/Relationships.tsx:95
+#: components/SchemaViewer/schemaToTsv.tsx:21
+#: components/Security/Role.tsx:138
+msgid "description"
+msgstr "Beschreibung"
+
+#. Used in: Components > Schema Config > Table
+#: components/SchemaConfig/Table.tsx:73
+msgid "tableFormat"
+msgstr "Tabellenformat"
+
+#. Used in: Components > Schema Config > Table
+#: components/SchemaConfig/Table.tsx:87
+msgid "tableAggregation"
+msgstr "Tabellenaggregation"
+
+#. Used in: Components > Schema Config > Helpers
+#: components/SchemaConfig/helpers.ts:124
+msgid "oneToOne"
+msgstr "Eins zu eins"
+
+#. Used in: Components > Schema Config > Helpers
+#: components/SchemaConfig/helpers.ts:125
+msgid "oneToMany"
+msgstr "Eins zu vielen"
+
+#. Used in: Components > Schema Config > Helpers
+#: components/SchemaConfig/helpers.ts:126
+msgid "manyToOne"
+msgstr "Viele zu eins"
+
+#. Used in: Components > Schema Config > Helpers
+#: components/SchemaConfig/helpers.ts:127
+msgid "manyToMany"
+msgstr "Viele zu viele"
+
+#. Used in: Components > Schema Config > Field ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Schema To Tsv
+#: components/SchemaConfig/Field.tsx:69
+#: components/SchemaViewer/Fields.tsx:64
+#: components/SchemaViewer/schemaToTsv.tsx:27
+msgid "fieldLength"
+msgstr "Länge"
+
+#. Used in: Components > Schema Config > Format
+#: components/SchemaConfig/Format.tsx:53
+msgid "fieldFormat"
+msgstr "Feldformat"
+
+#. Used in: Components > Schema Config > Format
+#: components/SchemaConfig/Format.tsx:73
+msgid "formatted"
+msgstr "Formatiert"
+
+#. Used in: Components > Schema Config > Format
+#: components/SchemaConfig/Format.tsx:97
+msgid "webLink"
+msgstr "Web-Link"
+
+#. Used in: Components > Schema Config > Format
+#: components/SchemaConfig/Format.tsx:106
+msgid "userDefined"
+msgstr "Benutzerdefiniert"
+
+#. Used in: Components > Router > Routes ⬤ Components > Schema Config > Languages
+#: components/Router/Routes.tsx:345
+#: components/SchemaConfig/Languages.tsx:27
+#: components/SchemaConfig/Languages.tsx:75
+msgid "addLanguage"
+msgstr "Sprache hinzuzufügen"
+
+#. Used in: Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Table ⬤ Components > Schema Viewer > Schema To Tsv
+#: components/SchemaViewer/Fields.tsx:57
+#: components/SchemaViewer/Relationships.tsx:94
+#: components/SchemaViewer/Table.tsx:57
+#: components/SchemaViewer/schemaToTsv.tsx:15
+#: components/SchemaViewer/schemaToTsv.tsx:20
+msgid "fieldLabel"
+msgstr "Etikett"
+
+#. Used in: Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
+#: components/SchemaViewer/Fields.tsx:65
+#: components/SchemaViewer/Relationships.tsx:101
+#: components/SchemaViewer/schemaToTsv.tsx:28
+msgid "databaseColumn"
+msgstr "Datenbank-Spalte"
+
+#. Used in: Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
+#: components/SchemaViewer/Relationships.tsx:102
+#: components/SchemaViewer/schemaToTsv.tsx:29
+msgid "relatedModel"
+msgstr "Zugehöriges Modell"
+
+#. Used in: Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
+#: components/SchemaViewer/Relationships.tsx:103
+#: components/SchemaViewer/schemaToTsv.tsx:30
+msgid "otherSideName"
+msgstr "Name der anderen Seite"
+
+#. Used in: Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
+#: components/SchemaViewer/Relationships.tsx:60
+#: components/SchemaViewer/Relationships.tsx:104
+#: components/SchemaViewer/schemaToTsv.tsx:31
+msgid "dependent"
+msgstr "Abhängig"
+
+#. Used in: Components > Schema Viewer > Index
+#: components/SchemaViewer/index.tsx:44
+msgid "downloadAsJson"
+msgstr "Als JSON herunterladen"
+
+#. Used in: Components > Schema Viewer > Index
+#: components/SchemaViewer/index.tsx:64
+msgid "downloadAsTsv"
+msgstr "Als TSV herunterladen"
+
+#. Used in: Components > Schema Viewer > Table ⬤ Components > Schema Viewer > Schema To Tsv
+#: components/SchemaViewer/Table.tsx:60
+#: components/SchemaViewer/schemaToTsv.tsx:18
+msgid "tableId"
+msgstr "Tabellen-ID"
+
+#. Used in: Components > Schema Viewer > Table
+#: components/SchemaViewer/Table.tsx:61
+msgid "fieldCount"
+msgstr "Anzahl Felder"
+
+#. Used in: Components > Schema Viewer > Table
+#: components/SchemaViewer/Table.tsx:62
+msgid "relationshipCount"
+msgstr "Anzahl Beziehungen"
+
+#. Used in: Components > Schema Viewer > Index
+#: components/SchemaViewer/index.tsx:57
+msgid "schemaExportFileName"
+msgstr "Specify 7 Datenmodell"
+
+#. Used in: Components > Schema Config > Field
+#: components/SchemaConfig/Field.tsx:88
+msgid "hideField"
+msgstr "Feld verbergen"
+
+#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Schema Viewer > Relationships
+#: components/FormMeta/CarryForward.tsx:274
+#: components/Forms/generateFormDefinition.ts:167
+#: components/SchemaConfig/Fields.tsx:58
+#: components/SchemaViewer/Relationships.tsx:44
+msgid "relationships"
+msgstr "Beziehungen"
+
+#. Used in: Components > Form Meta > Index ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
+#: components/FormMeta/index.tsx:64
+#: components/SchemaViewer/Fields.tsx:60
+#: components/SchemaViewer/Relationships.tsx:97
+#: components/SchemaViewer/schemaToTsv.tsx:23
+msgid "readOnly"
+msgstr "Nur-Lesen"
+
+#. Used in: Components > Schema Config > Table
+#: components/SchemaConfig/Table.tsx:110
+msgid "hideTable"
+msgstr "Tabelle verbergen"
+
+#. Used in: Components > Schema Viewer > Fields
+#: components/SchemaViewer/Fields.tsx:37
+msgid "scope"
+msgstr "Anwendungsbereich"
+
+#. Used in: Components > Schema Config > Index
+#: components/SchemaConfig/index.tsx:39
+msgid "schemaViewTitle"
+msgstr "Schema-Konfiguration: {tableName:string}"
+
+#. Used in: Components > Toolbar > Query Tables Edit
+#: components/Toolbar/QueryTablesEdit.tsx:82
+msgid "possibleTables"
+msgstr "Mögliche Tabellen"
+
+#. Used in: Components > Schema Viewer > Table
+#: components/SchemaViewer/Table.tsx:44
+msgid "goToTop"
+msgstr "Nach oben"
+
+#. Used in: Components > Schema Viewer > Relationships
+#: components/SchemaViewer/Relationships.tsx:76
+msgid "independent"
+msgstr "Unabhängig"
+
+#. Used in: Components > Schema Viewer > Index
+#: components/SchemaViewer/index.tsx:51
+msgid "downloadAsXml"
+msgstr "Als XML herunterladen"
+
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes
+#: components/Header/userToolDefinitions.ts:120
+#: components/Router/Routes.tsx:34
+#: components/Router/Routes.tsx:38
+msgid "databaseSchema"
+msgstr "Datenbankschema"
+
+#. Used in: Components > Toolbar > Query Tables Edit
+#: components/Toolbar/QueryTablesEdit.tsx:85
+msgid "selectedTables"
+msgstr "Ausgewählte Tabellen"
+
+#. Used in: Components > Schema Viewer > Fields
+#: components/SchemaViewer/Fields.tsx:30
+msgid "idField"
+msgstr "Feld-ID"
