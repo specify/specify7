@@ -18,6 +18,9 @@ import {
 import { Button } from '../Atoms/Button';
 import { Input, Select } from '../Atoms/Form';
 import { QueryInputField } from './FieldFilter';
+import { commonText } from '../../localization/common';
+import { className } from '../Atoms/className';
+import { icons } from '../Atoms/Icons';
 
 export function DateQueryInputField({
   currentValue,
@@ -58,11 +61,12 @@ export function DateQueryInputField({
   );
 
   return (
-    <div className="flex items-center">
-      <Button.Icon
-        disabled={handleChange === undefined}
-        icon="selector"
-        title="switch"
+    <div className="flex items-center gap-2">
+      <Button.Small
+        aria-label={commonText.remove()}
+        className="print:hidden"
+        title={commonText.remove()}
+        variant={className.grayButton}
         onClick={(): void => {
           toggleAbsolute();
           if (isAbsolute) {
@@ -84,7 +88,9 @@ export function DateQueryInputField({
             }
           }
         }}
-      />
+      >
+        {icons.history}
+      </Button.Small>
       {isAbsolute ? (
         <QueryInputField
           currentValue={absolute ?? currentValue}
