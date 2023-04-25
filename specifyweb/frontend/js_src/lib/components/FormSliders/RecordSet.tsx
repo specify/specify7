@@ -396,7 +396,6 @@ function RecordSet<SCHEMA extends AnySchema>({
         onSlide={(index, replace): void =>
           go(index, ids[index], undefined, replace)
         }
-        onFetch={handleFetch}
       />
       {hasDuplicate && (
         <Dialog
