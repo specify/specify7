@@ -32,7 +32,7 @@ import {
   preferencesPromise,
   setPref,
 } from './helpers';
-import { prefEvents } from './Hooks';
+import { prefEvents, useDarkMode } from './Hooks';
 import { DefaultPreferenceItemRender } from './Renderers';
 import { usePref } from './usePref';
 import { useTopChild } from './useTopChild';
@@ -102,9 +102,7 @@ function Preferences(): JSX.Element {
 
 /** Hide invisible preferences. Remote empty categories and subCategories */
 export function usePrefDefinitions() {
-  const [theme] = usePref('general', 'ui', 'theme');
-  const isDarkMode = theme === 'dark';
-  const isLightMode = theme === 'light';
+  const theme = useDarkMode();
 
   return React.useMemo(
     () =>
@@ -118,9 +116,8 @@ export function usePrefDefinitions() {
                 subCategories: Object.entries(subCategories)
                   .filter(
                     ([subCategory]) =>
-                      (isDarkMode && subCategory !== 'buttonLight') ||
-                      (isLightMode && subCategory !== 'buttonDark') ||
-                      (!isDarkMode && !isLightMode)
+                      (theme && subCategory !== 'buttonLight') ||
+                      (!theme && subCategory !== 'buttonDark')
                   )
                   .map(
                     ([subCategory, { items, ...subCategoryData }]) =>
