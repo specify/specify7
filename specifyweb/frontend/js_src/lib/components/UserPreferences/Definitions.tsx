@@ -390,7 +390,7 @@ export const preferenceDefinitions = {
             title: preferencesText.secondaryButtonColor(),
             requiresReload: false,
             visible: true,
-            defaultValue: '#d4d4d4',
+            defaultValue: '#d1d5db',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
