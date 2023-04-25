@@ -6,6 +6,7 @@ import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useTriggerState } from '../../hooks/useTriggerState';
+import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { dayjs } from '../../utils/dayJs';
 import { databaseDateFormat } from '../../utils/parser/dateConfig';
@@ -16,7 +17,9 @@ import {
   today,
 } from '../../utils/relativeDate';
 import { Button } from '../Atoms/Button';
+import { className } from '../Atoms/className';
 import { Input, Select } from '../Atoms/Form';
+import { icons } from '../Atoms/Icons';
 import { QueryInputField } from './FieldFilter';
 
 export function DateQueryInputField({
@@ -58,15 +61,12 @@ export function DateQueryInputField({
   );
 
   return (
-    <div className="flex items-center gap-1">
-      <Button.Icon
-        icon="selector"
-        title={
-          isAbsolute
-            ? queryText.switchToRelative()
-            : queryText.switchToAbsolute()
-        }
-        disabled={handleChange === undefined}
+    <div className="flex items-center gap-2">
+      <Button.Small
+        aria-label={commonText.remove()}
+        className="print:hidden"
+        title={commonText.remove()}
+        variant={className.lightGrayButton}
         onClick={(): void => {
           toggleAbsolute();
           if (isAbsolute) {
@@ -88,7 +88,9 @@ export function DateQueryInputField({
             }
           }
         }}
-      />
+      >
+        {icons.history}
+      </Button.Small>
       {isAbsolute ? (
         <QueryInputField
           currentValue={absolute ?? currentValue}
