@@ -26,7 +26,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
     | ((index: number) => Promise<RA<number | undefined> | void>)
     | undefined;
 }): JSX.Element {
-  const recordFetched = React.useRef<number>(0);
+  const fetchedCount = React.useRef<number>(0);
 
   const [showAttachments, handleShowAttachments, handleHideAttachments] =
     useBooleanState();
@@ -48,7 +48,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
         (record) => record?.populated !== true
       );
 
-      recordFetched.current = fetchCount === -1 ? records.length : fetchCount;
+      fetchedCount.current = fetchCount === -1 ? records.length : fetchCount;
 
       const attachements = await Promise.all(
         filterArray(relatedAttachementRecords.flat()).map(
@@ -122,7 +122,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
           ) : (
             <AttachmentGallery
               attachments={attachments?.attachments ?? []}
-              isComplete={recordFetched.current === records.length}
+              isComplete={fetchedCount.current === records.length}
               scale={scale}
               onChange={(attachment, index): void =>
                 void attachments?.related[index].set(`attachment`, attachment)
@@ -130,8 +130,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
               onFetchMore={
                 attachments === undefined || handleFetch === undefined || halt
                   ? undefined
-                  : async () =>
-                      handleFetch?.(recordFetched.current).then(f.void)
+                  : async () => handleFetch?.(fetchedCount.current).then(f.void)
               }
             />
           )}
