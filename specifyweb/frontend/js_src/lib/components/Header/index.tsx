@@ -19,12 +19,12 @@ import { MenuContext } from '../Core/Main';
 import { schema } from '../DataModel/schema';
 import { userInformation } from '../InitialContext/userInformation';
 import { titleDelay, titlePosition } from '../Molecules/Tooltips';
+import { userPreferences } from '../Preferences/userPreferences';
 import { ActiveLink } from '../Router/ActiveLink';
 import type { MenuItemName } from './menuItemDefinitions';
 import { useUserTools } from './menuItemProcessing';
 import { Notifications } from './Notifications';
 import { UserTools } from './UserTools';
-import { userPreferences } from '../Preferences/userPreferences';
 
 const collapseThreshold = 900;
 
@@ -222,7 +222,7 @@ export function MenuButton({
 }): JSX.Element | null {
   const [position] = userPreferences.use('header', 'appearance', 'position');
   const getClassName = (isActive: boolean): string => `
-    p-4
+    p-[1.4vh]
     ${isActive ? 'bg-brand-300 !text-white' : 'text-gray-700'}
     ${className.ariaHandled}
     ${extraProps?.className ?? ''}
