@@ -222,7 +222,7 @@ function RecordSet<SCHEMA extends AnySchema>({
   const [isLoading, handleLoading, handleLoaded] = useBooleanState();
 
   const handleFetch = React.useCallback(
-    async (index: number): Promise<undefined | RA<number | undefined>> => {
+    async (index: number): Promise<RA<number | undefined> | undefined> => {
       if (index >= totalCount) return undefined;
       handleLoading();
       return fetchItems(
@@ -234,7 +234,7 @@ function RecordSet<SCHEMA extends AnySchema>({
           totalCount
         )
       ).then(
-        (updates) =>
+        async (updates) =>
           new Promise((resolve) =>
             setIds((oldIds = []) => {
               handleLoaded();
@@ -387,6 +387,7 @@ function RecordSet<SCHEMA extends AnySchema>({
               }
             : undefined
         }
+        onFetch={handleFetch}
         onSaved={(resource): void =>
           ids[currentIndex] === resource.id
             ? undefined

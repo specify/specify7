@@ -21,7 +21,6 @@ import { SetUnloadProtectsContext } from '../Router/Router';
 import type { RecordSelectorProps } from './RecordSelector';
 import { useRecordSelector } from './RecordSelector';
 import { RecordSetAttachments } from '../Attachments/RecordSetAttachment';
-import { attachmentsText } from '../../localization/attachments';
 import { tablesWithAttachments } from '../Attachments';
 
 /**
@@ -82,8 +81,6 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   >(() =>
     ids.map((id) => (id === undefined ? undefined : new model.Resource({ id })))
   );
-
-  const [attachmentState, setAttachmentState] = React.useState(false);
 
   const previousIds = React.useRef(ids);
   React.useEffect(() => {
@@ -235,17 +232,8 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                 />
               )}
               {hasAttachments && (
-                <Button.Blue onClick={() => setAttachmentState(true)}>
-                  {attachmentsText.attachments()}
-                </Button.Blue>
+                <RecordSetAttachments records={records} onFetch={handleFetch} />
               )}
-              {attachmentState === true ? (
-                <RecordSetAttachments
-                  records={records}
-                  onClose={() => setAttachmentState(!attachmentState)}
-                  onFetch={handleFetch}
-                />
-              ) : null}
               {specifyNetworkBadge}
             </div>
             <div>{slider}</div>

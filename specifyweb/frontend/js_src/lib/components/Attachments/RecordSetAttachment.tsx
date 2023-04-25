@@ -9,22 +9,27 @@ import { CollectionObjectAttachment } from '../DataModel/types';
 import { serializeResource } from '../DataModel/helpers';
 import { AttachmentGallery } from './Gallery';
 import { useCachedState } from '../../hooks/useCachedState';
-import { defaultScale } from '.';
+import { defaultAttachmentScale } from '.';
 import { Button } from '../Atoms/Button';
 import { commonText } from '../../localization/common';
+import { f } from '../../utils/functools';
+import { useBooleanState } from '../../hooks/useBooleanState';
+
+const haltIncrementSize = 300;
 
 export function RecordSetAttachments<SCHEMA extends AnySchema>({
   records,
-  onClose: handleClose,
   onFetch: handleFetch,
 }: {
   readonly records: RA<SpecifyResource<SCHEMA> | undefined>;
-  readonly onClose: () => void;
-  readonly onFetch?:
-    | ((index: number) => Promise<void | RA<number | undefined>>)
+  readonly onFetch:
+    | ((index: number) => Promise<RA<number | undefined> | void>)
     | undefined;
 }): JSX.Element {
   const recordFetched = React.useRef<number>(0);
+
+  const [showAttachments, handleShowAttachments, handleHideAttachments] =
+    useBooleanState();
 
   const [attachments] = useAsyncState(
     React.useCallback(async () => {
@@ -45,7 +50,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
 
       recordFetched.current = fetchCount === -1 ? records.length : fetchCount;
 
-      const attachments = await Promise.all(
+      const attachements = await Promise.all(
         filterArray(relatedAttachementRecords.flat()).map(
           async (collectionObjectAttachment) => ({
             attachment: await collectionObjectAttachment
@@ -55,58 +60,83 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
           })
         )
       );
-      return attachments;
+
+      return {
+        attachments: attachements.map(({ attachment }) => attachment),
+        related: attachements.map(({ related }) => related),
+        count: attachements.length,
+      };
     }, [records]),
     true
   );
 
+  //halt value was added to not scraped all the records for attachment in cases where there is more than 300 and no attachments, the user is able to ask for the next 300 if necessary
   const [haltValue, setHaltValue] = React.useState(300);
-  const halt = attachments?.length === 0 && records.length >= haltValue;
+  const halt =
+    attachments?.attachments.length === 0 && records.length >= haltValue;
 
-  const [scale = defaultScale] = useCachedState('attachments', 'scale');
-
-  const children = halt ? (
-    haltValue === records.length ? (
-      <>{attachmentsText.noAttachments()}</>
-    ) : (
-      <div className="flex flex-col gap-4">
-        {attachmentsText.attachmentHaltLimit({ halt: haltValue })}
-        <Button.Orange
-          onClick={() => {
-            if (haltValue + 300 > records.length) {
-              setHaltValue(records.length);
-            } else {
-              setHaltValue(haltValue + 300);
-            }
-          }}
-        >
-          {attachmentsText.fetchNextAttachments()}
-        </Button.Orange>
-      </div>
-    )
-  ) : (
-    <AttachmentGallery
-      attachments={attachments?.map(({ attachment }) => attachment) ?? []}
-      scale={scale}
-      onChange={(attachment, index): void =>
-        void attachments?.[index].related.set(`attachment`, attachment)
-      }
-      onFetchMore={
-        attachments === undefined || handleFetch === undefined || halt
-          ? undefined
-          : async () => handleFetch?.(recordFetched.current)
-      }
-      isComplete={recordFetched.current === records.length}
-    />
+  const [scale = defaultAttachmentScale] = useCachedState(
+    'attachments',
+    'scale'
   );
 
   return (
-    <Dialog
-      buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
-      header={attachmentsText.attachments()}
-      onClose={handleClose}
-    >
-      {children}
-    </Dialog>
+    <>
+      <Button.Icon
+        icon="photos"
+        onClick={() => handleShowAttachments()}
+        title="attachments"
+      ></Button.Icon>
+      {showAttachments && (
+        <Dialog
+          buttons={
+            <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+          }
+          header={
+            attachments?.count !== undefined
+              ? commonText.countLine({
+                  resource: attachmentsText.attachments(),
+                  count: attachments.count,
+                })
+              : attachmentsText.attachments()
+          }
+          onClose={handleHideAttachments}
+        >
+          {halt ? (
+            haltValue === records.length ? (
+              <>{attachmentsText.noAttachments()}</>
+            ) : (
+              <div className="flex flex-col gap-4">
+                {attachmentsText.attachmentHaltLimit({ halt: haltValue })}
+                <Button.Orange
+                  onClick={(): void =>
+                    setHaltValue(
+                      Math.min(haltValue + haltIncrementSize, records.length)
+                    )
+                  }
+                >
+                  {attachmentsText.fetchNextAttachments()}
+                </Button.Orange>
+              </div>
+            )
+          ) : (
+            <AttachmentGallery
+              attachments={attachments?.attachments ?? []}
+              isComplete={recordFetched.current === records.length}
+              scale={scale}
+              onChange={(attachment, index): void =>
+                void attachments?.related[index].set(`attachment`, attachment)
+              }
+              onFetchMore={
+                attachments === undefined || handleFetch === undefined || halt
+                  ? undefined
+                  : async () =>
+                      handleFetch?.(recordFetched.current).then(f.void)
+              }
+            />
+          )}
+        </Dialog>
+      )}
+    </>
   );
 }

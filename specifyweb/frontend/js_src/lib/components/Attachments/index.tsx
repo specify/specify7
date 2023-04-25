@@ -48,7 +48,7 @@ export const tablesWithAttachments = f.store(() =>
   )
 );
 
-export const defaultScale = 10;
+export const defaultAttachmentScale = 10;
 const minScale = 4;
 const maxScale = 50;
 const defaultSortOrder = '-timestampCreated';
@@ -125,7 +125,7 @@ function Attachments(): JSX.Element {
     false
   );
 
-  const [scale = defaultScale, setScale] = useCachedState(
+  const [scale = defaultAttachmentScale, setScale] = useCachedState(
     'attachments',
     'scale'
   );

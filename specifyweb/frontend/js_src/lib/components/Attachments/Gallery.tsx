@@ -25,9 +25,7 @@ export function AttachmentGallery({
   onChange: handleChange,
 }: {
   readonly attachments: RA<SerializedResource<Attachment>>;
-  readonly onFetchMore:
-    | (() => Promise<void | RA<number | undefined>>)
-    | undefined;
+  readonly onFetchMore: (() => Promise<void>) | undefined;
   readonly scale: number;
   readonly isComplete: boolean;
   readonly onChange: (
