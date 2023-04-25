@@ -197,7 +197,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   );
 
   // FEATURE: these buttons should use var(--brand-color), rather than orange
-  const ButtonComponent = saveBlocked ? Button.Danger : Button.Warning;
+  const ButtonComponent = saveBlocked ? Button.Danger : Button.Save;
   const SubmitComponent = saveBlocked ? Submit.Red : Submit.Save;
   // Don't allow cloning the resource if it changed
   const isChanged = saveRequired || externalSaveRequired;

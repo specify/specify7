@@ -124,6 +124,7 @@ export type GenericPreferencesCategories = IR<{
     readonly items: IR<PreferenceItem<any>>;
   }>;
 }>;
+
 export const preferenceDefinitions = {
   general: {
     title: preferencesText.general(),
@@ -343,7 +344,7 @@ export const preferenceDefinitions = {
           }),
         },
       },
-      button: {
+      buttonLight: {
         title: preferencesText.button(),
         items: {
           saveButtonColor: defineItem({
@@ -399,6 +400,67 @@ export const preferenceDefinitions = {
             requiresReload: false,
             visible: true,
             defaultValue: '#f5f5f5',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+        },
+      },
+      buttonDark: {
+        title: preferencesText.button(),
+        items: {
+          saveButtonColor: defineItem({
+            title: preferencesText.saveButtonColor(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '#ff811a',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          dangerButtonColor: defineItem({
+            title: preferencesText.dangerButtonColor(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '#b91c1c',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          warningButtonColor: defineItem({
+            title: preferencesText.warningButtonColor(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '#f97316',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          infoButtonColor: defineItem({
+            title: preferencesText.infoButtonColor(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '#1d4ed8',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          successButtonColor: defineItem({
+            title: preferencesText.successButtonColor(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '#166534',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          secondaryButtonColor: defineItem({
+            title: preferencesText.secondaryButtonColor(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '#525252',
+            renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          secondaryLightButtonColor: defineItem({
+            title: preferencesText.secondaryLightButtonColor(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '#525252',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),

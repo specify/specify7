@@ -241,7 +241,7 @@ export function QueryLine({
           aria-label={commonText.remove()}
           className="print:hidden"
           title={commonText.remove()}
-          variant={className.infoButton}
+          variant={className.dangerButton}
           onClick={handleRemove}
         >
           {icons.trash}

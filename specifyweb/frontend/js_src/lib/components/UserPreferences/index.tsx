@@ -102,6 +102,10 @@ function Preferences(): JSX.Element {
 
 /** Hide invisible preferences. Remote empty categories and subCategories */
 export function usePrefDefinitions() {
+  const [theme] = usePref('general', 'ui', 'theme');
+  const isDarkMode = theme === 'dark';
+  const isLightMode = theme === 'light';
+
   return React.useMemo(
     () =>
       Object.entries(preferenceDefinitions as GenericPreferencesCategories)
@@ -112,6 +116,12 @@ export function usePrefDefinitions() {
               {
                 ...categoryData,
                 subCategories: Object.entries(subCategories)
+                  .filter(
+                    ([subCategory]) =>
+                      (isDarkMode && subCategory !== 'buttonLight') ||
+                      (isLightMode && subCategory !== 'buttonDark') ||
+                      (!isDarkMode && !isLightMode)
+                  )
                   .map(
                     ([subCategory, { items, ...subCategoryData }]) =>
                       [
