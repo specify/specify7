@@ -271,41 +271,56 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
           {formsText.saveConflictDescription()}
         </Dialog>
       ) : showSaveBlockedDialog ? (
-        <Dialog
-          buttons={commonText.close()}
-          header={formsText.saveBlocked()}
-          onClose={(): void => setShowBlockedDialog(false)}
-        >
-          <p>{formsText.saveBlockedDescription()}</p>
-          <Ul>
-            {Array.from(
-              resource.saveBlockers?.blockingResources ?? [],
-              (resource) => (
-                <li key={resource.cid}>
-                  <H3>{resource.specifyModel.label}</H3>
-                  <dl>
-                    {Object.entries(resource.saveBlockers?.blockers ?? []).map(
-                      ([key, blocker]) => (
-                        <React.Fragment key={key}>
-                          <dt>
-                            {typeof blocker.fieldName === 'string'
-                              ? resource.specifyModel.strictGetField(
-                                  blocker.fieldName
-                                ).label
-                              : camelToHuman(key)}
-                          </dt>
-                          <dd>{blocker.reason}</dd>
-                        </React.Fragment>
-                      )
-                    )}
-                  </dl>
-                </li>
-              )
-            )}
-          </Ul>
-        </Dialog>
+        <SaveBlockedDialog
+          resource={resource}
+          onClose={() => setShowBlockedDialog(false)}
+        />
       ) : undefined}
     </>
+  );
+}
+
+export function SaveBlockedDialog<SCHEMA extends AnySchema>({
+  resource,
+  onClose: handleClose,
+}: {
+  readonly resource: SpecifyResource<SCHEMA>;
+  readonly onClose: () => void;
+}): JSX.Element {
+  return (
+    <Dialog
+      buttons={commonText.close()}
+      header={formsText.saveBlocked()}
+      onClose={() => handleClose()}
+    >
+      <p>{formsText.saveBlockedDescription()}</p>
+      <Ul>
+        {Array.from(
+          resource.saveBlockers?.blockingResources ?? [],
+          (resource) => (
+            <li key={resource.cid}>
+              <H3>{resource.specifyModel.label}</H3>
+              <dl>
+                {Object.entries(resource.saveBlockers?.blockers ?? []).map(
+                  ([key, blocker]) => (
+                    <React.Fragment key={key}>
+                      <dt>
+                        {typeof blocker.fieldName === 'string'
+                          ? resource.specifyModel.strictGetField(
+                              blocker.fieldName
+                            ).label
+                          : camelToHuman(key)}
+                      </dt>
+                      <dd>{blocker.reason}</dd>
+                    </React.Fragment>
+                  )
+                )}
+              </dl>
+            </li>
+          )
+        )}
+      </Ul>
+    </Dialog>
   );
 }
 

@@ -67,15 +67,37 @@ export function MergeSubviewButton({
       ),
     [resource, relationship, getCount]
   );
+
+  const [isValid, setValid] = React.useState(true);
+  React.useEffect(() => {
+    if (merged !== undefined) return;
+    const relationshipName = relationship.relatedModel.name;
+    resourceOn(
+      resource,
+      'blockersChanged',
+      () => {
+        const hasSaveBlocker = Array.from(
+          resource.saveBlockers?.blockingResources ?? []
+        )
+          .map((resource) => resource.specifyModel.name)
+          .includes(relationshipName);
+        setValid(!hasSaveBlocker);
+      },
+      true
+    );
+  }, [resource]);
+
+  const SubviewButton = isValid ? Button.Gray : Button.Red;
+
   return (
     <>
-      <Button.Gray
+      <SubviewButton
         aria-pressed={isOpen}
         className="flex-1"
         onClick={handleOpen}
       >
         {mergingText.nRecords({ count })}
-      </Button.Gray>
+      </SubviewButton>
       {isOpen && (
         <MergeDialog
           merged={merged ?? resource}

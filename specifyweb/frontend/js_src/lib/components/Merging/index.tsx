@@ -23,7 +23,11 @@ import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import { deserializeResource } from '../DataModel/helpers';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
-import { fetchResource, resourceEvents } from '../DataModel/resource';
+import {
+  fetchResource,
+  resourceEvents,
+  resourceOn,
+} from '../DataModel/resource';
 import { getModel } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Tables } from '../DataModel/types';
@@ -33,6 +37,8 @@ import { OverlayContext, OverlayLocation } from '../Router/Router';
 import { autoMerge, postMergeResource } from './autoMerge';
 import { CompareRecords } from './Compare';
 import { userPreferences } from '../Preferences/userPreferences';
+import { SpecifyResource } from '../DataModel/legacyTypes';
+import { SaveBlockedDialog } from '../Forms/Save';
 
 const recordMergingTables = new Set<keyof Tables>(['Agent']);
 
@@ -184,7 +190,7 @@ function Merging({
           <Button.BorderedGray onClick={handleClose}>
             {commonText.cancel()}
           </Button.BorderedGray>
-          <Submit.Blue form={id('form')}>{treeText.merge()}</Submit.Blue>
+          <MergeButton id={id} mergeResource={merged} />
         </>
       }
       onClose={handleClose}
@@ -248,6 +254,51 @@ function Merging({
         }}
       />
     </MergeDialogContainer>
+  );
+}
+
+function MergeButton<SCHEMA extends AnySchema>({
+  id,
+  mergeResource,
+}: {
+  readonly id: (suffix: string) => string;
+  readonly mergeResource: SpecifyResource<SCHEMA>;
+}): JSX.Element {
+  const [formId] = React.useState(id('form'));
+  const [saveBlocked, setSaveBlocked] = React.useState(false);
+  const [showSaveBlockedDialog, setShowBlockedDialog] = React.useState(false);
+
+  React.useEffect(() => {
+    setSaveBlocked(false);
+    return resourceOn(
+      mergeResource,
+      'blockersChanged',
+      (): void => {
+        const onlyDeferredBlockers = Array.from(
+          mergeResource.saveBlockers?.blockingResources ?? []
+        ).every((resource) => resource.saveBlockers?.hasOnlyDeferredBlockers());
+        setSaveBlocked(!onlyDeferredBlockers);
+      },
+      true
+    );
+  }, [mergeResource]);
+
+  return (
+    <>
+      {!saveBlocked ? (
+        <Submit.Blue form={formId}>{treeText.merge()}</Submit.Blue>
+      ) : (
+        <Submit.Red className="cursor-not-allowed">
+          {treeText.merge()}
+        </Submit.Red>
+      )}
+      {showSaveBlockedDialog && (
+        <SaveBlockedDialog
+          resource={mergeResource}
+          onClose={() => setShowBlockedDialog(false)}
+        />
+      )}
+    </>
   );
 }
 
