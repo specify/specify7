@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-04-24 12:51+0000\n"
+"PO-Revision-Date: 2023-04-26 13:52+0000\n"
 "Last-Translator: Daniel Fernandez <daniel.fernandez@sac-cas.ch>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/report/de_CH/>\n"
@@ -34,7 +34,6 @@ msgstr "Auswertung"
 #: components/Reports/index.tsx:151
 #: components/Reports/index.tsx:158
 #: components/Router/OverlayRoutes.tsx:127
-#, fuzzy
 msgid "reports"
 msgstr "Berichte"
 
@@ -110,3 +109,8 @@ msgstr "Bericht beim Speichern generieren"
 #: components/Reports/Report.tsx:55
 msgid "missingReportQueryDescription"
 msgstr "Dieser Bericht hat keine zugehörige Abfrage"
+
+#. Used in: Components > Reports > Report
+#: components/Reports/Report.tsx:51
+msgid "missingReportQuery"
+msgstr "Fehlende Berichtsabfrage"
