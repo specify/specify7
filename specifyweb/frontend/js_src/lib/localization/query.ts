@@ -655,6 +655,10 @@ export const queryText = createDictionary({
   year: {
     'en-us': 'Years',
   },
+  relativeDate: {
+    'en-us':
+      '<input>{size:number}</input> <select>{type:string}</select> <secondSelect>{direction:string}</secondSelect>',
+  },
   importHiddenFields: {
     'en-us': 'The following fields are hidden in the query you imported:',
     'es-es': 'Los siguientes campos están ocultos en la consulta que importó:',

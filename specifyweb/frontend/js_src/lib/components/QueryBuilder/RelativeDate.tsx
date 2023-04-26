@@ -21,6 +21,7 @@ import { className } from '../Atoms/className';
 import { Input, Select } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { QueryInputField } from './FieldFilter';
+import { StringToJsx } from '../../localization/utils';
 
 export function DateQueryInputField({
   currentValue,
@@ -138,45 +139,60 @@ function DateSplit({
     handleChange?.(`${today} ${direction} ${size} ${type}`);
   return (
     <div className="flex flex-row gap-1">
-      <Input.Number
-        disabled={handleChange === undefined}
-        min={0}
-        value={size}
-        onBlur={commitChange}
-        onValueChange={(value): void => {
-          setValues({
-            ...values,
-            size: value,
-          });
-          handleChanging?.();
+      <StringToJsx
+        string={queryText.relativeDate({
+          size,
+          type: type,
+          direction: direction,
+        })}
+        components={{
+          input: (size) => (
+            <Input.Number
+              disabled={handleChange === undefined}
+              min={0}
+              value={size}
+              onBlur={commitChange}
+              onValueChange={(value): void => {
+                setValues({
+                  ...values,
+                  size: value,
+                });
+                handleChanging?.();
+              }}
+            />
+          ),
+          select: (type) => (
+            <Select
+              disabled={handleChange === undefined}
+              value={type}
+              onBlur={commitChange}
+              onValueChange={(newValue) => {
+                setValues({ ...values, type: newValue });
+                handleChanging?.();
+              }}
+            >
+              <option value="day">{queryText.day()}</option>
+              <option value="week">{queryText.week()}</option>
+              <option value="month">{queryText.month()}</option>
+              <option value="year">{queryText.year()}</option>
+            </Select>
+          ),
+          secondSelect: (direction) => (
+            <Select
+              disabled={handleChange === undefined}
+              value={direction}
+              onBlur={commitChange}
+              onValueChange={(newValue): void => {
+                setValues({ ...values, direction: newValue });
+                handleChanging?.();
+              }}
+            >
+              <option value="-">{queryText.past()}</option>
+              <option value="+">{queryText.future()}</option>
+            </Select>
+          ),
         }}
       />
-      <Select
-        disabled={handleChange === undefined}
-        value={type}
-        onBlur={commitChange}
-        onValueChange={(newValue) => {
-          setValues({ ...values, type: newValue });
-          handleChanging?.();
-        }}
-      >
-        <option value="day">{queryText.day()}</option>
-        <option value="week">{queryText.week()}</option>
-        <option value="month">{queryText.month()}</option>
-        <option value="year">{queryText.year()}</option>
-      </Select>
-      <Select
-        disabled={handleChange === undefined}
-        value={direction}
-        onBlur={commitChange}
-        onValueChange={(newValue): void => {
-          setValues({ ...values, direction: newValue });
-          handleChanging?.();
-        }}
-      >
-        <option value="-">{queryText.past()}</option>
-        <option value="+">{queryText.future()}</option>
-      </Select>
     </div>
   );
 }
