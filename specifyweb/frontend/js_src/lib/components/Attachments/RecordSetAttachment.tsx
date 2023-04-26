@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { RA, filterArray } from '../../utils/types';
 import { SpecifyResource } from '../DataModel/legacyTypes';
 import type { AnySchema } from '../DataModel/helperTypes';
@@ -64,13 +65,16 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
       return {
         attachments: attachements.map(({ attachment }) => attachment),
         related: attachements.map(({ related }) => related),
-        count: attachements.length,
       };
     }, [records]),
     true
   );
 
-  //halt value was added to not scraped all the records for attachment in cases where there is more than 300 and no attachments, the user is able to ask for the next 300 if necessary
+  /*
+   * Stop fetching records if the first 300 don't have attachments
+   * to save computing resources. Ask the user to continue and fetch
+   * the next haltIncrementSize (300) if desired.
+   */
   const [haltValue, setHaltValue] = React.useState(300);
   const halt =
     attachments?.attachments.length === 0 && records.length >= haltValue;
@@ -93,12 +97,12 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
             <Button.DialogClose>{commonText.close()}</Button.DialogClose>
           }
           header={
-            attachments?.count !== undefined
-              ? commonText.countLine({
+            attachments?.attachments === undefined
+              ? attachmentsText.attachments()
+              : commonText.countLine({
                   resource: attachmentsText.attachments(),
-                  count: attachments.count,
+                  count: attachments.attachments.length,
                 })
-              : attachmentsText.attachments()
           }
           onClose={handleHideAttachments}
         >
