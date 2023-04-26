@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-04-26 13:52+0000\n"
+"PO-Revision-Date: 2023-04-26 17:51+0000\n"
 "Last-Translator: Daniel Fernandez <daniel.fernandez@sac-cas.ch>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/wbPlan/de_CH/>\n"
@@ -272,15 +272,13 @@ msgstr "Abgleichslogik ändern"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:426
-#, fuzzy
 msgid "matchingLogicDescription"
-msgstr "Daten zum Abgleich mit vorhandenen Datensätzen anfordern."
+msgstr "Benötigt Daten um vorhandene Datensätze vergleichen zu können"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:422
-#, fuzzy
 msgid "matchingLogicUnavailable"
-msgstr "Die Zuordnungslogik ist für aktuelle Zuordnungen nicht verfügbar"
+msgstr "Die Vergleichslogik ist für aktuelle Mappings nicht verfügbar"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:404
