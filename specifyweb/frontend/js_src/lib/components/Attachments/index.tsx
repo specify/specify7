@@ -13,6 +13,7 @@ import { commonText } from '../../localization/common';
 import { schemaText } from '../../localization/schema';
 import { f } from '../../utils/functools';
 import { filterArray } from '../../utils/types';
+import { replaceItem } from '../../utils/utils';
 import { Container, H2 } from '../Atoms';
 import { className } from '../Atoms/className';
 import { Input, Label, Select } from '../Atoms/Form';
@@ -47,7 +48,7 @@ export const tablesWithAttachments = f.store(() =>
   )
 );
 
-const defaultScale = 10;
+export const defaultAttachmentScale = 10;
 const minScale = 4;
 const maxScale = 50;
 const defaultSortOrder = '-timestampCreated';
@@ -124,7 +125,7 @@ function Attachments(): JSX.Element {
     false
   );
 
-  const [scale = defaultScale, setScale] = useCachedState(
+  const [scale = defaultAttachmentScale, setScale] = useCachedState(
     'attachments',
     'scale'
   );
@@ -242,10 +243,13 @@ function Attachments(): JSX.Element {
         }
         key={`${order}_${JSON.stringify(filter)}`}
         scale={scale}
-        onChange={(records): void =>
+        onChange={(attachment, index): void =>
           collection === undefined
             ? undefined
-            : setCollection({ records, totalCount: collection.totalCount })
+            : setCollection({
+                records: replaceItem(collection.records, index, attachment),
+                totalCount: collection.totalCount,
+              })
         }
         onFetchMore={collection === undefined ? undefined : fetchMore}
       />
