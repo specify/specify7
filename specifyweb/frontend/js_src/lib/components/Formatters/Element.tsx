@@ -23,6 +23,10 @@ import { FormatterElement } from './Formatter';
 import type { Aggregator, Formatter } from './spec';
 import type { FormatterTypesOutlet } from './Types';
 
+/**
+ * Display a dialog for editing weblink/formatter/aggregator and calls a
+ * render prop to render the actual interface
+ */
 export function XmlEditorShell<
   ITEM extends { readonly name: string },
   OUTLET_CONTEXT extends { readonly items: GetSet<RA<ITEM>> }

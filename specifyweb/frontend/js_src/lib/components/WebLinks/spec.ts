@@ -97,7 +97,7 @@ const argumentSpec = f.store(() =>
       syncers.maybe(syncers.xmlContent),
       syncers.maybe(syncers.toBoolean)
     ),
-    isEditable: pipe(
+    legacyIsEditable: pipe(
       syncers.xmlChild('isEditable', 'optional'),
       syncers.maybe(syncers.xmlContent),
       syncers.maybe(syncers.toBoolean),
