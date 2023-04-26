@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-04-24 17:41+0000\n"
+"PO-Revision-Date: 2023-04-26 13:52+0000\n"
 "Last-Translator: Daniel Fernandez <daniel.fernandez@sac-cas.ch>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/wbPlan/de_CH/>\n"
@@ -377,3 +377,8 @@ msgstr ""
 "diese Tabelle zum neuen Ausgangspunkt für die Zuordnung von Spalten zu "
 "Datenfeldern und die bestehenden Zuordnungen werden gelöscht. Der AutoMapper "
 "wird versuchen, die Spalten den neuen Basistabellenfeldern zuzuordnen."
+
+#. Used in: Components > Wb Plan View > Mapper Components
+#: components/WbPlanView/MapperComponents.tsx:226
+msgid "matchBehavior"
+msgstr "Übereinstimmungsverhalten:"
