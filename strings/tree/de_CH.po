@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-04-24 17:50+0000\n"
+"PO-Revision-Date: 2023-04-26 17:49+0000\n"
 "Last-Translator: Daniel Fernandez <daniel.fernandez@sac-cas.ch>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/tree/de_CH/>\n"
@@ -111,9 +111,8 @@ msgstr "Wählen Sie ein neues Elternelement für \"{nodeName:string}\""
 
 #. Used in: Components > Tree View > Row
 #: components/TreeView/Row.tsx:200
-#, fuzzy
 msgid "leafNode"
-msgstr "Blatt-Knoten"
+msgstr "Blattknoten"
 
 #. 🟥Used to show tree node's direct and indirect usages. Used in: Components > Tree View > Helpers
 #: components/TreeView/helpers.ts:215
@@ -144,3 +143,94 @@ msgstr "Positionen bearbeiten"
 #: components/Forms/DeleteButton.tsx:155
 msgid "resourceToDelete"
 msgstr "Dadurch wird die folgende Ressource dauerhaft gelöscht"
+
+#. Used in: Components > Tree View > Actions
+#: components/TreeView/Actions.tsx:383
+#: components/TreeView/Actions.tsx:394
+msgid "mergeNode"
+msgstr "Knoten zusammenführen"
+
+#. Used in: Components > Tree View > Actions
+#: components/TreeView/Actions.tsx:345
+msgid "mergeNodeHere"
+msgstr "Führe \"{nodeName:string}\" hier zusammen"
+
+#. Used in: Components > Tree View > Actions
+#: components/TreeView/Actions.tsx:304
+msgid "mergeNodeHintMessage"
+msgstr "Wähle ein neues Ziel um \"{nodeName:string}\" zusammenzuführen"
+
+#. Used in: Components > Tree View > Actions
+#: components/TreeView/Actions.tsx:408
+msgid "mergeNodeMessage"
+msgstr ""
+"Alle Referenzen zu {treeName:string} \"{nodeName:string}\" werden mit \""
+"{parentName:string}\" ersetzt. Alle Nachkommen von \"{nodeName:string}\" "
+"werden nach \"{parentName:string}\" verschoben, wobei alle Nachkommen, die "
+"in Name und Rang übereinstimmen, selbst rekursiv zusammengeführt werden."
+
+#. Used in: Components > Tree View > Actions
+#: components/TreeView/Actions.tsx:385
+#: components/TreeView/Actions.tsx:396
+msgid "synonymizeNode"
+msgstr "Knoten synonymisieren"
+
+#. Used in: Components > Tree View > Actions
+#: components/TreeView/Actions.tsx:347
+msgid "makeSynonym"
+msgstr "Aus {nodeName:string} ein Synonym von {synonymName:string} machen"
+
+#. Used in: Components > Tree View > Actions
+#: components/TreeView/Actions.tsx:306
+msgid "synonymizeNodeHintMessage"
+msgstr "Wähle Ziel um \"{nodeName:string}\" daran zu synonymisieren"
+
+#. Used in: Components > Tree View > Actions
+#: components/TreeView/Actions.tsx:414
+msgid "synonymizeMessage"
+msgstr ""
+"Der {treeName:string}-Knoten \"{nodeName:string}\" wird zu einem Synonym von "
+"\"{synonymName:string}\"."
+
+#. Used in: Components > Tree View > Actions
+#: components/TreeView/Actions.tsx:351
+#: components/TreeView/Actions.tsx:386
+#: components/TreeView/Actions.tsx:397
+msgid "desynonymizeNode"
+msgstr "Knoten desynonymisieren"
+
+#. Used in: Components > Tree View > Actions
+#: components/TreeView/Actions.tsx:307
+#: components/TreeView/Actions.tsx:419
+msgid "desynonymizeNodeMessage"
+msgstr ""
+"\"{nodeName:string}\" wird nicht mehr ein Synonym von \"{synonymName:string}"
+"\" sein."
+
+#. Used in: Components > Tree View > Row
+#: components/TreeView/Row.tsx:202
+msgid "opened"
+msgstr "Geöffnet"
+
+#. Used in: Components > Tree View > Row
+#: components/TreeView/Row.tsx:222
+#: components/TreeView/Row.tsx:236
+msgid "acceptedName"
+msgstr "Bevorzugt: {name:string}"
+
+#. Used in: Components > Tree View > Index
+#: components/TreeView/index.tsx:99
+msgid "treeViewTitle"
+msgstr "{treeName:string} Baum"
+
+#. Used in: Components > Tree View > Search
+#: components/TreeView/Search.tsx:66
+#: components/TreeView/Search.tsx:67
+#: components/TreeView/Search.tsx:68
+msgid "searchTreePlaceholder"
+msgstr "Baum durchsuchen"
+
+#. Used in: Components > Tree View > Row
+#: components/TreeView/Row.tsx:203
+msgid "closed"
+msgstr "Geschlossen"
