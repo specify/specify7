@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-04-20 17:50+0000\n"
+"PO-Revision-Date: 2023-04-26 17:51+0000\n"
 "Last-Translator: Daniel Fernandez <daniel.fernandez@sac-cas.ch>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/interactions/de_CH/>\n"
@@ -32,3 +32,128 @@ msgstr "Elemente hinzufügen"
 #, fuzzy
 msgid "recordReturn"
 msgstr "{modelName:string} Return"
+
+#. Used in: Components > Interactions > Interaction Dialog
+#: components/Interactions/InteractionDialog.tsx:246
+msgid "withoutPreparations"
+msgstr "Ohne Präparate"
+
+#. Used in: Components > Interactions > Prep Return Dialog
+#: components/Interactions/PrepReturnDialog.tsx:117
+msgid "returnAllPreparations"
+msgstr "Alle Präparate zurückgeben"
+
+#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Dialog Row ⬤ Components > Interactions > Prep Return Dialog ⬤ Components > Interactions > Prep Return Row
+#: components/FormMeta/CarryForward.tsx:228
+#: components/Interactions/PrepDialog.tsx:109
+#: components/Interactions/PrepDialog.tsx:209
+#: components/Interactions/PrepDialogRow.tsx:63
+#: components/Interactions/PrepDialogRow.tsx:65
+#: components/Interactions/PrepReturnDialog.tsx:129
+#: components/Interactions/PrepReturnRow.tsx:84
+#: components/Interactions/PrepReturnRow.tsx:86
+msgid "selectAll"
+msgstr "Alle auswählen"
+
+#. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog
+#: components/Interactions/InteractionDialog.tsx:256
+#: components/Interactions/PrepDialog.tsx:123
+msgid "createRecord"
+msgstr "Erstelle {modelName:string}"
+
+#. Used in: Components > Interactions > Interaction Dialog
+#: components/Interactions/InteractionDialog.tsx:194
+msgid "missing"
+msgstr "Es fehlt:"
+
+#. Used in: Components > Interactions > Interaction Dialog
+#: components/Interactions/InteractionDialog.tsx:196
+msgid "preparationsNotFound"
+msgstr "Es wurden keine Präparate gefunden."
+
+#. Used in: Components > Interactions > Interaction Dialog
+#: components/Interactions/InteractionDialog.tsx:320
+msgid "problemsFound"
+msgstr "Es gibt Probleme mit dem Eintrag:"
+
+#. 🟥See documentation for syntax for plural rules. Used in: Components > Interactions > Interaction Dialog
+#: components/Interactions/InteractionDialog.tsx:262
+msgid "byChoosingRecordSet"
+msgstr "Durch wählen eines Datensatzes ({{count:none | one | ??}} available)"
+
+#. 🟥Field name is localized. Coming from Schema Configuration. I.e, By entering Catalog Numbers. Used in: Components > Interactions > Interaction Dialog
+#: components/Interactions/InteractionDialog.tsx:268
+msgid "byEnteringNumbers"
+msgstr "Durch Eingabe von {fieldName:string}s"
+
+#. Used in: Components > Interactions > Prep Dialog
+#: components/Interactions/PrepDialog.tsx:133
+msgid "preparations"
+msgstr "Präparate"
+
+#. Used in: Components > Form Commands > Index
+#: components/FormCommands/index.tsx:99
+msgid "preparationsCanNotBeReturned"
+msgstr "Präparate können in diesem Kontext nicht zurückgegeben werden."
+
+#. Used in: Components > Interactions > Prep Return Dialog
+#: components/Interactions/PrepReturnDialog.tsx:73
+msgid "noUnresolvedPreparations"
+msgstr "Für dieses Ausleihe bestehen keine ungelösten Vorbereitungen."
+
+#. Used in: Components > Interactions > Prep Return Dialog
+#: components/Interactions/PrepReturnDialog.tsx:228
+msgid "unresolved"
+msgstr "Ungelöst"
+
+#. Used in: Components > Interactions > Prep Return Dialog ⬤ Components > Query Builder > Loan Return
+#: components/Interactions/PrepReturnDialog.tsx:231
+#: components/QueryBuilder/LoanReturn.tsx:165
+msgid "return"
+msgstr "Rückgabe"
+
+#. Used in: Components > Interactions > Prep Return Dialog
+#: components/Interactions/PrepReturnDialog.tsx:234
+msgid "resolve"
+msgstr "Lösen"
+
+#. Used in: Components > Interactions > Prep Return Dialog ⬤ Components > Query Builder > Loan Return
+#: components/Interactions/PrepReturnDialog.tsx:149
+#: components/QueryBuilder/LoanReturn.tsx:163
+msgid "returnSelectedPreparations"
+msgstr "Ausgewählte Präparate zurückgeben"
+
+#. Used in: Components > Interactions > Prep Dialog
+#: components/Interactions/PrepDialog.tsx:104
+msgid "selectAllAvailablePreparations"
+msgstr "Alle verfügbaren Präparate auswählen"
+
+#. Used in: Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Dialog Row
+#: components/Interactions/PrepDialog.tsx:139
+#: components/Interactions/PrepDialog.tsx:143
+#: components/Interactions/PrepDialogRow.tsx:112
+#: components/Interactions/PrepDialogRow.tsx:115
+msgid "selectedAmount"
+msgstr "Ausgewählte Anzahl"
+
+#. Used in: Components > Interactions > Prep Return Row
+#: components/Interactions/PrepReturnRow.tsx:105
+#: components/Interactions/PrepReturnRow.tsx:109
+msgid "returnedAmount"
+msgstr "Zurückgegebene Anzahl"
+
+#. Used in: Components > Interactions > Prep Return Row
+#: components/Interactions/PrepReturnRow.tsx:125
+#: components/Interactions/PrepReturnRow.tsx:129
+msgid "resolvedAmount"
+msgstr "Gelöste Anzahl"
+
+#. 🟥Used to format preparations in the prep return dialog. Used in: Components > Interactions > Prep Dialog Row
+#: components/Interactions/PrepDialogRow.tsx:194
+msgid "prepReturnFormatter"
+msgstr "{tableName:string}: {resource:string}"
+
+#. Used in: Components > Interactions > Interaction Dialog
+#: components/Interactions/InteractionDialog.tsx:242
+msgid "addUnassociated"
+msgstr "Nicht assoziierter Gegenstand hinzufügen"
