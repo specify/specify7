@@ -77,7 +77,10 @@ export type PreferenceItem<VALUE> = {
    * If 'protected' then visible, but editable only if user has
    * `Preferences -> Edit Protected` permission
    */
-  readonly visible: boolean | 'protected';
+  readonly visible:
+    | boolean
+    | 'protected'
+    | ((context: PreferencesVisibilyContext) => boolean);
   readonly defaultValue: VALUE;
 } & (
   | {
@@ -103,6 +106,20 @@ export type PreferenceItem<VALUE> = {
         | RA<VALUE>;
     }
 );
+export type PreferencesVisibilyContext = {
+  readonly isDarkMode: boolean;
+  readonly isRedirecting: boolean;
+};
+
+const isLightMode = ({
+  isDarkMode,
+  isRedirecting,
+}: PreferencesVisibilyContext) => !isDarkMode || isRedirecting;
+
+const isDarkMode = ({
+  isDarkMode,
+  isRedirecting,
+}: PreferencesVisibilyContext) => isDarkMode || isRedirecting;
 
 const altKeyName = globalThis.navigator?.appVersion.includes('Mac')
   ? 'Option'
@@ -327,14 +344,6 @@ export const preferenceDefinitions = {
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
-          saveButtonColor: defineItem({
-            title: preferencesText.saveButtonColor(),
-            requiresReload: false,
-            visible: true,
-            defaultValue: '#ff811a',
-            renderer: ColorPickerPreferenceItem,
-            container: 'label',
-          }),
           roundedCorners: defineItem<boolean>({
             title: preferencesText.roundedCorners(),
             requiresReload: false,
@@ -345,12 +354,12 @@ export const preferenceDefinitions = {
         },
       },
       buttonLight: {
-        title: preferencesText.button(),
+        title: preferencesText.buttonLight(),
         items: {
           saveButtonColor: defineItem({
             title: preferencesText.saveButtonColor(),
             requiresReload: false,
-            visible: true,
+            visible: isLightMode,
             defaultValue: '#ff811a',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
@@ -358,7 +367,7 @@ export const preferenceDefinitions = {
           dangerButtonColor: defineItem({
             title: preferencesText.dangerButtonColor(),
             requiresReload: false,
-            visible: true,
+            visible: isLightMode,
             defaultValue: '#b91c1c',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
@@ -366,7 +375,7 @@ export const preferenceDefinitions = {
           warningButtonColor: defineItem({
             title: preferencesText.warningButtonColor(),
             requiresReload: false,
-            visible: true,
+            visible: isLightMode,
             defaultValue: '#f97316',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
@@ -374,7 +383,7 @@ export const preferenceDefinitions = {
           infoButtonColor: defineItem({
             title: preferencesText.infoButtonColor(),
             requiresReload: false,
-            visible: true,
+            visible: isLightMode,
             defaultValue: '#1d4ed8',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
@@ -382,7 +391,7 @@ export const preferenceDefinitions = {
           successButtonColor: defineItem({
             title: preferencesText.successButtonColor(),
             requiresReload: false,
-            visible: true,
+            visible: isLightMode,
             defaultValue: '#166534',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
@@ -390,7 +399,7 @@ export const preferenceDefinitions = {
           secondaryButtonColor: defineItem({
             title: preferencesText.secondaryButtonColor(),
             requiresReload: false,
-            visible: true,
+            visible: isLightMode,
             defaultValue: '#d1d5db',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
@@ -398,7 +407,7 @@ export const preferenceDefinitions = {
           secondaryLightButtonColor: defineItem({
             title: preferencesText.secondaryLightButtonColor(),
             requiresReload: false,
-            visible: true,
+            visible: isLightMode,
             defaultValue: '#f5f5f5',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
@@ -406,12 +415,12 @@ export const preferenceDefinitions = {
         },
       },
       buttonDark: {
-        title: preferencesText.button(),
+        title: preferencesText.buttonDark(),
         items: {
           saveButtonColor: defineItem({
             title: preferencesText.saveButtonColor(),
             requiresReload: false,
-            visible: true,
+            visible: isDarkMode,
             defaultValue: '#ff811a',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
@@ -419,7 +428,7 @@ export const preferenceDefinitions = {
           dangerButtonColor: defineItem({
             title: preferencesText.dangerButtonColor(),
             requiresReload: false,
-            visible: true,
+            visible: isDarkMode,
             defaultValue: '#b91c1c',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
@@ -427,7 +436,7 @@ export const preferenceDefinitions = {
           warningButtonColor: defineItem({
             title: preferencesText.warningButtonColor(),
             requiresReload: false,
-            visible: true,
+            visible: isDarkMode,
             defaultValue: '#f97316',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
@@ -435,7 +444,7 @@ export const preferenceDefinitions = {
           infoButtonColor: defineItem({
             title: preferencesText.infoButtonColor(),
             requiresReload: false,
-            visible: true,
+            visible: isDarkMode,
             defaultValue: '#1d4ed8',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
@@ -443,7 +452,7 @@ export const preferenceDefinitions = {
           successButtonColor: defineItem({
             title: preferencesText.successButtonColor(),
             requiresReload: false,
-            visible: true,
+            visible: isDarkMode,
             defaultValue: '#166534',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
@@ -451,7 +460,7 @@ export const preferenceDefinitions = {
           secondaryButtonColor: defineItem({
             title: preferencesText.secondaryButtonColor(),
             requiresReload: false,
-            visible: true,
+            visible: isDarkMode,
             defaultValue: '#525252',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
@@ -459,7 +468,7 @@ export const preferenceDefinitions = {
           secondaryLightButtonColor: defineItem({
             title: preferencesText.secondaryLightButtonColor(),
             requiresReload: false,
-            visible: true,
+            visible: isDarkMode,
             defaultValue: '#525252',
             renderer: ColorPickerPreferenceItem,
             container: 'label',

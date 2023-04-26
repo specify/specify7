@@ -24,6 +24,7 @@ import { PreferencesAside } from './Aside';
 import type {
   GenericPreferencesCategories,
   PreferenceItem,
+  PreferencesVisibilyContext,
 } from './Definitions';
 import { preferenceDefinitions } from './Definitions';
 import {
@@ -32,7 +33,7 @@ import {
   preferencesPromise,
   setPref,
 } from './helpers';
-import { prefEvents, useDarkMode } from './Hooks';
+import { PreferencesContext, prefEvents, useDarkMode } from './Hooks';
 import { DefaultPreferenceItemRender } from './Renderers';
 import { usePref } from './usePref';
 import { useTopChild } from './useTopChild';
@@ -102,7 +103,10 @@ function Preferences(): JSX.Element {
 
 /** Hide invisible preferences. Remote empty categories and subCategories */
 export function usePrefDefinitions() {
-  const theme = useDarkMode();
+  const preferencesVisibilityContext: PreferencesVisibilyContext = {
+    isDarkMode: useDarkMode(),
+    isRedirecting: React.useContext(PreferencesContext) !== undefined,
+  };
 
   return React.useMemo(
     () =>
@@ -114,11 +118,6 @@ export function usePrefDefinitions() {
               {
                 ...categoryData,
                 subCategories: Object.entries(subCategories)
-                  .filter(
-                    ([subCategory]) =>
-                      (theme && subCategory !== 'buttonLight') ||
-                      (!theme && subCategory !== 'buttonDark')
-                  )
                   .map(
                     ([subCategory, { items, ...subCategoryData }]) =>
                       [
@@ -126,7 +125,10 @@ export function usePrefDefinitions() {
                         {
                           ...subCategoryData,
                           items: Object.entries(items).filter(
-                            ([_name, { visible }]) => visible !== false
+                            ([_name, { visible }]) =>
+                              typeof visible === 'function'
+                                ? visible(preferencesVisibilityContext)
+                                : visible !== false
                           ),
                         },
                       ] as const
@@ -136,7 +138,7 @@ export function usePrefDefinitions() {
             ] as const
         )
         .filter(([_name, { subCategories }]) => subCategories.length > 0),
-    []
+    [preferencesVisibilityContext]
   );
 }
 
