@@ -291,7 +291,7 @@ export const preferenceDefinitions = {
           background: defineItem({
             title: preferencesText.background(),
             requiresReload: false,
-            visible: true,
+            visible: isLightMode,
             defaultValue: '#ffffff',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
@@ -299,7 +299,7 @@ export const preferenceDefinitions = {
           darkBackground: defineItem({
             title: preferencesText.darkBackground(),
             requiresReload: false,
-            visible: true,
+            visible: isDarkMode,
             defaultValue: '#171717',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
