@@ -1,19 +1,21 @@
 import React from 'react';
-import { RA, filterArray } from '../../utils/types';
-import { SpecifyResource } from '../DataModel/legacyTypes';
-import type { AnySchema } from '../DataModel/helperTypes';
-import { Dialog } from '../Molecules/Dialog';
-import { attachmentsText } from '../../localization/attachments';
+
 import { useAsyncState } from '../../hooks/useAsyncState';
-import { CollectionObjectAttachment } from '../DataModel/types';
-import { serializeResource } from '../DataModel/helpers';
-import { AttachmentGallery } from './Gallery';
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
-import { defaultAttachmentScale } from '.';
-import { Button } from '../Atoms/Button';
+import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import { f } from '../../utils/functools';
-import { useBooleanState } from '../../hooks/useBooleanState';
+import type { RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
+import { Button } from '../Atoms/Button';
+import { serializeResource } from '../DataModel/helpers';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { CollectionObjectAttachment } from '../DataModel/types';
+import { Dialog } from '../Molecules/Dialog';
+import { defaultAttachmentScale } from '.';
+import { AttachmentGallery } from './Gallery';
 
 const haltIncrementSize = 300;
 
@@ -70,7 +72,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
     true
   );
 
-  //halt value was added to not scraped all the records for attachment in cases where there is more than 300 and no attachments, the user is able to ask for the next 300 if necessary
+  // Halt value was added to not scraped all the records for attachment in cases where there is more than 300 and no attachments, the user is able to ask for the next 300 if necessary
   const [haltValue, setHaltValue] = React.useState(300);
   const halt =
     attachments?.attachments.length === 0 && records.length >= haltValue;
@@ -84,21 +86,21 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
     <>
       <Button.Icon
         icon="photos"
-        onClick={() => handleShowAttachments()}
         title="attachments"
-      ></Button.Icon>
+        onClick={() => handleShowAttachments()}
+      />
       {showAttachments && (
         <Dialog
           buttons={
             <Button.DialogClose>{commonText.close()}</Button.DialogClose>
           }
           header={
-            attachments?.count !== undefined
-              ? commonText.countLine({
+            attachments?.count === undefined
+              ? attachmentsText.attachments()
+              : commonText.countLine({
                   resource: attachmentsText.attachments(),
                   count: attachments.count,
                 })
-              : attachmentsText.attachments()
           }
           onClose={handleHideAttachments}
         >

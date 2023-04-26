@@ -13,6 +13,7 @@ import { commonText } from '../../localization/common';
 import { schemaText } from '../../localization/schema';
 import { f } from '../../utils/functools';
 import { filterArray } from '../../utils/types';
+import { replaceItem } from '../../utils/utils';
 import { Container, H2 } from '../Atoms';
 import { className } from '../Atoms/className';
 import { Input, Label, Select } from '../Atoms/Form';
@@ -26,7 +27,6 @@ import { ProtectedTable } from '../Permissions/PermissionDenied';
 import { OrderPicker } from '../Preferences/Renderers';
 import { attachmentSettingsPromise } from './attachments';
 import { AttachmentGallery } from './Gallery';
-import { replaceItem } from '../../utils/utils';
 
 export const attachmentRelatedTables = f.store(() =>
   Object.keys(schema.models).filter((tableName) =>

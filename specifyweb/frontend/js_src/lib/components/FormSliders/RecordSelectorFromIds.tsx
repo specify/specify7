@@ -9,6 +9,8 @@ import type { RA } from '../../utils/types';
 import { removeItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
+import { tablesWithAttachments } from '../Attachments';
+import { RecordSetAttachments } from '../Attachments/RecordSetAttachment';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
@@ -20,8 +22,6 @@ import { hasTablePermission } from '../Permissions/helpers';
 import { SetUnloadProtectsContext } from '../Router/Router';
 import type { RecordSelectorProps } from './RecordSelector';
 import { useRecordSelector } from './RecordSelector';
-import { RecordSetAttachments } from '../Attachments/RecordSetAttachment';
-import { tablesWithAttachments } from '../Attachments';
 
 /**
  * A Wrapper for RecordSelector that allows to specify list of records by their
@@ -74,7 +74,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
     | undefined;
   readonly onFetch?: (
     index: number
-  ) => Promise<undefined | RA<number | undefined>>;
+  ) => Promise<RA<number | undefined> | undefined>;
 }): JSX.Element | null {
   const [records, setRecords] = React.useState<
     RA<SpecifyResource<SCHEMA> | undefined>
