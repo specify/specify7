@@ -20,6 +20,7 @@ import type { SpecifyTable } from '../DataModel/specifyTable';
 import { getTableById, tables } from '../DataModel/tables';
 import type { RecordSet } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
+import { loadingGif } from '../Molecules';
 import { DateElement } from '../Molecules/DateElement';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { usePaginator } from '../Molecules/Paginator';
@@ -28,7 +29,6 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { hasToolPermission } from '../Permissions/helpers';
 import { OverlayContext } from '../Router/Router';
 import { EditRecordSet } from './RecordSetEdit';
-import { loadingGif } from '../Molecules';
 
 export function RecordSetsOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
