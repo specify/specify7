@@ -8,7 +8,7 @@ import { commonText } from '../../localization/common';
 import type { RA, WritableArray } from '../../utils/types';
 import { className } from '../Atoms/className';
 import { legacyNonJsxIcons } from '../Atoms/Icons';
-import { getUserPref } from '../UserPreferences/helpers';
+import { userPreferences } from '../Preferences/userPreferences';
 import { splitJoinedMappingPath } from '../WbPlanView/mappingHelpers';
 import type { LeafletInstance } from './addOns';
 import {
@@ -51,17 +51,33 @@ export function showLeafletMap({
     defaultZoom = DEFAULT_ZOOM;
   }
 
-  const animate = getUserPref('leaflet', 'behavior', 'animateTransitions');
+  const animate = userPreferences.get(
+    'leaflet',
+    'behavior',
+    'animateTransitions'
+  );
   const map = L.map(container, {
     maxZoom: 23,
-    doubleClickZoom: getUserPref('leaflet', 'behavior', 'doubleClickZoom'),
-    closePopupOnClick: getUserPref('leaflet', 'behavior', 'closePopupOnClick'),
+    doubleClickZoom: userPreferences.get(
+      'leaflet',
+      'behavior',
+      'doubleClickZoom'
+    ),
+    closePopupOnClick: userPreferences.get(
+      'leaflet',
+      'behavior',
+      'closePopupOnClick'
+    ),
     zoomAnimation: animate,
     fadeAnimation: animate,
     markerZoomAnimation: animate,
-    inertia: getUserPref('leaflet', 'behavior', 'panInertia'),
-    dragging: getUserPref('leaflet', 'behavior', 'mouseDrags'),
-    scrollWheelZoom: getUserPref('leaflet', 'behavior', 'scrollWheelZoom'),
+    inertia: userPreferences.get('leaflet', 'behavior', 'panInertia'),
+    dragging: userPreferences.get('leaflet', 'behavior', 'mouseDrags'),
+    scrollWheelZoom: userPreferences.get(
+      'leaflet',
+      'behavior',
+      'scrollWheelZoom'
+    ),
   }).setView(defaultCenter, defaultZoom);
   const controlLayers = L.control.layers(
     tileLayers.baseMaps,

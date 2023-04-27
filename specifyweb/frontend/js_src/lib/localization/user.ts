@@ -1011,4 +1011,8 @@ export const userText = createDictionary({
     'fr-fr': 'Options de configuration du compte',
     'uk-ua': 'Параметри налаштування облікового запису',
   },
+  currentUser: {
+    'en-us': 'Current User',
+    'ru-ru': 'Текущий пользователь',
+  },
 } as const);

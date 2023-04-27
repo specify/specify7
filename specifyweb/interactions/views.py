@@ -18,7 +18,9 @@ def preps_available_rs(request, recordset_id):
     cursor = connection.cursor()
     cursor.execute("""
     SELECT co.catalognumber,
+           co.collectionobjectid AS co_id,
            t.fullname,
+           t.taxonid AS t_id,
            p.preparationid,
            pt.name,
            p.countamt,

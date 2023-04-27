@@ -337,7 +337,7 @@ def check_collection_access_against_agents(userid: int) -> None:
     if missing_for_6 or missing_for_7:
         all_divisions = models.Division.objects.filter(
             disciplines__collections__id__in=[cid for cid, _ in sp6_collections] + [c.id for c in sp7_collections]
-        ).values_list('id', flat=True)
+        ).values_list('id', flat=True).distinct()
         raise MissingAgentForAccessibleCollection({
             'missing_for_6': missing_for_6,
             'missing_for_7': missing_for_7,

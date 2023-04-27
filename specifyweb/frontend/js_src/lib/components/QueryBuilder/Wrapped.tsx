@@ -16,14 +16,15 @@ import { Container } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Form } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
+import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getModelById } from '../DataModel/schema';
-import type { RecordSet, SpQuery } from '../DataModel/types';
+import type { RecordSet, SpQuery, SpQueryField } from '../DataModel/types';
 import { useMenuItem } from '../Header/useMenuItem';
 import { isTreeModel, treeRanksPromise } from '../InitialContext/treeRanks';
 import { useTitle } from '../Molecules/AppTitle';
-import { hasPermission } from '../Permissions/helpers';
-import { usePref } from '../UserPreferences/usePref';
+import { hasPermission, hasToolPermission } from '../Permissions/helpers';
+import { userPreferences } from '../Preferences/userPreferences';
 import { getMappedFields, mappingPathIsComplete } from '../WbPlanView/helpers';
 import { getMappingLineProps } from '../WbPlanView/LineComponents';
 import { MappingView } from '../WbPlanView/MapperComponents';
@@ -62,24 +63,35 @@ const pendingState = {
 // REFACTOR: split this component
 export function QueryBuilder({
   query: queryResource,
-  isReadOnly,
   recordSet,
   forceCollection,
   isEmbedded = false,
   autoRun = false,
   // If present, this callback is called when query results are selected
   onSelected: handleSelected,
+  onChange: handleChange,
 }: {
   readonly query: SpecifyResource<SpQuery>;
-  readonly isReadOnly: boolean;
   readonly recordSet?: SpecifyResource<RecordSet>;
   readonly forceCollection: number | undefined;
   readonly isEmbedded?: boolean;
   readonly autoRun?: boolean;
   readonly onSelected?: (selected: RA<number>) => void;
+  readonly onChange?: ({
+    fields,
+    isDistinct,
+  }: {
+    readonly fields: RA<SerializedResource<SpQueryField>>;
+    readonly isDistinct: boolean | null;
+  }) => void;
 }): JSX.Element | null {
   useMenuItem('queries');
-
+  const isReadOnly =
+    !hasPermission('/querybuilder/query', 'execute') &&
+    !hasToolPermission(
+      'queryBuilder',
+      queryResource.isNew() ? 'create' : 'update'
+    );
   const [treeRanksLoaded = false] = useAsyncState(fetchTreeRanks, true);
 
   const [query, setQuery] = useResource(queryResource);
@@ -103,6 +115,12 @@ export function QueryBuilder({
       state: buildInitialState(),
     });
   }, [buildInitialState]);
+  React.useEffect(() => {
+    handleChange?.({
+      fields: unParseQueryFields(state.baseTableName, state.fields),
+      isDistinct: query.selectDistinct,
+    });
+  }, [state, query.selectDistinct]);
   useErrorContext('state', state);
 
   /**
@@ -222,7 +240,7 @@ export function QueryBuilder({
     undefined
   );
 
-  const [stickyScrolling] = usePref(
+  const [stickyScrolling] = userPreferences.use(
     'queryBuilder',
     'behavior',
     'stickyScrolling'
@@ -337,7 +355,7 @@ export function QueryBuilder({
           } else runQuery('regular');
         }}
       >
-        <div className="flex snap-start flex-col gap-4 overflow-hidden">
+        <div className="flex snap-start flex-col gap-4 overflow-y-auto">
           {state.showMappingView && (
             <MappingView
               mappingElementProps={getMappingLineProps({
@@ -407,7 +425,20 @@ export function QueryBuilder({
               isReadOnly
                 ? undefined
                 : (line, field): void =>
-                    dispatch({ type: 'ChangeFieldAction', line, field })
+                    dispatch({
+                      type: 'ChangeFieldAction',
+                      line,
+                      field,
+                    })
+            }
+            onChangeFields={
+              isReadOnly
+                ? undefined
+                : (fields): void =>
+                    dispatch({
+                      type: 'ChangeFieldsAction',
+                      fields,
+                    })
             }
             onClose={(): void =>
               dispatch({
