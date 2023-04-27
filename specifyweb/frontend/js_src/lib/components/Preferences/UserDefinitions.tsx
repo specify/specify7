@@ -35,7 +35,7 @@ import {
   LanguagePreferencesItem,
   SchemaLanguagePreferenceItem,
 } from '../Toolbar/Language';
-import { MenuPreferences, WelcomePageMode } from './Renderers';
+import type { MenuPreferences, WelcomePageMode } from './Renderers';
 import {
   CollectionSortOrderPreferenceItem,
   ColorPickerPreferenceItem,
