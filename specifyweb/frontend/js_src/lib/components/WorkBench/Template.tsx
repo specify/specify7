@@ -24,7 +24,6 @@ import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Input } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
-import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import { useMenuItem } from '../Header/useMenuItem';
 import { treeRanksPromise } from '../InitialContext/treeRanks';

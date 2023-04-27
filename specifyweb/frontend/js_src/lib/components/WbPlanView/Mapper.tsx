@@ -21,7 +21,6 @@ import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
-import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import { strictGetModel } from '../DataModel/schema';
 import type { Tables } from '../DataModel/types';

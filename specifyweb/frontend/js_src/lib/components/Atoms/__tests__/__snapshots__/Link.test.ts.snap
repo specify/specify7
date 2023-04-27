@@ -19,7 +19,7 @@ exports[`Link.BorderedGray renders without errors 1`] = `
     class="button rounded cursor-pointer active:brightness-80 px-4 py-2
     disabled:bg-gray-200 disabled:text-gray-500 dark:disabled:!bg-neutral-700 gap-2
     inline-flex items-center capitalize justify-center shadow-sm button hover:brightness-150 bg-[color:var(--secondary-button-color)] text-gray-800 shadow-sm
-dark:bg-[color:var(--secondary-button-color-dark)] dark:text-gray-100 hover:dark:bg-neutral-500 ring-1 ring-gray-400 shadow-sm dark:ring-0
+dark:bg-[color:var(--secondary-button-color-dark)] dark:text-gray-100 ring-1 ring-gray-400 shadow-sm dark:ring-0
     disabled:ring-gray-400 disabled:dark:ring-neutral-500"
     href="#"
   >
@@ -59,7 +59,7 @@ exports[`Link.Gray renders without errors 1`] = `
     class="button rounded cursor-pointer active:brightness-80 px-4 py-2
     disabled:bg-gray-200 disabled:text-gray-500 dark:disabled:!bg-neutral-700 gap-2
     inline-flex items-center capitalize justify-center shadow-sm button hover:brightness-150 bg-[color:var(--secondary-button-color)] text-gray-800 shadow-sm
-dark:bg-[color:var(--secondary-button-color-dark)] dark:text-gray-100 hover:dark:bg-neutral-500"
+dark:bg-[color:var(--secondary-button-color-dark)] dark:text-gray-100"
     href="#"
   >
     Link
@@ -184,7 +184,7 @@ exports[`Link.Small default variant 1`] = `
     class="button rounded cursor-pointer active:brightness-80 px-4 py-2
     disabled:bg-gray-200 disabled:text-gray-500 dark:disabled:!bg-neutral-700 gap-2
     inline-flex items-center capitalize justify-center shadow-sm !py-1 !px-2 button hover:brightness-150 bg-[color:var(--secondary-button-color)] text-gray-800 shadow-sm
-dark:bg-[color:var(--secondary-button-color-dark)] dark:text-gray-100 hover:dark:bg-neutral-500 ring-1 ring-gray-400 shadow-sm dark:ring-0
+dark:bg-[color:var(--secondary-button-color-dark)] dark:text-gray-100 ring-1 ring-gray-400 shadow-sm dark:ring-0
     disabled:ring-gray-400 disabled:dark:ring-neutral-500 hover:bg-brand-200 dark:hover:bg-brand-400"
     href="#"
   />
