@@ -35,7 +35,7 @@ import {
   LanguagePreferencesItem,
   SchemaLanguagePreferenceItem,
 } from '../Toolbar/Language';
-import type { MenuPreferences, WelcomePageMode } from './Renderers';
+import { MenuPreferences, WelcomePageMode } from './Renderers';
 import {
   CollectionSortOrderPreferenceItem,
   ColorPickerPreferenceItem,
@@ -1130,12 +1130,21 @@ export const userPreferenceDefinitions = {
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
-          displayOriginal: defineItem<boolean>({
-            title: preferencesText.displayOriginalAttachment(),
+          displayOriginal: defineItem<'full' | 'thumbnail'>({
+            title: preferencesText.attachmentPreviewMode(),
             requiresReload: false,
             visible: true,
-            defaultValue: true,
-            type: 'java.lang.Boolean',
+            defaultValue: 'full',
+            values: [
+              {
+                value: 'full',
+                title: preferencesText.fullResolution(),
+              },
+              {
+                value: 'thumbnail',
+                title: preferencesText.thumbnail(),
+              },
+            ],
           }),
         },
       },

@@ -101,7 +101,7 @@ export function AttachmentViewer({
   const table = f.maybe(serialized.tableID ?? undefined, getAttachmentTable);
   return (
     <div className="flex h-full justify-center gap-8">
-      {displayOriginal ? (
+      {displayOriginal === 'full' ? (
         <div className="flex min-h-[30vw] w-full min-w-[30vh] flex-1 items-center">
           {originalUrl === undefined ? (
             loadingGif
