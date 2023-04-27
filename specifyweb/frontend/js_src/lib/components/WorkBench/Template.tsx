@@ -170,13 +170,13 @@ function WbView({
                 >
                   {wbText.revert()}
                 </Button.Small>
-                <Submit.Save
+                <Button.Save
                   aria-haspopup="dialog"
-                  className="wb-save"
+                  className="wb-save !py-1 !px-2"
                   onClick={undefined}
                 >
                   {commonText.save()}
-                </Submit.Save>
+                </Button.Save>
               </>
             )}
           </>

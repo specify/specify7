@@ -354,7 +354,7 @@ export const preferenceDefinitions = {
         },
       },
       buttonLight: {
-        title: preferencesText.buttonLight(),
+        title: preferencesText.buttonsLight(),
         items: {
           saveButtonColor: defineItem({
             title: preferencesText.saveButtonColor(),
@@ -415,7 +415,7 @@ export const preferenceDefinitions = {
         },
       },
       buttonDark: {
-        title: preferencesText.buttonDark(),
+        title: preferencesText.buttonsDark(),
         items: {
           saveButtonColor: defineItem({
             title: preferencesText.saveButtonColor(),

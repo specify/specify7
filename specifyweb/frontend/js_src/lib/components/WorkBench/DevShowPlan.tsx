@@ -36,7 +36,7 @@ export function DevShowPlan({
       buttons={
         <>
           <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-          <Submit.Save
+          <Button.Save
             onClick={(): void => {
               const plan =
                 uploadPlan.length === 0 ? null : JSON.parse(uploadPlan);
@@ -59,7 +59,7 @@ export function DevShowPlan({
             }}
           >
             {commonText.save()}
-          </Submit.Save>
+          </Button.Save>
         </>
       }
       header={wbPlanText.dataMapper()}

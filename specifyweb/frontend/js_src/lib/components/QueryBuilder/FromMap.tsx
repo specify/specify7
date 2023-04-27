@@ -72,7 +72,7 @@ export function QueryFromMap({
           <Button.Secondary onClick={handleClose}>
             {commonText.cancel()}
           </Button.Secondary>
-          <Submit.Save onClick={handleSave}>{commonText.save()}</Submit.Save>
+          <Button.Save onClick={handleSave}>{commonText.save()}</Button.Save>
         </>
       }
       forwardRef={setMap}
