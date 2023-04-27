@@ -24,12 +24,10 @@ export function AttachmentPicker({
   url,
   onChange: handleChange,
   isReadOnly,
-  displayScale,
 }: {
   readonly url: string | undefined;
-  readonly onChange: (url: string) => void;
+  readonly onChange: (url: string | undefined) => void;
   readonly isReadOnly: boolean;
-  readonly displayScale?: boolean;
 }): JSX.Element {
   const [attachment, setAttachment] = useAttachment(undefined);
   useErrorContext('attachment', attachment);
@@ -57,7 +55,9 @@ export function AttachmentPicker({
     <>
       {!isReadOnly && (
         <Button.Gray onClick={() => handleToggle()}>
-          {url === undefined ? commonText.pickImage() : commonText.change()}
+          {url === undefined
+            ? preferencesText.pickImage()
+            : commonText.change()}
         </Button.Gray>
       )}
 
@@ -65,7 +65,7 @@ export function AttachmentPicker({
         <Button.Gray
           onClick={() => {
             setAttachment(undefined);
-            handleChange('default');
+            handleChange(undefined);
           }}
         >
           {commonText.delete()}
@@ -74,12 +74,8 @@ export function AttachmentPicker({
 
       {url !== undefined && (
         <img
-          className="max-h-full max-w-full object-contain"
+          className="h-40 max-h-full w-40 max-w-full object-contain"
           src={url}
-          style={{
-            width: `10rem`,
-            height: `10rem`,
-          }}
         />
       )}
 
@@ -87,9 +83,7 @@ export function AttachmentPicker({
         <Dialog
           buttons={commonText.close()}
           header={preferencesText.pickAttachment()}
-          onClose={(): void => {
-            handleToggle();
-          }}
+          onClose={(): void => handleToggle()}
         >
           <Tabs
             index={[types.indexOf(type), (index) => setType(types[index])]}
@@ -105,10 +99,7 @@ export function AttachmentPicker({
                 />
               ),
               [attachmentsText.attachments()]: (
-                <AttachmentsView
-                  displayScale={displayScale}
-                  onClick={handleAttachment}
-                />
+                <AttachmentsView onClick={handleAttachment} />
               ),
             }}
           />

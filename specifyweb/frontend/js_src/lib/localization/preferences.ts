@@ -1409,4 +1409,7 @@ export const preferencesText = createDictionary({
   attachmentFailed: {
     'en-us': 'The attachment failed to load.',
   },
+  pickImage: {
+    'en-us': 'Pick an image',
+  },
 } as const);

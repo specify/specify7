@@ -233,12 +233,11 @@ export const WelcomePageModePreferenceItem: PreferenceItemComponent<WelcomePageM
         />
         {value === 'customImage' && (
           <AttachmentPicker
-            displayScale={false}
             isReadOnly={isReadOnly}
             url={url === 'default' ? undefined : url}
             onChange={(url): void => {
-              setUrl(url);
-              if (url === 'default') handleChange('default');
+              if (url === undefined) handleChange('default');
+              else setUrl(url);
             }}
           />
         )}

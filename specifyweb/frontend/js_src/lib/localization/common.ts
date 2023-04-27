@@ -619,7 +619,4 @@ export const commonText = createDictionary({
   change: {
     'en-us': 'Change',
   },
-  pickImage: {
-    'en-us': 'Pick an image',
-  },
 } as const);

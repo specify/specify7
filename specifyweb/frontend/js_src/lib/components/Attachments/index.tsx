@@ -27,6 +27,7 @@ import { ProtectedTable } from '../Permissions/PermissionDenied';
 import { OrderPicker } from '../UserPreferences/Renderers';
 import { attachmentSettingsPromise } from './attachments';
 import { AttachmentGallery } from './Gallery';
+import { DialogContext } from '../Atoms/Button';
 
 export const attachmentRelatedTables = f.store(() =>
   Object.keys(schema.models).filter((tableName) =>
@@ -56,17 +57,15 @@ const defaultFilter = { type: 'all' } as const;
 
 export function AttachmentsView({
   onClick,
-  displayScale,
 }: {
   readonly onClick?: (attachment: SerializedResource<Attachment>) => void;
-  readonly displayScale?: boolean;
 }): JSX.Element | null {
   const navigate = useNavigate();
   const [isConfigured] = usePromise(attachmentSettingsPromise, true);
 
   return isConfigured === undefined ? null : isConfigured ? (
     <ProtectedTable action="read" tableName="Attachment">
-      <Attachments displayScale={displayScale} onClick={onClick} />
+      <Attachments onClick={onClick} />
     </ProtectedTable>
   ) : (
     <Dialog
@@ -81,12 +80,12 @@ export function AttachmentsView({
 
 function Attachments({
   onClick,
-  displayScale = true,
 }: {
   readonly onClick?: (attachment: SerializedResource<Attachment>) => void;
-  readonly displayScale?: boolean;
 }): JSX.Element {
   useMenuItem('attachments');
+
+  const isInDialog = React.useContext(DialogContext);
 
   const [order = defaultSortOrder, setOrder] = useCachedState(
     'attachments',
@@ -236,7 +235,8 @@ function Attachments({
           </div>
         </Label.Inline>
         <span className="-ml-2 flex-1" />
-        {displayScale && (
+        {/* Don't display scale if in dialog to not have resizing/glitching issue */}
+        {isInDialog === undefined && (
           <Label.Inline>
             {attachmentsText.scale()}
             <Input.Generic
