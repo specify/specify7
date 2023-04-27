@@ -145,14 +145,12 @@ export function AttachmentViewer({
           )}
         </div>
       ) : (
-        <div className="flex items-center">
-          <span className="-ml-2 flex-1" />
+        <div className="flex items-center justify-center">
           <Thumbnail
             attachment={serializeResource(attachment)}
             className="!border-none"
             thumbnail={thumbnail}
           />
-          <span className="-ml-2 flex-1" />
         </div>
       )}
       {
