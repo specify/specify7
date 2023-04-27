@@ -309,6 +309,16 @@
   }
 }
 
+.\! {
+  /**
+   * In Chrome DevTools, in the "Element Classes" box (where you customize
+   * element class names), DevTools apply the first matching class name even
+   * before you started typing. The first matching happens to be !absolute,
+   * which breaks the UI. This noop is a workaround for that UX issue
+   */
+  --dev-tools-hack: 0;
+}
+
 /* Leaflet dark mode */
 .leaflet-bar a {
   @apply dark:!border-b-neutral-600 dark:!bg-black dark:!text-white
