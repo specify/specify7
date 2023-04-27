@@ -133,7 +133,7 @@ function Field({
           parser.type === 'number' &&
           rightAlignNumberFields &&
           globalThis.navigator.userAgent.toLowerCase().includes('webkit')
-            ? `text-right ${isReadOnly ? '' : 'pr-6'}`
+            ? 'text-right'
             : ''
         }
       `}

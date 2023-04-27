@@ -154,7 +154,7 @@
   }
 
   [type='number']:not([readonly], .no-arrows) {
-    @apply relative;
+    @apply relative pr-4;
   }
 
   .button:is([aria-pressed='true'], [aria-selected='true'], [aria-current]):not(.aria-handled) {
