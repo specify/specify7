@@ -239,6 +239,7 @@ export const WelcomePageModePreferenceItem: PreferenceItemComponent<WelcomePageM
               setUrl(url);
               if (url === 'default') handleChange('default');
             }}
+            displayScale={false}
           />
         )}
       </>

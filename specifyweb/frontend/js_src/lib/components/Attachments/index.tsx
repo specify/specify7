@@ -56,15 +56,17 @@ const defaultFilter = { type: 'all' } as const;
 
 export function AttachmentsView({
   onClick,
+  displayScale,
 }: {
   readonly onClick?: (attachment: SerializedResource<Attachment>) => void;
+  readonly displayScale?: boolean;
 }): JSX.Element | null {
   const navigate = useNavigate();
   const [isConfigured] = usePromise(attachmentSettingsPromise, true);
 
   return isConfigured === undefined ? null : isConfigured ? (
     <ProtectedTable action="read" tableName="Attachment">
-      <Attachments onClick={onClick} />
+      <Attachments onClick={onClick} displayScale={displayScale} />
     </ProtectedTable>
   ) : (
     <Dialog
@@ -79,8 +81,10 @@ export function AttachmentsView({
 
 function Attachments({
   onClick,
+  displayScale = true,
 }: {
   readonly onClick?: (attachment: SerializedResource<Attachment>) => void;
+  readonly displayScale?: boolean;
 }): JSX.Element {
   useMenuItem('attachments');
 
@@ -232,16 +236,18 @@ function Attachments({
           </div>
         </Label.Inline>
         <span className="-ml-2 flex-1" />
-        <Label.Inline>
-          {attachmentsText.scale()}
-          <Input.Generic
-            max={maxScale}
-            min={minScale}
-            type="range"
-            value={scale}
-            onValueChange={(value) => setScale(Number.parseInt(value))}
-          />
-        </Label.Inline>
+        {displayScale && (
+          <Label.Inline>
+            {attachmentsText.scale()}
+            <Input.Generic
+              max={maxScale}
+              min={minScale}
+              type="range"
+              value={scale}
+              onValueChange={(value) => setScale(Number.parseInt(value))}
+            />
+          </Label.Inline>
+        )}
       </header>
       <AttachmentGallery
         attachments={collection?.records ?? []}

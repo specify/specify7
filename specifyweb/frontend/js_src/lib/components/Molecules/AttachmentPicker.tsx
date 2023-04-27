@@ -24,10 +24,12 @@ export function AttachmentPicker({
   url,
   onChange: handleChange,
   isReadOnly,
+  displayScale,
 }: {
   readonly url: string | undefined;
   readonly onChange: (url: string) => void;
   readonly isReadOnly: boolean;
+  readonly displayScale?: boolean;
 }): JSX.Element {
   const [attachment, setAttachment] = useAttachment(undefined);
   useErrorContext('attachment', attachment);
@@ -103,7 +105,10 @@ export function AttachmentPicker({
                 />
               ),
               [attachmentsText.attachments()]: (
-                <AttachmentsView onClick={handleAttachment} />
+                <AttachmentsView
+                  onClick={handleAttachment}
+                  displayScale={displayScale}
+                />
               ),
             }}
           />
