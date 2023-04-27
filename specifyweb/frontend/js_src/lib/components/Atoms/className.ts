@@ -13,9 +13,9 @@ export const dialogIconTriggers = {
 
 const buttonClassName = 'button';
 const secondaryButton = `${buttonClassName} hover:brightness-150 bg-[color:var(--secondary-button-color)] text-gray-800 shadow-sm
-dark:bg-[color:var(--secondary-button-color-dark)] dark:text-gray-100 hover:dark:bg-neutral-500`;
+dark:bg-[color:var(--secondary-button-color-dark)] dark:text-gray-100`;
 const secondaryLightButton = `${buttonClassName} hover:brightness-150 bg-[color:var(--secondary-light-button-color)] text-gray-800 shadow-sm
-dark:bg-[color:var(--secondary-light-button-color-dark)] dark:text-gray-100 hover:dark:bg-neutral-500`;
+dark:bg-[color:var(--secondary-light-button-color-dark)] dark:text-gray-100`;
 const containerBaseUnstyled = `flex flex-col gap-4 overflow-scroll
   overflow-x-auto [overflow-y:overlay] [scrollbar-gutter:stable]`;
 const containerBase = `${containerBaseUnstyled} bg-[color:var(--form-foreground)]
