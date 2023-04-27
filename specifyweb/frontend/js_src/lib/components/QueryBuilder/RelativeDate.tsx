@@ -8,6 +8,7 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
+import { StringToJsx } from '../../localization/utils';
 import { dayjs } from '../../utils/dayJs';
 import { databaseDateFormat } from '../../utils/parser/dateConfig';
 import type { Parser } from '../../utils/parser/definitions';
@@ -21,7 +22,6 @@ import { className } from '../Atoms/className';
 import { Input, Select } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { QueryInputField } from './FieldFilter';
-import { StringToJsx } from '../../localization/utils';
 
 export function DateQueryInputField({
   currentValue,
@@ -140,11 +140,6 @@ function DateSplit({
   return (
     <div className="flex flex-row gap-1">
       <StringToJsx
-        string={queryText.relativeDate({
-          size,
-          type: type,
-          direction: direction,
-        })}
         components={{
           input: (size) => (
             <Input.Number
@@ -192,6 +187,11 @@ function DateSplit({
             </Select>
           ),
         }}
+        string={queryText.relativeDate({
+          size,
+          type,
+          direction,
+        })}
       />
     </div>
   );
