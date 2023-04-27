@@ -14,6 +14,7 @@ import { schemaText } from '../../localization/schema';
 import { f } from '../../utils/functools';
 import { filterArray } from '../../utils/types';
 import { Container, H2 } from '../Atoms';
+import { DialogContext } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Input, Label, Select } from '../Atoms/Form';
 import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
@@ -27,7 +28,6 @@ import { ProtectedTable } from '../Permissions/PermissionDenied';
 import { OrderPicker } from '../UserPreferences/Renderers';
 import { attachmentSettingsPromise } from './attachments';
 import { AttachmentGallery } from './Gallery';
-import { DialogContext } from '../Atoms/Button';
 
 export const attachmentRelatedTables = f.store(() =>
   Object.keys(schema.models).filter((tableName) =>
