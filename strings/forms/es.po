@@ -333,7 +333,7 @@ msgstr "Valor ilegal para un campo Sí/No"
 msgid "requiredField"
 msgstr "Se requiere campo."
 
-#: components/FormPlugins/LatLongUi.tsx:90
+#: components/FormPlugins/LatLongUi.tsx:91
 #: utils/parser/__tests__/definitions.test.ts:188
 #: utils/parser/__tests__/definitions.test.ts:190
 #: utils/parser/__tests__/definitions.test.ts:206

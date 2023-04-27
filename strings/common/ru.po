@@ -419,9 +419,9 @@ msgstr "Искать"
 msgid "noResults"
 msgstr "Нет результатов"
 
-#: components/FormPlugins/LatLongUi.tsx:95
-#: components/FormPlugins/LatLongUi.tsx:160
-#: components/FormPlugins/LatLongUi.tsx:163
+#: components/FormPlugins/LatLongUi.tsx:96
+#: components/FormPlugins/LatLongUi.tsx:161
+#: components/FormPlugins/LatLongUi.tsx:164
 #: components/HomePage/AboutSpecify.tsx:136
 #: components/WorkBench/DataSetMeta.tsx:270
 #. Used in: Components > Form Plugins > Lat Long Ui ⬤ Components > Home Page > About Specify ⬤ Components > Work Bench > Data Set Meta
@@ -466,12 +466,12 @@ msgstr "Игнорировать"
 msgid "proceed"
 msgstr "Продолжить"
 
-#: components/FormPlugins/LatLongUi.tsx:274
+#: components/FormPlugins/LatLongUi.tsx:275
 #. Used in: Components > Form Plugins > Lat Long Ui
 msgid "start"
 msgstr "Начало"
 
-#: components/FormPlugins/LatLongUi.tsx:286
+#: components/FormPlugins/LatLongUi.tsx:287
 #. Used in: Components > Form Plugins > Lat Long Ui
 msgid "end"
 msgstr "Конец"
@@ -740,7 +740,8 @@ msgstr "Выбрано"
 #: components/FormCells/FormTable.tsx:305
 #: components/FormCells/FormTable.tsx:307
 #: components/Header/index.tsx:173
-#. Used in: Components > Form Cells > Form Table ⬤ Components > Header > Index
+#: components/Molecules/AutoComplete.tsx:540
+#. Used in: Components > Form Cells > Form Table ⬤ Components > Header > Index ⬤ Components > Molecules > Auto Complete
 msgid "expand"
 msgstr "Расширить"
 

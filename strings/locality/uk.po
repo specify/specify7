@@ -106,63 +106,63 @@ msgstr "{geographyTable:string} має бути зіставлено"
 msgid "geographyRequiredDescription"
 msgstr "Плагін GeoLocate вимагає заповнення поля географії."
 
-#: components/FormPlugins/LatLongUi.tsx:272
+#: components/FormPlugins/LatLongUi.tsx:273
 #. Used in: Components > Form Plugins > Lat Long Ui
 #, fuzzy
 msgid "coordinates"
 msgstr "Координати"
 
-#: components/FormPlugins/LatLongUi.tsx:275
+#: components/FormPlugins/LatLongUi.tsx:276
 #. 🟥Represents coordinates. Careful with translation. Used in: Components > Form Plugins > Lat Long Ui
 #, fuzzy
 msgid "northWestCorner"
 msgstr "NW Кут"
 
-#: components/FormPlugins/LatLongUi.tsx:287
+#: components/FormPlugins/LatLongUi.tsx:288
 #. 🟥Represents coordinates. Careful with translation. Used in: Components > Form Plugins > Lat Long Ui
 #, fuzzy
 msgid "southEastCorner"
 msgstr "SE Кут"
 
-#: components/FormPlugins/LatLongUi.tsx:244
+#: components/FormPlugins/LatLongUi.tsx:245
 #. Used in: Components > Form Plugins > Lat Long Ui
 #, fuzzy
 msgid "coordinateType"
 msgstr "Тип координат"
 
-#: components/FormPlugins/LatLongUi.tsx:255
+#: components/FormPlugins/LatLongUi.tsx:256
 #. Used in: Components > Form Plugins > Lat Long Ui
 #, fuzzy
 msgid "point"
 msgstr "точка"
 
-#: components/FormPlugins/LatLongUi.tsx:256
+#: components/FormPlugins/LatLongUi.tsx:257
 #. Used in: Components > Form Plugins > Lat Long Ui
 #, fuzzy
 msgid "line"
 msgstr "лінія"
 
-#: components/FormPlugins/LatLongUi.tsx:257
+#: components/FormPlugins/LatLongUi.tsx:258
 #. Used in: Components > Form Plugins > Lat Long Ui
 #, fuzzy
 msgid "rectangle"
 msgstr "Прямокутник"
 
-#: components/FormPlugins/LatLongUi.tsx:263
+#: components/FormPlugins/LatLongUi.tsx:264
 #. Used in: Components > Form Plugins > Lat Long Ui
 #, fuzzy
 msgid "parsed"
 msgstr "Проаналізовано"
 
-#: components/FormPlugins/LatLongUi.tsx:170
-#: components/FormPlugins/LatLongUi.tsx:261
+#: components/FormPlugins/LatLongUi.tsx:171
+#: components/FormPlugins/LatLongUi.tsx:262
 #. Used in: Components > Form Plugins > Lat Long Ui
 #, fuzzy
 msgid "latitude"
 msgstr "Широта"
 
-#: components/FormPlugins/LatLongUi.tsx:184
-#: components/FormPlugins/LatLongUi.tsx:262
+#: components/FormPlugins/LatLongUi.tsx:185
+#: components/FormPlugins/LatLongUi.tsx:263
 #. Used in: Components > Form Plugins > Lat Long Ui
 #, fuzzy
 msgid "longitude"

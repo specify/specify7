@@ -332,7 +332,7 @@ msgstr "Недопустимое значение для поля Да / Нет"
 msgid "requiredField"
 msgstr "Поле обязательно для заполнения."
 
-#: components/FormPlugins/LatLongUi.tsx:90
+#: components/FormPlugins/LatLongUi.tsx:91
 #: utils/parser/__tests__/definitions.test.ts:188
 #: utils/parser/__tests__/definitions.test.ts:190
 #: utils/parser/__tests__/definitions.test.ts:206

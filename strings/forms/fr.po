@@ -391,7 +391,7 @@ msgstr "Valeur illégale pour un champ Oui/Non"
 msgid "requiredField"
 msgstr "Champ requis."
 
-#: components/FormPlugins/LatLongUi.tsx:90
+#: components/FormPlugins/LatLongUi.tsx:91
 #: utils/parser/__tests__/definitions.test.ts:188
 #: utils/parser/__tests__/definitions.test.ts:190
 #: utils/parser/__tests__/definitions.test.ts:206
