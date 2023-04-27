@@ -66,7 +66,7 @@ export function AttachmentsView({
 
   return isConfigured === undefined ? null : isConfigured ? (
     <ProtectedTable action="read" tableName="Attachment">
-      <Attachments onClick={onClick} displayScale={displayScale} />
+      <Attachments displayScale={displayScale} onClick={onClick} />
     </ProtectedTable>
   ) : (
     <Dialog

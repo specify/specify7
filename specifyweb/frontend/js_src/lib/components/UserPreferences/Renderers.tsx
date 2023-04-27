@@ -29,9 +29,9 @@ import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Collection } from '../DataModel/types';
 import { rawMenuItemsPromise } from '../Header/menuItemDefinitions';
 import { useMenuItems, useUserTools } from '../Header/menuItemProcessing';
+import { AttachmentPicker } from '../Molecules/AttachmentPicker';
 import { AutoComplete } from '../Molecules/AutoComplete';
 import { ListEdit } from '../Toolbar/QueryTablesEdit';
-import { AttachmentPicker } from '../Molecules/AttachmentPicker';
 import type { PreferenceItem, PreferenceItemComponent } from './Definitions';
 import { usePref } from './usePref';
 
@@ -233,13 +233,13 @@ export const WelcomePageModePreferenceItem: PreferenceItemComponent<WelcomePageM
         />
         {value === 'customImage' && (
           <AttachmentPicker
+            displayScale={false}
             isReadOnly={isReadOnly}
             url={url === 'default' ? undefined : url}
             onChange={(url): void => {
               setUrl(url);
               if (url === 'default') handleChange('default');
             }}
-            displayScale={false}
           />
         )}
       </>

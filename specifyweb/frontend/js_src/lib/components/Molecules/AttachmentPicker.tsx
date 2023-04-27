@@ -106,8 +106,8 @@ export function AttachmentPicker({
               ),
               [attachmentsText.attachments()]: (
                 <AttachmentsView
-                  onClick={handleAttachment}
                   displayScale={displayScale}
+                  onClick={handleAttachment}
                 />
               ),
             }}
