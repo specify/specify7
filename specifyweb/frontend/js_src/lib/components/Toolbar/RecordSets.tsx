@@ -149,7 +149,7 @@ export function RecordSetsDialog({
               ))}
             </tbody>
           </table>
-          <span className="-ml-2 flex-1" />
+          <span className="-mt-2 flex-1" />
           {data === undefined && loadingGif}
           {paginator(data?.totalCount)}
         </>
