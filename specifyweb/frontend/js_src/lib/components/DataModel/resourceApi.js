@@ -374,8 +374,10 @@ export const ResourceBase = Backbone.Model.extend({
       }
       case 'many-to-one': {
         if (!value) {
-          // BUG: tighten up this check.
-          // The FK is null, or not a URI or inlined resource at any rate
+          /*
+           * BUG: tighten up this check.
+           * The FK is null, or not a URI or inlined resource at any rate
+           */
           field.isDependent() && this.storeDependent(field, null);
           return value;
         }
