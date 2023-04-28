@@ -96,21 +96,13 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   const resolvedTotalCount =
     totalCount + (typeof newResource === 'object' ? 1 : 0);
 
-  const [index, setIndex] = useTriggerState(
+  const [rawIndex, setIndex] = useTriggerState(
     Math.max(0, defaultIndex ?? ids.length - 1)
   );
-  React.useEffect(
-    () =>
-      setIndex((index) =>
-        Math.max(
-          0,
-          typeof newResource === 'object'
-            ? totalCount
-            : Math.min(index, totalCount - 1)
-        )
-      ),
-    [newResource, totalCount]
-  );
+  const index =
+    typeof newResource === 'object'
+      ? totalCount
+      : Math.min(rawIndex, totalCount - 1);
 
   const currentResource = newResource ?? records[index];
 
