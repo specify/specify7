@@ -7,7 +7,7 @@ import { useErrorContext } from '../../hooks/useErrorContext';
 import { hijackBackboneAjax } from '../../utils/ajax/backboneAjax';
 import { Http } from '../../utils/ajax/definitions';
 import { f } from '../../utils/functools';
-import { deserializeResource, serializeResource } from '../DataModel/helpers';
+import { deserializeResource } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
@@ -20,7 +20,6 @@ import { ProtectedTable } from '../Permissions/PermissionDenied';
 import { NotFoundView } from '../Router/NotFoundView';
 import { locationToState, useStableLocation } from '../Router/RouterState';
 import { CheckLoggedInCollection, ViewResourceByGuid } from './DataTask';
-import { ResourceView } from './ResourceView';
 
 export function ShowResource({
   resource,
@@ -72,38 +71,11 @@ export function ShowResource({
   );
 
   const navigate = useNavigate();
-  return recordSet === undefined ? null : typeof recordSet === 'object' ? (
+  return recordSet === undefined ? null : (
     <RecordSetWrapper
       recordSet={recordSet}
       resource={resource}
       onClose={(): void => navigate('/specify/')}
-    />
-  ) : (
-    <ResourceView
-      dialog={false}
-      isDependent={false}
-      isSubForm={false}
-      mode="edit"
-      resource={resource}
-      viewName={resource.specifyModel.view}
-      onAdd={(newResource): void =>
-        navigate(
-          getResourceViewUrl(
-            newResource.specifyModel.name,
-            undefined,
-            recordSetId
-          ),
-          {
-            state: {
-              type: 'RecordSet',
-              resource: serializeResource(newResource),
-            },
-          }
-        )
-      }
-      onClose={f.never}
-      onDeleted={f.void}
-      onSaved={(): void => navigate(resource.viewUrl())}
     />
   );
 }
