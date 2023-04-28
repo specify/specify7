@@ -320,7 +320,7 @@ function RecordSet<SCHEMA extends AnySchema>({
         dialog={dialog}
         headerButtons={
           recordSet.isNew() ? (
-            ids.length > 0 && !currentRecord.isNew() ? (
+            ids.length > 1 && !currentRecord.isNew() ? (
               <Button.Orange
                 onClick={(): void => loading(createNewRecordSet(ids))}
               >

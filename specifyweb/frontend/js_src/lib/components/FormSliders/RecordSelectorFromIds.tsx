@@ -1,7 +1,7 @@
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
-import { unsetUnloadProtect, useSearchParameter } from '../../hooks/navigation';
+import { unsetUnloadProtect } from '../../hooks/navigation';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
@@ -116,6 +116,8 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   >(undefined);
   const setUnloadProtects = React.useContext(SetUnloadProtectsContext)!;
 
+  const resolvedTotalCount =
+    rest.totalCount + (typeof newResource === 'object' ? 1 : 0);
   const {
     dialogs,
     slider,
@@ -129,7 +131,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
     model,
     records:
       typeof newResource === 'object' ? [...records, newResource] : records,
-    totalCount: rest.totalCount + (typeof newResource === 'object' ? 1 : 0),
+    totalCount: resolvedTotalCount,
     onAdd:
       typeof handleAdd === 'function'
         ? (resources): void => {
@@ -230,7 +232,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
 
               {specifyNetworkBadge}
             </div>
-            {rest.totalCount > 1 && <div>{slider}</div>}
+            {resolvedTotalCount > 1 && <div>{slider}</div>}
           </div>
         )}
         isDependent={isDependent}
