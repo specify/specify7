@@ -317,11 +317,11 @@ function RecordSet<SCHEMA extends AnySchema>({
         headerButtons={
           recordSet.isNew() ? (
             ids.length > 1 && !currentRecord.isNew() ? (
-              <Button.Orange
+              <Button.Icon
+                icon="collection"
+                title="newRecordSet"
                 onClick={(): void => loading(createNewRecordSet(ids))}
-              >
-                {commonText.newRecordSet()}
-              </Button.Orange>
+              />
             ) : undefined
           ) : (
             <EditRecordSetButton recordSet={recordSet} />
