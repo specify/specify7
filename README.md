@@ -102,6 +102,7 @@ under GNU General Public License 2 (GPL2).
             - [Restarting Apache](#restarting-apache)
     - [Updating Specify 7](#updating-specify-7)
     - [Updating the database (Specify 6) version](#updating-the-database-specify-6-version)
+    - [Management commands](#management-commands)
     - [Localizing Specify 7](#localizing-specify-7)
 
 ## Changelog
@@ -514,6 +515,36 @@ the [Installing Specify 6](#installing-specify-6) section of this guide for the
 new version of Specify 6.
 
 [![analytics](https://www.google-analytics.com/collect?v=1&t=pageview&dl=https%3A%2F%2Fgithub.com%2Fspecify%2Fspecify7&uid=readme&tid=UA-169822764-3)]()
+
+## Management commands
+
+Several command line actions are available to run various tasks in Specify.
+
+The syntax for each command is like this:
+
+```bash
+python manage.py <command_name>
+```
+
+Example:
+
+```bash
+python manage.py update_feed
+```
+
+To see the list of all available commands, run:
+
+```bash
+python manage.py --help
+```
+
+In addition, to see documentation for each command, run:
+
+```bash
+python manage.py update_feed --help
+```
+
+(where `update_feed` can be replaced with a different command name)
 
 ## Localizing Specify 7
 
