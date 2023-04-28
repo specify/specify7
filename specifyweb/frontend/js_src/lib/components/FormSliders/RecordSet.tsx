@@ -197,6 +197,8 @@ function RecordSet<SCHEMA extends AnySchema>({
   >(() => {
     const array = [];
     if (initialTotalCount > 0) array[initialTotalCount - 1] = undefined;
+    if (recordSet.isNew() && !currentRecord.isNew())
+      array[0] = currentRecord.id;
     return array;
   });
 
@@ -259,10 +261,7 @@ function RecordSet<SCHEMA extends AnySchema>({
   // Fetch ID of record at current index
   const currentRecordId = ids[currentIndex];
   React.useEffect(() => {
-    if (currentRecordId === undefined)
-      if (recordSet.isNew() && !currentRecord.isNew())
-        setIds([currentRecord.id]);
-      else handleFetch(currentIndex);
+    if (currentRecordId === undefined) handleFetch(currentIndex);
 
     return (): void => {
       previousIndex.current = currentIndex;
@@ -278,12 +277,11 @@ function RecordSet<SCHEMA extends AnySchema>({
   ): Promise<void> {
     if (!recordSet.isNew())
       await addIdsToRecordSet(resources.map(({ id }) => id));
-    const oldTotalCount = totalCount;
-    go(oldTotalCount, resources[0].id, undefined, wasNew);
+    go(totalCount, resources[0].id, undefined, wasNew);
     setIds((oldIds = []) =>
       updateIds(
         oldIds,
-        resources.map(({ id }, index) => [oldTotalCount + index, id])
+        resources.map(({ id }, index) => [totalCount + index, id])
       )
     );
   }
@@ -418,6 +416,7 @@ function RecordSet<SCHEMA extends AnySchema>({
             : undefined
         }
         onSaved={(resource): void =>
+          // Don't do anything if saving existing resource
           ids[currentIndex] === resource.id
             ? undefined
             : loading(handleAdd([resource], true))
