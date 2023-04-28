@@ -324,7 +324,7 @@ msgstr "Инструменты"
 #: components/FormFields/Field.tsx:166
 #: components/FormFields/QueryComboBox.tsx:379
 #: components/FormPlugins/CollectionRelOneToMany.tsx:157
-#: components/FormPlugins/CollectionRelOneToOne.tsx:38
+#: components/FormPlugins/CollectionRelOneToOne.tsx:35
 #: components/Forms/BaseResourceView.tsx:51
 #: components/Forms/DeleteButton.tsx:110
 #: components/Forms/SearchDialog.tsx:155
