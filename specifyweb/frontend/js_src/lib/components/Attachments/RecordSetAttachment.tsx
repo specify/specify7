@@ -34,7 +34,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
 
   const [attachments] = useAsyncState(
     React.useCallback(async () => {
-      const relatedAttachementRecords = await Promise.all(
+      const relatedAttachmentRecords = await Promise.all(
         records.map((record) =>
           record
             ?.rgetCollection(`${record.specifyModel.name}Attachments`)
@@ -52,7 +52,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
       fetchedCount.current = fetchCount === -1 ? records.length : fetchCount;
 
       const attachements = await Promise.all(
-        filterArray(relatedAttachementRecords.flat()).map(
+        filterArray(relatedAttachmentRecords.flat()).map(
           async (collectionObjectAttachment) => ({
             attachment: await collectionObjectAttachment
               .rgetPromise('attachment')
@@ -88,7 +88,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
     <>
       <Button.Icon
         icon="photos"
-        onClick={() => handleShowAttachments()}
+        onClick={handleShowAttachments}
         title="attachments"
       ></Button.Icon>
       {showAttachments && (
@@ -134,7 +134,8 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
               onFetchMore={
                 attachments === undefined || handleFetch === undefined || halt
                   ? undefined
-                  : async () => handleFetch?.(fetchedCount.current).then(f.void)
+                  : async (): Promise<void> =>
+                      handleFetch?.(fetchedCount.current).then(f.void)
               }
             />
           )}
