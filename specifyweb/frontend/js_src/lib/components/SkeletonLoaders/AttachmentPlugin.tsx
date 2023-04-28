@@ -11,8 +11,8 @@ export function AttachmentPluginSkeleton() {
           <Skeleton.Rectangle />
           <Skeleton.SmallSquare />
         </div>
-        {Array.from({ length: 6 }, () => (
-          <div className="flex max-w-[80%] gap-4 p-2">
+        {Array.from({ length: 6 }, (_, index) => (
+          <div className="flex max-w-[80%] gap-4 p-2" key={index}>
             <Skeleton.Line />
             <Skeleton.Rectangle />
           </div>
