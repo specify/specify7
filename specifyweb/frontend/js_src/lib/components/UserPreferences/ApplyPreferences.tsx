@@ -97,66 +97,39 @@ export function SetCssVariables(): null {
       accentColor3: getUserPref('general', 'appearance', 'accentColor3'),
       accentColor4: getUserPref('general', 'appearance', 'accentColor4'),
       accentColor5: getUserPref('general', 'appearance', 'accentColor5'),
-      saveButtonColor: getUserPref('general', 'buttonLight', 'saveButtonColor'),
+      saveButtonColor: getUserPref(
+        'general',
+        darkMode ? 'buttonDark' : 'buttonLight',
+        'saveButtonColor'
+      ),
       secondaryButtonColor: getUserPref(
         'general',
-        'buttonLight',
+        darkMode ? 'buttonDark' : 'buttonLight',
         'secondaryButtonColor'
       ),
       secondaryLightButtonColor: getUserPref(
         'general',
-        'buttonLight',
+        darkMode ? 'buttonDark' : 'buttonLight',
         'secondaryLightButtonColor'
       ),
       dangerButtonColor: getUserPref(
         'general',
-        'buttonLight',
+        darkMode ? 'buttonDark' : 'buttonLight',
         'dangerButtonColor'
       ),
-      infoButtonColor: getUserPref('general', 'buttonLight', 'infoButtonColor'),
+      infoButtonColor: getUserPref(
+        'general',
+        darkMode ? 'buttonDark' : 'buttonLight',
+        'infoButtonColor'
+      ),
       warningButtonColor: getUserPref(
         'general',
-        'buttonLight',
+        darkMode ? 'buttonDark' : 'buttonLight',
         'warningButtonColor'
       ),
       successButtonColor: getUserPref(
         'general',
-        'buttonLight',
-        'successButtonColor'
-      ),
-      darkSaveButtonColor: getUserPref(
-        'general',
-        'buttonDark',
-        'saveButtonColor'
-      ),
-      darkSecondaryButtonColor: getUserPref(
-        'general',
-        'buttonDark',
-        'secondaryButtonColor'
-      ),
-      darkSecondaryLightButtonColor: getUserPref(
-        'general',
-        'buttonDark',
-        'secondaryLightButtonColor'
-      ),
-      darkDangerButtonColor: getUserPref(
-        'general',
-        'buttonDark',
-        'dangerButtonColor'
-      ),
-      darkInfoButtonColor: getUserPref(
-        'general',
-        'buttonDark',
-        'infoButtonColor'
-      ),
-      darkWarningButtonColor: getUserPref(
-        'general',
-        'buttonDark',
-        'warningButtonColor'
-      ),
-      darkSuccessButtonColor: getUserPref(
-        'general',
-        'buttonDark',
+        darkMode ? 'buttonDark' : 'buttonLight',
         'successButtonColor'
       ),
       roundedCorners: getUserPref('general', 'appearance', 'roundedCorners'),
@@ -280,83 +253,67 @@ export function SetCssVariables(): null {
     [prefs.accentColor5]
   );
 
-  // Buttons color preferences
-  const saveButtonColor = darkMode
-    ? prefs.darkSaveButtonColor
-    : prefs.saveButtonColor;
   React.useEffect(
     () =>
-      document.body.style.setProperty('--save-button-color', saveButtonColor),
-    [saveButtonColor]
+      document.body.style.setProperty(
+        '--save-button-color',
+        prefs.saveButtonColor
+      ),
+    [prefs.saveButtonColor]
   );
 
-  const secondaryButtonColor = darkMode
-    ? prefs.darkSecondaryButtonColor
-    : prefs.secondaryButtonColor;
   React.useEffect(
     () =>
       document.body.style.setProperty(
         '--secondary-button-color',
-        secondaryButtonColor
+        prefs.secondaryButtonColor
       ),
-    [secondaryButtonColor]
+    [prefs.secondaryButtonColor]
   );
 
-  const secondaryLightButtonColor = darkMode
-    ? prefs.darkSecondaryLightButtonColor
-    : prefs.secondaryLightButtonColor;
   React.useEffect(
     () =>
       document.body.style.setProperty(
         '--secondary-light-button-color',
-        secondaryLightButtonColor
+        prefs.secondaryLightButtonColor
       ),
-    [secondaryLightButtonColor]
+    [prefs.secondaryLightButtonColor]
   );
 
-  const dangerButtonColor = darkMode
-    ? prefs.darkDangerButtonColor
-    : prefs.dangerButtonColor;
   React.useEffect(
     () =>
       document.body.style.setProperty(
         '--danger-button-color',
-        dangerButtonColor
+        prefs.dangerButtonColor
       ),
-    [dangerButtonColor]
+    [prefs.dangerButtonColor]
   );
 
-  const infoButtonColor = darkMode
-    ? prefs.darkInfoButtonColor
-    : prefs.infoButtonColor;
   React.useEffect(
     () =>
-      document.body.style.setProperty('--info-button-color', infoButtonColor),
-    [infoButtonColor]
+      document.body.style.setProperty(
+        '--info-button-color',
+        prefs.infoButtonColor
+      ),
+    [prefs.infoButtonColor]
   );
 
-  const warningButtonColor = darkMode
-    ? prefs.darkWarningButtonColor
-    : prefs.warningButtonColor;
   React.useEffect(
     () =>
       document.body.style.setProperty(
         '--warning-button-color',
-        warningButtonColor
+        prefs.warningButtonColor
       ),
-    [warningButtonColor]
+    [prefs.warningButtonColor]
   );
 
-  const successButtonColor = darkMode
-    ? prefs.darkSuccessButtonColor
-    : prefs.successButtonColor;
   React.useEffect(
     () =>
       document.body.style.setProperty(
         '--success-button-color',
-        successButtonColor
+        prefs.successButtonColor
       ),
-    [successButtonColor]
+    [prefs.successButtonColor]
   );
 
   React.useEffect(
