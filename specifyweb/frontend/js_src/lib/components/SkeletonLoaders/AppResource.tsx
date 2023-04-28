@@ -4,7 +4,7 @@ import { Skeleton } from './Skeleton';
 
 export function AppResourceSkeleton() {
   return (
-    <div className="flex w-full flex-col gap-4">
+    <Skeleton.Root className="w-full flex-col">
       <div className="flex justify-between gap-4">
         <div className="flex gap-2">
           <Skeleton.SmallSquare />
@@ -22,6 +22,6 @@ export function AppResourceSkeleton() {
           <Skeleton.LongLine key={index} />
         ))}
       </div>
-    </div>
+    </Skeleton.Root>
   );
 }

@@ -4,7 +4,7 @@ import { Skeleton } from './Skeleton';
 
 export function DialogListSkeleton() {
   return (
-    <div className="flex flex-col gap-4">
+    <Skeleton.Root className="flex-col">
       <div className="m-2 flex justify-center gap-6">
         <Skeleton.Rectangle className="!w-80" />
       </div>
@@ -21,6 +21,6 @@ export function DialogListSkeleton() {
           </div>
         </div>
       ))}
-    </div>
+    </Skeleton.Root>
   );
 }

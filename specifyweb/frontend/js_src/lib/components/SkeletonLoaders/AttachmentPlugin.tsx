@@ -3,7 +3,7 @@ import { Skeleton } from './Skeleton';
 
 export function AttachmentPluginSkeleton() {
   return (
-    <div className="flex flex-col flex-wrap gap-4 md:flex-row">
+    <Skeleton.Root className="flex-col flex-wrap md:flex-row">
       <Skeleton.TallRectangle className="min-w-[30vh] md:flex-1" />
       <div className="flex flex-col items-center  gap-4">
         <div className="flex items-center gap-2 ">
@@ -21,6 +21,6 @@ export function AttachmentPluginSkeleton() {
           <Skeleton.Rectangle />
         </div>
       </div>
-    </div>
+    </Skeleton.Root>
   );
 }
