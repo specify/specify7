@@ -13,9 +13,9 @@ export const dialogIconTriggers = {
 
 const buttonClassName = 'button';
 const secondaryButton = `${buttonClassName} hover:brightness-150 bg-[color:var(--secondary-button-color)] text-gray-800 shadow-sm
-dark:bg-[color:var(--secondary-button-color-dark)] dark:text-gray-100`;
+dark:text-gray-100`;
 const secondaryLightButton = `${buttonClassName} hover:brightness-150 bg-[color:var(--secondary-light-button-color)] text-gray-800 shadow-sm
-dark:bg-[color:var(--secondary-light-button-color-dark)] dark:text-gray-100`;
+dark:text-gray-100`;
 const containerBaseUnstyled = `flex flex-col gap-4 overflow-scroll
   overflow-x-auto [overflow-y:overlay] [scrollbar-gutter:stable]`;
 const containerBase = `${containerBaseUnstyled} bg-[color:var(--form-foreground)]
@@ -63,11 +63,11 @@ export const className = {
   smallButton: `${niceButton} !py-1 !px-2`,
   borderedGrayButton,
   defaultSmallButtonVariant: `${borderedGrayButton} hover:bg-brand-200 dark:hover:bg-brand-400`,
-  dangerButton: `${dialogIconTriggers.error} hover:brightness-150 bg-[color:var(--danger-button-color)] dark:bg-[color:var(--danger-button-color-dark)] text-white`,
-  infoButton: `${dialogIconTriggers.info} hover:brightness-150 bg-[color:var(--info-button-color)] dark:bg-[color:var(--info-button-color-dark)] text-white`,
+  dangerButton: `${dialogIconTriggers.error} hover:brightness-150 bg-[color:var(--danger-button-color)] text-white`,
+  infoButton: `${dialogIconTriggers.info} hover:brightness-150 bg-[color:var(--info-button-color)] text-white`,
   warningButton: `${dialogIconTriggers.warning} hover:brightness-150 bg-[color:var(--warning-button-color)] text-white`,
-  successButton: `${dialogIconTriggers.success} hover:brightness-150 bg-[color:var(--success-button-color)] dark:bg-[color:var(--success-button-color-dark)] text-white`,
-  saveButton: `hover:brightness-150 text-white bg-[color:var(--save-button-color)] dark:bg-[color:var(--save-button-color-dark)]`,
+  successButton: `${dialogIconTriggers.success} hover:brightness-150 bg-[color:var(--success-button-color)] text-white`,
+  saveButton: `hover:brightness-150 text-white bg-[color:var(--save-button-color)]`,
   fancyButton: `bg-gray-300 hover:bg-brand-200 dark:bg-neutral-600
     hover:dark:bg-brand:400 text-gray-800 dark:text-white text-center`,
   containerFull,

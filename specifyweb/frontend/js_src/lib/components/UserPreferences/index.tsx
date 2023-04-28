@@ -24,7 +24,6 @@ import { PreferencesAside } from './Aside';
 import type {
   GenericPreferencesCategories,
   PreferenceItem,
-  PreferencesVisibilyContext,
 } from './Definitions';
 import { preferenceDefinitions } from './Definitions';
 import {
@@ -103,10 +102,15 @@ function Preferences(): JSX.Element {
 
 /** Hide invisible preferences. Remote empty categories and subCategories */
 export function usePrefDefinitions() {
-  const preferencesVisibilityContext: PreferencesVisibilyContext = {
-    isDarkMode: useDarkMode(),
-    isRedirecting: React.useContext(PreferencesContext) !== undefined,
-  };
+  const isDarkMode = useDarkMode();
+  const isRedirecting = React.useContext(PreferencesContext) !== undefined;
+  const preferencesVisibilityContext = React.useMemo(
+    () => ({
+      isDarkMode: isDarkMode,
+      isRedirecting: isRedirecting,
+    }),
+    [isDarkMode, isRedirecting]
+  );
 
   return React.useMemo(
     () =>
