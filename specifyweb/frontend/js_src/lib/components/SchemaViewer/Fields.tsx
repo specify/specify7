@@ -50,7 +50,7 @@ export function SchemaViewerFields({
   );
 }
 
-const fieldColumns = f.store(
+export const commonColumns = f.store(
   () =>
     ({
       name: getField(schema.models.SpLocaleContainerItem, 'name').label,
@@ -61,8 +61,15 @@ const fieldColumns = f.store(
       isRequired: getField(schema.models.SpLocaleContainerItem, 'isRequired')
         .label,
       type: getField(schema.models.SpLocaleContainerItem, 'type').label,
-      length: schemaText.fieldLength(),
       databaseColumn: schemaText.databaseColumn(),
+    } as const)
+);
+
+const fieldColumns = f.store(
+  () =>
+    ({
+      ...commonColumns,
+      length: schemaText.fieldLength(),
     } as const)
 );
 

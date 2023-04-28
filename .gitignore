@@ -16,6 +16,7 @@ seed-database
 /specifyweb/settings/debug.py
 /specifyweb/settings/secret_key.py
 /specifyweb/settings/ldap_settings.py
+/specifyweb/frontend/js_src/report
 
 
 

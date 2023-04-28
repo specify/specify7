@@ -1,12 +1,12 @@
+import logging
 import re
 from contextlib import contextmanager
-import logging
+
 logger = logging.getLogger(__name__)
 
 
 from django.db import models, connection
-from django.db.models import F, Q, ProtectedError
-from django.conf import settings
+from django.db.models import F, ProtectedError
 
 from specifyweb.businessrules.exceptions import TreeBusinessRuleException
 
@@ -254,20 +254,8 @@ def merge(node, into, agent):
             {"tree" : "Taxon",
              "localizationKey" : "nodeOperationToSynonymizedParent",
              "operation" : "Merging",
-             "node" : {
-                "id" : node.id,
-                "rankid" : node.rankid,
-                "fullName" : node.fullname,
-                "parentid": node.parent.id,
-                "children": list(node.children.values('id', 'fullname'))
-             },
-             "synonymized" : {
-                "id" : into.id,
-                "rankid" : into.rankid,
-                "fullName" : into.fullname,
-                "parentid": into.parent.id,
-                "children": list(into.children.values('id', 'fullname'))
-             }})
+             **node_action_exception(node,into)
+             })
     target_children = target.children.select_for_update()
     for child in node.children.select_for_update():
         matched = [target_child for target_child in target_children
@@ -315,20 +303,8 @@ def synonymize(node, into, agent):
             'Synonymizing "{node.fullname}" to synonymized node "{into.fullname}"'.format(node=node, into=into),
             {"tree" : "Taxon",
              "localizationKey" : "nodeSynonymizeToSynonymized",
-             "node" : {
-                "id" : node.id,
-                "rankid" : node.rankid,
-                "fullName" : node.fullname,
-                "parentid": node.parent.id,
-                "children": list(node.children.values('id', 'fullname'))
-             },
-             "synonymized" : {
-                "id" : into.id,
-                "rankid" : into.rankid,
-                "fullName" : into.fullname,
-                "parentid": into.parent.id,
-                "children": list(into.children.values('id', 'fullname'))
-             }})
+             **node_action_exception(node,into),
+             })
     node.accepted_id = target.id
     node.isaccepted = False
     node.save()
@@ -365,6 +341,24 @@ def synonymize(node, into, agent):
         node.determinations.update(preferredtaxon=target)
         from .models import Determination
         Determination.objects.filter(preferredtaxon=node).update(preferredtaxon=target)
+
+def node_action_exception(node, into):
+    return {
+        "node": {
+            "id": node.id,
+            "rankid": node.rankid,
+            "fullName": node.fullname,
+            "parentid": node.parent.id,
+            "children": list(node.children.values('id', 'fullname'))
+        },
+        "synonymized": {
+            "id": into.id,
+            "rankid": into.rankid,
+            "fullName": into.fullname,
+            "parentid": into.parent.id,
+            "children": list(into.children.values('id', 'fullname'))
+        }
+    }
 
 def desynonymize(node, agent):
     logger.info('desynonmizing %s', node)

@@ -171,7 +171,7 @@ const processUiPlugin: {
     const relationship = getProperty('relName');
     if (relationship === undefined) {
       console.error(
-        "Can't display CollectionRelOneToManyPlugin because initialize.relname is not set"
+        "Can't display ColRelTypePlugin because initialize.relname is not set"
       );
       return { type: 'Blank' };
     } else if (

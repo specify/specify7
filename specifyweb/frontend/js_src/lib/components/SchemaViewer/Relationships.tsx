@@ -7,13 +7,12 @@ import type { RA, RR } from '../../utils/types';
 import { ensure } from '../../utils/types';
 import { H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
-import { getField } from '../DataModel/helpers';
-import { schema } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { TableIcon } from '../Molecules/TableIcon';
 import { localizedRelationshipTypes } from '../SchemaConfig/helpers';
 import type { SchemaViewerRow, SchemaViewerValue } from './helpers';
 import { SchemaViewerTableList } from './TableList';
+import { commonColumns } from './Fields';
 
 export function SchemaViewerRelationships({
   table,
@@ -90,15 +89,7 @@ export function SchemaViewerRelationships({
 const relationshipColumns = f.store(
   () =>
     ({
-      name: getField(schema.models.SpLocaleContainerItem, 'name').label,
-      label: schemaText.fieldLabel(),
-      description: schemaText.description(),
-      isHidden: getField(schema.models.SpLocaleContainerItem, 'isHidden').label,
-      isReadOnly: schemaText.readOnly(),
-      isRequired: getField(schema.models.SpLocaleContainerItem, 'isRequired')
-        .label,
-      type: getField(schema.models.SpLocaleContainerItem, 'type').label,
-      databaseColumn: schemaText.databaseColumn(),
+      ...commonColumns,
       relatedModel: schemaText.relatedModel(),
       otherSideName: schemaText.otherSideName(),
       isDependent: schemaText.dependent(),
