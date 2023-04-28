@@ -68,7 +68,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
         related: attachements.map(({ related }) => related),
       };
     }, [records]),
-    true
+    false
   );
 
   /*
