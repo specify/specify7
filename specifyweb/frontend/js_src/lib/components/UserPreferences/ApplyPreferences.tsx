@@ -58,40 +58,31 @@ export function SetCssVariables(): null {
       scaleUi: getUserPref('general', 'ui', 'scaleInterface'),
       fontFamily: getUserPref('general', 'ui', 'fontFamily'),
       formMaxWidth: getUserPref('form', 'ui', 'maxWidth'),
-      fieldBackground: getUserPref('form', 'fieldBackground', 'default'),
-      darkFieldBackground: getUserPref(
+      fieldBackground: getUserPref(
         'form',
         'fieldBackground',
-        'darkDefault'
+        darkMode ? 'darkDefault' : 'default'
       ),
       disabledFieldBackground: getUserPref(
         'form',
         'fieldBackground',
-        'disabled'
+        darkMode ? 'darkDisabled' : 'disabled'
       ),
-      darkDisabledFieldBackground: getUserPref(
+      invalidFieldBackground: getUserPref(
         'form',
         'fieldBackground',
-        'darkDisabled'
-      ),
-      invalidFieldBackground: getUserPref('form', 'fieldBackground', 'invalid'),
-      darkInvalidFieldBackground: getUserPref(
-        'form',
-        'fieldBackground',
-        'darkInvalid'
+        darkMode ? 'darkInvalid' : 'invalid'
       ),
       requiredFieldBackground: getUserPref(
         'form',
         'fieldBackground',
-        'required'
+        darkMode ? 'darkRequired' : 'required'
       ),
-      darkRequiredFieldBackground: getUserPref(
-        'form',
-        'fieldBackground',
-        'darkRequired'
+      background: getUserPref(
+        'general',
+        'appearance',
+        darkMode ? 'darkBackground' : 'background'
       ),
-      background: getUserPref('general', 'appearance', 'background'),
-      darkBackground: getUserPref('general', 'appearance', 'darkBackground'),
       accentColor1: getUserPref('general', 'appearance', 'accentColor1'),
       accentColor2: getUserPref('general', 'appearance', 'accentColor2'),
       accentColor3: getUserPref('general', 'appearance', 'accentColor3'),
@@ -133,10 +124,16 @@ export function SetCssVariables(): null {
         'successButtonColor'
       ),
       roundedCorners: getUserPref('general', 'appearance', 'roundedCorners'),
-      formForeground: getUserPref('form', 'appearance', 'foreground'),
-      darkFormForeground: getUserPref('form', 'appearance', 'darkForeground'),
-      formBackground: getUserPref('form', 'appearance', 'background'),
-      darkFormBackground: getUserPref('form', 'appearance', 'darkBackground'),
+      formForeground: getUserPref(
+        'form',
+        'appearance',
+        darkMode ? 'darkForeground' : 'foreground'
+      ),
+      formBackground: getUserPref(
+        'form',
+        'appearance',
+        darkMode ? 'darkBackground' : 'background'
+      ),
       formFontFamily: getUserPref('form', 'ui', 'fontFamily'),
       formFontSize: getUserPref('form', 'ui', 'fontSize'),
       limitMaxFieldWidth: getUserPref('form', 'ui', 'limitMaxFieldWidth'),
@@ -172,55 +169,45 @@ export function SetCssVariables(): null {
     [prefs.formMaxWidth]
   );
 
-  const fieldBackground = darkMode
-    ? prefs.darkFieldBackground
-    : prefs.fieldBackground;
   React.useEffect(
     () =>
-      document.body.style.setProperty('--field-background', fieldBackground),
-    [fieldBackground]
+      document.body.style.setProperty(
+        '--field-background',
+        prefs.fieldBackground
+      ),
+    [prefs.fieldBackground]
   );
 
-  const disabledFieldBackground = darkMode
-    ? prefs.darkDisabledFieldBackground
-    : prefs.disabledFieldBackground;
   React.useEffect(
     () =>
       document.body.style.setProperty(
         '--disabled-field-background',
-        disabledFieldBackground
+        prefs.disabledFieldBackground
       ),
-    [disabledFieldBackground]
+    [prefs.disabledFieldBackground]
   );
 
-  const invalidFieldBackground = darkMode
-    ? prefs.darkInvalidFieldBackground
-    : prefs.invalidFieldBackground;
   React.useEffect(
     () =>
       document.body.style.setProperty(
         '--invalid-field-background',
-        invalidFieldBackground
+        prefs.invalidFieldBackground
       ),
-    [invalidFieldBackground]
+    [prefs.invalidFieldBackground]
   );
 
-  const requiredFieldBackground = darkMode
-    ? prefs.darkRequiredFieldBackground
-    : prefs.requiredFieldBackground;
   React.useEffect(
     () =>
       document.body.style.setProperty(
         '--required-field-background',
-        requiredFieldBackground
+        prefs.requiredFieldBackground
       ),
-    [requiredFieldBackground]
+    [prefs.requiredFieldBackground]
   );
 
-  const background = darkMode ? prefs.darkBackground : prefs.background;
   React.useEffect(
-    () => document.body.style.setProperty('--background', background),
-    [background]
+    () => document.body.style.setProperty('--background', prefs.background),
+    [prefs.background]
   );
 
   React.useEffect(
@@ -324,20 +311,22 @@ export function SetCssVariables(): null {
     [prefs.roundedCorners]
   );
 
-  const formForeground = darkMode
-    ? prefs.darkFormForeground
-    : prefs.formForeground;
   React.useEffect(
-    () => document.body.style.setProperty('--form-foreground', formForeground),
-    [formForeground]
+    () =>
+      document.body.style.setProperty(
+        '--form-foreground',
+        prefs.formForeground
+      ),
+    [prefs.formForeground]
   );
 
-  const formBackground = darkMode
-    ? prefs.darkFormBackground
-    : prefs.formBackground;
   React.useEffect(
-    () => document.body.style.setProperty('--form-background', formBackground),
-    [formBackground]
+    () =>
+      document.body.style.setProperty(
+        '--form-background',
+        prefs.formBackground
+      ),
+    [prefs.formBackground]
   );
 
   React.useEffect(
