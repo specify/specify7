@@ -6,8 +6,8 @@ import { Skeleton } from './Skeleton';
 export function AttachmentGallerySkeleton() {
   return (
     <Skeleton.Root className="contents">
-      {Array.from({ length: DEFAULT_FETCH_LIMIT }, () => (
-        <Skeleton.Square />
+      {Array.from({ length: DEFAULT_FETCH_LIMIT }, (_, index) => (
+        <Skeleton.Square key={index} />
       ))}
     </Skeleton.Root>
   );
