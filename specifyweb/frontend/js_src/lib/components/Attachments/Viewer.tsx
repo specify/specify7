@@ -93,7 +93,7 @@ export function AttachmentViewer({
   const Component = typeof originalUrl === 'string' ? Link.Blue : Button.Blue;
   const table = f.maybe(serialized.tableID ?? undefined, getAttachmentTable);
   return (
-    <div className="flex h-full gap-8">
+    <>
       <div className="flex min-h-[theme(spacing.60)] w-full min-w-[theme(spacing.60)] flex-1 items-center justify-center">
         {originalUrl === undefined ? (
           loadingGif
@@ -205,6 +205,6 @@ export function AttachmentViewer({
           </div>
         ) : undefined
       }
-    </div>
+    </>
   );
 }

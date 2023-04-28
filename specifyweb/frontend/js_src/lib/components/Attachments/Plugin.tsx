@@ -72,7 +72,7 @@ function ProtectedAttachmentsPlugin({
   );
   return attachment === undefined ? null : (
     <div
-      className="h-full overflow-x-auto"
+      className="flex h-full gap-8 overflow-x-auto"
       ref={filePickerContainer}
       tabIndex={-1}
     >
