@@ -103,3 +103,56 @@ The benefit of using several types of comments rather than just `TODO`:
   category your `TODO` belosngs to.
 - Can visually scan a `TODO` and immediately know what it involves doing
   (testing / bug fixing / refactoring / adding a feature)
+
+## Comment style
+
+Most of these things are enforced though ESLint rules, but mentioning them here
+just in case you don't have ESLint enabled (please don't do that):
+
+- Comments must always begin with upper case letter
+
+  Reasoning: it's always consistent, and for multi-line comments this make it
+  easy to see whether the comment is a single sentence or multiple sentences.
+
+- Lines should not be longer than 80 characters
+
+  Reasoning: this is the same requirement we have for all code files. Comments
+  should be consistent with that (to avoid the need for horizontal scrolling).
+
+- Single line comments can use `//`
+
+  Example:
+
+  ```js
+  // Console log 5 times
+  Array.from({ length: 5 }).map(console.log);
+  ```
+
+- Any multi line comments must use `/*`:
+
+  ```js
+  /*
+   * First line.
+   * Second line
+   */
+  ```
+
+- For comments that describe a function, a class, a global/exported variable or
+  a comment at the top of the file, instead of `/*` use `/**`. Like this:
+
+  ```js
+  /**
+   * First line.
+   * Second line
+   */
+  ```
+
+  See more examples across our codebase. `/**` is a special syntax (powered by
+  TSDoc). It adds fancy features and even allows rendering markdown. For syntax
+  see https://tsdoc.org/
+
+  For example, here is my IDE rendering such a comments:
+
+  ![](https://user-images.githubusercontent.com/40512816/234322371-99b339c0-224b-433f-9ae8-ee5862852817.png)
+
+  ![](https://user-images.githubusercontent.com/40512816/234322822-afbcd42d-5b4b-444d-8d98-f9af57cbfd1f.png)
