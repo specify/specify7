@@ -174,7 +174,6 @@ function RecordSet<SCHEMA extends AnySchema>({
   | 'onDelete'
   | 'onSaved'
   | 'records'
-  | 'totalCount'
 > & {
   readonly recordSet: SpecifyResource<RecordSetSchema>;
   readonly index: number;
@@ -187,7 +186,6 @@ function RecordSet<SCHEMA extends AnySchema>({
   const loading = React.useContext(LoadingContext);
   const navigate = useNavigate();
 
-  const [totalCount, setTotalCount] = React.useState<number>(initialTotalCount);
   const [ids = [], setIds] = React.useState<
     /*
      * Caution, this array can be sparse
@@ -198,7 +196,7 @@ function RecordSet<SCHEMA extends AnySchema>({
     RA<number | undefined>
   >(() => {
     const array = [];
-    if (totalCount > 0) array[totalCount - 1] = undefined;
+    if (initialTotalCount > 0) array[initialTotalCount - 1] = undefined;
     return array;
   });
 
@@ -231,6 +229,7 @@ function RecordSet<SCHEMA extends AnySchema>({
 
   const previousIndex = React.useRef<number>(currentIndex);
   const [isLoading, handleLoading, handleLoaded] = useBooleanState();
+  const totalCount = ids.length;
   const handleFetch = React.useCallback(
     (index: number): void => {
       if (index >= totalCount || recordSet.isNew()) return;
@@ -280,7 +279,6 @@ function RecordSet<SCHEMA extends AnySchema>({
     if (!recordSet.isNew())
       await addIdsToRecordSet(resources.map(({ id }) => id));
     const oldTotalCount = totalCount;
-    setTotalCount(oldTotalCount + resources.length);
     go(oldTotalCount, resources[0].id, undefined, wasNew);
     setIds((oldIds = []) =>
       updateIds(
@@ -346,7 +344,6 @@ function RecordSet<SCHEMA extends AnySchema>({
                 value: recordSet.get('name'),
               })
         }
-        totalCount={totalCount}
         onAdd={
           hasToolPermission('recordSets', 'create') && !recordSet.isNew()
             ? async (resources) =>
@@ -408,16 +405,14 @@ function RecordSet<SCHEMA extends AnySchema>({
                         )
                       )
                     : Promise.resolve()
-                  ).then(() => {
-                    const newTotalCount = totalCount - 1;
-                    setTotalCount(newTotalCount);
+                  ).then(() =>
                     setIds((oldIds = []) => {
                       const newIds = oldIds.slice();
                       newIds.splice(currentIndex, 1);
+                      if (newIds.length === 0) handleClose();
                       return newIds;
-                    });
-                    if (newTotalCount === 0) handleClose();
-                  })
+                    })
+                  )
                 );
               }
             : undefined

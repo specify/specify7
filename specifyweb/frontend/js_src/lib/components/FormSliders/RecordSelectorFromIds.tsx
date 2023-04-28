@@ -92,6 +92,10 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
     };
   }, [ids, model]);
 
+  const totalCount = ids.length;
+  const resolvedTotalCount =
+    totalCount + (typeof newResource === 'object' ? 1 : 0);
+
   const [index, setIndex] = useTriggerState(
     Math.max(0, defaultIndex ?? ids.length - 1)
   );
@@ -101,11 +105,11 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
         Math.max(
           0,
           typeof newResource === 'object'
-            ? rest.totalCount
-            : Math.min(index, rest.totalCount - 1)
+            ? totalCount
+            : Math.min(index, totalCount - 1)
         )
       ),
-    [newResource, rest.totalCount]
+    [newResource, totalCount]
   );
 
   const currentResource = newResource ?? records[index];
@@ -116,8 +120,6 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   >(undefined);
   const setUnloadProtects = React.useContext(SetUnloadProtectsContext)!;
 
-  const resolvedTotalCount =
-    rest.totalCount + (typeof newResource === 'object' ? 1 : 0);
   const {
     dialogs,
     slider,
@@ -140,6 +142,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                * Since React's setState has a special behavior when a function
                * argument is passed, need to wrap a function in a function
                */
+              // eslint-disable-next-line unicorn/consistent-function-scoping
               setUnloadProtect(() => () => handleAdd(resources));
             else handleAdd(resources);
           }
