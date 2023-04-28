@@ -110,6 +110,9 @@ const globalFieldOverrides: {
   Attachment: {
     tableID: 'optional',
   },
+  CollectingEventAttribute: {
+    hostTaxon: 'readOnly',
+  },
   Taxon: {
     parent: 'required',
     isAccepted: 'readOnly',

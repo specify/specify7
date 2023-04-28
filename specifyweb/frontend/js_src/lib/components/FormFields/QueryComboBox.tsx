@@ -64,6 +64,7 @@ export function QueryComboBox({
   typeSearch: initialTypeSearch,
   forceCollection,
   relatedModel: initialRelatedModel,
+  disableCanAdd = false,
 }: {
   readonly id: string | undefined;
   readonly resource: SpecifyResource<AnySchema> | undefined;
@@ -75,6 +76,7 @@ export function QueryComboBox({
   readonly typeSearch: Element | string | undefined;
   readonly forceCollection: number | undefined;
   readonly relatedModel?: SpecifyModel | undefined;
+  readonly disableCanAdd: boolean;
 }): JSX.Element {
   React.useEffect(() => {
     if (resource === undefined || !resource.isNew()) return;
@@ -344,7 +346,8 @@ export function QueryComboBox({
 
   const canAdd =
     !RESTRICT_ADDING.has(field.relatedModel.name) &&
-    hasTablePermission(field.relatedModel.name, 'create');
+    hasTablePermission(field.relatedModel.name, 'create') &&
+    !disableCanAdd;
 
   return (
     <div className="flex w-full min-w-[theme(spacing.40)] items-center sm:min-w-[unset]">
