@@ -74,6 +74,10 @@ export function RecordSetWrapper<SCHEMA extends AnySchema>({
           );
           return;
         }
+        /*
+         * Count how many record set items there are before this one.
+         * That would be used as index.
+         */
         const { totalCount } = await fetchCollection(
           'RecordSetItem',
           {
@@ -269,47 +273,44 @@ function RecordSet<SCHEMA extends AnySchema>({
   const [hasDuplicate, handleHasDuplicate, handleDismissDuplicate] =
     useBooleanState();
 
-  const handleAdd = (
+  async function handleAdd(
     resources: RA<SpecifyResource<SCHEMA>>,
     wasNew: boolean
-  ): void =>
-    loading(
-      Promise.all(
-        recordSet.isNew()
-          ? []
-          : resources.map(async (resource) =>
-              createResource('RecordSetItem', {
-                recordId: resource.id,
-                recordSet: recordSet.get('resource_uri'),
-              })
-            )
-      ).then(() => {
-        const oldTotalCount = totalCount;
-        setTotalCount(oldTotalCount + resources.length);
-        go(oldTotalCount, resources[0].id, undefined, wasNew);
-        setIds((oldIds = []) =>
-          updateIds(
-            oldIds,
-            resources.map(({ id }, index) => [oldTotalCount + index, id])
-          )
-        );
-      })
+  ): Promise<void> {
+    if (!recordSet.isNew())
+      await addIdsToRecordSet(resources.map(({ id }) => id));
+    const oldTotalCount = totalCount;
+    setTotalCount(oldTotalCount + resources.length);
+    go(oldTotalCount, resources[0].id, undefined, wasNew);
+    setIds((oldIds = []) =>
+      updateIds(
+        oldIds,
+        resources.map(({ id }, index) => [oldTotalCount + index, id])
+      )
     );
+  }
 
   async function createNewRecordSet(
     ids: RA<number | undefined>
   ): Promise<void> {
     await recordSet.save();
-    await Promise.all(
-      ids.map(async (recordId) =>
-        createResource('RecordSetItem', {
-          recordId: recordId,
-          recordSet: recordSet.get('resource_uri'),
-        })
-      )
-    );
+    await addIdsToRecordSet(ids);
     navigate(`/specify/record-set/${recordSet.id}/`);
   }
+
+  const addIdsToRecordSet = async (
+    ids: RA<number | undefined>
+  ): Promise<void> =>
+    Promise.all(
+      ids.map(async (recordId) =>
+        recordId === undefined
+          ? undefined
+          : createResource('RecordSetItem', {
+              recordId,
+              recordSet: recordSet.get('resource_uri'),
+            })
+      )
+    ).then(f.void);
 
   return (
     <>
@@ -320,7 +321,9 @@ function RecordSet<SCHEMA extends AnySchema>({
         headerButtons={
           recordSet.isNew() ? (
             ids.length > 0 && !currentRecord.isNew() ? (
-              <Button.Orange onClick={() => loading(createNewRecordSet(ids))}>
+              <Button.Orange
+                onClick={(): void => loading(createNewRecordSet(ids))}
+              >
                 {commonText.newRecordSet()}
               </Button.Orange>
             ) : undefined
@@ -369,10 +372,11 @@ function RecordSet<SCHEMA extends AnySchema>({
                   if (duplicates.length > 0 && nonDuplicates.length === 0)
                     handleHasDuplicate();
                   else
-                    handleAdd(
+                    return handleAdd(
                       nonDuplicates.map(({ resource }) => resource),
                       false
                     );
+                  return undefined;
                 })
             : undefined
         }
@@ -397,7 +401,9 @@ function RecordSet<SCHEMA extends AnySchema>({
                             records[0],
                             `Failed to remove resource from the ` +
                               `record set. RecordSetItem not found. RecordId: ` +
-                              `${ids[currentIndex]}. Record set: ${recordSet.id}`
+                              `${ids[currentIndex] ?? 'null'}. Record set: ${
+                                recordSet.id
+                              }`
                           ).id
                         )
                       )
@@ -419,7 +425,7 @@ function RecordSet<SCHEMA extends AnySchema>({
         onSaved={(resource): void =>
           ids[currentIndex] === resource.id
             ? undefined
-            : handleAdd([resource], true)
+            : loading(handleAdd([resource], true))
         }
         onSlide={(index, replace): void =>
           go(index, ids[index], undefined, replace)
