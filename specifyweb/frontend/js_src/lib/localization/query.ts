@@ -638,22 +638,29 @@ export const queryText = createDictionary({
     `,
   },
   future: {
-    'en-us': 'Future',
+    'en-us': 'in the future',
   },
   past: {
-    'en-us': 'Past',
+    'en-us': 'in the past',
   },
   day: {
-    'en-us': 'Day',
+    'en-us': 'Days',
   },
   week: {
-    'en-us': 'Week',
+    'en-us': 'Weeks',
   },
   month: {
-    'en-us': 'Month',
+    'en-us': 'Months',
   },
   year: {
-    'en-us': 'Year',
+    'en-us': 'Years',
+  },
+  relativeDate: {
+    comment: `Used in query builder lines, will be shown as a number 
+    followed by a period of time 
+    (ie: day, month or week) then a direction (past or future)`,
+    'en-us':
+      '<count>{size:number}</count> <length>{type:string}</length> <direction>{direction:string}</direction>',
   },
   importHiddenFields: {
     'en-us': 'The following fields are hidden in the query you imported:',

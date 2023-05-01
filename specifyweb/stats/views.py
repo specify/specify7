@@ -120,6 +120,7 @@ def collection_type_specimens(request) -> HttpResponse:
         FROM determination
         WHERE CollectionMemberID = %s
           AND TypeStatusName is not null
+          AND IsCurrent
         group by TypeStatusName
         """,
         [request.specify_collection.id]

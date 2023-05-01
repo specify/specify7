@@ -25,9 +25,15 @@ Coming in the next few months:
 
 - [And a lot more features](https://github.com/specify/specify7/pulls)
 
-## [7.8.10](https://github.com/specify/specify7/compare/v7.8.9...HEAD) (Unreleased)
+## [7.8.10](https://github.com/specify/specify7/compare/v7.8.9...HEAD) (1 May 2023)
 
-- [Statistics page](https://discourse.specifysoftware.org/t/statistics-panel-for-specify-7/828)
+### Added
+- Add support for relative dates in full date queries (Queries using relative dates will not be visible in Specify 6 'Saved Queries'. By default, they will appear in 'Other Queries'. 
+- Add support for picking the Current User as name in queries that end with Specify User (Queries using Current User will not be Specify 6 'Saved Queries'. By default, they will appear in 'Other Queries'.
+
+### Fixed
+- Available resources for creating are now properly scoped
+- A minor visual glitch in Auto Complete Input Box has been fixed for slower machines
 
 ## [7.8.9](https://github.com/specify/specify7/compare/v7.8.8...v7.8.9) (4 April 2023)
 
