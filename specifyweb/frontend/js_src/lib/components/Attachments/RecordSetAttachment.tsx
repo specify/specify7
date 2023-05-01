@@ -10,9 +10,12 @@ import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { serializeResource } from '../DataModel/helpers';
-import type { AnySchema } from '../DataModel/helperTypes';
+import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import type { CollectionObjectAttachment } from '../DataModel/types';
+import type {
+  Attachment,
+  CollectionObjectAttachment,
+} from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import { defaultAttachmentScale } from '.';
 import { AttachmentGallery } from './Gallery';
@@ -32,6 +35,11 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
 
   const [showAttachments, handleShowAttachments, handleHideAttachments] =
     useBooleanState();
+
+  const attachmentsRef = React.useRef<{
+    attachments: RA<SerializedResource<Attachment>>;
+    related: RA<SpecifyResource<CollectionObjectAttachment>>;
+  }>();
 
   const [attachments] = useAsyncState(
     React.useCallback(async () => {
@@ -63,10 +71,18 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
         )
       );
 
-      return {
-        attachments: attachements.map(({ attachment }) => attachment),
-        related: attachements.map(({ related }) => related),
+      const newAttachments = {
+        attachments: attachements.map(({ attachment }) => attachment) as RA<
+          SerializedResource<Attachment>
+        >,
+        related: attachements.map(({ related }) => related) as RA<
+          SpecifyResource<CollectionObjectAttachment>
+        >,
       };
+
+      attachmentsRef.current = newAttachments;
+
+      return newAttachments;
     }, [records]),
     false
   );
@@ -85,6 +101,8 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
     'scale'
   );
 
+  const currentAttachments = attachments ?? attachmentsRef.current;
+
   return (
     <>
       <Button.Icon
@@ -98,11 +116,11 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
             <Button.DialogClose>{commonText.close()}</Button.DialogClose>
           }
           header={
-            attachments?.attachments === undefined
+            currentAttachments?.attachments === undefined
               ? attachmentsText.attachments()
               : commonText.countLine({
                   resource: attachmentsText.attachments(),
-                  count: attachments.attachments.length,
+                  count: currentAttachments.attachments.length,
                 })
           }
           onClose={handleHideAttachments}
@@ -126,7 +144,7 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
             )
           ) : (
             <AttachmentGallery
-              attachments={attachments?.attachments ?? []}
+              attachments={currentAttachments?.attachments ?? []}
               isComplete={fetchedCount.current === records.length}
               scale={scale}
               onChange={(attachment, index): void =>
