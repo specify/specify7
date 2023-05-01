@@ -37,8 +37,8 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
     useBooleanState();
 
   const attachmentsRef = React.useRef<{
-    attachments: RA<SerializedResource<Attachment>>;
-    related: RA<SpecifyResource<CollectionObjectAttachment>>;
+    readonly attachments: RA<SerializedResource<Attachment>>;
+    readonly related: RA<SpecifyResource<CollectionObjectAttachment>>;
   }>();
 
   const [attachments] = useAsyncState(
