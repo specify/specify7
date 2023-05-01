@@ -198,6 +198,14 @@ export const overlayRoutes: RA<EnhancedRoute> = [
           ),
         isSingleResource: true,
       },
+      {
+        // This path is used when an overlay triggered a 404 page
+        path: 'not-found',
+        element: () =>
+          import('../Router/RouterUtils').then(
+            ({ NotFoundDialog }) => NotFoundDialog
+          ),
+      },
     ],
   },
 ];
