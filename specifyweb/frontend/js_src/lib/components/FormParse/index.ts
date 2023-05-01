@@ -32,8 +32,8 @@ export type ViewDescription = ParsedFormDefinition & {
   readonly mode: FormMode;
   readonly model: SpecifyModel;
   readonly errors?: RA<LogMessage>;
-  readonly viewSetId?: number;
   readonly name: string;
+  readonly rawDefinition: ViewDefinition | undefined;
 };
 
 type AltView = {
@@ -119,9 +119,9 @@ export function parseViewDefinition(
     mode,
     formType,
     model,
-    viewSetId: view.viewsetId ?? undefined,
     errors,
     name: view.name,
+    rawDefinition: view,
     ...parsed,
   };
 }

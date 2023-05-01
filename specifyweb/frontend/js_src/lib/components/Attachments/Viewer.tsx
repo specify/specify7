@@ -67,11 +67,24 @@ export function AttachmentViewer({
     ),
   });
 
+  const viewOriginalDefinition = useViewDefinition({
+    model: attachmentTable,
+    viewName: originalAttachmentsView,
+    formType: 'form',
+    mode: augmentMode(
+      'edit',
+      related?.isNew() ?? attachment.isNew(),
+      attachmentTable?.name
+    ),
+  });
+
   // If view doesn't exists, viewDefinition.name would be empty string
   const customViewName =
-    viewDefinition?.name === attachmentTable?.name
-      ? attachmentTable?.name
-      : undefined;
+    viewDefinition?.rawDefinition?.viewsetSource === 'disk'
+      ? viewDefinition.name === attachmentTable?.name
+        ? attachmentTable.name
+        : undefined
+      : viewOriginalDefinition?.name;
 
   /**
    * If view definition for a CollectionObjectAttachment table exists, use it

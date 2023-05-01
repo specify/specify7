@@ -54,6 +54,7 @@ export function useViewDefinition({
           name: attachmentView,
           formType,
           mode,
+          rawDefinition: undefined,
         };
       else if (useGeneratedForm)
         return autoGenerateViewDefinition(model, formType, mode);
@@ -116,6 +117,7 @@ const fetchViewDefinition = async (
             formType,
             mode,
             model,
+            rawDefinition: undefined,
           })
         );
     });
