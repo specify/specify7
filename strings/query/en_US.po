@@ -419,35 +419,42 @@ msgstr "Tree Desynonymize"
 msgid "tooLongErrorMessage"
 msgstr "Field value is too long. Max allowed length is {maxLength:number|formatted}"
 
-#: components/QueryBuilder/RelativeDate.tsx:144
+#: components/QueryBuilder/RelativeDate.tsx:186
 #. Used in: Components > Query Builder > Relative Date
 msgid "future"
-msgstr "Future"
+msgstr "in the future"
 
-#: components/QueryBuilder/RelativeDate.tsx:145
+#: components/QueryBuilder/RelativeDate.tsx:185
 #. Used in: Components > Query Builder > Relative Date
 msgid "past"
-msgstr "Past"
+msgstr "in the past"
 
 #: components/QueryBuilder/RelativeDate.tsx:169
 #. Used in: Components > Query Builder > Relative Date
 msgid "day"
-msgstr "Day"
+msgstr "Days"
 
 #: components/QueryBuilder/RelativeDate.tsx:170
 #. Used in: Components > Query Builder > Relative Date
 msgid "week"
-msgstr "Week"
+msgstr "Weeks"
 
 #: components/QueryBuilder/RelativeDate.tsx:171
 #. Used in: Components > Query Builder > Relative Date
 msgid "month"
-msgstr "Month"
+msgstr "Months"
 
 #: components/QueryBuilder/RelativeDate.tsx:172
 #. Used in: Components > Query Builder > Relative Date
 msgid "year"
-msgstr "Year"
+msgstr "Years"
+
+#: components/QueryBuilder/RelativeDate.tsx:190
+#. 🟥Used in query builder lines, will be shown as a number followed by a period of time (ie: day, month or week) then a direction (past or future). Used in: Components > Query Builder > Relative Date
+msgid "relativeDate"
+msgstr ""
+"<count>{size:number}</count> <length>{type:string}</length> "
+"<direction>{direction:string}</direction>"
 
 #: components/QueryBuilder/Import.tsx:148
 #. Used in: Components > Query Builder > Import

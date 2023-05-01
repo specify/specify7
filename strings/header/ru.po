@@ -125,7 +125,7 @@ msgstr "Выберите ресурс метаданных"
 #: components/Header/ExpressSearchTask.tsx:53
 #: components/Header/ExpressSearchTask.tsx:109
 #: components/Router/OverlayRoutes.tsx:44
-#: components/Router/Routes.tsx:26
+#: components/Router/Routes.tsx:25
 #. Used in: Components > Header > Express Search Task ⬤ Components > Router > Overlay Routes ⬤ Components > Router > Routes
 msgid "expressSearch"
 msgstr "Экспресс-поиск"
@@ -226,7 +226,7 @@ msgstr "форум сообщества"
 
 #: components/Errors/ErrorDialog.tsx:131
 #: components/Header/userToolDefinitions.ts:125
-#: components/Router/Routes.tsx:392
+#: components/Router/Routes.tsx:391
 #: components/RouterCommands/CacheBuster.tsx:41
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Router Commands > Cache Buster
 msgid "clearCache"

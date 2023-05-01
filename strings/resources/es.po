@@ -15,7 +15,7 @@ msgstr ""
 #: components/AppResources/Filters.tsx:119
 #: components/Header/userToolDefinitions.ts:58
 #: components/Preferences/UserDefinitions.tsx:1582
-#: components/Router/Routes.tsx:197
+#: components/Router/Routes.tsx:196
 #: components/Security/registry.ts:210
 #. Used in: Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Security > Registry
 #, fuzzy
@@ -72,21 +72,21 @@ msgstr "Tipo"
 msgid "userTypes"
 msgstr "Tipos de usuarios"
 
-#: components/AppResources/Aside.tsx:303
+#: components/AppResources/Aside.tsx:301
 #: components/AppResources/index.tsx:50
 #. Used in: Components > App Resources > Aside ⬤ Components > App Resources > Index
 #, fuzzy
 msgid "resources"
 msgstr "Recursos"
 
-#: components/AppResources/Aside.tsx:246
+#: components/AppResources/Aside.tsx:244
 #. Used in: Components > App Resources > Aside
 #, fuzzy
 msgid "subCategories"
 msgstr "Subcategorías"
 
-#: components/AppResources/Aside.tsx:313
-#: components/Router/Routes.tsx:205
+#: components/AppResources/Aside.tsx:311
+#: components/Router/Routes.tsx:204
 #. Used in: Components > App Resources > Aside ⬤ Components > Router > Routes
 #, fuzzy
 msgid "addResource"

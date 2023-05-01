@@ -505,12 +505,12 @@ msgstr ""
 "Значення поля задовге. Максимальна дозволена довжина "
 "{maxLength:number|formatted}"
 
-#: components/QueryBuilder/RelativeDate.tsx:144
+#: components/QueryBuilder/RelativeDate.tsx:186
 #. Used in: Components > Query Builder > Relative Date
 msgid "future"
 msgstr ""
 
-#: components/QueryBuilder/RelativeDate.tsx:145
+#: components/QueryBuilder/RelativeDate.tsx:185
 #. Used in: Components > Query Builder > Relative Date
 msgid "past"
 msgstr ""
@@ -533,6 +533,11 @@ msgstr ""
 #: components/QueryBuilder/RelativeDate.tsx:172
 #. Used in: Components > Query Builder > Relative Date
 msgid "year"
+msgstr ""
+
+#: components/QueryBuilder/RelativeDate.tsx:190
+#. 🟥Used in query builder lines, will be shown as a number followed by a period of time (ie: day, month or week) then a direction (past or future). Used in: Components > Query Builder > Relative Date
+msgid "relativeDate"
 msgstr ""
 
 #: components/QueryBuilder/Import.tsx:148

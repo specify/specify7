@@ -377,13 +377,15 @@ msgstr "Uploaded"
 #: components/QueryBuilder/Line.tsx:243
 #: components/QueryBuilder/Line.tsx:351
 #: components/QueryBuilder/Line.tsx:354
+#: components/QueryBuilder/RelativeDate.tsx:67
+#: components/QueryBuilder/RelativeDate.tsx:69
 #: components/Security/Policy.tsx:93
 #: components/Security/Policy.tsx:95
 #: components/Security/Role.tsx:182
 #: components/Statistics/StatsPageEditing.tsx:33
 #: components/Statistics/StatsResult.tsx:47
 #: components/Toolbar/QueryTablesEdit.tsx:227
-#. Used in: Components > Atoms > Data Entry ⬤ Components > Form Cells > Form Table ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Line ⬤ Components > Security > Policy ⬤ Components > Security > Role ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Statistics > Stats Result ⬤ Components > Toolbar > Query Tables Edit
+#. Used in: Components > Atoms > Data Entry ⬤ Components > Form Cells > Form Table ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Line ⬤ Components > Query Builder > Relative Date ⬤ Components > Security > Policy ⬤ Components > Security > Role ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Statistics > Stats Result ⬤ Components > Toolbar > Query Tables Edit
 msgid "remove"
 msgstr "Remove"
 
@@ -622,7 +624,7 @@ msgstr "Transactions"
 msgid "viewRecord"
 msgstr "View Record"
 
-#: components/AppResources/Aside.tsx:376
+#: components/AppResources/Aside.tsx:374
 #: components/FormCells/index.tsx:232
 #: components/FormCommands/index.tsx:108
 #: components/FormPlugins/index.tsx:195
@@ -734,7 +736,7 @@ msgstr "Selected"
 msgid "expand"
 msgstr "Expand"
 
-#: components/AppResources/Aside.tsx:172
+#: components/AppResources/Aside.tsx:168
 #. Used in: Components > App Resources > Aside
 msgid "expandAll"
 msgstr "Expand All"
@@ -746,7 +748,7 @@ msgstr "Expand All"
 msgid "collapse"
 msgstr "Collapse"
 
-#: components/AppResources/Aside.tsx:175
+#: components/AppResources/Aside.tsx:171
 #: components/TreeView/index.tsx:191
 #. Used in: Components > App Resources > Aside ⬤ Components > Tree View > Index
 msgid "collapseAll"
@@ -797,7 +799,7 @@ msgstr "None available"
 msgid "countLine"
 msgstr "{resource:string} ({count:number|formatted})"
 
-#: components/AppResources/Aside.tsx:231
+#: components/AppResources/Aside.tsx:229
 #. 🟥Example usage: Record Sets (1,234). Used in: Components > App Resources > Aside
 msgid "jsxCountLine"
 msgstr "{resource:string} <wrap>({count:number|formatted})</wrap>"

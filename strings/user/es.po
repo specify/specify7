@@ -363,7 +363,7 @@ msgid "configureCollectionAccess"
 msgstr "Seleccione el acceso a la colección de usuarios"
 
 #: components/Header/userToolDefinitions.ts:68
-#: components/Router/Routes.tsx:62
+#: components/Router/Routes.tsx:61
 #: components/Toolbar/Security.tsx:100
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Toolbar > Security
 #, fuzzy
@@ -493,14 +493,14 @@ msgstr "Todas las acciones"
 msgid "collectionAccess"
 msgstr "Habilitar acceso a la colección"
 
-#: components/Router/Routes.tsx:131
+#: components/Router/Routes.tsx:130
 #: components/Security/RoleTemplate.tsx:96
 #. Used in: Components > Router > Routes ⬤ Components > Security > Role Template
 #, fuzzy
 msgid "createRole"
 msgstr "Crear rol"
 
-#: components/Router/Routes.tsx:139
+#: components/Router/Routes.tsx:138
 #: components/Security/RoleTemplate.tsx:83
 #. Used in: Components > Router > Routes ⬤ Components > Security > Role Template
 #, fuzzy
