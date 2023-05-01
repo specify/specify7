@@ -189,6 +189,10 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   React.useEffect(
     () =>
       listen(form, 'submit', (event) => {
+        /*
+         * TEST: this line might actually be not needed as browsers only fire
+         *  submit event for valid forms
+         */
         if (!form.reportValidity()) return;
         event.preventDefault();
         event.stopPropagation();
@@ -212,6 +216,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
       disabled={resource.isNew() || isChanged || isSaving}
       title={description}
       onClick={(): void => {
+        // Scroll to the top of the form on save/clone
         smoothScroll(form, 0);
         loading(handleClick().then(handleAdd));
       }}

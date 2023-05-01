@@ -148,6 +148,8 @@ export function FormEditorWrapper(): JSX.Element {
             ? icons.switchVertical
             : icons.switchHorizontal}
         </Button.Small>
+        {/* FEATURE: ability to preview the form in a dialog */}
+        {/* FEATURE: ability to preview the form in a form table */}
       </div>
       <Editor
         key={`${tableName}_${viewName}`}
