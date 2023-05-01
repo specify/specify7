@@ -63,12 +63,10 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
         )
       );
 
-      const newAttachments = {
+      return {
         attachments: attachements.map(({ attachment }) => attachment),
         related: attachements.map(({ related }) => related),
       };
-
-      return newAttachments;
     }, [records]),
     false
   );
