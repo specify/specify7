@@ -33,6 +33,7 @@ export type ViewDescription = ParsedFormDefinition & {
   readonly model: SpecifyModel;
   readonly errors?: RA<LogMessage>;
   readonly name: string;
+  readonly viewSetId?: number;
   readonly rawDefinition: ViewDefinition | undefined;
 };
 
@@ -119,6 +120,7 @@ export function parseViewDefinition(
     mode,
     formType,
     model,
+    viewSetId: view.viewsetId ?? undefined,
     errors,
     name: view.name,
     rawDefinition: view,

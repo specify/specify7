@@ -198,6 +198,7 @@ const cellRenderers: {
         name: 'panel',
         formType,
         model: resource.specifyModel,
+        rawDefinition: undefined,
       }),
       [cellData, mode, formType, resource.specifyModel]
     );

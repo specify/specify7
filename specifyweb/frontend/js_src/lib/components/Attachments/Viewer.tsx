@@ -5,7 +5,7 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import { notificationsText } from '../../localization/notifications';
 import { f } from '../../utils/functools';
-import type { GetSet } from '../../utils/types';
+import { filterArray, GetSet } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { serializeResource } from '../DataModel/helpers';
@@ -23,6 +23,7 @@ import { loadingGif } from '../Molecules';
 import { userPreferences } from '../Preferences/userPreferences';
 import { fetchOriginalUrl, fetchThumbnail } from './attachments';
 import { AttachmentRecordLink, getAttachmentTable } from './Cell';
+import { multiSortFunction } from '../../utils/utils';
 
 export function AttachmentViewer({
   attachment,
@@ -56,7 +57,7 @@ export function AttachmentViewer({
       : undefined;
   }, [attachment]);
 
-  const viewDefinition = useViewDefinition({
+  const specificViewDefinition = useViewDefinition({
     model: attachmentTable,
     viewName: attachmentTable?.name,
     formType: 'form',
@@ -67,7 +68,7 @@ export function AttachmentViewer({
     ),
   });
 
-  const viewOriginalDefinition = useViewDefinition({
+  const objectAttachmentDefinition = useViewDefinition({
     model: attachmentTable,
     viewName: originalAttachmentsView,
     formType: 'form',
@@ -79,12 +80,18 @@ export function AttachmentViewer({
   });
 
   // If view doesn't exists, viewDefinition.name would be empty string
-  const customViewName =
-    viewDefinition?.rawDefinition?.viewsetSource === 'disk'
-      ? viewDefinition.name === attachmentTable?.name
-        ? attachmentTable.name
-        : undefined
-      : viewOriginalDefinition?.name;
+  const resolved = React.useMemo(
+    () =>
+      Array.from(
+        filterArray([specificViewDefinition, objectAttachmentDefinition])
+      ).sort(
+        multiSortFunction(
+          ({ rawDefinition }) => rawDefinition?.viewsetSource === 'disk',
+          ({ name }) => name === originalAttachmentsView
+        )
+      )[0],
+    [specificViewDefinition, objectAttachmentDefinition]
+  );
 
   /**
    * If view definition for a CollectionObjectAttachment table exists, use it
@@ -92,7 +99,7 @@ export function AttachmentViewer({
    * resource.
    */
   const showCustomForm =
-    typeof customViewName === 'string' && typeof related === 'object';
+    typeof resolved === 'string' && typeof related === 'object';
 
   const mimeType = attachment.get('mimeType') ?? undefined;
   const type = mimeType?.split('/')[0];
@@ -170,7 +177,7 @@ export function AttachmentViewer({
                * exports)
                */
               title={title}
-              viewName={customViewName ?? originalAttachmentsView}
+              viewName={resolved?.name ?? originalAttachmentsView}
               onAdd={undefined}
               // eslint-disable-next-line react/jsx-handler-names
               onClose={f.never}
