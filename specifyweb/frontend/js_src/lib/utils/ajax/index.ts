@@ -1,4 +1,5 @@
 import type { IR, RA } from '../types';
+import { setDevelopmentGlobal } from '../types';
 import { csrfToken } from './csrfToken';
 import { Http } from './definitions';
 import { csrfSafeMethod, extractAppResourceId, isExternalUrl } from './helpers';
@@ -136,3 +137,5 @@ export const ajax = async <RESPONSE_TYPE = string>(
             });
           }
         );
+
+setDevelopmentGlobal('_ajax', ajax);

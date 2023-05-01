@@ -36,6 +36,10 @@ let unsafeLocation: SafeLocation | undefined;
  *
  * If error was triggered by an overlay, display 404 error in a dialog. Otherwise,
  * replace the main page with a 404.
+ *
+ * BUG: This assumes that if overlay is open, then it triggered the 404
+ *  error, which is not always the case as the main content could be sending
+ *  requests in the background too
  */
 export function unsafeTriggerNotFound(): boolean {
   unsafeNavigateFunction?.(
