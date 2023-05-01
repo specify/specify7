@@ -141,7 +141,7 @@ function DateSplit({
     <div className="flex flex-row gap-1">
       <StringToJsx
         components={{
-          input: (size) => (
+          count: (size) => (
             <Input.Number
               disabled={handleChange === undefined}
               min={0}
@@ -156,7 +156,7 @@ function DateSplit({
               }}
             />
           ),
-          select: (type) => (
+          length: (type) => (
             <Select
               disabled={handleChange === undefined}
               value={type}
@@ -172,7 +172,7 @@ function DateSplit({
               <option value="year">{queryText.year()}</option>
             </Select>
           ),
-          secondSelect: (direction) => (
+          direction: (direction) => (
             <Select
               disabled={handleChange === undefined}
               value={direction}
