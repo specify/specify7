@@ -5,7 +5,9 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import { notificationsText } from '../../localization/notifications';
 import { f } from '../../utils/functools';
-import { filterArray, GetSet } from '../../utils/types';
+import type { GetSet } from '../../utils/types';
+import { filterArray } from '../../utils/types';
+import { multiSortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { serializeResource } from '../DataModel/helpers';
@@ -23,7 +25,6 @@ import { loadingGif } from '../Molecules';
 import { userPreferences } from '../Preferences/userPreferences';
 import { fetchOriginalUrl, fetchThumbnail } from './attachments';
 import { AttachmentRecordLink, getAttachmentTable } from './Cell';
-import { multiSortFunction } from '../../utils/utils';
 
 export function AttachmentViewer({
   attachment,
