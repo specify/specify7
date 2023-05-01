@@ -25,6 +25,7 @@ import { UnloadProtectDialog } from '../Router/Router';
 import { useResourceView } from './BaseResourceView';
 import { DeleteButton } from './DeleteButton';
 import { SaveButton } from './Save';
+import { useFirstFocus } from './SpecifyForm';
 
 /**
  * There is special behavior required when creating one of these resources,

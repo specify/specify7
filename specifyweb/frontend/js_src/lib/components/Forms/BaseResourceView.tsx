@@ -17,7 +17,7 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { userPreferences } from '../Preferences/userPreferences';
 import { displaySpecifyNetwork, SpecifyNetworkBadge } from '../SpecifyNetwork';
 import { format } from './dataObjFormatters';
-import { SpecifyForm } from './SpecifyForm';
+import { SpecifyForm, useFirstFocus } from './SpecifyForm';
 import { useViewDefinition } from './useViewDefinition';
 
 export type ResourceViewProps<SCHEMA extends AnySchema> = {
@@ -57,7 +57,7 @@ export function useResourceView<SCHEMA extends AnySchema>({
             if (resource === undefined) return undefined;
             format(resource)
               .then((title) => {
-                setFormatted(title ?? '');
+                setFormatted(title ?? ('' as LocalizedString));
                 return undefined;
               })
               .catch(softFail);
@@ -119,8 +119,15 @@ export function useResourceView<SCHEMA extends AnySchema>({
         })
       : formattedTableName;
 
+  const focusFirstField = useFirstFocus(form);
+  React.useEffect(() => {
+    return focusFirstField();
+  }, [resource?.specifyModel, focusFirstField]);
+
+  //find place with + - and place for slider, call hook there and check if event listener for click or useEffect for resource change
+
   return {
-    formatted: tableNameInTitle ? title : formatted,
+    formatted: tableNameInTitle ? (title as LocalizedString) : formatted,
     jsxFormatted:
       formHeaderFormat === 'name' ? (
         title
@@ -132,7 +139,7 @@ export function useResourceView<SCHEMA extends AnySchema>({
           {formHeaderFormat === 'full' ? title : formatted}
         </>
       ),
-    title,
+    title: title as LocalizedString,
     formElement: form,
     formPreferences: (
       <FormMeta resource={resource} viewDescription={viewDefinition} />

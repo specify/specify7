@@ -83,25 +83,6 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
   );
   const [language] = userPreferences.use('form', 'schema', 'language');
 
-  const [focusFirstFieldPref] = userPreferences.use(
-    'form',
-    'behavior',
-    'focusFirstField'
-  );
-  const formRef = React.useRef<HTMLDivElement | null>(null);
-
-  React.useEffect(() => {
-    if (!focusFirstFieldPref) return undefined;
-    const timeoutId = setTimeout(() => {
-      const firstFocusableElement = formRef.current?.querySelector<HTMLElement>(
-        'button, a, input:not([type="hidden"]), select, textarea, [tabindex]:not([tabindex="-1"])'
-      )!;
-
-      firstFocusableElement?.focus();
-    }, 100);
-    return () => clearTimeout(timeoutId);
-  }, [resource.specifyModel]);
-
   return viewDefinition?.name === attachmentView ? (
     <AttachmentsPlugin mode={viewDefinition.mode} resource={resource} />
   ) : (
@@ -113,7 +94,6 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
           ${showLoading ? 'relative' : ''}
         `}
         lang={language}
-        ref={formRef}
       >
         {showLoading && (
           <div
@@ -172,4 +152,25 @@ export function SpecifyForm<SCHEMA extends AnySchema>({
       </div>
     </FormLoadingContext.Provider>
   );
+}
+
+export function useFirstFocus(form: HTMLElement | null) {
+  const [focusFirstFieldPref] = userPreferences.use(
+    'form',
+    'behavior',
+    'focusFirstField'
+  );
+
+  return React.useCallback(() => {
+    if (!focusFirstFieldPref) return undefined;
+    //timeout needed to wait for the form to be render and find the first focusubale element
+    const timeoutId = setTimeout(() => {
+      const firstFocusableElement = form?.querySelector<HTMLElement>(
+        'button, a, input:not([type="hidden"]), select, textarea, [tabindex]:not([tabindex="-1"])'
+      )!;
+
+      firstFocusableElement?.focus();
+    }, 100);
+    return () => clearTimeout(timeoutId);
+  }, [form]);
 }
