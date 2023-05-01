@@ -56,7 +56,7 @@ const webLinkSpec = f.store(() =>
       syncers.maybe(syncers.tableName)
     ),
     description: pipe(
-      syncers.xmlChild('desc'),
+      syncers.xmlChild('desc', 'optional'),
       syncers.maybe(syncers.xmlContent),
       syncers.default<LocalizedString>('')
     ),
@@ -215,7 +215,7 @@ function reconstructWeblink(
     parameters: filterArray(
       augmented.map((argument) =>
         typeof argument === 'object'
-          ? { ...argument, isEditable: false }
+          ? { ...argument, legacyIsEditable: false }
           : undefined
       )
     ),
