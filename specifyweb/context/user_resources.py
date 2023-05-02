@@ -6,6 +6,11 @@ from specifyweb.context.resources import Resource, Resources
 Spappresource = getattr(models, 'Spappresource')
 Spappresourcedir = getattr(models, 'Spappresourcedir')
 
+user_resource_dir_filter_gen = lambda request: {
+                'specifyuser': request.specify_user,
+                'ispersonal': True,
+                'usertype': get_usertype(request.specify_user),
+}
 
 user_resources = openapi(schema={
     "get": {
@@ -75,16 +80,14 @@ user_resources = openapi(schema={
             }
         }
     }
-})(Resources.as_view(_spappresourcedirfilter= lambda request: {
-                'specifyuser': request.specify_user,
-                'ispersonal': True,
-                'usertype': get_usertype(request.specify_user),
-}, _spappresourcefilter= lambda request: {
+})(Resources.as_view(_spappresourcedirfilter= user_resource_dir_filter_gen,
+                     _spappresourcefilter= lambda request: {
                 'spappresourcedir__specifyuser': request.specify_user,
                 'spappresourcedir__ispersonal':True
 }, _spappresourcefilterpost=lambda request: {
                 'specifyuser': request.specify_user
-}))
+},_spappresourcedircreate=user_resource_dir_filter_gen
+                     ))
 
 
 user_resource = openapi(schema={
