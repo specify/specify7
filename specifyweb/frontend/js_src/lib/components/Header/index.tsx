@@ -20,11 +20,11 @@ import { schema } from '../DataModel/schema';
 import { userInformation } from '../InitialContext/userInformation';
 import { titleDelay, titlePosition } from '../Molecules/Tooltips';
 import { ActiveLink } from '../Router/ActiveLink';
-import { usePref } from '../UserPreferences/usePref';
 import type { MenuItemName } from './menuItemDefinitions';
 import { useUserTools } from './menuItemProcessing';
 import { Notifications } from './Notifications';
 import { UserTools } from './UserTools';
+import { userPreferences } from '../Preferences/userPreferences';
 
 const collapseThreshold = 900;
 
@@ -59,7 +59,7 @@ export function Header({
     return listen(window, 'resize', handleChange);
   }, [rawIsCollapsed, setIsCollapsed]);
 
-  const [position] = usePref('header', 'appearance', 'position');
+  const [position] = userPreferences.use('header', 'appearance', 'position');
   const isHorizontal = position === 'top' || position === 'bottom';
   // Top menu is only available as collapsed
   const isCollapsed = rawIsCollapsed || isHorizontal || forceCollapse;
@@ -220,9 +220,9 @@ export function MenuButton({
   readonly onClick: string | (() => void);
   readonly props?: TagProps<'a'> & TagProps<'button'>;
 }): JSX.Element | null {
-  const [position] = usePref('header', 'appearance', 'position');
+  const [position] = userPreferences.use('header', 'appearance', 'position');
   const getClassName = (isActive: boolean): string => `
-    p-4
+    p-[1.4vh]
     ${isActive ? 'bg-brand-300 !text-white' : 'text-gray-700'}
     ${className.ariaHandled}
     ${extraProps?.className ?? ''}

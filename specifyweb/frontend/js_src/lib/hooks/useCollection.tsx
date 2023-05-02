@@ -21,16 +21,21 @@ export function useCollection<SCHEMA extends AnySchema>(
     Promise<SerializedCollection<SCHEMA> | undefined> | undefined
   >(undefined);
 
-  const sizeRef = React.useRef<number>(0);
-
   const callback = React.useCallback(async () => {
     if (typeof fetchRef.current === 'object')
       return fetchRef.current.then(f.undefined);
-    fetchRef.current = fetch(sizeRef.current).then((data) => {
-      sizeRef.current = sizeRef.current += data.records.length;
-      fetchRef.current = undefined;
-      return data;
-    });
+    if (
+      collectionRef.current !== undefined &&
+      collectionRef.current?.records.length ===
+        collectionRef.current?.totalCount
+    )
+      return undefined;
+    fetchRef.current = fetch(collectionRef.current?.records.length ?? 0).then(
+      (data) => {
+        fetchRef.current = undefined;
+        return data;
+      }
+    );
     return fetchRef.current;
   }, [fetch]);
 
@@ -40,11 +45,15 @@ export function useCollection<SCHEMA extends AnySchema>(
     React.useCallback(async () => {
       currentCallback.current = callback;
       fetchRef.current = undefined;
-      sizeRef.current = 0;
+      collectionRef.current = undefined;
       return callback();
     }, [callback]),
     false
   );
+  const collectionRef = React.useRef<
+    SerializedCollection<SCHEMA> | undefined
+  >();
+  collectionRef.current = collection;
 
   const fetchMore = React.useCallback(
     async () =>
@@ -56,12 +65,17 @@ export function useCollection<SCHEMA extends AnySchema>(
         ? typeof fetchRef.current === 'object'
           ? callback().then(f.undefined)
           : callback().then((result) =>
+              result !== undefined &&
+              result.records.length > 0 &&
               // If the fetch function changed while fetching, discard the results
               currentCallback.current === callback
                 ? setCollection((collection) => ({
                     records: [
-                      ...defined(collection).records,
-                      ...defined(result).records,
+                      ...defined(
+                        collection,
+                        'Try to fetch more before collection is fetch.'
+                      ).records,
+                      ...result.records,
                     ],
                     totalCount: defined(collection).totalCount,
                   }))

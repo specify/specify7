@@ -1,8 +1,8 @@
 import { stringify } from 'csv-stringify/browser/esm';
 
 import { downloadFile } from '../Molecules/FilePicker';
-import { getUserPref } from '../UserPreferences/helpers';
 import type { Dataset } from '../WbPlanView/Wrapped';
+import { userPreferences } from '../Preferences/userPreferences';
 
 export const downloadDataSet = async ({
   name,
@@ -13,7 +13,11 @@ export const downloadDataSet = async ({
     stringify(
       [columns, ...rows],
       {
-        delimiter: getUserPref('workBench', 'editor', 'exportFileDelimiter'),
+        delimiter: userPreferences.get(
+          'workBench',
+          'editor',
+          'exportFileDelimiter'
+        ),
       },
       (error, output) => {
         if (error === undefined)

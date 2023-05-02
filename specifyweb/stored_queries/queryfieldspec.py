@@ -189,6 +189,9 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
         else:
             return self.get_field().name.lower() in ['oldvalue','newvalue']
 
+    def is_specify_username_end(self):
+       return len(self.join_path) > 2 and self.join_path[-1].name == 'name' and self.join_path[-2].is_relationship and self.join_path[-2].relatedModelName == 'SpecifyUser'
+
     def add_to_query(self, query, value=None, op_num=None, negate=False, formatter=None, formatauditobjs=False):
         no_filter = op_num is None
         #print "############################################################################"
@@ -202,6 +205,7 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
             no_filter = True
         elif self.is_relationship():
             # will be formatting or aggregating related objects
+
             if self.get_field().type == 'many-to-one':
                 query, orm_model, table, field = self.build_join(query, self.join_path)
                 query, orm_field = query.objectformatter.objformat(query, orm_model, formatter)
@@ -210,7 +214,6 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
                 orm_field = query.objectformatter.aggregate(query, self.get_field(), orm_model, formatter)
         else:
             query, orm_model, table, field = self.build_join(query, self.join_path)
-
             if self.tree_rank is not None:
                 query, orm_field = query.handle_tree_field(orm_model, table, self.tree_rank, self.tree_field)
             else:
@@ -236,6 +239,7 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
                 value = value
 
             op = QueryOps(uiformatter).by_op_num(op_num)
+
             f = op(orm_field, value)
             predicate = sql.not_(f) if negate else f
         else:
