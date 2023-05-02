@@ -319,6 +319,7 @@ def create_roles() -> None:
     role.policies.create(resource="/table/specifyuser", action="update")
     role.policies.create(resource="/table/specifyuser", action="delete")
 
+
     collection_admin = LibraryRole.objects.create(
         name="Collection Admin",
         description="Grants full access to all abilities within a collection.")

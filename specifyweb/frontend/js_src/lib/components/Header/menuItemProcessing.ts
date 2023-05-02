@@ -11,8 +11,7 @@ import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import type { MenuItem } from '../Core/Main';
-import { setPref } from '../UserPreferences/helpers';
-import { usePref } from '../UserPreferences/usePref';
+import { userPreferences } from '../Preferences/userPreferences';
 import { rawMenuItemsPromise } from './menuItemDefinitions';
 import { rawUserToolsPromise } from './userToolDefinitions';
 
@@ -23,7 +22,7 @@ const itemsPromise = f.store(async () =>
   })
 );
 export function useMenuItems(): RA<MenuItem> | undefined {
-  const [preference] = usePref('header', 'appearance', 'items');
+  const [preference] = userPreferences.use('header', 'appearance', 'items');
   const [items] = usePromise(itemsPromise(), false);
   return React.useMemo(() => {
     if (items === undefined) return undefined;
@@ -37,7 +36,7 @@ export function useMenuItems(): RA<MenuItem> | undefined {
       .map(({ name }) => name)
       .filter((name) => !visible.includes(name) && !hidden.includes(name));
     if (addedItems.length > 0)
-      setPref('header', 'appearance', 'items', {
+      userPreferences.set('header', 'appearance', 'items', {
         visible: [...visible, ...addedItems],
         hidden,
       });
@@ -55,7 +54,11 @@ export function useMenuItems(): RA<MenuItem> | undefined {
 }
 
 export function useUserTools(): IR<IR<MenuItem>> | undefined {
+<<<<<<< HEAD
   const [{ visible }] = usePref('header', 'appearance', 'items');
+=======
+  const [{ visible }] = userPreferences.use('header', 'appearance', 'items');
+>>>>>>> origin/production
   const [items] = usePromise(itemsPromise(), false);
   return React.useMemo(() => {
     if (items === undefined) return undefined;

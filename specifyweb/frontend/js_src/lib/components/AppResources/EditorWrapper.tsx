@@ -5,11 +5,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { fetchResource } from '../DataModel/resource';
-import type {
-  SpAppResource,
-  SpAppResourceDir,
-  SpViewSetObj,
-} from '../DataModel/types';
+import type { SpAppResource, SpViewSetObj } from '../DataModel/types';
 import { NotFoundView } from '../Router/NotFoundView';
 import { locationToState, useStableLocation } from '../Router/RouterState';
 import { findAppResourceDirectory } from './Create';
@@ -19,6 +15,7 @@ import { getAppResourceMode } from './helpers';
 import type { AppResources } from './hooks';
 import { useResourcesTree } from './hooks';
 import type { AppResourcesOutlet } from './index';
+import { ScopedAppResourceDir } from './types';
 
 export function AppResourceView(): JSX.Element {
   return <Wrapper mode="appResources" />;
@@ -132,7 +129,7 @@ function useDirectory(
   directoryKey: string | undefined,
   resource: SerializedResource<SpAppResource | SpViewSetObj> | undefined,
   resources: AppResources
-): SerializedResource<SpAppResourceDir> | undefined {
+): ScopedAppResourceDir | undefined {
   const resourcesTree = useResourcesTree(resources);
   return React.useMemo(() => {
     if (typeof directoryKey === 'string')
