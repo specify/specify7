@@ -48,6 +48,7 @@ import {
 import { useCollectionRelationships } from './useCollectionRelationships';
 import { useTreeData } from './useTreeData';
 import { useTypeSearch } from './useTypeSearch';
+import { titlePosition } from '../Molecules/Tooltips';
 
 /*
  * REFACTOR: split this component
@@ -370,6 +371,7 @@ export function QueryComboBox({
           title: typeof typeSearch === 'object' ? typeSearch.title : undefined,
           ...getValidationAttributes(parser),
           type: 'text',
+          ...{ [titlePosition]: 'top' },
         }}
         pendingValueRef={pendingValueRef}
         source={fetchSource}
