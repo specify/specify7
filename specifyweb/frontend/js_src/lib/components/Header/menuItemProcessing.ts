@@ -54,11 +54,7 @@ export function useMenuItems(): RA<MenuItem> | undefined {
 }
 
 export function useUserTools(): IR<IR<MenuItem>> | undefined {
-<<<<<<< HEAD
-  const [{ visible }] = usePref('header', 'appearance', 'items');
-=======
   const [{ visible }] = userPreferences.use('header', 'appearance', 'items');
->>>>>>> origin/production
   const [items] = usePromise(itemsPromise(), false);
   return React.useMemo(() => {
     if (items === undefined) return undefined;
