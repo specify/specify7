@@ -1,6 +1,6 @@
 {
     "Accession":{
-       "accessionnumber":[
+       "accessionNumber":[
           "division"
        ]
     },
@@ -35,7 +35,7 @@
        ]
     },
     "Appraisal":{
-       "appraisalnumber":[
+       "appraisalNumber":[
           "accession"
        ]
     },
@@ -66,7 +66,7 @@
        ]
     },
     "Collection":{
-       "collectionname":[
+       "collectionName":[
           "discipline"
        ],
        "code":[
@@ -74,15 +74,15 @@
        ]
     },
     "CollectingEvent": {
-      "uniqueidentifier" : [
+      "uniqueIdentifier" : [
          "discipline"
       ]
     },
     "CollectionObject":{
-       "catalognumber":[
+       "catalogNumber":[
           "collection"
        ],
-       "uniqueidentifier" : [
+       "uniqueIdentifier" : [
          "collection"
        ],
        "guid":[
@@ -138,7 +138,7 @@
       ]
     },
     "Gift":{
-       "giftnumber":[
+       "giftNumber":[
           "discipline"
        ]
     },
@@ -171,7 +171,7 @@
        ]
     },
     "Loan":{
-       "loannumber":[
+       "loanNumber":[
           "discipline"
        ]
     },
@@ -194,12 +194,12 @@
        ]
     },
     "Locality" : {
-      "uniqueidentifier" : [
+      "uniqueIdentifier" : [
          "discipline"
       ]
     },
     "LocalityCitation" : {
-      "referencework" : [
+      "referenceWork" : [
          "locality"
       ]
     },
@@ -209,7 +209,7 @@
       ]
     },
     "Permit":{
-       "permitnumber":[
+       "permitNumber":[
           null
        ]
     },
@@ -224,12 +224,12 @@
        ]
     },
     "RepositoryAgreement":{
-       "repositoryagreementnumber":[
+       "repositoryAgreementNumber":[
           "division"
        ]
     },
     "SpAppResourceData":{
-       "spappresource":[
+       "spAppResource":[
           null
        ]
     },

@@ -34,23 +34,30 @@ export type BusinessRuleDefs<SCHEMA extends AnySchema> = {
   readonly uniqueIn?: UniquenessRule<SCHEMA>;
   readonly customInit?: (resource: SpecifyResource<SCHEMA>) => void;
   readonly fieldChecks?: {
-    [FIELD_NAME in TableFields<SCHEMA> as Lowercase<FIELD_NAME>]?: (
+    [FIELD_NAME in TableFields<SCHEMA>]?: (
       resource: SpecifyResource<SCHEMA>
     ) => Promise<BusinessRuleResult | undefined> | void;
   };
 };
 
-export const uniqueRules: UniquenessRules = uniquenessRules;
+const uniqueRules: JSONUniquenessRules = uniquenessRules;
 
-type UniquenessRules = {
-  [TABLE in keyof Tables]?: UniquenessRule<Tables[TABLE]>;
+type JSONUniquenessRules = {
+  [TABLE in keyof Tables]?: JSONUniquenessRule<Tables[TABLE]>;
+};
+
+type JSONUniquenessRule<SCHEMA extends AnySchema> = {
+  [FIELD_NAME in TableFields<SCHEMA>]?:
+    | RA<string>
+    | RA<{ field: string; otherFields: string[] }>
+    | RA<null>;
 };
 
 export type UniquenessRule<SCHEMA extends AnySchema> = {
-  [FIELD_NAME in TableFields<SCHEMA> as Lowercase<FIELD_NAME>]?:
+  [FIELD_NAME in TableFields<SCHEMA>]?:
     | RA<string>
-    | RA<null>
-    | RA<{ field: string; otherFields: string[] }>;
+    | RA<{ field: string; otherFields: string[] }>
+    | RA<undefined>;
 };
 
 type MappedBusinessRuleDefs = {
@@ -60,7 +67,7 @@ type MappedBusinessRuleDefs = {
 export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
   BorrowMaterial: {
     fieldChecks: {
-      quantityreturned: (
+      quantityReturned: (
         borrowMaterial: SpecifyResource<BorrowMaterial>
       ): void => {
         const returned = borrowMaterial.get('quantityReturned');
@@ -80,7 +87,7 @@ export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
 
         newVal && borrowMaterial.set('quantityReturned', newVal);
       },
-      quantityresolved: (
+      quantityResolved: (
         borrowMaterial: SpecifyResource<BorrowMaterial>
       ): void => {
         const resolved = borrowMaterial.get('quantityResolved');
@@ -107,7 +114,7 @@ export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
       const ceField = collectionObject.specifyModel.getField('collectingEvent');
       if (
         ceField?.isDependent() &&
-        collectionObject.get('collectingEvent') == undefined
+        collectionObject.get('collectingEvent') === undefined
       ) {
         collectionObject.set(
           'collectingEvent',
@@ -166,9 +173,9 @@ export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
                 };
           });
       },
-      iscurrent: (
+      isCurrent: (
         determination: SpecifyResource<Determination>
-      ): Promise<BusinessRuleResult> | void => {
+      ): Promise<BusinessRuleResult> => {
         if (
           determination.get('isCurrent') &&
           determination.collection != null
@@ -202,7 +209,7 @@ export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
   },
   DNASequence: {
     fieldChecks: {
-      genesequence: (dnaSequence: SpecifyResource<DNASequence>): void => {
+      geneSequence: (dnaSequence: SpecifyResource<DNASequence>): void => {
         const current = dnaSequence.get('geneSequence');
         if (current === null) return;
         const countObj = { a: 0, t: 0, g: 0, c: 0, ambiguous: 0 };
@@ -281,9 +288,9 @@ export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
       updateLoanPrep(resource.collection);
     },
     fieldChecks: {
-      quantityreturned: (
+      quantityReturned: (
         loanReturnPrep: SpecifyResource<LoanReturnPreparation>
-      ): void => {
+      ) => {
         const returned = Number(loanReturnPrep.get('quantityReturned'))!;
         const previousReturned =
           previousLoanPreparations.previousReturned[loanReturnPrep.cid] ?? 0;
@@ -327,7 +334,7 @@ export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
           returned;
         updateLoanPrep(loanReturnPrep.collection);
       },
-      quantityresolved: (
+      quantityResolved: (
         loanReturnPrep: SpecifyResource<LoanReturnPreparation>
       ): void => {
         const resolved = Number(loanReturnPrep.get('quantityResolved'));
@@ -349,21 +356,39 @@ export const nonUniqueBusinessRuleDefs: MappedBusinessRuleDefs = {
   },
 };
 
-// From this code, Typescript believes that a businessRuleDefs uniqueIn can be from any table
-// For example, it believes the following is possible:
-// BusinessRuleDefs<BorrowMaterial> & {uniqueIn: UniquenessRule<Accession> | UniquenessRule<AccessionAgent> | ...}
+/*  From this code, Typescript believes that a businessRuleDefs uniqueIn can be from any table
+ *  For example, it believes the following is possible:
+ *  BusinessRuleDefs<BorrowMaterial> & {uniqueIn: UniquenessRule<Accession> | UniquenessRule<AccessionAgent> | ...}
+ */
 // @ts-expect-error
 export const businessRuleDefs: MappedBusinessRuleDefs = Object.fromEntries(
   (
-    Object.keys({ ...uniqueRules, ...nonUniqueBusinessRuleDefs }) as Array<
+    Object.keys({ ...uniqueRules, ...nonUniqueBusinessRuleDefs }) as RA<
       keyof Tables
     >
   ).map((table) => {
+    /*
+     * To ensure compatibility and consistency with other areas of the frontend,
+     * the undefined type is preferable over the null type.
+     * In the JSON uniqueness rules, if a field should be unique at a global (institution)
+     * level, then it is unique in 'null'.
+     * Thus we need to replace null with undefined
+     */
+    const uniquenessRules: UniquenessRule<Tables[typeof table]> | undefined =
+      uniqueRules[table] !== undefined
+        ? Object.fromEntries(
+            Object.entries(uniqueRules[table]!).map(([fieldName, rule]) => {
+              return [fieldName, rule[0] === null ? [undefined] : rule];
+            })
+          )
+        : undefined;
     const ruleDefs =
       nonUniqueBusinessRuleDefs[table] === undefined
-        ? { uniqueIn: uniqueRules[table] }
+        ? uniquenessRules === undefined
+          ? undefined
+          : { uniqueIn: uniquenessRules }
         : Object.assign({}, nonUniqueBusinessRuleDefs[table], {
-            uniqueIn: uniqueRules[table],
+            uniqueIn: uniquenessRules,
           });
     return [table, ruleDefs];
   })
