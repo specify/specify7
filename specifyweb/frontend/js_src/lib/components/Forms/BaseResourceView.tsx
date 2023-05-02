@@ -125,7 +125,7 @@ export function useResourceView<SCHEMA extends AnySchema>({
   }, [resource?.specifyModel, focusFirstField]);
 
   return {
-    formatted: tableNameInTitle ? (title as LocalizedString) : formatted,
+    formatted: tableNameInTitle ? title : formatted,
     jsxFormatted:
       formHeaderFormat === 'name' ? (
         title
@@ -137,7 +137,7 @@ export function useResourceView<SCHEMA extends AnySchema>({
           {formHeaderFormat === 'full' ? title : formatted}
         </>
       ),
-    title: title as LocalizedString,
+    title,
     formElement: form,
     formPreferences: (
       <FormMeta resource={resource} viewDescription={viewDefinition} />

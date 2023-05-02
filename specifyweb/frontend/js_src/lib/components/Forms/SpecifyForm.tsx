@@ -165,7 +165,7 @@ export function useFirstFocus(form: HTMLElement | null) {
 
   return React.useCallback(() => {
     if (!focusFirstFieldPref) return;
-    //timeout needed to wait for the form to be render and find the first focusubale element
+    // Timeout needed to wait for the form to be render and find the first focusubale element
     clearTimeout(refTimeout.current);
     refTimeout.current = setTimeout(() => {
       const firstFocusableElement = form?.querySelector<HTMLElement>(
