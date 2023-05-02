@@ -25,7 +25,6 @@ import { UnloadProtectDialog } from '../Router/Router';
 import { useResourceView } from './BaseResourceView';
 import { DeleteButton } from './DeleteButton';
 import { SaveButton } from './Save';
-import { useFirstFocus } from './SpecifyForm';
 
 /**
  * There is special behavior required when creating one of these resources,
@@ -109,6 +108,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
    */
   isSubForm,
   isDependent,
+  formRef,
 }: {
   readonly isLoading?: boolean;
   readonly resource: SpecifyResource<SCHEMA> | undefined;
@@ -131,6 +131,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
   readonly isSubForm: boolean;
   readonly isDependent: boolean;
   readonly title?: LocalizedString;
+  readonly formRef?: (form: HTMLFormElement | null) => void;
 }): JSX.Element {
   const mode = augmentMode(
     initialMode,
@@ -172,6 +173,10 @@ export function ResourceView<SCHEMA extends AnySchema>({
     resource,
     viewName,
   });
+  console.log(formElement);
+  React.useEffect(() => {
+    formRef?.(formElement);
+  }, [formElement]);
 
   const navigate = useNavigate();
   if (isDeleted)

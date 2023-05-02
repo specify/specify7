@@ -27,6 +27,7 @@ import type {
   RecordSelectorState,
 } from './RecordSelector';
 import { useRecordSelector } from './RecordSelector';
+import { useFirstFocus } from '../Forms/SpecifyForm';
 
 // REFACTOR: encapsulate common logic from FormTableCollection and this component
 /** A wrapper for RecordSelector to integrate with Backbone.Collection */
@@ -164,6 +165,10 @@ export function IntegratedRecordSelector({
   readonly onClose: () => void;
   readonly sortField: SubViewSortField | undefined;
 }): JSX.Element {
+  const [form, setForm] = React.useState<HTMLFormElement | null>(null);
+
+  const focusFirstField = useFirstFocus(form);
+
   const isDependent = collection instanceof DependentCollection;
   const isToOne =
     !relationshipIsToMany(relationship) || relationship.type === 'zero-to-one';
@@ -214,6 +219,7 @@ export function IntegratedRecordSelector({
         <>
           <ResourceView
             dialog={dialog}
+            formRef={setForm}
             headerButtons={(specifyNetworkBadge): JSX.Element => (
               <>
                 <DataEntry.Visit
@@ -234,7 +240,10 @@ export function IntegratedRecordSelector({
                       mode === 'view' ||
                       (isToOne && collection.models.length > 0)
                     }
-                    onClick={handleAdd}
+                    onClick={() => {
+                      handleAdd();
+                      focusFirstField();
+                    }}
                   />
                 ) : undefined}
                 {hasTablePermission(
@@ -247,7 +256,10 @@ export function IntegratedRecordSelector({
                       collection.models.length === 0 ||
                       resource === undefined
                     }
-                    onClick={(): void => handleRemove('minusButton')}
+                    onClick={(): void => {
+                      handleRemove('minusButton');
+                      focusFirstField();
+                    }}
                   />
                 ) : undefined}
                 <span

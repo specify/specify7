@@ -121,10 +121,8 @@ export function useResourceView<SCHEMA extends AnySchema>({
 
   const focusFirstField = useFirstFocus(form);
   React.useEffect(() => {
-    return focusFirstField();
+    focusFirstField();
   }, [resource?.specifyModel, focusFirstField]);
-
-  //find place with + - and place for slider, call hook there and check if event listener for click or useEffect for resource change
 
   return {
     formatted: tableNameInTitle ? (title as LocalizedString) : formatted,
