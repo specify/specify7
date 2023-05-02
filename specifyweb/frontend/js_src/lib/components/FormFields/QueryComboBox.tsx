@@ -39,6 +39,7 @@ import { userInformation } from '../InitialContext/userInformation';
 import type { AutoCompleteItem } from '../Molecules/AutoComplete';
 import { AutoComplete } from '../Molecules/AutoComplete';
 import { Dialog } from '../Molecules/Dialog';
+import { titlePosition } from '../Molecules/Tooltips';
 import { hasTablePermission } from '../Permissions/helpers';
 import {
   getQueryComboBoxConditions,
@@ -48,7 +49,6 @@ import {
 import { useCollectionRelationships } from './useCollectionRelationships';
 import { useTreeData } from './useTreeData';
 import { useTypeSearch } from './useTypeSearch';
-import { titlePosition } from '../Molecules/Tooltips';
 
 /*
  * REFACTOR: split this component
@@ -371,7 +371,7 @@ export function QueryComboBox({
           title: typeof typeSearch === 'object' ? typeSearch.title : undefined,
           ...getValidationAttributes(parser),
           type: 'text',
-          ...{ [titlePosition]: 'top' },
+          [titlePosition]: 'top',
         }}
         pendingValueRef={pendingValueRef}
         source={fetchSource}
