@@ -406,17 +406,17 @@ msgstr "Tipo de celda no compatible"
 msgid "additionalResultsOmitted"
 msgstr "Resultados adicionales omitidos"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:271
+#: components/FormSliders/RecordSelectorFromIds.tsx:269
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "recordSelectorUnloadProtect"
 msgstr "¿Continuar sin guardar?"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:274
+#: components/FormSliders/RecordSelectorFromIds.tsx:272
 #. 🟥When in record set and current record is unsaved and try to navigate to another record. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "recordSelectorUnloadProtectDescription"
 msgstr "Es posible que desee guardar este registro antes de navegar."
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:223
+#: components/FormSliders/RecordSelectorFromIds.tsx:221
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "creatingNewRecord"
 msgstr "Creando nuevo registro"
@@ -436,22 +436,22 @@ msgstr "Marcha atrás"
 msgid "deletedInline"
 msgstr "(borrado)"
 
-#: components/FormSliders/RecordSet.tsx:388
+#: components/FormSliders/RecordSet.tsx:431
 #. 🟥Example: Duplicate Record Set Item. Used in: Components > Form Sliders > Record Set
 msgid "duplicateRecordSetItem"
 msgstr "Elemento de {recordSetItemTable:string}"
 
-#: components/FormSliders/RecordSet.tsx:393
+#: components/FormSliders/RecordSet.tsx:436
 #. Used in: Components > Form Sliders > Record Set
 msgid "duplicateRecordSetItemDescription"
 msgstr "Este registro ya está presente en el {recordSetTable:string} actual"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:177
+#: components/FormSliders/RecordSelectorFromIds.tsx:175
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "addToRecordSet"
 msgstr "Agregar al {recordSetTable:string}"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:182
+#: components/FormSliders/RecordSelectorFromIds.tsx:180
 #. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "removeFromRecordSet"
 msgstr "Eliminar de {recordSetTable:string}"

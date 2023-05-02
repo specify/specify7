@@ -27,14 +27,14 @@ msgstr "Non"
 #: components/AppResources/Create.tsx:81
 #: components/AppResources/EditorComponents.tsx:85
 #: components/Attachments/Dialog.tsx:53
-#: components/FormSliders/RecordSelectorFromIds.tsx:258
+#: components/FormSliders/RecordSelectorFromIds.tsx:256
 #: components/Forms/DeleteButton.tsx:108
 #: components/Forms/DeleteButton.tsx:132
 #: components/Forms/ResourceView.tsx:296
 #: components/Forms/SearchDialog.tsx:105
 #: components/Header/ChooseCollection.tsx:41
 #: components/Header/ExpressSearchTask.tsx:49
-#: components/Header/Forms.tsx:61
+#: components/Header/Forms.tsx:62
 #: components/Interactions/InteractionsDialog.tsx:249
 #: components/Interactions/PrepDialog.tsx:101
 #: components/Interactions/PrepReturnDialog.tsx:114
@@ -137,7 +137,7 @@ msgstr "Créer"
 #: components/FormPlugins/PaleoLocation.tsx:86
 #: components/FormPlugins/index.tsx:203
 #: components/FormPlugins/index.tsx:275
-#: components/FormSliders/RecordSet.tsx:387
+#: components/FormSliders/RecordSet.tsx:430
 #: components/Forms/DataTask.tsx:131
 #: components/Forms/DeleteBlocked.tsx:80
 #: components/Forms/ResourceView.tsx:179
@@ -251,7 +251,7 @@ msgid "save"
 msgstr "Enregistrer"
 
 #: components/Atoms/DataEntry.tsx:136
-#: components/FormSliders/RecordSelectorFromIds.tsx:180
+#: components/FormSliders/RecordSelectorFromIds.tsx:178
 #: components/Forms/Save.tsx:241
 #: components/Molecules/AutoComplete.tsx:521
 #: components/PickLists/index.tsx:298
@@ -275,7 +275,7 @@ msgstr "Ajouter"
 msgid "open"
 msgstr "Ouvrir"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:185
+#: components/FormSliders/RecordSelectorFromIds.tsx:183
 #: components/Forms/DeleteButton.tsx:103
 #: components/Forms/DeleteButton.tsx:129
 #: components/Header/Notifications.tsx:231
@@ -461,7 +461,7 @@ msgstr "Modifier"
 msgid "ignore"
 msgstr "Ignorer"
 
-#: components/FormSliders/RecordSelectorFromIds.tsx:267
+#: components/FormSliders/RecordSelectorFromIds.tsx:265
 #: components/Toolbar/Language.tsx:114
 #. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Toolbar > Language
 msgid "proceed"
@@ -821,7 +821,7 @@ msgstr "{resource:string} <wrap>({count:number|formatted})</wrap>"
 #: components/FormCommands/index.tsx:126
 #: components/FormFields/useTypeSearch.tsx:89
 #: components/FormPlugins/index.tsx:212
-#: components/FormSliders/RecordSet.tsx:300
+#: components/FormSliders/RecordSet.tsx:340
 #: components/Forms/BaseResourceView.tsx:116
 #: components/Leaflet/index.ts:160
 #: components/Molecules/FilePicker.tsx:112
