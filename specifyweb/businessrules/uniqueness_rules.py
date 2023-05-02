@@ -1,6 +1,6 @@
 import json
 from django.core.exceptions import ObjectDoesNotExist
-from typing import Dict
+from typing import Dict, List, Union
 from specifyweb.specify import models
 from .orm_signal_handler import orm_signal_handler
 from .exceptions import BusinessRuleException
@@ -56,14 +56,19 @@ def make_uniqueness_rule(model_name, parent_field, unique_field):
                      "conflicting" : list(conflicts.values_list('id', flat=True)[:100])})
     return check_unique
 
-RAW_UNIQUENESS_RULES: Dict[str, Dict[str, list]] = json.load(open('specifyweb/frontend/js_src/lib/components/DataModel/uniquness_rules.json'))
+RAW_UNIQUENESS_RULES: Dict[str, Dict[str, List[Union[Dict[str, Union[str, list]], str, None]]]] = \
+    json.load(open('specifyweb/frontend/js_src/lib/components/DataModel/uniquness_rules.json'))
 
 def parse_uniqueness_rules():
     PARSED_UNIQUENESS_RULES = {}
-    for table, value in RAW_UNIQUENESS_RULES.items():
+    for table, rules in RAW_UNIQUENESS_RULES.items():
         table = table.lower().capitalize()
         if hasattr(models, table):
-            PARSED_UNIQUENESS_RULES[table] = value
+            PARSED_UNIQUENESS_RULES[table] = {}
+            for field_name, rule in rules.items():
+                # The Specify Model field names are always in lowercase
+                field_name = field_name.lower()
+                PARSED_UNIQUENESS_RULES[table][field_name] = rule
 
     return PARSED_UNIQUENESS_RULES
 

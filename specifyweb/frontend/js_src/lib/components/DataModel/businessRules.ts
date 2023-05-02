@@ -15,8 +15,8 @@ import { idFromUrl } from './resource';
 export class BusinessRuleManager<SCHEMA extends AnySchema> {
   private readonly resource: SpecifyResource<SCHEMA>;
   private readonly rules: BusinessRuleDefs<SCHEMA | AnySchema> | undefined;
-  public pendingPromises: Promise<BusinessRuleResult | null> =
-    Promise.resolve(null);
+  public pendingPromises: Promise<BusinessRuleResult | undefined> =
+    Promise.resolve(undefined);
   private fieldChangePromises: {
     [key: string]: ResolvablePromise<string>;
   } = {};
@@ -28,12 +28,12 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
   }
 
   private addPromise(
-    promise: Promise<BusinessRuleResult | string | void | undefined>
+    promise: Promise<BusinessRuleResult | string | undefined>
   ): void {
     this.pendingPromises = Promise.allSettled([
       this.pendingPromises,
       promise,
-    ]).then(() => null);
+    ]).then(() => undefined);
   }
 
   private changed(resource: SpecifyResource<SCHEMA>): void {
@@ -62,9 +62,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     this.resource.on('remove', this.removed, this);
   }
 
-  public async checkField(
-    fieldName: keyof SCHEMA['fields']
-  ): Promise<BusinessRuleResult | void> {
+  public checkField(fieldName: keyof SCHEMA['fields']) {
     fieldName =
       typeof fieldName === 'string' ? fieldName.toLowerCase() : fieldName;
     const thisCheck: ResolvablePromise<string> = flippedPromise();
@@ -87,7 +85,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
         )
       );
 
-    return Promise.all(checks)
+    Promise.all(checks)
       .then((results) => {
         return thisCheck === this.fieldChangePromises[fieldName as string]
           ? this.processCheckFieldResults(fieldName, results)
@@ -98,17 +96,15 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
 
   private processCheckFieldResults(
     fieldName: keyof SCHEMA['fields'],
-    results: RA<BusinessRuleResult | undefined | void>
-  ): Promise<RA<void | null>> {
-    return Promise.all(
-      results.map((result) => {
-        if (!result) return null;
+    results: RA<BusinessRuleResult<SCHEMA> | undefined>
+  ) {
+    results.map((result) => {
+      if (result !== undefined) {
         if (result.key === undefined) {
-          if (result.valid)
-            return typeof result.action === 'function' ? result.action() : null;
-          return null;
-        }
-        if (result.valid === false) {
+          if (result.valid && typeof result.action === 'function') {
+            result.action();
+          }
+        } else if (result.valid === false) {
           this.resource.saveBlockers!.add(
             result.key,
             fieldName as string,
@@ -116,10 +112,12 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
           );
         } else {
           this.resource.saveBlockers!.remove(result.key);
-          return typeof result.action === 'function' ? result.action() : null;
+          if (typeof result.action === 'function') {
+            result.action();
+          }
         }
-      })
-    );
+      }
+    });
   }
 
   private async checkUnique(
@@ -127,20 +125,16 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
   ): Promise<BusinessRuleResult> {
     const scopeFields =
       this.rules?.uniqueIn !== undefined
-        ? this.rules?.uniqueIn[fieldName as Lowercase<TableFields<SCHEMA>>] ??
-          []
+        ? this.rules?.uniqueIn[
+            this.resource.specifyModel.getField(fieldName as string)
+              ?.name as TableFields<SCHEMA>
+          ] ?? []
         : [];
-
-    // Typescript thinks that map() does not exist on NonNullable<UniquenessRule<SCHEMA>>
-    // However, map() exists on every possible type of UniquenessRule<SCHEMA>
-    // @ts-expect-error
     const results: RA<Promise<BusinessRuleResult<SCHEMA>>> = scopeFields.map(
-      (
-        uniqueRule: string | null | { field: string; otherFields: string[] }
-      ) => {
+      (uniqueRule) => {
         let scope = uniqueRule;
-        let fieldNames: string[] | null = [fieldName as string];
-        if (uniqueRule !== null && typeof uniqueRule != 'string') {
+        let fieldNames: string[] | undefined = [fieldName as string];
+        if (uniqueRule !== undefined && typeof uniqueRule !== 'string') {
           fieldNames = fieldNames.concat(uniqueRule.otherFields);
           scope = uniqueRule.field;
         }
@@ -200,15 +194,15 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
         : formsText.valueMustBeUniqueToDatabase();
   }
 
-  private uniqueIn(
-    scope: string | undefined | null,
-    fieldNames: RA<string> | string | null
+  private async uniqueIn(
+    scope: string | undefined,
+    fieldNames: RA<string> | string | undefined
   ): Promise<BusinessRuleResult<SCHEMA>> {
-    if (fieldNames === null) {
-      return Promise.resolve({
+    if (fieldNames === undefined) {
+      return {
         valid: false,
         reason: formsText.valueMustBeUniqueToDatabase(),
-      });
+      };
     }
     fieldNames = Array.isArray(fieldNames) ? fieldNames : [fieldNames];
 
@@ -223,13 +217,12 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     );
 
     const fieldIds = fieldValues.map((value, index) => {
-      if (fieldIsToOne[index] != null) {
-        if (value == null || value === undefined) {
-          return null;
-        } else {
+      if (fieldIsToOne[index] !== undefined) {
+        if (value !== undefined && value !== null) {
           return idFromUrl(value);
         }
-      } else return undefined;
+      }
+      return undefined;
     });
 
     const scopeFieldInfo =
@@ -245,19 +238,19 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
 
     const invalidResponse: BusinessRuleResult<SCHEMA> = {
       valid: false,
-      reason: !fieldInfo.some((field) => field === undefined)
-        ? this.getUniqueInvalidReason(scopeFieldInfo, fieldInfo)
-        : '',
+      reason: fieldInfo.some((field) => field === undefined)
+        ? ''
+        : this.getUniqueInvalidReason(scopeFieldInfo, fieldInfo),
     };
 
-    if (allNullOrUndefinedToOnes) return Promise.resolve({ valid: true });
+    if (allNullOrUndefinedToOnes) return { valid: true };
 
     const hasSameValues = (other: SpecifyResource<SCHEMA>): boolean => {
       const hasSameValue = (
         fieldValue: string | number | null,
         fieldName: string
       ): boolean => {
-        if (other.id != null && other.id === this.resource.id) return false;
+        if (other.id !== null && other.id === this.resource.id) return false;
         if (other.cid === this.resource.cid) return false;
         const otherValue = other.get(fieldName);
 
@@ -271,7 +264,7 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
       );
     };
 
-    if (scope != null) {
+    if (scope !== undefined) {
       const localCollection =
         this.resource.collection?.models !== undefined
           ? this.resource.collection.models.filter(
@@ -285,14 +278,14 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
 
       if (duplicates.length > 0) {
         overwriteReadOnly(invalidResponse, 'localDuplicates', duplicates);
-        return Promise.resolve(invalidResponse);
+        return invalidResponse;
       }
 
       const relatedPromise: Promise<SpecifyResource<AnySchema>> =
         this.resource.rgetPromise(scope);
 
       return relatedPromise.then((related) => {
-        if (!related) return Promise.resolve({ valid: true });
+        if (!related) return { valid: true };
         const filters: Partial<IR<boolean | number | string | null>> = {};
         for (let f = 0; f < fieldNames!.length; f++) {
           filters[fieldNames![f]] = fieldIds[f] || fieldValues[f];
@@ -356,9 +349,9 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
     ruleName: keyof BusinessRuleDefs<SCHEMA>,
     fieldName: keyof SCHEMA['fields'] | undefined,
     args: RA<any>
-  ): Promise<BusinessRuleResult | undefined | void> {
+  ): Promise<BusinessRuleResult | undefined> {
     if (this.rules === undefined || ruleName === 'uniqueIn') {
-      return Promise.resolve(undefined);
+      return undefined;
     }
     let rule = this.rules[ruleName];
 
@@ -367,21 +360,25 @@ export class BusinessRuleManager<SCHEMA extends AnySchema> {
       ruleName === 'fieldChecks' &&
       fieldName !== undefined
     )
-      rule = rule[fieldName as keyof typeof rule];
+      rule =
+        rule[
+          this.resource.specifyModel.getField(fieldName as string)
+            ?.name as keyof typeof rule
+        ];
 
-    if (rule === undefined) return Promise.resolve(undefined);
+    if (rule === undefined) return undefined;
 
-    // For some reason, Typescript still thinks that this.rules["fieldChecks"] is a valid rule
-    // thus rule.apply() would be invalid
-    // However, rule will never be this.rules["fieldChecks"]
+    /*
+     * For some reason, Typescript still thinks that this.rules["fieldChecks"] is a valid rule
+     * thus rule.apply() would be invalid
+     *  However, rule will never be this.rules["fieldChecks"]
+     */
     // @ts-expect-error
-    return Promise.resolve(rule.apply(undefined, args));
+    return rule.apply(undefined, args);
   }
 }
 
-export function attachBusinessRules(
-  resource: SpecifyResource<AnySchema>
-): void {
+export function attachBusinessRules(resource: SpecifyResource<AnySchema>) {
   const businessRuleManager = new BusinessRuleManager(resource);
   overwriteReadOnly(resource, 'saveBlockers', new SaveBlockers(resource));
   overwriteReadOnly(resource, 'businessRuleManager', businessRuleManager);
