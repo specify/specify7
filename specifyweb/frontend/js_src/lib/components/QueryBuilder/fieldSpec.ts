@@ -2,7 +2,6 @@
  * Query Field spec is a Specify 6 concept for a query field.
  */
 
-import { f } from '../../utils/functools';
 import type { Parser } from '../../utils/parser/definitions';
 import { resolveParser } from '../../utils/parser/definitions';
 import type { RA, WritableArray } from '../../utils/types';
@@ -90,43 +89,27 @@ export class QueryFieldSpec {
     SpQueryField['fields'],
     'fieldName' | 'isRelFld' | 'stringId' | 'tableList'
   > {
-    /*
-     * Flag to indicate that the `isRelFld` property should be false.
-     * This is currently used to dissociate the base table from
-     * formatted treeRanks as a fix for
-     *   https://github.com/specify/specify7/issues/3005
-     *
-     */
-    const overrideIsRelationship: boolean =
-      this.treeRank !== anyTreeRank && this.getField()?.isRelationship
-        ? isTreeModel(
-            this.getField()?.model.getRelationship(this.getField()!.name)
-              ?.relatedModel.name!
-          )
-        : false;
-
+    const field = this.getField();
     const fieldName = filterArray([
       this.treeRank === anyTreeRank ? undefined : this.treeRank,
-      typeof this.treeRank === 'string' &&
-      this.treeRank !== anyTreeRank &&
-      (this.getField()?.name === 'fullName' || overrideIsRelationship)
+      field === undefined
+        ? undefined
+        : typeof this.treeRank === 'string' &&
+          this.treeRank !== anyTreeRank &&
+          (field.name === 'fullName' || field.isRelationship)
         ? undefined
         : `${
-            f.maybe(this.getField(), (field) =>
-              /*
-               * Back-end expects "taxonId" and other id fields for tree ranks
-               * to be called "ID" (case-sensitive)
-               */
-              typeof this.treeRank === 'string'
-                ? field === field.model.idField && this.treeRank !== anyTreeRank
-                  ? 'ID'
-                  : field.name === 'author'
-                  ? 'Author'
-                  : field.name === 'fullName' && this.treeRank !== anyTreeRank
-                  ? ''
-                  : field.name
+            /*
+             * Back-end expects "taxonId" and other id fields for tree ranks
+             * to be called "ID" (case-sensitive)
+             */
+            typeof this.treeRank === 'string'
+              ? field === field.model.idField && this.treeRank !== anyTreeRank
+                ? 'ID'
+                : field.name === 'author'
+                ? 'Author'
                 : field.name
-            ) ?? ''
+              : field.name
           }${
             typeof this.datePart === 'string' && this.datePart !== 'fullDate'
               ? `Numeric${capitalize(this.datePart)}`
@@ -135,13 +118,19 @@ export class QueryFieldSpec {
     ]).join(' ');
     const tableList = this.makeTableList();
 
+    /*
+     * Flag to indicate that the `isRelFld` property should be false.
+     * This is currently used to dissociate the base table from
+     * formatted treeRanks as a fix for
+     *   https://github.com/specify/specify7/issues/3005
+     */
+    const overrideIsRelationship =
+      typeof this.treeRank === 'string' && this.treeRank !== anyTreeRank;
     return {
       tableList,
       stringId: [tableList, this.table.name.toLowerCase(), fieldName].join('.'),
       fieldName,
-      isRelFld: overrideIsRelationship
-        ? false
-        : this.getField()?.isRelationship === true,
+      isRelFld: field?.isRelationship === true && !overrideIsRelationship,
     };
   }
 
