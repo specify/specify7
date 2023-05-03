@@ -1,8 +1,8 @@
-import type {PartialDatePrecision} from '../../components/FormPlugins/PartialDateUi';
-import {dayjs} from '../dayJs';
-import {f} from '../functools';
-import {databaseDateFormat} from './dateConfig';
-import {fullDateFormat, monthFormat} from './dateFormat';
+import type { PartialDatePrecision } from '../../components/FormPlugins/PartialDateUi';
+import { dayjs } from '../dayJs';
+import { f } from '../functools';
+import { databaseDateFormat } from './dateConfig';
+import { fullDateFormat, monthFormat } from './dateFormat';
 
 /**
  * Parse date using the current formatters, while working arround day.js bugs
@@ -35,7 +35,6 @@ export function parseDate(
   );
 }
 
-
 /**
  * Several bugs have been discovered in day.js in the process of testing
  * Specify 7. The bugs are present in the latest stable version as of this
@@ -51,7 +50,6 @@ function fixDayJsBugs(
   else if (precision === 'full') return unsafeParseFullDate(value);
   else return undefined;
 }
-
 
 /**
  * An ugly workaround for a bug in day.js where any date in the MM/YYYY format is
